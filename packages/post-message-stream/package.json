@@ -1,7 +1,7 @@
 {
   "name": "post-message-stream",
   "version": "1.0.0",
-  "description": "",
+  "description": "Sets up a duplex object stream over window.postMessage",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,5 +10,14 @@
   "license": "ISC",
   "dependencies": {
     "readable-stream": "^2.1.4"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kumavis/post-message-stream.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kumavis/post-message-stream/issues"
+  },
+  "homepage": "https://github.com/kumavis/post-message-stream#readme"
 }
