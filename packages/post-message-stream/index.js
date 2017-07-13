@@ -15,11 +15,17 @@ function PostMessageStream (opts) {
   this._targetWindow = opts.targetWindow || window
   this._origin = (opts.targetWindow ? '*' : location.origin)
 
+  // initialization flags
+  this._init = false
+  this._haveSyn = false
+
   window.addEventListener('message', this._onMessage.bind(this), false)
+  // send syncorization message
+  this._write('SYN', null, noop)
+  this.cork()
 }
 
 // private
-
 PostMessageStream.prototype._onMessage = function (event) {
   var msg = event.data
 
@@ -30,16 +36,28 @@ PostMessageStream.prototype._onMessage = function (event) {
   if (msg.target !== this._name) return
   if (!msg.data) return
 
-  // forward message
-  try {
-    this.push(msg.data)
-  } catch (err) {
-    this.emit('error', err)
+  if (!this._init) {
+    if (msg.data === 'SYN') {
+      this._haveSyn = true
+      this._write('ACK', null, noop)
+    } else if (msg.data === 'ACK') {
+      this._init = true
+      if (!this._haveSyn) {
+        this._write('ACK', null, noop)
+      }
+      this.uncork()
+    }
+  } else {
+    // forward message
+    try {
+      this.push(msg.data)
+    } catch (err) {
+      this.emit('error', err)
+    }
   }
 }
 
 // stream plumbing
-
 PostMessageStream.prototype._read = noop
 
 PostMessageStream.prototype._write = function (data, encoding, cb) {
