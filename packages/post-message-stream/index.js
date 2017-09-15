@@ -37,6 +37,7 @@ PostMessageStream.prototype._onMessage = function (event) {
   if (!msg.data) return
 
   if (!this._init) {
+    // listen for handshake
     if (msg.data === 'SYN') {
       this._haveSyn = true
       this._write('ACK', null, noop)
