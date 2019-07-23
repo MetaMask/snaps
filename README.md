@@ -30,3 +30,6 @@ Output:
   "requestedAPIs": ["onNewTx", "fetch", "updatePluginState"]
 }
 ```
+
+To see an example in action, use the `example-basic.js` file within this repo:
+`npm run bundle-plugin-basic -- example.js`
