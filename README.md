@@ -2,9 +2,11 @@ Usage:
 
 To create a json file that can be served to metamask as a plugin manifest:
 
-`npm install`
-`touch new-plugin.js`
-`npm run bundle-plugin-basic -- new-plugin.js`
+```
+npm install
+touch new-plugin.js
+npm run bundle-plugin-basic -- new-plugin.js
+```
 
 Input:
 ```
