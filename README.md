@@ -5,31 +5,33 @@ To create a json file that can be served to metamask as a plugin manifest:
 ```
 npm install
 touch new-plugin.js
-npm run bundle-plugin-basic -- new-plugin.js
+npm link
+mm-plugin build example1.js -o example1.bundled.json
 ```
 
 Input:
 ```
-// new-plugin.js
+// example1.js
 
 (() => {
-  pluginAPIs.onNewTx(txMeta => {
-    console.log('txMeta in plugin',txMeta);
-    pluginAPIs.fetch('http://localhost:8081/plugin123.json')
-      .then(r => r.json())
-      .then(result => pluginAPIs.updatePluginState({  [txMeta.txParams.to]: Math.random() > 0.5 }));
+  ethereum.onNewTx(txMeta => {
+    let state = ethereum.getPluginState()
+    ethereum.updatePluginState({  [txMeta.txParams.from]: state[txMeta.txParams.from] + 1 })
+    state = ethereum.getPluginState()
+    console.log('Number of transactions sent by address', JSON.stringify(state, null, 2));
   })
 })
 ```
 
 Output:
 ```
-// basic-bundle.json
+// example1.bundled.json
 {
-  "source": "(function () {pluginAPIs.onNewTx(txMeta => {console.log('txMeta in plugin', txMeta);pluginAPIs.fetch('http://localhost:8081/plugin123.json').then(r => r.json()).then(result => pluginAPIs.updatePluginState({  [txMeta.txParams.to]: Math.random() > 0.5 }));})})",
-  "requestedAPIs": ["onNewTx", "fetch", "updatePluginState"]
+  "sourceCode": "(() => {\n  ethereum.onNewTx(txMeta => {\n    let state = ethereum.getPluginState()\n    ethereum.updatePluginState({  [txMeta.txParams.from]: state[txMeta.txParams.from] + 1 })\n    state = ethereum.getPluginState()\n    console.log('Number of transactions sent by address', JSON.stringify(state, null, 2));\n  })\n})\n",
+  "requestedPermissions": {
+    "onNewTx": {},
+    "getPluginState": {},
+    "updatePluginState": {}
+  }
 }
 ```
-
-To see an example in action, use the `example-basic.js` file within this repo:
-`npm run bundle-plugin-basic -- example.js`
