@@ -1,6 +1,6 @@
 {
   "name": "plugin-starter",
-  "version": "0.1",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -20,5 +20,8 @@
     "json": "^9.0.6",
     "terser": "^4.1.2",
     "uglifyify": "^5.0.1"
+  },
+  "bin": {
+    "mm-plugin": "./mm-plugin.js"
   }
 }
