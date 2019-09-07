@@ -23,5 +23,9 @@
   },
   "bin": {
     "mm-plugin": "./mm-plugin.js"
+  },
+  "dependencies": {
+    "serve-handler": "^6.1.1",
+    "yargs": "^14.0.0"
   }
 }
