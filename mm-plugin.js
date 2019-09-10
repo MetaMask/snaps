@@ -7,23 +7,22 @@ const chokidar = require('chokidar')
 const yargs = require('yargs')
 const serveHandler = require('serve-handler')
 
-// yargs config
+// yargs config and constants
+const CONFIG_PATH = './.mm-plugin.json'
+
 const srcBuilder = {
   describe: 'source file or directory',
   type: 'string',
-  default: './src'
 }
 
 const destBuilder = {
   describe: 'output file or directory',
   type: 'string',
-  default: './plugins'
 }
 
 const rootBuilder = {
   describe: 'server root directory',
   type: 'string',
-  default: './plugins'
 }
 
 const portBuilder = {
@@ -32,16 +31,21 @@ const portBuilder = {
   default: 8080
 }
 
+applyConfig()
+
 // globals
 
-const _application = {
+const _runtime = {
   verbose: false,
 }
 
 // setup application
 yargs
   .usage('Usage: $0 [command] [options]')
-  .example('$0 plugin.js ./out', 'build plugin.js as ./out/plugin.json')
+  .example('$0 plugin.js ./out', `\tBuild 'plugin.js' as './out/plugin.json'.`)
+  .example('$0 serve ./out', `\tServe files in './out' on port 8080.`)
+  .example('$0 serve ./out 9000', `\tServe files in './out' on port 9000.`)
+  .example('$0 watch ./src ./out', `\tRebuild files in './src' to './out' on change.`)
   .command(
     ['$0 [src] [dest]', 'build', 'b'],
     'build plugin file(s) from source',
@@ -72,20 +76,21 @@ yargs
     },
     argv => serve(argv)
   )
-  .option('verbose', {
-    alias: 'v',
+  .option('v', {
+    alias: 'verbose',
     boolean: true,
     describe: 'Display original errors.'
   })
   .middleware(argv => {
-    _application.verbose = Boolean(argv.verbose)
-  })
-  .fail((msg, err, _yargs) => {
-    console.error(msg || err.message)
-    if (err.stack && _application.verbose) console.error(err.stack)
-    process.exit(1)
+    _runtime.verbose = Boolean(argv.verbose)
   })
   .help()
+  .alias('h', 'help')
+  .fail((msg, err, _yargs) => {
+    console.error(msg || err.message)
+    if (err && err.stack && _runtime.verbose) console.error(err.stack)
+    process.exit(1)
+  })
   .argv
 
 // command handlers
@@ -101,7 +106,7 @@ function build (argv) {
   })
   .catch(err => {
     console.error(`Build failed: ${err.message}`)
-    if (_application.verbose && err.stack) console.error(err.stack)
+    if (_runtime.verbose && err.stack) console.error(err.stack)
     process.exit(1)
   })
 }
@@ -116,7 +121,7 @@ function watch (argv) {
   })
   .catch(err => {
     console.error(`Watch failed: ${err.message}`)
-    if (_application.verbose && err.stack) console.error(err.stack)
+    if (_runtime.verbose && err.stack) console.error(err.stack)
     process.exit(1)
   })
 }
@@ -154,9 +159,9 @@ async function serve (argv) {
 
   server.on('error', (err) => {
     if (err.code === 'EADDRINUSE') {
-      console.log(`Server error: Port ${port} already in use.`)
+      console.error(`Server error: Port ${port} already in use.`)
     } else {
-      if (_application.verbose) console.error(err)
+      if (_runtime.verbose) console.error(err)
     }
     process.exit(1)
   })
@@ -221,8 +226,8 @@ function buildFile(src, dest) {
   fs.readFile(src, 'utf8', function(err, contents) {
 
     if (err) {
-      console.log(`Build failure: could not read file '${src}'`)
-      if (_application.verbose) console.error(err)
+      console.error(`Build failure: could not read file '${src}'`)
+      if (_runtime.verbose) console.error(err)
       return
     }
 
@@ -245,8 +250,8 @@ function buildFile(src, dest) {
 
     fs.writeFile(dest, bundledPlugin, 'utf8', (err) => {
       if (err) {
-        console.log(`Build failure: could not write file '${dest}'`)
-        if (_application.verbose) console.error(err)
+        console.error(`Build failure: could not write file '${dest}'`)
+        if (_runtime.verbose) console.error(err)
         return
       }
       console.log(`Build success: '${src}' plugin bundled as '${dest}'`)
@@ -283,7 +288,7 @@ function watchFiles(pathInfo) {
     .on('unlink', path => console.log(`File removed: ${path}`))
     .on('error', err => {
       console.error(err.message)
-      if (err.stack && _application.verbose) console.err(error.stack)
+      if (err.stack && _runtime.verbose) console.err(error.stack)
     })
 
   watcher.add(`${src.path}/*`)
@@ -320,7 +325,8 @@ async function validatePaths(argv) {
 
   if (result.src.isDirectory && !result.dest.isDirectory) {
     throw new Error(
-      'Invalid params: If src is a directory, then dest must be a directory.'
+      `Invalid params: If 'src' is a directory, then 'dest' must be a directory. ` +
+      `Does your destination directory exist?`
       )
   }
 
@@ -343,10 +349,10 @@ async function isDirectory(p) {
     fs.stat(p, (err, stats) => {
       if (err || !stats) {
         if (err.code === 'ENOENT') return resolve(false)
-        console.log(
+        console.error(
           `Invalid params: Path '${p}' could not be resolved.`
         )
-        if (err && _application.verbose) console.error(err)
+        if (err && _runtime.verbose) console.error(err)
         process.exit(1)
       }
       resolve(stats.isDirectory())
@@ -375,4 +381,25 @@ function getOutfilePath(srcFilePath, outDir) {
 function getOutfileName (srcFilePath) {
   const split = srcFilePath.split('/')
   return split[split.length - 1].match(/(.+)\.js/)[1] + '.json'
+}
+
+function applyConfig () {
+  let cfg = {}
+  try {
+    cfg = JSON.parse(fs.readFileSync(CONFIG_PATH))
+  } catch (_) {}
+  if (!cfg || typeof cfg !== 'object' || Object.keys(cfg).length === 0) return
+  if (cfg['src']) {
+    srcBuilder.default = cfg['src']
+  }
+  if (cfg['dest']) {
+    destBuilder.default = cfg['dest']
+    rootBuilder.default = cfg['dest']
+  }
+  if (cfg['root']) {
+    rootBuilder.default = cfg['root']
+  }
+  if (cfg['port']) {
+    portBuilder.default = cfg['port']
+  }
 }

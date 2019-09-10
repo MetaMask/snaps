@@ -1,5 +1,5 @@
 {
-  "name": "plugin-starter",
+  "name": "mm-plugin",
   "version": "0.1.0",
   "description": "",
   "main": "mm-plugin.js",
