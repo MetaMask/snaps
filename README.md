@@ -4,6 +4,8 @@ A CLI tool for building MetaMask plugins.
 
 ## Basic Usage
 
+Ensure that you are using `node@^10.16.3`.
+
 ```bash
 mkdir myPlugin
 cd myPlugin
