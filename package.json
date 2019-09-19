@@ -1,32 +1,33 @@
 {
   "name": "mm-plugin",
   "version": "0.1.0",
-  "description": "",
+  "description": "MetaMask plugin CLI toolkit.",
   "main": "mm-plugin.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "bundle-plugin": "./bundle-plugin.sh",
-    "bundle-plugin-basic": "./bundle-plugin-basic.sh"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MetaMask/plugin-starter.git"
+  },
   "devDependencies": {
-    "@babel/core": "^7.5.5",
-    "@babel/plugin-transform-modules-commonjs": "^7.5.0",
-    "@babel/plugin-transform-modules-umd": "^7.2.0",
-    "@babel/preset-env": "^7.5.5",
-    "babelify": "^10.0.0",
-    "browserify": "^16.3.0",
-    "json": "^9.0.6",
-    "terser": "^4.1.2",
-    "uglifyify": "^5.0.2"
+    "3box": "^1.10.10"
   },
   "bin": {
     "mm-plugin": "./mm-plugin.js"
   },
   "dependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "babelify": "^10.0.0",
+    "browserify": "^16.3.0",
     "chokidar": "^3.0.2",
+    "fast-deep-equal": "^2.0.1",
     "serve-handler": "^6.1.1",
+    "ses": "^0.6.1",
+    "terser": "^4.3.1",
     "yargs": "^14.0.0"
   }
 }

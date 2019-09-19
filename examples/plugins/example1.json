@@ -1,4 +1,0 @@
-{
-  "sourceCode": "(() => {\n  ethereum.onNewTx(txMeta => {\n    let state = ethereum.getPluginState()\n    ethereum.updatePluginState({  [txMeta.txParams.from]: state[txMeta.txParams.from] + 1 })\n    state = ethereum.getPluginState()\n    console.log('Number of transactions sent by address', JSON.stringify(state, null, 2));\n  })\n})\n",
-  "requestedPermissions": null
-}

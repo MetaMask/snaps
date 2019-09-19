@@ -1,405 +1,244 @@
 #!/usr/bin/env node
 
 const fs = require('fs')
-const http = require('http')
-const pathUtils = require('path')
-const chokidar = require('chokidar')
 const yargs = require('yargs')
-const serveHandler = require('serve-handler')
+
+const {
+  build, manifest, serve, pluginEval, watch
+} = require('./src/commands')
+
+const { logError } = require('./src/utils')
+
+// globals
+
+global.mm_plugin = {
+  verbose: false,
+}
 
 // yargs config and constants
-const CONFIG_PATH = './.mm-plugin.json'
 
-const srcBuilder = {
-  describe: 'source file or directory',
-  type: 'string',
-}
+const CONFIG_PATH = '.mm-plugin.json'
 
-const destBuilder = {
-  describe: 'output file or directory',
-  type: 'string',
-}
-
-const rootBuilder = {
-  describe: 'server root directory',
-  type: 'string',
-}
-
-const portBuilder = {
-  describe: 'server port',
-  type: 'number',
-  default: 8080
+const builders = {
+  src: {
+    describe: 'Source file',
+    type: 'string',
+    default: 'index.js'
+  },
+  dist: {
+    describe: 'Output directory',
+    type: 'string',
+    default: 'dist'
+  },
+  plugin: {
+    describe: 'Plugin bundle',
+    type: 'string',
+    default: 'dist/bundle.js'
+  },
+  root: {
+    describe: 'Server root directory',
+    type: 'string',
+    default: '.'
+  },
+  port: {
+    describe: 'Server port',
+    type: 'number',
+    default: 8080
+  },
+  outfile: {
+    alias: 'n',
+    describe: 'Output file name',
+    type: 'string'
+  },
+  manifest: {
+    alias: 'm',
+    describe: 'Validate project package.json as a plugin manifest',
+    boolean: true,
+    default: true,
+  },
+  populate: {
+    alias: 'p',
+    describe: 'Update plugin manifest properties of package.json',
+    boolean: true,
+    default: true,
+  },
+  eval: {
+    alias: 'e',
+    describe: `Call 'eval' on plugin bundle to ensure it works`,
+    boolean: true,
+    default: true,
+  }
 }
 
 applyConfig()
 
-// globals
+// application
 
-const _runtime = {
-  verbose: false,
-}
-
-// setup application
 yargs
   .usage('Usage: $0 [command] [options]')
-  .example('$0 plugin.js ./out', `\tBuild 'plugin.js' as './out/plugin.json'.`)
-  .example('$0 serve ./out', `\tServe files in './out' on port 8080.`)
-  .example('$0 serve ./out 9000', `\tServe files in './out' on port 9000.`)
-  .example('$0 watch ./src ./out', `\tRebuild files in './src' to './out' on change.`)
+  .example('$0 index.js out', `\tBuild 'plugin.js' as './out/bundle.js'`)
+  .example('$0 index.js out -n plugin.js', `\tBuild 'plugin.js' as './out/plugin.js'`)
+  .example('$0 serve out', `\tServe files in './out' on port 8080`)
+  .example('$0 serve out 9000', `\tServe files in './out' on port 9000`)
+  .example('$0 watch index.js out', `\tRebuild './out/bundle.js' on changes to files in 'index.js' parent and child directories`)
   .command(
-    ['$0 [src] [dest]', 'build', 'b'],
-    'build plugin file(s) from source',
+    ['$0 [src] [dist]', 'build', 'b'],
+    'Build plugin from source',
     yargs => {
       yargs
-        .positional('src', srcBuilder)
-        .positional('dest', destBuilder)
+        .positional('src', builders.src)
+        .positional('dist', builders.dist)
+        .option('outfile-name', builders.outfile)
+        .option('eval', builders.eval)
+        .option('manifest', builders.manifest)
+        .option('populate', builders.populate)
+        .implies('populate', 'manifest')
     },
     argv => build(argv)
   )
   .command(
-    ['watch [src] [dest]', 'w'],
-    'rebuild file(s) on change',
+    ['eval [plugin]', 'e'],
+    builders.eval.describe,
     yargs => {
       yargs
-        .positional('src', srcBuilder)
-        .positional('dest', destBuilder)
+        .positional('plugin', builders.plugin)
     },
-    argv => watch(argv)
+    argv => pluginEval(argv)
+  )
+  .command(
+    ['manifest [dist]', 'm'],
+    builders.manifest.describe,
+    yargs => {
+      yargs
+        .positional('dist', builders.dist)
+        .option('populate', builders.populate)
+    },
+    argv => manifest(argv)
   )
   .command(
     ['serve [root] [port]', 's'],
-    'locally serve plugin file(s)',
+    'Locally serve plugin file(s)',
     yargs => {
       yargs
-        .positional('root', rootBuilder)
-        .positional('port', portBuilder)
+        .positional('root', builders.root)
+        .positional('port', builders.port)
     },
     argv => serve(argv)
   )
-  .option('v', {
-    alias: 'verbose',
+  .command(
+    ['watch [src] [dist]', 'w'],
+    'Build file(s) on change',
+    yargs => {
+      yargs
+        .positional('src', builders.src)
+        .positional('dist', builders.dist)
+        .option('outfile-name', builders.outfile)
+    },
+    argv => watch(argv)
+  )
+  .option('verbose', {
+    alias: 'v',
     boolean: true,
-    describe: 'Display original errors.'
+    describe: 'Display original errors'
   })
   .middleware(argv => {
-    _runtime.verbose = Boolean(argv.verbose)
+    assignGlobals(argv)
+    sanitizeInputs(argv)
   })
   .help()
-  .alias('h', 'help')
+  .alias('help', 'h')
   .fail((msg, err, _yargs) => {
     console.error(msg || err.message)
-    if (err && err.stack && _runtime.verbose) console.error(err.stack)
+    if (err && err.stack && mm_plugin.verbose) console.error(err.stack)
     process.exit(1)
   })
   .argv
 
-// command handlers
+// misc
 
-/**
- * Builds the given file or all files in the given directory.
- */
-function build (argv) {
-  // validate and catch
-  validatePaths(argv)
-  .then((paths) => {
-    buildFiles(paths)
-  })
-  .catch(err => {
-    console.error(`Build failed: ${err.message}`)
-    if (_runtime.verbose && err.stack) console.error(err.stack)
-    process.exit(1)
-  })
+function assignGlobals (argv) {
+  mm_plugin.verbose = Boolean(argv.verbose)
 }
 
-/**
- * Watches file(s) and builds them on changes.
- */
-function watch (argv) {
-  validatePaths(argv)
-  .then((paths) => {
-    watchFiles(paths)
-  })
-  .catch(err => {
-    console.error(`Watch failed: ${err.message}`)
-    if (_runtime.verbose && err.stack) console.error(err.stack)
-    process.exit(1)
-  })
-}
-
-/**
- * Starts a local, static HTTP server on the given port with the given root
- * directory.
- * 
- * @param {object} argv - Argv object from yargs
- * @param {string} argv.root - The root directory path string
- * @param {number} argv.port - The server port
- */
-async function serve (argv) {
-
-  const { port, root } = argv
-
-  const isDir = await isDirectory(root)
-  if (!isDir) {
-    throw new Error (`Invalid params: 'root' must be a directory.`)
-  }
-
-  const server = http.createServer(async (req, res) => {
-    await serveHandler(req, res, {
-      public: root,
-    })
-  })
-
-  server.listen({ port }, () => {
-    console.log(`Server listening on: http://localhost:${port}`)
-  })
-
-  server.on('request', (request) => {
-    console.log(`Handling incoming request for: ${request.url}`)
-  })
-
-  server.on('error', (err) => {
-    if (err.code === 'EADDRINUSE') {
-      console.error(`Server error: Port ${port} already in use.`)
-    } else {
-      if (_runtime.verbose) console.error(err)
-    }
-    process.exit(1)
-  })
-  
-  server.on('close', () => {
-    console.log('Server closed.')
-    process.exit(1)
-  })
-}
-
-// build utils
-
-/**
- * Builds all files in the given source directory to the given destination
- * directory.
- * 
- * @param {object} pathInfo - Path information object from validatePaths
- */
-function buildFiles(pathInfo) {
-
-  const { src, dest } = pathInfo
-
-  if (!src.isDirectory) {
-    if (!src.path.endsWith('.js')) {
-      throw new Error(`Invalid params: input file must be a '.js' file.`)
-    }
-    buildFile(src.path, dest.path)
-  } else {
-
-    fs.readdir(src.path, { withFileTypes: true }, (err, files) => {
-
-      if (err) throw err
-      if (!files || files.length === 0) {
-        throw new Error('Invalid directory: Source directory is empty.')
+function sanitizeInputs (argv) {
+  Object.keys(argv).forEach(key => {
+    if (typeof argv[key] === 'string') {
+      if (argv[key] === './') {
+        argv[key] = '.'
+      } else if (argv[key].startsWith('./')) {
+        argv[key] = argv[key].substring(2)
       }
-
-      let hasSourceFiles = false
-
-      files.forEach(file => {
-        if (file.isFile() && file.name.endsWith('.js')) {
-          hasSourceFiles = true
-          buildFile(
-            pathUtils.join(src.path, file.name), getOutfilePath(file.name, dest.path)
-          )
-        }
-      })
-
-      if (!hasSourceFiles) throw new Error(
-        'Invalid directory: Source directory contains no valid source files.'
-      )
-    })
-  }
-}
-
-/**
- * Builds a plugin bundle JSON file from its JavaScript source.
- * 
- * @param {string} src - The source file path
- * @param {string} dest - The destination file path
- */
-function buildFile(src, dest) {
-  fs.readFile(src, 'utf8', function(err, contents) {
-
-    if (err) {
-      console.error(`Build failure: could not read file '${src}'`)
-      if (_runtime.verbose) console.error(err)
-      return
     }
-
-    const sourceCode = contents
-    let requestedPermissions = contents.match(
-      /ethereumProvider\.[A-z0-9_\-$]+/g
-    )
-
-    if (requestedPermissions) {
-      requestedPermissions = requestedPermissions.reduce(
-        (acc, current) => ({ ...acc, [current.split('.')[1]]: {} }),
-        {}
-      )
-    }
-
-    const bundledPlugin = JSON.stringify({
-      sourceCode,
-      requestedPermissions,
-    }, null, 2)
-
-    fs.writeFile(dest, bundledPlugin, 'utf8', (err) => {
-      if (err) {
-        console.error(`Build failure: could not write file '${dest}'`)
-        if (_runtime.verbose) console.error(err)
-        return
-      }
-      console.log(`Build success: '${src}' plugin bundled as '${dest}'`)
-    })
-  })
-}
-
-// watch utils
-
-/**
- * Watch a single file or directory for changes, and build when files are
- * added or changed. Does not watch subdirectories.
- * 
- * @param {object} pathInfo - Path information object from validatePaths
- */
-function watchFiles(pathInfo) {
-
-  const { src, dest } = pathInfo
-
-  const watcher = chokidar.watch(src.path, {
-    ignored: str => str !== src.path && !str.endsWith('.js'),
-    depth: 1,
-  })
-
-  watcher
-    .on('add', path => {
-      console.log(`File added: ${path}`)
-      buildFile(path, getOutfilePath(path, dest.path))
-    })
-    .on('change', path => {
-      console.log(`File changed: ${path}`)
-      buildFile(path, getOutfilePath(path, dest.path))
-    })
-    .on('unlink', path => console.log(`File removed: ${path}`))
-    .on('error', err => {
-      console.error(err.message)
-      if (err.stack && _runtime.verbose) console.err(error.stack)
-    })
-
-  watcher.add(`${src.path}/*`)
-  console.log(`Watching '${src.path}' for changes...`)
-}
-
-// misc utils
-
-/**
- * Validates paths for building or watching file(s).
- * 
- * @param {object} argv - Argv object from yargs
- * @param {string} argv.src - The src path
- * @param {string} argv.dest - The destination path
- */
-async function validatePaths(argv) {
-
-  const { src, dest } = argv
-
-  if (!src || !dest) {
-    throw new Error('Invalid params: must provide src and dest')
-  }
-
-  const result = {
-    src: {
-      path: src,
-      isDirectory: await isDirectory(src),
-    },
-    dest: {
-      path: dest,
-      isDirectory: await isDirectory(dest),
-    }
-  }
-
-  if (result.src.isDirectory && !result.dest.isDirectory) {
-    throw new Error(
-      `Invalid params: If 'src' is a directory, then 'dest' must be a directory. ` +
-      `Does your destination directory exist?`
-      )
-  }
-
-  if (!result.dest.isDirectory && !result.dest.path.endsWith('.json')) {
-    throw new Error('Invalid params: Output file must be a JSON file.')
-  }
-
-  if (!result.src.isDirectory && result.dest.isDirectory) {
-    result.dest = {
-      path: pathUtils.join(result.dest.path, getOutfileName(result.src.path)),
-      isDirectory: false,
-    }
-  }
-
-  return result
-}
-
-async function isDirectory(p) {
-  return new Promise((resolve, _) => {
-    fs.stat(p, (err, stats) => {
-      if (err || !stats) {
-        if (err.code === 'ENOENT') return resolve(false)
-        console.error(
-          `Invalid params: Path '${p}' could not be resolved.`
-        )
-        if (err && _runtime.verbose) console.error(err)
-        process.exit(1)
-      }
-      resolve(stats.isDirectory())
-    })
   })
 }
 
 /**
- * Gets the complete out file path from the source file path and output
- * directory path. 
- * 
- * @param {string} srcFilePath - The source file path
- * @param {string} outDir - The out file directory
- * @returns - The complete out file path
+ * Attempts to read the config file and apply the config to
+ * globals.
  */
-function getOutfilePath(srcFilePath, outDir) {
-  return pathUtils.join(outDir, getOutfileName(srcFilePath))
-}
-
-/**
- * Gets the out file name from the source file name/path.
- * (Swaps '.js' for '.json')
- * 
- * @param {string} srcFilePath - The source file path
- */
-function getOutfileName (srcFilePath) {
-  const split = srcFilePath.split('/')
-  return split[split.length - 1].match(/(.+)\.js/)[1] + '.json'
-}
-
 function applyConfig () {
+
+  // first, attempt to read and apply config from package.json
+  let pkg = {}
+  try {
+    pkg = JSON.parse(fs.readFileSync('package.json'))
+
+    if (pkg.main) {
+      builders.src.default = pkg.main
+    }
+
+    if (pkg.web3Wallet) {
+      const { bundle } = pkg.web3Wallet
+      if (bundle) {
+        builders.plugin.default = bundle
+        let dist
+        if (bundle.indexOf('/') !== -1) {
+          dist = bundle.substr(0, bundle.indexOf('/') + 1)
+        } else {
+          dist = '.'
+        }
+        builders.dist.default = dist
+        builders.root.default = dist
+      }
+    }
+  } catch (err) {
+    logError(`Warning: Could not parse package.json`, err)
+  }
+
+  // second, attempt to read and apply config from .mm-plugin.json
   let cfg = {}
   try {
     cfg = JSON.parse(fs.readFileSync(CONFIG_PATH))
-  } catch (_) {}
+  } catch (err) {
+    if (err.code !== 'ENOENT') {
+      logError(`Warning: Could not parse .mm-plugin.json`, err)
+    }
+    process.exit(1)
+  }
   if (!cfg || typeof cfg !== 'object' || Object.keys(cfg).length === 0) return
-  if (cfg['src']) {
-    srcBuilder.default = cfg['src']
+  if (cfg.hasOwnProperty('src')) {
+    builders.src.default = cfg['src']
   }
-  if (cfg['dest']) {
-    destBuilder.default = cfg['dest']
-    rootBuilder.default = cfg['dest']
+  if (cfg.hasOwnProperty('dist')) {
+    builders.dist.default = cfg['dist']
+    builders.root.default = cfg['dist']
   }
-  if (cfg['root']) {
-    rootBuilder.default = cfg['root']
+  if (cfg.hasOwnProperty('plugin')) {
+    builders.plugin.default = cfg['plugin']
   }
-  if (cfg['port']) {
-    portBuilder.default = cfg['port']
+  if (cfg.hasOwnProperty('root')) {
+    builders.root.default = cfg['root']
+  }
+  if (cfg.hasOwnProperty('port')) {
+    builders.port.default = cfg['port']
+  }
+  if (cfg.hasOwnProperty('manifest')) {
+    builders.manifest.default = cfg['manifest']
+  }
+  if (cfg.hasOwnProperty('populate')) {
+    builders.populate.default = cfg['populate']
+  }
+  if (cfg.hasOwnProperty('eval')) {
+    builders.eval.default = cfg['eval']
   }
 }

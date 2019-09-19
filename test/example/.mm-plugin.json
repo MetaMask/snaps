@@ -1,0 +1,5 @@
+{
+  "src": "index.js",
+  "dist": "dist",
+  "port": 9000
+}

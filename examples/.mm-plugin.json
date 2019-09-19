@@ -1,5 +1,0 @@
-{
-  "src": "./src",
-  "dest": "./plugins",
-  "port": 9000
-}
