@@ -1,5 +1,5 @@
 const { errors: rpcErrors } = require('eth-json-rpc-errors')
-const { PrivateKey, PublicKey } = require('bls-signatures');
+const bls = require('noble-bls12-381')
 
 const DOMAIN = 2;
 const PRIVATE_KEY_PROMISE = wallet.getAppKey();
@@ -8,7 +8,7 @@ wallet.registerRpcMessageHandler(async (_originString, requestObject) => {
   switch (requestObject.method) {
 
     case 'getAccount':
-      return getPubKey().serialize().toString();
+      return getPubKey();
 
     case 'signMessage':
       const pubKey = await getPubKey();
@@ -17,22 +17,17 @@ wallet.registerRpcMessageHandler(async (_originString, requestObject) => {
       if (!approved) {
         throw rpcErrors.eth.unauthorized()
       }
-      const privateKey = await getPrivKey();
-      const sig = privateKey.sign(Uint8Array.from(Buffer.from(data)));
-      return sig
+      const PRIVATE_KEY = await PRIVATE_KEY_PROMISE;
+      const signature = await bls.sign(requestObject.params[0], PRIVATE_KEY, DOMAIN);
+      return signature
 
     default:
       throw rpcErrors.methodNotFound()
   }
 })
 
-async function getPrivKey() {
+async function getPubKey () {
   const PRIV_KEY = await PRIVATE_KEY_PROMISE;
-  const privateKey = PrivateKey.fromBytes(PRIV_KEY, true);
-  return privateKey;
+  return bls.getPublicKey(PRIV_KEY);
 }
 
-async function getPubKey () {
-  const privateKey = getPrivKey();
-  return privateKey.GetPublicKey();
-}
