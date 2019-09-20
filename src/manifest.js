@@ -8,8 +8,8 @@ const { isFile } = require('./utils')
 module.exports = async function manifest (argv) {
 
   console.log('Validating package.json...')
-  const isValid = true
-  const didUpdate = false
+  let isValid = true
+  let didUpdate = false
 
   const { dist, ['outfile-name']: outfileName } = argv
   if (!dist) {
@@ -98,7 +98,7 @@ module.exports = async function manifest (argv) {
   if (isValid) {
     console.log(`Successfully validated package.json!`)
   } else {
-    throw new Error(`package.json validation failed, please see above warnings`)
+    throw new Error(`Error: package.json validation failed, please see above warnings.`)
   }
 
   if (argv.populate && didUpdate) {

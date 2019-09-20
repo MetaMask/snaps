@@ -54,13 +54,13 @@ const builders = {
     alias: 'm',
     describe: 'Validate project package.json as a plugin manifest',
     boolean: true,
-    default: true,
+    default: false,
   },
   populate: {
     alias: 'p',
     describe: 'Update plugin manifest properties of package.json',
     boolean: true,
-    default: true,
+    default: false,
   },
   eval: {
     alias: 'e',
@@ -212,8 +212,8 @@ function applyConfig () {
   } catch (err) {
     if (err.code !== 'ENOENT') {
       logError(`Warning: Could not parse .mm-plugin.json`, err)
+      process.exit(1)
     }
-    process.exit(1)
   }
   if (!cfg || typeof cfg !== 'object' || Object.keys(cfg).length === 0) return
   if (cfg.hasOwnProperty('src')) {

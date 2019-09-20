@@ -1,0 +1,70 @@
+<!doctype html>
+
+<html>
+
+</head>
+  <title>BLS Signature Example</title>
+</head>
+
+<body>
+  <h1>BLS Signature Plugin Example!</h1>
+  <p>Make sure the plugin bundle is currently hosted on localhost:8083 for this to work.</p>
+  <button class="connect">Connect</button>
+  <button class="account">Get Public Key</button>
+
+  <br>
+
+  </input class="challenge" placeholder="enter data to sign">
+  <button class="sign">Sign Message</button>
+</body>
+
+<script>
+
+const origin = 'http://localhost:8083'
+const pluginOrigin = `wallet_plugin_${origin}`
+
+const connectButton = document.querySelector('button.connect')
+const accountButton = document.querySelector('button.account')
+const signButton = document.querySelector('button.sign')
+
+connectButton.addEventListener('click', connect)
+signButton.addEventListener('click', signMessage)
+accountButton.addEventListener('click', getAccount)
+
+async function connect () {
+  await ethereum.send('wallet_requestPermissions', [{
+    [pluginOrigin]: {}
+  }])
+}
+
+async function getAccount () {
+  try {
+    const response = await ethereum.send(pluginOrigin, [{
+      method: 'getAccount'
+    }])
+
+    alert('received back: ' + response.result)
+  } catch (err) {
+    console.error(err)
+    alert('Problem happened: ' + err)
+  }
+}
+
+async function sign () {
+  try {
+    const data = document.querySelector('.challenge').value
+    const response = await ethereum.send(pluginOrigin, [{
+      method: 'signMessage',
+      params: [data]
+    }])
+
+    alert('received back: ' + response.result)
+  } catch (err) {
+    console.error(err)
+    alert('Problem happened: ' + err)
+  }
+}
+
+</script>
+
+</html>

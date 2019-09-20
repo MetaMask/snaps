@@ -11,7 +11,7 @@ const {
   validateFilePath, validateOutfileName,
 } = require('./utils')
 
-const manifest = require('./manifest')
+const manifestHandler = require('./manifest')
 
 module.exports = {
   build,
@@ -153,14 +153,29 @@ async function serve (argv) {
   })
 }
 
+// manifest
+
+function manifest (argv) {
+  manifestHandler(argv)
+  .catch(err => {
+    logError(err.message, err)
+    process.exit(1)
+  })
+}
+
 // eval
 
 async function pluginEval (argv) {
   const { plugin } = argv
   await validateFilePath(plugin)
   try {
-    const s = SES.makeSESRootRealm({ consoleMode: 'allow', errorStackMode: 'allow' })
-    if (!s.evaluate(fs.readFileSync(plugin))) {
+    const s = SES.makeSESRootRealm({consoleMode: 'allow', errorStackMode: 'allow', mathRandomMode: 'allow'})
+    const result = s.evaluate(fs.readFileSync(plugin), {
+      // TODO: mock wallet properly
+      wallet: { registerRpcMessageHandler: () => true },
+      console
+    })
+    if (!result) {
       throw new Error(`SES.evaluate returned falsy value.`)
     }
     console.log('Plugin evaluation successful!')

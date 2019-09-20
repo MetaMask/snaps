@@ -1,0 +1,16 @@
+{
+  "name": "bls-signer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "eth-json-rpc-errors": "^1.1.0",
+    "noble-bls12-381": "^0.2.3",
+    "npm": "^6.11.3"
+  }
+}

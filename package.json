@@ -12,9 +12,7 @@
     "type": "git",
     "url": "git+https://github.com/MetaMask/plugin-starter.git"
   },
-  "devDependencies": {
-    "3box": "^1.10.10"
-  },
+  "devDependencies": {},
   "bin": {
     "mm-plugin": "./mm-plugin.js"
   },

@@ -1,0 +1,48 @@
+<!doctype html>
+
+<html>
+
+</head>
+  <title>Ping Pong Example</title>
+</head>
+
+<body>
+  <h1>Ping Pong Plugin Example!</h1>
+  <p>Make sure the plugin bundle is currently hosted on localhost:8082 for this to work.</p>
+  <button class="connect">Connect</button>
+  <button class="sendPing">Send Ping</button>
+</body>
+
+<script>
+
+const origin = 'http://localhost:8082'
+const pluginOrigin = `wallet_plugin_${origin}`
+
+const connectButton = document.querySelector('button.connect')
+const sendButton = document.querySelector('button.sendPing')
+
+connectButton.addEventListener('click', connect)
+sendButton.addEventListener('click', send)
+
+async function connect () {
+  await ethereum.send('wallet_requestPermissions', [{
+    [pluginOrigin]: {}
+  }])
+}
+
+async function send () {
+  try {
+    const response = await ethereum.send(pluginOrigin, [{
+      method: 'ping'
+    }])
+
+    alert('received back: ' + response.result)
+  } catch (err) {
+    console.error(err)
+    alert('Problem happened: ' + err)
+  }
+}
+
+</script>
+
+</html>

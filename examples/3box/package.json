@@ -25,5 +25,7 @@
     "bundle": "dist/bundle.js",
     "requiredPermissions": []
   },
-  "dependencies": {}
+  "dependencies": {
+    "3box": "^1.10.10"
+  }
 }
