@@ -22,7 +22,7 @@ wallet.registerRpcMessageHandler(async (_originString, requestObject) => {
       return signature
 
     default:
-      throw rpcErrors.eth.methodNotFound()
+      throw rpcErrors.methodNotFound()
   }
 })
 

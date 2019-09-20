@@ -31,7 +31,7 @@ const builders = {
     default: 'dist'
   },
   plugin: {
-    describe: 'Plugin bundle',
+    describe: 'Plugin bundle file',
     type: 'string',
     default: 'dist/bundle.js'
   },
@@ -54,13 +54,13 @@ const builders = {
     alias: 'm',
     describe: 'Validate project package.json as a plugin manifest',
     boolean: true,
-    default: false,
+    default: true,
   },
   populate: {
     alias: 'p',
     describe: 'Update plugin manifest properties of package.json',
     boolean: true,
-    default: false,
+    default: true,
   },
   eval: {
     alias: 'e',
@@ -189,11 +189,12 @@ function applyConfig () {
 
     if (pkg.web3Wallet) {
       const { bundle } = pkg.web3Wallet
-      if (bundle) {
-        builders.plugin.default = bundle
+      if (bundle && bundle.local) {
+        const { local: bundlePath } = bundle
+        builders.plugin.default = bundlePath
         let dist
-        if (bundle.indexOf('/') !== -1) {
-          dist = bundle.substr(0, bundle.indexOf('/') + 1)
+        if (bundlePath.indexOf('/') !== -1) {
+          dist = bundlePath.substr(0, bundlePath.indexOf('/') + 1)
         } else {
           dist = '.'
         }

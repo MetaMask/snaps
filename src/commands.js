@@ -178,7 +178,7 @@ async function pluginEval (argv) {
     if (!result) {
       throw new Error(`SES.evaluate returned falsy value.`)
     }
-    console.log('Plugin evaluation successful!')
+    console.log(`Eval Success: evaluated '${plugin}' in SES!`)
   } catch (err) {
     logError(`Plugin evaluation error: ${err.message}`, err)
     process.exit(1)

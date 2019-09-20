@@ -2,12 +2,12 @@
 const fs = require('fs')
 const pathUtils = require('path')
 const dequal = require('fast-deep-equal')
+const isUrl = require('is-url')
 
 const { isFile } = require('./utils')
 
 module.exports = async function manifest (argv) {
 
-  console.log('Validating package.json...')
   let isValid = true
   let didUpdate = false
 
@@ -41,12 +41,17 @@ module.exports = async function manifest (argv) {
     if (!pkg.web3Wallet) {
       pkg.web3Wallet = {}
     }
+    if (!pkg.web3Wallet.bundle) {
+      pkg.web3Wallet.bundle = {}
+    }
 
     let { bundle, requiredPermissions } = pkg.web3Wallet
-    const bundlePath = pathUtils.join(
-      dist, outfileName || 'bundle.js'
-    ).toString()
-    if (bundle !== bundlePath) pkg.web3Wallet.bundle = bundlePath
+    if (bundle && bundle.local) {
+      const bundlePath = pathUtils.join(
+        dist, outfileName || 'bundle.js'
+      ).toString()
+      if (bundle.local !== bundlePath) pkg.web3Wallet.bundle.local = bundlePath
+    }
 
     if (!requiredPermissions) {
       pkg.web3Wallet.requiredPermissions = []
@@ -72,40 +77,44 @@ module.exports = async function manifest (argv) {
   }
 
   const { bundle, requiredPermissions } = pkg.web3Wallet || {}
-  if (bundle) {
-    let res = await isFile(bundle)
-    if (!res) {
-      logManifestError(`'bundle' does not resolve to a file.`)
+  if (bundle && bundle.local) {
+    if (!(await isFile(bundle.local))) {
+      logManifestError(`'bundle.local' does not resolve to a file.`)
     }
   } else {
-    logManifestError(`Missing required 'web3Wallet' property 'bundle'.`)
+    logManifestError(`Missing required 'web3Wallet' property 'bundle.local'.`)
+  }
+
+  if (bundle.url && !isUrl(bundle.url)) {
+    logManifestError(`'bundle.url' does not resolve to a URL.`)
   }
 
   if (requiredPermissions) {
     if (!Array.isArray(requiredPermissions)) {
       logManifestError(`'web3Wallet' property 'requiredPermissions' must be an array.`)
     } else if (requiredPermissions.length === 0) {
-      console.log(
-        `Manifest Warning: 'web3Wallet' property 'requiredPermissions' is empty. ` +
-        `This probably makes your plugin trivial. Please ensure you list all ` +
-        `permissions your plugin uses.`
-      )
+      // TODO:SECURITY permissions must be explicitly requested in production
+      // console.log(
+      //   `Manifest Warning: 'web3Wallet' property 'requiredPermissions' is empty. ` +
+      //   `This probably makes your plugin trivial. Please ensure you list all ` +
+      //   `permissions your plugin uses.`
+      // )
     }
   } else {
     logManifestError(`Missing required 'web3Wallet' property 'requiredPermissions'.`)
   }
 
-  if (isValid) {
-    console.log(`Successfully validated package.json!`)
-  } else {
-    throw new Error(`Error: package.json validation failed, please see above warnings.`)
-  }
-
   if (argv.populate && didUpdate) {
     fs.writeFile('package.json', JSON.stringify(pkg, null, 2), (err) => {
       if (err) throw new Error(`Could not write package.json`, err)
-      console.log('Successfully updated package.json!')
+      console.log(`Manifest Success: updated '${pkg.name}' package.json!`)
     })
+  }
+
+  if (isValid) {
+    console.log(`Manifest Success: validated '${pkg.name}' package.json!`)
+  } else {
+    throw new Error(`Error: package.json validation failed, please see above warnings.`)
   }
 
   function logManifestError(message, err) {

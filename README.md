@@ -29,9 +29,13 @@ is simply `package.json`, with the following required standard fields:
 - `repository`
 
 In addition, we require the following custom fields:
-- `web3Wallet` (object)
-  - `bundle` (string; relative path to bundle)
-  - `requiredPermissions` (string array; required permission names)
+- `web3Wallet` (required; object)
+  - `bundle` (required; object)
+    - `local` (required; string; relative path to bundle)
+    - `url` (optional; string; absolute URL to bundle)
+  - `requiredPermissions` (required; string[]; required permission names)
+    - *Note:* eventually, permissions must be explicitly declared here, but this
+    is not enforced at the moment.
 
 Your plugin bundle must be built using the build config of this tool.
 
