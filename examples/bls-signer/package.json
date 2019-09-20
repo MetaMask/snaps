@@ -23,7 +23,8 @@
       "url": "http://localhost:8083/dist/bundle.js"
     },
     "requestedPermissions": {
-      "prompt": {}
-    }
+      "confirm": {}
+    },
+    "requiredPermissions": []
   }
 }
