@@ -14,13 +14,13 @@
 
   <br>
 
-  </input class="challenge" placeholder="enter data to sign">
+  <input class="challenge" placeholder="enter data to sign" />
   <button class="sign">Sign Message</button>
 </body>
 
 <script>
 
-const origin = 'http://localhost:8083'
+const origin = 'http://localhost:8083/package.json'
 const pluginOrigin = `wallet_plugin_${origin}`
 
 const connectButton = document.querySelector('button.connect')
@@ -32,9 +32,13 @@ signButton.addEventListener('click', signMessage)
 accountButton.addEventListener('click', getAccount)
 
 async function connect () {
-  await ethereum.send('wallet_requestPermissions', [{
-    [pluginOrigin]: {}
-  }])
+  try {
+    const res1 = await ethereum.send('wallet_requestPermissions', [{
+      [pluginOrigin]: {}
+    }])
+  } catch (e) {
+    console.log('connect: ', e)
+  }
 }
 
 async function getAccount () {
@@ -43,14 +47,14 @@ async function getAccount () {
       method: 'getAccount'
     }])
 
-    alert('received back: ' + response.result)
+    alert('received back: ' + JSON.stringify(response.result))
   } catch (err) {
     console.error(err)
     alert('Problem happened: ' + err)
   }
 }
 
-async function sign () {
+async function signMessage () {
   try {
     const data = document.querySelector('.challenge').value
     const response = await ethereum.send(pluginOrigin, [{
@@ -58,7 +62,7 @@ async function sign () {
       params: [data]
     }])
 
-    alert('received back: ' + response.result)
+    alert('received back: ' + JSON.stringify(response.result))
   } catch (err) {
     console.error(err)
     alert('Problem happened: ' + err)
