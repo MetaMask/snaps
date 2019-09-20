@@ -33,7 +33,7 @@ In addition, we require the following custom fields:
   - `bundle` (required; object)
     - `local` (required; string; relative path to bundle)
     - `url` (optional; string; absolute URL to bundle)
-  - `requiredPermissions` (required; string[]; required permission names)
+  - `requestedPermissions` (required; string[]; required permission names)
     - *Note:* eventually, permissions must be explicitly declared here, but this
     is not enforced at the moment.
 
