@@ -45,7 +45,7 @@ module.exports = async function manifest (argv) {
       pkg.web3Wallet.bundle = {}
     }
 
-    let { bundle, requiredPermissions } = pkg.web3Wallet
+    let { bundle, requestedPermissions } = pkg.web3Wallet
     if (bundle && bundle.local) {
       const bundlePath = pathUtils.join(
         dist, outfileName || 'bundle.js'
@@ -53,10 +53,10 @@ module.exports = async function manifest (argv) {
       if (bundle.local !== bundlePath) pkg.web3Wallet.bundle.local = bundlePath
     }
 
-    if (!requiredPermissions) {
-      pkg.web3Wallet.requiredPermissions = []
+    if (!requestedPermissions) {
+      pkg.web3Wallet.requestedPermissions = {}
     }
-    pkg.web3Wallet.requiredPermissions.sort()
+    pkg.web3Wallet.requestedPermissions.sort()
 
     if (!dequal(old, pkg.web3Wallet)) didUpdate = true
   }
@@ -76,7 +76,7 @@ module.exports = async function manifest (argv) {
     )
   }
 
-  const { bundle, requiredPermissions } = pkg.web3Wallet || {}
+  const { bundle, requestedPermissions } = pkg.web3Wallet || {}
   if (bundle && bundle.local) {
     if (!(await isFile(bundle.local))) {
       logManifestError(`'bundle.local' does not resolve to a file.`)
@@ -89,19 +89,22 @@ module.exports = async function manifest (argv) {
     logManifestError(`'bundle.url' does not resolve to a URL.`)
   }
 
-  if (requiredPermissions) {
-    if (!Array.isArray(requiredPermissions)) {
-      logManifestError(`'web3Wallet' property 'requiredPermissions' must be an array.`)
-    } else if (requiredPermissions.length === 0) {
+  if (requestedPermissions) {
+    if (
+      typeof requestedPermissions !== 'object' ||
+      Array.isArray(requestedPermissions)
+    ) {
+      logManifestError(`'web3Wallet' property 'requestedPermissions' must be an object.`)
+    } else if (Object.keys(requestedPermissions).length === 0) {
       // TODO:SECURITY permissions must be explicitly requested in production
       // console.log(
-      //   `Manifest Warning: 'web3Wallet' property 'requiredPermissions' is empty. ` +
+      //   `Manifest Warning: 'web3Wallet' property 'requestedPermissions' is empty. ` +
       //   `This probably makes your plugin trivial. Please ensure you list all ` +
       //   `permissions your plugin uses.`
       // )
     }
   } else {
-    logManifestError(`Missing required 'web3Wallet' property 'requiredPermissions'.`)
+    logManifestError(`Missing required 'web3Wallet' property 'requestedPermissions'.`)
   }
 
   if (argv.populate && didUpdate) {
