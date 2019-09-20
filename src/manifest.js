@@ -56,7 +56,11 @@ module.exports = async function manifest (argv) {
     if (!requestedPermissions) {
       pkg.web3Wallet.requestedPermissions = {}
     }
-    pkg.web3Wallet.requestedPermissions.sort()
+    requestedPermissions = Object.keys(requestedPermissions).sort().reduce(
+      (acc, p) => {
+        acc[p] = requestedPermissions[p]
+        return acc
+    }, {})
 
     if (!dequal(old, pkg.web3Wallet)) didUpdate = true
   }
