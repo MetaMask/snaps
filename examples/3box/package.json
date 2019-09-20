@@ -22,7 +22,10 @@
   },
   "homepage": "https://github.com/MetaMask/plugin-starter#readme",
   "web3Wallet": {
-    "bundle": "dist/bundle.js",
+    "bundle": {
+      "local": "dist/bundle.js",
+      "url": "http://localhost:8083/dist/bundle.js"
+    },
     "requiredPermissions": []
   },
   "dependencies": {

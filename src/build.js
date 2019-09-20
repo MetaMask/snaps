@@ -42,7 +42,7 @@ function bundle(src, dest) {
 
         closeBundleStream(bundleStream, strData)
         .then(() => {
-          console.log(`Build success: '${src}' plugin bundled as '${dest}'`)
+          console.log(`Build Success: '${src}' bundled as '${dest}'!`)
           resolve(true)
         })
         .catch((err) => writeError(err.message, err, dest))
