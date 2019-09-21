@@ -53,10 +53,9 @@ function bundle(src, dest) {
 function postProcess (str) {
   str = str.trim()
   str = str.replace(/\.import\(/g, '["import"](')
-  // eval("require('pkg')") => require('pkg')
-  str = str.replace(/([^\w]+)eval\(["'`]{1}(require\([^)]*\))["'`]{1}\)/g, '$1$2')
-  // eval(stuff) => stuff
-  str = str.replace(/([^\w]+)eval(\([^)]*\))/g, '$1$2')
+  // TODO: problem? the below also replaces things of the form "something.eval(stuff)"
+  // eval(stuff) => (1, eval)(stuff)
+  str = str.replace(/(\b)(eval)(\([^)]*\))/g, '$1(1, eval)$3')
   if (str.length === 0) throw new Error(`Bundled code is empty after postprocessing.`)
   return str
 }
@@ -84,17 +83,6 @@ function createBundleStream (dest) {
     writeError(err.message, err, dest)
   })
   return stream
-}
-
-function postProcess(str) {
-  str = str.trim()
-  str = str.replace(/\.import\(/g, '["import"](')
-  // eval(stringLiteral) => unwrappedStringLiteral
-  str = str.replace(/([^\w]+)eval\(["'`]{1}(\([^)]*\))["'`]{1}\)/g, '$1$2')
-  // eval(notStringLiteral) => notStringLiteral
-  str = str.replace(/([^\w]+)eval(\([^)]*\))/g, '$1$2')
-  if (str.length === 0) throw new Error(`Bundled code is empty after postprocessing.`)
-  return str
 }
 
 function writeError(msg, err, destFilePath) {
