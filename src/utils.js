@@ -2,11 +2,22 @@
 const fs = require('fs')
 const pathUtils = require('path')
 
+const permRequestKeys = [
+  '@context',
+  'id',
+  'parentCapability',
+  'invoker',
+  'date',
+  'caveats',
+  'proof'
+]
+
 module.exports = {
   isFile,
   isDirectory,
   getOutfilePath,
   logError,
+  permRequestKeys,
   validateDirPath,
   validateFilePath,
   validateOutfileName

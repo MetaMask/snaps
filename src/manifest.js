@@ -4,7 +4,7 @@ const pathUtils = require('path')
 const dequal = require('fast-deep-equal')
 const isUrl = require('is-url')
 
-const { isFile } = require('./utils')
+const { isFile, permRequestKeys } = require('./utils')
 
 module.exports = async function manifest (argv) {
 
@@ -45,7 +45,7 @@ module.exports = async function manifest (argv) {
       pkg.web3Wallet.bundle = {}
     }
 
-    let { bundle, requestedPermissions } = pkg.web3Wallet
+    let { bundle, initialPermissions } = pkg.web3Wallet
     if (bundle && bundle.local) {
       const bundlePath = pathUtils.join(
         dist, outfileName || 'bundle.js'
@@ -53,12 +53,12 @@ module.exports = async function manifest (argv) {
       if (bundle.local !== bundlePath) pkg.web3Wallet.bundle.local = bundlePath
     }
 
-    if (!requestedPermissions) {
-      pkg.web3Wallet.requestedPermissions = {}
+    if (!initialPermissions) {
+      pkg.web3Wallet.initialPermissions = {}
     }
-    requestedPermissions = Object.keys(requestedPermissions).sort().reduce(
+    initialPermissions = Object.keys(initialPermissions).sort().reduce(
       (acc, p) => {
-        acc[p] = requestedPermissions[p]
+        acc[p] = initialPermissions[p]
         return acc
     }, {})
 
@@ -80,7 +80,7 @@ module.exports = async function manifest (argv) {
     )
   }
 
-  const { bundle, requestedPermissions } = pkg.web3Wallet || {}
+  const { bundle, initialPermissions } = pkg.web3Wallet || {}
   if (bundle && bundle.local) {
     if (!(await isFile(bundle.local))) {
       logManifestError(`'bundle.local' does not resolve to a file.`)
@@ -93,22 +93,33 @@ module.exports = async function manifest (argv) {
     logManifestError(`'bundle.url' does not resolve to a URL.`)
   }
 
-  if (requestedPermissions) {
+  if (pkg.web3Wallet.hasOwnProperty('initialPermissions')) {
     if (
-      typeof requestedPermissions !== 'object' ||
-      Array.isArray(requestedPermissions)
+      typeof initialPermissions !== 'object' ||
+      Array.isArray(initialPermissions)
     ) {
-      logManifestError(`'web3Wallet' property 'requestedPermissions' must be an object.`)
-    } else if (Object.keys(requestedPermissions).length === 0) {
-      // TODO:SECURITY permissions must be explicitly requested in production
-      // console.log(
-      //   `Manifest Warning: 'web3Wallet' property 'requestedPermissions' is empty. ` +
-      //   `This probably makes your plugin trivial. Please ensure you list all ` +
-      //   `permissions your plugin uses.`
-      // )
+      logManifestError(`'web3Wallet' property 'initialPermissions' must be an object if present.`)
+
+    } else if (Object.keys(initialPermissions).length > 0) {
+
+      Object.entries(initialPermissions).forEach(([k, o]) => {
+        if (typeof o !== 'object' || Array.isArray(o)) {
+          logManifestError(`inital permission '${k}' must be an object`)
+
+        } else {
+
+          Object.keys(o).forEach(_k => {
+            if (!permRequestKeys.includes(_k)) {
+              logManifestError(`inital permission '${k}' has unrecognized key '${_k}'`)
+            }
+
+            if (_k === 'parentCapability' && k !== _k) {
+              logManifestError(`inital permissions '${k}' has mismatched 'parentCapability' field '${o[_k]}'`)
+            }
+          })
+        }
+      })
     }
-  } else {
-    logManifestError(`Missing required 'web3Wallet' property 'requestedPermissions'.`)
   }
 
   if (argv.populate && didUpdate) {
@@ -129,20 +140,4 @@ module.exports = async function manifest (argv) {
     console.error(`Manifest Error: ${message}`)
     if (err && mm_plugin.verbose) console.error(err)
   }
-}
-
-// TODO: use this to parse requested permissions from source files?
-// May be a nice convenience, but may be hard to make any guarantees about it.
-function parseRequestedPermissions (source) {
-  let requestedPermissions = source.match(
-    /ethereumProvider\.[A-z0-9_\-$]+/g
-  )
-
-  if (requestedPermissions) {
-    requestedPermissions = requestedPermissions.reduce(
-      (acc, current) => ({ ...acc, [current.split('.')[1]]: {} }),
-      {}
-    )
-  }
-  return requestedPermissions
 }

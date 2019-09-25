@@ -26,7 +26,7 @@
       "local": "dist/bundle.js",
       "url": "http://localhost:8083/dist/bundle.js"
     },
-    "requestedPermissions": {}
+    "initialPermissions": {}
   },
   "dependencies": {
     "3box": "^1.10.10"

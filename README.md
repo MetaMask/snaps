@@ -15,7 +15,7 @@ mm-plugin
 ```
 
 This will build to `myPlugin/dist/bundle.js` from `index.js` and its dependencies,
-and attempt to set the required custom properties on `package.json`.
+and attempt to set the custom properties on `package.json`.
 
 ## MetaMask Plugins
 
@@ -28,16 +28,19 @@ is simply `package.json`, with the following required standard fields:
 - `main` (relative path to source entry point, not the bundle)
 - `repository`
 
-In addition, we require the following custom fields:
-- `web3Wallet` (required; object)
-  - `bundle` (required; object)
-    - `local` (required; string; relative path to bundle)
-    - `url` (optional; string; absolute URL to bundle)
-  - `requestedPermissions` (required; string[]; required permission names)
-    - *Note:* eventually, permissions must be explicitly declared here, but this
-    is not enforced at the moment.
+In addition, we use the following custom fields:
+- `web3Wallet` (**required**; object)
+  - `bundle` (**required**; object)
+    - `local` (**required**; string; relative path to bundle)
+    - `url` (*optional*; string; absolute URL to bundle)
+  - `initialPermissions` (*optional*; object{ string: object } permissions
+  to be requested on install)
+    - See [this interface](https://github.com/MetaMask/json-rpc-capabilities-middleware#requestpermissions-irequestedpermissions)
+    and examples in this repo for details.
 
-Your plugin bundle must be built using the build config of this tool.
+We recommend building your plugin using this tool.
+You can bundle your plugin using your own tools, but it must run in the browser,
+run in SES, and its contents must be wrapped in an anonymous function (`() => ( ... )`).
 
 ### Assumed Project Structure
 

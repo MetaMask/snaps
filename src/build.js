@@ -60,16 +60,16 @@ function postProcess (str) {
   return str
 }
 
-async function closeBundleStream (stream, str) {
+async function closeBundleStream (stream, bundleString) {
 
-  if (str.endsWith(';')) str = str.slice(0, -1)
-  if (str.startsWith('(') && str.endsWith(')')) {
-    str = '() => ' + str
+  if (bundleString.endsWith(';')) bundleString = bundleString.slice(0, -1)
+  if (bundleString.startsWith('(') && bundleString.endsWith(')')) {
+    bundleString = '() => ' + bundleString
   } else {
-    str = '() => (\n' + str + '\n)'
+    bundleString = '() => (\n' + bundleString + '\n)'
   }
 
-  stream.end(str, (err) => {
+  stream.end(bundleString, (err) => {
     if (err) throw err
   })
 }
