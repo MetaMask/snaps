@@ -25,6 +25,13 @@ module.exports = {
 
 // misc utils
 
+/**
+ * Logs an error message to console. Logs original error if it exists and
+ * the verbose global is true.
+ * 
+ * @param {string} msg - The error message
+ * @param {Error} err - The original error
+ */
 function logError(msg, err) {
   console.error(msg)
   if (err && mm_plugin.verbose) console.error(err)
@@ -42,6 +49,13 @@ function getOutfilePath(outDir, outFileName) {
   return pathUtils.join(outDir, outFileName || 'bundle.js')
 }
 
+/**
+ * Ensures that the outfile name is just a js file name.
+ * Throws on validation failure
+ *
+ * @param {string} str - The file name to validate
+ * @returns {boolean} - True if validation succeeded
+ */
 function validateOutfileName(str) { 
   if (!str.endsWith('.js') || str.indexOf('/') !== -1) {
     throw new Error(`Invalid outfile name: ${str}`)
@@ -50,23 +64,30 @@ function validateOutfileName(str) {
 }
 
 /**
- * Validates paths for building or watching file(s).
+ * Validates a file path.
+ * Throws on validation failure
  * 
- * @param {object} argv - Argv object from yargs
- * @param {string} argv.src - The src file path
- * @param {string} argv.dist - The destination directory path
+ * @param {string} filePath - The file path to validate
+ * @returns {boolean} - True if validation succeeded
  */
-async function validateFilePath(fileName) {
+async function validateFilePath(filePath) {
 
-  const exists = await isFile(fileName)
+  const exists = await isFile(filePath)
 
   if (!exists) {
-    throw new Error(`Invalid params: '${fileName}' is not a file or does not exist.`)
+    throw new Error(`Invalid params: '${filePath}' is not a file or does not exist.`)
   }
 
   return true
 }
 
+/**
+ * Validates a directory path.
+ * Throws on validation failure
+ * 
+ * @param {string} dirPath - The directory path to validate
+ * @returns {boolean} - True if validation succeeded
+ */
 async function validateDirPath(dirName, createDir) {
 
   const exists = await isDirectory(dirName, createDir)

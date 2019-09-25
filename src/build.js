@@ -35,12 +35,9 @@ function bundle(src, dest) {
         // if (error) {
         //   writeError(error.message, error, dest)
         // }
-        // let strData = postProcess(code.toString())
+        // closeBundleStream(bundleStream, code.toString())
 
-        let strData = postProcess(bundle.toString())
-
-
-        closeBundleStream(bundleStream, strData)
+        closeBundleStream(bundleStream, bundle.toString())
         .then(() => {
           console.log(`Build success: '${src}' bundled as '${dest}'`)
           resolve(true)
@@ -50,30 +47,12 @@ function bundle(src, dest) {
   })
 }
 
-function postProcess (str) {
-  str = str.trim()
-  str = str.replace(/\.import\(/g, '["import"](')
-  // TODO: problem? the below also replaces things of the form "something.eval(stuff)"
-  // eval(stuff) => (1, eval)(stuff)
-  str = str.replace(/(\b)(eval)(\([^)]*\))/g, '$1(1, eval)$3')
-  if (str.length === 0) throw new Error(`Bundled code is empty after postprocessing.`)
-  return str
-}
-
-async function closeBundleStream (stream, bundleString) {
-
-  if (bundleString.endsWith(';')) bundleString = bundleString.slice(0, -1)
-  if (bundleString.startsWith('(') && bundleString.endsWith(')')) {
-    bundleString = '() => ' + bundleString
-  } else {
-    bundleString = '() => (\n' + bundleString + '\n)'
-  }
-
-  stream.end(bundleString, (err) => {
-    if (err) throw err
-  })
-}
-
+/**
+ * Opens a stream to write the destination file path.
+ *
+ * @param {string} dest - The output file path
+ * @returns {object} - The stream
+ */
 function createBundleStream (dest) {
   const stream = fs.createWriteStream(dest, {
     autoClose: false,
@@ -85,6 +64,66 @@ function createBundleStream (dest) {
   return stream
 }
 
+/**
+ * Postprocesses the bundle string and closes the write stream.
+ *
+ * @param {object} stream - The write stream
+ * @param {string} bundleString - The bundle string
+ */
+async function closeBundleStream (stream, bundleString) {
+  stream.end(postProcess(bundleString), (err) => {
+    if (err) throw err
+  })
+}
+
+/**
+ * Postprocesses a JavaScript bundle string such that it can be evaluated in SES.
+ * Currently:
+ * - converts certain dot notation to string notation (for indexing)
+ * - makes all direct calls to eval indirect
+ * - wraps original bundle in anonymous function
+ * 
+ * @param {string} bundleString - The bundle string
+ * @returns {string} - The postprocessed bundle string
+ */
+function postProcess (bundleString) {
+
+  bundleString = bundleString.trim()
+
+  // .import( => ["import"](
+  bundleString = bundleString.replace(/\.import\(/g, '["import"](')
+
+  // stuff.eval(otherStuff) => (1, stuff.eval)(otherStuff)
+  bundleString = bundleString.replace(
+    /((?:\b[\w\d]*[\]\)]?\.)+eval)(\([^)]*\))/g,
+    '(1, $1)$2'
+  )
+  // if we don't do the above, the below causes syntax errors if it encounters
+  // things of the form: "something.eval(stuff)"
+  // eval(stuff) => (1, eval)(stuff)
+  bundleString = bundleString.replace(/(\b)(eval)(\([^)]*\))/g, '$1(1, $2)$3')
+
+  if (bundleString.length === 0) throw new Error(
+    `Bundled code is empty after postprocessing.`
+  )
+
+  if (bundleString.endsWith(';')) bundleString = bundleString.slice(0, -1)
+  if (bundleString.startsWith('(') && bundleString.endsWith(')')) {
+    bundleString = '() => ' + bundleString
+  } else {
+    bundleString = '() => (\n' + bundleString + '\n)'
+  }
+
+  return bundleString
+}
+
+/**
+ * Logs an error, attempts to unlink the destination file, and exits.
+ *
+ * @param {string} msg - The error message
+ * @param {Error} err - The original error
+ * @param {string} destFilePath - The output file path
+ */
 function writeError(msg, err, destFilePath) {
   logError('Write error: ' + msg, err)
   try {

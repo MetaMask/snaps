@@ -6,6 +6,10 @@ const isUrl = require('is-url')
 
 const { isFile, permRequestKeys } = require('./utils')
 
+/**
+ * Validates a plugin package.json file.
+ * Exits with success message or gathers all errors before throwing at the end.
+ */
 module.exports = async function manifest (argv) {
 
   let isValid = true
@@ -16,6 +20,7 @@ module.exports = async function manifest (argv) {
     throw new Error(`Invalid params: must provide 'dist'`)
   }
 
+  // read the package.json file
   let pkg
   try {
     pkg = JSON.parse(fs.readFileSync('package.json'))
@@ -65,6 +70,7 @@ module.exports = async function manifest (argv) {
     if (!dequal(old, pkg.web3Wallet)) didUpdate = true
   }
 
+  // check presence of required keys
   const existing = Object.keys(pkg)
   const required = [
     'name', 'version', 'description', 'main', 'repository', 'web3Wallet'
@@ -80,6 +86,7 @@ module.exports = async function manifest (argv) {
     )
   }
 
+  // check web3Wallet properties
   const { bundle, initialPermissions } = pkg.web3Wallet || {}
   if (bundle && bundle.local) {
     if (!(await isFile(bundle.local))) {
@@ -121,6 +128,8 @@ module.exports = async function manifest (argv) {
       })
     }
   }
+
+  // validation complete, finish work and notify user
 
   if (argv.populate && didUpdate) {
     fs.writeFile('package.json', JSON.stringify(pkg, null, 2), (err) => {

@@ -21,28 +21,38 @@ const CONFIG_PATH = '.mm-plugin.json'
 
 const builders = {
   src: {
+    alias: 's',
     describe: 'Source file',
     type: 'string',
+    required: true,
     default: 'index.js'
   },
   dist: {
+    alias: 'd',
     describe: 'Output directory',
     type: 'string',
+    required: true,
     default: 'dist'
   },
   plugin: {
+    alias: 'p, b',
     describe: 'Plugin bundle file',
     type: 'string',
+    required: true,
     default: 'dist/bundle.js'
   },
   root: {
+    alias: 'r',
     describe: 'Server root directory',
     type: 'string',
+    required: true,
     default: '.'
   },
   port: {
+    alias: 'p',
     describe: 'Server port',
     type: 'number',
+    required: true,
     default: 8080
   },
   outfile: {
@@ -67,6 +77,11 @@ const builders = {
     describe: `Call 'eval' on plugin bundle to ensure it works`,
     boolean: true,
     default: true,
+  },
+  verbose: {
+    alias: 'v',
+    boolean: true,
+    describe: 'Display original errors'
   }
 }
 
@@ -76,18 +91,18 @@ applyConfig()
 
 yargs
   .usage('Usage: $0 [command] [options]')
-  .example('$0 index.js out', `\tBuild 'plugin.js' as './out/bundle.js'`)
-  .example('$0 index.js out -n plugin.js', `\tBuild 'plugin.js' as './out/plugin.js'`)
-  .example('$0 serve out', `\tServe files in './out' on port 8080`)
-  .example('$0 serve out 9000', `\tServe files in './out' on port 9000`)
-  .example('$0 watch index.js out', `\tRebuild './out/bundle.js' on changes to files in 'index.js' parent and child directories`)
+  .example('$0 -s index.js -d out', `\tBuild 'plugin.js' as './out/bundle.js'`)
+  .example('$0 -s index.js -d out -n plugin.js', `\tBuild 'plugin.js' as './out/plugin.js'`)
+  .example('$0 serve -r out', `\tServe files in './out' on port 8080`)
+  .example('$0 serve -r out -p 9000', `\tServe files in './out' on port 9000`)
+  .example('$0 watch -s index.js -d out', `\tRebuild './out/bundle.js' on changes to files in 'index.js' parent and child directories`)
   .command(
-    ['$0 [src] [dist]', 'build', 'b'],
+    ['$0', 'build', 'b'],
     'Build plugin from source',
     yargs => {
       yargs
-        .positional('src', builders.src)
-        .positional('dist', builders.dist)
+        .option('src', builders.src)
+        .option('dist', builders.dist)
         .option('outfile-name', builders.outfile)
         .option('eval', builders.eval)
         .option('manifest', builders.manifest)
@@ -97,50 +112,46 @@ yargs
     argv => build(argv)
   )
   .command(
-    ['eval [plugin]', 'e'],
+    ['eval', 'e'],
     builders.eval.describe,
     yargs => {
       yargs
-        .positional('plugin', builders.plugin)
+        .option('plugin', builders.plugin)
     },
     argv => pluginEval(argv)
   )
   .command(
-    ['manifest [dist]', 'm'],
+    ['manifest', 'm'],
     builders.manifest.describe,
     yargs => {
       yargs
-        .positional('dist', builders.dist)
+        .option('dist', builders.dist)
         .option('populate', builders.populate)
     },
     argv => manifest(argv)
   )
   .command(
-    ['serve [root] [port]', 's'],
+    ['serve', 's'],
     'Locally serve plugin file(s)',
     yargs => {
       yargs
-        .positional('root', builders.root)
-        .positional('port', builders.port)
+        .option('root', builders.root)
+        .option('port', builders.port)
     },
     argv => serve(argv)
   )
   .command(
-    ['watch [src] [dist]', 'w'],
+    ['watch', 'w'],
     'Build file(s) on change',
     yargs => {
       yargs
-        .positional('src', builders.src)
-        .positional('dist', builders.dist)
+        .option('src', builders.src)
+        .option('dist', builders.dist)
         .option('outfile-name', builders.outfile)
     },
     argv => watch(argv)
   )
-  .option('verbose', {
-    alias: 'v',
-    boolean: true,
-    describe: 'Display original errors'
-  })
+  .option('verbose', builders.verbose)
   .middleware(argv => {
     assignGlobals(argv)
     sanitizeInputs(argv)
@@ -160,6 +171,10 @@ function assignGlobals (argv) {
   mm_plugin.verbose = Boolean(argv.verbose)
 }
 
+/**
+ * Sanitizes inputs. Currently:
+ * - normalizes paths
+ */
 function sanitizeInputs (argv) {
   Object.keys(argv).forEach(key => {
     if (typeof argv[key] === 'string') {
@@ -241,5 +256,8 @@ function applyConfig () {
   }
   if (cfg.hasOwnProperty('eval')) {
     builders.eval.default = cfg['eval']
+  }
+  if (cfg.hasOwnProperty('verbose')) {
+    builders.verbose.default = cfg['verbose']
   }
 }

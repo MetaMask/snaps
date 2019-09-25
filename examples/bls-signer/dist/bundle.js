@@ -23962,7 +23962,7 @@ Script.prototype.runInContext = function (context) {
     var wEval = win.eval, wExecScript = win.execScript;
 
     if (!wEval && wExecScript) {
-        // win.(1, eval)() magically appears when this is called in IE:
+        // (1, win.eval)() magically appears when this is called in IE:
         wExecScript.call(win, 'null');
         wEval = win.eval;
     }

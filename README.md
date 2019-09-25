@@ -58,7 +58,9 @@ The defaults can be overwritten using the `.mm-plugin.json` config file,
 
 ### Permissions
 
-TODO
+This module uses permissions as defined in [`json-rpc-capabilities-middleware`
+or `rpc-cap`](https://github.com/MetaMask/json-rpc-capabilities-middleware).
+See examples in this repo for details.
 
 ## Usage
 
@@ -66,43 +68,45 @@ TODO
 ```
 Usage: mm-plugin [command] [options]
 
-Commands:
-  mm-plugin build [src] [dist]   Build plugin from source [default] [aliases: b]
-  mm-plugin eval [plugin]        Evaluate plugin bundle in SES      [aliases: e]
-  mm-plugin manifest [src]       Add plugin manifest properties to package.json
+Commands:                                                                                    
+  mm-plugin build     Build plugin from source            [default] [aliases: b]
+  mm-plugin eval      Call 'eval' on plugin bundle to ensure it works                        
+                                                                    [aliases: e]
+  mm-plugin manifest  Validate project package.json as a plugin manifest                     
                                                                     [aliases: m]
-  mm-plugin serve [root] [port]  Locally serve plugin file(s)       [aliases: s]
-  mm-plugin watch [src] [dist]   Build file(s) on change            [aliases: w]
+  mm-plugin serve     Locally serve plugin file(s)                  [aliases: s]             
+  mm-plugin watch     Build file(s) on change                       [aliases: w]
 
-Positionals:
-  src   Source file                               [string] [default: "index.js"]
-  dist  Output directory                              [string] [default: "dist"]
-  root  Server root directory                            [string] [default: "."]
-  port  Server port                                     [number] [default: 8080]
-  plugin  Plugin bundle                     [string] [default: "dist/bundle.js"]
-
-Options:
+Options (build):
   --version           Show version number                              [boolean]
   --verbose, -v       Display original errors                          [boolean]
   --help, -h          Show help                                        [boolean]
+  --src, -s           Source file      [string] [required] [default: "index.js"]
+  --dist, -d          Output directory    [string] [required] [default: "dist/"]
   --outfile-name, -n  Output file name                                  [string]
-  --manifest, -m      Add plugin manifest properties to package.json
+  --eval, -e          Call 'eval' on plugin bundle to ensure it works
+                                                       [boolean] [default: true]
+  --manifest, -m      Validate project package.json as a plugin manifest
+                                                       [boolean] [default: true]
+  --populate, -p      Update plugin manifest properties of package.json
                                                        [boolean] [default: true]
 
 Examples:
-  mm-plugin index.js out               Build 'plugin.js' as './out/bundle.js'
-  mm-plugin index.js out -n plugin.js  Build 'plugin.js' as './out/plugin.js'
-  mm-plugin serve out                  Serve files in './out' on port 8080
-  mm-plugin serve out 9000             Serve files in './out' on port 9000
-  mm-plugin watch index.js out         Rebuild './out/bundle.js' on changes to
-                                       files in 'index.js' parent and child
-                                       directories]
+  mm-plugin -s index.js -d out              Build 'plugin.js' as
+                                            './out/bundle.js'
+  mm-plugin -s index.js -d out -n           Build 'plugin.js' as
+  plugin.js                                 './out/plugin.js'
+  mm-plugin serve -r out                    Serve files in './out' on port 8080
+  mm-plugin serve -r out -p 9000            Serve files in './out' on port 9000
+  mm-plugin watch -s index.js -d out        Rebuild './out/bundle.js' on changes
+                                            to files in 'index.js' parent and
+                                            child directories
 ```
 
 ### Usage Notes
 - Commands
-  - `watch [src] [dist]` rebuilds on all changes in the parent and child directories of `src`,
-  except:
+  - `watch --src ... --dist ...` rebuilds on all changes in the parent directory
+  of `src` and its children except:
     - `node_modules/`
     - `test/` and `tests/`
     - The specified `dist` directory
