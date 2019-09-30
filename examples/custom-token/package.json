@@ -1,0 +1,28 @@
+{
+  "name": "custom-token",
+  "version": "1.0.0",
+  "description": "A locally defined token",
+  "main": "index.js",
+  "dependencies": {
+    "eth-json-rpc-errors": "^1.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MetaMask/plugin-starter.git"
+  },
+  "web3Wallet": {
+    "bundle": {
+      "local": "dist/bundle.js",
+      "url": "http://localhost:8085/dist/bundle.js"
+    },
+    "initialPermissions": {
+      "wallet_manageAssets": {}
+    }
+  }
+}
