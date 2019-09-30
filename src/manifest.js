@@ -14,7 +14,6 @@ const { isFile, permRequestKeys } = require('./utils')
 module.exports = async function manifest (argv) {
 
   let isValid = true
-  let hasWarnings = false
   let didUpdate = false
 
   const { dist, ['outfile-name']: outfileName } = argv
@@ -104,7 +103,7 @@ module.exports = async function manifest (argv) {
 
   if (!bundle.url) {
     logManifestError(`Missing required 'bundle.url' property.`)
-  } else if (bundle.url && !isUrl(bundle.url)) {
+  } else if (!isUrl(bundle.url)) {
     logManifestError(`'bundle.url' does not resolve to a URL.`)
   }
 
