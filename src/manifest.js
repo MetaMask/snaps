@@ -3,6 +3,7 @@ const fs = require('fs')
 const pathUtils = require('path')
 const dequal = require('fast-deep-equal')
 const isUrl = require('is-url')
+const deepClone = require('rfdc')({ proto: false, circles: false })
 
 const { isFile, permRequestKeys } = require('./utils')
 
@@ -41,7 +42,7 @@ module.exports = async function manifest (argv) {
   // attempt to set missing/erroneous properties if commanded
   if (argv.populate) {
 
-    let old = { ...pkg.web3Wallet }
+    const old = pkg.web3Wallet ? deepClone(pkg.web3Wallet) : {}
 
     if (!pkg.web3Wallet) {
       pkg.web3Wallet = {}
@@ -49,23 +50,27 @@ module.exports = async function manifest (argv) {
     if (!pkg.web3Wallet.bundle) {
       pkg.web3Wallet.bundle = {}
     }
-
-    let { bundle, initialPermissions } = pkg.web3Wallet
-    if (bundle && bundle.local) {
-      const bundlePath = pathUtils.join(
-        dist, outfileName || 'bundle.js'
-      ).toString()
-      if (bundle.local !== bundlePath) pkg.web3Wallet.bundle.local = bundlePath
-    }
-
-    if (!initialPermissions) {
+    if (!pkg.web3Wallet.initialPermissions) {
       pkg.web3Wallet.initialPermissions = {}
     }
-    initialPermissions = Object.keys(initialPermissions).sort().reduce(
-      (acc, p) => {
-        acc[p] = initialPermissions[p]
-        return acc
-    }, {})
+
+    let { bundle } = pkg.web3Wallet
+
+    const bundlePath = pathUtils.join(
+      dist, outfileName || 'bundle.js'
+    )
+    if (bundle.local !== bundlePath) bundle.local = bundlePath
+
+    // sort web3Wallet object keys
+    Object.entries(pkg.web3Wallet).forEach(([k, v]) => {
+      if (typeof v === 'object' && !Array.isArray(v)) {
+        pkg.web3Wallet[k] = Object.keys(v).sort().reduce(
+          (acc, l) => {
+            acc[l] = v[l]
+            return acc
+        }, {})
+      }
+    })
 
     if (!dequal(old, pkg.web3Wallet)) didUpdate = true
   }
@@ -131,10 +136,10 @@ module.exports = async function manifest (argv) {
 
   // validation complete, finish work and notify user
 
-  if (argv.populate && didUpdate) {
+  if (argv.populate) {
     fs.writeFile('package.json', JSON.stringify(pkg, null, 2), (err) => {
       if (err) throw new Error(`Could not write package.json`, err)
-      console.log(`Manifest Success: updated '${pkg.name}' package.json!`)
+      if (didUpdate) console.log(`Manifest Success: updated '${pkg.name}' package.json!`)
     })
   }
 
