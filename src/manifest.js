@@ -14,6 +14,7 @@ const { isFile, permRequestKeys } = require('./utils')
 module.exports = async function manifest (argv) {
 
   let isValid = true
+  let hasWarnings = false
   let didUpdate = false
 
   const { dist, ['outfile-name']: outfileName } = argv
@@ -101,7 +102,9 @@ module.exports = async function manifest (argv) {
     logManifestError(`Missing required 'web3Wallet' property 'bundle.local'.`)
   }
 
-  if (bundle.url && !isUrl(bundle.url)) {
+  if (!bundle.url) {
+    logManifestError(`Missing required 'bundle.url' property.`)
+  } else if (bundle.url && !isUrl(bundle.url)) {
     logManifestError(`'bundle.url' does not resolve to a URL.`)
   }
 
@@ -136,17 +139,17 @@ module.exports = async function manifest (argv) {
 
   // validation complete, finish work and notify user
 
-  if (argv.populate) {
-    fs.writeFile('package.json', JSON.stringify(pkg, null, 2), (err) => {
-      if (err) throw new Error(`Could not write package.json`, err)
-      if (didUpdate) console.log(`Manifest Success: updated '${pkg.name}' package.json!`)
-    })
-  }
-
   if (isValid) {
     console.log(`Manifest Success: validated '${pkg.name}' package.json!`)
   } else {
-    throw new Error(`Error: package.json validation failed, please see above warnings.`)
+    throw new Error(`Error: package.json validation failed, please see above errors.`)
+  }
+
+  if (argv.populate) {
+    fs.writeFile('package.json', JSON.stringify(pkg, null, 2) + '\n', (err) => {
+      if (err) throw new Error(`Could not write package.json`, err)
+      if (didUpdate) console.log(`Manifest Success: updated '${pkg.name}' package.json!`)
+    })
   }
 
   function logManifestError(message, err) {
