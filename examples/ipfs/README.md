@@ -1,5 +1,7 @@
 # IPFS Plugin Example
 
-This example does not currently work, because the `ipfs-mini` module depends on `XMLHttpRequest`, which is restricted from the plugin environment.
+To run: install the `mm-plugin` utility by installing with `npm i -g ../../` from this folder.
 
-It could be made to work easily by passing that global to the plugin context.
+Then run `mm-plugin serve` from this folder.
+
+Make sure you're running the [plugin beta branch](https://github.com/MetaMask/metamask-plugin-beta) of MetaMask.
