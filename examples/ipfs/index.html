@@ -61,10 +61,10 @@ async function add () {
       method: 'add',
       params: [ toAdd.value ],
     }])
-    addOutput.value = response.result
+    addOutput.innerText = response.result
   } catch (err) {
     console.error(err)
-    addOutput.value = `Problem getting: ${JSON.stringify(err)}`
+    addOutput.innerText = `Problem getting: ${JSON.stringify(err)}`
   }
 }
 
@@ -74,10 +74,10 @@ async function get () {
       method: 'cat',
       params: [ toGet.value ],
     }])
-    getOutput.value = response.result
+    getOutput.innerText = response.result
   } catch (err) {
     console.error(err)
-    getOutput.value = `Problem getting: ${JSON.stringify(err)}`
+    getOutput.innerText = `Problem getting: ${JSON.stringify(err)}`
   }
 }
 
