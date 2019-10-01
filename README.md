@@ -2,9 +2,15 @@
 
 A CLI tool for building MetaMask plugins.
 
-## Basic Usage
+## Installation
 
-Ensure that you are using `node@^10.16.3`.
+Always use `node@10.16.3`, the version currently used to develop MetaMask.
+
+1. `git clone git@github.com:MetaMask/mm-plugin.git`
+2. `cd mm-plugin`
+3. `npm install -g .`
+
+## Basic Usage
 
 ```bash
 mkdir myPlugin
@@ -29,12 +35,12 @@ is simply `package.json`, with the following required standard fields:
 - `repository`
 
 In addition, we use the following custom fields:
-- `web3Wallet` (**required**; object)
-  - `bundle` (**required**; object)
-    - `local` (**required**; string; relative path to bundle)
-    - `url` (*optional*; string; absolute URL to bundle)
-  - `initialPermissions` (*optional*; object{ string: object } permissions
-  to be requested on install)
+- `web3Wallet` (**required**; `object`)
+  - `bundle` (**required**; `object`)
+    - `local` (**required**; `string`; relative path to bundle)
+    - `url` (*optional*; `string`; absolute URL to bundle)
+  - `initialPermissions` (*optional*; `{ string: object }`; permissions
+  to be requested on plugin installation)
     - See [this interface](https://github.com/MetaMask/json-rpc-capabilities-middleware#requestpermissions-irequestedpermissions)
     and examples in this repo for details.
 
@@ -63,6 +69,8 @@ or `rpc-cap`](https://github.com/MetaMask/json-rpc-capabilities-middleware).
 See examples in this repo for details.
 
 ## Usage
+
+Always use `node@10.16.3`, the version currently used to develop MetaMask.
 
 `mm-plugin --help`
 ```
@@ -104,6 +112,7 @@ Examples:
 ```
 
 ### Usage Notes
+
 - Commands
   - `watch --src ... --dist ...` rebuilds on all changes in the parent directory
   of `src` and its children except:
@@ -118,6 +127,7 @@ Examples:
   - `dist` and `root` must be directory paths when specified
 
 ### Configuration File
+
 `.mm-config.json` can be placed in the project root directory. It should have string keys matching
 command arguments. Values become argument defaults, which can still be overriden on the command line.
 Example:
