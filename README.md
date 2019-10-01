@@ -111,9 +111,11 @@ Examples:
     - `test/` and `tests/`
     - The specified `dist` directory
     - Dotfiles
+  - `serve --root ... --port ...` serves the `root` directory on `localhost:port`
+    - By default, `root` serves the current working directory: `.`
 - Arguments
-  - `src` must be a file
-  - `dist` must be a directory
+  - `src`, `plugin`, and `outfile` must be file paths when specified
+  - `dist` and `root` must be directory paths when specified
 
 ### Configuration File
 `.mm-config.json` can be placed in the project root directory. It should have string keys matching
@@ -126,5 +128,3 @@ Example:
   "port": 9000
 }
 ```
-Here, `dist` also becomes the default for the server `root`. Specify `root` in the config
-to override this behavior.

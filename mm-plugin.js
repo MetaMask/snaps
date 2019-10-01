@@ -214,7 +214,6 @@ function applyConfig () {
           dist = '.'
         }
         builders.dist.default = dist
-        builders.root.default = dist
       }
     }
   } catch (err) {
@@ -237,7 +236,6 @@ function applyConfig () {
   }
   if (cfg.hasOwnProperty('dist')) {
     builders.dist.default = cfg['dist']
-    builders.root.default = cfg['dist']
   }
   if (cfg.hasOwnProperty('plugin')) {
     builders.plugin.default = cfg['plugin']
