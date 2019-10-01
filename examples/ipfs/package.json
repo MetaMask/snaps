@@ -1,0 +1,27 @@
+{
+  "name": "ipfs-mm-plugin",
+  "version": "1.0.0",
+  "description": "An IPFS plugin for MetaMask",
+  "main": "index.js",
+  "dependencies": {
+    "eth-json-rpc-errors": "^1.1.0",
+    "ipfs-mini": "^1.1.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MetaMask/plugin-starter.git"
+  },
+  "web3Wallet": {
+    "bundle": {
+      "local": "dist/bundle.js",
+      "url": "http://localhost:8086/dist/bundle.js"
+    },
+    "initialPermissions": {}
+  }
+}
