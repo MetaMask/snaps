@@ -1,6 +1,7 @@
 
 const fs = require('fs')
 const pathUtils = require('path')
+const readline = require('readline')
 
 const permRequestKeys = [
   '@context',
@@ -17,10 +18,33 @@ module.exports = {
   isDirectory,
   getOutfilePath,
   logError,
+  logWarning,
   permRequestKeys,
   validateDirPath,
   validateFilePath,
-  validateOutfileName
+  validateOutfileName,
+  prompt,
+}
+
+// readline utils
+
+let rl
+
+function createRl () {
+  return rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  })
+}
+
+function prompt (question, shouldClose) {
+  if (!rl) rl = createRl()
+  return new Promise((resolve, _reject) => {
+    rl.question(`${question} `, (answer) => {
+      resolve(answer)
+      if (shouldClose) rl.close()
+    })
+  })
 }
 
 // misc utils
@@ -35,6 +59,15 @@ module.exports = {
 function logError(msg, err) {
   console.error(msg)
   if (err && mm_plugin.verboseErrors) console.error(err)
+}
+
+/**
+ * Logs a warning message to console.
+ * 
+ * @param {string} msg - The warning message
+ */
+function logWarning(msg) {
+  if (msg && !mm_plugin.supressWarnings) console.warn(msg)
 }
 
 /**
