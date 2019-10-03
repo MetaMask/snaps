@@ -6,12 +6,11 @@ const serveHandler = require('serve-handler')
 const SES = require('ses')
 
 const { bundle } = require('./build')
+const manifestHandler = require('./manifest')
 const {
   logError, getOutfilePath, validateDirPath,
   validateFilePath, validateOutfileName,
 } = require('./utils')
-
-const manifestHandler = require('./manifest')
 
 module.exports = {
   build,

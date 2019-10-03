@@ -87,7 +87,7 @@ Commands:
 
 Options (build):
   --version               Show version number                          [boolean]
-  --verboseErrors, -v     Display original errors                      [boolean]
+  --verboseErrors, -v     Display original errors     [boolean] [default: false]
   --suppressWarnings, -w  Suppress warnings           [boolean] [default: false]
   --help, -h              Show help                                    [boolean]
   --src, -s               Source file  [string] [required] [default: "index.js"]
