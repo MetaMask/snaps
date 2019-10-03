@@ -138,17 +138,17 @@ module.exports = async function manifest (argv) {
 
   // validation complete, finish work and notify user
 
-  if (isValid) {
-    console.log(`Manifest Success: validated '${pkg.name}' package.json!`)
-  } else {
-    throw new Error(`Error: package.json validation failed, please see above errors.`)
-  }
-
   if (argv.populate) {
     fs.writeFile('package.json', JSON.stringify(pkg, null, 2) + '\n', (err) => {
       if (err) throw new Error(`Could not write package.json`, err)
       if (didUpdate) console.log(`Manifest Success: updated '${pkg.name}' package.json!`)
     })
+  }
+
+  if (isValid) {
+    console.log(`Manifest Success: validated '${pkg.name}' package.json!`)
+  } else {
+    throw new Error(`Error: package.json validation failed, please see above errors.`)
   }
 
   function logManifestError(message, err) {
