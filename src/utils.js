@@ -27,14 +27,14 @@ module.exports = {
 
 /**
  * Logs an error message to console. Logs original error if it exists and
- * the verbose global is true.
+ * the verboseErrors global is true.
  * 
  * @param {string} msg - The error message
  * @param {Error} err - The original error
  */
 function logError(msg, err) {
   console.error(msg)
-  if (err && mm_plugin.verbose) console.error(err)
+  if (err && mm_plugin.verboseErrors) console.error(err)
 }
 
 /**

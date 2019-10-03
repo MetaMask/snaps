@@ -13,7 +13,8 @@ const { isFile, permRequestKeys } = require('./utils')
  */
 module.exports = async function manifest (argv) {
 
-  let isValid = true
+  let isInvalid = false
+  let hasWarnings = false
   let didUpdate = false
 
   const { dist, ['outfile-name']: outfileName } = argv
@@ -75,17 +76,29 @@ module.exports = async function manifest (argv) {
     if (!dequal(old, pkg.web3Wallet)) didUpdate = true
   }
 
-  // check presence of required keys
+  // check presence of required and recommended keys
   const existing = Object.keys(pkg)
   const required = [
-    'name', 'version', 'description', 'main', 'repository', 'web3Wallet'
+    'name', 'version', 'description', 'main', 'web3Wallet'
   ]
-  const missing = required.filter(k => !existing.includes(k))
+  const recommended = [ 'repository' ]
+
+  let missing = required.filter(k => !existing.includes(k))
   if (missing.length > 0) {
     logManifestError(
       `Missing required package.json properties:\n` +
       missing.reduce((acc, curr) => {
-        acc += curr + '\n'
+        acc += `\t${curr}\n`
+        return acc
+      }, '')
+    )
+  }
+  missing = recommended.filter(k => !existing.includes(k))
+  if (missing.length > 0) {
+    logManifestWarning(
+      `Missing recommended package.json properties:\n` +
+      missing.reduce((acc, curr) => {
+        acc += `\t${curr}\n`
         return acc
       }, '')
     )
@@ -138,22 +151,35 @@ module.exports = async function manifest (argv) {
 
   // validation complete, finish work and notify user
 
-  if (isValid) {
-    console.log(`Manifest Success: validated '${pkg.name}' package.json!`)
-  } else {
-    throw new Error(`Error: package.json validation failed, please see above errors.`)
+  if (argv.populate) {
+    try {
+      fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n')
+      if (didUpdate) console.log(`Manifest: Updated '${pkg.name}' package.json!`)
+    } catch (err) {
+      throw new Error(`Could not write package.json`, err)
+    }
   }
 
-  if (argv.populate) {
-    fs.writeFile('package.json', JSON.stringify(pkg, null, 2) + '\n', (err) => {
-      if (err) throw new Error(`Could not write package.json`, err)
-      if (didUpdate) console.log(`Manifest Success: updated '${pkg.name}' package.json!`)
-    })
+  if (!isInvalid) {
+    if (!hasWarnings) {
+      console.log(`Manifest Success: Validated '${pkg.name}' package.json!`)
+    } else {
+      console.log(`Manifest Warning: Validation of '${pkg.name}' package.json completed with warnings. See above.`)
+    }
+  } else {
+    throw new Error(`Manifest Error: package.json validation failed, please see above errors.`)
   }
 
   function logManifestError(message, err) {
-    isValid = false
+    isInvalid = true
     console.error(`Manifest Error: ${message}`)
-    if (err && mm_plugin.verbose) console.error(err)
+    if (err && mm_plugin.verboseErrors) console.error(err)
+  }
+
+  function logManifestWarning(message) {
+    if (!mm_plugin.suppressWarnings) {
+      hasWarnings = true
+      console.warn(`Manifest Warning: ${message}`)
+    }
   }
 }

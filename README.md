@@ -86,17 +86,19 @@ Commands:
   mm-plugin watch     Build file(s) on change                       [aliases: w]
 
 Options (build):
-  --version           Show version number                              [boolean]
-  --verbose, -v       Display original errors                          [boolean]
-  --help, -h          Show help                                        [boolean]
-  --src, -s           Source file      [string] [required] [default: "index.js"]
-  --dist, -d          Output directory    [string] [required] [default: "dist/"]
-  --outfile-name, -n  Output file name                                  [string]
-  --eval, -e          Call 'eval' on plugin bundle to ensure it works
+  --version               Show version number                          [boolean]
+  --verboseErrors, -v     Display original errors                      [boolean]
+  --suppressWarnings, -w  Suppress warnings           [boolean] [default: false]
+  --help, -h              Show help                                    [boolean]
+  --src, -s               Source file  [string] [required] [default: "index.js"]
+  --dist, -d              Output directory
+                                          [string] [required] [default: "dist/"]
+  --outfile-name, -n      Output file name                              [string]
+  --eval, -e              Call 'eval' on plugin bundle to ensure it works
                                                        [boolean] [default: true]
-  --manifest, -m      Validate project package.json as a plugin manifest
+  --manifest, -m          Validate project package.json as a plugin manifest
                                                        [boolean] [default: true]
-  --populate, -p      Update plugin manifest properties of package.json
+  --populate, -p          Update plugin manifest properties of package.json
                                                        [boolean] [default: true]
 
 Examples:

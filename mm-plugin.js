@@ -12,7 +12,8 @@ const { logError } = require('./src/utils')
 // globals
 
 global.mm_plugin = {
-  verbose: false,
+  // verboseErrors: false,
+  // suppressWarnings: false,
 }
 
 // yargs config and constants
@@ -78,10 +79,17 @@ const builders = {
     boolean: true,
     default: true,
   },
-  verbose: {
-    alias: 'v',
+  verboseErrors: {
+    alias: ['v', 'verbose'],
     boolean: true,
-    describe: 'Display original errors'
+    describe: 'Display original errors',
+    default: false,
+  },
+  suppressWarnings: {
+    alias: ['w'],
+    boolean: true,
+    describe: 'Suppress warnings',
+    default: false,
   }
 }
 
@@ -151,7 +159,8 @@ yargs
     },
     argv => watch(argv)
   )
-  .option('verbose', builders.verbose)
+  .option('verboseErrors', builders.verboseErrors)
+  .option('suppressWarnings', builders.suppressWarnings)
   .middleware(argv => {
     assignGlobals(argv)
     sanitizeInputs(argv)
@@ -160,7 +169,7 @@ yargs
   .alias('help', 'h')
   .fail((msg, err, _yargs) => {
     console.error(msg || err.message)
-    if (err && err.stack && mm_plugin.verbose) console.error(err.stack)
+    if (err && err.stack && mm_plugin.verboseErrors) console.error(err.stack)
     process.exit(1)
   })
   .argv
@@ -168,7 +177,12 @@ yargs
 // misc
 
 function assignGlobals (argv) {
-  mm_plugin.verbose = Boolean(argv.verbose)
+  if (argv.hasOwnProperty('verboseErrors')) {
+    mm_plugin.verboseErrors = Boolean(argv.verboseErrors)
+  }
+  if (argv.hasOwnProperty('suppressWarnings')) {
+    mm_plugin.suppressWarnings = Boolean(argv.suppressWarnings)
+  }
 }
 
 /**
@@ -231,31 +245,8 @@ function applyConfig () {
     }
   }
   if (!cfg || typeof cfg !== 'object' || Object.keys(cfg).length === 0) return
-  if (cfg.hasOwnProperty('src')) {
-    builders.src.default = cfg['src']
-  }
-  if (cfg.hasOwnProperty('dist')) {
-    builders.dist.default = cfg['dist']
-  }
-  if (cfg.hasOwnProperty('plugin')) {
-    builders.plugin.default = cfg['plugin']
-  }
-  if (cfg.hasOwnProperty('root')) {
-    builders.root.default = cfg['root']
-  }
-  if (cfg.hasOwnProperty('port')) {
-    builders.port.default = cfg['port']
-  }
-  if (cfg.hasOwnProperty('manifest')) {
-    builders.manifest.default = cfg['manifest']
-  }
-  if (cfg.hasOwnProperty('populate')) {
-    builders.populate.default = cfg['populate']
-  }
-  if (cfg.hasOwnProperty('eval')) {
-    builders.eval.default = cfg['eval']
-  }
-  if (cfg.hasOwnProperty('verbose')) {
-    builders.verbose.default = cfg['verbose']
-  }
+  Object.keys(cfg).forEach(k => {
+    if (k === 'verbose') k = 'verboseErrors' // backwards compatibility
+    builders[k].default = cfg[k]
+  })
 }
