@@ -35,10 +35,12 @@ async function init (argv) {
     eval: true,
   })
 
-  serve({
-    ...newArgs,
-    root: '.',
-  })
+  console.log('\nPlugin project successfully initiated!')
+
+  // serve({
+  //   ...newArgs,
+  //   root: '.',
+  // })
 }
 
 // build

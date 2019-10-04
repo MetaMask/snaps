@@ -17,7 +17,7 @@ module.exports = async function initHandler (argv) {
 
   await validateEmptyDir()
 
-  console.log(`\nInit: Set package.json plugin properties\n`)
+  console.log(`\nInit: Set package.json web3Wallet properties\n`)
 
   const [ _web3Wallet, newArgs ] = await buildWeb3Wallet(argv)
   package.web3Wallet = _web3Wallet
@@ -29,7 +29,7 @@ module.exports = async function initHandler (argv) {
     process.exit(1)
   }
 
-  console.log(`\nInit: Plugin properties set successfully!`)
+  console.log(`\nInit: package.json web3Wallet properties set successfully!`)
 
   // write main js entry file
   const { main } = package
@@ -55,7 +55,7 @@ module.exports = async function initHandler (argv) {
   // write .mm-plugin.json
   try {
     fs.writeFileSync('.mm-plugin.json', JSON.stringify(newArgs, null, 2))
-    console.log(`Init: Wrote 'mm-plugin.json' config file`)
+    console.log(`Init: Wrote '.mm-plugin.json' config file`)
   } catch (err) {
     logError(`Init Error: Failed to write .mm-plugin.json file`, err)
   }
@@ -134,7 +134,7 @@ async function buildWeb3Wallet (argv) {
     let err
     try {
       if (!initialPermissions) {
-        initialPermissions = ''
+        initialPermissions = {}
         break
       }
       let splitPermissions = initialPermissions.split(' ')
@@ -144,7 +144,7 @@ async function buildWeb3Wallet (argv) {
           } else { logWarning(`Invalid permissions: ${p}`) }
           return acc
         }, {})
-      initialPermissions = splitPermissions ? splitPermissions : ''
+      initialPermissions = splitPermissions ? splitPermissions : {}
       break
     } catch (e) { err = e }
     logError(`Invalid initial permissions '${initialPermissions}', please retry.`, err)
@@ -182,7 +182,6 @@ async function validateEmptyDir () {
       }, '')
     )
     const c = await prompt(`Continue?`, 'yes')
-    console.log()
     if (c && ['y', 'yes'].includes(c.toLowerCase())) {
       return
     } else {
