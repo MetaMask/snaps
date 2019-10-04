@@ -192,6 +192,8 @@ yargs
 
   .option('verboseErrors', builders.verboseErrors)
   .option('suppressWarnings', builders.suppressWarnings)
+  .demandCommand(1, 'Invalid Input: You must specify at least one command')
+  .strict()
   .middleware(argv => {
     assignGlobals(argv)
     sanitizeInputs(argv)
