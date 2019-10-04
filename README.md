@@ -15,13 +15,8 @@ Always use `node@10.16.3`, the version currently used to develop MetaMask.
 ```bash
 mkdir myPlugin
 cd myPlugin
-npm init
-touch index.js
-mm-plugin
+mm-plugin init
 ```
-
-This will build to `myPlugin/dist/bundle.js` from `index.js` and its dependencies,
-and attempt to set the custom properties on `package.json`.
 
 ## MetaMask Plugins
 
@@ -77,7 +72,8 @@ Always use `node@10.16.3`, the version currently used to develop MetaMask.
 Usage: mm-plugin [command] [options]
 
 Commands:                                                                                    
-  mm-plugin build     Build plugin from source            [default] [aliases: b]
+  mm-plugin init      Initialize plugin package                     [aliases: i]
+  mm-plugin build     Build plugin from source                      [aliases: b]
   mm-plugin eval      Call 'eval' on plugin bundle to ensure it works                        
                                                                     [aliases: e]
   mm-plugin manifest  Validate project package.json as a plugin manifest                     
@@ -86,23 +82,27 @@ Commands:
   mm-plugin watch     Build file(s) on change                       [aliases: w]
 
 Options (build):
-  --version           Show version number                              [boolean]
-  --verbose, -v       Display original errors                          [boolean]
-  --help, -h          Show help                                        [boolean]
-  --src, -s           Source file      [string] [required] [default: "index.js"]
-  --dist, -d          Output directory    [string] [required] [default: "dist/"]
-  --outfile-name, -n  Output file name                                  [string]
-  --eval, -e          Call 'eval' on plugin bundle to ensure it works
+  --version               Show version number                          [boolean]
+  --verboseErrors, -v     Display original errors     [boolean] [default: false]
+  --suppressWarnings, -w  Suppress warnings           [boolean] [default: false]
+  --help, -h              Show help                                    [boolean]
+  --src, -s               Source file  [string] [required] [default: "index.js"]
+  --dist, -d              Output directory
+                                          [string] [required] [default: "dist"]
+  --outfileName, -n      Output file name                              [string]
+  --eval, -e              Call 'eval' on plugin bundle to ensure it works
                                                        [boolean] [default: true]
-  --manifest, -m      Validate project package.json as a plugin manifest
+  --manifest, -m          Validate project package.json as a plugin manifest
                                                        [boolean] [default: true]
-  --populate, -p      Update plugin manifest properties of package.json
+  --populate, -p          Update plugin manifest properties of package.json
                                                        [boolean] [default: true]
 
 Examples:
-  mm-plugin -s index.js -d out              Build 'plugin.js' as
+  mm-plugin init                            Initialize plugin package from
+                                            scratch
+  mm-plugin build -s index.js -d out        Build 'plugin.js' as
                                             './out/bundle.js'
-  mm-plugin -s index.js -d out -n           Build 'plugin.js' as
+  mm-plugin build -s index.js -d out -n     Build 'plugin.js' as
   plugin.js                                 './out/plugin.js'
   mm-plugin serve -r out                    Serve files in './out' on port 8080
   mm-plugin serve -r out -p 9000            Serve files in './out' on port 9000
@@ -123,7 +123,7 @@ Examples:
   - `serve --root ... --port ...` serves the `root` directory on `localhost:port`
     - By default, `root` serves the current working directory: `.`
 - Arguments
-  - `src`, `plugin`, and `outfile` must be file paths when specified
+  - `src`, `plugin`, and `outfileName` must be file paths when specified
   - `dist` and `root` must be directory paths when specified
 
 ### Configuration File

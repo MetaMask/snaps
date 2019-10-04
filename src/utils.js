@@ -1,6 +1,7 @@
 
 const fs = require('fs')
 const pathUtils = require('path')
+const readline = require('readline')
 
 const permRequestKeys = [
   '@context',
@@ -17,24 +18,69 @@ module.exports = {
   isDirectory,
   getOutfilePath,
   logError,
+  logWarning,
   permRequestKeys,
   validateDirPath,
   validateFilePath,
-  validateOutfileName
+  validateOutfileName,
+  prompt,
+  closePrompt,
+}
+
+// readline utils
+
+let rl
+
+function closePrompt () {
+  if (rl) rl.close()
+}
+
+function openPrompt () {
+  rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  })
+}
+
+function prompt (question, def, shouldClose) {
+  if (!rl) openPrompt()
+  return new Promise((resolve, _reject) => {
+    let queryString = `${question} `
+    if (def) queryString += `(${def}) `
+    rl.question(queryString, (answer) => {
+      if (!answer || !answer.trim()) resolve(def)
+      resolve(answer.trim())
+      if (shouldClose) rl.close()
+    })
+  })
 }
 
 // misc utils
 
 /**
  * Logs an error message to console. Logs original error if it exists and
- * the verbose global is true.
+ * the verboseErrors global is true.
  * 
  * @param {string} msg - The error message
  * @param {Error} err - The original error
  */
 function logError(msg, err) {
-  console.error(msg)
-  if (err && mm_plugin.verbose) console.error(err)
+  if (msg instanceof Error) {
+    if (!mm_plugin.verboseErrors) console.error(msg.message)
+    else console.error(msg)
+  } else if (typeof msg === 'string') {
+    console.error(msg)
+    if (err && mm_plugin.verboseErrors) console.error(err)
+  }
+}
+
+/**
+ * Logs a warning message to console.
+ * 
+ * @param {string} msg - The warning message
+ */
+function logWarning(msg) {
+  if (msg && !mm_plugin.supressWarnings) console.warn(msg)
 }
 
 /**
