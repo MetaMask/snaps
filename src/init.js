@@ -4,7 +4,9 @@ const pathUtils = require('path')
 const packageInit = require('init-package-json')
 
 const template = require('./initTemplate.json')
-const { logError, logWarning, prompt, closePrompt } = require('./utils')
+const {
+  logError, logWarning, prompt, closePrompt, trimPathString
+} = require('./utils')
 
 module.exports = async function initHandler (argv) {
 
@@ -114,9 +116,7 @@ async function buildWeb3Wallet (argv) {
   dist = await prompt(`output directory:`, dist)
   while (true) {
     try {
-      while (dist.endsWith('/')) {
-        dist = dist.slice(0, -1)
-      }
+      dist = trimPathString(dist)
       fs.mkdirSync(dist)
       break
     } catch (e) {

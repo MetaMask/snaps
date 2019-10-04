@@ -25,37 +25,14 @@ module.exports = {
   validateOutfileName,
   prompt,
   closePrompt,
-}
-
-// readline utils
-
-let rl
-
-function closePrompt () {
-  if (rl) rl.close()
-}
-
-function openPrompt () {
-  rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  })
-}
-
-function prompt (question, def, shouldClose) {
-  if (!rl) openPrompt()
-  return new Promise((resolve, _reject) => {
-    let queryString = `${question} `
-    if (def) queryString += `(${def}) `
-    rl.question(queryString, (answer) => {
-      if (!answer || !answer.trim()) resolve(def)
-      resolve(answer.trim())
-      if (shouldClose) rl.close()
-    })
-  })
+  trimPathString,
 }
 
 // misc utils
+
+function trimPathString(s) {
+  return s.replace(/^[./]+|[./]+$/g, '')
+}
 
 /**
  * Logs an error message to console. Logs original error if it exists and
@@ -185,6 +162,34 @@ function isFile(p) {
         return resolve(false)
       }
       resolve(stats.isFile())
+    })
+  })
+}
+
+// readline utils
+
+let rl
+
+function closePrompt () {
+  if (rl) rl.close()
+}
+
+function openPrompt () {
+  rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  })
+}
+
+function prompt (question, def, shouldClose) {
+  if (!rl) openPrompt()
+  return new Promise((resolve, _reject) => {
+    let queryString = `${question} `
+    if (def) queryString += `(${def}) `
+    rl.question(queryString, (answer) => {
+      if (!answer || !answer.trim()) resolve(def)
+      resolve(answer.trim())
+      if (shouldClose) rl.close()
     })
   })
 }
