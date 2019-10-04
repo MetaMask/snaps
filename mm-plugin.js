@@ -4,10 +4,10 @@ const fs = require('fs')
 const yargs = require('yargs')
 
 const {
-  build, manifest, serve, pluginEval, watch
+  build, init, manifest, pluginEval, serve, watch
 } = require('./src/commands')
 
-const { logError } = require('./src/utils')
+const { logError, logWarning } = require('./src/utils')
 
 // globals
 
@@ -28,6 +28,7 @@ const builders = {
     required: true,
     default: 'index.js'
   },
+
   dist: {
     alias: 'd',
     describe: 'Output directory',
@@ -35,6 +36,7 @@ const builders = {
     required: true,
     default: 'dist'
   },
+
   plugin: {
     alias: 'p, b',
     describe: 'Plugin bundle file',
@@ -42,6 +44,7 @@ const builders = {
     required: true,
     default: 'dist/bundle.js'
   },
+
   root: {
     alias: 'r',
     describe: 'Server root directory',
@@ -49,42 +52,50 @@ const builders = {
     required: true,
     default: '.'
   },
+
   port: {
     alias: 'p',
     describe: 'Server port',
     type: 'number',
     required: true,
-    default: 8080
+    default: 8081
   },
-  outfile: {
+
+  outfileName: {
     alias: 'n',
     describe: 'Output file name',
-    type: 'string'
+    type: 'string',
+    default: 'bundle.js'
   },
+
   manifest: {
     alias: 'm',
     describe: 'Validate project package.json as a plugin manifest',
     boolean: true,
     default: true,
   },
+
   populate: {
     alias: 'p',
     describe: 'Update plugin manifest properties of package.json',
     boolean: true,
     default: true,
   },
+
   eval: {
     alias: 'e',
     describe: `Call 'eval' on plugin bundle to ensure it works`,
     boolean: true,
     default: true,
   },
+
   verboseErrors: {
     alias: ['v', 'verbose'],
     boolean: true,
     describe: 'Display original errors',
     default: false,
   },
+
   suppressWarnings: {
     alias: ['w'],
     boolean: true,
@@ -98,20 +109,35 @@ applyConfig()
 // application
 
 yargs
-  .usage('Usage: $0 [command] [options]')
-  .example('$0 -s index.js -d out', `\tBuild 'plugin.js' as './out/bundle.js'`)
-  .example('$0 -s index.js -d out -n plugin.js', `\tBuild 'plugin.js' as './out/plugin.js'`)
+  .usage('Usage: $0 <command> [options]')
+  .example('$0 init', `\tInitialize plugin package from scratch`)
+  .example('$0 build -s index.js -d out', `\tBuild 'plugin.js' as './out/bundle.js'`)
+  .example('$0 build -s index.js -d out -n plugin.js', `\tBuild 'plugin.js' as './out/plugin.js'`)
   .example('$0 serve -r out', `\tServe files in './out' on port 8080`)
   .example('$0 serve -r out -p 9000', `\tServe files in './out' on port 9000`)
   .example('$0 watch -s index.js -d out', `\tRebuild './out/bundle.js' on changes to files in 'index.js' parent and child directories`)
+
   .command(
-    ['$0', 'build', 'b'],
+    ['init', 'i'],
+    'Initialize plugin package',
+    yargs => {
+      yargs
+        .option('src', builders.src)
+        .option('dist', builders.dist)
+        .option('outfileName', builders.outfileName)
+        .option('port', builders.port)
+    },
+    argv => init(argv)
+  )
+
+  .command(
+    ['build', 'b'],
     'Build plugin from source',
     yargs => {
       yargs
         .option('src', builders.src)
         .option('dist', builders.dist)
-        .option('outfile-name', builders.outfile)
+        .option('outfileName', builders.outfileName)
         .option('eval', builders.eval)
         .option('manifest', builders.manifest)
         .option('populate', builders.populate)
@@ -119,6 +145,7 @@ yargs
     },
     argv => build(argv)
   )
+
   .command(
     ['eval', 'e'],
     builders.eval.describe,
@@ -128,6 +155,7 @@ yargs
     },
     argv => pluginEval(argv)
   )
+
   .command(
     ['manifest', 'm'],
     builders.manifest.describe,
@@ -138,6 +166,7 @@ yargs
     },
     argv => manifest(argv)
   )
+
   .command(
     ['serve', 's'],
     'Locally serve plugin file(s)',
@@ -148,6 +177,7 @@ yargs
     },
     argv => serve(argv)
   )
+
   .command(
     ['watch', 'w'],
     'Build file(s) on change',
@@ -155,10 +185,11 @@ yargs
       yargs
         .option('src', builders.src)
         .option('dist', builders.dist)
-        .option('outfile-name', builders.outfile)
+        .option('outfileName', builders.outfileName)
     },
     argv => watch(argv)
   )
+
   .option('verboseErrors', builders.verboseErrors)
   .option('suppressWarnings', builders.suppressWarnings)
   .middleware(argv => {
@@ -231,7 +262,9 @@ function applyConfig () {
       }
     }
   } catch (err) {
-    logError(`Warning: Could not parse package.json`, err)
+    if (err.code !== 'ENOENT') {
+      logWarning(`Warning: Could not parse package.json`, err)
+    }
   }
 
   // second, attempt to read and apply config from .mm-plugin.json
@@ -240,8 +273,7 @@ function applyConfig () {
     cfg = JSON.parse(fs.readFileSync(CONFIG_PATH))
   } catch (err) {
     if (err.code !== 'ENOENT') {
-      logError(`Warning: Could not parse .mm-plugin.json`, err)
-      process.exit(1)
+      logWarning(`Warning: Could not parse .mm-plugin.json`, err)
     }
   }
   if (!cfg || typeof cfg !== 'object' || Object.keys(cfg).length === 0) return

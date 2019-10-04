@@ -25,7 +25,6 @@
     "fast-deep-equal": "^2.0.1",
     "init-package-json": "^1.10.3",
     "is-url": "^1.2.4",
-    "prompts": "^2.2.1",
     "rfdc": "^1.1.4",
     "serve-handler": "^6.1.1",
     "ses": "^0.6.3",

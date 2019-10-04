@@ -7,6 +7,7 @@ const SES = require('ses')
 
 const { bundle } = require('./build')
 const manifestHandler = require('./manifest')
+const initHandler = require('./init')
 const {
   logError, getOutfilePath, validateDirPath,
   validateFilePath, validateOutfileName,
@@ -18,6 +19,26 @@ module.exports = {
   serve,
   watch,
   manifest,
+  init,
+}
+
+// init
+
+async function init (argv) {
+  const newArgs = await initHandler(argv)
+
+  console.log()
+
+  await build({
+    ...newArgs,
+    manifest: false,
+    eval: true,
+  })
+
+  serve({
+    ...newArgs,
+    root: '.',
+  })
 }
 
 // build
@@ -31,11 +52,11 @@ module.exports = {
  * @param {object} argv - argv from Yargs
  * @param {string} argv.src - The source file path
  * @param {string} argv.dist - The output directory path
- * @param {string} argv.'outfile-name' - The output file name
+ * @param {string} argv.'outfileName' - The output file name
  */
 async function build (argv) {
 
-  const { src, dist, ['outfile-name']: outfileName } = argv
+  const { src, dist, ['outfileName']: outfileName } = argv
   if (outfileName) validateOutfileName(outfileName)
   await validateFilePath(src)
   await validateDirPath(dist, true)
@@ -60,11 +81,11 @@ async function build (argv) {
  * @param {object} argv - argv from Yargs
  * @param {string} argv.src - The source file path
  * @param {string} argv.dist - The output directory path
- * @param {string} argv.'outfile-name' - The output file name
+ * @param {string} argv.'outfileName' - The output file name
  */
 async function watch(argv) {
 
-  const { src, dist, ['outfile-name']: outfileName } = argv
+  const { src, dist, ['outfileName']: outfileName } = argv
   if (outfileName) validateOutfileName(outfileName)
   await validateFilePath(src)
   await validateDirPath(dist, true)
@@ -122,6 +143,8 @@ async function serve (argv) {
   const { port, root } = argv
 
   await validateDirPath(root)
+
+  console.log(`\nStarting server...`)
 
   const server = http.createServer(async (req, res) => {
     await serveHandler(req, res, {

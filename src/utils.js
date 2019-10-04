@@ -24,24 +24,32 @@ module.exports = {
   validateFilePath,
   validateOutfileName,
   prompt,
+  closePrompt,
 }
 
 // readline utils
 
 let rl
 
-function createRl () {
-  return rl = readline.createInterface({
+function closePrompt () {
+  if (rl) rl.close()
+}
+
+function openPrompt () {
+  rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
   })
 }
 
-function prompt (question, shouldClose) {
-  if (!rl) rl = createRl()
+function prompt (question, def, shouldClose) {
+  if (!rl) openPrompt()
   return new Promise((resolve, _reject) => {
-    rl.question(`${question} `, (answer) => {
-      resolve(answer)
+    let queryString = `${question} `
+    if (def) queryString += `(${def}) `
+    rl.question(queryString, (answer) => {
+      if (!answer || !answer.trim()) resolve(def)
+      resolve(answer.trim())
       if (shouldClose) rl.close()
     })
   })
@@ -57,8 +65,13 @@ function prompt (question, shouldClose) {
  * @param {Error} err - The original error
  */
 function logError(msg, err) {
-  console.error(msg)
-  if (err && mm_plugin.verboseErrors) console.error(err)
+  if (msg instanceof Error) {
+    if (!mm_plugin.verboseErrors) console.error(msg.message)
+    else console.error(msg)
+  } else if (typeof msg === 'string') {
+    console.error(msg)
+    if (err && mm_plugin.verboseErrors) console.error(err)
+  }
 }
 
 /**

@@ -17,7 +17,7 @@ module.exports = async function manifest (argv) {
   let hasWarnings = false
   let didUpdate = false
 
-  const { dist, ['outfile-name']: outfileName } = argv
+  const { dist, ['outfileName']: outfileName } = argv
   if (!dist) {
     throw new Error(`Invalid params: must provide 'dist'`)
   }
@@ -85,7 +85,7 @@ module.exports = async function manifest (argv) {
 
   let missing = required.filter(k => !existing.includes(k))
   if (missing.length > 0) {
-    logManifestError(
+    logManifestWarning(
       `Missing required package.json properties:\n` +
       missing.reduce((acc, curr) => {
         acc += `\t${curr}\n`
