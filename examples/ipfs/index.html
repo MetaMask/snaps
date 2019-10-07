@@ -50,17 +50,23 @@ addButton.addEventListener('click', add)
 getButton.addEventListener('click', get)
 
 async function connect () {
-  await ethereum.send('wallet_requestPermissions', [{
-    [pluginOrigin]: {}
-  }])
+  await ethereum.send({
+    method: 'wallet_requestPermissions',
+    params: [{
+      [pluginOrigin]: {}
+    }]
+  })
 }
 
 async function add () {
   try {
-    const response = await ethereum.send(pluginOrigin, [{
-      method: 'add',
-      params: [ toAdd.value ],
-    }])
+    const response = await ethereum.send({
+      method: pluginOrigin,
+      params: [{
+        method: 'add',
+        params: [ toAdd.value ],
+      }]
+    })
     addOutput.innerText = response.result
   } catch (err) {
     console.error(err)
@@ -70,10 +76,13 @@ async function add () {
 
 async function get () {
   try {
-    const response = await ethereum.send(pluginOrigin, [{
-      method: 'cat',
-      params: [ toGet.value ],
-    }])
+    const response = await ethereum.send({
+      method: pluginOrigin,
+      params: [{
+        method: 'cat',
+        params: [ toGet.value ],
+      }]
+    })
     getOutput.innerText = response.result
   } catch (err) {
     console.error(err)

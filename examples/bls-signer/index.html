@@ -33,9 +33,12 @@ accountButton.addEventListener('click', getAccount)
 
 async function connect () {
   try {
-    const res1 = await ethereum.send('wallet_requestPermissions', [{
-      [pluginOrigin]: {}
-    }])
+    const res1 = await ethereum.send({
+      method: 'wallet_requestPermissions',
+      params: [{
+        [pluginOrigin]: {}
+      }]
+    })
   } catch (e) {
     console.log('connect: ', e)
   }
@@ -43,9 +46,12 @@ async function connect () {
 
 async function getAccount () {
   try {
-    const response = await ethereum.send(pluginOrigin, [{
-      method: 'getAccount'
-    }])
+    const response = await ethereum.send({
+      method: pluginOrigin,
+      params: [{
+        method: 'getAccount'
+      }]
+    })
 
     alert('received back: ' + JSON.stringify(response.result))
   } catch (err) {
@@ -57,10 +63,13 @@ async function getAccount () {
 async function signMessage () {
   try {
     const data = document.querySelector('.challenge').value
-    const response = await ethereum.send(pluginOrigin, [{
-      method: 'signMessage',
-      params: [data]
-    }])
+    const response = await ethereum.send({
+      method: pluginOrigin,
+      params: [{
+        method: 'signMessage',
+        params: [data]
+      }]
+    })
 
     alert('received back: ' + JSON.stringify(response.result))
   } catch (err) {

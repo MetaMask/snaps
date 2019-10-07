@@ -28,15 +28,21 @@ checkBalanceButton.addEventListener('click', checkBalance)
 mintButton.addEventListener('click', mint)
 
 async function connect () {
-  await ethereum.send('wallet_requestPermissions', [{
-    [pluginOrigin]: {}
-  }])
+  await ethereum.send({
+    method: 'wallet_requestPermissions',
+    params: [{
+      [pluginOrigin]: {}
+    }]
+  })
 }
 
 async function checkBalance() {
   try {
-    const response = await ethereum.send(pluginOrigin, {
-      method: 'getBalance',
+    const response = await ethereum.send({
+      method: pluginOrigin, 
+      params: [{
+        method: 'getBalance'
+      }]
     })
 
     alert('current balance: ' + response.result)
@@ -49,9 +55,12 @@ async function checkBalance() {
 async function mint () {
   try {
 
-    const response = await ethereum.send(pluginOrigin, {
-      method: 'mint',
-      params: [1]
+    const response = await ethereum.send({
+      method: pluginOrigin,
+      params: [{
+        method: 'mint',
+        params: [1]
+      }]
     })
 
     alert('new balance: ' + response.result)
