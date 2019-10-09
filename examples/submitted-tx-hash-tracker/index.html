@@ -1,0 +1,54 @@
+<!doctype html>
+
+<html>
+
+</head>
+  <title>Submitted Tx Hashes Plugin Example</title>
+</head>
+
+<body>
+  <h1>Submitted Tx Hashes Plugin Example!</h1>
+  <p>Make sure the plugin bundle is currently hosted on localhost:8082 for this to work.</p>
+  <button class="connect">Connect</button>
+  <button class="logTxHashes">Log Tx Hashes</button>
+</body>
+
+<script>
+
+const origin = 'http://localhost:8082/package.json'
+const pluginOrigin = `wallet_plugin_${origin}`
+
+const connectButton = document.querySelector('button.connect')
+const logTxHashesButton = document.querySelector('button.logTxHashes')
+
+connectButton.addEventListener('click', connect)
+logTxHashesButton.addEventListener('click', logTxHashes)
+
+async function connect () {
+  await ethereum.send({
+    method: 'wallet_requestPermissions',
+    params: [{
+      [pluginOrigin]: {}
+    }]
+  })
+}
+
+async function logTxHashes () {
+  try {
+    const response = await ethereum.send({
+      method: pluginOrigin,
+      params: [{
+        method: 'getSuccessfulTxHashes'
+      }]
+    })
+
+    console.log(JSON.stringify(response && response.result, null, 2))
+  } catch (err) {
+    console.error(err)
+    alert('Problem happened: ' + err)
+  }
+}
+
+</script>
+
+</html>
