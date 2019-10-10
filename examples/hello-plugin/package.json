@@ -1,7 +1,7 @@
 {
-  "name": "ping-pong",
+  "name": "hello-plugin",
   "version": "1.0.0",
-  "description": "Message ping pong",
+  "description": "Hello plugins!",
   "main": "index.js",
   "dependencies": {
     "eth-json-rpc-errors": "^1.1.0"
@@ -19,8 +19,10 @@
   "web3Wallet": {
     "bundle": {
       "local": "dist/bundle.js",
-      "url": "http://localhost:8082/dist/bundle.js"
+      "url": "http://localhost:8081/dist/bundle.js"
     },
-    "initialPermissions": {}
+    "initialPermissions": {
+      "alert": {}
+    }
   }
 }

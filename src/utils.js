@@ -13,7 +13,13 @@ const permRequestKeys = [
   'proof'
 ]
 
+const CONFIG_PATHS = [
+  'mm-plugin.config.json',
+  '.mm-plugin.json' // backwards compatibility
+]
+
 module.exports = {
+  CONFIG_PATHS,
   isFile,
   isDirectory,
   getOutfilePath,

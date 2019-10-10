@@ -5,8 +5,10 @@ const packageInit = require('init-package-json')
 
 const template = require('./initTemplate.json')
 const {
-  logError, logWarning, prompt, closePrompt, trimPathString
+  CONFIG_PATHS, logError, logWarning, prompt, closePrompt, trimPathString
 } = require('./utils')
+
+const CONFIG_PATH = CONFIG_PATHS[0]
 
 module.exports = async function initHandler (argv) {
 
@@ -52,12 +54,12 @@ module.exports = async function initHandler (argv) {
     process.exit(1)
   }
 
-  // write .mm-plugin.json
+  // write config file
   try {
-    fs.writeFileSync('.mm-plugin.json', JSON.stringify(newArgs, null, 2))
-    console.log(`Init: Wrote '.mm-plugin.json' config file`)
+    fs.writeFileSync(CONFIG_PATH, JSON.stringify(newArgs, null, 2))
+    console.log(`Init: Wrote '${CONFIG_PATH}' config file`)
   } catch (err) {
-    logError(`Init Error: Failed to write .mm-plugin.json file`, err)
+    logError(`Init Error: Failed to write '${CONFIG_PATH}' file`, err)
   }
 
   closePrompt()
@@ -87,7 +89,7 @@ async function buildWeb3Wallet (argv) {
         fs.mkdirSync(dist)
       } catch (e) {
         if (e.code !== 'EEXIST') {
-          logError(`Error: Could not write default 'dist' '${dist}'. Maybe check your local .mm-plugin.json file?`)
+          logError(`Error: Could not write default 'dist' '${dist}'. Maybe check your local ${CONFIG_PATH} file?`)
         }
       }
       return endWeb3Wallet()
@@ -139,9 +141,12 @@ async function buildWeb3Wallet (argv) {
       }
       let splitPermissions = initialPermissions.split(' ')
         .reduce((acc, p) => {
-          if (typeof p === 'string' && !p.match(/^[\w\d_]+$/)) {
+          console.log(p)
+          if (typeof p === 'string' && p.match(/^[\w\d_]+$/)) {
             acc[p] = {}
-          } else { logWarning(`Invalid permissions: ${p}`) }
+          } else {
+            logWarning(`Invalid permissions: ${p}`)
+          }
           return acc
         }, {})
       initialPermissions = splitPermissions ? splitPermissions : {}
@@ -170,7 +175,7 @@ async function buildWeb3Wallet (argv) {
 
 async function validateEmptyDir () {
   const existing = fs.readdirSync(process.cwd()).filter(item => [
-     'index.js', 'index.html', '.mm-plugin.json', 'dist'
+     'index.js', 'index.html', CONFIG_PATH, 'dist'
   ].includes(item.toString()))
 
   if (existing.length > 0) {

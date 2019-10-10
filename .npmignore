@@ -1,4 +1,5 @@
 .DS_Store
 .python-version
 node_modules/
-temp
+development/*
+temp/

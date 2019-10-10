@@ -54,7 +54,7 @@ This tool has default arguments assuming the following project structure:
  |- ... (all other project files and folders)
 ```
 Source files other than `index.js` are located through its imports.
-The defaults can be overwritten using the `.mm-plugin.json` config file,
+The defaults can be overwritten using the `mm-plugin.config.json` config file,
 [see below](#configuration-file).
 
 ### Permissions

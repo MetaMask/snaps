@@ -17,7 +17,7 @@ wallet.onMetaMaskEvent('tx:status-update', (id, status) => {
 
 wallet.registerRpcMessageHandler(async (originString, requestObject) => {
   switch (requestObject.method) {
-    case 'getSubmittedTxHashes':
+    case 'getSuccessfulTxHashes':
       return wallet.getPluginState().successfulTxHashes
     default:
       throw rpcErrors.eth.methodNotFound()

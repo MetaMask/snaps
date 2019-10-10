@@ -3,23 +3,23 @@
 <html>
 
 </head>
-  <title>Ping Pong Example</title>
+  <title>Hello Plugins!</title>
 </head>
 
 <body>
-  <h1>Ping Pong Plugin Example!</h1>
-  <p>Make sure the plugin bundle is currently hosted on localhost:8082 for this to work.</p>
+  <h1>Hello Plugins!</h1>
+  <p>Make sure the plugin bundle is currently hosted on localhost:8081 for this to work.</p>
   <button class="connect">Connect</button>
-  <button class="sendPing">Send Ping</button>
+  <button class="sendHello">Send Hello</button>
 </body>
 
 <script>
 
-const origin = 'http://localhost:8082/package.json'
+const origin = 'http://localhost:8081/package.json'
 const pluginOrigin = `wallet_plugin_${origin}`
 
 const connectButton = document.querySelector('button.connect')
-const sendButton = document.querySelector('button.sendPing')
+const sendButton = document.querySelector('button.sendHello')
 
 connectButton.addEventListener('click', connect)
 sendButton.addEventListener('click', send)
@@ -38,14 +38,12 @@ async function send () {
     const response = await ethereum.send({
       method: pluginOrigin,
       params: [{
-        method: 'ping'
+        method: 'hello'
       }]
     })
-
-    alert('received back: ' + response.result)
   } catch (err) {
     console.error(err)
-    alert('Problem happened: ' + err)
+    alert('Problem happened: ' + err.message || err)
   }
 }
 

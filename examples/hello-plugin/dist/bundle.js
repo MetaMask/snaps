@@ -3,13 +3,15 @@ const { errors: rpcErrors } = require('eth-json-rpc-errors')
 
 wallet.registerRpcMessageHandler(async (originString, requestObject) => {
   switch (requestObject.method) {
-    case 'ping':
-      return 'pong'
+    case 'hello':
+      return wallet.send({
+        method: 'alert',
+        params: [`Hello, ${originString}!`]
+      })
     default:
       throw rpcErrors.eth.methodNotFound()
   }
 })
-
 
 },{"eth-json-rpc-errors":2}],2:[function(require,module,exports){
 

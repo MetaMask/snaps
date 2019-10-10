@@ -1,6 +1,11 @@
 # Changelog
 
-## 0.3.0 (Current)
+## 0.3.1 (Current)
+
+- Rename `.mm-plugin.json` to `mm-plugin.config.json`
+  - Still support `.mm-plugin.json` for backwards compatibility
+
+## 0.3.0
 
 - Remove default command; at least one command must now be specified
 - Add `init` command

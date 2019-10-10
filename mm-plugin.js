@@ -7,7 +7,7 @@ const {
   build, init, manifest, pluginEval, serve, watch
 } = require('./src/commands')
 
-const { logError, logWarning } = require('./src/utils')
+const { CONFIG_PATHS, logWarning } = require('./src/utils')
 
 // globals
 
@@ -17,8 +17,6 @@ global.mm_plugin = {
 }
 
 // yargs config and constants
-
-const CONFIG_PATH = '.mm-plugin.json'
 
 const builders = {
   src: {
@@ -269,15 +267,20 @@ function applyConfig () {
     }
   }
 
-  // second, attempt to read and apply config from .mm-plugin.json
+  // second, attempt to read and apply config from config file,
+  // which will always be preferred if it exists
   let cfg = {}
-  try {
-    cfg = JSON.parse(fs.readFileSync(CONFIG_PATH))
-  } catch (err) {
-    if (err.code !== 'ENOENT') {
-      logWarning(`Warning: Could not parse .mm-plugin.json`, err)
+  for (configPath of CONFIG_PATHS) {
+    try {
+      cfg = JSON.parse(fs.readFileSync(configPath))
+      break
+    } catch (err) {
+      if (err.code !== 'ENOENT') {
+        logWarning(`Warning: '${configPath}' exists but could not be parsed.`)
+      }
     }
   }
+
   if (!cfg || typeof cfg !== 'object' || Object.keys(cfg).length === 0) return
   Object.keys(cfg).forEach(k => {
     if (k === 'verbose') k = 'verboseErrors' // backwards compatibility
