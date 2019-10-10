@@ -29,15 +29,19 @@ is simply `package.json`, with the following required standard fields:
 - `main` (relative path to source entry point, not the bundle)
 - `repository`
 
-In addition, we use the following custom fields:
-- `web3Wallet` (**required**; `object`)
-  - `bundle` (**required**; `object`)
-    - `local` (**required**; `string`; relative path to bundle)
-    - `url` (*optional*; `string`; absolute URL to bundle)
-  - `initialPermissions` (*optional*; `{ string: object }`; permissions
+In addition, we use the following, required custom fields:
+- `web3Wallet` (`object`)
+  - `bundle` (`object`)
+    - `local` (`string`; relative path to bundle)
+    - `url` (`string`; absolute URL to bundle)
+      - Set to e.g. `localhost:8081/dist/bundle.js` for local development.
+  - `initialPermissions` (`{ string: object }`; permissions
   to be requested on plugin installation)
     - See [this interface](https://github.com/MetaMask/json-rpc-capabilities-middleware#requestpermissions-irequestedpermissions)
     and examples in this repo for details.
+
+If you exclude any required fields from `package.json`, your plugin may not
+work properly or install at all.
 
 We recommend building your plugin using this tool.
 You can bundle your plugin using your own tools, but it must run in the browser,
@@ -128,7 +132,7 @@ Examples:
 
 ### Configuration File
 
-`.mm-config.json` can be placed in the project root directory. It should have string keys matching
+`mm-plugin.config.json` can be placed in the project root directory. It should have string keys matching
 command arguments. Values become argument defaults, which can still be overriden on the command line.
 Example:
 ```json
