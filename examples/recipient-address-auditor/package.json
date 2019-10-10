@@ -1,0 +1,27 @@
+{
+  "name": "recipient-address-auditor",
+  "version": "1.0.0",
+  "description": "Audits recipients of new transactions and updates metamask state with audit results",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MetaMask/plugin-starter.git"
+  },
+  "web3Wallet": {
+    "bundle": {
+      "local": "dist/bundle.js",
+      "url": "http://localhost:8082/dist/bundle.js"
+    },
+    "initialPermissions": {
+      "addAddressAudit": {},
+      "newUnapprovedTx": {}
+    }
+  }
+}
