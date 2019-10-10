@@ -20,7 +20,7 @@ wallet.registerRpcMessageHandler(async (originString, requestObject) => {
     case 'getSuccessfulTxHashes':
       return wallet.getPluginState().successfulTxHashes
     default:
-      throw rpcErrors.eth.methodNotFound()
+      throw rpcErrors.eth.methodNotFound(requestObject)
   }
 })
 

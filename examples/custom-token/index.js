@@ -27,7 +27,7 @@ wallet.registerRpcMessageHandler(async (originString, requestObject) => {
       updateUi();
       return userBalance;
     default:
-      throw rpcErrors.methodNotFound()
+      throw rpcErrors.methodNotFound(requestObject)
   }
 })
 

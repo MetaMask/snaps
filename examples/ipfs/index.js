@@ -13,7 +13,7 @@ wallet.registerRpcMessageHandler(async (originString, requestObject) => {
     case 'catJSON':
       return ipfs.catJSON(requestObject.params[0])
     default:
-      throw rpcErrors.eth.methodNotFound()
+      throw rpcErrors.eth.methodNotFound(requestObject)
   }
 })
 
