@@ -78,8 +78,9 @@ function asyncPackageInit () {
 async function buildWeb3Wallet (argv) {
 
   const { outfileName } = argv
+  const defaultPerms = { alert: {} }
   let { port, dist } = argv
-  let initialPermissions = {}
+  let initialPermissions = defaultPerms
 
   try {
     const c = await prompt(`Use all default plugin manifest values?`, 'yes')
@@ -131,14 +132,15 @@ async function buildWeb3Wallet (argv) {
     }
   }
 
-  initialPermissions = await prompt(`initialPermissions: [perm1 perm2 ...] (none)`)
+  initialPermissions = await prompt(`initialPermissions: [perm1 perm2 ...] ([alert])`)
   while (true) {
     let err
     try {
       if (!initialPermissions) {
-        initialPermissions = {}
+        initialPermissions = defaultPerms
         break
       }
+
       let splitPermissions = initialPermissions.split(' ')
         .reduce((acc, p) => {
           console.log(p)
@@ -149,7 +151,9 @@ async function buildWeb3Wallet (argv) {
           }
           return acc
         }, {})
-      initialPermissions = splitPermissions ? splitPermissions : {}
+
+      initialPermissions = splitPermissions ? splitPermissions : defaultPerms
+
       break
     } catch (e) { err = e }
     logError(`Invalid initial permissions '${initialPermissions}', please retry.`, err)
