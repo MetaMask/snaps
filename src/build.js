@@ -82,6 +82,7 @@ async function closeBundleStream (stream, bundleString) {
  * - converts certain dot notation to string notation (for indexing)
  * - makes all direct calls to eval indirect
  * - wraps original bundle in anonymous function
+ * - handles certain Babel-related edge cases
  * 
  * @param {string} bundleString - The bundle string
  * @returns {string} - The postprocessed bundle string
@@ -107,11 +108,18 @@ function postProcess (bundleString) {
     `Bundled code is empty after postprocessing.`
   )
 
+  // wrap bundle conents in anonymous function
   if (bundleString.endsWith(';')) bundleString = bundleString.slice(0, -1)
   if (bundleString.startsWith('(') && bundleString.endsWith(')')) {
     bundleString = '() => ' + bundleString
   } else {
     bundleString = '() => (\n' + bundleString + '\n)'
+  }
+
+  // handle some cases by declaring missing globals
+  // Babel regeneratorRuntime
+  if (bundleString.indexOf('regeneratorRuntime') !== -1) {
+    bundleString = 'var regeneratorRuntime;\n' + bundleString
   }
 
   return bundleString
@@ -124,7 +132,7 @@ function postProcess (bundleString) {
  * @param {Error} err - The original error
  * @param {string} destFilePath - The output file path
  */
-function writeError(msg, err, destFilePath) {
+function writeError (msg, err, destFilePath) {
   logError('Write error: ' + msg, err)
   try {
     if (destFilePath) fs.unlinkSync(destFilePath)
