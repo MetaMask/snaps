@@ -56,7 +56,7 @@ async function getAccount () {
     alert('received back: ' + JSON.stringify(response.result))
   } catch (err) {
     console.error(err)
-    alert('Problem happened: ' + err)
+    alert('Problem happened: ' + err.message || err)
   }
 }
 
@@ -74,7 +74,7 @@ async function signMessage () {
     alert('received back: ' + JSON.stringify(response.result))
   } catch (err) {
     console.error(err)
-    alert('Problem happened: ' + err)
+    alert('Problem happened: ' + err.message || err)
   }
 }
 

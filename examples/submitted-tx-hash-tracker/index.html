@@ -45,7 +45,7 @@ async function logTxHashes () {
     console.log(JSON.stringify(response && response.result, null, 2))
   } catch (err) {
     console.error(err)
-    alert('Problem happened: ' + err)
+    alert('Problem happened: ' + err.message || err)
   }
 }
 
