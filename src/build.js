@@ -99,10 +99,15 @@ function postProcess (bundleString) {
     /((?:\b[\w\d]*[\]\)]?\.)+eval)(\([^)]*\))/g,
     '(1, $1)$2'
   )
+
   // if we don't do the above, the below causes syntax errors if it encounters
   // things of the form: "something.eval(stuff)"
   // eval(stuff) => (1, eval)(stuff)
   bundleString = bundleString.replace(/(\b)(eval)(\([^)]*\))/g, '$1(1, $2)$3')
+
+  // Browserify provides the Buffer global as an argument to modules that use
+  // it, but this does not work in SES
+  bundleString = bundleString.replace(/^\(function \(Buffer\)\{$/gm, '(function (){')
 
   if (bundleString.length === 0) throw new Error(
     `Bundled code is empty after postprocessing.`

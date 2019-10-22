@@ -19,7 +19,7 @@
   "web3Wallet": {
     "bundle": {
       "local": "dist/bundle.js",
-      "url": "http://localhost:8082/dist/bundle.js"
+      "url": "http://localhost:8083/dist/bundle.js"
     },
     "initialPermissions": {
       "metamask_getPluginState": {},
