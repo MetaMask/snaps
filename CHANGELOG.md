@@ -1,6 +1,13 @@
 # Changelog
 
-## 0.3.1 (Current)
+## 0.3.2 (Current)
+
+- Handle SES edge cases
+  - Babel: `regeneratorRuntime` global variable
+  - Browserify: modules that use `Buffer`
+    - Added regex that replaces lines in the bundle of the form `(function (Buffer){`
+
+## 0.3.1
 
 - Rename `.mm-plugin.json` to `mm-plugin.config.json`
   - Still support `.mm-plugin.json` for backwards compatibility
