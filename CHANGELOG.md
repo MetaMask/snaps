@@ -1,6 +1,10 @@
 # Changelog
 
-## 0.3.2 (Current)
+## 0.3.3 (Current)
+
+- Update `realms-shim`
+
+## 0.3.2
 
 - Handle SES edge cases
   - Babel: `regeneratorRuntime` global variable
