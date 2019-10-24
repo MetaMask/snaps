@@ -1,0 +1,77 @@
+<!doctype html>
+
+<html>
+  </head>
+    <title>3Box Example</title>
+  </head>
+  <body>
+    <h1>3Box Plugin Example!</h1>
+    <p>Make sure the plugin bundle is currently hosted on localhost:8081 for this to work.</p>
+    <button id="connectButton">Connect</button>
+    <div id="loading" style="display: none; padding: 5px 100px;">
+      Loading...
+    </div>
+    <div id="profile" style="display: none; padding: 5px 100px;">
+      <h5 style="padding: 20px 0px 10px 0px"> Profile: </h5>
+      <p>
+        <span id="profileData"></span>
+      </p>
+      <input type="text" id="prkey" placeholder="Profile Key" >
+      <input type="text" id="prvalue" placeholder="Profile Value" >
+      <button id="setButton" type="button" class="btn btn-primary">Set Profile Data</button>
+    </div>
+  </body>
+  <script src="https://unpkg.com/3box/dist/3box.js"></script>
+  <script>
+    const origin = 'http://localhost:8081/package.json'
+    const pluginOrigin = `wallet_plugin_${origin}`
+
+    connectButton.addEventListener('click', connect)
+    setButton.addEventListener('click', setData)
+
+    const threeIdProvider = {
+      send: async (request, callback) => {
+        let response
+        try {
+          response = await ethereum.send(pluginOrigin, [request])
+          callback(null, response.result)
+        } catch (err) {
+          callback(err)
+        }
+      }
+    }
+
+    function updateProfileData () {
+      window.box.public.all().then(profile => {
+        let tmpData = ''
+        Object.entries(profile).map(kv => {
+          tmpData += kv[0] + ': ' + kv[1] + '<br />'
+        })
+        profileData.innerHTML = tmpData
+      })
+    }
+
+    async function connect () {
+      // TODO - In the future Box.openBox should be able to detect
+      // 3ID support if 'ethereum' is passed to it directly.
+      await ethereum.send('wallet_requestPermissions', [{
+        [pluginOrigin]: {}
+      }])
+      loading.style.display = 'block'
+      window.box = await Box.openBox(null, threeIdProvider)
+      loading.style.display = 'none'
+      profile.style.display = 'block'
+      updateProfileData()
+      await window.box.syncDone
+      updateProfileData()
+    }
+
+    async function setData () {
+      window.box.public.set(prkey.value, prvalue.value).then(() => {
+        prkey.value = null
+        prvalue.value = null
+        updateProfileData()
+      })
+    }
+  </script>
+</html>
