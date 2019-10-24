@@ -6,7 +6,7 @@
   </head>
   <body>
     <h1>3Box Plugin Example!</h1>
-    <p>Make sure the plugin bundle is currently hosted on localhost:8081 for this to work.</p>
+    <p>Make sure the plugin bundle is currently hosted on localhost:8087 for this to work.</p>
     <button id="connectButton">Connect</button>
     <div id="loading" style="display: none; padding: 5px 100px;">
       Loading...
@@ -23,7 +23,7 @@
   </body>
   <script src="https://unpkg.com/3box/dist/3box.js"></script>
   <script>
-    const origin = 'http://localhost:8081/package.json'
+    const origin = 'http://localhost:8087/package.json'
     const pluginOrigin = `wallet_plugin_${origin}`
 
     connectButton.addEventListener('click', connect)

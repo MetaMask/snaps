@@ -24,7 +24,7 @@
   "web3Wallet": {
     "bundle": {
       "local": "dist/bundle.js",
-      "url": "http://localhost:8081/dist/bundle.js"
+      "url": "http://localhost:8087/dist/bundle.js"
     },
     "initialPermissions": {}
   },
