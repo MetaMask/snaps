@@ -1,7 +1,7 @@
 const { errors: rpcErrors } = require('eth-json-rpc-errors')
 
-let userBalance = 0;
-let created = false;
+let userBalance = 0
+let created = false
 
 let asset = {
   symbol: 'CUSTOM',
@@ -12,28 +12,28 @@ let asset = {
   customViewUrl: 'http://localhost:8085/index.html'
 }
 
-updateUi();
+updateUi()
 
-wallet.registerRpcMessageHandler(async (originString, requestObject) => {
+wallet.registerRpcMessageHandler(async (_originString, requestObject) => {
   switch (requestObject.method) {
     case 'getBalance':
-      return userBalance;
+      return userBalance
     case 'mint':
-      userBalance += (requestObject.params[0] || 1);
-      updateUi();
-      return userBalance;
+      userBalance += (requestObject.params[0] || 1)
+      updateUi()
+      return userBalance
     case 'burn':
-      userBalance -= (requestObject.params[0] || userBalance);
-      updateUi();
-      return userBalance;
+      userBalance -= (requestObject.params[0] || userBalance)
+      updateUi()
+      return userBalance
     default:
       throw rpcErrors.methodNotFound(requestObject)
   }
 })
 
 function updateUi () {
-  asset.balance = String(userBalance);
-  let method = created ? 'updateAsset' : 'addAsset';
+  asset.balance = String(userBalance)
+  let method = created ? 'updateAsset' : 'addAsset'
 
   // addAsset will update if identifier matches.
   wallet.send({

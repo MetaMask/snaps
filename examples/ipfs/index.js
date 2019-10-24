@@ -1,8 +1,8 @@
 const { errors: rpcErrors } = require('eth-json-rpc-errors')
-const IPFS = require('ipfs-mini');
-const ipfs = new IPFS({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
+const IPFS = require('ipfs-mini')
+const ipfs = new IPFS({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' })
 
-wallet.registerRpcMessageHandler(async (originString, requestObject) => {
+wallet.registerRpcMessageHandler(async (_originString, requestObject) => {
   switch (requestObject.method) {
     case 'add':
       return ipfs.add(requestObject.params[0])
