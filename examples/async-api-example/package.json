@@ -1,0 +1,21 @@
+{
+  "name": "async-api-example",
+  "version": "1.0.0",
+  "description": "A simple plugin for demonstrating how to provide an advanced API to sites using the MetaMask plugin system.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Dan Finlay <dan@danfinlay.com>",
+  "license": "ISC",
+  "web3Wallet": {
+    "bundle": {
+      "local": "dist/bundle.js",
+      "url": "http://localhost:8081/dist/bundle.js"
+    },
+    "initialPermissions": {}
+  },
+  "dependencies": {
+    "eth-json-rpc-errors": "^2.0.0"
+  }
+}
