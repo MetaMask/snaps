@@ -1,6 +1,10 @@
 # Changelog
 
-## 0.3.3 (Current)
+## 0.3.4 (Current)
+
+- `mm-plugin watch` should no longer terminate on on parse or write errors
+
+## 0.3.3
 
 - Update `realms-shim`
 
