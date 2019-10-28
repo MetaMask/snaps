@@ -16,6 +16,7 @@ module.exports = {
  * @param {string} dest - The destination file path
  */
 function bundle(src, dest) {
+
   return new Promise((resolve, _reject) => {
 
     const bundleStream = createBundleStream(dest)
@@ -28,21 +29,23 @@ function bundle(src, dest) {
       // })
       .bundle((err, bundle) => {
 
-        if (err) writeError(err)
+        if (err) writeError('Build error:', err)
 
         // TODO: minification, probably?
         // const { error, code } = terser.minify(bundle.toString())
         // if (error) {
-        //   writeError(error.message, error, dest)
+        //   writeError('Build error:', error.message, error, dest)
         // }
         // closeBundleStream(bundleStream, code.toString())
 
-        closeBundleStream(bundleStream, bundle.toString())
+        closeBundleStream(bundleStream, bundle ? bundle.toString() : null)
         .then(() => {
-          console.log(`Build success: '${src}' bundled as '${dest}'`)
+          if (bundle) {
+            console.log(`Build success: '${src}' bundled as '${dest}'!`)
+          }
           resolve(true)
         })
-        .catch((err) => writeError(err.message, err, dest))
+        .catch((err) => writeError('Write error:', err.message, err, dest))
       })
   })
 }
@@ -59,7 +62,7 @@ function createBundleStream (dest) {
     encoding: 'utf8',
   })
   stream.on('error', err => {
-    writeError(err.message, err, dest)
+    writeError('Write error:', err.message, err, dest)
   })
   return stream
 }
@@ -88,6 +91,10 @@ async function closeBundleStream (stream, bundleString) {
  * @returns {string} - The postprocessed bundle string
  */
 function postProcess (bundleString) {
+
+  if (typeof bundleString !== 'string') {
+    return null
+  }
 
   bundleString = bundleString.trim()
 
@@ -133,14 +140,22 @@ function postProcess (bundleString) {
 /**
  * Logs an error, attempts to unlink the destination file, and exits.
  *
+ * @param {string} prefix - The message prefix.
  * @param {string} msg - The error message
  * @param {Error} err - The original error
  * @param {string} destFilePath - The output file path
  */
-function writeError (msg, err, destFilePath) {
-  logError('Write error: ' + msg, err)
+function writeError (prefix, msg, err, destFilePath) {
+
+  if (!prefix.endsWith(' ')) prefix += ' '
+
+  logError(prefix + msg, err)
   try {
     if (destFilePath) fs.unlinkSync(destFilePath)
   } catch (_err) {}
-  process.exit(1)
+
+  // unless the watcher is active, exit
+  if (!mm_plugin.isWatching) {
+    process.exit(1)
+  }
 }

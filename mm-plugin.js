@@ -12,8 +12,9 @@ const { CONFIG_PATHS, logWarning } = require('./src/utils')
 // globals
 
 global.mm_plugin = {
-  // verboseErrors: false,
-  // suppressWarnings: false,
+  verboseErrors: false,
+  suppressWarnings: false,
+  isWatching: false,
 }
 
 // yargs config and constants
@@ -208,6 +209,9 @@ yargs
 // misc
 
 function assignGlobals (argv) {
+  if (['w', 'watch'].includes(argv._[0])) {
+    mm_plugin.isWatching = true
+  }
   if (argv.hasOwnProperty('verboseErrors')) {
     mm_plugin.verboseErrors = Boolean(argv.verboseErrors)
   }

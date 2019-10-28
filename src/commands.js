@@ -123,7 +123,7 @@ async function watch(argv) {
     })
     .on('unlink', path => console.log(`File removed: ${path}`))
     .on('error', err => {
-      logError('Watch error: ' + err.message)
+      logError('Watcher error: ' + err.message, err)
     })
 
   watcher.add(`${root}`)

@@ -1,10 +1,11 @@
 # MetaMask Plugin Utility
 
-A CLI tool for building MetaMask plugins.
+A CLI for developing MetaMask plugins.
 
 ## Installation
 
 Always use `node@10.16.3`, the version currently used to develop MetaMask.
+We recommend [NVM](https://github.com/nvm-sh/nvm) for managing Node versions.
 
 1. `git clone git@github.com:MetaMask/mm-plugin.git`
 2. `cd mm-plugin`
@@ -35,9 +36,9 @@ In addition, we use the following, required custom fields:
     - `local` (`string`; relative path to bundle)
     - `url` (`string`; absolute URL to bundle)
       - Set to e.g. `localhost:8081/dist/bundle.js` for local development.
-  - `initialPermissions` (`{ string: object }`; permissions
-  to be requested on plugin installation)
-    - See [this interface](https://github.com/MetaMask/json-rpc-capabilities-middleware#requestpermissions-irequestedpermissions)
+  - `initialPermissions` (`{ string: object }`; permissions to be requested on
+  plugin installation)
+    - See [this interface](https://github.com/MetaMask/rpc-cap#requestpermissions-irequestedpermissions)
     and examples in this repo for details.
 
 If you exclude any required fields from `package.json`, your plugin may not
@@ -63,8 +64,8 @@ The defaults can be overwritten using the `mm-plugin.config.json` config file,
 
 ### Permissions
 
-This module uses permissions as defined in [`json-rpc-capabilities-middleware`
-or `rpc-cap`](https://github.com/MetaMask/json-rpc-capabilities-middleware).
+This module uses permissions as defined in [`rpc-cap`, MetaMask's JSON RPC
+capabilities middleware](https://github.com/MetaMask/rpc-cap).
 See examples in this repo for details.
 
 ## Usage

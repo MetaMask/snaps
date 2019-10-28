@@ -1,16 +1,19 @@
 {
   "name": "mm-plugin",
   "version": "0.3.3",
-  "description": "MetaMask plugin CLI toolkit.",
+  "description": "MetaMask plugin development CLI.",
   "main": "mm-plugin.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Erik Marks <rekmarks@protonmail.com>",
+  "contributors": [
+    "Dan Miller <dmiller@kyokan.io"
+  ],
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MetaMask/plugin-starter.git"
+    "url": "git+https://github.com/MetaMask/mm-plugin.git"
   },
   "devDependencies": {},
   "bin": {
@@ -27,7 +30,7 @@
     "is-url": "^1.2.4",
     "rfdc": "^1.1.4",
     "serve-handler": "^6.1.1",
-    "ses": "^0.6.3",
+    "ses": "^0.6.4",
     "terser": "^4.3.1",
     "yargs": "^14.0.0"
   }
