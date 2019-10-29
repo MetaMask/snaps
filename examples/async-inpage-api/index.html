@@ -8,7 +8,7 @@
 
 <body>
   <h1>Ping Listeners!</h1>
-  <p>Make sure the plugin bundle is currently hosted on localhost:8081 for this to work.</p>
+  <p>Make sure the plugin bundle is currently hosted on localhost:8088 for this to work.</p>
   <button class="connect">Connect</button>
   <button class="index">Request Index</button>
   <button class="sendPing">Send Ping</button>
@@ -17,7 +17,7 @@
 
 <script>
 
-const pluginOrigin = 'http://localhost:8081/package.json'
+const pluginOrigin = 'http://localhost:8088/package.json'
 const pluginRequestString = `wallet_plugin_${pluginOrigin}`
 
 const connectButton = document.querySelector('button.connect')

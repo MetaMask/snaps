@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MetaMask/plugin-starter.git"
+    "url": "git+https://github.com/MetaMask/mm-plugin.git"
   },
   "web3Wallet": {
     "bundle": {
