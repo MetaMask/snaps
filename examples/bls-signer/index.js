@@ -32,6 +32,6 @@ async function getPubKey () {
 
 async function promptUser (message) {
   const response = await wallet.send({ method: 'confirm', params: [message] })
-  return response.result
+  return response
 }
 

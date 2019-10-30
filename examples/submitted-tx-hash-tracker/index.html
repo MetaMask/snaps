@@ -2,53 +2,69 @@
 
 <html>
 
-</head>
-  <title>Submitted Tx Hashes Plugin Example</title>
-</head>
+  </head>
+    <title>Submitted Tx Hashes Plugin Example</title>
+  </head>
 
-<body>
-  <h1>Submitted Tx Hashes Plugin Example!</h1>
-  <p>Make sure the plugin bundle is currently hosted on localhost:8083 for this to work.</p>
-  <button class="connect">Connect</button>
-  <button class="logTxHashes">Log Tx Hashes</button>
-</body>
+  <body>
+    <h1>Submitted Tx Hashes Plugin Example!</h1>
+    <details>
+      <summary>Instructions</summary>
+      <ul>
+        <li>First, click "Connect". Then, try out the other buttons!</li>
+        <li>Please note that:</li>
+        <ul>
+          <li>
+            The plugin <b>package.json</b> must be located in located in the server root directory
+          </li>
+          <li>
+            The plugin bundle must be hosted at the location specified by <b>package.json:web3Wallet:bundle:url</b>
+          </li>
+        </ul>
+      </ul>
+    </details>
+    <br/>
+    
+    <button class="connect">Connect</button>
+    <button class="logTxHashes">Log Tx Hashes</button>
+  </body>
 
-<script>
+  <script>
 
-const origin = 'http://localhost:8083/package.json'
-const pluginOrigin = `wallet_plugin_${origin}`
+    const origin = new URL('package.json', window.location.href).toString()
+    const pluginOrigin = `wallet_plugin_${origin}`
 
-const connectButton = document.querySelector('button.connect')
-const logTxHashesButton = document.querySelector('button.logTxHashes')
+    const connectButton = document.querySelector('button.connect')
+    const logTxHashesButton = document.querySelector('button.logTxHashes')
 
-connectButton.addEventListener('click', connect)
-logTxHashesButton.addEventListener('click', logTxHashes)
+    connectButton.addEventListener('click', connect)
+    logTxHashesButton.addEventListener('click', logTxHashes)
 
-async function connect () {
-  await ethereum.send({
-    method: 'wallet_requestPermissions',
-    params: [{
-      [pluginOrigin]: {}
-    }]
-  })
-}
+    async function connect () {
+      await ethereum.send({
+        method: 'wallet_requestPermissions',
+        params: [{
+          [pluginOrigin]: {}
+        }]
+      })
+    }
 
-async function logTxHashes () {
-  try {
-    const response = await ethereum.send({
-      method: pluginOrigin,
-      params: [{
-        method: 'getSuccessfulTxHashes'
-      }]
-    })
+    async function logTxHashes () {
+      try {
+        const response = await ethereum.send({
+          method: pluginOrigin,
+          params: [{
+            method: 'getSuccessfulTxHashes'
+          }]
+        })
 
-    console.log(JSON.stringify(response && response.result, null, 2))
-  } catch (err) {
-    console.error(err)
-    alert('Problem happened: ' + err.message || err)
-  }
-}
+        console.log(JSON.stringify(response, null, 2))
+      } catch (err) {
+        console.error(err)
+        alert('Problem happened: ' + err.message || err)
+      }
+    }
 
-</script>
+  </script>
 
 </html>

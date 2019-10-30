@@ -2,82 +2,98 @@
 
 <html>
 
-</head>
-  <title>BLS Signature Example</title>
-</head>
+  </head>
+    <title>BLS Signature Example</title>
+  </head>
 
-<body>
-  <h1>BLS Signature Plugin Example!</h1>
-  <p>Make sure the plugin bundle is currently hosted on localhost:8084 for this to work.</p>
-  <button class="connect">Connect</button>
-  <button class="account">Get Public Key</button>
+  <body>
+    <h1>BLS Signature Plugin Example!</h1>
+    <details>
+      <summary>Instructions</summary>
+      <ul>
+        <li>First, click "Connect". Then, try out the other buttons!</li>
+        <li>Please note that:</li>
+        <ul>
+          <li>
+            The plugin <b>package.json</b> must be located in located in the server root directory
+          </li>
+          <li>
+            The plugin bundle must be hosted at the location specified by <b>package.json:web3Wallet:bundle:url</b>
+          </li>
+        </ul>
+      </ul>
+    </details>
+    <br/>
 
-  <br>
+    <button class="connect">Connect</button>
+    <button class="account">Get Public Key</button>
 
-  <input class="challenge" placeholder="enter data to sign" />
-  <button class="sign">Sign Message</button>
-</body>
+    <br>
 
-<script>
+    <input class="challenge" placeholder="enter data to sign" />
+    <button class="sign">Sign Message</button>
+  </body>
 
-const origin = 'http://localhost:8084/package.json'
-const pluginOrigin = `wallet_plugin_${origin}`
+  <script>
 
-const connectButton = document.querySelector('button.connect')
-const accountButton = document.querySelector('button.account')
-const signButton = document.querySelector('button.sign')
+    const origin = new URL('package.json', window.location.href).toString()
+    const pluginOrigin = `wallet_plugin_${origin}`
 
-connectButton.addEventListener('click', connect)
-signButton.addEventListener('click', signMessage)
-accountButton.addEventListener('click', getAccount)
+    const connectButton = document.querySelector('button.connect')
+    const accountButton = document.querySelector('button.account')
+    const signButton = document.querySelector('button.sign')
 
-async function connect () {
-  try {
-    const res1 = await ethereum.send({
-      method: 'wallet_requestPermissions',
-      params: [{
-        [pluginOrigin]: {}
-      }]
-    })
-  } catch (e) {
-    console.log('connect: ', e)
-  }
-}
+    connectButton.addEventListener('click', connect)
+    signButton.addEventListener('click', signMessage)
+    accountButton.addEventListener('click', getAccount)
 
-async function getAccount () {
-  try {
-    const response = await ethereum.send({
-      method: pluginOrigin,
-      params: [{
-        method: 'getAccount'
-      }]
-    })
+    async function connect () {
+      try {
+        const res1 = await ethereum.send({
+          method: 'wallet_requestPermissions',
+          params: [{
+            [pluginOrigin]: {}
+          }]
+        })
+      } catch (e) {
+        console.log('connect: ', e)
+      }
+    }
 
-    alert('received back: ' + JSON.stringify(response.result))
-  } catch (err) {
-    console.error(err)
-    alert('Problem happened: ' + err.message || err)
-  }
-}
+    async function getAccount () {
+      try {
+        const response = await ethereum.send({
+          method: pluginOrigin,
+          params: [{
+            method: 'getAccount'
+          }]
+        })
 
-async function signMessage () {
-  try {
-    const data = document.querySelector('.challenge').value
-    const response = await ethereum.send({
-      method: pluginOrigin,
-      params: [{
-        method: 'signMessage',
-        params: [data]
-      }]
-    })
+        alert('received back: ' + JSON.stringify(response))
+      } catch (err) {
+        console.error(err)
+        alert('Problem happened: ' + err.message || err)
+      }
+    }
 
-    alert('received back: ' + JSON.stringify(response.result))
-  } catch (err) {
-    console.error(err)
-    alert('Problem happened: ' + err.message || err)
-  }
-}
+    async function signMessage () {
+      try {
+        const data = document.querySelector('.challenge').value
+        const response = await ethereum.send({
+          method: pluginOrigin,
+          params: [{
+            method: 'signMessage',
+            params: [data]
+          }]
+        })
 
-</script>
+        alert('received back: ' + JSON.stringify(response))
+      } catch (err) {
+        console.error(err)
+        alert('Problem happened: ' + err.message || err)
+      }
+    }
+
+  </script>
 
 </html>

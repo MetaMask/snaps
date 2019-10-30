@@ -2,51 +2,67 @@
 
 <html>
 
-</head>
-  <title>Hello Plugins!</title>
-</head>
+  </head>
+    <title>Hello Plugins!</title>
+  </head>
 
-<body>
-  <h1>Hello Plugins!</h1>
-  <p>Make sure the plugin bundle is currently hosted on localhost:8081 for this to work.</p>
-  <button class="connect">Connect</button>
-  <button class="sendHello">Send Hello</button>
-</body>
+  <body>
+    <h1>Hello Plugins!</h1>
+    <details>
+      <summary>Instructions</summary>
+      <ul>
+        <li>First, click "Connect". Then, try out the other buttons!</li>
+        <li>Please note that:</li>
+        <ul>
+          <li>
+            The plugin <b>package.json</b> must be located in located in the server root directory
+          </li>
+          <li>
+            The plugin bundle must be hosted at the location specified by <b>package.json:web3Wallet:bundle:url</b>
+          </li>
+        </ul>
+      </ul>
+    </details>
+    <br/>
 
-<script>
+    <button class="connect">Connect</button>
+    <button class="sendHello">Send Hello</button>
+  </body>
 
-const origin = 'http://localhost:8081/package.json'
-const pluginOrigin = `wallet_plugin_${origin}`
+  <script>
 
-const connectButton = document.querySelector('button.connect')
-const sendButton = document.querySelector('button.sendHello')
+    const origin = new URL('package.json', window.location.href).toString()
+    const pluginOrigin = `wallet_plugin_${origin}`
 
-connectButton.addEventListener('click', connect)
-sendButton.addEventListener('click', send)
+    const connectButton = document.querySelector('button.connect')
+    const sendButton = document.querySelector('button.sendHello')
 
-async function connect () {
-  await ethereum.send({
-    method: 'wallet_requestPermissions',
-    params: [{
-      [pluginOrigin]: {}
-    }]
-  })
-}
+    connectButton.addEventListener('click', connect)
+    sendButton.addEventListener('click', send)
 
-async function send () {
-  try {
-    const response = await ethereum.send({
-      method: pluginOrigin,
-      params: [{
-        method: 'hello'
-      }]
-    })
-  } catch (err) {
-    console.error(err)
-    alert('Problem happened: ' + err.message || err)
-  }
-}
+    async function connect () {
+      await ethereum.send({
+        method: 'wallet_requestPermissions',
+        params: [{
+          [pluginOrigin]: {}
+        }]
+      })
+    }
 
-</script>
+    async function send () {
+      try {
+        const response = await ethereum.send({
+          method: pluginOrigin,
+          params: [{
+            method: 'hello'
+          }]
+        })
+      } catch (err) {
+        console.error(err)
+        alert('Problem happened: ' + err.message || err)
+      }
+    }
+
+  </script>
 
 </html>

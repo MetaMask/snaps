@@ -2,74 +2,90 @@
 
 <html>
 
-</head>
-  <title>Custom Token Example</title>
-</head>
+  </head>
+    <title>Custom Token Example</title>
+  </head>
 
-<body>
-  <h1>Custom Token Plugin Example!</h1>
-  <p>Make sure the plugin bundle is currently hosted on localhost:8085 for this to work.</p>
-  <button class="connect">Connect</button>
-  <button class="checkBalance">Check Balance</button>
-  <button class="mint">Mint Tokens</button>
-</body>
+  <body>
+    <h1>Custom Token Plugin Example!</h1>
+    <details>
+      <summary>Instructions</summary>
+      <ul>
+        <li>First, click "Connect". Then, try out the other buttons!</li>
+        <li>Please note that:</li>
+        <ul>
+          <li>
+            The plugin <b>package.json</b> must be located in located in the server root directory
+          </li>
+          <li>
+            The plugin bundle must be hosted at the location specified by <b>package.json:web3Wallet:bundle:url</b>
+          </li>
+        </ul>
+      </ul>
+    </details>
+    <br/>
 
-<script>
+    <button class="connect">Connect</button>
+    <button class="checkBalance">Check Balance</button>
+    <button class="mint">Mint Tokens</button>
+  </body>
 
-const origin = 'http://localhost:8085/package.json'
-const pluginOrigin = `wallet_plugin_${origin}`
+  <script>
 
-const connectButton = document.querySelector('button.connect')
-const checkBalanceButton = document.querySelector('button.checkBalance')
-const mintButton = document.querySelector('button.mint')
+    const origin = new URL('package.json', window.location.href).toString()
+    const pluginOrigin = `wallet_plugin_${origin}`
 
-connectButton.addEventListener('click', connect)
-checkBalanceButton.addEventListener('click', checkBalance)
-mintButton.addEventListener('click', mint)
+    const connectButton = document.querySelector('button.connect')
+    const checkBalanceButton = document.querySelector('button.checkBalance')
+    const mintButton = document.querySelector('button.mint')
 
-async function connect () {
-  await ethereum.send({
-    method: 'wallet_requestPermissions',
-    params: [{
-      [pluginOrigin]: {}
-    }]
-  })
-}
+    connectButton.addEventListener('click', connect)
+    checkBalanceButton.addEventListener('click', checkBalance)
+    mintButton.addEventListener('click', mint)
 
-async function checkBalance() {
-  try {
-    const response = await ethereum.send({
-      method: pluginOrigin, 
-      params: [{
-        method: 'getBalance'
-      }]
-    })
+    async function connect () {
+      await ethereum.send({
+        method: 'wallet_requestPermissions',
+        params: [{
+          [pluginOrigin]: {}
+        }]
+      })
+    }
 
-    alert('current balance: ' + response.result)
-  } catch (err) {
-    console.error(err)
-    alert('Problem fetching balance: ' + err)
-  }
-}
+    async function checkBalance() {
+      try {
+        const response = await ethereum.send({
+          method: pluginOrigin, 
+          params: [{
+            method: 'getBalance'
+          }]
+        })
 
-async function mint () {
-  try {
+        alert('current balance: ' + response)
+      } catch (err) {
+        console.error(err)
+        alert('Problem fetching balance: ' + err)
+      }
+    }
 
-    const response = await ethereum.send({
-      method: pluginOrigin,
-      params: [{
-        method: 'mint',
-        params: [1]
-      }]
-    })
+    async function mint () {
+      try {
 
-    alert('new balance: ' + response.result)
-  } catch (err) {
-    console.error(err)
-    alert('Problem minting token: ' + err)
-  }
-}
+        const response = await ethereum.send({
+          method: pluginOrigin,
+          params: [{
+            method: 'mint',
+            params: [1]
+          }]
+        })
 
-</script>
+        alert('new balance: ' + response)
+      } catch (err) {
+        console.error(err)
+        alert('Problem minting token: ' + err)
+      }
+    }
+
+  </script>
 
 </html>

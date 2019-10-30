@@ -2,91 +2,107 @@
 
 <html>
 
-</head>
-  <title>Ping Listeners!</title>
-</head>
+  </head>
+    <title>Ping Listeners!</title>
+  </head>
 
-<body>
-  <h1>Ping Listeners!</h1>
-  <p>Make sure the plugin bundle is currently hosted on localhost:8088 for this to work.</p>
-  <button class="connect">Connect</button>
-  <button class="index">Request Index</button>
-  <button class="sendPing">Send Ping</button>
-  <button class="listen">Track Pings</button>
-</body>
+  <body>
+    <h1>Ping Listeners!</h1>
+    <details>
+      <summary>Instructions</summary>
+      <ul>
+        <li>First, click "Connect". Then, try out the other buttons!</li>
+        <li>Please note that:</li>
+        <ul>
+          <li>
+            The plugin <b>package.json</b> must be located in located in the server root directory
+          </li>
+          <li>
+            The plugin bundle must be hosted at the location specified by <b>package.json:web3Wallet:bundle:url</b>
+          </li>
+        </ul>
+      </ul>
+    </details>
+    <br/>
 
-<script>
+    <button class="connect">Connect</button>
+    <button class="index">Request Index</button>
+    <button class="sendPing">Send Ping</button>
+    <button class="listen">Track Pings</button>
+  </body>
 
-const pluginOrigin = 'http://localhost:8088/package.json'
-const pluginRequestString = `wallet_plugin_${pluginOrigin}`
+  <script>
 
-const connectButton = document.querySelector('button.connect')
-const indexButton = document.querySelector('button.index')
-const sendButton = document.querySelector('button.sendPing')
-const listenButton = document.querySelector('button.listen')
+    const origin = new URL('package.json', window.location.href).toString()
+    const pluginOrigin = `wallet_plugin_${origin}`
 
-connectButton.addEventListener('click', connect)
-indexButton.addEventListener('click', requestIndex)
-sendButton.addEventListener('click', send)
-listenButton.addEventListener('click', listen)
+    const connectButton = document.querySelector('button.connect')
+    const indexButton = document.querySelector('button.index')
+    const sendButton = document.querySelector('button.sendPing')
+    const listenButton = document.querySelector('button.listen')
 
-let index, pluginApi
+    connectButton.addEventListener('click', connect)
+    indexButton.addEventListener('click', requestIndex)
+    sendButton.addEventListener('click', send)
+    listenButton.addEventListener('click', listen)
 
-async function connect () {
-  await ethereum.send({
-    method: 'wallet_requestPermissions',
-    params: [{
-      [pluginRequestString]: {}
-    }]
-  })
-}
+    let index, pluginApi
 
-async function requestIndex () {
-  try {
-    index = await ethereum.requestIndex()
-    pluginApi = await index.getPluginApi(pluginOrigin)
+    async function connect () {
+      await ethereum.send({
+        method: 'wallet_requestPermissions',
+        params: [{
+          [pluginOrigin]: {}
+        }]
+      })
+    }
 
-    alert('successfully received plugin api!')
-  } catch (e) {
-    console.error(e)
-    alert('Problem requesting index.')
-  }
-}
+    async function requestIndex () {
+      try {
+        index = await ethereum.requestIndex()
+        pluginApi = await index.getPluginApi(origin.toString())
 
-async function send () {
-  try {
-    const response = await pluginApi.ping()
-    alert(`Site received response from plugin: ${response.result}`)
-  } catch (err) {
-    console.error(err)
-    alert('Problem happened: ' + err.message || err)
-  }
-}
+        alert('successfully received plugin api!')
+      } catch (e) {
+        console.error(e)
+        alert('Problem requesting index.')
+      }
+    }
 
-async function send () {
-  try {
-    const response = await pluginApi.ping()
-    alert(`Site received response from plugin: ${response}`)
-  } catch (err) {
-    console.error(err)
-    alert('Problem happened: ' + err.message || err)
-  }
-}
+    async function send () {
+      try {
+        const response = await pluginApi.ping()
+        alert(`Site received response from plugin: ${response}`)
+      } catch (err) {
+        console.error(err)
+        alert('Problem happened: ' + err.message || err)
+      }
+    }
 
-async function listen () {
-  try {
-    await pluginApi.on('ping', (response) => {
-      alert(`Listener received response from plugin: ${JSON.stringify(response)}`)
-    })
-    .then(() => {
-      alert('Listener seems to be registered.')
-    })
-  } catch (err) {
-    console.error(err)
-    alert('Problem happened: ' + err.message || err)
-  }
-}
+    async function send () {
+      try {
+        const response = await pluginApi.ping()
+        alert(`Site received response from plugin: ${response}`)
+      } catch (err) {
+        console.error(err)
+        alert('Problem happened: ' + err.message || err)
+      }
+    }
 
-</script>
+    async function listen () {
+      try {
+        await pluginApi.on('ping', (response) => {
+          alert(`Listener received response from plugin: ${JSON.stringify(response)}`)
+        })
+        .then(() => {
+          alert('Listener seems to be registered.')
+        })
+      } catch (err) {
+        console.error(err)
+        alert('Problem happened: ' + err.message || err)
+      }
+    }
+
+  </script>
 
 </html>
