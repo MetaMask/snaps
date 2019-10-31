@@ -1,6 +1,10 @@
 # Changelog
 
-## 0.3.5 (Current)
+## 0.3.6 (Current)
+
+- update faulty ignore files; package size decreased
+
+## 0.3.5
 
 - updated examples to work with `metamask-plugin-beta` as of [this commit](https://github.com/MetaMask/metamask-plugin-beta/commit/b8ba321689cec6749502969f0084e12193e92dab)
 
