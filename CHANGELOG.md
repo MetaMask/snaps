@@ -1,6 +1,10 @@
 # Changelog
 
-## 0.3.7 (Current)
+## 0.3.8 (Current)
+
+- Update readme
+
+## 0.3.7
 
 - `mm-plugin manifest` now populates `package.json:web3Wallet.bundle.url` using config values
   - It only does this if `bundle.url` is missing or starts with `http://localhost`.
