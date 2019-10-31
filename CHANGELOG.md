@@ -1,12 +1,21 @@
 # Changelog
 
-## 0.3.6 (Current)
+## 0.3.7 (Current)
 
-- update faulty ignore files; package size decreased
+- `mm-plugin manifest` now populates `package.json:web3Wallet.bundle.url` using config values
+  - It only does this if `bundle.url` is missing or starts with `http://localhost`.
+  - It applies: `bundle.url = 'http://localhost:${port}/${bundlePath}'`
+- Basic handling of HTML comment syntax in bundle
+  - `<!--` and `-->` are valid JavaScript, but disallowd by SES. They are now destructed into `<! --` and `-- >`.
+  - This may break code in some edge cases, but SES will never evaluate code with either token.
+
+## 0.3.6
+
+- Update faulty ignore files; package size decreased
 
 ## 0.3.5
 
-- updated examples to work with `metamask-plugin-beta` as of [this commit](https://github.com/MetaMask/metamask-plugin-beta/commit/b8ba321689cec6749502969f0084e12193e92dab)
+- Updated examples to work with `metamask-plugin-beta` as of [this commit](https://github.com/MetaMask/metamask-plugin-beta/commit/b8ba321689cec6749502969f0084e12193e92dab)
 
 ## 0.3.4
 
