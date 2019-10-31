@@ -112,8 +112,15 @@ function postProcess (bundleString) {
   // eval(stuff) => (1, eval)(stuff)
   bundleString = bundleString.replace(/(\b)(eval)(\([^)]*\))/g, '$1(1, $2)$3')
 
+  // SES interprets syntactically valid JavaScript '<!--' and '-->' as illegal
+  // HTML comment syntax.
+  // '<!--' => '<! --' && '-->' => '-- >'
+  bundleString = bundleString.replace(/<!--/g, '< !--')
+  bundleString = bundleString.replace(/-->/g, '-- >')
+
   // Browserify provides the Buffer global as an argument to modules that use
-  // it, but this does not work in SES
+  // it, but this does not work in SES. Since we pass in Buffer as an endowment,
+  // we can simply remove the argument.
   bundleString = bundleString.replace(/^\(function \(Buffer\)\{$/gm, '(function (){')
 
   if (bundleString.length === 0) throw new Error(
