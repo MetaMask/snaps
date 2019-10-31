@@ -7,9 +7,14 @@ A CLI for developing MetaMask plugins.
 Always use `node@10.16.3`, the version currently used to develop MetaMask.
 We recommend [NVM](https://github.com/nvm-sh/nvm) for managing Node versions.
 
+To install and access the examples (recommended):
+
 1. `git clone git@github.com:MetaMask/mm-plugin.git`
 2. `cd mm-plugin`
-3. `npm install -g .`
+3. `npm link`
+
+You can also simply install globally: `npm install -g mm-plugin`
+
 
 ## Basic Usage
 
