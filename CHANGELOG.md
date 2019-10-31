@@ -1,6 +1,10 @@
 # Changelog
 
-## 0.3.4 (Current)
+## 0.3.5 (Current)
+
+- updated examples to work with `metamask-plugin-beta` as of [this commit](https://github.com/MetaMask/metamask-plugin-beta/commit/b8ba321689cec6749502969f0084e12193e92dab)
+
+## 0.3.4
 
 - `mm-plugin watch` should no longer terminate on on parse or write errors
 
