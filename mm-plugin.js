@@ -161,6 +161,7 @@ yargs
     yargs => {
       yargs
         .option('dist', builders.dist)
+        .option('port', builders.port)
         .option('populate', builders.populate)
     },
     argv => manifest(argv)

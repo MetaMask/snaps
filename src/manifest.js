@@ -7,6 +7,8 @@ const deepClone = require('rfdc')({ proto: false, circles: false })
 
 const { isFile, permRequestKeys } = require('./utils')
 
+const LOCALHOST_START = 'http://localhost'
+
 /**
  * Validates a plugin package.json file.
  * Exits with success message or gathers all errors before throwing at the end.
@@ -17,7 +19,7 @@ module.exports = async function manifest (argv) {
   let hasWarnings = false
   let didUpdate = false
 
-  const { dist, ['outfileName']: outfileName } = argv
+  const { dist, port, ['outfileName']: outfileName } = argv
   if (!dist) {
     throw new Error(`Invalid params: must provide 'dist'`)
   }
@@ -61,6 +63,12 @@ module.exports = async function manifest (argv) {
       dist, outfileName || 'bundle.js'
     )
     if (bundle.local !== bundlePath) bundle.local = bundlePath
+    if (
+      typeof bundle.url !== 'string' ||
+      bundle.url.startsWith(LOCALHOST_START)
+    ) {
+      bundle.url = `${LOCALHOST_START}:${port}/${bundlePath}`
+    }
 
     // sort web3Wallet object keys
     Object.entries(pkg.web3Wallet).forEach(([k, v]) => {
