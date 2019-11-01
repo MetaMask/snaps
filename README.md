@@ -79,33 +79,36 @@ Always use `node@10.16.3`, the version currently used to develop MetaMask.
 
 `mm-plugin --help`
 ```
-Usage: mm-plugin [command] [options]
+Usage: mm-plugin <command> [options]
 
-Commands:                                                                                    
+Commands:
   mm-plugin init      Initialize plugin package                     [aliases: i]
   mm-plugin build     Build plugin from source                      [aliases: b]
-  mm-plugin eval      Call 'eval' on plugin bundle to ensure it works                        
-                                                                    [aliases: e]
-  mm-plugin manifest  Validate project package.json as a plugin manifest                     
+  mm-plugin eval      Attempt to evaluate plugin bundle in SES      [aliases: e]
+  mm-plugin manifest  Validate project package.json as a plugin manifest
                                                                     [aliases: m]
-  mm-plugin serve     Locally serve plugin file(s)                  [aliases: s]             
-  mm-plugin watch     Build file(s) on change                       [aliases: w]
+  mm-plugin serve     Locally serve plugin file(s) for testing      [aliases: s]
+  mm-plugin watch     Build plugin on change                        [aliases: w]
 
 Options (build):
-  --version               Show version number                          [boolean]
-  --verboseErrors, -v     Display original errors     [boolean] [default: false]
-  --suppressWarnings, -w  Suppress warnings           [boolean] [default: false]
-  --help, -h              Show help                                    [boolean]
-  --src, -s               Source file  [string] [required] [default: "index.js"]
-  --dist, -d              Output directory
-                                          [string] [required] [default: "dist"]
-  --outfileName, -n      Output file name                              [string]
-  --eval, -e              Call 'eval' on plugin bundle to ensure it works
+  --help, -h                      Show help                            [boolean]
+  --src, -s                       Source file
+                                       [string] [required] [default: "index.js"]
+  --dist, -d                      Output directory
+                                          [string] [required] [default: "dist/"]
+  --outfileName, -n               Output file name
+                                                 [string] [default: "bundle.js"]
+  --port, -p                      Local server port for testing
+                                             [number] [required] [default: 8081]
+  --eval, -e                      Attempt to evaluate plugin bundle in SES
                                                        [boolean] [default: true]
-  --manifest, -m          Validate project package.json as a plugin manifest
-                                                       [boolean] [default: true]
-  --populate, -p          Update plugin manifest properties of package.json
-                                                       [boolean] [default: true]
+  --manifest, -m                  Validate project package.json as a plugin
+                                  manifest             [boolean] [default: true]
+  --populate                      Update plugin manifest properties of
+                                  package.json         [boolean] [default: true]
+  --verboseErrors, -v, --verbose  Display original errors
+                                                      [boolean] [default: false]
+  --suppressWarnings, -w          Suppress warnings   [boolean] [default: false]
 
 Examples:
   mm-plugin init                            Initialize plugin package from

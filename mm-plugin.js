@@ -54,7 +54,7 @@ const builders = {
 
   port: {
     alias: 'p',
-    describe: 'Server port',
+    describe: 'Local server port for testing',
     type: 'number',
     required: true,
     default: 8081
@@ -75,7 +75,6 @@ const builders = {
   },
 
   populate: {
-    alias: 'p',
     describe: 'Update plugin manifest properties of package.json',
     boolean: true,
     default: true,
@@ -83,7 +82,7 @@ const builders = {
 
   eval: {
     alias: 'e',
-    describe: `Call 'eval' on plugin bundle to ensure it works`,
+    describe: `Attempt to evaluate plugin bundle in SES`,
     boolean: true,
     default: true,
   },
@@ -137,6 +136,7 @@ yargs
         .option('src', builders.src)
         .option('dist', builders.dist)
         .option('outfileName', builders.outfileName)
+        .option('port', builders.port)
         .option('eval', builders.eval)
         .option('manifest', builders.manifest)
         .option('populate', builders.populate)
@@ -169,7 +169,7 @@ yargs
 
   .command(
     ['serve', 's'],
-    'Locally serve plugin file(s)',
+    'Locally serve plugin file(s) for testing',
     yargs => {
       yargs
         .option('root', builders.root)
@@ -180,7 +180,7 @@ yargs
 
   .command(
     ['watch', 'w'],
-    'Build file(s) on change',
+    'Build plugin on change',
     yargs => {
       yargs
         .option('src', builders.src)

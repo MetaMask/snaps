@@ -20,6 +20,7 @@ module.exports = async function manifest (argv) {
   let didUpdate = false
 
   const { dist, port, ['outfileName']: outfileName } = argv
+  console.log(argv)
   if (!dist) {
     throw new Error(`Invalid params: must provide 'dist'`)
   }
@@ -64,8 +65,10 @@ module.exports = async function manifest (argv) {
     )
     if (bundle.local !== bundlePath) bundle.local = bundlePath
     if (
-      typeof bundle.url !== 'string' ||
-      bundle.url.startsWith(LOCALHOST_START)
+      port && (
+        typeof bundle.url !== 'string' ||
+        bundle.url.startsWith(LOCALHOST_START)
+      )
     ) {
       bundle.url = `${LOCALHOST_START}:${port}/${bundlePath}`
     }

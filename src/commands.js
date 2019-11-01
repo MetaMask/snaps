@@ -67,7 +67,10 @@ async function build (argv) {
   const result = await bundle(src, outfilePath)
   if (result && argv.eval) {
     await pluginEval({ ...argv, plugin: outfilePath })
-    if (argv.manifest) manifest(argv)
+  }
+
+  if (argv.manifest) {
+    manifest(argv)
   }
 }
 
