@@ -1,6 +1,13 @@
 # Changelog
 
-## 0.3.8 (Current)
+## 0.3.9 (Current)
+
+- Fix `undefined` `port` in `package.json` on build
+- The `populate` option for `mm-plugin manifest` (and `mm-plugin build`, which calls 
+`manifest` by default) no longer has the alias `p`
+  - `p` is now in every case reserved as an alias for `port`.
+
+## 0.3.8
 
 - Update readme
 

@@ -20,7 +20,6 @@ module.exports = async function manifest (argv) {
   let didUpdate = false
 
   const { dist, port, ['outfileName']: outfileName } = argv
-  console.log(argv)
   if (!dist) {
     throw new Error(`Invalid params: must provide 'dist'`)
   }
