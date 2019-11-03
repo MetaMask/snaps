@@ -60,6 +60,12 @@ const builders = {
     default: 8081
   },
 
+  debug: {
+    describe: 'Whether building outputs sourcemaps',
+    boolean: true,
+    default: false,
+  },
+
   outfileName: {
     alias: 'n',
     describe: 'Output file name',
@@ -136,6 +142,7 @@ yargs
         .option('src', builders.src)
         .option('dist', builders.dist)
         .option('outfileName', builders.outfileName)
+        .option('debug', builders.debug)
         .option('port', builders.port)
         .option('eval', builders.eval)
         .option('manifest', builders.manifest)
@@ -186,6 +193,7 @@ yargs
         .option('src', builders.src)
         .option('dist', builders.dist)
         .option('outfileName', builders.outfileName)
+        .option('debug', builders.debug)
     },
     argv => watch(argv)
   )

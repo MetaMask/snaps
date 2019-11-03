@@ -14,14 +14,17 @@ module.exports = {
  * 
  * @param {string} src - The source file path
  * @param {string} dest - The destination file path
+ * @param {object} argv - argv from Yargs
+ * @param {boolean} argv.debug - Whether to output sourcemaps
  */
-function bundle(src, dest) {
+function bundle(src, dest, argv) {
 
   return new Promise((resolve, _reject) => {
 
     const bundleStream = createBundleStream(dest)
 
-    browserify(src)
+    browserify(src, { debug: argv.debug })
+
       // TODO: Just give up on babel, which we may not even need?
       // This creates globals that SES doesn't like
       // .transform('babelify', {
