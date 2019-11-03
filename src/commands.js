@@ -54,7 +54,7 @@ async function init (argv) {
  * @param {object} argv - argv from Yargs
  * @param {string} argv.src - The source file path
  * @param {string} argv.dist - The output directory path
- * @param {string} argv.'outfileName' - The output file name
+ * @param {string} argv.outfileName - The output file name
  */
 async function build (argv) {
 
@@ -64,7 +64,7 @@ async function build (argv) {
   await validateDirPath(dist, true)
 
   const outfilePath = getOutfilePath(dist, outfileName)
-  const result = await bundle(src, outfilePath)
+  const result = await bundle(src, outfilePath, argv)
   if (result && argv.eval) {
     await pluginEval({ ...argv, plugin: outfilePath })
   }
