@@ -1,6 +1,10 @@
 # Changelog
 
-## 0.3.9 (Current)
+## 0.3.10 (Current)
+
+- Add optional source mapping via `debug` option to `build` and `watch` commands
+
+## 0.3.9
 
 - Fix `undefined` `port` in `package.json` on build
 - The `populate` option for `mm-plugin manifest` (and `mm-plugin build`, which calls 
