@@ -60,9 +60,10 @@ const builders = {
     default: 8081
   },
 
-  debug: {
-    describe: 'Whether building outputs sourcemaps',
-    boolean: true,
+  sourceMaps: {
+    alias: 'debug', // backwards compatibility
+    describe: 'Whether builds include sourcemaps',
+    type: 'boolean',
     default: false,
   },
 
@@ -76,33 +77,33 @@ const builders = {
   manifest: {
     alias: 'm',
     describe: 'Validate project package.json as a plugin manifest',
-    boolean: true,
+    type: 'boolean',
     default: true,
   },
 
   populate: {
     describe: 'Update plugin manifest properties of package.json',
-    boolean: true,
+    type: 'boolean',
     default: true,
   },
 
   eval: {
     alias: 'e',
     describe: `Attempt to evaluate plugin bundle in SES`,
-    boolean: true,
+    type: 'boolean',
     default: true,
   },
 
   verboseErrors: {
     alias: ['v', 'verbose'],
-    boolean: true,
+    type: 'boolean',
     describe: 'Display original errors',
     default: false,
   },
 
   suppressWarnings: {
     alias: ['w'],
-    boolean: true,
+    type: 'boolean',
     describe: 'Suppress warnings',
     default: false,
   }
@@ -142,7 +143,7 @@ yargs
         .option('src', builders.src)
         .option('dist', builders.dist)
         .option('outfileName', builders.outfileName)
-        .option('debug', builders.debug)
+        .option('sourceMaps', builders.sourceMaps)
         .option('port', builders.port)
         .option('eval', builders.eval)
         .option('manifest', builders.manifest)
@@ -193,7 +194,7 @@ yargs
         .option('src', builders.src)
         .option('dist', builders.dist)
         .option('outfileName', builders.outfileName)
-        .option('debug', builders.debug)
+        .option('sourceMaps', builders.sourceMaps)
     },
     argv => watch(argv)
   )
@@ -294,9 +295,17 @@ function applyConfig () {
     }
   }
 
-  if (!cfg || typeof cfg !== 'object' || Object.keys(cfg).length === 0) return
+  if (
+    typeof cfg !== 'object' ||
+    Object.keys(cfg).length === 0
+  ) { return }
+
   Object.keys(cfg).forEach(k => {
-    if (k === 'verbose') k = 'verboseErrors' // backwards compatibility
+
+    // backwards compatibility
+    if (k === 'verbose') k = 'verboseErrors'
+    else if (k === 'debug') k = 'sourceMaps'
+
     builders[k].default = cfg[k]
   })
 }
