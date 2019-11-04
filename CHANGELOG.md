@@ -1,6 +1,14 @@
 # Changelog
 
-## 0.3.10 (Current)
+## 0.3.11 (Current)
+
+- Stop publishing example builds to `npm`
+- Add `buildExamples` script to `package.json`
+  - Use this to build all examples with source maps
+- Rename `build` and `watch` option `debug` to `sourceMaps`
+  - Maintain `debug` alias for backwards compatibility
+
+## 0.3.10
 
 - Add optional source mapping via `debug` option to `build` and `watch` commands
 
@@ -21,8 +29,8 @@
   - It only does this if `bundle.url` is missing or starts with `http://localhost`.
   - It applies: `bundle.url = 'http://localhost:${port}/${bundlePath}'`
 - Basic handling of HTML comment syntax in bundle
-  - `<!--` and `-->` are valid JavaScript, but disallowd by SES. They are now destructed into `<! --` and `-- >`.
-  - This may break code in some edge cases, but SES will never evaluate code with either token.
+  - `<!--` and `-->` can be valid JavaScript, but are always forbidden by SES.
+  They are now destructed into `<! --` and `-- >`. This may break code in some edge cases.
 
 ## 0.3.6
 

@@ -1,6 +1,6 @@
 {
   "name": "mm-plugin",
-  "version": "0.3.10",
+  "version": "0.3.11",
   "description": "MetaMask plugin development CLI.",
   "main": "mm-plugin.js",
   "scripts": {
