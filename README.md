@@ -98,7 +98,7 @@ Options (build):
                                           [string] [required] [default: "dist/"]
   --outfileName, -n               Output file name
                                                  [string] [default: "bundle.js"]
-  --debug                         Whether building outputs sourcemaps
+  --sourceMaps                    Whether building outputs sourcemaps
                                                       [boolean] [default: false]
   --port, -p                      Local server port for testing
                                              [number] [required] [default: 8081]

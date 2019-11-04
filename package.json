@@ -5,7 +5,8 @@
   "main": "mm-plugin.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "generateInitTemplate": "node ./development/generateInitTemplate.js"
+    "generateInitTemplate": "node ./scripts/development/generateInitTemplate.js",
+    "buildExamples": "node ./scripts/buildExamples.js"
   },
   "author": "Erik Marks <rekmarks@protonmail.com>",
   "contributors": [
