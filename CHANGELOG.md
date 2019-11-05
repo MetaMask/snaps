@@ -1,6 +1,11 @@
 # Changelog
 
-## 0.3.11 (Current)
+## 0.3.12 (Current)
+
+- Use existing `package.json` for `mm-plugin init`, if it exists
+  - Fixes [#38](https://github.com/MetaMask/mm-plugin/issues/38)
+
+## 0.3.11
 
 - Stop publishing example builds to `npm`
 - Add `buildExamples` script to `package.json`
