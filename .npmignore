@@ -1,6 +1,6 @@
 .DS_Store
 .python-version
 node_modules
-development/*
+scripts/development
 temp
 dist
