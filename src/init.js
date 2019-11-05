@@ -12,14 +12,13 @@ const CONFIG_PATH = CONFIG_PATHS[0]
 
 module.exports = async function initHandler (argv) {
 
-  console.log('Init: Building plugin manifest\n')
+  console.log(`Init: Begin building 'package.json'\n`)
 
-  console.log(`Init: 'npm init'\n`)
   const package = await asyncPackageInit()
 
   await validateEmptyDir()
 
-  console.log(`\nInit: Set package.json web3Wallet properties\n`)
+  console.log(`\nInit: Set 'package.json' web3Wallet properties\n`)
 
   const [ _web3Wallet, newArgs ] = await buildWeb3Wallet(argv)
   package.web3Wallet = _web3Wallet
@@ -31,7 +30,7 @@ module.exports = async function initHandler (argv) {
     process.exit(1)
   }
 
-  console.log(`\nInit: package.json web3Wallet properties set successfully!`)
+  console.log(`\nInit: 'package.json' web3Wallet properties set successfully!`)
 
   // write main js entry file
   const { main } = package
@@ -66,7 +65,41 @@ module.exports = async function initHandler (argv) {
   return { ...argv, ...newArgs }
 }
 
-function asyncPackageInit () {
+async function asyncPackageInit () {
+
+  // use existing package.json if found
+  const hasPackage = fs.existsSync('package.json')
+
+  if (hasPackage) {
+
+    console.log(`Init: Attempting to use existing 'package.json'...`)
+
+    try {
+
+      const package = JSON.parse(fs.readFileSync('package.json', 'utf8'))
+      console.log(`Init: Successfully parsed 'package.json'!`)
+      return package
+    } catch (error) {
+
+      logError(
+        `Init Error: Could not parse 'package.json'. Please verify that the file is correctly formatted and try again.`,
+        error
+      )
+      process.exit(1)
+    }
+  }
+
+  // exit if yarn.lock is found, or we'll be in trouble
+  const usesYarn = fs.existsSync('yarn.lock')
+
+  if (usesYarn) {
+    logError(
+      `Init Error: Found a 'yarn.lock' file but no 'package.json'. Please run 'yarn init' and try again.`
+    )
+    process.exit(1)
+  }
+
+  // run 'npm init'
   return new Promise((resolve, _reject) => {
     packageInit(process.cwd(), '', {}, (err, data) => {
       if (err) reject(err)
