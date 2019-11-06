@@ -114,15 +114,15 @@ async function watch(argv) {
 
   watcher
     .on('ready', () => {
-      bundle(src, outfilePath)
+      bundle(src, outfilePath, argv)
     })
     .on('add', path => {
       console.log(`File added: ${path}`)
-      bundle(src, outfilePath)
+      bundle(src, outfilePath, argv)
     })
     .on('change', path => {
       console.log(`File changed: ${path}`)
-      bundle(src, outfilePath)
+      bundle(src, outfilePath, argv)
     })
     .on('unlink', path => console.log(`File removed: ${path}`))
     .on('error', err => {
