@@ -1,6 +1,10 @@
 # Changelog
 
-## 0.3.12 (Current)
+## 0.3.13 (Current)
+
+- Fix fatal `watch` command bug
+
+## 0.3.12
 
 - Use existing `package.json` for `mm-plugin init`, if it exists
   - Fixes [#38](https://github.com/MetaMask/mm-plugin/issues/38)
