@@ -165,7 +165,7 @@ function writeError (prefix, msg, err, destFilePath) {
   } catch (_err) {}
 
   // unless the watcher is active, exit
-  if (!mm_plugin.isWatching) {
+  if (!snaps.isWatching) {
     process.exit(1)
   }
 }

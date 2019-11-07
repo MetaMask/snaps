@@ -14,8 +14,10 @@ const permRequestKeys = [
 ]
 
 const CONFIG_PATHS = [
+  'snap.config.json',
+  // backwards compatibility
   'mm-plugin.config.json',
-  '.mm-plugin.json' // backwards compatibility
+  '.mm-plugin.json',
 ]
 
 module.exports = {
@@ -49,11 +51,11 @@ function trimPathString(s) {
  */
 function logError(msg, err) {
   if (msg instanceof Error) {
-    if (!mm_plugin.verboseErrors) console.error(msg.message)
+    if (!snaps.verboseErrors) console.error(msg.message)
     else console.error(msg)
   } else if (typeof msg === 'string') {
     console.error(msg)
-    if (err && mm_plugin.verboseErrors) console.error(err)
+    if (err && snaps.verboseErrors) console.error(err)
   }
 }
 
@@ -63,7 +65,7 @@ function logError(msg, err) {
  * @param {string} msg - The warning message
  */
 function logWarning(msg) {
-  if (msg && !mm_plugin.supressWarnings) console.warn(msg)
+  if (msg && !snaps.supressWarnings) console.warn(msg)
 }
 
 /**

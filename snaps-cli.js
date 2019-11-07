@@ -11,7 +11,7 @@ const { CONFIG_PATHS, logWarning } = require('./src/utils')
 
 // globals
 
-global.mm_plugin = {
+global.snaps = {
   verboseErrors: false,
   suppressWarnings: false,
   isWatching: false,
@@ -211,7 +211,7 @@ yargs
   .alias('help', 'h')
   .fail((msg, err, _yargs) => {
     console.error(msg || err.message)
-    if (err && err.stack && mm_plugin.verboseErrors) console.error(err.stack)
+    if (err && err.stack && snaps.verboseErrors) console.error(err.stack)
     process.exit(1)
   })
   .argv
@@ -220,13 +220,13 @@ yargs
 
 function assignGlobals (argv) {
   if (['w', 'watch'].includes(argv._[0])) {
-    mm_plugin.isWatching = true
+    snaps.isWatching = true
   }
   if (argv.hasOwnProperty('verboseErrors')) {
-    mm_plugin.verboseErrors = Boolean(argv.verboseErrors)
+    snaps.verboseErrors = Boolean(argv.verboseErrors)
   }
   if (argv.hasOwnProperty('suppressWarnings')) {
-    mm_plugin.suppressWarnings = Boolean(argv.suppressWarnings)
+    snaps.suppressWarnings = Boolean(argv.suppressWarnings)
   }
 }
 

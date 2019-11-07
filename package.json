@@ -1,8 +1,8 @@
 {
-  "name": "mm-plugin",
+  "name": "snaps-cli",
   "version": "0.3.13",
   "description": "MetaMask plugin development CLI.",
-  "main": "mm-plugin.js",
+  "main": "snaps-cli.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "generateInitTemplate": "node ./scripts/development/generateInitTemplate.js",
@@ -15,11 +15,12 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MetaMask/mm-plugin.git"
+    "url": "git+https://github.com/MetaMask/snaps-cli.git"
   },
   "devDependencies": {},
   "bin": {
-    "mm-plugin": "./mm-plugin.js"
+    "snap": "./snaps-cli.js",
+    "mm-plugin": "./snaps-cli.js"
   },
   "dependencies": {
     "@babel/core": "^7.5.5",

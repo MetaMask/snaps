@@ -183,11 +183,11 @@ module.exports = async function manifest (argv) {
   function logManifestError(message, err) {
     isInvalid = true
     console.error(`Manifest Error: ${message}`)
-    if (err && mm_plugin.verboseErrors) console.error(err)
+    if (err && snaps.verboseErrors) console.error(err)
   }
 
   function logManifestWarning(message) {
-    if (!mm_plugin.suppressWarnings) {
+    if (!snaps.suppressWarnings) {
       hasWarnings = true
       console.warn(`Manifest Warning: ${message}`)
     }

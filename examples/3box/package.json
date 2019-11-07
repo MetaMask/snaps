@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MetaMask/mm-plugin.git"
+    "url": "git+https://github.com/MetaMask/snaps-cli.git"
   },
   "keywords": [
     "ethereum",
@@ -18,9 +18,9 @@
   "author": "Sly Fox <fox@sly.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/MetaMask/mm-plugin/issues"
+    "url": "https://github.com/MetaMask/snaps-cli/issues"
   },
-  "homepage": "https://github.com/MetaMask/mm-plugin#readme",
+  "homepage": "https://github.com/MetaMask/snaps-cli#readme",
   "web3Wallet": {
     "bundle": {
       "local": "dist/bundle.js",

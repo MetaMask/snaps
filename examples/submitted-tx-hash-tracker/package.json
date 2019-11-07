@@ -14,7 +14,7 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MetaMask/mm-plugin.git"
+    "url": "git+https://github.com/MetaMask/snaps-cli.git"
   },
   "web3Wallet": {
     "bundle": {

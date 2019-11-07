@@ -9,7 +9,7 @@ We recommend [NVM](https://github.com/nvm-sh/nvm) for managing Node versions.
 
 To install and access the examples (recommended):
 
-1. `git clone git@github.com:MetaMask/mm-plugin.git`
+1. `git clone git@github.com:MetaMask/snaps-cli.git`
 2. `cd mm-plugin`
 3. `npm link`
 
@@ -64,7 +64,7 @@ This tool has default arguments assuming the following project structure:
  |- ... (all other project files and folders)
 ```
 Source files other than `index.js` are located through its imports.
-The defaults can be overwritten using the `mm-plugin.config.json` config file,
+The defaults can be overwritten using the `snap.config.json` config file,
 [see below](#configuration-file).
 
 ### Permissions
@@ -77,7 +77,7 @@ See examples in this repo for details.
 
 Always use `node@10.16.3`, the version currently used to develop MetaMask.
 
-`mm-plugin --help`
+`snap --help`
 ```
 Usage: mm-plugin <command> [options]
 
@@ -143,7 +143,7 @@ Examples:
 
 ### Configuration File
 
-`mm-plugin.config.json` can be placed in the project root directory. It should have string keys matching
+`snap.config.json` can be placed in the project root directory. It should have string keys matching
 command arguments. Values become argument defaults, which can still be overriden on the command line.
 Example:
 ```json

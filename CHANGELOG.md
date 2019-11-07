@@ -7,7 +7,7 @@
 ## 0.3.12
 
 - Use existing `package.json` for `mm-plugin init`, if it exists
-  - Fixes [#38](https://github.com/MetaMask/mm-plugin/issues/38)
+  - Fixes [#38](https://github.com/MetaMask/snaps-cli/issues/38)
 
 ## 0.3.11
 
