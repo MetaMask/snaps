@@ -1,6 +1,12 @@
 # Changelog
 
-## 0.3.13 (Current)
+## 0.4.0 (Current)
+
+- Rename package to `snaps-cli`
+- Rename CLI entry point to `snap`
+  - Maintain `mm-plugin` entry point alias and `mm-plugin.config.json` config files
+
+## 0.3.13
 
 - Fix fatal `watch` command bug
 
