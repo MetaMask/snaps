@@ -1,7 +1,7 @@
 {
   "name": "ipfs-snap",
   "version": "1.0.0",
-  "description": "An IPFS plugin for MetaMask",
+  "description": "An IPFS Snap for MetaMask",
   "main": "index.js",
   "dependencies": {
     "eth-json-rpc-errors": "^1.1.0",

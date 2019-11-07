@@ -3,11 +3,11 @@
 <html>
 
   </head>
-    <title>Address Audit Plugin Example</title>
+    <title>Address Audit Snap Example</title>
   </head>
 
   <body>
-    <h1>Address Audit Plugin Example!</h1>
+    <h1>Address Audit Snap Example!</h1>
     <details>
       <summary>Instructions</summary>
       <ul>
@@ -15,10 +15,10 @@
         <li>Please note that:</li>
         <ul>
           <li>
-            The plugin <b>package.json</b> must be located in located in the server root directory
+            The Snap <b>package.json</b> must be located in located in the server root directory
           </li>
           <li>
-            The plugin bundle must be hosted at the location specified by <b>package.json:web3Wallet:bundle:url</b>
+            The Snap bundle must be hosted at the location specified by <b>package.json:web3Wallet:bundle:url</b>
           </li>
         </ul>
       </ul>
@@ -30,8 +30,8 @@
 
   <script>
 
-    const origin = new URL('package.json', window.location.href).toString()
-    const pluginOrigin = `wallet_plugin_${origin}`
+    const snapUrl = new URL('package.json', window.location.href).toString()
+    const snapId = `wallet_plugin_${snapUrl}`
 
     const connectButton = document.querySelector('button.connect')
 
@@ -41,7 +41,7 @@
       await ethereum.send({
         method: 'wallet_requestPermissions',
         params: [{
-          [pluginOrigin]: {}
+          [snapId]: {}
         }]
       })
     }

@@ -5,7 +5,7 @@
     <title>3Box Example</title>
   </head>
   <body>
-    <h1>3Box Plugin Example!</h1>
+    <h1>3Box Snap Example!</h1>
     <details>
       <summary>Instructions</summary>
       <ul>
@@ -13,10 +13,10 @@
         <li>Please note that:</li>
         <ul>
           <li>
-            The plugin <b>package.json</b> must be located in located in the server root directory
+            The Snap <b>package.json</b> must be located in located in the server root directory
           </li>
           <li>
-            The plugin bundle must be hosted at the location specified by <b>package.json:web3Wallet:bundle:url</b>
+            The Snap bundle must be hosted at the location specified by <b>package.json:web3Wallet:bundle:url</b>
           </li>
         </ul>
       </ul>
@@ -40,8 +40,8 @@
   <script src="https://unpkg.com/3box/dist/3box.js"></script>
   <script>
 
-    const origin = new URL('package.json', window.location.href).toString()
-    const pluginOrigin = `wallet_plugin_${origin}`
+    const snapUrl = new URL('package.json', window.location.href).toString()
+    const snapId = `wallet_plugin_${snapUrl}`
 
     connectButton.addEventListener('click', connect)
     setButton.addEventListener('click', setData)
@@ -50,7 +50,7 @@
       send: async (request, callback) => {
         let response
         try {
-          response = await ethereum.send(pluginOrigin, [request])
+          response = await ethereum.send(snapId, [request])
           callback(null, response)
         } catch (err) {
           callback(err)
@@ -72,7 +72,7 @@
       // TODO - In the future Box.openBox should be able to detect
       // 3ID support if 'ethereum' is passed to it directly.
       await ethereum.send('wallet_requestPermissions', [{
-        [pluginOrigin]: {}
+        [snapId]: {}
       }])
       loading.style.display = 'block'
       window.box = await Box.openBox(null, threeIdProvider)

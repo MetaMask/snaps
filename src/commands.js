@@ -15,7 +15,7 @@ const {
 
 module.exports = {
   build,
-  pluginEval,
+  snapEval,
   serve,
   watch,
   manifest,
@@ -66,7 +66,7 @@ async function build (argv) {
   const outfilePath = getOutfilePath(dist, outfileName)
   const result = await bundle(src, outfilePath, argv)
   if (result && argv.eval) {
-    await pluginEval({ ...argv, plugin: outfilePath })
+    await snapEval({ ...argv, snap: outfilePath })
   }
 
   if (argv.manifest) {
@@ -192,12 +192,12 @@ function manifest (argv) {
 
 // eval
 
-async function pluginEval (argv) {
-  const { plugin } = argv
-  await validateFilePath(plugin)
+async function snapEval (argv) {
+  const { snap } = argv
+  await validateFilePath(snap)
   try {
     const s = SES.makeSESRootRealm({consoleMode: 'allow', errorStackMode: 'allow', mathRandomMode: 'allow'})
-    const result = s.evaluate(fs.readFileSync(plugin), {
+    const result = s.evaluate(fs.readFileSync(snap), {
       // TODO: mock wallet properly
       wallet: { registerRpcMessageHandler: () => true },
       console
@@ -205,9 +205,9 @@ async function pluginEval (argv) {
     if (!result) {
       throw new Error(`SES.evaluate returned falsy value.`)
     }
-    console.log(`Eval Success: evaluated '${plugin}' in SES!`)
+    console.log(`Eval Success: evaluated '${snap}' in SES!`)
   } catch (err) {
-    logError(`Plugin evaluation error: ${err.message}`, err)
+    logError(`Snap evaluation error: ${err.message}`, err)
     process.exit(1)
   }
   return true

@@ -1,5 +1,5 @@
 {
-  "name": "hello-plugin",
+  "name": "hello-snaps",
   "version": "1.0.0",
   "description": "Hello plugins!",
   "main": "index.js",

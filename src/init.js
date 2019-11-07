@@ -116,7 +116,7 @@ async function buildWeb3Wallet (argv) {
   let initialPermissions = defaultPerms
 
   try {
-    const c = await prompt(`Use all default plugin manifest values?`, 'yes')
+    const c = await prompt(`Use all default Snap manifest values?`, 'yes')
     if (c && ['y', 'yes'].includes(c.toLowerCase())) {
       console.log('Using default values...')
       try {

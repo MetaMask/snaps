@@ -7,7 +7,7 @@
   </head>
 
   <body>
-    <h1>BLS Signature Plugin Example!</h1>
+    <h1>BLS Signature Snap Example!</h1>
     <details>
       <summary>Instructions</summary>
       <ul>
@@ -15,10 +15,10 @@
         <li>Please note that:</li>
         <ul>
           <li>
-            The plugin <b>package.json</b> must be located in located in the server root directory
+            The Snap <b>package.json</b> must be located in located in the server root directory
           </li>
           <li>
-            The plugin bundle must be hosted at the location specified by <b>package.json:web3Wallet:bundle:url</b>
+            The Snap bundle must be hosted at the location specified by <b>package.json:web3Wallet:bundle:url</b>
           </li>
         </ul>
       </ul>
@@ -36,8 +36,8 @@
 
   <script>
 
-    const origin = new URL('package.json', window.location.href).toString()
-    const pluginOrigin = `wallet_plugin_${origin}`
+    const snapUrl = new URL('package.json', window.location.href).toString()
+    const snapId = `wallet_plugin_${snapUrl}`
 
     const connectButton = document.querySelector('button.connect')
     const accountButton = document.querySelector('button.account')
@@ -52,7 +52,7 @@
         const res1 = await ethereum.send({
           method: 'wallet_requestPermissions',
           params: [{
-            [pluginOrigin]: {}
+            [snapId]: {}
           }]
         })
       } catch (e) {
@@ -63,7 +63,7 @@
     async function getAccount () {
       try {
         const response = await ethereum.send({
-          method: pluginOrigin,
+          method: snapId,
           params: [{
             method: 'getAccount'
           }]
@@ -80,7 +80,7 @@
       try {
         const data = document.querySelector('.challenge').value
         const response = await ethereum.send({
-          method: pluginOrigin,
+          method: snapId,
           params: [{
             method: 'signMessage',
             params: [data]

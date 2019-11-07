@@ -4,7 +4,7 @@ const fs = require('fs')
 const yargs = require('yargs')
 
 const {
-  build, init, manifest, pluginEval, serve, watch
+  build, init, manifest, snapEval, serve, watch
 } = require('./src/commands')
 
 const { CONFIG_PATHS, logWarning } = require('./src/utils')
@@ -36,9 +36,9 @@ const builders = {
     default: 'dist'
   },
 
-  plugin: {
-    alias: 'p, b',
-    describe: 'Plugin bundle file',
+  snap: {
+    alias: ['plugin', 'p', 'b'],
+    describe: 'Snap bundle file',
     type: 'string',
     required: true,
     default: 'dist/bundle.js'
@@ -76,20 +76,20 @@ const builders = {
 
   manifest: {
     alias: 'm',
-    describe: 'Validate project package.json as a plugin manifest',
+    describe: 'Validate project package.json as a Snap manifest',
     type: 'boolean',
     default: true,
   },
 
   populate: {
-    describe: 'Update plugin manifest properties of package.json',
+    describe: 'Update Snap manifest properties of package.json',
     type: 'boolean',
     default: true,
   },
 
   eval: {
     alias: 'e',
-    describe: `Attempt to evaluate plugin bundle in SES`,
+    describe: `Attempt to evaluate Snap bundle in SES`,
     type: 'boolean',
     default: true,
   },
@@ -115,16 +115,16 @@ applyConfig()
 
 yargs
   .usage('Usage: $0 <command> [options]')
-  .example('$0 init', `\tInitialize plugin package from scratch`)
-  .example('$0 build -s index.js -d out', `\tBuild 'plugin.js' as './out/bundle.js'`)
-  .example('$0 build -s index.js -d out -n plugin.js', `\tBuild 'plugin.js' as './out/plugin.js'`)
+  .example('$0 init', `\tInitialize Snap package from scratch`)
+  .example('$0 build -s index.js -d out', `\tBuild 'index.js' as './out/bundle.js'`)
+  .example('$0 build -s index.js -d out -n snap.js', `\tBuild 'index.js' as './out/snap.js'`)
   .example('$0 serve -r out', `\tServe files in './out' on port 8080`)
   .example('$0 serve -r out -p 9000', `\tServe files in './out' on port 9000`)
   .example('$0 watch -s index.js -d out', `\tRebuild './out/bundle.js' on changes to files in 'index.js' parent and child directories`)
 
   .command(
     ['init', 'i'],
-    'Initialize plugin package',
+    'Initialize Snap package',
     yargs => {
       yargs
         .option('src', builders.src)
@@ -137,7 +137,7 @@ yargs
 
   .command(
     ['build', 'b'],
-    'Build plugin from source',
+    'Build Snap from source',
     yargs => {
       yargs
         .option('src', builders.src)
@@ -158,9 +158,9 @@ yargs
     builders.eval.describe,
     yargs => {
       yargs
-        .option('plugin', builders.plugin)
+        .option('snap', builders.snap)
     },
-    argv => pluginEval(argv)
+    argv => snapEval(argv)
   )
 
   .command(
@@ -177,7 +177,7 @@ yargs
 
   .command(
     ['serve', 's'],
-    'Locally serve plugin file(s) for testing',
+    'Locally serve Snap file(s) for testing',
     yargs => {
       yargs
         .option('root', builders.root)
@@ -188,7 +188,7 @@ yargs
 
   .command(
     ['watch', 'w'],
-    'Build plugin on change',
+    'Build Snap on change',
     yargs => {
       yargs
         .option('src', builders.src)
@@ -265,7 +265,7 @@ function applyConfig () {
       const { bundle } = pkg.web3Wallet
       if (bundle && bundle.local) {
         const { local: bundlePath } = bundle
-        builders.plugin.default = bundlePath
+        builders.snap.default = bundlePath
         let dist
         if (bundlePath.indexOf('/') !== -1) {
           dist = bundlePath.substr(0, bundlePath.indexOf('/') + 1)

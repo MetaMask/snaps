@@ -2,7 +2,7 @@
 const fs = require('fs')
 const path = require('path')
 
-const EXAMPLE_PATH = 'examples/hello-plugin'
+const EXAMPLE_PATH = 'examples/hello-snaps'
 const TEMPLATE_PATH = 'src/initTemplate.json'
 
 const html = fs.readFileSync(path.join(EXAMPLE_PATH, 'index.html')).toString()

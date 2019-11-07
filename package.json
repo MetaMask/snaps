@@ -1,7 +1,7 @@
 {
   "name": "snaps-cli",
   "version": "0.4.0",
-  "description": "MetaMask plugin development CLI.",
+  "description": "A CLI for developing MetaMask Snaps.",
   "main": "snaps-cli.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -20,6 +20,7 @@
   "devDependencies": {},
   "bin": {
     "snap": "./snaps-cli.js",
+    "mm-snap": "./snaps-cli.js",
     "mm-plugin": "./snaps-cli.js"
   },
   "dependencies": {

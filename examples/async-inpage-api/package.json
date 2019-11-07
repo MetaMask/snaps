@@ -1,7 +1,7 @@
 {
   "name": "async-inpage-api",
   "version": "1.0.0",
-  "description": "A simple plugin for demonstrating how to provide an advanced API to sites using the MetaMask plugin system.",
+  "description": "A simple Snap for demonstrating how to provide an advanced API to sites using the MetaMask Snaps system.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

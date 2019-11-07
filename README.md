@@ -1,6 +1,6 @@
-# MetaMask Plugin Utility
+# `snaps-cli`
 
-A CLI for developing MetaMask plugins.
+A CLI for developing MetaMask Snaps, formerly known as "plugins."
 
 ## Installation
 
@@ -10,23 +10,25 @@ We recommend [NVM](https://github.com/nvm-sh/nvm) for managing Node versions.
 To install and access the examples (recommended):
 
 1. `git clone git@github.com:MetaMask/snaps-cli.git`
-2. `cd mm-plugin`
+2. `cd snaps-cli`
 3. `npm link`
 
-You can also simply install globally: `npm install -g mm-plugin`
+You can also simply install globally: `npm install -g snaps-cli`
 
 
 ## Basic Usage
 
 ```bash
-mkdir myPlugin
-cd myPlugin
-mm-plugin init
+mkdir mySnap
+cd mySnap
+snap init
 ```
 
-## MetaMask Plugins
+There is also an alias `mm-snap` in case of `snap` being taken.
 
-MetaMask plugins consist of two things: a JSON manifest and a JavaScript bundle.
+## MetaMask Snaps
+
+MetaMask Snaps consist of two things: a JSON manifest and a JavaScript bundle.
 For a variety of reasons, we decided to follow NPM conventions. Thus, the manifest file
 is simply `package.json`, with the following required standard fields:
 - `name`
@@ -42,15 +44,15 @@ In addition, we use the following, required custom fields:
     - `url` (`string`; absolute URL to bundle)
       - Set to e.g. `localhost:8081/dist/bundle.js` for local development.
   - `initialPermissions` (`{ string: object }`; permissions to be requested on
-  plugin installation)
+  Snap installation)
     - See [this interface](https://github.com/MetaMask/rpc-cap#requestpermissions-irequestedpermissions)
     and examples in this repo for details.
 
-If you exclude any required fields from `package.json`, your plugin may not
+If you exclude any required fields from `package.json`, your Snap may not
 work properly or install at all.
 
-We recommend building your plugin using this tool.
-You can bundle your plugin using your own tools, but it must run in the browser,
+We recommend building your Snap using this tool.
+You can bundle your Snap using your own tools, but it must run in the browser,
 run in SES, and its contents must be wrapped in an anonymous function (`() => ( ... )`).
 
 ### Assumed Project Structure
@@ -79,16 +81,16 @@ Always use `node@10.16.3`, the version currently used to develop MetaMask.
 
 `snap --help`
 ```
-Usage: mm-plugin <command> [options]
+Usage: snap <command> [options]
 
 Commands:
-  mm-plugin init      Initialize plugin package                     [aliases: i]
-  mm-plugin build     Build plugin from source                      [aliases: b]
-  mm-plugin eval      Attempt to evaluate plugin bundle in SES      [aliases: e]
-  mm-plugin manifest  Validate project package.json as a plugin manifest
+  snap init      Initialize Snap package                     [aliases: i]
+  snap build     Build Snap from source                      [aliases: b]
+  snap eval      Attempt to evaluate Snap bundle in SES      [aliases: e]
+  snap manifest  Validate project package.json as a Snap manifest
                                                                     [aliases: m]
-  mm-plugin serve     Locally serve plugin file(s) for testing      [aliases: s]
-  mm-plugin watch     Build plugin on change                        [aliases: w]
+  snap serve     Locally serve Snap file(s) for testing      [aliases: s]
+  snap watch     Build Snap on change                        [aliases: w]
 
 Options (build):
   --help, -h                      Show help                            [boolean]
@@ -102,26 +104,26 @@ Options (build):
                                                       [boolean] [default: false]
   --port, -p                      Local server port for testing
                                              [number] [required] [default: 8081]
-  --eval, -e                      Attempt to evaluate plugin bundle in SES
+  --eval, -e                      Attempt to evaluate Snap bundle in SES
                                                        [boolean] [default: true]
-  --manifest, -m                  Validate project package.json as a plugin
+  --manifest, -m                  Validate project package.json as a Snap
                                   manifest             [boolean] [default: true]
-  --populate                      Update plugin manifest properties of
+  --populate                      Update Snap manifest properties of
                                   package.json         [boolean] [default: true]
   --verboseErrors, -v, --verbose  Display original errors
                                                       [boolean] [default: false]
   --suppressWarnings, -w          Suppress warnings   [boolean] [default: false]
 
 Examples:
-  mm-plugin init                            Initialize plugin package from
+  snap init                            Initialize Snap package from
                                             scratch
-  mm-plugin build -s index.js -d out        Build 'plugin.js' as
+  snap build -s index.js -d out        Build 'Snap.js' as
                                             './out/bundle.js'
-  mm-plugin build -s index.js -d out -n     Build 'plugin.js' as
-  plugin.js                                 './out/plugin.js'
-  mm-plugin serve -r out                    Serve files in './out' on port 8080
-  mm-plugin serve -r out -p 9000            Serve files in './out' on port 9000
-  mm-plugin watch -s index.js -d out        Rebuild './out/bundle.js' on changes
+  snap build -s index.js -d out -n     Build 'Snap.js' as
+  Snap.js                                 './out/Snap.js'
+  snap serve -r out                    Serve files in './out' on port 8080
+  snap serve -r out -p 9000            Serve files in './out' on port 9000
+  snap watch -s index.js -d out        Rebuild './out/bundle.js' on changes
                                             to files in 'index.js' parent and
                                             child directories
 ```
@@ -138,7 +140,7 @@ Examples:
   - `serve --root ... --port ...` serves the `root` directory on `localhost:port`
     - By default, `root` serves the current working directory: `.`
 - Arguments
-  - `src`, `plugin`, and `outfileName` must be file paths when specified
+  - `src`, `snap`, and `outfileName` must be file paths when specified
   - `dist` and `root` must be directory paths when specified
 
 ### Configuration File
@@ -148,8 +150,8 @@ command arguments. Values become argument defaults, which can still be overriden
 Example:
 ```json
 {
-  "src": "src",
-  "dist": "plugins",
+  "src": "lib",
+  "dist": "out",
   "port": 9000
 }
 ```

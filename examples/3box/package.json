@@ -1,7 +1,7 @@
 {
-  "name": "plugin-example",
+  "name": "snap-example",
   "version": "1.0.0",
-  "description": "A MetaMask plugin example.",
+  "description": "A MetaMask Snap example.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,7 +13,8 @@
   "keywords": [
     "ethereum",
     "MetaMask",
-    "plugin"
+    "plugin",
+    "Snaps"
   ],
   "author": "Sly Fox <fox@sly.com>",
   "license": "ISC",

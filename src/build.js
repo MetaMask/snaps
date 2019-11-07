@@ -10,7 +10,7 @@ module.exports = {
 }
 
 /**
- * Builds a plugin bundle JSON file from its JavaScript source.
+ * Builds a Snap bundle JSON file from its JavaScript source.
  * 
  * @param {string} src - The source file path
  * @param {string} dest - The destination file path

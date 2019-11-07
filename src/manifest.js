@@ -10,7 +10,7 @@ const { isFile, permRequestKeys } = require('./utils')
 const LOCALHOST_START = 'http://localhost'
 
 /**
- * Validates a plugin package.json file.
+ * Validates a Snap package.json file.
  * Exits with success message or gathers all errors before throwing at the end.
  */
 module.exports = async function manifest (argv) {

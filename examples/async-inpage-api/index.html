@@ -15,10 +15,10 @@
         <li>Please note that:</li>
         <ul>
           <li>
-            The plugin <b>package.json</b> must be located in located in the server root directory
+            The Snap <b>package.json</b> must be located in located in the server root directory
           </li>
           <li>
-            The plugin bundle must be hosted at the location specified by <b>package.json:web3Wallet:bundle:url</b>
+            The Snap bundle must be hosted at the location specified by <b>package.json:web3Wallet:bundle:url</b>
           </li>
         </ul>
       </ul>
@@ -33,8 +33,8 @@
 
   <script>
 
-    const origin = new URL('package.json', window.location.href).toString()
-    const pluginOrigin = `wallet_plugin_${origin}`
+    const snapUrl = new URL('package.json', window.location.href).toString()
+    const snapId = `wallet_plugin_${snapUrl}`
 
     const connectButton = document.querySelector('button.connect')
     const indexButton = document.querySelector('button.index')
@@ -52,7 +52,7 @@
       await ethereum.send({
         method: 'wallet_requestPermissions',
         params: [{
-          [pluginOrigin]: {}
+          [snapId]: {}
         }]
       })
     }
@@ -60,9 +60,9 @@
     async function requestIndex () {
       try {
         index = await ethereum.requestIndex()
-        pluginApi = await index.getPluginApi(origin.toString())
+        pluginApi = await index.getPluginApi(snapUrl.toString())
 
-        alert('successfully received plugin api!')
+        alert('successfully received Snap api!')
       } catch (e) {
         console.error(e)
         alert('Problem requesting index.')
@@ -72,7 +72,7 @@
     async function send () {
       try {
         const response = await pluginApi.ping()
-        alert(`Site received response from plugin: ${response}`)
+        alert(`Site received response from Snap: ${response}`)
       } catch (err) {
         console.error(err)
         alert('Problem happened: ' + err.message || err)
@@ -82,7 +82,7 @@
     async function send () {
       try {
         const response = await pluginApi.ping()
-        alert(`Site received response from plugin: ${response}`)
+        alert(`Site received response from Snap: ${response}`)
       } catch (err) {
         console.error(err)
         alert('Problem happened: ' + err.message || err)
@@ -92,7 +92,7 @@
     async function listen () {
       try {
         await pluginApi.on('ping', (response) => {
-          alert(`Listener received response from plugin: ${JSON.stringify(response)}`)
+          alert(`Listener received response from Snap: ${JSON.stringify(response)}`)
         })
         .then(() => {
           alert('Listener seems to be registered.')
