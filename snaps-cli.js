@@ -36,7 +36,7 @@ const builders = {
     default: 'dist'
   },
 
-  snap: {
+  bundle: {
     alias: ['plugin', 'p', 'b'],
     describe: 'Snap bundle file',
     type: 'string',
@@ -158,7 +158,7 @@ yargs
     builders.eval.describe,
     yargs => {
       yargs
-        .option('snap', builders.snap)
+        .option('bundle', builders.bundle)
     },
     argv => snapEval(argv)
   )
@@ -265,7 +265,7 @@ function applyConfig () {
       const { bundle } = pkg.web3Wallet
       if (bundle && bundle.local) {
         const { local: bundlePath } = bundle
-        builders.snap.default = bundlePath
+        builders.bundle.default = bundlePath
         let dist
         if (bundlePath.indexOf('/') !== -1) {
           dist = bundlePath.substr(0, bundlePath.indexOf('/') + 1)

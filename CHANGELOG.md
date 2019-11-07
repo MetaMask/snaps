@@ -1,6 +1,11 @@
 # Changelog
 
-## 0.4.0 (Current)
+## 0.4.1 (Current)
+
+- Rename `plugin` option to `bundle`, but keep alias
+- Bugfixes after renaming
+
+## 0.4.0
 
 - Rename package to `snaps-cli`
 - Rename CLI entry point to `snap`
