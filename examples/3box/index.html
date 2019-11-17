@@ -51,7 +51,7 @@
         let response
         try {
           response = await ethereum.send(snapId, [request])
-          callback(null, response)
+          callback(null, response.result)
         } catch (err) {
           callback(err)
         }

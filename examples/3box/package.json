@@ -30,6 +30,6 @@
     "initialPermissions": {}
   },
   "dependencies": {
-    "identity-wallet": "^0.2.1"
+    "identity-wallet": "^0.3.0"
   }
 }
