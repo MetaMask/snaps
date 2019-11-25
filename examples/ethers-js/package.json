@@ -1,0 +1,21 @@
+{
+  "name": "ethers-js-snap",
+  "version": "1.0.0",
+  "description": "A sample MetaMask snap for using ethers.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Dan Finlay <dan@danfinlay.com>",
+  "license": "ISC",
+  "web3Wallet": {
+    "bundle": {
+      "local": "dist/bundle.js",
+      "url": "http://localhost:8081/dist/bundle.js"
+    },
+    "initialPermissions": {}
+  },
+  "dependencies": {
+    "ethers": "^4.0.40"
+  }
+}

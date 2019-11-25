@@ -1,0 +1,88 @@
+<!doctype html>
+
+<html>
+
+  </head>
+    <title>Hello Plugins!</title>
+  </head>
+
+  <body>
+    <h1>Hello Plugins!</h1>
+    <details>
+      <summary>Instructions</summary>
+      <ul>
+        <li>First, click "Connect". Then, try out the other buttons!</li>
+        <li>Please note that:</li>
+        <ul>
+          <li>
+            The Snap <b>package.json</b> must be located in located in the server root directory
+          </li>
+          <li>
+            The Snap bundle must be hosted at the location specified by <b>package.json:web3Wallet:bundle:url</b>
+          </li>
+        </ul>
+      </ul>
+    </details>
+    <br/>
+
+    <button class="connect">Connect</button>
+    <button class="getAddress">Get Address</button>
+    <button class="sendHello">Send Hello</button>
+  </body>
+
+  <script>
+
+    const origin = new URL('package.json', window.location.href).toString()
+    const snapId = `wallet_plugin_${origin}`
+
+    const connectButton = document.querySelector('button.connect')
+    const sendButton = document.querySelector('button.sendHello')
+    const getAddressButton = document.querySelector('button.getAddress')
+
+    connectButton.addEventListener('click', connect)
+    sendButton.addEventListener('click', send)
+    getAddressButton.addEventListener('click', getAddress)
+
+    async function connect () {
+      await ethereum.send({
+        method: 'wallet_requestPermissions',
+        params: [{
+          [snapId]: {}
+        }]
+      })
+    }
+
+    async function getAddress () {
+      try {
+        const response = await ethereum.send({
+          method: snapId,
+          params: [{
+            method: 'address',
+          }]
+        })
+        console.log('responded: ' + response)
+      } catch (err) {
+        console.error(err)
+        alert('Problem happened: ' + err.message || err)
+      }
+    }
+
+    async function send () {
+      try {
+        const response = await ethereum.send({
+          method: snapId,
+          params: [{
+            method: 'signMessage',
+            params: ['Hello, world!'],
+          }]
+        })
+        console.log('responded: ' + response)
+      } catch (err) {
+        console.error(err)
+        alert('Problem happened: ' + err.message || err)
+      }
+    }
+
+  </script>
+
+</html>
