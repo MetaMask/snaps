@@ -1,0 +1,25 @@
+{
+    "name": "identicon-plugin",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "start": "mm-plugin serve"
+    },
+    "author": "",
+    "license": "ISC",
+    "web3Wallet": {
+      "bundle": {
+        "local": "bundle.js",
+        "url": "https://mountainous-dentist.glitch.me/bundle.js"
+      },
+      "initialPermissions": {
+        "setUseBlockie": {}
+      }
+    },
+    "dependencies": {
+      "serve-handler": "^6.1.2",
+      "mm-plugin": "^0.3.13"
+    }
+  }
