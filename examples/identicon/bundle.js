@@ -8,12 +8,6 @@
         case 'setUseBlockie':
           return wallet.setUseBlockie(requestObject.params[0])
         break
-        case 'getState':
-          return wallet.getState()
-        case 'setAddressBook':
-          return wallet.setAddressBook('0x89d24A6b4CcB1B6fAA2625fE562bDD9a23260359', 'test from plugin', '1', '')
-        case 'removeFromAddressBook':
-          return wallet.removeFromAddressBook('1', '0x549bA7D5ef6AAecFd09Fc2022A21e2423f1aBbB7')
         default:
           throw new Error('Method not found. From index.js')
       }
