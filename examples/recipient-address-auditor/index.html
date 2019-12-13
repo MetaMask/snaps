@@ -30,8 +30,7 @@
 
   <script>
 
-    const snapUrl = new URL('package.json', window.location.href).toString()
-    const snapId = `wallet_plugin_${snapUrl}`
+    const snapId = new URL('package.json', window.location.href).toString()
 
     const connectButton = document.querySelector('button.connect')
 
@@ -39,9 +38,9 @@
 
     async function connect () {
       await ethereum.send({
-        method: 'wallet_requestPermissions',
+        method: 'wallet_enable',
         params: [{
-          [snapId]: {}
+          wallet_plugin: { [snapId]: {} },
         }]
       })
     }

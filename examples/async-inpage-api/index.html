@@ -33,8 +33,7 @@
 
   <script>
 
-    const snapUrl = new URL('package.json', window.location.href).toString()
-    const snapId = `wallet_plugin_${snapUrl}`
+    const snapId = new URL('package.json', window.location.href).toString()
 
     const connectButton = document.querySelector('button.connect')
     const indexButton = document.querySelector('button.index')
@@ -50,9 +49,9 @@
 
     async function connect () {
       await ethereum.send({
-        method: 'wallet_requestPermissions',
+        method: 'wallet_enable',
         params: [{
-          [snapId]: {}
+          wallet_plugin: { [snapId]: {} },
         }]
       })
     }
@@ -60,7 +59,7 @@
     async function requestIndex () {
       try {
         index = await ethereum.requestIndex()
-        pluginApi = await index.getPluginApi(snapUrl.toString())
+        pluginApi = await index.getPluginApi(snapId)
 
         alert('successfully received Snap api!')
       } catch (e) {

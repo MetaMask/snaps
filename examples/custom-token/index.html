@@ -32,8 +32,7 @@
 
   <script>
 
-    const snapUrl = new URL('package.json', window.location.href).toString()
-    const snapId = `wallet_plugin_${snapUrl}`
+    const snapId = new URL('package.json', window.location.href).toString()
 
     const connectButton = document.querySelector('button.connect')
     const checkBalanceButton = document.querySelector('button.checkBalance')
@@ -45,9 +44,9 @@
 
     async function connect () {
       await ethereum.send({
-        method: 'wallet_requestPermissions',
+        method: 'wallet_enable',
         params: [{
-          [snapId]: {}
+          wallet_plugin: { [snapId]: {} },
         }]
       })
     }
@@ -55,8 +54,8 @@
     async function checkBalance() {
       try {
         const response = await ethereum.send({
-          method: snapId, 
-          params: [{
+          method: 'wallet_invokePlugin', 
+          params: [snapId, {
             method: 'getBalance'
           }]
         })
@@ -72,8 +71,8 @@
       try {
 
         const response = await ethereum.send({
-          method: snapId,
-          params: [{
+          method: 'wallet_invokePlugin',
+          params: [snapId, {
             method: 'mint',
             params: [1]
           }]
