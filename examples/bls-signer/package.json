@@ -11,7 +11,7 @@
   "dependencies": {
     "eth-json-rpc-errors": "^1.1.0",
     "noble-bls12-381": "^0.2.3",
-    "npm": "^6.11.3"
+    "npm": "^6.13.4"
   },
   "repository": {
     "type": "git",
