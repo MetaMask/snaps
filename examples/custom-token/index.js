@@ -33,7 +33,7 @@ wallet.registerRpcMessageHandler(async (_originString, requestObject) => {
 
 function updateUi () {
   asset.balance = String(userBalance)
-  let method = created ? 'updateAsset' : 'addAsset'
+  let method = created ? 'update' : 'add'
 
   // addAsset will update if identifier matches.
   wallet.send({
