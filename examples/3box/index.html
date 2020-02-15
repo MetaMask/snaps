@@ -54,7 +54,8 @@
         } catch (err) {
           callback(err)
         }
-      }
+      },
+      is3idProvider: true
     }
 
     function updateProfileData () {
@@ -70,12 +71,14 @@
     async function connect () {
       // TODO - In the future Box.openBox should be able to detect
       // 3ID support if 'ethereum' is passed to it directly.
-      await ethereum.send({
+      const result = await ethereum.send({
         method: 'wallet_enable',
         params: [{
           wallet_plugin: { [snapId]: {} },
+          eth_accounts: {},
         }]
       })
+      console.log('wallet_enable result', result)
       loading.style.display = 'block'
       window.box = await Box.openBox(null, threeIdProvider)
       loading.style.display = 'none'
