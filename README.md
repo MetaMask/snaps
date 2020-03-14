@@ -4,7 +4,7 @@ A CLI for developing MetaMask Snaps, formerly known as "plugins."
 
 ## Installation
 
-Always use `node@10.16.3`, the version currently used to develop MetaMask.
+Always use `node@10.17.0`, the version currently used to develop MetaMask.
 We recommend [nvm](https://github.com/nvm-sh/nvm) for managing Node versions.
 
 To install and access the examples (recommended):
