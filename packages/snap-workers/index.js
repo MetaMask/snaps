@@ -1,9 +1,9 @@
-const pluginWorker = require('./dist/pluginWorker')
-const { PLUGIN_STREAM_NAMES } = require('./enums')
+// const pluginWorker = require('./dist/pluginWorker')
+const { PLUGIN_STREAM_NAMES } = require('./src/enums')
 
 module.exports = {
-  pluginWorker: {
-    worker: pluginWorker,
+  plugin: {
+    // worker: pluginWorker,
     streamNames: PLUGIN_STREAM_NAMES,
   },
 }
