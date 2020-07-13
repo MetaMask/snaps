@@ -1,4 +1,4 @@
-const { Duplex } = require('readable-stream')
+const { Duplex } = require('stream')
 const { DEDICATED_WORKER_NAME } = require('./enums')
 
 /**
@@ -30,6 +30,8 @@ module.exports = class WorkerPostMessageStream extends Duplex {
 
   _onMessage (event) {
     const message = event.data
+
+    console.log('WORKER RECEIVED MESSAGE', event)
 
     // validate message
     if (typeof message !== 'object') return

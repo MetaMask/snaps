@@ -1,4 +1,4 @@
-const { Duplex } = require('readable-stream')
+const { Duplex } = require('stream')
 const { DEDICATED_WORKER_NAME } = require('./enums')
 
 /**

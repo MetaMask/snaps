@@ -1,4 +1,4 @@
-const { Duplex } = require('readable-stream')
+const { Duplex } = require('stream')
 
 module.exports = class WindowPostMessageStream extends Duplex {
 

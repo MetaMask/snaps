@@ -1,4 +1,6 @@
 
+dist
+
 # Created by https://www.gitignore.io/api/osx,node
 
 ### OSX ###
@@ -8,6 +10,7 @@
 
 # Icon must end with two \r
 Icon
+
 
 # Thumbnails
 ._*
