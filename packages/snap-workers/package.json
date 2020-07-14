@@ -7,6 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "yarn build:prep && yarn bundle",
+    "watch": "yarn build -w",
     "bundle": "node build.js",
     "build:prep": "mkdir -p dist && rm -rf dist/*",
     "prepare": "yarn build"
@@ -20,7 +21,8 @@
     "obj-multiplex": "^1.0.0",
     "post-message-stream": "rekmarks/post-message-stream#multi-env",
     "pump": "^3.0.0",
-    "ses": "0.6.5",
-    "uglifyify": "^5.0.2"
+    "ses": "^0.8.0",
+    "uglifyify": "^5.0.2",
+    "watchify": "^3.11.1"
   }
 }

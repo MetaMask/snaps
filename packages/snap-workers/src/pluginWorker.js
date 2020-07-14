@@ -3,9 +3,20 @@ const Dnode = require('dnode')
 const { MetamaskInpageProvider } = require('@metamask/inpage-provider')
 const ObjectMultiplex = require('obj-multiplex')
 const pump = require('pump')
-const SES = require('ses')
 const { WorkerPostMessageStream } = require('post-message-stream')
 const { PLUGIN_STREAM_NAMES } = require('./enums')
+
+require('ses')
+
+lockdown()
+
+const c = new Compartment({
+  print: harden(console.log),
+})
+ 
+c.evaluate(`
+  print('Hello! Hello?')
+`)
 
 init()
 
@@ -119,30 +130,31 @@ function _startPlugin (pluginName, _approvedPermissions, sourceCode, ethereumPro
 
   try {
 
-    const sessedPlugin = self.rootRealm.evaluate(sourceCode, {
+    console.log('SES happening here')
+    // const sessedPlugin = self.rootRealm.evaluate(sourceCode, {
 
-      wallet: ethereumProvider,
-      console, // Adding console for now for logging purposes.
-      BigInt,
-      setTimeout,
-      crypto,
-      SubtleCrypto,
-      fetch,
-      XMLHttpRequest,
-      WebSocket,
-      Buffer, // TODO:WW may not be available? we'll see
-      Date,
+    //   wallet: ethereumProvider,
+    //   console, // Adding console for now for logging purposes.
+    //   BigInt,
+    //   setTimeout,
+    //   crypto,
+    //   SubtleCrypto,
+    //   fetch,
+    //   XMLHttpRequest,
+    //   WebSocket,
+    //   Buffer, // TODO:WW may not be available? we'll see
+    //   Date,
 
-      window: {
-        crypto,
-        SubtleCrypto,
-        setTimeout,
-        fetch,
-        XMLHttpRequest,
-        WebSocket,
-      },
-    })
-    sessedPlugin()
+    //   window: {
+    //     crypto,
+    //     SubtleCrypto,
+    //     setTimeout,
+    //     fetch,
+    //     XMLHttpRequest,
+    //     WebSocket,
+    //   },
+    // })
+    // sessedPlugin()
   } catch (err) {
     // _removePlugin(pluginName)
     console.error(`error encountered trying to run plugin '${pluginName} in worker'`)
