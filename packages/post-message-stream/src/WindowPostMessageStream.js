@@ -22,6 +22,7 @@ module.exports = class WindowPostMessageStream extends Duplex {
     this._haveSyn = false
 
     window.addEventListener('message', this._onMessage.bind(this), false)
+
     // send synchronization message
     this._write('SYN', null, noop)
     this.cork()
