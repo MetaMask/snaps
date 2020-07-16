@@ -16,7 +16,7 @@
   "license": "ISC",
   "devDependencies": {
     "@metamask/inpage-provider": "MetaMask/inpage-provider#snaps-updated",
-    "browserify": "^16.5.1",
+    "browserify": "16.2.3",
     "dnode": "^1.2.2",
     "obj-multiplex": "^1.0.0",
     "post-message-stream": "rekmarks/post-message-stream#multi-env",

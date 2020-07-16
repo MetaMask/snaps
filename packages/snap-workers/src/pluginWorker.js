@@ -1,5 +1,4 @@
 const Dnode = require('dnode')
-// const { ethErrors, serializeError } = require('eth-json-rpc-errors')
 const { MetamaskInpageProvider } = require('@metamask/inpage-provider')
 const ObjectMultiplex = require('obj-multiplex')
 const pump = require('pump')
@@ -7,7 +6,6 @@ const { WorkerPostMessageStream } = require('post-message-stream')
 const { PLUGIN_STREAM_NAMES } = require('./enums')
 
 require('ses')
-
 lockdown()
 
 const c = new Compartment({
