@@ -1,36 +1,35 @@
+/* global Compartment, lockdown */ 
+
 const Dnode = require('dnode')
 const { MetamaskInpageProvider } = require('@metamask/inpage-provider')
 const ObjectMultiplex = require('obj-multiplex')
 const pump = require('pump')
 const { WorkerPostMessageStream } = require('post-message-stream')
 const { PLUGIN_STREAM_NAMES } = require('./enums')
+const pify = require('pify')
 
 require('ses')
-lockdown()
-
-const c = new Compartment({
-  print: harden(console.log),
+lockdown({
+  // we'd probably not do this in prod
+  mathTaming: 'unsafe',
+  errorTaming: 'unsafe',
 })
- 
-c.evaluate(`
-  print('Hello! Hello?')
-`)
+// now we have SES globals
 
 init()
 
 async function init () {
 
+  // streams
   self.backgroundApi = null
   self.rpcStream = null
   self.command = null
 
-  self.plugins = new Map()
+  // rpc handler function
+  self.pluginRpcHandler = null
 
-  // self.rootRealm = SES.makeSESRootRealm({
-  //   consoleMode: 'allow',
-  //   errorStackMode: 'allow',
-  //   mathRandomMode: 'allow',
-  // })
+  // we actually only do a single plugin for now, but in the fuuture...
+  self.plugins = new Map()
 
   await connectToParent()
 }
@@ -43,6 +42,9 @@ function connectToParent () {
   console.log('CONNECTING TO PARENT')
 
   const parentStream = new WorkerPostMessageStream()
+  // parentStream.on('data', (message) => {
+  //   console.log('WORKER RECEIVED MESSAGE', message.name, message.data)
+  // })
   const mux = setupMultiplex(parentStream, 'Parent')
 
   self.command = mux.createStream(PLUGIN_STREAM_NAMES.COMMAND)
@@ -55,7 +57,7 @@ function connectToParent () {
     const dnode = Dnode()
     backgroundApiStream.pipe(dnode).pipe(backgroundApiStream)
     dnode.once('remote', (metamaskConnection) => {
-      self.backgroundApi = metamaskConnection
+      self.backgroundApi = pify(metamaskConnection)
       resolve()
     })
   })
@@ -63,30 +65,48 @@ function connectToParent () {
 
 function _onCommandMessage (message) {
 
-  console.log('COMMAND MESSAGE', message)
-
   if (typeof message !== 'object') {
     console.error('Command stream received non-object message.')
     return
   }
 
-  const { command, data } = message
+  const { id, command, data } = message
+
+  const respond = (obj) => {
+    self.command.write({ ...obj, id })
+  }
 
   switch (command) {
 
     case 'installPlugin':
       installPlugin(data)
         .then(() => {
-          self.command.write({ response: 'OK' })
+          respond({ result: 'OK' })
         })
         .catch((error) => {
-          self.command.write({ response: 'FAILURE', error: error.message })
+          respond({ error: error.message })
         })
-
       break
 
     case 'ping':
-      self.command.write({ response: 'OK' })
+      respond({ result: 'OK' })
+      break
+
+    case 'pluginRpc':
+      if (!self.pluginRpcHandler) {
+        respond({
+          error: new Error('No RPC handler registered for plugin.')
+        })
+        break
+      }
+      const { origin, request } = data
+      self.pluginRpcHandler(origin, request)
+        .then((result) => {
+          respond({ result })
+        })
+        .catch((error) => {
+          respond({ error })
+        })
       break
 
     default:
@@ -116,7 +136,7 @@ async function installPlugin ({
  * @param {string} pluginName - The name of the plugin.
  * @param {Array<string>} approvedPermissions - The plugin's approved permissions.
  * Should always be a value returned from the permissions controller.
- * @param {string} sourceCode - The source code of the plugin.
+ * @param {string} sourceCode - The source code of the plugin, in IIFE format.
  * @param {Object} ethereumProvider - The plugin's Ethereum provider object.
  */
 function _startPlugin (pluginName, _approvedPermissions, sourceCode, ethereumProvider, backgroundApiKeys) {
@@ -125,40 +145,41 @@ function _startPlugin (pluginName, _approvedPermissions, sourceCode, ethereumPro
 
   // Object.assign(ethereumProvider, generateBackgroundApi(backgroundApiKeys, approvedPermissions))
   Object.assign(ethereumProvider, generateBackgroundApi(backgroundApiKeys))
+  ethereumProvider.registerRpcMessageHandler = (func) => {
+    self.pluginRpcHandler = func
+  }
 
   try {
 
-    console.log('SES happening here')
-    // const sessedPlugin = self.rootRealm.evaluate(sourceCode, {
+    const compartment = new Compartment({
+      wallet: ethereumProvider,
+      console, // Adding console for now for logging purposes.
+      BigInt,
+      setTimeout,
+      crypto,
+      SubtleCrypto,
+      fetch,
+      XMLHttpRequest,
+      WebSocket,
+      Buffer,
+      Date,
 
-    //   wallet: ethereumProvider,
-    //   console, // Adding console for now for logging purposes.
-    //   BigInt,
-    //   setTimeout,
-    //   crypto,
-    //   SubtleCrypto,
-    //   fetch,
-    //   XMLHttpRequest,
-    //   WebSocket,
-    //   Buffer, // TODO:WW may not be available? we'll see
-    //   Date,
-
-    //   window: {
-    //     crypto,
-    //     SubtleCrypto,
-    //     setTimeout,
-    //     fetch,
-    //     XMLHttpRequest,
-    //     WebSocket,
-    //   },
-    // })
-    // sessedPlugin()
+      window: {
+        crypto,
+        SubtleCrypto,
+        setTimeout,
+        fetch,
+        XMLHttpRequest,
+        WebSocket,
+      },
+    })
+    compartment.evaluate(sourceCode)
   } catch (err) {
-    // _removePlugin(pluginName)
-    console.error(`error encountered trying to run plugin '${pluginName} in worker'`)
+    // _removePlugin(pluginName) // TODO:WW
+    console.error(`Error while running plugin '${pluginName}' in worker:${self.name}.`, err)
   }
 
-  // _setPluginToActive(pluginName)
+  // _setPluginToActive(pluginName) // TODO:WW
 }
 
 function generateBackgroundApi (backgroundApiKeys) {

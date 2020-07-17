@@ -29,10 +29,10 @@
     "@agoric/default-evaluate-options" "^0.3.6"
     esm "^3.2.5"
 
-"@agoric/make-hardener@0.0.8":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@agoric/make-hardener/-/make-hardener-0.0.8.tgz#7f9e9d6874600b2e1b0543ce9456fbf62463be2d"
-  integrity sha512-bd83IYEMQbzpprwyA10RjHIGWmWeUMdsd5EzaHwke+zLH0HyqP6UKxFLv5mqkmrMeQyOMhNgKN1hCagjRyjlxQ==
+"@agoric/make-hardener@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@agoric/make-hardener/-/make-hardener-0.1.0.tgz#59539b611228ad8e9652cf6cc80925fdcd97ee9a"
+  integrity sha512-2nyT18UcAzwxw/C0Kf2fp5oI9BLf8YD9MmTvbHD0/FvjsK4FwnfGAk7P8f+eE9KgRoyfH8lqcnVO5ltwJrtmbw==
 
 "@agoric/transform-eventual-send@^1.3.0":
   version "1.3.1"
@@ -1834,6 +1834,11 @@ pbkdf2@^3.0.3:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
+pify@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/pify/-/pify-5.0.0.tgz#1f5eca3f5e87ebec28cc6d54a0e4aaf00acc127f"
+  integrity sha512-eW/gHNMlxdSP6dmG6uJip6FXN0EQBwm2clYYd8Wul42Cwu/DK8HEftzsapcNdYe2MfLiIwZqsDk2RDEsTE79hA==
+
 posix-character-classes@^0.1.0:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/posix-character-classes/-/posix-character-classes-0.1.1.tgz#01eac0fe3b5af71a2a6c02feabb8c1fef7e00eab"
@@ -1848,7 +1853,7 @@ post-message-stream@^3.0.0:
 
 post-message-stream@rekmarks/post-message-stream#multi-env:
   version "4.0.0"
-  resolved "https://codeload.github.com/rekmarks/post-message-stream/tar.gz/1be6bdf2ffadbd2ae045983656601c7edbb07bb8"
+  resolved "https://codeload.github.com/rekmarks/post-message-stream/tar.gz/aac54488bd56e34118f4b9add80d04186bfb3610"
   dependencies:
     readable-stream "^2.1.4"
 
@@ -2072,13 +2077,13 @@ semver@^5.4.1:
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.7.1.tgz#a954f931aeba508d307bbf069eff0c01c96116f7"
   integrity sha512-sauaDf/PZdVgrLTNYHRtpXa1iRiKcaebiKQ1BJdpQlWH2lCvexQdX55snPFyK7QzpudqbCI0qXFfOasHdyNDGQ==
 
-ses@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/ses/-/ses-0.8.0.tgz#e13d87fcc10dc32a63054300bf5d51a43ef575fb"
-  integrity sha512-De6R7ok79m2CMNtsldZ3g8w3GvjBn3X3YN1r2ZT0z+xtXjkPKZqFGuoLeb7ys81SZbJYQWnrmDwLdxA7XU94xw==
+ses@^0.9.1:
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/ses/-/ses-0.9.1.tgz#d7b4b29e8f033a81b5b4cdab1b60b1b207ceb673"
+  integrity sha512-dilCxcnB9uubQD+twe9ZizD+vBxs6udo0YkNEUcsPJkZIqAq69PMDoOUayUoTYFO/D2BmuZdSMiPobE2FSGpwA==
   dependencies:
     "@agoric/babel-standalone" "^7.9.5"
-    "@agoric/make-hardener" "0.0.8"
+    "@agoric/make-hardener" "^0.1.0"
     "@agoric/transform-module" "^0.3.0"
 
 set-immediate-shim@^1.0.1:

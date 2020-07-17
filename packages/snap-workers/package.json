@@ -19,9 +19,10 @@
     "browserify": "16.2.3",
     "dnode": "^1.2.2",
     "obj-multiplex": "^1.0.0",
+    "pify": "^5.0.0",
     "post-message-stream": "rekmarks/post-message-stream#multi-env",
     "pump": "^3.0.0",
-    "ses": "^0.8.0",
+    "ses": "^0.9.1",
     "uglifyify": "^5.0.2",
     "watchify": "^3.11.1"
   }
