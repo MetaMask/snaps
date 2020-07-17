@@ -1,6 +1,6 @@
-const { Duplex } = require('stream')
+const BasePostMessageStream = require('./BasePostMessageStream')
 
-module.exports = class WindowPostMessageStream extends Duplex {
+module.exports = class WindowPostMessageStream extends BasePostMessageStream {
 
   constructor ({
     name,
@@ -8,24 +8,17 @@ module.exports = class WindowPostMessageStream extends Duplex {
     targetWindow,
   } = {}) {
 
-    super({
-      objectMode: true,
-    })
+    super()
 
     this._name = name
     this._target = target
     this._targetWindow = targetWindow || window
     this._origin = (targetWindow ? '*' : location.origin)
+    this._onMessage = this._onMessage.bind(this)
 
-    // initialization flags
-    this._init = false
-    this._haveSyn = false
+    window.addEventListener('message', this._onMessage, false)
 
-    window.addEventListener('message', this._onMessage.bind(this), false)
-
-    // send synchronization message
-    this._write('SYN', null, noop)
-    this.cork()
+    this._handshake()
   }
 
   // private
@@ -40,26 +33,7 @@ module.exports = class WindowPostMessageStream extends Duplex {
     if (message.target !== this._name) return
     if (!message.data) return
 
-    if (!this._init) {
-      // listen for handshake
-      if (message.data === 'SYN') {
-        this._haveSyn = true
-        this._write('ACK', null, noop)
-      } else if (message.data === 'ACK') {
-        this._init = true
-        if (!this._haveSyn) {
-          this._write('ACK', null, noop)
-        }
-        this.uncork()
-      }
-    } else {
-      // forward message
-      try {
-        this.push(message.data)
-      } catch (err) {
-        this.emit('error', err)
-      }
-    }
+    this._onData(message.data)
   }
 
   _postMessage (data) {
@@ -69,18 +43,7 @@ module.exports = class WindowPostMessageStream extends Duplex {
     }, this._origin)
   }
 
-  // stream plumbing
-
-  _read () {
-    return undefined
-  }
-
-  _write (data, _encoding, cb) {
-    this._postMessage(data)
-    cb()
+  _destroy () {
+    window.removeEventListener('message', this._onMessage, false)
   }
 }
-
-// util
-
-function noop () {}
