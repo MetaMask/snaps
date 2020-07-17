@@ -2,8 +2,7 @@ const BasePostMessageStream = require('./BasePostMessageStream')
 const { DEDICATED_WORKER_NAME } = require('./enums')
 
 /**
- * Parent-side Worker PostMessage stream.
- * Dedicated workers only.
+ * Parent-side Dedicated Worker postMessage stream.
  */
 module.exports = class WorkerParentPostMessageStream extends BasePostMessageStream {
 

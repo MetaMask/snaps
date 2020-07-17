@@ -7,6 +7,9 @@ function noop () {
 const SYN = 'SYN'
 const ACK = 'ACK'
 
+/**
+ * Incomplete base implementation for postMessage streams.
+ */
 module.exports = class BasePostMessageStream extends Duplex {
 
   constructor () {
@@ -20,14 +23,17 @@ module.exports = class BasePostMessageStream extends Duplex {
     this._haveSyn = false
   }
 
-  // must be called at end of child constructor
+  // private
+
+  /**
+   * Must be called at end of child constructor to initiate
+   * communication with other end.
+   */
   _handshake () {
     // send synchronization message
     this._write(SYN, null, noop)
     this.cork()
   }
-
-  // private
 
   _onData (data) {
     if (!this._init) {
@@ -52,7 +58,9 @@ module.exports = class BasePostMessageStream extends Duplex {
     }
   }
 
-  // child classes must implement
+  /**
+   * Child classes must implement this function.
+   */
   _postMessage (_data) {
     throw new Error('Not implemented.')
   }

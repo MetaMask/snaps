@@ -1,5 +1,8 @@
 const BasePostMessageStream = require('./BasePostMessageStream')
 
+/**
+ * Window.postMessage stream.
+ */
 module.exports = class WindowPostMessageStream extends BasePostMessageStream {
 
   constructor ({
