@@ -22,12 +22,14 @@ module.exports = class WorkerPostMessageStream extends BasePostMessageStream {
   _onMessage (event) {
     const message = event.data
 
-    console.log('WORKER RECEIVED MESSAGE', event)
-
     // validate message
-    if (typeof message !== 'object') return
-    if (message.target !== this._name) return
-    if (!message.data) return
+    if (
+      (typeof message !== 'object') ||
+      (message.target !== this._name) ||
+      (!message.data)
+    ) {
+      return
+    }
 
     this._onData(message.data)
   }

@@ -30,11 +30,15 @@ module.exports = class WindowPostMessageStream extends BasePostMessageStream {
     const message = event.data
 
     // validate message
-    if (this._origin !== '*' && event.origin !== this._origin) return
-    if (event.source !== this._targetWindow) return
-    if (typeof message !== 'object') return
-    if (message.target !== this._name) return
-    if (!message.data) return
+    if (
+      (this._origin !== '*' && event.origin !== this._origin) ||
+      (event.source !== this._targetWindow) ||
+      (typeof message !== 'object') ||
+      (message.target !== this._name) ||
+      (!message.data)
+    ) {
+      return
+    }
 
     this._onData(message.data)
   }

@@ -25,8 +25,12 @@ module.exports = class WorkerParentPostMessageStream extends BasePostMessageStre
     const message = event.data
 
     // validate message
-    if (typeof message !== 'object') return
-    if (!message.data) return
+    if (
+      (typeof message !== 'object') ||
+      (!message.data)
+    ) {
+      return
+    }
 
     this._onData(message.data)
   }
