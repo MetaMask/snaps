@@ -19,7 +19,7 @@ if (watch) {
 }
 
 const b = browserify(browserifyOpts)
-  .transform('uglifyify', { global: true })
+  .transform('uglifyify', { global: true, sourceMap: false })
 
 if (watch) {
   b.on('update', bundle)

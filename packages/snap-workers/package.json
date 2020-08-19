@@ -12,6 +12,9 @@
     "build:prep": "mkdir -p dist && rm -rf dist/*",
     "prepare": "yarn build"
   },
+  "files": [
+    "dist/*"
+  ],
   "author": "Erik Marks <rekmarks@protonmail.com>",
   "license": "ISC",
   "devDependencies": {
