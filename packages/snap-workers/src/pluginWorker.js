@@ -13,6 +13,7 @@ lockdown({
   // we'd probably not do this in prod
   mathTaming: 'unsafe',
   errorTaming: 'unsafe',
+  dateTaming: 'unsafe',
 })
 // now we have SES globals
 
@@ -152,6 +153,7 @@ function _startPlugin (pluginName, _approvedPermissions, sourceCode, ethereumPro
   try {
 
     const compartment = new Compartment({
+      self, // give it the global object for now
       wallet: ethereumProvider,
       console, // Adding console for now for logging purposes.
       BigInt,
