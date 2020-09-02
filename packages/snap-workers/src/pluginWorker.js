@@ -10,7 +10,7 @@ const pify = require('pify')
 
 require('ses')
 lockdown({
-  // we'd probably not do this in prod
+  // we wouldn't do this in prod
   mathTaming: 'unsafe',
   errorTaming: 'unsafe',
   dateTaming: 'unsafe',
@@ -29,7 +29,7 @@ async function init () {
   // rpc handler function
   self.pluginRpcHandler = null
 
-  // we actually only do a single plugin for now, but in the fuuture...
+  // we actually only do a single plugin for now, but in the future...
   self.plugins = new Map()
 
   await connectToParent()
@@ -43,9 +43,6 @@ function connectToParent () {
   console.log('CONNECTING TO PARENT')
 
   const parentStream = new WorkerPostMessageStream()
-  // parentStream.on('data', (message) => {
-  //   console.log('WORKER RECEIVED MESSAGE', message.name, message.data)
-  // })
   const mux = setupMultiplex(parentStream, 'Parent')
 
   self.command = mux.createStream(PLUGIN_STREAM_NAMES.COMMAND)
@@ -153,7 +150,7 @@ function _startPlugin (pluginName, _approvedPermissions, sourceCode, ethereumPro
   try {
 
     const compartment = new Compartment({
-      self, // give it the global object for now
+      self, // Give it the global object for now
       wallet: ethereumProvider,
       console, // Adding console for now for logging purposes.
       BigInt,
