@@ -25,7 +25,7 @@
     "pify": "^5.0.0",
     "post-message-stream": "rekmarks/post-message-stream#multi-env",
     "pump": "^3.0.0",
-    "ses": "^0.9.1",
+    "ses": "^0.10.3",
     "tinyify": "^3.0.0",
     "watchify": "^3.11.1"
   }

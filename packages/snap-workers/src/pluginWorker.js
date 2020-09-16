@@ -8,7 +8,7 @@ const { WorkerPostMessageStream } = require('post-message-stream')
 const { PLUGIN_STREAM_NAMES } = require('./enums')
 const pify = require('pify')
 
-require('ses')
+require('ses/dist/lockdown.cjs')
 lockdown({
   // we wouldn't do this in prod
   mathTaming: 'unsafe',
