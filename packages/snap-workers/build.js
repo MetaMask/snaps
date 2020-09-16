@@ -10,6 +10,7 @@ if (process.argv.length > 2) {
 const browserifyOpts = {
   debug: false,
   entries: ['src/pluginWorker.js'],
+  plugin: 'tinyify',
 }
 
 if (watch) {
@@ -19,7 +20,6 @@ if (watch) {
 }
 
 const b = browserify(browserifyOpts)
-  .transform('uglifyify', { global: true, sourceMap: false })
 
 if (watch) {
   b.on('update', bundle)
