@@ -13,7 +13,8 @@
     "prepare": "yarn build"
   },
   "files": [
-    "dist/*"
+    "dist/",
+    "src/"
   ],
   "author": "Erik Marks <rekmarks@protonmail.com>",
   "license": "ISC",
