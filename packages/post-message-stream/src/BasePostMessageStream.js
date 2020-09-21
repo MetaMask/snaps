@@ -1,4 +1,4 @@
-const { Duplex } = require('stream')
+const { Duplex } = require('readable-stream')
 
 function noop () {
   return undefined

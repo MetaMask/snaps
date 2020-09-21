@@ -4,15 +4,12 @@
   "description": "Sets up a duplex object stream over window.postMessage",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "./build.sh"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {},
-  "devDependencies": {
-    "browserify": "^16.5.1",
-    "uglifyify": "^5.0.2"
+  "dependencies": {
+    "readable-stream": "2.3.3"
   },
   "repository": {
     "type": "git",
