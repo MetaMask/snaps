@@ -8,19 +8,20 @@ const { WorkerPostMessageStream } = require('post-message-stream')
 const { PLUGIN_STREAM_NAMES } = require('./enums')
 const pify = require('pify')
 
-require('ses/dist/lockdown.cjs')
+// require('ses/dist/lockdown.cjs')
+require('./lockdown.cjs')
+// now we SES globals
+
 lockdown({
   // we wouldn't do this in prod
   mathTaming: 'unsafe',
   errorTaming: 'unsafe',
   dateTaming: 'unsafe',
 })
-// now we have SES globals
 
 init()
 
 async function init () {
-
   // streams
   self.backgroundApi = null
   self.rpcStream = null

@@ -2355,7 +2355,7 @@ scope-analyzer@^2.0.0:
     estree-is-function "^1.0.0"
     get-assigned-identifiers "^1.1.0"
 
-ses@^0.10.3:
+ses@0.10.3:
   version "0.10.3"
   resolved "https://registry.yarnpkg.com/ses/-/ses-0.10.3.tgz#1a9e532d24c3676ce67e693e92f6c582b1d53c81"
   integrity sha512-z9aBNQFsPxc6VOqYig2a3GSGpG5ull+Qz9i99iMQMPavQ3z+wk//zoAAsKLo9+Xj1orHt4qTofHvfLOIqhDlCw==
