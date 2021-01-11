@@ -8,9 +8,8 @@ const { WorkerPostMessageStream } = require('post-message-stream')
 const { PLUGIN_STREAM_NAMES } = require('./enums')
 const pify = require('pify')
 
-// require('ses/dist/lockdown.cjs')
-require('./lockdown.cjs')
-// now we SES globals
+require('ses/dist/lockdown.cjs')
+// now we have SES globals
 
 lockdown({
   // we wouldn't do this in prod

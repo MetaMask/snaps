@@ -47,7 +47,7 @@
     json-rpc-middleware-stream "^2.1.1"
     loglevel "^1.6.1"
     obj-multiplex "^1.0.0"
-    post-message-stream "^3.0.0"
+    post-message-stream rekmarks/post-message-stream#multi-env
     pump "^3.0.0"
     safe-event-emitter "^1.0.1"
 
@@ -2373,10 +2373,10 @@ scope-analyzer@^2.0.0:
     estree-is-function "^1.0.0"
     get-assigned-identifiers "^1.1.0"
 
-ses@0.10.3:
-  version "0.10.3"
-  resolved "https://registry.yarnpkg.com/ses/-/ses-0.10.3.tgz#1a9e532d24c3676ce67e693e92f6c582b1d53c81"
-  integrity sha512-z9aBNQFsPxc6VOqYig2a3GSGpG5ull+Qz9i99iMQMPavQ3z+wk//zoAAsKLo9+Xj1orHt4qTofHvfLOIqhDlCw==
+ses@^0.11.0:
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/ses/-/ses-0.11.0.tgz#1e470112ed320d169f0b850525858129c0be0881"
+  integrity sha512-3HH+23C4bijk9VegfiP+cBMqkGim/TMsj/DK5nh/pJFiNrCMfi5euvVluIV66ry202+uckg7nXKrgrEcBwU8SA==
   dependencies:
     "@agoric/babel-standalone" "^7.9.5"
     "@agoric/make-hardener" "^0.1.0"
