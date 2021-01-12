@@ -11,10 +11,11 @@ To install and access the examples (recommended):
 
 1. `git clone git@github.com:MetaMask/snaps-cli.git`
 2. `cd snaps-cli`
-3. `npm link`
+3. `yarn link`
 
-You can also simply install globally: `npm install -g snaps-cli`
+You can also simply install globally, although without access to the examples:
 
+- `yarn global add snaps-cli`
 
 ## Basic Usage
 
@@ -31,6 +32,7 @@ There is also an alias `mm-snap` in case of `snap` being taken.
 MetaMask Snaps consist of two things: a JSON manifest and a JavaScript bundle.
 For a variety of reasons, we decided to follow NPM conventions. Thus, the manifest file
 is simply `package.json`, with the following required standard fields:
+
 - `name`
 - `version`
 - `description`
@@ -38,6 +40,7 @@ is simply `package.json`, with the following required standard fields:
 - `repository`
 
 In addition, we use the following, required custom fields:
+
 - `web3Wallet` (`object`)
   - `bundle` (`object`)
     - `local` (`string`; relative path to bundle)
@@ -58,13 +61,15 @@ run in SES, and its contents must be wrapped in an anonymous function (`() => ( 
 ### Assumed Project Structure
 
 This tool has default arguments assuming the following project structure:
-```
+
+```text
  .
  |- index.js
  |- dist/
  |-- bundle.js
  |- ... (all other project files and folders)
 ```
+
 Source files other than `index.js` are located through its imports.
 The defaults can be overwritten using the `snap.config.json` config file,
 [see below](#configuration-file).
@@ -80,7 +85,8 @@ See examples in this repo for details.
 Always use `node@10.16.3`, the version currently used to develop MetaMask.
 
 `snap --help`
-```
+
+```text
 Usage: snap <command> [options]
 
 Commands:
@@ -148,6 +154,7 @@ Examples:
 `snap.config.json` can be placed in the project root directory. It should have string keys matching
 command arguments. Values become argument defaults, which can still be overriden on the command line.
 Example:
+
 ```json
 {
   "src": "lib",

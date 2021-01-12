@@ -1,6 +1,6 @@
 # IPFS Snap Example
 
-To run: install the `snap` utility by installing with `npm i -g ../../` from this folder.
+To run: install the `snap` utility by installing with `yarn global add ../../` from this folder.
 
 Then run `snap serve` from this folder.
 
