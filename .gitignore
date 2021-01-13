@@ -2,3 +2,4 @@
 .python-version
 node_modules
 temp
+examples/*/dist
