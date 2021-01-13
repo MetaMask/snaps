@@ -2,9 +2,13 @@
 
 A CLI for developing MetaMask Snaps, formerly known as "plugins."
 
+## Compatibility
+
+If you're looking for the `snaps-cli` compatible with the pre-2021 `metamask-snaps-beta`, please see [this branch](https://github.com/MetaMask/snaps-cli/tree/version-0.4.0).
+
 ## Installation
 
-Always use `node@10.17.0`, the version currently used to develop MetaMask.
+Use `node@^12.0.0`.
 We recommend [nvm](https://github.com/nvm-sh/nvm) for managing Node versions.
 
 To install and access the examples (recommended):
