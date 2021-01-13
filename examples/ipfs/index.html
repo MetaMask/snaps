@@ -60,7 +60,7 @@
     getButton.addEventListener('click', get)
 
     async function connect () {
-      await ethereum.send({
+      await ethereum.request({
         method: 'wallet_enable',
         params: [{
           wallet_plugin: { [snapId]: {} },
@@ -70,7 +70,7 @@
 
     async function add () {
       try {
-        const response = await ethereum.send({
+        const response = await ethereum.request({
           method: 'wallet_invokePlugin',
           params: [snapId, {
             method: 'add',
@@ -86,7 +86,7 @@
 
     async function get () {
       try {
-        const response = await ethereum.send({
+        const response = await ethereum.request({
           method: 'wallet_invokePlugin',
           params: [snapId, {
             method: 'cat',

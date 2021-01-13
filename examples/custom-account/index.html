@@ -75,7 +75,7 @@ tipButton.addEventListener('click', tip)
 signButton.addEventListener('click', sign)
 
 async function connectAndInstall () {
-  await ethereum.send({
+  await ethereum.request({
     method: 'wallet_enable',
     params: [{
       wallet_plugin: { [snapId]: {} },
@@ -87,7 +87,7 @@ async function connectAndInstall () {
 async function add () {
   const address = document.querySelector('input.address').value
 
-  const result = await ethereum.send({
+  const result = await ethereum.request({
     method: 'wallet_invokePlugin',
     params: [snapId, {
       method: 'addAccount',
@@ -103,14 +103,14 @@ async function add () {
 async function tip () {
   const address = document.querySelector('input.address').value
 
-  const accounts = await ethereum.send({
+  const accounts = await ethereum.request({
     method: 'eth_accounts',
   })
   const account = accounts[0]
   console.log(`Account ${account} chosen from ${JSON.stringify(accounts)}`)
 
   try {
-    const response2 = await ethereum.send({
+    const response2 = await ethereum.request({
       method: 'eth_sendTransaction',
       params: [{
         from: account,
@@ -133,7 +133,7 @@ async function sign () {
   console.log(account)
 
   try {
-    const result = await ethereum.send({
+    const result = await ethereum.request({
       method: 'eth_sign',
       params: [account, JSON.stringify('Do you want to live, deliciously?')],
       from: account,

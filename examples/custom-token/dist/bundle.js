@@ -37,7 +37,7 @@ function updateUi () {
   let method = created ? 'update' : 'add'
 
   // addAsset will update if identifier matches.
-  wallet.send({
+  wallet.request({
     method: 'wallet_manageAssets',
     params: [ method, asset ],
   })

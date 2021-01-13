@@ -37,7 +37,7 @@
     connectButton.addEventListener('click', connect)
 
     async function connect () {
-      await ethereum.send({
+      await ethereum.request({
         method: 'wallet_enable',
         params: [{
           wallet_plugin: { [snapId]: {} },

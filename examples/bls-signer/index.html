@@ -47,7 +47,7 @@
     accountButton.addEventListener('click', getAccount)
 
     async function connect () {
-      await ethereum.send({
+      await ethereum.request({
         method: 'wallet_enable',
         params: [{
           wallet_plugin: { [snapId]: {} },
@@ -57,7 +57,7 @@
 
     async function getAccount () {
       try {
-        const response = await ethereum.send({
+        const response = await ethereum.request({
           method: 'wallet_invokePlugin',
           params: [snapId, {
             method: 'getAccount'
@@ -74,7 +74,7 @@
     async function signMessage () {
       try {
         const data = document.querySelector('.challenge').value
-        const response = await ethereum.send({
+        const response = await ethereum.request({
           method: 'wallet_invokePlugin',
           params: [snapId, {
             method: 'signMessage',

@@ -24,6 +24,7 @@ module.exports = {
   CONFIG_PATHS,
   isFile,
   isDirectory,
+  getEvalWorkerPath,
   getOutfilePath,
   logError,
   logWarning,
@@ -37,6 +38,13 @@ module.exports = {
 }
 
 // misc utils
+
+/**
+ * @returns {string} The path to the eval worker file.
+ */
+function getEvalWorkerPath () {
+  return pathUtils.join(__dirname, 'evalWorker.js')
+}
 
 function trimPathString(s) {
   return s.replace(/^[./]+|[./]+$/g, '')

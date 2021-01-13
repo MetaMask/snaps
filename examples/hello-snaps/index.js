@@ -1,7 +1,7 @@
 wallet.registerRpcMessageHandler(async (originString, requestObject) => {
   switch (requestObject.method) {
     case 'hello':
-      return wallet.send({
+      return wallet.request({
         method: 'alert',
         params: [`Hello, ${originString}!`]
       })

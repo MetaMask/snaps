@@ -62,12 +62,12 @@ function validate (params) {
 }
 
 async function confirm (message) {
-  const result = await wallet.send({ method: 'confirm', params: [message] });
+  const result = await wallet.request({ method: 'confirm', params: [message] });
   return result;
 }
 
 async function prompt (message) {
-  const result = await wallet.send({ method: 'customPrompt', params: [message] });
+  const result = await wallet.request({ method: 'customPrompt', params: [message] });
   return result;
 }
 
@@ -75,7 +75,7 @@ function updateUi () {
   console.log('updating UI with accounts', accounts)
   accounts.forEach(async (account) => {
     console.log('issuing add for ', account)
-    wallet.send({
+    wallet.request({
       method: 'wallet_manageIdentities',
       params: [ 'add', { address: account }],
     })

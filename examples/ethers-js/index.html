@@ -44,7 +44,7 @@
     getAddressButton.addEventListener('click', getAddress)
 
     async function connect () {
-      await ethereum.send({
+      await ethereum.request({
         method: 'wallet_requestPermissions',
         params: [{
           [snapId]: {}
@@ -54,7 +54,7 @@
 
     async function getAddress () {
       try {
-        const response = await ethereum.send({
+        const response = await ethereum.request({
           method: snapId,
           params: [{
             method: 'address',
@@ -69,7 +69,7 @@
 
     async function send () {
       try {
-        const response = await ethereum.send({
+        const response = await ethereum.request({
           method: snapId,
           params: [{
             method: 'signMessage',

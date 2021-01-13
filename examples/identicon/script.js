@@ -12,7 +12,7 @@ setBlockieButton.addEventListener('click', setBlockie)
 
 
 async function connect () {
-    await ethereum.send({
+    await ethereum.request({
     method: 'wallet_requestPermissions',
     params: [{
         [pluginOrigin]: {}
@@ -24,7 +24,7 @@ async function setBlockie () {
     const val = document.querySelector('input[name="identicon"]:checked').value
 
     try {
-    const response = await ethereum.send({
+    const response = await ethereum.request({
         method: pluginOrigin,
         params: [{
         method: 'setUseBlockie',

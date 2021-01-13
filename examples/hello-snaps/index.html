@@ -42,7 +42,7 @@
 
     // here we get permissions to interact with and install the plugin
     async function connect () {
-      await ethereum.send({
+      await ethereum.request({
         method: 'wallet_enable',
         params: [{
           wallet_plugin: { [snapId]: {} },
@@ -53,7 +53,7 @@
     // here we call the plugin's "hello" method
     async function send () {
       try {
-        const response = await ethereum.send({
+        const response = await ethereum.request({
           method: 'wallet_invokePlugin',
           params: [snapId, {
             method: 'hello'

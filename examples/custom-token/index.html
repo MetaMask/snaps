@@ -43,7 +43,7 @@
     mintButton.addEventListener('click', mint)
 
     async function connect () {
-      await ethereum.send({
+      await ethereum.request({
         method: 'wallet_enable',
         params: [{
           wallet_plugin: { [snapId]: {} },
@@ -53,7 +53,7 @@
 
     async function checkBalance() {
       try {
-        const response = await ethereum.send({
+        const response = await ethereum.request({
           method: 'wallet_invokePlugin', 
           params: [snapId, {
             method: 'getBalance'
@@ -70,7 +70,7 @@
     async function mint () {
       try {
 
-        const response = await ethereum.send({
+        const response = await ethereum.request({
           method: 'wallet_invokePlugin',
           params: [snapId, {
             method: 'mint',

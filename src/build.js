@@ -16,14 +16,17 @@ module.exports = {
  * @param {string} dest - The destination file path
  * @param {object} argv - argv from Yargs
  * @param {boolean} argv.sourceMaps - Whether to output sourcemaps
+ * @param {boolean} argv.sourceMaps - Whether to output sourcemaps
  */
 function bundle(src, dest, argv) {
+
+  const { sourceMaps: debug, environment } = argv
 
   return new Promise((resolve, _reject) => {
 
     const bundleStream = createBundleStream(dest)
 
-    browserify(src, { debug: argv.sourceMaps })
+    browserify(src, { debug })
 
       // TODO: Just give up on babel, which we may not even need?
       // This creates globals that SES doesn't like
@@ -129,14 +132,6 @@ function postProcess (bundleString) {
   if (bundleString.length === 0) throw new Error(
     `Bundled code is empty after postprocessing.`
   )
-
-  // wrap bundle conents in anonymous function
-  if (bundleString.endsWith(';')) bundleString = bundleString.slice(0, -1)
-  if (bundleString.startsWith('(') && bundleString.endsWith(')')) {
-    bundleString = '() => ' + bundleString
-  } else {
-    bundleString = '() => (\n' + bundleString + '\n)'
-  }
 
   // handle some cases by declaring missing globals
   // Babel regeneratorRuntime

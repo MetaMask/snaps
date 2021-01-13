@@ -106,7 +106,15 @@ const builders = {
     type: 'boolean',
     describe: 'Suppress warnings',
     default: false,
-  }
+  },
+
+  environment: {
+    alias: ['env'],
+    describe: 'The execution environment of the plugin.',
+    type: 'string',
+    default: 'worker',
+    choices: ['worker']
+  },
 }
 
 applyConfig()
@@ -148,6 +156,7 @@ yargs
         .option('eval', builders.eval)
         .option('manifest', builders.manifest)
         .option('populate', builders.populate)
+        .option('environment', builders.environment)
         .implies('populate', 'manifest')
     },
     argv => build(argv)
@@ -159,6 +168,7 @@ yargs
     yargs => {
       yargs
         .option('bundle', builders.bundle)
+        .option('environment', builders.environment)
     },
     argv => snapEval(argv)
   )
@@ -195,6 +205,7 @@ yargs
         .option('dist', builders.dist)
         .option('outfileName', builders.outfileName)
         .option('sourceMaps', builders.sourceMaps)
+        .option('environment', builders.environment)
     },
     argv => watch(argv)
   )
