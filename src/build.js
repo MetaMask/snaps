@@ -1,5 +1,6 @@
 const { promises: fs, createWriteStream } = require('fs');
 const browserify = require('browserify');
+const stripComments = require('strip-comments');
 // const terser = require('terser')
 
 const { logError } = require('./utils');
@@ -15,7 +16,7 @@ module.exports = {
  * @param {string} dest - The destination file path
  * @param {object} argv - argv from Yargs
  * @param {boolean} argv.sourceMaps - Whether to output sourcemaps
- * @param {boolean} argv.sourceMaps - Whether to output sourcemaps
+ * @param {boolean} argv.stripComments - Whether to remove comments from code
  */
 function bundle(src, dest, argv) {
 
@@ -45,7 +46,7 @@ function bundle(src, dest, argv) {
         // }
         // closeBundleStream(bundleStream, code.toString())
 
-        closeBundleStream(bundleStream, bundleBuffer ? bundleBuffer.toString() : null)
+        closeBundleStream(bundleStream, bundleBuffer ? bundleBuffer.toString() : null, { stripComments: argv.stripComments })
           .then(() => {
             if (bundleBuffer) {
               console.log(`Build success: '${src}' bundled as '${dest}'!`);
@@ -79,9 +80,11 @@ function createBundleStream(dest) {
  *
  * @param {object} stream - The write stream
  * @param {string} bundleString - The bundle string
+ * @param {object} options - post process options
+ * @param {boolean} options.stripComments
  */
-async function closeBundleStream(stream, bundleString) {
-  stream.end(postProcess(bundleString), (err) => {
+async function closeBundleStream(stream, bundleString, options) {
+  stream.end(postProcess(bundleString, options), (err) => {
     if (err) {
       throw err;
     }
@@ -97,15 +100,21 @@ async function closeBundleStream(stream, bundleString) {
  * - handles certain Babel-related edge cases
  *
  * @param {string} bundleString - The bundle string
+ * @param {object} options - post process options
+ * @param {boolean} options.stripComments
  * @returns {string} - The postprocessed bundle string
  */
-function postProcess(bundleString) {
+function postProcess(bundleString, options) {
 
   if (typeof bundleString !== 'string') {
     return null;
   }
 
   let processedString = bundleString.trim();
+
+  if (options.stripComments) {
+    processedString = stripComments(processedString);
+  }
 
   // .import( => ["import"](
   processedString = processedString.replace(/\.import\(/gu, '["import"](');

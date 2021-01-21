@@ -4,3 +4,4 @@ node_modules
 temp
 examples/*/dist
 *.log
+package-lock.json

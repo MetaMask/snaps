@@ -67,6 +67,13 @@ const builders = {
     default: false,
   },
 
+  stripComments: {
+    alias: 'strip',
+    describe: 'Whether to remove code comments from the build output',
+    type: 'boolean',
+    default: false,
+  },
+
   outfileName: {
     alias: 'n',
     describe: 'Output file name',
@@ -155,6 +162,7 @@ async function main() {
           .option('dist', builders.dist)
           .option('outfileName', builders.outfileName)
           .option('sourceMaps', builders.sourceMaps)
+          .option('stripComments', builders.stripComments)
           .option('port', builders.port)
           .option('eval', builders.eval)
           .option('manifest', builders.manifest)
@@ -208,7 +216,8 @@ async function main() {
           .option('dist', builders.dist)
           .option('outfileName', builders.outfileName)
           .option('sourceMaps', builders.sourceMaps)
-          .option('environment', builders.environment);
+          .option('environment', builders.environment)
+          .option('stripComments', builders.stripComments);
       },
       (argv) => watch(argv),
     )

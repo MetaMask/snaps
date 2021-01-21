@@ -112,6 +112,8 @@ Options (build):
                                                  [string] [default: "bundle.js"]
   --sourceMaps                    Whether building outputs sourcemaps
                                                       [boolean] [default: false]
+  --stripComments, --strip        Whether to remove code comments from bundle
+                                                      [boolean] [default: false]
   --port, -p                      Local server port for testing
                                              [number] [required] [default: 8081]
   --eval, -e                      Attempt to evaluate Snap bundle in SES
