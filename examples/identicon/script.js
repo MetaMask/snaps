@@ -1,3 +1,5 @@
+/* global ethereum */
+
 const origin = 'https://mountainous-dentist.glitch.me/package.json';
 const pluginOrigin = `wallet_plugin_${origin}`;
 

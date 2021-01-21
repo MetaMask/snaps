@@ -100,7 +100,7 @@ async function asyncPackageInit() {
   }
 
   // run 'npm init'
-  return new Promise((resolve, _reject) => {
+  return new Promise((resolve, reject) => {
     packageInit(process.cwd(), '', {}, (err, data) => {
       if (err) {
         reject(err);

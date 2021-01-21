@@ -193,18 +193,17 @@ function manifest(argv) {
 // eval
 
 async function snapEval(argv) {
-  const { bundles } = argv;
-  await validateFilePath(bundles);
+  const { bundle: bundlePath } = argv;
+  await validateFilePath(bundlePath);
   try {
     // TODO: When supporting multiple environments, evaluate them here.
-    await workerEval(bundle);
-    console.log(`Eval Success: evaluated '${bundle}' in SES!`);
+    await workerEval(bundlePath);
+    console.log(`Eval Success: evaluated '${bundlePath}' in SES!`);
     return true;
   } catch (err) {
     logError(`Snap evaluation error: ${err.message}`, err);
     process.exit(1);
   }
-  return true;
 }
 
 function workerEval(bundlePath) {

@@ -117,118 +117,121 @@ const builders = {
   },
 };
 
-applyConfig();
+main();
 
 // application
+async function main() {
+  await applyConfig();
 
-// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-yargs
-  .usage('Usage: $0 <command> [options]')
-  .example('$0 init', `\tInitialize Snap package from scratch`)
-  .example('$0 build -s index.js -d out', `\tBuild 'index.js' as './out/bundle.js'`)
-  .example('$0 build -s index.js -d out -n snap.js', `\tBuild 'index.js' as './out/snap.js'`)
-  .example('$0 serve -r out', `\tServe files in './out' on port 8080`)
-  .example('$0 serve -r out -p 9000', `\tServe files in './out' on port 9000`)
-  .example('$0 watch -s index.js -d out', `\tRebuild './out/bundle.js' on changes to files in 'index.js' parent and child directories`)
+  // eslint-disable-next-line no-unused-expressions
+  yargs
+    .usage('Usage: $0 <command> [options]')
+    .example('$0 init', `\tInitialize Snap package from scratch`)
+    .example('$0 build -s index.js -d out', `\tBuild 'index.js' as './out/bundle.js'`)
+    .example('$0 build -s index.js -d out -n snap.js', `\tBuild 'index.js' as './out/snap.js'`)
+    .example('$0 serve -r out', `\tServe files in './out' on port 8080`)
+    .example('$0 serve -r out -p 9000', `\tServe files in './out' on port 9000`)
+    .example('$0 watch -s index.js -d out', `\tRebuild './out/bundle.js' on changes to files in 'index.js' parent and child directories`)
 
-  .command(
-    ['init', 'i'],
-    'Initialize Snap package',
-    (yarg) => {
-      yarg
-        .option('src', builders.src)
-        .option('dist', builders.dist)
-        .option('outfileName', builders.outfileName)
-        .option('port', builders.port);
-    },
-    (argv) => init(argv),
-  )
+    .command(
+      ['init', 'i'],
+      'Initialize Snap package',
+      (yarg) => {
+        yarg
+          .option('src', builders.src)
+          .option('dist', builders.dist)
+          .option('outfileName', builders.outfileName)
+          .option('port', builders.port);
+      },
+      (argv) => init(argv),
+    )
 
-  .command(
-    ['build', 'b'],
-    'Build Snap from source',
-    (yarg) => {
-      yarg
-        .option('src', builders.src)
-        .option('dist', builders.dist)
-        .option('outfileName', builders.outfileName)
-        .option('sourceMaps', builders.sourceMaps)
-        .option('port', builders.port)
-        .option('eval', builders.eval)
-        .option('manifest', builders.manifest)
-        .option('populate', builders.populate)
-        .option('environment', builders.environment)
-        .implies('populate', 'manifest');
-    },
-    (argv) => build(argv),
-  )
+    .command(
+      ['build', 'b'],
+      'Build Snap from source',
+      (yarg) => {
+        yarg
+          .option('src', builders.src)
+          .option('dist', builders.dist)
+          .option('outfileName', builders.outfileName)
+          .option('sourceMaps', builders.sourceMaps)
+          .option('port', builders.port)
+          .option('eval', builders.eval)
+          .option('manifest', builders.manifest)
+          .option('populate', builders.populate)
+          .option('environment', builders.environment)
+          .implies('populate', 'manifest');
+      },
+      (argv) => build(argv),
+    )
 
-  .command(
-    ['eval', 'e'],
-    builders.eval.describe,
-    (yarg) => {
-      yarg
-        .option('bundle', builders.bundle)
-        .option('environment', builders.environment);
-    },
-    (argv) => snapEval(argv),
-  )
+    .command(
+      ['eval', 'e'],
+      builders.eval.describe,
+      (yarg) => {
+        yarg
+          .option('bundle', builders.bundle)
+          .option('environment', builders.environment);
+      },
+      (argv) => snapEval(argv),
+    )
 
-  .command(
-    ['manifest', 'm'],
-    builders.manifest.describe,
-    (yarg) => {
-      yarg
-        .option('dist', builders.dist)
-        .option('port', builders.port)
-        .option('populate', builders.populate);
-    },
-    (argv) => manifest(argv),
-  )
+    .command(
+      ['manifest', 'm'],
+      builders.manifest.describe,
+      (yarg) => {
+        yarg
+          .option('dist', builders.dist)
+          .option('port', builders.port)
+          .option('populate', builders.populate);
+      },
+      (argv) => manifest(argv),
+    )
 
-  .command(
-    ['serve', 's'],
-    'Locally serve Snap file(s) for testing',
-    (yarg) => {
-      yarg
-        .option('root', builders.root)
-        .option('port', builders.port);
-    },
-    (argv) => serve(argv),
-  )
+    .command(
+      ['serve', 's'],
+      'Locally serve Snap file(s) for testing',
+      (yarg) => {
+        yarg
+          .option('root', builders.root)
+          .option('port', builders.port);
+      },
+      (argv) => serve(argv),
+    )
 
-  .command(
-    ['watch', 'w'],
-    'Build Snap on change',
-    (yarg) => {
-      yarg
-        .option('src', builders.src)
-        .option('dist', builders.dist)
-        .option('outfileName', builders.outfileName)
-        .option('sourceMaps', builders.sourceMaps)
-        .option('environment', builders.environment);
-    },
-    (argv) => watch(argv),
-  )
+    .command(
+      ['watch', 'w'],
+      'Build Snap on change',
+      (yarg) => {
+        yarg
+          .option('src', builders.src)
+          .option('dist', builders.dist)
+          .option('outfileName', builders.outfileName)
+          .option('sourceMaps', builders.sourceMaps)
+          .option('environment', builders.environment);
+      },
+      (argv) => watch(argv),
+    )
 
-  .option('verboseErrors', builders.verboseErrors)
-  .option('suppressWarnings', builders.suppressWarnings)
-  .demandCommand(1, 'You must specify at least one command.')
-  .strict()
-  .middleware((argv) => {
-    assignGlobals(argv);
-    sanitizeInputs(argv);
-  })
-  .help()
-  .alias('help', 'h')
-  .fail((msg, err, _yargs) => {
-    console.error(msg || err.message);
-    if (err?.stack && snaps.verboseErrors) {
-      console.error(err.stack);
-    }
-    process.exit(1);
-  })
-  .argv;
+    .option('verboseErrors', builders.verboseErrors)
+    .option('suppressWarnings', builders.suppressWarnings)
+    .demandCommand(1, 'You must specify at least one command.')
+    .strict()
+    .middleware((argv) => {
+      assignGlobals(argv);
+      sanitizeInputs(argv);
+    })
+    .help()
+    .alias('help', 'h')
+    .fail((msg, err, _yargs) => {
+      console.error(msg || err.message);
+      if (err && err.stack && snaps.verboseErrors) {
+        console.error(err.stack);
+      }
+      process.exit(1);
+    })
+    .argv;
+}
 
 // misc
 
@@ -264,7 +267,7 @@ function sanitizeInputs(argv) {
  * Attempts to read the config file and apply the config to
  * globals.
  */
-function applyConfig() {
+async function applyConfig() {
 
   // first, attempt to read and apply config from package.json
   let pkg = {};
@@ -277,7 +280,7 @@ function applyConfig() {
 
     if (pkg.web3Wallet) {
       const { bundle } = pkg.web3Wallet;
-      if (bundle?.local) {
+      if (bundle && bundle.local) {
         const { local: bundlePath } = bundle;
         builders.bundle.default = bundlePath;
         let dist;

@@ -20,7 +20,7 @@ wallet.registerApiRequestHandler(async (origin) => {
           pingListeners.push(callback);
           return true;
         default:
-          throw rpcErrors.methodNotFound(requestObject);
+          throw rpcErrors.methodNotFound(eventName);
       }
     },
   };

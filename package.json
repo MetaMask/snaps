@@ -3,6 +3,10 @@
   "version": "0.4.1",
   "description": "A CLI for developing MetaMask Snaps.",
   "main": "snaps-cli.js",
+  "files": [
+    "snaps-cli.js",
+    "src/*"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "generateInitTemplate": "node ./scripts/development/generateInitTemplate.js",
@@ -21,14 +25,10 @@
   },
   "devDependencies": {
     "@metamask/eslint-config": "^4.0.0",
-    "@typescript-eslint/eslint-plugin": "^4.13.0",
-    "@typescript-eslint/parser": "^4.13.0",
-    "eslint": "^7.7.0",
+    "eslint": "^7.18.0",
     "eslint-plugin-import": "^2.22.0",
-    "eslint-plugin-jest": "^23.6.0",
     "eslint-plugin-json": "^2.1.2",
-    "eslint-plugin-node": "^11.1.0",
-    "typescript": "^4.1.3"
+    "eslint-plugin-node": "^11.1.0"
   },
   "bin": {
     "snap": "./snaps-cli.js",

@@ -1,5 +1,4 @@
-
-const { promises: fs } = require('fs');
+const { promises: fs, createWriteStream } = require('fs');
 const browserify = require('browserify');
 // const terser = require('terser')
 
@@ -33,16 +32,16 @@ function bundle(src, dest, argv) {
       // .transform('babelify', {
       //   presets: ['@babel/preset-env'],
       // })
-      .bundle((err, bundleBuffer) => {
+      .bundle(async (bundleError, bundleBuffer) => {
 
-        if (err) {
-          await writeError('Build error:', err);
+        if (bundleError) {
+          await writeError('Build error:', bundleError.message, bundleError);
         }
 
         // TODO: minification, probably?
         // const { error, code } = terser.minify(bundle.toString())
         // if (error) {
-        //   writeError('Build error:', error.message, error, dest)
+        //   await writeError('Build error:', error.message, error, dest)
         // }
         // closeBundleStream(bundleStream, code.toString())
 
@@ -53,7 +52,7 @@ function bundle(src, dest, argv) {
             }
             resolve(true);
           })
-          .catch((errs) => await writeError('Write error:', errs.message, errs, dest));
+          .catch(async (closeError) => await writeError('Write error:', closeError.message, closeError, dest));
       });
   });
 }
@@ -65,12 +64,12 @@ function bundle(src, dest, argv) {
  * @returns {object} - The stream
  */
 function createBundleStream(dest) {
-  const stream = fs.createWriteStream(dest, {
+  const stream = createWriteStream(dest, {
     autoClose: false,
     encoding: 'utf8',
   });
-  stream.on('error', (err) => {
-    writeError('Write error:', err.message, err, dest);
+  stream.on('error', async (err) => {
+    await writeError('Write error:', err.message, err, dest);
   });
   return stream;
 }
@@ -157,8 +156,7 @@ function postProcess(bundleString) {
  * @param {string} destFilePath - The output file path
  */
 async function writeError(prefix, msg, err, destFilePath) {
-
-  const processedPrefix;
+  let processedPrefix = prefix;
   if (!prefix.endsWith(' ')) {
     processedPrefix += ' ';
   }
@@ -168,12 +166,12 @@ async function writeError(prefix, msg, err, destFilePath) {
     if (destFilePath) {
       await fs.unlink(destFilePath);
     }
-  } catch (_err) {
-    continue;
+  } catch (unlinkError) {
+    logError(`${prefix}Failed to unlink mangled file.`, unlinkError);
   }
 
   // unless the watcher is active, exit
   if (!snaps.isWatching) {
-    throw new Error("Watcher isn't active!");
+    process.exit(1);
   }
 }
