@@ -1,16 +1,16 @@
 
-const fs = require('fs')
-const path = require('path')
+const { promises: fs } = require('fs');
+const path = require('path');
 
-const EXAMPLE_PATH = 'examples/hello-snaps'
-const TEMPLATE_PATH = 'src/initTemplate.json'
+const EXAMPLE_PATH = 'examples/hello-snaps';
+const TEMPLATE_PATH = 'src/initTemplate.json';
 
-const html = fs.readFileSync(path.join(EXAMPLE_PATH, 'index.html')).toString()
-const js = fs.readFileSync(path.join(EXAMPLE_PATH, 'index.js')).toString()
+const html = await fs.readFile(path.join(EXAMPLE_PATH, 'index.html')).toString();
+const js = await fs.readFile(path.join(EXAMPLE_PATH, 'index.js')).toString();
 
-fs.writeFileSync(TEMPLATE_PATH, JSON.stringify({
+await fs.writeFile(TEMPLATE_PATH, JSON.stringify({
   html,
-  js
-}, null, 2))
+  js,
+}, null, 2));
 
-console.log('success: wrote src/initTemplate.json')
+console.log('success: wrote src/initTemplate.json');

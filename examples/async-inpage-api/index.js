@@ -1,4 +1,4 @@
-const { errors: rpcErrors } = require('eth-json-rpc-errors')
+const { errors: rpcErrors } = require('eth-json-rpc-errors');
 
 const pingListeners = [];
 let pingCount = 0;
@@ -9,7 +9,7 @@ wallet.registerApiRequestHandler(async (origin) => {
 
     ping: () => {
       trackPings(origin);
-      return 'pong'
+      return 'pong';
     },
 
     // We're going to create an event for notifying the listener
@@ -18,25 +18,25 @@ wallet.registerApiRequestHandler(async (origin) => {
       switch (eventName) {
         case 'ping':
           pingListeners.push(callback);
-          return true
+          return true;
         default:
-          throw rpcErrors.methodNotFound(requestObject)
+          throw rpcErrors.methodNotFound(requestObject);
       }
-    }
-  }
+    },
+  };
 
-})
+});
 
-function trackPings (origin) {
-  pingCount++
+function trackPings(origin) {
+  pingCount += 1;
   const notice = {
     origin,
     pingCount,
-  }
+  };
   pingListeners.forEach((listener) => {
     listener(notice)
-    .catch((err) => {
-      console.error('Unable to deliver ping notice', err)
-    })
-  })
+      .catch((err) => {
+        console.error('Unable to deliver ping notice', err);
+      });
+  });
 }

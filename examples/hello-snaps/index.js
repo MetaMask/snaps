@@ -3,9 +3,9 @@ wallet.registerRpcMessageHandler(async (originString, requestObject) => {
     case 'hello':
       return wallet.request({
         method: 'alert',
-        params: [`Hello, ${originString}!`]
-      })
+        params: [`Hello, ${originString}!`],
+      });
     default:
-      throw new Error('Method not found.')
+      throw new Error('Method not found.');
   }
-})
+});

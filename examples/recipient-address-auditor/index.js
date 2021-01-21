@@ -1,13 +1,13 @@
-function mockAuditApi (address) {
-  return new Promise(resolve => {
-    const lastDigit = address.slice(address.length - 1)
-    resolve(Boolean(lastDigit.toLowerCase().match(/[a-f]/)))
-  })
+function mockAuditApi(address) {
+  return new Promise((resolve) => {
+    const lastDigit = address.slice(address.length - 1);
+    resolve(Boolean(lastDigit.toLowerCase().match(/[a-f]/u)));
+  });
 }
 
 wallet.onMetaMaskEvent('newUnapprovedTx', async (txMeta) => {
-  const { txParams } = txMeta
-  const addressIsUntrustworthy = await mockAuditApi(txParams.to)
+  const { txParams } = txMeta;
+  const addressIsUntrustworthy = await mockAuditApi(txParams.to);
   wallet.addAddressAudit({
     address: txParams.to,
     auditor: 'Awesome Audits',
@@ -15,5 +15,5 @@ wallet.onMetaMaskEvent('newUnapprovedTx', async (txMeta) => {
     message: addressIsUntrustworthy
       ? 'The recipient of this transaction is untrustworthy'
       : 'The recipient of this transaction is trustworthy',
-  })
-})
+  });
+});

@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-const fs = require('fs')
-const yargs = require('yargs')
+const { promises: fs } = require('fs');
+const yargs = require('yargs');
 
 const {
-  build, init, manifest, snapEval, serve, watch
-} = require('./src/commands')
+  build, init, manifest, snapEval, serve, watch,
+} = require('./src/commands');
 
-const { CONFIG_PATHS, logWarning } = require('./src/utils')
+const { CONFIG_PATHS, logWarning } = require('./src/utils');
 
 // globals
 
@@ -15,7 +15,7 @@ global.snaps = {
   verboseErrors: false,
   suppressWarnings: false,
   isWatching: false,
-}
+};
 
 // yargs config and constants
 
@@ -25,7 +25,7 @@ const builders = {
     describe: 'Source file',
     type: 'string',
     required: true,
-    default: 'index.js'
+    default: 'index.js',
   },
 
   dist: {
@@ -33,7 +33,7 @@ const builders = {
     describe: 'Output directory',
     type: 'string',
     required: true,
-    default: 'dist'
+    default: 'dist',
   },
 
   bundle: {
@@ -41,7 +41,7 @@ const builders = {
     describe: 'Snap bundle file',
     type: 'string',
     required: true,
-    default: 'dist/bundle.js'
+    default: 'dist/bundle.js',
   },
 
   root: {
@@ -49,7 +49,7 @@ const builders = {
     describe: 'Server root directory',
     type: 'string',
     required: true,
-    default: '.'
+    default: '.',
   },
 
   port: {
@@ -57,7 +57,7 @@ const builders = {
     describe: 'Local server port for testing',
     type: 'number',
     required: true,
-    default: 8081
+    default: 8081,
   },
 
   sourceMaps: {
@@ -71,7 +71,7 @@ const builders = {
     alias: 'n',
     describe: 'Output file name',
     type: 'string',
-    default: 'bundle.js'
+    default: 'bundle.js',
   },
 
   manifest: {
@@ -113,14 +113,15 @@ const builders = {
     describe: 'The execution environment of the plugin.',
     type: 'string',
     default: 'worker',
-    choices: ['worker']
+    choices: ['worker'],
   },
-}
+};
 
-applyConfig()
+applyConfig();
 
 // application
 
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 yargs
   .usage('Usage: $0 <command> [options]')
   .example('$0 init', `\tInitialize Snap package from scratch`)
@@ -133,21 +134,21 @@ yargs
   .command(
     ['init', 'i'],
     'Initialize Snap package',
-    yargs => {
-      yargs
+    (yarg) => {
+      yarg
         .option('src', builders.src)
         .option('dist', builders.dist)
         .option('outfileName', builders.outfileName)
-        .option('port', builders.port)
+        .option('port', builders.port);
     },
-    argv => init(argv)
+    (argv) => init(argv),
   )
 
   .command(
     ['build', 'b'],
     'Build Snap from source',
-    yargs => {
-      yargs
+    (yarg) => {
+      yarg
         .option('src', builders.src)
         .option('dist', builders.dist)
         .option('outfileName', builders.outfileName)
@@ -157,87 +158,89 @@ yargs
         .option('manifest', builders.manifest)
         .option('populate', builders.populate)
         .option('environment', builders.environment)
-        .implies('populate', 'manifest')
+        .implies('populate', 'manifest');
     },
-    argv => build(argv)
+    (argv) => build(argv),
   )
 
   .command(
     ['eval', 'e'],
     builders.eval.describe,
-    yargs => {
-      yargs
+    (yarg) => {
+      yarg
         .option('bundle', builders.bundle)
-        .option('environment', builders.environment)
+        .option('environment', builders.environment);
     },
-    argv => snapEval(argv)
+    (argv) => snapEval(argv),
   )
 
   .command(
     ['manifest', 'm'],
     builders.manifest.describe,
-    yargs => {
-      yargs
+    (yarg) => {
+      yarg
         .option('dist', builders.dist)
         .option('port', builders.port)
-        .option('populate', builders.populate)
+        .option('populate', builders.populate);
     },
-    argv => manifest(argv)
+    (argv) => manifest(argv),
   )
 
   .command(
     ['serve', 's'],
     'Locally serve Snap file(s) for testing',
-    yargs => {
-      yargs
+    (yarg) => {
+      yarg
         .option('root', builders.root)
-        .option('port', builders.port)
+        .option('port', builders.port);
     },
-    argv => serve(argv)
+    (argv) => serve(argv),
   )
 
   .command(
     ['watch', 'w'],
     'Build Snap on change',
-    yargs => {
-      yargs
+    (yarg) => {
+      yarg
         .option('src', builders.src)
         .option('dist', builders.dist)
         .option('outfileName', builders.outfileName)
         .option('sourceMaps', builders.sourceMaps)
-        .option('environment', builders.environment)
+        .option('environment', builders.environment);
     },
-    argv => watch(argv)
+    (argv) => watch(argv),
   )
 
   .option('verboseErrors', builders.verboseErrors)
   .option('suppressWarnings', builders.suppressWarnings)
   .demandCommand(1, 'You must specify at least one command.')
   .strict()
-  .middleware(argv => {
-    assignGlobals(argv)
-    sanitizeInputs(argv)
+  .middleware((argv) => {
+    assignGlobals(argv);
+    sanitizeInputs(argv);
   })
   .help()
   .alias('help', 'h')
   .fail((msg, err, _yargs) => {
-    console.error(msg || err.message)
-    if (err && err.stack && snaps.verboseErrors) console.error(err.stack)
-    process.exit(1)
+    console.error(msg || err.message);
+    if (err?.stack && snaps.verboseErrors) {
+      console.error(err.stack);
+    }
+    process.exit(1);
   })
-  .argv
+  .argv;
 
 // misc
 
-function assignGlobals (argv) {
+function assignGlobals(argv) {
   if (['w', 'watch'].includes(argv._[0])) {
-    snaps.isWatching = true
+    snaps.isWatching = true;
   }
-  if (argv.hasOwnProperty('verboseErrors')) {
-    snaps.verboseErrors = Boolean(argv.verboseErrors)
+  if (Object.prototype.hasOwnProperty.call(argv, 'verboseErrors')) {
+    snaps.verboseErrors = Boolean(argv.verboseErrors);
   }
-  if (argv.hasOwnProperty('suppressWarnings')) {
-    snaps.suppressWarnings = Boolean(argv.suppressWarnings)
+  if (Object.prototype.hasOwnProperty.call(argv, 'suppressWarnings')) {
+    snaps.suppressWarnings = Boolean(argv.suppressWarnings);
   }
 }
 
@@ -245,63 +248,63 @@ function assignGlobals (argv) {
  * Sanitizes inputs. Currently:
  * - normalizes paths
  */
-function sanitizeInputs (argv) {
-  Object.keys(argv).forEach(key => {
+function sanitizeInputs(argv) {
+  Object.keys(argv).forEach((key) => {
     if (typeof argv[key] === 'string') {
       if (argv[key] === './') {
-        argv[key] = '.'
+        argv[key] = '.';
       } else if (argv[key].startsWith('./')) {
-        argv[key] = argv[key].substring(2)
+        argv[key] = argv[key].substring(2);
       }
     }
-  })
+  });
 }
 
 /**
  * Attempts to read the config file and apply the config to
  * globals.
  */
-function applyConfig () {
+function applyConfig() {
 
   // first, attempt to read and apply config from package.json
-  let pkg = {}
+  let pkg = {};
   try {
-    pkg = JSON.parse(fs.readFileSync('package.json'))
+    pkg = JSON.parse(await fs.readFile('package.json'));
 
     if (pkg.main) {
-      builders.src.default = pkg.main
+      builders.src.default = pkg.main;
     }
 
     if (pkg.web3Wallet) {
-      const { bundle } = pkg.web3Wallet
-      if (bundle && bundle.local) {
-        const { local: bundlePath } = bundle
-        builders.bundle.default = bundlePath
-        let dist
-        if (bundlePath.indexOf('/') !== -1) {
-          dist = bundlePath.substr(0, bundlePath.indexOf('/') + 1)
+      const { bundle } = pkg.web3Wallet;
+      if (bundle?.local) {
+        const { local: bundlePath } = bundle;
+        builders.bundle.default = bundlePath;
+        let dist;
+        if (bundlePath.indexOf('/') === -1) {
+          dist = '.';
         } else {
-          dist = '.'
+          dist = bundlePath.substr(0, bundlePath.indexOf('/') + 1);
         }
-        builders.dist.default = dist
+        builders.dist.default = dist;
       }
     }
   } catch (err) {
     if (err.code !== 'ENOENT') {
-      logWarning(`Warning: Could not parse package.json`, err)
+      logWarning(`Warning: Could not parse package.json`, err);
     }
   }
 
   // second, attempt to read and apply config from config file,
   // which will always be preferred if it exists
-  let cfg = {}
-  for (configPath of CONFIG_PATHS) {
+  let cfg = {};
+  for (const configPath of CONFIG_PATHS) {
     try {
-      cfg = JSON.parse(fs.readFileSync(configPath))
-      break
+      cfg = JSON.parse(await fs.readFile(configPath));
+      break;
     } catch (err) {
       if (err.code !== 'ENOENT') {
-        logWarning(`Warning: '${configPath}' exists but could not be parsed.`)
+        logWarning(`Warning: '${configPath}' exists but could not be parsed.`);
       }
     }
   }
@@ -309,14 +312,19 @@ function applyConfig () {
   if (
     typeof cfg !== 'object' ||
     Object.keys(cfg).length === 0
-  ) { return }
+  ) {
+    return;
+  }
 
-  Object.keys(cfg).forEach(k => {
-
+  Object.keys(cfg).forEach((key) => {
+    let k = key;
     // backwards compatibility
-    if (k === 'verbose') k = 'verboseErrors'
-    else if (k === 'debug') k = 'sourceMaps'
+    if (k === 'verbose') {
+      k = 'verboseErrors';
+    } else if (k === 'debug') {
+      k = 'sourceMaps';
+    }
 
-    builders[k].default = cfg[k]
-  })
+    builders[k].default = cfg[k];
+  });
 }
