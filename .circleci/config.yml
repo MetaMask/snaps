@@ -1,0 +1,51 @@
+version: 2.1
+
+workflows:
+  build-test:
+    jobs:
+      - prep-deps
+      - test-lint:
+          requires:
+            - prep-deps
+      - all-tests-pass:
+          requires:
+            - test-lint
+
+jobs:
+  prep-deps:
+    docker:
+      - image: circleci/node:12
+    steps:
+      - checkout
+      - run:
+          name: Install deps
+          command: |
+            .circleci/scripts/deps-install.sh
+      - run:
+          name: Collect yarn install HAR logs
+          command: |
+            .circleci/scripts/collect-har-artifact.sh
+      - persist_to_workspace:
+          root: .
+          paths:
+          - node_modules
+          - build-artifacts
+
+  test-lint:
+    docker:
+      - image: circleci/node:12
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Lint
+          command: yarn lint
+
+  all-tests-pass:
+    docker:
+      - image: circleci/node:10
+    steps:
+      - run:
+          name: All tests passed
+          command: echo 'Great success'
