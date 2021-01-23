@@ -176,7 +176,7 @@ async function writeError(prefix, msg, err, destFilePath) {
       await fs.unlink(destFilePath);
     }
   } catch (unlinkError) {
-    logError(`${prefix}Failed to unlink mangled file.`, unlinkError);
+    logError(`${processedPrefix}Failed to unlink mangled file.`, unlinkError);
   }
 
   // unless the watcher is active, exit

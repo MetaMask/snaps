@@ -39,6 +39,14 @@ module.exports = {
     },
     {
       files: [
+        'scripts/**/*.js',
+      ],
+      env: {
+        node: true,
+      },
+    },
+    {
+      files: [
         'examples/**/*.js',
       ],
       env: {

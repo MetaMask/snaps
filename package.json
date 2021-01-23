@@ -9,8 +9,8 @@
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "generateInitTemplate": "node ./scripts/development/generateInitTemplate.js",
-    "buildExamples": "node ./scripts/buildExamples.js",
+    "dev:gen-init-template": "node ./scripts/development/generateInitTemplate.js",
+    "dev:build-examples": "node ./scripts/buildExamples.js",
     "lint": "eslint . --ext js,json",
     "lint:fix": "yarn lint --fix"
   },
@@ -28,7 +28,8 @@
     "eslint": "^7.18.0",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-json": "^2.1.2",
-    "eslint-plugin-node": "^11.1.0"
+    "eslint-plugin-node": "^11.1.0",
+    "execa": "^5.0.0"
   },
   "bin": {
     "snap": "./snaps-cli.js",
