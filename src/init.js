@@ -68,7 +68,7 @@ module.exports = async function initHandler(argv) {
 async function asyncPackageInit() {
 
   // use existing package.json if found
-  const hasPackage = await fs.exists('package.json');
+  const hasPackage = await fs.access('package.json');
 
   if (hasPackage) {
 
@@ -90,7 +90,7 @@ async function asyncPackageInit() {
   }
 
   // exit if yarn.lock is found, or we'll be in trouble
-  const usesYarn = await fs.exists('yarn.lock');
+  const usesYarn = await fs.access('yarn.lock');
 
   if (usesYarn) {
     logError(
@@ -220,7 +220,7 @@ async function buildWeb3Wallet(argv) {
 }
 
 async function validateEmptyDir() {
-  const existing = await fs.readdir(process.cwd()).filter((item) => [
+  const existing = (await fs.readdir(process.cwd())).filter((item) => [
     'index.js', 'index.html', CONFIG_PATH, 'dist',
   ].includes(item.toString()));
 
