@@ -1,5 +1,4 @@
-
-const { promises: fs } = require('fs');
+const { promises: fs, existsSync } = require('fs');
 const pathUtils = require('path');
 const packageInit = require('init-package-json');
 
@@ -68,7 +67,7 @@ module.exports = async function initHandler(argv) {
 async function asyncPackageInit() {
 
   // use existing package.json if found
-  const hasPackage = await fs.access('package.json');
+  const hasPackage = existsSync('package.json');
 
   if (hasPackage) {
 
@@ -90,7 +89,7 @@ async function asyncPackageInit() {
   }
 
   // exit if yarn.lock is found, or we'll be in trouble
-  const usesYarn = await fs.access('yarn.lock');
+  const usesYarn = existsSync('yarn.lock');
 
   if (usesYarn) {
     logError(
