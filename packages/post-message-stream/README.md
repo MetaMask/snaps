@@ -1,14 +1,16 @@
 # post-message-stream
 
-Sets up a duplex object stream over window.postMessage
+Sets up a duplex object stream over `window.postMessage`, between pages or a Web Worker and its parent window.
 
-```js
-var streamA = new PostMessageStream({
+## Usage
+
+```javascript
+const streamA = new WindowPostMessageStream({
   name: 'thing one',
   target: 'thing two',
 })
 
-var streamB = new PostMessageStream({
+const streamB = new WindowPostMessageStream({
   name: 'thing two',
   target: 'thing one',
 })
@@ -17,10 +19,10 @@ streamB.on('data', (data) => console.log(data))
 streamA.write(chunk)
 ```
 
-### constructor arguments
+## Constructor arguments
 
-```js
-var messageStream = new PostMessageStream({
+```javascript
+const messageStream = new WindowPostMessageStream({
 
   // required
 
