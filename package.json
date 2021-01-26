@@ -1,5 +1,8 @@
 {
   "name": "root",
   "private": true,
-  "devDependencies": {}
+  "devDependencies": {},
+  "scripts": {
+    "link-packages": "./scripts/link-packages.sh"
+  }
 }
