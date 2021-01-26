@@ -4,7 +4,7 @@ const Dnode = require('dnode')
 const { MetamaskInpageProvider } = require('@metamask/inpage-provider')
 const ObjectMultiplex = require('obj-multiplex')
 const pump = require('pump')
-const { WorkerPostMessageStream } = require('post-message-stream')
+const { WorkerPostMessageStream } = require('@mm-snaps/post-message-stream')
 const { PLUGIN_STREAM_NAMES } = require('./enums')
 const pify = require('pify')
 

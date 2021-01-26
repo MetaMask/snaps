@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Snap Web Workers for the MetaMask extension.",
   "main": "index.js",
-  "private": false,
+  "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "yarn build:prep && yarn bundle",
@@ -19,12 +19,12 @@
   "author": "Erik Marks <rekmarks@protonmail.com>",
   "license": "ISC",
   "devDependencies": {
-    "@metamask/inpage-provider": "@mm-snaps/inpage-provider",
+    "@metamask/inpage-provider": "^8.0.3",
+    "@mm-snaps/post-message-stream": "^0.0.1",
     "browserify": "16.2.3",
     "dnode": "^1.2.2",
     "obj-multiplex": "^1.0.0",
     "pify": "^5.0.0",
-    "post-message-stream": "@mm-snaps/post-message-stream",
     "pump": "^3.0.0",
     "ses": "^0.11.0",
     "tinyify": "^3.0.0",
