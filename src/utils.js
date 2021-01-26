@@ -1,6 +1,7 @@
 const { promises: fs } = require('fs');
 const pathUtils = require('path');
 const readline = require('readline');
+const builders = require('./builders');
 
 const permRequestKeys = [
   '@context',
@@ -14,16 +15,12 @@ const permRequestKeys = [
 
 const CONFIG_PATHS = [
   'snap.config.json',
-  // backwards compatibility
-  'mm-plugin.config.json',
-  '.mm-plugin.json',
 ];
 
 module.exports = {
   CONFIG_PATHS,
   isFile,
   isDirectory,
-  getEvalWorkerPath,
   getOutfilePath,
   logError,
   logWarning,
@@ -34,16 +31,18 @@ module.exports = {
   prompt,
   closePrompt,
   trimPathString,
+  assignGlobals,
+  sanitizeInputs,
+  applyConfig,
+};
+
+global.snaps = {
+  verboseErrors: false,
+  suppressWarnings: false,
+  isWatching: false,
 };
 
 // misc utils
-
-/**
- * @returns {string} The path to the eval worker file.
- */
-function getEvalWorkerPath() {
-  return pathUtils.join(__dirname, 'evalWorker.js');
-}
 
 /**
  * Trims leading and trailing periods "." and forward slashes "/" from the
@@ -230,5 +229,94 @@ function prompt(question, def, shouldClose) {
         rl.close();
       }
     });
+  });
+}
+
+function assignGlobals(argv) {
+  if (['w', 'watch'].includes(argv._[0])) {
+    snaps.isWatching = true;
+  }
+  if (Object.prototype.hasOwnProperty.call(argv, 'verboseErrors')) {
+    snaps.verboseErrors = Boolean(argv.verboseErrors);
+  }
+  if (Object.prototype.hasOwnProperty.call(argv, 'suppressWarnings')) {
+    snaps.suppressWarnings = Boolean(argv.suppressWarnings);
+  }
+}
+
+/**
+ * Sanitizes inputs. Currently:
+ * - normalizes paths
+ */
+function sanitizeInputs(argv) {
+  Object.keys(argv).forEach((key) => {
+    if (typeof argv[key] === 'string') {
+      if (argv[key] === './') {
+        argv[key] = '.';
+      } else if (argv[key].startsWith('./')) {
+        argv[key] = argv[key].substring(2);
+      }
+    }
+  });
+}
+
+/**
+ * Attempts to read the config file and apply the config to
+ * globals.
+ */
+async function applyConfig() {
+  // first, attempt to read and apply config from package.json
+  let pkg = {};
+
+  try {
+    pkg = JSON.parse(await fs.readFile('package.json'));
+
+    if (pkg.main) {
+      builders.src.default = pkg.main;
+    }
+
+    if (pkg.web3Wallet) {
+      const { bundle } = pkg.web3Wallet;
+      if (bundle && bundle.local) {
+        const { local: bundlePath } = bundle;
+        builders.bundle.default = bundlePath;
+        let dist;
+        if (bundlePath.indexOf('/') === -1) {
+          dist = '.';
+        } else {
+          dist = bundlePath.substr(0, bundlePath.indexOf('/') + 1);
+        }
+        builders.dist.default = dist;
+      }
+    }
+  } catch (err) {
+    if (err.code !== 'ENOENT') {
+      logWarning(`Warning: Could not parse package.json`, err);
+    }
+  }
+
+  // second, attempt to read and apply config from config file,
+  // which will always be preferred if it exists
+  let cfg = {};
+  for (const configPath of CONFIG_PATHS) {
+    try {
+      cfg = JSON.parse(await fs.readFile(configPath));
+      break;
+    } catch (err) {
+      if (err.code !== 'ENOENT') {
+        logWarning(`Warning: '${configPath}' exists but could not be parsed.`);
+      }
+    }
+  }
+
+  if (
+    typeof cfg !== 'object' ||
+      Object.keys(cfg).length === 0
+  ) {
+    return;
+  }
+
+  Object.keys(cfg).forEach((key) => {
+    builders[key].default = cfg[key];
   });
 }

@@ -24,7 +24,6 @@ module.exports = {
   overrides: [
     {
       files: [
-        'snaps-cli.js',
         'src/**/*.js',
       ],
       env: {

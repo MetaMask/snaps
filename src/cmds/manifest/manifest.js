@@ -4,7 +4,7 @@ const dequal = require('fast-deep-equal');
 const isUrl = require('is-url');
 const deepClone = require('rfdc')({ proto: false, circles: false });
 
-const { isFile, permRequestKeys } = require('./utils');
+const { isFile, permRequestKeys } = require('../../utils');
 
 const LOCALHOST_START = 'http://localhost';
 
@@ -13,7 +13,6 @@ const LOCALHOST_START = 'http://localhost';
  * Exits with success message or gathers all errors before throwing at the end.
  */
 module.exports = async function manifest(argv) {
-
   let isInvalid = false;
   let hasWarnings = false;
   let didUpdate = false;

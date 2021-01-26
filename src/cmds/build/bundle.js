@@ -3,11 +3,9 @@ const browserify = require('browserify');
 const stripComments = require('strip-comments');
 // const terser = require('terser')
 
-const { logError } = require('./utils');
+const { logError } = require('../../utils');
 
-module.exports = {
-  bundle,
-};
+module.exports = { bundle };
 
 /**
  * Builds a Snap bundle JSON file from its JavaScript source.

@@ -2,14 +2,13 @@
   "name": "snaps-cli",
   "version": "0.4.1",
   "description": "A CLI for developing MetaMask Snaps.",
-  "main": "snaps-cli.js",
+  "main": "./src/main.js",
   "files": [
-    "snaps-cli.js",
     "src/*"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev:gen-init-template": "node ./scripts/development/generateInitTemplate.js",
+    "dev:gen-init-template": "node ./scripts/generateInitTemplate.js",
     "dev:build-examples": "node ./scripts/buildExamples.js",
     "lint": "eslint . --ext js,json",
     "lint:fix": "yarn lint --fix"
@@ -32,9 +31,7 @@
     "execa": "^5.0.0"
   },
   "bin": {
-    "snap": "./snaps-cli.js",
-    "mm-snap": "./snaps-cli.js",
-    "mm-plugin": "./snaps-cli.js"
+    "mm-snap": "./src/main.js"
   },
   "dependencies": {
     "@babel/core": "^7.5.5",
@@ -50,7 +47,7 @@
     "ses": "^0.11.0",
     "strip-comments": "^2.0.1",
     "terser": "^4.3.1",
-    "yargs": "^14.0.0"
+    "yargs": "^16.2.0"
   },
   "engines": {
     "node": ">=12.11.0"
