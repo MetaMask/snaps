@@ -1,5 +1,5 @@
 {
-  "name": "@mm-snaps/post-message-stream",
+  "name": "@mm-snap/post-message-stream",
   "version": "0.0.1",
   "description": "Sets up a duplex object stream over window.postMessage",
   "main": "dist/index.js",

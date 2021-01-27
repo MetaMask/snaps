@@ -1,5 +1,5 @@
 import { Duplex } from 'stream';
-import { WorkerParentPostMessageStream } from '@mm-snaps/post-message-stream';
+import { WorkerParentPostMessageStream } from '@mm-snap/post-message-stream';
 
 interface PromiseCallbacks {
   resolve: (value?: any) => void;

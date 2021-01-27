@@ -6,8 +6,8 @@ import pump from 'pump';
 import { ObservableStore } from '@metamask/obs-store';
 import SafeEventEmitter from '@metamask/safe-event-emitter';
 import ObjectMultiplex from '@metamask/object-multiplex';
-import { WorkerParentPostMessageStream } from '@mm-snaps/post-message-stream';
-import { STREAM_NAMES as PLUGIN_STREAM_NAMES } from '@mm-snaps/snap-workers';
+import { WorkerParentPostMessageStream } from '@mm-snap/post-message-stream';
+import { STREAM_NAMES as PLUGIN_STREAM_NAMES } from '@mm-snap/workers';
 
 import { CommandEngine, CommandMessage, CommandResponse } from './CommandEngine';
 
@@ -58,7 +58,7 @@ const WORKER_TYPES = {
     url: getWorkerUrl(
       fs
         .readFileSync(
-          require.resolve('@mm-snaps/snap-workers/dist/pluginWorker.js'),
+          require.resolve('@mm-snap/workers/dist/pluginWorker.js'),
         )
         .toString(),
     ),

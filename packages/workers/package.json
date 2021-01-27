@@ -1,5 +1,5 @@
 {
-  "name": "@mm-snaps/snap-workers",
+  "name": "@mm-snap/workers",
   "version": "0.0.1",
   "description": "Snap Web Workers for the MetaMask extension.",
   "main": "index.js",
@@ -20,7 +20,7 @@
   "devDependencies": {
     "@metamask/eslint-config": "^4.1.0",
     "@metamask/inpage-provider": "^8.0.3",
-    "@mm-snaps/post-message-stream": "^0.0.1",
+    "@mm-snap/post-message-stream": "^0.0.1",
     "browserify": "16.2.3",
     "dnode": "^1.2.2",
     "obj-multiplex": "^1.0.0",
