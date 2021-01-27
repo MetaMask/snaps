@@ -16,6 +16,7 @@ module.exports = {
   overrides: [
     {
       files: [
+        '*.js',
         '*.json',
       ],
       parserOptions: {
