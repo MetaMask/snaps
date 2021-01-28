@@ -33,6 +33,5 @@ module.exports = {
     '!.eslintrc.js',
     'dist/',
     'node_modules/',
-    'lockdown.cjs', // TODO: Use the actual import
   ],
 };
