@@ -3,5 +3,5 @@ module.exports = {
     BACKGROUND_API: 'backgroundApi',
     JSON_RPC: 'jsonRpc',
     COMMAND: 'command',
-  }
-} 
+  },
+};

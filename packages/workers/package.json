@@ -4,8 +4,13 @@
   "description": "Snap Web Workers for the MetaMask extension.",
   "main": "index.js",
   "private": true,
+  "engines": {
+    "node": ">=10.4.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint . --ext js,json",
+    "lint:fix": "yarn lint --fix",
     "build": "yarn build:prep && yarn bundle",
     "watch": "yarn build -w",
     "bundle": "node build.js",
@@ -23,6 +28,10 @@
     "@mm-snap/post-message-stream": "^0.0.1",
     "browserify": "16.2.3",
     "dnode": "^1.2.2",
+    "eslint": "^7.18.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-json": "^2.1.2",
+    "eslint-plugin-node": "^11.1.0",
     "obj-multiplex": "^1.0.0",
     "pify": "^5.0.0",
     "pump": "^3.0.0",
