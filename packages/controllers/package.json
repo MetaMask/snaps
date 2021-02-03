@@ -6,7 +6,7 @@
   "author": "Erik Marks <rekmarks@protonmail.com>",
   "private": true,
   "engines": {
-    "node": ">10.0.0"
+    "node": ">=14.15.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
