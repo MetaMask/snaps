@@ -1,24 +1,25 @@
-const { Worker } = require('worker_threads');
-const pathUtils = require('path');
-
-const builders = require('../../builders');
-const { logError, validateFilePath } = require('../../utils');
+import pathUtils from 'path';
+import { Worker } from 'worker_threads';
+import yargs from 'yargs';
+import builders from '../../builders';
+import { logError, validateFilePath } from '../../utils';
+import { YargsArgs } from '../../types/yargs';
 
 module.exports.command = ['eval', 'e'];
 module.exports.desc = 'Attempt to evaluate Snap bundle in SES';
-module.exports.builder = (yarg) => {
+module.exports.builder = (yarg: yargs.Argv) => {
   yarg
     .option('bundle', builders.bundle)
     .option('environment', builders.environment);
 };
-module.exports.handler = (argv) => snapEval(argv);
+module.exports.handler = (argv: YargsArgs) => snapEval(argv);
 
-async function snapEval(argv) {
+export async function snapEval(argv: YargsArgs): Promise<boolean> {
   const { bundle: bundlePath } = argv;
-  await validateFilePath(bundlePath);
+  await validateFilePath(bundlePath as string);
   try {
     // TODO: When supporting multiple environments, evaluate them here.
-    await workerEval(bundlePath);
+    await workerEval(bundlePath as string);
     console.log(`Eval Success: evaluated '${bundlePath}' in SES!`);
     return true;
   } catch (err) {
@@ -27,12 +28,12 @@ async function snapEval(argv) {
   }
 }
 
-function workerEval(bundlePath) {
+function workerEval(bundlePath: string): Promise<null> {
   return new Promise((resolve, _reject) => {
     new Worker(getEvalWorkerPath())
-      .on('exit', (exitCode) => {
+      .on('exit', (exitCode: number) => {
         if (exitCode === 0) {
-          resolve();
+          resolve(null);
         } else {
           throw new Error(`Worker exited abnormally! Code: ${exitCode}`);
         }
@@ -46,6 +47,6 @@ function workerEval(bundlePath) {
 /**
  * @returns {string} The path to the eval worker file.
  */
-function getEvalWorkerPath() {
+function getEvalWorkerPath(): string {
   return pathUtils.join(__dirname, 'evalWorker.js');
 }

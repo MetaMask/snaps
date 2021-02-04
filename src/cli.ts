@@ -1,10 +1,19 @@
-const yargs = require('yargs');
-const builders = require('./builders');
-const { assignGlobals, sanitizeInputs } = require('./utils');
+import yargs from 'yargs/yargs';
+import { SnapsCliGlobals } from './types/package';
+import { assignGlobals, sanitizeInputs } from './utils';
 
-module.exports = function cli(commands) {
-  // eslint-disable-next-line no-unused-expressions
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace NodeJS {
+    // eslint-disable-next-line @typescript-eslint/no-empty-interface
+    interface Global extends SnapsCliGlobals {}
+  }
+}
+
+export function cli(commands: any): void {
+  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
   yargs(process.argv.slice(2))
+
     .usage('Usage: $0 <command> [options]')
 
     .example('$0 init', `\tInitialize Snap package from scratch`)
@@ -16,8 +25,21 @@ module.exports = function cli(commands) {
 
     .command(commands)
 
-    .option('verboseErrors', builders.verboseErrors)
-    .option('suppressWarnings', builders.suppressWarnings)
+    .option('verboseErrors', {
+      alias: ['v', 'verbose'],
+      type: 'boolean',
+      describe: 'Display original errors',
+      required: false,
+      default: false,
+    })
+
+    .option('suppressWarnings', {
+      alias: 'w',
+      type: 'boolean',
+      describe: 'Suppress warnings',
+      required: false,
+      default: false,
+    })
 
     .strict()
 
@@ -26,9 +48,9 @@ module.exports = function cli(commands) {
       sanitizeInputs(argv);
     })
 
-    .fail((msg, err, _yargs) => {
+    .fail((msg: string, err: Error, _yargs) => {
       console.error(msg || err.message);
-      if (err && err.stack && snaps.verboseErrors) {
+      if (err?.stack && global.snaps.verboseErrors) {
         console.error(err.stack);
       }
       process.exit(1);
@@ -40,4 +62,4 @@ module.exports = function cli(commands) {
     .alias('help', 'h')
 
     .argv;
-};
+}

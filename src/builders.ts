@@ -1,4 +1,6 @@
-const builders = {
+import { Builder } from './types/package';
+
+const builders: Builder = {
   src: {
     alias: 's',
     describe: 'Source file',
@@ -42,6 +44,7 @@ const builders = {
   sourceMaps: {
     describe: 'Whether builds include sourcemaps',
     type: 'boolean',
+    required: false,
     default: false,
   },
 
@@ -49,6 +52,7 @@ const builders = {
     alias: 'strip',
     describe: 'Whether to remove code comments from the build output',
     type: 'boolean',
+    required: false,
     default: false,
   },
 
@@ -56,6 +60,7 @@ const builders = {
     alias: 'n',
     describe: 'Output file name',
     type: 'string',
+    required: false,
     default: 'bundle.js',
   },
 
@@ -63,12 +68,14 @@ const builders = {
     alias: 'm',
     describe: 'Validate project package.json as a Snap manifest',
     type: 'boolean',
+    required: false,
     default: true,
   },
 
   populate: {
     describe: 'Update Snap manifest properties of package.json',
     type: 'boolean',
+    required: false,
     default: true,
   },
 
@@ -76,6 +83,7 @@ const builders = {
     alias: 'e',
     describe: 'Attempt to evaluate Snap bundle in SES',
     type: 'boolean',
+    required: false,
     default: true,
   },
 
@@ -83,23 +91,26 @@ const builders = {
     alias: ['v', 'verbose'],
     type: 'boolean',
     describe: 'Display original errors',
+    required: false,
     default: false,
   },
 
   suppressWarnings: {
-    alias: ['w'],
+    alias: 'w',
     type: 'boolean',
     describe: 'Suppress warnings',
+    required: false,
     default: false,
   },
 
   environment: {
-    alias: ['env'],
+    alias: 'env',
     describe: 'The execution environment of the plugin.',
     type: 'string',
+    required: false,
     default: 'worker',
     choices: ['worker'],
   },
 };
 
-module.exports = builders;
+export default builders;

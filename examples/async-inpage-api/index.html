@@ -62,8 +62,8 @@
         pluginApi = await index.getPluginApi(snapId)
 
         alert('successfully received Snap api!')
-      } catch (e) {
-        console.error(e)
+      } catch (err) {
+        console.error(err)
         alert('Problem requesting index.')
       }
     }

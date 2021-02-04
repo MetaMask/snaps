@@ -2,15 +2,22 @@
   "name": "snaps-cli",
   "version": "0.4.1",
   "description": "A CLI for developing MetaMask Snaps.",
-  "main": "./src/main.js",
+  "main": "./dist/src/cmds/index.js",
+  "bin": {
+    "mm-snap": "./dist/src/main.js"
+  },
   "files": [
-    "src/*"
+    "dist/",
+    "!dist/development"
   ],
   "scripts": {
+    "build:typescript": "tsc --project .",
+    "build:chmod": "chmod +x ./dist/src/main.js",
+    "build": "yarn build:typescript && yarn build:chmod",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev:gen-init-template": "node ./scripts/generateInitTemplate.js",
-    "dev:build-examples": "node ./scripts/buildExamples.js",
-    "lint": "eslint . --ext js,json",
+    "dev:gen-init-template": "node ./dist/development/generateInitTemplate.js",
+    "dev:build-examples": "node ./dist/development/buildExamples.js",
+    "lint": "eslint . --ext js,json,d.ts,ts",
     "lint:fix": "yarn lint --fix"
   },
   "author": "Erik Marks <rekmarks@protonmail.com>",
@@ -24,14 +31,23 @@
   },
   "devDependencies": {
     "@metamask/eslint-config": "^4.0.0",
+    "@types/browserify": "^12.0.36",
+    "@types/init-package-json": "^1.10.0",
+    "@types/is-url": "^1.2.28",
+    "@types/node": "^14.14.22",
+    "@types/rfdc": "^1.1.0",
+    "@types/serve-handler": "^6.1.0",
+    "@types/strip-comments": "^2.0.0",
+    "@types/yargs": "^15.0.12",
+    "@typescript-eslint/eslint-plugin": "^4.14.2",
+    "@typescript-eslint/parser": "^4.14.2",
     "eslint": "^7.18.0",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-json": "^2.1.2",
     "eslint-plugin-node": "^11.1.0",
-    "execa": "^5.0.0"
-  },
-  "bin": {
-    "mm-snap": "./src/main.js"
+    "execa": "^5.0.0",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.3"
   },
   "dependencies": {
     "@babel/core": "^7.5.5",

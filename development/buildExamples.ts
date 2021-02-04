@@ -1,11 +1,24 @@
-const { promises: fs } = require('fs');
-const path = require('path');
-const execa = require('execa');
+import { promises as fs } from 'fs';
+import { resolve } from 'path';
+import execa from 'execa';
 
-const { handler: build } = require('../src/cmds/build');
+import { build } from '../src/cmds/build';
+import { SnapsCliGlobals } from '../src/types/package';
 
 // mock the snaps global
-global.snaps = {};
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace NodeJS {
+    // eslint-disable-next-line @typescript-eslint/no-empty-interface
+    interface Global extends SnapsCliGlobals {}
+  }
+}
+
+global.snaps = {
+  verboseErrors: false,
+  suppressWarnings: false,
+  isWatching: false,
+};
 
 const EXAMPLES_PATH = 'examples';
 
@@ -15,12 +28,12 @@ async function buildExamples() {
   const examplesDir = await fs.readdir(EXAMPLES_PATH);
 
   examplesDir.forEach(async (exampleFile) => {
-    const exampleFilePath = path.resolve(EXAMPLES_PATH, exampleFile);
+    const exampleFilePath = resolve(EXAMPLES_PATH, exampleFile);
     const exampleFileStat = await fs.stat(exampleFilePath);
 
     if (exampleFileStat.isDirectory()) {
-      const srcPath = path.resolve(exampleFilePath, 'index.js');
-      const pkgPath = path.resolve(exampleFilePath, 'package.json');
+      const srcPath = resolve(exampleFilePath, 'index.js');
+      const pkgPath = resolve(exampleFilePath, 'package.json');
       const pkgStat = await fs.stat(pkgPath);
       const srcStat = await fs.stat(srcPath);
 
@@ -38,8 +51,10 @@ async function buildExamples() {
         try {
           await build({
             src: srcPath,
-            dist: path.resolve(exampleFilePath, 'dist'),
+            dist: resolve(exampleFilePath, 'dist'),
             sourceMaps: true,
+            stripComments: true,
+            port: 8000,
           });
         } catch (bundleError) {
           console.log(`Unexpected error while creating bundle in "${exampleFilePath}.`);

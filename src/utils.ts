@@ -1,9 +1,10 @@
-const { promises: fs } = require('fs');
-const pathUtils = require('path');
-const readline = require('readline');
-const builders = require('./builders');
+import { promises as fs } from 'fs';
+import pathUtils from 'path';
+import readline from 'readline';
+import yargs from 'yargs';
+import builders from './builders';
 
-const permRequestKeys = [
+export const permRequestKeys = [
   '@context',
   'id',
   'parentCapability',
@@ -13,28 +14,9 @@ const permRequestKeys = [
   'proof',
 ];
 
-const CONFIG_PATHS = [
+export const CONFIG_PATHS = [
   'snap.config.json',
 ];
-
-module.exports = {
-  CONFIG_PATHS,
-  isFile,
-  isDirectory,
-  getOutfilePath,
-  logError,
-  logWarning,
-  permRequestKeys,
-  validateDirPath,
-  validateFilePath,
-  validateOutfileName,
-  prompt,
-  closePrompt,
-  trimPathString,
-  assignGlobals,
-  sanitizeInputs,
-  applyConfig,
-};
 
 global.snaps = {
   verboseErrors: false,
@@ -42,16 +24,14 @@ global.snaps = {
   isWatching: false,
 };
 
-// misc utils
-
 /**
  * Trims leading and trailing periods "." and forward slashes "/" from the
  * given path string.
  *
- * @param {string} pathString - The path string to trim.
- * @returns {string} The trimmed path string.
+ * @param pathString - The path string to trim.
+ * @returns - The trimmed path string.
  */
-function trimPathString(pathString) {
+export function trimPathString(pathString: string): string {
   return pathString.replace(/^[./]+|[./]+$/gu, '');
 }
 
@@ -59,32 +39,27 @@ function trimPathString(pathString) {
  * Logs an error message to console. Logs original error if it exists and
  * the verboseErrors global is true.
  *
- * @param {string} msg - The error message
- * @param {Error} err - The original error
+ * @param msg - The error message
+ * @param err - The original error
  */
-function logError(msg, err) {
-  if (msg instanceof Error) {
-    if (snaps.verboseErrors) {
-      console.error(msg);
-    } else {
-      console.error(msg.message);
-    }
-  } else if (typeof msg === 'string') {
-    console.error(msg);
-    if (err && snaps.verboseErrors) {
-      console.error(err);
-    }
+export function logError(msg: string, err?: Error): void {
+  console.error(msg);
+  if (err && global.snaps.verboseErrors) {
+    console.error(err);
   }
 }
 
 /**
  * Logs a warning message to console.
  *
- * @param {string} msg - The warning message
+ * @param msg - The warning message
  */
-function logWarning(msg) {
-  if (msg && !snaps.supressWarnings) {
+export function logWarning(msg: string, error?: Error): void {
+  if (msg && !global.snaps.suppressWarnings) {
     console.warn(msg);
+    if (error && global.snaps.verboseErrors) {
+      console.error(error);
+    }
   }
 }
 
@@ -92,11 +67,11 @@ function logWarning(msg) {
  * Gets the complete out file path from the source file path and output
  * directory path.
  *
- * @param {string} srcFilePath - The source file path
- * @param {string} outDir - The out file directory
- * @returns {string} - The complete out file path
+ * @param srcFilePath - The source file path
+ * @param outDir - The out file directory
+ * @returns - The complete out file path
  */
-function getOutfilePath(outDir, outFileName) {
+export function getOutfilePath(outDir: string, outFileName: string): string {
   return pathUtils.join(outDir, outFileName || 'bundle.js');
 }
 
@@ -104,12 +79,12 @@ function getOutfilePath(outDir, outFileName) {
  * Ensures that the outfile name is just a js file name.
  * Throws on validation failure
  *
- * @param {string} str - The file name to validate
- * @returns {boolean} - True if validation succeeded
+ * @param filename - The file name to validate
+ * @returns - True if validation succeeded
  */
-function validateOutfileName(str) {
-  if (!str.endsWith('.js') || str.indexOf('/') !== -1) {
-    throw new Error(`Invalid outfile name: ${str}`);
+export function validateOutfileName(filename: string): boolean {
+  if (!filename.endsWith('.js') || filename.indexOf('/') !== -1) {
+    throw new Error(`Invalid outfile name: ${filename}`);
   }
   return true;
 }
@@ -118,17 +93,14 @@ function validateOutfileName(str) {
  * Validates a file path.
  * Throws on validation failure
  *
- * @param {string} filePath - The file path to validate
- * @returns {boolean} - True if validation succeeded
+ * @param filePath - The file path to validate
+ * @returns - True if validation succeeded
  */
-async function validateFilePath(filePath) {
-
+export async function validateFilePath(filePath: string): Promise<boolean> {
   const exists = await isFile(filePath);
-
   if (!exists) {
     throw new Error(`Invalid params: '${filePath}' is not a file or does not exist.`);
   }
-
   return true;
 }
 
@@ -136,17 +108,15 @@ async function validateFilePath(filePath) {
  * Validates a directory path.
  * Throws on validation failure
  *
- * @param {string} dirPath - The directory path to validate
- * @returns {boolean} - True if validation succeeded
+ * @param dirPath - The directory path to validate
+ * @param createDir - Whether to create the directory if it doesn't exist
+ * @returns - True if validation succeeded
  */
-async function validateDirPath(dirName, createDir) {
-
+export async function validateDirPath(dirName: string, createDir: boolean): Promise<boolean> {
   const exists = await isDirectory(dirName, createDir);
-
   if (!exists) {
     throw new Error(`Invalid params: '${dirName}' is not a directory or could not be created.`);
   }
-
   return true;
 }
 
@@ -154,11 +124,11 @@ async function validateDirPath(dirName, createDir) {
  * Checks whether the given path string resolves to an existing directory, and
  * optionally creates the directory if it doesn't exist.
  *
- * @param {string} pathString - The path string to check
- * @param {boolean} createDir - Whether to create the directory if it doesn't exist
- * @returns {boolean} - Whether the given path is an existing directory
+ * @param pathString - The path string to check
+ * @param createDir - Whether to create the directory if it doesn't exist
+ * @returns - Whether the given path is an existing directory
  */
-async function isDirectory(pathString, createDir) {
+export async function isDirectory(pathString: string, createDir: boolean): Promise<boolean> {
   try {
     const stats = await fs.stat(pathString);
     return stats.isDirectory();
@@ -185,7 +155,7 @@ async function isDirectory(pathString, createDir) {
  * @param {string} pathString - The path string to check
  * @returns {boolean} - Whether the given path is an existing file
  */
-async function isFile(pathString) {
+export async function isFile(pathString: string): Promise<boolean> {
   try {
     const stats = await fs.stat(pathString);
     return stats.isFile();
@@ -194,24 +164,18 @@ async function isFile(pathString) {
   }
 }
 
-// readline utils
+/* Readline Utils */
 
-let rl;
+let rl: readline.Interface;
 
-function closePrompt() {
-  if (rl) {
-    rl.close();
-  }
-}
-
-function openPrompt() {
+function openPrompt(): void {
   rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
   });
 }
 
-function prompt(question, def, shouldClose) {
+export function prompt(question: string, def?: string, shouldClose?: boolean): Promise<string> {
   if (!rl) {
     openPrompt();
   }
@@ -220,9 +184,11 @@ function prompt(question, def, shouldClose) {
     if (def) {
       queryString += `(${def}) `;
     }
-    rl.question(queryString, (answer) => {
+    rl.question(queryString, (answer: string) => {
       if (!answer || !answer.trim()) {
-        resolve(def);
+        if (def !== undefined) {
+          resolve(def);
+        }
       }
       resolve(answer.trim());
       if (shouldClose) {
@@ -232,29 +198,50 @@ function prompt(question, def, shouldClose) {
   });
 }
 
-function assignGlobals(argv) {
-  if (['w', 'watch'].includes(argv._[0])) {
-    snaps.isWatching = true;
-  }
-  if (Object.prototype.hasOwnProperty.call(argv, 'verboseErrors')) {
-    snaps.verboseErrors = Boolean(argv.verboseErrors);
-  }
-  if (Object.prototype.hasOwnProperty.call(argv, 'suppressWarnings')) {
-    snaps.suppressWarnings = Boolean(argv.suppressWarnings);
+export function closePrompt(): void {
+  if (rl) {
+    rl.close();
   }
 }
 
 /**
- * Sanitizes inputs. Currently:
- * - normalizes paths
+ * Sets global variable snaps which tracks user settings:
+ * watch mode activation, verbose errors messages, and whether to suppress warnings.
+ *
+ * @param {Argument} argv - arguments as an object generated by yargs
  */
-function sanitizeInputs(argv) {
+export function assignGlobals(argv: yargs.Arguments<{
+  verboseErrors: boolean;
+} & {
+  suppressWarnings: boolean;
+}>) {
+  if (['w', 'watch'].includes(argv._[0] as string)) {
+    global.snaps.isWatching = true;
+  }
+  if (Object.prototype.hasOwnProperty.call(argv, 'verboseErrors')) {
+    global.snaps.verboseErrors = Boolean(argv.verboseErrors);
+  }
+  if (Object.prototype.hasOwnProperty.call(argv, 'suppressWarnings')) {
+    global.snaps.suppressWarnings = Boolean(argv.suppressWarnings);
+  }
+}
+
+/**
+ * Sanitizes inputs. Currently normalizes paths.
+ *
+ * @param {Argument} argv - arguments as an object generated by yargs
+ */
+export function sanitizeInputs(argv: yargs.Arguments<{
+  verboseErrors: boolean;
+} & {
+  suppressWarnings: boolean;
+}>) {
   Object.keys(argv).forEach((key) => {
     if (typeof argv[key] === 'string') {
       if (argv[key] === './') {
         argv[key] = '.';
-      } else if (argv[key].startsWith('./')) {
-        argv[key] = argv[key].substring(2);
+      } else if ((argv[key] as string).startsWith('./')) {
+        argv[key] = (argv[key] as string).substring(2);
       }
     }
   });
@@ -264,12 +251,14 @@ function sanitizeInputs(argv) {
  * Attempts to read the config file and apply the config to
  * globals.
  */
-async function applyConfig() {
-  // first, attempt to read and apply config from package.json
-  let pkg = {};
+export async function applyConfig(): Promise<void> {
 
+  let pkg: any;
+
+  // first, attempt to read and apply config from package.json
   try {
-    pkg = JSON.parse(await fs.readFile('package.json'));
+
+    pkg = JSON.parse(await fs.readFile('package.json', 'utf8'));
 
     if (pkg.main) {
       builders.src.default = pkg.main;
@@ -277,10 +266,10 @@ async function applyConfig() {
 
     if (pkg.web3Wallet) {
       const { bundle } = pkg.web3Wallet;
-      if (bundle && bundle.local) {
+      if (bundle?.local) {
         const { local: bundlePath } = bundle;
         builders.bundle.default = bundlePath;
-        let dist;
+        let dist: string;
         if (bundlePath.indexOf('/') === -1) {
           dist = '.';
         } else {
@@ -297,14 +286,14 @@ async function applyConfig() {
 
   // second, attempt to read and apply config from config file,
   // which will always be preferred if it exists
-  let cfg = {};
+  let cfg: Record<string, unknown> = {};
   for (const configPath of CONFIG_PATHS) {
     try {
-      cfg = JSON.parse(await fs.readFile(configPath));
+      cfg = JSON.parse(await fs.readFile(configPath, 'utf8'));
       break;
     } catch (err) {
       if (err.code !== 'ENOENT') {
-        logWarning(`Warning: '${configPath}' exists but could not be parsed.`);
+        logWarning(`Warning: '${configPath}' exists but could not be parsed.`, err);
       }
     }
   }

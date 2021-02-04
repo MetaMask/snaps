@@ -1,10 +1,13 @@
-const { promises: fs } = require('fs');
-const pathUtils = require('path');
-const dequal = require('fast-deep-equal');
-const isUrl = require('is-url');
-const deepClone = require('rfdc')({ proto: false, circles: false });
+import { promises as fs } from 'fs';
+import pathUtils from 'path';
+import dequal from 'fast-deep-equal';
+import isUrl from 'is-url';
+import rfdc from 'rfdc';
+import { isFile, permRequestKeys } from '../../utils';
+import { YargsArgs } from '../../types/yargs';
+import { NodePackageManifest, ManifestWalletProperty } from '../../types/package';
 
-const { isFile, permRequestKeys } = require('../../utils');
+const deepClone = rfdc({ proto: false, circles: false });
 
 const LOCALHOST_START = 'http://localhost';
 
@@ -12,7 +15,8 @@ const LOCALHOST_START = 'http://localhost';
  * Validates a Snap package.json file.
  * Exits with success message or gathers all errors before throwing at the end.
  */
-module.exports = async function manifest(argv) {
+export async function manifest(argv: YargsArgs): Promise<void> {
+
   let isInvalid = false;
   let hasWarnings = false;
   let didUpdate = false;
@@ -23,9 +27,9 @@ module.exports = async function manifest(argv) {
   }
 
   // read the package.json file
-  let pkg;
+  let pkg: NodePackageManifest;
   try {
-    pkg = JSON.parse(await fs.readFile('package.json'));
+    pkg = JSON.parse(await fs.readFile('package.json', 'utf-8'));
   } catch (err) {
     if (err.code === 'ENOENT') {
       throw new Error(
@@ -33,7 +37,7 @@ module.exports = async function manifest(argv) {
         `you are running the command in the project root directory.`,
       );
     }
-    throw new Error(`Could not parse package.json`, err);
+    throw new Error(`Could not parse package.json`);
   }
 
   if (!pkg || typeof pkg !== 'object') {
@@ -48,17 +52,20 @@ module.exports = async function manifest(argv) {
     if (!pkg.web3Wallet) {
       pkg.web3Wallet = {};
     }
+
+    const bundle = pkg.web3Wallet.bundle || {};
     if (!pkg.web3Wallet.bundle) {
-      pkg.web3Wallet.bundle = {};
+      pkg.web3Wallet.bundle = bundle;
     }
+
     if (!pkg.web3Wallet.initialPermissions) {
       pkg.web3Wallet.initialPermissions = {};
     }
 
-    const { bundle } = pkg.web3Wallet;
+    const { web3Wallet } = pkg;
 
     const bundlePath = pathUtils.join(
-      dist, outfileName || 'bundle.js',
+      dist, outfileName as string || 'bundle.js',
     );
     if (bundle.local !== bundlePath) {
       bundle.local = bundlePath;
@@ -73,18 +80,23 @@ module.exports = async function manifest(argv) {
     }
 
     // sort web3Wallet object keys
-    Object.entries(pkg.web3Wallet).forEach(([k, v]) => {
-      if (typeof v === 'object' && !Array.isArray(v)) {
-        pkg.web3Wallet[k] = Object.keys(v).sort().reduce(
-          (acc, l) => {
-            acc[l] = v[l];
-            return acc;
-          }, {},
+    Object.keys(web3Wallet).sort().forEach((_key) => {
+      const key = _key as keyof ManifestWalletProperty;
+      const property = (web3Wallet)[key];
+
+      if (property && typeof property === 'object' && !Array.isArray(property)) {
+        web3Wallet[key] = Object.keys(property).sort().reduce(
+          (sortedProperty, _innerKey) => {
+            const innerKey = _innerKey as keyof ManifestWalletProperty[typeof key];
+            sortedProperty[innerKey] = property[innerKey];
+
+            return sortedProperty;
+          }, {} as Record<string, unknown>,
         );
       }
     });
 
-    if (!dequal(old, pkg.web3Wallet)) {
+    if (!dequal(old, web3Wallet)) {
       didUpdate = true;
     }
   }
@@ -96,7 +108,7 @@ module.exports = async function manifest(argv) {
   ];
   const recommended = ['repository'];
 
-  let missing = required.filter((k) => !existing.includes(k));
+  let missing = required.filter((key) => !existing.includes(key));
   if (missing.length > 0) {
     logManifestWarning(
       `Missing required package.json properties:\n${
@@ -105,7 +117,8 @@ module.exports = async function manifest(argv) {
         }, '')}`,
     );
   }
-  missing = recommended.filter((k) => !existing.includes(k));
+
+  missing = recommended.filter((key) => !existing.includes(key));
   if (missing.length > 0) {
     logManifestWarning(
       `Missing recommended package.json properties:\n${
@@ -117,7 +130,7 @@ module.exports = async function manifest(argv) {
 
   // check web3Wallet properties
   const { bundle, initialPermissions } = pkg.web3Wallet || {};
-  if (bundle && bundle.local) {
+  if (bundle?.local) {
     if (!(await isFile(bundle.local))) {
       logManifestError(`'bundle.local' does not resolve to a file.`);
     }
@@ -125,10 +138,12 @@ module.exports = async function manifest(argv) {
     logManifestError(`Missing required 'web3Wallet' property 'bundle.local'.`);
   }
 
-  if (!bundle.url) {
-    logManifestError(`Missing required 'bundle.url' property.`);
-  } else if (!isUrl(bundle.url)) {
-    logManifestError(`'bundle.url' does not resolve to a URL.`);
+  if (bundle !== undefined) {
+    if (!bundle.url) {
+      logManifestError(`Missing required 'bundle.url' property.`);
+    } else if (!isUrl(bundle.url)) {
+      logManifestError(`'bundle.url' does not resolve to a URL.`);
+    }
   }
 
   if (Object.prototype.hasOwnProperty.call(pkg.web3Wallet, 'initialPermissions')) {
@@ -140,19 +155,18 @@ module.exports = async function manifest(argv) {
 
     } else if (Object.keys(initialPermissions).length > 0) {
 
-      Object.entries(initialPermissions).forEach(([k, o]) => {
-        if (typeof o !== 'object' || Array.isArray(o)) {
-          logManifestError(`inital permission '${k}' must be an object`);
+      Object.entries(initialPermissions).forEach(([permission, value]) => {
+        if (typeof value !== 'object' || Array.isArray(value)) {
+          logManifestError(`inital permission '${permission}' must be an object`);
 
-        } else {
-
-          Object.keys(o).forEach((_k) => {
-            if (!permRequestKeys.includes(_k)) {
-              logManifestError(`inital permission '${k}' has unrecognized key '${_k}'`);
+        } else if (value !== null) {
+          Object.keys(value).forEach((permissionKey) => {
+            if (!permRequestKeys.includes(permissionKey)) {
+              logManifestError(`inital permission '${permission}' has unrecognized key '${permissionKey}'`);
             }
 
-            if (_k === 'parentCapability' && k !== _k) {
-              logManifestError(`inital permissions '${k}' has mismatched 'parentCapability' field '${o[_k]}'`);
+            if (permissionKey === 'parentCapability' && permission !== permissionKey) {
+              logManifestError(`inital permission '${permission}' has mismatched 'parentCapability' field '${(value as Record<string, unknown>)[permissionKey]}'`);
             }
           });
         }
@@ -169,7 +183,7 @@ module.exports = async function manifest(argv) {
         console.log(`Manifest: Updated '${pkg.name}' package.json!`);
       }
     } catch (err) {
-      throw new Error(`Could not write package.json`, err);
+      throw new Error(`Could not write package.json`);
     }
   }
 
@@ -181,18 +195,18 @@ module.exports = async function manifest(argv) {
     console.log(`Manifest Success: Validated '${pkg.name}' package.json!`);
   }
 
-  function logManifestError(message, err) {
+  function logManifestError(message: string, err?: Error) {
     isInvalid = true;
     console.error(`Manifest Error: ${message}`);
-    if (err && snaps.verboseErrors) {
+    if (err && global.snaps.verboseErrors) {
       console.error(err);
     }
   }
 
-  function logManifestWarning(message) {
-    if (!snaps.suppressWarnings) {
+  function logManifestWarning(message: string) {
+    if (!global.snaps.suppressWarnings) {
       hasWarnings = true;
       console.warn(`Manifest Warning: ${message}`);
     }
   }
-};
+}

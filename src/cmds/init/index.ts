@@ -1,19 +1,21 @@
-const builders = require('../../builders');
-const { handler: build } = require('../build');
-const initHandler = require('./initialize');
+import yargs from 'yargs';
+import builders from '../../builders';
+import { build } from '../build';
+import { YargsArgs } from '../../types/yargs';
+import { initHandler } from './initialize';
 
 module.exports.command = ['init', 'i'];
 module.exports.desc = 'Initialize Snap package';
-module.exports.builder = (yarg) => {
+module.exports.builder = (yarg: yargs.Argv) => {
   yarg
     .option('src', builders.src)
     .option('dist', builders.dist)
     .option('outfileName', builders.outfileName)
     .option('port', builders.port);
 };
-module.exports.handler = (argv) => init(argv);
+module.exports.handler = (argv: YargsArgs) => init(argv);
 
-async function init(argv) {
+async function init(argv: YargsArgs): Promise<void> {
   const newArgs = await initHandler(argv);
 
   console.log();
@@ -25,9 +27,4 @@ async function init(argv) {
   });
 
   console.log('\nPlugin project successfully initiated!');
-
-  // serve({
-  //   ...newArgs,
-  //   root: '.',
-  // })
 }

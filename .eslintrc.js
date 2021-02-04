@@ -9,22 +9,14 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 2018,
   },
-  rules: {
-    // TODO: Remove these once they've landed on the main config
-    semi: ['error', 'always'],
-    'space-before-function-paren': [
-      'error',
-      {
-        anonymous: 'always',
-        asyncArrow: 'always',
-        named: 'never',
-      },
-    ],
-  },
   overrides: [
     {
       files: [
-        'src/**/*.js',
+        'src/**/*.ts',
+        'development/*.ts',
+      ],
+      extends: [
+        '@metamask/eslint-config/config/typescript',
       ],
       env: {
         node: true,
@@ -34,14 +26,6 @@ module.exports = {
       },
       rules: {
         'node/no-process-exit': 'off',
-      },
-    },
-    {
-      files: [
-        'scripts/**/*.js',
-      ],
-      env: {
-        node: true,
       },
     },
     {
@@ -56,6 +40,15 @@ module.exports = {
       },
       rules: {
         'no-alert': 'off',
+        semi: ['error', 'always'],
+        'space-before-function-paren': [
+          'error',
+          {
+            anonymous: 'always',
+            asyncArrow: 'always',
+            named: 'never',
+          },
+        ],
       },
     },
   ],
@@ -64,4 +57,4 @@ module.exports = {
     'dist/',
     'node_modules/',
   ],
-};
+}

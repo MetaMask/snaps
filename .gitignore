@@ -5,3 +5,4 @@ temp
 examples/*/dist
 *.log
 package-lock.json
+dist/
