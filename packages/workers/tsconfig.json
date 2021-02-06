@@ -4,7 +4,7 @@
     "esModuleInterop": true,
     "module": "CommonJS",
     "moduleResolution": "node",
-    "outDir": "dist",
+    "outDir": "dist-temp",
     "sourceMap": true,
     "strict": true,
     "target": "ES2017",

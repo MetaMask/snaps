@@ -9,7 +9,7 @@ if (process.argv.length > 2) {
 
 const browserifyOpts = {
   debug: false,
-  entries: ['src/pluginWorker.js'],
+  entries: ['dist-temp/PluginWorker.js'],
   plugin: 'tinyify',
 };
 
@@ -30,7 +30,7 @@ bundle();
 function bundle() {
   b.bundle()
     .on('error', console.error)
-    .pipe(fs.createWriteStream('dist/pluginWorker.js'));
+    .pipe(fs.createWriteStream('dist/PluginWorker.js'));
 }
 
 function bundleLog(message) {
