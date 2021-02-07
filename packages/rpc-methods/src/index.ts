@@ -1,13 +1,7 @@
-import clearState from './clearState';
-import getAppKey from './getAppKey';
-import getState from './getState';
-import updateState from './updateState';
+import permitted from './permitted';
+import restricted from './restricted';
 
 export = {
-  permitted: [
-    clearState,
-    getAppKey,
-    getState,
-    updateState,
-  ],
+  permitted,
+  restricted,
 };

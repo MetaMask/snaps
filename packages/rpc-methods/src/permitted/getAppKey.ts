@@ -1,10 +1,11 @@
 import { JsonRpcEngineEndCallback, JsonRpcRequest, PendingJsonRpcResponse } from 'json-rpc-engine';
 import { ethErrors } from 'eth-rpc-errors';
-import { HandlerExport } from '../types';
+import { PermittedHandlerExport } from '../../types';
 
-const getAppKeyExport: HandlerExport<[string], string, GetAppKeyHooks> = {
+const getAppKeyExport: PermittedHandlerExport<[string], string, GetAppKeyHooks> = {
   methodNames: ['snap_getAppKey'],
   implementation: getAppKeyHandler,
+  description: 'Get the app key of the snap.',
 };
 export default getAppKeyExport;
 
