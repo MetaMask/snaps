@@ -24,14 +24,15 @@ export type RestrictedHandlerMiddlewareFunction<T, U> = (
 
 export type RestrictedHandlerMiddlewareGetter<T, U, V> = (hooks: V) => RestrictedHandlerMiddlewareFunction<T, U>;
 
-export interface PermittedHandlerExport<T, U, V> {
+interface BaseHandlerExport {
   description: string;
-  implementation: HandlerMiddlewareFunction<T, U, V>;
   methodNames: string[];
 }
 
-export interface RestrictedHandlerExport<T, U, V> {
-  description: string;
+export interface PermittedHandlerExport<T, U, V> extends BaseHandlerExport {
+  implementation: HandlerMiddlewareFunction<T, U, V>;
+}
+
+export interface RestrictedHandlerExport<T, U, V> extends BaseHandlerExport {
   implementationGetter: RestrictedHandlerMiddlewareGetter<T, U, V>;
-  methodName: string;
 }

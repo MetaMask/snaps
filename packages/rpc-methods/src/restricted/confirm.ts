@@ -4,7 +4,7 @@ import { AnnotatedJsonRpcEngine } from 'rpc-cap';
 import { RestrictedHandlerExport } from '../../types';
 
 const confirmExport: RestrictedHandlerExport<[string], boolean, ConfirmHooks> = {
-  methodName: 'snap_confirm',
+  methodNames: ['snap_confirm'],
   implementationGetter: confirmHandlerGetter,
   description: 'Display a confirmation to the user.',
 };
