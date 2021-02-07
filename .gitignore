@@ -1,4 +1,6 @@
 **/dist
+**/*.lerna_backup
+**/temp*
 
 # Logs
 logs
