@@ -1,0 +1,28 @@
+{
+  "name": "@mm-snap/types",
+  "version": "0.0.1",
+  "description": "Shared types for @mm-snap packages.",
+  "main": "index.d.ts",
+  "files": [
+    "index.d.ts"
+  ],
+  "repository": "git@github.com:MetaMask/snaps-skunkworks.git",
+  "author": "Erik Marks <rekmarks@protonmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "test": "yarn lint",
+    "lint": "eslint . --ext d.ts,ts,js,json",
+    "lint:fix": "yarn lint --fix"
+  },
+  "devDependencies": {
+    "@metamask/eslint-config": "^5.0.0",
+    "@metamask/inpage-provider": "^8.0.4",
+    "@typescript-eslint/eslint-plugin": "^4.14.2",
+    "@typescript-eslint/parser": "^4.14.2",
+    "eslint": "^7.19.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-json": "^2.1.2",
+    "typescript": "^4.1.3"
+  }
+}
