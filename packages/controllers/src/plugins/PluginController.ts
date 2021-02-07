@@ -88,7 +88,7 @@ interface PluginControllerArgs {
  * - Start: Initializes the plugin in its SES realm with the authorized permissions.
  */
 
-export default class PluginController extends EventEmitter {
+export class PluginController extends EventEmitter {
 
   // TODO:2021:Q1 use generic obs-store and remove casts from every call
   // related to the store or memStore
