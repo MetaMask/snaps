@@ -7,26 +7,15 @@ import SafeEventEmitter from '@metamask/safe-event-emitter';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { WorkerParentPostMessageStream } from '@mm-snap/post-message-stream';
 import { PLUGIN_STREAM_NAMES } from '@mm-snap/workers';
+import { PluginData } from '@mm-snap/types';
 
 import { CommandEngine, CommandRequest, CommandResponse } from './CommandEngine';
 
 export type SetupWorkerConnection = (metadata: any, stream: Duplex) => void;
 
-// TODO:27
-interface PluginData {
-  pluginName: string;
-  sourceCode: string;
-  [key: string]: unknown;
+interface PluginWorkerMetadata {
+  hostname: string;
 }
-
-type PluginWorkerMetadata = Record<string, unknown>;
-/**
- *  pluginName,
- *  sourceCode,
- */
-
-// end:TODO:27
-
 interface WorkerControllerArgs {
   setupWorkerConnection: SetupWorkerConnection;
 }

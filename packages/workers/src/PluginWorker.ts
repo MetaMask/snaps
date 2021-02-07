@@ -3,6 +3,11 @@ import { MetaMaskInpageProvider } from '@metamask/inpage-provider';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import pump from 'pump';
 import { WorkerPostMessageStream } from '@mm-snap/post-message-stream';
+import {
+  PluginData,
+  PluginProvider,
+  WorkerCommandRequest,
+} from '@mm-snap/types';
 import { STREAM_NAMES } from './enums';
 
 // eslint-disable-next-line import/no-unassigned-import
@@ -16,25 +21,10 @@ declare global {
 
 type PluginRpcHandler = (origin: string, request: Record<string, unknown>) => Promise<unknown>;
 
-interface CommandRequest {
-  id: number;
-  command: string;
-  data?: string | Record<string, unknown>;
-}
-
-interface RequestedPlugin {
-  pluginName: string;
-  sourceCode: string;
-}
-
 interface PluginRpcRequest {
   origin: string;
   request: Record<string, unknown>;
   target: string;
-}
-
-interface PluginProvider extends MetaMaskInpageProvider {
-  registerRpcMessageHandler: (handler: PluginRpcHandler) => void;
 }
 
 lockdown({
@@ -49,7 +39,7 @@ lockdown({
   class Controller {
     private pluginRpcHandlers: Map<string, PluginRpcHandler>;
 
-    private _initialized = false;
+    private initialized = false;
 
     private commandStream: Duplex;
 
@@ -62,25 +52,25 @@ lockdown({
     }
 
     initialize() {
-      if (this._initialized) {
+      if (this.initialized) {
         return;
       }
-      this._connectToParent();
+      this.connectToParent();
     }
 
-    private async _connectToParent() {
+    private async connectToParent() {
       console.log('CONNECTING TO PARENT');
 
       const parentStream = new WorkerPostMessageStream();
       const mux = setupMultiplex(parentStream, 'Parent');
 
       this.commandStream = mux.createStream(STREAM_NAMES.COMMAND) as any;
-      this.commandStream.on('data', this._onCommandRequest.bind(this));
+      this.commandStream.on('data', this.onCommandRequest.bind(this));
 
       this.rpcStream = mux.createStream(STREAM_NAMES.JSON_RPC) as any;
     }
 
-    private async _onCommandRequest(message: CommandRequest) {
+    private async onCommandRequest(message: WorkerCommandRequest) {
       if (!message || typeof message !== 'object' || Array.isArray(message)) {
         console.error('Command stream received non-object message.');
         return;
@@ -88,34 +78,41 @@ lockdown({
 
       const { id, command, data } = message;
 
+      if (typeof id === 'number') {
+        console.error(`Command stream receive non-numerical id "${id}".`);
+        return;
+      }
+
       switch (command) {
         case 'installPlugin':
-          this.installPlugin(id, data as unknown as RequestedPlugin);
+          this.installPlugin(id, data as unknown as PluginData);
           break;
 
         case 'ping':
-          this._respond(id, { result: 'OK' });
+          this.respond(id, { result: 'OK' });
           break;
 
         case 'pluginRpc':
-          await this._handlePluginRpc(id, data as unknown as PluginRpcRequest);
+          await this.handlePluginRpc(id, data as unknown as PluginRpcRequest);
           break;
 
         default:
-          console.error(`Unrecognized command: ${command}.`);
+          this.respond(id, {
+            error: new Error(`Unrecognized command: ${command}.`),
+          });
           break;
       }
     }
 
-    private _respond(id: number, responseObj: Record<string, unknown>) {
+    private respond(id: number, responseObj: Record<string, unknown>) {
       this.commandStream.write({ ...responseObj, id });
     }
 
-    private async _handlePluginRpc(id: number, { origin, request, target }: PluginRpcRequest) {
+    private async handlePluginRpc(id: number, { origin, request, target }: PluginRpcRequest) {
       const handler = this.pluginRpcHandlers.get(target);
 
       if (!handler) {
-        this._respond(id, {
+        this.respond(id, {
           error: new Error(`No RPC handler registered for plugin "${target}".`),
         });
         return;
@@ -123,31 +120,31 @@ lockdown({
 
       try {
         const result = await handler(origin, request);
-        this._respond(id, { result });
+        this.respond(id, { result });
       } catch (error) {
-        this._respond(id, { error });
+        this.respond(id, { error });
       }
     }
 
     private installPlugin(id: number, {
       pluginName,
       sourceCode,
-    }: Partial<RequestedPlugin> = {}) {
+    }: Partial<PluginData> = {}) {
       if (!isTruthyString(pluginName) || !isTruthyString(sourceCode)) {
-        this._respond(id, {
+        this.respond(id, {
           error: new Error('Invalid installPlugin parameters.'),
         });
         return;
       }
 
       try {
-        this._startPlugin(
+        this.startPlugin(
           pluginName as string,
           sourceCode as string,
         );
-        this._respond(id, { result: 'OK' });
+        this.respond(id, { result: 'OK' });
       } catch (err) {
-        this._respond(id, { error: err });
+        this.respond(id, { error: err });
       }
     }
 
@@ -161,7 +158,7 @@ lockdown({
      * @param {string} sourceCode - The source code of the plugin, in IIFE format.
      * @param {Object} ethereumProvider - The plugin's Ethereum provider object.
      */
-    private _startPlugin(
+    private startPlugin(
       pluginName: string,
       sourceCode: string,
     ) {

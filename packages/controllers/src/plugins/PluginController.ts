@@ -1,5 +1,3 @@
-/* global BigInt64Array, BigUint64Array */
-
 import { ObservableStore } from '@metamask/obs-store';
 import EventEmitter from '@metamask/safe-event-emitter';
 import { serializeError } from 'eth-rpc-errors';
@@ -10,11 +8,10 @@ import { WorkerController, SetupWorkerConnection } from '../workers/WorkerContro
 import { CommandResponse } from '../workers/CommandEngine';
 import { INLINE_PLUGINS } from './inlinePlugins';
 
-// import { PLUGIN_PREFIX } from '../permissions/enums'
-
 const PLUGIN_PREFIX = 'wallet_plugin_';
 
-enum API_HOOKS {
+// eslint-disable-next-line no-shadow
+enum PLUGIN_API_HOOKS {
   GET_STATE = 'getState',
   UPDATE_STATE = 'updateState',
   GET_APP_KEY = 'getAppKey',
@@ -30,7 +27,7 @@ const SERIALIZABLE_PLUGIN_PROPERTIES = {
 };
 
 interface SerializablePlugin {
-  initialPermissions: { [permission: string]: {} };
+  initialPermissions: { [permission: string]: Record<string, unknown> };
   name: string;
   permissionName: string;
 }
@@ -45,9 +42,9 @@ type PluginRpcHook = (origin: string, request: Record<string, unknown>) => Promi
 
 // The plugin is the caller
 export interface PluginApiHooks {
-  [API_HOOKS.GET_STATE]: () => Promise<unknown>;
-  [API_HOOKS.UPDATE_STATE]: (newState: unknown) => Promise<void>;
-  [API_HOOKS.GET_APP_KEY]: (requestedAccount?: string) => Promise<string>;
+  [PLUGIN_API_HOOKS.GET_STATE]: () => Promise<unknown>;
+  [PLUGIN_API_HOOKS.UPDATE_STATE]: (newState: unknown) => Promise<void>;
+  [PLUGIN_API_HOOKS.GET_APP_KEY]: (requestedAccount?: string) => Promise<string>;
 }
 
 export type GetPluginApiHookFunction = PluginController['getPluginApiHook'];
@@ -173,9 +170,9 @@ export default class PluginController extends EventEmitter {
     // remove sourceCode from memState plugin objects
     if (newState.plugins) {
       Object.keys(newState.plugins).forEach((name) => {
-        const plugin = { ...newState.plugins![name] };
+        const plugin = { ...(newState as PluginControllerState).plugins[name] };
         delete (plugin as Partial<Plugin>).sourceCode;
-        memState.plugins![name] = plugin;
+        (memState as PluginControllerMemState).plugins[name] = plugin;
       });
     }
 
@@ -187,7 +184,7 @@ export default class PluginController extends EventEmitter {
    */
   runExistingPlugins(): void {
 
-    const { plugins } = this.store.getState()
+    const { plugins } = this.store.getState();
 
     if (Object.keys(plugins).length > 0) {
       console.log('running existing plugins', plugins);
@@ -199,9 +196,6 @@ export default class PluginController extends EventEmitter {
     Object.values(plugins).forEach(({ name: pluginName, sourceCode }) => {
 
       console.log(`running: ${pluginName}`);
-      const approvedPermissions = this._getPermissionsFor(pluginName).map(
-        (perm) => perm.parentCapability,
-      );
 
       try {
         this._startPluginInWorker(pluginName, sourceCode);
@@ -355,7 +349,7 @@ export default class PluginController extends EventEmitter {
 
     // if the plugin is already installed and active, just return it
     const plugin = this.get(pluginName);
-    if (plugin && plugin.isActive) {
+    if (plugin?.isActive) {
       return this.getSerializable(pluginName) as SerializablePlugin;
     }
 
@@ -379,13 +373,10 @@ export default class PluginController extends EventEmitter {
    * If the plugin is already being installed, the previously pending promise will be returned.
    *
    * @param pluginName - The name of the plugin.
-   * @param [sourceUrl] - The URL of the source code.
+   * @param sourceUrl - The URL of the source code.
    */
   add(pluginName: string, sourceUrl?: string): Promise<Plugin> {
-    if (!sourceUrl) {
-      sourceUrl = pluginName;
-    }
-    console.log(`Adding ${sourceUrl}`);
+    console.log(`Adding ${sourceUrl || pluginName}`);
 
     // Deduplicate multiple add requests:
     if (!this._pluginsBeingAdded.has(pluginName)) {
@@ -403,9 +394,7 @@ export default class PluginController extends EventEmitter {
    */
   async _add(pluginName: string, sourceUrl?: string): Promise<Plugin> {
 
-    if (!sourceUrl) {
-      sourceUrl = pluginName;
-    }
+    const _sourceUrl = sourceUrl || pluginName;
 
     if (!pluginName || typeof pluginName !== 'string') {
       throw new Error(`Invalid plugin name: ${pluginName}`);
@@ -413,8 +402,8 @@ export default class PluginController extends EventEmitter {
 
     let plugin: Plugin;
     try {
-      console.log(`Fetching ${sourceUrl}`);
-      const pluginSource = await fetch(sourceUrl);
+      console.log(`Fetching ${_sourceUrl}`);
+      const pluginSource = await fetch(_sourceUrl);
       const pluginJson = await pluginSource.json();
 
       console.log(`Destructuring`, pluginJson);
@@ -478,8 +467,6 @@ export default class PluginController extends EventEmitter {
         pluginName, initialPermissions,
       );
       return approvedPermissions.map((perm) => perm.parentCapability);
-    } catch (err) {
-      throw err;
     } finally {
       this._pluginsBeingAdded.delete(pluginName);
     }
@@ -549,9 +536,9 @@ export default class PluginController extends EventEmitter {
 
     this._pluginRpcHooks.set(pluginName, rpcHook);
     this._pluginApiHooks.set(pluginName, {
-      [API_HOOKS.GET_STATE]: getStateHook,
-      [API_HOOKS.UPDATE_STATE]: updateStateHook,
-      [API_HOOKS.GET_APP_KEY]: getAppKeyHook,
+      [PLUGIN_API_HOOKS.GET_STATE]: getStateHook,
+      [PLUGIN_API_HOOKS.UPDATE_STATE]: updateStateHook,
+      [PLUGIN_API_HOOKS.GET_APP_KEY]: getAppKeyHook,
     });
   }
 

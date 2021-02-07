@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "Controllers for MetaMask Snaps.",
   "main": "dist/index.js",
+  "files": [
+    "dist/"
+  ],
   "author": "Erik Marks <rekmarks@protonmail.com>",
   "private": true,
   "engines": {
@@ -17,6 +20,7 @@
   },
   "devDependencies": {
     "@metamask/eslint-config": "^5.0.0",
+    "@mm-snap/types": "^0.0.1",
     "@types/pump": "^1.1.0",
     "@types/readable-stream": "^2.3.9",
     "@typescript-eslint/eslint-plugin": "^4.14.2",
