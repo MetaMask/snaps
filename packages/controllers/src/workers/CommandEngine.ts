@@ -5,9 +5,8 @@ interface PromiseCallbacks {
   reject: (error: Error) => void;
 }
 
-export interface CommandRequest {
+export interface CommandRequest extends Record<string, unknown> {
   command: string;
-  data?: string | Record<string, unknown>;
 }
 
 export interface CommandResponse {
@@ -15,14 +14,6 @@ export interface CommandResponse {
   result?: unknown;
   error?: Error;
 }
-
-export interface WorkerRequest {
-  id: number;
-  method: string;
-  params?: unknown;
-}
-
-export type WorkerMessage = CommandResponse | WorkerRequest;
 
 interface CommandEngineArgs {
   workerId: string;
@@ -77,7 +68,7 @@ export class CommandEngine {
     });
   }
 
-  private _onMessage(message: Partial<WorkerMessage>): void {
+  private _onMessage(message: Partial<CommandResponse>): void {
     if (!message || typeof message !== 'object' || Array.isArray(message)) {
       console.error(
         `Received message from "worker:${this.workerId}" that isn't a plain object.`,
@@ -95,9 +86,8 @@ export class CommandEngine {
     }
 
     if ('result' in message || 'error' in message) {
-      return this._handleResponse(message as CommandResponse);
-    } else if ('method' in message) {
-      return this._handleRequest(message as WorkerRequest);
+      this._handleResponse(message as CommandResponse);
+      return;
     }
 
     console.error(
@@ -135,10 +125,6 @@ export class CommandEngine {
       commandMetadata.resolve(result);
     }
     this._idMap.delete(id);
-  }
-
-  private _handleRequest(message: WorkerRequest): void {
-
   }
 
   private _getNextId(): number {
