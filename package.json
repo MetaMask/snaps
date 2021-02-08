@@ -1,8 +1,16 @@
 {
   "name": "root",
   "private": true,
-  "devDependencies": {},
+  "workspaces": [
+    "packages/controllers",
+    "packages/post-message-stream",
+    "packages/rpc-methods",
+    "packages/types",
+    "packages/workers"
+  ],
   "scripts": {
-    "link-packages": "./scripts/link-packages.sh"
-  }
+    "link-packages": "./scripts/link-packages.sh",
+    "prepare": "lerna run prepare"
+  },
+  "devDependencies": {}
 }
