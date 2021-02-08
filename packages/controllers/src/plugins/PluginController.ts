@@ -51,7 +51,6 @@ export type GetPluginApiHookFunction = PluginController['getPluginApiHook'];
 
 // Types that probably should be defined elsewhere in prod
 type RemoveAllPermissionsFunction = (pluginIds: string[]) => void;
-type GetPermissionsFunction = (pluginId: string) => IOcapLdCapability[];
 type GetAppKeyFunction = (domain: string, requestedAccount?: string) => Promise<string>;
 type CloseAllConnectionsFunction = (domain: string) => void;
 type RequestPermissionsFunction = (domain: string, requestedPermissions: IRequestedPermissions) => IOcapLdCapability[];
@@ -74,11 +73,11 @@ interface PluginControllerMemState {
 interface PluginControllerArgs {
   initState: Partial<PluginControllerState>;
   removeAllPermissionsFor: RemoveAllPermissionsFunction;
-  getPermissionsFor: GetPermissionsFunction;
   setupWorkerPluginProvider: SetupWorkerConnection;
   getAppKeyForDomain: GetAppKeyFunction;
   closeAllConnections: CloseAllConnectionsFunction;
   requestPermissions: RequestPermissionsFunction;
+  workerUrl: URL;
 }
 
 /*
@@ -100,8 +99,6 @@ export class PluginController extends EventEmitter {
 
   private _removeAllPermissionsFor: RemoveAllPermissionsFunction;
 
-  private _getPermissionsFor: GetPermissionsFunction;
-
   private _pluginRpcHooks: Map<string, PluginRpcHook>;
 
   private _pluginApiHooks: Map<string, PluginApiHooks>;
@@ -118,10 +115,10 @@ export class PluginController extends EventEmitter {
     initState,
     setupWorkerPluginProvider,
     removeAllPermissionsFor,
-    getPermissionsFor,
     getAppKeyForDomain,
     closeAllConnections,
     requestPermissions,
+    workerUrl,
   }: PluginControllerArgs) {
 
     super();
@@ -143,10 +140,10 @@ export class PluginController extends EventEmitter {
 
     this.workerController = new WorkerController({
       setupWorkerConnection: setupWorkerPluginProvider,
+      workerUrl,
     });
 
     this._removeAllPermissionsFor = removeAllPermissionsFor;
-    this._getPermissionsFor = getPermissionsFor;
     this._getAppKeyForDomain = getAppKeyForDomain;
     this._closeAllConnections = closeAllConnections;
     this._requestPermissions = requestPermissions;
@@ -476,7 +473,7 @@ export class PluginController extends EventEmitter {
   //   this.accountMessageHandlers.set(pluginName, handler)
   // }
 
-  runInlineWorkerPlugin(inlinePluginName: keyof typeof INLINE_PLUGINS = 'IDLE') {
+  runInlinePlugin(inlinePluginName: keyof typeof INLINE_PLUGINS = 'IDLE') {
     this._startPluginInWorker(
       'inlinePlugin',
       INLINE_PLUGINS[inlinePluginName],
@@ -486,7 +483,7 @@ export class PluginController extends EventEmitter {
     });
   }
 
-  removeInlineWorkerPlugin() {
+  removeInlinePlugin() {
     this.memStore.updateState({
       inlinePluginIsRunning: false,
     });

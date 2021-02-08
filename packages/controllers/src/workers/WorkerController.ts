@@ -1,4 +1,3 @@
-import fs from 'fs';
 import { Duplex } from 'stream';
 import { nanoid } from 'nanoid';
 import pump from 'pump';
@@ -18,6 +17,7 @@ interface PluginWorkerMetadata {
 }
 interface WorkerControllerArgs {
   setupWorkerConnection: SetupWorkerConnection;
+  workerUrl: URL;
 }
 
 interface WorkerStreams {
@@ -34,36 +34,14 @@ interface WorkerWrapper {
   worker: Worker;
 }
 
-/* eslint-disable node/no-sync */
-// Our brfs transform is extremely cranky, and will not apply itself unless
-// fs.readFileSync is called here, at the top-level, outside any function, with
-// a string literal path, and no encoding parameter ._.
-const WORKER_TYPES = {
-  plugin: {
-    url: getWorkerUrl(
-      fs
-        .readFileSync(
-          require.resolve('@mm-snap/workers/dist/pluginWorker.js'),
-        )
-        .toString(),
-    ),
-  },
-};
-/* eslint-enable node/no-sync */
-
-function getWorkerUrl(workerSrc: string) {
-  // the worker must be an IIFE file
-  return URL.createObjectURL(
-    new Blob([workerSrc], { type: 'application/javascript' }),
-  );
-}
-
 export class WorkerController extends SafeEventEmitter {
   public store: ObservableStore<{ workers: Record<string, WorkerWrapper> }>;
 
+  private workerUrl: URL;
+
   private workers: Map<string, WorkerWrapper>;
 
-  private _setupWorkerConnection: SetupWorkerConnection;
+  private setupWorkerConnection: SetupWorkerConnection;
 
   private pluginToWorkerMap: Map<string, string>;
 
@@ -71,9 +49,11 @@ export class WorkerController extends SafeEventEmitter {
 
   constructor({
     setupWorkerConnection,
+    workerUrl,
   }: WorkerControllerArgs) {
     super();
-    this._setupWorkerConnection = setupWorkerConnection;
+    this.workerUrl = workerUrl;
+    this.setupWorkerConnection = setupWorkerConnection;
     this.store = new ObservableStore({ workers: {} });
     this.workers = new Map();
     this.pluginToWorkerMap = new Map();
@@ -171,7 +151,7 @@ export class WorkerController extends SafeEventEmitter {
    * @returns The ID of the newly created worker.
    */
   async createPluginWorker(metadata: PluginWorkerMetadata): Promise<string> {
-    return this._initWorker('plugin', metadata);
+    return this._initWorker(metadata);
   }
 
   _mapPluginAndWorker(pluginName: string, workerId: string): void {
@@ -204,17 +184,12 @@ export class WorkerController extends SafeEventEmitter {
   }
 
   async _initWorker(
-    type: keyof typeof WORKER_TYPES,
     metadata: PluginWorkerMetadata,
   ): Promise<string> {
     console.log('_initWorker');
 
-    if (!WORKER_TYPES[type]) {
-      throw new Error('Unrecognized worker type.');
-    }
-
     const workerId = nanoid();
-    const worker = new Worker(WORKER_TYPES[type].url, { name: workerId });
+    const worker = new Worker(this.workerUrl, { name: workerId });
     const streams = this._initWorkerStreams(
       worker,
       workerId,
@@ -242,7 +217,7 @@ export class WorkerController extends SafeEventEmitter {
     const commandStream = mux.createStream(PLUGIN_STREAM_NAMES.COMMAND);
 
     const rpcStream = mux.createStream(PLUGIN_STREAM_NAMES.JSON_RPC);
-    this._setupWorkerConnection(metadata, (rpcStream as unknown) as Duplex);
+    this.setupWorkerConnection(metadata, (rpcStream as unknown) as Duplex);
 
     // Typecast justification: stream type mismatch
     return {

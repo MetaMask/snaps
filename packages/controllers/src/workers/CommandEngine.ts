@@ -10,7 +10,7 @@ export interface CommandRequest extends Record<string, unknown> {
 }
 
 export interface CommandResponse {
-  id: number;
+  id: string;
   result?: unknown;
   error?: Error;
 }
@@ -25,7 +25,7 @@ export class CommandEngine {
 
   private _currentCommandId: number;
 
-  private _idMap: Map<number, PromiseCallbacks>;
+  private _idMap: Map<string, PromiseCallbacks>;
 
   private _stream: WorkerParentPostMessageStream;
 
@@ -108,9 +108,9 @@ export class CommandEngine {
       return;
     }
 
-    if (!result || !error) {
+    if (!result && !error) {
       console.error(
-        `Received message from "worker:${this.workerId}" with id "${id}" with missing result and/or error.`,
+        `Received message from "worker:${this.workerId}" with id "${id}" with neither result nor error.`,
         message,
       );
       return;
@@ -127,9 +127,9 @@ export class CommandEngine {
     this._idMap.delete(id);
   }
 
-  private _getNextId(): number {
+  private _getNextId(): string {
     this._currentCommandId =
       (this._currentCommandId + 1) % Number.MAX_SAFE_INTEGER;
-    return this._currentCommandId;
+    return String(this._currentCommandId);
   }
 }

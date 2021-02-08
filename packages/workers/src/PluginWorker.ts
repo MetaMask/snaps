@@ -78,8 +78,8 @@ lockdown({
 
       const { id, command, data } = message;
 
-      if (typeof id === 'number') {
-        console.error(`Command stream receive non-numerical id "${id}".`);
+      if (!id || typeof id !== 'string') {
+        console.error(`Command stream received invalid id "${id}".`);
         return;
       }
 
@@ -104,11 +104,11 @@ lockdown({
       }
     }
 
-    private respond(id: number, responseObj: Record<string, unknown>) {
+    private respond(id: string, responseObj: Record<string, unknown>) {
       this.commandStream.write({ ...responseObj, id });
     }
 
-    private async handlePluginRpc(id: number, { origin, request, target }: PluginRpcRequest) {
+    private async handlePluginRpc(id: string, { origin, request, target }: PluginRpcRequest) {
       const handler = this.pluginRpcHandlers.get(target);
 
       if (!handler) {
@@ -126,7 +126,7 @@ lockdown({
       }
     }
 
-    private installPlugin(id: number, {
+    private installPlugin(id: string, {
       pluginName,
       sourceCode,
     }: Partial<PluginData> = {}) {
@@ -215,7 +215,8 @@ lockdown({
         this.pluginRpcHandlers.set(pluginName, func);
       };
 
-      return harden(pluginProvider as PluginProvider);
+      // return harden(pluginProvider as PluginProvider);
+      return pluginProvider as PluginProvider;
     }
   }
 

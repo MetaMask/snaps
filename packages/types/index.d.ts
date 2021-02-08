@@ -4,7 +4,7 @@ import { MetaMaskInpageProvider } from '@metamask/inpage-provider';
  * Command request sent to a worker.
  */
 export interface WorkerCommandRequest {
-  id: number;
+  id: string;
   command: string;
   data?: string | Record<string, unknown>;
 }
