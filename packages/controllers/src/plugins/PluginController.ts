@@ -8,23 +8,13 @@ import { WorkerController, SetupWorkerConnection } from '../workers/WorkerContro
 import { CommandResponse } from '../workers/CommandEngine';
 import { INLINE_PLUGINS } from './inlinePlugins';
 
-const PLUGIN_PREFIX = 'wallet_plugin_';
+export const PLUGIN_PREFIX = 'wallet_plugin_';
 
-// eslint-disable-next-line no-shadow
-enum PLUGIN_API_HOOKS {
-  GET_STATE = 'getState',
-  UPDATE_STATE = 'updateState',
-  GET_APP_KEY = 'getAppKey',
-}
-
-const SERIALIZABLE_PLUGIN_PROPERTIES = {
-  // we include excluded prop names for completeness
-  initialPermissions: true,
-  name: true,
-  permissionName: true,
-  isActive: false,
-  sourceCode: false,
-};
+const SERIALIZABLE_PLUGIN_PROPERTIES = new Set([
+  'initialPermissions',
+  'name',
+  'permissionName',
+]);
 
 interface SerializablePlugin {
   initialPermissions: { [permission: string]: Record<string, unknown> };
@@ -40,18 +30,8 @@ interface Plugin extends SerializablePlugin {
 // The plugin is the callee
 type PluginRpcHook = (origin: string, request: Record<string, unknown>) => Promise<CommandResponse>;
 
-// The plugin is the caller
-export interface PluginApiHooks {
-  [PLUGIN_API_HOOKS.GET_STATE]: () => Promise<unknown>;
-  [PLUGIN_API_HOOKS.UPDATE_STATE]: (newState: unknown) => Promise<void>;
-  [PLUGIN_API_HOOKS.GET_APP_KEY]: (requestedAccount?: string) => Promise<string>;
-}
-
-export type GetPluginApiHookFunction = PluginController['getPluginApiHook'];
-
 // Types that probably should be defined elsewhere in prod
 type RemoveAllPermissionsFunction = (pluginIds: string[]) => void;
-type GetAppKeyFunction = (domain: string, requestedAccount?: string) => Promise<string>;
 type CloseAllConnectionsFunction = (domain: string) => void;
 type RequestPermissionsFunction = (domain: string, requestedPermissions: IRequestedPermissions) => IOcapLdCapability[];
 
@@ -74,7 +54,6 @@ interface PluginControllerArgs {
   initState: Partial<PluginControllerState>;
   removeAllPermissionsFor: RemoveAllPermissionsFunction;
   setupWorkerPluginProvider: SetupWorkerConnection;
-  getAppKeyForDomain: GetAppKeyFunction;
   closeAllConnections: CloseAllConnectionsFunction;
   requestPermissions: RequestPermissionsFunction;
   workerUrl: URL;
@@ -101,10 +80,6 @@ export class PluginController extends EventEmitter {
 
   private _pluginRpcHooks: Map<string, PluginRpcHook>;
 
-  private _pluginApiHooks: Map<string, PluginApiHooks>;
-
-  private _getAppKeyForDomain: GetAppKeyFunction;
-
   private _closeAllConnections: CloseAllConnectionsFunction;
 
   private _requestPermissions: RequestPermissionsFunction;
@@ -115,7 +90,6 @@ export class PluginController extends EventEmitter {
     initState,
     setupWorkerPluginProvider,
     removeAllPermissionsFor,
-    getAppKeyForDomain,
     closeAllConnections,
     requestPermissions,
     workerUrl,
@@ -144,12 +118,10 @@ export class PluginController extends EventEmitter {
     });
 
     this._removeAllPermissionsFor = removeAllPermissionsFor;
-    this._getAppKeyForDomain = getAppKeyForDomain;
     this._closeAllConnections = closeAllConnections;
     this._requestPermissions = requestPermissions;
 
     this._pluginRpcHooks = new Map();
-    this._pluginApiHooks = new Map();
     this._pluginsBeingAdded = new Map();
   }
 
@@ -228,7 +200,7 @@ export class PluginController extends EventEmitter {
 
     return plugin
       ? Object.keys(plugin).reduce((acc, key) => {
-        if (SERIALIZABLE_PLUGIN_PROPERTIES[key as keyof Plugin]) {
+        if (SERIALIZABLE_PLUGIN_PROPERTIES.has(key as keyof Plugin)) {
           acc[key] = plugin[key as keyof SerializablePlugin];
         }
 
@@ -272,11 +244,7 @@ export class PluginController extends EventEmitter {
    * handlers, event listeners, and permissions; tear down all plugin providers.
    */
   clearState() {
-    // this._removeAllMetaMaskEventListeners()
-    // this.rpcMessageHandlers.clear()
-    // this.accountMessageHandlers.clear()
     this._pluginRpcHooks.clear();
-    this._pluginApiHooks.clear();
     const pluginNames = Object.keys((this.store.getState()).plugins);
     this.updateState({
       plugins: {},
@@ -506,13 +474,6 @@ export class PluginController extends EventEmitter {
     return this._pluginRpcHooks.get(pluginName);
   }
 
-  getPluginApiHook <T extends keyof PluginApiHooks>(
-    pluginName: string,
-    hookName: T,
-  ): PluginApiHooks[T] | undefined {
-    return this._pluginApiHooks.get(pluginName)?.[hookName];
-  }
-
   private _createPluginHooks(pluginName: string, workerId: string) {
     const rpcHook = async (origin: string, request: Record<string, unknown>) => {
       return await this.workerController.command(workerId, {
@@ -525,23 +486,11 @@ export class PluginController extends EventEmitter {
       });
     };
 
-    const getStateHook = async () => await this.getPluginState(pluginName);
-    const updateStateHook = async (newState: unknown) => {
-      await this.updatePluginState(pluginName, newState);
-    };
-    const getAppKeyHook = async (requestedAccount?: string) => await this._getAppKeyForDomain(pluginName, requestedAccount);
-
     this._pluginRpcHooks.set(pluginName, rpcHook);
-    this._pluginApiHooks.set(pluginName, {
-      [PLUGIN_API_HOOKS.GET_STATE]: getStateHook,
-      [PLUGIN_API_HOOKS.UPDATE_STATE]: updateStateHook,
-      [PLUGIN_API_HOOKS.GET_APP_KEY]: getAppKeyHook,
-    });
   }
 
   _removePluginHooks(pluginName: string) {
     this._pluginRpcHooks.delete(pluginName);
-    this._pluginApiHooks.delete(pluginName);
   }
 
   _setPluginToActive(pluginName: string): void {
