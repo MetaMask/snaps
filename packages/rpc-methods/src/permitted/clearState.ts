@@ -4,7 +4,7 @@ import { PermittedHandlerExport } from '../../types';
 const clearStateExport: PermittedHandlerExport<void, null, ClearStateHooks> = {
   methodNames: ['snap_clearState'],
   implementation: clearStateHandler,
-  description: 'Clear the state of the snap.',
+  methodDescription: 'Clear the state of the snap.',
 };
 export default clearStateExport;
 

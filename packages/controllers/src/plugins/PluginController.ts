@@ -16,19 +16,19 @@ const SERIALIZABLE_PLUGIN_PROPERTIES = new Set([
   'permissionName',
 ]);
 
-interface SerializablePlugin {
+export interface SerializablePlugin {
   initialPermissions: { [permission: string]: Record<string, unknown> };
   name: string;
   permissionName: string;
 }
 
-interface Plugin extends SerializablePlugin {
+export interface Plugin extends SerializablePlugin {
   isActive: boolean;
   sourceCode: string;
 }
 
 // The plugin is the callee
-type PluginRpcHook = (origin: string, request: Record<string, unknown>) => Promise<CommandResponse>;
+export type PluginRpcHook = (origin: string, request: Record<string, unknown>) => Promise<CommandResponse>;
 
 // Types that probably should be defined elsewhere in prod
 type RemoveAllPermissionsFunction = (pluginIds: string[]) => void;
@@ -39,12 +39,12 @@ interface StoredPlugins {
   [pluginId: string]: Plugin;
 }
 
-interface PluginControllerState {
+export interface PluginControllerState {
   plugins: StoredPlugins;
   pluginStates: Record<string, unknown>;
 }
 
-interface PluginControllerMemState {
+export interface PluginControllerMemState {
   inlinePluginIsRunning: boolean;
   plugins: { [pluginId: string]: SerializablePlugin };
   pluginStates: Record<string, unknown>;

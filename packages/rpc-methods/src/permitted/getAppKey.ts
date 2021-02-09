@@ -5,7 +5,7 @@ import { PermittedHandlerExport } from '../../types';
 const getAppKeyExport: PermittedHandlerExport<[string], string, GetAppKeyHooks> = {
   methodNames: ['snap_getAppKey'],
   implementation: getAppKeyHandler,
-  description: 'Get the app key of the snap.',
+  methodDescription: 'Get the app key of the snap.',
 };
 export default getAppKeyExport;
 

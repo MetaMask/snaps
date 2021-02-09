@@ -4,7 +4,7 @@ import { PermittedHandlerExport } from '../../types';
 const getStateExport: PermittedHandlerExport<void, Record<string, unknown>, GetStateHooks> = {
   methodNames: ['snap_getState'],
   implementation: getStateHandler,
-  description: 'Get the state of the snap.',
+  methodDescription: 'Get the state of the snap.',
 };
 export default getStateExport;
 

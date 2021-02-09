@@ -5,7 +5,7 @@ import { PermittedHandlerExport } from '../../types';
 const updateStateExport: PermittedHandlerExport<[Record<string, unknown>], null, UpdateStateHooks> = {
   methodNames: ['snap_updateState'],
   implementation: updateStateHandler,
-  description: 'Update the state of the snap.',
+  methodDescription: 'Update the state of the snap.',
 };
 export default updateStateExport;
 

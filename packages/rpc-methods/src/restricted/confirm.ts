@@ -6,7 +6,8 @@ import { RestrictedHandlerExport } from '../../types';
 const confirmExport: RestrictedHandlerExport<[string], boolean, ConfirmHooks> = {
   methodNames: ['snap_confirm'],
   implementationGetter: confirmHandlerGetter,
-  description: 'Display a confirmation to the user.',
+  methodDescription: 'Display a plain browser confirmation to the user.',
+  permissionDescription: 'Display a plain browser confirmation to the user.',
 };
 export default confirmExport;
 
