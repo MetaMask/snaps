@@ -34,7 +34,7 @@ export function cli(commands: any): void {
     })
 
     .option('suppressWarnings', {
-      alias: 'w',
+      alias: 'sw',
       type: 'boolean',
       describe: 'Suppress warnings',
       required: false,

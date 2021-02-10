@@ -96,7 +96,7 @@ const builders: Builder = {
   },
 
   suppressWarnings: {
-    alias: 'w',
+    alias: 'sw',
     type: 'boolean',
     describe: 'Suppress warnings',
     required: false,
