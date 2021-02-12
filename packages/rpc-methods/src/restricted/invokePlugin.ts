@@ -1,7 +1,7 @@
 import { JsonRpcEngineEndCallback, JsonRpcRequest, PendingJsonRpcResponse } from 'json-rpc-engine';
 import { ethErrors } from 'eth-rpc-errors';
 import { AnnotatedJsonRpcEngine } from 'rpc-cap';
-import { PLUGIN_PREFIX, PluginController } from '../../../controllers';
+import { PLUGIN_PREFIX, PluginController } from '@mm-snap/controllers';
 import { RestrictedHandlerExport } from '../../types';
 import { isPlainObject } from '../utils';
 

@@ -1,14 +1,14 @@
 import { ObservableStore } from '@metamask/obs-store';
 import EventEmitter from '@metamask/safe-event-emitter';
-import { serializeError } from 'eth-rpc-errors';
+import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { IOcapLdCapability } from 'rpc-cap/dist/src/@types/ocap-ld';
 import { IRequestedPermissions } from 'rpc-cap/dist/src/@types';
-
 import { WorkerController, SetupWorkerConnection } from '../workers/WorkerController';
 import { CommandResponse } from '../workers/CommandEngine';
 import { INLINE_PLUGINS } from './inlinePlugins';
 
 export const PLUGIN_PREFIX = 'wallet_plugin_';
+export const PLUGIN_PREFIX_REGEX = new RegExp(`^${PLUGIN_PREFIX}`, 'u');
 
 const SERIALIZABLE_PLUGIN_PROPERTIES = new Set([
   'initialPermissions',
@@ -30,10 +30,17 @@ export interface Plugin extends SerializablePlugin {
 // The plugin is the callee
 export type PluginRpcHook = (origin: string, request: Record<string, unknown>) => Promise<CommandResponse>;
 
+export type ProcessPluginReturnType = SerializablePlugin | { error: ReturnType<typeof serializeError> };
+export interface InstalledPlugins {
+  [pluginName: string]: ProcessPluginReturnType;
+}
+
 // Types that probably should be defined elsewhere in prod
 type RemoveAllPermissionsFunction = (pluginIds: string[]) => void;
 type CloseAllConnectionsFunction = (domain: string) => void;
 type RequestPermissionsFunction = (domain: string, requestedPermissions: IRequestedPermissions) => IOcapLdCapability[];
+type HasPermissionFunction = (domain: string, permissionName: string) => boolean;
+type GetPermissionsFunction = (domain: string) => IOcapLdCapability[];
 
 interface StoredPlugins {
   [pluginId: string]: Plugin;
@@ -56,6 +63,8 @@ interface PluginControllerArgs {
   setupWorkerPluginProvider: SetupWorkerConnection;
   closeAllConnections: CloseAllConnectionsFunction;
   requestPermissions: RequestPermissionsFunction;
+  getPermissions: GetPermissionsFunction;
+  hasPermission: HasPermissionFunction;
   workerUrl: URL;
 }
 
@@ -84,6 +93,10 @@ export class PluginController extends EventEmitter {
 
   private _requestPermissions: RequestPermissionsFunction;
 
+  private _getPermissions: GetPermissionsFunction;
+
+  private _hasPermission: HasPermissionFunction;
+
   private _pluginsBeingAdded: Map<string, Promise<Plugin>>;
 
   constructor({
@@ -92,19 +105,22 @@ export class PluginController extends EventEmitter {
     removeAllPermissionsFor,
     closeAllConnections,
     requestPermissions,
+    getPermissions,
+    hasPermission,
     workerUrl,
   }: PluginControllerArgs) {
-
     super();
     const _initState: PluginControllerState = {
       plugins: {},
       pluginStates: {},
       ...initState,
     };
+
     this.store = new ObservableStore({
       plugins: {},
       pluginStates: {},
     });
+
     this.memStore = new ObservableStore({
       inlinePluginIsRunning: false,
       plugins: {},
@@ -120,6 +136,8 @@ export class PluginController extends EventEmitter {
     this._removeAllPermissionsFor = removeAllPermissionsFor;
     this._closeAllConnections = closeAllConnections;
     this._requestPermissions = requestPermissions;
+    this._getPermissions = getPermissions;
+    this._hasPermission = hasPermission;
 
     this._pluginRpcHooks = new Map();
     this._pluginsBeingAdded = new Map();
@@ -195,16 +213,16 @@ export class PluginController extends EventEmitter {
    * @param pluginName - The name of the plugin to get.
    */
   getSerializable(pluginName: string): SerializablePlugin | null {
-
     const plugin = this.get(pluginName);
 
     return plugin
-      ? Object.keys(plugin).reduce((acc, key) => {
+      // The cast to "any" of the accumulator object is due to a TypeScript bug
+      ? Object.keys(plugin).reduce((serialized, key) => {
         if (SERIALIZABLE_PLUGIN_PROPERTIES.has(key as keyof Plugin)) {
-          acc[key] = plugin[key as keyof SerializablePlugin];
+          serialized[key] = plugin[key as keyof SerializablePlugin];
         }
 
-        return acc;
+        return serialized;
       }, {} as any) as SerializablePlugin
       : null;
   }
@@ -221,7 +239,6 @@ export class PluginController extends EventEmitter {
     newPluginState: unknown,
   ): Promise<void> {
     const state = this.store.getState();
-
     const newPluginStates = { ...state.pluginStates, [pluginName]: newPluginState };
 
     this.updateState({
@@ -274,7 +291,6 @@ export class PluginController extends EventEmitter {
    * @param {Array<string>} pluginName - The name of the plugins.
    */
   removePlugins(pluginNames: string[]): void {
-
     if (!Array.isArray(pluginNames)) {
       throw new Error('Expected Array of plugin names.');
     }
@@ -301,17 +317,57 @@ export class PluginController extends EventEmitter {
     });
   }
 
+  getPermittedPlugins(origin: string): InstalledPlugins {
+    return this._getPermissions(origin).reduce(
+      (permittedPlugins, perm) => {
+        if (perm.parentCapability.startsWith(PLUGIN_PREFIX)) {
+
+          const pluginName = perm.parentCapability.replace(PLUGIN_PREFIX_REGEX, '');
+          const plugin = this.getSerializable(pluginName);
+
+          permittedPlugins[pluginName] = plugin || {
+            error: serializeError(new Error('Plugin permitted but not installed.')),
+          };
+        }
+        return permittedPlugins;
+      },
+      {} as InstalledPlugins,
+    );
+  }
+
+  async installPlugins(origin: string, requestedPlugins: IRequestedPermissions): Promise<InstalledPlugins> {
+    const result: InstalledPlugins = {};
+
+    // use a for-loop so that we can return an object and await the resolution
+    // of each call to processRequestedPlugin
+    await Promise.all(Object.keys(requestedPlugins).map(async (pluginName) => {
+      const permissionName = PLUGIN_PREFIX + pluginName;
+
+      if (this._hasPermission(origin, permissionName)) {
+        // attempt to install and run the plugin, storing any errors that
+        // occur during the process
+        result[pluginName] = {
+          ...(await this.processRequestedPlugin(pluginName)),
+        };
+      } else {
+        // only allow the installation of permitted plugins
+        result[pluginName] = {
+          error: ethErrors.provider.unauthorized(
+            `Not authorized to install plugin '${pluginName}'. Request the permission for the plugin before attempting to install it.`,
+          ),
+        };
+      }
+    }));
+    return result;
+  }
+
   /**
    * Adds, authorizes, and runs the given plugin with a plugin provider.
    * Results from this method should be efficiently serializable.
    *
    * @param - pluginName - The name of the plugin.
    */
-  async processRequestedPlugin(pluginName: string): Promise<
-  SerializablePlugin |
-  { error: ReturnType<typeof serializeError> }
-  > {
-
+  async processRequestedPlugin(pluginName: string): Promise<ProcessPluginReturnType> {
     // if the plugin is already installed and active, just return it
     const plugin = this.get(pluginName);
     if (plugin?.isActive) {
@@ -326,7 +382,6 @@ export class PluginController extends EventEmitter {
       await this._startPluginInWorker(pluginName, sourceCode);
 
       return this.getSerializable(pluginName) as SerializablePlugin;
-
     } catch (err) {
       console.warn(`Error when adding plugin:`, err);
       return { error: serializeError(err) };
@@ -358,7 +413,6 @@ export class PluginController extends EventEmitter {
    * @param [sourceUrl] - The URL of the source code.
    */
   async _add(pluginName: string, sourceUrl?: string): Promise<Plugin> {
-
     const _sourceUrl = sourceUrl || pluginName;
 
     if (!pluginName || typeof pluginName !== 'string') {
@@ -511,9 +565,3 @@ export class PluginController extends EventEmitter {
     });
   }
 }
-
-// const createGetDomainMetadataFunction = (pluginName) => {
-//   return async () => {
-//     return { name: pluginName }
-//   }
-// }

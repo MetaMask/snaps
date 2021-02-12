@@ -1,17 +1,17 @@
 import { JsonRpcRequest, JsonRpcEngineNextCallback, JsonRpcEngineEndCallback } from 'json-rpc-engine';
 import { ethErrors } from 'eth-rpc-errors';
+import { PLUGIN_PREFIX } from '@mm-snap/controllers';
 import { PermittedHandlerExport } from '../../types';
 import { isPlainObject } from '../utils';
-import { PLUGIN_PREFIX } from '../../../controllers';
 
 const InvokePluginSugarExport: PermittedHandlerExport<JsonRpcRequest<unknown>, unknown, void> = {
   methodNames: ['wallet_invokePlugin'],
-  implementation: InvokePluginSugarHandler,
+  implementation: invokePluginSugarHandler,
   methodDescription: 'Call an RPC method of the specified plugin.',
 };
 export default InvokePluginSugarExport;
 
-async function InvokePluginSugarHandler(
+async function invokePluginSugarHandler(
   req: JsonRpcRequest<unknown>,
   _res: unknown,
   next: JsonRpcEngineNextCallback,

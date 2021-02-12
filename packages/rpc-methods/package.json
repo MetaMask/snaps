@@ -16,9 +16,10 @@
     "build": "yarn build:prep && yarn build:ts",
     "build:ts": "tsc --project .",
     "build:prep": "mkdir -p dist && rm -rf dist/*",
-    "prepare": "yarn build"
+    "prepare": "yarn lint:fix && yarn build"
   },
   "dependencies": {
+    "@mm-snap/controllers": "^0.0.1",
     "eth-rpc-errors": "^4.0.2"
   },
   "devDependencies": {
