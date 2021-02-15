@@ -1,19 +1,19 @@
 import { promises as fs } from 'fs';
 import builders from '../builders';
-import { logWarning } from './misc';
+import { logError } from './misc';
 import { CONFIG_PATHS } from '.';
+
+const INVALID_CONFIG_FILE = 'Invalid config file.';
 
 /**
  * Attempts to read the config file and apply the config to
  * globals.
  */
 export async function applyConfig(): Promise<void> {
-
   let pkg: any;
 
   // first, attempt to read and apply config from package.json
   try {
-
     pkg = JSON.parse(await fs.readFile('package.json', 'utf8'));
 
     if (pkg.main) {
@@ -36,32 +36,53 @@ export async function applyConfig(): Promise<void> {
     }
   } catch (err) {
     if (err.code !== 'ENOENT') {
-      logWarning(`Warning: Could not parse package.json`, err);
+      logError(
+        'Error: package.json exists but could not be parsed.',
+        err,
+      );
+      process.exit(1);
     }
   }
 
   // second, attempt to read and apply config from config file,
   // which will always be preferred if it exists
   let cfg: Record<string, unknown> = {};
+  let usedConfigPath: string | null = null;
   for (const configPath of CONFIG_PATHS) {
     try {
       cfg = JSON.parse(await fs.readFile(configPath, 'utf8'));
+      usedConfigPath = configPath;
       break;
     } catch (err) {
       if (err.code !== 'ENOENT') {
-        logWarning(`Warning: '${configPath}' exists but could not be parsed.`, err);
+        logError(
+          `Error: "${configPath}" exists but could not be parsed`,
+          err,
+        );
+        process.exit(1);
       }
     }
   }
 
-  if (
-    typeof cfg !== 'object' ||
-        Object.keys(cfg).length === 0
-  ) {
-    return;
-  }
+  if (cfg && typeof cfg === 'object' && !Array.isArray(cfg)) {
+    for (const key of Object.keys(cfg)) {
+      if (Object.hasOwnProperty.call(builders, key)) {
+        builders[key].default = cfg[key];
+      } else {
+        logError(
+          `Error: Encountered unrecognized config file property "${key}" in config file "${usedConfigPath as string}".`,
+          new Error(INVALID_CONFIG_FILE),
+        );
+        process.exit(1);
+      }
+    }
+  } else {
+    const cfgType = cfg === null ? 'null' : typeof cfg;
 
-  Object.keys(cfg).forEach((key) => {
-    builders[key].default = cfg[key];
-  });
+    logError(
+      `Error: The config file must consist of a top-level JSON object. Received "${cfgType}" from "${usedConfigPath as string}".`,
+      new Error(INVALID_CONFIG_FILE),
+    );
+    process.exit(1);
+  }
 }
