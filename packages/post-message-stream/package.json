@@ -12,7 +12,7 @@
     "build:prep": "mkdir -p dist && rm -rf dist/*",
     "lint": "eslint . --ext ts,js,json",
     "lint:fix": "yarn lint --fix",
-    "prepare": "yarn lint:fix && yarn build"
+    "prepare": "yarn lint && yarn build"
   },
   "author": "",
   "dependencies": {

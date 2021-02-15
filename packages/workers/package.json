@@ -18,7 +18,7 @@
     "build:ts": "tsc --project . && cp dist-temp/* dist && rm dist/PluginWorker*",
     "build:bundle": "node bundle.js",
     "build:prep": "mkdir -p dist && mkdir -p dist-temp && rm -rf dist/* && rm -rf dist-temp/*",
-    "prepare": "yarn lint:fix && yarn build"
+    "prepare": "yarn lint && yarn build"
   },
   "author": "Erik Marks <rekmarks@protonmail.com>",
   "devDependencies": {
