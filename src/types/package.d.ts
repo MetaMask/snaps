@@ -19,20 +19,19 @@ export interface NodePackageManifest {
   web3Wallet?: ManifestWalletProperty;
 }
 
-export interface Builder {
-  [key: string]: Options;
-  src: Options;
-  dist: Options;
-  bundle: Options;
-  root: Options;
-  port: Options;
-  sourceMaps: Options;
-  stripComments: Options;
-  outfileName: Options;
-  manifest: Options;
-  populate: Options;
-  eval: Options;
-  verboseErrors: Options;
-  suppressWarnings: Options;
-  environment: Options;
+export interface Builders {
+  readonly src: Readonly<Options>;
+  readonly dist: Readonly<Options>;
+  readonly bundle: Readonly<Options>;
+  readonly root: Readonly<Options>;
+  readonly port: Readonly<Options>;
+  readonly sourceMaps: Readonly<Options>;
+  readonly stripComments: Readonly<Options>;
+  readonly outfileName: Readonly<Options>;
+  readonly manifest: Readonly<Options>;
+  readonly populate: Readonly<Options>;
+  readonly eval: Readonly<Options>;
+  readonly verboseErrors: Readonly<Options>;
+  readonly suppressWarnings: Readonly<Options>;
+  readonly environment: Readonly<Options>;
 }

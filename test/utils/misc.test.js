@@ -1,4 +1,4 @@
-const { trimPathString, logError, logWarning, sanitizeInputs, assignGlobals } = require('../../dist/src/utils/misc');
+const { trimPathString, logError, logWarning, sanitizeInputs, setSnapGlobals } = require('../../dist/src/utils/misc');
 
 describe('misc', () => {
   global.snaps = {
@@ -115,16 +115,16 @@ describe('misc', () => {
     delete global.snaps;
   });
 
-  describe('assignGlobals', () => {
+  describe('setSnapGlobals', () => {
     it('sets global variables correctly', () => {
-      assignGlobals(exampleArgv);
+      setSnapGlobals(exampleArgv);
       expect(global.snaps.isWatching).toStrictEqual(true);
       expect(global.snaps.verboseErrors).toStrictEqual(true);
       expect(global.snaps.suppressWarnings).toStrictEqual(true);
     });
 
     it('doesnt set global variables incorrectly', () => {
-      assignGlobals(defaultArgv);
+      setSnapGlobals(defaultArgv);
       expect(global.snaps.isWatching).toStrictEqual(false);
       expect(global.snaps.verboseErrors).toStrictEqual(false);
       expect(global.snaps.suppressWarnings).toStrictEqual(false);

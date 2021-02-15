@@ -1,4 +1,5 @@
 import { promises as fs } from 'fs';
+import { Arguments } from 'yargs';
 import builders from '../builders';
 import { logError } from './misc';
 import { CONFIG_PATHS } from '.';
@@ -9,7 +10,7 @@ const INVALID_CONFIG_FILE = 'Invalid config file.';
  * Attempts to read the config file and apply the config to
  * globals.
  */
-export async function applyConfig(): Promise<void> {
+export async function applyConfig(argv: Arguments): Promise<void> {
   let pkg: any;
 
   // first, attempt to read and apply config from package.json
@@ -17,21 +18,21 @@ export async function applyConfig(): Promise<void> {
     pkg = JSON.parse(await fs.readFile('package.json', 'utf8'));
 
     if (pkg.main) {
-      builders.src.default = pkg.main;
+      argv.src = pkg.main;
     }
 
     if (pkg.web3Wallet) {
       const { bundle } = pkg.web3Wallet;
       if (bundle?.local) {
         const { local: bundlePath } = bundle;
-        builders.bundle.default = bundlePath;
+        argv.bundle = bundlePath;
         let dist: string;
         if (bundlePath.indexOf('/') === -1) {
           dist = '.';
         } else {
           dist = bundlePath.substr(0, bundlePath.indexOf('/') + 1);
         }
-        builders.dist.default = dist;
+        argv.dist = dist;
       }
     }
   } catch (err) {
@@ -67,7 +68,7 @@ export async function applyConfig(): Promise<void> {
   if (cfg && typeof cfg === 'object' && !Array.isArray(cfg)) {
     for (const key of Object.keys(cfg)) {
       if (Object.hasOwnProperty.call(builders, key)) {
-        builders[key].default = cfg[key];
+        argv[key] = cfg[key];
       } else {
         logError(
           `Error: Encountered unrecognized config file property "${key}" in config file "${usedConfigPath as string}".`,

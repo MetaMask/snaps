@@ -3,11 +3,6 @@ const { default: builders } = require('../../dist/src/builders');
 const { applyConfig } = require('../../dist/src/utils/snap-config');
 const misc = require('../../dist/src/utils/misc');
 
-const originalBuilders = Object.keys(builders).reduce((snapshot, key) => {
-  snapshot[key] = builders[key];
-  return builders[key];
-}, {});
-
 const getDefaultWeb3Wallet = () => {
   return {
     'bundle': {
@@ -37,6 +32,22 @@ const getDefaultSnapConfig = () => {
   };
 };
 
+const getArgv = ({
+  bundle = builders.bundle.default,
+  dist = builders.dist.default,
+  outfileName = builders.outfileName.default,
+  port = builders.port.default,
+  src = builders.src.default,
+} = {}) => {
+  return {
+    bundle,
+    dist,
+    outfileName,
+    port,
+    src,
+  };
+};
+
 describe('snap-config', () => {
   let fsMock;
 
@@ -59,9 +70,6 @@ describe('snap-config', () => {
   });
 
   afterEach(() => {
-    Object.keys(originalBuilders).forEach((key) => {
-      builders[key] = originalBuilders[key];
-    });
     fsMock.mockRestore();
     fsMock = null;
     delete global.snaps;
@@ -75,10 +83,12 @@ describe('snap-config', () => {
           return {};
         });
 
-      await applyConfig();
-      expect(builders.src.default).toStrictEqual('index.js');
-      expect(builders.bundle.default).toStrictEqual('dist/foo.js');
-      expect(builders.dist.default).toStrictEqual('dist/');
+      const argv = getArgv();
+      await applyConfig(argv);
+
+      expect(argv.src).toStrictEqual(builders.src.default);
+      expect(argv.bundle).toStrictEqual('dist/foo.js');
+      expect(argv.dist).toStrictEqual('dist/');
     });
 
     it('sets web3wallet with no local property correctly', async () => {
@@ -98,10 +108,12 @@ describe('snap-config', () => {
           return {};
         });
 
-      await applyConfig();
-      expect(builders.src.default).toStrictEqual(main);
-      expect(builders.bundle.default).toStrictEqual(builders.bundle.default);
-      expect(builders.dist.default).toStrictEqual(builders.dist.default);
+      const argv = getArgv();
+      await applyConfig(argv);
+
+      expect(argv.src).toStrictEqual(main);
+      expect(argv.bundle).toStrictEqual(builders.bundle.default);
+      expect(argv.dist).toStrictEqual(builders.dist.default);
     });
 
     it('sets dist field correctly in edge case', async () => {
@@ -122,10 +134,12 @@ describe('snap-config', () => {
           return {};
         });
 
-      await applyConfig();
-      expect(builders.src.default).toStrictEqual(main);
-      expect(builders.bundle.default).toStrictEqual(web3Wallet.bundle.local);
-      expect(builders.dist.default).toStrictEqual('.');
+      const argv = getArgv();
+      await applyConfig(argv);
+
+      expect(argv.src).toStrictEqual(main);
+      expect(argv.bundle).toStrictEqual(web3Wallet.bundle.local);
+      expect(argv.dist).toStrictEqual('.');
     });
 
     it('package.json read error is handled correctly', async () => {
@@ -137,7 +151,7 @@ describe('snap-config', () => {
           throw new Error('foo');
         });
 
-      await applyConfig();
+      await applyConfig(getArgv());
       expect(mockLogError).toHaveBeenCalled();
       expect(process.exit).toHaveBeenCalledWith(1);
     });
@@ -149,9 +163,11 @@ describe('snap-config', () => {
         .mockImplementationOnce(async () => getPackageJson())
         .mockImplementationOnce(async () => getDefaultSnapConfig());
 
-      await applyConfig();
-      expect(builders.port.default).toStrictEqual(8084);
-      expect(builders.outfileName.default).toStrictEqual('test.js');
+      const argv = getArgv();
+      await applyConfig(argv);
+
+      expect(argv.port).toStrictEqual(8084);
+      expect(argv.outfileName).toStrictEqual('test.js');
     });
 
     it('config file read error is handled correctly', async () => {
@@ -164,7 +180,7 @@ describe('snap-config', () => {
           throw new Error('foo');
         });
 
-      await applyConfig();
+      await applyConfig(getArgv());
       expect(mockLogError).toHaveBeenCalled();
       expect(process.exit).toHaveBeenCalledWith(1);
     });
@@ -177,7 +193,7 @@ describe('snap-config', () => {
         .mockImplementationOnce(async () => getPackageJson())
         .mockImplementationOnce(async () => 'foo');
 
-      await applyConfig();
+      await applyConfig(getArgv());
       expect(mockLogError).toHaveBeenCalled();
       expect(process.exit).toHaveBeenCalledWith(1);
     });
@@ -192,37 +208,9 @@ describe('snap-config', () => {
           return { foo: 'bar' };
         });
 
-      await applyConfig();
+      await applyConfig(getArgv());
       expect(mockLogError).toHaveBeenCalled();
       expect(process.exit).toHaveBeenCalledWith(1);
-    });
-  });
-
-  describe('applyConfig', () => {
-    it('sets default values correctly', async () => {
-      fsMock = jest.spyOn(fs, 'readFile')
-        .mockImplementationOnce(async () => getPackageJson())
-        .mockImplementationOnce(async () => {
-          return {};
-        });
-
-      await applyConfig();
-      expect(builders.src.default).toStrictEqual('index.js');
-      expect(builders.bundle.default).toStrictEqual('dist/foo.js');
-      expect(builders.dist.default).toStrictEqual('dist/');
-    });
-
-    it('config file overrides package.json fields', async () => {
-      const customConfig = {
-        'src': 'custom.js',
-      };
-
-      fsMock = jest.spyOn(fs, 'readFile')
-        .mockImplementationOnce(async () => getPackageJson())
-        .mockImplementationOnce(async () => customConfig);
-
-      await applyConfig();
-      expect(builders.src.default).toStrictEqual('custom.js');
     });
   });
 });

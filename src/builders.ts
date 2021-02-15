@@ -1,6 +1,6 @@
-import { Builder } from './types/package';
+import { Builders } from './types/package';
 
-const builders: Builder = {
+const builders: Builders = {
   src: {
     alias: 's',
     describe: 'Source file',

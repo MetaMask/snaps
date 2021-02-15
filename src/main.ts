@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 import { cli } from './cli';
-import { applyConfig } from './utils';
 import commands from './cmds';
 
 global.snaps = {
@@ -12,7 +11,6 @@ global.snaps = {
 main();
 
 // application
-async function main(): Promise<void> {
-  await applyConfig();
+function main(): void {
   cli(process.argv, commands);
 }

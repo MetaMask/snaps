@@ -1,6 +1,7 @@
 import yargs from 'yargs/yargs';
 import { SnapsCliGlobals } from './types/package';
-import { assignGlobals, sanitizeInputs } from './utils';
+import { applyConfig, sanitizeInputs, setSnapGlobals } from './utils';
+import builders from './builders';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -25,26 +26,21 @@ export function cli(argv: string[], commands: any): void {
 
     .command(commands)
 
-    .option('verboseErrors', {
-      alias: ['v', 'verboseErrors'],
-      type: 'boolean',
-      describe: 'Display original errors',
-      required: false,
-      default: false,
-    })
+    .option('verboseErrors', builders.verboseErrors)
 
-    .option('suppressWarnings', {
-      alias: ['sw', 'suppressWarnings'],
-      type: 'boolean',
-      describe: 'Suppress warnings',
-      required: false,
-      default: false,
-    })
+    .option('suppressWarnings', builders.suppressWarnings)
 
     .strict()
 
-    .middleware((yargsArgv) => {
-      assignGlobals(yargsArgv);
+    .middleware(async (yargsArgv) => {
+      // Some globals affect error logging, and applyConfig may error.
+      // Therefore, we set globals from the yargs argv object before applying
+      // defaults from the config, and then set the globals again after, to
+      // ensure that inline options are preferred over any config files.
+      // This is ugly, but cheap.
+      setSnapGlobals(yargsArgv);
+      await applyConfig(yargsArgv);
+      setSnapGlobals(yargsArgv);
       sanitizeInputs(yargsArgv);
     })
 
