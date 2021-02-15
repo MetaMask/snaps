@@ -1,39 +1,54 @@
 import readline from 'readline';
 
-let rl: readline.Interface;
+let singletonReadlineInterface: readline.Interface;
 
-function openPrompt(): void {
-  rl = readline.createInterface({
+interface PromptArgs {
+  question: string;
+  defaultValue?: string;
+  shouldClose?: boolean;
+  readlineInterface?: readline.Interface;
+}
+
+export function openPrompt(): void {
+  singletonReadlineInterface = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
   });
 }
 
-export function prompt(question: string, def?: string, shouldClose?: boolean): Promise<string> {
-  if (!rl) {
+export function prompt({
+  question,
+  defaultValue,
+  shouldClose,
+  readlineInterface = singletonReadlineInterface,
+}: PromptArgs): Promise<string> {
+  let _readlineInterface = readlineInterface;
+  if (!_readlineInterface) {
     openPrompt();
+    _readlineInterface = singletonReadlineInterface;
   }
+
   return new Promise((resolve, _reject) => {
     let queryString = `${question} `;
-    if (def) {
-      queryString += `(${def}) `;
+    if (defaultValue) {
+      queryString += `(${defaultValue}) `;
     }
-    rl.question(queryString, (answer: string) => {
+    _readlineInterface.question(queryString, (answer: string) => {
       if (!answer || !answer.trim()) {
-        if (def !== undefined) {
-          resolve(def);
+        if (defaultValue !== undefined) {
+          resolve(defaultValue);
         }
       }
       resolve(answer.trim());
       if (shouldClose) {
-        rl.close();
+        _readlineInterface.close();
       }
     });
   });
 }
 
-export function closePrompt(): void {
-  if (rl) {
-    rl.close();
+export function closePrompt(readlineInterface = singletonReadlineInterface): void {
+  if (readlineInterface) {
+    readlineInterface.close();
   }
 }

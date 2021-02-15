@@ -1,16 +1,12 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-/* global lockdown, Compartment, BigInt */
-
 import { parentPort } from 'worker_threads';
 import { readFileSync } from 'fs';
 import cryptography from 'crypto';
 
-// eslint-disable-next-line import/no-unassigned-import
+// eslint-disable-next-line import/no-unassigned-import, @typescript-eslint/no-require-imports
 require('ses/lockdown');
 
-declare let lockdown: any;
-declare let Compartment: any;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+declare let lockdown: any, Compartment: any;
 
 lockdown({
   mathTaming: 'unsafe',

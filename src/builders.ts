@@ -88,7 +88,7 @@ const builders: Builder = {
   },
 
   verboseErrors: {
-    alias: ['v', 'verbose'],
+    alias: ['v', 'verboseErrors'],
     type: 'boolean',
     describe: 'Display original errors',
     required: false,
@@ -96,7 +96,7 @@ const builders: Builder = {
   },
 
   suppressWarnings: {
-    alias: 'sw',
+    alias: ['sw', 'suppressWarnings'],
     type: 'boolean',
     describe: 'Suppress warnings',
     required: false,

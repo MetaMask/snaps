@@ -2,6 +2,7 @@ module.exports = {
   extends: [
     '@metamask/eslint-config',
     '@metamask/eslint-config/config/nodejs',
+    '@metamask/eslint-config/config/jest',
   ],
   plugins: [
     'json',
@@ -30,6 +31,24 @@ module.exports = {
     },
     {
       files: [
+        'src/cmds/eval/evalWorker.ts',
+      ],
+      globals: {
+        lockdown: true,
+        Compartment: true,
+        BigInt: true,
+      },
+    },
+    {
+      files: [
+        'src/main.ts',
+      ],
+      rules: {
+        'node/shebang': 'off',
+      },
+    },
+    {
+      files: [
         'examples/**/*.js',
       ],
       env: {
@@ -40,6 +59,15 @@ module.exports = {
       },
       rules: {
         'no-alert': 'off',
+        'import/no-unresolved': 'off',
+      },
+    },
+    {
+      files: [
+        'test/**/*.js',
+      ],
+      rules: {
+        'node/no-callback-literal': 'off',
       },
     },
   ],

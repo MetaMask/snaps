@@ -131,7 +131,7 @@ async function buildWeb3Wallet(argv: YargsArgs): Promise<[
   let initialPermissions: Record<string, unknown> = defaultPerms;
 
   try {
-    const c = await prompt(`Use all default Snap manifest values?`, 'yes', false);
+    const c = await prompt({ question: `Use all default Snap manifest values?`, defaultValue: 'yes', shouldClose: false });
     if (c && ['y', 'yes'].includes(c.toLowerCase())) {
       console.log('Using default values...');
       try {
@@ -153,7 +153,7 @@ async function buildWeb3Wallet(argv: YargsArgs): Promise<[
   let noValidPort = true;
   while (noValidPort) {
     // eslint-disable-next-line require-atomic-updates
-    const inputPort = (await prompt(`local server port:`, port.toString(10)));
+    const inputPort = (await prompt({ question: `local server port:`, defaultValue: port.toString(10) }));
     let err, tempPort;
     try {
       const parsedPort = Number.parseInt(inputPort, 10);
@@ -174,7 +174,7 @@ async function buildWeb3Wallet(argv: YargsArgs): Promise<[
   let invalidDist = true;
   while (invalidDist) {
     // eslint-disable-next-line require-atomic-updates
-    dist = await prompt(`output directory:`, dist);
+    dist = await prompt({ question: `output directory:`, defaultValue: dist });
     try {
       dist = trimPathString(dist);
       await fs.mkdir(dist);
@@ -191,7 +191,7 @@ async function buildWeb3Wallet(argv: YargsArgs): Promise<[
 
   let invalidPermissions = true;
   while (invalidPermissions) {
-    const inputPermissions = (await prompt(`initialPermissions: [perm1 perm2 ...] ([alert])`));
+    const inputPermissions = (await prompt({ question: `initialPermissions: [perm1 perm2 ...] ([alert])` }));
     let error;
     try {
       if (inputPermissions) {
@@ -254,7 +254,7 @@ async function validateEmptyDir(): Promise<void> {
         }, '')}`,
     );
 
-    const continueInput = await prompt(`Continue?`, 'yes');
+    const continueInput = await prompt({ question: `Continue?`, defaultValue: 'yes' });
     const shouldContinue = continueInput && ['y', 'yes'].includes(continueInput.toLowerCase());
 
     if (!shouldContinue) {

@@ -74,4 +74,3 @@ async function watch(argv: YargsArgs): Promise<void> {
   watcher.add(`${root}`);
   console.log(`Watching '${root}' for changes...`);
 }
-
