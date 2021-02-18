@@ -10,6 +10,10 @@
   ],
   "scripts": {
     "link-packages": "./scripts/link-packages.sh",
+    "version-bump": "./scripts/version-bump.sh",
+    "push-version-bump": "./scripts/push-version-bump.sh",
+    "release": "yarn version-bump && yarn push-version-bump",
+    "publish": "lerna publish from-package",
     "prepare": "lerna run prepare"
   },
   "devDependencies": {}
