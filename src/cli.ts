@@ -1,4 +1,6 @@
-import yargs from 'yargs/yargs';
+import yargs, { Arguments } from 'yargs';
+import yargsType from 'yargs/yargs';
+
 import { SnapsCliGlobals } from './types/package';
 import { applyConfig, sanitizeInputs, setSnapGlobals } from './utils';
 import builders from './builders';
@@ -12,8 +14,9 @@ declare global {
 }
 
 export function cli(argv: string[], commands: any): void {
+  const rawArgv = argv.slice(2);
   // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-  yargs(argv.slice(2))
+  yargs(rawArgv)
 
     .usage('Usage: $0 <command> [options]')
 
@@ -32,17 +35,14 @@ export function cli(argv: string[], commands: any): void {
 
     .strict()
 
-    .middleware(async (yargsArgv) => {
-      // Some globals affect error logging, and applyConfig may error.
-      // Therefore, we set globals from the yargs argv object before applying
-      // defaults from the config, and then set the globals again after, to
-      // ensure that inline options are preferred over any config files.
-      // This is ugly, but cheap.
-      setSnapGlobals(yargsArgv);
-      await applyConfig(yargsArgv);
+    // Typecast: The @types/yargs type for .middleware is incorrect.
+    // yargs middleware functions receive the yargs instance as a second parameter.
+    // ref: https://yargs.js.org/docs/#api-reference-middlewarecallbacks-applybeforevalidation
+    .middleware(((yargsArgv: Arguments, yargsInstance: typeof yargsType) => {
+      applyConfig(rawArgv, yargsArgv, yargsInstance);
       setSnapGlobals(yargsArgv);
       sanitizeInputs(yargsArgv);
-    })
+    }) as any, true)
 
     .fail((msg: string, err: Error, _yargs) => {
       console.error(msg || err.message);

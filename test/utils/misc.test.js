@@ -83,7 +83,7 @@ describe('misc', () => {
     sw: false,
     'suppress-warnings': false,
     src: '.',
-    s: 'index.js',
+    s: './index.js', // now handled by yargs itself
     dist: 'dist',
     d: 'dist',
     outfileName: 'bundle.js',

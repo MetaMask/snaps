@@ -1,38 +1,9 @@
-const { promises: fs } = require('fs');
+const fs = require('fs');
 const { default: builders } = require('../../dist/src/builders');
 const { applyConfig } = require('../../dist/src/utils/snap-config');
 const misc = require('../../dist/src/utils/misc');
 
-const getDefaultWeb3Wallet = () => {
-  return {
-    'bundle': {
-      'local': 'dist/foo.js',
-      'url': 'http://localhost:8084/dist/bundle.js',
-    },
-    'initialPermissions': {
-      'confirm': {},
-    },
-  };
-};
-
-const getPackageJson = async (
-  main = 'index.js',
-  web3Wallet = getDefaultWeb3Wallet(),
-) => {
-  return {
-    main,
-    web3Wallet,
-  };
-};
-
-const getDefaultSnapConfig = () => {
-  return {
-    'port': 8084,
-    'outfileName': 'test.js',
-  };
-};
-
-const getArgv = ({
+const getYargsArgv = ({
   bundle = builders.bundle.default,
   dist = builders.dist.default,
   outfileName = builders.outfileName.default,
@@ -48,9 +19,31 @@ const getArgv = ({
   };
 };
 
-describe('snap-config', () => {
-  let fsMock;
+const getYargsInstance = ({ keys = {}, aliases = {} } = {}) => {
+  return {
+    getOptions: () => {
+      return {
+        key: {
+          version: true,
+          verboseErrors: true,
+          suppressWarnings: true,
+          help: true,
+          ...keys,
+        },
+        alias: {
+          verboseErrors: ['v'],
+          suppressWarnings: ['sw'],
+          help: ['h'],
+          ...aliases,
+        },
+      };
+    },
+  };
+};
 
+jest.mock('fs');
+
+describe('snap-config', () => {
   beforeAll(() => {
     jest.spyOn(console, 'error').mockImplementation(() => undefined);
     jest.spyOn(process, 'exit').mockImplementation(() => undefined);
@@ -70,147 +63,92 @@ describe('snap-config', () => {
   });
 
   afterEach(() => {
-    fsMock.mockRestore();
-    fsMock = null;
     delete global.snaps;
   });
 
-  describe('applyConfig - uses package.json in absence of config file', () => {
-    it('sets default packageJSON correctly', async () => {
-      fsMock = jest.spyOn(fs, 'readFile')
-        .mockImplementationOnce(async () => getPackageJson())
-        .mockImplementationOnce(async () => {
-          return {};
-        });
+  it('applies a valid config file', () => {
+    const outfileName = 'foo.js';
+    const dist = 'build';
+    fs.readFileSync.mockReturnValueOnce({ dist, outfileName });
 
-      const argv = getArgv();
-      await applyConfig(argv);
+    const argv = getYargsArgv();
+    applyConfig(
+      ['build'],
+      argv,
+      getYargsInstance({ keys: { outfileName: true, dist: true } }),
+    );
 
-      expect(argv.src).toStrictEqual(builders.src.default);
-      expect(argv.bundle).toStrictEqual('dist/foo.js');
-      expect(argv.dist).toStrictEqual('dist/');
-    });
-
-    it('sets web3wallet with no local property correctly', async () => {
-      const main = 'custom.js';
-      const web3Wallet = {
-        'bundle': {
-          'url': 'http://localhost:8084/dist/bundle.js',
-        },
-        'initialPermissions': {
-          'confirm': {},
-        },
-      };
-
-      fsMock = jest.spyOn(fs, 'readFile')
-        .mockImplementationOnce(async () => getPackageJson(main, web3Wallet))
-        .mockImplementationOnce(async () => {
-          return {};
-        });
-
-      const argv = getArgv();
-      await applyConfig(argv);
-
-      expect(argv.src).toStrictEqual(main);
-      expect(argv.bundle).toStrictEqual(builders.bundle.default);
-      expect(argv.dist).toStrictEqual(builders.dist.default);
-    });
-
-    it('sets dist field correctly in edge case', async () => {
-      const main = 'custom.js';
-      const web3Wallet = {
-        'bundle': {
-          'local': 'foo.js',
-          'url': 'http://localhost:8084/dist/bundle.js',
-        },
-        'initialPermissions': {
-          'confirm': {},
-        },
-      };
-
-      fsMock = jest.spyOn(fs, 'readFile')
-        .mockImplementationOnce(async () => getPackageJson(main, web3Wallet))
-        .mockImplementationOnce(async () => {
-          return {};
-        });
-
-      const argv = getArgv();
-      await applyConfig(argv);
-
-      expect(argv.src).toStrictEqual(main);
-      expect(argv.bundle).toStrictEqual(web3Wallet.bundle.local);
-      expect(argv.dist).toStrictEqual('.');
-    });
-
-    it('package.json read error is handled correctly', async () => {
-      const mockLogError = jest.spyOn(misc, 'logError');
-      jest.spyOn(console, 'warn').mockImplementation();
-
-      fsMock = jest.spyOn(fs, 'readFile')
-        .mockImplementationOnce(async () => {
-          throw new Error('foo');
-        });
-
-      await applyConfig(getArgv());
-      expect(mockLogError).toHaveBeenCalled();
-      expect(process.exit).toHaveBeenCalledWith(1);
-    });
+    expect(argv.dist).toStrictEqual(dist);
+    expect(argv.outfileName).toStrictEqual(outfileName);
   });
 
-  describe('applyConfig - prefers config file over package.json', () => {
-    it('finds and uses config file correctly', async () => {
-      fsMock = jest.spyOn(fs, 'readFile')
-        .mockImplementationOnce(async () => getPackageJson())
-        .mockImplementationOnce(async () => getDefaultSnapConfig());
+  it('applies a valid config file, but ignores keys given on the command line', () => {
+    const outfileName = 'foo.js';
+    const configDist = 'build';
+    fs.readFileSync.mockReturnValueOnce({ dist: configDist, outfileName });
 
-      const argv = getArgv();
-      await applyConfig(argv);
+    const argvDist = 'build2';
+    const argv = getYargsArgv({ dist: argvDist });
+    applyConfig(
+      ['build', '--dist', argvDist],
+      argv,
+      getYargsInstance({ keys: { outfileName: true, dist: true } }),
+    );
 
-      expect(argv.port).toStrictEqual(8084);
-      expect(argv.outfileName).toStrictEqual('test.js');
+    expect(argv.dist).toStrictEqual(argvDist);
+    expect(argv.outfileName).toStrictEqual(outfileName);
+  });
+
+  it('handles config file read errors (ENOENT)', () => {
+    const mockLogError = jest.spyOn(misc, 'logError');
+    jest.spyOn(console, 'warn').mockImplementation();
+
+    fs.readFileSync.mockImplementationOnce(() => {
+      const err = new Error('foo');
+      err.code = 'ENOENT';
+      throw err;
     });
 
-    it('config file read error is handled correctly', async () => {
-      const mockLogError = jest.spyOn(misc, 'logError');
-      jest.spyOn(console, 'warn').mockImplementation();
+    const argv = getYargsArgv();
+    applyConfig(['build'], argv, getYargsInstance());
 
-      fsMock = jest.spyOn(fs, 'readFile')
-        .mockImplementationOnce(async () => getPackageJson())
-        .mockImplementationOnce(async () => {
-          throw new Error('foo');
-        });
+    expect(argv).toStrictEqual(getYargsArgv());
+    expect(mockLogError).not.toHaveBeenCalled();
+    expect(process.exit).not.toHaveBeenCalled();
+  });
 
-      await applyConfig(getArgv());
-      expect(mockLogError).toHaveBeenCalled();
-      expect(process.exit).toHaveBeenCalledWith(1);
+  it('handles config file read errors (non-ENOENT)', () => {
+    const mockLogError = jest.spyOn(misc, 'logError');
+    jest.spyOn(console, 'warn').mockImplementation();
+
+    fs.readFileSync.mockImplementationOnce(() => {
+      throw new Error('foo');
     });
 
-    it('parseable but invalid config file is handled correctly', async () => {
-      const mockLogError = jest.spyOn(misc, 'logError');
-      jest.spyOn(console, 'warn').mockImplementation();
+    applyConfig(['build'], getYargsArgv(), getYargsInstance());
+    expect(mockLogError).toHaveBeenCalled();
+    expect(process.exit).toHaveBeenCalledWith(1);
+  });
 
-      fsMock = jest.spyOn(fs, 'readFile')
-        .mockImplementationOnce(async () => getPackageJson())
-        .mockImplementationOnce(async () => 'foo');
+  it('handles parseable but invalid config file', () => {
+    const mockLogError = jest.spyOn(misc, 'logError');
+    jest.spyOn(console, 'warn').mockImplementation();
 
-      await applyConfig(getArgv());
-      expect(mockLogError).toHaveBeenCalled();
-      expect(process.exit).toHaveBeenCalledWith(1);
-    });
+    fs.readFileSync.mockReturnValueOnce('foo');
 
-    it('valid config file with invalid property is handled correctly', async () => {
-      const mockLogError = jest.spyOn(misc, 'logError');
-      jest.spyOn(console, 'warn').mockImplementation();
+    applyConfig(['build'], getYargsArgv(), getYargsInstance());
+    expect(mockLogError).toHaveBeenCalled();
+    expect(process.exit).toHaveBeenCalledWith(1);
+  });
 
-      fsMock = jest.spyOn(fs, 'readFile')
-        .mockImplementationOnce(async () => getPackageJson())
-        .mockImplementationOnce(async () => {
-          return { foo: 'bar' };
-        });
+  it('handles valid config file with invalid property', () => {
+    const mockLogError = jest.spyOn(misc, 'logError');
+    jest.spyOn(console, 'warn').mockImplementation();
 
-      await applyConfig(getArgv());
-      expect(mockLogError).toHaveBeenCalled();
-      expect(process.exit).toHaveBeenCalledWith(1);
-    });
+    fs.readFileSync.mockReturnValueOnce({ foo: 'bar' });
+
+    applyConfig(['build'], getYargsArgv(), getYargsInstance());
+    expect(mockLogError).toHaveBeenCalled();
+    expect(process.exit).toHaveBeenCalledWith(1);
   });
 });

@@ -5,7 +5,8 @@ const builders: Builders = {
     alias: 's',
     describe: 'Source file',
     type: 'string',
-    required: true,
+    demandOption: true,
+    normalize: true,
     default: 'index.js',
   },
 
@@ -13,15 +14,17 @@ const builders: Builders = {
     alias: 'd',
     describe: 'Output directory',
     type: 'string',
-    required: true,
+    demandOption: true,
+    normalize: true,
     default: 'dist',
   },
 
   bundle: {
-    alias: ['plugin', 'p', 'b'],
+    alias: 'b',
     describe: 'Snap bundle file',
     type: 'string',
-    required: true,
+    demandOption: true,
+    normalize: true,
     default: 'dist/bundle.js',
   },
 
@@ -29,7 +32,8 @@ const builders: Builders = {
     alias: 'r',
     describe: 'Server root directory',
     type: 'string',
-    required: true,
+    demandOption: true,
+    normalize: true,
     default: '.',
   },
 
@@ -37,14 +41,14 @@ const builders: Builders = {
     alias: 'p',
     describe: 'Local server port for testing',
     type: 'number',
-    required: true,
+    demandOption: true,
     default: 8081,
   },
 
   sourceMaps: {
     describe: 'Whether builds include sourcemaps',
     type: 'boolean',
-    required: false,
+    demandOption: false,
     default: false,
   },
 
@@ -52,7 +56,7 @@ const builders: Builders = {
     alias: 'strip',
     describe: 'Whether to remove code comments from the build output',
     type: 'boolean',
-    required: false,
+    demandOption: false,
     default: false,
   },
 
@@ -60,7 +64,7 @@ const builders: Builders = {
     alias: 'n',
     describe: 'Output file name',
     type: 'string',
-    required: false,
+    demandOption: false,
     default: 'bundle.js',
   },
 
@@ -68,14 +72,14 @@ const builders: Builders = {
     alias: 'm',
     describe: 'Validate project package.json as a Snap manifest',
     type: 'boolean',
-    required: false,
+    demandOption: false,
     default: true,
   },
 
   populate: {
     describe: 'Update Snap manifest properties of package.json',
     type: 'boolean',
-    required: false,
+    demandOption: false,
     default: true,
   },
 
@@ -83,23 +87,23 @@ const builders: Builders = {
     alias: 'e',
     describe: 'Attempt to evaluate Snap bundle in SES',
     type: 'boolean',
-    required: false,
+    demandOption: false,
     default: true,
   },
 
   verboseErrors: {
-    alias: ['v', 'verboseErrors'],
+    alias: 'v',
     type: 'boolean',
     describe: 'Display original errors',
-    required: false,
+    demandOption: false,
     default: false,
   },
 
   suppressWarnings: {
-    alias: ['sw', 'suppressWarnings'],
+    alias: 'sw',
     type: 'boolean',
     describe: 'Suppress warnings',
-    required: false,
+    demandOption: false,
     default: false,
   },
 
@@ -107,7 +111,7 @@ const builders: Builders = {
     alias: 'env',
     describe: 'The execution environment of the plugin.',
     type: 'string',
-    required: false,
+    demandOption: false,
     default: 'worker',
     choices: ['worker'],
   },
