@@ -2,7 +2,7 @@
   "version": "0.0.1",
   "command": {
     "publish": {
-      "registry": "https://npm.pkg.github.com"
+      "registry": "https://registry.npmjs.org"
     }
   },
   "packages": [
