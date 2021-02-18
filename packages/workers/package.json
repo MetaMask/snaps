@@ -6,7 +6,9 @@
   "files": [
     "dist/"
   ],
-  "private": true,
+  "publishConfig": {
+    "access": "restricted"
+  },
   "engines": {
     "node": ">=14.15.1"
   },

@@ -7,7 +7,9 @@
     "dist/"
   ],
   "author": "Erik Marks <rekmarks@protonmail.com>",
-  "private": true,
+  "publishConfig": {
+    "access": "restricted"
+  },
   "engines": {
     "node": ">=14.15.1"
   },

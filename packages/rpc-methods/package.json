@@ -8,7 +8,9 @@
   ],
   "repository": "git@github.com:MetaMask/snaps-skunkworks.git",
   "author": "Erik Marks <rekmarks@protonmail.com>",
-  "private": true,
+  "publishConfig": {
+    "access": "restricted"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint . --ext ts,js,json",
