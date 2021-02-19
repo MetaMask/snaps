@@ -33,5 +33,4 @@ export interface Builders {
   readonly eval: Readonly<Options>;
   readonly verboseErrors: Readonly<Options>;
   readonly suppressWarnings: Readonly<Options>;
-  readonly environment: Readonly<Options>;
 }

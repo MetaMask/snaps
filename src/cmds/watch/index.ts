@@ -13,7 +13,6 @@ module.exports.builder = (yarg: yargs.Argv) => {
     .option('dist', builders.dist)
     .option('outfileName', builders.outfileName)
     .option('sourceMaps', builders.sourceMaps)
-    .option('environment', builders.environment)
     .option('stripComments', builders.stripComments);
 };
 module.exports.handler = (argv: YargsArgs) => watch(argv);

@@ -106,15 +106,6 @@ const builders: Builders = {
     demandOption: false,
     default: false,
   },
-
-  environment: {
-    alias: 'env',
-    describe: 'The execution environment of the plugin.',
-    type: 'string',
-    demandOption: false,
-    default: 'worker',
-    choices: ['worker'],
-  },
 };
 
 export default builders;

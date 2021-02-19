@@ -46,8 +46,6 @@ describe('misc', () => {
     'outfile-name': 'bundle.js',
     sourceMaps: false,
     'source-maps': false,
-    environment: 'worker',
-    env: 'worker',
     stripComments: false,
     strip: false,
     'strip-comments': false,

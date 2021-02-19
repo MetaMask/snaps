@@ -19,7 +19,6 @@ module.exports.builder = (yarg: yargs.Argv) => {
     .option('eval', builders.eval)
     .option('manifest', builders.manifest)
     .option('populate', builders.populate)
-    .option('environment', builders.environment)
     .implies('populate', 'manifest');
 };
 module.exports.handler = (argv: YargsArgs) => build(argv);
