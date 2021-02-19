@@ -1,6 +1,6 @@
 import { parentPort } from 'worker_threads';
 import { readFileSync } from 'fs';
-import cryptography from 'crypto';
+import crypto from 'crypto';
 
 // eslint-disable-next-line import/no-unassigned-import, @typescript-eslint/no-require-imports
 require('ses/lockdown');
@@ -35,7 +35,7 @@ function getMockApi() {
     },
     BigInt,
     setTimeout,
-    cryptography,
+    crypto,
     SubtleCrypto: () => undefined,
     fetch: () => true,
     XMLHttpRequest: () => true,
@@ -44,7 +44,7 @@ function getMockApi() {
     Date,
 
     window: {
-      cryptography,
+      crypto,
       SubtleCrypto: () => undefined,
       fetch: () => true,
       XMLHttpRequest: () => true,
