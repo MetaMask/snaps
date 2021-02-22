@@ -2,7 +2,7 @@ import { JsonRpcEngineEndCallback, JsonRpcRequest, PendingJsonRpcResponse } from
 import { ethErrors } from 'eth-rpc-errors';
 import { PermittedHandlerExport } from '../../types';
 
-const updateStateExport: PermittedHandlerExport<[Record<string, unknown>], null, UpdateStateHooks> = {
+const updateStateExport: PermittedHandlerExport<UpdateStateHooks, [Record<string, unknown>], null> = {
   methodNames: ['snap_updateState'],
   implementation: updateStateHandler,
   methodDescription: 'Update the state of the snap.',

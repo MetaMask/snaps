@@ -1,7 +1,12 @@
-import confirmExport from './confirm';
-import invokePlugin from './invokePlugin';
+import confirmExport, { ConfirmHooks } from './confirm';
+import invokePlugin, { InvokePluginHooks } from './invokePlugin';
 
-export = [
+export type RestrictedRpcMethodHooks = (
+  ConfirmHooks &
+  InvokePluginHooks
+);
+
+export const handlers = [
   confirmExport,
   invokePlugin,
 ];

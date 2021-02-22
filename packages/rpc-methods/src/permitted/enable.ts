@@ -20,7 +20,7 @@ export interface EnableWalletResult {
   errors?: SerializedEthereumRpcError[];
 }
 
-const EnableWalletExport: PermittedHandlerExport<[IRequestedPermissions], EnableWalletResult, EnableWalletHooks> = {
+const EnableWalletExport: PermittedHandlerExport<EnableWalletHooks, [IRequestedPermissions], EnableWalletResult> = {
   methodNames: ['wallet_enable'],
   implementation: enableWalletHandler,
   methodDescription: 'Installs the requested plugins if they are permitted.',

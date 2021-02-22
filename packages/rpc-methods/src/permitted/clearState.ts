@@ -1,7 +1,7 @@
 import { PendingJsonRpcResponse, JsonRpcEngineEndCallback } from 'json-rpc-engine';
 import { PermittedHandlerExport } from '../../types';
 
-const clearStateExport: PermittedHandlerExport<void, null, ClearStateHooks> = {
+const clearStateExport: PermittedHandlerExport<ClearStateHooks, void, null> = {
   methodNames: ['snap_clearState'],
   implementation: clearStateHandler,
   methodDescription: 'Clear the state of the snap.',

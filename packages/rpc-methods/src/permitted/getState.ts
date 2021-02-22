@@ -1,7 +1,7 @@
 import { PendingJsonRpcResponse, JsonRpcEngineEndCallback } from 'json-rpc-engine';
 import { PermittedHandlerExport } from '../../types';
 
-const getStateExport: PermittedHandlerExport<void, Record<string, unknown>, GetStateHooks> = {
+const getStateExport: PermittedHandlerExport<GetStateHooks, void, Record<string, unknown>> = {
   methodNames: ['snap_getState'],
   implementation: getStateHandler,
   methodDescription: 'Get the state of the snap.',

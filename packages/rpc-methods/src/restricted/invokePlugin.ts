@@ -5,7 +5,7 @@ import { PLUGIN_PREFIX, PluginController } from '@mm-snap/controllers';
 import { RestrictedHandlerExport } from '../../types';
 import { isPlainObject } from '../utils';
 
-const invokePluginExport: RestrictedHandlerExport<[Record<string, unknown>], unknown, InvokePluginHooks> = {
+const invokePluginExport: RestrictedHandlerExport<InvokePluginHooks, [Record<string, unknown>], unknown> = {
   methodNames: [`${PLUGIN_PREFIX}*`],
   implementationGetter: invokePluginHandlerGetter,
   permissionDescription: 'Connect to plugin $1, and install it if not available yet.',
@@ -14,7 +14,6 @@ const invokePluginExport: RestrictedHandlerExport<[Record<string, unknown>], unk
 export default invokePluginExport;
 
 export interface InvokePluginHooks {
-
   getPlugin: PluginController['get'];
   addPlugin: PluginController['add'];
   getPluginRpcHandler: PluginController['getRpcMessageHandler'];

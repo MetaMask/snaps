@@ -4,7 +4,7 @@ import { IRequestedPermissions } from 'rpc-cap/dist/src/@types';
 import { PermittedHandlerExport } from '../../types';
 import { handleInstallPlugins, InstallPluginsHook, InstallPluginsResult } from './common/pluginInstallation';
 
-const InstallPluginsExport: PermittedHandlerExport<[IRequestedPermissions], InstallPluginsResult, InstallPluginsHooks> = {
+const InstallPluginsExport: PermittedHandlerExport<InstallPluginsHooks, [IRequestedPermissions], InstallPluginsResult> = {
   methodNames: ['wallet_installPlugins'],
   implementation: installPluginsHandler,
   methodDescription: 'Installs the requested plugins if they are permitted.',

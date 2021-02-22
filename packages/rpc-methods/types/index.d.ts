@@ -7,11 +7,11 @@ import {
 import { AnnotatedJsonRpcEngine } from 'rpc-cap';
 
 export type HandlerMiddlewareFunction<T, U, V> = (
-  req: JsonRpcRequest<T>,
-  res: PendingJsonRpcResponse<U>,
+  req: JsonRpcRequest<U>,
+  res: PendingJsonRpcResponse<V>,
   next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
-  hooks: V,
+  hooks: T,
 ) => void | Promise<void>;
 
 export type RestrictedHandlerMiddlewareFunction<T, U> = (
@@ -22,7 +22,7 @@ export type RestrictedHandlerMiddlewareFunction<T, U> = (
   engine: AnnotatedJsonRpcEngine,
 ) => void | Promise<void>;
 
-export type RestrictedHandlerMiddlewareGetter<T, U, V> = (hooks: V) => RestrictedHandlerMiddlewareFunction<T, U>;
+export type RestrictedHandlerMiddlewareGetter<T, U, V> = (hooks: T) => RestrictedHandlerMiddlewareFunction<U, V>;
 
 interface BaseHandlerExport {
   methodNames: string[];

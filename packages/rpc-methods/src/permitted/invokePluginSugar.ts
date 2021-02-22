@@ -4,7 +4,7 @@ import { PLUGIN_PREFIX } from '@mm-snap/controllers';
 import { PermittedHandlerExport } from '../../types';
 import { isPlainObject } from '../utils';
 
-const InvokePluginSugarExport: PermittedHandlerExport<JsonRpcRequest<unknown>, unknown, void> = {
+const InvokePluginSugarExport: PermittedHandlerExport<void, JsonRpcRequest<unknown>, unknown> = {
   methodNames: ['wallet_invokePlugin'],
   implementation: invokePluginSugarHandler,
   methodDescription: 'Call an RPC method of the specified plugin.',

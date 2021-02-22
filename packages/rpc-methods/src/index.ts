@@ -1,7 +1,2 @@
-import permitted from './permitted';
-import restricted from './restricted';
-
-export = {
-  permitted,
-  restricted,
-};
+export { handlers as permittedMethods, PermittedRpcMethodHooks } from './permitted';
+export { handlers as restrictedMethods, RestrictedRpcMethodHooks } from './restricted';

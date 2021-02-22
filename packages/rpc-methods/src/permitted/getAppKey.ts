@@ -2,7 +2,7 @@ import { JsonRpcEngineEndCallback, JsonRpcRequest, PendingJsonRpcResponse } from
 import { ethErrors } from 'eth-rpc-errors';
 import { PermittedHandlerExport } from '../../types';
 
-const getAppKeyExport: PermittedHandlerExport<[string], string, GetAppKeyHooks> = {
+const getAppKeyExport: PermittedHandlerExport<GetAppKeyHooks, [string], string> = {
   methodNames: ['snap_getAppKey'],
   implementation: getAppKeyHandler,
   methodDescription: 'Get the app key of the snap.',

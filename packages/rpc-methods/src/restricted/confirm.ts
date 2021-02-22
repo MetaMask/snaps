@@ -3,7 +3,7 @@ import { ethErrors } from 'eth-rpc-errors';
 import { AnnotatedJsonRpcEngine } from 'rpc-cap';
 import { RestrictedHandlerExport } from '../../types';
 
-const confirmExport: RestrictedHandlerExport<[string], boolean, ConfirmHooks> = {
+const confirmExport: RestrictedHandlerExport<ConfirmHooks, [string], boolean> = {
   methodNames: ['snap_confirm'],
   implementationGetter: confirmHandlerGetter,
   methodDescription: 'Display a plain browser confirmation to the user.',
