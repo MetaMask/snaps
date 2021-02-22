@@ -77,8 +77,6 @@ interface PluginControllerArgs {
 
 export class PluginController extends EventEmitter {
 
-  // TODO:2021:Q1 use generic obs-store and remove casts from every call
-  // related to the store or memStore
   public store: ObservableStore<PluginControllerState>;
 
   public memStore: ObservableStore<PluginControllerMemState>;
@@ -272,6 +270,9 @@ export class PluginController extends EventEmitter {
     });
     this.workerController.terminateAll();
     this._removeAllPermissionsFor(pluginNames);
+    this.memStore.updateState({
+      inlinePluginIsRunning: false,
+    });
   }
 
   /**
@@ -292,7 +293,7 @@ export class PluginController extends EventEmitter {
    */
   removePlugins(pluginNames: string[]): void {
     if (!Array.isArray(pluginNames)) {
-      throw new Error('Expected Array of plugin names.');
+      throw new Error('Expected array of plugin names.');
     }
 
     const state = this.store.getState();
@@ -383,7 +384,7 @@ export class PluginController extends EventEmitter {
 
       return this.getSerializable(pluginName) as SerializablePlugin;
     } catch (err) {
-      console.warn(`Error when adding plugin:`, err);
+      console.error(`Error when adding plugin.`, err);
       return { error: serializeError(err) };
     }
   }
