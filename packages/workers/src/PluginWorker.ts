@@ -34,6 +34,12 @@ lockdown({
   dateTaming: 'unsafe',
 });
 
+/**
+ * TODO:
+ * To support multiple plugins per worker, we need to duplex the rpcStream
+ * on this end, and pass MetaMaskInpageProvider the appropriate stream name.
+ */
+
 // init
 (function () {
   class Controller {
@@ -191,7 +197,7 @@ lockdown({
         });
         compartment.evaluate(sourceCode);
       } catch (err) {
-        // _removePlugin(pluginName) // TODO:WW
+        this.removePlugin(pluginName);
         console.error(
           `Error while running plugin '${pluginName}' in worker:${self.name}.`,
           err,
@@ -215,8 +221,17 @@ lockdown({
         this.pluginRpcHandlers.set(pluginName, func);
       };
 
+      // TODO: harden throws an error. Why?
       // return harden(pluginProvider as PluginProvider);
       return pluginProvider as PluginProvider;
+    }
+
+    /**
+     * Removes the plugin with the given name. Specifically:
+     * - Deletes the plugin's RPC handler, if any
+     */
+    private removePlugin(pluginName: string): void {
+      this.pluginRpcHandlers.delete(pluginName);
     }
   }
 
