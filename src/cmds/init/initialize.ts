@@ -152,22 +152,14 @@ async function buildWeb3Wallet(argv: YargsArgs): Promise<[
   // at this point, prompt the user for all values
   let noValidPort = true;
   while (noValidPort) {
-    // eslint-disable-next-line require-atomic-updates
     const inputPort = (await prompt({ question: `local server port:`, defaultValue: port.toString(10) }));
-    let err, tempPort;
-    try {
-      const parsedPort = Number.parseInt(inputPort, 10);
-      if (parsedPort && parsedPort > 0) {
-        tempPort = parsedPort;
-        noValidPort = false;
-        break;
-      }
-    } catch (portError) {
-      err = portError;
-    }
-    logError(`Invalid port '${port}, please retry.`, err);
-    if (tempPort !== undefined) {
-      port = tempPort;
+    const parsedPort = Number.parseInt(inputPort, 10);
+    if (parsedPort && parsedPort > 0) {
+      // eslint-disable-next-line require-atomic-updates
+      port = parsedPort;
+      noValidPort = false;
+    } else {
+      logError(`Invalid port '${port}, please retry.`);
     }
   }
 
@@ -179,10 +171,9 @@ async function buildWeb3Wallet(argv: YargsArgs): Promise<[
       dist = trimPathString(dist);
       await fs.mkdir(dist);
       invalidDist = false;
-      break;
     } catch (distError) {
       if (distError.code === 'EEXIST') {
-        break;
+        invalidDist = false;
       } else {
         logError(`Could not make directory '${dist}', please retry.`, distError);
       }
@@ -192,7 +183,6 @@ async function buildWeb3Wallet(argv: YargsArgs): Promise<[
   let invalidPermissions = true;
   while (invalidPermissions) {
     const inputPermissions = (await prompt({ question: `initialPermissions: [perm1 perm2 ...] ([alert])` }));
-    let error;
     try {
       if (inputPermissions) {
         initialPermissions = inputPermissions.split(' ')
@@ -211,10 +201,7 @@ async function buildWeb3Wallet(argv: YargsArgs): Promise<[
         invalidPermissions = false;
       }
     } catch (err) {
-      error = err;
-    }
-    if (invalidPermissions) {
-      logError(`Invalid permissions '${inputPermissions}', please retry.`, error);
+      logError(`Invalid permissions '${inputPermissions}', please retry.`, err);
     }
   }
 
