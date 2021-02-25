@@ -5,6 +5,9 @@ const getStateExport: PermittedHandlerExport<GetStateHooks, void, Record<string,
   methodNames: ['snap_getState'],
   implementation: getStateHandler,
   methodDescription: 'Get the state of the snap.',
+  hookNames: {
+    getSnapState: true,
+  },
 };
 export default getStateExport;
 

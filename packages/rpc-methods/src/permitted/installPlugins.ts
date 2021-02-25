@@ -8,6 +8,9 @@ const InstallPluginsExport: PermittedHandlerExport<InstallPluginsHooks, [IReques
   methodNames: ['wallet_installPlugins'],
   implementation: installPluginsHandler,
   methodDescription: 'Installs the requested plugins if they are permitted.',
+  hookNames: {
+    installPlugins: true,
+  },
 };
 export default InstallPluginsExport;
 

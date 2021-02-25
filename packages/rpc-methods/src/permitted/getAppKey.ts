@@ -6,6 +6,9 @@ const getAppKeyExport: PermittedHandlerExport<GetAppKeyHooks, [string], string> 
   methodNames: ['snap_getAppKey'],
   implementation: getAppKeyHandler,
   methodDescription: 'Get the app key of the snap.',
+  hookNames: {
+    getAppKey: true,
+  },
 };
 export default getAppKeyExport;
 

@@ -5,6 +5,9 @@ const clearStateExport: PermittedHandlerExport<ClearStateHooks, void, null> = {
   methodNames: ['snap_clearState'],
   implementation: clearStateHandler,
   methodDescription: 'Clear the state of the snap.',
+  hookNames: {
+    clearSnapState: true,
+  },
 };
 export default clearStateExport;
 

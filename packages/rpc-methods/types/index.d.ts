@@ -29,11 +29,23 @@ interface BaseHandlerExport {
   methodDescription: string;
 }
 
+/**
+ * We use a mapped object type in order to create a type that requires the
+ * presence of the names of all hooks for the given handler.
+ * This can then be used to select only the necessary hooks whenever a method
+ * is called for purposes of POLA.
+ */
+type HookNames<T> = {
+  [Property in keyof T]: true;
+};
+
 export interface PermittedHandlerExport<T, U, V> extends BaseHandlerExport {
   implementation: HandlerMiddlewareFunction<T, U, V>;
+  hookNames: HookNames<T>;
 }
 
 export interface RestrictedHandlerExport<T, U, V> extends BaseHandlerExport {
-  implementationGetter: RestrictedHandlerMiddlewareGetter<T, U, V>;
+  getImplementation: RestrictedHandlerMiddlewareGetter<T, U, V>;
   permissionDescription: string;
+  hookNames: HookNames<T>;
 }

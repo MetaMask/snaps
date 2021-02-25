@@ -8,6 +8,7 @@ const InvokePluginSugarExport: PermittedHandlerExport<void, JsonRpcRequest<unkno
   methodNames: ['wallet_invokePlugin'],
   implementation: invokePluginSugarHandler,
   methodDescription: 'Call an RPC method of the specified plugin.',
+  hookNames: undefined,
 };
 export default InvokePluginSugarExport;
 

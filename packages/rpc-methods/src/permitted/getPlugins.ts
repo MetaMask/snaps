@@ -6,6 +6,9 @@ const getPluginsExport: PermittedHandlerExport<GetPluginsHooks, void, InstalledP
   methodNames: ['wallet_getPlugins'],
   implementation: getPluginsHandler,
   methodDescription: 'Get requester\'s permitted and installed plugins.',
+  hookNames: {
+    getPlugins: true,
+  },
 };
 export default getPluginsExport;
 

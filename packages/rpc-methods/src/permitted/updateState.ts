@@ -6,6 +6,9 @@ const updateStateExport: PermittedHandlerExport<UpdateStateHooks, [Record<string
   methodNames: ['snap_updateState'],
   implementation: updateStateHandler,
   methodDescription: 'Update the state of the snap.',
+  hookNames: {
+    updateSnapState: true,
+  },
 };
 export default updateStateExport;
 

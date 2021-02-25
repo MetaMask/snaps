@@ -7,9 +7,14 @@ import { isPlainObject } from '../utils';
 
 const invokePluginExport: RestrictedHandlerExport<InvokePluginHooks, [Record<string, unknown>], unknown> = {
   methodNames: [`${PLUGIN_PREFIX}*`],
-  implementationGetter: invokePluginHandlerGetter,
+  getImplementation: invokePluginHandlerGetter,
   permissionDescription: 'Connect to plugin $1, and install it if not available yet.',
   methodDescription: 'Call an RPC method of the specified plugin.',
+  hookNames: {
+    'getPlugin': true,
+    'addPlugin': true,
+    'getPluginRpcHandler': true,
+  },
 };
 export default invokePluginExport;
 

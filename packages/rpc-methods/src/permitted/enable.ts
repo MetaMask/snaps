@@ -24,6 +24,11 @@ const EnableWalletExport: PermittedHandlerExport<EnableWalletHooks, [IRequestedP
   methodNames: ['wallet_enable'],
   implementation: enableWalletHandler,
   methodDescription: 'Installs the requested plugins if they are permitted.',
+  hookNames: {
+    getAccounts: true,
+    installPlugins: true,
+    requestPermissions: true,
+  },
 };
 export default EnableWalletExport;
 
