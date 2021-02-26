@@ -33,6 +33,17 @@ async function serve(argv: YargsArgs): Promise<void> {
   const server = http.createServer(async (req, res) => {
     await serveHandler(req, res, {
       public: root as string,
+      headers: [
+        {
+          source: '**/*',
+          headers: [
+            {
+              key: 'Cache-Control',
+              value: 'no-cache',
+            },
+          ],
+        },
+      ],
     });
   });
 
