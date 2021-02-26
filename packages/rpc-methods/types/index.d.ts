@@ -35,7 +35,7 @@ interface BaseHandlerExport {
  * This can then be used to select only the necessary hooks whenever a method
  * is called for purposes of POLA.
  */
-type HookNames<T> = {
+export type HookNames<T> = {
   [Property in keyof T]: true;
 };
 
