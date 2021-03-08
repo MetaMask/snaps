@@ -21,6 +21,7 @@
     "prepare": "yarn lint && yarn build"
   },
   "dependencies": {
+    "@metamask/key-tree": "^2.0.1",
     "@mm-snap/controllers": "^0.0.2",
     "eth-rpc-errors": "^4.0.2"
   },

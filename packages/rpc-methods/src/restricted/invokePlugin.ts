@@ -5,7 +5,7 @@ import { PLUGIN_PREFIX, PluginController } from '@mm-snap/controllers';
 import { RestrictedHandlerExport } from '../../types';
 import { isPlainObject } from '../utils';
 
-const invokePluginExport: RestrictedHandlerExport<InvokePluginHooks, [Record<string, unknown>], unknown> = {
+export const invokePluginHandler: RestrictedHandlerExport<InvokePluginHooks, [Record<string, unknown>], unknown> = {
   methodNames: [`${PLUGIN_PREFIX}*`],
   getImplementation: invokePluginHandlerGetter,
   permissionDescription: 'Connect to plugin $1, and install it if not available yet.',
@@ -16,7 +16,6 @@ const invokePluginExport: RestrictedHandlerExport<InvokePluginHooks, [Record<str
     'getPluginRpcHandler': true,
   },
 };
-export default invokePluginExport;
 
 export interface InvokePluginHooks {
   getPlugin: PluginController['get'];
@@ -25,7 +24,7 @@ export interface InvokePluginHooks {
 }
 
 function invokePluginHandlerGetter({ getPlugin, addPlugin, getPluginRpcHandler }: InvokePluginHooks) {
-  return async function invokePluginHandler(
+  return async function invokePlugin(
     req: JsonRpcRequest<[Record<string, unknown>]>,
     res: PendingJsonRpcResponse<unknown>,
     _next: unknown,

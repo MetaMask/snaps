@@ -3,7 +3,7 @@ import { ethErrors } from 'eth-rpc-errors';
 import { AnnotatedJsonRpcEngine } from 'rpc-cap';
 import { RestrictedHandlerExport } from '../../types';
 
-const confirmExport: RestrictedHandlerExport<ConfirmHooks, [string], boolean> = {
+export const confirmHandler: RestrictedHandlerExport<ConfirmHooks, [string], boolean> = {
   methodNames: ['snap_confirm'],
   getImplementation: confirmHandlerGetter,
   methodDescription: 'Display a plain browser confirmation to the user.',
@@ -12,7 +12,6 @@ const confirmExport: RestrictedHandlerExport<ConfirmHooks, [string], boolean> = 
     'showConfirmation': true,
   },
 };
-export default confirmExport;
 
 export interface ConfirmHooks {
 
@@ -25,7 +24,7 @@ export interface ConfirmHooks {
 }
 
 function confirmHandlerGetter({ showConfirmation }: ConfirmHooks) {
-  return async function confirmHandler(
+  return async function confirmImplementation(
     req: JsonRpcRequest<[string]>,
     res: PendingJsonRpcResponse<boolean>,
     _next: unknown,
