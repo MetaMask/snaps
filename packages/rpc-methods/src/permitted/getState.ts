@@ -1,15 +1,14 @@
 import { PendingJsonRpcResponse, JsonRpcEngineEndCallback } from 'json-rpc-engine';
 import { PermittedHandlerExport } from '../../types';
 
-const getStateExport: PermittedHandlerExport<GetStateHooks, void, Record<string, unknown>> = {
+export const getStateHandler: PermittedHandlerExport<GetStateHooks, void, Record<string, unknown>> = {
   methodNames: ['snap_getState'],
-  implementation: getStateHandler,
+  implementation: getState,
   methodDescription: 'Get the state of the snap.',
   hookNames: {
     getSnapState: true,
   },
 };
-export default getStateExport;
 
 export interface GetStateHooks {
 
@@ -20,7 +19,7 @@ export interface GetStateHooks {
   getSnapState: () => Promise<Record<string, unknown>>;
 }
 
-async function getStateHandler(
+async function getState(
   _req: unknown,
   res: PendingJsonRpcResponse<Record<string, unknown>>,
   _next: unknown,

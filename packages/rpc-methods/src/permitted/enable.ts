@@ -20,9 +20,9 @@ export interface EnableWalletResult {
   errors?: SerializedEthereumRpcError[];
 }
 
-const EnableWalletExport: PermittedHandlerExport<EnableWalletHooks, [IRequestedPermissions], EnableWalletResult> = {
+export const enableWalletHandler: PermittedHandlerExport<EnableWalletHooks, [IRequestedPermissions], EnableWalletResult> = {
   methodNames: ['wallet_enable'],
-  implementation: enableWalletHandler,
+  implementation: enableWallet,
   methodDescription: 'Installs the requested plugins if they are permitted.',
   hookNames: {
     getAccounts: true,
@@ -30,7 +30,6 @@ const EnableWalletExport: PermittedHandlerExport<EnableWalletHooks, [IRequestedP
     requestPermissions: true,
   },
 };
-export default EnableWalletExport;
 
 export interface EnableWalletHooks {
 
@@ -51,7 +50,7 @@ export interface EnableWalletHooks {
   requestPermissions: (permissions: IRequestedPermissions) => Promise<IOcapLdCapability[]>;
 }
 
-async function enableWalletHandler(
+async function enableWallet(
   req: JsonRpcRequest<[IRequestedPermissions]>,
   res: PendingJsonRpcResponse<EnableWalletResult>,
   _next: unknown,

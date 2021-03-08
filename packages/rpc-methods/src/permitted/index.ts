@@ -1,11 +1,11 @@
-import clearState, { ClearStateHooks } from './clearState';
-import enable, { EnableWalletHooks } from './enable';
-import getAppKey, { GetAppKeyHooks } from './getAppKey';
-import getPlugins, { GetPluginsHooks } from './getPlugins';
-import getState, { GetStateHooks } from './getState';
-import installPlugins, { InstallPluginsHooks } from './installPlugins';
-import invokePlugin from './invokePluginSugar';
-import updateState, { UpdateStateHooks } from './updateState';
+import { clearStateHandler, ClearStateHooks } from './clearState';
+import { enableWalletHandler, EnableWalletHooks } from './enable';
+import { getAppKeyHandler, GetAppKeyHooks } from './getAppKey';
+import { getPluginsHandler, GetPluginsHooks } from './getPlugins';
+import { getStateHandler, GetStateHooks } from './getState';
+import { installPluginsHandler, InstallPluginsHooks } from './installPlugins';
+import { invokePluginSugarHandler } from './invokePluginSugar';
+import { updateStateHandler, UpdateStateHooks } from './updateState';
 
 export type PermittedRpcMethodHooks = (
   ClearStateHooks &
@@ -18,12 +18,12 @@ export type PermittedRpcMethodHooks = (
 );
 
 export const handlers = [
-  clearState,
-  enable,
-  getAppKey,
-  getPlugins,
-  getState,
-  installPlugins,
-  invokePlugin,
-  updateState,
+  clearStateHandler,
+  enableWalletHandler,
+  getAppKeyHandler,
+  getPluginsHandler,
+  getStateHandler,
+  installPluginsHandler,
+  invokePluginSugarHandler,
+  updateStateHandler,
 ];

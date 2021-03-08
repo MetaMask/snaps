@@ -2,15 +2,14 @@ import { PendingJsonRpcResponse, JsonRpcEngineEndCallback } from 'json-rpc-engin
 import { InstalledPlugins } from '@mm-snap/controllers';
 import { PermittedHandlerExport } from '../../types';
 
-const getPluginsExport: PermittedHandlerExport<GetPluginsHooks, void, InstalledPlugins> = {
+export const getPluginsHandler: PermittedHandlerExport<GetPluginsHooks, void, InstalledPlugins> = {
   methodNames: ['wallet_getPlugins'],
-  implementation: getPluginsHandler,
+  implementation: getPluginsImplementation,
   methodDescription: 'Get requester\'s permitted and installed plugins.',
   hookNames: {
     getPlugins: true,
   },
 };
-export default getPluginsExport;
 
 export interface GetPluginsHooks {
 
@@ -20,7 +19,7 @@ export interface GetPluginsHooks {
   getPlugins: () => InstalledPlugins;
 }
 
-async function getPluginsHandler(
+async function getPluginsImplementation(
   _req: unknown,
   res: PendingJsonRpcResponse<InstalledPlugins>,
   _next: unknown,

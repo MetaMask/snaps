@@ -2,15 +2,14 @@ import { JsonRpcEngineEndCallback, JsonRpcRequest, PendingJsonRpcResponse } from
 import { ethErrors } from 'eth-rpc-errors';
 import { PermittedHandlerExport } from '../../types';
 
-const getAppKeyExport: PermittedHandlerExport<GetAppKeyHooks, [string], string> = {
+export const getAppKeyHandler: PermittedHandlerExport<GetAppKeyHooks, [string], string> = {
   methodNames: ['snap_getAppKey'],
-  implementation: getAppKeyHandler,
+  implementation: getAppKeyImplementation,
   methodDescription: 'Get the app key of the snap.',
   hookNames: {
     getAppKey: true,
   },
 };
-export default getAppKeyExport;
 
 export interface GetAppKeyHooks {
 
@@ -23,7 +22,7 @@ export interface GetAppKeyHooks {
   getAppKey: (requestedAccount?: string) => Promise<string>;
 }
 
-async function getAppKeyHandler(
+async function getAppKeyImplementation(
   req: JsonRpcRequest<[string]>,
   res: PendingJsonRpcResponse<string>,
   _next: unknown,

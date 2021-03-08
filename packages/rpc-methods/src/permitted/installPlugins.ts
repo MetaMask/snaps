@@ -4,15 +4,14 @@ import { IRequestedPermissions } from 'rpc-cap/dist/src/@types';
 import { PermittedHandlerExport } from '../../types';
 import { handleInstallPlugins, InstallPluginsHook, InstallPluginsResult } from './common/pluginInstallation';
 
-const InstallPluginsExport: PermittedHandlerExport<InstallPluginsHooks, [IRequestedPermissions], InstallPluginsResult> = {
+export const installPluginsHandler: PermittedHandlerExport<InstallPluginsHooks, [IRequestedPermissions], InstallPluginsResult> = {
   methodNames: ['wallet_installPlugins'],
-  implementation: installPluginsHandler,
+  implementation: installPluginsImplementation,
   methodDescription: 'Installs the requested plugins if they are permitted.',
   hookNames: {
     installPlugins: true,
   },
 };
-export default InstallPluginsExport;
 
 export interface InstallPluginsHooks {
 
@@ -22,7 +21,7 @@ export interface InstallPluginsHooks {
   installPlugins: InstallPluginsHook;
 }
 
-async function installPluginsHandler(
+async function installPluginsImplementation(
   req: JsonRpcRequest<[IRequestedPermissions]>,
   res: PendingJsonRpcResponse<InstallPluginsResult>,
   _next: unknown,
