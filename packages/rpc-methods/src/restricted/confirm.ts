@@ -5,7 +5,7 @@ import { RestrictedHandlerExport } from '../../types';
 
 export const confirmHandler: RestrictedHandlerExport<ConfirmHooks, [string], boolean> = {
   methodNames: ['snap_confirm'],
-  getImplementation: confirmHandlerGetter,
+  getImplementation: getConfirmHandler,
   methodDescription: 'Display a plain browser confirmation to the user.',
   permissionDescription: 'Display a plain browser confirmation to the user.',
   hookNames: {
@@ -23,7 +23,7 @@ export interface ConfirmHooks {
   showConfirmation: (prompt: string) => Promise<boolean>;
 }
 
-function confirmHandlerGetter({ showConfirmation }: ConfirmHooks) {
+function getConfirmHandler({ showConfirmation }: ConfirmHooks) {
   return async function confirmImplementation(
     req: JsonRpcRequest<[string]>,
     res: PendingJsonRpcResponse<boolean>,

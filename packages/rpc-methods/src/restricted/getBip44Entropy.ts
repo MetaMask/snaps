@@ -7,7 +7,7 @@ const METHOD_PREFIX = 'snap_getBip44Entropy_';
 
 export const getBip44EntropyHandler: RestrictedHandlerExport<GetBip44EntropyHooks, void, string> = {
   methodNames: [`${METHOD_PREFIX}*`],
-  getImplementation: getBip44EntropyHandlerGetter,
+  getImplementation: getGetBip44EntropyHandler,
   methodDescription: 'Control private keys for coin_type "$1"',
   permissionDescription: 'Control private keys for coin_type "$1"',
   hookNames: {
@@ -25,7 +25,7 @@ export interface GetBip44EntropyHooks {
 
 const ALL_DIGIT_REGEX = /^\d+$/u;
 
-function getBip44EntropyHandlerGetter({ getMnemonic }: GetBip44EntropyHooks) {
+function getGetBip44EntropyHandler({ getMnemonic }: GetBip44EntropyHooks) {
   return async function getBip44Entropy(
     req: JsonRpcRequest<void>,
     res: PendingJsonRpcResponse<string>,
@@ -46,7 +46,6 @@ function getBip44EntropyHandlerGetter({ getMnemonic }: GetBip44EntropyHooks) {
       res.result = deriveKeyFromPath(multipath).toString('base64');
       return end();
     } catch (err) {
-      res.error = err;
       return end(err);
     }
   };

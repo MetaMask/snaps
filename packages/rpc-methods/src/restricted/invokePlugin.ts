@@ -7,7 +7,7 @@ import { isPlainObject } from '../utils';
 
 export const invokePluginHandler: RestrictedHandlerExport<InvokePluginHooks, [Record<string, unknown>], unknown> = {
   methodNames: [`${PLUGIN_PREFIX}*`],
-  getImplementation: invokePluginHandlerGetter,
+  getImplementation: getInvokePluginHandlerGetter,
   permissionDescription: 'Connect to plugin $1, and install it if not available yet.',
   methodDescription: 'Call an RPC method of the specified plugin.',
   hookNames: {
@@ -23,7 +23,7 @@ export interface InvokePluginHooks {
   getPluginRpcHandler: PluginController['getRpcMessageHandler'];
 }
 
-function invokePluginHandlerGetter({ getPlugin, addPlugin, getPluginRpcHandler }: InvokePluginHooks) {
+function getInvokePluginHandlerGetter({ getPlugin, addPlugin, getPluginRpcHandler }: InvokePluginHooks) {
   return async function invokePlugin(
     req: JsonRpcRequest<[Record<string, unknown>]>,
     res: PendingJsonRpcResponse<unknown>,
