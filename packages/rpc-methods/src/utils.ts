@@ -1,5 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function isPlainObject(value: unknown): value is Object {
+export function isPlainObject(value: unknown): value is Record<string | symbol, unknown> {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
 }
 
