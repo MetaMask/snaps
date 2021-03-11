@@ -2,17 +2,20 @@ import { ObservableStore } from '@metamask/obs-store';
 import SafeEventEmitter from '@metamask/safe-event-emitter';
 import { ethErrors } from 'eth-rpc-errors';
 import { nanoid } from 'nanoid';
-import { JsonRpcRequest } from 'json-rpc-engine';
 
-interface ResourceBase {
+export interface ResourceBase {
   readonly id: string;
   readonly fromDomain: string;
 }
 
-type Resources<ResourceType extends ResourceBase> = Record<
-string,
-ResourceType
->;
+export type Resources<
+  ResourceType extends ResourceBase
+> = Record<string, ResourceType>;
+
+export type ResourceRequestHandler<T extends Record<string, unknown>> = (
+  method: string,
+  arg: string | Partial<T>
+) => string | T | null;
 
 const alwaysRequiredFields = ['fromDomain'];
 type RequiredFieldsType = readonly string[] & typeof alwaysRequiredFields;
@@ -104,17 +107,14 @@ export class ExternalResourceController<
     this.setResources(newResources);
   }
 
-  get(
-    fromDomain: string,
-    id: string,
-  ): (ResourceType & ResourceBase) | undefined {
+  get(fromDomain: string, id: string): (ResourceType & ResourceBase) | null {
     const resource = this.getResources()[id];
     if (resource && resource.fromDomain !== fromDomain) {
       throw ethErrors.provider.unauthorized({
         message: getUnauthorizedMessage(id),
       });
     }
-    return resource ? { ...resource } : undefined;
+    return resource ? { ...resource } : null;
   }
 
   add(fromDomain: string, resource: ResourceType & { id?: string }): string {
@@ -195,11 +195,11 @@ export class ExternalResourceController<
     return null;
   }
 
-  getRpcRequestHandler(fromDomain: string) {
-    const handleRpcRequest = (
-      req: JsonRpcRequest<[method: string, arg: any]>,
+  getResourceRequestHandler(fromDomain: string) {
+    const handleRpcRequest: ResourceRequestHandler<ResourceType & ResourceBase> = (
+      method: string,
+      arg: any,
     ) => {
-      const [method, arg] = req.params || [];
       switch (method) {
         case 'get':
           return this.get(fromDomain, arg);
@@ -210,7 +210,9 @@ export class ExternalResourceController<
         case 'delete':
           return this.delete(fromDomain, arg);
         default:
-          throw ethErrors.rpc.methodNotFound({ data: req });
+          throw ethErrors.rpc.methodNotFound({
+            message: `Not an asset method: ${method}`,
+          });
       }
     };
     return handleRpcRequest;
