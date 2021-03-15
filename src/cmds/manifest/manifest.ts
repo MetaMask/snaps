@@ -129,48 +129,50 @@ export async function manifest(argv: YargsArgs): Promise<void> {
   }
 
   // check web3Wallet properties
-  const { bundle, initialPermissions } = pkg.web3Wallet || {};
-  if (bundle?.local) {
-    if (!(await isFile(bundle.local))) {
-      logManifestError(`'bundle.local' does not resolve to a file.`);
+  if (pkg.web3Wallet !== undefined) {
+    const { bundle, initialPermissions } = pkg.web3Wallet || {};
+    if (bundle?.local) {
+      if (!(await isFile(bundle.local))) {
+        logManifestError(`'bundle.local' does not resolve to a file.`);
+      }
+    } else {
+      logManifestError(`Missing required 'web3Wallet' property 'bundle.local'.`);
     }
-  } else {
-    logManifestError(`Missing required 'web3Wallet' property 'bundle.local'.`);
-  }
 
-  if (bundle !== undefined) {
-    if (!bundle.url) {
-      logManifestError(`Missing required 'bundle.url' property.`);
-    } else if (!isUrl(bundle.url)) {
-      logManifestError(`'bundle.url' does not resolve to a URL.`);
+    if (bundle !== undefined) {
+      if (!bundle.url) {
+        logManifestError(`Missing required 'bundle.url' property.`);
+      } else if (!isUrl(bundle.url)) {
+        logManifestError(`'bundle.url' does not resolve to a URL.`);
+      }
     }
-  }
 
-  if (Object.prototype.hasOwnProperty.call(pkg.web3Wallet, 'initialPermissions')) {
-    if (
-      typeof initialPermissions !== 'object' ||
-      Array.isArray(initialPermissions)
-    ) {
-      logManifestError(`'web3Wallet' property 'initialPermissions' must be an object if present.`);
+    if (Object.prototype.hasOwnProperty.call(pkg.web3Wallet, 'initialPermissions')) {
+      if (
+        typeof initialPermissions !== 'object' ||
+        Array.isArray(initialPermissions)
+      ) {
+        logManifestError(`'web3Wallet' property 'initialPermissions' must be an object if present.`);
 
-    } else if (Object.keys(initialPermissions).length > 0) {
+      } else if (Object.keys(initialPermissions).length > 0) {
 
-      Object.entries(initialPermissions).forEach(([permission, value]) => {
-        if (typeof value !== 'object' || Array.isArray(value)) {
-          logManifestError(`inital permission '${permission}' must be an object`);
+        Object.entries(initialPermissions).forEach(([permission, value]) => {
+          if (typeof value !== 'object' || Array.isArray(value)) {
+            logManifestError(`initial permission '${permission}' must be an object`);
 
-        } else if (value !== null) {
-          Object.keys(value).forEach((permissionKey) => {
-            if (!permRequestKeys.includes(permissionKey)) {
-              logManifestError(`inital permission '${permission}' has unrecognized key '${permissionKey}'`);
-            }
+          } else if (value !== null) {
+            Object.keys(value).forEach((permissionKey) => {
+              if (!permRequestKeys.includes(permissionKey)) {
+                logManifestError(`initial permission '${permission}' has unrecognized key '${permissionKey}'`);
+              }
 
-            if (permissionKey === 'parentCapability' && permission !== permissionKey) {
-              logManifestError(`inital permission '${permission}' has mismatched 'parentCapability' field '${(value as Record<string, unknown>)[permissionKey]}'`);
-            }
-          });
-        }
-      });
+              if (permissionKey === 'parentCapability' && permission !== permissionKey) {
+                logManifestError(`initial permission '${permission}' has mismatched 'parentCapability' field '${(value as Record<string, unknown>)[permissionKey]}'`);
+              }
+            });
+          }
+        });
+      }
     }
   }
 
