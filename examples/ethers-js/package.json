@@ -16,6 +16,6 @@
     "initialPermissions": {}
   },
   "dependencies": {
-    "ethers": "^4.0.40"
+    "ethers": "^5.0.32"
   }
 }
