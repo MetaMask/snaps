@@ -2,8 +2,9 @@ import http from 'http';
 import serveHandler from 'serve-handler';
 import yargs from 'yargs';
 import builders from '../../builders';
-import { logError, validateDirPath } from '../../utils';
 import { YargsArgs } from '../../types/yargs';
+import { validateDirPath } from '../../utils';
+import { logServerError, logServerListening, logRequest } from './serveUtils';
 
 module.exports.command = ['serve', 's'];
 module.exports.desc = 'Locally serve Snap file(s) for testing';
@@ -47,20 +48,12 @@ async function serve(argv: YargsArgs): Promise<void> {
     });
   });
 
-  server.listen({ port }, () => {
-    console.log(`Server listening on: http://localhost:${port}`);
-  });
+  server.listen({ port }, () => logServerListening(port));
 
-  server.on('request', (request) => {
-    console.log(`Handling incoming request for: ${request.url}`);
-  });
+  server.on('request', (request) => logRequest(request));
 
-  server.on('error', (err) => {
-    if ((err as any).code === 'EADDRINUSE') {
-      logError(`Server error: Port ${port} already in use.`);
-    } else {
-      logError(`Server error: ${err.message}`, err);
-    }
+  server.on('error', (error) => {
+    logServerError(error, argv.port);
     process.exit(1);
   });
 
