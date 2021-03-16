@@ -1,6 +1,6 @@
 {
   "name": "@mm-snap/post-message-stream",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Sets up a duplex object stream over window.postMessage",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
