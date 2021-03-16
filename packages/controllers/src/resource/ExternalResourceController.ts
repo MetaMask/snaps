@@ -15,7 +15,7 @@ export type Resources<
 export type ResourceRequestHandler<T extends Record<string, unknown>> = (
   fromDomain: string,
   method: string,
-  arg: string | Partial<T>
+  arg?: string | Partial<T>
 ) => string | T | null;
 
 const alwaysRequiredFields = ['fromDomain'];
@@ -118,6 +118,12 @@ export class ExternalResourceController<
     return resource ? { ...resource } : null;
   }
 
+  getAllResources(fromDomain: string) {
+    return Object.values(this.getResources()).filter((resource) => {
+      return resource.fromDomain === fromDomain;
+    });
+  }
+
   add(fromDomain: string, resource: ResourceType & { id?: string }): string {
     const newResource = this.processNewResource(fromDomain, resource);
     const { id } = newResource;
@@ -204,6 +210,8 @@ export class ExternalResourceController<
     switch (method) {
       case 'get':
         return this.get(fromDomain, arg);
+      case 'getAll':
+        return this.getAllResources(fromDomain);
       case 'add':
         return this.add(fromDomain, arg);
       case 'update':
