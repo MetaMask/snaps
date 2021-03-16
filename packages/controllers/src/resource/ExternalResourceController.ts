@@ -13,6 +13,7 @@ export type Resources<
 > = Record<string, ResourceType>;
 
 export type ResourceRequestHandler<T extends Record<string, unknown>> = (
+  fromDomain: string,
   method: string,
   arg: string | Partial<T>
 ) => string | T | null;
@@ -195,26 +196,24 @@ export class ExternalResourceController<
     return null;
   }
 
-  getResourceRequestHandler(fromDomain: string) {
-    const handleRpcRequest: ResourceRequestHandler<ResourceType & ResourceBase> = (
-      method: string,
-      arg: any,
-    ) => {
-      switch (method) {
-        case 'get':
-          return this.get(fromDomain, arg);
-        case 'add':
-          return this.add(fromDomain, arg);
-        case 'update':
-          return this.update(fromDomain, arg);
-        case 'delete':
-          return this.delete(fromDomain, arg);
-        default:
-          throw ethErrors.rpc.methodNotFound({
-            message: `Not an asset method: ${method}`,
-          });
-      }
-    };
-    return handleRpcRequest;
+  handleRpcRequest(fromDomain: string, method: string, arg: any) {
+    if (!fromDomain || typeof fromDomain !== 'string') {
+      throw new Error('Invalid fromDomain.');
+    }
+
+    switch (method) {
+      case 'get':
+        return this.get(fromDomain, arg);
+      case 'add':
+        return this.add(fromDomain, arg);
+      case 'update':
+        return this.update(fromDomain, arg);
+      case 'delete':
+        return this.delete(fromDomain, arg);
+      default:
+        throw ethErrors.rpc.methodNotFound({
+          message: `Not an asset method: ${method}`,
+        });
+    }
   }
 }
