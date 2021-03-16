@@ -11,7 +11,8 @@
   "scripts": {
     "link-packages": "./scripts/link-packages.sh",
     "version-bump": "./scripts/version-bump.sh",
-    "prepare": "lerna run prepare"
+    "prepare": "lerna run prepare",
+    "publish-all": "lerna publish from-package"
   },
   "devDependencies": {}
 }
