@@ -8,8 +8,8 @@ const METHOD_PREFIX = 'snap_getBip44Entropy_';
 export const getBip44EntropyHandler: RestrictedHandlerExport<GetBip44EntropyHooks, void, string> = {
   methodNames: [`${METHOD_PREFIX}*`],
   getImplementation: getGetBip44EntropyHandler,
-  methodDescription: 'Control private keys for coin_type "$1"',
-  permissionDescription: 'Control private keys for coin_type "$1"',
+  methodDescription: 'Control private keys for a particular coin type.',
+  permissionDescription: 'Control private keys for a particular coin type.',
   hookNames: {
     'getMnemonic': true,
   },

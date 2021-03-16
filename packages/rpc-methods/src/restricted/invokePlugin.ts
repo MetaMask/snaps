@@ -8,7 +8,7 @@ import { isPlainObject } from '../utils';
 export const invokePluginHandler: RestrictedHandlerExport<InvokePluginHooks, [Record<string, unknown>], unknown> = {
   methodNames: [`${PLUGIN_PREFIX}*`],
   getImplementation: getInvokePluginHandlerGetter,
-  permissionDescription: 'Connect to plugin $1, and install it if not available yet.',
+  permissionDescription: 'Connect to the requested plugin, and install it if not available yet.',
   methodDescription: 'Call an RPC method of the specified plugin.',
   hookNames: {
     'getPlugin': true,
@@ -52,11 +52,11 @@ function getInvokePluginHandlerGetter({ getPlugin, addPlugin, getPluginRpcHandle
         }));
       }
 
-      const requestor = engine.domain;
+      const fromDomain = engine.domain;
 
       // Handler is an async function that takes an pluginOriginString string and a request object.
-      // It should return the result it would like returned to the requestor as part of response.result
-      res.result = await handler(requestor as string, pluginRpcRequest);
+      // It should return the result it would like returned to the fromDomain as part of response.result
+      res.result = await handler(fromDomain as string, pluginRpcRequest);
       return end();
     } catch (err) {
       return end(err);

@@ -5,6 +5,7 @@ import {
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from 'json-rpc-engine';
+import { AnnotatedJsonRpcEngine } from 'rpc-cap';
 import { RestrictedHandlerExport } from '../../types';
 import { isPlainObject } from '../utils';
 
@@ -15,8 +16,8 @@ string | Record<string, unknown> | null
 > = {
   methodNames: ['snap_manageAssets'],
   getImplementation: getManageAssetsHandler,
-  methodDescription: 'Get the state of the snap.',
-  permissionDescription: 'Get the state of the snap.',
+  methodDescription: 'Display custom assets in your wallet',
+  permissionDescription: 'Display custom assets in your wallet',
   hookNames: {
     handleAssetRequest: true,
   },
@@ -39,6 +40,7 @@ function getManageAssetsHandler({ handleAssetRequest }: ManageAssetsHooks) {
     res: PendingJsonRpcResponse<string | Record<string, unknown> | null>,
     _next: unknown,
     end: JsonRpcEngineEndCallback,
+    engine: AnnotatedJsonRpcEngine,
   ): Promise<void> {
     try {
       const [method, arg] = req?.params || [];
@@ -60,7 +62,7 @@ function getManageAssetsHandler({ handleAssetRequest }: ManageAssetsHooks) {
         );
       }
 
-      res.result = handleAssetRequest(method, arg);
+      res.result = handleAssetRequest(engine.domain as string, method, arg);
       return end();
     } catch (error) {
       return end(error);

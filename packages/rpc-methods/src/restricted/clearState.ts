@@ -1,4 +1,5 @@
 import { PendingJsonRpcResponse, JsonRpcEngineEndCallback } from 'json-rpc-engine';
+import { AnnotatedJsonRpcEngine } from 'rpc-cap';
 import { RestrictedHandlerExport } from '../../types';
 
 export const clearStateHandler: RestrictedHandlerExport<ClearStateHooks, void, null> = {
@@ -15,8 +16,9 @@ export interface ClearStateHooks {
 
   /**
    * A bound function that clears the state of a particular snap.
+   * @param fromDomain - The string identifying the fromDomain.
    */
-  clearSnapState: () => void;
+  clearSnapState: (fromDomain: string) => void;
 }
 
 function getClearStateHandler({ clearSnapState }: ClearStateHooks) {
@@ -25,9 +27,10 @@ function getClearStateHandler({ clearSnapState }: ClearStateHooks) {
     res: PendingJsonRpcResponse<null>,
     _next: unknown,
     end: JsonRpcEngineEndCallback,
+    engine: AnnotatedJsonRpcEngine,
   ): Promise<void> {
     try {
-      await clearSnapState();
+      await clearSnapState(engine.domain as string);
       res.result = null;
       return end();
     } catch (error) {

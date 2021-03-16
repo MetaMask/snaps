@@ -1,4 +1,5 @@
 import { PendingJsonRpcResponse, JsonRpcEngineEndCallback } from 'json-rpc-engine';
+import { AnnotatedJsonRpcEngine } from 'rpc-cap';
 import { RestrictedHandlerExport } from '../../types';
 
 export const getStateHandler: RestrictedHandlerExport<GetStateHooks, void, Record<string, unknown>> = {
@@ -14,10 +15,10 @@ export const getStateHandler: RestrictedHandlerExport<GetStateHooks, void, Recor
 export interface GetStateHooks {
 
   /**
-   * A bound function gets the state of a particular snap.
+   * @param fromDomain - The string identifying the fromDomain.
    * @returns The current state of the snap.
    */
-  getSnapState: () => Promise<Record<string, unknown>>;
+  getSnapState: (fromDomain: string) => Promise<Record<string, unknown>>;
 }
 
 function getGetStateHandler({ getSnapState }: GetStateHooks) {
@@ -26,9 +27,10 @@ function getGetStateHandler({ getSnapState }: GetStateHooks) {
     res: PendingJsonRpcResponse<Record<string, unknown>>,
     _next: unknown,
     end: JsonRpcEngineEndCallback,
+    engine: AnnotatedJsonRpcEngine,
   ): Promise<void> {
     try {
-      res.result = await getSnapState();
+      res.result = await getSnapState(engine.domain as string);
       return end();
     } catch (error) {
       return end(error);

@@ -1,5 +1,6 @@
 import { JsonRpcEngineEndCallback, JsonRpcRequest, PendingJsonRpcResponse } from 'json-rpc-engine';
 import { ethErrors } from 'eth-rpc-errors';
+import { AnnotatedJsonRpcEngine } from 'rpc-cap';
 import { RestrictedHandlerExport } from '../../types';
 
 export const updateStateHandler: RestrictedHandlerExport<UpdateStateHooks, [Record<string, unknown>], null> = {
@@ -16,9 +17,10 @@ export interface UpdateStateHooks {
 
   /**
    * A bound function that updates the state of a particular snap.
+   * @param fromDomain - The string identifying the fromDomain.
    * @param newState - The new state of the snap.
    */
-  updateSnapState: (newState: Record<string, unknown>) => Promise<void>;
+  updateSnapState: (fromDomain: string, newState: Record<string, unknown>) => Promise<void>;
 }
 
 function getUpdateStateHandler({ updateSnapState }: UpdateStateHooks) {
@@ -27,6 +29,7 @@ function getUpdateStateHandler({ updateSnapState }: UpdateStateHooks) {
     res: PendingJsonRpcResponse<null>,
     _next: unknown,
     end: JsonRpcEngineEndCallback,
+    engine: AnnotatedJsonRpcEngine,
   ): Promise<void> {
     const [newState] = req?.params || [];
 
@@ -37,7 +40,7 @@ function getUpdateStateHandler({ updateSnapState }: UpdateStateHooks) {
     }
 
     try {
-      await updateSnapState(newState);
+      await updateSnapState(engine.domain as string, newState);
       res.result = null;
       return end();
     } catch (error) {
