@@ -53,7 +53,7 @@ function getManageAssetsHandler({ handleAssetRequest }: ManageAssetsHooks) {
         );
       }
 
-      if (!arg || (typeof arg !== 'string' && !isPlainObject(arg))) {
+      if (arg && (typeof arg !== 'string' && !isPlainObject(arg))) {
         return end(
           ethErrors.rpc.invalidParams({
             message:
