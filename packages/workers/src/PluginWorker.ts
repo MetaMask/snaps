@@ -65,7 +65,7 @@ lockdown({
     }
 
     private async connectToParent() {
-      console.log('CONNECTING TO PARENT');
+      console.log('Worker: Connecting to parent.');
 
       const parentStream = new WorkerPostMessageStream();
       const mux = setupMultiplex(parentStream, 'Parent');
@@ -172,28 +172,25 @@ lockdown({
 
       const wallet = this.createPluginProvider(pluginName);
 
+      const endowments = {
+        BigInt,
+        Buffer,
+        console, // Adding raw console for now
+        crypto,
+        Date,
+        fetch: self.fetch.bind(self),
+        Math, // Math.random is considered unsafe, but we need it
+        setTimeout,
+        SubtleCrypto,
+        wallet,
+        WebSocket,
+        XMLHttpRequest,
+      };
+
       try {
         const compartment = new Compartment({
-          wallet,
-          console, // Adding console for now for logging purposes.
-          BigInt,
-          setTimeout,
-          crypto,
-          SubtleCrypto,
-          fetch,
-          XMLHttpRequest,
-          WebSocket,
-          Buffer,
-          Date,
-
-          window: {
-            crypto,
-            SubtleCrypto,
-            setTimeout,
-            fetch,
-            XMLHttpRequest,
-            WebSocket,
-          },
+          ...endowments,
+          window: { ...endowments },
         });
         compartment.evaluate(sourceCode);
       } catch (err) {
@@ -215,6 +212,7 @@ lockdown({
       }) as unknown as Partial<PluginProvider>;
 
       pluginProvider.registerRpcMessageHandler = (func: PluginRpcHandler) => {
+        console.log('Worker: Registering RPC message handler', func);
         if (this.pluginRpcHandlers.has(pluginName)) {
           throw new Error('RPC handler already registered.');
         }
