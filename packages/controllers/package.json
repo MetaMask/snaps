@@ -1,6 +1,6 @@
 {
   "name": "@mm-snap/controllers",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Controllers for MetaMask Snaps.",
   "main": "dist/index.js",
   "files": [
@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@metamask/eslint-config": "^5.0.0",
-    "@mm-snap/types": "^0.0.3",
+    "@mm-snap/types": "^0.0.4",
     "@types/pump": "^1.1.0",
     "@types/readable-stream": "^2.3.9",
     "@typescript-eslint/eslint-plugin": "^4.14.2",
@@ -40,8 +40,8 @@
     "@metamask/object-multiplex": "^1.1.0",
     "@metamask/obs-store": "^6.0.2",
     "@metamask/safe-event-emitter": "^2.0.0",
-    "@mm-snap/post-message-stream": "^0.0.3",
-    "@mm-snap/workers": "^0.0.3",
+    "@mm-snap/post-message-stream": "^0.0.4",
+    "@mm-snap/workers": "^0.0.4",
     "eth-rpc-errors": "^4.0.2",
     "nanoid": "^3.1.20",
     "pump": "^3.0.0"
