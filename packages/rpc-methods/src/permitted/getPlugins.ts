@@ -1,8 +1,8 @@
 import { PendingJsonRpcResponse, JsonRpcEngineEndCallback } from 'json-rpc-engine';
-import { InstalledPlugins } from '@mm-snap/controllers';
+import { InstallPluginsResult } from '@mm-snap/controllers';
 import { PermittedHandlerExport } from '../../types';
 
-export const getPluginsHandler: PermittedHandlerExport<GetPluginsHooks, void, InstalledPlugins> = {
+export const getPluginsHandler: PermittedHandlerExport<GetPluginsHooks, void, InstallPluginsResult> = {
   methodNames: ['wallet_getPlugins'],
   implementation: getPluginsImplementation,
   methodDescription: 'Get requester\'s permitted and installed plugins.',
@@ -16,12 +16,12 @@ export interface GetPluginsHooks {
   /**
    * @returns The permitted and installed plugins for the requesting origin.
    */
-  getPlugins: () => InstalledPlugins;
+  getPlugins: () => InstallPluginsResult;
 }
 
 async function getPluginsImplementation(
   _req: unknown,
-  res: PendingJsonRpcResponse<InstalledPlugins>,
+  res: PendingJsonRpcResponse<InstallPluginsResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
   { getPlugins }: GetPluginsHooks,
