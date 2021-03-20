@@ -3,7 +3,10 @@ import EventEmitter from '@metamask/safe-event-emitter';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { IOcapLdCapability } from 'rpc-cap/dist/src/@types/ocap-ld';
 import { IRequestedPermissions } from 'rpc-cap/dist/src/@types';
-import { WorkerController, SetupWorkerConnection } from '../workers/WorkerController';
+import {
+  WorkerController,
+  SetupWorkerConnection,
+} from '../workers/WorkerController';
 import { CommandResponse } from '../workers/CommandEngine';
 import { INLINE_PLUGINS } from './inlinePlugins';
 
@@ -16,30 +19,46 @@ const SERIALIZABLE_PLUGIN_PROPERTIES = new Set([
   'permissionName',
 ]);
 
+interface InititalPermissions {
+  [permission: string]: Record<string, unknown>;
+}
+
 export interface SerializablePlugin {
-  initialPermissions: { [permission: string]: Record<string, unknown> };
+  initialPermissions: InititalPermissions;
   name: string;
   permissionName: string;
+  version: string;
 }
 
 export interface Plugin extends SerializablePlugin {
-  isActive: boolean;
+  isRunning: boolean;
   sourceCode: string;
 }
 
 // The plugin is the callee
-export type PluginRpcHook = (origin: string, request: Record<string, unknown>) => Promise<CommandResponse>;
+export type PluginRpcHook = (
+  origin: string,
+  request: Record<string, unknown>
+) => Promise<CommandResponse>;
 
-export type ProcessPluginReturnType = SerializablePlugin | { error: ReturnType<typeof serializeError> };
-export interface InstalledPlugins {
+export type ProcessPluginReturnType =
+  | SerializablePlugin
+  | { error: ReturnType<typeof serializeError> };
+export interface InstallPluginsResult {
   [pluginName: string]: ProcessPluginReturnType;
 }
 
 // Types that probably should be defined elsewhere in prod
 type RemoveAllPermissionsFunction = (pluginIds: string[]) => void;
 type CloseAllConnectionsFunction = (domain: string) => void;
-type RequestPermissionsFunction = (domain: string, requestedPermissions: IRequestedPermissions) => IOcapLdCapability[];
-type HasPermissionFunction = (domain: string, permissionName: string) => boolean;
+type RequestPermissionsFunction = (
+  domain: string,
+  requestedPermissions: IRequestedPermissions
+) => IOcapLdCapability[];
+type HasPermissionFunction = (
+  domain: string,
+  permissionName: string
+) => boolean;
 type GetPermissionsFunction = (domain: string) => IOcapLdCapability[];
 
 interface StoredPlugins {
@@ -68,6 +87,27 @@ interface PluginControllerArgs {
   workerUrl: URL;
 }
 
+interface AddPluginBase {
+  name: string;
+}
+
+interface AddPluginByFetchingArgs extends AddPluginBase {
+  manifestUrl: string;
+}
+
+// The parts of a plugin package.json file that we care about
+interface PluginManifest {
+  version: string;
+  web3Wallet: { initialPermissions: InititalPermissions };
+}
+
+interface AddPluginDirectlyArgs extends AddPluginBase {
+  manifest: PluginManifest;
+  sourceCode: string;
+}
+
+type AddPluginArgs = AddPluginByFetchingArgs | AddPluginDirectlyArgs;
+
 /*
  * A plugin is initialized in three phases:
  * - Add: Loads the plugin from a remote source and parses it.
@@ -76,7 +116,6 @@ interface PluginControllerArgs {
  */
 
 export class PluginController extends EventEmitter {
-
   public store: ObservableStore<PluginControllerState>;
 
   public memStore: ObservableStore<PluginControllerMemState>;
@@ -141,12 +180,21 @@ export class PluginController extends EventEmitter {
     this._pluginsBeingAdded = new Map();
   }
 
+  /**
+   * Updates the state of this controller.
+   */
   updateState(newState: Partial<PluginControllerState>) {
     this.store.updateState(newState);
     this.memStore.updateState(this._filterMemStoreState(newState));
   }
 
-  _filterMemStoreState(newState: Partial<PluginControllerState>): Partial<PluginControllerMemState> {
+  /**
+   * Takes in a full state object and filters out the parts that we don't want
+   * to keep in memory. Currently just the sourceCode property of any plugins.
+   */
+  private _filterMemStoreState(
+    newState: Partial<PluginControllerState>,
+  ): Partial<PluginControllerMemState> {
     const memState: Partial<PluginControllerMemState> = {
       ...newState,
       plugins: {},
@@ -166,31 +214,113 @@ export class PluginController extends EventEmitter {
 
   /**
    * Runs existing (installed) plugins.
+   * Deletes any plugins that cannot be started.
    */
-  runExistingPlugins(): void {
-
+  async runExistingPlugins(): Promise<void> {
     const { plugins } = this.store.getState();
 
     if (Object.keys(plugins).length > 0) {
-      console.log('running existing plugins', plugins);
+      console.log('Starting existing plugins...', plugins);
     } else {
-      console.log('no existing plugins to run');
+      console.log('No existing plugins to run.');
       return;
     }
 
-    Object.values(plugins).forEach(({ name: pluginName, sourceCode }) => {
+    await Promise.all(
+      Object.values(plugins).map(async ({ name: pluginName, sourceCode }) => {
+        console.log(`Starting: ${pluginName}`);
 
-      console.log(`running: ${pluginName}`);
+        try {
+          await this._startPluginInWorker(pluginName, sourceCode);
+        } catch (err) {
+          console.warn(`Failed to start "${pluginName}", deleting it.`, err);
+          // Clean up failed plugins:
+          this.removePlugin(pluginName);
+        }
+      }),
+    );
+  }
 
-      try {
-        this._startPluginInWorker(pluginName, sourceCode);
-      } catch (err) {
+  /**
+   * Starts the given plugin. Throws an error if no such plugin exists
+   * or if it is already running.
+   *
+   * @param pluginName - The name of the plugin to start.
+   */
+  async startPlugin(pluginName: string): Promise<void> {
+    const plugin = this.get(pluginName);
+    if (!plugin) {
+      throw new Error(`Plugin "${pluginName}" not found.`);
+    }
+    if (plugin.isRunning) {
+      throw new Error(`Plugin "${pluginName}" already running.`);
+    }
 
-        console.warn(`failed to start '${pluginName}', deleting it`);
-        // Clean up failed plugins:
-        this.removePlugin(pluginName);
-      }
-    });
+    try {
+      await this._startPluginInWorker(pluginName, plugin.sourceCode);
+    } catch (err) {
+      console.error(`Failed to start "${pluginName}".`, err);
+    }
+  }
+
+  /**
+   * Stops the given plugin. Throws an error if no such plugin exists
+   * or if it is already stopped.
+   *
+   * @param pluginName - The name of the plugin to stop.
+   */
+  stopPlugin(pluginName: string): void {
+    const plugin = this.get(pluginName);
+    if (!plugin) {
+      throw new Error(`Plugin "${pluginName}" not found.`);
+    }
+    if (!plugin.isRunning) {
+      throw new Error(`Plugin "${pluginName}" already stopped.`);
+    }
+
+    this._stopPlugin(pluginName);
+    console.log(`Plugin "${pluginName}" stopped.`);
+  }
+
+  /**
+   * Stops the given plugin, removes all hooks, closes all connections, and
+   * terminates its worker.
+   *
+   * @param pluginName - The name of the plugin to stop.
+   * @param setNotRunning - Whether to mark the plugin as not running.
+   * Should only be set to false if the plugin is about to be deleted.
+   */
+  private _stopPlugin(pluginName: string, setNotRunning = true): void {
+    this._removePluginHooks(pluginName);
+    this._closeAllConnections(pluginName);
+    this.workerController.terminateWorkerOf(pluginName);
+    if (setNotRunning) {
+      this._setPluginToNotRunning(pluginName);
+    }
+  }
+
+  /**
+   * Returns whether the given plugin is running.
+   * Throws an error if the plugin doesn't exist.
+   *
+   * @param pluginName - The name of the plugin to check.
+   */
+  isRunning(pluginName: string): boolean {
+    const plugin = this.get(pluginName);
+    if (!plugin) {
+      throw new Error(`Plugin "${pluginName}" not found.`);
+    }
+
+    return plugin.isRunning;
+  }
+
+  /**
+   * Returns whether the given plugin has been added to state.
+   *
+   * @param pluginName - The name of the plugin to check for.
+   */
+  has(pluginName: string): boolean {
+    return pluginName in this.store.getState().plugins;
   }
 
   /**
@@ -214,14 +344,14 @@ export class PluginController extends EventEmitter {
     const plugin = this.get(pluginName);
 
     return plugin
-      // The cast to "any" of the accumulator object is due to a TypeScript bug
-      ? Object.keys(plugin).reduce((serialized, key) => {
+      ? // The cast to "any" of the accumulator object is due to a TypeScript bug
+      (Object.keys(plugin).reduce((serialized, key) => {
         if (SERIALIZABLE_PLUGIN_PROPERTIES.has(key as keyof Plugin)) {
           serialized[key] = plugin[key as keyof SerializablePlugin];
         }
 
         return serialized;
-      }, {} as any) as SerializablePlugin
+      }, {} as any) as SerializablePlugin)
       : null;
   }
 
@@ -237,7 +367,10 @@ export class PluginController extends EventEmitter {
     newPluginState: unknown,
   ): Promise<void> {
     const state = this.store.getState();
-    const newPluginStates = { ...state.pluginStates, [pluginName]: newPluginState };
+    const newPluginStates = {
+      ...state.pluginStates,
+      [pluginName]: newPluginState,
+    };
 
     this.updateState({
       pluginStates: newPluginStates,
@@ -260,7 +393,7 @@ export class PluginController extends EventEmitter {
    */
   clearState() {
     this._pluginRpcHooks.clear();
-    const pluginNames = Object.keys((this.store.getState()).plugins);
+    const pluginNames = Object.keys(this.store.getState().plugins);
     this.updateState({
       plugins: {},
       pluginStates: {},
@@ -286,8 +419,8 @@ export class PluginController extends EventEmitter {
   }
 
   /**
-   * Removes the given plugins from state, and clears all associated handlers
-   * and listeners.
+   * Stops the given plugins, removes them from state, and clears all associated
+   * permissions, handlers, and listeners.
    *
    * @param {Array<string>} pluginName - The name of the plugins.
    */
@@ -301,12 +434,7 @@ export class PluginController extends EventEmitter {
     const newPluginStates = { ...state.pluginStates };
 
     pluginNames.forEach((name) => {
-      // this._removeMetaMaskEventListeners(name)
-      // this.rpcMessageHandlers.delete(name)
-      // this.accountMessageHandlers.delete(name)
-      this._removePluginHooks(name);
-      this._closeAllConnections(name);
-      this.workerController.terminateWorkerOf(name);
+      this._stopPlugin(name, false);
       delete newPlugins[name];
       delete newPluginStates[name];
     });
@@ -318,47 +446,67 @@ export class PluginController extends EventEmitter {
     });
   }
 
-  getPermittedPlugins(origin: string): InstalledPlugins {
-    return this._getPermissions(origin).reduce(
-      (permittedPlugins, perm) => {
-        if (perm.parentCapability.startsWith(PLUGIN_PREFIX)) {
+  /**
+   * Gets the serialized permitted plugins of the given origin, if any.
+   * @param origin - The origin whose permitted plugins to retrieve.
+   */
+  getPermittedPlugins(origin: string): InstallPluginsResult {
+    return this._getPermissions(origin).reduce((permittedPlugins, perm) => {
+      if (perm.parentCapability.startsWith(PLUGIN_PREFIX)) {
+        const pluginName = perm.parentCapability.replace(
+          PLUGIN_PREFIX_REGEX,
+          '',
+        );
+        const plugin = this.getSerializable(pluginName);
 
-          const pluginName = perm.parentCapability.replace(PLUGIN_PREFIX_REGEX, '');
-          const plugin = this.getSerializable(pluginName);
-
-          permittedPlugins[pluginName] = plugin || {
-            error: serializeError(new Error('Plugin permitted but not installed.')),
-          };
-        }
-        return permittedPlugins;
-      },
-      {} as InstalledPlugins,
-    );
-  }
-
-  async installPlugins(origin: string, requestedPlugins: IRequestedPermissions): Promise<InstalledPlugins> {
-    const result: InstalledPlugins = {};
-
-    // use a for-loop so that we can return an object and await the resolution
-    // of each call to processRequestedPlugin
-    await Promise.all(Object.keys(requestedPlugins).map(async (pluginName) => {
-      const permissionName = PLUGIN_PREFIX + pluginName;
-
-      if (this._hasPermission(origin, permissionName)) {
-        // attempt to install and run the plugin, storing any errors that
-        // occur during the process
-        result[pluginName] = {
-          ...(await this.processRequestedPlugin(pluginName)),
-        };
-      } else {
-        // only allow the installation of permitted plugins
-        result[pluginName] = {
-          error: ethErrors.provider.unauthorized(
-            `Not authorized to install plugin '${pluginName}'. Request the permission for the plugin before attempting to install it.`,
+        permittedPlugins[pluginName] = plugin || {
+          error: serializeError(
+            new Error('Plugin permitted but not installed.'),
           ),
         };
       }
-    }));
+      return permittedPlugins;
+    }, {} as InstallPluginsResult);
+  }
+
+  /**
+   * Installs the plugins requested by the given origin, returning the plugin
+   * object if the origin is permitted to install it, and an authorization error
+   * otherwise.
+   *
+   * @param origin - The origin that requested to install the plugins.
+   * @param requestedPlugins - The plugins to install.
+   * @returns An object of plugin names and plugin objects, or errors if a
+   * plugin couldn't be installed.
+   */
+  async installPlugins(
+    origin: string,
+    requestedPlugins: IRequestedPermissions,
+  ): Promise<InstallPluginsResult> {
+    const result: InstallPluginsResult = {};
+
+    // use a for-loop so that we can return an object and await the resolution
+    // of each call to processRequestedPlugin
+    await Promise.all(
+      Object.keys(requestedPlugins).map(async (pluginName) => {
+        const permissionName = PLUGIN_PREFIX + pluginName;
+
+        if (this._hasPermission(origin, permissionName)) {
+          // attempt to install and run the plugin, storing any errors that
+          // occur during the process
+          result[pluginName] = {
+            ...(await this.processRequestedPlugin(pluginName)),
+          };
+        } else {
+          // only allow the installation of permitted plugins
+          result[pluginName] = {
+            error: ethErrors.provider.unauthorized(
+              `Not authorized to install plugin '${pluginName}'. Request the permission for the plugin before attempting to install it.`,
+            ),
+          };
+        }
+      }),
+    );
     return result;
   }
 
@@ -367,16 +515,22 @@ export class PluginController extends EventEmitter {
    * Results from this method should be efficiently serializable.
    *
    * @param - pluginName - The name of the plugin.
+   * @returns The resulting plugin object, or an error if something went wrong.
    */
-  async processRequestedPlugin(pluginName: string): Promise<ProcessPluginReturnType> {
+  async processRequestedPlugin(
+    pluginName: string,
+  ): Promise<ProcessPluginReturnType> {
     // if the plugin is already installed and active, just return it
     const plugin = this.get(pluginName);
-    if (plugin?.isActive) {
+    if (plugin?.isRunning) {
       return this.getSerializable(pluginName) as SerializablePlugin;
     }
 
     try {
-      const { sourceCode } = await this.add(pluginName);
+      const { sourceCode } = await this.add({
+        name: pluginName,
+        manifestUrl: pluginName,
+      });
 
       await this.authorize(pluginName);
 
@@ -394,57 +548,74 @@ export class PluginController extends EventEmitter {
    * If the plugin is already being installed, the previously pending promise will be returned.
    *
    * @param pluginName - The name of the plugin.
-   * @param sourceUrl - The URL of the source code.
+   * @param args - Object containing either the URL of the plugin's manifest,
+   * or the plugin's manifest and source code.
+   * @returns The resulting plugin object.
    */
-  add(pluginName: string, sourceUrl?: string): Promise<Plugin> {
-    console.log(`Adding ${sourceUrl || pluginName}`);
+  add(args: AddPluginArgs): Promise<Plugin> {
+    const { name: pluginName } = args;
+    if (!pluginName || typeof pluginName !== 'string') {
+      throw new Error(`Invalid plugin name: ${pluginName}`);
+    }
 
-    // Deduplicate multiple add requests:
+    if (
+      !args ||
+      (!('manifestUrl' in args) &&
+        (!('manifest' in args) || !('sourceCode' in args)))
+    ) {
+      throw new Error(`Invalid add plugin args for plugin "${pluginName}".`);
+    }
+
     if (!this._pluginsBeingAdded.has(pluginName)) {
-      this._pluginsBeingAdded.set(pluginName, this._add(pluginName));
+      console.log(`Adding plugin: ${pluginName}`);
+      this._pluginsBeingAdded.set(pluginName, this._add(args));
     }
 
     return this._pluginsBeingAdded.get(pluginName) as Promise<Plugin>;
   }
 
   /**
-   * Internal method. See the add method.
+   * Internal method. See the "add" method.
    *
    * @param pluginName - The name of the plugin.
-   * @param [sourceUrl] - The URL of the source code.
+   * @param args - The add plugin args.
+   * @returns The resulting plugin object.
    */
-  async _add(pluginName: string, sourceUrl?: string): Promise<Plugin> {
-    const _sourceUrl = sourceUrl || pluginName;
+  private async _add(args: AddPluginArgs): Promise<Plugin> {
+    const { name: pluginName } = args;
 
-    if (!pluginName || typeof pluginName !== 'string') {
-      throw new Error(`Invalid plugin name: ${pluginName}`);
+    let manifest: PluginManifest, sourceCode: string;
+    if ('manifestUrl' in args) {
+      const _sourceUrl = args.manifestUrl || pluginName;
+      [manifest, sourceCode] = await this._fetchPlugin(pluginName, _sourceUrl);
+    } else {
+      manifest = args.manifest;
+      sourceCode = args.sourceCode;
     }
 
-    let plugin: Plugin;
-    try {
-      console.log(`Fetching ${_sourceUrl}`);
-      const pluginSource = await fetch(_sourceUrl);
-      const pluginJson = await pluginSource.json();
-
-      console.log(`Destructuring`, pluginJson);
-      const { web3Wallet: { bundle, initialPermissions } } = pluginJson;
-
-      console.log(`Fetching bundle ${bundle.url}`);
-      const pluginBundle = await fetch(bundle.url);
-      const sourceCode = await pluginBundle.text();
-
-      console.log(`Constructing plugin`);
-      plugin = {
-        // manifest: {}, // relevant manifest metadata
-        name: pluginName,
-        initialPermissions,
-        permissionName: PLUGIN_PREFIX + pluginName, // so we can easily correlate them
-        sourceCode,
-        isActive: false,
-      };
-    } catch (err) {
-      throw new Error(`Problem loading plugin ${pluginName}: ${err.message}`);
+    if (typeof sourceCode !== 'string' || sourceCode.length === 0) {
+      throw new Error(`Invalid source code for plugin "${pluginName}".`);
     }
+    const initialPermissions = manifest?.web3Wallet?.initialPermissions;
+    if (
+      !initialPermissions ||
+      typeof initialPermissions !== 'object' ||
+      Array.isArray(initialPermissions)
+    ) {
+      throw new Error(
+        `Invalid initial permissions for plugin "${pluginName}".`,
+      );
+    }
+
+    console.log(`Constructing plugin`);
+    let plugin: Plugin = {
+      initialPermissions,
+      isRunning: false,
+      name: pluginName,
+      permissionName: PLUGIN_PREFIX + pluginName, // so we can easily correlate them
+      sourceCode,
+      version: manifest.version,
+    };
 
     const pluginsState = this.store.getState().plugins;
 
@@ -465,14 +636,44 @@ export class PluginController extends EventEmitter {
   }
 
   /**
+   * Fetches the manifest and source code of a plugin.
+   *
+   * @param name - The name of the plugin.
+   * @param manifestUrl - The URL of the plugin's manifest file.
+   */
+  private async _fetchPlugin(
+    name: string,
+    manifestUrl: string,
+  ): Promise<[PluginManifest, string]> {
+    try {
+      console.log(`Fetching plugin manifest from: ${manifestUrl}`);
+      const pluginSource = await fetch(manifestUrl);
+      const manifest = await pluginSource.json();
+
+      console.log(`Destructuring plugin: `, manifest);
+      const {
+        web3Wallet: { bundle },
+      } = manifest;
+
+      console.log(`Fetching plugin source code from: ${bundle.url}`);
+      const pluginBundle = await fetch(bundle.url);
+      const sourceCode = await pluginBundle.text();
+
+      return [manifest, sourceCode];
+    } catch (err) {
+      throw new Error(`Problem fetching plugin "${name}": ${err.message}`);
+    }
+  }
+
+  /**
    * Initiates a request for the given plugin's initial permissions.
    * Must be called in order. See processRequestedPlugin.
    *
    * @param pluginName - The name of the plugin.
-   * @returns - Resolves to the plugin's approvedPermissions, or rejects on error.
+   * @returns The plugin's approvedPermissions.
    */
   async authorize(pluginName: string): Promise<string[]> {
-    console.log(`authorizing ${pluginName}`);
+    console.log(`Authorizing plugin: ${pluginName}`);
     const pluginsState = this.store.getState().plugins;
     const plugin = pluginsState[pluginName];
     const { initialPermissions } = plugin;
@@ -484,7 +685,8 @@ export class PluginController extends EventEmitter {
 
     try {
       const approvedPermissions = await this._requestPermissions(
-        pluginName, initialPermissions,
+        pluginName,
+        initialPermissions,
       );
       return approvedPermissions.map((perm) => perm.parentCapability);
     } finally {
@@ -492,20 +694,19 @@ export class PluginController extends EventEmitter {
     }
   }
 
-  // _registerAccountMessageHandler (pluginName, handler) {
-  //   this.accountMessageHandlers.set(pluginName, handler)
-  // }
-
+  /**
+   * Test method.
+   */
   runInlinePlugin(inlinePluginName: keyof typeof INLINE_PLUGINS = 'IDLE') {
-    this._startPluginInWorker(
-      'inlinePlugin',
-      INLINE_PLUGINS[inlinePluginName],
-    );
+    this._startPluginInWorker('inlinePlugin', INLINE_PLUGINS[inlinePluginName]);
     this.memStore.updateState({
       inlinePluginIsRunning: true,
     });
   }
 
+  /**
+   * Test method.
+   */
   removeInlinePlugin() {
     this.memStore.updateState({
       inlinePluginIsRunning: false,
@@ -514,23 +715,31 @@ export class PluginController extends EventEmitter {
   }
 
   private async _startPluginInWorker(pluginName: string, sourceCode: string) {
-    const workerId = await this.workerController.createPluginWorker(
-      { hostname: pluginName },
-    );
+    const workerId = await this.workerController.createPluginWorker({
+      hostname: pluginName,
+    });
     this._createPluginHooks(pluginName, workerId);
     await this.workerController.startPlugin(workerId, {
       pluginName,
       sourceCode,
     });
-    this._setPluginToActive(pluginName);
+    this._setPluginToRunning(pluginName);
   }
 
+  /**
+   * Gets the RPC message handler for the given plugin.
+   *
+   * @param pluginName - The name of the plugin whose message handler to get.
+   */
   getRpcMessageHandler(pluginName: string): PluginRpcHook | undefined {
     return this._pluginRpcHooks.get(pluginName);
   }
 
   private _createPluginHooks(pluginName: string, workerId: string) {
-    const rpcHook = async (origin: string, request: Record<string, unknown>) => {
+    const rpcHook = async (
+      origin: string,
+      request: Record<string, unknown>,
+    ) => {
       return await this.workerController.command(workerId, {
         command: 'pluginRpc',
         data: {
@@ -544,19 +753,23 @@ export class PluginController extends EventEmitter {
     this._pluginRpcHooks.set(pluginName, rpcHook);
   }
 
-  _removePluginHooks(pluginName: string) {
+  private _removePluginHooks(pluginName: string) {
     this._pluginRpcHooks.delete(pluginName);
   }
 
-  _setPluginToActive(pluginName: string): void {
-    this._updatePlugin(pluginName, 'isActive', true);
+  private _setPluginToRunning(pluginName: string): void {
+    this._updatePlugin(pluginName, 'isRunning', true);
   }
 
-  _setPluginToInActive(pluginName: string): void {
-    this._updatePlugin(pluginName, 'isActive', false);
+  private _setPluginToNotRunning(pluginName: string): void {
+    this._updatePlugin(pluginName, 'isRunning', false);
   }
 
-  _updatePlugin(pluginName: string, property: keyof Plugin, value: unknown) {
+  private _updatePlugin(
+    pluginName: string,
+    property: keyof Plugin,
+    value: unknown,
+  ) {
     const { plugins } = this.store.getState();
     const plugin = plugins[pluginName];
     const newPlugin = { ...plugin, [property]: value };
