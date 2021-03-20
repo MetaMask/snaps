@@ -42,7 +42,10 @@ function getInvokePluginHandlerGetter({ getPlugin, addPlugin, getPluginRpcHandle
       const pluginOriginString = req.method.substr(PLUGIN_PREFIX.length);
 
       if (!getPlugin(pluginOriginString)) {
-        await addPlugin(pluginOriginString);
+        await addPlugin({
+          name: pluginOriginString,
+          manifestUrl: pluginOriginString,
+        });
       }
 
       const handler = getPluginRpcHandler(pluginOriginString);
