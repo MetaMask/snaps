@@ -596,6 +596,7 @@ export class PluginController extends EventEmitter {
     if (typeof sourceCode !== 'string' || sourceCode.length === 0) {
       throw new Error(`Invalid source code for plugin "${pluginName}".`);
     }
+
     const initialPermissions = manifest?.web3Wallet?.initialPermissions;
     if (
       !initialPermissions ||
@@ -607,7 +608,6 @@ export class PluginController extends EventEmitter {
       );
     }
 
-    console.log(`Constructing plugin`);
     let plugin: Plugin = {
       initialPermissions,
       isRunning: false,
