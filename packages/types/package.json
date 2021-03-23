@@ -9,7 +9,7 @@
   "repository": "git@github.com:MetaMask/snaps-skunkworks.git",
   "author": "Erik Marks <rekmarks@protonmail.com>",
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
   },
   "scripts": {
     "test": "yarn lint",
