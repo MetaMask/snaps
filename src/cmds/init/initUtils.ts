@@ -1,82 +1,13 @@
 import { promises as fs, existsSync } from 'fs';
 import pathUtils from 'path';
 import initPackageJson from 'init-package-json';
-import {
-  CONFIG_PATHS, logError, logWarning, prompt, closePrompt, trimPathString,
-} from '../../utils';
+import { CONFIG_PATHS, logError, logWarning, prompt, trimPathString } from '../../utils';
 import { YargsArgs } from '../../types/yargs';
 import { ManifestWalletProperty, NodePackageManifest } from '../../types/package';
-import template from './initTemplate.json';
 
 const CONFIG_PATH = CONFIG_PATHS[0];
 
-interface InitOutput {
-  port: number;
-  dist: string;
-  outfileName: string;
-  sourceMaps: boolean;
-  stripComments: boolean;
-  src: string;
-}
-
-export async function initHandler(argv: YargsArgs): Promise<InitOutput> {
-  console.log(`Init: Begin building 'package.json'\n`);
-
-  const pkg = await asyncPackageInit();
-
-  await validateEmptyDir();
-
-  console.log(`\nInit: Set 'package.json' web3Wallet properties\n`);
-
-  const [web3Wallet, _newArgs] = await buildWeb3Wallet(argv);
-  const newArgs = _newArgs as YargsArgs;
-  pkg.web3Wallet = web3Wallet;
-
-  try {
-    await fs.writeFile('package.json', `${JSON.stringify(pkg, null, 2)}\n`);
-  } catch (err) {
-    logError(`Init Error: Fatal: Failed to write package.json`, err);
-    process.exit(1);
-  }
-
-  console.log(`\nInit: 'package.json' web3Wallet properties set successfully!`);
-
-  // write main js entry file
-  const { main } = pkg;
-  if (main !== undefined) {
-    newArgs.src = main;
-    try {
-      await fs.writeFile(main, template.js);
-      console.log(`Init: Wrote main entry file '${main}'`);
-    } catch (err) {
-      logError(`Init Error: Fatal: Failed to write main .js file '${main}'`, err);
-      process.exit(1);
-    }
-  }
-
-  // write index.html
-  try {
-    await fs.writeFile('index.html', template.html.toString()
-      .replace(/_PORT_/gu, newArgs.port.toString() || argv.port.toString()));
-    console.log(`Init: Wrote 'index.html' file`);
-  } catch (err) {
-    logError(`Init Error: Fatal: Failed to write index.html file`, err);
-    process.exit(1);
-  }
-
-  // write config file
-  try {
-    await fs.writeFile(CONFIG_PATH, JSON.stringify(newArgs, null, 2));
-    console.log(`Init: Wrote '${CONFIG_PATH}' config file`);
-  } catch (err) {
-    logError(`Init Error: Failed to write '${CONFIG_PATH}' file`, err);
-  }
-
-  closePrompt();
-  return { ...argv, ...newArgs } as InitOutput;
-}
-
-async function asyncPackageInit(): Promise<NodePackageManifest> {
+export async function asyncPackageInit(): Promise<NodePackageManifest> {
 
   // use existing package.json if found
   const hasPackage = existsSync('package.json');
@@ -120,7 +51,7 @@ async function asyncPackageInit(): Promise<NodePackageManifest> {
   });
 }
 
-async function buildWeb3Wallet(argv: YargsArgs): Promise<[
+export async function buildWeb3Wallet(argv: YargsArgs): Promise<[
   ManifestWalletProperty,
   { port: number; dist: string; outfileName: string },
 ]> {
@@ -131,8 +62,8 @@ async function buildWeb3Wallet(argv: YargsArgs): Promise<[
   let initialPermissions: Record<string, unknown> = defaultPerms;
 
   try {
-    const c = await prompt({ question: `Use all default Snap manifest values?`, defaultValue: 'yes', shouldClose: false });
-    if (c && ['y', 'yes'].includes(c.toLowerCase())) {
+    const userInput = await prompt({ question: `Use all default Snap manifest values?`, defaultValue: 'yes', shouldClose: false });
+    if (userInput && ['y', 'yes'].includes(userInput.toLowerCase())) {
       console.log('Using default values...');
       try {
         await fs.mkdir(dist);
@@ -159,7 +90,7 @@ async function buildWeb3Wallet(argv: YargsArgs): Promise<[
       port = parsedPort;
       noValidPort = false;
     } else {
-      logError(`Invalid port '${port}, please retry.`);
+      logError(`Invalid port '${parsedPort}', please retry.`);
     }
   }
 
@@ -228,7 +159,7 @@ async function buildWeb3Wallet(argv: YargsArgs): Promise<[
   }
 }
 
-async function validateEmptyDir(): Promise<void> {
+export async function validateEmptyDir(): Promise<void> {
   const existing = (await fs.readdir(process.cwd())).filter((item) => [
     'index.js', 'index.html', CONFIG_PATH, 'dist',
   ].includes(item.toString()));

@@ -1,8 +1,8 @@
 import yargs from 'yargs';
 import builders from '../../builders';
-import { build } from '../build';
 import { YargsArgs } from '../../types/yargs';
-import { initHandler } from './initialize';
+import { build } from '../build';
+import { initHandler } from './initHandler';
 
 module.exports.command = ['init', 'i'];
 module.exports.desc = 'Initialize Snap package';
@@ -16,9 +16,9 @@ module.exports.builder = (yarg: yargs.Argv) => {
 module.exports.handler = (argv: YargsArgs) => init(argv);
 
 async function init(argv: YargsArgs): Promise<void> {
-  const newArgs = await initHandler(argv);
 
   console.log();
+  const newArgs = await initHandler(argv);
 
   await build({
     ...newArgs,
