@@ -197,11 +197,13 @@ export class PluginController extends EventEmitter {
   ): Partial<PluginControllerMemState> {
     const memState: Partial<PluginControllerMemState> = {
       ...newState,
-      plugins: {},
     };
 
-    // remove sourceCode from memState plugin objects
     if (newState.plugins) {
+      // Copy existing plugins to the new memState
+      memState.plugins = this.memStore.getState().plugins || {};
+
+      // Remove sourceCode from updated memState plugin objects
       Object.keys(newState.plugins).forEach((name) => {
         const plugin = { ...(newState as PluginControllerState).plugins[name] };
         delete (plugin as Partial<Plugin>).sourceCode;
