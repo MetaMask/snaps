@@ -10,9 +10,9 @@ import { RestrictedHandlerExport } from '../../types';
 import { isPlainObject } from '../utils';
 
 export const manageAssetsHandler: RestrictedHandlerExport<
-ManageAssetsHooks,
-[method: string, arg: string | Record<string, unknown>],
-string | Record<string, unknown> | null
+  ManageAssetsHooks,
+  [method: string, arg: string | Record<string, unknown>],
+  string | Record<string, unknown> | null
 > = {
   methodNames: ['snap_manageAssets'],
   getImplementation: getManageAssetsHandler,
@@ -24,7 +24,6 @@ string | Record<string, unknown> | null
 };
 
 export interface ManageAssetsHooks {
-
   /**
    * A bound function gets the state of a particular snap.
    * @returns The current state of the snap.
@@ -35,7 +34,7 @@ export interface ManageAssetsHooks {
 function getManageAssetsHandler({ handleAssetRequest }: ManageAssetsHooks) {
   return async function manageAssets(
     req: JsonRpcRequest<
-    [method: string, arg: string | Record<string, unknown>]
+      [method: string, arg: string | Record<string, unknown>]
     >,
     res: PendingJsonRpcResponse<string | Record<string, unknown> | null>,
     _next: unknown,
@@ -53,7 +52,7 @@ function getManageAssetsHandler({ handleAssetRequest }: ManageAssetsHooks) {
         );
       }
 
-      if (arg && (typeof arg !== 'string' && !isPlainObject(arg))) {
+      if (arg && typeof arg !== 'string' && !isPlainObject(arg)) {
         return end(
           ethErrors.rpc.invalidParams({
             message:

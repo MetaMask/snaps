@@ -8,14 +8,15 @@ export interface ResourceBase {
   readonly fromDomain: string;
 }
 
-export type Resources<
-  ResourceType extends ResourceBase
-> = Record<string, ResourceType>;
+export type Resources<ResourceType extends ResourceBase> = Record<
+  string,
+  ResourceType
+>;
 
 export type ResourceRequestHandler<T extends Record<string, unknown>> = (
   fromDomain: string,
   method: string,
-  arg?: string | Partial<T>
+  arg?: string | Partial<T>,
 ) => string | T | null;
 
 const alwaysRequiredFields = ['fromDomain'];
@@ -41,7 +42,8 @@ interface ExternalResourceControllerArgs<
   initialResources: Resources<ResourceType & ResourceBase>;
 }
 
-const getUnauthorizedMessage = (id: string) => `Not authorized to access resource with id "${id}".`;
+const getUnauthorizedMessage = (id: string) =>
+  `Not authorized to access resource with id "${id}".`;
 
 /**
  * A class intended to describe a particular resource that is managed by plugins.
@@ -77,7 +79,7 @@ export class ExternalResourceController<
   getResources(): Resources<ResourceType & ResourceBase> {
     return {
       ...(this.store.getState()[this.storageKey] as Resources<
-      ResourceType & ResourceBase
+        ResourceType & ResourceBase
       >),
     };
   }

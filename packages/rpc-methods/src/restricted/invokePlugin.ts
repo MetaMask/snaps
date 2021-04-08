@@ -1,19 +1,28 @@
-import { JsonRpcEngineEndCallback, JsonRpcRequest, PendingJsonRpcResponse } from 'json-rpc-engine';
+import {
+  JsonRpcEngineEndCallback,
+  JsonRpcRequest,
+  PendingJsonRpcResponse,
+} from 'json-rpc-engine';
 import { ethErrors } from 'eth-rpc-errors';
 import { AnnotatedJsonRpcEngine } from 'rpc-cap';
 import { PLUGIN_PREFIX, PluginController } from '@mm-snap/controllers';
 import { RestrictedHandlerExport } from '../../types';
 import { isPlainObject } from '../utils';
 
-export const invokePluginHandler: RestrictedHandlerExport<InvokePluginHooks, [Record<string, unknown>], unknown> = {
+export const invokePluginHandler: RestrictedHandlerExport<
+  InvokePluginHooks,
+  [Record<string, unknown>],
+  unknown
+> = {
   methodNames: [`${PLUGIN_PREFIX}*`],
   getImplementation: getInvokePluginHandlerGetter,
-  permissionDescription: 'Connect to the requested plugin, and install it if not available yet.',
+  permissionDescription:
+    'Connect to the requested plugin, and install it if not available yet.',
   methodDescription: 'Call an RPC method of the specified plugin.',
   hookNames: {
-    'getPlugin': true,
-    'addPlugin': true,
-    'getPluginRpcHandler': true,
+    getPlugin: true,
+    addPlugin: true,
+    getPluginRpcHandler: true,
   },
 };
 
@@ -23,7 +32,11 @@ export interface InvokePluginHooks {
   getPluginRpcHandler: PluginController['getRpcMessageHandler'];
 }
 
-function getInvokePluginHandlerGetter({ getPlugin, addPlugin, getPluginRpcHandler }: InvokePluginHooks) {
+function getInvokePluginHandlerGetter({
+  getPlugin,
+  addPlugin,
+  getPluginRpcHandler,
+}: InvokePluginHooks) {
   return async function invokePlugin(
     req: JsonRpcRequest<[Record<string, unknown>]>,
     res: PendingJsonRpcResponse<unknown>,
@@ -34,9 +47,12 @@ function getInvokePluginHandlerGetter({ getPlugin, addPlugin, getPluginRpcHandle
     try {
       const pluginRpcRequest = req.params?.[0];
       if (!isPlainObject(pluginRpcRequest)) {
-        return end(ethErrors.rpc.invalidParams({
-          message: 'Must specify plugin RPC request object as single parameter.',
-        }));
+        return end(
+          ethErrors.rpc.invalidParams({
+            message:
+              'Must specify plugin RPC request object as single parameter.',
+          }),
+        );
       }
 
       const pluginOriginString = req.method.substr(PLUGIN_PREFIX.length);
@@ -50,9 +66,11 @@ function getInvokePluginHandlerGetter({ getPlugin, addPlugin, getPluginRpcHandle
 
       const handler = getPluginRpcHandler(pluginOriginString);
       if (!handler) {
-        return end(ethErrors.rpc.methodNotFound({
-          message: `Plugin RPC message handler not found for plugin "${pluginOriginString}".`,
-        }));
+        return end(
+          ethErrors.rpc.methodNotFound({
+            message: `Plugin RPC message handler not found for plugin "${pluginOriginString}".`,
+          }),
+        );
       }
 
       const fromDomain = engine.domain;

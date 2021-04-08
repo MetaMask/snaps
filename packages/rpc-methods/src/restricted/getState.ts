@@ -1,8 +1,15 @@
-import { PendingJsonRpcResponse, JsonRpcEngineEndCallback } from 'json-rpc-engine';
+import {
+  PendingJsonRpcResponse,
+  JsonRpcEngineEndCallback,
+} from 'json-rpc-engine';
 import { AnnotatedJsonRpcEngine } from 'rpc-cap';
 import { RestrictedHandlerExport } from '../../types';
 
-export const getStateHandler: RestrictedHandlerExport<GetStateHooks, void, Record<string, unknown>> = {
+export const getStateHandler: RestrictedHandlerExport<
+  GetStateHooks,
+  void,
+  Record<string, unknown>
+> = {
   methodNames: ['snap_getState'],
   getImplementation: getGetStateHandler,
   methodDescription: 'Get the state of the snap.',
@@ -13,7 +20,6 @@ export const getStateHandler: RestrictedHandlerExport<GetStateHooks, void, Recor
 };
 
 export interface GetStateHooks {
-
   /**
    * @param fromDomain - The string identifying the fromDomain.
    * @returns The current state of the snap.

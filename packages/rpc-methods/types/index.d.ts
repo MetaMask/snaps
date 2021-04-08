@@ -22,7 +22,9 @@ export type RestrictedHandlerMiddlewareFunction<T, U> = (
   engine: AnnotatedJsonRpcEngine,
 ) => void | Promise<void>;
 
-export type RestrictedHandlerMiddlewareGetter<T, U, V> = (hooks: T) => RestrictedHandlerMiddlewareFunction<U, V>;
+export type RestrictedHandlerMiddlewareGetter<T, U, V> = (
+  hooks: T,
+) => RestrictedHandlerMiddlewareFunction<U, V>;
 
 interface BaseHandlerExport {
   methodNames: string[];

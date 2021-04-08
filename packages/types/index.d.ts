@@ -14,7 +14,10 @@ export interface PluginData {
   sourceCode: string;
 }
 
-export type PluginRpcHandler = (origin: string, request: Record<string, unknown>) => Promise<unknown>;
+export type PluginRpcHandler = (
+  origin: string,
+  request: Record<string, unknown>,
+) => Promise<unknown>;
 
 export interface PluginProvider extends MetaMaskInpageProvider {
   registerRpcMessageHandler: (handler: PluginRpcHandler) => void;

@@ -29,10 +29,7 @@ export class CommandEngine {
 
   private _stream: WorkerParentPostMessageStream;
 
-  constructor({
-    workerId,
-    commandStream,
-  }: CommandEngineArgs) {
+  constructor({ workerId, commandStream }: CommandEngineArgs) {
     this.workerId = workerId;
     this._currentCommandId = -1;
     this._idMap = new Map();
@@ -41,14 +38,20 @@ export class CommandEngine {
     this._stream.on('data', this._onMessage.bind(this));
   }
 
-  async command(message: CommandRequest, timeout?: number): Promise<CommandResponse> {
+  async command(
+    message: CommandRequest,
+    timeout?: number,
+  ): Promise<CommandResponse> {
     if (typeof message !== 'object') {
       throw new Error('Must send object.');
     }
     return this._send(message, timeout);
   }
 
-  private _send(message: CommandRequest, timeout = 10000): Promise<CommandResponse> {
+  private _send(
+    message: CommandRequest,
+    timeout = 10000,
+  ): Promise<CommandResponse> {
     const id = this._getNextId();
     return new Promise((resolve, reject) => {
       this._idMap.set(id, { resolve, reject });

@@ -2,20 +2,14 @@
   "compilerOptions": {
     "declaration": true,
     "esModuleInterop": true,
-    "lib": [
-      "DOM"
-    ],
+    "lib": ["DOM"],
     "module": "CommonJS",
     "moduleResolution": "node",
     "outDir": "dist",
     "sourceMap": true,
     "strict": true,
     "target": "ES2017",
-    "typeRoots": [
-      "./node_modules/@types",
-    ],
+    "typeRoots": ["./node_modules/@types"]
   },
-  "include": [
-    "./src/*.ts"
-  ]
+  "include": ["./src/*.ts"]
 }

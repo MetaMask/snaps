@@ -8,7 +8,11 @@ import { WorkerParentPostMessageStream } from '@mm-snap/post-message-stream';
 import { PLUGIN_STREAM_NAMES } from '@mm-snap/workers';
 import { PluginData } from '@mm-snap/types';
 
-import { CommandEngine, CommandRequest, CommandResponse } from './CommandEngine';
+import {
+  CommandEngine,
+  CommandRequest,
+  CommandResponse,
+} from './CommandEngine';
 
 export type SetupWorkerConnection = (metadata: any, stream: Duplex) => void;
 
@@ -47,10 +51,7 @@ export class WorkerController extends SafeEventEmitter {
 
   private workerToPluginMap: Map<string, string>;
 
-  constructor({
-    setupWorkerConnection,
-    workerUrl,
-  }: WorkerControllerArgs) {
+  constructor({ setupWorkerConnection, workerUrl }: WorkerControllerArgs) {
     super();
     this.workerUrl = workerUrl;
     this.setupWorkerConnection = setupWorkerConnection;
@@ -183,18 +184,12 @@ export class WorkerController extends SafeEventEmitter {
     this.pluginToWorkerMap.delete(pluginName);
   }
 
-  async _initWorker(
-    metadata: PluginWorkerMetadata,
-  ): Promise<string> {
+  async _initWorker(metadata: PluginWorkerMetadata): Promise<string> {
     console.log('_initWorker');
 
     const workerId = nanoid();
     const worker = new Worker(this.workerUrl, { name: workerId });
-    const streams = this._initWorkerStreams(
-      worker,
-      workerId,
-      metadata,
-    );
+    const streams = this._initWorkerStreams(worker, workerId, metadata);
     const commandEngine = new CommandEngine({
       workerId,
       commandStream: streams.command,
@@ -212,7 +207,10 @@ export class WorkerController extends SafeEventEmitter {
   ): WorkerStreams {
     const workerStream = new WorkerParentPostMessageStream({ worker });
     // Typecast justification: stream type mismatch
-    const mux = setupMultiplex(workerStream as unknown as Duplex, `Worker:${workerId}`);
+    const mux = setupMultiplex(
+      (workerStream as unknown) as Duplex,
+      `Worker:${workerId}`,
+    );
 
     const commandStream = mux.createStream(PLUGIN_STREAM_NAMES.COMMAND);
 

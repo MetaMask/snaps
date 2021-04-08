@@ -1,9 +1,17 @@
-import { JsonRpcEngineEndCallback, JsonRpcRequest, PendingJsonRpcResponse } from 'json-rpc-engine';
+import {
+  JsonRpcEngineEndCallback,
+  JsonRpcRequest,
+  PendingJsonRpcResponse,
+} from 'json-rpc-engine';
 import { ethErrors } from 'eth-rpc-errors';
 import { AnnotatedJsonRpcEngine } from 'rpc-cap';
 import { RestrictedHandlerExport } from '../../types';
 
-export const updateStateHandler: RestrictedHandlerExport<UpdateStateHooks, [Record<string, unknown>], null> = {
+export const updateStateHandler: RestrictedHandlerExport<
+  UpdateStateHooks,
+  [Record<string, unknown>],
+  null
+> = {
   methodNames: ['snap_updateState'],
   getImplementation: getUpdateStateHandler,
   methodDescription: 'Update the state of the snap.',
@@ -14,13 +22,15 @@ export const updateStateHandler: RestrictedHandlerExport<UpdateStateHooks, [Reco
 };
 
 export interface UpdateStateHooks {
-
   /**
    * A bound function that updates the state of a particular snap.
    * @param fromDomain - The string identifying the fromDomain.
    * @param newState - The new state of the snap.
    */
-  updateSnapState: (fromDomain: string, newState: Record<string, unknown>) => Promise<void>;
+  updateSnapState: (
+    fromDomain: string,
+    newState: Record<string, unknown>,
+  ) => Promise<void>;
 }
 
 function getUpdateStateHandler({ updateSnapState }: UpdateStateHooks) {
@@ -34,9 +44,11 @@ function getUpdateStateHandler({ updateSnapState }: UpdateStateHooks) {
     const [newState] = req?.params || [];
 
     if (!newState || typeof newState !== 'object' || Array.isArray(newState)) {
-      return end(ethErrors.rpc.invalidParams({
-        message: 'Must specify single object specifying the new state.',
-      }));
+      return end(
+        ethErrors.rpc.invalidParams({
+          message: 'Must specify single object specifying the new state.',
+        }),
+      );
     }
 
     try {

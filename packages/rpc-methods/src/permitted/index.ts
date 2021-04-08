@@ -4,12 +4,10 @@ import { getPluginsHandler, GetPluginsHooks } from './getPlugins';
 import { installPluginsHandler, InstallPluginsHooks } from './installPlugins';
 import { invokePluginSugarHandler } from './invokePluginSugar';
 
-export type PermittedRpcMethodHooks = (
-  EnableWalletHooks &
+export type PermittedRpcMethodHooks = EnableWalletHooks &
   GetAppKeyHooks &
   GetPluginsHooks &
-  InstallPluginsHooks
-);
+  InstallPluginsHooks;
 
 export const handlers = [
   enableWalletHandler,

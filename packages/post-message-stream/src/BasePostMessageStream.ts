@@ -19,13 +19,11 @@ export interface PostMessageEvent {
  * Incomplete base implementation for postMessage streams.
  */
 export abstract class BasePostMessageStream extends Duplex {
-
   private _init: boolean;
 
   private _haveSyn: boolean;
 
   constructor() {
-
     super({
       objectMode: true,
     });

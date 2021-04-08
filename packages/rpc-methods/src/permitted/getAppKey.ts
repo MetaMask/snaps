@@ -1,8 +1,16 @@
-import { JsonRpcEngineEndCallback, JsonRpcRequest, PendingJsonRpcResponse } from 'json-rpc-engine';
+import {
+  JsonRpcEngineEndCallback,
+  JsonRpcRequest,
+  PendingJsonRpcResponse,
+} from 'json-rpc-engine';
 import { ethErrors } from 'eth-rpc-errors';
 import { PermittedHandlerExport } from '../../types';
 
-export const getAppKeyHandler: PermittedHandlerExport<GetAppKeyHooks, [string], string> = {
+export const getAppKeyHandler: PermittedHandlerExport<
+  GetAppKeyHooks,
+  [string],
+  string
+> = {
   methodNames: ['snap_getAppKey'],
   implementation: getAppKeyImplementation,
   methodDescription: 'Get the app key of the snap.',
@@ -12,7 +20,6 @@ export const getAppKeyHandler: PermittedHandlerExport<GetAppKeyHooks, [string], 
 };
 
 export interface GetAppKeyHooks {
-
   /**
    * A bound function that gets the app key for a particular snap.
    * @param requestedAccount - The requested account to get the app key for, if
@@ -35,9 +42,12 @@ async function getAppKeyImplementation(
     requestedAccount !== undefined &&
     (!requestedAccount || typeof requestedAccount !== 'string')
   ) {
-    return end(ethErrors.rpc.invalidParams({
-      message: 'Must omit params completely or specify a single hexadecimal string Ethereum account.',
-    }));
+    return end(
+      ethErrors.rpc.invalidParams({
+        message:
+          'Must omit params completely or specify a single hexadecimal string Ethereum account.',
+      }),
+    );
   }
 
   try {
