@@ -1,20 +1,27 @@
-import { JsonRpcEngineEndCallback, JsonRpcRequest, PendingJsonRpcResponse } from 'json-rpc-engine';
+import {
+  JsonRpcEngineEndCallback,
+  JsonRpcRequest,
+  PendingJsonRpcResponse,
+} from 'json-rpc-engine';
 import { ethErrors } from 'eth-rpc-errors';
 import { AnnotatedJsonRpcEngine } from 'rpc-cap';
 import { RestrictedHandlerExport } from '../../types';
 
-export const confirmHandler: RestrictedHandlerExport<ConfirmHooks, [string], boolean> = {
+export const confirmHandler: RestrictedHandlerExport<
+  ConfirmHooks,
+  [string],
+  boolean
+> = {
   methodNames: ['snap_confirm'],
   getImplementation: getConfirmHandler,
   methodDescription: 'Display a plain browser confirmation to the user.',
   permissionDescription: 'Display a plain browser confirmation to the user.',
   hookNames: {
-    'showConfirmation': true,
+    showConfirmation: true,
   },
 };
 
 export interface ConfirmHooks {
-
   /**
    *
    * @param prompt - The prompt to display to the user.
@@ -34,9 +41,11 @@ function getConfirmHandler({ showConfirmation }: ConfirmHooks) {
     const [prompt] = req?.params || [];
 
     if (!prompt || typeof prompt !== 'string') {
-      return end(ethErrors.rpc.invalidParams({
-        message: 'Must specify a non-empty string prompt.',
-      }));
+      return end(
+        ethErrors.rpc.invalidParams({
+          message: 'Must specify a non-empty string prompt.',
+        }),
+      );
     }
 
     try {

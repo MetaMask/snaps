@@ -38,7 +38,7 @@ export interface Plugin extends SerializablePlugin {
 // The plugin is the callee
 export type PluginRpcHook = (
   origin: string,
-  request: Record<string, unknown>
+  request: Record<string, unknown>,
 ) => Promise<CommandResponse>;
 
 export type ProcessPluginReturnType =
@@ -53,11 +53,11 @@ type RemoveAllPermissionsFunction = (pluginIds: string[]) => void;
 type CloseAllConnectionsFunction = (domain: string) => void;
 type RequestPermissionsFunction = (
   domain: string,
-  requestedPermissions: IRequestedPermissions
+  requestedPermissions: IRequestedPermissions,
 ) => IOcapLdCapability[];
 type HasPermissionFunction = (
   domain: string,
-  permissionName: string
+  permissionName: string,
 ) => boolean;
 type GetPermissionsFunction = (domain: string) => IOcapLdCapability[];
 
@@ -347,13 +347,13 @@ export class PluginController extends EventEmitter {
 
     return plugin
       ? // The cast to "any" of the accumulator object is due to a TypeScript bug
-      (Object.keys(plugin).reduce((serialized, key) => {
-        if (SERIALIZABLE_PLUGIN_PROPERTIES.has(key as keyof Plugin)) {
-          serialized[key] = plugin[key as keyof SerializablePlugin];
-        }
+        (Object.keys(plugin).reduce((serialized, key) => {
+          if (SERIALIZABLE_PLUGIN_PROPERTIES.has(key as keyof Plugin)) {
+            serialized[key] = plugin[key as keyof SerializablePlugin];
+          }
 
-        return serialized;
-      }, {} as any) as SerializablePlugin)
+          return serialized;
+        }, {} as any) as SerializablePlugin)
       : null;
   }
 

@@ -1,22 +1,29 @@
-import { JsonRpcEngineEndCallback, JsonRpcRequest, PendingJsonRpcResponse } from 'json-rpc-engine';
+import {
+  JsonRpcEngineEndCallback,
+  JsonRpcRequest,
+  PendingJsonRpcResponse,
+} from 'json-rpc-engine';
 import { ethErrors } from 'eth-rpc-errors';
 import { deriveKeyFromPath } from '@metamask/key-tree';
 import { RestrictedHandlerExport } from '../../types';
 
 const METHOD_PREFIX = 'snap_getBip44Entropy_';
 
-export const getBip44EntropyHandler: RestrictedHandlerExport<GetBip44EntropyHooks, void, string> = {
+export const getBip44EntropyHandler: RestrictedHandlerExport<
+  GetBip44EntropyHooks,
+  void,
+  string
+> = {
   methodNames: [`${METHOD_PREFIX}*`],
   getImplementation: getGetBip44EntropyHandler,
   methodDescription: 'Control private keys for a particular coin type.',
   permissionDescription: 'Control private keys for a particular coin type.',
   hookNames: {
-    'getMnemonic': true,
+    getMnemonic: true,
   },
 };
 
 export interface GetBip44EntropyHooks {
-
   /**
    * @returns The mnemonic of the user's primary keyring.
    */
@@ -36,9 +43,11 @@ function getGetBip44EntropyHandler({ getMnemonic }: GetBip44EntropyHooks) {
     try {
       const bip44Code = req.method.substr(METHOD_PREFIX.length);
       if (!ALL_DIGIT_REGEX.test(bip44Code)) {
-        return end(ethErrors.rpc.methodNotFound({
-          message: `Invalid BIP-44 code: ${bip44Code}`,
-        }));
+        return end(
+          ethErrors.rpc.methodNotFound({
+            message: `Invalid BIP-44 code: ${bip44Code}`,
+          }),
+        );
       }
 
       const mnemonic = await getMnemonic();

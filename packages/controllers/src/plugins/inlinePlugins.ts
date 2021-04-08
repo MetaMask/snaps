@@ -1,5 +1,4 @@
 export const INLINE_PLUGINS = {
-
   IDLE: `
     console.log('Welcome to Flavortown.');
   `,

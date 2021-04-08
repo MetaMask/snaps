@@ -1,4 +1,8 @@
-import { BasePostMessageStream, PostMessageEvent, StreamData } from './BasePostMessageStream';
+import {
+  BasePostMessageStream,
+  PostMessageEvent,
+  StreamData,
+} from './BasePostMessageStream';
 import { DEDICATED_WORKER_NAME } from './enums';
 
 interface WorkerParentStreamArgs {
@@ -9,14 +13,11 @@ interface WorkerParentStreamArgs {
  * Parent-side Dedicated Worker postMessage stream.
  */
 export class WorkerParentPostMessageStream extends BasePostMessageStream {
-
   private _target: string;
 
   private _worker: Worker;
 
-  constructor({
-    worker,
-  }: Partial<WorkerParentStreamArgs> = {}) {
+  constructor({ worker }: Partial<WorkerParentStreamArgs> = {}) {
     if (!worker) {
       throw new Error('Invalid input.');
     }
@@ -41,10 +42,7 @@ export class WorkerParentPostMessageStream extends BasePostMessageStream {
     const message = event.data;
 
     // validate message
-    if (
-      (typeof message !== 'object') ||
-      (!message.data)
-    ) {
+    if (typeof message !== 'object' || !message.data) {
       return;
     }
 

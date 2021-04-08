@@ -1,11 +1,14 @@
-import { BasePostMessageStream, PostMessageEvent, StreamData } from './BasePostMessageStream';
+import {
+  BasePostMessageStream,
+  PostMessageEvent,
+  StreamData,
+} from './BasePostMessageStream';
 import { DEDICATED_WORKER_NAME } from './enums';
 
 /**
  * Worker-side Dedicated Worker postMessage stream.
  */
 export class WorkerPostMessageStream extends BasePostMessageStream {
-
   private _name: string;
 
   constructor() {
@@ -27,9 +30,9 @@ export class WorkerPostMessageStream extends BasePostMessageStream {
 
     // validate message
     if (
-      (typeof message !== 'object') ||
-      (message.target !== this._name) ||
-      (!message.data)
+      typeof message !== 'object' ||
+      message.target !== this._name ||
+      !message.data
     ) {
       return;
     }

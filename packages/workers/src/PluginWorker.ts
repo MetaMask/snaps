@@ -19,7 +19,10 @@ declare global {
   const harden: <T>(value: T) => T;
 }
 
-type PluginRpcHandler = (origin: string, request: Record<string, unknown>) => Promise<unknown>;
+type PluginRpcHandler = (
+  origin: string,
+  request: Record<string, unknown>,
+) => Promise<unknown>;
 
 interface PluginRpcRequest {
   origin: string;
@@ -91,7 +94,7 @@ lockdown({
 
       switch (command) {
         case 'installPlugin':
-          this.installPlugin(id, data as unknown as PluginData);
+          this.installPlugin(id, (data as unknown) as PluginData);
           break;
 
         case 'ping':
@@ -99,7 +102,7 @@ lockdown({
           break;
 
         case 'pluginRpc':
-          await this.handlePluginRpc(id, data as unknown as PluginRpcRequest);
+          await this.handlePluginRpc(id, (data as unknown) as PluginRpcRequest);
           break;
 
         default:
@@ -114,7 +117,10 @@ lockdown({
       this.commandStream.write({ ...responseObj, id });
     }
 
-    private async handlePluginRpc(id: string, { origin, request, target }: PluginRpcRequest) {
+    private async handlePluginRpc(
+      id: string,
+      { origin, request, target }: PluginRpcRequest,
+    ) {
       const handler = this.pluginRpcHandlers.get(target);
 
       if (!handler) {
@@ -132,10 +138,10 @@ lockdown({
       }
     }
 
-    private installPlugin(id: string, {
-      pluginName,
-      sourceCode,
-    }: Partial<PluginData> = {}) {
+    private installPlugin(
+      id: string,
+      { pluginName, sourceCode }: Partial<PluginData> = {},
+    ) {
       if (!isTruthyString(pluginName) || !isTruthyString(sourceCode)) {
         this.respond(id, {
           error: new Error('Invalid installPlugin parameters.'),
@@ -144,10 +150,7 @@ lockdown({
       }
 
       try {
-        this.startPlugin(
-          pluginName as string,
-          sourceCode as string,
-        );
+        this.startPlugin(pluginName as string, sourceCode as string);
         this.respond(id, { result: 'OK' });
       } catch (err) {
         this.respond(id, { error: err });
@@ -164,10 +167,7 @@ lockdown({
      * @param {string} sourceCode - The source code of the plugin, in IIFE format.
      * @param {Object} ethereumProvider - The plugin's Ethereum provider object.
      */
-    private startPlugin(
-      pluginName: string,
-      sourceCode: string,
-    ) {
+    private startPlugin(pluginName: string, sourceCode: string) {
       console.log(`starting plugin '${pluginName}' in worker`);
 
       const wallet = this.createPluginProvider(pluginName);
@@ -207,9 +207,12 @@ lockdown({
      * plugin provider object (i.e. globalThis.wallet), and returns it.
      */
     private createPluginProvider(pluginName: string): PluginProvider {
-      const pluginProvider = new MetaMaskInpageProvider(this.rpcStream as any, {
-        shouldSendMetadata: false,
-      }) as unknown as Partial<PluginProvider>;
+      const pluginProvider = (new MetaMaskInpageProvider(
+        this.rpcStream as any,
+        {
+          shouldSendMetadata: false,
+        },
+      ) as unknown) as Partial<PluginProvider>;
 
       pluginProvider.registerRpcMessageHandler = (func: PluginRpcHandler) => {
         console.log('Worker: Registering RPC message handler', func);
@@ -233,10 +236,7 @@ lockdown({
     }
   }
 
-  function setupMultiplex(
-    connectionStream: Duplex,
-    streamName: string,
-  ) {
+  function setupMultiplex(connectionStream: Duplex, streamName: string) {
     const mux = new ObjectMultiplex();
     pump(connectionStream, mux as any, connectionStream, (err) => {
       if (err) {

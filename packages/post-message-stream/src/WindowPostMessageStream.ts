@@ -1,4 +1,8 @@
-import { BasePostMessageStream, PostMessageEvent, StreamData } from './BasePostMessageStream';
+import {
+  BasePostMessageStream,
+  PostMessageEvent,
+  StreamData,
+} from './BasePostMessageStream';
 
 interface WindowPostMessageStreamArgs {
   name: string;
@@ -10,7 +14,6 @@ interface WindowPostMessageStreamArgs {
  * Window.postMessage stream.
  */
 export class WindowPostMessageStream extends BasePostMessageStream {
-
   private _name: string;
 
   private _target: string;
@@ -33,7 +36,7 @@ export class WindowPostMessageStream extends BasePostMessageStream {
     this._name = name;
     this._target = target;
     this._targetWindow = targetWindow || window;
-    this._origin = (targetWindow ? '*' : location.origin);
+    this._origin = targetWindow ? '*' : location.origin;
     this._onMessage = this._onMessage.bind(this);
 
     window.addEventListener('message', this._onMessage as any, false);
@@ -42,10 +45,13 @@ export class WindowPostMessageStream extends BasePostMessageStream {
   }
 
   protected _postMessage(data: unknown): void {
-    this._targetWindow.postMessage({
-      target: this._target,
-      data,
-    }, this._origin);
+    this._targetWindow.postMessage(
+      {
+        target: this._target,
+        data,
+      },
+      this._origin,
+    );
   }
 
   private _onMessage(event: PostMessageEvent): void {
@@ -54,10 +60,10 @@ export class WindowPostMessageStream extends BasePostMessageStream {
     // validate message
     if (
       (this._origin !== '*' && event.origin !== this._origin) ||
-      (event.source !== this._targetWindow) ||
-      (typeof message !== 'object') ||
-      (message.target !== this._name) ||
-      (!message.data)
+      event.source !== this._targetWindow ||
+      typeof message !== 'object' ||
+      message.target !== this._name ||
+      !message.data
     ) {
       return;
     }
