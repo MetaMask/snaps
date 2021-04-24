@@ -2,7 +2,6 @@ const { getOutfilePath, validateOutfileName, validateFilePath, validateDirPath }
 const filesystem = require('../../dist/src/utils/fs');
 
 describe('validate', () => {
-
   afterEach(() => {
     jest.restoreAllMocks();
   });

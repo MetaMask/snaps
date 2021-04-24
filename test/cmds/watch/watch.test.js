@@ -32,7 +32,6 @@ describe('watch', () => {
     });
 
     afterEach(() => {
-      jest.clearAllMocks();
       jest.restoreAllMocks();
       watcherEmitter = undefined;
     });

@@ -18,7 +18,6 @@ jest.mock('init-package-json');
 describe('initUtils', () => {
   describe('asyncPackageInit', () => {
     afterEach(() => {
-      jest.clearAllMocks();
       jest.restoreAllMocks();
     });
 
@@ -95,7 +94,6 @@ describe('initUtils', () => {
 
   describe('buildWeb3Wallet', () => {
     afterEach(() => {
-      jest.clearAllMocks();
       jest.restoreAllMocks();
     });
 
@@ -288,7 +286,6 @@ describe('initUtils', () => {
 
   describe('validateEmptyDir', () => {
     afterEach(() => {
-      jest.clearAllMocks();
       jest.restoreAllMocks();
     });
 

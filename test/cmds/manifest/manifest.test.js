@@ -53,7 +53,6 @@ describe('manifest', () => {
     });
 
     afterEach(() => {
-      jest.clearAllMocks();
       jest.restoreAllMocks();
     });
 

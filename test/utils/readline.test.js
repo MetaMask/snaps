@@ -26,7 +26,6 @@ describe('readline', () => {
     afterEach(() => {
       questionMock.mockRestore();
       questionMock = null;
-      closeMock.mockClear();
     });
 
     it('should open a prompt, read in user input from stdin, and return the trimmed input', async () => {

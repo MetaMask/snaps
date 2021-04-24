@@ -111,11 +111,6 @@ describe('misc', () => {
     global.snaps.isWatching = bool;
   };
 
-  beforeEach(() => {
-    jest.resetModules();
-    jest.resetAllMocks();
-  });
-
   afterEach(() => {
     jest.restoreAllMocks();
   });

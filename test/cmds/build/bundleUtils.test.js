@@ -26,7 +26,6 @@ describe('bundleUtils', () => {
     });
 
     afterEach(() => {
-      jest.clearAllMocks();
       jest.restoreAllMocks();
     });
 
@@ -60,7 +59,6 @@ describe('bundleUtils', () => {
     });
 
     afterEach(() => {
-      jest.clearAllMocks();
       jest.restoreAllMocks();
     });
 

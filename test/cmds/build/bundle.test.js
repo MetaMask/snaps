@@ -10,7 +10,6 @@ jest.mock('browserify');
 
 describe('bundle', () => {
   afterEach(() => {
-    jest.clearAllMocks();
     jest.restoreAllMocks();
   });
 

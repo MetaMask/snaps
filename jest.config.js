@@ -1,9 +1,10 @@
 module.exports = {
-  testEnvironment: 'node',
-  verbose: false,
+  clearMocks: true,
   coverageReporters: [
     'json',
     'text',
     'html',
   ],
+  testEnvironment: 'node',
+  verbose: false,
 };
