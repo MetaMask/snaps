@@ -1,3 +1,4 @@
+import { promises as filesystem } from 'fs';
 import { Arguments } from 'yargs';
 
 export const permRequestKeys = [
@@ -76,6 +77,35 @@ export function logWarning(msg: string, error?: Error): void {
     if (error && global.snaps.verboseErrors) {
       console.error(error);
     }
+  }
+}
+
+/**
+   * Logs an error, attempts to unlink the destination file, and exits.
+   *
+   * @param prefix - The message prefix
+   * @param msg - The error message
+   * @param err - The original error
+   * @param destFilePath - The output file path
+   */
+export async function writeError(prefix: string, msg: string, err: Error, destFilePath?: string): Promise<void> {
+  let processedPrefix = prefix;
+  if (!prefix.endsWith(' ')) {
+    processedPrefix += ' ';
+  }
+
+  logError(processedPrefix + msg, err);
+  try {
+    if (destFilePath) {
+      await filesystem.unlink(destFilePath);
+    }
+  } catch (unlinkError) {
+    logError(`${processedPrefix}Failed to unlink mangled file.`, unlinkError);
+  }
+
+  // unless the watcher is active, exit
+  if (!global.snaps.isWatching) {
+    process.exit(1);
   }
 }
 

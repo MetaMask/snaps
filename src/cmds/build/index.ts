@@ -1,6 +1,11 @@
 import yargs from 'yargs';
 import builders from '../../builders';
-import { getOutfilePath, validateDirPath, validateFilePath, validateOutfileName } from '../../utils';
+import {
+  getOutfilePath,
+  validateDirPath,
+  validateFilePath,
+  validateOutfileName,
+} from '../../utils';
 import { snapEval } from '../eval';
 import { manifest } from '../manifest/manifest';
 import { YargsArgs } from '../../types/yargs';
@@ -35,7 +40,6 @@ module.exports.handler = (argv: YargsArgs) => build(argv);
  * @param argv.outfileName - The output file name
  */
 export async function build(argv: YargsArgs): Promise<void> {
-
   const { src, dist, outfileName } = argv;
   if (outfileName) {
     validateOutfileName(outfileName as string);
@@ -53,4 +57,3 @@ export async function build(argv: YargsArgs): Promise<void> {
     manifest(argv);
   }
 }
-

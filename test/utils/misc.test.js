@@ -1,4 +1,11 @@
-const { trimPathString, logError, logWarning, sanitizeInputs, setSnapGlobals } = require('../../dist/src/utils/misc');
+const fs = require('fs');
+const { trimPathString, logError, logWarning, sanitizeInputs, setSnapGlobals, writeError } = require('../../dist/src/utils/misc');
+
+jest.mock('fs', () => ({
+  promises: {
+    unlink: jest.fn(),
+  },
+}));
 
 describe('misc', () => {
   global.snaps = {
@@ -100,6 +107,10 @@ describe('misc', () => {
     global.snaps.suppressWarnings = bool;
   };
 
+  const setIsWatching = (bool) => {
+    global.snaps.isWatching = bool;
+  };
+
   beforeEach(() => {
     jest.resetModules();
     jest.resetAllMocks();
@@ -198,6 +209,39 @@ describe('misc', () => {
       logWarning('custom warning message', 'verbose warning message');
       expect(global.console.warn).not.toHaveBeenCalled();
       expect(global.console.error).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('writeError', () => {
+
+    it('calls console error once if filesystem unlink is successful', async () => {
+      setVerboseErrors(false);
+      setIsWatching(false);
+      jest.spyOn(process, 'exit').mockImplementation(() => {
+        throw new Error('process exited');
+      });
+      jest.spyOn(fs.promises, 'unlink').mockResolvedValueOnce();
+      const errorMock = jest.spyOn(console, 'error').mockImplementation();
+      await expect(writeError('foo', 'bar', new Error('error message'), 'dest'))
+        .rejects
+        .toThrow('process exited');
+      expect(errorMock).toHaveBeenNthCalledWith(1, 'foo bar');
+      expect(errorMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('calls console error twice if filesystem unlink fails', async () => {
+      setVerboseErrors(false);
+      setIsWatching(false);
+      jest.spyOn(process, 'exit').mockImplementation(() => {
+        throw new Error('process exited');
+      });
+      jest.spyOn(fs.promises, 'unlink').mockRejectedValueOnce();
+      const errorMock = jest.spyOn(console, 'error').mockImplementation();
+      await expect(writeError('foo', 'bar', new Error('error message'), 'dest'))
+        .rejects
+        .toThrow('process exited');
+      expect(errorMock).toHaveBeenNthCalledWith(1, 'foo bar');
+      expect(errorMock).toHaveBeenCalledTimes(2, `foo Failed to unlink mangled file.`);
     });
   });
 
