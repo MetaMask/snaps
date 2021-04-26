@@ -47,7 +47,9 @@ export function prompt({
   });
 }
 
-export function closePrompt(readlineInterface = singletonReadlineInterface): void {
+export function closePrompt(
+  readlineInterface = singletonReadlineInterface,
+): void {
   if (readlineInterface) {
     readlineInterface.close();
   }

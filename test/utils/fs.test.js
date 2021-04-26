@@ -47,12 +47,7 @@ function cleanupTestFiles() {
 
 describe('file system checks', () => {
   beforeEach(async () => {
-    await createTestFiles(
-      'file.txt',
-      'empty-dir',
-      'dir',
-      'dir/file.txt',
-    );
+    await createTestFiles('file.txt', 'empty-dir', 'dir', 'dir/file.txt');
   });
 
   afterEach(() => {
@@ -104,8 +99,12 @@ describe('file system checks', () => {
       });
       jest.spyOn(console, 'error').mockImplementation();
 
-      await expect(isDirectory('wrong/path/', true)).rejects.toThrow(new Error(1));
-      expect(global.console.error).toHaveBeenCalledWith('Directory \'wrong/path/\' could not be created.');
+      await expect(isDirectory('wrong/path/', true)).rejects.toThrow(
+        new Error(1),
+      );
+      expect(global.console.error).toHaveBeenCalledWith(
+        "Directory 'wrong/path/' could not be created.",
+      );
 
       delete global.snaps;
     });
@@ -116,20 +115,18 @@ describe('file system checks', () => {
     });
 
     it('makes a directory when given a valid directory path that does not exist', async () => {
-      jest.spyOn(fs, 'mkdir')
-        .mockImplementationOnce(async (path) => {
-          await createDir(path);
-        });
+      jest.spyOn(fs, 'mkdir').mockImplementationOnce(async (path) => {
+        await createDir(path);
+      });
 
       const result = await isDirectory('new-dir', true);
       expect(result).toStrictEqual(true);
     });
 
     it('given error.code !== ENOENT, return false', async () => {
-      jest.spyOn(fs, 'stat')
-        .mockImplementationOnce(async () => {
-          throw new Error('BAD');
-        });
+      jest.spyOn(fs, 'stat').mockImplementationOnce(async () => {
+        throw new Error('BAD');
+      });
 
       const result = await isDirectory('new-dir', true);
       expect(result).toStrictEqual(false);

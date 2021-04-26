@@ -4,9 +4,7 @@ const pingListeners = [];
 let pingCount = 0;
 
 wallet.registerApiRequestHandler(async (origin) => {
-
   return {
-
     ping: () => {
       trackPings(origin);
       return 'pong';
@@ -24,7 +22,6 @@ wallet.registerApiRequestHandler(async (origin) => {
       }
     },
   };
-
 });
 
 function trackPings(origin) {
@@ -34,9 +31,8 @@ function trackPings(origin) {
     pingCount,
   };
   pingListeners.forEach((listener) => {
-    listener(notice)
-      .catch((err) => {
-        console.error('Unable to deliver ping notice', err);
-      });
+    listener(notice).catch((err) => {
+      console.error('Unable to deliver ping notice', err);
+    });
   });
 }

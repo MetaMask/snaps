@@ -3,7 +3,13 @@ import chokidar from 'chokidar';
 import builders from '../../builders';
 import { YargsArgs } from '../../types/yargs';
 import { bundle } from '../build/bundle';
-import { logError, getOutfilePath, validateDirPath, validateFilePath, validateOutfileName } from '../../utils';
+import {
+  logError,
+  getOutfilePath,
+  validateDirPath,
+  validateFilePath,
+  validateOutfileName,
+} from '../../utils';
 
 module.exports.command = ['watch', 'w'];
 module.exports.desc = 'Build Snap on change';
@@ -30,16 +36,14 @@ module.exports.handler = (argv: YargsArgs) => watch(argv);
  * @param argv.'outfileName' - The output file name
  */
 export async function watch(argv: YargsArgs): Promise<void> {
-
   const { src, dist, outfileName } = argv;
   if (outfileName) {
     validateOutfileName(outfileName as string);
   }
   await validateFilePath(src);
   await validateDirPath(dist, true);
-  const root = (
-    src.indexOf('/') === -1 ? '.' : src.substring(0, src.lastIndexOf('/') + 1)
-  );
+  const root =
+    src.indexOf('/') === -1 ? '.' : src.substring(0, src.lastIndexOf('/') + 1);
   const outfilePath = getOutfilePath(dist, outfileName as string);
 
   const watcher = chokidar.watch(root, {

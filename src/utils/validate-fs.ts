@@ -14,46 +14,57 @@ export function getOutfilePath(outDir: string, outFileName: string): string {
 }
 
 /**
-   * Ensures that the outfile name is just a js file name.
-   * Throws on validation failure
-   *
-   * @param filename - The file name to validate
-   * @returns - True if validation succeeded
-   */
+ * Ensures that the outfile name is just a js file name.
+ * Throws on validation failure
+ *
+ * @param filename - The file name to validate
+ * @returns - True if validation succeeded
+ */
 export function validateOutfileName(filename: string): boolean {
-  if (!filename.endsWith('.js') || filename === '.js' || filename.indexOf('/') !== -1) {
+  if (
+    !filename.endsWith('.js') ||
+    filename === '.js' ||
+    filename.indexOf('/') !== -1
+  ) {
     throw new Error(`Invalid outfile name: ${filename}. Must be a .js file`);
   }
   return true;
 }
 
 /**
-   * Validates a file path.
-   * Throws on validation failure
-   *
-   * @param filePath - The file path to validate
-   * @returns - True if validation succeeded
-   */
+ * Validates a file path.
+ * Throws on validation failure
+ *
+ * @param filePath - The file path to validate
+ * @returns - True if validation succeeded
+ */
 export async function validateFilePath(filePath: string): Promise<boolean> {
   const exists = await isFile(filePath);
   if (!exists) {
-    throw new Error(`Invalid params: '${filePath}' is not a file or does not exist.`);
+    throw new Error(
+      `Invalid params: '${filePath}' is not a file or does not exist.`,
+    );
   }
   return true;
 }
 
 /**
-   * Validates a directory path.
-   * Throws on validation failure
-   *
-   * @param dirPath - The directory path to validate
-   * @param createDir - Whether to create the directory if it doesn't exist
-   * @returns - True if validation succeeded
-   */
-export async function validateDirPath(dirName: string, createDir: boolean): Promise<boolean> {
+ * Validates a directory path.
+ * Throws on validation failure
+ *
+ * @param dirPath - The directory path to validate
+ * @param createDir - Whether to create the directory if it doesn't exist
+ * @returns - True if validation succeeded
+ */
+export async function validateDirPath(
+  dirName: string,
+  createDir: boolean,
+): Promise<boolean> {
   const exists = await isDirectory(dirName, createDir);
   if (!exists) {
-    throw new Error(`Invalid params: '${dirName}' is not a directory or could not be created.`);
+    throw new Error(
+      `Invalid params: '${dirName}' is not a directory or could not be created.`,
+    );
   }
   return true;
 }

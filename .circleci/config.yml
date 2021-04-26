@@ -42,9 +42,9 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-          - node_modules
-          - build-artifacts
-          - examples/*/node_modules
+            - node_modules
+            - build-artifacts
+            - examples/*/node_modules
 
   test-build:
     docker:
@@ -59,7 +59,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-          - dist
+            - dist
 
   test-lint:
     docker:

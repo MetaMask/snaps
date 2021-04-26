@@ -9,7 +9,10 @@ import { logError } from './misc';
  * @param createDir - Whether to create the directory if it doesn't exist
  * @returns - Whether the given path is an existing directory
  */
-export async function isDirectory(pathString: string, createDir: boolean): Promise<boolean> {
+export async function isDirectory(
+  pathString: string,
+  createDir: boolean,
+): Promise<boolean> {
   try {
     const stats = await fs.stat(pathString);
     return stats.isDirectory();
@@ -31,11 +34,11 @@ export async function isDirectory(pathString: string, createDir: boolean): Promi
 }
 
 /**
-   * Checks whether the given path string resolves to an existing file.
-   *
-   * @param {string} pathString - The path string to check
-   * @returns {boolean} - Whether the given path is an existing file
-   */
+ * Checks whether the given path string resolves to an existing file.
+ *
+ * @param {string} pathString - The path string to check
+ * @returns {boolean} - Whether the given path is an existing file
+ */
 export async function isFile(pathString: string): Promise<boolean> {
   try {
     const stats = await fs.stat(pathString);

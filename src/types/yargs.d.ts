@@ -2,7 +2,6 @@ import { Options } from 'yargs';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type OptionalArguments<T = {}> = T & {
-
   /** Non-option arguments */
   _?: (string | number)[];
 

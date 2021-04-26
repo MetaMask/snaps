@@ -1,8 +1,7 @@
 .DS_Store
 temp
-examples/*/dist
 package-lock.json
-dist/
+dist
 test/fs-sandbox
 
 # Logs

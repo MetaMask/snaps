@@ -1,5 +1,9 @@
 const readline = require('readline');
-const { openPrompt, prompt, closePrompt } = require('../../dist/src/utils/readline');
+const {
+  openPrompt,
+  prompt,
+  closePrompt,
+} = require('../../dist/src/utils/readline');
 
 jest.mock('readline', () => {
   return { createInterface: jest.fn() };

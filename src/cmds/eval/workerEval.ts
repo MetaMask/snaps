@@ -1,7 +1,10 @@
 import { Worker } from 'worker_threads';
 import pathUtils from 'path';
 
-export function workerEval(bundlePath: string, getWorker = getEvalWorker): Promise<null> {
+export function workerEval(
+  bundlePath: string,
+  getWorker = getEvalWorker,
+): Promise<null> {
   return new Promise((resolve, _reject) => {
     getWorker(getEvalWorkerPath())
       .on('exit', (exitCode: number) => {

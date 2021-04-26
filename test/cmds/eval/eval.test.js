@@ -14,7 +14,8 @@ describe('eval', () => {
       jest.spyOn(console, 'log').mockImplementation(() => undefined);
       jest.spyOn(console, 'error').mockImplementation(() => undefined);
       jest.spyOn(process, 'exit').mockImplementation(() => undefined);
-      jest.spyOn(fsUtils, 'validateFilePath')
+      jest
+        .spyOn(fsUtils, 'validateFilePath')
         .mockImplementation(async () => true);
     });
 
@@ -27,7 +28,9 @@ describe('eval', () => {
       global.snaps = {
         verboseErrors: false,
       };
-      jest.spyOn(workerEvalModule, 'workerEval').mockImplementation(async () => undefined);
+      jest
+        .spyOn(workerEvalModule, 'workerEval')
+        .mockImplementation(async () => undefined);
       await snapEval(mockArgv);
       expect(global.console.log).toHaveBeenCalledTimes(1);
     });
@@ -36,9 +39,11 @@ describe('eval', () => {
       global.snaps = {
         verboseErrors: false,
       };
-      jest.spyOn(workerEvalModule, 'workerEval').mockImplementation(async () => {
-        throw new Error();
-      });
+      jest
+        .spyOn(workerEvalModule, 'workerEval')
+        .mockImplementation(async () => {
+          throw new Error();
+        });
       process.exit.mockImplementationOnce(() => {
         throw new Error('process exited');
       });
@@ -76,7 +81,9 @@ describe('eval', () => {
       mockWorker.emit('exit', 0);
       const result = await evalPromise;
       expect(result).toBeNull();
-      expect(getWorker).toHaveBeenCalledWith(expect.stringMatching(/evalWorker\.js/u));
+      expect(getWorker).toHaveBeenCalledWith(
+        expect.stringMatching(/evalWorker\.js/u),
+      );
       expect(mockWorker.on).toHaveBeenCalledTimes(1);
       expect(mockWorker.postMessage).toHaveBeenCalledWith({
         pluginFilePath: mockBundlePath,
@@ -91,7 +98,9 @@ describe('eval', () => {
         mockWorker.emit('exit', exitCode);
         await evalPromise;
       }).rejects.toThrow(`Worker exited abnormally! Code: ${exitCode}`);
-      expect(getWorker).toHaveBeenCalledWith(expect.stringMatching(/evalWorker\.js/u));
+      expect(getWorker).toHaveBeenCalledWith(
+        expect.stringMatching(/evalWorker\.js/u),
+      );
       expect(mockWorker.on).toHaveBeenCalledTimes(1);
       expect(mockWorker.postMessage).toHaveBeenCalledWith({
         pluginFilePath: mockBundlePath,

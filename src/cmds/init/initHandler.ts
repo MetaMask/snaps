@@ -2,7 +2,11 @@ import { promises as fs } from 'fs';
 import { CONFIG_PATHS, logError, closePrompt } from '../../utils';
 import { YargsArgs } from '../../types/yargs';
 import template from './initTemplate.json';
-import { asyncPackageInit, validateEmptyDir, buildWeb3Wallet } from './initUtils';
+import {
+  asyncPackageInit,
+  validateEmptyDir,
+  buildWeb3Wallet,
+} from './initUtils';
 
 const CONFIG_PATH = CONFIG_PATHS[0];
 
@@ -36,15 +40,22 @@ export async function initHandler(argv: YargsArgs) {
       await fs.writeFile(main, template.js);
       console.log(`Init: Wrote main entry file '${main}'`);
     } catch (err) {
-      logError(`Init Error: Fatal: Failed to write main .js file '${main}'`, err);
+      logError(
+        `Init Error: Fatal: Failed to write main .js file '${main}'`,
+        err,
+      );
       process.exit(1);
     }
   }
 
   // write index.html
   try {
-    await fs.writeFile('index.html', template.html.toString()
-      .replace(/_PORT_/gu, newArgs.port.toString() || argv.port.toString()));
+    await fs.writeFile(
+      'index.html',
+      template.html
+        .toString()
+        .replace(/_PORT_/gu, newArgs.port.toString() || argv.port.toString()),
+    );
     console.log(`Init: Wrote 'index.html' file`);
   } catch (err) {
     logError(`Init Error: Fatal: Failed to write index.html file`, err);

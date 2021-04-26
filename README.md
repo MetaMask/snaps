@@ -51,9 +51,9 @@ In addition, we use the following, required custom fields:
     - `url` (`string`; absolute URL to bundle)
       - Set to e.g. `localhost:8081/dist/bundle.js` for local development.
   - `initialPermissions` (`{ string: object }`; permissions to be requested on
-  Snap installation)
+    Snap installation)
     - See [this interface](https://github.com/MetaMask/rpc-cap#requestpermissions-irequestedpermissions)
-    and examples in this repo for details.
+      and examples in this repo for details.
 
 If you exclude any required fields from `package.json`, your Snap may not
 work properly or install at all.
@@ -144,7 +144,7 @@ Examples:
 
 - Commands
   - `watch --src ... --dist ...` rebuilds on all changes in the parent directory
-  of `src` and its children except:
+    of `src` and its children except:
     - `node_modules/`
     - `test/` and `tests/`
     - The specified `dist` directory

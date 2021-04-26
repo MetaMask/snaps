@@ -9,9 +9,7 @@ import { logServerError, logServerListening, logRequest } from './serveUtils';
 module.exports.command = ['serve', 's'];
 module.exports.desc = 'Locally serve Snap file(s) for testing';
 module.exports.builder = (yarg: yargs.Argv) => {
-  yarg
-    .option('root', builders.root)
-    .option('port', builders.port);
+  yarg.option('root', builders.root).option('port', builders.port);
 };
 module.exports.handler = (argv: YargsArgs) => serve(argv);
 
@@ -24,7 +22,6 @@ module.exports.handler = (argv: YargsArgs) => serve(argv);
  * @param argv.port - The server port
  */
 async function serve(argv: YargsArgs): Promise<void> {
-
   const { port, root } = argv;
 
   await validateDirPath(root as string, true);

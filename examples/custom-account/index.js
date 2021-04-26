@@ -37,7 +37,9 @@ wallet.registerAccountMessageHandler(async (origin, req) => {
     case 'wallet_signTypedData_v4': {
       const result = await prompt({
         html: `<div style="width: 100%;overflow-wrap: break-word;">
-          The site from <span style="font-weight: 900;color: #037DD6;"><a href="${origin}">${origin}</a></span> requests you sign this with your offline strategy:\n${JSON.stringify(req)}
+          The site from <span style="font-weight: 900;color: #037DD6;"><a href="${origin}">${origin}</a></span> requests you sign this with your offline strategy:\n${JSON.stringify(
+          req,
+        )}
           </div>`,
       });
       return result;
@@ -50,7 +52,9 @@ wallet.registerAccountMessageHandler(async (origin, req) => {
 async function addAccount(params) {
   validate(params);
   const account = params[0];
-  const approved = await confirm(`Do you want to add read-only account ${account} to your wallet?`);
+  const approved = await confirm(
+    `Do you want to add read-only account ${account} to your wallet?`,
+  );
   if (!approved) {
     throw ethErrors.provider.userRejectedRequest({ data: params });
   }
@@ -70,7 +74,10 @@ async function confirm(message) {
 }
 
 async function prompt(message) {
-  const result = await wallet.request({ method: 'customPrompt', params: [message] });
+  const result = await wallet.request({
+    method: 'customPrompt',
+    params: [message],
+  });
   return result;
 }
 
@@ -78,14 +85,14 @@ function updateUi() {
   console.log('updating UI with accounts', accounts);
   accounts.forEach(async (account) => {
     console.log('issuing add for ', account);
-    wallet.request({
-      method: 'wallet_manageIdentities',
-      params: ['add', { address: account }],
-    })
+    wallet
+      .request({
+        method: 'wallet_manageIdentities',
+        params: ['add', { address: account }],
+      })
       .catch((err) => console.log('Problem updating identity', err))
       .then(() => {
         console.log('adding identity seems to have succeeded!');
       });
   });
 }
-

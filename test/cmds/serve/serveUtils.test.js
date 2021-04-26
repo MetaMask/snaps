@@ -1,9 +1,12 @@
 const miscUtils = require('../../../dist/src/utils/misc');
-const { logServerListening, logRequest, logServerError } = require('../../../dist/src/cmds/serve/serveUtils');
+const {
+  logServerListening,
+  logRequest,
+  logServerError,
+} = require('../../../dist/src/cmds/serve/serveUtils');
 
 describe('serve utility functions', () => {
   describe('logServerListening', () => {
-
     afterEach(() => {
       jest.restoreAllMocks();
     });
@@ -18,7 +21,6 @@ describe('serve utility functions', () => {
   });
 
   describe('logRequest', () => {
-
     afterEach(() => {
       jest.restoreAllMocks();
     });
@@ -32,11 +34,9 @@ describe('serve utility functions', () => {
       logRequest(requestInput);
       expect(global.console.log).toHaveBeenCalledTimes(1);
     });
-
   });
 
   describe('logServerError', () => {
-
     afterEach(() => {
       jest.restoreAllMocks();
     });

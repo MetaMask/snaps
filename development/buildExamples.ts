@@ -44,7 +44,9 @@ async function buildExamples() {
             cwd: exampleFilePath,
           });
         } catch (depsInstallError) {
-          console.log(`Unexpected error when installing dependences in "${exampleFilePath}.`);
+          console.log(
+            `Unexpected error when installing dependences in "${exampleFilePath}.`,
+          );
           throw depsInstallError;
         }
 
@@ -57,11 +59,15 @@ async function buildExamples() {
             port: 8000,
           });
         } catch (bundleError) {
-          console.log(`Unexpected error while creating bundle in "${exampleFilePath}.`);
+          console.log(
+            `Unexpected error while creating bundle in "${exampleFilePath}.`,
+          );
           throw bundleError;
         }
       } else {
-        throw new Error(`Invalid example directory "${exampleFile}". Ensure it has valid 'package.json' and 'index.js' files.`);
+        throw new Error(
+          `Invalid example directory "${exampleFile}". Ensure it has valid 'package.json' and 'index.js' files.`,
+        );
       }
     }
   });

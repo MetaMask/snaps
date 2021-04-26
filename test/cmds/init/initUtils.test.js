@@ -1,6 +1,10 @@
 const fs = require('fs');
 const initPackageJson = require('init-package-json');
-const { asyncPackageInit, buildWeb3Wallet, validateEmptyDir } = require('../../../dist/src/cmds/init/initUtils');
+const {
+  asyncPackageInit,
+  buildWeb3Wallet,
+  validateEmptyDir,
+} = require('../../../dist/src/cmds/init/initUtils');
 const readlineUtils = require('../../../dist/src/utils/readline');
 const miscUtils = require('../../../dist/src/utils/misc');
 
@@ -22,8 +26,12 @@ describe('initUtils', () => {
     });
 
     it('console logs if successful', async () => {
-      const existsSyncMock = jest.spyOn(fs, 'existsSync').mockImplementation(() => true);
-      const readFileMock = jest.spyOn(fs.promises, 'readFile').mockImplementationOnce();
+      const existsSyncMock = jest
+        .spyOn(fs, 'existsSync')
+        .mockImplementation(() => true);
+      const readFileMock = jest
+        .spyOn(fs.promises, 'readFile')
+        .mockImplementationOnce();
       const parseMock = jest.spyOn(JSON, 'parse').mockImplementation();
       jest.spyOn(console, 'log').mockImplementation();
 
@@ -35,19 +43,24 @@ describe('initUtils', () => {
     });
 
     it('throws error if unable to parse packagejson', async () => {
-      const existsSyncMock = jest.spyOn(fs, 'existsSync').mockImplementation(() => true);
-      const readFileMock = jest.spyOn(fs.promises, 'readFile').mockImplementationOnce();
+      const existsSyncMock = jest
+        .spyOn(fs, 'existsSync')
+        .mockImplementation(() => true);
+      const readFileMock = jest
+        .spyOn(fs.promises, 'readFile')
+        .mockImplementationOnce();
       const parseMock = jest.spyOn(JSON, 'parse').mockImplementation(() => {
         throw new Error('error message');
       });
       jest.spyOn(console, 'log').mockImplementation();
       const errorMock = jest.spyOn(miscUtils, 'logError').mockImplementation();
-      jest.spyOn(process, 'exit')
-        .mockImplementation(() => {
-          throw new Error('process exited');
-        });
+      jest.spyOn(process, 'exit').mockImplementation(() => {
+        throw new Error('process exited');
+      });
 
-      await expect(asyncPackageInit()).rejects.toThrow(new Error('process exited'));
+      await expect(asyncPackageInit()).rejects.toThrow(
+        new Error('process exited'),
+      );
       expect(existsSyncMock).toHaveBeenCalled();
       expect(readFileMock).toHaveBeenCalledTimes(1);
       expect(parseMock).toHaveBeenCalledTimes(1);
@@ -57,17 +70,21 @@ describe('initUtils', () => {
     });
 
     it('yarn lock logic works throws error if initpackagejson is rejected', async () => {
-      const existsSyncMock = jest.spyOn(fs, 'existsSync')
+      const existsSyncMock = jest
+        .spyOn(fs, 'existsSync')
         .mockImplementationOnce(() => false)
         .mockImplementationOnce(() => false);
-      initPackageJson.mockImplementation((_, __, ___, cb) => cb(new Error('initpackage error'), true));
+      initPackageJson.mockImplementation((_, __, ___, cb) =>
+        cb(new Error('initpackage error'), true),
+      );
 
       await expect(asyncPackageInit()).rejects.toThrow('initpackage error');
       expect(existsSyncMock).toHaveBeenCalledTimes(2);
     });
 
     it('yarn lock logic works', async () => {
-      const existsSyncMock = jest.spyOn(fs, 'existsSync')
+      const existsSyncMock = jest
+        .spyOn(fs, 'existsSync')
         .mockImplementationOnce(() => false)
         .mockImplementationOnce(() => false);
       initPackageJson.mockImplementation((_, __, ___, cb) => cb(false, true));
@@ -77,15 +94,20 @@ describe('initUtils', () => {
     });
 
     it('logs error when yarn lock is found', async () => {
-      const existsSyncMock = jest.spyOn(fs, 'existsSync')
+      const existsSyncMock = jest
+        .spyOn(fs, 'existsSync')
         .mockImplementationOnce(() => false)
         .mockImplementationOnce(() => true);
       const errorMock = jest.spyOn(miscUtils, 'logError').mockImplementation();
-      const processExitMock = jest.spyOn(process, 'exit').mockImplementationOnce(() => {
-        throw new Error('process exited');
-      });
+      const processExitMock = jest
+        .spyOn(process, 'exit')
+        .mockImplementationOnce(() => {
+          throw new Error('process exited');
+        });
 
-      await expect(asyncPackageInit()).rejects.toThrow(new Error('process exited'));
+      await expect(asyncPackageInit()).rejects.toThrow(
+        new Error('process exited'),
+      );
       expect(existsSyncMock).toHaveBeenCalledTimes(2);
       expect(errorMock).toHaveBeenCalledTimes(1);
       expect(processExitMock).toHaveBeenCalledWith(1);
@@ -108,11 +130,14 @@ describe('initUtils', () => {
     const NO = 'no';
     const VALID_PORT = 8000;
     const VALID_DIR = 'validDir';
-    const VALID_PERMISSIONS_INPUT = 'confirm customPrompt wallet_manageIdentities';
+    const VALID_PERMISSIONS_INPUT =
+      'confirm customPrompt wallet_manageIdentities';
 
-    it('applies default web3wallet values if user input is \'y\'', async () => {
+    it("applies default web3wallet values if user input is 'y'", async () => {
       const mkdirMock = fs.promises.mkdir.mockImplementation();
-      const promptMock = jest.spyOn(readlineUtils, 'prompt').mockImplementation(() => 'y');
+      const promptMock = jest
+        .spyOn(readlineUtils, 'prompt')
+        .mockImplementation(() => 'y');
       jest.spyOn(console, 'log').mockImplementation();
 
       await buildWeb3Wallet(getMockArgv());
@@ -123,18 +148,24 @@ describe('initUtils', () => {
 
     it('throws error if fails to make directory and apply default values', async () => {
       fs.promises.mkdir.mockImplementation(() => {
-        const err = new Error('an error message that is not `file already exists`');
+        const err = new Error(
+          'an error message that is not `file already exists`',
+        );
         err.code = 'notEEXIST';
         throw err;
       });
-      const promptMock = jest.spyOn(readlineUtils, 'prompt').mockImplementation(() => 'y');
+      const promptMock = jest
+        .spyOn(readlineUtils, 'prompt')
+        .mockImplementation(() => 'y');
       jest.spyOn(console, 'log').mockImplementation();
       const errorMock = jest.spyOn(miscUtils, 'logError').mockImplementation();
       jest.spyOn(process, 'exit').mockImplementationOnce(() => {
         throw new Error('error message');
       });
 
-      await expect(buildWeb3Wallet(getMockArgv())).rejects.toThrow(new Error('error message'));
+      await expect(buildWeb3Wallet(getMockArgv())).rejects.toThrow(
+        new Error('error message'),
+      );
       expect(promptMock).toHaveBeenCalledTimes(1);
       expect(global.console.log).toHaveBeenCalledTimes(1);
       expect(errorMock).toHaveBeenCalledTimes(2);
@@ -150,15 +181,16 @@ describe('initUtils', () => {
             url: `http://localhost:${VALID_PORT}/${VALID_DIR}/${mockArgv.outfileName}`,
           },
           initialPermissions: {
-            'confirm': {},
-            'customPrompt': {},
-            'wallet_manageIdentities': {},
+            confirm: {},
+            customPrompt: {},
+            wallet_manageIdentities: {},
           },
         },
         { dist: VALID_DIR, outfileName: 'bundle.js', port: VALID_PORT },
       ];
 
-      const promptMock = jest.spyOn(readlineUtils, 'prompt')
+      const promptMock = jest
+        .spyOn(readlineUtils, 'prompt')
         .mockImplementationOnce(() => NO)
         .mockImplementationOnce(() => VALID_PORT)
         .mockImplementationOnce(() => VALID_DIR)
@@ -179,13 +211,14 @@ describe('initUtils', () => {
             url: `http://localhost:${VALID_PORT}/${VALID_DIR}/${mockArgv.outfileName}`,
           },
           initialPermissions: {
-            'alert': {},
+            alert: {},
           },
         },
         { dist: VALID_DIR, outfileName: 'bundle.js', port: VALID_PORT },
       ];
 
-      const promptMock = jest.spyOn(readlineUtils, 'prompt')
+      const promptMock = jest
+        .spyOn(readlineUtils, 'prompt')
         .mockImplementationOnce(() => NO)
         .mockImplementationOnce(() => VALID_PORT)
         .mockImplementationOnce(() => VALID_DIR)
@@ -198,7 +231,8 @@ describe('initUtils', () => {
     });
 
     it('treats already existing directory as a success', async () => {
-      const promptMock = jest.spyOn(readlineUtils, 'prompt')
+      const promptMock = jest
+        .spyOn(readlineUtils, 'prompt')
         .mockImplementationOnce(() => NO)
         .mockImplementationOnce(() => VALID_PORT)
         .mockImplementationOnce(() => VALID_DIR)
@@ -218,7 +252,8 @@ describe('initUtils', () => {
 
     it('logs error and reprompts if user inputs invalid port', async () => {
       const invalidPort = '-1';
-      const promptMock = jest.spyOn(readlineUtils, 'prompt')
+      const promptMock = jest
+        .spyOn(readlineUtils, 'prompt')
         .mockImplementationOnce(() => NO)
         .mockImplementationOnce(() => invalidPort)
         .mockImplementationOnce(() => VALID_PORT)
@@ -237,7 +272,8 @@ describe('initUtils', () => {
 
     it('logs error and reprompts if user inputs directory that could not be made', async () => {
       const invalidDist = 'invalidDir';
-      const promptMock = jest.spyOn(readlineUtils, 'prompt')
+      const promptMock = jest
+        .spyOn(readlineUtils, 'prompt')
         .mockImplementationOnce(() => NO)
         .mockImplementationOnce(() => VALID_PORT)
         .mockImplementationOnce(() => invalidDist)
@@ -245,13 +281,13 @@ describe('initUtils', () => {
         .mockImplementationOnce(() => VALID_PERMISSIONS_INPUT);
 
       const mockErrorCode = 'notEEXIST';
-      fs.promises.mkdir
-        .mockResolvedValue()
-        .mockImplementationOnce(() => {
-          const err = new Error('an error message that is not `file already exists`');
-          err.code = mockErrorCode;
-          throw err;
-        });
+      fs.promises.mkdir.mockResolvedValue().mockImplementationOnce(() => {
+        const err = new Error(
+          'an error message that is not `file already exists`',
+        );
+        err.code = mockErrorCode;
+        throw err;
+      });
       const errorMock = jest.spyOn(miscUtils, 'logError').mockImplementation();
 
       await buildWeb3Wallet(getMockArgv());
@@ -265,7 +301,8 @@ describe('initUtils', () => {
 
     it('logs error and reprompts if user inputs invalid permission', async () => {
       const invalidPermissions = '@!*XYZ123 confirm';
-      const promptMock = jest.spyOn(readlineUtils, 'prompt')
+      const promptMock = jest
+        .spyOn(readlineUtils, 'prompt')
         .mockImplementationOnce(() => NO)
         .mockImplementationOnce(() => VALID_PORT)
         .mockImplementationOnce(() => VALID_DIR)
@@ -290,9 +327,15 @@ describe('initUtils', () => {
     });
 
     it('warns user if files may be overwritten', async () => {
-      const readdirMock = jest.spyOn(fs.promises, 'readdir').mockImplementation(() => ['index.js', 'dist']);
-      const warningMock = jest.spyOn(miscUtils, 'logWarning').mockImplementation();
-      const promptMock = jest.spyOn(readlineUtils, 'prompt').mockImplementation(() => 'n');
+      const readdirMock = jest
+        .spyOn(fs.promises, 'readdir')
+        .mockImplementation(() => ['index.js', 'dist']);
+      const warningMock = jest
+        .spyOn(miscUtils, 'logWarning')
+        .mockImplementation();
+      const promptMock = jest
+        .spyOn(readlineUtils, 'prompt')
+        .mockImplementation(() => 'n');
       jest.spyOn(process, 'exit').mockImplementationOnce(() => undefined);
       jest.spyOn(console, 'log').mockImplementation();
 
@@ -305,9 +348,15 @@ describe('initUtils', () => {
     });
 
     it('handles continue correctly', async () => {
-      const readdirMock = jest.spyOn(fs.promises, 'readdir').mockImplementation(() => ['index.js', 'dist']);
-      const warningMock = jest.spyOn(miscUtils, 'logWarning').mockImplementation();
-      const promptMock = jest.spyOn(readlineUtils, 'prompt').mockImplementation(() => 'YES');
+      const readdirMock = jest
+        .spyOn(fs.promises, 'readdir')
+        .mockImplementation(() => ['index.js', 'dist']);
+      const warningMock = jest
+        .spyOn(miscUtils, 'logWarning')
+        .mockImplementation();
+      const promptMock = jest
+        .spyOn(readlineUtils, 'prompt')
+        .mockImplementation(() => 'YES');
       jest.spyOn(process, 'exit').mockImplementationOnce(() => undefined);
       jest.spyOn(console, 'log').mockImplementation();
 

@@ -11,11 +11,12 @@ const mockArgv = {
 
 describe('serve', () => {
   describe('Starts a local, static HTTP server on the given port with the given root directory.', () => {
-
     let mockServer;
 
     beforeEach(() => {
-      const logServerListeningMock = jest.spyOn(serveUtils, 'logServerListening').mockImplementation();
+      const logServerListeningMock = jest
+        .spyOn(serveUtils, 'logServerListening')
+        .mockImplementation();
       jest.spyOn(http, 'createServer').mockImplementation(() => {
         mockServer = new EventEmitter();
         mockServer.listen = () => logServerListeningMock();
@@ -48,7 +49,9 @@ describe('serve', () => {
 
     it('server handles "error" event correctly', async () => {
       jest.spyOn(console, 'log').mockImplementation();
-      const logServerErrorMock = jest.spyOn(serveUtils, 'logServerError').mockImplementation();
+      const logServerErrorMock = jest
+        .spyOn(serveUtils, 'logServerError')
+        .mockImplementation();
       jest.spyOn(process, 'exit').mockImplementation(() => undefined);
 
       await serve.handler(mockArgv);
@@ -66,7 +69,9 @@ describe('serve', () => {
 
     it('server handles "request" event correctly', async () => {
       jest.spyOn(console, 'log').mockImplementation();
-      const logRequestMock = jest.spyOn(serveUtils, 'logRequest').mockImplementation();
+      const logRequestMock = jest
+        .spyOn(serveUtils, 'logRequest')
+        .mockImplementation();
 
       await serve.handler(mockArgv);
       const finishPromise = new Promise((resolve, _) => {

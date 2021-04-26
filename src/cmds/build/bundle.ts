@@ -22,15 +22,16 @@ export function bundle(
   return new Promise((resolve, _reject) => {
     const bundleStream = createBundleStream(dest);
     browserify(src, { debug }).bundle(
-      async (bundleError, bundleBuffer: Buffer) => await canCloseStream({
-        bundleError,
-        bundleBuffer,
-        bundleStream,
-        src,
-        dest,
-        resolve,
-        argv,
-      }),
+      async (bundleError, bundleBuffer: Buffer) =>
+        await canCloseStream({
+          bundleError,
+          bundleBuffer,
+          bundleStream,
+          src,
+          dest,
+          resolve,
+          argv,
+        }),
     );
   });
 }

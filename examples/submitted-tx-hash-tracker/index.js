@@ -10,7 +10,10 @@ wallet.onMetaMaskEvent('tx:status-update', (id, status) => {
     const txMeta = wallet.getTxById(id);
     wallet.updatePluginState({
       ...currentPluginState,
-      successfulTxHashes: [...currentPluginState.successfulTxHashes, txMeta.hash],
+      successfulTxHashes: [
+        ...currentPluginState.successfulTxHashes,
+        txMeta.hash,
+      ],
     });
   }
 });
@@ -23,4 +26,3 @@ wallet.registerRpcMessageHandler(async (_originString, requestObject) => {
       throw rpcErrors.eth.methodNotFound(requestObject);
   }
 });
-

@@ -36,7 +36,7 @@
 
 - Fix `undefined` `port` in `package.json` on build
 - The `populate` option for `mm-plugin manifest` (and `mm-plugin build`, which calls
-`manifest` by default) no longer has the alias `p`
+  `manifest` by default) no longer has the alias `p`
   - `p` is now in every case reserved as an alias for `port`.
 
 ## 0.3.8
@@ -50,7 +50,7 @@
   - It applies: `bundle.url = 'http://localhost:${port}/${bundlePath}'`
 - Basic handling of HTML comment syntax in bundle
   - `<!--` and `-->` can be valid JavaScript, but are always forbidden by SES.
-  They are now destructed into `<! --` and `-- >`. This may break code in some edge cases.
+    They are now destructed into `<! --` and `-- >`. This may break code in some edge cases.
 
 ## 0.3.6
 
@@ -88,7 +88,7 @@
 ## 0.2.1
 
 - Specifying `web3Wallet.bundle.local` or `dist` in `.mm-plugin.json` no longer
-overwrites the default for the `serve` command's `root` directory argument
+  overwrites the default for the `serve` command's `root` directory argument
 
 ## 0.2.0
 

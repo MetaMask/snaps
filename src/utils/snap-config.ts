@@ -51,8 +51,10 @@ export function applyConfig(
   const commandOptions = new Set(Object.keys(options));
 
   const shouldSetArg = (key: string): boolean => {
-    return commandOptions.has(key) &&
-      !Object.prototype.hasOwnProperty.call(parsedProcessArgv, key);
+    return (
+      commandOptions.has(key) &&
+      !Object.prototype.hasOwnProperty.call(parsedProcessArgv, key)
+    );
   };
 
   // Now, we attempt to read and apply config from the config file, if any.
@@ -74,7 +76,6 @@ export function applyConfig(
         err,
       );
       process.exit(1);
-
     }
   }
 

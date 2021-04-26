@@ -87,9 +87,7 @@ describe('bundleUtils', () => {
 
   describe('postProcess', () => {
     it('trims the string', () => {
-      expect(postProcess(' trimMe ')).toStrictEqual(
-        'trimMe',
-      );
+      expect(postProcess(' trimMe ')).toStrictEqual('trimMe');
     });
 
     it('strips comments if configured to do so', () => {
@@ -99,9 +97,9 @@ describe('bundleUtils', () => {
     });
 
     it('ignores comments if configured to do so', () => {
-      expect(
-        postProcess('/* leave me alone */postProcessMe'),
-      ).toStrictEqual('/* leave me alone */postProcessMe');
+      expect(postProcess('/* leave me alone */postProcessMe')).toStrictEqual(
+        '/* leave me alone */postProcessMe',
+      );
     });
 
     it('applies regeneratorRuntime hack', () => {

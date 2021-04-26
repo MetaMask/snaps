@@ -10,10 +10,17 @@ async function generateInitTemplate() {
   const html = fs.readFile(path.join(EXAMPLE_PATH, 'index.html')).toString();
   const js = fs.readFile(path.join(EXAMPLE_PATH, 'index.js')).toString();
 
-  await fs.writeFile(TEMPLATE_PATH, JSON.stringify({
-    html,
-    js,
-  }, null, 2));
+  await fs.writeFile(
+    TEMPLATE_PATH,
+    JSON.stringify(
+      {
+        html,
+        js,
+      },
+      null,
+      2,
+    ),
+  );
 
   console.log('success: wrote src/initTemplate.json');
 }

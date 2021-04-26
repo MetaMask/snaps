@@ -19,11 +19,11 @@ wallet.registerRpcMessageHandler(async (_originString, requestObject) => {
     case 'getBalance':
       return userBalance;
     case 'mint':
-      userBalance += (requestObject.params[0] || 1);
+      userBalance += requestObject.params[0] || 1;
       updateUi();
       return userBalance;
     case 'burn':
-      userBalance -= (requestObject.params[0] || userBalance);
+      userBalance -= requestObject.params[0] || userBalance;
       updateUi();
       return userBalance;
     default:
@@ -43,4 +43,3 @@ function updateUi() {
 
   created = true;
 }
-

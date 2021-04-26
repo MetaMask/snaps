@@ -1,4 +1,9 @@
-const { getOutfilePath, validateOutfileName, validateFilePath, validateDirPath } = require('../../dist/src/utils/validate-fs');
+const {
+  getOutfilePath,
+  validateOutfileName,
+  validateFilePath,
+  validateDirPath,
+} = require('../../dist/src/utils/validate-fs');
 const filesystem = require('../../dist/src/utils/fs');
 
 describe('validate', () => {
@@ -9,8 +14,12 @@ describe('validate', () => {
   describe('getOutfilePath', () => {
     it('gets the complete out file path', () => {
       expect(getOutfilePath('./src', 'outDir')).toStrictEqual('src/outDir');
-      expect(getOutfilePath('../src', '///outDir////')).toStrictEqual('../src/outDir/');
-      expect(getOutfilePath('../src', '/lol//outDir////')).toStrictEqual('../src/lol/outDir/');
+      expect(getOutfilePath('../src', '///outDir////')).toStrictEqual(
+        '../src/outDir/',
+      );
+      expect(getOutfilePath('../src', '/lol//outDir////')).toStrictEqual(
+        '../src/lol/outDir/',
+      );
       expect(getOutfilePath('src', 'outDir')).toStrictEqual('src/outDir');
       expect(getOutfilePath('src/', './outDir/')).toStrictEqual('src/outDir/');
       expect(getOutfilePath('src/', '')).toStrictEqual('src/bundle.js');
@@ -54,9 +63,9 @@ describe('validate', () => {
 
     it('checks whether an invalid path string throws an error', async () => {
       jest.spyOn(filesystem, 'isFile').mockReturnValue(false);
-      await expect(validateFilePath('/some/file/path.js'))
-        .rejects
-        .toThrow('Invalid params: \'/some/file/path.js\' is not a file or does not exist.');
+      await expect(validateFilePath('/some/file/path.js')).rejects.toThrow(
+        "Invalid params: '/some/file/path.js' is not a file or does not exist.",
+      );
     });
   });
 
@@ -69,9 +78,9 @@ describe('validate', () => {
 
     it('checks whether an invalid path string to a directory throws an error', async () => {
       jest.spyOn(filesystem, 'isDirectory').mockReturnValue(false);
-      await expect(validateDirPath('/some/directory', true))
-        .rejects
-        .toThrow('Invalid params: \'/some/directory\' is not a directory or could not be created.');
+      await expect(validateDirPath('/some/directory', true)).rejects.toThrow(
+        "Invalid params: '/some/directory' is not a directory or could not be created.",
+      );
     });
   });
 });
