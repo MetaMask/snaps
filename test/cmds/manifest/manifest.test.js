@@ -249,12 +249,10 @@ describe('manifest', () => {
 
     describe('checks if log error and warning aligns to global settings', () => {
       afterEach(() => {
-        global.snaps.verboseErrors = false;
         global.snaps.suppressWarnings = false;
       });
 
-      it('suppresses logManifestError per global settings', async () => {
-        global.snaps.verboseErrors = true;
+      it('logs manifest errors per global settings', async () => {
         jest.spyOn(JSON, 'parse').mockImplementation((value) => value);
         jest.spyOn(utils, 'isFile').mockImplementation(() => true);
         jest.spyOn(fs.promises, 'readFile').mockImplementationOnce(
@@ -273,7 +271,7 @@ describe('manifest', () => {
         expect(global.console.error).toHaveBeenCalledTimes(2);
       });
 
-      it('suppresses logManifestWarning per global settings', async () => {
+      it('suppresses manifest errors per global settings', async () => {
         global.snaps.suppressWarnings = true;
         const badJSON = {};
         jest.spyOn(JSON, 'parse').mockImplementation((value) => value);

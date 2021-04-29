@@ -14,6 +14,7 @@ import {
 module.exports.command = ['watch', 'w'];
 module.exports.desc = 'Build Snap on change';
 module.exports.builder = (yarg: yargs.Argv) => {
+  /* istanbul ignore next */
   yarg
     .option('src', builders.src)
     .option('dist', builders.dist)
@@ -53,6 +54,7 @@ export async function watch(argv: YargsArgs): Promise<void> {
       `**/${dist}/**`,
       `**/test/**`,
       `**/tests/**`,
+      /* istanbul ignore next */
       (str: string) => str !== '.' && str.startsWith('.'),
     ],
   });

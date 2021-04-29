@@ -1,7 +1,7 @@
 import { createWriteStream } from 'fs';
 import stripComments from 'strip-comments';
 import { writeError } from '../../utils/misc';
-import { Option } from '../../types/yargs';
+import { Option, YargsArgs } from '../../types/yargs';
 
 /**
  * Opens a stream to write the destination file path.
@@ -20,6 +20,16 @@ export function createBundleStream(dest: string): NodeJS.WritableStream {
   return stream;
 }
 
+interface CloseStreamArgs {
+  bundleError: Error;
+  bundleBuffer: Buffer;
+  bundleStream: NodeJS.WritableStream;
+  src: string;
+  dest: string;
+  resolve: (value: boolean) => void;
+  argv: YargsArgs;
+}
+
 /**
  * Postprocesses the bundle string and closes the write stream.
  *
@@ -28,12 +38,32 @@ export function createBundleStream(dest: string): NodeJS.WritableStream {
  * @param options - post process options
  * @param options.stripComments
  */
-export function closeBundleStream(
-  stream: NodeJS.WritableStream,
-  bundleString: string | null,
-  options: Option,
-) {
-  stream.end(postProcess(bundleString, options) as string);
+export async function closeBundleStream({
+  bundleError,
+  bundleBuffer,
+  bundleStream,
+  src,
+  dest,
+  resolve,
+  argv,
+}: CloseStreamArgs) {
+  if (bundleError) {
+    await writeError('Build error:', bundleError.message, bundleError);
+  }
+
+  try {
+    bundleStream.end(
+      postProcess(bundleBuffer ? bundleBuffer.toString() : null, {
+        stripComments: argv.stripComments,
+      }) as string,
+    );
+    if (bundleBuffer) {
+      console.log(`Build success: '${src}' bundled as '${dest}'!`);
+    }
+    resolve(true);
+  } catch (closeError) {
+    await writeError('Write error:', closeError.message, closeError, dest);
+  }
 }
 
 /**

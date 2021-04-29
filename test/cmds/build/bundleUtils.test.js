@@ -49,43 +49,82 @@ describe('bundleUtils', () => {
     let mockStream;
 
     beforeEach(() => {
-      jest.spyOn(fs, 'createWriteStream').mockImplementation(() => {
-        mockStream = new EventEmitter();
-        mockStream.end = () => undefined;
-        jest.spyOn(mockStream, 'on');
-        jest.spyOn(mockStream, 'end');
-        return mockStream;
-      });
+      mockStream = new EventEmitter();
+      mockStream.end = () => undefined;
+      jest.spyOn(mockStream, 'on');
+      jest.spyOn(mockStream, 'end');
     });
 
     afterEach(() => {
       jest.restoreAllMocks();
     });
 
-    it('closes stream with bundleString', async () => {
-      const mockWritableStream = fs.createWriteStream();
-      await closeBundleStream(mockWritableStream, 'foo', false);
-
-      const finishPromise = new Promise((resolve, _reject) => {
-        expect(mockWritableStream.end).toHaveBeenCalledWith('foo');
-        resolve();
-      });
-      await finishPromise;
+    it('writes to console error if there is a bundle Error', async () => {
+      const writeErrorMock = jest
+        .spyOn(miscUtils, 'writeError')
+        .mockImplementation(() => {
+          throw new Error('error message');
+        });
+      await expect(closeBundleStream({ bundleError: true })).rejects.toThrow(
+        'error message',
+      );
+      expect(writeErrorMock).toHaveBeenCalledTimes(1);
     });
 
-    it('if bundleString is null, closes stream with empty line', async () => {
-      const mockWritableStream = fs.createWriteStream();
-      await closeBundleStream(mockWritableStream, null, false);
+    it('console logs if successfully closed bundle stream', async () => {
+      const writeErrorMock = jest
+        .spyOn(miscUtils, 'writeError')
+        .mockImplementation();
+      const logMock = jest.spyOn(console, 'log').mockImplementation();
+      const resolveMock = jest.fn();
 
-      const finishPromise = new Promise((resolve, _reject) => {
-        expect(mockWritableStream.end).toHaveBeenCalledWith(null);
-        resolve();
+      await closeBundleStream({
+        bundleError: false,
+        bundleStream: mockStream,
+        bundleBuffer: 'foo',
+        src: 'src',
+        dest: 'dest',
+        argv: { stripComments: false },
+        resolve: resolveMock,
       });
-      await finishPromise;
+      expect(writeErrorMock).not.toHaveBeenCalled();
+      expect(mockStream.end).toHaveBeenCalled();
+      expect(logMock).toHaveBeenCalled();
+      expect(resolveMock).toHaveBeenCalled();
+    });
+
+    it('catches error if failed to close bundle stream', async () => {
+      const logMock = jest.spyOn(console, 'log').mockImplementation();
+      mockStream.end.mockImplementation(() => {
+        throw new Error('error message 1');
+      });
+      const writeErrorMock = jest
+        .spyOn(miscUtils, 'writeError')
+        .mockImplementation(() => {
+          throw new Error('error message 2');
+        });
+
+      await expect(
+        closeBundleStream({
+          bundleError: false,
+          bundleStream: mockStream,
+          bundleBuffer: 'foo',
+          src: 'src',
+          dest: 'dest',
+          argv: { stripComments: false },
+        }),
+      ).rejects.toThrow('error message 2');
+      expect(logMock).not.toHaveBeenCalled();
+      expect(mockStream.end).toHaveBeenCalledTimes(1);
+      expect(writeErrorMock).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('postProcess', () => {
+    it('handles null input', () => {
+      expect(postProcess(null)).toBeNull();
+    });
+
     it('trims the string', () => {
       expect(postProcess(' trimMe ')).toStrictEqual('trimMe');
     });

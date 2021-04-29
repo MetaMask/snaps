@@ -1,9 +1,5 @@
 const readline = require('readline');
-const {
-  openPrompt,
-  prompt,
-  closePrompt,
-} = require('../../dist/src/utils/readline');
+const { prompt, closePrompt } = require('../../dist/src/utils/readline');
 
 jest.mock('readline', () => {
   return { createInterface: jest.fn() };
@@ -11,16 +7,7 @@ jest.mock('readline', () => {
 
 describe('readline', () => {
   afterAll(() => {
-    jest.unmock('readline');
     jest.restoreAllMocks();
-  });
-
-  describe('openPrompt', () => {
-    it('should open a prompt', () => {
-      const createInterfaceSpy = jest.spyOn(readline, 'createInterface');
-      openPrompt();
-      expect(createInterfaceSpy).toHaveBeenCalled();
-    });
   });
 
   describe('prompt', () => {
@@ -32,13 +19,18 @@ describe('readline', () => {
       questionMock = null;
     });
 
-    it('should open a prompt, read in user input from stdin, and return the trimmed input', async () => {
+    it('should create an interface, open a prompt, read in user input from stdin, and return the trimmed input', async () => {
       questionMock = jest.fn((_, cb) => cb('answer '));
+      const createInterfaceSpy = jest
+        .spyOn(readline, 'createInterface')
+        .mockImplementationOnce(() => {
+          return { question: questionMock };
+        });
 
       const promptResult = await prompt({
         question: 'question',
-        readlineInterface: { question: questionMock },
       });
+      expect(createInterfaceSpy).toHaveBeenCalledTimes(1);
       expect(promptResult).toStrictEqual('answer');
     });
 

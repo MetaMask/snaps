@@ -1,6 +1,5 @@
 import browserify from 'browserify';
 import { YargsArgs } from '../../types/yargs';
-import { writeError } from '../../utils/misc';
 import { createBundleStream, closeBundleStream } from './bundleUtils';
 
 /**
@@ -23,7 +22,7 @@ export function bundle(
     const bundleStream = createBundleStream(dest);
     browserify(src, { debug }).bundle(
       async (bundleError, bundleBuffer: Buffer) =>
-        await canCloseStream({
+        await closeBundleStream({
           bundleError,
           bundleBuffer,
           bundleStream,
@@ -34,42 +33,4 @@ export function bundle(
         }),
     );
   });
-}
-
-interface CloseStreamArgs {
-  bundleError: any;
-  bundleBuffer: Buffer;
-  bundleStream: NodeJS.WritableStream;
-  src: string;
-  dest: string;
-  resolve: any;
-  argv: YargsArgs;
-}
-
-export async function canCloseStream({
-  bundleError,
-  bundleBuffer,
-  bundleStream,
-  src,
-  dest,
-  resolve,
-  argv,
-}: CloseStreamArgs) {
-  if (bundleError) {
-    await writeError('Build error:', bundleError.message, bundleError);
-  }
-
-  try {
-    closeBundleStream(
-      bundleStream,
-      bundleBuffer ? bundleBuffer.toString() : null,
-      { stripComments: argv.stripComments },
-    );
-    if (bundleBuffer) {
-      console.log(`Build success: '${src}' bundled as '${dest}'!`);
-    }
-    resolve(true);
-  } catch (closeError) {
-    await writeError('Write error:', closeError.message, closeError, dest);
-  }
 }

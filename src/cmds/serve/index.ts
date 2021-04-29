@@ -9,6 +9,7 @@ import { logServerError, logServerListening, logRequest } from './serveUtils';
 module.exports.command = ['serve', 's'];
 module.exports.desc = 'Locally serve Snap file(s) for testing';
 module.exports.builder = (yarg: yargs.Argv) => {
+  /* istanbul ignore next */
   yarg.option('root', builders.root).option('port', builders.port);
 };
 module.exports.handler = (argv: YargsArgs) => serve(argv);

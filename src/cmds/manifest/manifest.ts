@@ -223,12 +223,9 @@ export async function manifest(argv: YargsArgs): Promise<void> {
     console.log(`Manifest Success: Validated '${pkg.name}' package.json!`);
   }
 
-  function logManifestError(message: string, err?: Error) {
+  function logManifestError(message: string) {
     isInvalid = true;
     console.error(`Manifest Error: ${message}`);
-    if (err && global.snaps.verboseErrors) {
-      console.error(err);
-    }
   }
 
   function logManifestWarning(message: string) {

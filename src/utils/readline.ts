@@ -9,7 +9,7 @@ interface PromptArgs {
   readlineInterface?: readline.Interface;
 }
 
-export function openPrompt(): void {
+function openPrompt(): void {
   singletonReadlineInterface = readline.createInterface({
     input: process.stdin,
     output: process.stdout,

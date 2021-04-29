@@ -14,6 +14,7 @@ import { bundle } from './bundle';
 module.exports.command = ['build', 'b'];
 module.exports.desc = 'Build Snap from source';
 module.exports.builder = (yarg: yargs.Argv) => {
+  /* istanbul ignore next */
   yarg
     .option('src', builders.src)
     .option('dist', builders.dist)
