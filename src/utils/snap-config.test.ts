@@ -1,7 +1,7 @@
-const fs = require('fs');
-const { default: builders } = require('../../dist/src/builders');
-const { applyConfig } = require('../../dist/src/utils/snap-config');
-const misc = require('../../dist/src/utils/misc');
+import fs from 'fs';
+import builders from '../builders';
+import { applyConfig } from './snap-config';
+import * as miscUtils from './misc';
 
 const getYargsArgv = ({
   bundle = builders.bundle.default,
@@ -44,17 +44,11 @@ const getYargsInstance = ({ keys = {}, aliases = {} } = {}) => {
 jest.mock('fs');
 
 describe('snap-config', () => {
-  beforeAll(() => {
-    jest.spyOn(console, 'error').mockImplementation(() => undefined);
-    jest.spyOn(process, 'exit').mockImplementation(() => undefined);
-    jest.spyOn(JSON, 'parse').mockImplementation((value) => value);
-  });
-
-  afterAll(() => {
-    jest.restoreAllMocks();
-  });
-
   beforeEach(() => {
+    jest.spyOn(console, 'error').mockImplementation(() => undefined);
+    jest.spyOn(process, 'exit').mockImplementation(() => undefined as never);
+    jest.spyOn(JSON, 'parse').mockImplementation((value) => value);
+
     global.snaps = {
       verboseErrors: false,
       suppressWarnings: false,
@@ -63,19 +57,19 @@ describe('snap-config', () => {
   });
 
   afterEach(() => {
-    delete global.snaps;
+    global.snaps = {};
   });
 
   it('applies a valid config file', () => {
     const outfileName = 'foo.js';
     const dist = 'build';
-    fs.readFileSync.mockReturnValueOnce({ dist, outfileName });
+    (fs.readFileSync as jest.Mock).mockReturnValueOnce({ dist, outfileName });
 
     const argv = getYargsArgv();
     applyConfig(
       ['build'],
-      argv,
-      getYargsInstance({ keys: { outfileName: true, dist: true } }),
+      argv as any,
+      getYargsInstance({ keys: { outfileName: true, dist: true } }) as any,
     );
 
     expect(argv.dist).toStrictEqual(dist);
@@ -85,14 +79,17 @@ describe('snap-config', () => {
   it('applies a valid config file, but ignores keys given on the command line', () => {
     const outfileName = 'foo.js';
     const configDist = 'build';
-    fs.readFileSync.mockReturnValueOnce({ dist: configDist, outfileName });
+    (fs.readFileSync as jest.Mock).mockReturnValueOnce({
+      dist: configDist,
+      outfileName,
+    });
 
     const argvDist = 'build2';
     const argv = getYargsArgv({ dist: argvDist });
     applyConfig(
       ['build', '--dist', argvDist],
-      argv,
-      getYargsInstance({ keys: { outfileName: true, dist: true } }),
+      argv as any,
+      getYargsInstance({ keys: { outfileName: true, dist: true } }) as any,
     );
 
     expect(argv.dist).toStrictEqual(argvDist);
@@ -100,17 +97,17 @@ describe('snap-config', () => {
   });
 
   it('handles config file read errors (ENOENT)', () => {
-    const mockLogError = jest.spyOn(misc, 'logError');
+    const mockLogError = jest.spyOn(miscUtils, 'logError');
     jest.spyOn(console, 'warn').mockImplementation();
 
-    fs.readFileSync.mockImplementationOnce(() => {
-      const err = new Error('foo');
+    (fs.readFileSync as jest.Mock).mockImplementationOnce(() => {
+      const err: Error & { code?: string } = new Error('foo');
       err.code = 'ENOENT';
       throw err;
     });
 
     const argv = getYargsArgv();
-    applyConfig(['build'], argv, getYargsInstance());
+    applyConfig(['build'], argv as any, getYargsInstance() as any);
 
     expect(argv).toStrictEqual(getYargsArgv());
     expect(mockLogError).not.toHaveBeenCalled();
@@ -118,36 +115,36 @@ describe('snap-config', () => {
   });
 
   it('handles config file read errors (non-ENOENT)', () => {
-    const mockLogError = jest.spyOn(misc, 'logError');
+    const mockLogError = jest.spyOn(miscUtils, 'logError');
     jest.spyOn(console, 'warn').mockImplementation();
 
-    fs.readFileSync.mockImplementationOnce(() => {
+    (fs.readFileSync as jest.Mock).mockImplementationOnce(() => {
       throw new Error('foo');
     });
 
-    applyConfig(['build'], getYargsArgv(), getYargsInstance());
+    applyConfig(['build'], getYargsArgv() as any, getYargsInstance() as any);
     expect(mockLogError).toHaveBeenCalled();
     expect(process.exit).toHaveBeenCalledWith(1);
   });
 
   it('handles parseable but invalid config file', () => {
-    const mockLogError = jest.spyOn(misc, 'logError');
+    const mockLogError = jest.spyOn(miscUtils, 'logError');
     jest.spyOn(console, 'warn').mockImplementation();
 
-    fs.readFileSync.mockReturnValueOnce('foo');
+    (fs.readFileSync as jest.Mock).mockReturnValueOnce('foo');
 
-    applyConfig(['build'], getYargsArgv(), getYargsInstance());
+    applyConfig(['build'], getYargsArgv() as any, getYargsInstance() as any);
     expect(mockLogError).toHaveBeenCalled();
     expect(process.exit).toHaveBeenCalledWith(1);
   });
 
   it('handles valid config file with invalid property', () => {
-    const mockLogError = jest.spyOn(misc, 'logError');
+    const mockLogError = jest.spyOn(miscUtils, 'logError');
     jest.spyOn(console, 'warn').mockImplementation();
 
-    fs.readFileSync.mockReturnValueOnce({ foo: 'bar' });
+    (fs.readFileSync as jest.Mock).mockReturnValueOnce({ foo: 'bar' });
 
-    applyConfig(['build'], getYargsArgv(), getYargsInstance());
+    applyConfig(['build'], getYargsArgv() as any, getYargsInstance() as any);
     expect(mockLogError).toHaveBeenCalled();
     expect(process.exit).toHaveBeenCalledWith(1);
   });

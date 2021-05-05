@@ -1,12 +1,12 @@
-const fs = require('fs');
-const initPackageJson = require('init-package-json');
-const {
+import fs from 'fs';
+import initPackageJson from 'init-package-json';
+import * as readlineUtils from '../../utils/readline';
+import * as miscUtils from '../../utils/misc';
+import {
   asyncPackageInit,
   buildWeb3Wallet,
   validateEmptyDir,
-} = require('../../../dist/src/cmds/init/initUtils');
-const readlineUtils = require('../../../dist/src/utils/readline');
-const miscUtils = require('../../../dist/src/utils/misc');
+} from './initUtils';
 
 jest.mock('fs', () => ({
   existsSync: jest.fn(),
@@ -19,19 +19,19 @@ jest.mock('fs', () => ({
 
 jest.mock('init-package-json');
 
+interface ErrorWithCode extends Error {
+  code?: number | string;
+}
+
 describe('initUtils', () => {
   describe('asyncPackageInit', () => {
-    afterEach(() => {
-      jest.restoreAllMocks();
-    });
-
     it('console logs if successful', async () => {
       const existsSyncMock = jest
         .spyOn(fs, 'existsSync')
         .mockImplementation(() => true);
       const readFileMock = jest
         .spyOn(fs.promises, 'readFile')
-        .mockImplementationOnce();
+        .mockImplementationOnce(async () => '');
       const parseMock = jest.spyOn(JSON, 'parse').mockImplementation();
       jest.spyOn(console, 'log').mockImplementation();
 
@@ -48,7 +48,7 @@ describe('initUtils', () => {
         .mockImplementation(() => true);
       const readFileMock = jest
         .spyOn(fs.promises, 'readFile')
-        .mockImplementationOnce();
+        .mockImplementationOnce(async () => '');
       const parseMock = jest.spyOn(JSON, 'parse').mockImplementation(() => {
         throw new Error('error message');
       });
@@ -74,8 +74,8 @@ describe('initUtils', () => {
         .spyOn(fs, 'existsSync')
         .mockImplementationOnce(() => false)
         .mockImplementationOnce(() => false);
-      initPackageJson.mockImplementation((_, __, ___, cb) =>
-        cb(new Error('initpackage error'), true),
+      ((initPackageJson as unknown) as jest.Mock).mockImplementation(
+        (_, __, ___, cb) => cb(new Error('initpackage error'), true),
       );
 
       await expect(asyncPackageInit()).rejects.toThrow('initpackage error');
@@ -87,7 +87,9 @@ describe('initUtils', () => {
         .spyOn(fs, 'existsSync')
         .mockImplementationOnce(() => false)
         .mockImplementationOnce(() => false);
-      initPackageJson.mockImplementation((_, __, ___, cb) => cb(false, true));
+      ((initPackageJson as unknown) as jest.Mock).mockImplementation(
+        (_, __, ___, cb) => cb(false, true),
+      );
 
       await asyncPackageInit();
       expect(existsSyncMock).toHaveBeenCalledTimes(2);
@@ -115,10 +117,6 @@ describe('initUtils', () => {
   });
 
   describe('buildWeb3Wallet', () => {
-    afterEach(() => {
-      jest.restoreAllMocks();
-    });
-
     const getMockArgv = () => {
       return {
         dist: 'dist',
@@ -134,21 +132,21 @@ describe('initUtils', () => {
       'confirm customPrompt wallet_manageIdentities';
 
     it("applies default web3wallet values if user input is 'y'", async () => {
-      const mkdirMock = fs.promises.mkdir.mockImplementation();
+      const mkdirMock = (fs.promises.mkdir as jest.Mock).mockImplementation();
       const promptMock = jest
         .spyOn(readlineUtils, 'prompt')
-        .mockImplementation(() => 'y');
+        .mockImplementation(async () => 'y');
       jest.spyOn(console, 'log').mockImplementation();
 
-      await buildWeb3Wallet(getMockArgv());
+      await buildWeb3Wallet(getMockArgv() as any);
       expect(promptMock).toHaveBeenCalledTimes(1);
       expect(mkdirMock).toHaveBeenCalledTimes(1);
       expect(global.console.log).toHaveBeenCalledTimes(1);
     });
 
     it('throws error if fails to make directory and apply default values', async () => {
-      fs.promises.mkdir.mockImplementation(() => {
-        const err = new Error(
+      (fs.promises.mkdir as jest.Mock).mockImplementation(() => {
+        const err: ErrorWithCode = new Error(
           'an error message that is not `file already exists`',
         );
         err.code = 'notEEXIST';
@@ -156,14 +154,14 @@ describe('initUtils', () => {
       });
       const promptMock = jest
         .spyOn(readlineUtils, 'prompt')
-        .mockImplementation(() => 'y');
+        .mockImplementation(async () => 'y');
       jest.spyOn(console, 'log').mockImplementation();
       const errorMock = jest.spyOn(miscUtils, 'logError').mockImplementation();
       jest.spyOn(process, 'exit').mockImplementationOnce(() => {
         throw new Error('error message');
       });
 
-      await expect(buildWeb3Wallet(getMockArgv())).rejects.toThrow(
+      await expect(buildWeb3Wallet(getMockArgv() as any)).rejects.toThrow(
         new Error('error message'),
       );
       expect(promptMock).toHaveBeenCalledTimes(1);
@@ -191,13 +189,15 @@ describe('initUtils', () => {
 
       const promptMock = jest
         .spyOn(readlineUtils, 'prompt')
-        .mockImplementationOnce(() => NO)
-        .mockImplementationOnce(() => VALID_PORT)
-        .mockImplementationOnce(() => VALID_DIR)
-        .mockImplementationOnce(() => VALID_PERMISSIONS_INPUT);
+        .mockImplementationOnce(async () => NO)
+        .mockImplementationOnce(async () => String(VALID_PORT))
+        .mockImplementationOnce(async () => VALID_DIR)
+        .mockImplementationOnce(async () => VALID_PERMISSIONS_INPUT);
       const mkdirMock = jest.spyOn(fs.promises, 'mkdir').mockImplementation();
 
-      expect(await buildWeb3Wallet(mockArgv)).toStrictEqual(expectedMockWallet);
+      expect(await buildWeb3Wallet(mockArgv as any)).toStrictEqual(
+        expectedMockWallet,
+      );
       expect(promptMock).toHaveBeenCalledTimes(4);
       expect(mkdirMock).toHaveBeenCalledTimes(1);
     });
@@ -219,13 +219,15 @@ describe('initUtils', () => {
 
       const promptMock = jest
         .spyOn(readlineUtils, 'prompt')
-        .mockImplementationOnce(() => NO)
-        .mockImplementationOnce(() => VALID_PORT)
-        .mockImplementationOnce(() => VALID_DIR)
-        .mockImplementationOnce(() => ''); // to accept default permissions
+        .mockImplementationOnce(async () => NO)
+        .mockImplementationOnce(async () => String(VALID_PORT))
+        .mockImplementationOnce(async () => VALID_DIR)
+        .mockImplementationOnce(async () => ''); // to accept default permissions
       const mkdirMock = jest.spyOn(fs.promises, 'mkdir').mockImplementation();
 
-      expect(await buildWeb3Wallet(mockArgv)).toStrictEqual(expectedMockWallet);
+      expect(await buildWeb3Wallet(mockArgv as any)).toStrictEqual(
+        expectedMockWallet,
+      );
       expect(promptMock).toHaveBeenCalledTimes(4);
       expect(mkdirMock).toHaveBeenCalledTimes(1);
     });
@@ -233,18 +235,20 @@ describe('initUtils', () => {
     it('treats already existing directory as a success', async () => {
       const promptMock = jest
         .spyOn(readlineUtils, 'prompt')
-        .mockImplementationOnce(() => NO)
-        .mockImplementationOnce(() => VALID_PORT)
-        .mockImplementationOnce(() => VALID_DIR)
-        .mockImplementationOnce(() => VALID_PERMISSIONS_INPUT);
-      const mkdirMock = fs.promises.mkdir.mockImplementation(() => {
-        const err = new Error('file already exists');
-        err.code = 'EEXIST';
-        throw err;
-      });
+        .mockImplementationOnce(async () => NO)
+        .mockImplementationOnce(async () => String(VALID_PORT))
+        .mockImplementationOnce(async () => VALID_DIR)
+        .mockImplementationOnce(async () => VALID_PERMISSIONS_INPUT);
+      const mkdirMock = (fs.promises.mkdir as jest.Mock).mockImplementation(
+        () => {
+          const err: ErrorWithCode = new Error('file already exists');
+          err.code = 'EEXIST';
+          throw err;
+        },
+      );
       const errorMock = jest.spyOn(miscUtils, 'logError').mockImplementation();
 
-      await buildWeb3Wallet(getMockArgv());
+      await buildWeb3Wallet(getMockArgv() as any);
       expect(mkdirMock).toHaveBeenCalledTimes(1);
       expect(promptMock).toHaveBeenCalledTimes(4);
       expect(errorMock).not.toHaveBeenCalled();
@@ -254,15 +258,15 @@ describe('initUtils', () => {
       const invalidPort = '-1';
       const promptMock = jest
         .spyOn(readlineUtils, 'prompt')
-        .mockImplementationOnce(() => NO)
-        .mockImplementationOnce(() => invalidPort)
-        .mockImplementationOnce(() => VALID_PORT)
-        .mockImplementationOnce(() => VALID_DIR)
-        .mockImplementationOnce(() => VALID_PERMISSIONS_INPUT);
+        .mockImplementationOnce(async () => NO)
+        .mockImplementationOnce(async () => invalidPort)
+        .mockImplementationOnce(async () => String(VALID_PORT))
+        .mockImplementationOnce(async () => VALID_DIR)
+        .mockImplementationOnce(async () => VALID_PERMISSIONS_INPUT);
 
       const errorMock = jest.spyOn(miscUtils, 'logError').mockImplementation();
 
-      await buildWeb3Wallet(getMockArgv());
+      await buildWeb3Wallet(getMockArgv() as any);
       expect(promptMock).toHaveBeenCalledTimes(5);
       expect(errorMock).toHaveBeenCalledTimes(1);
       expect(errorMock).toHaveBeenLastCalledWith(
@@ -274,23 +278,25 @@ describe('initUtils', () => {
       const invalidDist = 'invalidDir';
       const promptMock = jest
         .spyOn(readlineUtils, 'prompt')
-        .mockImplementationOnce(() => NO)
-        .mockImplementationOnce(() => VALID_PORT)
-        .mockImplementationOnce(() => invalidDist)
-        .mockImplementationOnce(() => VALID_DIR)
-        .mockImplementationOnce(() => VALID_PERMISSIONS_INPUT);
+        .mockImplementationOnce(async () => NO)
+        .mockImplementationOnce(async () => String(VALID_PORT))
+        .mockImplementationOnce(async () => invalidDist)
+        .mockImplementationOnce(async () => VALID_DIR)
+        .mockImplementationOnce(async () => VALID_PERMISSIONS_INPUT);
 
       const mockErrorCode = 'notEEXIST';
-      fs.promises.mkdir.mockResolvedValue().mockImplementationOnce(() => {
-        const err = new Error(
-          'an error message that is not `file already exists`',
-        );
-        err.code = mockErrorCode;
-        throw err;
-      });
+      (fs.promises.mkdir as jest.Mock)
+        .mockResolvedValue(undefined)
+        .mockImplementationOnce(() => {
+          const err: ErrorWithCode = new Error(
+            'an error message that is not `file already exists`',
+          );
+          err.code = mockErrorCode;
+          throw err;
+        });
       const errorMock = jest.spyOn(miscUtils, 'logError').mockImplementation();
 
-      await buildWeb3Wallet(getMockArgv());
+      await buildWeb3Wallet(getMockArgv() as any);
       expect(promptMock).toHaveBeenCalledTimes(5);
       expect(errorMock).toHaveBeenCalledTimes(1);
       expect(errorMock).toHaveBeenLastCalledWith(
@@ -303,15 +309,15 @@ describe('initUtils', () => {
       const invalidPermissions = '@!*XYZ123 confirm';
       const promptMock = jest
         .spyOn(readlineUtils, 'prompt')
-        .mockImplementationOnce(() => NO)
-        .mockImplementationOnce(() => VALID_PORT)
-        .mockImplementationOnce(() => VALID_DIR)
-        .mockImplementationOnce(() => invalidPermissions)
-        .mockImplementationOnce(() => VALID_PERMISSIONS_INPUT);
+        .mockImplementationOnce(async () => NO)
+        .mockImplementationOnce(async () => String(VALID_PORT))
+        .mockImplementationOnce(async () => VALID_DIR)
+        .mockImplementationOnce(async () => invalidPermissions)
+        .mockImplementationOnce(async () => VALID_PERMISSIONS_INPUT);
       const errorMock = jest.spyOn(miscUtils, 'logError').mockImplementation();
-      fs.promises.mkdir.mockResolvedValue();
+      (fs.promises.mkdir as jest.Mock).mockResolvedValue(undefined);
 
-      await buildWeb3Wallet(getMockArgv());
+      await buildWeb3Wallet(getMockArgv() as any);
       expect(promptMock).toHaveBeenCalledTimes(5);
       expect(errorMock).toHaveBeenCalledTimes(1);
       expect(errorMock).toHaveBeenLastCalledWith(
@@ -322,21 +328,19 @@ describe('initUtils', () => {
   });
 
   describe('validateEmptyDir', () => {
-    afterEach(() => {
-      jest.restoreAllMocks();
-    });
-
     it('warns user if files may be overwritten', async () => {
       const readdirMock = jest
         .spyOn(fs.promises, 'readdir')
-        .mockImplementation(() => ['index.js', 'dist']);
+        .mockImplementation(() => ['index.js', 'dist'] as any);
       const warningMock = jest
         .spyOn(miscUtils, 'logWarning')
         .mockImplementation();
       const promptMock = jest
         .spyOn(readlineUtils, 'prompt')
-        .mockImplementation(() => 'n');
-      jest.spyOn(process, 'exit').mockImplementationOnce(() => undefined);
+        .mockImplementation(async () => 'n');
+      jest
+        .spyOn(process, 'exit')
+        .mockImplementationOnce(() => undefined as never);
       jest.spyOn(console, 'log').mockImplementation();
 
       await validateEmptyDir();
@@ -350,14 +354,16 @@ describe('initUtils', () => {
     it('handles continue correctly', async () => {
       const readdirMock = jest
         .spyOn(fs.promises, 'readdir')
-        .mockImplementation(() => ['index.js', 'dist']);
+        .mockImplementation(() => ['index.js', 'dist'] as any);
       const warningMock = jest
         .spyOn(miscUtils, 'logWarning')
         .mockImplementation();
       const promptMock = jest
         .spyOn(readlineUtils, 'prompt')
-        .mockImplementation(() => 'YES');
-      jest.spyOn(process, 'exit').mockImplementationOnce(() => undefined);
+        .mockImplementation(async () => 'YES');
+      jest
+        .spyOn(process, 'exit')
+        .mockImplementationOnce(() => undefined as never);
       jest.spyOn(console, 'log').mockImplementation();
 
       await validateEmptyDir();

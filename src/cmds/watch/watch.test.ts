@@ -1,13 +1,25 @@
-const EventEmitter = require('events');
-const chokidar = require('chokidar');
-const watch = require('../../../dist/src/cmds/watch');
-const build = require('../../../dist/src/cmds/build/bundle');
-const fsUtils = require('../../../dist/src/utils/validate-fs');
-const miscUtils = require('../../../dist/src/utils/misc');
+import EventEmitter from 'events';
+import chokidar from 'chokidar';
+import * as build from '../build/bundle';
+import * as fsUtils from '../../utils/validate-fs';
+import * as miscUtils from '../../utils/misc';
+import * as watch from '.';
+
+interface MockWatcher extends EventEmitter {
+  add: () => void;
+}
+
+function getMockWatcher(): MockWatcher {
+  const watcher: MockWatcher = new EventEmitter() as any;
+  watcher.add = () => undefined;
+  jest.spyOn(watcher, 'on');
+  jest.spyOn(watcher, 'add');
+  return watcher;
+}
 
 describe('watch', () => {
   describe('Watch a directory and its subdirectories for changes, and build when files are added or changed.', () => {
-    let watcherEmitter;
+    let watcherEmitter: MockWatcher;
 
     const mockSrc = 'index.js';
     const mockDist = 'dist';
@@ -23,43 +35,34 @@ describe('watch', () => {
 
     beforeEach(() => {
       jest.spyOn(chokidar, 'watch').mockImplementation(() => {
-        watcherEmitter = new EventEmitter();
-        watcherEmitter.add = () => undefined;
-        jest.spyOn(watcherEmitter, 'on');
-        jest.spyOn(watcherEmitter, 'add');
-        return watcherEmitter;
+        watcherEmitter = getMockWatcher();
+        return watcherEmitter as any;
       });
-    });
-
-    afterEach(() => {
-      jest.restoreAllMocks();
-      watcherEmitter = undefined;
     });
 
     it('successfully processes arguments from yargs', async () => {
       const chokidarMock = jest
         .spyOn(chokidar, 'watch')
         .mockImplementation(() => {
-          watcherEmitter = new EventEmitter();
-          watcherEmitter.add = () => undefined;
-          jest.spyOn(watcherEmitter, 'on');
-          jest.spyOn(watcherEmitter, 'add');
-          return watcherEmitter;
+          watcherEmitter = getMockWatcher();
+          return watcherEmitter as any;
         });
       jest.spyOn(console, 'log').mockImplementation();
       const validateDirPathMock = jest
         .spyOn(fsUtils, 'validateDirPath')
-        .mockImplementation(() => true);
+        .mockImplementation(async () => true);
       const validateFilePathMock = jest
         .spyOn(fsUtils, 'validateFilePath')
-        .mockImplementation(() => true);
+        .mockImplementation(async () => true);
       const validateOutfileNameMock = jest
         .spyOn(fsUtils, 'validateOutfileName')
         .mockImplementation(() => true);
       jest
         .spyOn(fsUtils, 'getOutfilePath')
         .mockImplementation(() => 'dist/bundle.js');
-      await watch.handler(getMockArgv());
+
+      // TODO: Fix index.ts exports
+      await (watch as any).handler(getMockArgv());
       expect(validateDirPathMock).toHaveBeenCalledWith(mockDist, true);
       expect(validateFilePathMock).toHaveBeenCalledWith(mockSrc);
       expect(validateOutfileNameMock).toHaveBeenCalledWith(mockOutfileName);
@@ -69,10 +72,13 @@ describe('watch', () => {
     it('watcher handles "changed" event correctly', async () => {
       jest.spyOn(console, 'log').mockImplementation();
       const bundleMock = jest.spyOn(build, 'bundle').mockImplementation();
-      jest.spyOn(fsUtils, 'validateFilePath').mockImplementation(() => true);
+      jest
+        .spyOn(fsUtils, 'validateFilePath')
+        .mockImplementation(async () => true);
 
-      await watch.handler(getMockArgv());
-      const finishPromise = new Promise((resolve, _) => {
+      // TODO: Fix index.ts exports
+      await (watch as any).handler(getMockArgv());
+      const finishPromise = new Promise<void>((resolve, _) => {
         watcherEmitter.on('change', () => {
           expect(bundleMock).toHaveBeenCalledWith(
             mockSrc,
@@ -83,6 +89,7 @@ describe('watch', () => {
         });
       });
       watcherEmitter.emit('change');
+
       await finishPromise;
       expect(global.console.log).toHaveBeenCalledTimes(2);
     });
@@ -90,10 +97,13 @@ describe('watch', () => {
     it('watcher handles "ready" event correctly', async () => {
       jest.spyOn(console, 'log').mockImplementation();
       const bundleMock = jest.spyOn(build, 'bundle').mockImplementation();
-      jest.spyOn(fsUtils, 'validateFilePath').mockImplementation(() => true);
+      jest
+        .spyOn(fsUtils, 'validateFilePath')
+        .mockImplementation(async () => true);
 
-      await watch.handler(getMockArgv());
-      const finishPromise = new Promise((resolve, _) => {
+      // TODO: Fix index.ts exports
+      await (watch as any).handler(getMockArgv());
+      const finishPromise = new Promise<void>((resolve, _) => {
         watcherEmitter.on('ready', () => {
           expect(bundleMock).toHaveBeenCalledWith(
             mockSrc,
@@ -104,6 +114,7 @@ describe('watch', () => {
         });
       });
       watcherEmitter.emit('ready');
+
       await finishPromise;
       expect(global.console.log).toHaveBeenCalledTimes(1);
     });
@@ -111,10 +122,13 @@ describe('watch', () => {
     it('watcher handles "add" event correctly', async () => {
       jest.spyOn(console, 'log').mockImplementation();
       const bundleMock = jest.spyOn(build, 'bundle').mockImplementation();
-      jest.spyOn(fsUtils, 'validateFilePath').mockImplementation(() => true);
+      jest
+        .spyOn(fsUtils, 'validateFilePath')
+        .mockImplementation(async () => true);
 
-      await watch.handler(getMockArgv());
-      const finishPromise = new Promise((resolve, _) => {
+      // TODO: Fix index.ts exports
+      await (watch as any).handler(getMockArgv());
+      const finishPromise = new Promise<void>((resolve, _) => {
         watcherEmitter.on('add', () => {
           expect(bundleMock).toHaveBeenCalledWith(
             mockSrc,
@@ -125,6 +139,7 @@ describe('watch', () => {
         });
       });
       watcherEmitter.emit('add');
+
       await finishPromise;
       expect(global.console.log).toHaveBeenCalledTimes(2);
     });
@@ -132,16 +147,20 @@ describe('watch', () => {
     it('watcher handles "unlink" event correctly', async () => {
       jest.spyOn(console, 'log').mockImplementation();
       const bundleMock = jest.spyOn(build, 'bundle').mockImplementation();
-      jest.spyOn(fsUtils, 'validateFilePath').mockImplementation(() => true);
+      jest
+        .spyOn(fsUtils, 'validateFilePath')
+        .mockImplementation(async () => true);
 
-      await watch.handler(getMockArgv());
-      const finishPromise = new Promise((resolve, _) => {
+      // TODO: Fix index.ts exports
+      await (watch as any).handler(getMockArgv());
+      const finishPromise = new Promise<void>((resolve, _) => {
         watcherEmitter.on('unlink', () => {
           expect(bundleMock).not.toHaveBeenCalled();
           resolve();
         });
       });
       watcherEmitter.emit('unlink');
+
       await finishPromise;
       expect(global.console.log).toHaveBeenCalledTimes(2);
     });
@@ -154,10 +173,13 @@ describe('watch', () => {
         .spyOn(miscUtils, 'logError')
         .mockImplementation();
       const bundleMock = jest.spyOn(build, 'bundle').mockImplementation();
-      jest.spyOn(fsUtils, 'validateFilePath').mockImplementation(() => true);
+      jest
+        .spyOn(fsUtils, 'validateFilePath')
+        .mockImplementation(async () => true);
 
-      await watch.handler(getMockArgv());
-      const finishPromise = new Promise((resolve, _) => {
+      // TODO: Fix index.ts exports
+      await (watch as any).handler(getMockArgv());
+      const finishPromise = new Promise<void>((resolve, _) => {
         watcherEmitter.on('error', () => {
           expect(bundleMock).not.toHaveBeenCalled();
           expect(logErrorMock).toHaveBeenCalled();
@@ -165,6 +187,7 @@ describe('watch', () => {
         });
       });
       watcherEmitter.emit('error', mockError);
+
       await finishPromise;
       expect(global.console.log).toHaveBeenCalledTimes(1);
     });

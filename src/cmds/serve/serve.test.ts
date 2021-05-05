@@ -1,9 +1,9 @@
-const EventEmitter = require('events');
-const http = require('http');
-const serveHandler = require('serve-handler');
-const serve = require('../../../dist/src/cmds/serve');
-const serveUtils = require('../../../dist/src/cmds/serve/serveUtils');
-const fsUtils = require('../../../dist/src/utils/validate-fs');
+import EventEmitter from 'events';
+import http from 'http';
+import serveHandler from 'serve-handler';
+import * as fsUtils from '../../utils/validate-fs';
+import * as serveUtils from './serveUtils';
+import * as serve from '.';
 
 const mockArgv = {
   root: '.',
@@ -12,34 +12,42 @@ const mockArgv = {
 
 jest.mock('serve-handler', () => jest.fn());
 
+interface MockServer extends EventEmitter {
+  listen: () => void;
+}
+
+function getMockServer(listen: any): MockServer {
+  const server: MockServer = new EventEmitter() as any;
+  server.listen = listen;
+  jest.spyOn(server, 'on');
+  jest.spyOn(server, 'listen');
+  return server;
+}
+
 describe('serve', () => {
   describe('Starts a local, static HTTP server on the given port with the given root directory.', () => {
-    let mockServer;
+    let mockServer: MockServer;
 
     beforeEach(() => {
-      jest.spyOn(process, 'exit').mockImplementation(() => undefined);
+      jest.spyOn(process, 'exit').mockImplementation(() => undefined as never);
       const logServerListeningMock = jest
         .spyOn(serveUtils, 'logServerListening')
         .mockImplementation();
       jest.spyOn(http, 'createServer').mockImplementation(() => {
-        mockServer = new EventEmitter();
-        mockServer.listen = () => logServerListeningMock();
-        jest.spyOn(mockServer, 'on');
-        jest.spyOn(mockServer, 'listen');
-        return mockServer;
+        mockServer = getMockServer(logServerListeningMock);
+        return mockServer as any;
       });
-      jest.spyOn(fsUtils, 'validateDirPath').mockImplementation(() => true);
-    });
-
-    afterEach(() => {
-      jest.restoreAllMocks();
+      jest
+        .spyOn(fsUtils, 'validateDirPath')
+        .mockImplementation(async () => true);
     });
 
     it('server handles "close" event correctly', async () => {
       jest.spyOn(console, 'log').mockImplementation();
 
-      await serve.handler(mockArgv);
-      const finishPromise = new Promise((resolve, _) => {
+      // TODO: Fix index.ts exports
+      await (serve as any).handler(mockArgv);
+      const finishPromise = new Promise<void>((resolve, _) => {
         mockServer.on('close', () => {
           expect(global.console.log).toHaveBeenCalledTimes(2);
           resolve();
@@ -55,10 +63,11 @@ describe('serve', () => {
       const logServerErrorMock = jest
         .spyOn(serveUtils, 'logServerError')
         .mockImplementation();
-      jest.spyOn(process, 'exit').mockImplementation(() => undefined);
+      jest.spyOn(process, 'exit').mockImplementation(() => undefined as never);
 
-      await serve.handler(mockArgv);
-      const finishPromise = new Promise((resolve, _) => {
+      // TODO: Fix index.ts exports
+      await (serve as any).handler(mockArgv);
+      const finishPromise = new Promise<void>((resolve, _) => {
         mockServer.on('error', () => {
           expect(global.console.log).toHaveBeenCalledTimes(1);
           expect(logServerErrorMock).toHaveBeenCalled();
@@ -71,13 +80,12 @@ describe('serve', () => {
     });
 
     it('server handles "request" event correctly', async () => {
-      let requestCallback;
-      jest.spyOn(http, 'createServer').mockImplementationOnce((cb) => {
+      let requestCallback: (...args: any[]) => any;
+
+      jest.spyOn(http, 'createServer').mockImplementationOnce((cb: any) => {
         requestCallback = cb;
-        mockServer = new EventEmitter();
-        mockServer.listen = () => undefined;
-        jest.spyOn(mockServer, 'on');
-        return mockServer;
+        mockServer = getMockServer(() => undefined);
+        return mockServer as any;
       });
 
       jest.spyOn(console, 'log').mockImplementation();
@@ -85,8 +93,9 @@ describe('serve', () => {
         .spyOn(serveUtils, 'logRequest')
         .mockImplementation();
 
-      await serve.handler(mockArgv);
-      const finishPromise = new Promise((resolve, _) => {
+      // TODO: Fix index.ts exports
+      await (serve as any).handler(mockArgv);
+      const finishPromise = new Promise<void>((resolve, _) => {
         mockServer.on('request', (...args) => {
           expect(global.console.log).toHaveBeenCalledTimes(1);
           expect(logRequestMock).toHaveBeenCalled();

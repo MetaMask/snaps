@@ -40,7 +40,7 @@ module.exports = {
       files: [
         // Exports a yargs middleware function, which must be synchronous.
         'src/utils/snap-config.ts',
-        'test/utils/snap-config.test.js',
+        'src/utils/snap-config.test.ts',
       ],
       rules: {
         'node/no-sync': 'off',
@@ -62,7 +62,7 @@ module.exports = {
     },
 
     {
-      files: ['test/**/*.js'],
+      files: ['**/*.test.ts'],
       extends: ['@metamask/eslint-config-jest'],
       rules: {
         'node/no-callback-literal': 'off',

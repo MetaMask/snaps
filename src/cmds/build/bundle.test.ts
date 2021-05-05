@@ -1,14 +1,10 @@
-const browserify = require('browserify');
-const { bundle } = require('../../../dist/src/cmds/build/bundle');
-const bundleUtils = require('../../../dist/src/cmds/build/bundleUtils');
+import browserify from 'browserify';
+import { bundle } from '../build/bundle';
+import * as bundleUtils from '../build/bundleUtils';
 
 jest.mock('browserify');
 
 describe('bundle', () => {
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
-
   global.snaps = {
     verboseErrors: false,
     isWatching: false,
@@ -20,19 +16,22 @@ describe('bundle', () => {
         sourceMaps: true,
       };
 
-      const mockBrowserify = browserify.mockImplementation((_, __) => ({
-        bundle: (cb) => {
-          cb();
-        },
-      }));
+      const mockBrowserify = (browserify as jest.Mock).mockImplementation(
+        () => ({
+          bundle: (cb: () => any) => {
+            cb();
+          },
+        }),
+      );
       const createStreamMock = jest
         .spyOn(bundleUtils, 'createBundleStream')
         .mockImplementation();
       const closeStreamMock = jest
         .spyOn(bundleUtils, 'closeBundleStream')
-        .mockImplementation(({ resolve }) => resolve());
+        .mockImplementation((({ resolve }: { resolve: () => any }) =>
+          resolve()) as any);
 
-      await bundle('src', 'dest', mockArgv);
+      await bundle('src', 'dest', mockArgv as any);
       expect(mockBrowserify).toHaveBeenCalledWith('src', { debug: true });
       expect(createStreamMock).toHaveBeenCalled();
       expect(closeStreamMock).toHaveBeenCalled();

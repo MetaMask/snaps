@@ -1,15 +1,11 @@
-const { build } = require('../../../dist/src/cmds/build');
-const evalModule = require('../../../dist/src/cmds/eval');
-const manifestModule = require('../../../dist/src/cmds/manifest/manifest');
-const buildBundle = require('../../../dist/src/cmds/build/bundle');
-const fsUtils = require('../../../dist/src/utils/validate-fs');
+import * as evalModule from '../eval';
+import * as manifestModule from '../manifest/manifest';
+import * as fsUtils from '../../utils/validate-fs';
+import * as buildBundle from './bundle';
+import { build } from '.';
 
 describe('build', () => {
   describe('build', () => {
-    afterEach(() => {
-      jest.restoreAllMocks();
-    });
-
     global.snaps = {
       verboseErrors: false,
     };
@@ -35,13 +31,13 @@ describe('build', () => {
         .mockImplementation();
       const bundleMock = jest
         .spyOn(buildBundle, 'bundle')
-        .mockImplementation(() => true);
+        .mockImplementation(async () => true);
       const evalMock = jest.spyOn(evalModule, 'snapEval').mockImplementation();
       const manifestMock = jest
         .spyOn(manifestModule, 'manifest')
         .mockImplementation();
 
-      await build(mockArgv);
+      await build(mockArgv as any);
       expect(bundleMock).toHaveBeenCalledWith(
         mockArgv.src,
         outfilePath,
@@ -74,13 +70,13 @@ describe('build', () => {
         .mockImplementation();
       const bundleMock = jest
         .spyOn(buildBundle, 'bundle')
-        .mockImplementation(() => true);
+        .mockImplementation(async () => true);
       const evalMock = jest.spyOn(evalModule, 'snapEval').mockImplementation();
       const manifestMock = jest
         .spyOn(manifestModule, 'manifest')
         .mockImplementation();
 
-      await build(mockArgv);
+      await build(mockArgv as any);
       expect(bundleMock).toHaveBeenCalledWith(
         mockArgv.src,
         outfilePath,
@@ -109,7 +105,7 @@ describe('build', () => {
       jest.spyOn(manifestModule, 'manifest').mockImplementation();
       jest.spyOn(buildBundle, 'bundle').mockImplementation();
 
-      await build(mockArgv);
+      await build(mockArgv as any);
       expect(evalMock).not.toHaveBeenCalled();
     });
   });

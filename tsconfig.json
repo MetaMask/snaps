@@ -4,6 +4,7 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "inlineSourceMap": true,
+    "lib": ["ES2020"],
     "module": "CommonJS",
     "outDir": "./dist",
     "resolveJsonModule": true,

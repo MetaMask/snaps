@@ -1,17 +1,18 @@
-const init = require('../../../dist/src/cmds/init');
-const initializeModule = require('../../../dist/src/cmds/init/initHandler');
-const buildModule = require('../../../dist/src/cmds/build');
+import * as buildModule from '../build';
+import * as initializeModule from './initHandler';
+import * as init from '.';
 
 describe('init module', () => {
   it('console logs if successful', async () => {
     const mockArgv = { foo: 'bar' };
     const initHandlerMock = jest
       .spyOn(initializeModule, 'initHandler')
-      .mockImplementation(() => mockArgv);
+      .mockImplementation(() => mockArgv as any);
     const buildMock = jest.spyOn(buildModule, 'build').mockImplementation();
     jest.spyOn(console, 'log').mockImplementation();
 
-    await init.handler({ ...mockArgv });
+    // TODO: Fix index.ts exports
+    await (init as any).handler({ ...(mockArgv as any) });
     expect(initHandlerMock).toHaveBeenCalledWith(mockArgv);
     expect(buildMock).toHaveBeenCalledWith({
       foo: 'bar',

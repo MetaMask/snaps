@@ -1,30 +1,21 @@
-const readline = require('readline');
-const { prompt, closePrompt } = require('../../dist/src/utils/readline');
+import readline from 'readline';
+import { prompt, closePrompt } from './readline';
 
 jest.mock('readline', () => {
   return { createInterface: jest.fn() };
 });
 
 describe('readline', () => {
-  afterAll(() => {
-    jest.restoreAllMocks();
-  });
-
   describe('prompt', () => {
-    let questionMock;
+    let questionMock: (...args: any[]) => any;
     const closeMock = jest.fn();
-
-    afterEach(() => {
-      questionMock.mockRestore();
-      questionMock = null;
-    });
 
     it('should create an interface, open a prompt, read in user input from stdin, and return the trimmed input', async () => {
       questionMock = jest.fn((_, cb) => cb('answer '));
       const createInterfaceSpy = jest
         .spyOn(readline, 'createInterface')
         .mockImplementationOnce(() => {
-          return { question: questionMock };
+          return { question: questionMock } as any;
         });
 
       const promptResult = await prompt({
@@ -40,7 +31,7 @@ describe('readline', () => {
       const promptResult = await prompt({
         question: 'question',
         defaultValue: 'default',
-        readlineInterface: { question: questionMock },
+        readlineInterface: { question: questionMock } as any,
       });
       expect(promptResult).toStrictEqual('default');
     });
@@ -51,7 +42,7 @@ describe('readline', () => {
         question: 'question',
         defaultValue: 'default',
         shouldClose: true,
-        readlineInterface: { question: questionMock, close: closeMock },
+        readlineInterface: { question: questionMock, close: closeMock } as any,
       });
       expect(closeMock).toHaveBeenCalled();
     });
@@ -63,7 +54,7 @@ describe('readline', () => {
         question: 'question',
         defaultValue: 'default',
         shouldClose: false,
-        readlineInterface: { question: questionMock, close: closeMock },
+        readlineInterface: { question: questionMock, close: closeMock } as any,
       });
       expect(closeMock).not.toHaveBeenCalled();
     });
@@ -73,7 +64,7 @@ describe('readline', () => {
     it('should close the readline interface', () => {
       const closeMock = jest.fn();
 
-      closePrompt({ close: closeMock });
+      closePrompt({ close: closeMock } as any);
       expect(closeMock).toHaveBeenCalled();
     });
   });

@@ -2,9 +2,9 @@ import { Options } from 'yargs';
 
 export interface SnapsCliGlobals {
   snaps: {
-    verboseErrors: boolean;
-    suppressWarnings: boolean;
-    isWatching: boolean;
+    verboseErrors?: boolean;
+    suppressWarnings?: boolean;
+    isWatching?: boolean;
   };
 }
 

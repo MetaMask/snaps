@@ -1,12 +1,12 @@
-const fs = require('fs');
-const {
+import fs from 'fs';
+import {
   trimPathString,
   logError,
   logWarning,
   sanitizeInputs,
   setSnapGlobals,
   writeError,
-} = require('../../dist/src/utils/misc');
+} from './misc';
 
 jest.mock('fs', () => ({
   promises: {
@@ -106,24 +106,20 @@ describe('misc', () => {
     '$0': '/usr/local/bin/mm-snap',
   };
 
-  const setVerboseErrors = (bool) => {
+  const setVerboseErrors = (bool: boolean) => {
     global.snaps.verboseErrors = bool;
   };
 
-  const setSuppressWarnings = (bool) => {
+  const setSuppressWarnings = (bool: boolean) => {
     global.snaps.suppressWarnings = bool;
   };
 
-  const setIsWatching = (bool) => {
+  const setIsWatching = (bool: boolean) => {
     global.snaps.isWatching = bool;
   };
 
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
-
   afterAll(() => {
-    delete global.snaps;
+    global.snaps = {};
   });
 
   describe('setSnapGlobals', () => {
@@ -153,11 +149,9 @@ describe('misc', () => {
     it('logs an error message to console', () => {
       setVerboseErrors(true);
       jest.spyOn(console, 'error').mockImplementation();
-      logError('custom error message', 'verbose error message');
+      logError('custom error message', new Error('verbose'));
       expect(global.console.error).toHaveBeenCalledWith('custom error message');
-      expect(global.console.error).toHaveBeenCalledWith(
-        'verbose error message',
-      );
+      expect(global.console.error).toHaveBeenCalledWith(new Error('verbose'));
 
       setVerboseErrors(false);
       jest.spyOn(console, 'error').mockImplementation();
@@ -174,13 +168,11 @@ describe('misc', () => {
       jest.spyOn(console, 'warn').mockImplementation();
       jest.spyOn(console, 'error').mockImplementation();
 
-      logWarning('custom warning message', 'verbose warning message');
+      logWarning('custom warning message', new Error('verbose'));
       expect(global.console.warn).toHaveBeenCalledWith(
         'custom warning message',
       );
-      expect(global.console.error).toHaveBeenCalledWith(
-        'verbose warning message',
-      );
+      expect(global.console.error).toHaveBeenCalledWith(new Error('verbose'));
     });
 
     it('if verbose errors is set to false, just logs a warning message to console', () => {
@@ -190,7 +182,7 @@ describe('misc', () => {
       jest.spyOn(console, 'warn').mockImplementation();
       jest.spyOn(console, 'error').mockImplementation();
 
-      logWarning('custom warning message', 'verbose warning message');
+      logWarning('custom warning message', new Error('verbose'));
       expect(global.console.warn).toHaveBeenCalledWith(
         'custom warning message',
       );
@@ -218,7 +210,7 @@ describe('misc', () => {
       jest.spyOn(console, 'warn').mockImplementation();
       jest.spyOn(console, 'error').mockImplementation();
 
-      logWarning('custom warning message', 'verbose warning message');
+      logWarning('custom warning message', new Error('verbose'));
       expect(global.console.warn).not.toHaveBeenCalled();
       expect(global.console.error).not.toHaveBeenCalled();
     });
@@ -246,16 +238,13 @@ describe('misc', () => {
       jest.spyOn(process, 'exit').mockImplementation(() => {
         throw new Error('process exited');
       });
-      jest.spyOn(fs.promises, 'unlink').mockRejectedValueOnce();
+      jest.spyOn(fs.promises, 'unlink').mockRejectedValueOnce(undefined);
       const errorMock = jest.spyOn(console, 'error').mockImplementation();
       await expect(
         writeError('foo', 'bar', new Error('error message'), 'dest'),
       ).rejects.toThrow('process exited');
       expect(errorMock).toHaveBeenNthCalledWith(1, 'foo bar');
-      expect(errorMock).toHaveBeenCalledTimes(
-        2,
-        `foo Failed to unlink mangled file.`,
-      );
+      expect(errorMock).toHaveBeenCalledTimes(2);
     });
   });
 

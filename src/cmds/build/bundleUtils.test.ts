@@ -1,32 +1,37 @@
-const EventEmitter = require('events');
-const fs = require('fs');
-const {
+import EventEmitter from 'events';
+import fs from 'fs';
+import * as miscUtils from '../../utils/misc';
+import {
   createBundleStream,
   closeBundleStream,
   postProcess,
-} = require('../../../dist/src/cmds/build/bundleUtils');
-const miscUtils = require('../../../dist/src/utils/misc');
+} from './bundleUtils';
 
 jest.mock('fs', () => ({
   createWriteStream: jest.fn(),
 }));
 
+interface MockStream extends EventEmitter {
+  end: () => void;
+}
+
+function getMockStream(): MockStream {
+  const stream: MockStream = new EventEmitter() as any;
+  stream.end = () => undefined;
+  jest.spyOn(stream, 'on');
+  jest.spyOn(stream, 'end');
+  return stream;
+}
+
 describe('bundleUtils', () => {
   describe('createBundleStream', () => {
-    let mockStream;
+    let mockStream: MockStream;
 
     beforeEach(() => {
-      jest.spyOn(fs, 'createWriteStream').mockImplementation(() => {
-        mockStream = new EventEmitter();
-        mockStream.end = () => undefined;
-        jest.spyOn(mockStream, 'on');
-        jest.spyOn(mockStream, 'end');
+      jest.spyOn(fs, 'createWriteStream').mockImplementation((() => {
+        mockStream = getMockStream();
         return mockStream;
-      });
-    });
-
-    afterEach(() => {
-      jest.restoreAllMocks();
+      }) as any);
     });
 
     it('writes error on error event', async () => {
@@ -34,7 +39,7 @@ describe('bundleUtils', () => {
         .spyOn(miscUtils, 'writeError')
         .mockImplementation();
       createBundleStream('foo');
-      const finishPromise = new Promise((resolve, _reject) => {
+      const finishPromise = new Promise<void>((resolve, _reject) => {
         mockStream.on('error', () => {
           expect(mockWriteError).toHaveBeenCalled();
           resolve();
@@ -46,17 +51,10 @@ describe('bundleUtils', () => {
   });
 
   describe('closeBundleStream', () => {
-    let mockStream;
+    let mockStream: MockStream;
 
     beforeEach(() => {
-      mockStream = new EventEmitter();
-      mockStream.end = () => undefined;
-      jest.spyOn(mockStream, 'on');
-      jest.spyOn(mockStream, 'end');
-    });
-
-    afterEach(() => {
-      jest.restoreAllMocks();
+      mockStream = getMockStream();
     });
 
     it('writes to console error if there is a bundle Error', async () => {
@@ -65,9 +63,9 @@ describe('bundleUtils', () => {
         .mockImplementation(() => {
           throw new Error('error message');
         });
-      await expect(closeBundleStream({ bundleError: true })).rejects.toThrow(
-        'error message',
-      );
+      await expect(
+        closeBundleStream({ bundleError: true } as any),
+      ).rejects.toThrow('error message');
       expect(writeErrorMock).toHaveBeenCalledTimes(1);
     });
 
@@ -86,7 +84,7 @@ describe('bundleUtils', () => {
         dest: 'dest',
         argv: { stripComments: false },
         resolve: resolveMock,
-      });
+      } as any);
       expect(writeErrorMock).not.toHaveBeenCalled();
       expect(mockStream.end).toHaveBeenCalled();
       expect(logMock).toHaveBeenCalled();
@@ -95,7 +93,7 @@ describe('bundleUtils', () => {
 
     it('catches error if failed to close bundle stream', async () => {
       const logMock = jest.spyOn(console, 'log').mockImplementation();
-      mockStream.end.mockImplementation(() => {
+      (mockStream.end as jest.Mock).mockImplementation(() => {
         throw new Error('error message 1');
       });
       const writeErrorMock = jest
@@ -112,7 +110,7 @@ describe('bundleUtils', () => {
           src: 'src',
           dest: 'dest',
           argv: { stripComments: false },
-        }),
+        } as any),
       ).rejects.toThrow('error message 2');
       expect(logMock).not.toHaveBeenCalled();
       expect(mockStream.end).toHaveBeenCalledTimes(1);
