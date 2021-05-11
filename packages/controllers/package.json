@@ -14,7 +14,7 @@
     "node": ">=14.15.1"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "build": "yarn build:prep && yarn build:ts",
     "build:ts": "tsc --project .",
     "build:prep": "mkdir -p dist && rm -rf dist/*",
@@ -25,17 +25,24 @@
   "dependencies": {
     "@metamask/object-multiplex": "^1.1.0",
     "@metamask/obs-store": "^6.0.2",
+    "@metamask/post-message-stream": "4.0.0",
     "@metamask/safe-event-emitter": "^2.0.0",
-    "@mm-snap/post-message-stream": "^0.0.5",
     "@mm-snap/workers": "^0.0.5",
     "eth-rpc-errors": "^4.0.2",
+    "json-rpc-engine": "^6.1.0",
+    "json-rpc-middleware-stream": "^3.0.0",
     "nanoid": "^3.1.20",
     "pump": "^3.0.0"
   },
   "devDependencies": {
+    "@jest-runner/electron": "^3.0.1",
     "@mm-snap/types": "^0.0.5",
+    "@types/jest": "^26.0.23",
     "@types/pump": "^1.1.0",
     "@types/readable-stream": "^2.3.9",
-    "rpc-cap": "^4.0.0"
+    "electron": "^12.0.7",
+    "jest": "^26.6.3",
+    "rpc-cap": "^4.0.0",
+    "ts-jest": "^26.5.6"
   }
 }

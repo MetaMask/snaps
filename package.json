@@ -3,7 +3,6 @@
   "private": true,
   "workspaces": [
     "packages/controllers",
-    "packages/post-message-stream",
     "packages/rpc-methods",
     "packages/types",
     "packages/workers"

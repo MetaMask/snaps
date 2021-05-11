@@ -2,12 +2,8 @@ import { Duplex } from 'stream';
 import { MetaMaskInpageProvider } from '@metamask/inpage-provider';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import pump from 'pump';
-import { WorkerPostMessageStream } from '@mm-snap/post-message-stream';
-import {
-  PluginData,
-  PluginProvider,
-  WorkerCommandRequest,
-} from '@mm-snap/types';
+import { WorkerPostMessageStream } from '@metamask/post-message-stream';
+import { PluginData, PluginProvider } from '@mm-snap/types';
 import { STREAM_NAMES } from './enums';
 
 // eslint-disable-next-line import/no-unassigned-import
@@ -79,22 +75,22 @@ lockdown({
       this.rpcStream = mux.createStream(STREAM_NAMES.JSON_RPC) as any;
     }
 
-    private async onCommandRequest(message: WorkerCommandRequest) {
+    private async onCommandRequest(message: any) {
       if (!message || typeof message !== 'object' || Array.isArray(message)) {
         console.error('Command stream received non-object message.');
         return;
       }
 
-      const { id, command, data } = message;
+      const { id, method, params } = message;
 
-      if (!id || typeof id !== 'string') {
+      if (!id && typeof id !== 'string' && typeof id !== 'number') {
         console.error(`Command stream received invalid id "${id}".`);
         return;
       }
 
-      switch (command) {
+      switch (method) {
         case 'installPlugin':
-          this.installPlugin(id, (data as unknown) as PluginData);
+          this.installPlugin(id, (params as unknown) as PluginData);
           break;
 
         case 'ping':
@@ -102,19 +98,26 @@ lockdown({
           break;
 
         case 'pluginRpc':
-          await this.handlePluginRpc(id, (data as unknown) as PluginRpcRequest);
+          await this.handlePluginRpc(
+            id,
+            (params as unknown) as PluginRpcRequest,
+          );
           break;
 
         default:
           this.respond(id, {
-            error: new Error(`Unrecognized command: ${command}.`),
+            error: new Error(`Unrecognized command: ${method}.`),
           });
           break;
       }
     }
 
     private respond(id: string, responseObj: Record<string, unknown>) {
-      this.commandStream.write({ ...responseObj, id });
+      this.commandStream.write({
+        id,
+        jsonrpc: '2.0',
+        ...responseObj,
+      });
     }
 
     private async handlePluginRpc(
