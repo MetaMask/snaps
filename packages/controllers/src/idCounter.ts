@@ -1,5 +1,6 @@
 let id = 1;
 
 export const getId = () => {
-  return id++; //eslint-disable-line
+  id = id + 1;
+  return id;
 };
