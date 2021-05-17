@@ -3,11 +3,11 @@ import EventEmitter from '@metamask/safe-event-emitter';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { IOcapLdCapability } from 'rpc-cap/dist/src/@types/ocap-ld';
 import { IRequestedPermissions } from 'rpc-cap/dist/src/@types';
+import { nanoid } from 'nanoid';
 import {
   WorkerController,
   SetupWorkerConnection,
 } from '../workers/WorkerController';
-import { CommandResponse } from '../workers/CommandEngine';
 import { INLINE_PLUGINS } from './inlinePlugins';
 
 export const PLUGIN_PREFIX = 'wallet_plugin_';
@@ -39,7 +39,7 @@ export interface Plugin extends SerializablePlugin {
 export type PluginRpcHook = (
   origin: string,
   request: Record<string, unknown>,
-) => Promise<CommandResponse>;
+) => Promise<unknown>;
 
 export type ProcessPluginReturnType =
   | SerializablePlugin
@@ -743,8 +743,10 @@ export class PluginController extends EventEmitter {
       request: Record<string, unknown>,
     ) => {
       return await this.workerController.command(workerId, {
-        command: 'pluginRpc',
-        data: {
+        id: nanoid(),
+        jsonrpc: '2.0',
+        method: 'pluginRpc',
+        params: {
           origin,
           request,
           target: pluginName,

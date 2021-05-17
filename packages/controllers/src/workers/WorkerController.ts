@@ -4,15 +4,15 @@ import pump from 'pump';
 import { ObservableStore } from '@metamask/obs-store';
 import SafeEventEmitter from '@metamask/safe-event-emitter';
 import ObjectMultiplex from '@metamask/object-multiplex';
-import { WorkerParentPostMessageStream } from '@mm-snap/post-message-stream';
+import { WorkerParentPostMessageStream } from '@metamask/post-message-stream';
 import { PLUGIN_STREAM_NAMES } from '@mm-snap/workers';
+import { createStreamMiddleware } from 'json-rpc-middleware-stream';
 import { PluginData } from '@mm-snap/types';
-
 import {
-  CommandEngine,
-  CommandRequest,
-  CommandResponse,
-} from './CommandEngine';
+  JsonRpcEngine,
+  JsonRpcRequest,
+  PendingJsonRpcResponse,
+} from 'json-rpc-engine';
 
 export type SetupWorkerConnection = (metadata: any, stream: Duplex) => void;
 
@@ -30,11 +30,10 @@ interface WorkerStreams {
   _connection: WorkerParentPostMessageStream;
 }
 
-// { id: workerId, streams, commandEngine, worker }
 interface WorkerWrapper {
-  id: string;
+  workerId: string;
   streams: WorkerStreams;
-  commandEngine: CommandEngine;
+  rpcEngine: JsonRpcEngine;
   worker: Worker;
 }
 
@@ -83,9 +82,8 @@ export class WorkerController extends SafeEventEmitter {
 
   async command(
     workerId: string,
-    message: CommandRequest,
-    timeout?: number,
-  ): Promise<CommandResponse> {
+    message: JsonRpcRequest<unknown>,
+  ): Promise<unknown> {
     if (typeof message !== 'object') {
       throw new Error('Must send object.');
     }
@@ -96,8 +94,13 @@ export class WorkerController extends SafeEventEmitter {
     }
 
     console.log('Parent: Sending Command', message);
-
-    return await workerObj.commandEngine.command(message, timeout);
+    const response: PendingJsonRpcResponse<unknown> = await workerObj.rpcEngine.handle(
+      message,
+    );
+    if (response.error) {
+      throw new Error(response.error.message);
+    }
+    return response.result;
   }
 
   terminateAll(): void {
@@ -134,7 +137,7 @@ export class WorkerController extends SafeEventEmitter {
   async startPlugin(
     workerId: string,
     pluginData: PluginData,
-  ): Promise<CommandResponse> {
+  ): Promise<unknown> {
     const _workerId: string = workerId || this.workers.keys().next()?.value();
     if (!_workerId) {
       throw new Error('No workers available.');
@@ -142,9 +145,11 @@ export class WorkerController extends SafeEventEmitter {
 
     this._mapPluginAndWorker(pluginData.pluginName, workerId);
 
-    return await this.command(_workerId, {
-      command: 'installPlugin',
-      data: pluginData,
+    return this.command(_workerId, {
+      jsonrpc: '2.0',
+      method: 'installPlugin',
+      params: pluginData,
+      id: nanoid(),
     });
   }
 
@@ -188,15 +193,29 @@ export class WorkerController extends SafeEventEmitter {
     console.log('_initWorker');
 
     const workerId = nanoid();
-    const worker = new Worker(this.workerUrl, { name: workerId });
-    const streams = this._initWorkerStreams(worker, workerId, metadata);
-    const commandEngine = new CommandEngine({
-      workerId,
-      commandStream: streams.command,
+    const worker = new Worker(this.workerUrl, {
+      name: workerId,
     });
+    const streams = this._initWorkerStreams(worker, workerId, metadata);
+    const rpcEngine = new JsonRpcEngine();
 
-    this._setWorker(workerId, { id: workerId, streams, commandEngine, worker });
-    await this.command(workerId, { command: 'ping' });
+    const jsonRpcConnection = createStreamMiddleware();
+
+    pump(jsonRpcConnection.stream, streams.command, jsonRpcConnection.stream);
+
+    rpcEngine.push(jsonRpcConnection.middleware);
+
+    this._setWorker(workerId, {
+      workerId,
+      streams,
+      rpcEngine,
+      worker,
+    });
+    await this.command(workerId, {
+      jsonrpc: '2.0',
+      method: 'ping',
+      id: nanoid(),
+    });
     return workerId;
   }
 
