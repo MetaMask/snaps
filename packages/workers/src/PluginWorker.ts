@@ -114,9 +114,9 @@ lockdown({
 
     private respond(id: string, responseObj: Record<string, unknown>) {
       this.commandStream.write({
+        ...responseObj,
         id,
         jsonrpc: '2.0',
-        ...responseObj,
       });
     }
 
