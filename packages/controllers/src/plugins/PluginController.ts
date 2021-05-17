@@ -40,7 +40,7 @@ export interface Plugin extends SerializablePlugin {
 export type PluginRpcHook = (
   origin: string,
   request: Record<string, unknown>,
-) => Promise<JsonRpcResponse<any>>;
+) => Promise<JsonRpcResponse<unknown>>;
 
 export type ProcessPluginReturnType =
   | SerializablePlugin
