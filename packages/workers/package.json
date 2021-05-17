@@ -31,6 +31,7 @@
     "@types/pump": "^1.1.0",
     "@types/readable-stream": "^2.3.9",
     "browserify": "16.2.3",
+    "json-rpc-engine": "^6.1.0",
     "pump": "^3.0.0",
     "ses": "^0.11.0",
     "tinyify": "^3.0.0",

@@ -4,6 +4,7 @@ import ObjectMultiplex from '@metamask/object-multiplex';
 import pump from 'pump';
 import { WorkerPostMessageStream } from '@metamask/post-message-stream';
 import { PluginData, PluginProvider } from '@mm-snap/types';
+import type { JsonRpcId, JsonRpcRequest } from 'json-rpc-engine';
 import { STREAM_NAMES } from './enums';
 
 // eslint-disable-next-line import/no-unassigned-import
@@ -75,7 +76,7 @@ lockdown({
       this.rpcStream = mux.createStream(STREAM_NAMES.JSON_RPC) as any;
     }
 
-    private async onCommandRequest(message: any) {
+    private async onCommandRequest(message: JsonRpcRequest<unknown>) {
       if (!message || typeof message !== 'object' || Array.isArray(message)) {
         console.error('Command stream received non-object message.');
         return;
@@ -83,7 +84,11 @@ lockdown({
 
       const { id, method, params } = message;
 
-      if (!id && typeof id !== 'string' && typeof id !== 'number') {
+      if (
+        id === null ||
+        id === undefined ||
+        (typeof id !== 'string' && typeof id !== 'number')
+      ) {
         console.error(`Command stream received invalid id "${id}".`);
         return;
       }
@@ -112,7 +117,7 @@ lockdown({
       }
     }
 
-    private respond(id: string, responseObj: Record<string, unknown>) {
+    private respond(id: JsonRpcId, responseObj: Record<string, unknown>) {
       this.commandStream.write({
         ...responseObj,
         id,
@@ -121,7 +126,7 @@ lockdown({
     }
 
     private async handlePluginRpc(
-      id: string,
+      id: JsonRpcId,
       { origin, request, target }: PluginRpcRequest,
     ) {
       const handler = this.pluginRpcHandlers.get(target);
@@ -142,7 +147,7 @@ lockdown({
     }
 
     private installPlugin(
-      id: string,
+      id: JsonRpcId,
       { pluginName, sourceCode }: Partial<PluginData> = {},
     ) {
       if (!isTruthyString(pluginName) || !isTruthyString(sourceCode)) {

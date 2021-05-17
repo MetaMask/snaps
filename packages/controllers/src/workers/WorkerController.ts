@@ -11,10 +11,8 @@ import { PluginData } from '@mm-snap/types';
 import {
   JsonRpcEngine,
   JsonRpcRequest,
-  JsonRpcResponse,
+  PendingJsonRpcResponse,
 } from 'json-rpc-engine';
-
-import { getId } from '../idCounter';
 
 export type SetupWorkerConnection = (metadata: any, stream: Duplex) => void;
 
@@ -82,7 +80,10 @@ export class WorkerController extends SafeEventEmitter {
     this.store.updateState({ workers: newWorkerState });
   }
 
-  async command(workerId: string, message: JsonRpcRequest<any>): Promise<unknown> {
+  async command(
+    workerId: string,
+    message: JsonRpcRequest<unknown>,
+  ): Promise<unknown> {
     if (typeof message !== 'object') {
       throw new Error('Must send object.');
     }
@@ -93,7 +94,9 @@ export class WorkerController extends SafeEventEmitter {
     }
 
     console.log('Parent: Sending Command', message);
-    const response: any = await workerObj.rpcEngine.handle(message);
+    const response: PendingJsonRpcResponse<unknown> = await workerObj.rpcEngine.handle(
+      message,
+    );
     if (response.error) {
       throw new Error(response.error.message);
     }
@@ -134,7 +137,7 @@ export class WorkerController extends SafeEventEmitter {
   async startPlugin(
     workerId: string,
     pluginData: PluginData,
-  ): Promise<JsonRpcResponse<any>> {
+  ): Promise<unknown> {
     const _workerId: string = workerId || this.workers.keys().next()?.value();
     if (!_workerId) {
       throw new Error('No workers available.');
@@ -146,7 +149,7 @@ export class WorkerController extends SafeEventEmitter {
       jsonrpc: '2.0',
       method: 'installPlugin',
       params: pluginData,
-      id: getId(),
+      id: nanoid(),
     });
   }
 
@@ -211,7 +214,7 @@ export class WorkerController extends SafeEventEmitter {
     await this.command(workerId, {
       jsonrpc: '2.0',
       method: 'ping',
-      id: getId(),
+      id: nanoid(),
     });
     return workerId;
   }
