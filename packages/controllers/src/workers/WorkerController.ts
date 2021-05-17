@@ -82,7 +82,7 @@ export class WorkerController extends SafeEventEmitter {
     this.store.updateState({ workers: newWorkerState });
   }
 
-  async command(workerId: string, message: JsonRpcRequest<any>): Promise<any> {
+  async command(workerId: string, message: JsonRpcRequest<any>): Promise<unknown> {
     if (typeof message !== 'object') {
       throw new Error('Must send object.');
     }
