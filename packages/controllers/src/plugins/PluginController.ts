@@ -1,27 +1,31 @@
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
 import { ObservableStore } from '@metamask/obs-store';
-import EventEmitter from '@metamask/safe-event-emitter';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { IOcapLdCapability } from 'rpc-cap/dist/src/@types/ocap-ld';
 import { IRequestedPermissions } from 'rpc-cap/dist/src/@types';
 import { nanoid } from 'nanoid';
 import {
-  WorkerController,
-  SetupWorkerConnection,
-} from '../workers/WorkerController';
+  BaseController,
+  StateMetadata,
+} from '@metamask/controllers/dist/BaseControllerV2';
+
+import { RestrictedControllerMessenger } from '@metamask/controllers/dist/ControllerMessenger';
+import { Json, JsonRpcRequest } from 'json-rpc-engine';
+import { PluginData } from '@mm-snap/types';
+import { PluginWorkerMetadata } from '../workers/WorkerController';
 import { INLINE_PLUGINS } from './inlinePlugins';
 
 export const PLUGIN_PREFIX = 'wallet_plugin_';
 export const PLUGIN_PREFIX_REGEX = new RegExp(`^${PLUGIN_PREFIX}`, 'u');
-
 const SERIALIZABLE_PLUGIN_PROPERTIES = new Set([
   'initialPermissions',
   'name',
   'permissionName',
 ]);
 
-interface InititalPermissions {
-  [permission: string]: Record<string, unknown>;
-}
+type InititalPermissions = {
+  [permission: string]: IOcapLdCapability;
+};
 
 export interface SerializablePlugin {
   initialPermissions: InititalPermissions;
@@ -54,37 +58,55 @@ type CloseAllConnectionsFunction = (domain: string) => void;
 type RequestPermissionsFunction = (
   domain: string,
   requestedPermissions: IRequestedPermissions,
-) => IOcapLdCapability[];
+) => Promise<IOcapLdCapability[]>;
 type HasPermissionFunction = (
   domain: string,
   permissionName: string,
 ) => boolean;
 type GetPermissionsFunction = (domain: string) => IOcapLdCapability[];
+type TerminateWorkerOf = (pluginName: string) => void;
+type Command = (
+  workerId: string,
+  message: JsonRpcRequest<unknown>,
+) => Promise<unknown>;
+type TerminateAll = () => void;
+type CreatePluginWorker = (metadate: PluginWorkerMetadata) => Promise<string>;
+type StartPlugin = (
+  workerId: string,
+  pluginData: PluginData,
+) => Promise<unknown>;
 
-interface StoredPlugins {
-  [pluginId: string]: Plugin;
-}
+type StoredPlugins = Record<string, Plugin>;
 
-export interface PluginControllerState {
+export type PluginControllerState = {
   plugins: StoredPlugins;
-  pluginStates: Record<string, unknown>;
-}
+  pluginStates: {
+    [id: string]: Json;
+  };
+};
 
 export interface PluginControllerMemState {
   inlinePluginIsRunning: boolean;
-  plugins: { [pluginId: string]: SerializablePlugin };
-  pluginStates: Record<string, unknown>;
+  plugins: Record<string, SerializablePlugin>;
+  pluginStates: {
+    [id: string]: Json;
+  };
 }
 
 interface PluginControllerArgs {
-  initState: Partial<PluginControllerState>;
+  messenger: RestrictedControllerMessenger<string, any, any, string, string>;
+  metadata: StateMetadata<PluginControllerState>;
+  state: PluginControllerState;
   removeAllPermissionsFor: RemoveAllPermissionsFunction;
-  setupWorkerPluginProvider: SetupWorkerConnection;
   closeAllConnections: CloseAllConnectionsFunction;
   requestPermissions: RequestPermissionsFunction;
   getPermissions: GetPermissionsFunction;
   hasPermission: HasPermissionFunction;
-  workerUrl: URL;
+  terminateWorkerOf: TerminateWorkerOf;
+  command: Command;
+  terminateAll: TerminateAll;
+  createPluginWorker: CreatePluginWorker;
+  startPlugin: StartPlugin;
 }
 
 interface AddPluginBase {
@@ -108,6 +130,13 @@ interface AddPluginDirectlyArgs extends AddPluginBase {
 
 type AddPluginArgs = AddPluginByFetchingArgs | AddPluginDirectlyArgs;
 
+const defaultState: PluginControllerState = {
+  plugins: {},
+  pluginStates: {},
+};
+
+const name = 'PluginController';
+
 /*
  * A plugin is initialized in three phases:
  * - Add: Loads the plugin from a remote source and parses it.
@@ -115,12 +144,11 @@ type AddPluginArgs = AddPluginByFetchingArgs | AddPluginDirectlyArgs;
  * - Start: Initializes the plugin in its SES realm with the authorized permissions.
  */
 
-export class PluginController extends EventEmitter {
-  public store: ObservableStore<PluginControllerState>;
-
+export class PluginController extends BaseController<
+  string,
+  PluginControllerState
+> {
   public memStore: ObservableStore<PluginControllerMemState>;
-
-  private workerController: WorkerController;
 
   private _removeAllPermissionsFor: RemoveAllPermissionsFunction;
 
@@ -134,28 +162,38 @@ export class PluginController extends EventEmitter {
 
   private _hasPermission: HasPermissionFunction;
 
+  private _terminateWorkerOf: TerminateWorkerOf;
+
+  private _command: Command;
+
+  private _terminateAll: TerminateAll;
+
+  private _createPluginWorker: CreatePluginWorker;
+
+  private _startPlugin: StartPlugin;
+
   private _pluginsBeingAdded: Map<string, Promise<Plugin>>;
 
   constructor({
-    initState,
-    setupWorkerPluginProvider,
     removeAllPermissionsFor,
     closeAllConnections,
     requestPermissions,
     getPermissions,
+    terminateWorkerOf,
+    terminateAll,
     hasPermission,
-    workerUrl,
+    createPluginWorker,
+    startPlugin,
+    command,
+    messenger,
+    metadata,
+    state,
   }: PluginControllerArgs) {
-    super();
-    const _initState: PluginControllerState = {
-      plugins: {},
-      pluginStates: {},
-      ...initState,
-    };
-
-    this.store = new ObservableStore({
-      plugins: {},
-      pluginStates: {},
+    super({
+      messenger,
+      metadata,
+      name,
+      state: { ...defaultState, ...state },
     });
 
     this.memStore = new ObservableStore({
@@ -163,18 +201,18 @@ export class PluginController extends EventEmitter {
       plugins: {},
       pluginStates: {},
     });
-    this.updateState(_initState);
-
-    this.workerController = new WorkerController({
-      setupWorkerConnection: setupWorkerPluginProvider,
-      workerUrl,
-    });
+    this.updateState(state);
 
     this._removeAllPermissionsFor = removeAllPermissionsFor;
     this._closeAllConnections = closeAllConnections;
     this._requestPermissions = requestPermissions;
     this._getPermissions = getPermissions;
     this._hasPermission = hasPermission;
+    this._terminateWorkerOf = terminateWorkerOf;
+    this._terminateAll = terminateAll;
+    this._createPluginWorker = createPluginWorker;
+    this._startPlugin = startPlugin;
+    this._command = command;
 
     this._pluginRpcHooks = new Map();
     this._pluginsBeingAdded = new Map();
@@ -184,7 +222,14 @@ export class PluginController extends EventEmitter {
    * Updates the state of this controller.
    */
   updateState(newState: Partial<PluginControllerState>) {
-    this.store.updateState(newState);
+    this.update((state) => {
+      if (newState.pluginStates) {
+        state.pluginStates = newState.pluginStates as any;
+      }
+      if (newState.plugins) {
+        state.plugins = newState.plugins as any;
+      }
+    });
     this.memStore.updateState(this._filterMemStoreState(newState));
   }
 
@@ -204,10 +249,12 @@ export class PluginController extends EventEmitter {
       memState.plugins = this.memStore.getState().plugins || {};
 
       // Remove sourceCode from updated memState plugin objects
-      Object.keys(newState.plugins).forEach((name) => {
-        const plugin = { ...(newState as PluginControllerState).plugins[name] };
+      Object.keys(newState.plugins).forEach((pluginName) => {
+        const plugin = {
+          ...(newState as PluginControllerState).plugins[pluginName],
+        };
         delete (plugin as Partial<Plugin>).sourceCode;
-        (memState as PluginControllerMemState).plugins[name] = plugin;
+        (memState as PluginControllerMemState).plugins[pluginName] = plugin;
       });
     }
 
@@ -219,7 +266,7 @@ export class PluginController extends EventEmitter {
    * Deletes any plugins that cannot be started.
    */
   async runExistingPlugins(): Promise<void> {
-    const { plugins } = this.store.getState();
+    const { plugins } = this.state;
 
     if (Object.keys(plugins).length > 0) {
       console.log('Starting existing plugins...', plugins);
@@ -295,7 +342,7 @@ export class PluginController extends EventEmitter {
   private _stopPlugin(pluginName: string, setNotRunning = true): void {
     this._removePluginHooks(pluginName);
     this._closeAllConnections(pluginName);
-    this.workerController.terminateWorkerOf(pluginName);
+    this._terminateWorkerOf(pluginName);
     if (setNotRunning) {
       this._setPluginToNotRunning(pluginName);
     }
@@ -322,7 +369,7 @@ export class PluginController extends EventEmitter {
    * @param pluginName - The name of the plugin to check for.
    */
   has(pluginName: string): boolean {
-    return pluginName in this.store.getState().plugins;
+    return pluginName in this.state.plugins;
   }
 
   /**
@@ -333,7 +380,7 @@ export class PluginController extends EventEmitter {
    * @param pluginName - The name of the plugin to get.
    */
   get(pluginName: string) {
-    return this.store.getState().plugins[pluginName];
+    return this.state.plugins[pluginName];
   }
 
   /**
@@ -366,11 +413,10 @@ export class PluginController extends EventEmitter {
    */
   async updatePluginState(
     pluginName: string,
-    newPluginState: unknown,
+    newPluginState: Json,
   ): Promise<void> {
-    const state = this.store.getState();
     const newPluginStates = {
-      ...state.pluginStates,
+      ...this.state.pluginStates,
       [pluginName]: newPluginState,
     };
 
@@ -386,7 +432,7 @@ export class PluginController extends EventEmitter {
    * @param pluginName - The name of the plugin whose state to get.
    */
   async getPluginState(pluginName: string): Promise<unknown> {
-    return this.store.getState().pluginStates[pluginName];
+    return this.state.pluginStates[pluginName];
   }
 
   /**
@@ -395,15 +441,15 @@ export class PluginController extends EventEmitter {
    */
   clearState() {
     this._pluginRpcHooks.clear();
-    const pluginNames = Object.keys(this.store.getState().plugins);
+    const pluginNames = Object.keys(this.state.plugins);
     this.updateState({
       plugins: {},
       pluginStates: {},
     });
-    pluginNames.forEach((name) => {
-      this._closeAllConnections(name);
+    pluginNames.forEach((pluginName) => {
+      this._closeAllConnections(pluginName);
     });
-    this.workerController.terminateAll();
+    this._terminateAll();
     this._removeAllPermissionsFor(pluginNames);
     this.memStore.updateState({
       inlinePluginIsRunning: false,
@@ -431,14 +477,13 @@ export class PluginController extends EventEmitter {
       throw new Error('Expected array of plugin names.');
     }
 
-    const state = this.store.getState();
-    const newPlugins = { ...state.plugins };
-    const newPluginStates = { ...state.pluginStates };
+    const newPlugins = { ...this.state.plugins };
+    const newPluginStates = { ...this.state.pluginStates };
 
-    pluginNames.forEach((name) => {
-      this._stopPlugin(name, false);
-      delete newPlugins[name];
-      delete newPluginStates[name];
+    pluginNames.forEach((pluginName) => {
+      this._stopPlugin(pluginName, false);
+      delete newPlugins[pluginName];
+      delete newPluginStates[pluginName];
     });
     this._removeAllPermissionsFor(pluginNames);
 
@@ -619,7 +664,7 @@ export class PluginController extends EventEmitter {
       version: manifest.version,
     };
 
-    const pluginsState = this.store.getState().plugins;
+    const pluginsState = this.state.plugins;
 
     // restore relevant plugin state if it exists
     if (pluginsState[pluginName]) {
@@ -644,7 +689,7 @@ export class PluginController extends EventEmitter {
    * @param manifestUrl - The URL of the plugin's manifest file.
    */
   private async _fetchPlugin(
-    name: string,
+    pluginName: string,
     manifestUrl: string,
   ): Promise<[PluginManifest, string]> {
     try {
@@ -663,7 +708,9 @@ export class PluginController extends EventEmitter {
 
       return [manifest, sourceCode];
     } catch (err) {
-      throw new Error(`Problem fetching plugin "${name}": ${err.message}`);
+      throw new Error(
+        `Problem fetching plugin "${pluginName}": ${err.message}`,
+      );
     }
   }
 
@@ -676,12 +723,15 @@ export class PluginController extends EventEmitter {
    */
   async authorize(pluginName: string): Promise<string[]> {
     console.log(`Authorizing plugin: ${pluginName}`);
-    const pluginsState = this.store.getState().plugins;
+    const pluginsState = this.state.plugins;
     const plugin = pluginsState[pluginName];
     const { initialPermissions } = plugin;
 
     // Don't prompt if there are no permissions requested:
     if (Object.keys(initialPermissions).length === 0) {
+      return [];
+    }
+    if (initialPermissions === null) {
       return [];
     }
 
@@ -717,11 +767,11 @@ export class PluginController extends EventEmitter {
   }
 
   private async _startPluginInWorker(pluginName: string, sourceCode: string) {
-    const workerId = await this.workerController.createPluginWorker({
+    const workerId = await this._createPluginWorker({
       hostname: pluginName,
     });
     this._createPluginHooks(pluginName, workerId);
-    await this.workerController.startPlugin(workerId, {
+    await this._startPlugin(workerId, {
       pluginName,
       sourceCode,
     });
@@ -742,7 +792,7 @@ export class PluginController extends EventEmitter {
       origin: string,
       request: Record<string, unknown>,
     ) => {
-      return await this.workerController.command(workerId, {
+      return await this._command(workerId, {
         id: nanoid(),
         jsonrpc: '2.0',
         method: 'pluginRpc',
@@ -774,7 +824,7 @@ export class PluginController extends EventEmitter {
     property: keyof Plugin,
     value: unknown,
   ) {
-    const { plugins } = this.store.getState();
+    const { plugins } = this.state;
     const plugin = plugins[pluginName];
     const newPlugin = { ...plugin, [property]: value };
     const newPlugins = { ...plugins, [pluginName]: newPlugin };
