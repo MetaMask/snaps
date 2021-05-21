@@ -20,7 +20,7 @@
     "build:prep": "mkdir -p dist && rm -rf dist/*",
     "lint": "eslint . --ext ts,js",
     "lint:fix": "yarn lint --fix",
-    "prepare": "yarn lint && yarn build"
+    "prepublishOnly": "yarn lint && yarn build"
   },
   "dependencies": {
     "@metamask/object-multiplex": "^1.1.0",
