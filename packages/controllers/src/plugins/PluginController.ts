@@ -2,7 +2,6 @@
 import { ObservableStore } from '@metamask/obs-store';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { IOcapLdCapability } from 'rpc-cap/dist/src/@types/ocap-ld';
-import { IRequestedPermissions } from 'rpc-cap/dist/src/@types';
 import { nanoid } from 'nanoid';
 import {
   BaseController,
@@ -24,7 +23,7 @@ const SERIALIZABLE_PLUGIN_PROPERTIES = new Set([
 ]);
 
 type InititalPermissions = {
-  [permission: string]: IOcapLdCapability;
+  [permission: string]: Json;
 };
 
 export interface SerializablePlugin {
@@ -57,7 +56,7 @@ type RemoveAllPermissionsFunction = (pluginIds: string[]) => void;
 type CloseAllConnectionsFunction = (domain: string) => void;
 type RequestPermissionsFunction = (
   domain: string,
-  requestedPermissions: IRequestedPermissions,
+  requestedPermissions: InititalPermissions,
 ) => Promise<IOcapLdCapability[]>;
 type HasPermissionFunction = (
   domain: string,
@@ -208,6 +207,7 @@ export class PluginController extends BaseController<
     this._requestPermissions = requestPermissions;
     this._getPermissions = getPermissions;
     this._hasPermission = hasPermission;
+
     this._terminateWorkerOf = terminateWorkerOf;
     this._terminateAll = terminateAll;
     this._createPluginWorker = createPluginWorker;
@@ -222,12 +222,12 @@ export class PluginController extends BaseController<
    * Updates the state of this controller.
    */
   updateState(newState: Partial<PluginControllerState>) {
-    this.update((state) => {
+    this.update((state: any) => {
       if (newState.pluginStates) {
-        state.pluginStates = newState.pluginStates as any;
+        state.pluginStates = newState.pluginStates;
       }
       if (newState.plugins) {
-        state.plugins = newState.plugins as any;
+        state.plugins = newState.plugins;
       }
     });
     this.memStore.updateState(this._filterMemStoreState(newState));
@@ -528,7 +528,7 @@ export class PluginController extends BaseController<
    */
   async installPlugins(
     origin: string,
-    requestedPlugins: IRequestedPermissions,
+    requestedPlugins: InititalPermissions,
   ): Promise<InstallPluginsResult> {
     const result: InstallPluginsResult = {};
 

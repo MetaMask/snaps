@@ -23,7 +23,7 @@
     "prepare": "yarn lint && yarn build"
   },
   "dependencies": {
-    "@metamask/controllers": "^8.0.0",
+    "@metamask/controllers": "^9.1.0",
     "@metamask/object-multiplex": "^1.1.0",
     "@metamask/obs-store": "^6.0.2",
     "@metamask/post-message-stream": "4.0.0",

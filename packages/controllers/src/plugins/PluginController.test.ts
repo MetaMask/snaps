@@ -31,8 +31,6 @@ describe('PluginController Controller', () => {
       closeAllConnections: jest.fn(),
       messenger: new ControllerMessenger<any, any>().getRestricted({
         name: 'PluginController',
-        allowedActions: [],
-        allowedEvents: [],
       }),
       state: {
         pluginStates: {},
@@ -73,8 +71,6 @@ describe('PluginController Controller', () => {
       closeAllConnections: jest.fn(),
       messenger: new ControllerMessenger<any, any>().getRestricted({
         name: 'PluginController',
-        allowedActions: [],
-        allowedEvents: [],
       }),
       state: {
         pluginStates: {},
