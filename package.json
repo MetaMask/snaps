@@ -10,7 +10,6 @@
   "scripts": {
     "link-packages": "./scripts/link-packages.sh",
     "version-bump": "./scripts/version-bump.sh",
-    "prepare": "lerna run prepare",
     "publish-all": "lerna publish from-package",
     "lint:eslint": "eslint . --ext js,ts",
     "lint:json": "prettier '**/*.json' --ignore-path .gitignore",
