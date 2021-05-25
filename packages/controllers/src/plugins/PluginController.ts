@@ -3,10 +3,7 @@ import { ObservableStore } from '@metamask/obs-store';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { IOcapLdCapability } from 'rpc-cap/dist/src/@types/ocap-ld';
 import { nanoid } from 'nanoid';
-import {
-  BaseController,
-  StateMetadata,
-} from '@metamask/controllers/dist/BaseControllerV2';
+import { BaseController } from '@metamask/controllers/dist/BaseControllerV2';
 
 import { RestrictedControllerMessenger } from '@metamask/controllers/dist/ControllerMessenger';
 import { Json, JsonRpcRequest } from 'json-rpc-engine';
@@ -94,7 +91,6 @@ export interface PluginControllerMemState {
 
 interface PluginControllerArgs {
   messenger: RestrictedControllerMessenger<string, any, any, string, string>;
-  metadata: StateMetadata<PluginControllerState>;
   state: PluginControllerState;
   removeAllPermissionsFor: RemoveAllPermissionsFunction;
   closeAllConnections: CloseAllConnectionsFunction;
@@ -185,12 +181,20 @@ export class PluginController extends BaseController<
     startPlugin,
     command,
     messenger,
-    metadata,
     state,
   }: PluginControllerArgs) {
     super({
       messenger,
-      metadata,
+      metadata: {
+        pluginStates: {
+          persist: false,
+          anonymous: false,
+        },
+        plugins: {
+          persist: false,
+          anonymous: false,
+        },
+      },
       name,
       state: { ...defaultState, ...state },
     });

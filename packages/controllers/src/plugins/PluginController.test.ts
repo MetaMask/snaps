@@ -36,16 +36,6 @@ describe('PluginController Controller', () => {
         pluginStates: {},
         plugins: {},
       },
-      metadata: {
-        pluginStates: {
-          persist: false,
-          anonymous: false,
-        },
-        plugins: {
-          persist: false,
-          anonymous: false,
-        },
-      },
     });
     expect(pluginController).toBeDefined();
   });
@@ -76,22 +66,13 @@ describe('PluginController Controller', () => {
         pluginStates: {},
         plugins: {},
       },
-      metadata: {
-        pluginStates: {
-          persist: false,
-          anonymous: false,
-        },
-        plugins: {
-          persist: false,
-          anonymous: false,
-        },
-      },
     });
     const plugin = await pluginController.add({
       name: 'TestPlugin',
       sourceCode: `
         wallet.registerRpcMessageHandler(async (origin, request) => {
           const {method, params, id} = request;
+          wallet.request({method: 'setState'})
           return method + id;
         });
       `,
