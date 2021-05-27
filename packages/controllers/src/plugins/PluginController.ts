@@ -191,11 +191,11 @@ export class PluginController extends BaseController<
           anonymous: false,
         },
         pluginStates: {
-          persist: false,
+          persist: true,
           anonymous: false,
         },
         plugins: {
-          persist: false,
+          persist: true,
           anonymous: false,
         },
       },
