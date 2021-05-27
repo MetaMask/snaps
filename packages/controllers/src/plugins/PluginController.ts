@@ -3,9 +3,10 @@ import { ObservableStore } from '@metamask/obs-store';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { IOcapLdCapability } from 'rpc-cap/dist/src/@types/ocap-ld';
 import { nanoid } from 'nanoid';
-import { BaseControllerV2: BaseController, RestrictedControllerMessenger } from '@metamask/controllers';
-
-import { RestrictedControllerMessenger } from '@metamask/controllers/dist/ControllerMessenger';
+import {
+  BaseControllerV2 as BaseController,
+  RestrictedControllerMessenger,
+} from '@metamask/controllers';
 import { Json, JsonRpcRequest } from 'json-rpc-engine';
 import { PluginData } from '@mm-snap/types';
 import { PluginWorkerMetadata } from '../workers/WorkerController';
@@ -19,12 +20,12 @@ const SERIALIZABLE_PLUGIN_PROPERTIES = new Set([
   'permissionName',
 ]);
 
-type InititalPermissions = {
+type RequestedPluginPermissions = {
   [permission: string]: Json;
 };
 
 export interface SerializablePlugin {
-  initialPermissions: InititalPermissions;
+  initialPermissions: RequestedPluginPermissions;
   name: string;
   permissionName: string;
   version: string;
@@ -53,7 +54,7 @@ type RemoveAllPermissionsFunction = (pluginIds: string[]) => void;
 type CloseAllConnectionsFunction = (domain: string) => void;
 type RequestPermissionsFunction = (
   domain: string,
-  requestedPermissions: InititalPermissions,
+  requestedPermissions: RequestedPluginPermissions,
 ) => Promise<IOcapLdCapability[]>;
 type HasPermissionFunction = (
   domain: string,
@@ -115,7 +116,7 @@ interface AddPluginByFetchingArgs extends AddPluginBase {
 // The parts of a plugin package.json file that we care about
 interface PluginManifest {
   version: string;
-  web3Wallet: { initialPermissions: InititalPermissions };
+  web3Wallet: { initialPermissions: RequestedPluginPermissions };
 }
 
 interface AddPluginDirectlyArgs extends AddPluginBase {
@@ -532,7 +533,7 @@ export class PluginController extends BaseController<
    */
   async installPlugins(
     origin: string,
-    requestedPlugins: InititalPermissions,
+    requestedPlugins: RequestedPluginPermissions,
   ): Promise<InstallPluginsResult> {
     const result: InstallPluginsResult = {};
 
