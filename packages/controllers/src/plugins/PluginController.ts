@@ -3,7 +3,7 @@ import { ObservableStore } from '@metamask/obs-store';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { IOcapLdCapability } from 'rpc-cap/dist/src/@types/ocap-ld';
 import { nanoid } from 'nanoid';
-import { BaseController } from '@metamask/controllers/dist/BaseControllerV2';
+import { BaseControllerV2: BaseController, RestrictedControllerMessenger } from '@metamask/controllers';
 
 import { RestrictedControllerMessenger } from '@metamask/controllers/dist/ControllerMessenger';
 import { Json, JsonRpcRequest } from 'json-rpc-engine';
