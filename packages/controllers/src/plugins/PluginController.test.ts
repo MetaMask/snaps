@@ -33,6 +33,7 @@ describe('PluginController Controller', () => {
         name: 'PluginController',
       }),
       state: {
+        inlinePluginIsRunning: false,
         pluginStates: {},
         plugins: {},
       },
@@ -63,6 +64,7 @@ describe('PluginController Controller', () => {
         name: 'PluginController',
       }),
       state: {
+        inlinePluginIsRunning: false,
         pluginStates: {},
         plugins: {},
       },

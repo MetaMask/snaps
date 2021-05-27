@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
-import { ObservableStore } from '@metamask/obs-store';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { IOcapLdCapability } from 'rpc-cap/dist/src/@types/ocap-ld';
 import { nanoid } from 'nanoid';
@@ -76,6 +75,7 @@ type StartPlugin = (
 type StoredPlugins = Record<string, Plugin>;
 
 export type PluginControllerState = {
+  inlinePluginIsRunning: boolean;
   plugins: StoredPlugins;
   pluginStates: {
     [id: string]: Json;
@@ -127,6 +127,7 @@ interface AddPluginDirectlyArgs extends AddPluginBase {
 type AddPluginArgs = AddPluginByFetchingArgs | AddPluginDirectlyArgs;
 
 const defaultState: PluginControllerState = {
+  inlinePluginIsRunning: false,
   plugins: {},
   pluginStates: {},
 };
@@ -144,8 +145,6 @@ export class PluginController extends BaseController<
   string,
   PluginControllerState
 > {
-  public memStore: ObservableStore<PluginControllerMemState>;
-
   private _removeAllPermissionsFor: RemoveAllPermissionsFunction;
 
   private _pluginRpcHooks: Map<string, PluginRpcHook>;
@@ -187,6 +186,10 @@ export class PluginController extends BaseController<
     super({
       messenger,
       metadata: {
+        inlinePluginIsRunning: {
+          persist: false,
+          anonymous: false,
+        },
         pluginStates: {
           persist: false,
           anonymous: false,
@@ -200,12 +203,11 @@ export class PluginController extends BaseController<
       state: { ...defaultState, ...state },
     });
 
-    this.memStore = new ObservableStore({
-      inlinePluginIsRunning: false,
-      plugins: {},
-      pluginStates: {},
+    this.update((_state: any) => {
+      _state.inlinePluginIsRunning = state.inlinePluginIsRunning;
+      _state.plugins = state.plugins;
+      _state.pluginStates = state.pluginStates;
     });
-    this.updateState(state);
 
     this._removeAllPermissionsFor = removeAllPermissionsFor;
     this._closeAllConnections = closeAllConnections;
@@ -221,49 +223,6 @@ export class PluginController extends BaseController<
 
     this._pluginRpcHooks = new Map();
     this._pluginsBeingAdded = new Map();
-  }
-
-  /**
-   * Updates the state of this controller.
-   */
-  updateState(newState: Partial<PluginControllerState>) {
-    this.update((state: any) => {
-      if (newState.pluginStates) {
-        state.pluginStates = newState.pluginStates;
-      }
-      if (newState.plugins) {
-        state.plugins = newState.plugins;
-      }
-    });
-    this.memStore.updateState(this._filterMemStoreState(newState));
-  }
-
-  /**
-   * Takes in a full state object and filters out the parts that we don't want
-   * to keep in memory. Currently just the sourceCode property of any plugins.
-   */
-  private _filterMemStoreState(
-    newState: Partial<PluginControllerState>,
-  ): Partial<PluginControllerMemState> {
-    const memState: Partial<PluginControllerMemState> = {
-      ...newState,
-    };
-
-    if (newState.plugins) {
-      // Copy existing plugins to the new memState
-      memState.plugins = this.memStore.getState().plugins || {};
-
-      // Remove sourceCode from updated memState plugin objects
-      Object.keys(newState.plugins).forEach((pluginName) => {
-        const plugin = {
-          ...(newState as PluginControllerState).plugins[pluginName],
-        };
-        delete (plugin as Partial<Plugin>).sourceCode;
-        (memState as PluginControllerMemState).plugins[pluginName] = plugin;
-      });
-    }
-
-    return memState;
   }
 
   /**
@@ -420,13 +379,8 @@ export class PluginController extends BaseController<
     pluginName: string,
     newPluginState: Json,
   ): Promise<void> {
-    const newPluginStates = {
-      ...this.state.pluginStates,
-      [pluginName]: newPluginState,
-    };
-
-    this.updateState({
-      pluginStates: newPluginStates,
+    this.update((state: any) => {
+      state[pluginName] = newPluginState;
     });
   }
 
@@ -447,17 +401,15 @@ export class PluginController extends BaseController<
   clearState() {
     this._pluginRpcHooks.clear();
     const pluginNames = Object.keys(this.state.plugins);
-    this.updateState({
-      plugins: {},
-      pluginStates: {},
-    });
     pluginNames.forEach((pluginName) => {
       this._closeAllConnections(pluginName);
     });
     this._terminateAll();
     this._removeAllPermissionsFor(pluginNames);
-    this.memStore.updateState({
-      inlinePluginIsRunning: false,
+    this.update((state: any) => {
+      state.inlinePluginIsRunning = false;
+      state.plugins = {};
+      state.pluginStates = {};
     });
   }
 
@@ -492,9 +444,9 @@ export class PluginController extends BaseController<
     });
     this._removeAllPermissionsFor(pluginNames);
 
-    this.updateState({
-      plugins: newPlugins,
-      pluginStates: newPluginStates,
+    this.update((state: any) => {
+      state.plugins = newPlugins;
+      state.pluginStates = newPluginStates;
     });
   }
 
@@ -677,11 +629,8 @@ export class PluginController extends BaseController<
     }
 
     // store the plugin back in state
-    this.updateState({
-      plugins: {
-        ...pluginsState,
-        [pluginName]: plugin,
-      },
+    this.update((state: any) => {
+      state.plugins[pluginName] = plugin;
     });
 
     return plugin;
@@ -756,8 +705,8 @@ export class PluginController extends BaseController<
    */
   runInlinePlugin(inlinePluginName: keyof typeof INLINE_PLUGINS = 'IDLE') {
     this._startPluginInWorker('inlinePlugin', INLINE_PLUGINS[inlinePluginName]);
-    this.memStore.updateState({
-      inlinePluginIsRunning: true,
+    this.update((state: any) => {
+      state.inlinePluginIsRunning = true;
     });
   }
 
@@ -765,8 +714,8 @@ export class PluginController extends BaseController<
    * Test method.
    */
   removeInlinePlugin() {
-    this.memStore.updateState({
-      inlinePluginIsRunning: false,
+    this.update((state: any) => {
+      state.inlinePluginIsRunning = false;
     });
     this.removePlugin('inlinePlugin');
   }
@@ -833,8 +782,8 @@ export class PluginController extends BaseController<
     const plugin = plugins[pluginName];
     const newPlugin = { ...plugin, [property]: value };
     const newPlugins = { ...plugins, [pluginName]: newPlugin };
-    this.updateState({
-      plugins: newPlugins,
+    this.update((state: any) => {
+      state.plugins = newPlugins;
     });
   }
 }
