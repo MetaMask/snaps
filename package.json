@@ -22,7 +22,8 @@
     "build:post-tsc": "yarn workspace @mm-snap/workers run build:post-tsc",
     "build": "yarn build:tsc && yarn build:post-tsc",
     "build:clean": "yarn workspaces run build:prep && yarn build",
-    "test": "yarn workspaces run test"
+    "test": "yarn workspaces run test",
+    "test:ci": "./scripts/test-ci.sh"
   },
   "devDependencies": {
     "@jest-runner/electron": "^3.0.1",
