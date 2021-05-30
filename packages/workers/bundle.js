@@ -9,7 +9,7 @@ if (process.argv.length > 2) {
 
 const browserifyOpts = {
   debug: false,
-  entries: ['dist-temp/PluginWorker.js'],
+  entries: ['dist/_PluginWorker.js'],
   plugin: 'tinyify',
 };
 

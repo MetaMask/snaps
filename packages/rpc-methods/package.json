@@ -3,6 +3,7 @@
   "version": "0.0.5",
   "description": "MetaMask Snap RPC method implementations.",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist/"
   ],
@@ -20,7 +21,8 @@
     "test": "echo \"@mm-snap/rpc-methods has no tests.\"",
     "lint": "eslint . --ext ts,js",
     "lint:fix": "yarn lint --fix",
-    "build": "yarn rimraf dist/* && tsc --project .",
+    "build": "yarn build:prep && tsc --project tsconfig.local.json",
+    "build:prep": "yarn rimraf dist/*",
     "prepublishOnly": "yarn lint && yarn build"
   },
   "dependencies": {

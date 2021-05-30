@@ -1,13 +1,9 @@
 {
+  "extends": "../../tsconfig.packages.json",
   "compilerOptions": {
-    "declaration": true,
-    "esModuleInterop": true,
-    "module": "CommonJS",
-    "moduleResolution": "node",
-    "outDir": "dist-temp",
-    "sourceMap": true,
-    "strict": true,
-    "target": "ES2017",
+    "composite": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
     "typeRoots": ["./node_modules/@types"]
   },
   "include": ["./src"]

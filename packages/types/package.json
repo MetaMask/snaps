@@ -3,6 +3,7 @@
   "version": "0.0.5",
   "description": "Shared types for @mm-snap packages.",
   "main": "index.d.ts",
+  "types": "index.d.ts",
   "files": [
     "index.d.ts"
   ],
@@ -18,9 +19,11 @@
   },
   "scripts": {
     "build": "echo \"@mm-snap/types has no build command.\"",
-    "test": "yarn lint",
+    "build:prep": "echo \"@mm-snap/types has no build:prep command.\"",
+    "test": "echo \"@mm-snap/types has no tests.\"",
     "lint": "eslint . --ext ts,js",
-    "lint:fix": "yarn lint --fix"
+    "lint:fix": "yarn lint --fix",
+    "prepublishOnly": "yarn lint"
   },
   "devDependencies": {
     "@metamask/inpage-provider": "^8.0.4"

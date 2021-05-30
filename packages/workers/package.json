@@ -3,6 +3,7 @@
   "version": "0.0.5",
   "description": "Snap Web Workers for the MetaMask extension.",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist/"
   ],
@@ -20,10 +21,10 @@
     "test": "echo \"@mm-snap/workers has no tests.\"",
     "lint": "eslint . --ext ts,js",
     "lint:fix": "yarn lint --fix",
-    "build": "yarn build:prep && yarn build:ts && yarn build:bundle",
-    "build:ts": "tsc --project . && cp dist-temp/* dist && rm dist/PluginWorker*",
-    "build:bundle": "node bundle.js",
-    "build:prep": "yarn rimraf dist/* dist-temp/*",
+    "build": "yarn build:prep && yarn build:tsc && yarn build:post-tsc",
+    "build:tsc": "tsc --project tsconfig.local.json",
+    "build:post-tsc": "mv dist/PluginWorker.js dist/_PluginWorker.js && rm dist/PluginWorker* && node bundle.js && rm dist/_PluginWorker.js",
+    "build:prep": "yarn rimraf dist/*",
     "prepublishOnly": "yarn lint && yarn build"
   },
   "devDependencies": {

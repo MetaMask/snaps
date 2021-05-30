@@ -1,17 +1,14 @@
 {
+  "extends": "../../tsconfig.packages.json",
+  "references": [{ "path": "../workers" }],
   "compilerOptions": {
-    "declaration": true,
-    "esModuleInterop": true,
-    "module": "CommonJS",
-    "moduleResolution": "node",
+    "composite": true,
     "outDir": "dist",
-    "sourceMap": true,
-    "strict": true,
-    "target": "ES2017",
+    "rootDir": "src",
     "typeRoots": [
+      "../../node_modules/@types",
       "./node_modules/@types",
-      "./types",
-      "../../node_modules/@types"
+      "./types"
     ]
   },
   "include": ["./src"],
