@@ -6,6 +6,9 @@
   "files": [
     "index.d.ts"
   ],
+  "engines": {
+    "node": ">=12"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps-skunkworks.git"

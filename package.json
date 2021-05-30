@@ -8,6 +8,9 @@
     "type": "git",
     "url": "https://github.com/MetaMask/snaps-skunkworks.git"
   },
+  "engines": {
+    "node": ">=12"
+  },
   "scripts": {
     "setup": "yarn install && yarn allow-scripts",
     "link-packages": "./scripts/link-packages.sh",

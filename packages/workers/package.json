@@ -10,7 +10,7 @@
     "access": "public"
   },
   "engines": {
-    "node": ">=14.15.1"
+    "node": ">=12"
   },
   "repository": {
     "type": "git",
