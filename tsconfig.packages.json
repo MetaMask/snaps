@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "esModuleInterop": true,
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "strict": true,
+    "target": "ES2017",
+    "typeRoots": ["./node_modules/@types"]
+  }
+}
