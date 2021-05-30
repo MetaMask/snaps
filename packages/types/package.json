@@ -6,12 +6,15 @@
   "files": [
     "index.d.ts"
   ],
-  "repository": "git@github.com:MetaMask/snaps-skunkworks.git",
-  "author": "Erik Marks <rekmarks@protonmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps-skunkworks.git"
+  },
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
+    "build": "echo \"@mm-snap/types has no build command.\"",
     "test": "yarn lint",
     "lint": "eslint . --ext ts,js",
     "lint:fix": "yarn lint --fix"
