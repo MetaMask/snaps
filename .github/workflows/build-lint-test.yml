@@ -1,0 +1,33 @@
+name: Build, Lint, and Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-lint-test:
+    name: Build and Test
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: yarn install --frozen-lockfile
+      - run: yarn allow-scripts
+      - run: yarn build
+      - run: yarn lint
+      - run: yarn test:ci
+
+  all-jobs-pass:
+    name: All jobs pass
+    runs-on: ubuntu-20.04
+    needs:
+      - build-lint-test
+    steps:
+      - run: echo "Great success!"

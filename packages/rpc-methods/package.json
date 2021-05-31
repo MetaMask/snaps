@@ -3,22 +3,27 @@
   "version": "0.0.5",
   "description": "MetaMask Snap RPC method implementations.",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist/"
   ],
-  "repository": "git@github.com:MetaMask/snaps-skunkworks.git",
-  "author": "Erik Marks <rekmarks@protonmail.com>",
+  "engines": {
+    "node": ">=12"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps-skunkworks.git"
+  },
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\"",
+    "test": "echo \"@mm-snap/rpc-methods has no tests.\"",
     "lint": "eslint . --ext ts,js",
     "lint:fix": "yarn lint --fix",
-    "build": "yarn build:prep && yarn build:ts",
-    "build:ts": "tsc --project .",
-    "build:prep": "mkdir -p dist && rm -rf dist/*",
-    "prepare": "yarn lint && yarn build"
+    "build": "yarn build:prep && tsc --project tsconfig.local.json",
+    "build:prep": "yarn rimraf dist/*",
+    "prepublishOnly": "yarn lint && yarn build"
   },
   "dependencies": {
     "@metamask/key-tree": "^2.0.1",

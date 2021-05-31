@@ -3,24 +3,27 @@
   "version": "0.0.5",
   "description": "Controllers for MetaMask Snaps.",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist/"
   ],
-  "author": "Erik Marks <rekmarks@protonmail.com>",
   "publishConfig": {
     "access": "public"
   },
   "engines": {
-    "node": ">=14.15.1"
+    "node": ">=12"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps-skunkworks.git"
   },
   "scripts": {
     "test": "jest",
-    "build": "yarn build:prep && yarn build:ts",
-    "build:ts": "tsc --project .",
-    "build:prep": "mkdir -p dist && rm -rf dist/*",
+    "build": "yarn build:prep && tsc --project tsconfig.local.json",
+    "build:prep": "yarn rimraf dist/*",
     "lint": "eslint . --ext ts,js",
     "lint:fix": "yarn lint --fix",
-    "prepare": "yarn lint && yarn build"
+    "prepublishOnly": "yarn lint && yarn build"
   },
   "dependencies": {
     "@metamask/controllers": "^9.1.0",
