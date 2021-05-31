@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/consistent-type-definitions */
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { IOcapLdCapability } from 'rpc-cap/dist/src/@types/ocap-ld';
 import { nanoid } from 'nanoid';
