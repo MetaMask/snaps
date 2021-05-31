@@ -40,6 +40,7 @@ describe('PluginController Controller', () => {
     });
     expect(pluginController).toBeDefined();
   });
+
   it('can add a plugin and use its JSON-RPC api', async () => {
     const workerController = new WorkerController({
       setupWorkerConnection: jest.fn(),
