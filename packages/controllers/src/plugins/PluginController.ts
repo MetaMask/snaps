@@ -72,23 +72,16 @@ type StartPlugin = (
   pluginData: PluginData,
 ) => Promise<unknown>;
 
-type StoredPlugins = Record<string, Plugin>;
+type PluginId = string;
+type StoredPlugins = Record<PluginId, Plugin>;
 
 export type PluginControllerState = {
   inlinePluginIsRunning: boolean;
   plugins: StoredPlugins;
   pluginStates: {
-    [id: string]: Json;
+    [PluginId: string]: Json;
   };
 };
-
-export interface PluginControllerMemState {
-  inlinePluginIsRunning: boolean;
-  plugins: Record<string, SerializablePlugin>;
-  pluginStates: {
-    [id: string]: Json;
-  };
-}
 
 interface PluginControllerArgs {
   messenger: RestrictedControllerMessenger<string, any, any, string, string>;
@@ -434,20 +427,15 @@ export class PluginController extends BaseController<
       throw new Error('Expected array of plugin names.');
     }
 
-    const newPlugins = { ...this.state.plugins };
-    const newPluginStates = { ...this.state.pluginStates };
-
-    pluginNames.forEach((pluginName) => {
-      this._stopPlugin(pluginName, false);
-      delete newPlugins[pluginName];
-      delete newPluginStates[pluginName];
-    });
-    this._removeAllPermissionsFor(pluginNames);
-
     this.update((state: any) => {
-      state.plugins = newPlugins;
-      state.pluginStates = newPluginStates;
+      pluginNames.forEach((pluginName) => {
+        this._stopPlugin(pluginName, false);
+        delete state.plugins[pluginName];
+        delete state.pluginStates[pluginName];
+      });
     });
+
+    this._removeAllPermissionsFor(pluginNames);
   }
 
   /**
