@@ -16,7 +16,7 @@ import {
 
 export type SetupWorkerConnection = (metadata: any, stream: Duplex) => void;
 
-interface PluginWorkerMetadata {
+export interface PluginWorkerMetadata {
   hostname: string;
 }
 interface WorkerControllerArgs {
