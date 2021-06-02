@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { ControllerMessenger } from '@metamask/controllers/dist/ControllerMessenger';
-import { WorkerController } from '../workers/WorkerController';
+import { WorkerExecutionEnvironment } from '../services/WorkerExecutionEnvironment';
 import { PluginController } from './PluginController';
 
 const workerCode = fs.readFileSync(
@@ -10,20 +10,26 @@ const workerCode = fs.readFileSync(
 
 describe('PluginController Controller', () => {
   it('can create a worker and plugin controller', async () => {
-    const workerController = new WorkerController({
+    const workerExecutionEnvironment = new WorkerExecutionEnvironment({
       setupWorkerConnection: jest.fn(),
       workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
     });
     const pluginController = new PluginController({
-      command: workerController.command.bind(workerController),
-      createPluginWorker: workerController.createPluginWorker.bind(
-        workerController,
+      command: workerExecutionEnvironment.command.bind(
+        workerExecutionEnvironment,
       ),
-      terminateAll: workerController.terminateAll.bind(workerController),
-      terminateWorkerOf: workerController.terminateWorkerOf.bind(
-        workerController,
+      createPluginEnvironment: workerExecutionEnvironment.createPluginEnvironment.bind(
+        workerExecutionEnvironment,
       ),
-      startPlugin: workerController.startPlugin.bind(workerController),
+      terminateAll: workerExecutionEnvironment.terminateAllPlugins.bind(
+        workerExecutionEnvironment,
+      ),
+      terminatePlugin: workerExecutionEnvironment.terminatePlugin.bind(
+        workerExecutionEnvironment,
+      ),
+      startPlugin: workerExecutionEnvironment.startPlugin.bind(
+        workerExecutionEnvironment,
+      ),
       removeAllPermissionsFor: jest.fn(),
       getPermissions: jest.fn(),
       hasPermission: jest.fn(),
@@ -42,20 +48,26 @@ describe('PluginController Controller', () => {
   });
 
   it('can add a plugin and use its JSON-RPC api', async () => {
-    const workerController = new WorkerController({
+    const workerExecutionEnvironment = new WorkerExecutionEnvironment({
       setupWorkerConnection: jest.fn(),
       workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
     });
     const pluginController = new PluginController({
-      command: workerController.command.bind(workerController),
-      createPluginWorker: workerController.createPluginWorker.bind(
-        workerController,
+      command: workerExecutionEnvironment.command.bind(
+        workerExecutionEnvironment,
       ),
-      terminateAll: workerController.terminateAll.bind(workerController),
-      terminateWorkerOf: workerController.terminateWorkerOf.bind(
-        workerController,
+      createPluginEnvironment: workerExecutionEnvironment.createPluginEnvironment.bind(
+        workerExecutionEnvironment,
       ),
-      startPlugin: workerController.startPlugin.bind(workerController),
+      terminateAll: workerExecutionEnvironment.terminateAllPlugins.bind(
+        workerExecutionEnvironment,
+      ),
+      terminatePlugin: workerExecutionEnvironment.terminatePlugin.bind(
+        workerExecutionEnvironment,
+      ),
+      startPlugin: workerExecutionEnvironment.startPlugin.bind(
+        workerExecutionEnvironment,
+      ),
       removeAllPermissionsFor: jest.fn(),
       getPermissions: jest.fn(),
       hasPermission: jest.fn(),

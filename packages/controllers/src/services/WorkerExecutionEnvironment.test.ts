@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { WorkerController } from './WorkerController';
+import { WorkerExecutionEnvironment } from './WorkerExecutionEnvironment';
 
 const workerCode = fs.readFileSync(
   require.resolve('@mm-snap/workers/dist/PluginWorker.js'),
@@ -8,7 +8,7 @@ const workerCode = fs.readFileSync(
 
 describe('Worker Controller', () => {
   it('can boot', async () => {
-    const workerController = new WorkerController({
+    const workerController = new WorkerExecutionEnvironment({
       setupWorkerConnection: () => {
         // do nothing
       },
@@ -17,30 +17,30 @@ describe('Worker Controller', () => {
     expect(workerController).toBeDefined();
   });
   it('can create a plugin worker and get the workerId back', async () => {
-    const workerController = new WorkerController({
+    const workerController = new WorkerExecutionEnvironment({
       setupWorkerConnection: () => {
         // do nothing
       },
       workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
     });
     expect(
-      typeof (await workerController.createPluginWorker({
+      typeof (await workerController.createPluginEnvironment({
         hostname: 'foobarbaz',
       })),
     ).toEqual('string');
   });
   it('can create a plugin worker and start the plugin', async () => {
-    const workerController = new WorkerController({
+    const workerController = new WorkerExecutionEnvironment({
       setupWorkerConnection: () => {
         // do nothing
       },
       workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
     });
     const pluginName = 'foo.bar.baz';
-    const workerId = await workerController.createPluginWorker({
+    await workerController.createPluginEnvironment({
       hostname: pluginName,
     });
-    const response = await workerController.startPlugin(workerId, {
+    const response = await workerController.startPlugin({
       pluginName,
       sourceCode: `
         console.log('foo');

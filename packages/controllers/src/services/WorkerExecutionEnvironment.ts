@@ -13,6 +13,7 @@ import {
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from 'json-rpc-engine';
+import { PluginExecutionEnvironmentService } from '../services/PluginExecutionEnvironmentService';
 
 export type SetupWorkerConnection = (metadata: any, stream: Duplex) => void;
 
@@ -37,7 +38,9 @@ interface WorkerWrapper {
   worker: Worker;
 }
 
-export class WorkerController extends SafeEventEmitter {
+export class WorkerExecutionEnvironment
+  extends SafeEventEmitter
+  implements PluginExecutionEnvironmentService {
   public store: ObservableStore<{ workers: Record<string, WorkerWrapper> }>;
 
   private workerUrl: URL;
@@ -81,9 +84,14 @@ export class WorkerController extends SafeEventEmitter {
   }
 
   async command(
-    workerId: string,
+    pluginName: string,
     message: JsonRpcRequest<unknown>,
   ): Promise<unknown> {
+    const workerId = this.pluginToWorkerMap.get(pluginName);
+    if (workerId === undefined) {
+      throw new Error(`No worker found. workerId: ${workerId}`);
+    }
+
     if (typeof message !== 'object') {
       throw new Error('Must send object.');
     }
@@ -103,13 +111,13 @@ export class WorkerController extends SafeEventEmitter {
     return response.result;
   }
 
-  terminateAll(): void {
+  terminateAllPlugins(): void {
     for (const workerId of this.workers.keys()) {
       this.terminate(workerId);
     }
   }
 
-  terminateWorkerOf(pluginName: string): void {
+  terminatePlugin(pluginName: string): void {
     const workerId = this.pluginToWorkerMap.get(pluginName);
     workerId && this.terminate(workerId);
   }
@@ -134,18 +142,18 @@ export class WorkerController extends SafeEventEmitter {
     console.log(`worker:${workerId} terminated`);
   }
 
-  async startPlugin(
-    workerId: string,
-    pluginData: PluginData,
-  ): Promise<unknown> {
-    const _workerId: string = workerId || this.workers.keys().next()?.value();
+  async startPlugin(pluginData: PluginData): Promise<unknown> {
+    // find worker by pluginName or use an existing workerId;
+    const _workerId =
+      this.pluginToWorkerMap.get(pluginData.pluginName) ||
+      this.workers.keys().next()?.value;
     if (!_workerId) {
       throw new Error('No workers available.');
     }
 
-    this._mapPluginAndWorker(pluginData.pluginName, workerId);
+    this._mapPluginAndWorker(pluginData.pluginName, _workerId);
 
-    return this.command(_workerId, {
+    return this.command(pluginData.pluginName, {
       jsonrpc: '2.0',
       method: 'installPlugin',
       params: pluginData,
@@ -156,7 +164,9 @@ export class WorkerController extends SafeEventEmitter {
   /**
    * @returns The ID of the newly created worker.
    */
-  async createPluginWorker(metadata: PluginWorkerMetadata): Promise<string> {
+  async createPluginEnvironment(
+    metadata: PluginWorkerMetadata,
+  ): Promise<string> {
     return this._initWorker(metadata);
   }
 
@@ -210,11 +220,6 @@ export class WorkerController extends SafeEventEmitter {
       streams,
       rpcEngine,
       worker,
-    });
-    await this.command(workerId, {
-      jsonrpc: '2.0',
-      method: 'ping',
-      id: nanoid(),
     });
     return workerId;
   }

@@ -5,9 +5,14 @@ import {
   BaseControllerV2 as BaseController,
   RestrictedControllerMessenger,
 } from '@metamask/controllers';
-import { Json, JsonRpcRequest } from 'json-rpc-engine';
-import { PluginData } from '@mm-snap/types';
-import { PluginWorkerMetadata } from '../workers/WorkerController';
+import { Json } from 'json-rpc-engine';
+import {
+  Command,
+  CreatePluginEnvironment,
+  StartPlugin,
+  TerminateAll,
+  TerminatePlugin,
+} from '../services/PluginExecutionEnvironmentService';
 import { INLINE_PLUGINS } from './inlinePlugins';
 
 export const PLUGIN_PREFIX = 'wallet_plugin_';
@@ -59,18 +64,6 @@ type HasPermissionFunction = (
   permissionName: string,
 ) => boolean;
 type GetPermissionsFunction = (domain: string) => IOcapLdCapability[];
-type TerminateWorkerOf = (pluginName: string) => void;
-type Command = (
-  workerId: string,
-  message: JsonRpcRequest<unknown>,
-) => Promise<unknown>;
-type TerminateAll = () => void;
-type CreatePluginWorker = (metadate: PluginWorkerMetadata) => Promise<string>;
-type StartPlugin = (
-  workerId: string,
-  pluginData: PluginData,
-) => Promise<unknown>;
-
 type PluginId = string;
 type StoredPlugins = Record<PluginId, Plugin>;
 
@@ -90,10 +83,10 @@ interface PluginControllerArgs {
   requestPermissions: RequestPermissionsFunction;
   getPermissions: GetPermissionsFunction;
   hasPermission: HasPermissionFunction;
-  terminateWorkerOf: TerminateWorkerOf;
+  terminatePlugin: TerminatePlugin;
   command: Command;
   terminateAll: TerminateAll;
-  createPluginWorker: CreatePluginWorker;
+  createPluginEnvironment: CreatePluginEnvironment;
   startPlugin: StartPlugin;
 }
 
@@ -149,13 +142,13 @@ export class PluginController extends BaseController<
 
   private _hasPermission: HasPermissionFunction;
 
-  private _terminateWorkerOf: TerminateWorkerOf;
+  private _terminatePlugin: TerminatePlugin;
 
   private _command: Command;
 
   private _terminateAll: TerminateAll;
 
-  private _createPluginWorker: CreatePluginWorker;
+  private _createPluginEnvironment: CreatePluginEnvironment;
 
   private _startPlugin: StartPlugin;
 
@@ -166,10 +159,10 @@ export class PluginController extends BaseController<
     closeAllConnections,
     requestPermissions,
     getPermissions,
-    terminateWorkerOf,
+    terminatePlugin,
     terminateAll,
     hasPermission,
-    createPluginWorker,
+    createPluginEnvironment,
     startPlugin,
     command,
     messenger,
@@ -207,9 +200,9 @@ export class PluginController extends BaseController<
     this._getPermissions = getPermissions;
     this._hasPermission = hasPermission;
 
-    this._terminateWorkerOf = terminateWorkerOf;
+    this._terminatePlugin = terminatePlugin;
     this._terminateAll = terminateAll;
-    this._createPluginWorker = createPluginWorker;
+    this._createPluginEnvironment = createPluginEnvironment;
     this._startPlugin = startPlugin;
     this._command = command;
 
@@ -236,7 +229,7 @@ export class PluginController extends BaseController<
         console.log(`Starting: ${pluginName}`);
 
         try {
-          await this._startPluginInWorker(pluginName, sourceCode);
+          await this._startPluginInExecutionEnvironment(pluginName, sourceCode);
         } catch (err) {
           console.warn(`Failed to start "${pluginName}", deleting it.`, err);
           // Clean up failed plugins:
@@ -262,7 +255,10 @@ export class PluginController extends BaseController<
     }
 
     try {
-      await this._startPluginInWorker(pluginName, plugin.sourceCode);
+      await this._startPluginInExecutionEnvironment(
+        pluginName,
+        plugin.sourceCode,
+      );
     } catch (err) {
       console.error(`Failed to start "${pluginName}".`, err);
     }
@@ -298,7 +294,7 @@ export class PluginController extends BaseController<
   private _stopPlugin(pluginName: string, setNotRunning = true): void {
     this._removePluginHooks(pluginName);
     this._closeAllConnections(pluginName);
-    this._terminateWorkerOf(pluginName);
+    this._terminatePlugin(pluginName);
     if (setNotRunning) {
       this._setPluginToNotRunning(pluginName);
     }
@@ -525,7 +521,7 @@ export class PluginController extends BaseController<
 
       await this.authorize(pluginName);
 
-      await this._startPluginInWorker(pluginName, sourceCode);
+      await this._startPluginInExecutionEnvironment(pluginName, sourceCode);
 
       return this.getSerializable(pluginName) as SerializablePlugin;
     } catch (err) {
@@ -691,7 +687,10 @@ export class PluginController extends BaseController<
    * Test method.
    */
   runInlinePlugin(inlinePluginName: keyof typeof INLINE_PLUGINS = 'IDLE') {
-    this._startPluginInWorker('inlinePlugin', INLINE_PLUGINS[inlinePluginName]);
+    this._startPluginInExecutionEnvironment(
+      'inlinePlugin',
+      INLINE_PLUGINS[inlinePluginName],
+    );
     this.update((state: any) => {
       state.inlinePluginIsRunning = true;
     });
@@ -707,12 +706,15 @@ export class PluginController extends BaseController<
     this.removePlugin('inlinePlugin');
   }
 
-  private async _startPluginInWorker(pluginName: string, sourceCode: string) {
-    const workerId = await this._createPluginWorker({
+  private async _startPluginInExecutionEnvironment(
+    pluginName: string,
+    sourceCode: string,
+  ) {
+    await this._createPluginEnvironment({
       hostname: pluginName,
     });
-    this._createPluginHooks(pluginName, workerId);
-    await this._startPlugin(workerId, {
+    this._createPluginHooks(pluginName);
+    await this._startPlugin({
       pluginName,
       sourceCode,
     });
@@ -728,12 +730,12 @@ export class PluginController extends BaseController<
     return this._pluginRpcHooks.get(pluginName);
   }
 
-  private _createPluginHooks(pluginName: string, workerId: string) {
+  private _createPluginHooks(pluginName: string) {
     const rpcHook = async (
       origin: string,
       request: Record<string, unknown>,
     ) => {
-      return await this._command(workerId, {
+      return await this._command(pluginName, {
         id: nanoid(),
         jsonrpc: '2.0',
         method: 'pluginRpc',
