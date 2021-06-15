@@ -245,6 +245,11 @@ export class WebWorkerExecutionEnvironmentService
       rpcEngine,
       worker,
     });
+    await this._command(workerId, {
+      jsonrpc: '2.0',
+      method: 'ping',
+      id: nanoid(),
+    });
     return workerId;
   }
 

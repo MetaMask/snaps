@@ -10,8 +10,8 @@ import {
   StartPlugin,
   TerminateAll,
   TerminatePlugin,
-} from '../services/PluginExecutionEnvironmentService';
-import { PluginRpcHook } from '../services/WorkerExecutionEnvironment';
+} from '../services/ExecutionEnvironmentService';
+import { PluginRpcHook } from '../services/WebWorkerExecutionEnvironmentService';
 import { INLINE_PLUGINS } from './inlinePlugins';
 
 export const PLUGIN_PREFIX = 'wallet_plugin_';
