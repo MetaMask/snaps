@@ -98,7 +98,7 @@ describe('PluginController Controller', () => {
       },
     });
     await pluginController.startPlugin(plugin.name);
-    const handle = pluginController.getRpcMessageHandler(plugin.name);
+    const handle = await pluginController.getRpcMessageHandler(plugin.name);
     if (!handle) {
       throw Error('rpc handler not found');
     }
@@ -110,13 +110,14 @@ describe('PluginController Controller', () => {
     });
     expect(result).toEqual('test1');
   });
+
   it('can add a plugin and use its JSON-RPC api with a stub execution env service', async () => {
     class ExecutionEnvironmentStub implements ExecutionEnvironmentService {
-      terminateAllPlugins() {
+      async terminateAllPlugins() {
         // empty stub
       }
 
-      getRpcMessageHandler() {
+      async getRpcMessageHandler() {
         return (_: any, request: Record<string, unknown>) => {
           return new Promise((resolve) => {
             const results = `${request.method}${request.id}`;
@@ -129,7 +130,7 @@ describe('PluginController Controller', () => {
         return 'some-unique-id';
       }
 
-      terminatePlugin() {
+      async terminatePlugin() {
         // empty stub
       }
     }
@@ -179,7 +180,7 @@ describe('PluginController Controller', () => {
       },
     });
     await pluginController.startPlugin(plugin.name);
-    const handle = pluginController.getRpcMessageHandler(plugin.name);
+    const handle = await pluginController.getRpcMessageHandler(plugin.name);
     if (!handle) {
       throw Error('rpc handler not found');
     }

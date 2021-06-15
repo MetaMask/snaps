@@ -6,19 +6,19 @@ export interface PluginMetadata {
   hostname: string;
 }
 
-export type TerminatePlugin = (pluginName: string) => void;
+export type TerminatePlugin = (pluginName: string) => Promise<void>;
 export type Command = (
   pluginName: string,
   message: JsonRpcRequest<unknown>,
 ) => Promise<unknown>;
-export type TerminateAll = () => void;
+export type TerminateAll = () => Promise<void>;
 export type CreatePluginEnvironment = (
   metadata: PluginMetadata,
 ) => Promise<string>;
 export type StartPlugin = (pluginData: PluginData) => Promise<unknown>;
 export type GetRpcMessageHandler = (
   pluginName: string,
-) => PluginRpcHook | undefined;
+) => Promise<PluginRpcHook | undefined>;
 
 export interface ExecutionEnvironmentService {
   terminatePlugin: TerminatePlugin;

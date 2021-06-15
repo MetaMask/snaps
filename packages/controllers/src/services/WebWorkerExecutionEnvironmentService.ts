@@ -109,14 +109,14 @@ export class WebWorkerExecutionEnvironmentService
     return response.result;
   }
 
-  terminateAllPlugins(): void {
+  async terminateAllPlugins() {
     for (const workerId of this.workers.keys()) {
       this.terminate(workerId);
     }
     this._pluginRpcHooks.clear();
   }
 
-  terminatePlugin(pluginName: string): void {
+  async terminatePlugin(pluginName: string) {
     const workerId = this.pluginToWorkerMap.get(pluginName);
     workerId && this.terminate(workerId);
     this._removePluginHooks(pluginName);
@@ -147,7 +147,7 @@ export class WebWorkerExecutionEnvironmentService
    *
    * @param pluginName - The name of the plugin whose message handler to get.
    */
-  getRpcMessageHandler(pluginName: string): PluginRpcHook | undefined {
+  async getRpcMessageHandler(pluginName: string) {
     return this._pluginRpcHooks.get(pluginName);
   }
 

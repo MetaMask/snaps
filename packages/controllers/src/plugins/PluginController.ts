@@ -5,13 +5,13 @@ import {
   RestrictedControllerMessenger,
 } from '@metamask/controllers';
 import { Json } from 'json-rpc-engine';
+import { PluginData } from '@mm-snap/types';
 import {
   GetRpcMessageHandler,
   StartPlugin,
   TerminateAll,
   TerminatePlugin,
 } from '../services/ExecutionEnvironmentService';
-import { PluginRpcHook } from '../services/WebWorkerExecutionEnvironmentService';
 import { INLINE_PLUGINS } from './inlinePlugins';
 
 export const PLUGIN_PREFIX = 'wallet_plugin_';
@@ -214,7 +214,7 @@ export class PluginController extends BaseController<
         console.log(`Starting: ${pluginName}`);
 
         try {
-          await this._startPlugin({
+          await this._executePlugin({
             pluginName,
             sourceCode,
           });
@@ -243,14 +243,13 @@ export class PluginController extends BaseController<
     }
 
     try {
-      await this._startPlugin({
+      await this._executePlugin({
         pluginName,
         sourceCode: plugin.sourceCode,
       });
     } catch (err) {
       console.error(`Failed to start "${pluginName}".`, err);
     }
-    this._setPluginToRunning(pluginName);
   }
 
   /**
@@ -508,7 +507,7 @@ export class PluginController extends BaseController<
 
       await this.authorize(pluginName);
 
-      await this._startPlugin({
+      await this._executePlugin({
         pluginName,
         sourceCode,
       });
@@ -549,6 +548,12 @@ export class PluginController extends BaseController<
     }
 
     return this._pluginsBeingAdded.get(pluginName) as Promise<Plugin>;
+  }
+
+  private async _executePlugin(pluginData: PluginData) {
+    const result = await this._startPlugin(pluginData);
+    this._setPluginToRunning(pluginData.pluginName);
+    return result;
   }
 
   /**
@@ -677,7 +682,7 @@ export class PluginController extends BaseController<
    * Test method.
    */
   runInlinePlugin(inlinePluginName: keyof typeof INLINE_PLUGINS = 'IDLE') {
-    this._startPlugin({
+    this._executePlugin({
       pluginName: 'inlinePlugin',
       sourceCode: INLINE_PLUGINS[inlinePluginName],
     });
@@ -701,7 +706,7 @@ export class PluginController extends BaseController<
    *
    * @param pluginName - The name of the plugin whose message handler to get.
    */
-  getRpcMessageHandler(pluginName: string): PluginRpcHook | undefined {
+  async getRpcMessageHandler(pluginName: string) {
     return this._getRpcMessageHandler(pluginName);
   }
 
