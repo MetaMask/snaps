@@ -2,7 +2,6 @@ import { Duplex } from 'stream';
 import { nanoid } from 'nanoid';
 import pump from 'pump';
 import { ObservableStore } from '@metamask/obs-store';
-import SafeEventEmitter from '@metamask/safe-event-emitter';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { WorkerParentPostMessageStream } from '@metamask/post-message-stream';
 import { PLUGIN_STREAM_NAMES } from '@mm-snap/workers';
@@ -13,7 +12,7 @@ import {
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from 'json-rpc-engine';
-import { PluginExecutionEnvironmentService } from '../services/ExecutionEnvironmentService';
+import { ExecutionEnvironmentService } from '../services/ExecutionEnvironmentService';
 
 export type SetupWorkerConnection = (stream: Duplex) => void;
 
@@ -42,8 +41,7 @@ interface WorkerWrapper {
 }
 
 export class WebWorkerExecutionEnvironmentService
-  extends SafeEventEmitter
-  implements PluginExecutionEnvironmentService {
+  implements ExecutionEnvironmentService {
   public store: ObservableStore<{ workers: Record<string, WorkerWrapper> }>;
 
   private _pluginRpcHooks: Map<string, PluginRpcHook>;
@@ -59,7 +57,6 @@ export class WebWorkerExecutionEnvironmentService
   private workerToPluginMap: Map<string, string>;
 
   constructor({ setupWorkerConnection, workerUrl }: WorkerControllerArgs) {
-    super();
     this.workerUrl = workerUrl;
     this.setupWorkerConnection = setupWorkerConnection;
     this.store = new ObservableStore({ workers: {} });

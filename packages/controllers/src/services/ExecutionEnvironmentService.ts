@@ -20,7 +20,7 @@ export type GetRpcMessageHandler = (
   pluginName: string,
 ) => PluginRpcHook | undefined;
 
-export interface PluginExecutionEnvironmentService {
+export interface ExecutionEnvironmentService {
   terminatePlugin: TerminatePlugin;
   terminateAllPlugins: TerminateAll;
   startPlugin: StartPlugin;

@@ -1,10 +1,7 @@
 import fs from 'fs';
 import { ControllerMessenger } from '@metamask/controllers/dist/ControllerMessenger';
-import {
-  PluginRpcHook,
-  WebWorkerExecutionEnvironmentService,
-} from '../services/WebWorkerExecutionEnvironmentService';
-import { PluginExecutionEnvironmentService } from '../services/ExecutionEnvironmentService';
+import { WebWorkerExecutionEnvironmentService } from '../services/WebWorkerExecutionEnvironmentService';
+import { ExecutionEnvironmentService } from '../services/ExecutionEnvironmentService';
 import { PluginController } from './PluginController';
 
 const workerCode = fs.readFileSync(
@@ -114,15 +111,7 @@ describe('PluginController Controller', () => {
     expect(result).toEqual('test1');
   });
   it('can add a plugin and use its JSON-RPC api with a stub execution env service', async () => {
-    class ExecutionEnvironmentStub
-      implements PluginExecutionEnvironmentService {
-      private _pluginRpcHooks: Map<string, PluginRpcHook>;
-
-      constructor() {
-        this._pluginRpcHooks = new Map();
-        //
-      }
-
+    class ExecutionEnvironmentStub implements ExecutionEnvironmentService {
       terminateAllPlugins() {
         // empty stub
       }
@@ -179,7 +168,6 @@ describe('PluginController Controller', () => {
       sourceCode: `
         wallet.registerRpcMessageHandler(async (origin, request) => {
           const {method, params, id} = request;
-          wallet.request({method: 'setState'})
           return method + id;
         });
       `,
