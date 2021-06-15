@@ -86,7 +86,7 @@ export class WebWorkerExecutionEnvironmentService
     this.store.updateState({ workers: newWorkerState });
   }
 
-  async _command(
+  private async _command(
     workerId: string,
     message: JsonRpcRequest<unknown>,
   ): Promise<unknown> {
