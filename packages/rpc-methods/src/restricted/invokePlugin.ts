@@ -64,7 +64,7 @@ function getInvokePluginHandlerGetter({
         });
       }
 
-      const handler = getPluginRpcHandler(pluginOriginString);
+      const handler = await getPluginRpcHandler(pluginOriginString);
       if (!handler) {
         return end(
           ethErrors.rpc.methodNotFound({
