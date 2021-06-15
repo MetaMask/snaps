@@ -1,18 +1,17 @@
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { IOcapLdCapability } from 'rpc-cap/dist/src/@types/ocap-ld';
-import { nanoid } from 'nanoid';
 import {
   BaseControllerV2 as BaseController,
   RestrictedControllerMessenger,
 } from '@metamask/controllers';
 import { Json } from 'json-rpc-engine';
 import {
-  Command,
-  CreatePluginEnvironment,
+  GetRpcMessageHandler,
   StartPlugin,
   TerminateAll,
   TerminatePlugin,
 } from '../services/PluginExecutionEnvironmentService';
+import { PluginRpcHook } from '../services/WorkerExecutionEnvironment';
 import { INLINE_PLUGINS } from './inlinePlugins';
 
 export const PLUGIN_PREFIX = 'wallet_plugin_';
@@ -38,12 +37,6 @@ export interface Plugin extends SerializablePlugin {
   isRunning: boolean;
   sourceCode: string;
 }
-
-// The plugin is the callee
-export type PluginRpcHook = (
-  origin: string,
-  request: Record<string, unknown>,
-) => Promise<unknown>;
 
 export type ProcessPluginReturnType =
   | SerializablePlugin
@@ -84,10 +77,9 @@ interface PluginControllerArgs {
   getPermissions: GetPermissionsFunction;
   hasPermission: HasPermissionFunction;
   terminatePlugin: TerminatePlugin;
-  command: Command;
-  terminateAll: TerminateAll;
-  createPluginEnvironment: CreatePluginEnvironment;
+  terminateAllPlugins: TerminateAll;
   startPlugin: StartPlugin;
+  getRpcMessageHandler: GetRpcMessageHandler;
 }
 
 interface AddPluginBase {
@@ -132,8 +124,6 @@ export class PluginController extends BaseController<
 > {
   private _removeAllPermissionsFor: RemoveAllPermissionsFunction;
 
-  private _pluginRpcHooks: Map<string, PluginRpcHook>;
-
   private _closeAllConnections: CloseAllConnectionsFunction;
 
   private _requestPermissions: RequestPermissionsFunction;
@@ -144,13 +134,11 @@ export class PluginController extends BaseController<
 
   private _terminatePlugin: TerminatePlugin;
 
-  private _command: Command;
-
-  private _terminateAll: TerminateAll;
-
-  private _createPluginEnvironment: CreatePluginEnvironment;
+  private _terminateAllPlugins: TerminateAll;
 
   private _startPlugin: StartPlugin;
+
+  private _getRpcMessageHandler: GetRpcMessageHandler;
 
   private _pluginsBeingAdded: Map<string, Promise<Plugin>>;
 
@@ -160,11 +148,10 @@ export class PluginController extends BaseController<
     requestPermissions,
     getPermissions,
     terminatePlugin,
-    terminateAll,
+    terminateAllPlugins,
     hasPermission,
-    createPluginEnvironment,
     startPlugin,
-    command,
+    getRpcMessageHandler,
     messenger,
     state,
   }: PluginControllerArgs) {
@@ -201,12 +188,10 @@ export class PluginController extends BaseController<
     this._hasPermission = hasPermission;
 
     this._terminatePlugin = terminatePlugin;
-    this._terminateAll = terminateAll;
-    this._createPluginEnvironment = createPluginEnvironment;
+    this._terminateAllPlugins = terminateAllPlugins;
     this._startPlugin = startPlugin;
-    this._command = command;
+    this._getRpcMessageHandler = getRpcMessageHandler;
 
-    this._pluginRpcHooks = new Map();
     this._pluginsBeingAdded = new Map();
   }
 
@@ -229,7 +214,10 @@ export class PluginController extends BaseController<
         console.log(`Starting: ${pluginName}`);
 
         try {
-          await this._startPluginInExecutionEnvironment(pluginName, sourceCode);
+          await this._startPlugin({
+            pluginName,
+            sourceCode,
+          });
         } catch (err) {
           console.warn(`Failed to start "${pluginName}", deleting it.`, err);
           // Clean up failed plugins:
@@ -255,13 +243,14 @@ export class PluginController extends BaseController<
     }
 
     try {
-      await this._startPluginInExecutionEnvironment(
+      await this._startPlugin({
         pluginName,
-        plugin.sourceCode,
-      );
+        sourceCode: plugin.sourceCode,
+      });
     } catch (err) {
       console.error(`Failed to start "${pluginName}".`, err);
     }
+    this._setPluginToRunning(pluginName);
   }
 
   /**
@@ -292,7 +281,6 @@ export class PluginController extends BaseController<
    * Should only be set to false if the plugin is about to be deleted.
    */
   private _stopPlugin(pluginName: string, setNotRunning = true): void {
-    this._removePluginHooks(pluginName);
     this._closeAllConnections(pluginName);
     this._terminatePlugin(pluginName);
     if (setNotRunning) {
@@ -387,12 +375,11 @@ export class PluginController extends BaseController<
    * handlers, event listeners, and permissions; tear down all plugin providers.
    */
   clearState() {
-    this._pluginRpcHooks.clear();
     const pluginNames = Object.keys(this.state.plugins);
     pluginNames.forEach((pluginName) => {
       this._closeAllConnections(pluginName);
     });
-    this._terminateAll();
+    this._terminateAllPlugins();
     this._removeAllPermissionsFor(pluginNames);
     this.update((state: any) => {
       state.inlinePluginIsRunning = false;
@@ -521,7 +508,10 @@ export class PluginController extends BaseController<
 
       await this.authorize(pluginName);
 
-      await this._startPluginInExecutionEnvironment(pluginName, sourceCode);
+      await this._startPlugin({
+        pluginName,
+        sourceCode,
+      });
 
       return this.getSerializable(pluginName) as SerializablePlugin;
     } catch (err) {
@@ -687,10 +677,10 @@ export class PluginController extends BaseController<
    * Test method.
    */
   runInlinePlugin(inlinePluginName: keyof typeof INLINE_PLUGINS = 'IDLE') {
-    this._startPluginInExecutionEnvironment(
-      'inlinePlugin',
-      INLINE_PLUGINS[inlinePluginName],
-    );
+    this._startPlugin({
+      pluginName: 'inlinePlugin',
+      sourceCode: INLINE_PLUGINS[inlinePluginName],
+    });
     this.update((state: any) => {
       state.inlinePluginIsRunning = true;
     });
@@ -706,52 +696,13 @@ export class PluginController extends BaseController<
     this.removePlugin('inlinePlugin');
   }
 
-  private async _startPluginInExecutionEnvironment(
-    pluginName: string,
-    sourceCode: string,
-  ) {
-    await this._createPluginEnvironment({
-      hostname: pluginName,
-    });
-    this._createPluginHooks(pluginName);
-    await this._startPlugin({
-      pluginName,
-      sourceCode,
-    });
-    this._setPluginToRunning(pluginName);
-  }
-
   /**
    * Gets the RPC message handler for the given plugin.
    *
    * @param pluginName - The name of the plugin whose message handler to get.
    */
   getRpcMessageHandler(pluginName: string): PluginRpcHook | undefined {
-    return this._pluginRpcHooks.get(pluginName);
-  }
-
-  private _createPluginHooks(pluginName: string) {
-    const rpcHook = async (
-      origin: string,
-      request: Record<string, unknown>,
-    ) => {
-      return await this._command(pluginName, {
-        id: nanoid(),
-        jsonrpc: '2.0',
-        method: 'pluginRpc',
-        params: {
-          origin,
-          request,
-          target: pluginName,
-        },
-      });
-    };
-
-    this._pluginRpcHooks.set(pluginName, rpcHook);
-  }
-
-  private _removePluginHooks(pluginName: string) {
-    this._pluginRpcHooks.delete(pluginName);
+    return this._getRpcMessageHandler(pluginName);
   }
 
   private _setPluginToRunning(pluginName: string): void {

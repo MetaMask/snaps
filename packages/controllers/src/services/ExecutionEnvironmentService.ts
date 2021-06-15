@@ -1,5 +1,6 @@
 import { JsonRpcRequest } from 'json-rpc-engine';
 import { PluginData } from '@mm-snap/types';
+import { PluginRpcHook } from './WebWorkerExecutionEnvironmentService';
 
 export interface PluginMetadata {
   hostname: string;
@@ -15,11 +16,13 @@ export type CreatePluginEnvironment = (
   metadata: PluginMetadata,
 ) => Promise<string>;
 export type StartPlugin = (pluginData: PluginData) => Promise<unknown>;
+export type GetRpcMessageHandler = (
+  pluginName: string,
+) => PluginRpcHook | undefined;
 
 export interface PluginExecutionEnvironmentService {
   terminatePlugin: TerminatePlugin;
   terminateAllPlugins: TerminateAll;
-  createPluginEnvironment: CreatePluginEnvironment;
-  command: Command;
   startPlugin: StartPlugin;
+  getRpcMessageHandler: GetRpcMessageHandler;
 }
