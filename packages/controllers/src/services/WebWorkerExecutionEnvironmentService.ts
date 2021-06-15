@@ -175,7 +175,7 @@ export class WebWorkerExecutionEnvironmentService
     this._pluginRpcHooks.set(pluginName, rpcHook);
   }
 
-  async startPlugin(pluginData: PluginData): Promise<unknown> {
+  async executePlugin(pluginData: PluginData): Promise<unknown> {
     const _workerId = await this._initWorker();
 
     this._mapPluginAndWorker(pluginData.pluginName, _workerId);

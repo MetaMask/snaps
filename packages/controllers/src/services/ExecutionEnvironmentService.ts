@@ -15,7 +15,7 @@ export type TerminateAll = () => Promise<void>;
 export type CreatePluginEnvironment = (
   metadata: PluginMetadata,
 ) => Promise<string>;
-export type StartPlugin = (pluginData: PluginData) => Promise<unknown>;
+export type ExecutePlugin = (pluginData: PluginData) => Promise<unknown>;
 export type GetRpcMessageHandler = (
   pluginName: string,
 ) => Promise<PluginRpcHook | undefined>;
@@ -23,6 +23,6 @@ export type GetRpcMessageHandler = (
 export interface ExecutionEnvironmentService {
   terminatePlugin: TerminatePlugin;
   terminateAllPlugins: TerminateAll;
-  startPlugin: StartPlugin;
+  executePlugin: ExecutePlugin;
   getRpcMessageHandler: GetRpcMessageHandler;
 }

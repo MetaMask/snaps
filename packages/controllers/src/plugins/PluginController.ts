@@ -8,7 +8,7 @@ import { Json } from 'json-rpc-engine';
 import { PluginData } from '@mm-snap/types';
 import {
   GetRpcMessageHandler,
-  StartPlugin,
+  ExecutePlugin,
   TerminateAll,
   TerminatePlugin,
 } from '../services/ExecutionEnvironmentService';
@@ -78,7 +78,7 @@ interface PluginControllerArgs {
   hasPermission: HasPermissionFunction;
   terminatePlugin: TerminatePlugin;
   terminateAllPlugins: TerminateAll;
-  startPlugin: StartPlugin;
+  executePlugin: ExecutePlugin;
   getRpcMessageHandler: GetRpcMessageHandler;
 }
 
@@ -136,7 +136,7 @@ export class PluginController extends BaseController<
 
   private _terminateAllPlugins: TerminateAll;
 
-  private _startPlugin: StartPlugin;
+  private _executePlugin: ExecutePlugin;
 
   private _getRpcMessageHandler: GetRpcMessageHandler;
 
@@ -150,7 +150,7 @@ export class PluginController extends BaseController<
     terminatePlugin,
     terminateAllPlugins,
     hasPermission,
-    startPlugin,
+    executePlugin,
     getRpcMessageHandler,
     messenger,
     state,
@@ -189,7 +189,7 @@ export class PluginController extends BaseController<
 
     this._terminatePlugin = terminatePlugin;
     this._terminateAllPlugins = terminateAllPlugins;
-    this._startPlugin = startPlugin;
+    this._executePlugin = executePlugin;
     this._getRpcMessageHandler = getRpcMessageHandler;
 
     this._pluginsBeingAdded = new Map();
@@ -214,7 +214,7 @@ export class PluginController extends BaseController<
         console.log(`Starting: ${pluginName}`);
 
         try {
-          await this._executePlugin({
+          await this._startPlugin({
             pluginName,
             sourceCode,
           });
@@ -243,7 +243,7 @@ export class PluginController extends BaseController<
     }
 
     try {
-      await this._executePlugin({
+      await this._startPlugin({
         pluginName,
         sourceCode: plugin.sourceCode,
       });
@@ -507,7 +507,7 @@ export class PluginController extends BaseController<
 
       await this.authorize(pluginName);
 
-      await this._executePlugin({
+      await this._startPlugin({
         pluginName,
         sourceCode,
       });
@@ -550,8 +550,8 @@ export class PluginController extends BaseController<
     return this._pluginsBeingAdded.get(pluginName) as Promise<Plugin>;
   }
 
-  private async _executePlugin(pluginData: PluginData) {
-    const result = await this._startPlugin(pluginData);
+  private async _startPlugin(pluginData: PluginData) {
+    const result = await this._executePlugin(pluginData);
     this._setPluginToRunning(pluginData.pluginName);
     return result;
   }
@@ -682,7 +682,7 @@ export class PluginController extends BaseController<
    * Test method.
    */
   runInlinePlugin(inlinePluginName: keyof typeof INLINE_PLUGINS = 'IDLE') {
-    this._executePlugin({
+    this._startPlugin({
       pluginName: 'inlinePlugin',
       sourceCode: INLINE_PLUGINS[inlinePluginName],
     });

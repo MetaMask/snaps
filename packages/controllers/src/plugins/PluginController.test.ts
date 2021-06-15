@@ -24,7 +24,7 @@ describe('PluginController Controller', () => {
       terminatePlugin: workerExecutionEnvironment.terminatePlugin.bind(
         workerExecutionEnvironment,
       ),
-      startPlugin: workerExecutionEnvironment.startPlugin.bind(
+      executePlugin: workerExecutionEnvironment.executePlugin.bind(
         workerExecutionEnvironment,
       ),
       getRpcMessageHandler: workerExecutionEnvironment.getRpcMessageHandler.bind(
@@ -61,7 +61,7 @@ describe('PluginController Controller', () => {
       terminatePlugin: webWorkerExecutionEnvironment.terminatePlugin.bind(
         webWorkerExecutionEnvironment,
       ),
-      startPlugin: webWorkerExecutionEnvironment.startPlugin.bind(
+      executePlugin: webWorkerExecutionEnvironment.executePlugin.bind(
         webWorkerExecutionEnvironment,
       ),
       getRpcMessageHandler: webWorkerExecutionEnvironment.getRpcMessageHandler.bind(
@@ -126,7 +126,7 @@ describe('PluginController Controller', () => {
         };
       }
 
-      async startPlugin() {
+      async executePlugin() {
         return 'some-unique-id';
       }
 
@@ -144,7 +144,7 @@ describe('PluginController Controller', () => {
       terminatePlugin: executionEnvironmentStub.terminatePlugin.bind(
         executionEnvironmentStub,
       ),
-      startPlugin: executionEnvironmentStub.startPlugin.bind(
+      executePlugin: executionEnvironmentStub.executePlugin.bind(
         executionEnvironmentStub,
       ),
       getRpcMessageHandler: executionEnvironmentStub.getRpcMessageHandler.bind(

@@ -28,7 +28,7 @@ describe('Worker Controller', () => {
       },
     );
     const pluginName = 'foo.bar.baz';
-    const response = await webWorkerExecutionEnvironmentService.startPlugin({
+    const response = await webWorkerExecutionEnvironmentService.executePlugin({
       pluginName,
       sourceCode: `
         console.log('foo');
