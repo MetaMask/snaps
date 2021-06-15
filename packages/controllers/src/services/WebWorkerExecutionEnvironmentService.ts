@@ -180,15 +180,14 @@ export class WebWorkerExecutionEnvironmentService
 
     this._mapPluginAndWorker(pluginData.pluginName, _workerId);
 
-    return this._command(_workerId, {
+    const result = await this._command(_workerId, {
       jsonrpc: '2.0',
       method: 'installPlugin',
       params: pluginData,
       id: nanoid(),
-    }).then((result: unknown) => {
-      this._createPluginHooks(pluginData.pluginName, _workerId);
-      return result;
     });
+    this._createPluginHooks(pluginData.pluginName, _workerId);
+    return result;
   }
 
   _mapPluginAndWorker(pluginName: string, workerId: string): void {
