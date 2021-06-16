@@ -2,7 +2,6 @@ import { Duplex } from 'stream';
 import { nanoid } from 'nanoid';
 import pump from 'pump';
 import { ObservableStore } from '@metamask/obs-store';
-import SafeEventEmitter from '@metamask/safe-event-emitter';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { WorkerParentPostMessageStream } from '@metamask/post-message-stream';
 import { PLUGIN_STREAM_NAMES } from '@mm-snap/workers';
@@ -13,12 +12,10 @@ import {
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from 'json-rpc-engine';
+import { ExecutionEnvironmentService } from '../services/ExecutionEnvironmentService';
 
-export type SetupWorkerConnection = (metadata: any, stream: Duplex) => void;
+export type SetupWorkerConnection = (stream: Duplex) => void;
 
-export interface PluginWorkerMetadata {
-  hostname: string;
-}
 interface WorkerControllerArgs {
   setupWorkerConnection: SetupWorkerConnection;
   workerUrl: URL;
@@ -30,6 +27,12 @@ interface WorkerStreams {
   _connection: WorkerParentPostMessageStream;
 }
 
+// The plugin is the callee
+export type PluginRpcHook = (
+  origin: string,
+  request: Record<string, unknown>,
+) => Promise<unknown>;
+
 interface WorkerWrapper {
   workerId: string;
   streams: WorkerStreams;
@@ -37,8 +40,11 @@ interface WorkerWrapper {
   worker: Worker;
 }
 
-export class WorkerController extends SafeEventEmitter {
+export class WebWorkerExecutionEnvironmentService
+  implements ExecutionEnvironmentService {
   public store: ObservableStore<{ workers: Record<string, WorkerWrapper> }>;
+
+  private _pluginRpcHooks: Map<string, PluginRpcHook>;
 
   private workerUrl: URL;
 
@@ -51,13 +57,13 @@ export class WorkerController extends SafeEventEmitter {
   private workerToPluginMap: Map<string, string>;
 
   constructor({ setupWorkerConnection, workerUrl }: WorkerControllerArgs) {
-    super();
     this.workerUrl = workerUrl;
     this.setupWorkerConnection = setupWorkerConnection;
     this.store = new ObservableStore({ workers: {} });
     this.workers = new Map();
     this.pluginToWorkerMap = new Map();
     this.workerToPluginMap = new Map();
+    this._pluginRpcHooks = new Map();
   }
 
   _setWorker(workerId: string, workerObj: WorkerWrapper): void {
@@ -80,7 +86,7 @@ export class WorkerController extends SafeEventEmitter {
     this.store.updateState({ workers: newWorkerState });
   }
 
-  async command(
+  private async _command(
     workerId: string,
     message: JsonRpcRequest<unknown>,
   ): Promise<unknown> {
@@ -103,15 +109,17 @@ export class WorkerController extends SafeEventEmitter {
     return response.result;
   }
 
-  terminateAll(): void {
+  async terminateAllPlugins() {
     for (const workerId of this.workers.keys()) {
       this.terminate(workerId);
     }
+    this._pluginRpcHooks.clear();
   }
 
-  terminateWorkerOf(pluginName: string): void {
+  async terminatePlugin(pluginName: string) {
     const workerId = this.pluginToWorkerMap.get(pluginName);
     workerId && this.terminate(workerId);
+    this._removePluginHooks(pluginName);
   }
 
   terminate(workerId: string): void {
@@ -134,30 +142,57 @@ export class WorkerController extends SafeEventEmitter {
     console.log(`worker:${workerId} terminated`);
   }
 
-  async startPlugin(
-    workerId: string,
-    pluginData: PluginData,
-  ): Promise<unknown> {
-    const _workerId: string = workerId || this.workers.keys().next()?.value();
-    if (!_workerId) {
-      throw new Error('No workers available.');
+  /**
+   * Gets the RPC message handler for the given plugin.
+   *
+   * @param pluginName - The name of the plugin whose message handler to get.
+   */
+  async getRpcMessageHandler(pluginName: string) {
+    return this._pluginRpcHooks.get(pluginName);
+  }
+
+  private _removePluginHooks(pluginName: string) {
+    this._pluginRpcHooks.delete(pluginName);
+  }
+
+  private _createPluginHooks(pluginName: string, workerId: string) {
+    const rpcHook = async (
+      origin: string,
+      request: Record<string, unknown>,
+    ) => {
+      return await this._command(workerId, {
+        id: nanoid(),
+        jsonrpc: '2.0',
+        method: 'pluginRpc',
+        params: {
+          origin,
+          request,
+          target: pluginName,
+        },
+      });
+    };
+
+    this._pluginRpcHooks.set(pluginName, rpcHook);
+  }
+
+  async executePlugin(pluginData: PluginData): Promise<unknown> {
+    if (this.pluginToWorkerMap.has(pluginData.pluginName)) {
+      throw new Error(
+        `Plugin "${pluginData.pluginName}" is already being executed.`,
+      );
     }
 
-    this._mapPluginAndWorker(pluginData.pluginName, workerId);
+    const _workerId = await this._initWorker();
+    this._mapPluginAndWorker(pluginData.pluginName, _workerId);
 
-    return this.command(_workerId, {
+    const result = await this._command(_workerId, {
       jsonrpc: '2.0',
       method: 'installPlugin',
       params: pluginData,
       id: nanoid(),
     });
-  }
-
-  /**
-   * @returns The ID of the newly created worker.
-   */
-  async createPluginWorker(metadata: PluginWorkerMetadata): Promise<string> {
-    return this._initWorker(metadata);
+    this._createPluginHooks(pluginData.pluginName, _workerId);
+    return result;
   }
 
   _mapPluginAndWorker(pluginName: string, workerId: string): void {
@@ -189,14 +224,14 @@ export class WorkerController extends SafeEventEmitter {
     this.pluginToWorkerMap.delete(pluginName);
   }
 
-  async _initWorker(metadata: PluginWorkerMetadata): Promise<string> {
+  async _initWorker(): Promise<string> {
     console.log('_initWorker');
 
     const workerId = nanoid();
     const worker = new Worker(this.workerUrl, {
       name: workerId,
     });
-    const streams = this._initWorkerStreams(worker, workerId, metadata);
+    const streams = this._initWorkerStreams(worker, workerId);
     const rpcEngine = new JsonRpcEngine();
 
     const jsonRpcConnection = createStreamMiddleware();
@@ -211,7 +246,7 @@ export class WorkerController extends SafeEventEmitter {
       rpcEngine,
       worker,
     });
-    await this.command(workerId, {
+    await this._command(workerId, {
       jsonrpc: '2.0',
       method: 'ping',
       id: nanoid(),
@@ -219,11 +254,7 @@ export class WorkerController extends SafeEventEmitter {
     return workerId;
   }
 
-  _initWorkerStreams(
-    worker: Worker,
-    workerId: string,
-    metadata: PluginWorkerMetadata,
-  ): WorkerStreams {
+  _initWorkerStreams(worker: Worker, workerId: string): WorkerStreams {
     const workerStream = new WorkerParentPostMessageStream({ worker });
     // Typecast justification: stream type mismatch
     const mux = setupMultiplex(
@@ -234,7 +265,7 @@ export class WorkerController extends SafeEventEmitter {
     const commandStream = mux.createStream(PLUGIN_STREAM_NAMES.COMMAND);
 
     const rpcStream = mux.createStream(PLUGIN_STREAM_NAMES.JSON_RPC);
-    this.setupWorkerConnection(metadata, (rpcStream as unknown) as Duplex);
+    this.setupWorkerConnection((rpcStream as unknown) as Duplex);
 
     // Typecast justification: stream type mismatch
     return {

@@ -1,13 +1,17 @@
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { IOcapLdCapability } from 'rpc-cap/dist/src/@types/ocap-ld';
-import { nanoid } from 'nanoid';
 import {
   BaseControllerV2 as BaseController,
   RestrictedControllerMessenger,
 } from '@metamask/controllers';
-import { Json, JsonRpcRequest } from 'json-rpc-engine';
+import { Json } from 'json-rpc-engine';
 import { PluginData } from '@mm-snap/types';
-import { PluginWorkerMetadata } from '../workers/WorkerController';
+import {
+  GetRpcMessageHandler,
+  ExecutePlugin,
+  TerminateAll,
+  TerminatePlugin,
+} from '../services/ExecutionEnvironmentService';
 import { INLINE_PLUGINS } from './inlinePlugins';
 
 export const PLUGIN_PREFIX = 'wallet_plugin_';
@@ -34,12 +38,6 @@ export interface Plugin extends SerializablePlugin {
   sourceCode: string;
 }
 
-// The plugin is the callee
-export type PluginRpcHook = (
-  origin: string,
-  request: Record<string, unknown>,
-) => Promise<unknown>;
-
 export type ProcessPluginReturnType =
   | SerializablePlugin
   | { error: ReturnType<typeof serializeError> };
@@ -59,18 +57,6 @@ type HasPermissionFunction = (
   permissionName: string,
 ) => boolean;
 type GetPermissionsFunction = (domain: string) => IOcapLdCapability[];
-type TerminateWorkerOf = (pluginName: string) => void;
-type Command = (
-  workerId: string,
-  message: JsonRpcRequest<unknown>,
-) => Promise<unknown>;
-type TerminateAll = () => void;
-type CreatePluginWorker = (metadate: PluginWorkerMetadata) => Promise<string>;
-type StartPlugin = (
-  workerId: string,
-  pluginData: PluginData,
-) => Promise<unknown>;
-
 type PluginId = string;
 type StoredPlugins = Record<PluginId, Plugin>;
 
@@ -90,11 +76,10 @@ interface PluginControllerArgs {
   requestPermissions: RequestPermissionsFunction;
   getPermissions: GetPermissionsFunction;
   hasPermission: HasPermissionFunction;
-  terminateWorkerOf: TerminateWorkerOf;
-  command: Command;
-  terminateAll: TerminateAll;
-  createPluginWorker: CreatePluginWorker;
-  startPlugin: StartPlugin;
+  terminatePlugin: TerminatePlugin;
+  terminateAllPlugins: TerminateAll;
+  executePlugin: ExecutePlugin;
+  getRpcMessageHandler: GetRpcMessageHandler;
 }
 
 interface AddPluginBase {
@@ -139,8 +124,6 @@ export class PluginController extends BaseController<
 > {
   private _removeAllPermissionsFor: RemoveAllPermissionsFunction;
 
-  private _pluginRpcHooks: Map<string, PluginRpcHook>;
-
   private _closeAllConnections: CloseAllConnectionsFunction;
 
   private _requestPermissions: RequestPermissionsFunction;
@@ -149,15 +132,13 @@ export class PluginController extends BaseController<
 
   private _hasPermission: HasPermissionFunction;
 
-  private _terminateWorkerOf: TerminateWorkerOf;
+  private _terminatePlugin: TerminatePlugin;
 
-  private _command: Command;
+  private _terminateAllPlugins: TerminateAll;
 
-  private _terminateAll: TerminateAll;
+  private _executePlugin: ExecutePlugin;
 
-  private _createPluginWorker: CreatePluginWorker;
-
-  private _startPlugin: StartPlugin;
+  private _getRpcMessageHandler: GetRpcMessageHandler;
 
   private _pluginsBeingAdded: Map<string, Promise<Plugin>>;
 
@@ -166,12 +147,11 @@ export class PluginController extends BaseController<
     closeAllConnections,
     requestPermissions,
     getPermissions,
-    terminateWorkerOf,
-    terminateAll,
+    terminatePlugin,
+    terminateAllPlugins,
     hasPermission,
-    createPluginWorker,
-    startPlugin,
-    command,
+    executePlugin,
+    getRpcMessageHandler,
     messenger,
     state,
   }: PluginControllerArgs) {
@@ -207,13 +187,11 @@ export class PluginController extends BaseController<
     this._getPermissions = getPermissions;
     this._hasPermission = hasPermission;
 
-    this._terminateWorkerOf = terminateWorkerOf;
-    this._terminateAll = terminateAll;
-    this._createPluginWorker = createPluginWorker;
-    this._startPlugin = startPlugin;
-    this._command = command;
+    this._terminatePlugin = terminatePlugin;
+    this._terminateAllPlugins = terminateAllPlugins;
+    this._executePlugin = executePlugin;
+    this._getRpcMessageHandler = getRpcMessageHandler;
 
-    this._pluginRpcHooks = new Map();
     this._pluginsBeingAdded = new Map();
   }
 
@@ -236,7 +214,10 @@ export class PluginController extends BaseController<
         console.log(`Starting: ${pluginName}`);
 
         try {
-          await this._startPluginInWorker(pluginName, sourceCode);
+          await this._startPlugin({
+            pluginName,
+            sourceCode,
+          });
         } catch (err) {
           console.warn(`Failed to start "${pluginName}", deleting it.`, err);
           // Clean up failed plugins:
@@ -262,7 +243,10 @@ export class PluginController extends BaseController<
     }
 
     try {
-      await this._startPluginInWorker(pluginName, plugin.sourceCode);
+      await this._startPlugin({
+        pluginName,
+        sourceCode: plugin.sourceCode,
+      });
     } catch (err) {
       console.error(`Failed to start "${pluginName}".`, err);
     }
@@ -296,9 +280,8 @@ export class PluginController extends BaseController<
    * Should only be set to false if the plugin is about to be deleted.
    */
   private _stopPlugin(pluginName: string, setNotRunning = true): void {
-    this._removePluginHooks(pluginName);
     this._closeAllConnections(pluginName);
-    this._terminateWorkerOf(pluginName);
+    this._terminatePlugin(pluginName);
     if (setNotRunning) {
       this._setPluginToNotRunning(pluginName);
     }
@@ -391,12 +374,11 @@ export class PluginController extends BaseController<
    * handlers, event listeners, and permissions; tear down all plugin providers.
    */
   clearState() {
-    this._pluginRpcHooks.clear();
     const pluginNames = Object.keys(this.state.plugins);
     pluginNames.forEach((pluginName) => {
       this._closeAllConnections(pluginName);
     });
-    this._terminateAll();
+    this._terminateAllPlugins();
     this._removeAllPermissionsFor(pluginNames);
     this.update((state: any) => {
       state.inlinePluginIsRunning = false;
@@ -525,7 +507,10 @@ export class PluginController extends BaseController<
 
       await this.authorize(pluginName);
 
-      await this._startPluginInWorker(pluginName, sourceCode);
+      await this._startPlugin({
+        pluginName,
+        sourceCode,
+      });
 
       return this.getSerializable(pluginName) as SerializablePlugin;
     } catch (err) {
@@ -563,6 +548,12 @@ export class PluginController extends BaseController<
     }
 
     return this._pluginsBeingAdded.get(pluginName) as Promise<Plugin>;
+  }
+
+  private async _startPlugin(pluginData: PluginData) {
+    const result = await this._executePlugin(pluginData);
+    this._setPluginToRunning(pluginData.pluginName);
+    return result;
   }
 
   /**
@@ -691,7 +682,10 @@ export class PluginController extends BaseController<
    * Test method.
    */
   runInlinePlugin(inlinePluginName: keyof typeof INLINE_PLUGINS = 'IDLE') {
-    this._startPluginInWorker('inlinePlugin', INLINE_PLUGINS[inlinePluginName]);
+    this._startPlugin({
+      pluginName: 'inlinePlugin',
+      sourceCode: INLINE_PLUGINS[inlinePluginName],
+    });
     this.update((state: any) => {
       state.inlinePluginIsRunning = true;
     });
@@ -707,49 +701,13 @@ export class PluginController extends BaseController<
     this.removePlugin('inlinePlugin');
   }
 
-  private async _startPluginInWorker(pluginName: string, sourceCode: string) {
-    const workerId = await this._createPluginWorker({
-      hostname: pluginName,
-    });
-    this._createPluginHooks(pluginName, workerId);
-    await this._startPlugin(workerId, {
-      pluginName,
-      sourceCode,
-    });
-    this._setPluginToRunning(pluginName);
-  }
-
   /**
    * Gets the RPC message handler for the given plugin.
    *
    * @param pluginName - The name of the plugin whose message handler to get.
    */
-  getRpcMessageHandler(pluginName: string): PluginRpcHook | undefined {
-    return this._pluginRpcHooks.get(pluginName);
-  }
-
-  private _createPluginHooks(pluginName: string, workerId: string) {
-    const rpcHook = async (
-      origin: string,
-      request: Record<string, unknown>,
-    ) => {
-      return await this._command(workerId, {
-        id: nanoid(),
-        jsonrpc: '2.0',
-        method: 'pluginRpc',
-        params: {
-          origin,
-          request,
-          target: pluginName,
-        },
-      });
-    };
-
-    this._pluginRpcHooks.set(pluginName, rpcHook);
-  }
-
-  private _removePluginHooks(pluginName: string) {
-    this._pluginRpcHooks.delete(pluginName);
+  async getRpcMessageHandler(pluginName: string) {
+    return this._getRpcMessageHandler(pluginName);
   }
 
   private _setPluginToRunning(pluginName: string): void {
