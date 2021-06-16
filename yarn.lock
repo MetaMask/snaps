@@ -2622,6 +2622,11 @@
     "@types/insert-module-globals" "*"
     "@types/node" "*"
 
+"@types/deep-freeze-strict@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@types/deep-freeze-strict/-/deep-freeze-strict-1.1.0.tgz#447a6a2576191344aa42310131dd3df5c41492c4"
+  integrity sha1-RHpqJXYZE0SqQjEBMd099cQUksQ=
+
 "@types/glob@*", "@types/glob@^7.1.1":
   version "7.1.4"
   resolved "https://registry.yarnpkg.com/@types/glob/-/glob-7.1.4.tgz#ea59e21d2ee5c517914cb4bc8e4153b99e566672"
@@ -4844,6 +4849,11 @@ deep-equal@^1.0.0:
     object-is "^1.0.1"
     object-keys "^1.1.1"
     regexp.prototype.flags "^1.2.0"
+
+deep-freeze-strict@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/deep-freeze-strict/-/deep-freeze-strict-1.1.1.tgz#77d0583ca24a69be4bbd9ac2fae415d55523e5b0"
+  integrity sha1-d9BYPKJKab5LvZrC+uQV1VUj5bA=
 
 deep-is@^0.1.3, deep-is@~0.1.3:
   version "0.1.3"
