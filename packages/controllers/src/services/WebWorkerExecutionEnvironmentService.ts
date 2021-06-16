@@ -176,8 +176,11 @@ export class WebWorkerExecutionEnvironmentService
   }
 
   async executePlugin(pluginData: PluginData): Promise<unknown> {
-    const _workerId = await this._initWorker();
+    if (this.pluginToWorkerMap.has(pluginData.pluginName)) {
+      throw new Error(`Plugin "${pluginData.pluginName}" is already being executed.`);
+    }
 
+    const _workerId = await this._initWorker();
     this._mapPluginAndWorker(pluginData.pluginName, _workerId);
 
     const result = await this._command(_workerId, {
