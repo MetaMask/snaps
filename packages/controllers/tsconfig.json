@@ -8,7 +8,7 @@
     "typeRoots": [
       "../../node_modules/@types",
       "./node_modules/@types",
-      "./types"
+      "./src/types"
     ]
   },
   "include": ["./src"],
