@@ -238,18 +238,11 @@ export class PluginController extends BaseController<
     if (!plugin) {
       throw new Error(`Plugin "${pluginName}" not found.`);
     }
-    if (plugin.isRunning) {
-      throw new Error(`Plugin "${pluginName}" already running.`);
-    }
 
-    try {
-      await this._startPlugin({
-        pluginName,
-        sourceCode: plugin.sourceCode,
-      });
-    } catch (err) {
-      console.error(`Failed to start "${pluginName}".`, err);
-    }
+    await this._startPlugin({
+      pluginName,
+      sourceCode: plugin.sourceCode,
+    });
   }
 
   /**
@@ -551,6 +544,11 @@ export class PluginController extends BaseController<
   }
 
   private async _startPlugin(pluginData: PluginData) {
+    const { pluginName } = pluginData;
+    if (this.get(pluginName).isRunning) {
+      throw new Error(`Plugin "${pluginName}" already running.`);
+    }
+
     const result = await this._executePlugin(pluginData);
     this._setPluginToRunning(pluginData.pluginName);
     return result;
