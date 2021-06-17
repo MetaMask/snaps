@@ -546,7 +546,7 @@ export class PluginController extends BaseController<
   private async _startPlugin(pluginData: PluginData) {
     const { pluginName } = pluginData;
     if (this.get(pluginName).isRunning) {
-      throw new Error(`Plugin "${pluginName}" already running.`);
+      throw new Error(`Plugin "${pluginName}" is already started.`);
     }
 
     const result = await this._executePlugin(pluginData);
@@ -617,6 +617,7 @@ export class PluginController extends BaseController<
    *
    * @param name - The name of the plugin.
    * @param manifestUrl - The URL of the plugin's manifest file.
+   * @returns An array of the plugin manifest object and the plugin source code.
    */
   private async _fetchPlugin(
     pluginName: string,

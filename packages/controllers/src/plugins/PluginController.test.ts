@@ -192,4 +192,51 @@ describe('PluginController Controller', () => {
     });
     expect(result).toEqual('test1');
   });
+
+  it('errors if attempting to start a plugin that was already started', async () => {
+    const name = 'fooPlugin';
+    const manifest = {
+      name,
+      version: '1.0.0',
+      web3Wallet: {
+        initialPermissions: {
+          eth_accounts: {},
+        },
+      },
+    };
+    const sourceCode = 'foo';
+
+    const mockExecutePlugin = jest.fn();
+
+    const pluginController = new PluginController({
+      terminateAllPlugins: jest.fn(),
+      terminatePlugin: jest.fn(),
+      executePlugin: mockExecutePlugin,
+      getRpcMessageHandler: jest.fn(),
+      removeAllPermissionsFor: jest.fn(),
+      getPermissions: jest.fn(),
+      hasPermission: jest.fn(),
+      requestPermissions: jest.fn(),
+      closeAllConnections: jest.fn(),
+      messenger: new ControllerMessenger<any, any>().getRestricted({
+        name: 'PluginController',
+      }),
+      state: {
+        inlinePluginIsRunning: false,
+        pluginStates: {},
+        plugins: {},
+      },
+    });
+
+    await pluginController.add({ name, manifest, sourceCode });
+    await pluginController.startPlugin(name);
+    await expect(pluginController.startPlugin(name)).rejects.toThrow(
+      /^Plugin "fooPlugin" is already started.$/u,
+    );
+    expect(mockExecutePlugin).toHaveBeenCalledTimes(1);
+    expect(mockExecutePlugin).toHaveBeenCalledWith({
+      pluginName: name,
+      sourceCode,
+    });
+  });
 });
