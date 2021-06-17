@@ -70,7 +70,7 @@ export type PluginControllerState = {
 
 interface PluginControllerArgs {
   messenger: RestrictedControllerMessenger<string, any, any, string, string>;
-  state: PluginControllerState;
+  state?: PluginControllerState;
   removeAllPermissionsFor: RemoveAllPermissionsFunction;
   closeAllConnections: CloseAllConnectionsFunction;
   requestPermissions: RequestPermissionsFunction;
@@ -173,12 +173,6 @@ export class PluginController extends BaseController<
       },
       name,
       state: { ...defaultState, ...state },
-    });
-
-    this.update((_state: any) => {
-      _state.inlinePluginIsRunning = state.inlinePluginIsRunning;
-      _state.plugins = state.plugins;
-      _state.pluginStates = state.pluginStates;
     });
 
     this._removeAllPermissionsFor = removeAllPermissionsFor;

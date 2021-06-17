@@ -38,11 +38,6 @@ describe('PluginController Controller', () => {
       messenger: new ControllerMessenger<any, any>().getRestricted({
         name: 'PluginController',
       }),
-      state: {
-        inlinePluginIsRunning: false,
-        pluginStates: {},
-        plugins: {},
-      },
     });
     expect(pluginController).toBeDefined();
   });
@@ -75,12 +70,8 @@ describe('PluginController Controller', () => {
       messenger: new ControllerMessenger<any, any>().getRestricted({
         name: 'PluginController',
       }),
-      state: {
-        inlinePluginIsRunning: false,
-        pluginStates: {},
-        plugins: {},
-      },
     });
+
     const plugin = await pluginController.add({
       name: 'TestPlugin',
       sourceCode: `
@@ -97,11 +88,13 @@ describe('PluginController Controller', () => {
         version: '0.0.0-development',
       },
     });
+
     await pluginController.startPlugin(plugin.name);
     const handle = await pluginController.getRpcMessageHandler(plugin.name);
     if (!handle) {
       throw Error('rpc handler not found');
     }
+
     const result = await handle('foo.com', {
       jsonrpc: '2.0',
       method: 'test',
@@ -158,12 +151,8 @@ describe('PluginController Controller', () => {
       messenger: new ControllerMessenger<any, any>().getRestricted({
         name: 'PluginController',
       }),
-      state: {
-        inlinePluginIsRunning: false,
-        pluginStates: {},
-        plugins: {},
-      },
     });
+
     const plugin = await pluginController.add({
       name: 'TestPlugin',
       sourceCode: `
@@ -179,11 +168,13 @@ describe('PluginController Controller', () => {
         version: '0.0.0-development',
       },
     });
+
     await pluginController.startPlugin(plugin.name);
     const handle = await pluginController.getRpcMessageHandler(plugin.name);
     if (!handle) {
       throw Error('rpc handler not found');
     }
+
     const result = await handle('foo.com', {
       jsonrpc: '2.0',
       method: 'test',
@@ -221,11 +212,6 @@ describe('PluginController Controller', () => {
       messenger: new ControllerMessenger<any, any>().getRestricted({
         name: 'PluginController',
       }),
-      state: {
-        inlinePluginIsRunning: false,
-        pluginStates: {},
-        plugins: {},
-      },
     });
 
     await pluginController.add({ name, manifest, sourceCode });
