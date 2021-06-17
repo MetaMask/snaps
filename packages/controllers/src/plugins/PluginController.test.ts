@@ -38,11 +38,6 @@ describe('PluginController Controller', () => {
       messenger: new ControllerMessenger<any, any>().getRestricted({
         name: 'PluginController',
       }),
-      state: {
-        inlinePluginIsRunning: false,
-        pluginStates: {},
-        plugins: {},
-      },
     });
     expect(pluginController).toBeDefined();
   });
@@ -75,12 +70,8 @@ describe('PluginController Controller', () => {
       messenger: new ControllerMessenger<any, any>().getRestricted({
         name: 'PluginController',
       }),
-      state: {
-        inlinePluginIsRunning: false,
-        pluginStates: {},
-        plugins: {},
-      },
     });
+
     const plugin = await pluginController.add({
       name: 'TestPlugin',
       sourceCode: `
@@ -97,11 +88,13 @@ describe('PluginController Controller', () => {
         version: '0.0.0-development',
       },
     });
+
     await pluginController.startPlugin(plugin.name);
     const handle = await pluginController.getRpcMessageHandler(plugin.name);
     if (!handle) {
       throw Error('rpc handler not found');
     }
+
     const result = await handle('foo.com', {
       jsonrpc: '2.0',
       method: 'test',
@@ -158,12 +151,8 @@ describe('PluginController Controller', () => {
       messenger: new ControllerMessenger<any, any>().getRestricted({
         name: 'PluginController',
       }),
-      state: {
-        inlinePluginIsRunning: false,
-        pluginStates: {},
-        plugins: {},
-      },
     });
+
     const plugin = await pluginController.add({
       name: 'TestPlugin',
       sourceCode: `
@@ -179,11 +168,13 @@ describe('PluginController Controller', () => {
         version: '0.0.0-development',
       },
     });
+
     await pluginController.startPlugin(plugin.name);
     const handle = await pluginController.getRpcMessageHandler(plugin.name);
     if (!handle) {
       throw Error('rpc handler not found');
     }
+
     const result = await handle('foo.com', {
       jsonrpc: '2.0',
       method: 'test',
@@ -191,5 +182,47 @@ describe('PluginController Controller', () => {
       id: 1,
     });
     expect(result).toEqual('test1');
+  });
+
+  it('errors if attempting to start a plugin that was already started', async () => {
+    const name = 'fooPlugin';
+    const manifest = {
+      name,
+      version: '1.0.0',
+      web3Wallet: {
+        initialPermissions: {
+          eth_accounts: {},
+        },
+      },
+    };
+    const sourceCode = 'foo';
+
+    const mockExecutePlugin = jest.fn();
+
+    const pluginController = new PluginController({
+      terminateAllPlugins: jest.fn(),
+      terminatePlugin: jest.fn(),
+      executePlugin: mockExecutePlugin,
+      getRpcMessageHandler: jest.fn(),
+      removeAllPermissionsFor: jest.fn(),
+      getPermissions: jest.fn(),
+      hasPermission: jest.fn(),
+      requestPermissions: jest.fn(),
+      closeAllConnections: jest.fn(),
+      messenger: new ControllerMessenger<any, any>().getRestricted({
+        name: 'PluginController',
+      }),
+    });
+
+    await pluginController.add({ name, manifest, sourceCode });
+    await pluginController.startPlugin(name);
+    await expect(pluginController.startPlugin(name)).rejects.toThrow(
+      /^Plugin "fooPlugin" is already started.$/u,
+    );
+    expect(mockExecutePlugin).toHaveBeenCalledTimes(1);
+    expect(mockExecutePlugin).toHaveBeenCalledWith({
+      pluginName: name,
+      sourceCode,
+    });
   });
 });
