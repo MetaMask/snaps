@@ -10,7 +10,7 @@ describe('Worker Controller', () => {
   it('can boot', async () => {
     const webWorkerExecutionEnvironmentService = new WebWorkerExecutionEnvironmentService(
       {
-        setupWorkerConnection: () => {
+        setupPluginProvider: () => {
           // do nothing
         },
         workerUrl: new URL('https://foo.bar.baz'),
@@ -21,7 +21,7 @@ describe('Worker Controller', () => {
   it('can create a plugin worker and start the plugin', async () => {
     const webWorkerExecutionEnvironmentService = new WebWorkerExecutionEnvironmentService(
       {
-        setupWorkerConnection: () => {
+        setupPluginProvider: () => {
           // do nothing
         },
         workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
