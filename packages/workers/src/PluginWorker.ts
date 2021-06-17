@@ -94,11 +94,11 @@ lockdown({
       }
 
       switch (method) {
-        case 'installPlugin':
-          this.installPlugin(id, (params as unknown) as PluginData);
+        case 'executePlugin':
+          this.executePlugin(id, (params as unknown) as PluginData);
           break;
 
-        case 'ping':
+        case 'handshake':
           this.respond(id, { result: 'OK' });
           break;
 
@@ -146,13 +146,13 @@ lockdown({
       }
     }
 
-    private installPlugin(
+    private executePlugin(
       id: JsonRpcId,
       { pluginName, sourceCode }: Partial<PluginData> = {},
     ) {
       if (!isTruthyString(pluginName) || !isTruthyString(sourceCode)) {
         this.respond(id, {
-          error: new Error('Invalid installPlugin parameters.'),
+          error: new Error('Invalid executePlugin parameters.'),
         });
         return;
       }

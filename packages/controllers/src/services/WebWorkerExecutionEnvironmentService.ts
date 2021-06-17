@@ -191,7 +191,7 @@ export class WebWorkerExecutionEnvironmentService
 
     const result = await this._command(worker.id, {
       jsonrpc: '2.0',
-      method: 'installPlugin',
+      method: 'executePlugin',
       params: pluginData,
       id: nanoid(),
     });
@@ -252,7 +252,7 @@ export class WebWorkerExecutionEnvironmentService
 
     await this._command(workerId, {
       jsonrpc: '2.0',
-      method: 'ping',
+      method: 'handshake',
       id: nanoid(),
     });
 
