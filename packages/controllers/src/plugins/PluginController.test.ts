@@ -13,7 +13,7 @@ describe('PluginController Controller', () => {
   it('can create a worker and plugin controller', async () => {
     const workerExecutionEnvironment = new WebWorkerExecutionEnvironmentService(
       {
-        setupWorkerConnection: jest.fn(),
+        setupPluginProvider: jest.fn(),
         workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
       },
     );
@@ -45,7 +45,7 @@ describe('PluginController Controller', () => {
   it('can add a plugin and use its JSON-RPC api with a WebWorkerExecutionEnvironmentService', async () => {
     const webWorkerExecutionEnvironment = new WebWorkerExecutionEnvironmentService(
       {
-        setupWorkerConnection: jest.fn(),
+        setupPluginProvider: jest.fn(),
         workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
       },
     );
