@@ -70,7 +70,7 @@ export type PluginControllerState = {
 
 interface PluginControllerArgs {
   messenger: RestrictedControllerMessenger<string, any, any, string, string>;
-  state: PluginControllerState;
+  state?: PluginControllerState;
   removeAllPermissionsFor: RemoveAllPermissionsFunction;
   closeAllConnections: CloseAllConnectionsFunction;
   requestPermissions: RequestPermissionsFunction;
@@ -175,12 +175,6 @@ export class PluginController extends BaseController<
       state: { ...defaultState, ...state },
     });
 
-    this.update((_state: any) => {
-      _state.inlinePluginIsRunning = state.inlinePluginIsRunning;
-      _state.plugins = state.plugins;
-      _state.pluginStates = state.pluginStates;
-    });
-
     this._removeAllPermissionsFor = removeAllPermissionsFor;
     this._closeAllConnections = closeAllConnections;
     this._requestPermissions = requestPermissions;
@@ -238,18 +232,11 @@ export class PluginController extends BaseController<
     if (!plugin) {
       throw new Error(`Plugin "${pluginName}" not found.`);
     }
-    if (plugin.isRunning) {
-      throw new Error(`Plugin "${pluginName}" already running.`);
-    }
 
-    try {
-      await this._startPlugin({
-        pluginName,
-        sourceCode: plugin.sourceCode,
-      });
-    } catch (err) {
-      console.error(`Failed to start "${pluginName}".`, err);
-    }
+    await this._startPlugin({
+      pluginName,
+      sourceCode: plugin.sourceCode,
+    });
   }
 
   /**
@@ -551,6 +538,11 @@ export class PluginController extends BaseController<
   }
 
   private async _startPlugin(pluginData: PluginData) {
+    const { pluginName } = pluginData;
+    if (this.get(pluginName).isRunning) {
+      throw new Error(`Plugin "${pluginName}" is already started.`);
+    }
+
     const result = await this._executePlugin(pluginData);
     this._setPluginToRunning(pluginData.pluginName);
     return result;
@@ -619,6 +611,7 @@ export class PluginController extends BaseController<
    *
    * @param name - The name of the plugin.
    * @param manifestUrl - The URL of the plugin's manifest file.
+   * @returns An array of the plugin manifest object and the plugin source code.
    */
   private async _fetchPlugin(
     pluginName: string,
