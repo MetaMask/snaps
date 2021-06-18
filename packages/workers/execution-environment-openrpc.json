@@ -35,6 +35,7 @@
           "description": "a plugins source code that gets executed in the environment",
           "required": true,
           "schema": {
+            "title": "SourceCode",
             "type": "string"
           }
         }
@@ -74,6 +75,7 @@
           "required": true,
           "description": "the name of the plugin method",
           "schema": {
+            "title": "Target",
             "type": "string"
           }
         },
@@ -82,6 +84,7 @@
           "required": true,
           "description": "Origin of the plugin JSON-RPC request",
           "schema": {
+            "title": "Origin",
             "type": "string"
           }
         },
@@ -96,10 +99,12 @@
             "required": ["method", "params"],
             "properties": {
               "jsonrpc": {
+                "title": "JSONRPCString",
                 "type": "string",
                 "const": "2.0"
               },
               "id": {
+                "title": "JSONRPCID",
                 "oneOf": [
                   {
                     "type": "string"
@@ -110,18 +115,13 @@
                 ]
               },
               "method": {
+                "title": "JSONRPCMethod",
                 "description": "the name of the method",
                 "type": "string"
               },
               "params": {
-                "oneOf": [
-                  {
-                    "type": "array"
-                  },
-                  {
-                    "type": "object"
-                  }
-                ]
+                "title": "JSONRPCParams",
+                "type": ["array", "object"]
               }
             }
           }
@@ -130,6 +130,7 @@
       "result": {
         "name": "HandlePluginRpcResult",
         "schema": {
+          "title": "PluginRpcResult",
           "type": "object",
           "properties": {
             "result": true,
@@ -173,6 +174,7 @@
   "components": {
     "schemas": {
       "OK": {
+        "title": "OK",
         "type": "string",
         "const": "OK"
       }
