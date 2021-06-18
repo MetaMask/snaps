@@ -52,7 +52,11 @@ export class PermissionsController extends BaseController<
 > {
   private safeMethods: Set<string>;
 
-  constructor({ messenger, state = {}, safeMethods }: PermissionsControllerOptions) {
+  constructor({
+    messenger,
+    state = {},
+    safeMethods,
+  }: PermissionsControllerOptions) {
     super({
       name,
       metadata,

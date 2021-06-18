@@ -6,11 +6,18 @@ import { Caveat } from './Caveat';
 
 export type CaveatFunction<T, U> = JsonRpcMiddleware<T, U>;
 
-export type CaveatFunctionGenerator<T, U> = (
-  caveat: Caveat<Json>,
+export type CaveatFunctionGenerator<C extends Json, T, U> = (
+  caveat: Caveat<C>,
 ) => CaveatFunction<T, U>;
 
-export const caveatFunctions = {
+/**
+ * Caveat middleware function generators for all caveat types.
+ *
+ * A caveat function generator takes a caveat object and returns a caveat
+ * middleware function corresponding to the caveat's type and bound to its
+ * value.
+ */
+export const caveatFunctionGenerators = {
   filterResponse,
   forceParams,
   limitResponseLength,
@@ -22,15 +29,14 @@ export const caveatFunctions = {
  * Require that request.params is a subset of or equal to the caveat value.
  * Arrays are order-dependent, objects are order-independent.
  */
-export function requireParamsIsSubset(
-  serialized: Caveat<Record<string, Json>>,
+function requireParamsIsSubset(
+  caveat: Caveat<Record<string, Json>>,
 ): CaveatFunction<unknown[] | Record<string, unknown>, unknown> {
-  const { value } = serialized;
-  return (req, res, next, end): void => {
+  const { value } = caveat;
+  return (req, _res, next, _end): void => {
     // Ensure that the params are a subset of or equal to the caveat value
     if (!isSubset(value, req.params)) {
-      res.error = ethErrors.provider.unauthorized({ data: req });
-      return end(res.error);
+      throw ethErrors.provider.unauthorized({ data: req });
     }
 
     return next();
@@ -41,15 +47,14 @@ export function requireParamsIsSubset(
  * Require that request.params is a superset of or equal to the caveat value.
  * Arrays are order-dependent, objects are order-independent.
  */
-export function requireParamsIsSuperset(
-  serialized: Caveat<Record<string, Json>>,
+function requireParamsIsSuperset(
+  caveat: Caveat<Record<string, Json>>,
 ): CaveatFunction<unknown[] | Record<string, unknown>, unknown> {
-  const { value } = serialized;
-  return (req, res, next, end): void => {
+  const { value } = caveat;
+  return (req, _res, next, _end): void => {
     // Ensure that the params are a superset of or equal to the caveat value
     if (!isSubset(req.params, value)) {
-      res.error = ethErrors.provider.unauthorized({ data: req });
-      return end(res.error);
+      throw ethErrors.provider.unauthorized({ data: req });
     }
 
     return next();
@@ -59,10 +64,10 @@ export function requireParamsIsSuperset(
 /*
  * Filters array results deeply.
  */
-export function filterResponse(
-  serialized: Caveat<Json[]>,
+function filterResponse(
+  caveat: Caveat<Json[]>,
 ): CaveatFunction<unknown, unknown[]> {
-  const { value } = serialized;
+  const { value } = caveat;
   return (_req, res, next, _end): void => {
     next((done) => {
       if (Array.isArray(res.result)) {
@@ -82,10 +87,10 @@ export function filterResponse(
 /*
  * Limits array results to a specific integer length.
  */
-export function limitResponseLength(
-  serialized: Caveat<number>,
+function limitResponseLength(
+  caveat: Caveat<number>,
 ): CaveatFunction<unknown, unknown[]> {
-  const { value } = serialized;
+  const { value } = caveat;
   return (_req, res, next, _end): void => {
     next((done) => {
       if (Array.isArray(res.result)) {
@@ -97,14 +102,14 @@ export function limitResponseLength(
 }
 
 /*
- * Forces the method to be called with given params.
+ * Forces the method to be called with the specified params.
  */
-export function forceParams(
-  serialized: Caveat<Json[] | Record<string, Json>>,
+function forceParams(
+  caveat: Caveat<Json[] | Record<string, Json>>,
 ): CaveatFunction<unknown, unknown> {
-  const { value } = serialized;
-  return (req, _, next): void => {
+  const { value } = caveat;
+  return (req, _res, next, _end): void => {
     req.params = Array.isArray(value) ? [...value] : { ...value };
-    next();
+    return next();
   };
 }
