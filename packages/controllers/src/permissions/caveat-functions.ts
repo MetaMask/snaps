@@ -30,13 +30,20 @@ export const caveatFunctionGenerators = {
  * Arrays are order-dependent, objects are order-independent.
  */
 function requireParamsIsSubset(
-  caveat: Caveat<Record<string, Json>>,
-): CaveatFunction<unknown[] | Record<string, unknown>, unknown> {
+  caveat: Caveat<Json[] | Record<string, Json>>,
+): CaveatFunction<
+  Json[] | Record<string, Json>,
+  Json[] | Record<string, Json>
+> {
   const { value } = caveat;
   return (req, _res, next, _end): void => {
     // Ensure that the params are a subset of or equal to the caveat value
     if (!isSubset(value, req.params)) {
-      throw ethErrors.provider.unauthorized({ data: req });
+      throw ethErrors.provider.unauthorized({
+        data: { permittedParameters: value },
+        message:
+          'Unauthorized parameters. The request parameters must be a subset of or equal to the permitted parameters.',
+      });
     }
 
     return next();
@@ -48,13 +55,20 @@ function requireParamsIsSubset(
  * Arrays are order-dependent, objects are order-independent.
  */
 function requireParamsIsSuperset(
-  caveat: Caveat<Record<string, Json>>,
-): CaveatFunction<unknown[] | Record<string, unknown>, unknown> {
+  caveat: Caveat<Json[] | Record<string, Json>>,
+): CaveatFunction<
+  Json[] | Record<string, Json>,
+  Json[] | Record<string, Json>
+> {
   const { value } = caveat;
   return (req, _res, next, _end): void => {
     // Ensure that the params are a superset of or equal to the caveat value
     if (!isSubset(req.params, value)) {
-      throw ethErrors.provider.unauthorized({ data: req });
+      throw ethErrors.provider.unauthorized({
+        data: { requiredParameters: value },
+        message:
+          'Unauthorized parameters; missing required parameters. The request parameters must be a superset of or equal to the required parameters.',
+      });
     }
 
     return next();
@@ -66,19 +80,18 @@ function requireParamsIsSuperset(
  */
 function filterResponse(
   caveat: Caveat<Json[]>,
-): CaveatFunction<unknown, unknown[]> {
+): CaveatFunction<Json[], Json[]> {
   const { value } = caveat;
   return (_req, res, next, _end): void => {
     next((done) => {
-      if (Array.isArray(res.result)) {
-        res.result = res.result.filter((item) => {
-          const findResult = value.find((resultValue: Json) => {
-            return equal(resultValue, item);
-          });
-
-          return findResult !== undefined;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      res.result = res.result!.filter((item) => {
+        const findResult = value.find((resultValue: Json) => {
+          return equal(resultValue, item);
         });
-      }
+
+        return findResult !== undefined;
+      });
       done();
     });
   };
@@ -89,13 +102,12 @@ function filterResponse(
  */
 function limitResponseLength(
   caveat: Caveat<number>,
-): CaveatFunction<unknown, unknown[]> {
+): CaveatFunction<Json[], Json[]> {
   const { value } = caveat;
   return (_req, res, next, _end): void => {
     next((done) => {
-      if (Array.isArray(res.result)) {
-        res.result = res.result.slice(0, value);
-      }
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      res.result = res.result!.slice(0, value);
       done();
     });
   };
@@ -106,7 +118,10 @@ function limitResponseLength(
  */
 function forceParams(
   caveat: Caveat<Json[] | Record<string, Json>>,
-): CaveatFunction<unknown, unknown> {
+): CaveatFunction<
+  Json[] | Record<string, Json>,
+  Json[] | Record<string, Json>
+> {
   const { value } = caveat;
   return (req, _res, next, _end): void => {
     req.params = Array.isArray(value) ? [...value] : { ...value };

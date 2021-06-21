@@ -46,6 +46,9 @@ interface PermissionsControllerOptions {
   safeMethods: string[];
 }
 
+// TODO: Use this error message.
+// 'Unauthorized to perform action. Try requesting the required permission(s) first. For more information, see: https://docs.metamask.io/guide/rpc-api.html#permissions'
+
 export class PermissionsController extends BaseController<
   typeof name,
   PermissionsControllerState
