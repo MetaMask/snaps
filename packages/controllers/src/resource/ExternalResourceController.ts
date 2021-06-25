@@ -1,5 +1,8 @@
-import { ObservableStore } from '@metamask/obs-store';
-import SafeEventEmitter from '@metamask/safe-event-emitter';
+import {
+  BaseControllerV2 as BaseController,
+  RestrictedControllerMessenger,
+} from '@metamask/controllers';
+import { Json } from 'json-rpc-engine';
 import { ethErrors } from 'eth-rpc-errors';
 import { nanoid } from 'nanoid';
 
@@ -8,38 +11,40 @@ export interface ResourceBase {
   readonly fromDomain: string;
 }
 
-export type Resources<ResourceType extends ResourceBase> = Record<
-  string,
-  ResourceType
->;
-
-export type ResourceRequestHandler<T extends Record<string, unknown>> = (
+export type ResourceRequestHandler<T extends Record<string, Json>> = (
   fromDomain: string,
   method: string,
   arg?: string | Partial<T>,
 ) => string | T | null;
 
-const alwaysRequiredFields = ['fromDomain'];
-type RequiredFieldsType = readonly string[] & typeof alwaysRequiredFields;
+const fromDomainKey = 'fromDomain';
+type RequiredFieldsType = readonly string[] & [typeof fromDomainKey];
 
-const computeState = <
-  StorageKey extends string,
-  ResourceType extends Record<string, unknown>
->(
-  storageKey: StorageKey,
-  initialResources: Resources<ResourceType & ResourceBase>,
-) => {
-  return { [storageKey]: initialResources };
+const name = 'ExternalResourceController';
+const storageKey = 'externalDomainResources';
+
+export type Resources<ResourceType extends Record<string, Json>> = Record<
+  string,
+  ResourceType & ResourceBase
+>;
+
+type ResourceControllerState<ResourceType extends Record<string, Json>> = {
+  [storageKey]: Resources<ResourceType>;
 };
 
 interface ExternalResourceControllerArgs<
-  StorageKey extends string,
   RequiredFields extends readonly string[],
-  ResourceType extends Record<RequiredFieldsType[number], unknown>
+  ResourceType extends Record<RequiredFieldsType[number], Json>
 > {
-  storageKey: StorageKey;
+  messenger: RestrictedControllerMessenger<
+    typeof name,
+    any,
+    any,
+    string,
+    string
+  >;
   requiredFields: RequiredFields;
-  initialResources: Resources<ResourceType & ResourceBase>;
+  state?: ResourceControllerState<ResourceType>;
 }
 
 const getUnauthorizedMessage = (id: string) =>
@@ -52,44 +57,40 @@ const getUnauthorizedMessage = (id: string) =>
  * These are things that MetaMask treats as first-class objects with distinct properties within its own UI.
  */
 export class ExternalResourceController<
-  StorageKey extends string,
   RequiredFields extends readonly string[],
-  ResourceType extends Record<RequiredFields[number], unknown>
-> extends SafeEventEmitter {
+  ResourceType extends Record<RequiredFields[number], Json>
+> extends BaseController<typeof name, ResourceControllerState<ResourceType>> {
   private readonly requiredFields: readonly string[];
 
-  private readonly storageKey: StorageKey;
-
-  private readonly store: ObservableStore<ReturnType<typeof computeState>>;
+  public readonly storageKey = storageKey;
 
   constructor({
-    storageKey,
     requiredFields,
-    initialResources,
-  }: ExternalResourceControllerArgs<StorageKey, RequiredFields, ResourceType>) {
-    super();
+    state = { [storageKey]: {} },
+    messenger,
+  }: ExternalResourceControllerArgs<RequiredFields, ResourceType>) {
+    super({
+      name,
+      messenger,
+      metadata: {
+        [storageKey]: { persist: true, anonymous: true },
+      },
+      state: state as any,
+    });
     this.requiredFields = requiredFields;
     this.storageKey = storageKey;
-
-    this.store = new ObservableStore(
-      computeState(storageKey, initialResources),
-    );
   }
 
-  getResources(): Resources<ResourceType & ResourceBase> {
+  getResources(): Resources<ResourceType> {
     return {
-      ...(this.store.getState()[this.storageKey] as Resources<
-        ResourceType & ResourceBase
-      >),
+      ...(this.state[this.storageKey] as Resources<ResourceType>),
     };
   }
 
-  private setResources(
-    resources: Resources<ResourceType & ResourceBase>,
-  ): void {
-    this.store.updateState({
+  private setResources(resources: Resources<ResourceType>): void {
+    this.update({
       [this.storageKey]: resources,
-    });
+    } as any);
   }
 
   clearResources(): void {
@@ -105,12 +106,15 @@ export class ExternalResourceController<
         }
         return acc;
       },
-      {} as Resources<ResourceType & ResourceBase>,
+      {} as Resources<ResourceType>,
     );
     this.setResources(newResources);
   }
 
-  get(fromDomain: string, id: string): (ResourceType & ResourceBase) | null {
+  getResource(
+    fromDomain: string,
+    id: string,
+  ): (ResourceType & ResourceBase) | null {
     const resource = this.getResources()[id];
     if (resource && resource.fromDomain !== fromDomain) {
       throw ethErrors.provider.unauthorized({
@@ -126,7 +130,10 @@ export class ExternalResourceController<
     });
   }
 
-  add(fromDomain: string, resource: ResourceType & { id?: string }): string {
+  addResource(
+    fromDomain: string,
+    resource: ResourceType & { id?: string },
+  ): string {
     const newResource = this.processNewResource(fromDomain, resource);
     const { id } = newResource;
     const resources = this.getResources();
@@ -141,7 +148,7 @@ export class ExternalResourceController<
     return newResource.id;
   }
 
-  update(
+  updateResource(
     fromDomain: string,
     resource: Partial<ResourceType> & { id: string },
   ): string {
@@ -186,7 +193,7 @@ export class ExternalResourceController<
     } as ResourceType & ResourceBase;
   }
 
-  delete(fromDomain: string, id: string): null {
+  deleteResource(fromDomain: string, id: string): null {
     const resources = this.getResources();
     const existingResource = resources[id];
     if (!existingResource) {
@@ -211,15 +218,15 @@ export class ExternalResourceController<
 
     switch (method) {
       case 'get':
-        return this.get(fromDomain, arg);
+        return this.getResource(fromDomain, arg);
       case 'getAll':
         return this.getAllResources(fromDomain);
       case 'add':
-        return this.add(fromDomain, arg);
+        return this.addResource(fromDomain, arg);
       case 'update':
-        return this.update(fromDomain, arg);
+        return this.updateResource(fromDomain, arg);
       case 'delete':
-        return this.delete(fromDomain, arg);
+        return this.deleteResource(fromDomain, arg);
       default:
         throw ethErrors.rpc.methodNotFound({
           message: `Not an asset method: ${method}`,
