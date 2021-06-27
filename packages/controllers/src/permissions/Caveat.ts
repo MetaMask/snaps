@@ -15,9 +15,20 @@ interface CaveatOptions<ValueType extends Json> {
 }
 
 /**
- * A caveat is...
+ *
  */
-export class Caveat<ValueType extends Json> {
+export interface ZcapLdCaveat {
+  /**
+   * The type of the caveat, which is presumed to be meaningful in the context
+   * of the capability it is associated with.
+   */
+  type: string;
+}
+
+/**
+ * TODO: Document
+ */
+export class Caveat<ValueType extends Json> implements ZcapLdCaveat {
   /**
    * The type of the caveat.
    */
@@ -26,14 +37,14 @@ export class Caveat<ValueType extends Json> {
   /**
    * The unique name of the caveat.
    *
-   * TODO: Should be optional
+   * TODO: Make optional in typescript@4.4.x
    */
   public readonly name: string | null;
 
   /**
    * Any additional data necessary to enforce the caveat.
    *
-   * TODO: Should be optional
+   * TODO: Make optional in typescript@4.4.x
    */
   public readonly value: ValueType;
 
