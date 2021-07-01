@@ -1,16 +1,7 @@
 import { Json } from 'json-rpc-engine';
 
-export enum CaveatType {
-  FilterResponse = 'filterResponse',
-  ForceParams = 'forceParams',
-  LimitResponseLength = 'limitResponseLength',
-  RequireParamsIsSubset = 'requireParamsIsSubset',
-  RequireParamsIsSuperset = 'requireParamsIsSuperset',
-}
-
 interface CaveatOptions<ValueType extends Json> {
-  type: CaveatType;
-  name?: string;
+  type: string;
   value: ValueType;
 }
 
@@ -30,16 +21,12 @@ export interface ZcapLdCaveat {
  */
 export class Caveat<ValueType extends Json> implements ZcapLdCaveat {
   /**
-   * The type of the caveat.
-   */
-  public readonly type: CaveatType;
-
-  /**
-   * The unique name of the caveat.
+   * The type of the caveat. The type is presumed to be meaningful in the
+   * context of the capability it is associated with.
    *
-   * TODO: Make optional in typescript@4.4.x
+   * In MetaMask, every permission can only have one caveat of each type.
    */
-  public readonly name: string | null;
+  public readonly type: string;
 
   /**
    * Any additional data necessary to enforce the caveat.
@@ -48,9 +35,8 @@ export class Caveat<ValueType extends Json> implements ZcapLdCaveat {
    */
   public readonly value: ValueType;
 
-  constructor({ type, name, value }: CaveatOptions<ValueType>) {
+  constructor({ type, value }: CaveatOptions<ValueType>) {
     this.type = type;
-    this.name = name || null;
     this.value = value;
   }
 }

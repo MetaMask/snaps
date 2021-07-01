@@ -4,6 +4,12 @@ import equal from 'fast-deep-equal';
 import { ethErrors } from 'eth-rpc-errors';
 import { Caveat } from './Caveat';
 
+// TODO: Decide what to do with these functions.
+// Since caveats are now implemented by the consumer of the permissions
+// controller, these will no longer serve their intended purpose.
+// However, some of them may still be useful as utilities for constructing
+// caveats, since some of them are battle-tested, and all of them have tests.
+
 export type CaveatFunction<Params, Result> = JsonRpcMiddleware<Params, Result>;
 
 export type CaveatFunctionGenerator<

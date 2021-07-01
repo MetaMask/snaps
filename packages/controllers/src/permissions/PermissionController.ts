@@ -4,9 +4,9 @@ import {
 } from '@metamask/controllers';
 import { ethErrors } from 'eth-rpc-errors';
 import {
-  CaveatFunctionGenerator,
-  caveatFunctionGenerators,
-} from './caveat-functions';
+  CaveatSpecification,
+  CaveatSpecifications,
+} from './caveat-processor';
 import {
   OriginString,
   Permission,
@@ -63,9 +63,10 @@ interface PermissionsControllerOptions {
     never
   >;
   state?: Partial<PermissionsControllerState>;
+  caveatSpecifications: CaveatSpecifications;
+  methodPrefix: string;
   restrictedMethods: string[];
   safeMethods: string[];
-  methodPrefix: string;
 }
 
 export class PermissionsController extends BaseController<
@@ -83,15 +84,14 @@ export class PermissionsController extends BaseController<
 
   private readonly internalMethods: Readonly<Set<string>>;
 
-  private readonly caveatFunctionGenerators: Readonly<
-    Record<string, CaveatFunctionGenerator<any, any, any>>
-  > = {
-    ...caveatFunctionGenerators,
-  };
+  private readonly caveatSpecifications: Readonly<CaveatSpecifications>;
+
+  private readonly caveatTypes: Readonly<Set<string>>;
 
   constructor({
     messenger,
     state = {},
+    caveatSpecifications,
     methodPrefix,
     restrictedMethods,
     safeMethods,
@@ -103,6 +103,8 @@ export class PermissionsController extends BaseController<
       state: { ...defaultState, ...state },
     });
 
+    this.caveatSpecifications = caveatSpecifications;
+    this.caveatTypes = getCaveatTypes(caveatSpecifications);
     this.methodPrefix = methodPrefix;
     this.internalMethods = getInternalMethodNames(methodPrefix);
     this.restrictedMethods = new Set(restrictedMethods);
@@ -223,6 +225,10 @@ export class PermissionsController extends BaseController<
 
     return '';
   }
+}
+
+function getCaveatTypes(caveatSpecifications: CaveatSpecifications) {
+  return new Set(Object.values(caveatSpecifications).map(specification => specification.type))
 }
 
 function getInternalMethodNames(methodPrefix: string) {
