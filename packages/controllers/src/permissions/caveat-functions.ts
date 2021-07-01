@@ -4,11 +4,13 @@ import equal from 'fast-deep-equal';
 import { ethErrors } from 'eth-rpc-errors';
 import { Caveat } from './Caveat';
 
-export type CaveatFunction<T, U> = JsonRpcMiddleware<T, U>;
+export type CaveatFunction<Params, Result> = JsonRpcMiddleware<Params, Result>;
 
-export type CaveatFunctionGenerator<C extends Json, T, U> = (
-  caveat: Caveat<C>,
-) => CaveatFunction<T, U>;
+export type CaveatFunctionGenerator<
+  CaveatValue extends Json,
+  Params,
+  Result
+> = (caveat: Caveat<CaveatValue>) => CaveatFunction<Params, Result>;
 
 /**
  * Caveat middleware function generators for all caveat types.

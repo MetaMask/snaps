@@ -11,7 +11,7 @@ export type OriginString = string;
 /**
  * The name of a restricted method.
  */
-export type RestrictedMethodName = string;
+export type MethodName = string;
 
 /**
  * An interface
@@ -75,12 +75,12 @@ interface PermissionOptions {
   /**
    * The method that the permission corresponds to.
    */
-  method: RestrictedMethodName;
+  target: MethodName;
 
   /**
    * The origin string of the external domain that has the permission.
    */
-  origin: OriginString;
+  invoker: OriginString;
 
   /**
    * The GUID of the permission object.
@@ -127,41 +127,15 @@ export class Permission implements ZcapLdCapability {
    */
   public readonly invoker: OriginString;
 
-  constructor({ method, origin, caveats, id }: PermissionOptions) {
+  constructor({ target, invoker, caveats, id }: PermissionOptions) {
     this.id = id ?? nanoid();
-    this.parentCapability = method;
-    this.invoker = origin;
+    this.parentCapability = target;
+    this.invoker = invoker;
     this.caveats = caveats ?? null;
     this.date = new Date().getTime();
   }
 }
 
-type RequestedPermission = Pick<PermissionOptions, 'caveats' | 'method'>;
+type RequestedPermission = Pick<PermissionOptions, 'caveats' | 'target'>;
 
-export type RequestedPermissions = Record<OriginString, RequestedPermission>;
-
-export interface DomainMetadata {
-  origin: OriginString;
-}
-
-export interface PermissionsRequestMetadata extends DomainMetadata {
-  id: string;
-}
-
-/**
- * Used for prompting the user about a proposed new permission.
- * Includes information about the domain granted, as well as the permissions
- * assigned.
- */
-export interface PermissionsRequest {
-  metadata: PermissionsRequestMetadata;
-  permissions: RequestedPermissions;
-}
-
-export type UserApprovalPrompt = (
-  permissionsRequest: PermissionsRequest,
-) => Promise<RequestedPermissions>;
-
-export interface PermissionsDomainEntry extends DomainMetadata {
-  permissions: Record<RestrictedMethodName, Permission>;
-}
+export type RequestedPermissions = Record<MethodName, RequestedPermission>;
