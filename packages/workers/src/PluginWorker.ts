@@ -95,7 +95,7 @@ lockdown({
 
       switch (method) {
         case 'executePlugin':
-          this.executePlugin(id, (params as unknown) as PluginData);
+          this.executePlugin(id, params as unknown as PluginData);
           break;
 
         case 'handshake':
@@ -103,10 +103,7 @@ lockdown({
           break;
 
         case 'pluginRpc':
-          await this.handlePluginRpc(
-            id,
-            (params as unknown) as PluginRpcRequest,
-          );
+          await this.handlePluginRpc(id, params as unknown as PluginRpcRequest);
           break;
 
         default:
@@ -127,7 +124,7 @@ lockdown({
 
     private async handlePluginRpc(
       id: JsonRpcId,
-      { origin, request, target }: PluginRpcRequest,
+      { origin: requestOrigin, request, target }: PluginRpcRequest,
     ) {
       const handler = this.pluginRpcHandlers.get(target);
 
@@ -139,7 +136,7 @@ lockdown({
       }
 
       try {
-        const result = await handler(origin, request);
+        const result = await handler(requestOrigin, request);
         this.respond(id, { result });
       } catch (error) {
         this.respond(id, { error });
@@ -215,12 +212,9 @@ lockdown({
      * plugin provider object (i.e. globalThis.wallet), and returns it.
      */
     private createPluginProvider(pluginName: string): PluginProvider {
-      const pluginProvider = (new MetaMaskInpageProvider(
-        this.rpcStream as any,
-        {
-          shouldSendMetadata: false,
-        },
-      ) as unknown) as Partial<PluginProvider>;
+      const pluginProvider = new MetaMaskInpageProvider(this.rpcStream as any, {
+        shouldSendMetadata: false,
+      }) as unknown as Partial<PluginProvider>;
 
       pluginProvider.registerRpcMessageHandler = (func: PluginRpcHandler) => {
         console.log('Worker: Registering RPC message handler', func);

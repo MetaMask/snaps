@@ -27,9 +27,10 @@ describe('PluginController Controller', () => {
       executePlugin: workerExecutionEnvironment.executePlugin.bind(
         workerExecutionEnvironment,
       ),
-      getRpcMessageHandler: workerExecutionEnvironment.getRpcMessageHandler.bind(
-        workerExecutionEnvironment,
-      ),
+      getRpcMessageHandler:
+        workerExecutionEnvironment.getRpcMessageHandler.bind(
+          workerExecutionEnvironment,
+        ),
       removeAllPermissionsFor: jest.fn(),
       getPermissions: jest.fn(),
       hasPermission: jest.fn(),
@@ -43,25 +44,26 @@ describe('PluginController Controller', () => {
   });
 
   it('can add a plugin and use its JSON-RPC api with a WebWorkerExecutionEnvironmentService', async () => {
-    const webWorkerExecutionEnvironment = new WebWorkerExecutionEnvironmentService(
-      {
+    const webWorkerExecutionEnvironment =
+      new WebWorkerExecutionEnvironmentService({
         setupPluginProvider: jest.fn(),
         workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
-      },
-    );
+      });
     const pluginController = new PluginController({
-      terminateAllPlugins: webWorkerExecutionEnvironment.terminateAllPlugins.bind(
-        webWorkerExecutionEnvironment,
-      ),
+      terminateAllPlugins:
+        webWorkerExecutionEnvironment.terminateAllPlugins.bind(
+          webWorkerExecutionEnvironment,
+        ),
       terminatePlugin: webWorkerExecutionEnvironment.terminatePlugin.bind(
         webWorkerExecutionEnvironment,
       ),
       executePlugin: webWorkerExecutionEnvironment.executePlugin.bind(
         webWorkerExecutionEnvironment,
       ),
-      getRpcMessageHandler: webWorkerExecutionEnvironment.getRpcMessageHandler.bind(
-        webWorkerExecutionEnvironment,
-      ),
+      getRpcMessageHandler:
+        webWorkerExecutionEnvironment.getRpcMessageHandler.bind(
+          webWorkerExecutionEnvironment,
+        ),
       removeAllPermissionsFor: jest.fn(),
       getPermissions: jest.fn(),
       hasPermission: jest.fn(),

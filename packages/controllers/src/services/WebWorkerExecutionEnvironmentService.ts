@@ -12,7 +12,7 @@ import {
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from 'json-rpc-engine';
-import { ExecutionEnvironmentService } from '../services/ExecutionEnvironmentService';
+import { ExecutionEnvironmentService } from './ExecutionEnvironmentService';
 
 export type SetupPluginProvider = (pluginName: string, stream: Duplex) => void;
 
@@ -41,7 +41,8 @@ interface WorkerWrapper {
 }
 
 export class WebWorkerExecutionEnvironmentService
-  implements ExecutionEnvironmentService {
+  implements ExecutionEnvironmentService
+{
   public store: ObservableStore<{ workers: Record<string, WorkerWrapper> }>;
 
   private _pluginRpcHooks: Map<string, PluginRpcHook>;
@@ -100,9 +101,8 @@ export class WebWorkerExecutionEnvironmentService
     }
 
     console.log('Parent: Sending Command', message);
-    const response: PendingJsonRpcResponse<unknown> = await workerWrapper.rpcEngine.handle(
-      message,
-    );
+    const response: PendingJsonRpcResponse<unknown> =
+      await workerWrapper.rpcEngine.handle(message);
     if (response.error) {
       throw new Error(response.error.message);
     }
@@ -186,7 +186,7 @@ export class WebWorkerExecutionEnvironmentService
     this._mapPluginAndWorker(pluginData.pluginName, worker.id);
     this.setupPluginProvider(
       pluginData.pluginName,
-      (worker.streams.rpc as unknown) as Duplex,
+      worker.streams.rpc as unknown as Duplex,
     );
 
     const result = await this._command(worker.id, {
@@ -263,7 +263,7 @@ export class WebWorkerExecutionEnvironmentService
     const workerStream = new WorkerParentPostMessageStream({ worker });
     // Typecast justification: stream type mismatch
     const mux = setupMultiplex(
-      (workerStream as unknown) as Duplex,
+      workerStream as unknown as Duplex,
       `Worker:${workerId}`,
     );
 
@@ -273,7 +273,7 @@ export class WebWorkerExecutionEnvironmentService
 
     // Typecast: stream type mismatch
     return {
-      command: (commandStream as unknown) as Duplex,
+      command: commandStream as unknown as Duplex,
       rpc: rpcStream,
       _connection: workerStream,
     };
@@ -295,7 +295,7 @@ function setupMultiplex(
   pump(
     connectionStream,
     // Typecast: stream type mismatch
-    (mux as unknown) as Duplex,
+    mux as unknown as Duplex,
     connectionStream,
     (err) => {
       if (err) {

@@ -6,7 +6,7 @@ export function isPlainObject(
 
 type SelectedHooks<
   Hooks extends Record<keyof HookNames, unknown>,
-  HookNames extends Record<string, boolean>
+  HookNames extends Record<string, boolean>,
 > = Pick<Hooks, keyof HookNames & keyof Hooks>;
 
 export function selectHooks<Hooks extends Record<string, unknown>>(
@@ -16,12 +16,12 @@ export function selectHooks<Hooks extends Record<string, unknown>>(
 
 export function selectHooks<
   Hooks extends Record<keyof HookNames, unknown>,
-  HookNames extends Record<string, boolean>
+  HookNames extends Record<string, boolean>,
 >(hooks: Hooks, hookNames: HookNames): SelectedHooks<Hooks, HookNames>;
 
 export function selectHooks<
   T extends Record<keyof U, unknown>,
-  U extends Record<string, boolean>
+  U extends Record<string, boolean>,
 >(hooks: T, hookNames?: U) {
   if (hookNames) {
     return Object.keys(hookNames).reduce((hookSubset, _hookName) => {

@@ -8,25 +8,23 @@ const workerCode = fs.readFileSync(
 
 describe('Worker Controller', () => {
   it('can boot', async () => {
-    const webWorkerExecutionEnvironmentService = new WebWorkerExecutionEnvironmentService(
-      {
+    const webWorkerExecutionEnvironmentService =
+      new WebWorkerExecutionEnvironmentService({
         setupPluginProvider: () => {
           // do nothing
         },
         workerUrl: new URL('https://foo.bar.baz'),
-      },
-    );
+      });
     expect(webWorkerExecutionEnvironmentService).toBeDefined();
   });
   it('can create a plugin worker and start the plugin', async () => {
-    const webWorkerExecutionEnvironmentService = new WebWorkerExecutionEnvironmentService(
-      {
+    const webWorkerExecutionEnvironmentService =
+      new WebWorkerExecutionEnvironmentService({
         setupPluginProvider: () => {
           // do nothing
         },
         workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
-      },
-    );
+      });
     const pluginName = 'foo.bar.baz';
     const response = await webWorkerExecutionEnvironmentService.executePlugin({
       pluginName,
