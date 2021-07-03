@@ -28,7 +28,7 @@ interface ZcapLdCapability {
   /**
    * The cryptograhically strong GUID of the capability.
    */
-  'id': string;
+  id: string;
 
   /**
    * A pointer to the resource that possession of the capability grants
@@ -36,7 +36,7 @@ interface ZcapLdCapability {
    *
    * In the context of MetaMask, this is always the name of an RPC method.
    */
-  'parentCapability': string;
+  parentCapability: string;
 
   /**
    * A pointer to the the entity that may invoke this capability.
@@ -46,19 +46,19 @@ interface ZcapLdCapability {
    *
    * In the context of MetaMask, this is simply the origin of an external domain.
    */
-  'invoker': string;
+  invoker: string;
 
   /**
    * The issuing date, in UNIX epoch time.
    */
-  'date'?: number;
+  date?: number;
 
   /**
    * An array of caveat objects. See {@link ZcapLdCaveat}.
    *
    * TODO: Make optional in typescript@4.4.x
    */
-  'caveats': ZcapLdCaveat[] | null;
+  caveats: ZcapLdCaveat[] | null;
 
   /**
    * The proof that this capability was delegated to the specified invoker.
@@ -68,7 +68,7 @@ interface ZcapLdCapability {
    * In MetaMask, the "proof" of validity is the existence of a valid capability
    * object in the designated part of our state tree, so this field is omitted.
    */
-  'proof'?: string;
+  proof?: string;
 }
 
 interface PermissionOptions {

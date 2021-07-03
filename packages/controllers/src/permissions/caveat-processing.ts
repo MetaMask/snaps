@@ -11,7 +11,7 @@ type CaveatType = string;
 type CaveatFunction<
   CaveatValue extends Json,
   Params extends Json,
-  Result extends Json
+  Result extends Json,
 > = (
   caveatObject: Caveat<CaveatValue>,
   request: JsonRpcRequest<Params>,
@@ -20,7 +20,7 @@ type CaveatFunction<
 type CaveatImplementationFactory<
   CaveatValue extends Json,
   MethodParameters extends Json,
-  MethodResult extends Json
+  MethodResult extends Json,
 > = (
   caveatValue: CaveatValue,
 ) => CaveatFunction<CaveatValue, MethodParameters, MethodResult>;
@@ -28,7 +28,7 @@ type CaveatImplementationFactory<
 export interface CaveatSpecification<
   CaveatValue extends Json,
   MethodParameters extends Json,
-  MethodResult extends Json
+  MethodResult extends Json,
 > {
   type: CaveatType;
   getImplementation: CaveatImplementationFactory<

@@ -48,7 +48,6 @@ export type PermissionsControllerDomains = Record<
   PermissionsDomainEntry
 >;
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type PermissionsControllerState = {
   domains: PermissionsControllerDomains;
 };
