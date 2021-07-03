@@ -24,7 +24,7 @@ type RequiredFieldsType = readonly string[] & typeof alwaysRequiredFields;
 
 const computeState = <
   StorageKey extends string,
-  ResourceType extends Record<string, unknown>
+  ResourceType extends Record<string, unknown>,
 >(
   storageKey: StorageKey,
   initialResources: Resources<ResourceType & ResourceBase>,
@@ -35,7 +35,7 @@ const computeState = <
 interface ExternalResourceControllerArgs<
   StorageKey extends string,
   RequiredFields extends readonly string[],
-  ResourceType extends Record<RequiredFieldsType[number], unknown>
+  ResourceType extends Record<RequiredFieldsType[number], unknown>,
 > {
   storageKey: StorageKey;
   requiredFields: RequiredFields;
@@ -54,7 +54,7 @@ const getUnauthorizedMessage = (id: string) =>
 export class ExternalResourceController<
   StorageKey extends string,
   RequiredFields extends readonly string[],
-  ResourceType extends Record<RequiredFields[number], unknown>
+  ResourceType extends Record<RequiredFields[number], unknown>,
 > extends SafeEventEmitter {
   private readonly requiredFields: readonly string[];
 
