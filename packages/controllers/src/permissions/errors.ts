@@ -1,5 +1,7 @@
 import { JsonRpcRequest } from 'json-rpc-engine';
 import { ethErrors, EthereumRpcError } from 'eth-rpc-errors';
+import { Permission } from './Permission';
+import { Caveat } from './Caveat';
 
 interface ErrorArg {
   message?: string;
@@ -31,4 +33,95 @@ export function userRejectedRequest(
   request?: JsonRpcRequest<unknown>,
 ): EthereumRpcError<JsonRpcRequest<unknown>> {
   return ethErrors.provider.userRejectedRequest({ data: request });
+}
+
+export class InvalidDomainIdentifierError extends Error {
+  constructor(origin: string) {
+    super(`Invalid external domain identifier: ${origin}`);
+  }
+}
+
+export class UnrecognizedDomainError extends Error {
+  constructor(origin: string) {
+    super(`Unrecognized external domain: "${origin}" has no permissions.`);
+  }
+}
+
+export class PermissionDoesNotExistError extends Error {
+  constructor(origin: string, target: string) {
+    super(`External domain "${origin}" has no permission for "${target}".`);
+  }
+}
+
+export class PermissionHasNoCaveatsError extends Error {
+  constructor(origin: string, target: string) {
+    super(
+      `Permission for "${target}" of external domain "${origin}" has no caveats.`,
+    );
+  }
+}
+
+export class CaveatDoesNotExistError extends Error {
+  constructor(origin: string, target: string, caveatType: string) {
+    super(
+      `Permission for "${target}" of external domain "${origin}" has no caveat of type "${caveatType}".`,
+    );
+  }
+}
+
+export class PermissionTargetDoesNotExistError extends Error {
+  constructor(origin: string, target: string) {
+    super(
+      `Target "${target}" of requested permission for external domain "${origin}" does not exist.`,
+    );
+  }
+}
+
+export class InvalidPermissionJsonError extends Error {
+  public data: { origin: string; permission: Permission };
+
+  constructor(origin: string, permission: Permission) {
+    super(
+      `Permission object of external domain "${origin}" is not valid JSON.`,
+    );
+    this.data = { origin, permission };
+  }
+}
+
+export class CaveatTypeDoesNotExistError extends Error {
+  public data: { origin: string; target: string };
+
+  constructor(caveatType: string, origin: string, target: string) {
+    super(`Caveat type "${caveatType}" does not exist.`);
+    this.data = { origin, target };
+  }
+}
+
+export class CaveatMissingValueError extends Error {
+  public data: { caveat: Caveat<any>; origin: string; target: string };
+
+  constructor(caveat: Caveat<any>, origin: string, target: string) {
+    super(`Caveat is missing "value" field.`);
+    this.data = { caveat, origin, target };
+  }
+}
+
+export class InvalidCaveatFieldsError extends Error {
+  public data: { caveat: Caveat<any>; origin: string; target: string };
+
+  constructor(caveat: Caveat<any>, origin: string, target: string) {
+    super(
+      `Caveat has unexpected number of fields: ${Object.keys(caveat).length}`,
+    );
+    this.data = { caveat, origin, target };
+  }
+}
+
+export class InvalidCaveatJsonError extends Error {
+  public data: { caveat: Caveat<any>; origin: string; target: string };
+
+  constructor(caveat: Caveat<any>, origin: string, target: string) {
+    super(`Caveat object is not valid JSON.`);
+    this.data = { caveat, origin, target };
+  }
 }

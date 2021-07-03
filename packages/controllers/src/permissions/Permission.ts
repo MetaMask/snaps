@@ -127,7 +127,8 @@ export class Permission implements ZcapLdCapability {
    */
   public readonly invoker: OriginString;
 
-  constructor({ target, invoker, caveats, id }: PermissionOptions) {
+  constructor(options: PermissionOptions) {
+    const { id, target, invoker, caveats } = options;
     this.id = id ?? nanoid();
     this.parentCapability = target;
     this.invoker = invoker;
