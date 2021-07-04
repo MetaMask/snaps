@@ -3,7 +3,7 @@ import { nanoid } from 'nanoid';
 import { Caveat, ZcapLdCaveat } from './Caveat';
 
 /**
- * The origin of an external domain.
+ * The origin of an actor.
  * Effectively the GUID of an entity that can have permissions.
  */
 export type OriginString = string;
@@ -44,7 +44,7 @@ interface ZcapLdCapability {
    * By the standard, this a link – usually some kind of URI – to a cryptographic
    * key that the proof of the `proof` field "must validate against".
    *
-   * In the context of MetaMask, this is simply the origin of an external domain.
+   * In the context of MetaMask, this is simply the origin of an actor.
    */
   invoker: string;
 
@@ -78,7 +78,7 @@ interface PermissionOptions {
   target: MethodName;
 
   /**
-   * The origin string of the external domain that has the permission.
+   * The origin string of the actor that has the permission.
    */
   invoker: OriginString;
 
@@ -123,7 +123,7 @@ export class Permission implements ZcapLdCapability {
   public readonly caveats: Caveat<Json>[] | null;
 
   /**
-   * The origin string of the external domain that has the permission.
+   * The origin string of the actor that has the permission.
    */
   public readonly invoker: OriginString;
 

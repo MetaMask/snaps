@@ -1,7 +1,7 @@
 import { Json, JsonRpcRequest, PendingJsonRpcResponse } from 'json-rpc-engine';
 import { Caveat } from './Caveat';
 import { Permission } from './Permission';
-import { PermittedJsonRpcMiddleware } from './PermissionController';
+import { RestrictedMethodImplementation } from './PermissionController';
 
 type CaveatType = string;
 
@@ -60,10 +60,10 @@ type CaveatReturnHandler<Result> = (
  */
 export function decorateWithCaveats(
   methodName: string,
-  methodImplementation: PermittedJsonRpcMiddleware<Json, Json>,
+  methodImplementation: RestrictedMethodImplementation<Json, Json>,
   getPermission: (method: string) => Permission, // bound to the requesting origin
   caveatImplementations: Record<CaveatType, CaveatFunction<Json, Json, Json>>, // all caveat implementations
-): PermittedJsonRpcMiddleware<Json, Json> {
+): RestrictedMethodImplementation<Json, Json> {
   const { caveats } = getPermission(methodName);
 
   // If the permission has caveats, create an array of invocations of their
@@ -105,7 +105,7 @@ export function decorateWithCaveats(
       }
     }
     return methodImplementation(req, res, next, end, context);
-  }) as PermittedJsonRpcMiddleware<Json, Json>;
+  }) as RestrictedMethodImplementation<Json, Json>;
 }
 
 function applyCaveats(

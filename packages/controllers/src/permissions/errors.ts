@@ -35,36 +35,34 @@ export function userRejectedRequest(
   return ethErrors.provider.userRejectedRequest({ data: request });
 }
 
-export class InvalidDomainIdentifierError extends Error {
+export class InvalidActorIdentifierError extends Error {
   constructor(origin: string) {
-    super(`Invalid external domain identifier: ${origin}`);
+    super(`Invalid actor identifier: ${origin}`);
   }
 }
 
-export class UnrecognizedDomainError extends Error {
+export class UnrecognizedActorError extends Error {
   constructor(origin: string) {
-    super(`Unrecognized external domain: "${origin}" has no permissions.`);
+    super(`Unrecognized actor: "${origin}" has no permissions.`);
   }
 }
 
 export class PermissionDoesNotExistError extends Error {
   constructor(origin: string, target: string) {
-    super(`External domain "${origin}" has no permission for "${target}".`);
+    super(`Actor "${origin}" has no permission for "${target}".`);
   }
 }
 
 export class PermissionHasNoCaveatsError extends Error {
   constructor(origin: string, target: string) {
-    super(
-      `Permission for "${target}" of external domain "${origin}" has no caveats.`,
-    );
+    super(`Permission for "${target}" of actor "${origin}" has no caveats.`);
   }
 }
 
 export class CaveatDoesNotExistError extends Error {
   constructor(origin: string, target: string, caveatType: string) {
     super(
-      `Permission for "${target}" of external domain "${origin}" has no caveat of type "${caveatType}".`,
+      `Permission for "${target}" of actor "${origin}" has no caveat of type "${caveatType}".`,
     );
   }
 }
@@ -72,7 +70,7 @@ export class CaveatDoesNotExistError extends Error {
 export class PermissionTargetDoesNotExistError extends Error {
   constructor(origin: string, target: string) {
     super(
-      `Target "${target}" of requested permission for external domain "${origin}" does not exist.`,
+      `Target "${target}" of requested permission for actor "${origin}" does not exist.`,
     );
   }
 }
@@ -81,9 +79,7 @@ export class InvalidPermissionJsonError extends Error {
   public data: { origin: string; permission: Permission };
 
   constructor(origin: string, permission: Permission) {
-    super(
-      `Permission object of external domain "${origin}" is not valid JSON.`,
-    );
+    super(`Permission object of actor "${origin}" is not valid JSON.`);
     this.data = { origin, permission };
   }
 }

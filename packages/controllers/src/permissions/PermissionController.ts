@@ -21,7 +21,7 @@ import {
 import {
   PermissionDoesNotExistError,
   methodNotFound,
-  UnrecognizedDomainError,
+  UnrecognizedActorError,
   PermissionHasNoCaveatsError,
   CaveatDoesNotExistError,
   CaveatTypeDoesNotExistError,
@@ -29,104 +29,125 @@ import {
   PermissionTargetDoesNotExistError,
   CaveatMissingValueError,
   InvalidCaveatFieldsError,
-  InvalidDomainIdentifierError,
+  InvalidActorIdentifierError,
 } from './errors';
 import { Caveat } from './Caveat';
 
-export interface DomainMetadata {
+export interface ActorMetadata {
   origin: OriginString;
 }
 
-const controllerName = 'PermissionsController';
+const controllerName = 'PermissionController';
 
-export interface PermissionsDomainEntry extends DomainMetadata {
+export interface PermissionsActorEntry extends ActorMetadata {
   permissions: Record<MethodName, Permission>;
 }
 
-export type PermissionsControllerDomains = Record<
+export type PermissionControllerActors = Record<
   OriginString,
-  PermissionsDomainEntry
+  PermissionsActorEntry
 >;
 
-export type PermissionsControllerState = {
-  domains: PermissionsControllerDomains;
+export type PermissionControllerState = {
+  actors: PermissionControllerActors;
 };
 
 const stateMetadata = {
-  domains: { persist: true, anonymous: true },
+  actors: { persist: true, anonymous: true },
 };
 
-const defaultState: PermissionsControllerState = {
-  domains: {},
+const defaultState: PermissionControllerState = {
+  actors: {},
 };
 
-export interface GetDomains {
-  type: `${typeof controllerName}:getDomains`;
-  handler: () => (keyof PermissionsControllerDomains)[];
+export interface GetActorsAction {
+  type: `${typeof controllerName}:getActors`;
+  handler: () => (keyof PermissionControllerActors)[];
 }
 
-export interface AccountsChanged {
-  type: `${typeof controllerName}:accountsChanged`;
-  payload: [{ domain: OriginString; accounts: string[] }];
+export interface ClearPermissionsAction {
+  type: `${typeof controllerName}:clearPermissions`;
+  handler: () => void;
 }
 
-export interface PermittedJsonRpcMiddleware<Params, Result>
+export interface PermissionChangedPayload<PermissionTarget extends string> {
+  actor: OriginString;
+  target: PermissionTarget;
+  permission: Permission;
+}
+
+export interface PermissionChangedEvent<PermissionTarget extends string> {
+  type: `${typeof controllerName}:permissionChanged:${PermissionTarget}`;
+  payload: [PermissionChangedPayload<PermissionTarget>];
+}
+
+export type PermissionControllerActions =
+  | GetActorsAction
+  | ClearPermissionsAction;
+
+export type PermissionControllerEvents = PermissionChangedEvent<string>;
+
+export type PermissionControllerMessenger = RestrictedControllerMessenger<
+  typeof controllerName,
+  PermissionControllerActions,
+  PermissionControllerEvents,
+  never,
+  never
+>;
+
+export interface RestrictedMethodImplementation<Params, Result>
   extends JsonRpcMiddleware<Params, Result> {
   (
     req: JsonRpcRequest<Params>,
     res: PendingJsonRpcResponse<Result>,
     next: JsonRpcEngineNextCallback,
     end: JsonRpcEngineEndCallback,
-    context?: Readonly<
-      {
-        origin: OriginString;
-      } & Record<string, unknown>
-    >,
+    context?: Readonly<{
+      origin: OriginString;
+      [key: string]: unknown;
+    }>,
   ): void;
 }
 
 type RestrictedMethodsOption = Record<
   MethodName,
-  PermittedJsonRpcMiddleware<unknown, unknown>
+  RestrictedMethodImplementation<unknown, unknown>
 >;
 
-interface PermissionsControllerOptions {
-  messenger: RestrictedControllerMessenger<
-    typeof controllerName,
-    GetDomains,
-    AccountsChanged,
-    never,
-    never
-  >;
-  state?: Partial<PermissionsControllerState>;
+interface PermissionControllerOptions {
+  messenger: PermissionControllerMessenger;
   caveatSpecifications: CaveatSpecifications;
   methodPrefix: string;
   restrictedMethods: RestrictedMethodsOption;
   safeMethods: string[];
+  state?: Partial<PermissionControllerState>;
 }
 
-export class PermissionsController extends BaseController<
+export class PermissionController extends BaseController<
   typeof controllerName,
-  PermissionsControllerState
+  PermissionControllerState
 > {
   public readonly methodPrefix: string;
+
+  protected messagingSystem: PermissionControllerMessenger;
 
   /**
    * Can be namespaced.
    */
-  private readonly restrictedMethods: Readonly<
-    Map<string, PermittedJsonRpcMiddleware<unknown, unknown>>
+  private readonly restrictedMethods: ReadonlyMap<
+    string,
+    RestrictedMethodImplementation<unknown, unknown>
   >;
 
-  private readonly _safeMethods: Readonly<Set<string>>;
+  private readonly _safeMethods: ReadonlySet<string>;
 
-  public get safeMethods(): Readonly<Set<string>> {
+  public get safeMethods(): ReadonlySet<string> {
     return this._safeMethods;
   }
 
-  private readonly _internalMethods: Readonly<Set<string>>;
+  private readonly _internalMethods: ReadonlySet<string>;
 
-  public get internalMethods(): Readonly<Set<string>> {
+  public get internalMethods(): ReadonlySet<string> {
     return this._internalMethods;
   }
 
@@ -136,7 +157,7 @@ export class PermissionsController extends BaseController<
     return this._caveatSpecifications;
   }
 
-  private readonly caveatTypes: Readonly<Set<string>>;
+  protected readonly caveatTypes: ReadonlySet<string>;
 
   constructor({
     messenger,
@@ -145,7 +166,7 @@ export class PermissionsController extends BaseController<
     methodPrefix,
     restrictedMethods,
     safeMethods,
-  }: PermissionsControllerOptions) {
+  }: PermissionControllerOptions) {
     super({
       name: controllerName,
       metadata: stateMetadata,
@@ -153,12 +174,29 @@ export class PermissionsController extends BaseController<
       state: { ...defaultState, ...state },
     });
 
-    this._caveatSpecifications = caveatSpecifications;
+    this._caveatSpecifications = Object.freeze(caveatSpecifications);
     this.caveatTypes = getCaveatTypes(caveatSpecifications);
     this.methodPrefix = methodPrefix;
     this._internalMethods = getInternalMethodNames(methodPrefix);
     this.restrictedMethods = getRestrictedMethodMap(restrictedMethods);
     this._safeMethods = new Set(safeMethods);
+
+    // This assignment is redundant, but TypeScript doesn't know that it becomes
+    // assigned if we don't do it.
+    this.messagingSystem = messenger;
+
+    this.registerMessageHandlers();
+  }
+
+  protected registerMessageHandlers(): void {
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:getActors`,
+      () => this.getActors(),
+    );
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:clearPermissions`,
+      () => this.clearPermissions(),
+    );
   }
 
   clearPermissions(): void {
@@ -167,16 +205,16 @@ export class PermissionsController extends BaseController<
     });
   }
 
-  getDomains(): (keyof PermissionsControllerDomains)[] {
-    return Object.keys(this.state.domains);
+  getActors(): (keyof PermissionControllerActors)[] {
+    return Object.keys(this.state.actors);
   }
 
   getPermission(origin: string, target: string): Permission {
-    return this.state.domains[origin]?.permissions[target];
+    return this.state.actors[origin]?.permissions[target];
   }
 
   getPermissions(origin: string): Record<MethodName, Permission> {
-    return this.state.domains[origin]?.permissions;
+    return this.state.actors[origin]?.permissions;
   }
 
   hasPermission(origin: string, target: string): boolean {
@@ -184,46 +222,46 @@ export class PermissionsController extends BaseController<
   }
 
   hasPermissions(origin: string): boolean {
-    return Boolean(this.state.domains[origin]);
+    return Boolean(this.state.actors[origin]);
   }
 
   setPermission(origin: string, permission: Permission): void {
     this.update((draftState) => {
-      if (!draftState.domains[origin]) {
-        draftState.domains[origin] = { origin, permissions: {} };
+      if (!draftState.actors[origin]) {
+        draftState.actors[origin] = { origin, permissions: {} };
       }
       const { parentCapability: target } = permission;
-      draftState.domains[origin].permissions[target] = permission as any;
+      draftState.actors[origin].permissions[target] = permission as any;
     });
   }
 
   /**
-   * Adds permissions to the given domain. Overwrites existing identical
-   * permissions (same domain, and method). Other existing permissions
+   * Adds permissions to the given actor. Overwrites existing identical
+   * permissions (same actor and method). Other existing permissions
    * remain unaffected.
    *
-   * @param {string} domainName - The grantee domain.
-   * @param {Array} newPermissions - The unique, new permissions for the grantee domain.
+   * @param {string} origin - The origin of the grantee actor.
+   * @param {Array} newPermissions - The unique, new permissions for the grantee actor.
    */
   setPermissions(
     origin: string,
     permissions: Record<MethodName, Permission>,
   ): void {
     this.update((draftState) => {
-      if (!draftState.domains[origin]) {
-        draftState.domains[origin] = { origin, permissions: {} };
+      if (!draftState.actors[origin]) {
+        draftState.actors[origin] = { origin, permissions: {} };
       }
-      Object.assign(draftState.domains[origin].permissions, permissions);
+      Object.assign(draftState.actors[origin].permissions, permissions);
     });
   }
 
   revokePermission(origin: string, target: string): void {
     this.update((draftState) => {
-      if (!draftState.domains[origin]) {
-        throw new UnrecognizedDomainError(origin);
+      if (!draftState.actors[origin]) {
+        throw new UnrecognizedActorError(origin);
       }
 
-      const { permissions } = draftState.domains[origin];
+      const { permissions } = draftState.actors[origin];
       if (!permissions[target]) {
         throw new PermissionDoesNotExistError(origin, target);
       }
@@ -231,17 +269,17 @@ export class PermissionsController extends BaseController<
       if (Object.keys(permissions).length > 1) {
         delete permissions[target];
       } else {
-        delete draftState.domains[origin];
+        delete draftState.actors[origin];
       }
     });
   }
 
   revokeAllPermissions(origin: string): void {
     this.update((draftState) => {
-      if (!draftState.domains[origin]) {
-        throw new UnrecognizedDomainError(origin);
+      if (!draftState.actors[origin]) {
+        throw new UnrecognizedActorError(origin);
       }
-      delete draftState.domains[origin];
+      delete draftState.actors[origin];
     });
   }
 
@@ -265,7 +303,7 @@ export class PermissionsController extends BaseController<
 
   setCaveat(origin: string, target: string, caveat: Caveat<Json>): void {
     this.update((draftState) => {
-      const permission = draftState.domains[origin]?.permissions[target];
+      const permission = draftState.actors[origin]?.permissions[target];
       if (!permission) {
         throw new PermissionDoesNotExistError(origin, target);
       }
@@ -288,7 +326,7 @@ export class PermissionsController extends BaseController<
 
   removeCaveat(origin: string, target: string, caveatType: string): void {
     this.update((draftState) => {
-      const permission = draftState.domains[origin]?.permissions[target];
+      const permission = draftState.actors[origin]?.permissions[target];
       if (!permission) {
         throw new PermissionDoesNotExistError(origin, target);
       }
@@ -359,12 +397,12 @@ export class PermissionsController extends BaseController<
   }
 
   grantPermissions(
-    domain: DomainMetadata,
+    actor: ActorMetadata,
     requestedPermissions: RequestedPermissions,
   ): Record<MethodName, Permission> {
-    const { origin } = domain;
+    const { origin } = actor;
     if (!origin || typeof origin !== 'string') {
-      throw new InvalidDomainIdentifierError(origin);
+      throw new InvalidActorIdentifierError(origin);
     }
 
     // Enforce actual approving known methods:
@@ -452,7 +490,7 @@ function getInternalMethodNames(methodPrefix: string) {
 
 function getRestrictedMethodMap(
   restrictedMethods: RestrictedMethodsOption,
-): Map<string, PermittedJsonRpcMiddleware<unknown, unknown>> {
+): ReadonlyMap<string, RestrictedMethodImplementation<unknown, unknown>> {
   return Object.entries(restrictedMethods).reduce(
     (methodMap, [methodName, implementation]) => {
       if (!methodName || typeof methodName !== 'string') {
@@ -468,13 +506,24 @@ function getRestrictedMethodMap(
 
 // TODO: Are we using these?
 
-export interface PermissionsRequestMetadata extends DomainMetadata {
+export interface AccountsChangedPayload
+  extends PermissionChangedPayload<'eth_accounts'> {
+  accounts: string[];
+}
+
+export interface AccountsChangedEvent
+  extends PermissionChangedEvent<'eth_accounts'> {
+  type: `${typeof controllerName}:permissionChanged:eth_accounts`;
+  payload: [AccountsChangedPayload];
+}
+
+export interface PermissionsRequestMetadata extends ActorMetadata {
   id: string;
 }
 
 /**
  * Used for prompting the user about a proposed new permission.
- * Includes information about the domain granted, as well as the permissions
+ * Includes information about the actor granted, as well as the permissions
  * assigned.
  */
 export interface PermissionsRequest {

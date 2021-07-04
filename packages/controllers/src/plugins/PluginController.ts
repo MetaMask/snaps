@@ -57,16 +57,16 @@ export type InstallPluginsResult = {
 
 // Types that probably should be defined elsewhere in prod
 type RemoveAllPermissionsFunction = (pluginIds: string[]) => void;
-type CloseAllConnectionsFunction = (domain: string) => void;
+type CloseAllConnectionsFunction = (origin: string) => void;
 type RequestPermissionsFunction = (
-  domain: string,
+  origin: string,
   requestedPermissions: RequestedPluginPermissions,
 ) => Promise<IOcapLdCapability[]>;
 type HasPermissionFunction = (
-  domain: string,
+  origin: string,
   permissionName: string,
 ) => boolean;
-type GetPermissionsFunction = (domain: string) => IOcapLdCapability[];
+type GetPermissionsFunction = (origin: string) => IOcapLdCapability[];
 type PluginId = string;
 type StoredPlugins = Record<PluginId, Plugin>;
 
