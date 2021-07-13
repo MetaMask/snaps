@@ -48,6 +48,7 @@ export type PermissionControllerActors = Record<
   PermissionsActorEntry
 >;
 
+// TODO: TypeScript doesn't understand that a given actor may not exist.
 export type PermissionControllerState = {
   actors: PermissionControllerActors;
 };
@@ -134,7 +135,7 @@ export class PermissionController extends BaseController<
   /**
    * Can be namespaced.
    */
-  private readonly restrictedMethods: ReadonlyMap<
+  private readonly _restrictedMethods: ReadonlyMap<
     string,
     RestrictedMethodImplementation<unknown, unknown>
   >;
@@ -157,7 +158,7 @@ export class PermissionController extends BaseController<
     return this._caveatSpecifications;
   }
 
-  protected readonly caveatTypes: ReadonlySet<string>;
+  protected readonly _caveatTypes: ReadonlySet<string>;
 
   constructor({
     messenger,
@@ -174,12 +175,12 @@ export class PermissionController extends BaseController<
       state: { ...defaultState, ...state },
     });
 
-    this._caveatSpecifications = Object.freeze(caveatSpecifications);
-    this.caveatTypes = getCaveatTypes(caveatSpecifications);
-    this.methodPrefix = methodPrefix;
+    this._caveatSpecifications = Object.freeze({ ...caveatSpecifications });
+    this._caveatTypes = getCaveatTypes(this._caveatSpecifications);
     this._internalMethods = getInternalMethodNames(methodPrefix);
-    this.restrictedMethods = getRestrictedMethodMap(restrictedMethods);
+    this._restrictedMethods = getRestrictedMethodMap(restrictedMethods);
     this._safeMethods = new Set(safeMethods);
+    this.methodPrefix = methodPrefix;
 
     // This assignment is redundant, but TypeScript doesn't know that it becomes
     // assigned if we don't do it.
@@ -188,6 +189,10 @@ export class PermissionController extends BaseController<
     this.registerMessageHandlers();
   }
 
+  /**
+   * Constructor helper for registering this controller's messaging system
+   * actions.
+   */
   protected registerMessageHandlers(): void {
     this.messagingSystem.registerActionHandler(
       `${controllerName}:getActors`,
@@ -195,11 +200,11 @@ export class PermissionController extends BaseController<
     );
     this.messagingSystem.registerActionHandler(
       `${controllerName}:clearPermissions`,
-      () => this.clearPermissions(),
+      () => this.clearState(),
     );
   }
 
-  clearPermissions(): void {
+  protected clearState(): void {
     this.update((_draftState) => {
       return { ...defaultState };
     });
@@ -209,11 +214,11 @@ export class PermissionController extends BaseController<
     return Object.keys(this.state.actors);
   }
 
-  getPermission(origin: string, target: string): Permission {
+  getPermission(origin: string, target: string): Permission | undefined {
     return this.state.actors[origin]?.permissions[target];
   }
 
-  getPermissions(origin: string): Record<MethodName, Permission> {
+  getPermissions(origin: string): Record<MethodName, Permission> | undefined {
     return this.state.actors[origin]?.permissions;
   }
 
@@ -231,6 +236,7 @@ export class PermissionController extends BaseController<
         draftState.actors[origin] = { origin, permissions: {} };
       }
       const { parentCapability: target } = permission;
+      // Typecast: ts(2589)
       draftState.actors[origin].permissions[target] = permission as any;
     });
   }
@@ -308,15 +314,16 @@ export class PermissionController extends BaseController<
         throw new PermissionDoesNotExistError(origin, target);
       }
 
+      // Typecasts: ts(2589)
       if (permission.caveats) {
-        const existingIndex = permission.caveats.findIndex(
+        const caveatIndex = permission.caveats.findIndex(
           (existingCaveat) => existingCaveat.type === caveat.type,
         );
 
-        if (existingIndex === -1) {
+        if (caveatIndex === -1) {
           permission.caveats.push(caveat as any);
         } else {
-          permission.caveats.splice(existingIndex, 1, caveat as any);
+          permission.caveats.splice(caveatIndex, 1, caveat as any);
         }
       } else {
         permission.caveats = [caveat as any];
@@ -335,17 +342,17 @@ export class PermissionController extends BaseController<
         throw new PermissionHasNoCaveatsError(origin, target);
       }
 
-      const existingIndex = permission.caveats.findIndex(
+      const caveatIndex = permission.caveats.findIndex(
         (existingCaveat) => existingCaveat.type === caveatType,
       );
-      if (existingIndex === -1) {
+      if (caveatIndex === -1) {
         throw new CaveatDoesNotExistError(origin, target, caveatType);
       }
 
-      if (permission.caveats.length > 1) {
-        permission.caveats.splice(existingIndex, 1);
-      } else {
+      if (permission.caveats.length === 1) {
         permission.caveats = null;
+      } else {
+        permission.caveats.splice(caveatIndex, 1);
       }
     });
   }
@@ -361,12 +368,12 @@ export class PermissionController extends BaseController<
    * @returns The internal key of the method.
    */
   getMethodKeyFor(method: string): string {
-    if (this.restrictedMethods.has(method)) {
+    if (this._restrictedMethods.has(method)) {
       return method;
     }
 
     const wildCardMethodsWithoutWildCard: Record<string, boolean> = {};
-    for (const methodName of this.restrictedMethods.keys()) {
+    for (const methodName of this._restrictedMethods.keys()) {
       const wildCardMatch = methodName.match(/(.+)\*$/u);
       if (wildCardMatch) {
         wildCardMethodsWithoutWildCard[wildCardMatch[1]] = true;
@@ -381,13 +388,13 @@ export class PermissionController extends BaseController<
 
     while (
       segments.length > 0 &&
-      !this.restrictedMethods.has(methodKey) &&
+      !this._restrictedMethods.has(methodKey) &&
       !wildCardMethodsWithoutWildCard[methodKey]
     ) {
       methodKey += `${segments.shift()}_`;
     }
 
-    if (this.restrictedMethods.has(methodKey)) {
+    if (this._restrictedMethods.has(methodKey)) {
       return methodKey;
     } else if (wildCardMethodsWithoutWildCard[methodKey]) {
       return `${methodKey}*`;
@@ -415,7 +422,7 @@ export class PermissionController extends BaseController<
     const permissions: { [methodName: string]: Permission } = {};
 
     for (const method of Object.keys(requestedPermissions)) {
-      if (!this.restrictedMethods.has(this.getMethodKeyFor(method))) {
+      if (!this._restrictedMethods.has(this.getMethodKeyFor(method))) {
         throw new PermissionTargetDoesNotExistError(origin, method);
       }
 
@@ -444,7 +451,7 @@ export class PermissionController extends BaseController<
     caveats?: Caveat<Json>[],
   ): Caveat<Json>[] | undefined {
     const caveatArray = caveats?.map((caveat) => {
-      if (!this.caveatTypes.has(caveat.type)) {
+      if (!this._caveatTypes.has(caveat.type)) {
         throw new CaveatTypeDoesNotExistError(caveat.type, origin, target);
       }
 
