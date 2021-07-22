@@ -10,12 +10,17 @@ module.exports = {
   //     statements: 100,
   //   },
   // },
+  testEnvironmentOptions: {
+    resources: 'usable',
+    runScripts: 'dangerously',
+  },
   preset: 'ts-jest',
-  runner: '@jest-runner/electron',
-  testEnvironment: '@jest-runner/electron/environment',
+  testEnvironment: 'jsdom',
+  setupFiles: ['<rootDir>/jest-setup.js'],
+  testPathIgnorePatterns: [
+    'src/services/WebWorkerExecutionEnvironmentService.test.ts',
+    'src/plugins/PluginController.test.ts',
+  ],
   testRegex: ['\\.test\\.ts$'],
   testTimeout: 5000,
-  testPathIgnorePatterns: [
-    'src/services/IframeExecutionEnvironmentService.test.ts',
-  ],
 };
