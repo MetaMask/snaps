@@ -1,5 +1,6 @@
 import type { Patch } from 'immer';
 import deepEqual from 'fast-deep-equal';
+import deepFreeze from 'deep-freeze-strict';
 import {
   BaseControllerV2 as BaseController,
   RestrictedControllerMessenger,
@@ -50,7 +51,7 @@ export type PermissionControllerSubjects = Record<
   PermissionsSubjectEntry
 >;
 
-// TODO: TypeScript doesn't understand that a given subject may not exist.
+// TODO: TypeScript doesn't understand that a given subject may not exist. Can we fix it?
 export type PermissionControllerState = {
   subjects: PermissionControllerSubjects;
 };
@@ -109,7 +110,7 @@ export interface RestrictedMethodImplementation<Params, Result>
       origin: OriginString;
       [key: string]: unknown;
     }>,
-  ): void;
+  ): void | Promise<void>;
 }
 
 type RestrictedMethodsOption = Record<
@@ -148,12 +149,6 @@ export class PermissionController extends BaseController<
     return this._safeMethods;
   }
 
-  private readonly _internalMethods: ReadonlySet<string>;
-
-  public get internalMethods(): ReadonlySet<string> {
-    return this._internalMethods;
-  }
-
   private readonly _caveatSpecifications: Readonly<CaveatSpecifications>;
 
   public get caveatSpecifications(): Readonly<CaveatSpecifications> {
@@ -177,9 +172,8 @@ export class PermissionController extends BaseController<
       state: { ...defaultState, ...state },
     });
 
-    this._caveatSpecifications = Object.freeze({ ...caveatSpecifications });
+    this._caveatSpecifications = deepFreeze({ ...caveatSpecifications });
     this._caveatTypes = getCaveatTypes(this._caveatSpecifications);
-    this._internalMethods = getInternalMethodNames(methodPrefix);
     this._restrictedMethods = getRestrictedMethodMap(restrictedMethods);
     this._safeMethods = new Set(safeMethods);
     this.methodPrefix = methodPrefix;
@@ -216,6 +210,14 @@ export class PermissionController extends BaseController<
     return Object.keys(this.state.subjects);
   }
 
+  /**
+   * Gets the permission for the specified target of the subject corresponding
+   * to the specified origin.
+   *
+   * @param origin - The origin of the subject.
+   * @param target - The method name as invoked by a third party (i.e., not a method key).
+   * @returns The permission if it exists, or undefined otherwise.
+   */
   getPermission(origin: string, target: string): Permission | undefined {
     return this.state.subjects[origin]?.permissions[target];
   }
@@ -405,6 +407,27 @@ export class PermissionController extends BaseController<
     return '';
   }
 
+  getRestrictedMethodImplementation<Params, Result>(
+    method: string,
+  ): RestrictedMethodImplementation<Params, Result> | undefined {
+    const methodKey = this.getMethodKeyFor(method);
+    if (!methodKey) {
+      return undefined;
+    }
+
+    const methodImplementation = this._restrictedMethods.get(methodKey);
+    /* istanbul ignore if */ // This should be impossible
+    if (!methodImplementation) {
+      throw new Error(
+        `Method "${method}" with method key "${methodKey}" has no implementation.`,
+      );
+    }
+    return methodImplementation as RestrictedMethodImplementation<
+      Params,
+      Result
+    >;
+  }
+
   grantPermissions(
     subject: SubjectMetadata,
     requestedPermissions: RequestedPermissions,
@@ -417,7 +440,7 @@ export class PermissionController extends BaseController<
     // Enforce actual approving known methods:
     for (const methodName in requestedPermissions) {
       if (!this.getMethodKeyFor(methodName)) {
-        throw methodNotFound({ methodName });
+        throw methodNotFound({ method: methodName });
       }
     }
 
@@ -488,13 +511,6 @@ function getCaveatTypes(caveatSpecifications: CaveatSpecifications) {
       (specification) => specification.type,
     ),
   );
-}
-
-function getInternalMethodNames(methodPrefix: string) {
-  return new Set([
-    `${methodPrefix}getPermissions`,
-    `${methodPrefix}requestPermissions`,
-  ]);
 }
 
 function getRestrictedMethodMap(

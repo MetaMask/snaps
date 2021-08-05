@@ -9,7 +9,7 @@ interface ErrorArg {
 }
 
 interface MethodNotFoundArg extends ErrorArg {
-  methodName?: string;
+  method?: string;
 }
 
 export function unauthorized(arg?: ErrorArg) {
@@ -22,8 +22,8 @@ export function unauthorized(arg?: ErrorArg) {
 }
 
 export function methodNotFound(opts: MethodNotFoundArg) {
-  const message = opts.methodName
-    ? `The method '${opts.methodName}' does not exist / is not available.`
+  const message = opts.method
+    ? `The method '${opts.method}' does not exist / is not available.`
     : undefined;
 
   return ethErrors.rpc.methodNotFound({ data: opts.data, message });

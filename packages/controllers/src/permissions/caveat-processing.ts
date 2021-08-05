@@ -18,25 +18,13 @@ type CaveatFunction<
   request: JsonRpcRequest<Params>,
 ) => CaveatReturnHandler<Result> | undefined;
 
-type CaveatImplementationFactory<
-  CaveatValue extends Json,
-  MethodParameters extends Json,
-  MethodResult extends Json,
-> = (
-  caveatValue: CaveatValue,
-) => CaveatFunction<CaveatValue, MethodParameters, MethodResult>;
-
 export interface CaveatSpecification<
   CaveatValue extends Json,
   MethodParameters extends Json,
   MethodResult extends Json,
 > {
   type: CaveatType;
-  getImplementation: CaveatImplementationFactory<
-    CaveatValue,
-    MethodParameters,
-    MethodResult
-  >;
+  implementation: CaveatFunction<CaveatValue, MethodParameters, MethodResult>;
 }
 
 export type CaveatSpecifications = Record<
@@ -59,13 +47,14 @@ type CaveatReturnHandler<Result> = (
 /**
  * Decorate a restricted method implementation with its caveats.
  */
-export function decorateWithCaveats(
-  methodName: string,
-  methodImplementation: RestrictedMethodImplementation<Json, Json>,
-  getPermission: (method: string) => Permission, // bound to the requesting origin
-  caveatImplementations: Record<CaveatType, CaveatFunction<Json, Json, Json>>, // all caveat implementations
-): RestrictedMethodImplementation<Json, Json> {
-  const { caveats } = getPermission(methodName);
+export function decorateWithCaveats<
+  MethodImplementation extends RestrictedMethodImplementation<Json, Json>,
+>(
+  methodImplementation: MethodImplementation,
+  permission: Readonly<Permission>, // bound to the requesting origin
+  caveatImplementations: CaveatSpecifications, // all caveat implementations
+): MethodImplementation {
+  const { caveats } = permission;
 
   // If the permission has caveats, create an array of functions that call the
   // corresponding caveat functions with the caveat object and request as
@@ -79,7 +68,7 @@ export function decorateWithCaveats(
       }
 
       caveatFunctions.push((request: JsonRpcRequest<Json>) =>
-        caveatImplementations[caveat.type](caveat, request),
+        caveatImplementations[caveat.type].implementation(caveat, request),
       );
     }
 
@@ -98,19 +87,13 @@ export function decorateWithCaveats(
       }
 
       return methodImplementation(req, res, next, _end, context);
-    }) as RestrictedMethodImplementation<Json, Json>;
+    }) as MethodImplementation;
   }
 
   // If there are no caveats, return a function that calls the restricted method
   // implementation directly, without applying any caveats.
   return ((req, res, next, end, context) =>
-    methodImplementation(
-      req,
-      res,
-      next,
-      end,
-      context,
-    )) as RestrictedMethodImplementation<Json, Json>;
+    methodImplementation(req, res, next, end, context)) as MethodImplementation;
 }
 
 /**
