@@ -15,7 +15,4 @@ module.exports = {
   testEnvironment: '@jest-runner/electron/environment',
   testRegex: ['\\.test\\.ts$'],
   testTimeout: 5000,
-  testPathIgnorePatterns: [
-    'src/services/IframeExecutionEnvironmentService.test.ts',
-  ],
 };

@@ -1,8 +1,10 @@
+import { describe, it, expect } from '@jest/globals';
+import fixJSDOMPostMessageEventSource from './helpers/fixJSDOMPostMessageEventSource';
 import { IframeExecutionEnvironmentService } from './IframeExecutionEnvironmentService';
 
 describe('Iframe Controller', () => {
   it('can boot', async () => {
-    const webWorkerExecutionEnvironmentService =
+    const iframeExecutionEnvironmentService =
       new IframeExecutionEnvironmentService({
         setupPluginProvider: () => {
           // do nothing
@@ -11,10 +13,11 @@ describe('Iframe Controller', () => {
           'https://metamask.github.io/iframe-execution-environment/',
         ),
       });
-    expect(webWorkerExecutionEnvironmentService).toBeDefined();
+    iframeExecutionEnvironmentService.terminateAllPlugins();
+    expect(iframeExecutionEnvironmentService).toBeDefined();
   });
   it('can create a plugin worker and start the plugin', async () => {
-    const webWorkerExecutionEnvironmentService =
+    const iframeExecutionEnvironmentService =
       new IframeExecutionEnvironmentService({
         setupPluginProvider: () => {
           // do nothing
@@ -23,13 +26,16 @@ describe('Iframe Controller', () => {
           'https://metamask.github.io/iframe-execution-environment/',
         ),
       });
-    const pluginName = 'foo.bar.baz';
-    const response = await webWorkerExecutionEnvironmentService.executePlugin({
-      pluginName,
+    const removeListener = fixJSDOMPostMessageEventSource(
+      iframeExecutionEnvironmentService,
+    );
+    const response = await iframeExecutionEnvironmentService.executePlugin({
+      pluginName: 'TestPlugin',
       sourceCode: `
         console.log('foo');
       `,
     });
     expect(response).toEqual('OK');
+    removeListener();
   });
 });

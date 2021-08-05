@@ -3,10 +3,7 @@ import { nanoid } from 'nanoid';
 import pump from 'pump';
 import { ObservableStore } from '@metamask/obs-store';
 import ObjectMultiplex from '@metamask/object-multiplex';
-import {
-  WindowPostMessageStream,
-  WorkerParentPostMessageStream,
-} from '@metamask/post-message-stream';
+import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { PLUGIN_STREAM_NAMES } from '@mm-snap/workers';
 import { createStreamMiddleware } from 'json-rpc-middleware-stream';
 import { PluginData } from '@mm-snap/types';
@@ -15,19 +12,19 @@ import {
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from 'json-rpc-engine';
-import { ExecutionEnvironmentService } from '../services/ExecutionEnvironmentService';
+import { ExecutionEnvironmentService } from '@mm-snap/controllers';
 
 export type SetupPluginProvider = (pluginName: string, stream: Duplex) => void;
 
-interface WorkerControllerArgs {
+interface JobControllerArgs {
   setupPluginProvider: SetupPluginProvider;
   iframeUrl: URL;
 }
 
-interface WorkerStreams {
+interface JobStreams {
   command: Duplex;
   rpc: Duplex | null;
-  _connection: WorkerParentPostMessageStream;
+  _connection: WindowPostMessageStream;
 }
 
 // The plugin is the callee
@@ -38,73 +35,75 @@ export type PluginRpcHook = (
 
 interface EnvMetadata {
   id: string;
-  streams: WorkerStreams;
+  streams: JobStreams;
   rpcEngine: JsonRpcEngine;
 }
 
 export class IframeExecutionEnvironmentService
-  implements ExecutionEnvironmentService {
-  public store: ObservableStore<{ workers: Record<string, EnvMetadata> }>;
+  implements ExecutionEnvironmentService
+{
+  public store: ObservableStore<{ jobs: Record<string, EnvMetadata> }>;
 
   private _pluginRpcHooks: Map<string, PluginRpcHook>;
 
-  private iframeUrl: URL;
+  public _iframeWindow?: Window;
 
-  private workers: Map<string, EnvMetadata>;
+  public iframeUrl: URL;
+
+  private jobs: Map<string, EnvMetadata>;
 
   private setupPluginProvider: SetupPluginProvider;
 
-  private pluginToWorkerMap: Map<string, string>;
+  private pluginToJobMap: Map<string, string>;
 
-  private workerToPluginMap: Map<string, string>;
+  private jobToPluginMap: Map<string, string>;
 
-  constructor({ setupPluginProvider, iframeUrl }: WorkerControllerArgs) {
+  constructor({ setupPluginProvider, iframeUrl }: JobControllerArgs) {
     this.iframeUrl = iframeUrl;
     this.setupPluginProvider = setupPluginProvider;
-    this.store = new ObservableStore({ workers: {} });
-    this.workers = new Map();
-    this.pluginToWorkerMap = new Map();
-    this.workerToPluginMap = new Map();
+    this.store = new ObservableStore({ jobs: {} });
+    this.jobs = new Map();
+    this.pluginToJobMap = new Map();
+    this.jobToPluginMap = new Map();
     this._pluginRpcHooks = new Map();
   }
 
-  private _setWorker(workerId: string, workerWrapper: EnvMetadata): void {
-    this.workers.set(workerId, workerWrapper);
+  private _setJob(jobId: string, jobWrapper: EnvMetadata): void {
+    this.jobs.set(jobId, jobWrapper);
 
-    const newWorkerState = {
-      ...(this.store.getState().workers as Record<string, EnvMetadata>),
-      [workerId]: workerWrapper,
+    const newJobState = {
+      ...(this.store.getState().jobs as Record<string, EnvMetadata>),
+      [jobId]: jobWrapper,
     };
-    this.store.updateState({ workers: newWorkerState });
+    this.store.updateState({ jobs: newJobState });
   }
 
-  private _deleteWorker(workerId: string): void {
-    this.workers.delete(workerId);
+  private _deleteJob(jobId: string): void {
+    this.jobs.delete(jobId);
 
-    const newWorkerState = {
-      ...(this.store.getState().workers as Record<string, EnvMetadata>),
+    const newJobState = {
+      ...(this.store.getState().jobs as Record<string, EnvMetadata>),
     };
-    delete newWorkerState[workerId];
-    this.store.updateState({ workers: newWorkerState });
+    delete newJobState[jobId];
+    this.store.updateState({ jobs: newJobState });
   }
 
   private async _command(
-    workerId: string,
+    jobId: string,
     message: JsonRpcRequest<unknown>,
   ): Promise<unknown> {
     if (typeof message !== 'object') {
       throw new Error('Must send object.');
     }
 
-    const workerWrapper = this.workers.get(workerId);
-    if (!workerWrapper) {
-      throw new Error(`Worker with id ${workerId} not found.`);
+    const jobWrapper = this.jobs.get(jobId);
+    if (!jobWrapper) {
+      throw new Error(`Job with id ${jobId} not found.`);
     }
 
     console.log('Parent: Sending Command', message);
-    const response: PendingJsonRpcResponse<unknown> = await workerWrapper.rpcEngine.handle(
-      message,
-    );
+    const response: PendingJsonRpcResponse<unknown> =
+      await jobWrapper.rpcEngine.handle(message);
     if (response.error) {
       throw new Error(response.error.message);
     }
@@ -112,25 +111,25 @@ export class IframeExecutionEnvironmentService
   }
 
   async terminateAllPlugins() {
-    for (const workerId of this.workers.keys()) {
-      this.terminate(workerId);
+    for (const jobId of this.jobs.keys()) {
+      this.terminate(jobId);
     }
     this._pluginRpcHooks.clear();
   }
 
   async terminatePlugin(pluginName: string) {
-    const workerId = this.pluginToWorkerMap.get(pluginName);
-    workerId && this.terminate(workerId);
+    const jobId = this.pluginToJobMap.get(pluginName);
+    jobId && this.terminate(jobId);
     this._removePluginHooks(pluginName);
   }
 
-  terminate(workerId: string): void {
-    const workerWrapper = this.workers.get(workerId);
-    if (!workerWrapper) {
-      throw new Error(`Worked with id "${workerId}" not found.`);
+  terminate(jobId: string): void {
+    const jobWrapper = this.jobs.get(jobId);
+    if (!jobWrapper) {
+      throw new Error(`Job with id "${jobId}" not found.`);
     }
 
-    Object.values(workerWrapper.streams).forEach((stream) => {
+    Object.values(jobWrapper.streams).forEach((stream) => {
       try {
         !stream.destroyed && stream.destroy();
         stream.removeAllListeners();
@@ -138,10 +137,10 @@ export class IframeExecutionEnvironmentService
         console.log('Error while destroying stream', err);
       }
     });
-    document.getElementById(workerWrapper.id)?.remove();
-    this._removePluginAndWorkerMapping(workerId);
-    this._deleteWorker(workerId);
-    console.log(`worker:${workerId} terminated`);
+    document.getElementById(jobWrapper.id)?.remove();
+    this._removePluginAndJobMapping(jobId);
+    this._deleteJob(jobId);
+    console.log(`job:${jobId} terminated`);
   }
 
   /**
@@ -157,12 +156,12 @@ export class IframeExecutionEnvironmentService
     this._pluginRpcHooks.delete(pluginName);
   }
 
-  private _createPluginHooks(pluginName: string, workerId: string) {
+  private _createPluginHooks(pluginName: string, jobId: string) {
     const rpcHook = async (
       origin: string,
       request: Record<string, unknown>,
     ) => {
-      return await this._command(workerId, {
+      return await this._command(jobId, {
         id: nanoid(),
         jsonrpc: '2.0',
         method: 'pluginRpc',
@@ -178,62 +177,61 @@ export class IframeExecutionEnvironmentService
   }
 
   async executePlugin(pluginData: PluginData): Promise<unknown> {
-    if (this.pluginToWorkerMap.has(pluginData.pluginName)) {
+    if (this.pluginToJobMap.has(pluginData.pluginName)) {
       throw new Error(
         `Plugin "${pluginData.pluginName}" is already being executed.`,
       );
     }
 
-    const worker = await this._init();
-    this._mapPluginAndWorker(pluginData.pluginName, worker.id);
+    const job = await this._init();
+    this._mapPluginAndJob(pluginData.pluginName, job.id);
     this.setupPluginProvider(
       pluginData.pluginName,
-      (worker.streams.rpc as unknown) as Duplex,
+      job.streams.rpc as unknown as Duplex,
     );
 
-    const result = await this._command(worker.id, {
+    const result = await this._command(job.id, {
       jsonrpc: '2.0',
       method: 'executePlugin',
       params: pluginData,
       id: nanoid(),
     });
-    this._createPluginHooks(pluginData.pluginName, worker.id);
+    this._createPluginHooks(pluginData.pluginName, job.id);
     return result;
   }
 
-  _mapPluginAndWorker(pluginName: string, workerId: string): void {
-    this.pluginToWorkerMap.set(pluginName, workerId);
-    this.workerToPluginMap.set(workerId, pluginName);
+  _mapPluginAndJob(pluginName: string, jobId: string): void {
+    this.pluginToJobMap.set(pluginName, jobId);
+    this.jobToPluginMap.set(jobId, pluginName);
   }
 
   /**
-   * @returns The ID of the plugin's worker.
+   * @returns The ID of the plugin's job.
    */
-  _getWorkerForPlugin(pluginName: string): string | undefined {
-    return this.pluginToWorkerMap.get(pluginName);
+  _getJobForPlugin(pluginName: string): string | undefined {
+    return this.pluginToJobMap.get(pluginName);
   }
 
   /**
-   * @returns The ID worker's plugin.
+   * @returns The ID job's plugin.
    */
-  _getPluginForWorker(workerId: string): string | undefined {
-    return this.workerToPluginMap.get(workerId);
+  _getPluginForJob(jobId: string): string | undefined {
+    return this.jobToPluginMap.get(jobId);
   }
 
-  _removePluginAndWorkerMapping(workerId: string): void {
-    const pluginName = this.workerToPluginMap.get(workerId);
+  _removePluginAndJobMapping(jobId: string): void {
+    const pluginName = this.jobToPluginMap.get(jobId);
     if (!pluginName) {
-      throw new Error(`worker:${workerId} has no mapped plugin.`);
+      throw new Error(`job:${jobId} has no mapped plugin.`);
     }
 
-    this.workerToPluginMap.delete(workerId);
-    this.pluginToWorkerMap.delete(pluginName);
+    this.jobToPluginMap.delete(jobId);
+    this.pluginToJobMap.delete(pluginName);
   }
 
   private async _init(): Promise<EnvMetadata> {
-    const workerId = nanoid();
-    console.log('calling init', workerId);
-    const streams = await this._initStreams(workerId);
+    const jobId = nanoid();
+    const streams = await this._initStreams(jobId);
     const rpcEngine = new JsonRpcEngine();
 
     const jsonRpcConnection = createStreamMiddleware();
@@ -243,14 +241,13 @@ export class IframeExecutionEnvironmentService
     rpcEngine.push(jsonRpcConnection.middleware);
 
     const envMetadata = {
-      id: workerId,
+      id: jobId,
       streams,
       rpcEngine,
     };
-    this._setWorker(workerId, envMetadata);
-    console.log('calling handshake', workerId);
+    this._setJob(jobId, envMetadata);
 
-    await this._command(workerId, {
+    await this._command(jobId, {
       jsonrpc: '2.0',
       method: 'handshake',
       id: nanoid(),
@@ -260,29 +257,33 @@ export class IframeExecutionEnvironmentService
   }
 
   async _initStreams(envId: string): Promise<any> {
-    const iframeWindow = await this._createWindow(
+    this._iframeWindow = await this._createWindow(
       this.iframeUrl.toString(),
       envId,
     );
-    console.log('created iframe', envId);
     const envStream = new WindowPostMessageStream({
       name: 'parent',
       target: 'child',
-      targetWindow: iframeWindow,
+      targetWindow: this._iframeWindow,
     });
     // Typecast justification: stream type mismatch
     const mux = setupMultiplex(
-      (envStream as unknown) as Duplex,
+      envStream as unknown as Duplex,
       `Environment:${envId}`,
     );
 
     const commandStream = mux.createStream(PLUGIN_STREAM_NAMES.COMMAND);
-
+    commandStream.write({
+      jsonrpc: '2.0',
+      method: 'handshake',
+      params: [],
+      id: 0,
+    });
     const rpcStream = mux.createStream(PLUGIN_STREAM_NAMES.JSON_RPC);
 
     // Typecast: stream type mismatch
     return {
-      command: (commandStream as unknown) as Duplex,
+      command: commandStream as unknown as Duplex,
       rpc: rpcStream,
       _connection: envStream,
     };
@@ -322,7 +323,7 @@ function setupMultiplex(
   pump(
     connectionStream,
     // Typecast: stream type mismatch
-    (mux as unknown) as Duplex,
+    mux as unknown as Duplex,
     connectionStream,
     (err) => {
       if (err) {
