@@ -1,8 +1,9 @@
+import type { Patch } from 'immer';
+import deepEqual from 'fast-deep-equal';
 import {
   BaseControllerV2 as BaseController,
   RestrictedControllerMessenger,
 } from '@metamask/controllers';
-import deepEqual from 'fast-deep-equal';
 import {
   Json,
   JsonRpcEngineEndCallback,
@@ -11,6 +12,7 @@ import {
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from 'json-rpc-engine';
+
 import { CaveatSpecifications } from './caveat-processing';
 import {
   OriginString,
@@ -61,32 +63,32 @@ const defaultState: PermissionControllerState = {
   actors: {},
 };
 
-export interface GetActorsAction {
+export type GetPermissionsState = {
+  type: `${typeof controllerName}:getState`;
+  handler: () => PermissionControllerState;
+};
+
+export type GetActors = {
   type: `${typeof controllerName}:getActors`;
   handler: () => (keyof PermissionControllerActors)[];
-}
+};
 
-export interface ClearPermissionsAction {
+export type ClearPermissions = {
   type: `${typeof controllerName}:clearPermissions`;
   handler: () => void;
-}
+};
 
-export interface PermissionChangedPayload<PermissionTarget extends string> {
-  actor: OriginString;
-  target: PermissionTarget;
-  permission: Permission;
-}
-
-export interface PermissionChangedEvent<PermissionTarget extends string> {
-  type: `${typeof controllerName}:permissionChanged:${PermissionTarget}`;
-  payload: [PermissionChangedPayload<PermissionTarget>];
-}
+export type PermissionsStateChange = {
+  type: `${typeof controllerName}:stateChange`;
+  payload: [PermissionControllerState, Patch[]];
+};
 
 export type PermissionControllerActions =
-  | GetActorsAction
-  | ClearPermissionsAction;
+  | GetPermissionsState
+  | GetActors
+  | ClearPermissions;
 
-export type PermissionControllerEvents = PermissionChangedEvent<string>;
+export type PermissionControllerEvents = PermissionsStateChange;
 
 export type PermissionControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
@@ -512,17 +514,6 @@ function getRestrictedMethodMap(
 }
 
 // TODO: Are we using these?
-
-export interface AccountsChangedPayload
-  extends PermissionChangedPayload<'eth_accounts'> {
-  accounts: string[];
-}
-
-export interface AccountsChangedEvent
-  extends PermissionChangedEvent<'eth_accounts'> {
-  type: `${typeof controllerName}:permissionChanged:eth_accounts`;
-  payload: [AccountsChangedPayload];
-}
 
 export interface PermissionsRequestMetadata extends ActorMetadata {
   id: string;
