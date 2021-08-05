@@ -35,34 +35,34 @@ export function userRejectedRequest(
   return ethErrors.provider.userRejectedRequest({ data: request });
 }
 
-export class InvalidActorIdentifierError extends Error {
+export class InvalidSubjectIdentifierError extends Error {
   constructor(origin: string) {
-    super(`Invalid actor identifier: ${origin}`);
+    super(`Invalid subject identifier: ${origin}`);
   }
 }
 
-export class UnrecognizedActorError extends Error {
+export class UnrecognizedSubjectError extends Error {
   constructor(origin: string) {
-    super(`Unrecognized actor: "${origin}" has no permissions.`);
+    super(`Unrecognized subject: "${origin}" has no permissions.`);
   }
 }
 
 export class PermissionDoesNotExistError extends Error {
   constructor(origin: string, target: string) {
-    super(`Actor "${origin}" has no permission for "${target}".`);
+    super(`Subject "${origin}" has no permission for "${target}".`);
   }
 }
 
 export class PermissionHasNoCaveatsError extends Error {
   constructor(origin: string, target: string) {
-    super(`Permission for "${target}" of actor "${origin}" has no caveats.`);
+    super(`Permission for "${target}" of subject "${origin}" has no caveats.`);
   }
 }
 
 export class CaveatDoesNotExistError extends Error {
   constructor(origin: string, target: string, caveatType: string) {
     super(
-      `Permission for "${target}" of actor "${origin}" has no caveat of type "${caveatType}".`,
+      `Permission for "${target}" of subject "${origin}" has no caveat of type "${caveatType}".`,
     );
   }
 }
@@ -70,7 +70,7 @@ export class CaveatDoesNotExistError extends Error {
 export class PermissionTargetDoesNotExistError extends Error {
   constructor(origin: string, target: string) {
     super(
-      `Target "${target}" of requested permission for actor "${origin}" does not exist.`,
+      `Target "${target}" of requested permission for subject "${origin}" does not exist.`,
     );
   }
 }
@@ -79,7 +79,7 @@ export class InvalidPermissionJsonError extends Error {
   public data: { origin: string; permission: Permission };
 
   constructor(origin: string, permission: Permission) {
-    super(`Permission object of actor "${origin}" is not valid JSON.`);
+    super(`Permission object of subject "${origin}" is not valid JSON.`);
     this.data = { origin, permission };
   }
 }

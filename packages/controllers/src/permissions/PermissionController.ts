@@ -23,7 +23,7 @@ import {
 import {
   PermissionDoesNotExistError,
   methodNotFound,
-  UnrecognizedActorError,
+  UnrecognizedSubjectError,
   PermissionHasNoCaveatsError,
   CaveatDoesNotExistError,
   CaveatTypeDoesNotExistError,
@@ -31,36 +31,36 @@ import {
   PermissionTargetDoesNotExistError,
   CaveatMissingValueError,
   InvalidCaveatFieldsError,
-  InvalidActorIdentifierError,
+  InvalidSubjectIdentifierError,
 } from './errors';
 import { Caveat } from './Caveat';
 
-export interface ActorMetadata {
+export interface SubjectMetadata {
   origin: OriginString;
 }
 
 const controllerName = 'PermissionController';
 
-export interface PermissionsActorEntry extends ActorMetadata {
+export interface PermissionsSubjectEntry extends SubjectMetadata {
   permissions: Record<MethodName, Permission>;
 }
 
-export type PermissionControllerActors = Record<
+export type PermissionControllerSubjects = Record<
   OriginString,
-  PermissionsActorEntry
+  PermissionsSubjectEntry
 >;
 
-// TODO: TypeScript doesn't understand that a given actor may not exist.
+// TODO: TypeScript doesn't understand that a given subject may not exist.
 export type PermissionControllerState = {
-  actors: PermissionControllerActors;
+  subjects: PermissionControllerSubjects;
 };
 
 const stateMetadata = {
-  actors: { persist: true, anonymous: true },
+  subjects: { persist: true, anonymous: true },
 };
 
 const defaultState: PermissionControllerState = {
-  actors: {},
+  subjects: {},
 };
 
 export type GetPermissionsState = {
@@ -68,9 +68,9 @@ export type GetPermissionsState = {
   handler: () => PermissionControllerState;
 };
 
-export type GetActors = {
-  type: `${typeof controllerName}:getActors`;
-  handler: () => (keyof PermissionControllerActors)[];
+export type GetSubjects = {
+  type: `${typeof controllerName}:getSubjects`;
+  handler: () => (keyof PermissionControllerSubjects)[];
 };
 
 export type ClearPermissions = {
@@ -85,7 +85,7 @@ export type PermissionsStateChange = {
 
 export type PermissionControllerActions =
   | GetPermissionsState
-  | GetActors
+  | GetSubjects
   | ClearPermissions;
 
 export type PermissionControllerEvents = PermissionsStateChange;
@@ -197,8 +197,8 @@ export class PermissionController extends BaseController<
    */
   protected registerMessageHandlers(): void {
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:getActors`,
-      () => this.getActors(),
+      `${controllerName}:getSubjects`,
+      () => this.getSubjects(),
     );
     this.messagingSystem.registerActionHandler(
       `${controllerName}:clearPermissions`,
@@ -212,16 +212,16 @@ export class PermissionController extends BaseController<
     });
   }
 
-  getActors(): (keyof PermissionControllerActors)[] {
-    return Object.keys(this.state.actors);
+  getSubjects(): (keyof PermissionControllerSubjects)[] {
+    return Object.keys(this.state.subjects);
   }
 
   getPermission(origin: string, target: string): Permission | undefined {
-    return this.state.actors[origin]?.permissions[target];
+    return this.state.subjects[origin]?.permissions[target];
   }
 
   getPermissions(origin: string): Record<MethodName, Permission> | undefined {
-    return this.state.actors[origin]?.permissions;
+    return this.state.subjects[origin]?.permissions;
   }
 
   hasPermission(origin: string, target: string): boolean {
@@ -229,47 +229,47 @@ export class PermissionController extends BaseController<
   }
 
   hasPermissions(origin: string): boolean {
-    return Boolean(this.state.actors[origin]);
+    return Boolean(this.state.subjects[origin]);
   }
 
   setPermission(origin: string, permission: Permission): void {
     this.update((draftState) => {
-      if (!draftState.actors[origin]) {
-        draftState.actors[origin] = { origin, permissions: {} };
+      if (!draftState.subjects[origin]) {
+        draftState.subjects[origin] = { origin, permissions: {} };
       }
       const { parentCapability: target } = permission;
       // Typecast: ts(2589)
-      draftState.actors[origin].permissions[target] = permission as any;
+      draftState.subjects[origin].permissions[target] = permission as any;
     });
   }
 
   /**
-   * Adds permissions to the given actor. Overwrites existing identical
-   * permissions (same actor and method). Other existing permissions
+   * Adds permissions to the given subject. Overwrites existing identical
+   * permissions (same subject and method). Other existing permissions
    * remain unaffected.
    *
-   * @param {string} origin - The origin of the grantee actor.
-   * @param {Array} newPermissions - The unique, new permissions for the grantee actor.
+   * @param {string} origin - The origin of the grantee subject.
+   * @param {Array} newPermissions - The unique, new permissions for the grantee subject.
    */
   setPermissions(
     origin: string,
     permissions: Record<MethodName, Permission>,
   ): void {
     this.update((draftState) => {
-      if (!draftState.actors[origin]) {
-        draftState.actors[origin] = { origin, permissions: {} };
+      if (!draftState.subjects[origin]) {
+        draftState.subjects[origin] = { origin, permissions: {} };
       }
-      Object.assign(draftState.actors[origin].permissions, permissions);
+      Object.assign(draftState.subjects[origin].permissions, permissions);
     });
   }
 
   revokePermission(origin: string, target: string): void {
     this.update((draftState) => {
-      if (!draftState.actors[origin]) {
-        throw new UnrecognizedActorError(origin);
+      if (!draftState.subjects[origin]) {
+        throw new UnrecognizedSubjectError(origin);
       }
 
-      const { permissions } = draftState.actors[origin];
+      const { permissions } = draftState.subjects[origin];
       if (!permissions[target]) {
         throw new PermissionDoesNotExistError(origin, target);
       }
@@ -277,17 +277,17 @@ export class PermissionController extends BaseController<
       if (Object.keys(permissions).length > 1) {
         delete permissions[target];
       } else {
-        delete draftState.actors[origin];
+        delete draftState.subjects[origin];
       }
     });
   }
 
   revokeAllPermissions(origin: string): void {
     this.update((draftState) => {
-      if (!draftState.actors[origin]) {
-        throw new UnrecognizedActorError(origin);
+      if (!draftState.subjects[origin]) {
+        throw new UnrecognizedSubjectError(origin);
       }
-      delete draftState.actors[origin];
+      delete draftState.subjects[origin];
     });
   }
 
@@ -311,7 +311,7 @@ export class PermissionController extends BaseController<
 
   setCaveat(origin: string, target: string, caveat: Caveat<Json>): void {
     this.update((draftState) => {
-      const permission = draftState.actors[origin]?.permissions[target];
+      const permission = draftState.subjects[origin]?.permissions[target];
       if (!permission) {
         throw new PermissionDoesNotExistError(origin, target);
       }
@@ -335,7 +335,7 @@ export class PermissionController extends BaseController<
 
   removeCaveat(origin: string, target: string, caveatType: string): void {
     this.update((draftState) => {
-      const permission = draftState.actors[origin]?.permissions[target];
+      const permission = draftState.subjects[origin]?.permissions[target];
       if (!permission) {
         throw new PermissionDoesNotExistError(origin, target);
       }
@@ -406,12 +406,12 @@ export class PermissionController extends BaseController<
   }
 
   grantPermissions(
-    actor: ActorMetadata,
+    subject: SubjectMetadata,
     requestedPermissions: RequestedPermissions,
   ): Record<MethodName, Permission> {
-    const { origin } = actor;
+    const { origin } = subject;
     if (!origin || typeof origin !== 'string') {
-      throw new InvalidActorIdentifierError(origin);
+      throw new InvalidSubjectIdentifierError(origin);
     }
 
     // Enforce actual approving known methods:
@@ -515,13 +515,13 @@ function getRestrictedMethodMap(
 
 // TODO: Are we using these?
 
-export interface PermissionsRequestMetadata extends ActorMetadata {
+export interface PermissionsRequestMetadata extends SubjectMetadata {
   id: string;
 }
 
 /**
  * Used for prompting the user about a proposed new permission.
- * Includes information about the actor granted, as well as the permissions
+ * Includes information about the subject granted, as well as the permissions
  * assigned.
  */
 export interface PermissionsRequest {
