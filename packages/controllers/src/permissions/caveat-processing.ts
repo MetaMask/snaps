@@ -1,5 +1,6 @@
 import { Json, JsonRpcRequest, PendingJsonRpcResponse } from 'json-rpc-engine';
 import { Caveat } from './Caveat';
+import { UnrecognizedCaveatTypeError } from './errors';
 import { Permission } from './Permission';
 import { RestrictedMethodImplementation } from './PermissionController';
 
@@ -66,48 +67,61 @@ export function decorateWithCaveats(
 ): RestrictedMethodImplementation<Json, Json> {
   const { caveats } = getPermission(methodName);
 
-  // If the permission has caveats, create an array of invocations of their
-  // corresponding functions bound to the caveat objects.
-  const caveatFunctions: BoundCaveatFunction<Json, Json>[] = [];
+  // If the permission has caveats, create an array of functions that call the
+  // corresponding caveat functions with the caveat object and request as
+  // arguments.
   if (caveats && caveats.length > 0) {
+    const caveatFunctions: BoundCaveatFunction<Json, Json>[] = [];
+
     for (const caveat of caveats) {
       if (!caveatImplementations[caveat.type]) {
-        throw new Error(`Unrecognized caveat type: ${caveat.type}`);
+        throw new UnrecognizedCaveatTypeError(caveat.type);
       }
 
       caveatFunctions.push((request: JsonRpcRequest<Json>) =>
         caveatImplementations[caveat.type](caveat, request),
       );
     }
-  }
 
-  return ((req, res, next, end, context) => {
-    // If there are caveats, apply them to the request.
-    if (caveatFunctions.length > 0) {
+    return ((req, res, next, end, context) => {
+      let _end = end;
       const caveatReturnHandlers = applyCaveats(req, caveatFunctions);
 
       // If any of the caveats specified return handlers, wrap the "end"
       // callback such that the return handlers are applied to the response
       // before actually ending the request.
       if (caveatReturnHandlers.length > 0) {
-        const endWithReturnHandlers = () => {
+        _end = () => {
           caveatReturnHandlers.forEach((returnHandler) => returnHandler(res));
           end();
         };
-
-        return methodImplementation(
-          req,
-          res,
-          next,
-          endWithReturnHandlers,
-          context,
-        );
       }
-    }
-    return methodImplementation(req, res, next, end, context);
-  }) as RestrictedMethodImplementation<Json, Json>;
+
+      return methodImplementation(req, res, next, _end, context);
+    }) as RestrictedMethodImplementation<Json, Json>;
+  }
+
+  // If there are no caveats, return a function that calls the restricted method
+  // implementation directly, without applying any caveats.
+  return ((req, res, next, end, context) =>
+    methodImplementation(
+      req,
+      res,
+      next,
+      end,
+      context,
+    )) as RestrictedMethodImplementation<Json, Json>;
 }
 
+/**
+ * Applies the specified caveats to the specified request. Specifically, every
+ * caveat function in the array is called with the request object as an argument.
+ *
+ * @param req - The request to apply caveats to.
+ * @param caveatFunctions - The caveats functions to call with the request as
+ * an argument.
+ * @returns Any return handlers returned by the caveat functions.
+ */
 function applyCaveats(
   req: JsonRpcRequest<Json>,
   caveatFunctions: BoundCaveatFunction<Json, Json>[],

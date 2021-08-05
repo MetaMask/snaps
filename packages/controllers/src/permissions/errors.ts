@@ -59,6 +59,12 @@ export class PermissionHasNoCaveatsError extends Error {
   }
 }
 
+export class UnrecognizedCaveatTypeError extends Error {
+  constructor(caveatType: string) {
+    super(`Unrecognized caveat type: ${caveatType}`);
+  }
+}
+
 export class CaveatDoesNotExistError extends Error {
   constructor(origin: string, target: string, caveatType: string) {
     super(
