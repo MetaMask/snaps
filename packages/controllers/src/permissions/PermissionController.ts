@@ -1,5 +1,4 @@
 import type { Patch } from 'immer';
-import deepEqual from 'fast-deep-equal';
 import deepFreeze from 'deep-freeze-strict';
 import {
   BaseControllerV2 as BaseController,
@@ -28,11 +27,11 @@ import {
   PermissionHasNoCaveatsError,
   CaveatDoesNotExistError,
   CaveatTypeDoesNotExistError,
-  InvalidCaveatJsonError,
   PermissionTargetDoesNotExistError,
   CaveatMissingValueError,
   InvalidCaveatFieldsError,
   InvalidSubjectIdentifierError,
+  InvalidCaveatTypeError,
 } from './errors';
 import { Caveat } from './Caveat';
 
@@ -155,8 +154,6 @@ export class PermissionController extends BaseController<
     return this._caveatSpecifications;
   }
 
-  protected readonly _caveatTypes: ReadonlySet<string>;
-
   constructor({
     messenger,
     state = {},
@@ -173,7 +170,6 @@ export class PermissionController extends BaseController<
     });
 
     this._caveatSpecifications = deepFreeze({ ...caveatSpecifications });
-    this._caveatTypes = getCaveatTypes(this._caveatSpecifications);
     this._restrictedMethods = getRestrictedMethodMap(restrictedMethods);
     this._safeMethods = new Set(safeMethods);
     this.methodPrefix = methodPrefix;
@@ -476,41 +472,29 @@ export class PermissionController extends BaseController<
     caveats?: Caveat<Json>[],
   ): Caveat<Json>[] | undefined {
     const caveatArray = caveats?.map((caveat) => {
-      if (!this._caveatTypes.has(caveat.type)) {
+      if (caveat.type !== 'string') {
+        throw new InvalidCaveatTypeError(caveat.type);
+      }
+
+      const specification = this.caveatSpecifications[caveat.type];
+      if (!specification) {
         throw new CaveatTypeDoesNotExistError(caveat.type, origin, target);
       }
 
       if (!('value' in caveat)) {
         throw new CaveatMissingValueError(caveat, origin, target);
       }
+      // Should throw an error if validation fails.
+      specification.validator(caveat.value);
 
       if (Object.keys(caveat).length !== 2) {
         throw new InvalidCaveatFieldsError(caveat, origin, target);
       }
 
-      if (!isValidJson(caveat)) {
-        throw new InvalidCaveatJsonError(caveat, origin, target);
-      }
       return new Caveat({ type: caveat.type, value: caveat.value });
     });
     return caveatArray && caveatArray.length > 0 ? caveatArray : undefined;
   }
-}
-
-function isValidJson(value: unknown): boolean {
-  try {
-    return deepEqual(value, JSON.parse(JSON.stringify(value)));
-  } catch (error) {
-    return false;
-  }
-}
-
-function getCaveatTypes(caveatSpecifications: CaveatSpecifications) {
-  return new Set(
-    Object.values(caveatSpecifications).map(
-      (specification) => specification.type,
-    ),
-  );
 }
 
 function getRestrictedMethodMap(

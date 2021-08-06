@@ -18,6 +18,10 @@ type CaveatFunction<
   request: JsonRpcRequest<Params>,
 ) => CaveatReturnHandler<Result> | undefined;
 
+type CaveatValueValidator<CaveatValue extends Json> = (
+  caveatValue: CaveatValue,
+) => void;
+
 export interface CaveatSpecification<
   CaveatValue extends Json,
   MethodParameters extends Json,
@@ -25,6 +29,7 @@ export interface CaveatSpecification<
 > {
   type: CaveatType;
   implementation: CaveatFunction<CaveatValue, MethodParameters, MethodResult>;
+  validator: CaveatValueValidator<CaveatValue>;
 }
 
 export type CaveatSpecifications = Record<

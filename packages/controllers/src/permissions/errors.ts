@@ -90,6 +90,12 @@ export class InvalidPermissionJsonError extends Error {
   }
 }
 
+export class InvalidCaveatTypeError extends Error {
+  constructor(caveatType: string) {
+    super(`Caveat types must be strings. Received: ${typeof caveatType}`);
+  }
+}
+
 export class CaveatTypeDoesNotExistError extends Error {
   public data: { origin: string; target: string };
 
