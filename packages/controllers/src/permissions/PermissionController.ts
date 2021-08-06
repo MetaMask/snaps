@@ -41,9 +41,11 @@ export interface SubjectMetadata {
 
 const controllerName = 'PermissionController';
 
-export interface PermissionsSubjectEntry extends SubjectMetadata {
-  permissions: Record<MethodName, Permission>;
-}
+type SubjectPermissions = Record<MethodName, Permission>;
+
+export type PermissionsSubjectEntry = {
+  permissions: SubjectPermissions;
+} & SubjectMetadata;
 
 export type PermissionControllerSubjects = Record<
   OriginString,
@@ -272,12 +274,49 @@ export class PermissionController extends BaseController<
         throw new PermissionDoesNotExistError(origin, target);
       }
 
-      if (Object.keys(permissions).length > 1) {
-        delete permissions[target];
-      } else {
-        delete draftState.subjects[origin];
-      }
+      // Typecast: ts(2589)
+      this._deletePermission(
+        draftState as any,
+        permissions as any,
+        origin,
+        target,
+      );
     });
+  }
+
+  revokePermissionForAllSubjects(target: string): void {
+    if (this.getSubjects().length === 0) {
+      return;
+    }
+
+    this.update((draftState) => {
+      Object.values(draftState.subjects).forEach((subject) => {
+        const { permissions } = subject;
+
+        // Typecast: ts(2589)
+        if (permissions[target]) {
+          this._deletePermission(
+            draftState as any,
+            permissions as any,
+            origin,
+            target,
+          );
+        }
+      });
+    });
+  }
+
+  private _deletePermission(
+    draftState: PermissionControllerState,
+    permissions: SubjectPermissions,
+    origin: string,
+    target: string,
+  ): void {
+    if (Object.keys(permissions).length > 1) {
+      delete permissions[target];
+    } else {
+      delete draftState.subjects[origin];
+    }
   }
 
   revokeAllPermissions(origin: string): void {
