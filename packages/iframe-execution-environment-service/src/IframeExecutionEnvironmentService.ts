@@ -282,7 +282,11 @@ export class IframeExecutionEnvironmentService
     };
   }
 
-  _createWindow(uri: string, jobId: string, timeout: number): Promise<Window> {
+  private _createWindow(
+    uri: string,
+    jobId: string,
+    timeout: number,
+  ): Promise<Window> {
     const iframe = document.createElement('iframe');
     return new Promise((resolve, reject) => {
       const errorTimeout = setTimeout(() => {

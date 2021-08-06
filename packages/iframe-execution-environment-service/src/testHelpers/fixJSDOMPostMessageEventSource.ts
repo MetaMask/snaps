@@ -4,8 +4,9 @@ import { IframeExecutionEnvironmentService } from '../IframeExecutionEnvironment
 const fixJSDOMPostMessageEventSource = (
   iframeExecutionEnvironmentService: IframeExecutionEnvironmentService,
 ) => {
-  const oldCreateWindow = iframeExecutionEnvironmentService._createWindow;
-  iframeExecutionEnvironmentService._createWindow = async (
+  const oldCreateWindow = (iframeExecutionEnvironmentService as any)
+    ._createWindow;
+  (iframeExecutionEnvironmentService as any)._createWindow = async (
     uri: string,
     envId: string,
     timeout: number,
