@@ -1,0 +1,42 @@
+{
+  "name": "@mm-snap/iframe-execution-environment-service",
+  "version": "0.0.0-development",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps-skunkworks.git"
+  },
+  "files": [
+    "dist/",
+    "!dist/testHelpers"
+  ],
+  "devDependencies": {
+    "@jest/globals": "^27.0.6",
+    "@jest/types": "^27.0.6",
+    "jest": "27",
+    "ts-jest": "27"
+  },
+  "scripts": {
+    "test": "jest",
+    "lint": "eslint . --ext ts,js",
+    "lint:fix": "yarn lint --fix",
+    "build": "yarn build:prep && yarn build:tsc && yarn build:post-tsc",
+    "build:tsc": "tsc --project tsconfig.json",
+    "build:post-tsc": "echo 'post-tsc-iframe-execution-env'",
+    "build:prep": "yarn rimraf dist/*",
+    "prepublishOnly": "yarn lint && yarn build"
+  },
+  "dependencies": {
+    "@metamask/object-multiplex": "^1.2.0",
+    "@metamask/obs-store": "^7.0.0",
+    "@metamask/post-message-stream": "^4.0.0",
+    "@mm-snap/controllers": "^0.0.5",
+    "@mm-snap/types": "^0.0.5",
+    "@mm-snap/workers": "^0.0.5",
+    "json-rpc-engine": "^6.1.0",
+    "json-rpc-middleware-stream": "^3.0.0",
+    "nanoid": "^3.1.23",
+    "pump": "^3.0.0",
+    "stream": "^0.0.2"
+  }
+}
