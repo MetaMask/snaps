@@ -102,20 +102,20 @@ export class IframeExecutionEnvironmentService
     return response.result;
   }
 
-  async terminateAllPlugins() {
+  public async terminateAllPlugins() {
     for (const jobId of this.jobs.keys()) {
       this.terminate(jobId);
     }
     this._pluginRpcHooks.clear();
   }
 
-  async terminatePlugin(pluginName: string) {
+  public async terminatePlugin(pluginName: string) {
     const jobId = this.pluginToJobMap.get(pluginName);
     jobId && this.terminate(jobId);
     this._removePluginHooks(pluginName);
   }
 
-  terminate(jobId: string): void {
+  public terminate(jobId: string): void {
     const jobWrapper = this.jobs.get(jobId);
     if (!jobWrapper) {
       throw new Error(`Job with id "${jobId}" not found.`);
@@ -140,7 +140,7 @@ export class IframeExecutionEnvironmentService
    *
    * @param pluginName - The name of the plugin whose message handler to get.
    */
-  async getRpcMessageHandler(pluginName: string) {
+  public async getRpcMessageHandler(pluginName: string) {
     return this._pluginRpcHooks.get(pluginName);
   }
 
@@ -168,7 +168,7 @@ export class IframeExecutionEnvironmentService
     this._pluginRpcHooks.set(pluginName, rpcHook);
   }
 
-  async executePlugin(pluginData: PluginData): Promise<unknown> {
+  public async executePlugin(pluginData: PluginData): Promise<unknown> {
     if (this.pluginToJobMap.has(pluginData.pluginName)) {
       throw new Error(
         `Plugin "${pluginData.pluginName}" is already being executed.`,
@@ -192,7 +192,7 @@ export class IframeExecutionEnvironmentService
     return result;
   }
 
-  _mapPluginAndJob(pluginName: string, jobId: string): void {
+  private _mapPluginAndJob(pluginName: string, jobId: string): void {
     this.pluginToJobMap.set(pluginName, jobId);
     this.jobToPluginMap.set(jobId, pluginName);
   }
@@ -200,18 +200,18 @@ export class IframeExecutionEnvironmentService
   /**
    * @returns The ID of the plugin's job.
    */
-  _getJobForPlugin(pluginName: string): string | undefined {
+  private _getJobForPlugin(pluginName: string): string | undefined {
     return this.pluginToJobMap.get(pluginName);
   }
 
   /**
    * @returns The ID job's plugin.
    */
-  _getPluginForJob(jobId: string): string | undefined {
+  private _getPluginForJob(jobId: string): string | undefined {
     return this.jobToPluginMap.get(jobId);
   }
 
-  _removePluginAndJobMapping(jobId: string): void {
+  private _removePluginAndJobMapping(jobId: string): void {
     const pluginName = this.jobToPluginMap.get(jobId);
     if (!pluginName) {
       throw new Error(`job: "${jobId}" has no mapped plugin.`);
@@ -248,7 +248,7 @@ export class IframeExecutionEnvironmentService
     return envMetadata;
   }
 
-  async _initStreams(jobId: string): Promise<any> {
+  private async _initStreams(jobId: string): Promise<any> {
     this._iframeWindow = await this._createWindow(
       this.iframeUrl.toString(),
       jobId,
