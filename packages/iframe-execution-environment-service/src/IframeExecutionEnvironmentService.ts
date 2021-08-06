@@ -1,7 +1,6 @@
 import { Duplex } from 'stream';
 import { nanoid } from 'nanoid';
 import pump from 'pump';
-import { ObservableStore } from '@metamask/obs-store';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { PLUGIN_STREAM_NAMES } from '@mm-snap/workers';
@@ -42,8 +41,6 @@ interface EnvMetadata {
 export class IframeExecutionEnvironmentService
   implements ExecutionEnvironmentService
 {
-  public store: ObservableStore<{ jobs: Record<string, EnvMetadata> }>;
-
   private _pluginRpcHooks: Map<string, PluginRpcHook>;
 
   public _iframeWindow?: Window;
@@ -64,7 +61,6 @@ export class IframeExecutionEnvironmentService
   }: IframeExecutionEnvironmentServiceArgs) {
     this.iframeUrl = iframeUrl;
     this.setupPluginProvider = setupPluginProvider;
-    this.store = new ObservableStore({ jobs: {} });
     this.jobs = new Map();
     this.pluginToJobMap = new Map();
     this.jobToPluginMap = new Map();
@@ -73,22 +69,10 @@ export class IframeExecutionEnvironmentService
 
   private _setJob(jobId: string, jobWrapper: EnvMetadata): void {
     this.jobs.set(jobId, jobWrapper);
-
-    const newJobState = {
-      ...(this.store.getState().jobs as Record<string, EnvMetadata>),
-      [jobId]: jobWrapper,
-    };
-    this.store.updateState({ jobs: newJobState });
   }
 
   private _deleteJob(jobId: string): void {
     this.jobs.delete(jobId);
-
-    const newJobState = {
-      ...(this.store.getState().jobs as Record<string, EnvMetadata>),
-    };
-    delete newJobState[jobId];
-    this.store.updateState({ jobs: newJobState });
   }
 
   private async _command(
@@ -259,10 +243,10 @@ export class IframeExecutionEnvironmentService
     return envMetadata;
   }
 
-  async _initStreams(envId: string): Promise<any> {
+  async _initStreams(jobId: string): Promise<any> {
     this._iframeWindow = await this._createWindow(
       this.iframeUrl.toString(),
-      envId,
+      jobId,
     );
     const envStream = new WindowPostMessageStream({
       name: 'parent',
@@ -272,7 +256,7 @@ export class IframeExecutionEnvironmentService
     // Typecast justification: stream type mismatch
     const mux = setupMultiplex(
       envStream as unknown as Duplex,
-      `Environment:${envId}`,
+      `Job: "${jobId}"`,
     );
 
     const commandStream = mux.createStream(PLUGIN_STREAM_NAMES.COMMAND);
@@ -292,7 +276,7 @@ export class IframeExecutionEnvironmentService
     };
   }
 
-  _createWindow(uri: string, envId: string, timeout = 60000): Promise<Window> {
+  _createWindow(uri: string, jobId: string, timeout = 60000): Promise<Window> {
     const iframe = document.createElement('iframe');
     return new Promise((resolve, reject) => {
       const errorTimeout = setTimeout(() => {
@@ -307,7 +291,7 @@ export class IframeExecutionEnvironmentService
       });
       document.body.appendChild(iframe);
       iframe.setAttribute('src', uri);
-      iframe.setAttribute('id', envId);
+      iframe.setAttribute('id', jobId);
     });
   }
 }
