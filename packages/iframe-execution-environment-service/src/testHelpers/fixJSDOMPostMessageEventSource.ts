@@ -8,8 +8,9 @@ const fixJSDOMPostMessageEventSource = (
   iframeExecutionEnvironmentService._createWindow = async (
     uri: string,
     envId: string,
+    timeout: number,
   ) => {
-    const result = await oldCreateWindow(uri, envId);
+    const result = await oldCreateWindow(uri, envId, timeout);
 
     const scriptElement = result.document.createElement('script');
 

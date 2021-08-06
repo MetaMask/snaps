@@ -16,6 +16,7 @@ import { ExecutionEnvironmentService } from '@mm-snap/controllers';
 export type SetupPluginProvider = (pluginName: string, stream: Duplex) => void;
 
 interface IframeExecutionEnvironmentServiceArgs {
+  createWindowTimeout?: number;
   setupPluginProvider: SetupPluginProvider;
   iframeUrl: URL;
 }
@@ -55,10 +56,14 @@ export class IframeExecutionEnvironmentService
 
   private jobToPluginMap: Map<string, string>;
 
+  private _createWindowTimeout: number;
+
   constructor({
     setupPluginProvider,
     iframeUrl,
+    createWindowTimeout = 60000,
   }: IframeExecutionEnvironmentServiceArgs) {
+    this._createWindowTimeout = createWindowTimeout;
     this.iframeUrl = iframeUrl;
     this.setupPluginProvider = setupPluginProvider;
     this.jobs = new Map();
@@ -247,6 +252,7 @@ export class IframeExecutionEnvironmentService
     this._iframeWindow = await this._createWindow(
       this.iframeUrl.toString(),
       jobId,
+      this._createWindowTimeout,
     );
     const envStream = new WindowPostMessageStream({
       name: 'parent',
@@ -276,7 +282,7 @@ export class IframeExecutionEnvironmentService
     };
   }
 
-  _createWindow(uri: string, jobId: string, timeout = 60000): Promise<Window> {
+  _createWindow(uri: string, jobId: string, timeout: number): Promise<Window> {
     const iframe = document.createElement('iframe');
     return new Promise((resolve, reject) => {
       const errorTimeout = setTimeout(() => {
