@@ -1,5 +1,5 @@
 import { describe, it, expect } from '@jest/globals';
-import fixJSDOMPostMessageEventSource from './helpers/fixJSDOMPostMessageEventSource';
+import fixJSDOMPostMessageEventSource from './testHelpers/fixJSDOMPostMessageEventSource';
 import { IframeExecutionEnvironmentService } from './IframeExecutionEnvironmentService';
 
 describe('Iframe Controller', () => {

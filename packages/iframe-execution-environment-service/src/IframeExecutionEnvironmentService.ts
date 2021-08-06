@@ -16,7 +16,7 @@ import { ExecutionEnvironmentService } from '@mm-snap/controllers';
 
 export type SetupPluginProvider = (pluginName: string, stream: Duplex) => void;
 
-interface JobControllerArgs {
+interface IframeExecutionEnvironmentServiceArgs {
   setupPluginProvider: SetupPluginProvider;
   iframeUrl: URL;
 }
@@ -58,7 +58,10 @@ export class IframeExecutionEnvironmentService
 
   private jobToPluginMap: Map<string, string>;
 
-  constructor({ setupPluginProvider, iframeUrl }: JobControllerArgs) {
+  constructor({
+    setupPluginProvider,
+    iframeUrl,
+  }: IframeExecutionEnvironmentServiceArgs) {
     this.iframeUrl = iframeUrl;
     this.setupPluginProvider = setupPluginProvider;
     this.store = new ObservableStore({ jobs: {} });
@@ -140,7 +143,7 @@ export class IframeExecutionEnvironmentService
     document.getElementById(jobWrapper.id)?.remove();
     this._removePluginAndJobMapping(jobId);
     this._deleteJob(jobId);
-    console.log(`job:${jobId} terminated`);
+    console.log(`job: "${jobId}" terminated`);
   }
 
   /**
@@ -222,7 +225,7 @@ export class IframeExecutionEnvironmentService
   _removePluginAndJobMapping(jobId: string): void {
     const pluginName = this.jobToPluginMap.get(jobId);
     if (!pluginName) {
-      throw new Error(`job:${jobId} has no mapped plugin.`);
+      throw new Error(`job: "${jobId}" has no mapped plugin.`);
     }
 
     this.jobToPluginMap.delete(jobId);
@@ -289,15 +292,16 @@ export class IframeExecutionEnvironmentService
     };
   }
 
-  _createWindow(uri: string, envId: string): Promise<Window> {
+  _createWindow(uri: string, envId: string, timeout = 60000): Promise<Window> {
     const iframe = document.createElement('iframe');
-    return new Promise((resolve) => {
-      const resolved = false;
+    return new Promise((resolve, reject) => {
+      const errorTimeout = setTimeout(() => {
+        iframe.remove();
+        reject(new Error(`Timed out creating iframe window: "${uri}"`));
+      }, timeout);
       iframe.addEventListener('load', () => {
-        if (resolved) {
-          return;
-        }
         if (iframe.contentWindow) {
+          clearTimeout(errorTimeout);
           resolve(iframe.contentWindow);
         }
       });
@@ -328,7 +332,7 @@ function setupMultiplex(
     (err) => {
       if (err) {
         streamName
-          ? console.error(`${streamName} stream failure.`, err)
+          ? console.error(`"${streamName}" stream failure.`, err)
           : console.error(err);
       }
     },

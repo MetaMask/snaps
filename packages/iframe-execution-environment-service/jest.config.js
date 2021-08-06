@@ -8,4 +8,9 @@ module.exports = {
   testPathIgnorePatterns: [],
   testRegex: ['\\.test\\.ts$'],
   testTimeout: 5000,
+  globals: {
+    'ts-jest': {
+      tsConfig: 'tsconfig.test.json',
+    },
+  },
 };

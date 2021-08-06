@@ -7,7 +7,8 @@
     "url": "https://github.com/MetaMask/snaps-skunkworks.git"
   },
   "files": [
-    "dist/"
+    "dist/",
+    "!dist/testHelpers"
   ],
   "devDependencies": {
     "@jest/globals": "^27.0.6",
@@ -20,8 +21,8 @@
     "lint": "eslint . --ext ts,js",
     "lint:fix": "yarn lint --fix",
     "build": "yarn build:prep && yarn build:tsc && yarn build:post-tsc",
-    "build:tsc": "tsc --project tsconfig.local.json",
-    "build:post-tsc": "mv dist/PluginWorker.js dist/_PluginWorker.js && rm dist/PluginWorker* && node bundle.js && rm dist/_PluginWorker.js",
+    "build:tsc": "tsc --project tsconfig.json",
+    "build:post-tsc": "echo 'post-tsc-iframe-execution-env'",
     "build:prep": "yarn rimraf dist/*",
     "prepublishOnly": "yarn lint && yarn build"
   },

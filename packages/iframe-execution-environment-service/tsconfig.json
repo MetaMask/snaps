@@ -1,10 +1,14 @@
 {
   "extends": "../../tsconfig.packages.json",
   "compilerOptions": {
-    "composite": true,
+    "composite": false,
     "outDir": "./dist",
     "rootDir": "./src",
     "typeRoots": ["./node_modules/@types"]
   },
-  "include": ["./src"]
+  "include": ["./src"],
+  "exclude": [
+     "**/*.test.ts",
+    "./src/testHelpers/"
+    ]
 }
