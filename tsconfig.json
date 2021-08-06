@@ -2,7 +2,8 @@
   "references": [
     { "path": "./packages/controllers" },
     { "path": "./packages/rpc-methods" },
-    { "path": "./packages/workers" }
+    { "path": "./packages/workers" },
+    { "path": "./packages/iframe-execution-environment-service" }
   ],
   "files": [],
   "include": [],
