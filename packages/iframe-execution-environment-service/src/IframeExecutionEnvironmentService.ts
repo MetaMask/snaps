@@ -98,7 +98,7 @@ export class IframeExecutionEnvironmentService
 
     const jobWrapper = this.jobs.get(jobId);
     if (!jobWrapper) {
-      throw new Error(`Job with id ${jobId} not found.`);
+      throw new Error(`Job with id "${jobId}" not found.`);
     }
 
     console.log('Parent: Sending Command', message);
