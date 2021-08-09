@@ -487,16 +487,16 @@ export class PluginController extends BaseController<
     }
 
     try {
-      const { sourceCode } = await this.add({
+      const addedPlugin = await this.add({
         name: pluginName,
         manifestUrl: pluginName,
       });
 
-      await this.authorize(pluginName);
+      await this.authorize(addedPlugin);
 
       await this._startPlugin({
         pluginName,
-        sourceCode,
+        sourceCode: addedPlugin.sourceCode,
       });
 
       return this.getSerializable(pluginName) as SerializablePlugin;
@@ -539,7 +539,7 @@ export class PluginController extends BaseController<
 
   private async _startPlugin(pluginData: PluginData) {
     const { pluginName } = pluginData;
-    if (this.get(pluginName).isRunning) {
+    if (this.get(pluginName)?.isRunning) {
       throw new Error(`Plugin "${pluginName}" is already started.`);
     }
 
@@ -646,11 +646,9 @@ export class PluginController extends BaseController<
    * @param pluginName - The name of the plugin.
    * @returns The plugin's approvedPermissions.
    */
-  async authorize(pluginName: string): Promise<string[]> {
+  async authorize(plugin: Plugin): Promise<string[]> {
+    const { name: pluginName, initialPermissions } = plugin;
     console.log(`Authorizing plugin: ${pluginName}`);
-    const pluginsState = this.state.plugins;
-    const plugin = pluginsState[pluginName];
-    const { initialPermissions } = plugin;
 
     // Don't prompt if there are no permissions requested:
     if (Object.keys(initialPermissions).length === 0) {

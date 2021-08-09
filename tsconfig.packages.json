@@ -4,6 +4,7 @@
     "esModuleInterop": true,
     "module": "CommonJS",
     "moduleResolution": "node",
+    "noUncheckedIndexedAccess": true,
     "sourceMap": true,
     "strict": true,
     "target": "ES2017",

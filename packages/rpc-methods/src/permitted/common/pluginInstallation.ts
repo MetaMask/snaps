@@ -1,6 +1,7 @@
 import { ethErrors } from 'eth-rpc-errors';
 import { PLUGIN_PREFIX, InstallPluginsResult } from '@mm-snap/controllers';
 import { IRequestedPermissions } from 'rpc-cap/dist/src/@types';
+import { IOcapLdCapability } from 'rpc-cap/dist/src/@types/ocap-ld';
 import { isPlainObject } from '../../utils';
 
 export { InstallPluginsResult } from '@mm-snap/controllers';
@@ -51,11 +52,17 @@ export function preprocessRequestPermissions(
             });
           }
 
-          newRequestedPermissions[pluginKey] = requestedPlugins[pluginName];
+          // Typecast: TS doesn't understand that pluginName is an existing key
+          newRequestedPermissions[pluginKey] = requestedPlugins[
+            pluginName
+          ] as Partial<IOcapLdCapability>;
         });
       } else {
         // otherwise, leave things as we found them
-        newRequestedPermissions[permName] = requestedPermissions[permName];
+        // Typecast: TS doesn't understand that permName is an existing key
+        newRequestedPermissions[permName] = requestedPermissions[
+          permName
+        ] as Partial<IOcapLdCapability>;
       }
 
       return newRequestedPermissions;
