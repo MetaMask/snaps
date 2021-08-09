@@ -80,15 +80,15 @@ export type ClearPermissions = {
   handler: () => void;
 };
 
-export type PermissionsStateChange = {
-  type: `${typeof controllerName}:stateChange`;
-  payload: [PermissionControllerState, Patch[]];
-};
-
 export type PermissionControllerActions =
   | GetPermissionsState
   | GetSubjects
   | ClearPermissions;
+
+export type PermissionsStateChange = {
+  type: `${typeof controllerName}:stateChange`;
+  payload: [PermissionControllerState, Patch[]];
+};
 
 export type PermissionControllerEvents = PermissionsStateChange;
 

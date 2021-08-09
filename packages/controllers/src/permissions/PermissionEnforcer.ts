@@ -41,20 +41,20 @@ class PermissionEnforcer {
     this.getRestrictedMethodImplementation = getRestrictedMethodImplementation;
   }
 
-  async safelyExecuteRestrictedMethodAs<Params, Result>(
+  async safelyExecuteRestrictedMethod<Params, Result>(
     origin: string,
     method: string,
     params: Params,
   ): Promise<Result | void> {
     try {
-      return await this.executeRestrictedMethodAs(origin, method, params);
+      return await this.executeRestrictedMethod(origin, method, params);
     } catch (error) {
       console.error(error);
       return undefined;
     }
   }
 
-  executeRestrictedMethodAs<Params, Result>(
+  executeRestrictedMethod<Params, Result>(
     origin: string,
     method: string,
     params: Params,
@@ -89,7 +89,7 @@ class PermissionEnforcer {
       if (!methodImplementation) {
         throw methodNotFound({ method, data: { request: req } });
       }
-      this.executeRestrictedMethod(
+      this._executeRestrictedMethod(
         methodImplementation,
         { origin },
         req,
@@ -127,7 +127,7 @@ class PermissionEnforcer {
         return end(unauthorized({ data: { request: req } }));
       }
 
-      this.executeRestrictedMethod(
+      this._executeRestrictedMethod(
         methodImplementation,
         subject,
         req,
@@ -151,7 +151,7 @@ class PermissionEnforcer {
    * @param end
    * @returns
    */
-  private executeRestrictedMethod(
+  private _executeRestrictedMethod(
     methodImplementation: RestrictedMethodImplementation<unknown, unknown>,
     subject: SubjectMetadata,
     req: JsonRpcRequest<unknown>,
