@@ -10,16 +10,21 @@ jobs:
       contents: write
     if: |
       github.event.pull_request.merged == true &&
-      startsWith(github.event.pull_request.head.ref, 'automation_release-')
+      startsWith(github.event.pull_request.head.ref, 'release/')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          # We check out the release pull request's base branch, which will be
+          # used as the base branch for all git operations.
+          ref: ${{ github.event.pull_request.base.ref }}
       - name: Get Node.js version
         id: nvm
         run: echo ::set-output name=NODE_VERSION::$(cat .nvmrc)
       - uses: actions/setup-node@v2
         with:
           node-version: ${{ steps.nvm.outputs.NODE_VERSION }}
-      - uses: MetaMask/action-publish-release@v0.1.0
+      - uses: MetaMask/action-publish-release@v1
+        id: publish-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
