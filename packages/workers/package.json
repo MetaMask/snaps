@@ -1,6 +1,6 @@
 {
   "name": "@mm-snap/workers",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Snap Web Workers for the MetaMask extension.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
