@@ -24,6 +24,7 @@
     "lint": "eslint . --ext ts,js",
     "lint:changelog": "yarn auto-changelog validate",
     "lint:fix": "yarn lint --fix",
+    "publish": "npm publish",
     "prepublishOnly": "yarn lint"
   },
   "devDependencies": {

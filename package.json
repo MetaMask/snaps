@@ -14,6 +14,7 @@
   },
   "scripts": {
     "setup": "yarn install && yarn allow-scripts",
+    "publish": "yarn setup && yarn workspaces run publish",
     "link-packages": "./scripts/link-packages.sh",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!**/CHANGELOG.md' '**/*.yml' --ignore-path .gitignore",
