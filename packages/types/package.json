@@ -15,7 +15,8 @@
     "url": "https://github.com/MetaMask/snaps-skunkworks.git"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
     "build": "echo \"@mm-snap/types has no build command.\"",
