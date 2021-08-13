@@ -6,4 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/
+## [0.0.6]
+### Added
+- Initial release
+
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.0.6...HEAD
+[0.0.6]: https://github.com/MetaMask/snaps-skunkworks/releases/tag/v0.0.6
