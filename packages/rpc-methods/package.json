@@ -15,7 +15,8 @@
     "url": "https://github.com/MetaMask/snaps-skunkworks.git"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
     "test": "echo \"@mm-snap/rpc-methods has no tests.\"",
