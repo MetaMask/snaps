@@ -22,6 +22,7 @@
     "build": "yarn build:prep && tsc --project tsconfig.local.json",
     "build:prep": "yarn rimraf dist/*",
     "lint": "eslint . --ext ts,js",
+    "lint:changelog": "yarn auto-changelog validate",
     "lint:fix": "yarn lint --fix",
     "prepublishOnly": "yarn lint && yarn build"
   },
