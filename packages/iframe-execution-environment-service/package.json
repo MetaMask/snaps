@@ -1,6 +1,6 @@
 {
   "name": "@mm-snap/iframe-execution-environment-service",
-  "version": "0.0.0-development",
+  "version": "0.0.5",
   "main": "dist/index.js",
   "repository": {
     "type": "git",
