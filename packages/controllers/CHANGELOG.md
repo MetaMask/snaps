@@ -7,19 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.0.6]
-### Uncategorized
-- Add changelog linting to CI, fix changelog issues ([#41](https://github.com/MetaMask/snaps-skunkworks/pull/41))
-- Feature/iframe execution environment ([#33](https://github.com/MetaMask/snaps-skunkworks/pull/33))
-- Update TypeScript and ESLint dependencies ([#29](https://github.com/MetaMask/snaps-skunkworks/pull/29))
-- add snaps execution environment OpenRPC spec ([#23](https://github.com/MetaMask/snaps-skunkworks/pull/23))
-- Restore origin parameter to setupWorkerConnection, rename to setupPluginProvider ([#20](https://github.com/MetaMask/snaps-skunkworks/pull/20))
-- Move `isRunning` check from startPlugin to _startPlugin ([#21](https://github.com/MetaMask/snaps-skunkworks/pull/21))
-- Refactor worker controller to use generic execution environment interface ([#19](https://github.com/MetaMask/snaps-skunkworks/pull/19))
-- refactor plugin controller to use v2 ([#13](https://github.com/MetaMask/snaps-skunkworks/pull/13))
-- Standardize repository, remove lerna ([#16](https://github.com/MetaMask/snaps-skunkworks/pull/16))
-- Replace `prepare` scripts with `prepublishOnly` ([#15](https://github.com/MetaMask/snaps-skunkworks/pull/15))
-- Refactor `CommandEngine` to JSON-RPC ([#11](https://github.com/MetaMask/snaps-skunkworks/pull/11))
-- @metamask/eslint-config*@6.0.0 ([#8](https://github.com/MetaMask/snaps-skunkworks/pull/8))
+### Added
+- iframe execution environment ([#33](https://github.com/MetaMask/snaps-skunkworks/pull/33))
+- Execution environment OpenRPC spec ([#23](https://github.com/MetaMask/snaps-skunkworks/pull/23))
+
+### Changed
+- **(BREAKING)** Migrate `CommandEngine` message format to JSON-RPC ([#11](https://github.com/MetaMask/snaps-skunkworks/pull/11))
+- **(BREAKING)** Refactor `PluginController` to use `BaseControllerV2` ([#13](https://github.com/MetaMask/snaps-skunkworks/pull/13))
+- **(BREAKING)** Use generic execution environment interface ([#19](https://github.com/MetaMask/snaps-skunkworks/pull/19))
+- **(BREAKING)** Restore origin parameter to `setupWorkerConnection`, rename to `setupPluginProvider` ([#20](https://github.com/MetaMask/snaps-skunkworks/pull/20))
+- **(BREAKING)** Rename some execution environment methods ([#23](https://github.com/MetaMask/snaps-skunkworks/pull/23))
+
+### Fixed
+- Ensure that the plugin `isRunning` check always runs when a plugin is started ([#21](https://github.com/MetaMask/snaps-skunkworks/pull/21))
 
 ## [0.0.5]
 ### Uncategorized

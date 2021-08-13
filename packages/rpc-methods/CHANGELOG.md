@@ -7,14 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.0.6]
-### Uncategorized
-- Add changelog linting to CI, fix changelog issues ([#41](https://github.com/MetaMask/snaps-skunkworks/pull/41))
-- Update TypeScript and ESLint dependencies ([#29](https://github.com/MetaMask/snaps-skunkworks/pull/29))
-- Refactor worker controller to use generic execution environment interface ([#19](https://github.com/MetaMask/snaps-skunkworks/pull/19))
-- Standardize repository, remove lerna ([#16](https://github.com/MetaMask/snaps-skunkworks/pull/16))
-- Replace `prepare` scripts with `prepublishOnly` ([#15](https://github.com/MetaMask/snaps-skunkworks/pull/15))
-- Refactor `CommandEngine` to JSON-RPC ([#11](https://github.com/MetaMask/snaps-skunkworks/pull/11))
-- @metamask/eslint-config*@6.0.0 ([#8](https://github.com/MetaMask/snaps-skunkworks/pull/8))
+### Changed
+- **(BREAKING)** Migrate `CommandEngine` message format to JSON-RPC ([#11](https://github.com/MetaMask/snaps-skunkworks/pull/11))
+- **(BREAKING)** Use generic execution environment interface ([#19](https://github.com/MetaMask/snaps-skunkworks/pull/19))
 
 ## [0.0.5]
 ### Uncategorized

@@ -7,18 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.0.6]
-### Uncategorized
-- Add changelog linting to CI, fix changelog issues ([#41](https://github.com/MetaMask/snaps-skunkworks/pull/41))
-- Update TypeScript and ESLint dependencies ([#29](https://github.com/MetaMask/snaps-skunkworks/pull/29))
-- add snaps execution environment OpenRPC spec ([#23](https://github.com/MetaMask/snaps-skunkworks/pull/23))
-- Standardize repository, remove lerna ([#16](https://github.com/MetaMask/snaps-skunkworks/pull/16))
-- Replace `prepare` scripts with `prepublishOnly` ([#15](https://github.com/MetaMask/snaps-skunkworks/pull/15))
-- Refactor `CommandEngine` to JSON-RPC ([#11](https://github.com/MetaMask/snaps-skunkworks/pull/11))
-- @metamask/eslint-config*@6.0.0 ([#8](https://github.com/MetaMask/snaps-skunkworks/pull/8))
+### Added
+- Execution environment OpenRPC spec ([#23](https://github.com/MetaMask/snaps-skunkworks/pull/23))
+
+### Changed
+- **(BREAKING)** Migrate `CommandEngine` message format to JSON-RPC ([#11](https://github.com/MetaMask/snaps-skunkworks/pull/11))
+- **(BREAKING)** Rename some execution environment methods ([#23](https://github.com/MetaMask/snaps-skunkworks/pull/23))
 
 ## [0.0.5]
-### Uncategorized
-- First semi-stable release.
+### Added
+- Initial release
 
 [Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.0.6...HEAD
 [0.0.6]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.0.5...v0.0.6
