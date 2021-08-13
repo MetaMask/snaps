@@ -22,6 +22,7 @@
     "build:prep": "echo \"@mm-snap/types has no build:prep command.\"",
     "test": "echo \"@mm-snap/types has no tests.\"",
     "lint": "eslint . --ext ts,js",
+    "lint:changelog": "yarn auto-changelog validate",
     "lint:fix": "yarn lint --fix",
     "prepublishOnly": "yarn lint"
   },

@@ -20,6 +20,7 @@
   "scripts": {
     "test": "echo \"@mm-snap/workers has no tests.\"",
     "lint": "eslint . --ext ts,js",
+    "lint:changelog": "yarn auto-changelog validate",
     "lint:fix": "yarn lint --fix",
     "build": "yarn build:prep && yarn build:tsc && yarn build:post-tsc",
     "build:tsc": "tsc --project tsconfig.local.json",
