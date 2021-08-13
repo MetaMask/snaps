@@ -26,6 +26,7 @@
     "build:tsc": "tsc --project tsconfig.local.json",
     "build:post-tsc": "mv dist/PluginWorker.js dist/_PluginWorker.js && rm dist/PluginWorker* && node bundle.js && rm dist/_PluginWorker.js",
     "build:prep": "yarn rimraf dist/*",
+    "publish": "npm publish",
     "prepublishOnly": "yarn lint && yarn build"
   },
   "devDependencies": {

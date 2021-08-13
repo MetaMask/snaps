@@ -24,6 +24,7 @@
     "lint:fix": "yarn lint --fix",
     "build": "yarn build:prep && tsc --project tsconfig.local.json",
     "build:prep": "yarn rimraf dist/*",
+    "publish": "npm publish",
     "prepublishOnly": "yarn lint && yarn build"
   },
   "dependencies": {
