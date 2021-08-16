@@ -53,6 +53,7 @@ const fixJSDOMPostMessageEventSource = (
 
     return result;
   };
+
   const listener = (event: MessageEvent) => {
     if (event.source === null && !event.origin) {
       let source;
@@ -64,6 +65,7 @@ const fixJSDOMPostMessageEventSource = (
         source = iframeExecutionEnvironmentService._iframeWindow;
         origin = iframeExecutionEnvironmentService.iframeUrl.toString();
       }
+
       if (event.data.target) {
         event.stopImmediatePropagation();
         const args = Object.assign({
