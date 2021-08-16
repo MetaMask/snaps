@@ -23,6 +23,12 @@ jobs:
       - run: yarn build
       - run: yarn lint
       - run: yarn test:ci
+      - name: Validate RC changelog
+        if: ${{ startsWith(github.head_ref, 'release/') }}
+        run: yarn lint:changelogs --rc
+      - name: Validate changelog
+        if: ${{ !startsWith(github.head_ref, 'release/') }}
+        run: yarn lint:changelogs
 
   all-jobs-pass:
     name: All jobs pass

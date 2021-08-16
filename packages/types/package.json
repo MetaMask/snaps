@@ -1,6 +1,6 @@
 {
   "name": "@mm-snap/types",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Shared types for @mm-snap packages.",
   "main": "index.d.ts",
   "types": "index.d.ts",
@@ -15,14 +15,17 @@
     "url": "https://github.com/MetaMask/snaps-skunkworks.git"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
     "build": "echo \"@mm-snap/types has no build command.\"",
     "build:prep": "echo \"@mm-snap/types has no build:prep command.\"",
     "test": "echo \"@mm-snap/types has no tests.\"",
     "lint": "eslint . --ext ts,js",
+    "lint:changelog": "yarn auto-changelog validate",
     "lint:fix": "yarn lint --fix",
+    "publish": "npm publish",
     "prepublishOnly": "yarn lint"
   },
   "devDependencies": {
