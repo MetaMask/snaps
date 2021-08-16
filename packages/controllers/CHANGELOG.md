@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.0.7]
-### Uncategorized
-- Changed updatePluginState to use proper key `pluginStates` ([#48](https://github.com/MetaMask/snaps-skunkworks/pull/48))
+### Changed
+- PluginController updatePluginState to use proper key `pluginStates` ([#48](https://github.com/MetaMask/snaps-skunkworks/pull/48))
 
 ## [0.0.6]
 ### Added
