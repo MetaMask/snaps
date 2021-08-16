@@ -40,7 +40,60 @@ describe('PluginController Controller', () => {
         name: 'PluginController',
       }),
     });
+
     expect(pluginController).toBeDefined();
+  });
+  it('can create a worker and plugin controller and update its state', async () => {
+    const workerExecutionEnvironment = new WebWorkerExecutionEnvironmentService(
+      {
+        setupPluginProvider: jest.fn(),
+        workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
+      },
+    );
+    const pluginController = new PluginController({
+      terminateAllPlugins: workerExecutionEnvironment.terminateAllPlugins.bind(
+        workerExecutionEnvironment,
+      ),
+      terminatePlugin: workerExecutionEnvironment.terminatePlugin.bind(
+        workerExecutionEnvironment,
+      ),
+      executePlugin: workerExecutionEnvironment.executePlugin.bind(
+        workerExecutionEnvironment,
+      ),
+      getRpcMessageHandler:
+        workerExecutionEnvironment.getRpcMessageHandler.bind(
+          workerExecutionEnvironment,
+        ),
+      removeAllPermissionsFor: jest.fn(),
+      getPermissions: jest.fn(),
+      hasPermission: jest.fn(),
+      requestPermissions: jest.fn(),
+      closeAllConnections: jest.fn(),
+      messenger: new ControllerMessenger<any, any>().getRestricted({
+        name: 'PluginController',
+      }),
+    });
+    const plugin = await pluginController.add({
+      name: 'TestPlugin',
+      sourceCode: `
+        wallet.registerRpcMessageHandler(async (origin, request) => {
+          const {method, params, id} = request;
+          wallet.request({method: 'setState'})
+          return method + id;
+        });
+      `,
+      manifest: {
+        web3Wallet: {
+          initialPermissions: {},
+        },
+        version: '0.0.0-development',
+      },
+    });
+
+    await pluginController.startPlugin(plugin.name);
+    await pluginController.updatePluginState(plugin.name, { hello: 'world' });
+    const pluginState = await pluginController.getPluginState(plugin.name);
+    expect(pluginState).toEqual({ hello: 'world' });
   });
 
   it('can add a plugin and use its JSON-RPC api with a WebWorkerExecutionEnvironmentService', async () => {
