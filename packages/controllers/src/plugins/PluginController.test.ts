@@ -43,7 +43,7 @@ describe('PluginController Controller', () => {
 
     expect(pluginController).toBeDefined();
   });
-  it('can create a worker and plugin controller and update its state', async () => {
+  it('can create a worker and plugin controller and add a plugin and update its state', async () => {
     const workerExecutionEnvironment = new WebWorkerExecutionEnvironmentService(
       {
         setupPluginProvider: jest.fn(),
