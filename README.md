@@ -25,3 +25,11 @@ Repository-wide watching is currently not possible.
 ### Testing and Linting
 
 Run `yarn test` and `yarn lint` in the project root directory, or in a workspace.
+
+### Publishing
+
+Follow the usual release automation workflow, the publish locally from the monorepo root using:
+
+```sh
+yarn publish:all --otp=YOUR_NPM_OTP_CODE
+```

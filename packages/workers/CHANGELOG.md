@@ -6,9 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.0.5]
-### Uncategorized
-- First semi-stable release.
+## [0.0.6]
+### Added
+- Execution environment OpenRPC spec ([#23](https://github.com/MetaMask/snaps-skunkworks/pull/23))
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.0.5...HEAD
+### Changed
+- **(BREAKING)** Migrate `CommandEngine` message format to JSON-RPC ([#11](https://github.com/MetaMask/snaps-skunkworks/pull/11))
+- **(BREAKING)** Rename some execution environment methods ([#23](https://github.com/MetaMask/snaps-skunkworks/pull/23))
+
+## [0.0.5]
+### Added
+- Initial release
+
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.0.6...HEAD
+[0.0.6]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.0.5...v0.0.6
 [0.0.5]: https://github.com/MetaMask/snaps-skunkworks/releases/tag/v0.0.5
