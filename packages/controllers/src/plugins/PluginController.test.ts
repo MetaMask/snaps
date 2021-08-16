@@ -78,7 +78,7 @@ describe('PluginController Controller', () => {
       sourceCode: `
         wallet.registerRpcMessageHandler(async (origin, request) => {
           const {method, params, id} = request;
-          wallet.request({method: 'setState'})
+          const state = wallet.request({method: 'getState', params: []});
           return method + id;
         });
       `,
@@ -94,6 +94,7 @@ describe('PluginController Controller', () => {
     await pluginController.updatePluginState(plugin.name, { hello: 'world' });
     const pluginState = await pluginController.getPluginState(plugin.name);
     expect(pluginState).toEqual({ hello: 'world' });
+    expect(pluginController.state.pluginStates).toEqual({ hello: 'world' });
   });
 
   it('can add a plugin and use its JSON-RPC api with a WebWorkerExecutionEnvironmentService', async () => {
