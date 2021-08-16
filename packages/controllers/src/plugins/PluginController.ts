@@ -342,7 +342,7 @@ export class PluginController extends BaseController<
     newPluginState: Json,
   ): Promise<void> {
     this.update((state: any) => {
-      state[pluginName] = newPluginState;
+      state.pluginStates[pluginName] = newPluginState;
     });
   }
 
