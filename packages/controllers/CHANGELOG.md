@@ -7,8 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.0.7]
-### Changed
-- PluginController updatePluginState to use proper key `pluginStates` ([#48](https://github.com/MetaMask/snaps-skunkworks/pull/48))
+### Fixed
+- Store plugin states in the correct place ([#48](https://github.com/MetaMask/snaps-skunkworks/pull/48))
+  - Previously, plugin states would be set as top-level keys of the `PluginController`'s state. This broke retrieving plugin states. They are now correctly stored under `state.pluginStates`.
 
 ## [0.0.6]
 ### Added
