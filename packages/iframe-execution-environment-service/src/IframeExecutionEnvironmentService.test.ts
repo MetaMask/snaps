@@ -1,4 +1,4 @@
-import { describe, it, expect } from '@jest/globals';
+import { describe, expect, it } from '@jest/globals';
 import fixJSDOMPostMessageEventSource from './testHelpers/fixJSDOMPostMessageEventSource';
 import { IframeExecutionEnvironmentService } from './IframeExecutionEnvironmentService';
 
@@ -16,6 +16,7 @@ describe('Iframe Controller', () => {
     iframeExecutionEnvironmentService.terminateAllPlugins();
     expect(iframeExecutionEnvironmentService).toBeDefined();
   });
+
   it('can create a plugin worker and start the plugin', async () => {
     const iframeExecutionEnvironmentService =
       new IframeExecutionEnvironmentService({
@@ -35,7 +36,7 @@ describe('Iframe Controller', () => {
         console.log('foo');
       `,
     });
-    expect(response).toEqual('OK');
+    expect(response).toStrictEqual('OK');
     removeListener();
   });
 });

@@ -250,6 +250,7 @@ export class PluginController extends BaseController<
     if (!plugin) {
       throw new Error(`Plugin "${pluginName}" not found.`);
     }
+
     if (!plugin.isRunning) {
       throw new Error(`Plugin "${pluginName}" already stopped.`);
     }
@@ -656,6 +657,7 @@ export class PluginController extends BaseController<
     if (Object.keys(initialPermissions).length === 0) {
       return [];
     }
+
     if (initialPermissions === null) {
       return [];
     }
@@ -679,6 +681,7 @@ export class PluginController extends BaseController<
       pluginName: 'inlinePlugin',
       sourceCode: INLINE_PLUGINS[inlinePluginName],
     });
+
     this.update((state: any) => {
       state.inlinePluginIsRunning = true;
     });

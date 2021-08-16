@@ -43,6 +43,7 @@ describe('PluginController Controller', () => {
 
     expect(pluginController).toBeDefined();
   });
+
   it('can create a worker and plugin controller and add a plugin and update its state', async () => {
     const workerExecutionEnvironment = new WebWorkerExecutionEnvironmentService(
       {
@@ -92,8 +93,8 @@ describe('PluginController Controller', () => {
     await pluginController.startPlugin(plugin.name);
     await pluginController.updatePluginState(plugin.name, { hello: 'world' });
     const pluginState = await pluginController.getPluginState(plugin.name);
-    expect(pluginState).toEqual({ hello: 'world' });
-    expect(pluginController.state.pluginStates).toEqual({
+    expect(pluginState).toStrictEqual({ hello: 'world' });
+    expect(pluginController.state.pluginStates).toStrictEqual({
       TestPlugin: {
         hello: 'world',
       },
@@ -160,7 +161,7 @@ describe('PluginController Controller', () => {
       params: {},
       id: 1,
     });
-    expect(result).toEqual('test1');
+    expect(result).toStrictEqual('test1');
   });
 
   it('can add a plugin and use its JSON-RPC api with a stub execution env service', async () => {
@@ -240,7 +241,7 @@ describe('PluginController Controller', () => {
       params: {},
       id: 1,
     });
-    expect(result).toEqual('test1');
+    expect(result).toStrictEqual('test1');
   });
 
   it('errors if attempting to start a plugin that was already started', async () => {
