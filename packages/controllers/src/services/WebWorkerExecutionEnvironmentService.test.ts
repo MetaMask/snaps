@@ -17,6 +17,7 @@ describe('Worker Controller', () => {
       });
     expect(webWorkerExecutionEnvironmentService).toBeDefined();
   });
+
   it('can create a plugin worker and start the plugin', async () => {
     const webWorkerExecutionEnvironmentService =
       new WebWorkerExecutionEnvironmentService({
@@ -32,6 +33,6 @@ describe('Worker Controller', () => {
         console.log('foo');
       `,
     });
-    expect(response).toEqual('OK');
+    expect(response).toStrictEqual('OK');
   });
 });
