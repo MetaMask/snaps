@@ -192,6 +192,7 @@ export class PermissionController extends BaseController<
       `${controllerName}:getSubjects`,
       () => this.getSubjects(),
     );
+
     this.messagingSystem.registerActionHandler(
       `${controllerName}:clearPermissions`,
       () => this.clearState(),

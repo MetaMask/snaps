@@ -89,6 +89,7 @@ class PermissionEnforcer {
       if (!methodImplementation) {
         throw methodNotFound({ method, data: { request: req } });
       }
+
       this._executeRestrictedMethod(
         methodImplementation,
         { origin },
