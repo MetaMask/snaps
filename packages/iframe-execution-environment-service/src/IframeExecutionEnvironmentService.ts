@@ -110,9 +110,11 @@ export class IframeExecutionEnvironmentService
   }
 
   public async terminatePlugin(pluginName: string) {
-    const jobId = this.pluginToJobMap.get(pluginName);
-    jobId && this.terminate(jobId);
-    this._removePluginHooks(pluginName);
+    const jobId = this._getJobForPlugin(pluginName);
+    if (!jobId) {
+      throw new Error(`Job with id "${jobId}" not found.`);
+    }
+    this.terminate(jobId);
   }
 
   public terminate(jobId: string): void {
@@ -176,18 +178,24 @@ export class IframeExecutionEnvironmentService
     }
 
     const job = await this._init();
+
+    let result;
+    try {
+      result = await this._command(job.id, {
+        jsonrpc: '2.0',
+        method: 'executePlugin',
+        params: pluginData,
+        id: nanoid(),
+      });
+    } catch (e) {
+      this._deleteJob(job.id);
+      throw e;
+    }
     this._mapPluginAndJob(pluginData.pluginName, job.id);
     this.setupPluginProvider(
       pluginData.pluginName,
       job.streams.rpc as unknown as Duplex,
     );
-
-    const result = await this._command(job.id, {
-      jsonrpc: '2.0',
-      method: 'executePlugin',
-      params: pluginData,
-      id: nanoid(),
-    });
     this._createPluginHooks(pluginData.pluginName, job.id);
     return result;
   }
@@ -219,6 +227,7 @@ export class IframeExecutionEnvironmentService
 
     this.jobToPluginMap.delete(jobId);
     this.pluginToJobMap.delete(pluginName);
+    this._removePluginHooks(pluginName);
   }
 
   private async _init(): Promise<EnvMetadata> {
@@ -266,12 +275,6 @@ export class IframeExecutionEnvironmentService
     );
 
     const commandStream = mux.createStream(PLUGIN_STREAM_NAMES.COMMAND);
-    commandStream.write({
-      jsonrpc: '2.0',
-      method: 'handshake',
-      params: [],
-      id: 0,
-    });
     const rpcStream = mux.createStream(PLUGIN_STREAM_NAMES.JSON_RPC);
 
     // Typecast: stream type mismatch
