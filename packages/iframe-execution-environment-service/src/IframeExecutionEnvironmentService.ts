@@ -110,7 +110,7 @@ export class IframeExecutionEnvironmentService
   }
 
   public async terminatePlugin(pluginName: string) {
-    const jobId = this._getJobForPlugin(pluginName);
+    const jobId = this.pluginToJobMap.get(pluginName);
     if (!jobId) {
       throw new Error(`Job with id "${jobId}" not found.`);
     }
@@ -178,6 +178,7 @@ export class IframeExecutionEnvironmentService
     }
 
     const job = await this._init();
+    this._mapPluginAndJob(pluginData.pluginName, job.id);
 
     let result;
     try {
@@ -188,10 +189,9 @@ export class IframeExecutionEnvironmentService
         id: nanoid(),
       });
     } catch (e) {
-      this._deleteJob(job.id);
+      this.terminate(job.id);
       throw e;
     }
-    this._mapPluginAndJob(pluginData.pluginName, job.id);
     this.setupPluginProvider(
       pluginData.pluginName,
       job.streams.rpc as unknown as Duplex,
@@ -203,20 +203,6 @@ export class IframeExecutionEnvironmentService
   private _mapPluginAndJob(pluginName: string, jobId: string): void {
     this.pluginToJobMap.set(pluginName, jobId);
     this.jobToPluginMap.set(jobId, pluginName);
-  }
-
-  /**
-   * @returns The ID of the plugin's job.
-   */
-  private _getJobForPlugin(pluginName: string): string | undefined {
-    return this.pluginToJobMap.get(pluginName);
-  }
-
-  /**
-   * @returns The ID job's plugin.
-   */
-  private _getPluginForJob(jobId: string): string | undefined {
-    return this.jobToPluginMap.get(jobId);
   }
 
   private _removePluginAndJobMapping(jobId: string): void {

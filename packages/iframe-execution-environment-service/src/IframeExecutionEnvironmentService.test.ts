@@ -53,16 +53,15 @@ describe('Iframe Controller', () => {
     const removeListener = fixJSDOMPostMessageEventSource(
       iframeExecutionEnvironmentService,
     );
-    try {
-      const result = await iframeExecutionEnvironmentService.executePlugin({
+    const action = async () => {
+      await iframeExecutionEnvironmentService.executePlugin({
         pluginName: 'TestPlugin',
         sourceCode: `
           throw new Error("potato");
         `,
       });
-    } catch (error) {
-      expect(error.message).toContain("Error while running plugin 'TestPlugin'")
     }
+    await expect(action()).rejects.toThrow(/Error while running plugin 'TestPlugin'/)
     removeListener();
   });
 });
