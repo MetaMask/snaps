@@ -192,6 +192,7 @@ export class IframeExecutionEnvironmentService
       this.terminate(job.id);
       throw e;
     }
+
     this.setupPluginProvider(
       pluginData.pluginName,
       job.streams.rpc as unknown as Duplex,
