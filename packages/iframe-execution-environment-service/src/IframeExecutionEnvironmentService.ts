@@ -112,7 +112,7 @@ export class IframeExecutionEnvironmentService
   public async terminatePlugin(pluginName: string) {
     const jobId = this.pluginToJobMap.get(pluginName);
     if (!jobId) {
-      throw new Error(`Job with id "${jobId}" not found.`);
+      throw new Error(`Job not found for plugin with name "${pluginName}"`);
     }
     this.terminate(jobId);
   }
