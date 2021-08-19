@@ -2459,6 +2459,23 @@
   resolved "https://registry.yarnpkg.com/@metamask/safe-event-emitter/-/safe-event-emitter-2.0.0.tgz#af577b477c683fad17c619a78208cede06f9605c"
   integrity sha512-/kSXhY692qiV1MXu6EeOZvg5nECLclxNXcKCxJ3cXQgYuRymRHpdx/t7JXfsK+JLjwA1e1c1/SBrlQYpusC29Q==
 
+"@mm-snap/controllers@^0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@mm-snap/controllers/-/controllers-0.0.6.tgz#f49d40f52c24120734216e86515d56fc373da198"
+  integrity sha512-KnjVfI+21pBxOc7hXrdZDSfSSybzAa5+0EUAnaUA2V8E+CwsGf2OIO0vhKdXuvbvQcUytqQhtxyvPk4Qelv+ZA==
+  dependencies:
+    "@metamask/controllers" "^14.2.0"
+    "@metamask/object-multiplex" "^1.1.0"
+    "@metamask/obs-store" "^6.0.2"
+    "@metamask/post-message-stream" "4.0.0"
+    "@metamask/safe-event-emitter" "^2.0.0"
+    "@mm-snap/workers" "^0.0.6"
+    eth-rpc-errors "^4.0.2"
+    json-rpc-engine "^6.1.0"
+    json-rpc-middleware-stream "^3.0.0"
+    nanoid "^3.1.20"
+    pump "^3.0.0"
+
 "@nodelib/fs.scandir@2.1.4":
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/@nodelib/fs.scandir/-/fs.scandir-2.1.4.tgz#d4b3549a5db5de2683e0c1071ab4f140904bbf69"

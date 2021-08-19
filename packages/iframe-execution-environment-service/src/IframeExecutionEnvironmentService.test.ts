@@ -39,4 +39,33 @@ describe('Iframe Controller', () => {
     expect(response).toStrictEqual('OK');
     removeListener();
   });
+
+  it('can handle a crashed plugin', async () => {
+    expect.assertions(1);
+    const iframeExecutionEnvironmentService =
+      new IframeExecutionEnvironmentService({
+        setupPluginProvider: () => {
+          // do nothing
+        },
+        iframeUrl: new URL(
+          'https://metamask.github.io/iframe-execution-environment/',
+        ),
+      });
+    const removeListener = fixJSDOMPostMessageEventSource(
+      iframeExecutionEnvironmentService,
+    );
+    const action = async () => {
+      await iframeExecutionEnvironmentService.executePlugin({
+        pluginName: 'TestPlugin',
+        sourceCode: `
+          throw new Error("potato");
+        `,
+      });
+    };
+
+    await expect(action()).rejects.toThrow(
+      /Error while running plugin 'TestPlugin'/u,
+    );
+    removeListener();
+  });
 });

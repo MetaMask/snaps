@@ -111,8 +111,10 @@ export class IframeExecutionEnvironmentService
 
   public async terminatePlugin(pluginName: string) {
     const jobId = this.pluginToJobMap.get(pluginName);
-    jobId && this.terminate(jobId);
-    this._removePluginHooks(pluginName);
+    if (!jobId) {
+      throw new Error(`Job not found for plugin with name "${pluginName}".`);
+    }
+    this.terminate(jobId);
   }
 
   public terminate(jobId: string): void {
@@ -177,17 +179,24 @@ export class IframeExecutionEnvironmentService
 
     const job = await this._init();
     this._mapPluginAndJob(pluginData.pluginName, job.id);
+
+    let result;
+    try {
+      result = await this._command(job.id, {
+        jsonrpc: '2.0',
+        method: 'executePlugin',
+        params: pluginData,
+        id: nanoid(),
+      });
+    } catch (error) {
+      this.terminate(job.id);
+      throw error;
+    }
+
     this.setupPluginProvider(
       pluginData.pluginName,
       job.streams.rpc as unknown as Duplex,
     );
-
-    const result = await this._command(job.id, {
-      jsonrpc: '2.0',
-      method: 'executePlugin',
-      params: pluginData,
-      id: nanoid(),
-    });
     this._createPluginHooks(pluginData.pluginName, job.id);
     return result;
   }
@@ -195,20 +204,6 @@ export class IframeExecutionEnvironmentService
   private _mapPluginAndJob(pluginName: string, jobId: string): void {
     this.pluginToJobMap.set(pluginName, jobId);
     this.jobToPluginMap.set(jobId, pluginName);
-  }
-
-  /**
-   * @returns The ID of the plugin's job.
-   */
-  private _getJobForPlugin(pluginName: string): string | undefined {
-    return this.pluginToJobMap.get(pluginName);
-  }
-
-  /**
-   * @returns The ID job's plugin.
-   */
-  private _getPluginForJob(jobId: string): string | undefined {
-    return this.jobToPluginMap.get(jobId);
   }
 
   private _removePluginAndJobMapping(jobId: string): void {
@@ -219,6 +214,7 @@ export class IframeExecutionEnvironmentService
 
     this.jobToPluginMap.delete(jobId);
     this.pluginToJobMap.delete(pluginName);
+    this._removePluginHooks(pluginName);
   }
 
   private async _init(): Promise<EnvMetadata> {
@@ -266,12 +262,6 @@ export class IframeExecutionEnvironmentService
     );
 
     const commandStream = mux.createStream(PLUGIN_STREAM_NAMES.COMMAND);
-    commandStream.write({
-      jsonrpc: '2.0',
-      method: 'handshake',
-      params: [],
-      id: 0,
-    });
     const rpcStream = mux.createStream(PLUGIN_STREAM_NAMES.JSON_RPC);
 
     // Typecast: stream type mismatch
