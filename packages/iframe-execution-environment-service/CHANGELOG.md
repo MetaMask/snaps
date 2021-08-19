@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.0.8]
-### Uncategorized
-- Added JSON-RPC error support for iframe execution environment `executePlugin` ([#51](https://github.com/MetaMask/snaps-skunkworks/pull/51))
+### Added
+- JSON-RPC error support for iframe execution environment `executePlugin` ([#51](https://github.com/MetaMask/snaps-skunkworks/pull/51))
 
 ## [0.0.6]
 ### Added
