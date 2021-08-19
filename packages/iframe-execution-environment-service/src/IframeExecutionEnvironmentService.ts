@@ -188,9 +188,9 @@ export class IframeExecutionEnvironmentService
         params: pluginData,
         id: nanoid(),
       });
-    } catch (e) {
+    } catch (error) {
       this.terminate(job.id);
-      throw e;
+      throw error;
     }
 
     this.setupPluginProvider(
