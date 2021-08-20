@@ -42,19 +42,6 @@ class PermissionEnforcer {
     this._getRestrictedMethodImplementation = getRestrictedMethodImplementation;
   }
 
-  async safelyExecuteRestrictedMethod<Params, Result>(
-    origin: string,
-    method: string,
-    params: Params,
-  ): Promise<Result | void> {
-    try {
-      return await this.executeRestrictedMethod(origin, method, params);
-    } catch (error) {
-      console.error(error);
-      return undefined;
-    }
-  }
-
   executeRestrictedMethod<Params, Result>(
     origin: string,
     method: string,
