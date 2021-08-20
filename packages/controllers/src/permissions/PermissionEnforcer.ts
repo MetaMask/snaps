@@ -4,6 +4,7 @@ import {
   JsonRpcEngineNextCallback,
   JsonRpcRequest,
   PendingJsonRpcResponse,
+  JsonRpcEngineCallbackError,
 } from 'json-rpc-engine';
 import { CaveatSpecifications, decorateWithCaveats } from './caveat-processing';
 import { methodNotFound, unauthorized } from './errors';
@@ -25,7 +26,7 @@ class PermissionEnforcer {
 
   private getPermission: PermissionController['getPermission'];
 
-  private getRestrictedMethodImplementation: PermissionController['getRestrictedMethodImplementation'];
+  private _getRestrictedMethodImplementation: PermissionController['getRestrictedMethodImplementation'];
 
   private caveatSpecifications: CaveatSpecifications;
 
@@ -38,7 +39,7 @@ class PermissionEnforcer {
     this.caveatSpecifications = caveatSpecifications;
     this.isSafeMethod = isSafeMethod;
     this.getPermission = getPermission;
-    this.getRestrictedMethodImplementation = getRestrictedMethodImplementation;
+    this._getRestrictedMethodImplementation = getRestrictedMethodImplementation;
   }
 
   async safelyExecuteRestrictedMethod<Params, Result>(
@@ -71,9 +72,9 @@ class PermissionEnforcer {
       // no-op
       const next = () => undefined;
 
-      const end = () => {
-        if (res.error) {
-          throw res.error;
+      const end = (error?: JsonRpcEngineCallbackError) => {
+        if (error || res.error) {
+          throw error || res.error;
         } else if (res.result === undefined) {
           throw new Error(
             `Internal request for method "${method}" as origin "${origin}" has no result.`,
@@ -83,12 +84,10 @@ class PermissionEnforcer {
         }
       };
 
-      // if the method also is not a restricted method, the method does not exist
-      const methodImplementation =
-        this.getRestrictedMethodImplementation(method);
-      if (!methodImplementation) {
-        throw methodNotFound({ method, data: { request: req } });
-      }
+      const methodImplementation = this.getRestrictedMethodImplementation(
+        method,
+        req,
+      );
 
       this._executeRestrictedMethod(
         methodImplementation,
@@ -117,11 +116,10 @@ class PermissionEnforcer {
       }
 
       // if the method also is not a restricted method, the method does not exist
-      const methodImplementation =
-        this.getRestrictedMethodImplementation(method);
-      if (!methodImplementation) {
-        return end(methodNotFound({ method, data: { request: req } }));
-      }
+      const methodImplementation = this.getRestrictedMethodImplementation(
+        method,
+        req,
+      );
 
       const permission = this.getPermission(subject.origin, method);
       if (!permission) {
@@ -139,6 +137,27 @@ class PermissionEnforcer {
       return undefined;
     };
     return permissionsMiddleware;
+  }
+
+  /**
+   * Get the implementation of the given method.
+   *
+   * @param method - The name of the method whose implementation to retrieve.
+   * @param request - The JSON-RPC request object calling the restricted method.
+   * @returns The restricted method implementation, or throws an error if no
+   * method exists.
+   */
+  private getRestrictedMethodImplementation(
+    method: string,
+    request: JsonRpcRequest<unknown>,
+  ): RestrictedMethodImplementation<unknown, unknown> {
+    const methodImplementation =
+      this._getRestrictedMethodImplementation(method);
+    if (!methodImplementation) {
+      throw methodNotFound({ method, data: { request } });
+    }
+
+    return methodImplementation;
   }
 
   /**
