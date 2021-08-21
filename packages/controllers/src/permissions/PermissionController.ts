@@ -105,13 +105,28 @@ export type RestrictedMethodRequest<Params extends Json> = {
   [key: string]: any;
 };
 
-export type RestrictedMethodImplementation<
+export type SyncRestrictedMethodImplementation<
   Params extends Json,
-  Result extends Json | Promise<Json>,
+  Result extends Json,
 > = (
   request: RestrictedMethodRequest<Params>,
   context: RestrictedMethodContext,
 ) => Result | Error | EthereumRpcError<Json>;
+
+export type AsyncRestrictedMethodImplementation<
+  Params extends Json,
+  Result extends Json,
+> = (
+  request: RestrictedMethodRequest<Params>,
+  context: RestrictedMethodContext,
+) => Promise<Result | Error | EthereumRpcError<Json>>;
+
+export type RestrictedMethodImplementation<
+  Params extends Json,
+  Result extends Json,
+> =
+  | SyncRestrictedMethodImplementation<Params, Result>
+  | AsyncRestrictedMethodImplementation<Params, Result>;
 
 type RestrictedMethodsOption = Record<
   MethodName,

@@ -2,7 +2,10 @@ import { Json } from 'json-rpc-engine';
 import { Caveat } from './Caveat';
 import { UnrecognizedCaveatTypeError } from './errors';
 import { Permission } from './Permission';
-import { RestrictedMethodImplementation } from './PermissionController';
+import {
+  AsyncRestrictedMethodImplementation,
+  RestrictedMethodImplementation,
+} from './PermissionController';
 
 type CaveatType = string;
 
@@ -11,9 +14,9 @@ type CaveatValueValidator<CaveatValue extends Json> = (
 ) => void;
 
 type CaveatDecorator = (
-  decorated: RestrictedMethodImplementation<Json, Json>,
+  decorated: AsyncRestrictedMethodImplementation<Json, Json>,
   caveat: Caveat<Json>,
-) => RestrictedMethodImplementation<Json, Json>;
+) => AsyncRestrictedMethodImplementation<Json, Json>;
 
 export interface CaveatSpecification<CaveatValue extends Json> {
   type: CaveatType;
@@ -28,20 +31,21 @@ export type CaveatSpecifications = Readonly<
 /**
  * Decorate a restricted method implementation with its caveats.
  *
- * TODO: Should all caveat functions be async?
  * TODO: Document how to create caveats using below examples.
+ * Note that all caveat functions (i.e. the argument and return value of the decorator)
+ * must be awaited.
  */
-export function decorateWithCaveats<
-  MethodImplementation extends RestrictedMethodImplementation<Json, Json>,
->(
-  methodImplementation: MethodImplementation,
+export function decorateWithCaveats(
+  methodImplementation: RestrictedMethodImplementation<Json, Json>,
   permission: Readonly<Permission>, // bound to the requesting origin
   caveatSpecifications: CaveatSpecifications, // all caveat implementations
-): MethodImplementation {
+): RestrictedMethodImplementation<Json, Json> {
   const caveats = permission.caveats ?? [];
 
-  let decorated: RestrictedMethodImplementation<Json, Json> =
-    methodImplementation;
+  let decorated = methodImplementation as AsyncRestrictedMethodImplementation<
+    Json,
+    Json
+  >;
   for (const caveat of caveats) {
     const specification = caveatSpecifications[caveat.type];
     if (!specification) {
@@ -50,13 +54,13 @@ export function decorateWithCaveats<
 
     decorated = specification.decorator(decorated, caveat);
   }
-  return decorated as MethodImplementation;
+  return decorated;
 }
 
 // Return next example.
 //
 // export function ifMetaMask(next: MethodImplementation) {
-//   return (req: JsonRpcRequest<Json>, context: Record<string, unknown>) => {
+//   return async (req: JsonRpcRequest<Json>, context: Record<string, unknown>) => {
 //     if (context.origin !== 'metamask.io') {
 //       return new EthereumJsonRpcError();
 //     }
@@ -68,8 +72,8 @@ export function decorateWithCaveats<
 // "Return handler" example
 //
 // export function eth_accounts(next: MethodImplementation) {
-//   return (req: JsonRpcRequest<Json>, context: Record<string, unknown>) => {
-//     const accounts = next(req, context);
+//   return async (req: JsonRpcRequest<Json>, context: Record<string, unknown>) => {
+//     const accounts = await next(req, context);
 //     return accounts.filter(() => {
 //        // filter
 //     });

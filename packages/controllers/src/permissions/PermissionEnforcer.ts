@@ -43,13 +43,13 @@ class PermissionEnforcer {
     this._getRestrictedMethodImplementation = getRestrictedMethodImplementation;
   }
 
-  async executeRestrictedMethod<Params extends Json, Result extends Json>(
+  async executeRestrictedMethod(
     origin: string,
     method: string,
-    params: Params,
-  ): Promise<Result> {
+    params: Json,
+  ): Promise<Json> {
     const id = nanoid();
-    const req: JsonRpcRequest<Params> = { id, jsonrpc: '2.0', method };
+    const req: JsonRpcRequest<Json> = { id, jsonrpc: '2.0', method };
     if (params !== undefined) {
       req.params = params;
     }
@@ -75,7 +75,7 @@ class PermissionEnforcer {
       );
     }
 
-    return result as Result;
+    return result;
   }
 
   getPermissionsMiddleware(
@@ -118,7 +118,7 @@ class PermissionEnforcer {
         return undefined;
       }
 
-      res.result = result as Json;
+      res.result = result;
       return undefined;
     };
 
@@ -159,7 +159,7 @@ class PermissionEnforcer {
     methodImplementation: RestrictedMethodImplementation<Json, Json>,
     subject: SubjectMetadata,
     req: JsonRpcRequest<Json>,
-  ): Json | Error | Promise<Json | Error> {
+  ): ReturnType<RestrictedMethodImplementation<Json, Json>> {
     const { origin } = subject;
     const { method } = req;
 
