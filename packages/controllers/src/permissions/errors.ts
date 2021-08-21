@@ -35,6 +35,13 @@ export function userRejectedRequest(
   return ethErrors.provider.userRejectedRequest({ data: request });
 }
 
+export function internalError(
+  message: string,
+  request?: JsonRpcRequest<unknown>,
+): EthereumRpcError<JsonRpcRequest<unknown>> {
+  return ethErrors.rpc.internal({ message, data: request });
+}
+
 export class InvalidSubjectIdentifierError extends Error {
   constructor(origin: string) {
     super(`Invalid subject identifier: ${origin}`);

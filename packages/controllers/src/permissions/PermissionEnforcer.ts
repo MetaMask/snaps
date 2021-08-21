@@ -1,13 +1,14 @@
 import { nanoid } from 'nanoid';
 import {
-  JsonRpcEngineEndCallback,
-  JsonRpcEngineNextCallback,
+  AsyncJsonRpcEngineNextCallback,
+  createAsyncMiddleware,
+  Json,
   JsonRpcRequest,
+  JsonRpcMiddleware,
   PendingJsonRpcResponse,
-  JsonRpcEngineCallbackError,
 } from 'json-rpc-engine';
-import { CaveatSpecifications, decorateWithCaveats } from './caveat-processing';
-import { methodNotFound, unauthorized } from './errors';
+import { CaveatSpecifications, decorateWithCaveats } from './caveat-decoration';
+import { internalError, methodNotFound, unauthorized } from './errors';
 import type {
   PermissionController,
   RestrictedMethodImplementation,
@@ -42,59 +43,49 @@ class PermissionEnforcer {
     this._getRestrictedMethodImplementation = getRestrictedMethodImplementation;
   }
 
-  executeRestrictedMethod<Params, Result>(
+  async executeRestrictedMethod<Params extends Json, Result extends Json>(
     origin: string,
     method: string,
     params: Params,
   ): Promise<Result> {
-    return new Promise<Result>((resolve) => {
-      const id = nanoid();
-      const req: JsonRpcRequest<Params> = { id, jsonrpc: '2.0', method };
-      if (params !== undefined) {
-        req.params = params;
-      }
+    const id = nanoid();
+    const req: JsonRpcRequest<Params> = { id, jsonrpc: '2.0', method };
+    if (params !== undefined) {
+      req.params = params;
+    }
 
-      const res: PendingJsonRpcResponse<Result> = { id, jsonrpc: '2.0' };
+    const methodImplementation = this.getRestrictedMethodImplementation(
+      method,
+      req,
+    );
 
-      // no-op
-      const next = () => undefined;
+    const result = await this._executeRestrictedMethod(
+      methodImplementation,
+      { origin },
+      req,
+    );
 
-      const end = (error?: JsonRpcEngineCallbackError) => {
-        if (error || res.error) {
-          throw error || res.error;
-        } else if (res.result === undefined) {
-          throw new Error(
-            `Internal request for method "${method}" as origin "${origin}" has no result.`,
-          );
-        } else {
-          resolve(res.result);
-        }
-      };
+    if (resultIsError(result)) {
+      throw result;
+    }
 
-      const methodImplementation = this.getRestrictedMethodImplementation(
-        method,
-        req,
+    if (result === undefined) {
+      throw new Error(
+        `Internal request for method "${method}" as origin "${origin}" has no result.`,
       );
+    }
 
-      this._executeRestrictedMethod(
-        methodImplementation,
-        { origin },
-        req,
-        res,
-        next,
-        end,
-      );
-    });
+    return result as Result;
   }
 
-  getPermissionsMiddleware() {
-    const permissionsMiddleware = (
-      req: JsonRpcRequest<unknown>,
-      res: PendingJsonRpcResponse<unknown>,
-      next: JsonRpcEngineNextCallback,
-      end: JsonRpcEngineEndCallback,
-      subject: SubjectMetadata,
-    ): void => {
+  getPermissionsMiddleware(
+    subject: SubjectMetadata,
+  ): JsonRpcMiddleware<Json, Json> {
+    const permissionsMiddleware = async (
+      req: JsonRpcRequest<Json>,
+      res: PendingJsonRpcResponse<Json>,
+      next: AsyncJsonRpcEngineNextCallback,
+    ): Promise<void> => {
       const { method } = req;
 
       // skip registered safe/passthrough methods.
@@ -108,22 +99,30 @@ class PermissionEnforcer {
         req,
       );
 
-      const permission = this.getPermission(subject.origin, method);
-      if (!permission) {
-        return end(unauthorized({ data: { request: req } }));
-      }
-
-      this._executeRestrictedMethod(
+      const result = await this._executeRestrictedMethod(
         methodImplementation,
         subject,
         req,
-        res,
-        next,
-        end,
       );
+
+      if (resultIsError(result)) {
+        res.error = result;
+        return undefined;
+      }
+
+      if (result === undefined) {
+        res.error = internalError(
+          `Request for method "${req.method}" returned undefined result.`,
+          req,
+        );
+        return undefined;
+      }
+
+      res.result = result as Json;
       return undefined;
     };
-    return permissionsMiddleware;
+
+    return createAsyncMiddleware(permissionsMiddleware);
   }
 
   /**
@@ -136,8 +135,8 @@ class PermissionEnforcer {
    */
   private getRestrictedMethodImplementation(
     method: string,
-    request: JsonRpcRequest<unknown>,
-  ): RestrictedMethodImplementation<unknown, unknown> {
+    request: JsonRpcRequest<Json>,
+  ): RestrictedMethodImplementation<Json, Json> {
     const methodImplementation =
       this._getRestrictedMethodImplementation(method);
     if (!methodImplementation) {
@@ -151,34 +150,29 @@ class PermissionEnforcer {
    * If called as a result of an RPC request, the existence of the method
    * should already be verified.
    *
-   * @param subject
-   * @param req
-   * @param res
-   * @param next
-   * @param end
+   * @param methodImplementation - The implementation of the method to call.
+   * @param subject - Metadata about the subject that made the request.
+   * @param req - The request object associated with the request.
    * @returns
    */
   private _executeRestrictedMethod(
-    methodImplementation: RestrictedMethodImplementation<unknown, unknown>,
+    methodImplementation: RestrictedMethodImplementation<Json, Json>,
     subject: SubjectMetadata,
-    req: JsonRpcRequest<unknown>,
-    res: PendingJsonRpcResponse<unknown>,
-    next: JsonRpcEngineNextCallback,
-    end: JsonRpcEngineEndCallback,
-  ): void | Promise<void> {
+    req: JsonRpcRequest<Json>,
+  ): Json | Error | Promise<Json | Error> {
     const { origin } = subject;
     const { method } = req;
 
     const permission = this.getPermission(origin, method);
     if (!permission) {
-      throw unauthorized({ data: { origin, method } });
+      return unauthorized({ data: { origin, method } });
     }
 
     return decorateWithCaveats(
       methodImplementation,
       permission,
       this.caveatSpecifications,
-    )(req, res, next, end, { origin });
+    )(req, { origin });
   }
 }
 
@@ -196,4 +190,14 @@ export function getPermissionEnforcer(
     getRestrictedMethodImplementation:
       controller.getRestrictedMethodImplementation.bind(controller),
   });
+}
+
+function resultIsError(resultOrError: Json | Error): resultOrError is Error {
+  return Boolean(
+    resultOrError instanceof Error ||
+      (resultOrError &&
+        typeof resultOrError === 'object' &&
+        'message' in resultOrError &&
+        'code' in resultOrError),
+  );
 }

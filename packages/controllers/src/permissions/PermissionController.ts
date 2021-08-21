@@ -4,16 +4,10 @@ import {
   BaseControllerV2 as BaseController,
   RestrictedControllerMessenger,
 } from '@metamask/controllers';
-import {
-  Json,
-  JsonRpcEngineEndCallback,
-  JsonRpcEngineNextCallback,
-  JsonRpcMiddleware,
-  JsonRpcRequest,
-  PendingJsonRpcResponse,
-} from 'json-rpc-engine';
+import { Json } from 'json-rpc-engine';
 
-import { CaveatSpecifications } from './caveat-processing';
+import { EthereumRpcError } from 'eth-rpc-errors';
+import { CaveatSpecifications } from './caveat-decoration';
 import {
   OriginString,
   Permission,
@@ -100,23 +94,28 @@ export type PermissionControllerMessenger = RestrictedControllerMessenger<
   never
 >;
 
-export interface RestrictedMethodImplementation<Params, Result>
-  extends JsonRpcMiddleware<Params, Result> {
-  (
-    req: JsonRpcRequest<Params>,
-    res: PendingJsonRpcResponse<Result>,
-    next: JsonRpcEngineNextCallback,
-    end: JsonRpcEngineEndCallback,
-    context?: Readonly<{
-      origin: OriginString;
-      [key: string]: unknown;
-    }>,
-  ): void | Promise<void>;
-}
+export type RestrictedMethodContext = Readonly<{
+  origin: OriginString;
+  [key: string]: any;
+}>;
+
+export type RestrictedMethodRequest<Params extends Json> = {
+  method: string;
+  params?: Params;
+  [key: string]: any;
+};
+
+export type RestrictedMethodImplementation<
+  Params extends Json,
+  Result extends Json | Promise<Json>,
+> = (
+  request: RestrictedMethodRequest<Params>,
+  context: RestrictedMethodContext,
+) => Result | Error | EthereumRpcError<Json>;
 
 type RestrictedMethodsOption = Record<
   MethodName,
-  RestrictedMethodImplementation<unknown, unknown>
+  RestrictedMethodImplementation<Json, Json>
 >;
 
 interface PermissionControllerOptions {
@@ -141,7 +140,7 @@ export class PermissionController extends BaseController<
    */
   private readonly _restrictedMethods: ReadonlyMap<
     string,
-    RestrictedMethodImplementation<unknown, unknown>
+    RestrictedMethodImplementation<Json, Json>
   >;
 
   private readonly _safeMethods: ReadonlySet<string>;
@@ -443,9 +442,9 @@ export class PermissionController extends BaseController<
     return '';
   }
 
-  getRestrictedMethodImplementation<Params, Result>(
+  getRestrictedMethodImplementation(
     method: string,
-  ): RestrictedMethodImplementation<Params, Result> | undefined {
+  ): RestrictedMethodImplementation<Json, Json> | undefined {
     const methodKey = this.getMethodKeyFor(method);
     if (!methodKey) {
       return undefined;
@@ -458,10 +457,8 @@ export class PermissionController extends BaseController<
         `Method "${method}" with method key "${methodKey}" has no implementation.`,
       );
     }
-    return methodImplementation as RestrictedMethodImplementation<
-      Params,
-      Result
-    >;
+
+    return methodImplementation;
   }
 
   grantPermissions(
@@ -539,7 +536,7 @@ export class PermissionController extends BaseController<
 
 function getRestrictedMethodMap(
   restrictedMethods: RestrictedMethodsOption,
-): ReadonlyMap<string, RestrictedMethodImplementation<unknown, unknown>> {
+): ReadonlyMap<string, RestrictedMethodImplementation<Json, Json>> {
   return Object.entries(restrictedMethods).reduce(
     (methodMap, [methodName, implementation]) => {
       if (!methodName || typeof methodName !== 'string') {
