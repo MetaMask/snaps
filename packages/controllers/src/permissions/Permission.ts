@@ -144,12 +144,11 @@ export class Permission implements ZcapLdCapability {
    * @param caveatType The type of the caveat to retrieve.
    * @returns The caveat value, or undefined if no such caveat exists.
    */
-  public static getCaveatValue(
+  public static getCaveat(
     permission: Permission,
     caveatType: string,
-  ): Json | undefined {
-    return permission.caveats?.find((caveat) => caveat.type === caveatType)
-      ?.value;
+  ): Caveat<Json> | undefined {
+    return permission.caveats?.find((caveat) => caveat.type === caveatType);
   }
 }
 

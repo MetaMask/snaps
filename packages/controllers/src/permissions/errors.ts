@@ -80,6 +80,14 @@ export class CaveatDoesNotExistError extends Error {
   }
 }
 
+export class CaveatAlreadyExistsError extends Error {
+  constructor(origin: string, target: string, caveatType: string) {
+    super(
+      `Permission for "${target}" of subject "${origin}" already has a caveat of type "${caveatType}".`,
+    );
+  }
+}
+
 export class PermissionTargetDoesNotExistError extends Error {
   constructor(origin: string, target: string) {
     super(

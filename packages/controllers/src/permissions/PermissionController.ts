@@ -26,6 +26,7 @@ import {
   InvalidCaveatFieldsError,
   InvalidSubjectIdentifierError,
   InvalidCaveatTypeError,
+  CaveatAlreadyExistsError,
 } from './errors';
 import { Caveat } from './Caveat';
 
@@ -343,16 +344,6 @@ export class PermissionController extends BaseController<
     });
   }
 
-  getCaveat(
-    origin: string,
-    target: string,
-    caveatType: string,
-  ): Caveat<Json> | undefined {
-    return this.getPermission(origin, target)?.caveats?.find(
-      (caveat) => caveat.type === caveatType,
-    );
-  }
-
   hasCaveat(origin: string, target: string, caveatType: string): boolean {
     return (
       this.getPermission(origin, target)?.caveats?.some(
@@ -361,9 +352,61 @@ export class PermissionController extends BaseController<
     );
   }
 
-  setCaveat(origin: string, target: string, caveat: Caveat<Json>): void {
+  addCaveat(
+    origin: string,
+    target: string,
+    caveatType: string,
+    caveatValue: Json,
+  ): void {
+    if (this._getCaveat(origin, target, caveatType)) {
+      throw new CaveatAlreadyExistsError(origin, target, caveatType);
+    }
+
+    this._setCaveat(
+      origin,
+      target,
+      new Caveat({ type: caveatType, value: caveatValue }),
+    );
+  }
+
+  updateCaveat(
+    origin: string,
+    target: string,
+    caveatType: string,
+    caveatValue: Json,
+  ): void {
+    if (!this._getCaveat(origin, target, caveatType)) {
+      throw new CaveatDoesNotExistError(origin, target, caveatType);
+    }
+
+    this._setCaveat(
+      origin,
+      target,
+      new Caveat({ type: caveatType, value: caveatValue }),
+    );
+  }
+
+  private _getCaveat(
+    origin: string,
+    target: string,
+    caveatType: string,
+  ): Caveat<Json> | undefined {
+    const permission = this.getPermission(origin, target);
+    if (!permission) {
+      throw new PermissionDoesNotExistError(origin, target);
+    }
+
+    return Permission.getCaveat(permission, caveatType);
+  }
+
+  private _setCaveat(
+    origin: string,
+    target: string,
+    caveat: Caveat<Json>,
+  ): void {
     this.update((draftState) => {
       const permission = draftState.subjects[origin]?.permissions[target];
+      /* istanbul ignore if */ // This should be impossible
       if (!permission) {
         throw new PermissionDoesNotExistError(origin, target);
       }
