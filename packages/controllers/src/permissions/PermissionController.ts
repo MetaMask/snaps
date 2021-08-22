@@ -21,7 +21,6 @@ import {
   PermissionHasNoCaveatsError,
   CaveatDoesNotExistError,
   CaveatTypeDoesNotExistError,
-  PermissionTargetDoesNotExistError,
   CaveatMissingValueError,
   InvalidCaveatFieldsError,
   InvalidSubjectIdentifierError,
@@ -195,14 +194,14 @@ export class PermissionController extends BaseController<
     // assigned if we don't do it.
     this.messagingSystem = messenger;
 
-    this.registerMessageHandlers();
+    this._registerMessageHandlers();
   }
 
   /**
    * Constructor helper for registering this controller's messaging system
    * actions.
    */
-  protected registerMessageHandlers(): void {
+  private _registerMessageHandlers(): void {
     this.messagingSystem.registerActionHandler(
       `${controllerName}:getSubjects`,
       () => this.getSubjects(),
@@ -214,7 +213,7 @@ export class PermissionController extends BaseController<
     );
   }
 
-  protected clearState(): void {
+  clearState(): void {
     this.update((_draftState) => {
       return { ...defaultState };
     });
@@ -522,6 +521,7 @@ export class PermissionController extends BaseController<
   grantPermissions(
     subject: SubjectMetadata,
     requestedPermissions: RequestedPermissions,
+    shouldPreserveExistingPermissions = true,
   ): Record<MethodName, Permission> {
     const { origin } = subject;
     if (!origin || typeof origin !== 'string') {
@@ -535,13 +535,10 @@ export class PermissionController extends BaseController<
       }
     }
 
-    const permissions: { [methodName: string]: Permission } = {};
+    const permissions: { [methodName: string]: Permission } =
+      (shouldPreserveExistingPermissions && this.getPermissions(origin)) || {};
 
     for (const method of Object.keys(requestedPermissions)) {
-      if (!this._restrictedMethods.has(this.getMethodKeyFor(method))) {
-        throw new PermissionTargetDoesNotExistError(origin, method);
-      }
-
       permissions[method] = new Permission({
         target: method,
         invoker: origin,
@@ -567,6 +564,10 @@ export class PermissionController extends BaseController<
     caveats?: Caveat<Json>[],
   ): Caveat<Json>[] | undefined {
     const caveatArray = caveats?.map((caveat) => {
+      if (Object.keys(caveat).length !== 2) {
+        throw new InvalidCaveatFieldsError(caveat, origin, target);
+      }
+
       if (caveat.type !== 'string') {
         throw new InvalidCaveatTypeError(caveat.type);
       }
@@ -580,11 +581,7 @@ export class PermissionController extends BaseController<
         throw new CaveatMissingValueError(caveat, origin, target);
       }
       // Should throw an error if validation fails.
-      specification.validator(caveat.value);
-
-      if (Object.keys(caveat).length !== 2) {
-        throw new InvalidCaveatFieldsError(caveat, origin, target);
-      }
+      specification.validator(caveat.value, origin, target);
 
       return new Caveat({ type: caveat.type, value: caveat.value });
     });

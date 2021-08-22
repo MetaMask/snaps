@@ -11,6 +11,8 @@ type CaveatType = string;
 
 type CaveatValueValidator<CaveatValue extends Json> = (
   caveatValue: CaveatValue,
+  origin?: string,
+  target?: string,
 ) => void;
 
 type CaveatDecorator = (

@@ -88,14 +88,6 @@ export class CaveatAlreadyExistsError extends Error {
   }
 }
 
-export class PermissionTargetDoesNotExistError extends Error {
-  constructor(origin: string, target: string) {
-    super(
-      `Target "${target}" of requested permission for subject "${origin}" does not exist.`,
-    );
-  }
-}
-
 export class InvalidPermissionJsonError extends Error {
   public data: { origin: string; permission: Permission };
 
