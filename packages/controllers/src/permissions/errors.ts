@@ -1,5 +1,5 @@
 import { JsonRpcRequest } from 'json-rpc-engine';
-import { ethErrors, EthereumRpcError } from 'eth-rpc-errors';
+import { errorCodes, ethErrors, EthereumRpcError } from 'eth-rpc-errors';
 import { Permission } from './Permission';
 import { Caveat } from './Caveat';
 
@@ -101,6 +101,16 @@ export class InvalidPermissionJsonError extends Error {
   constructor(origin: string, permission: Permission) {
     super(`Permission object of subject "${origin}" is not valid JSON.`);
     this.data = { origin, permission };
+  }
+}
+
+export class InvalidCaveatError extends EthereumRpcError<unknown> {
+  constructor(receivedCaveat: unknown) {
+    super(
+      errorCodes.rpc.invalidParams,
+      `Invalid caveat. Caveats must be plain objects.`,
+      { receivedCaveat },
+    );
   }
 }
 

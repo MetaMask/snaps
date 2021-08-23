@@ -1,3 +1,4 @@
+import type { EthereumRpcError } from 'eth-rpc-errors';
 import { Json } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
 import { Caveat, CaveatInterface, ZcapLdCaveat } from './Caveat';
@@ -128,7 +129,7 @@ export class Permission implements ZcapLdCapability {
   public readonly invoker: OriginString;
 
   constructor(options: PermissionOptions) {
-    const { id, target, invoker, caveats } = options;
+    const { caveats, id, invoker, target } = options;
     this.id = id ?? nanoid();
     this.parentCapability = target;
     this.invoker = invoker;
@@ -158,3 +159,86 @@ type RequestedPermission = {
 };
 
 export type RequestedPermissions = Record<MethodName, RequestedPermission>;
+
+export type RestrictedMethodContext = Readonly<{
+  origin: OriginString;
+  [key: string]: any;
+}>;
+
+export type RestrictedMethodRequest<Params extends Json> = {
+  method: string;
+  params?: Params;
+  [key: string]: any;
+};
+
+export type SyncRestrictedMethodImplementation<
+  Params extends Json,
+  Result extends Json,
+> = (
+  request: RestrictedMethodRequest<Params>,
+  context: RestrictedMethodContext,
+) => Result | Error | EthereumRpcError<Json>;
+
+export type AsyncRestrictedMethodImplementation<
+  Params extends Json,
+  Result extends Json,
+> = (
+  request: RestrictedMethodRequest<Params>,
+  context: RestrictedMethodContext,
+) => Promise<Result | Error | EthereumRpcError<Json>>;
+
+export type RestrictedMethodImplementation<
+  Params extends Json,
+  Result extends Json,
+> =
+  | SyncRestrictedMethodImplementation<Params, Result>
+  | AsyncRestrictedMethodImplementation<Params, Result>;
+
+export type PermissionSpecification<
+  FactoryOptions extends PermissionOptions,
+  RequestData extends Record<string, unknown>,
+  MethodImplementation extends RestrictedMethodImplementation<Json, Json>,
+> = {
+  /**
+   * The target resource of the permission. In other words, at the time of
+   * writing, the RPC method name.
+   */
+  target: string;
+
+  /**
+   * The factory function used to get permission objects.
+   *
+   * If no factory is specified, the {@link Permission} constructor will be
+   * used.
+   *
+   * The validator function will be called on newly created permissions whether
+   * a factory is specified or not.
+   */
+  factory?: (options: FactoryOptions, requestData?: RequestData) => Permission;
+
+  /**
+   * The implementation of the restricted method that the permission
+   * corresponds to.
+   */
+  methodImplementation: MethodImplementation;
+
+  /**
+   * The validator function used to validate permissions of the associated type
+   * whenever they are instantiated. Permissions are instantiated whenever they
+   * are created or mutated. The only way a permission can be legally mutated is
+   * when its caveat array or its contents are modified by the permission
+   * controller.
+   *
+   * The validator should throw an appropriate JSON-RPC error if validation fails.
+   */
+  validator?: (permission: Permission) => void;
+};
+
+export type PermissionSpecifications = Record<
+  MethodName,
+  PermissionSpecification<
+    PermissionOptions,
+    Record<string, unknown>,
+    RestrictedMethodImplementation<Json, Json>
+  >
+>;
