@@ -8,38 +8,67 @@ import {
   PendingJsonRpcResponse,
 } from 'json-rpc-engine';
 import { CaveatSpecifications, decorateWithCaveats } from './caveat-decoration';
-import { internalError, methodNotFound, unauthorized } from './errors';
+import {
+  internalError,
+  invalidParams,
+  methodNotFound,
+  unauthorized,
+} from './errors';
+import type { Permission, RequestedPermissions } from './Permission';
 import type {
   PermissionController,
+  PermissionsRequest,
   RestrictedMethodImplementation,
   SubjectMetadata,
 } from './PermissionController';
+import type { ApprovalController } from './temp/ApprovalController';
 
-interface PermissionEnforcerArgs {
+type IsRestrictedMethod = (method: string) => boolean;
+type IsSafeMethod = (method: string) => boolean;
+type RequestUserApproval = (
+  permissionsRequest: PermissionsRequest,
+) => Promise<RequestedPermissions>;
+
+type PermissionEnforcerArgs = {
   caveatSpecifications: CaveatSpecifications;
-  isSafeMethod: (method: string) => boolean;
+  isRestrictedMethod: IsRestrictedMethod;
+  isSafeMethod: IsSafeMethod;
   getPermission: PermissionController['getPermission'];
   getRestrictedMethodImplementation: PermissionController['getRestrictedMethodImplementation'];
-}
+  grantPermissions: PermissionController['grantPermissions'];
+  requestUserApproval: RequestUserApproval;
+};
 
 class PermissionEnforcer {
-  private isSafeMethod: (method: string) => boolean;
+  private caveatSpecifications: CaveatSpecifications;
+
+  private isRestrictedMethod: IsRestrictedMethod;
+
+  private isSafeMethod: IsSafeMethod;
 
   private getPermission: PermissionController['getPermission'];
 
-  private _getRestrictedMethodImplementation: PermissionController['getRestrictedMethodImplementation'];
+  private grantPermissions: PermissionController['grantPermissions'];
 
-  private caveatSpecifications: CaveatSpecifications;
+  private requestUserApproval: RequestUserApproval;
+
+  private _getRestrictedMethodImplementation: PermissionController['getRestrictedMethodImplementation'];
 
   constructor({
     caveatSpecifications,
+    isRestrictedMethod,
     isSafeMethod,
     getPermission,
     getRestrictedMethodImplementation,
+    grantPermissions,
+    requestUserApproval,
   }: PermissionEnforcerArgs) {
     this.caveatSpecifications = caveatSpecifications;
+    this.isRestrictedMethod = isRestrictedMethod;
     this.isSafeMethod = isSafeMethod;
     this.getPermission = getPermission;
+    this.grantPermissions = grantPermissions;
+    this.requestUserApproval = requestUserApproval;
     this._getRestrictedMethodImplementation = getRestrictedMethodImplementation;
   }
 
@@ -78,6 +107,64 @@ class PermissionEnforcer {
     return result;
   }
 
+  async requestPermissions(
+    origin: string,
+    requestedPermissions: RequestedPermissions,
+    id: string = nanoid(),
+  ): Promise<[Record<string, Permission>, { id: string; origin: string }]> {
+    this.validateRequestedPermissions(origin, requestedPermissions);
+    const metadata: PermissionsRequest['metadata'] = {
+      id,
+      origin,
+    };
+
+    const permissionsRequest: PermissionsRequest = {
+      metadata,
+      permissions: requestedPermissions,
+    };
+
+    const approved = await this.requestUserApproval(permissionsRequest);
+    if (Object.keys(approved).length === 0) {
+      throw internalError(
+        `Approved permissions request for origin "${origin}" contains no permissions.`,
+        { requestedPermissions },
+      );
+    }
+
+    return [this.grantPermissions({ origin }, approved), metadata];
+  }
+
+  private validateRequestedPermissions(
+    origin: string,
+    requestedPermissions: RequestedPermissions,
+  ) {
+    if (
+      !requestedPermissions ||
+      typeof requestedPermissions !== 'object' ||
+      Array.isArray(requestedPermissions)
+    ) {
+      throw invalidParams({ data: { origin, requestedPermissions } });
+    }
+
+    const perms: RequestedPermissions = requestedPermissions;
+
+    for (const methodName of Object.keys(perms)) {
+      const target =
+        perms[methodName].target ||
+        (perms[methodName] as unknown as Permission).parentCapability;
+      if (target !== undefined && methodName !== target) {
+        throw invalidParams({ data: { origin, requestedPermissions } });
+      }
+
+      if (!this.isRestrictedMethod(methodName)) {
+        throw methodNotFound({
+          method: methodName,
+          data: { origin, requestedPermissions },
+        });
+      }
+    }
+  }
+
   getPermissionsMiddleware(
     subject: SubjectMetadata,
   ): JsonRpcMiddleware<Json, Json> {
@@ -113,7 +200,7 @@ class PermissionEnforcer {
       if (result === undefined) {
         res.error = internalError(
           `Request for method "${req.method}" returned undefined result.`,
-          req,
+          { request: req },
         );
         return undefined;
       }
@@ -179,16 +266,34 @@ class PermissionEnforcer {
 export type { PermissionEnforcer };
 
 export function getPermissionEnforcer(
-  controller: PermissionController,
+  permissionController: PermissionController,
+  addAndShowApprovalRequest: ApprovalController['addAndShowApprovalRequest'],
 ): PermissionEnforcer {
   return new PermissionEnforcer({
-    caveatSpecifications: controller.caveatSpecifications,
-    isSafeMethod: (method: string) => {
-      return controller.safeMethods.has(method);
+    caveatSpecifications: permissionController.caveatSpecifications,
+    isRestrictedMethod: (method: string) => {
+      return Boolean(permissionController.getMethodKeyFor(method));
     },
-    getPermission: controller.getPermission.bind(controller),
+    isSafeMethod: (method: string) => {
+      return permissionController.safeMethods.has(method);
+    },
+    getPermission:
+      permissionController.getPermission.bind(permissionController),
     getRestrictedMethodImplementation:
-      controller.getRestrictedMethodImplementation.bind(controller),
+      permissionController.getRestrictedMethodImplementation.bind(
+        permissionController,
+      ),
+    grantPermissions:
+      permissionController.grantPermissions.bind(permissionController),
+    requestUserApproval: async (permissionsRequest: PermissionsRequest) => {
+      const { origin, id } = permissionsRequest.metadata;
+      return (await addAndShowApprovalRequest({
+        id,
+        origin,
+        requestData: permissionsRequest,
+        type: 'wallet_requestPermissions', // TODO: Establish enum somehow
+      })) as RequestedPermissions;
+    },
   });
 }
 

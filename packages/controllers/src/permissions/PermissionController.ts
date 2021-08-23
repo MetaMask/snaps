@@ -29,13 +29,13 @@ import {
 } from './errors';
 import { Caveat } from './Caveat';
 
-export interface SubjectMetadata {
+export type SubjectMetadata = {
   origin: OriginString;
-}
+};
 
 const controllerName = 'PermissionController';
 
-type SubjectPermissions = Record<MethodName, Permission>;
+export type SubjectPermissions = Record<MethodName, Permission>;
 
 export type PermissionsSubjectEntry = {
   permissions: SubjectPermissions;
@@ -133,14 +133,14 @@ type RestrictedMethodsOption = Record<
   RestrictedMethodImplementation<Json, Json>
 >;
 
-interface PermissionControllerOptions {
+type PermissionControllerOptions = {
   messenger: PermissionControllerMessenger;
   caveatSpecifications: CaveatSpecifications;
   methodPrefix: string;
   restrictedMethods: RestrictedMethodsOption;
   safeMethods: string[];
   state?: Partial<PermissionControllerState>;
-}
+};
 
 export class PermissionController extends BaseController<
   typeof controllerName,
@@ -545,7 +545,7 @@ export class PermissionController extends BaseController<
         caveats: this.computeCaveats(
           origin,
           method,
-          requestedPermissions[method].caveats,
+          requestedPermissions[method].caveats || undefined,
         ),
       });
     }
@@ -607,19 +607,19 @@ function getRestrictedMethodMap(
 
 // TODO: Are we using these?
 
-export interface PermissionsRequestMetadata extends SubjectMetadata {
+export type PermissionsRequestMetadata = SubjectMetadata & {
   id: string;
-}
+};
 
 /**
  * Used for prompting the user about a proposed new permission.
  * Includes information about the subject granted, as well as the permissions
  * assigned.
  */
-export interface PermissionsRequest {
-  stateMetadata: PermissionsRequestMetadata;
+export type PermissionsRequest = {
+  metadata: PermissionsRequestMetadata;
   permissions: RequestedPermissions;
-}
+};
 
 export type UserApprovalPrompt = (
   permissionsRequest: PermissionsRequest,

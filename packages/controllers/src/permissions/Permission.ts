@@ -1,6 +1,6 @@
 import { Json } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
-import { Caveat, ZcapLdCaveat } from './Caveat';
+import { Caveat, CaveatInterface, ZcapLdCaveat } from './Caveat';
 
 /**
  * The origin of a subject.
@@ -16,7 +16,7 @@ export type MethodName = string;
 /**
  * An interface
  */
-interface ZcapLdCapability {
+type ZcapLdCapability = {
   /**
    * The context(s) in which this capability is meaningful.
    *
@@ -69,9 +69,9 @@ interface ZcapLdCapability {
    * object in the designated part of our state tree, so this field is omitted.
    */
   proof?: string;
-}
+};
 
-interface PermissionOptions {
+type PermissionOptions = {
   /**
    * The method that the permission corresponds to.
    */
@@ -93,7 +93,7 @@ interface PermissionOptions {
    * See {@link Caveat}.
    */
   caveats?: Caveat<Json>[];
-}
+};
 
 /**
  * TODO: Document
@@ -152,6 +152,9 @@ export class Permission implements ZcapLdCapability {
   }
 }
 
-type RequestedPermission = Pick<PermissionOptions, 'caveats' | 'target'>;
+type RequestedPermission = {
+  target: MethodName;
+  caveats: CaveatInterface<Json>[] | null;
+};
 
 export type RequestedPermissions = Record<MethodName, RequestedPermission>;

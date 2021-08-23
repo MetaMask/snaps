@@ -3,14 +3,14 @@ import { ethErrors, EthereumRpcError } from 'eth-rpc-errors';
 import { Permission } from './Permission';
 import { Caveat } from './Caveat';
 
-interface ErrorArg {
+type ErrorArg = {
   message?: string;
   data?: JsonRpcRequest<unknown> | unknown;
-}
+};
 
-interface MethodNotFoundArg extends ErrorArg {
+type MethodNotFoundArg = ErrorArg & {
   method?: string;
-}
+};
 
 export function unauthorized(arg?: ErrorArg) {
   return ethErrors.provider.unauthorized({
@@ -29,17 +29,24 @@ export function methodNotFound(opts: MethodNotFoundArg) {
   return ethErrors.rpc.methodNotFound({ data: opts.data, message });
 }
 
-export function userRejectedRequest(
-  request?: JsonRpcRequest<unknown>,
-): EthereumRpcError<JsonRpcRequest<unknown>> {
-  return ethErrors.provider.userRejectedRequest({ data: request });
+export function invalidParams(opts: ErrorArg) {
+  return ethErrors.rpc.invalidParams({
+    data: opts.data,
+    message: opts.message,
+  });
 }
 
-export function internalError(
+export function userRejectedRequest<Data extends Record<string, unknown>>(
+  data?: Data,
+): EthereumRpcError<Data> {
+  return ethErrors.provider.userRejectedRequest({ data });
+}
+
+export function internalError<Data extends Record<string, unknown>>(
   message: string,
-  request?: JsonRpcRequest<unknown>,
-): EthereumRpcError<JsonRpcRequest<unknown>> {
-  return ethErrors.rpc.internal({ message, data: request });
+  data?: Data,
+): EthereumRpcError<Data> {
+  return ethErrors.rpc.internal({ message, data });
 }
 
 export class InvalidSubjectIdentifierError extends Error {

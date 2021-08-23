@@ -1,25 +1,30 @@
 import { Json } from 'json-rpc-engine';
 
-interface CaveatOptions<ValueType extends Json> {
+type CaveatOptions<ValueType extends Json> = {
   type: string;
   value: ValueType;
-}
+};
 
-/**
- *
- */
-export interface ZcapLdCaveat {
+export type ZcapLdCaveat = {
   /**
    * The type of the caveat, which is presumed to be meaningful in the context
    * of the capability it is associated with.
    */
   type: string;
-}
+};
+
+/**
+ * Identical to instances of the Caveat class, useful for when TypeScript
+ * has a meltdown over assigning classes to the Json type.
+ */
+export type CaveatInterface<Value extends Json> = ZcapLdCaveat & {
+  value: Value;
+};
 
 /**
  * TODO: Document
  */
-export class Caveat<ValueType extends Json> implements ZcapLdCaveat {
+export class Caveat<Value extends Json> implements CaveatInterface<Value> {
   /**
    * The type of the caveat. The type is presumed to be meaningful in the
    * context of the capability it is associated with.
@@ -33,9 +38,9 @@ export class Caveat<ValueType extends Json> implements ZcapLdCaveat {
    *
    * TODO: Make optional in typescript@4.4.x
    */
-  public readonly value: ValueType;
+  public readonly value: Value;
 
-  constructor({ type, value }: CaveatOptions<ValueType>) {
+  constructor({ type, value }: CaveatOptions<Value>) {
     this.type = type;
     this.value = value;
   }

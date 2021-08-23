@@ -20,11 +20,11 @@ type CaveatDecorator = (
   caveat: Caveat<Json>,
 ) => AsyncRestrictedMethodImplementation<Json, Json>;
 
-export interface CaveatSpecification<CaveatValue extends Json> {
+export type CaveatSpecification<CaveatValue extends Json> = {
   type: CaveatType;
   decorator: CaveatDecorator;
   validator: CaveatValueValidator<CaveatValue>;
-}
+};
 
 export type CaveatSpecifications = Readonly<
   Record<CaveatType, CaveatSpecification<Json>>
