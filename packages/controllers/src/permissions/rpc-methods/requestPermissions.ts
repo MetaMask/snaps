@@ -52,7 +52,9 @@ async function requestPermissionsImplementation(
     typeof req.id === 'number' || req.id ? req.id.toString() : nanoid();
 
   try {
-    res.result = Object.values(requestPermissions(req.params[0], id));
+    res.result = Object.values(
+      (await requestPermissions(req.params[0], id))[0],
+    );
     return end();
   } catch (error) {
     return end(error);
