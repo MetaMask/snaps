@@ -5,6 +5,7 @@ import type {
   PendingJsonRpcResponse,
 } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
+import { MethodNames } from '../enums';
 
 import { invalidParams } from '../errors';
 import type { Permission, RequestedPermissions } from '../Permission';
@@ -14,7 +15,7 @@ export const requestPermissionsHandler: PermittedHandlerExport<
   [RequestedPermissions],
   Permission[]
 > = {
-  methodNames: ['wallet_requestPermissions'],
+  methodNames: [MethodNames.requestPermissions],
   implementation: requestPermissionsImplementation,
   methodDescription: 'Request permissions.',
   hookNames: {

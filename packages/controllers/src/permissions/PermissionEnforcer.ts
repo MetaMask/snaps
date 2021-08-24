@@ -25,6 +25,7 @@ import type {
   SubjectMetadata,
 } from './PermissionController';
 import type { ApprovalController } from './temp/ApprovalController';
+import { MethodNames } from './enums';
 
 export type PermissionsRequestMetadata = SubjectMetadata & {
   id: string;
@@ -403,7 +404,7 @@ export function getPermissionEnforcer(
         id,
         origin,
         requestData: permissionsRequest,
-        type: 'wallet_requestPermissions', // TODO: Define enum for this
+        type: MethodNames.requestPermissions,
       })) as PermissionsRequest;
     },
     acceptPermissionsRequest,

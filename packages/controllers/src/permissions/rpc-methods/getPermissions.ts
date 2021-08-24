@@ -3,6 +3,7 @@ import type {
   JsonRpcEngineEndCallback,
   PendingJsonRpcResponse,
 } from 'json-rpc-engine';
+import { MethodNames } from '../enums';
 
 import type { Permission } from '../Permission';
 import type { SubjectPermissions } from '../PermissionController';
@@ -12,7 +13,7 @@ export const getPermissionsHandler: PermittedHandlerExport<
   void,
   Permission[]
 > = {
-  methodNames: ['wallet_getPermissions'],
+  methodNames: [MethodNames.getPermissions],
   implementation: getPermissionsImplementation,
   methodDescription: 'Get permissions.',
   hookNames: {
