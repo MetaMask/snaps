@@ -537,11 +537,14 @@ export class PermissionController extends BaseController<
 
       const permissionOptions = { caveats, invoker: origin, target };
 
-      const permission =
-        specification.factory?.(permissionOptions, requestData) ||
-        new Permission(permissionOptions);
+      let permission: Permission;
+      if (specification.factory) {
+        permission = specification.factory(permissionOptions, requestData);
+      } else {
+        permission = new Permission(permissionOptions);
+        specification.validator?.(permission);
+      }
 
-      specification.validator?.(permission);
       permissions[targetKey] = permission;
     }
 

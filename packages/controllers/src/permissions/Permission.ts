@@ -206,13 +206,14 @@ export type PermissionSpecification<
   target: string;
 
   /**
-   * The factory function used to get permission objects.
+   * The factory function used to get permission objects. Permissions returned
+   * by this function are presumed to valid, and they will not be passed to the
+   * validator function associated with this specification (if any). In other
+   * words, the factory function should validate the permissions it creates.
    *
    * If no factory is specified, the {@link Permission} constructor will be
-   * used.
-   *
-   * The validator function will be called on newly created permissions whether
-   * a factory is specified or not.
+   * used, and the validator function (if specified) will be called on newly
+   * constructed permissions.
    */
   factory?: (options: FactoryOptions, requestData?: RequestData) => Permission;
 
@@ -224,10 +225,8 @@ export type PermissionSpecification<
 
   /**
    * The validator function used to validate permissions of the associated type
-   * whenever they are instantiated. Permissions are instantiated whenever they
-   * are created or mutated. The only way a permission can be legally mutated is
-   * when its caveat array or its contents are modified by the permission
-   * controller.
+   * whenever they are mutated. The only way a permission can be legally mutated
+   * is when its caveats are modified by the permission controller.
    *
    * The validator should throw an appropriate JSON-RPC error if validation fails.
    */
