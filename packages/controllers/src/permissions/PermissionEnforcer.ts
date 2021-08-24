@@ -22,12 +22,12 @@ import type {
 } from './Permission';
 import type {
   PermissionController,
-  SubjectMetadata,
+  PermissionsSubjectMetadata,
 } from './PermissionController';
 import type { ApprovalController } from './temp/ApprovalController';
 import { MethodNames } from './enums';
 
-export type PermissionsRequestMetadata = SubjectMetadata & {
+export type PermissionsRequestMetadata = PermissionsSubjectMetadata & {
   id: string;
 };
 
@@ -307,7 +307,7 @@ class PermissionEnforcer {
    */
   private _executeRestrictedMethod(
     methodImplementation: RestrictedMethodImplementation<Json, Json>,
-    subject: SubjectMetadata,
+    subject: PermissionsSubjectMetadata,
     req: JsonRpcRequest<Json>,
   ): ReturnType<RestrictedMethodImplementation<Json, Json>> {
     const { origin } = subject;
@@ -326,7 +326,7 @@ class PermissionEnforcer {
   }
 
   getPermissionsMiddleware(
-    subject: SubjectMetadata,
+    subject: PermissionsSubjectMetadata,
   ): JsonRpcMiddleware<Json, Json> {
     const permissionsMiddleware = async (
       req: JsonRpcRequest<Json>,

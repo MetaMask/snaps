@@ -31,7 +31,7 @@ import {
   InvalidCaveatError,
 } from './errors';
 
-export type SubjectMetadata = {
+export type PermissionsSubjectMetadata = {
   origin: OriginString;
 };
 
@@ -41,7 +41,7 @@ export type SubjectPermissions = Record<MethodName, Permission>;
 
 export type PermissionsSubjectEntry = {
   permissions: SubjectPermissions;
-} & SubjectMetadata;
+} & PermissionsSubjectMetadata;
 
 export type PermissionControllerSubjects = Record<
   OriginString,
@@ -108,7 +108,7 @@ type PermissionControllerOptions = {
 
 type GrantPermissionsOptions = {
   approvedPermissions: RequestedPermissions;
-  subject: SubjectMetadata;
+  subject: PermissionsSubjectMetadata;
   shouldPreserveExistingPermissions?: boolean;
   requestData?: Record<string, unknown>;
 };
