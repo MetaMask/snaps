@@ -17,38 +17,33 @@ if (parentPort !== null) {
   parentPort.on('message', (message: { pluginFilePath: string }) => {
     const { pluginFilePath } = message;
 
-    const compartment = new Compartment(getMockApi());
-    // Wrap the IIFE in an arrow function, because mocking the wallet is iffy
-    compartment.evaluate(
-      // '() => ' + readFileSync(pluginFilePath, 'utf8')
+    new Compartment(getMockEndowments()).evaluate(
       readFileSync(pluginFilePath, 'utf8'),
     );
-    setTimeout(() => process.exit(0), 1000); // Hacky McHack
+    setTimeout(() => process.exit(0), 1000); // Hack to ensure worker exits
   });
 }
 
-function getMockApi() {
-  return {
+function getMockEndowments() {
+  const endowments = {
+    BigInt,
+    Buffer,
     console,
+    crypto,
+    Date,
+    fetch: () => true,
+    Math,
     wallet: {
       registerRpcMessageHandler: () => true,
     },
-    BigInt,
     setTimeout,
-    crypto,
     SubtleCrypto: () => undefined,
-    fetch: () => true,
-    XMLHttpRequest: () => true,
     WebSocket: () => true,
-    Buffer,
-    Date,
+    XMLHttpRequest: () => true,
+  };
 
-    window: {
-      crypto,
-      SubtleCrypto: () => undefined,
-      fetch: () => true,
-      XMLHttpRequest: () => true,
-      WebSocket: () => true,
-    },
+  return {
+    ...endowments,
+    window: endowments,
   };
 }
