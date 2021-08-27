@@ -1,6 +1,6 @@
 {
   "name": "snaps-cli",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "A CLI for developing MetaMask Snaps.",
   "main": "./dist/src/cmds/index.js",
   "bin": {

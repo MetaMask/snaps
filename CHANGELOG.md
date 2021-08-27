@@ -6,6 +6,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.2]
+### Added
+- API Compatability with latest Snaps implementation ([#114](https://github.com/MetaMask/snaps-cli/pull/114))
+- License file ([#88](https://github.com/MetaMask/snaps-cli/pull/88))
+- `--stripComments` option ([#65](https://github.com/MetaMask/snaps-cli/pull/65))
+
+### Changed
+- Use Node 14 ([#77](https://github.com/MetaMask/snaps-cli/pull/77))
+- Prevent serve command from caching files ([#90](https://github.com/MetaMask/snaps-cli/pull/90))
+- Restore crypto to eval environment ([#87](https://github.com/MetaMask/snaps-cli/pull/87))
+- Fix `applyConfig` behavior ([#85](https://github.com/MetaMask/snaps-cli/pull/85), [#84](https://github.com/MetaMask/snaps-cli/pull/84))
+- Alias for `suppressWarnings` to `--sw` ([#81](https://github.com/MetaMask/snaps-cli/pull/81))
+- Use workers as the execution environment ([#60](https://github.com/MetaMask/snaps-cli/pull/60))
+- Use `ses@^0.11.0` ([#60](https://github.com/MetaMask/snaps-cli/pull/60))
+
+### Removed
+- 3box example
+- Environment option ([#86](https://github.com/MetaMask/snaps-cli/pull/86))
+
+### Fixed
+- File existence checks `init` command ([#73](https://github.com/MetaMask/snaps-cli/pull/73))
+- `fs.exists` and `fs.readdir` error handling ([#71](https://github.com/MetaMask/snaps-cli/pull/71))
+
 ## [0.4.1]
 ### Uncategorized
 - Rename `plugin` option to `bundle`, but keep alias
@@ -100,7 +123,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Use named rather than positional arguments
 
-[Unreleased]: https://github.com/MetaMask/snaps-cli/compare/v0.4.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-cli/compare/v0.4.2...HEAD
+[0.4.2]: https://github.com/MetaMask/snaps-cli/compare/v0.4.1...v0.4.2
 [0.4.1]: https://github.com/MetaMask/snaps-cli/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/MetaMask/snaps-cli/compare/v0.3.13...v0.4.0
 [0.3.13]: https://github.com/MetaMask/snaps-cli/compare/v0.3.12...v0.3.13
