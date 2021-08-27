@@ -12,18 +12,19 @@
   ],
   "scripts": {
     "setup": "yarn install && yarn allow-scripts",
-    "build:prep": "mkdir -p dist && rm -rf dist/*",
     "build:typescript": "tsc --project ./tsconfig.build.json",
     "build:chmod": "chmod +x ./dist/src/main.js",
-    "build": "yarn build:prep && yarn build:typescript && yarn build:chmod",
-    "test": "yarn build && jest",
-    "test:nobuild": "jest",
+    "build": "yarn build:typescript && yarn build:chmod",
+    "build:clean": "yarn rimraf dist && yarn build:typescript && yarn build:chmod",
+    "test": "jest",
+    "test:watch": "jest --watch",
     "dev:gen-init-template": "node ./dist/development/generateInitTemplate.js",
     "dev:build-examples": "node ./dist/development/buildExamples.js",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' '**/*.yml' --ignore-path .gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
-    "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write"
+    "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
+    "prepublishOnly": "yarn build:clean && yarn lint && yarn test"
   },
   "license": "ISC",
   "repository": {
