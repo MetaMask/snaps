@@ -28,7 +28,7 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MetaMask/snaps-cli.git"
+    "url": "https://github.com/MetaMask/snaps-cli.git"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^1.0.6",
