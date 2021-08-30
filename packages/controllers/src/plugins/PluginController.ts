@@ -210,6 +210,11 @@ export class PluginController extends BaseController<
     this._getRpcMessageHandler = getRpcMessageHandler;
 
     this._pluginsBeingAdded = new Map();
+
+    // reset plugins on boot to not running
+    Object.values(this.state.plugins).forEach((plugin) => {
+      this._setPluginToNotRunning(plugin.name);
+    });
   }
 
   /**

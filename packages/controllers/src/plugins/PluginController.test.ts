@@ -285,4 +285,41 @@ describe('PluginController Controller', () => {
       sourceCode,
     });
   });
+
+  it('can not delete exusting plugins when using runExistinPlugins with a hydrated state', async () => {
+    expect.assertions(1);
+
+    const mockExecutePlugin = jest.fn();
+
+    const pluginController = new PluginController({
+      terminateAllPlugins: jest.fn(),
+      terminatePlugin: jest.fn(),
+      executePlugin: mockExecutePlugin,
+      getRpcMessageHandler: jest.fn(),
+      removeAllPermissionsFor: jest.fn(),
+      getPermissions: jest.fn(),
+      hasPermission: jest.fn(),
+      requestPermissions: jest.fn(),
+      closeAllConnections: jest.fn(),
+      messenger: new ControllerMessenger<any, any>().getRestricted({
+        name: 'PluginController',
+      }),
+      state: {
+        pluginStates: {},
+        inlinePluginIsRunning: false,
+        plugins: {
+          foo: {
+            isRunning: true,
+            initialPermissions: {},
+            permissionName: 'fooperm',
+            version: '0.0.1',
+            sourceCode: 'console.log("foo")',
+            name: 'foo',
+          },
+        },
+      },
+    });
+    await pluginController.runExistingPlugins();
+    expect(pluginController.state.plugins.foo).toBeDefined();
+  });
 });
