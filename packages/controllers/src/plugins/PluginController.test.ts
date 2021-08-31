@@ -287,7 +287,7 @@ describe('PluginController Controller', () => {
     });
   });
 
-  it('can not delete exusting plugins when using runExistinPlugins with a hydrated state', async () => {
+  it('can not delete existing plugins when using runExistinPlugins with a hydrated state', async () => {
     expect.assertions(1);
 
     const mockExecutePlugin = jest.fn();

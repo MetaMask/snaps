@@ -314,7 +314,6 @@ function setupMultiplex(
     mux as unknown as Duplex,
     connectionStream,
     (err) => {
-      console.log('stream error, ended', err);
       if (err) {
         streamName
           ? console.error(`"${streamName}" stream failure.`, err)
