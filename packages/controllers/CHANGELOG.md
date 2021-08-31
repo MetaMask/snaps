@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.9]
+### Uncategorized
+- Added reset plugins running state in PluginController constructor to … ([#64](https://github.com/MetaMask/snaps-skunkworks/pull/64))
+- @metamask/controllers@15.0.0 ([#66](https://github.com/MetaMask/snaps-skunkworks/pull/66))
+
 ## [0.0.7]
 ### Fixed
 - Store plugin states in the correct place ([#48](https://github.com/MetaMask/snaps-skunkworks/pull/48))
@@ -30,7 +35,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.0.7...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.0.9...HEAD
+[0.0.9]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.0.7...v0.0.9
 [0.0.7]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.0.6...v0.0.7
 [0.0.6]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.0.5...v0.0.6
 [0.0.5]: https://github.com/MetaMask/snaps-skunkworks/releases/tag/v0.0.5
