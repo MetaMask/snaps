@@ -36,6 +36,7 @@
     "@metamask/safe-event-emitter": "^2.0.0",
     "@mm-snap/workers": "^0.0.6",
     "eth-rpc-errors": "^4.0.2",
+    "immer": "^8.0.4",
     "json-rpc-engine": "^6.1.0",
     "json-rpc-middleware-stream": "^3.0.0",
     "nanoid": "^3.1.20",
@@ -51,8 +52,5 @@
     "jest": "^26.6.3",
     "rpc-cap": "^4.0.0",
     "ts-jest": "^26.5.6"
-  },
-  "peerDependencies": {
-    "immer": "^8.0.4"
   }
 }
