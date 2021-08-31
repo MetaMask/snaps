@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.0.9]
 ### Added
-- reset plugins running state in PluginController `persist` ([#64](https://github.com/MetaMask/snaps-skunkworks/pull/64))
+- `PluginController`: Always persist plugin `isRunning` state as `false` ([#64](https://github.com/MetaMask/snaps-skunkworks/pull/64))
+  - Plugins are not automatically running on boot, and we should never persist this state as `true`.
 
 ### Changed
 - @metamask/controllers@15.0.0 ([#66](https://github.com/MetaMask/snaps-skunkworks/pull/66))
