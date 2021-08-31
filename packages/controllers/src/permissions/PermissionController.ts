@@ -116,10 +116,9 @@ type GrantPermissionsOptions = {
 
 export class PermissionController extends BaseController<
   typeof controllerName,
-  PermissionControllerState
+  PermissionControllerState,
+  PermissionControllerMessenger
 > {
-  protected messagingSystem: PermissionControllerMessenger;
-
   private readonly _permissionSpecifications: Readonly<PermissionSpecifications>;
 
   public get permissionSpecifications(): Readonly<PermissionSpecifications> {
@@ -157,10 +156,6 @@ export class PermissionController extends BaseController<
       ...permissionSpecifications,
     });
     this._safeMethods = new Set(safeMethods);
-
-    // This assignment is redundant, but TypeScript doesn't know that it becomes
-    // assigned if we don't do it.
-    this.messagingSystem = messenger;
 
     this.registerMessageHandlers();
   }
