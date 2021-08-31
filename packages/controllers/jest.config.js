@@ -10,9 +10,26 @@ module.exports = {
   //     statements: 100,
   //   },
   // },
-  preset: 'ts-jest',
-  runner: '@jest-runner/electron',
-  testEnvironment: '@jest-runner/electron/environment',
-  testRegex: ['\\.test\\.ts$'],
-  testTimeout: 5000,
+  silent: true,
+  testTimeout: 2500,
+  projects: [
+    {
+      displayName: 'runner: electron',
+      testMatch: [
+        '<rootDir>/src/plugins/**/*.test.ts',
+        '<rootDir>/src/services/**/*.test.ts',
+      ],
+      preset: 'ts-jest',
+      runner: '@jest-runner/electron',
+      testEnvironment: '@jest-runner/electron/environment',
+    },
+    {
+      displayName: 'runner: default',
+      testPathIgnorePatterns: [
+        '<rootDir>/src/plugins/*',
+        '<rootDir>/src/services/*',
+      ],
+      preset: 'ts-jest',
+    },
+  ],
 };

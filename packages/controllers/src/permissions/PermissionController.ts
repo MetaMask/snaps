@@ -7,7 +7,7 @@ import deepFreeze from 'deep-freeze-strict';
 import { Json } from 'json-rpc-engine';
 
 import { isPlainObject } from '../utils';
-import { Caveat, CaveatSpecifications } from './Caveat';
+import { Caveat, CaveatSpecifications, constructCaveat } from './Caveat';
 import {
   OriginString,
   Permission,
@@ -15,6 +15,8 @@ import {
   RequestedPermissions,
   RestrictedMethodImplementation,
   PermissionSpecifications,
+  findCaveat,
+  constructPermission,
 } from './Permission';
 import {
   PermissionDoesNotExistError,
@@ -100,7 +102,6 @@ export type PermissionControllerMessenger = RestrictedControllerMessenger<
 type PermissionControllerOptions = {
   messenger: PermissionControllerMessenger;
   caveatSpecifications: CaveatSpecifications;
-  methodPrefix: string;
   permissionSpecifications: PermissionSpecifications;
   safeMethods: string[];
   state?: Partial<PermissionControllerState>;
@@ -117,8 +118,6 @@ export class PermissionController extends BaseController<
   typeof controllerName,
   PermissionControllerState
 > {
-  public readonly methodPrefix: string;
-
   protected messagingSystem: PermissionControllerMessenger;
 
   private readonly _permissionSpecifications: Readonly<PermissionSpecifications>;
@@ -143,7 +142,6 @@ export class PermissionController extends BaseController<
     messenger,
     state = {},
     caveatSpecifications,
-    methodPrefix,
     permissionSpecifications,
     safeMethods,
   }: PermissionControllerOptions) {
@@ -159,7 +157,6 @@ export class PermissionController extends BaseController<
       ...permissionSpecifications,
     });
     this._safeMethods = new Set(safeMethods);
-    this.methodPrefix = methodPrefix;
 
     // This assignment is redundant, but TypeScript doesn't know that it becomes
     // assigned if we don't do it.
@@ -363,7 +360,7 @@ export class PermissionController extends BaseController<
       throw new PermissionDoesNotExistError(origin, target);
     }
 
-    return Permission.getCaveat(permission, caveatType);
+    return findCaveat(permission, caveatType);
   }
 
   private setCaveat(
@@ -541,7 +538,7 @@ export class PermissionController extends BaseController<
       if (specification.factory) {
         permission = specification.factory(permissionOptions, requestData);
       } else {
-        permission = new Permission(permissionOptions);
+        permission = constructPermission(permissionOptions);
         specification.validator?.(permission);
       }
 
@@ -597,10 +594,7 @@ export class PermissionController extends BaseController<
       throw new CaveatMissingValueError(requestedCaveat, origin, target);
     }
 
-    const caveat = new Caveat({
-      type: requestedCaveat.type,
-      value: requestedCaveat.value,
-    });
+    const caveat = constructCaveat(requestedCaveat.type, requestedCaveat.value);
 
     specification.validator?.(origin, target, caveat);
     return caveat;

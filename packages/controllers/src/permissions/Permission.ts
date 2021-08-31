@@ -1,7 +1,7 @@
 import type { EthereumRpcError } from 'eth-rpc-errors';
 import { Json } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
-import { Caveat, CaveatInterface, ZcapLdCaveat } from './Caveat';
+import { Caveat, ZcapLdCaveat } from './Caveat';
 
 /**
  * The origin of a subject.
@@ -24,12 +24,12 @@ type ZcapLdCapability = {
    * It is required by the standard, but we omit it because there is only one
    * context (the user's MetaMask instance).
    */
-  '@context'?: string[];
+  readonly '@context'?: string[];
 
   /**
    * The cryptograhically strong GUID of the capability.
    */
-  id: string;
+  readonly id: string;
 
   /**
    * A pointer to the resource that possession of the capability grants
@@ -37,7 +37,7 @@ type ZcapLdCapability = {
    *
    * In the context of MetaMask, this is always the name of an RPC method.
    */
-  parentCapability: string;
+  readonly parentCapability: string;
 
   /**
    * A pointer to the the entity that may invoke this capability.
@@ -47,19 +47,19 @@ type ZcapLdCapability = {
    *
    * In the context of MetaMask, this is simply the origin of subject.
    */
-  invoker: string;
+  readonly invoker: string;
 
   /**
    * The issuing date, in UNIX epoch time.
    */
-  date?: number;
+  readonly date?: number;
 
   /**
    * An array of caveat objects. See {@link ZcapLdCaveat}.
    *
    * TODO: Make optional in typescript@4.4.x
    */
-  caveats: ZcapLdCaveat[] | null;
+  readonly caveats: ZcapLdCaveat[] | null;
 
   /**
    * The proof that this capability was delegated to the specified invoker.
@@ -69,7 +69,7 @@ type ZcapLdCapability = {
    * In MetaMask, the "proof" of validity is the existence of a valid capability
    * object in the designated part of our state tree, so this field is omitted.
    */
-  proof?: string;
+  readonly proof?: string;
 };
 
 type PermissionOptions = {
@@ -99,21 +99,19 @@ type PermissionOptions = {
 /**
  * TODO: Document
  */
-export class Permission implements ZcapLdCapability {
+export type Permission = Omit<
+  ZcapLdCapability,
+  '@context' | 'caveats' | 'proof'
+> & {
   /**
    * The GUID of the permission object.
    */
-  public readonly id: string;
+  readonly id: string;
 
   /**
    * The creation date of the permission, in UNIX epoch time.
    */
-  public readonly date: number;
-
-  /**
-   * The method that the permission corresponds to.
-   */
-  public readonly parentCapability: string;
+  readonly date: number;
 
   /**
    * The caveats of the permission.
@@ -121,41 +119,51 @@ export class Permission implements ZcapLdCapability {
    *
    * TODO: Make optional in typescript@4.4.x
    */
-  public readonly caveats: Caveat<Json>[] | null;
+  readonly caveats: Caveat<Json>[] | null;
 
   /**
    * The origin string of the subject that has the permission.
    */
-  public readonly invoker: OriginString;
+  readonly invoker: OriginString;
+};
 
-  constructor(options: PermissionOptions) {
-    const { caveats, id, invoker, target } = options;
-    this.id = id ?? nanoid();
-    this.parentCapability = target;
-    this.invoker = invoker;
-    this.caveats = caveats ?? null;
-    this.date = new Date().getTime();
-  }
+/**
+ * The default {@link Permission} factory function. Naively constructs a permission from
+ * the inputs. Sets a default, random `id` if none is provided.
+ *
+ * @param options - The options for the permission.
+ * @returns The new permission object.
+ */
+export function constructPermission(options: PermissionOptions) {
+  const { caveats, id, invoker, target } = options;
 
-  /**
-   * Gets the value of the caveat of the specified type belonging to the
-   * specified permission.
-   *
-   * @param permission The permission whose caveat value to retrieve.
-   * @param caveatType The type of the caveat to retrieve.
-   * @returns The caveat value, or undefined if no such caveat exists.
-   */
-  public static getCaveat(
-    permission: Permission,
-    caveatType: string,
-  ): Caveat<Json> | undefined {
-    return permission.caveats?.find((caveat) => caveat.type === caveatType);
-  }
+  return {
+    id: id ?? nanoid(),
+    parentCapability: target,
+    invoker,
+    caveats: caveats ?? null,
+    date: new Date().getTime(),
+  };
+}
+
+/**
+ * Gets the value of the caveat of the specified type belonging to the
+ * specified permission.
+ *
+ * @param permission The permission whose caveat value to retrieve.
+ * @param caveatType The type of the caveat to retrieve.
+ * @returns The caveat value, or undefined if no such caveat exists.
+ */
+export function findCaveat(
+  permission: Permission,
+  caveatType: string,
+): Caveat<Json> | undefined {
+  return permission.caveats?.find((caveat) => caveat.type === caveatType);
 }
 
 type RequestedPermission = {
-  target: MethodName;
-  caveats: CaveatInterface<Json>[] | null;
+  target?: MethodName;
+  caveats: Caveat<Json>[] | null;
 };
 
 export type RequestedPermissions = Record<MethodName, RequestedPermission>;
@@ -165,26 +173,25 @@ export type RestrictedMethodContext = Readonly<{
   [key: string]: any;
 }>;
 
-export type RestrictedMethodRequest<Params extends Json> = {
+// TODO: Should restricted methods just take (method, params, context) instead?
+export type RestrictedMethodArgs<Params extends Json> = {
   method: string;
   params?: Params;
-  [key: string]: any;
+  context: RestrictedMethodContext;
 };
 
 export type SyncRestrictedMethodImplementation<
   Params extends Json,
   Result extends Json,
 > = (
-  request: RestrictedMethodRequest<Params>,
-  context: RestrictedMethodContext,
+  args: RestrictedMethodArgs<Params>,
 ) => Result | Error | EthereumRpcError<Json>;
 
 export type AsyncRestrictedMethodImplementation<
   Params extends Json,
   Result extends Json,
 > = (
-  request: RestrictedMethodRequest<Params>,
-  context: RestrictedMethodContext,
+  args: RestrictedMethodArgs<Params>,
 ) => Promise<Result | Error | EthereumRpcError<Json>>;
 
 export type RestrictedMethodImplementation<

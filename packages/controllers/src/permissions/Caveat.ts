@@ -9,50 +9,42 @@ import {
 
 type CaveatType = string;
 
-type CaveatOptions<Value extends Json> = {
-  type: CaveatType;
-  value: Value;
-};
-
 export type ZcapLdCaveat = {
-  /**
-   * The type of the caveat, which is presumed to be meaningful in the context
-   * of the capability it is associated with.
-   */
-  type: CaveatType;
-};
-
-/**
- * Identical to instances of the Caveat class, useful for when TypeScript
- * has a meltdown over assigning classes to the Json type.
- */
-export type CaveatInterface<Value extends Json> = ZcapLdCaveat & {
-  value: Value;
-};
-
-/**
- * TODO: Document
- */
-export class Caveat<Value extends Json> implements CaveatInterface<Value> {
   /**
    * The type of the caveat. The type is presumed to be meaningful in the
    * context of the capability it is associated with.
    *
    * In MetaMask, every permission can only have one caveat of each type.
    */
-  public readonly type: CaveatType;
+  readonly type: CaveatType;
+};
 
+/**
+ * Identical to instances of the Caveat class, useful for when TypeScript
+ * has a meltdown over assigning classes to the Json type.
+ */
+export type Caveat<Value extends Json> = ZcapLdCaveat & {
   /**
    * Any additional data necessary to enforce the caveat.
    *
    * TODO: Make optional in typescript@4.4.x
    */
-  public readonly value: Value;
+  readonly value: Value | null;
+};
 
-  constructor({ type, value }: CaveatOptions<Value>) {
-    this.type = type;
-    this.value = value;
-  }
+/**
+ * The {@link Caveat} factory function. Naively constructs a new caveat from the
+ * inputs. Sets `value` to `null` if no value is provided.
+ *
+ * @param type - The type of the caveat.
+ * @param value - The value associated with the caveat, if any.
+ * @returns The new caveat object.
+ */
+export function constructCaveat<Value extends Json>(
+  type: string,
+  value?: Value,
+): Caveat<Value> {
+  return { type, value: value === undefined ? null : value };
 }
 
 // Next, we define types used for specifying caveats at the consumer layer,
@@ -60,18 +52,18 @@ export class Caveat<Value extends Json> implements CaveatInterface<Value> {
 // Accomplished by decorating the restricted method implementation with the
 // the corresponding caveat functions.
 
-type CaveatDecorator = (
+export type CaveatDecorator<CaveatValue extends Json> = (
   decorated: AsyncRestrictedMethodImplementation<Json, Json>,
-  caveat: Caveat<Json>,
+  caveat: Caveat<CaveatValue>,
 ) => AsyncRestrictedMethodImplementation<Json, Json>;
 
-type CaveatValidator = (
+export type CaveatValidator = (
   origin: string,
   target: string,
   caveat: Caveat<Json>,
 ) => void;
 
-export type CaveatSpecification = {
+export type CaveatSpecification<CaveatValue extends Json> = {
   /**
    * The string type of the caveat.
    */
@@ -81,7 +73,7 @@ export type CaveatSpecification = {
    * The decorator function used to apply the caveat to restricted method
    * requests.
    */
-  decorator: CaveatDecorator;
+  decorator: CaveatDecorator<CaveatValue>;
 
   /**
    * The validator function used to validate caveats of the associated type
@@ -98,7 +90,7 @@ export type CaveatSpecification = {
 };
 
 export type CaveatSpecifications = Readonly<
-  Record<CaveatType, CaveatSpecification>
+  Record<CaveatType, CaveatSpecification<Json>>
 >;
 
 /**
@@ -144,11 +136,9 @@ export function decorateWithCaveats(
 
 // "Return handler" example
 //
-// export function eth_accounts(next: MethodImplementation) {
+// export function eth_accounts(next: MethodImplementation, caveat: Caveat<string[]>) {
 //   return async (req: JsonRpcRequest<Json>, context: Record<string, unknown>) => {
 //     const accounts = await next(req, context);
-//     return accounts.filter(() => {
-//        // filter
-//     });
+//     return accounts.filter((account: string) => caveat.value.includes(account))
 //   };
 // }

@@ -311,7 +311,7 @@ class PermissionEnforcer {
     req: JsonRpcRequest<Json>,
   ): ReturnType<RestrictedMethodImplementation<Json, Json>> {
     const { origin } = subject;
-    const { method } = req;
+    const { method, params } = req;
 
     const permission = this.getPermission(origin, method);
     if (!permission) {
@@ -322,7 +322,7 @@ class PermissionEnforcer {
       methodImplementation,
       permission,
       this.caveatSpecifications,
-    )(req, { origin });
+    )({ method, params, context: { origin } });
   }
 
   getPermissionsMiddleware(
