@@ -29,13 +29,14 @@
     "prepublishOnly": "yarn lint && yarn build"
   },
   "dependencies": {
-    "@metamask/controllers": "^14.2.0",
+    "@metamask/controllers": "^15.0.0",
     "@metamask/object-multiplex": "^1.1.0",
     "@metamask/obs-store": "^6.0.2",
     "@metamask/post-message-stream": "4.0.0",
     "@metamask/safe-event-emitter": "^2.0.0",
     "@mm-snap/workers": "^0.0.6",
     "eth-rpc-errors": "^4.0.2",
+    "immer": "^8.0.4",
     "json-rpc-engine": "^6.1.0",
     "json-rpc-middleware-stream": "^3.0.0",
     "nanoid": "^3.1.20",
