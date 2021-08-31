@@ -3,6 +3,7 @@ import type { Patch } from 'immer';
 import { IOcapLdCapability } from 'rpc-cap/dist/src/@types/ocap-ld';
 import {
   BaseControllerV2 as BaseController,
+  IsJsonable,
   RestrictedControllerMessenger,
 } from '@metamask/controllers';
 import { Json } from 'json-rpc-engine';
@@ -190,7 +191,19 @@ export class PluginController extends BaseController<
           anonymous: false,
         },
         plugins: {
-          persist: true,
+          persist: (plugins) => {
+            return Object.values(plugins)
+              .map((plugin) => {
+                return {
+                  ...plugin,
+                  isRunning: false,
+                };
+              })
+              .reduce((memo: Record<string, IsJsonable<Plugin>>, plugin) => {
+                memo[plugin.name] = plugin;
+                return memo;
+              }, {});
+          },
           anonymous: false,
         },
       },
