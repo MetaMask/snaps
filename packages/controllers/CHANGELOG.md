@@ -7,8 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.0.9]
-### Uncategorized
-- Added reset plugins running state in PluginController constructor to … ([#64](https://github.com/MetaMask/snaps-skunkworks/pull/64))
+### Added
+- reset plugins running state in PluginController `persist` ([#64](https://github.com/MetaMask/snaps-skunkworks/pull/64))
+
+### Changed
 - @metamask/controllers@15.0.0 ([#66](https://github.com/MetaMask/snaps-skunkworks/pull/66))
 
 ## [0.0.7]
