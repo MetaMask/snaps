@@ -25,7 +25,6 @@ import type {
   PermissionsSubjectMetadata,
 } from './PermissionController';
 import type { ApprovalController } from './temp/ApprovalController';
-import { MethodNames } from './enums';
 
 export type PermissionsRequestMetadata = PermissionsSubjectMetadata & {
   id: string;
@@ -60,7 +59,7 @@ type PermissionEnforcerArgs = {
   hasApprovalRequest: ApprovalController['has'];
 };
 
-class PermissionEnforcer {
+export class PermissionEnforcer {
   private caveatSpecifications: CaveatSpecifications;
 
   private isRestrictedMethod: IsRestrictedMethod;
@@ -371,46 +370,6 @@ class PermissionEnforcer {
 
     return createAsyncMiddleware(permissionsMiddleware);
   }
-}
-
-export type { PermissionEnforcer };
-
-export function getPermissionEnforcer(
-  permissionController: PermissionController,
-  addAndShowApprovalRequest: ApprovalController['addAndShowApprovalRequest'],
-  acceptPermissionsRequest: ApprovalController['accept'],
-  rejectPermissionsRequest: ApprovalController['reject'],
-  hasApprovalRequest: ApprovalController['has'],
-): PermissionEnforcer {
-  return new PermissionEnforcer({
-    caveatSpecifications: permissionController.caveatSpecifications,
-    isRestrictedMethod: (method: string) => {
-      return Boolean(permissionController.getTargetKey(method));
-    },
-    isSafeMethod: (method: string) => {
-      return permissionController.safeMethods.has(method);
-    },
-    getPermission:
-      permissionController.getPermission.bind(permissionController),
-    getRestrictedMethodImplementation:
-      permissionController.getRestrictedMethodImplementation.bind(
-        permissionController,
-      ),
-    grantPermissions:
-      permissionController.grantPermissions.bind(permissionController),
-    requestUserApproval: async (permissionsRequest: PermissionsRequest) => {
-      const { origin, id } = permissionsRequest.metadata;
-      return (await addAndShowApprovalRequest({
-        id,
-        origin,
-        requestData: permissionsRequest,
-        type: MethodNames.requestPermissions,
-      })) as PermissionsRequest;
-    },
-    acceptPermissionsRequest,
-    rejectPermissionsRequest,
-    hasApprovalRequest,
-  });
 }
 
 function resultIsError(resultOrError: Json | Error): resultOrError is Error {

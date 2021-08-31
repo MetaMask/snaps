@@ -1,6 +1,10 @@
 import {
   BaseControllerV2 as BaseController,
   RestrictedControllerMessenger,
+  AddApprovalRequest,
+  AcceptRequest as AcceptApprovalRequest,
+  RejectRequest as RejectApprovalRequest,
+  HasApprovalRequest,
 } from '@metamask/controllers';
 import type { Patch } from 'immer';
 import deepFreeze from 'deep-freeze-strict';
@@ -32,6 +36,8 @@ import {
   CaveatAlreadyExistsError,
   InvalidCaveatError,
 } from './errors';
+import { PermissionEnforcer, PermissionsRequest } from './PermissionEnforcer';
+import { MethodNames } from './enums';
 
 export type PermissionsSubjectMetadata = {
   origin: OriginString;
@@ -91,11 +97,17 @@ export type PermissionsStateChange = {
 
 export type PermissionControllerEvents = PermissionsStateChange;
 
+type AllowedActions =
+  | AddApprovalRequest
+  | HasApprovalRequest
+  | AcceptApprovalRequest
+  | RejectApprovalRequest;
+
 export type PermissionControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
-  PermissionControllerActions,
+  PermissionControllerActions | AllowedActions,
   PermissionControllerEvents,
-  never,
+  AllowedActions['type'],
   never
 >;
 
@@ -119,6 +131,18 @@ export class PermissionController extends BaseController<
   PermissionControllerState,
   PermissionControllerMessenger
 > {
+  private readonly _caveatSpecifications: Readonly<CaveatSpecifications>;
+
+  public get caveatSpecifications(): Readonly<CaveatSpecifications> {
+    return this._caveatSpecifications;
+  }
+
+  private readonly _enforcer: Readonly<PermissionEnforcer>;
+
+  public get enforcer(): Readonly<PermissionEnforcer> {
+    return this._enforcer;
+  }
+
   private readonly _permissionSpecifications: Readonly<PermissionSpecifications>;
 
   public get permissionSpecifications(): Readonly<PermissionSpecifications> {
@@ -129,12 +153,6 @@ export class PermissionController extends BaseController<
 
   public get safeMethods(): ReadonlySet<string> {
     return this._safeMethods;
-  }
-
-  private readonly _caveatSpecifications: Readonly<CaveatSpecifications>;
-
-  public get caveatSpecifications(): Readonly<CaveatSpecifications> {
-    return this._caveatSpecifications;
   }
 
   constructor({
@@ -158,6 +176,7 @@ export class PermissionController extends BaseController<
     this._safeMethods = new Set(safeMethods);
 
     this.registerMessageHandlers();
+    this._enforcer = this.constructEnforcer();
   }
 
   /**
@@ -593,5 +612,53 @@ export class PermissionController extends BaseController<
 
     specification.validator?.(origin, target, caveat);
     return caveat;
+  }
+
+  private constructEnforcer(): PermissionEnforcer {
+    return new PermissionEnforcer({
+      caveatSpecifications: this.caveatSpecifications,
+      getPermission: this.getPermission.bind(this),
+      getRestrictedMethodImplementation:
+        this.getRestrictedMethodImplementation.bind(this),
+      grantPermissions: this.grantPermissions.bind(this),
+      isRestrictedMethod: (method: string) => {
+        return Boolean(this.getTargetKey(method));
+      },
+      isSafeMethod: (method: string) => {
+        return this.safeMethods.has(method);
+      },
+      requestUserApproval: async (permissionsRequest: PermissionsRequest) => {
+        const { origin, id } = permissionsRequest.metadata;
+        return (await this.messagingSystem.call(
+          'ApprovalController:addRequest',
+          {
+            id,
+            origin,
+            requestData: permissionsRequest,
+            type: MethodNames.requestPermissions,
+          },
+          true,
+        )) as PermissionsRequest;
+      },
+      acceptPermissionsRequest: (id: string, value?: unknown) =>
+        this.messagingSystem.call(
+          'ApprovalController:acceptRequest',
+          id,
+          value,
+        ),
+      rejectPermissionsRequest: (id: string, error: Error) =>
+        this.messagingSystem.call(
+          'ApprovalController:rejectRequest',
+          id,
+          error,
+        ),
+      hasApprovalRequest: (opts: {
+        id?: string;
+        origin?: string;
+        type?: string;
+      }) =>
+        // Typecast: It can't handle the overloads
+        this.messagingSystem.call('ApprovalController:hasRequest', opts as any),
+    });
   }
 }
