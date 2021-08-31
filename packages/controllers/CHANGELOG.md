@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.9]
+### Added
+- `PluginController`: Always persist plugin `isRunning` state as `false` ([#64](https://github.com/MetaMask/snaps-skunkworks/pull/64))
+  - Plugins are not automatically running on boot, and we should never persist this state as `true`.
+
+### Changed
+- **(BREAKING)** `@metamask/controllers@15.0.0` ([#66](https://github.com/MetaMask/snaps-skunkworks/pull/66))
+  - This may cause incompatibilities with other versions of the `@metamask/controllers` package.
+
 ## [0.0.7]
 ### Fixed
 - Store plugin states in the correct place ([#48](https://github.com/MetaMask/snaps-skunkworks/pull/48))
@@ -30,7 +39,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.0.7...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.0.9...HEAD
+[0.0.9]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.0.7...v0.0.9
 [0.0.7]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.0.6...v0.0.7
 [0.0.6]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.0.5...v0.0.6
 [0.0.5]: https://github.com/MetaMask/snaps-skunkworks/releases/tag/v0.0.5
