@@ -12,7 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Plugins are not automatically running on boot, and we should never persist this state as `true`.
 
 ### Changed
-- @metamask/controllers@15.0.0 ([#66](https://github.com/MetaMask/snaps-skunkworks/pull/66))
+- **(BREAKING)** `@metamask/controllers@15.0.0` ([#66](https://github.com/MetaMask/snaps-skunkworks/pull/66))
+  - This may cause incompatibilities with other versions of the `@metamask/controllers` package.
 
 ## [0.0.7]
 ### Fixed
