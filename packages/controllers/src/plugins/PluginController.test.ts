@@ -1,8 +1,9 @@
 import fs from 'fs';
 import { ControllerMessenger } from '@metamask/controllers/dist/ControllerMessenger';
+import { getPersistentState } from '@metamask/controllers';
 import { WebWorkerExecutionEnvironmentService } from '../services/WebWorkerExecutionEnvironmentService';
 import { ExecutionEnvironmentService } from '../services/ExecutionEnvironmentService';
-import { PluginController } from './PluginController';
+import { PluginController, PluginControllerState } from './PluginController';
 
 const workerCode = fs.readFileSync(
   require.resolve('@mm-snap/workers/dist/PluginWorker.js'),
@@ -291,7 +292,7 @@ describe('PluginController Controller', () => {
 
     const mockExecutePlugin = jest.fn();
 
-    const pluginController = new PluginController({
+    const firstPluginController = new PluginController({
       terminateAllPlugins: jest.fn(),
       terminatePlugin: jest.fn(),
       executePlugin: mockExecutePlugin,
@@ -319,7 +320,28 @@ describe('PluginController Controller', () => {
         },
       },
     });
-    await pluginController.runExistingPlugins();
-    expect(pluginController.state.plugins.foo).toBeDefined();
+    // persist the state somewhere
+    const persistedState = getPersistentState<PluginControllerState>(
+      firstPluginController.state,
+      firstPluginController.metadata,
+    );
+    // create a new controller
+    const secondPluginController = new PluginController({
+      terminateAllPlugins: jest.fn(),
+      terminatePlugin: jest.fn(),
+      executePlugin: mockExecutePlugin,
+      getRpcMessageHandler: jest.fn(),
+      removeAllPermissionsFor: jest.fn(),
+      getPermissions: jest.fn(),
+      hasPermission: jest.fn(),
+      requestPermissions: jest.fn(),
+      closeAllConnections: jest.fn(),
+      messenger: new ControllerMessenger<any, any>().getRestricted({
+        name: 'PluginController',
+      }),
+      state: persistedState as unknown as PluginControllerState,
+    });
+    await secondPluginController.runExistingPlugins();
+    expect(secondPluginController.state.plugins.foo).toBeDefined();
   });
 });
