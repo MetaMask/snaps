@@ -6,6 +6,7 @@ import {
   PermissionController,
   PermissionControllerActions,
   PermissionControllerEvents,
+  PermissionEnforcer,
   PermissionSpecifications,
   RestrictedMethodArgs,
 } from '.';
@@ -57,21 +58,54 @@ function getPermissionSpecifications(): PermissionSpecifications {
   };
 }
 
+function getPermissionController(): PermissionController {
+  return new PermissionController({
+    caveatSpecifications: getCaveatSpecifications(),
+    messenger: getRestrictedMessenger(),
+    permissionSpecifications: getPermissionSpecifications(),
+    safeMethods: ['wallet_safeMethod'],
+  });
+}
+
 describe('PermissionController', () => {
   describe('constructor', () => {
     it('initializes a new PermissionController', () => {
-      const controller = new PermissionController({
-        caveatSpecifications: getCaveatSpecifications(),
-        messenger: getRestrictedMessenger(),
-        permissionSpecifications: getPermissionSpecifications(),
-        safeMethods: ['wallet_safeMethod'],
-      });
-
+      const controller = getPermissionController();
       expect(controller.state).toStrictEqual({ subjects: {} });
+      expect(controller.enforcer instanceof PermissionEnforcer).toStrictEqual(
+        true,
+      );
     });
   });
 
-  describe('foo', () => {
-    it.todo('bar');
+  describe('grantPermissions', () => {
+    it('grants new permissions', () => {
+      const controller = getPermissionController();
+      const origin = 'metamask.io';
+
+      controller.grantPermissions({
+        subject: { origin },
+        approvedPermissions: {
+          wallet_getSecretArray: {},
+        },
+      });
+
+      expect(controller.state).toStrictEqual({
+        subjects: {
+          [origin]: {
+            origin,
+            permissions: {
+              wallet_getSecretArray: {
+                id: expect.any(String),
+                parentCapability: 'wallet_getSecretArray',
+                invoker: origin,
+                caveats: null,
+                date: expect.any(Number),
+              },
+            },
+          },
+        },
+      });
+    });
   });
 });

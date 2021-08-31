@@ -163,7 +163,7 @@ export function findCaveat(
 
 type RequestedPermission = {
   target?: MethodName;
-  caveats: Caveat<Json>[] | null;
+  caveats?: Caveat<Json>[];
 };
 
 export type RequestedPermissions = Record<MethodName, RequestedPermission>;

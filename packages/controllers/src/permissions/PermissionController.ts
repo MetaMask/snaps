@@ -543,7 +543,7 @@ export class PermissionController extends BaseController<
       const caveats = this.computeCaveats(
         origin,
         target,
-        approvedPermissions[target].caveats || undefined,
+        approvedPermissions[target].caveats,
       );
 
       const permissionOptions = { caveats, invoker: origin, target };
