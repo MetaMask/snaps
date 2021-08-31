@@ -1,4 +1,5 @@
 import { ethErrors, serializeError } from 'eth-rpc-errors';
+import type { Patch } from 'immer';
 import { IOcapLdCapability } from 'rpc-cap/dist/src/@types/ocap-ld';
 import {
   BaseControllerV2 as BaseController,
@@ -13,6 +14,8 @@ import {
   TerminatePlugin,
 } from '../services/ExecutionEnvironmentService';
 import { INLINE_PLUGINS } from './inlinePlugins';
+
+export const controllerName = 'PluginController';
 
 export const PLUGIN_PREFIX = 'wallet_plugin_';
 export const PLUGIN_PREFIX_REGEX = new RegExp(`^${PLUGIN_PREFIX}`, 'u');
@@ -68,8 +71,27 @@ export type PluginControllerState = {
   };
 };
 
+export type PluginStateChange = {
+  type: `${typeof controllerName}:stateChange`;
+  payload: [PluginControllerState, Patch[]];
+};
+
+// TODO: Create actions
+export type PluginControllerActions = never;
+
+export type PluginControllerEvents = PluginStateChange;
+
+// TODO: Use ControllerMessenger events
+type PluginControllerMessenger = RestrictedControllerMessenger<
+  typeof controllerName,
+  PluginControllerActions,
+  PluginControllerEvents,
+  never,
+  never
+>;
+
 interface PluginControllerArgs {
-  messenger: RestrictedControllerMessenger<string, any, any, string, string>;
+  messenger: PluginControllerMessenger;
   state?: PluginControllerState;
   removeAllPermissionsFor: RemoveAllPermissionsFunction;
   closeAllConnections: CloseAllConnectionsFunction;
@@ -120,7 +142,8 @@ const name = 'PluginController';
 
 export class PluginController extends BaseController<
   string,
-  PluginControllerState
+  PluginControllerState,
+  PluginControllerMessenger
 > {
   private _removeAllPermissionsFor: RemoveAllPermissionsFunction;
 
