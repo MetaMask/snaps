@@ -115,7 +115,7 @@ type PermissionControllerOptions = {
   messenger: PermissionControllerMessenger;
   caveatSpecifications: CaveatSpecifications;
   permissionSpecifications: PermissionSpecifications;
-  safeMethods: string[];
+  unrestrictedMethods: string[];
   state?: Partial<PermissionControllerState>;
 };
 
@@ -149,10 +149,10 @@ export class PermissionController extends BaseController<
     return this._permissionSpecifications;
   }
 
-  private readonly _safeMethods: ReadonlySet<string>;
+  private readonly _unrestrictedMethods: ReadonlySet<string>;
 
-  public get safeMethods(): ReadonlySet<string> {
-    return this._safeMethods;
+  public get unrestrictedMethods(): ReadonlySet<string> {
+    return this._unrestrictedMethods;
   }
 
   constructor({
@@ -160,7 +160,7 @@ export class PermissionController extends BaseController<
     state = {},
     caveatSpecifications,
     permissionSpecifications,
-    safeMethods,
+    unrestrictedMethods,
   }: PermissionControllerOptions) {
     super({
       name: controllerName,
@@ -173,7 +173,7 @@ export class PermissionController extends BaseController<
     this._permissionSpecifications = deepFreeze({
       ...permissionSpecifications,
     });
-    this._safeMethods = new Set(safeMethods);
+    this._unrestrictedMethods = new Set(unrestrictedMethods);
 
     this.registerMessageHandlers();
     this._enforcer = this.constructEnforcer();
@@ -624,8 +624,8 @@ export class PermissionController extends BaseController<
       isRestrictedMethod: (method: string) => {
         return Boolean(this.getTargetKey(method));
       },
-      isSafeMethod: (method: string) => {
-        return this.safeMethods.has(method);
+      isUnrestrictedMethod: (method: string) => {
+        return this.unrestrictedMethods.has(method);
       },
       requestUserApproval: async (permissionsRequest: PermissionsRequest) => {
         const { origin, id } = permissionsRequest.metadata;

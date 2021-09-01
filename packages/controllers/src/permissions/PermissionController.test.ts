@@ -39,6 +39,7 @@ function getCaveatSpecifications(): CaveatSpecifications {
         ) =>
         async (args: RestrictedMethodArgs<Json>) => {
           const result = await method(args);
+          // TODO: Throw error if this isn't an array
           return Array.isArray(result)
             ? result.filter(caveat.value.includes)
             : result;
@@ -63,7 +64,7 @@ function getPermissionController(): PermissionController {
     caveatSpecifications: getCaveatSpecifications(),
     messenger: getRestrictedMessenger(),
     permissionSpecifications: getPermissionSpecifications(),
-    safeMethods: ['wallet_safeMethod'],
+    unrestrictedMethods: ['wallet_unrestrictedMethod'],
   });
 }
 
@@ -72,6 +73,7 @@ describe('PermissionController', () => {
     it('initializes a new PermissionController', () => {
       const controller = getPermissionController();
       expect(controller.state).toStrictEqual({ subjects: {} });
+      controller.enforcer.executeRestrictedMethod('foo', 'foo');
       expect(controller.enforcer instanceof PermissionEnforcer).toStrictEqual(
         true,
       );

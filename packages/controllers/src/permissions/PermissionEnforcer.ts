@@ -42,7 +42,7 @@ export type PermissionsRequest = {
 };
 
 type IsRestrictedMethod = (method: string) => boolean;
-type IsSafeMethod = (method: string) => boolean;
+type IsUnrestrictedMethod = (method: string) => boolean;
 type RequestUserApproval = (
   permissionsRequest: PermissionsRequest,
 ) => Promise<PermissionsRequest>;
@@ -50,7 +50,7 @@ type RequestUserApproval = (
 type PermissionEnforcerArgs = {
   caveatSpecifications: CaveatSpecifications;
   isRestrictedMethod: IsRestrictedMethod;
-  isSafeMethod: IsSafeMethod;
+  isUnrestrictedMethod: IsUnrestrictedMethod;
   getPermission: PermissionController['getPermission'];
   getRestrictedMethodImplementation: PermissionController['getRestrictedMethodImplementation'];
   grantPermissions: PermissionController['grantPermissions'];
@@ -65,7 +65,7 @@ export class PermissionEnforcer {
 
   private isRestrictedMethod: IsRestrictedMethod;
 
-  private isSafeMethod: IsSafeMethod;
+  private isUnrestrictedMethod: IsUnrestrictedMethod;
 
   private getPermission: PermissionController['getPermission'];
 
@@ -84,7 +84,7 @@ export class PermissionEnforcer {
   constructor({
     caveatSpecifications,
     isRestrictedMethod,
-    isSafeMethod,
+    isUnrestrictedMethod,
     getPermission,
     getRestrictedMethodImplementation,
     grantPermissions,
@@ -95,7 +95,7 @@ export class PermissionEnforcer {
   }: PermissionEnforcerArgs) {
     this.caveatSpecifications = caveatSpecifications;
     this.isRestrictedMethod = isRestrictedMethod;
-    this.isSafeMethod = isSafeMethod;
+    this.isUnrestrictedMethod = isUnrestrictedMethod;
     this.getPermission = getPermission;
     this.grantPermissions = grantPermissions;
     this.requestUserApproval = requestUserApproval;
@@ -243,7 +243,7 @@ export class PermissionEnforcer {
   async executeRestrictedMethod(
     origin: string,
     method: string,
-    params: Json,
+    params?: Json,
   ): Promise<Json> {
     const id = nanoid();
     const req: JsonRpcRequest<Json> = { id, jsonrpc: '2.0', method };
@@ -325,7 +325,7 @@ export class PermissionEnforcer {
     )({ method, params, context: { origin } });
   }
 
-  getPermissionsMiddleware(
+  createPermissionMiddleware(
     subject: PermissionsSubjectMetadata,
   ): JsonRpcMiddleware<Json, Json> {
     const permissionsMiddleware = async (
@@ -336,7 +336,7 @@ export class PermissionEnforcer {
       const { method } = req;
 
       // skip registered safe/passthrough methods.
-      if (this.isSafeMethod(method)) {
+      if (this.isUnrestrictedMethod(method)) {
         return next();
       }
 
