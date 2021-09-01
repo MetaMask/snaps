@@ -5,9 +5,6 @@ module.exports = {
     '@typescript-eslint/consistent-type-definitions': 'off',
   },
 
-  // TODO:temp
-  ignorePatterns: ['**/temp/**'],
-
   overrides: [
     {
       files: ['**/*.d.ts'],

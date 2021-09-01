@@ -1,4 +1,4 @@
-import { nanoid } from 'nanoid';
+import type { ApprovalController } from '@metamask/controllers';
 import {
   AsyncJsonRpcEngineNextCallback,
   createAsyncMiddleware,
@@ -7,6 +7,8 @@ import {
   JsonRpcMiddleware,
   PendingJsonRpcResponse,
 } from 'json-rpc-engine';
+import { nanoid } from 'nanoid';
+
 import { CaveatSpecifications, decorateWithCaveats } from './Caveat';
 import {
   internalError,
@@ -24,7 +26,6 @@ import type {
   PermissionController,
   PermissionsSubjectMetadata,
 } from './PermissionController';
-import type { ApprovalController } from './temp/ApprovalController';
 
 export type PermissionsRequestMetadata = PermissionsSubjectMetadata & {
   id: string;
