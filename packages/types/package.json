@@ -22,9 +22,11 @@
     "build": "echo \"@mm-snap/types has no build command.\"",
     "build:prep": "echo \"@mm-snap/types has no build:prep command.\"",
     "test": "echo \"@mm-snap/types has no tests.\"",
-    "lint": "eslint . --ext ts,js",
+    "lint:eslint": "eslint . --cache --ext js,ts",
+    "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
+    "lint": "yarn lint:eslint && yarn lint:misc --check",
+    "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "yarn auto-changelog validate",
-    "lint:fix": "yarn lint --fix",
     "publish": "npm publish",
     "prepublishOnly": "yarn lint"
   },
