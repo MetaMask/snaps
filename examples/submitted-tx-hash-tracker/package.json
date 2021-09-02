@@ -1,0 +1,31 @@
+{
+  "name": "submitted-tx-hash-tracker",
+  "version": "1.0.0",
+  "description": "Keeps score of your metamask events",
+  "main": "index.js",
+  "dependencies": {
+    "eth-json-rpc-errors": "^1.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MetaMask/snaps-cli.git"
+  },
+  "web3Wallet": {
+    "bundle": {
+      "local": "dist/bundle.js",
+      "url": "http://localhost:8083/dist/bundle.js"
+    },
+    "initialPermissions": {
+      "metamask_getPluginState": {},
+      "metamask_getTxById": {},
+      "metamask_tx:status-update": {},
+      "metamask_updatePluginState": {}
+    }
+  }
+}
