@@ -17,7 +17,6 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "dev:gen-init-template": "node ./scripts/generateInitTemplate.js",
-    "dev:build-examples": "node ./scripts/buildExamples.js",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' '**/*.yml' --ignore-path .gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check",

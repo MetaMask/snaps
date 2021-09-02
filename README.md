@@ -11,14 +11,6 @@ If you're looking for the `snaps-cli` compatible with the pre-2021 `metamask-sna
 Use `node@^12.0.0`.
 We recommend [nvm](https://github.com/nvm-sh/nvm) for managing Node versions.
 
-To install and access the examples (recommended):
-
-1. `git clone git@github.com:MetaMask/snaps-cli.git`
-2. `cd snaps-cli`
-3. `yarn link`
-
-You can also simply install globally, although without access to the examples:
-
 - `yarn global add snaps-cli`
 
 ## Basic Usage
@@ -53,7 +45,7 @@ In addition, we use the following, required custom fields:
   - `initialPermissions` (`{ string: object }`; permissions to be requested on
     Snap installation)
     - See [this interface](https://github.com/MetaMask/rpc-cap#requestpermissions-irequestedpermissions)
-      and examples in this repo for details.
+    for details.
 
 If you exclude any required fields from `package.json`, your Snap may not
 work properly or install at all.

@@ -39,21 +39,6 @@ module.exports = {
     },
 
     {
-      files: ['examples/**/*.js'],
-      env: {
-        browser: true,
-      },
-      globals: {
-        wallet: true,
-      },
-      rules: {
-        'import/no-unresolved': 'off',
-        'no-alert': 'off',
-        'no-shadow': 'off',
-      },
-    },
-
-    {
       files: ['**/*.test.ts'],
       extends: ['@metamask/eslint-config-jest'],
       rules: {
