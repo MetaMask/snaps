@@ -45,7 +45,7 @@ In addition, we use the following, required custom fields:
   - `initialPermissions` (`{ string: object }`; permissions to be requested on
     Snap installation)
     - See [this interface](https://github.com/MetaMask/rpc-cap#requestpermissions-irequestedpermissions)
-    for details.
+      for details.
 
 If you exclude any required fields from `package.json`, your Snap may not
 work properly or install at all.
