@@ -349,6 +349,7 @@ describe('manifest', () => {
         jest
           .spyOn(fs.promises, 'readFile')
           .mockImplementationOnce(async () => mockJSON as any);
+
         jest.spyOn(fs.promises, 'writeFile').mockImplementationOnce(() => {
           throw new Error('error');
         });
@@ -386,6 +387,7 @@ describe('manifest', () => {
         jest
           .spyOn(fs.promises, 'readFile')
           .mockImplementationOnce(async () => mockJSON as any);
+
         jest
           .spyOn(fs.promises, 'writeFile')
           .mockImplementationOnce(() => doneJSON as any);

@@ -28,11 +28,11 @@ export async function watch(argv: YargsArgs): Promise<void> {
   }
   await validateFilePath(src);
   await validateDirPath(dist, true);
-  const root =
+  const rootDir =
     src.indexOf('/') === -1 ? '.' : src.substring(0, src.lastIndexOf('/') + 1);
   const outfilePath = getOutfilePath(dist, outfileName as string);
 
-  const watcher = chokidar.watch(root, {
+  const watcher = chokidar.watch(rootDir, {
     ignoreInitial: true,
     ignored: [
       '**/node_modules/**',
@@ -61,6 +61,6 @@ export async function watch(argv: YargsArgs): Promise<void> {
       logError(`Watcher error: ${err.message}`, err);
     });
 
-  watcher.add(`${root}`);
-  console.log(`Watching '${root}' for changes...`);
+  watcher.add(`${rootDir}`);
+  console.log(`Watching '${rootDir}' for changes...`);
 }

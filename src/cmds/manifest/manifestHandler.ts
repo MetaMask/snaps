@@ -72,6 +72,7 @@ export async function manifest(argv: YargsArgs): Promise<void> {
     if (bundle.local !== bundlePath) {
       bundle.local = bundlePath;
     }
+
     if (
       port &&
       (typeof bundle.url !== 'string' || bundle.url.startsWith(LOCALHOST_START))

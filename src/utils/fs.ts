@@ -21,6 +21,7 @@ export async function isDirectory(
       if (!createDir) {
         return false;
       }
+
       try {
         await fs.mkdir(pathString);
         return true;

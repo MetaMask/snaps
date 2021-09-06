@@ -24,15 +24,15 @@ export = {
  * @param argv.port - The server port
  */
 async function serve(argv: YargsArgs): Promise<void> {
-  const { port, root } = argv;
+  const { port, root: rootDir } = argv;
 
-  await validateDirPath(root as string, true);
+  await validateDirPath(rootDir as string, true);
 
   console.log(`\nStarting server...`);
 
   const server = http.createServer(async (req, res) => {
     await serveHandler(req, res, {
-      public: root as string,
+      public: rootDir as string,
       headers: [
         {
           source: '**/*',

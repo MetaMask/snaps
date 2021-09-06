@@ -57,6 +57,7 @@ export async function closeBundleStream({
         stripComments: argv.stripComments,
       }) as string,
     );
+
     if (bundleBuffer) {
       console.log(`Build success: '${src}' bundled as '${dest}'!`);
     }

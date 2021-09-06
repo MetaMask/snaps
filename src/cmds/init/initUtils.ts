@@ -1,6 +1,6 @@
 import { promises as fs, existsSync } from 'fs';
 // TypeScript won't accept the global unless we bring in the entire DOM
-// eslint-disable-next-line node/prefer-global/url
+// eslint-disable-next-line no-shadow, node/prefer-global/url
 import { URL } from 'url';
 import pathUtils from 'path';
 import initPackageJson from 'init-package-json';

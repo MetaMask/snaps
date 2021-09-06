@@ -33,6 +33,7 @@ export function prompt({
     if (defaultValue) {
       queryString += `(${defaultValue}) `;
     }
+
     _readlineInterface.question(queryString, (answer: string) => {
       if (!answer || !answer.trim()) {
         if (defaultValue !== undefined) {

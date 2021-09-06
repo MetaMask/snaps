@@ -28,6 +28,7 @@ describe('eval', () => {
       global.snaps = {
         verboseErrors: false,
       };
+
       jest
         .spyOn(workerEvalModule, 'workerEval')
         .mockImplementation(async () => null);
@@ -40,14 +41,17 @@ describe('eval', () => {
       global.snaps = {
         verboseErrors: false,
       };
+
       jest
         .spyOn(workerEvalModule, 'workerEval')
         .mockImplementation(async () => {
           throw new Error();
         });
+
       (process.exit as any).mockImplementationOnce(() => {
         throw new Error('process exited');
       });
+
       await expect(async () => {
         await snapEval(getMockArgv());
       }).rejects.toThrow('process exited');

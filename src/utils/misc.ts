@@ -25,9 +25,11 @@ export function setSnapGlobals(argv: Arguments) {
   } else {
     global.snaps.isWatching = false;
   }
+
   if (Object.prototype.hasOwnProperty.call(argv, 'verboseErrors')) {
     global.snaps.verboseErrors = Boolean(argv.verboseErrors);
   }
+
   if (Object.prototype.hasOwnProperty.call(argv, 'suppressWarnings')) {
     global.snaps.suppressWarnings = Boolean(argv.suppressWarnings);
   }

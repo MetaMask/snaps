@@ -42,6 +42,7 @@ describe('cli', () => {
     consoleLogSpy.mockImplementationOnce((message: string) => {
       expect(message).toMatch(HELP_TEXT_REGEX);
     });
+
     processExitSpy.mockImplementationOnce(() => {
       throw new Error('process exited');
     });
@@ -72,6 +73,7 @@ describe('cli', () => {
     beforeEach(() => {
       processExitSpy.mockImplementation();
     });
+
     Object.keys(commandMap).forEach((command) => {
       it(`calls ${command}`, async () => {
         const mockCommandHandler = jest.fn();

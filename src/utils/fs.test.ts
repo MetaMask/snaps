@@ -101,6 +101,7 @@ describe('file system checks', () => {
       await expect(isDirectory('wrong/path/', true)).rejects.toThrow(
         new Error('foo'),
       );
+
       expect(global.console.error).toHaveBeenCalledWith(
         "Directory 'wrong/path/' could not be created.",
       );

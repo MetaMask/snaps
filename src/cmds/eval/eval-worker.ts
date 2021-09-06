@@ -5,7 +5,6 @@ import crypto from 'crypto';
 // eslint-disable-next-line import/no-unassigned-import, @typescript-eslint/no-require-imports
 require('ses/lockdown');
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare let lockdown: any, Compartment: any;
 
 lockdown({

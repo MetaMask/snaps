@@ -13,6 +13,7 @@ describe('validate', () => {
       expect(getOutfilePath('../src', '///outDir////')).toStrictEqual(
         '../src/outDir/',
       );
+
       expect(getOutfilePath('../src', '/lol//outDir////')).toStrictEqual(
         '../src/lol/outDir/',
       );
@@ -78,6 +79,7 @@ describe('validate', () => {
       jest
         .spyOn(filesystem, 'isDirectory')
         .mockReturnValue(Promise.resolve(false));
+
       await expect(validateDirPath('/some/directory', true)).rejects.toThrow(
         "Invalid params: '/some/directory' is not a directory or could not be created.",
       );

@@ -47,6 +47,7 @@ describe('build', () => {
         outfilePath,
         mockArgv,
       );
+
       expect(evalMock).toHaveBeenCalledWith({
         ...mockArgv,
         bundle: outfilePath,

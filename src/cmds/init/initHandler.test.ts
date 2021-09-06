@@ -87,11 +87,13 @@ describe('initialize', () => {
         'package.json',
         `${JSON.stringify(getMockPackageAndWallet(), null, 2)}\n`,
       );
+
       expect(fsWriteMock).toHaveBeenNthCalledWith(
         2,
         getMockPackage().main,
         template.js,
       );
+
       expect(fsWriteMock).toHaveBeenNthCalledWith(
         3,
         'index.html',
@@ -103,6 +105,7 @@ describe('initialize', () => {
               ((mockArgv as unknown) as { port: number }).port.toString(),
           ),
       );
+
       expect(fsWriteMock).toHaveBeenNthCalledWith(
         4,
         CONFIG_PATH,
@@ -124,6 +127,7 @@ describe('initialize', () => {
       jest.spyOn(process, 'exit').mockImplementation(() => {
         throw new Error('process exited');
       });
+
       jest
         .spyOn(initUtils, 'asyncPackageInit')
         .mockImplementation(() => getMockPackage() as any);
@@ -151,6 +155,7 @@ describe('initialize', () => {
       jest.spyOn(process, 'exit').mockImplementation(() => {
         throw new Error('process exited');
       });
+
       jest
         .spyOn(initUtils, 'asyncPackageInit')
         .mockImplementation(() => getMockPackage() as any);
@@ -180,6 +185,7 @@ describe('initialize', () => {
       jest.spyOn(process, 'exit').mockImplementation(() => {
         throw new Error('process exited');
       });
+
       jest
         .spyOn(initUtils, 'asyncPackageInit')
         .mockImplementation(() => getMockPackage() as any);

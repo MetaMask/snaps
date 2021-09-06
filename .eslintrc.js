@@ -21,15 +21,6 @@ module.exports = {
     },
 
     {
-      files: ['src/cmds/eval/eval-worker.ts'],
-      globals: {
-        lockdown: true,
-        Compartment: true,
-        BigInt: true,
-      },
-    },
-
-    {
       files: ['src/main.ts'],
       rules: {
         'node/shebang': 'off',
@@ -56,8 +47,9 @@ module.exports = {
         wallet: true,
       },
       rules: {
-        'no-alert': 'off',
         'import/no-unresolved': 'off',
+        'no-alert': 'off',
+        'no-shadow': 'off',
       },
     },
 

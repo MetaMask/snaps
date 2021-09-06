@@ -36,6 +36,7 @@ describe('serve', () => {
         mockServer = getMockServer();
         return mockServer as any;
       });
+
       jest
         .spyOn(fsUtils, 'validateDirPath')
         .mockImplementation(async () => true);
