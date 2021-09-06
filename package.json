@@ -2,7 +2,6 @@
   "name": "snaps-cli",
   "version": "0.4.2",
   "description": "A CLI for developing MetaMask Snaps.",
-  "main": "./dist/cmds/index.js",
   "bin": {
     "mm-snap": "./dist/main.js"
   },

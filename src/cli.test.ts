@@ -1,8 +1,8 @@
 import yargs from 'yargs';
 import { cli } from './cli';
-import { commandModules } from './cmds';
+import commands from './cmds';
 
-const commandMap = ((commandModules as unknown) as yargs.CommandModule[]).reduce(
+const commandMap = ((commands as unknown) as yargs.CommandModule[]).reduce(
   (map, commandModule) => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     map[commandModule.command![0]] = commandModule;
@@ -47,7 +47,7 @@ describe('cli', () => {
       throw new Error('process exited');
     });
 
-    expect(() => cli(getMockArgv('--help'), commandModules)).toThrow(
+    expect(() => cli(getMockArgv('--help'), commands)).toThrow(
       'process exited',
     );
   });
@@ -63,7 +63,7 @@ describe('cli', () => {
         resolve();
       });
 
-      cli(getMockArgv('--help'), commandModules);
+      cli(getMockArgv('--help'), commands);
     });
   });
 
