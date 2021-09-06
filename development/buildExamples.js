@@ -1,18 +1,8 @@
-import { promises as fs } from 'fs';
-import { resolve } from 'path';
-import execa from 'execa';
+const { promises: fs } = require('fs');
+const { resolve } = require('path');
+const execa = require('execa');
 
-import { build } from '../src/cmds/build/buildHandler';
-import { SnapsCliGlobals } from '../src/types/package';
-
-// mock the snaps global
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace NodeJS {
-    // eslint-disable-next-line @typescript-eslint/no-empty-interface
-    interface Global extends SnapsCliGlobals {}
-  }
-}
+const { build } = require('../dist/cmds/build/buildHandler');
 
 global.snaps = {
   verboseErrors: false,

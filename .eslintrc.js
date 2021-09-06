@@ -21,7 +21,7 @@ module.exports = {
     },
 
     {
-      files: ['src/cmds/eval/evalWorker.ts'],
+      files: ['src/cmds/eval/eval-worker.ts'],
       globals: {
         lockdown: true,
         Compartment: true,

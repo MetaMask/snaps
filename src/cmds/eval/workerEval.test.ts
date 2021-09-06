@@ -33,7 +33,7 @@ jest.mock('worker_threads', () => ({
 
 describe('workerEval', () => {
   const mockBundlePath = './snap.js';
-  const workerPathRegex = /evalWorker\.js$/u;
+  const workerPathRegex = /eval-worker\.js$/u;
 
   beforeEach(() => {
     jest.spyOn(pathUtils, 'join');
