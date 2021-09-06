@@ -8,9 +8,4 @@ global.snaps = {
   isWatching: false,
 };
 
-main();
-
-// application
-function main(): void {
-  cli(process.argv, commands);
-}
+cli(process.argv, commands);

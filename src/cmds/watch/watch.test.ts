@@ -3,7 +3,7 @@ import chokidar from 'chokidar';
 import * as build from '../build/bundle';
 import * as fsUtils from '../../utils/validate-fs';
 import * as miscUtils from '../../utils/misc';
-import * as watch from '.';
+import watch from '.';
 
 interface MockWatcher extends EventEmitter {
   add: () => void;
@@ -30,7 +30,7 @@ describe('watch', () => {
         src: mockSrc,
         dist: mockDist,
         outfileName: mockOutfileName,
-      };
+      } as any;
     };
 
     beforeEach(() => {
@@ -61,12 +61,39 @@ describe('watch', () => {
         .spyOn(fsUtils, 'getOutfilePath')
         .mockImplementation(() => 'dist/bundle.js');
 
-      // TODO: Fix index.ts exports
-      await (watch as any).handler(getMockArgv());
+      await watch.handler(getMockArgv());
       expect(validateDirPathMock).toHaveBeenCalledWith(mockDist, true);
       expect(validateFilePathMock).toHaveBeenCalledWith(mockSrc);
       expect(validateOutfileNameMock).toHaveBeenCalledWith(mockOutfileName);
       expect(chokidarMock.mock.calls[0][0]).toBe('.');
+    });
+
+    it('successfully processes arguments from yargs: nested src path', async () => {
+      const chokidarMock = jest
+        .spyOn(chokidar, 'watch')
+        .mockImplementation(() => {
+          watcherEmitter = getMockWatcher();
+          return watcherEmitter as any;
+        });
+      jest.spyOn(console, 'log').mockImplementation();
+      const validateDirPathMock = jest
+        .spyOn(fsUtils, 'validateDirPath')
+        .mockImplementation(async () => true);
+      const validateFilePathMock = jest
+        .spyOn(fsUtils, 'validateFilePath')
+        .mockImplementation(async () => true);
+      const validateOutfileNameMock = jest
+        .spyOn(fsUtils, 'validateOutfileName')
+        .mockImplementation(() => true);
+      jest
+        .spyOn(fsUtils, 'getOutfilePath')
+        .mockImplementation(() => 'dist/bundle.js');
+
+      await watch.handler({ ...getMockArgv(), src: 'foo/index.js' });
+      expect(validateDirPathMock).toHaveBeenCalledWith(mockDist, true);
+      expect(validateFilePathMock).toHaveBeenCalledWith('foo/index.js');
+      expect(validateOutfileNameMock).toHaveBeenCalledWith(mockOutfileName);
+      expect(chokidarMock.mock.calls[0][0]).toBe('foo/');
     });
 
     it('watcher handles "changed" event correctly', async () => {
@@ -76,8 +103,7 @@ describe('watch', () => {
         .spyOn(fsUtils, 'validateFilePath')
         .mockImplementation(async () => true);
 
-      // TODO: Fix index.ts exports
-      await (watch as any).handler(getMockArgv());
+      await watch.handler(getMockArgv());
       const finishPromise = new Promise<void>((resolve, _) => {
         watcherEmitter.on('change', () => {
           expect(bundleMock).toHaveBeenCalledWith(
@@ -101,8 +127,7 @@ describe('watch', () => {
         .spyOn(fsUtils, 'validateFilePath')
         .mockImplementation(async () => true);
 
-      // TODO: Fix index.ts exports
-      await (watch as any).handler(getMockArgv());
+      await watch.handler(getMockArgv());
       const finishPromise = new Promise<void>((resolve, _) => {
         watcherEmitter.on('ready', () => {
           expect(bundleMock).toHaveBeenCalledWith(
@@ -126,8 +151,7 @@ describe('watch', () => {
         .spyOn(fsUtils, 'validateFilePath')
         .mockImplementation(async () => true);
 
-      // TODO: Fix index.ts exports
-      await (watch as any).handler(getMockArgv());
+      await watch.handler(getMockArgv());
       const finishPromise = new Promise<void>((resolve, _) => {
         watcherEmitter.on('add', () => {
           expect(bundleMock).toHaveBeenCalledWith(
@@ -151,8 +175,7 @@ describe('watch', () => {
         .spyOn(fsUtils, 'validateFilePath')
         .mockImplementation(async () => true);
 
-      // TODO: Fix index.ts exports
-      await (watch as any).handler(getMockArgv());
+      await watch.handler(getMockArgv());
       const finishPromise = new Promise<void>((resolve, _) => {
         watcherEmitter.on('unlink', () => {
           expect(bundleMock).not.toHaveBeenCalled();
@@ -177,8 +200,7 @@ describe('watch', () => {
         .spyOn(fsUtils, 'validateFilePath')
         .mockImplementation(async () => true);
 
-      // TODO: Fix index.ts exports
-      await (watch as any).handler(getMockArgv());
+      await watch.handler(getMockArgv());
       const finishPromise = new Promise<void>((resolve, _) => {
         watcherEmitter.on('error', () => {
           expect(bundleMock).not.toHaveBeenCalled();

@@ -43,6 +43,13 @@ const builders: Builders = {
     type: 'number',
     demandOption: true,
     default: 8081,
+    coerce: (arg: unknown) => {
+      const port = Number.parseInt(String(arg), 10);
+      if (Number.isNaN(port)) {
+        throw new Error(`Invalid port: ${arg}`);
+      }
+      return port;
+    },
   },
 
   sourceMaps: {

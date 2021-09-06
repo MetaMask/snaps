@@ -6,13 +6,14 @@ import { YargsArgs } from '../../types/yargs';
 import { validateDirPath } from '../../utils';
 import { logServerError, logServerListening, logRequest } from './serveUtils';
 
-module.exports.command = ['serve', 's'];
-module.exports.desc = 'Locally serve Snap file(s) for testing';
-module.exports.builder = (yarg: yargs.Argv) => {
-  /* istanbul ignore next */
-  yarg.option('root', builders.root).option('port', builders.port);
+export = {
+  command: ['serve', 's'],
+  desc: 'Locally serve Snap file(s) for testing',
+  builder: (yarg: yargs.Argv) => {
+    yarg.option('root', builders.root).option('port', builders.port);
+  },
+  handler: (argv: YargsArgs) => serve(argv),
 };
-module.exports.handler = (argv: YargsArgs) => serve(argv);
 
 /**
  * Starts a local, static HTTP server on the given port with the given root

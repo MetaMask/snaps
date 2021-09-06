@@ -1,20 +1,21 @@
 import yargs from 'yargs';
 import builders from '../../builders';
 import { YargsArgs } from '../../types/yargs';
-import { build } from '../build';
+import { build } from '../build/buildHandler';
 import { initHandler } from './initHandler';
 
-module.exports.command = ['init', 'i'];
-module.exports.desc = 'Initialize Snap package';
-module.exports.builder = (yarg: yargs.Argv) => {
-  /* istanbul ignore next */
-  yarg
-    .option('src', builders.src)
-    .option('dist', builders.dist)
-    .option('outfileName', builders.outfileName)
-    .option('port', builders.port);
+export = {
+  command: ['init', 'i'],
+  desc: 'Initialize Snap package',
+  builder: (yarg: yargs.Argv) => {
+    yarg
+      .option('src', builders.src)
+      .option('dist', builders.dist)
+      .option('outfileName', builders.outfileName)
+      .option('port', builders.port);
+  },
+  handler: (argv: YargsArgs) => init(argv),
 };
-module.exports.handler = (argv: YargsArgs) => init(argv);
 
 async function init(argv: YargsArgs): Promise<void> {
   console.log();

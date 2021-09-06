@@ -3,22 +3,23 @@ import http from 'http';
 import serveHandler from 'serve-handler';
 import * as fsUtils from '../../utils/validate-fs';
 import * as serveUtils from './serveUtils';
-import * as serve from '.';
+import serve from '.';
 
-const mockArgv = {
-  root: '.',
-  port: 8081,
-};
+const getMockArgv = () =>
+  ({
+    root: '.',
+    port: 8081,
+  } as any);
 
 jest.mock('serve-handler', () => jest.fn());
 
 interface MockServer extends EventEmitter {
-  listen: () => void;
+  listen: ({ port }: { port: string }, callback: () => void) => void;
 }
 
-function getMockServer(listen: any): MockServer {
+function getMockServer(): MockServer {
   const server: MockServer = new EventEmitter() as any;
-  server.listen = listen;
+  server.listen = (_port, callback) => callback();
   jest.spyOn(server, 'on');
   jest.spyOn(server, 'listen');
   return server;
@@ -30,11 +31,9 @@ describe('serve', () => {
 
     beforeEach(() => {
       jest.spyOn(process, 'exit').mockImplementation(() => undefined as never);
-      const logServerListeningMock = jest
-        .spyOn(serveUtils, 'logServerListening')
-        .mockImplementation();
+      jest.spyOn(serveUtils, 'logServerListening').mockImplementation();
       jest.spyOn(http, 'createServer').mockImplementation(() => {
-        mockServer = getMockServer(logServerListeningMock);
+        mockServer = getMockServer();
         return mockServer as any;
       });
       jest
@@ -45,8 +44,7 @@ describe('serve', () => {
     it('server handles "close" event correctly', async () => {
       jest.spyOn(console, 'log').mockImplementation();
 
-      // TODO: Fix index.ts exports
-      await (serve as any).handler(mockArgv);
+      await serve.handler(getMockArgv());
       const finishPromise = new Promise<void>((resolve, _) => {
         mockServer.on('close', () => {
           expect(global.console.log).toHaveBeenCalledTimes(2);
@@ -65,8 +63,7 @@ describe('serve', () => {
         .mockImplementation();
       jest.spyOn(process, 'exit').mockImplementation(() => undefined as never);
 
-      // TODO: Fix index.ts exports
-      await (serve as any).handler(mockArgv);
+      await serve.handler(getMockArgv());
       const finishPromise = new Promise<void>((resolve, _) => {
         mockServer.on('error', () => {
           expect(global.console.log).toHaveBeenCalledTimes(1);
@@ -82,9 +79,10 @@ describe('serve', () => {
     it('server handles "request" event correctly', async () => {
       let requestCallback: (...args: any[]) => any;
 
+      jest.spyOn(serveUtils, 'logServerListening').mockImplementation();
       jest.spyOn(http, 'createServer').mockImplementationOnce((cb: any) => {
         requestCallback = cb;
-        mockServer = getMockServer(() => undefined);
+        mockServer = getMockServer();
         return mockServer as any;
       });
 
@@ -93,8 +91,7 @@ describe('serve', () => {
         .spyOn(serveUtils, 'logRequest')
         .mockImplementation();
 
-      // TODO: Fix index.ts exports
-      await (serve as any).handler(mockArgv);
+      await serve.handler(getMockArgv());
       const finishPromise = new Promise<void>((resolve, _) => {
         mockServer.on('request', (...args) => {
           expect(global.console.log).toHaveBeenCalledTimes(1);

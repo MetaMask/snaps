@@ -2,7 +2,7 @@ import { promises as fs } from 'fs';
 import { resolve } from 'path';
 import execa from 'execa';
 
-import { build } from '../src/cmds/build';
+import { build } from '../src/cmds/build/buildHandler';
 import { SnapsCliGlobals } from '../src/types/package';
 
 // mock the snaps global

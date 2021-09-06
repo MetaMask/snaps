@@ -45,7 +45,7 @@ describe('initialize', () => {
     };
 
     const getMockArgv = () => {
-      return { foo: 'bar' };
+      return { foo: 'bar' } as any;
     };
 
     const getExpectedReturnValue = () => {
@@ -78,7 +78,7 @@ describe('initialize', () => {
         .mockImplementation();
       const mockArgv = getMockArgv();
 
-      expect(await initHandler({ ...(mockArgv as any) })).toStrictEqual(
+      expect(await initHandler({ ...mockArgv })).toStrictEqual(
         getExpectedReturnValue(),
       );
       expect(global.console.log).toHaveBeenCalledTimes(6);

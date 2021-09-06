@@ -1,6 +1,7 @@
 import fs from 'fs';
 import * as utils from '../../utils/fs';
-import { manifest } from './manifest';
+import * as manifestHandlerModule from './manifestHandler';
+import manifestModule from '.';
 
 jest.mock('fs', () => ({
   promises: {
@@ -9,7 +10,9 @@ jest.mock('fs', () => ({
   },
 }));
 
-const mockArgv = { dist: 'dist' };
+const getMockArgv = () => {
+  return { dist: 'dist' } as any;
+};
 
 const getDefaultWeb3Wallet = () => {
   return {
@@ -46,6 +49,35 @@ global.snaps = {
 };
 
 describe('manifest', () => {
+  it('manifest handler: success', async () => {
+    const foobar = { foo: 'bar' };
+    const manifestHandlerMock = jest
+      .spyOn(manifestHandlerModule, 'manifest')
+      .mockImplementation();
+
+    await (manifestModule as any).handler({ ...(foobar as any) });
+    expect(manifestHandlerMock).toHaveBeenCalledWith(foobar);
+  });
+
+  it('manifest handler: failure', async () => {
+    const foobar = { foo: 'bar' };
+    const manifestHandlerMock = jest
+      .spyOn(manifestHandlerModule, 'manifest')
+      .mockImplementation(() => {
+        throw new Error('manifest failure');
+      });
+
+    jest.spyOn(console, 'error').mockImplementation();
+    jest.spyOn(process, 'exit').mockImplementation();
+
+    await (manifestModule as any).handler({ ...(foobar as any) });
+    expect(manifestHandlerMock).toHaveBeenCalledWith(foobar);
+    expect(console.error).toHaveBeenCalledTimes(1);
+    expect(process.exit).toHaveBeenCalledWith(1);
+  });
+
+  const { manifest } = manifestHandlerModule;
+
   describe('manifest function validates a snap package.json file', () => {
     beforeEach(() => {
       jest.spyOn(console, 'error').mockImplementation();
@@ -67,7 +99,7 @@ describe('manifest', () => {
       });
       const fsMock = jest.spyOn(fs.promises, 'readFile').mockImplementation();
 
-      await expect(manifest(mockArgv as any)).rejects.toThrow(
+      await expect(manifest(getMockArgv())).rejects.toThrow(
         'Manifest error: Could not find package.json. Please ensure that you are running the command in the project root directory.',
       );
       expect(fsMock).toHaveBeenCalledTimes(1);
@@ -81,7 +113,7 @@ describe('manifest', () => {
         .spyOn(fs.promises, 'readFile')
         .mockImplementationOnce(async () => getPackageJson() as any);
 
-      await expect(manifest(mockArgv as any)).rejects.toThrow(
+      await expect(manifest(getMockArgv())).rejects.toThrow(
         'Could not parse package.json',
       );
       expect(fsMock).toHaveBeenCalledTimes(1);
@@ -92,7 +124,7 @@ describe('manifest', () => {
       const fsMock = jest
         .spyOn(fs.promises, 'readFile')
         .mockImplementationOnce(async () => getPackageJson() as any);
-      await expect(manifest(mockArgv as any)).rejects.toThrow(
+      await expect(manifest(getMockArgv())).rejects.toThrow(
         'Invalid parsed package.json: false',
       );
       expect(fsMock).toHaveBeenCalledTimes(1);
@@ -107,7 +139,7 @@ describe('manifest', () => {
         .spyOn(fs.promises, 'readFile')
         .mockImplementationOnce(async () => badJSON as any);
 
-      await manifest(mockArgv as any);
+      await manifest(getMockArgv());
       expect(global.console.warn).toHaveBeenCalledTimes(2);
       expect(global.console.log).toHaveBeenCalledTimes(1);
     });
@@ -126,7 +158,7 @@ describe('manifest', () => {
           }) as any,
       );
 
-      await expect(manifest(mockArgv as any)).rejects.toThrow(
+      await expect(manifest(getMockArgv())).rejects.toThrow(
         'Manifest Error: package.json validation failed, please see above errors.',
       );
       expect(global.console.error).toHaveBeenCalledTimes(2);
@@ -145,7 +177,7 @@ describe('manifest', () => {
           }) as any,
       );
 
-      await expect(manifest(mockArgv as any)).rejects.toThrow(
+      await expect(manifest(getMockArgv())).rejects.toThrow(
         'Manifest Error: package.json validation failed, please see above errors.',
       );
       expect(global.console.error).toHaveBeenCalledTimes(1);
@@ -164,7 +196,7 @@ describe('manifest', () => {
           }) as any,
       );
 
-      await expect(manifest(mockArgv as any)).rejects.toThrow(
+      await expect(manifest(getMockArgv())).rejects.toThrow(
         'Manifest Error: package.json validation failed, please see above errors.',
       );
       expect(global.console.error).toHaveBeenCalledTimes(1);
@@ -184,7 +216,7 @@ describe('manifest', () => {
           }) as any,
       );
 
-      await expect(manifest(mockArgv as any)).rejects.toThrow(
+      await expect(manifest(getMockArgv())).rejects.toThrow(
         'Manifest Error: package.json validation failed, please see above errors.',
       );
       expect(global.console.error).toHaveBeenCalledTimes(1);
@@ -204,7 +236,7 @@ describe('manifest', () => {
           }) as any,
       );
 
-      await expect(manifest(mockArgv as any)).rejects.toThrow(
+      await expect(manifest(getMockArgv())).rejects.toThrow(
         'Manifest Error: package.json validation failed, please see above errors.',
       );
       expect(global.console.error).toHaveBeenCalledTimes(1);
@@ -224,7 +256,7 @@ describe('manifest', () => {
           }) as any,
       );
 
-      await expect(manifest(mockArgv as any)).rejects.toThrow(
+      await expect(manifest(getMockArgv())).rejects.toThrow(
         'Manifest Error: package.json validation failed, please see above errors.',
       );
       expect(global.console.error).toHaveBeenCalledTimes(2);
@@ -248,7 +280,7 @@ describe('manifest', () => {
           }) as any,
       );
 
-      await expect(manifest(mockArgv as any)).rejects.toThrow(
+      await expect(manifest(getMockArgv())).rejects.toThrow(
         'Manifest Error: package.json validation failed, please see above errors.',
       );
       expect(global.console.error).toHaveBeenCalledTimes(2);
@@ -273,7 +305,7 @@ describe('manifest', () => {
             }) as any,
         );
 
-        await expect(manifest(mockArgv as any)).rejects.toThrow(
+        await expect(manifest(getMockArgv())).rejects.toThrow(
           'Manifest Error: package.json validation failed, please see above errors.',
         );
         expect(global.console.error).toHaveBeenCalledTimes(2);
@@ -289,7 +321,7 @@ describe('manifest', () => {
           .spyOn(fs.promises, 'readFile')
           .mockImplementationOnce(async () => badJSON as any);
 
-        await manifest(mockArgv as any);
+        await manifest(getMockArgv());
         expect(global.console.warn).not.toHaveBeenCalled();
       });
     });
