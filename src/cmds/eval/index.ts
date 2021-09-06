@@ -4,7 +4,7 @@ import { YargsArgs } from '../../types/yargs';
 import { snapEval } from './evalHandler';
 
 export = {
-  command: ['eval', 'e'],
+  command: ['eval', 'evaluate', 'e'],
   desc: 'Attempt to evaluate Snap bundle in SES',
   builder: (yarg: yargs.Argv) => {
     yarg.option('bundle', builders.bundle);

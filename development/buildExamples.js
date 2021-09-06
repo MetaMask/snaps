@@ -2,7 +2,7 @@ const { promises: fs } = require('fs');
 const { resolve } = require('path');
 const execa = require('execa');
 
-const { build } = require('../dist/cmds/build/buildHandler');
+const { build } = require('../dist/cmds');
 
 global.snaps = {
   verboseErrors: false,

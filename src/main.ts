@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { cli } from './cli';
-import commands from './cmds';
+import { commandModules } from './cmds';
 
 global.snaps = {
   verboseErrors: false,
@@ -8,4 +8,4 @@ global.snaps = {
   isWatching: false,
 };
 
-cli(process.argv, commands);
+cli(process.argv, commandModules);

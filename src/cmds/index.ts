@@ -1,9 +1,22 @@
-import init from './init';
-import build from './build';
-import evaluate from './eval';
-import manifest from './manifest';
-import serve from './serve';
-import watch from './watch';
+import buildModule from './build';
+import evaluateModule from './eval';
+import initModule from './init';
+import manifestModule from './manifest';
+import serveModule from './serve';
+import watchModule from './watch';
 
-const commands = [init, build, evaluate, manifest, serve, watch];
-export default commands;
+export const commandModules = [
+  buildModule,
+  evaluateModule,
+  initModule,
+  manifestModule,
+  serveModule,
+  watchModule,
+];
+
+export const build = buildModule.handler;
+export const evaluate = evaluateModule.handler;
+export const init = initModule.handler;
+export const manifest = manifestModule.handler;
+export const serve = serveModule.handler;
+export const watch = watchModule.handler;
