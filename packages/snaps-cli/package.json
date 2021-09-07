@@ -22,6 +22,7 @@
     "build:clean": "yarn rimraf dist && yarn build",
     "test": "jest",
     "test:watch": "jest --watch",
+    "lint:changelog": "yarn auto-changelog validate",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check",

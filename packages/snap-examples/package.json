@@ -14,6 +14,7 @@
     "setup": "yarn install && yarn allow-scripts",
     "test": "echo \"@metamask/snaps-cli has no tests.\"",
     "prepublishOnly": "yarn build:clean && yarn lint && yarn test",
+    "lint:changelog": "yarn auto-changelog validate",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path .gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
