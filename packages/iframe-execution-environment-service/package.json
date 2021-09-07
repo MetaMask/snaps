@@ -12,9 +12,11 @@
   ],
   "scripts": {
     "test": "jest",
-    "lint": "eslint . --ext ts,js",
+    "lint:eslint": "eslint . --cache --ext js,ts",
+    "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
+    "lint": "yarn lint:eslint && yarn lint:misc --check",
+    "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "yarn auto-changelog validate",
-    "lint:fix": "yarn lint --fix",
     "build": "yarn build:prep && yarn build:tsc && yarn build:post-tsc",
     "build:tsc": "tsc --project tsconfig.json",
     "build:post-tsc": "echo 'post-tsc-iframe-execution-env'",
