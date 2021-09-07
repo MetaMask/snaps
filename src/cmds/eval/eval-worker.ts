@@ -1,11 +1,17 @@
+import { EventEmitter } from 'events';
 import { parentPort } from 'worker_threads';
 import { readFileSync } from 'fs';
 import crypto from 'crypto';
 
-// eslint-disable-next-line import/no-unassigned-import, @typescript-eslint/no-require-imports
-require('ses/lockdown');
+// eslint-disable-next-line import/no-unassigned-import
+import 'ses/lockdown';
 
 declare let lockdown: any, Compartment: any;
+
+type MockSnapProvider = EventEmitter & {
+  registerRpcMessageHandler: () => any;
+  request: () => Promise<any>;
+};
 
 lockdown({
   mathTaming: 'unsafe',
@@ -23,6 +29,13 @@ if (parentPort !== null) {
   });
 }
 
+function getMockSnapProvider(): MockSnapProvider {
+  const mockProvider = new EventEmitter() as Partial<MockSnapProvider>;
+  mockProvider.registerRpcMessageHandler = () => true;
+  mockProvider.request = async () => true;
+  return mockProvider as MockSnapProvider;
+}
+
 function getMockEndowments() {
   const endowments = {
     BigInt,
@@ -32,9 +45,7 @@ function getMockEndowments() {
     Date,
     fetch: () => true,
     Math,
-    wallet: {
-      registerRpcMessageHandler: () => true,
-    },
+    wallet: getMockSnapProvider(),
     setTimeout,
     SubtleCrypto: () => undefined,
     WebSocket: () => true,
