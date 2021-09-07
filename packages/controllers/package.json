@@ -2,22 +2,15 @@
   "name": "@mm-snap/controllers",
   "version": "0.0.9",
   "description": "Controllers for MetaMask Snaps.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps-skunkworks.git"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist/"
   ],
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
-  },
-  "engines": {
-    "node": ">=12.11.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/MetaMask/snaps-skunkworks.git"
-  },
   "scripts": {
     "test": "jest",
     "build": "yarn build:prep && tsc --project tsconfig.local.json",
@@ -51,5 +44,12 @@
     "jest": "^26.6.3",
     "rpc-cap": "^4.0.0",
     "ts-jest": "^26.5.6"
+  },
+  "engines": {
+    "node": ">=12.11.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }

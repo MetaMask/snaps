@@ -2,22 +2,15 @@
   "name": "@mm-snap/workers",
   "version": "0.0.6",
   "description": "Snap Web Workers for the MetaMask extension.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps-skunkworks.git"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist/"
   ],
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
-  },
-  "engines": {
-    "node": ">=12.11.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/MetaMask/snaps-skunkworks.git"
-  },
   "scripts": {
     "test": "echo \"@mm-snap/workers has no tests.\"",
     "lint": "eslint . --ext ts,js",
@@ -43,5 +36,12 @@
     "ses": "^0.11.0",
     "tinyify": "^3.0.0",
     "watchify": "^3.11.1"
+  },
+  "engines": {
+    "node": ">=12.11.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }

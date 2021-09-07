@@ -1,17 +1,14 @@
 {
   "name": "root",
-  "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
   "version": "0.0.9",
+  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps-skunkworks.git"
   },
-  "engines": {
-    "node": ">=12.11.0"
-  },
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "setup": "yarn install && yarn allow-scripts",
     "publish:all": "yarn setup && yarn workspaces run publish",
@@ -50,6 +47,9 @@
     "prettier": "^2.3.2",
     "rimraf": "^3.0.2",
     "typescript": "^4.3.5"
+  },
+  "engines": {
+    "node": ">=12.11.0"
   },
   "lavamoat": {
     "allowScripts": {

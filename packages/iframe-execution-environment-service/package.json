@@ -1,21 +1,15 @@
 {
   "name": "@mm-snap/iframe-execution-environment-service",
   "version": "0.0.8",
-  "main": "dist/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps-skunkworks.git"
   },
+  "main": "dist/index.js",
   "files": [
     "dist/",
     "!dist/testHelpers"
   ],
-  "devDependencies": {
-    "@jest/globals": "^27.0.6",
-    "@jest/types": "^27.0.6",
-    "jest": "27",
-    "ts-jest": "27"
-  },
   "scripts": {
     "test": "jest",
     "lint": "eslint . --ext ts,js",
@@ -40,6 +34,12 @@
     "nanoid": "^3.1.23",
     "pump": "^3.0.0",
     "stream": "^0.0.2"
+  },
+  "devDependencies": {
+    "@jest/globals": "^27.0.6",
+    "@jest/types": "^27.0.6",
+    "jest": "27",
+    "ts-jest": "27"
   },
   "publishConfig": {
     "access": "public",
