@@ -35,10 +35,9 @@ export function applyConfig(
   //
   // If we set args that aren't valid for the current command, yargs will error
   // during validation.
-  const {
-    alias: aliases,
-    key: options,
-  } = (yargsInstance as any).getOptions() as {
+  const { alias: aliases, key: options } = (
+    yargsInstance as any
+  ).getOptions() as {
     alias: Record<string, string[]>;
     key: Record<string, unknown>;
   };

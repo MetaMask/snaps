@@ -1,6 +1,6 @@
 import browserify from 'browserify';
-import { bundle } from '../build/bundle';
-import * as bundleUtils from '../build/bundleUtils';
+import { bundle } from './bundle';
+import * as bundleUtils from './bundleUtils';
 
 jest.mock('browserify');
 

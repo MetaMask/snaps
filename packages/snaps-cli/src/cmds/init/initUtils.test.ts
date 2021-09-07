@@ -74,7 +74,7 @@ describe('initUtils', () => {
         .spyOn(fs, 'existsSync')
         .mockImplementationOnce(() => false)
         .mockImplementationOnce(() => false);
-      ((initPackageJson as unknown) as jest.Mock).mockImplementation(
+      (initPackageJson as unknown as jest.Mock).mockImplementation(
         (_, __, ___, cb) => cb(new Error('initpackage error'), true),
       );
 
@@ -87,7 +87,7 @@ describe('initUtils', () => {
         .spyOn(fs, 'existsSync')
         .mockImplementationOnce(() => false)
         .mockImplementationOnce(() => false);
-      ((initPackageJson as unknown) as jest.Mock).mockImplementation(
+      (initPackageJson as unknown as jest.Mock).mockImplementation(
         (_, __, ___, cb) => cb(false, true),
       );
 

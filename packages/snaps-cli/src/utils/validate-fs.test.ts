@@ -3,7 +3,7 @@ import {
   validateOutfileName,
   validateFilePath,
   validateDirPath,
-} from '../../src/utils/validate-fs';
+} from './validate-fs';
 import * as filesystem from './fs';
 
 describe('validate', () => {

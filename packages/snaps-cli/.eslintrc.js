@@ -1,13 +1,10 @@
 module.exports = {
-  extends: ['@metamask/eslint-config', '@metamask/eslint-config-nodejs'],
+  extends: ['../../.eslintrc.js'],
 
   overrides: [
     {
       files: ['**/*.ts'],
-      extends: ['@metamask/eslint-config-typescript'],
-      env: {
-        node: true,
-      },
+      extends: ['@metamask/eslint-config-nodejs'],
       globals: {
         snaps: true,
       },
@@ -40,12 +37,9 @@ module.exports = {
 
     {
       files: ['**/*.test.ts'],
-      extends: ['@metamask/eslint-config-jest'],
       rules: {
         'node/no-callback-literal': 'off',
       },
     },
   ],
-
-  ignorePatterns: ['!.eslintrc.js', 'dist/', 'node_modules/'],
 };

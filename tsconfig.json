@@ -1,9 +1,10 @@
 {
   "references": [
     { "path": "./packages/controllers" },
+    { "path": "./packages/iframe-execution-environment-service" },
     { "path": "./packages/rpc-methods" },
-    { "path": "./packages/workers" },
-    { "path": "./packages/iframe-execution-environment-service" }
+    { "path": "./packages/snaps-cli" },
+    { "path": "./packages/workers" }
   ],
   "files": [],
   "include": [],

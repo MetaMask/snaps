@@ -95,7 +95,8 @@ export async function manifest(argv: YargsArgs): Promise<void> {
           web3Wallet[key] = Object.keys(property)
             .sort()
             .reduce((sortedProperty, _innerKey) => {
-              const innerKey = _innerKey as keyof ManifestWalletProperty[typeof key];
+              const innerKey =
+                _innerKey as keyof ManifestWalletProperty[typeof key];
               sortedProperty[innerKey] = property[innerKey];
 
               return sortedProperty;

@@ -102,7 +102,7 @@ describe('initialize', () => {
           .replace(
             /_PORT_/gu,
             newArgs.port.toString() ||
-              ((mockArgv as unknown) as { port: number }).port.toString(),
+              (mockArgv as unknown as { port: number }).port.toString(),
           ),
       );
 

@@ -2,7 +2,7 @@ import yargs from 'yargs';
 import { cli } from './cli';
 import commands from './cmds';
 
-const commandMap = ((commands as unknown) as yargs.CommandModule[]).reduce(
+const commandMap = (commands as unknown as yargs.CommandModule[]).reduce(
   (map, commandModule) => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     map[commandModule.command![0]] = commandModule;
