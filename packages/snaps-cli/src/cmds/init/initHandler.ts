@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs';
 import { CONFIG_PATHS, logError, closePrompt } from '../../utils';
 import { YargsArgs } from '../../types/yargs';
-import template from './initTemplate.json';
+import template from './init-template.json';
 import {
   asyncPackageInit,
   validateEmptyDir,

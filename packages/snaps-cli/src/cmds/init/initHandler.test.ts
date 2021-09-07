@@ -3,7 +3,7 @@ import * as readlineUtils from '../../utils/readline';
 import * as miscUtils from '../../utils/misc';
 import * as initUtils from './initUtils';
 import { initHandler } from './initHandler';
-import template from './initTemplate.json';
+import template from './init-template.json';
 
 describe('initialize', () => {
   describe('initHandler', () => {

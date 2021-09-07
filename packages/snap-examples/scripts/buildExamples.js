@@ -1,7 +1,12 @@
 const { promises: fs } = require('fs');
-const { resolve } = require('path');
+const { resolve, join: pathJoin } = require('path');
 
 const execa = require('execa');
+
+const SNAPS_CLI_BIN_PATH = pathJoin(
+  __dirname,
+  '../../../node_modules/@metamask/snaps-cli/dist/main.js',
+);
 
 const EXAMPLES_PATH = 'examples';
 
@@ -34,9 +39,13 @@ async function buildExamples() {
         }
 
         try {
-          await execa('mm-snap', ['build', '--sourceMaps', '--stripComments'], {
-            cwd: exampleFilePath,
-          });
+          await execa(
+            SNAPS_CLI_BIN_PATH,
+            ['build', '--sourceMaps', '--stripComments'],
+            {
+              cwd: exampleFilePath,
+            },
+          );
         } catch (bundleError) {
           console.error(
             `Unexpected error while creating bundle in "${exampleFilePath}.`,

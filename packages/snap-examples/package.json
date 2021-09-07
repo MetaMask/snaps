@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snap-examples",
-  "version": "0.0.0",
+  "version": "0.0.9",
   "description": "Example MetaMask Snaps.",
   "repository": {
     "type": "git",
@@ -12,11 +12,10 @@
   ],
   "scripts": {
     "setup": "yarn install && yarn allow-scripts",
-    "test": "echo TODO && exit 1",
-    "test:watch": "echo TODO && exit 1",
+    "test": "echo \"@metamask/snaps-cli has no tests.\"",
     "prepublishOnly": "yarn build:clean && yarn lint && yarn test",
     "lint:eslint": "eslint . --cache --ext js,ts",
-    "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' '**/*.yml' --ignore-path .gitignore",
+    "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path .gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "build:clean": "yarn build",
@@ -29,6 +28,7 @@
     "@metamask/eslint-config-jest": "^8.0.0",
     "@metamask/eslint-config-nodejs": "^8.0.0",
     "@metamask/eslint-config-typescript": "^8.0.0",
+    "@metamask/snaps-cli": "^0.0.9",
     "@types/jest": "^26.0.13",
     "@typescript-eslint/eslint-plugin": "^4.21.0",
     "@typescript-eslint/parser": "^4.21.0",
@@ -43,12 +43,11 @@
     "prettier": "^2.2.1",
     "prettier-plugin-packagejson": "^2.2.11",
     "rimraf": "^3.0.2",
-    "snaps-cli": "^0.4.2",
     "ts-jest": "^26.3.0",
     "typescript": "^4.2.4"
   },
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=12.11.0"
   },
   "publishConfig": {
     "access": "public",

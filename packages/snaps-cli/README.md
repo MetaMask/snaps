@@ -1,4 +1,4 @@
-# `snaps-cli`
+# @metamask/snaps-cli
 
 A CLI for developing MetaMask Snaps, formerly known as "plugins."
 

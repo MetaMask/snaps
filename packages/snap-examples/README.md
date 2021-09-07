@@ -1,4 +1,4 @@
-# MetaMask Module Template
+# @metamask/snap-examples
 
 This TypeScript module is maintained in the style of the MetaMask team.
 
