@@ -14,7 +14,7 @@ module.exports = {
     },
 
     {
-      files: ['src/**/*', 'development/**/*'],
+      files: ['src/**/*', 'scripts/**/*'],
       rules: {
         'node/no-process-exit': 'off',
       },
