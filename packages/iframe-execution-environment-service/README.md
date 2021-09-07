@@ -1,3 +1,3 @@
 # @mm-snap/iframe-execution-environment-service
 
-An ifram execution environment for MetaMask Snaps.
+An iframe execution environment for MetaMask Snaps.
