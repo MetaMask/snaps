@@ -1,21 +1,20 @@
 {
   "name": "hello-snaps",
   "version": "1.0.0",
-  "description": "Hello plugins!",
+  "description": "The 'Hello, world!' of MetaMask Snaps.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps-skunkworks.git"
+  },
+  "license": "ISC",
   "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "dependencies": {
     "eth-json-rpc-errors": "^1.1.0"
   },
   "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/MetaMask/snaps-cli.git"
-  },
   "web3Wallet": {
     "bundle": {
       "local": "dist/bundle.js",

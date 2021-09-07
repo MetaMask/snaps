@@ -1,22 +1,21 @@
 {
   "name": "ipfs-snap",
   "version": "1.0.0",
-  "description": "An IPFS Snap for MetaMask",
+  "description": "An example Snap that performs IPFS operations.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps-skunkworks.git"
+  },
+  "license": "ISC",
   "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "dependencies": {
     "eth-json-rpc-errors": "^1.1.0",
     "ipfs-mini": "^1.1.5"
   },
   "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/MetaMask/snaps-cli.git"
-  },
   "web3Wallet": {
     "bundle": {
       "local": "dist/bundle.js",

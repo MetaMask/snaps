@@ -1,20 +1,19 @@
 {
   "name": "bls-signer",
   "version": "1.0.0",
-  "description": "",
+  "description": "An example Snap that signs messages using BLS.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps-skunkworks.git"
+  },
+  "license": "ISC",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "eth-json-rpc-errors": "^1.1.0",
     "noble-bls12-381": "^0.2.3"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/MetaMask/snaps-cli.git"
   },
   "web3Wallet": {
     "bundle": {
