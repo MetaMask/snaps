@@ -1,14 +1,10 @@
 # @metamask/snaps-cli
 
-A CLI for developing MetaMask Snaps, formerly known as "plugins."
-
-## Compatibility
-
-If you're looking for the `snaps-cli` compatible with the pre-2021 `metamask-snaps-beta`, please see [this branch](https://github.com/MetaMask/snaps-cli/tree/version-0.4.0).
+A CLI for developing MetaMask Snaps.
 
 ## Installation
 
-Use `node@^12.0.0`.
+Use Node.js `12.11.0` or later.
 We recommend [nvm](https://github.com/nvm-sh/nvm) for managing Node versions.
 
 - `yarn global add snaps-cli`
@@ -18,15 +14,13 @@ We recommend [nvm](https://github.com/nvm-sh/nvm) for managing Node versions.
 ```bash
 mkdir mySnap
 cd mySnap
-snap init
+mm-snap init
 ```
-
-There is also an alias `mm-snap` in case of `snap` being taken.
 
 ## MetaMask Snaps
 
 MetaMask Snaps consist of two things: a JSON manifest and a JavaScript bundle.
-For a variety of reasons, we decided to follow NPM conventions. Thus, the manifest file
+For a variety of reasons, we decided to follow npm conventions. Thus, the manifest file
 is simply `package.json`, with the following required standard fields:
 
 - `name`
@@ -51,8 +45,10 @@ If you exclude any required fields from `package.json`, your Snap may not
 work properly or install at all.
 
 We recommend building your Snap using this tool.
-You can bundle your Snap using your own tools, but it must run in the browser,
-run in SES, and its contents must be wrapped in an anonymous function (`() => ( ... )`).
+You can bundle your Snap using your own tools, but it must run in SES and only
+use the global APIs that MetaMask exposes at runtime.
+Although Snaps currently execute in the browser, some browser APIs are not available for snaps,
+and Snaps do not have DOM access.
 
 ### Assumed Project Structure
 
@@ -78,7 +74,7 @@ See examples in this repo for details.
 
 ## Usage
 
-Always use `node@10.16.3`, the version currently used to develop MetaMask.
+Always use Node.js `12.11.0` or greater.
 
 `snap --help`
 
