@@ -2,22 +2,15 @@
   "name": "@mm-snap/rpc-methods",
   "version": "0.0.6",
   "description": "MetaMask Snap RPC method implementations.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps-skunkworks.git"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist/"
   ],
-  "engines": {
-    "node": ">=12"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/MetaMask/snaps-skunkworks.git"
-  },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
-  },
   "scripts": {
     "test": "echo \"@mm-snap/rpc-methods has no tests.\"",
     "lint:eslint": "eslint . --cache --ext js,ts",
@@ -39,5 +32,12 @@
     "@types/node": "^14.14.25",
     "json-rpc-engine": "^6.1.0",
     "rpc-cap": "^4.0.0"
+  },
+  "engines": {
+    "node": ">=12.11.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }

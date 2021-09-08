@@ -1,17 +1,14 @@
 {
   "name": "root",
-  "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
   "version": "0.0.9",
+  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps-skunkworks.git"
   },
-  "engines": {
-    "node": ">=12"
-  },
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "setup": "yarn install && yarn allow-scripts",
     "publish:all": "yarn setup && yarn workspaces run publish",
@@ -36,6 +33,8 @@
     "@metamask/eslint-config-jest": "^8.0.0",
     "@metamask/eslint-config-nodejs": "^8.0.0",
     "@metamask/eslint-config-typescript": "^8.0.0",
+    "@types/jest": "^26.0.20",
+    "@types/node": "^14.14.25",
     "@typescript-eslint/eslint-plugin": "^4.28.1",
     "@typescript-eslint/parser": "^4.28.1",
     "electron": "^12.0.7",
@@ -48,6 +47,9 @@
     "prettier": "^2.3.2",
     "rimraf": "^3.0.2",
     "typescript": "^4.3.5"
+  },
+  "engines": {
+    "node": ">=12.11.0"
   },
   "lavamoat": {
     "allowScripts": {
