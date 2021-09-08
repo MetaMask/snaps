@@ -1,4 +1,4 @@
-import { ResourceRequestHandler } from '@mm-snap/controllers';
+import { ResourceRequestHandler } from '@metamask/snap-controllers';
 import { ethErrors } from 'eth-rpc-errors';
 import {
   JsonRpcEngineEndCallback,

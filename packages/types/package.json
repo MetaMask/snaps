@@ -1,7 +1,7 @@
 {
-  "name": "@mm-snap/types",
+  "name": "@metamask/snap-types",
   "version": "0.0.6",
-  "description": "Shared types for @mm-snap packages.",
+  "description": "Shared types for MetaMask Snaps packages.",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps-skunkworks.git"
@@ -12,9 +12,9 @@
     "index.d.ts"
   ],
   "scripts": {
-    "build": "echo \"@mm-snap/types has no build command.\"",
-    "build:prep": "echo \"@mm-snap/types has no build:prep command.\"",
-    "test": "echo \"@mm-snap/types has no tests.\"",
+    "build": "echo \"@metamask/snap-types has no build command.\"",
+    "build:prep": "echo \"@metamask/snap-types has no build:prep command.\"",
+    "test": "echo \"@metamask/snap-types has no tests.\"",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check",

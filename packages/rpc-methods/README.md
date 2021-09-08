@@ -1,3 +1,3 @@
-# @mm-snap/rpc-methods
+# @metamask/rpc-methods
 
-JSON-RPC methods for `@mm-snap/` functionality.
+JSON-RPC methods for MetaMask Snaps functionality.

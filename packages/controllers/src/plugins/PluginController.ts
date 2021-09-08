@@ -7,7 +7,7 @@ import {
   RestrictedControllerMessenger,
 } from '@metamask/controllers';
 import { Json } from 'json-rpc-engine';
-import { PluginData } from '@mm-snap/types';
+import { PluginData } from '@metamask/snap-types';
 import {
   GetRpcMessageHandler,
   ExecutePlugin,

@@ -4,9 +4,9 @@ import pump from 'pump';
 import { ObservableStore } from '@metamask/obs-store';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { WorkerParentPostMessageStream } from '@metamask/post-message-stream';
-import { PLUGIN_STREAM_NAMES } from '@mm-snap/workers';
+import { PLUGIN_STREAM_NAMES } from '@metamask/snap-workers';
 import { createStreamMiddleware } from 'json-rpc-middleware-stream';
-import { PluginData } from '@mm-snap/types';
+import { PluginData } from '@metamask/snap-types';
 import {
   JsonRpcEngine,
   JsonRpcRequest,

@@ -1,5 +1,5 @@
 {
-  "name": "@mm-snap/rpc-methods",
+  "name": "@metamask/rpc-methods",
   "version": "0.0.6",
   "description": "MetaMask Snap RPC method implementations.",
   "repository": {
@@ -12,7 +12,7 @@
     "dist/"
   ],
   "scripts": {
-    "test": "echo \"@mm-snap/rpc-methods has no tests.\"",
+    "test": "echo \"@metamask/rpc-methods has no tests.\"",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "@metamask/key-tree": "^2.0.1",
-    "@mm-snap/controllers": "^0.0.6",
+    "@metamask/snap-controllers": "^0.0.6",
     "eth-rpc-errors": "^4.0.2"
   },
   "devDependencies": {
