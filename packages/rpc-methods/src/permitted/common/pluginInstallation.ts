@@ -1,5 +1,8 @@
 import { ethErrors } from 'eth-rpc-errors';
-import { PLUGIN_PREFIX, InstallPluginsResult } from '@metamask/snap-controllers';
+import {
+  PLUGIN_PREFIX,
+  InstallPluginsResult,
+} from '@metamask/snap-controllers';
 import { IRequestedPermissions } from 'rpc-cap/dist/src/@types';
 import { isPlainObject } from '../../utils';
 
