@@ -3,15 +3,15 @@ import { nanoid } from 'nanoid';
 import pump from 'pump';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
-import { PLUGIN_STREAM_NAMES } from '@mm-snap/workers';
+import { PLUGIN_STREAM_NAMES } from '@metamask/snap-workers';
 import { createStreamMiddleware } from 'json-rpc-middleware-stream';
-import { PluginData } from '@mm-snap/types';
+import { PluginData } from '@metamask/snap-types';
 import {
   JsonRpcEngine,
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from 'json-rpc-engine';
-import { ExecutionEnvironmentService } from '@mm-snap/controllers';
+import { ExecutionEnvironmentService } from '@metamask/snap-controllers';
 
 export type SetupPluginProvider = (pluginName: string, stream: Duplex) => void;
 

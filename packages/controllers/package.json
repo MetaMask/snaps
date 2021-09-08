@@ -1,5 +1,5 @@
 {
-  "name": "@mm-snap/controllers",
+  "name": "@metamask/snap-controllers",
   "version": "0.0.9",
   "description": "Controllers for MetaMask Snaps.",
   "repository": {
@@ -29,7 +29,7 @@
     "@metamask/obs-store": "^6.0.2",
     "@metamask/post-message-stream": "4.0.0",
     "@metamask/safe-event-emitter": "^2.0.0",
-    "@mm-snap/workers": "^0.0.6",
+    "@metamask/snap-workers": "^0.0.9",
     "eth-rpc-errors": "^4.0.2",
     "immer": "^9.0.6",
     "json-rpc-engine": "^6.1.0",
@@ -39,7 +39,8 @@
   },
   "devDependencies": {
     "@jest-runner/electron": "^3.0.1",
-    "@mm-snap/types": "^0.0.6",
+    "@metamask/snap-types": "^0.0.9",
+    "@types/jest": "^26.0.23",
     "@types/pump": "^1.1.0",
     "@types/readable-stream": "^2.3.9",
     "electron": "^12.0.7",

@@ -19,7 +19,7 @@ This will always build the packages in the correct order.
 
 You can also run `yarn build` in a workspace, although you have to ensure that the projects are built in the correct order.
 
-`@mm-snap/workers` has a post-`tsc` step that must be run, which somewhat complicates the build process.
+`@metamask/snap-workers` has a post-`tsc` step that must be run, which somewhat complicates the build process.
 Repository-wide watching is currently not possible.
 
 ### Testing and Linting

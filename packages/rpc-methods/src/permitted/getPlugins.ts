@@ -2,7 +2,7 @@ import {
   PendingJsonRpcResponse,
   JsonRpcEngineEndCallback,
 } from 'json-rpc-engine';
-import { InstallPluginsResult } from '@mm-snap/controllers';
+import { InstallPluginsResult } from '@metamask/snap-controllers';
 import { PermittedHandlerExport } from '../../types';
 
 export const getPluginsHandler: PermittedHandlerExport<

@@ -5,7 +5,7 @@ import {
 } from 'json-rpc-engine';
 import { ethErrors } from 'eth-rpc-errors';
 import { AnnotatedJsonRpcEngine } from 'rpc-cap';
-import { PLUGIN_PREFIX, PluginController } from '@mm-snap/controllers';
+import { PLUGIN_PREFIX, PluginController } from '@metamask/snap-controllers';
 import { RestrictedHandlerExport } from '../../types';
 import { isPlainObject } from '../utils';
 

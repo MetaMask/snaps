@@ -1,5 +1,5 @@
 import { JsonRpcRequest } from 'json-rpc-engine';
-import { PluginData } from '@mm-snap/types';
+import { PluginData } from '@metamask/snap-types';
 import { PluginRpcHook } from './WebWorkerExecutionEnvironmentService';
 
 export interface PluginMetadata {

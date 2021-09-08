@@ -4,7 +4,7 @@ import {
   JsonRpcEngineEndCallback,
 } from 'json-rpc-engine';
 import { ethErrors } from 'eth-rpc-errors';
-import { PLUGIN_PREFIX } from '@mm-snap/controllers';
+import { PLUGIN_PREFIX } from '@metamask/snap-controllers';
 import { PermittedHandlerExport } from '../../types';
 import { isPlainObject } from '../utils';
 

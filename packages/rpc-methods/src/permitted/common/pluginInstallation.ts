@@ -1,9 +1,12 @@
 import { ethErrors } from 'eth-rpc-errors';
-import { PLUGIN_PREFIX, InstallPluginsResult } from '@mm-snap/controllers';
+import {
+  PLUGIN_PREFIX,
+  InstallPluginsResult,
+} from '@metamask/snap-controllers';
 import { IRequestedPermissions } from 'rpc-cap/dist/src/@types';
 import { isPlainObject } from '../../utils';
 
-export { InstallPluginsResult } from '@mm-snap/controllers';
+export { InstallPluginsResult } from '@metamask/snap-controllers';
 
 export type InstallPluginsHook = (
   requestedPlugins: IRequestedPermissions,

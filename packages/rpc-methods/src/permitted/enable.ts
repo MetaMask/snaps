@@ -6,7 +6,7 @@ import {
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { IRequestedPermissions } from 'rpc-cap/dist/src/@types';
 import { IOcapLdCapability } from 'rpc-cap/dist/src/@types/ocap-ld';
-import { PLUGIN_PREFIX, PLUGIN_PREFIX_REGEX } from '@mm-snap/controllers';
+import { PLUGIN_PREFIX, PLUGIN_PREFIX_REGEX } from '@metamask/snap-controllers';
 import { PermittedHandlerExport } from '../../types';
 import {
   handleInstallPlugins,

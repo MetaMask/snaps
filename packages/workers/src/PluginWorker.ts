@@ -3,7 +3,7 @@ import { MetaMaskInpageProvider } from '@metamask/inpage-provider';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import pump from 'pump';
 import { WorkerPostMessageStream } from '@metamask/post-message-stream';
-import { PluginData, PluginProvider } from '@mm-snap/types';
+import { PluginData, PluginProvider } from '@metamask/snap-types';
 import type { JsonRpcId, JsonRpcRequest } from 'json-rpc-engine';
 import { STREAM_NAMES } from './enums';
 

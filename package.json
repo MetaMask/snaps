@@ -19,7 +19,7 @@
     "lint": "yarn lint:eslint && yarn lint:misc --check",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "build:tsc": "tsc --build --force tsconfig.json",
-    "build:post-tsc": "yarn workspace @mm-snap/workers run build:post-tsc",
+    "build:post-tsc": "yarn workspace @metamask/snap-workers run build:post-tsc",
     "build": "yarn build:tsc && yarn build:post-tsc",
     "build:clean": "yarn workspaces run build:prep && yarn build",
     "test": "yarn workspaces run test",

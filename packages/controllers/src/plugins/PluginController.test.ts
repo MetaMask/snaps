@@ -6,7 +6,7 @@ import { ExecutionEnvironmentService } from '../services/ExecutionEnvironmentSer
 import { PluginController, PluginControllerState } from './PluginController';
 
 const workerCode = fs.readFileSync(
-  require.resolve('@mm-snap/workers/dist/PluginWorker.js'),
+  require.resolve('@metamask/snap-workers/dist/PluginWorker.js'),
   'utf8',
 );
 

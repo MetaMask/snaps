@@ -1,3 +1,3 @@
-# @mm-snap/types
+# @metamask/snap-types
 
-Types for `@mm-snap/` packages.
+Types for MetaMask Snaps packages.
