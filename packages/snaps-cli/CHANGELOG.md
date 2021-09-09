@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - As part of the renaming, and due to the scope of the changes to both this package and MetaMask Snaps generally, its versioning and changelog have been reset. The original changelog can be found [here](https://github.com/MetaMask/snaps-cli/blob/main/CHANGELOG.md).
 
 ### Removed
-- **(BREAKING)** Examples ([#72](https://github.com/MetaMask/snaps-skunkworks/pull/72))
+- Example snaps ([#72](https://github.com/MetaMask/snaps-skunkworks/pull/72))
   - The examples now live in their own package, [`@metamask/snap-examples`](https://npmjs.com/package/@metamask/snap-examples).
 
 [Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.1.0...HEAD
