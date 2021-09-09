@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0]
+### Added
+- Readme file ([#71](https://github.com/MetaMask/snaps-skunkworks/pull/71))
+
+### Changed
+- **(BREAKING)** Rename package to `@metamask/snap-controllers` ([#73](https://github.com/MetaMask/snaps-skunkworks/pull/73))
+
 ## [0.0.9]
 ### Added
 - `PluginController`: Always persist plugin `isRunning` state as `false` ([#64](https://github.com/MetaMask/snaps-skunkworks/pull/64))
@@ -39,7 +46,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.0.9...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.0.9...v0.1.0
 [0.0.9]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.0.7...v0.0.9
 [0.0.7]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.0.6...v0.0.7
 [0.0.6]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.0.5...v0.0.6
