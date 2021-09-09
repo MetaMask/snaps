@@ -7,11 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.1.0]
-### Uncategorized
-- Scope packages under @metamask npm org ([#73](https://github.com/MetaMask/snaps-skunkworks/pull/73))
-- Add snaps-cli and snap-examples packages ([#72](https://github.com/MetaMask/snaps-skunkworks/pull/72))
-- Fix repository / package maintenance issues ([#71](https://github.com/MetaMask/snaps-skunkworks/pull/71))
-- build(deps): bump immer from 8.0.4 to 9.0.6 ([#69](https://github.com/MetaMask/snaps-skunkworks/pull/69))
+### Added
+- Readme file ([#71](https://github.com/MetaMask/snaps-skunkworks/pull/71))
+
+### Changed
+- **(BREAKING)** Rename package to `@metamask/snap-controllers` ([#73](https://github.com/MetaMask/snaps-skunkworks/pull/73))
 
 ## [0.0.9]
 ### Added
