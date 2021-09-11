@@ -1,4 +1,4 @@
-import type { PermittedHandlerExport } from '@mm-snap/rpc-methods/types';
+import type { PermittedHandlerExport } from '@metamask/rpc-methods/types';
 import type {
   JsonRpcEngineEndCallback,
   PendingJsonRpcResponse,

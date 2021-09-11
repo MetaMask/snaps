@@ -73,7 +73,6 @@ describe('PermissionController', () => {
     it('initializes a new PermissionController', () => {
       const controller = getPermissionController();
       expect(controller.state).toStrictEqual({ subjects: {} });
-      controller.enforcer.executeRestrictedMethod('foo', 'foo');
       expect(controller.enforcer instanceof PermissionEnforcer).toStrictEqual(
         true,
       );

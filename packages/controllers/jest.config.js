@@ -11,7 +11,7 @@ module.exports = {
   //   },
   // },
   silent: true,
-  testTimeout: 2500,
+  testTimeout: 5000,
   projects: [
     {
       displayName: 'runner: electron',
