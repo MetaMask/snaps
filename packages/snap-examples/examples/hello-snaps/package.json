@@ -21,7 +21,7 @@
       "url": "http://localhost:8081/dist/bundle.js"
     },
     "initialPermissions": {
-      "alert": {}
+      "snap_confirm": {}
     }
   }
 }

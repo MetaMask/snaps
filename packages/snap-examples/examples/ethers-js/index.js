@@ -12,7 +12,9 @@ const provider = new ethers.providers.Web3Provider(wallet);
 
 wallet.registerRpcMessageHandler(async (_originString, requestObject) => {
   console.log('received request', requestObject);
-  const privKey = await wallet.getAppKey();
+  const privKey = await wallet.request({
+    method: 'snap_getAppKey',
+  });
   console.log(`privKey is ${privKey}`);
   const ethWallet = new ethers.Wallet(privKey, provider);
   console.dir(ethWallet);

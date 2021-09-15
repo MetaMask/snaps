@@ -8,7 +8,7 @@ console.log('Hello from bls-snap!');
 wallet.registerRpcMessageHandler(async (_originString, requestObject) => {
   switch (requestObject.method) {
     case 'getAccount':
-      return getPubKey();
+      return await getPubKey();
 
     case 'signMessage': {
       const pubKey = await getPubKey();
