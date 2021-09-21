@@ -10,7 +10,7 @@ import type { Patch } from 'immer';
 import deepFreeze from 'deep-freeze-strict';
 import { Json } from 'json-rpc-engine';
 
-import { isPlainObject } from '../utils';
+import { isPlainObject, hasProperty } from '../utils';
 import { Caveat, CaveatSpecifications, constructCaveat } from './Caveat';
 import {
   OriginString,
@@ -455,7 +455,7 @@ export class PermissionController extends BaseController<
    * @returns The internal key of the method.
    */
   getTargetKey(method: string): string {
-    if (method in this._permissionSpecifications) {
+    if (hasProperty(this._permissionSpecifications, method)) {
       return method;
     }
 
@@ -475,13 +475,13 @@ export class PermissionController extends BaseController<
 
     while (
       segments.length > 0 &&
-      !(targetKey in this._permissionSpecifications) &&
+      !hasProperty(this._permissionSpecifications, targetKey) &&
       !wildCardMethodsWithoutWildCard[targetKey]
     ) {
       targetKey += `${segments.shift()}_`;
     }
 
-    if (targetKey in this._permissionSpecifications) {
+    if (hasProperty(this._permissionSpecifications, targetKey)) {
       return targetKey;
     } else if (wildCardMethodsWithoutWildCard[targetKey]) {
       return `${targetKey}*`;
@@ -604,7 +604,7 @@ export class PermissionController extends BaseController<
       );
     }
 
-    if (!('value' in requestedCaveat)) {
+    if (!hasProperty(requestedCaveat, 'value')) {
       throw new CaveatMissingValueError(requestedCaveat, origin, target);
     }
 

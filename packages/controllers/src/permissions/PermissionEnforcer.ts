@@ -9,6 +9,7 @@ import {
 } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
 
+import { isPlainObject, hasProperty } from '../utils';
 import { CaveatSpecifications, decorateWithCaveats } from './Caveat';
 import {
   internalError,
@@ -377,8 +378,8 @@ function resultIsError(resultOrError: Json | Error): resultOrError is Error {
   return Boolean(
     resultOrError instanceof Error ||
       (resultOrError &&
-        typeof resultOrError === 'object' &&
-        'message' in resultOrError &&
-        'code' in resultOrError),
+        isPlainObject(resultOrError) &&
+        hasProperty(resultOrError, 'message') &&
+        hasProperty(resultOrError, 'code')),
   );
 }
