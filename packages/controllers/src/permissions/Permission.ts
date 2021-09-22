@@ -1,7 +1,7 @@
 import type { EthereumRpcError } from 'eth-rpc-errors';
 import { Json } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
-import { Caveat, ZcapLdCaveat } from './Caveat';
+import { Caveat, GenericCaveat, ZcapLdCaveat } from './Caveat';
 
 /**
  * The origin of a subject.
@@ -72,7 +72,7 @@ type ZcapLdCapability = {
   readonly proof?: string;
 };
 
-type PermissionOptions = {
+export type PermissionOptions = {
   /**
    * The method that the permission corresponds to.
    */
@@ -154,11 +154,14 @@ export function constructPermission(options: PermissionOptions) {
  * @param caveatType The type of the caveat to retrieve.
  * @returns The caveat value, or undefined if no such caveat exists.
  */
-export function findCaveat(
+export function findCaveat<TargetCaveat extends Caveat<Json>>(
   permission: Permission,
-  caveatType: string,
-): Caveat<Json> | undefined {
-  return permission.caveats?.find((caveat) => caveat.type === caveatType);
+  caveatType: TargetCaveat['type'],
+): TargetCaveat | undefined {
+  // TODO:types
+  return permission.caveats?.find(
+    (caveat) => caveat.type === caveatType,
+  ) as any;
 }
 
 type RequestedPermission = {
@@ -202,6 +205,7 @@ export type RestrictedMethodImplementation<
   | AsyncRestrictedMethodImplementation<Params, Result>;
 
 export type PermissionSpecification<
+  Target extends string,
   FactoryOptions extends PermissionOptions,
   RequestData extends Record<string, unknown>,
   MethodImplementation extends RestrictedMethodImplementation<Json, Json>,
@@ -210,7 +214,7 @@ export type PermissionSpecification<
    * The target resource of the permission. In other words, at the time of
    * writing, the RPC method name.
    */
-  target: string;
+  target: Target | `${Target}*`;
 
   /**
    * The factory function used to get permission objects. Permissions returned
@@ -243,8 +247,27 @@ export type PermissionSpecification<
 export type PermissionSpecifications = Record<
   MethodName,
   PermissionSpecification<
+    string,
     PermissionOptions,
     Record<string, unknown>,
     RestrictedMethodImplementation<Json, Json>
   >
 >;
+
+export type PermConstraint<AllowedCaveat extends GenericCaveat | never> = Omit<
+  Permission,
+  'caveats'
+> & {
+  caveats: AllowedCaveat extends never ? null : AllowedCaveat[];
+};
+
+export type GenericPerm = PermConstraint<GenericCaveat | never>;
+
+export type PermSpec<Target extends string> = PermissionSpecification<
+  Target,
+  PermissionOptions,
+  Record<string, unknown>,
+  RestrictedMethodImplementation<Json, Json>
+>;
+
+export type PermSpecs<Target extends string> = Record<Target, PermSpec<Target>>;

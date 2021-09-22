@@ -63,7 +63,10 @@ export type CaveatValidator = (
   caveat: Caveat<Json>,
 ) => void;
 
-export type CaveatSpecification<CaveatValue extends Json> = {
+export type CaveatSpecification<
+  CaveatType extends string,
+  CaveatValue extends Json,
+> = {
   /**
    * The string type of the caveat.
    */
@@ -90,8 +93,27 @@ export type CaveatSpecification<CaveatValue extends Json> = {
 };
 
 export type CaveatSpecifications = Readonly<
-  Record<CaveatType, CaveatSpecification<Json>>
+  Record<CaveatType, CaveatSpecification<string, Json>>
 >;
+
+export type GenericCaveat = Caveat<Json>;
+
+export type CaveatSpec<Caveats extends Caveat<Json>> = CaveatSpecification<
+  Caveats['type'],
+  ExtractCaveatValue<Caveats, Caveats['type']>
+>;
+
+export type CaveatSpecs<Caveats extends Caveat<Json>> = Record<
+  Caveats['type'],
+  CaveatSpec<Caveats>
+>;
+
+export type ExtractCaveatValue<Caveat, CaveatType> = Caveat extends {
+  type: CaveatType;
+  value: infer CaveatValue;
+}
+  ? CaveatValue
+  : never;
 
 /**
  * Decorate a restricted method implementation with its caveats.
