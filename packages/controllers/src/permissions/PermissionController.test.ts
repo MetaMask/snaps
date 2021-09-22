@@ -1,13 +1,15 @@
 import { ControllerMessenger, Json } from '@metamask/controllers';
 import {
   AsyncRestrictedMethodImplementation,
+  Caveat,
   CaveatDecorator,
-  CaveatSpecifications,
+  CaveatSpecs,
+  PermConstraint,
   PermissionController,
   PermissionControllerActions,
   PermissionControllerEvents,
   PermissionEnforcer,
-  PermissionSpecifications,
+  PermSpecs,
   RestrictedMethodArgs,
 } from '.';
 
@@ -29,7 +31,13 @@ enum CaveatTypes {
   filterArrayResponse = 'filterArrayResponse',
 }
 
-function getCaveatSpecifications(): CaveatSpecifications {
+type DefaultTargetNames = 'wallet_getSecretArray';
+
+type DefaultCaveats = Caveat<Json[]>;
+
+type DefaultPermissions = PermConstraint<DefaultTargetNames, DefaultCaveats>;
+
+function getCaveatSpecifications(): CaveatSpecs<DefaultCaveats> {
   return {
     filterArrayResponse: {
       type: CaveatTypes.filterArrayResponse,
@@ -39,16 +47,19 @@ function getCaveatSpecifications(): CaveatSpecifications {
         ) =>
         async (args: RestrictedMethodArgs<Json>) => {
           const result = await method(args);
-          // TODO: Throw error if this isn't an array
-          return Array.isArray(result)
-            ? result.filter(caveat.value.includes)
-            : result;
-        }) as CaveatDecorator<Json>,
+          if (!Array.isArray(result)) {
+            throw Error('not an array');
+          }
+
+          return result.filter(caveat.value.includes);
+        }) as CaveatDecorator<Json[]>,
     },
   };
 }
 
-function getPermissionSpecifications(): PermissionSpecifications {
+function getPermissionSpecifications(): PermSpecs<
+  DefaultPermissions['parentCapability']
+> {
   return {
     wallet_getSecretArray: {
       target: 'wallet_getSecretArray',
@@ -59,7 +70,11 @@ function getPermissionSpecifications(): PermissionSpecifications {
   };
 }
 
-function getPermissionController(): PermissionController {
+function getPermissionController(): PermissionController<
+  DefaultTargetNames,
+  DefaultCaveats,
+  DefaultPermissions
+> {
   return new PermissionController({
     caveatSpecifications: getCaveatSpecifications(),
     messenger: getRestrictedMessenger(),
@@ -90,6 +105,8 @@ describe('PermissionController', () => {
           wallet_getSecretArray: {},
         },
       });
+
+      // controller.addCaveat('foo', 'wallet_getSecretArray', 'filterArrayResponse', ['foo'])
 
       expect(controller.state).toStrictEqual({
         subjects: {

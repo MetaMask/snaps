@@ -7,8 +7,6 @@ import {
   RestrictedMethodImplementation,
 } from './Permission';
 
-type CaveatType = string;
-
 export type ZcapLdCaveat = {
   /**
    * The type of the caveat. The type is presumed to be meaningful in the
@@ -16,7 +14,7 @@ export type ZcapLdCaveat = {
    *
    * In MetaMask, every permission can only have one caveat of each type.
    */
-  readonly type: CaveatType;
+  readonly type: string;
 };
 
 /**
@@ -29,7 +27,7 @@ export type Caveat<Value extends Json> = ZcapLdCaveat & {
    *
    * TODO: Make optional in typescript@4.4.x
    */
-  readonly value: Value | null;
+  readonly value: Value;
 };
 
 /**
@@ -40,11 +38,11 @@ export type Caveat<Value extends Json> = ZcapLdCaveat & {
  * @param value - The value associated with the caveat, if any.
  * @returns The new caveat object.
  */
-export function constructCaveat<Value extends Json>(
+export function constructCaveat(
   type: string,
-  value?: Value,
-): Caveat<Value> {
-  return { type, value: value === undefined ? null : value };
+  value: unknown,
+): { type: string; value: unknown } {
+  return { type, value };
 }
 
 // Next, we define types used for specifying caveats at the consumer layer,
@@ -57,11 +55,11 @@ export type CaveatDecorator<CaveatValue extends Json> = (
   caveat: Caveat<CaveatValue>,
 ) => AsyncRestrictedMethodImplementation<Json, Json>;
 
-export type CaveatValidator = (
+export type CaveatValidator<Caveats extends GenericCaveat> = (
   origin: string,
   target: string,
-  caveat: Caveat<Json>,
-) => void;
+  caveat: { type: string; value: unknown },
+) => caveat is Caveats;
 
 export type CaveatSpecification<
   CaveatType extends string,
@@ -89,11 +87,11 @@ export type CaveatSpecification<
    * performed. Although caveats can also be validated by permission validators,
    * validating caveat values separately is strongly recommended.
    */
-  validator?: CaveatValidator;
+  validator?: CaveatValidator<Caveat<CaveatValue>>;
 };
 
 export type CaveatSpecifications = Readonly<
-  Record<CaveatType, CaveatSpecification<string, Json>>
+  Record<string, CaveatSpecification<string, Json>>
 >;
 
 export type GenericCaveat = Caveat<Json>;
@@ -108,7 +106,7 @@ export type CaveatSpecs<Caveats extends Caveat<Json>> = Record<
   CaveatSpec<Caveats>
 >;
 
-export type ExtractCaveatValue<Caveat, CaveatType> = Caveat extends {
+export type ExtractCaveatValue<Caveats, CaveatType> = Caveats extends {
   type: CaveatType;
   value: infer CaveatValue;
 }
@@ -122,10 +120,10 @@ export type ExtractCaveatValue<Caveat, CaveatType> = Caveat extends {
  * Note that all caveat functions (i.e. the argument and return value of the decorator)
  * must be awaited.
  */
-export function decorateWithCaveats(
+export function decorateWithCaveats<Caveats extends GenericCaveat>(
   methodImplementation: RestrictedMethodImplementation<Json, Json>,
   permission: Readonly<Permission>, // bound to the requesting origin
-  caveatSpecifications: CaveatSpecifications, // all caveat implementations
+  caveatSpecifications: CaveatSpecs<Caveats>, // all caveat implementations
 ): RestrictedMethodImplementation<Json, Json> {
   const caveats = permission.caveats ?? [];
 
@@ -133,13 +131,14 @@ export function decorateWithCaveats(
     Json,
     Json
   >;
+  // TODO:types fix the base caveat types
   for (const caveat of caveats) {
-    const specification = caveatSpecifications[caveat.type];
+    const specification = caveatSpecifications[caveat.type as Caveats['type']];
     if (!specification) {
       throw new UnrecognizedCaveatTypeError(caveat.type);
     }
 
-    decorated = specification.decorator(decorated, caveat);
+    decorated = specification.decorator(decorated, caveat as any);
   }
   return decorated;
 }

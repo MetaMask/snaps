@@ -115,7 +115,7 @@ export class InvalidCaveatError extends EthereumRpcError<unknown> {
 }
 
 export class InvalidCaveatTypeError extends Error {
-  constructor(caveatType: string) {
+  constructor(caveatType: unknown) {
     super(`Caveat types must be strings. Received: ${typeof caveatType}`);
   }
 }
@@ -130,18 +130,26 @@ export class CaveatTypeDoesNotExistError extends Error {
 }
 
 export class CaveatMissingValueError extends Error {
-  public data: { caveat: Caveat<any>; origin: string; target: string };
+  public data: {
+    caveat: Record<string, unknown>;
+    origin: string;
+    target: string;
+  };
 
-  constructor(caveat: Caveat<any>, origin: string, target: string) {
+  constructor(caveat: Record<string, unknown>, origin: string, target: string) {
     super(`Caveat is missing "value" field.`);
     this.data = { caveat, origin, target };
   }
 }
 
 export class InvalidCaveatFieldsError extends Error {
-  public data: { caveat: Caveat<any>; origin: string; target: string };
+  public data: {
+    caveat: Record<string, unknown>;
+    origin: string;
+    target: string;
+  };
 
-  constructor(caveat: Caveat<any>, origin: string, target: string) {
+  constructor(caveat: Record<string, unknown>, origin: string, target: string) {
     super(
       `Caveat has unexpected number of fields: ${Object.keys(caveat).length}`,
     );

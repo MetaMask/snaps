@@ -12,7 +12,6 @@ import { Json } from 'json-rpc-engine';
 
 import { isPlainObject, hasProperty } from '../utils';
 import {
-  Caveat as CaveatConstraint,
   CaveatSpecs,
   constructCaveat,
   ExtractCaveatValue,
@@ -20,18 +19,14 @@ import {
 } from './Caveat';
 import {
   OriginString,
-  Permission as PermissionConstraint,
   MethodName,
   RequestedPermissions,
   RestrictedMethodImplementation,
-  PermissionOptions,
-  PermissionSpecifications as PermissionSpecificationsConstraint,
-  PermissionSpecification as PermissionSpecificationConstraint,
-  findCaveat,
   constructPermission,
   GenericPerm,
-  PermSpec,
   PermSpecs,
+  PermConstraint,
+  ExtractPermissionTargetNames,
 } from './Permission';
 import {
   PermissionDoesNotExistError,
@@ -68,8 +63,7 @@ export type PermissionSubjectEntry<Permission extends GenericPerm> = {
 export type PermissionControllerSubjects<Permission extends GenericPerm> =
   Record<OriginString, PermissionSubjectEntry<Permission>>;
 
-// TODO: TypeScript doesn't understand that a given subject may not exist. Can we fix it?
-// Yes we can, in TS4.4
+// TODO:TS4.4 Enable compiler flags to forbid unchecked member access
 export type PermissionControllerState<Permission extends GenericPerm> = {
   subjects: PermissionControllerSubjects<Permission>;
 };
@@ -78,7 +72,7 @@ const stateMetadata = {
   subjects: { persist: true, anonymous: true },
 };
 
-// TODO:types
+// Typecast: We can't reference the class generics, so we must resort to "any"
 const defaultState: PermissionControllerState<any> = {
   subjects: {},
 };
@@ -98,6 +92,7 @@ export type ClearPermissions = {
   handler: () => void;
 };
 
+// TODO: Implement all desired actions
 export type PermissionControllerActions =
   | GetPermissionsState
   | GetSubjects
@@ -108,6 +103,10 @@ export type PermissionsStateChange = {
   payload: [PermissionControllerState<GenericPerm>, Patch[]];
 };
 
+/**
+ * The controller only emits its generic state change events. Consumers should
+ * use selector subscriptions to subscribe to relevant substate.
+ */
 export type PermissionControllerEvents = PermissionsStateChange;
 
 type AllowedActions =
@@ -124,63 +123,71 @@ export type PermissionControllerMessenger = RestrictedControllerMessenger<
   never
 >;
 
-type ExtractPermissionOptions<
-  PSpec,
-  Perm extends GenericPerm,
-> = PSpec extends PermissionSpecificationConstraint<
-  Perm['parentCapability'],
-  infer PermOpts,
-  Record<string, unknown>,
-  RestrictedMethodImplementation<Json, Json>
->
-  ? PermOpts
-  : never;
+// type ExtractPermissionOptions<
+//   PSpec,
+//   Perm extends GenericPerm,
+// > = PSpec extends PermissionSpecificationConstraint<
+//   Perm['parentCapability'],
+//   PermConstraint<>,
+//   infer PermOpts,
+//   Record<string, unknown>,
+//   RestrictedMethodImplementation<Json, Json>
+// >
+//   ? PermOpts
+//   : never;
 
-type ExtractRequestData<
-  PSpec,
-  Perm extends GenericPerm,
-> = PSpec extends PermissionSpecificationConstraint<
-  Perm['parentCapability'],
-  PermissionOptions,
-  infer RequestData,
-  RestrictedMethodImplementation<Json, Json>
->
-  ? RequestData
-  : never;
+// type ExtractRequestData<
+//   PSpec,
+//   Perm extends GenericPerm,
+// > = PSpec extends PermissionSpecificationConstraint<
+//   Perm['parentCapability'],
+//   PermissionOptions,
+//   infer RequestData,
+//   RestrictedMethodImplementation<Json, Json>
+// >
+//   ? RequestData
+//   : never;
 
-type ExtractMethodImplementation<
-  PSpec,
-  Perm extends GenericPerm,
-> = PSpec extends PermissionSpecificationConstraint<
-  Perm['parentCapability'],
-  PermissionOptions,
-  Record<string, unknown>,
-  infer Impl
->
-  ? Impl
-  : never;
+// type ExtractMethodImplementation<
+//   PSpec,
+//   Perm extends GenericPerm,
+// > = PSpec extends PermissionSpecificationConstraint<
+//   Perm['parentCapability'],
+//   PermissionOptions,
+//   Record<string, unknown>,
+//   infer Impl
+// >
+//   ? Impl
+//   : never;
 
-type ExtractValidCaveats<
+type ExtractValidCaveatTypes<
   Perm extends GenericPerm,
-  Target extends string,
+  TargetName extends string,
 > = Perm extends {
-  parentCapability: Target;
-  caveats: (infer ValidCaveats)[];
+  parentCapability: TargetName;
+  caveats: null;
 }
-  ? ValidCaveats
+  ? never
+  : Perm extends {
+      parentCapability: TargetName;
+      caveats: (infer ValidCaveats)[];
+    }
+  ? ValidCaveats extends GenericCaveat
+    ? ValidCaveats['type']
+    : never
   : never;
 
 type PermissionControllerOptions<
-  Targets extends string,
-  Permission extends GenericPerm,
+  TargetKey extends string,
+  Permission extends PermConstraint<
+    ExtractPermissionTargetNames<TargetKey>,
+    GenericCaveat
+  >,
   Caveat extends GenericCaveat,
 > = {
   messenger: PermissionControllerMessenger;
   caveatSpecifications: CaveatSpecs<Caveat>;
-  permissionSpecifications: Record<
-    Permission['parentCapability'],
-    PermSpec<Targets>
-  >;
+  permissionSpecifications: PermSpecs<TargetKey>;
   unrestrictedMethods: string[];
   state?: Partial<PermissionControllerState<Permission>>;
 };
@@ -193,9 +200,12 @@ type GrantPermissionsOptions = {
 };
 
 export class PermissionController<
-  Targets extends string,
-  Permission extends GenericPerm,
-  Caveat extends CaveatConstraint<Json>,
+  TargetKey extends string,
+  Caveat extends GenericCaveat,
+  Permission extends PermConstraint<
+    ExtractPermissionTargetNames<TargetKey>,
+    Caveat
+  >,
 > extends BaseController<
   typeof controllerName,
   PermissionControllerState<Permission>,
@@ -207,15 +217,19 @@ export class PermissionController<
     return this._caveatSpecifications;
   }
 
-  private readonly _enforcer: Readonly<PermissionEnforcer>;
+  private readonly _enforcer: Readonly<
+    PermissionEnforcer<TargetKey, Caveat, Permission>
+  >;
 
-  public get enforcer(): Readonly<PermissionEnforcer> {
+  public get enforcer(): Readonly<
+    PermissionEnforcer<TargetKey, Caveat, Permission>
+  > {
     return this._enforcer;
   }
 
-  private readonly _permissionSpecifications: Readonly<PermSpecs<Targets>>;
+  private readonly _permissionSpecifications: Readonly<PermSpecs<TargetKey>>;
 
-  public get permissionSpecifications(): Readonly<PermSpecs<Targets>> {
+  public get permissionSpecifications(): Readonly<PermSpecs<TargetKey>> {
     return this._permissionSpecifications;
   }
 
@@ -231,7 +245,7 @@ export class PermissionController<
     caveatSpecifications,
     permissionSpecifications,
     unrestrictedMethods,
-  }: PermissionControllerOptions<Targets, Permission, Caveat>) {
+  }: PermissionControllerOptions<TargetKey, Permission, Caveat>) {
     super({
       name: controllerName,
       metadata: stateMetadata,
@@ -287,7 +301,7 @@ export class PermissionController<
    * @returns The permission if it exists, or undefined otherwise.
    */
   getPermission<SubjectPermission extends Permission>(
-    origin: string,
+    origin: OriginString,
     target: SubjectPermission['parentCapability'],
   ): SubjectPermission | undefined {
     return this.state.subjects[origin]?.permissions[
@@ -295,26 +309,32 @@ export class PermissionController<
     ] as SubjectPermission;
   }
 
-  getPermissions(origin: string): Record<MethodName, Permission> | undefined {
+  getPermissions(
+    origin: OriginString,
+  ): SubjectPermissions<Permission> | undefined {
     return this.state.subjects[origin]?.permissions;
   }
 
   hasPermission(
-    origin: string,
+    origin: OriginString,
     target: Permission['parentCapability'],
   ): boolean {
     return Boolean(this.getPermission(origin, target));
   }
 
-  hasPermissions(origin: string): boolean {
+  hasPermissions(origin: OriginString): boolean {
     return Boolean(this.state.subjects[origin]);
   }
 
-  private validatePermission(permission: Permission): void {
-    const specification = this.getPermissionSpecification(
-      this.getTargetKey(permission.parentCapability) as Targets,
-    );
-    specification.validator?.(permission);
+  private validateModifiedPermission(permission: Permission): void {
+    const targetKey = this.getTargetKey(permission.parentCapability);
+    /* istanbul ignore next: this should be impossible */
+    if (!targetKey) {
+      throw new Error(
+        `Fatal: Existing permission target key "${targetKey}" has no specification.`,
+      );
+    }
+    this.permissionSpecifications[targetKey].validator?.(permission);
   }
 
   /**
@@ -322,19 +342,19 @@ export class PermissionController<
    * permissions (same subject and method). Other existing permissions
    * remain unaffected.
    *
-   * **Note: Assumes that the new permissions have been validated.**
+   * **ATTN: Assumes that the new permissions have been validated.**
    *
    * @param origin - The origin of the grantee subject.
    * @param permissions - The new permissions for the grantee subject.
    */
   private setValidatedPermissions(
-    origin: string,
+    origin: OriginString,
     permissions: Record<MethodName, Permission>,
     shouldPreserveExistingPermissions = false,
   ): void {
     this.update((draftState) => {
       if (!draftState.subjects[origin]) {
-        // TODO:types
+        // Typecast: immer's WritableDraft is incompatible with our generics
         draftState.subjects[origin] = { origin, permissions: {} as any };
       }
 
@@ -348,7 +368,7 @@ export class PermissionController<
   }
 
   revokePermission(
-    origin: string,
+    origin: OriginString,
     target: Permission['parentCapability'],
   ): void {
     this.update((draftState) => {
@@ -396,7 +416,7 @@ export class PermissionController<
   private deletePermission(
     draftState: PermissionControllerState<Permission>,
     permissions: SubjectPermissions<Permission>,
-    origin: string,
+    origin: OriginString,
     target: Permission['parentCapability'],
   ): void {
     if (Object.keys(permissions).length > 1) {
@@ -406,7 +426,7 @@ export class PermissionController<
     }
   }
 
-  revokeAllPermissions(origin: string): void {
+  revokeAllPermissions(origin: OriginString): void {
     this.update((draftState) => {
       if (!draftState.subjects[origin]) {
         throw new UnrecognizedSubjectError(origin);
@@ -416,9 +436,9 @@ export class PermissionController<
   }
 
   hasCaveat<
-    Target extends Permission['parentCapability'],
-    CaveatType extends ExtractValidCaveats<Permission, Target>,
-  >(origin: string, target: Target, caveatType: CaveatType['type']): boolean {
+    TargetName extends Permission['parentCapability'],
+    CaveatType extends ExtractValidCaveatTypes<Permission, TargetName>,
+  >(origin: OriginString, target: TargetName, caveatType: CaveatType): boolean {
     return (
       this.getPermission(origin, target)?.caveats?.some(
         (caveat) => caveat.type === caveatType,
@@ -427,12 +447,12 @@ export class PermissionController<
   }
 
   addCaveat<
-    Target extends Permission['parentCapability'],
-    CaveatType extends ExtractValidCaveats<Permission, Target>,
+    TargetName extends Permission['parentCapability'],
+    CaveatType extends ExtractValidCaveatTypes<Permission, TargetName>,
   >(
-    origin: string,
-    target: Target,
-    caveatType: CaveatType['type'],
+    origin: OriginString,
+    target: TargetName,
+    caveatType: CaveatType,
     caveatValue: ExtractCaveatValue<Caveat, CaveatType>,
   ): void {
     if (this.hasCaveat(origin, target, caveatType)) {
@@ -443,12 +463,12 @@ export class PermissionController<
   }
 
   updateCaveat<
-    Target extends Permission['parentCapability'],
-    CaveatType extends ExtractValidCaveats<Permission, Target>,
+    TargetName extends Permission['parentCapability'],
+    CaveatType extends ExtractValidCaveatTypes<Permission, TargetName>,
   >(
-    origin: string,
-    target: Target,
-    caveatType: CaveatType['type'],
+    origin: OriginString,
+    target: TargetName,
+    caveatType: CaveatType,
     caveatValue: ExtractCaveatValue<Caveat, CaveatType>,
   ): void {
     if (!this.hasCaveat(origin, target, caveatType)) {
@@ -458,36 +478,36 @@ export class PermissionController<
     this.setCaveat(origin, target, caveatType, caveatValue);
   }
 
-  private getCaveat<
-    Target extends Permission['parentCapability'],
-    CaveatType extends ExtractValidCaveats<Permission, Target>,
-  >(
-    origin: string,
-    target: Target,
-    caveatType: CaveatType['type'],
-  ): CaveatType | undefined {
-    const permission = this.getPermission(origin, target);
-    if (!permission) {
-      throw new PermissionDoesNotExistError(origin, target);
-    }
+  // private getCaveat<
+  //   TargetName extends Permission['parentCapability'],
+  //   CaveatType extends ExtractValidCaveatTypes<Permission, TargetName>,
+  // >(
+  //   origin: OriginString,
+  //   target: TargetName,
+  //   caveatType: CaveatType,
+  // ): CaveatType | undefined {
+  //   const permission = this.getPermission(origin, target);
+  //   if (!permission) {
+  //     throw new PermissionDoesNotExistError(origin, target);
+  //   }
 
-    return findCaveat(permission, caveatType);
-  }
+  //   return findCaveat(permission, caveatType);
+  // }
 
   private setCaveat<
-    Target extends Permission['parentCapability'],
-    CaveatType extends ExtractValidCaveats<Permission, Target>,
+    TargetName extends Permission['parentCapability'],
+    CaveatType extends ExtractValidCaveatTypes<Permission, TargetName>,
   >(
-    origin: string,
-    target: Target,
-    caveatType: CaveatType['type'],
+    origin: OriginString,
+    target: TargetName,
+    caveatType: CaveatType,
     caveatValue: ExtractCaveatValue<Caveat, CaveatType>,
   ): void {
     this.update((draftState) => {
-      // TODO:types
-      const permission = (draftState.subjects[origin] as any)?.permissions[
-        target
-      ] as Permission;
+      // Typecast: immer's WritableDraft is incompatible with our generics
+      const permission = (
+        draftState.subjects as PermissionControllerSubjects<Permission>
+      )[origin]?.permissions[target] as Permission;
       /* istanbul ignore if: This should be impossible, but TypeScript wants it */
       if (!permission) {
         throw new PermissionDoesNotExistError(origin, target);
@@ -510,22 +530,26 @@ export class PermissionController<
           permission.caveats.splice(caveatIndex, 1, caveat as any);
         }
       } else {
-        permission.caveats = [caveat as any];
+        // Typecast: At this point, we don't know if the specific permission
+        // is allowed to have caveats, but it should be impossible to call
+        // this method for a permission that may not have any caveats.
+        // If all else fails, the permission validator is also called.
+        permission.caveats = [caveat] as any;
       }
 
-      // Typecast: ts(2589)
-      this.validatePermission(permission as any);
+      this.validateModifiedPermission(permission);
     });
   }
 
   removeCaveat<
-    Target extends Permission['parentCapability'],
-    CaveatType extends ExtractValidCaveats<Permission, Target>,
-  >(origin: string, target: Target, caveatType: CaveatType['type']): void {
+    TargetName extends Permission['parentCapability'],
+    CaveatType extends ExtractValidCaveatTypes<Permission, TargetName>,
+  >(origin: OriginString, target: TargetName, caveatType: CaveatType): void {
     this.update((draftState) => {
-      // TODO:types
-      const permission: Permission = (draftState.subjects[origin] as any)
-        ?.permissions[target];
+      // Typecast: immer's WritableDraft is incompatible with our generics
+      const permission: Permission = (
+        draftState.subjects as PermissionControllerSubjects<Permission>
+      )[origin]?.permissions[target];
       if (!permission) {
         throw new PermissionDoesNotExistError(origin, target);
       }
@@ -547,8 +571,7 @@ export class PermissionController<
         permission.caveats.splice(caveatIndex, 1);
       }
 
-      // Typecast: ts(2589)
-      this.validatePermission(permission as any);
+      this.validateModifiedPermission(permission);
     });
   }
 
@@ -559,12 +582,12 @@ export class PermissionController<
    * Used to support our namespaced method feature, which allows blocks
    * of methods to be hidden behind a restricted method with a trailing `_` character.
    *
-   * @param method string - The requested RPC method.
+   * @param method - The requested RPC method.
    * @returns The internal key of the method.
    */
-  getTargetKey(method: Permission['parentCapability']): Targets | '' {
+  getTargetKey(method: Permission['parentCapability']): TargetKey | undefined {
     if (hasProperty(this._permissionSpecifications, method)) {
-      return method as Targets;
+      return method as TargetKey;
     }
 
     const wildCardMethodsWithoutWildCard: Record<string, boolean> = {};
@@ -590,84 +613,75 @@ export class PermissionController<
     }
 
     if (hasProperty(this._permissionSpecifications, targetKey)) {
-      return targetKey as Targets;
+      return targetKey as TargetKey;
     } else if (wildCardMethodsWithoutWildCard[targetKey]) {
-      return `${targetKey}*` as Targets;
+      return `${targetKey}*` as TargetKey;
     }
 
-    return '';
+    return undefined;
   }
 
   getRestrictedMethodImplementation(
-    method: string,
+    method: Permission['parentCapability'],
   ): RestrictedMethodImplementation<Json, Json> | undefined {
     const targetKey = this.getTargetKey(method);
     if (!targetKey) {
       return undefined;
     }
 
-    return this.getPermissionSpecification(method as Targets)
-      .methodImplementation;
+    return this.permissionSpecifications[targetKey].methodImplementation;
   }
 
-  private getPermissionSpecification(targetKey: Targets) {
-    const specification = this._permissionSpecifications[targetKey];
-    /* istanbul ignore if: This should be impossible, but TypeScript wants it */
-    if (!specification) {
-      throw new Error(
-        `Existing permission target key "${targetKey}" has no specification.`,
-      );
-    }
-
-    return specification;
-  }
-
-  grantPermissions(
-    opts: GrantPermissionsOptions,
-  ): SubjectPermissions<Permission> {
-    const {
-      requestData,
-      approvedPermissions,
-      shouldPreserveExistingPermissions = false,
-      subject,
-    } = opts;
+  grantPermissions({
+    requestData,
+    approvedPermissions,
+    shouldPreserveExistingPermissions = false,
+    subject,
+  }: GrantPermissionsOptions): SubjectPermissions<Permission> {
     const { origin } = subject;
 
     if (!origin || typeof origin !== 'string') {
       throw new InvalidSubjectIdentifierError(origin);
     }
 
-    const permissions: { [methodName: string]: Permission } =
-      (shouldPreserveExistingPermissions && {
+    const permissions: SubjectPermissions<Permission> =
+      ((shouldPreserveExistingPermissions && {
         ...this.getPermissions(origin),
       }) ||
-      {};
+        {}) as SubjectPermissions<Permission>;
 
-    for (const target of Object.keys(approvedPermissions)) {
-      const targetKey = this.getTargetKey(target);
+    for (const requestedTarget of Object.keys(approvedPermissions)) {
+      const targetKey = this.getTargetKey(
+        requestedTarget as Permission['parentCapability'],
+      );
       if (!targetKey) {
-        throw methodNotFound({ method: target });
+        throw methodNotFound({ method: requestedTarget });
       }
 
-      const specification = this.getPermissionSpecification(targetKey);
+      // The requested target must be a valid target name if we found its key.
+      // We reassign it to change its type.
+      const targetName = requestedTarget as Permission['parentCapability'];
+      const specification = this.permissionSpecifications[targetKey];
 
       const caveats = this.computeCaveats(
         origin,
-        target,
-        approvedPermissions[target].caveats,
+        targetName,
+        approvedPermissions[targetName].caveats,
       );
 
-      const permissionOptions = { caveats, invoker: origin, target };
+      const permissionOptions = {
+        caveats,
+        invoker: origin,
+        target: targetName,
+      };
 
-      let permission: Permission;
-      if (specification.factory) {
-        permission = specification.factory(permissionOptions, requestData);
-      } else {
-        permission = constructPermission(permissionOptions);
-        specification.validator?.(permission);
-      }
-
-      permissions[targetKey] = permission;
+      const permission = (
+        specification.factory
+          ? specification.factory(permissionOptions, requestData)
+          : constructPermission(permissionOptions)
+      ) as Permission;
+      specification.validator?.(permission);
+      permissions[targetName] = permission;
     }
 
     this.setValidatedPermissions(origin, permissions);
@@ -679,10 +693,10 @@ export class PermissionController<
    * @returns Whether the given caveats are valid.
    */
   private computeCaveats(
-    origin: string,
-    target: string,
-    caveats?: Caveat<Json>[],
-  ): Caveat<Json>[] | undefined {
+    origin: OriginString,
+    target: Permission['parentCapability'],
+    caveats?: unknown[],
+  ): Caveat[] | undefined {
     const caveatArray = caveats?.map((requestedCaveat) =>
       this.computeCaveat(origin, target, requestedCaveat),
     );
@@ -690,10 +704,10 @@ export class PermissionController<
   }
 
   private computeCaveat(
-    origin: string,
-    target: string,
-    requestedCaveat: Caveat<Json>,
-  ): Caveat<Json> {
+    origin: OriginString,
+    target: Permission['parentCapability'],
+    requestedCaveat: unknown,
+  ): Caveat {
     if (!isPlainObject(requestedCaveat)) {
       throw new InvalidCaveatError(requestedCaveat);
     }
@@ -706,7 +720,10 @@ export class PermissionController<
       throw new InvalidCaveatTypeError(requestedCaveat.type);
     }
 
-    const specification = this.caveatSpecifications[requestedCaveat.type];
+    const specification =
+      this.caveatSpecifications[
+        requestedCaveat.type as keyof CaveatSpecs<Caveat>
+      ];
     if (!specification) {
       throw new CaveatTypeDoesNotExistError(
         requestedCaveat.type,
@@ -720,20 +737,25 @@ export class PermissionController<
     }
 
     const caveat = constructCaveat(requestedCaveat.type, requestedCaveat.value);
-
     specification.validator?.(origin, target, caveat);
-    return caveat;
+    return caveat as Caveat;
   }
 
-  private constructEnforcer(): PermissionEnforcer {
-    return new PermissionEnforcer({
+  private constructEnforcer(): PermissionEnforcer<
+    TargetKey,
+    Caveat,
+    Permission
+  > {
+    return new PermissionEnforcer<TargetKey, Caveat, Permission>({
       caveatSpecifications: this.caveatSpecifications,
       getPermission: this.getPermission.bind(this),
       getRestrictedMethodImplementation:
         this.getRestrictedMethodImplementation.bind(this),
       grantPermissions: this.grantPermissions.bind(this),
       isRestrictedMethod: (method: string) => {
-        return Boolean(this.getTargetKey(method));
+        return Boolean(
+          this.getTargetKey(method as Permission['parentCapability']),
+        );
       },
       isUnrestrictedMethod: (method: string) => {
         return this.unrestrictedMethods.has(method);
@@ -765,10 +787,12 @@ export class PermissionController<
         ),
       hasApprovalRequest: (opts: {
         id?: string;
-        origin?: string;
+        origin?: OriginString;
         type?: string;
       }) =>
-        // Typecast: It can't handle the overloads
+        // Typecast: There are only some valid parameter combinations, but we
+        // just won't worry about that here. It's unclear if the messaging
+        // even handles them.
         this.messagingSystem.call('ApprovalController:hasRequest', opts as any),
     });
   }

@@ -205,69 +205,115 @@ export type RestrictedMethodImplementation<
   | AsyncRestrictedMethodImplementation<Params, Result>;
 
 export type PermissionSpecification<
-  Target extends string,
+  TargetKey extends string,
+  Perm extends PermConstraint<TargetKey, GenericCaveat | never>,
   FactoryOptions extends PermissionOptions,
   RequestData extends Record<string, unknown>,
   MethodImplementation extends RestrictedMethodImplementation<Json, Json>,
-> = {
-  /**
-   * The target resource of the permission. In other words, at the time of
-   * writing, the RPC method name.
-   */
-  target: Target | `${Target}*`;
+> = TargetKeyConstraint<TargetKey> extends never
+  ? never
+  : {
+      /**
+       * The target resource of the permission. In other words, at the time of
+       * writing, the RPC method name.
+       */
+      target: TargetKey;
 
-  /**
-   * The factory function used to get permission objects. Permissions returned
-   * by this function are presumed to valid, and they will not be passed to the
-   * validator function associated with this specification (if any). In other
-   * words, the factory function should validate the permissions it creates.
-   *
-   * If no factory is specified, the {@link Permission} constructor will be
-   * used, and the validator function (if specified) will be called on newly
-   * constructed permissions.
-   */
-  factory?: (options: FactoryOptions, requestData?: RequestData) => Permission;
+      /**
+       * The factory function used to get permission objects. Permissions returned
+       * by this function are presumed to valid, and they will not be passed to the
+       * validator function associated with this specification (if any). In other
+       * words, the factory function should validate the permissions it creates.
+       *
+       * If no factory is specified, the {@link Permission} constructor will be
+       * used, and the validator function (if specified) will be called on newly
+       * constructed permissions.
+       */
+      factory?: (options: FactoryOptions, requestData?: RequestData) => Perm;
 
-  /**
-   * The implementation of the restricted method that the permission
-   * corresponds to.
-   */
-  methodImplementation: MethodImplementation;
+      /**
+       * The implementation of the restricted method that the permission
+       * corresponds to.
+       */
+      methodImplementation: MethodImplementation;
 
-  /**
-   * The validator function used to validate permissions of the associated type
-   * whenever they are mutated. The only way a permission can be legally mutated
-   * is when its caveats are modified by the permission controller.
-   *
-   * The validator should throw an appropriate JSON-RPC error if validation fails.
-   */
-  validator?: (permission: Permission) => void;
-};
+      /**
+       * The validator function used to validate permissions of the associated type
+       * whenever they are mutated. The only way a permission can be legally mutated
+       * is when its caveats are modified by the permission controller.
+       *
+       * The validator should throw an appropriate JSON-RPC error if validation fails.
+       */
+      validator?: (permission: Permission) => void;
+    };
 
-export type PermissionSpecifications = Record<
-  MethodName,
-  PermissionSpecification<
-    string,
-    PermissionOptions,
-    Record<string, unknown>,
-    RestrictedMethodImplementation<Json, Json>
-  >
->;
+// export type PermissionSpecifications = Record<
+//   MethodName,
+//   PermissionSpecification<
+//     string,
+//     GenericPerm,
+//     PermissionOptions,
+//     Record<string, unknown>,
+//     RestrictedMethodImplementation<Json, Json>
+//   >
+// >;
 
-export type PermConstraint<AllowedCaveat extends GenericCaveat | never> = Omit<
-  Permission,
-  'caveats'
-> & {
-  caveats: AllowedCaveat extends never ? null : AllowedCaveat[];
-};
+export type TargetKeyConstraint<Key extends string> = Key extends `${string}_*`
+  ? Key
+  : Key extends `${string}_`
+  ? never
+  : Key extends `${string}*`
+  ? never
+  : Key;
 
-export type GenericPerm = PermConstraint<GenericCaveat | never>;
+export type TargetNameConstraint<Name extends string> =
+  Name extends `${string}*` ? never : Name extends `${string}_` ? never : Name;
 
-export type PermSpec<Target extends string> = PermissionSpecification<
-  Target,
-  PermissionOptions,
-  Record<string, unknown>,
-  RestrictedMethodImplementation<Json, Json>
->;
+// type NotWildCard<Name extends string> = Name extends `${string}*`
+//   ? never
+//   : Name;
 
-export type PermSpecs<Target extends string> = Record<Target, PermSpec<Target>>;
+export type ExtractPermissionTargetNames<TargetKey extends string> =
+  TargetKey extends `${infer Base}_*` ? `${Base}_${string}` : TargetKey;
+
+// type MyKeys = 'foo' | 'foo2' | 'bar_*' | 'excluded1_' | 'excluded2*';
+
+// type MyConstrainedKeys = TargetKeyConstraint<MyKeys>
+
+// type MyNames = TargetNameConstraint<ExtractPermissionTargetNames<MyConstrainedKeys>>;
+
+// let foo: NotWildCard<'foo*'>;
+// foo.
+
+// let bar: PermConstraint<'foo*', any>;
+// bar.
+
+export type PermConstraint<
+  TargetName extends string,
+  AllowedCaveat extends GenericCaveat | never,
+> = TargetNameConstraint<TargetName> extends never
+  ? never
+  : Omit<Permission, 'caveats' | 'parentCapability'> & {
+      caveats: AllowedCaveat extends never ? null : AllowedCaveat[] | null;
+      parentCapability: TargetName extends `${string}_`
+        ? `${TargetName}${string}`
+        : TargetName;
+    };
+
+export type GenericPerm = PermConstraint<string, GenericCaveat | never>;
+
+export type PermSpec<TargetKey extends string> =
+  TargetKeyConstraint<TargetKey> extends never
+    ? never
+    : PermissionSpecification<
+        TargetKey,
+        PermConstraint<TargetKey, GenericCaveat | never>,
+        PermissionOptions,
+        Record<string, unknown>,
+        RestrictedMethodImplementation<Json, Json>
+      >;
+
+export type PermSpecs<TargetKey extends string> =
+  TargetKeyConstraint<TargetKey> extends never
+    ? never
+    : Record<TargetKey, PermSpec<TargetKey>>;
