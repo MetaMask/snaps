@@ -93,7 +93,7 @@ export type PermissionOptions = {
    * The caveats of the permission.
    * See {@link Caveat}.
    */
-  caveats?: Caveat<Json>[];
+  caveats?: Caveat<string, Json>[];
 };
 
 /**
@@ -119,7 +119,7 @@ export type Permission = Omit<
    *
    * TODO: Make optional in typescript@4.4.x
    */
-  readonly caveats: Caveat<Json>[] | null;
+  readonly caveats: Caveat<string, Json>[] | null;
 
   /**
    * The origin string of the subject that has the permission.
@@ -147,18 +147,18 @@ export function constructPermission(options: PermissionOptions) {
 }
 
 /**
- * Gets the value of the caveat of the specified type belonging to the
- * specified permission.
+ * Gets the the caveat of the specified type belonging to the specified
+ * permission.
  *
- * @param permission The permission whose caveat value to retrieve.
+ * @param permission The permission whose caveat to retrieve.
  * @param caveatType The type of the caveat to retrieve.
- * @returns The caveat value, or undefined if no such caveat exists.
+ * @returns The caveat, or undefined if no such caveat exists.
  */
-export function findCaveat<TargetCaveat extends Caveat<Json>>(
+export function findCaveat<TargetCaveat extends Caveat<string, Json>>(
   permission: Permission,
   caveatType: TargetCaveat['type'],
 ): TargetCaveat | undefined {
-  // TODO:types
+  // TODO:types create a type for a permission that can have particular caveats?
   return permission.caveats?.find(
     (caveat) => caveat.type === caveatType,
   ) as any;
@@ -166,7 +166,7 @@ export function findCaveat<TargetCaveat extends Caveat<Json>>(
 
 type RequestedPermission = {
   target?: MethodName;
-  caveats?: Caveat<Json>[];
+  caveats?: Caveat<string, Json>[];
 };
 
 export type RequestedPermissions = Record<MethodName, RequestedPermission>;
@@ -251,7 +251,7 @@ export type PermissionSpecification<
 //   MethodName,
 //   PermissionSpecification<
 //     string,
-//     GenericPerm,
+//     GenericPermission,
 //     PermissionOptions,
 //     Record<string, unknown>,
 //     RestrictedMethodImplementation<Json, Json>
@@ -300,7 +300,7 @@ export type PermConstraint<
         : TargetName;
     };
 
-export type GenericPerm = PermConstraint<string, GenericCaveat | never>;
+export type GenericPermission = PermConstraint<string, GenericCaveat | never>;
 
 export type PermSpec<TargetKey extends string> =
   TargetKeyConstraint<TargetKey> extends never

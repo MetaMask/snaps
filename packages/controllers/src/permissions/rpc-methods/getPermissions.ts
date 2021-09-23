@@ -3,7 +3,7 @@ import type {
   JsonRpcEngineEndCallback,
   PendingJsonRpcResponse,
 } from 'json-rpc-engine';
-import { GenericPerm } from '../Permission';
+import { GenericPermission } from '../Permission';
 import { MethodNames } from '../enums';
 
 import type { Permission } from '../Permission';
@@ -23,7 +23,7 @@ export const getPermissionsHandler: PermittedHandlerExport<
 };
 
 export type GetPermissionsHooks = {
-  getPermissions: () => SubjectPermissions<GenericPerm>;
+  getPermissions: () => SubjectPermissions<GenericPermission>;
 };
 
 async function getPermissionsImplementation(

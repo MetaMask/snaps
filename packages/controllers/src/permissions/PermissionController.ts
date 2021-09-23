@@ -23,7 +23,7 @@ import {
   RequestedPermissions,
   RestrictedMethodImplementation,
   constructPermission,
-  GenericPerm,
+  GenericPermission,
   PermSpecs,
   PermConstraint,
   ExtractPermissionTargetNames,
@@ -51,20 +51,20 @@ export type PermissionSubjectMetadata = {
 
 const controllerName = 'PermissionController';
 
-export type SubjectPermissions<Permission extends GenericPerm> = Record<
+export type SubjectPermissions<Permission extends GenericPermission> = Record<
   Permission['parentCapability'],
   Permission
 >;
 
-export type PermissionSubjectEntry<Permission extends GenericPerm> = {
+export type PermissionSubjectEntry<Permission extends GenericPermission> = {
   permissions: SubjectPermissions<Permission>;
 } & PermissionSubjectMetadata;
 
-export type PermissionControllerSubjects<Permission extends GenericPerm> =
+export type PermissionControllerSubjects<Permission extends GenericPermission> =
   Record<OriginString, PermissionSubjectEntry<Permission>>;
 
 // TODO:TS4.4 Enable compiler flags to forbid unchecked member access
-export type PermissionControllerState<Permission extends GenericPerm> = {
+export type PermissionControllerState<Permission extends GenericPermission> = {
   subjects: PermissionControllerSubjects<Permission>;
 };
 
@@ -79,12 +79,12 @@ const defaultState: PermissionControllerState<any> = {
 
 export type GetPermissionsState = {
   type: `${typeof controllerName}:getState`;
-  handler: () => PermissionControllerState<GenericPerm>;
+  handler: () => PermissionControllerState<GenericPermission>;
 };
 
 export type GetSubjects = {
   type: `${typeof controllerName}:getSubjects`;
-  handler: () => (keyof PermissionControllerSubjects<GenericPerm>)[];
+  handler: () => (keyof PermissionControllerSubjects<GenericPermission>)[];
 };
 
 export type ClearPermissions = {
@@ -100,7 +100,7 @@ export type PermissionControllerActions =
 
 export type PermissionsStateChange = {
   type: `${typeof controllerName}:stateChange`;
-  payload: [PermissionControllerState<GenericPerm>, Patch[]];
+  payload: [PermissionControllerState<GenericPermission>, Patch[]];
 };
 
 /**
@@ -125,7 +125,7 @@ export type PermissionControllerMessenger = RestrictedControllerMessenger<
 
 // type ExtractPermissionOptions<
 //   PSpec,
-//   Perm extends GenericPerm,
+//   Perm extends GenericPermission,
 // > = PSpec extends PermissionSpecificationConstraint<
 //   Perm['parentCapability'],
 //   PermConstraint<>,
@@ -138,7 +138,7 @@ export type PermissionControllerMessenger = RestrictedControllerMessenger<
 
 // type ExtractRequestData<
 //   PSpec,
-//   Perm extends GenericPerm,
+//   Perm extends GenericPermission,
 // > = PSpec extends PermissionSpecificationConstraint<
 //   Perm['parentCapability'],
 //   PermissionOptions,
@@ -150,7 +150,7 @@ export type PermissionControllerMessenger = RestrictedControllerMessenger<
 
 // type ExtractMethodImplementation<
 //   PSpec,
-//   Perm extends GenericPerm,
+//   Perm extends GenericPermission,
 // > = PSpec extends PermissionSpecificationConstraint<
 //   Perm['parentCapability'],
 //   PermissionOptions,
@@ -161,17 +161,14 @@ export type PermissionControllerMessenger = RestrictedControllerMessenger<
 //   : never;
 
 type ExtractValidCaveatTypes<
-  Perm extends GenericPerm,
+  Perm extends GenericPermission,
   TargetName extends string,
 > = Perm extends {
   parentCapability: TargetName;
   caveats: null;
 }
   ? never
-  : Perm extends {
-      parentCapability: TargetName;
-      caveats: (infer ValidCaveats)[];
-    }
+  : Perm extends PermConstraint<TargetName, infer ValidCaveats>
   ? ValidCaveats extends GenericCaveat
     ? ValidCaveats['type']
     : never
@@ -724,6 +721,7 @@ export class PermissionController<
       this.caveatSpecifications[
         requestedCaveat.type as keyof CaveatSpecs<Caveat>
       ];
+
     if (!specification) {
       throw new CaveatTypeDoesNotExistError(
         requestedCaveat.type,

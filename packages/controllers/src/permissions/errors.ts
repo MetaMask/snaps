@@ -23,7 +23,7 @@ export function unauthorized(arg?: ErrorArg) {
 
 export function methodNotFound(opts: MethodNotFoundArg) {
   const message = opts.method
-    ? `The method '${opts.method}' does not exist / is not available.`
+    ? `The method "${opts.method}" does not exist / is not available.`
     : undefined;
 
   return ethErrors.rpc.methodNotFound({ data: opts.data, message });
@@ -50,8 +50,12 @@ export function internalError<Data extends Record<string, unknown>>(
 }
 
 export class InvalidSubjectIdentifierError extends Error {
-  constructor(origin: string) {
-    super(`Invalid subject identifier: ${origin}`);
+  constructor(origin: unknown) {
+    super(
+      `Invalid subject identifier: "${
+        typeof origin === 'string' ? origin : typeof origin
+      }"`,
+    );
   }
 }
 
@@ -75,7 +79,7 @@ export class PermissionHasNoCaveatsError extends Error {
 
 export class UnrecognizedCaveatTypeError extends Error {
   constructor(caveatType: string) {
-    super(`Unrecognized caveat type: ${caveatType}`);
+    super(`Unrecognized caveat type: "${caveatType}"`);
   }
 }
 
@@ -116,7 +120,7 @@ export class InvalidCaveatError extends EthereumRpcError<unknown> {
 
 export class InvalidCaveatTypeError extends Error {
   constructor(caveatType: unknown) {
-    super(`Caveat types must be strings. Received: ${typeof caveatType}`);
+    super(`Caveat types must be strings. Received: "${typeof caveatType}"`);
   }
 }
 
@@ -151,16 +155,16 @@ export class InvalidCaveatFieldsError extends Error {
 
   constructor(caveat: Record<string, unknown>, origin: string, target: string) {
     super(
-      `Caveat has unexpected number of fields: ${Object.keys(caveat).length}`,
+      `Caveat has unexpected number of fields: "${Object.keys(caveat).length}"`,
     );
     this.data = { caveat, origin, target };
   }
 }
 
 export class InvalidCaveatJsonError extends Error {
-  public data: { caveat: Caveat<any>; origin: string; target: string };
+  public data: { caveat: Caveat<any, any>; origin: string; target: string };
 
-  constructor(caveat: Caveat<any>, origin: string, target: string) {
+  constructor(caveat: Caveat<any, any>, origin: string, target: string) {
     super(`Caveat object is not valid JSON.`);
     this.data = { caveat, origin, target };
   }
