@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.1.1]
-### Uncategorized
-- snap-examples: Fix compatibility issues
+### Added
 - Add missing publish scripts to new packages
+
+### Changed
+- Fix examples compatibility issues
 
 ## [0.1.0]
 ### Changed
