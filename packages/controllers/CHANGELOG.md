@@ -7,8 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.1.1]
-### Uncategorized
-- Added out of band error support ([#88](https://github.com/MetaMask/snaps-skunkworks/pull/88))
+### Added
+- Out of band error support ([#88](https://github.com/MetaMask/snaps-skunkworks/pull/88))
+
+### Changed
 - @metamask/controllers@17.0.0 ([#87](https://github.com/MetaMask/snaps-skunkworks/pull/87))
 
 ## [0.1.0]
