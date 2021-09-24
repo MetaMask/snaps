@@ -19,7 +19,6 @@ import {
   userRejectedRequest,
 } from './errors';
 import type {
-  ExtractPermissionTargetNames,
   PermConstraint,
   RequestedPermissions,
   RestrictedMethodImplementation,
@@ -52,10 +51,7 @@ type RequestUserApproval = (
 type PermissionEnforcerArgs<
   TargetKey extends string,
   Caveat extends GenericCaveat,
-  Permission extends PermConstraint<
-    ExtractPermissionTargetNames<TargetKey>,
-    Caveat
-  >,
+  Permission extends PermConstraint<TargetKey, Caveat>,
 > = {
   caveatSpecifications: CaveatSpecs<Caveat>;
   isRestrictedMethod: IsRestrictedMethod;
@@ -84,10 +80,7 @@ type PermissionEnforcerArgs<
 export class PermissionEnforcer<
   TargetKey extends string,
   Caveat extends GenericCaveat,
-  Permission extends PermConstraint<
-    ExtractPermissionTargetNames<TargetKey>,
-    Caveat
-  >,
+  Permission extends PermConstraint<TargetKey, Caveat>,
 > {
   private caveatSpecifications: CaveatSpecs<Caveat>;
 

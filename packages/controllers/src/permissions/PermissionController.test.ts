@@ -70,24 +70,22 @@ function getDefaultCaveatSpecifications(): CaveatSpecs<DefaultCaveats> {
 
 type SecretArrayName = 'wallet_getSecretArray';
 
-type GetSecretArrayPermission = PermConstraint<
-  SecretArrayName,
-  FilterArrayCaveat
->;
+type SecretArrayPermission = PermConstraint<SecretArrayName, FilterArrayCaveat>;
 
 type SecretObjectName = 'wallet_getSecretObject';
 
-type GetSecretObjectPermission = PermConstraint<
+type SecretObjectPermission = PermConstraint<
   SecretObjectName,
   FilterObjectCaveat
 >;
 
-// type DefaultTargetNames = SecretArrayName | SecretObjectName;
+type DefaultTargetNames = SecretArrayName | SecretObjectName;
 
-type DefaultPermissions = GetSecretArrayPermission | GetSecretObjectPermission;
+type DefaultPermissions = SecretArrayPermission | SecretObjectPermission;
 
 function getDefaultPermissionSpecifications(): PermSpecs<
-  DefaultPermissions['parentCapability']
+  DefaultTargetNames,
+  DefaultPermissions
 > {
   return {
     wallet_getSecretArray: {
@@ -97,9 +95,9 @@ function getDefaultPermissionSpecifications(): PermSpecs<
       },
     },
     wallet_getSecretObject: {
-      target: 'wallet_getSecretArray', // TODO:types Same issue as caveat specs
+      target: 'wallet_getSecretObject',
       methodImplementation: (_args: RestrictedMethodArgs<Json>) => {
-        return ['secret1', 'secret2', 'secret3'];
+        return { secret1: 'a', secret2: 'b', secret3: 'c' };
       },
     },
   };
@@ -136,8 +134,12 @@ function getControllerOpts(opts?: Record<string, unknown>) {
   };
 }
 
-function getDefaultPermissionController(opts = getControllerOpts()) {
-  return new PermissionController(opts);
+function getDefaultPermissionController() {
+  return new PermissionController<
+    DefaultTargetNames,
+    DefaultCaveats,
+    DefaultPermissions
+  >(getControllerOpts());
 }
 
 describe('PermissionController', () => {

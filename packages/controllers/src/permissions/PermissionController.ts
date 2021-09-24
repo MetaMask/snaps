@@ -26,7 +26,6 @@ import {
   GenericPermission,
   PermSpecs,
   PermConstraint,
-  ExtractPermissionTargetNames,
 } from './Permission';
 import {
   PermissionDoesNotExistError,
@@ -176,15 +175,12 @@ type ExtractValidCaveatTypes<
 
 type PermissionControllerOptions<
   TargetKey extends string,
-  Permission extends PermConstraint<
-    ExtractPermissionTargetNames<TargetKey>,
-    GenericCaveat
-  >,
-  Caveat extends GenericCaveat,
+  Caveat extends GenericCaveat | never,
+  Permission extends PermConstraint<TargetKey, Caveat>,
 > = {
   messenger: PermissionControllerMessenger;
   caveatSpecifications: CaveatSpecs<Caveat>;
-  permissionSpecifications: PermSpecs<TargetKey>;
+  permissionSpecifications: PermSpecs<TargetKey, Permission>;
   unrestrictedMethods: string[];
   state?: Partial<PermissionControllerState<Permission>>;
 };
@@ -198,11 +194,8 @@ type GrantPermissionsOptions = {
 
 export class PermissionController<
   TargetKey extends string,
-  Caveat extends GenericCaveat,
-  Permission extends PermConstraint<
-    ExtractPermissionTargetNames<TargetKey>,
-    Caveat
-  >,
+  Caveat extends GenericCaveat | never,
+  Permission extends PermConstraint<TargetKey, Caveat>,
 > extends BaseController<
   typeof controllerName,
   PermissionControllerState<Permission>,
@@ -224,9 +217,13 @@ export class PermissionController<
     return this._enforcer;
   }
 
-  private readonly _permissionSpecifications: Readonly<PermSpecs<TargetKey>>;
+  private readonly _permissionSpecifications: Readonly<
+    PermSpecs<TargetKey, Permission>
+  >;
 
-  public get permissionSpecifications(): Readonly<PermSpecs<TargetKey>> {
+  public get permissionSpecifications(): Readonly<
+    PermSpecs<TargetKey, Permission>
+  > {
     return this._permissionSpecifications;
   }
 
@@ -242,7 +239,7 @@ export class PermissionController<
     caveatSpecifications,
     permissionSpecifications,
     unrestrictedMethods,
-  }: PermissionControllerOptions<TargetKey, Permission, Caveat>) {
+  }: PermissionControllerOptions<TargetKey, Caveat, Permission>) {
     super({
       name: controllerName,
       metadata: stateMetadata,

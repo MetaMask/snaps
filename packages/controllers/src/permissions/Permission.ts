@@ -154,11 +154,13 @@ export function constructPermission(options: PermissionOptions) {
  * @param caveatType The type of the caveat to retrieve.
  * @returns The caveat, or undefined if no such caveat exists.
  */
-export function findCaveat<TargetCaveat extends Caveat<string, Json>>(
-  permission: Permission,
+export function findCaveat<
+  TargetCaveat extends GenericCaveat,
+  TargetPermission extends PermConstraint<string, TargetCaveat>,
+>(
+  permission: TargetPermission,
   caveatType: TargetCaveat['type'],
 ): TargetCaveat | undefined {
-  // TODO:types create a type for a permission that can have particular caveats?
   return permission.caveats?.find(
     (caveat) => caveat.type === caveatType,
   ) as any;
@@ -247,17 +249,6 @@ export type PermissionSpecification<
       validator?: (permission: Permission) => void;
     };
 
-// export type PermissionSpecifications = Record<
-//   MethodName,
-//   PermissionSpecification<
-//     string,
-//     GenericPermission,
-//     PermissionOptions,
-//     Record<string, unknown>,
-//     RestrictedMethodImplementation<Json, Json>
-//   >
-// >;
-
 export type TargetKeyConstraint<Key extends string> = Key extends `${string}_*`
   ? Key
   : Key extends `${string}_`
@@ -269,26 +260,15 @@ export type TargetKeyConstraint<Key extends string> = Key extends `${string}_*`
 export type TargetNameConstraint<Name extends string> =
   Name extends `${string}*` ? never : Name extends `${string}_` ? never : Name;
 
-// type NotWildCard<Name extends string> = Name extends `${string}*`
-//   ? never
-//   : Name;
-
 export type ExtractPermissionTargetNames<TargetKey extends string> =
   TargetKey extends `${infer Base}_*` ? `${Base}_${string}` : TargetKey;
 
-// type MyKeys = 'foo' | 'foo2' | 'bar_*' | 'excluded1_' | 'excluded2*';
-
-// type MyConstrainedKeys = TargetKeyConstraint<MyKeys>
-
-// type MyNames = TargetNameConstraint<ExtractPermissionTargetNames<MyConstrainedKeys>>;
-
-// let foo: NotWildCard<'foo*'>;
-// foo.
-
-// let bar: PermConstraint<'foo*', any>;
-// bar.
-
 export type PermConstraint<
+  TargetKey extends string,
+  AllowedCaveat extends GenericCaveat | never,
+> = _PermConstraint<ExtractPermissionTargetNames<TargetKey>, AllowedCaveat>;
+
+export type _PermConstraint<
   TargetName extends string,
   AllowedCaveat extends GenericCaveat | never,
 > = TargetNameConstraint<TargetName> extends never
@@ -302,18 +282,36 @@ export type PermConstraint<
 
 export type GenericPermission = PermConstraint<string, GenericCaveat | never>;
 
-export type PermSpec<TargetKey extends string> =
-  TargetKeyConstraint<TargetKey> extends never
-    ? never
-    : PermissionSpecification<
-        TargetKey,
-        PermConstraint<TargetKey, GenericCaveat | never>,
-        PermissionOptions,
-        Record<string, unknown>,
-        RestrictedMethodImplementation<Json, Json>
-      >;
+export type PermSpec<
+  TargetKey extends string,
+  Perm extends PermConstraint<TargetKey, GenericCaveat | never>,
+> = TargetKeyConstraint<TargetKey> extends never
+  ? never
+  : PermissionSpecification<
+      TargetKey,
+      Perm,
+      PermissionOptions,
+      Record<string, unknown>,
+      RestrictedMethodImplementation<Json, Json>
+    >;
 
-export type PermSpecs<TargetKey extends string> =
-  TargetKeyConstraint<TargetKey> extends never
-    ? never
-    : Record<TargetKey, PermSpec<TargetKey>>;
+export type PermSpecs<
+  TargetKey extends string,
+  Permissions extends PermConstraint<TargetKey, GenericCaveat | never>,
+> = TargetKeyConstraint<TargetKey> extends never
+  ? never
+  : {
+      [Key in TargetKey]: Permissions extends PermConstraint<
+        Key,
+        GenericCaveat | never
+      >
+        ? GetPermissionSpecification<Key, Permissions>
+        : never;
+    };
+
+export type GetPermissionSpecification<
+  TargetKey extends string,
+  Permissions extends PermConstraint<TargetKey, GenericCaveat | never>,
+> = Permissions extends PermConstraint<TargetKey, GenericCaveat | never>
+  ? PermSpec<TargetKey, Permissions>
+  : never;
