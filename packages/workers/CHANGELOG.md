@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.1.2]
-### Uncategorized
-- Changed handshake back to ping ([#90](https://github.com/MetaMask/snaps-skunkworks/pull/90))
+### Changed
+- Restore name of `handshake` method to `ping` ([#90](https://github.com/MetaMask/snaps-skunkworks/pull/90))
 
 ## [0.1.0]
 ### Changed
