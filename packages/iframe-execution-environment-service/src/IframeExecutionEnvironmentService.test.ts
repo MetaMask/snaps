@@ -13,8 +13,8 @@ describe('Iframe Controller', () => {
           'https://metamask.github.io/iframe-execution-environment/',
         ),
       });
-    iframeExecutionEnvironmentService.terminateAllPlugins();
     expect(iframeExecutionEnvironmentService).toBeDefined();
+    await iframeExecutionEnvironmentService.terminateAllPlugins();
   });
 
   it('can create a plugin worker and start the plugin', async () => {
@@ -38,6 +38,7 @@ describe('Iframe Controller', () => {
     });
     expect(response).toStrictEqual('OK');
     removeListener();
+    await iframeExecutionEnvironmentService.terminateAllPlugins();
   });
 
   it('can handle a crashed plugin', async () => {
@@ -66,6 +67,7 @@ describe('Iframe Controller', () => {
     await expect(action()).rejects.toThrow(
       /Error while running plugin 'TestPlugin'/u,
     );
+    await iframeExecutionEnvironmentService.terminateAllPlugins();
     removeListener();
   });
 });

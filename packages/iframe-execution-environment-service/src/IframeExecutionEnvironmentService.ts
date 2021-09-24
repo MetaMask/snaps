@@ -12,13 +12,16 @@ import {
   PendingJsonRpcResponse,
 } from 'json-rpc-engine';
 import { ExecutionEnvironmentService } from '@metamask/snap-controllers';
+import { EthereumRpcError } from 'eth-rpc-errors';
 
 export type SetupPluginProvider = (pluginName: string, stream: Duplex) => void;
 
+type OnError = (pluginName: string, error: EthereumRpcError<unknown>) => void;
 interface IframeExecutionEnvironmentServiceArgs {
   createWindowTimeout?: number;
   setupPluginProvider: SetupPluginProvider;
   iframeUrl: URL;
+  onError?: OnError;
 }
 
 interface JobStreams {
@@ -58,9 +61,12 @@ export class IframeExecutionEnvironmentService
 
   private _createWindowTimeout: number;
 
+  private _onError?: OnError;
+
   constructor({
     setupPluginProvider,
     iframeUrl,
+    onError,
     createWindowTimeout = 60000,
   }: IframeExecutionEnvironmentServiceArgs) {
     this._createWindowTimeout = createWindowTimeout;
@@ -70,6 +76,7 @@ export class IframeExecutionEnvironmentService
     this.pluginToJobMap = new Map();
     this.jobToPluginMap = new Map();
     this._pluginRpcHooks = new Map();
+    this._onError = onError;
   }
 
   private _setJob(jobId: string, jobWrapper: EnvMetadata): void {
@@ -262,6 +269,21 @@ export class IframeExecutionEnvironmentService
     );
 
     const commandStream = mux.createStream(PLUGIN_STREAM_NAMES.COMMAND);
+    const handler = (data: any) => {
+      if (data.error && this._onError) {
+        const err = new EthereumRpcError(
+          data.error.code,
+          data.error.message,
+          data.error.data,
+        );
+        const pluginName = this.jobToPluginMap.get(jobId);
+        if (pluginName) {
+          this._onError(pluginName, err);
+        }
+        commandStream.off('data', handler);
+      }
+    };
+    commandStream.on('data', handler);
     const rpcStream = mux.createStream(PLUGIN_STREAM_NAMES.JSON_RPC);
 
     // Typecast: stream type mismatch

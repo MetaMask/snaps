@@ -12,13 +12,16 @@ import {
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from 'json-rpc-engine';
+import { EthereumRpcError } from 'eth-rpc-errors';
 import { ExecutionEnvironmentService } from './ExecutionEnvironmentService';
 
 export type SetupPluginProvider = (pluginName: string, stream: Duplex) => void;
 
+type OnError = (pluginName: string, error: EthereumRpcError<unknown>) => void;
 interface WorkerControllerArgs {
   setupPluginProvider: SetupPluginProvider;
   workerUrl: URL;
+  onError?: OnError;
 }
 
 interface WorkerStreams {
@@ -57,7 +60,13 @@ export class WebWorkerExecutionEnvironmentService
 
   private workerToPluginMap: Map<string, string>;
 
-  constructor({ setupPluginProvider, workerUrl }: WorkerControllerArgs) {
+  private _onError?: OnError;
+
+  constructor({
+    setupPluginProvider,
+    workerUrl,
+    onError,
+  }: WorkerControllerArgs) {
     this.workerUrl = workerUrl;
     this.setupPluginProvider = setupPluginProvider;
     this.store = new ObservableStore({ workers: {} });
@@ -65,6 +74,7 @@ export class WebWorkerExecutionEnvironmentService
     this.pluginToWorkerMap = new Map();
     this.workerToPluginMap = new Map();
     this._pluginRpcHooks = new Map();
+    this._onError = onError;
   }
 
   private _setWorker(workerId: string, workerWrapper: WorkerWrapper): void {
@@ -233,6 +243,20 @@ export class WebWorkerExecutionEnvironmentService
     const worker = new Worker(this.workerUrl, {
       name: workerId,
     });
+    const handler = (ev: ErrorEvent) => {
+      if (this._onError) {
+        const err = new EthereumRpcError(
+          ev.error.code,
+          ev.error.message,
+          ev.error.data,
+        );
+        const pluginName = this.workerToPluginMap.get(workerId);
+        if (pluginName) {
+          this._onError(pluginName, err);
+        }
+      }
+    };
+    worker.addEventListener('error', handler, { once: true });
     const streams = this._initWorkerStreams(worker, workerId);
     const rpcEngine = new JsonRpcEngine();
 
