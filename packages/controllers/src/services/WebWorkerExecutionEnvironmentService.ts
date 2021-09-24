@@ -277,7 +277,7 @@ export class WebWorkerExecutionEnvironmentService
 
     await this._command(workerId, {
       jsonrpc: '2.0',
-      method: 'handshake',
+      method: 'ping',
       id: nanoid(),
     });
 

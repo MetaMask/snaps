@@ -244,7 +244,7 @@ export class IframeExecutionEnvironmentService
 
     await this._command(jobId, {
       jsonrpc: '2.0',
-      method: 'handshake',
+      method: 'ping',
       id: nanoid(),
     });
 
