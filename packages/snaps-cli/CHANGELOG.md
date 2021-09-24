@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1]
+### Uncategorized
+- Add missing publish scripts to new packages
+
 ## [0.1.0]
 ### Changed
 - **(BREAKING)** Rename package to `@metamask/snaps-cli` ([#72](https://github.com/MetaMask/snaps-skunkworks/pull/72))
@@ -16,5 +20,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Example snaps ([#72](https://github.com/MetaMask/snaps-skunkworks/pull/72))
   - The examples now live in their own package, [`@metamask/snap-examples`](https://npmjs.com/package/@metamask/snap-examples).
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/MetaMask/snaps-skunkworks/releases/tag/v0.1.0
