@@ -243,7 +243,7 @@ export class WebWorkerExecutionEnvironmentService
     const worker = new Worker(this.workerUrl, {
       name: workerId,
     });
-    // Handle out-of-band errors, i.e. errors thrown from the a plugin outside of the req/res cycle.
+    // Handle out-of-band errors, i.e. errors thrown from the plugin outside of the req/res cycle.
     const errorHandler = (ev: ErrorEvent) => {
       if (this._onError) {
         const err = new EthereumRpcError(
