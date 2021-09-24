@@ -243,7 +243,8 @@ export class WebWorkerExecutionEnvironmentService
     const worker = new Worker(this.workerUrl, {
       name: workerId,
     });
-    const handler = (ev: ErrorEvent) => {
+    // Handle out-of-band errors, i.e. errors thrown from the a plugin outside of the req/res cycle.
+    const errorHandler = (ev: ErrorEvent) => {
       if (this._onError) {
         const err = new EthereumRpcError(
           ev.error.code,
@@ -256,7 +257,7 @@ export class WebWorkerExecutionEnvironmentService
         }
       }
     };
-    worker.addEventListener('error', handler, { once: true });
+    worker.addEventListener('error', errorHandler, { once: true });
     const streams = this._initWorkerStreams(worker, workerId);
     const rpcEngine = new JsonRpcEngine();
 

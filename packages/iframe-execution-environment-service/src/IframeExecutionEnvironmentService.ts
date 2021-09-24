@@ -269,7 +269,8 @@ export class IframeExecutionEnvironmentService
     );
 
     const commandStream = mux.createStream(PLUGIN_STREAM_NAMES.COMMAND);
-    const handler = (data: any) => {
+    // Handle out-of-band errors, i.e. errors thrown from the a plugin outside of the req/res cycle.
+    const errorHandler = (data: any) => {
       if (data.error && this._onError) {
         const err = new EthereumRpcError(
           data.error.code,
@@ -280,10 +281,10 @@ export class IframeExecutionEnvironmentService
         if (pluginName) {
           this._onError(pluginName, err);
         }
-        commandStream.off('data', handler);
+        commandStream.off('data', errorHandler);
       }
     };
-    commandStream.on('data', handler);
+    commandStream.on('data', errorHandler);
     const rpcStream = mux.createStream(PLUGIN_STREAM_NAMES.JSON_RPC);
 
     // Typecast: stream type mismatch
