@@ -2623,6 +2623,11 @@
     "@types/insert-module-globals" "*"
     "@types/node" "*"
 
+"@types/deep-freeze-strict@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@types/deep-freeze-strict/-/deep-freeze-strict-1.1.0.tgz#447a6a2576191344aa42310131dd3df5c41492c4"
+  integrity sha1-RHpqJXYZE0SqQjEBMd099cQUksQ=
+
 "@types/glob@*", "@types/glob@^7.1.1":
   version "7.1.4"
   resolved "https://registry.yarnpkg.com/@types/glob/-/glob-7.1.4.tgz#ea59e21d2ee5c517914cb4bc8e4153b99e566672"
@@ -2630,11 +2635,6 @@
   dependencies:
     "@types/minimatch" "*"
     "@types/node" "*"
-
-"@types/deep-freeze-strict@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@types/deep-freeze-strict/-/deep-freeze-strict-1.1.0.tgz#447a6a2576191344aa42310131dd3df5c41492c4"
-  integrity sha1-RHpqJXYZE0SqQjEBMd099cQUksQ=
 
 "@types/graceful-fs@^4.1.2":
   version "4.1.5"
