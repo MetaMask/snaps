@@ -50,7 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ensure that the plugin `isRunning` check always runs when a plugin is started ([#21](https://github.com/MetaMask/snaps-skunkworks/pull/21))
 
 ## [0.0.5]
-### Uncategorized
+### Added
 - First semi-stable release.
 
 [Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.1.1...HEAD
