@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1]
+### Added
+- Out of band error support ([#88](https://github.com/MetaMask/snaps-skunkworks/pull/88))
+
+### Changed
+- @metamask/controllers@17.0.0 ([#87](https://github.com/MetaMask/snaps-skunkworks/pull/87))
+
 ## [0.1.0]
 ### Added
 - Readme file ([#71](https://github.com/MetaMask/snaps-skunkworks/pull/71))
@@ -43,10 +50,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ensure that the plugin `isRunning` check always runs when a plugin is started ([#21](https://github.com/MetaMask/snaps-skunkworks/pull/21))
 
 ## [0.0.5]
-### Uncategorized
+### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.0.9...v0.1.0
 [0.0.9]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.0.7...v0.0.9
 [0.0.7]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.0.6...v0.0.7
