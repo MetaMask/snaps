@@ -3,7 +3,6 @@ import type { Patch } from 'immer';
 import { IOcapLdCapability } from 'rpc-cap/dist/src/@types/ocap-ld';
 import {
   BaseControllerV2 as BaseController,
-  IsJsonable,
   RestrictedControllerMessenger,
 } from '@metamask/controllers';
 import { Json } from 'json-rpc-engine';
@@ -30,24 +29,24 @@ type RequestedPluginPermissions = {
   [permission: string]: Json;
 };
 
-export interface SerializablePlugin {
+export type SerializablePlugin = {
   initialPermissions: RequestedPluginPermissions;
   name: string;
   permissionName: string;
   version: string;
-}
+};
 
-export interface Plugin extends SerializablePlugin {
+export type Plugin = SerializablePlugin & {
   isRunning: boolean;
   sourceCode: string;
-}
+};
 
 export type ProcessPluginReturnType =
   | SerializablePlugin
   | { error: ReturnType<typeof serializeError> };
-export interface InstallPluginsResult {
+export type InstallPluginsResult = {
   [pluginName: string]: ProcessPluginReturnType;
-}
+};
 
 // Types that probably should be defined elsewhere in prod
 type RemoveAllPermissionsFunction = (pluginIds: string[]) => void;
@@ -91,7 +90,7 @@ type PluginControllerMessenger = RestrictedControllerMessenger<
   never
 >;
 
-interface PluginControllerArgs {
+type PluginControllerArgs = {
   messenger: PluginControllerMessenger;
   state?: PluginControllerState;
   removeAllPermissionsFor: RemoveAllPermissionsFunction;
@@ -103,26 +102,26 @@ interface PluginControllerArgs {
   terminateAllPlugins: TerminateAll;
   executePlugin: ExecutePlugin;
   getRpcMessageHandler: GetRpcMessageHandler;
-}
+};
 
-interface AddPluginBase {
+type AddPluginBase = {
   name: string;
-}
+};
 
-interface AddPluginByFetchingArgs extends AddPluginBase {
+type AddPluginByFetchingArgs = AddPluginBase & {
   manifestUrl: string;
-}
+};
 
 // The parts of a plugin package.json file that we care about
-interface PluginManifest {
+type PluginManifest = {
   version: string;
   web3Wallet: { initialPermissions: RequestedPluginPermissions };
-}
+};
 
-interface AddPluginDirectlyArgs extends AddPluginBase {
+type AddPluginDirectlyArgs = AddPluginBase & {
   manifest: PluginManifest;
   sourceCode: string;
-}
+};
 
 type AddPluginArgs = AddPluginByFetchingArgs | AddPluginDirectlyArgs;
 
@@ -199,7 +198,7 @@ export class PluginController extends BaseController<
                   isRunning: false,
                 };
               })
-              .reduce((memo: Record<string, IsJsonable<Plugin>>, plugin) => {
+              .reduce((memo: Record<string, Plugin>, plugin) => {
                 memo[plugin.name] = plugin;
                 return memo;
               }, {});
