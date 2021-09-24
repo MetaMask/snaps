@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.1.1]
-### Uncategorized
-- Added out of band error support ([#88](https://github.com/MetaMask/snaps-skunkworks/pull/88))
+### Added
+- Out of band error support ([#88](https://github.com/MetaMask/snaps-skunkworks/pull/88))
 
 ## [0.1.0]
 ### Added
