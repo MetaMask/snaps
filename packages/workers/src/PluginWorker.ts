@@ -98,7 +98,7 @@ lockdown({
           this.executePlugin(id, params as unknown as PluginData);
           break;
 
-        case 'handshake':
+        case 'ping':
           this.respond(id, { result: 'OK' });
           break;
 
