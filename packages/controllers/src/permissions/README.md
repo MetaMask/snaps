@@ -75,7 +75,7 @@ const caveatSpecifications = {
     decorator: ((
         // Restricted methods and other caveats can be async, so we have to
         // assume that the method is async.
-        method: AsyncRestrictedMethodImplementation<Json, string[]>,
+        method: AsyncRestrictedMethod<Json, string[]>,
         caveat: { type: 'filterArrayResponse'; value: string[] },
       ) =>
       async (args: RestrictedMethodArgs<Json>) => {
@@ -150,4 +150,39 @@ const approvedPermissions = await ethereum.request({
 const existingPermissions = await ethereum.request({
   method: 'wallet_getPermissions',
 )
+```
+
+### Caveat Decorators
+
+```typescript
+// Validation / passthrough
+export function onlyArrayParams(
+  next: MethodImplementation,
+  _caveat: Caveat<never>,
+) {
+  return async (
+    req: JsonRpcRequest<Json>,
+    context: Record<string, unknown>,
+  ) => {
+    if (!Array.isArray(req.params)) {
+      return new EthereumJsonRpcError();
+    }
+
+    return next(req, context);
+  };
+}
+
+// "Return handler" example
+export function eth_accounts(
+  next: MethodImplementation,
+  caveat: Caveat<string[]>,
+) {
+  return async (
+    req: JsonRpcRequest<Json>,
+    context: Record<string, unknown>,
+  ) => {
+    const accounts = await next(req, context);
+    return accounts.filter((account: string) => caveat.value.includes(account));
+  };
+}
 ```

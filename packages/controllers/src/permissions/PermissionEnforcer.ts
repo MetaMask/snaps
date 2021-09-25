@@ -10,7 +10,11 @@ import {
 import { nanoid } from 'nanoid';
 
 import { isPlainObject, hasProperty } from '../utils';
-import { CaveatSpecs, decorateWithCaveats, GenericCaveat } from './Caveat';
+import {
+  CaveatSpecifications,
+  decorateWithCaveats,
+  GenericCaveat,
+} from './Caveat';
 import {
   internalError,
   invalidParams,
@@ -19,9 +23,9 @@ import {
   userRejectedRequest,
 } from './errors';
 import type {
-  PermConstraint,
+  PermissionConstraint,
   RequestedPermissions,
-  RestrictedMethodImplementation,
+  RestrictedMethod,
 } from './Permission';
 import type {
   PermissionController,
@@ -51,9 +55,9 @@ type RequestUserApproval = (
 type PermissionEnforcerArgs<
   TargetKey extends string,
   Caveat extends GenericCaveat,
-  Permission extends PermConstraint<TargetKey, Caveat>,
+  Permission extends PermissionConstraint<TargetKey, Caveat>,
 > = {
-  caveatSpecifications: CaveatSpecs<Caveat>;
+  caveatSpecifications: CaveatSpecifications<Caveat>;
   isRestrictedMethod: IsRestrictedMethod;
   isUnrestrictedMethod: IsUnrestrictedMethod;
   getPermission: PermissionController<
@@ -61,11 +65,11 @@ type PermissionEnforcerArgs<
     Caveat,
     Permission
   >['getPermission'];
-  getRestrictedMethodImplementation: PermissionController<
+  getRestrictedMethod: PermissionController<
     TargetKey,
     Caveat,
     Permission
-  >['getRestrictedMethodImplementation'];
+  >['getRestrictedMethod'];
   grantPermissions: PermissionController<
     TargetKey,
     Caveat,
@@ -80,9 +84,9 @@ type PermissionEnforcerArgs<
 export class PermissionEnforcer<
   TargetKey extends string,
   Caveat extends GenericCaveat,
-  Permission extends PermConstraint<TargetKey, Caveat>,
+  Permission extends PermissionConstraint<TargetKey, Caveat>,
 > {
-  private caveatSpecifications: CaveatSpecs<Caveat>;
+  private caveatSpecifications: CaveatSpecifications<Caveat>;
 
   private isRestrictedMethod: IsRestrictedMethod;
 
@@ -108,18 +112,18 @@ export class PermissionEnforcer<
 
   private _hasApprovalRequest: ApprovalController['has'];
 
-  private _getRestrictedMethodImplementation: PermissionController<
+  private _getRestrictedMethod: PermissionController<
     TargetKey,
     Caveat,
     Permission
-  >['getRestrictedMethodImplementation'];
+  >['getRestrictedMethod'];
 
   constructor({
     caveatSpecifications,
     isRestrictedMethod,
     isUnrestrictedMethod,
     getPermission,
-    getRestrictedMethodImplementation,
+    getRestrictedMethod,
     grantPermissions,
     requestUserApproval,
     acceptPermissionsRequest,
@@ -135,7 +139,7 @@ export class PermissionEnforcer<
     this._acceptPermissionsRequest = acceptPermissionsRequest;
     this._rejectPermissionsRequest = rejectPermissionsRequest;
     this._hasApprovalRequest = hasApprovalRequest;
-    this._getRestrictedMethodImplementation = getRestrictedMethodImplementation;
+    this._getRestrictedMethod = getRestrictedMethod;
   }
 
   public async requestPermissions(
@@ -207,9 +211,8 @@ export class PermissionEnforcer<
     const perms: RequestedPermissions = requestedPermissions;
 
     for (const methodName of Object.keys(perms)) {
-      const target =
-        perms[methodName].target ||
-        (perms[methodName] as unknown as Permission).parentCapability;
+      const target = (perms[methodName] as unknown as Permission)
+        .parentCapability;
       if (target !== undefined && methodName !== target) {
         throw invalidParams({ data: { origin, requestedPermissions } });
       }
@@ -284,10 +287,7 @@ export class PermissionEnforcer<
       req.params = params;
     }
 
-    const methodImplementation = this.getRestrictedMethodImplementation(
-      method,
-      req,
-    );
+    const methodImplementation = this.getRestrictedMethod(method, req);
 
     const result = await this._executeRestrictedMethod(
       methodImplementation,
@@ -316,11 +316,11 @@ export class PermissionEnforcer<
    * @returns The restricted method implementation, or throws an error if no
    * method exists.
    */
-  private getRestrictedMethodImplementation(
+  private getRestrictedMethod(
     method: string,
     request: JsonRpcRequest<Json>,
-  ): RestrictedMethodImplementation<Json, Json> {
-    const methodImplementation = this._getRestrictedMethodImplementation(
+  ): RestrictedMethod<Json, Json> {
+    const methodImplementation = this._getRestrictedMethod(
       method as Permission['parentCapability'],
     );
     if (!methodImplementation) {
@@ -340,10 +340,10 @@ export class PermissionEnforcer<
    * @returns
    */
   private _executeRestrictedMethod(
-    methodImplementation: RestrictedMethodImplementation<Json, Json>,
+    methodImplementation: RestrictedMethod<Json, Json>,
     subject: PermissionSubjectMetadata,
     req: JsonRpcRequest<Json>,
-  ): ReturnType<RestrictedMethodImplementation<Json, Json>> {
+  ): ReturnType<RestrictedMethod<Json, Json>> {
     const { origin } = subject;
     const { method, params } = req;
 
@@ -378,10 +378,7 @@ export class PermissionEnforcer<
       }
 
       // This will throw if no restricted method implementation is found.
-      const methodImplementation = this.getRestrictedMethodImplementation(
-        method,
-        req,
-      );
+      const methodImplementation = this.getRestrictedMethod(method, req);
 
       const result = await this._executeRestrictedMethod(
         methodImplementation,

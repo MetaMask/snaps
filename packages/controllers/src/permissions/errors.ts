@@ -1,7 +1,7 @@
 import { JsonRpcRequest } from 'json-rpc-engine';
 import { errorCodes, ethErrors, EthereumRpcError } from 'eth-rpc-errors';
-import { Permission } from './Permission';
-import { Caveat } from './Caveat';
+import { GenericPermission } from './Permission';
+import { CaveatConstraint } from './Caveat';
 
 type ErrorArg = {
   message?: string;
@@ -100,9 +100,9 @@ export class CaveatAlreadyExistsError extends Error {
 }
 
 export class InvalidPermissionJsonError extends Error {
-  public data: { origin: string; permission: Permission };
+  public data: { origin: string; permission: GenericPermission };
 
-  constructor(origin: string, permission: Permission) {
+  constructor(origin: string, permission: GenericPermission) {
     super(`Permission object of subject "${origin}" is not valid JSON.`);
     this.data = { origin, permission };
   }
@@ -162,9 +162,17 @@ export class InvalidCaveatFieldsError extends Error {
 }
 
 export class InvalidCaveatJsonError extends Error {
-  public data: { caveat: Caveat<any, any>; origin: string; target: string };
+  public data: {
+    caveat: CaveatConstraint<any, any>;
+    origin: string;
+    target: string;
+  };
 
-  constructor(caveat: Caveat<any, any>, origin: string, target: string) {
+  constructor(
+    caveat: CaveatConstraint<any, any>,
+    origin: string,
+    target: string,
+  ) {
     super(`Caveat object is not valid JSON.`);
     this.data = { caveat, origin, target };
   }

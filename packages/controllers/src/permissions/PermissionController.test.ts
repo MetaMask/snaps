@@ -2,37 +2,43 @@ import { ControllerMessenger, Json } from '@metamask/controllers';
 import { isPlainObject } from '../utils';
 import * as errors from './errors';
 import {
-  AsyncRestrictedMethodImplementation,
-  Caveat,
-  CaveatSpecs,
-  PermConstraint,
+  AsyncRestrictedMethod,
+  CaveatConstraint,
+  CaveatSpecifications,
+  PermissionConstraint,
   PermissionController,
   PermissionControllerActions,
   PermissionControllerEvents,
   PermissionEnforcer,
-  PermSpecs,
+  PermissionSpecifications,
   RestrictedMethodArgs,
 } from '.';
 
-// Caveat types and specifications
+// CaveatConstraint types and specifications
 
 enum CaveatTypes {
   filterArrayResponse = 'filterArrayResponse',
   filterObjectResponse = 'filterObjectResponse',
 }
 
-type FilterArrayCaveat = Caveat<CaveatTypes.filterArrayResponse, string[]>;
-type FilterObjectCaveat = Caveat<CaveatTypes.filterObjectResponse, string[]>;
+type FilterArrayCaveat = CaveatConstraint<
+  CaveatTypes.filterArrayResponse,
+  string[]
+>;
+type FilterObjectCaveat = CaveatConstraint<
+  CaveatTypes.filterObjectResponse,
+  string[]
+>;
 
 type DefaultCaveats = FilterArrayCaveat | FilterObjectCaveat;
 
-function getDefaultCaveatSpecifications(): CaveatSpecs<DefaultCaveats> {
+function getDefaultCaveatSpecifications(): CaveatSpecifications<DefaultCaveats> {
   return {
     filterArrayResponse: {
       type: CaveatTypes.filterArrayResponse,
       decorator:
         (
-          method: AsyncRestrictedMethodImplementation<Json, Json>,
+          method: AsyncRestrictedMethod<Json, Json>,
           caveat: FilterArrayCaveat,
         ) =>
         async (args: RestrictedMethodArgs<Json>) => {
@@ -48,7 +54,7 @@ function getDefaultCaveatSpecifications(): CaveatSpecs<DefaultCaveats> {
       type: CaveatTypes.filterObjectResponse,
       decorator:
         (
-          method: AsyncRestrictedMethodImplementation<Json, Json>,
+          method: AsyncRestrictedMethod<Json, Json>,
           caveat: FilterObjectCaveat,
         ) =>
         async (args: RestrictedMethodArgs<Json>) => {
@@ -70,11 +76,14 @@ function getDefaultCaveatSpecifications(): CaveatSpecs<DefaultCaveats> {
 
 type SecretArrayName = 'wallet_getSecretArray';
 
-type SecretArrayPermission = PermConstraint<SecretArrayName, FilterArrayCaveat>;
+type SecretArrayPermission = PermissionConstraint<
+  SecretArrayName,
+  FilterArrayCaveat
+>;
 
 type SecretObjectName = 'wallet_getSecretObject';
 
-type SecretObjectPermission = PermConstraint<
+type SecretObjectPermission = PermissionConstraint<
   SecretObjectName,
   FilterObjectCaveat
 >;
@@ -83,7 +92,7 @@ type DefaultTargetNames = SecretArrayName | SecretObjectName;
 
 type DefaultPermissions = SecretArrayPermission | SecretObjectPermission;
 
-function getDefaultPermissionSpecifications(): PermSpecs<
+function getDefaultPermissionSpecifications(): PermissionSpecifications<
   DefaultTargetNames,
   DefaultPermissions
 > {
