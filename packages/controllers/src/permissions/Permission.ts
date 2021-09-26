@@ -103,9 +103,11 @@ type TargetNameConstraint<Name extends string> = Name extends `${string}*`
  * keys.
  *
  * See the documentation for the distinction between target names and keys.
+ *
+ * @template Key - The target key type to extract target names from.
  */
-type ExtractPermissionTargetNames<TargetKey extends string> =
-  TargetKey extends `${infer Base}_*` ? `${Base}_${string}` : TargetKey;
+type ExtractPermissionTargetNames<Key extends string> =
+  Key extends `${infer Base}_*` ? `${Base}_${string}` : Key;
 
 /**
  * The consumer-facing base permission type.
@@ -124,6 +126,53 @@ export type GenericPermission = PermissionConstraint<
   TargetName,
   GenericCaveat | never
 >;
+
+/**
+ * An internal utility type used in {@link ExtractPermissionTargetKey}.
+ *
+ * @template Key - The target key type to extract from.
+ * @template Name - The name whose key to extract.
+ */
+type KeyOfTargetName<
+  Key extends string,
+  Name extends string,
+> = Name extends ExtractPermissionTargetNames<Key> ? Key : never;
+
+/**
+ * A utility type for finding the permission target key corresponding to a
+ * target name. In a way, the inverse of {@link ExtractPermissionTargetNames}.
+ *
+ * See the documentation for the distinction between target names and keys.
+ *
+ * @template Key - The target key type to extract from.
+ * @template Name - The name whose key to extract.
+ */
+type ExtractPermissionTargetKey<
+  Key extends string,
+  Name extends string,
+> = Name extends Key ? Name : Extract<Key, KeyOfTargetName<Key, Name>>;
+
+/**
+ * A utility type for extracting the valid caveat types for a particular
+ * permission from a union of permission types.
+ *
+ * @template PermissionUnion - The permission type union to extract valid caveat
+ * types from.
+ * @template Key - The target key type to extract from.
+ * @template Name - The target name of the permission.
+ */
+export type ExtractValidCaveatTypes<
+  PermissionUnion extends GenericPermission,
+  Key extends string,
+  Name extends string,
+> = PermissionUnion extends PermissionConstraint<
+  ExtractPermissionTargetKey<Key, Name>,
+  infer ValidCaveats
+>
+  ? ValidCaveats extends GenericCaveat
+    ? ValidCaveats['type']
+    : never
+  : never;
 
 /**
  * The options object of {@link constructPermission}.
@@ -153,8 +202,10 @@ export type PermissionOptions = {
 };
 
 /**
- * The default {@link Permission} factory function. Naively constructs a permission from
+ * The default permission factory function. Naively constructs a permission from
  * the inputs. Sets a default, random `id` if none is provided.
+ *
+ * @see {@link PermissionBase} For more details.
  *
  * @param options - The options for the permission.
  * @returns The new permission object.

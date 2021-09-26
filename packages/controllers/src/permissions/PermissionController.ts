@@ -19,6 +19,7 @@ import {
 } from './Caveat';
 import {
   constructPermission,
+  ExtractValidCaveatTypes,
   GenericPermission,
   MutableCaveats,
   OriginString,
@@ -185,25 +186,6 @@ export type ExtractCaveatValue<
   CaveatType extends string,
 > = CaveatUnion extends CaveatConstraint<CaveatType, infer CaveatValue>
   ? CaveatValue
-  : never;
-
-/**
- * A utility type for extracting the valid caveat types for a particular
- * permission from a union of permission types.
- *
- * @template PermissionUnion - The permission type union to extract valid caveat
- * types from.
- * @template TargetName - The target name of the permission.
- */
-type ExtractValidCaveatTypes<
-  PermissionUnion extends GenericPermission,
-  TargetName extends string,
-> = PermissionUnion extends PermissionConstraint<TargetName, never>
-  ? never
-  : PermissionUnion extends PermissionConstraint<TargetName, infer ValidCaveats>
-  ? ValidCaveats extends GenericCaveat
-    ? ValidCaveats['type']
-    : never
   : never;
 
 /**
@@ -521,7 +503,11 @@ export class PermissionController<
 
   hasCaveat<
     TargetName extends Permission['parentCapability'],
-    CaveatType extends ExtractValidCaveatTypes<Permission, TargetName>,
+    CaveatType extends ExtractValidCaveatTypes<
+      Permission,
+      TargetKey,
+      TargetName
+    >,
   >(origin: OriginString, target: TargetName, caveatType: CaveatType): boolean {
     return (
       this.getPermission(origin, target)?.caveats?.some(
@@ -532,7 +518,11 @@ export class PermissionController<
 
   addCaveat<
     TargetName extends Permission['parentCapability'],
-    CaveatType extends ExtractValidCaveatTypes<Permission, TargetName>,
+    CaveatType extends ExtractValidCaveatTypes<
+      Permission,
+      TargetKey,
+      TargetName
+    >,
   >(
     origin: OriginString,
     target: TargetName,
@@ -548,7 +538,11 @@ export class PermissionController<
 
   updateCaveat<
     TargetName extends Permission['parentCapability'],
-    CaveatType extends ExtractValidCaveatTypes<Permission, TargetName>,
+    CaveatType extends ExtractValidCaveatTypes<
+      Permission,
+      TargetKey,
+      TargetName
+    >,
   >(
     origin: OriginString,
     target: TargetName,
@@ -564,7 +558,11 @@ export class PermissionController<
 
   private setCaveat<
     TargetName extends Permission['parentCapability'],
-    CaveatType extends ExtractValidCaveatTypes<Permission, TargetName>,
+    CaveatType extends ExtractValidCaveatTypes<
+      Permission,
+      TargetKey,
+      TargetName
+    >,
   >(
     origin: OriginString,
     target: TargetName,
@@ -611,7 +609,11 @@ export class PermissionController<
 
   removeCaveat<
     TargetName extends Permission['parentCapability'],
-    CaveatType extends ExtractValidCaveatTypes<Permission, TargetName>,
+    CaveatType extends ExtractValidCaveatTypes<
+      Permission,
+      TargetKey,
+      TargetName
+    >,
   >(origin: OriginString, target: TargetName, caveatType: CaveatType): void {
     this.update((draftState) => {
       // Typecast: immer's WritableDraft is incompatible with our generics

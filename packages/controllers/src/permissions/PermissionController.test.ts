@@ -471,13 +471,6 @@ describe('PermissionController', () => {
   });
 });
 
-// controller.addCaveat(
-//   'foo',
-//   'wallet_getSecretArray' as const,
-//   CaveatTypes.filterArrayResponse,
-//   ['foo'],
-// );
-
 // Testing utilities
 
 function getPermissionMatcher(
