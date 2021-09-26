@@ -14,10 +14,7 @@ import {
  * @template Type - The type of the caveat.
  * @template Value - The value associated with the caveat.
  */
-export type CaveatConstraint<
-  Type extends string,
-  Value extends Json | never,
-> = {
+export type CaveatConstraint<Type extends string, Value extends Json> = {
   /**
    * The type of the caveat. The type is presumed to be meaningful in the
    * context of the capability it is associated with.
@@ -29,9 +26,9 @@ export type CaveatConstraint<
   /**
    * Any additional data necessary to enforce the caveat.
    *
-   * TODO: Make optional in typescript@4.4.x
+   * TODO:TS4.4 Make optional
    */
-  readonly value: Value extends never ? null : Value;
+  readonly value: Value;
 };
 
 /**
@@ -42,10 +39,10 @@ export type CaveatConstraint<
  * @param value - The value associated with the caveat, if any.
  * @returns The new caveat object.
  */
-export function constructCaveat(
-  type: string,
-  value: unknown,
-): { type: string; value: unknown } {
+export function constructCaveat<Type extends string, Value extends Json>(
+  type: Type,
+  value: Value,
+): CaveatConstraint<Type, Value> {
   return { type, value };
 }
 

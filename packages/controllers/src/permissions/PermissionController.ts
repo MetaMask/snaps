@@ -805,7 +805,11 @@ export class PermissionController<
       throw new CaveatMissingValueError(requestedCaveat, origin, target);
     }
 
-    const caveat = constructCaveat(requestedCaveat.type, requestedCaveat.value);
+    // TODO: Consider validating that this is Json?
+    const caveat = constructCaveat(
+      requestedCaveat.type,
+      (requestedCaveat.value as Json) ?? null,
+    );
     specification.validator?.(origin, target, caveat);
     return caveat as Caveat;
   }
