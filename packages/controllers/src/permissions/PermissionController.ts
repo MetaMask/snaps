@@ -10,7 +10,7 @@ import type { Patch } from 'immer';
 import deepFreeze from 'deep-freeze-strict';
 import { Json } from 'json-rpc-engine';
 
-import { isPlainObject, hasProperty } from '../utils';
+import { isPlainObject, hasProperty, NonEmptyArray } from '../utils';
 import {
   CaveatConstraint,
   CaveatSpecifications,
@@ -766,11 +766,13 @@ export class PermissionController<
     origin: OriginString,
     target: Permission['parentCapability'],
     caveats?: unknown[] | null,
-  ): Caveat[] | undefined {
+  ): NonEmptyArray<Caveat> | undefined {
     const caveatArray = caveats?.map((requestedCaveat) =>
       this.computeCaveat(origin, target, requestedCaveat),
     );
-    return caveatArray && caveatArray.length > 0 ? caveatArray : undefined;
+    return caveatArray && caveatArray.length > 0
+      ? (caveatArray as NonEmptyArray<Caveat>)
+      : undefined;
   }
 
   private computeCaveat(

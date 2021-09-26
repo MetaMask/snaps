@@ -1,6 +1,7 @@
 import type { EthereumRpcError } from 'eth-rpc-errors';
 import { Json } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
+import { NonEmptyArray } from '../utils';
 import { CaveatConstraint, GenericCaveat } from './Caveat';
 // This is in fact used in a docstring, but ESLint doesn't notice this.
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -16,11 +17,6 @@ export type OriginString = string;
  * The name of a permission target.
  */
 export type TargetName = string;
-
-/**
- * Like {@link Array}, but always non-empty.
- */
-type NonEmptyArray<T> = [T, ...T[]];
 
 /**
  * The base permission interface. Lacks important constraints on its generics;
@@ -198,7 +194,7 @@ export type PermissionOptions = {
    * The caveats of the permission.
    * See {@link CaveatConstraint}.
    */
-  caveats?: CaveatConstraint<string, Json>[];
+  caveats?: NonEmptyArray<CaveatConstraint<string, Json>>;
 };
 
 /**
@@ -210,14 +206,16 @@ export type PermissionOptions = {
  * @param options - The options for the permission.
  * @returns The new permission object.
  */
-export function constructPermission(options: PermissionOptions) {
-  const { caveats, id, invoker, target } = options;
+export function constructPermission(
+  options: PermissionOptions,
+): GenericPermission {
+  const { caveats = null, id, invoker, target } = options;
 
   return {
     id: id ?? nanoid(),
     parentCapability: target,
     invoker,
-    caveats: caveats ?? null,
+    caveats,
     date: new Date().getTime(),
   };
 }
