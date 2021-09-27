@@ -120,6 +120,14 @@ export type GetSubjects = {
 };
 
 /**
+ * Checks whether the specified subject has any permissions.
+ */
+export type HasPermissions = {
+  type: `${typeof controllerName}:hasPermissions`;
+  handler: GenericPermissionController['hasPermissions'];
+};
+
+/**
  * Clears all permissions from the {@link PermissionController}.
  */
 export type ClearPermissions = {
@@ -132,9 +140,10 @@ export type ClearPermissions = {
  * The {@link ControllerMessenger} actions of the {@link PermissionController}.
  */
 export type PermissionControllerActions =
+  | ClearPermissions
   | GetPermissionControllerState
   | GetSubjects
-  | ClearPermissions;
+  | HasPermissions;
 
 /**
  * The generic state change event of the {@link PermissionController}.
@@ -221,6 +230,12 @@ type GrantPermissionsOptions = {
   shouldPreserveExistingPermissions?: boolean;
   requestData?: Record<string, unknown>;
 };
+
+export type GenericPermissionController = PermissionController<
+  string,
+  GenericCaveat,
+  GenericPermission
+>;
 
 /**
  * @template TargetKey - A union of string literal types corresponding to the
@@ -338,13 +353,18 @@ export class PermissionController<
    */
   private registerMessageHandlers(): void {
     this.messagingSystem.registerActionHandler(
+      `${controllerName}:clearPermissions`,
+      () => this.clearState(),
+    );
+
+    this.messagingSystem.registerActionHandler(
       `${controllerName}:getSubjects`,
       () => this.getSubjects(),
     );
 
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:clearPermissions`,
-      () => this.clearState(),
+      `${controllerName}:hasPermissions`,
+      (origin: string) => this.hasPermissions(origin),
     );
   }
 
