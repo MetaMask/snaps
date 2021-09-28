@@ -20,7 +20,7 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "build:clean": "yarn build",
     "build": "node ./scripts/buildExamples.js",
-    "publish": "npm publish",
+    "publish": "../../scripts/publish-package.sh",
     "prepublishOnly": "yarn build:clean && yarn lint && yarn test"
   },
   "devDependencies": {
