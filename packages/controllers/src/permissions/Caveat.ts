@@ -69,9 +69,9 @@ export type CaveatDecorator<Caveat extends GenericCaveat> = (
  *
  */
 export type CaveatValidator<Caveat extends GenericCaveat> = (
-  origin: string,
-  target: string,
   caveat: { type: string; value: unknown },
+  origin?: string,
+  target?: string,
 ) => caveat is Caveat;
 
 export type CaveatSpecification<Caveat extends GenericCaveat> = {

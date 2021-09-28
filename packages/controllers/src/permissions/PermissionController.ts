@@ -834,7 +834,7 @@ export class PermissionController<
       requestedCaveat.type,
       (requestedCaveat.value as Json) ?? null,
     );
-    specification.validator?.(origin, target, caveat);
+    specification.validator?.(caveat, origin, target);
     return caveat as Caveat;
   }
 
