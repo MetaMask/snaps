@@ -7,9 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.2.0]
-### Uncategorized
-- Fix publish scripts ([#92](https://github.com/MetaMask/snaps-skunkworks/pull/92))
-- Update package 'publish' scripts
+### Changed
+- Update publish scripts ([#92](https://github.com/MetaMask/snaps-skunkworks/pull/92))
 
 ## [0.1.0]
 ### Added
@@ -24,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **(BREAKING)** Use generic execution environment interface ([#19](https://github.com/MetaMask/snaps-skunkworks/pull/19))
 
 ## [0.0.5]
-### Uncategorized
+### Added
 - First semi-stable release.
 
 [Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.2.0...HEAD
