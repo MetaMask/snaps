@@ -27,5 +27,6 @@ LOCAL_VERSION=$(jq -r .version < package.json)
 
 # Publish the package if either condition is met
 if [[ $NPM_VERSION == "NULL" || $LOCAL_VERSION != "$NPM_VERSION" ]]; then
+  yarn publish:prep
   npm publish "--otp=$OTP"
 fi
