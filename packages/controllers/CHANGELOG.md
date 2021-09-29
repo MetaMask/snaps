@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0]
+### Changed
+- Update publish scripts ([#92](https://github.com/MetaMask/snaps-skunkworks/pull/92))
+
 ## [0.1.2]
 ### Changed
 - Restore name of `handshake` method to `ping` ([#90](https://github.com/MetaMask/snaps-skunkworks/pull/90))
@@ -57,7 +61,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.1.2...v0.2.0
 [0.1.2]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.0.9...v0.1.0
