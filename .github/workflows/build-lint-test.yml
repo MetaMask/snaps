@@ -35,7 +35,10 @@ jobs:
       - name: Require clean working directory
         shell: bash
         run: |
-          git diff --quiet || echo "Working directory dirty after building" && exit 1
+          if [[ $(git diff --quiet) != '' ]]; then
+            echo "Working tree dirty after building"
+            exit 1
+          fi
       - run: yarn lint
       - run: yarn test:ci
       - name: Validate RC changelog

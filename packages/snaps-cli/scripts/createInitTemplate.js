@@ -15,13 +15,13 @@ async function createInitTemplate() {
 
   await fs.writeFile(
     TEMPLATE_PATH,
-    JSON.stringify(
+    `${JSON.stringify(
       {
         html: html.toString(),
         js: js.toString(),
       },
       null,
       2,
-    ),
+    )}\n`,
   );
 }
