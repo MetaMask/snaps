@@ -7,8 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.2.1]
-### Uncategorized
-- Ensure snaps-cli init template is always up to date ([#94](https://github.com/MetaMask/snaps-skunkworks/pull/94))
+### Fixed
+- Snap produced by `mm-snap init` ([#94](https://github.com/MetaMask/snaps-skunkworks/pull/94))
+  - The template used to create the "Hello, world!" snap had become outdated due to a build-time bug.
 
 ## [0.2.0]
 ### Changed
