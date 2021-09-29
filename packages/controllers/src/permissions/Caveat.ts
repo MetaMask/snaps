@@ -119,6 +119,11 @@ type GetCaveatSpecification<
   ? CaveatSpecification<Caveat>
   : never;
 
+export type GetCaveatFromType<
+  Caveat extends GenericCaveat,
+  CaveatType extends string,
+> = Caveat extends CaveatConstraint<CaveatType, Json> ? Caveat : never;
+
 /**
  * Decorate a restricted method implementation with its caveats.
  *

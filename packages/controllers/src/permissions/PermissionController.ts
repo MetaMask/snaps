@@ -16,10 +16,12 @@ import {
   CaveatSpecifications,
   constructCaveat,
   GenericCaveat,
+  GetCaveatFromType,
 } from './Caveat';
 import {
   constructPermission,
   ExtractValidCaveatTypes,
+  findCaveat,
   GenericPermission,
   MutableCaveats,
   OriginString,
@@ -457,23 +459,36 @@ export class PermissionController<
     origin: OriginString,
     target: Permission['parentCapability'],
   ): void {
+    this.revokePermissions({ [origin]: [target] });
+  }
+
+  revokePermissions(
+    subjectsAndPermissions: Record<
+      OriginString,
+      Permission['parentCapability'][]
+    >,
+  ): void {
     this.update((draftState) => {
       if (!draftState.subjects[origin]) {
         throw new UnrecognizedSubjectError(origin);
       }
 
-      const { permissions } = draftState.subjects[origin];
-      if (!hasProperty(permissions as Record<string, unknown>, target)) {
-        throw new PermissionDoesNotExistError(origin, target);
-      }
+      Object.keys(subjectsAndPermissions).forEach((origin) => {
+        subjectsAndPermissions[origin].forEach((target) => {
+          const { permissions } = draftState.subjects[origin];
+          if (!hasProperty(permissions as Record<string, unknown>, target)) {
+            throw new PermissionDoesNotExistError(origin, target);
+          }
 
-      // Typecast: ts(2589)
-      this.deletePermission(
-        draftState as any,
-        permissions as any,
-        origin,
-        target,
-      );
+          // Typecast: ts(2589)
+          this.deletePermission(
+            draftState as any,
+            permissions as any,
+            origin,
+            target,
+          );
+        });
+      });
     });
   }
 
@@ -554,6 +569,29 @@ export class PermissionController<
     }
 
     this.setCaveat(origin, target, caveatType, caveatValue);
+  }
+
+  getCaveat<
+    TargetName extends Permission['parentCapability'],
+    CaveatType extends ExtractValidCaveatTypes<
+      Permission,
+      TargetKey,
+      TargetName
+    >,
+  >(
+    origin: OriginString,
+    target: TargetName,
+    caveatType: CaveatType,
+  ): GetCaveatFromType<Caveat, CaveatType> | undefined {
+    const permission = this.getPermission(origin, target);
+    if (!permission) {
+      throw new PermissionDoesNotExistError(origin, target);
+    }
+
+    return findCaveat(permission, caveatType) as GetCaveatFromType<
+      Caveat,
+      CaveatType
+    >;
   }
 
   updateCaveat<
@@ -770,7 +808,7 @@ export class PermissionController<
           ? specification.factory(permissionOptions, requestData)
           : constructPermission(permissionOptions)
       ) as Permission;
-      specification.validator?.(permission);
+      specification.validator?.(permission, origin, targetName);
       permissions[targetName] = permission;
     }
 

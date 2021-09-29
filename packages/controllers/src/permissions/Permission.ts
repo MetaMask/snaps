@@ -228,16 +228,11 @@ export function constructPermission(
  * @param caveatType The type of the caveat to retrieve.
  * @returns The caveat, or undefined if no such caveat exists.
  */
-export function findCaveat<
-  TargetCaveat extends GenericCaveat,
-  TargetPermission extends PermissionConstraint<string, TargetCaveat>,
->(
-  permission: TargetPermission,
-  caveatType: TargetCaveat['type'],
-): TargetCaveat | undefined {
-  return permission.caveats?.find(
-    (caveat) => caveat.type === caveatType,
-  ) as any;
+export function findCaveat(
+  permission: GenericPermission,
+  caveatType: string,
+): GenericCaveat | undefined {
+  return permission.caveats?.find((caveat) => caveat.type === caveatType);
 }
 
 /**
@@ -345,7 +340,11 @@ type PermissionSpecificationBase<
    *
    * The validator should throw an appropriate JSON-RPC error if validation fails.
    */
-  validator?: (permission: GenericPermission) => void;
+  validator?: (
+    permission: GenericPermission,
+    origin?: string,
+    target?: string,
+  ) => void;
 };
 
 /**
