@@ -21,7 +21,7 @@
     "build:clean": "yarn build",
     "build": "node ./scripts/buildExamples.js",
     "publish": "../../scripts/publish-package.sh",
-    "prepublishOnly": "yarn build:clean && yarn lint && yarn test"
+    "publish:prep": "yarn build:clean && yarn lint && yarn test"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^1.0.5",

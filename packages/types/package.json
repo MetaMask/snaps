@@ -21,7 +21,7 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "yarn auto-changelog validate",
     "publish": "../../scripts/publish-package.sh",
-    "prepublishOnly": "yarn lint"
+    "publish:prep": "yarn lint"
   },
   "devDependencies": {
     "@metamask/inpage-provider": "^8.0.4"

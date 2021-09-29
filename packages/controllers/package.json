@@ -21,7 +21,7 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "yarn auto-changelog validate",
     "publish": "../../scripts/publish-package.sh",
-    "prepublishOnly": "yarn lint && yarn build"
+    "publish:prep": "yarn lint && yarn build"
   },
   "dependencies": {
     "@metamask/controllers": "^17.0.0",
