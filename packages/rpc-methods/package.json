@@ -20,8 +20,8 @@
     "lint:changelog": "yarn auto-changelog validate",
     "build": "yarn build:prep && tsc --project tsconfig.local.json",
     "build:prep": "yarn rimraf dist/*",
-    "publish": "../../scripts/publish-package.sh",
-    "prepublishOnly": "yarn lint && yarn build"
+    "publish": "yarn publish:prep && ../../scripts/publish-package.sh",
+    "publish:prep": "yarn lint && yarn build"
   },
   "dependencies": {
     "@metamask/key-tree": "^2.0.1",

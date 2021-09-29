@@ -22,8 +22,8 @@
     "build:tsc": "tsc --project tsconfig.local.json",
     "build:post-tsc": "mv dist/PluginWorker.js dist/_PluginWorker.js && rm dist/PluginWorker* && node bundle.js && rm dist/_PluginWorker.js",
     "build:prep": "yarn rimraf dist/*",
-    "publish": "../../scripts/publish-package.sh",
-    "prepublishOnly": "yarn lint && yarn build"
+    "publish": "yarn publish:prep && ../../scripts/publish-package.sh",
+    "publish:prep": "yarn lint && yarn build"
   },
   "devDependencies": {
     "@metamask/inpage-provider": "^8.0.3",

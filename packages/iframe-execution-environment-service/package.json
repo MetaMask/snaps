@@ -21,8 +21,8 @@
     "build:tsc": "tsc --project tsconfig.json",
     "build:post-tsc": "echo 'post-tsc-iframe-execution-env'",
     "build:prep": "yarn rimraf dist/*",
-    "publish": "../../scripts/publish-package.sh",
-    "prepublishOnly": "yarn lint && yarn build"
+    "publish": "yarn publish:prep && ../../scripts/publish-package.sh",
+    "publish:prep": "yarn lint && yarn build"
   },
   "dependencies": {
     "@metamask/object-multiplex": "^1.2.0",
