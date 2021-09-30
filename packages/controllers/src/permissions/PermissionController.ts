@@ -117,7 +117,7 @@ export type GetPermissionControllerState = {
  * Gets the names of all subjects from the {@link PermissionController}.
  */
 export type GetSubjects = {
-  type: `${typeof controllerName}:getSubjects`;
+  type: `${typeof controllerName}:getSubjectNames`;
   handler: () => (keyof PermissionControllerSubjects<GenericPermission>)[];
 };
 
@@ -360,8 +360,8 @@ export class PermissionController<
     );
 
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:getSubjects`,
-      () => this.getSubjects(),
+      `${controllerName}:getSubjectNames`,
+      () => this.getSubjectNames(),
     );
 
     this.messagingSystem.registerActionHandler(
@@ -376,7 +376,7 @@ export class PermissionController<
     });
   }
 
-  getSubjects(): OriginString[] {
+  getSubjectNames(): OriginString[] {
     return Object.keys(this.state.subjects);
   }
 
@@ -469,11 +469,11 @@ export class PermissionController<
     >,
   ): void {
     this.update((draftState) => {
-      if (!draftState.subjects[origin]) {
-        throw new UnrecognizedSubjectError(origin);
-      }
-
       Object.keys(subjectsAndPermissions).forEach((origin) => {
+        if (!hasProperty(draftState.subjects, origin)) {
+          throw new UnrecognizedSubjectError(origin);
+        }
+
         subjectsAndPermissions[origin].forEach((target) => {
           const { permissions } = draftState.subjects[origin];
           if (!hasProperty(permissions as Record<string, unknown>, target)) {
@@ -493,7 +493,7 @@ export class PermissionController<
   }
 
   revokePermissionForAllSubjects(target: Permission['parentCapability']): void {
-    if (this.getSubjects().length === 0) {
+    if (this.getSubjectNames().length === 0) {
       return;
     }
 
@@ -713,7 +713,9 @@ export class PermissionController<
    * @param method - The requested RPC method.
    * @returns The internal key of the method.
    */
-  getTargetKey(method: Permission['parentCapability']): TargetKey | undefined {
+  private getTargetKey(
+    method: Permission['parentCapability'],
+  ): TargetKey | undefined {
     if (hasProperty(this._permissionSpecifications, method)) {
       return method as TargetKey;
     }
