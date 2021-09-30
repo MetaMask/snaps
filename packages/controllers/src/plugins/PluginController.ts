@@ -7,6 +7,7 @@ import {
 } from '@metamask/controllers';
 import { Json } from 'json-rpc-engine';
 import { PluginData } from '@metamask/snap-types';
+import fastDeepEqual from 'fast-deep-equal';
 import {
   GetRpcMessageHandler,
   ExecutePlugin,
@@ -41,6 +42,12 @@ export type Plugin = SerializablePlugin & {
   sourceCode: string;
 };
 
+export type PluginError = {
+  message: string;
+  code: number;
+  data?: Json;
+};
+
 export type ProcessPluginReturnType =
   | SerializablePlugin
   | { error: ReturnType<typeof serializeError> };
@@ -69,6 +76,7 @@ export type PluginControllerState = {
   pluginStates: {
     [PluginId: string]: Json;
   };
+  pluginErrors: PluginError[];
 };
 
 export type PluginStateChange = {
@@ -126,6 +134,7 @@ type AddPluginDirectlyArgs = AddPluginBase & {
 type AddPluginArgs = AddPluginByFetchingArgs | AddPluginDirectlyArgs;
 
 const defaultState: PluginControllerState = {
+  pluginErrors: [],
   inlinePluginIsRunning: false,
   plugins: {},
   pluginStates: {},
@@ -181,6 +190,10 @@ export class PluginController extends BaseController<
     super({
       messenger,
       metadata: {
+        pluginErrors: {
+          persist: false,
+          anonymous: false,
+        },
         inlinePluginIsRunning: {
           persist: false,
           anonymous: false,
@@ -379,6 +392,44 @@ export class PluginController extends BaseController<
   ): Promise<void> {
     this.update((state: any) => {
       state.pluginStates[pluginName] = newPluginState;
+    });
+  }
+
+  /**
+   * Adds an error from a plugin to the PluginControllers state.
+   *
+   * @param pluginError - The error to store on the PluginController
+   */
+  async addPluginErrors(pluginErrors: PluginError[]) {
+    this.update((state: any) => {
+      state.pluginErrors = state.pluginErrors.concat(pluginErrors);
+    });
+  }
+
+  /**
+   * Adds an error from a plugin to the PluginControllers state.
+   *
+   * @param pluginError - The error to store on the PluginController
+   */
+  async removePluginErrors(pluginErrors: PluginError[]) {
+    this.update((state: any) => {
+      state.pluginErrors = state.pluginErrors.filter(
+        (pluginErrorToCompare: PluginError) => {
+          return !pluginErrors.some((pluginErrorPassedIn) => {
+            return fastDeepEqual(pluginErrorPassedIn, pluginErrorToCompare);
+          });
+        },
+      );
+    });
+  }
+
+  /**
+   * Clears all errors from a plugin from the PluginControllers state.
+   *
+   */
+  async clearPluginErrors() {
+    this.update((state: any) => {
+      state.pluginErrors = [];
     });
   }
 
@@ -670,7 +721,7 @@ export class PluginController extends BaseController<
       return [manifest, sourceCode];
     } catch (err) {
       throw new Error(
-        `Problem fetching plugin "${pluginName}": ${err.message}`,
+        `Problem fetching plugin "${pluginName}": ${(err as Error).message}`,
       );
     }
   }
