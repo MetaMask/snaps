@@ -44,6 +44,7 @@ export type PermissionsRequestMetadata = PermissionSubjectMetadata & {
 export type PermissionsRequest = {
   metadata: PermissionsRequestMetadata;
   permissions: RequestedPermissions;
+  [key: string]: Json;
 };
 
 type IsRestrictedMethod = (method: string) => boolean;
@@ -175,7 +176,7 @@ export class PermissionEnforcer<
       permissions: requestedPermissions,
     };
 
-    const { permissions: approvedPermissions, metadata: approvedMetadata } =
+    const { permissions: approvedPermissions, ...requestData } =
       await this.requestUserApproval(permissionsRequest);
     if (Object.keys(approvedPermissions).length === 0) {
       // The request should already have been rejected if this is the case.
@@ -190,7 +191,7 @@ export class PermissionEnforcer<
         subject: { origin },
         approvedPermissions,
         shouldPreserveExistingPermissions,
-        requestData: approvedMetadata,
+        requestData,
       }),
       metadata,
     ];
