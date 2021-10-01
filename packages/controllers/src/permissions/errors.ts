@@ -93,15 +93,6 @@ export class CaveatAlreadyExistsError extends Error {
   }
 }
 
-export class InvalidPermissionJsonError extends Error {
-  public data: { origin: string; permission: GenericPermission };
-
-  constructor(origin: string, permission: GenericPermission) {
-    super(`Permission object of subject "${origin}" is not valid JSON.`);
-    this.data = { origin, permission };
-  }
-}
-
 export class InvalidCaveatError extends EthereumRpcError<unknown> {
   public data: { origin: string; target: string };
 
@@ -165,23 +156,6 @@ export class InvalidCaveatFieldsError extends Error {
     super(
       `Caveat has unexpected number of fields: "${Object.keys(caveat).length}"`,
     );
-    this.data = { caveat, origin, target };
-  }
-}
-
-export class InvalidCaveatJsonError extends Error {
-  public data: {
-    caveat: CaveatConstraint<any, any>;
-    origin: string;
-    target: string;
-  };
-
-  constructor(
-    caveat: CaveatConstraint<any, any>,
-    origin: string,
-    target: string,
-  ) {
-    super(`Caveat object is not valid JSON.`);
     this.data = { caveat, origin, target };
   }
 }
