@@ -862,7 +862,7 @@ export class PermissionController<
   grantPermissions({
     requestData,
     approvedPermissions,
-    shouldPreserveExistingPermissions = false,
+    shouldPreserveExistingPermissions = true,
     subject,
   }: GrantPermissionsOptions): SubjectPermissions<Permission> {
     const { origin } = subject;
