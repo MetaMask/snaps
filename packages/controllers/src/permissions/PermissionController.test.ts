@@ -86,6 +86,11 @@ function getDefaultCaveatSpecifications(): CaveatSpecifications<DefaultCaveats> 
         async (args: RestrictedMethodArgs<Json>) => {
           return method(args);
         },
+      validator: (caveat: { type: CaveatTypes.noopCaveat; value: unknown }) => {
+        if (caveat.value !== null) {
+          throw new Error('Caveat value must be null');
+        }
+      },
     },
   };
 }
@@ -157,7 +162,7 @@ function getDefaultPermissionSpecifications(): PermissionSpecifications<
           !permission.caveats?.some(
             (caveat) => caveat.type === CaveatTypes.filterArrayResponse,
           ),
-          'invalid caveats',
+          'permission validation failed',
         );
       },
     },
@@ -182,7 +187,7 @@ function getDefaultPermissionSpecifications(): PermissionSpecifications<
         assert.deepStrictEqual(
           permission.caveats,
           [constructCaveat(CaveatTypes.noopCaveat, null)],
-          'invalid caveats',
+          'permission validation failed',
         );
       },
     },
@@ -991,7 +996,7 @@ describe('PermissionController', () => {
       });
     });
 
-    it("appends a caveat to the specified permission's existing caveats", () => {
+    it(`appends a caveat to the specified permission's existing caveats`, () => {
       const controller = getDefaultPermissionController();
       const origin = 'metamask.io';
 
@@ -1045,6 +1050,31 @@ describe('PermissionController', () => {
           },
         },
       });
+    });
+
+    it('throws an error if the permission fails to validate with the new caveat', () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      controller.grantPermissions({
+        subject: { origin },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretObject]: {
+            caveats: [
+              constructCaveat(CaveatTypes.filterObjectResponse, ['foo']),
+            ],
+          },
+        },
+      });
+
+      expect(() =>
+        controller.addCaveat(
+          origin,
+          PermissionNames.wallet_getSecretObject,
+          CaveatTypes.filterArrayResponse as any,
+          ['foo'],
+        ),
+      ).toThrow(new Error('permission validation failed'));
     });
 
     it('throws an error if a corresponding caveat already exists', () => {
@@ -1469,7 +1499,7 @@ describe('PermissionController', () => {
       });
     });
 
-    it('preserves existing permissions if shouldPreserveExistingPermissions is true', () => {
+    it('preserves existing permissions if preserveExistingPermissions is true', () => {
       const controller = getDefaultPermissionControllerWithState();
       const origin = 'metamask.io';
 
@@ -1491,8 +1521,7 @@ describe('PermissionController', () => {
         approvedPermissions: {
           wallet_getSecretObject: {},
         },
-        // This is the default
-        // shouldPreserveExistingPermissions: true,
+        // preserveExistingPermissions is true by default
       });
 
       expect(controller.state).toStrictEqual({
@@ -1512,7 +1541,7 @@ describe('PermissionController', () => {
       });
     });
 
-    it('overwrites existing permissions if shouldPreserveExistingPermissions is false', () => {
+    it('overwrites existing permissions if preserveExistingPermissions is false', () => {
       const controller = getDefaultPermissionControllerWithState();
       const origin = 'metamask.io';
 
@@ -1534,7 +1563,7 @@ describe('PermissionController', () => {
         approvedPermissions: {
           wallet_getSecretObject: {},
         },
-        shouldPreserveExistingPermissions: false,
+        preserveExistingPermissions: false,
       });
 
       expect(controller.state).toStrictEqual({
@@ -1584,6 +1613,157 @@ describe('PermissionController', () => {
           },
         }),
       ).toThrow(errors.methodNotFound({ method: 'wallet_getSecretFalafel' }));
+    });
+
+    it('throws if a requested caveat is not a plain object', () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      expect(() =>
+        controller.grantPermissions({
+          subject: { origin },
+          approvedPermissions: {
+            wallet_getSecretArray: {
+              caveats: [[]] as any,
+            },
+          },
+        }),
+      ).toThrow(
+        new errors.InvalidCaveatError(
+          [],
+          origin,
+          PermissionNames.wallet_getSecretArray,
+        ),
+      );
+
+      expect(() =>
+        controller.grantPermissions({
+          subject: { origin },
+          approvedPermissions: {
+            wallet_getSecretArray: {
+              caveats: ['foo'] as any,
+            },
+          },
+        }),
+      ).toThrow(
+        new errors.InvalidCaveatError(
+          [],
+          origin,
+          PermissionNames.wallet_getSecretArray,
+        ),
+      );
+    });
+
+    it('throws if a requested caveat has more than two keys', () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      expect(() =>
+        controller.grantPermissions({
+          subject: { origin },
+          approvedPermissions: {
+            wallet_getSecretArray: {
+              caveats: [
+                {
+                  ...constructCaveat(CaveatTypes.filterArrayResponse, ['foo']),
+                  bar: 'bar',
+                },
+              ] as any,
+            },
+          },
+        }),
+      ).toThrow(
+        new errors.InvalidCaveatFieldsError(
+          {
+            ...constructCaveat(CaveatTypes.filterArrayResponse, ['foo']),
+            bar: 'bar',
+          },
+          origin,
+          PermissionNames.wallet_getSecretArray,
+        ),
+      );
+    });
+
+    it('throws if a requested caveat type is not a string', () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      expect(() =>
+        controller.grantPermissions({
+          subject: { origin },
+          approvedPermissions: {
+            wallet_getSecretArray: {
+              caveats: [
+                {
+                  type: 2,
+                  value: ['foo'],
+                },
+              ] as any,
+            },
+          },
+        }),
+      ).toThrow(
+        new errors.InvalidCaveatTypeError(
+          {
+            type: 2,
+            value: ['foo'],
+          },
+          origin,
+          PermissionNames.wallet_getSecretArray,
+        ),
+      );
+    });
+
+    it('throws if a requested caveat type does not exist', () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      expect(() =>
+        controller.grantPermissions({
+          subject: { origin },
+          approvedPermissions: {
+            wallet_getSecretArray: {
+              caveats: [constructCaveat('fooType', 'bar')] as any,
+            },
+          },
+        }),
+      ).toThrow(
+        new errors.CaveatTypeDoesNotExistError(
+          constructCaveat('fooType', 'bar'),
+          origin,
+          PermissionNames.wallet_getSecretArray,
+        ),
+      );
+    });
+
+    it('throws if a requested caveat has no value field', () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      expect(() =>
+        controller.grantPermissions({
+          subject: { origin },
+          approvedPermissions: {
+            wallet_getSecretArray: {
+              caveats: [
+                {
+                  type: CaveatTypes.filterArrayResponse,
+                  foo: 'bar',
+                },
+              ] as any,
+            },
+          },
+        }),
+      ).toThrow(
+        new errors.CaveatMissingValueError(
+          {
+            type: CaveatTypes.filterArrayResponse,
+            foo: 'bar',
+          },
+          origin,
+          PermissionNames.wallet_getSecretArray,
+        ),
+      );
     });
   });
 

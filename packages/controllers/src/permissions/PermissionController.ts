@@ -14,7 +14,7 @@ import { isPlainObject, hasProperty, NonEmptyArray } from '../utils';
 import {
   CaveatConstraint,
   CaveatSpecifications,
-  constructCaveat,
+  constructCaveat as _constructCaveat,
   GenericCaveat,
   GetCaveatFromType,
 } from './Caveat';
@@ -228,7 +228,7 @@ type PermissionControllerOptions<
 type GrantPermissionsOptions = {
   approvedPermissions: RequestedPermissions;
   subject: PermissionSubjectMetadata;
-  shouldPreserveExistingPermissions?: boolean;
+  preserveExistingPermissions?: boolean;
   requestData?: Record<string, unknown>;
 };
 
@@ -633,7 +633,15 @@ export class PermissionController<
   }
 
   /**
-   * TODO
+   * Adds a caveat of the specified type, with the specified caveat value, to
+   * the permission corresponding to the given subject origin and permission
+   * target.
+   *
+   * For modifying existing caveats, use
+   * {@link PermissionController.updateCaveat}.
+   *
+   * Throws an error if no such permission exists, or if the caveat already
+   * exists.
    *
    * @template TargetName - The permission target name. Should be inferred.
    * @template CaveatType - The valid caveat types for the permission. Should
@@ -664,7 +672,14 @@ export class PermissionController<
   }
 
   /**
-   * TODO
+   * Updates the value of the caveat of the specified type belonging to the
+   * permission corresponding to the given subject origin and permission
+   * target.
+   *
+   * For adding new caveats, use
+   * {@link PermissionController.addCaveat}.
+   *
+   * Throws an error if no such permission or caveat exists.
    *
    * @template TargetName - The permission target name. Should be inferred.
    * @template CaveatType - The valid caveat types for the permission. Should
@@ -694,6 +709,22 @@ export class PermissionController<
     this.setCaveat(origin, target, caveatType, caveatValue);
   }
 
+  /**
+   * Internal method for setting the caveat of a permission.
+   *
+   * Throws an error if the permission does not exist or fails to validate after
+   * its caveats have been modified.
+   *
+   * @see {@link PermissionController.addCaveat}
+   * @see {@link PermissionController.updateCaveat}
+   * @template TargetName - The permission target name. Should be inferred.
+   * @template CaveatType - The valid caveat types for the permission. Should
+   * be inferred.
+   * @param origin - The origin of the subject.
+   * @param target - The target name of the permission.
+   * @param caveatType - The type of the caveat to set.
+   * @param caveatValue - The value of the caveat to set.
+   */
   private setCaveat<
     TargetName extends Permission['parentCapability'],
     CaveatType extends ExtractValidCaveatTypes<
@@ -708,16 +739,27 @@ export class PermissionController<
     caveatValue: ExtractCaveatValue<Caveat, CaveatType>,
   ): void {
     this.update((draftState) => {
+      const subject = draftState.subjects[origin] as
+        | PermissionSubjectEntry<Permission>
+        | undefined;
+
+      // This should be impossible in our usage, but TypeScript wants it
+      /* istanbul ignore if */
+      if (!subject) {
+        throw new UnrecognizedSubjectError(origin);
+      }
+
       // Typecast: immer's WritableDraft is incompatible with our generics
-      const permission: MutableCaveats<Permission> = (
-        draftState.subjects as PermissionControllerSubjects<Permission>
-      )[origin]?.permissions[target];
-      /* istanbul ignore if: This should be impossible, but TypeScript wants it */
+      const permission: MutableCaveats<Permission> =
+        subject.permissions[target];
+
+      // This should also be impossible in our usage, but TypeScript wants it
+      /* istanbul ignore if */
       if (!permission) {
         throw new PermissionDoesNotExistError(origin, target);
       }
 
-      const caveat = this.computeCaveat(origin, target, {
+      const caveat = this.constructCaveat(origin, target, {
         type: caveatType,
         value: caveatValue,
       });
@@ -746,7 +788,10 @@ export class PermissionController<
   }
 
   /**
-   * TODO
+   * Removes the caveat of the specified type from the permission corresponding
+   * to the given subject origin and target name.
+   *
+   * Throws an error if no such permission or caveat exists.
    *
    * @template TargetName - The permission target name. Should be inferred.
    * @template CaveatType - The valid caveat types for the permission. Should
@@ -859,10 +904,25 @@ export class PermissionController<
     return undefined;
   }
 
+  /**
+   * Grants approved permissions to the specified subject. Every permission and
+   * caveat is stringently validated – including by calling every specification
+   * validator – and an error is thrown if any validation fails.
+   *
+   * @param options - Options bag.
+   * @param options.approvedPermissions - The requested permissions approved by
+   * the user.
+   * @param options.requestData - Permission request data. Passed to permission
+   * factory functions.
+   * @param options.preserveExistingPermissions - Whether to preserve the
+   * subject's existing permissions.
+   * @param options.subject - The subject to grant permissions to.
+   * @returns The granted permissions.
+   */
   grantPermissions({
-    requestData,
     approvedPermissions,
-    shouldPreserveExistingPermissions = true,
+    requestData,
+    preserveExistingPermissions = true,
     subject,
   }: GrantPermissionsOptions): SubjectPermissions<Permission> {
     const { origin } = subject;
@@ -872,7 +932,7 @@ export class PermissionController<
     }
 
     const permissions: SubjectPermissions<Permission> =
-      ((shouldPreserveExistingPermissions && {
+      ((preserveExistingPermissions && {
         ...this.getPermissions(origin),
       }) ||
         {}) as SubjectPermissions<Permission>;
@@ -890,7 +950,7 @@ export class PermissionController<
       const targetName = requestedTarget as Permission['parentCapability'];
       const specification = this.permissionSpecifications[targetKey];
 
-      const caveats = this.computeCaveats(
+      const caveats = this.constructCaveats(
         origin,
         targetName,
         approvedPermissions[targetName].caveats,
@@ -916,9 +976,9 @@ export class PermissionController<
   }
 
   /**
-   * Adds permissions to the given subject. Overwrites existing identical
-   * permissions (same subject and method). Other existing permissions
-   * remain unaffected.
+   * Assigns the specified permissions to the subject with the given origin.
+   * Overwrites all existing permissions, and creates a subject entry if it
+   * doesn't already exist.
    *
    * **ATTN: Assumes that the new permissions have been validated.**
    *
@@ -935,34 +995,57 @@ export class PermissionController<
         draftState.subjects[origin] = { origin, permissions: {} as any };
       }
 
-      Object.assign(draftState.subjects[origin].permissions, permissions);
+      draftState.subjects[origin].permissions = permissions as any;
     });
   }
 
   /**
-   * @param caveats The caveats to validate.
-   * @returns Whether the given caveats are valid.
+   * Constructs the requested caveats for the permission of the specified
+   * subject origin and target name.
+   *
+   * Throws an error if validation fails.
+   *
+   * @see {@link PermissionController.constructCaveat} for details.
+   * @param origin - The origin of the permission subject.
+   * @param target - The permission target name.
+   * @param requestedCaveats - The requested caveats to construct.
+   * @returns The constructed caveats.
    */
-  private computeCaveats(
+  private constructCaveats(
     origin: OriginString,
     target: Permission['parentCapability'],
-    caveats?: unknown[] | null,
+    requestedCaveats?: unknown[] | null,
   ): NonEmptyArray<Caveat> | undefined {
-    const caveatArray = caveats?.map((requestedCaveat) =>
-      this.computeCaveat(origin, target, requestedCaveat),
+    const caveatArray = requestedCaveats?.map((requestedCaveat) =>
+      this.constructCaveat(origin, target, requestedCaveat),
     );
     return caveatArray && caveatArray.length > 0
       ? (caveatArray as NonEmptyArray<Caveat>)
       : undefined;
   }
 
-  private computeCaveat(
+  /**
+   * Constructs a caveat for the permission of the specified subject origin and
+   * target name, per the requested caveat argument. This methods validates
+   * everything about the requested caveat, except that its `value` property
+   * is JSON-compatible. It also ensures that a caveat specification exist for
+   * the requested type, and calls the specification validator, if it exists, on
+   * the constructed caveat.
+   *
+   * Throws an error if validation fails.
+   *
+   * @param origin - The origin of the permission subject.
+   * @param target - The permission target name.
+   * @param requestedCaveat - The requested caveat to construct.
+   * @returns The constructed caveat.
+   */
+  private constructCaveat(
     origin: OriginString,
     target: Permission['parentCapability'],
     requestedCaveat: unknown,
   ): Caveat {
     if (!isPlainObject(requestedCaveat)) {
-      throw new InvalidCaveatError(requestedCaveat);
+      throw new InvalidCaveatError(requestedCaveat, origin, target);
     }
 
     if (Object.keys(requestedCaveat).length !== 2) {
@@ -970,7 +1053,7 @@ export class PermissionController<
     }
 
     if (typeof requestedCaveat.type !== 'string') {
-      throw new InvalidCaveatTypeError(requestedCaveat.type);
+      throw new InvalidCaveatTypeError(requestedCaveat, origin, target);
     }
 
     const specification =
@@ -979,11 +1062,7 @@ export class PermissionController<
       ];
 
     if (!specification) {
-      throw new CaveatTypeDoesNotExistError(
-        requestedCaveat.type,
-        origin,
-        target,
-      );
+      throw new CaveatTypeDoesNotExistError(requestedCaveat, origin, target);
     }
 
     if (!hasProperty(requestedCaveat, 'value')) {
@@ -991,7 +1070,7 @@ export class PermissionController<
     }
 
     // TODO: Consider validating that this is Json?
-    const caveat = constructCaveat(
+    const caveat = _constructCaveat(
       requestedCaveat.type,
       (requestedCaveat.value as Json) ?? null,
     );
@@ -999,6 +1078,11 @@ export class PermissionController<
     return caveat as Caveat;
   }
 
+  /**
+   * Constructor helper for getting the enforcer of this controller.
+   *
+   * @returns The {@link PermissionEnforcer}.
+   */
   private constructEnforcer(): PermissionEnforcer<
     TargetKey,
     Caveat,
@@ -1048,8 +1132,7 @@ export class PermissionController<
         type?: string;
       }) =>
         // Typecast: There are only some valid parameter combinations, but we
-        // just won't worry about that here. It's unclear if the messaging
-        // even handles them.
+        // just won't worry about that here.
         this.messagingSystem.call('ApprovalController:hasRequest', opts as any),
     });
   }

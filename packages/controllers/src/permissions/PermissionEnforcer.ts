@@ -163,7 +163,7 @@ export class PermissionEnforcer<
     origin: string,
     requestedPermissions: RequestedPermissions,
     id: string = nanoid(),
-    shouldPreserveExistingPermissions = false,
+    preserveExistingPermissions = false,
   ): Promise<[Record<string, Permission>, { id: string; origin: string }]> {
     this.validateRequestedPermissions(origin, requestedPermissions);
     const metadata: PermissionsRequest['metadata'] = {
@@ -190,7 +190,7 @@ export class PermissionEnforcer<
       this.grantPermissions({
         subject: { origin },
         approvedPermissions,
-        shouldPreserveExistingPermissions,
+        preserveExistingPermissions,
         requestData,
       }),
       metadata,

@@ -103,27 +103,41 @@ export class InvalidPermissionJsonError extends Error {
 }
 
 export class InvalidCaveatError extends EthereumRpcError<unknown> {
-  constructor(receivedCaveat: unknown) {
+  public data: { origin: string; target: string };
+
+  constructor(receivedCaveat: unknown, origin: string, target: string) {
     super(
       errorCodes.rpc.invalidParams,
       `Invalid caveat. Caveats must be plain objects.`,
       { receivedCaveat },
     );
+    this.data = { origin, target };
   }
 }
 
 export class InvalidCaveatTypeError extends Error {
-  constructor(caveatType: unknown) {
-    super(`Caveat types must be strings. Received: "${typeof caveatType}"`);
+  public data: {
+    caveat: Record<string, unknown>;
+    origin: string;
+    target: string;
+  };
+
+  constructor(caveat: Record<string, unknown>, origin: string, target: string) {
+    super(`Caveat types must be strings. Received: "${typeof caveat.type}"`);
+    this.data = { caveat, origin, target };
   }
 }
 
 export class CaveatTypeDoesNotExistError extends Error {
-  public data: { origin: string; target: string };
+  public data: {
+    caveat: Record<string, unknown>;
+    origin: string;
+    target: string;
+  };
 
-  constructor(caveatType: string, origin: string, target: string) {
-    super(`Caveat type "${caveatType}" does not exist.`);
-    this.data = { origin, target };
+  constructor(caveat: Record<string, unknown>, origin: string, target: string) {
+    super(`Caveat type "${caveat.type}" does not exist.`);
+    this.data = { caveat, origin, target };
   }
 }
 
