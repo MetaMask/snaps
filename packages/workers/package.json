@@ -13,17 +13,18 @@
   ],
   "scripts": {
     "test": "echo \"@metamask/snap-workers has no tests.\"",
+    "test:ci": "yarn test",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "yarn auto-changelog validate",
-    "build": "yarn build:prep && yarn build:tsc && yarn build:post-tsc",
+    "build": "yarn build:tsc && yarn build:post-tsc",
     "build:tsc": "tsc --project tsconfig.local.json",
     "build:post-tsc": "mv dist/PluginWorker.js dist/_PluginWorker.js && rm dist/PluginWorker* && node bundle.js && rm dist/_PluginWorker.js",
-    "build:prep": "yarn rimraf dist/*",
+    "build:clean": "yarn rimraf dist/* && yarn build",
     "publish": "../../scripts/publish-package.sh",
-    "publish:prep": "yarn lint && yarn build"
+    "publish:prep": "yarn lint && yarn build:clean"
   },
   "devDependencies": {
     "@metamask/inpage-provider": "^8.0.3",

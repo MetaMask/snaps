@@ -12,17 +12,18 @@
   ],
   "scripts": {
     "test": "jest",
+    "test:ci": "yarn test",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "yarn auto-changelog validate",
-    "build": "yarn build:prep && yarn build:tsc && yarn build:post-tsc",
     "build:tsc": "tsc --project tsconfig.json",
     "build:post-tsc": "echo 'post-tsc-iframe-execution-env'",
-    "build:prep": "yarn rimraf dist/*",
+    "build": "yarn build:tsc && yarn build:post-tsc",
+    "build:clean": "yarn rimraf dist/* && yarn build",
     "publish": "../../scripts/publish-package.sh",
-    "publish:prep": "yarn lint && yarn build"
+    "publish:prep": "yarn lint && yarn build:clean"
   },
   "dependencies": {
     "@metamask/object-multiplex": "^1.2.0",

@@ -13,8 +13,9 @@
   ],
   "scripts": {
     "build": "echo \"@metamask/snap-types has no build command.\"",
-    "build:prep": "echo \"@metamask/snap-types has no build:prep command.\"",
+    "build:clean": "echo \"@metamask/snap-types has no build:clean command.\"",
     "test": "echo \"@metamask/snap-types has no tests.\"",
+    "test:ci": "yarn test",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check",

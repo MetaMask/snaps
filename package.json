@@ -21,9 +21,9 @@
     "build:tsc": "tsc --build --force tsconfig.json",
     "build:post-tsc": "yarn workspace @metamask/snap-workers run build:post-tsc",
     "build": "yarn build:tsc && yarn build:post-tsc",
-    "build:clean": "yarn workspaces run build:prep && yarn build",
+    "build:clean": "yarn workspaces run build:clean",
     "test": "yarn workspaces run test",
-    "test:ci": "./scripts/test-ci.sh"
+    "test:ci": "yarn workspaces run test:ci"
   },
   "devDependencies": {
     "@jest-runner/electron": "^3.0.1",
