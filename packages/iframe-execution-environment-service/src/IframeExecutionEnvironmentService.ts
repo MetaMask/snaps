@@ -281,7 +281,7 @@ export class IframeExecutionEnvironmentService
         if (pluginName) {
           this._onError(pluginName, err);
         }
-        commandStream.off('data', errorHandler);
+        commandStream.removeListener('data', errorHandler);
       }
     };
     commandStream.on('data', errorHandler);

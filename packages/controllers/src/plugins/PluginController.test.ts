@@ -304,6 +304,7 @@ describe('PluginController Controller', () => {
         name: 'PluginController',
       }),
       state: {
+        pluginErrors: {},
         pluginStates: {},
         inlinePluginIsRunning: false,
         plugins: {
@@ -346,6 +347,96 @@ describe('PluginController Controller', () => {
     expect(secondPluginController.state.plugins.foo).toBeDefined();
     expect(secondPluginController.state.plugins.foo.isRunning).toStrictEqual(
       true,
+    );
+  });
+
+  it('can add errors to the PluginControllers state', async () => {
+    class ExecutionEnvironmentStub implements ExecutionEnvironmentService {
+      async terminateAllPlugins() {
+        // empty stub
+      }
+
+      async getRpcMessageHandler() {
+        return (_: any, request: Record<string, unknown>) => {
+          return new Promise((resolve) => {
+            const results = `${request.method}${request.id}`;
+            resolve(results);
+          });
+        };
+      }
+
+      async executePlugin() {
+        return 'some-unique-id';
+      }
+
+      async terminatePlugin() {
+        // empty stub
+      }
+    }
+
+    const executionEnvironmentStub = new ExecutionEnvironmentStub();
+
+    const pluginController = new PluginController({
+      terminateAllPlugins: executionEnvironmentStub.terminateAllPlugins.bind(
+        executionEnvironmentStub,
+      ),
+      terminatePlugin: executionEnvironmentStub.terminatePlugin.bind(
+        executionEnvironmentStub,
+      ),
+      executePlugin: executionEnvironmentStub.executePlugin.bind(
+        executionEnvironmentStub,
+      ),
+      getRpcMessageHandler: executionEnvironmentStub.getRpcMessageHandler.bind(
+        executionEnvironmentStub,
+      ),
+      removeAllPermissionsFor: jest.fn(),
+      getPermissions: jest.fn(),
+      hasPermission: jest.fn(),
+      requestPermissions: jest.fn(),
+      closeAllConnections: jest.fn(),
+      messenger: new ControllerMessenger<any, any>().getRestricted({
+        name: 'PluginController',
+      }),
+    });
+    pluginController.addPluginError({
+      code: 1,
+      data: {},
+      message: 'error happened',
+    });
+
+    const arrayOfErrors = Object.entries(pluginController.state.pluginErrors);
+
+    expect(arrayOfErrors.length > 0).toStrictEqual(true);
+
+    pluginController.removePluginError(arrayOfErrors[0][0]);
+
+    expect(Object.entries(pluginController.state.pluginErrors)).toHaveLength(0);
+
+    pluginController.addPluginError({
+      code: 1,
+      data: {},
+      message: 'error happened',
+    });
+
+    pluginController.addPluginError({
+      code: 2,
+      data: {},
+      message: 'error 2',
+    });
+
+    pluginController.removePluginError(
+      Object.entries(pluginController.state.pluginErrors)[0][0],
+    );
+
+    expect(Object.entries(pluginController.state.pluginErrors)).toHaveLength(1);
+    expect(
+      Object.entries(pluginController.state.pluginErrors)[0][1],
+    ).toStrictEqual(
+      expect.objectContaining({
+        code: 2,
+        data: {},
+        message: 'error 2',
+      }),
     );
   });
 });

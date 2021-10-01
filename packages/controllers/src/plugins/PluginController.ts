@@ -7,6 +7,7 @@ import {
 } from '@metamask/controllers';
 import { Json } from 'json-rpc-engine';
 import { PluginData } from '@metamask/snap-types';
+import { nanoid } from 'nanoid';
 import {
   GetRpcMessageHandler,
   ExecutePlugin,
@@ -41,6 +42,12 @@ export type Plugin = SerializablePlugin & {
   sourceCode: string;
 };
 
+export type PluginError = {
+  message: string;
+  code: number;
+  data?: Json;
+};
+
 export type ProcessPluginReturnType =
   | SerializablePlugin
   | { error: ReturnType<typeof serializeError> };
@@ -68,6 +75,9 @@ export type PluginControllerState = {
   plugins: StoredPlugins;
   pluginStates: {
     [PluginId: string]: Json;
+  };
+  pluginErrors: {
+    [internalID: string]: PluginError & { internalID: string };
   };
 };
 
@@ -126,6 +136,7 @@ type AddPluginDirectlyArgs = AddPluginBase & {
 type AddPluginArgs = AddPluginByFetchingArgs | AddPluginDirectlyArgs;
 
 const defaultState: PluginControllerState = {
+  pluginErrors: {},
   inlinePluginIsRunning: false,
   plugins: {},
   pluginStates: {},
@@ -181,6 +192,10 @@ export class PluginController extends BaseController<
     super({
       messenger,
       metadata: {
+        pluginErrors: {
+          persist: false,
+          anonymous: false,
+        },
         inlinePluginIsRunning: {
           persist: false,
           anonymous: false,
@@ -379,6 +394,42 @@ export class PluginController extends BaseController<
   ): Promise<void> {
     this.update((state: any) => {
       state.pluginStates[pluginName] = newPluginState;
+    });
+  }
+
+  /**
+   * Adds error from a plugin to the PluginControllers state.
+   *
+   * @param pluginError - The error to store on the PluginController
+   */
+  async addPluginError(pluginError: PluginError) {
+    this.update((state: any) => {
+      const id = nanoid();
+      state.pluginErrors[id] = {
+        ...pluginError,
+        internalID: id,
+      };
+    });
+  }
+
+  /**
+   * Removes an error by internalID from a the PluginControllers state.
+   *
+   * @param internalID - The internal error ID to remove on the PluginController
+   */
+  async removePluginError(internalID: string) {
+    this.update((state: any) => {
+      delete state.pluginErrors[internalID];
+    });
+  }
+
+  /**
+   * Clears all errors from the PluginControllers state.
+   *
+   */
+  async clearPluginErrors() {
+    this.update((state: any) => {
+      state.pluginErrors = {};
     });
   }
 
@@ -670,7 +721,7 @@ export class PluginController extends BaseController<
       return [manifest, sourceCode];
     } catch (err) {
       throw new Error(
-        `Problem fetching plugin "${pluginName}": ${err.message}`,
+        `Problem fetching plugin "${pluginName}": ${(err as Error).message}`,
       );
     }
   }

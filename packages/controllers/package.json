@@ -35,7 +35,7 @@
     "immer": "^9.0.6",
     "json-rpc-engine": "^6.1.0",
     "json-rpc-middleware-stream": "^3.0.0",
-    "nanoid": "^3.1.20",
+    "nanoid": "^3.1.28",
     "pump": "^3.0.0"
   },
   "devDependencies": {
