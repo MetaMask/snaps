@@ -21,7 +21,7 @@
     "build": "node ./scripts/buildExamples.js",
     "build:prep": "echo \"@metamask/snap-examples has no build:prep command.\"",
     "publish": "../../scripts/publish-package.sh",
-    "publish:prep": "yarn build:clean && yarn lint && yarn test"
+    "publish:prep": "yarn lint && yarn build:clean"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^1.0.5",

@@ -13,4 +13,3 @@ if [[ $(git diff --quiet) != '' ]]; then
 fi
 
 yarn lint
-yarn test
