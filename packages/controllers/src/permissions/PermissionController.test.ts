@@ -270,6 +270,20 @@ function getDefaultPermissionControllerWithState() {
   >(getControllerOptions({ state: getExistingPermissionState() }));
 }
 
+function getPermissionMatcher(
+  parentCapability: string,
+  caveats: GenericCaveat[] | null | typeof expect.objectContaining = null,
+  invoker = 'metamask.io',
+) {
+  return expect.objectContaining({
+    id: expect.any(String),
+    parentCapability,
+    invoker,
+    caveats,
+    date: expect.any(Number),
+  });
+}
+
 describe('PermissionController', () => {
   describe('constructor', () => {
     it('initializes a new PermissionController', () => {
@@ -1920,19 +1934,3 @@ describe('PermissionController', () => {
     });
   });
 });
-
-// Testing utilities
-
-function getPermissionMatcher(
-  parentCapability: string,
-  caveats: GenericCaveat[] | null | typeof expect.objectContaining = null,
-  invoker = 'metamask.io',
-) {
-  return expect.objectContaining({
-    id: expect.any(String),
-    parentCapability,
-    invoker,
-    caveats,
-    date: expect.any(Number),
-  });
-}
