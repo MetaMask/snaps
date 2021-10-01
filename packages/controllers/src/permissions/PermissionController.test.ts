@@ -103,7 +103,7 @@ type SecretObjectName = 'wallet_getSecretObject';
 
 type SecretObjectPermission = PermissionConstraint<
   SecretObjectName,
-  FilterObjectCaveat
+  FilterObjectCaveat | NoopCaveat
 >;
 
 type SecretNamespacedKey = 'wallet_getSecret_*';
@@ -150,6 +150,15 @@ function getDefaultPermissionSpecifications(): PermissionSpecifications<
       target: PermissionKeys.wallet_getSecretObject,
       methodImplementation: (_args: RestrictedMethodArgs<Json>) => {
         return { secret1: 'a', secret2: 'b', secret3: 'c' };
+      },
+      validator: (permission: GenericPermission) => {
+        // A dummy validator for a caveat type that should be impossible to add
+        assert.ok(
+          !permission.caveats?.some(
+            (caveat) => caveat.type === CaveatTypes.filterArrayResponse,
+          ),
+          'invalid caveats',
+        );
       },
     },
     'wallet_getSecret_*': {
@@ -279,6 +288,41 @@ describe('PermissionController', () => {
     });
   });
 
+  describe('getRestrictedMethod', () => {
+    it('gets the implementation of a restricted method', () => {
+      const controller = getDefaultPermissionController();
+      expect(
+        controller.getRestrictedMethod(PermissionNames.wallet_getSecretArray),
+      ).toStrictEqual(
+        controller.permissionSpecifications[
+          PermissionKeys.wallet_getSecretArray
+        ].methodImplementation,
+      );
+    });
+
+    it('gets the implementation of a namespaced restricted method', () => {
+      const controller = getDefaultPermissionController();
+      expect(
+        controller.getRestrictedMethod(
+          PermissionNames.wallet_getSecret_('foo'),
+        ),
+      ).toStrictEqual(
+        controller.permissionSpecifications[
+          PermissionKeys['wallet_getSecret_*']
+        ].methodImplementation,
+      );
+    });
+
+    it('returns undefined if the method does not exist', () => {
+      const controller = getDefaultPermissionController();
+      expect(controller.getRestrictedMethod('foo' as any)).toBeUndefined();
+    });
+
+    // This is currently disallowed by the types, but handled by getTargetKey
+    // Should we add runtime validation forbidding it? Maybe in the constructor?
+    it.todo('handles methods ending in "_"');
+  });
+
   describe('getSubjectNames', () => {
     it('gets all subject names', () => {
       const controller = getDefaultPermissionController();
@@ -330,6 +374,25 @@ describe('PermissionController', () => {
           PermissionNames.wallet_getSecretArray,
         ),
       ).toBeUndefined();
+    });
+  });
+
+  describe('getPermissions', () => {
+    it('gets existing permissions', () => {
+      const controller = getDefaultPermissionControllerWithState();
+
+      expect(controller.getPermissions('metamask.io')).toStrictEqual({
+        [PermissionNames.wallet_getSecretArray]: getPermissionMatcher(
+          PermissionNames.wallet_getSecretArray,
+          null,
+          'metamask.io',
+        ),
+      });
+    });
+
+    it('returns undefined for subjects without permissions', () => {
+      const controller = getDefaultPermissionController();
+      expect(controller.getPermissions('metamask.io')).toBeUndefined();
     });
   });
 
@@ -772,30 +835,541 @@ describe('PermissionController', () => {
   });
 
   describe('hasCaveat', () => {
-    it.todo('hasCaveat');
-  });
+    it('indicates whether a permission has a particular caveat', () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
 
-  describe('addCaveat', () => {
-    it.todo('addCaveat');
+      controller.grantPermissions({
+        subject: { origin },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretArray]: {},
+          [PermissionNames.wallet_getSecretObject]: {
+            caveats: [
+              constructCaveat(CaveatTypes.filterObjectResponse, ['kaplar']),
+            ],
+          },
+          [PermissionNames.wallet_getSecret_('foo')]: {},
+        },
+      });
+
+      expect(
+        controller.hasCaveat(
+          origin,
+          PermissionNames.wallet_getSecretArray,
+          CaveatTypes.filterArrayResponse,
+        ),
+      ).toStrictEqual(false);
+
+      expect(
+        controller.hasCaveat(
+          origin,
+          PermissionNames.wallet_getSecretObject,
+          CaveatTypes.filterObjectResponse,
+        ),
+      ).toStrictEqual(true);
+
+      expect(
+        controller.hasCaveat(
+          origin,
+          PermissionNames.wallet_getSecret_('foo'),
+          CaveatTypes.noopCaveat,
+        ),
+      ).toStrictEqual(true);
+    });
+
+    it('throws an error if no corresponding permission exists', () => {
+      const controller = getDefaultPermissionController();
+      expect(() =>
+        controller.hasCaveat(
+          'metamask.io',
+          PermissionNames.wallet_getSecretArray,
+          CaveatTypes.filterArrayResponse,
+        ),
+      ).toThrow(
+        new errors.PermissionDoesNotExistError(
+          'metamask.io',
+          PermissionNames.wallet_getSecretArray,
+        ),
+      );
+    });
   });
 
   describe('getCaveat', () => {
-    it.todo('getCaveat');
+    it('gets existing caveats', () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      controller.grantPermissions({
+        subject: { origin },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretArray]: {},
+          [PermissionNames.wallet_getSecretObject]: {
+            caveats: [
+              constructCaveat(CaveatTypes.filterObjectResponse, ['kaplar']),
+            ],
+          },
+          [PermissionNames.wallet_getSecret_('foo')]: {},
+        },
+      });
+
+      expect(
+        controller.getCaveat(
+          origin,
+          PermissionNames.wallet_getSecretArray,
+          CaveatTypes.filterArrayResponse,
+        ),
+      ).toBeUndefined();
+
+      expect(
+        controller.getCaveat(
+          origin,
+          PermissionNames.wallet_getSecretObject,
+          CaveatTypes.filterObjectResponse,
+        ),
+      ).toStrictEqual(
+        constructCaveat(CaveatTypes.filterObjectResponse, ['kaplar']),
+      );
+
+      expect(
+        controller.getCaveat(
+          origin,
+          PermissionNames.wallet_getSecret_('foo'),
+          CaveatTypes.noopCaveat,
+        ),
+      ).toStrictEqual(constructCaveat(CaveatTypes.noopCaveat, null));
+    });
+
+    it('throws an error if no corresponding permission exists', () => {
+      const controller = getDefaultPermissionController();
+      expect(() =>
+        controller.getCaveat(
+          'metamask.io',
+          PermissionNames.wallet_getSecretArray,
+          CaveatTypes.filterArrayResponse,
+        ),
+      ).toThrow(
+        new errors.PermissionDoesNotExistError(
+          'metamask.io',
+          PermissionNames.wallet_getSecretArray,
+        ),
+      );
+    });
+  });
+
+  describe('addCaveat', () => {
+    it('adds a caveat to the specified permission', () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      controller.grantPermissions({
+        subject: { origin },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretArray]: {},
+        },
+      });
+
+      controller.addCaveat(
+        origin,
+        PermissionNames.wallet_getSecretArray,
+        CaveatTypes.filterArrayResponse,
+        ['foo'],
+      );
+
+      expect(controller.state).toStrictEqual({
+        subjects: {
+          [origin]: {
+            origin,
+            permissions: {
+              wallet_getSecretArray: getPermissionMatcher(
+                'wallet_getSecretArray',
+                [constructCaveat(CaveatTypes.filterArrayResponse, ['foo'])],
+                origin,
+              ),
+            },
+          },
+        },
+      });
+    });
+
+    it("appends a caveat to the specified permission's existing caveats", () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      controller.grantPermissions({
+        subject: { origin },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretObject]: {
+            caveats: [
+              constructCaveat(CaveatTypes.filterObjectResponse, ['foo']),
+            ],
+          },
+        },
+      });
+
+      expect(controller.state).toStrictEqual({
+        subjects: {
+          [origin]: {
+            origin,
+            permissions: {
+              wallet_getSecretObject: getPermissionMatcher(
+                'wallet_getSecretObject',
+                [constructCaveat(CaveatTypes.filterObjectResponse, ['foo'])],
+                origin,
+              ),
+            },
+          },
+        },
+      });
+
+      controller.addCaveat(
+        origin,
+        PermissionNames.wallet_getSecretObject,
+        CaveatTypes.noopCaveat,
+        null,
+      );
+
+      expect(controller.state).toStrictEqual({
+        subjects: {
+          [origin]: {
+            origin,
+            permissions: {
+              wallet_getSecretObject: getPermissionMatcher(
+                'wallet_getSecretObject',
+                [
+                  constructCaveat(CaveatTypes.filterObjectResponse, ['foo']),
+                  constructCaveat(CaveatTypes.noopCaveat, null),
+                ],
+                origin,
+              ),
+            },
+          },
+        },
+      });
+    });
+
+    it('throws an error if a corresponding caveat already exists', () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      controller.grantPermissions({
+        subject: { origin },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretObject]: {
+            caveats: [
+              constructCaveat(CaveatTypes.filterObjectResponse, ['kaplar']),
+            ],
+          },
+        },
+      });
+
+      expect(() =>
+        controller.addCaveat(
+          origin,
+          PermissionNames.wallet_getSecretObject,
+          CaveatTypes.filterObjectResponse,
+          ['foo'],
+        ),
+      ).toThrow(
+        new errors.CaveatAlreadyExistsError(
+          origin,
+          PermissionNames.wallet_getSecretObject,
+          CaveatTypes.filterObjectResponse,
+        ),
+      );
+    });
+
+    it('throws an error if no corresponding permission exists', () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      expect(() =>
+        controller.addCaveat(
+          origin,
+          PermissionNames.wallet_getSecretArray,
+          CaveatTypes.filterArrayResponse,
+          ['foo'],
+        ),
+      ).toThrow(
+        new errors.PermissionDoesNotExistError(
+          origin,
+          PermissionNames.wallet_getSecretArray,
+        ),
+      );
+    });
   });
 
   describe('updateCaveat', () => {
-    it.todo('updateCaveat');
+    it('updates an existing caveat', () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      controller.grantPermissions({
+        subject: { origin },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretArray]: {
+            caveats: [
+              constructCaveat(CaveatTypes.filterArrayResponse, ['foo']),
+            ],
+          },
+        },
+      });
+
+      expect(controller.state).toStrictEqual({
+        subjects: {
+          [origin]: {
+            origin,
+            permissions: {
+              wallet_getSecretArray: getPermissionMatcher(
+                'wallet_getSecretArray',
+                [constructCaveat(CaveatTypes.filterArrayResponse, ['foo'])],
+                origin,
+              ),
+            },
+          },
+        },
+      });
+
+      controller.updateCaveat(
+        origin,
+        PermissionNames.wallet_getSecretArray,
+        CaveatTypes.filterArrayResponse,
+        ['bar'],
+      );
+
+      expect(controller.state).toStrictEqual({
+        subjects: {
+          [origin]: {
+            origin,
+            permissions: {
+              wallet_getSecretArray: getPermissionMatcher(
+                'wallet_getSecretArray',
+                [constructCaveat(CaveatTypes.filterArrayResponse, ['bar'])],
+                origin,
+              ),
+            },
+          },
+        },
+      });
+    });
+
+    it('throws an error if no corresponding permission exists', () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      expect(() =>
+        controller.updateCaveat(
+          origin,
+          PermissionNames.wallet_getSecretArray,
+          CaveatTypes.filterArrayResponse,
+          ['foo'],
+        ),
+      ).toThrow(
+        new errors.PermissionDoesNotExistError(
+          origin,
+          PermissionNames.wallet_getSecretArray,
+        ),
+      );
+    });
+
+    it('throws an error if no corresponding caveat exists', () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      controller.grantPermissions({
+        subject: { origin },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretArray]: {},
+        },
+      });
+
+      expect(() =>
+        controller.updateCaveat(
+          origin,
+          PermissionNames.wallet_getSecretArray,
+          CaveatTypes.filterArrayResponse,
+          ['foo'],
+        ),
+      ).toThrow(
+        new errors.CaveatDoesNotExistError(
+          origin,
+          PermissionNames.wallet_getSecretArray,
+          CaveatTypes.filterArrayResponse,
+        ),
+      );
+    });
   });
 
   describe('removeCaveat', () => {
-    it.todo('removeCaveat');
-  });
+    it('removes an existing caveat', () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
 
-  describe('getRestrictedMethod', () => {
-    it.todo('getRestrictedMethod');
-    // This is currently disallowed by the types, but handled by getTargetKey
-    // Should we add runtime validation forbidding it? Maybe in the constructor?
-    it.todo('handles methods ending in "_"');
+      controller.grantPermissions({
+        subject: { origin },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretArray]: {
+            caveats: [
+              constructCaveat(CaveatTypes.filterArrayResponse, ['foo']),
+            ],
+          },
+        },
+      });
+
+      expect(controller.state).toStrictEqual({
+        subjects: {
+          [origin]: {
+            origin,
+            permissions: {
+              wallet_getSecretArray: getPermissionMatcher(
+                'wallet_getSecretArray',
+                [constructCaveat(CaveatTypes.filterArrayResponse, ['foo'])],
+                origin,
+              ),
+            },
+          },
+        },
+      });
+
+      controller.removeCaveat(
+        origin,
+        PermissionNames.wallet_getSecretArray,
+        CaveatTypes.filterArrayResponse,
+      );
+
+      expect(controller.state).toStrictEqual({
+        subjects: {
+          [origin]: {
+            origin,
+            permissions: {
+              wallet_getSecretArray: getPermissionMatcher(
+                'wallet_getSecretArray',
+                null,
+                origin,
+              ),
+            },
+          },
+        },
+      });
+    });
+
+    it('removes an existing caveat, without modifying other caveats of the same permission', () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      controller.grantPermissions({
+        subject: { origin },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretObject]: {
+            caveats: [
+              constructCaveat(CaveatTypes.noopCaveat, null),
+              constructCaveat(CaveatTypes.filterObjectResponse, ['foo']),
+            ],
+          },
+        },
+      });
+
+      expect(controller.state).toStrictEqual({
+        subjects: {
+          [origin]: {
+            origin,
+            permissions: {
+              wallet_getSecretObject: getPermissionMatcher(
+                'wallet_getSecretObject',
+                [
+                  constructCaveat(CaveatTypes.noopCaveat, null),
+                  constructCaveat(CaveatTypes.filterObjectResponse, ['foo']),
+                ],
+                origin,
+              ),
+            },
+          },
+        },
+      });
+
+      controller.removeCaveat(
+        origin,
+        PermissionNames.wallet_getSecretObject,
+        CaveatTypes.noopCaveat,
+      );
+
+      expect(controller.state).toStrictEqual({
+        subjects: {
+          [origin]: {
+            origin,
+            permissions: {
+              wallet_getSecretObject: getPermissionMatcher(
+                'wallet_getSecretObject',
+                [constructCaveat(CaveatTypes.filterObjectResponse, ['foo'])],
+                origin,
+              ),
+            },
+          },
+        },
+      });
+    });
+
+    it('throws an error if no corresponding permission exists', () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      expect(() =>
+        controller.removeCaveat(
+          origin,
+          PermissionNames.wallet_getSecretArray,
+          CaveatTypes.filterArrayResponse,
+        ),
+      ).toThrow(
+        new errors.PermissionDoesNotExistError(
+          origin,
+          PermissionNames.wallet_getSecretArray,
+        ),
+      );
+    });
+
+    it('throws an error if no corresponding caveat exists', () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      controller.grantPermissions({
+        subject: { origin },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretArray]: {},
+          [PermissionNames.wallet_getSecretObject]: {
+            caveats: [
+              constructCaveat(CaveatTypes.filterObjectResponse, ['foo']),
+            ],
+          },
+        },
+      });
+
+      expect(() =>
+        controller.removeCaveat(
+          origin,
+          PermissionNames.wallet_getSecretArray,
+          CaveatTypes.filterArrayResponse,
+        ),
+      ).toThrow(
+        new errors.CaveatDoesNotExistError(
+          origin,
+          PermissionNames.wallet_getSecretArray,
+          CaveatTypes.filterArrayResponse,
+        ),
+      );
+
+      expect(() =>
+        controller.removeCaveat(
+          origin,
+          PermissionNames.wallet_getSecretObject,
+          CaveatTypes.noopCaveat,
+        ),
+      ).toThrow(
+        new errors.CaveatDoesNotExistError(
+          origin,
+          PermissionNames.wallet_getSecretObject,
+          CaveatTypes.noopCaveat,
+        ),
+      );
+    });
   });
 
   describe('grantPermissions', () => {

@@ -35,7 +35,6 @@ import {
   PermissionDoesNotExistError,
   methodNotFound,
   UnrecognizedSubjectError,
-  PermissionHasNoCaveatsError,
   CaveatDoesNotExistError,
   CaveatTypeDoesNotExistError,
   CaveatMissingValueError,
@@ -380,6 +379,23 @@ export class PermissionController<
   }
 
   /**
+   * Gets the implementation of the specified restricted method.
+   *
+   * @param method - The name of the restricted method.
+   * @returns The restricted method implementation.
+   */
+  getRestrictedMethod(
+    method: Permission['parentCapability'],
+  ): RestrictedMethod<Json, Json> | undefined {
+    const targetKey = this.getTargetKey(method);
+    if (!targetKey) {
+      return undefined;
+    }
+
+    return this.permissionSpecifications[targetKey].methodImplementation;
+  }
+
+  /**
    * @returns The origins (i.e. IDs) of all subjects.
    */
   getSubjectNames(): OriginString[] {
@@ -439,47 +455,6 @@ export class PermissionController<
    */
   hasPermissions(origin: OriginString): boolean {
     return Boolean(this.state.subjects[origin]);
-  }
-
-  private validateModifiedPermission(permission: Permission): void {
-    const targetKey = this.getTargetKey(permission.parentCapability);
-    /* istanbul ignore next: this should be impossible */
-    if (!targetKey) {
-      throw new Error(
-        `Fatal: Existing permission target key "${targetKey}" has no specification.`,
-      );
-    }
-    this.permissionSpecifications[targetKey].validator?.(permission);
-  }
-
-  /**
-   * Adds permissions to the given subject. Overwrites existing identical
-   * permissions (same subject and method). Other existing permissions
-   * remain unaffected.
-   *
-   * **ATTN: Assumes that the new permissions have been validated.**
-   *
-   * @param origin - The origin of the grantee subject.
-   * @param permissions - The new permissions for the grantee subject.
-   */
-  private setValidatedPermissions(
-    origin: OriginString,
-    permissions: Record<TargetName, Permission>,
-    shouldPreserveExistingPermissions = true,
-  ): void {
-    this.update((draftState) => {
-      if (!draftState.subjects[origin]) {
-        // Typecast: immer's WritableDraft is incompatible with our generics
-        draftState.subjects[origin] = { origin, permissions: {} as any };
-      }
-
-      if (shouldPreserveExistingPermissions) {
-        Object.assign(draftState.subjects[origin].permissions, permissions);
-      } else {
-        // Typecast: ts(2589)
-        draftState.subjects[origin].permissions = permissions as any;
-      }
-    });
   }
 
   /**
@@ -593,6 +568,21 @@ export class PermissionController<
     }
   }
 
+  /**
+   * Checks whether the permission of the subject corresponding to the given
+   * origin has a caveat of the specified type.
+   *
+   * Throws an error if the subject does not have a permission with the
+   * specified target name.
+   *
+   * @template TargetName - The permission target name. Should be inferred.
+   * @template CaveatType - The valid caveat types for the permission. Should
+   * be inferred.
+   * @param origin - The origin of the subject.
+   * @param target - The target name of the permission.
+   * @param caveatType - The type of the caveat to check for.
+   * @returns Whether the permission has the specified caveat.
+   */
   hasCaveat<
     TargetName extends Permission['parentCapability'],
     CaveatType extends ExtractValidCaveatTypes<
@@ -601,33 +591,24 @@ export class PermissionController<
       TargetName
     >,
   >(origin: OriginString, target: TargetName, caveatType: CaveatType): boolean {
-    return (
-      this.getPermission(origin, target)?.caveats?.some(
-        (caveat) => caveat.type === caveatType,
-      ) ?? false
-    );
+    return Boolean(this.getCaveat(origin, target, caveatType));
   }
 
-  addCaveat<
-    TargetName extends Permission['parentCapability'],
-    CaveatType extends ExtractValidCaveatTypes<
-      Permission,
-      TargetKey,
-      TargetName
-    >,
-  >(
-    origin: OriginString,
-    target: TargetName,
-    caveatType: CaveatType,
-    caveatValue: ExtractCaveatValue<Caveat, CaveatType>,
-  ): void {
-    if (this.hasCaveat(origin, target, caveatType)) {
-      throw new CaveatAlreadyExistsError(origin, target, caveatType);
-    }
-
-    this.setCaveat(origin, target, caveatType, caveatValue);
-  }
-
+  /**
+   * Gets the caveat of the specified type, if any, for the the permission of
+   * the subject corresponding to the given origin.
+   *
+   * Throws an error if the subject does not have a permission with the
+   * specified target name.
+   *
+   * @template TargetName - The permission target name. Should be inferred.
+   * @template CaveatType - The valid caveat types for the permission. Should
+   * be inferred.
+   * @param origin - The origin of the subject.
+   * @param target - The target name of the permission.
+   * @param caveatType - The type of the caveat to get.
+   * @returns The caveat, or `undefined` if no such caveat exists.
+   */
   getCaveat<
     TargetName extends Permission['parentCapability'],
     CaveatType extends ExtractValidCaveatTypes<
@@ -651,6 +632,48 @@ export class PermissionController<
     >;
   }
 
+  /**
+   * TODO
+   *
+   * @template TargetName - The permission target name. Should be inferred.
+   * @template CaveatType - The valid caveat types for the permission. Should
+   * be inferred.
+   * @param origin - The origin of the subject.
+   * @param target - The target name of the permission.
+   * @param caveatType - The type of the caveat to add.
+   * @param caveatValue - The value of the caveat to add.
+   */
+  addCaveat<
+    TargetName extends Permission['parentCapability'],
+    CaveatType extends ExtractValidCaveatTypes<
+      Permission,
+      TargetKey,
+      TargetName
+    >,
+  >(
+    origin: OriginString,
+    target: TargetName,
+    caveatType: CaveatType,
+    caveatValue: ExtractCaveatValue<Caveat, CaveatType>,
+  ): void {
+    if (this.hasCaveat(origin, target, caveatType)) {
+      throw new CaveatAlreadyExistsError(origin, target, caveatType);
+    }
+
+    this.setCaveat(origin, target, caveatType, caveatValue);
+  }
+
+  /**
+   * TODO
+   *
+   * @template TargetName - The permission target name. Should be inferred.
+   * @template CaveatType - The valid caveat types for the permission. Should
+   * be inferred.
+   * @param origin - The origin of the subject.
+   * @param target - The target name of the permission.
+   * @param caveatType - The type of the caveat to update.
+   * @param caveatValue - The new value of the caveat.
+   */
   updateCaveat<
     TargetName extends Permission['parentCapability'],
     CaveatType extends ExtractValidCaveatTypes<
@@ -722,6 +745,16 @@ export class PermissionController<
     });
   }
 
+  /**
+   * TODO
+   *
+   * @template TargetName - The permission target name. Should be inferred.
+   * @template CaveatType - The valid caveat types for the permission. Should
+   * be inferred.
+   * @param origin - The origin of the subject.
+   * @param target - The target name of the permission.
+   * @param caveatType - The type of the caveat to remove.
+   */
   removeCaveat<
     TargetName extends Permission['parentCapability'],
     CaveatType extends ExtractValidCaveatTypes<
@@ -740,13 +773,13 @@ export class PermissionController<
       }
 
       if (!permission.caveats) {
-        throw new PermissionHasNoCaveatsError(origin, target);
+        throw new CaveatDoesNotExistError(origin, target, caveatType);
       }
 
       const caveatIndex = permission.caveats.findIndex(
         (existingCaveat) => existingCaveat.type === caveatType,
       );
-      if (caveatIndex === -1) {
+      if (!permission.caveats || caveatIndex === -1) {
         throw new CaveatDoesNotExistError(origin, target, caveatType);
       }
 
@@ -758,6 +791,24 @@ export class PermissionController<
 
       this.validateModifiedPermission(permission as Permission);
     });
+  }
+
+  /**
+   * Validates the specified modified permission. Effectively, calls the
+   * validator function of the specified permission, if any. Should always
+   * be invoked on a permission after its caveats have been modified.
+   *
+   * @param permission - The modified permission to validate.
+   */
+  private validateModifiedPermission(permission: Permission): void {
+    const targetKey = this.getTargetKey(permission.parentCapability);
+    /* istanbul ignore next: this should be impossible */
+    if (!targetKey) {
+      throw new Error(
+        `Fatal: Existing permission target key "${targetKey}" has no specification.`,
+      );
+    }
+    this.permissionSpecifications[targetKey].validator?.(permission);
   }
 
   /**
@@ -806,17 +857,6 @@ export class PermissionController<
     }
 
     return undefined;
-  }
-
-  getRestrictedMethod(
-    method: Permission['parentCapability'],
-  ): RestrictedMethod<Json, Json> | undefined {
-    const targetKey = this.getTargetKey(method);
-    if (!targetKey) {
-      return undefined;
-    }
-
-    return this.permissionSpecifications[targetKey].methodImplementation;
   }
 
   grantPermissions({
@@ -876,6 +916,30 @@ export class PermissionController<
   }
 
   /**
+   * Adds permissions to the given subject. Overwrites existing identical
+   * permissions (same subject and method). Other existing permissions
+   * remain unaffected.
+   *
+   * **ATTN: Assumes that the new permissions have been validated.**
+   *
+   * @param origin - The origin of the grantee subject.
+   * @param permissions - The new permissions for the grantee subject.
+   */
+  private setValidatedPermissions(
+    origin: OriginString,
+    permissions: Record<TargetName, Permission>,
+  ): void {
+    this.update((draftState) => {
+      if (!draftState.subjects[origin]) {
+        // Typecast: immer's WritableDraft is incompatible with our generics
+        draftState.subjects[origin] = { origin, permissions: {} as any };
+      }
+
+      Object.assign(draftState.subjects[origin].permissions, permissions);
+    });
+  }
+
+  /**
    * @param caveats The caveats to validate.
    * @returns Whether the given caveats are valid.
    */
@@ -905,7 +969,7 @@ export class PermissionController<
       throw new InvalidCaveatFieldsError(requestedCaveat, origin, target);
     }
 
-    if (requestedCaveat.type !== 'string') {
+    if (typeof requestedCaveat.type !== 'string') {
       throw new InvalidCaveatTypeError(requestedCaveat.type);
     }
 

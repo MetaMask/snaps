@@ -71,12 +71,6 @@ export class PermissionDoesNotExistError extends Error {
   }
 }
 
-export class PermissionHasNoCaveatsError extends Error {
-  constructor(origin: string, target: string) {
-    super(`Permission for "${target}" of subject "${origin}" has no caveats.`);
-  }
-}
-
 export class UnrecognizedCaveatTypeError extends Error {
   constructor(caveatType: string) {
     super(`Unrecognized caveat type: "${caveatType}"`);
