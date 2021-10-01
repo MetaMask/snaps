@@ -1,6 +1,6 @@
 import assert from 'assert';
 import { ControllerMessenger, Json } from '@metamask/controllers';
-import { isPlainObject } from '../utils';
+import { hasProperty, isPlainObject } from '../utils';
 import * as errors from './errors';
 import { constructCaveat } from './Caveat';
 import {
@@ -203,11 +203,18 @@ function getDefaultRestrictedMessenger() {
     PermissionControllerActions,
     PermissionControllerEvents
   >();
-  return controllerMessenger.getRestricted<typeof controllerName, never, never>(
-    {
-      name: controllerName,
-    },
-  );
+  return controllerMessenger.getRestricted<
+    typeof controllerName,
+    PermissionControllerActions['type'],
+    PermissionControllerEvents['type']
+  >({
+    name: controllerName,
+    allowedActions: [
+      'PermissionController:clearPermissions',
+      'PermissionController:getSubjectNames',
+      'PermissionController:hasPermissions',
+    ],
+  });
 }
 
 function getDefaultUnrestrictedMethods() {
@@ -236,7 +243,7 @@ function getExistingPermissionState() {
   };
 }
 
-function getControllerOpts(opts?: Record<string, unknown>) {
+function getControllerOptions(opts?: Record<string, unknown>) {
   return {
     caveatSpecifications: getDefaultCaveatSpecifications(),
     messenger: getDefaultRestrictedMessenger(),
@@ -252,7 +259,7 @@ function getDefaultPermissionController() {
     DefaultTargetKeys,
     DefaultCaveats,
     DefaultPermissions
-  >(getControllerOpts());
+  >(getControllerOptions());
 }
 
 function getDefaultPermissionControllerWithState() {
@@ -260,7 +267,7 @@ function getDefaultPermissionControllerWithState() {
     DefaultTargetKeys,
     DefaultCaveats,
     DefaultPermissions
-  >(getControllerOpts({ state: getExistingPermissionState() }));
+  >(getControllerOptions({ state: getExistingPermissionState() }));
 }
 
 describe('PermissionController', () => {
@@ -290,7 +297,7 @@ describe('PermissionController', () => {
             DefaultCaveats,
             DefaultPermissions
           >(
-            getControllerOpts({
+            getControllerOptions({
               permissionSpecifications: {
                 ...getDefaultPermissionSpecifications(),
                 '': { target: '' },
@@ -306,7 +313,7 @@ describe('PermissionController', () => {
             DefaultCaveats,
             DefaultPermissions
           >(
-            getControllerOpts({
+            getControllerOptions({
               permissionSpecifications: {
                 ...getDefaultPermissionSpecifications(),
                 foo_: { target: 'foo_' },
@@ -322,7 +329,7 @@ describe('PermissionController', () => {
             DefaultCaveats,
             DefaultPermissions
           >(
-            getControllerOpts({
+            getControllerOptions({
               permissionSpecifications: {
                 ...getDefaultPermissionSpecifications(),
                 'foo*': { target: 'foo*' },
@@ -338,7 +345,7 @@ describe('PermissionController', () => {
             DefaultCaveats,
             DefaultPermissions
           >(
-            getControllerOpts({
+            getControllerOptions({
               permissionSpecifications: {
                 ...getDefaultPermissionSpecifications(),
                 foo: { target: 'bar' },
@@ -1832,7 +1839,85 @@ describe('PermissionController', () => {
   });
 
   describe('actions', () => {
-    it.todo('controller actions');
+    it('permissionController:clearPermissions', () => {
+      const options = getControllerOptions();
+      const { messenger } = options;
+      const controller = new PermissionController<
+        DefaultTargetKeys,
+        DefaultCaveats,
+        DefaultPermissions
+      >(options);
+      const clearStateSpy = jest.spyOn(controller, 'clearState');
+
+      controller.grantPermissions({
+        subject: { origin: 'foo' },
+        approvedPermissions: {
+          wallet_getSecretArray: {},
+        },
+      });
+
+      expect(hasProperty(controller.state.subjects, 'foo')).toStrictEqual(true);
+
+      messenger.call('PermissionController:clearPermissions');
+      expect(clearStateSpy).toHaveBeenCalledTimes(1);
+      expect(controller.state).toStrictEqual({ subjects: {} });
+    });
+
+    it('permissionController:getSubjectNames', () => {
+      const options = getControllerOptions();
+      const { messenger } = options;
+      const controller = new PermissionController<
+        DefaultTargetKeys,
+        DefaultCaveats,
+        DefaultPermissions
+      >(options);
+      const getSubjectNamesSpy = jest.spyOn(controller, 'getSubjectNames');
+
+      expect(
+        messenger.call('PermissionController:getSubjectNames'),
+      ).toStrictEqual([]);
+
+      controller.grantPermissions({
+        subject: { origin: 'foo' },
+        approvedPermissions: {
+          wallet_getSecretArray: {},
+        },
+      });
+
+      expect(
+        messenger.call('PermissionController:getSubjectNames'),
+      ).toStrictEqual(['foo']);
+      expect(getSubjectNamesSpy).toHaveBeenCalledTimes(2);
+    });
+
+    it('permissionController:hasPermissions', () => {
+      const options = getControllerOptions();
+      const { messenger } = options;
+      const controller = new PermissionController<
+        DefaultTargetKeys,
+        DefaultCaveats,
+        DefaultPermissions
+      >(options);
+      const hasPermissionsSpy = jest.spyOn(controller, 'hasPermissions');
+
+      expect(
+        messenger.call('PermissionController:hasPermissions', 'foo'),
+      ).toStrictEqual(false);
+
+      controller.grantPermissions({
+        subject: { origin: 'foo' },
+        approvedPermissions: {
+          wallet_getSecretArray: {},
+        },
+      });
+
+      expect(
+        messenger.call('PermissionController:hasPermissions', 'foo'),
+      ).toStrictEqual(true);
+      expect(hasPermissionsSpy).toHaveBeenCalledTimes(2);
+      expect(hasPermissionsSpy).toHaveBeenNthCalledWith(1, 'foo');
+      expect(hasPermissionsSpy).toHaveBeenNthCalledWith(2, 'foo');
+    });
   });
 });
 
