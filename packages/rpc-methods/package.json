@@ -18,10 +18,11 @@
     "lint": "yarn lint:eslint && yarn lint:misc --check",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "yarn auto-changelog validate",
-    "build": "yarn build:prep && tsc --project tsconfig.local.json",
+    "build": "tsc --project tsconfig.local.json",
     "build:prep": "yarn rimraf dist/*",
+    "build:clean": "yarn build:prep && yarn build",
     "publish": "../../scripts/publish-package.sh",
-    "publish:prep": "yarn lint && yarn build"
+    "publish:prep": "yarn lint && yarn build:clean"
   },
   "dependencies": {
     "@metamask/key-tree": "^2.0.1",
