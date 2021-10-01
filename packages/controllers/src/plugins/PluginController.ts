@@ -396,9 +396,9 @@ export class PluginController extends BaseController<
   }
 
   /**
-   * Adds an error from a plugin to the PluginControllers state.
+   * Adds errors from a plugin to the PluginControllers state.
    *
-   * @param pluginError - The error to store on the PluginController
+   * @param pluginErrors - The errors to store on the PluginController
    */
   async addPluginErrors(pluginErrors: PluginError[]) {
     this.update((state: any) => {
@@ -407,9 +407,9 @@ export class PluginController extends BaseController<
   }
 
   /**
-   * Adds an error from a plugin to the PluginControllers state.
+   * Removes errors from a plugin from the PluginControllers state.
    *
-   * @param pluginError - The error to store on the PluginController
+   * @param pluginErrors - The errors to remove on the PluginController
    */
   async removePluginErrors(pluginErrors: PluginError[]) {
     this.update((state: any) => {
