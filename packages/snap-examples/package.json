@@ -19,7 +19,7 @@
     "lint": "yarn lint:eslint && yarn lint:misc --check",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "build": "node ./scripts/buildExamples.js",
-    "build:prep": "echo \"@metamask/snap-examples has no build:prep command.\"",
+    "build:clean": "echo \"@metamask/snap-examples has no build:clean command.\"",
     "publish": "../../scripts/publish-package.sh",
     "publish:prep": "yarn lint && yarn build:clean"
   },

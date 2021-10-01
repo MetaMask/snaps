@@ -14,8 +14,7 @@
   "scripts": {
     "test": "jest",
     "build": "tsc --project tsconfig.local.json",
-    "build:prep": "yarn rimraf dist/*",
-    "build:clean": "yarn build:prep && yarn build",
+    "build:clean": "yarn rimraf dist/* && yarn build",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
