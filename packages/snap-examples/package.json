@@ -12,13 +12,14 @@
   ],
   "scripts": {
     "setup": "yarn install && yarn allow-scripts",
-    "test": "echo \"@metamask/snaps-cli has no tests.\"",
+    "test": "echo \"@metamask/snap-examples has no tests.\"",
     "lint:changelog": "yarn auto-changelog validate",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "build:clean": "yarn build",
+    "build:prep": "echo \"@metamask/snap-examples has no build:prep command.\"",
     "build": "node ./scripts/buildExamples.js",
     "publish": "../../scripts/publish-package.sh",
     "publish:prep": "yarn build:clean && yarn lint && yarn test"
