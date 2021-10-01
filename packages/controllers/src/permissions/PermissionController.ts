@@ -263,7 +263,7 @@ export class PermissionController<
   >;
 
   /**
-   * The {@link CaveatSpecifications} of this controller.
+   * The {@link CaveatSpecifications} of the controller.
    */
   public get caveatSpecifications(): Readonly<CaveatSpecifications<Caveat>> {
     return this._caveatSpecifications;
@@ -274,7 +274,7 @@ export class PermissionController<
   >;
 
   /**
-   * The {@link PermissionEnforcer} of this controller.
+   * The {@link PermissionEnforcer} of the controller.
    */
   public get enforcer(): Readonly<
     PermissionEnforcer<TargetKey, Caveat, Permission>
@@ -287,7 +287,7 @@ export class PermissionController<
   >;
 
   /**
-   * The {@link PermissionSpecifications} of this controller.
+   * The {@link PermissionSpecifications} of the controller.
    */
   public get permissionSpecifications(): Readonly<
     PermissionSpecifications<TargetKey, Permission>
@@ -298,7 +298,7 @@ export class PermissionController<
   private readonly _unrestrictedMethods: ReadonlySet<string>;
 
   /**
-   * The names of all JSON-RPC methods that will be ignored by this controller.
+   * The names of all JSON-RPC methods that will be ignored by the controller.
    */
   public get unrestrictedMethods(): ReadonlySet<string> {
     return this._unrestrictedMethods;
@@ -307,10 +307,10 @@ export class PermissionController<
   /**
    * @param options - Permission controller options.
    * @param options.caveatSpecifications - The specifications of all caveats
-   * available to this controller. See {@link CaveatSpecifications} and the
+   * available to the controller. See {@link CaveatSpecifications} and the
    * documentation for more details.
    * @param options.permissionSpecifications - The specifications of all
-   * permissions available to this controller. See
+   * permissions available to the controller. See
    * {@link PermissionSpecifications} and the documentation for more details.
    * @param options.unrestrictedMethods - The callable names of all JSON-RPC
    * methods ignored by the new controller.
@@ -350,7 +350,7 @@ export class PermissionController<
   }
 
   /**
-   * Constructor helper for registering this controller's messaging system
+   * Constructor helper for registering the controller's messaging system
    * actions.
    */
   private registerMessageHandlers(): void {
@@ -370,12 +370,18 @@ export class PermissionController<
     );
   }
 
+  /**
+   * Clears the state of the controller.
+   */
   clearState(): void {
     this.update((_draftState) => {
       return { ...defaultState };
     });
   }
 
+  /**
+   * @returns The origins (i.e. IDs) of all subjects.
+   */
   getSubjectNames(): OriginString[] {
     return Object.keys(this.state.subjects);
   }
@@ -397,12 +403,26 @@ export class PermissionController<
     ] as SubjectPermission;
   }
 
+  /**
+   * Gets all permissions for the specified subject, if any.
+   *
+   * @param origin - The origin of the subject.
+   * @returns The permissions of the subject, if any.
+   */
   getPermissions(
     origin: OriginString,
   ): SubjectPermissions<Permission> | undefined {
     return this.state.subjects[origin]?.permissions;
   }
 
+  /**
+   * Checks whether the subject with the specified origin has the specified
+   * permission.
+   *
+   * @param origin - The origin of the subject.
+   * @param target - The target name of the permission.
+   * @returns Whether the subject has the permission.
+   */
   hasPermission(
     origin: OriginString,
     target: Permission['parentCapability'],
@@ -410,6 +430,13 @@ export class PermissionController<
     return Boolean(this.getPermission(origin, target));
   }
 
+  /**
+   * Checks whether the subject with the specified origin has any permissions.
+   * Use this if you want to know if a subject "exists".
+   *
+   * @param origin - The origin of the subject to check.
+   * @returns Whether the subject has any permissions.
+   */
   hasPermissions(origin: OriginString): boolean {
     return Boolean(this.state.subjects[origin]);
   }
@@ -438,7 +465,7 @@ export class PermissionController<
   private setValidatedPermissions(
     origin: OriginString,
     permissions: Record<TargetName, Permission>,
-    shouldPreserveExistingPermissions = false,
+    shouldPreserveExistingPermissions = true,
   ): void {
     this.update((draftState) => {
       if (!draftState.subjects[origin]) {
@@ -455,6 +482,31 @@ export class PermissionController<
     });
   }
 
+  /**
+   * Revokes all permissions from the specified origin.
+   *
+   * Throws an error of the origin has no permissions.
+   *
+   * @param origin - The origin whose permissions to revoke.
+   */
+  revokeAllPermissions(origin: OriginString): void {
+    this.update((draftState) => {
+      if (!draftState.subjects[origin]) {
+        throw new UnrecognizedSubjectError(origin);
+      }
+      delete draftState.subjects[origin];
+    });
+  }
+
+  /**
+   * Revokes the specified permission from the subject with the specified
+   * origin.
+   *
+   * Throws an error if the subject or the permission does not exist.
+   *
+   * @param origin - The origin of the subject whose permission to revoke.
+   * @param target - The target name of the permission to revoke.
+   */
   revokePermission(
     origin: OriginString,
     target: Permission['parentCapability'],
@@ -462,10 +514,18 @@ export class PermissionController<
     this.revokePermissions({ [origin]: [target] });
   }
 
+  /**
+   * Revokes the specified permissions from the specified subjects.
+   *
+   * Throws an error if any of the subjects or permissions do not exist.
+   *
+   * @param subjectsAndPermissions - An object mapping subject origins
+   * to arrays of permission target names to revoke.
+   */
   revokePermissions(
     subjectsAndPermissions: Record<
       OriginString,
-      Permission['parentCapability'][]
+      NonEmptyArray<Permission['parentCapability']>
     >,
   ): void {
     this.update((draftState) => {
@@ -492,13 +552,19 @@ export class PermissionController<
     });
   }
 
+  /**
+   * Revokes all permissions corresponding to the specified target for all subjects.
+   * Does nothing if no subjects or no such permission exists.
+   *
+   * @param target - The name of the target to revoke all permissions for.
+   */
   revokePermissionForAllSubjects(target: Permission['parentCapability']): void {
     if (this.getSubjectNames().length === 0) {
       return;
     }
 
     this.update((draftState) => {
-      Object.values(draftState.subjects).forEach((subject) => {
+      Object.entries(draftState.subjects).forEach(([origin, subject]) => {
         const { permissions } = subject;
 
         if (hasProperty(permissions as Record<string, unknown>, target)) {
@@ -525,15 +591,6 @@ export class PermissionController<
     } else {
       delete draftState.subjects[origin];
     }
-  }
-
-  revokeAllPermissions(origin: OriginString): void {
-    this.update((draftState) => {
-      if (!draftState.subjects[origin]) {
-        throw new UnrecognizedSubjectError(origin);
-      }
-      delete draftState.subjects[origin];
-    });
   }
 
   hasCaveat<

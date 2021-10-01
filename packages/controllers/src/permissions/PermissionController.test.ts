@@ -387,6 +387,45 @@ describe('PermissionController', () => {
     });
   });
 
+  describe('revokeAllPermissions', () => {
+    it('revokes all permissions for the specified subject', () => {
+      const controller = getDefaultPermissionControllerWithState();
+      expect(controller.state).toStrictEqual(getExistingPermissionState());
+
+      controller.revokeAllPermissions('metamask.io');
+      expect(controller.state).toStrictEqual({ subjects: {} });
+
+      controller.grantPermissions({
+        subject: { origin: 'foo' },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretArray]: {},
+          [PermissionNames.wallet_getSecret_('bar')]: {},
+        },
+      });
+
+      controller.revokeAllPermissions('foo');
+      expect(controller.state).toStrictEqual({ subjects: {} });
+    });
+
+    it('throws an error if the specified subject has no permissions', () => {
+      const controller = getDefaultPermissionController();
+      expect(() => controller.revokeAllPermissions('metamask.io')).toThrow(
+        new errors.UnrecognizedSubjectError('metamask.io'),
+      );
+
+      controller.grantPermissions({
+        subject: { origin: 'metamask.io' },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretObject]: {},
+        },
+      });
+
+      expect(() => controller.revokeAllPermissions('foo')).toThrow(
+        new errors.UnrecognizedSubjectError('foo'),
+      );
+    });
+  });
+
   describe('revokePermission', () => {
     it('revokes a permission from an origin with a single permission', () => {
       const controller = getDefaultPermissionControllerWithState();
@@ -407,9 +446,8 @@ describe('PermissionController', () => {
       controller.grantPermissions({
         subject: { origin },
         approvedPermissions: {
-          wallet_getSecretObject: {},
+          [PermissionNames.wallet_getSecretObject]: {},
         },
-        shouldPreserveExistingPermissions: true,
       });
 
       controller.revokePermission(
@@ -424,6 +462,39 @@ describe('PermissionController', () => {
             permissions: {
               [PermissionNames.wallet_getSecretObject]: getPermissionMatcher(
                 PermissionNames.wallet_getSecretObject,
+                null,
+                origin,
+              ),
+            },
+          },
+        },
+      });
+    });
+
+    it('revokes a namespaced permission', () => {
+      const controller = getDefaultPermissionControllerWithState();
+      expect(controller.state).toStrictEqual(getExistingPermissionState());
+      const origin = 'metamask.io';
+
+      controller.grantPermissions({
+        subject: { origin },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecret_('foo')]: {},
+        },
+      });
+
+      controller.revokePermission(
+        origin,
+        PermissionNames.wallet_getSecret_('foo'),
+      );
+
+      expect(controller.state).toStrictEqual({
+        subjects: {
+          [origin]: {
+            origin,
+            permissions: {
+              [PermissionNames.wallet_getSecretArray]: getPermissionMatcher(
+                PermissionNames.wallet_getSecretArray,
                 null,
                 origin,
               ),
@@ -460,11 +531,244 @@ describe('PermissionController', () => {
   });
 
   describe('revokePermissions', () => {
-    it.todo('revokes different permissions from multiple origins at once');
+    it('revokes different permissions for multiple subjects', () => {
+      const controller = getDefaultPermissionController();
+      const origin0 = 'origin0';
+      const origin1 = 'origin1';
+      const origin2 = 'origin2';
+      const origin3 = 'origin3';
+      const origin4 = 'origin4';
+
+      controller.grantPermissions({
+        subject: { origin: origin0 },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretArray]: {},
+        },
+      });
+
+      controller.grantPermissions({
+        subject: { origin: origin1 },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretArray]: {},
+        },
+      });
+
+      controller.grantPermissions({
+        subject: { origin: origin2 },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretArray]: {},
+          [PermissionNames.wallet_getSecretObject]: {},
+          [PermissionNames.wallet_getSecret_('foo')]: {},
+        },
+      });
+
+      controller.grantPermissions({
+        subject: { origin: origin3 },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretArray]: {},
+          [PermissionNames.wallet_getSecret_('foo')]: {},
+        },
+      });
+
+      controller.grantPermissions({
+        subject: { origin: origin4 },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretArray]: {},
+          [PermissionNames.wallet_getSecretObject]: {},
+          [PermissionNames.wallet_getSecret_('bar')]: {},
+        },
+      });
+
+      controller.revokePermissions({
+        [origin0]: [PermissionNames.wallet_getSecretArray],
+        [origin2]: [
+          PermissionNames.wallet_getSecretArray,
+          PermissionNames.wallet_getSecret_('foo'),
+        ],
+        [origin3]: [PermissionNames.wallet_getSecretArray],
+        [origin4]: [
+          PermissionNames.wallet_getSecretArray,
+          PermissionNames.wallet_getSecretObject,
+          PermissionNames.wallet_getSecret_('bar'),
+        ],
+      });
+
+      expect(controller.state).toStrictEqual({
+        subjects: {
+          [origin1]: {
+            origin: origin1,
+            permissions: {
+              [PermissionNames.wallet_getSecretArray]: getPermissionMatcher(
+                PermissionNames.wallet_getSecretArray,
+                null,
+                origin1,
+              ),
+            },
+          },
+          [origin2]: {
+            origin: origin2,
+            permissions: {
+              [PermissionNames.wallet_getSecretObject]: getPermissionMatcher(
+                PermissionNames.wallet_getSecretObject,
+                null,
+                origin2,
+              ),
+            },
+          },
+          [origin3]: {
+            origin: origin3,
+            permissions: {
+              [PermissionNames.wallet_getSecret_('foo')]: getPermissionMatcher(
+                PermissionNames.wallet_getSecret_('foo'),
+                [constructCaveat(CaveatTypes.noopCaveat, null)],
+                origin3,
+              ),
+            },
+          },
+        },
+      });
+    });
+
+    it('throws an error if a specified subject has no permissions', () => {
+      const controller = getDefaultPermissionControllerWithState();
+      expect(() =>
+        controller.revokePermissions({
+          foo: [PermissionNames.wallet_getSecretArray],
+        }),
+      ).toThrow(new errors.UnrecognizedSubjectError('foo'));
+    });
+
+    it('throws an error if the requested subject does not have the specified permission', () => {
+      const controller = getDefaultPermissionControllerWithState();
+      expect(() =>
+        controller.revokePermissions({
+          'metamask.io': [PermissionNames.wallet_getSecretObject],
+        }),
+      ).toThrow(
+        new errors.PermissionDoesNotExistError(
+          'metamask.io',
+          PermissionNames.wallet_getSecretObject,
+        ),
+      );
+    });
   });
 
   describe('revokePermissionForAllSubjects', () => {
-    it.todo('revokePermissionForAllSubjects');
+    it('does nothing if there are no subjects', () => {
+      const controller = getDefaultPermissionController();
+      controller.revokePermissionForAllSubjects(
+        PermissionNames.wallet_getSecretArray,
+      );
+      expect(controller.state).toStrictEqual({ subjects: {} });
+    });
+
+    it('revokes single permission from all subjects', () => {
+      const controller = getDefaultPermissionController();
+      const origin0 = 'origin0';
+      const origin1 = 'origin1';
+      const origin2 = 'origin2';
+      const origin3 = 'origin3';
+      const origin4 = 'origin4';
+
+      controller.grantPermissions({
+        subject: { origin: origin0 },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretObject]: {},
+        },
+      });
+
+      controller.grantPermissions({
+        subject: { origin: origin1 },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretArray]: {},
+        },
+      });
+
+      controller.grantPermissions({
+        subject: { origin: origin2 },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretArray]: {},
+          [PermissionNames.wallet_getSecretObject]: {},
+          [PermissionNames.wallet_getSecret_('foo')]: {},
+        },
+      });
+
+      controller.grantPermissions({
+        subject: { origin: origin3 },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretArray]: {},
+          [PermissionNames.wallet_getSecret_('foo')]: {},
+        },
+      });
+
+      controller.grantPermissions({
+        subject: { origin: origin4 },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretArray]: {},
+          [PermissionNames.wallet_getSecretObject]: {},
+          [PermissionNames.wallet_getSecret_('bar')]: {},
+        },
+      });
+
+      controller.revokePermissionForAllSubjects(
+        PermissionNames.wallet_getSecretArray,
+      );
+
+      expect(controller.state).toStrictEqual({
+        subjects: {
+          [origin0]: {
+            origin: origin0,
+            permissions: {
+              [PermissionNames.wallet_getSecretObject]: getPermissionMatcher(
+                PermissionNames.wallet_getSecretObject,
+                null,
+                origin0,
+              ),
+            },
+          },
+          [origin2]: {
+            origin: origin2,
+            permissions: {
+              [PermissionNames.wallet_getSecretObject]: getPermissionMatcher(
+                PermissionNames.wallet_getSecretObject,
+                null,
+                origin2,
+              ),
+              [PermissionNames.wallet_getSecret_('foo')]: getPermissionMatcher(
+                PermissionNames.wallet_getSecret_('foo'),
+                [constructCaveat(CaveatTypes.noopCaveat, null)],
+                origin2,
+              ),
+            },
+          },
+          [origin3]: {
+            origin: origin3,
+            permissions: {
+              [PermissionNames.wallet_getSecret_('foo')]: getPermissionMatcher(
+                PermissionNames.wallet_getSecret_('foo'),
+                [constructCaveat(CaveatTypes.noopCaveat, null)],
+                origin3,
+              ),
+            },
+          },
+          [origin4]: {
+            origin: origin4,
+            permissions: {
+              [PermissionNames.wallet_getSecretObject]: getPermissionMatcher(
+                PermissionNames.wallet_getSecretObject,
+                null,
+                origin4,
+              ),
+              [PermissionNames.wallet_getSecret_('bar')]: getPermissionMatcher(
+                PermissionNames.wallet_getSecret_('bar'),
+                [constructCaveat(CaveatTypes.noopCaveat, null)],
+                origin4,
+              ),
+            },
+          },
+        },
+      });
+    });
   });
 
   describe('hasCaveat', () => {
@@ -591,44 +895,6 @@ describe('PermissionController', () => {
       });
     });
 
-    it('overwrites existing permissions if shouldPreserveExistingPermissions is false', () => {
-      const controller = getDefaultPermissionControllerWithState();
-      const origin = 'metamask.io';
-
-      expect(controller.state).toStrictEqual({
-        subjects: {
-          [origin]: {
-            origin,
-            permissions: {
-              wallet_getSecretArray: getPermissionMatcher(
-                'wallet_getSecretArray',
-              ),
-            },
-          },
-        },
-      });
-
-      controller.grantPermissions({
-        subject: { origin },
-        approvedPermissions: {
-          wallet_getSecretObject: {},
-        },
-      });
-
-      expect(controller.state).toStrictEqual({
-        subjects: {
-          [origin]: {
-            origin,
-            permissions: expect.objectContaining({
-              wallet_getSecretObject: getPermissionMatcher(
-                'wallet_getSecretObject',
-              ),
-            }),
-          },
-        },
-      });
-    });
-
     it('preserves existing permissions if shouldPreserveExistingPermissions is true', () => {
       const controller = getDefaultPermissionControllerWithState();
       const origin = 'metamask.io';
@@ -651,7 +917,8 @@ describe('PermissionController', () => {
         approvedPermissions: {
           wallet_getSecretObject: {},
         },
-        shouldPreserveExistingPermissions: true,
+        // This is the default
+        // shouldPreserveExistingPermissions: true,
       });
 
       expect(controller.state).toStrictEqual({
@@ -662,6 +929,45 @@ describe('PermissionController', () => {
               wallet_getSecretArray: getPermissionMatcher(
                 'wallet_getSecretArray',
               ),
+              wallet_getSecretObject: getPermissionMatcher(
+                'wallet_getSecretObject',
+              ),
+            }),
+          },
+        },
+      });
+    });
+
+    it('overwrites existing permissions if shouldPreserveExistingPermissions is false', () => {
+      const controller = getDefaultPermissionControllerWithState();
+      const origin = 'metamask.io';
+
+      expect(controller.state).toStrictEqual({
+        subjects: {
+          [origin]: {
+            origin,
+            permissions: {
+              wallet_getSecretArray: getPermissionMatcher(
+                'wallet_getSecretArray',
+              ),
+            },
+          },
+        },
+      });
+
+      controller.grantPermissions({
+        subject: { origin },
+        approvedPermissions: {
+          wallet_getSecretObject: {},
+        },
+        shouldPreserveExistingPermissions: false,
+      });
+
+      expect(controller.state).toStrictEqual({
+        subjects: {
+          [origin]: {
+            origin,
+            permissions: expect.objectContaining({
               wallet_getSecretObject: getPermissionMatcher(
                 'wallet_getSecretObject',
               ),
