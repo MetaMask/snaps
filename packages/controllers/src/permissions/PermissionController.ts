@@ -26,6 +26,7 @@ import {
   MutableCaveats,
   OriginString,
   PermissionConstraint,
+  PermissionSpecificationConstraint,
   PermissionSpecifications,
   RequestedPermissions,
   RestrictedMethod,
@@ -338,14 +339,46 @@ export class PermissionController<
       },
     });
 
+    this._unrestrictedMethods = new Set(unrestrictedMethods);
     this._caveatSpecifications = deepFreeze({ ...caveatSpecifications });
+
+    this.validatePermissionSpecifications(permissionSpecifications);
     this._permissionSpecifications = deepFreeze({
       ...permissionSpecifications,
     });
-    this._unrestrictedMethods = new Set(unrestrictedMethods);
 
     this.registerMessageHandlers();
     this._enforcer = this.constructEnforcer();
+  }
+
+  /**
+   * Constructor helper for validating permission specifications. This is
+   * intended to prevent the use of invalid target keys which, while impossible
+   * to add in TypeScript, could rather easily occur in plain JavaScript.
+   *
+   * Throws an error if validation fails.
+   *
+   * @param specifications - The permission specifications passed to this
+   * controller's constructor.
+   */
+  private validatePermissionSpecifications(
+    specifications: PermissionSpecifications<TargetKey, Permission>,
+  ) {
+    Object.entries<PermissionSpecificationConstraint<TargetKey, Permission>>(
+      specifications,
+    ).forEach(([targetKey, { target: innerTargetKey }]) => {
+      // Check if the target key is the empty string, ends with "_", or ends
+      // with "*" but not "_*"
+      if (!targetKey || /_$/u.test(targetKey) || /[^_]\*$/u.test(targetKey)) {
+        throw new Error(`Invalid permission target key: "${targetKey}"`);
+      }
+
+      if (targetKey !== innerTargetKey) {
+        throw new Error(
+          `Invalid permission specification: key "${targetKey}" must match specification.target value "${innerTargetKey}".`,
+        );
+      }
+    });
   }
 
   /**
@@ -895,9 +928,7 @@ export class PermissionController<
       targetKey += `${segments.shift()}_`;
     }
 
-    if (hasProperty(this._permissionSpecifications, targetKey)) {
-      return targetKey as TargetKey;
-    } else if (wildCardMethodsWithoutWildCard[targetKey]) {
+    if (wildCardMethodsWithoutWildCard[targetKey]) {
       return `${targetKey}*` as TargetKey;
     }
 

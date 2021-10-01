@@ -281,6 +281,74 @@ describe('PermissionController', () => {
       const controller = getDefaultPermissionControllerWithState();
       expect(controller.state).toStrictEqual(getExistingPermissionState());
     });
+
+    it('throws an error for invalid permission target keys', () => {
+      expect(
+        () =>
+          new PermissionController<
+            DefaultTargetKeys,
+            DefaultCaveats,
+            DefaultPermissions
+          >(
+            getControllerOpts({
+              permissionSpecifications: {
+                ...getDefaultPermissionSpecifications(),
+                '': { target: '' },
+              } as any,
+            }),
+          ),
+      ).toThrow(`Invalid permission target key: ""`);
+
+      expect(
+        () =>
+          new PermissionController<
+            DefaultTargetKeys,
+            DefaultCaveats,
+            DefaultPermissions
+          >(
+            getControllerOpts({
+              permissionSpecifications: {
+                ...getDefaultPermissionSpecifications(),
+                foo_: { target: 'foo_' },
+              } as any,
+            }),
+          ),
+      ).toThrow(`Invalid permission target key: "foo_"`);
+
+      expect(
+        () =>
+          new PermissionController<
+            DefaultTargetKeys,
+            DefaultCaveats,
+            DefaultPermissions
+          >(
+            getControllerOpts({
+              permissionSpecifications: {
+                ...getDefaultPermissionSpecifications(),
+                'foo*': { target: 'foo*' },
+              } as any,
+            }),
+          ),
+      ).toThrow(`Invalid permission target key: "foo*"`);
+
+      expect(
+        () =>
+          new PermissionController<
+            DefaultTargetKeys,
+            DefaultCaveats,
+            DefaultPermissions
+          >(
+            getControllerOpts({
+              permissionSpecifications: {
+                ...getDefaultPermissionSpecifications(),
+                foo: { target: 'bar' },
+              } as any,
+            }),
+          ),
+      ).toThrow(
+        `Invalid permission specification: key "foo" must match specification.target value "bar".`,
+      );
+    });
   });
 
   describe('clearState', () => {
@@ -322,10 +390,6 @@ describe('PermissionController', () => {
       const controller = getDefaultPermissionController();
       expect(controller.getRestrictedMethod('foo' as any)).toBeUndefined();
     });
-
-    // This is currently disallowed by the types, but handled by getTargetKey
-    // Should we add runtime validation forbidding it? Maybe in the constructor?
-    it.todo('handles methods ending in "_"');
   });
 
   describe('getSubjectNames', () => {
