@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.1]
+### Fixed
+- Snap produced by `mm-snap init` ([#94](https://github.com/MetaMask/snaps-skunkworks/pull/94))
+  - The template used to create the "Hello, world!" snap had become outdated due to a build-time bug.
+
+## [0.2.0]
+### Changed
+- Update publish scripts ([#92](https://github.com/MetaMask/snaps-skunkworks/pull/92))
+
 ## [0.1.1]
 ### Added
 - Missing publish scripts to new packages
@@ -20,6 +29,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Example snaps ([#72](https://github.com/MetaMask/snaps-skunkworks/pull/72))
   - The examples now live in their own package, [`@metamask/snap-examples`](https://npmjs.com/package/@metamask/snap-examples).
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.2.0...v0.2.1
+[0.2.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/MetaMask/snaps-skunkworks/releases/tag/v0.1.0

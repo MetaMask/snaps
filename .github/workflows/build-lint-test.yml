@@ -32,6 +32,13 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn allow-scripts
       - run: yarn build
+      - name: Require clean working directory
+        shell: bash
+        run: |
+          if [[ $(git diff --quiet) != '' ]]; then
+            echo "Working tree dirty after building"
+            exit 1
+          fi
       - run: yarn lint
       - run: yarn test:ci
       - name: Validate RC changelog
