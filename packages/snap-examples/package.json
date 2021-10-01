@@ -12,16 +12,16 @@
   ],
   "scripts": {
     "setup": "yarn install && yarn allow-scripts",
-    "test": "echo \"@metamask/snaps-cli has no tests.\"",
+    "test": "echo \"@metamask/snap-examples has no tests.\"",
     "lint:changelog": "yarn auto-changelog validate",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
-    "build:clean": "yarn build",
     "build": "node ./scripts/buildExamples.js",
+    "build:clean": "echo \"@metamask/snap-examples has no build:clean command.\"",
     "publish": "../../scripts/publish-package.sh",
-    "publish:prep": "yarn build:clean && yarn lint && yarn test"
+    "publish:prep": "yarn lint && yarn build:clean"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^1.0.5",
