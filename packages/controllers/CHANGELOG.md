@@ -7,10 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.2.2]
-### Uncategorized
+### Added
 - Added plugin error state ([#96](https://github.com/MetaMask/snaps-skunkworks/pull/96))
-- Fix CI test scripts ([#98](https://github.com/MetaMask/snaps-skunkworks/pull/98))
-- Fix package script issues ([#97](https://github.com/MetaMask/snaps-skunkworks/pull/97))
+
+### Fixed
+- CI test scripts ([#98](https://github.com/MetaMask/snaps-skunkworks/pull/98))
+- package script issues ([#97](https://github.com/MetaMask/snaps-skunkworks/pull/97))
 
 ## [0.2.0]
 ### Changed
