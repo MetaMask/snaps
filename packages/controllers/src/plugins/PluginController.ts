@@ -7,7 +7,7 @@ import {
 } from '@metamask/controllers';
 import { Json } from 'json-rpc-engine';
 import { PluginData } from '@metamask/snap-types';
-import fastDeepEqual from 'fast-deep-equal';
+import { nanoid } from 'nanoid';
 import {
   GetRpcMessageHandler,
   ExecutePlugin,
@@ -76,7 +76,9 @@ export type PluginControllerState = {
   pluginStates: {
     [PluginId: string]: Json;
   };
-  pluginErrors: PluginError[];
+  pluginErrors: {
+    [internalID: string]: PluginError & { internalID: string };
+  };
 };
 
 export type PluginStateChange = {
@@ -134,7 +136,7 @@ type AddPluginDirectlyArgs = AddPluginBase & {
 type AddPluginArgs = AddPluginByFetchingArgs | AddPluginDirectlyArgs;
 
 const defaultState: PluginControllerState = {
-  pluginErrors: [],
+  pluginErrors: {},
   inlinePluginIsRunning: false,
   plugins: {},
   pluginStates: {},
@@ -396,40 +398,38 @@ export class PluginController extends BaseController<
   }
 
   /**
-   * Adds errors from a plugin to the PluginControllers state.
+   * Adds error from a plugin to the PluginControllers state.
    *
-   * @param pluginErrors - The errors to store on the PluginController
+   * @param pluginError - The error to store on the PluginController
    */
-  async addPluginErrors(pluginErrors: PluginError[]) {
+  async addPluginError(pluginError: PluginError) {
     this.update((state: any) => {
-      state.pluginErrors = state.pluginErrors.concat(pluginErrors);
+      const id = nanoid();
+      state.pluginErrors[id] = {
+        ...pluginError,
+        internalID: id,
+      };
     });
   }
 
   /**
-   * Removes errors from a plugin from the PluginControllers state.
+   * Removes an error by internalID from a the PluginControllers state.
    *
-   * @param pluginErrors - The errors to remove on the PluginController
+   * @param internalID - The internal error ID to remove on the PluginController
    */
-  async removePluginErrors(pluginErrors: PluginError[]) {
+  async removePluginError(internalID: string) {
     this.update((state: any) => {
-      state.pluginErrors = state.pluginErrors.filter(
-        (pluginErrorToCompare: PluginError) => {
-          return !pluginErrors.some((pluginErrorPassedIn) => {
-            return fastDeepEqual(pluginErrorPassedIn, pluginErrorToCompare);
-          });
-        },
-      );
+      delete state.pluginErrors[internalID];
     });
   }
 
   /**
-   * Clears all errors from a plugin from the PluginControllers state.
+   * Clears all errors from the PluginControllers state.
    *
    */
   async clearPluginErrors() {
     this.update((state: any) => {
-      state.pluginErrors = [];
+      state.pluginErrors = {};
     });
   }
 

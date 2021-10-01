@@ -304,7 +304,7 @@ describe('PluginController Controller', () => {
         name: 'PluginController',
       }),
       state: {
-        pluginErrors: [],
+        pluginErrors: {},
         pluginStates: {},
         inlinePluginIsRunning: false,
         plugins: {
@@ -398,55 +398,45 @@ describe('PluginController Controller', () => {
         name: 'PluginController',
       }),
     });
-    pluginController.addPluginErrors([
-      {
-        code: 1,
-        data: {},
-        message: 'error happened',
-      },
-    ]);
+    pluginController.addPluginError({
+      code: 1,
+      data: {},
+      message: 'error happened',
+    });
 
-    expect(pluginController.state.pluginErrors.length > 0).toStrictEqual(true);
+    const arrayOfErrors = Object.entries(pluginController.state.pluginErrors);
 
-    pluginController.removePluginErrors([
-      {
-        code: 1,
-        data: {},
-        message: 'error happened',
-      },
-    ]);
+    expect(arrayOfErrors.length > 0).toStrictEqual(true);
 
-    expect(pluginController.state.pluginErrors).toHaveLength(0);
+    pluginController.removePluginError(arrayOfErrors[0][0]);
 
-    pluginController.addPluginErrors([
-      {
-        code: 1,
-        data: {},
-        message: 'error happened',
-      },
-    ]);
+    expect(Object.entries(pluginController.state.pluginErrors)).toHaveLength(0);
 
-    pluginController.addPluginErrors([
-      {
-        code: 2,
-        data: {},
-        message: 'error 2',
-      },
-    ]);
+    pluginController.addPluginError({
+      code: 1,
+      data: {},
+      message: 'error happened',
+    });
 
-    pluginController.removePluginErrors([
-      {
-        code: 1,
-        data: {},
-        message: 'error happened',
-      },
-    ]);
-
-    expect(pluginController.state.pluginErrors).toHaveLength(1);
-    expect(pluginController.state.pluginErrors[0]).toStrictEqual({
+    pluginController.addPluginError({
       code: 2,
       data: {},
       message: 'error 2',
     });
+
+    pluginController.removePluginError(
+      Object.entries(pluginController.state.pluginErrors)[0][0],
+    );
+
+    expect(Object.entries(pluginController.state.pluginErrors)).toHaveLength(1);
+    expect(
+      Object.entries(pluginController.state.pluginErrors)[0][1],
+    ).toStrictEqual(
+      expect.objectContaining({
+        code: 2,
+        data: {},
+        message: 'error 2',
+      }),
+    );
   });
 });
