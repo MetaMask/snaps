@@ -1,7 +1,5 @@
 import { JsonRpcRequest } from 'json-rpc-engine';
 import { errorCodes, ethErrors, EthereumRpcError } from 'eth-rpc-errors';
-import { GenericPermission } from './Permission';
-import { CaveatConstraint } from './Caveat';
 
 type ErrorArg = {
   message?: string;

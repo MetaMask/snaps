@@ -42,6 +42,16 @@ type NoopCaveat = CaveatConstraint<CaveatTypes.noopCaveat, null>;
 
 type DefaultCaveats = FilterArrayCaveat | FilterObjectCaveat | NoopCaveat;
 
+/**
+ * Gets caveat specifications for:
+ * - {@link FilterArrayCaveat}
+ * - {@link FilterObjectCaveat}
+ * - {@link NoopCaveat}
+ *
+ * Used as a default in {@link getControllerOptions}.
+ *
+ * @returns The caveat specifications.
+ */
 function getDefaultCaveatSpecifications(): CaveatSpecifications<DefaultCaveats> {
   return {
     filterArrayResponse: {
@@ -88,7 +98,7 @@ function getDefaultCaveatSpecifications(): CaveatSpecifications<DefaultCaveats> 
         },
       validator: (caveat: { type: CaveatTypes.noopCaveat; value: unknown }) => {
         if (caveat.value !== null) {
-          throw new Error('Caveat value must be null');
+          throw new Error('NoopCaveat value must be null');
         }
       },
     },
@@ -134,12 +144,30 @@ enum PermissionKeys {
   'wallet_getSecret_*' = 'wallet_getSecret_*',
 }
 
+/**
+ * Permission name (as opposed to keys) enum. Since one of the permissions are
+ * namespaced, it's a getter function.
+ */
 const PermissionNames = {
   wallet_getSecretArray: 'wallet_getSecretArray' as const,
   wallet_getSecretObject: 'wallet_getSecretObject' as const,
   wallet_getSecret_: (str: string) => `wallet_getSecret_${str}` as const,
 };
 
+/**
+ * Gets permission specifications for:
+ * - {@link SecretArrayPermission}
+ *   - Has neither validator nor factory.
+ * - {@link SecretObjectPermission}
+ *   - Has validator, but no factory.
+ * - {@link SecretNamespacedPermission}
+ *   - Has both validator and factory.
+ *
+ *
+ * Used as a default in {@link getControllerOptions}.
+ *
+ * @returns The permission specifications.
+ */
 function getDefaultPermissionSpecifications(): PermissionSpecifications<
   DefaultTargetKeys,
   DefaultPermissions
@@ -162,7 +190,7 @@ function getDefaultPermissionSpecifications(): PermissionSpecifications<
           !permission.caveats?.some(
             (caveat) => caveat.type === CaveatTypes.filterArrayResponse,
           ),
-          'permission validation failed',
+          'getSecretObject permission validation failed',
         );
       },
     },
@@ -180,14 +208,10 @@ function getDefaultPermissionSpecifications(): PermissionSpecifications<
           caveats: [constructCaveat(CaveatTypes.noopCaveat, null)],
         }) as SecretNamespacedPermission,
       validator: (permission: GenericPermission) => {
-        if (!permission.parentCapability.startsWith('wallet_getSecret_')) {
-          throw new Error('invalid parentCapability');
-        }
-
         assert.deepStrictEqual(
           permission.caveats,
           [constructCaveat(CaveatTypes.noopCaveat, null)],
-          'permission validation failed',
+          'getSecret_* permission validation failed',
         );
       },
     },
@@ -198,6 +222,13 @@ function getDefaultPermissionSpecifications(): PermissionSpecifications<
 
 const controllerName = 'PermissionController' as const;
 
+/** *
+ * Gets a restricted controller messenger.
+ *
+ * Used as a default in {@link getControllerOptions}.
+ *
+ * @returns The restricted messenger.
+ */
 function getDefaultRestrictedMessenger() {
   const controllerMessenger = new ControllerMessenger<
     PermissionControllerActions,
@@ -217,12 +248,19 @@ function getDefaultRestrictedMessenger() {
   });
 }
 
+/**
+ * Gets the default unrestricted methods array.
+ *
+ * Used as a default in {@link getControllerOptions}.
+ */
 function getDefaultUnrestrictedMethods() {
   return ['wallet_unrestrictedMethod'];
 }
 
 /**
- * Useful for populating a controller with some existing permissions.
+ * Gets some existing state to populate the permission controller with.
+ * There is one subject, "metamask.io", with one permission,
+ * "wallet_getSecretArray", with no caveats.
  */
 function getExistingPermissionState() {
   return {
@@ -243,6 +281,20 @@ function getExistingPermissionState() {
   };
 }
 
+/**
+ * Gets constructor options for the permission controller. Returns defaults
+ * that can be overwritten by passing in replacement options.
+ *
+ * The following defaults are used:
+ * - `caveatSpecifications`: {@link getDefaultCaveatSpecifications}
+ * - `messenger`: {@link getDefaultRestrictedMessenger}
+ * - `permissionSpecifications`: {@link getDefaultPermissionSpecifications}
+ * - `unrestrictedMethods`: {@link getDefaultUnrestrictedMethods}
+ * - `state`: `undefined`
+ *
+ * @param opts - Permission controller options.
+ * @returns - The permission controller constructor options.
+ */
 function getControllerOptions(opts?: Record<string, unknown>) {
   return {
     caveatSpecifications: getDefaultCaveatSpecifications(),
@@ -254,6 +306,14 @@ function getControllerOptions(opts?: Record<string, unknown>) {
   };
 }
 
+/**
+ * Gets a "default" permission controller. This simply means a controller using
+ * the default caveat and permissions created in this test file.
+ *
+ * For the options used, see {@link getControllerOptions}.
+ *
+ * @returns The default permission controller for testing.
+ */
 function getDefaultPermissionController() {
   return new PermissionController<
     DefaultTargetKeys,
@@ -262,6 +322,14 @@ function getDefaultPermissionController() {
   >(getControllerOptions());
 }
 
+/**
+ * Gets an equivalent controller to the one returned by
+ * {@link getDefaultPermissionController}, except it's initialized with the
+ * state returned by {@link getExistingPermissionState}.
+ *
+ * @returns The default permission controller for testing, with some initial
+ * state.
+ */
 function getDefaultPermissionControllerWithState() {
   return new PermissionController<
     DefaultTargetKeys,
@@ -270,6 +338,15 @@ function getDefaultPermissionControllerWithState() {
   >(getControllerOptions({ state: getExistingPermissionState() }));
 }
 
+/**
+ * Gets a Jest matcher for a permission as they are stored in controller state.
+ *
+ * @param parentCapability - The `parentCapability` of the permission.
+ * @param caveats - The caveat array of the permission, or `null`.
+ * @param invoker - The subject identifier (i.e. origin) of the subject.
+ * @returns A Jest matcher that matches permissions whose corresponding fields
+ * correspond to the parameters of this function.
+ */
 function getPermissionMatcher(
   parentCapability: string,
   caveats: GenericCaveat[] | null | typeof expect.objectContaining = null,
@@ -1137,31 +1214,6 @@ describe('PermissionController', () => {
       });
     });
 
-    it('throws an error if the permission fails to validate with the new caveat', () => {
-      const controller = getDefaultPermissionController();
-      const origin = 'metamask.io';
-
-      controller.grantPermissions({
-        subject: { origin },
-        approvedPermissions: {
-          [PermissionNames.wallet_getSecretObject]: {
-            caveats: [
-              constructCaveat(CaveatTypes.filterObjectResponse, ['foo']),
-            ],
-          },
-        },
-      });
-
-      expect(() =>
-        controller.addCaveat(
-          origin,
-          PermissionNames.wallet_getSecretObject,
-          CaveatTypes.filterArrayResponse as any,
-          ['foo'],
-        ),
-      ).toThrow(new Error('permission validation failed'));
-    });
-
     it('throws an error if a corresponding caveat already exists', () => {
       const controller = getDefaultPermissionController();
       const origin = 'metamask.io';
@@ -1210,6 +1262,31 @@ describe('PermissionController', () => {
           PermissionNames.wallet_getSecretArray,
         ),
       );
+    });
+
+    it('throws an error if the permission fails to validate with the added caveat', () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      controller.grantPermissions({
+        subject: { origin },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretObject]: {
+            caveats: [
+              constructCaveat(CaveatTypes.filterObjectResponse, ['foo']),
+            ],
+          },
+        },
+      });
+
+      expect(() =>
+        controller.addCaveat(
+          origin,
+          PermissionNames.wallet_getSecretObject,
+          CaveatTypes.filterArrayResponse as any,
+          ['foo'],
+        ),
+      ).toThrow(new Error('getSecretObject permission validation failed'));
     });
   });
 
@@ -1311,6 +1388,29 @@ describe('PermissionController', () => {
           CaveatTypes.filterArrayResponse,
         ),
       );
+    });
+
+    it('throws an error if the updated caveat fails to validate', () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      controller.grantPermissions({
+        subject: { origin },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecret_('foo')]: {
+            caveats: [constructCaveat(CaveatTypes.noopCaveat, null)],
+          },
+        },
+      });
+
+      expect(() =>
+        controller.updateCaveat(
+          origin,
+          PermissionNames.wallet_getSecret_('foo'),
+          CaveatTypes.noopCaveat,
+          'bar' as any,
+        ),
+      ).toThrow(new Error('NoopCaveat value must be null'));
     });
   });
 
@@ -1484,6 +1584,28 @@ describe('PermissionController', () => {
           CaveatTypes.noopCaveat,
         ),
       );
+    });
+
+    it('throws an error if the permission fails to validate after caveat removal', () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      controller.grantPermissions({
+        subject: { origin },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecret_('foo')]: {
+            caveats: [constructCaveat(CaveatTypes.noopCaveat, null)],
+          },
+        },
+      });
+
+      expect(() =>
+        controller.removeCaveat(
+          origin,
+          PermissionNames.wallet_getSecret_('foo'),
+          CaveatTypes.noopCaveat,
+        ),
+      ).toThrow(new Error('getSecret_* permission validation failed'));
     });
   });
 
@@ -1850,9 +1972,51 @@ describe('PermissionController', () => {
         ),
       );
     });
+
+    it('throws if caveat validation fails', () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      expect(() =>
+        controller.grantPermissions({
+          subject: { origin },
+          approvedPermissions: {
+            [PermissionNames.wallet_getSecret_('foo')]: {
+              caveats: [
+                {
+                  type: CaveatTypes.noopCaveat,
+                  value: 'bar',
+                },
+              ] as any,
+            },
+          },
+        }),
+      ).toThrow(new Error('NoopCaveat value must be null'));
+    });
+
+    it('throws if permission validation fails', () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      expect(() =>
+        controller.grantPermissions({
+          subject: { origin },
+          approvedPermissions: {
+            wallet_getSecretObject: {
+              caveats: [
+                {
+                  type: CaveatTypes.filterArrayResponse,
+                  value: ['bar'],
+                },
+              ] as any,
+            },
+          },
+        }),
+      ).toThrow(new Error('getSecretObject permission validation failed'));
+    });
   });
 
-  describe('actions', () => {
+  describe('controller actions', () => {
     it('permissionController:clearPermissions', () => {
       const options = getControllerOptions();
       const { messenger } = options;
