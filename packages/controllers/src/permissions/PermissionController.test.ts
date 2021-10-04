@@ -1610,7 +1610,7 @@ describe('PermissionController', () => {
   });
 
   describe('grantPermissions', () => {
-    it('grants new permissions', () => {
+    it('grants new permission', () => {
       const controller = getDefaultPermissionController();
       const origin = 'metamask.io';
 
@@ -1628,6 +1628,37 @@ describe('PermissionController', () => {
             permissions: {
               wallet_getSecretArray: getPermissionMatcher(
                 'wallet_getSecretArray',
+              ),
+            },
+          },
+        },
+      });
+    });
+
+    it('grants new permissions (multiple at once)', () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      controller.grantPermissions({
+        subject: { origin },
+        approvedPermissions: {
+          wallet_getSecretArray: {},
+          wallet_getSecretObject: {
+            parentCapability: 'wallet_getSecretObject',
+          },
+        },
+      });
+
+      expect(controller.state).toStrictEqual({
+        subjects: {
+          [origin]: {
+            origin,
+            permissions: {
+              wallet_getSecretArray: getPermissionMatcher(
+                'wallet_getSecretArray',
+              ),
+              wallet_getSecretObject: getPermissionMatcher(
+                'wallet_getSecretObject',
               ),
             },
           },
@@ -1820,6 +1851,50 @@ describe('PermissionController', () => {
           },
         }),
       ).toThrow(errors.methodNotFound({ method: 'wallet_getSecretFalafel' }));
+    });
+
+    it('throws if an approved permission is malformed', () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      expect(() =>
+        controller.grantPermissions({
+          subject: { origin },
+          approvedPermissions: {
+            wallet_getSecretArray: {
+              // This must match the key
+              parentCapability: 'wallet_getSecretObject',
+            },
+          },
+        }),
+      ).toThrow(
+        new errors.InvalidApprovedPermissionError(
+          origin,
+          'wallet_getSecretArray',
+          { parentCapability: 'wallet_getSecretObject' },
+        ),
+      );
+
+      expect(() =>
+        controller.grantPermissions({
+          subject: { origin },
+          approvedPermissions: {
+            wallet_getSecretArray: {
+              parentCapability: 'wallet_getSecretArray',
+            },
+            wallet_getSecretObject: {
+              // This must match the key
+              parentCapability: 'wallet_getSecretArray',
+            },
+          },
+        }),
+      ).toThrow(
+        new errors.InvalidApprovedPermissionError(
+          origin,
+          'wallet_getSecretObject',
+          { parentCapability: 'wallet_getSecretArray' },
+        ),
+      );
     });
 
     it('throws if a requested caveat is not a plain object', () => {

@@ -44,6 +44,7 @@ import {
   InvalidCaveatTypeError,
   CaveatAlreadyExistsError,
   InvalidCaveatError,
+  InvalidApprovedPermissionError,
 } from './errors';
 import { PermissionEnforcer, PermissionsRequest } from './PermissionEnforcer';
 import { MethodNames } from './enums';
@@ -968,12 +969,25 @@ export class PermissionController<
       }) ||
         {}) as SubjectPermissions<Permission>;
 
-    for (const requestedTarget of Object.keys(approvedPermissions)) {
+    for (const [requestedTarget, approvedPermission] of Object.entries(
+      approvedPermissions,
+    )) {
       const targetKey = this.getTargetKey(
         requestedTarget as Permission['parentCapability'],
       );
       if (!targetKey) {
         throw methodNotFound({ method: requestedTarget });
+      }
+
+      if (
+        approvedPermission.parentCapability !== undefined &&
+        requestedTarget !== approvedPermission.parentCapability
+      ) {
+        throw new InvalidApprovedPermissionError(
+          origin,
+          requestedTarget,
+          approvedPermission,
+        );
       }
 
       // The requested target must be a valid target name if we found its key.
@@ -984,7 +998,7 @@ export class PermissionController<
       const caveats = this.constructCaveats(
         origin,
         targetName,
-        approvedPermissions[targetName].caveats,
+        approvedPermission.caveats,
       );
 
       const permissionOptions = {

@@ -63,6 +63,25 @@ export class UnrecognizedSubjectError extends Error {
   }
 }
 
+export class InvalidApprovedPermissionError extends Error {
+  public data: {
+    origin: string;
+    target: string;
+    approvedPermission: Record<string, unknown>;
+  };
+
+  constructor(
+    origin: string,
+    target: string,
+    approvedPermission: Record<string, unknown>,
+  ) {
+    super(
+      `Invalid approved permission for origin "${origin}" and target "${target}".`,
+    );
+    this.data = { origin, target, approvedPermission };
+  }
+}
+
 export class PermissionDoesNotExistError extends Error {
   constructor(origin: string, target: string) {
     super(`Subject "${origin}" has no permission for "${target}".`);
