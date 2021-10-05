@@ -1,4 +1,5 @@
 import {
+  Json,
   BaseControllerV2 as BaseController,
   RestrictedControllerMessenger,
   AddApprovalRequest,
@@ -8,13 +9,13 @@ import {
 } from '@metamask/controllers';
 import type { Patch } from 'immer';
 import deepFreeze from 'deep-freeze-strict';
-import { Json } from 'json-rpc-engine';
-
+import { nanoid } from 'nanoid';
 import { isPlainObject, hasProperty, NonEmptyArray } from '../utils';
 import {
   CaveatConstraint,
   CaveatSpecifications,
   constructCaveat as _constructCaveat,
+  decorateWithCaveats,
   GenericCaveat,
   GetCaveatFromType,
 } from './Caveat';
@@ -45,15 +46,40 @@ import {
   CaveatAlreadyExistsError,
   InvalidCaveatError,
   InvalidApprovedPermissionError,
+  unauthorized,
+  invalidParams,
+  internalError,
+  userRejectedRequest,
 } from './errors';
-import { PermissionEnforcer, PermissionsRequest } from './PermissionEnforcer';
 import { MethodNames } from './enums';
+import { getPermissionMiddlewareFactory } from './permission-middleware';
 
 /**
  * Metadata associated with {@link PermissionController} subjects.
  */
 export type PermissionSubjectMetadata = {
   origin: OriginString;
+};
+
+/**
+ * Metadata associated with permission requests.
+ */
+export type PermissionsRequestMetadata = PermissionSubjectMetadata & {
+  id: string;
+};
+
+/**
+ * Used for prompting the user about a proposed new permission.
+ * Includes information about the grantee subject, requested permissions, and
+ * any additional information added by the consumer.
+ *
+ * All properties except `permissions` are passed to any factories found for
+ * the requested permissions.
+ */
+export type PermissionsRequest = {
+  metadata: PermissionsRequestMetadata;
+  permissions: RequestedPermissions;
+  [key: string]: Json;
 };
 
 /**
@@ -270,19 +296,6 @@ export class PermissionController<
     return this._caveatSpecifications;
   }
 
-  private readonly _enforcer: Readonly<
-    PermissionEnforcer<TargetKey, Caveat, Permission>
-  >;
-
-  /**
-   * The {@link PermissionEnforcer} of the controller.
-   */
-  public get enforcer(): Readonly<
-    PermissionEnforcer<TargetKey, Caveat, Permission>
-  > {
-    return this._enforcer;
-  }
-
   private readonly _permissionSpecifications: Readonly<
     PermissionSpecifications<TargetKey, Permission>
   >;
@@ -304,6 +317,18 @@ export class PermissionController<
   public get unrestrictedMethods(): ReadonlySet<string> {
     return this._unrestrictedMethods;
   }
+
+  /**
+   * Returns a `json-rpc-engine` middleware function factory, so that the rules
+   * described by the state of this controller can be applied to incoming
+   * JSON-RPC requests.
+   *
+   * The middleware **must** be added in the correct place in the middleware
+   * stack in order for it to work. See the documentation for more details.
+   */
+  public createPermissionMiddleware: ReturnType<
+    typeof getPermissionMiddlewareFactory
+  >;
 
   /**
    * @param options - Permission controller options.
@@ -349,7 +374,12 @@ export class PermissionController<
     });
 
     this.registerMessageHandlers();
-    this._enforcer = this.constructEnforcer();
+    this.createPermissionMiddleware = getPermissionMiddlewareFactory({
+      executeRestrictedMethod: this._executeRestrictedMethod.bind(this),
+      getRestrictedMethod: this._getRestrictedMethod.bind(this),
+      isUnrestrictedMethod: (methodName: string) =>
+        this.unrestrictedMethods.has(methodName),
+    });
   }
 
   /**
@@ -419,9 +449,11 @@ export class PermissionController<
    * @returns The restricted method implementation.
    */
   getRestrictedMethod(
-    method: Permission['parentCapability'],
+    method: string,
   ): RestrictedMethod<Json, Json> | undefined {
-    const targetKey = this.getTargetKey(method);
+    const targetKey = this.getTargetKey(
+      method as Permission['parentCapability'],
+    );
     if (!targetKey) {
       return undefined;
     }
@@ -937,10 +969,14 @@ export class PermissionController<
   }
 
   /**
-   * Grants approved permissions to the specified subject. Every permission and
+   * Grants _approved_ permissions to the specified subject. Every permission and
    * caveat is stringently validated – including by calling every specification
    * validator – and an error is thrown if any validation fails.
    *
+   * **ATTN:** This method does **not** prompt the user for approval.
+   *
+   * @see {@link PermissionController.requestPermissions} For initiating a
+   * permissions request requiring user approval.
    * @param options - Options bag.
    * @param options.approvedPermissions - The requested permissions approved by
    * the user.
@@ -1124,61 +1160,291 @@ export class PermissionController<
   }
 
   /**
-   * Constructor helper for getting the enforcer of this controller.
+   * TODO
    *
-   * @returns The {@link PermissionEnforcer}.
+   * @param origin - The origin of the grantee subject.
+   * @param requestedPermissions - The requested permissions.
+   * @param id - The id of the permissions request.
+   * @param preserveExistingPermissions - Whether to preserve the subject's
+   * existing permissions.
+   * @returns The granted permissions and request metadata.
    */
-  private constructEnforcer(): PermissionEnforcer<
-    TargetKey,
-    Caveat,
-    Permission
-  > {
-    return new PermissionEnforcer<TargetKey, Caveat, Permission>({
-      caveatSpecifications: this.caveatSpecifications,
-      getPermission: this.getPermission.bind(this),
-      getRestrictedMethod: this.getRestrictedMethod.bind(this),
-      grantPermissions: this.grantPermissions.bind(this),
-      isRestrictedMethod: (method: string) => {
-        return Boolean(
-          this.getTargetKey(method as Permission['parentCapability']),
+  async requestPermissions(
+    origin: string,
+    requestedPermissions: RequestedPermissions,
+    id: string = nanoid(),
+    preserveExistingPermissions = true,
+  ): Promise<[Record<string, Permission>, { id: string; origin: string }]> {
+    this.validateRequestedPermissions(origin, requestedPermissions);
+    const metadata: PermissionsRequest['metadata'] = {
+      id,
+      origin,
+    };
+
+    const permissionsRequest: PermissionsRequest = {
+      metadata,
+      permissions: requestedPermissions,
+    };
+
+    const { permissions: approvedPermissions, ...requestData } =
+      await this.requestUserApproval(permissionsRequest);
+    if (Object.keys(approvedPermissions).length === 0) {
+      // The request should already have been rejected if this is the case.
+      throw internalError(
+        `Approved permissions request for origin "${origin}" contains no permissions.`,
+        { requestedPermissions },
+      );
+    }
+
+    return [
+      this.grantPermissions({
+        subject: { origin },
+        approvedPermissions,
+        preserveExistingPermissions,
+        requestData,
+      }),
+      metadata,
+    ];
+  }
+
+  /**
+   * TODO
+   *
+   * @param permissionsRequest - The permissions request object.
+   * @returns The approved permissions request object.
+   */
+  private async requestUserApproval(permissionsRequest: PermissionsRequest) {
+    const { origin, id } = permissionsRequest.metadata;
+    return (await this.messagingSystem.call(
+      'ApprovalController:addRequest',
+      {
+        id,
+        origin,
+        requestData: permissionsRequest,
+        type: MethodNames.requestPermissions,
+      },
+      true,
+    )) as PermissionsRequest;
+  }
+
+  /**
+   * TODO
+   *
+   * @param origin - The origin of the grantee subject.
+   * @param requestedPermissions - The requested permissions.
+   */
+  private validateRequestedPermissions(
+    origin: string,
+    requestedPermissions: RequestedPermissions,
+  ) {
+    if (
+      !requestedPermissions ||
+      typeof requestedPermissions !== 'object' ||
+      Array.isArray(requestedPermissions)
+    ) {
+      throw invalidParams({ data: { origin, requestedPermissions } });
+    }
+
+    const perms: RequestedPermissions = requestedPermissions;
+
+    for (const methodName of Object.keys(perms)) {
+      const target = (perms[methodName] as unknown as Permission)
+        .parentCapability;
+      if (target !== undefined && methodName !== target) {
+        throw invalidParams({ data: { origin, requestedPermissions } });
+      }
+
+      if (!this.getRestrictedMethod(methodName)) {
+        throw methodNotFound({
+          method: methodName,
+          data: { origin, requestedPermissions },
+        });
+      }
+    }
+  }
+
+  /**
+   * TODO
+   *
+   * @param request - The permissions request.
+   */
+  async acceptPermissionsRequest(request: PermissionsRequest): Promise<void> {
+    const { id } = request.metadata;
+
+    if (!this.hasApprovalRequest({ id })) {
+      console.debug(`Permissions request with id "${id}" not found.`);
+      return;
+    }
+
+    try {
+      if (Object.keys(request.permissions).length === 0) {
+        this._rejectPermissionsRequest(
+          id,
+          invalidParams({
+            message: 'Must request at least one permission.',
+          }),
         );
-      },
-      isUnrestrictedMethod: (method: string) => {
-        return this.unrestrictedMethods.has(method);
-      },
-      requestUserApproval: async (permissionsRequest: PermissionsRequest) => {
-        const { origin, id } = permissionsRequest.metadata;
-        return (await this.messagingSystem.call(
-          'ApprovalController:addRequest',
-          {
-            id,
-            origin,
-            requestData: permissionsRequest,
-            type: MethodNames.requestPermissions,
-          },
-          true,
-        )) as PermissionsRequest;
-      },
-      acceptPermissionsRequest: (id: string, value?: unknown) =>
+      } else {
         this.messagingSystem.call(
           'ApprovalController:acceptRequest',
           id,
-          value,
-        ),
-      rejectPermissionsRequest: (id: string, error: Error) =>
-        this.messagingSystem.call(
-          'ApprovalController:rejectRequest',
-          id,
-          error,
-        ),
-      hasApprovalRequest: (opts: {
-        id?: string;
-        origin?: OriginString;
-        type?: string;
-      }) =>
-        // Typecast: There are only some valid parameter combinations, but we
-        // just won't worry about that here.
-        this.messagingSystem.call('ApprovalController:hasRequest', opts as any),
-    });
+          request,
+        );
+      }
+    } catch (err) {
+      // if finalization fails, reject the request
+      this._rejectPermissionsRequest(id, err as Error);
+    }
   }
+
+  /**
+   * TODO
+   *
+   * @param id - The id of the request to be rejected.
+   */
+  async rejectPermissionsRequest(id: string): Promise<void> {
+    if (!this.hasApprovalRequest({ id })) {
+      console.debug(`Permissions request with id '${id}' not found.`);
+      return;
+    }
+
+    this._rejectPermissionsRequest(id, userRejectedRequest());
+  }
+
+  /**
+   * TODO
+   *
+   * @param options - The {@link HasApprovalRequest} options.
+   * @returns Whether the specified request exists.
+   */
+  private hasApprovalRequest(options: { id: string }) {
+    // Typecast: There are only some valid parameter combinations, but we
+    // just won't worry about that here.
+    return this.messagingSystem.call(
+      'ApprovalController:hasRequest',
+      // Typecast: Passing just an id is definitely valid, so I don't know
+      // what's going on here.
+      options as any,
+    );
+  }
+
+  /**
+   * TODO
+   *
+   * @param id - The id of the request to reject.
+   * @param error - The error associated with the rejection.
+   */
+  private _rejectPermissionsRequest(id: string, error: Error): void {
+    return this.messagingSystem.call(
+      'ApprovalController:rejectRequest',
+      id,
+      error,
+    );
+  }
+
+  /**
+   * TODO
+   *
+   * @param origin - The origin of the subject to execute the method on behalf
+   * of.
+   * @param methodName - The name of the method to execute.
+   * @param params - The parameters to pass to the method implementation.
+   * @returns The result of the executed method.
+   */
+  async executeRestrictedMethod(
+    origin: string,
+    methodName: Permission['parentCapability'],
+    params?: Json,
+  ): Promise<Json> {
+    // Throws if the method does not exist
+    const methodImplementation = this._getRestrictedMethod(methodName, origin);
+
+    const result = await this._executeRestrictedMethod(
+      methodImplementation,
+      { origin },
+      methodName,
+      params,
+    );
+
+    if (resultIsError(result)) {
+      throw result;
+    }
+
+    if (result === undefined) {
+      throw new Error(
+        `Internal request for method "${methodName}" as origin "${origin}" has no result.`,
+      );
+    }
+
+    return result;
+  }
+
+  /**
+   * TODO
+   *
+   * @param method - The name of the method to get.
+   * @param request - The request associated with the request for the method.
+   * @returns - The restricted method implementation, if it exists.
+   */
+  private _getRestrictedMethod(
+    method: string,
+    origin: string,
+  ): RestrictedMethod<Json, Json> {
+    const methodImplementation = this.getRestrictedMethod(
+      method as Permission['parentCapability'],
+    );
+    if (!methodImplementation) {
+      throw methodNotFound({ method, data: { origin } });
+    }
+
+    return methodImplementation;
+  }
+
+  /**
+   * TODO
+   *
+   * @param methodImplementation - The implementation of the method to call.
+   * @param subject - Metadata about the subject that made the request.
+   * @param req - The request object associated with the request.
+   * @returns
+   */
+  private _executeRestrictedMethod(
+    methodImplementation: RestrictedMethod<Json, Json>,
+    subject: PermissionSubjectMetadata,
+    method: Permission['parentCapability'],
+    params: Json = [],
+  ): ReturnType<RestrictedMethod<Json, Json>> {
+    const { origin } = subject;
+
+    const permission = this.getPermission(origin, method);
+    if (!permission) {
+      return unauthorized({ data: { origin, method } });
+    }
+
+    return decorateWithCaveats<Caveat>(
+      methodImplementation,
+      permission,
+      this.caveatSpecifications,
+    )({ method, params, context: { origin } });
+  }
+}
+
+/**
+ * Type guard for checking whether the value returned from a restricted method
+ * invocation is a result or an error.
+ *
+ * @param resultOrError - The value returned from a restricted method
+ * invocation.
+ * @returns Whether the value is an {@link Error}.
+ */
+export function resultIsError(
+  resultOrError: Json | Error,
+): resultOrError is Error {
+  return Boolean(
+    resultOrError instanceof Error ||
+      (resultOrError &&
+        isPlainObject(resultOrError) &&
+        hasProperty(resultOrError, 'message') &&
+        typeof resultOrError.message === 'string'),
+  );
 }

@@ -165,7 +165,7 @@ export function onlyArrayParams(
     context: Record<string, unknown>,
   ) => {
     if (!Array.isArray(req.params)) {
-      return new EthereumJsonRpcError();
+      throw new EthereumJsonRpcError();
     }
 
     return next(req, context);

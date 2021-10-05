@@ -14,7 +14,6 @@ import {
   PermissionController,
   PermissionControllerActions,
   PermissionControllerEvents,
-  PermissionEnforcer,
   PermissionOptions,
   PermissionSpecifications,
   RestrictedMethodArgs,
@@ -366,9 +365,6 @@ describe('PermissionController', () => {
     it('initializes a new PermissionController', () => {
       const controller = getDefaultPermissionController();
       expect(controller.state).toStrictEqual({ subjects: {} });
-      expect(controller.enforcer instanceof PermissionEnforcer).toStrictEqual(
-        true,
-      );
 
       expect(controller.unrestrictedMethods).toStrictEqual(
         new Set(getDefaultUnrestrictedMethods()),
@@ -2089,6 +2085,22 @@ describe('PermissionController', () => {
         }),
       ).toThrow(new Error('getSecretObject permission validation failed'));
     });
+  });
+
+  describe('requestPermissions', () => {
+    it.todo('requests the permissions');
+  });
+
+  describe('acceptPermissionsRequest', () => {
+    it.todo('accepts a permissions request');
+  });
+
+  describe('rejectPermissionsRequest', () => {
+    it.todo('rejects a permissions request');
+  });
+
+  describe('executeRestrictedMethod', () => {
+    it.todo('executes a restricted method');
   });
 
   describe('controller actions', () => {
