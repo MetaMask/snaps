@@ -1241,7 +1241,8 @@ export class PermissionController<
     if (
       !requestedPermissions ||
       typeof requestedPermissions !== 'object' ||
-      Array.isArray(requestedPermissions)
+      Array.isArray(requestedPermissions) ||
+      Object.keys(requestedPermissions).length === 0
     ) {
       throw invalidParams({ data: { origin, requestedPermissions } });
     }
