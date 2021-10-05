@@ -5,6 +5,7 @@ import {
   AsyncRestrictedMethod,
   RestrictedMethod,
   GenericPermission,
+  RestrictedMethodParams,
 } from './Permission';
 
 /**
@@ -61,9 +62,9 @@ export function constructCaveat<Type extends string, Value extends Json>(
  * @returns The decorate restricted method implementation.
  */
 export type CaveatDecorator<Caveat extends GenericCaveat> = (
-  decorated: AsyncRestrictedMethod<Json, Json>,
+  decorated: AsyncRestrictedMethod<RestrictedMethodParams, Json>,
   caveat: Caveat,
-) => AsyncRestrictedMethod<Json, Json>;
+) => AsyncRestrictedMethod<RestrictedMethodParams, Json>;
 
 /**
  *
@@ -131,16 +132,19 @@ export type GetCaveatFromType<
  * decorator) must be awaited.
  */
 export function decorateWithCaveats<Caveat extends GenericCaveat>(
-  methodImplementation: RestrictedMethod<Json, Json>,
+  methodImplementation: RestrictedMethod<RestrictedMethodParams, Json>,
   permission: Readonly<GenericPermission>, // bound to the requesting origin
   caveatSpecifications: CaveatSpecifications<Caveat>, // all caveat implementations
-): RestrictedMethod<Json, Json> {
+): RestrictedMethod<RestrictedMethodParams, Json> {
   const { caveats } = permission;
   if (!caveats) {
     return methodImplementation;
   }
 
-  let decorated = methodImplementation as AsyncRestrictedMethod<Json, Json>;
+  let decorated = methodImplementation as AsyncRestrictedMethod<
+    RestrictedMethodParams,
+    Json
+  >;
 
   for (const caveat of caveats) {
     const specification = caveatSpecifications[caveat.type as Caveat['type']];

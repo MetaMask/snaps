@@ -31,6 +31,7 @@ import {
   PermissionSpecifications,
   RequestedPermissions,
   RestrictedMethod,
+  RestrictedMethodParams,
   TargetName,
 } from './Permission';
 import {
@@ -450,7 +451,7 @@ export class PermissionController<
    */
   getRestrictedMethod(
     method: string,
-  ): RestrictedMethod<Json, Json> | undefined {
+  ): RestrictedMethod<RestrictedMethodParams, Json> | undefined {
     const targetKey = this.getTargetKey(
       method as Permission['parentCapability'],
     );
@@ -1354,7 +1355,7 @@ export class PermissionController<
   async executeRestrictedMethod(
     origin: string,
     methodName: Permission['parentCapability'],
-    params?: Json,
+    params?: RestrictedMethodParams,
   ): Promise<Json> {
     // Throws if the method does not exist
     const methodImplementation = this._getRestrictedMethod(methodName, origin);
@@ -1389,7 +1390,7 @@ export class PermissionController<
   private _getRestrictedMethod(
     method: string,
     origin: string,
-  ): RestrictedMethod<Json, Json> {
+  ): RestrictedMethod<RestrictedMethodParams, Json> {
     const methodImplementation = this.getRestrictedMethod(
       method as Permission['parentCapability'],
     );
@@ -1409,11 +1410,11 @@ export class PermissionController<
    * @returns
    */
   private _executeRestrictedMethod(
-    methodImplementation: RestrictedMethod<Json, Json>,
+    methodImplementation: RestrictedMethod<RestrictedMethodParams, Json>,
     subject: PermissionSubjectMetadata,
     method: Permission['parentCapability'],
-    params: Json = [],
-  ): ReturnType<RestrictedMethod<Json, Json>> {
+    params: RestrictedMethodParams = [],
+  ): ReturnType<RestrictedMethod<RestrictedMethodParams, Json>> {
     const { origin } = subject;
 
     const permission = this.getPermission(origin, method);

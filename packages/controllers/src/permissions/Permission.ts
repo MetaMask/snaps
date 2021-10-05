@@ -256,12 +256,14 @@ type RestrictedMethodContext = Readonly<{
   [key: string]: any;
 }>;
 
+export type RestrictedMethodParams = Json[] | Record<string, Json>;
+
 /**
  * The arguments passed to a restricted method implementation.
  *
  * @template Params - The JSON-RPC parameters of the restricted method.
  */
-export type RestrictedMethodArgs<Params extends Json> = {
+export type RestrictedMethodArgs<Params extends RestrictedMethodParams> = {
   method: TargetName;
   params?: Params;
   context: RestrictedMethodContext;
@@ -273,7 +275,10 @@ export type RestrictedMethodArgs<Params extends Json> = {
  * @template Params - The JSON-RPC parameters of the restricted method.
  * @template Result - The JSON-RPC result of the restricted method.
  */
-export type SyncRestrictedMethod<Params extends Json, Result extends Json> = (
+export type SyncRestrictedMethod<
+  Params extends RestrictedMethodParams,
+  Result extends Json,
+> = (
   args: RestrictedMethodArgs<Params>,
 ) => Result | Error | EthereumRpcError<Json>;
 
@@ -283,7 +288,10 @@ export type SyncRestrictedMethod<Params extends Json, Result extends Json> = (
  * @template Params - The JSON-RPC parameters of the restricted method.
  * @template Result - The JSON-RPC result of the restricted method.
  */
-export type AsyncRestrictedMethod<Params extends Json, Result extends Json> = (
+export type AsyncRestrictedMethod<
+  Params extends RestrictedMethodParams,
+  Result extends Json,
+> = (
   args: RestrictedMethodArgs<Params>,
 ) => Promise<Result | Error | EthereumRpcError<Json>>;
 
@@ -293,7 +301,10 @@ export type AsyncRestrictedMethod<Params extends Json, Result extends Json> = (
  * @template Params - The JSON-RPC parameters of the restricted method.
  * @template Result - The JSON-RPC result of the restricted method.
  */
-export type RestrictedMethod<Params extends Json, Result extends Json> =
+export type RestrictedMethod<
+  Params extends RestrictedMethodParams,
+  Result extends Json,
+> =
   | SyncRestrictedMethod<Params, Result>
   | AsyncRestrictedMethod<Params, Result>;
 
@@ -307,7 +318,7 @@ type PermissionSpecificationBase<
   Permission extends PermissionConstraint<TargetKey, GenericCaveat | never>,
   FactoryOptions extends PermissionOptions,
   RequestData extends Record<string, unknown>,
-  MethodImplementation extends RestrictedMethod<Json, Json>,
+  MethodImplementation extends RestrictedMethod<RestrictedMethodParams, Json>,
 > = {
   /**
    * The target resource of the permission. In other words, at the time of
@@ -380,7 +391,7 @@ export type PermissionSpecificationConstraint<
       Permission,
       PermissionOptions,
       Record<string, unknown>,
-      RestrictedMethod<Json, Json>
+      RestrictedMethod<RestrictedMethodParams, Json>
     >;
 
 /**

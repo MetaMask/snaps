@@ -78,7 +78,7 @@ const caveatSpecifications = {
         method: AsyncRestrictedMethod<Json, string[]>,
         caveat: { type: 'filterArrayResponse'; value: string[] },
       ) =>
-      async (args: RestrictedMethodArgs<Json>) => {
+      async (args: RestrictedMethodArgs<RestrictedMethodParams>) => {
         const result = await method(args);
         return Array.isArray(result)
           ? result.filter(caveat.value.includes)
@@ -91,7 +91,9 @@ const permissionSpecifications = {
   wallet_getSecretArray: {
     // i.e. the restricted method name
     target: 'wallet_getSecretArray',
-    methodImplementation: (_args: RestrictedMethodArgs<Json>) => {
+    methodImplementation: (
+      _args: RestrictedMethodArgs<RestrictedMethodParams>,
+    ) => {
       return ['secret1', 'secret2', 'secret3'];
     },
   },

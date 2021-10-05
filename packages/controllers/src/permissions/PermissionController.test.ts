@@ -17,6 +17,7 @@ import {
   PermissionOptions,
   PermissionSpecifications,
   RestrictedMethodArgs,
+  RestrictedMethodParams,
 } from '.';
 
 // CaveatConstraint types and specifications
@@ -57,10 +58,10 @@ function getDefaultCaveatSpecifications(): CaveatSpecifications<DefaultCaveats> 
       type: CaveatTypes.filterArrayResponse,
       decorator:
         (
-          method: AsyncRestrictedMethod<Json, Json>,
+          method: AsyncRestrictedMethod<RestrictedMethodParams, Json>,
           caveat: FilterArrayCaveat,
         ) =>
-        async (args: RestrictedMethodArgs<Json>) => {
+        async (args: RestrictedMethodArgs<RestrictedMethodParams>) => {
           const result: string[] | unknown = await method(args);
           if (!Array.isArray(result)) {
             throw Error('not an array');
@@ -73,10 +74,10 @@ function getDefaultCaveatSpecifications(): CaveatSpecifications<DefaultCaveats> 
       type: CaveatTypes.filterObjectResponse,
       decorator:
         (
-          method: AsyncRestrictedMethod<Json, Json>,
+          method: AsyncRestrictedMethod<RestrictedMethodParams, Json>,
           caveat: FilterObjectCaveat,
         ) =>
-        async (args: RestrictedMethodArgs<Json>) => {
+        async (args: RestrictedMethodArgs<RestrictedMethodParams>) => {
           const result = await method(args);
           if (!isPlainObject(result)) {
             throw Error('not a plain object');
@@ -91,8 +92,11 @@ function getDefaultCaveatSpecifications(): CaveatSpecifications<DefaultCaveats> 
     noopCaveat: {
       type: CaveatTypes.noopCaveat,
       decorator:
-        (method: AsyncRestrictedMethod<Json, Json>, _caveat: NoopCaveat) =>
-        async (args: RestrictedMethodArgs<Json>) => {
+        (
+          method: AsyncRestrictedMethod<RestrictedMethodParams, Json>,
+          _caveat: NoopCaveat,
+        ) =>
+        async (args: RestrictedMethodArgs<RestrictedMethodParams>) => {
           return method(args);
         },
       validator: (caveat: { type: CaveatTypes.noopCaveat; value: unknown }) => {
@@ -174,13 +178,17 @@ function getDefaultPermissionSpecifications(): PermissionSpecifications<
   return {
     wallet_getSecretArray: {
       target: PermissionKeys.wallet_getSecretArray,
-      methodImplementation: (_args: RestrictedMethodArgs<Json>) => {
+      methodImplementation: (
+        _args: RestrictedMethodArgs<RestrictedMethodParams>,
+      ) => {
         return ['secret1', 'secret2', 'secret3'];
       },
     },
     wallet_getSecretObject: {
       target: PermissionKeys.wallet_getSecretObject,
-      methodImplementation: (_args: RestrictedMethodArgs<Json>) => {
+      methodImplementation: (
+        _args: RestrictedMethodArgs<RestrictedMethodParams>,
+      ) => {
         return { secret1: 'a', secret2: 'b', secret3: 'c' };
       },
       validator: (permission: GenericPermission) => {
@@ -195,7 +203,9 @@ function getDefaultPermissionSpecifications(): PermissionSpecifications<
     },
     'wallet_getSecret_*': {
       target: PermissionKeys['wallet_getSecret_*'],
-      methodImplementation: (args: RestrictedMethodArgs<Json>) => {
+      methodImplementation: (
+        args: RestrictedMethodArgs<RestrictedMethodParams>,
+      ) => {
         return `Hello, secret friend "${args.method.replace(
           'wallet_getSecret_',
           '',

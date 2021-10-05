@@ -11,19 +11,20 @@ import {
   GenericPermission,
   PermissionSubjectMetadata,
   RestrictedMethod,
+  RestrictedMethodParams,
   resultIsError,
 } from '.';
 
 type ExecuteRestrictedMethod<Permission extends GenericPermission> = (
-  methodImplementation: RestrictedMethod<Json, Json>,
+  methodImplementation: RestrictedMethod<RestrictedMethodParams, Json>,
   subject: PermissionSubjectMetadata,
   method: Permission['parentCapability'],
-  params?: Json,
-) => ReturnType<RestrictedMethod<Json, Json>>;
+  params?: RestrictedMethodParams,
+) => ReturnType<RestrictedMethod<RestrictedMethodParams, Json>>;
 type GetRestrictedMethod = (
   method: string,
   origin: string,
-) => RestrictedMethod<Json, Json>;
+) => RestrictedMethod<RestrictedMethodParams, Json>;
 type IsUnrestrictedMethod = (method: string) => boolean;
 
 type PermissionMiddlewareFactoryOptions<Permission extends GenericPermission> =
@@ -42,9 +43,9 @@ export function getPermissionMiddlewareFactory<
 }: PermissionMiddlewareFactoryOptions<Permission>) {
   return function createPermissionMiddleware(
     subject: PermissionSubjectMetadata,
-  ): JsonRpcMiddleware<Json, Json> {
+  ): JsonRpcMiddleware<RestrictedMethodParams, Json> {
     const permissionsMiddleware = async (
-      req: JsonRpcRequest<Json>,
+      req: JsonRpcRequest<RestrictedMethodParams>,
       res: PendingJsonRpcResponse<Json>,
       next: AsyncJsonRpcEngineNextCallback,
     ): Promise<void> => {
