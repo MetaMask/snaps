@@ -1,6 +1,7 @@
 import fs from 'fs';
 import { ControllerMessenger } from '@metamask/controllers/dist/ControllerMessenger';
 import { getPersistentState } from '@metamask/controllers';
+import { ErrorMessageEvent } from '@metamask/snap-types';
 import { WebWorkerExecutionEnvironmentService } from '../services/WebWorkerExecutionEnvironmentService';
 import { ExecutionEnvironmentService } from '../services/ExecutionEnvironmentService';
 import { PluginController, PluginControllerState } from './PluginController';
@@ -14,11 +15,13 @@ describe('PluginController Controller', () => {
   it('can create a worker and plugin controller', async () => {
     const workerExecutionEnvironment = new WebWorkerExecutionEnvironmentService(
       {
+        messenger: new ControllerMessenger(),
         setupPluginProvider: jest.fn(),
         workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
       },
     );
     const pluginController = new PluginController({
+      serviceMessenger: new ControllerMessenger<never, ErrorMessageEvent>(),
       terminateAllPlugins: workerExecutionEnvironment.terminateAllPlugins.bind(
         workerExecutionEnvironment,
       ),
@@ -48,11 +51,13 @@ describe('PluginController Controller', () => {
   it('can create a worker and plugin controller and add a plugin and update its state', async () => {
     const workerExecutionEnvironment = new WebWorkerExecutionEnvironmentService(
       {
+        messenger: new ControllerMessenger(),
         setupPluginProvider: jest.fn(),
         workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
       },
     );
     const pluginController = new PluginController({
+      serviceMessenger: new ControllerMessenger<never, ErrorMessageEvent>(),
       terminateAllPlugins: workerExecutionEnvironment.terminateAllPlugins.bind(
         workerExecutionEnvironment,
       ),
@@ -105,10 +110,12 @@ describe('PluginController Controller', () => {
   it('can add a plugin and use its JSON-RPC api with a WebWorkerExecutionEnvironmentService', async () => {
     const webWorkerExecutionEnvironment =
       new WebWorkerExecutionEnvironmentService({
+        messenger: new ControllerMessenger(),
         setupPluginProvider: jest.fn(),
         workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
       });
     const pluginController = new PluginController({
+      serviceMessenger: new ControllerMessenger<never, ErrorMessageEvent>(),
       terminateAllPlugins:
         webWorkerExecutionEnvironment.terminateAllPlugins.bind(
           webWorkerExecutionEnvironment,
@@ -192,6 +199,7 @@ describe('PluginController Controller', () => {
     const executionEnvironmentStub = new ExecutionEnvironmentStub();
 
     const pluginController = new PluginController({
+      serviceMessenger: new ControllerMessenger<never, ErrorMessageEvent>(),
       terminateAllPlugins: executionEnvironmentStub.terminateAllPlugins.bind(
         executionEnvironmentStub,
       ),
@@ -261,6 +269,7 @@ describe('PluginController Controller', () => {
     const mockExecutePlugin = jest.fn();
 
     const pluginController = new PluginController({
+      serviceMessenger: new ControllerMessenger<never, ErrorMessageEvent>(),
       terminateAllPlugins: jest.fn(),
       terminatePlugin: jest.fn(),
       executePlugin: mockExecutePlugin,
@@ -291,6 +300,7 @@ describe('PluginController Controller', () => {
     const mockExecutePlugin = jest.fn();
 
     const firstPluginController = new PluginController({
+      serviceMessenger: new ControllerMessenger<never, ErrorMessageEvent>(),
       terminateAllPlugins: jest.fn(),
       terminatePlugin: jest.fn(),
       executePlugin: mockExecutePlugin,
@@ -326,6 +336,7 @@ describe('PluginController Controller', () => {
     );
     // create a new controller
     const secondPluginController = new PluginController({
+      serviceMessenger: new ControllerMessenger<never, ErrorMessageEvent>(),
       terminateAllPlugins: jest.fn(),
       terminatePlugin: jest.fn(),
       executePlugin: mockExecutePlugin,
@@ -377,6 +388,7 @@ describe('PluginController Controller', () => {
     const executionEnvironmentStub = new ExecutionEnvironmentStub();
 
     const pluginController = new PluginController({
+      serviceMessenger: new ControllerMessenger<never, ErrorMessageEvent>(),
       terminateAllPlugins: executionEnvironmentStub.terminateAllPlugins.bind(
         executionEnvironmentStub,
       ),

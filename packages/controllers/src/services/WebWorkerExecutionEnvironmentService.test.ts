@@ -1,4 +1,6 @@
 import fs from 'fs';
+import { ControllerMessenger } from '@metamask/controllers';
+import { ErrorMessageEvent } from '@metamask/snap-types';
 import { WebWorkerExecutionEnvironmentService } from './WebWorkerExecutionEnvironmentService';
 
 const workerCode = fs.readFileSync(
@@ -10,6 +12,7 @@ describe('Worker Controller', () => {
   it('can boot', async () => {
     const webWorkerExecutionEnvironmentService =
       new WebWorkerExecutionEnvironmentService({
+        messenger: new ControllerMessenger<never, ErrorMessageEvent>(),
         setupPluginProvider: () => {
           // do nothing
         },
@@ -21,6 +24,7 @@ describe('Worker Controller', () => {
   it('can create a plugin worker and start the plugin', async () => {
     const webWorkerExecutionEnvironmentService =
       new WebWorkerExecutionEnvironmentService({
+        messenger: new ControllerMessenger<never, ErrorMessageEvent>(),
         setupPluginProvider: () => {
           // do nothing
         },
@@ -33,6 +37,7 @@ describe('Worker Controller', () => {
         console.log('foo');
       `,
     });
+
     expect(response).toStrictEqual('OK');
   });
 });

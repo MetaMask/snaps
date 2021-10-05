@@ -1,3 +1,4 @@
+import { Json } from '@metamask/controllers';
 import { MetaMaskInpageProvider } from '@metamask/inpage-provider';
 
 /**
@@ -21,4 +22,9 @@ export type PluginRpcHandler = (
 
 export interface PluginProvider extends MetaMaskInpageProvider {
   registerRpcMessageHandler: (handler: PluginRpcHandler) => void;
+}
+type PluginName = string;
+export interface ErrorMessageEvent {
+  type: 'error';
+  payload: [PluginName, { message: string; code: number; data?: Json }];
 }

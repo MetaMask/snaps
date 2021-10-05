@@ -3,10 +3,11 @@ import type { Patch } from 'immer';
 import { IOcapLdCapability } from 'rpc-cap/dist/src/@types/ocap-ld';
 import {
   BaseControllerV2 as BaseController,
+  ControllerMessenger,
   RestrictedControllerMessenger,
 } from '@metamask/controllers';
 import { Json } from 'json-rpc-engine';
-import { PluginData } from '@metamask/snap-types';
+import { ErrorMessageEvent, PluginData } from '@metamask/snap-types';
 import { nanoid } from 'nanoid';
 import {
   GetRpcMessageHandler,
@@ -102,6 +103,7 @@ type PluginControllerMessenger = RestrictedControllerMessenger<
 
 type PluginControllerArgs = {
   messenger: PluginControllerMessenger;
+  serviceMessenger: ControllerMessenger<never, ErrorMessageEvent>;
   state?: PluginControllerState;
   removeAllPermissionsFor: RemoveAllPermissionsFunction;
   closeAllConnections: CloseAllConnectionsFunction;
@@ -176,6 +178,8 @@ export class PluginController extends BaseController<
 
   private _pluginsBeingAdded: Map<string, Promise<Plugin>>;
 
+  private _serviceMessenger: ControllerMessenger<never, ErrorMessageEvent>;
+
   constructor({
     removeAllPermissionsFor,
     closeAllConnections,
@@ -187,6 +191,7 @@ export class PluginController extends BaseController<
     executePlugin,
     getRpcMessageHandler,
     messenger,
+    serviceMessenger,
     state,
   }: PluginControllerArgs) {
     super({
@@ -235,6 +240,11 @@ export class PluginController extends BaseController<
     this._terminateAllPlugins = terminateAllPlugins;
     this._executePlugin = executePlugin;
     this._getRpcMessageHandler = getRpcMessageHandler;
+    this._serviceMessenger = serviceMessenger;
+    this._serviceMessenger.subscribe('error', (pluginName, error) => {
+      this.stopPlugin(pluginName);
+      this.addPluginError(error);
+    });
 
     this._pluginsBeingAdded = new Map();
   }

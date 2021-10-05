@@ -1,4 +1,6 @@
 import { describe, expect, it } from '@jest/globals';
+import { ControllerMessenger } from '@metamask/controllers';
+import { ErrorMessageEvent } from '@metamask/snap-types';
 import fixJSDOMPostMessageEventSource from './testHelpers/fixJSDOMPostMessageEventSource';
 import { IframeExecutionEnvironmentService } from './IframeExecutionEnvironmentService';
 
@@ -6,6 +8,7 @@ describe('Iframe Controller', () => {
   it('can boot', async () => {
     const iframeExecutionEnvironmentService =
       new IframeExecutionEnvironmentService({
+        messenger: new ControllerMessenger<never, ErrorMessageEvent>(),
         setupPluginProvider: () => {
           // do nothing
         },
@@ -20,6 +23,7 @@ describe('Iframe Controller', () => {
   it('can create a plugin worker and start the plugin', async () => {
     const iframeExecutionEnvironmentService =
       new IframeExecutionEnvironmentService({
+        messenger: new ControllerMessenger<never, ErrorMessageEvent>(),
         setupPluginProvider: () => {
           // do nothing
         },
@@ -45,6 +49,7 @@ describe('Iframe Controller', () => {
     expect.assertions(1);
     const iframeExecutionEnvironmentService =
       new IframeExecutionEnvironmentService({
+        messenger: new ControllerMessenger<never, ErrorMessageEvent>(),
         setupPluginProvider: () => {
           // do nothing
         },

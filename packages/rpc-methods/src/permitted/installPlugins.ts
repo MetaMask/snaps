@@ -50,7 +50,7 @@ async function installPluginsImplementation(
   try {
     res.result = await handleInstallPlugins(req.params[0], installPlugins);
   } catch (err) {
-    res.error = err;
+    res.error = err as Error;
   }
   return end();
 }
