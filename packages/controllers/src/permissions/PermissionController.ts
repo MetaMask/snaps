@@ -7,6 +7,9 @@ import {
   RejectRequest as RejectApprovalRequest,
   HasApprovalRequest,
 } from '@metamask/controllers';
+// This is used in a docstring, but ESLint doesn't notice it.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ApprovalController } from '@metamask/controllers';
 import type { Patch } from 'immer';
 import deepFreeze from 'deep-freeze-strict';
 import { nanoid } from 'nanoid';
@@ -1161,8 +1164,11 @@ export class PermissionController<
   }
 
   /**
-   * TODO
+   * Initiates a permission request that requires user approval. This should
+   * always be used to grant additional permissions to a subject, unless user
+   * approval has been obtained through some other means.
    *
+   * @see {@link ApprovalController} For the user approval logic.
    * @param origin - The origin of the grantee subject.
    * @param requestedPermissions - The requested permissions.
    * @param id - The id of the permissions request.
@@ -1209,7 +1215,8 @@ export class PermissionController<
   }
 
   /**
-   * TODO
+   * Adds a request to the {@link ApprovalController} using the
+   * {@link AddApprovalRequest} action.
    *
    * @param permissionsRequest - The permissions request object.
    * @returns The approved permissions request object.
@@ -1229,7 +1236,18 @@ export class PermissionController<
   }
 
   /**
-   * TODO
+   * Validates requested permissions. Throws if validation fails.
+   *
+   * All properties of {@link RequestedPermissions} values are ignored during
+   * request processing in this controller except `caveats`, which is validated
+   * by {@link PermissionController.computeCaveats}, caveat validators, and
+   * permission validators.
+   *
+   * This method still validates the `parentCapability` field, since a mismatch
+   * between a {@link RequestedPermissions} key and `parentCapability` makes it
+   * impossible to determine which permission the consumer intended to request.
+   * At the time of writing, our types also do not prevent this kind of
+   * mismatch.
    *
    * @param origin - The origin of the grantee subject.
    * @param requestedPermissions - The requested permissions.
@@ -1237,7 +1255,7 @@ export class PermissionController<
   private validateRequestedPermissions(
     origin: string,
     requestedPermissions: RequestedPermissions,
-  ) {
+  ): void {
     if (
       !requestedPermissions ||
       typeof requestedPermissions !== 'object' ||

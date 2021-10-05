@@ -3,7 +3,7 @@ import { Json } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
 import { NonEmptyArray } from '../utils';
 import { CaveatConstraint, GenericCaveat } from './Caveat';
-// This is in fact used in a docstring, but ESLint doesn't notice this.
+// This is used in a docstring, but ESLint doesn't notice it.
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { PermissionController } from './PermissionController';
 
