@@ -25,6 +25,6 @@ export interface PluginProvider extends MetaMaskInpageProvider {
 }
 type PluginName = string;
 export interface ErrorMessageEvent {
-  type: 'error';
+  type: 'PluginExecutionService:unhandledError';
   payload: [PluginName, { message: string; code: number; data?: Json }];
 }
