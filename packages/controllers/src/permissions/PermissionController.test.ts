@@ -32,6 +32,7 @@ import {
 
 enum CaveatTypes {
   filterArrayResponse = 'filterArrayResponse',
+  reverseArrayResponse = 'reverseArrayResponse',
   filterObjectResponse = 'filterObjectResponse',
   noopCaveat = 'noopCaveat',
 }
@@ -41,6 +42,11 @@ type FilterArrayCaveat = CaveatConstraint<
   string[]
 >;
 
+type ReverseArrayCaveat = CaveatConstraint<
+  CaveatTypes.reverseArrayResponse,
+  null
+>;
+
 type FilterObjectCaveat = CaveatConstraint<
   CaveatTypes.filterObjectResponse,
   string[]
@@ -48,7 +54,11 @@ type FilterObjectCaveat = CaveatConstraint<
 
 type NoopCaveat = CaveatConstraint<CaveatTypes.noopCaveat, null>;
 
-type DefaultCaveats = FilterArrayCaveat | FilterObjectCaveat | NoopCaveat;
+type DefaultCaveats =
+  | FilterArrayCaveat
+  | ReverseArrayCaveat
+  | FilterObjectCaveat
+  | NoopCaveat;
 
 /**
  * Gets caveat specifications for:
@@ -75,7 +85,25 @@ function getDefaultCaveatSpecifications(): CaveatSpecifications<DefaultCaveats> 
             throw Error('not an array');
           }
 
-          return result.filter(caveat.value.includes);
+          return result.filter((resultValue) =>
+            caveat.value.includes(resultValue),
+          );
+        },
+    },
+    reverseArrayResponse: {
+      type: CaveatTypes.reverseArrayResponse,
+      decorator:
+        (
+          method: AsyncRestrictedMethod<RestrictedMethodParams, Json>,
+          _caveat: ReverseArrayCaveat,
+        ) =>
+        async (args: RestrictedMethodArgs<RestrictedMethodParams>) => {
+          const result: unknown[] | unknown = await method(args);
+          if (!Array.isArray(result)) {
+            throw Error('not an array');
+          }
+
+          return result.reverse();
         },
     },
     filterObjectResponse: {
@@ -91,8 +119,10 @@ function getDefaultCaveatSpecifications(): CaveatSpecifications<DefaultCaveats> 
             throw Error('not a plain object');
           }
 
-          caveat.value.forEach((key) => {
-            delete result[key];
+          Object.keys(result).forEach((key) => {
+            if (!caveat.value.includes(key)) {
+              delete result[key];
+            }
           });
           return result;
         },
@@ -122,7 +152,7 @@ type SecretArrayName = 'wallet_getSecretArray';
 
 type SecretArrayPermission = PermissionConstraint<
   SecretArrayName,
-  FilterArrayCaveat
+  FilterArrayCaveat | ReverseArrayCaveat
 >;
 
 type SecretObjectName = 'wallet_getSecretObject';
@@ -139,20 +169,36 @@ type SecretNamespacedPermission = PermissionConstraint<
   NoopCaveat
 >;
 
+// Dummy permission that returns an error object
+// type GetErrorName = 'wallet_getError';
+
+// type GetErrorPermission = PermissionConstraint<GetErrorName, never>;
+
+// Illegal dummy permission
+// type GetUndefinedName = 'wallet_getUndefined';
+
+// type GetUndefinedPermission = PermissionConstraint<GetUndefinedName, never>;
+
 type DefaultTargetKeys =
   | SecretArrayName
   | SecretObjectName
   | SecretNamespacedKey;
+// | GetErrorName
+// | GetUndefinedName;
 
 type DefaultPermissions =
   | SecretArrayPermission
   | SecretObjectPermission
   | SecretNamespacedPermission;
+// | GetErrorPermission
+// | GetUndefinedPermission;
 
 enum PermissionKeys {
   'wallet_getSecretArray' = 'wallet_getSecretArray',
   'wallet_getSecretObject' = 'wallet_getSecretObject',
   'wallet_getSecret_*' = 'wallet_getSecret_*',
+  // 'wallet_getError' = 'wallet_getError',
+  // 'wallet_getUndefined' = 'wallet_getUndefined',
 }
 
 /**
@@ -163,6 +209,8 @@ const PermissionNames = {
   wallet_getSecretArray: 'wallet_getSecretArray' as const,
   wallet_getSecretObject: 'wallet_getSecretObject' as const,
   wallet_getSecret_: (str: string) => `wallet_getSecret_${str}` as const,
+  // wallet_getError: 'wallet_getError' as const,
+  // wallet_getUndefined: 'wallet_getUndefined' as const,
 };
 
 /**
@@ -189,7 +237,7 @@ function getDefaultPermissionSpecifications(): PermissionSpecifications<
       methodImplementation: (
         _args: RestrictedMethodArgs<RestrictedMethodParams>,
       ) => {
-        return ['secret1', 'secret2', 'secret3'];
+        return ['a', 'b', 'c'];
       },
     },
     wallet_getSecretObject: {
@@ -197,7 +245,7 @@ function getDefaultPermissionSpecifications(): PermissionSpecifications<
       methodImplementation: (
         _args: RestrictedMethodArgs<RestrictedMethodParams>,
       ) => {
-        return { secret1: 'a', secret2: 'b', secret3: 'c' };
+        return { a: 'x', b: 'y', c: 'z' };
       },
       validator: (permission: GenericPermission) => {
         // A dummy validator for a caveat type that should be impossible to add
@@ -232,6 +280,15 @@ function getDefaultPermissionSpecifications(): PermissionSpecifications<
         );
       },
     },
+    // wallet_getError: {
+    //   target: PermissionKeys.wallet_getError,
+    //   methodImplementation: ((args: RestrictedMethodArgs<string[]>) => {
+    //     return { message: `The error says: ${args.params?.[0] || 'default'}` }
+    //   })
+    // },
+    // wallet_getUndefined: {
+    //   target: PermissionKeys.wallet_getUndefined,
+    // }
   };
 }
 
@@ -2610,7 +2667,88 @@ describe('PermissionController', () => {
   });
 
   describe('executeRestrictedMethod', () => {
-    it.todo('executes a restricted method');
+    it('executes a restricted method', async () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      controller.grantPermissions({
+        subject: { origin },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretArray]: {},
+        },
+      });
+
+      expect(
+        await controller.executeRestrictedMethod(
+          origin,
+          PermissionNames.wallet_getSecretArray,
+        ),
+      ).toStrictEqual(['a', 'b', 'c']);
+    });
+
+    it('executes a namespaced restricted method', async () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      controller.grantPermissions({
+        subject: { origin },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecret_('foo')]: {},
+        },
+      });
+
+      expect(
+        await controller.executeRestrictedMethod(
+          origin,
+          PermissionNames.wallet_getSecret_('foo'),
+        ),
+      ).toStrictEqual('Hello, secret friend "foo"!');
+    });
+
+    it('executes a restricted method with caveats', async () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      controller.grantPermissions({
+        subject: { origin },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretArray]: {
+            caveats: [constructCaveat(CaveatTypes.filterArrayResponse, ['b'])],
+          },
+        },
+      });
+
+      expect(
+        await controller.executeRestrictedMethod(
+          origin,
+          PermissionNames.wallet_getSecretArray,
+        ),
+      ).toStrictEqual(['b']);
+    });
+
+    it('executes a restricted method with multiple caveats', async () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      controller.grantPermissions({
+        subject: { origin },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretArray]: {
+            caveats: [
+              constructCaveat(CaveatTypes.filterArrayResponse, ['a', 'c']),
+              constructCaveat(CaveatTypes.reverseArrayResponse, null),
+            ],
+          },
+        },
+      });
+
+      expect(
+        await controller.executeRestrictedMethod(
+          origin,
+          PermissionNames.wallet_getSecretArray,
+        ),
+      ).toStrictEqual(['c', 'a']);
+    });
   });
 
   describe('controller actions', () => {
