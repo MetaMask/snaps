@@ -1,5 +1,12 @@
 import assert from 'assert';
-import { ControllerMessenger, Json } from '@metamask/controllers';
+import {
+  ControllerMessenger,
+  Json,
+  AddApprovalRequest,
+  AcceptRequest as AcceptApprovalRequest,
+  RejectRequest as RejectApprovalRequest,
+  HasApprovalRequest,
+} from '@metamask/controllers';
 import { hasProperty, isPlainObject } from '../utils';
 import * as errors from './errors';
 import { constructCaveat } from './Caveat';
@@ -232,6 +239,12 @@ function getDefaultPermissionSpecifications(): PermissionSpecifications<
 
 const controllerName = 'PermissionController' as const;
 
+type ApprovalActions =
+  | HasApprovalRequest
+  | AddApprovalRequest
+  | AcceptApprovalRequest
+  | RejectApprovalRequest;
+
 /** *
  * Gets a restricted controller messenger.
  *
@@ -241,12 +254,12 @@ const controllerName = 'PermissionController' as const;
  */
 function getDefaultRestrictedMessenger() {
   const controllerMessenger = new ControllerMessenger<
-    PermissionControllerActions,
+    PermissionControllerActions | ApprovalActions,
     PermissionControllerEvents
   >();
   return controllerMessenger.getRestricted<
     typeof controllerName,
-    PermissionControllerActions['type'],
+    PermissionControllerActions['type'] | ApprovalActions['type'],
     PermissionControllerEvents['type']
   >({
     name: controllerName,
@@ -254,6 +267,10 @@ function getDefaultRestrictedMessenger() {
       'PermissionController:clearPermissions',
       'PermissionController:getSubjectNames',
       'PermissionController:hasPermissions',
+      'ApprovalController:hasRequest',
+      'ApprovalController:addRequest',
+      'ApprovalController:acceptRequest',
+      'ApprovalController:rejectRequest',
     ],
   });
 }
@@ -2367,11 +2384,229 @@ describe('PermissionController', () => {
   });
 
   describe('acceptPermissionsRequest', () => {
-    it.todo('accepts a permissions request');
+    it('accepts a permissions request', async () => {
+      const options = getPermissionControllerOptions();
+      const { messenger } = options;
+      const origin = 'metamask.io';
+      const id = 'foobar';
+
+      const callActionSpy = jest
+        .spyOn(messenger, 'call')
+        .mockImplementationOnce((async (..._args: any) => true) as any)
+        .mockImplementationOnce((async (..._args: any) => undefined) as any);
+
+      const controller = getDefaultPermissionController(options);
+
+      await controller.acceptPermissionsRequest({
+        metadata: { id, origin },
+        permissions: {
+          [PermissionNames.wallet_getSecretArray]: {},
+        },
+      });
+
+      expect(callActionSpy).toHaveBeenCalledTimes(2);
+      expect(callActionSpy).toHaveBeenNthCalledWith(
+        1,
+        'ApprovalController:hasRequest',
+        {
+          id,
+        },
+      );
+
+      expect(callActionSpy).toHaveBeenNthCalledWith(
+        2,
+        'ApprovalController:acceptRequest',
+        id,
+        {
+          metadata: { id, origin },
+          permissions: {
+            [PermissionNames.wallet_getSecretArray]: {},
+          },
+        },
+      );
+    });
+
+    it('rejects the request if it contains no permissions', async () => {
+      const options = getPermissionControllerOptions();
+      const { messenger } = options;
+      const origin = 'metamask.io';
+      const id = 'foobar';
+
+      const callActionSpy = jest
+        .spyOn(messenger, 'call')
+        .mockImplementationOnce(((..._args: any) => true) as any)
+        .mockImplementationOnce(((..._args: any) => undefined) as any);
+
+      const controller = getDefaultPermissionController(options);
+
+      await controller.acceptPermissionsRequest({
+        metadata: { id, origin },
+        permissions: {},
+      });
+
+      expect(callActionSpy).toHaveBeenCalledTimes(2);
+      expect(callActionSpy).toHaveBeenNthCalledWith(
+        1,
+        'ApprovalController:hasRequest',
+        {
+          id,
+        },
+      );
+
+      expect(callActionSpy).toHaveBeenNthCalledWith(
+        2,
+        'ApprovalController:rejectRequest',
+        id,
+        errors.invalidParams({
+          message: 'Must request at least one permission.',
+        }),
+      );
+    });
+
+    it('throws if the request does not exist', async () => {
+      const options = getPermissionControllerOptions();
+      const { messenger } = options;
+      const origin = 'metamask.io';
+      const id = 'foobar';
+
+      const callActionSpy = jest
+        .spyOn(messenger, 'call')
+        .mockImplementationOnce(((..._args: any) => false) as any);
+
+      const controller = getDefaultPermissionController(options);
+
+      await expect(
+        async () =>
+          await controller.acceptPermissionsRequest({
+            metadata: { id, origin },
+            permissions: {
+              [PermissionNames.wallet_getSecretArray]: {},
+            },
+          }),
+      ).rejects.toThrow(new errors.PermissionsRequestNotFoundError(id));
+
+      expect(callActionSpy).toHaveBeenCalledTimes(1);
+      expect(callActionSpy).toHaveBeenNthCalledWith(
+        1,
+        'ApprovalController:hasRequest',
+        {
+          id,
+        },
+      );
+    });
+
+    it('rejects the request and throws if accepting the request throws', async () => {
+      const options = getPermissionControllerOptions();
+      const { messenger } = options;
+      const origin = 'metamask.io';
+      const id = 'foobar';
+
+      const callActionSpy = jest
+        .spyOn(messenger, 'call')
+        .mockImplementationOnce(((..._args: any) => true) as any)
+        .mockImplementationOnce(((..._args: any) => {
+          throw new Error('unexpected failure');
+        }) as any)
+        .mockImplementationOnce(((..._args: any) => undefined) as any);
+
+      const controller = getDefaultPermissionController(options);
+
+      await expect(
+        async () =>
+          await controller.acceptPermissionsRequest({
+            metadata: { id, origin },
+            permissions: {
+              [PermissionNames.wallet_getSecretArray]: {},
+            },
+          }),
+      ).rejects.toThrow(new Error('unexpected failure'));
+
+      expect(callActionSpy).toHaveBeenCalledTimes(3);
+      expect(callActionSpy).toHaveBeenNthCalledWith(
+        1,
+        'ApprovalController:hasRequest',
+        {
+          id,
+        },
+      );
+
+      expect(callActionSpy).toHaveBeenNthCalledWith(
+        2,
+        'ApprovalController:acceptRequest',
+        id,
+        {
+          metadata: { id, origin },
+          permissions: {
+            [PermissionNames.wallet_getSecretArray]: {},
+          },
+        },
+      );
+
+      expect(callActionSpy).toHaveBeenNthCalledWith(
+        3,
+        'ApprovalController:rejectRequest',
+        id,
+        new Error('unexpected failure'),
+      );
+    });
   });
 
   describe('rejectPermissionsRequest', () => {
-    it.todo('rejects a permissions request');
+    it('rejects a permissions request', async () => {
+      const options = getPermissionControllerOptions();
+      const { messenger } = options;
+      const id = 'foobar';
+
+      const callActionSpy = jest
+        .spyOn(messenger, 'call')
+        .mockImplementationOnce((async (..._args: any) => true) as any)
+        .mockImplementationOnce((async (..._args: any) => undefined) as any);
+
+      const controller = getDefaultPermissionController(options);
+
+      await controller.rejectPermissionsRequest(id);
+
+      expect(callActionSpy).toHaveBeenCalledTimes(2);
+      expect(callActionSpy).toHaveBeenNthCalledWith(
+        1,
+        'ApprovalController:hasRequest',
+        {
+          id,
+        },
+      );
+
+      expect(callActionSpy).toHaveBeenNthCalledWith(
+        2,
+        'ApprovalController:rejectRequest',
+        id,
+        errors.userRejectedRequest(),
+      );
+    });
+
+    it('throws if the request does not exist', async () => {
+      const options = getPermissionControllerOptions();
+      const { messenger } = options;
+      const id = 'foobar';
+
+      const callActionSpy = jest
+        .spyOn(messenger, 'call')
+        .mockImplementationOnce(((..._args: any) => false) as any);
+
+      const controller = getDefaultPermissionController(options);
+
+      await expect(
+        async () => await controller.rejectPermissionsRequest(id),
+      ).rejects.toThrow(new errors.PermissionsRequestNotFoundError(id));
+
+      expect(callActionSpy).toHaveBeenCalledTimes(1);
+      expect(callActionSpy).toHaveBeenNthCalledWith(
+        1,
+        'ApprovalController:hasRequest',
+        {
+          id,
+        },
+      );
+    });
   });
 
   describe('executeRestrictedMethod', () => {

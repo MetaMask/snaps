@@ -7,9 +7,13 @@ import {
   RejectRequest as RejectApprovalRequest,
   HasApprovalRequest,
 } from '@metamask/controllers';
-// This is used in a docstring, but ESLint doesn't notice it.
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { ApprovalController } from '@metamask/controllers';
+// These are used in docstrings, but ESLint is ignorant of docstrings.
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import type {
+  ApprovalController,
+  ControllerMessenger,
+} from '@metamask/controllers';
+/* eslint-enable @typescript-eslint/no-unused-vars */
 import type { Patch } from 'immer';
 import deepFreeze from 'deep-freeze-strict';
 import { nanoid } from 'nanoid';
@@ -54,6 +58,7 @@ import {
   invalidParams,
   internalError,
   userRejectedRequest,
+  PermissionsRequestNotFoundError,
 } from './errors';
 import { MethodNames } from './enums';
 import { getPermissionMiddlewareFactory } from './permission-middleware';
@@ -271,6 +276,11 @@ export type GenericPermissionController = PermissionController<
 >;
 
 /**
+ * The permission controller. See the documentation for details.
+ *
+ * Assumes the existence of an {@link ApprovalController} reachable via the
+ * {@link ControllerMessenger}.
+ *
  * @template TargetKey - A union of string literal types corresponding to the
  * keys of all permission target. Must match the permission specifications of
  * the controller.
@@ -1169,6 +1179,10 @@ export class PermissionController<
    * approval has been obtained through some other means.
    *
    * @see {@link ApprovalController} For the user approval logic.
+   * @see {@link PermissionController.acceptPermissionsRequest} For the method
+   * that _accepts_ the request and resolves the user approval promise.
+   * @see {@link PermissionController.rejectPermissionsRequest} For the method
+   * that _rejects_ the request and the user approval promise.
    * @param origin - The origin of the grantee subject.
    * @param requestedPermissions - The requested permissions.
    * @param id - The id of the permissions request.
@@ -1284,7 +1298,8 @@ export class PermissionController<
   }
 
   /**
-   * TODO
+   * Accepts a permissions request created by
+   * {@link PermissionController.requestPermissions}.
    *
    * @param request - The permissions request.
    */
@@ -1292,52 +1307,57 @@ export class PermissionController<
     const { id } = request.metadata;
 
     if (!this.hasApprovalRequest({ id })) {
-      console.debug(`Permissions request with id "${id}" not found.`);
+      throw new PermissionsRequestNotFoundError(id);
+    }
+
+    if (Object.keys(request.permissions).length === 0) {
+      this._rejectPermissionsRequest(
+        id,
+        invalidParams({
+          message: 'Must request at least one permission.',
+        }),
+      );
       return;
     }
 
     try {
-      if (Object.keys(request.permissions).length === 0) {
-        this._rejectPermissionsRequest(
-          id,
-          invalidParams({
-            message: 'Must request at least one permission.',
-          }),
-        );
-      } else {
-        this.messagingSystem.call(
-          'ApprovalController:acceptRequest',
-          id,
-          request,
-        );
-      }
-    } catch (err) {
-      // if finalization fails, reject the request
-      this._rejectPermissionsRequest(id, err as Error);
+      this.messagingSystem.call(
+        'ApprovalController:acceptRequest',
+        id,
+        request,
+      );
+    } catch (error) {
+      // If accepting unexpectedly fails, reject the request and re-throw the
+      // error
+      this._rejectPermissionsRequest(id, error);
+      throw error;
     }
   }
 
   /**
-   * TODO
+   * Rejects a permissions request created by
+   * {@link PermissionController.requestPermissions}.
    *
    * @param id - The id of the request to be rejected.
    */
   async rejectPermissionsRequest(id: string): Promise<void> {
     if (!this.hasApprovalRequest({ id })) {
-      console.debug(`Permissions request with id '${id}' not found.`);
-      return;
+      throw new PermissionsRequestNotFoundError(id);
     }
 
     this._rejectPermissionsRequest(id, userRejectedRequest());
   }
 
   /**
-   * TODO
+   * Checks whether the {@link ApprovalController} has a particular permissions
+   * request.
    *
+   * @see {@link PermissionController.acceptPermissionsRequest} and
+   * {@link PermissionController.rejectPermissionsRequest} for usage.
    * @param options - The {@link HasApprovalRequest} options.
    * @returns Whether the specified request exists.
    */
-  private hasApprovalRequest(options: { id: string }) {
+  private hasApprovalRequest(options: { id: string }): boolean {
     // Typecast: There are only some valid parameter combinations, but we
     // just won't worry about that here.
     return this.messagingSystem.call(
@@ -1349,8 +1369,10 @@ export class PermissionController<
   }
 
   /**
-   * TODO
+   * Internal function for rejecting a permission request.
    *
+   * @see {@link PermissionController.acceptPermissionsRequest} and
+   * {@link PermissionController.rejectPermissionsRequest} for usage.
    * @param id - The id of the request to reject.
    * @param error - The error associated with the rejection.
    */
@@ -1402,27 +1424,6 @@ export class PermissionController<
   /**
    * TODO
    *
-   * @param method - The name of the method to get.
-   * @param request - The request associated with the request for the method.
-   * @returns - The restricted method implementation, if it exists.
-   */
-  private _getRestrictedMethod(
-    method: string,
-    origin: string,
-  ): RestrictedMethod<RestrictedMethodParams, Json> {
-    const methodImplementation = this.getRestrictedMethod(
-      method as Permission['parentCapability'],
-    );
-    if (!methodImplementation) {
-      throw methodNotFound({ method, data: { origin } });
-    }
-
-    return methodImplementation;
-  }
-
-  /**
-   * TODO
-   *
    * @param methodImplementation - The implementation of the method to call.
    * @param subject - Metadata about the subject that made the request.
    * @param req - The request object associated with the request.
@@ -1446,6 +1447,31 @@ export class PermissionController<
       permission,
       this.caveatSpecifications,
     )({ method, params, context: { origin } });
+  }
+
+  /**
+   * Like {@link PermissionController.getRestrictedMethod}, except the request
+   * for the restricted method is associated with a specific subject, and a
+   * JSON-RPC error is thrown if the method does not exist.
+   *
+   * @see {@link PermissionController.executeRestrictedMethod} and
+   * {@link PermissionController.createPermissionMiddleware} for usage.
+   * @param method - The name of the method to get.
+   * @param request - The request associated with the request for the method.
+   * @returns - The restricted method implementation, if it exists.
+   */
+  private _getRestrictedMethod(
+    method: string,
+    origin: string,
+  ): RestrictedMethod<RestrictedMethodParams, Json> {
+    const methodImplementation = this.getRestrictedMethod(
+      method as Permission['parentCapability'],
+    );
+    if (!methodImplementation) {
+      throw methodNotFound({ method, data: { origin } });
+    }
+
+    return methodImplementation;
   }
 }
 

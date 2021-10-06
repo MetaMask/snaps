@@ -176,3 +176,9 @@ export class InvalidCaveatFieldsError extends Error {
     this.data = { caveat, origin, target };
   }
 }
+
+export class PermissionsRequestNotFoundError extends Error {
+  constructor(id: string) {
+    super(`Permissions request with id "${id}" not found.`);
+  }
+}
