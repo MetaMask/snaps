@@ -28,6 +28,8 @@ import {
   RestrictedMethodBase,
   RestrictedMethodOptions,
   GenericRestrictedMethodParams,
+  PermissionSpecificationBase,
+  PermissionFactory,
 } from '.';
 
 // CaveatConstraint types and specifications
@@ -267,6 +269,15 @@ const PermissionNames = {
   // wallet_getUndefined: 'wallet_getUndefined' as const,
 };
 
+// let a: SecretArrayPermissionSpecification;
+// a.target
+
+type foobar = PermissionSpecificationsMap<DefaultPermissionSpecifications>;
+// SecretArrayPermissionSpecification
+
+// let baz: foobar
+// baz['wallet_getSecret_*'].factory
+
 /**
  * Gets permission specifications for:
  * - {@link SecretArrayPermission}
@@ -281,17 +292,12 @@ const PermissionNames = {
  *
  * @returns The permission specifications.
  */
-function getDefaultPermissionSpecifications(): PermissionSpecificationsMap<
-  DefaultTargetKeys,
-  DefaultPermissions,
-  DefaultRestrictedMethods,
-  DefaultPermissionSpecifications
-> {
+function getDefaultPermissionSpecifications(): PermissionSpecificationsMap<DefaultPermissionSpecifications> {
   return {
     wallet_getSecretArray: {
-      target: PermissionKeys.wallet_getSecretArray,
+      target: 'wallet_getSecretArray',
       methodImplementation: (
-        _args: RestrictedMethodOptions<GenericRestrictedMethodParams>,
+        _args: RestrictedMethodOptions<[]>,
       ) => {
         return ['a', 'b', 'c'];
       },
@@ -323,12 +329,8 @@ function getDefaultPermissionSpecifications(): PermissionSpecificationsMap<
           '',
         )}"!`;
       },
-      factory: (
-        options: PermissionOptions<
-          SecretNamespacedPermission['parentCapability']
-        >,
-      ) =>
-        constructPermission({
+      factory: (options: PermissionOptions<SecretNamespacedPermission>) =>
+        constructPermission<SecretNamespacedPermission>({
           ...options,
           caveats: [constructCaveat(CaveatTypes.noopCaveat, null)],
         }) as SecretNamespacedPermission,
@@ -450,6 +452,58 @@ function getPermissionControllerOptions(opts?: Record<string, unknown>) {
   };
 }
 
+type DoesExtend<T, U> = T extends U ? true : false;
+
+// True
+type Targets = DoesExtend<DefaultTargetKeys, string>;
+type Perms = DoesExtend<DefaultPermissions, GenericPermission>;
+type Methods = DoesExtend<
+  DefaultRestrictedMethods,
+  RestrictedMethodBase<any, any>
+>;
+
+// False
+type Specs = DoesExtend<
+  DefaultPermissionSpecifications,
+  PermissionSpecificationBase<
+    string,
+    GenericPermission,
+    Record<string, any>,
+    RestrictedMethodBase<any, any>
+  >
+>;
+type SpecsReverse = DoesExtend<
+  PermissionSpecificationBase<
+    string,
+    GenericPermission,
+    Record<string, any>,
+    RestrictedMethodBase<any, any>
+  >,
+  DefaultPermissionSpecifications
+>;
+
+type base = PermissionSpecificationBase<
+  string,
+  GenericPermission,
+  Record<string, any>,
+  RestrictedMethodBase<any, any>
+>;
+let fizz: DefaultPermissionSpecifications = {} as any;
+const foo: base = fizz;
+
+type SpecificFactory = PermissionFactory<SecretArrayPermission, Record<string, unknown>>
+type GenericFactory = PermissionFactory<GenericPermission, Record<string, unknown>>
+
+let specificFactory: SpecificFactory = (() => undefined) as any
+let genericFactory: GenericFactory = specificFactory
+specificFactory = genericFactory
+
+let specificPermission: SecretArrayPermission = {} as any
+let genericPermission: GenericPermission = specificPermission
+
+let specificOptions: PermissionOptions<SecretArrayPermission> = {} as any
+let genericOptions: PermissionOptions<GenericPermission> = specificOptions
+
 /**
  * Gets a "default" permission controller. This simply means a controller using
  * the default caveat and permissions created in this test file.
@@ -462,9 +516,10 @@ function getDefaultPermissionController(
   opts = getPermissionControllerOptions(),
 ) {
   return new PermissionController<
+    DefaultPermissionSpecifications,
     DefaultTargetKeys,
-    DefaultCaveats,
-    DefaultPermissions
+    DefaultPermissions,
+    DefaultCaveats
   >(opts);
 }
 
