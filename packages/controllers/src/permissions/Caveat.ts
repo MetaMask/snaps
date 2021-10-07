@@ -110,17 +110,17 @@ export type GenericCaveat = CaveatConstraint<string, Json>;
  * An object mapping the type of each caveat to its corresponding specification.
  */
 export type CaveatSpecifications<Caveat extends GenericCaveat> = {
-  [Type in Caveat['type']]: GetCaveatSpecification<Caveat, Type>;
+  [Type in Caveat['type']]: ExtractCaveatSpecification<Caveat, Type>;
 };
 
-type GetCaveatSpecification<
+type ExtractCaveatSpecification<
   Caveat extends GenericCaveat,
   CaveatType extends string,
 > = Caveat extends CaveatConstraint<CaveatType, Json>
   ? CaveatSpecification<Caveat>
   : never;
 
-export type GetCaveatFromType<
+export type ExtractCaveatFromType<
   Caveat extends GenericCaveat,
   CaveatType extends string,
 > = Caveat extends CaveatConstraint<CaveatType, Json> ? Caveat : never;

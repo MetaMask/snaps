@@ -66,11 +66,6 @@ export function getPermissionMiddlewareFactory<
         params,
       );
 
-      if (resultIsError(result)) {
-        res.error = result;
-        return undefined;
-      }
-
       if (result === undefined) {
         res.error = internalError(
           `Request for method "${req.method}" returned undefined result.`,

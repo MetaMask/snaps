@@ -23,8 +23,10 @@ import {
   PermissionControllerActions,
   PermissionControllerEvents,
   PermissionOptions,
-  PermissionSpecifications,
-  RestrictedMethodArgs,
+  PermissionSpecificationConstraint,
+  PermissionSpecificationsMap,
+  RestrictedMethod,
+  RestrictedMethodOptions,
   RestrictedMethodParams,
 } from '.';
 
@@ -79,7 +81,7 @@ function getDefaultCaveatSpecifications(): CaveatSpecifications<DefaultCaveats> 
           method: AsyncRestrictedMethod<RestrictedMethodParams, Json>,
           caveat: FilterArrayCaveat,
         ) =>
-        async (args: RestrictedMethodArgs<RestrictedMethodParams>) => {
+        async (args: RestrictedMethodOptions<RestrictedMethodParams>) => {
           const result: string[] | unknown = await method(args);
           if (!Array.isArray(result)) {
             throw Error('not an array');
@@ -97,7 +99,7 @@ function getDefaultCaveatSpecifications(): CaveatSpecifications<DefaultCaveats> 
           method: AsyncRestrictedMethod<RestrictedMethodParams, Json>,
           _caveat: ReverseArrayCaveat,
         ) =>
-        async (args: RestrictedMethodArgs<RestrictedMethodParams>) => {
+        async (args: RestrictedMethodOptions<RestrictedMethodParams>) => {
           const result: unknown[] | unknown = await method(args);
           if (!Array.isArray(result)) {
             throw Error('not an array');
@@ -113,7 +115,7 @@ function getDefaultCaveatSpecifications(): CaveatSpecifications<DefaultCaveats> 
           method: AsyncRestrictedMethod<RestrictedMethodParams, Json>,
           caveat: FilterObjectCaveat,
         ) =>
-        async (args: RestrictedMethodArgs<RestrictedMethodParams>) => {
+        async (args: RestrictedMethodOptions<RestrictedMethodParams>) => {
           const result = await method(args);
           if (!isPlainObject(result)) {
             throw Error('not a plain object');
@@ -134,7 +136,7 @@ function getDefaultCaveatSpecifications(): CaveatSpecifications<DefaultCaveats> 
           method: AsyncRestrictedMethod<RestrictedMethodParams, Json>,
           _caveat: NoopCaveat,
         ) =>
-        async (args: RestrictedMethodArgs<RestrictedMethodParams>) => {
+        async (args: RestrictedMethodOptions<RestrictedMethodParams>) => {
           return method(args);
         },
       validator: (caveat: { type: CaveatTypes.noopCaveat; value: unknown }) => {
@@ -148,24 +150,38 @@ function getDefaultCaveatSpecifications(): CaveatSpecifications<DefaultCaveats> 
 
 // Permission types and specifications
 
-type SecretArrayName = 'wallet_getSecretArray';
+// wallet_getSecretArray
+
+type SecretArrayPermissionName = 'wallet_getSecretArray';
 
 type SecretArrayPermission = PermissionConstraint<
-  SecretArrayName,
+  SecretArrayPermissionName,
   FilterArrayCaveat | ReverseArrayCaveat
 >;
 
-type SecretObjectName = 'wallet_getSecretObject';
+type SecretArrayPermissionSpecification = PermissionSpecificationConstraint<
+  SecretArrayPermissionName,
+  SecretArrayPermission,
+  PermissionOptions<SecretArrayPermission>,
+  Record<string, unknown>,
+  RestrictedMethod<[], Json>
+>;
+
+// wallet_getSecretObject
+
+type SecretObjectPermissionName = 'wallet_getSecretObject';
 
 type SecretObjectPermission = PermissionConstraint<
-  SecretObjectName,
+  SecretObjectPermissionName,
   FilterObjectCaveat | NoopCaveat
 >;
 
-type SecretNamespacedKey = 'wallet_getSecret_*';
+// wallet_getSecret_*
+
+type SecretNamespacedPermissionKey = 'wallet_getSecret_*';
 
 type SecretNamespacedPermission = PermissionConstraint<
-  SecretNamespacedKey,
+  SecretNamespacedPermissionKey,
   NoopCaveat
 >;
 
@@ -180,9 +196,9 @@ type SecretNamespacedPermission = PermissionConstraint<
 // type GetUndefinedPermission = PermissionConstraint<GetUndefinedName, never>;
 
 type DefaultTargetKeys =
-  | SecretArrayName
-  | SecretObjectName
-  | SecretNamespacedKey;
+  | SecretArrayPermissionName
+  | SecretObjectPermissionName
+  | SecretNamespacedPermissionKey;
 // | GetErrorName
 // | GetUndefinedName;
 
@@ -227,7 +243,7 @@ const PermissionNames = {
  *
  * @returns The permission specifications.
  */
-function getDefaultPermissionSpecifications(): PermissionSpecifications<
+function getDefaultPermissionSpecifications(): PermissionSpecificationsMap<
   DefaultTargetKeys,
   DefaultPermissions
 > {
@@ -235,7 +251,7 @@ function getDefaultPermissionSpecifications(): PermissionSpecifications<
     wallet_getSecretArray: {
       target: PermissionKeys.wallet_getSecretArray,
       methodImplementation: (
-        _args: RestrictedMethodArgs<RestrictedMethodParams>,
+        _args: RestrictedMethodOptions<RestrictedMethodParams>,
       ) => {
         return ['a', 'b', 'c'];
       },
@@ -243,7 +259,7 @@ function getDefaultPermissionSpecifications(): PermissionSpecifications<
     wallet_getSecretObject: {
       target: PermissionKeys.wallet_getSecretObject,
       methodImplementation: (
-        _args: RestrictedMethodArgs<RestrictedMethodParams>,
+        _args: RestrictedMethodOptions<RestrictedMethodParams>,
       ) => {
         return { a: 'x', b: 'y', c: 'z' };
       },
@@ -260,7 +276,7 @@ function getDefaultPermissionSpecifications(): PermissionSpecifications<
     'wallet_getSecret_*': {
       target: PermissionKeys['wallet_getSecret_*'],
       methodImplementation: (
-        args: RestrictedMethodArgs<RestrictedMethodParams>,
+        args: RestrictedMethodOptions<RestrictedMethodParams>,
       ) => {
         return `Hello, secret friend "${args.method.replace(
           'wallet_getSecret_',
@@ -282,7 +298,7 @@ function getDefaultPermissionSpecifications(): PermissionSpecifications<
     },
     // wallet_getError: {
     //   target: PermissionKeys.wallet_getError,
-    //   methodImplementation: ((args: RestrictedMethodArgs<string[]>) => {
+    //   methodImplementation: ((args: RestrictedMethodOptions<string[]>) => {
     //     return { message: `The error says: ${args.params?.[0] || 'default'}` }
     //   })
     // },
