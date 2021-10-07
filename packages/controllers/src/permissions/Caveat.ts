@@ -3,9 +3,9 @@ import { Json } from 'json-rpc-engine';
 import { UnrecognizedCaveatTypeError } from './errors';
 import {
   AsyncRestrictedMethod,
-  RestrictedMethod,
+  RestrictedMethodBase,
   GenericPermission,
-  RestrictedMethodParams,
+  GenericRestrictedMethodParams,
 } from './Permission';
 
 /**
@@ -62,9 +62,9 @@ export function constructCaveat<Type extends string, Value extends Json>(
  * @returns The decorate restricted method implementation.
  */
 export type CaveatDecorator<Caveat extends GenericCaveat> = (
-  decorated: AsyncRestrictedMethod<RestrictedMethodParams, Json>,
+  decorated: AsyncRestrictedMethod<GenericRestrictedMethodParams, Json>,
   caveat: Caveat,
-) => AsyncRestrictedMethod<RestrictedMethodParams, Json>;
+) => AsyncRestrictedMethod<GenericRestrictedMethodParams, Json>;
 
 /**
  *
@@ -132,17 +132,20 @@ export type ExtractCaveatFromType<
  * decorator) must be awaited.
  */
 export function decorateWithCaveats<Caveat extends GenericCaveat>(
-  methodImplementation: RestrictedMethod<RestrictedMethodParams, Json>,
+  methodImplementation: RestrictedMethodBase<
+    GenericRestrictedMethodParams,
+    Json
+  >,
   permission: Readonly<GenericPermission>, // bound to the requesting origin
   caveatSpecifications: CaveatSpecifications<Caveat>, // all caveat implementations
-): RestrictedMethod<RestrictedMethodParams, Json> {
+): RestrictedMethodBase<GenericRestrictedMethodParams, Json> {
   const { caveats } = permission;
   if (!caveats) {
     return methodImplementation;
   }
 
   let decorated = methodImplementation as AsyncRestrictedMethod<
-    RestrictedMethodParams,
+    GenericRestrictedMethodParams,
     Json
   >;
 

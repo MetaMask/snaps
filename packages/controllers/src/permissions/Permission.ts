@@ -183,12 +183,8 @@ export type ExtractValidCaveatTypes<
 /**
  * The options object of {@link constructPermission}.
  */
-export type PermissionOptions<Permission extends GenericPermission> = {
-  /**
-   * The method that the permission corresponds to.
-   */
-  target: Permission['parentCapability'];
-
+export type PermissionOptions<TargetName extends string> = {
+  target: TargetName;
   /**
    * The origin string of the subject that has the permission.
    */
@@ -217,7 +213,7 @@ export type PermissionOptions<Permission extends GenericPermission> = {
  * @returns The new permission object.
  */
 export function constructPermission(
-  options: PermissionOptions<GenericPermission>,
+  options: PermissionOptions<string>,
 ): GenericPermission {
   const { caveats = null, id, invoker, target } = options;
 
@@ -269,14 +265,16 @@ type RestrictedMethodContext = Readonly<{
   [key: string]: any;
 }>;
 
-export type RestrictedMethodParams = Json[] | Record<string, Json>;
+export type GenericRestrictedMethodParams = Json[] | Record<string, Json>;
 
 /**
  * The arguments passed to a restricted method implementation.
  *
  * @template Params - The JSON-RPC parameters of the restricted method.
  */
-export type RestrictedMethodOptions<Params extends RestrictedMethodParams> = {
+export type RestrictedMethodOptions<
+  Params extends GenericRestrictedMethodParams,
+> = {
   method: GenericTargetName;
   params?: Params;
   context: RestrictedMethodContext;
@@ -289,7 +287,7 @@ export type RestrictedMethodOptions<Params extends RestrictedMethodParams> = {
  * @template Result - The JSON-RPC result of the restricted method.
  */
 export type SyncRestrictedMethod<
-  Params extends RestrictedMethodParams,
+  Params extends GenericRestrictedMethodParams,
   Result extends Json,
 > = (args: RestrictedMethodOptions<Params>) => Result;
 
@@ -300,7 +298,7 @@ export type SyncRestrictedMethod<
  * @template Result - The JSON-RPC result of the restricted method.
  */
 export type AsyncRestrictedMethod<
-  Params extends RestrictedMethodParams,
+  Params extends GenericRestrictedMethodParams,
   Result extends Json,
 > = (args: RestrictedMethodOptions<Params>) => Promise<Result>;
 
@@ -310,27 +308,27 @@ export type AsyncRestrictedMethod<
  * @template Params - The JSON-RPC parameters of the restricted method.
  * @template Result - The JSON-RPC result of the restricted method.
  */
-export type RestrictedMethod<
-  Params extends RestrictedMethodParams,
+export type RestrictedMethodBase<
+  Params extends GenericRestrictedMethodParams,
   Result extends Json,
 > =
   | SyncRestrictedMethod<Params, Result>
   | AsyncRestrictedMethod<Params, Result>;
 
-let foo: RestrictedMethod<[], 'kaplar'>;
-type Restriction<T> = T extends Json[] | Record<string, Json> ? T : never;
-type a = Restriction<[]>;
-
-type Restriction2<T> = T extends RestrictedMethod<RestrictedMethodParams, Json>
-  ? T
+export type RestrictedMethodConstraint<
+  MethodImplementation extends RestrictedMethodBase<any, any>,
+> = MethodImplementation extends (...args: infer Args) => Json
+  ? Args extends GenericRestrictedMethodParams
+    ? MethodImplementation
+    : never
   : never;
-type b = Restriction2<typeof foo>;
 
-type Restriction3<
-  Params extends RestrictedMethodParams,
-  T,
-> = T extends RestrictedMethod<Params, Json> ? T : never;
-type c = Restriction3<[], typeof foo>;
+// type ExtractPermission<
+//   TargetKey extends string,
+//   Permission extends PermissionConstraint<string, GenericCaveat | never>,
+// > = Permission extends PermissionConstraint<TargetKey, GenericCaveat | never>
+//   ? Permission
+//   : never;
 
 /**
  * The base permission specification interface. Lacks important constraints on
@@ -340,9 +338,11 @@ type c = Restriction3<[], typeof foo>;
 type PermissionSpecificationBase<
   TargetKey extends string,
   Permission extends PermissionConstraint<TargetKey, GenericCaveat | never>,
-  FactoryOptions extends PermissionOptions<Permission>,
   RequestData extends Record<string, unknown>,
-  MethodImplementation extends RestrictedMethod<RestrictedMethodParams, Json>,
+  MethodImplementation extends RestrictedMethodBase<
+    GenericRestrictedMethodParams,
+    Json
+  >,
 > = {
   /**
    * The target resource of the permission. In other words, at the time of
@@ -360,7 +360,11 @@ type PermissionSpecificationBase<
    * used, and the validator function (if specified) will be called on newly
    * constructed permissions.
    */
-  factory?: (options: FactoryOptions, requestData?: RequestData) => Permission;
+  // factory?: (options: PermissionOptions<Permission>, requestData?: RequestData) => Permission;
+  factory?: (
+    options: PermissionOptions<string>,
+    requestData?: RequestData,
+  ) => Permission;
 
   /**
    * The implementation of the restricted method that the permission
@@ -378,7 +382,7 @@ type PermissionSpecificationBase<
   validator?: (
     permission: GenericPermission,
     origin?: string,
-    target?: Permission['parentCapability'],
+    target?: string,
   ) => void;
 };
 
@@ -408,15 +412,15 @@ type TargetKeyConstraint<Key extends string> = Key extends `${string}_*`
 export type PermissionSpecificationConstraint<
   TargetKey extends string,
   Permission extends PermissionConstraint<TargetKey, GenericCaveat | never>,
-  FactoryOptions extends PermissionOptions<Permission>,
   RequestData extends Record<string, unknown>,
-  MethodImplementation extends RestrictedMethod<RestrictedMethodParams, Json>,
+  MethodImplementation extends RestrictedMethodBase<any, any>,
 > = TargetKeyConstraint<TargetKey> extends never
+  ? never
+  : RestrictedMethodConstraint<MethodImplementation> extends never
   ? never
   : PermissionSpecificationBase<
       TargetKey,
       Permission,
-      FactoryOptions,
       RequestData,
       MethodImplementation
     >;
@@ -424,10 +428,36 @@ export type PermissionSpecificationConstraint<
 export type GenericPermissionSpecification = PermissionSpecificationConstraint<
   string,
   GenericPermission,
-  PermissionOptions<GenericPermission>,
   Record<string, unknown>,
-  RestrictedMethod<RestrictedMethodParams, Json>
+  RestrictedMethodBase<GenericRestrictedMethodParams, Json>
 >;
+
+/**
+ * Utility type used in {@link PermissionSpecifications} to map permission
+ * target keys to their individual {@link PermissionSpecificationConstraint}
+ * objects.
+ */
+type ExtractPermissionSpecification<
+  TargetKey extends string,
+  Permissions extends PermissionConstraint<TargetKey, GenericCaveat | never>,
+  RestrictedMethods extends RestrictedMethodBase<any, any>,
+  Specifications extends PermissionSpecificationConstraint<
+    string,
+    Permissions,
+    Record<string, unknown>,
+    RestrictedMethods
+  >,
+> = Specifications extends PermissionSpecificationConstraint<
+  TargetKey,
+  Permissions,
+  Record<string, unknown>,
+  RestrictedMethods
+>
+  ? Specifications
+  : never;
+// > = Permissions extends PermissionConstraint<TargetKey, GenericCaveat | never>
+//   ? PermissionSpecificationConstraint<TargetKey, Permissions>
+//   : never;
 
 /**
  * The specifications for all permissions and restricted methods supported by
@@ -436,29 +466,42 @@ export type GenericPermissionSpecification = PermissionSpecificationConstraint<
 export type PermissionSpecificationsMap<
   TargetKeys extends string,
   Permissions extends PermissionConstraint<TargetKeys, GenericCaveat | never>,
+  RestrictedMethods extends RestrictedMethodBase<any, any>,
   Specifications extends PermissionSpecificationConstraint<
     TargetKeys,
     Permissions,
-    PermissionOptions<Permissions>,
     Record<string, unknown>,
-    RestrictedMethod<RestrictedMethodParams, Json>
+    RestrictedMethods
   >,
 > = TargetKeyConstraint<TargetKeys> extends never
+  ? never
+  : RestrictedMethodConstraint<RestrictedMethods> extends never
   ? never
   : {
       [Key in TargetKeys]: Permissions extends PermissionConstraint<
         Key,
         GenericCaveat | never
       >
-        ? // ? ExtractPermissionSpecification<Key, Permissions, Specifications>
-          Specifications extends PermissionSpecificationConstraint<
-            TargetKeys,
+        ? ExtractPermissionSpecification<
+            Key,
             Permissions,
-            PermissionOptions<Permissions>,
-            Record<string, unknown>,
-            RestrictedMethod<RestrictedMethodParams, Json>
+            RestrictedMethods,
+            Specifications
           >
-          ? Specifications
-          : never
         : never;
     };
+//   [Key in TargetKeys]: Permissions extends PermissionConstraint<
+//     Key,
+//     GenericCaveat | never
+//   >
+//     ? Specifications extends PermissionSpecificationConstraint<
+//         Key,
+//         // Permissions,
+//         ExtractPermission<Key, Permissions>,
+//         Record<string, unknown>,
+//         RestrictedMethods
+//       >
+//       ? Specifications
+//       : never
+//     : never;
+// };

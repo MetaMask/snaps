@@ -39,8 +39,8 @@ import {
   PermissionSpecificationConstraint,
   PermissionSpecificationsMap,
   RequestedPermissions,
-  RestrictedMethod,
-  RestrictedMethodParams,
+  RestrictedMethodBase,
+  GenericRestrictedMethodParams,
 } from './Permission';
 import {
   PermissionDoesNotExistError,
@@ -252,12 +252,12 @@ type PermissionControllerOptions<
   TargetKey extends string,
   Caveat extends GenericCaveat | never,
   Permission extends PermissionConstraint<TargetKey, Caveat>,
+  InstanceRestrictedMethod extends RestrictedMethodBase<any, any>,
   Specification extends PermissionSpecificationConstraint<
     TargetKey,
     Permission,
-    PermissionOptions<Permission>,
     Record<string, unknown>,
-    RestrictedMethod<RestrictedMethodParams, Json>
+    InstanceRestrictedMethod
   >,
 > = {
   messenger: PermissionControllerMessenger;
@@ -265,6 +265,7 @@ type PermissionControllerOptions<
   permissionSpecifications: PermissionSpecificationsMap<
     TargetKey,
     Permission,
+    InstanceRestrictedMethod,
     Specification
   >;
   unrestrictedMethods: string[];
@@ -285,6 +286,7 @@ export type GenericPermissionController = PermissionController<
   string,
   GenericCaveat,
   GenericPermission,
+  RestrictedMethodBase<any, any>,
   GenericPermissionSpecification
 >;
 
@@ -307,12 +309,12 @@ export class PermissionController<
   TargetKey extends string,
   Caveat extends GenericCaveat | never,
   Permission extends PermissionConstraint<TargetKey, Caveat>,
+  InstanceRestrictedMethod extends RestrictedMethodBase<any, any>,
   Specification extends PermissionSpecificationConstraint<
     TargetKey,
     Permission,
-    PermissionOptions<Permission>,
     Record<string, unknown>,
-    RestrictedMethod<RestrictedMethodParams, Json>
+    InstanceRestrictedMethod
   >,
 > extends BaseController<
   typeof controllerName,
@@ -331,14 +333,24 @@ export class PermissionController<
   }
 
   private readonly _permissionSpecifications: Readonly<
-    PermissionSpecificationsMap<TargetKey, Permission, Specification>
+    PermissionSpecificationsMap<
+      TargetKey,
+      Permission,
+      InstanceRestrictedMethod,
+      Specification
+    >
   >;
 
   /**
    * The {@link PermissionSpecificationsMap} of the controller.
    */
   public get permissionSpecifications(): Readonly<
-    PermissionSpecificationsMap<TargetKey, Permission, Specification>
+    PermissionSpecificationsMap<
+      TargetKey,
+      Permission,
+      InstanceRestrictedMethod,
+      Specification
+    >
   > {
     return this._permissionSpecifications;
   }
@@ -384,6 +396,7 @@ export class PermissionController<
       TargetKey,
       Caveat,
       Permission,
+      InstanceRestrictedMethod,
       Specification
     >,
   ) {
@@ -435,6 +448,7 @@ export class PermissionController<
     specifications: PermissionSpecificationsMap<
       TargetKey,
       Permission,
+      InstanceRestrictedMethod,
       Specification
     >,
   ) {
@@ -493,7 +507,7 @@ export class PermissionController<
    */
   getRestrictedMethod(
     method: string,
-  ): RestrictedMethod<RestrictedMethodParams, Json> | undefined {
+  ): RestrictedMethodBase<GenericRestrictedMethodParams, Json> | undefined {
     const targetKey = this.getTargetKey(
       method as Permission['parentCapability'],
     );
@@ -1080,7 +1094,7 @@ export class PermissionController<
         approvedPermission.caveats,
       );
 
-      const permissionOptions: PermissionOptions<Permission> = {
+      const permissionOptions: PermissionOptions<typeof targetName> = {
         caveats,
         invoker: origin,
         target: targetName,
@@ -1425,7 +1439,7 @@ export class PermissionController<
   async executeRestrictedMethod(
     origin: string,
     methodName: Permission['parentCapability'],
-    params?: RestrictedMethodParams,
+    params?: GenericRestrictedMethodParams,
   ): Promise<Json> {
     // Throws if the method does not exist
     const methodImplementation = this._getRestrictedMethod(methodName, origin);
@@ -1459,11 +1473,14 @@ export class PermissionController<
    * @returns
    */
   private _executeRestrictedMethod(
-    methodImplementation: RestrictedMethod<RestrictedMethodParams, Json>,
+    methodImplementation: RestrictedMethodBase<
+      GenericRestrictedMethodParams,
+      Json
+    >,
     subject: PermissionSubjectMetadata,
     method: Permission['parentCapability'],
-    params: RestrictedMethodParams = [],
-  ): ReturnType<RestrictedMethod<RestrictedMethodParams, Json>> {
+    params: GenericRestrictedMethodParams = [],
+  ): ReturnType<RestrictedMethodBase<GenericRestrictedMethodParams, Json>> {
     const { origin } = subject;
 
     const permission = this.getPermission(origin, method);
@@ -1492,7 +1509,7 @@ export class PermissionController<
   private _getRestrictedMethod(
     method: string,
     origin: string,
-  ): RestrictedMethod<RestrictedMethodParams, Json> {
+  ): RestrictedMethodBase<GenericRestrictedMethodParams, Json> {
     const methodImplementation = this.getRestrictedMethod(
       method as Permission['parentCapability'],
     );
