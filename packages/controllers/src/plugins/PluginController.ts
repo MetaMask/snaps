@@ -3,7 +3,6 @@ import type { Patch } from 'immer';
 import { IOcapLdCapability } from 'rpc-cap/dist/src/@types/ocap-ld';
 import {
   BaseControllerV2 as BaseController,
-  ControllerMessenger,
   RestrictedControllerMessenger,
 } from '@metamask/controllers';
 import { Json } from 'json-rpc-engine';
@@ -96,14 +95,13 @@ export type PluginControllerEvents = PluginStateChange;
 type PluginControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
   PluginControllerActions,
-  PluginControllerEvents,
+  PluginControllerEvents | ErrorMessageEvent,
   never,
-  never
+  ErrorMessageEvent['type']
 >;
 
 type PluginControllerArgs = {
   messenger: PluginControllerMessenger;
-  serviceMessenger: ControllerMessenger<never, ErrorMessageEvent>;
   state?: PluginControllerState;
   removeAllPermissionsFor: RemoveAllPermissionsFunction;
   closeAllConnections: CloseAllConnectionsFunction;
@@ -178,8 +176,6 @@ export class PluginController extends BaseController<
 
   private _pluginsBeingAdded: Map<string, Promise<Plugin>>;
 
-  private _serviceMessenger: ControllerMessenger<never, ErrorMessageEvent>;
-
   constructor({
     removeAllPermissionsFor,
     closeAllConnections,
@@ -191,7 +187,6 @@ export class PluginController extends BaseController<
     executePlugin,
     getRpcMessageHandler,
     messenger,
-    serviceMessenger,
     state,
   }: PluginControllerArgs) {
     super({
@@ -240,11 +235,13 @@ export class PluginController extends BaseController<
     this._terminateAllPlugins = terminateAllPlugins;
     this._executePlugin = executePlugin;
     this._getRpcMessageHandler = getRpcMessageHandler;
-    this._serviceMessenger = serviceMessenger;
-    this._serviceMessenger.subscribe('error', (pluginName, error) => {
-      this.stopPlugin(pluginName);
-      this.addPluginError(error);
-    });
+    this.messagingSystem.subscribe(
+      'ServiceMessenger:unhandledError',
+      (pluginName, error) => {
+        this.stopPlugin(pluginName);
+        this.addPluginError(error);
+      },
+    );
 
     this._pluginsBeingAdded = new Map();
   }
@@ -449,7 +446,7 @@ export class PluginController extends BaseController<
    *
    * @param pluginName - The name of the plugin whose state to get.
    */
-  async getPluginState(pluginName: string): Promise<unknown> {
+  async getPluginState(pluginName: string): Promise<Json> {
     return this.state.pluginStates[pluginName];
   }
 

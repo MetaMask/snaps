@@ -6,9 +6,19 @@ import { IframeExecutionEnvironmentService } from './IframeExecutionEnvironmentS
 
 describe('Iframe Controller', () => {
   it('can boot', async () => {
+    const controllerMessenger = new ControllerMessenger<
+      never,
+      ErrorMessageEvent
+    >();
     const iframeExecutionEnvironmentService =
       new IframeExecutionEnvironmentService({
-        messenger: new ControllerMessenger<never, ErrorMessageEvent>(),
+        messenger: controllerMessenger.getRestricted<
+          'ServiceMessenger',
+          never,
+          ErrorMessageEvent['type']
+        >({
+          name: 'ServiceMessenger',
+        }),
         setupPluginProvider: () => {
           // do nothing
         },
@@ -21,9 +31,19 @@ describe('Iframe Controller', () => {
   });
 
   it('can create a plugin worker and start the plugin', async () => {
+    const controllerMessenger = new ControllerMessenger<
+      never,
+      ErrorMessageEvent
+    >();
     const iframeExecutionEnvironmentService =
       new IframeExecutionEnvironmentService({
-        messenger: new ControllerMessenger<never, ErrorMessageEvent>(),
+        messenger: controllerMessenger.getRestricted<
+          'ServiceMessenger',
+          never,
+          ErrorMessageEvent['type']
+        >({
+          name: 'ServiceMessenger',
+        }),
         setupPluginProvider: () => {
           // do nothing
         },
@@ -47,9 +67,19 @@ describe('Iframe Controller', () => {
 
   it('can handle a crashed plugin', async () => {
     expect.assertions(1);
+    const controllerMessenger = new ControllerMessenger<
+      never,
+      ErrorMessageEvent
+    >();
     const iframeExecutionEnvironmentService =
       new IframeExecutionEnvironmentService({
-        messenger: new ControllerMessenger<never, ErrorMessageEvent>(),
+        messenger: controllerMessenger.getRestricted<
+          'ServiceMessenger',
+          never,
+          ErrorMessageEvent['type']
+        >({
+          name: 'ServiceMessenger',
+        }),
         setupPluginProvider: () => {
           // do nothing
         },

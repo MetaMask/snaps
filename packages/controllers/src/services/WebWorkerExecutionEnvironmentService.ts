@@ -6,13 +6,12 @@ import ObjectMultiplex from '@metamask/object-multiplex';
 import { WorkerParentPostMessageStream } from '@metamask/post-message-stream';
 import { PLUGIN_STREAM_NAMES } from '@metamask/snap-workers';
 import { createStreamMiddleware } from 'json-rpc-middleware-stream';
-import { ErrorMessageEvent, PluginData } from '@metamask/snap-types';
+import { PluginData, ServiceMessenger } from '@metamask/snap-types';
 import {
   JsonRpcEngine,
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from 'json-rpc-engine';
-import { ControllerMessenger } from '@metamask/controllers';
 import { ExecutionEnvironmentService } from './ExecutionEnvironmentService';
 
 export type SetupPluginProvider = (pluginName: string, stream: Duplex) => void;
@@ -20,7 +19,7 @@ export type SetupPluginProvider = (pluginName: string, stream: Duplex) => void;
 interface WorkerControllerArgs {
   setupPluginProvider: SetupPluginProvider;
   workerUrl: URL;
-  messenger: ControllerMessenger<never, ErrorMessageEvent>;
+  messenger: ServiceMessenger;
 }
 
 interface WorkerStreams {
@@ -59,7 +58,7 @@ export class WebWorkerExecutionEnvironmentService
 
   private workerToPluginMap: Map<string, string>;
 
-  private _messenger: ControllerMessenger<never, ErrorMessageEvent>;
+  private _messenger: ServiceMessenger;
 
   constructor({
     setupPluginProvider,
@@ -247,11 +246,15 @@ export class WebWorkerExecutionEnvironmentService
       if (this._messenger) {
         const pluginName = this.workerToPluginMap.get(workerId);
         if (pluginName) {
-          this._messenger.publish('error', pluginName, {
-            code: ev.error.code,
-            message: ev.error.message,
-            data: ev.error.data,
-          });
+          this._messenger.publish(
+            'ServiceMessenger:unhandledError',
+            pluginName,
+            {
+              code: ev.error.code,
+              message: ev.error.message,
+              data: ev.error.data,
+            },
+          );
         }
       }
     };

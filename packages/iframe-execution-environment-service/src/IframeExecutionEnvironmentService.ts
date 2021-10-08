@@ -5,14 +5,13 @@ import ObjectMultiplex from '@metamask/object-multiplex';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { PLUGIN_STREAM_NAMES } from '@metamask/snap-workers';
 import { createStreamMiddleware } from 'json-rpc-middleware-stream';
-import { ErrorMessageEvent, PluginData } from '@metamask/snap-types';
+import { PluginData, ServiceMessenger } from '@metamask/snap-types';
 import {
   JsonRpcEngine,
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from 'json-rpc-engine';
 import { ExecutionEnvironmentService } from '@metamask/snap-controllers';
-import { ControllerMessenger } from '@metamask/controllers';
 
 export type SetupPluginProvider = (pluginName: string, stream: Duplex) => void;
 
@@ -20,7 +19,7 @@ interface IframeExecutionEnvironmentServiceArgs {
   createWindowTimeout?: number;
   setupPluginProvider: SetupPluginProvider;
   iframeUrl: URL;
-  messenger: ControllerMessenger<never, ErrorMessageEvent>;
+  messenger: ServiceMessenger;
 }
 
 interface JobStreams {
@@ -60,7 +59,7 @@ export class IframeExecutionEnvironmentService
 
   private _createWindowTimeout: number;
 
-  private _messenger?: ControllerMessenger<never, ErrorMessageEvent>;
+  private _messenger: ServiceMessenger;
 
   constructor({
     setupPluginProvider,
@@ -272,12 +271,15 @@ export class IframeExecutionEnvironmentService
     const errorHandler = (data: any) => {
       if (
         data.error &&
-        (data.id === null || data.id === undefined) && // only out of band errors (i.e. no id)
-        this._messenger
+        (data.id === null || data.id === undefined) // only out of band errors (i.e. no id)
       ) {
         const pluginName = this.jobToPluginMap.get(jobId);
         if (pluginName) {
-          this._messenger.publish('error', pluginName, data.error);
+          this._messenger.publish(
+            'ServiceMessenger:unhandledError',
+            pluginName,
+            data.error,
+          );
         }
         commandStream.removeListener('data', errorHandler);
       }

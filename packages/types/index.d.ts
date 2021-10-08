@@ -1,4 +1,4 @@
-import { Json } from '@metamask/controllers';
+import { Json, RestrictedControllerMessenger } from '@metamask/controllers';
 import { MetaMaskInpageProvider } from '@metamask/inpage-provider';
 
 /**
@@ -25,6 +25,13 @@ export interface PluginProvider extends MetaMaskInpageProvider {
 }
 type PluginName = string;
 export interface ErrorMessageEvent {
-  type: 'PluginExecutionService:unhandledError';
+  type: 'ServiceMessenger:unhandledError';
   payload: [PluginName, { message: string; code: number; data?: Json }];
 }
+export type ServiceMessenger = RestrictedControllerMessenger<
+  'ServiceMessenger',
+  never,
+  ErrorMessageEvent,
+  never,
+  ErrorMessageEvent['type']
+>;
