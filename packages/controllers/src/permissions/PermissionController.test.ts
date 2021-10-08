@@ -23,13 +23,10 @@ import {
   PermissionControllerActions,
   PermissionControllerEvents,
   PermissionOptions,
-  PermissionSpecificationConstraint,
-  PermissionSpecificationsMap,
-  RestrictedMethodBase,
   RestrictedMethodOptions,
   GenericRestrictedMethodParams,
-  PermissionSpecificationBase,
-  PermissionFactory,
+  NewSpecShape,
+  PermissionSpecificationsMap2,
 } from '.';
 
 // CaveatConstraint types and specifications
@@ -162,39 +159,32 @@ function getDefaultCaveatSpecifications(): CaveatSpecifications<DefaultCaveats> 
 
 // wallet_getSecretArray
 
-type SecretArrayPermissionName = 'wallet_getSecretArray';
+// type SecretArrayPermissionName = 'wallet_getSecretArray';
 
-type SecretArrayPermission = PermissionConstraint<
-  SecretArrayPermissionName,
-  FilterArrayCaveat | ReverseArrayCaveat
->;
+// type SecretArrayPermission = PermissionConstraint<
+//   SecretArrayPermissionName,
+//   FilterArrayCaveat | ReverseArrayCaveat
+// >;
 
-type SecretArrayMethod = RestrictedMethodBase<[], string[]>;
+// type SecretArrayMethod = RestrictedMethodBase<[], string[]>;
 
-type SecretArrayPermissionSpecification = PermissionSpecificationConstraint<
-  SecretArrayPermissionName,
-  SecretArrayPermission,
-  Record<string, unknown>,
-  SecretArrayMethod
->;
+// type SecretArrayPermissionSpecification = PermissionSpecificationConstraint2<
+//   SecretArrayPermissionName,
+//   SecretArrayPermission,
+//   Record<string, unknown>,
+//   SecretArrayMethod
+// >;
 
 // wallet_getSecretObject
 
-type SecretObjectPermissionName = 'wallet_getSecretObject';
+// type SecretObjectPermissionName = 'wallet_getSecretObject';
 
-type SecretObjectPermission = PermissionConstraint<
-  SecretObjectPermissionName,
-  FilterObjectCaveat | NoopCaveat
->;
+// type SecretObjectPermission = PermissionConstraint<
+//   SecretObjectPermissionName,
+//   FilterObjectCaveat | NoopCaveat
+// >;
 
-type SecretObjectMethod = RestrictedMethodBase<[], Record<string, string>>;
-
-type SecretObjectPermissionSpecification = PermissionSpecificationConstraint<
-  SecretObjectPermissionName,
-  SecretObjectPermission,
-  Record<string, unknown>,
-  SecretObjectMethod
->;
+// type SecretObjectMethod = RestrictedMethodBase<[], Record<string, string>>;
 
 // wallet_getSecret_*
 
@@ -205,15 +195,7 @@ type SecretNamespacedPermission = PermissionConstraint<
   NoopCaveat
 >;
 
-type SecretNamespacedMethod = RestrictedMethodBase<[], string>;
-
-type SecretNamespacedPermissionSpecification =
-  PermissionSpecificationConstraint<
-    SecretNamespacedPermissionKey,
-    SecretNamespacedPermission,
-    Record<string, unknown>,
-    SecretNamespacedMethod
-  >;
+// type SecretNamespacedMethod = RestrictedMethodBase<[], string>;
 
 // Dummy permission that returns an error object
 // type GetErrorName = 'wallet_getError';
@@ -225,29 +207,29 @@ type SecretNamespacedPermissionSpecification =
 
 // type GetUndefinedPermission = PermissionConstraint<GetUndefinedName, never>;
 
-type DefaultTargetKeys =
-  | SecretArrayPermissionName
-  | SecretObjectPermissionName
-  | SecretNamespacedPermissionKey;
+// type DefaultTargetKeys =
+//   | SecretArrayPermissionName
+//   | SecretObjectPermissionName
+//   | SecretNamespacedPermissionKey;
 // | GetErrorName
 // | GetUndefinedName;
 
-type DefaultPermissions =
-  | SecretArrayPermission
-  | SecretObjectPermission
-  | SecretNamespacedPermission;
+// type DefaultPermissions =
+//   | SecretArrayPermission
+//   | SecretObjectPermission
+//   | SecretNamespacedPermission;
 // | GetErrorPermission
 // | GetUndefinedPermission;
 
-type DefaultRestrictedMethods =
-  | SecretArrayMethod
-  | SecretObjectMethod
-  | SecretNamespacedMethod;
+// type DefaultRestrictedMethods =
+//   | SecretArrayMethod
+//   | SecretObjectMethod
+//   | SecretNamespacedMethod;
 
-type DefaultPermissionSpecifications =
-  | SecretArrayPermissionSpecification
-  | SecretObjectPermissionSpecification
-  | SecretNamespacedPermissionSpecification;
+// type DefaultPermissionSpecifications =
+//   | SecretArrayPermissionSpecification
+//   | SecretObjectPermissionSpecification
+//   | SecretNamespacedPermissionSpecification;
 
 enum PermissionKeys {
   'wallet_getSecretArray' = 'wallet_getSecretArray',
@@ -262,21 +244,12 @@ enum PermissionKeys {
  * namespaced, it's a getter function.
  */
 const PermissionNames = {
-  wallet_getSecretArray: 'wallet_getSecretArray' as const,
-  wallet_getSecretObject: 'wallet_getSecretObject' as const,
+  wallet_getSecretArray: PermissionKeys.wallet_getSecretArray,
+  wallet_getSecretObject: PermissionKeys.wallet_getSecretObject,
   wallet_getSecret_: (str: string) => `wallet_getSecret_${str}` as const,
   // wallet_getError: 'wallet_getError' as const,
   // wallet_getUndefined: 'wallet_getUndefined' as const,
 };
-
-// let a: SecretArrayPermissionSpecification;
-// a.target
-
-type foobar = PermissionSpecificationsMap<DefaultPermissionSpecifications>;
-// SecretArrayPermissionSpecification
-
-// let baz: foobar
-// baz['wallet_getSecret_*'].factory
 
 /**
  * Gets permission specifications for:
@@ -292,18 +265,22 @@ type foobar = PermissionSpecificationsMap<DefaultPermissionSpecifications>;
  *
  * @returns The permission specifications.
  */
-function getDefaultPermissionSpecifications(): PermissionSpecificationsMap<DefaultPermissionSpecifications> {
+function getDefaultPermissionSpecifications() {
   return {
-    wallet_getSecretArray: {
-      target: 'wallet_getSecretArray',
-      methodImplementation: (
-        _args: RestrictedMethodOptions<[]>,
-      ) => {
+    [PermissionKeys.wallet_getSecretArray]: {
+      targetKey: PermissionKeys.wallet_getSecretArray,
+      allowedCaveats: [
+        CaveatTypes.filterArrayResponse,
+        CaveatTypes.reverseArrayResponse,
+      ] as const,
+      // allowedCaveats: ['foo'] as const,
+      methodImplementation: (_args: RestrictedMethodOptions<[]>) => {
         return ['a', 'b', 'c'];
       },
     },
-    wallet_getSecretObject: {
-      target: PermissionKeys.wallet_getSecretObject,
+    [PermissionKeys.wallet_getSecretObject]: {
+      targetKey: PermissionKeys.wallet_getSecretObject,
+      allowedCaveats: [CaveatTypes.filterObjectResponse] as const,
       methodImplementation: (
         _args: RestrictedMethodOptions<GenericRestrictedMethodParams>,
       ) => {
@@ -319,8 +296,9 @@ function getDefaultPermissionSpecifications(): PermissionSpecificationsMap<Defau
         );
       },
     },
-    'wallet_getSecret_*': {
-      target: PermissionKeys['wallet_getSecret_*'],
+    [PermissionKeys['wallet_getSecret_*']]: {
+      targetKey: PermissionKeys['wallet_getSecret_*'],
+      allowedCaveats: [CaveatTypes.noopCaveat] as const,
       methodImplementation: (
         args: RestrictedMethodOptions<GenericRestrictedMethodParams>,
       ) => {
@@ -353,6 +331,19 @@ function getDefaultPermissionSpecifications(): PermissionSpecificationsMap<Defau
     // }
   };
 }
+
+// type Keys = keyof typeof MyType;
+// type Values = typeof MyType[Keys];
+// type Thing<T> = T extends
+type GetSpecMapValues<T> = T extends PermissionSpecificationsMap2<
+  NewSpecShape<string>
+>
+  ? T[keyof T]
+  : never;
+
+type DefaultPermissionSpecifications = GetSpecMapValues<
+  ReturnType<typeof getDefaultPermissionSpecifications>
+>;
 
 // The permissions controller
 
@@ -452,58 +443,6 @@ function getPermissionControllerOptions(opts?: Record<string, unknown>) {
   };
 }
 
-type DoesExtend<T, U> = T extends U ? true : false;
-
-// True
-type Targets = DoesExtend<DefaultTargetKeys, string>;
-type Perms = DoesExtend<DefaultPermissions, GenericPermission>;
-type Methods = DoesExtend<
-  DefaultRestrictedMethods,
-  RestrictedMethodBase<any, any>
->;
-
-// False
-type Specs = DoesExtend<
-  DefaultPermissionSpecifications,
-  PermissionSpecificationBase<
-    string,
-    GenericPermission,
-    Record<string, any>,
-    RestrictedMethodBase<any, any>
-  >
->;
-type SpecsReverse = DoesExtend<
-  PermissionSpecificationBase<
-    string,
-    GenericPermission,
-    Record<string, any>,
-    RestrictedMethodBase<any, any>
-  >,
-  DefaultPermissionSpecifications
->;
-
-type base = PermissionSpecificationBase<
-  string,
-  GenericPermission,
-  Record<string, any>,
-  RestrictedMethodBase<any, any>
->;
-let fizz: DefaultPermissionSpecifications = {} as any;
-const foo: base = fizz;
-
-type SpecificFactory = PermissionFactory<SecretArrayPermission, Record<string, unknown>>
-type GenericFactory = PermissionFactory<GenericPermission, Record<string, unknown>>
-
-let specificFactory: SpecificFactory = (() => undefined) as any
-let genericFactory: GenericFactory = specificFactory
-specificFactory = genericFactory
-
-let specificPermission: SecretArrayPermission = {} as any
-let genericPermission: GenericPermission = specificPermission
-
-let specificOptions: PermissionOptions<SecretArrayPermission> = {} as any
-let genericOptions: PermissionOptions<GenericPermission> = specificOptions
-
 /**
  * Gets a "default" permission controller. This simply means a controller using
  * the default caveat and permissions created in this test file.
@@ -517,8 +456,6 @@ function getDefaultPermissionController(
 ) {
   return new PermissionController<
     DefaultPermissionSpecifications,
-    DefaultTargetKeys,
-    DefaultPermissions,
     DefaultCaveats
   >(opts);
 }
@@ -533,9 +470,8 @@ function getDefaultPermissionController(
  */
 function getDefaultPermissionControllerWithState() {
   return new PermissionController<
-    DefaultTargetKeys,
-    DefaultCaveats,
-    DefaultPermissions
+    DefaultPermissionSpecifications,
+    DefaultCaveats
   >(getPermissionControllerOptions({ state: getExistingPermissionState() }));
 }
 
@@ -582,14 +518,13 @@ describe('PermissionController', () => {
       expect(
         () =>
           new PermissionController<
-            DefaultTargetKeys,
-            DefaultCaveats,
-            DefaultPermissions
+            DefaultPermissionSpecifications,
+            DefaultCaveats
           >(
             getPermissionControllerOptions({
               permissionSpecifications: {
                 ...getDefaultPermissionSpecifications(),
-                '': { target: '' },
+                '': { targetKey: '' },
               } as any,
             }),
           ),
@@ -598,14 +533,13 @@ describe('PermissionController', () => {
       expect(
         () =>
           new PermissionController<
-            DefaultTargetKeys,
-            DefaultCaveats,
-            DefaultPermissions
+            DefaultPermissionSpecifications,
+            DefaultCaveats
           >(
             getPermissionControllerOptions({
               permissionSpecifications: {
                 ...getDefaultPermissionSpecifications(),
-                foo_: { target: 'foo_' },
+                foo_: { targetKey: 'foo_' },
               } as any,
             }),
           ),
@@ -614,14 +548,13 @@ describe('PermissionController', () => {
       expect(
         () =>
           new PermissionController<
-            DefaultTargetKeys,
-            DefaultCaveats,
-            DefaultPermissions
+            DefaultPermissionSpecifications,
+            DefaultCaveats
           >(
             getPermissionControllerOptions({
               permissionSpecifications: {
                 ...getDefaultPermissionSpecifications(),
-                'foo*': { target: 'foo*' },
+                'foo*': { targetKey: 'foo*' },
               } as any,
             }),
           ),
@@ -630,14 +563,13 @@ describe('PermissionController', () => {
       expect(
         () =>
           new PermissionController<
-            DefaultTargetKeys,
-            DefaultCaveats,
-            DefaultPermissions
+            DefaultPermissionSpecifications,
+            DefaultCaveats
           >(
             getPermissionControllerOptions({
               permissionSpecifications: {
                 ...getDefaultPermissionSpecifications(),
-                foo: { target: 'bar' },
+                foo: { targetKey: 'bar' },
               } as any,
             }),
           ),
@@ -2871,9 +2803,8 @@ describe('PermissionController', () => {
       const options = getPermissionControllerOptions();
       const { messenger } = options;
       const controller = new PermissionController<
-        DefaultTargetKeys,
-        DefaultCaveats,
-        DefaultPermissions
+        DefaultPermissionSpecifications,
+        DefaultCaveats
       >(options);
       const clearStateSpy = jest.spyOn(controller, 'clearState');
 
@@ -2895,9 +2826,8 @@ describe('PermissionController', () => {
       const options = getPermissionControllerOptions();
       const { messenger } = options;
       const controller = new PermissionController<
-        DefaultTargetKeys,
-        DefaultCaveats,
-        DefaultPermissions
+        DefaultPermissionSpecifications,
+        DefaultCaveats
       >(options);
       const getSubjectNamesSpy = jest.spyOn(controller, 'getSubjectNames');
 
@@ -2922,9 +2852,8 @@ describe('PermissionController', () => {
       const options = getPermissionControllerOptions();
       const { messenger } = options;
       const controller = new PermissionController<
-        DefaultTargetKeys,
-        DefaultCaveats,
-        DefaultPermissions
+        DefaultPermissionSpecifications,
+        DefaultCaveats
       >(options);
       const hasPermissionsSpy = jest.spyOn(controller, 'hasPermissions');
 

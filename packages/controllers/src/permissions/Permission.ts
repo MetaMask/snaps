@@ -1,7 +1,7 @@
 import { Json } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
 import { NonEmptyArray } from '../utils';
-import { GenericCaveat } from './Caveat';
+import { CaveatConstraint, GenericCaveat } from './Caveat';
 // This is used in a docstring, but ESLint doesn't notice it.
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { PermissionController } from './PermissionController';
@@ -180,9 +180,11 @@ export type ExtractValidCaveatTypes<
   Name extends string,
 > = ExtractValidCaveats<Permission, Key, Name>['type'];
 
-type ExtractArrayMembers<T> = T extends [...infer U] ? U : never;
+type ExtractArrayMembers<T> = T extends readonly [...infer U] | [...infer U]
+  ? U[number]
+  : never;
 export type ExtractCaveats<Permission extends GenericPermission> =
-  ExtractArrayMembers<Permission['caveats']>[number];
+  ExtractArrayMembers<Permission['caveats']>;
 
 /**
  * The options object of {@link constructPermission}.
@@ -204,7 +206,8 @@ export type PermissionOptions<Permission extends GenericPermission> = {
    * The caveats of the permission.
    * See {@link CaveatConstraint}.
    */
-  caveats?: NonEmptyArray<ExtractCaveats<Permission>>;
+  // caveats?: NonEmptyArray<ExtractCaveats<Permission>>;
+  caveats?: NonEmptyArray<GenericCaveat>;
 };
 
 /**
@@ -320,7 +323,8 @@ export type RestrictedMethodBase<
   | AsyncRestrictedMethod<Params, Result>;
 
 export type RestrictedMethodConstraint<
-  MethodImplementation extends RestrictedMethodBase<any, any>,
+  // MethodImplementation extends RestrictedMethodBase<any, any>,
+  MethodImplementation,
 > = MethodImplementation extends (...args: infer Args) => Json
   ? Args extends GenericRestrictedMethodParams
     ? MethodImplementation
@@ -416,6 +420,58 @@ type TargetKeyConstraint<Key extends string> = Key extends `${string}_*`
   ? never
   : Key;
 
+type GenericFunction = (...args: any[]) => any;
+
+export type NewSpecShape<TargetKey extends string> = {
+  targetKey: TargetKey;
+  methodImplementation: GenericFunction;
+  allowedCaveats?: Readonly<NonEmptyArray<string>>;
+  validator?: GenericFunction;
+  factory?: GenericFunction;
+};
+
+// const foo: NewSpecShape<string> = {
+//   targetKey: 'foo',
+//   methodImplementation: () => undefined,
+// };
+// type bar = ExtractArrayMembers<NewSpecShape<string>['allowedCaveats']>;
+// type xxx = ExtractArrayMembers<[]>;
+// type yyy = ExtractArrayMembers<undefined>;
+
+export type ExtractCaveatTypes<Specification> = Specification extends Record<
+  string,
+  unknown
+>
+  ? ExtractArrayMembers<Specification['allowedCaveats']>
+  : never;
+
+export type ExtractCaveatsFromTypes<
+  CaveatType,
+  Caveats extends GenericCaveat,
+> = CaveatType extends string
+  ? Caveats extends CaveatConstraint<CaveatType, Json>
+    ? Caveats
+    : never
+  : never;
+
+/**
+ * An individual permission specification object. Constrained such that the
+ * given target key must be valid.
+ *
+ * @template TargetKey - The key of the permission target.
+ * @template Permission - The type of the permission object.
+ */
+export type PermissionSpecificationConstraint2<T> =
+  T extends NewSpecShape<string>
+    ? T['targetKey'] extends TargetKeyConstraint<T['targetKey']>
+      ? T['methodImplementation'] extends RestrictedMethodConstraint<
+          T['methodImplementation']
+        >
+        ? T
+        : never
+      : never
+    : never;
+
 /**
  * An individual permission specification object. Constrained such that the
  * given target key must be valid.
@@ -472,6 +528,21 @@ export type GenericPermissionSpecification = PermissionSpecificationConstraint<
 // // > = Permissions extends PermissionConstraint<TargetKey, GenericCaveat | never>
 // //   ? PermissionSpecificationConstraint<TargetKey, Permissions>
 // //   : never;
+
+export type PermissionSpecificationsMap2<
+  Specifications extends NewSpecShape<string>,
+> = PermissionSpecificationConstraint2<Specifications> extends never
+  ? never
+  : {
+      [TargetKey in Specifications['targetKey']]: Specifications extends NewSpecShape<TargetKey>
+        ? Specifications
+        : never;
+    };
+
+// TODO:types Map the names correctly.
+export type PermissionSpecificationsMap3<
+  Specifications extends NewSpecShape<string>,
+> = Record<Specifications['targetKey'], Specifications>;
 
 export type PermissionSpecificationsMap<
   Specifications extends PermissionSpecificationBase<string, any, any, any>,
