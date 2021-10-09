@@ -116,10 +116,59 @@ export type GenericPermission = PermissionConstraint<
   GenericCaveat | never
 >;
 
-// type ExtractCaveats<Permission extends GenericPermission> = Permission extends PermissionConstraint<
-//   GenericTargetName,
-//   infer AllowedCaveats
-// > ? AllowedCaveats : never;
+/**
+ * An internal utility type used in {@link ExtractPermissionTargetKey}.
+ *
+ * @template Key - The target key type to extract from.
+ * @template Name - The name whose key to extract.
+ */
+type KeyOfTargetName<
+  Key extends string,
+  Name extends string,
+> = Name extends ExtractPermissionTargetNames<Key> ? Key : never;
+
+/**
+ * A utility type for finding the permission target key corresponding to a
+ * target name. In a way, the inverse of {@link ExtractPermissionTargetNames}.
+ *
+ * See the documentation for the distinction between target names and keys.
+ *
+ * @template Key - The target key type to extract from.
+ * @template Name - The name whose key to extract.
+ */
+type ExtractPermissionTargetKey<
+  Key extends string,
+  Name extends string,
+> = Name extends Key ? Name : Extract<Key, KeyOfTargetName<Key, Name>>;
+
+/**
+ * Internal utility for extracting the members types of an array. The type
+ * evalutes to `never` if the specified type is the empty tuple or neither
+ * an array nor a tuple.
+ *
+ * @template T - The array type whose members to extract.
+ */
+type ExtractArrayMembers<T> = T extends readonly [...infer U] | [...infer U]
+  ? U[number]
+  : never;
+
+/**
+ * A utility type for extracting the allowed caveat types for a particular
+ * permission from a permission specification type or type union.
+ *
+ * @template PermissionSpecification - The permission specification type to
+ * extract valid caveat types from.
+ * @template TargetName - The target name of the permission whose allowed
+ * caveats to extract.
+ */
+export type ExtractAllowedCaveatTypes<
+  PermissionSpecification extends PermissionSpecificationBase<string>,
+  TargetName extends string,
+> = PermissionSpecification extends PermissionSpecificationBase<
+  ExtractPermissionTargetKey<PermissionSpecification['targetKey'], TargetName>
+>
+  ? ExtractArrayMembers<PermissionSpecification['allowedCaveats']>
+  : never;
 
 /**
  * The options object of {@link constructPermission}.
@@ -332,7 +381,6 @@ export type PermissionSpecificationBase<TargetKey extends string> = {
    * corresponds to.
    */
   methodImplementation: GenericFunction;
-  // methodImplementation: RestrictedMethodConstraint<any>;
 
   /**
    * The factory function used to get permission objects. Permissions returned

@@ -3,7 +3,7 @@ import type {
   JsonRpcEngineEndCallback,
   PendingJsonRpcResponse,
 } from 'json-rpc-engine';
-import { MethodNames } from '../enums';
+import { MethodNames } from '../utils';
 
 import type { GenericPermission } from '../Permission';
 import type { SubjectPermissions } from '../PermissionController';

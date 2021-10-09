@@ -41,6 +41,7 @@ import {
   PermissionSpecificationsMap,
   PermissionSpecificationBase,
   PermissionConstraint,
+  ExtractAllowedCaveatTypes,
 } from './Permission';
 import {
   PermissionDoesNotExistError,
@@ -61,7 +62,7 @@ import {
   userRejectedRequest,
   PermissionsRequestNotFoundError,
 } from './errors';
-import { MethodNames } from './enums';
+import { MethodNames } from './utils';
 import { getPermissionMiddlewareFactory } from './permission-middleware';
 
 /**
@@ -725,7 +726,10 @@ export class PermissionController<
       PermissionSpecification,
       CaveatSpecification
     >['parentCapability'],
-    CaveatType extends CaveatSpecification['type'],
+    CaveatType extends ExtractAllowedCaveatTypes<
+      PermissionSpecification,
+      TargetName
+    >,
   >(origin: OriginString, target: TargetName, caveatType: CaveatType): boolean {
     return Boolean(this.getCaveat(origin, target, caveatType));
   }
@@ -750,7 +754,10 @@ export class PermissionController<
       PermissionSpecification,
       CaveatSpecification
     >['parentCapability'],
-    CaveatType extends CaveatSpecification['type'],
+    CaveatType extends ExtractAllowedCaveatTypes<
+      PermissionSpecification,
+      TargetName
+    >,
   >(
     origin: OriginString,
     target: TargetName,
@@ -790,7 +797,10 @@ export class PermissionController<
       PermissionSpecification,
       CaveatSpecification
     >['parentCapability'],
-    CaveatType extends CaveatSpecification['type'],
+    CaveatType extends ExtractAllowedCaveatTypes<
+      PermissionSpecification,
+      TargetName
+    >,
   >(
     origin: OriginString,
     target: TargetName,
@@ -827,7 +837,10 @@ export class PermissionController<
       PermissionSpecification,
       CaveatSpecification
     >['parentCapability'],
-    CaveatType extends CaveatSpecification['type'],
+    CaveatType extends ExtractAllowedCaveatTypes<
+      PermissionSpecification,
+      TargetName
+    >,
     CaveatValue extends ExtractCaveatValue<CaveatSpecification, CaveatType>,
   >(
     origin: OriginString,
@@ -867,7 +880,10 @@ export class PermissionController<
       PermissionSpecification,
       CaveatSpecification
     >['parentCapability'],
-    CaveatType extends CaveatSpecification['type'],
+    CaveatType extends ExtractAllowedCaveatTypes<
+      PermissionSpecification,
+      TargetName
+    >,
   >(
     origin: OriginString,
     target: TargetName,
@@ -944,7 +960,10 @@ export class PermissionController<
       PermissionSpecification,
       CaveatSpecification
     >['parentCapability'],
-    CaveatType extends CaveatSpecification['type'],
+    CaveatType extends ExtractAllowedCaveatTypes<
+      PermissionSpecification,
+      TargetName
+    >,
   >(origin: OriginString, target: TargetName, caveatType: CaveatType): void {
     this.update((draftState) => {
       const permission = draftState.subjects[origin]?.permissions[target];

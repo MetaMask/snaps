@@ -5,7 +5,7 @@ import type {
   PendingJsonRpcResponse,
 } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
-import { MethodNames } from '../enums';
+import { MethodNames } from '../utils';
 
 import { invalidParams } from '../errors';
 import type { GenericPermission, RequestedPermissions } from '../Permission';

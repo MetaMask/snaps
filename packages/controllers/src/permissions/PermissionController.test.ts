@@ -24,10 +24,7 @@ import {
   PermissionOptions,
   RestrictedMethodOptions,
   RestrictedMethodParameters,
-  PermissionSpecificationBase,
-  PermissionSpecificationsMap,
-  CaveatSpecificationsMap,
-  CaveatSpecificationBase,
+  ExtractSpecifications,
 } from '.';
 
 // CaveatBase types and specifications
@@ -55,12 +52,6 @@ type FilterObjectCaveat = CaveatBase<
 >;
 
 type NoopCaveat = CaveatBase<typeof CaveatTypes.noopCaveat, null>;
-
-// type DefaultCaveats =
-//   | FilterArrayCaveat
-//   | ReverseArrayCaveat
-//   | FilterObjectCaveat
-//   | NoopCaveat;
 
 /**
  * Gets caveat specifications for:
@@ -151,13 +142,7 @@ function getDefaultCaveatSpecifications() {
   } as const;
 }
 
-type GetCaveatSpecMapValues<T> = T extends CaveatSpecificationsMap<
-  CaveatSpecificationBase<string>
->
-  ? T[keyof T]
-  : never;
-
-type DefaultCaveatSpecifications = GetCaveatSpecMapValues<
+type DefaultCaveatSpecifications = ExtractSpecifications<
   ReturnType<typeof getDefaultCaveatSpecifications>
 >;
 
@@ -166,7 +151,8 @@ type DefaultCaveatSpecifications = GetCaveatSpecMapValues<
 // wallet_getSecret_*
 // We only define types for this permission because it's the only one with a
 // factory.
-// Other permission types are extracted from the permission specifications.
+// Other permission types are extracted from the permission specifications in
+// the permission controller.
 
 type SecretNamespacedPermissionKey = 'wallet_getSecret_*';
 
@@ -264,13 +250,7 @@ function getDefaultPermissionSpecifications() {
   } as const;
 }
 
-type GetSpecMapValues<T> = T extends PermissionSpecificationsMap<
-  PermissionSpecificationBase<string>
->
-  ? T[keyof T]
-  : never;
-
-type DefaultPermissionSpecifications = GetSpecMapValues<
+type DefaultPermissionSpecifications = ExtractSpecifications<
   ReturnType<typeof getDefaultPermissionSpecifications>
 >;
 
@@ -387,7 +367,6 @@ function getDefaultPermissionController(
     DefaultPermissionSpecifications,
     DefaultCaveatSpecifications
   >(opts);
-  // return new PermissionController(opts);
 }
 
 /**

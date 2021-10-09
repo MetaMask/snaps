@@ -144,9 +144,6 @@ export type ExtractCaveat<
   CaveatSpecification extends CaveatSpecificationBase<string>,
   CaveatType extends string,
 > = _ExtractCaveat<ExtractCaveats<CaveatSpecification>, CaveatType>;
-// extends CaveatBase<CaveatType, Json>
-//   ? ExtractCaveats<CaveatSpecification>
-//   : never;
 
 /**
  * A utility type for extracting the {@link CaveatBase.value} type from
@@ -159,12 +156,6 @@ export type ExtractCaveatValue<
   CaveatSpecification extends CaveatSpecificationBase<string>,
   CaveatType extends string,
 > = ExtractCaveat<CaveatSpecification, CaveatType>['value'];
-// export type ExtractCaveatValue<
-//   CaveatUnion extends GenericCaveat,
-//   CaveatType extends string,
-// > = CaveatUnion extends CaveatBase<CaveatType, infer CaveatValue>
-//   ? CaveatValue
-//   : never;
 
 /**
  * Decorate a restricted method implementation with its caveats.
