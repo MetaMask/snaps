@@ -216,9 +216,8 @@ function getDefaultPermissionSpecifications() {
         CaveatTypes.filterArrayResponse,
         CaveatTypes.reverseArrayResponse,
       ],
-      methodImplementation: (_args: RestrictedMethodOptions<never>) => {
+      methodImplementation: (_args: RestrictedMethodOptions<void>) => {
         return ['a', 'b', 'c'];
-        // return () => undefined;
       },
     },
     [PermissionKeys.wallet_getSecretObject]: {
@@ -227,9 +226,8 @@ function getDefaultPermissionSpecifications() {
         CaveatTypes.filterObjectResponse,
         CaveatTypes.noopCaveat,
       ],
-      methodImplementation: (_args: RestrictedMethodOptions<never>) => {
+      methodImplementation: (_args: RestrictedMethodOptions<void>) => {
         return { a: 'x', b: 'y', c: 'z' };
-        // return () => undefined;
       },
       validator: (permission: GenericPermission) => {
         // A dummy validator for a caveat type that should be impossible to add
@@ -249,7 +247,6 @@ function getDefaultPermissionSpecifications() {
           'wallet_getSecret_',
           '',
         )}"!`;
-        // return Symbol('foo')
       },
       factory: (options: PermissionOptions<SecretNamespacedPermission>) =>
         constructPermission<SecretNamespacedPermission>({
@@ -266,20 +263,6 @@ function getDefaultPermissionSpecifications() {
     },
   } as const;
 }
-
-// TODO:delete
-// type DoesExtend<T, U> = T extends U ? T : never;
-
-// const specs = getDefaultPermissionSpecifications()
-// type func = typeof specs['wallet_getSecret_*']['methodImplementation']
-// type x = DoesExtend<func, GenericRestrictedMethod>
-// type xx = DoesExtend<func, (args: RestrictedMethodOptions<RestrictedMethodParameters>) => Json | Promise<Json>>;
-// type xxx = DoesExtend<func, (args: any) => Json | Promise<Json>>;
-// type xxxx = DoesExtend<func, (args: {
-//   method: string;
-//   params?: Json;
-//   context: RestrictedMethodContext;
-// }) => Json | Promise<Json>>;
 
 type GetSpecMapValues<T> = T extends PermissionSpecificationsMap<
   PermissionSpecificationBase<string>
@@ -542,7 +525,8 @@ describe('PermissionController', () => {
       expect(
         controller.getRestrictedMethod(PermissionNames.wallet_getSecretArray),
       ).toStrictEqual(
-        controller.permissionSpecifications[
+        // TODO:types what?
+        (controller.permissionSpecifications as any)[
           PermissionKeys.wallet_getSecretArray
         ].methodImplementation,
       );
@@ -555,7 +539,8 @@ describe('PermissionController', () => {
           PermissionNames.wallet_getSecret_('foo'),
         ),
       ).toStrictEqual(
-        controller.permissionSpecifications[
+        // TODO:types what?
+        (controller.permissionSpecifications as any)[
           PermissionKeys['wallet_getSecret_*']
         ].methodImplementation,
       );

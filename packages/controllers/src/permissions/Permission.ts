@@ -70,20 +70,6 @@ export type PermissionBase<
     : Target;
 };
 
-// TODO:delete?
-/**
- * Makes the {@link PermissionBase.caveats} property of the given permission mutable.
- * Useful for mutating the caveats of a permission in state updates.
- *
- * @template Permission - The permission type to modify.
- */
-export type MutableCaveats<Permission extends GenericPermission> = {
-  -readonly [K in keyof Pick<Permission, 'caveats'>]: Permission[K];
-} &
-  {
-    [K in keyof Omit<Permission, 'caveats'>]: Permission[K];
-  };
-
 /**
  * A utility type for ensuring that the given permission target name conforms to
  * our naming conventions.
@@ -225,7 +211,7 @@ type RestrictedMethodContext = Readonly<{
   [key: string]: any;
 }>;
 
-export type RestrictedMethodParameters = Json[] | Record<string, Json> | never;
+export type RestrictedMethodParameters = Json[] | Record<string, Json> | void;
 
 /**
  * The arguments passed to a restricted method implementation.
@@ -280,7 +266,7 @@ export type GenericRestrictedMethod = RestrictedMethodBase<
 >;
 
 export type RestrictedMethodConstraint<
-  MethodImplementation extends GenericRestrictedMethod,
+  MethodImplementation extends RestrictedMethodBase<any, any>,
 > = MethodImplementation extends (args: infer Options) => Json | Promise<Json>
   ? Options extends RestrictedMethodOptions<RestrictedMethodParameters>
     ? MethodImplementation
@@ -397,10 +383,10 @@ export type PermissionSpecificationConstraint<T> =
  */
 export type PermissionSpecificationsMap<
   Specification extends PermissionSpecificationBase<string>,
-> = PermissionSpecificationConstraint<Specification> extends never
-  ? never
-  : {
+> = Specification extends PermissionSpecificationConstraint<Specification>
+  ? {
       [TargetKey in Specification['targetKey']]: Specification extends PermissionSpecificationBase<TargetKey>
         ? Specification
         : never;
-    };
+    }
+  : never;

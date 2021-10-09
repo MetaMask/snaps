@@ -6,6 +6,7 @@ import {
   AcceptRequest as AcceptApprovalRequest,
   RejectRequest as RejectApprovalRequest,
   HasApprovalRequest,
+  StateMetadata,
 } from '@metamask/controllers';
 // These are used in docstrings, but ESLint is ignorant of docstrings.
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -132,7 +133,7 @@ export type PermissionControllerState<Permission> =
 /**
  * The state metadata of the {@link PermissionController}.
  */
-const stateMetadata = {
+const stateMetadata: StateMetadata<PermissionControllerState<any>> = {
   subjects: { persist: true, anonymous: true },
 };
 
@@ -252,13 +253,11 @@ export type GenericPermissionController = PermissionController<
 export type ExtractPermission<
   PermissionSpecification extends PermissionSpecificationBase<string>,
   CaveatSpecification extends CaveatSpecificationBase<string>,
-> = PermissionSpecification extends any
-  ? CaveatSpecification extends any
-    ? PermissionConstraint<
-        PermissionSpecification['targetKey'],
-        ExtractCaveats<CaveatSpecification>
-      >
-    : never
+> = PermissionSpecification extends PermissionSpecificationConstraint<PermissionSpecification>
+  ? PermissionConstraint<
+      PermissionSpecification['targetKey'],
+      ExtractCaveats<CaveatSpecification>
+    >
   : never;
 
 /**
@@ -392,7 +391,8 @@ export class PermissionController<
     } = options;
     super({
       name: controllerName,
-      // TODO:types why?
+      // Typecast: The state metadata object is declared outside of the
+      // controller instance and therefore incorrectly genericized.
       metadata: stateMetadata as any,
       messenger,
       state: {
@@ -541,15 +541,8 @@ export class PermissionController<
    * @param origin - The origin of the subject.
    * @returns The permissions of the subject, if any.
    */
-  getPermissions(
-    origin: OriginString, // | SubjectPermissions< //     ExtractPermission<PermissionSpecification, CaveatSpecification> //   > // | undefined {
-  ) {
-    // TODO:types why?
-    return this.state.subjects[origin]?.permissions as
-      | SubjectPermissions<
-          ExtractPermission<PermissionSpecification, CaveatSpecification>
-        >
-      | undefined;
+  getPermissions(origin: OriginString) {
+    return this.state.subjects[origin]?.permissions;
   }
 
   /**
@@ -911,9 +904,9 @@ export class PermissionController<
         );
 
         if (caveatIndex === -1) {
-          permission.caveats.push(caveat as any);
+          permission.caveats.push(caveat);
         } else {
-          permission.caveats.splice(caveatIndex, 1, caveat as any);
+          permission.caveats.splice(caveatIndex, 1, caveat);
         }
       } else {
         // Typecast: At this point, we don't know if the specific permission
@@ -924,7 +917,7 @@ export class PermissionController<
       }
 
       this.validateModifiedPermission(
-        // TODO:types why?
+        // Typecast: Immer WritableDraft incompatibility
         permission as unknown as ExtractPermission<
           PermissionSpecification,
           CaveatSpecification
@@ -971,14 +964,14 @@ export class PermissionController<
       }
 
       if (permission.caveats.length === 1) {
-        // TODO:types why?
+        // Typecast: Immer WritableDraft incompatibility
         permission.caveats = null as any;
       } else {
         permission.caveats.splice(caveatIndex, 1);
       }
 
       this.validateModifiedPermission(
-        // TODO:types why?
+        // Typecast: Immer WritableDraft incompatibility
         permission as unknown as ExtractPermission<
           PermissionSpecification,
           CaveatSpecification
@@ -1177,7 +1170,7 @@ export class PermissionController<
     this.update((draftState) => {
       if (!draftState.subjects[origin]) {
         // Typecast: immer's WritableDraft is incompatible with our generics
-        draftState.subjects[origin] = { origin, permissions: {} as any };
+        draftState.subjects[origin] = { origin, permissions: {} };
       }
 
       draftState.subjects[origin].permissions = permissions as any;
