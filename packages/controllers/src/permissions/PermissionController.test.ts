@@ -13,7 +13,6 @@ import { constructCaveat } from './Caveat';
 import {
   AsyncRestrictedMethod,
   CaveatConstraint,
-  CaveatSpecifications,
   constructPermission,
   GenericCaveat,
   GenericPermission,
@@ -27,39 +26,41 @@ import {
   GenericRestrictedMethodParams,
   NewSpecShape,
   PermissionSpecificationsMap2,
+  CaveatSpecifications2,
+  CaveatSpecification2,
 } from '.';
 
 // CaveatConstraint types and specifications
 
-enum CaveatTypes {
-  filterArrayResponse = 'filterArrayResponse',
-  reverseArrayResponse = 'reverseArrayResponse',
-  filterObjectResponse = 'filterObjectResponse',
-  noopCaveat = 'noopCaveat',
-}
+const CaveatTypes = {
+  filterArrayResponse: 'filterArrayResponse',
+  reverseArrayResponse: 'reverseArrayResponse',
+  filterObjectResponse: 'filterObjectResponse',
+  noopCaveat: 'noopCaveat',
+} as const;
 
 type FilterArrayCaveat = CaveatConstraint<
-  CaveatTypes.filterArrayResponse,
+  typeof CaveatTypes.filterArrayResponse,
   string[]
 >;
 
 type ReverseArrayCaveat = CaveatConstraint<
-  CaveatTypes.reverseArrayResponse,
+  typeof CaveatTypes.reverseArrayResponse,
   null
 >;
 
 type FilterObjectCaveat = CaveatConstraint<
-  CaveatTypes.filterObjectResponse,
+  typeof CaveatTypes.filterObjectResponse,
   string[]
 >;
 
-type NoopCaveat = CaveatConstraint<CaveatTypes.noopCaveat, null>;
+type NoopCaveat = CaveatConstraint<typeof CaveatTypes.noopCaveat, null>;
 
-type DefaultCaveats =
-  | FilterArrayCaveat
-  | ReverseArrayCaveat
-  | FilterObjectCaveat
-  | NoopCaveat;
+// type DefaultCaveats =
+//   | FilterArrayCaveat
+//   | ReverseArrayCaveat
+//   | FilterObjectCaveat
+//   | NoopCaveat;
 
 /**
  * Gets caveat specifications for:
@@ -71,7 +72,7 @@ type DefaultCaveats =
  *
  * @returns The caveat specifications.
  */
-function getDefaultCaveatSpecifications(): CaveatSpecifications<DefaultCaveats> {
+function getDefaultCaveatSpecifications() {
   return {
     filterArrayResponse: {
       type: CaveatTypes.filterArrayResponse,
@@ -146,14 +147,27 @@ function getDefaultCaveatSpecifications(): CaveatSpecifications<DefaultCaveats> 
         ) => {
           return method(args);
         },
-      validator: (caveat: { type: CaveatTypes.noopCaveat; value: unknown }) => {
+      validator: (caveat: {
+        type: typeof CaveatTypes.noopCaveat;
+        value: unknown;
+      }) => {
         if (caveat.value !== null) {
           throw new Error('NoopCaveat value must be null');
         }
       },
     },
-  };
+  } as const;
 }
+
+type GetCaveatSpecMapValues<T> = T extends CaveatSpecifications2<
+  CaveatSpecification2<string>
+>
+  ? T[keyof T]
+  : never;
+
+type DefaultCaveatSpecifications = GetCaveatSpecMapValues<
+  ReturnType<typeof getDefaultCaveatSpecifications>
+>;
 
 // Permission types and specifications
 
@@ -481,7 +495,7 @@ function getDefaultPermissionController(
 ) {
   return new PermissionController<
     DefaultPermissionSpecifications,
-    DefaultCaveats
+    DefaultCaveatSpecifications
   >(opts);
 }
 
@@ -496,7 +510,7 @@ function getDefaultPermissionController(
 function getDefaultPermissionControllerWithState() {
   return new PermissionController<
     DefaultPermissionSpecifications,
-    DefaultCaveats
+    DefaultCaveatSpecifications
   >(getPermissionControllerOptions({ state: getExistingPermissionState() }));
 }
 
@@ -544,7 +558,7 @@ describe('PermissionController', () => {
         () =>
           new PermissionController<
             DefaultPermissionSpecifications,
-            DefaultCaveats
+            DefaultCaveatSpecifications
           >(
             getPermissionControllerOptions({
               permissionSpecifications: {
@@ -559,7 +573,7 @@ describe('PermissionController', () => {
         () =>
           new PermissionController<
             DefaultPermissionSpecifications,
-            DefaultCaveats
+            DefaultCaveatSpecifications
           >(
             getPermissionControllerOptions({
               permissionSpecifications: {
@@ -574,7 +588,7 @@ describe('PermissionController', () => {
         () =>
           new PermissionController<
             DefaultPermissionSpecifications,
-            DefaultCaveats
+            DefaultCaveatSpecifications
           >(
             getPermissionControllerOptions({
               permissionSpecifications: {
@@ -589,7 +603,7 @@ describe('PermissionController', () => {
         () =>
           new PermissionController<
             DefaultPermissionSpecifications,
-            DefaultCaveats
+            DefaultCaveatSpecifications
           >(
             getPermissionControllerOptions({
               permissionSpecifications: {
@@ -2829,7 +2843,7 @@ describe('PermissionController', () => {
       const { messenger } = options;
       const controller = new PermissionController<
         DefaultPermissionSpecifications,
-        DefaultCaveats
+        DefaultCaveatSpecifications
       >(options);
       const clearStateSpy = jest.spyOn(controller, 'clearState');
 
@@ -2852,7 +2866,7 @@ describe('PermissionController', () => {
       const { messenger } = options;
       const controller = new PermissionController<
         DefaultPermissionSpecifications,
-        DefaultCaveats
+        DefaultCaveatSpecifications
       >(options);
       const getSubjectNamesSpy = jest.spyOn(controller, 'getSubjectNames');
 
@@ -2878,7 +2892,7 @@ describe('PermissionController', () => {
       const { messenger } = options;
       const controller = new PermissionController<
         DefaultPermissionSpecifications,
-        DefaultCaveats
+        DefaultCaveatSpecifications
       >(options);
       const hasPermissionsSpy = jest.spyOn(controller, 'hasPermissions');
 
