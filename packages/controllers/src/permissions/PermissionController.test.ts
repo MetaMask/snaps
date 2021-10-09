@@ -157,7 +157,7 @@ function getDefaultCaveatSpecifications(): CaveatSpecifications<DefaultCaveats> 
 
 // Permission types and specifications
 
-// wallet_getSecretArray
+// // wallet_getSecretArray
 
 // type SecretArrayPermissionName = 'wallet_getSecretArray';
 
@@ -166,16 +166,7 @@ function getDefaultCaveatSpecifications(): CaveatSpecifications<DefaultCaveats> 
 //   FilterArrayCaveat | ReverseArrayCaveat
 // >;
 
-// type SecretArrayMethod = RestrictedMethodBase<[], string[]>;
-
-// type SecretArrayPermissionSpecification = PermissionSpecificationConstraint2<
-//   SecretArrayPermissionName,
-//   SecretArrayPermission,
-//   Record<string, unknown>,
-//   SecretArrayMethod
-// >;
-
-// wallet_getSecretObject
+// // wallet_getSecretObject
 
 // type SecretObjectPermissionName = 'wallet_getSecretObject';
 
@@ -183,8 +174,6 @@ function getDefaultCaveatSpecifications(): CaveatSpecifications<DefaultCaveats> 
 //   SecretObjectPermissionName,
 //   FilterObjectCaveat | NoopCaveat
 // >;
-
-// type SecretObjectMethod = RestrictedMethodBase<[], Record<string, string>>;
 
 // wallet_getSecret_*
 
@@ -195,53 +184,20 @@ type SecretNamespacedPermission = PermissionConstraint<
   NoopCaveat
 >;
 
-// type SecretNamespacedMethod = RestrictedMethodBase<[], string>;
-
-// Dummy permission that returns an error object
-// type GetErrorName = 'wallet_getError';
-
-// type GetErrorPermission = PermissionConstraint<GetErrorName, never>;
-
-// Illegal dummy permission
-// type GetUndefinedName = 'wallet_getUndefined';
-
-// type GetUndefinedPermission = PermissionConstraint<GetUndefinedName, never>;
-
-// type DefaultTargetKeys =
-//   | SecretArrayPermissionName
-//   | SecretObjectPermissionName
-//   | SecretNamespacedPermissionKey;
-// | GetErrorName
-// | GetUndefinedName;
-
-// type DefaultPermissions =
-//   | SecretArrayPermission
-//   | SecretObjectPermission
-//   | SecretNamespacedPermission;
-// | GetErrorPermission
-// | GetUndefinedPermission;
-
-// type DefaultRestrictedMethods =
-//   | SecretArrayMethod
-//   | SecretObjectMethod
-//   | SecretNamespacedMethod;
-
-// type DefaultPermissionSpecifications =
-//   | SecretArrayPermissionSpecification
-//   | SecretObjectPermissionSpecification
-//   | SecretNamespacedPermissionSpecification;
-
-enum PermissionKeys {
-  'wallet_getSecretArray' = 'wallet_getSecretArray',
-  'wallet_getSecretObject' = 'wallet_getSecretObject',
-  'wallet_getSecret_*' = 'wallet_getSecret_*',
+/**
+ * Permission key constants.
+ */
+const PermissionKeys = {
+  wallet_getSecretArray: 'wallet_getSecretArray',
+  wallet_getSecretObject: 'wallet_getSecretObject',
+  'wallet_getSecret_*': 'wallet_getSecret_*',
   // 'wallet_getError' = 'wallet_getError',
   // 'wallet_getUndefined' = 'wallet_getUndefined',
-}
+} as const;
 
 /**
- * Permission name (as opposed to keys) enum. Since one of the permissions are
- * namespaced, it's a getter function.
+ * Permission name (as opposed to keys) constants and getters. Since one of the
+ * permissions are namespaced, it's a getter function.
  */
 const PermissionNames = {
   wallet_getSecretArray: PermissionKeys.wallet_getSecretArray,
@@ -249,7 +205,7 @@ const PermissionNames = {
   wallet_getSecret_: (str: string) => `wallet_getSecret_${str}` as const,
   // wallet_getError: 'wallet_getError' as const,
   // wallet_getUndefined: 'wallet_getUndefined' as const,
-};
+} as const;
 
 /**
  * Gets permission specifications for:
@@ -272,19 +228,21 @@ function getDefaultPermissionSpecifications() {
       allowedCaveats: [
         CaveatTypes.filterArrayResponse,
         CaveatTypes.reverseArrayResponse,
-      ] as const,
-      // allowedCaveats: ['foo'] as const,
-      methodImplementation: (_args: RestrictedMethodOptions<[]>) => {
+      ],
+      methodImplementation: (_args: RestrictedMethodOptions<never>) => {
         return ['a', 'b', 'c'];
+        // return () => undefined;
       },
     },
     [PermissionKeys.wallet_getSecretObject]: {
       targetKey: PermissionKeys.wallet_getSecretObject,
-      allowedCaveats: [CaveatTypes.filterObjectResponse] as const,
-      methodImplementation: (
-        _args: RestrictedMethodOptions<GenericRestrictedMethodParams>,
-      ) => {
+      allowedCaveats: [
+        CaveatTypes.filterObjectResponse,
+        CaveatTypes.noopCaveat,
+      ],
+      methodImplementation: (_args: RestrictedMethodOptions<never>) => {
         return { a: 'x', b: 'y', c: 'z' };
+        // return () => undefined;
       },
       validator: (permission: GenericPermission) => {
         // A dummy validator for a caveat type that should be impossible to add
@@ -298,14 +256,13 @@ function getDefaultPermissionSpecifications() {
     },
     [PermissionKeys['wallet_getSecret_*']]: {
       targetKey: PermissionKeys['wallet_getSecret_*'],
-      allowedCaveats: [CaveatTypes.noopCaveat] as const,
-      methodImplementation: (
-        args: RestrictedMethodOptions<GenericRestrictedMethodParams>,
-      ) => {
+      allowedCaveats: [CaveatTypes.noopCaveat],
+      methodImplementation: (args: RestrictedMethodOptions<[]>) => {
         return `Hello, secret friend "${args.method.replace(
           'wallet_getSecret_',
           '',
         )}"!`;
+        // return Symbol('foo')
       },
       factory: (options: PermissionOptions<SecretNamespacedPermission>) =>
         constructPermission<SecretNamespacedPermission>({
@@ -329,12 +286,80 @@ function getDefaultPermissionSpecifications() {
     // wallet_getUndefined: {
     //   target: PermissionKeys.wallet_getUndefined,
     // }
-  };
+  } as const;
 }
 
-// type Keys = keyof typeof MyType;
-// type Values = typeof MyType[Keys];
-// type Thing<T> = T extends
+// type RestrictedMethodContext = Readonly<{
+//   origin: string;
+//   [key: string]: any;
+// }>;
+
+// const specs = getDefaultPermissionSpecifications()
+// type DoesExtend<T, U> = T extends U ? T : never;
+// // type func = typeof specs.wallet_getSecretArray.methodImplementation
+// type func = typeof specs['wallet_getSecret_*']['methodImplementation']
+// type x = DoesExtend<func, GenericRestrictedMethod>
+// type xx = DoesExtend<func, (args: RestrictedMethodOptions<GenericRestrictedMethodParams>) => Json | Promise<Json>>;
+// type xxx = DoesExtend<func, (args: any) => Json | Promise<Json>>;
+// type xxxx = DoesExtend<func, (args: {
+//   method: string;
+//   params?: Json;
+//   context: RestrictedMethodContext;
+// }) => Json | Promise<Json>>;
+// type y = DoesExtend<void, GenericRestrictedMethodParams>
+// type yy = DoesExtend<RestrictedMethodOptions<never>, RestrictedMethodOptions<GenericRestrictedMethodParams>>;
+// type z = DoesExtend<string[], Json>
+// type zz = DoesExtend<[], Json>
+
+// type RestrictedMethodConstraint2<
+//   // MethodImplementation extends RestrictedMethodBase<any, any>,
+//   MethodImplementation,
+// > = MethodImplementation extends (args: infer Args) => Json | Promise<Json>
+//   ? Args extends RestrictedMethodOptions<GenericRestrictedMethodParams>
+//     ? MethodImplementation
+//   // ? Args extends any
+//   //   ? Args
+//     : never
+//   : never;
+
+// type RestrictedMethodConstraint3<
+//   // MethodImplementation extends RestrictedMethodBase<any, any>,
+//   MethodImplementation,
+// > = MethodImplementation extends (args: infer Args) => infer Result
+//   ? Args extends RestrictedMethodOptions<GenericRestrictedMethodParams>
+//     ? Result extends Json | Promise<Json>
+//       ? MethodImplementation
+//       : never
+//     : never
+//   : never;
+
+// type funcA = (args: RestrictedMethodOptions<[]>) => Promise<string>
+// type funcB = (args: RestrictedMethodOptions<[]>) => (() => undefined)
+// type funcC = (args: RestrictedMethodOptions<[]>) => Promise<() => undefined>
+
+// type a = RestrictedMethodConstraint3<funcA>
+// type b = RestrictedMethodConstraint3<funcB>
+// type c = RestrictedMethodConstraint3<funcC>
+
+// type j = PermissionSpecificationConstraint2<typeof specs.wallet_getSecretObject>
+// type k = PermissionSpecificationConstraint2<DefaultPermissionSpecifications>
+
+// type PermissionControllerOptions<
+//   PermissionSpecification extends NewSpecShape<string>,
+//   Caveat extends GenericCaveat,
+// > = PermissionSpecificationConstraint2<PermissionSpecification> extends never
+//   ? never
+//   : {
+//       messenger: any;
+//       caveatSpecifications: CaveatSpecifications<Caveat>;
+//       // permissionSpecifications: PermissionSpecificationsMap2<PermissionSpecificationConstraint2<PermissionSpecification>>;
+//       permissionSpecifications: PermissionSpecificationsMap2<PermissionSpecification>;
+//       unrestrictedMethods: string[];
+//       state?: Partial<{}>
+//     };
+
+// type q = PermissionControllerOptions<DefaultPermissionSpecifications, DefaultCaveats>
+
 type GetSpecMapValues<T> = T extends PermissionSpecificationsMap2<
   NewSpecShape<string>
 >

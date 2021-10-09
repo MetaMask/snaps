@@ -272,7 +272,15 @@ type RestrictedMethodContext = Readonly<{
   [key: string]: any;
 }>;
 
-export type GenericRestrictedMethodParams = Json[] | Record<string, Json>;
+export type GenericRestrictedMethodParams =
+  | Json[]
+  | Record<string, Json>
+  | never;
+
+export type GenericRestrictedMethod = RestrictedMethodBase<
+  GenericRestrictedMethodParams,
+  Json
+>;
 
 /**
  * The arguments passed to a restricted method implementation.
@@ -325,8 +333,8 @@ export type RestrictedMethodBase<
 export type RestrictedMethodConstraint<
   // MethodImplementation extends RestrictedMethodBase<any, any>,
   MethodImplementation,
-> = MethodImplementation extends (...args: infer Args) => Json
-  ? Args extends GenericRestrictedMethodParams
+> = MethodImplementation extends (args: infer Args) => Json | Promise<Json>
+  ? Args extends RestrictedMethodOptions<GenericRestrictedMethodParams>
     ? MethodImplementation
     : never
   : never;
@@ -425,6 +433,8 @@ type GenericFunction = (...args: any[]) => any;
 export type NewSpecShape<TargetKey extends string> = {
   targetKey: TargetKey;
   methodImplementation: GenericFunction;
+  // methodImplementation: GenericRestrictedMethod;
+  // methodImplementation: (args: RestrictedMethodOptions<GenericRestrictedMethodParams>) => Json | Promise<Json>,
   allowedCaveats?: Readonly<NonEmptyArray<string>>;
   validator?: GenericFunction;
   factory?: GenericFunction;
@@ -543,6 +553,7 @@ export type PermissionSpecificationsMap2<
 export type PermissionSpecificationsMap3<
   Specifications extends NewSpecShape<string>,
 > = Record<Specifications['targetKey'], Specifications>;
+// > = PermissionSpecificationConstraint2<Specifications> extends never ? never : Record<Specifications['targetKey'], Specifications>;
 
 export type PermissionSpecificationsMap<
   Specifications extends PermissionSpecificationBase<string, any, any, any>,

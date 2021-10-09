@@ -31,19 +31,17 @@ import {
   ExtractValidCaveatTypes,
   findCaveat,
   GenericPermission,
-  MutableCaveats,
   OriginString,
   PermissionOptions,
   RequestedPermissions,
   RestrictedMethodBase,
   GenericRestrictedMethodParams,
   PermissionSpecificationConstraint2,
-  PermissionSpecificationsMap3,
+  PermissionSpecificationsMap2,
   NewSpecShape,
   PermissionConstraint,
   ExtractCaveatsFromTypes,
   ExtractCaveatTypes,
-  ExtractCaveats,
 } from './Permission';
 import {
   PermissionDoesNotExistError,
@@ -269,10 +267,15 @@ export type GenericPermissionController = PermissionController<
 export type ExtractPermission<
   PermissionSpecification extends NewSpecShape<string>,
   Caveat extends GenericCaveat,
-> = PermissionConstraint<
-  PermissionSpecification['targetKey'],
-  ExtractCaveatsFromTypes<ExtractCaveatTypes<PermissionSpecification>, Caveat>
->;
+> = PermissionSpecification extends any
+  ? PermissionConstraint<
+      PermissionSpecification['targetKey'],
+      ExtractCaveatsFromTypes<
+        ExtractCaveatTypes<PermissionSpecification>,
+        Caveat
+      >
+    >
+  : never;
 
 /**
  * Options for the {@link PermissionController} constructor.
@@ -294,7 +297,7 @@ export type PermissionControllerOptions<
   : {
       messenger: PermissionControllerMessenger;
       caveatSpecifications: CaveatSpecifications<Caveat>;
-      permissionSpecifications: PermissionSpecificationsMap3<PermissionSpecification>;
+      permissionSpecifications: PermissionSpecificationsMap2<PermissionSpecification>;
       unrestrictedMethods: string[];
       state?: Partial<
         PermissionControllerState<
@@ -338,14 +341,14 @@ export class PermissionController<
   }
 
   private readonly _permissionSpecifications: Readonly<
-    PermissionSpecificationsMap3<Specification>
+    PermissionSpecificationsMap2<Specification>
   >;
 
   /**
-   * The {@link PermissionSpecificationsMap3} of the controller.
+   * The {@link PermissionSpecificationsMap2} of the controller.
    */
   public get permissionSpecifications(): Readonly<
-    PermissionSpecificationsMap3<Specification>
+    PermissionSpecificationsMap2<Specification>
   > {
     return this._permissionSpecifications;
   }
@@ -378,7 +381,7 @@ export class PermissionController<
    * documentation for more details.
    * @param options.permissionSpecifications - The specifications of all
    * permissions available to the controller. See
-   * {@link PermissionSpecificationsMap3} and the documentation for more details.
+   * {@link PermissionSpecificationsMap2} and the documentation for more details.
    * @param options.unrestrictedMethods - The callable names of all JSON-RPC
    * methods ignored by the new controller.
    * @param options.messenger - The controller messenger. See
@@ -435,7 +438,7 @@ export class PermissionController<
    * controller's constructor.
    */
   private validatePermissionSpecifications(
-    specifications: PermissionSpecificationsMap3<Specification>,
+    specifications: PermissionSpecificationsMap2<Specification>,
   ) {
     Object.entries<Specification>(specifications).forEach(
       ([targetKey, { targetKey: innerTargetKey }]) => {
@@ -708,14 +711,11 @@ export class PermissionController<
       Specification,
       Caveat
     >['parentCapability'],
-    // CaveatType extends ExtractValidCaveatTypes<
-    //   ExtractPermission<Specification, Caveat>,
-    //   Specification['targetKey'],
-    //   TargetName
-    // >,
-    CaveatType extends ExtractCaveats<
-      ExtractPermission<Specification, Caveat>
-    >['type'],
+    CaveatType extends ExtractValidCaveatTypes<
+      ExtractPermission<Specification, Caveat>,
+      Specification['targetKey'],
+      TargetName
+    >,
   >(origin: OriginString, target: TargetName, caveatType: CaveatType): boolean {
     return Boolean(this.getCaveat(origin, target, caveatType));
   }
@@ -877,9 +877,7 @@ export class PermissionController<
     caveatValue: ExtractCaveatValue<Caveat, CaveatType>,
   ): void {
     this.update((draftState) => {
-      const subject = draftState.subjects[origin] as
-        | PermissionSubjectEntry<ExtractPermission<Specification, Caveat>>
-        | undefined;
+      const subject = draftState.subjects[origin];
 
       // This should be impossible in our usage, but TypeScript wants it
       /* istanbul ignore if */
@@ -888,9 +886,7 @@ export class PermissionController<
       }
 
       // Typecast: immer's WritableDraft is incompatible with our generics
-      const permission: MutableCaveats<
-        ExtractPermission<Specification, Caveat>
-      > = subject.permissions[target];
+      const permission = subject.permissions[target];
 
       // This should also be impossible in our usage, but TypeScript wants it
       /* istanbul ignore if */
@@ -923,7 +919,8 @@ export class PermissionController<
       }
 
       this.validateModifiedPermission(
-        permission as ExtractPermission<Specification, Caveat>,
+        // TODO:types why?
+        permission as unknown as ExtractPermission<Specification, Caveat>,
       );
     });
   }
@@ -953,14 +950,7 @@ export class PermissionController<
     >,
   >(origin: OriginString, target: TargetName, caveatType: CaveatType): void {
     this.update((draftState) => {
-      // Typecast: immer's WritableDraft is incompatible with our generics
-      const permission: MutableCaveats<
-        ExtractPermission<Specification, Caveat>
-      > = (
-        draftState.subjects as PermissionControllerSubjects<
-          ExtractPermission<Specification, Caveat>
-        >
-      )[origin]?.permissions[target];
+      const permission = draftState.subjects[origin]?.permissions[target];
       if (!permission) {
         throw new PermissionDoesNotExistError(origin, target);
       }
@@ -977,13 +967,15 @@ export class PermissionController<
       }
 
       if (permission.caveats.length === 1) {
-        permission.caveats = null;
+        // TODO:types why?
+        permission.caveats = null as any;
       } else {
         permission.caveats.splice(caveatIndex, 1);
       }
 
       this.validateModifiedPermission(
-        permission as ExtractPermission<Specification, Caveat>,
+        // TODO:types why?
+        permission as unknown as ExtractPermission<Specification, Caveat>,
       );
     });
   }
