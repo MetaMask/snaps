@@ -25,7 +25,7 @@ export type GenericTargetName = string;
  */
 export type PermissionBase<
   Target extends GenericTargetName,
-  AllowedCaveat extends GenericCaveat | never,
+  AllowedCaveat extends GenericCaveat,
 > = {
   /**
    * The context(s) in which this capability is meaningful.
@@ -65,9 +65,7 @@ export type PermissionBase<
    *
    * In the context of MetaMask, this is always the name of an RPC method.
    */
-  readonly parentCapability: Target extends `${string}_`
-    ? `${Target}${string}`
-    : Target;
+  readonly parentCapability: Target;
 };
 
 /**
@@ -103,7 +101,7 @@ type ExtractPermissionTargetNames<Key extends string> =
  */
 export type PermissionConstraint<
   TargetKey extends string,
-  AllowedCaveats extends GenericCaveat | never,
+  AllowedCaveats extends GenericCaveat,
 > = TargetNameConstraint<ExtractPermissionTargetNames<TargetKey>> extends never
   ? never
   : PermissionBase<ExtractPermissionTargetNames<TargetKey>, AllowedCaveats>;
@@ -113,7 +111,7 @@ export type PermissionConstraint<
  */
 export type GenericPermission = PermissionConstraint<
   GenericTargetName,
-  GenericCaveat | never
+  GenericCaveat
 >;
 
 /**

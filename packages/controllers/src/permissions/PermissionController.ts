@@ -1408,7 +1408,7 @@ export class PermissionController<
         throw invalidParams({ data: { origin, requestedPermissions } });
       }
 
-      if (!this.getRestrictedMethod(methodName)) {
+      if (!this.getTargetKey(methodName)) {
         throw methodNotFound({
           method: methodName,
           data: { origin, requestedPermissions },
