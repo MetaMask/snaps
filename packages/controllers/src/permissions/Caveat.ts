@@ -66,15 +66,16 @@ export type CaveatDecorator<Caveat extends GenericCaveat> = (
   caveat: Caveat,
 ) => AsyncRestrictedMethod<RestrictedMethodParameters, Json>;
 
-type ExtractCaveatValueFromDecorator<Decorator extends CaveatDecorator<any>> =
-  Decorator extends (
-    decorated: any,
-    caveat: infer Caveat,
-  ) => AsyncRestrictedMethod<RestrictedMethodParameters, Json>
-    ? Caveat extends GenericCaveat
-      ? Caveat['value']
-      : never
-    : never;
+export type ExtractCaveatValueFromDecorator<
+  Decorator extends CaveatDecorator<any>,
+> = Decorator extends (
+  decorated: any,
+  caveat: infer Caveat,
+) => AsyncRestrictedMethod<any, any>
+  ? Caveat extends GenericCaveat
+    ? Caveat['value']
+    : never
+  : never;
 
 type CaveatValidator<Caveat extends GenericCaveat> = (
   caveat: { type: Caveat['type']; value: unknown },
@@ -114,9 +115,11 @@ export type CaveatSpecificationBase<Type extends string> = {
 export type GenericCaveat = CaveatBase<string, Json>;
 
 export type CaveatSpecificationsMap<
-  CaveatSpecification extends CaveatSpecificationBase<string>,
+  Specification extends CaveatSpecificationBase<string>,
 > = {
-  [Key in CaveatSpecification['type']]: CaveatSpecification;
+  [Key in Specification['type']]: Specification extends CaveatSpecificationBase<Key>
+    ? Specification
+    : never;
 };
 
 export type ExtractCaveats<
@@ -128,12 +131,40 @@ export type ExtractCaveats<
     >
   : never;
 
+/**
+ * Internal utility type, because using parameterized types in conditional types
+ * causes weird things to happen.
+ */
+type _ExtractCaveat<
+  Caveat extends GenericCaveat,
+  CaveatType extends string,
+> = Caveat extends CaveatBase<CaveatType, Json> ? Caveat : never;
+
 export type ExtractCaveat<
   CaveatSpecification extends CaveatSpecificationBase<string>,
   CaveatType extends string,
-> = ExtractCaveats<CaveatSpecification> extends CaveatBase<CaveatType, Json>
-  ? ExtractCaveats<CaveatSpecification>
-  : never;
+> = _ExtractCaveat<ExtractCaveats<CaveatSpecification>, CaveatType>;
+// extends CaveatBase<CaveatType, Json>
+//   ? ExtractCaveats<CaveatSpecification>
+//   : never;
+
+/**
+ * A utility type for extracting the {@link CaveatBase.value} type from
+ * a union of caveat types.
+ *
+ * @template CaveatUnion - The caveat type union to extract a value type from.
+ * @template CaveatType - The type of the caveat whose value to extract.
+ */
+export type ExtractCaveatValue<
+  CaveatSpecification extends CaveatSpecificationBase<string>,
+  CaveatType extends string,
+> = ExtractCaveat<CaveatSpecification, CaveatType>['value'];
+// export type ExtractCaveatValue<
+//   CaveatUnion extends GenericCaveat,
+//   CaveatType extends string,
+// > = CaveatUnion extends CaveatBase<CaveatType, infer CaveatValue>
+//   ? CaveatValue
+//   : never;
 
 /**
  * Decorate a restricted method implementation with its caveats.

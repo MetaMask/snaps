@@ -404,6 +404,7 @@ function getDefaultPermissionController(
     DefaultPermissionSpecifications,
     DefaultCaveatSpecifications
   >(opts);
+  // return new PermissionController(opts);
 }
 
 /**

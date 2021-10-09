@@ -19,14 +19,13 @@ import deepFreeze from 'deep-freeze-strict';
 import { nanoid } from 'nanoid';
 import { isPlainObject, hasProperty, NonEmptyArray } from '../utils';
 import {
-  CaveatBase,
   constructCaveat as _constructCaveat,
   decorateWithCaveats,
-  GenericCaveat,
   ExtractCaveat,
   CaveatSpecificationBase,
   ExtractCaveats,
   CaveatSpecificationsMap,
+  ExtractCaveatValue,
 } from './Caveat';
 import {
   constructPermission,
@@ -226,20 +225,6 @@ export type PermissionControllerMessenger = RestrictedControllerMessenger<
 >;
 
 /**
- * A utility type for extracting the {@link CaveatBase.value} type from
- * a union of caveat types.
- *
- * @template CaveatUnion - The caveat type union to extract a value type from.
- * @template CaveatType - The type of the caveat whose value to extract.
- */
-export type ExtractCaveatValue<
-  CaveatUnion extends GenericCaveat,
-  CaveatType extends string,
-> = CaveatUnion extends CaveatBase<CaveatType, infer CaveatValue>
-  ? CaveatValue
-  : never;
-
-/**
  * Options for {@link PermissionController.grantPermissions}.
  */
 type GrantPermissionsOptions = {
@@ -380,7 +365,7 @@ export class PermissionController<
   /**
    * @param options - Permission controller options.
    * @param options.caveatSpecifications - The specifications of all caveats
-   * available to the controller. See {@link CaveatSpecifications} and the
+   * available to the controller. See {@link CaveatSpecificationsMap} and the
    * documentation for more details.
    * @param options.permissionSpecifications - The specifications of all
    * permissions available to the controller. See
@@ -817,10 +802,7 @@ export class PermissionController<
     origin: OriginString,
     target: TargetName,
     caveatType: CaveatType,
-    caveatValue: ExtractCaveatValue<
-      ExtractCaveats<CaveatSpecification>,
-      CaveatType
-    >,
+    caveatValue: ExtractCaveatValue<CaveatSpecification, CaveatType>,
   ): void {
     if (this.hasCaveat(origin, target, caveatType)) {
       throw new CaveatAlreadyExistsError(origin, target, caveatType);
@@ -853,14 +835,16 @@ export class PermissionController<
       CaveatSpecification
     >['parentCapability'],
     CaveatType extends CaveatSpecification['type'],
+    CaveatValue extends ExtractCaveatValue<CaveatSpecification, CaveatType>,
   >(
     origin: OriginString,
     target: TargetName,
     caveatType: CaveatType,
-    caveatValue: ExtractCaveatValue<
-      ExtractCaveats<CaveatSpecification>,
-      CaveatType
-    >,
+    caveatValue: CaveatValue,
+    // caveatValue: ExtractCaveatValue<
+    //   CaveatSpecification,
+    //   CaveatType
+    // >,
   ): void {
     if (!this.hasCaveat(origin, target, caveatType)) {
       throw new CaveatDoesNotExistError(origin, target, caveatType);
@@ -895,10 +879,7 @@ export class PermissionController<
     origin: OriginString,
     target: TargetName,
     caveatType: CaveatType,
-    caveatValue: ExtractCaveatValue<
-      ExtractCaveats<CaveatSpecification>,
-      CaveatType
-    >,
+    caveatValue: ExtractCaveatValue<CaveatSpecification, CaveatType>,
   ): void {
     this.update((draftState) => {
       const subject = draftState.subjects[origin];

@@ -274,6 +274,11 @@ export type RestrictedMethodBase<
   | SyncRestrictedMethod<Params, Result>
   | AsyncRestrictedMethod<Params, Result>;
 
+export type GenericRestrictedMethod = RestrictedMethodBase<
+  RestrictedMethodParameters,
+  Json
+>;
+
 export type RestrictedMethodConstraint<
   MethodImplementation extends GenericRestrictedMethod,
 > = MethodImplementation extends (args: infer Options) => Json | Promise<Json>
@@ -281,11 +286,6 @@ export type RestrictedMethodConstraint<
     ? MethodImplementation
     : never
   : never;
-
-export type GenericRestrictedMethod = RestrictedMethodBase<
-  RestrictedMethodParameters,
-  Json
->;
 
 export type PermissionFactory<
   Permission extends GenericPermission,
@@ -346,7 +346,7 @@ export type PermissionSpecificationBase<TargetKey extends string> = {
    * corresponds to.
    */
   methodImplementation: GenericFunction;
-  // methodImplementation: RestrictedMethodConstraint<any, any>;
+  // methodImplementation: RestrictedMethodConstraint<any>;
 
   /**
    * The factory function used to get permission objects. Permissions returned
@@ -396,11 +396,11 @@ export type PermissionSpecificationConstraint<T> =
  * types.
  */
 export type PermissionSpecificationsMap<
-  Specifications extends PermissionSpecificationBase<string>,
-> = PermissionSpecificationConstraint<Specifications> extends never
+  Specification extends PermissionSpecificationBase<string>,
+> = PermissionSpecificationConstraint<Specification> extends never
   ? never
   : {
-      [TargetKey in Specifications['targetKey']]: Specifications extends PermissionSpecificationBase<TargetKey>
-        ? Specifications
+      [TargetKey in Specification['targetKey']]: Specification extends PermissionSpecificationBase<TargetKey>
+        ? Specification
         : never;
     };
