@@ -19,14 +19,14 @@ import deepFreeze from 'deep-freeze-strict';
 import { nanoid } from 'nanoid';
 import { isPlainObject, hasProperty, NonEmptyArray } from '../utils';
 import {
-  CaveatConstraint,
+  CaveatBase,
   constructCaveat as _constructCaveat,
   decorateWithCaveats,
   GenericCaveat,
-  ExtractCaveatFromType,
-  CaveatSpecification2,
-  ExtractCaveatsFromSpec,
-  CaveatSpecifications2,
+  ExtractCaveat,
+  CaveatSpecificationBase,
+  ExtractCaveats,
+  CaveatSpecificationsMap,
 } from './Caveat';
 import {
   constructPermission,
@@ -36,10 +36,10 @@ import {
   PermissionOptions,
   RequestedPermissions,
   RestrictedMethodBase,
-  GenericRestrictedMethodParams,
-  PermissionSpecificationConstraint2,
-  PermissionSpecificationsMap2,
-  NewSpecShape,
+  RestrictedMethodParameters,
+  PermissionSpecificationConstraint,
+  PermissionSpecificationsMap,
+  PermissionSpecificationBase,
   PermissionConstraint,
 } from './Permission';
 import {
@@ -177,7 +177,7 @@ export type ClearPermissions = {
   handler: () => void;
 };
 
-// TODO: Implement all desired actions
+// TODO:feat Implement all desired actions
 /**
  * The {@link ControllerMessenger} actions of the {@link PermissionController}.
  */
@@ -226,7 +226,7 @@ export type PermissionControllerMessenger = RestrictedControllerMessenger<
 >;
 
 /**
- * A utility type for extracting the {@link CaveatConstraint.value} type from
+ * A utility type for extracting the {@link CaveatBase.value} type from
  * a union of caveat types.
  *
  * @template CaveatUnion - The caveat type union to extract a value type from.
@@ -235,7 +235,7 @@ export type PermissionControllerMessenger = RestrictedControllerMessenger<
 export type ExtractCaveatValue<
   CaveatUnion extends GenericCaveat,
   CaveatType extends string,
-> = CaveatUnion extends CaveatConstraint<CaveatType, infer CaveatValue>
+> = CaveatUnion extends CaveatBase<CaveatType, infer CaveatValue>
   ? CaveatValue
   : never;
 
@@ -250,27 +250,30 @@ type GrantPermissionsOptions = {
 };
 
 export type GenericPermissionController = PermissionController<
-  NewSpecShape<string>,
-  CaveatSpecification2<string>
+  PermissionSpecificationBase<string>,
+  CaveatSpecificationBase<string>
 >;
 
-// type ExtractPermission<Type> = Type extends PermissionSpecificationConstraint<
-//   string,
-//   infer X,
-//   Record<string, unknown>,
-//   RestrictedMethodBase<any, any>
-// >
-//   ? X
-//   : never;
-
+/**
+ * Extracts the permission type or types from the specified permission and
+ * caveat specifications.
+ *
+ * @template PermissionSpecification - The permission specification(s) to
+ * extract a permission type union from.
+ * @template CaveatSpecification - The caveat specification(s) to extract a
+ * permission type union from. Necessary because {@link PermissionConstraint}
+ * has a generic that describes the allowed caveats for the permission.
+ */
 export type ExtractPermission<
-  PermissionSpecification extends NewSpecShape<string>,
-  CaveatSpecification extends CaveatSpecification2<string>,
+  PermissionSpecification extends PermissionSpecificationBase<string>,
+  CaveatSpecification extends CaveatSpecificationBase<string>,
 > = PermissionSpecification extends any
-  ? PermissionConstraint<
-      PermissionSpecification['targetKey'],
-      ExtractCaveatsFromSpec<CaveatSpecification>
-    >
+  ? CaveatSpecification extends any
+    ? PermissionConstraint<
+        PermissionSpecification['targetKey'],
+        ExtractCaveats<CaveatSpecification>
+      >
+    : never
   : never;
 
 /**
@@ -286,14 +289,14 @@ export type ExtractPermission<
  * objects.
  */
 export type PermissionControllerOptions<
-  PermissionSpecification extends NewSpecShape<string>,
-  CaveatSpecification extends CaveatSpecification2<string>,
-> = PermissionSpecificationConstraint2<PermissionSpecification> extends never
+  PermissionSpecification extends PermissionSpecificationBase<string>,
+  CaveatSpecification extends CaveatSpecificationBase<string>,
+> = PermissionSpecificationConstraint<PermissionSpecification> extends never
   ? never
   : {
       messenger: PermissionControllerMessenger;
-      caveatSpecifications: CaveatSpecifications2<CaveatSpecification>;
-      permissionSpecifications: PermissionSpecificationsMap2<PermissionSpecification>;
+      caveatSpecifications: CaveatSpecificationsMap<CaveatSpecification>;
+      permissionSpecifications: PermissionSpecificationsMap<PermissionSpecification>;
       unrestrictedMethods: string[];
       state?: Partial<
         PermissionControllerState<
@@ -318,8 +321,8 @@ export type PermissionControllerOptions<
  * of the controller.
  */
 export class PermissionController<
-  PermissionSpecification extends NewSpecShape<string>,
-  CaveatSpecification extends CaveatSpecification2<string>,
+  PermissionSpecification extends PermissionSpecificationBase<string>,
+  CaveatSpecification extends CaveatSpecificationBase<string>,
 > extends BaseController<
   typeof controllerName,
   PermissionControllerState<
@@ -328,27 +331,27 @@ export class PermissionController<
   PermissionControllerMessenger
 > {
   private readonly _caveatSpecifications: Readonly<
-    CaveatSpecifications2<CaveatSpecification>
+    CaveatSpecificationsMap<CaveatSpecification>
   >;
 
   /**
    * The {@link CaveatSpecifications} of the controller.
    */
   public get caveatSpecifications(): Readonly<
-    CaveatSpecifications2<CaveatSpecification>
+    CaveatSpecificationsMap<CaveatSpecification>
   > {
     return this._caveatSpecifications;
   }
 
   private readonly _permissionSpecifications: Readonly<
-    PermissionSpecificationsMap2<PermissionSpecification>
+    PermissionSpecificationsMap<PermissionSpecification>
   >;
 
   /**
-   * The {@link PermissionSpecificationsMap2} of the controller.
+   * The {@link PermissionSpecificationsMap} of the controller.
    */
   public get permissionSpecifications(): Readonly<
-    PermissionSpecificationsMap2<PermissionSpecification>
+    PermissionSpecificationsMap<PermissionSpecification>
   > {
     return this._permissionSpecifications;
   }
@@ -381,7 +384,7 @@ export class PermissionController<
    * documentation for more details.
    * @param options.permissionSpecifications - The specifications of all
    * permissions available to the controller. See
-   * {@link PermissionSpecificationsMap2} and the documentation for more details.
+   * {@link PermissionSpecificationsMap} and the documentation for more details.
    * @param options.unrestrictedMethods - The callable names of all JSON-RPC
    * methods ignored by the new controller.
    * @param options.messenger - The controller messenger. See
@@ -443,7 +446,7 @@ export class PermissionController<
    * controller's constructor.
    */
   private validatePermissionSpecifications(
-    specifications: PermissionSpecificationsMap2<PermissionSpecification>,
+    specifications: PermissionSpecificationsMap<PermissionSpecification>,
   ) {
     Object.entries<PermissionSpecification>(specifications).forEach(
       ([targetKey, { targetKey: innerTargetKey }]) => {
@@ -479,7 +482,7 @@ export class PermissionController<
 
     this.messagingSystem.registerActionHandler(
       `${controllerName}:hasPermissions`,
-      (origin: string) => this.hasPermissions(origin),
+      (origin: OriginString) => this.hasPermissions(origin),
     );
   }
 
@@ -488,8 +491,11 @@ export class PermissionController<
    */
   clearState(): void {
     this.update((_draftState) => {
-      // TODO:types why?
-      return { ...defaultState } as any;
+      // Typecast: The default state is declared outside of the controller
+      // instance and therefore incorrectly genericized.
+      return { ...defaultState } as PermissionControllerState<
+        ExtractPermission<PermissionSpecification, CaveatSpecification>
+      >;
     });
   }
 
@@ -501,7 +507,7 @@ export class PermissionController<
    */
   getRestrictedMethod(
     method: string,
-  ): RestrictedMethodBase<GenericRestrictedMethodParams, Json> | undefined {
+  ): RestrictedMethodBase<RestrictedMethodParameters, Json> | undefined {
     const targetKey = this.getTargetKey(
       method as ExtractPermission<
         PermissionSpecification,
@@ -551,12 +557,8 @@ export class PermissionController<
    * @returns The permissions of the subject, if any.
    */
   getPermissions(
-    origin: OriginString,
-  ):
-    | SubjectPermissions<
-        ExtractPermission<PermissionSpecification, CaveatSpecification>
-      >
-    | undefined {
+    origin: OriginString, // | SubjectPermissions< //     ExtractPermission<PermissionSpecification, CaveatSpecification> //   > // | undefined {
+  ) {
     // TODO:types why?
     return this.state.subjects[origin]?.permissions as
       | SubjectPermissions<
@@ -775,16 +777,15 @@ export class PermissionController<
     origin: OriginString,
     target: TargetName,
     caveatType: CaveatType,
-  ): ExtractCaveatFromType<CaveatSpecification, CaveatType> | undefined {
+  ): ExtractCaveat<CaveatSpecification, CaveatType> | undefined {
     const permission = this.getPermission(origin, target);
     if (!permission) {
       throw new PermissionDoesNotExistError(origin, target);
     }
 
-    return findCaveat(permission, caveatType) as ExtractCaveatFromType<
-      CaveatSpecification,
-      CaveatType
-    >;
+    return findCaveat(permission, caveatType) as
+      | ExtractCaveat<CaveatSpecification, CaveatType>
+      | undefined;
   }
 
   /**
@@ -817,7 +818,7 @@ export class PermissionController<
     target: TargetName,
     caveatType: CaveatType,
     caveatValue: ExtractCaveatValue<
-      ExtractCaveatsFromSpec<CaveatSpecification>,
+      ExtractCaveats<CaveatSpecification>,
       CaveatType
     >,
   ): void {
@@ -857,7 +858,7 @@ export class PermissionController<
     target: TargetName,
     caveatType: CaveatType,
     caveatValue: ExtractCaveatValue<
-      ExtractCaveatsFromSpec<CaveatSpecification>,
+      ExtractCaveats<CaveatSpecification>,
       CaveatType
     >,
   ): void {
@@ -895,7 +896,7 @@ export class PermissionController<
     target: TargetName,
     caveatType: CaveatType,
     caveatValue: ExtractCaveatValue<
-      ExtractCaveatsFromSpec<CaveatSpecification>,
+      ExtractCaveats<CaveatSpecification>,
       CaveatType
     >,
   ): void {
@@ -1221,14 +1222,12 @@ export class PermissionController<
       CaveatSpecification
     >['parentCapability'],
     requestedCaveats?: unknown[] | null,
-  ): NonEmptyArray<ExtractCaveatsFromSpec<CaveatSpecification>> | undefined {
+  ): NonEmptyArray<ExtractCaveats<CaveatSpecification>> | undefined {
     const caveatArray = requestedCaveats?.map((requestedCaveat) =>
       this.constructCaveat(origin, target, requestedCaveat),
     );
     return caveatArray && caveatArray.length > 0
-      ? (caveatArray as NonEmptyArray<
-          ExtractCaveatsFromSpec<CaveatSpecification>
-        >)
+      ? (caveatArray as NonEmptyArray<ExtractCaveats<CaveatSpecification>>)
       : undefined;
   }
 
@@ -1254,7 +1253,7 @@ export class PermissionController<
       CaveatSpecification
     >['parentCapability'],
     requestedCaveat: unknown,
-  ): ExtractCaveatsFromSpec<CaveatSpecification> {
+  ): ExtractCaveats<CaveatSpecification> {
     if (!isPlainObject(requestedCaveat)) {
       throw new InvalidCaveatError(requestedCaveat, origin, target);
     }
@@ -1286,7 +1285,7 @@ export class PermissionController<
       (requestedCaveat.value as Json) ?? null,
     );
     specification.validator?.(caveat, origin, target);
-    return caveat as ExtractCaveatsFromSpec<CaveatSpecification>;
+    return caveat as ExtractCaveats<CaveatSpecification>;
   }
 
   /**
@@ -1307,7 +1306,7 @@ export class PermissionController<
    * @returns The granted permissions and request metadata.
    */
   async requestPermissions(
-    origin: string,
+    origin: OriginString,
     requestedPermissions: RequestedPermissions,
     id: string = nanoid(),
     preserveExistingPermissions = true,
@@ -1317,7 +1316,7 @@ export class PermissionController<
         string,
         ExtractPermission<PermissionSpecification, CaveatSpecification>
       >,
-      { id: string; origin: string },
+      { id: string; origin: OriginString },
     ]
   > {
     this.validateRequestedPermissions(origin, requestedPermissions);
@@ -1391,7 +1390,7 @@ export class PermissionController<
    * @param requestedPermissions - The requested permissions.
    */
   private validateRequestedPermissions(
-    origin: string,
+    origin: OriginString,
     requestedPermissions: RequestedPermissions,
   ): void {
     if (
@@ -1522,12 +1521,12 @@ export class PermissionController<
    * @returns The result of the executed method.
    */
   async executeRestrictedMethod(
-    origin: string,
+    origin: OriginString,
     methodName: ExtractPermission<
       PermissionSpecification,
       CaveatSpecification
     >['parentCapability'],
-    params?: GenericRestrictedMethodParams,
+    params?: RestrictedMethodParameters,
   ): Promise<Json> {
     // Throws if the method does not exist
     const methodImplementation = this._getRestrictedMethod(methodName, origin);
@@ -1562,7 +1561,7 @@ export class PermissionController<
    */
   private _executeRestrictedMethod(
     methodImplementation: RestrictedMethodBase<
-      GenericRestrictedMethodParams,
+      RestrictedMethodParameters,
       Json
     >,
     subject: PermissionSubjectMetadata,
@@ -1570,8 +1569,8 @@ export class PermissionController<
       PermissionSpecification,
       CaveatSpecification
     >['parentCapability'],
-    params: GenericRestrictedMethodParams = [],
-  ): ReturnType<RestrictedMethodBase<GenericRestrictedMethodParams, Json>> {
+    params: RestrictedMethodParameters = [],
+  ): ReturnType<RestrictedMethodBase<RestrictedMethodParameters, Json>> {
     const { origin } = subject;
 
     const permission = this.getPermission(origin, method);
@@ -1599,8 +1598,8 @@ export class PermissionController<
    */
   private _getRestrictedMethod(
     method: string,
-    origin: string,
-  ): RestrictedMethodBase<GenericRestrictedMethodParams, Json> {
+    origin: OriginString,
+  ): RestrictedMethodBase<RestrictedMethodParameters, Json> {
     const methodImplementation = this.getRestrictedMethod(
       method as ExtractPermission<
         PermissionSpecification,

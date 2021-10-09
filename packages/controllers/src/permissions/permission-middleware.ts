@@ -11,22 +11,19 @@ import {
   GenericPermission,
   PermissionSubjectMetadata,
   RestrictedMethodBase,
-  GenericRestrictedMethodParams,
+  RestrictedMethodParameters,
 } from '.';
 
 type ExecuteRestrictedMethod<Permission extends GenericPermission> = (
-  methodImplementation: RestrictedMethodBase<
-    GenericRestrictedMethodParams,
-    Json
-  >,
+  methodImplementation: RestrictedMethodBase<RestrictedMethodParameters, Json>,
   subject: PermissionSubjectMetadata,
   method: Permission['parentCapability'],
-  params?: GenericRestrictedMethodParams,
-) => ReturnType<RestrictedMethodBase<GenericRestrictedMethodParams, Json>>;
+  params?: RestrictedMethodParameters,
+) => ReturnType<RestrictedMethodBase<RestrictedMethodParameters, Json>>;
 type GetRestrictedMethod = (
   method: string,
   origin: string,
-) => RestrictedMethodBase<GenericRestrictedMethodParams, Json>;
+) => RestrictedMethodBase<RestrictedMethodParameters, Json>;
 type IsUnrestrictedMethod = (method: string) => boolean;
 
 type PermissionMiddlewareFactoryOptions<Permission extends GenericPermission> =
@@ -45,9 +42,9 @@ export function getPermissionMiddlewareFactory<
 }: PermissionMiddlewareFactoryOptions<Permission>) {
   return function createPermissionMiddleware(
     subject: PermissionSubjectMetadata,
-  ): JsonRpcMiddleware<GenericRestrictedMethodParams, Json> {
+  ): JsonRpcMiddleware<RestrictedMethodParameters, Json> {
     const permissionsMiddleware = async (
-      req: JsonRpcRequest<GenericRestrictedMethodParams>,
+      req: JsonRpcRequest<RestrictedMethodParameters>,
       res: PendingJsonRpcResponse<Json>,
       next: AsyncJsonRpcEngineNextCallback,
     ): Promise<void> => {

@@ -12,7 +12,7 @@ import * as errors from './errors';
 import { constructCaveat } from './Caveat';
 import {
   AsyncRestrictedMethod,
-  CaveatConstraint,
+  CaveatBase,
   constructPermission,
   GenericCaveat,
   GenericPermission,
@@ -23,14 +23,14 @@ import {
   PermissionControllerEvents,
   PermissionOptions,
   RestrictedMethodOptions,
-  GenericRestrictedMethodParams,
-  NewSpecShape,
-  PermissionSpecificationsMap2,
-  CaveatSpecifications2,
-  CaveatSpecification2,
+  RestrictedMethodParameters,
+  PermissionSpecificationBase,
+  PermissionSpecificationsMap,
+  CaveatSpecificationsMap,
+  CaveatSpecificationBase,
 } from '.';
 
-// CaveatConstraint types and specifications
+// CaveatBase types and specifications
 
 const CaveatTypes = {
   filterArrayResponse: 'filterArrayResponse',
@@ -39,22 +39,22 @@ const CaveatTypes = {
   noopCaveat: 'noopCaveat',
 } as const;
 
-type FilterArrayCaveat = CaveatConstraint<
+type FilterArrayCaveat = CaveatBase<
   typeof CaveatTypes.filterArrayResponse,
   string[]
 >;
 
-type ReverseArrayCaveat = CaveatConstraint<
+type ReverseArrayCaveat = CaveatBase<
   typeof CaveatTypes.reverseArrayResponse,
   null
 >;
 
-type FilterObjectCaveat = CaveatConstraint<
+type FilterObjectCaveat = CaveatBase<
   typeof CaveatTypes.filterObjectResponse,
   string[]
 >;
 
-type NoopCaveat = CaveatConstraint<typeof CaveatTypes.noopCaveat, null>;
+type NoopCaveat = CaveatBase<typeof CaveatTypes.noopCaveat, null>;
 
 // type DefaultCaveats =
 //   | FilterArrayCaveat
@@ -78,12 +78,10 @@ function getDefaultCaveatSpecifications() {
       type: CaveatTypes.filterArrayResponse,
       decorator:
         (
-          method: AsyncRestrictedMethod<GenericRestrictedMethodParams, Json>,
+          method: AsyncRestrictedMethod<RestrictedMethodParameters, Json>,
           caveat: FilterArrayCaveat,
         ) =>
-        async (
-          args: RestrictedMethodOptions<GenericRestrictedMethodParams>,
-        ) => {
+        async (args: RestrictedMethodOptions<RestrictedMethodParameters>) => {
           const result: string[] | unknown = await method(args);
           if (!Array.isArray(result)) {
             throw Error('not an array');
@@ -98,12 +96,10 @@ function getDefaultCaveatSpecifications() {
       type: CaveatTypes.reverseArrayResponse,
       decorator:
         (
-          method: AsyncRestrictedMethod<GenericRestrictedMethodParams, Json>,
+          method: AsyncRestrictedMethod<RestrictedMethodParameters, Json>,
           _caveat: ReverseArrayCaveat,
         ) =>
-        async (
-          args: RestrictedMethodOptions<GenericRestrictedMethodParams>,
-        ) => {
+        async (args: RestrictedMethodOptions<RestrictedMethodParameters>) => {
           const result: unknown[] | unknown = await method(args);
           if (!Array.isArray(result)) {
             throw Error('not an array');
@@ -116,12 +112,10 @@ function getDefaultCaveatSpecifications() {
       type: CaveatTypes.filterObjectResponse,
       decorator:
         (
-          method: AsyncRestrictedMethod<GenericRestrictedMethodParams, Json>,
+          method: AsyncRestrictedMethod<RestrictedMethodParameters, Json>,
           caveat: FilterObjectCaveat,
         ) =>
-        async (
-          args: RestrictedMethodOptions<GenericRestrictedMethodParams>,
-        ) => {
+        async (args: RestrictedMethodOptions<RestrictedMethodParameters>) => {
           const result = await method(args);
           if (!isPlainObject(result)) {
             throw Error('not a plain object');
@@ -139,12 +133,10 @@ function getDefaultCaveatSpecifications() {
       type: CaveatTypes.noopCaveat,
       decorator:
         (
-          method: AsyncRestrictedMethod<GenericRestrictedMethodParams, Json>,
+          method: AsyncRestrictedMethod<RestrictedMethodParameters, Json>,
           _caveat: NoopCaveat,
         ) =>
-        async (
-          args: RestrictedMethodOptions<GenericRestrictedMethodParams>,
-        ) => {
+        async (args: RestrictedMethodOptions<RestrictedMethodParameters>) => {
           return method(args);
         },
       validator: (caveat: {
@@ -159,8 +151,8 @@ function getDefaultCaveatSpecifications() {
   } as const;
 }
 
-type GetCaveatSpecMapValues<T> = T extends CaveatSpecifications2<
-  CaveatSpecification2<string>
+type GetCaveatSpecMapValues<T> = T extends CaveatSpecificationsMap<
+  CaveatSpecificationBase<string>
 >
   ? T[keyof T]
   : never;
@@ -171,25 +163,10 @@ type DefaultCaveatSpecifications = GetCaveatSpecMapValues<
 
 // Permission types and specifications
 
-// // wallet_getSecretArray
-
-// type SecretArrayPermissionName = 'wallet_getSecretArray';
-
-// type SecretArrayPermission = PermissionConstraint<
-//   SecretArrayPermissionName,
-//   FilterArrayCaveat | ReverseArrayCaveat
-// >;
-
-// // wallet_getSecretObject
-
-// type SecretObjectPermissionName = 'wallet_getSecretObject';
-
-// type SecretObjectPermission = PermissionConstraint<
-//   SecretObjectPermissionName,
-//   FilterObjectCaveat | NoopCaveat
-// >;
-
 // wallet_getSecret_*
+// We only define types for this permission because it's the only one with a
+// factory.
+// Other permission types are extracted from the permission specifications.
 
 type SecretNamespacedPermissionKey = 'wallet_getSecret_*';
 
@@ -205,8 +182,6 @@ const PermissionKeys = {
   wallet_getSecretArray: 'wallet_getSecretArray',
   wallet_getSecretObject: 'wallet_getSecretObject',
   'wallet_getSecret_*': 'wallet_getSecret_*',
-  // 'wallet_getError' = 'wallet_getError',
-  // 'wallet_getUndefined' = 'wallet_getUndefined',
 } as const;
 
 /**
@@ -217,8 +192,6 @@ const PermissionNames = {
   wallet_getSecretArray: PermissionKeys.wallet_getSecretArray,
   wallet_getSecretObject: PermissionKeys.wallet_getSecretObject,
   wallet_getSecret_: (str: string) => `wallet_getSecret_${str}` as const,
-  // wallet_getError: 'wallet_getError' as const,
-  // wallet_getUndefined: 'wallet_getUndefined' as const,
 } as const;
 
 /**
@@ -291,91 +264,25 @@ function getDefaultPermissionSpecifications() {
         );
       },
     },
-    // wallet_getError: {
-    //   target: PermissionKeys.wallet_getError,
-    //   methodImplementation: ((args: RestrictedMethodOptions<string[]>) => {
-    //     return { message: `The error says: ${args.params?.[0] || 'default'}` }
-    //   })
-    // },
-    // wallet_getUndefined: {
-    //   target: PermissionKeys.wallet_getUndefined,
-    // }
   } as const;
 }
 
-// type RestrictedMethodContext = Readonly<{
-//   origin: string;
-//   [key: string]: any;
-// }>;
+// TODO:delete
+// type DoesExtend<T, U> = T extends U ? T : never;
 
 // const specs = getDefaultPermissionSpecifications()
-// type DoesExtend<T, U> = T extends U ? T : never;
-// // type func = typeof specs.wallet_getSecretArray.methodImplementation
 // type func = typeof specs['wallet_getSecret_*']['methodImplementation']
 // type x = DoesExtend<func, GenericRestrictedMethod>
-// type xx = DoesExtend<func, (args: RestrictedMethodOptions<GenericRestrictedMethodParams>) => Json | Promise<Json>>;
+// type xx = DoesExtend<func, (args: RestrictedMethodOptions<RestrictedMethodParameters>) => Json | Promise<Json>>;
 // type xxx = DoesExtend<func, (args: any) => Json | Promise<Json>>;
 // type xxxx = DoesExtend<func, (args: {
 //   method: string;
 //   params?: Json;
 //   context: RestrictedMethodContext;
 // }) => Json | Promise<Json>>;
-// type y = DoesExtend<void, GenericRestrictedMethodParams>
-// type yy = DoesExtend<RestrictedMethodOptions<never>, RestrictedMethodOptions<GenericRestrictedMethodParams>>;
-// type z = DoesExtend<string[], Json>
-// type zz = DoesExtend<[], Json>
 
-// type RestrictedMethodConstraint2<
-//   // MethodImplementation extends RestrictedMethodBase<any, any>,
-//   MethodImplementation,
-// > = MethodImplementation extends (args: infer Args) => Json | Promise<Json>
-//   ? Args extends RestrictedMethodOptions<GenericRestrictedMethodParams>
-//     ? MethodImplementation
-//   // ? Args extends any
-//   //   ? Args
-//     : never
-//   : never;
-
-// type RestrictedMethodConstraint3<
-//   // MethodImplementation extends RestrictedMethodBase<any, any>,
-//   MethodImplementation,
-// > = MethodImplementation extends (args: infer Args) => infer Result
-//   ? Args extends RestrictedMethodOptions<GenericRestrictedMethodParams>
-//     ? Result extends Json | Promise<Json>
-//       ? MethodImplementation
-//       : never
-//     : never
-//   : never;
-
-// type funcA = (args: RestrictedMethodOptions<[]>) => Promise<string>
-// type funcB = (args: RestrictedMethodOptions<[]>) => (() => undefined)
-// type funcC = (args: RestrictedMethodOptions<[]>) => Promise<() => undefined>
-
-// type a = RestrictedMethodConstraint3<funcA>
-// type b = RestrictedMethodConstraint3<funcB>
-// type c = RestrictedMethodConstraint3<funcC>
-
-// type j = PermissionSpecificationConstraint2<typeof specs.wallet_getSecretObject>
-// type k = PermissionSpecificationConstraint2<DefaultPermissionSpecifications>
-
-// type PermissionControllerOptions<
-//   PermissionSpecification extends NewSpecShape<string>,
-//   Caveat extends GenericCaveat,
-// > = PermissionSpecificationConstraint2<PermissionSpecification> extends never
-//   ? never
-//   : {
-//       messenger: any;
-//       caveatSpecifications: CaveatSpecifications<Caveat>;
-//       // permissionSpecifications: PermissionSpecificationsMap2<PermissionSpecificationConstraint2<PermissionSpecification>>;
-//       permissionSpecifications: PermissionSpecificationsMap2<PermissionSpecification>;
-//       unrestrictedMethods: string[];
-//       state?: Partial<{}>
-//     };
-
-// type q = PermissionControllerOptions<DefaultPermissionSpecifications, DefaultCaveats>
-
-type GetSpecMapValues<T> = T extends PermissionSpecificationsMap2<
-  NewSpecShape<string>
+type GetSpecMapValues<T> = T extends PermissionSpecificationsMap<
+  PermissionSpecificationBase<string>
 >
   ? T[keyof T]
   : never;

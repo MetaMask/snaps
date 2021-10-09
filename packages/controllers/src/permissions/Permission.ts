@@ -1,10 +1,12 @@
 import { Json } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
 import { NonEmptyArray } from '../utils';
-import { CaveatConstraint, GenericCaveat } from './Caveat';
+import { GenericCaveat } from './Caveat';
 // This is used in a docstring, but ESLint doesn't notice it.
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import type { PermissionController } from './PermissionController';
+import type { CaveatBase } from './Caveat';
+/* eslint-enable @typescript-eslint/no-unused-vars */
 
 /**
  * The origin of a subject.
@@ -36,7 +38,7 @@ export type PermissionBase<
   // TODO: Make optional in typescript@4.4.x
   /**
    * The caveats of the permission.
-   * @see {@link CaveatConstraint} For more information.
+   * @see {@link CaveatBase} For more information.
    */
   readonly caveats: AllowedCaveat extends never
     ? null
@@ -68,6 +70,7 @@ export type PermissionBase<
     : Target;
 };
 
+// TODO:delete?
 /**
  * Makes the {@link PermissionBase.caveats} property of the given permission mutable.
  * Useful for mutating the caveats of a permission in state updates.
@@ -106,13 +109,18 @@ type ExtractPermissionTargetNames<Key extends string> =
 
 /**
  * The consumer-facing base permission type.
+ *
+ * @template TargetKey - They key of the permission target that the permission
+ * corresponds to.
+ * @template AllowedCaveats - A union of the allowed {@link CaveatBase} types
+ * for the permission.
  */
 export type PermissionConstraint<
   TargetKey extends string,
-  AllowedCaveat extends GenericCaveat | never,
+  AllowedCaveats extends GenericCaveat | never,
 > = TargetNameConstraint<ExtractPermissionTargetNames<TargetKey>> extends never
   ? never
-  : PermissionBase<ExtractPermissionTargetNames<TargetKey>, AllowedCaveat>;
+  : PermissionBase<ExtractPermissionTargetNames<TargetKey>, AllowedCaveats>;
 
 /**
  * A generic permission.
@@ -122,72 +130,15 @@ export type GenericPermission = PermissionConstraint<
   GenericCaveat | never
 >;
 
-/**
- * An internal utility type used in {@link ExtractPermissionTargetKey}.
- *
- * @template Key - The target key type to extract from.
- * @template Name - The name whose key to extract.
- */
-type KeyOfTargetName<
-  Key extends string,
-  Name extends string,
-> = Name extends ExtractPermissionTargetNames<Key> ? Key : never;
-
-/**
- * A utility type for finding the permission target key corresponding to a
- * target name. In a way, the inverse of {@link ExtractPermissionTargetNames}.
- *
- * See the documentation for the distinction between target names and keys.
- *
- * @template Key - The target key type to extract from.
- * @template Name - The name whose key to extract.
- */
-type ExtractPermissionTargetKey<
-  Key extends string,
-  Name extends string,
-> = Name extends Key ? Name : Extract<Key, KeyOfTargetName<Key, Name>>;
-
-/**
- * @template Permission - The permission type to extract valid caveats from.
- * @template Key - The target key type to extract from.
- * @template Name - The target name of the permission.
- */
-type ExtractValidCaveats<
-  Permission extends GenericPermission,
-  Key extends string,
-  Name extends string,
-> = Permission extends PermissionConstraint<
-  ExtractPermissionTargetKey<Key, Name>,
-  infer ValidCaveats
->
-  ? ValidCaveats extends GenericCaveat
-    ? ValidCaveats
-    : never
-  : never;
-
-/**
- * A utility type for extracting the valid caveat types for a particular
- * permission from a union of permission types.
- *
- * @template Permission - The permission type to extract valid caveat types
- * types from.
- * @template Key - The target key type to extract from.
- * @template Name - The target name of the permission.
- */
-export type ExtractValidCaveatTypes<
-  Permission extends GenericPermission,
-  Key extends string,
-  Name extends string,
-> = ExtractValidCaveats<Permission, Key, Name>['type'];
-
-type ExtractArrayMembers<T> = T extends readonly [...infer U] | [...infer U]
-  ? U[number]
-  : never;
-export type ExtractCaveats<Permission extends GenericPermission> =
-  ExtractArrayMembers<Permission['caveats']>;
+// type ExtractCaveats<Permission extends GenericPermission> = Permission extends PermissionConstraint<
+//   GenericTargetName,
+//   infer AllowedCaveats
+// > ? AllowedCaveats : never;
 
 /**
  * The options object of {@link constructPermission}.
+ *
+ * @template Permission - The {@link PermissionBase} that will be constructed.
  */
 export type PermissionOptions<Permission extends GenericPermission> = {
   target: Permission['parentCapability'];
@@ -204,10 +155,11 @@ export type PermissionOptions<Permission extends GenericPermission> = {
 
   /**
    * The caveats of the permission.
-   * See {@link CaveatConstraint}.
+   * See {@link CaveatBase}.
    */
-  // caveats?: NonEmptyArray<ExtractCaveats<Permission>>;
   caveats?: NonEmptyArray<GenericCaveat>;
+  // TODO:feat Add runtime check for allowed caveats to ensure that we can do this.
+  // caveats?: NonEmptyArray<ExtractCaveats<Permission>>;
 };
 
 /**
@@ -216,6 +168,7 @@ export type PermissionOptions<Permission extends GenericPermission> = {
  *
  * @see {@link PermissionBase} For more details.
  *
+ * @template Permission - The {@link PermissionBase} that will be constructed.
  * @param options - The options for the permission.
  * @returns The new permission object.
  */
@@ -272,28 +225,19 @@ type RestrictedMethodContext = Readonly<{
   [key: string]: any;
 }>;
 
-export type GenericRestrictedMethodParams =
-  | Json[]
-  | Record<string, Json>
-  | never;
-
-export type GenericRestrictedMethod = RestrictedMethodBase<
-  GenericRestrictedMethodParams,
-  Json
->;
+export type RestrictedMethodParameters = Json[] | Record<string, Json> | never;
 
 /**
  * The arguments passed to a restricted method implementation.
  *
  * @template Params - The JSON-RPC parameters of the restricted method.
  */
-export type RestrictedMethodOptions<
-  Params extends GenericRestrictedMethodParams,
-> = {
-  method: GenericTargetName;
-  params?: Params;
-  context: RestrictedMethodContext;
-};
+export type RestrictedMethodOptions<Params extends RestrictedMethodParameters> =
+  {
+    method: GenericTargetName;
+    params?: Params;
+    context: RestrictedMethodContext;
+  };
 
 /**
  * A synchronous restricted method implementation.
@@ -302,7 +246,7 @@ export type RestrictedMethodOptions<
  * @template Result - The JSON-RPC result of the restricted method.
  */
 export type SyncRestrictedMethod<
-  Params extends GenericRestrictedMethodParams,
+  Params extends RestrictedMethodParameters,
   Result extends Json,
 > = (args: RestrictedMethodOptions<Params>) => Result;
 
@@ -313,7 +257,7 @@ export type SyncRestrictedMethod<
  * @template Result - The JSON-RPC result of the restricted method.
  */
 export type AsyncRestrictedMethod<
-  Params extends GenericRestrictedMethodParams,
+  Params extends RestrictedMethodParameters,
   Result extends Json,
 > = (args: RestrictedMethodOptions<Params>) => Promise<Result>;
 
@@ -324,27 +268,24 @@ export type AsyncRestrictedMethod<
  * @template Result - The JSON-RPC result of the restricted method.
  */
 export type RestrictedMethodBase<
-  Params extends GenericRestrictedMethodParams,
+  Params extends RestrictedMethodParameters,
   Result extends Json,
 > =
   | SyncRestrictedMethod<Params, Result>
   | AsyncRestrictedMethod<Params, Result>;
 
 export type RestrictedMethodConstraint<
-  // MethodImplementation extends RestrictedMethodBase<any, any>,
-  MethodImplementation,
-> = MethodImplementation extends (args: infer Args) => Json | Promise<Json>
-  ? Args extends RestrictedMethodOptions<GenericRestrictedMethodParams>
+  MethodImplementation extends GenericRestrictedMethod,
+> = MethodImplementation extends (args: infer Options) => Json | Promise<Json>
+  ? Options extends RestrictedMethodOptions<RestrictedMethodParameters>
     ? MethodImplementation
     : never
   : never;
 
-// type ExtractPermission<
-//   TargetKey extends string,
-//   Permission extends PermissionConstraint<string, GenericCaveat | never>,
-// > = Permission extends PermissionConstraint<TargetKey, GenericCaveat | never>
-//   ? Permission
-//   : never;
+export type GenericRestrictedMethod = RestrictedMethodBase<
+  RestrictedMethodParameters,
+  Json
+>;
 
 export type PermissionFactory<
   Permission extends GenericPermission,
@@ -356,61 +297,9 @@ export type PermissionFactory<
 
 export type PermissionValidator<Permission extends GenericPermission> = (
   permission: GenericPermission,
-  origin?: string,
+  origin?: OriginString,
   target?: Permission['parentCapability'],
 ) => void;
-
-/**
- * The base permission specification interface. Lacks important constraints on
- * its generics; consumers should use {@link PermissionSpecificationConstraint}
- * instead.
- */
-export type PermissionSpecificationBase<
-  TargetKey extends string,
-  Permission extends PermissionConstraint<TargetKey, GenericCaveat | never>,
-  RequestData extends Record<string, unknown>,
-  MethodImplementation extends RestrictedMethodBase<
-    GenericRestrictedMethodParams,
-    Json
-  >,
-> = {
-  /**
-   * The target resource of the permission. In other words, at the time of
-   * writing, the RPC method name.
-   */
-  target: TargetKey;
-
-  /**
-   * The factory function used to get permission objects. Permissions returned
-   * by this function are presumed to valid, and they will not be passed to the
-   * validator function associated with this specification (if any). In other
-   * words, the factory function should validate the permissions it creates.
-   *
-   * If no factory is specified, the {@link Permission} constructor will be
-   * used, and the validator function (if specified) will be called on newly
-   * constructed permissions.
-   */
-  factory?: PermissionFactory<Permission, RequestData>;
-
-  /**
-   * The implementation of the restricted method that the permission
-   * corresponds to.
-   */
-  methodImplementation: MethodImplementation;
-
-  /**
-   * The validator function used to validate permissions of the associated type
-   * whenever they are mutated. The only way a permission can be legally mutated
-   * is when its caveats are modified by the permission controller.
-   *
-   * The validator should throw an appropriate JSON-RPC error if validation fails.
-   */
-  validator?: PermissionValidator<Permission>;
-};
-
-// type AllTheThings = {
-//   specification:
-// }
 
 /**
  * A utility type for ensuring that the given permission target key conforms to
@@ -428,41 +317,58 @@ type TargetKeyConstraint<Key extends string> = Key extends `${string}_*`
   ? never
   : Key;
 
+/**
+ * A type extended by any function.
+ */
 type GenericFunction = (...args: any[]) => any;
 
-export type NewSpecShape<TargetKey extends string> = {
+/**
+ * The base permission specification type.
+ *
+ * @template TargetKey - They key of the permission target that the permission
+ * corresponds to.
+ */
+export type PermissionSpecificationBase<TargetKey extends string> = {
+  /**
+   * The target resource of the permission. In other words, at the time of
+   * writing, the RPC method name.
+   */
   targetKey: TargetKey;
-  methodImplementation: GenericFunction;
-  // methodImplementation: GenericRestrictedMethod;
-  // methodImplementation: (args: RestrictedMethodOptions<GenericRestrictedMethodParams>) => Json | Promise<Json>,
+
+  /**
+   * An array of the caveat types that may be added to instances of this
+   * permission.
+   */
   allowedCaveats?: Readonly<NonEmptyArray<string>>;
-  validator?: GenericFunction;
-  factory?: GenericFunction;
+
+  /**
+   * The implementation of the restricted method that the permission
+   * corresponds to.
+   */
+  methodImplementation: GenericFunction;
+  // methodImplementation: RestrictedMethodConstraint<any, any>;
+
+  /**
+   * The factory function used to get permission objects. Permissions returned
+   * by this function are presumed to valid, and they will not be passed to the
+   * validator function associated with this specification (if any). In other
+   * words, the factory function should validate the permissions it creates.
+   *
+   * If no factory is specified, the {@link Permission} constructor will be
+   * used, and the validator function (if specified) will be called on newly
+   * constructed permissions.
+   */
+  factory?: PermissionFactory<any, any>;
+
+  /**
+   * The validator function used to validate permissions of the associated type
+   * whenever they are mutated. The only way a permission can be legally mutated
+   * is when its caveats are modified by the permission controller.
+   *
+   * The validator should throw an appropriate JSON-RPC error if validation fails.
+   */
+  validator?: PermissionValidator<any>;
 };
-
-// const foo: NewSpecShape<string> = {
-//   targetKey: 'foo',
-//   methodImplementation: () => undefined,
-// };
-// type bar = ExtractArrayMembers<NewSpecShape<string>['allowedCaveats']>;
-// type xxx = ExtractArrayMembers<[]>;
-// type yyy = ExtractArrayMembers<undefined>;
-
-export type ExtractCaveatTypes<Specification> = Specification extends Record<
-  string,
-  unknown
->
-  ? ExtractArrayMembers<Specification['allowedCaveats']>
-  : never;
-
-export type ExtractCaveatsFromTypes<
-  CaveatType,
-  Caveats extends GenericCaveat,
-> = CaveatType extends string
-  ? Caveats extends CaveatConstraint<CaveatType, Json>
-    ? Caveats
-    : never
-  : never;
 
 /**
  * An individual permission specification object. Constrained such that the
@@ -471,8 +377,8 @@ export type ExtractCaveatsFromTypes<
  * @template TargetKey - The key of the permission target.
  * @template Permission - The type of the permission object.
  */
-export type PermissionSpecificationConstraint2<T> =
-  T extends NewSpecShape<string>
+export type PermissionSpecificationConstraint<T> =
+  T extends PermissionSpecificationBase<string>
     ? T['targetKey'] extends TargetKeyConstraint<T['targetKey']>
       ? T['methodImplementation'] extends RestrictedMethodConstraint<
           T['methodImplementation']
@@ -483,140 +389,18 @@ export type PermissionSpecificationConstraint2<T> =
     : never;
 
 /**
- * An individual permission specification object. Constrained such that the
- * given target key must be valid.
+ * The specifications for all permissions and restricted methods supported by
+ * a particular {@link PermissionController}.
  *
- * @template TargetKey - The key of the permission target.
- * @template Permission - The type of the permission object.
+ * @template Specifications - A union of all {@link PermissionSpecificationBase}
+ * types.
  */
-export type PermissionSpecificationConstraint<
-  TargetKey extends string,
-  Permission extends PermissionConstraint<TargetKey, GenericCaveat | never>,
-  RequestData extends Record<string, unknown>,
-  MethodImplementation extends RestrictedMethodBase<any, any>,
-> = TargetKeyConstraint<TargetKey> extends never
-  ? never
-  : RestrictedMethodConstraint<MethodImplementation> extends never
-  ? never
-  : PermissionSpecificationBase<
-      TargetKey,
-      Permission,
-      RequestData,
-      MethodImplementation
-    >;
-
-export type GenericPermissionSpecification = PermissionSpecificationConstraint<
-  string,
-  GenericPermission,
-  Record<string, unknown>,
-  RestrictedMethodBase<GenericRestrictedMethodParams, Json>
->;
-
-// /**
-//  * Utility type used in {@link PermissionSpecifications} to map permission
-//  * target keys to their individual {@link PermissionSpecificationConstraint}
-//  * objects.
-//  */
-// type ExtractPermissionSpecification<
-//   TargetKey extends string,
-//   Permissions extends PermissionConstraint<TargetKey, GenericCaveat | never>,
-//   RestrictedMethods extends RestrictedMethodBase<any, any>,
-//   Specifications extends PermissionSpecificationConstraint<
-//     string,
-//     Permissions,
-//     Record<string, unknown>,
-//     RestrictedMethods
-//   >,
-// > = Specifications extends PermissionSpecificationConstraint<
-//   TargetKey,
-//   Permissions,
-//   Record<string, unknown>,
-//   RestrictedMethods
-// >
-//   ? Specifications
-//   : never;
-// // > = Permissions extends PermissionConstraint<TargetKey, GenericCaveat | never>
-// //   ? PermissionSpecificationConstraint<TargetKey, Permissions>
-// //   : never;
-
-export type PermissionSpecificationsMap2<
-  Specifications extends NewSpecShape<string>,
-> = PermissionSpecificationConstraint2<Specifications> extends never
-  ? never
-  : {
-      [TargetKey in Specifications['targetKey']]: Specifications extends NewSpecShape<TargetKey>
-        ? Specifications
-        : never;
-    };
-
-// TODO:types Map the names correctly.
-export type PermissionSpecificationsMap3<
-  Specifications extends NewSpecShape<string>,
-> = Record<Specifications['targetKey'], Specifications>;
-// > = PermissionSpecificationConstraint2<Specifications> extends never ? never : Record<Specifications['targetKey'], Specifications>;
-
 export type PermissionSpecificationsMap<
-  Specifications extends PermissionSpecificationBase<string, any, any, any>,
-> = TargetKeyConstraint<Specifications['target']> extends never
-  ? never
-  : RestrictedMethodConstraint<
-      Specifications['methodImplementation']
-    > extends never
+  Specifications extends PermissionSpecificationBase<string>,
+> = PermissionSpecificationConstraint<Specifications> extends never
   ? never
   : {
-      [TargetKey in Specifications['target']]: Specifications extends PermissionSpecificationConstraint<
-        TargetKey,
-        PermissionConstraint<TargetKey, any>,
-        Record<string, unknown>,
-        RestrictedMethodBase<any, any>
-      >
+      [TargetKey in Specifications['targetKey']]: Specifications extends PermissionSpecificationBase<TargetKey>
         ? Specifications
         : never;
     };
-
-// /**
-//  * The specifications for all permissions and restricted methods supported by
-//  * a particular {@link PermissionController}.
-//  */
-// export type PermissionSpecificationsMap<
-//   TargetKeys extends string,
-//   Permissions extends PermissionConstraint<TargetKeys, GenericCaveat | never>,
-//   RestrictedMethods extends RestrictedMethodBase<any, any>,
-//   Specifications extends PermissionSpecificationConstraint<
-//     TargetKeys,
-//     Permissions,
-//     Record<string, unknown>,
-//     RestrictedMethods
-//   >,
-// > = TargetKeyConstraint<TargetKeys> extends never
-//   ? never
-//   : RestrictedMethodConstraint<RestrictedMethods> extends never
-//   ? never
-//   : {
-//       [Key in TargetKeys]: Permissions extends PermissionConstraint<
-//         Key,
-//         GenericCaveat | never
-//       >
-//         ? ExtractPermissionSpecification<
-//             Key,
-//             Permissions,
-//             RestrictedMethods,
-//             Specifications
-//           >
-//         : never;
-//     };
-// //   [Key in TargetKeys]: Permissions extends PermissionConstraint<
-// //     Key,
-// //     GenericCaveat | never
-// //   >
-// //     ? Specifications extends PermissionSpecificationConstraint<
-// //         Key,
-// //         // Permissions,
-// //         ExtractPermission<Key, Permissions>,
-// //         Record<string, unknown>,
-// //         RestrictedMethods
-// //       >
-// //       ? Specifications
-// //       : never
-// //     : never;
-// // };
