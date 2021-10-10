@@ -165,9 +165,11 @@ type SecretNamespacedPermission = PermissionConstraint<
  * Permission key constants.
  */
 const PermissionKeys = {
+  wallet_doubleNumber: 'wallet_doubleNumber',
   wallet_getSecretArray: 'wallet_getSecretArray',
   wallet_getSecretObject: 'wallet_getSecretObject',
   wallet_noop: 'wallet_noop',
+  wallet_noop2: 'wallet_noop2',
   'wallet_getSecret_*': 'wallet_getSecret_*',
 } as const;
 
@@ -176,9 +178,11 @@ const PermissionKeys = {
  * permissions are namespaced, it's a getter function.
  */
 const PermissionNames = {
+  wallet_doubleNumber: PermissionKeys.wallet_doubleNumber,
   wallet_getSecretArray: PermissionKeys.wallet_getSecretArray,
   wallet_getSecretObject: PermissionKeys.wallet_getSecretObject,
   wallet_noop: PermissionKeys.wallet_noop,
+  wallet_noop2: PermissionKeys.wallet_noop2,
   wallet_getSecret_: (str: string) => `wallet_getSecret_${str}` as const,
 } as const;
 
@@ -249,10 +253,38 @@ function getDefaultPermissionSpecifications() {
         );
       },
     },
+    [PermissionKeys.wallet_doubleNumber]: {
+      targetKey: PermissionKeys.wallet_doubleNumber,
+      methodImplementation: ({ params }: RestrictedMethodOptions<[number]>) => {
+        if (!Array.isArray(params)) {
+          throw new Error(
+            `Invalid ${PermissionKeys.wallet_doubleNumber} request`,
+          );
+        }
+        return params[0] * 2;
+      },
+    },
     [PermissionKeys.wallet_noop]: {
       targetKey: PermissionKeys.wallet_noop,
       methodImplementation: (_args: RestrictedMethodOptions<void>) => {
         return null;
+      },
+    },
+    // This one exists just to check permission validator logic
+    [PermissionKeys.wallet_noop2]: {
+      targetKey: PermissionKeys.wallet_noop2,
+      methodImplementation: (_args: RestrictedMethodOptions<void>) => {
+        return null;
+      },
+      allowedCaveats: [CaveatTypes.noopCaveat, CaveatTypes.filterArrayResponse],
+      validator: (permission: GenericPermission) => {
+        if (
+          permission.caveats?.some(
+            ({ type }) => type !== CaveatTypes.noopCaveat,
+          )
+        ) {
+          throw new Error('noop permission validation failed');
+        }
       },
     },
   } as const;
@@ -2145,7 +2177,7 @@ describe('PermissionController', () => {
       ).toThrow(new Error('NoopCaveat value must be null'));
     });
 
-    it('throws if permission validation fails', () => {
+    it('throws if the requested permission specifies disallowed caveats', () => {
       const controller = getDefaultPermissionController();
       const origin = 'metamask.io';
 
@@ -2170,6 +2202,51 @@ describe('PermissionController', () => {
           PermissionNames.wallet_getSecretObject,
         ),
       );
+    });
+
+    it('throws if the requested permission specifies caveats, and no caveats are allowed', () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      expect(() =>
+        controller.grantPermissions({
+          subject: { origin },
+          approvedPermissions: {
+            wallet_doubleNumber: {
+              caveats: [
+                {
+                  type: CaveatTypes.filterArrayResponse,
+                  value: ['bar'],
+                },
+              ] as any,
+            },
+          },
+        }),
+      ).toThrow(
+        new errors.ForbiddenCaveatError(
+          CaveatTypes.filterArrayResponse,
+          origin,
+          PermissionNames.wallet_doubleNumber,
+        ),
+      );
+    });
+
+    it('throws if the permission validator throws', () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      expect(() =>
+        controller.grantPermissions({
+          subject: { origin },
+          approvedPermissions: {
+            [PermissionNames.wallet_noop2]: {
+              caveats: [
+                constructCaveat(CaveatTypes.filterArrayResponse, ['foo']),
+              ],
+            },
+          },
+        }),
+      ).toThrow(new Error('noop permission validation failed'));
     });
   });
 
@@ -2685,6 +2762,26 @@ describe('PermissionController', () => {
       ).toStrictEqual(['a', 'b', 'c']);
     });
 
+    it('executes a restricted method with parameters', async () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      controller.grantPermissions({
+        subject: { origin },
+        approvedPermissions: {
+          [PermissionNames.wallet_doubleNumber]: {},
+        },
+      });
+
+      expect(
+        await controller.executeRestrictedMethod(
+          origin,
+          PermissionNames.wallet_doubleNumber,
+          [10],
+        ),
+      ).toStrictEqual(20);
+    });
+
     it('executes a namespaced restricted method', async () => {
       const controller = getDefaultPermissionController();
       const origin = 'metamask.io';
@@ -2747,6 +2844,71 @@ describe('PermissionController', () => {
           PermissionNames.wallet_getSecretArray,
         ),
       ).toStrictEqual(['c', 'a']);
+    });
+
+    it('throws if the subject does not have the requisite permission', async () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      await expect(
+        controller.executeRestrictedMethod(
+          origin,
+          PermissionNames.wallet_doubleNumber,
+        ),
+      ).rejects.toThrow(
+        errors.unauthorized({
+          data: { origin, method: PermissionNames.wallet_doubleNumber },
+        }),
+      );
+    });
+
+    it('throws if the requested method (i.e. target) does not exist', async () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      await expect(
+        controller.executeRestrictedMethod(origin, 'wallet_getMeTacos' as any),
+      ).rejects.toThrow(
+        errors.methodNotFound({
+          method: 'wallet_getMeTacos',
+          data: { origin },
+        }),
+      );
+    });
+
+    it('throws if the restricted method returns undefined', async () => {
+      const permissionSpecifications = getDefaultPermissionSpecifications();
+      (
+        permissionSpecifications as any
+      ).wallet_doubleNumber.methodImplementation = () => undefined;
+
+      const controller = new PermissionController<
+        DefaultPermissionSpecifications,
+        DefaultCaveatSpecifications
+      >(
+        getPermissionControllerOptions({
+          permissionSpecifications,
+        }),
+      );
+      const origin = 'metamask.io';
+
+      controller.grantPermissions({
+        subject: { origin },
+        approvedPermissions: {
+          [PermissionNames.wallet_doubleNumber]: {},
+        },
+      });
+
+      await expect(
+        controller.executeRestrictedMethod(
+          origin,
+          PermissionNames.wallet_doubleNumber,
+        ),
+      ).rejects.toThrow(
+        new Error(
+          `Internal request for method "${PermissionNames.wallet_doubleNumber}" as origin "${origin}" returned no result.`,
+        ),
+      );
     });
   });
 

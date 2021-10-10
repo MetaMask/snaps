@@ -1248,7 +1248,7 @@ export class PermissionController<
    * Overwrites all existing permissions, and creates a subject entry if it
    * doesn't already exist.
    *
-   * **ATTN: Assumes that the new permissions have been validated.**
+   * **ATTN:** Assumes that the new permissions have been validated.
    *
    * @param origin - The origin of the grantee subject.
    * @param permissions - The new permissions for the grantee subject.
@@ -1583,7 +1583,22 @@ export class PermissionController<
   }
 
   /**
-   * TODO
+   * Executes a restricted method as the subject with the the given origin.
+   * The specified params, if any, will be passed to the method implementation.
+   *
+   * **ATTN:** Great caution should be exercised in the use of this method.
+   * Methods that cause side effects or affect application state should
+   * be avoided.
+   *
+   * This method will first attempt to retrieve the requested restrictded method
+   * implementation, throwing if it does not exist. The method will then be
+   * invoked as though the subject with the specified origin had invoked it with
+   * the specified parameters. This means that any existing caveats will be
+   * applied to the restricted method, and this method will throw if the
+   * restricted method or its caveat decorators throw.
+   *
+   * In addition, this method will throw if the subject does not have a
+   * permission for the specified restricted method.
    *
    * @param origin - The origin of the subject to execute the method on behalf
    * of.
@@ -1611,7 +1626,7 @@ export class PermissionController<
 
     if (result === undefined) {
       throw new Error(
-        `Internal request for method "${methodName}" as origin "${origin}" has no result.`,
+        `Internal request for method "${methodName}" as origin "${origin}" returned no result.`,
       );
     }
 
@@ -1619,8 +1634,16 @@ export class PermissionController<
   }
 
   /**
-   * TODO
+   * An internal method used in the controller's `json-rpc-engine` middleware
+   * and {@link PermissionController.executeRestrictedMethod}. Calls the
+   * specified restricted method implementation after decorating it with the
+   * caveats of its permission. Throws if the subject does not have the
+   * requisite permission.
    *
+   * **ATTN:** Assumes that all parameters are valid.
+   *
+   * @see {@link PermissionController.executeRestrictedMethod} and
+   * {@link PermissionController.createPermissionMiddleware} for usage.
    * @param methodImplementation - The implementation of the method to call.
    * @param subject - Metadata about the subject that made the request.
    * @param req - The request object associated with the request.
