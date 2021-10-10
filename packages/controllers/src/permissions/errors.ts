@@ -1,33 +1,33 @@
-import { JsonRpcRequest } from 'json-rpc-engine';
 import { errorCodes, ethErrors, EthereumRpcError } from 'eth-rpc-errors';
 
-type ErrorArg = {
-  message?: string;
-  data?: JsonRpcRequest<unknown> | unknown;
+type UnauthorizedArg = {
+  data?: Record<string, unknown>;
 };
 
-type MethodNotFoundArg = ErrorArg & {
-  method?: string;
-};
-
-export function unauthorized(arg?: ErrorArg) {
+export function unauthorized(opts: UnauthorizedArg) {
   return ethErrors.provider.unauthorized({
     message:
-      arg?.message ||
       'Unauthorized to perform action. Try requesting the required permission(s) first. For more information, see: https://docs.metamask.io/guide/rpc-api.html#permissions',
-    data: arg?.data || undefined,
+    data: opts.data,
   });
 }
 
-export function methodNotFound(opts: MethodNotFoundArg) {
-  const message = opts.method
-    ? `The method "${opts.method}" does not exist / is not available.`
-    : undefined;
+type MethodNotFoundArg = {
+  method: string;
+  data?: unknown;
+};
 
+export function methodNotFound(opts: MethodNotFoundArg) {
+  const message = `The method "${opts.method}" does not exist / is not available.`;
   return ethErrors.rpc.methodNotFound({ data: opts.data, message });
 }
 
-export function invalidParams(opts: ErrorArg) {
+type InvalidParamsArg = {
+  message?: string;
+  data?: unknown;
+};
+
+export function invalidParams(opts: InvalidParamsArg) {
   return ethErrors.rpc.invalidParams({
     data: opts.data,
     message: opts.message,
