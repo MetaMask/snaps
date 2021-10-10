@@ -7,6 +7,7 @@ import {
   RejectRequest as RejectApprovalRequest,
   HasApprovalRequest,
 } from '@metamask/controllers';
+import { JsonRpcEngine, PendingJsonRpcResponse } from 'json-rpc-engine';
 import { hasProperty, isPlainObject } from '../utils';
 import * as errors from './errors';
 import { constructCaveat } from './Caveat';
@@ -2803,7 +2804,7 @@ describe('PermissionController', () => {
       ).toStrictEqual('Hello, secret friend "foo"!');
     });
 
-    it('executes a restricted method with caveats', async () => {
+    it('executes a restricted method with a caveat', async () => {
       const controller = getDefaultPermissionController();
       const origin = 'metamask.io';
 
@@ -2915,7 +2916,7 @@ describe('PermissionController', () => {
   });
 
   describe('controller actions', () => {
-    it('permissionController:clearPermissions', () => {
+    it('action: PermissionController:clearPermissions', () => {
       const options = getPermissionControllerOptions();
       const { messenger } = options;
       const controller = new PermissionController<
@@ -2938,7 +2939,7 @@ describe('PermissionController', () => {
       expect(controller.state).toStrictEqual({ subjects: {} });
     });
 
-    it('permissionController:getSubjectNames', () => {
+    it('action: PermissionController:getSubjectNames', () => {
       const options = getPermissionControllerOptions();
       const { messenger } = options;
       const controller = new PermissionController<
@@ -2964,7 +2965,7 @@ describe('PermissionController', () => {
       expect(getSubjectNamesSpy).toHaveBeenCalledTimes(2);
     });
 
-    it('permissionController:hasPermissions', () => {
+    it('action: PermissionController:hasPermissions', () => {
       const options = getPermissionControllerOptions();
       const { messenger } = options;
       const controller = new PermissionController<
@@ -2990,6 +2991,195 @@ describe('PermissionController', () => {
       expect(hasPermissionsSpy).toHaveBeenCalledTimes(2);
       expect(hasPermissionsSpy).toHaveBeenNthCalledWith(1, 'foo');
       expect(hasPermissionsSpy).toHaveBeenNthCalledWith(2, 'foo');
+    });
+  });
+
+  describe('permission middleware', () => {
+    it('executes a restricted method', async () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      controller.grantPermissions({
+        subject: { origin },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretArray]: {},
+        },
+      });
+
+      const engine = new JsonRpcEngine();
+      engine.push(controller.createPermissionMiddleware({ origin }));
+
+      const response: any = await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: PermissionNames.wallet_getSecretArray,
+      });
+
+      expect(response.result).toStrictEqual(['a', 'b', 'c']);
+    });
+
+    it('executes a restricted method with a caveat', async () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      controller.grantPermissions({
+        subject: { origin },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretArray]: {
+            caveats: [constructCaveat(CaveatTypes.filterArrayResponse, ['b'])],
+          },
+        },
+      });
+
+      const engine = new JsonRpcEngine();
+      engine.push(controller.createPermissionMiddleware({ origin }));
+
+      const response: any = await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: PermissionNames.wallet_getSecretArray,
+      });
+
+      expect(response.result).toStrictEqual(['b']);
+    });
+
+    it('executes a restricted method with multiple caveats', async () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      controller.grantPermissions({
+        subject: { origin },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretArray]: {
+            caveats: [
+              constructCaveat(CaveatTypes.filterArrayResponse, ['a', 'c']),
+              constructCaveat(CaveatTypes.reverseArrayResponse, null),
+            ],
+          },
+        },
+      });
+
+      const engine = new JsonRpcEngine();
+      engine.push(controller.createPermissionMiddleware({ origin }));
+
+      const response: any = await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: PermissionNames.wallet_getSecretArray,
+      });
+
+      expect(response.result).toStrictEqual(['c', 'a']);
+    });
+
+    it('passes through unrestricted methods', async () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      const engine = new JsonRpcEngine();
+      engine.push(controller.createPermissionMiddleware({ origin }));
+      engine.push(
+        (
+          _req: any,
+          res: PendingJsonRpcResponse<'success'>,
+          _next: any,
+          end: () => any,
+        ) => {
+          res.result = 'success';
+          end();
+        },
+      );
+
+      const response: any = await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'wallet_unrestrictedMethod',
+      });
+
+      expect(response.result).toStrictEqual('success');
+    });
+
+    it('returns an error if the subject does not have the requisite permission', async () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      const engine = new JsonRpcEngine();
+      engine.push(controller.createPermissionMiddleware({ origin }));
+
+      const request: any = {
+        jsonrpc: '2.0',
+        id: 1,
+        method: PermissionNames.wallet_getSecretArray,
+      };
+
+      const expectedError = errors.unauthorized({
+        data: { origin, method: PermissionNames.wallet_getSecretArray },
+      });
+
+      const { error }: any = await engine.handle(request);
+      expect(error).toMatchObject(expect.objectContaining(expectedError));
+    });
+
+    it('returns an error if the method does not exist', async () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      const engine = new JsonRpcEngine();
+      engine.push(controller.createPermissionMiddleware({ origin }));
+
+      const request: any = {
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'wallet_foo',
+      };
+
+      const expectedError = errors.methodNotFound({
+        method: 'wallet_foo',
+        data: { origin },
+      });
+
+      const { error }: any = await engine.handle(request);
+      expect(error).toMatchObject(expect.objectContaining(expectedError));
+    });
+
+    it('returns an error if the restricted method returns undefined', async () => {
+      const permissionSpecifications = getDefaultPermissionSpecifications();
+      (
+        permissionSpecifications as any
+      ).wallet_doubleNumber.methodImplementation = () => undefined;
+
+      const controller = new PermissionController<
+        DefaultPermissionSpecifications,
+        DefaultCaveatSpecifications
+      >(
+        getPermissionControllerOptions({
+          permissionSpecifications,
+        }),
+      );
+      const origin = 'metamask.io';
+
+      controller.grantPermissions({
+        subject: { origin },
+        approvedPermissions: {
+          [PermissionNames.wallet_doubleNumber]: {},
+        },
+      });
+
+      const engine = new JsonRpcEngine();
+      engine.push(controller.createPermissionMiddleware({ origin }));
+
+      const request: any = {
+        jsonrpc: '2.0',
+        id: 1,
+        method: PermissionNames.wallet_doubleNumber,
+      };
+
+      const expectedError = errors.internalError(
+        `Request for method "${PermissionNames.wallet_doubleNumber}" returned undefined result.`,
+        { request: { ...request } },
+      );
+
+      const { error }: any = await engine.handle(request);
+      expect(error).toMatchObject(expect.objectContaining(expectedError));
     });
   });
 });
