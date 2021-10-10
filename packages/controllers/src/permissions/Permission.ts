@@ -1,6 +1,6 @@
 import { Json } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
-import { NonEmptyArray } from '../utils';
+import { Mutable, NonEmptyArray } from '../utils';
 import { GenericCaveat } from './Caveat';
 // This is used in a docstring, but ESLint doesn't notice it.
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -112,6 +112,14 @@ export type PermissionConstraint<
 export type GenericPermission = PermissionConstraint<
   GenericTargetName,
   GenericCaveat
+>;
+
+/**
+ * A {@link GenericPermission} with mutable caveats.
+ */
+export type MutableGenericPermission = Mutable<
+  GenericPermission & { caveats: NonEmptyArray<GenericCaveat> },
+  'caveats'
 >;
 
 /**

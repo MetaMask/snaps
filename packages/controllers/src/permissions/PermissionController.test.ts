@@ -1717,6 +1717,10 @@ describe('PermissionController', () => {
     });
   });
 
+  describe('updateAllCaveatsOfType', () => {
+    it.todo('updates all caveats of a type');
+  });
+
   describe('grantPermissions', () => {
     it('grants new permission', () => {
       const controller = getDefaultPermissionController();

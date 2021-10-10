@@ -18,7 +18,7 @@ import type {
 import type { Patch } from 'immer';
 import deepFreeze from 'deep-freeze-strict';
 import { nanoid } from 'nanoid';
-import { isPlainObject, hasProperty, NonEmptyArray } from '../utils';
+import { isPlainObject, hasProperty, NonEmptyArray, Mutable } from '../utils';
 import {
   constructCaveat as _constructCaveat,
   decorateWithCaveats,
@@ -27,6 +27,7 @@ import {
   ExtractCaveats,
   CaveatSpecificationsMap,
   ExtractCaveatValue,
+  GenericCaveat,
 } from './Caveat';
 import {
   constructPermission,
@@ -42,6 +43,7 @@ import {
   PermissionSpecificationBase,
   PermissionConstraint,
   ExtractAllowedCaveatTypes,
+  MutableGenericPermission,
 } from './Permission';
 import {
   PermissionDoesNotExistError,
@@ -227,6 +229,11 @@ export type PermissionControllerMessenger = RestrictedControllerMessenger<
   never
 >;
 
+export type GenericPermissionController = PermissionController<
+  PermissionSpecificationBase<string>,
+  CaveatSpecificationBase<string>
+>;
+
 /**
  * Options for {@link PermissionController.grantPermissions}.
  */
@@ -237,10 +244,31 @@ type GrantPermissionsOptions = {
   requestData?: Record<string, unknown>;
 };
 
-export type GenericPermissionController = PermissionController<
-  PermissionSpecificationBase<string>,
-  CaveatSpecificationBase<string>
->;
+/**
+ * Describes the possible results of a {@link CaveatMutator} function.
+ */
+export enum CaveatMutatorResult {
+  noop,
+  updateValue,
+  deleteCaveat,
+  revokePermission,
+}
+
+/**
+ * Given a caveat value, returns a {@link CaveatMutatorResult} and, optionally,
+ * a new caveat value.
+ *
+ * @see {@link PermissionController.updateAllCaveatsOfType} for more details.
+ * @template Caveat - The caveat type for which this mutator is intended.
+ * @param caveatValue - The existing value of the caveat being mutated.
+ * @returns A tuple of the mutation result and, optionally, the new caveat
+ * value.
+ */
+export type CaveatMutator<Caveat extends GenericCaveat> = (
+  caveatValue: Caveat['value'],
+) =>
+  | [Exclude<CaveatMutatorResult, CaveatMutatorResult.updateValue>]
+  | [CaveatMutatorResult.updateValue, GenericCaveat['value']];
 
 /**
  * Extracts the permission type or types from the specified permission and
@@ -656,10 +684,10 @@ export class PermissionController<
             throw new PermissionDoesNotExistError(origin, target);
           }
 
-          // Typecast: ts(2589)
+          // Typecast: Immer WritableDraft incompatibility
           this.deletePermission(
-            draftState as any,
-            permissions as any,
+            draftState.subjects as unknown as PermissionControllerSubjects<GenericPermission>,
+            permissions as unknown as SubjectPermissions<GenericPermission>,
             origin,
             target,
           );
@@ -690,9 +718,9 @@ export class PermissionController<
 
         if (hasProperty(permissions as Record<string, unknown>, target)) {
           this.deletePermission(
-            // Typecast: ts(2589)
-            draftState as any,
-            permissions as any,
+            // Typecast: Immer WritableDraft incompatibility
+            draftState.subjects as unknown as PermissionControllerSubjects<GenericPermission>,
+            permissions as unknown as SubjectPermissions<GenericPermission>,
             origin,
             target,
           );
@@ -702,12 +730,8 @@ export class PermissionController<
   }
 
   private deletePermission(
-    draftState: PermissionControllerState<
-      ExtractPermission<PermissionSpecification, CaveatSpecification>
-    >,
-    permissions: SubjectPermissions<
-      ExtractPermission<PermissionSpecification, CaveatSpecification>
-    >,
+    subjects: PermissionControllerSubjects<GenericPermission>,
+    permissions: SubjectPermissions<GenericPermission>,
     origin: OriginString,
     target: ExtractPermission<
       PermissionSpecification,
@@ -717,7 +741,7 @@ export class PermissionController<
     if (Object.keys(permissions).length > 1) {
       delete permissions[target];
     } else {
-      delete draftState.subjects[origin];
+      delete subjects[origin];
     }
   }
 
@@ -862,10 +886,6 @@ export class PermissionController<
     target: TargetName,
     caveatType: CaveatType,
     caveatValue: CaveatValue,
-    // caveatValue: ExtractCaveatValue<
-    //   CaveatSpecification,
-    //   CaveatType
-    // >,
   ): void {
     if (!this.hasCaveat(origin, target, caveatType)) {
       throw new CaveatDoesNotExistError(origin, target, caveatType);
@@ -960,6 +980,104 @@ export class PermissionController<
   }
 
   /**
+   * Updates all caveats with the specified type for all subjects and
+   * permissions by applying the specified mutator function to them.
+   *
+   * Caveat mutators are functions that receive a caveat value and return a
+   * tuple consisting of a {@link CaveatMutatorResult} and, optionally, a new
+   * value to update the existing caveat with.
+   *
+   * For each caveat, depending on the mutator result, this method will:
+   * - Do nothing ({@link CaveatMutatorResult.noop})
+   * - Update the value of the caveat ({@link CaveatMutatorResult.updateValue})
+   *   - The caveat specification validator, if any, will be called after
+   *     updating the value.
+   * - Delete the caveat ({@link CaveatMutatorResult.deleteCaveat})
+   *   - The permission specification validator, if any, will be called after
+   *     deleting the caveat.
+   * - Revoke the parent permission ({@link CaveatMutatorResult.revokePermission})
+   *
+   * This method throws if the validation of any caveat or permission fails.
+   *
+   * @param targetCaveatType - The type of the caveats to update.
+   * @param mutator - The mutator function which will be applied to all caveat
+   * values.
+   */
+  updateAllCaveatsOfType<
+    CaveatType extends ExtractCaveats<CaveatSpecification>['type'],
+    Caveat extends ExtractCaveat<CaveatSpecification, CaveatType>,
+  >(targetCaveatType: CaveatType, mutator: CaveatMutator<Caveat>): void {
+    if (Object.keys(this.state.subjects).length === 0) {
+      return;
+    }
+
+    this.update((draftState) => {
+      Object.values(draftState.subjects).forEach((subject) => {
+        Object.values(subject.permissions).forEach((permission) => {
+          const { caveats } = permission;
+          const targetCaveat = caveats?.find(
+            ({ type }) => type === targetCaveatType,
+          ) as Caveat | undefined;
+          if (!targetCaveat) {
+            return;
+          }
+
+          // The mutator may modify the caveat value in place, and must always
+          // return a valid mutation result.
+          const [mutationResult, newValue] = mutator(targetCaveat.value);
+          switch (mutationResult) {
+            case CaveatMutatorResult.noop:
+              break;
+
+            case CaveatMutatorResult.updateValue:
+              // Typecast: The mutator type guarantees that the new value will
+              // not be undefined in this case. In any case, the specification
+              // validator is called on the mutated caveat.
+              (targetCaveat as Mutable<GenericCaveat, 'value'>).value =
+                newValue as Caveat['value'];
+
+              this.validateCaveat(
+                targetCaveat,
+                subject.origin,
+                permission.parentCapability,
+              );
+              break;
+
+            case CaveatMutatorResult.deleteCaveat:
+              // Typecast: Immer WritableDraft incompatibility
+              this.deleteCaveat(
+                permission as MutableGenericPermission,
+                targetCaveatType,
+                subject.origin,
+                permission.parentCapability,
+              );
+              break;
+
+            case CaveatMutatorResult.revokePermission:
+              // Typecast: Immer WritableDraft incompatibility
+              this.deletePermission(
+                draftState.subjects as unknown as PermissionControllerSubjects<GenericPermission>,
+                subject.permissions as unknown as SubjectPermissions<GenericPermission>,
+                origin,
+                permission.parentCapability,
+              );
+              break;
+
+            default:
+              // This type check ensures that the switch statement is
+              // exhaustive.
+              // eslint-disable-next-line no-case-declarations
+              const _exhaustiveCheck: never = mutationResult;
+              throw new Error(
+                `Unrecognized mutation result: "${_exhaustiveCheck}"`,
+              );
+          }
+        });
+      });
+    });
+  }
+
+  /**
    * Removes the caveat of the specified type from the permission corresponding
    * to the given subject origin and target name.
    *
@@ -992,30 +1110,59 @@ export class PermissionController<
         throw new CaveatDoesNotExistError(origin, target, caveatType);
       }
 
-      const caveatIndex = permission.caveats.findIndex(
-        (existingCaveat) => existingCaveat.type === caveatType,
-      );
-      if (!permission.caveats || caveatIndex === -1) {
-        throw new CaveatDoesNotExistError(origin, target, caveatType);
-      }
-
-      if (permission.caveats.length === 1) {
-        // Typecast: Immer WritableDraft incompatibility
-        permission.caveats = null as any;
-      } else {
-        permission.caveats.splice(caveatIndex, 1);
-      }
-
-      this.validateModifiedPermission(
-        // Typecast: Immer WritableDraft incompatibility
-        permission as unknown as ExtractPermission<
-          PermissionSpecification,
-          CaveatSpecification
-        >,
-        origin,
-        target,
-      );
+      // Typecast: Immer WritableDraft incompatibility
+      this.deleteCaveat(permission as any, caveatType, origin, target);
     });
+  }
+
+  /**
+   * Deletes the specified caveat from the specified permission. If no caveats
+   * remain after deletion, the permission's caveat property is set to `null`.
+   * The permission is validated after being modified.
+   *
+   * Throws an error if the permission does not have a caveat with the specified
+   * type.
+   *
+   * @param permission - The permission whose caveat to delete.
+   * @param caveatType - The type of the caveat to delete.
+   * @param origin - The origin the permission subject.
+   * @param target - The name of the permission target.
+   */
+  private deleteCaveat<
+    TargetName extends ExtractPermission<
+      PermissionSpecification,
+      CaveatSpecification
+    >['parentCapability'],
+    CaveatType extends ExtractCaveats<CaveatSpecification>['type'],
+  >(
+    permission: MutableGenericPermission,
+    caveatType: CaveatType,
+    origin: OriginString,
+    target: TargetName,
+  ): void {
+    const caveatIndex = permission.caveats.findIndex(
+      (existingCaveat) => existingCaveat.type === caveatType,
+    );
+    if (!permission.caveats || caveatIndex === -1) {
+      throw new CaveatDoesNotExistError(origin, target, caveatType);
+    }
+
+    if (permission.caveats.length === 1) {
+      // Typecast: Immer WritableDraft incompatibility
+      permission.caveats = null as any;
+    } else {
+      permission.caveats.splice(caveatIndex, 1);
+    }
+
+    this.validateModifiedPermission(
+      // Typecast: From generic to modified permission
+      permission as ExtractPermission<
+        PermissionSpecification,
+        CaveatSpecification
+      >,
+      origin,
+      target,
+    );
   }
 
   /**
@@ -1030,15 +1177,13 @@ export class PermissionController<
    * @param origin - The origin associated with the permission.
    * @param targetName - The target name name of the permission.
    */
-  private validateModifiedPermission<
-    Permission extends ExtractPermission<
+  private validateModifiedPermission(
+    permission: GenericPermission,
+    origin: OriginString,
+    targetName: ExtractPermission<
       PermissionSpecification,
       CaveatSpecification
-    >,
-  >(
-    permission: Permission,
-    origin: OriginString,
-    targetName: Permission['parentCapability'],
+    >['parentCapability'],
   ): void {
     const targetKey = this.getTargetKey(permission.parentCapability);
     /* istanbul ignore next: this should be impossible */
@@ -1218,16 +1363,14 @@ export class PermissionController<
    * @param origin - The origin associated with the permission.
    * @param targetName - The target name of the permission.
    */
-  private validatePermission<
-    Permission extends ExtractPermission<
+  private validatePermission(
+    specification: PermissionSpecificationBase<string>,
+    permission: GenericPermission,
+    origin: OriginString,
+    targetName: ExtractPermission<
       PermissionSpecification,
       CaveatSpecification
-    >,
-  >(
-    specification: PermissionSpecificationBase<string>,
-    permission: Permission,
-    origin: OriginString,
-    targetName: Permission['parentCapability'],
+    >['parentCapability'],
   ): void {
     const { allowedCaveats, validator } = specification;
     if (permission.caveats !== null) {
@@ -1333,19 +1476,6 @@ export class PermissionController<
       throw new InvalidCaveatTypeError(requestedCaveat, origin, target);
     }
 
-    const specification =
-      this.caveatSpecifications[
-        requestedCaveat.type as CaveatSpecification['type']
-      ];
-
-    if (!specification) {
-      throw new UnrecognizedCaveatTypeError(
-        requestedCaveat.type,
-        origin,
-        target,
-      );
-    }
-
     if (!hasProperty(requestedCaveat, 'value')) {
       throw new CaveatMissingValueError(requestedCaveat, origin, target);
     }
@@ -1355,8 +1485,32 @@ export class PermissionController<
       requestedCaveat.type,
       (requestedCaveat.value as Json) ?? null,
     );
-    specification.validator?.(caveat, origin, target);
+    this.validateCaveat(caveat, origin, target);
     return caveat as ExtractCaveats<CaveatSpecification>;
+  }
+
+  /**
+   * Validates the specified caveat by ensuring that a specification exists for
+   * its type and invoking the validator function with it, if any.
+   *
+   * @param caveat - The caveat object to validate.
+   * @param origin - The origin associated with the subject of the parent
+   * permission.
+   * @param target - The target name associated with the parent permission.
+   */
+  private validateCaveat(
+    caveat: GenericCaveat,
+    origin: OriginString,
+    target: string,
+  ): void {
+    const specification =
+      this.caveatSpecifications[caveat.type as CaveatSpecification['type']];
+
+    if (!specification) {
+      throw new UnrecognizedCaveatTypeError(caveat.type, origin, target);
+    }
+
+    specification.validator?.(caveat, origin, target);
   }
 
   /**
