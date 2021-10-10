@@ -565,10 +565,9 @@ describe('PermissionController', () => {
       expect(
         controller.getRestrictedMethod(PermissionNames.wallet_getSecretArray),
       ).toStrictEqual(
-        // TODO:types Fix permissionSpecifications indices
-        (controller.permissionSpecifications as any)[
-          PermissionKeys.wallet_getSecretArray
-        ].methodImplementation,
+        controller.getPermissionSpecification(
+          PermissionNames.wallet_getSecretArray,
+        ).methodImplementation,
       );
     });
 
@@ -579,10 +578,9 @@ describe('PermissionController', () => {
           PermissionNames.wallet_getSecret_('foo'),
         ),
       ).toStrictEqual(
-        // TODO:types Fix permissionSpecifications indices
-        (controller.permissionSpecifications as any)[
-          PermissionKeys['wallet_getSecret_*']
-        ].methodImplementation,
+        controller.getPermissionSpecification(
+          PermissionKeys['wallet_getSecret_*'],
+        ).methodImplementation,
       );
     });
 

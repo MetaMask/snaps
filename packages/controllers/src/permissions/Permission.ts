@@ -444,3 +444,17 @@ export type PermissionSpecificationsMap<
         : never;
     }
   : never;
+
+/**
+ * Extracts a specific {@link PermissionSpecificationBase} from a union of
+ * permission specifications.
+ *
+ * @template Specification - The specification union type to extract from.
+ * @template TargetKey - The `targetKey` of the specification to extract.
+ */
+export type ExtractPermissionSpecification<
+  Specification extends PermissionSpecificationBase<string>,
+  TargetKey extends Specification['targetKey'],
+> = Specification extends PermissionSpecificationBase<TargetKey>
+  ? Specification
+  : never;

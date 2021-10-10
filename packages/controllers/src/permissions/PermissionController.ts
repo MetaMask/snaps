@@ -44,6 +44,7 @@ import {
   PermissionConstraint,
   ExtractAllowedCaveatTypes,
   MutableGenericPermission,
+  ExtractPermissionSpecification,
 } from './Permission';
 import {
   PermissionDoesNotExistError,
@@ -348,27 +349,9 @@ export class PermissionController<
     CaveatSpecificationsMap<CaveatSpecification>
   >;
 
-  /**
-   * The {@link CaveatSpecifications} of the controller.
-   */
-  public get caveatSpecifications(): Readonly<
-    CaveatSpecificationsMap<CaveatSpecification>
-  > {
-    return this._caveatSpecifications;
-  }
-
   private readonly _permissionSpecifications: Readonly<
     PermissionSpecificationsMap<PermissionSpecification>
   >;
-
-  /**
-   * The {@link PermissionSpecificationsMap} of the controller.
-   */
-  public get permissionSpecifications(): Readonly<
-    PermissionSpecificationsMap<PermissionSpecification>
-  > {
-    return this._permissionSpecifications;
-  }
 
   private readonly _unrestrictedMethods: ReadonlySet<string>;
 
@@ -453,6 +436,35 @@ export class PermissionController<
         this.unrestrictedMethods,
       ),
     });
+  }
+
+  /**
+   * Gets a permission specification.
+   *
+   * @param targetKey - The target key of the permission specification to get.
+   * @returns The permission specification with the specified target key.
+   */
+  getPermissionSpecification<
+    TargetKey extends PermissionSpecification['targetKey'],
+  >(
+    targetKey: TargetKey,
+  ): ExtractPermissionSpecification<PermissionSpecification, TargetKey> {
+    // Typecast: Due to constraints added to the PermissionSpecificationsMap,
+    // `keyof typeof this._permissionSpecifications` evalutes to `never`.
+    // Therefore, we have to cast it like this.
+    return (this._permissionSpecifications as any)[targetKey];
+  }
+
+  /**
+   * Gets a caveat specification.
+   *
+   * @param caveatType - The type of the caveat specification to get.
+   * @returns The caveat specification with the specified type.
+   */
+  getCaveatSpecification<CaveatType extends CaveatSpecification['type']>(
+    caveatType: CaveatType,
+  ) {
+    return this._caveatSpecifications[caveatType];
   }
 
   /**
@@ -547,7 +559,7 @@ export class PermissionController<
       return undefined;
     }
 
-    return this.permissionSpecifications[targetKey].methodImplementation;
+    return this.getPermissionSpecification(targetKey).methodImplementation;
   }
 
   /**
@@ -1194,7 +1206,7 @@ export class PermissionController<
     }
 
     this.validatePermission(
-      this.permissionSpecifications[targetKey],
+      this.getPermissionSpecification(targetKey),
       permission,
       origin,
       targetName,
@@ -1322,7 +1334,7 @@ export class PermissionController<
         PermissionSpecification,
         CaveatSpecification
       >['parentCapability'];
-      const specification = this.permissionSpecifications[targetKey];
+      const specification = this.getPermissionSpecification(targetKey);
 
       const caveats = this.constructCaveats(
         origin,
@@ -1503,8 +1515,7 @@ export class PermissionController<
     origin: OriginString,
     target: string,
   ): void {
-    const specification =
-      this.caveatSpecifications[caveat.type as CaveatSpecification['type']];
+    const specification = this.getCaveatSpecification(caveat.type);
 
     if (!specification) {
       throw new UnrecognizedCaveatTypeError(caveat.type, origin, target);
@@ -1825,7 +1836,7 @@ export class PermissionController<
     return decorateWithCaveats<CaveatSpecification>(
       methodImplementation,
       permission,
-      this.caveatSpecifications,
+      this._caveatSpecifications,
     )({ method, params, context: { origin } });
   }
 
