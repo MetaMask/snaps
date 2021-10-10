@@ -179,7 +179,7 @@ export type ClearPermissions = {
   handler: () => void;
 };
 
-// TODO:feat Implement all desired actions
+// TODO: Implement all desired actions
 /**
  * The {@link ControllerMessenger} actions of the {@link PermissionController}.
  */

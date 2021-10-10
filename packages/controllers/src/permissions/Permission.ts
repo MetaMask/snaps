@@ -191,7 +191,7 @@ export type PermissionOptions<Permission extends GenericPermission> = {
    * See {@link CaveatBase}.
    */
   caveats?: NonEmptyArray<GenericCaveat>;
-  // TODO:feat Add runtime check for allowed caveats to ensure that we can do this.
+  // TODO: Refactor allowed caveats validation to enable this?
   // caveats?: NonEmptyArray<ExtractCaveats<Permission>>;
 };
 
