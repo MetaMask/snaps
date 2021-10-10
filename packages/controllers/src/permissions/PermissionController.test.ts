@@ -167,6 +167,7 @@ type SecretNamespacedPermission = PermissionConstraint<
 const PermissionKeys = {
   wallet_getSecretArray: 'wallet_getSecretArray',
   wallet_getSecretObject: 'wallet_getSecretObject',
+  wallet_noop: 'wallet_noop',
   'wallet_getSecret_*': 'wallet_getSecret_*',
 } as const;
 
@@ -177,6 +178,7 @@ const PermissionKeys = {
 const PermissionNames = {
   wallet_getSecretArray: PermissionKeys.wallet_getSecretArray,
   wallet_getSecretObject: PermissionKeys.wallet_getSecretObject,
+  wallet_noop: PermissionKeys.wallet_noop,
   wallet_getSecret_: (str: string) => `wallet_getSecret_${str}` as const,
 } as const;
 
@@ -228,7 +230,7 @@ function getDefaultPermissionSpecifications() {
     [PermissionKeys['wallet_getSecret_*']]: {
       targetKey: PermissionKeys['wallet_getSecret_*'],
       allowedCaveats: [CaveatTypes.noopCaveat],
-      methodImplementation: (args: RestrictedMethodOptions<[]>) => {
+      methodImplementation: (args: RestrictedMethodOptions<void>) => {
         return `Hello, secret friend "${args.method.replace(
           'wallet_getSecret_',
           '',
@@ -245,6 +247,12 @@ function getDefaultPermissionSpecifications() {
           [constructCaveat(CaveatTypes.noopCaveat, null)],
           'getSecret_* permission validation failed',
         );
+      },
+    },
+    [PermissionKeys.wallet_noop]: {
+      targetKey: PermissionKeys.wallet_noop,
+      methodImplementation: (_args: RestrictedMethodOptions<void>) => {
+        return null;
       },
     },
   } as const;
@@ -423,7 +431,7 @@ describe('PermissionController', () => {
       expect(controller.state).toStrictEqual(getExistingPermissionState());
     });
 
-    it('throws an error for invalid permission target keys', () => {
+    it('throws if a permission specification target key is invalid', () => {
       expect(
         () =>
           new PermissionController<
@@ -468,7 +476,9 @@ describe('PermissionController', () => {
             }),
           ),
       ).toThrow(`Invalid permission target key: "foo*"`);
+    });
 
+    it('throws if a permission specification map key does not match its "targetKey" value', () => {
       expect(
         () =>
           new PermissionController<
@@ -485,6 +495,25 @@ describe('PermissionController', () => {
       ).toThrow(
         `Invalid permission specification: key "foo" must match specification.target value "bar".`,
       );
+    });
+
+    it('throws if a permission specification lists unrecognized caveats', () => {
+      const permissionSpecifications = getDefaultPermissionSpecifications();
+      (
+        permissionSpecifications as any
+      ).wallet_getSecretArray.allowedCaveats.push('foo');
+
+      expect(
+        () =>
+          new PermissionController<
+            DefaultPermissionSpecifications,
+            DefaultCaveatSpecifications
+          >(
+            getPermissionControllerOptions({
+              permissionSpecifications,
+            }),
+          ),
+      ).toThrow(new errors.UnrecognizedCaveatTypeError('foo'));
     });
   });
 
@@ -1327,7 +1356,13 @@ describe('PermissionController', () => {
           CaveatTypes.filterArrayResponse as any,
           ['foo'],
         ),
-      ).toThrow(new Error('getSecretObject permission validation failed'));
+      ).toThrow(
+        new errors.ForbiddenCaveatError(
+          CaveatTypes.filterArrayResponse,
+          origin,
+          PermissionNames.wallet_getSecretObject,
+        ),
+      );
     });
   });
 
@@ -2051,8 +2086,8 @@ describe('PermissionController', () => {
           },
         }),
       ).toThrow(
-        new errors.CaveatTypeDoesNotExistError(
-          constructCaveat('fooType', 'bar'),
+        new errors.UnrecognizedCaveatTypeError(
+          'fooType',
           origin,
           PermissionNames.wallet_getSecretArray,
         ),
@@ -2128,7 +2163,13 @@ describe('PermissionController', () => {
             },
           },
         }),
-      ).toThrow(new Error('getSecretObject permission validation failed'));
+      ).toThrow(
+        new errors.ForbiddenCaveatError(
+          CaveatTypes.filterArrayResponse,
+          origin,
+          PermissionNames.wallet_getSecretObject,
+        ),
+      );
     });
   });
 

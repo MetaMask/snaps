@@ -390,7 +390,7 @@ export type PermissionSpecificationBase<TargetKey extends string> = {
    * used, and the validator function (if specified) will be called on newly
    * constructed permissions.
    */
-  factory?: PermissionFactory<any, any>;
+  factory?: PermissionFactory<any, Record<string, unknown>>;
 
   /**
    * The validator function used to validate permissions of the associated type
@@ -399,7 +399,7 @@ export type PermissionSpecificationBase<TargetKey extends string> = {
    *
    * The validator should throw an appropriate JSON-RPC error if validation fails.
    */
-  validator?: PermissionValidator<any>;
+  validator?: PermissionValidator<GenericPermission>;
 };
 
 /**

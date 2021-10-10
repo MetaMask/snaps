@@ -89,8 +89,26 @@ export class PermissionDoesNotExistError extends Error {
 }
 
 export class UnrecognizedCaveatTypeError extends Error {
-  constructor(caveatType: string) {
+  public data: {
+    caveatType: string;
+    origin?: string;
+    target?: string;
+  };
+
+  constructor(caveatType: string);
+
+  constructor(caveatType: string, origin: string, target: string);
+
+  constructor(caveatType: string, origin?: string, target?: string) {
     super(`Unrecognized caveat type: "${caveatType}"`);
+    this.data = { caveatType };
+    if (origin !== undefined) {
+      this.data.origin = origin;
+    }
+
+    if (target !== undefined) {
+      this.data.target = target;
+    }
   }
 }
 
@@ -136,19 +154,6 @@ export class InvalidCaveatTypeError extends Error {
   }
 }
 
-export class CaveatTypeDoesNotExistError extends Error {
-  public data: {
-    caveat: Record<string, unknown>;
-    origin: string;
-    target: string;
-  };
-
-  constructor(caveat: Record<string, unknown>, origin: string, target: string) {
-    super(`Caveat type "${caveat.type}" does not exist.`);
-    this.data = { caveat, origin, target };
-  }
-}
-
 export class CaveatMissingValueError extends Error {
   public data: {
     caveat: Record<string, unknown>;
@@ -174,6 +179,21 @@ export class InvalidCaveatFieldsError extends Error {
       `Caveat has unexpected number of fields: "${Object.keys(caveat).length}"`,
     );
     this.data = { caveat, origin, target };
+  }
+}
+
+export class ForbiddenCaveatError extends Error {
+  public data: {
+    caveatType: string;
+    origin: string;
+    target: string;
+  };
+
+  constructor(caveatType: string, origin: string, targetName: string) {
+    super(
+      `Permissions for target "${targetName}" may not have caveats of type "${caveatType}".`,
+    );
+    this.data = { caveatType, origin, target: targetName };
   }
 }
 
