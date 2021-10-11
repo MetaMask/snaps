@@ -26,6 +26,7 @@ import {
   RestrictedMethodOptions,
   RestrictedMethodParameters,
   ExtractSpecifications,
+  CaveatMutatorOperation,
 } from '.';
 
 // CaveatBase types and specifications
@@ -83,6 +84,16 @@ function getDefaultCaveatSpecifications() {
             caveat.value.includes(resultValue),
           );
         },
+      validator: (caveat: {
+        type: typeof CaveatTypes.filterArrayResponse;
+        value: unknown;
+      }) => {
+        if (!Array.isArray(caveat.value)) {
+          throw new Error(
+            `${CaveatTypes.filterArrayResponse} values must be arrays`,
+          );
+        }
+      },
     },
     reverseArrayResponse: {
       type: CaveatTypes.reverseArrayResponse,
@@ -1716,8 +1727,333 @@ describe('PermissionController', () => {
     });
   });
 
-  describe('updateAllCaveatsOfType', () => {
-    it.todo('updates all caveats of a type');
+  describe('updatePermissionsByCaveat', () => {
+    enum MultiCaveatOrigins {
+      a = 'a.com',
+      b = 'b.io',
+      c = 'c.biz',
+    }
+
+    /**
+     * @returns A tuple of a permission controller and an object listing the
+     * origins of its subjects. Each subject has at least one permission
+     * with caveats.
+     */
+    const getMultiCaveatController = () => {
+      const controller = getDefaultPermissionController();
+
+      controller.grantPermissions({
+        subject: { origin: MultiCaveatOrigins.a },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretArray]: {
+            caveats: [constructCaveat(CaveatTypes.filterArrayResponse, ['a'])],
+          },
+        },
+      });
+
+      controller.grantPermissions({
+        subject: { origin: MultiCaveatOrigins.b },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretArray]: {
+            caveats: [
+              constructCaveat(CaveatTypes.filterArrayResponse, ['b']),
+              constructCaveat(CaveatTypes.reverseArrayResponse, null),
+            ],
+          },
+          [PermissionNames.wallet_getSecretObject]: {
+            caveats: [
+              constructCaveat(CaveatTypes.filterObjectResponse, ['b']),
+              constructCaveat(CaveatTypes.noopCaveat, null),
+            ],
+          },
+          [PermissionNames.wallet_getSecret_('foo')]: {
+            caveats: [constructCaveat(CaveatTypes.noopCaveat, null)],
+          },
+          [PermissionNames.wallet_doubleNumber]: {},
+        },
+      });
+
+      controller.grantPermissions({
+        subject: { origin: MultiCaveatOrigins.c },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretObject]: {
+            caveats: [constructCaveat(CaveatTypes.filterObjectResponse, ['c'])],
+          },
+          [PermissionNames.wallet_getSecret_('bar')]: {
+            caveats: [constructCaveat(CaveatTypes.noopCaveat, null)],
+          },
+        },
+      });
+
+      return controller;
+    };
+
+    const getMultiCaveatStateMatcher = (
+      overrides: Partial<
+        Record<MultiCaveatOrigins, ReturnType<typeof getPermissionMatcher>>
+      > = {},
+    ) => {
+      return {
+        subjects: {
+          [MultiCaveatOrigins.a]: {
+            origin: MultiCaveatOrigins.a,
+            permissions: {
+              [PermissionNames.wallet_getSecretArray]: getPermissionMatcher(
+                PermissionNames.wallet_getSecretArray,
+                [constructCaveat(CaveatTypes.filterArrayResponse, ['a'])],
+                MultiCaveatOrigins.a,
+              ),
+              ...overrides[MultiCaveatOrigins.a],
+            },
+          },
+
+          [MultiCaveatOrigins.b]: {
+            origin: MultiCaveatOrigins.b,
+            permissions: {
+              [PermissionNames.wallet_getSecretArray]: getPermissionMatcher(
+                PermissionNames.wallet_getSecretArray,
+                [
+                  constructCaveat(CaveatTypes.filterArrayResponse, ['b']),
+                  constructCaveat(CaveatTypes.reverseArrayResponse, null),
+                ],
+                MultiCaveatOrigins.b,
+              ),
+              [PermissionNames.wallet_getSecretObject]: getPermissionMatcher(
+                PermissionNames.wallet_getSecretObject,
+                [
+                  constructCaveat(CaveatTypes.filterObjectResponse, ['b']),
+                  constructCaveat(CaveatTypes.noopCaveat, null),
+                ],
+                MultiCaveatOrigins.b,
+              ),
+              [PermissionNames.wallet_getSecret_('foo')]: getPermissionMatcher(
+                PermissionNames.wallet_getSecret_('foo'),
+                [constructCaveat(CaveatTypes.noopCaveat, null)],
+                MultiCaveatOrigins.b,
+              ),
+              [PermissionNames.wallet_doubleNumber]: getPermissionMatcher(
+                PermissionNames.wallet_doubleNumber,
+                null,
+                MultiCaveatOrigins.b,
+              ),
+              ...overrides[MultiCaveatOrigins.b],
+            },
+          },
+
+          [MultiCaveatOrigins.c]: {
+            origin: MultiCaveatOrigins.c,
+            permissions: {
+              [PermissionNames.wallet_getSecretObject]: getPermissionMatcher(
+                PermissionNames.wallet_getSecretObject,
+                [constructCaveat(CaveatTypes.filterObjectResponse, ['c'])],
+                MultiCaveatOrigins.c,
+              ),
+              [PermissionNames.wallet_getSecret_('bar')]: getPermissionMatcher(
+                PermissionNames.wallet_getSecret_('bar'),
+                [constructCaveat(CaveatTypes.noopCaveat, null)],
+                MultiCaveatOrigins.c,
+              ),
+              ...overrides[MultiCaveatOrigins.c],
+            },
+          },
+        },
+      };
+    };
+
+    // This is effectively a test of the above test utilities.
+    it('multi-caveat controller has expected state', () => {
+      const controller = getMultiCaveatController();
+      expect(controller.state).toStrictEqual(getMultiCaveatStateMatcher());
+    });
+
+    it('does nothing if there are no subjects', () => {
+      const controller = getDefaultPermissionController();
+      expect(controller.state).toStrictEqual({ subjects: {} });
+
+      // There are no caveats, so this does nothing.
+      controller.updatePermissionsByCaveat(
+        CaveatTypes.filterArrayResponse,
+        () => [CaveatMutatorOperation.updateValue, ['a', 'b']],
+      );
+      expect(controller.state).toStrictEqual({ subjects: {} });
+    });
+
+    it('does nothing if the mutator returns the "noop" operation', () => {
+      const controller = getMultiCaveatController();
+
+      // Although there are caveats, we always return the "noop" operation, and
+      // therefore nothing happens.
+      controller.updatePermissionsByCaveat(
+        CaveatTypes.filterArrayResponse,
+        () => [CaveatMutatorOperation.noop],
+      );
+      expect(controller.state).toStrictEqual(getMultiCaveatStateMatcher());
+    });
+
+    it('updates the value of all caveats of a particular type', () => {
+      const controller = getMultiCaveatController();
+
+      controller.updatePermissionsByCaveat(
+        CaveatTypes.filterArrayResponse,
+        () => [CaveatMutatorOperation.updateValue, ['a', 'b']],
+      );
+
+      expect(controller.state).toStrictEqual(
+        getMultiCaveatStateMatcher({
+          [MultiCaveatOrigins.a]: {
+            [PermissionNames.wallet_getSecretArray]: getPermissionMatcher(
+              PermissionNames.wallet_getSecretArray,
+              [constructCaveat(CaveatTypes.filterArrayResponse, ['a', 'b'])],
+              MultiCaveatOrigins.a,
+            ),
+          },
+          [MultiCaveatOrigins.b]: {
+            [PermissionNames.wallet_getSecretArray]: getPermissionMatcher(
+              PermissionNames.wallet_getSecretArray,
+              [
+                constructCaveat(CaveatTypes.filterArrayResponse, ['a', 'b']),
+                constructCaveat(CaveatTypes.reverseArrayResponse, null),
+              ],
+              MultiCaveatOrigins.b,
+            ),
+          },
+        }),
+      );
+    });
+
+    it('selectively updates the value of all caveats of a particular type', () => {
+      const controller = getMultiCaveatController();
+
+      let counter = 0;
+      const mutator: any = () => {
+        counter += 1;
+        return counter === 1
+          ? [CaveatMutatorOperation.noop]
+          : [CaveatMutatorOperation.updateValue, ['a', 'b']];
+      };
+
+      controller.updatePermissionsByCaveat(
+        CaveatTypes.filterArrayResponse,
+        mutator,
+      );
+
+      expect(controller.state).toStrictEqual(
+        getMultiCaveatStateMatcher({
+          [MultiCaveatOrigins.b]: {
+            [PermissionNames.wallet_getSecretArray]: getPermissionMatcher(
+              PermissionNames.wallet_getSecretArray,
+              [
+                constructCaveat(CaveatTypes.filterArrayResponse, ['a', 'b']),
+                constructCaveat(CaveatTypes.reverseArrayResponse, null),
+              ],
+              MultiCaveatOrigins.b,
+            ),
+          },
+        }),
+      );
+    });
+
+    it('deletes all caveats of a particular type', () => {
+      const controller = getMultiCaveatController();
+
+      controller.updatePermissionsByCaveat(
+        CaveatTypes.filterArrayResponse,
+        () => [CaveatMutatorOperation.deleteCaveat],
+      );
+
+      expect(controller.state).toStrictEqual(
+        getMultiCaveatStateMatcher({
+          [MultiCaveatOrigins.a]: {
+            [PermissionNames.wallet_getSecretArray]: getPermissionMatcher(
+              PermissionNames.wallet_getSecretArray,
+              null,
+              MultiCaveatOrigins.a,
+            ),
+          },
+          [MultiCaveatOrigins.b]: {
+            [PermissionNames.wallet_getSecretArray]: getPermissionMatcher(
+              PermissionNames.wallet_getSecretArray,
+              [constructCaveat(CaveatTypes.reverseArrayResponse, null)],
+              MultiCaveatOrigins.b,
+            ),
+          },
+        }),
+      );
+    });
+
+    it('revokes permissions associated with a caveat', () => {
+      const controller = getMultiCaveatController();
+
+      controller.updatePermissionsByCaveat(
+        CaveatTypes.filterObjectResponse,
+        () => [CaveatMutatorOperation.revokePermission],
+      );
+
+      const matcher = getMultiCaveatStateMatcher();
+      delete matcher.subjects[MultiCaveatOrigins.b].permissions[
+        PermissionNames.wallet_getSecretObject
+      ];
+
+      delete matcher.subjects[MultiCaveatOrigins.c].permissions[
+        PermissionNames.wallet_getSecretObject
+      ];
+
+      expect(controller.state).toStrictEqual(matcher);
+    });
+
+    it('deletes subject if all permissions are revoked', () => {
+      const controller = getMultiCaveatController();
+
+      let counter = 0;
+      const mutator: any = () => {
+        counter += 1;
+        return counter === 1
+          ? [CaveatMutatorOperation.revokePermission]
+          : [CaveatMutatorOperation.noop];
+      };
+
+      controller.updatePermissionsByCaveat(
+        CaveatTypes.filterArrayResponse,
+        mutator,
+      );
+
+      const matcher = getMultiCaveatStateMatcher();
+      delete (matcher.subjects as any)[MultiCaveatOrigins.a];
+
+      expect(controller.state).toStrictEqual(matcher);
+    });
+
+    it('throws if caveat validation fails after a value is updated', () => {
+      const controller = getMultiCaveatController();
+
+      expect(() =>
+        controller.updatePermissionsByCaveat(
+          CaveatTypes.filterArrayResponse,
+          () => [CaveatMutatorOperation.updateValue, 'foo'],
+        ),
+      ).toThrow(`${CaveatTypes.filterArrayResponse} values must be arrays`);
+    });
+
+    it('throws if permission validation fails after a value is updated', () => {
+      const controller = getMultiCaveatController();
+
+      expect(() =>
+        controller.updatePermissionsByCaveat(CaveatTypes.noopCaveat, () => [
+          CaveatMutatorOperation.deleteCaveat,
+        ]),
+      ).toThrow('getSecret_* permission validation failed');
+    });
+
+    it('throws if mutator returns unrecognized operation', () => {
+      const controller = getMultiCaveatController();
+
+      expect(() =>
+        controller.updatePermissionsByCaveat(
+          CaveatTypes.filterArrayResponse,
+          () => ['foobar'] as any,
+        ),
+      ).toThrow(`Unrecognized mutation result: "foobar"`);
+    });
   });
 
   describe('grantPermissions', () => {

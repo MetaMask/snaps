@@ -248,7 +248,7 @@ type GrantPermissionsOptions = {
 /**
  * Describes the possible results of a {@link CaveatMutator} function.
  */
-export enum CaveatMutatorResult {
+export enum CaveatMutatorOperation {
   noop,
   updateValue,
   deleteCaveat,
@@ -256,10 +256,10 @@ export enum CaveatMutatorResult {
 }
 
 /**
- * Given a caveat value, returns a {@link CaveatMutatorResult} and, optionally,
+ * Given a caveat value, returns a {@link CaveatMutatorOperation} and, optionally,
  * a new caveat value.
  *
- * @see {@link PermissionController.updateAllCaveatsOfType} for more details.
+ * @see {@link PermissionController.updatePermissionsByCaveat} for more details.
  * @template Caveat - The caveat type for which this mutator is intended.
  * @param caveatValue - The existing value of the caveat being mutated.
  * @returns A tuple of the mutation result and, optionally, the new caveat
@@ -268,8 +268,8 @@ export enum CaveatMutatorResult {
 export type CaveatMutator<Caveat extends GenericCaveat> = (
   caveatValue: Caveat['value'],
 ) =>
-  | [Exclude<CaveatMutatorResult, CaveatMutatorResult.updateValue>]
-  | [CaveatMutatorResult.updateValue, GenericCaveat['value']];
+  | [Exclude<CaveatMutatorOperation, CaveatMutatorOperation.updateValue>]
+  | [CaveatMutatorOperation.updateValue, GenericCaveat['value']];
 
 /**
  * Extracts the permission type or types from the specified permission and
@@ -699,7 +699,6 @@ export class PermissionController<
           // Typecast: Immer WritableDraft incompatibility
           this.deletePermission(
             draftState.subjects as unknown as PermissionControllerSubjects<GenericPermission>,
-            permissions as unknown as SubjectPermissions<GenericPermission>,
             origin,
             target,
           );
@@ -732,7 +731,6 @@ export class PermissionController<
           this.deletePermission(
             // Typecast: Immer WritableDraft incompatibility
             draftState.subjects as unknown as PermissionControllerSubjects<GenericPermission>,
-            permissions as unknown as SubjectPermissions<GenericPermission>,
             origin,
             target,
           );
@@ -741,15 +739,25 @@ export class PermissionController<
     });
   }
 
+  /**
+   * Deletes the permission identified by the given origin and target. If the
+   * permission is the single remaining permission of its subject, the subject
+   * is also deleted.
+   *
+   * @param subjects - The draft permission controller subjects.
+   * @param origin - The origin of the subject associated with the permission
+   * to delete.
+   * @param target - The target name of the permission to delete.
+   */
   private deletePermission(
     subjects: PermissionControllerSubjects<GenericPermission>,
-    permissions: SubjectPermissions<GenericPermission>,
     origin: OriginString,
     target: ExtractPermission<
       PermissionSpecification,
       CaveatSpecification
     >['parentCapability'],
   ): void {
+    const { permissions } = subjects[origin];
     if (Object.keys(permissions).length > 1) {
       delete permissions[target];
     } else {
@@ -907,7 +915,9 @@ export class PermissionController<
   }
 
   /**
-   * Internal method for setting the caveat of a permission.
+   * Sets the specified caveat on the specified permission. Overwrites existing
+   * caveats of the same type in-place (preserving array order), and adds the
+   * caveat to the end of the array otherwise.
    *
    * Throws an error if the permission does not exist or fails to validate after
    * its caveats have been modified.
@@ -995,19 +1005,22 @@ export class PermissionController<
    * Updates all caveats with the specified type for all subjects and
    * permissions by applying the specified mutator function to them.
    *
+   * **ATTN:** Permissions can be revoked entirely by the action of this method,
+   * read on for details.
+   *
    * Caveat mutators are functions that receive a caveat value and return a
-   * tuple consisting of a {@link CaveatMutatorResult} and, optionally, a new
+   * tuple consisting of a {@link CaveatMutatorOperation} and, optionally, a new
    * value to update the existing caveat with.
    *
    * For each caveat, depending on the mutator result, this method will:
-   * - Do nothing ({@link CaveatMutatorResult.noop})
-   * - Update the value of the caveat ({@link CaveatMutatorResult.updateValue})
+   * - Do nothing ({@link CaveatMutatorOperation.noop})
+   * - Update the value of the caveat ({@link CaveatMutatorOperation.updateValue})
    *   - The caveat specification validator, if any, will be called after
    *     updating the value.
-   * - Delete the caveat ({@link CaveatMutatorResult.deleteCaveat})
+   * - Delete the caveat ({@link CaveatMutatorOperation.deleteCaveat})
    *   - The permission specification validator, if any, will be called after
    *     deleting the caveat.
-   * - Revoke the parent permission ({@link CaveatMutatorResult.revokePermission})
+   * - Revoke the parent permission ({@link CaveatMutatorOperation.revokePermission})
    *
    * This method throws if the validation of any caveat or permission fails.
    *
@@ -1015,7 +1028,7 @@ export class PermissionController<
    * @param mutator - The mutator function which will be applied to all caveat
    * values.
    */
-  updateAllCaveatsOfType<
+  updatePermissionsByCaveat<
     CaveatType extends ExtractCaveats<CaveatSpecification>['type'],
     Caveat extends ExtractCaveat<CaveatSpecification, CaveatType>,
   >(targetCaveatType: CaveatType, mutator: CaveatMutator<Caveat>): void {
@@ -1038,10 +1051,10 @@ export class PermissionController<
           // return a valid mutation result.
           const [mutationResult, newValue] = mutator(targetCaveat.value);
           switch (mutationResult) {
-            case CaveatMutatorResult.noop:
+            case CaveatMutatorOperation.noop:
               break;
 
-            case CaveatMutatorResult.updateValue:
+            case CaveatMutatorOperation.updateValue:
               // Typecast: The mutator type guarantees that the new value will
               // not be undefined in this case. In any case, the specification
               // validator is called on the mutated caveat.
@@ -1055,7 +1068,7 @@ export class PermissionController<
               );
               break;
 
-            case CaveatMutatorResult.deleteCaveat:
+            case CaveatMutatorOperation.deleteCaveat:
               // Typecast: Immer WritableDraft incompatibility
               this.deleteCaveat(
                 permission as MutableGenericPermission,
@@ -1065,12 +1078,11 @@ export class PermissionController<
               );
               break;
 
-            case CaveatMutatorResult.revokePermission:
+            case CaveatMutatorOperation.revokePermission:
               // Typecast: Immer WritableDraft incompatibility
               this.deletePermission(
                 draftState.subjects as unknown as PermissionControllerSubjects<GenericPermission>,
-                subject.permissions as unknown as SubjectPermissions<GenericPermission>,
-                origin,
+                subject.origin,
                 permission.parentCapability,
               );
               break;
@@ -1732,7 +1744,9 @@ export class PermissionController<
   }
 
   /**
-   * Internal function for rejecting a permission request.
+   * Rejects the permissions request with the specified id, with the specified
+   * error as the reason. This method is effectively a wrapper around a
+   * messenger call for the `ApprovalController:rejectRequest` action.
    *
    * @see {@link PermissionController.acceptPermissionsRequest} and
    * {@link PermissionController.rejectPermissionsRequest} for usage.
