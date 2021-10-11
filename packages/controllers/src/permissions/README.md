@@ -18,15 +18,15 @@ Permissions can have **caveats**, which are host-defined attenuations of the aut
 
 Permission system concepts correspond to components of the MetaMask stack as follows:
 
-| Concept           | Implementation                                                                           |
-| :---------------- | :--------------------------------------------------------------------------------------- |
-| Host              | The MetaMask application                                                                 |
-| Subjects          | Websites, Snaps, or other extensions                                                     |
-| Targets           | JSON-RPC methods                                                                         |
-| Invocations       | JSON-RPC requests                                                                        |
-| Permissions       | Permission objects                                                                       |
-| Caveats           | Caveat objects                                                                           |
-| Permission system | The `PermissionController`, `PermissionEnforcer`, and their `json-rpc-engine` middleware |
+| Concept           | Implementation                                                  |
+| :---------------- | :-------------------------------------------------------------- |
+| Host              | The MetaMask application                                        |
+| Subjects          | Websites, Snaps, or other extensions                            |
+| Targets           | JSON-RPC methods                                                |
+| Invocations       | JSON-RPC requests                                               |
+| Permissions       | Permission objects                                              |
+| Caveats           | Caveat objects                                                  |
+| Permission system | The `PermissionController` and its `json-rpc-engine` middleware |
 
 For the time being, JSON-RPC methods are the only kind of permission target that exists.
 Therefore, our implementation of the permission system revolves around JSON-RPC requests and MetaMask's `json-rpc-engine` stack.
@@ -35,15 +35,13 @@ Unrestricted methods can always be called by anyone.
 Restricted methods require the requisite permission in order to be called.
 
 At any given moment, the `PermissionController` state tree describes the complete state of the permissions of all subjects known to the current MetaMask instance.
-The `PermissionController` also provides methods for adding, updating, and removing permissions.
-The controller has a sibling module, the `PermissionEnforcer`, which furnishes methods for applying the rules described by the controller state to incoming JSON-RPC requests.
-The also provides a `json-rpc-engine` middleware so that we can apply its logic to incoming JSON-RPC requests.
+The `PermissionController` also provides methods for adding, updating, and removing permissions, and a `json-rpc-engine` middleware function factory so that the permissioning logic can be applied to incoming JSON-RPC requests.
 
 Once the permission middleware is injected into our middleware stack, every JSON-RPC request will be handled in one of the following ways:
 
 - If the requested method is neither restricted nor unrestricted, the request will be rejected with a `methodNotFound` error.
 - If the requested method is unrestricted, it will pass through the middleware unmodified.
-- If the requested method is restricted, the enforcer will attempt to get the permission corresponding to the subject and target, and:
+- If the requested method is restricted, the middleware will attempt to get the permission corresponding to the subject and target, and:
   - If a permission is found, call the corresponding method with the request parameters.
   - If a permission is not found, reject the request with an `unauthorized` error.
 
@@ -105,8 +103,6 @@ const permissionController = new PermissionController({
   permissionSpecifications,
   unrestrictedMethods: ['wallet_unrestrictedMethod'],
 });
-
-const permissionEnforcer = permissionController.enforcer;
 ```
 
 ### Adding the Permission Middleware
@@ -120,19 +116,20 @@ const origin = getOrigin(subject);
 
 const engine = new JsonRpcEngine();
 engine.push(/* your various middleware*/);
-engine.push(permissionEnforcer.createPermissionMiddleware({ origin }));
+engine.push(permissionController.createPermissionMiddleware({ origin }));
 // Your middleware stack is now permissioned
+engine.push(/* your other various middleware*/);
 ```
 
 ### Calling a Restricted Method Internally
 
 ```typescript
 // Sometimes, we need to call a restricted method internally, as a particular subject.
-permissionEnforcer.executeRestrictedMethod(origin, 'wallet_getSecretArray');
+permissionController.executeRestrictedMethod(origin, 'wallet_getSecretArray');
 
 // If the restricted method has any parameters, they are given as the third
 // argument to executeRestrictedMethod().
-permissionEnforcer.executeRestrictedMethod(origin, 'wallet_getSecret', {
+permissionController.executeRestrictedMethod(origin, 'wallet_getSecret', {
   secretType: 'array',
 });
 ```

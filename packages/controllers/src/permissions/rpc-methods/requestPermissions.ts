@@ -23,7 +23,6 @@ export const requestPermissionsHandler: PermittedHandlerExport<
   },
 };
 
-// PermissionEnforcer['requestPermissions'] but with the origin parameter bound
 type RequestPermissions = (
   requestedPermissions: RequestedPermissions,
   id: string,
