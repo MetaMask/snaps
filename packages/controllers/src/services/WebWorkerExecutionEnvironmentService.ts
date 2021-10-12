@@ -203,8 +203,68 @@ export class WebWorkerExecutionEnvironmentService
       params: pluginData,
       id: nanoid(),
     });
+    // set up poll/ping for status to see if its up, if its not then emit event that it cant be reached
+    this._pollForWorkerStatus(pluginData.pluginName);
     this._createPluginHooks(pluginData.pluginName, worker.id);
     return result;
+  }
+
+  _pollForWorkerStatus(pluginName: string) {
+    const workerId = this._getWorkerForPlugin(pluginName);
+    if (!workerId) {
+      throw new Error('no worker id found for plugin');
+    }
+    const INTERVAL = 5000;
+
+    setTimeout(async () => {
+      console.log('getting worker status');
+      this._getWorkerStatus(workerId)
+        .then(() => {
+          this._pollForWorkerStatus(pluginName);
+        })
+        .catch(() => {
+          this._messenger.publish(
+            'ServiceMessenger:unhandledError', // more specific error that we know about
+            pluginName,
+            {
+              code: -32006,
+              message: 'Plugin cannot be reached',
+            },
+          );
+        });
+    }, INTERVAL);
+  }
+
+  async _getWorkerStatus(workerId: string) {
+    const TIMEOUT = 30000;
+
+    let resolve: any;
+    let reject: any;
+
+    const promise = new Promise((res, rej) => {
+      resolve = res;
+      reject = rej;
+    });
+
+    const timeout = setTimeout(() => {
+      reject(new Error('ping request timed out'));
+    }, TIMEOUT);
+    console.log('doin that ping thing');
+
+    try {
+      await this._command(workerId, {
+        jsonrpc: '2.0',
+        method: 'ping',
+        params: [],
+        id: nanoid(),
+      });
+      clearTimeout(timeout);
+      resolve(true); // eslint-disable-line
+    } catch (e) {
+      reject(e as Error);
+    }
+
+    return promise;
   }
 
   _mapPluginAndWorker(pluginName: string, workerId: string): void {

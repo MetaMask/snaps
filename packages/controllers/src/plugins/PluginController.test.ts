@@ -496,14 +496,18 @@ describe('PluginController Controller', () => {
       PluginControllerActions,
       ErrorMessageEvent
     >();
-    const messenger = controllerMessenger.getRestricted({
+    const serviceMessenger = controllerMessenger.getRestricted({
+      name: 'ServiceMessenger',
+      allowedEvents: ['ServiceMessenger:unhandledError'],
+    });
+    const pluginControllerMessenger = controllerMessenger.getRestricted({
       name: 'PluginController',
       allowedEvents: ['ServiceMessenger:unhandledError'],
     });
 
     const workerExecutionEnvironment = new WebWorkerExecutionEnvironmentService(
       {
-        messenger,
+        messenger: serviceMessenger,
         setupPluginProvider: jest.fn(),
         workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
       },
@@ -527,7 +531,7 @@ describe('PluginController Controller', () => {
       hasPermission: jest.fn(),
       requestPermissions: jest.fn(),
       closeAllConnections: jest.fn(),
-      messenger,
+      messenger: pluginControllerMessenger,
     });
     const plugin = await pluginController.add({
       name: 'TestPlugin',

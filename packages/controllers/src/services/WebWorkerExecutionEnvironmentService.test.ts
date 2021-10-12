@@ -54,4 +54,43 @@ describe('Worker Controller', () => {
 
     expect(response).toStrictEqual('OK');
   });
+
+  it('can create a plugin worker and handle no ping reply', async () => {
+    const messenger = new ControllerMessenger<
+      never,
+      ErrorMessageEvent
+    >().getRestricted<'ServiceMessenger', never, ErrorMessageEvent['type']>({
+      name: 'ServiceMessenger',
+      allowedEvents: ['ServiceMessenger:unhandledError'],
+    });
+    const webWorkerExecutionEnvironmentService =
+      new WebWorkerExecutionEnvironmentService({
+        messenger,
+        setupPluginProvider: () => {
+          // do nothing
+        },
+        workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
+      });
+
+    const pluginName = 'foo.bar.baz';
+    await webWorkerExecutionEnvironmentService.executePlugin({
+      pluginName,
+      sourceCode: `
+        console.log('foo');
+      `,
+    });
+
+    // prevent command from returning
+    // eslint-disable-next-line jest/prefer-spy-on
+    (webWorkerExecutionEnvironmentService as any)._command = jest.fn();
+
+    // check for an error
+    const promise = new Promise((resolve) => {
+      messenger.subscribe('ServiceMessenger:unhandledError', resolve);
+    });
+
+    await promise;
+
+    expect(promise).toBeDefined();
+  }, 60000);
 });
