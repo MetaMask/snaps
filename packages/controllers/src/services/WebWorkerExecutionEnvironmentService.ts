@@ -241,7 +241,7 @@ export class WebWorkerExecutionEnvironmentService
     let resolve: any;
     let reject: any;
 
-    const promise = new Promise((res, rej) => {
+    const timeoutPromise = new Promise((res, rej) => {
       resolve = res;
       reject = rej;
     });
@@ -249,9 +249,8 @@ export class WebWorkerExecutionEnvironmentService
     const timeout = setTimeout(() => {
       reject(new Error('ping request timed out'));
     }, TIMEOUT);
-    console.log('doin that ping thing');
 
-    try {
+    return Promise.race([
       this._command(workerId, {
         jsonrpc: '2.0',
         method: 'ping',
@@ -260,11 +259,9 @@ export class WebWorkerExecutionEnvironmentService
       }).then(() => {
         clearTimeout(timeout);
         resolve();
-      });
-      await promise;
-    } catch (e) {
-      reject(e as Error);
-    }
+      }),
+      timeoutPromise,
+    ])
   }
 
   _mapPluginAndWorker(pluginName: string, workerId: string): void {
