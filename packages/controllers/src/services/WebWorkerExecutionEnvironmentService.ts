@@ -252,19 +252,19 @@ export class WebWorkerExecutionEnvironmentService
     console.log('doin that ping thing');
 
     try {
-      await this._command(workerId, {
+      this._command(workerId, {
         jsonrpc: '2.0',
         method: 'ping',
         params: [],
         id: nanoid(),
+      }).then(() => {
+        clearTimeout(timeout);
+        resolve();
       });
-      clearTimeout(timeout);
-      resolve(true); // eslint-disable-line
+      await promise;
     } catch (e) {
       reject(e as Error);
     }
-
-    return promise;
   }
 
   _mapPluginAndWorker(pluginName: string, workerId: string): void {
