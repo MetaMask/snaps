@@ -6,7 +6,7 @@ import {
   RestrictedControllerMessenger,
 } from '@metamask/controllers';
 import { Json } from 'json-rpc-engine';
-import { PluginData } from '@metamask/snap-types';
+import { ErrorMessageEvent, PluginData } from '@metamask/snap-types';
 import { nanoid } from 'nanoid';
 import {
   GetRpcMessageHandler,
@@ -95,9 +95,9 @@ export type PluginControllerEvents = PluginStateChange;
 type PluginControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
   PluginControllerActions,
-  PluginControllerEvents,
+  PluginControllerEvents | ErrorMessageEvent,
   never,
-  never
+  ErrorMessageEvent['type']
 >;
 
 type PluginControllerArgs = {
@@ -235,6 +235,13 @@ export class PluginController extends BaseController<
     this._terminateAllPlugins = terminateAllPlugins;
     this._executePlugin = executePlugin;
     this._getRpcMessageHandler = getRpcMessageHandler;
+    this.messagingSystem.subscribe(
+      'ServiceMessenger:unhandledError',
+      (pluginName, error) => {
+        this.stopPlugin(pluginName);
+        this.addPluginError(error);
+      },
+    );
 
     this._pluginsBeingAdded = new Map();
   }
@@ -439,7 +446,7 @@ export class PluginController extends BaseController<
    *
    * @param pluginName - The name of the plugin whose state to get.
    */
-  async getPluginState(pluginName: string): Promise<unknown> {
+  async getPluginState(pluginName: string): Promise<Json> {
     return this.state.pluginStates[pluginName];
   }
 

@@ -6,22 +6,20 @@ import ObjectMultiplex from '@metamask/object-multiplex';
 import { WorkerParentPostMessageStream } from '@metamask/post-message-stream';
 import { PLUGIN_STREAM_NAMES } from '@metamask/snap-workers';
 import { createStreamMiddleware } from 'json-rpc-middleware-stream';
-import { PluginData } from '@metamask/snap-types';
+import { PluginData, ServiceMessenger } from '@metamask/snap-types';
 import {
   JsonRpcEngine,
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from 'json-rpc-engine';
-import { EthereumRpcError } from 'eth-rpc-errors';
 import { ExecutionEnvironmentService } from './ExecutionEnvironmentService';
 
 export type SetupPluginProvider = (pluginName: string, stream: Duplex) => void;
 
-type OnError = (pluginName: string, error: EthereumRpcError<unknown>) => void;
 interface WorkerControllerArgs {
   setupPluginProvider: SetupPluginProvider;
   workerUrl: URL;
-  onError?: OnError;
+  messenger: ServiceMessenger;
 }
 
 interface WorkerStreams {
@@ -60,12 +58,12 @@ export class WebWorkerExecutionEnvironmentService
 
   private workerToPluginMap: Map<string, string>;
 
-  private _onError?: OnError;
+  private _messenger: ServiceMessenger;
 
   constructor({
     setupPluginProvider,
     workerUrl,
-    onError,
+    messenger,
   }: WorkerControllerArgs) {
     this.workerUrl = workerUrl;
     this.setupPluginProvider = setupPluginProvider;
@@ -74,7 +72,7 @@ export class WebWorkerExecutionEnvironmentService
     this.pluginToWorkerMap = new Map();
     this.workerToPluginMap = new Map();
     this._pluginRpcHooks = new Map();
-    this._onError = onError;
+    this._messenger = messenger;
   }
 
   private _setWorker(workerId: string, workerWrapper: WorkerWrapper): void {
@@ -245,15 +243,18 @@ export class WebWorkerExecutionEnvironmentService
     });
     // Handle out-of-band errors, i.e. errors thrown from the plugin outside of the req/res cycle.
     const errorHandler = (ev: ErrorEvent) => {
-      if (this._onError) {
-        const err = new EthereumRpcError(
-          ev.error.code,
-          ev.error.message,
-          ev.error.data,
-        );
+      if (this._messenger) {
         const pluginName = this.workerToPluginMap.get(workerId);
         if (pluginName) {
-          this._onError(pluginName, err);
+          this._messenger.publish(
+            'ServiceMessenger:unhandledError',
+            pluginName,
+            {
+              code: ev.error.code,
+              message: ev.error.message,
+              data: ev.error.data,
+            },
+          );
         }
       }
     };

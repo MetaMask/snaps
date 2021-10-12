@@ -1,9 +1,14 @@
 import fs from 'fs';
 import { ControllerMessenger } from '@metamask/controllers/dist/ControllerMessenger';
 import { getPersistentState } from '@metamask/controllers';
+import { ErrorMessageEvent } from '@metamask/snap-types';
 import { WebWorkerExecutionEnvironmentService } from '../services/WebWorkerExecutionEnvironmentService';
 import { ExecutionEnvironmentService } from '../services/ExecutionEnvironmentService';
-import { PluginController, PluginControllerState } from './PluginController';
+import {
+  PluginController,
+  PluginControllerActions,
+  PluginControllerState,
+} from './PluginController';
 
 const workerCode = fs.readFileSync(
   require.resolve('@metamask/snap-workers/dist/PluginWorker.js'),
@@ -12,8 +17,17 @@ const workerCode = fs.readFileSync(
 
 describe('PluginController Controller', () => {
   it('can create a worker and plugin controller', async () => {
+    const messenger = new ControllerMessenger<
+      PluginControllerActions,
+      ErrorMessageEvent
+    >().getRestricted({
+      name: 'PluginController',
+      allowedEvents: ['ServiceMessenger:unhandledError'],
+    });
+
     const workerExecutionEnvironment = new WebWorkerExecutionEnvironmentService(
       {
+        messenger,
         setupPluginProvider: jest.fn(),
         workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
       },
@@ -37,17 +51,24 @@ describe('PluginController Controller', () => {
       hasPermission: jest.fn(),
       requestPermissions: jest.fn(),
       closeAllConnections: jest.fn(),
-      messenger: new ControllerMessenger<any, any>().getRestricted({
-        name: 'PluginController',
-      }),
+      messenger,
     });
 
     expect(pluginController).toBeDefined();
   });
 
   it('can create a worker and plugin controller and add a plugin and update its state', async () => {
+    const messenger = new ControllerMessenger<
+      PluginControllerActions,
+      ErrorMessageEvent
+    >().getRestricted({
+      name: 'PluginController',
+      allowedEvents: ['ServiceMessenger:unhandledError'],
+    });
+
     const workerExecutionEnvironment = new WebWorkerExecutionEnvironmentService(
       {
+        messenger,
         setupPluginProvider: jest.fn(),
         workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
       },
@@ -71,9 +92,7 @@ describe('PluginController Controller', () => {
       hasPermission: jest.fn(),
       requestPermissions: jest.fn(),
       closeAllConnections: jest.fn(),
-      messenger: new ControllerMessenger<any, any>().getRestricted({
-        name: 'PluginController',
-      }),
+      messenger,
     });
     const plugin = await pluginController.add({
       name: 'TestPlugin',
@@ -103,8 +122,16 @@ describe('PluginController Controller', () => {
   });
 
   it('can add a plugin and use its JSON-RPC api with a WebWorkerExecutionEnvironmentService', async () => {
+    const messenger = new ControllerMessenger<
+      PluginControllerActions,
+      ErrorMessageEvent
+    >().getRestricted({
+      name: 'PluginController',
+      allowedEvents: ['ServiceMessenger:unhandledError'],
+    });
     const webWorkerExecutionEnvironment =
       new WebWorkerExecutionEnvironmentService({
+        messenger,
         setupPluginProvider: jest.fn(),
         workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
       });
@@ -128,9 +155,7 @@ describe('PluginController Controller', () => {
       hasPermission: jest.fn(),
       requestPermissions: jest.fn(),
       closeAllConnections: jest.fn(),
-      messenger: new ControllerMessenger<any, any>().getRestricted({
-        name: 'PluginController',
-      }),
+      messenger,
     });
 
     const plugin = await pluginController.add({
@@ -190,7 +215,13 @@ describe('PluginController Controller', () => {
     }
 
     const executionEnvironmentStub = new ExecutionEnvironmentStub();
-
+    const messenger = new ControllerMessenger<
+      PluginControllerActions,
+      ErrorMessageEvent
+    >().getRestricted({
+      name: 'PluginController',
+      allowedEvents: ['ServiceMessenger:unhandledError'],
+    });
     const pluginController = new PluginController({
       terminateAllPlugins: executionEnvironmentStub.terminateAllPlugins.bind(
         executionEnvironmentStub,
@@ -209,9 +240,7 @@ describe('PluginController Controller', () => {
       hasPermission: jest.fn(),
       requestPermissions: jest.fn(),
       closeAllConnections: jest.fn(),
-      messenger: new ControllerMessenger<any, any>().getRestricted({
-        name: 'PluginController',
-      }),
+      messenger,
     });
 
     const plugin = await pluginController.add({
@@ -260,6 +289,13 @@ describe('PluginController Controller', () => {
 
     const mockExecutePlugin = jest.fn();
 
+    const messenger = new ControllerMessenger<
+      PluginControllerActions,
+      ErrorMessageEvent
+    >().getRestricted({
+      name: 'PluginController',
+      allowedEvents: ['ServiceMessenger:unhandledError'],
+    });
     const pluginController = new PluginController({
       terminateAllPlugins: jest.fn(),
       terminatePlugin: jest.fn(),
@@ -270,9 +306,7 @@ describe('PluginController Controller', () => {
       hasPermission: jest.fn(),
       requestPermissions: jest.fn(),
       closeAllConnections: jest.fn(),
-      messenger: new ControllerMessenger<any, any>().getRestricted({
-        name: 'PluginController',
-      }),
+      messenger,
     });
 
     await pluginController.add({ name, manifest, sourceCode });
@@ -290,6 +324,11 @@ describe('PluginController Controller', () => {
   it('can not delete existing plugins when using runExistinPlugins with a hydrated state', async () => {
     const mockExecutePlugin = jest.fn();
 
+    const controllerMessenger = new ControllerMessenger<
+      PluginControllerActions,
+      ErrorMessageEvent
+    >();
+
     const firstPluginController = new PluginController({
       terminateAllPlugins: jest.fn(),
       terminatePlugin: jest.fn(),
@@ -300,8 +339,9 @@ describe('PluginController Controller', () => {
       hasPermission: jest.fn(),
       requestPermissions: jest.fn(),
       closeAllConnections: jest.fn(),
-      messenger: new ControllerMessenger<any, any>().getRestricted({
+      messenger: controllerMessenger.getRestricted({
         name: 'PluginController',
+        allowedEvents: ['ServiceMessenger:unhandledError'],
       }),
       state: {
         pluginErrors: {},
@@ -319,11 +359,16 @@ describe('PluginController Controller', () => {
         },
       },
     });
+
     // persist the state somewhere
     const persistedState = getPersistentState<PluginControllerState>(
       firstPluginController.state,
       firstPluginController.metadata,
     );
+    const secondControllerMessenger = new ControllerMessenger<
+      PluginControllerActions,
+      ErrorMessageEvent
+    >();
     // create a new controller
     const secondPluginController = new PluginController({
       terminateAllPlugins: jest.fn(),
@@ -335,8 +380,9 @@ describe('PluginController Controller', () => {
       hasPermission: jest.fn(),
       requestPermissions: jest.fn(),
       closeAllConnections: jest.fn(),
-      messenger: new ControllerMessenger<any, any>().getRestricted({
+      messenger: secondControllerMessenger.getRestricted({
         name: 'PluginController',
+        allowedEvents: ['ServiceMessenger:unhandledError'],
       }),
       state: persistedState as unknown as PluginControllerState,
     });
@@ -376,6 +422,13 @@ describe('PluginController Controller', () => {
 
     const executionEnvironmentStub = new ExecutionEnvironmentStub();
 
+    const messenger = new ControllerMessenger<
+      PluginControllerActions,
+      ErrorMessageEvent
+    >().getRestricted({
+      name: 'PluginController',
+      allowedEvents: ['ServiceMessenger:unhandledError'],
+    });
     const pluginController = new PluginController({
       terminateAllPlugins: executionEnvironmentStub.terminateAllPlugins.bind(
         executionEnvironmentStub,
@@ -394,9 +447,7 @@ describe('PluginController Controller', () => {
       hasPermission: jest.fn(),
       requestPermissions: jest.fn(),
       closeAllConnections: jest.fn(),
-      messenger: new ControllerMessenger<any, any>().getRestricted({
-        name: 'PluginController',
-      }),
+      messenger,
     });
     pluginController.addPluginError({
       code: 1,
@@ -438,5 +489,84 @@ describe('PluginController Controller', () => {
         message: 'error 2',
       }),
     );
+  });
+
+  it('can handle an error event on the controller messenger', async () => {
+    const controllerMessenger = new ControllerMessenger<
+      PluginControllerActions,
+      ErrorMessageEvent
+    >();
+    const messenger = controllerMessenger.getRestricted({
+      name: 'PluginController',
+      allowedEvents: ['ServiceMessenger:unhandledError'],
+    });
+
+    const workerExecutionEnvironment = new WebWorkerExecutionEnvironmentService(
+      {
+        messenger,
+        setupPluginProvider: jest.fn(),
+        workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
+      },
+    );
+    const pluginController = new PluginController({
+      terminateAllPlugins: workerExecutionEnvironment.terminateAllPlugins.bind(
+        workerExecutionEnvironment,
+      ),
+      terminatePlugin: workerExecutionEnvironment.terminatePlugin.bind(
+        workerExecutionEnvironment,
+      ),
+      executePlugin: workerExecutionEnvironment.executePlugin.bind(
+        workerExecutionEnvironment,
+      ),
+      getRpcMessageHandler:
+        workerExecutionEnvironment.getRpcMessageHandler.bind(
+          workerExecutionEnvironment,
+        ),
+      removeAllPermissionsFor: jest.fn(),
+      getPermissions: jest.fn(),
+      hasPermission: jest.fn(),
+      requestPermissions: jest.fn(),
+      closeAllConnections: jest.fn(),
+      messenger,
+    });
+    const plugin = await pluginController.add({
+      name: 'TestPlugin',
+      sourceCode: `
+        wallet.registerRpcMessageHandler(async (origin, request) => {
+          const {method, params, id} = request;
+          return method + id;
+        });
+      `,
+      manifest: {
+        web3Wallet: {
+          initialPermissions: {},
+        },
+        version: '0.0.0-development',
+      },
+    });
+    await pluginController.startPlugin(plugin.name);
+
+    // defer
+    setTimeout(() => {
+      controllerMessenger.publish(
+        'ServiceMessenger:unhandledError',
+        plugin.name,
+        {
+          message: 'foo',
+          code: 123,
+        },
+      );
+    }, 0);
+
+    await new Promise((resolve) => {
+      controllerMessenger.subscribe(
+        'ServiceMessenger:unhandledError',
+        async () => {
+          const localPlugin = pluginController.get(plugin.name);
+          expect(localPlugin.isRunning).toStrictEqual(false);
+          resolve(undefined);
+        },
+      );
+    });
   });
 });

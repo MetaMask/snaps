@@ -1,4 +1,6 @@
 import fs from 'fs';
+import { ControllerMessenger } from '@metamask/controllers';
+import { ErrorMessageEvent, ServiceMessenger } from '@metamask/snap-types';
 import { WebWorkerExecutionEnvironmentService } from './WebWorkerExecutionEnvironmentService';
 
 const workerCode = fs.readFileSync(
@@ -8,8 +10,16 @@ const workerCode = fs.readFileSync(
 
 describe('Worker Controller', () => {
   it('can boot', async () => {
+    const messenger: ServiceMessenger = new ControllerMessenger().getRestricted<
+      'ServiceMessenger',
+      never,
+      ErrorMessageEvent['type']
+    >({
+      name: 'ServiceMessenger',
+    });
     const webWorkerExecutionEnvironmentService =
       new WebWorkerExecutionEnvironmentService({
+        messenger,
         setupPluginProvider: () => {
           // do nothing
         },
@@ -19,8 +29,16 @@ describe('Worker Controller', () => {
   });
 
   it('can create a plugin worker and start the plugin', async () => {
+    const messenger: ServiceMessenger = new ControllerMessenger().getRestricted<
+      'ServiceMessenger',
+      never,
+      ErrorMessageEvent['type']
+    >({
+      name: 'ServiceMessenger',
+    });
     const webWorkerExecutionEnvironmentService =
       new WebWorkerExecutionEnvironmentService({
+        messenger,
         setupPluginProvider: () => {
           // do nothing
         },
@@ -33,6 +51,7 @@ describe('Worker Controller', () => {
         console.log('foo');
       `,
     });
+
     expect(response).toStrictEqual('OK');
   });
 });

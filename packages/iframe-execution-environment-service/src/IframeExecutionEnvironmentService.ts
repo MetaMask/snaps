@@ -5,23 +5,21 @@ import ObjectMultiplex from '@metamask/object-multiplex';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { PLUGIN_STREAM_NAMES } from '@metamask/snap-workers';
 import { createStreamMiddleware } from 'json-rpc-middleware-stream';
-import { PluginData } from '@metamask/snap-types';
+import { PluginData, ServiceMessenger } from '@metamask/snap-types';
 import {
   JsonRpcEngine,
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from 'json-rpc-engine';
 import { ExecutionEnvironmentService } from '@metamask/snap-controllers';
-import { EthereumRpcError } from 'eth-rpc-errors';
 
 export type SetupPluginProvider = (pluginName: string, stream: Duplex) => void;
 
-type OnError = (pluginName: string, error: EthereumRpcError<unknown>) => void;
 interface IframeExecutionEnvironmentServiceArgs {
   createWindowTimeout?: number;
   setupPluginProvider: SetupPluginProvider;
   iframeUrl: URL;
-  onError?: OnError;
+  messenger: ServiceMessenger;
 }
 
 interface JobStreams {
@@ -61,12 +59,12 @@ export class IframeExecutionEnvironmentService
 
   private _createWindowTimeout: number;
 
-  private _onError?: OnError;
+  private _messenger: ServiceMessenger;
 
   constructor({
     setupPluginProvider,
     iframeUrl,
-    onError,
+    messenger,
     createWindowTimeout = 60000,
   }: IframeExecutionEnvironmentServiceArgs) {
     this._createWindowTimeout = createWindowTimeout;
@@ -76,7 +74,7 @@ export class IframeExecutionEnvironmentService
     this.pluginToJobMap = new Map();
     this.jobToPluginMap = new Map();
     this._pluginRpcHooks = new Map();
-    this._onError = onError;
+    this._messenger = messenger;
   }
 
   private _setJob(jobId: string, jobWrapper: EnvMetadata): void {
@@ -271,15 +269,17 @@ export class IframeExecutionEnvironmentService
     const commandStream = mux.createStream(PLUGIN_STREAM_NAMES.COMMAND);
     // Handle out-of-band errors, i.e. errors thrown from the plugin outside of the req/res cycle.
     const errorHandler = (data: any) => {
-      if (data.error && this._onError) {
-        const err = new EthereumRpcError(
-          data.error.code,
-          data.error.message,
-          data.error.data,
-        );
+      if (
+        data.error &&
+        (data.id === null || data.id === undefined) // only out of band errors (i.e. no id)
+      ) {
         const pluginName = this.jobToPluginMap.get(jobId);
         if (pluginName) {
-          this._onError(pluginName, err);
+          this._messenger.publish(
+            'ServiceMessenger:unhandledError',
+            pluginName,
+            data.error,
+          );
         }
         commandStream.removeListener('data', errorHandler);
       }

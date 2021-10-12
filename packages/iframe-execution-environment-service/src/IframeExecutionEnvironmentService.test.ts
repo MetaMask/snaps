@@ -1,11 +1,24 @@
 import { describe, expect, it } from '@jest/globals';
+import { ControllerMessenger } from '@metamask/controllers';
+import { ErrorMessageEvent } from '@metamask/snap-types';
 import fixJSDOMPostMessageEventSource from './testHelpers/fixJSDOMPostMessageEventSource';
 import { IframeExecutionEnvironmentService } from './IframeExecutionEnvironmentService';
 
 describe('Iframe Controller', () => {
   it('can boot', async () => {
+    const controllerMessenger = new ControllerMessenger<
+      never,
+      ErrorMessageEvent
+    >();
     const iframeExecutionEnvironmentService =
       new IframeExecutionEnvironmentService({
+        messenger: controllerMessenger.getRestricted<
+          'ServiceMessenger',
+          never,
+          ErrorMessageEvent['type']
+        >({
+          name: 'ServiceMessenger',
+        }),
         setupPluginProvider: () => {
           // do nothing
         },
@@ -18,8 +31,19 @@ describe('Iframe Controller', () => {
   });
 
   it('can create a plugin worker and start the plugin', async () => {
+    const controllerMessenger = new ControllerMessenger<
+      never,
+      ErrorMessageEvent
+    >();
     const iframeExecutionEnvironmentService =
       new IframeExecutionEnvironmentService({
+        messenger: controllerMessenger.getRestricted<
+          'ServiceMessenger',
+          never,
+          ErrorMessageEvent['type']
+        >({
+          name: 'ServiceMessenger',
+        }),
         setupPluginProvider: () => {
           // do nothing
         },
@@ -43,8 +67,19 @@ describe('Iframe Controller', () => {
 
   it('can handle a crashed plugin', async () => {
     expect.assertions(1);
+    const controllerMessenger = new ControllerMessenger<
+      never,
+      ErrorMessageEvent
+    >();
     const iframeExecutionEnvironmentService =
       new IframeExecutionEnvironmentService({
+        messenger: controllerMessenger.getRestricted<
+          'ServiceMessenger',
+          never,
+          ErrorMessageEvent['type']
+        >({
+          name: 'ServiceMessenger',
+        }),
         setupPluginProvider: () => {
           // do nothing
         },

@@ -24,6 +24,9 @@
     "publish": "../../scripts/publish-package.sh",
     "publish:prep": "yarn lint"
   },
+  "dependencies": {
+    "@metamask/controllers": "^17.0.0"
+  },
   "devDependencies": {
     "@metamask/inpage-provider": "^8.0.4"
   },
