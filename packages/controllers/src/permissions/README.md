@@ -8,7 +8,7 @@ It is the successor of the original MetaMask permission system, [`rpc-cap`](http
 The permission system itself belongs to a **host**, and it mediates the access to resources – called **targets** – of distinct **subjects**.
 A target can belong to the host itself, or another subject.
 
-When a subject requests access to a target, we say that they **invoke** it.
+When a subject attempts to access a target, we say that they **invoke** it.
 The system ensures that subjects can only invoke a target if they have the **permission** to do so.
 Permissions are associated with a subject and target, and they are part of the state of the permission system.
 
