@@ -261,7 +261,7 @@ export class WebWorkerExecutionEnvironmentService
         resolve();
       }),
       timeoutPromise,
-    ])
+    ]);
   }
 
   _mapPluginAndWorker(pluginName: string, workerId: string): void {
