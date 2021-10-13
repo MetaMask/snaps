@@ -42,8 +42,8 @@ Once the permission middleware is injected into our middleware stack, every JSON
 - If the requested method is neither restricted nor unrestricted, the request will be rejected with a `methodNotFound` error.
 - If the requested method is unrestricted, it will pass through the middleware unmodified.
 - If the requested method is restricted, the middleware will attempt to get the permission corresponding to the subject and target, and:
-  - If a permission is found, call the corresponding method with the request parameters.
-  - If a permission is not found, reject the request with an `unauthorized` error.
+  - If the request is authorized, call the corresponding method with the request parameters.
+  - If the request is not authorized, reject the request with an `unauthorized` error.
 
 ### Caveats
 
