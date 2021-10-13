@@ -47,7 +47,7 @@ Once the permission middleware is injected into our middleware stack, every JSON
 
 ### Caveats
 
-Caveats are objects associated with permissions that impose arbitrary restrictions on restricted method requests.
+Caveats are arbitrary restrictions on restricted method requests.
 Every permission has a `caveats` field, which is either an array of caveats or `null`.
 Every caveat has a string `type`, and every type has an associated function that is used to apply the caveat to a restricted method request.
 When the `PermissionController` is constructed, the consumer specifies the available caveat types and their implementations.
