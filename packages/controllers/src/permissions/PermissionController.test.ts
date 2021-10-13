@@ -10,10 +10,10 @@ import {
 import { JsonRpcEngine, PendingJsonRpcResponse } from 'json-rpc-engine';
 import { hasProperty, isPlainObject } from '../utils';
 import * as errors from './errors';
-import { constructCaveat } from './Caveat';
 import {
   AsyncRestrictedMethod,
   CaveatBase,
+  constructCaveat,
   constructPermission,
   GenericCaveat,
   GenericPermission,
@@ -323,12 +323,11 @@ type ApprovalActions =
  *
  * @returns The restricted messenger.
  */
-function getDefaultRestrictedMessenger() {
-  const controllerMessenger = new ControllerMessenger<
+function getPermissionControllerMessenger() {
+  return new ControllerMessenger<
     PermissionControllerActions | ApprovalActions,
     PermissionControllerEvents
-  >();
-  return controllerMessenger.getRestricted<
+  >().getRestricted<
     typeof controllerName,
     PermissionControllerActions['type'] | ApprovalActions['type'],
     PermissionControllerEvents['type']
@@ -385,7 +384,7 @@ function getExistingPermissionState() {
  *
  * The following defaults are used:
  * - `caveatSpecifications`: {@link getDefaultCaveatSpecifications}
- * - `messenger`: {@link getDefaultRestrictedMessenger}
+ * - `messenger`: {@link getPermissionControllerMessenger}
  * - `permissionSpecifications`: {@link getDefaultPermissionSpecifications}
  * - `unrestrictedMethods`: {@link getDefaultUnrestrictedMethods}
  * - `state`: `undefined`
@@ -396,7 +395,7 @@ function getExistingPermissionState() {
 function getPermissionControllerOptions(opts?: Record<string, unknown>) {
   return {
     caveatSpecifications: getDefaultCaveatSpecifications(),
-    messenger: getDefaultRestrictedMessenger(),
+    messenger: getPermissionControllerMessenger(),
     permissionSpecifications: getDefaultPermissionSpecifications(),
     unrestrictedMethods: getDefaultUnrestrictedMethods(),
     state: undefined,
