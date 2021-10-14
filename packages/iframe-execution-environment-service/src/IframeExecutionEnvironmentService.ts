@@ -202,8 +202,58 @@ export class IframeExecutionEnvironmentService
       pluginData.pluginName,
       job.streams.rpc as unknown as Duplex,
     );
+    // set up poll/ping for status to see if its up, if its not then emit event that it cant be reached
+    this._pollForJobStatus(pluginData.pluginName);
     this._createPluginHooks(pluginData.pluginName, job.id);
     return result;
+  }
+
+  _pollForJobStatus(pluginName: string) {
+    const jobId = this.pluginToJobMap.get(pluginName);
+    if (!jobId) {
+      throw new Error('no job id found for plugin');
+    }
+    const INTERVAL = 5000;
+
+    setTimeout(async () => {
+      console.log('getting job status');
+      this._getJobStatus(jobId)
+        .then(() => {
+          this._pollForJobStatus(pluginName);
+        })
+        .catch(() => {
+          this._messenger.publish('ServiceMessenger:unresponsive', pluginName);
+        });
+    }, INTERVAL);
+  }
+
+  async _getJobStatus(jobId: string) {
+    const TIMEOUT = 30000;
+
+    let resolve: any;
+    let reject: any;
+
+    const timeoutPromise = new Promise((res, rej) => {
+      resolve = res;
+      reject = rej;
+    });
+
+    const timeout = setTimeout(() => {
+      reject(new Error('ping request timed out'));
+    }, TIMEOUT);
+
+    return Promise.race([
+      this._command(jobId, {
+        jsonrpc: '2.0',
+        method: 'ping',
+        params: [],
+        id: nanoid(),
+      }).then(() => {
+        clearTimeout(timeout);
+        resolve();
+      }),
+      timeoutPromise,
+    ]);
   }
 
   private _mapPluginAndJob(pluginName: string, jobId: string): void {

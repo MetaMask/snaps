@@ -223,14 +223,7 @@ export class WebWorkerExecutionEnvironmentService
           this._pollForWorkerStatus(pluginName);
         })
         .catch(() => {
-          this._messenger.publish(
-            'ServiceMessenger:unhandledError', // more specific error that we know about
-            pluginName,
-            {
-              code: -32006,
-              message: 'Plugin cannot be reached',
-            },
-          );
+          this._messenger.publish('ServiceMessenger:unresponsive', pluginName);
         });
     }, INTERVAL);
   }

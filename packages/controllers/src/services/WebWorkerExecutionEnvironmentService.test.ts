@@ -1,6 +1,10 @@
 import fs from 'fs';
 import { ControllerMessenger } from '@metamask/controllers';
-import { ErrorMessageEvent, ServiceMessenger } from '@metamask/snap-types';
+import {
+  ErrorMessageEvent,
+  ServiceMessenger,
+  UnresponsiveMessageEvent,
+} from '@metamask/snap-types';
 import { WebWorkerExecutionEnvironmentService } from './WebWorkerExecutionEnvironmentService';
 
 const workerCode = fs.readFileSync(
@@ -58,10 +62,14 @@ describe('Worker Controller', () => {
   it('can create a plugin worker and handle no ping reply', async () => {
     const messenger = new ControllerMessenger<
       never,
-      ErrorMessageEvent
-    >().getRestricted<'ServiceMessenger', never, ErrorMessageEvent['type']>({
+      UnresponsiveMessageEvent
+    >().getRestricted<
+      'ServiceMessenger',
+      never,
+      UnresponsiveMessageEvent['type']
+    >({
       name: 'ServiceMessenger',
-      allowedEvents: ['ServiceMessenger:unhandledError'],
+      allowedEvents: ['ServiceMessenger:unresponsive'],
     });
     const webWorkerExecutionEnvironmentService =
       new WebWorkerExecutionEnvironmentService({
@@ -86,11 +94,10 @@ describe('Worker Controller', () => {
 
     // check for an error
     const promise = new Promise((resolve) => {
-      messenger.subscribe('ServiceMessenger:unhandledError', resolve);
+      messenger.subscribe('ServiceMessenger:unresponsive', resolve);
     });
 
-    await promise;
-
-    expect(promise).toBeDefined();
+    const result = await promise;
+    expect(result).toStrictEqual(pluginName);
   }, 60000);
 });

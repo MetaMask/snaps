@@ -6,7 +6,12 @@ import {
   RestrictedControllerMessenger,
 } from '@metamask/controllers';
 import { Json } from 'json-rpc-engine';
-import { ErrorMessageEvent, PluginData } from '@metamask/snap-types';
+import {
+  ErrorJSON,
+  ErrorMessageEvent,
+  PluginData,
+  UnresponsiveMessageEvent,
+} from '@metamask/snap-types';
 import { nanoid } from 'nanoid';
 import {
   GetRpcMessageHandler,
@@ -95,9 +100,9 @@ export type PluginControllerEvents = PluginStateChange;
 type PluginControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
   PluginControllerActions,
-  PluginControllerEvents | ErrorMessageEvent,
+  PluginControllerEvents | ErrorMessageEvent | UnresponsiveMessageEvent,
   never,
-  ErrorMessageEvent['type']
+  ErrorMessageEvent['type'] | UnresponsiveMessageEvent['type']
 >;
 
 type PluginControllerArgs = {
@@ -237,13 +242,31 @@ export class PluginController extends BaseController<
     this._getRpcMessageHandler = getRpcMessageHandler;
     this.messagingSystem.subscribe(
       'ServiceMessenger:unhandledError',
-      (pluginName, error) => {
-        this.stopPlugin(pluginName);
-        this.addPluginError(error);
-      },
+      this._onUnhandledPluginError,
+    );
+
+    this.messagingSystem.subscribe(
+      'ServiceMessenger:unresponsive',
+      this._onUnresponsivePlugin,
     );
 
     this._pluginsBeingAdded = new Map();
+  }
+
+  _onUnresponsivePlugin(pluginName: string) {
+    this.stopPlugin(pluginName);
+    this.addPluginError({
+      code: -32001, // just made this code up
+      message: 'Plugin Unresponsive',
+      data: {
+        pluginName,
+      },
+    });
+  }
+
+  _onUnhandledPluginError(pluginName: string, error: ErrorJSON) {
+    this.stopPlugin(pluginName);
+    this.addPluginError(error);
   }
 
   /**
@@ -788,6 +811,19 @@ export class PluginController extends BaseController<
       state.inlinePluginIsRunning = false;
     });
     this.removePlugin('inlinePlugin');
+  }
+
+  destroy() {
+    super.destroy();
+    this.messagingSystem.unsubscribe(
+      'ServiceMessenger:unhandledError',
+      this._onUnhandledPluginError,
+    );
+
+    this.messagingSystem.unsubscribe(
+      'ServiceMessenger:unresponsive',
+      this._onUnresponsivePlugin,
+    );
   }
 
   /**
