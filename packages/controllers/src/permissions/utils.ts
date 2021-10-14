@@ -21,6 +21,6 @@ export enum MethodNames {
  */
 export type ExtractSpecifications<
   SpecificationsMap extends
-    | CaveatSpecificationsMap<CaveatSpecificationBase<string>>
-    | PermissionSpecificationsMap<PermissionSpecificationBase<string>>,
+    | CaveatSpecificationsMap<CaveatSpecificationBase>
+    | PermissionSpecificationsMap<PermissionSpecificationBase>,
 > = SpecificationsMap[keyof SpecificationsMap];
