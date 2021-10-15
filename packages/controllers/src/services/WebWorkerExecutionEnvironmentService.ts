@@ -20,6 +20,8 @@ interface WorkerControllerArgs {
   setupPluginProvider: SetupPluginProvider;
   workerUrl: URL;
   messenger: ServiceMessenger;
+  unresponsivePollingInterval?: number;
+  unresponsiveTimeout?: number;
 }
 
 interface WorkerStreams {
@@ -60,10 +62,16 @@ export class WebWorkerExecutionEnvironmentService
 
   private _messenger: ServiceMessenger;
 
+  private _unresponsivePollingInterval: number;
+
+  private _unresponsiveTimeout: number;
+
   constructor({
     setupPluginProvider,
     workerUrl,
     messenger,
+    unresponsivePollingInterval = 5000,
+    unresponsiveTimeout = 30000,
   }: WorkerControllerArgs) {
     this.workerUrl = workerUrl;
     this.setupPluginProvider = setupPluginProvider;
@@ -73,6 +81,8 @@ export class WebWorkerExecutionEnvironmentService
     this.workerToPluginMap = new Map();
     this._pluginRpcHooks = new Map();
     this._messenger = messenger;
+    this._unresponsivePollingInterval = unresponsivePollingInterval;
+    this._unresponsiveTimeout = unresponsiveTimeout;
   }
 
   private _setWorker(workerId: string, workerWrapper: WorkerWrapper): void {
@@ -214,7 +224,6 @@ export class WebWorkerExecutionEnvironmentService
     if (!workerId) {
       throw new Error('no worker id found for plugin');
     }
-    const INTERVAL = 5000;
 
     setTimeout(async () => {
       console.log('getting worker status');
@@ -225,12 +234,10 @@ export class WebWorkerExecutionEnvironmentService
         .catch(() => {
           this._messenger.publish('ServiceMessenger:unresponsive', pluginName);
         });
-    }, INTERVAL);
+    }, this._unresponsivePollingInterval);
   }
 
   async _getWorkerStatus(workerId: string) {
-    const TIMEOUT = 30000;
-
     let resolve: any;
     let reject: any;
 
@@ -241,7 +248,7 @@ export class WebWorkerExecutionEnvironmentService
 
     const timeout = setTimeout(() => {
       reject(new Error('ping request timed out'));
-    }, TIMEOUT);
+    }, this._unresponsiveTimeout);
 
     return Promise.race([
       this._command(workerId, {
