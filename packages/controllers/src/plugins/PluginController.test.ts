@@ -596,9 +596,9 @@ describe('PluginController Controller', () => {
     }, 0);
 
     await new Promise((resolve) => {
-      controllerMessenger.subscribe(
+      pluginControllerMessenger.subscribe(
         'ServiceMessenger:unhandledError',
-        async () => {
+        () => {
           const localPlugin = pluginController.get(plugin.name);
           expect(localPlugin.isRunning).toStrictEqual(false);
           resolve(undefined);
@@ -684,8 +684,9 @@ describe('PluginController Controller', () => {
           const localPlugin = pluginController.get(pluginName);
           expect(localPlugin.isRunning).toStrictEqual(false);
           resolve(undefined);
+          pluginController.destroy();
         },
       );
     });
-  });
+  }, 60000);
 });

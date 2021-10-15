@@ -20,6 +20,8 @@ interface IframeExecutionEnvironmentServiceArgs {
   setupPluginProvider: SetupPluginProvider;
   iframeUrl: URL;
   messenger: ServiceMessenger;
+  unresponsivePollingInterval?: number;
+  unresponsiveTimeout?: number;
 }
 
 interface JobStreams {
@@ -61,10 +63,16 @@ export class IframeExecutionEnvironmentService
 
   private _messenger: ServiceMessenger;
 
+  private _unresponsivePollingInterval: number;
+
+  private _unresponsiveTimeout: number;
+
   constructor({
     setupPluginProvider,
     iframeUrl,
     messenger,
+    unresponsivePollingInterval = 5000,
+    unresponsiveTimeout = 30000,
     createWindowTimeout = 60000,
   }: IframeExecutionEnvironmentServiceArgs) {
     this._createWindowTimeout = createWindowTimeout;
@@ -75,6 +83,8 @@ export class IframeExecutionEnvironmentService
     this.jobToPluginMap = new Map();
     this._pluginRpcHooks = new Map();
     this._messenger = messenger;
+    this._unresponsivePollingInterval = unresponsivePollingInterval;
+    this._unresponsiveTimeout = unresponsiveTimeout;
   }
 
   private _setJob(jobId: string, jobWrapper: EnvMetadata): void {
@@ -213,10 +223,8 @@ export class IframeExecutionEnvironmentService
     if (!jobId) {
       throw new Error('no job id found for plugin');
     }
-    const INTERVAL = 5000;
 
     setTimeout(async () => {
-      console.log('getting job status');
       this._getJobStatus(jobId)
         .then(() => {
           this._pollForJobStatus(pluginName);
@@ -224,12 +232,10 @@ export class IframeExecutionEnvironmentService
         .catch(() => {
           this._messenger.publish('ServiceMessenger:unresponsive', pluginName);
         });
-    }, INTERVAL);
+    }, this._unresponsivePollingInterval);
   }
 
   async _getJobStatus(jobId: string) {
-    const TIMEOUT = 30000;
-
     let resolve: any;
     let reject: any;
 
@@ -240,7 +246,7 @@ export class IframeExecutionEnvironmentService
 
     const timeout = setTimeout(() => {
       reject(new Error('ping request timed out'));
-    }, TIMEOUT);
+    }, this._unresponsiveTimeout);
 
     return Promise.race([
       this._command(jobId, {
