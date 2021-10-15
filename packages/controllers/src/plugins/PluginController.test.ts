@@ -61,6 +61,7 @@ describe('PluginController Controller', () => {
     });
 
     expect(pluginController).toBeDefined();
+    pluginController.destroy();
   });
 
   it('can create a worker and plugin controller and add a plugin and update its state', async () => {
@@ -128,6 +129,7 @@ describe('PluginController Controller', () => {
         hello: 'world',
       },
     });
+    pluginController.destroy();
   });
 
   it('can add a plugin and use its JSON-RPC api with a WebWorkerExecutionEnvironmentService', async () => {
@@ -200,6 +202,7 @@ describe('PluginController Controller', () => {
       id: 1,
     });
     expect(result).toStrictEqual('test1');
+    pluginController.destroy();
   });
 
   it('can add a plugin and use its JSON-RPC api with a stub execution env service', async () => {
@@ -287,6 +290,7 @@ describe('PluginController Controller', () => {
       id: 1,
     });
     expect(result).toStrictEqual('test1');
+    pluginController.destroy();
   });
 
   it('errors if attempting to start a plugin that was already started', async () => {
@@ -418,6 +422,8 @@ describe('PluginController Controller', () => {
     expect(secondPluginController.state.plugins.foo.isRunning).toStrictEqual(
       true,
     );
+    firstPluginController.destroy();
+    secondPluginController.destroy();
   });
 
   it('can add errors to the PluginControllers state', async () => {
@@ -516,6 +522,7 @@ describe('PluginController Controller', () => {
         message: 'error 2',
       }),
     );
+    pluginController.destroy();
   });
 
   it('can handle an error event on the controller messenger', async () => {
@@ -602,6 +609,7 @@ describe('PluginController Controller', () => {
           const localPlugin = pluginController.get(plugin.name);
           expect(localPlugin.isRunning).toStrictEqual(false);
           resolve(undefined);
+          pluginController.destroy();
         },
       );
     });

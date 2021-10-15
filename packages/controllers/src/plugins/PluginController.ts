@@ -240,14 +240,17 @@ export class PluginController extends BaseController<
     this._terminateAllPlugins = terminateAllPlugins;
     this._executePlugin = executePlugin;
     this._getRpcMessageHandler = getRpcMessageHandler;
+    this._onUnhandledPluginError = this._onUnhandledPluginError.bind(this);
+    this._onUnresponsivePlugin = this._onUnresponsivePlugin.bind(this);
+
     this.messagingSystem.subscribe(
       'ServiceMessenger:unhandledError',
-      this._onUnhandledPluginError.bind(this),
+      this._onUnhandledPluginError,
     );
 
     this.messagingSystem.subscribe(
       'ServiceMessenger:unresponsive',
-      this._onUnresponsivePlugin.bind(this),
+      this._onUnresponsivePlugin,
     );
 
     this._pluginsBeingAdded = new Map();
