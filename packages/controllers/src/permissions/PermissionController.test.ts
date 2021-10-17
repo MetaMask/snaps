@@ -12,13 +12,13 @@ import { hasProperty, isPlainObject } from '../utils';
 import * as errors from './errors';
 import {
   AsyncRestrictedMethod,
-  CaveatBase,
+  Caveat,
   constructCaveat,
   constructPermission,
-  GenericCaveat,
+  CaveatConstraint,
   GenericPermission,
   MethodNames,
-  PermissionConstraint,
+  Permission,
   PermissionController,
   PermissionControllerActions,
   PermissionControllerEvents,
@@ -29,7 +29,7 @@ import {
   CaveatMutatorOperation,
 } from '.';
 
-// CaveatBase types and specifications
+// Caveat types and specifications
 
 const CaveatTypes = {
   filterArrayResponse: 'filterArrayResponse',
@@ -38,22 +38,19 @@ const CaveatTypes = {
   noopCaveat: 'noopCaveat',
 } as const;
 
-type FilterArrayCaveat = CaveatBase<
+type FilterArrayCaveat = Caveat<
   typeof CaveatTypes.filterArrayResponse,
   string[]
 >;
 
-type ReverseArrayCaveat = CaveatBase<
-  typeof CaveatTypes.reverseArrayResponse,
-  null
->;
+type ReverseArrayCaveat = Caveat<typeof CaveatTypes.reverseArrayResponse, null>;
 
-type FilterObjectCaveat = CaveatBase<
+type FilterObjectCaveat = Caveat<
   typeof CaveatTypes.filterObjectResponse,
   string[]
 >;
 
-type NoopCaveat = CaveatBase<typeof CaveatTypes.noopCaveat, null>;
+type NoopCaveat = Caveat<typeof CaveatTypes.noopCaveat, null>;
 
 /**
  * Gets caveat specifications for:
@@ -168,7 +165,7 @@ type DefaultCaveatSpecifications = ExtractSpecifications<
 
 type SecretNamespacedPermissionKey = 'wallet_getSecret_*';
 
-type SecretNamespacedPermission = PermissionConstraint<
+type SecretNamespacedPermission = Permission<
   SecretNamespacedPermissionKey,
   NoopCaveat
 >;
@@ -446,7 +443,7 @@ function getDefaultPermissionControllerWithState() {
  */
 function getPermissionMatcher(
   parentCapability: string,
-  caveats: GenericCaveat[] | null | typeof expect.objectContaining = null,
+  caveats: CaveatConstraint[] | null | typeof expect.objectContaining = null,
   invoker = 'metamask.io',
 ) {
   return expect.objectContaining({

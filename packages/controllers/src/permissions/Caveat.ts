@@ -3,19 +3,35 @@ import { Json } from 'json-rpc-engine';
 import { UnrecognizedCaveatTypeError } from './errors';
 import {
   AsyncRestrictedMethod,
-  RestrictedMethodBase,
+  RestrictedMethod,
   GenericPermission,
   RestrictedMethodParameters,
 } from './Permission';
 
+export type CaveatConstraint = {
+  /**
+   * The type of the caveat. The type is presumed to be meaningful in the
+   * context of the capability it is associated with.
+   *
+   * In MetaMask, every permission can only have one caveat of each type.
+   */
+  readonly type: string;
+
+  /**
+   * Any additional data necessary to enforce the caveat.
+   *
+   * TODO:TS4.4 Make optional
+   */
+  readonly value: Json;
+};
+
 /**
- * Identical to instances of the Caveat class, useful for when TypeScript
- * has a meltdown over assigning classes to the Json type.
+ * TODO:docs
  *
  * @template Type - The type of the caveat.
  * @template Value - The value associated with the caveat.
  */
-export type CaveatBase<Type extends string, Value extends Json> = {
+export type Caveat<Type extends string, Value extends Json> = {
   /**
    * The type of the caveat. The type is presumed to be meaningful in the
    * context of the capability it is associated with.
@@ -33,7 +49,7 @@ export type CaveatBase<Type extends string, Value extends Json> = {
 };
 
 /**
- * The {@link CaveatBase} factory function. Naively constructs a new caveat from the
+ * The {@link Caveat} factory function. Naively constructs a new caveat from the
  * inputs. Sets `value` to `null` if no value is provided.
  *
  * @param type - The type of the caveat.
@@ -43,7 +59,7 @@ export type CaveatBase<Type extends string, Value extends Json> = {
 export function constructCaveat<Type extends string, Value extends Json>(
   type: Type,
   value: Value,
-): CaveatBase<Type, Value> {
+): Caveat<Type, Value> {
   return { type, value };
 }
 
@@ -55,35 +71,72 @@ export function constructCaveat<Type extends string, Value extends Json>(
 /**
  * A function for applying caveats to a restricted method request.
  *
- * @template Caveat - The caveat type associated with this decorator.
+ * @template ParentCaveat - The caveat type associated with this decorator.
  * @param decorated - The restricted method implementation to be decorated.
  * The method may have already been decorated with other caveats.
  * @param caveat - The caveat object.
  * @returns The decorate restricted method implementation.
  */
-export type CaveatDecorator<Caveat extends GenericCaveat> = (
+export type CaveatDecorator<ParentCaveat extends CaveatConstraint> = (
   decorated: AsyncRestrictedMethod<RestrictedMethodParameters, Json>,
-  caveat: Caveat,
+  caveat: ParentCaveat,
 ) => AsyncRestrictedMethod<RestrictedMethodParameters, Json>;
 
-export type ExtractCaveatValueFromDecorator<
-  Decorator extends CaveatDecorator<any>,
-> = Decorator extends (
-  decorated: any,
-  caveat: infer Caveat,
-) => AsyncRestrictedMethod<any, any>
-  ? Caveat extends GenericCaveat
-    ? Caveat['value']
-    : never
-  : never;
+/**
+ * TODO:docs
+ */
+type ExtractCaveatValueFromDecorator<Decorator extends CaveatDecorator<any>> =
+  Decorator extends (
+    decorated: any,
+    caveat: infer ParentCaveat,
+  ) => AsyncRestrictedMethod<any, any>
+    ? ParentCaveat extends CaveatConstraint
+      ? ParentCaveat['value']
+      : never
+    : never;
 
-type CaveatValidator<Caveat extends GenericCaveat> = (
-  caveat: { type: Caveat['type']; value: unknown },
+/**
+ * TODO:docs
+ */
+export type CaveatValidator<ParentCaveat extends CaveatConstraint> = (
+  caveat: { type: ParentCaveat['type']; value: unknown },
   origin?: string,
   target?: string,
 ) => void;
 
-export type CaveatSpecificationBase<Type extends string> = {
+/**
+ * TODO:docs
+ */
+export type CaveatSpecificationConstraint = {
+  /**
+   * The string type of the caveat.
+   */
+  type: string;
+
+  /**
+   * The decorator function used to apply the caveat to restricted method
+   * requests.
+   */
+  decorator: CaveatDecorator<any>;
+
+  /**
+   * The validator function used to validate caveats of the associated type
+   * whenever they are instantiated. Caveat are instantiated whenever they are
+   * created or mutated.
+   *
+   * The validator should throw an appropriate JSON-RPC error if validation fails.
+   *
+   * If no validator is specified, no validation of caveat values will be
+   * performed. Although caveats can also be validated by permission validators,
+   * validating caveat values separately is strongly recommended.
+   */
+  validator?: CaveatValidator<any>;
+};
+
+/**
+ * TODO:docs
+ */
+export type CaveatSpecification<Type extends string> = {
   /**
    * The string type of the caveat.
    */
@@ -110,52 +163,59 @@ export type CaveatSpecificationBase<Type extends string> = {
 };
 
 /**
- * A generic caveat.
+ * TODO:docs
  */
-export type GenericCaveat = CaveatBase<string, Json>;
-
-export type CaveatSpecificationsMap<
-  Specification extends CaveatSpecificationBase<string>,
+export type CaveatSpecificationMap<
+  Specification extends CaveatSpecification<string>,
 > = {
-  [Key in Specification['type']]: Specification extends CaveatSpecificationBase<Key>
+  [Key in Specification['type']]: Specification extends CaveatSpecification<Key>
     ? Specification
     : never;
 };
 
-export type ExtractCaveats<
-  Specification extends CaveatSpecificationBase<string>,
-> = Specification extends any
-  ? CaveatBase<
-      Specification['type'],
-      ExtractCaveatValueFromDecorator<Specification['decorator']>
-    >
-  : never;
+/**
+ * TODO:docs
+ */
+export type ExtractCaveats<Specification extends CaveatSpecification<string>> =
+  Specification extends any
+    ? Caveat<
+        Specification['type'],
+        ExtractCaveatValueFromDecorator<Specification['decorator']>
+      >
+    : never;
 
 /**
  * Internal utility type, because using parameterized types in conditional types
  * causes weird things to happen.
  */
 type _ExtractCaveat<
-  Caveat extends GenericCaveat,
+  CaveatUnion extends CaveatConstraint,
   CaveatType extends string,
-> = Caveat extends CaveatBase<CaveatType, Json> ? Caveat : never;
-
-export type ExtractCaveat<
-  CaveatSpecification extends CaveatSpecificationBase<string>,
-  CaveatType extends string,
-> = _ExtractCaveat<ExtractCaveats<CaveatSpecification>, CaveatType>;
+> = CaveatUnion extends Caveat<CaveatType, Json> ? CaveatUnion : never;
 
 /**
- * A utility type for extracting the {@link CaveatBase.value} type from
- * a union of caveat types.
+ * Extracts the type of a specific {@link Caveat} from a union of caveat
+ * specifications.
  *
- * @template CaveatUnion - The caveat type union to extract a value type from.
+ * @template CaveatSpecifications - The union of all caveat specifications.
+ * @template CaveatType - The type of the caveat to extract.
+ */
+export type ExtractCaveat<
+  CaveatSpecifications extends CaveatSpecification<string>,
+  CaveatType extends string,
+> = _ExtractCaveat<ExtractCaveats<CaveatSpecifications>, CaveatType>;
+
+/**
+ * Extracts the value type of a specific {@link Caveat} from a union of caveat
+ * specifications.
+ *
+ * @template CaveatSpecifications - The union of all caveat specifications.
  * @template CaveatType - The type of the caveat whose value to extract.
  */
 export type ExtractCaveatValue<
-  CaveatSpecification extends CaveatSpecificationBase<string>,
+  CaveatSpecifications extends CaveatSpecification<string>,
   CaveatType extends string,
-> = ExtractCaveat<CaveatSpecification, CaveatType>['value'];
+> = ExtractCaveat<CaveatSpecifications, CaveatType>['value'];
 
 /**
  * Decorate a restricted method implementation with its caveats.
@@ -164,12 +224,12 @@ export type ExtractCaveatValue<
  * decorator) must be awaited.
  */
 export function decorateWithCaveats<
-  CaveatSpecification extends CaveatSpecificationBase<string>,
+  CaveatSpecifications extends CaveatSpecification<string>,
 >(
-  methodImplementation: RestrictedMethodBase<RestrictedMethodParameters, Json>,
+  methodImplementation: RestrictedMethod<RestrictedMethodParameters, Json>,
   permission: Readonly<GenericPermission>, // bound to the requesting origin
-  caveatSpecifications: CaveatSpecificationsMap<CaveatSpecification>, // all caveat implementations
-): RestrictedMethodBase<RestrictedMethodParameters, Json> {
+  caveatSpecifications: CaveatSpecificationMap<CaveatSpecifications>, // all caveat implementations
+): RestrictedMethod<RestrictedMethodParameters, Json> {
   const { caveats } = permission;
   if (!caveats) {
     return methodImplementation;
@@ -182,7 +242,7 @@ export function decorateWithCaveats<
 
   for (const caveat of caveats) {
     const specification =
-      caveatSpecifications[caveat.type as CaveatSpecification['type']];
+      caveatSpecifications[caveat.type as CaveatSpecifications['type']];
     if (!specification) {
       throw new UnrecognizedCaveatTypeError(caveat.type);
     }

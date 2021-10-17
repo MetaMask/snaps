@@ -1,4 +1,4 @@
-import { constructPermission, GenericCaveat } from '.';
+import { constructPermission, CaveatConstraint } from '.';
 
 describe('constructPermission', () => {
   it('constructs a permission', () => {
@@ -24,7 +24,7 @@ describe('constructPermission', () => {
   it('constructs a permission with caveats', () => {
     const invoker = 'foo.io';
     const target = 'wallet_bar';
-    const caveats = [{ type: 'foo', value: 'bar' }] as [GenericCaveat];
+    const caveats = [{ type: 'foo', value: 'bar' }] as [CaveatConstraint];
 
     expect(
       constructPermission({

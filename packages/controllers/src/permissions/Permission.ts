@@ -1,11 +1,11 @@
 import { Json } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
 import { Mutable, NonEmptyArray } from '../utils';
-import { GenericCaveat } from './Caveat';
+import { CaveatConstraint } from './Caveat';
 // This is used in a docstring, but ESLint doesn't notice it.
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import type { PermissionController } from './PermissionController';
-import type { CaveatBase } from './Caveat';
+import type { Caveat } from './Caveat';
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
 /**
@@ -19,14 +19,7 @@ export type OriginString = string;
  */
 export type GenericTargetName = string;
 
-/**
- * The base permission interface. Lacks important constraints on its generics;
- * consumers should use {@link PermissionConstraint} instead.
- */
-export type PermissionBase<
-  Target extends GenericTargetName,
-  AllowedCaveat extends GenericCaveat,
-> = {
+export type PermissionConstraint = {
   /**
    * The context(s) in which this capability is meaningful.
    *
@@ -35,14 +28,12 @@ export type PermissionBase<
    */
   readonly '@context'?: NonEmptyArray<string>;
 
-  // TODO: Make optional in typescript@4.4.x
+  // TODO:TS4.4 Make optional
   /**
    * The caveats of the permission.
-   * @see {@link CaveatBase} For more information.
+   * @see {@link Caveat} For more information.
    */
-  readonly caveats: AllowedCaveat extends never
-    ? null
-    : NonEmptyArray<AllowedCaveat> | null;
+  readonly caveats: null | NonEmptyArray<CaveatConstraint>;
 
   /**
    * The creation date of the permission, in UNIX epoch time.
@@ -65,8 +56,38 @@ export type PermissionBase<
    *
    * In the context of MetaMask, this is always the name of an RPC method.
    */
-  readonly parentCapability: Target;
+  readonly parentCapability: string;
 };
+
+/**
+ * @template TargetKey - They key of the permission target that the permission
+ * corresponds to.
+ * @template AllowedCaveat - A union of the allowed {@link Caveat} types
+ * for the permission.
+ */
+export type Permission<
+  TargetKey extends GenericTargetName,
+  AllowedCaveat extends CaveatConstraint,
+> = ValidateTargetName<ExtractPermissionTargetNames<TargetKey>> extends never
+  ? never
+  : PermissionConstraint & {
+      // TODO:TS4.4 Make optional
+      /**
+       * The caveats of the permission.
+       * @see {@link Caveat} For more information.
+       */
+      readonly caveats: AllowedCaveat extends never
+        ? null
+        : NonEmptyArray<AllowedCaveat> | null;
+
+      /**
+       * A pointer to the resource that possession of the capability grants
+       * access to.
+       *
+       * In the context of MetaMask, this is always the name of an RPC method.
+       */
+      readonly parentCapability: ExtractPermissionTargetNames<TargetKey>;
+    };
 
 /**
  * A utility type for ensuring that the given permission target name conforms to
@@ -74,7 +95,7 @@ export type PermissionBase<
  *
  * See the documentation for the distinction between target names and keys.
  */
-type TargetNameConstraint<Name extends string> = Name extends `${string}*`
+type ValidateTargetName<Name extends string> = Name extends `${string}*`
   ? never
   : Name extends `${string}_`
   ? never
@@ -88,7 +109,7 @@ type TargetNameConstraint<Name extends string> = Name extends `${string}*`
  *
  * @template Key - The target key type to extract target names from.
  */
-type ExtractPermissionTargetNames<Key extends string> =
+export type ExtractPermissionTargetNames<Key extends string> =
   Key extends `${infer Base}_*` ? `${Base}_${string}` : Key;
 
 /**
@@ -96,29 +117,20 @@ type ExtractPermissionTargetNames<Key extends string> =
  *
  * @template TargetKey - They key of the permission target that the permission
  * corresponds to.
- * @template AllowedCaveats - A union of the allowed {@link CaveatBase} types
+ * @template AllowedCaveats - A union of the allowed {@link Caveat} types
  * for the permission.
  */
-export type PermissionConstraint<
-  TargetKey extends string,
-  AllowedCaveats extends GenericCaveat,
-> = TargetNameConstraint<ExtractPermissionTargetNames<TargetKey>> extends never
-  ? never
-  : PermissionBase<ExtractPermissionTargetNames<TargetKey>, AllowedCaveats>;
 
 /**
  * A generic permission.
  */
-export type GenericPermission = PermissionConstraint<
-  GenericTargetName,
-  GenericCaveat
->;
+export type GenericPermission = Permission<GenericTargetName, CaveatConstraint>;
 
 /**
  * A {@link GenericPermission} with mutable caveats.
  */
 export type MutableGenericPermission = Mutable<
-  GenericPermission & { caveats: NonEmptyArray<GenericCaveat> },
+  GenericPermission & { caveats: NonEmptyArray<CaveatConstraint> | null },
   'caveats'
 >;
 
@@ -128,7 +140,7 @@ export type MutableGenericPermission = Mutable<
  * @template Key - The target key type to extract from.
  * @template Name - The name whose key to extract.
  */
-type KeyOfTargetName<
+export type KeyOfTargetName<
   Key extends string,
   Name extends string,
 > = Name extends ExtractPermissionTargetNames<Key> ? Key : never;
@@ -142,10 +154,10 @@ type KeyOfTargetName<
  * @template Key - The target key type to extract from.
  * @template Name - The name whose key to extract.
  */
-type ExtractPermissionTargetKey<
+export type ExtractPermissionTargetKey<
   Key extends string,
   Name extends string,
-> = Name extends Key ? Name : Extract<Key, KeyOfTargetName<Key, Name>>;
+> = Key extends Name ? Key : Extract<Key, KeyOfTargetName<Key, Name>>;
 
 /**
  * Internal utility for extracting the members types of an array. The type
@@ -168,21 +180,24 @@ type ExtractArrayMembers<T> = T extends readonly [...infer U] | [...infer U]
  * caveats to extract.
  */
 export type ExtractAllowedCaveatTypes<
-  PermissionSpecification extends PermissionSpecificationBase<string>,
+  PermissionSpecification extends PermissionSpecificationConstraint,
   TargetName extends string,
-> = PermissionSpecification extends PermissionSpecificationBase<
-  ExtractPermissionTargetKey<PermissionSpecification['targetKey'], TargetName>
->
+> = PermissionSpecification extends PermissionSpecificationConstraint & {
+  targetKey: ExtractPermissionTargetKey<
+    PermissionSpecification['targetKey'],
+    TargetName
+  >;
+}
   ? ExtractArrayMembers<PermissionSpecification['allowedCaveats']>
   : never;
 
 /**
  * The options object of {@link constructPermission}.
  *
- * @template Permission - The {@link PermissionBase} that will be constructed.
+ * @template TargetPermission - The {@link Permission} that will be constructed.
  */
-export type PermissionOptions<Permission extends GenericPermission> = {
-  target: Permission['parentCapability'];
+export type PermissionOptions<TargetPermission extends GenericPermission> = {
+  target: TargetPermission['parentCapability'];
   /**
    * The origin string of the subject that has the permission.
    */
@@ -196,25 +211,25 @@ export type PermissionOptions<Permission extends GenericPermission> = {
 
   /**
    * The caveats of the permission.
-   * See {@link CaveatBase}.
+   * See {@link Caveat}.
    */
-  caveats?: NonEmptyArray<GenericCaveat>;
+  caveats?: NonEmptyArray<CaveatConstraint>;
   // TODO: Refactor allowed caveats validation to enable this?
-  // caveats?: NonEmptyArray<ExtractCaveats<Permission>>;
+  // caveats?: NonEmptyArray<ExtractCaveats<TargetPermission>>;
 };
 
 /**
  * The default permission factory function. Naively constructs a permission from
  * the inputs. Sets a default, random `id` if none is provided.
  *
- * @see {@link PermissionBase} For more details.
+ * @see {@link Permission} For more details.
  *
- * @template Permission - The {@link PermissionBase} that will be constructed.
+ * @template TargetPermission - The {@link Permission} that will be constructed.
  * @param options - The options for the permission.
  * @returns The new permission object.
  */
-export function constructPermission<Permission extends GenericPermission>(
-  options: PermissionOptions<Permission>,
+export function constructPermission<TargetPermission extends GenericPermission>(
+  options: PermissionOptions<TargetPermission>,
 ): GenericPermission {
   const { caveats = null, id, invoker, target } = options;
 
@@ -238,7 +253,7 @@ export function constructPermission<Permission extends GenericPermission>(
 export function findCaveat(
   permission: GenericPermission,
   caveatType: string,
-): GenericCaveat | undefined {
+): CaveatConstraint | undefined {
   return permission.caveats?.find((caveat) => caveat.type === caveatType);
 }
 
@@ -308,20 +323,20 @@ export type AsyncRestrictedMethod<
  * @template Params - The JSON-RPC parameters of the restricted method.
  * @template Result - The JSON-RPC result of the restricted method.
  */
-export type RestrictedMethodBase<
+export type RestrictedMethod<
   Params extends RestrictedMethodParameters,
   Result extends Json,
 > =
   | SyncRestrictedMethod<Params, Result>
   | AsyncRestrictedMethod<Params, Result>;
 
-export type GenericRestrictedMethod = RestrictedMethodBase<
+export type GenericRestrictedMethod = RestrictedMethod<
   RestrictedMethodParameters,
   Json
 >;
 
-export type RestrictedMethodConstraint<
-  MethodImplementation extends RestrictedMethodBase<any, any>,
+export type ValidateRestrictedMethod<
+  MethodImplementation extends RestrictedMethod<any, any>,
 > = MethodImplementation extends (args: infer Options) => Json | Promise<Json>
   ? Options extends RestrictedMethodOptions<RestrictedMethodParameters>
     ? MethodImplementation
@@ -329,17 +344,17 @@ export type RestrictedMethodConstraint<
   : never;
 
 export type PermissionFactory<
-  Permission extends GenericPermission,
+  TargetPermission extends GenericPermission,
   RequestData extends Record<string, unknown>,
 > = (
-  options: PermissionOptions<Permission>,
+  options: PermissionOptions<TargetPermission>,
   requestData?: RequestData,
-) => Permission;
+) => TargetPermission;
 
-export type PermissionValidator<Permission extends GenericPermission> = (
+export type PermissionValidator<TargetPermission extends GenericPermission> = (
   permission: GenericPermission,
   origin?: OriginString,
-  target?: Permission['parentCapability'],
+  target?: TargetPermission['parentCapability'],
 ) => void;
 
 /**
@@ -350,7 +365,7 @@ export type PermissionValidator<Permission extends GenericPermission> = (
  *
  * @template Key - The target key string to apply the constraint to.
  */
-type TargetKeyConstraint<Key extends string> = Key extends `${string}_*`
+type ValidateTargetKey<Key extends string> = Key extends `${string}_*`
   ? Key
   : Key extends `${string}_`
   ? never
@@ -363,18 +378,12 @@ type TargetKeyConstraint<Key extends string> = Key extends `${string}_*`
  */
 type GenericFunction = (...args: any[]) => any;
 
-/**
- * The base permission specification type.
- *
- * @template TargetKey - They key of the permission target that the permission
- * corresponds to.
- */
-export type PermissionSpecificationBase<TargetKey extends string> = {
+export type PermissionSpecificationConstraint = {
   /**
    * The target resource of the permission. In other words, at the time of
    * writing, the RPC method name.
    */
-  targetKey: TargetKey;
+  targetKey: string;
 
   /**
    * An array of the caveat types that may be added to instances of this
@@ -411,16 +420,16 @@ export type PermissionSpecificationBase<TargetKey extends string> = {
 };
 
 /**
- * An individual permission specification object. Constrained such that the
+ * Constraint for {@link PermissionSpecificationConstraint} objects ensuring th
+ * that permission specifications are
  * given target key must be valid.
  *
- * @template TargetKey - The key of the permission target.
- * @template Permission - The type of the permission object.
+ * @template T - The key of the permission target.
  */
-export type PermissionSpecificationConstraint<T> =
-  T extends PermissionSpecificationBase<string>
-    ? T['targetKey'] extends TargetKeyConstraint<T['targetKey']>
-      ? T['methodImplementation'] extends RestrictedMethodConstraint<
+export type ValidatePermissionSpecification<T> =
+  T extends PermissionSpecificationConstraint
+    ? T['targetKey'] extends ValidateTargetKey<T['targetKey']>
+      ? T['methodImplementation'] extends ValidateRestrictedMethod<
           T['methodImplementation']
         >
         ? T
@@ -432,29 +441,31 @@ export type PermissionSpecificationConstraint<T> =
  * The specifications for all permissions and restricted methods supported by
  * a particular {@link PermissionController}.
  *
- * @template Specifications - A union of all {@link PermissionSpecificationBase}
+ * @template Specifications - A union of all {@link PermissionSpecificationConstraint}
  * types.
  */
-export type PermissionSpecificationsMap<
-  Specification extends PermissionSpecificationBase<string>,
-> = Specification extends PermissionSpecificationConstraint<Specification>
-  ? {
-      [TargetKey in Specification['targetKey']]: Specification extends PermissionSpecificationBase<TargetKey>
-        ? Specification
-        : never;
-    }
-  : never;
+export type PermissionSpecificationMap<
+  Specification extends PermissionSpecificationConstraint,
+> = {
+  [TargetKey in Specification['targetKey']]: Specification extends PermissionSpecificationConstraint & {
+    targetKey: TargetKey;
+  }
+    ? Specification
+    : never;
+};
 
 /**
- * Extracts a specific {@link PermissionSpecificationBase} from a union of
+ * Extracts a specific {@link PermissionSpecificationConstraint} from a union of
  * permission specifications.
  *
  * @template Specification - The specification union type to extract from.
  * @template TargetKey - The `targetKey` of the specification to extract.
  */
 export type ExtractPermissionSpecification<
-  Specification extends PermissionSpecificationBase<string>,
+  Specification extends PermissionSpecificationConstraint,
   TargetKey extends Specification['targetKey'],
-> = Specification extends PermissionSpecificationBase<TargetKey>
+> = Specification extends PermissionSpecificationConstraint & {
+  targetKey: TargetKey;
+}
   ? Specification
   : never;

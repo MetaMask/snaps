@@ -10,20 +10,24 @@ import { internalError } from './errors';
 import {
   GenericPermission,
   PermissionSubjectMetadata,
-  RestrictedMethodBase,
+  RestrictedMethod,
   RestrictedMethodParameters,
 } from '.';
 
+/**
+ * TODO:docs
+ */
+
 type ExecuteRestrictedMethod<Permission extends GenericPermission> = (
-  methodImplementation: RestrictedMethodBase<RestrictedMethodParameters, Json>,
+  methodImplementation: RestrictedMethod<RestrictedMethodParameters, Json>,
   subject: PermissionSubjectMetadata,
   method: Permission['parentCapability'],
   params?: RestrictedMethodParameters,
-) => ReturnType<RestrictedMethodBase<RestrictedMethodParameters, Json>>;
+) => ReturnType<RestrictedMethod<RestrictedMethodParameters, Json>>;
 type GetRestrictedMethod = (
   method: string,
   origin: string,
-) => RestrictedMethodBase<RestrictedMethodParameters, Json>;
+) => RestrictedMethod<RestrictedMethodParameters, Json>;
 type IsUnrestrictedMethod = (method: string) => boolean;
 
 type PermissionMiddlewareFactoryOptions<Permission extends GenericPermission> =

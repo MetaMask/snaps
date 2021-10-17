@@ -1,7 +1,7 @@
 import * as errors from './errors';
 import {
-  CaveatSpecificationBase,
-  CaveatSpecificationsMap,
+  CaveatSpecification,
+  CaveatSpecificationMap,
   decorateWithCaveats,
   GenericPermission,
 } from '.';
@@ -17,7 +17,7 @@ describe('decorateWithCaveats', () => {
         decorator: (method: any, _caveat: any) => () =>
           method().reverse() as any,
       },
-    } as unknown as CaveatSpecificationsMap<CaveatSpecificationBase<string>>;
+    } as unknown as CaveatSpecificationMap<CaveatSpecification<string>>;
 
     const permission = {
       caveats: [{ type: 'reverse', value: null }],
@@ -41,7 +41,7 @@ describe('decorateWithCaveats', () => {
         decorator: (method: any, _caveat: any) => () =>
           method().reverse() as any,
       },
-    } as unknown as CaveatSpecificationsMap<CaveatSpecificationBase<string>>;
+    } as unknown as CaveatSpecificationMap<CaveatSpecification<string>>;
 
     const permission = {
       // This type doesn't exist

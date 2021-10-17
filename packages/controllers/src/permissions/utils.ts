@@ -1,7 +1,10 @@
-import { CaveatSpecificationBase, CaveatSpecificationsMap } from './Caveat';
 import {
-  PermissionSpecificationBase,
-  PermissionSpecificationsMap,
+  CaveatSpecificationConstraint,
+  CaveatSpecificationMap,
+} from './Caveat';
+import {
+  PermissionSpecificationConstraint,
+  PermissionSpecificationMap,
 } from './Permission';
 
 export enum MethodNames {
@@ -10,17 +13,15 @@ export enum MethodNames {
 }
 
 /**
- * Utility type for extracting a union of all individual
- * {@link CaveatSpecificationBase} or
- * {@link PermissionSpecificationBase} types
- * from a {@link CaveatSpecificationsMap} or
- * {@link PermissionSpecificationsMap}.
+ * Utility type for extracting a union of all individual caveat or permission
+ * specification types from a {@link CaveatSpecificationMap} or
+ * {@link PermissionSpecificationMap}.
  *
  * @template SpecificationsMap - The caveat or permission specifications map
  * whose specification type union to extract.
  */
 export type ExtractSpecifications<
   SpecificationsMap extends
-    | CaveatSpecificationsMap<CaveatSpecificationBase<string>>
-    | PermissionSpecificationsMap<PermissionSpecificationBase<string>>,
+    | CaveatSpecificationMap<CaveatSpecificationConstraint>
+    | PermissionSpecificationMap<PermissionSpecificationConstraint>,
 > = SpecificationsMap[keyof SpecificationsMap];
