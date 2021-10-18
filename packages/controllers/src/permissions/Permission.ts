@@ -166,10 +166,12 @@ export type ExtractPermissionTargetKey<
  * evalutes to `never` if the specified type is the empty tuple or neither
  * an array nor a tuple.
  *
- * @template T - The array type whose members to extract.
+ * @template ArrayType - The array type whose members to extract.
  */
-type ExtractArrayMembers<T> = T extends readonly [...infer U] | [...infer U]
-  ? U[number]
+type ExtractArrayMembers<ArrayType> = ArrayType extends
+  | readonly [...infer ArrayMembers]
+  | [...infer ArrayMembers]
+  ? ArrayMembers[number]
   : never;
 
 /**
