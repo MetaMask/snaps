@@ -1767,7 +1767,9 @@ export class PermissionController<
   private hasApprovalRequest(options: { id: string }): boolean {
     return this.messagingSystem.call(
       'ApprovalController:hasRequest',
-      // Typecast: Passing just an id is definitely valid, so we override it.
+      // Typecast: For some reason, the type here expects all of the possible
+      // HasApprovalRequest options to be specified, when they're actually all
+      // optional. Passing just the id is definitely valid, so we just cast it.
       options as any,
     );
   }
