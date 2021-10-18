@@ -60,6 +60,8 @@ export type PermissionConstraint = {
 };
 
 /**
+ * TODO:docs
+ *
  * @template TargetKey - They key of the permission target that the permission
  * corresponds to.
  * @template AllowedCaveat - A union of the allowed {@link Caveat} types
@@ -420,19 +422,20 @@ export type PermissionSpecificationConstraint = {
 };
 
 /**
- * Constraint for {@link PermissionSpecificationConstraint} objects ensuring th
- * that permission specifications are
- * given target key must be valid.
+ * Constraint for {@link PermissionSpecificationConstraint} objects that
+ * evaluates to `never` if the specification contains any invalid fields.
  *
- * @template T - The key of the permission target.
+ * @template Specification - The permission specification to validate.
  */
-export type ValidatePermissionSpecification<T> =
-  T extends PermissionSpecificationConstraint
-    ? T['targetKey'] extends ValidateTargetKey<T['targetKey']>
-      ? T['methodImplementation'] extends ValidateRestrictedMethod<
-          T['methodImplementation']
+export type ValidatePermissionSpecification<Specification> =
+  Specification extends PermissionSpecificationConstraint
+    ? Specification['targetKey'] extends ValidateTargetKey<
+        Specification['targetKey']
+      >
+      ? Specification['methodImplementation'] extends ValidateRestrictedMethod<
+          Specification['methodImplementation']
         >
-        ? T
+        ? Specification
         : never
       : never
     : never;

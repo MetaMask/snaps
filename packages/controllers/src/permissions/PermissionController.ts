@@ -232,6 +232,9 @@ export type PermissionControllerMessenger = RestrictedControllerMessenger<
   never
 >;
 
+/**
+ * A generic {@link PermissionController}.
+ */
 export type GenericPermissionController = PermissionController<
   PermissionSpecificationConstraint,
   CaveatSpecificationConstraint
@@ -274,7 +277,7 @@ export type CaveatMutator<TargetCaveat extends CaveatConstraint> = (
   | [CaveatMutatorOperation.updateValue, CaveatConstraint['value']];
 
 /**
- * Extracts the permission type or types from the specified permission and
+ * Extracts the constrained permission type(s) from the specified permission and
  * caveat specifications.
  *
  * @template ControllerPermissionSpecification - The permission specification(s) to
