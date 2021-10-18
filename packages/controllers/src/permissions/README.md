@@ -70,18 +70,23 @@ const caveatSpecifications = {
     // If a permission has any caveats, its corresponding restricted method
     // implementation is decorated / wrapped with the implementations of its
     // caveats, using the caveat's decorator function.
-    decorator: ((
+    decorator:
+      (
         // Restricted methods and other caveats can be async, so we have to
         // assume that the method is async.
-        method: AsyncRestrictedMethod<Json, string[]>,
-        caveat: { type: 'filterArrayResponse'; value: string[] },
+        method: AsyncRestrictedMethod<RestrictedMethodParameters, Json>,
+        caveat: FilterArrayCaveat,
       ) =>
       async (args: RestrictedMethodOptions<RestrictedMethodParameters>) => {
-        const result = await method(args);
-        return Array.isArray(result)
-          ? result.filter(caveat.value.includes)
-          : result;
-      }) as CaveatDecorator<Json>,
+        const result: string[] | unknown = await method(args);
+        if (!Array.isArray(result)) {
+          throw Error('not an array');
+        }
+
+        return result.filter((resultValue) =>
+          caveat.value.includes(resultValue),
+        );
+      },
   },
 };
 
@@ -153,35 +158,34 @@ const existingPermissions = await ethereum.request({
 
 ### Caveat Decorators
 
+Here follows some more example caveat decorator implementations.
+
 ```typescript
 // Validation / passthrough
 export function onlyArrayParams(
-  next: MethodImplementation,
+  method: AsyncRestrictedMethod<RestrictedMethodParameters, Json>,
   _caveat: Caveat<never>,
 ) {
-  return async (
-    req: JsonRpcRequest<Json>,
-    context: Record<string, unknown>,
-  ) => {
-    if (!Array.isArray(req.params)) {
+  return async (args: RestrictedMethodOptions<RestrictedMethodParameters>) => {
+    if (!Array.isArray(args.params)) {
       throw new EthereumJsonRpcError();
     }
 
-    return next(req, context);
+    return method(args);
   };
 }
 
 // "Return handler" example
 export function eth_accounts(
-  next: MethodImplementation,
+  method: AsyncRestrictedMethod<RestrictedMethodParameters, Json>,
   caveat: Caveat<string[]>,
 ) {
-  return async (
-    req: JsonRpcRequest<Json>,
-    context: Record<string, unknown>,
-  ) => {
-    const accounts = await next(req, context);
-    return accounts.filter((account: string) => caveat.value.includes(account));
+  return async (args: RestrictedMethodOptions<RestrictedMethodParameters>) => {
+    const accounts: string[] | unknown = await method(args);
+    return (
+      accounts?.filter((account: string) => caveat.value.includes(account)) ??
+      []
+    );
   };
 }
 ```
