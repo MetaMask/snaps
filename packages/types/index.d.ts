@@ -24,14 +24,23 @@ export interface PluginProvider extends MetaMaskInpageProvider {
   registerRpcMessageHandler: (handler: PluginRpcHandler) => void;
 }
 type PluginName = string;
+export interface ErrorJSON {
+  message: string;
+  code: number;
+  data?: Json;
+}
 export interface ErrorMessageEvent {
   type: 'ServiceMessenger:unhandledError';
-  payload: [PluginName, { message: string; code: number; data?: Json }];
+  payload: [PluginName, ErrorJSON];
+}
+export interface UnresponsiveMessageEvent {
+  type: 'ServiceMessenger:unresponsive';
+  payload: [PluginName];
 }
 export type ServiceMessenger = RestrictedControllerMessenger<
   'ServiceMessenger',
   never,
-  ErrorMessageEvent,
+  ErrorMessageEvent | UnresponsiveMessageEvent,
   never,
-  ErrorMessageEvent['type']
+  ErrorMessageEvent['type'] | UnresponsiveMessageEvent['type']
 >;
