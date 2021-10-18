@@ -277,14 +277,14 @@ export type CaveatMutator<TargetCaveat extends CaveatConstraint> = (
   | [CaveatMutatorOperation.updateValue, CaveatConstraint['value']];
 
 /**
- * Extracts the constrained permission type(s) from the specified permission and
- * caveat specifications.
+ * Extracts the permission(s) specified by the given permission and caveat
+ * specifications.
  *
- * @template ControllerPermissionSpecification - The permission specification(s) to
- * extract a permission type union from.
- * @template ControllerCaveatSpecification - The caveat specification(s) to extract a
- * permission type union from. Necessary because {@link Permission}
- * has a generic that describes the allowed caveats for the permission.
+ * @template ControllerPermissionSpecification - The permission specification(s)
+ * to extract from.
+ * @template ControllerCaveatSpecification - The caveat specification(s) to
+ * extract from. Necessary because {@link Permission} has a generic parameter
+ * that describes the allowed caveats for the permission.
  */
 export type ExtractPermission<
   ControllerPermissionSpecification extends PermissionSpecificationConstraint,
