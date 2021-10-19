@@ -40,6 +40,7 @@ export type SerializablePlugin = {
   name: string;
   permissionName: string;
   version: string;
+  lastRequestAt?: number; // unix timestamp
 };
 
 export type Plugin = SerializablePlugin & {
@@ -117,6 +118,8 @@ type PluginControllerArgs = {
   terminateAllPlugins: TerminateAll;
   executePlugin: ExecutePlugin;
   getRpcMessageHandler: GetRpcMessageHandler;
+  maxIdleTime?: number;
+  idleTimeCheckInterval?: number;
 };
 
 type AddPluginBase = {
@@ -181,6 +184,14 @@ export class PluginController extends BaseController<
 
   private _pluginsBeingAdded: Map<string, Promise<Plugin>>;
 
+  private _maxIdleTime: number;
+
+  private _idleTimeCheckInterval: number;
+
+  private _shouldStopLastRequestInterval: boolean;
+
+  private _timeoutForLastRequestStatus?: NodeJS.Timeout;
+
   constructor({
     removeAllPermissionsFor,
     closeAllConnections,
@@ -193,7 +204,10 @@ export class PluginController extends BaseController<
     getRpcMessageHandler,
     messenger,
     state,
-  }: PluginControllerArgs) {
+    maxIdleTime = 30000,
+    idleTimeCheckInterval = 5000,
+  }: // idletime -- time between last requests
+  PluginControllerArgs) {
     super({
       messenger,
       metadata: {
@@ -254,6 +268,36 @@ export class PluginController extends BaseController<
     );
 
     this._pluginsBeingAdded = new Map();
+    this._shouldStopLastRequestInterval = false;
+    this._maxIdleTime = maxIdleTime;
+    this._idleTimeCheckInterval = idleTimeCheckInterval;
+    this._pollForLastRequestStatus();
+  }
+
+  _pollForLastRequestStatus() {
+    this._timeoutForLastRequestStatus = setTimeout(async () => {
+      await this._stopPluginsLastRequestPastMax();
+      this._pollForLastRequestStatus();
+    }, this._idleTimeCheckInterval);
+  }
+
+  _stopPluginsLastRequestPastMax() {
+    const promises = Object.entries(this.state.plugins).map(
+      async ([_, val]) => {
+        if (
+          this._maxIdleTime &&
+          val.lastRequestAt &&
+          val.lastRequestAt > Date.now() - this._maxIdleTime
+        ) {
+          await this.stopPlugin(val.name);
+        }
+      },
+    );
+    return Promise.all(promises);
+    // every `n` seconds
+    // check state for each plugin
+    // check lastUpdatedAt
+    // if more than 2 min, stop it.
   }
 
   _onUnresponsivePlugin(pluginName: string) {
@@ -835,7 +879,24 @@ export class PluginController extends BaseController<
    * @param pluginName - The name of the plugin whose message handler to get.
    */
   async getRpcMessageHandler(pluginName: string) {
-    return this._getRpcMessageHandler(pluginName);
+    const handler = await this._getRpcMessageHandler(pluginName);
+    if (!handler) {
+      return undefined;
+    }
+
+    return (origin: string, request: Record<string, unknown>) => {
+      this._recordPluginRpcRequest(pluginName);
+      return handler(origin, request);
+    };
+  }
+
+  private _recordPluginRpcRequest(pluginName: string) {
+    this.update((state: any) => {
+      state.plugins[pluginName] = {
+        ...state.plugins[pluginName],
+        lastRequestAt: Date.now(),
+      };
+    });
   }
 
   private _setPluginToRunning(pluginName: string): void {

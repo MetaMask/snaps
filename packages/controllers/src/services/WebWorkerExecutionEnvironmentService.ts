@@ -226,7 +226,6 @@ export class WebWorkerExecutionEnvironmentService
     }
 
     setTimeout(async () => {
-      console.log('getting worker status');
       this._getWorkerStatus(workerId)
         .then(() => {
           this._pollForWorkerStatus(pluginName);

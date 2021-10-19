@@ -697,4 +697,89 @@ describe('PluginController Controller', () => {
       );
     });
   }, 60000);
+
+  it('can add a plugin and use its JSON-RPC api and then get stopped from idling too long', async () => {
+    const messenger = new ControllerMessenger<
+      PluginControllerActions,
+      ErrorMessageEvent | UnresponsiveMessageEvent
+    >().getRestricted({
+      name: 'PluginController',
+      allowedEvents: [
+        'ServiceMessenger:unhandledError',
+        'ServiceMessenger:unresponsive',
+      ],
+    });
+    const webWorkerExecutionEnvironment =
+      new WebWorkerExecutionEnvironmentService({
+        messenger,
+        setupPluginProvider: jest.fn(),
+        workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
+      });
+    const pluginController = new PluginController({
+      idleTimeCheckInterval: 1000,
+      maxIdleTime: 2000,
+      terminateAllPlugins:
+        webWorkerExecutionEnvironment.terminateAllPlugins.bind(
+          webWorkerExecutionEnvironment,
+        ),
+      terminatePlugin: webWorkerExecutionEnvironment.terminatePlugin.bind(
+        webWorkerExecutionEnvironment,
+      ),
+      executePlugin: webWorkerExecutionEnvironment.executePlugin.bind(
+        webWorkerExecutionEnvironment,
+      ),
+      getRpcMessageHandler:
+        webWorkerExecutionEnvironment.getRpcMessageHandler.bind(
+          webWorkerExecutionEnvironment,
+        ),
+      removeAllPermissionsFor: jest.fn(),
+      getPermissions: jest.fn(),
+      hasPermission: jest.fn(),
+      requestPermissions: jest.fn(),
+      closeAllConnections: jest.fn(),
+      messenger,
+    });
+
+    const plugin = await pluginController.add({
+      name: 'TestPlugin',
+      sourceCode: `
+        wallet.registerRpcMessageHandler(async (origin, request) => {
+          const {method, params, id} = request;
+          wallet.request({method: 'setState'})
+          return method + id;
+        });
+      `,
+      manifest: {
+        web3Wallet: {
+          initialPermissions: {},
+        },
+        version: '0.0.0-development',
+      },
+    });
+
+    await pluginController.startPlugin(plugin.name);
+    const handle = await pluginController.getRpcMessageHandler(plugin.name);
+    if (!handle) {
+      throw Error('rpc handler not found');
+    }
+
+    await handle('foo.com', {
+      jsonrpc: '2.0',
+      method: 'test',
+      params: {},
+      id: 1,
+    });
+
+    expect(pluginController.state.plugins[plugin.name].isRunning).toStrictEqual(
+      true,
+    );
+
+    await new Promise((resolve) => {
+      setTimeout(resolve, 3000);
+    });
+
+    expect(pluginController.state.plugins[plugin.name].isRunning).toStrictEqual(
+      false,
+    );
+  });
 });
