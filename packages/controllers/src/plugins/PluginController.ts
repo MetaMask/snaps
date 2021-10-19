@@ -934,13 +934,22 @@ export class PluginController extends BaseController<
    *
    * @param pluginName - The name of the plugin whose message handler to get.
    */
-  async getRpcMessageHandler(pluginName: string) {
-    const handler = await this._getRpcMessageHandler(pluginName);
-    if (!handler) {
-      return undefined;
-    }
-
-    return (origin: string, request: Record<string, unknown>) => {
+  async getRpcMessageHandler(
+    pluginName: string,
+  ): Promise<
+    (origin: string, request: Record<string, unknown>) => Promise<unknown>
+  > {
+    return async (origin, request) => {
+      let handler = await this._getRpcMessageHandler(pluginName);
+      if (!handler) {
+        if (this.state.plugins[pluginName].isRunning === false) {
+          await this.startPlugin(pluginName);
+          // eslint-disable-next-line require-atomic-updates
+          handler = await this.getRpcMessageHandler(pluginName);
+        }
+        // something went really wrong
+        return undefined;
+      }
       this._recordPluginRpcRequest(pluginName);
       return handler(origin, request);
     };
