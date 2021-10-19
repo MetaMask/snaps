@@ -188,8 +188,6 @@ export class PluginController extends BaseController<
 
   private _idleTimeCheckInterval: number;
 
-  private _shouldStopLastRequestInterval: boolean;
-
   private _timeoutForLastRequestStatus?: NodeJS.Timeout;
 
   constructor({
@@ -268,7 +266,6 @@ export class PluginController extends BaseController<
     );
 
     this._pluginsBeingAdded = new Map();
-    this._shouldStopLastRequestInterval = false;
     this._maxIdleTime = maxIdleTime;
     this._idleTimeCheckInterval = idleTimeCheckInterval;
     this._pollForLastRequestStatus();
@@ -862,6 +859,11 @@ export class PluginController extends BaseController<
 
   destroy() {
     super.destroy();
+
+    if (this._timeoutForLastRequestStatus) {
+      clearTimeout(this._timeoutForLastRequestStatus);
+    }
+
     this.messagingSystem.unsubscribe(
       'ServiceMessenger:unhandledError',
       this._onUnhandledPluginError,
