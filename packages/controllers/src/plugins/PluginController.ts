@@ -204,8 +204,7 @@ export class PluginController extends BaseController<
     state,
     maxIdleTime = 30000,
     idleTimeCheckInterval = 5000,
-  }: // idletime -- time between last requests
-  PluginControllerArgs) {
+  }: PluginControllerArgs) {
     super({
       messenger,
       metadata: {
@@ -291,10 +290,6 @@ export class PluginController extends BaseController<
       },
     );
     return Promise.all(promises);
-    // every `n` seconds
-    // check state for each plugin
-    // check lastUpdatedAt
-    // if more than 2 min, stop it.
   }
 
   _onUnresponsivePlugin(pluginName: string) {
