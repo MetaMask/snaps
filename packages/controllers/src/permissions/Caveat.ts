@@ -166,7 +166,7 @@ export type CaveatSpecification<Type extends string> = {
  * TODO:docs
  */
 export type CaveatSpecificationMap<
-  Specification extends CaveatSpecification<string>,
+  Specification extends CaveatSpecificationConstraint,
 > = {
   [Key in Specification['type']]: Specification extends CaveatSpecification<Key>
     ? Specification

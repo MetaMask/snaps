@@ -443,7 +443,7 @@ export type ValidatePermissionSpecification<Specification> =
 export type PermissionSpecificationMap<
   Specification extends PermissionSpecificationConstraint,
 > = {
-  [TargetKey in Specification['targetKey']]: Specification extends PermissionSpecificationConstraint & {
+  [TargetKey in Specification['targetKey']]: Specification extends {
     targetKey: TargetKey;
   }
     ? Specification
@@ -460,7 +460,7 @@ export type PermissionSpecificationMap<
 export type ExtractPermissionSpecification<
   Specification extends PermissionSpecificationConstraint,
   TargetKey extends Specification['targetKey'],
-> = Specification extends PermissionSpecificationConstraint & {
+> = Specification extends {
   targetKey: TargetKey;
 }
   ? Specification
