@@ -115,15 +115,6 @@ export type ExtractPermissionTargetNames<Key extends string> =
   Key extends `${infer Base}_*` ? `${Base}_${string}` : Key;
 
 /**
- * The consumer-facing base permission type.
- *
- * @template TargetKey - They key of the permission target that the permission
- * corresponds to.
- * @template AllowedCaveats - A union of the allowed {@link Caveat} types
- * for the permission.
- */
-
-/**
  * A {@link PermissionConstraint} with mutable caveats.
  */
 export type MutableGenericPermission = Mutable<
