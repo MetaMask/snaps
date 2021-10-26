@@ -311,24 +311,22 @@ export type ExtractPermission<
  * caveat specifications available to the controller.
  */
 export type PermissionControllerOptions<
-  ControllerPermissionSpecification extends PermissionSpecificationConstraint,
+  ControllerPermissionSpecification extends ValidPermissionSpecification<PermissionSpecificationConstraint>,
   ControllerCaveatSpecification extends CaveatSpecificationConstraint,
-> = ValidPermissionSpecification<ControllerPermissionSpecification> extends never
-  ? never
-  : {
-      messenger: PermissionControllerMessenger;
-      caveatSpecifications: CaveatSpecificationMap<ControllerCaveatSpecification>;
-      permissionSpecifications: PermissionSpecificationMap<ControllerPermissionSpecification>;
-      unrestrictedMethods: string[];
-      state?: Partial<
-        PermissionControllerState<
-          ExtractPermission<
-            ControllerPermissionSpecification,
-            ControllerCaveatSpecification
-          >
-        >
-      >;
-    };
+> = {
+  messenger: PermissionControllerMessenger;
+  caveatSpecifications: CaveatSpecificationMap<ControllerCaveatSpecification>;
+  permissionSpecifications: PermissionSpecificationMap<ControllerPermissionSpecification>;
+  unrestrictedMethods: string[];
+  state?: Partial<
+    PermissionControllerState<
+      ExtractPermission<
+        ControllerPermissionSpecification,
+        ControllerCaveatSpecification
+      >
+    >
+  >;
+};
 
 /**
  * The permission controller. See the documentation for details.
