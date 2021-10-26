@@ -220,7 +220,10 @@ export class PluginController extends BaseController<
 
   private _lastRequestMap: Map<PluginName, number>;
 
-  private _rpcHandlerMap: Map<PluginName, any>;
+  private _rpcHandlerMap: Map<
+    PluginName,
+    (origin: string, request: Record<string, unknown>) => Promise<unknown>
+  >;
 
   constructor({
     removeAllPermissionsFor,
