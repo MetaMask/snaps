@@ -70,7 +70,7 @@ export type PermissionConstraint = {
 export type Permission<
   TargetKey extends GenericTargetName,
   AllowedCaveat extends CaveatConstraint,
-> = ValidateTargetName<ExtractPermissionTargetNames<TargetKey>> extends never
+> = ValidTargetName<ExtractPermissionTargetNames<TargetKey>> extends never
   ? never
   : PermissionConstraint & {
       // TODO:TS4.4 Make optional
@@ -97,7 +97,7 @@ export type Permission<
  *
  * See the documentation for the distinction between target names and keys.
  */
-type ValidateTargetName<Name extends string> = Name extends `${string}*`
+type ValidTargetName<Name extends string> = Name extends `${string}*`
   ? never
   : Name extends `${string}_`
   ? never
@@ -334,7 +334,7 @@ export type GenericRestrictedMethod = RestrictedMethod<
   Json
 >;
 
-export type ValidateRestrictedMethod<
+export type ValidRestrictedMethod<
   MethodImplementation extends RestrictedMethod<any, any>,
 > = MethodImplementation extends (args: infer Options) => Json | Promise<Json>
   ? Options extends RestrictedMethodOptions<RestrictedMethodParameters>
@@ -365,7 +365,7 @@ export type PermissionValidator<TargetPermission extends PermissionConstraint> =
  *
  * @template Key - The target key string to apply the constraint to.
  */
-type ValidateTargetKey<Key extends string> = Key extends `${string}_*`
+type ValidTargetKey<Key extends string> = Key extends `${string}_*`
   ? Key
   : Key extends `${string}_`
   ? never
@@ -422,10 +422,10 @@ export type PermissionSpecificationConstraint = {
  */
 export type ValidPermissionSpecification<
   Specification extends PermissionSpecificationConstraint,
-> = Specification['targetKey'] extends ValidateTargetKey<
+> = Specification['targetKey'] extends ValidTargetKey<
   Specification['targetKey']
 >
-  ? Specification['methodImplementation'] extends ValidateRestrictedMethod<
+  ? Specification['methodImplementation'] extends ValidRestrictedMethod<
       Specification['methodImplementation']
     >
     ? Specification
