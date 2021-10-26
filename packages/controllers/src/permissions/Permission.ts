@@ -377,11 +377,6 @@ type ValidateTargetKey<Key extends string> = Key extends `${string}_*`
   ? never
   : Key;
 
-/**
- * A type extended by any function.
- */
-type GenericFunction = (...args: any[]) => any;
-
 export type PermissionSpecificationConstraint = {
   /**
    * The target resource of the permission. In other words, at the time of
@@ -399,7 +394,7 @@ export type PermissionSpecificationConstraint = {
    * The implementation of the restricted method that the permission
    * corresponds to.
    */
-  methodImplementation: GenericFunction;
+  methodImplementation: RestrictedMethod<any, Json>;
 
   /**
    * The factory function used to get permission objects. Permissions returned
