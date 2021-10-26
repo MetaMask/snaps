@@ -5,13 +5,13 @@ import type {
 } from 'json-rpc-engine';
 import { MethodNames } from '../utils';
 
-import type { GenericPermission } from '../Permission';
+import type { PermissionConstraint } from '../Permission';
 import type { SubjectPermissions } from '../PermissionController';
 
 export const getPermissionsHandler: PermittedHandlerExport<
   GetPermissionsHooks,
   void,
-  GenericPermission[]
+  PermissionConstraint[]
 > = {
   methodNames: [MethodNames.getPermissions],
   implementation: getPermissionsImplementation,
@@ -22,12 +22,12 @@ export const getPermissionsHandler: PermittedHandlerExport<
 };
 
 export type GetPermissionsHooks = {
-  getPermissions: () => SubjectPermissions<GenericPermission>;
+  getPermissions: () => SubjectPermissions<PermissionConstraint>;
 };
 
 async function getPermissionsImplementation(
   _req: unknown,
-  res: PendingJsonRpcResponse<GenericPermission[]>,
+  res: PendingJsonRpcResponse<PermissionConstraint[]>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
   { getPermissions }: GetPermissionsHooks,

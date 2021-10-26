@@ -3,7 +3,7 @@ import {
   CaveatSpecification,
   CaveatSpecificationMap,
   decorateWithCaveats,
-  GenericPermission,
+  PermissionConstraint,
 } from '.';
 
 // This function is mostly tested through the PermissionController tests,
@@ -21,7 +21,7 @@ describe('decorateWithCaveats', () => {
 
     const permission = {
       caveats: [{ type: 'reverse', value: null }],
-    } as unknown as GenericPermission;
+    } as unknown as PermissionConstraint;
 
     expect(methodImplementation()).toStrictEqual([1, 2, 3]);
     expect(
@@ -46,7 +46,7 @@ describe('decorateWithCaveats', () => {
     const permission = {
       // This type doesn't exist
       caveats: [{ type: 'kaplar', value: null }],
-    } as unknown as GenericPermission;
+    } as unknown as PermissionConstraint;
 
     expect(() =>
       decorateWithCaveats(

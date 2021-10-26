@@ -32,7 +32,7 @@ import {
 import {
   constructPermission,
   findCaveat,
-  GenericPermission,
+  PermissionConstraint,
   OriginString,
   PermissionOptions,
   RequestedPermissions,
@@ -105,17 +105,15 @@ const controllerName = 'PermissionController';
 /**
  * Permissions associated with a {@link PermissionController} subject.
  */
-export type SubjectPermissions<Permissions extends GenericPermission> = Record<
-  Permissions['parentCapability'],
-  Permissions
->;
+export type SubjectPermissions<Permissions extends PermissionConstraint> =
+  Record<Permissions['parentCapability'], Permissions>;
 
 /**
  * Permissions and metadata associated with a {@link PermissionController}
  * subject.
  */
 export type PermissionSubjectEntry<
-  SubjectPermission extends GenericPermission,
+  SubjectPermission extends PermissionConstraint,
 > = {
   permissions: SubjectPermissions<SubjectPermission>;
 } & PermissionSubjectMetadata;
@@ -124,7 +122,7 @@ export type PermissionSubjectEntry<
  * All subjects of a {@link PermissionController}.
  */
 export type PermissionControllerSubjects<
-  SubjectPermission extends GenericPermission,
+  SubjectPermission extends PermissionConstraint,
 > = Record<OriginString, PermissionSubjectEntry<SubjectPermission>>;
 
 // TODO:TS4.4 Enable compiler flags to forbid unchecked member access
@@ -132,7 +130,7 @@ export type PermissionControllerSubjects<
  * The state of a {@link PermissionController}.
  */
 export type PermissionControllerState<Permissions> =
-  Permissions extends GenericPermission
+  Permissions extends PermissionConstraint
     ? {
         subjects: PermissionControllerSubjects<Permissions>;
       }
@@ -148,7 +146,7 @@ const stateMetadata: StateMetadata<PermissionControllerState<any>> = {
 /**
  * The default state of the {@link PermissionController}.
  */
-const defaultState: PermissionControllerState<GenericPermission> = {
+const defaultState: PermissionControllerState<PermissionConstraint> = {
   subjects: {},
 };
 
@@ -157,7 +155,7 @@ const defaultState: PermissionControllerState<GenericPermission> = {
  */
 export type GetPermissionControllerState = {
   type: `${typeof controllerName}:getState`;
-  handler: () => PermissionControllerState<GenericPermission>;
+  handler: () => PermissionControllerState<PermissionConstraint>;
 };
 
 /**
@@ -165,7 +163,7 @@ export type GetPermissionControllerState = {
  */
 export type GetSubjects = {
   type: `${typeof controllerName}:getSubjectNames`;
-  handler: () => (keyof PermissionControllerSubjects<GenericPermission>)[];
+  handler: () => (keyof PermissionControllerSubjects<PermissionConstraint>)[];
 };
 
 /**
@@ -199,7 +197,7 @@ export type PermissionControllerActions =
  */
 export type PermissionControllerStateChange = {
   type: `${typeof controllerName}:stateChange`;
-  payload: [PermissionControllerState<GenericPermission>, Patch[]];
+  payload: [PermissionControllerState<PermissionConstraint>, Patch[]];
 };
 
 /**
@@ -711,7 +709,7 @@ export class PermissionController<
 
           // Typecast: Immer WritableDraft incompatibility
           this.deletePermission(
-            draftState.subjects as unknown as PermissionControllerSubjects<GenericPermission>,
+            draftState.subjects as unknown as PermissionControllerSubjects<PermissionConstraint>,
             origin,
             target,
           );
@@ -743,7 +741,7 @@ export class PermissionController<
         if (hasProperty(permissions as Record<string, unknown>, target)) {
           this.deletePermission(
             // Typecast: Immer WritableDraft incompatibility
-            draftState.subjects as unknown as PermissionControllerSubjects<GenericPermission>,
+            draftState.subjects as unknown as PermissionControllerSubjects<PermissionConstraint>,
             origin,
             target,
           );
@@ -763,7 +761,7 @@ export class PermissionController<
    * @param target - The target name of the permission to delete.
    */
   private deletePermission(
-    subjects: PermissionControllerSubjects<GenericPermission>,
+    subjects: PermissionControllerSubjects<PermissionConstraint>,
     origin: OriginString,
     target: ExtractPermission<
       ControllerPermissionSpecification,
@@ -1096,7 +1094,7 @@ export class PermissionController<
             case CaveatMutatorOperation.revokePermission:
               // Typecast: Immer WritableDraft incompatibility
               this.deletePermission(
-                draftState.subjects as unknown as PermissionControllerSubjects<GenericPermission>,
+                draftState.subjects as unknown as PermissionControllerSubjects<PermissionConstraint>,
                 subject.origin,
                 permission.parentCapability,
               );
@@ -1214,7 +1212,7 @@ export class PermissionController<
    * @param targetName - The target name name of the permission.
    */
   private validateModifiedPermission(
-    permission: GenericPermission,
+    permission: PermissionConstraint,
     origin: OriginString,
     targetName: ExtractPermission<
       ControllerPermissionSpecification,
@@ -1416,7 +1414,7 @@ export class PermissionController<
    */
   private validatePermission(
     specification: PermissionSpecificationConstraint,
-    permission: GenericPermission,
+    permission: PermissionConstraint,
     origin: OriginString,
     targetName: ExtractPermission<
       ControllerPermissionSpecification,

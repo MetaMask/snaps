@@ -8,7 +8,7 @@ import {
 } from 'json-rpc-engine';
 import { internalError } from './errors';
 import {
-  GenericPermission,
+  PermissionConstraint,
   PermissionSubjectMetadata,
   RestrictedMethod,
   RestrictedMethodParameters,
@@ -18,7 +18,7 @@ import {
  * TODO:docs
  */
 
-type ExecuteRestrictedMethod<Permission extends GenericPermission> = (
+type ExecuteRestrictedMethod<Permission extends PermissionConstraint> = (
   methodImplementation: RestrictedMethod<RestrictedMethodParameters, Json>,
   subject: PermissionSubjectMetadata,
   method: Permission['parentCapability'],
@@ -30,15 +30,16 @@ type GetRestrictedMethod = (
 ) => RestrictedMethod<RestrictedMethodParameters, Json>;
 type IsUnrestrictedMethod = (method: string) => boolean;
 
-type PermissionMiddlewareFactoryOptions<Permission extends GenericPermission> =
-  {
-    executeRestrictedMethod: ExecuteRestrictedMethod<Permission>;
-    getRestrictedMethod: GetRestrictedMethod;
-    isUnrestrictedMethod: IsUnrestrictedMethod;
-  };
+type PermissionMiddlewareFactoryOptions<
+  Permission extends PermissionConstraint,
+> = {
+  executeRestrictedMethod: ExecuteRestrictedMethod<Permission>;
+  getRestrictedMethod: GetRestrictedMethod;
+  isUnrestrictedMethod: IsUnrestrictedMethod;
+};
 
 export function getPermissionMiddlewareFactory<
-  Permission extends GenericPermission,
+  Permission extends PermissionConstraint,
 >({
   executeRestrictedMethod,
   getRestrictedMethod,

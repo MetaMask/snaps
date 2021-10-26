@@ -8,12 +8,12 @@ import { nanoid } from 'nanoid';
 import { MethodNames } from '../utils';
 
 import { invalidParams } from '../errors';
-import type { GenericPermission, RequestedPermissions } from '../Permission';
+import type { PermissionConstraint, RequestedPermissions } from '../Permission';
 
 export const requestPermissionsHandler: PermittedHandlerExport<
   RequestPermissionsHooks,
   [RequestedPermissions],
-  GenericPermission[]
+  PermissionConstraint[]
 > = {
   methodNames: [MethodNames.requestPermissions],
   implementation: requestPermissionsImplementation,
@@ -27,7 +27,7 @@ type RequestPermissions = (
   requestedPermissions: RequestedPermissions,
   id: string,
 ) => Promise<
-  [Record<string, GenericPermission>, { id: string; origin: string }]
+  [Record<string, PermissionConstraint>, { id: string; origin: string }]
 >;
 
 export type RequestPermissionsHooks = {
@@ -36,7 +36,7 @@ export type RequestPermissionsHooks = {
 
 async function requestPermissionsImplementation(
   req: JsonRpcRequest<[RequestedPermissions]>,
-  res: PendingJsonRpcResponse<GenericPermission[]>,
+  res: PendingJsonRpcResponse<PermissionConstraint[]>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
   { requestPermissions }: RequestPermissionsHooks,

@@ -16,7 +16,7 @@ import {
   constructCaveat,
   constructPermission,
   CaveatConstraint,
-  GenericPermission,
+  PermissionConstraint,
   MethodNames,
   Permission,
   PermissionController,
@@ -230,7 +230,7 @@ function getDefaultPermissionSpecifications() {
       methodImplementation: (_args: RestrictedMethodOptions<void>) => {
         return { a: 'x', b: 'y', c: 'z' };
       },
-      validator: (permission: GenericPermission) => {
+      validator: (permission: PermissionConstraint) => {
         // A dummy validator for a caveat type that should be impossible to add
         assert.ok(
           !permission.caveats?.some(
@@ -254,7 +254,7 @@ function getDefaultPermissionSpecifications() {
           ...options,
           caveats: [constructCaveat(CaveatTypes.noopCaveat, null)],
         }) as SecretNamespacedPermission,
-      validator: (permission: GenericPermission) => {
+      validator: (permission: PermissionConstraint) => {
         assert.deepStrictEqual(
           permission.caveats,
           [constructCaveat(CaveatTypes.noopCaveat, null)],
@@ -286,7 +286,7 @@ function getDefaultPermissionSpecifications() {
         return null;
       },
       allowedCaveats: [CaveatTypes.noopCaveat, CaveatTypes.filterArrayResponse],
-      validator: (permission: GenericPermission) => {
+      validator: (permission: PermissionConstraint) => {
         if (
           permission.caveats?.some(
             ({ type }) => type !== CaveatTypes.noopCaveat,

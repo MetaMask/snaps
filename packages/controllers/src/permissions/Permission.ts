@@ -124,15 +124,10 @@ export type ExtractPermissionTargetNames<Key extends string> =
  */
 
 /**
- * A generic permission.
- */
-export type GenericPermission = Permission<GenericTargetName, CaveatConstraint>;
-
-/**
- * A {@link GenericPermission} with mutable caveats.
+ * A {@link PermissionConstraint} with mutable caveats.
  */
 export type MutableGenericPermission = Mutable<
-  GenericPermission & { caveats: NonEmptyArray<CaveatConstraint> | null },
+  PermissionConstraint & { caveats: NonEmptyArray<CaveatConstraint> | null },
   'caveats'
 >;
 
@@ -200,7 +195,7 @@ export type ExtractAllowedCaveatTypes<
  *
  * @template TargetPermission - The {@link Permission} that will be constructed.
  */
-export type PermissionOptions<TargetPermission extends GenericPermission> = {
+export type PermissionOptions<TargetPermission extends PermissionConstraint> = {
   target: TargetPermission['parentCapability'];
   /**
    * The origin string of the subject that has the permission.
@@ -232,9 +227,9 @@ export type PermissionOptions<TargetPermission extends GenericPermission> = {
  * @param options - The options for the permission.
  * @returns The new permission object.
  */
-export function constructPermission<TargetPermission extends GenericPermission>(
-  options: PermissionOptions<TargetPermission>,
-): GenericPermission {
+export function constructPermission<
+  TargetPermission extends PermissionConstraint,
+>(options: PermissionOptions<TargetPermission>): PermissionConstraint {
   const { caveats = null, id, invoker, target } = options;
 
   return {
@@ -255,7 +250,7 @@ export function constructPermission<TargetPermission extends GenericPermission>(
  * @returns The caveat, or undefined if no such caveat exists.
  */
 export function findCaveat(
-  permission: GenericPermission,
+  permission: PermissionConstraint,
   caveatType: string,
 ): CaveatConstraint | undefined {
   return permission.caveats?.find((caveat) => caveat.type === caveatType);
@@ -263,9 +258,9 @@ export function findCaveat(
 
 /**
  * A requested permission object. Just an object with any of the properties
- * of a {@link GenericPermission} object.
+ * of a {@link PermissionConstraint} object.
  */
-type RequestedPermission = Partial<GenericPermission>;
+type RequestedPermission = Partial<PermissionConstraint>;
 
 /**
  * A record of target names and their {@link RequestedPermission} objects.
@@ -348,18 +343,19 @@ export type ValidateRestrictedMethod<
   : never;
 
 export type PermissionFactory<
-  TargetPermission extends GenericPermission,
+  TargetPermission extends PermissionConstraint,
   RequestData extends Record<string, unknown>,
 > = (
   options: PermissionOptions<TargetPermission>,
   requestData?: RequestData,
 ) => TargetPermission;
 
-export type PermissionValidator<TargetPermission extends GenericPermission> = (
-  permission: GenericPermission,
-  origin?: OriginString,
-  target?: TargetPermission['parentCapability'],
-) => void;
+export type PermissionValidator<TargetPermission extends PermissionConstraint> =
+  (
+    permission: PermissionConstraint,
+    origin?: OriginString,
+    target?: TargetPermission['parentCapability'],
+  ) => void;
 
 /**
  * A utility type for ensuring that the given permission target key conforms to
@@ -415,7 +411,7 @@ export type PermissionSpecificationConstraint = {
    *
    * The validator should throw an appropriate JSON-RPC error if validation fails.
    */
-  validator?: PermissionValidator<GenericPermission>;
+  validator?: PermissionValidator<PermissionConstraint>;
 };
 
 /**

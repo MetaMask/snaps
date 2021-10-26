@@ -4,7 +4,7 @@ import { UnrecognizedCaveatTypeError } from './errors';
 import {
   AsyncRestrictedMethod,
   RestrictedMethod,
-  GenericPermission,
+  PermissionConstraint,
   RestrictedMethodParameters,
 } from './Permission';
 
@@ -227,7 +227,7 @@ export function decorateWithCaveats<
   CaveatSpecifications extends CaveatSpecification<string>,
 >(
   methodImplementation: RestrictedMethod<RestrictedMethodParameters, Json>,
-  permission: Readonly<GenericPermission>, // bound to the requesting origin
+  permission: Readonly<PermissionConstraint>, // bound to the requesting origin
   caveatSpecifications: CaveatSpecificationMap<CaveatSpecifications>, // all caveat implementations
 ): RestrictedMethod<RestrictedMethodParameters, Json> {
   const { caveats } = permission;
