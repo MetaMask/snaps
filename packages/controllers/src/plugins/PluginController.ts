@@ -616,6 +616,7 @@ export class PluginController extends BaseController<
         this._stopPlugin(pluginName, false);
         delete state.plugins[pluginName];
         delete state.pluginStates[pluginName];
+        this._rpcHandlerMap.delete(pluginName);
       });
     });
 
