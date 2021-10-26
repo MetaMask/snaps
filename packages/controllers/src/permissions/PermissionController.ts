@@ -124,7 +124,10 @@ export type PermissionSubjectEntry<
  */
 export type PermissionControllerSubjects<
   SubjectPermission extends PermissionConstraint,
-> = Record<OriginString, PermissionSubjectEntry<SubjectPermission>>;
+> = Record<
+  SubjectPermission['invoker'],
+  PermissionSubjectEntry<SubjectPermission>
+>;
 
 // TODO:TS4.4 Enable compiler flags to forbid unchecked member access
 /**
