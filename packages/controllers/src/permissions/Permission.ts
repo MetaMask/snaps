@@ -350,12 +350,11 @@ export type PermissionFactory<
   requestData?: RequestData,
 ) => TargetPermission;
 
-export type PermissionValidator<TargetPermission extends PermissionConstraint> =
-  (
-    permission: PermissionConstraint,
-    origin?: OriginString,
-    target?: TargetPermission['parentCapability'],
-  ) => void;
+export type PermissionValidatorConstraint = (
+  permission: PermissionConstraint,
+  origin?: OriginString,
+  target?: string,
+) => void;
 
 /**
  * A utility type for ensuring that the given permission target key conforms to
@@ -411,7 +410,7 @@ export type PermissionSpecificationConstraint = {
    *
    * The validator should throw an appropriate JSON-RPC error if validation fails.
    */
-  validator?: PermissionValidator<PermissionConstraint>;
+  validator?: PermissionValidatorConstraint;
 };
 
 /**
