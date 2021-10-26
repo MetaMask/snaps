@@ -326,12 +326,28 @@ export class PluginController extends BaseController<
         pluginName,
       },
     });
+    this._transitionPluginState(pluginName, 'CRASH');
   }
 
   _onUnhandledPluginError(pluginName: string, error: ErrorJSON) {
     this._transitionPluginState(pluginName, 'CRASH');
     this.stopPlugin(pluginName);
     this.addPluginError(error);
+    this._transitionPluginState(pluginName, 'CRASH');
+  }
+
+  _transitionPluginState(pluginName: string, event: string) {
+    const nextStateNode =
+      (pluginStatusStateMachineConfig as any).states[
+        this.state.plugins[pluginName].status
+      ].on?.[event] ?? this.state.plugins[pluginName].status;
+
+    this.update((state: any) => {
+      state.plugins[pluginName] = {
+        ...state.plugins[pluginName],
+        status: nextStateNode,
+      };
+    });
   }
 
   _transitionPluginState(pluginName: string, event: string) {
