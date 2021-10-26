@@ -138,18 +138,24 @@ export type PermissionControllerState<Permissions> =
     : never;
 
 /**
- * The state metadata of the {@link PermissionController}.
+ * Get the state metadata of the {@link PermissionController}.
+ *
+ * @template Permissions - The controller's permission type union.
  */
-const stateMetadata: StateMetadata<PermissionControllerState<any>> = {
-  subjects: { persist: true, anonymous: true },
-};
+function getStateMetadata<Permissions extends PermissionConstraint>() {
+  return { subjects: { anonymous: true, persist: true } } as StateMetadata<
+    PermissionControllerState<Permissions>
+  >;
+}
 
 /**
- * The default state of the {@link PermissionController}.
+ * Get the default state of the {@link PermissionController}.
+ *
+ * @template Permissions - The controller's permission type union.
  */
-const defaultState: PermissionControllerState<PermissionConstraint> = {
-  subjects: {},
-};
+function getDefaultState<Permissions extends PermissionConstraint>() {
+  return { subjects: {} } as PermissionControllerState<Permissions>;
+}
 
 /**
  * Gets the state of the {@link PermissionController}.
@@ -412,15 +418,21 @@ export class PermissionController<
     // genericized.
     super({
       name: controllerName,
-      metadata: stateMetadata as any,
-      messenger,
-      state: {
-        ...(defaultState as PermissionControllerState<
+      metadata:
+        getStateMetadata<
           ExtractPermission<
             ControllerPermissionSpecification,
             ControllerCaveatSpecification
           >
-        >),
+        >(),
+      messenger,
+      state: {
+        ...getDefaultState<
+          ExtractPermission<
+            ControllerPermissionSpecification,
+            ControllerCaveatSpecification
+          >
+        >(),
         ...state,
       },
     });
@@ -543,12 +555,14 @@ export class PermissionController<
     this.update((_draftState) => {
       // Typecast: The default state is declared outside of the controller
       // instance and therefore incorrectly genericized.
-      return { ...defaultState } as PermissionControllerState<
-        ExtractPermission<
-          ControllerPermissionSpecification,
-          ControllerCaveatSpecification
-        >
-      >;
+      return {
+        ...getDefaultState<
+          ExtractPermission<
+            ControllerPermissionSpecification,
+            ControllerCaveatSpecification
+          >
+        >(),
+      };
     });
   }
 
