@@ -380,6 +380,7 @@ describe('PluginController Controller', () => {
             version: '0.0.1',
             sourceCode: 'console.log("foo")',
             name: 'foo',
+            status: 'idle',
           },
         },
       },
@@ -608,6 +609,7 @@ describe('PluginController Controller', () => {
         () => {
           const localPlugin = pluginController.get(plugin.name);
           expect(localPlugin.isRunning).toStrictEqual(false);
+          expect(localPlugin.status).toStrictEqual('crashed');
           resolve(undefined);
           pluginController.destroy();
         },
@@ -691,6 +693,7 @@ describe('PluginController Controller', () => {
         async (pluginName: string) => {
           const localPlugin = pluginController.get(pluginName);
           expect(localPlugin.isRunning).toStrictEqual(false);
+          expect(localPlugin.status).toStrictEqual('crashed');
           resolve(undefined);
           pluginController.destroy();
         },
@@ -780,6 +783,82 @@ describe('PluginController Controller', () => {
 
     expect(pluginController.state.plugins[plugin.name].isRunning).toStrictEqual(
       false,
+    );
+
+    expect(pluginController.state.plugins[plugin.name].status).toStrictEqual(
+      'stopped',
+    );
+  });
+
+  it('can add a plugin and see its status', async () => {
+    const messenger = new ControllerMessenger<
+      PluginControllerActions,
+      ErrorMessageEvent | UnresponsiveMessageEvent
+    >().getRestricted({
+      name: 'PluginController',
+      allowedEvents: [
+        'ServiceMessenger:unhandledError',
+        'ServiceMessenger:unresponsive',
+      ],
+    });
+    const webWorkerExecutionEnvironment =
+      new WebWorkerExecutionEnvironmentService({
+        messenger,
+        setupPluginProvider: jest.fn(),
+        workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
+      });
+    const pluginController = new PluginController({
+      idleTimeCheckInterval: 1000,
+      maxIdleTime: 2000,
+      terminateAllPlugins:
+        webWorkerExecutionEnvironment.terminateAllPlugins.bind(
+          webWorkerExecutionEnvironment,
+        ),
+      terminatePlugin: webWorkerExecutionEnvironment.terminatePlugin.bind(
+        webWorkerExecutionEnvironment,
+      ),
+      executePlugin: webWorkerExecutionEnvironment.executePlugin.bind(
+        webWorkerExecutionEnvironment,
+      ),
+      getRpcMessageHandler:
+        webWorkerExecutionEnvironment.getRpcMessageHandler.bind(
+          webWorkerExecutionEnvironment,
+        ),
+      removeAllPermissionsFor: jest.fn(),
+      getPermissions: jest.fn(),
+      hasPermission: jest.fn(),
+      requestPermissions: jest.fn(),
+      closeAllConnections: jest.fn(),
+      messenger,
+    });
+
+    const plugin = await pluginController.add({
+      name: 'TestPlugin',
+      sourceCode: `
+        wallet.registerRpcMessageHandler(async (origin, request) => {
+          const {method, params, id} = request;
+          wallet.request({method: 'setState'})
+          return method + id;
+        });
+      `,
+      manifest: {
+        web3Wallet: {
+          initialPermissions: {},
+        },
+        version: '0.0.0-development',
+      },
+    });
+
+    await pluginController.startPlugin(plugin.name);
+
+    expect(pluginController.state.plugins[plugin.name].status).toStrictEqual(
+      'running',
+    );
+
+    await pluginController.stopPlugin(plugin.name);
+
+    expect(pluginController.state.plugins[plugin.name].status).toStrictEqual(
+      'stopped',
     );
   });
 });

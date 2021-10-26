@@ -10,6 +10,7 @@ import {
   ErrorJSON,
   ErrorMessageEvent,
   PluginData,
+  PluginName,
   UnresponsiveMessageEvent,
 } from '@metamask/snap-types';
 import { nanoid } from 'nanoid';
@@ -40,7 +41,7 @@ export type SerializablePlugin = {
   name: string;
   permissionName: string;
   version: string;
-  lastRequestAt?: number; // unix timestamp
+  status: 'idle' | 'running' | 'stopped' | 'crashed';
 };
 
 export type Plugin = SerializablePlugin & {
@@ -150,6 +151,33 @@ const defaultState: PluginControllerState = {
   pluginStates: {},
 };
 
+const pluginStatusStateMachineConfig = {
+  initial: 'idle',
+  states: {
+    idle: {
+      on: {
+        START: 'running',
+      },
+    },
+    running: {
+      on: {
+        STOP: 'stopped',
+        CRASH: 'crashed',
+      },
+    },
+    stopped: {
+      on: {
+        START: 'running',
+      },
+    },
+    crashed: {
+      on: {
+        START: 'running',
+      },
+    },
+  },
+};
+
 const name = 'PluginController';
 
 /*
@@ -189,6 +217,8 @@ export class PluginController extends BaseController<
   private _idleTimeCheckInterval: number;
 
   private _timeoutForLastRequestStatus?: NodeJS.Timeout;
+
+  private _lastRequestMap: Map<PluginName, number>;
 
   constructor({
     removeAllPermissionsFor,
@@ -268,31 +298,26 @@ export class PluginController extends BaseController<
     this._maxIdleTime = maxIdleTime;
     this._idleTimeCheckInterval = idleTimeCheckInterval;
     this._pollForLastRequestStatus();
+    this._lastRequestMap = new Map();
   }
 
   _pollForLastRequestStatus() {
     this._timeoutForLastRequestStatus = setTimeout(async () => {
-      await this._stopPluginsLastRequestPastMax();
+      this._stopPluginsLastRequestPastMax();
       this._pollForLastRequestStatus();
     }, this._idleTimeCheckInterval);
   }
 
   _stopPluginsLastRequestPastMax() {
-    const promises = Object.entries(this.state.plugins).map(
-      async ([_, val]) => {
-        if (
-          this._maxIdleTime &&
-          val.lastRequestAt &&
-          val.lastRequestAt > Date.now() - this._maxIdleTime
-        ) {
-          await this.stopPlugin(val.name);
-        }
-      },
-    );
-    return Promise.all(promises);
+    this._lastRequestMap.forEach(async (val, pluginName) => {
+      if (this._maxIdleTime && val > Date.now() - this._maxIdleTime) {
+        this.stopPlugin(pluginName);
+      }
+    });
   }
 
   _onUnresponsivePlugin(pluginName: string) {
+    this._transitionPluginState(pluginName, 'CRASH');
     this.stopPlugin(pluginName);
     this.addPluginError({
       code: -32001, // just made this code up
@@ -304,8 +329,23 @@ export class PluginController extends BaseController<
   }
 
   _onUnhandledPluginError(pluginName: string, error: ErrorJSON) {
+    this._transitionPluginState(pluginName, 'CRASH');
     this.stopPlugin(pluginName);
     this.addPluginError(error);
+  }
+
+  _transitionPluginState(pluginName: string, event: string) {
+    const nextStateNode =
+      (pluginStatusStateMachineConfig as any).states[
+        this.state.plugins[pluginName].status
+      ].on?.[event] ?? this.state.plugins[pluginName].status;
+
+    this.update((state: any) => {
+      state.plugins[pluginName] = {
+        ...state.plugins[pluginName],
+        status: nextStateNode,
+      };
+    });
   }
 
   /**
@@ -391,6 +431,7 @@ export class PluginController extends BaseController<
     this._terminatePlugin(pluginName);
     if (setNotRunning) {
       this._setPluginToNotRunning(pluginName);
+      this._transitionPluginState(pluginName, 'STOP');
     }
   }
 
@@ -701,6 +742,7 @@ export class PluginController extends BaseController<
 
     const result = await this._executePlugin(pluginData);
     this._setPluginToRunning(pluginData.pluginName);
+    this._transitionPluginState(pluginName, 'START');
     return result;
   }
 
@@ -745,6 +787,7 @@ export class PluginController extends BaseController<
       permissionName: PLUGIN_PREFIX + pluginName, // so we can easily correlate them
       sourceCode,
       version: manifest.version,
+      status: pluginStatusStateMachineConfig.initial as any,
     };
 
     const pluginsState = this.state.plugins;
@@ -888,12 +931,7 @@ export class PluginController extends BaseController<
   }
 
   private _recordPluginRpcRequest(pluginName: string) {
-    this.update((state: any) => {
-      state.plugins[pluginName] = {
-        ...state.plugins[pluginName],
-        lastRequestAt: Date.now(),
-      };
-    });
+    this._lastRequestMap.set(pluginName, Date.now());
   }
 
   private _setPluginToRunning(pluginName: string): void {
