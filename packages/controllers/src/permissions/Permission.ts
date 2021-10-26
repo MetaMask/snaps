@@ -420,18 +420,17 @@ export type PermissionSpecificationConstraint = {
  *
  * @template Specification - The permission specification to validate.
  */
-export type ValidatePermissionSpecification<Specification> =
-  Specification extends PermissionSpecificationConstraint
-    ? Specification['targetKey'] extends ValidateTargetKey<
-        Specification['targetKey']
-      >
-      ? Specification['methodImplementation'] extends ValidateRestrictedMethod<
-          Specification['methodImplementation']
-        >
-        ? Specification
-        : never
-      : never
-    : never;
+export type ValidPermissionSpecification<
+  Specification extends PermissionSpecificationConstraint,
+> = Specification['targetKey'] extends ValidateTargetKey<
+  Specification['targetKey']
+>
+  ? Specification['methodImplementation'] extends ValidateRestrictedMethod<
+      Specification['methodImplementation']
+    >
+    ? Specification
+    : never
+  : never;
 
 /**
  * The specifications for all permissions and restricted methods supported by

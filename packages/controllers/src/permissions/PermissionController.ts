@@ -38,7 +38,7 @@ import {
   RequestedPermissions,
   RestrictedMethod,
   RestrictedMethodParameters,
-  ValidatePermissionSpecification,
+  ValidPermissionSpecification,
   PermissionSpecificationMap,
   Permission,
   ExtractAllowedCaveatTypes,
@@ -115,8 +115,9 @@ export type SubjectPermissions<Permissions extends PermissionConstraint> =
 export type PermissionSubjectEntry<
   SubjectPermission extends PermissionConstraint,
 > = {
+  origin: SubjectPermission['invoker'];
   permissions: SubjectPermissions<SubjectPermission>;
-} & PermissionSubjectMetadata;
+};
 
 /**
  * All subjects of a {@link PermissionController}.
@@ -287,7 +288,7 @@ export type CaveatMutator<TargetCaveat extends CaveatConstraint> = (
 export type ExtractPermission<
   ControllerPermissionSpecification extends PermissionSpecificationConstraint,
   ControllerCaveatSpecification extends CaveatSpecificationConstraint,
-> = ControllerPermissionSpecification extends ValidatePermissionSpecification<ControllerPermissionSpecification>
+> = ControllerPermissionSpecification extends ValidPermissionSpecification<ControllerPermissionSpecification>
   ? Permission<
       ControllerPermissionSpecification['targetKey'],
       ExtractCaveats<ControllerCaveatSpecification>
@@ -306,7 +307,7 @@ export type ExtractPermission<
 export type PermissionControllerOptions<
   ControllerPermissionSpecification extends PermissionSpecificationConstraint,
   ControllerCaveatSpecification extends CaveatSpecificationConstraint,
-> = ValidatePermissionSpecification<ControllerPermissionSpecification> extends never
+> = ValidPermissionSpecification<ControllerPermissionSpecification> extends never
   ? never
   : {
       messenger: PermissionControllerMessenger;
