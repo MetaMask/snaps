@@ -220,6 +220,8 @@ export class PluginController extends BaseController<
 
   private _lastRequestMap: Map<PluginName, number>;
 
+  private _rpcHandlerMap: Map<PluginName, any>;
+
   constructor({
     removeAllPermissionsFor,
     closeAllConnections,
@@ -299,6 +301,7 @@ export class PluginController extends BaseController<
     this._idleTimeCheckInterval = idleTimeCheckInterval;
     this._pollForLastRequestStatus();
     this._lastRequestMap = new Map();
+    this._rpcHandlerMap = new Map();
   }
 
   _pollForLastRequestStatus() {
@@ -939,7 +942,15 @@ export class PluginController extends BaseController<
   ): Promise<
     (origin: string, request: Record<string, unknown>) => Promise<unknown>
   > {
-    return async (origin, request) => {
+    const existingHandler = this._rpcHandlerMap.get(pluginName);
+    if (existingHandler) {
+      return existingHandler;
+    }
+
+    const rpcHandler = async (
+      origin: string,
+      request: Record<string, unknown>,
+    ) => {
       let handler = await this._getRpcMessageHandler(pluginName);
       if (!handler) {
         // cold start
@@ -954,6 +965,8 @@ export class PluginController extends BaseController<
       this._recordPluginRpcRequest(pluginName);
       return handler(origin, request);
     };
+    this._rpcHandlerMap.set(pluginName, rpcHandler);
+    return rpcHandler;
   }
 
   private _recordPluginRpcRequest(pluginName: string) {
