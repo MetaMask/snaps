@@ -136,17 +136,17 @@ export type CaveatSpecificationConstraint = {
 /**
  * TODO:docs
  */
-export type CaveatSpecification<Type extends string> = {
+export type CaveatSpecification<SpecifiedCaveat extends CaveatConstraint> = {
   /**
    * The string type of the caveat.
    */
-  type: Type;
+  type: SpecifiedCaveat['type'];
 
   /**
    * The decorator function used to apply the caveat to restricted method
    * requests.
    */
-  decorator: CaveatDecorator<any>;
+  decorator: CaveatDecorator<SpecifiedCaveat>;
 
   /**
    * The validator function used to validate caveats of the associated type
@@ -159,7 +159,7 @@ export type CaveatSpecification<Type extends string> = {
    * performed. Although caveats can also be validated by permission validators,
    * validating caveat values separately is strongly recommended.
    */
-  validator?: CaveatValidator<any>;
+  validator?: CaveatValidator<SpecifiedCaveat>;
 };
 
 /**
@@ -168,7 +168,9 @@ export type CaveatSpecification<Type extends string> = {
 export type CaveatSpecificationMap<
   Specification extends CaveatSpecificationConstraint,
 > = {
-  [Key in Specification['type']]: Specification extends CaveatSpecification<Key>
+  [Key in Specification['type']]: Specification extends CaveatSpecification<
+    Caveat<Key, any>
+  >
     ? Specification
     : never;
 };
@@ -176,13 +178,14 @@ export type CaveatSpecificationMap<
 /**
  * TODO:docs
  */
-export type ExtractCaveats<Specification extends CaveatSpecification<string>> =
-  Specification extends any
-    ? Caveat<
-        Specification['type'],
-        ExtractCaveatValueFromDecorator<Specification['decorator']>
-      >
-    : never;
+export type ExtractCaveats<
+  Specification extends CaveatSpecification<CaveatConstraint>,
+> = Specification extends any
+  ? Caveat<
+      Specification['type'],
+      ExtractCaveatValueFromDecorator<Specification['decorator']>
+    >
+  : never;
 
 /**
  * Internal utility type, because using parameterized types in conditional types
@@ -201,7 +204,7 @@ type _ExtractCaveat<
  * @template CaveatType - The type of the caveat to extract.
  */
 export type ExtractCaveat<
-  CaveatSpecifications extends CaveatSpecification<string>,
+  CaveatSpecifications extends CaveatSpecification<CaveatConstraint>,
   CaveatType extends string,
 > = _ExtractCaveat<ExtractCaveats<CaveatSpecifications>, CaveatType>;
 
@@ -213,7 +216,7 @@ export type ExtractCaveat<
  * @template CaveatType - The type of the caveat whose value to extract.
  */
 export type ExtractCaveatValue<
-  CaveatSpecifications extends CaveatSpecification<string>,
+  CaveatSpecifications extends CaveatSpecification<CaveatConstraint>,
   CaveatType extends string,
 > = ExtractCaveat<CaveatSpecifications, CaveatType>['value'];
 
@@ -224,7 +227,7 @@ export type ExtractCaveatValue<
  * decorator) must be awaited.
  */
 export function decorateWithCaveats<
-  CaveatSpecifications extends CaveatSpecification<string>,
+  CaveatSpecifications extends CaveatSpecification<CaveatConstraint>,
 >(
   methodImplementation: RestrictedMethod<RestrictedMethodParameters, Json>,
   permission: Readonly<PermissionConstraint>, // bound to the requesting origin
