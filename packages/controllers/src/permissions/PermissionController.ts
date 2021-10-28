@@ -1071,7 +1071,7 @@ export class PermissionController<
           const { caveats } = permission;
           const targetCaveat = caveats?.find(
             ({ type }) => type === targetCaveatType,
-          ) as TargetCaveat | undefined;
+          );
           if (!targetCaveat) {
             return;
           }
