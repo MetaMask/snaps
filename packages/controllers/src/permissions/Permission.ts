@@ -1,6 +1,6 @@
 import { Json } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
-import { Mutable, NonEmptyArray } from '../utils';
+import { NonEmptyArray } from '../utils';
 import { CaveatConstraint } from './Caveat';
 // This is used in a docstring, but ESLint doesn't notice it.
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -113,14 +113,6 @@ type ValidTargetName<Name extends string> = Name extends `${string}*`
  */
 export type ExtractPermissionTargetNames<Key extends string> =
   Key extends `${infer Base}_*` ? `${Base}_${string}` : Key;
-
-/**
- * A {@link PermissionConstraint} with mutable caveats.
- */
-export type MutableGenericPermission = Mutable<
-  PermissionConstraint & { caveats: NonEmptyArray<CaveatConstraint> | null },
-  'caveats'
->;
 
 /**
  * An internal utility type used in {@link ExtractPermissionTargetKey}.

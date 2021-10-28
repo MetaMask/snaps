@@ -27,6 +27,7 @@ import {
   RestrictedMethodParameters,
   ExtractSpecifications,
   CaveatMutatorOperation,
+  RestrictedMethod,
 } from '.';
 
 // Caveat types and specifications
@@ -568,28 +569,24 @@ describe('PermissionController', () => {
   });
 
   describe('getRestrictedMethod', () => {
-    it('gets the implementation of a restricted method', () => {
+    it('gets the implementation of a restricted method', async () => {
       const controller = getDefaultPermissionController();
-      expect(
-        controller.getRestrictedMethod(PermissionNames.wallet_getSecretArray),
-      ).toStrictEqual(
-        controller.getPermissionSpecification(
-          PermissionNames.wallet_getSecretArray,
-        ).methodImplementation,
-      );
+      const method = controller.getRestrictedMethod(
+        PermissionNames.wallet_getSecretArray,
+      ) as RestrictedMethod<any, ['a', 'b', 'c']>;
+
+      expect(await method({} as any)).toStrictEqual(['a', 'b', 'c']);
     });
 
-    it('gets the implementation of a namespaced restricted method', () => {
+    it('gets the implementation of a namespaced restricted method', async () => {
       const controller = getDefaultPermissionController();
+      const method = controller.getRestrictedMethod(
+        PermissionNames.wallet_getSecret_('foo'),
+      ) as RestrictedMethod<any, string>;
+
       expect(
-        controller.getRestrictedMethod(
-          PermissionNames.wallet_getSecret_('foo'),
-        ),
-      ).toStrictEqual(
-        controller.getPermissionSpecification(
-          PermissionKeys['wallet_getSecret_*'],
-        ).methodImplementation,
-      );
+        await method({ method: 'wallet_getSecret_foo' } as any),
+      ).toStrictEqual('Hello, secret friend "foo"!');
     });
 
     it('returns undefined if the method does not exist', () => {
@@ -1869,7 +1866,12 @@ describe('PermissionController', () => {
       // There are no caveats, so this does nothing.
       controller.updatePermissionsByCaveat(
         CaveatTypes.filterArrayResponse,
-        () => [CaveatMutatorOperation.updateValue, ['a', 'b']],
+        () => {
+          return {
+            operation: CaveatMutatorOperation.updateValue,
+            value: ['a', 'b'],
+          };
+        },
       );
       expect(controller.state).toStrictEqual({ subjects: {} });
     });
@@ -1881,7 +1883,9 @@ describe('PermissionController', () => {
       // therefore nothing happens.
       controller.updatePermissionsByCaveat(
         CaveatTypes.filterArrayResponse,
-        () => [CaveatMutatorOperation.noop],
+        () => {
+          return { operation: CaveatMutatorOperation.noop };
+        },
       );
       expect(controller.state).toStrictEqual(getMultiCaveatStateMatcher());
     });
@@ -1891,7 +1895,12 @@ describe('PermissionController', () => {
 
       controller.updatePermissionsByCaveat(
         CaveatTypes.filterArrayResponse,
-        () => [CaveatMutatorOperation.updateValue, ['a', 'b']],
+        () => {
+          return {
+            operation: CaveatMutatorOperation.updateValue,
+            value: ['a', 'b'],
+          };
+        },
       );
 
       expect(controller.state).toStrictEqual(
@@ -1924,8 +1933,11 @@ describe('PermissionController', () => {
       const mutator: any = () => {
         counter += 1;
         return counter === 1
-          ? [CaveatMutatorOperation.noop]
-          : [CaveatMutatorOperation.updateValue, ['a', 'b']];
+          ? { operation: CaveatMutatorOperation.noop }
+          : {
+              operation: CaveatMutatorOperation.updateValue,
+              value: ['a', 'b'],
+            };
       };
 
       controller.updatePermissionsByCaveat(
@@ -1954,7 +1966,9 @@ describe('PermissionController', () => {
 
       controller.updatePermissionsByCaveat(
         CaveatTypes.filterArrayResponse,
-        () => [CaveatMutatorOperation.deleteCaveat],
+        () => {
+          return { operation: CaveatMutatorOperation.deleteCaveat };
+        },
       );
 
       expect(controller.state).toStrictEqual(
@@ -1982,7 +1996,9 @@ describe('PermissionController', () => {
 
       controller.updatePermissionsByCaveat(
         CaveatTypes.filterObjectResponse,
-        () => [CaveatMutatorOperation.revokePermission],
+        () => {
+          return { operation: CaveatMutatorOperation.revokePermission };
+        },
       );
 
       const matcher = getMultiCaveatStateMatcher();
@@ -2003,9 +2019,12 @@ describe('PermissionController', () => {
       let counter = 0;
       const mutator: any = () => {
         counter += 1;
-        return counter === 1
-          ? [CaveatMutatorOperation.revokePermission]
-          : [CaveatMutatorOperation.noop];
+        return {
+          operation:
+            counter === 1
+              ? CaveatMutatorOperation.revokePermission
+              : CaveatMutatorOperation.noop,
+        };
       };
 
       controller.updatePermissionsByCaveat(
@@ -2025,7 +2044,12 @@ describe('PermissionController', () => {
       expect(() =>
         controller.updatePermissionsByCaveat(
           CaveatTypes.filterArrayResponse,
-          () => [CaveatMutatorOperation.updateValue, 'foo'],
+          () => {
+            return {
+              operation: CaveatMutatorOperation.updateValue,
+              value: 'foo',
+            };
+          },
         ),
       ).toThrow(`${CaveatTypes.filterArrayResponse} values must be arrays`);
     });
@@ -2034,9 +2058,9 @@ describe('PermissionController', () => {
       const controller = getMultiCaveatController();
 
       expect(() =>
-        controller.updatePermissionsByCaveat(CaveatTypes.noopCaveat, () => [
-          CaveatMutatorOperation.deleteCaveat,
-        ]),
+        controller.updatePermissionsByCaveat(CaveatTypes.noopCaveat, () => {
+          return { operation: CaveatMutatorOperation.deleteCaveat };
+        }),
       ).toThrow('getSecret_* permission validation failed');
     });
 
@@ -2046,7 +2070,9 @@ describe('PermissionController', () => {
       expect(() =>
         controller.updatePermissionsByCaveat(
           CaveatTypes.filterArrayResponse,
-          () => ['foobar'] as any,
+          () => {
+            return { operation: 'foobar' } as any;
+          },
         ),
       ).toThrow(`Unrecognized mutation result: "foobar"`);
     });

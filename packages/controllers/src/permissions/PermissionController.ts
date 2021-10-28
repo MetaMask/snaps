@@ -15,7 +15,7 @@ import type {
   ControllerMessenger,
 } from '@metamask/controllers';
 /* eslint-enable @typescript-eslint/no-unused-vars */
-import type { Patch } from 'immer';
+import { castDraft, castImmutable, Draft, Patch } from 'immer';
 import deepFreeze from 'deep-freeze-strict';
 import { nanoid } from 'nanoid';
 import { isPlainObject, hasProperty, NonEmptyArray, Mutable } from '../utils';
@@ -42,7 +42,6 @@ import {
   PermissionSpecificationMap,
   Permission,
   ExtractAllowedCaveatTypes,
-  MutableGenericPermission,
   ExtractPermissionSpecification,
   PermissionSpecificationConstraint,
 } from './Permission';
@@ -105,8 +104,8 @@ const controllerName = 'PermissionController';
 /**
  * Permissions associated with a {@link PermissionController} subject.
  */
-export type SubjectPermissions<Permissions extends PermissionConstraint> =
-  Record<Permissions['parentCapability'], Permissions>;
+export type SubjectPermissions<Permission extends PermissionConstraint> =
+  Record<Permission['parentCapability'], Permission>;
 
 /**
  * Permissions and metadata associated with a {@link PermissionController}
@@ -121,6 +120,8 @@ export type PermissionSubjectEntry<
 
 /**
  * All subjects of a {@link PermissionController}.
+ *
+ * @template SubjectPermission - The permissions of the subject.
  */
 export type PermissionControllerSubjects<
   SubjectPermission extends PermissionConstraint,
@@ -132,32 +133,34 @@ export type PermissionControllerSubjects<
 // TODO:TS4.4 Enable compiler flags to forbid unchecked member access
 /**
  * The state of a {@link PermissionController}.
+ *
+ * @template Permission - The controller's permission type union.
  */
-export type PermissionControllerState<Permissions> =
-  Permissions extends PermissionConstraint
+export type PermissionControllerState<Permission> =
+  Permission extends PermissionConstraint
     ? {
-        subjects: PermissionControllerSubjects<Permissions>;
+        subjects: PermissionControllerSubjects<Permission>;
       }
     : never;
 
 /**
  * Get the state metadata of the {@link PermissionController}.
  *
- * @template Permissions - The controller's permission type union.
+ * @template Permission - The controller's permission type union.
  */
-function getStateMetadata<Permissions extends PermissionConstraint>() {
+function getStateMetadata<Permission extends PermissionConstraint>() {
   return { subjects: { anonymous: true, persist: true } } as StateMetadata<
-    PermissionControllerState<Permissions>
+    PermissionControllerState<Permission>
   >;
 }
 
 /**
  * Get the default state of the {@link PermissionController}.
  *
- * @template Permissions - The controller's permission type union.
+ * @template Permission - The controller's permission type union.
  */
-function getDefaultState<Permissions extends PermissionConstraint>() {
-  return { subjects: {} } as PermissionControllerState<Permissions>;
+function getDefaultState<Permission extends PermissionConstraint>() {
+  return { subjects: {} } as PermissionControllerState<Permission>;
 }
 
 /**
@@ -280,9 +283,19 @@ export enum CaveatMutatorOperation {
  */
 export type CaveatMutator<TargetCaveat extends CaveatConstraint> = (
   caveatValue: TargetCaveat['value'],
-) =>
-  | [Exclude<CaveatMutatorOperation, CaveatMutatorOperation.updateValue>]
-  | [CaveatMutatorOperation.updateValue, CaveatConstraint['value']];
+) => CaveatMutatorResult;
+
+type CaveatMutatorResult =
+  | Readonly<{
+      operation: CaveatMutatorOperation.updateValue;
+      value: CaveatConstraint['value'];
+    }>
+  | Readonly<{
+      operation: Exclude<
+        CaveatMutatorOperation,
+        CaveatMutatorOperation.updateValue
+      >;
+    }>;
 
 /**
  * Extracts the permission(s) specified by the given permission and caveat
@@ -466,7 +479,7 @@ export class PermissionController<
    * @param targetKey - The target key of the permission specification to get.
    * @returns The permission specification with the specified target key.
    */
-  getPermissionSpecification<
+  private getPermissionSpecification<
     TargetKey extends ControllerPermissionSpecification['targetKey'],
   >(
     targetKey: TargetKey,
@@ -483,7 +496,7 @@ export class PermissionController<
    * @param caveatType - The type of the caveat specification to get.
    * @returns The caveat specification with the specified type.
    */
-  getCaveatSpecification<
+  private getCaveatSpecification<
     CaveatType extends ControllerCaveatSpecification['type'],
   >(caveatType: CaveatType) {
     return this._caveatSpecifications[caveatType];
@@ -496,8 +509,10 @@ export class PermissionController<
    *
    * Throws an error if validation fails.
    *
-   * @param specifications - The permission specifications passed to this
-   * controller's constructor.
+   * @param permissionSpecifications - The permission specifications passed to
+   * this controller's constructor.
+   * @param caveatSpecifications - The caveat specifications passed to this
+   * controller.
    */
   private validatePermissionSpecifications(
     permissionSpecifications: PermissionSpecificationMap<ControllerPermissionSpecification>,
@@ -724,11 +739,7 @@ export class PermissionController<
           }
 
           // Typecast: Immer WritableDraft incompatibility
-          this.deletePermission(
-            draftState.subjects as unknown as PermissionControllerSubjects<PermissionConstraint>,
-            origin,
-            target,
-          );
+          this.deletePermission(draftState.subjects, origin, target);
         });
       });
     });
@@ -755,12 +766,7 @@ export class PermissionController<
         const { permissions } = subject;
 
         if (hasProperty(permissions as Record<string, unknown>, target)) {
-          this.deletePermission(
-            // Typecast: Immer WritableDraft incompatibility
-            draftState.subjects as unknown as PermissionControllerSubjects<PermissionConstraint>,
-            origin,
-            target,
-          );
+          this.deletePermission(draftState.subjects, origin, target);
         }
       });
     });
@@ -777,7 +783,7 @@ export class PermissionController<
    * @param target - The target name of the permission to delete.
    */
   private deletePermission(
-    subjects: PermissionControllerSubjects<PermissionConstraint>,
+    subjects: Draft<PermissionControllerSubjects<PermissionConstraint>>,
     origin: OriginString,
     target: ExtractPermission<
       ControllerPermissionSpecification,
@@ -980,7 +986,9 @@ export class PermissionController<
     this.update((draftState) => {
       const subject = draftState.subjects[origin];
 
-      /* istanbul ignore if: practically impossible, but TypeScript wants it */
+      // Unreachable because `hasCaveat` is always called before this, and it
+      // throws if permissions are missing. TypeScript needs this, however.
+      /* istanbul ignore if */
       if (!subject) {
         throw new UnrecognizedSubjectError(origin);
       }
@@ -1017,10 +1025,7 @@ export class PermissionController<
 
       this.validateModifiedPermission(
         // Typecast: Immer WritableDraft incompatibility
-        permission as unknown as ExtractPermission<
-          ControllerPermissionSpecification,
-          ControllerCaveatSpecification
-        >,
+        permission,
         origin,
         target,
       );
@@ -1078,8 +1083,8 @@ export class PermissionController<
 
           // The mutator may modify the caveat value in place, and must always
           // return a valid mutation result.
-          const [mutationResult, newValue] = mutator(targetCaveat.value);
-          switch (mutationResult) {
+          const mutatorResult = mutator(targetCaveat.value);
+          switch (mutatorResult.operation) {
             case CaveatMutatorOperation.noop:
               break;
 
@@ -1088,7 +1093,7 @@ export class PermissionController<
               // not be undefined in this case. In any case, the specification
               // validator is called on the mutated caveat.
               (targetCaveat as Mutable<CaveatConstraint, 'value'>).value =
-                newValue as TargetCaveat['value'];
+                mutatorResult.value;
 
               this.validateCaveat(
                 targetCaveat,
@@ -1100,7 +1105,7 @@ export class PermissionController<
             case CaveatMutatorOperation.deleteCaveat:
               // Typecast: Immer WritableDraft incompatibility
               this.deleteCaveat(
-                permission as MutableGenericPermission,
+                permission,
                 targetCaveatType,
                 subject.origin,
                 permission.parentCapability,
@@ -1110,20 +1115,22 @@ export class PermissionController<
             case CaveatMutatorOperation.revokePermission:
               // Typecast: Immer WritableDraft incompatibility
               this.deletePermission(
-                draftState.subjects as unknown as PermissionControllerSubjects<PermissionConstraint>,
+                draftState.subjects,
                 subject.origin,
                 permission.parentCapability,
               );
               break;
 
-            default:
+            default: {
               // This type check ensures that the switch statement is
               // exhaustive.
-              // eslint-disable-next-line no-case-declarations
-              const _exhaustiveCheck: never = mutationResult;
+              const _exhaustiveCheck: never = mutatorResult;
               throw new Error(
-                `Unrecognized mutation result: "${_exhaustiveCheck}"`,
+                `Unrecognized mutation result: "${
+                  (_exhaustiveCheck as any).operation
+                }"`,
               );
+            }
           }
         });
       });
@@ -1188,7 +1195,7 @@ export class PermissionController<
     >['parentCapability'],
     CaveatType extends ExtractCaveats<ControllerCaveatSpecification>['type'],
   >(
-    permission: MutableGenericPermission,
+    permission: Draft<PermissionConstraint>,
     caveatType: CaveatType,
     origin: OriginString,
     target: TargetName,
@@ -1228,7 +1235,7 @@ export class PermissionController<
    * @param targetName - The target name name of the permission.
    */
   private validateModifiedPermission(
-    permission: PermissionConstraint,
+    permission: Draft<PermissionConstraint>,
     origin: OriginString,
     targetName: ExtractPermission<
       ControllerPermissionSpecification,
@@ -1245,7 +1252,7 @@ export class PermissionController<
 
     this.validatePermission(
       this.getPermissionSpecification(targetKey),
-      permission,
+      castImmutable(permission) as PermissionConstraint,
       origin,
       targetName,
     );
@@ -1477,7 +1484,7 @@ export class PermissionController<
       }
 
       // Typecast: Immer WritableDraft incompatibility
-      draftState.subjects[origin].permissions = permissions as any;
+      draftState.subjects[origin].permissions = castDraft(permissions);
     });
   }
 
