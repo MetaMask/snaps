@@ -947,7 +947,7 @@ export class PluginController extends BaseController<
           handler = await this.getRpcMessageHandler(pluginName);
         } else {
           // something went really wrong
-          return undefined;
+          throw new Error('Internal Snap Error: Service RPC Handler not found');
         }
       }
       this._recordPluginRpcRequest(pluginName);
