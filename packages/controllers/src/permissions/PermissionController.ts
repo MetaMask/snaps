@@ -8,6 +8,7 @@ import {
   HasApprovalRequest,
   StateMetadata,
 } from '@metamask/controllers';
+import deepEqual from 'fast-deep-equal';
 // These are used in docstrings, but ESLint is ignorant of docstrings.
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import type {
@@ -64,6 +65,7 @@ import {
   userRejectedRequest,
   PermissionsRequestNotFoundError,
   ForbiddenCaveatError,
+  CaveatInvalidJsonError,
 } from './errors';
 import { MethodNames } from './utils';
 import { getPermissionMiddlewareFactory } from './permission-middleware';
@@ -1549,7 +1551,8 @@ export class PermissionController<
       throw new InvalidCaveatFieldsError(requestedCaveat, origin, target);
     }
 
-    if (typeof requestedCaveat.type !== 'string') {
+    const { type, value } = requestedCaveat;
+    if (typeof type !== 'string') {
       throw new InvalidCaveatTypeError(requestedCaveat, origin, target);
     }
 
@@ -1557,11 +1560,12 @@ export class PermissionController<
       throw new CaveatMissingValueError(requestedCaveat, origin, target);
     }
 
-    // TODO: Consider validating that this is Json?
-    const caveat = _constructCaveat(
-      requestedCaveat.type,
-      (requestedCaveat.value as Json) ?? null,
-    );
+    // Assert that the caveat value is valid JSON
+    if (!deepEqual(value, JSON.parse(JSON.stringify(value)))) {
+      throw new CaveatInvalidJsonError(requestedCaveat, origin, target);
+    }
+
+    const caveat = _constructCaveat(type, (value as Json) ?? null);
     this.validateCaveat(caveat, origin, target);
     return caveat as ExtractCaveats<ControllerCaveatSpecification>;
   }

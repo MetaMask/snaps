@@ -2517,6 +2517,36 @@ describe('PermissionController', () => {
       );
     });
 
+    it('throws if a requested caveat has a value that is not valid JSON', () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      expect(() =>
+        controller.grantPermissions({
+          subject: { origin },
+          approvedPermissions: {
+            wallet_getSecretArray: {
+              caveats: [
+                {
+                  type: CaveatTypes.filterArrayResponse,
+                  value: { foo: () => undefined },
+                },
+              ] as any,
+            },
+          },
+        }),
+      ).toThrow(
+        new errors.CaveatInvalidJsonError(
+          {
+            type: CaveatTypes.filterArrayResponse,
+            foo: 'bar',
+          },
+          origin,
+          PermissionNames.wallet_getSecretArray,
+        ),
+      );
+    });
+
     it('throws if caveat validation fails', () => {
       const controller = getDefaultPermissionController();
       const origin = 'metamask.io';

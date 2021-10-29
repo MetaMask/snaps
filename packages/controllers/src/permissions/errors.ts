@@ -167,6 +167,19 @@ export class CaveatMissingValueError extends Error {
   }
 }
 
+export class CaveatInvalidJsonError extends Error {
+  public data: {
+    caveat: Record<string, unknown>;
+    origin: string;
+    target: string;
+  };
+
+  constructor(caveat: Record<string, unknown>, origin: string, target: string) {
+    super(`Caveat "value" is invalid JSON.`);
+    this.data = { caveat, origin, target };
+  }
+}
+
 export class InvalidCaveatFieldsError extends Error {
   public data: {
     caveat: Record<string, unknown>;
