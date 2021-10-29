@@ -40,7 +40,7 @@ import {
   RestrictedMethodParameters,
   ValidPermissionSpecification,
   PermissionSpecificationMap,
-  Permission,
+  Permission as SpecificPermission,
   ExtractAllowedCaveatTypes,
   ExtractPermissionSpecification,
   PermissionSpecificationConstraint,
@@ -311,7 +311,7 @@ export type ExtractPermission<
   ControllerPermissionSpecification extends PermissionSpecificationConstraint,
   ControllerCaveatSpecification extends CaveatSpecificationConstraint,
 > = ControllerPermissionSpecification extends ValidPermissionSpecification<ControllerPermissionSpecification>
-  ? Permission<
+  ? SpecificPermission<
       ControllerPermissionSpecification['targetKey'],
       ExtractCaveats<ControllerCaveatSpecification>
     >

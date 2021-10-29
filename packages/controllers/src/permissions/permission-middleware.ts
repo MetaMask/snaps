@@ -8,43 +8,52 @@ import {
 } from 'json-rpc-engine';
 import { internalError } from './errors';
 import {
+  GenericPermissionController,
   PermissionConstraint,
   PermissionSubjectMetadata,
-  RestrictedMethod,
   RestrictedMethodParameters,
 } from '.';
+// This is used in a docstring, but ESLint doesn't notice it.
+/* eslint-disable @typescript-eslint/no-unused-vars, import/order */
+import type { JsonRpcEngine } from 'json-rpc-engine';
+import type { PermissionController } from './PermissionController';
+/* eslint-enable @typescript-eslint/no-unused-vars, import/order */
 
-/**
- * TODO:docs
- */
-
-type ExecuteRestrictedMethod<Permission extends PermissionConstraint> = (
-  methodImplementation: RestrictedMethod<RestrictedMethodParameters, Json>,
-  subject: PermissionSubjectMetadata,
-  method: Permission['parentCapability'],
-  params?: RestrictedMethodParameters,
-) => ReturnType<RestrictedMethod<RestrictedMethodParameters, Json>>;
-type GetRestrictedMethod = (
-  method: string,
-  origin: string,
-) => RestrictedMethod<RestrictedMethodParameters, Json>;
-type IsUnrestrictedMethod = (method: string) => boolean;
-
-type PermissionMiddlewareFactoryOptions<
-  Permission extends PermissionConstraint,
-> = {
-  executeRestrictedMethod: ExecuteRestrictedMethod<Permission>;
-  getRestrictedMethod: GetRestrictedMethod;
-  isUnrestrictedMethod: IsUnrestrictedMethod;
+type PermissionMiddlewareFactoryOptions = {
+  executeRestrictedMethod: GenericPermissionController['_executeRestrictedMethod'];
+  getRestrictedMethod: GenericPermissionController['_getRestrictedMethod'];
+  isUnrestrictedMethod: (method: string) => boolean;
 };
 
+/**
+ * Creates a permission middleware function factory. Intended for internal use
+ * in the {@link PermissionController}. Like any {@link JsonRpcEngine}
+ * middleware, each middleware will only receive requests from a particular
+ * subject / origin. However, each middleware also requires access to some
+ * `PermissionController` internals, which is why this "factory factory" exists.
+ *
+ * The middlewares returned by the factory will pass through requests for
+ * unrestricted methods, and attempt to execute restricted methods. If a method
+ * is neither restricted nor unrestricted, a "method not found" error will be
+ * returned.
+ * If a method is restricted, the middleware will first attempt to retrieve the
+ * subject's permission for that method. If the permission is found, the method
+ * will be executed. Otherwise, an "unauthorized" error will be returned.
+ *
+ * @param options - Options bag.
+ * @param options.executeRestrictedMethod - {@link PermissionController._executeRestrictedMethod}.
+ * @param options.getRestrictedMethod - {@link PermissionController.getRestrictedMethod}.
+ * @param options.isUnrestrictedMethod - A function that checks whether a
+ * particular method is unrestricted.
+ * @returns A permission middleware factory function.
+ */
 export function getPermissionMiddlewareFactory<
   Permission extends PermissionConstraint,
 >({
   executeRestrictedMethod,
   getRestrictedMethod,
   isUnrestrictedMethod,
-}: PermissionMiddlewareFactoryOptions<Permission>) {
+}: PermissionMiddlewareFactoryOptions) {
   return function createPermissionMiddleware(
     subject: PermissionSubjectMetadata,
   ): JsonRpcMiddleware<RestrictedMethodParameters, Json> {
@@ -55,7 +64,7 @@ export function getPermissionMiddlewareFactory<
     ): Promise<void> => {
       const { method, params } = req;
 
-      // skip registered safe/passthrough methods.
+      // Skip registered unrestricted methods.
       if (isUnrestrictedMethod(method)) {
         return next();
       }
@@ -63,6 +72,7 @@ export function getPermissionMiddlewareFactory<
       // This will throw if no restricted method implementation is found.
       const methodImplementation = getRestrictedMethod(method, subject.origin);
 
+      // This will throw if the permission does not exist.
       const result = await executeRestrictedMethod(
         methodImplementation,
         subject,

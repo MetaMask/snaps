@@ -19,6 +19,15 @@ export type OriginString = string;
  */
 export type GenericTargetName = string;
 
+/**
+ * A `ZCAP-LD`-like permission object. A permission is associated with a
+ * particular `invoker`, which is the holder of the permission. Possessing the
+ * permission grants access to a particular restricted resource, identified by
+ * the `parentCapability`. The use of the restricted resource may be further
+ * restricted by any `caveats` associated with the permission.
+ *
+ * See the documentation for details.
+ */
 export type PermissionConstraint = {
   /**
    * The context(s) in which this capability is meaningful.
@@ -60,7 +69,13 @@ export type PermissionConstraint = {
 };
 
 /**
- * TODO:docs
+ * A `ZCAP-LD`-like permission object. A permission is associated with a
+ * particular `invoker`, which is the holder of the permission. Possessing the
+ * permission grants access to a particular restricted resource, identified by
+ * the `parentCapability`. The use of the restricted resource may be further
+ * restricted by any `caveats` associated with the permission.
+ *
+ * See the documentation for details.
  *
  * @template TargetKey - They key of the permission target that the permission
  * corresponds to.
