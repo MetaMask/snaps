@@ -11,6 +11,7 @@ import {
   PluginController,
   PluginControllerActions,
   PluginControllerState,
+  PluginStatus,
 } from './PluginController';
 
 const workerCode = fs.readFileSync(
@@ -380,7 +381,7 @@ describe('PluginController Controller', () => {
             version: '0.0.1',
             sourceCode: 'console.log("foo")',
             name: 'foo',
-            status: 'idle',
+            status: PluginStatus.idle,
           },
         },
       },
@@ -415,14 +416,8 @@ describe('PluginController Controller', () => {
       }),
       state: persistedState as unknown as PluginControllerState,
     });
-    expect(secondPluginController.state.plugins.foo.isRunning).toStrictEqual(
-      false,
-    );
     await secondPluginController.runExistingPlugins();
     expect(secondPluginController.state.plugins.foo).toBeDefined();
-    expect(secondPluginController.state.plugins.foo.isRunning).toStrictEqual(
-      true,
-    );
     firstPluginController.destroy();
     secondPluginController.destroy();
   });
@@ -589,10 +584,13 @@ describe('PluginController Controller', () => {
         version: '0.0.0-development',
       },
     });
+    console.log('before');
     await pluginController.startPlugin(plugin.name);
+    console.log('after');
 
     // defer
     setTimeout(() => {
+      console.log('pubbing');
       controllerMessenger.publish(
         'ServiceMessenger:unhandledError',
         plugin.name,
@@ -601,14 +599,15 @@ describe('PluginController Controller', () => {
           code: 123,
         },
       );
-    }, 0);
+    }, 100);
 
     await new Promise((resolve) => {
+      console.log('subbing');
       pluginControllerMessenger.subscribe(
         'ServiceMessenger:unhandledError',
         () => {
+          console.log('got event here');
           const localPlugin = pluginController.get(plugin.name);
-          expect(localPlugin.isRunning).toStrictEqual(false);
           expect(localPlugin.status).toStrictEqual('crashed');
           resolve(undefined);
           pluginController.destroy();
@@ -692,14 +691,13 @@ describe('PluginController Controller', () => {
         'ServiceMessenger:unresponsive',
         async (pluginName: string) => {
           const localPlugin = pluginController.get(pluginName);
-          expect(localPlugin.isRunning).toStrictEqual(false);
           expect(localPlugin.status).toStrictEqual('crashed');
           resolve(undefined);
           pluginController.destroy();
         },
       );
     });
-  }, 60000);
+  }, 3000);
 
   it('can add a plugin and use its JSON-RPC api and then get stopped from idling too long', async () => {
     const messenger = new ControllerMessenger<
@@ -773,17 +771,9 @@ describe('PluginController Controller', () => {
       id: 1,
     });
 
-    expect(pluginController.state.plugins[plugin.name].isRunning).toStrictEqual(
-      true,
-    );
-
     await new Promise((resolve) => {
       setTimeout(resolve, 3000);
     });
-
-    expect(pluginController.state.plugins[plugin.name].isRunning).toStrictEqual(
-      false,
-    );
 
     expect(pluginController.state.plugins[plugin.name].status).toStrictEqual(
       'stopped',

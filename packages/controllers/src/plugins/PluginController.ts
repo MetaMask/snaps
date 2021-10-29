@@ -41,7 +41,7 @@ export type SerializablePlugin = {
   name: string;
   permissionName: string;
   version: string;
-  status: 'idle' | 'running' | 'stopped' | 'crashed';
+  status: PluginStatus;
 };
 
 export type Plugin = SerializablePlugin & {
@@ -330,8 +330,8 @@ export class PluginController extends BaseController<
   }
 
   _onUnresponsivePlugin(pluginName: string) {
-    this._transitionPluginState(pluginName, 'crash');
-    this.stopPlugin(pluginName);
+    this._transitionPluginState(pluginName, PluginStatusEvent.crash);
+    this._stopPlugin(pluginName, false);
     this.addPluginError({
       code: -32001, // just made this code up
       message: 'Plugin Unresponsive',
@@ -342,16 +342,25 @@ export class PluginController extends BaseController<
   }
 
   _onUnhandledPluginError(pluginName: string, error: ErrorJSON) {
-    this._transitionPluginState(pluginName, 'crash');
-    this.stopPlugin(pluginName);
+    this._transitionPluginState(pluginName, PluginStatusEvent.crash);
+    this._stopPlugin(pluginName, false);
     this.addPluginError(error);
   }
 
-  _transitionPluginState(pluginName: string, event: string) {
+  _transitionPluginState(pluginName: string, event: PluginStatusEvent) {
     const nextStateNode =
-      (pluginStatusStateMachineConfig as any).states[
-        this.state.plugins[pluginName].status
-      ].on?.[event] ?? this.state.plugins[pluginName].status;
+      (
+        pluginStatusStateMachineConfig.states[
+          this.state.plugins[pluginName].status
+        ].on as any
+      )[event] ?? this.state.plugins[pluginName].status;
+    console.log(
+      'transition',
+      pluginName,
+      event,
+      nextStateNode,
+      this.state.plugins[pluginName],
+    );
 
     this.update((state: any) => {
       state.plugins[pluginName].status = nextStateNode;
@@ -420,7 +429,7 @@ export class PluginController extends BaseController<
       throw new Error(`Plugin "${pluginName}" not found.`);
     }
 
-    if (!plugin.isRunning) {
+    if (!this.isRunning(pluginName)) {
       throw new Error(`Plugin "${pluginName}" already stopped.`);
     }
 
@@ -440,8 +449,7 @@ export class PluginController extends BaseController<
     this._closeAllConnections(pluginName);
     this._terminatePlugin(pluginName);
     if (setNotRunning) {
-      this._setPluginToNotRunning(pluginName);
-      this._transitionPluginState(pluginName, 'stop');
+      this._transitionPluginState(pluginName, PluginStatusEvent.stop);
     }
   }
 
@@ -457,7 +465,7 @@ export class PluginController extends BaseController<
       throw new Error(`Plugin "${pluginName}" not found.`);
     }
 
-    return plugin.isRunning;
+    return plugin.status === 'running';
   }
 
   /**
@@ -689,7 +697,7 @@ export class PluginController extends BaseController<
   ): Promise<ProcessPluginReturnType> {
     // if the plugin is already installed and active, just return it
     const plugin = this.get(pluginName);
-    if (plugin?.isRunning) {
+    if (plugin?.status !== 'running') {
       return this.getSerializable(pluginName) as SerializablePlugin;
     }
 
@@ -746,13 +754,12 @@ export class PluginController extends BaseController<
 
   private async _startPlugin(pluginData: PluginData) {
     const { pluginName } = pluginData;
-    if (this.get(pluginName).isRunning) {
+    if (this.isRunning(pluginName)) {
       throw new Error(`Plugin "${pluginName}" is already started.`);
     }
 
     const result = await this._executePlugin(pluginData);
-    this._setPluginToRunning(pluginData.pluginName);
-    this._transitionPluginState(pluginName, 'start');
+    this._transitionPluginState(pluginName, PluginStatusEvent.start);
     return result;
   }
 
@@ -797,7 +804,7 @@ export class PluginController extends BaseController<
       permissionName: PLUGIN_PREFIX + pluginName, // so we can easily correlate them
       sourceCode,
       version: manifest.version,
-      status: pluginStatusStateMachineConfig.initial as any,
+      status: pluginStatusStateMachineConfig.initial,
     };
 
     const pluginsState = this.state.plugins;
@@ -942,27 +949,5 @@ export class PluginController extends BaseController<
 
   private _recordPluginRpcRequest(pluginName: string) {
     this._lastRequestMap.set(pluginName, Date.now());
-  }
-
-  private _setPluginToRunning(pluginName: string): void {
-    this._updatePlugin(pluginName, 'isRunning', true);
-  }
-
-  private _setPluginToNotRunning(pluginName: string): void {
-    this._updatePlugin(pluginName, 'isRunning', false);
-  }
-
-  private _updatePlugin(
-    pluginName: string,
-    property: keyof Plugin,
-    value: unknown,
-  ) {
-    const { plugins } = this.state;
-    const plugin = plugins[pluginName];
-    const newPlugin = { ...plugin, [property]: value };
-    const newPlugins = { ...plugins, [pluginName]: newPlugin };
-    this.update((state: any) => {
-      state.plugins = newPlugins;
-    });
   }
 }
