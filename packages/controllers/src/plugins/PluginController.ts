@@ -151,32 +151,45 @@ const defaultState: PluginControllerState = {
   pluginStates: {},
 };
 
+export enum PluginStatus {
+  idle = 'idle',
+  running = 'running',
+  stopped = 'stopped',
+  crashed = 'crashed',
+}
+
+export enum PluginStatusEvent {
+  start = 'start',
+  stop = 'stop',
+  crash = 'crash',
+}
+
 const pluginStatusStateMachineConfig = {
-  initial: 'idle',
+  initial: PluginStatus.idle,
   states: {
-    idle: {
+    [PluginStatus.idle]: {
       on: {
-        START: 'running',
+        [PluginStatusEvent.start]: PluginStatus.running,
       },
     },
-    running: {
+    [PluginStatus.running]: {
       on: {
-        STOP: 'stopped',
-        CRASH: 'crashed',
+        [PluginStatusEvent.stop]: PluginStatus.stopped,
+        [PluginStatusEvent.crash]: PluginStatus.crashed,
       },
     },
-    stopped: {
+    [PluginStatus.stopped]: {
       on: {
-        START: 'running',
+        [PluginStatusEvent.start]: PluginStatus.running,
       },
     },
-    crashed: {
+    [PluginStatus.crashed]: {
       on: {
-        START: 'running',
+        [PluginStatusEvent.start]: PluginStatus.running,
       },
     },
   },
-};
+} as const;
 
 const name = 'PluginController';
 
@@ -317,7 +330,7 @@ export class PluginController extends BaseController<
   }
 
   _onUnresponsivePlugin(pluginName: string) {
-    this._transitionPluginState(pluginName, 'CRASH');
+    this._transitionPluginState(pluginName, 'crash');
     this.stopPlugin(pluginName);
     this.addPluginError({
       code: -32001, // just made this code up
@@ -329,7 +342,7 @@ export class PluginController extends BaseController<
   }
 
   _onUnhandledPluginError(pluginName: string, error: ErrorJSON) {
-    this._transitionPluginState(pluginName, 'CRASH');
+    this._transitionPluginState(pluginName, 'crash');
     this.stopPlugin(pluginName);
     this.addPluginError(error);
   }
@@ -341,10 +354,7 @@ export class PluginController extends BaseController<
       ].on?.[event] ?? this.state.plugins[pluginName].status;
 
     this.update((state: any) => {
-      state.plugins[pluginName] = {
-        ...state.plugins[pluginName],
-        status: nextStateNode,
-      };
+      state.plugins[pluginName].status = nextStateNode;
     });
   }
 
@@ -431,7 +441,7 @@ export class PluginController extends BaseController<
     this._terminatePlugin(pluginName);
     if (setNotRunning) {
       this._setPluginToNotRunning(pluginName);
-      this._transitionPluginState(pluginName, 'STOP');
+      this._transitionPluginState(pluginName, 'stop');
     }
   }
 
@@ -742,7 +752,7 @@ export class PluginController extends BaseController<
 
     const result = await this._executePlugin(pluginData);
     this._setPluginToRunning(pluginData.pluginName);
-    this._transitionPluginState(pluginName, 'START');
+    this._transitionPluginState(pluginName, 'start');
     return result;
   }
 
