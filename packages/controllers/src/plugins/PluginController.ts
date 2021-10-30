@@ -45,7 +45,6 @@ export type SerializablePlugin = {
 };
 
 export type Plugin = SerializablePlugin & {
-  isRunning: boolean;
   sourceCode: string;
 };
 
@@ -269,7 +268,7 @@ export class PluginController extends BaseController<
               .map((plugin) => {
                 return {
                   ...plugin,
-                  isRunning: false,
+                  status: pluginStatusStateMachineConfig.initial,
                 };
               })
               .reduce((memo: Record<string, Plugin>, plugin) => {
@@ -348,22 +347,17 @@ export class PluginController extends BaseController<
   }
 
   _transitionPluginState(pluginName: string, event: PluginStatusEvent) {
-    const nextStateNode =
-      (
-        pluginStatusStateMachineConfig.states[
-          this.state.plugins[pluginName].status
-        ].on as any
-      )[event] ?? this.state.plugins[pluginName].status;
-    console.log(
-      'transition',
-      pluginName,
-      event,
-      nextStateNode,
-      this.state.plugins[pluginName],
-    );
+    const pluginStatus = this.state.plugins[pluginName].status;
+    const nextStatus =
+      (pluginStatusStateMachineConfig.states[pluginStatus].on as any)[event] ??
+      pluginStatus;
+
+    if (nextStatus === pluginStatus) {
+      return;
+    }
 
     this.update((state: any) => {
-      state.plugins[pluginName].status = nextStateNode;
+      state.plugins[pluginName].status = nextStatus;
     });
   }
 
@@ -799,7 +793,6 @@ export class PluginController extends BaseController<
 
     let plugin: Plugin = {
       initialPermissions,
-      isRunning: false,
       name: pluginName,
       permissionName: PLUGIN_PREFIX + pluginName, // so we can easily correlate them
       sourceCode,

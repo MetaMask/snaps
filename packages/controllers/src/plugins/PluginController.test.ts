@@ -375,7 +375,6 @@ describe('PluginController Controller', () => {
         inlinePluginIsRunning: false,
         plugins: {
           foo: {
-            isRunning: true,
             initialPermissions: {},
             permissionName: 'fooperm',
             version: '0.0.1',
