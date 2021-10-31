@@ -429,9 +429,6 @@ export class PermissionController<
       state = {},
     } = options;
 
-    // Typecast: The state metadata and default state objects are declared
-    // outside of the controller instance and are therefore incorrectly
-    // genericized.
     super({
       name: controllerName,
       metadata:
@@ -571,8 +568,6 @@ export class PermissionController<
    */
   clearState(): void {
     this.update((_draftState) => {
-      // Typecast: The default state is declared outside of the controller
-      // instance and therefore incorrectly genericized.
       return {
         ...getDefaultState<
           ExtractPermission<
@@ -740,7 +735,6 @@ export class PermissionController<
             throw new PermissionDoesNotExistError(origin, target);
           }
 
-          // Typecast: Immer WritableDraft incompatibility
           this.deletePermission(draftState.subjects, origin, target);
         });
       });
@@ -1026,7 +1020,6 @@ export class PermissionController<
       }
 
       this.validateModifiedPermission(
-        // Typecast: Immer WritableDraft incompatibility
         permission,
         origin,
         target,
@@ -1107,7 +1100,6 @@ export class PermissionController<
               break;
 
             case CaveatMutatorOperation.deleteCaveat:
-              // Typecast: Immer WritableDraft incompatibility
               this.deleteCaveat(
                 permission,
                 targetCaveatType,
@@ -1117,7 +1109,6 @@ export class PermissionController<
               break;
 
             case CaveatMutatorOperation.revokePermission:
-              // Typecast: Immer WritableDraft incompatibility
               this.deletePermission(
                 draftState.subjects,
                 subject.origin,
