@@ -82,7 +82,7 @@ export type PermissionConstraint = {
  * @template AllowedCaveat - A union of the allowed {@link Caveat} types
  * for the permission.
  */
-export type Permission<
+export type ValidPermission<
   TargetKey extends GenericTargetName,
   AllowedCaveat extends CaveatConstraint,
 > = ValidTargetName<ExtractPermissionTargetNames<TargetKey>> extends never

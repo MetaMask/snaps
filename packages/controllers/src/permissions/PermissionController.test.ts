@@ -18,7 +18,7 @@ import {
   CaveatConstraint,
   PermissionConstraint,
   MethodNames,
-  Permission,
+  ValidPermission,
   PermissionController,
   PermissionControllerActions,
   PermissionControllerEvents,
@@ -166,7 +166,7 @@ type DefaultCaveatSpecifications = ExtractSpecifications<
 
 type SecretNamespacedPermissionKey = 'wallet_getSecret_*';
 
-type SecretNamespacedPermission = Permission<
+type SecretNamespacedPermission = ValidPermission<
   SecretNamespacedPermissionKey,
   NoopCaveat
 >;

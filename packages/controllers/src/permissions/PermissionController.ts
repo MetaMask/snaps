@@ -41,7 +41,7 @@ import {
   RestrictedMethodParameters,
   ValidPermissionSpecification,
   PermissionSpecificationMap,
-  Permission as SpecificPermission,
+  ValidPermission,
   ExtractAllowedCaveatTypes,
   ExtractPermissionSpecification,
   PermissionSpecificationConstraint,
@@ -313,7 +313,7 @@ export type ExtractPermission<
   ControllerPermissionSpecification extends PermissionSpecificationConstraint,
   ControllerCaveatSpecification extends CaveatSpecificationConstraint,
 > = ControllerPermissionSpecification extends ValidPermissionSpecification<ControllerPermissionSpecification>
-  ? SpecificPermission<
+  ? ValidPermission<
       ControllerPermissionSpecification['targetKey'],
       ExtractCaveats<ControllerCaveatSpecification>
     >
@@ -1019,11 +1019,7 @@ export class PermissionController<
         permission.caveats = [caveat] as any;
       }
 
-      this.validateModifiedPermission(
-        permission,
-        origin,
-        target,
-      );
+      this.validateModifiedPermission(permission, origin, target);
     });
   }
 
