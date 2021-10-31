@@ -1091,9 +1091,11 @@ export class PermissionController<
               break;
 
             case CaveatMutatorOperation.updateValue:
-              // Typecast: The mutator type guarantees that the new value will
-              // not be undefined in this case. In any case, the specification
-              // validator is called on the mutated caveat.
+              // Typecast: `Mutable` is used here to assign to a readonly
+              // property. `targetConstraint` should already be mutable because
+              // it's part of a draft, but for some reason it's not. We can't
+              // use the more-correct `Draft` type here either because it
+              // results in an error.
               (targetCaveat as Mutable<CaveatConstraint, 'value'>).value =
                 mutatorResult.value;
 
@@ -1172,8 +1174,7 @@ export class PermissionController<
         throw new CaveatDoesNotExistError(origin, target, caveatType);
       }
 
-      // Typecast: Immer WritableDraft incompatibility
-      this.deleteCaveat(permission as any, caveatType, origin, target);
+      this.deleteCaveat(permission, caveatType, origin, target);
     });
   }
 
@@ -1277,7 +1278,7 @@ export class PermissionController<
     >['parentCapability'],
   ): ControllerPermissionSpecification['targetKey'] | undefined {
     if (hasProperty(this._permissionSpecifications, method)) {
-      return method as ControllerPermissionSpecification['targetKey'];
+      return method;
     }
 
     const wildCardMethodsWithoutWildCard: Record<string, boolean> = {};
@@ -1303,7 +1304,7 @@ export class PermissionController<
     }
 
     if (wildCardMethodsWithoutWildCard[targetKey]) {
-      return `${targetKey}*` as ControllerPermissionSpecification['targetKey'];
+      return `${targetKey}*`;
     }
 
     return undefined;
@@ -1363,12 +1364,7 @@ export class PermissionController<
     for (const [requestedTarget, approvedPermission] of Object.entries(
       approvedPermissions,
     )) {
-      const targetKey = this.getTargetKey(
-        requestedTarget as ExtractPermission<
-          ControllerPermissionSpecification,
-          ControllerCaveatSpecification
-        >['parentCapability'],
-      );
+      const targetKey = this.getTargetKey(requestedTarget);
       if (!targetKey) {
         throw methodNotFound({ method: requestedTarget });
       }
@@ -1409,14 +1405,9 @@ export class PermissionController<
         target: targetName,
       };
 
-      const permission = (
-        specification.factory
+      const permission = specification.factory
           ? specification.factory(permissionOptions, requestData)
-          : constructPermission(permissionOptions)
-      ) as ExtractPermission<
-        ControllerPermissionSpecification,
-        ControllerCaveatSpecification
-      >;
+          : constructPermission(permissionOptions);
       this.validatePermission(specification, permission, origin, targetName);
       permissions[targetName] = permission;
     }
