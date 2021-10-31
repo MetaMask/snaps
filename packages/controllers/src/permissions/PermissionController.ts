@@ -1406,8 +1406,8 @@ export class PermissionController<
       };
 
       const permission = specification.factory
-          ? specification.factory(permissionOptions, requestData)
-          : constructPermission(permissionOptions);
+        ? specification.factory(permissionOptions, requestData)
+        : constructPermission(permissionOptions);
       this.validatePermission(specification, permission, origin, targetName);
       permissions[targetName] = permission;
     }
