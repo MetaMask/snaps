@@ -459,7 +459,7 @@ export class PluginController extends BaseController<
       throw new Error(`Plugin "${pluginName}" not found.`);
     }
 
-    return plugin.status === 'running';
+    return plugin.status === PluginStatus.running;
   }
 
   /**
@@ -691,7 +691,7 @@ export class PluginController extends BaseController<
   ): Promise<ProcessPluginReturnType> {
     // if the plugin is already installed and active, just return it
     const plugin = this.get(pluginName);
-    if (plugin?.status !== 'running') {
+    if (plugin?.status !== PluginStatus.running) {
       return this.getSerializable(pluginName) as SerializablePlugin;
     }
 
