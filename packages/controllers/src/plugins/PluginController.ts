@@ -613,6 +613,7 @@ export class PluginController extends BaseController<
     this.update((state: any) => {
       pluginNames.forEach((pluginName) => {
         this._stopPlugin(pluginName, false);
+        this._rpcHandlerMap.delete(pluginName);
         delete state.plugins[pluginName];
         delete state.pluginStates[pluginName];
       });
