@@ -415,8 +415,10 @@ describe('PluginController Controller', () => {
       }),
       state: persistedState as unknown as PluginControllerState,
     });
+    expect(secondPluginController.isRunning('foo')).toStrictEqual(false);
     await secondPluginController.runExistingPlugins();
     expect(secondPluginController.state.plugins.foo).toBeDefined();
+    expect(secondPluginController.isRunning('foo')).toStrictEqual(true);
     firstPluginController.destroy();
     secondPluginController.destroy();
   });
