@@ -11,6 +11,7 @@ import {
   PluginController,
   PluginControllerActions,
   PluginControllerState,
+  PluginStatus,
 } from './PluginController';
 
 const workerCode = fs.readFileSync(
@@ -374,12 +375,12 @@ describe('PluginController Controller', () => {
         inlinePluginIsRunning: false,
         plugins: {
           foo: {
-            isRunning: true,
             initialPermissions: {},
             permissionName: 'fooperm',
             version: '0.0.1',
             sourceCode: 'console.log("foo")',
             name: 'foo',
+            status: PluginStatus.idle,
           },
         },
       },
@@ -414,14 +415,10 @@ describe('PluginController Controller', () => {
       }),
       state: persistedState as unknown as PluginControllerState,
     });
-    expect(secondPluginController.state.plugins.foo.isRunning).toStrictEqual(
-      false,
-    );
+    expect(secondPluginController.isRunning('foo')).toStrictEqual(false);
     await secondPluginController.runExistingPlugins();
     expect(secondPluginController.state.plugins.foo).toBeDefined();
-    expect(secondPluginController.state.plugins.foo.isRunning).toStrictEqual(
-      true,
-    );
+    expect(secondPluginController.isRunning('foo')).toStrictEqual(true);
     firstPluginController.destroy();
     secondPluginController.destroy();
   });
@@ -600,14 +597,14 @@ describe('PluginController Controller', () => {
           code: 123,
         },
       );
-    }, 0);
+    }, 100);
 
     await new Promise((resolve) => {
       pluginControllerMessenger.subscribe(
         'ServiceMessenger:unhandledError',
         () => {
           const localPlugin = pluginController.get(plugin.name);
-          expect(localPlugin.isRunning).toStrictEqual(false);
+          expect(localPlugin.status).toStrictEqual('crashed');
           resolve(undefined);
           pluginController.destroy();
         },
@@ -690,11 +687,164 @@ describe('PluginController Controller', () => {
         'ServiceMessenger:unresponsive',
         async (pluginName: string) => {
           const localPlugin = pluginController.get(pluginName);
-          expect(localPlugin.isRunning).toStrictEqual(false);
+          expect(localPlugin.status).toStrictEqual('crashed');
           resolve(undefined);
           pluginController.destroy();
         },
       );
     });
-  }, 60000);
+  }, 3000);
+
+  it('can add a plugin and use its JSON-RPC api and then get stopped from idling too long', async () => {
+    const messenger = new ControllerMessenger<
+      PluginControllerActions,
+      ErrorMessageEvent | UnresponsiveMessageEvent
+    >().getRestricted({
+      name: 'PluginController',
+      allowedEvents: [
+        'ServiceMessenger:unhandledError',
+        'ServiceMessenger:unresponsive',
+      ],
+    });
+    const webWorkerExecutionEnvironment =
+      new WebWorkerExecutionEnvironmentService({
+        messenger,
+        setupPluginProvider: jest.fn(),
+        workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
+      });
+    const pluginController = new PluginController({
+      idleTimeCheckInterval: 1000,
+      maxIdleTime: 2000,
+      terminateAllPlugins:
+        webWorkerExecutionEnvironment.terminateAllPlugins.bind(
+          webWorkerExecutionEnvironment,
+        ),
+      terminatePlugin: webWorkerExecutionEnvironment.terminatePlugin.bind(
+        webWorkerExecutionEnvironment,
+      ),
+      executePlugin: webWorkerExecutionEnvironment.executePlugin.bind(
+        webWorkerExecutionEnvironment,
+      ),
+      getRpcMessageHandler:
+        webWorkerExecutionEnvironment.getRpcMessageHandler.bind(
+          webWorkerExecutionEnvironment,
+        ),
+      removeAllPermissionsFor: jest.fn(),
+      getPermissions: jest.fn(),
+      hasPermission: jest.fn(),
+      requestPermissions: jest.fn(),
+      closeAllConnections: jest.fn(),
+      messenger,
+    });
+
+    const plugin = await pluginController.add({
+      name: 'TestPlugin',
+      sourceCode: `
+        wallet.registerRpcMessageHandler(async (origin, request) => {
+          const {method, params, id} = request;
+          wallet.request({method: 'setState'})
+          return method + id;
+        });
+      `,
+      manifest: {
+        web3Wallet: {
+          initialPermissions: {},
+        },
+        version: '0.0.0-development',
+      },
+    });
+
+    await pluginController.startPlugin(plugin.name);
+    const handle = await pluginController.getRpcMessageHandler(plugin.name);
+    if (!handle) {
+      throw Error('rpc handler not found');
+    }
+
+    await handle('foo.com', {
+      jsonrpc: '2.0',
+      method: 'test',
+      params: {},
+      id: 1,
+    });
+
+    await new Promise((resolve) => {
+      setTimeout(resolve, 3000);
+    });
+
+    expect(pluginController.state.plugins[plugin.name].status).toStrictEqual(
+      'stopped',
+    );
+  });
+
+  it('can add a plugin and see its status', async () => {
+    const messenger = new ControllerMessenger<
+      PluginControllerActions,
+      ErrorMessageEvent | UnresponsiveMessageEvent
+    >().getRestricted({
+      name: 'PluginController',
+      allowedEvents: [
+        'ServiceMessenger:unhandledError',
+        'ServiceMessenger:unresponsive',
+      ],
+    });
+    const webWorkerExecutionEnvironment =
+      new WebWorkerExecutionEnvironmentService({
+        messenger,
+        setupPluginProvider: jest.fn(),
+        workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
+      });
+    const pluginController = new PluginController({
+      idleTimeCheckInterval: 1000,
+      maxIdleTime: 2000,
+      terminateAllPlugins:
+        webWorkerExecutionEnvironment.terminateAllPlugins.bind(
+          webWorkerExecutionEnvironment,
+        ),
+      terminatePlugin: webWorkerExecutionEnvironment.terminatePlugin.bind(
+        webWorkerExecutionEnvironment,
+      ),
+      executePlugin: webWorkerExecutionEnvironment.executePlugin.bind(
+        webWorkerExecutionEnvironment,
+      ),
+      getRpcMessageHandler:
+        webWorkerExecutionEnvironment.getRpcMessageHandler.bind(
+          webWorkerExecutionEnvironment,
+        ),
+      removeAllPermissionsFor: jest.fn(),
+      getPermissions: jest.fn(),
+      hasPermission: jest.fn(),
+      requestPermissions: jest.fn(),
+      closeAllConnections: jest.fn(),
+      messenger,
+    });
+
+    const plugin = await pluginController.add({
+      name: 'TestPlugin',
+      sourceCode: `
+        wallet.registerRpcMessageHandler(async (origin, request) => {
+          const {method, params, id} = request;
+          wallet.request({method: 'setState'})
+          return method + id;
+        });
+      `,
+      manifest: {
+        web3Wallet: {
+          initialPermissions: {},
+        },
+        version: '0.0.0-development',
+      },
+    });
+
+    await pluginController.startPlugin(plugin.name);
+
+    expect(pluginController.state.plugins[plugin.name].status).toStrictEqual(
+      'running',
+    );
+
+    await pluginController.stopPlugin(plugin.name);
+
+    expect(pluginController.state.plugins[plugin.name].status).toStrictEqual(
+      'stopped',
+    );
+  });
 });

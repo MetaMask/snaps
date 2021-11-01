@@ -10,6 +10,7 @@ import {
   ErrorJSON,
   ErrorMessageEvent,
   PluginData,
+  PluginName,
   UnresponsiveMessageEvent,
 } from '@metamask/snap-types';
 import { nanoid } from 'nanoid';
@@ -40,10 +41,10 @@ export type SerializablePlugin = {
   name: string;
   permissionName: string;
   version: string;
+  status: PluginStatus;
 };
 
 export type Plugin = SerializablePlugin & {
-  isRunning: boolean;
   sourceCode: string;
 };
 
@@ -117,6 +118,8 @@ type PluginControllerArgs = {
   terminateAllPlugins: TerminateAll;
   executePlugin: ExecutePlugin;
   getRpcMessageHandler: GetRpcMessageHandler;
+  maxIdleTime?: number;
+  idleTimeCheckInterval?: number;
 };
 
 type AddPluginBase = {
@@ -146,6 +149,46 @@ const defaultState: PluginControllerState = {
   plugins: {},
   pluginStates: {},
 };
+
+export enum PluginStatus {
+  idle = 'idle',
+  running = 'running',
+  stopped = 'stopped',
+  crashed = 'crashed',
+}
+
+export enum PluginStatusEvent {
+  start = 'start',
+  stop = 'stop',
+  crash = 'crash',
+}
+
+const pluginStatusStateMachineConfig = {
+  initial: PluginStatus.idle,
+  states: {
+    [PluginStatus.idle]: {
+      on: {
+        [PluginStatusEvent.start]: PluginStatus.running,
+      },
+    },
+    [PluginStatus.running]: {
+      on: {
+        [PluginStatusEvent.stop]: PluginStatus.stopped,
+        [PluginStatusEvent.crash]: PluginStatus.crashed,
+      },
+    },
+    [PluginStatus.stopped]: {
+      on: {
+        [PluginStatusEvent.start]: PluginStatus.running,
+      },
+    },
+    [PluginStatus.crashed]: {
+      on: {
+        [PluginStatusEvent.start]: PluginStatus.running,
+      },
+    },
+  },
+} as const;
 
 const name = 'PluginController';
 
@@ -181,6 +224,14 @@ export class PluginController extends BaseController<
 
   private _pluginsBeingAdded: Map<string, Promise<Plugin>>;
 
+  private _maxIdleTime: number;
+
+  private _idleTimeCheckInterval: number;
+
+  private _timeoutForLastRequestStatus?: NodeJS.Timeout;
+
+  private _lastRequestMap: Map<PluginName, number>;
+
   constructor({
     removeAllPermissionsFor,
     closeAllConnections,
@@ -193,6 +244,8 @@ export class PluginController extends BaseController<
     getRpcMessageHandler,
     messenger,
     state,
+    maxIdleTime = 30000,
+    idleTimeCheckInterval = 5000,
   }: PluginControllerArgs) {
     super({
       messenger,
@@ -215,7 +268,7 @@ export class PluginController extends BaseController<
               .map((plugin) => {
                 return {
                   ...plugin,
-                  isRunning: false,
+                  status: pluginStatusStateMachineConfig.initial,
                 };
               })
               .reduce((memo: Record<string, Plugin>, plugin) => {
@@ -254,10 +307,30 @@ export class PluginController extends BaseController<
     );
 
     this._pluginsBeingAdded = new Map();
+    this._maxIdleTime = maxIdleTime;
+    this._idleTimeCheckInterval = idleTimeCheckInterval;
+    this._pollForLastRequestStatus();
+    this._lastRequestMap = new Map();
+  }
+
+  _pollForLastRequestStatus() {
+    this._timeoutForLastRequestStatus = setTimeout(async () => {
+      this._stopPluginsLastRequestPastMax();
+      this._pollForLastRequestStatus();
+    }, this._idleTimeCheckInterval);
+  }
+
+  _stopPluginsLastRequestPastMax() {
+    this._lastRequestMap.forEach(async (val, pluginName) => {
+      if (this._maxIdleTime && val > Date.now() - this._maxIdleTime) {
+        this.stopPlugin(pluginName);
+      }
+    });
   }
 
   _onUnresponsivePlugin(pluginName: string) {
-    this.stopPlugin(pluginName);
+    this._transitionPluginState(pluginName, PluginStatusEvent.crash);
+    this._stopPlugin(pluginName, false);
     this.addPluginError({
       code: -32001, // just made this code up
       message: 'Plugin Unresponsive',
@@ -268,8 +341,24 @@ export class PluginController extends BaseController<
   }
 
   _onUnhandledPluginError(pluginName: string, error: ErrorJSON) {
-    this.stopPlugin(pluginName);
+    this._transitionPluginState(pluginName, PluginStatusEvent.crash);
+    this._stopPlugin(pluginName, false);
     this.addPluginError(error);
+  }
+
+  _transitionPluginState(pluginName: string, event: PluginStatusEvent) {
+    const pluginStatus = this.state.plugins[pluginName].status;
+    const nextStatus =
+      (pluginStatusStateMachineConfig.states[pluginStatus].on as any)[event] ??
+      pluginStatus;
+
+    if (nextStatus === pluginStatus) {
+      return;
+    }
+
+    this.update((state: any) => {
+      state.plugins[pluginName].status = nextStatus;
+    });
   }
 
   /**
@@ -334,7 +423,7 @@ export class PluginController extends BaseController<
       throw new Error(`Plugin "${pluginName}" not found.`);
     }
 
-    if (!plugin.isRunning) {
+    if (!this.isRunning(pluginName)) {
       throw new Error(`Plugin "${pluginName}" already stopped.`);
     }
 
@@ -354,7 +443,7 @@ export class PluginController extends BaseController<
     this._closeAllConnections(pluginName);
     this._terminatePlugin(pluginName);
     if (setNotRunning) {
-      this._setPluginToNotRunning(pluginName);
+      this._transitionPluginState(pluginName, PluginStatusEvent.stop);
     }
   }
 
@@ -370,7 +459,7 @@ export class PluginController extends BaseController<
       throw new Error(`Plugin "${pluginName}" not found.`);
     }
 
-    return plugin.isRunning;
+    return plugin.status === PluginStatus.running;
   }
 
   /**
@@ -602,7 +691,7 @@ export class PluginController extends BaseController<
   ): Promise<ProcessPluginReturnType> {
     // if the plugin is already installed and active, just return it
     const plugin = this.get(pluginName);
-    if (plugin?.isRunning) {
+    if (plugin?.status !== PluginStatus.running) {
       return this.getSerializable(pluginName) as SerializablePlugin;
     }
 
@@ -659,12 +748,12 @@ export class PluginController extends BaseController<
 
   private async _startPlugin(pluginData: PluginData) {
     const { pluginName } = pluginData;
-    if (this.get(pluginName).isRunning) {
+    if (this.isRunning(pluginName)) {
       throw new Error(`Plugin "${pluginName}" is already started.`);
     }
 
     const result = await this._executePlugin(pluginData);
-    this._setPluginToRunning(pluginData.pluginName);
+    this._transitionPluginState(pluginName, PluginStatusEvent.start);
     return result;
   }
 
@@ -704,11 +793,11 @@ export class PluginController extends BaseController<
 
     let plugin: Plugin = {
       initialPermissions,
-      isRunning: false,
       name: pluginName,
       permissionName: PLUGIN_PREFIX + pluginName, // so we can easily correlate them
       sourceCode,
       version: manifest.version,
+      status: pluginStatusStateMachineConfig.initial,
     };
 
     const pluginsState = this.state.plugins;
@@ -818,6 +907,11 @@ export class PluginController extends BaseController<
 
   destroy() {
     super.destroy();
+
+    if (this._timeoutForLastRequestStatus) {
+      clearTimeout(this._timeoutForLastRequestStatus);
+    }
+
     this.messagingSystem.unsubscribe(
       'ServiceMessenger:unhandledError',
       this._onUnhandledPluginError,
@@ -835,28 +929,18 @@ export class PluginController extends BaseController<
    * @param pluginName - The name of the plugin whose message handler to get.
    */
   async getRpcMessageHandler(pluginName: string) {
-    return this._getRpcMessageHandler(pluginName);
+    const handler = await this._getRpcMessageHandler(pluginName);
+    if (!handler) {
+      return undefined;
+    }
+
+    return (origin: string, request: Record<string, unknown>) => {
+      this._recordPluginRpcRequest(pluginName);
+      return handler(origin, request);
+    };
   }
 
-  private _setPluginToRunning(pluginName: string): void {
-    this._updatePlugin(pluginName, 'isRunning', true);
-  }
-
-  private _setPluginToNotRunning(pluginName: string): void {
-    this._updatePlugin(pluginName, 'isRunning', false);
-  }
-
-  private _updatePlugin(
-    pluginName: string,
-    property: keyof Plugin,
-    value: unknown,
-  ) {
-    const { plugins } = this.state;
-    const plugin = plugins[pluginName];
-    const newPlugin = { ...plugin, [property]: value };
-    const newPlugins = { ...plugins, [pluginName]: newPlugin };
-    this.update((state: any) => {
-      state.plugins = newPlugins;
-    });
+  private _recordPluginRpcRequest(pluginName: string) {
+    this._lastRequestMap.set(pluginName, Date.now());
   }
 }
