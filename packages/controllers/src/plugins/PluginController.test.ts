@@ -847,4 +847,86 @@ describe('PluginController Controller', () => {
       'stopped',
     );
   });
+
+  it('can add a plugin and stop it and have it start on-demand', async () => {
+    const messenger = new ControllerMessenger<
+      PluginControllerActions,
+      ErrorMessageEvent | UnresponsiveMessageEvent
+    >().getRestricted({
+      name: 'PluginController',
+      allowedEvents: [
+        'ServiceMessenger:unhandledError',
+        'ServiceMessenger:unresponsive',
+      ],
+    });
+    const webWorkerExecutionEnvironment =
+      new WebWorkerExecutionEnvironmentService({
+        messenger,
+        setupPluginProvider: jest.fn(),
+        workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
+      });
+    const pluginController = new PluginController({
+      idleTimeCheckInterval: 1000,
+      maxIdleTime: 2000,
+      terminateAllPlugins:
+        webWorkerExecutionEnvironment.terminateAllPlugins.bind(
+          webWorkerExecutionEnvironment,
+        ),
+      terminatePlugin: webWorkerExecutionEnvironment.terminatePlugin.bind(
+        webWorkerExecutionEnvironment,
+      ),
+      executePlugin: webWorkerExecutionEnvironment.executePlugin.bind(
+        webWorkerExecutionEnvironment,
+      ),
+      getRpcMessageHandler:
+        webWorkerExecutionEnvironment.getRpcMessageHandler.bind(
+          webWorkerExecutionEnvironment,
+        ),
+      removeAllPermissionsFor: jest.fn(),
+      getPermissions: jest.fn(),
+      hasPermission: jest.fn(),
+      requestPermissions: jest.fn(),
+      closeAllConnections: jest.fn(),
+      messenger,
+    });
+
+    const plugin = await pluginController.add({
+      name: 'TestPlugin',
+      sourceCode: `
+        wallet.registerRpcMessageHandler(async (origin, request) => {
+          const {method, params, id} = request;
+          wallet.request({method: 'setState'})
+          return method + id;
+        });
+      `,
+      manifest: {
+        web3Wallet: {
+          initialPermissions: {},
+        },
+        version: '0.0.0-development',
+      },
+    });
+
+    const handler = await pluginController.getRpcMessageHandler(plugin.name);
+
+    await pluginController.startPlugin(plugin.name);
+
+    expect(pluginController.state.plugins[plugin.name].status).toStrictEqual(
+      'running',
+    );
+
+    await pluginController.stopPlugin(plugin.name);
+
+    expect(pluginController.state.plugins[plugin.name].status).toStrictEqual(
+      'stopped',
+    );
+
+    const results = await handler('foo.com', {
+      jsonrpc: '2.0',
+      method: 'test',
+      params: {},
+      id: 1,
+    });
+    expect(results).toStrictEqual('test1');
+  });
 });

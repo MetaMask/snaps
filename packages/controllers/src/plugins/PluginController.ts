@@ -232,6 +232,11 @@ export class PluginController extends BaseController<
 
   private _lastRequestMap: Map<PluginName, number>;
 
+  private _rpcHandlerMap: Map<
+    PluginName,
+    (origin: string, request: Record<string, unknown>) => Promise<unknown>
+  >;
+
   constructor({
     removeAllPermissionsFor,
     closeAllConnections,
@@ -311,6 +316,7 @@ export class PluginController extends BaseController<
     this._idleTimeCheckInterval = idleTimeCheckInterval;
     this._pollForLastRequestStatus();
     this._lastRequestMap = new Map();
+    this._rpcHandlerMap = new Map();
   }
 
   _pollForLastRequestStatus() {
@@ -928,16 +934,36 @@ export class PluginController extends BaseController<
    *
    * @param pluginName - The name of the plugin whose message handler to get.
    */
-  async getRpcMessageHandler(pluginName: string) {
-    const handler = await this._getRpcMessageHandler(pluginName);
-    if (!handler) {
-      return undefined;
+  async getRpcMessageHandler(
+    pluginName: string,
+  ): Promise<
+    (origin: string, request: Record<string, unknown>) => Promise<unknown>
+  > {
+    const existingHandler = this._rpcHandlerMap.get(pluginName);
+    if (existingHandler) {
+      return existingHandler;
     }
 
-    return (origin: string, request: Record<string, unknown>) => {
+    const rpcHandler = async (
+      origin: string,
+      request: Record<string, unknown>,
+    ) => {
+      let handler = await this._getRpcMessageHandler(pluginName);
+      if (!handler) {
+        // cold start
+        if (this.isRunning(pluginName) === false) {
+          await this.startPlugin(pluginName);
+          handler = await this.getRpcMessageHandler(pluginName);
+        } else {
+          // something went really wrong
+          throw new Error('Internal Snap Error: Service RPC Handler not found');
+        }
+      }
       this._recordPluginRpcRequest(pluginName);
       return handler(origin, request);
     };
+    this._rpcHandlerMap.set(pluginName, rpcHandler);
+    return rpcHandler;
   }
 
   private _recordPluginRpcRequest(pluginName: string) {
