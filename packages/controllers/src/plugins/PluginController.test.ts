@@ -583,13 +583,10 @@ describe('PluginController Controller', () => {
         version: '0.0.0-development',
       },
     });
-    console.log('before');
     await pluginController.startPlugin(plugin.name);
-    console.log('after');
 
     // defer
     setTimeout(() => {
-      console.log('pubbing');
       controllerMessenger.publish(
         'ServiceMessenger:unhandledError',
         plugin.name,
@@ -601,11 +598,9 @@ describe('PluginController Controller', () => {
     }, 100);
 
     await new Promise((resolve) => {
-      console.log('subbing');
       pluginControllerMessenger.subscribe(
         'ServiceMessenger:unhandledError',
         () => {
-          console.log('got event here');
           const localPlugin = pluginController.get(plugin.name);
           expect(localPlugin.status).toStrictEqual('crashed');
           resolve(undefined);
