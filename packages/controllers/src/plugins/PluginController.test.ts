@@ -998,13 +998,11 @@ describe('PluginController Controller', () => {
       'running',
     );
 
-    await pluginController.stopPlugin(plugin.name);
+    pluginController.disablePlugin(plugin.name);
 
     expect(pluginController.state.plugins[plugin.name].status).toStrictEqual(
       'stopped',
     );
-
-    pluginController.disablePlugin(plugin.name);
 
     await expect(pluginController.startPlugin(plugin.name)).rejects.toThrow(
       /^Plugin "TestPlugin" is disabled.$/u,

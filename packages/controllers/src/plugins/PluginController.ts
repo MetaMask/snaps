@@ -164,12 +164,19 @@ export enum PluginStatusEvent {
   crash = 'crash',
 }
 
+const disabledGuard = (pluginState: SerializablePlugin) => {
+  return pluginState.enabled;
+};
+
 const pluginStatusStateMachineConfig = {
   initial: PluginStatus.idle,
   states: {
     [PluginStatus.idle]: {
       on: {
-        [PluginStatusEvent.start]: PluginStatus.running,
+        [PluginStatusEvent.start]: {
+          target: PluginStatus.running,
+          cond: disabledGuard,
+        },
       },
     },
     [PluginStatus.running]: {
@@ -180,12 +187,18 @@ const pluginStatusStateMachineConfig = {
     },
     [PluginStatus.stopped]: {
       on: {
-        [PluginStatusEvent.start]: PluginStatus.running,
+        [PluginStatusEvent.start]: {
+          target: PluginStatus.running,
+          cond: disabledGuard,
+        },
       },
     },
     [PluginStatus.crashed]: {
       on: {
-        [PluginStatusEvent.start]: PluginStatus.running,
+        [PluginStatusEvent.start]: {
+          target: PluginStatus.running,
+          cond: disabledGuard,
+        },
       },
     },
   },
@@ -355,9 +368,21 @@ export class PluginController extends BaseController<
 
   _transitionPluginState(pluginName: string, event: PluginStatusEvent) {
     const pluginStatus = this.state.plugins[pluginName].status;
-    const nextStatus =
+    let nextStatus =
       (pluginStatusStateMachineConfig.states[pluginStatus].on as any)[event] ??
       pluginStatus;
+    if (nextStatus.cond) {
+      const cond = nextStatus.cond(this.state.plugins[pluginName]);
+      if (cond === false) {
+        throw new Error(
+          `Condition failed for state transition ${pluginName} with event ${event}`,
+        );
+      }
+    }
+
+    if (nextStatus.target) {
+      nextStatus = nextStatus.target;
+    }
 
     if (nextStatus === pluginStatus) {
       return;
@@ -439,6 +464,7 @@ export class PluginController extends BaseController<
    * @param pluginName - The name of the plugin to disable.
    */
   disablePlugin(pluginName: string): void {
+    this.stopPlugin(pluginName);
     this.update((state: any) => {
       state.plugins[pluginName].enabled = false;
     });
