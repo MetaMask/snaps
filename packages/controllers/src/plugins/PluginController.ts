@@ -954,7 +954,7 @@ export class PluginController extends BaseController<
         // cold start
         if (this.isRunning(pluginName) === false) {
           await this.startPlugin(pluginName);
-          handler = await this.getRpcMessageHandler(pluginName);
+          handler = await this._getRpcMessageHandler(pluginName);
         } else {
           // something went really wrong
           throw new Error('Internal Snap Error: Service RPC Handler not found');
