@@ -1339,15 +1339,13 @@ export class PermissionController<
       throw new InvalidSubjectIdentifierError(origin);
     }
 
-    const permissions: SubjectPermissions<
-      ExtractPermission<
-        ControllerPermissionSpecification,
-        ControllerCaveatSpecification
-      >
-    > = ((preserveExistingPermissions && {
-      ...this.getPermissions(origin),
-    }) ||
-      {}) as SubjectPermissions<
+    const permissions = (
+      preserveExistingPermissions
+        ? {
+            ...this.getPermissions(origin),
+          }
+        : {}
+    ) as SubjectPermissions<
       ExtractPermission<
         ControllerPermissionSpecification,
         ControllerCaveatSpecification
@@ -1387,12 +1385,7 @@ export class PermissionController<
         approvedPermission.caveats,
       );
 
-      const permissionOptions: PermissionOptions<
-        ExtractPermission<
-          ControllerPermissionSpecification,
-          ControllerCaveatSpecification
-        >
-      > = {
+      const permissionOptions = {
         caveats,
         invoker: origin,
         target: targetName,
@@ -1469,7 +1462,6 @@ export class PermissionController<
         draftState.subjects[origin] = { origin, permissions: {} };
       }
 
-      // Typecast: Immer WritableDraft incompatibility
       draftState.subjects[origin].permissions = castDraft(permissions);
     });
   }
@@ -1505,10 +1497,9 @@ export class PermissionController<
   /**
    * Constructs a caveat for the permission of the specified subject origin and
    * target name, per the requested caveat argument. This methods validates
-   * everything about the requested caveat, except that its `value` property
-   * is JSON-compatible. It also ensures that a caveat specification exist for
-   * the requested type, and calls the specification validator, if it exists, on
-   * the constructed caveat.
+   * everything about the requested caveat. It also ensures that a caveat
+   * specification exist for the requested type, and calls the specification
+   * validator, if it exists, on the constructed caveat.
    *
    * Throws an error if validation fails.
    *
@@ -1610,12 +1601,12 @@ export class PermissionController<
     ]
   > {
     this.validateRequestedPermissions(origin, requestedPermissions);
-    const metadata: PermissionsRequest['metadata'] = {
+    const metadata = {
       id,
       origin,
     };
 
-    const permissionsRequest: PermissionsRequest = {
+    const permissionsRequest = {
       metadata,
       permissions: requestedPermissions,
     };
@@ -1692,15 +1683,10 @@ export class PermissionController<
       throw invalidParams({ data: { origin, requestedPermissions } });
     }
 
-    const perms: RequestedPermissions = requestedPermissions;
+    const perms = requestedPermissions;
 
     for (const methodName of Object.keys(perms)) {
-      const target = (
-        perms[methodName] as unknown as ExtractPermission<
-          ControllerPermissionSpecification,
-          ControllerCaveatSpecification
-        >
-      ).parentCapability;
+      const target = perms[methodName].parentCapability;
       if (target !== undefined && methodName !== target) {
         throw invalidParams({ data: { origin, requestedPermissions } });
       }
