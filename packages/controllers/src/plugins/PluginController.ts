@@ -412,6 +412,10 @@ export class PluginController extends BaseController<
       throw new Error(`Plugin "${pluginName}" not found.`);
     }
 
+    if (this.state.plugins[pluginName].enabled === false) {
+      throw new Error(`Plugin "${pluginName}" is disabled.`);
+    }
+
     await this._startPlugin({
       pluginName,
       sourceCode: plugin.sourceCode,

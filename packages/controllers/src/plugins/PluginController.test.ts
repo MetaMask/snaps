@@ -1006,6 +1006,10 @@ describe('PluginController Controller', () => {
 
     pluginController.disablePlugin(plugin.name);
 
+    await expect(pluginController.startPlugin(plugin.name)).rejects.toThrow(
+      /^Plugin "TestPlugin" is disabled.$/u,
+    );
+
     await expect(
       handler('foo.com', {
         jsonrpc: '2.0',
