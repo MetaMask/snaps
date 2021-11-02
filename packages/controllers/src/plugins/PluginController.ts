@@ -42,6 +42,7 @@ export type SerializablePlugin = {
   permissionName: string;
   version: string;
   status: PluginStatus;
+  enabled: boolean;
 };
 
 export type Plugin = SerializablePlugin & {
@@ -414,6 +415,28 @@ export class PluginController extends BaseController<
     await this._startPlugin({
       pluginName,
       sourceCode: plugin.sourceCode,
+    });
+  }
+
+  /**
+   * Enables the given plugin. A plugin can only be started if it is enabled.
+   *
+   * @param pluginName - The name of the plugin to enable.
+   */
+  enablePlugin(pluginName: string): void {
+    this.update((state: any) => {
+      state.plugins[pluginName].enabled = true;
+    });
+  }
+
+  /**
+   * Disables the given plugin. A plugin can only be started if it is enabled.
+   *
+   * @param pluginName - The name of the plugin to disable.
+   */
+  disablePlugin(pluginName: string): void {
+    this.update((state: any) => {
+      state.plugins[pluginName].enabled = false;
     });
   }
 
@@ -804,6 +827,7 @@ export class PluginController extends BaseController<
       permissionName: PLUGIN_PREFIX + pluginName, // so we can easily correlate them
       sourceCode,
       version: manifest.version,
+      enabled: true,
       status: pluginStatusStateMachineConfig.initial,
     };
 
@@ -950,6 +974,10 @@ export class PluginController extends BaseController<
       request: Record<string, unknown>,
     ) => {
       let handler = await this._getRpcMessageHandler(pluginName);
+
+      if (this.state.plugins[pluginName].enabled === false) {
+        throw new Error(`Plugin "${pluginName}" is disabled.`);
+      }
 
       if (!handler && this.isRunning(pluginName) === false) {
         // cold start
