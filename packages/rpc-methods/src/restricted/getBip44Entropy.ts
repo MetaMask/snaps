@@ -4,7 +4,7 @@ import {
   PendingJsonRpcResponse,
 } from 'json-rpc-engine';
 import { ethErrors } from 'eth-rpc-errors';
-import { BIP44CoinTypeNode } from '@metamask/key-tree';
+import { BIP44CoinTypeNode, JsonBIP44CoinTypeNode } from '@metamask/key-tree';
 import { RestrictedHandlerExport } from '../../types';
 
 const METHOD_PREFIX = 'snap_getBip44Entropy_';
@@ -12,7 +12,7 @@ const METHOD_PREFIX = 'snap_getBip44Entropy_';
 export const getBip44EntropyHandler: RestrictedHandlerExport<
   GetBip44EntropyHooks,
   void,
-  string
+  JsonBIP44CoinTypeNode
 > = {
   methodNames: [`${METHOD_PREFIX}*`],
   getImplementation: getGetBip44EntropyHandler,
@@ -35,7 +35,7 @@ const ALL_DIGIT_REGEX = /^\d+$/u;
 function getGetBip44EntropyHandler({ getMnemonic }: GetBip44EntropyHooks) {
   return async function getBip44Entropy(
     req: JsonRpcRequest<void>,
-    res: PendingJsonRpcResponse<string>,
+    res: PendingJsonRpcResponse<JsonBIP44CoinTypeNode>,
     _next: unknown,
     end: JsonRpcEngineEndCallback,
     _engine: unknown,
@@ -54,7 +54,7 @@ function getGetBip44EntropyHandler({ getMnemonic }: GetBip44EntropyHooks) {
         `bip39:${await getMnemonic()}`,
         `bip32:44'`,
         `bip32:${Number(bip44Code)}'`,
-      ]).key;
+      ]).toJSON();
       return end();
     } catch (err) {
       return end(err);
