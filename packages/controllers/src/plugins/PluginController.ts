@@ -950,17 +950,19 @@ export class PluginController extends BaseController<
       request: Record<string, unknown>,
     ) => {
       let handler = await this._getRpcMessageHandler(pluginName);
+
       if (!handler) {
         // cold start
         if (this.isRunning(pluginName) === false) {
           await this.startPlugin(pluginName);
           handler = await this._getRpcMessageHandler(pluginName);
-        } else {
-          // something went really wrong
-          throw new Error(
-            `Snap execution service returned no RPC handler for running snap "${pluginName}".`,
-          );
         }
+      }
+
+      if (!handler) {
+        throw new Error(
+          `Snap execution service returned no RPC handler for running snap "${pluginName}".`,
+        );
       }
 
       this._recordPluginRpcRequest(pluginName);
