@@ -951,12 +951,10 @@ export class PluginController extends BaseController<
     ) => {
       let handler = await this._getRpcMessageHandler(pluginName);
 
-      if (!handler) {
+      if (!handler && this.isRunning(pluginName) === false) {
         // cold start
-        if (this.isRunning(pluginName) === false) {
-          await this.startPlugin(pluginName);
-          handler = await this._getRpcMessageHandler(pluginName);
-        }
+        await this.startPlugin(pluginName);
+        handler = await this._getRpcMessageHandler(pluginName);
       }
 
       if (!handler) {
