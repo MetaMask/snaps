@@ -19,7 +19,13 @@ import type {
 import { castDraft, castImmutable, Draft, Patch } from 'immer';
 import deepFreeze from 'deep-freeze-strict';
 import { nanoid } from 'nanoid';
-import { isPlainObject, hasProperty, NonEmptyArray, Mutable } from '../utils';
+import {
+  isPlainObject,
+  hasProperty,
+  NonEmptyArray,
+  Mutable,
+  isNonEmptyArray,
+} from '../utils';
 import {
   constructCaveat as _constructCaveat,
   decorateWithCaveats,
@@ -1491,10 +1497,8 @@ export class PermissionController<
     const caveatArray = requestedCaveats?.map((requestedCaveat) =>
       this.constructCaveat(origin, target, requestedCaveat),
     );
-    return caveatArray && caveatArray.length > 0
-      ? (caveatArray as NonEmptyArray<
-          ExtractCaveats<ControllerCaveatSpecification>
-        >)
+    return caveatArray && isNonEmptyArray(caveatArray)
+      ? caveatArray
       : undefined;
   }
 

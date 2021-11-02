@@ -17,6 +17,17 @@ export const hasProperty = (
 export type NonEmptyArray<T> = [T, ...T[]];
 
 /**
+ * {@link NonEmptyArray} type guard.
+ *
+ * @template T - The non-empty array member type.
+ * @param value - The value to check.
+ * @returns Whether the value is a non-empty array.
+ */
+export function isNonEmptyArray<T>(value: T[]): value is NonEmptyArray<T> {
+  return Array.isArray(value) && value.length > 0;
+}
+
+/**
  * Makes every specified property of the specified object type mutable.
  *
  * @template T - The object whose readonly properties to make mutable.
