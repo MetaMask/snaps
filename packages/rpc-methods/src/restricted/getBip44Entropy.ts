@@ -4,7 +4,7 @@ import {
   PendingJsonRpcResponse,
 } from 'json-rpc-engine';
 import { ethErrors } from 'eth-rpc-errors';
-import { deriveKeyFromPath } from '@metamask/key-tree';
+import { BIP44CoinTypeNode } from '@metamask/key-tree';
 import { RestrictedHandlerExport } from '../../types';
 
 const METHOD_PREFIX = 'snap_getBip44Entropy_';
@@ -50,9 +50,11 @@ function getGetBip44EntropyHandler({ getMnemonic }: GetBip44EntropyHooks) {
         );
       }
 
-      const mnemonic = await getMnemonic();
-      const multipath = `bip39:${mnemonic}/bip32:44'/bip32:${bip44Code}'`;
-      res.result = deriveKeyFromPath(multipath).toString('base64');
+      res.result = new BIP44CoinTypeNode([
+        `bip39:${await getMnemonic()}`,
+        `bip32:44'`,
+        `bip32:${Number(bip44Code)}'`,
+      ]).key;
       return end();
     } catch (err) {
       return end(err);
