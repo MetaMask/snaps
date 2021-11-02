@@ -960,6 +960,7 @@ export class PluginController extends BaseController<
           throw new Error('Internal Snap Error: Service RPC Handler not found');
         }
       }
+
       this._recordPluginRpcRequest(pluginName);
       return handler(origin, request);
     };
