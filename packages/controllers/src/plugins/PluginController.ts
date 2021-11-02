@@ -963,6 +963,7 @@ export class PluginController extends BaseController<
       this._recordPluginRpcRequest(pluginName);
       return handler(origin, request);
     };
+
     this._rpcHandlerMap.set(pluginName, rpcHandler);
     return rpcHandler;
   }
