@@ -41,7 +41,6 @@ import {
   findCaveat,
   PermissionConstraint,
   OriginString,
-  PermissionOptions,
   RequestedPermissions,
   RestrictedMethod,
   RestrictedMethodParameters,
