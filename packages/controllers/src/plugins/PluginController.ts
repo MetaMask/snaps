@@ -375,7 +375,7 @@ export class PluginController extends BaseController<
       const cond = nextStatus.cond(this.state.plugins[pluginName]);
       if (cond === false) {
         throw new Error(
-          `Condition failed for state transition ${pluginName} with event ${event}`,
+          `Condition failed for state transition "${pluginName}" with event "${event}".`,
         );
       }
     }
