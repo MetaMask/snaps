@@ -164,10 +164,18 @@ export enum PluginStatusEvent {
   crash = 'crash',
 }
 
-const disabledGuard = (pluginState: SerializablePlugin) => {
-  return pluginState.enabled;
+/**
+ * Guard transitioning when the plugin is disabled.
+ */
+const disabledGuard = (serializedPlugin: SerializablePlugin) => {
+  return serializedPlugin.enabled;
 };
 
+/**
+ * The StateMachine configuration for a plugins `status` state.
+ * Using a state machine for a plugins `status` ensures that the plugin transitions to a valid next lifecycle state.
+ * Supports a very minimal subset of XState conventions outlined in `_transitionPluginState`.
+ */
 const pluginStatusStateMachineConfig = {
   initial: PluginStatus.idle,
   states: {
@@ -366,6 +374,16 @@ export class PluginController extends BaseController<
     this.addPluginError(error);
   }
 
+  /**
+   * Transitions between states using `pluginStatusStateMachineConfig` as the template to figure out the next state.
+   * This transition function uses a very minimal subset of XState conventions:
+   * - supports initial state
+   * - .on supports raw event target string
+   * - .on supports {target, cond} object
+   * - the arguments for `cond` is the `SerializedPlugin` instead of Xstate convention of `(event, context) => boolean`
+   * @param pluginName the name of the plugin to transition
+   * @param event the event enum to use to transition
+   */
   _transitionPluginState(pluginName: string, event: PluginStatusEvent) {
     const pluginStatus = this.state.plugins[pluginName].status;
     let nextStatus =
