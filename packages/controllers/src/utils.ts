@@ -1,3 +1,6 @@
+import { Json } from '@metamask/controllers';
+import deepEqual from 'fast-deep-equal';
+
 type PlainObject = Record<number | string | symbol, unknown>;
 
 export function isPlainObject(value: unknown): value is PlainObject {
@@ -25,6 +28,20 @@ export type NonEmptyArray<T> = [T, ...T[]];
  */
 export function isNonEmptyArray<T>(value: T[]): value is NonEmptyArray<T> {
   return Array.isArray(value) && value.length > 0;
+}
+
+/**
+ * {@link Json} type guard.
+ *
+ * @param value - The value to check.
+ * @returns Whether the value is valid JSON.
+ */
+export function isValidJson(value: unknown): value is Json {
+  try {
+    return deepEqual(value, JSON.parse(JSON.stringify(value)));
+  } catch (_) {
+    return false;
+  }
 }
 
 /**

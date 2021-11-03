@@ -8,7 +8,6 @@ import {
   HasApprovalRequest,
   StateMetadata,
 } from '@metamask/controllers';
-import deepEqual from 'fast-deep-equal';
 // These are used in docstrings, but ESLint is ignorant of docstrings.
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import type {
@@ -25,6 +24,7 @@ import {
   NonEmptyArray,
   Mutable,
   isNonEmptyArray,
+  isValidJson,
 } from '../utils';
 import {
   constructCaveat as _constructCaveat,
@@ -257,16 +257,6 @@ export type GenericPermissionController = PermissionController<
   PermissionSpecificationConstraint,
   CaveatSpecificationConstraint
 >;
-
-/**
- * Options for {@link PermissionController.grantPermissions}.
- */
-type GrantPermissionsOptions = {
-  approvedPermissions: RequestedPermissions;
-  subject: PermissionSubjectMetadata;
-  preserveExistingPermissions?: boolean;
-  requestData?: Record<string, unknown>;
-};
 
 /**
  * Describes the possible results of a {@link CaveatMutator} function.
@@ -1326,7 +1316,12 @@ export class PermissionController<
     requestData,
     preserveExistingPermissions = true,
     subject,
-  }: GrantPermissionsOptions): SubjectPermissions<
+  }: {
+    approvedPermissions: RequestedPermissions;
+    subject: PermissionSubjectMetadata;
+    preserveExistingPermissions?: boolean;
+    requestData?: Record<string, unknown>;
+  }): SubjectPermissions<
     ExtractPermission<
       ControllerPermissionSpecification,
       ControllerCaveatSpecification
@@ -1533,7 +1528,7 @@ export class PermissionController<
     }
 
     // Assert that the caveat value is valid JSON
-    if (!deepEqual(value, JSON.parse(JSON.stringify(value)))) {
+    if (!isValidJson(value)) {
       throw new CaveatInvalidJsonError(requestedCaveat, origin, target);
     }
 
@@ -1569,6 +1564,9 @@ export class PermissionController<
    * Initiates a permission request that requires user approval. This should
    * always be used to grant additional permissions to a subject, unless user
    * approval has been obtained through some other means.
+   *
+   * Permissions are validated at every step of the approval process, and this
+   * method will reject if validation fails.
    *
    * @see {@link ApprovalController} For the user approval logic.
    * @see {@link PermissionController.acceptPermissionsRequest} For the method
@@ -1612,15 +1610,9 @@ export class PermissionController<
 
     const { permissions: approvedPermissions, ...requestData } =
       await this.requestUserApproval(permissionsRequest);
-    if (Object.keys(approvedPermissions).length === 0) {
-      // The request should already have been rejected if this is the case.
-      throw internalError(
-        `Approved permissions request for origin "${origin}" contains no permissions.`,
-        { requestedPermissions },
-      );
-    }
 
     return [
+      // Further validation is performed here
       this.grantPermissions({
         subject: { origin },
         approvedPermissions,
@@ -1632,62 +1624,48 @@ export class PermissionController<
   }
 
   /**
-   * Adds a request to the {@link ApprovalController} using the
-   * {@link AddApprovalRequest} action.
-   *
-   * @param permissionsRequest - The permissions request object.
-   * @returns The approved permissions request object.
-   */
-  private async requestUserApproval(permissionsRequest: PermissionsRequest) {
-    const { origin, id } = permissionsRequest.metadata;
-    return (await this.messagingSystem.call(
-      'ApprovalController:addRequest',
-      {
-        id,
-        origin,
-        requestData: permissionsRequest,
-        type: MethodNames.requestPermissions,
-      },
-      true,
-    )) as PermissionsRequest;
-  }
-
-  /**
    * Validates requested permissions. Throws if validation fails.
    *
-   * All properties of {@link RequestedPermissions} values are ignored during
-   * request processing in this controller except `caveats`, which is validated
-   * by {@link PermissionController.computeCaveats}, caveat validators, and
-   * permission validators.
+   * This method ensures that the the requested permissions are a properly
+   * formatted {@link RequestedPermissions} object, that its keys correspond to
+   * the `parentCapability` fields of its values, and that the requested
+   * capability exists.
    *
-   * This method still validates the `parentCapability` field, since a mismatch
-   * between a {@link RequestedPermissions} key and `parentCapability` makes it
-   * impossible to determine which permission the consumer intended to request.
-   * At the time of writing, our types also do not prevent this kind of
-   * mismatch.
+   * Unrecognzied properties on requested permissions are ignored. Any requested
+   * caveats are validated in later stages of request processing.
    *
    * @param origin - The origin of the grantee subject.
    * @param requestedPermissions - The requested permissions.
    */
   private validateRequestedPermissions(
     origin: OriginString,
-    requestedPermissions: RequestedPermissions,
+    requestedPermissions: RequestedPermissions | unknown,
   ): void {
-    if (
-      !requestedPermissions ||
-      typeof requestedPermissions !== 'object' ||
-      Array.isArray(requestedPermissions) ||
-      Object.keys(requestedPermissions).length === 0
-    ) {
-      throw invalidParams({ data: { origin, requestedPermissions } });
+    if (!isPlainObject(requestedPermissions)) {
+      throw invalidParams({
+        message: `Requested permissions for origin "${origin}" is not a plain object.`,
+        data: { origin, requestedPermissions },
+      });
     }
 
-    const perms = requestedPermissions;
+    if (Object.keys(requestedPermissions).length === 0) {
+      throw invalidParams({
+        message: `Permissions request for origin "${origin}" contains no permissions.`,
+        data: { requestedPermissions },
+      });
+    }
 
-    for (const methodName of Object.keys(perms)) {
-      const target = perms[methodName].parentCapability;
-      if (target !== undefined && methodName !== target) {
-        throw invalidParams({ data: { origin, requestedPermissions } });
+    for (const methodName of Object.keys(requestedPermissions)) {
+      const permission = requestedPermissions[methodName];
+      if (
+        !isPlainObject(permission) ||
+        (permission.parentCapability !== undefined &&
+          methodName !== permission.parentCapability)
+      ) {
+        throw invalidParams({
+          message: `Permissions request for origin "${origin}" contains invalid requested permission(s).`,
+          data: { origin, requestedPermissions },
+        });
       }
 
       if (!this.getTargetKey(methodName)) {
@@ -1696,6 +1674,91 @@ export class PermissionController<
           data: { origin, requestedPermissions },
         });
       }
+    }
+  }
+
+  /**
+   * Adds a request to the {@link ApprovalController} using the
+   * {@link AddApprovalRequest} action. Also validates the resulting approved
+   * permissions request, and throws an error if validation fails.
+   *
+   * @param permissionsRequest - The permissions request object.
+   * @returns The approved permissions request object.
+   */
+  private async requestUserApproval(permissionsRequest: PermissionsRequest) {
+    const { origin, id } = permissionsRequest.metadata;
+    const approvedRequest = await this.messagingSystem.call(
+      'ApprovalController:addRequest',
+      {
+        id,
+        origin,
+        requestData: permissionsRequest,
+        type: MethodNames.requestPermissions,
+      },
+      true,
+    );
+
+    this.validateApprovedPermissions(approvedRequest, { id, origin });
+    return approvedRequest as PermissionsRequest;
+  }
+
+  /**
+   * Validates an approved {@link PermissionsRequest} object. The approved
+   * request must have the required `metadata` and `permissions` properties,
+   * the `id` and `origin` of the `metadata` must match the original request
+   * metadata, and the requested permissions must be valid per
+   * {@link PermissionController.validateRequestedPermissions}. Any extra
+   * metadata properties are ignored.
+   *
+   * An error is thrown if validation fails.
+   *
+   * @param approvedRequest - The approved permissions request object.
+   * @param originalMetadata - The original request metadata.
+   */
+  private validateApprovedPermissions(
+    approvedRequest: PermissionsRequest | unknown,
+    originalMetadata: PermissionsRequestMetadata,
+  ) {
+    const { id, origin } = originalMetadata;
+
+    if (
+      !isPlainObject(approvedRequest) ||
+      !isPlainObject(approvedRequest.metadata)
+    ) {
+      throw internalError(
+        `Approved permissions request for subject "${origin}" is invalid.`,
+        { data: { approvedRequest } },
+      );
+    }
+
+    const {
+      metadata: { id: newId, origin: newOrigin },
+      permissions,
+    } = approvedRequest;
+
+    if (newId !== id) {
+      throw internalError(
+        `Approved permissions request for subject "${origin}" mutated its id.`,
+        { originalId: id, mutatedId: newId },
+      );
+    }
+
+    if (newOrigin !== origin) {
+      throw internalError(
+        `Approved permissions request for subject "${origin}" mutated its origin.`,
+        { originalOrigin: origin, mutatedOrigin: newOrigin },
+      );
+    }
+
+    try {
+      this.validateRequestedPermissions(origin, permissions);
+    } catch (error) {
+      // Re-throw as an internal error; we should never receive invalid approved
+      // permissions.
+      throw internalError(
+        `Invalid approved permissions request: ${error.message}`,
+        error.data,
+      );
     }
   }
 

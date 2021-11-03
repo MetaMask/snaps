@@ -2521,29 +2521,36 @@ describe('PermissionController', () => {
       const controller = getDefaultPermissionController();
       const origin = 'metamask.io';
 
-      expect(() =>
-        controller.grantPermissions({
-          subject: { origin },
-          approvedPermissions: {
-            wallet_getSecretArray: {
-              caveats: [
-                {
-                  type: CaveatTypes.filterArrayResponse,
-                  value: { foo: () => undefined },
+      const circular: any = { foo: 'bar' };
+      circular.circular = circular;
+
+      [{ foo: () => undefined }, circular, { foo: BigInt(10) }].forEach(
+        (invalidValue) => {
+          expect(() =>
+            controller.grantPermissions({
+              subject: { origin },
+              approvedPermissions: {
+                wallet_getSecretArray: {
+                  caveats: [
+                    {
+                      type: CaveatTypes.filterArrayResponse,
+                      value: invalidValue,
+                    },
+                  ] as any,
                 },
-              ] as any,
-            },
-          },
-        }),
-      ).toThrow(
-        new errors.CaveatInvalidJsonError(
-          {
-            type: CaveatTypes.filterArrayResponse,
-            foo: 'bar',
-          },
-          origin,
-          PermissionNames.wallet_getSecretArray,
-        ),
+              },
+            }),
+          ).toThrow(
+            new errors.CaveatInvalidJsonError(
+              {
+                type: CaveatTypes.filterArrayResponse,
+                value: invalidValue,
+              },
+              origin,
+              PermissionNames.wallet_getSecretArray,
+            ),
+          );
+        },
       );
     });
 
@@ -2760,53 +2767,35 @@ describe('PermissionController', () => {
       );
     });
 
-    it('throws if no permissions were approved', async () => {
+    it('throws if requested permissions object is not a plain object', async () => {
       const options = getPermissionControllerOptions();
       const { messenger } = options;
       const origin = 'metamask.io';
-
-      const callActionSpy = jest
-        .spyOn(messenger, 'call')
-        .mockImplementationOnce((async (...args: any) => {
-          const [, { requestData }] = args;
-          return {
-            metadata: { ...requestData.metadata },
-            permissions: {}, // no permissions
-          };
-        }) as any);
-
       const controller = getDefaultPermissionController(options);
-      await expect(
-        async () =>
-          await controller.requestPermissions(origin, {
-            [PermissionNames.wallet_getSecretArray]: {},
-          }),
-      ).rejects.toThrow(
-        errors.internalError(
-          `Approved permissions request for origin "${origin}" contains no permissions.`,
-          {
-            [PermissionNames.wallet_getSecretArray]: {},
-          },
-        ),
-      );
 
-      expect(callActionSpy).toHaveBeenCalledTimes(1);
-      expect(callActionSpy).toHaveBeenCalledWith(
-        'ApprovalController:addRequest',
-        {
-          id: expect.any(String),
-          origin,
-          requestData: {
-            metadata: { id: expect.any(String), origin },
-            permissions: { [PermissionNames.wallet_getSecretArray]: {} },
-          },
-          type: MethodNames.requestPermissions,
-        },
-        true,
-      );
+      const callActionSpy = jest.spyOn(messenger, 'call');
+
+      for (const invalidInput of [
+        // not plain objects
+        null,
+        'foo',
+        [{ [PermissionNames.wallet_getSecretArray]: {} }],
+      ]) {
+        await expect(
+          async () =>
+            await controller.requestPermissions(origin, invalidInput as any),
+        ).rejects.toThrow(
+          errors.invalidParams({
+            message: `Requested permissions for origin "${origin}" is not a plain object.`,
+            data: { origin, requestedPermissions: invalidInput },
+          }),
+        );
+      }
+
+      expect(callActionSpy).not.toHaveBeenCalled();
     });
 
-    it('throws if requested permissions are invalid', async () => {
+    it('throws if requested permissions object has no permissions', async () => {
       const options = getPermissionControllerOptions();
       const { messenger } = options;
       const origin = 'metamask.io';
@@ -2814,23 +2803,16 @@ describe('PermissionController', () => {
       const callActionSpy = jest.spyOn(messenger, 'call');
 
       const controller = getDefaultPermissionController(options);
-      // Iterate over some invalid inputs
-      [
-        // not plain objects
-        null,
-        'foo',
-        [{ [PermissionNames.wallet_getSecretArray]: {} }],
-        // no permissions
-        {},
-      ].forEach(async (input) => {
-        await expect(
-          async () => await controller.requestPermissions(origin, input as any),
-        ).rejects.toThrow(
-          errors.invalidParams({
-            data: { origin, requestedPermissions: input },
-          }),
-        );
-      });
+      await expect(
+        async () =>
+          // No permissions in object
+          await controller.requestPermissions(origin, {}),
+      ).rejects.toThrow(
+        errors.invalidParams({
+          message: `Permissions request for origin "${origin}" contains no permissions.`,
+          data: { origin, requestedPermissions: {} },
+        }),
+      );
 
       expect(callActionSpy).not.toHaveBeenCalled();
     });
@@ -2849,12 +2831,14 @@ describe('PermissionController', () => {
             [PermissionNames.wallet_getSecretArray]: {
               parentCapability: PermissionNames.wallet_getSecretArray,
             },
+            // parentCapability value does not match key
             [PermissionNames.wallet_getSecretObject]: {
               parentCapability: PermissionNames.wallet_getSecretArray,
             },
           }),
       ).rejects.toThrow(
         errors.invalidParams({
+          message: `Permissions request for origin "${origin}" contains invalid requested permission(s).`,
           data: {
             origin,
             requestedPermissions: {
@@ -2874,7 +2858,7 @@ describe('PermissionController', () => {
       expect(callActionSpy).not.toHaveBeenCalled();
     });
 
-    it('throws if requesting a permission for an unre target', async () => {
+    it('throws if requesting a permission for an unknown target', async () => {
       const options = getPermissionControllerOptions();
       const { messenger } = options;
       const origin = 'metamask.io';
@@ -2904,6 +2888,320 @@ describe('PermissionController', () => {
       );
 
       expect(callActionSpy).not.toHaveBeenCalled();
+    });
+
+    it('throws if the approved request object is invalid', async () => {
+      const options = getPermissionControllerOptions();
+      const { messenger } = options;
+      const origin = 'metamask.io';
+      const controller = getDefaultPermissionController(options);
+      const callActionSpy = jest.spyOn(messenger, 'call');
+
+      for (const invalidRequestObject of ['foo', null, { metadata: 'foo' }]) {
+        callActionSpy.mockClear();
+        callActionSpy.mockImplementationOnce(
+          (async () => invalidRequestObject) as any,
+        );
+
+        await expect(
+          async () =>
+            await controller.requestPermissions(origin, {
+              [PermissionNames.wallet_getSecretArray]: {},
+            }),
+        ).rejects.toThrow(
+          errors.internalError(
+            `Approved permissions request for subject "${origin}" is invalid.`,
+            { data: { approvedRequest: invalidRequestObject } },
+          ),
+        );
+
+        expect(callActionSpy).toHaveBeenCalledTimes(1);
+        expect(callActionSpy).toHaveBeenCalledWith(
+          'ApprovalController:addRequest',
+          {
+            id: expect.any(String),
+            origin,
+            requestData: {
+              metadata: { id: expect.any(String), origin },
+              permissions: { [PermissionNames.wallet_getSecretArray]: {} },
+            },
+            type: MethodNames.requestPermissions,
+          },
+          true,
+        );
+      }
+    });
+
+    it('throws if the approved request ID changed', async () => {
+      const options = getPermissionControllerOptions();
+      const { messenger } = options;
+      const origin = 'metamask.io';
+
+      const callActionSpy = jest
+        .spyOn(messenger, 'call')
+        .mockImplementationOnce((async (...args: any) => {
+          const [, { requestData }] = args;
+          return {
+            // different id
+            metadata: { ...requestData.metadata, id: 'foo' },
+            permissions: {
+              [PermissionNames.wallet_getSecretArray]: {},
+            },
+          };
+        }) as any);
+
+      const controller = getDefaultPermissionController(options);
+      await expect(
+        async () =>
+          await controller.requestPermissions(origin, {
+            [PermissionNames.wallet_getSecretArray]: {},
+          }),
+      ).rejects.toThrow(
+        errors.internalError(
+          `Approved permissions request for subject "${origin}" mutated its id.`,
+          { originalId: expect.any(String), mutatedId: 'foo' },
+        ),
+      );
+
+      expect(callActionSpy).toHaveBeenCalledTimes(1);
+      expect(callActionSpy).toHaveBeenCalledWith(
+        'ApprovalController:addRequest',
+        {
+          id: expect.any(String),
+          origin,
+          requestData: {
+            metadata: { id: expect.any(String), origin },
+            permissions: { [PermissionNames.wallet_getSecretArray]: {} },
+          },
+          type: MethodNames.requestPermissions,
+        },
+        true,
+      );
+    });
+
+    it('throws if the approved request origin changed', async () => {
+      const options = getPermissionControllerOptions();
+      const { messenger } = options;
+      const origin = 'metamask.io';
+
+      const callActionSpy = jest
+        .spyOn(messenger, 'call')
+        .mockImplementationOnce((async (...args: any) => {
+          const [, { requestData }] = args;
+          return {
+            // different origin
+            metadata: { ...requestData.metadata, origin: 'foo.com' },
+            permissions: {
+              [PermissionNames.wallet_getSecretArray]: {},
+            },
+          };
+        }) as any);
+
+      const controller = getDefaultPermissionController(options);
+      await expect(
+        async () =>
+          await controller.requestPermissions(origin, {
+            [PermissionNames.wallet_getSecretArray]: {},
+          }),
+      ).rejects.toThrow(
+        errors.internalError(
+          `Approved permissions request for subject "${origin}" mutated its origin.`,
+          { originalOrigin: origin, mutatedOrigin: 'foo' },
+        ),
+      );
+
+      expect(callActionSpy).toHaveBeenCalledTimes(1);
+      expect(callActionSpy).toHaveBeenCalledWith(
+        'ApprovalController:addRequest',
+        {
+          id: expect.any(String),
+          origin,
+          requestData: {
+            metadata: { id: expect.any(String), origin },
+            permissions: { [PermissionNames.wallet_getSecretArray]: {} },
+          },
+          type: MethodNames.requestPermissions,
+        },
+        true,
+      );
+    });
+
+    it('throws if no permissions were approved', async () => {
+      const options = getPermissionControllerOptions();
+      const { messenger } = options;
+      const origin = 'metamask.io';
+
+      const callActionSpy = jest
+        .spyOn(messenger, 'call')
+        .mockImplementationOnce((async (...args: any) => {
+          const [, { requestData }] = args;
+          return {
+            metadata: { ...requestData.metadata },
+            permissions: {}, // no permissions
+          };
+        }) as any);
+
+      const controller = getDefaultPermissionController(options);
+      await expect(
+        async () =>
+          await controller.requestPermissions(origin, {
+            [PermissionNames.wallet_getSecretArray]: {},
+          }),
+      ).rejects.toThrow(
+        errors.internalError(
+          `Invalid approved permissions request: Permissions request for origin "${origin}" contains no permissions.`,
+          {
+            [PermissionNames.wallet_getSecretArray]: {},
+          },
+        ),
+      );
+
+      expect(callActionSpy).toHaveBeenCalledTimes(1);
+      expect(callActionSpy).toHaveBeenCalledWith(
+        'ApprovalController:addRequest',
+        {
+          id: expect.any(String),
+          origin,
+          requestData: {
+            metadata: { id: expect.any(String), origin },
+            permissions: { [PermissionNames.wallet_getSecretArray]: {} },
+          },
+          type: MethodNames.requestPermissions,
+        },
+        true,
+      );
+    });
+
+    it('throws if approved permissions object is not a plain object', async () => {
+      const options = getPermissionControllerOptions();
+      const { messenger } = options;
+      const origin = 'metamask.io';
+      const id = 'arbitraryId';
+      const controller = getDefaultPermissionController(options);
+
+      const callActionSpy = jest.spyOn(messenger, 'call');
+
+      // The metadata is valid, but the permissions are invalid
+      const getInvalidRequestObject = (invalidPermissions: any) => {
+        return {
+          metadata: { origin, id },
+          permissions: invalidPermissions,
+        };
+      };
+
+      for (const invalidRequestObject of [
+        null,
+        'foo',
+        [{ [PermissionNames.wallet_getSecretArray]: {} }],
+      ].map((invalidPermissions) =>
+        getInvalidRequestObject(invalidPermissions),
+      )) {
+        callActionSpy.mockClear();
+        callActionSpy.mockImplementationOnce(
+          (async () => invalidRequestObject) as any,
+        );
+
+        await expect(
+          async () =>
+            await controller.requestPermissions(
+              origin,
+              {
+                [PermissionNames.wallet_getSecretArray]: {},
+              },
+              id,
+            ),
+        ).rejects.toThrow(
+          errors.internalError(
+            `Invalid approved permissions request: Requested permissions for origin "${origin}" is not a plain object.`,
+            { data: { approvedRequest: invalidRequestObject } },
+          ),
+        );
+
+        expect(callActionSpy).toHaveBeenCalledTimes(1);
+        expect(callActionSpy).toHaveBeenCalledWith(
+          'ApprovalController:addRequest',
+          {
+            id: expect.any(String),
+            origin,
+            requestData: {
+              metadata: { id: expect.any(String), origin },
+              permissions: { [PermissionNames.wallet_getSecretArray]: {} },
+            },
+            type: MethodNames.requestPermissions,
+          },
+          true,
+        );
+      }
+    });
+
+    it('throws if approved permissions contain a (key : value.parentCapability) mismatch', async () => {
+      const options = getPermissionControllerOptions();
+      const { messenger } = options;
+      const origin = 'metamask.io';
+      const controller = getDefaultPermissionController(options);
+
+      const callActionSpy = jest
+        .spyOn(messenger, 'call')
+        .mockImplementationOnce((async (...args: any) => {
+          const [, { requestData }] = args;
+          return {
+            metadata: { ...requestData.metadata },
+            permissions: {
+              [PermissionNames.wallet_getSecretArray]: {
+                parentCapability: PermissionNames.wallet_getSecretArray,
+              },
+              // parentCapability value does not match key
+              [PermissionNames.wallet_getSecretObject]: {
+                parentCapability: PermissionNames.wallet_getSecretArray,
+              },
+            },
+          };
+        }) as any);
+
+      await expect(
+        async () =>
+          await controller.requestPermissions(origin, {
+            [PermissionNames.wallet_getSecretArray]: {
+              parentCapability: PermissionNames.wallet_getSecretArray,
+            },
+          }),
+      ).rejects.toThrow(
+        errors.invalidParams({
+          message: `Invalid approved permissions request: Permissions request for origin "${origin}" contains invalid requested permission(s).`,
+          data: {
+            origin,
+            requestedPermissions: {
+              [PermissionNames.wallet_getSecretArray]: {
+                [PermissionNames.wallet_getSecretArray]: {
+                  parentCapability: PermissionNames.wallet_getSecretArray,
+                },
+                [PermissionNames.wallet_getSecretObject]: {
+                  parentCapability: PermissionNames.wallet_getSecretArray,
+                },
+              },
+            },
+          },
+        }),
+      );
+
+      expect(callActionSpy).toHaveBeenCalledTimes(1);
+      expect(callActionSpy).toHaveBeenCalledWith(
+        'ApprovalController:addRequest',
+        {
+          id: expect.any(String),
+          origin,
+          requestData: {
+            metadata: { id: expect.any(String), origin },
+            permissions: {
+              [PermissionNames.wallet_getSecretArray]: {
+                parentCapability: PermissionNames.wallet_getSecretArray,
+              },
+            },
+          },
+          type: MethodNames.requestPermissions,
+        },
+        true,
+      );
     });
   });
 
