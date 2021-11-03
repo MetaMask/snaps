@@ -42,6 +42,7 @@ export type SerializablePlugin = {
   permissionName: string;
   version: string;
   status: PluginStatus;
+  enabled: boolean;
 };
 
 export type Plugin = SerializablePlugin & {
@@ -163,12 +164,27 @@ export enum PluginStatusEvent {
   crash = 'crash',
 }
 
+/**
+ * Guard transitioning when the plugin is disabled.
+ */
+const disabledGuard = (serializedPlugin: SerializablePlugin) => {
+  return serializedPlugin.enabled;
+};
+
+/**
+ * The state machine configuration for a plugins `status` state.
+ * Using a state machine for a plugins `status` ensures that the plugin transitions to a valid next lifecycle state.
+ * Supports a very minimal subset of XState conventions outlined in `_transitionPluginState`.
+ */
 const pluginStatusStateMachineConfig = {
   initial: PluginStatus.idle,
   states: {
     [PluginStatus.idle]: {
       on: {
-        [PluginStatusEvent.start]: PluginStatus.running,
+        [PluginStatusEvent.start]: {
+          target: PluginStatus.running,
+          cond: disabledGuard,
+        },
       },
     },
     [PluginStatus.running]: {
@@ -179,12 +195,18 @@ const pluginStatusStateMachineConfig = {
     },
     [PluginStatus.stopped]: {
       on: {
-        [PluginStatusEvent.start]: PluginStatus.running,
+        [PluginStatusEvent.start]: {
+          target: PluginStatus.running,
+          cond: disabledGuard,
+        },
       },
     },
     [PluginStatus.crashed]: {
       on: {
-        [PluginStatusEvent.start]: PluginStatus.running,
+        [PluginStatusEvent.start]: {
+          target: PluginStatus.running,
+          cond: disabledGuard,
+        },
       },
     },
   },
@@ -352,11 +374,33 @@ export class PluginController extends BaseController<
     this.addPluginError(error);
   }
 
+  /**
+   * Transitions between states using `pluginStatusStateMachineConfig` as the template to figure out the next state.
+   * This transition function uses a very minimal subset of XState conventions:
+   * - supports initial state
+   * - .on supports raw event target string
+   * - .on supports {target, cond} object
+   * - the arguments for `cond` is the `SerializedPlugin` instead of Xstate convention of `(event, context) => boolean`
+   * @param pluginName the name of the plugin to transition
+   * @param event the event enum to use to transition
+   */
   _transitionPluginState(pluginName: string, event: PluginStatusEvent) {
     const pluginStatus = this.state.plugins[pluginName].status;
-    const nextStatus =
+    let nextStatus =
       (pluginStatusStateMachineConfig.states[pluginStatus].on as any)[event] ??
       pluginStatus;
+    if (nextStatus.cond) {
+      const cond = nextStatus.cond(this.state.plugins[pluginName]);
+      if (cond === false) {
+        throw new Error(
+          `Condition failed for state transition "${pluginName}" with event "${event}".`,
+        );
+      }
+    }
+
+    if (nextStatus.target) {
+      nextStatus = nextStatus.target;
+    }
 
     if (nextStatus === pluginStatus) {
       return;
@@ -411,9 +455,36 @@ export class PluginController extends BaseController<
       throw new Error(`Plugin "${pluginName}" not found.`);
     }
 
+    if (this.state.plugins[pluginName].enabled === false) {
+      throw new Error(`Plugin "${pluginName}" is disabled.`);
+    }
+
     await this._startPlugin({
       pluginName,
       sourceCode: plugin.sourceCode,
+    });
+  }
+
+  /**
+   * Enables the given plugin. A plugin can only be started if it is enabled.
+   *
+   * @param pluginName - The name of the plugin to enable.
+   */
+  enablePlugin(pluginName: string): void {
+    this.update((state: any) => {
+      state.plugins[pluginName].enabled = true;
+    });
+  }
+
+  /**
+   * Disables the given plugin. A plugin can only be started if it is enabled.
+   *
+   * @param pluginName - The name of the plugin to disable.
+   */
+  disablePlugin(pluginName: string): void {
+    this.stopPlugin(pluginName);
+    this.update((state: any) => {
+      state.plugins[pluginName].enabled = false;
     });
   }
 
@@ -804,6 +875,7 @@ export class PluginController extends BaseController<
       permissionName: PLUGIN_PREFIX + pluginName, // so we can easily correlate them
       sourceCode,
       version: manifest.version,
+      enabled: true,
       status: pluginStatusStateMachineConfig.initial,
     };
 
@@ -950,6 +1022,10 @@ export class PluginController extends BaseController<
       request: Record<string, unknown>,
     ) => {
       let handler = await this._getRpcMessageHandler(pluginName);
+
+      if (this.state.plugins[pluginName].enabled === false) {
+        throw new Error(`Plugin "${pluginName}" is disabled.`);
+      }
 
       if (!handler && this.isRunning(pluginName) === false) {
         // cold start
