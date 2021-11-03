@@ -172,7 +172,7 @@ const disabledGuard = (serializedPlugin: SerializablePlugin) => {
 };
 
 /**
- * The StateMachine configuration for a plugins `status` state.
+ * The state machine configuration for a plugins `status` state.
  * Using a state machine for a plugins `status` ensures that the plugin transitions to a valid next lifecycle state.
  * Supports a very minimal subset of XState conventions outlined in `_transitionPluginState`.
  */
