@@ -583,12 +583,7 @@ export class PermissionController<
   getRestrictedMethod(
     method: string,
   ): RestrictedMethod<RestrictedMethodParameters, Json> | undefined {
-    const targetKey = this.getTargetKey(
-      method as ExtractPermission<
-        ControllerPermissionSpecification,
-        ControllerCaveatSpecification
-      >['parentCapability'],
-    );
+    const targetKey = this.getTargetKey(method);
     if (!targetKey) {
       return undefined;
     }
@@ -1254,10 +1249,7 @@ export class PermissionController<
    * @returns The internal key of the method.
    */
   private getTargetKey(
-    method: ExtractPermission<
-      ControllerPermissionSpecification,
-      ControllerCaveatSpecification
-    >['parentCapability'],
+    method: string,
   ): ControllerPermissionSpecification['targetKey'] | undefined {
     if (hasProperty(this._permissionSpecifications, method)) {
       return method;
@@ -1955,12 +1947,7 @@ export class PermissionController<
     method: string,
     origin: OriginString,
   ): RestrictedMethod<RestrictedMethodParameters, Json> {
-    const methodImplementation = this.getRestrictedMethod(
-      method as ExtractPermission<
-        ControllerPermissionSpecification,
-        ControllerCaveatSpecification
-      >['parentCapability'],
-    );
+    const methodImplementation = this.getRestrictedMethod(method);
     if (!methodImplementation) {
       throw methodNotFound({ method, data: { origin } });
     }
