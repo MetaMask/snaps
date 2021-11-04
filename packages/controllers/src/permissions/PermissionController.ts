@@ -1912,7 +1912,8 @@ export class PermissionController<
    * caveats of its permission. Throws if the subject does not have the
    * requisite permission.
    *
-   * **ATTN:** Assumes that all parameters are valid.
+   * **ATTN:** Parameter validation is the responsibility of the caller, or
+   * the restricted method implementation in the case of `params`.
    *
    * @see {@link PermissionController.executeRestrictedMethod} and
    * {@link PermissionController.createPermissionMiddleware} for usage.
