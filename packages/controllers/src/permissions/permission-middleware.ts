@@ -21,7 +21,7 @@ import type { PermissionController } from './PermissionController';
 
 type PermissionMiddlewareFactoryOptions = {
   executeRestrictedMethod: GenericPermissionController['_executeRestrictedMethod'];
-  getRestrictedMethod: GenericPermissionController['_getRestrictedMethod'];
+  getRestrictedMethod: GenericPermissionController['getRestrictedMethod'];
   isUnrestrictedMethod: (method: string) => boolean;
 };
 
