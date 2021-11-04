@@ -240,8 +240,7 @@ export function constructPermission<
 }
 
 /**
- * Gets the the caveat of the specified type belonging to the specified
- * permission.
+ * Gets the caveat of the specified type belonging to the specified permission.
  *
  * @param permission The permission whose caveat to retrieve.
  * @param caveatType The type of the caveat to retrieve.

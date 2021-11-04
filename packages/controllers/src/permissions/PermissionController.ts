@@ -1643,7 +1643,7 @@ export class PermissionController<
    */
   private validateRequestedPermissions(
     origin: OriginString,
-    requestedPermissions: RequestedPermissions | unknown,
+    requestedPermissions: unknown,
   ): void {
     if (!isPlainObject(requestedPermissions)) {
       throw invalidParams({
@@ -1720,7 +1720,7 @@ export class PermissionController<
    * @param originalMetadata - The original request metadata.
    */
   private validateApprovedPermissions(
-    approvedRequest: PermissionsRequest | unknown,
+    approvedRequest: unknown,
     originalMetadata: PermissionsRequestMetadata,
   ) {
     const { id, origin } = originalMetadata;
@@ -1824,6 +1824,7 @@ export class PermissionController<
    * @see {@link PermissionController.acceptPermissionsRequest} and
    * {@link PermissionController.rejectPermissionsRequest} for usage.
    * @param options - The {@link HasApprovalRequest} options.
+   * @param options.id - The id of the approval request to check for.
    * @returns Whether the specified request exists.
    */
   private hasApprovalRequest(options: { id: string }): boolean {
