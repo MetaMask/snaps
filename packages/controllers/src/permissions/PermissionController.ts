@@ -460,7 +460,7 @@ export class PermissionController<
     this.registerMessageHandlers();
     this.createPermissionMiddleware = getPermissionMiddlewareFactory({
       executeRestrictedMethod: this._executeRestrictedMethod.bind(this),
-      getRestrictedMethod: this._getRestrictedMethod.bind(this),
+      getRestrictedMethod: this.getRestrictedMethod.bind(this),
       isUnrestrictedMethod: this.unrestrictedMethods.has.bind(
         this.unrestrictedMethods,
       ),
@@ -577,15 +577,27 @@ export class PermissionController<
   /**
    * Gets the implementation of the specified restricted method.
    *
+   * A JSON-RPC error is thrown if the method does not exist.
+   *
+   * @see {@link PermissionController.executeRestrictedMethod} and
+   * {@link PermissionController.createPermissionMiddleware} for internal usage.
    * @param method - The name of the restricted method.
+   * @param origin - The origin associated with the request for the restricted
+   * method, if any.
    * @returns The restricted method implementation.
    */
   getRestrictedMethod(
     method: string,
-  ): RestrictedMethod<RestrictedMethodParameters, Json> | undefined {
+    origin?: string,
+  ): RestrictedMethod<RestrictedMethodParameters, Json> {
     const targetKey = this.getTargetKey(method);
     if (!targetKey) {
-      return undefined;
+      const error = methodNotFound({ method });
+      if (origin) {
+        error.data = { origin };
+      }
+
+      throw error;
     }
 
     return this.getPermissionSpecification(targetKey).methodImplementation;
@@ -1875,7 +1887,7 @@ export class PermissionController<
     params?: RestrictedMethodParameters,
   ): Promise<Json> {
     // Throws if the method does not exist
-    const methodImplementation = this._getRestrictedMethod(methodName, origin);
+    const methodImplementation = this.getRestrictedMethod(methodName, origin);
 
     const result = await this._executeRestrictedMethod(
       methodImplementation,
@@ -1930,28 +1942,5 @@ export class PermissionController<
       permission,
       this._caveatSpecifications,
     )({ method, params, context: { origin } });
-  }
-
-  /**
-   * Like {@link PermissionController.getRestrictedMethod}, except the request
-   * for the restricted method is associated with a specific subject, and a
-   * JSON-RPC error is thrown if the method does not exist.
-   *
-   * @see {@link PermissionController.executeRestrictedMethod} and
-   * {@link PermissionController.createPermissionMiddleware} for usage.
-   * @param method - The name of the method to get.
-   * @param request - The request associated with the request for the method.
-   * @returns - The restricted method implementation, if it exists.
-   */
-  private _getRestrictedMethod(
-    method: string,
-    origin: OriginString,
-  ): RestrictedMethod<RestrictedMethodParameters, Json> {
-    const methodImplementation = this.getRestrictedMethod(method);
-    if (!methodImplementation) {
-      throw methodNotFound({ method, data: { origin } });
-    }
-
-    return methodImplementation;
   }
 }

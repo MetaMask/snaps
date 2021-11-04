@@ -589,9 +589,11 @@ describe('PermissionController', () => {
       ).toStrictEqual('Hello, secret friend "foo"!');
     });
 
-    it('returns undefined if the method does not exist', () => {
+    it('throws an error if the method does not exist', () => {
       const controller = getDefaultPermissionController();
-      expect(controller.getRestrictedMethod('foo' as any)).toBeUndefined();
+      expect(() => controller.getRestrictedMethod('foo')).toThrow(
+        errors.methodNotFound({ method: 'foo' }),
+      );
     });
   });
 
