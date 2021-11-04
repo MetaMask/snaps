@@ -818,7 +818,7 @@ export class PermissionController<
   }
 
   /**
-   * Gets the caveat of the specified type, if any, for the the permission of
+   * Gets the caveat of the specified type, if any, for the permission of
    * the subject corresponding to the given origin.
    *
    * Throws an error if the subject does not have a permission with the
@@ -1532,7 +1532,7 @@ export class PermissionController<
       throw new CaveatInvalidJsonError(requestedCaveat, origin, target);
     }
 
-    const caveat = _constructCaveat(type, (value as Json) ?? null);
+    const caveat = _constructCaveat(type, value ?? null);
     this.validateCaveat(caveat, origin, target);
     return caveat as ExtractCaveats<ControllerCaveatSpecification>;
   }
@@ -1626,7 +1626,7 @@ export class PermissionController<
   /**
    * Validates requested permissions. Throws if validation fails.
    *
-   * This method ensures that the the requested permissions are a properly
+   * This method ensures that the requested permissions are a properly
    * formatted {@link RequestedPermissions} object, that its keys correspond to
    * the `parentCapability` fields of its values, and that the requested
    * capability exists.
@@ -1851,14 +1851,14 @@ export class PermissionController<
   }
 
   /**
-   * Executes a restricted method as the subject with the the given origin.
+   * Executes a restricted method as the subject with the given origin.
    * The specified params, if any, will be passed to the method implementation.
    *
    * **ATTN:** Great caution should be exercised in the use of this method.
    * Methods that cause side effects or affect application state should
    * be avoided.
    *
-   * This method will first attempt to retrieve the requested restrictded method
+   * This method will first attempt to retrieve the requested restricted method
    * implementation, throwing if it does not exist. The method will then be
    * invoked as though the subject with the specified origin had invoked it with
    * the specified parameters. This means that any existing caveats will be
@@ -1933,7 +1933,7 @@ export class PermissionController<
       throw unauthorized({ data: { origin, method } });
     }
 
-    return decorateWithCaveats<ControllerCaveatSpecification>(
+    return decorateWithCaveats(
       methodImplementation,
       permission,
       this._caveatSpecifications,
