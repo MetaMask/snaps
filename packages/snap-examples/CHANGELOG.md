@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.3.0]
 ### Changed
-- Enforce consistent naming for Snaps ([#119](https://github.com/MetaMask/snaps-skunkworks/pull/119))
+- **BREAKING:** Enforce consistent naming for Snaps-related functionality ([#119](https://github.com/MetaMask/snaps-skunkworks/pull/119))
 
 ## [0.2.2]
 ### Fixed
