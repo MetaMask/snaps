@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0]
+### Added
+- Poll Snaps for their status ([#104](https://github.com/MetaMask/snaps-skunkworks/pull/104))
+  - If a Snap stops responding, it will be forced to stop.
+
+### Changed
+- **BREAKING:** Enforce consistent naming for Snaps-related functionality ([#119](https://github.com/MetaMask/snaps-skunkworks/pull/119))
+- Use the `ControllerMessenger` to communicate between the `SnapController` and its execution environment service ([#100](https://github.com/MetaMask/snaps-skunkworks/pull/100))
+
 ## [0.2.2]
 ### Added
 - Snap error state ([#96](https://github.com/MetaMask/snaps-skunkworks/pull/96))
@@ -40,7 +49,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.2.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.2.2...v0.3.0
 [0.2.2]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.2.0...v0.2.2
 [0.2.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.1.2...v0.2.0
 [0.1.2]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.1.1...v0.1.2

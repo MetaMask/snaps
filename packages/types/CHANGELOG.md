@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0]
+### Added
+- `UnresponsiveMessageEvent` ([#104](https://github.com/MetaMask/snaps-skunkworks/pull/104))
+- `ErrorMessageEvent`, `ServiceMessenger` ([#100](https://github.com/MetaMask/snaps-skunkworks/pull/100))
+
+### Changed
+- **BREAKING:** Enforce consistent naming for Snaps-related functionality ([#119](https://github.com/MetaMask/snaps-skunkworks/pull/119))
+
 ## [0.2.2]
 ### Fixed
 - Package script issues ([#97](https://github.com/MetaMask/snaps-skunkworks/pull/97), [#98](https://github.com/MetaMask/snaps-skunkworks/pull/98))
@@ -28,7 +36,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.2.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.2.2...v0.3.0
 [0.2.2]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.2.0...v0.2.2
 [0.2.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.0.6...v0.1.0
