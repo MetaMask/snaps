@@ -7,10 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.3.0]
-### Uncategorized
+### Added
+- Poll for status webworker ([#104](https://github.com/MetaMask/snaps-skunkworks/pull/104))
+- Service Messenger ([#100](https://github.com/MetaMask/snaps-skunkworks/pull/100))
+
+### Changed
 - Enforce consistent naming for Snaps ([#119](https://github.com/MetaMask/snaps-skunkworks/pull/119))
-- Add poll for status webworker ([#104](https://github.com/MetaMask/snaps-skunkworks/pull/104))
-- Added Service Messenger ([#100](https://github.com/MetaMask/snaps-skunkworks/pull/100))
 
 ## [0.2.2]
 ### Added
