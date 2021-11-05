@@ -1,28 +1,26 @@
 import { JsonRpcRequest } from 'json-rpc-engine';
-import { PluginData } from '@metamask/snap-types';
-import { PluginRpcHook } from './WebWorkerExecutionEnvironmentService';
+import { SnapData } from '@metamask/snap-types';
+import { SnapRpcHook } from './WebWorkerExecutionEnvironmentService';
 
-export interface PluginMetadata {
+export interface SnapMetadata {
   hostname: string;
 }
 
-export type TerminatePlugin = (pluginName: string) => Promise<void>;
+export type TerminateSnap = (snapName: string) => Promise<void>;
 export type Command = (
-  pluginName: string,
+  snapName: string,
   message: JsonRpcRequest<unknown>,
 ) => Promise<unknown>;
 export type TerminateAll = () => Promise<void>;
-export type CreatePluginEnvironment = (
-  metadata: PluginMetadata,
-) => Promise<string>;
-export type ExecutePlugin = (pluginData: PluginData) => Promise<unknown>;
+export type CreateSnapEnvironment = (metadata: SnapMetadata) => Promise<string>;
+export type ExecuteSnap = (snapData: SnapData) => Promise<unknown>;
 export type GetRpcMessageHandler = (
-  pluginName: string,
-) => Promise<PluginRpcHook | undefined>;
+  snapName: string,
+) => Promise<SnapRpcHook | undefined>;
 
 export interface ExecutionEnvironmentService {
-  terminatePlugin: TerminatePlugin;
-  terminateAllPlugins: TerminateAll;
-  executePlugin: ExecutePlugin;
+  terminateSnap: TerminateSnap;
+  terminateAllSnaps: TerminateAll;
+  executeSnap: ExecuteSnap;
   getRpcMessageHandler: GetRpcMessageHandler;
 }

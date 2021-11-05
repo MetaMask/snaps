@@ -3,7 +3,7 @@ import { MetaMaskInpageProvider } from '@metamask/inpage-provider';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import pump from 'pump';
 import { WorkerPostMessageStream } from '@metamask/post-message-stream';
-import { PluginData, PluginProvider } from '@metamask/snap-types';
+import { SnapData, SnapProvider } from '@metamask/snap-types';
 import type { JsonRpcId, JsonRpcRequest } from 'json-rpc-engine';
 import { STREAM_NAMES } from './enums';
 
@@ -16,12 +16,12 @@ declare global {
   const harden: <T>(value: T) => T;
 }
 
-type PluginRpcHandler = (
+type SnapRpcHandler = (
   origin: string,
   request: Record<string, unknown>,
 ) => Promise<unknown>;
 
-interface PluginRpcRequest {
+interface SnapRpcRequest {
   origin: string;
   request: Record<string, unknown>;
   target: string;
@@ -36,14 +36,14 @@ lockdown({
 
 /**
  * TODO:
- * To support multiple plugins per worker, we need to duplex the rpcStream
+ * To support multiple snaps per worker, we need to duplex the rpcStream
  * on this end, and pass MetaMaskInpageProvider the appropriate stream name.
  */
 
 // init
 (function () {
   class Controller {
-    private pluginRpcHandlers: Map<string, PluginRpcHandler>;
+    private snapRpcHandlers: Map<string, SnapRpcHandler>;
 
     private initialized = false;
 
@@ -52,7 +52,7 @@ lockdown({
     private rpcStream: Duplex;
 
     constructor() {
-      this.pluginRpcHandlers = new Map();
+      this.snapRpcHandlers = new Map();
       this.commandStream = null as any;
       this.rpcStream = null as any;
     }
@@ -94,16 +94,16 @@ lockdown({
       }
 
       switch (method) {
-        case 'executePlugin':
-          this.executePlugin(id, params as unknown as PluginData);
+        case 'executeSnap':
+          this.executeSnap(id, params as unknown as SnapData);
           break;
 
         case 'ping':
           this.respond(id, { result: 'OK' });
           break;
 
-        case 'pluginRpc':
-          await this.handlePluginRpc(id, params as unknown as PluginRpcRequest);
+        case 'snapRpc':
+          await this.handleSnapRpc(id, params as unknown as SnapRpcRequest);
           break;
 
         default:
@@ -122,15 +122,15 @@ lockdown({
       });
     }
 
-    private async handlePluginRpc(
+    private async handleSnapRpc(
       id: JsonRpcId,
-      { origin: requestOrigin, request, target }: PluginRpcRequest,
+      { origin: requestOrigin, request, target }: SnapRpcRequest,
     ) {
-      const handler = this.pluginRpcHandlers.get(target);
+      const handler = this.snapRpcHandlers.get(target);
 
       if (!handler) {
         this.respond(id, {
-          error: new Error(`No RPC handler registered for plugin "${target}".`),
+          error: new Error(`No RPC handler registered for snap "${target}".`),
         });
         return;
       }
@@ -143,19 +143,19 @@ lockdown({
       }
     }
 
-    private executePlugin(
+    private executeSnap(
       id: JsonRpcId,
-      { pluginName, sourceCode }: Partial<PluginData> = {},
+      { snapName, sourceCode }: Partial<SnapData> = {},
     ) {
-      if (!isTruthyString(pluginName) || !isTruthyString(sourceCode)) {
+      if (!isTruthyString(snapName) || !isTruthyString(sourceCode)) {
         this.respond(id, {
-          error: new Error('Invalid executePlugin parameters.'),
+          error: new Error('Invalid executeSnap parameters.'),
         });
         return;
       }
 
       try {
-        this.startPlugin(pluginName as string, sourceCode as string);
+        this.startSnap(snapName as string, sourceCode as string);
         this.respond(id, { result: 'OK' });
       } catch (err) {
         this.respond(id, { error: err });
@@ -163,19 +163,19 @@ lockdown({
     }
 
     /**
-     * Attempts to evaluate a plugin in SES.
-     * Generates the APIs for the plugin. May throw on error.
+     * Attempts to evaluate a snap in SES.
+     * Generates the APIs for the snap. May throw on error.
      *
-     * @param {string} pluginName - The name of the plugin.
-     * @param {Array<string>} approvedPermissions - The plugin's approved permissions.
+     * @param {string} snapName - The name of the snap.
+     * @param {Array<string>} approvedPermissions - The snap's approved permissions.
      * Should always be a value returned from the permissions controller.
-     * @param {string} sourceCode - The source code of the plugin, in IIFE format.
-     * @param {Object} ethereumProvider - The plugin's Ethereum provider object.
+     * @param {string} sourceCode - The source code of the snap, in IIFE format.
+     * @param {Object} ethereumProvider - The snap's Ethereum provider object.
      */
-    private startPlugin(pluginName: string, sourceCode: string) {
-      console.log(`starting plugin '${pluginName}' in worker`);
+    private startSnap(snapName: string, sourceCode: string) {
+      console.log(`starting snap '${snapName}' in worker`);
 
-      const wallet = this.createPluginProvider(pluginName);
+      const wallet = this.createSnapProvider(snapName);
 
       const endowments = {
         BigInt,
@@ -199,42 +199,42 @@ lockdown({
         });
         compartment.evaluate(sourceCode);
       } catch (err) {
-        this.removePlugin(pluginName);
+        this.removeSnap(snapName);
         console.error(
-          `Error while running plugin '${pluginName}' in worker:${self.name}.`,
+          `Error while running snap '${snapName}' in worker:${self.name}.`,
           err,
         );
       }
     }
 
     /**
-     * Sets up the given plugin's RPC message handler, creates a hardened
-     * plugin provider object (i.e. globalThis.wallet), and returns it.
+     * Sets up the given snap's RPC message handler, creates a hardened
+     * snap provider object (i.e. globalThis.wallet), and returns it.
      */
-    private createPluginProvider(pluginName: string): PluginProvider {
-      const pluginProvider = new MetaMaskInpageProvider(this.rpcStream as any, {
+    private createSnapProvider(snapName: string): SnapProvider {
+      const snapProvider = new MetaMaskInpageProvider(this.rpcStream as any, {
         shouldSendMetadata: false,
-      }) as unknown as Partial<PluginProvider>;
+      }) as unknown as Partial<SnapProvider>;
 
-      pluginProvider.registerRpcMessageHandler = (func: PluginRpcHandler) => {
+      snapProvider.registerRpcMessageHandler = (func: SnapRpcHandler) => {
         console.log('Worker: Registering RPC message handler', func);
-        if (this.pluginRpcHandlers.has(pluginName)) {
+        if (this.snapRpcHandlers.has(snapName)) {
           throw new Error('RPC handler already registered.');
         }
-        this.pluginRpcHandlers.set(pluginName, func);
+        this.snapRpcHandlers.set(snapName, func);
       };
 
       // TODO: harden throws an error. Why?
-      // return harden(pluginProvider as PluginProvider);
-      return pluginProvider as PluginProvider;
+      // return harden(snapProvider as SnapProvider);
+      return snapProvider as SnapProvider;
     }
 
     /**
-     * Removes the plugin with the given name. Specifically:
-     * - Deletes the plugin's RPC handler, if any
+     * Removes the snap with the given name. Specifically:
+     * - Deletes the snap's RPC handler, if any
      */
-    private removePlugin(pluginName: string): void {
-      this.pluginRpcHandlers.delete(pluginName);
+    private removeSnap(snapName: string): void {
+      this.snapRpcHandlers.delete(snapName);
     }
   }
 

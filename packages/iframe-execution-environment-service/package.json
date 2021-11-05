@@ -21,7 +21,8 @@
     "build:tsc": "tsc --project tsconfig.json",
     "build:post-tsc": "echo 'post-tsc-iframe-execution-env'",
     "build": "yarn build:tsc && yarn build:post-tsc",
-    "build:clean": "yarn rimraf dist/* && yarn build",
+    "build:clean": "yarn clean && yarn build",
+    "clean": "rimraf dist/*",
     "publish": "../../scripts/publish-package.sh",
     "publish:prep": "yarn lint && yarn build:clean"
   },

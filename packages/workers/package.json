@@ -21,8 +21,9 @@
     "lint:changelog": "yarn auto-changelog validate",
     "build": "yarn build:tsc && yarn build:post-tsc",
     "build:tsc": "tsc --project tsconfig.local.json",
-    "build:post-tsc": "mv dist/PluginWorker.js dist/_PluginWorker.js && rm dist/PluginWorker* && node bundle.js && rm dist/_PluginWorker.js",
-    "build:clean": "yarn rimraf dist/* && yarn build",
+    "build:post-tsc": "mv dist/SnapWorker.js dist/_SnapWorker.js && rm dist/SnapWorker* && node bundle.js && rm dist/_SnapWorker.js",
+    "build:clean": "yarn clean && yarn build",
+    "clean": "rimraf dist/*",
     "publish": "../../scripts/publish-package.sh",
     "publish:prep": "yarn lint && yarn build:clean"
   },

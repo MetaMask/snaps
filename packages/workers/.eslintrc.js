@@ -3,7 +3,7 @@ module.exports = {
 
   overrides: [
     {
-      files: ['src/PluginWorker.ts'],
+      files: ['src/SnapWorker.ts'],
       env: {
         browser: true,
       },

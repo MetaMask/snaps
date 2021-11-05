@@ -8,24 +8,24 @@ import {
 import { WebWorkerExecutionEnvironmentService } from '../services/WebWorkerExecutionEnvironmentService';
 import { ExecutionEnvironmentService } from '../services/ExecutionEnvironmentService';
 import {
-  PluginController,
-  PluginControllerActions,
-  PluginControllerState,
-  PluginStatus,
-} from './PluginController';
+  SnapController,
+  SnapControllerActions,
+  SnapControllerState,
+  SnapStatus,
+} from './SnapController';
 
 const workerCode = fs.readFileSync(
-  require.resolve('@metamask/snap-workers/dist/PluginWorker.js'),
+  require.resolve('@metamask/snap-workers/dist/SnapWorker.js'),
   'utf8',
 );
 
-describe('PluginController Controller', () => {
-  it('can create a worker and plugin controller', async () => {
+describe('SnapController Controller', () => {
+  it('can create a worker and snap controller', async () => {
     const messenger = new ControllerMessenger<
-      PluginControllerActions,
+      SnapControllerActions,
       ErrorMessageEvent | UnresponsiveMessageEvent
     >().getRestricted({
-      name: 'PluginController',
+      name: 'SnapController',
       allowedEvents: [
         'ServiceMessenger:unhandledError',
         'ServiceMessenger:unresponsive',
@@ -35,18 +35,18 @@ describe('PluginController Controller', () => {
     const workerExecutionEnvironment = new WebWorkerExecutionEnvironmentService(
       {
         messenger,
-        setupPluginProvider: jest.fn(),
+        setupSnapProvider: jest.fn(),
         workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
       },
     );
-    const pluginController = new PluginController({
-      terminateAllPlugins: workerExecutionEnvironment.terminateAllPlugins.bind(
+    const snapController = new SnapController({
+      terminateAllSnaps: workerExecutionEnvironment.terminateAllSnaps.bind(
         workerExecutionEnvironment,
       ),
-      terminatePlugin: workerExecutionEnvironment.terminatePlugin.bind(
+      terminateSnap: workerExecutionEnvironment.terminateSnap.bind(
         workerExecutionEnvironment,
       ),
-      executePlugin: workerExecutionEnvironment.executePlugin.bind(
+      executeSnap: workerExecutionEnvironment.executeSnap.bind(
         workerExecutionEnvironment,
       ),
       getRpcMessageHandler:
@@ -61,16 +61,16 @@ describe('PluginController Controller', () => {
       messenger,
     });
 
-    expect(pluginController).toBeDefined();
-    pluginController.destroy();
+    expect(snapController).toBeDefined();
+    snapController.destroy();
   });
 
-  it('can create a worker and plugin controller and add a plugin and update its state', async () => {
+  it('can create a worker and snap controller and add a snap and update its state', async () => {
     const messenger = new ControllerMessenger<
-      PluginControllerActions,
+      SnapControllerActions,
       ErrorMessageEvent | UnresponsiveMessageEvent
     >().getRestricted({
-      name: 'PluginController',
+      name: 'SnapController',
       allowedEvents: [
         'ServiceMessenger:unhandledError',
         'ServiceMessenger:unresponsive',
@@ -80,18 +80,18 @@ describe('PluginController Controller', () => {
     const workerExecutionEnvironment = new WebWorkerExecutionEnvironmentService(
       {
         messenger,
-        setupPluginProvider: jest.fn(),
+        setupSnapProvider: jest.fn(),
         workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
       },
     );
-    const pluginController = new PluginController({
-      terminateAllPlugins: workerExecutionEnvironment.terminateAllPlugins.bind(
+    const snapController = new SnapController({
+      terminateAllSnaps: workerExecutionEnvironment.terminateAllSnaps.bind(
         workerExecutionEnvironment,
       ),
-      terminatePlugin: workerExecutionEnvironment.terminatePlugin.bind(
+      terminateSnap: workerExecutionEnvironment.terminateSnap.bind(
         workerExecutionEnvironment,
       ),
-      executePlugin: workerExecutionEnvironment.executePlugin.bind(
+      executeSnap: workerExecutionEnvironment.executeSnap.bind(
         workerExecutionEnvironment,
       ),
       getRpcMessageHandler:
@@ -105,8 +105,8 @@ describe('PluginController Controller', () => {
       closeAllConnections: jest.fn(),
       messenger,
     });
-    const plugin = await pluginController.add({
-      name: 'TestPlugin',
+    const snap = await snapController.add({
+      name: 'TestSnap',
       sourceCode: `
         wallet.registerRpcMessageHandler(async (origin, request) => {
           const {method, params, id} = request;
@@ -121,24 +121,24 @@ describe('PluginController Controller', () => {
       },
     });
 
-    await pluginController.startPlugin(plugin.name);
-    await pluginController.updatePluginState(plugin.name, { hello: 'world' });
-    const pluginState = await pluginController.getPluginState(plugin.name);
-    expect(pluginState).toStrictEqual({ hello: 'world' });
-    expect(pluginController.state.pluginStates).toStrictEqual({
-      TestPlugin: {
+    await snapController.startSnap(snap.name);
+    await snapController.updateSnapState(snap.name, { hello: 'world' });
+    const snapState = await snapController.getSnapState(snap.name);
+    expect(snapState).toStrictEqual({ hello: 'world' });
+    expect(snapController.state.snapStates).toStrictEqual({
+      TestSnap: {
         hello: 'world',
       },
     });
-    pluginController.destroy();
+    snapController.destroy();
   });
 
-  it('can add a plugin and use its JSON-RPC api with a WebWorkerExecutionEnvironmentService', async () => {
+  it('can add a snap and use its JSON-RPC api with a WebWorkerExecutionEnvironmentService', async () => {
     const messenger = new ControllerMessenger<
-      PluginControllerActions,
+      SnapControllerActions,
       ErrorMessageEvent | UnresponsiveMessageEvent
     >().getRestricted({
-      name: 'PluginController',
+      name: 'SnapController',
       allowedEvents: [
         'ServiceMessenger:unhandledError',
         'ServiceMessenger:unresponsive',
@@ -147,18 +147,17 @@ describe('PluginController Controller', () => {
     const webWorkerExecutionEnvironment =
       new WebWorkerExecutionEnvironmentService({
         messenger,
-        setupPluginProvider: jest.fn(),
+        setupSnapProvider: jest.fn(),
         workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
       });
-    const pluginController = new PluginController({
-      terminateAllPlugins:
-        webWorkerExecutionEnvironment.terminateAllPlugins.bind(
-          webWorkerExecutionEnvironment,
-        ),
-      terminatePlugin: webWorkerExecutionEnvironment.terminatePlugin.bind(
+    const snapController = new SnapController({
+      terminateAllSnaps: webWorkerExecutionEnvironment.terminateAllSnaps.bind(
         webWorkerExecutionEnvironment,
       ),
-      executePlugin: webWorkerExecutionEnvironment.executePlugin.bind(
+      terminateSnap: webWorkerExecutionEnvironment.terminateSnap.bind(
+        webWorkerExecutionEnvironment,
+      ),
+      executeSnap: webWorkerExecutionEnvironment.executeSnap.bind(
         webWorkerExecutionEnvironment,
       ),
       getRpcMessageHandler:
@@ -173,8 +172,8 @@ describe('PluginController Controller', () => {
       messenger,
     });
 
-    const plugin = await pluginController.add({
-      name: 'TestPlugin',
+    const snap = await snapController.add({
+      name: 'TestSnap',
       sourceCode: `
         wallet.registerRpcMessageHandler(async (origin, request) => {
           const {method, params, id} = request;
@@ -190,8 +189,8 @@ describe('PluginController Controller', () => {
       },
     });
 
-    await pluginController.startPlugin(plugin.name);
-    const handle = await pluginController.getRpcMessageHandler(plugin.name);
+    await snapController.startSnap(snap.name);
+    const handle = await snapController.getRpcMessageHandler(snap.name);
     if (!handle) {
       throw Error('rpc handler not found');
     }
@@ -203,12 +202,12 @@ describe('PluginController Controller', () => {
       id: 1,
     });
     expect(result).toStrictEqual('test1');
-    pluginController.destroy();
+    snapController.destroy();
   });
 
-  it('can add a plugin and use its JSON-RPC api with a stub execution env service', async () => {
+  it('can add a snap and use its JSON-RPC api with a stub execution env service', async () => {
     class ExecutionEnvironmentStub implements ExecutionEnvironmentService {
-      async terminateAllPlugins() {
+      async terminateAllSnaps() {
         // empty stub
       }
 
@@ -221,34 +220,34 @@ describe('PluginController Controller', () => {
         };
       }
 
-      async executePlugin() {
+      async executeSnap() {
         return 'some-unique-id';
       }
 
-      async terminatePlugin() {
+      async terminateSnap() {
         // empty stub
       }
     }
 
     const executionEnvironmentStub = new ExecutionEnvironmentStub();
     const messenger = new ControllerMessenger<
-      PluginControllerActions,
+      SnapControllerActions,
       ErrorMessageEvent | UnresponsiveMessageEvent
     >().getRestricted({
-      name: 'PluginController',
+      name: 'SnapController',
       allowedEvents: [
         'ServiceMessenger:unhandledError',
         'ServiceMessenger:unresponsive',
       ],
     });
-    const pluginController = new PluginController({
-      terminateAllPlugins: executionEnvironmentStub.terminateAllPlugins.bind(
+    const snapController = new SnapController({
+      terminateAllSnaps: executionEnvironmentStub.terminateAllSnaps.bind(
         executionEnvironmentStub,
       ),
-      terminatePlugin: executionEnvironmentStub.terminatePlugin.bind(
+      terminateSnap: executionEnvironmentStub.terminateSnap.bind(
         executionEnvironmentStub,
       ),
-      executePlugin: executionEnvironmentStub.executePlugin.bind(
+      executeSnap: executionEnvironmentStub.executeSnap.bind(
         executionEnvironmentStub,
       ),
       getRpcMessageHandler: executionEnvironmentStub.getRpcMessageHandler.bind(
@@ -262,8 +261,8 @@ describe('PluginController Controller', () => {
       messenger,
     });
 
-    const plugin = await pluginController.add({
-      name: 'TestPlugin',
+    const snap = await snapController.add({
+      name: 'TestSnap',
       sourceCode: `
         wallet.registerRpcMessageHandler(async (origin, request) => {
           const {method, params, id} = request;
@@ -278,8 +277,8 @@ describe('PluginController Controller', () => {
       },
     });
 
-    await pluginController.startPlugin(plugin.name);
-    const handle = await pluginController.getRpcMessageHandler(plugin.name);
+    await snapController.startSnap(snap.name);
+    const handle = await snapController.getRpcMessageHandler(snap.name);
     if (!handle) {
       throw Error('rpc handler not found');
     }
@@ -291,11 +290,11 @@ describe('PluginController Controller', () => {
       id: 1,
     });
     expect(result).toStrictEqual('test1');
-    pluginController.destroy();
+    snapController.destroy();
   });
 
-  it('errors if attempting to start a plugin that was already started', async () => {
-    const name = 'fooPlugin';
+  it('errors if attempting to start a snap that was already started', async () => {
+    const name = 'fooSnap';
     const manifest = {
       name,
       version: '1.0.0',
@@ -307,22 +306,22 @@ describe('PluginController Controller', () => {
     };
     const sourceCode = 'foo';
 
-    const mockExecutePlugin = jest.fn();
+    const mockExecuteSnap = jest.fn();
 
     const messenger = new ControllerMessenger<
-      PluginControllerActions,
+      SnapControllerActions,
       ErrorMessageEvent | UnresponsiveMessageEvent
     >().getRestricted({
-      name: 'PluginController',
+      name: 'SnapController',
       allowedEvents: [
         'ServiceMessenger:unhandledError',
         'ServiceMessenger:unresponsive',
       ],
     });
-    const pluginController = new PluginController({
-      terminateAllPlugins: jest.fn(),
-      terminatePlugin: jest.fn(),
-      executePlugin: mockExecutePlugin,
+    const snapController = new SnapController({
+      terminateAllSnaps: jest.fn(),
+      terminateSnap: jest.fn(),
+      executeSnap: mockExecuteSnap,
       getRpcMessageHandler: jest.fn(),
       removeAllPermissionsFor: jest.fn(),
       getPermissions: jest.fn(),
@@ -332,30 +331,30 @@ describe('PluginController Controller', () => {
       messenger,
     });
 
-    await pluginController.add({ name, manifest, sourceCode });
-    await pluginController.startPlugin(name);
-    await expect(pluginController.startPlugin(name)).rejects.toThrow(
-      /^Plugin "fooPlugin" is already started.$/u,
+    await snapController.add({ name, manifest, sourceCode });
+    await snapController.startSnap(name);
+    await expect(snapController.startSnap(name)).rejects.toThrow(
+      /^Snap "fooSnap" is already started.$/u,
     );
-    expect(mockExecutePlugin).toHaveBeenCalledTimes(1);
-    expect(mockExecutePlugin).toHaveBeenCalledWith({
-      pluginName: name,
+    expect(mockExecuteSnap).toHaveBeenCalledTimes(1);
+    expect(mockExecuteSnap).toHaveBeenCalledWith({
+      snapName: name,
       sourceCode,
     });
   });
 
-  it('can not delete existing plugins when using runExistinPlugins with a hydrated state', async () => {
-    const mockExecutePlugin = jest.fn();
+  it('can not delete existing snaps when using runExistinSnaps with a hydrated state', async () => {
+    const mockExecuteSnap = jest.fn();
 
     const controllerMessenger = new ControllerMessenger<
-      PluginControllerActions,
+      SnapControllerActions,
       ErrorMessageEvent | UnresponsiveMessageEvent
     >();
 
-    const firstPluginController = new PluginController({
-      terminateAllPlugins: jest.fn(),
-      terminatePlugin: jest.fn(),
-      executePlugin: mockExecutePlugin,
+    const firstSnapController = new SnapController({
+      terminateAllSnaps: jest.fn(),
+      terminateSnap: jest.fn(),
+      executeSnap: mockExecuteSnap,
       getRpcMessageHandler: jest.fn(),
       removeAllPermissionsFor: jest.fn(),
       getPermissions: jest.fn(),
@@ -363,17 +362,17 @@ describe('PluginController Controller', () => {
       requestPermissions: jest.fn(),
       closeAllConnections: jest.fn(),
       messenger: controllerMessenger.getRestricted({
-        name: 'PluginController',
+        name: 'SnapController',
         allowedEvents: [
           'ServiceMessenger:unhandledError',
           'ServiceMessenger:unresponsive',
         ],
       }),
       state: {
-        pluginErrors: {},
-        pluginStates: {},
-        inlinePluginIsRunning: false,
-        plugins: {
+        snapErrors: {},
+        snapStates: {},
+        inlineSnapIsRunning: false,
+        snaps: {
           foo: {
             initialPermissions: {},
             permissionName: 'fooperm',
@@ -381,26 +380,26 @@ describe('PluginController Controller', () => {
             sourceCode: 'console.log("foo")',
             name: 'foo',
             enabled: true,
-            status: PluginStatus.idle,
+            status: SnapStatus.idle,
           },
         },
       },
     });
 
     // persist the state somewhere
-    const persistedState = getPersistentState<PluginControllerState>(
-      firstPluginController.state,
-      firstPluginController.metadata,
+    const persistedState = getPersistentState<SnapControllerState>(
+      firstSnapController.state,
+      firstSnapController.metadata,
     );
     const secondControllerMessenger = new ControllerMessenger<
-      PluginControllerActions,
+      SnapControllerActions,
       ErrorMessageEvent | UnresponsiveMessageEvent
     >();
     // create a new controller
-    const secondPluginController = new PluginController({
-      terminateAllPlugins: jest.fn(),
-      terminatePlugin: jest.fn(),
-      executePlugin: mockExecutePlugin,
+    const secondSnapController = new SnapController({
+      terminateAllSnaps: jest.fn(),
+      terminateSnap: jest.fn(),
+      executeSnap: mockExecuteSnap,
       getRpcMessageHandler: jest.fn(),
       removeAllPermissionsFor: jest.fn(),
       getPermissions: jest.fn(),
@@ -408,25 +407,25 @@ describe('PluginController Controller', () => {
       requestPermissions: jest.fn(),
       closeAllConnections: jest.fn(),
       messenger: secondControllerMessenger.getRestricted({
-        name: 'PluginController',
+        name: 'SnapController',
         allowedEvents: [
           'ServiceMessenger:unhandledError',
           'ServiceMessenger:unresponsive',
         ],
       }),
-      state: persistedState as unknown as PluginControllerState,
+      state: persistedState as unknown as SnapControllerState,
     });
-    expect(secondPluginController.isRunning('foo')).toStrictEqual(false);
-    await secondPluginController.runExistingPlugins();
-    expect(secondPluginController.state.plugins.foo).toBeDefined();
-    expect(secondPluginController.isRunning('foo')).toStrictEqual(true);
-    firstPluginController.destroy();
-    secondPluginController.destroy();
+    expect(secondSnapController.isRunning('foo')).toStrictEqual(false);
+    await secondSnapController.runExistingSnaps();
+    expect(secondSnapController.state.snaps.foo).toBeDefined();
+    expect(secondSnapController.isRunning('foo')).toStrictEqual(true);
+    firstSnapController.destroy();
+    secondSnapController.destroy();
   });
 
-  it('can add errors to the PluginControllers state', async () => {
+  it('can add errors to the SnapControllers state', async () => {
     class ExecutionEnvironmentStub implements ExecutionEnvironmentService {
-      async terminateAllPlugins() {
+      async terminateAllSnaps() {
         // empty stub
       }
 
@@ -439,11 +438,11 @@ describe('PluginController Controller', () => {
         };
       }
 
-      async executePlugin() {
+      async executeSnap() {
         return 'some-unique-id';
       }
 
-      async terminatePlugin() {
+      async terminateSnap() {
         // empty stub
       }
     }
@@ -451,23 +450,23 @@ describe('PluginController Controller', () => {
     const executionEnvironmentStub = new ExecutionEnvironmentStub();
 
     const messenger = new ControllerMessenger<
-      PluginControllerActions,
+      SnapControllerActions,
       ErrorMessageEvent | UnresponsiveMessageEvent
     >().getRestricted({
-      name: 'PluginController',
+      name: 'SnapController',
       allowedEvents: [
         'ServiceMessenger:unhandledError',
         'ServiceMessenger:unresponsive',
       ],
     });
-    const pluginController = new PluginController({
-      terminateAllPlugins: executionEnvironmentStub.terminateAllPlugins.bind(
+    const snapController = new SnapController({
+      terminateAllSnaps: executionEnvironmentStub.terminateAllSnaps.bind(
         executionEnvironmentStub,
       ),
-      terminatePlugin: executionEnvironmentStub.terminatePlugin.bind(
+      terminateSnap: executionEnvironmentStub.terminateSnap.bind(
         executionEnvironmentStub,
       ),
-      executePlugin: executionEnvironmentStub.executePlugin.bind(
+      executeSnap: executionEnvironmentStub.executeSnap.bind(
         executionEnvironmentStub,
       ),
       getRpcMessageHandler: executionEnvironmentStub.getRpcMessageHandler.bind(
@@ -480,52 +479,50 @@ describe('PluginController Controller', () => {
       closeAllConnections: jest.fn(),
       messenger,
     });
-    pluginController.addPluginError({
+    snapController.addSnapError({
       code: 1,
       data: {},
       message: 'error happened',
     });
 
-    const arrayOfErrors = Object.entries(pluginController.state.pluginErrors);
+    const arrayOfErrors = Object.entries(snapController.state.snapErrors);
 
     expect(arrayOfErrors.length > 0).toStrictEqual(true);
 
-    pluginController.removePluginError(arrayOfErrors[0][0]);
+    snapController.removeSnapError(arrayOfErrors[0][0]);
 
-    expect(Object.entries(pluginController.state.pluginErrors)).toHaveLength(0);
+    expect(Object.entries(snapController.state.snapErrors)).toHaveLength(0);
 
-    pluginController.addPluginError({
+    snapController.addSnapError({
       code: 1,
       data: {},
       message: 'error happened',
     });
 
-    pluginController.addPluginError({
+    snapController.addSnapError({
       code: 2,
       data: {},
       message: 'error 2',
     });
 
-    pluginController.removePluginError(
-      Object.entries(pluginController.state.pluginErrors)[0][0],
+    snapController.removeSnapError(
+      Object.entries(snapController.state.snapErrors)[0][0],
     );
 
-    expect(Object.entries(pluginController.state.pluginErrors)).toHaveLength(1);
-    expect(
-      Object.entries(pluginController.state.pluginErrors)[0][1],
-    ).toStrictEqual(
+    expect(Object.entries(snapController.state.snapErrors)).toHaveLength(1);
+    expect(Object.entries(snapController.state.snapErrors)[0][1]).toStrictEqual(
       expect.objectContaining({
         code: 2,
         data: {},
         message: 'error 2',
       }),
     );
-    pluginController.destroy();
+    snapController.destroy();
   });
 
   it('can handle an error event on the controller messenger', async () => {
     const controllerMessenger = new ControllerMessenger<
-      PluginControllerActions,
+      SnapControllerActions,
       ErrorMessageEvent | UnresponsiveMessageEvent
     >();
     const serviceMessenger = controllerMessenger.getRestricted({
@@ -535,8 +532,8 @@ describe('PluginController Controller', () => {
         'ServiceMessenger:unresponsive',
       ],
     });
-    const pluginControllerMessenger = controllerMessenger.getRestricted({
-      name: 'PluginController',
+    const snapControllerMessenger = controllerMessenger.getRestricted({
+      name: 'SnapController',
       allowedEvents: [
         'ServiceMessenger:unhandledError',
         'ServiceMessenger:unresponsive',
@@ -546,18 +543,18 @@ describe('PluginController Controller', () => {
     const workerExecutionEnvironment = new WebWorkerExecutionEnvironmentService(
       {
         messenger: serviceMessenger,
-        setupPluginProvider: jest.fn(),
+        setupSnapProvider: jest.fn(),
         workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
       },
     );
-    const pluginController = new PluginController({
-      terminateAllPlugins: workerExecutionEnvironment.terminateAllPlugins.bind(
+    const snapController = new SnapController({
+      terminateAllSnaps: workerExecutionEnvironment.terminateAllSnaps.bind(
         workerExecutionEnvironment,
       ),
-      terminatePlugin: workerExecutionEnvironment.terminatePlugin.bind(
+      terminateSnap: workerExecutionEnvironment.terminateSnap.bind(
         workerExecutionEnvironment,
       ),
-      executePlugin: workerExecutionEnvironment.executePlugin.bind(
+      executeSnap: workerExecutionEnvironment.executeSnap.bind(
         workerExecutionEnvironment,
       ),
       getRpcMessageHandler:
@@ -569,10 +566,10 @@ describe('PluginController Controller', () => {
       hasPermission: jest.fn(),
       requestPermissions: jest.fn(),
       closeAllConnections: jest.fn(),
-      messenger: pluginControllerMessenger,
+      messenger: snapControllerMessenger,
     });
-    const plugin = await pluginController.add({
-      name: 'TestPlugin',
+    const snap = await snapController.add({
+      name: 'TestSnap',
       sourceCode: `
         wallet.registerRpcMessageHandler(async (origin, request) => {
           const {method, params, id} = request;
@@ -586,13 +583,13 @@ describe('PluginController Controller', () => {
         version: '0.0.0-development',
       },
     });
-    await pluginController.startPlugin(plugin.name);
+    await snapController.startSnap(snap.name);
 
     // defer
     setTimeout(() => {
       controllerMessenger.publish(
         'ServiceMessenger:unhandledError',
-        plugin.name,
+        snap.name,
         {
           message: 'foo',
           code: 123,
@@ -601,13 +598,13 @@ describe('PluginController Controller', () => {
     }, 100);
 
     await new Promise((resolve) => {
-      pluginControllerMessenger.subscribe(
+      snapControllerMessenger.subscribe(
         'ServiceMessenger:unhandledError',
         () => {
-          const localPlugin = pluginController.get(plugin.name);
-          expect(localPlugin.status).toStrictEqual('crashed');
+          const localSnap = snapController.get(snap.name);
+          expect(localSnap.status).toStrictEqual('crashed');
           resolve(undefined);
-          pluginController.destroy();
+          snapController.destroy();
         },
       );
     });
@@ -615,7 +612,7 @@ describe('PluginController Controller', () => {
 
   it('can handle an unresponsive event on the controller messenger', async () => {
     const controllerMessenger = new ControllerMessenger<
-      PluginControllerActions,
+      SnapControllerActions,
       ErrorMessageEvent | UnresponsiveMessageEvent
     >();
     const serviceMessenger = controllerMessenger.getRestricted({
@@ -625,8 +622,8 @@ describe('PluginController Controller', () => {
         'ServiceMessenger:unresponsive',
       ],
     });
-    const pluginControllerMessenger = controllerMessenger.getRestricted({
-      name: 'PluginController',
+    const snapControllerMessenger = controllerMessenger.getRestricted({
+      name: 'SnapController',
       allowedEvents: [
         'ServiceMessenger:unhandledError',
         'ServiceMessenger:unresponsive',
@@ -636,18 +633,18 @@ describe('PluginController Controller', () => {
     const workerExecutionEnvironment = new WebWorkerExecutionEnvironmentService(
       {
         messenger: serviceMessenger,
-        setupPluginProvider: jest.fn(),
+        setupSnapProvider: jest.fn(),
         workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
       },
     );
-    const pluginController = new PluginController({
-      terminateAllPlugins: workerExecutionEnvironment.terminateAllPlugins.bind(
+    const snapController = new SnapController({
+      terminateAllSnaps: workerExecutionEnvironment.terminateAllSnaps.bind(
         workerExecutionEnvironment,
       ),
-      terminatePlugin: workerExecutionEnvironment.terminatePlugin.bind(
+      terminateSnap: workerExecutionEnvironment.terminateSnap.bind(
         workerExecutionEnvironment,
       ),
-      executePlugin: workerExecutionEnvironment.executePlugin.bind(
+      executeSnap: workerExecutionEnvironment.executeSnap.bind(
         workerExecutionEnvironment,
       ),
       getRpcMessageHandler:
@@ -659,10 +656,10 @@ describe('PluginController Controller', () => {
       hasPermission: jest.fn(),
       requestPermissions: jest.fn(),
       closeAllConnections: jest.fn(),
-      messenger: pluginControllerMessenger,
+      messenger: snapControllerMessenger,
     });
-    const plugin = await pluginController.add({
-      name: 'TestPlugin',
+    const snap = await snapController.add({
+      name: 'TestSnap',
       sourceCode: `
         wallet.registerRpcMessageHandler(async (origin, request) => {
           const {method, params, id} = request;
@@ -676,32 +673,32 @@ describe('PluginController Controller', () => {
         version: '0.0.0-development',
       },
     });
-    await pluginController.startPlugin(plugin.name);
+    await snapController.startSnap(snap.name);
 
     // defer
     setTimeout(() => {
-      controllerMessenger.publish('ServiceMessenger:unresponsive', plugin.name);
+      controllerMessenger.publish('ServiceMessenger:unresponsive', snap.name);
     }, 1);
 
     await new Promise((resolve) => {
       controllerMessenger.subscribe(
         'ServiceMessenger:unresponsive',
-        async (pluginName: string) => {
-          const localPlugin = pluginController.get(pluginName);
-          expect(localPlugin.status).toStrictEqual('crashed');
+        async (snapName: string) => {
+          const localSnap = snapController.get(snapName);
+          expect(localSnap.status).toStrictEqual('crashed');
           resolve(undefined);
-          pluginController.destroy();
+          snapController.destroy();
         },
       );
     });
   }, 3000);
 
-  it('can add a plugin and use its JSON-RPC api and then get stopped from idling too long', async () => {
+  it('can add a snap and use its JSON-RPC api and then get stopped from idling too long', async () => {
     const messenger = new ControllerMessenger<
-      PluginControllerActions,
+      SnapControllerActions,
       ErrorMessageEvent | UnresponsiveMessageEvent
     >().getRestricted({
-      name: 'PluginController',
+      name: 'SnapController',
       allowedEvents: [
         'ServiceMessenger:unhandledError',
         'ServiceMessenger:unresponsive',
@@ -710,20 +707,19 @@ describe('PluginController Controller', () => {
     const webWorkerExecutionEnvironment =
       new WebWorkerExecutionEnvironmentService({
         messenger,
-        setupPluginProvider: jest.fn(),
+        setupSnapProvider: jest.fn(),
         workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
       });
-    const pluginController = new PluginController({
+    const snapController = new SnapController({
       idleTimeCheckInterval: 1000,
       maxIdleTime: 2000,
-      terminateAllPlugins:
-        webWorkerExecutionEnvironment.terminateAllPlugins.bind(
-          webWorkerExecutionEnvironment,
-        ),
-      terminatePlugin: webWorkerExecutionEnvironment.terminatePlugin.bind(
+      terminateAllSnaps: webWorkerExecutionEnvironment.terminateAllSnaps.bind(
         webWorkerExecutionEnvironment,
       ),
-      executePlugin: webWorkerExecutionEnvironment.executePlugin.bind(
+      terminateSnap: webWorkerExecutionEnvironment.terminateSnap.bind(
+        webWorkerExecutionEnvironment,
+      ),
+      executeSnap: webWorkerExecutionEnvironment.executeSnap.bind(
         webWorkerExecutionEnvironment,
       ),
       getRpcMessageHandler:
@@ -738,8 +734,8 @@ describe('PluginController Controller', () => {
       messenger,
     });
 
-    const plugin = await pluginController.add({
-      name: 'TestPlugin',
+    const snap = await snapController.add({
+      name: 'TestSnap',
       sourceCode: `
         wallet.registerRpcMessageHandler(async (origin, request) => {
           const {method, params, id} = request;
@@ -755,8 +751,8 @@ describe('PluginController Controller', () => {
       },
     });
 
-    await pluginController.startPlugin(plugin.name);
-    const handle = await pluginController.getRpcMessageHandler(plugin.name);
+    await snapController.startSnap(snap.name);
+    const handle = await snapController.getRpcMessageHandler(snap.name);
     if (!handle) {
       throw Error('rpc handler not found');
     }
@@ -772,17 +768,17 @@ describe('PluginController Controller', () => {
       setTimeout(resolve, 3000);
     });
 
-    expect(pluginController.state.plugins[plugin.name].status).toStrictEqual(
+    expect(snapController.state.snaps[snap.name].status).toStrictEqual(
       'stopped',
     );
   });
 
-  it('can add a plugin and see its status', async () => {
+  it('can add a snap and see its status', async () => {
     const messenger = new ControllerMessenger<
-      PluginControllerActions,
+      SnapControllerActions,
       ErrorMessageEvent | UnresponsiveMessageEvent
     >().getRestricted({
-      name: 'PluginController',
+      name: 'SnapController',
       allowedEvents: [
         'ServiceMessenger:unhandledError',
         'ServiceMessenger:unresponsive',
@@ -791,20 +787,19 @@ describe('PluginController Controller', () => {
     const webWorkerExecutionEnvironment =
       new WebWorkerExecutionEnvironmentService({
         messenger,
-        setupPluginProvider: jest.fn(),
+        setupSnapProvider: jest.fn(),
         workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
       });
-    const pluginController = new PluginController({
+    const snapController = new SnapController({
       idleTimeCheckInterval: 1000,
       maxIdleTime: 2000,
-      terminateAllPlugins:
-        webWorkerExecutionEnvironment.terminateAllPlugins.bind(
-          webWorkerExecutionEnvironment,
-        ),
-      terminatePlugin: webWorkerExecutionEnvironment.terminatePlugin.bind(
+      terminateAllSnaps: webWorkerExecutionEnvironment.terminateAllSnaps.bind(
         webWorkerExecutionEnvironment,
       ),
-      executePlugin: webWorkerExecutionEnvironment.executePlugin.bind(
+      terminateSnap: webWorkerExecutionEnvironment.terminateSnap.bind(
+        webWorkerExecutionEnvironment,
+      ),
+      executeSnap: webWorkerExecutionEnvironment.executeSnap.bind(
         webWorkerExecutionEnvironment,
       ),
       getRpcMessageHandler:
@@ -819,8 +814,8 @@ describe('PluginController Controller', () => {
       messenger,
     });
 
-    const plugin = await pluginController.add({
-      name: 'TestPlugin',
+    const snap = await snapController.add({
+      name: 'TestSnap',
       sourceCode: `
         wallet.registerRpcMessageHandler(async (origin, request) => {
           const {method, params, id} = request;
@@ -836,25 +831,25 @@ describe('PluginController Controller', () => {
       },
     });
 
-    await pluginController.startPlugin(plugin.name);
+    await snapController.startSnap(snap.name);
 
-    expect(pluginController.state.plugins[plugin.name].status).toStrictEqual(
+    expect(snapController.state.snaps[snap.name].status).toStrictEqual(
       'running',
     );
 
-    await pluginController.stopPlugin(plugin.name);
+    await snapController.stopSnap(snap.name);
 
-    expect(pluginController.state.plugins[plugin.name].status).toStrictEqual(
+    expect(snapController.state.snaps[snap.name].status).toStrictEqual(
       'stopped',
     );
   });
 
-  it('can add a plugin and stop it and have it start on-demand', async () => {
+  it('can add a snap and stop it and have it start on-demand', async () => {
     const messenger = new ControllerMessenger<
-      PluginControllerActions,
+      SnapControllerActions,
       ErrorMessageEvent | UnresponsiveMessageEvent
     >().getRestricted({
-      name: 'PluginController',
+      name: 'SnapController',
       allowedEvents: [
         'ServiceMessenger:unhandledError',
         'ServiceMessenger:unresponsive',
@@ -863,20 +858,19 @@ describe('PluginController Controller', () => {
     const webWorkerExecutionEnvironment =
       new WebWorkerExecutionEnvironmentService({
         messenger,
-        setupPluginProvider: jest.fn(),
+        setupSnapProvider: jest.fn(),
         workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
       });
-    const pluginController = new PluginController({
+    const snapController = new SnapController({
       idleTimeCheckInterval: 1000,
       maxIdleTime: 2000,
-      terminateAllPlugins:
-        webWorkerExecutionEnvironment.terminateAllPlugins.bind(
-          webWorkerExecutionEnvironment,
-        ),
-      terminatePlugin: webWorkerExecutionEnvironment.terminatePlugin.bind(
+      terminateAllSnaps: webWorkerExecutionEnvironment.terminateAllSnaps.bind(
         webWorkerExecutionEnvironment,
       ),
-      executePlugin: webWorkerExecutionEnvironment.executePlugin.bind(
+      terminateSnap: webWorkerExecutionEnvironment.terminateSnap.bind(
+        webWorkerExecutionEnvironment,
+      ),
+      executeSnap: webWorkerExecutionEnvironment.executeSnap.bind(
         webWorkerExecutionEnvironment,
       ),
       getRpcMessageHandler:
@@ -891,8 +885,8 @@ describe('PluginController Controller', () => {
       messenger,
     });
 
-    const plugin = await pluginController.add({
-      name: 'TestPlugin',
+    const snap = await snapController.add({
+      name: 'TestSnap',
       sourceCode: `
         wallet.registerRpcMessageHandler(async (origin, request) => {
           const {method, params, id} = request;
@@ -908,17 +902,17 @@ describe('PluginController Controller', () => {
       },
     });
 
-    const handler = await pluginController.getRpcMessageHandler(plugin.name);
+    const handler = await snapController.getRpcMessageHandler(snap.name);
 
-    await pluginController.startPlugin(plugin.name);
+    await snapController.startSnap(snap.name);
 
-    expect(pluginController.state.plugins[plugin.name].status).toStrictEqual(
+    expect(snapController.state.snaps[snap.name].status).toStrictEqual(
       'running',
     );
 
-    await pluginController.stopPlugin(plugin.name);
+    await snapController.stopSnap(snap.name);
 
-    expect(pluginController.state.plugins[plugin.name].status).toStrictEqual(
+    expect(snapController.state.snaps[snap.name].status).toStrictEqual(
       'stopped',
     );
 
@@ -931,12 +925,12 @@ describe('PluginController Controller', () => {
     expect(results).toStrictEqual('test1');
   });
 
-  it('can add a plugin disable/enable it and still get a response from method "test"', async () => {
+  it('can add a snap disable/enable it and still get a response from method "test"', async () => {
     const messenger = new ControllerMessenger<
-      PluginControllerActions,
+      SnapControllerActions,
       ErrorMessageEvent | UnresponsiveMessageEvent
     >().getRestricted({
-      name: 'PluginController',
+      name: 'SnapController',
       allowedEvents: [
         'ServiceMessenger:unhandledError',
         'ServiceMessenger:unresponsive',
@@ -945,20 +939,19 @@ describe('PluginController Controller', () => {
     const webWorkerExecutionEnvironment =
       new WebWorkerExecutionEnvironmentService({
         messenger,
-        setupPluginProvider: jest.fn(),
+        setupSnapProvider: jest.fn(),
         workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
       });
-    const pluginController = new PluginController({
+    const snapController = new SnapController({
       idleTimeCheckInterval: 1000,
       maxIdleTime: 2000,
-      terminateAllPlugins:
-        webWorkerExecutionEnvironment.terminateAllPlugins.bind(
-          webWorkerExecutionEnvironment,
-        ),
-      terminatePlugin: webWorkerExecutionEnvironment.terminatePlugin.bind(
+      terminateAllSnaps: webWorkerExecutionEnvironment.terminateAllSnaps.bind(
         webWorkerExecutionEnvironment,
       ),
-      executePlugin: webWorkerExecutionEnvironment.executePlugin.bind(
+      terminateSnap: webWorkerExecutionEnvironment.terminateSnap.bind(
+        webWorkerExecutionEnvironment,
+      ),
+      executeSnap: webWorkerExecutionEnvironment.executeSnap.bind(
         webWorkerExecutionEnvironment,
       ),
       getRpcMessageHandler:
@@ -973,8 +966,8 @@ describe('PluginController Controller', () => {
       messenger,
     });
 
-    const plugin = await pluginController.add({
-      name: 'TestPlugin',
+    const snap = await snapController.add({
+      name: 'TestSnap',
       sourceCode: `
         wallet.registerRpcMessageHandler(async (origin, request) => {
           const {method, params, id} = request;
@@ -990,22 +983,22 @@ describe('PluginController Controller', () => {
       },
     });
 
-    const handler = await pluginController.getRpcMessageHandler(plugin.name);
+    const handler = await snapController.getRpcMessageHandler(snap.name);
 
-    await pluginController.startPlugin(plugin.name);
+    await snapController.startSnap(snap.name);
 
-    expect(pluginController.state.plugins[plugin.name].status).toStrictEqual(
+    expect(snapController.state.snaps[snap.name].status).toStrictEqual(
       'running',
     );
 
-    pluginController.disablePlugin(plugin.name);
+    snapController.disableSnap(snap.name);
 
-    expect(pluginController.state.plugins[plugin.name].status).toStrictEqual(
+    expect(snapController.state.snaps[snap.name].status).toStrictEqual(
       'stopped',
     );
 
-    await expect(pluginController.startPlugin(plugin.name)).rejects.toThrow(
-      /^Plugin "TestPlugin" is disabled.$/u,
+    await expect(snapController.startSnap(snap.name)).rejects.toThrow(
+      /^Snap "TestSnap" is disabled.$/u,
     );
 
     await expect(
@@ -1015,17 +1008,15 @@ describe('PluginController Controller', () => {
         params: {},
         id: 1,
       }),
-    ).rejects.toThrow(/^Plugin "TestPlugin" is disabled.$/u);
+    ).rejects.toThrow(/^Snap "TestSnap" is disabled.$/u);
 
-    expect(pluginController.state.plugins[plugin.name].status).toStrictEqual(
+    expect(snapController.state.snaps[snap.name].status).toStrictEqual(
       'stopped',
     );
 
-    expect(pluginController.state.plugins[plugin.name].enabled).toStrictEqual(
-      false,
-    );
+    expect(snapController.state.snaps[snap.name].enabled).toStrictEqual(false);
 
-    pluginController.enablePlugin(plugin.name);
+    snapController.enableSnap(snap.name);
 
     const results = await handler('foo.com', {
       jsonrpc: '2.0',
@@ -1034,11 +1025,9 @@ describe('PluginController Controller', () => {
       id: 1,
     });
 
-    expect(pluginController.state.plugins[plugin.name].enabled).toStrictEqual(
-      true,
-    );
+    expect(snapController.state.snaps[snap.name].enabled).toStrictEqual(true);
 
-    expect(pluginController.state.plugins[plugin.name].status).toStrictEqual(
+    expect(snapController.state.snaps[snap.name].status).toStrictEqual(
       'running',
     );
 

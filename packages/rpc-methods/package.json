@@ -20,7 +20,8 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "yarn auto-changelog validate",
     "build": "tsc --project tsconfig.local.json",
-    "build:clean": "yarn rimraf dist/* && yarn build",
+    "build:clean": "yarn clean && yarn build",
+    "clean": "rimraf dist/*",
     "publish": "../../scripts/publish-package.sh",
     "publish:prep": "yarn lint && yarn build:clean"
   },

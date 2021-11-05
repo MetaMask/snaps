@@ -40,21 +40,21 @@
     connectButton.addEventListener('click', connect)
     sendButton.addEventListener('click', send)
 
-    // here we get permissions to interact with and install the plugin
+    // here we get permissions to interact with and install the snap
     async function connect () {
       await ethereum.request({
         method: 'wallet_enable',
         params: [{
-          wallet_plugin: { [snapId]: {} },
+          wallet_snap: { [snapId]: {} },
         }]
       })
     }
 
-    // here we call the plugin's "hello" method
+    // here we call the snap's "hello" method
     async function send () {
       try {
         const response = await ethereum.request({
-          method: 'wallet_invokePlugin',
+          method: 'wallet_invokeSnap',
           params: [snapId, {
             method: 'hello'
           }]

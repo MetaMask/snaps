@@ -21,6 +21,7 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "build": "node ./scripts/buildExamples.js",
     "build:clean": "echo \"@metamask/snap-examples has no build:clean command.\"",
+    "clean": "echo \"@metamask/snap-examples has no clean command.\"",
     "publish": "../../scripts/publish-package.sh",
     "publish:prep": "yarn lint && yarn build:clean"
   },
