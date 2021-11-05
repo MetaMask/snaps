@@ -12,7 +12,7 @@ export function workerEval(bundlePath: string): Promise<null> {
         }
       })
       .postMessage({
-        pluginFilePath: bundlePath,
+        snapFilePath: bundlePath,
       });
   });
 }

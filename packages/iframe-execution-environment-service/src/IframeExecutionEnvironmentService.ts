@@ -3,9 +3,9 @@ import { nanoid } from 'nanoid';
 import pump from 'pump';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
-import { PLUGIN_STREAM_NAMES } from '@metamask/snap-workers';
+import { SNAP_STREAM_NAMES } from '@metamask/snap-workers';
 import { createStreamMiddleware } from 'json-rpc-middleware-stream';
-import { PluginData, ServiceMessenger } from '@metamask/snap-types';
+import { SnapData, ServiceMessenger } from '@metamask/snap-types';
 import {
   JsonRpcEngine,
   JsonRpcRequest,
@@ -13,11 +13,11 @@ import {
 } from 'json-rpc-engine';
 import { ExecutionEnvironmentService } from '@metamask/snap-controllers';
 
-export type SetupPluginProvider = (pluginName: string, stream: Duplex) => void;
+export type SetupSnapProvider = (snapName: string, stream: Duplex) => void;
 
 interface IframeExecutionEnvironmentServiceArgs {
   createWindowTimeout?: number;
-  setupPluginProvider: SetupPluginProvider;
+  setupSnapProvider: SetupSnapProvider;
   iframeUrl: URL;
   messenger: ServiceMessenger;
   unresponsivePollingInterval?: number;
@@ -30,8 +30,8 @@ interface JobStreams {
   _connection: WindowPostMessageStream;
 }
 
-// The plugin is the callee
-export type PluginRpcHook = (
+// The snap is the callee
+export type SnapRpcHook = (
   origin: string,
   request: Record<string, unknown>,
 ) => Promise<unknown>;
@@ -45,7 +45,7 @@ interface EnvMetadata {
 export class IframeExecutionEnvironmentService
   implements ExecutionEnvironmentService
 {
-  private _pluginRpcHooks: Map<string, PluginRpcHook>;
+  private _snapRpcHooks: Map<string, SnapRpcHook>;
 
   public _iframeWindow?: Window;
 
@@ -53,11 +53,11 @@ export class IframeExecutionEnvironmentService
 
   private jobs: Map<string, EnvMetadata>;
 
-  private setupPluginProvider: SetupPluginProvider;
+  private setupSnapProvider: SetupSnapProvider;
 
-  private pluginToJobMap: Map<string, string>;
+  private snapToJobMap: Map<string, string>;
 
-  private jobToPluginMap: Map<string, string>;
+  private jobToSnapMap: Map<string, string>;
 
   private _createWindowTimeout: number;
 
@@ -68,7 +68,7 @@ export class IframeExecutionEnvironmentService
   private _unresponsiveTimeout: number;
 
   constructor({
-    setupPluginProvider,
+    setupSnapProvider,
     iframeUrl,
     messenger,
     unresponsivePollingInterval = 5000,
@@ -77,11 +77,11 @@ export class IframeExecutionEnvironmentService
   }: IframeExecutionEnvironmentServiceArgs) {
     this._createWindowTimeout = createWindowTimeout;
     this.iframeUrl = iframeUrl;
-    this.setupPluginProvider = setupPluginProvider;
+    this.setupSnapProvider = setupSnapProvider;
     this.jobs = new Map();
-    this.pluginToJobMap = new Map();
-    this.jobToPluginMap = new Map();
-    this._pluginRpcHooks = new Map();
+    this.snapToJobMap = new Map();
+    this.jobToSnapMap = new Map();
+    this._snapRpcHooks = new Map();
     this._messenger = messenger;
     this._unresponsivePollingInterval = unresponsivePollingInterval;
     this._unresponsiveTimeout = unresponsiveTimeout;
@@ -117,17 +117,17 @@ export class IframeExecutionEnvironmentService
     return response.result;
   }
 
-  public async terminateAllPlugins() {
+  public async terminateAllSnaps() {
     for (const jobId of this.jobs.keys()) {
       this.terminate(jobId);
     }
-    this._pluginRpcHooks.clear();
+    this._snapRpcHooks.clear();
   }
 
-  public async terminatePlugin(pluginName: string) {
-    const jobId = this.pluginToJobMap.get(pluginName);
+  public async terminateSnap(snapName: string) {
+    const jobId = this.snapToJobMap.get(snapName);
     if (!jobId) {
-      throw new Error(`Job not found for plugin with name "${pluginName}".`);
+      throw new Error(`Job not found for snap with name "${snapName}".`);
     }
     this.terminate(jobId);
   }
@@ -147,25 +147,25 @@ export class IframeExecutionEnvironmentService
       }
     });
     document.getElementById(jobWrapper.id)?.remove();
-    this._removePluginAndJobMapping(jobId);
+    this._removeSnapAndJobMapping(jobId);
     this._deleteJob(jobId);
     console.log(`job: "${jobId}" terminated`);
   }
 
   /**
-   * Gets the RPC message handler for the given plugin.
+   * Gets the RPC message handler for the given snap.
    *
-   * @param pluginName - The name of the plugin whose message handler to get.
+   * @param snapName - The name of the snap whose message handler to get.
    */
-  public async getRpcMessageHandler(pluginName: string) {
-    return this._pluginRpcHooks.get(pluginName);
+  public async getRpcMessageHandler(snapName: string) {
+    return this._snapRpcHooks.get(snapName);
   }
 
-  private _removePluginHooks(pluginName: string) {
-    this._pluginRpcHooks.delete(pluginName);
+  private _removeSnapHooks(snapName: string) {
+    this._snapRpcHooks.delete(snapName);
   }
 
-  private _createPluginHooks(pluginName: string, jobId: string) {
+  private _createSnapHooks(snapName: string, jobId: string) {
     const rpcHook = async (
       origin: string,
       request: Record<string, unknown>,
@@ -173,34 +173,34 @@ export class IframeExecutionEnvironmentService
       return await this._command(jobId, {
         id: nanoid(),
         jsonrpc: '2.0',
-        method: 'pluginRpc',
+        method: 'snapRpc',
         params: {
           origin,
           request,
-          target: pluginName,
+          target: snapName,
         },
       });
     };
 
-    this._pluginRpcHooks.set(pluginName, rpcHook);
+    this._snapRpcHooks.set(snapName, rpcHook);
   }
 
-  public async executePlugin(pluginData: PluginData): Promise<unknown> {
-    if (this.pluginToJobMap.has(pluginData.pluginName)) {
+  public async executeSnap(snapData: SnapData): Promise<unknown> {
+    if (this.snapToJobMap.has(snapData.snapName)) {
       throw new Error(
-        `Plugin "${pluginData.pluginName}" is already being executed.`,
+        `Snap "${snapData.snapName}" is already being executed.`,
       );
     }
 
     const job = await this._init();
-    this._mapPluginAndJob(pluginData.pluginName, job.id);
+    this._mapSnapAndJob(snapData.snapName, job.id);
 
     let result;
     try {
       result = await this._command(job.id, {
         jsonrpc: '2.0',
-        method: 'executePlugin',
-        params: pluginData,
+        method: 'executeSnap',
+        params: snapData,
         id: nanoid(),
       });
     } catch (error) {
@@ -208,29 +208,29 @@ export class IframeExecutionEnvironmentService
       throw error;
     }
 
-    this.setupPluginProvider(
-      pluginData.pluginName,
+    this.setupSnapProvider(
+      snapData.snapName,
       job.streams.rpc as unknown as Duplex,
     );
     // set up poll/ping for status to see if its up, if its not then emit event that it cant be reached
-    this._pollForJobStatus(pluginData.pluginName);
-    this._createPluginHooks(pluginData.pluginName, job.id);
+    this._pollForJobStatus(snapData.snapName);
+    this._createSnapHooks(snapData.snapName, job.id);
     return result;
   }
 
-  _pollForJobStatus(pluginName: string) {
-    const jobId = this.pluginToJobMap.get(pluginName);
+  _pollForJobStatus(snapName: string) {
+    const jobId = this.snapToJobMap.get(snapName);
     if (!jobId) {
-      throw new Error('no job id found for plugin');
+      throw new Error('no job id found for snap');
     }
 
     setTimeout(async () => {
       this._getJobStatus(jobId)
         .then(() => {
-          this._pollForJobStatus(pluginName);
+          this._pollForJobStatus(snapName);
         })
         .catch(() => {
-          this._messenger.publish('ServiceMessenger:unresponsive', pluginName);
+          this._messenger.publish('ServiceMessenger:unresponsive', snapName);
         });
     }, this._unresponsivePollingInterval);
   }
@@ -262,20 +262,20 @@ export class IframeExecutionEnvironmentService
     ]);
   }
 
-  private _mapPluginAndJob(pluginName: string, jobId: string): void {
-    this.pluginToJobMap.set(pluginName, jobId);
-    this.jobToPluginMap.set(jobId, pluginName);
+  private _mapSnapAndJob(snapName: string, jobId: string): void {
+    this.snapToJobMap.set(snapName, jobId);
+    this.jobToSnapMap.set(jobId, snapName);
   }
 
-  private _removePluginAndJobMapping(jobId: string): void {
-    const pluginName = this.jobToPluginMap.get(jobId);
-    if (!pluginName) {
-      throw new Error(`job: "${jobId}" has no mapped plugin.`);
+  private _removeSnapAndJobMapping(jobId: string): void {
+    const snapName = this.jobToSnapMap.get(jobId);
+    if (!snapName) {
+      throw new Error(`job: "${jobId}" has no mapped snap.`);
     }
 
-    this.jobToPluginMap.delete(jobId);
-    this.pluginToJobMap.delete(pluginName);
-    this._removePluginHooks(pluginName);
+    this.jobToSnapMap.delete(jobId);
+    this.snapToJobMap.delete(snapName);
+    this._removeSnapHooks(snapName);
   }
 
   private async _init(): Promise<EnvMetadata> {
@@ -322,18 +322,18 @@ export class IframeExecutionEnvironmentService
       `Job: "${jobId}"`,
     );
 
-    const commandStream = mux.createStream(PLUGIN_STREAM_NAMES.COMMAND);
-    // Handle out-of-band errors, i.e. errors thrown from the plugin outside of the req/res cycle.
+    const commandStream = mux.createStream(SNAP_STREAM_NAMES.COMMAND);
+    // Handle out-of-band errors, i.e. errors thrown from the snap outside of the req/res cycle.
     const errorHandler = (data: any) => {
       if (
         data.error &&
         (data.id === null || data.id === undefined) // only out of band errors (i.e. no id)
       ) {
-        const pluginName = this.jobToPluginMap.get(jobId);
-        if (pluginName) {
+        const snapName = this.jobToSnapMap.get(jobId);
+        if (snapName) {
           this._messenger.publish(
             'ServiceMessenger:unhandledError',
-            pluginName,
+            snapName,
             data.error,
           );
         }
@@ -341,7 +341,7 @@ export class IframeExecutionEnvironmentService
       }
     };
     commandStream.on('data', errorHandler);
-    const rpcStream = mux.createStream(PLUGIN_STREAM_NAMES.JSON_RPC);
+    const rpcStream = mux.createStream(SNAP_STREAM_NAMES.JSON_RPC);
 
     // Typecast: stream type mismatch
     return {

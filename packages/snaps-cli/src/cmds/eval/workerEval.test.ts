@@ -55,7 +55,7 @@ describe('workerEval', () => {
     ]);
     expect(mockWorkerRef.on).toHaveBeenCalledTimes(1);
     expect(mockWorkerRef.postMessage).toHaveBeenCalledWith({
-      pluginFilePath: mockBundlePath,
+      snapFilePath: mockBundlePath,
     });
   });
 
@@ -72,7 +72,7 @@ describe('workerEval', () => {
     ]);
     expect(mockWorkerRef.on).toHaveBeenCalledTimes(1);
     expect(mockWorkerRef.postMessage).toHaveBeenCalledWith({
-      pluginFilePath: mockBundlePath,
+      snapFilePath: mockBundlePath,
     });
   });
 });

@@ -4,9 +4,9 @@ import pump from 'pump';
 import { ObservableStore } from '@metamask/obs-store';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { WorkerParentPostMessageStream } from '@metamask/post-message-stream';
-import { PLUGIN_STREAM_NAMES } from '@metamask/snap-workers';
+import { SNAP_STREAM_NAMES } from '@metamask/snap-workers';
 import { createStreamMiddleware } from 'json-rpc-middleware-stream';
-import { PluginData, ServiceMessenger } from '@metamask/snap-types';
+import { SnapData, ServiceMessenger } from '@metamask/snap-types';
 import {
   JsonRpcEngine,
   JsonRpcRequest,
@@ -14,10 +14,10 @@ import {
 } from 'json-rpc-engine';
 import { ExecutionEnvironmentService } from './ExecutionEnvironmentService';
 
-export type SetupPluginProvider = (pluginName: string, stream: Duplex) => void;
+export type SetupSnapProvider = (snapName: string, stream: Duplex) => void;
 
 interface WorkerControllerArgs {
-  setupPluginProvider: SetupPluginProvider;
+  setupSnapProvider: SetupSnapProvider;
   workerUrl: URL;
   messenger: ServiceMessenger;
   unresponsivePollingInterval?: number;
@@ -30,8 +30,8 @@ interface WorkerStreams {
   _connection: WorkerParentPostMessageStream;
 }
 
-// The plugin is the callee
-export type PluginRpcHook = (
+// The snap is the callee
+export type SnapRpcHook = (
   origin: string,
   request: Record<string, unknown>,
 ) => Promise<unknown>;
@@ -48,17 +48,17 @@ export class WebWorkerExecutionEnvironmentService
 {
   public store: ObservableStore<{ workers: Record<string, WorkerWrapper> }>;
 
-  private _pluginRpcHooks: Map<string, PluginRpcHook>;
+  private _snapRpcHooks: Map<string, SnapRpcHook>;
 
   private workerUrl: URL;
 
   private workers: Map<string, WorkerWrapper>;
 
-  private setupPluginProvider: SetupPluginProvider;
+  private setupSnapProvider: SetupSnapProvider;
 
-  private pluginToWorkerMap: Map<string, string>;
+  private snapToWorkerMap: Map<string, string>;
 
-  private workerToPluginMap: Map<string, string>;
+  private workerToSnapMap: Map<string, string>;
 
   private _messenger: ServiceMessenger;
 
@@ -67,19 +67,19 @@ export class WebWorkerExecutionEnvironmentService
   private _unresponsiveTimeout: number;
 
   constructor({
-    setupPluginProvider,
+    setupSnapProvider,
     workerUrl,
     messenger,
     unresponsivePollingInterval = 5000,
     unresponsiveTimeout = 30000,
   }: WorkerControllerArgs) {
     this.workerUrl = workerUrl;
-    this.setupPluginProvider = setupPluginProvider;
+    this.setupSnapProvider = setupSnapProvider;
     this.store = new ObservableStore({ workers: {} });
     this.workers = new Map();
-    this.pluginToWorkerMap = new Map();
-    this.workerToPluginMap = new Map();
-    this._pluginRpcHooks = new Map();
+    this.snapToWorkerMap = new Map();
+    this.workerToSnapMap = new Map();
+    this._snapRpcHooks = new Map();
     this._messenger = messenger;
     this._unresponsivePollingInterval = unresponsivePollingInterval;
     this._unresponsiveTimeout = unresponsiveTimeout;
@@ -127,17 +127,17 @@ export class WebWorkerExecutionEnvironmentService
     return response.result;
   }
 
-  async terminateAllPlugins() {
+  async terminateAllSnaps() {
     for (const workerId of this.workers.keys()) {
       this.terminate(workerId);
     }
-    this._pluginRpcHooks.clear();
+    this._snapRpcHooks.clear();
   }
 
-  async terminatePlugin(pluginName: string) {
-    const workerId = this.pluginToWorkerMap.get(pluginName);
+  async terminateSnap(snapName: string) {
+    const workerId = this.snapToWorkerMap.get(snapName);
     workerId && this.terminate(workerId);
-    this._removePluginHooks(pluginName);
+    this._removeSnapHooks(snapName);
   }
 
   terminate(workerId: string): void {
@@ -155,25 +155,25 @@ export class WebWorkerExecutionEnvironmentService
       }
     });
     workerWrapper.worker.terminate();
-    this._removePluginAndWorkerMapping(workerId);
+    this._removeSnapAndWorkerMapping(workerId);
     this._deleteWorker(workerId);
     console.log(`worker:${workerId} terminated`);
   }
 
   /**
-   * Gets the RPC message handler for the given plugin.
+   * Gets the RPC message handler for the given snap.
    *
-   * @param pluginName - The name of the plugin whose message handler to get.
+   * @param snapName - The name of the snap whose message handler to get.
    */
-  async getRpcMessageHandler(pluginName: string) {
-    return this._pluginRpcHooks.get(pluginName);
+  async getRpcMessageHandler(snapName: string) {
+    return this._snapRpcHooks.get(snapName);
   }
 
-  private _removePluginHooks(pluginName: string) {
-    this._pluginRpcHooks.delete(pluginName);
+  private _removeSnapHooks(snapName: string) {
+    this._snapRpcHooks.delete(snapName);
   }
 
-  private _createPluginHooks(pluginName: string, workerId: string) {
+  private _createSnapHooks(snapName: string, workerId: string) {
     const rpcHook = async (
       origin: string,
       request: Record<string, unknown>,
@@ -181,57 +181,57 @@ export class WebWorkerExecutionEnvironmentService
       return await this._command(workerId, {
         id: nanoid(),
         jsonrpc: '2.0',
-        method: 'pluginRpc',
+        method: 'snapRpc',
         params: {
           origin,
           request,
-          target: pluginName,
+          target: snapName,
         },
       });
     };
 
-    this._pluginRpcHooks.set(pluginName, rpcHook);
+    this._snapRpcHooks.set(snapName, rpcHook);
   }
 
-  async executePlugin(pluginData: PluginData): Promise<unknown> {
-    if (this.pluginToWorkerMap.has(pluginData.pluginName)) {
+  async executeSnap(snapData: SnapData): Promise<unknown> {
+    if (this.snapToWorkerMap.has(snapData.snapName)) {
       throw new Error(
-        `Plugin "${pluginData.pluginName}" is already being executed.`,
+        `Snap "${snapData.snapName}" is already being executed.`,
       );
     }
 
     const worker = await this._initWorker();
-    this._mapPluginAndWorker(pluginData.pluginName, worker.id);
-    this.setupPluginProvider(
-      pluginData.pluginName,
+    this._mapSnapAndWorker(snapData.snapName, worker.id);
+    this.setupSnapProvider(
+      snapData.snapName,
       worker.streams.rpc as unknown as Duplex,
     );
 
     const result = await this._command(worker.id, {
       jsonrpc: '2.0',
-      method: 'executePlugin',
-      params: pluginData,
+      method: 'executeSnap',
+      params: snapData,
       id: nanoid(),
     });
     // set up poll/ping for status to see if its up, if its not then emit event that it cant be reached
-    this._pollForWorkerStatus(pluginData.pluginName);
-    this._createPluginHooks(pluginData.pluginName, worker.id);
+    this._pollForWorkerStatus(snapData.snapName);
+    this._createSnapHooks(snapData.snapName, worker.id);
     return result;
   }
 
-  _pollForWorkerStatus(pluginName: string) {
-    const workerId = this._getWorkerForPlugin(pluginName);
+  _pollForWorkerStatus(snapName: string) {
+    const workerId = this._getWorkerForSnap(snapName);
     if (!workerId) {
-      throw new Error('no worker id found for plugin');
+      throw new Error('no worker id found for snap');
     }
 
     setTimeout(async () => {
       this._getWorkerStatus(workerId)
         .then(() => {
-          this._pollForWorkerStatus(pluginName);
+          this._pollForWorkerStatus(snapName);
         })
         .catch(() => {
-          this._messenger.publish('ServiceMessenger:unresponsive', pluginName);
+          this._messenger.publish('ServiceMessenger:unresponsive', snapName);
         });
     }, this._unresponsivePollingInterval);
   }
@@ -263,33 +263,33 @@ export class WebWorkerExecutionEnvironmentService
     ]);
   }
 
-  _mapPluginAndWorker(pluginName: string, workerId: string): void {
-    this.pluginToWorkerMap.set(pluginName, workerId);
-    this.workerToPluginMap.set(workerId, pluginName);
+  _mapSnapAndWorker(snapName: string, workerId: string): void {
+    this.snapToWorkerMap.set(snapName, workerId);
+    this.workerToSnapMap.set(workerId, snapName);
   }
 
   /**
-   * @returns The ID of the plugin's worker.
+   * @returns The ID of the snap's worker.
    */
-  _getWorkerForPlugin(pluginName: string): string | undefined {
-    return this.pluginToWorkerMap.get(pluginName);
+  _getWorkerForSnap(snapName: string): string | undefined {
+    return this.snapToWorkerMap.get(snapName);
   }
 
   /**
-   * @returns The ID worker's plugin.
+   * @returns The ID worker's snap.
    */
-  _getPluginForWorker(workerId: string): string | undefined {
-    return this.workerToPluginMap.get(workerId);
+  _getSnapForWorker(workerId: string): string | undefined {
+    return this.workerToSnapMap.get(workerId);
   }
 
-  _removePluginAndWorkerMapping(workerId: string): void {
-    const pluginName = this.workerToPluginMap.get(workerId);
-    if (!pluginName) {
-      throw new Error(`worker:${workerId} has no mapped plugin.`);
+  _removeSnapAndWorkerMapping(workerId: string): void {
+    const snapName = this.workerToSnapMap.get(workerId);
+    if (!snapName) {
+      throw new Error(`worker:${workerId} has no mapped snap.`);
     }
 
-    this.workerToPluginMap.delete(workerId);
-    this.pluginToWorkerMap.delete(pluginName);
+    this.workerToSnapMap.delete(workerId);
+    this.snapToWorkerMap.delete(snapName);
   }
 
   private async _initWorker(): Promise<WorkerWrapper> {
@@ -297,14 +297,14 @@ export class WebWorkerExecutionEnvironmentService
     const worker = new Worker(this.workerUrl, {
       name: workerId,
     });
-    // Handle out-of-band errors, i.e. errors thrown from the plugin outside of the req/res cycle.
+    // Handle out-of-band errors, i.e. errors thrown from the snap outside of the req/res cycle.
     const errorHandler = (ev: ErrorEvent) => {
       if (this._messenger) {
-        const pluginName = this.workerToPluginMap.get(workerId);
-        if (pluginName) {
+        const snapName = this.workerToSnapMap.get(workerId);
+        if (snapName) {
           this._messenger.publish(
             'ServiceMessenger:unhandledError',
-            pluginName,
+            snapName,
             {
               code: ev.error.code,
               message: ev.error.message,
@@ -349,9 +349,9 @@ export class WebWorkerExecutionEnvironmentService
       `Worker:${workerId}`,
     );
 
-    const commandStream = mux.createStream(PLUGIN_STREAM_NAMES.COMMAND);
+    const commandStream = mux.createStream(SNAP_STREAM_NAMES.COMMAND);
 
-    const rpcStream = mux.createStream(PLUGIN_STREAM_NAMES.JSON_RPC);
+    const rpcStream = mux.createStream(SNAP_STREAM_NAMES.JSON_RPC);
 
     // Typecast: stream type mismatch
     return {

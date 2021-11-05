@@ -46,7 +46,7 @@ const getUnauthorizedMessage = (id: string) =>
   `Not authorized to access resource with id "${id}".`;
 
 /**
- * A class intended to describe a particular resource that is managed by plugins.
+ * A class intended to describe a particular resource that is managed by snaps.
  * Example resources are assets.
  *
  * These are things that MetaMask treats as first-class objects with distinct properties within its own UI.

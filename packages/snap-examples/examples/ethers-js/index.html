@@ -3,11 +3,11 @@
 <html>
 
   </head>
-    <title>Hello Plugins!</title>
+    <title>Hello Snaps!</title>
   </head>
 
   <body>
-    <h1>Hello Plugins!</h1>
+    <h1>Hello Snaps!</h1>
     <details>
       <summary>Instructions</summary>
       <ul>
@@ -33,7 +33,7 @@
   <script>
 
     const origin = new URL('package.json', window.location.href).toString()
-    const snapId = `wallet_plugin_${origin}`
+    const snapId = `wallet_snap_${origin}`
 
     const connectButton = document.querySelector('button.connect')
     const sendButton = document.querySelector('button.sendHello')

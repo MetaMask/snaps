@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.2.2]
 ### Added
-- Added plugin error state ([#96](https://github.com/MetaMask/snaps-skunkworks/pull/96))
+- Added snap error state ([#96](https://github.com/MetaMask/snaps-skunkworks/pull/96))
 
 ### Fixed
 - Package script issues ([#97](https://github.com/MetaMask/snaps-skunkworks/pull/97), [#98](https://github.com/MetaMask/snaps-skunkworks/pull/98))

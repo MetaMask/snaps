@@ -6,21 +6,21 @@ import {
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { IRequestedPermissions } from 'rpc-cap/dist/src/@types';
 import { IOcapLdCapability } from 'rpc-cap/dist/src/@types/ocap-ld';
-import { PLUGIN_PREFIX, PLUGIN_PREFIX_REGEX } from '@metamask/snap-controllers';
+import { SNAP_PREFIX, SNAP_PREFIX_REGEX } from '@metamask/snap-controllers';
 import { PermittedHandlerExport } from '../../types';
 import {
-  handleInstallPlugins,
-  InstallPluginsHook,
-  InstallPluginsResult,
+  handleInstallSnaps,
+  InstallSnapsHook,
+  InstallSnapsResult,
   preprocessRequestPermissions,
-} from './common/pluginInstallation';
+} from './common/snapInstallation';
 
 type SerializedEthereumRpcError = ReturnType<typeof serializeError>;
 
 export interface EnableWalletResult {
   accounts: string[];
   permissions: IOcapLdCapability[];
-  plugins: InstallPluginsResult;
+  snaps: InstallSnapsResult;
   errors?: SerializedEthereumRpcError[];
 }
 
@@ -31,10 +31,10 @@ export const enableWalletHandler: PermittedHandlerExport<
 > = {
   methodNames: ['wallet_enable'],
   implementation: enableWallet,
-  methodDescription: 'Installs the requested plugins if they are permitted.',
+  methodDescription: 'Installs the requested snaps if they are permitted.',
   hookNames: {
     getAccounts: true,
-    installPlugins: true,
+    installSnaps: true,
     requestPermissions: true,
   },
 };
@@ -46,9 +46,9 @@ export interface EnableWalletHooks {
   getAccounts: () => string[];
 
   /**
-   * Installs the requested plugins if they are permitted.
+   * Installs the requested snaps if they are permitted.
    */
-  installPlugins: InstallPluginsHook;
+  installSnaps: InstallSnapsHook;
 
   /**
    * Initiates a permission request for the requesting origin.
@@ -64,7 +64,7 @@ async function enableWallet(
   res: PendingJsonRpcResponse<EnableWalletResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { getAccounts, installPlugins, requestPermissions }: EnableWalletHooks,
+  { getAccounts, installSnaps, requestPermissions }: EnableWalletHooks,
 ): Promise<void> {
   if (!Array.isArray(req.params)) {
     return end(
@@ -77,7 +77,7 @@ async function enableWallet(
   const result: EnableWalletResult = {
     accounts: [],
     permissions: [],
-    plugins: {},
+    snaps: {},
   };
 
   // request the permissions
@@ -94,30 +94,30 @@ async function enableWallet(
     return end(err);
   }
 
-  // install plugins, if any
+  // install snaps, if any
 
-  // get the names of the approved plugins
-  const requestedPlugins: IRequestedPermissions = result.permissions
+  // get the names of the approved snaps
+  const requestedSnaps: IRequestedPermissions = result.permissions
     // requestPermissions returns all permissions for the domain,
-    // so we're filtering out non-plugin and preexisting permissions
+    // so we're filtering out non-snap and preexisting permissions
     .filter(
       (p) =>
-        p.parentCapability.startsWith(PLUGIN_PREFIX) &&
+        p.parentCapability.startsWith(SNAP_PREFIX) &&
         p.parentCapability in requestedPermissions,
     )
-    // convert from namespaced permissions to plugin names
-    .map((p) => p.parentCapability.replace(PLUGIN_PREFIX_REGEX, ''))
-    .reduce((_requestedPlugins, pluginName) => {
-      _requestedPlugins[pluginName] = {};
-      return _requestedPlugins;
+    // convert from namespaced permissions to snap names
+    .map((p) => p.parentCapability.replace(SNAP_PREFIX_REGEX, ''))
+    .reduce((_requestedSnaps, snapName) => {
+      _requestedSnaps[snapName] = {};
+      return _requestedSnaps;
     }, {} as IRequestedPermissions);
 
   try {
-    if (Object.keys(requestedPlugins).length > 0) {
-      // this throws if requestedPlugins is empty
-      result.plugins = await handleInstallPlugins(
-        requestedPlugins,
-        installPlugins,
+    if (Object.keys(requestedSnaps).length > 0) {
+      // this throws if requestedSnaps is empty
+      result.snaps = await handleInstallSnaps(
+        requestedSnaps,
+        installSnaps,
       );
     }
   } catch (err) {

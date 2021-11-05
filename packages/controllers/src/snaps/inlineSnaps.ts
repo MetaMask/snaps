@@ -1,10 +1,10 @@
-export const INLINE_PLUGINS = {
+export const INLINE_SNAPS = {
   IDLE: `
     console.log('Welcome to Flavortown.');
   `,
 
   INFINITE_LOOP: `
-    console.log('Infinite loop plugin start.');
+    console.log('Infinite loop snap start.');
     let num = 0;
     let time;
     while (true) {
@@ -19,7 +19,7 @@ export const INLINE_PLUGINS = {
   `,
 
   MEMORY_LEAK: `
-    console.log('Memory leak plugin start.')
+    console.log('Memory leak snap start.')
     const getStr = () => Math.random().toString(2)
     const getLongStr = (str) => new Array(1000000).join(str)
     wallet.leakyBoi = {}

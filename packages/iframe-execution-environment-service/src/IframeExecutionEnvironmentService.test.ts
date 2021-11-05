@@ -22,7 +22,7 @@ describe('Iframe Controller', () => {
         >({
           name: 'ServiceMessenger',
         }),
-        setupPluginProvider: () => {
+        setupSnapProvider: () => {
           // do nothing
         },
         iframeUrl: new URL(
@@ -30,10 +30,10 @@ describe('Iframe Controller', () => {
         ),
       });
     expect(iframeExecutionEnvironmentService).toBeDefined();
-    await iframeExecutionEnvironmentService.terminateAllPlugins();
+    await iframeExecutionEnvironmentService.terminateAllSnaps();
   });
 
-  it('can create a plugin worker and start the plugin', async () => {
+  it('can create a snap worker and start the snap', async () => {
     const controllerMessenger = new ControllerMessenger<
       never,
       ErrorMessageEvent
@@ -47,7 +47,7 @@ describe('Iframe Controller', () => {
         >({
           name: 'ServiceMessenger',
         }),
-        setupPluginProvider: () => {
+        setupSnapProvider: () => {
           // do nothing
         },
         iframeUrl: new URL(
@@ -57,18 +57,18 @@ describe('Iframe Controller', () => {
     const removeListener = fixJSDOMPostMessageEventSource(
       iframeExecutionEnvironmentService,
     );
-    const response = await iframeExecutionEnvironmentService.executePlugin({
-      pluginName: 'TestPlugin',
+    const response = await iframeExecutionEnvironmentService.executeSnap({
+      snapName: 'TestSnap',
       sourceCode: `
         console.log('foo');
       `,
     });
     expect(response).toStrictEqual('OK');
     removeListener();
-    await iframeExecutionEnvironmentService.terminateAllPlugins();
+    await iframeExecutionEnvironmentService.terminateAllSnaps();
   });
 
-  it('can handle a crashed plugin', async () => {
+  it('can handle a crashed snap', async () => {
     expect.assertions(1);
     const controllerMessenger = new ControllerMessenger<
       never,
@@ -83,7 +83,7 @@ describe('Iframe Controller', () => {
         >({
           name: 'ServiceMessenger',
         }),
-        setupPluginProvider: () => {
+        setupSnapProvider: () => {
           // do nothing
         },
         iframeUrl: new URL(
@@ -94,8 +94,8 @@ describe('Iframe Controller', () => {
       iframeExecutionEnvironmentService,
     );
     const action = async () => {
-      await iframeExecutionEnvironmentService.executePlugin({
-        pluginName: 'TestPlugin',
+      await iframeExecutionEnvironmentService.executeSnap({
+        snapName: 'TestSnap',
         sourceCode: `
           throw new Error("potato");
         `,
@@ -103,9 +103,9 @@ describe('Iframe Controller', () => {
     };
 
     await expect(action()).rejects.toThrow(
-      /Error while running plugin 'TestPlugin'/u,
+      /Error while running snap 'TestSnap'/u,
     );
-    await iframeExecutionEnvironmentService.terminateAllPlugins();
+    await iframeExecutionEnvironmentService.terminateAllSnaps();
     removeListener();
   });
 
@@ -125,7 +125,7 @@ describe('Iframe Controller', () => {
     const iframeExecutionEnvironmentService =
       new IframeExecutionEnvironmentService({
         messenger,
-        setupPluginProvider: () => {
+        setupSnapProvider: () => {
           // do nothing
         },
         iframeUrl: new URL(
@@ -135,10 +135,10 @@ describe('Iframe Controller', () => {
     const removeListener = fixJSDOMPostMessageEventSource(
       iframeExecutionEnvironmentService,
     );
-    const pluginName = 'foo.bar.baz';
+    const snapName = 'foo.bar.baz';
 
-    await iframeExecutionEnvironmentService.executePlugin({
-      pluginName,
+    await iframeExecutionEnvironmentService.executeSnap({
+      snapName,
       sourceCode: `
         console.log('foo');
       `,
@@ -153,7 +153,7 @@ describe('Iframe Controller', () => {
     });
 
     const result = await promise;
-    expect(result).toStrictEqual(pluginName);
+    expect(result).toStrictEqual(snapName);
     removeListener();
   }, 60000);
 });

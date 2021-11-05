@@ -27,5 +27,5 @@ async function init(argv: YargsArgs): Promise<void> {
     eval: true,
   });
 
-  console.log('\nPlugin project successfully initiated!');
+  console.log('\nSnap project successfully initiated!');
 }

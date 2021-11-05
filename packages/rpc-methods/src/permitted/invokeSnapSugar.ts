@@ -4,22 +4,22 @@ import {
   JsonRpcEngineEndCallback,
 } from 'json-rpc-engine';
 import { ethErrors } from 'eth-rpc-errors';
-import { PLUGIN_PREFIX } from '@metamask/snap-controllers';
+import { SNAP_PREFIX } from '@metamask/snap-controllers';
 import { PermittedHandlerExport } from '../../types';
 import { isPlainObject } from '../utils';
 
-export const invokePluginSugarHandler: PermittedHandlerExport<
+export const invokeSnapSugarHandler: PermittedHandlerExport<
   void,
   JsonRpcRequest<unknown>,
   unknown
 > = {
-  methodNames: ['wallet_invokePlugin'],
-  implementation: invokePluginSugar,
-  methodDescription: 'Call an RPC method of the specified plugin.',
+  methodNames: ['wallet_invokeSnap'],
+  implementation: invokeSnapSugar,
+  methodDescription: 'Call an RPC method of the specified snap.',
   hookNames: undefined,
 };
 
-async function invokePluginSugar(
+async function invokeSnapSugar(
   req: JsonRpcRequest<unknown>,
   _res: unknown,
   next: JsonRpcEngineNextCallback,
@@ -32,12 +32,12 @@ async function invokePluginSugar(
   ) {
     return end(
       ethErrors.rpc.invalidParams({
-        message: 'Must specify a string plugin ID and a plain request object.',
+        message: 'Must specify a string snap ID and a plain request object.',
       }),
     );
   }
 
-  req.method = PLUGIN_PREFIX + req.params[0];
+  req.method = SNAP_PREFIX + req.params[0];
   req.params = [req.params[1]];
   return next();
 }

@@ -50,7 +50,7 @@
       await ethereum.request({
         method: 'wallet_enable',
         params: [{
-          wallet_plugin: { [snapId]: {} },
+          wallet_snap: { [snapId]: {} },
         }]
       })
     }
@@ -58,7 +58,7 @@
     async function getAccount () {
       try {
         const response = await ethereum.request({
-          method: 'wallet_invokePlugin',
+          method: 'wallet_invokeSnap',
           params: [snapId, {
             method: 'getAccount'
           }]
@@ -75,7 +75,7 @@
       try {
         const data = document.querySelector('.challenge').value
         const response = await ethereum.request({
-          method: 'wallet_invokePlugin',
+          method: 'wallet_invokeSnap',
           params: [snapId, {
             method: 'signMessage',
             params: [data]

@@ -8,7 +8,7 @@ import {
 import { WebWorkerExecutionEnvironmentService } from './WebWorkerExecutionEnvironmentService';
 
 const workerCode = fs.readFileSync(
-  require.resolve('@metamask/snap-workers/dist/PluginWorker.js'),
+  require.resolve('@metamask/snap-workers/dist/SnapWorker.js'),
   'utf8',
 );
 
@@ -24,7 +24,7 @@ describe('Worker Controller', () => {
     const webWorkerExecutionEnvironmentService =
       new WebWorkerExecutionEnvironmentService({
         messenger,
-        setupPluginProvider: () => {
+        setupSnapProvider: () => {
           // do nothing
         },
         workerUrl: new URL('https://foo.bar.baz'),
@@ -32,7 +32,7 @@ describe('Worker Controller', () => {
     expect(webWorkerExecutionEnvironmentService).toBeDefined();
   });
 
-  it('can create a plugin worker and start the plugin', async () => {
+  it('can create a snap worker and start the snap', async () => {
     const messenger: ServiceMessenger = new ControllerMessenger().getRestricted<
       'ServiceMessenger',
       never,
@@ -43,14 +43,14 @@ describe('Worker Controller', () => {
     const webWorkerExecutionEnvironmentService =
       new WebWorkerExecutionEnvironmentService({
         messenger,
-        setupPluginProvider: () => {
+        setupSnapProvider: () => {
           // do nothing
         },
         workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
       });
-    const pluginName = 'foo.bar.baz';
-    const response = await webWorkerExecutionEnvironmentService.executePlugin({
-      pluginName,
+    const snapName = 'foo.bar.baz';
+    const response = await webWorkerExecutionEnvironmentService.executeSnap({
+      snapName,
       sourceCode: `
         console.log('foo');
       `,
@@ -59,7 +59,7 @@ describe('Worker Controller', () => {
     expect(response).toStrictEqual('OK');
   });
 
-  it('can create a plugin worker and handle no ping reply', async () => {
+  it('can create a snap worker and handle no ping reply', async () => {
     const messenger = new ControllerMessenger<
       never,
       UnresponsiveMessageEvent
@@ -74,15 +74,15 @@ describe('Worker Controller', () => {
     const webWorkerExecutionEnvironmentService =
       new WebWorkerExecutionEnvironmentService({
         messenger,
-        setupPluginProvider: () => {
+        setupSnapProvider: () => {
           // do nothing
         },
         workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
       });
 
-    const pluginName = 'foo.bar.baz';
-    await webWorkerExecutionEnvironmentService.executePlugin({
-      pluginName,
+    const snapName = 'foo.bar.baz';
+    await webWorkerExecutionEnvironmentService.executeSnap({
+      snapName,
       sourceCode: `
         console.log('foo');
       `,
@@ -98,6 +98,6 @@ describe('Worker Controller', () => {
     });
 
     const result = await promise;
-    expect(result).toStrictEqual(pluginName);
+    expect(result).toStrictEqual(snapName);
   }, 60000);
 });

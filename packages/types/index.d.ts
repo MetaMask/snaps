@@ -10,20 +10,20 @@ export interface WorkerCommandRequest {
   data?: string | Record<string, unknown>;
 }
 
-export interface PluginData {
-  pluginName: string;
+export interface SnapData {
+  snapName: string;
   sourceCode: string;
 }
 
-export type PluginRpcHandler = (
+export type SnapRpcHandler = (
   origin: string,
   request: Record<string, unknown>,
 ) => Promise<unknown>;
 
-export interface PluginProvider extends MetaMaskInpageProvider {
-  registerRpcMessageHandler: (handler: PluginRpcHandler) => void;
+export interface SnapProvider extends MetaMaskInpageProvider {
+  registerRpcMessageHandler: (handler: SnapRpcHandler) => void;
 }
-type PluginName = string;
+type SnapName = string;
 export interface ErrorJSON {
   message: string;
   code: number;
@@ -31,11 +31,11 @@ export interface ErrorJSON {
 }
 export interface ErrorMessageEvent {
   type: 'ServiceMessenger:unhandledError';
-  payload: [PluginName, ErrorJSON];
+  payload: [SnapName, ErrorJSON];
 }
 export interface UnresponsiveMessageEvent {
   type: 'ServiceMessenger:unresponsive';
-  payload: [PluginName];
+  payload: [SnapName];
 }
 export type ServiceMessenger = RestrictedControllerMessenger<
   'ServiceMessenger',

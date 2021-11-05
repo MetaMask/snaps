@@ -1,18 +1,18 @@
 import { enableWalletHandler, EnableWalletHooks } from './enable';
 import { getAppKeyHandler, GetAppKeyHooks } from './getAppKey';
-import { getPluginsHandler, GetPluginsHooks } from './getPlugins';
-import { installPluginsHandler, InstallPluginsHooks } from './installPlugins';
-import { invokePluginSugarHandler } from './invokePluginSugar';
+import { getSnapsHandler, GetSnapsHooks } from './getSnaps';
+import { installSnapsHandler, InstallSnapsHooks } from './installSnaps';
+import { invokeSnapSugarHandler } from './invokeSnapSugar';
 
 export type PermittedRpcMethodHooks = EnableWalletHooks &
   GetAppKeyHooks &
-  GetPluginsHooks &
-  InstallPluginsHooks;
+  GetSnapsHooks &
+  InstallSnapsHooks;
 
 export const handlers = [
   enableWalletHandler,
   getAppKeyHandler,
-  getPluginsHandler,
-  installPluginsHandler,
-  invokePluginSugarHandler,
+  getSnapsHandler,
+  installSnapsHandler,
+  invokeSnapSugarHandler,
 ];
