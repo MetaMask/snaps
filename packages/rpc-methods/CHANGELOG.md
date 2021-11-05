@@ -7,10 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.3.0]
-### Uncategorized
-- Enforce consistent naming for Snaps ([#119](https://github.com/MetaMask/snaps-skunkworks/pull/119))
+### Added
+- Service Messenger ([#100](https://github.com/MetaMask/snaps-skunkworks/pull/100))
+
+### Changed
 - rpc-methods: Make wallet_getBip44Entropy_* implementation safer ([#115](https://github.com/MetaMask/snaps-skunkworks/pull/115))
-- Added Service Messenger ([#100](https://github.com/MetaMask/snaps-skunkworks/pull/100))
+- Enforce consistent naming for Snaps ([#119](https://github.com/MetaMask/snaps-skunkworks/pull/119))
 
 ## [0.2.2]
 ### Fixed
