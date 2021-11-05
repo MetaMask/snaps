@@ -7,14 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.3.0]
-### Uncategorized
-- Enforce consistent naming for Snaps ([#119](https://github.com/MetaMask/snaps-skunkworks/pull/119))
+### Added
 - PluginController: Allow enabling / disabling plugins ([#116](https://github.com/MetaMask/snaps-skunkworks/pull/116))
-- Added start on-demand inside rpcMessageHandler ([#114](https://github.com/MetaMask/snaps-skunkworks/pull/114))
-- Added max idle time ([#105](https://github.com/MetaMask/snaps-skunkworks/pull/105))
-- build(deps-dev): bump electron from 12.0.7 to 12.1.0 ([#102](https://github.com/MetaMask/snaps-skunkworks/pull/102))
-- Add poll for status webworker ([#104](https://github.com/MetaMask/snaps-skunkworks/pull/104))
-- Added Service Messenger ([#100](https://github.com/MetaMask/snaps-skunkworks/pull/100))
+- Start on-demand inside rpcMessageHandler ([#114](https://github.com/MetaMask/snaps-skunkworks/pull/114))
+- Max idle time ([#105](https://github.com/MetaMask/snaps-skunkworks/pull/105))
+- Poll for status webworker ([#104](https://github.com/MetaMask/snaps-skunkworks/pull/104))
+- Service Messenger ([#100](https://github.com/MetaMask/snaps-skunkworks/pull/100))
+
+### Changed
+- Enforce consistent naming for Snaps ([#119](https://github.com/MetaMask/snaps-skunkworks/pull/119))
 
 ## [0.2.2]
 ### Added
