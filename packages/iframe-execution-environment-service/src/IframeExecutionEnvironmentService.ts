@@ -187,9 +187,7 @@ export class IframeExecutionEnvironmentService
 
   public async executeSnap(snapData: SnapData): Promise<unknown> {
     if (this.snapToJobMap.has(snapData.snapName)) {
-      throw new Error(
-        `Snap "${snapData.snapName}" is already being executed.`,
-      );
+      throw new Error(`Snap "${snapData.snapName}" is already being executed.`);
     }
 
     const job = await this._init();

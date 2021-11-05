@@ -115,10 +115,7 @@ async function enableWallet(
   try {
     if (Object.keys(requestedSnaps).length > 0) {
       // this throws if requestedSnaps is empty
-      result.snaps = await handleInstallSnaps(
-        requestedSnaps,
-        installSnaps,
-      );
+      result.snaps = await handleInstallSnaps(requestedSnaps, installSnaps);
     }
   } catch (err) {
     if (!result.errors) {

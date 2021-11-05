@@ -151,10 +151,9 @@ describe('SnapController Controller', () => {
         workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
       });
     const snapController = new SnapController({
-      terminateAllSnaps:
-        webWorkerExecutionEnvironment.terminateAllSnaps.bind(
-          webWorkerExecutionEnvironment,
-        ),
+      terminateAllSnaps: webWorkerExecutionEnvironment.terminateAllSnaps.bind(
+        webWorkerExecutionEnvironment,
+      ),
       terminateSnap: webWorkerExecutionEnvironment.terminateSnap.bind(
         webWorkerExecutionEnvironment,
       ),
@@ -511,9 +510,7 @@ describe('SnapController Controller', () => {
     );
 
     expect(Object.entries(snapController.state.snapErrors)).toHaveLength(1);
-    expect(
-      Object.entries(snapController.state.snapErrors)[0][1],
-    ).toStrictEqual(
+    expect(Object.entries(snapController.state.snapErrors)[0][1]).toStrictEqual(
       expect.objectContaining({
         code: 2,
         data: {},
@@ -716,10 +713,9 @@ describe('SnapController Controller', () => {
     const snapController = new SnapController({
       idleTimeCheckInterval: 1000,
       maxIdleTime: 2000,
-      terminateAllSnaps:
-        webWorkerExecutionEnvironment.terminateAllSnaps.bind(
-          webWorkerExecutionEnvironment,
-        ),
+      terminateAllSnaps: webWorkerExecutionEnvironment.terminateAllSnaps.bind(
+        webWorkerExecutionEnvironment,
+      ),
       terminateSnap: webWorkerExecutionEnvironment.terminateSnap.bind(
         webWorkerExecutionEnvironment,
       ),
@@ -797,10 +793,9 @@ describe('SnapController Controller', () => {
     const snapController = new SnapController({
       idleTimeCheckInterval: 1000,
       maxIdleTime: 2000,
-      terminateAllSnaps:
-        webWorkerExecutionEnvironment.terminateAllSnaps.bind(
-          webWorkerExecutionEnvironment,
-        ),
+      terminateAllSnaps: webWorkerExecutionEnvironment.terminateAllSnaps.bind(
+        webWorkerExecutionEnvironment,
+      ),
       terminateSnap: webWorkerExecutionEnvironment.terminateSnap.bind(
         webWorkerExecutionEnvironment,
       ),
@@ -869,10 +864,9 @@ describe('SnapController Controller', () => {
     const snapController = new SnapController({
       idleTimeCheckInterval: 1000,
       maxIdleTime: 2000,
-      terminateAllSnaps:
-        webWorkerExecutionEnvironment.terminateAllSnaps.bind(
-          webWorkerExecutionEnvironment,
-        ),
+      terminateAllSnaps: webWorkerExecutionEnvironment.terminateAllSnaps.bind(
+        webWorkerExecutionEnvironment,
+      ),
       terminateSnap: webWorkerExecutionEnvironment.terminateSnap.bind(
         webWorkerExecutionEnvironment,
       ),
@@ -951,10 +945,9 @@ describe('SnapController Controller', () => {
     const snapController = new SnapController({
       idleTimeCheckInterval: 1000,
       maxIdleTime: 2000,
-      terminateAllSnaps:
-        webWorkerExecutionEnvironment.terminateAllSnaps.bind(
-          webWorkerExecutionEnvironment,
-        ),
+      terminateAllSnaps: webWorkerExecutionEnvironment.terminateAllSnaps.bind(
+        webWorkerExecutionEnvironment,
+      ),
       terminateSnap: webWorkerExecutionEnvironment.terminateSnap.bind(
         webWorkerExecutionEnvironment,
       ),
@@ -1021,9 +1014,7 @@ describe('SnapController Controller', () => {
       'stopped',
     );
 
-    expect(snapController.state.snaps[snap.name].enabled).toStrictEqual(
-      false,
-    );
+    expect(snapController.state.snaps[snap.name].enabled).toStrictEqual(false);
 
     snapController.enableSnap(snap.name);
 
@@ -1034,9 +1025,7 @@ describe('SnapController Controller', () => {
       id: 1,
     });
 
-    expect(snapController.state.snaps[snap.name].enabled).toStrictEqual(
-      true,
-    );
+    expect(snapController.state.snaps[snap.name].enabled).toStrictEqual(true);
 
     expect(snapController.state.snaps[snap.name].status).toStrictEqual(
       'running',

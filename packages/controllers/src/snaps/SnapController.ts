@@ -587,10 +587,7 @@ export class SnapController extends BaseController<
    * @param snapName - The name of the snap whose state should be updated.
    * @param newSnapState - The new state of the snap.
    */
-  async updateSnapState(
-    snapName: string,
-    newSnapState: Json,
-  ): Promise<void> {
+  async updateSnapState(snapName: string, newSnapState: Json): Promise<void> {
     this.update((state: any) => {
       state.snapStates[snapName] = newSnapState;
     });
@@ -700,16 +697,11 @@ export class SnapController extends BaseController<
   getPermittedSnaps(origin: string): InstallSnapsResult {
     return this._getPermissions(origin).reduce((permittedSnaps, perm) => {
       if (perm.parentCapability.startsWith(SNAP_PREFIX)) {
-        const snapName = perm.parentCapability.replace(
-          SNAP_PREFIX_REGEX,
-          '',
-        );
+        const snapName = perm.parentCapability.replace(SNAP_PREFIX_REGEX, '');
         const snap = this.getSerializable(snapName);
 
         permittedSnaps[snapName] = snap || {
-          error: serializeError(
-            new Error('Snap permitted but not installed.'),
-          ),
+          error: serializeError(new Error('Snap permitted but not installed.')),
         };
       }
       return permittedSnaps;
@@ -764,9 +756,7 @@ export class SnapController extends BaseController<
    * @param - snapName - The name of the snap.
    * @returns The resulting snap object, or an error if something went wrong.
    */
-  async processRequestedSnap(
-    snapName: string,
-  ): Promise<ProcessSnapReturnType> {
+  async processRequestedSnap(snapName: string): Promise<ProcessSnapReturnType> {
     // if the snap is already installed and active, just return it
     const snap = this.get(snapName);
     if (snap?.status !== SnapStatus.running) {
@@ -864,9 +854,7 @@ export class SnapController extends BaseController<
       typeof initialPermissions !== 'object' ||
       Array.isArray(initialPermissions)
     ) {
-      throw new Error(
-        `Invalid initial permissions for snap "${snapName}".`,
-      );
+      throw new Error(`Invalid initial permissions for snap "${snapName}".`);
     }
 
     let snap: Snap = {

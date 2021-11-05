@@ -12,9 +12,7 @@ export type Command = (
   message: JsonRpcRequest<unknown>,
 ) => Promise<unknown>;
 export type TerminateAll = () => Promise<void>;
-export type CreateSnapEnvironment = (
-  metadata: SnapMetadata,
-) => Promise<string>;
+export type CreateSnapEnvironment = (metadata: SnapMetadata) => Promise<string>;
 export type ExecuteSnap = (snapData: SnapData) => Promise<unknown>;
 export type GetRpcMessageHandler = (
   snapName: string,

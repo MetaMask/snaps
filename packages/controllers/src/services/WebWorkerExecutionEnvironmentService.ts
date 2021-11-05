@@ -195,9 +195,7 @@ export class WebWorkerExecutionEnvironmentService
 
   async executeSnap(snapData: SnapData): Promise<unknown> {
     if (this.snapToWorkerMap.has(snapData.snapName)) {
-      throw new Error(
-        `Snap "${snapData.snapName}" is already being executed.`,
-      );
+      throw new Error(`Snap "${snapData.snapName}" is already being executed.`);
     }
 
     const worker = await this._initWorker();
@@ -302,15 +300,11 @@ export class WebWorkerExecutionEnvironmentService
       if (this._messenger) {
         const snapName = this.workerToSnapMap.get(workerId);
         if (snapName) {
-          this._messenger.publish(
-            'ServiceMessenger:unhandledError',
-            snapName,
-            {
-              code: ev.error.code,
-              message: ev.error.message,
-              data: ev.error.data,
-            },
-          );
+          this._messenger.publish('ServiceMessenger:unhandledError', snapName, {
+            code: ev.error.code,
+            message: ev.error.message,
+            data: ev.error.data,
+          });
         }
       }
     };
