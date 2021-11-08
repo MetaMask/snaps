@@ -380,7 +380,7 @@ describe('SnapController Controller', () => {
             sourceCode: 'console.log("foo")',
             name: 'foo',
             enabled: true,
-            status: SnapStatus.idle,
+            status: SnapStatus.installing,
           },
         },
       },
