@@ -20,6 +20,7 @@ import {
   TerminateAll,
   TerminateSnap,
 } from '../services/ExecutionEnvironmentService';
+import { timeSince } from '../utils';
 import { INLINE_SNAPS } from './inlineSnaps';
 
 export const controllerName = 'SnapController';
@@ -349,8 +350,8 @@ export class SnapController extends BaseController<
   }
 
   _stopSnapsLastRequestPastMax() {
-    this._lastRequestMap.forEach(async (val, snapName) => {
-      if (this._maxIdleTime && val > Date.now() - this._maxIdleTime) {
+    this._lastRequestMap.forEach(async (timestamp, snapName) => {
+      if (this._maxIdleTime && timeSince(timestamp) > this._maxIdleTime) {
         this.stopSnap(snapName);
       }
     });
@@ -757,9 +758,9 @@ export class SnapController extends BaseController<
    * @returns The resulting snap object, or an error if something went wrong.
    */
   async processRequestedSnap(snapName: string): Promise<ProcessSnapReturnType> {
-    // if the snap is already installed and active, just return it
+    // If the snap is already installed, just return it
     const snap = this.get(snapName);
-    if (snap?.status !== SnapStatus.running) {
+    if (snap) {
       return this.getSerializable(snapName) as SerializableSnap;
     }
 
