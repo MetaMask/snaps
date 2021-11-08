@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.3.1]
-### Uncategorized
-- rpc-methods: Fix tsconfig.local.json ([#122](https://github.com/MetaMask/snaps-skunkworks/pull/122))
+### Changed
+- No changes this release.
 
 ## [0.3.0]
 ### Changed

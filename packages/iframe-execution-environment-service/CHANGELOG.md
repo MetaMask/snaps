@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.3.1]
-### Uncategorized
-- Fix 0.3.0 changelog entries ([#123](https://github.com/MetaMask/snaps-skunkworks/pull/123))
+### Fixed
+- Correctly identify breaking changes in [0.3.0] release ([#123](https://github.com/MetaMask/snaps-skunkworks/pull/123))
 
 ## [0.3.0]
 ### Added
