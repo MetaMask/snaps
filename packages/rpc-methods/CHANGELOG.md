@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1]
+### Uncategorized
+- rpc-methods: Fix tsconfig.local.json ([#122](https://github.com/MetaMask/snaps-skunkworks/pull/122))
+
 ## [0.3.0]
 ### Changed
 - **BREAKING:** Make `wallet_getBip44Entropy_*` implementation safer ([#115](https://github.com/MetaMask/snaps-skunkworks/pull/115))
@@ -36,7 +40,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.2.2...v0.3.0
 [0.2.2]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.2.0...v0.2.2
 [0.2.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.1.0...v0.2.0

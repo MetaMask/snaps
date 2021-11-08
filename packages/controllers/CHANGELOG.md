@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1]
+### Uncategorized
+- Update Snap initial states ([#126](https://github.com/MetaMask/snaps-skunkworks/pull/126))
+- Changed on demand boot to not boot when idle ([#124](https://github.com/MetaMask/snaps-skunkworks/pull/124))
+- Fix 0.3.0 changelog entries ([#123](https://github.com/MetaMask/snaps-skunkworks/pull/123))
+- Fix Snap execution and installation bugs ([#125](https://github.com/MetaMask/snaps-skunkworks/pull/125))
+
 ## [0.3.0]
 ### Added
 - Allow disabling and enabling Snaps ([#116](https://github.com/MetaMask/snaps-skunkworks/pull/116))
@@ -82,7 +89,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.2.2...v0.3.0
 [0.2.2]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.2.0...v0.2.2
 [0.2.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.1.2...v0.2.0
