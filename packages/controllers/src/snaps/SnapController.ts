@@ -1016,6 +1016,10 @@ export class SnapController extends BaseController<
         throw new Error(`Snap "${snapName}" is disabled.`);
       }
 
+      if (this.state.snaps[snapName].status === SnapStatus.idle) {
+        throw new Error(`Snap "${snapName}" has not been started yet.`);
+      }
+
       if (!handler && this.isRunning(snapName) === false) {
         // cold start
         await this.startSnap(snapName);

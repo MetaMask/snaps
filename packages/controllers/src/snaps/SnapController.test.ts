@@ -985,6 +985,15 @@ describe('SnapController Controller', () => {
 
     const handler = await snapController.getRpcMessageHandler(snap.name);
 
+    await expect(
+      handler('foo.com', {
+        jsonrpc: '2.0',
+        method: 'test',
+        params: {},
+        id: 1,
+      }),
+    ).rejects.toThrow(/^Snap "TestSnap" has not been started yet.$/u);
+
     await snapController.startSnap(snap.name);
 
     expect(snapController.state.snaps[snap.name].status).toStrictEqual(
