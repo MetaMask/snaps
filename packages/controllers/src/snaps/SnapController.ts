@@ -153,7 +153,7 @@ const defaultState: SnapControllerState = {
 };
 
 export enum SnapStatus {
-  idle = 'idle',
+  installing = 'installing',
   running = 'running',
   stopped = 'stopped',
   crashed = 'crashed',
@@ -178,9 +178,9 @@ const disabledGuard = (serializedSnap: SerializableSnap) => {
  * Supports a very minimal subset of XState conventions outlined in `_transitionSnapState`.
  */
 const snapStatusStateMachineConfig = {
-  initial: SnapStatus.idle,
+  initial: SnapStatus.installing,
   states: {
-    [SnapStatus.idle]: {
+    [SnapStatus.installing]: {
       on: {
         [SnapStatusEvent.start]: {
           target: SnapStatus.running,
@@ -296,7 +296,8 @@ export class SnapController extends BaseController<
               .map((snap) => {
                 return {
                   ...snap,
-                  status: snapStatusStateMachineConfig.initial,
+                  // At the time state is rehydrated, no snap will be running.
+                  status: SnapStatus.stopped,
                 };
               })
               .reduce((memo: Record<string, Snap>, snap) => {
@@ -1016,7 +1017,7 @@ export class SnapController extends BaseController<
         throw new Error(`Snap "${snapName}" is disabled.`);
       }
 
-      if (this.state.snaps[snapName].status === SnapStatus.idle) {
+      if (this.state.snaps[snapName].status === SnapStatus.installing) {
         throw new Error(`Snap "${snapName}" has not been started yet.`);
       }
 
