@@ -145,7 +145,7 @@ export class IframeExecutionEnvironmentService
     const snapName = this.jobToSnapMap.get(jobId);
 
     if (!snapName) {
-      throw new Error(`Snap name for Job with id "${jobId}" not found.`);
+      throw new Error(`Failed to find a snap for job with id "${jobId}"`);
     }
 
     Object.values(jobWrapper.streams).forEach((stream) => {
