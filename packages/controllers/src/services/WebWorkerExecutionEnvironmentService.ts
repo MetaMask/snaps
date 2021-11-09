@@ -66,6 +66,8 @@ export class WebWorkerExecutionEnvironmentService
 
   private _unresponsiveTimeout: number;
 
+  private _timeoutForUnresponsiveMap: Map<string, number>;
+
   constructor({
     setupSnapProvider,
     workerUrl,
@@ -83,6 +85,7 @@ export class WebWorkerExecutionEnvironmentService
     this._messenger = messenger;
     this._unresponsivePollingInterval = unresponsivePollingInterval;
     this._unresponsiveTimeout = unresponsiveTimeout;
+    this._timeoutForUnresponsiveMap = new Map();
   }
 
   private _setWorker(workerId: string, workerWrapper: WorkerWrapper): void {
@@ -142,8 +145,13 @@ export class WebWorkerExecutionEnvironmentService
 
   terminate(workerId: string): void {
     const workerWrapper = this.workers.get(workerId);
+    const snapName = this._getSnapForWorker(workerId);
     if (!workerWrapper) {
-      throw new Error(`Worked with id "${workerId}" not found.`);
+      throw new Error(`Worker with id "${workerId}" not found.`);
+    }
+
+    if (!snapName) {
+      throw new Error(`Snap name for Worker with id "${workerId}" not found.`);
     }
 
     Object.values(workerWrapper.streams).forEach((stream) => {
@@ -157,6 +165,10 @@ export class WebWorkerExecutionEnvironmentService
     workerWrapper.worker.terminate();
     this._removeSnapAndWorkerMapping(workerId);
     this._deleteWorker(workerId);
+
+    clearTimeout(this._timeoutForUnresponsiveMap.get(workerId));
+    this._timeoutForUnresponsiveMap.delete(workerId);
+
     console.log(`worker:${workerId} terminated`);
   }
 
@@ -223,7 +235,7 @@ export class WebWorkerExecutionEnvironmentService
       throw new Error('no worker id found for snap');
     }
 
-    setTimeout(async () => {
+    const timeout = window.setTimeout(async () => {
       this._getWorkerStatus(workerId)
         .then(() => {
           this._pollForWorkerStatus(snapName);
@@ -232,6 +244,7 @@ export class WebWorkerExecutionEnvironmentService
           this._messenger.publish('ServiceMessenger:unresponsive', snapName);
         });
     }, this._unresponsivePollingInterval);
+    this._timeoutForUnresponsiveMap.set(snapName, timeout);
   }
 
   async _getWorkerStatus(workerId: string) {
@@ -243,7 +256,7 @@ export class WebWorkerExecutionEnvironmentService
       reject = rej;
     });
 
-    const timeout = setTimeout(() => {
+    const timeout = window.setTimeout(() => {
       reject(new Error('ping request timed out'));
     }, this._unresponsiveTimeout);
 

@@ -771,6 +771,7 @@ describe('SnapController Controller', () => {
     expect(snapController.state.snaps[snap.name].status).toStrictEqual(
       'stopped',
     );
+    snapController.destroy();
   });
 
   it('can add a snap and see its status', async () => {
@@ -842,6 +843,8 @@ describe('SnapController Controller', () => {
     expect(snapController.state.snaps[snap.name].status).toStrictEqual(
       'stopped',
     );
+
+    snapController.destroy();
   });
 
   it('can add a snap and stop it and have it start on-demand', async () => {
@@ -923,6 +926,7 @@ describe('SnapController Controller', () => {
       id: 1,
     });
     expect(results).toStrictEqual('test1');
+    snapController.destroy();
   });
 
   it('can add a snap disable/enable it and still get a response from method "test"', async () => {
@@ -1041,5 +1045,100 @@ describe('SnapController Controller', () => {
     );
 
     expect(results).toStrictEqual('test1');
+    snapController.destroy();
+  });
+
+  it('can send an rpc request and time out', async () => {
+    const messenger = new ControllerMessenger<
+      SnapControllerActions,
+      ErrorMessageEvent | UnresponsiveMessageEvent
+    >().getRestricted({
+      name: 'SnapController',
+      allowedEvents: [
+        'ServiceMessenger:unhandledError',
+        'ServiceMessenger:unresponsive',
+      ],
+    });
+    const webWorkerExecutionEnvironment =
+      new WebWorkerExecutionEnvironmentService({
+        messenger,
+        setupSnapProvider: jest.fn(),
+        workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
+      });
+    const snapController = new SnapController({
+      idleTimeCheckInterval: 30000,
+      maxIdleTime: 160000,
+      maxRequestTime: 1000,
+      terminateAllSnaps: webWorkerExecutionEnvironment.terminateAllSnaps.bind(
+        webWorkerExecutionEnvironment,
+      ),
+      terminateSnap: webWorkerExecutionEnvironment.terminateSnap.bind(
+        webWorkerExecutionEnvironment,
+      ),
+      executeSnap: webWorkerExecutionEnvironment.executeSnap.bind(
+        webWorkerExecutionEnvironment,
+      ),
+      getRpcMessageHandler:
+        webWorkerExecutionEnvironment.getRpcMessageHandler.bind(
+          webWorkerExecutionEnvironment,
+        ),
+      removeAllPermissionsFor: jest.fn(),
+      getPermissions: jest.fn(),
+      hasPermission: jest.fn(),
+      requestPermissions: jest.fn(),
+      closeAllConnections: jest.fn(),
+      messenger,
+    });
+
+    const snap = await snapController.add({
+      name: 'TestSnap',
+      sourceCode: `
+        wallet.registerRpcMessageHandler(async (origin, request) => {
+          const {method, params, id} = request;
+          wallet.request({method: 'setState'})
+          return method + id;
+        });
+      `,
+      manifest: {
+        web3Wallet: {
+          initialPermissions: {},
+        },
+        version: '0.0.0-development',
+      },
+    });
+
+    // override handler to take too long to return
+    (snapController as any)._getRpcMessageHandler = async () => {
+      return async () => {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(undefined);
+          }, 60000);
+        });
+      };
+    };
+
+    const handler = await snapController.getRpcMessageHandler(snap.name);
+
+    await snapController.startSnap(snap.name);
+
+    expect(snapController.state.snaps[snap.name].status).toStrictEqual(
+      'running',
+    );
+
+    await expect(
+      handler('foo.com', {
+        jsonrpc: '2.0',
+        method: 'test',
+        params: {},
+        id: 1,
+      }),
+    ).rejects.toThrow(/^request timed out$/u);
+
+    expect(snapController.state.snaps[snap.name].status).toStrictEqual(
+      'stopped',
+    );
+
+    snapController.destroy();
   });
 });
