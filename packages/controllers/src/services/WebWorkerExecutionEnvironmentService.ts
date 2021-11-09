@@ -153,7 +153,7 @@ export class WebWorkerExecutionEnvironmentService
     const snapName = this._getSnapForWorker(workerId);
 
     if (!snapName) {
-      throw new Error(`Snap name for Worker with id "${workerId}" not found.`);
+      throw new Error(`Failed to find a snap for worker with id "${workerId}".`);
     }
 
     Object.values(workerWrapper.streams).forEach((stream) => {
