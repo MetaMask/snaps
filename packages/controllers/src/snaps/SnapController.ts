@@ -1050,8 +1050,7 @@ export class SnapController extends BaseController<
       });
 
       const timeout = setTimeout(() => {
-        this._transitionSnapState(snapName, SnapStatusEvent.stop);
-        this._stopSnap(snapName, false);
+        this._stopSnap(snapName);
         reject(new Error('request timed out'));
       }, this._maxRequestTime);
 
