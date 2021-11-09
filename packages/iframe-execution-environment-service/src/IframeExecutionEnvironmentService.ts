@@ -137,10 +137,12 @@ export class IframeExecutionEnvironmentService
 
   public terminate(jobId: string): void {
     const jobWrapper = this.jobs.get(jobId);
-    const snapName = this.jobToSnapMap.get(jobId);
+
     if (!jobWrapper) {
       throw new Error(`Job with id "${jobId}" not found.`);
     }
+
+    const snapName = this.jobToSnapMap.get(jobId);
 
     if (!snapName) {
       throw new Error(`Snap name for Job with id "${jobId}" not found.`);
@@ -232,7 +234,7 @@ export class IframeExecutionEnvironmentService
       throw new Error('no job id found for snap');
     }
 
-    const timeout = window.setTimeout(async () => {
+    const timeout = setTimeout(async () => {
       this._getJobStatus(jobId)
         .then(() => {
           this._pollForJobStatus(snapName);
@@ -240,7 +242,7 @@ export class IframeExecutionEnvironmentService
         .catch(() => {
           this._messenger.publish('ServiceMessenger:unresponsive', snapName);
         });
-    }, this._unresponsivePollingInterval);
+    }, this._unresponsivePollingInterval) as unknown as number;
     this._timeoutForUnresponsiveMap.set(snapName, timeout);
   }
 
@@ -253,7 +255,7 @@ export class IframeExecutionEnvironmentService
       reject = rej;
     });
 
-    const timeout = window.setTimeout(() => {
+    const timeout = setTimeout(() => {
       reject(new Error('ping request timed out'));
     }, this._unresponsiveTimeout);
 
@@ -367,7 +369,7 @@ export class IframeExecutionEnvironmentService
   ): Promise<Window> {
     const iframe = document.createElement('iframe');
     return new Promise((resolve, reject) => {
-      const errorTimeout = window.setTimeout(() => {
+      const errorTimeout = setTimeout(() => {
         iframe.remove();
         reject(new Error(`Timed out creating iframe window: "${uri}"`));
       }, timeout);

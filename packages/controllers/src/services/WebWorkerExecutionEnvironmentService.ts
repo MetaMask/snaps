@@ -145,10 +145,12 @@ export class WebWorkerExecutionEnvironmentService
 
   terminate(workerId: string): void {
     const workerWrapper = this.workers.get(workerId);
-    const snapName = this._getSnapForWorker(workerId);
+
     if (!workerWrapper) {
       throw new Error(`Worker with id "${workerId}" not found.`);
     }
+
+    const snapName = this._getSnapForWorker(workerId);
 
     if (!snapName) {
       throw new Error(`Snap name for Worker with id "${workerId}" not found.`);
@@ -235,7 +237,7 @@ export class WebWorkerExecutionEnvironmentService
       throw new Error('no worker id found for snap');
     }
 
-    const timeout = window.setTimeout(async () => {
+    const timeout = setTimeout(async () => {
       this._getWorkerStatus(workerId)
         .then(() => {
           this._pollForWorkerStatus(snapName);
@@ -243,7 +245,7 @@ export class WebWorkerExecutionEnvironmentService
         .catch(() => {
           this._messenger.publish('ServiceMessenger:unresponsive', snapName);
         });
-    }, this._unresponsivePollingInterval);
+    }, this._unresponsivePollingInterval) as unknown as number;
     this._timeoutForUnresponsiveMap.set(snapName, timeout);
   }
 
@@ -256,7 +258,7 @@ export class WebWorkerExecutionEnvironmentService
       reject = rej;
     });
 
-    const timeout = window.setTimeout(() => {
+    const timeout = setTimeout(() => {
       reject(new Error('ping request timed out'));
     }, this._unresponsiveTimeout);
 
