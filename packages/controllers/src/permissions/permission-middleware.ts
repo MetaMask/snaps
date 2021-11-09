@@ -76,7 +76,7 @@ export function getPermissionMiddlewareFactory<
       const result = await executeRestrictedMethod(
         methodImplementation,
         subject,
-        method as Permission['parentCapability'],
+        method,
         params,
       );
 

@@ -188,15 +188,6 @@ export type ExtractCaveats<
   : never;
 
 /**
- * Internal utility type, because using parameterized types in conditional types
- * causes weird things to happen.
- */
-type _ExtractCaveat<
-  CaveatUnion extends CaveatConstraint,
-  CaveatType extends string,
-> = CaveatUnion extends Caveat<CaveatType, Json> ? CaveatUnion : never;
-
-/**
  * Extracts the type of a specific {@link Caveat} from a union of caveat
  * specifications.
  *
@@ -206,7 +197,7 @@ type _ExtractCaveat<
 export type ExtractCaveat<
   CaveatSpecifications extends CaveatSpecification<CaveatConstraint>,
   CaveatType extends string,
-> = _ExtractCaveat<ExtractCaveats<CaveatSpecifications>, CaveatType>;
+> = Extract<ExtractCaveats<CaveatSpecifications>, { type: CaveatType }>;
 
 /**
  * Extracts the value type of a specific {@link Caveat} from a union of caveat
@@ -238,10 +229,9 @@ export function decorateWithCaveats<
     return methodImplementation;
   }
 
-  let decorated = methodImplementation as AsyncRestrictedMethod<
-    RestrictedMethodParameters,
-    Json
-  >;
+  let decorated = async (
+    args: Parameters<RestrictedMethod<RestrictedMethodParameters, Json>>[0],
+  ) => methodImplementation(args);
 
   for (const caveat of caveats) {
     const specification =

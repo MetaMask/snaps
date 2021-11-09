@@ -1591,8 +1591,7 @@ export class PermissionController<
     preserveExistingPermissions = true,
   ): Promise<
     [
-      Record<
-        string,
+      SubjectPermissions<
         ExtractPermission<
           ControllerPermissionSpecification,
           ControllerCaveatSpecification

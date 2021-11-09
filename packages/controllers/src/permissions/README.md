@@ -78,7 +78,7 @@ const caveatSpecifications = {
         caveat: FilterArrayCaveat,
       ) =>
       async (args: RestrictedMethodOptions<RestrictedMethodParameters>) => {
-        const result: string[] | unknown = await method(args);
+        const result = await method(args);
         if (!Array.isArray(result)) {
           throw Error('not an array');
         }

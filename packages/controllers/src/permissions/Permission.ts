@@ -169,7 +169,7 @@ type ExtractArrayMembers<ArrayType> = ArrayType extends
 
 /**
  * A utility type for extracting the allowed caveat types for a particular
- * permission from a permission specification type or type union.
+ * permission from a permission specification type.
  *
  * @template PermissionSpecification - The permission specification type to
  * extract valid caveat types from.
@@ -211,8 +211,6 @@ export type PermissionOptions<TargetPermission extends PermissionConstraint> = {
    * See {@link Caveat}.
    */
   caveats?: NonEmptyArray<CaveatConstraint>;
-  // TODO: Refactor allowed caveats validation to enable this?
-  // caveats?: NonEmptyArray<ExtractCaveats<TargetPermission>>;
 };
 
 /**
