@@ -1054,13 +1054,14 @@ export class SnapController extends BaseController<
         reject(new Error('request timed out'));
       }, this._maxRequestTime);
 
-      return Promise.race([
-        handler(origin, request).then((result) => {
-          clearTimeout(timeout);
-          resolve(result);
-        }),
+      // This will either get the result or reject due to the timeout.
+      const result = await Promise.race([
+        handler(origin, request),
         timeoutPromise,
       ]);
+
+      clearTimeout(timeout);
+      return result;
     };
 
     this._rpcHandlerMap.set(snapName, rpcHandler);
