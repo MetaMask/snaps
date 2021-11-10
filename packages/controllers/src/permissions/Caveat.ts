@@ -154,6 +154,7 @@ export type CaveatSpecificationMap<
   Specification extends CaveatSpecificationConstraint,
 > = Record<Specification['type'], Specification>;
 
+// TODO: Figure out why we have to extend "any" in this type.
 /**
  * TODO:docs
  */
