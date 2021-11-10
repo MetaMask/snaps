@@ -15,8 +15,8 @@ import type {
   ControllerMessenger,
 } from '@metamask/controllers';
 /* eslint-enable @typescript-eslint/no-unused-vars */
-import { castDraft, castImmutable, Draft, Patch } from 'immer';
 import deepFreeze from 'deep-freeze-strict';
+import { castDraft, Draft, Patch } from 'immer';
 import { nanoid } from 'nanoid';
 import {
   isPlainObject,
@@ -70,6 +70,8 @@ import {
   PermissionsRequestNotFoundError,
   ForbiddenCaveatError,
   CaveatInvalidJsonError,
+  DuplicateCaveatError,
+  InvalidCaveatsPropertyError,
 } from './errors';
 import { MethodNames } from './utils';
 import { getPermissionMiddlewareFactory } from './permission-middleware';
@@ -997,10 +999,11 @@ export class PermissionController<
         throw new PermissionDoesNotExistError(origin, target);
       }
 
-      const caveat = this.constructCaveat(origin, target, {
+      const caveat = {
         type: caveatType,
         value: caveatValue,
-      });
+      };
+      this.validateCaveat(caveat, origin, target);
 
       if (permission.caveats) {
         const caveatIndex = permission.caveats.findIndex(
@@ -1243,7 +1246,7 @@ export class PermissionController<
 
     this.validatePermission(
       this.getPermissionSpecification(targetKey),
-      castImmutable(permission) as PermissionConstraint,
+      permission as PermissionConstraint,
       origin,
       targetName,
     );
@@ -1376,6 +1379,7 @@ export class PermissionController<
       >['parentCapability'];
       const specification = this.getPermissionSpecification(targetKey);
 
+      // The requested caveats are validated here.
       const caveats = this.constructCaveats(
         origin,
         targetName,
@@ -1388,10 +1392,33 @@ export class PermissionController<
         target: targetName,
       };
 
-      const permission = specification.factory
-        ? specification.factory(permissionOptions, requestData)
-        : constructPermission(permissionOptions);
-      this.validatePermission(specification, permission, origin, targetName);
+      let permission: ExtractPermission<
+        ControllerPermissionSpecification,
+        ControllerCaveatSpecification
+      >;
+      if (specification.factory) {
+        permission = specification.factory(permissionOptions, requestData);
+
+        // Full caveat and permission validation is performed here since the
+        // factory function can arbitrarily modify the entire permission object,
+        // including its caveats.
+        this.validatePermission(specification, permission, origin, targetName);
+      } else {
+        permission = constructPermission(
+          permissionOptions,
+        ) as ExtractPermission<
+          ControllerPermissionSpecification,
+          ControllerCaveatSpecification
+        >;
+
+        // We do not need to validate caveats in this case, because the plain
+        // permission constructor function does not modify the caveats, which
+        // were already validated by `constructCaveats` above.
+        this.validatePermission(specification, permission, origin, targetName, {
+          invokePermissionValidator: true,
+          performCaveatValidation: false,
+        });
+      }
       permissions[targetName] = permission;
     }
 
@@ -1401,8 +1428,13 @@ export class PermissionController<
 
   /**
    * Validates the specified permission by:
+   * - Ensuring that its `caveats` property is either `null` or a non-empty
+   *   array.
    * - Ensuring that it only includes caveats allowed by its specification.
-   * - Calling the validator of its specification, if any.
+   * - Ensuring that it includes no duplicate caveats (by caveat type).
+   * - Validating each caveat object, if `performCaveatValidation` is `true`.
+   * - Calling the validator of its specification, if one exists and
+   *   `invokePermissionValidator` is `true`.
    *
    * An error is thrown if validation fails.
    *
@@ -1410,6 +1442,12 @@ export class PermissionController<
    * @param permission - The permission to validate.
    * @param origin - The origin associated with the permission.
    * @param targetName - The target name of the permission.
+   * @param validationOptions - Validation options.
+   * @param validationOptions.invokePermissionValidator - Whether to invoke the
+   * permission's consumer-specified validator function, if any.
+   * @param validationOptions.performCaveatValidation - Whether to invoke
+   * {@link PermissionController.validateCaveat} on each of the permission's
+   * caveats.
    */
   private validatePermission(
     specification: PermissionSpecificationConstraint,
@@ -1419,17 +1457,37 @@ export class PermissionController<
       ControllerPermissionSpecification,
       ControllerCaveatSpecification
     >['parentCapability'],
+    { invokePermissionValidator, performCaveatValidation } = {
+      invokePermissionValidator: true,
+      performCaveatValidation: true,
+    },
   ): void {
     const { allowedCaveats, validator } = specification;
-    if (permission.caveats !== null) {
-      permission.caveats.forEach(({ type }) => {
-        if (!allowedCaveats?.includes(type)) {
-          throw new ForbiddenCaveatError(type, origin, targetName);
+    if (hasProperty(permission, 'caveats')) {
+      const { caveats } = permission;
+
+      if (caveats !== null && !(Array.isArray(caveats) && caveats.length > 0)) {
+        throw new InvalidCaveatsPropertyError(origin, targetName, caveats);
+      }
+
+      const seenCaveatTypes = new Set<string>();
+      caveats?.forEach((caveat) => {
+        if (performCaveatValidation) {
+          this.validateCaveat(caveat, origin, targetName);
         }
+
+        if (!allowedCaveats?.includes(caveat.type)) {
+          throw new ForbiddenCaveatError(caveat.type, origin, targetName);
+        }
+
+        if (seenCaveatTypes.has(caveat.type)) {
+          throw new DuplicateCaveatError(caveat.type, origin, targetName);
+        }
+        seenCaveatTypes.add(caveat.type);
       });
     }
 
-    if (validator) {
+    if (invokePermissionValidator && validator) {
       validator(permission, origin, targetName);
     }
   }
@@ -1464,12 +1522,11 @@ export class PermissionController<
   }
 
   /**
-   * Constructs the requested caveats for the permission of the specified
-   * subject origin and target name.
+   * Validates the requested caveats for the permission of the specified
+   * subject origin and target name and returns the validated caveat array.
    *
    * Throws an error if validation fails.
    *
-   * @see {@link PermissionController.constructCaveat} for details.
    * @param origin - The origin of the permission subject.
    * @param target - The permission target name.
    * @param requestedCaveats - The requested caveats to construct.
@@ -1483,66 +1540,26 @@ export class PermissionController<
     >['parentCapability'],
     requestedCaveats?: unknown[] | null,
   ): NonEmptyArray<ExtractCaveats<ControllerCaveatSpecification>> | undefined {
-    const caveatArray = requestedCaveats?.map((requestedCaveat) =>
-      this.constructCaveat(origin, target, requestedCaveat),
-    );
+    const caveatArray = requestedCaveats?.map((requestedCaveat) => {
+      this.validateCaveat(requestedCaveat, origin, target);
+
+      // Reassign so that we have a fresh object.
+      const { type, value } = requestedCaveat as CaveatConstraint;
+      return { type, value } as ExtractCaveats<ControllerCaveatSpecification>;
+    });
+
     return caveatArray && isNonEmptyArray(caveatArray)
       ? caveatArray
       : undefined;
   }
 
   /**
-   * Constructs a caveat for the permission of the specified subject origin and
-   * target name, per the requested caveat argument. This methods validates
-   * everything about the requested caveat. It also ensures that a caveat
-   * specification exist for the requested type, and calls the specification
-   * validator, if it exists, on the constructed caveat.
+   * This methods validates that the specified caveat is an object with the
+   * expected properties and types. It also ensures that a caveat specification
+   * exists for the requested caveat type, and calls the specification
+   * validator, if it exists, on the caveat object.
    *
    * Throws an error if validation fails.
-   *
-   * @param origin - The origin of the permission subject.
-   * @param target - The permission target name.
-   * @param requestedCaveat - The requested caveat to construct.
-   * @returns The constructed caveat.
-   */
-  private constructCaveat(
-    origin: OriginString,
-    target: ExtractPermission<
-      ControllerPermissionSpecification,
-      ControllerCaveatSpecification
-    >['parentCapability'],
-    requestedCaveat: unknown,
-  ): ExtractCaveats<ControllerCaveatSpecification> {
-    if (!isPlainObject(requestedCaveat)) {
-      throw new InvalidCaveatError(requestedCaveat, origin, target);
-    }
-
-    if (Object.keys(requestedCaveat).length !== 2) {
-      throw new InvalidCaveatFieldsError(requestedCaveat, origin, target);
-    }
-
-    const { type, value } = requestedCaveat;
-    if (typeof type !== 'string') {
-      throw new InvalidCaveatTypeError(requestedCaveat, origin, target);
-    }
-
-    if (!hasProperty(requestedCaveat, 'value')) {
-      throw new CaveatMissingValueError(requestedCaveat, origin, target);
-    }
-
-    // Assert that the caveat value is valid JSON
-    if (!isValidJson(value)) {
-      throw new CaveatInvalidJsonError(requestedCaveat, origin, target);
-    }
-
-    const caveat = { type, value: value ?? null };
-    this.validateCaveat(caveat, origin, target);
-    return caveat as ExtractCaveats<ControllerCaveatSpecification>;
-  }
-
-  /**
-   * Validates the specified caveat by ensuring that a specification exists for
-   * its type and invoking the validator function with it, if any.
    *
    * @param caveat - The caveat object to validate.
    * @param origin - The origin associated with the subject of the parent
@@ -1550,17 +1567,37 @@ export class PermissionController<
    * @param target - The target name associated with the parent permission.
    */
   private validateCaveat(
-    caveat: CaveatConstraint,
+    caveat: unknown,
     origin: OriginString,
     target: string,
   ): void {
-    const specification = this.getCaveatSpecification(caveat.type);
+    if (!isPlainObject(caveat)) {
+      throw new InvalidCaveatError(caveat, origin, target);
+    }
 
+    if (Object.keys(caveat).length !== 2) {
+      throw new InvalidCaveatFieldsError(caveat, origin, target);
+    }
+
+    if (typeof caveat.type !== 'string') {
+      throw new InvalidCaveatTypeError(caveat, origin, target);
+    }
+
+    const specification = this.getCaveatSpecification(caveat.type);
     if (!specification) {
       throw new UnrecognizedCaveatTypeError(caveat.type, origin, target);
     }
 
-    specification.validator?.(caveat, origin, target);
+    if (!hasProperty(caveat, 'value') || caveat.value === undefined) {
+      throw new CaveatMissingValueError(caveat, origin, target);
+    }
+
+    if (!isValidJson(caveat.value)) {
+      throw new CaveatInvalidJsonError(caveat, origin, target);
+    }
+
+    // Typecast: TypeScript still believes that the caveat is a PlainObject.
+    specification.validator?.(caveat as CaveatConstraint, origin, target);
   }
 
   /**
@@ -1614,7 +1651,6 @@ export class PermissionController<
       await this.requestUserApproval(permissionsRequest);
 
     return [
-      // Further validation is performed here
       this.grantPermissions({
         subject: { origin },
         approvedPermissions,
@@ -1629,12 +1665,13 @@ export class PermissionController<
    * Validates requested permissions. Throws if validation fails.
    *
    * This method ensures that the requested permissions are a properly
-   * formatted {@link RequestedPermissions} object, that its keys correspond to
-   * the `parentCapability` fields of its values, and that the requested
-   * capability exists.
+   * formatted {@link RequestedPermissions} object, and performs the same
+   * validation as {@link PermissionController.grantPermissions}, except that
+   * consumer-specified permission validator functions are not called, since
+   * they are only called on fully constructed, approved permissions that are
+   * otherwise completely valid.
    *
-   * Unrecognzied properties on requested permissions are ignored. Any requested
-   * caveats are validated in later stages of request processing.
+   * Unrecognzied properties on requested permissions are ignored.
    *
    * @param origin - The origin of the grantee subject.
    * @param requestedPermissions - The requested permissions.
@@ -1659,6 +1696,15 @@ export class PermissionController<
 
     for (const methodName of Object.keys(requestedPermissions)) {
       const permission = requestedPermissions[methodName];
+      const targetKey = this.getTargetKey(methodName);
+
+      if (!targetKey) {
+        throw methodNotFound({
+          method: methodName,
+          data: { origin, requestedPermissions },
+        });
+      }
+
       if (
         !isPlainObject(permission) ||
         (permission.parentCapability !== undefined &&
@@ -1670,12 +1716,16 @@ export class PermissionController<
         });
       }
 
-      if (!this.getTargetKey(methodName)) {
-        throw methodNotFound({
-          method: methodName,
-          data: { origin, requestedPermissions },
-        });
-      }
+      // Here we validate the permission without invoking its validator, if any.
+      // The validator will be invoked after the permission has been approved.
+      this.validatePermission(
+        this.getPermissionSpecification(targetKey),
+        // Typecast: The permission is still a "PlainObject" here.
+        permission as PermissionConstraint,
+        origin,
+        methodName,
+        { invokePermissionValidator: false, performCaveatValidation: true },
+      );
     }
   }
 

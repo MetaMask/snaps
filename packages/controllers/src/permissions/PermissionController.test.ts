@@ -2368,6 +2368,32 @@ describe('PermissionController', () => {
       );
     });
 
+    it('throws if an approved permission has duplicate caveats', () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      expect(() =>
+        controller.grantPermissions({
+          subject: { origin },
+          approvedPermissions: {
+            wallet_getSecretArray: {
+              parentCapability: 'wallet_getSecretArray',
+              caveats: [
+                { type: CaveatTypes.filterArrayResponse, value: ['foo'] },
+                { type: CaveatTypes.filterArrayResponse, value: ['foo'] },
+              ],
+            },
+          },
+        }),
+      ).toThrow(
+        new errors.DuplicateCaveatError(
+          CaveatTypes.filterArrayResponse,
+          origin,
+          PermissionNames.wallet_getSecretArray,
+        ),
+      );
+    });
+
     it('throws if a requested caveat is not a plain object', () => {
       const controller = getDefaultPermissionController();
       const origin = 'metamask.io';
@@ -2887,6 +2913,69 @@ describe('PermissionController', () => {
             },
           },
         }),
+      );
+
+      expect(callActionSpy).not.toHaveBeenCalled();
+    });
+
+    it('throws if the "caveat" property of a requested permission is invalid', async () => {
+      const options = getPermissionControllerOptions();
+      const { messenger } = options;
+      const origin = 'metamask.io';
+
+      const callActionSpy = jest.spyOn(messenger, 'call');
+
+      const controller = getDefaultPermissionController(options);
+      for (const invalidCaveatsValue of [
+        [], // empty array
+        undefined,
+        'foo',
+        2,
+        Symbol('bar'),
+      ]) {
+        await expect(
+          async () =>
+            await controller.requestPermissions(origin, {
+              [PermissionNames.wallet_getSecretArray]: {
+                caveats: invalidCaveatsValue as any,
+              },
+            }),
+        ).rejects.toThrow(
+          new errors.InvalidCaveatsPropertyError(
+            origin,
+            PermissionNames.wallet_getSecretArray,
+            invalidCaveatsValue,
+          ),
+        );
+
+        expect(callActionSpy).not.toHaveBeenCalled();
+      }
+    });
+
+    it('throws if a requested permission has duplicate caveats', async () => {
+      const options = getPermissionControllerOptions();
+      const { messenger } = options;
+      const origin = 'metamask.io';
+
+      const callActionSpy = jest.spyOn(messenger, 'call');
+
+      const controller = getDefaultPermissionController(options);
+      await expect(
+        async () =>
+          await controller.requestPermissions(origin, {
+            [PermissionNames.wallet_getSecretArray]: {
+              caveats: [
+                { type: CaveatTypes.filterArrayResponse, value: ['foo'] },
+                { type: CaveatTypes.filterArrayResponse, value: ['foo'] },
+              ],
+            },
+          }),
+      ).rejects.toThrow(
+        new errors.DuplicateCaveatError(
+          CaveatTypes.filterArrayResponse,
+          origin,
+          PermissionNames.wallet_getSecretArray,
+        ),
       );
 
       expect(callActionSpy).not.toHaveBeenCalled();

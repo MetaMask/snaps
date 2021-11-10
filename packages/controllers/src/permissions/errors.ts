@@ -112,6 +112,17 @@ export class UnrecognizedCaveatTypeError extends Error {
   }
 }
 
+export class InvalidCaveatsPropertyError extends Error {
+  public data: { origin: string; target: string; caveatsProperty: unknown };
+
+  constructor(origin: string, target: string, caveatsProperty: unknown) {
+    super(
+      `The "caveats" property of permission for "${target}" of subject "${origin}" is invalid. It must be a non-empty array if specified.`,
+    );
+    this.data = { origin, target, caveatsProperty };
+  }
+}
+
 export class CaveatDoesNotExistError extends Error {
   constructor(origin: string, target: string, caveatType: string) {
     super(
@@ -205,6 +216,21 @@ export class ForbiddenCaveatError extends Error {
   constructor(caveatType: string, origin: string, targetName: string) {
     super(
       `Permissions for target "${targetName}" may not have caveats of type "${caveatType}".`,
+    );
+    this.data = { caveatType, origin, target: targetName };
+  }
+}
+
+export class DuplicateCaveatError extends Error {
+  public data: {
+    caveatType: string;
+    origin: string;
+    target: string;
+  };
+
+  constructor(caveatType: string, origin: string, targetName: string) {
+    super(
+      `Permissions for target "${targetName}" contains multiple caveats of type "${caveatType}".`,
     );
     this.data = { caveatType, origin, target: targetName };
   }
