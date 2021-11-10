@@ -162,10 +162,8 @@ export type ExtractPermissionTargetKey<
  *
  * @template ArrayType - The array type whose members to extract.
  */
-type ExtractArrayMembers<ArrayType> = ArrayType extends
-  | readonly [...infer ArrayMembers]
-  | [...infer ArrayMembers]
-  ? ArrayMembers[number]
+type ExtractArrayMembers<ArrayType> = ArrayType extends any[] | readonly any[]
+  ? ArrayType[number]
   : never;
 
 /**
