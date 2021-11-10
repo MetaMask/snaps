@@ -9,7 +9,6 @@ import {
 import { internalError } from './errors';
 import {
   GenericPermissionController,
-  PermissionConstraint,
   PermissionSubjectMetadata,
   RestrictedMethodParameters,
 } from '.';
@@ -47,9 +46,7 @@ type PermissionMiddlewareFactoryOptions = {
  * particular method is unrestricted.
  * @returns A permission middleware factory function.
  */
-export function getPermissionMiddlewareFactory<
-  Permission extends PermissionConstraint,
->({
+export function getPermissionMiddlewareFactory({
   executeRestrictedMethod,
   getRestrictedMethod,
   isUnrestrictedMethod,

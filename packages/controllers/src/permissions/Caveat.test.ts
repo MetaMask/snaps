@@ -9,13 +9,14 @@ import {
 // This function is mostly tested through the PermissionController tests,
 // we just add a couple here for completeness.
 describe('decorateWithCaveats', () => {
-  it('decorates a method with caveat', () => {
+  it('decorates a method with caveat', async () => {
     const methodImplementation = () => [1, 2, 3];
 
     const caveatSpecifications = {
       reverse: {
-        decorator: (method: any, _caveat: any) => () =>
-          method().reverse() as any,
+        decorator: (method: any, _caveat: any) => async () => {
+          return (await method()).reverse();
+        },
       },
     } as unknown as CaveatSpecificationMap<CaveatSpecificationConstraint>;
 
@@ -23,14 +24,14 @@ describe('decorateWithCaveats', () => {
       caveats: [{ type: 'reverse', value: null }],
     } as unknown as PermissionConstraint;
 
+    const decorated = decorateWithCaveats(
+      methodImplementation,
+      permission,
+      caveatSpecifications,
+    );
+
     expect(methodImplementation()).toStrictEqual([1, 2, 3]);
-    expect(
-      decorateWithCaveats(
-        methodImplementation,
-        permission,
-        caveatSpecifications,
-      )({} as any),
-    ).toStrictEqual([3, 2, 1]);
+    expect(await decorated({} as any)).toStrictEqual([3, 2, 1]);
   });
 
   it('throws an error if the caveat type is unrecognized', () => {
