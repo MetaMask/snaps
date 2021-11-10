@@ -67,6 +67,8 @@ export class IframeExecutionEnvironmentService
 
   private _unresponsiveTimeout: number;
 
+  private _timeoutForUnresponsiveMap: Map<string, number>;
+
   constructor({
     setupSnapProvider,
     iframeUrl,
@@ -85,6 +87,7 @@ export class IframeExecutionEnvironmentService
     this._messenger = messenger;
     this._unresponsivePollingInterval = unresponsivePollingInterval;
     this._unresponsiveTimeout = unresponsiveTimeout;
+    this._timeoutForUnresponsiveMap = new Map();
   }
 
   private _setJob(jobId: string, jobWrapper: EnvMetadata): void {
@@ -134,8 +137,15 @@ export class IframeExecutionEnvironmentService
 
   public terminate(jobId: string): void {
     const jobWrapper = this.jobs.get(jobId);
+
     if (!jobWrapper) {
       throw new Error(`Job with id "${jobId}" not found.`);
+    }
+
+    const snapName = this.jobToSnapMap.get(jobId);
+
+    if (!snapName) {
+      throw new Error(`Failed to find a snap for job with id "${jobId}"`);
     }
 
     Object.values(jobWrapper.streams).forEach((stream) => {
@@ -147,6 +157,8 @@ export class IframeExecutionEnvironmentService
       }
     });
     document.getElementById(jobWrapper.id)?.remove();
+    clearTimeout(this._timeoutForUnresponsiveMap.get(snapName));
+    this._timeoutForUnresponsiveMap.delete(snapName);
     this._removeSnapAndJobMapping(jobId);
     this._deleteJob(jobId);
     console.log(`job: "${jobId}" terminated`);
@@ -222,7 +234,7 @@ export class IframeExecutionEnvironmentService
       throw new Error('no job id found for snap');
     }
 
-    setTimeout(async () => {
+    const timeout = setTimeout(async () => {
       this._getJobStatus(jobId)
         .then(() => {
           this._pollForJobStatus(snapName);
@@ -230,7 +242,8 @@ export class IframeExecutionEnvironmentService
         .catch(() => {
           this._messenger.publish('ServiceMessenger:unresponsive', snapName);
         });
-    }, this._unresponsivePollingInterval);
+    }, this._unresponsivePollingInterval) as unknown as number;
+    this._timeoutForUnresponsiveMap.set(snapName, timeout);
   }
 
   async _getJobStatus(jobId: string) {

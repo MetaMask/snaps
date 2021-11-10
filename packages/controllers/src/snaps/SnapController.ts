@@ -121,6 +121,7 @@ type SnapControllerArgs = {
   executeSnap: ExecuteSnap;
   getRpcMessageHandler: GetRpcMessageHandler;
   maxIdleTime?: number;
+  maxRequestTime?: number;
   idleTimeCheckInterval?: number;
 };
 
@@ -249,9 +250,11 @@ export class SnapController extends BaseController<
 
   private _maxIdleTime: number;
 
+  private _maxRequestTime: number;
+
   private _idleTimeCheckInterval: number;
 
-  private _timeoutForLastRequestStatus?: NodeJS.Timeout;
+  private _timeoutForLastRequestStatus?: number;
 
   private _lastRequestMap: Map<SnapName, number>;
 
@@ -274,6 +277,7 @@ export class SnapController extends BaseController<
     state,
     maxIdleTime = 30000,
     idleTimeCheckInterval = 5000,
+    maxRequestTime = 60000,
   }: SnapControllerArgs) {
     super({
       messenger,
@@ -337,6 +341,7 @@ export class SnapController extends BaseController<
 
     this._snapsBeingAdded = new Map();
     this._maxIdleTime = maxIdleTime;
+    this._maxRequestTime = maxRequestTime;
     this._idleTimeCheckInterval = idleTimeCheckInterval;
     this._pollForLastRequestStatus();
     this._lastRequestMap = new Map();
@@ -347,7 +352,7 @@ export class SnapController extends BaseController<
     this._timeoutForLastRequestStatus = setTimeout(async () => {
       this._stopSnapsLastRequestPastMax();
       this._pollForLastRequestStatus();
-    }, this._idleTimeCheckInterval);
+    }, this._idleTimeCheckInterval) as unknown as number;
   }
 
   _stopSnapsLastRequestPastMax() {
@@ -1034,7 +1039,25 @@ export class SnapController extends BaseController<
       }
 
       this._recordSnapRpcRequest(snapName);
-      return handler(origin, request);
+
+      // Handle max request time
+      let timeout: number | undefined;
+
+      const timeoutPromise = new Promise((_resolve, reject) => {
+        timeout = setTimeout(() => {
+          this._stopSnap(snapName);
+          reject(new Error('The request timed out.'));
+        }, this._maxRequestTime) as unknown as number;
+      });
+
+      // This will either get the result or reject due to the timeout.
+      const result = await Promise.race([
+        handler(origin, request),
+        timeoutPromise,
+      ]);
+
+      clearTimeout(timeout);
+      return result;
     };
 
     this._rpcHandlerMap.set(snapName, rpcHandler);

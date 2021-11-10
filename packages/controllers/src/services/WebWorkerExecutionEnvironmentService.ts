@@ -66,6 +66,8 @@ export class WebWorkerExecutionEnvironmentService
 
   private _unresponsiveTimeout: number;
 
+  private _timeoutForUnresponsiveMap: Map<string, number>;
+
   constructor({
     setupSnapProvider,
     workerUrl,
@@ -83,6 +85,7 @@ export class WebWorkerExecutionEnvironmentService
     this._messenger = messenger;
     this._unresponsivePollingInterval = unresponsivePollingInterval;
     this._unresponsiveTimeout = unresponsiveTimeout;
+    this._timeoutForUnresponsiveMap = new Map();
   }
 
   private _setWorker(workerId: string, workerWrapper: WorkerWrapper): void {
@@ -142,8 +145,17 @@ export class WebWorkerExecutionEnvironmentService
 
   terminate(workerId: string): void {
     const workerWrapper = this.workers.get(workerId);
+
     if (!workerWrapper) {
-      throw new Error(`Worked with id "${workerId}" not found.`);
+      throw new Error(`Worker with id "${workerId}" not found.`);
+    }
+
+    const snapName = this._getSnapForWorker(workerId);
+
+    if (!snapName) {
+      throw new Error(
+        `Failed to find a snap for worker with id "${workerId}".`,
+      );
     }
 
     Object.values(workerWrapper.streams).forEach((stream) => {
@@ -157,6 +169,10 @@ export class WebWorkerExecutionEnvironmentService
     workerWrapper.worker.terminate();
     this._removeSnapAndWorkerMapping(workerId);
     this._deleteWorker(workerId);
+
+    clearTimeout(this._timeoutForUnresponsiveMap.get(workerId));
+    this._timeoutForUnresponsiveMap.delete(workerId);
+
     console.log(`worker:${workerId} terminated`);
   }
 
@@ -223,7 +239,7 @@ export class WebWorkerExecutionEnvironmentService
       throw new Error('no worker id found for snap');
     }
 
-    setTimeout(async () => {
+    const timeout = setTimeout(async () => {
       this._getWorkerStatus(workerId)
         .then(() => {
           this._pollForWorkerStatus(snapName);
@@ -231,7 +247,8 @@ export class WebWorkerExecutionEnvironmentService
         .catch(() => {
           this._messenger.publish('ServiceMessenger:unresponsive', snapName);
         });
-    }, this._unresponsivePollingInterval);
+    }, this._unresponsivePollingInterval) as unknown as number;
+    this._timeoutForUnresponsiveMap.set(snapName, timeout);
   }
 
   async _getWorkerStatus(workerId: string) {
