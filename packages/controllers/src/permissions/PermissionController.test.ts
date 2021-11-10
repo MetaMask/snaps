@@ -253,7 +253,7 @@ function getDefaultPermissionSpecifications() {
         constructPermission<SecretNamespacedPermission>({
           ...options,
           caveats: [{ type: CaveatTypes.noopCaveat, value: null }],
-        }) as SecretNamespacedPermission,
+        }),
       validator: (permission: PermissionConstraint) => {
         assert.deepStrictEqual(
           permission.caveats,
