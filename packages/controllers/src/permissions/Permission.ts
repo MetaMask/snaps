@@ -130,12 +130,13 @@ export type ExtractPermissionTargetNames<Key extends string> =
   Key extends `${infer Base}_*` ? `${Base}_${string}` : Key;
 
 /**
+ * Extracts the permission key of a particular name from a union of keys.
  * An internal utility type used in {@link ExtractPermissionTargetKey}.
  *
  * @template Key - The target key type to extract from.
  * @template Name - The name whose key to extract.
  */
-export type KeyOfTargetName<
+type KeyOfTargetName<
   Key extends string,
   Name extends string,
 > = Name extends ExtractPermissionTargetNames<Key> ? Key : never;
