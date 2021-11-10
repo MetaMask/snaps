@@ -85,7 +85,7 @@ export type PermissionConstraint = {
 export type ValidPermission<
   TargetKey extends TargetName,
   AllowedCaveat extends CaveatConstraint,
-> = ValidTargetName<ExtractPermissionTargetNames<TargetKey>> extends never
+> = ExtractPermissionTargetNames<TargetKey> extends never
   ? never
   : PermissionConstraint & {
       // TODO:TS4.4 Make optional
@@ -126,8 +126,9 @@ type ValidTargetName<Name extends string> = Name extends `${string}*`
  *
  * @template Key - The target key type to extract target names from.
  */
-export type ExtractPermissionTargetNames<Key extends string> =
-  Key extends `${infer Base}_*` ? `${Base}_${string}` : Key;
+export type ExtractPermissionTargetNames<Key extends string> = ValidTargetName<
+  Key extends `${infer Base}_*` ? `${Base}_${string}` : Key
+>;
 
 /**
  * Extracts the permission key of a particular name from a union of keys.
