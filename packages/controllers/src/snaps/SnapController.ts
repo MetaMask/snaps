@@ -1041,7 +1041,7 @@ export class SnapController extends BaseController<
       this._recordSnapRpcRequest(snapName);
 
       // Handle max request time
-      let timeout: number;
+      let timeout: number | undefined;
 
       const timeoutPromise = new Promise((_resolve, reject) => {
         timeout = setTimeout(() => {
