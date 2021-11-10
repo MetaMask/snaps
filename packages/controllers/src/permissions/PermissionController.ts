@@ -27,7 +27,6 @@ import {
   isValidJson,
 } from '../utils';
 import {
-  constructCaveat as _constructCaveat,
   decorateWithCaveats,
   ExtractCaveat,
   ExtractCaveats,
@@ -1536,7 +1535,7 @@ export class PermissionController<
       throw new CaveatInvalidJsonError(requestedCaveat, origin, target);
     }
 
-    const caveat = _constructCaveat(type, value ?? null);
+    const caveat = { type, value: value ?? null };
     this.validateCaveat(caveat, origin, target);
     return caveat as ExtractCaveats<ControllerCaveatSpecification>;
   }

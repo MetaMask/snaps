@@ -48,21 +48,6 @@ export type Caveat<Type extends string, Value extends Json> = {
   readonly value: Value;
 };
 
-/**
- * The {@link Caveat} factory function. Naively constructs a new caveat from the
- * inputs. Sets `value` to `null` if no value is provided.
- *
- * @param type - The type of the caveat.
- * @param value - The value associated with the caveat, if any.
- * @returns The new caveat object.
- */
-export function constructCaveat<Type extends string, Value extends Json>(
-  type: Type,
-  value: Value,
-): Caveat<Type, Value> {
-  return { type, value };
-}
-
 // Next, we define types used for specifying caveats at the consumer layer,
 // and a function for applying caveats to a restricted method request. This is
 // Accomplished by decorating the restricted method implementation with the
