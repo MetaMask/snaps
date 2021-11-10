@@ -193,12 +193,6 @@ export type PermissionOptions<TargetPermission extends PermissionConstraint> = {
   invoker: OriginString;
 
   /**
-   * The GUID of the permission object.
-   * Assigned if not provided.
-   */
-  id?: string;
-
-  /**
    * The caveats of the permission.
    * See {@link Caveat}.
    */
@@ -218,10 +212,10 @@ export type PermissionOptions<TargetPermission extends PermissionConstraint> = {
 export function constructPermission<
   TargetPermission extends PermissionConstraint,
 >(options: PermissionOptions<TargetPermission>): TargetPermission {
-  const { caveats = null, id, invoker, target } = options;
+  const { caveats = null, invoker, target } = options;
 
   return {
-    id: id ?? nanoid(),
+    id: nanoid(),
     parentCapability: target,
     invoker,
     caveats,

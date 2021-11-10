@@ -42,26 +42,4 @@ describe('constructPermission', () => {
       }),
     );
   });
-
-  it('constructs a permission with an id', () => {
-    const invoker = 'foo.io';
-    const target = 'wallet_bar';
-    const id = 'abc123';
-
-    expect(
-      constructPermission({
-        invoker,
-        target,
-        id,
-      }),
-    ).toMatchObject(
-      expect.objectContaining({
-        id,
-        parentCapability: target,
-        invoker,
-        caveats: null,
-        date: expect.any(Number),
-      }),
-    );
-  });
 });

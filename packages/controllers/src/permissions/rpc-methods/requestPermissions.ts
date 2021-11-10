@@ -1,10 +1,10 @@
+import { ethErrors } from 'eth-rpc-errors';
 import type { PermittedHandlerExport } from '@metamask/rpc-methods/types';
 import type {
   JsonRpcEngineEndCallback,
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from 'json-rpc-engine';
-import { nanoid } from 'nanoid';
 import { MethodNames } from '../utils';
 
 import { invalidParams } from '../errors';
@@ -50,14 +50,20 @@ async function requestPermissionsImplementation(
     return end(invalidParams({ data: { request: req } }));
   }
 
-  const id =
-    typeof req.id === 'number' || req.id ? req.id.toString() : nanoid();
+  if (typeof req.id !== 'number' && !req.id) {
+    return end(
+      ethErrors.rpc.invalidRequest({
+        message: 'Invalid request: Must specify an id.',
+        data: { request: req },
+      }),
+    );
+  }
 
   try {
     const [requestedPermissions] = req.params;
     const [grantedPermissions] = await requestPermissions(
       requestedPermissions,
-      id,
+      req.id.toString(),
     );
 
     // `wallet_requestPermission` is specified to return an array.
