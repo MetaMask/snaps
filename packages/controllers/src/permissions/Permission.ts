@@ -17,7 +17,7 @@ export type OriginString = string;
 /**
  * The name of a permission target.
  */
-export type GenericTargetName = string;
+type TargetName = string;
 
 /**
  * A `ZCAP-LD`-like permission object. A permission is associated with a
@@ -83,7 +83,7 @@ export type PermissionConstraint = {
  * for the permission.
  */
 export type ValidPermission<
-  TargetKey extends GenericTargetName,
+  TargetKey extends TargetName,
   AllowedCaveat extends CaveatConstraint,
 > = ValidTargetName<ExtractPermissionTargetNames<TargetKey>> extends never
   ? never
@@ -174,8 +174,6 @@ type ExtractArrayMembers<ArrayType> = ArrayType extends []
  *
  * @template PermissionSpecification - The permission specification type to
  * extract valid caveat types from.
- * @template TargetName - The target name of the permission whose allowed
- * caveats to extract.
  */
 export type ExtractAllowedCaveatTypes<
   PermissionSpecification extends PermissionSpecificationConstraint,
@@ -253,10 +251,7 @@ type RequestedPermission = Partial<PermissionConstraint>;
 /**
  * A record of target names and their {@link RequestedPermission} objects.
  */
-export type RequestedPermissions = Record<
-  GenericTargetName,
-  RequestedPermission
->;
+export type RequestedPermissions = Record<TargetName, RequestedPermission>;
 
 /**
  * The restricted method context object. Essentially a way to pass internal
@@ -277,7 +272,7 @@ export type RestrictedMethodParameters = Json[] | Record<string, Json> | void;
  */
 export type RestrictedMethodOptions<Params extends RestrictedMethodParameters> =
   {
-    method: GenericTargetName;
+    method: TargetName;
     params?: Params;
     context: RestrictedMethodContext;
   };
