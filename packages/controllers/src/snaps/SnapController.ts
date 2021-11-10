@@ -1040,19 +1040,15 @@ export class SnapController extends BaseController<
 
       this._recordSnapRpcRequest(snapName);
 
-      // handle max request time
-      let resolve: (...args: unknown[]) => void;
-      let reject: (...args: unknown[]) => void;
+      // Handle max request time
+      let timeout: number;
 
-      const timeoutPromise = new Promise((res, rej) => {
-        resolve = res;
-        reject = rej;
+      const timeoutPromise = new Promise((_resolve, reject) => {
+        timeout = setTimeout(() => {
+          this._stopSnap(snapName);
+          reject(new Error('The request timed out.'));
+        }, this._maxRequestTime) as unknown as number;
       });
-
-      const timeout = setTimeout(() => {
-        this._stopSnap(snapName);
-        reject(new Error('request timed out'));
-      }, this._maxRequestTime);
 
       // This will either get the result or reject due to the timeout.
       const result = await Promise.race([
