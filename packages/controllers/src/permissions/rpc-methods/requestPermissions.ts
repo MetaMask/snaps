@@ -54,9 +54,14 @@ async function requestPermissionsImplementation(
     typeof req.id === 'number' || req.id ? req.id.toString() : nanoid();
 
   try {
-    res.result = Object.values(
-      (await requestPermissions(req.params[0], id))[0],
+    const [requestedPermissions] = req.params;
+    const [grantedPermissions] = await requestPermissions(
+      requestedPermissions,
+      id,
     );
+
+    // `wallet_requestPermission` is specified to return an array.
+    res.result = Object.values(grantedPermissions);
     return end();
   } catch (error) {
     return end(error);

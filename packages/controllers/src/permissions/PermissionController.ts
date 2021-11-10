@@ -1413,7 +1413,7 @@ export class PermissionController<
 
         // We do not need to validate caveats in this case, because the plain
         // permission constructor function does not modify the caveats, which
-        // were already validated by `constructCaveats` above.
+        // were already validated by `constructCaveats` above.
         this.validatePermission(specification, permission, origin, targetName, {
           invokePermissionValidator: true,
           performCaveatValidation: false,
