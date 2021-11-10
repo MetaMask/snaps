@@ -17,12 +17,13 @@ export const getPermissionsHandler: PermittedHandlerExport<
   implementation: getPermissionsImplementation,
   methodDescription: 'Get permissions.',
   hookNames: {
-    getPermissions: true,
+    getPermissionsForOrigin: true,
   },
 };
 
 export type GetPermissionsHooks = {
-  getPermissions: () => SubjectPermissions<PermissionConstraint>;
+  // This must be bound to the requesting origin.
+  getPermissionsForOrigin: () => SubjectPermissions<PermissionConstraint>;
 };
 
 async function getPermissionsImplementation(
@@ -30,9 +31,8 @@ async function getPermissionsImplementation(
   res: PendingJsonRpcResponse<PermissionConstraint[]>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { getPermissions }: GetPermissionsHooks,
+  { getPermissionsForOrigin }: GetPermissionsHooks,
 ): Promise<void> {
-  // getPermissions is already bound to the origin
-  res.result = Object.values(getPermissions() || {});
+  res.result = Object.values(getPermissionsForOrigin() || {});
   return end();
 }
