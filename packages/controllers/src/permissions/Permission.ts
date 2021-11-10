@@ -179,15 +179,7 @@ type ExtractArrayMembers<ArrayType> = ArrayType extends []
  */
 export type ExtractAllowedCaveatTypes<
   PermissionSpecification extends PermissionSpecificationConstraint,
-  TargetName extends string,
-> = PermissionSpecification extends PermissionSpecificationConstraint & {
-  targetKey: ExtractPermissionTargetKey<
-    PermissionSpecification['targetKey'],
-    TargetName
-  >;
-}
-  ? ExtractArrayMembers<PermissionSpecification['allowedCaveats']>
-  : never;
+> = ExtractArrayMembers<PermissionSpecification['allowedCaveats']>;
 
 /**
  * The options object of {@link constructPermission}.
@@ -226,7 +218,7 @@ export type PermissionOptions<TargetPermission extends PermissionConstraint> = {
  */
 export function constructPermission<
   TargetPermission extends PermissionConstraint,
->(options: PermissionOptions<TargetPermission>): PermissionConstraint {
+>(options: PermissionOptions<TargetPermission>): TargetPermission {
   const { caveats = null, id, invoker, target } = options;
 
   return {
@@ -235,7 +227,7 @@ export function constructPermission<
     invoker,
     caveats,
     date: new Date().getTime(),
-  };
+  } as TargetPermission;
 }
 
 /**
@@ -379,7 +371,7 @@ export type PermissionSpecificationConstraint = {
    * An array of the caveat types that may be added to instances of this
    * permission.
    */
-  allowedCaveats?: Readonly<NonEmptyArray<string>>;
+  allowedCaveats: Readonly<NonEmptyArray<string>> | null;
 
   /**
    * The implementation of the restricted method that the permission

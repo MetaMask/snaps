@@ -264,6 +264,7 @@ function getDefaultPermissionSpecifications() {
     },
     [PermissionKeys.wallet_doubleNumber]: {
       targetKey: PermissionKeys.wallet_doubleNumber,
+      allowedCaveats: null,
       methodImplementation: ({ params }: RestrictedMethodOptions<[number]>) => {
         if (!Array.isArray(params)) {
           throw new Error(
@@ -275,6 +276,7 @@ function getDefaultPermissionSpecifications() {
     },
     [PermissionKeys.wallet_noop]: {
       targetKey: PermissionKeys.wallet_noop,
+      allowedCaveats: null,
       methodImplementation: (_args: RestrictedMethodOptions<void>) => {
         return null;
       },
