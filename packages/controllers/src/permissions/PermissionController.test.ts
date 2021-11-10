@@ -64,7 +64,7 @@ type NoopCaveat = Caveat<typeof CaveatTypes.noopCaveat, null>;
  */
 function getDefaultCaveatSpecifications() {
   return {
-    filterArrayResponse: {
+    [CaveatTypes.filterArrayResponse]: {
       type: CaveatTypes.filterArrayResponse,
       decorator:
         (
@@ -92,7 +92,7 @@ function getDefaultCaveatSpecifications() {
         }
       },
     },
-    reverseArrayResponse: {
+    [CaveatTypes.reverseArrayResponse]: {
       type: CaveatTypes.reverseArrayResponse,
       decorator:
         (
@@ -108,7 +108,7 @@ function getDefaultCaveatSpecifications() {
           return result.reverse();
         },
     },
-    filterObjectResponse: {
+    [CaveatTypes.filterObjectResponse]: {
       type: CaveatTypes.filterObjectResponse,
       decorator:
         (
@@ -129,7 +129,7 @@ function getDefaultCaveatSpecifications() {
           return result;
         },
     },
-    noopCaveat: {
+    [CaveatTypes.noopCaveat]: {
       type: CaveatTypes.noopCaveat,
       decorator:
         (

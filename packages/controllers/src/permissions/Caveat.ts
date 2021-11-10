@@ -152,13 +152,7 @@ export type CaveatSpecification<SpecifiedCaveat extends CaveatConstraint> = {
  */
 export type CaveatSpecificationMap<
   Specification extends CaveatSpecificationConstraint,
-> = {
-  [Key in Specification['type']]: Specification extends CaveatSpecification<
-    Caveat<Key, any>
-  >
-    ? Specification
-    : never;
-};
+> = Record<Specification['type'], Specification>;
 
 /**
  * TODO:docs
