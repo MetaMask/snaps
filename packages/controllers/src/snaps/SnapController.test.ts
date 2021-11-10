@@ -1133,7 +1133,7 @@ describe('SnapController Controller', () => {
         params: {},
         id: 1,
       }),
-    ).rejects.toThrow(/^request timed out$/u);
+    ).rejects.toThrow(/request timed out/u);
 
     expect(snapController.state.snaps[snap.name].status).toStrictEqual(
       'stopped',
