@@ -1,4 +1,5 @@
 import { promises as filesystem } from 'fs';
+import path from 'path';
 import { Arguments } from 'yargs';
 
 export const permRequestKeys = [
@@ -12,6 +13,17 @@ export const permRequestKeys = [
 ];
 
 export const CONFIG_PATHS = ['snap.config.json'];
+
+const argumentSet = new Set([
+  'src',
+  's',
+  'dist',
+  'd',
+  'bundle',
+  'b',
+  'root',
+  'r',
+]);
 
 /**
  * Sets global variable snaps which tracks user settings:
@@ -47,6 +59,10 @@ export function sanitizeInputs(argv: Arguments) {
       // Node's path.normalize() does not do this
       if (argv[key] === './') {
         argv[key] = '.';
+      }
+
+      if (argumentSet.has(key)) {
+        argv[key] = path.normalize(argv[key] as string);
       }
     }
   });

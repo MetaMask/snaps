@@ -8,7 +8,7 @@
   },
   "license": "ISC",
   "bin": {
-    "mm-snap": "./dist/main.js"
+    "mm-snap": "node dist/main.js"
   },
   "files": [
     "dist/"
@@ -18,7 +18,7 @@
     "build:init-template": "node ./scripts/createInitTemplate.js",
     "build:typescript": "tsc --project ./tsconfig.local.json",
     "build:chmod": "chmod +x ./dist/main.js",
-    "build": "yarn build:init-template && yarn build:typescript && yarn build:chmod",
+    "build": "yarn build:init-template && yarn build:typescript",
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf dist/*",
     "test": "jest",
