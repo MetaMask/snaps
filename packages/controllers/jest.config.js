@@ -16,7 +16,7 @@ module.exports = {
     {
       displayName: 'runner: electron',
       testMatch: [
-        '<rootDir>/src/plugins/**/*.test.ts',
+        '<rootDir>/src/snaps/**/*.test.ts',
         '<rootDir>/src/services/**/*.test.ts',
       ],
       preset: 'ts-jest',
@@ -26,7 +26,7 @@ module.exports = {
     {
       displayName: 'runner: default',
       testPathIgnorePatterns: [
-        '<rootDir>/src/plugins/*',
+        '<rootDir>/src/snaps/*',
         '<rootDir>/src/services/*',
       ],
       preset: 'ts-jest',

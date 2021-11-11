@@ -17,7 +17,6 @@ export const requestPermissionsHandler: PermittedHandlerExport<
 > = {
   methodNames: [MethodNames.requestPermissions],
   implementation: requestPermissionsImplementation,
-  methodDescription: 'Request permissions.',
   hookNames: {
     requestPermissions: true,
   },
