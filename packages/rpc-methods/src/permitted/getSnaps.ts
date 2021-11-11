@@ -5,6 +5,9 @@ import {
 import { InstallSnapsResult } from '@metamask/snap-controllers';
 import { PermittedHandlerExport } from '../../types';
 
+/**
+ * `wallet_getSnaps` gets the requester's permitted and installed Snaps.
+ */
 export const getSnapsHandler: PermittedHandlerExport<
   GetSnapsHooks,
   void,
@@ -12,7 +15,6 @@ export const getSnapsHandler: PermittedHandlerExport<
 > = {
   methodNames: ['wallet_getSnaps'],
   implementation: getSnapsImplementation,
-  methodDescription: "Get requester's permitted and installed snaps.",
   hookNames: {
     getSnaps: true,
   },

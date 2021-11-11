@@ -5,6 +5,9 @@ import {
 import { AnnotatedJsonRpcEngine } from 'rpc-cap';
 import { RestrictedHandlerExport } from '../../types';
 
+/**
+ * `snap_getState` gets the Snap's persistent state.
+ */
 export const getStateHandler: RestrictedHandlerExport<
   GetStateHooks,
   void,
@@ -12,8 +15,6 @@ export const getStateHandler: RestrictedHandlerExport<
 > = {
   methodNames: ['snap_getState'],
   getImplementation: getGetStateHandler,
-  methodDescription: 'Get the state of the snap.',
-  permissionDescription: 'Get the state of the snap.',
   hookNames: {
     getSnapState: true,
   },

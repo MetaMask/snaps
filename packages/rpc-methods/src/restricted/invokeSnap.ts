@@ -9,6 +9,11 @@ import { SNAP_PREFIX, SnapController } from '@metamask/snap-controllers';
 import { RestrictedHandlerExport } from '../../types';
 import { isPlainObject } from '../utils';
 
+/**
+ * `wallet_snap_*` attempts to invoke an RPC method of the specified Snap.
+ * Requesting its corresponding permission will attempt to connect to the Snap,
+ * and install it if it's not avaialble yet.
+ */
 export const invokeSnapHandler: RestrictedHandlerExport<
   InvokeSnapHooks,
   [Record<string, unknown>],
@@ -16,9 +21,6 @@ export const invokeSnapHandler: RestrictedHandlerExport<
 > = {
   methodNames: [`${SNAP_PREFIX}*`],
   getImplementation: getInvokeSnapHandlerGetter,
-  permissionDescription:
-    'Connect to the requested snap, and install it if not available yet.',
-  methodDescription: 'Call an RPC method of the specified snap.',
   hookNames: {
     getSnap: true,
     addSnap: true,

@@ -28,7 +28,6 @@ export type RestrictedHandlerMiddlewareGetter<T, U, V> = (
 
 interface BaseHandlerExport {
   methodNames: string[];
-  methodDescription: string;
 }
 
 /**
@@ -48,6 +47,5 @@ export interface PermittedHandlerExport<T, U, V> extends BaseHandlerExport {
 
 export interface RestrictedHandlerExport<T, U, V> extends BaseHandlerExport {
   getImplementation: RestrictedHandlerMiddlewareGetter<T, U, V>;
-  permissionDescription: string;
   hookNames: HookNames<T>;
 }

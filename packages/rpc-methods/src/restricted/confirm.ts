@@ -7,6 +7,9 @@ import { ethErrors } from 'eth-rpc-errors';
 import { AnnotatedJsonRpcEngine } from 'rpc-cap';
 import { RestrictedHandlerExport } from '../../types';
 
+/**
+ * `snap_confirm` lets the Snap display a confirmation dialog to the user.
+ */
 export const confirmHandler: RestrictedHandlerExport<
   ConfirmHooks,
   [string],
@@ -14,8 +17,6 @@ export const confirmHandler: RestrictedHandlerExport<
 > = {
   methodNames: ['snap_confirm'],
   getImplementation: getConfirmHandler,
-  methodDescription: 'Display a plain browser confirmation to the user.',
-  permissionDescription: 'Display a plain browser confirmation to the user.',
   hookNames: {
     showConfirmation: true,
   },

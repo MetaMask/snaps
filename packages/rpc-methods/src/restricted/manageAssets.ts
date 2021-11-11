@@ -9,6 +9,10 @@ import { AnnotatedJsonRpcEngine } from 'rpc-cap';
 import { RestrictedHandlerExport } from '../../types';
 import { isPlainObject } from '../utils';
 
+/**
+ * `snap_manageAssets` lets the Snap add custom assets to the wallet
+ * application.
+ */
 export const manageAssetsHandler: RestrictedHandlerExport<
   ManageAssetsHooks,
   [method: string, arg: string | Record<string, unknown>],
@@ -16,8 +20,6 @@ export const manageAssetsHandler: RestrictedHandlerExport<
 > = {
   methodNames: ['snap_manageAssets'],
   getImplementation: getManageAssetsHandler,
-  methodDescription: 'Display custom assets in your wallet',
-  permissionDescription: 'Display custom assets in your wallet',
   hookNames: {
     handleAssetRequest: true,
   },

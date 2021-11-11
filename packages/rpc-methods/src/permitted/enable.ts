@@ -12,7 +12,7 @@ import {
   handleInstallSnaps,
   InstallSnapsHook,
   InstallSnapsResult,
-  preprocessRequestPermissions,
+  preprocessRequestedPermissions,
 } from './common/snapInstallation';
 
 type SerializedEthereumRpcError = ReturnType<typeof serializeError>;
@@ -24,6 +24,16 @@ export interface EnableWalletResult {
   errors?: SerializedEthereumRpcError[];
 }
 
+/**
+ * `wallet_enable` is a convenience method that takes a request permissions
+ * object as its single parameter, and then calls `wallet_requestPermissions`,
+ * `wallet_installSnaps`, and `eth_accounts` as appropriate based on the
+ * requested permissions. The method returns a single object result with
+ * separate properties for the return values of each method, and any errors
+ * that occurred:
+ *
+ * `{ accounts, permissions, snaps, errors? }`
+ */
 export const enableWalletHandler: PermittedHandlerExport<
   EnableWalletHooks,
   [IRequestedPermissions],
@@ -31,7 +41,6 @@ export const enableWalletHandler: PermittedHandlerExport<
 > = {
   methodNames: ['wallet_enable'],
   implementation: enableWallet,
-  methodDescription: 'Installs the requested snaps if they are permitted.',
   hookNames: {
     getAccounts: true,
     installSnaps: true,
@@ -85,7 +94,7 @@ async function enableWallet(
   let requestedPermissions: IRequestedPermissions;
   try {
     // we expect the params to be the same as wallet_requestPermissions
-    requestedPermissions = await preprocessRequestPermissions(req.params[0]);
+    requestedPermissions = preprocessRequestedPermissions(req.params[0]);
     result.permissions = await requestPermissions(requestedPermissions);
     if (!result.permissions || !result.permissions.length) {
       throw ethErrors.provider.userRejectedRequest({ data: req });
