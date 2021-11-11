@@ -2696,9 +2696,12 @@ describe('PermissionController', () => {
 
       const controller = getDefaultPermissionController(options);
       expect(
-        await controller.requestPermissions(origin, {
-          [PermissionNames.wallet_getSecretArray]: {},
-        }),
+        await controller.requestPermissions(
+          { origin },
+          {
+            [PermissionNames.wallet_getSecretArray]: {},
+          },
+        ),
       ).toMatchObject([
         {
           [PermissionNames.wallet_getSecretArray]: getPermissionMatcher(
@@ -2743,15 +2746,18 @@ describe('PermissionController', () => {
 
       const controller = getDefaultPermissionController(options);
       expect(
-        await controller.requestPermissions(origin, {
-          [PermissionNames.wallet_getSecretArray]: {},
-          [PermissionNames.wallet_getSecretObject]: {
-            caveats: [
-              { type: CaveatTypes.filterObjectResponse, value: ['baz'] },
-            ],
+        await controller.requestPermissions(
+          { origin },
+          {
+            [PermissionNames.wallet_getSecretArray]: {},
+            [PermissionNames.wallet_getSecretObject]: {
+              caveats: [
+                { type: CaveatTypes.filterObjectResponse, value: ['baz'] },
+              ],
+            },
+            [PermissionNames.wallet_getSecret_('foo')]: {},
           },
-          [PermissionNames.wallet_getSecret_('foo')]: {},
-        }),
+        ),
       ).toMatchObject([
         {
           [PermissionNames.wallet_getSecretArray]: getPermissionMatcher(
@@ -2813,7 +2819,10 @@ describe('PermissionController', () => {
       ]) {
         await expect(
           async () =>
-            await controller.requestPermissions(origin, invalidInput as any),
+            await controller.requestPermissions(
+              { origin },
+              invalidInput as any,
+            ),
         ).rejects.toThrow(
           errors.invalidParams({
             message: `Requested permissions for origin "${origin}" is not a plain object.`,
@@ -2836,7 +2845,7 @@ describe('PermissionController', () => {
       await expect(
         async () =>
           // No permissions in object
-          await controller.requestPermissions(origin, {}),
+          await controller.requestPermissions({ origin }, {}),
       ).rejects.toThrow(
         errors.invalidParams({
           message: `Permissions request for origin "${origin}" contains no permissions.`,
@@ -2857,15 +2866,18 @@ describe('PermissionController', () => {
       const controller = getDefaultPermissionController(options);
       await expect(
         async () =>
-          await controller.requestPermissions(origin, {
-            [PermissionNames.wallet_getSecretArray]: {
-              parentCapability: PermissionNames.wallet_getSecretArray,
+          await controller.requestPermissions(
+            { origin },
+            {
+              [PermissionNames.wallet_getSecretArray]: {
+                parentCapability: PermissionNames.wallet_getSecretArray,
+              },
+              // parentCapability value does not match key
+              [PermissionNames.wallet_getSecretObject]: {
+                parentCapability: PermissionNames.wallet_getSecretArray,
+              },
             },
-            // parentCapability value does not match key
-            [PermissionNames.wallet_getSecretObject]: {
-              parentCapability: PermissionNames.wallet_getSecretArray,
-            },
-          }),
+          ),
       ).rejects.toThrow(
         errors.invalidParams({
           message: `Permissions request for origin "${origin}" contains invalid requested permission(s).`,
@@ -2898,10 +2910,13 @@ describe('PermissionController', () => {
       const controller = getDefaultPermissionController(options);
       await expect(
         async () =>
-          await controller.requestPermissions(origin, {
-            [PermissionNames.wallet_getSecretArray]: {},
-            wallet_getSecretKabob: {},
-          }),
+          await controller.requestPermissions(
+            { origin },
+            {
+              [PermissionNames.wallet_getSecretArray]: {},
+              wallet_getSecretKabob: {},
+            },
+          ),
       ).rejects.toThrow(
         errors.methodNotFound({
           method: 'wallet_getSecretKabob',
@@ -2937,11 +2952,14 @@ describe('PermissionController', () => {
       ]) {
         await expect(
           async () =>
-            await controller.requestPermissions(origin, {
-              [PermissionNames.wallet_getSecretArray]: {
-                caveats: invalidCaveatsValue as any,
+            await controller.requestPermissions(
+              { origin },
+              {
+                [PermissionNames.wallet_getSecretArray]: {
+                  caveats: invalidCaveatsValue as any,
+                },
               },
-            }),
+            ),
         ).rejects.toThrow(
           new errors.InvalidCaveatsPropertyError(
             origin,
@@ -2964,14 +2982,17 @@ describe('PermissionController', () => {
       const controller = getDefaultPermissionController(options);
       await expect(
         async () =>
-          await controller.requestPermissions(origin, {
-            [PermissionNames.wallet_getSecretArray]: {
-              caveats: [
-                { type: CaveatTypes.filterArrayResponse, value: ['foo'] },
-                { type: CaveatTypes.filterArrayResponse, value: ['foo'] },
-              ],
+          await controller.requestPermissions(
+            { origin },
+            {
+              [PermissionNames.wallet_getSecretArray]: {
+                caveats: [
+                  { type: CaveatTypes.filterArrayResponse, value: ['foo'] },
+                  { type: CaveatTypes.filterArrayResponse, value: ['foo'] },
+                ],
+              },
             },
-          }),
+          ),
       ).rejects.toThrow(
         new errors.DuplicateCaveatError(
           CaveatTypes.filterArrayResponse,
@@ -2998,9 +3019,12 @@ describe('PermissionController', () => {
 
         await expect(
           async () =>
-            await controller.requestPermissions(origin, {
-              [PermissionNames.wallet_getSecretArray]: {},
-            }),
+            await controller.requestPermissions(
+              { origin },
+              {
+                [PermissionNames.wallet_getSecretArray]: {},
+              },
+            ),
         ).rejects.toThrow(
           errors.internalError(
             `Approved permissions request for subject "${origin}" is invalid.`,
@@ -3046,9 +3070,12 @@ describe('PermissionController', () => {
       const controller = getDefaultPermissionController(options);
       await expect(
         async () =>
-          await controller.requestPermissions(origin, {
-            [PermissionNames.wallet_getSecretArray]: {},
-          }),
+          await controller.requestPermissions(
+            { origin },
+            {
+              [PermissionNames.wallet_getSecretArray]: {},
+            },
+          ),
       ).rejects.toThrow(
         errors.internalError(
           `Approved permissions request for subject "${origin}" mutated its id.`,
@@ -3093,9 +3120,12 @@ describe('PermissionController', () => {
       const controller = getDefaultPermissionController(options);
       await expect(
         async () =>
-          await controller.requestPermissions(origin, {
-            [PermissionNames.wallet_getSecretArray]: {},
-          }),
+          await controller.requestPermissions(
+            { origin },
+            {
+              [PermissionNames.wallet_getSecretArray]: {},
+            },
+          ),
       ).rejects.toThrow(
         errors.internalError(
           `Approved permissions request for subject "${origin}" mutated its origin.`,
@@ -3137,9 +3167,12 @@ describe('PermissionController', () => {
       const controller = getDefaultPermissionController(options);
       await expect(
         async () =>
-          await controller.requestPermissions(origin, {
-            [PermissionNames.wallet_getSecretArray]: {},
-          }),
+          await controller.requestPermissions(
+            { origin },
+            {
+              [PermissionNames.wallet_getSecretArray]: {},
+            },
+          ),
       ).rejects.toThrow(
         errors.internalError(
           `Invalid approved permissions request: Permissions request for origin "${origin}" contains no permissions.`,
@@ -3197,7 +3230,7 @@ describe('PermissionController', () => {
         await expect(
           async () =>
             await controller.requestPermissions(
-              origin,
+              { origin },
               {
                 [PermissionNames.wallet_getSecretArray]: {},
               },
@@ -3253,11 +3286,14 @@ describe('PermissionController', () => {
 
       await expect(
         async () =>
-          await controller.requestPermissions(origin, {
-            [PermissionNames.wallet_getSecretArray]: {
-              parentCapability: PermissionNames.wallet_getSecretArray,
+          await controller.requestPermissions(
+            { origin },
+            {
+              [PermissionNames.wallet_getSecretArray]: {
+                parentCapability: PermissionNames.wallet_getSecretArray,
+              },
             },
-          }),
+          ),
       ).rejects.toThrow(
         errors.invalidParams({
           message: `Invalid approved permissions request: Permissions request for origin "${origin}" contains invalid requested permission(s).`,

@@ -1598,9 +1598,9 @@ export class PermissionController<
    * @returns The granted permissions and request metadata.
    */
   async requestPermissions(
-    origin: OriginString,
+    subject: PermissionSubjectMetadata,
     requestedPermissions: RequestedPermissions,
-    id: string = nanoid(),
+    id = nanoid(),
     preserveExistingPermissions = true,
   ): Promise<
     [
@@ -1613,6 +1613,7 @@ export class PermissionController<
       { id: string; origin: OriginString },
     ]
   > {
+    const { origin } = subject;
     this.validateRequestedPermissions(origin, requestedPermissions);
     const metadata = {
       id,
@@ -1629,7 +1630,7 @@ export class PermissionController<
 
     return [
       this.grantPermissions({
-        subject: { origin },
+        subject,
         approvedPermissions,
         preserveExistingPermissions,
         requestData,
