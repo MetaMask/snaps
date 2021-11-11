@@ -12,7 +12,7 @@ import {
   handleInstallSnaps,
   InstallSnapsHook,
   InstallSnapsResult,
-  preprocessRequestPermissions,
+  preprocessRequestedPermissions,
 } from './common/snapInstallation';
 
 type SerializedEthereumRpcError = ReturnType<typeof serializeError>;
@@ -87,7 +87,7 @@ async function enableWallet(
   let requestedPermissions: IRequestedPermissions;
   try {
     // we expect the params to be the same as wallet_requestPermissions
-    requestedPermissions = preprocessRequestPermissions(req.params[0]);
+    requestedPermissions = preprocessRequestedPermissions(req.params[0]);
     result.permissions = await requestPermissions(requestedPermissions);
     if (!result.permissions || !result.permissions.length) {
       throw ethErrors.provider.userRejectedRequest({ data: req });

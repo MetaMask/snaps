@@ -10,7 +10,7 @@ export type InstallSnapsHook = (
 ) => Promise<InstallSnapsResult>;
 
 // preprocess requested permissions to support 'wallet_snap' syntactic sugar
-export function preprocessRequestPermissions(
+export function preprocessRequestedPermissions(
   requestedPermissions: IRequestedPermissions,
 ): IRequestedPermissions {
   if (!isPlainObject(requestedPermissions)) {
