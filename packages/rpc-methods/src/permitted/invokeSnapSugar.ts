@@ -8,6 +8,9 @@ import { SNAP_PREFIX } from '@metamask/snap-controllers';
 import { PermittedHandlerExport } from '../../types';
 import { isPlainObject } from '../utils';
 
+/**
+ * `wallet_invokeSnap` attempts to invoke an RPC method of the specified Snap.
+ */
 export const invokeSnapSugarHandler: PermittedHandlerExport<
   void,
   JsonRpcRequest<unknown>,
@@ -15,7 +18,6 @@ export const invokeSnapSugarHandler: PermittedHandlerExport<
 > = {
   methodNames: ['wallet_invokeSnap'],
   implementation: invokeSnapSugar,
-  methodDescription: 'Call an RPC method of the specified snap.',
   hookNames: undefined,
 };
 

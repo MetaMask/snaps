@@ -5,6 +5,9 @@ import {
 import { AnnotatedJsonRpcEngine } from 'rpc-cap';
 import { RestrictedHandlerExport } from '../../types';
 
+/**
+ * `snap_clearState` clears the persistent state of the Snap.
+ */
 export const clearStateHandler: RestrictedHandlerExport<
   ClearStateHooks,
   void,
@@ -12,8 +15,6 @@ export const clearStateHandler: RestrictedHandlerExport<
 > = {
   methodNames: ['snap_clearState'],
   getImplementation: getClearStateHandler,
-  methodDescription: 'Clear the state of the snap.',
-  permissionDescription: 'Clear the state of the snap.',
   hookNames: {
     clearSnapState: true,
   },

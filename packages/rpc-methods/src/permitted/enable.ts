@@ -24,6 +24,9 @@ export interface EnableWalletResult {
   errors?: SerializedEthereumRpcError[];
 }
 
+/**
+ * `wallet_enable` is a convenience method the requests
+ */
 export const enableWalletHandler: PermittedHandlerExport<
   EnableWalletHooks,
   [IRequestedPermissions],
@@ -31,7 +34,6 @@ export const enableWalletHandler: PermittedHandlerExport<
 > = {
   methodNames: ['wallet_enable'],
   implementation: enableWallet,
-  methodDescription: 'Installs the requested snaps if they are permitted.',
   hookNames: {
     getAccounts: true,
     installSnaps: true,
@@ -85,7 +87,7 @@ async function enableWallet(
   let requestedPermissions: IRequestedPermissions;
   try {
     // we expect the params to be the same as wallet_requestPermissions
-    requestedPermissions = await preprocessRequestPermissions(req.params[0]);
+    requestedPermissions = preprocessRequestPermissions(req.params[0]);
     result.permissions = await requestPermissions(requestedPermissions);
     if (!result.permissions || !result.permissions.length) {
       throw ethErrors.provider.userRejectedRequest({ data: req });
