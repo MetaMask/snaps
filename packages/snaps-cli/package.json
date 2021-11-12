@@ -8,7 +8,7 @@
   },
   "license": "ISC",
   "bin": {
-    "mm-snap": "dist/main.js"
+    "mm-snap": "./dist/main.js"
   },
   "files": [
     "dist/"
