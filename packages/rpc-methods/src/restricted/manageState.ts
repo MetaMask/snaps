@@ -47,9 +47,9 @@ export interface ManageStateHooks {
 }
 
 export enum ManageStateOperation {
-  clearState = 'clearState',
-  getState = 'getState',
-  updateState = 'updateState',
+  clearState = 'clear',
+  getState = 'get',
+  updateState = 'update',
 }
 
 function getManageStateHandler({
