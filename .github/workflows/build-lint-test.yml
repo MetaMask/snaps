@@ -8,7 +8,7 @@ on:
 jobs:
   build-lint-test:
     name: Build, Lint, and Test
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [12.x, 14.x, 16.x]
@@ -48,10 +48,45 @@ jobs:
         if: ${{ !startsWith(github.head_ref, 'release/') }}
         run: yarn lint:changelogs
 
+  platform-compatibility:
+    name: Platform Compatibility Tests
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macOS-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 12.x
+      - name: Get Yarn cache directory
+        run: echo "::set-output name=YARN_CACHE_DIR::$(yarn cache dir)"
+        id: yarn-cache-dir
+      - name: Get Yarn version
+        run: echo "::set-output name=YARN_VERSION::$(yarn --version)"
+        id: yarn-version
+      - name: Cache yarn dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.yarn-cache-dir.outputs.YARN_CACHE_DIR }}
+          key: yarn-cache-${{ runner.os }}-${{ steps.yarn-version.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}
+      - run: yarn install --frozen-lockfile
+      - run: yarn allow-scripts
+      - run: yarn workspace @metamask/snaps-cli run build
+      - name: Require clean working directory
+        shell: bash
+        run: |
+          if [[ $(git diff --quiet) != '' ]]; then
+            echo "Working tree dirty after building"
+            exit 1
+          fi
+      - run: yarn workspace @metamask/snaps-cli run test
+
   all-jobs-pass:
     name: All jobs pass
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs:
       - build-lint-test
+      - platform-compatibility
     steps:
       - run: echo "Great success!"
