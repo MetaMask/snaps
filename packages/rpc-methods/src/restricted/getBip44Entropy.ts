@@ -9,6 +9,10 @@ import { RestrictedHandlerExport } from '../../types';
 
 const METHOD_PREFIX = 'snap_getBip44Entropy_';
 
+/**
+ * `snap_getBip44Entropy_*` lets the Snap control private keys for a particular
+ * BIP-32 coin type.
+ */
 export const getBip44EntropyHandler: RestrictedHandlerExport<
   GetBip44EntropyHooks,
   void,
@@ -16,8 +20,6 @@ export const getBip44EntropyHandler: RestrictedHandlerExport<
 > = {
   methodNames: [`${METHOD_PREFIX}*`],
   getImplementation: getGetBip44EntropyHandler,
-  methodDescription: 'Control private keys for a particular coin type.',
-  permissionDescription: 'Control private keys for a particular coin type.',
   hookNames: {
     getMnemonic: true,
   },

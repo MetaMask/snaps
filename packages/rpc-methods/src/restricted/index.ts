@@ -6,7 +6,6 @@ import {
 } from './getBip44Entropy';
 import { getStateHandler, GetStateHooks } from './getState';
 import { invokeSnapHandler, InvokeSnapHooks } from './invokeSnap';
-import { manageAssetsHandler, ManageAssetsHooks } from './manageAssets';
 import { updateStateHandler, UpdateStateHooks } from './updateState';
 
 export type RestrictedRpcMethodHooks = ClearStateHooks &
@@ -14,7 +13,6 @@ export type RestrictedRpcMethodHooks = ClearStateHooks &
   GetBip44EntropyHooks &
   GetStateHooks &
   InvokeSnapHooks &
-  ManageAssetsHooks &
   UpdateStateHooks;
 
 export const handlers = [
@@ -22,7 +20,6 @@ export const handlers = [
   confirmHandler,
   getBip44EntropyHandler,
   getStateHandler,
-  manageAssetsHandler,
   invokeSnapHandler,
   updateStateHandler,
 ];

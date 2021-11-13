@@ -6,6 +6,9 @@ import {
 import { ethErrors } from 'eth-rpc-errors';
 import { PermittedHandlerExport } from '../../types';
 
+/**
+ * `snap_getAppKey` gets the Snap's app key.
+ */
 export const getAppKeyHandler: PermittedHandlerExport<
   GetAppKeyHooks,
   [string],
@@ -13,7 +16,6 @@ export const getAppKeyHandler: PermittedHandlerExport<
 > = {
   methodNames: ['snap_getAppKey'],
   implementation: getAppKeyImplementation,
-  methodDescription: 'Get the app key of the snap.',
   hookNames: {
     getAppKey: true,
   },

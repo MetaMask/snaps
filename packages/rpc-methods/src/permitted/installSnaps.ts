@@ -12,6 +12,9 @@ import {
   InstallSnapsResult,
 } from './common/snapInstallation';
 
+/**
+ * `wallet_installSnaps` installs the requested Snaps, if they are permitted.
+ */
 export const installSnapsHandler: PermittedHandlerExport<
   InstallSnapsHooks,
   [IRequestedPermissions],
@@ -19,7 +22,6 @@ export const installSnapsHandler: PermittedHandlerExport<
 > = {
   methodNames: ['wallet_installSnaps'],
   implementation: installSnapsImplementation,
-  methodDescription: 'Installs the requested snaps if they are permitted.',
   hookNames: {
     installSnaps: true,
   },

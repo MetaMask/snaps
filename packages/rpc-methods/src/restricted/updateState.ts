@@ -7,6 +7,9 @@ import { ethErrors } from 'eth-rpc-errors';
 import { AnnotatedJsonRpcEngine } from 'rpc-cap';
 import { RestrictedHandlerExport } from '../../types';
 
+/**
+ * `snap_updateState` updates the Snap's persistent state.
+ */
 export const updateStateHandler: RestrictedHandlerExport<
   UpdateStateHooks,
   [Record<string, unknown>],
@@ -14,8 +17,6 @@ export const updateStateHandler: RestrictedHandlerExport<
 > = {
   methodNames: ['snap_updateState'],
   getImplementation: getUpdateStateHandler,
-  methodDescription: 'Update the state of the snap.',
-  permissionDescription: 'Update the state of the snap.',
   hookNames: {
     updateSnapState: true,
   },
