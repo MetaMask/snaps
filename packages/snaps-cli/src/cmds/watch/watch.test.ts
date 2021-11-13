@@ -1,4 +1,5 @@
 import EventEmitter from 'events';
+import os from 'os';
 import chokidar from 'chokidar';
 import * as build from '../build/bundle';
 import * as fsUtils from '../../utils/validate-fs';
@@ -104,13 +105,13 @@ describe('watch', () => {
         .mockImplementation(async () => true);
 
       await watch.handler(getMockArgv());
+      const path =
+        os.platform() === 'win32'
+          ? `${mockDist}\\${mockOutfileName}`
+          : `${mockDist}/${mockOutfileName}`;
       const finishPromise = new Promise<void>((resolve, _) => {
         watcherEmitter.on('change', () => {
-          expect(bundleMock).toHaveBeenCalledWith(
-            mockSrc,
-            `${mockDist}/${mockOutfileName}`,
-            getMockArgv(),
-          );
+          expect(bundleMock).toHaveBeenCalledWith(mockSrc, path, getMockArgv());
           resolve();
         });
       });
@@ -128,13 +129,13 @@ describe('watch', () => {
         .mockImplementation(async () => true);
 
       await watch.handler(getMockArgv());
+      const path =
+        os.platform() === 'win32'
+          ? `${mockDist}\\${mockOutfileName}`
+          : `${mockDist}/${mockOutfileName}`;
       const finishPromise = new Promise<void>((resolve, _) => {
         watcherEmitter.on('ready', () => {
-          expect(bundleMock).toHaveBeenCalledWith(
-            mockSrc,
-            `${mockDist}/${mockOutfileName}`,
-            getMockArgv(),
-          );
+          expect(bundleMock).toHaveBeenCalledWith(mockSrc, path, getMockArgv());
           resolve();
         });
       });
@@ -152,13 +153,13 @@ describe('watch', () => {
         .mockImplementation(async () => true);
 
       await watch.handler(getMockArgv());
+      const path =
+        os.platform() === 'win32'
+          ? `${mockDist}\\${mockOutfileName}`
+          : `${mockDist}/${mockOutfileName}`;
       const finishPromise = new Promise<void>((resolve, _) => {
         watcherEmitter.on('add', () => {
-          expect(bundleMock).toHaveBeenCalledWith(
-            mockSrc,
-            `${mockDist}/${mockOutfileName}`,
-            getMockArgv(),
-          );
+          expect(bundleMock).toHaveBeenCalledWith(mockSrc, path, getMockArgv());
           resolve();
         });
       });
