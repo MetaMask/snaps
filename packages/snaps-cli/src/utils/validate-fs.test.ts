@@ -1,3 +1,4 @@
+import path from 'path';
 import {
   getOutfilePath,
   validateOutfileName,
@@ -9,17 +10,18 @@ import * as filesystem from './fs';
 describe('validate', () => {
   describe('getOutfilePath', () => {
     it('gets the complete out file path', () => {
-      expect(getOutfilePath('./src', 'outDir')).toStrictEqual('src/outDir');
-      expect(getOutfilePath('../src', '///outDir////')).toStrictEqual(
-        '../src/outDir/',
-      );
-
-      expect(getOutfilePath('../src', '/lol//outDir////')).toStrictEqual(
-        '../src/lol/outDir/',
-      );
-      expect(getOutfilePath('src', 'outDir')).toStrictEqual('src/outDir');
-      expect(getOutfilePath('src/', './outDir/')).toStrictEqual('src/outDir/');
-      expect(getOutfilePath('src/', '')).toStrictEqual('src/bundle.js');
+      const path1 = path.normalize('src/outDir');
+      const path2 = path.normalize('../src/outDir/');
+      const path3 = path.normalize('../src/lol/outDir/');
+      const path4 = path.normalize('src/outDir');
+      const path5 = path.normalize('src/outDir/');
+      const path6 = path.normalize('src/bundle.js');
+      expect(getOutfilePath('./src', 'outDir')).toStrictEqual(path1);
+      expect(getOutfilePath('../src', '///outDir////')).toStrictEqual(path2);
+      expect(getOutfilePath('../src', '/lol//outDir////')).toStrictEqual(path3);
+      expect(getOutfilePath('src', 'outDir')).toStrictEqual(path4);
+      expect(getOutfilePath('src/', './outDir/')).toStrictEqual(path5);
+      expect(getOutfilePath('src/', '')).toStrictEqual(path6);
       expect(getOutfilePath('', '')).toStrictEqual('bundle.js');
     });
   });

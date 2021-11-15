@@ -1,4 +1,5 @@
 import fs from 'fs';
+import path from 'path';
 import initPackageJson from 'init-package-json';
 import * as readlineUtils from '../../utils/readline';
 import * as miscUtils from '../../utils/misc';
@@ -175,7 +176,7 @@ describe('initUtils', () => {
       const expectedMockWallet = [
         {
           bundle: {
-            local: `${VALID_DIR}/${mockArgv.outfileName}`,
+            local: path.normalize(`${VALID_DIR}/${mockArgv.outfileName}`),
             url: `http://localhost:${VALID_PORT}/${VALID_DIR}/${mockArgv.outfileName}`,
           },
           initialPermissions: {
@@ -207,7 +208,7 @@ describe('initUtils', () => {
       const expectedMockWallet = [
         {
           bundle: {
-            local: `${VALID_DIR}/${mockArgv.outfileName}`,
+            local: path.normalize(`${VALID_DIR}/${mockArgv.outfileName}`),
             url: `http://localhost:${VALID_PORT}/${VALID_DIR}/${mockArgv.outfileName}`,
           },
           initialPermissions: {
