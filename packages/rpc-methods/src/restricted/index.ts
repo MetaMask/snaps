@@ -1,25 +1,21 @@
-import { clearStateHandler, ClearStateHooks } from './clearState';
 import { confirmHandler, ConfirmHooks } from './confirm';
 import {
   getBip44EntropyHandler,
   GetBip44EntropyHooks,
 } from './getBip44Entropy';
-import { getStateHandler, GetStateHooks } from './getState';
 import { invokeSnapHandler, InvokeSnapHooks } from './invokeSnap';
-import { updateStateHandler, UpdateStateHooks } from './updateState';
+import { manageStateHandler, ManageStateHooks } from './manageState';
 
-export type RestrictedRpcMethodHooks = ClearStateHooks &
-  ConfirmHooks &
+export { ManageStateOperation } from './manageState';
+
+export type RestrictedRpcMethodHooks = ConfirmHooks &
   GetBip44EntropyHooks &
-  GetStateHooks &
   InvokeSnapHooks &
-  UpdateStateHooks;
+  ManageStateHooks;
 
 export const handlers = [
-  clearStateHandler,
   confirmHandler,
   getBip44EntropyHandler,
-  getStateHandler,
   invokeSnapHandler,
-  updateStateHandler,
+  manageStateHandler,
 ];
