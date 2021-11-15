@@ -187,6 +187,7 @@ describe('initUtils', () => {
         },
         { dist: VALID_DIR, outfileName: 'bundle.js', port: VALID_PORT },
       ];
+
       const promptMock = jest
         .spyOn(readlineUtils, 'prompt')
         .mockImplementationOnce(async () => NO)
@@ -194,6 +195,7 @@ describe('initUtils', () => {
         .mockImplementationOnce(async () => VALID_DIR)
         .mockImplementationOnce(async () => VALID_PERMISSIONS_INPUT);
       const mkdirMock = jest.spyOn(fs.promises, 'mkdir').mockImplementation();
+
       expect(await buildWeb3Wallet(mockArgv as any)).toStrictEqual(
         expectedMockWallet,
       );
@@ -215,6 +217,7 @@ describe('initUtils', () => {
         },
         { dist: VALID_DIR, outfileName: 'bundle.js', port: VALID_PORT },
       ];
+
       const promptMock = jest
         .spyOn(readlineUtils, 'prompt')
         .mockImplementationOnce(async () => NO)
