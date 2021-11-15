@@ -1,5 +1,5 @@
 import fs from 'fs';
-import os from 'os';
+import path from 'path';
 import initPackageJson from 'init-package-json';
 import * as readlineUtils from '../../utils/readline';
 import * as miscUtils from '../../utils/misc';
@@ -8,7 +8,6 @@ import {
   buildWeb3Wallet,
   validateEmptyDir,
 } from './initUtils';
-import path from 'path';
 
 jest.mock('fs', () => ({
   existsSync: jest.fn(),

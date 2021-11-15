@@ -155,7 +155,7 @@ describe('watch', () => {
         .mockImplementation(async () => true);
 
       await watch.handler(getMockArgv());
-      const mockPath = path.normalize(`${mockDist}/${mockOutfileName}`)
+      const mockPath = path.normalize(`${mockDist}/${mockOutfileName}`);
       const finishPromise = new Promise<void>((resolve, _) => {
         watcherEmitter.on('add', () => {
           expect(bundleMock).toHaveBeenCalledWith(
