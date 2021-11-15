@@ -8,6 +8,7 @@ import {
   buildWeb3Wallet,
   validateEmptyDir,
 } from './initUtils';
+import path from 'path';
 
 jest.mock('fs', () => ({
   existsSync: jest.fn(),
@@ -176,7 +177,7 @@ describe('initUtils', () => {
       const expectedMockWallet = [
         {
           bundle: {
-            local: `${VALID_DIR}/${mockArgv.outfileName}`,
+            local: path.normalize(`${VALID_DIR}/${mockArgv.outfileName}`),
             url: `http://localhost:${VALID_PORT}/${VALID_DIR}/${mockArgv.outfileName}`,
           },
           initialPermissions: {
@@ -187,10 +188,6 @@ describe('initUtils', () => {
         },
         { dist: VALID_DIR, outfileName: 'bundle.js', port: VALID_PORT },
       ];
-      // eslint-disable-next-line jest/no-if
-      if (os.platform() === 'win32' && expectedMockWallet[0].bundle) {
-        expectedMockWallet[0].bundle.local = `${VALID_DIR}\\${mockArgv.outfileName}`;
-      }
       const promptMock = jest
         .spyOn(readlineUtils, 'prompt')
         .mockImplementationOnce(async () => NO)
@@ -210,7 +207,7 @@ describe('initUtils', () => {
       const expectedMockWallet = [
         {
           bundle: {
-            local: `${VALID_DIR}/${mockArgv.outfileName}`,
+            local: path.normalize(`${VALID_DIR}/${mockArgv.outfileName}`),
             url: `http://localhost:${VALID_PORT}/${VALID_DIR}/${mockArgv.outfileName}`,
           },
           initialPermissions: {
@@ -219,10 +216,6 @@ describe('initUtils', () => {
         },
         { dist: VALID_DIR, outfileName: 'bundle.js', port: VALID_PORT },
       ];
-      // eslint-disable-next-line jest/no-if
-      if (os.platform() === 'win32' && expectedMockWallet[0].bundle) {
-        expectedMockWallet[0].bundle.local = `${VALID_DIR}\\${mockArgv.outfileName}`;
-      }
       const promptMock = jest
         .spyOn(readlineUtils, 'prompt')
         .mockImplementationOnce(async () => NO)

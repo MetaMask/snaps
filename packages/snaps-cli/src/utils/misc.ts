@@ -13,8 +13,8 @@ export const permRequestKeys = [
 ];
 
 export const CONFIG_PATHS = ['snap.config.json'];
-
-const argumentSet = new Set([
+// CLI arguments whose values are file paths
+const pathArguments = new Set([
   'src',
   's',
   'dist',
@@ -61,7 +61,7 @@ export function sanitizeInputs(argv: Arguments) {
         argv[key] = '.';
       }
 
-      if (argumentSet.has(key)) {
+      if (pathArguments.has(key)) {
         argv[key] = path.normalize(argv[key] as string);
       }
     }

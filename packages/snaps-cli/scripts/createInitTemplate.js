@@ -5,7 +5,7 @@ const EXAMPLE_PATH = path.join(
   __dirname,
   '../../../node_modules/@metamask/snap-examples/examples/hello-snaps',
 );
-const TEMPLATE_PATH = path.normalize('src/cmds/init/init-template.json');
+const TEMPLATE_PATH = 'src/cmds/init/init-template.json';
 
 createInitTemplate();
 

@@ -1,4 +1,4 @@
-import os from 'os';
+import path from 'path';
 import * as snapEvalModule from '../eval/evalHandler';
 import * as manifestModule from '../manifest/manifestHandler';
 import * as fsUtils from '../../utils/validate-fs';
@@ -22,11 +22,9 @@ describe('build', () => {
         manifest: true,
       };
 
-      const outfilePath =
-        // eslint-disable-next-line jest/no-if
-        os.platform() === 'win32'
-          ? `${mockArgv.dist}\\${mockArgv.outfileName}`
-          : `${mockArgv.dist}/${mockArgv.outfileName}`;
+      const outfilePath = path.normalize(
+        `${mockArgv.dist}/${mockArgv.outfileName}`,
+      );
       const validateOutfileNameMock = jest
         .spyOn(fsUtils, 'validateOutfileName')
         .mockImplementation();
@@ -68,11 +66,7 @@ describe('build', () => {
         src: 'index.js',
         dist: 'dist',
       };
-      const outfilePath =
-        // eslint-disable-next-line jest/no-if
-        os.platform() === 'win32'
-          ? `${mockArgv.dist}\\bundle.js`
-          : `${mockArgv.dist}/bundle.js`;
+      const outfilePath = path.normalize(`${mockArgv.dist}/bundle.js`);
       const validateOutfileNameMock = jest
         .spyOn(fsUtils, 'validateOutfileName')
         .mockImplementation();

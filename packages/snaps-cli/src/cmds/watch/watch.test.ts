@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import os from 'os';
+import path from 'path';
 import chokidar from 'chokidar';
 import * as build from '../build/bundle';
 import * as fsUtils from '../../utils/validate-fs';
@@ -105,13 +105,14 @@ describe('watch', () => {
         .mockImplementation(async () => true);
 
       await watch.handler(getMockArgv());
-      const path =
-        os.platform() === 'win32'
-          ? `${mockDist}\\${mockOutfileName}`
-          : `${mockDist}/${mockOutfileName}`;
+      const mockPath = path.normalize(`${mockDist}/${mockOutfileName}`);
       const finishPromise = new Promise<void>((resolve, _) => {
         watcherEmitter.on('change', () => {
-          expect(bundleMock).toHaveBeenCalledWith(mockSrc, path, getMockArgv());
+          expect(bundleMock).toHaveBeenCalledWith(
+            mockSrc,
+            mockPath,
+            getMockArgv(),
+          );
           resolve();
         });
       });
@@ -129,13 +130,14 @@ describe('watch', () => {
         .mockImplementation(async () => true);
 
       await watch.handler(getMockArgv());
-      const path =
-        os.platform() === 'win32'
-          ? `${mockDist}\\${mockOutfileName}`
-          : `${mockDist}/${mockOutfileName}`;
+      const mockPath = path.normalize(`${mockDist}/${mockOutfileName}`);
       const finishPromise = new Promise<void>((resolve, _) => {
         watcherEmitter.on('ready', () => {
-          expect(bundleMock).toHaveBeenCalledWith(mockSrc, path, getMockArgv());
+          expect(bundleMock).toHaveBeenCalledWith(
+            mockSrc,
+            mockPath,
+            getMockArgv(),
+          );
           resolve();
         });
       });
@@ -153,13 +155,14 @@ describe('watch', () => {
         .mockImplementation(async () => true);
 
       await watch.handler(getMockArgv());
-      const path =
-        os.platform() === 'win32'
-          ? `${mockDist}\\${mockOutfileName}`
-          : `${mockDist}/${mockOutfileName}`;
+      const mockPath = path.normalize(`${mockDist}/${mockOutfileName}`)
       const finishPromise = new Promise<void>((resolve, _) => {
         watcherEmitter.on('add', () => {
-          expect(bundleMock).toHaveBeenCalledWith(mockSrc, path, getMockArgv());
+          expect(bundleMock).toHaveBeenCalledWith(
+            mockSrc,
+            mockPath,
+            getMockArgv(),
+          );
           resolve();
         });
       });

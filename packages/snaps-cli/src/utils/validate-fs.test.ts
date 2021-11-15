@@ -1,4 +1,4 @@
-import os from 'os';
+import path from 'path';
 import {
   getOutfilePath,
   validateOutfileName,
@@ -10,23 +10,12 @@ import * as filesystem from './fs';
 describe('validate', () => {
   describe('getOutfilePath', () => {
     it('gets the complete out file path', () => {
-      let path1, path2, path3, path4, path5, path6;
-      // eslint-disable-next-line jest/no-if
-      if (os.platform() === 'win32') {
-        path1 = 'src\\outDir';
-        path2 = '..\\src\\outDir\\';
-        path3 = '..\\src\\lol\\outDir\\';
-        path4 = 'src\\outDir';
-        path5 = 'src\\outDir\\';
-        path6 = 'src\\bundle.js';
-      } else {
-        path1 = 'src/outDir';
-        path2 = '../src/outDir/';
-        path3 = '../src/lol/outDir/';
-        path4 = 'src/outDir';
-        path5 = 'src/outDir/';
-        path6 = 'src/bundle.js';
-      }
+      const path1 = path.normalize('src/outDir');
+      const path2 = path.normalize('../src/outDir/');
+      const path3 = path.normalize('../src/lol/outDir/');
+      const path4 = path.normalize('src/outDir');
+      const path5 = path.normalize('src/outDir/');
+      const path6 = path.normalize('src/bundle.js');
       expect(getOutfilePath('./src', 'outDir')).toStrictEqual(path1);
       expect(getOutfilePath('../src', '///outDir////')).toStrictEqual(path2);
       expect(getOutfilePath('../src', '/lol//outDir////')).toStrictEqual(path3);
