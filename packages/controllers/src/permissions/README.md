@@ -45,6 +45,23 @@ Once the permission middleware is injected into our middleware stack, every JSON
   - If the request is authorized, call the corresponding method with the request parameters.
   - If the request is not authorized, reject the request with an `unauthorized` error.
 
+### Target Keys and Target Names
+
+When consuming or reading the `PermissionController`, you will encounter the concepts of "target keys" and "target names".
+As described in the previous section, a permission grants a subject access to a restricted resource, called a _target_, which is some string.
+Targets are referred to by consumers by their _names_, and internally (in the `PermissionController`) by their _keys_.
+This distinction exists to enable namespaced targets, specifically namespaced JSON-RPC methods.
+
+All targets have a single key.
+If a target _is not_ namespaced, the key is identical to its name.
+If a target _is_ namespaced, it may have any number of names, all of which are distinct from its key.
+Permissions are always requested and invoked by their target name(s).
+
+For example, for the non-namespaced restricted method `eth_accounts`, both the key and the name is `eth_accounts`.
+On the other hand, the namespaced restricted method `wallet_getSecret_*` has the key `wallet_getSecret_*`, and any number of names where the `*` wildcard character is substituted for some valid string per the method implementation.
+
+See [below](#construction) for a concrete example.
+
 ### Caveats
 
 Caveats are arbitrary restrictions on restricted method requests.
@@ -58,11 +75,13 @@ When the `PermissionController` is constructed, the consumer specifies the avail
 
 ## Examples
 
+In addition to the below examples, the [`PermissionController` unit tests](./PermissionController.test.ts) show how to set up the controller.
+
 ### Construction
 
 ```typescript
 // To construct a permission controller, we first need to define the caveat
-// types and restricted methods
+// types and restricted methods.
 
 const caveatSpecifications = {
   filterArrayResponse: {
@@ -90,14 +109,37 @@ const caveatSpecifications = {
   },
 };
 
+// The property names of this object must be target keys.
 const permissionSpecifications = {
   wallet_getSecretArray: {
     // i.e. the restricted method name
     target: 'wallet_getSecretArray',
+    allowedCaveats: [
+      'filterArrayResponse',
+    ],
     methodImplementation: (
       _args: RestrictedMethodOptions<RestrictedMethodParameters>,
     ) => {
       return ['secret1', 'secret2', 'secret3'];
+    },
+  },
+
+  // This is a namespaced restricted method.
+  wallet_getSecret_*: {
+    target: 'wallet_getSecret_*',
+    methodImplementation: (
+      args: RestrictedMethodOptions<RestrictedMethodParameters>,
+    ) => {
+      // The "method" is the string method name that was externally requested,
+      // and the "*" in the target key for this method will be replaced with
+      // some string whose value should affect the behavior of this method.
+      //
+      // "context" contains the origin of the requester and anything attached
+      // by the host during permission request processing.
+      const { method, context } = args;
+
+      const secretName = method.replace('wallet_getSecret_', '');
+      return context.getSecret(secretName);
     },
   },
 };
@@ -164,7 +206,7 @@ Here follows some more example caveat decorator implementations.
 // Validation / passthrough
 export function onlyArrayParams(
   method: AsyncRestrictedMethod<RestrictedMethodParameters, Json>,
-  _caveat: Caveat<never>,
+  _caveat: Caveat<'PassthroughCaveat', never>,
 ) {
   return async (args: RestrictedMethodOptions<RestrictedMethodParameters>) => {
     if (!Array.isArray(args.params)) {
@@ -178,13 +220,16 @@ export function onlyArrayParams(
 // "Return handler" example
 export function eth_accounts(
   method: AsyncRestrictedMethod<RestrictedMethodParameters, Json>,
-  caveat: Caveat<string[]>,
+  caveat: Caveat<'RestrictAccountCaveat', string[]>,
 ) {
   return async (args: RestrictedMethodOptions<RestrictedMethodParameters>) => {
-    const accounts: string[] | unknown = await method(args);
+    const accounts: string[] | Json = await method(args);
+    if (!Array.isArray(args.params)) {
+      throw new EthereumJsonRpcError();
+    }
+
     return (
-      accounts?.filter((account: string) => caveat.value.includes(account)) ??
-      []
+      accounts.filter((account: string) => caveat.value.includes(account)) ?? []
     );
   };
 }

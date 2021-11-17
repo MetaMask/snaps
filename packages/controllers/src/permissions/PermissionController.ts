@@ -343,7 +343,7 @@ export type PermissionControllerOptions<
 };
 
 /**
- * The permission controller. See the documentation for details.
+ * The permission controller. See the README for details.
  *
  * Assumes the existence of an {@link ApprovalController} reachable via the
  * {@link ControllerMessenger}.
@@ -390,7 +390,7 @@ export class PermissionController<
    * JSON-RPC requests.
    *
    * The middleware **must** be added in the correct place in the middleware
-   * stack in order for it to work. See the documentation for more details.
+   * stack in order for it to work. See the README for an example.
    */
   public createPermissionMiddleware: ReturnType<
     typeof getPermissionMiddlewareFactory
@@ -403,7 +403,7 @@ export class PermissionController<
    * documentation for more details.
    * @param options.permissionSpecifications - The specifications of all
    * permissions available to the controller. See
-   * {@link PermissionSpecificationMap} and the documentation for more details.
+   * {@link PermissionSpecificationMap} and the README for more details.
    * @param options.unrestrictedMethods - The callable names of all JSON-RPC
    * methods ignored by the new controller.
    * @param options.messenger - The controller messenger. See
@@ -616,7 +616,8 @@ export class PermissionController<
    * to the specified origin.
    *
    * @param origin - The origin of the subject.
-   * @param target - The method name as invoked by a third party (i.e., not a method key).
+   * @param targetName - The method name as invoked by a third party (i.e., not
+   * a method key).
    * @returns The permission if it exists, or undefined otherwise.
    */
   getPermission<
@@ -626,10 +627,10 @@ export class PermissionController<
     >,
   >(
     origin: OriginString,
-    target: SubjectPermission['parentCapability'],
+    targetName: SubjectPermission['parentCapability'],
   ): SubjectPermission | undefined {
     return this.state.subjects[origin]?.permissions[
-      target
+      targetName
     ] as SubjectPermission;
   }
 
@@ -1235,45 +1236,44 @@ export class PermissionController<
   }
 
   /**
-   * Used for retrieving the key that manages the restricted method
-   * associated with the current RPC `method` key.
+   * Gets the key for the specified permission target.
    *
-   * Used to support our namespaced method feature, which allows blocks
-   * of methods to be hidden behind a restricted method with a trailing `_` character.
+   * Used to support our namespaced permission target feature, which is used
+   * to implement namespaced restricted JSON-RPC methods.
    *
-   * @param method - The requested RPC method.
-   * @returns The internal key of the method.
+   * @param target - The requested permission target.
+   * @returns The internal key of the permission target.
    */
   private getTargetKey(
-    method: string,
+    target: string,
   ): ControllerPermissionSpecification['targetKey'] | undefined {
-    if (hasProperty(this._permissionSpecifications, method)) {
-      return method;
+    if (hasProperty(this._permissionSpecifications, target)) {
+      return target;
     }
 
-    const wildCardMethodsWithoutWildCard: Record<string, boolean> = {};
+    const namespacedTargetsWithoutWildcard: Record<string, boolean> = {};
     for (const targetKey of Object.keys(this._permissionSpecifications)) {
       const wildCardMatch = targetKey.match(/(.+)\*$/u);
       if (wildCardMatch) {
-        wildCardMethodsWithoutWildCard[wildCardMatch[1]] = true;
+        namespacedTargetsWithoutWildcard[wildCardMatch[1]] = true;
       }
     }
 
     // Check for potentially nested namespaces:
     // Ex: wildzone_
     // Ex: eth_plugin_
-    const segments = method.split('_');
+    const segments = target.split('_');
     let targetKey = '';
 
     while (
       segments.length > 0 &&
       !hasProperty(this._permissionSpecifications, targetKey) &&
-      !wildCardMethodsWithoutWildCard[targetKey]
+      !namespacedTargetsWithoutWildcard[targetKey]
     ) {
       targetKey += `${segments.shift()}_`;
     }
 
-    if (wildCardMethodsWithoutWildCard[targetKey]) {
+    if (namespacedTargetsWithoutWildcard[targetKey]) {
       return `${targetKey}*`;
     }
 
@@ -1672,13 +1672,13 @@ export class PermissionController<
       });
     }
 
-    for (const methodName of Object.keys(requestedPermissions)) {
-      const permission = requestedPermissions[methodName];
-      const targetKey = this.getTargetKey(methodName);
+    for (const targetName of Object.keys(requestedPermissions)) {
+      const permission = requestedPermissions[targetName];
+      const targetKey = this.getTargetKey(targetName);
 
       if (!targetKey) {
         throw methodNotFound({
-          method: methodName,
+          method: targetName,
           data: { origin, requestedPermissions },
         });
       }
@@ -1686,7 +1686,7 @@ export class PermissionController<
       if (
         !isPlainObject(permission) ||
         (permission.parentCapability !== undefined &&
-          methodName !== permission.parentCapability)
+          targetName !== permission.parentCapability)
       ) {
         throw invalidParams({
           message: `Permissions request for origin "${origin}" contains invalid requested permission(s).`,
@@ -1701,7 +1701,7 @@ export class PermissionController<
         // Typecast: The permission is still a "PlainObject" here.
         permission as PermissionConstraint,
         origin,
-        methodName,
+        targetName,
         { invokePermissionValidator: false, performCaveatValidation: true },
       );
     }
@@ -1901,31 +1901,32 @@ export class PermissionController<
    *
    * @param origin - The origin of the subject to execute the method on behalf
    * of.
-   * @param methodName - The name of the method to execute.
+   * @param targetName - The name of the method to execute. This must be a valid
+   * permission target name.
    * @param params - The parameters to pass to the method implementation.
    * @returns The result of the executed method.
    */
   async executeRestrictedMethod(
     origin: OriginString,
-    methodName: ExtractPermission<
+    targetName: ExtractPermission<
       ControllerPermissionSpecification,
       ControllerCaveatSpecification
     >['parentCapability'],
     params?: RestrictedMethodParameters,
   ): Promise<Json> {
     // Throws if the method does not exist
-    const methodImplementation = this.getRestrictedMethod(methodName, origin);
+    const methodImplementation = this.getRestrictedMethod(targetName, origin);
 
     const result = await this._executeRestrictedMethod(
       methodImplementation,
       { origin },
-      methodName,
+      targetName,
       params,
     );
 
     if (result === undefined) {
       throw new Error(
-        `Internal request for method "${methodName}" as origin "${origin}" returned no result.`,
+        `Internal request for method "${targetName}" as origin "${origin}" returned no result.`,
       );
     }
 

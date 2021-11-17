@@ -26,7 +26,7 @@ type TargetName = string;
  * the `parentCapability`. The use of the restricted resource may be further
  * restricted by any `caveats` associated with the permission.
  *
- * See the documentation for details.
+ * See the README for details.
  */
 export type PermissionConstraint = {
   /**
@@ -63,7 +63,8 @@ export type PermissionConstraint = {
    * A pointer to the resource that possession of the capability grants
    * access to.
    *
-   * In the context of MetaMask, this is always the name of an RPC method.
+   * At present, this is always the name of an RPC method in the context of
+   * MetaMask, but will expand to include other permission types in the future.
    */
   readonly parentCapability: string;
 };
@@ -75,7 +76,7 @@ export type PermissionConstraint = {
  * the `parentCapability`. The use of the restricted resource may be further
  * restricted by any `caveats` associated with the permission.
  *
- * See the documentation for details.
+ * See the README for details.
  *
  * @template TargetKey - They key of the permission target that the permission
  * corresponds to.
@@ -101,7 +102,8 @@ export type ValidPermission<
        * A pointer to the resource that possession of the capability grants
        * access to.
        *
-       * In the context of MetaMask, this is always the name of an RPC method.
+       * At present, this is always the name of an RPC method in the context of
+       * MetaMask, but will expand to include other permission types in the future.
        */
       readonly parentCapability: ExtractPermissionTargetNames<TargetKey>;
     };
@@ -110,7 +112,7 @@ export type ValidPermission<
  * A utility type for ensuring that the given permission target name conforms to
  * our naming conventions.
  *
- * See the documentation for the distinction between target names and keys.
+ * See the README for the distinction between target names and keys.
  */
 type ValidTargetName<Name extends string> = Name extends `${string}*`
   ? never
@@ -122,7 +124,7 @@ type ValidTargetName<Name extends string> = Name extends `${string}*`
  * A utility type for extracting permission target names from a union of target
  * keys.
  *
- * See the documentation for the distinction between target names and keys.
+ * See the README for the distinction between target names and keys.
  *
  * @template Key - The target key type to extract target names from.
  */
@@ -146,7 +148,7 @@ type KeyOfTargetName<
  * A utility type for finding the permission target key corresponding to a
  * target name. In a way, the inverse of {@link ExtractPermissionTargetNames}.
  *
- * See the documentation for the distinction between target names and keys.
+ * See the README for the distinction between target names and keys.
  *
  * @template Key - The target key type to extract from.
  * @template Name - The name whose key to extract.
@@ -338,7 +340,7 @@ export type PermissionValidatorConstraint = (
  * A utility type for ensuring that the given permission target key conforms to
  * our naming conventions.
  *
- * See the documentation for the distinction between target names and keys.
+ * See the README for the distinction between target names and keys.
  *
  * @template Key - The target key string to apply the constraint to.
  */
@@ -352,8 +354,9 @@ type ValidTargetKey<Key extends string> = Key extends `${string}_*`
 
 export type PermissionSpecificationConstraint = {
   /**
-   * The target resource of the permission. In other words, at the time of
-   * writing, the RPC method name.
+   * The target resource of the permission. At the time of, this is a full
+   * JSON-RPC method name or the prefix of a namespaced JSON-RPC method, e.g.
+   * `wallet_snap_*`.
    */
   targetKey: string;
 
@@ -410,8 +413,8 @@ export type ValidPermissionSpecification<
   : never;
 
 /**
- * The specifications for all permissions and restricted methods supported by
- * a particular {@link PermissionController}.
+ * The specifications for all permissions supported by a particular
+ * {@link PermissionController}.
  *
  * @template Specifications - A union of all {@link PermissionSpecificationConstraint}
  * types.
