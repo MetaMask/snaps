@@ -18,7 +18,7 @@ export const requestPermissionsHandler: PermittedHandlerExport<
   methodNames: [MethodNames.requestPermissions],
   implementation: requestPermissionsImplementation,
   hookNames: {
-    requestPermissions: true,
+    requestPermissionsForOrigin: true,
   },
 };
 
@@ -30,7 +30,7 @@ type RequestPermissions = (
 >;
 
 export type RequestPermissionsHooks = {
-  requestPermissions: RequestPermissions;
+  requestPermissionsForOrigin: RequestPermissions;
 };
 
 async function requestPermissionsImplementation(
@@ -38,7 +38,7 @@ async function requestPermissionsImplementation(
   res: PendingJsonRpcResponse<PermissionConstraint[]>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { requestPermissions }: RequestPermissionsHooks,
+  { requestPermissionsForOrigin }: RequestPermissionsHooks,
 ): Promise<void> {
   if (
     !Array.isArray(req.params) ||
@@ -60,7 +60,7 @@ async function requestPermissionsImplementation(
 
   try {
     const [requestedPermissions] = req.params;
-    const [grantedPermissions] = await requestPermissions(
+    const [grantedPermissions] = await requestPermissionsForOrigin(
       requestedPermissions,
       req.id.toString(),
     );
