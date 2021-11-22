@@ -1,5 +1,5 @@
 import * as errors from './errors';
-import { CaveatConstraint, decorateWithCaveats } from '.';
+import { decorateWithCaveats, PermissionConstraint } from '.';
 
 // This function is mostly tested through the PermissionController tests,
 // we just add a couple here for completeness.
@@ -16,12 +16,12 @@ describe('decorateWithCaveats', () => {
       },
     };
 
-    const permission = {
+    const permission: PermissionConstraint = {
       id: 'foo',
       parentCapability: 'arbitraryMethod',
       invoker: 'arbitraryInvoker',
       date: Date.now(),
-      caveats: [{ type: 'reverse', value: null }] as [CaveatConstraint],
+      caveats: [{ type: 'reverse', value: null }],
     };
 
     const decorated = decorateWithCaveats(
@@ -46,13 +46,13 @@ describe('decorateWithCaveats', () => {
       },
     };
 
-    const permission = {
+    const permission: PermissionConstraint = {
       id: 'foo',
       parentCapability: 'arbitraryMethod',
       invoker: 'arbitraryInvoker',
       date: Date.now(),
       // This type doesn't exist
-      caveats: [{ type: 'kaplar', value: null }] as [CaveatConstraint],
+      caveats: [{ type: 'kaplar', value: null }],
     };
 
     expect(() =>
