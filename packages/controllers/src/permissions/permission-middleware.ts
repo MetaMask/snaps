@@ -54,6 +54,11 @@ export function getPermissionMiddlewareFactory({
   return function createPermissionMiddleware(
     subject: PermissionSubjectMetadata,
   ): JsonRpcMiddleware<RestrictedMethodParameters, Json> {
+    const { origin } = subject;
+    if (typeof origin !== 'string' || !origin) {
+      throw new Error(`The subject "origin" must be a non-empty string.`);
+    }
+
     const permissionsMiddleware = async (
       req: JsonRpcRequest<RestrictedMethodParameters>,
       res: PendingJsonRpcResponse<Json>,
@@ -67,7 +72,7 @@ export function getPermissionMiddlewareFactory({
       }
 
       // This will throw if no restricted method implementation is found.
-      const methodImplementation = getRestrictedMethod(method, subject.origin);
+      const methodImplementation = getRestrictedMethod(method, origin);
 
       // This will throw if the permission does not exist.
       const result = await executeRestrictedMethod(
