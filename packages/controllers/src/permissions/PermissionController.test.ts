@@ -3913,6 +3913,20 @@ describe('PermissionController', () => {
       expect(response.result).toStrictEqual('success');
     });
 
+    it('throws an error if the subject has an invalid "origin" property', async () => {
+      const controller = getDefaultPermissionController();
+
+      ['', null, undefined, 2].forEach((invalidOrigin) => {
+        expect(
+          () => controller.createPermissionMiddleware({
+            origin: invalidOrigin as any,
+          }),
+        ).toThrow(
+          new Error('The subject "origin" must be a non-empty string.'),
+        );
+      });
+    });
+
     it('returns an error if the subject does not have the requisite permission', async () => {
       const controller = getDefaultPermissionController();
       const origin = 'metamask.io';

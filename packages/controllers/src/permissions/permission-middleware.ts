@@ -56,7 +56,7 @@ export function getPermissionMiddlewareFactory({
   ): JsonRpcMiddleware<RestrictedMethodParameters, Json> {
     const { origin } = subject;
     if (typeof origin !== 'string' || !origin) {
-      throw new Error(`The subject "origin" must be a non-empty string.`);
+      throw new Error('The subject "origin" must be a non-empty string.');
     }
 
     const permissionsMiddleware = async (
