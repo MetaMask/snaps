@@ -3234,7 +3234,7 @@ describe('PermissionController', () => {
               {
                 [PermissionNames.wallet_getSecretArray]: {},
               },
-              id,
+              { id, preserveExistingPermissions: true },
             ),
         ).rejects.toThrow(
           errors.internalError(

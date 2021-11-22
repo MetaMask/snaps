@@ -1590,18 +1590,22 @@ export class PermissionController<
    * that _accepts_ the request and resolves the user approval promise.
    * @see {@link PermissionController.rejectPermissionsRequest} For the method
    * that _rejects_ the request and the user approval promise.
-   * @param origin - The origin of the grantee subject.
+   * @param subject - The grantee subject.
    * @param requestedPermissions - The requested permissions.
-   * @param id - The id of the permissions request.
-   * @param preserveExistingPermissions - Whether to preserve the subject's
-   * existing permissions.
+   * @param options - Additional options.
+   * @param options.id - The id of the permissions request. Defaults to a unique
+   * id.
+   * @param options.preserveExistingPermissions - Whether to preserve the
+   * subject's existing permissions. Defaults to `true`.
    * @returns The granted permissions and request metadata.
    */
   async requestPermissions(
     subject: PermissionSubjectMetadata,
     requestedPermissions: RequestedPermissions,
-    id = nanoid(),
-    preserveExistingPermissions = true,
+    options: {
+      id?: string;
+      preserveExistingPermissions?: boolean;
+    } = {},
   ): Promise<
     [
       SubjectPermissions<
@@ -1614,7 +1618,9 @@ export class PermissionController<
     ]
   > {
     const { origin } = subject;
+    const { id = nanoid(), preserveExistingPermissions = true } = options;
     this.validateRequestedPermissions(origin, requestedPermissions);
+
     const metadata = {
       id,
       origin,
