@@ -1,10 +1,5 @@
 import * as errors from './errors';
-import {
-  CaveatSpecificationConstraint,
-  CaveatSpecificationMap,
-  decorateWithCaveats,
-  PermissionConstraint,
-} from '.';
+import { CaveatConstraint, decorateWithCaveats } from '.';
 
 // This function is mostly tested through the PermissionController tests,
 // we just add a couple here for completeness.
@@ -14,15 +9,20 @@ describe('decorateWithCaveats', () => {
 
     const caveatSpecifications = {
       reverse: {
+        type: 'reverse',
         decorator: (method: any, _caveat: any) => async () => {
           return (await method()).reverse();
         },
       },
-    } as unknown as CaveatSpecificationMap<CaveatSpecificationConstraint>;
+    };
 
     const permission = {
-      caveats: [{ type: 'reverse', value: null }],
-    } as unknown as PermissionConstraint;
+      id: 'foo',
+      parentCapability: 'arbitraryMethod',
+      invoker: 'arbitraryInvoker',
+      date: Date.now(),
+      caveats: [{ type: 'reverse', value: null }] as [CaveatConstraint],
+    };
 
     const decorated = decorateWithCaveats(
       methodImplementation,
@@ -39,15 +39,21 @@ describe('decorateWithCaveats', () => {
 
     const caveatSpecifications = {
       reverse: {
-        decorator: (method: any, _caveat: any) => () =>
-          method().reverse() as any,
+        type: 'reverse',
+        decorator: (method: any, _caveat: any) => async () => {
+          return (await method()).reverse();
+        },
       },
-    } as unknown as CaveatSpecificationMap<CaveatSpecificationConstraint>;
+    };
 
     const permission = {
+      id: 'foo',
+      parentCapability: 'arbitraryMethod',
+      invoker: 'arbitraryInvoker',
+      date: Date.now(),
       // This type doesn't exist
-      caveats: [{ type: 'kaplar', value: null }],
-    } as unknown as PermissionConstraint;
+      caveats: [{ type: 'kaplar', value: null }] as [CaveatConstraint],
+    };
 
     expect(() =>
       decorateWithCaveats(
