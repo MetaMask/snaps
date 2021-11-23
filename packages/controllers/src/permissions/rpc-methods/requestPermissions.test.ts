@@ -7,8 +7,12 @@ describe('requestPermissions RPC method', () => {
     const { implementation } = requestPermissionsHandler;
     const mockRequestPermissionsForOrigin = jest
       .fn()
-      .mockImplementationOnce(async () => {
-        return [{ a: 'a', b: 'b', c: 'c' }];
+      .mockImplementationOnce(() => {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            resolve([{ a: 'a', b: 'b', c: 'c' }]);
+          }, 10);
+        });
       });
 
     const engine = new JsonRpcEngine();
