@@ -487,7 +487,7 @@ describe('PermissionController', () => {
               permissionSpecifications: {
                 ...getDefaultPermissionSpecifications(),
                 '': { targetKey: '' },
-              } as any,
+              },
             }),
           ),
       ).toThrow(`Invalid permission target key: ""`);
@@ -502,7 +502,7 @@ describe('PermissionController', () => {
               permissionSpecifications: {
                 ...getDefaultPermissionSpecifications(),
                 foo_: { targetKey: 'foo_' },
-              } as any,
+              },
             }),
           ),
       ).toThrow(`Invalid permission target key: "foo_"`);
@@ -517,7 +517,7 @@ describe('PermissionController', () => {
               permissionSpecifications: {
                 ...getDefaultPermissionSpecifications(),
                 'foo*': { targetKey: 'foo*' },
-              } as any,
+              },
             }),
           ),
       ).toThrow(`Invalid permission target key: "foo*"`);
@@ -534,7 +534,7 @@ describe('PermissionController', () => {
               permissionSpecifications: {
                 ...getDefaultPermissionSpecifications(),
                 foo: { targetKey: 'bar' },
-              } as any,
+              },
             }),
           ),
       ).toThrow(
@@ -1417,7 +1417,7 @@ describe('PermissionController', () => {
         controller.addCaveat(
           origin,
           PermissionNames.wallet_getSecretObject,
-          CaveatTypes.filterArrayResponse as any,
+          CaveatTypes.filterArrayResponse,
           ['foo'],
         ),
       ).toThrow(
@@ -2545,7 +2545,7 @@ describe('PermissionController', () => {
           subject: { origin },
           approvedPermissions: {
             wallet_getSecretArray: {
-              caveats: [{ type: 'fooType', value: 'bar' }] as any,
+              caveats: [{ type: 'fooType', value: 'bar' }],
             },
           },
         }),
@@ -2607,7 +2607,7 @@ describe('PermissionController', () => {
                       type: CaveatTypes.filterArrayResponse,
                       value: invalidValue,
                     },
-                  ] as any,
+                  ],
                 },
               },
             }),
@@ -2639,7 +2639,7 @@ describe('PermissionController', () => {
                   type: CaveatTypes.noopCaveat,
                   value: 'bar',
                 },
-              ] as any,
+              ],
             },
           },
         }),
@@ -2660,7 +2660,7 @@ describe('PermissionController', () => {
                   type: CaveatTypes.filterArrayResponse,
                   value: ['bar'],
                 },
-              ] as any,
+              ],
             },
           },
         }),
@@ -2687,7 +2687,7 @@ describe('PermissionController', () => {
                   type: CaveatTypes.filterArrayResponse,
                   value: ['bar'],
                 },
-              ] as any,
+              ],
             },
           },
         }),
@@ -3056,9 +3056,7 @@ describe('PermissionController', () => {
 
       for (const invalidRequestObject of ['foo', null, { metadata: 'foo' }]) {
         callActionSpy.mockClear();
-        callActionSpy.mockImplementationOnce(
-          (async () => invalidRequestObject) as any,
-        );
+        callActionSpy.mockImplementationOnce(async () => invalidRequestObject);
 
         await expect(
           async () =>
@@ -3099,7 +3097,7 @@ describe('PermissionController', () => {
 
       const callActionSpy = jest
         .spyOn(messenger, 'call')
-        .mockImplementationOnce((async (...args: any) => {
+        .mockImplementationOnce(async (...args: any) => {
           const [, { requestData }] = args;
           return {
             // different id
@@ -3108,7 +3106,7 @@ describe('PermissionController', () => {
               [PermissionNames.wallet_getSecretArray]: {},
             },
           };
-        }) as any);
+        });
 
       const controller = getDefaultPermissionController(options);
       await expect(
@@ -3149,7 +3147,7 @@ describe('PermissionController', () => {
 
       const callActionSpy = jest
         .spyOn(messenger, 'call')
-        .mockImplementationOnce((async (...args: any) => {
+        .mockImplementationOnce(async (...args: any) => {
           const [, { requestData }] = args;
           return {
             // different origin
@@ -3158,7 +3156,7 @@ describe('PermissionController', () => {
               [PermissionNames.wallet_getSecretArray]: {},
             },
           };
-        }) as any);
+        });
 
       const controller = getDefaultPermissionController(options);
       await expect(
@@ -3199,13 +3197,13 @@ describe('PermissionController', () => {
 
       const callActionSpy = jest
         .spyOn(messenger, 'call')
-        .mockImplementationOnce((async (...args: any) => {
+        .mockImplementationOnce(async (...args: any) => {
           const [, { requestData }] = args;
           return {
             metadata: { ...requestData.metadata },
             permissions: {}, // no permissions
           };
-        }) as any);
+        });
 
       const controller = getDefaultPermissionController(options);
       await expect(
@@ -3266,9 +3264,7 @@ describe('PermissionController', () => {
         getInvalidRequestObject(invalidPermissions),
       )) {
         callActionSpy.mockClear();
-        callActionSpy.mockImplementationOnce(
-          (async () => invalidRequestObject) as any,
-        );
+        callActionSpy.mockImplementationOnce(async () => invalidRequestObject);
 
         await expect(
           async () =>
@@ -3311,7 +3307,7 @@ describe('PermissionController', () => {
 
       const callActionSpy = jest
         .spyOn(messenger, 'call')
-        .mockImplementationOnce((async (...args: any) => {
+        .mockImplementationOnce(async (...args: any) => {
           const [, { requestData }] = args;
           return {
             metadata: { ...requestData.metadata },
@@ -3325,7 +3321,7 @@ describe('PermissionController', () => {
               },
             },
           };
-        }) as any);
+        });
 
       await expect(
         async () =>
@@ -3386,8 +3382,8 @@ describe('PermissionController', () => {
 
       const callActionSpy = jest
         .spyOn(messenger, 'call')
-        .mockImplementationOnce((async (..._args: any) => true) as any)
-        .mockImplementationOnce((async (..._args: any) => undefined) as any);
+        .mockImplementationOnce((..._args: any) => true)
+        .mockImplementationOnce((..._args: any) => undefined);
 
       const controller = getDefaultPermissionController(options);
 
@@ -3428,8 +3424,8 @@ describe('PermissionController', () => {
 
       const callActionSpy = jest
         .spyOn(messenger, 'call')
-        .mockImplementationOnce(((..._args: any) => true) as any)
-        .mockImplementationOnce(((..._args: any) => undefined) as any);
+        .mockImplementationOnce((..._args: any) => true)
+        .mockImplementationOnce((..._args: any) => undefined);
 
       const controller = getDefaultPermissionController(options);
 
@@ -3465,7 +3461,7 @@ describe('PermissionController', () => {
 
       const callActionSpy = jest
         .spyOn(messenger, 'call')
-        .mockImplementationOnce(((..._args: any) => false) as any);
+        .mockImplementationOnce((..._args: any) => false);
 
       const controller = getDefaultPermissionController(options);
 
@@ -3497,11 +3493,11 @@ describe('PermissionController', () => {
 
       const callActionSpy = jest
         .spyOn(messenger, 'call')
-        .mockImplementationOnce(((..._args: any) => true) as any)
-        .mockImplementationOnce(((..._args: any) => {
+        .mockImplementationOnce((..._args: any) => true)
+        .mockImplementationOnce((..._args: any) => {
           throw new Error('unexpected failure');
-        }) as any)
-        .mockImplementationOnce(((..._args: any) => undefined) as any);
+        })
+        .mockImplementationOnce((..._args: any) => undefined);
 
       const controller = getDefaultPermissionController(options);
 
@@ -3553,8 +3549,8 @@ describe('PermissionController', () => {
 
       const callActionSpy = jest
         .spyOn(messenger, 'call')
-        .mockImplementationOnce((async (..._args: any) => true) as any)
-        .mockImplementationOnce((async (..._args: any) => undefined) as any);
+        .mockImplementationOnce(async (..._args: any) => true)
+        .mockImplementationOnce(async (..._args: any) => undefined);
 
       const controller = getDefaultPermissionController(options);
 
@@ -3584,7 +3580,7 @@ describe('PermissionController', () => {
 
       const callActionSpy = jest
         .spyOn(messenger, 'call')
-        .mockImplementationOnce(((..._args: any) => false) as any);
+        .mockImplementationOnce((..._args: any) => false);
 
       const controller = getDefaultPermissionController(options);
 
