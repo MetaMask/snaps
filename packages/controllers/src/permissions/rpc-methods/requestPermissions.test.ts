@@ -8,6 +8,8 @@ describe('requestPermissions RPC method', () => {
     const mockRequestPermissionsForOrigin = jest
       .fn()
       .mockImplementationOnce(() => {
+        // Resolve this promise after a timeout to ensure that the function
+        // is awaited properly.
         return new Promise((resolve) => {
           setTimeout(() => {
             resolve([{ a: 'a', b: 'b', c: 'c' }]);
