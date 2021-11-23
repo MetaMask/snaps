@@ -652,12 +652,22 @@ describe('PermissionController', () => {
       );
     });
 
-    it('returns undefined for non-existing permissions', () => {
+    it('returns undefined if the subject does not exist', () => {
       const controller = getDefaultPermissionController();
       expect(
         controller.getPermission(
           'metamask.io',
           PermissionNames.wallet_getSecretArray,
+        ),
+      ).toBeUndefined();
+    });
+
+    it('returns undefined if the subject does not have the specified permission', () => {
+      const controller = getDefaultPermissionControllerWithState();
+      expect(
+        controller.getPermission(
+          'metamask.io',
+          PermissionNames.wallet_getSecretObject,
         ),
       ).toBeUndefined();
     });
