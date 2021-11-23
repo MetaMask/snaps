@@ -9,6 +9,7 @@ import { MethodNames } from '../utils';
 
 import { invalidParams } from '../errors';
 import type { PermissionConstraint, RequestedPermissions } from '../Permission';
+import { isPlainObject } from '../../utils';
 
 export const requestPermissionsHandler: PermittedHandlerExport<
   RequestPermissionsHooks,
@@ -40,35 +41,31 @@ async function requestPermissionsImplementation(
   end: JsonRpcEngineEndCallback,
   { requestPermissionsForOrigin }: RequestPermissionsHooks,
 ): Promise<void> {
-  if (
-    !Array.isArray(req.params) ||
-    !req.params[0] ||
-    typeof req.params[0] !== 'object' ||
-    Array.isArray(req.params[0])
-  ) {
-    return end(invalidParams({ data: { request: req } }));
-  }
+  const { id, params } = req;
 
-  if (typeof req.id !== 'number' && !req.id) {
+  if (
+    (typeof id !== 'number' && typeof id !== 'string') ||
+    (typeof id === 'string' && !id)
+  ) {
     return end(
       ethErrors.rpc.invalidRequest({
-        message: 'Invalid request: Must specify an id.',
+        message: 'Invalid request: Must specify a valid id.',
         data: { request: req },
       }),
     );
   }
 
-  try {
-    const [requestedPermissions] = req.params;
-    const [grantedPermissions] = await requestPermissionsForOrigin(
-      requestedPermissions,
-      req.id.toString(),
-    );
-
-    // `wallet_requestPermission` is specified to return an array.
-    res.result = Object.values(grantedPermissions);
-    return end();
-  } catch (error) {
-    return end(error);
+  if (!Array.isArray(params) || !isPlainObject(params[0])) {
+    return end(invalidParams({ data: { request: req } }));
   }
+
+  const [requestedPermissions] = params;
+  const [grantedPermissions] = await requestPermissionsForOrigin(
+    requestedPermissions,
+    String(id),
+  );
+
+  // `wallet_requestPermission` is specified to return an array.
+  res.result = Object.values(grantedPermissions);
+  return end();
 }

@@ -3917,8 +3917,8 @@ describe('PermissionController', () => {
       const controller = getDefaultPermissionController();
 
       ['', null, undefined, 2].forEach((invalidOrigin) => {
-        expect(
-          () => controller.createPermissionMiddleware({
+        expect(() =>
+          controller.createPermissionMiddleware({
             origin: invalidOrigin as any,
           }),
         ).toThrow(

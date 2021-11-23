@@ -15,21 +15,22 @@ module.exports = {
   projects: [
     {
       displayName: 'runner: electron',
+      preset: 'ts-jest',
+      runner: '@jest-runner/electron',
+      testEnvironment: '@jest-runner/electron/environment',
       testMatch: [
         '<rootDir>/src/snaps/**/*.test.ts',
         '<rootDir>/src/services/**/*.test.ts',
       ],
-      preset: 'ts-jest',
-      runner: '@jest-runner/electron',
-      testEnvironment: '@jest-runner/electron/environment',
     },
     {
       displayName: 'runner: default',
+      preset: 'ts-jest',
       testPathIgnorePatterns: [
         '<rootDir>/src/snaps/*',
         '<rootDir>/src/services/*',
       ],
-      preset: 'ts-jest',
+      testRegex: ['\\.test\\.(ts|js)$'],
     },
   ],
 };
