@@ -65,16 +65,16 @@ export type InstallSnapsResult = {
 
 // Types that probably should be defined elsewhere in prod
 type RemoveAllPermissionsFunction = (snapIds: string[]) => void;
-type CloseAllConnectionsFunction = (domain: string) => void;
+type CloseAllConnectionsFunction = (origin: string) => void;
 type RequestPermissionsFunction = (
-  domain: string,
+  origin: string,
   requestedPermissions: RequestedSnapPermissions,
 ) => Promise<IOcapLdCapability[]>;
 type HasPermissionFunction = (
-  domain: string,
+  origin: string,
   permissionName: string,
 ) => boolean;
-type GetPermissionsFunction = (domain: string) => IOcapLdCapability[];
+type GetPermissionsFunction = (origin: string) => IOcapLdCapability[];
 type SnapId = string;
 type StoredSnaps = Record<SnapId, Snap>;
 
