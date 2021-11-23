@@ -25,7 +25,7 @@ describe('constructPermission', () => {
   it('constructs a permission with caveats', () => {
     const invoker = 'foo.io';
     const target = 'wallet_bar';
-    const caveats = [{ type: 'foo', value: 'bar' }] as [CaveatConstraint];
+    const caveats: [CaveatConstraint] = [{ type: 'foo', value: 'bar' }];
 
     expect(
       constructPermission({

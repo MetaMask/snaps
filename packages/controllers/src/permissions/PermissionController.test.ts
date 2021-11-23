@@ -204,7 +204,6 @@ const PermissionNames = {
  * - {@link SecretNamespacedPermission}
  *   - Has both validator and factory.
  *
- *
  * Used as a default in {@link getPermissionControllerOptions}.
  *
  * @returns The permission specifications.
@@ -414,8 +413,8 @@ function getDefaultPermissionController(
   opts = getPermissionControllerOptions(),
 ) {
   return new PermissionController<
-    DefaultPermissionSpecifications,
-    DefaultCaveatSpecifications
+    typeof opts.permissionSpecifications[keyof typeof opts.permissionSpecifications],
+    typeof opts.caveatSpecifications[keyof typeof opts.caveatSpecifications]
   >(opts);
 }
 
@@ -574,19 +573,27 @@ describe('PermissionController', () => {
       const controller = getDefaultPermissionController();
       const method = controller.getRestrictedMethod(
         PermissionNames.wallet_getSecretArray,
-      ) as RestrictedMethod<any, ['a', 'b', 'c']>;
+      );
 
-      expect(await method({} as any)).toStrictEqual(['a', 'b', 'c']);
+      expect(
+        await method({
+          method: 'wallet_getSecretArray',
+          context: { origin: 'github.com' },
+        }),
+      ).toStrictEqual(['a', 'b', 'c']);
     });
 
     it('gets the implementation of a namespaced restricted method', async () => {
       const controller = getDefaultPermissionController();
       const method = controller.getRestrictedMethod(
         PermissionNames.wallet_getSecret_('foo'),
-      ) as RestrictedMethod<any, string>;
+      );
 
       expect(
-        await method({ method: 'wallet_getSecret_foo' } as any),
+        await method({
+          method: 'wallet_getSecret_foo',
+          context: { origin: 'github.com' },
+        }),
       ).toStrictEqual('Hello, secret friend "foo"!');
     });
 
@@ -2686,13 +2693,13 @@ describe('PermissionController', () => {
 
       const callActionSpy = jest
         .spyOn(messenger, 'call')
-        .mockImplementationOnce((async (...args: any) => {
+        .mockImplementationOnce(async (...args: any) => {
           const [, { requestData }] = args;
           return {
             metadata: { ...requestData.metadata },
             permissions: { ...requestData.permissions },
           };
-        }) as any);
+        });
 
       const controller = getDefaultPermissionController(options);
       expect(
@@ -2736,13 +2743,13 @@ describe('PermissionController', () => {
 
       const callActionSpy = jest
         .spyOn(messenger, 'call')
-        .mockImplementationOnce((async (...args: any) => {
+        .mockImplementationOnce(async (...args: any) => {
           const [, { requestData }] = args;
           return {
             metadata: { ...requestData.metadata },
             permissions: { ...requestData.permissions },
           };
-        }) as any);
+        });
 
       const controller = getDefaultPermissionController(options);
       expect(
