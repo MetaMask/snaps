@@ -29,7 +29,12 @@ describe('decorateWithCaveats', () => {
     );
 
     expect(methodImplementation()).toStrictEqual([1, 2, 3]);
-    expect(await decorated({} as any)).toStrictEqual([3, 2, 1]);
+    expect(
+      await decorated({
+        method: 'arbitraryMethod',
+        context: { origin: 'metamask.io' },
+      }),
+    ).toStrictEqual([3, 2, 1]);
   });
 
   it('decorates a method with multiple caveats', async () => {
@@ -68,7 +73,12 @@ describe('decorateWithCaveats', () => {
     );
 
     expect(methodImplementation()).toStrictEqual([1, 2, 3]);
-    expect(await decorated({} as any)).toStrictEqual([3]);
+    expect(
+      await decorated({
+        method: 'arbitraryMethod',
+        context: { origin: 'metamask.io' },
+      }),
+    ).toStrictEqual([3]);
   });
 
   it('returns the unmodified method implementation if there are no caveats', () => {
@@ -83,7 +93,12 @@ describe('decorateWithCaveats', () => {
     };
 
     const decorated = decorateWithCaveats(methodImplementation, permission, {});
-    expect(methodImplementation()).toStrictEqual(decorated({} as any));
+    expect(methodImplementation()).toStrictEqual(
+      decorated({
+        method: 'arbitraryMethod',
+        context: { origin: 'metamask.io' },
+      }),
+    );
   });
 
   it('throws an error if the caveat type is unrecognized', () => {
@@ -112,7 +127,10 @@ describe('decorateWithCaveats', () => {
         methodImplementation,
         permission,
         caveatSpecifications,
-      )({} as any),
+      )({
+        method: 'arbitraryMethod',
+        context: { origin: 'metamask.io' },
+      }),
     ).toThrow(new errors.UnrecognizedCaveatTypeError('kaplar'));
   });
 });
