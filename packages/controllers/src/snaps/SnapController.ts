@@ -524,6 +524,7 @@ export class SnapController extends BaseController<
    * Should only be set to false if the snap is about to be deleted.
    */
   private _stopSnap(snapName: string, setNotRunning = true): void {
+    this._lastRequestMap.delete(snapName);
     this._closeAllConnections(snapName);
     this._terminateSnap(snapName);
     if (setNotRunning) {
