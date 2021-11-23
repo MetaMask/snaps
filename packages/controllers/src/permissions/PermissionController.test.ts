@@ -435,17 +435,22 @@ function getDefaultPermissionControllerWithState() {
 /**
  * Gets a Jest matcher for a permission as they are stored in controller state.
  *
- * @param parentCapability - The `parentCapability` of the permission.
- * @param caveats - The caveat array of the permission, or `null`.
- * @param invoker - The subject identifier (i.e. origin) of the subject.
+ * @param options - Options bag.
+ * @param options.parentCapability - The `parentCapability` of the permission.
+ * @param options.caveats - The caveat array of the permission, or `null`.
+ * @param options.invoker - The subject identifier (i.e. origin) of the subject.
  * @returns A Jest matcher that matches permissions whose corresponding fields
  * correspond to the parameters of this function.
  */
-function getPermissionMatcher(
-  parentCapability: string,
-  caveats: CaveatConstraint[] | null | typeof expect.objectContaining = null,
+function getPermissionMatcher({
+  parentCapability,
+  caveats = null,
   invoker = 'metamask.io',
-) {
+}: {
+  parentCapability: string;
+  caveats?: CaveatConstraint[] | null | typeof expect.objectContaining;
+  invoker?: string;
+}) {
   return expect.objectContaining({
     id: expect.any(String),
     parentCapability,
@@ -639,11 +644,11 @@ describe('PermissionController', () => {
           PermissionNames.wallet_getSecretArray,
         ),
       ).toStrictEqual(
-        getPermissionMatcher(
-          PermissionNames.wallet_getSecretArray,
-          null,
-          'metamask.io',
-        ),
+        getPermissionMatcher({
+          parentCapability: PermissionNames.wallet_getSecretArray,
+          caveats: null,
+          invoker: 'metamask.io',
+        }),
       );
     });
 
@@ -663,11 +668,11 @@ describe('PermissionController', () => {
       const controller = getDefaultPermissionControllerWithState();
 
       expect(controller.getPermissions('metamask.io')).toStrictEqual({
-        [PermissionNames.wallet_getSecretArray]: getPermissionMatcher(
-          PermissionNames.wallet_getSecretArray,
-          null,
-          'metamask.io',
-        ),
+        [PermissionNames.wallet_getSecretArray]: getPermissionMatcher({
+          parentCapability: PermissionNames.wallet_getSecretArray,
+          caveats: null,
+          invoker: 'metamask.io',
+        }),
       });
     });
 
@@ -804,11 +809,11 @@ describe('PermissionController', () => {
           [origin]: {
             origin,
             permissions: {
-              [PermissionNames.wallet_getSecretObject]: getPermissionMatcher(
-                PermissionNames.wallet_getSecretObject,
-                null,
-                origin,
-              ),
+              [PermissionNames.wallet_getSecretObject]: getPermissionMatcher({
+                parentCapability: PermissionNames.wallet_getSecretObject,
+                caveats: null,
+                invoker: origin,
+              }),
             },
           },
         },
@@ -837,11 +842,11 @@ describe('PermissionController', () => {
           [origin]: {
             origin,
             permissions: {
-              [PermissionNames.wallet_getSecretArray]: getPermissionMatcher(
-                PermissionNames.wallet_getSecretArray,
-                null,
-                origin,
-              ),
+              [PermissionNames.wallet_getSecretArray]: getPermissionMatcher({
+                parentCapability: PermissionNames.wallet_getSecretArray,
+                caveats: null,
+                invoker: origin,
+              }),
             },
           },
         },
@@ -942,31 +947,31 @@ describe('PermissionController', () => {
           [origin1]: {
             origin: origin1,
             permissions: {
-              [PermissionNames.wallet_getSecretArray]: getPermissionMatcher(
-                PermissionNames.wallet_getSecretArray,
-                null,
-                origin1,
-              ),
+              [PermissionNames.wallet_getSecretArray]: getPermissionMatcher({
+                parentCapability: PermissionNames.wallet_getSecretArray,
+                caveats: null,
+                invoker: origin1,
+              }),
             },
           },
           [origin2]: {
             origin: origin2,
             permissions: {
-              [PermissionNames.wallet_getSecretObject]: getPermissionMatcher(
-                PermissionNames.wallet_getSecretObject,
-                null,
-                origin2,
-              ),
+              [PermissionNames.wallet_getSecretObject]: getPermissionMatcher({
+                parentCapability: PermissionNames.wallet_getSecretObject,
+                caveats: null,
+                invoker: origin2,
+              }),
             },
           },
           [origin3]: {
             origin: origin3,
             permissions: {
-              [PermissionNames.wallet_getSecret_('foo')]: getPermissionMatcher(
-                PermissionNames.wallet_getSecret_('foo'),
-                [{ type: CaveatTypes.noopCaveat, value: null }],
-                origin3,
-              ),
+              [PermissionNames.wallet_getSecret_('foo')]: getPermissionMatcher({
+                parentCapability: PermissionNames.wallet_getSecret_('foo'),
+                caveats: [{ type: CaveatTypes.noopCaveat, value: null }],
+                invoker: origin3,
+              }),
             },
           },
         },
@@ -1063,51 +1068,51 @@ describe('PermissionController', () => {
           [origin0]: {
             origin: origin0,
             permissions: {
-              [PermissionNames.wallet_getSecretObject]: getPermissionMatcher(
-                PermissionNames.wallet_getSecretObject,
-                null,
-                origin0,
-              ),
+              [PermissionNames.wallet_getSecretObject]: getPermissionMatcher({
+                parentCapability: PermissionNames.wallet_getSecretObject,
+                caveats: null,
+                invoker: origin0,
+              }),
             },
           },
           [origin2]: {
             origin: origin2,
             permissions: {
-              [PermissionNames.wallet_getSecretObject]: getPermissionMatcher(
-                PermissionNames.wallet_getSecretObject,
-                null,
-                origin2,
-              ),
-              [PermissionNames.wallet_getSecret_('foo')]: getPermissionMatcher(
-                PermissionNames.wallet_getSecret_('foo'),
-                [{ type: CaveatTypes.noopCaveat, value: null }],
-                origin2,
-              ),
+              [PermissionNames.wallet_getSecretObject]: getPermissionMatcher({
+                parentCapability: PermissionNames.wallet_getSecretObject,
+                caveats: null,
+                invoker: origin2,
+              }),
+              [PermissionNames.wallet_getSecret_('foo')]: getPermissionMatcher({
+                parentCapability: PermissionNames.wallet_getSecret_('foo'),
+                caveats: [{ type: CaveatTypes.noopCaveat, value: null }],
+                invoker: origin2,
+              }),
             },
           },
           [origin3]: {
             origin: origin3,
             permissions: {
-              [PermissionNames.wallet_getSecret_('foo')]: getPermissionMatcher(
-                PermissionNames.wallet_getSecret_('foo'),
-                [{ type: CaveatTypes.noopCaveat, value: null }],
-                origin3,
-              ),
+              [PermissionNames.wallet_getSecret_('foo')]: getPermissionMatcher({
+                parentCapability: PermissionNames.wallet_getSecret_('foo'),
+                caveats: [{ type: CaveatTypes.noopCaveat, value: null }],
+                invoker: origin3,
+              }),
             },
           },
           [origin4]: {
             origin: origin4,
             permissions: {
-              [PermissionNames.wallet_getSecretObject]: getPermissionMatcher(
-                PermissionNames.wallet_getSecretObject,
-                null,
-                origin4,
-              ),
-              [PermissionNames.wallet_getSecret_('bar')]: getPermissionMatcher(
-                PermissionNames.wallet_getSecret_('bar'),
-                [{ type: CaveatTypes.noopCaveat, value: null }],
-                origin4,
-              ),
+              [PermissionNames.wallet_getSecretObject]: getPermissionMatcher({
+                parentCapability: PermissionNames.wallet_getSecretObject,
+                caveats: null,
+                invoker: origin4,
+              }),
+              [PermissionNames.wallet_getSecret_('bar')]: getPermissionMatcher({
+                parentCapability: PermissionNames.wallet_getSecret_('bar'),
+                caveats: [{ type: CaveatTypes.noopCaveat, value: null }],
+                invoker: origin4,
+              }),
             },
           },
         },
@@ -1262,11 +1267,13 @@ describe('PermissionController', () => {
           [origin]: {
             origin,
             permissions: {
-              wallet_getSecretArray: getPermissionMatcher(
-                'wallet_getSecretArray',
-                [{ type: CaveatTypes.filterArrayResponse, value: ['foo'] }],
-                origin,
-              ),
+              wallet_getSecretArray: getPermissionMatcher({
+                parentCapability: 'wallet_getSecretArray',
+                caveats: [
+                  { type: CaveatTypes.filterArrayResponse, value: ['foo'] },
+                ],
+                invoker: origin,
+              }),
             },
           },
         },
@@ -1293,11 +1300,13 @@ describe('PermissionController', () => {
           [origin]: {
             origin,
             permissions: {
-              wallet_getSecretObject: getPermissionMatcher(
-                'wallet_getSecretObject',
-                [{ type: CaveatTypes.filterObjectResponse, value: ['foo'] }],
-                origin,
-              ),
+              wallet_getSecretObject: getPermissionMatcher({
+                parentCapability: 'wallet_getSecretObject',
+                caveats: [
+                  { type: CaveatTypes.filterObjectResponse, value: ['foo'] },
+                ],
+                invoker: origin,
+              }),
             },
           },
         },
@@ -1315,14 +1324,14 @@ describe('PermissionController', () => {
           [origin]: {
             origin,
             permissions: {
-              wallet_getSecretObject: getPermissionMatcher(
-                'wallet_getSecretObject',
-                [
+              wallet_getSecretObject: getPermissionMatcher({
+                parentCapability: 'wallet_getSecretObject',
+                caveats: [
                   { type: CaveatTypes.filterObjectResponse, value: ['foo'] },
                   { type: CaveatTypes.noopCaveat, value: null },
                 ],
-                origin,
-              ),
+                invoker: origin,
+              }),
             },
           },
         },
@@ -1432,11 +1441,13 @@ describe('PermissionController', () => {
           [origin]: {
             origin,
             permissions: {
-              wallet_getSecretArray: getPermissionMatcher(
-                'wallet_getSecretArray',
-                [{ type: CaveatTypes.filterArrayResponse, value: ['foo'] }],
-                origin,
-              ),
+              wallet_getSecretArray: getPermissionMatcher({
+                parentCapability: 'wallet_getSecretArray',
+                caveats: [
+                  { type: CaveatTypes.filterArrayResponse, value: ['foo'] },
+                ],
+                invoker: origin,
+              }),
             },
           },
         },
@@ -1454,11 +1465,13 @@ describe('PermissionController', () => {
           [origin]: {
             origin,
             permissions: {
-              wallet_getSecretArray: getPermissionMatcher(
-                'wallet_getSecretArray',
-                [{ type: CaveatTypes.filterArrayResponse, value: ['bar'] }],
-                origin,
-              ),
+              wallet_getSecretArray: getPermissionMatcher({
+                parentCapability: 'wallet_getSecretArray',
+                caveats: [
+                  { type: CaveatTypes.filterArrayResponse, value: ['bar'] },
+                ],
+                invoker: origin,
+              }),
             },
           },
         },
@@ -1556,11 +1569,13 @@ describe('PermissionController', () => {
           [origin]: {
             origin,
             permissions: {
-              wallet_getSecretArray: getPermissionMatcher(
-                'wallet_getSecretArray',
-                [{ type: CaveatTypes.filterArrayResponse, value: ['foo'] }],
-                origin,
-              ),
+              wallet_getSecretArray: getPermissionMatcher({
+                parentCapability: 'wallet_getSecretArray',
+                caveats: [
+                  { type: CaveatTypes.filterArrayResponse, value: ['foo'] },
+                ],
+                invoker: origin,
+              }),
             },
           },
         },
@@ -1577,11 +1592,11 @@ describe('PermissionController', () => {
           [origin]: {
             origin,
             permissions: {
-              wallet_getSecretArray: getPermissionMatcher(
-                'wallet_getSecretArray',
-                null,
-                origin,
-              ),
+              wallet_getSecretArray: getPermissionMatcher({
+                parentCapability: 'wallet_getSecretArray',
+                caveats: null,
+                invoker: origin,
+              }),
             },
           },
         },
@@ -1609,14 +1624,14 @@ describe('PermissionController', () => {
           [origin]: {
             origin,
             permissions: {
-              wallet_getSecretObject: getPermissionMatcher(
-                'wallet_getSecretObject',
-                [
+              wallet_getSecretObject: getPermissionMatcher({
+                parentCapability: 'wallet_getSecretObject',
+                caveats: [
                   { type: CaveatTypes.noopCaveat, value: null },
                   { type: CaveatTypes.filterObjectResponse, value: ['foo'] },
                 ],
-                origin,
-              ),
+                invoker: origin,
+              }),
             },
           },
         },
@@ -1633,11 +1648,13 @@ describe('PermissionController', () => {
           [origin]: {
             origin,
             permissions: {
-              wallet_getSecretObject: getPermissionMatcher(
-                'wallet_getSecretObject',
-                [{ type: CaveatTypes.filterObjectResponse, value: ['foo'] }],
-                origin,
-              ),
+              wallet_getSecretObject: getPermissionMatcher({
+                parentCapability: 'wallet_getSecretObject',
+                caveats: [
+                  { type: CaveatTypes.filterObjectResponse, value: ['foo'] },
+                ],
+                invoker: origin,
+              }),
             },
           },
         },
@@ -1801,11 +1818,13 @@ describe('PermissionController', () => {
           [MultiCaveatOrigins.a]: {
             origin: MultiCaveatOrigins.a,
             permissions: {
-              [PermissionNames.wallet_getSecretArray]: getPermissionMatcher(
-                PermissionNames.wallet_getSecretArray,
-                [{ type: CaveatTypes.filterArrayResponse, value: ['a'] }],
-                MultiCaveatOrigins.a,
-              ),
+              [PermissionNames.wallet_getSecretArray]: getPermissionMatcher({
+                parentCapability: PermissionNames.wallet_getSecretArray,
+                caveats: [
+                  { type: CaveatTypes.filterArrayResponse, value: ['a'] },
+                ],
+                invoker: MultiCaveatOrigins.a,
+              }),
               ...overrides[MultiCaveatOrigins.a],
             },
           },
@@ -1813,32 +1832,32 @@ describe('PermissionController', () => {
           [MultiCaveatOrigins.b]: {
             origin: MultiCaveatOrigins.b,
             permissions: {
-              [PermissionNames.wallet_getSecretArray]: getPermissionMatcher(
-                PermissionNames.wallet_getSecretArray,
-                [
+              [PermissionNames.wallet_getSecretArray]: getPermissionMatcher({
+                parentCapability: PermissionNames.wallet_getSecretArray,
+                caveats: [
                   { type: CaveatTypes.filterArrayResponse, value: ['b'] },
                   { type: CaveatTypes.reverseArrayResponse, value: null },
                 ],
-                MultiCaveatOrigins.b,
-              ),
-              [PermissionNames.wallet_getSecretObject]: getPermissionMatcher(
-                PermissionNames.wallet_getSecretObject,
-                [
+                invoker: MultiCaveatOrigins.b,
+              }),
+              [PermissionNames.wallet_getSecretObject]: getPermissionMatcher({
+                parentCapability: PermissionNames.wallet_getSecretObject,
+                caveats: [
                   { type: CaveatTypes.filterObjectResponse, value: ['b'] },
                   { type: CaveatTypes.noopCaveat, value: null },
                 ],
-                MultiCaveatOrigins.b,
-              ),
-              [PermissionNames.wallet_getSecret_('foo')]: getPermissionMatcher(
-                PermissionNames.wallet_getSecret_('foo'),
-                [{ type: CaveatTypes.noopCaveat, value: null }],
-                MultiCaveatOrigins.b,
-              ),
-              [PermissionNames.wallet_doubleNumber]: getPermissionMatcher(
-                PermissionNames.wallet_doubleNumber,
-                null,
-                MultiCaveatOrigins.b,
-              ),
+                invoker: MultiCaveatOrigins.b,
+              }),
+              [PermissionNames.wallet_getSecret_('foo')]: getPermissionMatcher({
+                parentCapability: PermissionNames.wallet_getSecret_('foo'),
+                caveats: [{ type: CaveatTypes.noopCaveat, value: null }],
+                invoker: MultiCaveatOrigins.b,
+              }),
+              [PermissionNames.wallet_doubleNumber]: getPermissionMatcher({
+                parentCapability: PermissionNames.wallet_doubleNumber,
+                caveats: null,
+                invoker: MultiCaveatOrigins.b,
+              }),
               ...overrides[MultiCaveatOrigins.b],
             },
           },
@@ -1846,16 +1865,18 @@ describe('PermissionController', () => {
           [MultiCaveatOrigins.c]: {
             origin: MultiCaveatOrigins.c,
             permissions: {
-              [PermissionNames.wallet_getSecretObject]: getPermissionMatcher(
-                PermissionNames.wallet_getSecretObject,
-                [{ type: CaveatTypes.filterObjectResponse, value: ['c'] }],
-                MultiCaveatOrigins.c,
-              ),
-              [PermissionNames.wallet_getSecret_('bar')]: getPermissionMatcher(
-                PermissionNames.wallet_getSecret_('bar'),
-                [{ type: CaveatTypes.noopCaveat, value: null }],
-                MultiCaveatOrigins.c,
-              ),
+              [PermissionNames.wallet_getSecretObject]: getPermissionMatcher({
+                parentCapability: PermissionNames.wallet_getSecretObject,
+                caveats: [
+                  { type: CaveatTypes.filterObjectResponse, value: ['c'] },
+                ],
+                invoker: MultiCaveatOrigins.c,
+              }),
+              [PermissionNames.wallet_getSecret_('bar')]: getPermissionMatcher({
+                parentCapability: PermissionNames.wallet_getSecret_('bar'),
+                caveats: [{ type: CaveatTypes.noopCaveat, value: null }],
+                invoker: MultiCaveatOrigins.c,
+              }),
               ...overrides[MultiCaveatOrigins.c],
             },
           },
@@ -1916,21 +1937,23 @@ describe('PermissionController', () => {
       expect(controller.state).toStrictEqual(
         getMultiCaveatStateMatcher({
           [MultiCaveatOrigins.a]: {
-            [PermissionNames.wallet_getSecretArray]: getPermissionMatcher(
-              PermissionNames.wallet_getSecretArray,
-              [{ type: CaveatTypes.filterArrayResponse, value: ['a', 'b'] }],
-              MultiCaveatOrigins.a,
-            ),
+            [PermissionNames.wallet_getSecretArray]: getPermissionMatcher({
+              parentCapability: PermissionNames.wallet_getSecretArray,
+              caveats: [
+                { type: CaveatTypes.filterArrayResponse, value: ['a', 'b'] },
+              ],
+              invoker: MultiCaveatOrigins.a,
+            }),
           },
           [MultiCaveatOrigins.b]: {
-            [PermissionNames.wallet_getSecretArray]: getPermissionMatcher(
-              PermissionNames.wallet_getSecretArray,
-              [
+            [PermissionNames.wallet_getSecretArray]: getPermissionMatcher({
+              parentCapability: PermissionNames.wallet_getSecretArray,
+              caveats: [
                 { type: CaveatTypes.filterArrayResponse, value: ['a', 'b'] },
                 { type: CaveatTypes.reverseArrayResponse, value: null },
               ],
-              MultiCaveatOrigins.b,
-            ),
+              invoker: MultiCaveatOrigins.b,
+            }),
           },
         }),
       );
@@ -1958,14 +1981,14 @@ describe('PermissionController', () => {
       expect(controller.state).toStrictEqual(
         getMultiCaveatStateMatcher({
           [MultiCaveatOrigins.b]: {
-            [PermissionNames.wallet_getSecretArray]: getPermissionMatcher(
-              PermissionNames.wallet_getSecretArray,
-              [
+            [PermissionNames.wallet_getSecretArray]: getPermissionMatcher({
+              parentCapability: PermissionNames.wallet_getSecretArray,
+              caveats: [
                 { type: CaveatTypes.filterArrayResponse, value: ['a', 'b'] },
                 { type: CaveatTypes.reverseArrayResponse, value: null },
               ],
-              MultiCaveatOrigins.b,
-            ),
+              invoker: MultiCaveatOrigins.b,
+            }),
           },
         }),
       );
@@ -1984,18 +2007,20 @@ describe('PermissionController', () => {
       expect(controller.state).toStrictEqual(
         getMultiCaveatStateMatcher({
           [MultiCaveatOrigins.a]: {
-            [PermissionNames.wallet_getSecretArray]: getPermissionMatcher(
-              PermissionNames.wallet_getSecretArray,
-              null,
-              MultiCaveatOrigins.a,
-            ),
+            [PermissionNames.wallet_getSecretArray]: getPermissionMatcher({
+              parentCapability: PermissionNames.wallet_getSecretArray,
+              caveats: null,
+              invoker: MultiCaveatOrigins.a,
+            }),
           },
           [MultiCaveatOrigins.b]: {
-            [PermissionNames.wallet_getSecretArray]: getPermissionMatcher(
-              PermissionNames.wallet_getSecretArray,
-              [{ type: CaveatTypes.reverseArrayResponse, value: null }],
-              MultiCaveatOrigins.b,
-            ),
+            [PermissionNames.wallet_getSecretArray]: getPermissionMatcher({
+              parentCapability: PermissionNames.wallet_getSecretArray,
+              caveats: [
+                { type: CaveatTypes.reverseArrayResponse, value: null },
+              ],
+              invoker: MultiCaveatOrigins.b,
+            }),
           },
         }),
       );
@@ -2105,9 +2130,9 @@ describe('PermissionController', () => {
           [origin]: {
             origin,
             permissions: {
-              wallet_getSecretArray: getPermissionMatcher(
-                'wallet_getSecretArray',
-              ),
+              wallet_getSecretArray: getPermissionMatcher({
+                parentCapability: 'wallet_getSecretArray',
+              }),
             },
           },
         },
@@ -2133,12 +2158,12 @@ describe('PermissionController', () => {
           [origin]: {
             origin,
             permissions: {
-              wallet_getSecretArray: getPermissionMatcher(
-                'wallet_getSecretArray',
-              ),
-              wallet_getSecretObject: getPermissionMatcher(
-                'wallet_getSecretObject',
-              ),
+              wallet_getSecretArray: getPermissionMatcher({
+                parentCapability: 'wallet_getSecretArray',
+              }),
+              wallet_getSecretObject: getPermissionMatcher({
+                parentCapability: 'wallet_getSecretObject',
+              }),
             },
           },
         },
@@ -2161,10 +2186,10 @@ describe('PermissionController', () => {
           [origin]: {
             origin,
             permissions: {
-              wallet_getSecret_kabob: getPermissionMatcher(
-                'wallet_getSecret_kabob',
-                [{ type: CaveatTypes.noopCaveat, value: null }],
-              ),
+              wallet_getSecret_kabob: getPermissionMatcher({
+                parentCapability: 'wallet_getSecret_kabob',
+                caveats: [{ type: CaveatTypes.noopCaveat, value: null }],
+              }),
             },
           },
         },
@@ -2195,21 +2220,21 @@ describe('PermissionController', () => {
           [origin1]: {
             origin: origin1,
             permissions: {
-              wallet_getSecret_kabob: getPermissionMatcher(
-                'wallet_getSecret_kabob',
-                [{ type: CaveatTypes.noopCaveat, value: null }],
-                origin1,
-              ),
+              wallet_getSecret_kabob: getPermissionMatcher({
+                parentCapability: 'wallet_getSecret_kabob',
+                caveats: [{ type: CaveatTypes.noopCaveat, value: null }],
+                invoker: origin1,
+              }),
             },
           },
           [origin2]: {
             origin: origin2,
             permissions: {
-              wallet_getSecretArray: getPermissionMatcher(
-                'wallet_getSecretArray',
-                null,
-                origin2,
-              ),
+              wallet_getSecretArray: getPermissionMatcher({
+                parentCapability: 'wallet_getSecretArray',
+                caveats: null,
+                invoker: origin2,
+              }),
             },
           },
         },
@@ -2225,9 +2250,9 @@ describe('PermissionController', () => {
           [origin]: {
             origin,
             permissions: expect.objectContaining({
-              wallet_getSecretArray: getPermissionMatcher(
-                'wallet_getSecretArray',
-              ),
+              wallet_getSecretArray: getPermissionMatcher({
+                parentCapability: 'wallet_getSecretArray',
+              }),
             }),
           },
         },
@@ -2246,12 +2271,12 @@ describe('PermissionController', () => {
           [origin]: {
             origin,
             permissions: expect.objectContaining({
-              wallet_getSecretArray: getPermissionMatcher(
-                'wallet_getSecretArray',
-              ),
-              wallet_getSecretObject: getPermissionMatcher(
-                'wallet_getSecretObject',
-              ),
+              wallet_getSecretArray: getPermissionMatcher({
+                parentCapability: 'wallet_getSecretArray',
+              }),
+              wallet_getSecretObject: getPermissionMatcher({
+                parentCapability: 'wallet_getSecretObject',
+              }),
             }),
           },
         },
@@ -2267,9 +2292,9 @@ describe('PermissionController', () => {
           [origin]: {
             origin,
             permissions: {
-              wallet_getSecretArray: getPermissionMatcher(
-                'wallet_getSecretArray',
-              ),
+              wallet_getSecretArray: getPermissionMatcher({
+                parentCapability: 'wallet_getSecretArray',
+              }),
             },
           },
         },
@@ -2288,9 +2313,9 @@ describe('PermissionController', () => {
           [origin]: {
             origin,
             permissions: expect.objectContaining({
-              wallet_getSecretObject: getPermissionMatcher(
-                'wallet_getSecretObject',
-              ),
+              wallet_getSecretObject: getPermissionMatcher({
+                parentCapability: 'wallet_getSecretObject',
+              }),
             }),
           },
         },
@@ -2710,11 +2735,11 @@ describe('PermissionController', () => {
         ),
       ).toMatchObject([
         {
-          [PermissionNames.wallet_getSecretArray]: getPermissionMatcher(
-            PermissionNames.wallet_getSecretArray,
-            null,
-            origin,
-          ),
+          [PermissionNames.wallet_getSecretArray]: getPermissionMatcher({
+            parentCapability: PermissionNames.wallet_getSecretArray,
+            caveats: null,
+            invoker: origin,
+          }),
         },
         { id: expect.any(String), origin },
       ]);
@@ -2766,21 +2791,23 @@ describe('PermissionController', () => {
         ),
       ).toMatchObject([
         {
-          [PermissionNames.wallet_getSecretArray]: getPermissionMatcher(
-            PermissionNames.wallet_getSecretArray,
-            null,
-            origin,
-          ),
-          [PermissionNames.wallet_getSecretObject]: getPermissionMatcher(
-            PermissionNames.wallet_getSecretObject,
-            [{ type: CaveatTypes.filterObjectResponse, value: ['baz'] }],
-            origin,
-          ),
-          [PermissionNames.wallet_getSecret_('foo')]: getPermissionMatcher(
-            PermissionNames.wallet_getSecret_('foo'),
-            [{ type: CaveatTypes.noopCaveat, value: null }],
-            origin,
-          ),
+          [PermissionNames.wallet_getSecretArray]: getPermissionMatcher({
+            parentCapability: PermissionNames.wallet_getSecretArray,
+            caveats: null,
+            invoker: origin,
+          }),
+          [PermissionNames.wallet_getSecretObject]: getPermissionMatcher({
+            parentCapability: PermissionNames.wallet_getSecretObject,
+            caveats: [
+              { type: CaveatTypes.filterObjectResponse, value: ['baz'] },
+            ],
+            invoker: origin,
+          }),
+          [PermissionNames.wallet_getSecret_('foo')]: getPermissionMatcher({
+            parentCapability: PermissionNames.wallet_getSecret_('foo'),
+            caveats: [{ type: CaveatTypes.noopCaveat, value: null }],
+            invoker: origin,
+          }),
         },
         { id: expect.any(String), origin },
       ]);
