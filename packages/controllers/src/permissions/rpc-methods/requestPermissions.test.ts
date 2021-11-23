@@ -1,5 +1,5 @@
-import { JsonRpcEngine } from 'json-rpc-engine';
-import { ethErrors } from 'eth-rpc-errors';
+import { JsonRpcEngine, createAsyncMiddleware } from 'json-rpc-engine';
+import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { requestPermissionsHandler } from './requestPermissions';
 
 describe('requestPermissions RPC method', () => {
@@ -7,7 +7,7 @@ describe('requestPermissions RPC method', () => {
     const { implementation } = requestPermissionsHandler;
     const mockRequestPermissionsForOrigin = jest
       .fn()
-      .mockImplementationOnce(() => {
+      .mockImplementationOnce(async () => {
         return [{ a: 'a', b: 'b', c: 'c' }];
       });
 
@@ -26,6 +26,41 @@ describe('requestPermissions RPC method', () => {
     });
 
     expect(response.result).toStrictEqual(['a', 'b', 'c']);
+    expect(mockRequestPermissionsForOrigin).toHaveBeenCalledTimes(1);
+    expect(mockRequestPermissionsForOrigin).toHaveBeenCalledWith({}, '1');
+  });
+
+  it('returns an error if requestPermissionsForOrigin rejects', async () => {
+    const { implementation } = requestPermissionsHandler;
+    const mockRequestPermissionsForOrigin = jest
+      .fn()
+      .mockImplementationOnce(async () => {
+        throw new Error('foo');
+      });
+
+    const engine = new JsonRpcEngine();
+    const end: any = () => undefined; // this won't be called
+
+    // Pass the middleware function to createAsyncMiddleware so the error
+    // is catched.
+    engine.push(
+      createAsyncMiddleware(
+        (req, res, next) =>
+          implementation(req as any, res as any, next, end, {
+            requestPermissionsForOrigin: mockRequestPermissionsForOrigin,
+          }) as any,
+      ),
+    );
+
+    const response: any = await engine.handle({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'arbitraryName',
+      params: [{}],
+    });
+
+    expect(response.result).toBeUndefined();
+    expect(response.error).toStrictEqual(serializeError(new Error('foo')));
     expect(mockRequestPermissionsForOrigin).toHaveBeenCalledTimes(1);
     expect(mockRequestPermissionsForOrigin).toHaveBeenCalledWith({}, '1');
   });
