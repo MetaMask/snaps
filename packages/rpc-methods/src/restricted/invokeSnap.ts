@@ -77,19 +77,18 @@ function getInvokeSnapImplementation({
       });
     }
 
-    const snapOriginString = method.substr(SNAP_PREFIX.length);
+    const snapIdString = method.substr(SNAP_PREFIX.length);
 
-    if (!getSnap(snapOriginString)) {
+    if (!getSnap(snapIdString)) {
       await addSnap({
-        id: snapOriginString,
-        manifestUrl: snapOriginString,
+        id: snapIdString,
       });
     }
 
-    const handler = await getSnapRpcHandler(snapOriginString);
+    const handler = await getSnapRpcHandler(snapIdString);
     if (!handler) {
       throw ethErrors.rpc.methodNotFound({
-        message: `Snap RPC message handler not found for snap "${snapOriginString}".`,
+        message: `Snap RPC message handler not found for snap "${snapIdString}".`,
       });
     }
 

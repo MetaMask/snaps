@@ -1,0 +1,98 @@
+{
+  "title": "Snap Manifest",
+  "description": "The Snap manifest file MUST be named `snap.manifest.json` and located in the package root directory.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "proposedName",
+    "source",
+    "initialPermissions",
+    "manifestVersion"
+  ],
+  "properties": {
+    "version": {
+      "description": "MUST be a valid SemVer version string and equal to the corresponding `package.json` field.",
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+    },
+    "description": {
+      "description": "MUST be a non-empty string less than or equal to 280 characters. A short description of the Snap.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 280
+    },
+    "proposedName": {
+      "description": "MUST be a string less than or equal to 214 characters. The Snap author's proposed name for the Snap. The Snap host application may display this name unmodified in its user interface. The proposed name SHOULD be human-readable.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 214
+    },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "MAY be omitted. If present, MUST be equal to the corresponding package.json field.",
+      "required": ["type", "url"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["git"]
+        },
+        "url": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "description": "Specifies some Snap metadata and where to fetch the Snap during installation.",
+      "additionalProperties": false,
+      "required": ["shasum", "location"],
+      "properties": {
+        "shasum": {
+          "type": "string",
+          "description": "MUST be the Base64-encoded string representation of the SHA-256 hash of the Snap source file.",
+          "minLength": 44,
+          "maxLength": 44,
+          "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$"
+        },
+        "location": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["npm"],
+          "properties": {
+            "npm": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["filePath", "packageName", "registry"],
+              "properties": {
+                "filePath": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "packageName": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "registry": {
+                  "type": "string",
+                  "enum": ["https://registry.npmjs.org"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "initialPermissions": {
+      "type": "object",
+      "description": "MUST be a valid EIP-2255 wallet_requestPermissions parameter object, specifying the initial permissions that will be requested when the Snap is added to the host application."
+    },
+    "manifestVersion": {
+      "type": "string",
+      "description": "The Snap manifest specification version targeted by the manifest.",
+      "enum": ["0.1"]
+    }
+  }
+}

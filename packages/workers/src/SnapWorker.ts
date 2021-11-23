@@ -167,7 +167,7 @@ lockdown({
      * Generates the APIs for the snap. May throw on error.
      *
      * @param snapId - The id of the Snap.
-     * @param approvedPermissions - The snap's approved permissions.
+     * @param approvedPermissions - The Snap's approved permissions.
      * Should always be a value returned from the permissions controller.
      * @param sourceCode - The source code of the snap, in IIFE format.
      * @param ethereumProvider - The snap's Ethereum provider object.

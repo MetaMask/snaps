@@ -1,0 +1,23 @@
+{
+  "version": "0.5.0",
+  "proposedName": "MetaMask Example Snap",
+  "description": "A basic MetaMask Snap example.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps-skunkworks.git"
+  },
+  "source": {
+    "shasum": "m9N8XOgqscV1o9jCgn9gdE2xZB7sjU6bF3e1XCGpMiE=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "packageName": "@metamask/example-snap",
+        "registry": "https://registry.npmjs.org/"
+      }
+    }
+  },
+  "initialPermissions": {
+    "snap_confirm": {}
+  },
+  "manifestVersion": "0.1"
+}

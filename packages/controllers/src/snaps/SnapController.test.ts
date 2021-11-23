@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { ControllerMessenger } from '@metamask/controllers/dist/ControllerMessenger';
-import { getPersistentState } from '@metamask/controllers';
+import { getPersistentState, Json } from '@metamask/controllers';
 import {
   ErrorMessageEvent,
   UnresponsiveMessageEvent,
@@ -13,13 +13,52 @@ import {
   SnapControllerState,
   SnapStatus,
 } from './SnapController';
+import { getSnapSourceShasum } from './utils';
+import { SnapManifest } from './json-schemas';
 
 const workerCode = fs.readFileSync(
   require.resolve('@metamask/snap-workers/dist/SnapWorker.js'),
   'utf8',
 );
 
-describe('SnapController Controller', () => {
+const getSnapManifest = ({
+  version = '0.0.0-development',
+  proposedName = 'ExampleSnap',
+  description = 'arbitraryDescription',
+  filePath = 'dist/bundle.js',
+  packageName = 'example-snap',
+  initialPermissions = {},
+  shasum = '2QqUxo5joo4kKKr7yiCjdYsZOZcIFBnIBEdwU9Yx7+M=',
+}: Pick<Partial<SnapManifest>, 'version' | 'proposedName' | 'description'> & {
+  filePath?: string;
+  initialPermissions?: Record<string, Record<string, Json>>;
+  packageName?: string;
+  shasum?: string;
+} = {}) => {
+  return {
+    version,
+    proposedName,
+    description,
+    repository: {
+      type: 'git',
+      url: 'https://github.com/example-snap',
+    },
+    source: {
+      shasum,
+      location: {
+        npm: {
+          filePath,
+          packageName,
+          registry: 'https://registry.npmjs.org',
+        },
+      },
+    },
+    initialPermissions,
+    manifestVersion: '0.1',
+  } as const;
+};
+
+describe('SnapController', () => {
   it('can create a worker and snap controller', async () => {
     const messenger = new ControllerMessenger<
       SnapControllerActions,
@@ -105,20 +144,18 @@ describe('SnapController Controller', () => {
       closeAllConnections: jest.fn(),
       messenger,
     });
+
+    const sourceCode = `
+      wallet.registerRpcMessageHandler(async (origin, request) => {
+        const {method, params, id} = request;
+        return method + id;
+      });
+    `;
+
     const snap = await snapController.add({
-      id: 'TestSnap',
-      sourceCode: `
-        wallet.registerRpcMessageHandler(async (origin, request) => {
-          const {method, params, id} = request;
-          return method + id;
-        });
-      `,
-      manifest: {
-        web3Wallet: {
-          initialPermissions: {},
-        },
-        version: '0.0.0-development',
-      },
+      id: 'npm:example-snap',
+      sourceCode,
+      manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
     });
 
     await snapController.startSnap(snap.id);
@@ -126,7 +163,7 @@ describe('SnapController Controller', () => {
     const snapState = await snapController.getSnapState(snap.id);
     expect(snapState).toStrictEqual({ hello: 'world' });
     expect(snapController.state.snapStates).toStrictEqual({
-      TestSnap: {
+      'npm:example-snap': {
         hello: 'world',
       },
     });
@@ -172,21 +209,18 @@ describe('SnapController Controller', () => {
       messenger,
     });
 
+    const sourceCode = `
+      wallet.registerRpcMessageHandler(async (origin, request) => {
+        const {method, params, id} = request;
+        wallet.request({method: 'setState'})
+        return method + id;
+      });
+    `;
+
     const snap = await snapController.add({
-      id: 'TestSnap',
-      sourceCode: `
-        wallet.registerRpcMessageHandler(async (origin, request) => {
-          const {method, params, id} = request;
-          wallet.request({method: 'setState'})
-          return method + id;
-        });
-      `,
-      manifest: {
-        web3Wallet: {
-          initialPermissions: {},
-        },
-        version: '0.0.0-development',
-      },
+      id: 'npm:example-snap',
+      sourceCode,
+      manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
     });
 
     await snapController.startSnap(snap.id);
@@ -261,20 +295,17 @@ describe('SnapController Controller', () => {
       messenger,
     });
 
+    const sourceCode = `
+      wallet.registerRpcMessageHandler(async (origin, request) => {
+        const {method, params, id} = request;
+        return method + id;
+      });
+    `;
+
     const snap = await snapController.add({
-      id: 'TestSnap',
-      sourceCode: `
-        wallet.registerRpcMessageHandler(async (origin, request) => {
-          const {method, params, id} = request;
-          return method + id;
-        });
-      `,
-      manifest: {
-        web3Wallet: {
-          initialPermissions: {},
-        },
-        version: '0.0.0-development',
-      },
+      id: 'npm:example-snap',
+      sourceCode,
+      manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
     });
 
     await snapController.startSnap(snap.id);
@@ -294,17 +325,13 @@ describe('SnapController Controller', () => {
   });
 
   it('errors if attempting to start a snap that was already started', async () => {
-    const id = 'fooSnap';
-    const manifest = {
-      name: id,
-      version: '1.0.0',
-      web3Wallet: {
-        initialPermissions: {
-          eth_accounts: {},
-        },
-      },
-    };
+    const id = 'npm:example-snap';
     const sourceCode = 'foo';
+    const manifest = getSnapManifest({
+      version: '1.0.0',
+      initialPermissions: { eth_accounts: {} },
+      shasum: getSnapSourceShasum(sourceCode),
+    });
 
     const mockExecuteSnap = jest.fn();
 
@@ -334,7 +361,7 @@ describe('SnapController Controller', () => {
     await snapController.add({ id, manifest, sourceCode });
     await snapController.startSnap(id);
     await expect(snapController.startSnap(id)).rejects.toThrow(
-      /^Snap "fooSnap" is already started.$/u,
+      /^Snap "npm:example-snap" is already started.$/u,
     );
     expect(mockExecuteSnap).toHaveBeenCalledTimes(1);
     expect(mockExecuteSnap).toHaveBeenCalledWith({
@@ -350,6 +377,8 @@ describe('SnapController Controller', () => {
       SnapControllerActions,
       ErrorMessageEvent | UnresponsiveMessageEvent
     >();
+
+    const sourceCode = 'console.log("foo");';
 
     const firstSnapController = new SnapController({
       terminateAllSnaps: jest.fn(),
@@ -371,14 +400,16 @@ describe('SnapController Controller', () => {
       state: {
         snapErrors: {},
         snapStates: {},
-        inlineSnapIsRunning: false,
         snaps: {
-          foo: {
+          'npm:foo': {
             initialPermissions: {},
             permissionName: 'fooperm',
             version: '0.0.1',
-            sourceCode: 'console.log("foo")',
-            id: 'foo',
+            sourceCode,
+            id: 'npm:foo',
+            manifest: getSnapManifest({
+              shasum: getSnapSourceShasum(sourceCode),
+            }),
             enabled: true,
             status: SnapStatus.installing,
           },
@@ -415,10 +446,10 @@ describe('SnapController Controller', () => {
       }),
       state: persistedState as unknown as SnapControllerState,
     });
-    expect(secondSnapController.isRunning('foo')).toStrictEqual(false);
+    expect(secondSnapController.isRunning('npm:foo')).toStrictEqual(false);
     await secondSnapController.runExistingSnaps();
-    expect(secondSnapController.state.snaps.foo).toBeDefined();
-    expect(secondSnapController.isRunning('foo')).toStrictEqual(true);
+    expect(secondSnapController.state.snaps['npm:foo']).toBeDefined();
+    expect(secondSnapController.isRunning('npm:foo')).toStrictEqual(true);
     firstSnapController.destroy();
     secondSnapController.destroy();
   });
@@ -568,20 +599,18 @@ describe('SnapController Controller', () => {
       closeAllConnections: jest.fn(),
       messenger: snapControllerMessenger,
     });
+
+    const sourceCode = `
+      wallet.registerRpcMessageHandler(async (origin, request) => {
+        const {method, params, id} = request;
+        return method + id;
+      });
+    `;
+
     const snap = await snapController.add({
-      id: 'TestSnap',
-      sourceCode: `
-        wallet.registerRpcMessageHandler(async (origin, request) => {
-          const {method, params, id} = request;
-          return method + id;
-        });
-      `,
-      manifest: {
-        web3Wallet: {
-          initialPermissions: {},
-        },
-        version: '0.0.0-development',
-      },
+      id: 'npm:example-snap',
+      sourceCode,
+      manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
     });
     await snapController.startSnap(snap.id);
 
@@ -654,20 +683,18 @@ describe('SnapController Controller', () => {
       closeAllConnections: jest.fn(),
       messenger: snapControllerMessenger,
     });
+
+    const sourceCode = `
+      wallet.registerRpcMessageHandler(async (origin, request) => {
+        const {method, params, id} = request;
+        return method + id;
+      });
+    `;
+
     const snap = await snapController.add({
-      id: 'TestSnap',
-      sourceCode: `
-        wallet.registerRpcMessageHandler(async (origin, request) => {
-          const {method, params, id} = request;
-          return method + id;
-        });
-      `,
-      manifest: {
-        web3Wallet: {
-          initialPermissions: {},
-        },
-        version: '0.0.0-development',
-      },
+      id: 'npm:example-snap',
+      sourceCode,
+      manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
     });
     await snapController.startSnap(snap.id);
 
@@ -730,30 +757,24 @@ describe('SnapController Controller', () => {
       messenger,
     });
 
+    const sourceCode = `
+      wallet.registerRpcMessageHandler(async (origin, request) => {
+        const {method, params, id} = request;
+        wallet.request({method: 'setState'})
+        return method + id;
+      });
+    `;
+
     const snap = await snapController.add({
-      id: 'TestSnap',
-      sourceCode: `
-        wallet.registerRpcMessageHandler(async (origin, request) => {
-          const {method, params, id} = request;
-          wallet.request({method: 'setState'})
-          return method + id;
-        });
-      `,
-      manifest: {
-        web3Wallet: {
-          initialPermissions: {},
-        },
-        version: '0.0.0-development',
-      },
+      id: 'npm:example-snap',
+      sourceCode,
+      manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
     });
-
     await snapController.startSnap(snap.id);
-    const handle = await snapController.getRpcMessageHandler(snap.id);
-    if (!handle) {
-      throw Error('rpc handler not found');
-    }
 
-    await handle('foo.com', {
+    const handler = await snapController.getRpcMessageHandler(snap.id);
+
+    await handler('foo.com', {
       jsonrpc: '2.0',
       method: 'test',
       params: {},
@@ -809,29 +830,24 @@ describe('SnapController Controller', () => {
       messenger,
     });
 
+    const sourceCode = `
+      wallet.registerRpcMessageHandler(async (origin, request) => {
+        const {method, params, id} = request;
+        wallet.request({method: 'setState'})
+        return method + id;
+      });
+    `;
+
     const snap = await snapController.add({
-      id: 'TestSnap',
-      sourceCode: `
-        wallet.registerRpcMessageHandler(async (origin, request) => {
-          const {method, params, id} = request;
-          wallet.request({method: 'setState'})
-          return method + id;
-        });
-      `,
-      manifest: {
-        web3Wallet: {
-          initialPermissions: {},
-        },
-        version: '0.0.0-development',
-      },
+      id: 'npm:example-snap',
+      sourceCode,
+      manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
     });
 
     await snapController.startSnap(snap.id);
-
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
 
-    await snapController.stopSnap(snap.id);
-
+    snapController.stopSnap(snap.id);
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
 
     snapController.destroy();
@@ -878,31 +894,26 @@ describe('SnapController Controller', () => {
       messenger,
     });
 
+    const sourceCode = `
+      wallet.registerRpcMessageHandler(async (origin, request) => {
+        const {method, params, id} = request;
+        wallet.request({method: 'setState'})
+        return method + id;
+      });
+    `;
+
     const snap = await snapController.add({
-      id: 'TestSnap',
-      sourceCode: `
-        wallet.registerRpcMessageHandler(async (origin, request) => {
-          const {method, params, id} = request;
-          wallet.request({method: 'setState'})
-          return method + id;
-        });
-      `,
-      manifest: {
-        web3Wallet: {
-          initialPermissions: {},
-        },
-        version: '0.0.0-development',
-      },
+      id: 'npm:example-snap',
+      sourceCode,
+      manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
     });
 
     const handler = await snapController.getRpcMessageHandler(snap.id);
 
     await snapController.startSnap(snap.id);
-
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
 
     await snapController.stopSnap(snap.id);
-
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
 
     const results = await handler('foo.com', {
@@ -912,6 +923,7 @@ describe('SnapController Controller', () => {
       id: 1,
     });
     expect(results).toStrictEqual('test1');
+
     snapController.destroy();
   });
 
@@ -956,21 +968,18 @@ describe('SnapController Controller', () => {
       messenger,
     });
 
+    const sourceCode = `
+      wallet.registerRpcMessageHandler(async (origin, request) => {
+        const {method, params, id} = request;
+        wallet.request({method: 'setState'})
+        return method + id;
+      });
+    `;
+
     const snap = await snapController.add({
-      id: 'TestSnap',
-      sourceCode: `
-        wallet.registerRpcMessageHandler(async (origin, request) => {
-          const {method, params, id} = request;
-          wallet.request({method: 'setState'})
-          return method + id;
-        });
-      `,
-      manifest: {
-        web3Wallet: {
-          initialPermissions: {},
-        },
-        version: '0.0.0-development',
-      },
+      id: 'npm:example-snap',
+      sourceCode,
+      manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
     });
 
     const handler = await snapController.getRpcMessageHandler(snap.id);
@@ -982,18 +991,16 @@ describe('SnapController Controller', () => {
         params: {},
         id: 1,
       }),
-    ).rejects.toThrow(/^Snap "TestSnap" has not been started yet.$/u);
+    ).rejects.toThrow(/^Snap "npm:example-snap" has not been started yet.$/u);
 
     await snapController.startSnap(snap.id);
-
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
 
     snapController.disableSnap(snap.id);
-
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
 
     await expect(snapController.startSnap(snap.id)).rejects.toThrow(
-      /^Snap "TestSnap" is disabled.$/u,
+      /^Snap "npm:example-snap" is disabled.$/u,
     );
 
     await expect(
@@ -1003,26 +1010,23 @@ describe('SnapController Controller', () => {
         params: {},
         id: 1,
       }),
-    ).rejects.toThrow(/^Snap "TestSnap" is disabled.$/u);
+    ).rejects.toThrow(/^Snap "npm:example-snap" is disabled.$/u);
 
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
-
     expect(snapController.state.snaps[snap.id].enabled).toStrictEqual(false);
 
     snapController.enableSnap(snap.id);
+    expect(snapController.state.snaps[snap.id].enabled).toStrictEqual(true);
 
-    const results = await handler('foo.com', {
+    const result = await handler('foo.com', {
       jsonrpc: '2.0',
       method: 'test',
       params: {},
       id: 1,
     });
-
-    expect(snapController.state.snaps[snap.id].enabled).toStrictEqual(true);
-
+    expect(result).toStrictEqual('test1');
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
 
-    expect(results).toStrictEqual('test1');
     snapController.destroy();
   });
 
@@ -1068,21 +1072,18 @@ describe('SnapController Controller', () => {
       messenger,
     });
 
+    const sourceCode = `
+      wallet.registerRpcMessageHandler(async (origin, request) => {
+        const {method, params, id} = request;
+        wallet.request({method: 'setState'})
+        return method + id;
+      });
+    `;
+
     const snap = await snapController.add({
-      id: 'TestSnap',
-      sourceCode: `
-        wallet.registerRpcMessageHandler(async (origin, request) => {
-          const {method, params, id} = request;
-          wallet.request({method: 'setState'})
-          return method + id;
-        });
-      `,
-      manifest: {
-        web3Wallet: {
-          initialPermissions: {},
-        },
-        version: '0.0.0-development',
-      },
+      id: 'npm:example-snap',
+      sourceCode,
+      manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
     });
 
     // override handler to take too long to return
@@ -1099,7 +1100,6 @@ describe('SnapController Controller', () => {
     const handler = await snapController.getRpcMessageHandler(snap.id);
 
     await snapController.startSnap(snap.id);
-
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
 
     await expect(
@@ -1110,7 +1110,6 @@ describe('SnapController Controller', () => {
         id: 1,
       }),
     ).rejects.toThrow(/request timed out/u);
-
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
 
     snapController.destroy();

@@ -1,6 +1,5 @@
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import type { Patch } from 'immer';
-import { IOcapLdCapability } from 'rpc-cap/dist/src/@types/ocap-ld';
 import {
   BaseControllerV2 as BaseController,
   RestrictedControllerMessenger,
@@ -14,6 +13,8 @@ import {
   UnresponsiveMessageEvent,
 } from '@metamask/snap-types';
 import { nanoid } from 'nanoid';
+import isValidSemver from 'semver/functions/valid';
+import { PermissionConstraint } from '../permissions';
 import {
   GetRpcMessageHandler,
   ExecuteSnap,
@@ -21,7 +22,16 @@ import {
   TerminateSnap,
 } from '../services/ExecutionEnvironmentService';
 import { timeSince } from '../utils';
-import { INLINE_SNAPS } from './inlineSnaps';
+import {
+  LOCALHOST_HOSTNAMES,
+  SnapIdPrefixes,
+  SNAP_MANIFEST_FILE,
+  validateSnapShasum,
+  ValidatedSnapId,
+  fetchContent,
+  fetchNpmSnap,
+} from './utils';
+import { SnapManifest, validateSnapManifest } from './json-schemas';
 
 export const controllerName = 'SnapController';
 
@@ -34,7 +44,7 @@ const SERIALIZABLE_SNAP_PROPERTIES = new Set([
 ]);
 
 type RequestedSnapPermissions = {
-  [permission: string]: Json;
+  [permission: string]: Record<string, Json>;
 };
 
 export type SerializableSnap = {
@@ -42,6 +52,7 @@ export type SerializableSnap = {
   id: SnapId;
   permissionName: string;
   version: string;
+  manifest: SnapManifest;
   status: SnapStatus;
   enabled: boolean;
 };
@@ -59,9 +70,7 @@ export type SnapError = {
 export type ProcessSnapReturnType =
   | SerializableSnap
   | { error: ReturnType<typeof serializeError> };
-export type InstallSnapsResult = {
-  [snapId: string]: ProcessSnapReturnType;
-};
+export type InstallSnapsResult = Record<SnapId, ProcessSnapReturnType>;
 
 // Types that probably should be defined elsewhere in prod
 type RemoveAllPermissionsFunction = (snapIds: string[]) => void;
@@ -69,20 +78,17 @@ type CloseAllConnectionsFunction = (origin: string) => void;
 type RequestPermissionsFunction = (
   origin: string,
   requestedPermissions: RequestedSnapPermissions,
-) => Promise<IOcapLdCapability[]>;
+) => Promise<PermissionConstraint[]>;
 type HasPermissionFunction = (
   origin: string,
   permissionName: string,
 ) => boolean;
-type GetPermissionsFunction = (origin: string) => IOcapLdCapability[];
+type GetPermissionsFunction = (origin: string) => PermissionConstraint[];
 type StoredSnaps = Record<SnapId, Snap>;
 
 export type SnapControllerState = {
-  inlineSnapIsRunning: boolean;
   snaps: StoredSnaps;
-  snapStates: {
-    [SnapId: string]: Json;
-  };
+  snapStates: Record<SnapId, Json>;
   snapErrors: {
     [internalID: string]: SnapError & { internalID: string };
   };
@@ -126,16 +132,7 @@ type SnapControllerArgs = {
 
 type AddSnapBase = {
   id: SnapId;
-};
-
-type AddSnapByFetchingArgs = AddSnapBase & {
-  manifestUrl: string;
-};
-
-// The parts of a snap package.json file that we care about
-type SnapManifest = {
-  version: string;
-  web3Wallet: { initialPermissions: RequestedSnapPermissions };
+  version?: string;
 };
 
 type AddSnapDirectlyArgs = AddSnapBase & {
@@ -143,11 +140,14 @@ type AddSnapDirectlyArgs = AddSnapBase & {
   sourceCode: string;
 };
 
-type AddSnapArgs = AddSnapByFetchingArgs | AddSnapDirectlyArgs;
+type AddSnapArgs = AddSnapBase | AddSnapDirectlyArgs;
+
+type ValidatedAddSnapArgs = Omit<AddSnapDirectlyArgs, 'id'> & {
+  id: ValidatedSnapId;
+};
 
 const defaultState: SnapControllerState = {
   snapErrors: {},
-  inlineSnapIsRunning: false,
   snaps: {},
   snapStates: {},
 };
@@ -285,10 +285,6 @@ export class SnapController extends BaseController<
           persist: false,
           anonymous: false,
         },
-        inlineSnapIsRunning: {
-          persist: false,
-          anonymous: false,
-        },
         snapStates: {
           persist: true,
           anonymous: false,
@@ -387,8 +383,9 @@ export class SnapController extends BaseController<
    * - .on supports raw event target string
    * - .on supports {target, cond} object
    * - the arguments for `cond` is the `SerializedSnap` instead of Xstate convention of `(event, context) => boolean`
-   * @param snapId the id of the Snap to transition
-   * @param event the event enum to use to transition
+   *
+   * @param snapId - The id of the snap to transition
+   * @param event - The event enum to use to transition
    */
   _transitionSnapState(snapId: SnapId, event: SnapStatusEvent) {
     const snapStatus = this.state.snaps[snapId].status;
@@ -658,7 +655,6 @@ export class SnapController extends BaseController<
     this._terminateAllSnaps();
     this._removeAllPermissionsFor(snapIds);
     this.update((state: any) => {
-      state.inlineSnapIsRunning = false;
       state.snaps = {};
       state.snapStates = {};
     });
@@ -734,24 +730,34 @@ export class SnapController extends BaseController<
     // use a for-loop so that we can return an object and await the resolution
     // of each call to processRequestedSnap
     await Promise.all(
-      Object.keys(requestedSnaps).map(async (snapId) => {
-        const permissionName = SNAP_PREFIX + snapId;
+      Object.entries(requestedSnaps).map(
+        async ([snapId, { version = 'latest' }]) => {
+          const permissionName = SNAP_PREFIX + snapId;
 
-        if (this._hasPermission(origin, permissionName)) {
-          // attempt to install and run the snap, storing any errors that
-          // occur during the process
-          result[snapId] = {
-            ...(await this.processRequestedSnap(snapId)),
-          };
-        } else {
-          // only allow the installation of permitted snaps
-          result[snapId] = {
-            error: ethErrors.provider.unauthorized(
-              `Not authorized to install snap '${snapId}'. Request the permission for the snap before attempting to install it.`,
-            ),
-          };
-        }
-      }),
+          if (this._hasPermission(origin, permissionName)) {
+            if (isValidSnapVersion(version)) {
+              // attempt to install and run the snap, storing any errors that
+              // occur during the process
+              result[snapId] = {
+                ...(await this.processRequestedSnap(snapId, version)),
+              };
+            }
+
+            result[snapId] = {
+              error: ethErrors.rpc.invalidParams(
+                `The "version" field must be a valid SemVer version or the string "latest" if specified. Received: "${version}".`,
+              ),
+            };
+          } else {
+            // only allow the installation of permitted snaps
+            result[snapId] = {
+              error: ethErrors.provider.unauthorized(
+                `Not authorized to install snap "${snapId}". Request the permission for the snap before attempting to install it.`,
+              ),
+            };
+          }
+        },
+      ),
     );
     return result;
   }
@@ -760,10 +766,14 @@ export class SnapController extends BaseController<
    * Adds, authorizes, and runs the given snap with a snap provider.
    * Results from this method should be efficiently serializable.
    *
-   * @param - snapId - The id of the Snap.
+   * @param snapId - The id of the snap.
+   * @param version - The version of the snap to install.
    * @returns The resulting snap object, or an error if something went wrong.
    */
-  async processRequestedSnap(snapId: SnapId): Promise<ProcessSnapReturnType> {
+  async processRequestedSnap(
+    snapId: SnapId,
+    version: string,
+  ): Promise<ProcessSnapReturnType> {
     // If the snap is already installed, just return it
     const snap = this.get(snapId);
     if (snap) {
@@ -773,7 +783,7 @@ export class SnapController extends BaseController<
     try {
       const { sourceCode } = await this.add({
         id: snapId,
-        manifestUrl: snapId,
+        version,
       });
 
       await this.authorize(snapId);
@@ -800,25 +810,42 @@ export class SnapController extends BaseController<
    * @returns The resulting snap object.
    */
   add(args: AddSnapArgs): Promise<Snap> {
-    const { id: snapId } = args;
-    if (!snapId || typeof snapId !== 'string') {
-      throw new Error(`Invalid snap id: ${snapId}`);
-    }
+    const { id: _snapId } = args;
+    this.validateSnapId(_snapId);
+    const snapId: ValidatedSnapId = _snapId as ValidatedSnapId;
 
     if (
       !args ||
-      (!('manifestUrl' in args) &&
-        (!('manifest' in args) || !('sourceCode' in args)))
+      !('id' in args) ||
+      (!('manifest' in args) && 'sourceCode' in args) ||
+      ('manifest' in args && !('sourceCode' in args))
     ) {
       throw new Error(`Invalid add snap args for snap "${snapId}".`);
     }
 
     if (!this._snapsBeingAdded.has(snapId)) {
       console.log(`Adding snap: ${snapId}`);
-      this._snapsBeingAdded.set(snapId, this._add(args));
+      this._snapsBeingAdded.set(
+        snapId,
+        this._add(args as ValidatedAddSnapArgs),
+      );
     }
 
     return this._snapsBeingAdded.get(snapId) as Promise<Snap>;
+  }
+
+  private validateSnapId(snapId: unknown): void {
+    if (!snapId || typeof snapId !== 'string') {
+      throw new Error(`Invalid snap id: Not a string. Received "${snapId}"`);
+    }
+
+    for (const prefix of Object.values(SnapIdPrefixes)) {
+      if (snapId.startsWith(prefix) && snapId.replace(prefix, '').length > 0) {
+        return;
+      }
+    }
+
+    throw new Error(`Invalid snap id. Received: "${snapId}"`);
   }
 
   private async _startSnap(snapData: SnapData) {
@@ -839,23 +866,23 @@ export class SnapController extends BaseController<
    * @param args - The add snap args.
    * @returns The resulting snap object.
    */
-  private async _add(args: AddSnapArgs): Promise<Snap> {
-    const { id: snapId } = args;
+  private async _add(args: ValidatedAddSnapArgs): Promise<Snap> {
+    const { id: snapId, version } = args;
 
     let manifest: SnapManifest, sourceCode: string;
-    if ('manifestUrl' in args) {
-      const _sourceUrl = args.manifestUrl || snapId;
-      [manifest, sourceCode] = await this._fetchSnap(snapId, _sourceUrl);
-    } else {
+    if ('manifest' in args) {
       manifest = args.manifest;
       sourceCode = args.sourceCode;
+      validateSnapManifest(manifest);
+    } else {
+      [manifest, sourceCode] = await this._fetchSnap(snapId, version);
     }
 
     if (typeof sourceCode !== 'string' || sourceCode.length === 0) {
       throw new Error(`Invalid source code for snap "${snapId}".`);
     }
 
-    const initialPermissions = manifest?.web3Wallet?.initialPermissions;
+    const initialPermissions = manifest?.initialPermissions;
     if (
       !initialPermissions ||
       typeof initialPermissions !== 'object' ||
@@ -870,6 +897,7 @@ export class SnapController extends BaseController<
       permissionName: SNAP_PREFIX + snapId, // so we can easily correlate them
       sourceCode,
       version: manifest.version,
+      manifest,
       enabled: true,
       status: snapStatusStateMachineConfig.initial,
     };
@@ -893,33 +921,79 @@ export class SnapController extends BaseController<
    * Fetches the manifest and source code of a snap.
    *
    * @param snapId - The id of the Snap.
-   * @param manifestUrl - The URL of the snap's manifest file.
-   * @returns An array of the snap manifest object and the snap source code.
+   * @param version - The version of the Snap to fetch.
+   * @returns A tuple of the Snap manifest object and the Snap source code.
    */
   private async _fetchSnap(
-    snapId: SnapId,
-    manifestUrl: string,
+    snapId: ValidatedSnapId,
+    version?: string,
   ): Promise<[SnapManifest, string]> {
     try {
-      console.log(`Fetching snap manifest from: ${manifestUrl}`);
-      const snapSource = await fetch(manifestUrl);
-      const manifest = await snapSource.json();
+      if (snapId.startsWith(SnapIdPrefixes.local)) {
+        return this._fetchLocalSnap(snapId.replace(SnapIdPrefixes.local, ''));
+      } else if (snapId.startsWith(SnapIdPrefixes.npm)) {
+        return this._fetchNpmSnap(
+          snapId.replace(SnapIdPrefixes.npm, ''),
+          version,
+        );
+      }
 
-      console.log(`Destructuring snap: `, manifest);
-      const {
-        web3Wallet: { bundle },
-      } = manifest;
-
-      console.log(`Fetching snap source code from: ${bundle.url}`);
-      const snapBundle = await fetch(bundle.url);
-      const sourceCode = await snapBundle.text();
-
-      return [manifest, sourceCode];
-    } catch (err) {
+      // This should be impossible.
+      /* istanbul ignore next */
+      throw new Error(`Invalid Snap id: "${snapId}"`);
+    } catch (error) {
       throw new Error(
-        `Problem fetching snap "${snapId}": ${(err as Error).message}`,
+        `Failed to fetch Snap "${snapId}": ${(error as Error).message}`,
       );
     }
+  }
+
+  private async _fetchNpmSnap(
+    packageName: string,
+    version?: string,
+  ): Promise<[SnapManifest, string]> {
+    if (!isValidSnapVersion(version)) {
+      throw new Error(`Received invalid Snap version: "${version}".`);
+    }
+
+    return fetchNpmSnap(packageName, version);
+  }
+
+  /**
+   * Does not validate the shasum?
+   *
+   * @param localhostUrl - The localhost URL to download from.
+   * @returns The validated manifest and the source code.
+   */
+  private async _fetchLocalSnap(
+    localhostUrl: string,
+  ): Promise<[SnapManifest, string]> {
+    const manifestUrl = new URL(SNAP_MANIFEST_FILE, localhostUrl);
+    if (!LOCALHOST_HOSTNAMES.has(manifestUrl.hostname)) {
+      throw new Error(
+        `Invalid URL: Locally hosted Snaps must be hosted on localhost. Received URL: "${manifestUrl.toString()}"`,
+      );
+    }
+
+    const _manifest = await fetchContent(manifestUrl, 'json');
+    validateSnapManifest(_manifest);
+    const manifest = _manifest as SnapManifest;
+
+    const {
+      source: {
+        location: {
+          npm: { filePath },
+        },
+      },
+    } = manifest;
+
+    const sourceCode = await fetchContent(
+      new URL(filePath, localhostUrl),
+      'text',
+    );
+    validateSnapShasum(manifest, sourceCode);
+
+    return [manifest, sourceCode];
   }
 
   /**
@@ -953,30 +1027,6 @@ export class SnapController extends BaseController<
     } finally {
       this._snapsBeingAdded.delete(snapId);
     }
-  }
-
-  /**
-   * Test method.
-   */
-  runInlineSnap(inlineSnapId: keyof typeof INLINE_SNAPS = 'IDLE') {
-    this._startSnap({
-      snapId: 'inlineSnap',
-      sourceCode: INLINE_SNAPS[inlineSnapId],
-    });
-
-    this.update((state: any) => {
-      state.inlineSnapIsRunning = true;
-    });
-  }
-
-  /**
-   * Test method.
-   */
-  removeInlineSnap() {
-    this.update((state: any) => {
-      state.inlineSnapIsRunning = false;
-    });
-    this.removeSnap('inlineSnap');
   }
 
   destroy() {
@@ -1067,4 +1117,11 @@ export class SnapController extends BaseController<
   private _recordSnapRpcRequest(snapId: SnapId) {
     this._lastRequestMap.set(snapId, Date.now());
   }
+}
+
+function isValidSnapVersion(version: unknown): version is string {
+  return Boolean(
+    typeof version === 'string' &&
+      (version === 'latest' || isValidSemver(version)),
+  );
 }
