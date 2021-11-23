@@ -156,19 +156,6 @@ type DefaultCaveatSpecifications = ExtractSpecifications<
 
 // Permission types and specifications
 
-// wallet_getSecret_*
-// We only define types for this permission because it's the only one with a
-// factory.
-// Other permission types are extracted from the permission specifications in
-// the permission controller.
-
-type SecretNamespacedPermissionKey = 'wallet_getSecret_*';
-
-type SecretNamespacedPermission = ValidPermission<
-  SecretNamespacedPermissionKey,
-  NoopCaveat
->;
-
 /**
  * Permission key constants.
  */
@@ -177,9 +164,25 @@ const PermissionKeys = {
   wallet_getSecretArray: 'wallet_getSecretArray',
   wallet_getSecretObject: 'wallet_getSecretObject',
   wallet_noop: 'wallet_noop',
-  wallet_noop2: 'wallet_noop2',
+  wallet_noopWithValidator: 'wallet_noopWithValidator',
+  wallet_noopWithFactory: 'wallet_noopWithFactory',
   'wallet_getSecret_*': 'wallet_getSecret_*',
 } as const;
+
+// wallet_getSecret_*
+// We only define types for permissions with factories.
+// Other permission types are extracted from the permission specifications in
+// the permission controller.
+
+type SecretNamespacedPermission = ValidPermission<
+  typeof PermissionKeys['wallet_getSecret_*'],
+  NoopCaveat
+>;
+
+type NoopWithFactoryPermission = ValidPermission<
+  typeof PermissionKeys['wallet_noopWithFactory'],
+  FilterArrayCaveat
+>;
 
 /**
  * Permission name (as opposed to keys) constants and getters. Since one of the
@@ -190,19 +193,13 @@ const PermissionNames = {
   wallet_getSecretArray: PermissionKeys.wallet_getSecretArray,
   wallet_getSecretObject: PermissionKeys.wallet_getSecretObject,
   wallet_noop: PermissionKeys.wallet_noop,
-  wallet_noop2: PermissionKeys.wallet_noop2,
+  wallet_noopWithValidator: PermissionKeys.wallet_noopWithValidator,
+  wallet_noopWithFactory: PermissionKeys.wallet_noopWithFactory,
   wallet_getSecret_: (str: string) => `wallet_getSecret_${str}` as const,
 } as const;
 
 /**
- * Gets permission specifications for:
- * - {@link SecretArrayPermission}
- *   - Has neither validator nor factory.
- * - {@link SecretObjectPermission}
- *   - Has validator, but no factory.
- * - {@link SecretNamespacedPermission}
- *   - Has both validator and factory.
- *
+ * Gets permission specifications for our test permissions.
  * Used as a default in {@link getPermissionControllerOptions}.
  *
  * @returns The permission specifications.
@@ -279,9 +276,9 @@ function getDefaultPermissionSpecifications() {
         return null;
       },
     },
-    // This one exists just to check permission validator logic
-    [PermissionKeys.wallet_noop2]: {
-      targetKey: PermissionKeys.wallet_noop2,
+    // This one exists to check some permission validator logic
+    [PermissionKeys.wallet_noopWithValidator]: {
+      targetKey: PermissionKeys.wallet_noopWithValidator,
       methodImplementation: (_args: RestrictedMethodOptions<void>) => {
         return null;
       },
@@ -294,6 +291,33 @@ function getDefaultPermissionSpecifications() {
         ) {
           throw new Error('noop permission validation failed');
         }
+      },
+    },
+    // This one exists just to check that permission factories can use the
+    // requestData of approved permission requests
+    [PermissionKeys.wallet_noopWithFactory]: {
+      targetKey: PermissionKeys.wallet_noopWithFactory,
+      methodImplementation: (_args: RestrictedMethodOptions<void>) => {
+        return null;
+      },
+      allowedCaveats: [CaveatTypes.filterArrayResponse],
+      factory: (
+        options: PermissionOptions<NoopWithFactoryPermission>,
+        requestData?: Record<string, unknown>,
+      ) => {
+        if (!requestData) {
+          throw new Error('requestData is required');
+        }
+
+        return constructPermission<NoopWithFactoryPermission>({
+          ...options,
+          caveats: [
+            {
+              type: CaveatTypes.filterArrayResponse,
+              value: requestData.caveatValue as string[],
+            },
+          ],
+        });
       },
     },
   } as const;
@@ -2708,7 +2732,7 @@ describe('PermissionController', () => {
         controller.grantPermissions({
           subject: { origin },
           approvedPermissions: {
-            [PermissionNames.wallet_noop2]: {
+            [PermissionNames.wallet_noopWithValidator]: {
               caveats: [
                 { type: CaveatTypes.filterArrayResponse, value: ['foo'] },
               ],
@@ -2770,6 +2794,61 @@ describe('PermissionController', () => {
       );
     });
 
+    it('requests a permission that requires requestData in its factory', async () => {
+      const options = getPermissionControllerOptions();
+      const { messenger } = options;
+      const origin = 'metamask.io';
+
+      const callActionSpy = jest
+        .spyOn(messenger, 'call')
+        .mockImplementationOnce(async (...args: any) => {
+          const [, { requestData }] = args;
+          return {
+            metadata: { ...requestData.metadata },
+            permissions: { ...requestData.permissions },
+            caveatValue: ['foo'], // this will be added to the permission
+          };
+        });
+
+      const controller = getDefaultPermissionController(options);
+      expect(
+        await controller.requestPermissions(
+          { origin },
+          {
+            [PermissionNames.wallet_noopWithFactory]: {},
+          },
+        ),
+      ).toMatchObject([
+        {
+          [PermissionNames.wallet_noopWithFactory]: getPermissionMatcher({
+            parentCapability: PermissionNames.wallet_noopWithFactory,
+            caveats: [
+              { type: CaveatTypes.filterArrayResponse, value: ['foo'] },
+            ],
+            invoker: origin,
+          }),
+        },
+        { id: expect.any(String), origin },
+      ]);
+
+      expect(callActionSpy).toHaveBeenCalledTimes(1);
+      expect(callActionSpy).toHaveBeenCalledWith(
+        'ApprovalController:addRequest',
+        {
+          id: expect.any(String),
+          origin,
+          requestData: {
+            metadata: { id: expect.any(String), origin },
+            permissions: {
+              [PermissionNames.wallet_noopWithFactory]: {},
+            },
+          },
+          type: MethodNames.requestPermissions,
+        },
+        true,
+      );
+    });
+
     it('requests multiple permissions', async () => {
       const options = getPermissionControllerOptions();
       const { messenger } = options;
@@ -2810,6 +2889,241 @@ describe('PermissionController', () => {
             parentCapability: PermissionNames.wallet_getSecretObject,
             caveats: [
               { type: CaveatTypes.filterObjectResponse, value: ['baz'] },
+            ],
+            invoker: origin,
+          }),
+          [PermissionNames.wallet_getSecret_('foo')]: getPermissionMatcher({
+            parentCapability: PermissionNames.wallet_getSecret_('foo'),
+            caveats: [{ type: CaveatTypes.noopCaveat, value: null }],
+            invoker: origin,
+          }),
+        },
+        { id: expect.any(String), origin },
+      ]);
+
+      expect(callActionSpy).toHaveBeenCalledTimes(1);
+      expect(callActionSpy).toHaveBeenCalledWith(
+        'ApprovalController:addRequest',
+        {
+          id: expect.any(String),
+          origin,
+          requestData: {
+            metadata: { id: expect.any(String), origin },
+            permissions: {
+              [PermissionNames.wallet_getSecretArray]: {},
+              [PermissionNames.wallet_getSecretObject]: {
+                caveats: [
+                  { type: CaveatTypes.filterObjectResponse, value: ['baz'] },
+                ],
+              },
+              [PermissionNames.wallet_getSecret_('foo')]: {},
+            },
+          },
+          type: MethodNames.requestPermissions,
+        },
+        true,
+      );
+    });
+
+    it('requests multiple permissions (approved permissions are a strict superset)', async () => {
+      const options = getPermissionControllerOptions();
+      const { messenger } = options;
+      const origin = 'metamask.io';
+
+      const callActionSpy = jest
+        .spyOn(messenger, 'call')
+        .mockImplementationOnce(async (...args: any) => {
+          const [, { requestData }] = args;
+          return {
+            metadata: { ...requestData.metadata },
+            // wallet_getSecret_foo is added to the request
+            permissions: {
+              ...requestData.permissions,
+              [PermissionNames.wallet_getSecret_('foo')]: {},
+            },
+          };
+        });
+
+      const controller = getDefaultPermissionController(options);
+      expect(
+        await controller.requestPermissions(
+          { origin },
+          {
+            [PermissionNames.wallet_getSecretArray]: {},
+            [PermissionNames.wallet_getSecretObject]: {
+              caveats: [
+                { type: CaveatTypes.filterObjectResponse, value: ['baz'] },
+              ],
+            },
+          },
+        ),
+      ).toMatchObject([
+        {
+          [PermissionNames.wallet_getSecretArray]: getPermissionMatcher({
+            parentCapability: PermissionNames.wallet_getSecretArray,
+            caveats: null,
+            invoker: origin,
+          }),
+          [PermissionNames.wallet_getSecretObject]: getPermissionMatcher({
+            parentCapability: PermissionNames.wallet_getSecretObject,
+            caveats: [
+              { type: CaveatTypes.filterObjectResponse, value: ['baz'] },
+            ],
+            invoker: origin,
+          }),
+          [PermissionNames.wallet_getSecret_('foo')]: getPermissionMatcher({
+            parentCapability: PermissionNames.wallet_getSecret_('foo'),
+            caveats: [{ type: CaveatTypes.noopCaveat, value: null }],
+            invoker: origin,
+          }),
+        },
+        { id: expect.any(String), origin },
+      ]);
+
+      expect(callActionSpy).toHaveBeenCalledTimes(1);
+      expect(callActionSpy).toHaveBeenCalledWith(
+        'ApprovalController:addRequest',
+        {
+          id: expect.any(String),
+          origin,
+          requestData: {
+            metadata: { id: expect.any(String), origin },
+            permissions: {
+              [PermissionNames.wallet_getSecretArray]: {},
+              [PermissionNames.wallet_getSecretObject]: {
+                caveats: [
+                  { type: CaveatTypes.filterObjectResponse, value: ['baz'] },
+                ],
+              },
+            },
+          },
+          type: MethodNames.requestPermissions,
+        },
+        true,
+      );
+    });
+
+    it('requests multiple permissions (approved permissions are a strict subset)', async () => {
+      const options = getPermissionControllerOptions();
+      const { messenger } = options;
+      const origin = 'metamask.io';
+
+      const callActionSpy = jest
+        .spyOn(messenger, 'call')
+        .mockImplementationOnce(async (...args: any) => {
+          const [, { requestData }] = args;
+          const approvedPermissions = { ...requestData.permissions };
+          delete approvedPermissions[PermissionNames.wallet_getSecretArray];
+
+          return {
+            metadata: { ...requestData.metadata },
+            permissions: approvedPermissions,
+          };
+        });
+
+      const controller = getDefaultPermissionController(options);
+      expect(
+        await controller.requestPermissions(
+          { origin },
+          {
+            [PermissionNames.wallet_getSecretArray]: {},
+            [PermissionNames.wallet_getSecretObject]: {
+              caveats: [
+                { type: CaveatTypes.filterObjectResponse, value: ['baz'] },
+              ],
+            },
+            [PermissionNames.wallet_getSecret_('foo')]: {},
+          },
+        ),
+      ).toMatchObject([
+        {
+          [PermissionNames.wallet_getSecretObject]: getPermissionMatcher({
+            parentCapability: PermissionNames.wallet_getSecretObject,
+            caveats: [
+              { type: CaveatTypes.filterObjectResponse, value: ['baz'] },
+            ],
+            invoker: origin,
+          }),
+          [PermissionNames.wallet_getSecret_('foo')]: getPermissionMatcher({
+            parentCapability: PermissionNames.wallet_getSecret_('foo'),
+            caveats: [{ type: CaveatTypes.noopCaveat, value: null }],
+            invoker: origin,
+          }),
+        },
+        { id: expect.any(String), origin },
+      ]);
+
+      expect(callActionSpy).toHaveBeenCalledTimes(1);
+      expect(callActionSpy).toHaveBeenCalledWith(
+        'ApprovalController:addRequest',
+        {
+          id: expect.any(String),
+          origin,
+          requestData: {
+            metadata: { id: expect.any(String), origin },
+            permissions: {
+              [PermissionNames.wallet_getSecretArray]: {},
+              [PermissionNames.wallet_getSecretObject]: {
+                caveats: [
+                  { type: CaveatTypes.filterObjectResponse, value: ['baz'] },
+                ],
+              },
+              [PermissionNames.wallet_getSecret_('foo')]: {},
+            },
+          },
+          type: MethodNames.requestPermissions,
+        },
+        true,
+      );
+    });
+
+    it('requests multiple permissions (an approved permission is modified)', async () => {
+      const options = getPermissionControllerOptions();
+      const { messenger } = options;
+      const origin = 'metamask.io';
+
+      const callActionSpy = jest
+        .spyOn(messenger, 'call')
+        .mockImplementationOnce(async (...args: any) => {
+          const [, { requestData }] = args;
+          const approvedPermissions = { ...requestData.permissions };
+          approvedPermissions[PermissionNames.wallet_getSecretObject] = {
+            caveats: [
+              { type: CaveatTypes.filterObjectResponse, value: ['kaplar'] },
+            ],
+          };
+
+          return {
+            metadata: { ...requestData.metadata },
+            permissions: approvedPermissions,
+          };
+        });
+
+      const controller = getDefaultPermissionController(options);
+      expect(
+        await controller.requestPermissions(
+          { origin },
+          {
+            [PermissionNames.wallet_getSecretArray]: {},
+            [PermissionNames.wallet_getSecretObject]: {
+              caveats: [
+                { type: CaveatTypes.filterObjectResponse, value: ['baz'] },
+              ],
+            },
+            [PermissionNames.wallet_getSecret_('foo')]: {},
+          },
+        ),
+      ).toMatchObject([
+        {
+          [PermissionNames.wallet_getSecretArray]: getPermissionMatcher({
+            parentCapability: PermissionNames.wallet_getSecretArray,
+            caveats: null,
+            invoker: origin,
+          }),
+          [PermissionNames.wallet_getSecretObject]: getPermissionMatcher({
+            parentCapability: PermissionNames.wallet_getSecretObject,
+            caveats: [
+              { type: CaveatTypes.filterObjectResponse, value: ['kaplar'] },
             ],
             invoker: origin,
           }),
