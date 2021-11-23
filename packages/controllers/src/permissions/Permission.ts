@@ -86,27 +86,25 @@ export type PermissionConstraint = {
 export type ValidPermission<
   TargetKey extends TargetName,
   AllowedCaveat extends CaveatConstraint,
-> = ExtractPermissionTargetNames<TargetKey> extends never
-  ? never
-  : PermissionConstraint & {
-      // TODO:TS4.4 Make optional
-      /**
-       * The caveats of the permission.
-       * @see {@link Caveat} For more information.
-       */
-      readonly caveats: AllowedCaveat extends never
-        ? null
-        : NonEmptyArray<AllowedCaveat> | null;
+> = PermissionConstraint & {
+  // TODO:TS4.4 Make optional
+  /**
+   * The caveats of the permission.
+   * @see {@link Caveat} For more information.
+   */
+  readonly caveats: AllowedCaveat extends never
+    ? null
+    : NonEmptyArray<AllowedCaveat> | null;
 
-      /**
-       * A pointer to the resource that possession of the capability grants
-       * access to.
-       *
-       * At present, this is always the name of an RPC method in the context of
-       * MetaMask, but will expand to include other permission types in the future.
-       */
-      readonly parentCapability: ExtractPermissionTargetNames<TargetKey>;
-    };
+  /**
+   * A pointer to the resource that possession of the capability grants
+   * access to.
+   *
+   * At present, this is always the name of an RPC method in the context of
+   * MetaMask, but will expand to include other permission types in the future.
+   */
+  readonly parentCapability: ExtractPermissionTargetNames<TargetKey>;
+};
 
 /**
  * A utility type for ensuring that the given permission target name conforms to
