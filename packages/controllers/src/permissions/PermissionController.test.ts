@@ -26,7 +26,6 @@ import {
   RestrictedMethodParameters,
   ExtractSpecifications,
   CaveatMutatorOperation,
-  RestrictedMethod,
 } from '.';
 
 // Caveat types and specifications
