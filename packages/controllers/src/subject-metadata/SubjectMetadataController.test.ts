@@ -29,9 +29,7 @@ function getSubjectMetadataControllerMessenger() {
       name: controllerName,
       allowedActions: [
         'PermissionController:hasPermissions',
-        'SubjectMetadataController:clearState',
         'SubjectMetadataController:getState',
-        'SubjectMetadataController:trimMetadataState',
       ],
     }),
     hasPermissionsSpy,
@@ -250,40 +248,6 @@ describe('SubjectMetadataController', () => {
           A: getSubjectMetadata('A', 'a'),
           D: getSubjectMetadata('D', 'd'),
         },
-      });
-    });
-  });
-
-  describe('actions', () => {
-    describe('SubjectMetadataController:clearState', () => {
-      it('calls SubjectMetadataController.clearState', () => {
-        const [messenger] = getSubjectMetadataControllerMessenger();
-
-        const controller = new SubjectMetadataController({
-          messenger,
-          subjectCacheLimit: 10,
-        });
-        jest.spyOn(controller, 'clearState');
-
-        messenger.call('SubjectMetadataController:clearState');
-        expect(controller.clearState).toHaveBeenCalledTimes(1);
-        expect(controller.clearState).toHaveBeenCalledWith();
-      });
-    });
-
-    describe('SubjectMetadataController:trimMetadataState', () => {
-      it('calls SubjectMetadataController.trimMetadataState', () => {
-        const [messenger] = getSubjectMetadataControllerMessenger();
-
-        const controller = new SubjectMetadataController({
-          messenger,
-          subjectCacheLimit: 10,
-        });
-        jest.spyOn(controller, 'trimMetadataState');
-
-        messenger.call('SubjectMetadataController:trimMetadataState');
-        expect(controller.trimMetadataState).toHaveBeenCalledTimes(1);
-        expect(controller.trimMetadataState).toHaveBeenCalledWith();
       });
     });
   });

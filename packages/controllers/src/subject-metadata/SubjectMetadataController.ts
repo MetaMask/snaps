@@ -48,20 +48,7 @@ export type GetSubjectMetadataState = {
   handler: () => SubjectMetadataControllerState;
 };
 
-export type ClearSubjectMetadataState = {
-  type: `${typeof controllerName}:clearState`;
-  handler: () => void;
-};
-
-export type TrimSubjectMetadataState = {
-  type: `${typeof controllerName}:trimMetadataState`;
-  handler: () => void;
-};
-
-export type SubjectMetadataControllerActions =
-  | GetSubjectMetadataState
-  | ClearSubjectMetadataState
-  | TrimSubjectMetadataState;
+export type SubjectMetadataControllerActions = GetSubjectMetadataState;
 
 export type SubjectMetadataStateChange = {
   type: `${typeof controllerName}:stateChange`;
@@ -133,23 +120,6 @@ export class SubjectMetadataController extends BaseController<
     this.subjectHasPermissions = hasPermissions;
     this._subjectCacheLimit = subjectCacheLimit;
     this.subjectsEncounteredSinceStartup = new Set();
-    this.registerMessageHandlers();
-  }
-
-  /**
-   * Constructor helper for registering message handlers for the actions of this
-   * controller.
-   */
-  private registerMessageHandlers(): void {
-    this.messagingSystem.registerActionHandler(
-      `${controllerName}:clearState`,
-      () => this.clearState(),
-    );
-
-    this.messagingSystem.registerActionHandler(
-      `${controllerName}:trimMetadataState`,
-      () => this.trimMetadataState(),
-    );
   }
 
   /**
