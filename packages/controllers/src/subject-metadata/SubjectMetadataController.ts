@@ -97,10 +97,6 @@ export class SubjectMetadataController extends BaseController<
 > {
   private _subjectCacheLimit: number;
 
-  get subjectCacheLimit(): number {
-    return this._subjectCacheLimit;
-  }
-
   private subjectsEncounteredSinceStartup: Set<string>;
 
   private subjectHasPermissions: GenericPermissionController['hasPermissions'];
@@ -189,7 +185,7 @@ export class SubjectMetadataController extends BaseController<
     let originToForget: string | null = null;
     // We only delete the oldest encountered subject from the cache, again to
     // ensure that the user's experience isn't degraded by missing icons etc.
-    if (this.subjectsEncounteredSinceStartup.size >= this.subjectCacheLimit) {
+    if (this.subjectsEncounteredSinceStartup.size >= this._subjectCacheLimit) {
       const cachedOrigin = this.subjectsEncounteredSinceStartup
         .values()
         .next().value;
