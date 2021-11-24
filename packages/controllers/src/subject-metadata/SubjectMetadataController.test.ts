@@ -207,7 +207,6 @@ describe('SubjectMetadataController', () => {
         messenger: getSubjectMetadataControllerMessenger()[0],
         subjectCacheLimit: 10,
       });
-      jest.spyOn(console, 'error');
 
       controller.addSubjectMetadata({ origin: 'https://foo@', name: 'foo' });
       expect(controller.state).toStrictEqual({
@@ -215,7 +214,6 @@ describe('SubjectMetadataController', () => {
           'https://foo@': getSubjectMetadata('https://foo@', 'foo'),
         },
       });
-      expect(console.error).toHaveBeenCalledTimes(1);
     });
   });
 

@@ -210,9 +210,7 @@ export class SubjectMetadataController extends BaseController<
       try {
         newMetadata.host = new URL(origin).host;
       } catch (_) {
-        console.error(
-          `${controllerName}: Encountered invalid URL: "${origin}"`,
-        );
+        // Do nothing. Some "origins" are not valid URLs.
       }
     }
 
