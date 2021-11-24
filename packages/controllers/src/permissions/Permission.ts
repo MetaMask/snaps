@@ -350,6 +350,16 @@ type ValidTargetKey<Key extends string> = Key extends `${string}_*`
   ? never
   : Key;
 
+/**
+ * The constraint for permission specification objects. Every {@link Permission}
+ * supported by a {@link PermissionController} must have an associated
+ * specification, which is the source of truth for all permission-related types.
+ * In addition, a permission specification includes the actual implementation
+ * of restricted methods, a list of permitted caveats, and any factory and
+ * validation functions specified by the consumer.
+ *
+ * See the README for more details.
+ */
 export type PermissionSpecificationConstraint = {
   /**
    * The target resource of the permission. At the time of, this is a full
@@ -414,8 +424,7 @@ export type ValidPermissionSpecification<
  * The specifications for all permissions supported by a particular
  * {@link PermissionController}.
  *
- * @template Specifications - A union of all {@link PermissionSpecificationConstraint}
- * types.
+ * @template Specifications - The union of all {@link PermissionSpecificationConstraint} types.
  */
 export type PermissionSpecificationMap<
   Specification extends PermissionSpecificationConstraint,
