@@ -116,9 +116,11 @@ export class SubjectMetadataController extends BaseController<
   }
 
   /**
-   * Clears the state of this controller.
+   * Clears the state of this controller. Also resets the cache of subjects
+   * encountered since startup, so as to not prematurely reach the cache limit.
    */
   clearState(): void {
+    this.subjectsEncounteredSinceStartup.clear();
     this.update((_draftState) => {
       return { ...defaultState };
     });

@@ -106,18 +106,23 @@ describe('SubjectMetadataController', () => {
       const controller = new SubjectMetadataController({
         messenger,
         subjectCacheLimit: 10,
-        state: {
-          subjectMetadata: {
-            'foo.com': getSubjectMetadata('foo.com', 'foo'),
-          },
-        },
       });
+
+      controller.addSubjectMetadata(getSubjectMetadata('foo.com', 'foo'));
 
       expect(controller.state).toStrictEqual({
         subjectMetadata: { 'foo.com': getSubjectMetadata('foo.com', 'foo') },
       });
+
+      expect(
+        (controller as any).subjectsEncounteredSinceStartup.size,
+      ).toStrictEqual(1);
+
       controller.clearState();
       expect(controller.state).toStrictEqual({ subjectMetadata: {} });
+      expect(
+        (controller as any).subjectsEncounteredSinceStartup.size,
+      ).toStrictEqual(0);
     });
   });
 
