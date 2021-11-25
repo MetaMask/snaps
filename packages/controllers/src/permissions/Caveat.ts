@@ -1,5 +1,4 @@
 import { Json } from 'json-rpc-engine';
-
 import { UnrecognizedCaveatTypeError } from './errors';
 import {
   AsyncRestrictedMethod,
@@ -7,6 +6,10 @@ import {
   PermissionConstraint,
   RestrictedMethodParameters,
 } from './Permission';
+// This is used in a docstring, but ESLint doesn't notice it.
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import type { PermissionController } from './PermissionController';
+/* eslint-enable @typescript-eslint/no-unused-vars */
 
 export type CaveatConstraint = {
   /**
@@ -26,7 +29,11 @@ export type CaveatConstraint = {
 };
 
 /**
- * TODO:docs
+ * A `ZCAP-LD`-like caveat object. A caveat is associated with a particular
+ * permission, and stored in its `caveats` array. Conceptually, a caveat is
+ * an arbitrary attenuation of the authority granted by its associated
+ * permission. It is the responsibility of the host to interpret and apply
+ * the restriction represented by a caveat.
  *
  * @template Type - The type of the caveat.
  * @template Value - The value associated with the caveat.
@@ -60,7 +67,7 @@ export type Caveat<Type extends string, Value extends Json> = {
  * @param decorated - The restricted method implementation to be decorated.
  * The method may have already been decorated with other caveats.
  * @param caveat - The caveat object.
- * @returns The decorate restricted method implementation.
+ * @returns The decorated restricted method implementation.
  */
 export type CaveatDecorator<ParentCaveat extends CaveatConstraint> = (
   decorated: AsyncRestrictedMethod<RestrictedMethodParameters, Json>,
@@ -68,7 +75,10 @@ export type CaveatDecorator<ParentCaveat extends CaveatConstraint> = (
 ) => AsyncRestrictedMethod<RestrictedMethodParameters, Json>;
 
 /**
- * TODO:docs
+ * Extracts a caveat value type from a caveat decorator.
+ *
+ * @template Decorator - The {@link CaveatDecorator} to extract a caveat value
+ * type from.
  */
 type ExtractCaveatValueFromDecorator<Decorator extends CaveatDecorator<any>> =
   Decorator extends (
@@ -81,7 +91,12 @@ type ExtractCaveatValueFromDecorator<Decorator extends CaveatDecorator<any>> =
     : never;
 
 /**
- * TODO:docs
+ * A function for validating caveats of a particular type.
+ *
+ * @template ParentCaveat - The caveat type associated with this validator.
+ * @param caveat - The caveat object to validate.
+ * @param origin - The origin associated with the parent permission.
+ * @param target - The target of the parent permission.
  */
 export type CaveatValidator<ParentCaveat extends CaveatConstraint> = (
   caveat: { type: ParentCaveat['type']; value: unknown },
@@ -90,7 +105,14 @@ export type CaveatValidator<ParentCaveat extends CaveatConstraint> = (
 ) => void;
 
 /**
- * TODO:docs
+ * The constraint for caveat specification objects. Every {@link Caveat}
+ * supported by a {@link PermissionController} must have an associated
+ * specification, which is the source of truth for all caveat-related types.
+ * In addition, a caveat specification includes the decorator function used
+ * to apply the caveat's attenuation to a restricted method, and any validator
+ * function specified by the consumer.
+ *
+ * See the README for more details.
  */
 export type CaveatSpecificationConstraint = {
   /**
@@ -119,51 +141,28 @@ export type CaveatSpecificationConstraint = {
 };
 
 /**
- * TODO:docs
- */
-export type CaveatSpecification<SpecifiedCaveat extends CaveatConstraint> = {
-  /**
-   * The string type of the caveat.
-   */
-  type: SpecifiedCaveat['type'];
-
-  /**
-   * The decorator function used to apply the caveat to restricted method
-   * requests.
-   */
-  decorator: CaveatDecorator<SpecifiedCaveat>;
-
-  /**
-   * The validator function used to validate caveats of the associated type
-   * whenever they are instantiated. Caveat are instantiated whenever they are
-   * created or mutated.
-   *
-   * The validator should throw an appropriate JSON-RPC error if validation fails.
-   *
-   * If no validator is specified, no validation of caveat values will be
-   * performed. Although caveats can also be validated by permission validators,
-   * validating caveat values separately is strongly recommended.
-   */
-  validator?: CaveatValidator<SpecifiedCaveat>;
-};
-
-/**
- * TODO:docs
+ * The specifications for all caveats supported by a particular
+ * {@link PermissionController}.
+ *
+ * @template Specifications - The union of all {@link CaveatSpecificationConstraint} types.
  */
 export type CaveatSpecificationMap<
-  Specification extends CaveatSpecificationConstraint,
-> = Record<Specification['type'], Specification>;
+  CaveatSpecification extends CaveatSpecificationConstraint,
+> = Record<CaveatSpecification['type'], CaveatSpecification>;
 
-// TODO: Figure out why we have to extend "any" in this type.
 /**
- * TODO:docs
+ * Extracts the union of all caveat types specified by the given
+ * {@link CaveatSpecificationConstraint} type.
+ *
+ * @template CaveatSpecification - The {@link CaveatSpecificationConstraint} to extract a
+ * caveat type union from.
  */
 export type ExtractCaveats<
-  Specification extends CaveatSpecification<CaveatConstraint>,
-> = Specification extends any
+  CaveatSpecification extends CaveatSpecificationConstraint,
+> = CaveatSpecification extends any
   ? Caveat<
-      Specification['type'],
-      ExtractCaveatValueFromDecorator<Specification['decorator']>
+      CaveatSpecification['type'],
+      ExtractCaveatValueFromDecorator<CaveatSpecification['decorator']>
     >
   : never;
 
@@ -175,7 +174,7 @@ export type ExtractCaveats<
  * @template CaveatType - The type of the caveat to extract.
  */
 export type ExtractCaveat<
-  CaveatSpecifications extends CaveatSpecification<CaveatConstraint>,
+  CaveatSpecifications extends CaveatSpecificationConstraint,
   CaveatType extends string,
 > = Extract<ExtractCaveats<CaveatSpecifications>, { type: CaveatType }>;
 
@@ -187,7 +186,7 @@ export type ExtractCaveat<
  * @template CaveatType - The type of the caveat whose value to extract.
  */
 export type ExtractCaveatValue<
-  CaveatSpecifications extends CaveatSpecification<CaveatConstraint>,
+  CaveatSpecifications extends CaveatSpecificationConstraint,
   CaveatType extends string,
 > = ExtractCaveat<CaveatSpecifications, CaveatType>['value'];
 
@@ -198,7 +197,7 @@ export type ExtractCaveatValue<
  * decorator) must be awaited.
  */
 export function decorateWithCaveats<
-  CaveatSpecifications extends CaveatSpecification<CaveatConstraint>,
+  CaveatSpecifications extends CaveatSpecificationConstraint,
 >(
   methodImplementation: RestrictedMethod<RestrictedMethodParameters, Json>,
   permission: Readonly<PermissionConstraint>, // bound to the requesting origin
