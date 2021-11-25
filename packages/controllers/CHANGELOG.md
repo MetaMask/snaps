@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0]
+### Added
+- `SubjectMetadataController` ([#61](https://github.com/MetaMask/snaps-skunkworks/pull/61))
+- `PermissionController` ([#132](https://github.com/MetaMask/snaps-skunkworks/pull/132), [#141](https://github.com/MetaMask/snaps-skunkworks/pull/141))
+- **BREAKING:** `SnapController`: Add max request processing time ([#128](https://github.com/MetaMask/snaps-skunkworks/pull/128))
+
+### Fixed
+- `SnapController`: Clean up timeouts after stopping a Snap ([#139](https://github.com/MetaMask/snaps-skunkworks/pull/139))
+- `WebWorkerExecutionEnvironmentService`: Clean up post-termination timeouts ([#128](https://github.com/MetaMask/snaps-skunkworks/pull/128))
+
 ## [0.3.1]
 ### Changed
 - **BREAKING:** Update Snap initial states ([#126](https://github.com/MetaMask/snaps-skunkworks/pull/126))
@@ -92,7 +102,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.3.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.2.2...v0.3.0
 [0.2.2]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.2.0...v0.2.2
