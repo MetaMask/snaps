@@ -20,14 +20,12 @@ export type SubjectMetadata = PermissionSubjectMetadata & {
   name: string;
   // TODO:TS4.4 make optional
   extensionId: string | null;
-  host: string | null;
   iconUrl: string | null;
 };
 
 type SubjectMetadataToAdd = PermissionSubjectMetadata & {
   name: string;
   extensionId?: string | null;
-  host?: string | null;
   iconUrl?: string | null;
 } & Record<string, Json>;
 
@@ -148,7 +146,6 @@ export class SubjectMetadataController extends BaseController<
     const newMetadata: SubjectMetadata = {
       ...metadata,
       extensionId: metadata.extensionId || null,
-      host: metadata.host || null,
       iconUrl: metadata.iconUrl || null,
     };
 
@@ -167,18 +164,6 @@ export class SubjectMetadataController extends BaseController<
     }
 
     this.subjectsEncounteredSinceStartup.add(origin);
-
-    if (
-      !newMetadata.extensionId &&
-      !newMetadata.host &&
-      /[a-z]+:\/\/\w.+/iu.test(origin)
-    ) {
-      try {
-        newMetadata.host = new URL(origin).host;
-      } catch (_) {
-        // Do nothing. Some "origins" are not valid URLs.
-      }
-    }
 
     this.update((draftState) => {
       // Typecast: ts(2589)

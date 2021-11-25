@@ -45,7 +45,6 @@ function getSubjectMetadata(
     origin,
     name,
     iconUrl: null,
-    host: null,
     extensionId: null,
     ...opts,
   };
@@ -180,36 +179,6 @@ describe('SubjectMetadataController', () => {
       expect(controller.state).toStrictEqual({
         subjectMetadata: {
           'bar.io': getSubjectMetadata('bar.io', 'bar'),
-        },
-      });
-    });
-
-    it('adds "host" property for valid URL origin', () => {
-      const controller = new SubjectMetadataController({
-        messenger: getSubjectMetadataControllerMessenger()[0],
-        subjectCacheLimit: 10,
-      });
-
-      controller.addSubjectMetadata({ origin: 'https://foo.com', name: 'foo' });
-      expect(controller.state).toStrictEqual({
-        subjectMetadata: {
-          'https://foo.com': getSubjectMetadata('https://foo.com', 'foo', {
-            host: 'foo.com',
-          }),
-        },
-      });
-    });
-
-    it('logs error if failing to compute host from URL-like origin', () => {
-      const controller = new SubjectMetadataController({
-        messenger: getSubjectMetadataControllerMessenger()[0],
-        subjectCacheLimit: 10,
-      });
-
-      controller.addSubjectMetadata({ origin: 'https://foo@', name: 'foo' });
-      expect(controller.state).toStrictEqual({
-        subjectMetadata: {
-          'https://foo@': getSubjectMetadata('https://foo@', 'foo'),
         },
       });
     });
