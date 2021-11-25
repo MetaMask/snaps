@@ -7,12 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.4.0]
-### Uncategorized
-- Finish PermissionController docstrings, remove redundant type ([#141](https://github.com/MetaMask/snaps-skunkworks/pull/141))
-- Add SubjectMetadataController ([#61](https://github.com/MetaMask/snaps-skunkworks/pull/61))
-- PermissionController 2.0 ([#132](https://github.com/MetaMask/snaps-skunkworks/pull/132))
-- Fixed issue with cleanup of lastRequestMap after stopping ([#139](https://github.com/MetaMask/snaps-skunkworks/pull/139))
-- Added max request time + clean up ExecutionEnvironmentService timeouts on terminate ([#128](https://github.com/MetaMask/snaps-skunkworks/pull/128))
+### Added
+- `SubjectMetadataController` ([#61](https://github.com/MetaMask/snaps-skunkworks/pull/61))
+- `PermissionController` ([#132](https://github.com/MetaMask/snaps-skunkworks/pull/132), [#141](https://github.com/MetaMask/snaps-skunkworks/pull/141))
+- **BREAKING:** `SnapController`: Add max request processing time ([#128](https://github.com/MetaMask/snaps-skunkworks/pull/128))
+
+### Fixed
+- `SnapController`: Clean up timeouts after stopping a Snap ([#139](https://github.com/MetaMask/snaps-skunkworks/pull/139))
+- `WebWorkerExecutionEnvironmentService`: Clean up post-termination timeouts ([#128](https://github.com/MetaMask/snaps-skunkworks/pull/128))
 
 ## [0.3.1]
 ### Changed

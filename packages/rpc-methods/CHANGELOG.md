@@ -7,10 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.4.0]
-### Uncategorized
-- Consolidate Snap state management methods into single method ([#135](https://github.com/MetaMask/snaps-skunkworks/pull/135))
-- Remove snap_manageAssets ([#134](https://github.com/MetaMask/snaps-skunkworks/pull/134))
-- Replace RPC method and permission description properties with docstrings ([#130](https://github.com/MetaMask/snaps-skunkworks/pull/130))
+### Changed
+- **BREAKING:** Consolidate Snap state management methods into single method ([#135](https://github.com/MetaMask/snaps-skunkworks/pull/135))
+  - `snap_manageState`
+- **BREAKING:** Replace RPC method and permission description properties with docstrings ([#130](https://github.com/MetaMask/snaps-skunkworks/pull/130))
+
+### Removed
+- **BREAKING:** Remove `snap_manageAssets` ([#134](https://github.com/MetaMask/snaps-skunkworks/pull/134))
 
 ## [0.3.1]
 ### Changed

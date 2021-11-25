@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.4.0]
-### Uncategorized
-- Added max request time + clean up ExecutionEnvironmentService timeouts on terminate ([#128](https://github.com/MetaMask/snaps-skunkworks/pull/128))
+### Fixed
+- Clean up post-termination timeouts ([#128](https://github.com/MetaMask/snaps-skunkworks/pull/128))
 
 ## [0.3.1]
 ### Fixed

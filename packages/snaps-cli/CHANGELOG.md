@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.4.0]
-### Uncategorized
-- Make snaps-cli windows compatible ([#131](https://github.com/MetaMask/snaps-skunkworks/pull/131))
+### Fixed
+- Make Windows-compatible ([#131](https://github.com/MetaMask/snaps-skunkworks/pull/131))
 
 ## [0.3.1]
 ### Changed
