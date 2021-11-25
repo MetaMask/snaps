@@ -101,18 +101,13 @@ export class SubjectMetadataController extends BaseController<
       return messenger.call('PermissionController:hasPermissions', origin);
     };
 
-    if (state.subjectMetadata) {
-      SubjectMetadataController.trimMetadataState(
-        state as SubjectMetadataControllerState,
-        hasPermissions,
-      );
-    }
-
     super({
       name: controllerName,
       metadata: stateMetadata,
       messenger,
-      state: { ...defaultState, ...state },
+      state: {
+        ...SubjectMetadataController.getTrimmedState(state, hasPermissions),
+      },
     });
 
     this.subjectHasPermissions = hasPermissions;
@@ -179,7 +174,7 @@ export class SubjectMetadataController extends BaseController<
    */
   trimMetadataState(): void {
     this.update((draftState) => {
-      SubjectMetadataController.trimMetadataState(
+      return SubjectMetadataController.getTrimmedState(
         // Typecast: ts(2589)
         draftState as any,
         this.subjectHasPermissions,
@@ -188,25 +183,34 @@ export class SubjectMetadataController extends BaseController<
   }
 
   /**
-   * Deletes all subjects without permissions from the given state object. This
-   * method is static because we want to call it in the constructor, before the
-   * controller's state is initialized.
+   * Returns a new state object that only includes subjects with permissions.
+   * This method is static because we want to call it in the constructor, before
+   * the controller's state is initialized.
    *
-   * @param draftState - The `immer` draft state.
+   * @param state - The state object to trim.
    * @param hasPermissions - A function that returns a boolean indicating
    * whether a particular subject (identified by its origin) has any
    * permissions.
+   * @returns The new state object. If the specified `state` object has no
+   * subject metadata, the returned object will be equivalent to the default
+   * state of this controller.
    */
-  private static trimMetadataState(
-    draftState: SubjectMetadataControllerState,
+  private static getTrimmedState(
+    state: Partial<SubjectMetadataControllerState>,
     hasPermissions: SubjectMetadataController['subjectHasPermissions'],
-  ): void {
-    const { subjectMetadata } = draftState;
+  ): SubjectMetadataControllerState {
+    const { subjectMetadata = {} } = state;
 
-    Object.keys(subjectMetadata).forEach((origin) => {
-      if (!hasPermissions(origin)) {
-        delete subjectMetadata[origin];
-      }
-    });
+    return {
+      subjectMetadata: Object.keys(subjectMetadata).reduce(
+        (newSubjectMetadata, origin) => {
+          if (hasPermissions(origin)) {
+            newSubjectMetadata[origin] = subjectMetadata[origin];
+          }
+          return newSubjectMetadata;
+        },
+        {} as Record<SubjectOrigin, SubjectMetadata>,
+      ),
+    };
   }
 }
