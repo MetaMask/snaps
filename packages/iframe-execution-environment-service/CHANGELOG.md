@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0]
+### Uncategorized
+- Added max request time + clean up ExecutionEnvironmentService timeouts on terminate ([#128](https://github.com/MetaMask/snaps-skunkworks/pull/128))
+
 ## [0.3.1]
 ### Fixed
 - Correctly identify breaking changes in [0.3.0] release ([#123](https://github.com/MetaMask/snaps-skunkworks/pull/123))
@@ -53,7 +57,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.3.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.2.2...v0.3.0
 [0.2.2]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.2.0...v0.2.2
