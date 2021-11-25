@@ -202,15 +202,14 @@ export class SubjectMetadataController extends BaseController<
     const { subjectMetadata = {} } = state;
 
     return {
-      subjectMetadata: Object.keys(subjectMetadata).reduce(
-        (newSubjectMetadata, origin) => {
-          if (hasPermissions(origin)) {
-            newSubjectMetadata[origin] = subjectMetadata[origin];
-          }
-          return newSubjectMetadata;
-        },
-        {} as Record<SubjectOrigin, SubjectMetadata>,
-      ),
+      subjectMetadata: Object.keys(subjectMetadata).reduce<
+        Record<SubjectOrigin, SubjectMetadata>
+      >((newSubjectMetadata, origin) => {
+        if (hasPermissions(origin)) {
+          newSubjectMetadata[origin] = subjectMetadata[origin];
+        }
+        return newSubjectMetadata;
+      }, {}),
     };
   }
 }
