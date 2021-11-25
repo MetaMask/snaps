@@ -82,7 +82,7 @@ export class SubjectMetadataController extends BaseController<
 > {
   private subjectCacheLimit: number;
 
-  private subjectsEncounteredSinceStartup: Set<string>;
+  private subjectsWithoutPermissionsEcounteredSinceStartup: Set<string>;
 
   private subjectHasPermissions: GenericPermissionController['hasPermissions'];
 
@@ -112,7 +112,7 @@ export class SubjectMetadataController extends BaseController<
 
     this.subjectHasPermissions = hasPermissions;
     this.subjectCacheLimit = subjectCacheLimit;
-    this.subjectsEncounteredSinceStartup = new Set();
+    this.subjectsWithoutPermissionsEcounteredSinceStartup = new Set();
   }
 
   /**
@@ -120,7 +120,7 @@ export class SubjectMetadataController extends BaseController<
    * encountered since startup, so as to not prematurely reach the cache limit.
    */
   clearState(): void {
-    this.subjectsEncounteredSinceStartup.clear();
+    this.subjectsWithoutPermissionsEcounteredSinceStartup.clear();
     this.update((_draftState) => {
       return { ...defaultState };
     });
@@ -149,18 +149,24 @@ export class SubjectMetadataController extends BaseController<
     let originToForget: string | null = null;
     // We only delete the oldest encountered subject from the cache, again to
     // ensure that the user's experience isn't degraded by missing icons etc.
-    if (this.subjectsEncounteredSinceStartup.size >= this.subjectCacheLimit) {
-      const cachedOrigin = this.subjectsEncounteredSinceStartup
+    if (
+      this.subjectsWithoutPermissionsEcounteredSinceStartup.size >=
+      this.subjectCacheLimit
+    ) {
+      const cachedOrigin = this.subjectsWithoutPermissionsEcounteredSinceStartup
         .values()
         .next().value;
 
-      this.subjectsEncounteredSinceStartup.delete(cachedOrigin);
+      this.subjectsWithoutPermissionsEcounteredSinceStartup.delete(
+        cachedOrigin,
+      );
+
       if (!this.subjectHasPermissions(cachedOrigin)) {
         originToForget = cachedOrigin;
       }
     }
 
-    this.subjectsEncounteredSinceStartup.add(origin);
+    this.subjectsWithoutPermissionsEcounteredSinceStartup.add(origin);
 
     this.update((draftState) => {
       // Typecast: ts(2589)
