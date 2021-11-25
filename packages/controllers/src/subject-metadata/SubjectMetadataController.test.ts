@@ -98,31 +98,35 @@ describe('SubjectMetadataController', () => {
   });
 
   describe('clearState', () => {
-    it('clears the controller state', () => {
+    it('clears the controller state, and continues to function normally afterwards', () => {
       const [messenger, hasPermissionsSpy] =
         getSubjectMetadataControllerMessenger();
-      hasPermissionsSpy.mockImplementation(() => true);
-
       const controller = new SubjectMetadataController({
         messenger,
-        subjectCacheLimit: 10,
+        subjectCacheLimit: 3,
       });
 
+      // No subject will have permissions.
+      hasPermissionsSpy.mockImplementation(() => false);
+
+      // Add subjects up to the cache limit
       controller.addSubjectMetadata(getSubjectMetadata('foo.com', 'foo'));
+      controller.addSubjectMetadata(getSubjectMetadata('bar.com', 'bar'));
+      controller.addSubjectMetadata(getSubjectMetadata('baz.com', 'baz'));
 
-      expect(controller.state).toStrictEqual({
-        subjectMetadata: { 'foo.com': getSubjectMetadata('foo.com', 'foo') },
-      });
+      expect(Object.keys(controller.state.subjectMetadata)).toHaveLength(3);
 
-      expect(
-        (controller as any).subjectsEncounteredSinceStartup.size,
-      ).toStrictEqual(1);
-
+      // Clear the state
       controller.clearState();
-      expect(controller.state).toStrictEqual({ subjectMetadata: {} });
-      expect(
-        (controller as any).subjectsEncounteredSinceStartup.size,
-      ).toStrictEqual(0);
+      expect(Object.keys(controller.state.subjectMetadata)).toHaveLength(0);
+
+      // Add another subject, which also does not have any permissions
+      controller.addSubjectMetadata(getSubjectMetadata('fizz.com', 'fizz'));
+
+      // Observe that the subject was added normally
+      expect(controller.state).toStrictEqual({
+        subjectMetadata: { 'fizz.com': getSubjectMetadata('fizz.com', 'fizz') },
+      });
     });
   });
 
