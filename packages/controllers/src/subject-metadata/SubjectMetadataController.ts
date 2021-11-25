@@ -80,7 +80,7 @@ export class SubjectMetadataController extends BaseController<
   SubjectMetadataControllerState,
   SubjectMetadataControllerMessenger
 > {
-  private _subjectCacheLimit: number;
+  private subjectCacheLimit: number;
 
   private subjectsEncounteredSinceStartup: Set<string>;
 
@@ -111,7 +111,7 @@ export class SubjectMetadataController extends BaseController<
     });
 
     this.subjectHasPermissions = hasPermissions;
-    this._subjectCacheLimit = subjectCacheLimit;
+    this.subjectCacheLimit = subjectCacheLimit;
     this.subjectsEncounteredSinceStartup = new Set();
   }
 
@@ -147,7 +147,7 @@ export class SubjectMetadataController extends BaseController<
     let originToForget: string | null = null;
     // We only delete the oldest encountered subject from the cache, again to
     // ensure that the user's experience isn't degraded by missing icons etc.
-    if (this.subjectsEncounteredSinceStartup.size >= this._subjectCacheLimit) {
+    if (this.subjectsEncounteredSinceStartup.size >= this.subjectCacheLimit) {
       const cachedOrigin = this.subjectsEncounteredSinceStartup
         .values()
         .next().value;
