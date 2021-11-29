@@ -378,7 +378,7 @@ export type PermissionSpecificationConstraint = {
    * The implementation of the restricted method that the permission
    * corresponds to.
    */
-  methodImplementation: RestrictedMethod<any, Json>;
+  methodImplementation: RestrictedMethod<any, any>;
 
   /**
    * The factory function used to get permission objects. Permissions returned
@@ -400,6 +400,47 @@ export type PermissionSpecificationConstraint = {
    * The validator should throw an appropriate JSON-RPC error if validation fails.
    */
   validator?: PermissionValidatorConstraint;
+};
+
+/**
+ * Options for {@link PermissionSpecificationBuilder} functions.
+ */
+type PermissionSpecificationBuilderOptions<
+  FactoryHooks extends Record<string, unknown>,
+  MethodHooks extends Record<string, unknown>,
+  ValidatorHooks extends Record<string, unknown>,
+> = {
+  targetKey?: string;
+  allowedCaveats?: Readonly<NonEmptyArray<string>> | null;
+  factoryHooks?: FactoryHooks;
+  methodHooks?: MethodHooks;
+  validatorHooks?: ValidatorHooks;
+};
+
+/**
+ * A function that builds a permission specification. Modules that specify
+ * restricted methods for external consumption should make this their primary /
+ * default export so that host applications can use them to generate concrete
+ * specifications tailored to their requirements.
+ */
+export type PermissionSpecificationBuilder<
+  Options extends PermissionSpecificationBuilderOptions<any, any, any>,
+  Specification extends PermissionSpecificationConstraint,
+> = (options: Options) => Specification;
+
+/**
+ * A restricted method permission export object, containing the
+ * {@link PermissionSpecificationBuilder} function and "hook name" objects.
+ */
+export type PermissionSpecificationBuilderExportConstraint = {
+  targetKey: string;
+  specificationBuilder: PermissionSpecificationBuilder<
+    PermissionSpecificationBuilderOptions<any, any, any>,
+    PermissionSpecificationConstraint
+  >;
+  factoryHookNames?: Record<string, true>;
+  methodHookNames?: Record<string, true>;
+  validatorHookNames?: Record<string, true>;
 };
 
 /**

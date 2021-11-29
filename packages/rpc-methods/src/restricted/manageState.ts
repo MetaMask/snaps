@@ -1,31 +1,16 @@
+import { Json } from 'json-rpc-engine';
 import {
-  JsonRpcEngineEndCallback,
-  JsonRpcRequest,
-  PendingJsonRpcResponse,
-} from 'json-rpc-engine';
+  PermissionSpecificationBuilder,
+  RestrictedMethodOptions,
+  ValidPermissionSpecification,
+} from '@metamask/snap-controllers';
 import { ethErrors } from 'eth-rpc-errors';
-import { RestrictedHandlerExport } from '../../types';
+import { NonEmptyArray } from '@metamask/snap-controllers/src/utils';
 import { isPlainObject } from '../utils';
 
-/**
- * `snap_manageState` let's the Snap store and manage some of its state on
- * your device.
- */
-export const manageStateHandler: RestrictedHandlerExport<
-  ManageStateHooks,
-  [ManageStateOperation, Record<string, unknown>],
-  Record<string, unknown> | null
-> = {
-  methodNames: ['snap_manageState'],
-  getImplementation: getManageStateHandler,
-  hookNames: {
-    clearSnapState: true,
-    getSnapState: true,
-    updateSnapState: true,
-  },
-};
+const methodName = 'snap_manageState';
 
-export interface ManageStateHooks {
+export type ManageStateMethodHooks = {
   /**
    * A bound function that clears the state of the requesting Snap.
    */
@@ -36,15 +21,54 @@ export interface ManageStateHooks {
    *
    * @returns The current state of the Snap.
    */
-  getSnapState: () => Promise<Record<string, unknown>>;
+  getSnapState: () => Promise<Record<string, Json>>;
 
   /**
    * A bound function that updates the state of the requesting Snap.
    *
    * @param newState - The new state of the Snap.
    */
-  updateSnapState: (newState: Record<string, unknown>) => Promise<void>;
-}
+  updateSnapState: (newState: Record<string, Json>) => Promise<void>;
+};
+
+type ManageStateSpecificationBuilderOptions = {
+  allowedCaveats?: Readonly<NonEmptyArray<string>> | null;
+  methodHooks: ManageStateMethodHooks;
+};
+
+type ManageStateSpecification = ValidPermissionSpecification<{
+  targetKey: typeof methodName;
+  methodImplementation: ReturnType<typeof getManageStateImplementation>;
+  allowedCaveats: Readonly<NonEmptyArray<string>> | null;
+}>;
+
+/**
+ * `snap_manageState` let's the Snap store and manage some of its state on
+ * your device.
+ */
+const specificationBuilder: PermissionSpecificationBuilder<
+  ManageStateSpecificationBuilderOptions,
+  ManageStateSpecification
+> = ({
+  allowedCaveats = null,
+  methodHooks,
+}: ManageStateSpecificationBuilderOptions) => {
+  return {
+    targetKey: methodName,
+    allowedCaveats,
+    methodImplementation: getManageStateImplementation(methodHooks),
+  };
+};
+
+export const manageStateBuilder = {
+  targetKey: methodName,
+  specificationBuilder,
+  methodHooks: {
+    clearSnapState: true,
+    getSnapState: true,
+    updateSnapState: true,
+  },
+} as const;
 
 export enum ManageStateOperation {
   clearState = 'clear',
@@ -52,60 +76,45 @@ export enum ManageStateOperation {
   updateState = 'update',
 }
 
-function getManageStateHandler({
+function getManageStateImplementation({
   clearSnapState,
   getSnapState,
   updateSnapState,
-}: ManageStateHooks) {
+}: ManageStateMethodHooks) {
   return async function manageState(
-    req: JsonRpcRequest<
-      [ManageStateOperation, Record<string, unknown> | undefined]
+    options: RestrictedMethodOptions<
+      [ManageStateOperation, Record<string, Json>]
     >,
-    res: PendingJsonRpcResponse<Record<string, unknown> | null>,
-    _next: unknown,
-    end: JsonRpcEngineEndCallback,
-  ): Promise<void> {
-    const [operation, newState] = req?.params || [];
+  ): Promise<null | Record<string, Json>> {
+    const { params = [], method } = options;
+    const [operation, newState] = params;
 
-    try {
-      switch (operation) {
-        case ManageStateOperation.clearState:
-          await clearSnapState();
-          res.result = null;
-          break;
+    switch (operation) {
+      case ManageStateOperation.clearState:
+        await clearSnapState();
+        return null;
 
-        case ManageStateOperation.getState:
-          res.result = await getSnapState();
-          break;
+      case ManageStateOperation.getState:
+        return await getSnapState();
 
-        case ManageStateOperation.updateState:
-          if (!isPlainObject(newState)) {
-            return end(
-              ethErrors.rpc.invalidParams({
-                message: `Invalid ${req.method} "updateState" parameter: The new state must be a plain object.`,
-                data: {
-                  receivedNewState:
-                    typeof newState === 'undefined' ? 'undefined' : newState,
-                },
-              }),
-            );
-          }
+      case ManageStateOperation.updateState:
+        if (!isPlainObject(newState)) {
+          throw ethErrors.rpc.invalidParams({
+            message: `Invalid ${method} "updateState" parameter: The new state must be a plain object.`,
+            data: {
+              receivedNewState:
+                typeof newState === 'undefined' ? 'undefined' : newState,
+            },
+          });
+        }
 
-          await updateSnapState(newState);
-          res.result = null;
-          break;
+        await updateSnapState(newState);
+        return null;
 
-        default:
-          return end(
-            ethErrors.rpc.invalidParams(
-              `Invalid ${req.method} operation: "${operation}"`,
-            ),
-          );
-      }
-
-      return end();
-    } catch (error) {
-      return end(error);
+      default:
+        throw ethErrors.rpc.invalidParams(
+          `Invalid ${method} operation: "${operation}"`,
+        );
     }
   };
 }

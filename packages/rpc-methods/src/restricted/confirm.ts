@@ -1,61 +1,78 @@
-import {
-  JsonRpcEngineEndCallback,
-  JsonRpcRequest,
-  PendingJsonRpcResponse,
-} from 'json-rpc-engine';
 import { ethErrors } from 'eth-rpc-errors';
-import { AnnotatedJsonRpcEngine } from 'rpc-cap';
-import { RestrictedHandlerExport } from '../../types';
+import {
+  PermissionSpecificationBuilder,
+  RestrictedMethodOptions,
+  ValidPermissionSpecification,
+} from '@metamask/snap-controllers';
+import { NonEmptyArray } from '@metamask/snap-controllers/src/utils';
 
-/**
- * `snap_confirm` lets the Snap display a confirmation dialog to the user.
- */
-export const confirmHandler: RestrictedHandlerExport<
-  ConfirmHooks,
-  [string],
-  boolean
-> = {
-  methodNames: ['snap_confirm'],
-  getImplementation: getConfirmHandler,
-  hookNames: {
-    showConfirmation: true,
-  },
-};
+const methodName = 'snap_confirm';
 
-export interface ConfirmHooks {
+export type ConfirmMethodHooks = {
   /**
    *
    * @param prompt - The prompt to display to the user.
    * @returns Whether the user accepted or rejected the confirmation.
    */
   showConfirmation: (prompt: string) => Promise<boolean>;
-}
+};
 
-function getConfirmHandler({ showConfirmation }: ConfirmHooks) {
+type ConfirmSpecificationBuilderOptions = {
+  allowedCaveats?: Readonly<NonEmptyArray<string>> | null;
+  methodHooks: ConfirmMethodHooks;
+};
+
+type ConfirmSpecification = ValidPermissionSpecification<{
+  targetKey: typeof methodName;
+  methodImplementation: ReturnType<typeof getConfirmImplementation>;
+  allowedCaveats: Readonly<NonEmptyArray<string>> | null;
+}>;
+
+/**
+ * `snap_confirm` lets the Snap display a confirmation dialog to the user.
+ */
+const specificationBuilder: PermissionSpecificationBuilder<
+  ConfirmSpecificationBuilderOptions,
+  ConfirmSpecification
+> = ({
+  allowedCaveats = null,
+  methodHooks,
+}: ConfirmSpecificationBuilderOptions) => {
+  return {
+    targetKey: methodName,
+    allowedCaveats,
+    methodImplementation: getConfirmImplementation(methodHooks),
+  };
+};
+
+export const confirmBuilder = {
+  targetKey: methodName,
+  specificationBuilder,
+  methodHooks: {
+    showConfirmation: true,
+  },
+} as const;
+
+function getConfirmImplementation({ showConfirmation }: ConfirmMethodHooks) {
   return async function confirmImplementation(
-    req: JsonRpcRequest<[string]>,
-    res: PendingJsonRpcResponse<boolean>,
-    _next: unknown,
-    end: JsonRpcEngineEndCallback,
-    engine: AnnotatedJsonRpcEngine,
-  ): Promise<void> {
-    const [prompt] = req?.params || [];
+    args: RestrictedMethodOptions<[string]>,
+  ): Promise<null> {
+    const { params = [], context } = args;
+    const [prompt] = params;
 
     if (!prompt || typeof prompt !== 'string') {
-      return end(
-        ethErrors.rpc.invalidParams({
-          message: 'Must specify a non-empty string prompt.',
-        }),
-      );
+      throw ethErrors.rpc.invalidParams({
+        message: 'Must specify a non-empty string prompt.',
+      });
     }
 
     try {
-      res.result = await showConfirmation(
-        `MetaMask Confirmation\n${engine.domain} asks:\n${prompt}`,
+      await showConfirmation(
+        `MetaMask Confirmation\n${context.origin} asks:\n${prompt}`,
       );
-      return end();
+      return null;
     } catch (error) {
-      return end(error);
+      return null;
     }
   };
 }
