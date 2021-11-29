@@ -4,7 +4,7 @@ import {
   JsonRpcEngineEndCallback,
 } from 'json-rpc-engine';
 import { ethErrors } from 'eth-rpc-errors';
-import { IRequestedPermissions } from 'rpc-cap/dist/src/@types';
+import { RequestedPermissions } from '@metamask/snap-controllers';
 import { PermittedHandlerExport } from '../../types';
 import {
   handleInstallSnaps,
@@ -17,7 +17,7 @@ import {
  */
 export const installSnapsHandler: PermittedHandlerExport<
   InstallSnapsHooks,
-  [IRequestedPermissions],
+  [RequestedPermissions],
   InstallSnapsResult
 > = {
   methodNames: ['wallet_installSnaps'],
@@ -27,15 +27,15 @@ export const installSnapsHandler: PermittedHandlerExport<
   },
 };
 
-export interface InstallSnapsHooks {
+export type InstallSnapsHooks = {
   /**
    * Installs the requested snaps if they are permitted.
    */
   installSnaps: InstallSnapsHook;
-}
+};
 
 async function installSnapsImplementation(
-  req: JsonRpcRequest<[IRequestedPermissions]>,
+  req: JsonRpcRequest<[RequestedPermissions]>,
   res: PendingJsonRpcResponse<InstallSnapsResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,

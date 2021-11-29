@@ -2,10 +2,10 @@ import EventEmitter from 'events';
 import pathUtils from 'path';
 import { workerEval } from './workerEval';
 
-interface MockWorkerInterface extends EventEmitter {
+type MockWorkerInterface = {
   constructorArgs: unknown[];
   postMessage: () => void;
-}
+} & EventEmitter;
 
 let mockWorkerRef: MockWorkerInterface;
 

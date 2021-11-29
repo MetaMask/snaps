@@ -1,18 +1,22 @@
 import { ethErrors } from 'eth-rpc-errors';
-import { SNAP_PREFIX, InstallSnapsResult } from '@metamask/snap-controllers';
-import { IRequestedPermissions } from 'rpc-cap/dist/src/@types';
+import {
+  SNAP_PREFIX,
+  InstallSnapsResult,
+  RequestedPermissions,
+} from '@metamask/snap-controllers';
+
 import { isPlainObject } from '../../utils';
 
 export { InstallSnapsResult } from '@metamask/snap-controllers';
 
 export type InstallSnapsHook = (
-  requestedSnaps: IRequestedPermissions,
+  requestedSnaps: RequestedPermissions,
 ) => Promise<InstallSnapsResult>;
 
 // preprocess requested permissions to support 'wallet_snap' syntactic sugar
 export function preprocessRequestedPermissions(
-  requestedPermissions: IRequestedPermissions,
-): IRequestedPermissions {
+  requestedPermissions: RequestedPermissions,
+): RequestedPermissions {
   if (!isPlainObject(requestedPermissions)) {
     throw ethErrors.rpc.invalidRequest({ data: { requestedPermissions } });
   }
@@ -36,7 +40,7 @@ export function preprocessRequestedPermissions(
 
         const requestedSnaps = requestedPermissions[
           permName
-        ] as IRequestedPermissions;
+        ] as RequestedPermissions;
 
         // destructure 'wallet_snap' object
         Object.keys(requestedSnaps).forEach((snapName) => {
@@ -60,7 +64,7 @@ export function preprocessRequestedPermissions(
 
       return newRequestedPermissions;
     },
-    {} as IRequestedPermissions,
+    {} as RequestedPermissions,
   );
 }
 
@@ -69,7 +73,7 @@ export function preprocessRequestedPermissions(
  * controller for installation.
  */
 export async function handleInstallSnaps(
-  requestedSnaps: IRequestedPermissions,
+  requestedSnaps: RequestedPermissions,
   installSnaps: InstallSnapsHook,
 ): Promise<InstallSnapsResult> {
   if (!isPlainObject(requestedSnaps)) {

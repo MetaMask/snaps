@@ -20,9 +20,9 @@ jest.mock('fs', () => ({
 
 jest.mock('init-package-json');
 
-interface ErrorWithCode extends Error {
+type ErrorWithCode = {
   code?: number | string;
-}
+} & Error;
 
 describe('initUtils', () => {
   describe('asyncPackageInit', () => {

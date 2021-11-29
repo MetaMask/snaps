@@ -21,11 +21,11 @@ type SnapRpcHandler = (
   request: Record<string, unknown>,
 ) => Promise<unknown>;
 
-interface SnapRpcRequest {
+type SnapRpcRequest = {
   origin: string;
   request: Record<string, unknown>;
   target: string;
-}
+};
 
 lockdown({
   // TODO: Which would we use in prod?
