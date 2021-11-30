@@ -57,13 +57,13 @@ const specificationBuilder: PermissionSpecificationBuilder<
   };
 };
 
-export const getBip44EntropyBuilder = {
+export const getBip44EntropyBuilder = Object.freeze({
   targetKey,
   specificationBuilder,
   methodHooks: {
     getMnemonic: true,
   },
-} as const;
+} as const);
 
 const ALL_DIGIT_REGEX = /^\d+$/u;
 

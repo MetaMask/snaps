@@ -50,7 +50,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
   };
 };
 
-export const invokeSnapBuilder = {
+export const invokeSnapBuilder = Object.freeze({
   targetKey,
   specificationBuilder,
   methodHooks: {
@@ -58,7 +58,7 @@ export const invokeSnapBuilder = {
     addSnap: true,
     getSnapRpcHandler: true,
   },
-} as const;
+} as const);
 
 function getInvokeSnapImplementation({
   getSnap,

@@ -60,7 +60,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
   };
 };
 
-export const manageStateBuilder = {
+export const manageStateBuilder = Object.freeze({
   targetKey: methodName,
   specificationBuilder,
   methodHooks: {
@@ -68,7 +68,7 @@ export const manageStateBuilder = {
     getSnapState: true,
     updateSnapState: true,
   },
-} as const;
+} as const);
 
 export enum ManageStateOperation {
   clearState = 'clear',

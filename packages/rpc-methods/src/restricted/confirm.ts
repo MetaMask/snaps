@@ -45,13 +45,13 @@ const specificationBuilder: PermissionSpecificationBuilder<
   };
 };
 
-export const confirmBuilder = {
+export const confirmBuilder = Object.freeze({
   targetKey: methodName,
   specificationBuilder,
   methodHooks: {
     showConfirmation: true,
   },
-} as const;
+} as const);
 
 function getConfirmImplementation({ showConfirmation }: ConfirmMethodHooks) {
   return async function confirmImplementation(
