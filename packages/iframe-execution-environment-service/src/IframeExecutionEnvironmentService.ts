@@ -150,8 +150,10 @@ export class IframeExecutionEnvironmentService
 
     Object.values(jobWrapper.streams).forEach((stream) => {
       try {
-        !stream.destroyed && stream.destroy();
-        stream.removeAllListeners();
+        if (stream && !stream.destroyed) {
+          stream.destroy();
+          stream.removeAllListeners();
+        }
       } catch (err) {
         console.log('Error while destroying stream', err);
       }
