@@ -4,9 +4,12 @@ import {
   JsonRpcEngineEndCallback,
 } from 'json-rpc-engine';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
-import { IRequestedPermissions } from 'rpc-cap/dist/src/@types';
-import { IOcapLdCapability } from 'rpc-cap/dist/src/@types/ocap-ld';
-import { SNAP_PREFIX, SNAP_PREFIX_REGEX } from '@metamask/snap-controllers';
+import {
+  RequestedPermissions,
+  PermissionConstraint,
+  SNAP_PREFIX,
+  SNAP_PREFIX_REGEX,
+} from '@metamask/snap-controllers';
 import { PermittedHandlerExport } from '../../types';
 import {
   handleInstallSnaps,
@@ -17,12 +20,12 @@ import {
 
 type SerializedEthereumRpcError = ReturnType<typeof serializeError>;
 
-export interface EnableWalletResult {
+export type EnableWalletResult = {
   accounts: string[];
-  permissions: IOcapLdCapability[];
+  permissions: PermissionConstraint[];
   snaps: InstallSnapsResult;
   errors?: SerializedEthereumRpcError[];
-}
+};
 
 /**
  * `wallet_enable` is a convenience method that takes a request permissions
@@ -36,7 +39,7 @@ export interface EnableWalletResult {
  */
 export const enableWalletHandler: PermittedHandlerExport<
   EnableWalletHooks,
-  [IRequestedPermissions],
+  [RequestedPermissions],
   EnableWalletResult
 > = {
   methodNames: ['wallet_enable'],
@@ -48,7 +51,7 @@ export const enableWalletHandler: PermittedHandlerExport<
   },
 };
 
-export interface EnableWalletHooks {
+export type EnableWalletHooks = {
   /**
    * @returns The permitted accounts for the requesting origin.
    */
@@ -64,12 +67,12 @@ export interface EnableWalletHooks {
    * @returns The result of the permissions request.
    */
   requestPermissions: (
-    permissions: IRequestedPermissions,
-  ) => Promise<IOcapLdCapability[]>;
-}
+    permissions: RequestedPermissions,
+  ) => Promise<PermissionConstraint[]>;
+};
 
 async function enableWallet(
-  req: JsonRpcRequest<[IRequestedPermissions]>,
+  req: JsonRpcRequest<[RequestedPermissions]>,
   res: PendingJsonRpcResponse<EnableWalletResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
@@ -91,7 +94,7 @@ async function enableWallet(
 
   // request the permissions
 
-  let requestedPermissions: IRequestedPermissions;
+  let requestedPermissions: RequestedPermissions;
   try {
     // we expect the params to be the same as wallet_requestPermissions
     requestedPermissions = preprocessRequestedPermissions(req.params[0]);
@@ -106,20 +109,20 @@ async function enableWallet(
   // install snaps, if any
 
   // get the names of the approved snaps
-  const requestedSnaps: IRequestedPermissions = result.permissions
+  const requestedSnaps: RequestedPermissions = result.permissions
     // requestPermissions returns all permissions for the domain,
     // so we're filtering out non-snap and preexisting permissions
     .filter(
-      (p) =>
-        p.parentCapability.startsWith(SNAP_PREFIX) &&
-        p.parentCapability in requestedPermissions,
+      (perm) =>
+        perm.parentCapability.startsWith(SNAP_PREFIX) &&
+        perm.parentCapability in requestedPermissions,
     )
     // convert from namespaced permissions to snap names
-    .map((p) => p.parentCapability.replace(SNAP_PREFIX_REGEX, ''))
-    .reduce((_requestedSnaps, snapName) => {
-      _requestedSnaps[snapName] = {};
+    .reduce((_requestedSnaps, perm) => {
+      const snapId = perm.parentCapability.replace(SNAP_PREFIX_REGEX, '');
+      _requestedSnaps[snapId] = requestedPermissions[perm.parentCapability];
       return _requestedSnaps;
-    }, {} as IRequestedPermissions);
+    }, {} as RequestedPermissions);
 
   try {
     if (Object.keys(requestedSnaps).length > 0) {

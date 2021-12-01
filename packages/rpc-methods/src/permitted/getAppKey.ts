@@ -21,7 +21,7 @@ export const getAppKeyHandler: PermittedHandlerExport<
   },
 };
 
-export interface GetAppKeyHooks {
+export type GetAppKeyHooks = {
   /**
    * A bound function that gets the app key for a particular snap.
    * @param requestedAccount - The requested account to get the app key for, if
@@ -29,7 +29,7 @@ export interface GetAppKeyHooks {
    * @returns The requested app key.
    */
   getAppKey: (requestedAccount?: string) => Promise<string>;
-}
+};
 
 async function getAppKeyImplementation(
   req: JsonRpcRequest<[string]>,

@@ -20,12 +20,12 @@ export const getSnapsHandler: PermittedHandlerExport<
   },
 };
 
-export interface GetSnapsHooks {
+export type GetSnapsHooks = {
   /**
    * @returns The permitted and installed snaps for the requesting origin.
    */
   getSnaps: () => InstallSnapsResult;
-}
+};
 
 async function getSnapsImplementation(
   _req: unknown,

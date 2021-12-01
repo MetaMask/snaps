@@ -11,9 +11,9 @@ jest.mock('fs', () => ({
   createWriteStream: jest.fn(),
 }));
 
-interface MockStream extends EventEmitter {
+type MockStream = {
   end: () => void;
-}
+} & EventEmitter;
 
 function getMockStream(): MockStream {
   const stream: MockStream = new EventEmitter() as any;

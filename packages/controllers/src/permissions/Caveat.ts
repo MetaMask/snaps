@@ -141,6 +141,42 @@ export type CaveatSpecificationConstraint = {
 };
 
 /**
+ * Options for {@link CaveatSpecificationBuilder} functions.
+ */
+type CaveatSpecificationBuilderOptions<
+  DecoratorHooks extends Record<string, unknown>,
+  ValidatorHooks extends Record<string, unknown>,
+> = {
+  type?: string;
+  decoratorHooks?: DecoratorHooks;
+  validatorHooks?: ValidatorHooks;
+};
+
+/**
+ * A function that builds caveat specifications. Modules that specify caveats
+ * for external consumption should make this their primary / default export so
+ * that host applications can use them to generate concrete specifications
+ * tailored to their requirements.
+ */
+export type CaveatSpecificationBuilder<
+  Options extends CaveatSpecificationBuilderOptions<any, any>,
+  Specification extends CaveatSpecificationConstraint,
+> = (options: Options) => Specification;
+
+/**
+ * A caveat specification export object, containing the
+ * {@link CaveatSpecificationBuilder} function and "hook name" objects.
+ */
+export type CaveatSpecificationBuilderExportConstraint = {
+  specificationBuilder: CaveatSpecificationBuilder<
+    CaveatSpecificationBuilderOptions<any, any>,
+    CaveatSpecificationConstraint
+  >;
+  decoratorHookNames?: Record<string, true>;
+  validatorHookNames?: Record<string, true>;
+};
+
+/**
  * The specifications for all caveats supported by a particular
  * {@link PermissionController}.
  *

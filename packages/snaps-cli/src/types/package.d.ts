@@ -1,25 +1,25 @@
 import { Options } from 'yargs';
 
-export interface SnapsCliGlobals {
+export type SnapsCliGlobals = {
   snaps: {
     verboseErrors?: boolean;
     suppressWarnings?: boolean;
     isWatching?: boolean;
   };
-}
+};
 
-interface ManifestWalletProperty {
+type ManifestWalletProperty = {
   bundle?: { local?: string; url?: string };
   initialPermissions?: Record<string, unknown>;
-}
+};
 
-export interface NodePackageManifest {
+export type NodePackageManifest = {
   [key: string]: unknown;
   main?: string;
   web3Wallet?: ManifestWalletProperty;
-}
+};
 
-export interface Builders {
+export type Builders = {
   readonly src: Readonly<Options>;
   readonly dist: Readonly<Options>;
   readonly bundle: Readonly<Options>;
@@ -33,4 +33,4 @@ export interface Builders {
   readonly eval: Readonly<Options>;
   readonly verboseErrors: Readonly<Options>;
   readonly suppressWarnings: Readonly<Options>;
-}
+};
