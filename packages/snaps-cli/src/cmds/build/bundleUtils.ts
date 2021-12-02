@@ -20,7 +20,7 @@ export function createBundleStream(dest: string): NodeJS.WritableStream {
   return stream;
 }
 
-interface CloseStreamArgs {
+type CloseStreamArgs = {
   bundleError: Error;
   bundleBuffer: Buffer;
   bundleStream: NodeJS.WritableStream;
@@ -28,7 +28,7 @@ interface CloseStreamArgs {
   dest: string;
   resolve: (value: boolean) => void;
   argv: YargsArgs;
-}
+};
 
 /**
  * Postprocesses the bundle string and closes the write stream.

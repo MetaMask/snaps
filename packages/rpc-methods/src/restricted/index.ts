@@ -1,21 +1,21 @@
-import { confirmHandler, ConfirmHooks } from './confirm';
+import { confirmBuilder, ConfirmMethodHooks } from './confirm';
 import {
-  getBip44EntropyHandler,
-  GetBip44EntropyHooks,
+  getBip44EntropyBuilder,
+  GetBip44EntropyMethodHooks,
 } from './getBip44Entropy';
-import { invokeSnapHandler, InvokeSnapHooks } from './invokeSnap';
-import { manageStateHandler, ManageStateHooks } from './manageState';
+import { invokeSnapBuilder, InvokeSnapMethodHooks } from './invokeSnap';
+import { manageStateBuilder, ManageStateMethodHooks } from './manageState';
 
 export { ManageStateOperation } from './manageState';
 
-export type RestrictedRpcMethodHooks = ConfirmHooks &
-  GetBip44EntropyHooks &
-  InvokeSnapHooks &
-  ManageStateHooks;
+export type RestrictedMethodHooks = ConfirmMethodHooks &
+  GetBip44EntropyMethodHooks &
+  InvokeSnapMethodHooks &
+  ManageStateMethodHooks;
 
-export const handlers = [
-  confirmHandler,
-  getBip44EntropyHandler,
-  invokeSnapHandler,
-  manageStateHandler,
-];
+export const builders = {
+  [confirmBuilder.targetKey]: confirmBuilder,
+  [getBip44EntropyBuilder.targetKey]: getBip44EntropyBuilder,
+  [invokeSnapBuilder.targetKey]: invokeSnapBuilder,
+  [manageStateBuilder.targetKey]: manageStateBuilder,
+} as const;

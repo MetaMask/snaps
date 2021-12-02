@@ -15,20 +15,20 @@ import { ExecutionEnvironmentService } from '@metamask/snap-controllers';
 
 export type SetupSnapProvider = (snapName: string, stream: Duplex) => void;
 
-interface IframeExecutionEnvironmentServiceArgs {
+type IframeExecutionEnvironmentServiceArgs = {
   createWindowTimeout?: number;
   setupSnapProvider: SetupSnapProvider;
   iframeUrl: URL;
   messenger: ServiceMessenger;
   unresponsivePollingInterval?: number;
   unresponsiveTimeout?: number;
-}
+};
 
-interface JobStreams {
+type JobStreams = {
   command: Duplex;
   rpc: Duplex | null;
   _connection: WindowPostMessageStream;
-}
+};
 
 // The snap is the callee
 export type SnapRpcHook = (
@@ -36,11 +36,11 @@ export type SnapRpcHook = (
   request: Record<string, unknown>,
 ) => Promise<unknown>;
 
-interface EnvMetadata {
+type EnvMetadata = {
   id: string;
   streams: JobStreams;
   rpcEngine: JsonRpcEngine;
-}
+};
 
 export class IframeExecutionEnvironmentService
   implements ExecutionEnvironmentService
@@ -150,8 +150,10 @@ export class IframeExecutionEnvironmentService
 
     Object.values(jobWrapper.streams).forEach((stream) => {
       try {
-        !stream.destroyed && stream.destroy();
-        stream.removeAllListeners();
+        if (stream && !stream.destroyed) {
+          stream.destroy();
+          stream.removeAllListeners();
+        }
       } catch (err) {
         console.log('Error while destroying stream', err);
       }

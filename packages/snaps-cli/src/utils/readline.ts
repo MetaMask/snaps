@@ -2,12 +2,12 @@ import readline from 'readline';
 
 let singletonReadlineInterface: readline.Interface;
 
-interface PromptArgs {
+type PromptArgs = {
   question: string;
   defaultValue?: string;
   shouldClose?: boolean;
   readlineInterface?: readline.Interface;
-}
+};
 
 function openPrompt(): void {
   singletonReadlineInterface = readline.createInterface({

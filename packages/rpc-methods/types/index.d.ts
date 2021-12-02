@@ -4,7 +4,6 @@ import {
   JsonRpcEngineEndCallback,
   PendingJsonRpcResponse,
 } from 'json-rpc-engine';
-import { AnnotatedJsonRpcEngine } from 'rpc-cap';
 
 export type HandlerMiddlewareFunction<T, U, V> = (
   req: JsonRpcRequest<U>,
@@ -14,21 +13,9 @@ export type HandlerMiddlewareFunction<T, U, V> = (
   hooks: T,
 ) => void | Promise<void>;
 
-export type RestrictedHandlerMiddlewareFunction<T, U> = (
-  req: JsonRpcRequest<T>,
-  res: PendingJsonRpcResponse<U>,
-  next: JsonRpcEngineNextCallback,
-  end: JsonRpcEngineEndCallback,
-  engine: AnnotatedJsonRpcEngine,
-) => void | Promise<void>;
-
-export type RestrictedHandlerMiddlewareGetter<T, U, V> = (
-  hooks: T,
-) => RestrictedHandlerMiddlewareFunction<U, V>;
-
-interface BaseHandlerExport {
+type BaseHandlerExport = {
   methodNames: string[];
-}
+};
 
 /**
  * We use a mapped object type in order to create a type that requires the
@@ -40,12 +27,7 @@ export type HookNames<T> = {
   [Property in keyof T]: true;
 };
 
-export interface PermittedHandlerExport<T, U, V> extends BaseHandlerExport {
+export type PermittedHandlerExport<T, U, V> = {
   implementation: HandlerMiddlewareFunction<T, U, V>;
   hookNames: HookNames<T>;
-}
-
-export interface RestrictedHandlerExport<T, U, V> extends BaseHandlerExport {
-  getImplementation: RestrictedHandlerMiddlewareGetter<T, U, V>;
-  hookNames: HookNames<T>;
-}
+} & BaseHandlerExport;
