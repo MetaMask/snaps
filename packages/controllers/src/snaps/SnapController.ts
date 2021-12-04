@@ -25,13 +25,13 @@ import { timeSince } from '../utils';
 import {
   LOCALHOST_HOSTNAMES,
   SnapIdPrefixes,
-  SNAP_MANIFEST_FILE,
+  NpmSnapFileNames,
   validateSnapShasum,
   ValidatedSnapId,
   fetchContent,
   fetchNpmSnap,
 } from './utils';
-import { SnapManifest, validateSnapManifest } from './json-schemas';
+import { SnapManifest, validateSnapJsonFile } from './json-schemas';
 
 export const controllerName = 'SnapController';
 
@@ -873,7 +873,7 @@ export class SnapController extends BaseController<
     if ('manifest' in args) {
       manifest = args.manifest;
       sourceCode = args.sourceCode;
-      validateSnapManifest(manifest);
+      validateSnapJsonFile(NpmSnapFileNames.Manifest, manifest);
     } else {
       [manifest, sourceCode] = await this._fetchSnap(snapId, version);
     }
@@ -956,7 +956,8 @@ export class SnapController extends BaseController<
       throw new Error(`Received invalid Snap version: "${version}".`);
     }
 
-    return fetchNpmSnap(packageName, version);
+    const [manifest, sourceCode] = await fetchNpmSnap(packageName, version);
+    return [manifest, sourceCode];
   }
 
   /**
@@ -968,7 +969,7 @@ export class SnapController extends BaseController<
   private async _fetchLocalSnap(
     localhostUrl: string,
   ): Promise<[SnapManifest, string]> {
-    const manifestUrl = new URL(SNAP_MANIFEST_FILE, localhostUrl);
+    const manifestUrl = new URL(NpmSnapFileNames.Manifest, localhostUrl);
     if (!LOCALHOST_HOSTNAMES.has(manifestUrl.hostname)) {
       throw new Error(
         `Invalid URL: Locally hosted Snaps must be hosted on localhost. Received URL: "${manifestUrl.toString()}"`,
@@ -976,7 +977,7 @@ export class SnapController extends BaseController<
     }
 
     const _manifest = await fetchContent(manifestUrl, 'json');
-    validateSnapManifest(_manifest);
+    validateSnapJsonFile(NpmSnapFileNames.Manifest, _manifest);
     const manifest = _manifest as SnapManifest;
 
     const {

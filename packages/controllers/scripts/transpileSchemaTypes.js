@@ -19,8 +19,6 @@ function transpileSchema(schema, primaryExportName) {
       .replace(/^export /gmu, '')
       // Convert all interfaces to object types for Json type compatibility
       .replace(/^interface (\w+) \{/gmu, 'type $1 = {')
-      // Convert all optional properties to "X | null" for TS@<4.4 compatibility
-      .replace(/(\w+)\?: (\w+);/gmu, '$1: $2 | null')
       // Export the primary schema type only
       .replace(
         new RegExp(`^type ${primaryExportName}`, 'mu'),

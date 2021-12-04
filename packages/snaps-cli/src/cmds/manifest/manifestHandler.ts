@@ -1,233 +1,141 @@
 import { promises as fs } from 'fs';
-import pathUtils from 'path';
-import dequal from 'fast-deep-equal';
-import isUrl from 'is-url';
-import rfdc from 'rfdc';
-import { isFile, permRequestKeys } from '../../utils';
-import { YargsArgs } from '../../types/yargs';
+import type { Json, SnapManifest } from '@metamask/snap-controllers';
 import {
-  NodePackageManifest,
-  ManifestWalletProperty,
-} from '../../types/package';
+  NpmSnapFileNames,
+  UnvalidatedSnapFiles,
+  validateNpmSnap,
+  validateNpmSnapManifest,
+  getSnapSourceShasum,
+  ProgrammaticallyFixableSnapError,
+  SnapValidationFailureReason,
+  SnapFiles,
+} from '@metamask/snap-controllers/dist/snaps/utils';
+import { deepClone, readJsonFile } from '../../utils';
+import { YargsArgs } from '../../types/yargs';
 
-const deepClone = rfdc({ proto: false, circles: false });
+const errorPrefix = 'Manifest Error: ';
 
-const LOCALHOST_START = 'http://localhost';
+const ManifestSortOrder: Record<keyof SnapManifest, number> = {
+  version: 1,
+  proposedName: 2,
+  description: 2,
+  repository: 3,
+  source: 4,
+  initialPermissions: 5,
+  manifestVersion: 6,
+};
 
 /**
- * Validates a Snap package.json file.
- * Exits with success message or gathers all errors before throwing at the end.
+ * Validates a snap.manifest.json file. Attempts to fix the manifest and write
+ * the fixed version to disk if `writeManifest` is true. Throws if validation
+ * fails.
+ *
+ * @param argv - The Yargs `argv` object.
  */
-export async function manifest(argv: YargsArgs): Promise<void> {
-  let isInvalid = false;
-  let hasWarnings = false;
+export async function manifestHandler({
+  writeManifest,
+}: YargsArgs): Promise<void> {
   let didUpdate = false;
+  let hasWarnings = false;
 
-  const { dist, port, outfileName } = argv;
-  if (!dist) {
-    throw new Error(`Invalid params: must provide 'dist'`);
-  }
+  const unvalidatedManifest = await readSnapJsonFile(NpmSnapFileNames.Manifest);
+  const snapFiles: UnvalidatedSnapFiles = {
+    manifest: unvalidatedManifest,
+    packageJson: await readSnapJsonFile(NpmSnapFileNames.PackageJson),
+    sourceCode: await getSnapSourceCode(unvalidatedManifest),
+  };
 
-  // read the package.json file
-  let pkg: NodePackageManifest;
+  let manifest: SnapManifest | undefined;
   try {
-    pkg = JSON.parse(await fs.readFile('package.json', 'utf-8'));
-  } catch (err) {
-    if (err.code === 'ENOENT') {
-      throw new Error(
-        `Manifest error: Could not find package.json. Please ensure that ` +
-          `you are running the command in the project root directory.`,
-      );
-    }
-    throw new Error(`Could not parse package.json`);
-  }
+    [manifest] = validateNpmSnap(snapFiles, errorPrefix);
+  } catch (error) {
+    if (writeManifest && error instanceof ProgrammaticallyFixableSnapError) {
+      // If we get here, the files at least have the correct shape.
+      const partiallyValidatedFiles = snapFiles as SnapFiles;
 
-  if (!pkg || typeof pkg !== 'object') {
-    throw new Error(`Invalid parsed package.json: ${pkg}`);
-  }
+      let isInvalid = true;
+      const maxAttempts = Object.keys(SnapValidationFailureReason).length;
 
-  // attempt to set missing/erroneous properties if commanded
-  if (argv.populate) {
-    const old = pkg.web3Wallet ? deepClone(pkg.web3Wallet) : {};
+      // Attempt to fix all fixable validation failure reasons. All such reasons
+      // are enumerated by the SnapValidationFailureReason enum, so we only
+      for (let attempts = 1; isInvalid && attempts <= maxAttempts; attempts++) {
+        manifest = fixManifest(partiallyValidatedFiles, error);
 
-    if (!pkg.web3Wallet) {
-      pkg.web3Wallet = {};
-    }
+        try {
+          validateNpmSnapManifest(
+            { ...partiallyValidatedFiles, manifest },
+            errorPrefix,
+          );
 
-    const bundle = pkg.web3Wallet.bundle || {};
-    if (!pkg.web3Wallet.bundle) {
-      pkg.web3Wallet.bundle = bundle;
-    }
-
-    if (!pkg.web3Wallet.initialPermissions) {
-      pkg.web3Wallet.initialPermissions = {};
-    }
-
-    const { web3Wallet } = pkg;
-
-    const bundlePath = pathUtils.join(
-      dist,
-      (outfileName as string) || 'bundle.js',
-    );
-    if (bundle.local !== bundlePath) {
-      bundle.local = bundlePath;
-    }
-
-    if (
-      port &&
-      (typeof bundle.url !== 'string' || bundle.url.startsWith(LOCALHOST_START))
-    ) {
-      bundle.url = `${LOCALHOST_START}:${port}/${bundlePath}`;
-    }
-
-    // sort web3Wallet object keys
-    Object.keys(web3Wallet)
-      .sort()
-      .forEach((_key) => {
-        const key = _key as keyof ManifestWalletProperty;
-        const property = web3Wallet[key];
-
-        if (
-          property &&
-          typeof property === 'object' &&
-          !Array.isArray(property)
-        ) {
-          web3Wallet[key] = Object.keys(property)
-            .sort()
-            .reduce((sortedProperty, _innerKey) => {
-              const innerKey =
-                _innerKey as keyof ManifestWalletProperty[typeof key];
-              sortedProperty[innerKey] = property[innerKey];
-
-              return sortedProperty;
-            }, {} as Record<string, unknown>);
-        }
-      });
-
-    if (!dequal(old, web3Wallet)) {
-      didUpdate = true;
-    }
-  }
-
-  // check presence of required and recommended keys
-  const existing = Object.keys(pkg);
-  const required = ['name', 'version', 'description', 'main', 'web3Wallet'];
-  const recommended = ['repository'];
-
-  let missing = required.filter((key) => !existing.includes(key));
-  if (missing.length > 0) {
-    logManifestWarning(
-      `Missing required package.json properties:\n${missing.reduce(
-        (acc, curr) => {
-          return `${acc}\t${curr}\n`;
-        },
-        '',
-      )}`,
-    );
-  }
-
-  missing = recommended.filter((key) => !existing.includes(key));
-  if (missing.length > 0) {
-    logManifestWarning(
-      `Missing recommended package.json properties:\n${missing.reduce(
-        (acc, curr) => {
-          return `${acc}\t${curr}\n`;
-        },
-        '',
-      )}`,
-    );
-  }
-
-  // check web3Wallet properties
-  if (pkg.web3Wallet !== undefined) {
-    const { bundle, initialPermissions } = pkg.web3Wallet || {};
-    if (bundle?.local) {
-      if (!(await isFile(bundle.local))) {
-        logManifestError(`'bundle.local' does not resolve to a file.`);
-      }
-    } else {
-      logManifestError(
-        `Missing required 'web3Wallet' property 'bundle.local'.`,
-      );
-    }
-
-    if (bundle !== undefined) {
-      if (!bundle.url) {
-        logManifestError(`Missing required 'bundle.url' property.`);
-      } else if (!isUrl(bundle.url)) {
-        logManifestError(`'bundle.url' does not resolve to a URL.`);
-      }
-    }
-
-    if (
-      Object.prototype.hasOwnProperty.call(pkg.web3Wallet, 'initialPermissions')
-    ) {
-      if (
-        typeof initialPermissions !== 'object' ||
-        Array.isArray(initialPermissions)
-      ) {
-        logManifestError(
-          `'web3Wallet' property 'initialPermissions' must be an object if present.`,
-        );
-      } else if (Object.keys(initialPermissions).length > 0) {
-        Object.entries(initialPermissions).forEach(([permission, value]) => {
-          if (typeof value !== 'object' || Array.isArray(value)) {
-            logManifestError(
-              `initial permission '${permission}' must be an object`,
+          isInvalid = false;
+        } catch (nextValidationError) {
+          /* istanbul ignore next: this should be impossible */
+          if (
+            !(
+              nextValidationError instanceof ProgrammaticallyFixableSnapError
+            ) ||
+            (attempts === maxAttempts && !isInvalid)
+          ) {
+            throw new Error(
+              `Internal Error: Failed to fix manifest. This is a bug, please report it. Reason:\n${error.message}`,
             );
-          } else if (value !== null) {
-            Object.keys(value).forEach((permissionKey) => {
-              if (!permRequestKeys.includes(permissionKey)) {
-                logManifestError(
-                  `initial permission '${permission}' has unrecognized key '${permissionKey}'`,
-                );
-              }
-
-              if (
-                permissionKey === 'parentCapability' &&
-                permission !== permissionKey
-              ) {
-                logManifestError(
-                  `initial permission '${permission}' has mismatched 'parentCapability' field '${
-                    (value as Record<string, unknown>)[permissionKey]
-                  }'`,
-                );
-              }
-            });
           }
-        });
+        }
       }
+
+      didUpdate = true;
+    } else {
+      throw error;
     }
   }
 
-  // validation complete, finish work and notify user
+  // TypeScript doesn't see that the 'manifest' variable must be of type
+  // SnapManifest at this point, so we cast it.
+  const validatedManifest = manifest as SnapManifest;
 
-  if (argv.populate) {
-    try {
-      await fs.writeFile('package.json', `${JSON.stringify(pkg, null, 2)}\n`);
-      if (didUpdate) {
-        console.log(`Manifest: Updated '${pkg.name}' package.json!`);
-      }
-    } catch (err) {
-      throw new Error(`Could not write package.json`);
-    }
-  }
+  // Check presence of recommended keys
+  const recommendedFields = ['repository'] as const;
 
-  if (isInvalid) {
-    throw new Error(
-      `Manifest Error: package.json validation failed, please see above errors.`,
+  const missingRecommendedFields = recommendedFields.filter(
+    (key) => !validatedManifest[key],
+  );
+
+  if (missingRecommendedFields.length > 0) {
+    logManifestWarning(
+      `Missing recommended package.json properties:\n${missingRecommendedFields.reduce(
+        (allMissing, currentField) => {
+          return `${allMissing}\t${currentField}\n`;
+        },
+        '',
+      )}`,
     );
-  } else if (hasWarnings) {
+  }
+
+  // Validation complete, finish work and notify user.
+
+  if (writeManifest) {
+    try {
+      await fs.writeFile(
+        NpmSnapFileNames.Manifest,
+        `${JSON.stringify(getWritableManifest(validatedManifest), null, 2)}\n`,
+      );
+
+      if (didUpdate) {
+        console.log(`Manifest: Updated snap.manifest.json`);
+      }
+    } catch (error) {
+      throw new Error(
+        `${errorPrefix}Failed to update snap.manifest.json: ${error.message}`,
+      );
+    }
+  }
+
+  if (hasWarnings) {
     console.log(
-      `Manifest Warning: Validation of '${pkg.name}' package.json completed with warnings. See above.`,
+      `Manifest Warning: Validation of snap.manifest.json completed with warnings. See above.`,
     );
   } else {
-    console.log(`Manifest Success: Validated '${pkg.name}' package.json!`);
-  }
-
-  function logManifestError(message: string) {
-    isInvalid = true;
-    console.error(`Manifest Error: ${message}`);
+    console.log(`Manifest Success: Validated snap.manifest.json!`);
   }
 
   function logManifestWarning(message: string) {
@@ -236,4 +144,121 @@ export async function manifest(argv: YargsArgs): Promise<void> {
       console.warn(`Manifest Warning: ${message}`);
     }
   }
+}
+
+/**
+ * Utility function for reading `package.json` or the Snap manifest file.
+ * These are assumed to be in the current working directory.
+ *
+ * @param snapJsonFileName - The name of the file to read.
+ * @returns The parsed JSON file.
+ */
+async function readSnapJsonFile(
+  snapJsonFileName: NpmSnapFileNames,
+): Promise<Json> {
+  try {
+    return await readJsonFile(snapJsonFileName);
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      throw new Error(
+        `${errorPrefix}Could not find '${snapJsonFileName}'. Please ensure that ` +
+          `you are running the command in the project root directory.`,
+      );
+    }
+    throw new Error(`${errorPrefix}${error.message}`);
+  }
+}
+
+/**
+ * Given an unvalidated Snap manifest, attempts to extract the location of the
+ * bundle source file location and read the file.
+ *
+ * @param manifest - The unvalidated Snap manifest file contents.
+ * @returns The contents of the bundle file, if any.
+ */
+async function getSnapSourceCode(manifest: Json): Promise<string | undefined> {
+  if (manifest && typeof manifest === 'object' && !Array.isArray(manifest)) {
+    /* istanbul ignore next: optional chaining */
+    const sourceFilePath = (manifest as Partial<SnapManifest>).source?.location
+      ?.npm?.filePath;
+
+    try {
+      return sourceFilePath
+        ? await fs.readFile(sourceFilePath, 'utf8')
+        : undefined;
+    } catch (error) {
+      throw new Error(
+        `Manifest Error: Failed to read Snap bundle file: ${error.message}`,
+      );
+    }
+  }
+  return undefined;
+}
+
+/**
+ * Given the relevant Snap files (manifest, `package.json`, and bundle) and a
+ * Snap manifest validation error, fixes the fault in the manifest that caused
+ * the error.
+ *
+ * @param snapFiles - The contents of all Snap files.
+ * @param error - The {@link ProgrammaticallyFixableSnapError} that was thrown.
+ * @returns A copy of the manifest file where the cause of the error is fixed.
+ */
+function fixManifest(
+  snapFiles: SnapFiles,
+  error: ProgrammaticallyFixableSnapError,
+): SnapManifest {
+  const { manifest, packageJson, sourceCode } = snapFiles;
+  const manifestCopy = deepClone(manifest);
+
+  switch (error.reason) {
+    case SnapValidationFailureReason.NameMismatch:
+      manifestCopy.source.location.npm.packageName = packageJson.name;
+      break;
+
+    case SnapValidationFailureReason.VersionMismatch:
+      manifestCopy.version = packageJson.version;
+      break;
+
+    case SnapValidationFailureReason.RepositoryMismatch:
+      manifestCopy.repository = packageJson.repository
+        ? deepClone(packageJson.repository)
+        : null;
+      break;
+
+    case SnapValidationFailureReason.ShasumMismatch:
+      manifestCopy.source.shasum = getSnapSourceShasum(sourceCode);
+      break;
+
+    /* istanbul ignore next */
+    default:
+      // eslint-disable-next-line no-case-declarations
+      const failureReason: never = error.reason;
+      throw new Error(
+        `Unrecognized validation failure reason: '${failureReason}'`,
+      );
+  }
+
+  return manifestCopy;
+}
+
+/**
+ * Sorts the given manifest in our preferred sort order and removes the
+ * `repository` field if it is falsy (it may be `null`).
+ *
+ * @param manifest - The manifest to sort and modify.
+ * @returns The disk-ready manifest.
+ */
+export function getWritableManifest(manifest: SnapManifest): SnapManifest {
+  const { repository, ...remaining } = manifest;
+  return (
+    Object.keys(
+      repository ? { ...remaining, repository } : remaining,
+    ) as (keyof SnapManifest)[]
+  )
+    .sort((a, b) => ManifestSortOrder[a] - ManifestSortOrder[b])
+    .reduce((outManifest, key) => {
+      (outManifest as any)[key] = manifest[key];
+      return outManifest;
+    }, {} as SnapManifest);
 }

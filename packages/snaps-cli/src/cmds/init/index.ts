@@ -11,8 +11,8 @@ export = {
     yarg
       .option('src', builders.src)
       .option('dist', builders.dist)
-      .option('outfileName', builders.outfileName)
-      .option('port', builders.port);
+      .option('port', builders.port)
+      .option('outfileName', builders.outfileName);
   },
   handler: (argv: YargsArgs) => init(argv),
 };

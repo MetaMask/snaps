@@ -31,8 +31,6 @@ const getYargsInstance = ({ keys = {}, aliases = {} } = {}) => {
           ...keys,
         },
         alias: {
-          verboseErrors: ['v'],
-          suppressWarnings: ['sw'],
           help: ['h'],
           ...aliases,
         },

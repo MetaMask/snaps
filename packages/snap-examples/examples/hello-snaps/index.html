@@ -31,8 +31,8 @@
 
   <script>
 
-    // we identify the Snap by the location of its package.json file
-    const snapId = new URL('package.json', window.location.href).toString()
+    // When developing locally, we identify Snaps like this
+    const snapId = `local:${window.location.href}`;
 
     const connectButton = document.querySelector('button.connect')
     const sendButton = document.querySelector('button.sendHello')

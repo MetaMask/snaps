@@ -12,10 +12,15 @@ module.exports = {
   coverageReporters: ['text', 'html'],
   coverageThreshold: {
     global: {
-      branches: 86,
+      branches: 90,
       functions: 100,
       lines: 100,
       statements: 100,
+    },
+  },
+  globals: {
+    'ts-jest': {
+      tsconfig: 'tsconfig.test.json',
     },
   },
   moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'],
@@ -27,6 +32,7 @@ module.exports = {
   // original implementations, between each test. It does not affect mocked
   // modules.
   restoreMocks: true,
+  setupFiles: ['./test/setup.js'],
   testEnvironment: 'node',
   testRegex: ['\\.test\\.(ts|js)$'],
   testTimeout: 2500,

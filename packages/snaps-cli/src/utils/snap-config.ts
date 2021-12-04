@@ -1,10 +1,10 @@
-import fs from 'fs';
+import { readFileSync } from 'fs';
 import { Arguments } from 'yargs';
 import yargs from 'yargs/yargs';
 import yargsParse from 'yargs-parser';
 import builders from '../builders';
 import { logError } from './misc';
-import { CONFIG_PATHS } from '.';
+import { CONFIG_FILE } from '.';
 
 // Note that the below function is necessary because yarg's .config() function
 // leaves much to be desired.
@@ -58,24 +58,19 @@ export function applyConfig(
 
   // Now, we attempt to read and apply config from the config file, if any.
   let cfg: Record<string, unknown> = {};
-  let usedConfigPath: string | null = null;
-  for (const configPath of CONFIG_PATHS) {
-    try {
-      cfg = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-      usedConfigPath = configPath;
-      break;
-    } catch (err) {
-      if (err.code === 'ENOENT') {
-        // If there's no config file, we're done here.
-        return;
-      }
-
-      logError(
-        `Error: "${configPath}" exists but could not be parsed. Ensure your config file is valid JSON and try again.`,
-        err,
-      );
-      process.exit(1);
+  try {
+    cfg = JSON.parse(readFileSync(CONFIG_FILE, 'utf8'));
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      // If there's no config file, we're done here.
+      return;
     }
+
+    logError(
+      `Error: "${CONFIG_FILE}" exists but could not be parsed. Ensure your config file is valid JSON and try again.`,
+      err,
+    );
+    process.exit(1);
   }
 
   if (cfg && typeof cfg === 'object' && !Array.isArray(cfg)) {
@@ -86,9 +81,7 @@ export function applyConfig(
         }
       } else {
         logError(
-          `Error: Encountered unrecognized config property "${key}" in config file "${
-            usedConfigPath as string
-          }". Remove the property and try again.`,
+          `Error: Encountered unrecognized config property "${key}" in config file "${CONFIG_FILE}". Remove the property and try again.`,
         );
         process.exit(1);
       }
@@ -97,9 +90,7 @@ export function applyConfig(
     const cfgType = cfg === null ? 'null' : typeof cfg;
 
     logError(
-      `Error: The config file must consist of a top-level JSON object. Received "${cfgType}" from "${
-        usedConfigPath as string
-      }". Fix your config file and try again.`,
+      `Error: The config file must consist of a top-level JSON object. Received "${cfgType}" from "${CONFIG_FILE}". Fix your config file and try again.`,
     );
     process.exit(1);
   }

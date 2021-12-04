@@ -1,73 +1,83 @@
 import { promises as fs } from 'fs';
-import { CONFIG_PATHS, logError, closePrompt } from '../../utils';
+import pathUtils from 'path';
+import mkdirp from 'mkdirp';
+import { NpmSnapFileNames } from '@metamask/snap-controllers/dist/snaps/utils';
+import { CONFIG_FILE, logError, closePrompt } from '../../utils';
 import { YargsArgs } from '../../types/yargs';
 import template from './init-template.json';
 import {
   asyncPackageInit,
-  validateEmptyDir,
-  buildWeb3Wallet,
+  prepareWorkingDirectory,
+  buildSnapManifest,
 } from './initUtils';
 
-const CONFIG_PATH = CONFIG_PATHS[0];
-
 export async function initHandler(argv: YargsArgs) {
-  console.log(`Init: Begin building 'package.json'\n`);
+  console.log(`MetaMask Snaps: Initialize\n`);
 
-  const pkg = await asyncPackageInit();
+  const packageJson = await asyncPackageInit();
 
-  await validateEmptyDir();
+  await prepareWorkingDirectory();
 
-  console.log(`\nInit: Set 'package.json' web3Wallet properties\n`);
+  console.log(`\nInit: Building '${NpmSnapFileNames.Manifest}'...\n`);
 
-  const [web3Wallet, _newArgs] = await buildWeb3Wallet(argv);
-  const newArgs = _newArgs as YargsArgs;
-  pkg.web3Wallet = web3Wallet;
+  const [snapManifest, _newArgs] = await buildSnapManifest(
+    argv,
+    packageJson,
+    template.js.shasum,
+  );
 
-  try {
-    await fs.writeFile('package.json', `${JSON.stringify(pkg, null, 2)}\n`);
-  } catch (err) {
-    logError(`Init Error: Fatal: Failed to write package.json`, err);
-    process.exit(1);
-  }
+  const newArgs = Object.keys(_newArgs)
+    .sort()
+    .reduce((sorted, key) => {
+      sorted[key] = _newArgs[key as keyof typeof _newArgs];
+      return sorted;
+    }, {} as YargsArgs);
 
-  console.log(`\nInit: 'package.json' web3Wallet properties set successfully!`);
-
-  // write main js entry file
-  const { main } = pkg;
-  if (main !== undefined) {
-    newArgs.src = main;
-    try {
-      await fs.writeFile(main, template.js);
-      console.log(`Init: Wrote main entry file '${main}'`);
-    } catch (err) {
-      logError(
-        `Init Error: Fatal: Failed to write main .js file '${main}'`,
-        err,
-      );
-      process.exit(1);
-    }
-  }
-
-  // write index.html
   try {
     await fs.writeFile(
-      'index.html',
-      template.html
-        .toString()
-        .replace(/_PORT_/gu, newArgs.port.toString() || argv.port.toString()),
+      NpmSnapFileNames.Manifest,
+      `${JSON.stringify(snapManifest, null, 2)}\n`,
     );
-    console.log(`Init: Wrote 'index.html' file`);
   } catch (err) {
-    logError(`Init Error: Fatal: Failed to write index.html file`, err);
+    logError(
+      `Init Error: Failed to write '${NpmSnapFileNames.Manifest}'.`,
+      err,
+    );
     process.exit(1);
   }
 
-  // write config file
+  console.log(`\nInit: Created '${NpmSnapFileNames.Manifest}'.`);
+
+  // Write main .js entry file
+  const { src } = newArgs;
   try {
-    await fs.writeFile(CONFIG_PATH, JSON.stringify(newArgs, null, 2));
-    console.log(`Init: Wrote '${CONFIG_PATH}' config file`);
+    if (pathUtils.basename(src) !== src) {
+      await mkdirp(pathUtils.dirname(src));
+    }
+
+    await fs.writeFile(src, template.js.source);
+    console.log(`Init: Created '${src}'.`);
   } catch (err) {
-    logError(`Init Error: Failed to write '${CONFIG_PATH}' file`, err);
+    logError(`Init Error: Failed to write '${src}'.`, err);
+    process.exit(1);
+  }
+
+  // Write index.html
+  try {
+    await fs.writeFile('index.html', template.html);
+    console.log(`Init: Created 'index.html'.`);
+  } catch (err) {
+    logError(`Init Error: Failed to write 'index.html'.`, err);
+    process.exit(1);
+  }
+
+  // Write config file
+  try {
+    await fs.writeFile(CONFIG_FILE, JSON.stringify(newArgs, null, 2));
+    console.log(`Init: Wrote '${CONFIG_FILE}' config file`);
+  } catch (err) {
+    logError(`Init Error: Failed to write '${CONFIG_FILE}'.`, err);
+    process.exit(1);
   }
 
   closePrompt();

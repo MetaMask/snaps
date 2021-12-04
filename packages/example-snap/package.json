@@ -1,7 +1,7 @@
 {
   "name": "@metamask/example-snap",
   "version": "0.5.0",
-  "description": "A basic MetaMask Snap example.",
+  "description": "An example MetaMask Snap.",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps-skunkworks.git"

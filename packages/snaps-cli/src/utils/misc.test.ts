@@ -1,4 +1,5 @@
 import fs from 'fs';
+import pathUtils from 'path';
 import {
   trimPathString,
   logError,
@@ -25,13 +26,11 @@ describe('misc', () => {
   const defaultArgv = {
     _: ['init'],
     verboseErrors: false,
-    v: false,
     'verbose-errors': false,
     suppressWarnings: false,
-    sw: false,
     'suppress-warnings': false,
-    src: 'index.js',
-    s: 'index.js',
+    src: 'src/index.js',
+    s: 'src/index.js',
     dist: 'dist',
     d: 'dist',
     outfileName: 'bundle.js',
@@ -42,17 +41,16 @@ describe('misc', () => {
     $0: '/usr/local/bin/mm-snap',
   };
 
-  // this is the yargs object created with cli command: mm-snap watch -v --sw
+  // this is the yargs object created with cli command:
+  //   mm-snap watch -verboseErrors --suppressWarnings
   const exampleArgv = {
     _: ['watch'],
-    v: true,
     verboseErrors: true,
     'verbose-errors': true,
-    sw: true,
     suppressWarnings: true,
     'suppress-warnings': true,
-    src: 'index.js',
-    s: 'index.js',
+    src: 'src/index.js',
+    s: 'src/index.js',
     dist: 'dist',
     d: 'dist',
     outfileName: 'bundle.js',
@@ -69,13 +67,11 @@ describe('misc', () => {
   const unsanitizedArgv = {
     _: ['init'],
     verboseErrors: false,
-    v: false,
     'verbose-errors': false,
     suppressWarnings: false,
-    sw: false,
     'suppress-warnings': false,
     src: './',
-    s: './index.js',
+    s: './src/index.js',
     dist: 'dist',
     d: 'dist',
     outfileName: 'bundle.js',
@@ -89,13 +85,11 @@ describe('misc', () => {
   const sanitizedArgv = {
     _: ['init'],
     verboseErrors: false,
-    v: false,
     'verbose-errors': false,
     suppressWarnings: false,
-    sw: false,
     'suppress-warnings': false,
     src: '.',
-    s: 'index.js', // now handled by yargs itself
+    s: pathUtils.normalize('src/index.js'),
     dist: 'dist',
     d: 'dist',
     outfileName: 'bundle.js',

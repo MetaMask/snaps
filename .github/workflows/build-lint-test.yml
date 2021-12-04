@@ -72,7 +72,7 @@ jobs:
           key: yarn-cache-${{ runner.os }}-${{ steps.yarn-version.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}
       - run: yarn install --frozen-lockfile
       - run: yarn allow-scripts
-      - run: yarn workspace @metamask/snaps-cli run build
+      - run: yarn build
       - name: Require clean working directory
         shell: bash
         run: |

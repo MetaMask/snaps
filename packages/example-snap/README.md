@@ -1,3 +1,3 @@
 # @metamask/example-snap
 
-A basic MetaMask Snap example.
+An example MetaMask Snap.

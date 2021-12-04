@@ -12,8 +12,7 @@ import { isPlainObject } from '../utils';
 import {
   NpmSnapPackageJson,
   SnapManifest,
-  validateSnapManifest,
-  validateNpmSnapPackageJson,
+  validateSnapJsonFile,
 } from './json-schemas';
 
 const pipeline = promisify(_pipeline);
@@ -23,11 +22,24 @@ export enum SnapIdPrefixes {
   local = 'local:',
 }
 
-export const PACKAGE_JSON = 'package.json';
-
-export const SNAP_MANIFEST_FILE = 'snap.manifest.json';
+export enum NpmSnapFileNames {
+  PackageJson = 'package.json',
+  Manifest = 'snap.manifest.json',
+}
 
 export const LOCALHOST_HOSTNAMES = new Set(['localhost', '127.0.0.1']);
+
+// This RegEx matches valid npm package names (with some exceptions) and space-
+// separated alphanumerical words, optionally with dashes and underscores.
+// The RegEx consists of two parts. The first part matches space-separated
+// words. It is based on the following Stackoverflow answer:
+// https://stackoverflow.com/a/34974982
+// The second part, after the pipe operator, is the same RegEx used for the
+// `name` field of the official package.json JSON Schema, except that we allow
+// mixed-case letters. It was originally copied from:
+// https://github.com/SchemaStore/schemastore/blob/81a16897c1dabfd98c72242a5fd62eb080ff76d8/src/schemas/json/package.json#L132-L138
+export const PROPOSED_NAME_REGEX =
+  /^(?:[A-Za-z0-9-_]+( [A-Za-z0-9-_]+)*)|(?:(?:@[A-Za-z0-9-*~][A-Za-z0-9-*._~]*\/)?[A-Za-z0-9-~][A-Za-z0-9-._~]*)$/u;
 
 type FetchContentTypes = 'text' | 'json' | 'arrayBuffer';
 
@@ -48,23 +60,8 @@ export async function fetchContent<ContentType extends FetchContentTypes>(
 }
 
 /**
- * Checks whether the source.shasum property of the specified Snap manifest
- * matches the shasum of the specified snap source code string.
+ * Calculates the Base64-econded SHA-256 digest of a Snap source code string.
  *
- * @param manifest - The manifest whose shasum to validate.
- * @param sourceCode - The source code of the snap.
- */
-export function validateSnapShasum(
-  manifest: SnapManifest,
-  sourceCode: string,
-  errorMessage = 'Invalid Snap manifest: manifest shasum does not match computed shasum.',
-): void {
-  if (manifest.source.shasum !== getSnapSourceShasum(sourceCode)) {
-    throw new Error(errorMessage);
-  }
-}
-
-/**
  * @param sourceCode - The UTF-8 string source code of a Snap.
  * @returns The Base64-encoded SHA-256 digest of the source code.
  */
@@ -79,18 +76,28 @@ export type ValidatedSnapId = `local:${string}` | `npm:${string}`;
 const ExpectedSnapFiles = ['manifest', 'packageJson', 'sourceCode'] as const;
 
 const SnapFileNameFromKey = {
-  manifest: SNAP_MANIFEST_FILE,
-  packageJson: PACKAGE_JSON,
+  manifest: NpmSnapFileNames.Manifest,
+  packageJson: NpmSnapFileNames.PackageJson,
   sourceCode: 'source code bundle',
 } as const;
 
 /**
- * An object for storing parsed but unvalidated Snap data.
+ * An object for storing parsed but unvalidated Snap file contents.
  */
-type InterimSnapData = {
+export type UnvalidatedSnapFiles = {
   manifest?: Json;
   packageJson?: Json;
   sourceCode?: string;
+};
+
+/**
+ * An object for storing the contents of Snap files that have passed JSON
+ * Schema validation, or are non-empty if they are strings.
+ */
+export type SnapFiles = {
+  manifest: SnapManifest;
+  packageJson: NpmSnapPackageJson;
+  sourceCode: string;
 };
 
 /**
@@ -107,7 +114,7 @@ export async function fetchNpmSnap(
   packageName: string,
   version: string,
   fetchFunction = fetch,
-): Promise<[SnapManifest, string]> {
+): Promise<[SnapManifest, string, NpmSnapPackageJson]> {
   const [tarballResponse, actualVersion] = await fetchNpmTarball(
     packageName,
     version,
@@ -115,18 +122,45 @@ export async function fetchNpmSnap(
   );
 
   // Extract the tarball and get the necessary files from it.
-  const snapData: InterimSnapData = {};
+  const snapFiles: UnvalidatedSnapFiles = {};
   await pipeline([
     getResponseBodyStream(tarballResponse),
     // The "gz" in "tgz" stands for "gzip". The tarball needs to be decompressed
     // before we can actually grab any files from it.
     createGunzipStream(),
-    createTarballExtractionStream(snapData),
+    createTarballExtractionStream(snapFiles),
   ]);
 
-  // At this point, the necessary files will have been added to the snapData
+  // At this point, the necessary files will have been added to the snapFiles
   // object if they exist.
-  return validateNpmSnap(snapData, packageName, actualVersion);
+  return validateNpmSnap(
+    snapFiles,
+    `npm Snap "${packageName}@${actualVersion}" validation error: `,
+  );
+}
+
+/**
+ * Snap validation failure reason codes that are programmatically fixable
+ * if validation occurs during development.
+ */
+export enum SnapValidationFailureReason {
+  NameMismatch = '"name" field mismatch',
+  VersionMismatch = '"version" field mismatch',
+  RepositoryMismatch = '"repository" field mismatch',
+  ShasumMismatch = '"shasum" field mismatch',
+}
+
+/**
+ * An error indicating that a Snap validation failure is programmatically
+ * fixable during development.
+ */
+export class ProgrammaticallyFixableSnapError extends Error {
+  reason: SnapValidationFailureReason;
+
+  constructor(message: string, reason: SnapValidationFailureReason) {
+    super(message);
+    this.reason = reason;
+  }
 }
 
 /**
@@ -138,74 +172,105 @@ export async function fetchNpmSnap(
  * if any.
  * @param packageName - The name of the package whose tarball to fetch.
  * @param version - The version of the package to fetch, or the string `latest`.
+ * @param errorPrefix - The prefix of the error message.
  * @returns A tuple of the Snap manifest object and the Snap source code.
  */
 export function validateNpmSnap(
-  snapFiles: InterimSnapData,
-  packageName: string,
-  version: string,
-): [SnapManifest, string] {
-  const errorPrefix = `npm Snap "${packageName}@${version}"`;
-
+  snapFiles: UnvalidatedSnapFiles,
+  errorPrefix: `${string}: `,
+): [SnapManifest, string, NpmSnapPackageJson] {
   ExpectedSnapFiles.forEach((key) => {
     if (!snapFiles[key]) {
       throw new Error(
-        `${errorPrefix} contains no ${SnapFileNameFromKey[key]}.`,
+        `${errorPrefix}Missing file "${SnapFileNameFromKey[key]}".`,
       );
     }
   });
 
   const { manifest, packageJson, sourceCode } =
-    snapFiles as Required<InterimSnapData>;
+    snapFiles as Required<UnvalidatedSnapFiles>;
   try {
-    validateSnapManifest(manifest);
+    validateSnapJsonFile(NpmSnapFileNames.Manifest, manifest);
   } catch (error) {
     throw new Error(
-      `${errorPrefix} "${SNAP_MANIFEST_FILE}" is invalid: ${error.message}`,
+      `${errorPrefix}"${NpmSnapFileNames.Manifest}" is invalid:\n${error.message}`,
     );
   }
   const validatedManifest = manifest as SnapManifest;
-  const manifestPackageName = validatedManifest.source.location.npm.packageName;
-  const manifestPackageVersion = validatedManifest.version;
-  const manifestRepository = validatedManifest.repository;
 
   try {
-    validateNpmSnapPackageJson(packageJson);
+    validateSnapJsonFile(NpmSnapFileNames.PackageJson, packageJson);
   } catch (error) {
     throw new Error(
-      `${errorPrefix} "${PACKAGE_JSON}" is invalid: ${error.message}`,
+      `${errorPrefix}"${NpmSnapFileNames.PackageJson}" is invalid:\n${error.message}`,
     );
   }
   const validatedPackageJson = packageJson as NpmSnapPackageJson;
-  const packageJsonName = validatedPackageJson.name;
-  const packageJsonVersion = validatedPackageJson.version;
-  const packageJsonRepository = validatedPackageJson.repository;
 
-  if (manifestPackageName !== packageJsonName) {
-    throw new Error(
-      `${errorPrefix} "${SNAP_MANIFEST_FILE}" npm package name ("${manifestPackageName}") does not match the "${PACKAGE_JSON}" "name" field ("${packageJsonName}").`,
+  validateNpmSnapManifest(
+    {
+      manifest: validatedManifest,
+      packageJson: validatedPackageJson,
+      sourceCode,
+    },
+    errorPrefix,
+  );
+  return [validatedManifest, sourceCode, validatedPackageJson];
+}
+
+/**
+ * Validates the fields of an npm Snap manifest that has already passed JSON
+ * Schema validation.
+ *
+ * @param manifest - The npm Snap manifest to validate.
+ * @param packageJson - The npm Snap's `package.json`.
+ * @param sourceCode - The Snap's source code.
+ * @param errorPrefix - The prefix for error messages.
+ */
+export function validateNpmSnapManifest(
+  { manifest, packageJson, sourceCode }: SnapFiles,
+  errorPrefix: `${string}: `,
+): [SnapManifest, string, NpmSnapPackageJson] {
+  const packageJsonName = packageJson.name;
+  const packageJsonVersion = packageJson.version;
+  const packageJsonRepository = packageJson.repository;
+
+  const manifestPackageName = manifest.source.location.npm.packageName;
+  const manifestPackageVersion = manifest.version;
+  const manifestRepository = manifest.repository;
+
+  if (packageJsonName !== manifestPackageName) {
+    throw new ProgrammaticallyFixableSnapError(
+      `${errorPrefix}"${NpmSnapFileNames.Manifest}" npm package name ("${manifestPackageName}") does not match the "${NpmSnapFileNames.PackageJson}" "name" field ("${packageJsonName}").`,
+      SnapValidationFailureReason.NameMismatch,
     );
   }
 
-  if (manifestPackageVersion !== packageJsonVersion) {
-    throw new Error(
-      `${errorPrefix} "${SNAP_MANIFEST_FILE}" npm package version ("${manifestPackageVersion}") does not match the "${PACKAGE_JSON}" "version" field ("${packageJsonVersion}").`,
+  if (packageJsonVersion !== manifestPackageVersion) {
+    throw new ProgrammaticallyFixableSnapError(
+      `${errorPrefix}"${NpmSnapFileNames.Manifest}" npm package version ("${manifestPackageVersion}") does not match the "${NpmSnapFileNames.PackageJson}" "version" field ("${packageJsonVersion}").`,
+      SnapValidationFailureReason.VersionMismatch,
     );
   }
 
-  if (!deepEqual(manifestRepository, packageJsonRepository)) {
-    throw new Error(
-      `${errorPrefix} "${SNAP_MANIFEST_FILE}" "repository" field does not match the "${PACKAGE_JSON}" "repository" field.`,
+  if (
+    // The repository may be `undefined` in package.json but can only be defined
+    // or `null` in the Snap manifest due to TS@<4.4 issues.
+    (packageJsonRepository || manifestRepository) &&
+    !deepEqual(packageJsonRepository, manifestRepository)
+  ) {
+    throw new ProgrammaticallyFixableSnapError(
+      `${errorPrefix}"${NpmSnapFileNames.Manifest}" "repository" field does not match the "${NpmSnapFileNames.PackageJson}" "repository" field.`,
+      SnapValidationFailureReason.RepositoryMismatch,
     );
   }
 
   validateSnapShasum(
-    validatedManifest,
+    manifest,
     sourceCode,
-    `${errorPrefix} "${SNAP_MANIFEST_FILE}" "shasum" field does not match computed shasum.`,
+    `${errorPrefix}"${NpmSnapFileNames.Manifest}" "shasum" field does not match computed shasum.`,
   );
-
-  return [validatedManifest, sourceCode];
+  return [manifest, sourceCode, packageJson];
 }
 
 /**
@@ -262,7 +327,7 @@ async function fetchNpmTarball(
     throw new Error(`Failed to fetch tarball for package "${packageName}".`);
   }
 
-  return [tarballResponse as ResponseWithBody, targetVersion];
+  return [tarballResponse as unknown as ResponseWithBody, targetVersion];
 }
 
 // The paths of files within npm tarballs appear to always be prefixed with
@@ -273,10 +338,12 @@ const NPM_TARBALL_PATH_PREFIX = /^package\//u;
  * Creates a `tar-stream` that will get the necessary files from an npm Snap
  * package tarball (`.tgz` file).
  *
- * @param snapData - An object to write target file contents to.
+ * @param snapFiles - An object to write target file contents to.
  * @returns The {@link Writable} tarball extraction stream.
  */
-function createTarballExtractionStream(snapData: InterimSnapData): Writable {
+function createTarballExtractionStream(
+  snapFiles: UnvalidatedSnapFiles,
+): Writable {
   // `tar-stream` is pretty old-school, so we create it first and then
   // instrument it by adding event listeners.
   const extractStream = tarExtract();
@@ -297,28 +364,28 @@ function createTarballExtractionStream(snapData: InterimSnapData): Writable {
 
       // Note the use of `concat-stream` since the data for each file may be
       // chunked.
-      if (filePath === PACKAGE_JSON) {
+      if (filePath === NpmSnapFileNames.PackageJson) {
         return entryStream.pipe(
           concat((data) => {
             try {
-              snapData.packageJson = JSON.parse(data.toString());
+              snapFiles.packageJson = JSON.parse(data.toString());
             } catch (_error) {
               return extractStream.destroy(
-                new Error(`Failed to parse "${PACKAGE_JSON}".`),
+                new Error(`Failed to parse "${NpmSnapFileNames.PackageJson}".`),
               );
             }
 
             return next();
           }),
         );
-      } else if (filePath === SNAP_MANIFEST_FILE) {
+      } else if (filePath === NpmSnapFileNames.Manifest) {
         return entryStream.pipe(
           concat((data) => {
             try {
-              snapData.manifest = JSON.parse(data.toString());
+              snapFiles.manifest = JSON.parse(data.toString());
             } catch (_error) {
               return extractStream.destroy(
-                new Error(`Failed to parse "${SNAP_MANIFEST_FILE}".`),
+                new Error(`Failed to parse "${NpmSnapFileNames.Manifest}".`),
               );
             }
 
@@ -345,18 +412,40 @@ function createTarballExtractionStream(snapData: InterimSnapData): Writable {
   // When we've read the entire tarball, attempt to grab the bundle file
   // contents from the .js file cache.
   extractStream.on('finish', () => {
-    if (snapData.manifest) {
-      const bundlePath = (snapData as any).manifest.source?.location?.npm
-        ?.filePath;
+    if (isPlainObject(snapFiles.manifest)) {
+      /* istanbul ignore next: optional chaining */
+      const bundlePath = (
+        snapFiles.manifest as unknown as Partial<SnapManifest>
+      ).source?.location?.npm?.filePath;
 
       if (bundlePath) {
-        snapData.sourceCode = jsFileCache.get(bundlePath)?.toString('utf8');
+        snapFiles.sourceCode = jsFileCache.get(bundlePath)?.toString('utf8');
       }
     }
     jsFileCache.clear();
   });
 
   return extractStream;
+}
+
+/**
+ * Checks whether the source.shasum property of the specified Snap manifest
+ * matches the shasum of the specified snap source code string.
+ *
+ * @param manifest - The manifest whose shasum to validate.
+ * @param sourceCode - The source code of the snap.
+ */
+export function validateSnapShasum(
+  manifest: SnapManifest,
+  sourceCode: string,
+  errorMessage = 'Invalid Snap manifest: manifest shasum does not match computed shasum.',
+): void {
+  if (manifest.source.shasum !== getSnapSourceShasum(sourceCode)) {
+    throw new ProgrammaticallyFixableSnapError(
+      errorMessage,
+      SnapValidationFailureReason.ShasumMismatch,
+    );
+  }
 }
 
 /**

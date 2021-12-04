@@ -18,7 +18,7 @@ type YargsArgs = {
   port: number;
   dist: string;
   src: string;
-  outfileName?: string;
+  outfileName: string;
 } & OptionalArguments;
 
 type Option = {

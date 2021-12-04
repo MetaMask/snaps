@@ -1,2 +1,2 @@
-declare const validate: (manifest: unknown) => void;
+declare const validate: (manifest: unknown) => { message: string }[];
 export = validate;

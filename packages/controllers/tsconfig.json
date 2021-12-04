@@ -4,6 +4,7 @@
   "compilerOptions": {
     "allowJs": true,
     "composite": true,
+    "lib": ["DOM", "ES2020"],
     "outDir": "dist",
     "resolveJsonModule": true,
     "rootDir": "src",

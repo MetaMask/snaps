@@ -1,5 +1,8 @@
 **/dist
 
+# sed backup files
+*.*-e
+
 # Logs
 logs
 *.log

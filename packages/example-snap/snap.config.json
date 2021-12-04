@@ -1,4 +1,4 @@
 {
-  "populate": false,
-  "src": "src/index.js"
+  "src": "src/index.js",
+  "port": 8080
 }
