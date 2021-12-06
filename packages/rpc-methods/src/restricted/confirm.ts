@@ -1,10 +1,10 @@
-import { ethErrors } from 'eth-rpc-errors';
 import {
   PermissionSpecificationBuilder,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
 } from '@metamask/snap-controllers';
 import { NonEmptyArray } from '@metamask/snap-controllers/src/utils';
+import { ethErrors } from 'eth-rpc-errors';
 
 const methodName = 'snap_confirm';
 
@@ -12,9 +12,15 @@ export type ConfirmMethodHooks = {
   /**
    *
    * @param prompt - The prompt to display to the user.
+   * @param title - The main header that will be displayed below site origin
+   * @param subtitle - The subheader that will be displayed right below the title
    * @returns Whether the user accepted or rejected the confirmation.
    */
-  showConfirmation: (prompt: string) => Promise<boolean>;
+  showConfirmation: (
+    prompt: string,
+    title: string,
+    subtitle: string,
+  ) => Promise<boolean>;
 };
 
 type ConfirmSpecificationBuilderOptions = {
@@ -55,10 +61,10 @@ export const confirmBuilder = Object.freeze({
 
 function getConfirmImplementation({ showConfirmation }: ConfirmMethodHooks) {
   return async function confirmImplementation(
-    args: RestrictedMethodOptions<[string]>,
-  ): Promise<null> {
-    const { params = [], context } = args;
-    const [prompt] = params;
+    args: RestrictedMethodOptions<[string, string, string]>,
+  ): Promise<boolean | null> {
+    const { params = [] } = args;
+    const [prompt, title, subtitle] = params;
 
     if (!prompt || typeof prompt !== 'string') {
       throw ethErrors.rpc.invalidParams({
@@ -67,10 +73,7 @@ function getConfirmImplementation({ showConfirmation }: ConfirmMethodHooks) {
     }
 
     try {
-      await showConfirmation(
-        `MetaMask Confirmation\n${context.origin} asks:\n${prompt}`,
-      );
-      return null;
+      return await showConfirmation(prompt, title || '', subtitle || '');
     } catch (error) {
       return null;
     }
