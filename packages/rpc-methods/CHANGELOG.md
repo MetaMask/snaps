@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0]
+### Uncategorized
+- Added title and subtitle to Custom Confirmation ([#145](https://github.com/MetaMask/snaps-skunkworks/pull/145))
+- Update restricted RPC methods per new permissions system ([#143](https://github.com/MetaMask/snaps-skunkworks/pull/143))
+
 ## [0.4.0]
 ### Changed
 - **BREAKING:** Consolidate Snap state management methods into single method ([#135](https://github.com/MetaMask/snaps-skunkworks/pull/135))
@@ -49,7 +54,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.2.2...v0.3.0
