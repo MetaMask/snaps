@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.5.0]
-### Uncategorized
-- Update restricted RPC methods per new permissions system ([#143](https://github.com/MetaMask/snaps-skunkworks/pull/143))
+### Changed
+- Convert all TypeScript `interface` declarations to `type` equivalents ([#143](https://github.com/MetaMask/snaps-skunkworks/pull/143))
 
 ## [0.4.0]
 ### Fixed

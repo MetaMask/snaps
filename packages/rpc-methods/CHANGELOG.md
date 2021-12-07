@@ -7,8 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.5.0]
-### Uncategorized
-- Added title and subtitle to Custom Confirmation ([#145](https://github.com/MetaMask/snaps-skunkworks/pull/145))
+### Added
+- Added `title` and `subtitle` to `snap_confirm` ([#145](https://github.com/MetaMask/snaps-skunkworks/pull/145))
+
+### Changed
+- **BREAKING:** Update restricted RPC methods per new `PermissionController` ([#143](https://github.com/MetaMask/snaps-skunkworks/pull/143))
+- Convert all TypeScript `interface` declarations to `type` equivalents ([#143](https://github.com/MetaMask/snaps-skunkworks/pull/143))
 - Update restricted RPC methods per new permissions system ([#143](https://github.com/MetaMask/snaps-skunkworks/pull/143))
 
 ## [0.4.0]
