@@ -145,9 +145,9 @@ lockdown({
 
     private executeSnap(
       id: JsonRpcId,
-      { snapName, sourceCode }: Partial<SnapData> = {},
+      { snapId, sourceCode }: Partial<SnapData> = {},
     ) {
-      if (!isTruthyString(snapName) || !isTruthyString(sourceCode)) {
+      if (!isTruthyString(snapId) || !isTruthyString(sourceCode)) {
         this.respond(id, {
           error: new Error('Invalid executeSnap parameters.'),
         });
@@ -155,7 +155,7 @@ lockdown({
       }
 
       try {
-        this.startSnap(snapName as string, sourceCode as string);
+        this.startSnap(snapId as string, sourceCode as string);
         this.respond(id, { result: 'OK' });
       } catch (err) {
         this.respond(id, { error: err });
@@ -166,16 +166,16 @@ lockdown({
      * Attempts to evaluate a snap in SES.
      * Generates the APIs for the snap. May throw on error.
      *
-     * @param {string} snapName - The name of the snap.
-     * @param {Array<string>} approvedPermissions - The snap's approved permissions.
+     * @param snapId - The id of the Snap.
+     * @param approvedPermissions - The snap's approved permissions.
      * Should always be a value returned from the permissions controller.
-     * @param {string} sourceCode - The source code of the snap, in IIFE format.
-     * @param {Object} ethereumProvider - The snap's Ethereum provider object.
+     * @param sourceCode - The source code of the snap, in IIFE format.
+     * @param ethereumProvider - The snap's Ethereum provider object.
      */
-    private startSnap(snapName: string, sourceCode: string) {
-      console.log(`starting snap '${snapName}' in worker`);
+    private startSnap(snapId: string, sourceCode: string) {
+      console.log(`starting snap '${snapId}' in worker`);
 
-      const wallet = this.createSnapProvider(snapName);
+      const wallet = this.createSnapProvider(snapId);
 
       const endowments = {
         BigInt,
@@ -199,9 +199,9 @@ lockdown({
         });
         compartment.evaluate(sourceCode);
       } catch (err) {
-        this.removeSnap(snapName);
+        this.removeSnap(snapId);
         console.error(
-          `Error while running snap '${snapName}' in worker:${self.name}.`,
+          `Error while running snap '${snapId}' in worker:${self.name}.`,
           err,
         );
       }
@@ -211,17 +211,17 @@ lockdown({
      * Sets up the given snap's RPC message handler, creates a hardened
      * snap provider object (i.e. globalThis.wallet), and returns it.
      */
-    private createSnapProvider(snapName: string): SnapProvider {
+    private createSnapProvider(snapId: string): SnapProvider {
       const snapProvider = new MetaMaskInpageProvider(this.rpcStream as any, {
         shouldSendMetadata: false,
       }) as unknown as Partial<SnapProvider>;
 
       snapProvider.registerRpcMessageHandler = (func: SnapRpcHandler) => {
         console.log('Worker: Registering RPC message handler', func);
-        if (this.snapRpcHandlers.has(snapName)) {
+        if (this.snapRpcHandlers.has(snapId)) {
           throw new Error('RPC handler already registered.');
         }
-        this.snapRpcHandlers.set(snapName, func);
+        this.snapRpcHandlers.set(snapId, func);
       };
 
       // TODO: harden throws an error. Why?
@@ -233,8 +233,8 @@ lockdown({
      * Removes the snap with the given name. Specifically:
      * - Deletes the snap's RPC handler, if any
      */
-    private removeSnap(snapName: string): void {
-      this.snapRpcHandlers.delete(snapName);
+    private removeSnap(snapId: string): void {
+      this.snapRpcHandlers.delete(snapId);
     }
   }
 

@@ -81,7 +81,7 @@ function getInvokeSnapImplementation({
 
     if (!getSnap(snapOriginString)) {
       await addSnap({
-        name: snapOriginString,
+        id: snapOriginString,
         manifestUrl: snapOriginString,
       });
     }

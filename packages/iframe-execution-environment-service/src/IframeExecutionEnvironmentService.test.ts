@@ -58,7 +58,7 @@ describe('Iframe Controller', () => {
       iframeExecutionEnvironmentService,
     );
     const response = await iframeExecutionEnvironmentService.executeSnap({
-      snapName: 'TestSnap',
+      snapId: 'TestSnap',
       sourceCode: `
         console.log('foo');
       `,
@@ -95,7 +95,7 @@ describe('Iframe Controller', () => {
     );
     const action = async () => {
       await iframeExecutionEnvironmentService.executeSnap({
-        snapName: 'TestSnap',
+        snapId: 'TestSnap',
         sourceCode: `
           throw new Error("potato");
         `,
@@ -135,10 +135,10 @@ describe('Iframe Controller', () => {
     const removeListener = fixJSDOMPostMessageEventSource(
       iframeExecutionEnvironmentService,
     );
-    const snapName = 'foo.bar.baz';
+    const snapId = 'foo.bar.baz';
 
     await iframeExecutionEnvironmentService.executeSnap({
-      snapName,
+      snapId,
       sourceCode: `
         console.log('foo');
       `,
@@ -153,7 +153,7 @@ describe('Iframe Controller', () => {
     });
 
     const result = await promise;
-    expect(result).toStrictEqual(snapName);
+    expect(result).toStrictEqual(snapId);
     removeListener();
   }, 60000);
 });

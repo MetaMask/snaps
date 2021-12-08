@@ -48,9 +48,9 @@ describe('Worker Controller', () => {
         },
         workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
       });
-    const snapName = 'foo.bar.baz';
+    const snapId = 'foo.bar.baz';
     const response = await webWorkerExecutionEnvironmentService.executeSnap({
-      snapName,
+      snapId,
       sourceCode: `
         console.log('foo');
       `,
@@ -80,9 +80,9 @@ describe('Worker Controller', () => {
         workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
       });
 
-    const snapName = 'foo.bar.baz';
+    const snapId = 'foo.bar.baz';
     await webWorkerExecutionEnvironmentService.executeSnap({
-      snapName,
+      snapId,
       sourceCode: `
         console.log('foo');
       `,
@@ -98,6 +98,6 @@ describe('Worker Controller', () => {
     });
 
     const result = await promise;
-    expect(result).toStrictEqual(snapName);
+    expect(result).toStrictEqual(snapId);
   }, 60000);
 });

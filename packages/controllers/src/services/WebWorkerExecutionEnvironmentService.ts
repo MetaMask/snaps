@@ -14,7 +14,7 @@ import {
 } from 'json-rpc-engine';
 import { ExecutionEnvironmentService } from './ExecutionEnvironmentService';
 
-export type SetupSnapProvider = (snapName: string, stream: Duplex) => void;
+export type SetupSnapProvider = (snapId: string, stream: Duplex) => void;
 
 interface WorkerControllerArgs {
   setupSnapProvider: SetupSnapProvider;
@@ -137,10 +137,10 @@ export class WebWorkerExecutionEnvironmentService
     this._snapRpcHooks.clear();
   }
 
-  async terminateSnap(snapName: string) {
-    const workerId = this.snapToWorkerMap.get(snapName);
+  async terminateSnap(snapId: string) {
+    const workerId = this.snapToWorkerMap.get(snapId);
     workerId && this.terminate(workerId);
-    this._removeSnapHooks(snapName);
+    this._removeSnapHooks(snapId);
   }
 
   terminate(workerId: string): void {
@@ -150,9 +150,9 @@ export class WebWorkerExecutionEnvironmentService
       throw new Error(`Worker with id "${workerId}" not found.`);
     }
 
-    const snapName = this._getSnapForWorker(workerId);
+    const snapId = this._getSnapForWorker(workerId);
 
-    if (!snapName) {
+    if (!snapId) {
       throw new Error(
         `Failed to find a snap for worker with id "${workerId}".`,
       );
@@ -179,17 +179,17 @@ export class WebWorkerExecutionEnvironmentService
   /**
    * Gets the RPC message handler for the given snap.
    *
-   * @param snapName - The name of the snap whose message handler to get.
+   * @param snapId - The id of the Snap whose message handler to get.
    */
-  async getRpcMessageHandler(snapName: string) {
-    return this._snapRpcHooks.get(snapName);
+  async getRpcMessageHandler(snapId: string) {
+    return this._snapRpcHooks.get(snapId);
   }
 
-  private _removeSnapHooks(snapName: string) {
-    this._snapRpcHooks.delete(snapName);
+  private _removeSnapHooks(snapId: string) {
+    this._snapRpcHooks.delete(snapId);
   }
 
-  private _createSnapHooks(snapName: string, workerId: string) {
+  private _createSnapHooks(snapId: string, workerId: string) {
     const rpcHook = async (
       origin: string,
       request: Record<string, unknown>,
@@ -201,23 +201,23 @@ export class WebWorkerExecutionEnvironmentService
         params: {
           origin,
           request,
-          target: snapName,
+          target: snapId,
         },
       });
     };
 
-    this._snapRpcHooks.set(snapName, rpcHook);
+    this._snapRpcHooks.set(snapId, rpcHook);
   }
 
   async executeSnap(snapData: SnapData): Promise<unknown> {
-    if (this.snapToWorkerMap.has(snapData.snapName)) {
-      throw new Error(`Snap "${snapData.snapName}" is already being executed.`);
+    if (this.snapToWorkerMap.has(snapData.snapId)) {
+      throw new Error(`Snap "${snapData.snapId}" is already being executed.`);
     }
 
     const worker = await this._initWorker();
-    this._mapSnapAndWorker(snapData.snapName, worker.id);
+    this._mapSnapAndWorker(snapData.snapId, worker.id);
     this.setupSnapProvider(
-      snapData.snapName,
+      snapData.snapId,
       worker.streams.rpc as unknown as Duplex,
     );
 
@@ -228,13 +228,13 @@ export class WebWorkerExecutionEnvironmentService
       id: nanoid(),
     });
     // set up poll/ping for status to see if its up, if its not then emit event that it cant be reached
-    this._pollForWorkerStatus(snapData.snapName);
-    this._createSnapHooks(snapData.snapName, worker.id);
+    this._pollForWorkerStatus(snapData.snapId);
+    this._createSnapHooks(snapData.snapId, worker.id);
     return result;
   }
 
-  _pollForWorkerStatus(snapName: string) {
-    const workerId = this._getWorkerForSnap(snapName);
+  _pollForWorkerStatus(snapId: string) {
+    const workerId = this._getWorkerForSnap(snapId);
     if (!workerId) {
       throw new Error('no worker id found for snap');
     }
@@ -242,13 +242,13 @@ export class WebWorkerExecutionEnvironmentService
     const timeout = setTimeout(async () => {
       this._getWorkerStatus(workerId)
         .then(() => {
-          this._pollForWorkerStatus(snapName);
+          this._pollForWorkerStatus(snapId);
         })
         .catch(() => {
-          this._messenger.publish('ServiceMessenger:unresponsive', snapName);
+          this._messenger.publish('ServiceMessenger:unresponsive', snapId);
         });
     }, this._unresponsivePollingInterval) as unknown as number;
-    this._timeoutForUnresponsiveMap.set(snapName, timeout);
+    this._timeoutForUnresponsiveMap.set(snapId, timeout);
   }
 
   async _getWorkerStatus(workerId: string) {
@@ -278,16 +278,16 @@ export class WebWorkerExecutionEnvironmentService
     ]);
   }
 
-  _mapSnapAndWorker(snapName: string, workerId: string): void {
-    this.snapToWorkerMap.set(snapName, workerId);
-    this.workerToSnapMap.set(workerId, snapName);
+  _mapSnapAndWorker(snapId: string, workerId: string): void {
+    this.snapToWorkerMap.set(snapId, workerId);
+    this.workerToSnapMap.set(workerId, snapId);
   }
 
   /**
    * @returns The ID of the snap's worker.
    */
-  _getWorkerForSnap(snapName: string): string | undefined {
-    return this.snapToWorkerMap.get(snapName);
+  _getWorkerForSnap(snapId: string): string | undefined {
+    return this.snapToWorkerMap.get(snapId);
   }
 
   /**
@@ -298,13 +298,13 @@ export class WebWorkerExecutionEnvironmentService
   }
 
   _removeSnapAndWorkerMapping(workerId: string): void {
-    const snapName = this.workerToSnapMap.get(workerId);
-    if (!snapName) {
+    const snapId = this.workerToSnapMap.get(workerId);
+    if (!snapId) {
       throw new Error(`worker:${workerId} has no mapped snap.`);
     }
 
     this.workerToSnapMap.delete(workerId);
-    this.snapToWorkerMap.delete(snapName);
+    this.snapToWorkerMap.delete(snapId);
   }
 
   private async _initWorker(): Promise<WorkerWrapper> {
@@ -315,9 +315,9 @@ export class WebWorkerExecutionEnvironmentService
     // Handle out-of-band errors, i.e. errors thrown from the snap outside of the req/res cycle.
     const errorHandler = (ev: ErrorEvent) => {
       if (this._messenger) {
-        const snapName = this.workerToSnapMap.get(workerId);
-        if (snapName) {
-          this._messenger.publish('ServiceMessenger:unhandledError', snapName, {
+        const snapId = this.workerToSnapMap.get(workerId);
+        if (snapId) {
+          this._messenger.publish('ServiceMessenger:unhandledError', snapId, {
             code: ev.error.code,
             message: ev.error.message,
             data: ev.error.data,
@@ -376,8 +376,8 @@ export class WebWorkerExecutionEnvironmentService
 /**
  * Sets up stream multiplexing for the given stream.
  *
- * @param {any} connectionStream - the stream to mux
- * @param {string} streamName - the name of the stream, for identification in errors
+ * @param connectionStream - the stream to mux
+ * @param streamName - the name of the stream, for identification in errors
  * @return {stream.Stream} the multiplexed stream
  */
 function setupMultiplex(

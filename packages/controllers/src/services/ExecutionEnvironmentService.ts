@@ -6,16 +6,16 @@ export interface SnapMetadata {
   hostname: string;
 }
 
-export type TerminateSnap = (snapName: string) => Promise<void>;
+export type TerminateSnap = (snapId: string) => Promise<void>;
 export type Command = (
-  snapName: string,
+  snapId: string,
   message: JsonRpcRequest<unknown>,
 ) => Promise<unknown>;
 export type TerminateAll = () => Promise<void>;
 export type CreateSnapEnvironment = (metadata: SnapMetadata) => Promise<string>;
 export type ExecuteSnap = (snapData: SnapData) => Promise<unknown>;
 export type GetRpcMessageHandler = (
-  snapName: string,
+  snapId: string,
 ) => Promise<SnapRpcHook | undefined>;
 
 export interface ExecutionEnvironmentService {

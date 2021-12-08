@@ -11,7 +11,7 @@ export type WorkerCommandRequest = {
 };
 
 export type SnapData = {
-  snapName: string;
+  snapId: string;
   sourceCode: string;
 };
 
@@ -23,7 +23,9 @@ export type SnapRpcHandler = (
 export type SnapProvider = {
   registerRpcMessageHandler: (handler: SnapRpcHandler) => void;
 } & MetaMaskInpageProvider;
-type SnapName = string;
+
+export type SnapId = string;
+
 export type ErrorJSON = {
   message: string;
   code: number;
@@ -31,11 +33,11 @@ export type ErrorJSON = {
 };
 export type ErrorMessageEvent = {
   type: 'ServiceMessenger:unhandledError';
-  payload: [SnapName, ErrorJSON];
+  payload: [SnapId, ErrorJSON];
 };
 export type UnresponsiveMessageEvent = {
   type: 'ServiceMessenger:unresponsive';
-  payload: [SnapName];
+  payload: [SnapId];
 };
 export type ServiceMessenger = RestrictedControllerMessenger<
   'ServiceMessenger',
