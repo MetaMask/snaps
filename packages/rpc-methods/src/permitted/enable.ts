@@ -117,7 +117,7 @@ async function enableWallet(
         perm.parentCapability.startsWith(SNAP_PREFIX) &&
         perm.parentCapability in requestedPermissions,
     )
-    // convert from namespaced permissions to snap names
+    // convert from namespaced permissions to snap ids
     .reduce((_requestedSnaps, perm) => {
       const snapId = perm.parentCapability.replace(SNAP_PREFIX_REGEX, '');
       _requestedSnaps[snapId] = requestedPermissions[perm.parentCapability];

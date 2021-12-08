@@ -106,7 +106,7 @@ describe('SnapController Controller', () => {
       messenger,
     });
     const snap = await snapController.add({
-      name: 'TestSnap',
+      id: 'TestSnap',
       sourceCode: `
         wallet.registerRpcMessageHandler(async (origin, request) => {
           const {method, params, id} = request;
@@ -121,9 +121,9 @@ describe('SnapController Controller', () => {
       },
     });
 
-    await snapController.startSnap(snap.name);
-    await snapController.updateSnapState(snap.name, { hello: 'world' });
-    const snapState = await snapController.getSnapState(snap.name);
+    await snapController.startSnap(snap.id);
+    await snapController.updateSnapState(snap.id, { hello: 'world' });
+    const snapState = await snapController.getSnapState(snap.id);
     expect(snapState).toStrictEqual({ hello: 'world' });
     expect(snapController.state.snapStates).toStrictEqual({
       TestSnap: {
@@ -173,7 +173,7 @@ describe('SnapController Controller', () => {
     });
 
     const snap = await snapController.add({
-      name: 'TestSnap',
+      id: 'TestSnap',
       sourceCode: `
         wallet.registerRpcMessageHandler(async (origin, request) => {
           const {method, params, id} = request;
@@ -189,8 +189,8 @@ describe('SnapController Controller', () => {
       },
     });
 
-    await snapController.startSnap(snap.name);
-    const handle = await snapController.getRpcMessageHandler(snap.name);
+    await snapController.startSnap(snap.id);
+    const handle = await snapController.getRpcMessageHandler(snap.id);
     if (!handle) {
       throw Error('rpc handler not found');
     }
@@ -262,7 +262,7 @@ describe('SnapController Controller', () => {
     });
 
     const snap = await snapController.add({
-      name: 'TestSnap',
+      id: 'TestSnap',
       sourceCode: `
         wallet.registerRpcMessageHandler(async (origin, request) => {
           const {method, params, id} = request;
@@ -277,8 +277,8 @@ describe('SnapController Controller', () => {
       },
     });
 
-    await snapController.startSnap(snap.name);
-    const handle = await snapController.getRpcMessageHandler(snap.name);
+    await snapController.startSnap(snap.id);
+    const handle = await snapController.getRpcMessageHandler(snap.id);
     if (!handle) {
       throw Error('rpc handler not found');
     }
@@ -294,9 +294,9 @@ describe('SnapController Controller', () => {
   });
 
   it('errors if attempting to start a snap that was already started', async () => {
-    const name = 'fooSnap';
+    const id = 'fooSnap';
     const manifest = {
-      name,
+      name: id,
       version: '1.0.0',
       web3Wallet: {
         initialPermissions: {
@@ -331,14 +331,14 @@ describe('SnapController Controller', () => {
       messenger,
     });
 
-    await snapController.add({ name, manifest, sourceCode });
-    await snapController.startSnap(name);
-    await expect(snapController.startSnap(name)).rejects.toThrow(
+    await snapController.add({ id, manifest, sourceCode });
+    await snapController.startSnap(id);
+    await expect(snapController.startSnap(id)).rejects.toThrow(
       /^Snap "fooSnap" is already started.$/u,
     );
     expect(mockExecuteSnap).toHaveBeenCalledTimes(1);
     expect(mockExecuteSnap).toHaveBeenCalledWith({
-      snapName: name,
+      snapId: id,
       sourceCode,
     });
   });
@@ -378,7 +378,7 @@ describe('SnapController Controller', () => {
             permissionName: 'fooperm',
             version: '0.0.1',
             sourceCode: 'console.log("foo")',
-            name: 'foo',
+            id: 'foo',
             enabled: true,
             status: SnapStatus.installing,
           },
@@ -569,7 +569,7 @@ describe('SnapController Controller', () => {
       messenger: snapControllerMessenger,
     });
     const snap = await snapController.add({
-      name: 'TestSnap',
+      id: 'TestSnap',
       sourceCode: `
         wallet.registerRpcMessageHandler(async (origin, request) => {
           const {method, params, id} = request;
@@ -583,25 +583,21 @@ describe('SnapController Controller', () => {
         version: '0.0.0-development',
       },
     });
-    await snapController.startSnap(snap.name);
+    await snapController.startSnap(snap.id);
 
     // defer
     setTimeout(() => {
-      controllerMessenger.publish(
-        'ServiceMessenger:unhandledError',
-        snap.name,
-        {
-          message: 'foo',
-          code: 123,
-        },
-      );
+      controllerMessenger.publish('ServiceMessenger:unhandledError', snap.id, {
+        message: 'foo',
+        code: 123,
+      });
     }, 100);
 
     await new Promise((resolve) => {
       snapControllerMessenger.subscribe(
         'ServiceMessenger:unhandledError',
         () => {
-          const localSnap = snapController.get(snap.name);
+          const localSnap = snapController.get(snap.id);
           expect(localSnap.status).toStrictEqual('crashed');
           resolve(undefined);
           snapController.destroy();
@@ -659,7 +655,7 @@ describe('SnapController Controller', () => {
       messenger: snapControllerMessenger,
     });
     const snap = await snapController.add({
-      name: 'TestSnap',
+      id: 'TestSnap',
       sourceCode: `
         wallet.registerRpcMessageHandler(async (origin, request) => {
           const {method, params, id} = request;
@@ -673,18 +669,18 @@ describe('SnapController Controller', () => {
         version: '0.0.0-development',
       },
     });
-    await snapController.startSnap(snap.name);
+    await snapController.startSnap(snap.id);
 
     // defer
     setTimeout(() => {
-      controllerMessenger.publish('ServiceMessenger:unresponsive', snap.name);
+      controllerMessenger.publish('ServiceMessenger:unresponsive', snap.id);
     }, 1);
 
     await new Promise((resolve) => {
       controllerMessenger.subscribe(
         'ServiceMessenger:unresponsive',
-        async (snapName: string) => {
-          const localSnap = snapController.get(snapName);
+        async (snapId: string) => {
+          const localSnap = snapController.get(snapId);
           expect(localSnap.status).toStrictEqual('crashed');
           resolve(undefined);
           snapController.destroy();
@@ -735,7 +731,7 @@ describe('SnapController Controller', () => {
     });
 
     const snap = await snapController.add({
-      name: 'TestSnap',
+      id: 'TestSnap',
       sourceCode: `
         wallet.registerRpcMessageHandler(async (origin, request) => {
           const {method, params, id} = request;
@@ -751,8 +747,8 @@ describe('SnapController Controller', () => {
       },
     });
 
-    await snapController.startSnap(snap.name);
-    const handle = await snapController.getRpcMessageHandler(snap.name);
+    await snapController.startSnap(snap.id);
+    const handle = await snapController.getRpcMessageHandler(snap.id);
     if (!handle) {
       throw Error('rpc handler not found');
     }
@@ -768,9 +764,7 @@ describe('SnapController Controller', () => {
       setTimeout(resolve, 3000);
     });
 
-    expect(snapController.state.snaps[snap.name].status).toStrictEqual(
-      'stopped',
-    );
+    expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
     snapController.destroy();
   });
 
@@ -816,7 +810,7 @@ describe('SnapController Controller', () => {
     });
 
     const snap = await snapController.add({
-      name: 'TestSnap',
+      id: 'TestSnap',
       sourceCode: `
         wallet.registerRpcMessageHandler(async (origin, request) => {
           const {method, params, id} = request;
@@ -832,17 +826,13 @@ describe('SnapController Controller', () => {
       },
     });
 
-    await snapController.startSnap(snap.name);
+    await snapController.startSnap(snap.id);
 
-    expect(snapController.state.snaps[snap.name].status).toStrictEqual(
-      'running',
-    );
+    expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
 
-    await snapController.stopSnap(snap.name);
+    await snapController.stopSnap(snap.id);
 
-    expect(snapController.state.snaps[snap.name].status).toStrictEqual(
-      'stopped',
-    );
+    expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
 
     snapController.destroy();
   });
@@ -889,7 +879,7 @@ describe('SnapController Controller', () => {
     });
 
     const snap = await snapController.add({
-      name: 'TestSnap',
+      id: 'TestSnap',
       sourceCode: `
         wallet.registerRpcMessageHandler(async (origin, request) => {
           const {method, params, id} = request;
@@ -905,19 +895,15 @@ describe('SnapController Controller', () => {
       },
     });
 
-    const handler = await snapController.getRpcMessageHandler(snap.name);
+    const handler = await snapController.getRpcMessageHandler(snap.id);
 
-    await snapController.startSnap(snap.name);
+    await snapController.startSnap(snap.id);
 
-    expect(snapController.state.snaps[snap.name].status).toStrictEqual(
-      'running',
-    );
+    expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
 
-    await snapController.stopSnap(snap.name);
+    await snapController.stopSnap(snap.id);
 
-    expect(snapController.state.snaps[snap.name].status).toStrictEqual(
-      'stopped',
-    );
+    expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
 
     const results = await handler('foo.com', {
       jsonrpc: '2.0',
@@ -971,7 +957,7 @@ describe('SnapController Controller', () => {
     });
 
     const snap = await snapController.add({
-      name: 'TestSnap',
+      id: 'TestSnap',
       sourceCode: `
         wallet.registerRpcMessageHandler(async (origin, request) => {
           const {method, params, id} = request;
@@ -987,7 +973,7 @@ describe('SnapController Controller', () => {
       },
     });
 
-    const handler = await snapController.getRpcMessageHandler(snap.name);
+    const handler = await snapController.getRpcMessageHandler(snap.id);
 
     await expect(
       handler('foo.com', {
@@ -998,19 +984,15 @@ describe('SnapController Controller', () => {
       }),
     ).rejects.toThrow(/^Snap "TestSnap" has not been started yet.$/u);
 
-    await snapController.startSnap(snap.name);
+    await snapController.startSnap(snap.id);
 
-    expect(snapController.state.snaps[snap.name].status).toStrictEqual(
-      'running',
-    );
+    expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
 
-    snapController.disableSnap(snap.name);
+    snapController.disableSnap(snap.id);
 
-    expect(snapController.state.snaps[snap.name].status).toStrictEqual(
-      'stopped',
-    );
+    expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
 
-    await expect(snapController.startSnap(snap.name)).rejects.toThrow(
+    await expect(snapController.startSnap(snap.id)).rejects.toThrow(
       /^Snap "TestSnap" is disabled.$/u,
     );
 
@@ -1023,13 +1005,11 @@ describe('SnapController Controller', () => {
       }),
     ).rejects.toThrow(/^Snap "TestSnap" is disabled.$/u);
 
-    expect(snapController.state.snaps[snap.name].status).toStrictEqual(
-      'stopped',
-    );
+    expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
 
-    expect(snapController.state.snaps[snap.name].enabled).toStrictEqual(false);
+    expect(snapController.state.snaps[snap.id].enabled).toStrictEqual(false);
 
-    snapController.enableSnap(snap.name);
+    snapController.enableSnap(snap.id);
 
     const results = await handler('foo.com', {
       jsonrpc: '2.0',
@@ -1038,11 +1018,9 @@ describe('SnapController Controller', () => {
       id: 1,
     });
 
-    expect(snapController.state.snaps[snap.name].enabled).toStrictEqual(true);
+    expect(snapController.state.snaps[snap.id].enabled).toStrictEqual(true);
 
-    expect(snapController.state.snaps[snap.name].status).toStrictEqual(
-      'running',
-    );
+    expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
 
     expect(results).toStrictEqual('test1');
     snapController.destroy();
@@ -1091,7 +1069,7 @@ describe('SnapController Controller', () => {
     });
 
     const snap = await snapController.add({
-      name: 'TestSnap',
+      id: 'TestSnap',
       sourceCode: `
         wallet.registerRpcMessageHandler(async (origin, request) => {
           const {method, params, id} = request;
@@ -1118,13 +1096,11 @@ describe('SnapController Controller', () => {
       };
     };
 
-    const handler = await snapController.getRpcMessageHandler(snap.name);
+    const handler = await snapController.getRpcMessageHandler(snap.id);
 
-    await snapController.startSnap(snap.name);
+    await snapController.startSnap(snap.id);
 
-    expect(snapController.state.snaps[snap.name].status).toStrictEqual(
-      'running',
-    );
+    expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
 
     await expect(
       handler('foo.com', {
@@ -1135,9 +1111,7 @@ describe('SnapController Controller', () => {
       }),
     ).rejects.toThrow(/request timed out/u);
 
-    expect(snapController.state.snaps[snap.name].status).toStrictEqual(
-      'stopped',
-    );
+    expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
 
     snapController.destroy();
   });

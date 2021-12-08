@@ -43,19 +43,19 @@ export function preprocessRequestedPermissions(
         ] as RequestedPermissions;
 
         // destructure 'wallet_snap' object
-        Object.keys(requestedSnaps).forEach((snapName) => {
-          const snapKey = SNAP_PREFIX + snapName;
+        Object.keys(requestedSnaps).forEach((snapId) => {
+          const snapKey = SNAP_PREFIX + snapId;
 
           // disallow requesting a snap X under 'wallet_snaps' and
           // directly as 'wallet_snap_X'
           if (requestedPermissions[snapKey]) {
             throw ethErrors.rpc.invalidParams({
-              message: `Snap '${snapName}' requested both as direct permission and under 'wallet_snap'. We recommend using 'wallet_snap' only.`,
+              message: `Snap '${snapId}' requested both as direct permission and under 'wallet_snap'. We recommend using 'wallet_snap' only.`,
               data: { requestedPermissions },
             });
           }
 
-          newRequestedPermissions[snapKey] = requestedSnaps[snapName];
+          newRequestedPermissions[snapKey] = requestedSnaps[snapId];
         });
       } else {
         // otherwise, leave things as we found them

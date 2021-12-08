@@ -37,7 +37,7 @@ export async function isDirectory(
 /**
  * Checks whether the given path string resolves to an existing file.
  *
- * @param {string} pathString - The path string to check
+ * @param pathString - The path string to check
  * @returns {boolean} - Whether the given path is an existing file
  */
 export async function isFile(pathString: string): Promise<boolean> {

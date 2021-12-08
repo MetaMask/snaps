@@ -10,7 +10,7 @@ import {
   ErrorJSON,
   ErrorMessageEvent,
   SnapData,
-  SnapName,
+  SnapId,
   UnresponsiveMessageEvent,
 } from '@metamask/snap-types';
 import { nanoid } from 'nanoid';
@@ -39,7 +39,7 @@ type RequestedSnapPermissions = {
 
 export type SerializableSnap = {
   initialPermissions: RequestedSnapPermissions;
-  name: string;
+  id: string;
   permissionName: string;
   version: string;
   status: SnapStatus;
@@ -60,7 +60,7 @@ export type ProcessSnapReturnType =
   | SerializableSnap
   | { error: ReturnType<typeof serializeError> };
 export type InstallSnapsResult = {
-  [snapName: string]: ProcessSnapReturnType;
+  [snapId: string]: ProcessSnapReturnType;
 };
 
 // Types that probably should be defined elsewhere in prod
@@ -75,7 +75,6 @@ type HasPermissionFunction = (
   permissionName: string,
 ) => boolean;
 type GetPermissionsFunction = (origin: string) => IOcapLdCapability[];
-type SnapId = string;
 type StoredSnaps = Record<SnapId, Snap>;
 
 export type SnapControllerState = {
@@ -126,7 +125,7 @@ type SnapControllerArgs = {
 };
 
 type AddSnapBase = {
-  name: string;
+  id: string;
 };
 
 type AddSnapByFetchingArgs = AddSnapBase & {
@@ -256,10 +255,10 @@ export class SnapController extends BaseController<
 
   private _timeoutForLastRequestStatus?: number;
 
-  private _lastRequestMap: Map<SnapName, number>;
+  private _lastRequestMap: Map<SnapId, number>;
 
   private _rpcHandlerMap: Map<
-    SnapName,
+    SnapId,
     (origin: string, request: Record<string, unknown>) => Promise<unknown>
   >;
 
@@ -305,7 +304,7 @@ export class SnapController extends BaseController<
                 };
               })
               .reduce((memo: Record<string, Snap>, snap) => {
-                memo[snap.name] = snap;
+                memo[snap.id] = snap;
                 return memo;
               }, {});
           },
@@ -356,28 +355,28 @@ export class SnapController extends BaseController<
   }
 
   _stopSnapsLastRequestPastMax() {
-    this._lastRequestMap.forEach(async (timestamp, snapName) => {
+    this._lastRequestMap.forEach(async (timestamp, snapId) => {
       if (this._maxIdleTime && timeSince(timestamp) > this._maxIdleTime) {
-        this.stopSnap(snapName);
+        this.stopSnap(snapId);
       }
     });
   }
 
-  _onUnresponsiveSnap(snapName: string) {
-    this._transitionSnapState(snapName, SnapStatusEvent.crash);
-    this._stopSnap(snapName, false);
+  _onUnresponsiveSnap(snapId: string) {
+    this._transitionSnapState(snapId, SnapStatusEvent.crash);
+    this._stopSnap(snapId, false);
     this.addSnapError({
       code: -32001, // just made this code up
       message: 'Snap Unresponsive',
       data: {
-        snapName,
+        snapId,
       },
     });
   }
 
-  _onUnhandledSnapError(snapName: string, error: ErrorJSON) {
-    this._transitionSnapState(snapName, SnapStatusEvent.crash);
-    this._stopSnap(snapName, false);
+  _onUnhandledSnapError(snapId: string, error: ErrorJSON) {
+    this._transitionSnapState(snapId, SnapStatusEvent.crash);
+    this._stopSnap(snapId, false);
     this.addSnapError(error);
   }
 
@@ -388,19 +387,19 @@ export class SnapController extends BaseController<
    * - .on supports raw event target string
    * - .on supports {target, cond} object
    * - the arguments for `cond` is the `SerializedSnap` instead of Xstate convention of `(event, context) => boolean`
-   * @param snapName the name of the snap to transition
+   * @param snapId the id of the Snap to transition
    * @param event the event enum to use to transition
    */
-  _transitionSnapState(snapName: string, event: SnapStatusEvent) {
-    const snapStatus = this.state.snaps[snapName].status;
+  _transitionSnapState(snapId: string, event: SnapStatusEvent) {
+    const snapStatus = this.state.snaps[snapId].status;
     let nextStatus =
       (snapStatusStateMachineConfig.states[snapStatus].on as any)[event] ??
       snapStatus;
     if (nextStatus.cond) {
-      const cond = nextStatus.cond(this.state.snaps[snapName]);
+      const cond = nextStatus.cond(this.state.snaps[snapId]);
       if (cond === false) {
         throw new Error(
-          `Condition failed for state transition "${snapName}" with event "${event}".`,
+          `Condition failed for state transition "${snapId}" with event "${event}".`,
         );
       }
     }
@@ -414,7 +413,7 @@ export class SnapController extends BaseController<
     }
 
     this.update((state: any) => {
-      state.snaps[snapName].status = nextStatus;
+      state.snaps[snapId].status = nextStatus;
     });
   }
 
@@ -433,18 +432,18 @@ export class SnapController extends BaseController<
     }
 
     await Promise.all(
-      Object.values(snaps).map(async ({ name: snapName, sourceCode }) => {
-        console.log(`Starting: ${snapName}`);
+      Object.values(snaps).map(async ({ id: snapId, sourceCode }) => {
+        console.log(`Starting: ${snapId}`);
 
         try {
           await this._startSnap({
-            snapName,
+            snapId,
             sourceCode,
           });
         } catch (err) {
-          console.warn(`Failed to start "${snapName}", deleting it.`, err);
+          console.warn(`Failed to start "${snapId}", deleting it.`, err);
           // Clean up failed snaps:
-          this.removeSnap(snapName);
+          this.removeSnap(snapId);
         }
       }),
     );
@@ -454,20 +453,20 @@ export class SnapController extends BaseController<
    * Starts the given snap. Throws an error if no such snap exists
    * or if it is already running.
    *
-   * @param snapName - The name of the snap to start.
+   * @param snapId - The id of the Snap to start.
    */
-  async startSnap(snapName: string): Promise<void> {
-    const snap = this.get(snapName);
+  async startSnap(snapId: string): Promise<void> {
+    const snap = this.get(snapId);
     if (!snap) {
-      throw new Error(`Snap "${snapName}" not found.`);
+      throw new Error(`Snap "${snapId}" not found.`);
     }
 
-    if (this.state.snaps[snapName].enabled === false) {
-      throw new Error(`Snap "${snapName}" is disabled.`);
+    if (this.state.snaps[snapId].enabled === false) {
+      throw new Error(`Snap "${snapId}" is disabled.`);
     }
 
     await this._startSnap({
-      snapName,
+      snapId,
       sourceCode: snap.sourceCode,
     });
   }
@@ -475,23 +474,23 @@ export class SnapController extends BaseController<
   /**
    * Enables the given snap. A snap can only be started if it is enabled.
    *
-   * @param snapName - The name of the snap to enable.
+   * @param snapId - The id of the Snap to enable.
    */
-  enableSnap(snapName: string): void {
+  enableSnap(snapId: string): void {
     this.update((state: any) => {
-      state.snaps[snapName].enabled = true;
+      state.snaps[snapId].enabled = true;
     });
   }
 
   /**
    * Disables the given snap. A snap can only be started if it is enabled.
    *
-   * @param snapName - The name of the snap to disable.
+   * @param snapId - The id of the Snap to disable.
    */
-  disableSnap(snapName: string): void {
-    this.stopSnap(snapName);
+  disableSnap(snapId: string): void {
+    this.stopSnap(snapId);
     this.update((state: any) => {
-      state.snaps[snapName].enabled = false;
+      state.snaps[snapId].enabled = false;
     });
   }
 
@@ -499,36 +498,36 @@ export class SnapController extends BaseController<
    * Stops the given snap. Throws an error if no such snap exists
    * or if it is already stopped.
    *
-   * @param snapName - The name of the snap to stop.
+   * @param snapId - The id of the Snap to stop.
    */
-  stopSnap(snapName: string): void {
-    const snap = this.get(snapName);
+  stopSnap(snapId: string): void {
+    const snap = this.get(snapId);
     if (!snap) {
-      throw new Error(`Snap "${snapName}" not found.`);
+      throw new Error(`Snap "${snapId}" not found.`);
     }
 
-    if (!this.isRunning(snapName)) {
-      throw new Error(`Snap "${snapName}" already stopped.`);
+    if (!this.isRunning(snapId)) {
+      throw new Error(`Snap "${snapId}" already stopped.`);
     }
 
-    this._stopSnap(snapName);
-    console.log(`Snap "${snapName}" stopped.`);
+    this._stopSnap(snapId);
+    console.log(`Snap "${snapId}" stopped.`);
   }
 
   /**
    * Stops the given snap, removes all hooks, closes all connections, and
    * terminates its worker.
    *
-   * @param snapName - The name of the snap to stop.
+   * @param snapId - The id of the Snap to stop.
    * @param setNotRunning - Whether to mark the snap as not running.
    * Should only be set to false if the snap is about to be deleted.
    */
-  private _stopSnap(snapName: string, setNotRunning = true): void {
-    this._lastRequestMap.delete(snapName);
-    this._closeAllConnections(snapName);
-    this._terminateSnap(snapName);
+  private _stopSnap(snapId: string, setNotRunning = true): void {
+    this._lastRequestMap.delete(snapId);
+    this._closeAllConnections(snapId);
+    this._terminateSnap(snapId);
     if (setNotRunning) {
-      this._transitionSnapState(snapName, SnapStatusEvent.stop);
+      this._transitionSnapState(snapId, SnapStatusEvent.stop);
     }
   }
 
@@ -536,12 +535,12 @@ export class SnapController extends BaseController<
    * Returns whether the given snap is running.
    * Throws an error if the snap doesn't exist.
    *
-   * @param snapName - The name of the snap to check.
+   * @param snapId - The id of the Snap to check.
    */
-  isRunning(snapName: string): boolean {
-    const snap = this.get(snapName);
+  isRunning(snapId: string): boolean {
+    const snap = this.get(snapId);
     if (!snap) {
-      throw new Error(`Snap "${snapName}" not found.`);
+      throw new Error(`Snap "${snapId}" not found.`);
     }
 
     return snap.status === SnapStatus.running;
@@ -550,31 +549,31 @@ export class SnapController extends BaseController<
   /**
    * Returns whether the given snap has been added to state.
    *
-   * @param snapName - The name of the snap to check for.
+   * @param snapId - The id of the Snap to check for.
    */
-  has(snapName: string): boolean {
-    return snapName in this.state.snaps;
+  has(snapId: string): boolean {
+    return snapId in this.state.snaps;
   }
 
   /**
-   * Gets the snap with the given name if it exists, including all data.
+   * Gets the snap with the given id if it exists, including all data.
    * This should not be used if the snap is to be serializable, as e.g.
    * the snap sourceCode may be quite large.
    *
-   * @param snapName - The name of the snap to get.
+   * @param snapId - The id of the Snap to get.
    */
-  get(snapName: string) {
-    return this.state.snaps[snapName];
+  get(snapId: string) {
+    return this.state.snaps[snapId];
   }
 
   /**
-   * Gets the snap with the given name if it exists, excluding any
+   * Gets the snap with the given id if it exists, excluding any
    * non-serializable or expensive-to-serialize data.
    *
-   * @param snapName - The name of the snap to get.
+   * @param snapId - The id of the Snap to get.
    */
-  getSerializable(snapName: string): SerializableSnap | null {
-    const snap = this.get(snapName);
+  getSerializable(snapId: string): SerializableSnap | null {
+    const snap = this.get(snapId);
 
     return snap
       ? // The cast to "any" of the accumulator object is due to a TypeScript bug
@@ -589,15 +588,15 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Updates the own state of the snap with the given name.
+   * Updates the own state of the snap with the given id.
    * This is distinct from the state MetaMask uses to manage snaps.
    *
-   * @param snapName - The name of the snap whose state should be updated.
+   * @param snapId - The id of the Snap whose state should be updated.
    * @param newSnapState - The new state of the snap.
    */
-  async updateSnapState(snapName: string, newSnapState: Json): Promise<void> {
+  async updateSnapState(snapId: string, newSnapState: Json): Promise<void> {
     this.update((state: any) => {
-      state.snapStates[snapName] = newSnapState;
+      state.snapStates[snapId] = newSnapState;
     });
   }
 
@@ -638,13 +637,13 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Gets the own state of the snap with the given name.
+   * Gets the own state of the snap with the given id.
    * This is distinct from the state MetaMask uses to manage snaps.
    *
-   * @param snapName - The name of the snap whose state to get.
+   * @param snapId - The id of the Snap whose state to get.
    */
-  async getSnapState(snapName: string): Promise<Json> {
-    return this.state.snapStates[snapName];
+  async getSnapState(snapId: string): Promise<Json> {
+    return this.state.snapStates[snapId];
   }
 
   /**
@@ -652,12 +651,12 @@ export class SnapController extends BaseController<
    * handlers, event listeners, and permissions; tear down all snap providers.
    */
   clearState() {
-    const snapNames = Object.keys(this.state.snaps);
-    snapNames.forEach((snapName) => {
-      this._closeAllConnections(snapName);
+    const snapIds = Object.keys(this.state.snaps);
+    snapIds.forEach((snapId) => {
+      this._closeAllConnections(snapId);
     });
     this._terminateAllSnaps();
-    this._removeAllPermissionsFor(snapNames);
+    this._removeAllPermissionsFor(snapIds);
     this.update((state: any) => {
       state.inlineSnapIsRunning = false;
       state.snaps = {};
@@ -669,33 +668,33 @@ export class SnapController extends BaseController<
    * Removes the given snap from state, and clears all associated handlers
    * and listeners.
    *
-   * @param snapName - The name of the snap.
+   * @param snapId - The id of the Snap.
    */
-  removeSnap(snapName: string): void {
-    this.removeSnaps([snapName]);
+  removeSnap(snapId: string): void {
+    this.removeSnaps([snapId]);
   }
 
   /**
    * Stops the given snaps, removes them from state, and clears all associated
    * permissions, handlers, and listeners.
    *
-   * @param {Array<string>} snapName - The name of the snaps.
+   * @param snapIds - The ids of the Snaps.
    */
-  removeSnaps(snapNames: string[]): void {
-    if (!Array.isArray(snapNames)) {
-      throw new Error('Expected array of snap names.');
+  removeSnaps(snapIds: string[]): void {
+    if (!Array.isArray(snapIds)) {
+      throw new Error('Expected array of snap ids.');
     }
 
     this.update((state: any) => {
-      snapNames.forEach((snapName) => {
-        this._stopSnap(snapName, false);
-        this._rpcHandlerMap.delete(snapName);
-        delete state.snaps[snapName];
-        delete state.snapStates[snapName];
+      snapIds.forEach((snapId) => {
+        this._stopSnap(snapId, false);
+        this._rpcHandlerMap.delete(snapId);
+        delete state.snaps[snapId];
+        delete state.snapStates[snapId];
       });
     });
 
-    this._removeAllPermissionsFor(snapNames);
+    this._removeAllPermissionsFor(snapIds);
   }
 
   /**
@@ -705,10 +704,10 @@ export class SnapController extends BaseController<
   getPermittedSnaps(origin: string): InstallSnapsResult {
     return this._getPermissions(origin).reduce((permittedSnaps, perm) => {
       if (perm.parentCapability.startsWith(SNAP_PREFIX)) {
-        const snapName = perm.parentCapability.replace(SNAP_PREFIX_REGEX, '');
-        const snap = this.getSerializable(snapName);
+        const snapId = perm.parentCapability.replace(SNAP_PREFIX_REGEX, '');
+        const snap = this.getSerializable(snapId);
 
-        permittedSnaps[snapName] = snap || {
+        permittedSnaps[snapId] = snap || {
           error: serializeError(new Error('Snap permitted but not installed.')),
         };
       }
@@ -723,7 +722,7 @@ export class SnapController extends BaseController<
    *
    * @param origin - The origin that requested to install the snaps.
    * @param requestedSnaps - The snaps to install.
-   * @returns An object of snap names and snap objects, or errors if a
+   * @returns An object of snap ids and snap objects, or errors if a
    * snap couldn't be installed.
    */
   async installSnaps(
@@ -735,20 +734,20 @@ export class SnapController extends BaseController<
     // use a for-loop so that we can return an object and await the resolution
     // of each call to processRequestedSnap
     await Promise.all(
-      Object.keys(requestedSnaps).map(async (snapName) => {
-        const permissionName = SNAP_PREFIX + snapName;
+      Object.keys(requestedSnaps).map(async (snapId) => {
+        const permissionName = SNAP_PREFIX + snapId;
 
         if (this._hasPermission(origin, permissionName)) {
           // attempt to install and run the snap, storing any errors that
           // occur during the process
-          result[snapName] = {
-            ...(await this.processRequestedSnap(snapName)),
+          result[snapId] = {
+            ...(await this.processRequestedSnap(snapId)),
           };
         } else {
           // only allow the installation of permitted snaps
-          result[snapName] = {
+          result[snapId] = {
             error: ethErrors.provider.unauthorized(
-              `Not authorized to install snap '${snapName}'. Request the permission for the snap before attempting to install it.`,
+              `Not authorized to install snap '${snapId}'. Request the permission for the snap before attempting to install it.`,
             ),
           };
         }
@@ -761,30 +760,30 @@ export class SnapController extends BaseController<
    * Adds, authorizes, and runs the given snap with a snap provider.
    * Results from this method should be efficiently serializable.
    *
-   * @param - snapName - The name of the snap.
+   * @param - snapId - The id of the Snap.
    * @returns The resulting snap object, or an error if something went wrong.
    */
-  async processRequestedSnap(snapName: string): Promise<ProcessSnapReturnType> {
+  async processRequestedSnap(snapId: string): Promise<ProcessSnapReturnType> {
     // If the snap is already installed, just return it
-    const snap = this.get(snapName);
+    const snap = this.get(snapId);
     if (snap) {
-      return this.getSerializable(snapName) as SerializableSnap;
+      return this.getSerializable(snapId) as SerializableSnap;
     }
 
     try {
       const { sourceCode } = await this.add({
-        name: snapName,
-        manifestUrl: snapName,
+        id: snapId,
+        manifestUrl: snapId,
       });
 
-      await this.authorize(snapName);
+      await this.authorize(snapId);
 
       await this._startSnap({
-        snapName,
+        snapId,
         sourceCode,
       });
 
-      return this.getSerializable(snapName) as SerializableSnap;
+      return this.getSerializable(snapId) as SerializableSnap;
     } catch (err) {
       console.error(`Error when adding snap.`, err);
       return { error: serializeError(err) };
@@ -795,15 +794,15 @@ export class SnapController extends BaseController<
    * Returns a promise representing the complete installation of the requested snap.
    * If the snap is already being installed, the previously pending promise will be returned.
    *
-   * @param snapName - The name of the snap.
+   * @param snapId - The id of the Snap.
    * @param args - Object containing either the URL of the snap's manifest,
    * or the snap's manifest and source code.
    * @returns The resulting snap object.
    */
   add(args: AddSnapArgs): Promise<Snap> {
-    const { name: snapName } = args;
-    if (!snapName || typeof snapName !== 'string') {
-      throw new Error(`Invalid snap name: ${snapName}`);
+    const { id: snapId } = args;
+    if (!snapId || typeof snapId !== 'string') {
+      throw new Error(`Invalid snap id: ${snapId}`);
     }
 
     if (
@@ -811,49 +810,49 @@ export class SnapController extends BaseController<
       (!('manifestUrl' in args) &&
         (!('manifest' in args) || !('sourceCode' in args)))
     ) {
-      throw new Error(`Invalid add snap args for snap "${snapName}".`);
+      throw new Error(`Invalid add snap args for snap "${snapId}".`);
     }
 
-    if (!this._snapsBeingAdded.has(snapName)) {
-      console.log(`Adding snap: ${snapName}`);
-      this._snapsBeingAdded.set(snapName, this._add(args));
+    if (!this._snapsBeingAdded.has(snapId)) {
+      console.log(`Adding snap: ${snapId}`);
+      this._snapsBeingAdded.set(snapId, this._add(args));
     }
 
-    return this._snapsBeingAdded.get(snapName) as Promise<Snap>;
+    return this._snapsBeingAdded.get(snapId) as Promise<Snap>;
   }
 
   private async _startSnap(snapData: SnapData) {
-    const { snapName } = snapData;
-    if (this.isRunning(snapName)) {
-      throw new Error(`Snap "${snapName}" is already started.`);
+    const { snapId } = snapData;
+    if (this.isRunning(snapId)) {
+      throw new Error(`Snap "${snapId}" is already started.`);
     }
 
     const result = await this._executeSnap(snapData);
-    this._transitionSnapState(snapName, SnapStatusEvent.start);
+    this._transitionSnapState(snapId, SnapStatusEvent.start);
     return result;
   }
 
   /**
    * Internal method. See the "add" method.
    *
-   * @param snapName - The name of the snap.
+   * @param snapId - The id of the Snap.
    * @param args - The add snap args.
    * @returns The resulting snap object.
    */
   private async _add(args: AddSnapArgs): Promise<Snap> {
-    const { name: snapName } = args;
+    const { id: snapId } = args;
 
     let manifest: SnapManifest, sourceCode: string;
     if ('manifestUrl' in args) {
-      const _sourceUrl = args.manifestUrl || snapName;
-      [manifest, sourceCode] = await this._fetchSnap(snapName, _sourceUrl);
+      const _sourceUrl = args.manifestUrl || snapId;
+      [manifest, sourceCode] = await this._fetchSnap(snapId, _sourceUrl);
     } else {
       manifest = args.manifest;
       sourceCode = args.sourceCode;
     }
 
     if (typeof sourceCode !== 'string' || sourceCode.length === 0) {
-      throw new Error(`Invalid source code for snap "${snapName}".`);
+      throw new Error(`Invalid source code for snap "${snapId}".`);
     }
 
     const initialPermissions = manifest?.web3Wallet?.initialPermissions;
@@ -862,13 +861,13 @@ export class SnapController extends BaseController<
       typeof initialPermissions !== 'object' ||
       Array.isArray(initialPermissions)
     ) {
-      throw new Error(`Invalid initial permissions for snap "${snapName}".`);
+      throw new Error(`Invalid initial permissions for snap "${snapId}".`);
     }
 
     let snap: Snap = {
       initialPermissions,
-      name: snapName,
-      permissionName: SNAP_PREFIX + snapName, // so we can easily correlate them
+      id: snapId,
+      permissionName: SNAP_PREFIX + snapId, // so we can easily correlate them
       sourceCode,
       version: manifest.version,
       enabled: true,
@@ -878,13 +877,13 @@ export class SnapController extends BaseController<
     const snapsState = this.state.snaps;
 
     // restore relevant snap state if it exists
-    if (snapsState[snapName]) {
-      snap = { ...snapsState[snapName], ...snap };
+    if (snapsState[snapId]) {
+      snap = { ...snapsState[snapId], ...snap };
     }
 
     // store the snap back in state
     this.update((state: any) => {
-      state.snaps[snapName] = snap;
+      state.snaps[snapId] = snap;
     });
 
     return snap;
@@ -893,12 +892,12 @@ export class SnapController extends BaseController<
   /**
    * Fetches the manifest and source code of a snap.
    *
-   * @param name - The name of the snap.
+   * @param snapId - The id of the Snap.
    * @param manifestUrl - The URL of the snap's manifest file.
    * @returns An array of the snap manifest object and the snap source code.
    */
   private async _fetchSnap(
-    snapName: string,
+    snapId: string,
     manifestUrl: string,
   ): Promise<[SnapManifest, string]> {
     try {
@@ -918,7 +917,7 @@ export class SnapController extends BaseController<
       return [manifest, sourceCode];
     } catch (err) {
       throw new Error(
-        `Problem fetching snap "${snapName}": ${(err as Error).message}`,
+        `Problem fetching snap "${snapId}": ${(err as Error).message}`,
       );
     }
   }
@@ -927,13 +926,13 @@ export class SnapController extends BaseController<
    * Initiates a request for the given snap's initial permissions.
    * Must be called in order. See processRequestedSnap.
    *
-   * @param snapName - The name of the snap.
+   * @param snapId - The id of the Snap.
    * @returns The snap's approvedPermissions.
    */
-  async authorize(snapName: string): Promise<string[]> {
-    console.log(`Authorizing snap: ${snapName}`);
+  async authorize(snapId: string): Promise<string[]> {
+    console.log(`Authorizing snap: ${snapId}`);
     const snapsState = this.state.snaps;
-    const snap = snapsState[snapName];
+    const snap = snapsState[snapId];
     const { initialPermissions } = snap;
 
     // Don't prompt if there are no permissions requested:
@@ -947,22 +946,22 @@ export class SnapController extends BaseController<
 
     try {
       const approvedPermissions = await this._requestPermissions(
-        snapName,
+        snapId,
         initialPermissions,
       );
       return approvedPermissions.map((perm) => perm.parentCapability);
     } finally {
-      this._snapsBeingAdded.delete(snapName);
+      this._snapsBeingAdded.delete(snapId);
     }
   }
 
   /**
    * Test method.
    */
-  runInlineSnap(inlineSnapName: keyof typeof INLINE_SNAPS = 'IDLE') {
+  runInlineSnap(inlineSnapId: keyof typeof INLINE_SNAPS = 'IDLE') {
     this._startSnap({
-      snapName: 'inlineSnap',
-      sourceCode: INLINE_SNAPS[inlineSnapName],
+      snapId: 'inlineSnap',
+      sourceCode: INLINE_SNAPS[inlineSnapId],
     });
 
     this.update((state: any) => {
@@ -1001,14 +1000,14 @@ export class SnapController extends BaseController<
   /**
    * Gets the RPC message handler for the given snap.
    *
-   * @param snapName - The name of the snap whose message handler to get.
+   * @param snapId - The id of the Snap whose message handler to get.
    */
   async getRpcMessageHandler(
-    snapName: string,
+    snapId: string,
   ): Promise<
     (origin: string, request: Record<string, unknown>) => Promise<unknown>
   > {
-    const existingHandler = this._rpcHandlerMap.get(snapName);
+    const existingHandler = this._rpcHandlerMap.get(snapId);
     if (existingHandler) {
       return existingHandler;
     }
@@ -1017,36 +1016,36 @@ export class SnapController extends BaseController<
       origin: string,
       request: Record<string, unknown>,
     ) => {
-      let handler = await this._getRpcMessageHandler(snapName);
+      let handler = await this._getRpcMessageHandler(snapId);
 
-      if (this.state.snaps[snapName].enabled === false) {
-        throw new Error(`Snap "${snapName}" is disabled.`);
+      if (this.state.snaps[snapId].enabled === false) {
+        throw new Error(`Snap "${snapId}" is disabled.`);
       }
 
-      if (this.state.snaps[snapName].status === SnapStatus.installing) {
-        throw new Error(`Snap "${snapName}" has not been started yet.`);
+      if (this.state.snaps[snapId].status === SnapStatus.installing) {
+        throw new Error(`Snap "${snapId}" has not been started yet.`);
       }
 
-      if (!handler && this.isRunning(snapName) === false) {
+      if (!handler && this.isRunning(snapId) === false) {
         // cold start
-        await this.startSnap(snapName);
-        handler = await this._getRpcMessageHandler(snapName);
+        await this.startSnap(snapId);
+        handler = await this._getRpcMessageHandler(snapId);
       }
 
       if (!handler) {
         throw new Error(
-          `Snap execution service returned no RPC handler for running snap "${snapName}".`,
+          `Snap execution service returned no RPC handler for running snap "${snapId}".`,
         );
       }
 
-      this._recordSnapRpcRequest(snapName);
+      this._recordSnapRpcRequest(snapId);
 
       // Handle max request time
       let timeout: number | undefined;
 
       const timeoutPromise = new Promise((_resolve, reject) => {
         timeout = setTimeout(() => {
-          this._stopSnap(snapName);
+          this._stopSnap(snapId);
           reject(new Error('The request timed out.'));
         }, this._maxRequestTime) as unknown as number;
       });
@@ -1061,11 +1060,11 @@ export class SnapController extends BaseController<
       return result;
     };
 
-    this._rpcHandlerMap.set(snapName, rpcHandler);
+    this._rpcHandlerMap.set(snapId, rpcHandler);
     return rpcHandler;
   }
 
-  private _recordSnapRpcRequest(snapName: string) {
-    this._lastRequestMap.set(snapName, Date.now());
+  private _recordSnapRpcRequest(snapId: string) {
+    this._lastRequestMap.set(snapId, Date.now());
   }
 }

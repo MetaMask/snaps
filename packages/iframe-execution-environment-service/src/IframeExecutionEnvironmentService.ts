@@ -13,7 +13,7 @@ import {
 } from 'json-rpc-engine';
 import { ExecutionEnvironmentService } from '@metamask/snap-controllers';
 
-export type SetupSnapProvider = (snapName: string, stream: Duplex) => void;
+export type SetupSnapProvider = (snapId: string, stream: Duplex) => void;
 
 type IframeExecutionEnvironmentServiceArgs = {
   createWindowTimeout?: number;
@@ -127,10 +127,10 @@ export class IframeExecutionEnvironmentService
     this._snapRpcHooks.clear();
   }
 
-  public async terminateSnap(snapName: string) {
-    const jobId = this.snapToJobMap.get(snapName);
+  public async terminateSnap(snapId: string) {
+    const jobId = this.snapToJobMap.get(snapId);
     if (!jobId) {
-      throw new Error(`Job not found for snap with name "${snapName}".`);
+      throw new Error(`Job not found for snap with id "${snapId}".`);
     }
     this.terminate(jobId);
   }
@@ -142,9 +142,9 @@ export class IframeExecutionEnvironmentService
       throw new Error(`Job with id "${jobId}" not found.`);
     }
 
-    const snapName = this.jobToSnapMap.get(jobId);
+    const snapId = this.jobToSnapMap.get(jobId);
 
-    if (!snapName) {
+    if (!snapId) {
       throw new Error(`Failed to find a snap for job with id "${jobId}"`);
     }
 
@@ -159,8 +159,8 @@ export class IframeExecutionEnvironmentService
       }
     });
     document.getElementById(jobWrapper.id)?.remove();
-    clearTimeout(this._timeoutForUnresponsiveMap.get(snapName));
-    this._timeoutForUnresponsiveMap.delete(snapName);
+    clearTimeout(this._timeoutForUnresponsiveMap.get(snapId));
+    this._timeoutForUnresponsiveMap.delete(snapId);
     this._removeSnapAndJobMapping(jobId);
     this._deleteJob(jobId);
     console.log(`job: "${jobId}" terminated`);
@@ -169,17 +169,17 @@ export class IframeExecutionEnvironmentService
   /**
    * Gets the RPC message handler for the given snap.
    *
-   * @param snapName - The name of the snap whose message handler to get.
+   * @param snapId - The id of the Snap whose message handler to get.
    */
-  public async getRpcMessageHandler(snapName: string) {
-    return this._snapRpcHooks.get(snapName);
+  public async getRpcMessageHandler(snapId: string) {
+    return this._snapRpcHooks.get(snapId);
   }
 
-  private _removeSnapHooks(snapName: string) {
-    this._snapRpcHooks.delete(snapName);
+  private _removeSnapHooks(snapId: string) {
+    this._snapRpcHooks.delete(snapId);
   }
 
-  private _createSnapHooks(snapName: string, jobId: string) {
+  private _createSnapHooks(snapId: string, jobId: string) {
     const rpcHook = async (
       origin: string,
       request: Record<string, unknown>,
@@ -191,21 +191,21 @@ export class IframeExecutionEnvironmentService
         params: {
           origin,
           request,
-          target: snapName,
+          target: snapId,
         },
       });
     };
 
-    this._snapRpcHooks.set(snapName, rpcHook);
+    this._snapRpcHooks.set(snapId, rpcHook);
   }
 
   public async executeSnap(snapData: SnapData): Promise<unknown> {
-    if (this.snapToJobMap.has(snapData.snapName)) {
-      throw new Error(`Snap "${snapData.snapName}" is already being executed.`);
+    if (this.snapToJobMap.has(snapData.snapId)) {
+      throw new Error(`Snap "${snapData.snapId}" is already being executed.`);
     }
 
     const job = await this._init();
-    this._mapSnapAndJob(snapData.snapName, job.id);
+    this._mapSnapAndJob(snapData.snapId, job.id);
 
     let result;
     try {
@@ -221,17 +221,17 @@ export class IframeExecutionEnvironmentService
     }
 
     this.setupSnapProvider(
-      snapData.snapName,
+      snapData.snapId,
       job.streams.rpc as unknown as Duplex,
     );
     // set up poll/ping for status to see if its up, if its not then emit event that it cant be reached
-    this._pollForJobStatus(snapData.snapName);
-    this._createSnapHooks(snapData.snapName, job.id);
+    this._pollForJobStatus(snapData.snapId);
+    this._createSnapHooks(snapData.snapId, job.id);
     return result;
   }
 
-  _pollForJobStatus(snapName: string) {
-    const jobId = this.snapToJobMap.get(snapName);
+  _pollForJobStatus(snapId: string) {
+    const jobId = this.snapToJobMap.get(snapId);
     if (!jobId) {
       throw new Error('no job id found for snap');
     }
@@ -239,13 +239,13 @@ export class IframeExecutionEnvironmentService
     const timeout = setTimeout(async () => {
       this._getJobStatus(jobId)
         .then(() => {
-          this._pollForJobStatus(snapName);
+          this._pollForJobStatus(snapId);
         })
         .catch(() => {
-          this._messenger.publish('ServiceMessenger:unresponsive', snapName);
+          this._messenger.publish('ServiceMessenger:unresponsive', snapId);
         });
     }, this._unresponsivePollingInterval) as unknown as number;
-    this._timeoutForUnresponsiveMap.set(snapName, timeout);
+    this._timeoutForUnresponsiveMap.set(snapId, timeout);
   }
 
   async _getJobStatus(jobId: string) {
@@ -275,20 +275,20 @@ export class IframeExecutionEnvironmentService
     ]);
   }
 
-  private _mapSnapAndJob(snapName: string, jobId: string): void {
-    this.snapToJobMap.set(snapName, jobId);
-    this.jobToSnapMap.set(jobId, snapName);
+  private _mapSnapAndJob(snapId: string, jobId: string): void {
+    this.snapToJobMap.set(snapId, jobId);
+    this.jobToSnapMap.set(jobId, snapId);
   }
 
   private _removeSnapAndJobMapping(jobId: string): void {
-    const snapName = this.jobToSnapMap.get(jobId);
-    if (!snapName) {
+    const snapId = this.jobToSnapMap.get(jobId);
+    if (!snapId) {
       throw new Error(`job: "${jobId}" has no mapped snap.`);
     }
 
     this.jobToSnapMap.delete(jobId);
-    this.snapToJobMap.delete(snapName);
-    this._removeSnapHooks(snapName);
+    this.snapToJobMap.delete(snapId);
+    this._removeSnapHooks(snapId);
   }
 
   private async _init(): Promise<EnvMetadata> {
@@ -342,11 +342,11 @@ export class IframeExecutionEnvironmentService
         data.error &&
         (data.id === null || data.id === undefined) // only out of band errors (i.e. no id)
       ) {
-        const snapName = this.jobToSnapMap.get(jobId);
-        if (snapName) {
+        const snapId = this.jobToSnapMap.get(jobId);
+        if (snapId) {
           this._messenger.publish(
             'ServiceMessenger:unhandledError',
-            snapName,
+            snapId,
             data.error,
           );
         }
@@ -391,8 +391,8 @@ export class IframeExecutionEnvironmentService
 /**
  * Sets up stream multiplexing for the given stream.
  *
- * @param {any} connectionStream - the stream to mux
- * @param {string} streamName - the name of the stream, for identification in errors
+ * @param connectionStream - the stream to mux
+ * @param streamName - the name of the stream, for identification in errors
  * @return {stream.Stream} the multiplexed stream
  */
 function setupMultiplex(
