@@ -12,23 +12,26 @@ const methodName = 'snap_manageState';
 
 export type ManageStateMethodHooks = {
   /**
-   * A bound function that clears the state of the requesting Snap.
+   * A function that clears the state of the requesting Snap.
    */
-  clearSnapState: () => Promise<void>;
+  clearSnapState: (snapId: string) => Promise<void>;
 
   /**
-   * A bound function that gets the state of the requesting Snap.
+   * A function that gets the state of the requesting Snap.
    *
    * @returns The current state of the Snap.
    */
-  getSnapState: () => Promise<Record<string, Json>>;
+  getSnapState: (snapId: string) => Promise<Record<string, Json>>;
 
   /**
-   * A bound function that updates the state of the requesting Snap.
+   * A function that updates the state of the requesting Snap.
    *
    * @param newState - The new state of the Snap.
    */
-  updateSnapState: (newState: Record<string, Json>) => Promise<void>;
+  updateSnapState: (
+    snapId: string,
+    newState: Record<string, Json>,
+  ) => Promise<void>;
 };
 
 type ManageStateSpecificationBuilderOptions = {
@@ -86,16 +89,20 @@ function getManageStateImplementation({
       [ManageStateOperation, Record<string, Json>]
     >,
   ): Promise<null | Record<string, Json>> {
-    const { params = [], method } = options;
+    const {
+      params = [],
+      method,
+      context: { origin },
+    } = options;
     const [operation, newState] = params;
 
     switch (operation) {
       case ManageStateOperation.clearState:
-        await clearSnapState();
+        await clearSnapState(origin);
         return null;
 
       case ManageStateOperation.getState:
-        return await getSnapState();
+        return await getSnapState(origin);
 
       case ManageStateOperation.updateState:
         if (!isPlainObject(newState)) {
@@ -108,7 +115,7 @@ function getManageStateImplementation({
           });
         }
 
-        await updateSnapState(newState);
+        await updateSnapState(origin, newState);
         return null;
 
       default:
