@@ -38,12 +38,12 @@ function getSubjectMetadataControllerMessenger() {
 
 function getSubjectMetadata(
   origin: string,
-  name: string,
+  name?: string,
   opts?: Record<string, Json>,
 ) {
   return {
     origin,
-    name,
+    name: name ?? null,
     iconUrl: null,
     extensionId: null,
     ...opts,
@@ -138,8 +138,12 @@ describe('SubjectMetadataController', () => {
       });
 
       controller.addSubjectMetadata(getSubjectMetadata('foo.com', 'foo'));
+      controller.addSubjectMetadata(getSubjectMetadata('bar.com'));
       expect(controller.state).toStrictEqual({
-        subjectMetadata: { 'foo.com': getSubjectMetadata('foo.com', 'foo') },
+        subjectMetadata: {
+          'foo.com': getSubjectMetadata('foo.com', 'foo'),
+          'bar.com': getSubjectMetadata('bar.com'),
+        },
       });
     });
 

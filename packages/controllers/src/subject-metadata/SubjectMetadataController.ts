@@ -17,14 +17,14 @@ type SubjectOrigin = string;
 
 export type SubjectMetadata = PermissionSubjectMetadata & {
   [key: string]: Json;
-  name: string;
   // TODO:TS4.4 make optional
+  name: string | null;
   extensionId: string | null;
   iconUrl: string | null;
 };
 
 type SubjectMetadataToAdd = PermissionSubjectMetadata & {
-  name: string;
+  name?: string | null;
   extensionId?: string | null;
   iconUrl?: string | null;
 } & Record<string, Json>;
@@ -144,6 +144,7 @@ export class SubjectMetadataController extends BaseController<
       ...metadata,
       extensionId: metadata.extensionId || null,
       iconUrl: metadata.iconUrl || null,
+      name: metadata.name || null,
     };
 
     let originToForget: string | null = null;
