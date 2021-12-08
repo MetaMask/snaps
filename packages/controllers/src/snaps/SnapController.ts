@@ -21,7 +21,6 @@ import {
   TerminateSnap,
 } from '../services/ExecutionEnvironmentService';
 import { timeSince } from '../utils';
-import { INLINE_SNAPS } from './inlineSnaps';
 
 export const controllerName = 'SnapController';
 
@@ -78,7 +77,6 @@ type GetPermissionsFunction = (origin: string) => IOcapLdCapability[];
 type StoredSnaps = Record<SnapId, Snap>;
 
 export type SnapControllerState = {
-  inlineSnapIsRunning: boolean;
   snaps: StoredSnaps;
   snapStates: {
     [SnapId: string]: Json;
@@ -147,7 +145,6 @@ type AddSnapArgs = AddSnapByFetchingArgs | AddSnapDirectlyArgs;
 
 const defaultState: SnapControllerState = {
   snapErrors: {},
-  inlineSnapIsRunning: false,
   snaps: {},
   snapStates: {},
 };
@@ -282,10 +279,6 @@ export class SnapController extends BaseController<
       messenger,
       metadata: {
         snapErrors: {
-          persist: false,
-          anonymous: false,
-        },
-        inlineSnapIsRunning: {
           persist: false,
           anonymous: false,
         },
@@ -658,7 +651,6 @@ export class SnapController extends BaseController<
     this._terminateAllSnaps();
     this._removeAllPermissionsFor(snapIds);
     this.update((state: any) => {
-      state.inlineSnapIsRunning = false;
       state.snaps = {};
       state.snapStates = {};
     });
@@ -953,30 +945,6 @@ export class SnapController extends BaseController<
     } finally {
       this._snapsBeingAdded.delete(snapId);
     }
-  }
-
-  /**
-   * Test method.
-   */
-  runInlineSnap(inlineSnapId: keyof typeof INLINE_SNAPS = 'IDLE') {
-    this._startSnap({
-      snapId: 'inlineSnap',
-      sourceCode: INLINE_SNAPS[inlineSnapId],
-    });
-
-    this.update((state: any) => {
-      state.inlineSnapIsRunning = true;
-    });
-  }
-
-  /**
-   * Test method.
-   */
-  removeInlineSnap() {
-    this.update((state: any) => {
-      state.inlineSnapIsRunning = false;
-    });
-    this.removeSnap('inlineSnap');
   }
 
   destroy() {
