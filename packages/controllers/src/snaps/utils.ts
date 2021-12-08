@@ -1,11 +1,11 @@
 import { createHash } from 'crypto';
-import { pipeline as _pipeline, Readable } from 'stream';
+import { Readable } from 'stream';
 import type { Writable } from 'stream';
-import { promisify } from 'util';
 import { Json } from '@metamask/controllers';
 import concat from 'concat-stream';
 import deepEqual from 'fast-deep-equal';
 import createGunzipStream from 'gunzip-maybe';
+import pump from 'pump';
 import { ReadableWebToNodeStream } from 'readable-web-to-node-stream';
 import { extract as tarExtract } from 'tar-stream';
 import { isPlainObject } from '../utils';
@@ -14,8 +14,6 @@ import {
   SnapManifest,
   validateSnapJsonFile,
 } from './json-schemas';
-
-const pipeline = promisify(_pipeline);
 
 export enum SnapIdPrefixes {
   npm = 'npm:',
@@ -123,13 +121,18 @@ export async function fetchNpmSnap(
 
   // Extract the tarball and get the necessary files from it.
   const snapFiles: UnvalidatedSnapFiles = {};
-  await pipeline([
-    getResponseBodyStream(tarballResponse),
-    // The "gz" in "tgz" stands for "gzip". The tarball needs to be decompressed
-    // before we can actually grab any files from it.
-    createGunzipStream(),
-    createTarballExtractionStream(snapFiles),
-  ]);
+  await new Promise<void>((resolve, reject) => {
+    pump(
+      getResponseBodyStream(tarballResponse),
+      // The "gz" in "tgz" stands for "gzip". The tarball needs to be decompressed
+      // before we can actually grab any files from it.
+      createGunzipStream(),
+      createTarballExtractionStream(snapFiles),
+      (error) => {
+        error ? reject(error) : resolve();
+      },
+    );
+  });
 
   // At this point, the necessary files will have been added to the snapFiles
   // object if they exist.
