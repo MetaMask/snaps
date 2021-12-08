@@ -29,7 +29,7 @@ export const SNAP_PREFIX = 'wallet_snap_';
 export const SNAP_PREFIX_REGEX = new RegExp(`^${SNAP_PREFIX}`, 'u');
 const SERIALIZABLE_SNAP_PROPERTIES = new Set([
   'initialPermissions',
-  'name',
+  'id',
   'permissionName',
 ]);
 
@@ -39,7 +39,7 @@ type RequestedSnapPermissions = {
 
 export type SerializableSnap = {
   initialPermissions: RequestedSnapPermissions;
-  id: string;
+  id: SnapId;
   permissionName: string;
   version: string;
   status: SnapStatus;
@@ -125,7 +125,7 @@ type SnapControllerArgs = {
 };
 
 type AddSnapBase = {
-  id: string;
+  id: SnapId;
 };
 
 type AddSnapByFetchingArgs = AddSnapBase & {
@@ -362,7 +362,7 @@ export class SnapController extends BaseController<
     });
   }
 
-  _onUnresponsiveSnap(snapId: string) {
+  _onUnresponsiveSnap(snapId: SnapId) {
     this._transitionSnapState(snapId, SnapStatusEvent.crash);
     this._stopSnap(snapId, false);
     this.addSnapError({
@@ -374,7 +374,7 @@ export class SnapController extends BaseController<
     });
   }
 
-  _onUnhandledSnapError(snapId: string, error: ErrorJSON) {
+  _onUnhandledSnapError(snapId: SnapId, error: ErrorJSON) {
     this._transitionSnapState(snapId, SnapStatusEvent.crash);
     this._stopSnap(snapId, false);
     this.addSnapError(error);
@@ -390,7 +390,7 @@ export class SnapController extends BaseController<
    * @param snapId the id of the Snap to transition
    * @param event the event enum to use to transition
    */
-  _transitionSnapState(snapId: string, event: SnapStatusEvent) {
+  _transitionSnapState(snapId: SnapId, event: SnapStatusEvent) {
     const snapStatus = this.state.snaps[snapId].status;
     let nextStatus =
       (snapStatusStateMachineConfig.states[snapStatus].on as any)[event] ??
@@ -455,7 +455,7 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The id of the Snap to start.
    */
-  async startSnap(snapId: string): Promise<void> {
+  async startSnap(snapId: SnapId): Promise<void> {
     const snap = this.get(snapId);
     if (!snap) {
       throw new Error(`Snap "${snapId}" not found.`);
@@ -476,7 +476,7 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The id of the Snap to enable.
    */
-  enableSnap(snapId: string): void {
+  enableSnap(snapId: SnapId): void {
     this.update((state: any) => {
       state.snaps[snapId].enabled = true;
     });
@@ -487,7 +487,7 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The id of the Snap to disable.
    */
-  disableSnap(snapId: string): void {
+  disableSnap(snapId: SnapId): void {
     this.stopSnap(snapId);
     this.update((state: any) => {
       state.snaps[snapId].enabled = false;
@@ -500,7 +500,7 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The id of the Snap to stop.
    */
-  stopSnap(snapId: string): void {
+  stopSnap(snapId: SnapId): void {
     const snap = this.get(snapId);
     if (!snap) {
       throw new Error(`Snap "${snapId}" not found.`);
@@ -522,7 +522,7 @@ export class SnapController extends BaseController<
    * @param setNotRunning - Whether to mark the snap as not running.
    * Should only be set to false if the snap is about to be deleted.
    */
-  private _stopSnap(snapId: string, setNotRunning = true): void {
+  private _stopSnap(snapId: SnapId, setNotRunning = true): void {
     this._lastRequestMap.delete(snapId);
     this._closeAllConnections(snapId);
     this._terminateSnap(snapId);
@@ -537,7 +537,7 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The id of the Snap to check.
    */
-  isRunning(snapId: string): boolean {
+  isRunning(snapId: SnapId): boolean {
     const snap = this.get(snapId);
     if (!snap) {
       throw new Error(`Snap "${snapId}" not found.`);
@@ -551,7 +551,7 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The id of the Snap to check for.
    */
-  has(snapId: string): boolean {
+  has(snapId: SnapId): boolean {
     return snapId in this.state.snaps;
   }
 
@@ -562,7 +562,7 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The id of the Snap to get.
    */
-  get(snapId: string) {
+  get(snapId: SnapId) {
     return this.state.snaps[snapId];
   }
 
@@ -572,7 +572,7 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The id of the Snap to get.
    */
-  getSerializable(snapId: string): SerializableSnap | null {
+  getSerializable(snapId: SnapId): SerializableSnap | null {
     const snap = this.get(snapId);
 
     return snap
@@ -594,7 +594,7 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap whose state should be updated.
    * @param newSnapState - The new state of the snap.
    */
-  async updateSnapState(snapId: string, newSnapState: Json): Promise<void> {
+  async updateSnapState(snapId: SnapId, newSnapState: Json): Promise<void> {
     this.update((state: any) => {
       state.snapStates[snapId] = newSnapState;
     });
@@ -642,7 +642,7 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The id of the Snap whose state to get.
    */
-  async getSnapState(snapId: string): Promise<Json> {
+  async getSnapState(snapId: SnapId): Promise<Json> {
     return this.state.snapStates[snapId];
   }
 
@@ -670,7 +670,7 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The id of the Snap.
    */
-  removeSnap(snapId: string): void {
+  removeSnap(snapId: SnapId): void {
     this.removeSnaps([snapId]);
   }
 
@@ -763,7 +763,7 @@ export class SnapController extends BaseController<
    * @param - snapId - The id of the Snap.
    * @returns The resulting snap object, or an error if something went wrong.
    */
-  async processRequestedSnap(snapId: string): Promise<ProcessSnapReturnType> {
+  async processRequestedSnap(snapId: SnapId): Promise<ProcessSnapReturnType> {
     // If the snap is already installed, just return it
     const snap = this.get(snapId);
     if (snap) {
@@ -897,7 +897,7 @@ export class SnapController extends BaseController<
    * @returns An array of the snap manifest object and the snap source code.
    */
   private async _fetchSnap(
-    snapId: string,
+    snapId: SnapId,
     manifestUrl: string,
   ): Promise<[SnapManifest, string]> {
     try {
@@ -929,7 +929,7 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap.
    * @returns The snap's approvedPermissions.
    */
-  async authorize(snapId: string): Promise<string[]> {
+  async authorize(snapId: SnapId): Promise<string[]> {
     console.log(`Authorizing snap: ${snapId}`);
     const snapsState = this.state.snaps;
     const snap = snapsState[snapId];
@@ -1003,7 +1003,7 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap whose message handler to get.
    */
   async getRpcMessageHandler(
-    snapId: string,
+    snapId: SnapId,
   ): Promise<
     (origin: string, request: Record<string, unknown>) => Promise<unknown>
   > {
@@ -1064,7 +1064,7 @@ export class SnapController extends BaseController<
     return rpcHandler;
   }
 
-  private _recordSnapRpcRequest(snapId: string) {
+  private _recordSnapRpcRequest(snapId: SnapId) {
     this._lastRequestMap.set(snapId, Date.now());
   }
 }

@@ -23,7 +23,9 @@ export type SnapRpcHandler = (
 export type SnapProvider = {
   registerRpcMessageHandler: (handler: SnapRpcHandler) => void;
 } & MetaMaskInpageProvider;
-type SnapId = string;
+
+export type SnapId = string;
+
 export type ErrorJSON = {
   message: string;
   code: number;
