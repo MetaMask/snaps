@@ -371,7 +371,6 @@ describe('SnapController Controller', () => {
       state: {
         snapErrors: {},
         snapStates: {},
-        inlineSnapIsRunning: false,
         snaps: {
           foo: {
             initialPermissions: {},
