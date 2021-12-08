@@ -10,13 +10,14 @@ const methodName = 'snap_confirm';
 
 export type ConfirmMethodHooks = {
   /**
-   *
+   * @param snapId - The ID of the Snap that created the confirmation.
    * @param prompt - The prompt to display to the user.
    * @param title - The main header that will be displayed below site origin
    * @param subtitle - The subheader that will be displayed right below the title
    * @returns Whether the user accepted or rejected the confirmation.
    */
   showConfirmation: (
+    snapId: string,
     prompt: string,
     title: string,
     subtitle: string,
@@ -63,7 +64,10 @@ function getConfirmImplementation({ showConfirmation }: ConfirmMethodHooks) {
   return async function confirmImplementation(
     args: RestrictedMethodOptions<[string, string, string]>,
   ): Promise<boolean | null> {
-    const { params = [] } = args;
+    const {
+      params = [],
+      context: { origin },
+    } = args;
     const [prompt, title, subtitle] = params;
 
     if (!prompt || typeof prompt !== 'string') {
@@ -73,7 +77,12 @@ function getConfirmImplementation({ showConfirmation }: ConfirmMethodHooks) {
     }
 
     try {
-      return await showConfirmation(prompt, title || '', subtitle || '');
+      return await showConfirmation(
+        origin,
+        prompt,
+        title || '',
+        subtitle || '',
+      );
     } catch (error) {
       return null;
     }
