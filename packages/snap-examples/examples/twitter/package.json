@@ -1,0 +1,54 @@
+{
+  "name": "twitter-snap",
+  "version": "1.0.0",
+  "description": "An example Snap that performs simple twitter operations.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps-skunkworks.git"
+  },
+  "license": "ISC",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "webpack --config webpack.prod.js",
+    "build:dev": "webpack --config webpack.dev.js",
+    "start": "webpack-dev-server --open --live-reload --config webpack.dev.js",
+    "start:prod": "webpack-dev-server --open --config webpack.prod.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "crypto": "^1.0.1",
+    "eth-json-rpc-errors": "^1.1.0",
+    "html-webpack-plugin": "^5.5.0",
+    "https": "^1.0.0",
+    "ipfs-mini": "^1.1.5",
+    "regenerator-runtime": "^0.13.9",
+    "twitter-api-v2": "^1.7.1"
+  },
+  "web3Wallet": {
+    "bundle": {
+      "local": "dist/bundle.js",
+      "url": "http://localhost:8086/dist/bundle.js"
+    },
+    "initialPermissions": {}
+  },
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "noImplicitAny": true,
+    "module": "commonjs",
+    "sourceMap": true,
+    "jsx": "react",
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "devDependencies": {
+    "@swc/cli": "^0.1.52",
+    "@swc/core": "^1.2.118",
+    "chrome-types": "^0.1.73",
+    "html-loader": "^3.0.1",
+    "image-config-webpack-plugin": "^2.0.3",
+    "swc-loader": "^0.1.15",
+    "webpack": "^5.65.0",
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.6.0"
+  }
+}

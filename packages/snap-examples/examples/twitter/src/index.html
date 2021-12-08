@@ -1,0 +1,106 @@
+<!doctype html>
+
+<html>
+
+  </head>
+    <title>Twitter Snap Example</title>
+  </head>
+
+  <body>
+    <h1>Twitter MetaMask Snap Example!</h1>
+    <details>
+      <summary>Instructions</summary>
+      <ul>
+        <li>First, click "Connect". Then, try out the other buttons!</li>
+        <li>Please note that:</li>
+        <ul>
+          <li>
+            The Snap <b>package.json</b> must be located in located in the server root directory
+          </li>
+          <li>
+            The Snap bundle must be hosted at the location specified by <b>package.json:web3Wallet.bundle.url</b>
+          </li>
+        </ul>
+      </ul>
+    </details>
+    <br/>
+
+    <button class="connect">Connect</button>
+
+    <p>
+      <input class="toTweet"></input>
+      <button class="tweet">Tweet</button>
+      <span class="tweetOutput"></span>
+    </p>
+
+    <p>
+      <input class="toGet"></input>
+      <button class="get">Get</button>
+      <span class="getOutput"></span>
+    </p>
+
+  </body>
+
+  <script>
+
+    const snapId = new URL('package.json', window.location.href).toString()
+
+    const connectButton = document.querySelector('button.connect')
+
+    const toTweet = document.querySelector('input.toTweet')
+    const tweetButton = document.querySelector('button.tweet')
+    const tweetOutput = document.querySelector('span.addOutput')
+
+    const toGet = document.querySelector('input.toGet')
+    const getButton = document.querySelector('button.get')
+    const tweetGetOutput = document.querySelector('span.getOutput')
+
+    connectButton.addEventListener('click', connect)
+    tweetButton.addEventListener('click', tweet)
+    getButton.addEventListener('click', get)
+
+    async function connect () {
+      const result =  await ethereum.request({
+        method: 'wallet_enable',
+        params: [{
+          wallet_snap: { [snapId]: {} },
+        }]
+      })
+      console.log ({result})
+    }
+
+    async function tweet () {
+      try {
+        const response = await ethereum.request({
+          method: 'wallet_invokeSnap',
+          params: [snapId, {
+            method: 'tweet',
+            params: [ toTweet.value ],
+          }]
+        })
+        tweetGetOutput.innerText = response
+      } catch (err) {
+        console.error(err)
+        tweetGetOutput.innerText = `Problem getting: ${JSON.stringify(err)}`
+      }
+    }
+
+    async function get () {
+      try {
+        const response = await ethereum.request({
+          method: 'wallet_invokeSnap',
+          params: [snapId, {
+            method: 'getTweet',
+            params: [ toGet.value ],
+          }]
+        })
+        tweetGetOutput.innerText = response
+      } catch (err) {
+        console.error(err)
+        tweetGetOutput.innerText = `Problem getting: ${JSON.stringify(err)}`
+      }
+    }
+
+  </script>
+
+</html>
