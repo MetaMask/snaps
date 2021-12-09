@@ -5,7 +5,7 @@ import {
   validateOutfileName,
 } from '../../utils';
 import { snapEval } from '../eval/evalHandler';
-import { manifest } from '../manifest/manifestHandler';
+import { manifestHandler } from '../manifest/manifestHandler';
 import { YargsArgs } from '../../types/yargs';
 import { bundle } from './bundle';
 
@@ -35,6 +35,6 @@ export async function build(argv: YargsArgs): Promise<void> {
   }
 
   if (argv.manifest) {
-    manifest(argv);
+    await manifestHandler(argv);
   }
 }

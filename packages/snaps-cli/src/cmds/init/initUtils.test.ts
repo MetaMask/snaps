@@ -1,12 +1,21 @@
 import fs from 'fs';
-import path from 'path';
+import * as snapUtils from '@metamask/snap-controllers/dist/snaps';
 import initPackageJson from 'init-package-json';
-import * as readlineUtils from '../../utils/readline';
+import mkdirp from 'mkdirp';
+import {
+  DEFAULT_SNAP_SHASUM,
+  FakeFsError,
+  getPackageJson,
+  getSnapManifest,
+} from '../../../test/utils';
+// We have to import utils separately or else we run into trouble with our mocks
+import * as fsUtils from '../../utils/fs';
 import * as miscUtils from '../../utils/misc';
+import * as readlineUtils from '../../utils/readline';
 import {
   asyncPackageInit,
-  buildWeb3Wallet,
-  validateEmptyDir,
+  buildSnapManifest,
+  prepareWorkingDirectory,
 } from './initUtils';
 
 jest.mock('fs', () => ({
@@ -18,11 +27,12 @@ jest.mock('fs', () => ({
   },
 }));
 
+jest.mock('@metamask/snap-controllers/dist/snaps');
+
 jest.mock('init-package-json');
 
-type ErrorWithCode = {
-  code?: number | string;
-} & Error;
+jest.mock('mkdirp');
+const mkdirpMock = mkdirp as unknown as jest.Mock;
 
 describe('initUtils', () => {
   describe('asyncPackageInit', () => {
@@ -30,16 +40,21 @@ describe('initUtils', () => {
       const existsSyncMock = jest
         .spyOn(fs, 'existsSync')
         .mockImplementation(() => true);
-      const readFileMock = jest
-        .spyOn(fs.promises, 'readFile')
+
+      const readJsonFileMock = jest
+        .spyOn(fsUtils, 'readJsonFile')
         .mockImplementationOnce(async () => '');
-      const parseMock = jest.spyOn(JSON, 'parse').mockImplementation();
+
+      const validateSnapJsonFileMock = jest
+        .spyOn(snapUtils, 'validateSnapJsonFile')
+        .mockImplementationOnce(() => true);
+
       jest.spyOn(console, 'log').mockImplementation();
 
       await asyncPackageInit();
       expect(existsSyncMock).toHaveBeenCalledTimes(1);
-      expect(readFileMock).toHaveBeenCalledTimes(1);
-      expect(parseMock).toHaveBeenCalledTimes(1);
+      expect(readJsonFileMock).toHaveBeenCalledTimes(1);
+      expect(validateSnapJsonFileMock).toHaveBeenCalledTimes(1);
       expect(global.console.log).toHaveBeenCalledTimes(2);
     });
 
@@ -54,7 +69,9 @@ describe('initUtils', () => {
         throw new Error('error message');
       });
       jest.spyOn(console, 'log').mockImplementation();
-      const errorMock = jest.spyOn(miscUtils, 'logError').mockImplementation();
+      const logErrorMock = jest
+        .spyOn(miscUtils, 'logError')
+        .mockImplementation();
       jest.spyOn(process, 'exit').mockImplementation(() => {
         throw new Error('process exited');
       });
@@ -65,7 +82,7 @@ describe('initUtils', () => {
       expect(existsSyncMock).toHaveBeenCalled();
       expect(readFileMock).toHaveBeenCalledTimes(1);
       expect(parseMock).toHaveBeenCalledTimes(1);
-      expect(errorMock).toHaveBeenCalledTimes(1);
+      expect(logErrorMock).toHaveBeenCalledTimes(1);
       expect(process.exit).toHaveBeenCalledWith(1);
       expect(global.console.log).toHaveBeenCalledTimes(1);
     });
@@ -101,7 +118,9 @@ describe('initUtils', () => {
         .spyOn(fs, 'existsSync')
         .mockImplementationOnce(() => false)
         .mockImplementationOnce(() => true);
-      const errorMock = jest.spyOn(miscUtils, 'logError').mockImplementation();
+      const logErrorMock = jest
+        .spyOn(miscUtils, 'logError')
+        .mockImplementation();
       const processExitMock = jest
         .spyOn(process, 'exit')
         .mockImplementationOnce(() => {
@@ -112,227 +131,280 @@ describe('initUtils', () => {
         new Error('process exited'),
       );
       expect(existsSyncMock).toHaveBeenCalledTimes(2);
-      expect(errorMock).toHaveBeenCalledTimes(1);
+      expect(logErrorMock).toHaveBeenCalledTimes(1);
       expect(processExitMock).toHaveBeenCalledWith(1);
     });
   });
 
-  describe('buildWeb3Wallet', () => {
+  describe('buildSnapManifest', () => {
     const getMockArgv = () => {
       return {
         dist: 'dist',
         outfileName: 'bundle.js',
-        port: 8081,
-      };
+      } as any;
     };
 
     const NO = 'no';
-    const VALID_PORT = 8000;
-    const VALID_DIR = 'validDir';
-    const VALID_PERMISSIONS_INPUT =
-      'confirm customPrompt wallet_manageIdentities';
+    const VALID_PERMISSIONS_INPUT = 'snap_confirm snap_manageState';
 
-    it("applies default web3wallet values if user input is 'y'", async () => {
-      const mkdirMock = (fs.promises.mkdir as jest.Mock).mockImplementation();
+    it("applies default manifest values if user inputs 'yes'", async () => {
       const promptMock = jest
         .spyOn(readlineUtils, 'prompt')
         .mockImplementation(async () => 'y');
       jest.spyOn(console, 'log').mockImplementation();
 
-      await buildWeb3Wallet(getMockArgv() as any);
+      const [manifest, argv] = await buildSnapManifest(
+        getMockArgv(),
+        getPackageJson(),
+        DEFAULT_SNAP_SHASUM,
+      );
+      expect(manifest).toStrictEqual(getSnapManifest());
+      expect(argv).toStrictEqual({
+        ...getMockArgv(),
+        src: 'src/index.js',
+      });
+
       expect(promptMock).toHaveBeenCalledTimes(1);
-      expect(mkdirMock).toHaveBeenCalledTimes(1);
+
+      expect(mkdirpMock).toHaveBeenCalledTimes(1);
+      expect(mkdirpMock).toHaveBeenCalledWith(getMockArgv().dist);
+
       expect(global.console.log).toHaveBeenCalledTimes(1);
     });
 
-    it('throws error if fails to make directory and apply default values', async () => {
-      (fs.promises.mkdir as jest.Mock).mockImplementation(() => {
-        const err: ErrorWithCode = new Error(
-          'an error message that is not `file already exists`',
-        );
-        err.code = 'notEEXIST';
-        throw err;
+    it('throws if the "dist" directory cannot be created', async () => {
+      mkdirpMock.mockImplementationOnce(() => {
+        throw new FakeFsError('some file system error', 'ERROR');
       });
       const promptMock = jest
         .spyOn(readlineUtils, 'prompt')
         .mockImplementation(async () => 'y');
       jest.spyOn(console, 'log').mockImplementation();
-      const errorMock = jest.spyOn(miscUtils, 'logError').mockImplementation();
+      const logErrorMock = jest
+        .spyOn(miscUtils, 'logError')
+        .mockImplementation();
       jest.spyOn(process, 'exit').mockImplementationOnce(() => {
-        throw new Error('error message');
+        throw new Error('process exit');
       });
 
-      await expect(buildWeb3Wallet(getMockArgv() as any)).rejects.toThrow(
-        new Error('error message'),
-      );
+      await expect(
+        buildSnapManifest(getMockArgv(), getPackageJson(), DEFAULT_SNAP_SHASUM),
+      ).rejects.toThrow(new Error('process exit'));
       expect(promptMock).toHaveBeenCalledTimes(1);
       expect(global.console.log).toHaveBeenCalledTimes(1);
-      expect(errorMock).toHaveBeenCalledTimes(2);
+      expect(logErrorMock).toHaveBeenCalledTimes(2);
       expect(process.exit).toHaveBeenCalledWith(1);
     });
 
     it('handles valid user inputs when not using default values', async () => {
-      const mockArgv = getMockArgv();
-      const expectedMockWallet = [
-        {
-          bundle: {
-            local: path.normalize(`${VALID_DIR}/${mockArgv.outfileName}`),
-            url: `http://localhost:${VALID_PORT}/${VALID_DIR}/${mockArgv.outfileName}`,
-          },
+      const packageJson = getPackageJson();
+      const { dist } = getMockArgv();
+
+      const promptMock = jest
+        .spyOn(readlineUtils, 'prompt')
+        .mockImplementationOnce(async () => NO)
+        .mockImplementationOnce(async () => packageJson.name)
+        .mockImplementationOnce(async () => packageJson.description)
+        .mockImplementationOnce(async () => dist)
+        .mockImplementationOnce(async () => VALID_PERMISSIONS_INPUT);
+
+      expect(
+        await buildSnapManifest(
+          getMockArgv(),
+          getPackageJson(),
+          DEFAULT_SNAP_SHASUM,
+        ),
+      ).toStrictEqual([
+        getSnapManifest({
           initialPermissions: {
-            confirm: {},
-            customPrompt: {},
-            wallet_manageIdentities: {},
+            snap_confirm: {},
+            snap_manageState: {},
           },
-        },
-        { dist: VALID_DIR, outfileName: 'bundle.js', port: VALID_PORT },
-      ];
+        }),
+        { dist, outfileName: 'bundle.js', src: 'src/index.js' },
+      ]);
+      expect(promptMock).toHaveBeenCalledTimes(5);
+      expect(mkdirpMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('handles invalid "proposedName" input', async () => {
+      const packageJson = getPackageJson();
+      const { dist } = getMockArgv();
 
       const promptMock = jest
         .spyOn(readlineUtils, 'prompt')
         .mockImplementationOnce(async () => NO)
-        .mockImplementationOnce(async () => String(VALID_PORT))
-        .mockImplementationOnce(async () => VALID_DIR)
+        .mockImplementationOnce(async () => new Array(215).fill('a').join(''))
+        .mockImplementationOnce(async () => packageJson.name)
+        .mockImplementationOnce(async () => packageJson.description)
+        .mockImplementationOnce(async () => dist)
         .mockImplementationOnce(async () => VALID_PERMISSIONS_INPUT);
-      const mkdirMock = jest.spyOn(fs.promises, 'mkdir').mockImplementation();
 
-      expect(await buildWeb3Wallet(mockArgv as any)).toStrictEqual(
-        expectedMockWallet,
-      );
-      expect(promptMock).toHaveBeenCalledTimes(4);
-      expect(mkdirMock).toHaveBeenCalledTimes(1);
-    });
+      const logErrorMock = jest
+        .spyOn(miscUtils, 'logError')
+        .mockImplementation();
 
-    it('handles valid user inputs and using default permissions', async () => {
-      const mockArgv = getMockArgv();
-      const expectedMockWallet = [
-        {
-          bundle: {
-            local: path.normalize(`${VALID_DIR}/${mockArgv.outfileName}`),
-            url: `http://localhost:${VALID_PORT}/${VALID_DIR}/${mockArgv.outfileName}`,
-          },
+      expect(
+        await buildSnapManifest(
+          getMockArgv(),
+          getPackageJson(),
+          DEFAULT_SNAP_SHASUM,
+        ),
+      ).toStrictEqual([
+        getSnapManifest({
           initialPermissions: {
-            alert: {},
+            snap_confirm: {},
+            snap_manageState: {},
           },
-        },
-        { dist: VALID_DIR, outfileName: 'bundle.js', port: VALID_PORT },
-      ];
+        }),
+        { dist, outfileName: 'bundle.js', src: 'src/index.js' },
+      ]);
 
-      const promptMock = jest
-        .spyOn(readlineUtils, 'prompt')
-        .mockImplementationOnce(async () => NO)
-        .mockImplementationOnce(async () => String(VALID_PORT))
-        .mockImplementationOnce(async () => VALID_DIR)
-        .mockImplementationOnce(async () => ''); // to accept default permissions
-      const mkdirMock = jest.spyOn(fs.promises, 'mkdir').mockImplementation();
-
-      expect(await buildWeb3Wallet(mockArgv as any)).toStrictEqual(
-        expectedMockWallet,
+      expect(promptMock).toHaveBeenCalledTimes(6);
+      expect(logErrorMock).toHaveBeenCalledTimes(1);
+      expect(logErrorMock).toHaveBeenCalledWith(
+        expect.stringMatching(
+          /the proposed name must adhere to npm package naming conventions/iu,
+        ),
       );
-      expect(promptMock).toHaveBeenCalledTimes(4);
-      expect(mkdirMock).toHaveBeenCalledTimes(1);
+      expect(mkdirpMock).toHaveBeenCalledTimes(1);
     });
 
-    it('treats already existing directory as a success', async () => {
+    it('handles invalid "description" input', async () => {
+      const packageJson = getPackageJson();
+      const { dist } = getMockArgv();
+
       const promptMock = jest
         .spyOn(readlineUtils, 'prompt')
         .mockImplementationOnce(async () => NO)
-        .mockImplementationOnce(async () => String(VALID_PORT))
-        .mockImplementationOnce(async () => VALID_DIR)
+        .mockImplementationOnce(async () => packageJson.name)
+        .mockImplementationOnce(async () => new Array(281).fill('a').join(''))
+        .mockImplementationOnce(async () => packageJson.description)
+        .mockImplementationOnce(async () => dist)
         .mockImplementationOnce(async () => VALID_PERMISSIONS_INPUT);
-      const mkdirMock = (fs.promises.mkdir as jest.Mock).mockImplementation(
-        () => {
-          const err: ErrorWithCode = new Error('file already exists');
-          err.code = 'EEXIST';
-          throw err;
-        },
-      );
-      const errorMock = jest.spyOn(miscUtils, 'logError').mockImplementation();
 
-      await buildWeb3Wallet(getMockArgv() as any);
-      expect(mkdirMock).toHaveBeenCalledTimes(1);
-      expect(promptMock).toHaveBeenCalledTimes(4);
-      expect(errorMock).not.toHaveBeenCalled();
+      const logErrorMock = jest
+        .spyOn(miscUtils, 'logError')
+        .mockImplementation();
+
+      expect(
+        await buildSnapManifest(
+          getMockArgv(),
+          getPackageJson(),
+          DEFAULT_SNAP_SHASUM,
+        ),
+      ).toStrictEqual([
+        getSnapManifest({
+          initialPermissions: {
+            snap_confirm: {},
+            snap_manageState: {},
+          },
+        }),
+        { dist, outfileName: 'bundle.js', src: 'src/index.js' },
+      ]);
+
+      expect(promptMock).toHaveBeenCalledTimes(6);
+      expect(logErrorMock).toHaveBeenCalledTimes(1);
+      expect(logErrorMock).toHaveBeenCalledWith(
+        `The description must be a non-empty string less than or equal to 280 characters.`,
+      );
+      expect(mkdirpMock).toHaveBeenCalledTimes(1);
     });
 
-    it('logs error and reprompts if user inputs invalid port', async () => {
-      const invalidPort = '-1';
+    it('handles invalid "dist" input', async () => {
+      const packageJson = getPackageJson();
+      const { dist } = getMockArgv();
+
       const promptMock = jest
         .spyOn(readlineUtils, 'prompt')
         .mockImplementationOnce(async () => NO)
-        .mockImplementationOnce(async () => invalidPort)
-        .mockImplementationOnce(async () => String(VALID_PORT))
-        .mockImplementationOnce(async () => VALID_DIR)
+        .mockImplementationOnce(async () => packageJson.name)
+        .mockImplementationOnce(async () => packageJson.description)
+        .mockImplementationOnce(async () => 'invalid/directory')
+        .mockImplementationOnce(async () => dist)
         .mockImplementationOnce(async () => VALID_PERMISSIONS_INPUT);
 
-      const errorMock = jest.spyOn(miscUtils, 'logError').mockImplementation();
+      mkdirpMock.mockImplementationOnce(async () => {
+        throw new Error('invalid directory');
+      });
 
-      await buildWeb3Wallet(getMockArgv() as any);
-      expect(promptMock).toHaveBeenCalledTimes(5);
-      expect(errorMock).toHaveBeenCalledTimes(1);
-      expect(errorMock).toHaveBeenLastCalledWith(
-        expect.stringContaining(invalidPort),
+      const logErrorMock = jest
+        .spyOn(miscUtils, 'logError')
+        .mockImplementation();
+
+      expect(
+        await buildSnapManifest(
+          getMockArgv(),
+          getPackageJson(),
+          DEFAULT_SNAP_SHASUM,
+        ),
+      ).toStrictEqual([
+        getSnapManifest({
+          initialPermissions: {
+            snap_confirm: {},
+            snap_manageState: {},
+          },
+        }),
+        { dist, outfileName: 'bundle.js', src: 'src/index.js' },
+      ]);
+
+      expect(promptMock).toHaveBeenCalledTimes(6);
+      expect(logErrorMock).toHaveBeenCalledTimes(1);
+      expect(logErrorMock).toHaveBeenCalledWith(
+        `Unable to create directory 'invalid/directory'. Ensure that the path is valid and try again.`,
+        new Error('invalid directory'),
       );
+      expect(mkdirpMock).toHaveBeenCalledTimes(2);
     });
 
-    it('logs error and reprompts if user inputs directory that could not be made', async () => {
-      const invalidDist = 'invalidDir';
+    it('handles invalid "initialPermissions" input', async () => {
+      const packageJson = getPackageJson();
+      const { dist } = getMockArgv();
+
       const promptMock = jest
         .spyOn(readlineUtils, 'prompt')
         .mockImplementationOnce(async () => NO)
-        .mockImplementationOnce(async () => String(VALID_PORT))
-        .mockImplementationOnce(async () => invalidDist)
-        .mockImplementationOnce(async () => VALID_DIR)
+        .mockImplementationOnce(async () => packageJson.name)
+        .mockImplementationOnce(async () => packageJson.description)
+        .mockImplementationOnce(async () => dist)
+        .mockImplementationOnce(async () => '@invalid ~permissions')
         .mockImplementationOnce(async () => VALID_PERMISSIONS_INPUT);
 
-      const mockErrorCode = 'notEEXIST';
-      (fs.promises.mkdir as jest.Mock)
-        .mockResolvedValue(undefined)
-        .mockImplementationOnce(() => {
-          const err: ErrorWithCode = new Error(
-            'an error message that is not `file already exists`',
-          );
-          err.code = mockErrorCode;
-          throw err;
-        });
-      const errorMock = jest.spyOn(miscUtils, 'logError').mockImplementation();
+      const logErrorMock = jest
+        .spyOn(miscUtils, 'logError')
+        .mockImplementation();
 
-      await buildWeb3Wallet(getMockArgv() as any);
-      expect(promptMock).toHaveBeenCalledTimes(5);
-      expect(errorMock).toHaveBeenCalledTimes(1);
-      expect(errorMock).toHaveBeenLastCalledWith(
-        expect.stringContaining(invalidDist),
-        expect.objectContaining({ code: mockErrorCode }),
+      expect(
+        await buildSnapManifest(
+          getMockArgv(),
+          getPackageJson(),
+          DEFAULT_SNAP_SHASUM,
+        ),
+      ).toStrictEqual([
+        getSnapManifest({
+          initialPermissions: {
+            snap_confirm: {},
+            snap_manageState: {},
+          },
+        }),
+        { dist, outfileName: 'bundle.js', src: 'src/index.js' },
+      ]);
+
+      expect(promptMock).toHaveBeenCalledTimes(6);
+      expect(logErrorMock).toHaveBeenCalledTimes(1);
+      expect(logErrorMock).toHaveBeenCalledWith(
+        `Invalid permissions '@invalid ~permissions'.\nThe permissions must be specified as a space-separated list of strings with only characters, digits, underscores ('_'), and colons (':').`,
+        new Error('Invalid permission: @invalid'),
       );
-    });
-
-    it('logs error and reprompts if user inputs invalid permission', async () => {
-      const invalidPermissions = '@!*XYZ123 confirm';
-      const promptMock = jest
-        .spyOn(readlineUtils, 'prompt')
-        .mockImplementationOnce(async () => NO)
-        .mockImplementationOnce(async () => String(VALID_PORT))
-        .mockImplementationOnce(async () => VALID_DIR)
-        .mockImplementationOnce(async () => invalidPermissions)
-        .mockImplementationOnce(async () => VALID_PERMISSIONS_INPUT);
-      const errorMock = jest.spyOn(miscUtils, 'logError').mockImplementation();
-      (fs.promises.mkdir as jest.Mock).mockResolvedValue(undefined);
-
-      await buildWeb3Wallet(getMockArgv() as any);
-      expect(promptMock).toHaveBeenCalledTimes(5);
-      expect(errorMock).toHaveBeenCalledTimes(1);
-      expect(errorMock).toHaveBeenLastCalledWith(
-        expect.stringContaining(invalidPermissions),
-        expect.any(Error),
-      );
+      expect(mkdirpMock).toHaveBeenCalledTimes(1);
     });
   });
 
-  describe('validateEmptyDir', () => {
+  describe('prepareWorkingDirectory', () => {
     it('warns user if files may be overwritten', async () => {
       const readdirMock = jest
         .spyOn(fs.promises, 'readdir')
-        .mockImplementation(() => ['index.js', 'dist'] as any);
+        .mockImplementation(() => ['src/index.js', 'dist'] as any);
       const warningMock = jest
         .spyOn(miscUtils, 'logWarning')
         .mockImplementation();
@@ -344,7 +416,7 @@ describe('initUtils', () => {
         .mockImplementationOnce(() => undefined as never);
       jest.spyOn(console, 'log').mockImplementation();
 
-      await validateEmptyDir();
+      await prepareWorkingDirectory();
       expect(warningMock).toHaveBeenCalledTimes(1);
       expect(readdirMock).toHaveBeenCalledTimes(1);
       expect(promptMock).toHaveBeenCalledTimes(1);
@@ -355,7 +427,7 @@ describe('initUtils', () => {
     it('handles continue correctly', async () => {
       const readdirMock = jest
         .spyOn(fs.promises, 'readdir')
-        .mockImplementation(() => ['index.js', 'dist'] as any);
+        .mockImplementation(() => ['src/index.js', 'dist'] as any);
       const warningMock = jest
         .spyOn(miscUtils, 'logWarning')
         .mockImplementation();
@@ -367,7 +439,7 @@ describe('initUtils', () => {
         .mockImplementationOnce(() => undefined as never);
       jest.spyOn(console, 'log').mockImplementation();
 
-      await validateEmptyDir();
+      await prepareWorkingDirectory();
       expect(warningMock).toHaveBeenCalledTimes(1);
       expect(readdirMock).toHaveBeenCalledTimes(1);
       expect(promptMock).toHaveBeenCalledTimes(1);

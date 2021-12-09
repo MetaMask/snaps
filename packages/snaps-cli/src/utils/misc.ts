@@ -1,6 +1,9 @@
 import { promises as filesystem } from 'fs';
 import path from 'path';
+import rfdc from 'rfdc';
 import { Arguments } from 'yargs';
+
+export const deepClone = rfdc({ proto: false, circles: false });
 
 export const permRequestKeys = [
   '@context',
@@ -12,7 +15,8 @@ export const permRequestKeys = [
   'proof',
 ];
 
-export const CONFIG_PATHS = ['snap.config.json'];
+export const CONFIG_FILE = 'snap.config.json';
+
 // CLI arguments whose values are file paths
 const pathArguments = new Set([
   'src',

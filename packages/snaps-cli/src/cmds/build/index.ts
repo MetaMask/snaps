@@ -13,11 +13,10 @@ export = {
       .option('outfileName', builders.outfileName)
       .option('sourceMaps', builders.sourceMaps)
       .option('stripComments', builders.stripComments)
-      .option('port', builders.port)
       .option('eval', builders.eval)
       .option('manifest', builders.manifest)
-      .option('populate', builders.populate)
-      .implies('populate', 'manifest');
+      .option('writeManifest', builders.writeManifest)
+      .implies('writeManifest', 'manifest');
   },
   handler: (argv: YargsArgs) => build(argv),
 };

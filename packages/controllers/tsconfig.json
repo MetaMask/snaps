@@ -2,11 +2,14 @@
   "extends": "../../tsconfig.packages.json",
   "references": [{ "path": "../workers" }],
   "compilerOptions": {
+    "allowJs": true,
     "composite": true,
+    "lib": ["DOM", "ES2020"],
     "outDir": "dist",
+    "resolveJsonModule": true,
     "rootDir": "src",
     "typeRoots": ["../../node_modules/@types", "./node_modules/@types"]
   },
-  "include": ["./src"],
+  "include": ["./src", "./src/snaps/json-schemas"],
   "exclude": ["**/*.test.ts"]
 }

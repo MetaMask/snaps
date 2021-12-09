@@ -39,6 +39,8 @@ export async function watch(argv: YargsArgs): Promise<void> {
       `**/${dist}/**`,
       `**/test/**`,
       `**/tests/**`,
+      `**/*.test.js`,
+      `**/*.test.ts`,
       /* istanbul ignore next */
       (str: string) => str !== '.' && str.startsWith('.'),
     ],

@@ -1,3 +1,4 @@
+export { Json } from '@metamask/controllers';
 export * from './permissions';
 export * from './resource';
 export * from './services';

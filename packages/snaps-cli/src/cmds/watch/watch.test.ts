@@ -22,7 +22,7 @@ describe('watch', () => {
   describe('Watch a directory and its subdirectories for changes, and build when files are added or changed.', () => {
     let watcherEmitter: MockWatcher;
 
-    const mockSrc = 'index.js';
+    const mockSrc = 'src/index.js';
     const mockDist = 'dist';
     const mockOutfileName = 'bundle.js';
 
@@ -66,7 +66,7 @@ describe('watch', () => {
       expect(validateDirPathMock).toHaveBeenCalledWith(mockDist, true);
       expect(validateFilePathMock).toHaveBeenCalledWith(mockSrc);
       expect(validateOutfileNameMock).toHaveBeenCalledWith(mockOutfileName);
-      expect(chokidarMock.mock.calls[0][0]).toBe('.');
+      expect(chokidarMock.mock.calls[0][0]).toBe('src/');
     });
 
     it('successfully processes arguments from yargs: nested src path', async () => {

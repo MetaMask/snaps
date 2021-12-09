@@ -50,7 +50,7 @@ export async function validateFilePath(filePath: string): Promise<boolean> {
 
 /**
  * Validates a directory path.
- * Throws on validation failure
+ * Throws on validation failure.
  *
  * @param dirPath - The directory path to validate
  * @param createDir - Whether to create the directory if it doesn't exist

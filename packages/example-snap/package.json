@@ -1,0 +1,37 @@
+{
+  "name": "@metamask/example-snap",
+  "version": "0.5.0",
+  "description": "An example MetaMask Snap.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps-skunkworks.git"
+  },
+  "license": "MIT",
+  "files": [
+    "dist/",
+    "snap.manifest.json"
+  ],
+  "scripts": {
+    "build": "yarn mm-snap build",
+    "build:clean": "yarn clean && yarn build",
+    "clean": "rimraf dist/*",
+    "test": "echo \"@metamask/example-snap has no tests.\"",
+    "test:ci": "yarn test",
+    "lint:eslint": "eslint . --cache --ext js,ts",
+    "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
+    "lint": "yarn lint:eslint && yarn lint:misc --check",
+    "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
+    "lint:changelog": "yarn auto-changelog validate",
+    "publish": "../../scripts/publish-package.sh",
+    "publish:prep": "yarn build:clean"
+  },
+  "devDependencies": {
+    "@metamask/auto-changelog": "^2.5.0",
+    "@metamask/snaps-cli": "^0.5.0",
+    "rimraf": "^3.0.2"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

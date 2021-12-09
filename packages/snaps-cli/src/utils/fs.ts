@@ -1,4 +1,5 @@
 import { promises as fs } from 'fs';
+import type { Json } from '@metamask/snap-controllers';
 import { logError } from './misc';
 
 /**
@@ -47,4 +48,18 @@ export async function isFile(pathString: string): Promise<boolean> {
   } catch (error) {
     return false;
   }
+}
+
+/**
+ * Reads a `.json` file, parses its contents, and returns them.
+ *
+ * @param pathString - The path to the JSON file.
+ * @returns The parsed contents of the JSON file.
+ */
+export async function readJsonFile(pathString: string): Promise<Json> {
+  if (!pathString.endsWith('.json')) {
+    throw new Error('The specified file must be a ".json" file.');
+  }
+
+  return JSON.parse(await fs.readFile(pathString, 'utf8'));
 }

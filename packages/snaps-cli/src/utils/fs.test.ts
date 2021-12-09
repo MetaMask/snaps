@@ -1,18 +1,18 @@
 import { promises as fs } from 'fs';
 import pathUtils from 'path';
 import rimraf from 'rimraf';
-import { isFile, isDirectory } from './fs';
+import { isFile, isDirectory, readJsonFile } from './fs';
 
 /**
  * All test files will be created in this temporary directory, which is removed during cleanup.
  */
-const BASE_PATH = pathUtils.join(__dirname, 'fs-sandbox');
+const BASE_PATH = pathUtils.join(__dirname, '__TEST__fs-sandbox');
 
 function getPath(path?: string) {
   return path ? pathUtils.join(BASE_PATH, path) : BASE_PATH;
 }
 
-async function createFile(fileName: string, data = 'foo') {
+async function createFile(fileName: string, data: string) {
   await fs.writeFile(getPath(fileName), data);
 }
 
@@ -27,11 +27,16 @@ const isFileRegEx = /\w+\.\w+$/u;
  * - File paths with a file name including its file extension, e.g. foo.txt
  * - Parent directories must be specified before their contents, or an error will be thrown
  */
-async function createTestFiles(...paths: string[]) {
+async function createTestFiles(...paths: (string | [string, string])[]) {
   await createDir();
-  for (const path of paths) {
+  for (let path of paths) {
+    let data = 'foo';
+    if (typeof path !== 'string') {
+      [path, data] = path;
+    }
+
     if (isFileRegEx.test(path)) {
-      await createFile(path);
+      await createFile(path, data);
     } else {
       await createDir(path);
     }
@@ -45,9 +50,12 @@ function cleanupTestFiles() {
   rimraf.sync(getPath());
 }
 
-describe('file system checks', () => {
+describe('file system utilities', () => {
   beforeEach(async () => {
-    await createTestFiles('file.txt', 'empty-dir', 'dir', 'dir/file.txt');
+    await createTestFiles('file.txt', 'empty-dir', 'dir', 'dir/file.txt', [
+      'foo.json',
+      '{ "foo": 1 }\n',
+    ]);
   });
 
   afterEach(() => {
@@ -130,6 +138,18 @@ describe('file system checks', () => {
 
       const result = await isDirectory('new-dir', true);
       expect(result).toStrictEqual(false);
+    });
+  });
+
+  describe('readJsonFile', () => {
+    it('reads a .json file', async () => {
+      expect(await readJsonFile(getPath('foo.json'))).toStrictEqual({ foo: 1 });
+    });
+
+    it('throws if the file does not end with ".json"', async () => {
+      await expect(readJsonFile(getPath('file.txt'))).rejects.toThrow(
+        new Error('The specified file must be a ".json" file.'),
+      );
     });
   });
 });

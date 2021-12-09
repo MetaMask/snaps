@@ -4,7 +4,7 @@
     "composite": true,
     "forceConsistentCasingInFileNames": true,
     "inlineSources": true,
-    "lib": ["ES2020"],
+    "lib": ["DOM", "ES2020"],
     "outDir": "dist",
     "rootDir": "src",
     "resolveJsonModule": true,

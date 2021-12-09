@@ -1,13 +1,29 @@
-import { Builders } from './types/package';
+import { Options } from 'yargs';
 
-const builders: Builders = {
+export type SnapsCliBuilders = {
+  readonly src: Readonly<Options>;
+  readonly dist: Readonly<Options>;
+  readonly bundle: Readonly<Options>;
+  readonly root: Readonly<Options>;
+  readonly port: Readonly<Options>;
+  readonly sourceMaps: Readonly<Options>;
+  readonly stripComments: Readonly<Options>;
+  readonly outfileName: Readonly<Options>;
+  readonly manifest: Readonly<Options>;
+  readonly writeManifest: Readonly<Options>;
+  readonly eval: Readonly<Options>;
+  readonly verboseErrors: Readonly<Options>;
+  readonly suppressWarnings: Readonly<Options>;
+};
+
+const builders: SnapsCliBuilders = {
   src: {
     alias: 's',
     describe: 'Source file',
     type: 'string',
     demandOption: true,
     normalize: true,
-    default: 'index.js',
+    default: 'src/index.js',
   },
 
   dist: {
@@ -77,14 +93,14 @@ const builders: Builders = {
 
   manifest: {
     alias: 'm',
-    describe: 'Validate project package.json as a Snap manifest',
+    describe: 'Validate snap.manifest.json',
     type: 'boolean',
     demandOption: false,
     default: true,
   },
 
-  populate: {
-    describe: 'Update Snap manifest properties of package.json',
+  writeManifest: {
+    describe: 'Make necessary changes to the Snap manifest file',
     type: 'boolean',
     demandOption: false,
     default: true,
@@ -99,7 +115,6 @@ const builders: Builders = {
   },
 
   verboseErrors: {
-    alias: 'v',
     type: 'boolean',
     describe: 'Display original errors',
     demandOption: false,
@@ -107,7 +122,6 @@ const builders: Builders = {
   },
 
   suppressWarnings: {
-    alias: 'sw',
     type: 'boolean',
     describe: 'Suppress warnings',
     demandOption: false,

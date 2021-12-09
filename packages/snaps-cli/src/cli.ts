@@ -1,17 +1,8 @@
 import yargs, { Arguments } from 'yargs';
 import yargsType from 'yargs/yargs';
 
-import { SnapsCliGlobals } from './types/package';
 import { applyConfig, sanitizeInputs, setSnapGlobals } from './utils';
 import builders from './builders';
-
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace NodeJS {
-    // eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/consistent-type-definitions
-    interface Global extends SnapsCliGlobals {}
-  }
-}
 
 export function cli(argv: string[], commands: any): void {
   const rawArgv = argv.slice(2);
@@ -21,18 +12,18 @@ export function cli(argv: string[], commands: any): void {
 
     .example('$0 init', `\tInitialize Snap package from scratch`)
     .example(
-      '$0 build -s index.js -d out',
-      `\tBuild 'index.js' as './out/bundle.js'`,
+      '$0 build -s src/index.js -d out',
+      `\tBuild 'src/index.js' as './out/bundle.js'`,
     )
     .example(
-      '$0 build -s index.js -d out -n snap.js',
-      `\tBuild 'index.js' as './out/snap.js'`,
+      '$0 build -s src/index.js -d out -n snap.js',
+      `\tBuild 'src/index.js' as './out/snap.js'`,
     )
     .example('$0 serve -r out', `\tServe files in './out' on port 8080`)
     .example('$0 serve -r out -p 9000', `\tServe files in './out' on port 9000`)
     .example(
-      '$0 watch -s index.js -d out',
-      `\tRebuild './out/bundle.js' on changes to files in 'index.js' parent and child directories`,
+      '$0 watch -s src/index.js -d out',
+      `\tRebuild './out/bundle.js' on changes to files in 'src/index.js' parent and child directories`,
     )
 
     .command(commands)

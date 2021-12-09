@@ -1,0 +1,60 @@
+{
+  "title": "npm Snap package.json",
+  "type": "object",
+  "required": ["version", "name"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "title": "Version",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+    },
+    "name": {
+      "type": "string",
+      "title": "Package Name",
+      "minLength": 1,
+      "maxLength": 214,
+      "pattern": "^(?:@[a-z0-9-*~][a-z0-9-*._~]*/)?[a-z0-9-~][a-z0-9-._~]*$"
+    },
+    "private": {
+      "type": "boolean",
+      "title": "Private",
+      "enum": [false]
+    },
+    "main": {
+      "type": "string",
+      "title": "Main",
+      "minLength": 1
+    },
+    "publishConfig": {
+      "type": "object",
+      "title": "Publish Config",
+      "required": ["access", "registry"],
+      "properties": {
+        "access": {
+          "type": "string",
+          "enum": ["public"]
+        },
+        "registry": {
+          "type": "string",
+          "enum": ["https://registry.npmjs.org", "https://registry.npmjs.org/"]
+        }
+      }
+    },
+    "repository": {
+      "type": "object",
+      "title": "Repository",
+      "additionalProperties": false,
+      "required": ["type", "url"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["git"]
+        },
+        "url": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

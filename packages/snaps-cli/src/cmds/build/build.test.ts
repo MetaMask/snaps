@@ -15,7 +15,7 @@ describe('build', () => {
 
     it('processes yargs properties correctly', async () => {
       const mockArgv = {
-        src: 'index.js',
+        src: 'src/index.js',
         dist: 'dist',
         outfileName: 'bundle.js',
         eval: true,
@@ -41,7 +41,7 @@ describe('build', () => {
         .spyOn(snapEvalModule, 'snapEval')
         .mockImplementation();
       const manifestMock = jest
-        .spyOn(manifestModule, 'manifest')
+        .spyOn(manifestModule, 'manifestHandler')
         .mockImplementation();
 
       await build(mockArgv as any);
@@ -63,7 +63,7 @@ describe('build', () => {
 
     it('does not call validateOutfileName, snapEval, or manifest without argv parameters', async () => {
       const mockArgv = {
-        src: 'index.js',
+        src: 'src/index.js',
         dist: 'dist',
       };
       const outfilePath = path.normalize(`${mockArgv.dist}/bundle.js`);
@@ -83,7 +83,7 @@ describe('build', () => {
         .spyOn(snapEvalModule, 'snapEval')
         .mockImplementation();
       const manifestMock = jest
-        .spyOn(manifestModule, 'manifest')
+        .spyOn(manifestModule, 'manifestHandler')
         .mockImplementation();
 
       await build(mockArgv as any);
@@ -101,7 +101,7 @@ describe('build', () => {
 
     it('does not call eval if bundle fails', async () => {
       const mockArgv = {
-        src: 'index.js',
+        src: 'src/index.js',
         dist: 'dist',
         outfileName: 'bundle.js',
         eval: true,
@@ -114,7 +114,7 @@ describe('build', () => {
       const evalMock = jest
         .spyOn(snapEvalModule, 'snapEval')
         .mockImplementation();
-      jest.spyOn(manifestModule, 'manifest').mockImplementation();
+      jest.spyOn(manifestModule, 'manifestHandler').mockImplementation();
       jest.spyOn(buildBundle, 'bundle').mockImplementation();
 
       await build(mockArgv as any);
