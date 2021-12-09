@@ -961,7 +961,7 @@ export class SnapController extends BaseController<
   }
 
   /**
-   *  Fetches the manifest and source code of a local snap.
+   * Fetches the manifest and source code of a local snap.
    *
    * @param localhostUrl - The localhost URL to download from.
    * @returns The validated manifest and the source code.
