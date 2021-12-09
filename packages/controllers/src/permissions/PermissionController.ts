@@ -49,6 +49,7 @@ import {
   ExtractAllowedCaveatTypes,
   ExtractPermissionSpecification,
   PermissionSpecificationConstraint,
+  PermissionType,
 } from './Permission';
 import {
   PermissionDoesNotExistError,
@@ -325,7 +326,7 @@ export type ExtractPermission<
  * caveat specifications available to the controller.
  */
 export type PermissionControllerOptions<
-  ControllerPermissionSpecification extends ValidPermissionSpecification<PermissionSpecificationConstraint>,
+  ControllerPermissionSpecification extends PermissionSpecificationConstraint,
   ControllerCaveatSpecification extends CaveatSpecificationConstraint,
 > = {
   messenger: PermissionControllerMessenger;
@@ -593,15 +594,14 @@ export class PermissionController<
   ): RestrictedMethod<RestrictedMethodParameters, Json> {
     const targetKey = this.getTargetKey(method);
     if (!targetKey) {
-      const error = methodNotFound({ method });
-      if (origin) {
-        error.data = { origin };
-      }
-
-      throw error;
+      throw getMethodNotFoundError(method, origin);
     }
 
-    return this.getPermissionSpecification(targetKey).methodImplementation;
+    const specification = this.getPermissionSpecification(targetKey);
+    if (specification.permissionType !== PermissionType.RestrictedMethod) {
+      throw getMethodNotFoundError(method, origin);
+    }
+    return specification.methodImplementation;
   }
 
   /**
@@ -1978,4 +1978,12 @@ export class PermissionController<
       this._caveatSpecifications,
     )({ method, params, context: { origin } });
   }
+}
+
+function getMethodNotFoundError(method: string, origin?: string): Error {
+  const error = methodNotFound({ method });
+  if (origin) {
+    error.data = { origin };
+  }
+  return error;
 }

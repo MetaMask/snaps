@@ -26,6 +26,7 @@ import {
   RestrictedMethodParameters,
   ExtractSpecifications,
   CaveatMutatorOperation,
+  PermissionType,
 } from '.';
 
 // Caveat types and specifications
@@ -207,6 +208,7 @@ const PermissionNames = {
 function getDefaultPermissionSpecifications() {
   return {
     [PermissionKeys.wallet_getSecretArray]: {
+      permissionType: PermissionType.RestrictedMethod,
       targetKey: PermissionKeys.wallet_getSecretArray,
       allowedCaveats: [
         CaveatTypes.filterArrayResponse,
@@ -217,6 +219,7 @@ function getDefaultPermissionSpecifications() {
       },
     },
     [PermissionKeys.wallet_getSecretObject]: {
+      permissionType: PermissionType.RestrictedMethod,
       targetKey: PermissionKeys.wallet_getSecretObject,
       allowedCaveats: [
         CaveatTypes.filterObjectResponse,
@@ -236,6 +239,7 @@ function getDefaultPermissionSpecifications() {
       },
     },
     [PermissionKeys['wallet_getSecret_*']]: {
+      permissionType: PermissionType.RestrictedMethod,
       targetKey: PermissionKeys['wallet_getSecret_*'],
       allowedCaveats: [CaveatTypes.noopCaveat],
       methodImplementation: (args: RestrictedMethodOptions<void>) => {
@@ -258,6 +262,7 @@ function getDefaultPermissionSpecifications() {
       },
     },
     [PermissionKeys.wallet_doubleNumber]: {
+      permissionType: PermissionType.RestrictedMethod,
       targetKey: PermissionKeys.wallet_doubleNumber,
       allowedCaveats: null,
       methodImplementation: ({ params }: RestrictedMethodOptions<[number]>) => {
@@ -270,6 +275,7 @@ function getDefaultPermissionSpecifications() {
       },
     },
     [PermissionKeys.wallet_noop]: {
+      permissionType: PermissionType.RestrictedMethod,
       targetKey: PermissionKeys.wallet_noop,
       allowedCaveats: null,
       methodImplementation: (_args: RestrictedMethodOptions<void>) => {
@@ -278,6 +284,7 @@ function getDefaultPermissionSpecifications() {
     },
     // This one exists to check some permission validator logic
     [PermissionKeys.wallet_noopWithValidator]: {
+      permissionType: PermissionType.RestrictedMethod,
       targetKey: PermissionKeys.wallet_noopWithValidator,
       methodImplementation: (_args: RestrictedMethodOptions<void>) => {
         return null;
@@ -296,6 +303,7 @@ function getDefaultPermissionSpecifications() {
     // This one exists just to check that permission factories can use the
     // requestData of approved permission requests
     [PermissionKeys.wallet_noopWithFactory]: {
+      permissionType: PermissionType.RestrictedMethod,
       targetKey: PermissionKeys.wallet_noopWithFactory,
       methodImplementation: (_args: RestrictedMethodOptions<void>) => {
         return null;

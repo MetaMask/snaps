@@ -307,11 +307,6 @@ export type RestrictedMethod<
   | SyncRestrictedMethod<Params, Result>
   | AsyncRestrictedMethod<Params, Result>;
 
-export type GenericRestrictedMethod = RestrictedMethod<
-  RestrictedMethodParameters,
-  Json
->;
-
 export type ValidRestrictedMethod<
   MethodImplementation extends RestrictedMethod<any, any>,
 > = MethodImplementation extends (args: infer Options) => Json | Promise<Json>
@@ -319,6 +314,14 @@ export type ValidRestrictedMethod<
     ? MethodImplementation
     : never
   : never;
+
+/**
+ * A synchronous or asynchronous function that gets the endowments for a
+ * particular endowment permission.
+ */
+export type EndowmentGetter<Endowments> = (options: {
+  context: RestrictedMethodContext;
+}) => Endowments | Promise<Endowments>;
 
 export type PermissionFactory<
   TargetPermission extends PermissionConstraint,
@@ -351,16 +354,38 @@ type ValidTargetKey<Key extends string> = Key extends `${string}_*`
   : Key;
 
 /**
- * The constraint for permission specification objects. Every {@link Permission}
- * supported by a {@link PermissionController} must have an associated
- * specification, which is the source of truth for all permission-related types.
- * In addition, a permission specification includes the actual implementation
- * of restricted methods, a list of permitted caveats, and any factory and
- * validation functions specified by the consumer.
+ * The different possible types of permissions.
+ */
+export enum PermissionType {
+  /**
+   * A restricted JSON-RPC method. A subject must have the requisite permission
+   * to call a restricted JSON-RPC method.
+   */
+  RestrictedMethod = 'RestrictedMethod',
+
+  /**
+   * An "endowment" granted to subjects that possess the requisite permission,
+   * such as a global environment variable exposing a restricted API, etc.
+   */
+  Endowment = 'Endowment',
+}
+
+/**
+ * The base constraint for permission specification objects. Every
+ * {@link Permission} supported by a {@link PermissionController} must have an
+ * associated specification, which is the source of truth for all permission-
+ * related types. In addition, a permission specification the list of permitted
+ * caveats, and any factory and validation functions specified by the consumer.
+ * A concrete permission specification may specify further fields as necessary.
  *
  * See the README for more details.
  */
-export type PermissionSpecificationConstraint = {
+type PermissionSpecificationBase<Type extends PermissionType> = {
+  /**
+   * The type of the specified permission.
+   */
+  permissionType: Type;
+
   /**
    * The target resource of the permission. At the time of, this is a full
    * JSON-RPC method name or the prefix of a namespaced JSON-RPC method, e.g.
@@ -373,12 +398,6 @@ export type PermissionSpecificationConstraint = {
    * permission.
    */
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
-
-  /**
-   * The implementation of the restricted method that the permission
-   * corresponds to.
-   */
-  methodImplementation: RestrictedMethod<any, any>;
 
   /**
    * The factory function used to get permission objects. Permissions returned
@@ -401,6 +420,97 @@ export type PermissionSpecificationConstraint = {
    */
   validator?: PermissionValidatorConstraint;
 };
+
+/**
+ *
+ */
+export type RestrictedMethodSpecificationConstraint =
+  PermissionSpecificationBase<PermissionType.RestrictedMethod> & {
+    /**
+     * The implementation of the restricted method that the permission
+     * corresponds to.
+     */
+    methodImplementation: RestrictedMethod<any, any>;
+  };
+
+// Should endowment getters take any parameters?
+// Yes, they must minimally take some contextual information, like the requester.
+// Maybe they take arbitrary contextual data as well.
+// (permission, origin, target)
+// (permission, origin, context) ?
+/**
+ * TODO
+ */
+export type EndowmentSpecificationConstraint =
+  PermissionSpecificationBase<PermissionType.Endowment> & {
+    permissionType: PermissionType.Endowment;
+
+    /**
+     * Endowment permissions do not (yet?) support caveats.
+     */
+    allowedCaveats: null;
+
+    /**
+     *
+     */
+    endowmentGetter: EndowmentGetter<any>;
+  };
+
+/**
+ * The constraint for permission specification objects. Every {@link Permission}
+ * supported by a {@link PermissionController} must have an associated
+ * specification, which is the source of truth for all permission-related types.
+ * All specifications must adhere to the {@link PermissionSpecificationBase}
+ * interface, but specifications may have different fields depending on the
+ * {@link PermissionType}.
+ *
+ * See the README for more details.
+ */
+export type PermissionSpecificationConstraint =
+  | EndowmentSpecificationConstraint
+  | RestrictedMethodSpecificationConstraint;
+
+// {
+//   /**
+//    * The target resource of the permission. At the time of, this is a full
+//    * JSON-RPC method name or the prefix of a namespaced JSON-RPC method, e.g.
+//    * `wallet_snap_*`.
+//    */
+//   targetKey: string;
+
+//   /**
+//    * An array of the caveat types that may be added to instances of this
+//    * permission.
+//    */
+//   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
+
+//   /**
+//    * The implementation of the restricted method that the permission
+//    * corresponds to.
+//    */
+//   methodImplementation: RestrictedMethod<any, any>;
+
+//   /**
+//    * The factory function used to get permission objects. Permissions returned
+//    * by this function are presumed to valid, and they will not be passed to the
+//    * validator function associated with this specification (if any). In other
+//    * words, the factory function should validate the permissions it creates.
+//    *
+//    * If no factory is specified, the {@link Permission} constructor will be
+//    * used, and the validator function (if specified) will be called on newly
+//    * constructed permissions.
+//    */
+//   factory?: PermissionFactory<any, Record<string, unknown>>;
+
+//   /**
+//    * The validator function used to validate permissions of the associated type
+//    * whenever they are mutated. The only way a permission can be legally mutated
+//    * is when its caveats are modified by the permission controller.
+//    *
+//    * The validator should throw an appropriate JSON-RPC error if validation fails.
+//    */
+//   validator?: PermissionValidatorConstraint;
+// };
 
 /**
  * Options for {@link PermissionSpecificationBuilder} functions.
@@ -443,6 +553,14 @@ export type PermissionSpecificationBuilderExportConstraint = {
   validatorHookNames?: Record<string, true>;
 };
 
+type ValidRestrictedMethodSpecification<
+  Specification extends RestrictedMethodSpecificationConstraint,
+> = Specification['methodImplementation'] extends ValidRestrictedMethod<
+  Specification['methodImplementation']
+>
+  ? Specification
+  : never;
+
 /**
  * Constraint for {@link PermissionSpecificationConstraint} objects that
  * evaluates to `never` if the specification contains any invalid fields.
@@ -454,10 +572,12 @@ export type ValidPermissionSpecification<
 > = Specification['targetKey'] extends ValidTargetKey<
   Specification['targetKey']
 >
-  ? Specification['methodImplementation'] extends ValidRestrictedMethod<
-      Specification['methodImplementation']
-    >
+  ? Specification['permissionType'] extends PermissionType.Endowment
     ? Specification
+    : Specification['permissionType'] extends PermissionType.RestrictedMethod
+    ? ValidRestrictedMethodSpecification<
+        Extract<Specification, RestrictedMethodSpecificationConstraint>
+      >
     : never
   : never;
 
