@@ -50,6 +50,8 @@ import {
   ExtractPermissionSpecification,
   PermissionSpecificationConstraint,
   PermissionType,
+  RestrictedMethodSpecificationConstraint,
+  EndowmentSpecificationConstraint,
 } from './Permission';
 import {
   PermissionDoesNotExistError,
@@ -73,6 +75,7 @@ import {
   CaveatInvalidJsonError,
   DuplicateCaveatError,
   InvalidCaveatsPropertyError,
+  EndowmentPermissionDoesNotExistError,
 } from './errors';
 import { MethodNames } from './utils';
 import { getPermissionMiddlewareFactory } from './permission-middleware';
@@ -317,6 +320,45 @@ export type ExtractPermission<
   : never;
 
 /**
+ * Extracts the restricted method permission(s) specified by the given
+ * permission and caveat specifications.
+ *
+ * @template ControllerPermissionSpecification - The permission specification(s)
+ * to extract from.
+ * @template ControllerCaveatSpecification - The caveat specification(s) to
+ * extract from. Necessary because {@link Permission} has a generic parameter
+ * that describes the allowed caveats for the permission.
+ */
+export type ExtractRestrictedMethodPermission<
+  ControllerPermissionSpecification extends PermissionSpecificationConstraint,
+  ControllerCaveatSpecification extends CaveatSpecificationConstraint,
+> = ExtractPermission<
+  Extract<
+    ControllerPermissionSpecification,
+    RestrictedMethodSpecificationConstraint
+  >,
+  ControllerCaveatSpecification
+>;
+
+/**
+ * Extracts the endowment permission(s) specified by the given permission and
+ * caveat specifications.
+ *
+ * @template ControllerPermissionSpecification - The permission specification(s)
+ * to extract from.
+ * @template ControllerCaveatSpecification - The caveat specification(s) to
+ * extract from. Necessary because {@link Permission} has a generic parameter
+ * that describes the allowed caveats for the permission.
+ */
+export type ExtractEndowmentPermission<
+  ControllerPermissionSpecification extends PermissionSpecificationConstraint,
+  ControllerCaveatSpecification extends CaveatSpecificationConstraint,
+> = ExtractPermission<
+  Extract<ControllerPermissionSpecification, EndowmentSpecificationConstraint>,
+  ControllerCaveatSpecification
+>;
+
+/**
  * Options for the {@link PermissionController} constructor.
  *
  * @template ControllerPermissionSpecification - A union of the types of all
@@ -516,27 +558,36 @@ export class PermissionController<
   ) {
     Object.entries<ControllerPermissionSpecification>(
       permissionSpecifications,
-    ).forEach(([targetKey, { targetKey: innerTargetKey, allowedCaveats }]) => {
-      // Check if the target key is the empty string, ends with "_", or ends
-      // with "*" but not "_*"
-      if (!targetKey || /_$/u.test(targetKey) || /[^_]\*$/u.test(targetKey)) {
-        throw new Error(`Invalid permission target key: "${targetKey}"`);
-      }
+    ).forEach(
+      ([
+        targetKey,
+        { permissionType, targetKey: innerTargetKey, allowedCaveats },
+      ]) => {
+        if (!permissionType || !hasProperty(PermissionType, permissionType)) {
+          throw new Error(`Invalid permission type: "${permissionType}"`);
+        }
 
-      if (targetKey !== innerTargetKey) {
-        throw new Error(
-          `Invalid permission specification: key "${targetKey}" must match specification.target value "${innerTargetKey}".`,
-        );
-      }
+        // Check if the target key is the empty string, ends with "_", or ends
+        // with "*" but not "_*"
+        if (!targetKey || /_$/u.test(targetKey) || /[^_]\*$/u.test(targetKey)) {
+          throw new Error(`Invalid permission target key: "${targetKey}"`);
+        }
 
-      if (allowedCaveats) {
-        allowedCaveats.forEach((caveatType) => {
-          if (!hasProperty(caveatSpecifications, caveatType)) {
-            throw new UnrecognizedCaveatTypeError(caveatType);
-          }
-        });
-      }
-    });
+        if (targetKey !== innerTargetKey) {
+          throw new Error(
+            `Invalid permission specification: key "${targetKey}" must match specification.target value "${innerTargetKey}".`,
+          );
+        }
+
+        if (allowedCaveats) {
+          allowedCaveats.forEach((caveatType) => {
+            if (!hasProperty(caveatSpecifications, caveatType)) {
+              throw new UnrecognizedCaveatTypeError(caveatType);
+            }
+          });
+        }
+      },
+    );
   }
 
   /**
@@ -577,6 +628,52 @@ export class PermissionController<
   }
 
   /**
+   * Gets the permission specification corresponding to the given permission
+   * type and target name. Throws an error if the target name does not
+   * correspond to a permission, or if the specification is not of the
+   * given permission type.
+   *
+   * @template Type - The type of the permission specification to get.
+   * @param permissionType - The type of the permission specification to get.
+   * @param targetName - The name of the permission whose specification to get.
+   * @param requestingOrigin - The origin of the requesting subject, if any.
+   * Will be added to any thrown errors.
+   * @returns The specification object corresponding to the given type and
+   * target name.
+   */
+  private getTypedPermissionSpecification<Type extends PermissionType>(
+    permissionType: Type,
+    targetName: string,
+    requestingOrigin?: string,
+  ): Extract<ControllerPermissionSpecification, { permissionType: Type }> {
+    const failureError =
+      permissionType === PermissionType.RestrictedMethod
+        ? methodNotFound(
+            targetName,
+            requestingOrigin ? { origin: requestingOrigin } : undefined,
+          )
+        : new EndowmentPermissionDoesNotExistError(
+            targetName,
+            requestingOrigin,
+          );
+
+    const targetKey = this.getTargetKey(targetName);
+    if (!targetKey) {
+      throw failureError;
+    }
+
+    const specification = this.getPermissionSpecification(targetKey);
+    if (specification.permissionType !== permissionType) {
+      throw failureError;
+    }
+
+    return specification as unknown as Extract<
+      ControllerPermissionSpecification,
+      { permissionType: Type }
+    >;
+  }
+
+  /**
    * Gets the implementation of the specified restricted method.
    *
    * A JSON-RPC error is thrown if the method does not exist.
@@ -592,16 +689,11 @@ export class PermissionController<
     method: string,
     origin?: string,
   ): RestrictedMethod<RestrictedMethodParameters, Json> {
-    const targetKey = this.getTargetKey(method);
-    if (!targetKey) {
-      throw getMethodNotFoundError(method, origin);
-    }
-
-    const specification = this.getPermissionSpecification(targetKey);
-    if (specification.permissionType !== PermissionType.RestrictedMethod) {
-      throw getMethodNotFoundError(method, origin);
-    }
-    return specification.methodImplementation;
+    return this.getTypedPermissionSpecification(
+      PermissionType.RestrictedMethod,
+      method,
+      origin,
+    ).methodImplementation;
   }
 
   /**
@@ -1339,7 +1431,7 @@ export class PermissionController<
     )) {
       const targetKey = this.getTargetKey(requestedTarget);
       if (!targetKey) {
-        throw methodNotFound({ method: requestedTarget });
+        throw methodNotFound(requestedTarget);
       }
 
       if (
@@ -1683,10 +1775,7 @@ export class PermissionController<
       const targetKey = this.getTargetKey(targetName);
 
       if (!targetKey) {
-        throw methodNotFound({
-          method: targetName,
-          data: { origin, requestedPermissions },
-        });
+        throw methodNotFound(targetName, { origin, requestedPermissions });
       }
 
       if (
@@ -1888,6 +1977,37 @@ export class PermissionController<
   }
 
   /**
+   * Gets the subject's endowments per the specified endowment permission.
+   * Throws if the subject does not have the required permission or if the
+   * permission is not an endowment permission.
+   *
+   * @param origin - The origin of the subject whose endowments to retrieve.
+   * @param targetName - The name of the endowment permission. This must be a
+   * valid permission target name.
+   * @param requestData - Additional data associated with the request, if any.
+   * Forwarded to the endowment getter function for the permission.
+   * @returns The endowments, if any.
+   */
+  async getEndowments(
+    origin: string,
+    targetName: ExtractEndowmentPermission<
+      ControllerPermissionSpecification,
+      ControllerCaveatSpecification
+    >['parentCapability'],
+    requestData?: unknown,
+  ): Promise<unknown> {
+    if (!this.hasPermission(origin, targetName)) {
+      throw unauthorized({ data: { origin, targetName } });
+    }
+
+    return this.getTypedPermissionSpecification(
+      PermissionType.Endowment,
+      targetName,
+      origin,
+    ).endowmentGetter({ origin, requestData });
+  }
+
+  /**
    * Executes a restricted method as the subject with the given origin.
    * The specified params, if any, will be passed to the method implementation.
    *
@@ -1914,7 +2034,7 @@ export class PermissionController<
    */
   async executeRestrictedMethod(
     origin: OriginString,
-    targetName: ExtractPermission<
+    targetName: ExtractRestrictedMethodPermission<
       ControllerPermissionSpecification,
       ControllerCaveatSpecification
     >['parentCapability'],
@@ -1978,12 +2098,4 @@ export class PermissionController<
       this._caveatSpecifications,
     )({ method, params, context: { origin } });
   }
-}
-
-function getMethodNotFoundError(method: string, origin?: string): Error {
-  const error = methodNotFound({ method });
-  if (origin) {
-    error.data = { origin };
-  }
-  return error;
 }

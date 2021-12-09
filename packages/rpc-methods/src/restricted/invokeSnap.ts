@@ -5,6 +5,7 @@ import {
   ValidPermissionSpecification,
   SNAP_PREFIX,
   SnapController,
+  PermissionType,
 } from '@metamask/snap-controllers';
 import { ethErrors } from 'eth-rpc-errors';
 
@@ -26,6 +27,7 @@ type InvokeSnapSpecificationBuilderOptions = {
 };
 
 type InvokeSnapSpecification = ValidPermissionSpecification<{
+  permissionType: PermissionType.RestrictedMethod;
   targetKey: typeof targetKey;
   methodImplementation: ReturnType<typeof getInvokeSnapImplementation>;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
@@ -37,6 +39,7 @@ type InvokeSnapSpecification = ValidPermissionSpecification<{
  * and install it if it's not avaialble yet.
  */
 const specificationBuilder: PermissionSpecificationBuilder<
+  PermissionType.RestrictedMethod,
   InvokeSnapSpecificationBuilderOptions,
   InvokeSnapSpecification
 > = ({
@@ -44,6 +47,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
   methodHooks,
 }: InvokeSnapSpecificationBuilderOptions) => {
   return {
+    permissionType: PermissionType.RestrictedMethod,
     targetKey,
     allowedCaveats,
     methodImplementation: getInvokeSnapImplementation(methodHooks),
