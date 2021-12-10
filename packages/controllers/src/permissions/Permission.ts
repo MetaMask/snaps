@@ -61,10 +61,7 @@ export type PermissionConstraint = {
 
   /**
    * A pointer to the resource that possession of the capability grants
-   * access to.
-   *
-   * At present, this is always the name of an RPC method in the context of
-   * MetaMask, but will expand to include other permission types in the future.
+   * access to, for example a JSON-RPC method or endowment.
    */
   readonly parentCapability: string;
 };
@@ -98,10 +95,7 @@ export type ValidPermission<
 
   /**
    * A pointer to the resource that possession of the capability grants
-   * access to.
-   *
-   * At present, this is always the name of an RPC method in the context of
-   * MetaMask, but will expand to include other permission types in the future.
+   * access to, for example a JSON-RPC method or endowment.
    */
   readonly parentCapability: ExtractPermissionTargetNames<TargetKey>;
 };
@@ -397,9 +391,10 @@ type PermissionSpecificationBase<Type extends PermissionType> = {
   permissionType: Type;
 
   /**
-   * The target resource of the permission. At the time of, this is a full
-   * JSON-RPC method name or the prefix of a namespaced JSON-RPC method, e.g.
-   * `wallet_snap_*`.
+   * The target resource of the permission. The shape of this string depends on
+   * the permission type. For example, a restricted method target key will
+   * consist of either a complete method name or the prefix of a namespaced
+   * method, e.g. `wallet_snap_*`.
    */
   targetKey: string;
 

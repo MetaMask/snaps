@@ -336,24 +336,6 @@ function getDefaultPermissionSpecifications() {
       targetKey: PermissionKeys.endowmentPermission1,
       endowmentGetter: (_options: EndowmentGetterParams) => ['endowment1'],
       allowedCaveats: null,
-      factory: (
-        options: PermissionOptions<NoopWithFactoryPermission>,
-        requestData?: Record<string, unknown>,
-      ) => {
-        if (!requestData) {
-          throw new Error('requestData is required');
-        }
-
-        return constructPermission<NoopWithFactoryPermission>({
-          ...options,
-          caveats: [
-            {
-              type: CaveatTypes.filterArrayResponse,
-              value: requestData.caveatValue as string[],
-            },
-          ],
-        });
-      },
     },
   } as const;
 }
@@ -535,7 +517,28 @@ describe('PermissionController', () => {
       expect(controller.state).toStrictEqual(getExistingPermissionState());
     });
 
-    it('throws if a permission specification target key is invalid', () => {
+    it('throws if a permission specification permissionType is invalid', () => {
+      [null, '', 'kaplar'].forEach((invalidPermissionType) => {
+        expect(
+          () =>
+            new PermissionController<
+              DefaultPermissionSpecifications,
+              DefaultCaveatSpecifications
+            >(
+              getPermissionControllerOptions({
+                permissionSpecifications: {
+                  ...getDefaultPermissionSpecifications(),
+                  foo: {
+                    permissionType: invalidPermissionType,
+                  },
+                },
+              }),
+            ),
+        ).toThrow(`Invalid permission type: "${invalidPermissionType}"`);
+      });
+    });
+
+    it('throws if a permission specification targetKey is invalid', () => {
       ['', 'foo_', 'foo*'].forEach((invalidTargetKey) => {
         expect(
           () =>
@@ -636,6 +639,13 @@ describe('PermissionController', () => {
           context: { origin: 'github.com' },
         }),
       ).toStrictEqual('Hello, secret friend "foo"!');
+    });
+
+    it('throws an error if the requested permission target is not a restricted method', () => {
+      const controller = getDefaultPermissionController();
+      expect(() =>
+        controller.getRestrictedMethod(PermissionNames.endowmentPermission1),
+      ).toThrow(errors.methodNotFound(PermissionNames.endowmentPermission1));
     });
 
     it('throws an error if the method does not exist', () => {
@@ -3919,6 +3929,64 @@ describe('PermissionController', () => {
         {
           id,
         },
+      );
+    });
+  });
+
+  describe('getEndowments', () => {
+    it('gets the endowments', async () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      controller.grantPermissions({
+        subject: { origin },
+        approvedPermissions: {
+          [PermissionNames.endowmentPermission1]: {},
+        },
+      });
+
+      expect(
+        await controller.getEndowments(
+          origin,
+          PermissionNames.endowmentPermission1,
+        ),
+      ).toStrictEqual(['endowment1']);
+    });
+
+    it('throws if the requested permission target is not an endowment', async () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      controller.grantPermissions({
+        subject: { origin },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretArray]: {},
+        },
+      });
+
+      await expect(
+        controller.getEndowments(
+          origin,
+          PermissionNames.wallet_getSecretArray as any,
+        ),
+      ).rejects.toThrow(
+        new errors.EndowmentPermissionDoesNotExistError(
+          PermissionNames.wallet_getSecretArray,
+          origin,
+        ),
+      );
+    });
+
+    it('throws if the subject does not have the requisite permission', async () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      await expect(
+        controller.getEndowments(origin, PermissionNames.endowmentPermission1),
+      ).rejects.toThrow(
+        errors.unauthorized({
+          data: { origin, targetName: PermissionNames.endowmentPermission1 },
+        }),
       );
     });
   });

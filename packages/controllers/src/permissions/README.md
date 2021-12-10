@@ -16,34 +16,19 @@ Permissions can have **caveats**, which are host-defined attenuations of the aut
 
 ## Implementation Overview
 
+At any given moment, the `PermissionController` state tree describes the complete state of the permissions of all subjects known to the host (i.e., the MetaMask instance).
+The `PermissionController` also provides methods for adding, updating, and removing permissions, and enforcing the rules described by its state tree.
 Permission system concepts correspond to components of the MetaMask stack as follows:
 
 | Concept           | Implementation                                                  |
 | :---------------- | :-------------------------------------------------------------- |
 | Host              | The MetaMask application                                        |
 | Subjects          | Websites, Snaps, or other extensions                            |
-| Targets           | JSON-RPC methods                                                |
-| Invocations       | JSON-RPC requests                                               |
+| Targets           | JSON-RPC methods, endowments                                    |
+| Invocations       | JSON-RPC requests, endowment retrieval                          |
 | Permissions       | Permission objects                                              |
 | Caveats           | Caveat objects                                                  |
 | Permission system | The `PermissionController` and its `json-rpc-engine` middleware |
-
-For the time being, JSON-RPC methods are the only kind of permission target that exists.
-Therefore, our implementation of the permission system revolves around JSON-RPC requests and MetaMask's `json-rpc-engine` stack.
-To use the permission system, every JSON-RPC method must be enumerated and designated as either "restricted" or "unrestricted".
-Unrestricted methods can always be called by anyone.
-Restricted methods require the requisite permission in order to be called.
-
-At any given moment, the `PermissionController` state tree describes the complete state of the permissions of all subjects known to the current MetaMask instance.
-The `PermissionController` also provides methods for adding, updating, and removing permissions, and a `json-rpc-engine` middleware function factory so that the permissioning logic can be applied to incoming JSON-RPC requests.
-
-Once the permission middleware is injected into our middleware stack, every JSON-RPC request will be handled in one of the following ways:
-
-- If the requested method is neither restricted nor unrestricted, the request will be rejected with a `methodNotFound` error.
-- If the requested method is unrestricted, it will pass through the middleware unmodified.
-- If the requested method is restricted, the middleware will attempt to get the permission corresponding to the subject and target, and:
-  - If the request is authorized, call the corresponding method with the request parameters.
-  - If the request is not authorized, reject the request with an `unauthorized` error.
 
 ### Target Keys and Target Names
 
@@ -62,16 +47,43 @@ On the other hand, the namespaced restricted method `wallet_getSecret_*` has the
 
 See [below](#construction) for a concrete example.
 
+### Permission / Target Types
+
+In practice, targets can be different things, necessitating distinct implementations in order to enforce the logic of the permission system.
+This being the case, the `PermissionController` defines different **permission / target types**, intended for different kinds of permission targets.
+At present, there are two permission / target types.
+
+#### JSON-RPC Methods
+
+Restricting access to JSON-RPC methods was the motivating and only supported use case for the original permission system, and remains the predominant kind of permission to this day.
+The `PermissionController` provides patterns for creating restricted JSON-RPC method implementations and caveats, and a `json-rpc-engine` middleware function factory.
+To permission a JSON-RPC server, every JSON-RPC method must be enumerated and designated as either "restricted" or "unrestricted", and a permission middleware function must be added to the `json-rpc-engine` middleware stack.
+Unrestricted methods can always be called by anyone.
+Restricted methods require the requisite permission in order to be called.
+
+Once the permission middleware is injected into the middleware stack, every JSON-RPC request will be handled in one of the following ways:
+
+- If the requested method is neither restricted nor unrestricted, the request will be rejected with a `methodNotFound` error.
+- If the requested method is unrestricted, it will pass through the middleware unmodified.
+- If the requested method is restricted, the middleware will attempt to get the permission corresponding to the subject and target, and:
+  - If the request is authorized, call the corresponding method with the request parameters.
+  - If the request is not authorized, reject the request with an `unauthorized` error.
+
+#### Endowments
+
+The name "endowment" comes from the endowments that you may provide to a [Secure EcmaScript (SES) `Compartment`](https://github.com/endojs/endo/tree/26d991afb01cf824827db0c958c50970e038112f/packages/ses#compartment) when it is constructed.
+SES endowments are simply names that appear in the compartment's global scope.
+In the context of the `PermissionController`, endowments are simply "things" that subjects should not be able to access by default.
+They _could_ be the names of endowments that are to be made available to a particular SES `Compartment`, but they could also be any JavaScript value, and it is the host's responsibility to make sense of them.
+
+At present, endowment permissions may not have any caveats, but caveat support may be added in the future.
+
 ### Caveats
 
 Caveats are arbitrary restrictions on restricted method requests.
 Every permission has a `caveats` field, which is either an array of caveats or `null`.
 Every caveat has a string `type`, and every type has an associated function that is used to apply the caveat to a restricted method request.
 When the `PermissionController` is constructed, the consumer specifies the available caveat types and their implementations.
-
-> In `rpc-cap`, caveat types were specified by `rpc-cap` itself, and the consumer had to choose from the available types.
-> This did not end up being easy to reason about or work with in practice.
-> Now, caveat types and their implementations are provided by the consumer, just like the restricted methods and their implementations.
 
 ## Examples
 
@@ -111,12 +123,17 @@ const caveatSpecifications = {
 
 // The property names of this object must be target keys.
 const permissionSpecifications = {
+  // This is a plain restricted method.
   wallet_getSecretArray: {
+    // Every permission must have this field.
+    permissionType: PermissionType.RestrictedMethod,
     // i.e. the restricted method name
-    target: 'wallet_getSecretArray',
+    targetKey: 'wallet_getSecretArray',
     allowedCaveats: [
       'filterArrayResponse',
     ],
+    // Every restricted method must specify its implementation in its
+    // specification.
     methodImplementation: (
       _args: RestrictedMethodOptions<RestrictedMethodParameters>,
     ) => {
@@ -126,7 +143,8 @@ const permissionSpecifications = {
 
   // This is a namespaced restricted method.
   wallet_getSecret_*: {
-    target: 'wallet_getSecret_*',
+    permissionType: PermissionType.RestrictedMethod,
+    targetKey: 'wallet_getSecret_*',
     methodImplementation: (
       args: RestrictedMethodOptions<RestrictedMethodParameters>,
     ) => {
@@ -142,6 +160,17 @@ const permissionSpecifications = {
       return context.getSecret(secretName);
     },
   },
+
+  // This is an endowment.
+  secretEndowment: {
+    permissionType: PermissionType.Endowment,
+    // Naming conventions for endowments are yet to be established.
+    targetKey: 'endowment:globals',
+    // This function will be called to retrieve the subject's endowment(s).
+    // Here we imagine that these are the names of globals that will be made
+    // available to a SES Compartment.
+    endowmentGetter: (_options: EndowmentGetterParams) => ['fetch', 'Math', 'setTimeout'],
+  }
 };
 
 const permissionController = new PermissionController({
@@ -181,6 +210,20 @@ permissionController.executeRestrictedMethod(origin, 'wallet_getSecret', {
 });
 ```
 
+### Getting Endowments
+
+```typescript
+// Getting endowments internally is the only option, since the host has to apply
+// them in some way external to the permission system.
+const endowments = await permissionController.getEndowments(
+  origin,
+  'endowment:globals',
+);
+
+// Now the endowments can be applied, whatever that means.
+applyEndowments(origin, endowments);
+```
+
 ### Requesting and Getting Permissions
 
 ```typescript
@@ -198,7 +241,7 @@ const existingPermissions = await ethereum.request({
 )
 ```
 
-### Caveat Decorators
+### Restricted Method Caveat Decorators
 
 Here follows some more example caveat decorator implementations.
 

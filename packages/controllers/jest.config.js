@@ -1,13 +1,17 @@
 module.exports = {
   collectCoverage: true,
+  collectCoverageFrom: [
+    '<rootDir>/**/src/**/*.ts',
+    '!<rootDir>/**/src/**/*.test.ts',
+  ],
   coverageReporters: ['text', 'html'],
-  coveragePathIgnorePatterns: ['/node_modules/', '/mocks/'],
+  coveragePathIgnorePatterns: ['/node_modules/', '/mocks/', '/test/'],
   coverageThreshold: {
     global: {
-      branches: 64,
-      functions: 75,
-      lines: 73,
-      statements: 73,
+      branches: 54,
+      functions: 70,
+      lines: 66,
+      statements: 66,
     },
     './src/permissions': {
       branches: 100,
