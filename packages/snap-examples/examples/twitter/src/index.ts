@@ -11,8 +11,8 @@ wallet.registerRpcMessageHandler(async (_originString:any, requestObject:any) =>
   const {method, params: [userTweetInput]} = requestObject
   let response
   let textResponse
-  // Play with the built in methods
-  // const user = await roClient.v2.userByUsername('plhery');
+
+
   try {
     switch (method) {
       case 'tweet':
