@@ -496,7 +496,7 @@ type PermissionSpecificationBuilderOptions<
 
 /**
  * A function that builds a permission specification. Modules that specify
- * restricted methods for external consumption should make this their primary /
+ * permissions for external consumption should make this their primary /
  * default export so that host applications can use them to generate concrete
  * specifications tailored to their requirements.
  */
