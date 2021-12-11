@@ -66,6 +66,7 @@ const getSnapControllerOptions = (
     getRpcMessageHandler: jest.fn(),
     removeAllPermissionsFor: jest.fn(),
     getPermissions: jest.fn(),
+    hasPermission: jest.fn(),
     requestPermissions: jest.fn(),
     closeAllConnections: jest.fn(),
     messenger: getSnapControllerMessenger(),
@@ -85,6 +86,7 @@ const getSnapControllerWithEESOptions = (
   return {
     removeAllPermissionsFor: jest.fn(),
     getPermissions: jest.fn(),
+    hasPermission: jest.fn(),
     requestPermissions: jest.fn(),
     closeAllConnections: jest.fn(),
     messenger: getSnapControllerMessenger(),
