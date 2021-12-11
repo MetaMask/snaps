@@ -184,6 +184,10 @@ const getSnapManifest = ({
   } as const;
 };
 
+/**
+ * Note that fake timers cannot be used in these tests because of the Electron
+ * environment we use.
+ */
 describe('SnapController', () => {
   it('can create a snap controller and execution service', async () => {
     const [snapController, service] = getSnapControllerWithEEService();
