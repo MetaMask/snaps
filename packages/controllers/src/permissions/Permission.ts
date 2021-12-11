@@ -334,7 +334,7 @@ export type EndowmentGetterParams = {
  * particular endowment permission. The getter receives the origin of the
  * requesting subject and, optionally, additional request metadata.
  */
-export type EndowmentGetter<Endowments> = (
+export type EndowmentGetter<Endowments extends Json> = (
   options: EndowmentGetterParams,
 ) => Endowments | Promise<Endowments>;
 

@@ -14,7 +14,11 @@ import {
 } from '@metamask/snap-types';
 import { nanoid } from 'nanoid';
 import isValidSemver from 'semver/functions/valid';
-import { PermissionConstraint } from '../permissions';
+import {
+  PermissionConstraint,
+  HasPermission,
+  GetEndowments,
+} from '../permissions';
 import {
   GetRpcMessageHandler,
   ExecuteSnap,
@@ -79,10 +83,6 @@ type RequestPermissionsFunction = (
   origin: string,
   requestedPermissions: RequestedSnapPermissions,
 ) => Promise<PermissionConstraint[]>;
-type HasPermissionFunction = (
-  origin: string,
-  permissionName: string,
-) => boolean;
 type GetPermissionsFunction = (origin: string) => PermissionConstraint[];
 type StoredSnaps = Record<SnapId, Snap>;
 
@@ -102,7 +102,7 @@ export type SnapStateChange = {
 // TODO: Create actions
 export type SnapControllerActions = never;
 
-export type AllowedActions = never;
+export type AllowedActions = GetEndowments | HasPermission;
 
 export type SnapControllerEvents = SnapStateChange;
 
@@ -111,27 +111,27 @@ export type AllowedEvents = ErrorMessageEvent | UnresponsiveMessageEvent;
 // TODO: Use ControllerMessenger events
 type SnapControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
-  SnapControllerActions,
+  SnapControllerActions | AllowedActions,
   SnapControllerEvents | AllowedEvents,
-  AllowedActions,
+  AllowedActions['type'],
   AllowedEvents['type']
 >;
 
 type SnapControllerArgs = {
-  messenger: SnapControllerMessenger;
-  state?: SnapControllerState;
-  removeAllPermissionsFor: RemoveAllPermissionsFunction;
   closeAllConnections: CloseAllConnectionsFunction;
-  requestPermissions: RequestPermissionsFunction;
-  getPermissions: GetPermissionsFunction;
-  hasPermission: HasPermissionFunction;
-  terminateSnap: TerminateSnap;
-  terminateAllSnaps: TerminateAll;
+  endowmentPermissionNames: string[];
   executeSnap: ExecuteSnap;
+  getPermissions: GetPermissionsFunction;
   getRpcMessageHandler: GetRpcMessageHandler;
+  messenger: SnapControllerMessenger;
+  removeAllPermissionsFor: RemoveAllPermissionsFunction;
+  requestPermissions: RequestPermissionsFunction;
+  state?: SnapControllerState;
+  terminateAllSnaps: TerminateAll;
+  terminateSnap: TerminateSnap;
+  idleTimeCheckInterval?: number;
   maxIdleTime?: number;
   maxRequestTime?: number;
-  idleTimeCheckInterval?: number;
 };
 
 type AddSnapBase = {
@@ -231,25 +231,17 @@ export class SnapController extends BaseController<
   SnapControllerState,
   SnapControllerMessenger
 > {
-  private _removeAllPermissionsFor: RemoveAllPermissionsFunction;
-
   private _closeAllConnections: CloseAllConnectionsFunction;
 
-  private _requestPermissions: RequestPermissionsFunction;
-
-  private _getPermissions: GetPermissionsFunction;
-
-  private _hasPermission: HasPermissionFunction;
-
-  private _terminateSnap: TerminateSnap;
-
-  private _terminateAllSnaps: TerminateAll;
+  private _endowmentPermissionNames: string[];
 
   private _executeSnap: ExecuteSnap;
 
+  private _getPermissions: GetPermissionsFunction;
+
   private _getRpcMessageHandler: GetRpcMessageHandler;
 
-  private _snapsBeingAdded: Map<string, Promise<Snap>>;
+  private _lastRequestMap: Map<SnapId, number>;
 
   private _maxIdleTime: number;
 
@@ -257,29 +249,37 @@ export class SnapController extends BaseController<
 
   private _idleTimeCheckInterval: number;
 
-  private _timeoutForLastRequestStatus?: number;
-
-  private _lastRequestMap: Map<SnapId, number>;
+  private _removeAllPermissionsFor: RemoveAllPermissionsFunction;
 
   private _rpcHandlerMap: Map<
     SnapId,
     (origin: string, request: Record<string, unknown>) => Promise<unknown>
   >;
 
+  private _requestPermissions: RequestPermissionsFunction;
+
+  private _snapsBeingAdded: Map<string, Promise<Snap>>;
+
+  private _terminateAllSnaps: TerminateAll;
+
+  private _terminateSnap: TerminateSnap;
+
+  private _timeoutForLastRequestStatus?: number;
+
   constructor({
-    removeAllPermissionsFor,
     closeAllConnections,
-    requestPermissions,
-    getPermissions,
-    terminateSnap,
-    terminateAllSnaps,
-    hasPermission,
     executeSnap,
+    getPermissions,
     getRpcMessageHandler,
     messenger,
+    removeAllPermissionsFor,
+    requestPermissions,
     state,
-    maxIdleTime = 30000,
+    terminateAllSnaps,
+    terminateSnap,
+    endowmentPermissionNames = [],
     idleTimeCheckInterval = 5000,
+    maxIdleTime = 30000,
     maxRequestTime = 60000,
   }: SnapControllerArgs) {
     super({
@@ -319,7 +319,7 @@ export class SnapController extends BaseController<
     this._closeAllConnections = closeAllConnections;
     this._requestPermissions = requestPermissions;
     this._getPermissions = getPermissions;
-    this._hasPermission = hasPermission;
+    this._endowmentPermissionNames = endowmentPermissionNames;
 
     this._terminateSnap = terminateSnap;
     this._terminateAllSnaps = terminateAllSnaps;
@@ -738,7 +738,13 @@ export class SnapController extends BaseController<
         async ([snapId, { version = 'latest' }]) => {
           const permissionName = SNAP_PREFIX + snapId;
 
-          if (this._hasPermission(origin, permissionName)) {
+          if (
+            this.messagingSystem.call(
+              'PermissionController:hasPermission',
+              origin,
+              permissionName,
+            )
+          ) {
             if (isValidSnapVersion(version)) {
               // attempt to install and run the snap, storing any errors that
               // occur during the process
@@ -858,9 +864,57 @@ export class SnapController extends BaseController<
       throw new Error(`Snap "${snapId}" is already started.`);
     }
 
-    const result = await this._executeSnap(snapData);
+    const result = await this._executeSnap({
+      ...snapData,
+      endowments: await this._getEndowments(snapId),
+    });
     this._transitionSnapState(snapId, SnapStatusEvent.start);
     return result;
+  }
+
+  /**
+   * Gets the names of all endowments that will be added to the Snap's
+   * Compartment when it executes. These should be the names of global
+   * JavaScript APIs accessible in the root realm of the execution environment.
+   *
+   * Throws an error if the endowment getter for a permission returns a truthy
+   * value that is not an array of strings.
+   *
+   * @param snapId - The id of the snap whose SES endowments to get.
+   * @returns An array of the names of the endowments, if any.
+   */
+  private async _getEndowments(snapId: string): Promise<string[] | undefined> {
+    let allEndowments: string[] = [];
+
+    for (const permissionName of this._endowmentPermissionNames) {
+      if (
+        this.messagingSystem.call(
+          'PermissionController:hasPermission',
+          snapId,
+          permissionName,
+        )
+      ) {
+        const endowments = await this.messagingSystem.call(
+          'PermissionController:getEndowments',
+          snapId,
+          permissionName,
+        );
+
+        if (endowments) {
+          // We don't have any guarantees about the type of the endowments
+          // value, so we have to guard at runtime.
+          if (
+            !Array.isArray(endowments) ||
+            endowments.some((value) => typeof value !== 'string')
+          ) {
+            throw new Error('Expected an array of string endowment names.');
+          }
+
+          allEndowments = allEndowments.concat(endowments as string[]);
+        }
+      }
+    }
+    return allEndowments.length > 0 ? allEndowments : undefined;
   }
 
   /**

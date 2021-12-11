@@ -39,6 +39,10 @@ const getSnapControllerMessenger = (
       'ServiceMessenger:unhandledError',
       'ServiceMessenger:unresponsive',
     ],
+    allowedActions: [
+      'PermissionController:getEndowments',
+      'PermissionController:hasPermission',
+    ],
   });
 
 const getWebworkerEESMessenger = (
@@ -63,10 +67,10 @@ const getSnapControllerOptions = (
     terminateAllSnaps: jest.fn(),
     terminateSnap: jest.fn(),
     executeSnap: jest.fn(),
+    endowmentPermissionNames: [],
     getRpcMessageHandler: jest.fn(),
     removeAllPermissionsFor: jest.fn(),
     getPermissions: jest.fn(),
-    hasPermission: jest.fn(),
     requestPermissions: jest.fn(),
     closeAllConnections: jest.fn(),
     messenger: getSnapControllerMessenger(),
@@ -84,9 +88,9 @@ const getSnapControllerWithEESOptions = (
   opts?: Partial<SnapControllerWithEESConstructorParams>,
 ) => {
   return {
+    endowmentPermissionNames: [],
     removeAllPermissionsFor: jest.fn(),
     getPermissions: jest.fn(),
-    hasPermission: jest.fn(),
     requestPermissions: jest.fn(),
     closeAllConnections: jest.fn(),
     messenger: getSnapControllerMessenger(),
@@ -440,6 +444,10 @@ describe('SnapController', () => {
       allowedEvents: [
         'ServiceMessenger:unhandledError',
         'ServiceMessenger:unresponsive',
+      ],
+      allowedActions: [
+        'PermissionController:getEndowments',
+        'PermissionController:hasPermission',
       ],
     });
 

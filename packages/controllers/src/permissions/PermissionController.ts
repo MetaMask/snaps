@@ -201,6 +201,14 @@ export type HasPermissions = {
 };
 
 /**
+ * Checks whether the specified subject has a specific permission.
+ */
+export type HasPermission = {
+  type: `${typeof controllerName}:hasPermission`;
+  handler: GenericPermissionController['hasPermission'];
+};
+
+/**
  * Clears all permissions from the {@link PermissionController}.
  */
 export type ClearPermissions = {
@@ -225,6 +233,7 @@ export type PermissionControllerActions =
   | GetEndowments
   | GetPermissionControllerState
   | GetSubjects
+  | HasPermission
   | HasPermissions;
 
 /**
@@ -622,6 +631,12 @@ export class PermissionController<
     );
 
     this.messagingSystem.registerActionHandler(
+      `${controllerName}:hasPermission`,
+      (origin: OriginString, targetName: string) =>
+        this.hasPermission(origin, targetName),
+    );
+
+    this.messagingSystem.registerActionHandler(
       `${controllerName}:hasPermissions`,
       (origin: OriginString) => this.hasPermissions(origin),
     );
@@ -734,9 +749,9 @@ export class PermissionController<
     origin: OriginString,
     targetName: SubjectPermission['parentCapability'],
   ): SubjectPermission | undefined {
-    return this.state.subjects[origin]?.permissions[
-      targetName
-    ] as SubjectPermission;
+    return this.state.subjects[origin]?.permissions[targetName] as
+      | SubjectPermission
+      | undefined;
   }
 
   /**
@@ -2008,7 +2023,7 @@ export class PermissionController<
       ControllerCaveatSpecification
     >['parentCapability'],
     requestData?: unknown,
-  ): Promise<unknown> {
+  ): Promise<Json> {
     if (!this.hasPermission(origin, targetName)) {
       throw unauthorized({ data: { origin, targetName } });
     }
