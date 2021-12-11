@@ -472,7 +472,7 @@ describe('SnapController', () => {
         message: 'foo',
         code: 123,
       });
-    }, 100);
+    }, 1);
 
     await new Promise((resolve) => {
       snapControllerMessenger.subscribe(
@@ -529,13 +529,13 @@ describe('SnapController', () => {
         },
       );
     });
-  }, 3000);
+  });
 
   it('can add a snap and use its JSON-RPC api and then get stopped from idling too long', async () => {
     const [snapController] = getSnapControllerWithEEService(
       getSnapControllerWithEESOptions({
-        idleTimeCheckInterval: 1000,
-        maxIdleTime: 2000,
+        idleTimeCheckInterval: 50,
+        maxIdleTime: 100,
       }),
     );
 
@@ -564,7 +564,7 @@ describe('SnapController', () => {
     });
 
     await new Promise((resolve) => {
-      setTimeout(resolve, 3000);
+      setTimeout(resolve, 300);
     });
 
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
@@ -718,7 +718,7 @@ describe('SnapController', () => {
       getSnapControllerWithEESOptions({
         idleTimeCheckInterval: 30000,
         maxIdleTime: 160000,
-        maxRequestTime: 1000,
+        maxRequestTime: 50,
       }),
     );
 
@@ -742,7 +742,7 @@ describe('SnapController', () => {
         return new Promise((resolve) => {
           setTimeout(() => {
             resolve(undefined);
-          }, 60000);
+          }, 300);
         });
       };
     };
