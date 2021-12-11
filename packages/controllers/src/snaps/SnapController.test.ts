@@ -1,15 +1,14 @@
 import fs from 'fs';
 import { ControllerMessenger } from '@metamask/controllers/dist/ControllerMessenger';
 import { getPersistentState, Json } from '@metamask/controllers';
-import {
-  ErrorMessageEvent,
-  UnresponsiveMessageEvent,
-} from '@metamask/snap-types';
 import { WebWorkerExecutionEnvironmentService } from '../services/WebWorkerExecutionEnvironmentService';
 import { ExecutionEnvironmentService } from '../services/ExecutionEnvironmentService';
 import {
+  AllowedActions,
+  AllowedEvents,
   SnapController,
   SnapControllerActions,
+  SnapControllerEvents,
   SnapControllerState,
   SnapStatus,
 } from './SnapController';
@@ -20,6 +19,131 @@ const workerCode = fs.readFileSync(
   require.resolve('@metamask/snap-workers/dist/SnapWorker.js'),
   'utf8',
 );
+
+const getControllerMessenger = () =>
+  new ControllerMessenger<
+    SnapControllerActions | AllowedActions,
+    SnapControllerEvents | AllowedEvents
+  >();
+
+const getSnapControllerMessenger = (
+  messenger?: ReturnType<typeof getControllerMessenger>,
+) =>
+  (messenger ?? getControllerMessenger()).getRestricted<
+    'SnapController',
+    SnapControllerActions['type'] | AllowedActions['type'],
+    SnapControllerEvents['type'] | AllowedEvents['type']
+  >({
+    name: 'SnapController',
+    allowedEvents: [
+      'ServiceMessenger:unhandledError',
+      'ServiceMessenger:unresponsive',
+    ],
+  });
+
+const getWebworkerEESMessenger = (
+  messenger?: ReturnType<typeof getControllerMessenger>,
+) =>
+  (messenger ?? getControllerMessenger()).getRestricted({
+    name: 'ServiceMessenger',
+    allowedEvents: [
+      'ServiceMessenger:unhandledError',
+      'ServiceMessenger:unresponsive',
+    ],
+  });
+
+type SnapControllerConstructorParams = ConstructorParameters<
+  typeof SnapController
+>[0];
+
+const getSnapControllerOptions = (
+  opts?: Partial<SnapControllerConstructorParams>,
+) => {
+  return {
+    terminateAllSnaps: jest.fn(),
+    terminateSnap: jest.fn(),
+    executeSnap: jest.fn(),
+    getRpcMessageHandler: jest.fn(),
+    removeAllPermissionsFor: jest.fn(),
+    getPermissions: jest.fn(),
+    requestPermissions: jest.fn(),
+    closeAllConnections: jest.fn(),
+    messenger: getSnapControllerMessenger(),
+    state: undefined,
+    ...opts,
+  } as SnapControllerConstructorParams;
+};
+
+type SnapControllerWithEESConstructorParams = Omit<
+  SnapControllerConstructorParams,
+  'terminateAllSnaps' | 'terminateSnap' | 'executeSnap' | 'getRpcMessageHandler'
+>;
+
+const getSnapControllerWithEESOptions = (
+  opts?: Partial<SnapControllerWithEESConstructorParams>,
+) => {
+  return {
+    removeAllPermissionsFor: jest.fn(),
+    getPermissions: jest.fn(),
+    requestPermissions: jest.fn(),
+    closeAllConnections: jest.fn(),
+    messenger: getSnapControllerMessenger(),
+    state: undefined,
+    ...opts,
+  } as SnapControllerWithEESConstructorParams;
+};
+
+const getSnapController = (options = getSnapControllerOptions()) => {
+  return new SnapController(options);
+};
+
+const getWebWorkerEES = (
+  messenger: ReturnType<typeof getSnapControllerMessenger>,
+) =>
+  new WebWorkerExecutionEnvironmentService({
+    messenger,
+    setupSnapProvider: jest.fn(),
+    workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
+  });
+
+class ExecutionEnvironmentStub implements ExecutionEnvironmentService {
+  async terminateAllSnaps() {
+    // empty stub
+  }
+
+  async getRpcMessageHandler() {
+    return (_: any, request: Record<string, unknown>) => {
+      return new Promise((resolve) => {
+        const results = `${request.method}${request.id}`;
+        resolve(results);
+      });
+    };
+  }
+
+  async executeSnap() {
+    return 'some-unique-id';
+  }
+
+  async terminateSnap() {
+    // empty stub
+  }
+}
+
+const getSnapControllerWithEEService = (
+  options = getSnapControllerWithEESOptions(),
+  service?: ReturnType<typeof getWebWorkerEES>,
+) => {
+  const { messenger } = options;
+  const _service = service || getWebWorkerEES(messenger);
+  const controller = new SnapController({
+    terminateAllSnaps: _service.terminateAllSnaps.bind(_service),
+    terminateSnap: _service.terminateSnap.bind(_service),
+    executeSnap: _service.executeSnap.bind(_service),
+    getRpcMessageHandler: _service.getRpcMessageHandler.bind(_service),
+    ...options,
+  });
+  return [controller, _service] as const;
+};
 
 const getSnapManifest = ({
   version = '0.0.0-development',
@@ -59,91 +183,15 @@ const getSnapManifest = ({
 };
 
 describe('SnapController', () => {
-  it('can create a worker and snap controller', async () => {
-    const messenger = new ControllerMessenger<
-      SnapControllerActions,
-      ErrorMessageEvent | UnresponsiveMessageEvent
-    >().getRestricted({
-      name: 'SnapController',
-      allowedEvents: [
-        'ServiceMessenger:unhandledError',
-        'ServiceMessenger:unresponsive',
-      ],
-    });
-
-    const workerExecutionEnvironment = new WebWorkerExecutionEnvironmentService(
-      {
-        messenger,
-        setupSnapProvider: jest.fn(),
-        workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
-      },
-    );
-    const snapController = new SnapController({
-      terminateAllSnaps: workerExecutionEnvironment.terminateAllSnaps.bind(
-        workerExecutionEnvironment,
-      ),
-      terminateSnap: workerExecutionEnvironment.terminateSnap.bind(
-        workerExecutionEnvironment,
-      ),
-      executeSnap: workerExecutionEnvironment.executeSnap.bind(
-        workerExecutionEnvironment,
-      ),
-      getRpcMessageHandler:
-        workerExecutionEnvironment.getRpcMessageHandler.bind(
-          workerExecutionEnvironment,
-        ),
-      removeAllPermissionsFor: jest.fn(),
-      getPermissions: jest.fn(),
-      hasPermission: jest.fn(),
-      requestPermissions: jest.fn(),
-      closeAllConnections: jest.fn(),
-      messenger,
-    });
-
+  it('can create a snap controller and execution service', async () => {
+    const [snapController, service] = getSnapControllerWithEEService();
+    expect(service).toBeDefined();
     expect(snapController).toBeDefined();
     snapController.destroy();
   });
 
   it('can create a worker and snap controller and add a snap and update its state', async () => {
-    const messenger = new ControllerMessenger<
-      SnapControllerActions,
-      ErrorMessageEvent | UnresponsiveMessageEvent
-    >().getRestricted({
-      name: 'SnapController',
-      allowedEvents: [
-        'ServiceMessenger:unhandledError',
-        'ServiceMessenger:unresponsive',
-      ],
-    });
-
-    const workerExecutionEnvironment = new WebWorkerExecutionEnvironmentService(
-      {
-        messenger,
-        setupSnapProvider: jest.fn(),
-        workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
-      },
-    );
-    const snapController = new SnapController({
-      terminateAllSnaps: workerExecutionEnvironment.terminateAllSnaps.bind(
-        workerExecutionEnvironment,
-      ),
-      terminateSnap: workerExecutionEnvironment.terminateSnap.bind(
-        workerExecutionEnvironment,
-      ),
-      executeSnap: workerExecutionEnvironment.executeSnap.bind(
-        workerExecutionEnvironment,
-      ),
-      getRpcMessageHandler:
-        workerExecutionEnvironment.getRpcMessageHandler.bind(
-          workerExecutionEnvironment,
-        ),
-      removeAllPermissionsFor: jest.fn(),
-      getPermissions: jest.fn(),
-      hasPermission: jest.fn(),
-      requestPermissions: jest.fn(),
-      closeAllConnections: jest.fn(),
-      messenger,
-    });
+    const [snapController] = getSnapControllerWithEEService();
 
     const sourceCode = `
       wallet.registerRpcMessageHandler(async (origin, request) => {
@@ -171,43 +219,7 @@ describe('SnapController', () => {
   });
 
   it('can add a snap and use its JSON-RPC api with a WebWorkerExecutionEnvironmentService', async () => {
-    const messenger = new ControllerMessenger<
-      SnapControllerActions,
-      ErrorMessageEvent | UnresponsiveMessageEvent
-    >().getRestricted({
-      name: 'SnapController',
-      allowedEvents: [
-        'ServiceMessenger:unhandledError',
-        'ServiceMessenger:unresponsive',
-      ],
-    });
-    const webWorkerExecutionEnvironment =
-      new WebWorkerExecutionEnvironmentService({
-        messenger,
-        setupSnapProvider: jest.fn(),
-        workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
-      });
-    const snapController = new SnapController({
-      terminateAllSnaps: webWorkerExecutionEnvironment.terminateAllSnaps.bind(
-        webWorkerExecutionEnvironment,
-      ),
-      terminateSnap: webWorkerExecutionEnvironment.terminateSnap.bind(
-        webWorkerExecutionEnvironment,
-      ),
-      executeSnap: webWorkerExecutionEnvironment.executeSnap.bind(
-        webWorkerExecutionEnvironment,
-      ),
-      getRpcMessageHandler:
-        webWorkerExecutionEnvironment.getRpcMessageHandler.bind(
-          webWorkerExecutionEnvironment,
-        ),
-      removeAllPermissionsFor: jest.fn(),
-      getPermissions: jest.fn(),
-      hasPermission: jest.fn(),
-      requestPermissions: jest.fn(),
-      closeAllConnections: jest.fn(),
-      messenger,
-    });
+    const [snapController] = getSnapControllerWithEEService();
 
     const sourceCode = `
       wallet.registerRpcMessageHandler(async (origin, request) => {
@@ -240,60 +252,13 @@ describe('SnapController', () => {
   });
 
   it('can add a snap and use its JSON-RPC api with a stub execution env service', async () => {
-    class ExecutionEnvironmentStub implements ExecutionEnvironmentService {
-      async terminateAllSnaps() {
-        // empty stub
-      }
+    const executionEnvironmentStub =
+      new ExecutionEnvironmentStub() as unknown as WebWorkerExecutionEnvironmentService;
 
-      async getRpcMessageHandler() {
-        return (_: any, request: Record<string, unknown>) => {
-          return new Promise((resolve) => {
-            const results = `${request.method}${request.id}`;
-            resolve(results);
-          });
-        };
-      }
-
-      async executeSnap() {
-        return 'some-unique-id';
-      }
-
-      async terminateSnap() {
-        // empty stub
-      }
-    }
-
-    const executionEnvironmentStub = new ExecutionEnvironmentStub();
-    const messenger = new ControllerMessenger<
-      SnapControllerActions,
-      ErrorMessageEvent | UnresponsiveMessageEvent
-    >().getRestricted({
-      name: 'SnapController',
-      allowedEvents: [
-        'ServiceMessenger:unhandledError',
-        'ServiceMessenger:unresponsive',
-      ],
-    });
-    const snapController = new SnapController({
-      terminateAllSnaps: executionEnvironmentStub.terminateAllSnaps.bind(
-        executionEnvironmentStub,
-      ),
-      terminateSnap: executionEnvironmentStub.terminateSnap.bind(
-        executionEnvironmentStub,
-      ),
-      executeSnap: executionEnvironmentStub.executeSnap.bind(
-        executionEnvironmentStub,
-      ),
-      getRpcMessageHandler: executionEnvironmentStub.getRpcMessageHandler.bind(
-        executionEnvironmentStub,
-      ),
-      removeAllPermissionsFor: jest.fn(),
-      getPermissions: jest.fn(),
-      hasPermission: jest.fn(),
-      requestPermissions: jest.fn(),
-      closeAllConnections: jest.fn(),
-      messenger,
-    });
+    const [snapController] = getSnapControllerWithEEService(
+      undefined,
+      executionEnvironmentStub,
+    );
 
     const sourceCode = `
       wallet.registerRpcMessageHandler(async (origin, request) => {
@@ -335,28 +300,9 @@ describe('SnapController', () => {
 
     const mockExecuteSnap = jest.fn();
 
-    const messenger = new ControllerMessenger<
-      SnapControllerActions,
-      ErrorMessageEvent | UnresponsiveMessageEvent
-    >().getRestricted({
-      name: 'SnapController',
-      allowedEvents: [
-        'ServiceMessenger:unhandledError',
-        'ServiceMessenger:unresponsive',
-      ],
-    });
-    const snapController = new SnapController({
-      terminateAllSnaps: jest.fn(),
-      terminateSnap: jest.fn(),
-      executeSnap: mockExecuteSnap,
-      getRpcMessageHandler: jest.fn(),
-      removeAllPermissionsFor: jest.fn(),
-      getPermissions: jest.fn(),
-      hasPermission: jest.fn(),
-      requestPermissions: jest.fn(),
-      closeAllConnections: jest.fn(),
-      messenger,
-    });
+    const snapController = getSnapController(
+      getSnapControllerOptions({ executeSnap: mockExecuteSnap }),
+    );
 
     await snapController.add({ id, manifest, sourceCode });
     await snapController.startSnap(id);
@@ -373,81 +319,49 @@ describe('SnapController', () => {
   it('can not delete existing snaps when using runExistinSnaps with a hydrated state', async () => {
     const mockExecuteSnap = jest.fn();
 
-    const controllerMessenger = new ControllerMessenger<
-      SnapControllerActions,
-      ErrorMessageEvent | UnresponsiveMessageEvent
-    >();
-
     const sourceCode = 'console.log("foo");';
 
-    const firstSnapController = new SnapController({
-      terminateAllSnaps: jest.fn(),
-      terminateSnap: jest.fn(),
-      executeSnap: mockExecuteSnap,
-      getRpcMessageHandler: jest.fn(),
-      removeAllPermissionsFor: jest.fn(),
-      getPermissions: jest.fn(),
-      hasPermission: jest.fn(),
-      requestPermissions: jest.fn(),
-      closeAllConnections: jest.fn(),
-      messenger: controllerMessenger.getRestricted({
-        name: 'SnapController',
-        allowedEvents: [
-          'ServiceMessenger:unhandledError',
-          'ServiceMessenger:unresponsive',
-        ],
-      }),
-      state: {
-        snapErrors: {},
-        snapStates: {},
-        snaps: {
-          'npm:foo': {
-            initialPermissions: {},
-            permissionName: 'fooperm',
-            version: '0.0.1',
-            sourceCode,
-            id: 'npm:foo',
-            manifest: getSnapManifest({
-              shasum: getSnapSourceShasum(sourceCode),
-            }),
-            enabled: true,
-            status: SnapStatus.installing,
+    const firstSnapController = getSnapController(
+      getSnapControllerOptions({
+        executeSnap: mockExecuteSnap,
+        state: {
+          snapErrors: {},
+          snapStates: {},
+          snaps: {
+            'npm:foo': {
+              initialPermissions: {},
+              permissionName: 'fooperm',
+              version: '0.0.1',
+              sourceCode,
+              id: 'npm:foo',
+              manifest: getSnapManifest({
+                shasum: getSnapSourceShasum(sourceCode),
+              }),
+              enabled: true,
+              status: SnapStatus.installing,
+            },
           },
         },
-      },
-    });
+      }),
+    );
 
     // persist the state somewhere
     const persistedState = getPersistentState<SnapControllerState>(
       firstSnapController.state,
       firstSnapController.metadata,
     );
-    const secondControllerMessenger = new ControllerMessenger<
-      SnapControllerActions,
-      ErrorMessageEvent | UnresponsiveMessageEvent
-    >();
+
     // create a new controller
-    const secondSnapController = new SnapController({
-      terminateAllSnaps: jest.fn(),
-      terminateSnap: jest.fn(),
-      executeSnap: mockExecuteSnap,
-      getRpcMessageHandler: jest.fn(),
-      removeAllPermissionsFor: jest.fn(),
-      getPermissions: jest.fn(),
-      hasPermission: jest.fn(),
-      requestPermissions: jest.fn(),
-      closeAllConnections: jest.fn(),
-      messenger: secondControllerMessenger.getRestricted({
-        name: 'SnapController',
-        allowedEvents: [
-          'ServiceMessenger:unhandledError',
-          'ServiceMessenger:unresponsive',
-        ],
+    const secondSnapController = getSnapController(
+      getSnapControllerOptions({
+        executeSnap: mockExecuteSnap,
+        state: persistedState as unknown as SnapControllerState,
       }),
-      state: persistedState as unknown as SnapControllerState,
-    });
+    );
+
     expect(secondSnapController.isRunning('npm:foo')).toStrictEqual(false);
     await secondSnapController.runExistingSnaps();
+
     expect(secondSnapController.state.snaps['npm:foo']).toBeDefined();
     expect(secondSnapController.isRunning('npm:foo')).toStrictEqual(true);
     firstSnapController.destroy();
@@ -455,61 +369,14 @@ describe('SnapController', () => {
   });
 
   it('can add errors to the SnapControllers state', async () => {
-    class ExecutionEnvironmentStub implements ExecutionEnvironmentService {
-      async terminateAllSnaps() {
-        // empty stub
-      }
+    const executionEnvironmentStub =
+      new ExecutionEnvironmentStub() as unknown as WebWorkerExecutionEnvironmentService;
 
-      async getRpcMessageHandler() {
-        return (_: any, request: Record<string, unknown>) => {
-          return new Promise((resolve) => {
-            const results = `${request.method}${request.id}`;
-            resolve(results);
-          });
-        };
-      }
+    const [snapController] = getSnapControllerWithEEService(
+      undefined,
+      executionEnvironmentStub,
+    );
 
-      async executeSnap() {
-        return 'some-unique-id';
-      }
-
-      async terminateSnap() {
-        // empty stub
-      }
-    }
-
-    const executionEnvironmentStub = new ExecutionEnvironmentStub();
-
-    const messenger = new ControllerMessenger<
-      SnapControllerActions,
-      ErrorMessageEvent | UnresponsiveMessageEvent
-    >().getRestricted({
-      name: 'SnapController',
-      allowedEvents: [
-        'ServiceMessenger:unhandledError',
-        'ServiceMessenger:unresponsive',
-      ],
-    });
-    const snapController = new SnapController({
-      terminateAllSnaps: executionEnvironmentStub.terminateAllSnaps.bind(
-        executionEnvironmentStub,
-      ),
-      terminateSnap: executionEnvironmentStub.terminateSnap.bind(
-        executionEnvironmentStub,
-      ),
-      executeSnap: executionEnvironmentStub.executeSnap.bind(
-        executionEnvironmentStub,
-      ),
-      getRpcMessageHandler: executionEnvironmentStub.getRpcMessageHandler.bind(
-        executionEnvironmentStub,
-      ),
-      removeAllPermissionsFor: jest.fn(),
-      getPermissions: jest.fn(),
-      hasPermission: jest.fn(),
-      requestPermissions: jest.fn(),
-      closeAllConnections: jest.fn(),
-      messenger,
-    });
     snapController.addSnapError({
       code: 1,
       data: {},
@@ -552,10 +419,8 @@ describe('SnapController', () => {
   });
 
   it('can handle an error event on the controller messenger', async () => {
-    const controllerMessenger = new ControllerMessenger<
-      SnapControllerActions,
-      ErrorMessageEvent | UnresponsiveMessageEvent
-    >();
+    const controllerMessenger = getControllerMessenger();
+
     const serviceMessenger = controllerMessenger.getRestricted({
       name: 'ServiceMessenger',
       allowedEvents: [
@@ -563,6 +428,7 @@ describe('SnapController', () => {
         'ServiceMessenger:unresponsive',
       ],
     });
+
     const snapControllerMessenger = controllerMessenger.getRestricted({
       name: 'SnapController',
       allowedEvents: [
@@ -578,27 +444,11 @@ describe('SnapController', () => {
         workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
       },
     );
-    const snapController = new SnapController({
-      terminateAllSnaps: workerExecutionEnvironment.terminateAllSnaps.bind(
-        workerExecutionEnvironment,
-      ),
-      terminateSnap: workerExecutionEnvironment.terminateSnap.bind(
-        workerExecutionEnvironment,
-      ),
-      executeSnap: workerExecutionEnvironment.executeSnap.bind(
-        workerExecutionEnvironment,
-      ),
-      getRpcMessageHandler:
-        workerExecutionEnvironment.getRpcMessageHandler.bind(
-          workerExecutionEnvironment,
-        ),
-      removeAllPermissionsFor: jest.fn(),
-      getPermissions: jest.fn(),
-      hasPermission: jest.fn(),
-      requestPermissions: jest.fn(),
-      closeAllConnections: jest.fn(),
-      messenger: snapControllerMessenger,
-    });
+
+    const [snapController] = getSnapControllerWithEEService(
+      getSnapControllerWithEESOptions({ messenger: snapControllerMessenger }),
+      workerExecutionEnvironment,
+    );
 
     const sourceCode = `
       wallet.registerRpcMessageHandler(async (origin, request) => {
@@ -636,53 +486,16 @@ describe('SnapController', () => {
   });
 
   it('can handle an unresponsive event on the controller messenger', async () => {
-    const controllerMessenger = new ControllerMessenger<
-      SnapControllerActions,
-      ErrorMessageEvent | UnresponsiveMessageEvent
-    >();
-    const serviceMessenger = controllerMessenger.getRestricted({
-      name: 'ServiceMessenger',
-      allowedEvents: [
-        'ServiceMessenger:unhandledError',
-        'ServiceMessenger:unresponsive',
-      ],
-    });
-    const snapControllerMessenger = controllerMessenger.getRestricted({
-      name: 'SnapController',
-      allowedEvents: [
-        'ServiceMessenger:unhandledError',
-        'ServiceMessenger:unresponsive',
-      ],
-    });
+    const controllerMessenger = getControllerMessenger();
+    const serviceMessenger = getWebworkerEESMessenger(controllerMessenger);
+    const snapControllerMessenger =
+      getSnapControllerMessenger(controllerMessenger);
 
-    const workerExecutionEnvironment = new WebWorkerExecutionEnvironmentService(
-      {
-        messenger: serviceMessenger,
-        setupSnapProvider: jest.fn(),
-        workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
-      },
+    const workerExecutionEnvironment = getWebWorkerEES(serviceMessenger);
+    const [snapController] = getSnapControllerWithEEService(
+      getSnapControllerWithEESOptions({ messenger: snapControllerMessenger }),
+      workerExecutionEnvironment,
     );
-    const snapController = new SnapController({
-      terminateAllSnaps: workerExecutionEnvironment.terminateAllSnaps.bind(
-        workerExecutionEnvironment,
-      ),
-      terminateSnap: workerExecutionEnvironment.terminateSnap.bind(
-        workerExecutionEnvironment,
-      ),
-      executeSnap: workerExecutionEnvironment.executeSnap.bind(
-        workerExecutionEnvironment,
-      ),
-      getRpcMessageHandler:
-        workerExecutionEnvironment.getRpcMessageHandler.bind(
-          workerExecutionEnvironment,
-        ),
-      removeAllPermissionsFor: jest.fn(),
-      getPermissions: jest.fn(),
-      hasPermission: jest.fn(),
-      requestPermissions: jest.fn(),
-      closeAllConnections: jest.fn(),
-      messenger: snapControllerMessenger,
-    });
 
     const sourceCode = `
       wallet.registerRpcMessageHandler(async (origin, request) => {
@@ -717,45 +530,12 @@ describe('SnapController', () => {
   }, 3000);
 
   it('can add a snap and use its JSON-RPC api and then get stopped from idling too long', async () => {
-    const messenger = new ControllerMessenger<
-      SnapControllerActions,
-      ErrorMessageEvent | UnresponsiveMessageEvent
-    >().getRestricted({
-      name: 'SnapController',
-      allowedEvents: [
-        'ServiceMessenger:unhandledError',
-        'ServiceMessenger:unresponsive',
-      ],
-    });
-    const webWorkerExecutionEnvironment =
-      new WebWorkerExecutionEnvironmentService({
-        messenger,
-        setupSnapProvider: jest.fn(),
-        workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
-      });
-    const snapController = new SnapController({
-      idleTimeCheckInterval: 1000,
-      maxIdleTime: 2000,
-      terminateAllSnaps: webWorkerExecutionEnvironment.terminateAllSnaps.bind(
-        webWorkerExecutionEnvironment,
-      ),
-      terminateSnap: webWorkerExecutionEnvironment.terminateSnap.bind(
-        webWorkerExecutionEnvironment,
-      ),
-      executeSnap: webWorkerExecutionEnvironment.executeSnap.bind(
-        webWorkerExecutionEnvironment,
-      ),
-      getRpcMessageHandler:
-        webWorkerExecutionEnvironment.getRpcMessageHandler.bind(
-          webWorkerExecutionEnvironment,
-        ),
-      removeAllPermissionsFor: jest.fn(),
-      getPermissions: jest.fn(),
-      hasPermission: jest.fn(),
-      requestPermissions: jest.fn(),
-      closeAllConnections: jest.fn(),
-      messenger,
-    });
+    const [snapController] = getSnapControllerWithEEService(
+      getSnapControllerWithEESOptions({
+        idleTimeCheckInterval: 1000,
+        maxIdleTime: 2000,
+      }),
+    );
 
     const sourceCode = `
       wallet.registerRpcMessageHandler(async (origin, request) => {
@@ -790,45 +570,12 @@ describe('SnapController', () => {
   });
 
   it('can add a snap and see its status', async () => {
-    const messenger = new ControllerMessenger<
-      SnapControllerActions,
-      ErrorMessageEvent | UnresponsiveMessageEvent
-    >().getRestricted({
-      name: 'SnapController',
-      allowedEvents: [
-        'ServiceMessenger:unhandledError',
-        'ServiceMessenger:unresponsive',
-      ],
-    });
-    const webWorkerExecutionEnvironment =
-      new WebWorkerExecutionEnvironmentService({
-        messenger,
-        setupSnapProvider: jest.fn(),
-        workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
-      });
-    const snapController = new SnapController({
-      idleTimeCheckInterval: 1000,
-      maxIdleTime: 2000,
-      terminateAllSnaps: webWorkerExecutionEnvironment.terminateAllSnaps.bind(
-        webWorkerExecutionEnvironment,
-      ),
-      terminateSnap: webWorkerExecutionEnvironment.terminateSnap.bind(
-        webWorkerExecutionEnvironment,
-      ),
-      executeSnap: webWorkerExecutionEnvironment.executeSnap.bind(
-        webWorkerExecutionEnvironment,
-      ),
-      getRpcMessageHandler:
-        webWorkerExecutionEnvironment.getRpcMessageHandler.bind(
-          webWorkerExecutionEnvironment,
-        ),
-      removeAllPermissionsFor: jest.fn(),
-      getPermissions: jest.fn(),
-      hasPermission: jest.fn(),
-      requestPermissions: jest.fn(),
-      closeAllConnections: jest.fn(),
-      messenger,
-    });
+    const [snapController] = getSnapControllerWithEEService(
+      getSnapControllerWithEESOptions({
+        idleTimeCheckInterval: 1000,
+        maxIdleTime: 2000,
+      }),
+    );
 
     const sourceCode = `
       wallet.registerRpcMessageHandler(async (origin, request) => {
@@ -854,45 +601,12 @@ describe('SnapController', () => {
   });
 
   it('can add a snap and stop it and have it start on-demand', async () => {
-    const messenger = new ControllerMessenger<
-      SnapControllerActions,
-      ErrorMessageEvent | UnresponsiveMessageEvent
-    >().getRestricted({
-      name: 'SnapController',
-      allowedEvents: [
-        'ServiceMessenger:unhandledError',
-        'ServiceMessenger:unresponsive',
-      ],
-    });
-    const webWorkerExecutionEnvironment =
-      new WebWorkerExecutionEnvironmentService({
-        messenger,
-        setupSnapProvider: jest.fn(),
-        workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
-      });
-    const snapController = new SnapController({
-      idleTimeCheckInterval: 1000,
-      maxIdleTime: 2000,
-      terminateAllSnaps: webWorkerExecutionEnvironment.terminateAllSnaps.bind(
-        webWorkerExecutionEnvironment,
-      ),
-      terminateSnap: webWorkerExecutionEnvironment.terminateSnap.bind(
-        webWorkerExecutionEnvironment,
-      ),
-      executeSnap: webWorkerExecutionEnvironment.executeSnap.bind(
-        webWorkerExecutionEnvironment,
-      ),
-      getRpcMessageHandler:
-        webWorkerExecutionEnvironment.getRpcMessageHandler.bind(
-          webWorkerExecutionEnvironment,
-        ),
-      removeAllPermissionsFor: jest.fn(),
-      getPermissions: jest.fn(),
-      hasPermission: jest.fn(),
-      requestPermissions: jest.fn(),
-      closeAllConnections: jest.fn(),
-      messenger,
-    });
+    const [snapController] = getSnapControllerWithEEService(
+      getSnapControllerWithEESOptions({
+        idleTimeCheckInterval: 1000,
+        maxIdleTime: 2000,
+      }),
+    );
 
     const sourceCode = `
       wallet.registerRpcMessageHandler(async (origin, request) => {
@@ -928,45 +642,12 @@ describe('SnapController', () => {
   });
 
   it('can add a snap disable/enable it and still get a response from method "test"', async () => {
-    const messenger = new ControllerMessenger<
-      SnapControllerActions,
-      ErrorMessageEvent | UnresponsiveMessageEvent
-    >().getRestricted({
-      name: 'SnapController',
-      allowedEvents: [
-        'ServiceMessenger:unhandledError',
-        'ServiceMessenger:unresponsive',
-      ],
-    });
-    const webWorkerExecutionEnvironment =
-      new WebWorkerExecutionEnvironmentService({
-        messenger,
-        setupSnapProvider: jest.fn(),
-        workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
-      });
-    const snapController = new SnapController({
-      idleTimeCheckInterval: 1000,
-      maxIdleTime: 2000,
-      terminateAllSnaps: webWorkerExecutionEnvironment.terminateAllSnaps.bind(
-        webWorkerExecutionEnvironment,
-      ),
-      terminateSnap: webWorkerExecutionEnvironment.terminateSnap.bind(
-        webWorkerExecutionEnvironment,
-      ),
-      executeSnap: webWorkerExecutionEnvironment.executeSnap.bind(
-        webWorkerExecutionEnvironment,
-      ),
-      getRpcMessageHandler:
-        webWorkerExecutionEnvironment.getRpcMessageHandler.bind(
-          webWorkerExecutionEnvironment,
-        ),
-      removeAllPermissionsFor: jest.fn(),
-      getPermissions: jest.fn(),
-      hasPermission: jest.fn(),
-      requestPermissions: jest.fn(),
-      closeAllConnections: jest.fn(),
-      messenger,
-    });
+    const [snapController] = getSnapControllerWithEEService(
+      getSnapControllerWithEESOptions({
+        idleTimeCheckInterval: 1000,
+        maxIdleTime: 2000,
+      }),
+    );
 
     const sourceCode = `
       wallet.registerRpcMessageHandler(async (origin, request) => {
@@ -1031,46 +712,13 @@ describe('SnapController', () => {
   });
 
   it('can send an rpc request and time out', async () => {
-    const messenger = new ControllerMessenger<
-      SnapControllerActions,
-      ErrorMessageEvent | UnresponsiveMessageEvent
-    >().getRestricted({
-      name: 'SnapController',
-      allowedEvents: [
-        'ServiceMessenger:unhandledError',
-        'ServiceMessenger:unresponsive',
-      ],
-    });
-    const webWorkerExecutionEnvironment =
-      new WebWorkerExecutionEnvironmentService({
-        messenger,
-        setupSnapProvider: jest.fn(),
-        workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
-      });
-    const snapController = new SnapController({
-      idleTimeCheckInterval: 30000,
-      maxIdleTime: 160000,
-      maxRequestTime: 1000,
-      terminateAllSnaps: webWorkerExecutionEnvironment.terminateAllSnaps.bind(
-        webWorkerExecutionEnvironment,
-      ),
-      terminateSnap: webWorkerExecutionEnvironment.terminateSnap.bind(
-        webWorkerExecutionEnvironment,
-      ),
-      executeSnap: webWorkerExecutionEnvironment.executeSnap.bind(
-        webWorkerExecutionEnvironment,
-      ),
-      getRpcMessageHandler:
-        webWorkerExecutionEnvironment.getRpcMessageHandler.bind(
-          webWorkerExecutionEnvironment,
-        ),
-      removeAllPermissionsFor: jest.fn(),
-      getPermissions: jest.fn(),
-      hasPermission: jest.fn(),
-      requestPermissions: jest.fn(),
-      closeAllConnections: jest.fn(),
-      messenger,
-    });
+    const [snapController] = getSnapControllerWithEEService(
+      getSnapControllerWithEESOptions({
+        idleTimeCheckInterval: 30000,
+        maxIdleTime: 160000,
+        maxRequestTime: 1000,
+      }),
+    );
 
     const sourceCode = `
       wallet.registerRpcMessageHandler(async (origin, request) => {

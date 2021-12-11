@@ -102,15 +102,19 @@ export type SnapStateChange = {
 // TODO: Create actions
 export type SnapControllerActions = never;
 
+export type AllowedActions = never;
+
 export type SnapControllerEvents = SnapStateChange;
+
+export type AllowedEvents = ErrorMessageEvent | UnresponsiveMessageEvent;
 
 // TODO: Use ControllerMessenger events
 type SnapControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
   SnapControllerActions,
-  SnapControllerEvents | ErrorMessageEvent | UnresponsiveMessageEvent,
-  never,
-  ErrorMessageEvent['type'] | UnresponsiveMessageEvent['type']
+  SnapControllerEvents | AllowedEvents,
+  AllowedActions,
+  AllowedEvents['type']
 >;
 
 type SnapControllerArgs = {
