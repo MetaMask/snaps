@@ -17,6 +17,7 @@ module.exports = {
       displayName: 'runner: electron',
       preset: 'ts-jest',
       runner: '@jest-runner/electron',
+      // Note that this environment does not support fake timers.
       testEnvironment: '@jest-runner/electron/environment',
       testMatch: [
         '<rootDir>/src/snaps/**/*.test.ts',
