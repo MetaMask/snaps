@@ -374,6 +374,7 @@ function getPermissionControllerMessenger() {
     allowedActions: [
       'PermissionController:clearPermissions',
       'PermissionController:getSubjectNames',
+      'PermissionController:getEndowments',
       'PermissionController:hasPermissions',
       'ApprovalController:hasRequest',
       'ApprovalController:addRequest',
@@ -4178,6 +4179,77 @@ describe('PermissionController', () => {
       messenger.call('PermissionController:clearPermissions');
       expect(clearStateSpy).toHaveBeenCalledTimes(1);
       expect(controller.state).toStrictEqual({ subjects: {} });
+    });
+
+    it('action: PermissionController:getEndowments', async () => {
+      const options = getPermissionControllerOptions();
+      const { messenger } = options;
+      const controller = new PermissionController<
+        DefaultPermissionSpecifications,
+        DefaultCaveatSpecifications
+      >(options);
+      const getEndowmentsSpy = jest.spyOn(controller, 'getEndowments');
+
+      await expect(
+        messenger.call(
+          'PermissionController:getEndowments',
+          'foo',
+          PermissionNames.endowmentPermission1,
+        ),
+      ).rejects.toThrow(
+        errors.unauthorized({
+          data: {
+            origin: 'foo',
+            targetName: PermissionNames.endowmentPermission1,
+          },
+        }),
+      );
+
+      controller.grantPermissions({
+        subject: { origin: 'foo' },
+        approvedPermissions: {
+          [PermissionNames.endowmentPermission1]: {},
+        },
+      });
+
+      expect(
+        await messenger.call(
+          'PermissionController:getEndowments',
+          'foo',
+          PermissionNames.endowmentPermission1,
+        ),
+      ).toStrictEqual(['endowment1']);
+
+      expect(
+        await messenger.call(
+          'PermissionController:getEndowments',
+          'foo',
+          PermissionNames.endowmentPermission1,
+          { arbitrary: 'requestData' },
+        ),
+      ).toStrictEqual(['endowment1']);
+
+      expect(getEndowmentsSpy).toHaveBeenCalledTimes(3);
+      expect(getEndowmentsSpy).toHaveBeenNthCalledWith(
+        1,
+        'foo',
+        PermissionNames.endowmentPermission1,
+        undefined,
+      );
+
+      expect(getEndowmentsSpy).toHaveBeenNthCalledWith(
+        2,
+        'foo',
+        PermissionNames.endowmentPermission1,
+        undefined,
+      );
+
+      expect(getEndowmentsSpy).toHaveBeenNthCalledWith(
+        3,
+        'foo',
+        PermissionNames.endowmentPermission1,
+        { arbitrary: 'requestData' },
+      );
     });
 
     it('action: PermissionController:getSubjectNames', () => {

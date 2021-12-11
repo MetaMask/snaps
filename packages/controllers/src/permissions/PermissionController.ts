@@ -207,12 +207,21 @@ export type ClearPermissions = {
   handler: () => void;
 };
 
+/**
+ * Gets the endowments for the given subject and permission.
+ */
+export type GetEndowments = {
+  type: `${typeof controllerName}:getEndowments`;
+  handler: GenericPermissionController['getEndowments'];
+};
+
 // TODO: Implement all desired actions
 /**
  * The {@link ControllerMessenger} actions of the {@link PermissionController}.
  */
 export type PermissionControllerActions =
   | ClearPermissions
+  | GetEndowments
   | GetPermissionControllerState
   | GetSubjects
   | HasPermissions;
@@ -598,6 +607,12 @@ export class PermissionController<
     this.messagingSystem.registerActionHandler(
       `${controllerName}:clearPermissions`,
       () => this.clearState(),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:getEndowments`,
+      (origin: string, targetName: string, requestData?: unknown) =>
+        this.getEndowments(origin, targetName, requestData),
     );
 
     this.messagingSystem.registerActionHandler(
