@@ -1,24 +1,22 @@
 {
   "name": "ethers-js-snap",
   "version": "1.0.0",
+  "private": true,
   "description": "An example Snap that that uses ethers.js.",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps-skunkworks.git"
   },
   "license": "ISC",
-  "main": "index.js",
+  "main": "src/index.js",
+  "files": [
+    "dist/",
+    "snap.manifest.json"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "ethers": "^5.4.6"
-  },
-  "web3Wallet": {
-    "bundle": {
-      "local": "dist/bundle.js",
-      "url": "http://localhost:8081/dist/bundle.js"
-    },
-    "initialPermissions": {}
   }
 }

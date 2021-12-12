@@ -1,13 +1,18 @@
 {
   "name": "ipfs-snap",
   "version": "1.0.0",
+  "private": true,
   "description": "An example Snap that performs IPFS operations.",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps-skunkworks.git"
   },
   "license": "ISC",
-  "main": "index.js",
+  "main": "src/index.js",
+  "files": [
+    "dist/",
+    "snap.manifest.json"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,12 +20,5 @@
     "eth-json-rpc-errors": "^1.1.0",
     "ipfs-mini": "^1.1.5"
   },
-  "devDependencies": {},
-  "web3Wallet": {
-    "bundle": {
-      "local": "dist/bundle.js",
-      "url": "http://localhost:8086/dist/bundle.js"
-    },
-    "initialPermissions": {}
-  }
+  "devDependencies": {}
 }

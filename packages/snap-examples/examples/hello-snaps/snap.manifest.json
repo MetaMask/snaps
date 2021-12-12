@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "description": "The 'Hello, world!' of MetaMask Snaps.",
+  "proposedName": "hello-snaps",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps-skunkworks.git"
+  },
+  "source": {
+    "shasum": "m9N8XOgqscV1o9jCgn9gdE2xZB7sjU6bF3e1XCGpMiE=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "packageName": "hello-snaps",
+        "registry": "https://registry.npmjs.org"
+      }
+    }
+  },
+  "initialPermissions": {
+    "snap_confirm": {}
+  },
+  "manifestVersion": "0.1"
+}

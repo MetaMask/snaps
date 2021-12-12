@@ -1,6 +1,7 @@
 {
   "name": "hello-snaps",
   "version": "1.0.0",
+  "private": true,
   "description": "The 'Hello, world!' of MetaMask Snaps.",
   "repository": {
     "type": "git",
@@ -8,20 +9,15 @@
   },
   "license": "ISC",
   "main": "src/index.js",
+  "files": [
+    "dist/",
+    "snap.manifest.json"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "eth-json-rpc-errors": "^1.1.0"
   },
-  "devDependencies": {},
-  "web3Wallet": {
-    "bundle": {
-      "local": "dist/bundle.js",
-      "url": "http://localhost:8081/dist/bundle.js"
-    },
-    "initialPermissions": {
-      "snap_confirm": {}
-    }
-  }
+  "devDependencies": {}
 }
