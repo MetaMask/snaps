@@ -313,8 +313,16 @@ export type ValidRestrictedMethod<
  * {@link EndowmentGetter} parameter object.
  */
 export type EndowmentGetterParams = {
+  /**
+   * The origin of the requesting subject.
+   */
   origin: string;
+
+  /**
+   * Any additional data associated with the request.
+   */
   requestData?: unknown;
+
   [key: string]: unknown;
 };
 
