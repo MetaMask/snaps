@@ -129,9 +129,7 @@ const permissionSpecifications = {
     permissionType: PermissionType.RestrictedMethod,
     // i.e. the restricted method name
     targetKey: 'wallet_getSecretArray',
-    allowedCaveats: [
-      'filterArrayResponse',
-    ],
+    allowedCaveats: ['filterArrayResponse'],
     // Every restricted method must specify its implementation in its
     // specification.
     methodImplementation: (
@@ -169,8 +167,12 @@ const permissionSpecifications = {
     // This function will be called to retrieve the subject's endowment(s).
     // Here we imagine that these are the names of globals that will be made
     // available to a SES Compartment.
-    endowmentGetter: (_options: EndowmentGetterParams) => ['fetch', 'Math', 'setTimeout'],
-  }
+    endowmentGetter: (_options: EndowmentGetterParams) => [
+      'fetch',
+      'Math',
+      'setTimeout',
+    ],
+  },
 };
 
 const permissionController = new PermissionController({
