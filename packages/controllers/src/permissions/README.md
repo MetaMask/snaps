@@ -142,7 +142,7 @@ const permissionSpecifications = {
   },
 
   // This is a namespaced restricted method.
-  wallet_getSecret_*: {
+  'wallet_getSecret_*': {
     permissionType: PermissionType.RestrictedMethod,
     targetKey: 'wallet_getSecret_*',
     methodImplementation: (
