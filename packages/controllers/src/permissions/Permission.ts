@@ -386,7 +386,7 @@ export enum PermissionType {
  * The base constraint for permission specification objects. Every
  * {@link Permission} supported by a {@link PermissionController} must have an
  * associated specification, which is the source of truth for all permission-
- * related types. In addition, a permission specification the list of permitted
+ * related types. A permission specification includes the list of permitted
  * caveats, and any factory and validation functions specified by the consumer.
  * A concrete permission specification may specify further fields as necessary.
  *
