@@ -105,7 +105,7 @@ function getValidatedParams(params: unknown): ConfirmFields {
 
   const { prompt, description, textAreaContent } = params[0];
 
-  if (!prompt || typeof prompt !== 'string'  || prompt.length > 40) {
+  if (!prompt || typeof prompt !== 'string' || prompt.length > 40) {
     throw ethErrors.rpc.invalidParams({
       message:
         'Must specify a non-empty string "prompt" less than 40 characters long.',
