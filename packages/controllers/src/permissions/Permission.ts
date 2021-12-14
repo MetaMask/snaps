@@ -511,10 +511,9 @@ type PermissionSpecificationBuilderOptions<
 export type PermissionSpecificationBuilder<
   Type extends PermissionType,
   Options extends PermissionSpecificationBuilderOptions<any, any, any>,
-  Specification extends Extract<
-    PermissionSpecificationConstraint,
-    { permissionType: Type }
-  >,
+  Specification extends PermissionSpecificationConstraint & {
+    permissionType: Type;
+  },
 > = (options: Options) => Specification;
 
 /**

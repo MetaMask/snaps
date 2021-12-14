@@ -660,7 +660,7 @@ export class PermissionController<
     permissionType: Type,
     targetName: string,
     requestingOrigin?: string,
-  ): Extract<ControllerPermissionSpecification, { permissionType: Type }> {
+  ): ControllerPermissionSpecification & { permissionType: Type } {
     const failureError =
       permissionType === PermissionType.RestrictedMethod
         ? methodNotFound(
@@ -682,10 +682,9 @@ export class PermissionController<
       throw failureError;
     }
 
-    return specification as unknown as Extract<
-      ControllerPermissionSpecification,
-      { permissionType: Type }
-    >;
+    return specification as unknown as ControllerPermissionSpecification & {
+      permissionType: Type;
+    };
   }
 
   /**
