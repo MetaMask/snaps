@@ -241,6 +241,10 @@ export class SnapController extends BaseController<
 
   private _getRpcMessageHandler: GetRpcMessageHandler;
 
+  /**
+   * A {@link Map} of Snap IDs and the Unix timestamp of the most recent RPC
+   * request received by the Snap.
+   */
   private _lastRequestMap: Map<SnapId, number>;
 
   private _maxIdleTime: number;
