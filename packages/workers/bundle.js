@@ -5,22 +5,21 @@ const browserify = require('browserify');
 const rimraf = promisify(require('rimraf'));
 const endOfStream = promisify(require('end-of-stream'));
 
+const MAIN_FILE_PATH = pathUtils.resolve(__dirname, 'dist/SnapWorker.js');
+const TEMP_FILE_PATH = pathUtils.resolve(__dirname, 'dist/_SnapWorker.js');
+
 /**
  * This is to be run after `tsc`.
  */
-
 main();
 
 async function main() {
-  // Add SES contents to tsc output
-  await preprocess();
-  // Run browserify
+  // Run browserify on the tsc output
   await bundle();
-  // Delete temporary file
-  await rimraf(pathUtils.resolve(__dirname, 'dist/_SnapWorker.js'));
-}
 
-async function preprocess() {
+  // Remove original SnapWorker files
+  await rimraf(pathUtils.resolve(__dirname, 'dist/SnapWorker*'));
+
   // Get the SES lockdown contents
   const sesContent = await fs.readFile(
     pathUtils.resolve(
@@ -29,27 +28,21 @@ async function preprocess() {
     ),
   );
 
-  // Get the tsc output file
-  const tscOutput = await fs.readFile(
-    pathUtils.resolve(__dirname, 'dist/SnapWorker.js'),
-    'utf8',
-  );
+  // Get the browserify output
+  const bundleContent = await fs.readFile(TEMP_FILE_PATH, 'utf8');
 
-  // Remove original SnapWorker files
-  await rimraf(pathUtils.resolve(__dirname, 'dist/SnapWorker*'));
+  // Prepend the SES lockdown contents to the bundle contents and write to
+  // primary export file
+  await fs.writeFile(MAIN_FILE_PATH, `${sesContent}${bundleContent}`);
 
-  // Prepend the SES lockdown contents to the tsc output and write to a
-  // temporary file
-  await fs.writeFile(
-    pathUtils.resolve(__dirname, 'dist/_SnapWorker.js'),
-    `${sesContent}${tscOutput}`,
-  );
+  // Delete temporary file
+  await rimraf(TEMP_FILE_PATH);
 }
 
 async function bundle() {
   const browserifyOpts = {
     debug: false,
-    entries: ['dist/_SnapWorker.js'],
+    entries: [MAIN_FILE_PATH],
     plugin: 'tinyify',
   };
 
@@ -57,6 +50,6 @@ async function bundle() {
     browserify(browserifyOpts)
       .bundle()
       .on('error', console.error)
-      .pipe(createWriteStream('dist/SnapWorker.js')),
+      .pipe(createWriteStream(TEMP_FILE_PATH)),
   );
 }
