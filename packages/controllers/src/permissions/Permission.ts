@@ -61,10 +61,7 @@ export type PermissionConstraint = {
 
   /**
    * A pointer to the resource that possession of the capability grants
-   * access to.
-   *
-   * At present, this is always the name of an RPC method in the context of
-   * MetaMask, but will expand to include other permission types in the future.
+   * access to, for example a JSON-RPC method or endowment.
    */
   readonly parentCapability: string;
 };
@@ -98,10 +95,7 @@ export type ValidPermission<
 
   /**
    * A pointer to the resource that possession of the capability grants
-   * access to.
-   *
-   * At present, this is always the name of an RPC method in the context of
-   * MetaMask, but will expand to include other permission types in the future.
+   * access to, for example a JSON-RPC method or endowment.
    */
   readonly parentCapability: ExtractPermissionTargetNames<TargetKey>;
 };
@@ -307,11 +301,6 @@ export type RestrictedMethod<
   | SyncRestrictedMethod<Params, Result>
   | AsyncRestrictedMethod<Params, Result>;
 
-export type GenericRestrictedMethod = RestrictedMethod<
-  RestrictedMethodParameters,
-  Json
->;
-
 export type ValidRestrictedMethod<
   MethodImplementation extends RestrictedMethod<any, any>,
 > = MethodImplementation extends (args: infer Options) => Json | Promise<Json>
@@ -319,6 +308,32 @@ export type ValidRestrictedMethod<
     ? MethodImplementation
     : never
   : never;
+
+/**
+ * {@link EndowmentGetter} parameter object.
+ */
+export type EndowmentGetterParams = {
+  /**
+   * The origin of the requesting subject.
+   */
+  origin: string;
+
+  /**
+   * Any additional data associated with the request.
+   */
+  requestData?: unknown;
+
+  [key: string]: unknown;
+};
+
+/**
+ * A synchronous or asynchronous function that gets the endowments for a
+ * particular endowment permission. The getter receives the origin of the
+ * requesting subject and, optionally, additional request metadata.
+ */
+export type EndowmentGetter<Endowments> = (
+  options: EndowmentGetterParams,
+) => Endowments | Promise<Endowments>;
 
 export type PermissionFactory<
   TargetPermission extends PermissionConstraint,
@@ -351,20 +366,43 @@ type ValidTargetKey<Key extends string> = Key extends `${string}_*`
   : Key;
 
 /**
- * The constraint for permission specification objects. Every {@link Permission}
- * supported by a {@link PermissionController} must have an associated
- * specification, which is the source of truth for all permission-related types.
- * In addition, a permission specification includes the actual implementation
- * of restricted methods, a list of permitted caveats, and any factory and
- * validation functions specified by the consumer.
+ * The different possible types of permissions.
+ */
+export enum PermissionType {
+  /**
+   * A restricted JSON-RPC method. A subject must have the requisite permission
+   * to call a restricted JSON-RPC method.
+   */
+  RestrictedMethod = 'RestrictedMethod',
+
+  /**
+   * An "endowment" granted to subjects that possess the requisite permission,
+   * such as a global environment variable exposing a restricted API, etc.
+   */
+  Endowment = 'Endowment',
+}
+
+/**
+ * The base constraint for permission specification objects. Every
+ * {@link Permission} supported by a {@link PermissionController} must have an
+ * associated specification, which is the source of truth for all permission-
+ * related types. A permission specification includes the list of permitted
+ * caveats, and any factory and validation functions specified by the consumer.
+ * A concrete permission specification may specify further fields as necessary.
  *
  * See the README for more details.
  */
-export type PermissionSpecificationConstraint = {
+type PermissionSpecificationBase<Type extends PermissionType> = {
   /**
-   * The target resource of the permission. At the time of, this is a full
-   * JSON-RPC method name or the prefix of a namespaced JSON-RPC method, e.g.
-   * `wallet_snap_*`.
+   * The type of the specified permission.
+   */
+  permissionType: Type;
+
+  /**
+   * The target resource of the permission. The shape of this string depends on
+   * the permission type. For example, a restricted method target key will
+   * consist of either a complete method name or the prefix of a namespaced
+   * method, e.g. `wallet_snap_*`.
    */
   targetKey: string;
 
@@ -373,12 +411,6 @@ export type PermissionSpecificationConstraint = {
    * permission.
    */
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
-
-  /**
-   * The implementation of the restricted method that the permission
-   * corresponds to.
-   */
-  methodImplementation: RestrictedMethod<any, any>;
 
   /**
    * The factory function used to get permission objects. Permissions returned
@@ -403,6 +435,59 @@ export type PermissionSpecificationConstraint = {
 };
 
 /**
+ * The constraint for restricted method permission specification objects.
+ * Permissions that correspond to JSON-RPC methods are specified using objects
+ * that conform to this type.
+ *
+ * See the README for more details.
+ */
+export type RestrictedMethodSpecificationConstraint =
+  PermissionSpecificationBase<PermissionType.RestrictedMethod> & {
+    /**
+     * The implementation of the restricted method that the permission
+     * corresponds to.
+     */
+    methodImplementation: RestrictedMethod<any, any>;
+  };
+
+/**
+ * The constraint for endowment permission specification objects. Permissions
+ * that endow callers with some restricted resource are specified using objects
+ * that conform to this type.
+ *
+ * See the README for more details.
+ */
+export type EndowmentSpecificationConstraint =
+  PermissionSpecificationBase<PermissionType.Endowment> & {
+    /**
+     * Endowment permissions do not support caveats.
+     */
+    allowedCaveats: null;
+
+    /**
+     * The {@link EndowmentGetter} function for the permission. This function
+     * will be called by the {@link PermissionController} whenever the
+     * permission is invoked, after which the host can apply the endowments to
+     * the requesting subject in the intended manner.
+     */
+    endowmentGetter: EndowmentGetter<any>;
+  };
+
+/**
+ * The constraint for permission specification objects. Every {@link Permission}
+ * supported by a {@link PermissionController} must have an associated
+ * specification, which is the source of truth for all permission-related types.
+ * All specifications must adhere to the {@link PermissionSpecificationBase}
+ * interface, but specifications may have different fields depending on the
+ * {@link PermissionType}.
+ *
+ * See the README for more details.
+ */
+export type PermissionSpecificationConstraint =
+  | EndowmentSpecificationConstraint
+  | RestrictedMethodSpecificationConstraint;
+
+/**
  * Options for {@link PermissionSpecificationBuilder} functions.
  */
 type PermissionSpecificationBuilderOptions<
@@ -419,13 +504,16 @@ type PermissionSpecificationBuilderOptions<
 
 /**
  * A function that builds a permission specification. Modules that specify
- * restricted methods for external consumption should make this their primary /
+ * permissions for external consumption should make this their primary /
  * default export so that host applications can use them to generate concrete
  * specifications tailored to their requirements.
  */
 export type PermissionSpecificationBuilder<
+  Type extends PermissionType,
   Options extends PermissionSpecificationBuilderOptions<any, any, any>,
-  Specification extends PermissionSpecificationConstraint,
+  Specification extends PermissionSpecificationConstraint & {
+    permissionType: Type;
+  },
 > = (options: Options) => Specification;
 
 /**
@@ -435,6 +523,7 @@ export type PermissionSpecificationBuilder<
 export type PermissionSpecificationBuilderExportConstraint = {
   targetKey: string;
   specificationBuilder: PermissionSpecificationBuilder<
+    PermissionType,
     PermissionSpecificationBuilderOptions<any, any, any>,
     PermissionSpecificationConstraint
   >;
@@ -442,6 +531,14 @@ export type PermissionSpecificationBuilderExportConstraint = {
   methodHookNames?: Record<string, true>;
   validatorHookNames?: Record<string, true>;
 };
+
+type ValidRestrictedMethodSpecification<
+  Specification extends RestrictedMethodSpecificationConstraint,
+> = Specification['methodImplementation'] extends ValidRestrictedMethod<
+  Specification['methodImplementation']
+>
+  ? Specification
+  : never;
 
 /**
  * Constraint for {@link PermissionSpecificationConstraint} objects that
@@ -454,12 +551,35 @@ export type ValidPermissionSpecification<
 > = Specification['targetKey'] extends ValidTargetKey<
   Specification['targetKey']
 >
-  ? Specification['methodImplementation'] extends ValidRestrictedMethod<
-      Specification['methodImplementation']
-    >
+  ? Specification['permissionType'] extends PermissionType.Endowment
     ? Specification
+    : Specification['permissionType'] extends PermissionType.RestrictedMethod
+    ? ValidRestrictedMethodSpecification<
+        Extract<Specification, RestrictedMethodSpecificationConstraint>
+      >
     : never
   : never;
+
+/**
+ * Checks that the specification has the expected permission type.
+ *
+ * @param specification - The specification to check.
+ * @param expectedType - The expected permission type.
+ * @template Specification - The specification to check.
+ * @template Type - The expected permission type.
+ * @returns Whether or not the specification is of the expected type.
+ */
+export function hasSpecificationType<
+  Specification extends PermissionSpecificationConstraint,
+  Type extends PermissionType,
+>(
+  specification: Specification,
+  expectedType: Type,
+): specification is Specification & {
+  permissionType: Type;
+} {
+  return specification.permissionType === expectedType;
+}
 
 /**
  * The specifications for all permissions supported by a particular

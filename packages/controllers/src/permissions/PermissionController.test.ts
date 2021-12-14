@@ -10,6 +10,7 @@ import {
 import { JsonRpcEngine, PendingJsonRpcResponse } from 'json-rpc-engine';
 import { hasProperty, isPlainObject } from '../utils';
 import * as errors from './errors';
+import { EndowmentGetterParams } from './Permission';
 import {
   AsyncRestrictedMethod,
   Caveat,
@@ -26,6 +27,7 @@ import {
   RestrictedMethodParameters,
   ExtractSpecifications,
   CaveatMutatorOperation,
+  PermissionType,
 } from '.';
 
 // Caveat types and specifications
@@ -167,6 +169,7 @@ const PermissionKeys = {
   wallet_noopWithValidator: 'wallet_noopWithValidator',
   wallet_noopWithFactory: 'wallet_noopWithFactory',
   'wallet_getSecret_*': 'wallet_getSecret_*',
+  endowmentPermission1: 'endowmentPermission1',
 } as const;
 
 // wallet_getSecret_*
@@ -195,6 +198,7 @@ const PermissionNames = {
   wallet_noop: PermissionKeys.wallet_noop,
   wallet_noopWithValidator: PermissionKeys.wallet_noopWithValidator,
   wallet_noopWithFactory: PermissionKeys.wallet_noopWithFactory,
+  endowmentPermission1: PermissionKeys.endowmentPermission1,
   wallet_getSecret_: (str: string) => `wallet_getSecret_${str}` as const,
 } as const;
 
@@ -207,6 +211,7 @@ const PermissionNames = {
 function getDefaultPermissionSpecifications() {
   return {
     [PermissionKeys.wallet_getSecretArray]: {
+      permissionType: PermissionType.RestrictedMethod,
       targetKey: PermissionKeys.wallet_getSecretArray,
       allowedCaveats: [
         CaveatTypes.filterArrayResponse,
@@ -217,6 +222,7 @@ function getDefaultPermissionSpecifications() {
       },
     },
     [PermissionKeys.wallet_getSecretObject]: {
+      permissionType: PermissionType.RestrictedMethod,
       targetKey: PermissionKeys.wallet_getSecretObject,
       allowedCaveats: [
         CaveatTypes.filterObjectResponse,
@@ -236,6 +242,7 @@ function getDefaultPermissionSpecifications() {
       },
     },
     [PermissionKeys['wallet_getSecret_*']]: {
+      permissionType: PermissionType.RestrictedMethod,
       targetKey: PermissionKeys['wallet_getSecret_*'],
       allowedCaveats: [CaveatTypes.noopCaveat],
       methodImplementation: (args: RestrictedMethodOptions<void>) => {
@@ -258,6 +265,7 @@ function getDefaultPermissionSpecifications() {
       },
     },
     [PermissionKeys.wallet_doubleNumber]: {
+      permissionType: PermissionType.RestrictedMethod,
       targetKey: PermissionKeys.wallet_doubleNumber,
       allowedCaveats: null,
       methodImplementation: ({ params }: RestrictedMethodOptions<[number]>) => {
@@ -270,6 +278,7 @@ function getDefaultPermissionSpecifications() {
       },
     },
     [PermissionKeys.wallet_noop]: {
+      permissionType: PermissionType.RestrictedMethod,
       targetKey: PermissionKeys.wallet_noop,
       allowedCaveats: null,
       methodImplementation: (_args: RestrictedMethodOptions<void>) => {
@@ -278,6 +287,7 @@ function getDefaultPermissionSpecifications() {
     },
     // This one exists to check some permission validator logic
     [PermissionKeys.wallet_noopWithValidator]: {
+      permissionType: PermissionType.RestrictedMethod,
       targetKey: PermissionKeys.wallet_noopWithValidator,
       methodImplementation: (_args: RestrictedMethodOptions<void>) => {
         return null;
@@ -296,6 +306,7 @@ function getDefaultPermissionSpecifications() {
     // This one exists just to check that permission factories can use the
     // requestData of approved permission requests
     [PermissionKeys.wallet_noopWithFactory]: {
+      permissionType: PermissionType.RestrictedMethod,
       targetKey: PermissionKeys.wallet_noopWithFactory,
       methodImplementation: (_args: RestrictedMethodOptions<void>) => {
         return null;
@@ -319,6 +330,12 @@ function getDefaultPermissionSpecifications() {
           ],
         });
       },
+    },
+    [PermissionKeys.endowmentPermission1]: {
+      permissionType: PermissionType.Endowment,
+      targetKey: PermissionKeys.endowmentPermission1,
+      endowmentGetter: (_options: EndowmentGetterParams) => ['endowment1'],
+      allowedCaveats: null,
     },
   } as const;
 }
@@ -357,6 +374,7 @@ function getPermissionControllerMessenger() {
     allowedActions: [
       'PermissionController:clearPermissions',
       'PermissionController:getSubjectNames',
+      'PermissionController:getEndowments',
       'PermissionController:hasPermissions',
       'ApprovalController:hasRequest',
       'ApprovalController:addRequest',
@@ -500,51 +518,47 @@ describe('PermissionController', () => {
       expect(controller.state).toStrictEqual(getExistingPermissionState());
     });
 
-    it('throws if a permission specification target key is invalid', () => {
-      expect(
-        () =>
-          new PermissionController<
-            DefaultPermissionSpecifications,
-            DefaultCaveatSpecifications
-          >(
-            getPermissionControllerOptions({
-              permissionSpecifications: {
-                ...getDefaultPermissionSpecifications(),
-                '': { targetKey: '' },
-              },
-            }),
-          ),
-      ).toThrow(`Invalid permission target key: ""`);
+    it('throws if a permission specification permissionType is invalid', () => {
+      [null, '', 'kaplar'].forEach((invalidPermissionType) => {
+        expect(
+          () =>
+            new PermissionController<
+              DefaultPermissionSpecifications,
+              DefaultCaveatSpecifications
+            >(
+              getPermissionControllerOptions({
+                permissionSpecifications: {
+                  ...getDefaultPermissionSpecifications(),
+                  foo: {
+                    permissionType: invalidPermissionType,
+                  },
+                },
+              }),
+            ),
+        ).toThrow(`Invalid permission type: "${invalidPermissionType}"`);
+      });
+    });
 
-      expect(
-        () =>
-          new PermissionController<
-            DefaultPermissionSpecifications,
-            DefaultCaveatSpecifications
-          >(
-            getPermissionControllerOptions({
-              permissionSpecifications: {
-                ...getDefaultPermissionSpecifications(),
-                foo_: { targetKey: 'foo_' },
-              },
-            }),
-          ),
-      ).toThrow(`Invalid permission target key: "foo_"`);
-
-      expect(
-        () =>
-          new PermissionController<
-            DefaultPermissionSpecifications,
-            DefaultCaveatSpecifications
-          >(
-            getPermissionControllerOptions({
-              permissionSpecifications: {
-                ...getDefaultPermissionSpecifications(),
-                'foo*': { targetKey: 'foo*' },
-              },
-            }),
-          ),
-      ).toThrow(`Invalid permission target key: "foo*"`);
+    it('throws if a permission specification targetKey is invalid', () => {
+      ['', 'foo_', 'foo*'].forEach((invalidTargetKey) => {
+        expect(
+          () =>
+            new PermissionController<
+              DefaultPermissionSpecifications,
+              DefaultCaveatSpecifications
+            >(
+              getPermissionControllerOptions({
+                permissionSpecifications: {
+                  ...getDefaultPermissionSpecifications(),
+                  [invalidTargetKey]: {
+                    permissionType: PermissionType.Endowment,
+                    targetKey: invalidTargetKey,
+                  },
+                },
+              }),
+            ),
+        ).toThrow(`Invalid permission target key: "${invalidTargetKey}"`);
+      });
     });
 
     it('throws if a permission specification map key does not match its "targetKey" value', () => {
@@ -557,7 +571,10 @@ describe('PermissionController', () => {
             getPermissionControllerOptions({
               permissionSpecifications: {
                 ...getDefaultPermissionSpecifications(),
-                foo: { targetKey: 'bar' },
+                foo: {
+                  permissionType: PermissionType.Endowment,
+                  targetKey: 'bar',
+                },
               },
             }),
           ),
@@ -625,10 +642,17 @@ describe('PermissionController', () => {
       ).toStrictEqual('Hello, secret friend "foo"!');
     });
 
+    it('throws an error if the requested permission target is not a restricted method', () => {
+      const controller = getDefaultPermissionController();
+      expect(() =>
+        controller.getRestrictedMethod(PermissionNames.endowmentPermission1),
+      ).toThrow(errors.methodNotFound(PermissionNames.endowmentPermission1));
+    });
+
     it('throws an error if the method does not exist', () => {
       const controller = getDefaultPermissionController();
       expect(() => controller.getRestrictedMethod('foo')).toThrow(
-        errors.methodNotFound({ method: 'foo' }),
+        errors.methodNotFound('foo'),
       );
     });
   });
@@ -2388,7 +2412,7 @@ describe('PermissionController', () => {
             wallet_getSecretFalafel: {},
           },
         }),
-      ).toThrow(errors.methodNotFound({ method: 'wallet_getSecretFalafel' }));
+      ).toThrow(errors.methodNotFound('wallet_getSecretFalafel'));
     });
 
     it('throws if an approved permission is malformed', () => {
@@ -3275,15 +3299,12 @@ describe('PermissionController', () => {
             },
           ),
       ).rejects.toThrow(
-        errors.methodNotFound({
-          method: 'wallet_getSecretKabob',
-          data: {
-            origin,
-            requestedPermissions: {
-              [PermissionNames.wallet_getSecretArray]: {
-                [PermissionNames.wallet_getSecretArray]: {},
-                wallet_getSecretKabob: {},
-              },
+        errors.methodNotFound('wallet_getSecretKabob', {
+          origin,
+          requestedPermissions: {
+            [PermissionNames.wallet_getSecretArray]: {
+              [PermissionNames.wallet_getSecretArray]: {},
+              wallet_getSecretKabob: {},
             },
           },
         }),
@@ -3913,6 +3934,64 @@ describe('PermissionController', () => {
     });
   });
 
+  describe('getEndowments', () => {
+    it('gets the endowments', async () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      controller.grantPermissions({
+        subject: { origin },
+        approvedPermissions: {
+          [PermissionNames.endowmentPermission1]: {},
+        },
+      });
+
+      expect(
+        await controller.getEndowments(
+          origin,
+          PermissionNames.endowmentPermission1,
+        ),
+      ).toStrictEqual(['endowment1']);
+    });
+
+    it('throws if the requested permission target is not an endowment', async () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      controller.grantPermissions({
+        subject: { origin },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretArray]: {},
+        },
+      });
+
+      await expect(
+        controller.getEndowments(
+          origin,
+          PermissionNames.wallet_getSecretArray as any,
+        ),
+      ).rejects.toThrow(
+        new errors.EndowmentPermissionDoesNotExistError(
+          PermissionNames.wallet_getSecretArray,
+          origin,
+        ),
+      );
+    });
+
+    it('throws if the subject does not have the requisite permission', async () => {
+      const controller = getDefaultPermissionController();
+      const origin = 'metamask.io';
+
+      await expect(
+        controller.getEndowments(origin, PermissionNames.endowmentPermission1),
+      ).rejects.toThrow(
+        errors.unauthorized({
+          data: { origin, targetName: PermissionNames.endowmentPermission1 },
+        }),
+      );
+    });
+  });
+
   describe('executeRestrictedMethod', () => {
     it('executes a restricted method', async () => {
       const controller = getDefaultPermissionController();
@@ -4039,12 +4118,7 @@ describe('PermissionController', () => {
 
       await expect(
         controller.executeRestrictedMethod(origin, 'wallet_getMeTacos' as any),
-      ).rejects.toThrow(
-        errors.methodNotFound({
-          method: 'wallet_getMeTacos',
-          data: { origin },
-        }),
-      );
+      ).rejects.toThrow(errors.methodNotFound('wallet_getMeTacos', { origin }));
     });
 
     it('throws if the restricted method returns undefined', async () => {
@@ -4105,6 +4179,77 @@ describe('PermissionController', () => {
       messenger.call('PermissionController:clearPermissions');
       expect(clearStateSpy).toHaveBeenCalledTimes(1);
       expect(controller.state).toStrictEqual({ subjects: {} });
+    });
+
+    it('action: PermissionController:getEndowments', async () => {
+      const options = getPermissionControllerOptions();
+      const { messenger } = options;
+      const controller = new PermissionController<
+        DefaultPermissionSpecifications,
+        DefaultCaveatSpecifications
+      >(options);
+      const getEndowmentsSpy = jest.spyOn(controller, 'getEndowments');
+
+      await expect(
+        messenger.call(
+          'PermissionController:getEndowments',
+          'foo',
+          PermissionNames.endowmentPermission1,
+        ),
+      ).rejects.toThrow(
+        errors.unauthorized({
+          data: {
+            origin: 'foo',
+            targetName: PermissionNames.endowmentPermission1,
+          },
+        }),
+      );
+
+      controller.grantPermissions({
+        subject: { origin: 'foo' },
+        approvedPermissions: {
+          [PermissionNames.endowmentPermission1]: {},
+        },
+      });
+
+      expect(
+        await messenger.call(
+          'PermissionController:getEndowments',
+          'foo',
+          PermissionNames.endowmentPermission1,
+        ),
+      ).toStrictEqual(['endowment1']);
+
+      expect(
+        await messenger.call(
+          'PermissionController:getEndowments',
+          'foo',
+          PermissionNames.endowmentPermission1,
+          { arbitrary: 'requestData' },
+        ),
+      ).toStrictEqual(['endowment1']);
+
+      expect(getEndowmentsSpy).toHaveBeenCalledTimes(3);
+      expect(getEndowmentsSpy).toHaveBeenNthCalledWith(
+        1,
+        'foo',
+        PermissionNames.endowmentPermission1,
+        undefined,
+      );
+
+      expect(getEndowmentsSpy).toHaveBeenNthCalledWith(
+        2,
+        'foo',
+        PermissionNames.endowmentPermission1,
+        undefined,
+      );
+
+      expect(getEndowmentsSpy).toHaveBeenNthCalledWith(
+        3,
+        'foo',
+        PermissionNames.endowmentPermission1,
+        { arbitrary: 'requestData' },
+      );
     });
 
     it('action: PermissionController:getSubjectNames', () => {
@@ -4314,10 +4459,7 @@ describe('PermissionController', () => {
         method: 'wallet_foo',
       };
 
-      const expectedError = errors.methodNotFound({
-        method: 'wallet_foo',
-        data: { origin },
-      });
+      const expectedError = errors.methodNotFound('wallet_foo', { origin });
 
       const { error }: any = await engine.handle(request);
       expect(error).toMatchObject(expect.objectContaining(expectedError));
