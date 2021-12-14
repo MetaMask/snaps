@@ -15,6 +15,10 @@ export type SnapData = {
   sourceCode: string;
 };
 
+export type SnapExecutionData = SnapData & {
+  endowments?: Json;
+};
+
 export type SnapRpcHandler = (
   origin: string,
   request: Record<string, unknown>,
