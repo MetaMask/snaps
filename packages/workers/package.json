@@ -21,7 +21,7 @@
     "lint:changelog": "yarn auto-changelog validate",
     "build": "yarn build:tsc && yarn build:post-tsc",
     "build:tsc": "tsc --project tsconfig.local.json",
-    "build:post-tsc": "mv dist/SnapWorker.js dist/_SnapWorker.js && rm dist/SnapWorker* && node bundle.js && rm dist/_SnapWorker.js",
+    "build:post-tsc": "node bundle.js",
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf dist/*",
     "publish": "../../scripts/publish-package.sh",
@@ -35,11 +35,12 @@
     "@types/pump": "^1.1.0",
     "@types/readable-stream": "^2.3.9",
     "browserify": "16.2.3",
+    "end-of-stream": "^1.4.4",
     "json-rpc-engine": "^6.1.0",
     "pump": "^3.0.0",
-    "ses": "^0.11.0",
-    "tinyify": "^3.0.0",
-    "watchify": "^3.11.1"
+    "rimraf": "^2.7.1",
+    "ses": "^0.15.3",
+    "tinyify": "^3.0.0"
   },
   "engines": {
     "node": ">=12.11.0"

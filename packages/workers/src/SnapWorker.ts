@@ -7,9 +7,6 @@ import { SnapData, SnapProvider } from '@metamask/snap-types';
 import type { JsonRpcId, JsonRpcRequest } from 'json-rpc-engine';
 import { STREAM_NAMES } from './enums';
 
-// eslint-disable-next-line import/no-unassigned-import
-import 'ses/dist/lockdown.cjs';
-
 declare global {
   const lockdown: any;
   const Compartment: any;
@@ -28,10 +25,11 @@ type SnapRpcRequest = {
 };
 
 lockdown({
-  // TODO: Which would we use in prod?
-  mathTaming: 'unsafe',
+  consoleTaming: 'unsafe',
   errorTaming: 'unsafe',
+  mathTaming: 'unsafe',
   dateTaming: 'unsafe',
+  overrideTaming: 'severe',
 });
 
 /**
