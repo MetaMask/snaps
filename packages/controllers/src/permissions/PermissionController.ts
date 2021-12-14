@@ -52,6 +52,7 @@ import {
   PermissionType,
   RestrictedMethodSpecificationConstraint,
   EndowmentSpecificationConstraint,
+  hasSpecificationType,
 } from './Permission';
 import {
   PermissionDoesNotExistError,
@@ -678,13 +679,11 @@ export class PermissionController<
     }
 
     const specification = this.getPermissionSpecification(targetKey);
-    if (specification.permissionType !== permissionType) {
+    if (!hasSpecificationType(specification, permissionType)) {
       throw failureError;
     }
 
-    return specification as unknown as ControllerPermissionSpecification & {
-      permissionType: Type;
-    };
+    return specification;
   }
 
   /**

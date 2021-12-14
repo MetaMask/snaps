@@ -561,6 +561,27 @@ export type ValidPermissionSpecification<
   : never;
 
 /**
+ * Checks that the specification has the expected permission type.
+ *
+ * @param specification - The specification to check.
+ * @param expectedType - The expected permission type.
+ * @template Specification - The specification to check.
+ * @template Type - The expected permission type.
+ * @returns Whether or not the specification is of the expected type.
+ */
+export function hasSpecificationType<
+  Specification extends PermissionSpecificationConstraint,
+  Type extends PermissionType,
+>(
+  specification: Specification,
+  expectedType: Type,
+): specification is Specification & {
+  permissionType: Type;
+} {
+  return specification.permissionType === expectedType;
+}
+
+/**
  * The specifications for all permissions supported by a particular
  * {@link PermissionController}.
  *
