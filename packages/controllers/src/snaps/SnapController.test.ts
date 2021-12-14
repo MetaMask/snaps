@@ -39,9 +39,13 @@ const getSnapControllerMessenger = (
       'ServiceMessenger:unhandledError',
       'ServiceMessenger:unresponsive',
     ],
+    allowedActions: [
+      'PermissionController:getEndowments',
+      'PermissionController:hasPermission',
+    ],
   });
 
-const getWebworkerEESMessenger = (
+const getWebWorkerEESMessenger = (
   messenger?: ReturnType<typeof getControllerMessenger>,
 ) =>
   (messenger ?? getControllerMessenger()).getRestricted({
@@ -63,10 +67,10 @@ const getSnapControllerOptions = (
     terminateAllSnaps: jest.fn(),
     terminateSnap: jest.fn(),
     executeSnap: jest.fn(),
+    endowmentPermissionNames: [],
     getRpcMessageHandler: jest.fn(),
     removeAllPermissionsFor: jest.fn(),
     getPermissions: jest.fn(),
-    hasPermission: jest.fn(),
     requestPermissions: jest.fn(),
     closeAllConnections: jest.fn(),
     messenger: getSnapControllerMessenger(),
@@ -84,9 +88,9 @@ const getSnapControllerWithEESOptions = (
   opts?: Partial<SnapControllerWithEESConstructorParams>,
 ) => {
   return {
+    endowmentPermissionNames: [],
     removeAllPermissionsFor: jest.fn(),
     getPermissions: jest.fn(),
-    hasPermission: jest.fn(),
     requestPermissions: jest.fn(),
     closeAllConnections: jest.fn(),
     messenger: getSnapControllerMessenger(),
@@ -131,7 +135,7 @@ class ExecutionEnvironmentStub implements ExecutionEnvironmentService {
   }
 }
 
-const getSnapControllerWithEEService = (
+const getSnapControllerWithEES = (
   options = getSnapControllerWithEESOptions(),
   service?: ReturnType<typeof getWebWorkerEES>,
 ) => {
@@ -189,15 +193,15 @@ const getSnapManifest = ({
  * environment we use.
  */
 describe('SnapController', () => {
-  it('can create a snap controller and execution service', async () => {
-    const [snapController, service] = getSnapControllerWithEEService();
+  it('should create a snap controller and execution service', async () => {
+    const [snapController, service] = getSnapControllerWithEES();
     expect(service).toBeDefined();
     expect(snapController).toBeDefined();
     snapController.destroy();
   });
 
-  it('can create a worker and snap controller and add a snap and update its state', async () => {
-    const [snapController] = getSnapControllerWithEEService();
+  it('should create a worker and snap controller and add a snap and update its state', async () => {
+    const [snapController] = getSnapControllerWithEES();
 
     const sourceCode = `
       wallet.registerRpcMessageHandler(async (origin, request) => {
@@ -224,8 +228,8 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
-  it('can add a snap and use its JSON-RPC api with a WebWorkerExecutionEnvironmentService', async () => {
-    const [snapController] = getSnapControllerWithEEService();
+  it('should add a snap and use its JSON-RPC api with a WebWorkerExecutionEnvironmentService', async () => {
+    const [snapController] = getSnapControllerWithEES();
 
     const sourceCode = `
       wallet.registerRpcMessageHandler(async (origin, request) => {
@@ -257,11 +261,11 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
-  it('can add a snap and use its JSON-RPC api with a stub execution env service', async () => {
+  it('should add a snap and use its JSON-RPC api', async () => {
     const executionEnvironmentStub =
       new ExecutionEnvironmentStub() as unknown as WebWorkerExecutionEnvironmentService;
 
-    const [snapController] = getSnapControllerWithEEService(
+    const [snapController] = getSnapControllerWithEES(
       undefined,
       executionEnvironmentStub,
     );
@@ -295,6 +299,57 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
+  it('should pass endowments to a snap when executing it', async () => {
+    const executeSnapMock = jest.fn();
+    const messenger = getSnapControllerMessenger();
+    const callActionMock = jest.spyOn(messenger, 'call');
+
+    const snapController = getSnapController(
+      getSnapControllerOptions({
+        endowmentPermissionNames: ['endowment:foo'],
+        executeSnap: executeSnapMock,
+        messenger,
+      }),
+    );
+
+    const sourceCode = `console.log('Hello, world!');`;
+
+    const snap = await snapController.add({
+      id: 'npm:example-snap',
+      sourceCode,
+      manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
+    });
+
+    callActionMock
+      .mockImplementationOnce(() => true) // hasPermission
+      .mockImplementationOnce(async () => ['fooEndowment']); // getEndowments
+
+    await snapController.startSnap(snap.id);
+
+    expect(callActionMock).toHaveBeenCalledTimes(2);
+    expect(callActionMock).toHaveBeenNthCalledWith(
+      1,
+      'PermissionController:hasPermission',
+      'npm:example-snap',
+      'endowment:foo',
+    );
+
+    expect(callActionMock).toHaveBeenNthCalledWith(
+      2,
+      'PermissionController:getEndowments',
+      'npm:example-snap',
+      'endowment:foo',
+    );
+
+    expect(executeSnapMock).toHaveBeenCalledTimes(1);
+    expect(executeSnapMock).toHaveBeenNthCalledWith(1, {
+      snapId: 'npm:example-snap',
+      sourceCode,
+      endowments: ['fooEndowment'],
+    });
+    snapController.destroy();
+  });
+
   it('errors if attempting to start a snap that was already started', async () => {
     const id = 'npm:example-snap';
     const sourceCode = 'foo';
@@ -322,7 +377,7 @@ describe('SnapController', () => {
     });
   });
 
-  it('can not delete existing snaps when using runExistinSnaps with a hydrated state', async () => {
+  it('should not delete existing snaps when using runExistinSnaps with a hydrated state', async () => {
     const mockExecuteSnap = jest.fn();
 
     const sourceCode = 'console.log("foo");';
@@ -374,11 +429,11 @@ describe('SnapController', () => {
     secondSnapController.destroy();
   });
 
-  it('can add errors to the SnapControllers state', async () => {
+  it('should add errors to the SnapControllers state', async () => {
     const executionEnvironmentStub =
       new ExecutionEnvironmentStub() as unknown as WebWorkerExecutionEnvironmentService;
 
-    const [snapController] = getSnapControllerWithEEService(
+    const [snapController] = getSnapControllerWithEES(
       undefined,
       executionEnvironmentStub,
     );
@@ -424,7 +479,7 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
-  it('can handle an error event on the controller messenger', async () => {
+  it('should handle an error event on the controller messenger', async () => {
     const controllerMessenger = getControllerMessenger();
 
     const serviceMessenger = controllerMessenger.getRestricted({
@@ -441,6 +496,10 @@ describe('SnapController', () => {
         'ServiceMessenger:unhandledError',
         'ServiceMessenger:unresponsive',
       ],
+      allowedActions: [
+        'PermissionController:getEndowments',
+        'PermissionController:hasPermission',
+      ],
     });
 
     const workerExecutionEnvironment = new WebWorkerExecutionEnvironmentService(
@@ -451,7 +510,7 @@ describe('SnapController', () => {
       },
     );
 
-    const [snapController] = getSnapControllerWithEEService(
+    const [snapController] = getSnapControllerWithEES(
       getSnapControllerWithEESOptions({ messenger: snapControllerMessenger }),
       workerExecutionEnvironment,
     );
@@ -491,14 +550,14 @@ describe('SnapController', () => {
     });
   });
 
-  it('can handle an unresponsive event on the controller messenger', async () => {
+  it('should handle an unresponsive event on the controller messenger', async () => {
     const controllerMessenger = getControllerMessenger();
-    const serviceMessenger = getWebworkerEESMessenger(controllerMessenger);
+    const serviceMessenger = getWebWorkerEESMessenger(controllerMessenger);
     const snapControllerMessenger =
       getSnapControllerMessenger(controllerMessenger);
 
     const workerExecutionEnvironment = getWebWorkerEES(serviceMessenger);
-    const [snapController] = getSnapControllerWithEEService(
+    const [snapController] = getSnapControllerWithEES(
       getSnapControllerWithEESOptions({ messenger: snapControllerMessenger }),
       workerExecutionEnvironment,
     );
@@ -535,8 +594,8 @@ describe('SnapController', () => {
     });
   });
 
-  it('can add a snap and use its JSON-RPC api and then get stopped from idling too long', async () => {
-    const [snapController] = getSnapControllerWithEEService(
+  it('should add a snap and use its JSON-RPC api and then get stopped from idling too long', async () => {
+    const [snapController] = getSnapControllerWithEES(
       getSnapControllerWithEESOptions({
         idleTimeCheckInterval: 50,
         maxIdleTime: 100,
@@ -575,8 +634,8 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
-  it('can add a snap and see its status', async () => {
-    const [snapController] = getSnapControllerWithEEService(
+  it('should add a snap and see its status', async () => {
+    const [snapController] = getSnapControllerWithEES(
       getSnapControllerWithEESOptions({
         idleTimeCheckInterval: 1000,
         maxIdleTime: 2000,
@@ -606,8 +665,8 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
-  it('can add a snap and stop it and have it start on-demand', async () => {
-    const [snapController] = getSnapControllerWithEEService(
+  it('should add a snap and stop it and have it start on-demand', async () => {
+    const [snapController] = getSnapControllerWithEES(
       getSnapControllerWithEESOptions({
         idleTimeCheckInterval: 1000,
         maxIdleTime: 2000,
@@ -647,8 +706,8 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
-  it('can add a snap disable/enable it and still get a response from method "test"', async () => {
-    const [snapController] = getSnapControllerWithEEService(
+  it('should add a snap disable/enable it and still get a response from method "test"', async () => {
+    const [snapController] = getSnapControllerWithEES(
       getSnapControllerWithEESOptions({
         idleTimeCheckInterval: 1000,
         maxIdleTime: 2000,
@@ -717,8 +776,8 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
-  it('can send an rpc request and time out', async () => {
-    const [snapController] = getSnapControllerWithEEService(
+  it('should send an rpc request and time out', async () => {
+    const [snapController] = getSnapControllerWithEES(
       getSnapControllerWithEESOptions({
         idleTimeCheckInterval: 30000,
         maxIdleTime: 160000,

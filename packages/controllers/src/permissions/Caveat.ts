@@ -20,10 +20,9 @@ export type CaveatConstraint = {
    */
   readonly type: string;
 
+  // TODO:TS4.4 Make optional
   /**
    * Any additional data necessary to enforce the caveat.
-   *
-   * TODO:TS4.4 Make optional
    */
   readonly value: Json;
 };
@@ -47,10 +46,9 @@ export type Caveat<Type extends string, Value extends Json> = {
    */
   readonly type: Type;
 
+  // TODO:TS4.4 Make optional
   /**
    * Any additional data necessary to enforce the caveat.
-   *
-   * TODO:TS4.4 Make optional
    */
   readonly value: Value;
 };

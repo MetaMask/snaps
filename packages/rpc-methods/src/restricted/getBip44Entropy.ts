@@ -1,5 +1,6 @@
 import {
   PermissionSpecificationBuilder,
+  PermissionType,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
 } from '@metamask/snap-controllers';
@@ -34,6 +35,7 @@ type GetBip44EntropySpecificationBuilderOptions = {
 };
 
 type GetBip44EntropySpecification = ValidPermissionSpecification<{
+  permissionType: PermissionType.RestrictedMethod;
   targetKey: typeof targetKey;
   methodImplementation: ReturnType<typeof getBip44EntropyImplementation>;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
@@ -44,6 +46,7 @@ type GetBip44EntropySpecification = ValidPermissionSpecification<{
  * BIP-32 coin type.
  */
 const specificationBuilder: PermissionSpecificationBuilder<
+  PermissionType.RestrictedMethod,
   GetBip44EntropySpecificationBuilderOptions,
   GetBip44EntropySpecification
 > = ({
@@ -51,6 +54,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
   methodHooks,
 }: GetBip44EntropySpecificationBuilderOptions) => {
   return {
+    permissionType: PermissionType.RestrictedMethod,
     targetKey,
     allowedCaveats,
     methodImplementation: getBip44EntropyImplementation(methodHooks),

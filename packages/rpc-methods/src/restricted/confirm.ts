@@ -1,5 +1,6 @@
 import {
   PermissionSpecificationBuilder,
+  PermissionType,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
 } from '@metamask/snap-controllers';
@@ -42,6 +43,7 @@ type ConfirmSpecificationBuilderOptions = {
 };
 
 type ConfirmSpecification = ValidPermissionSpecification<{
+  permissionType: PermissionType.RestrictedMethod;
   targetKey: typeof methodName;
   methodImplementation: ReturnType<typeof getConfirmImplementation>;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
@@ -51,6 +53,7 @@ type ConfirmSpecification = ValidPermissionSpecification<{
  * `snap_confirm` lets the Snap display a confirmation dialog to the user.
  */
 const specificationBuilder: PermissionSpecificationBuilder<
+  PermissionType.RestrictedMethod,
   ConfirmSpecificationBuilderOptions,
   ConfirmSpecification
 > = ({
@@ -58,6 +61,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
   methodHooks,
 }: ConfirmSpecificationBuilderOptions) => {
   return {
+    permissionType: PermissionType.RestrictedMethod,
     targetKey: methodName,
     allowedCaveats,
     methodImplementation: getConfirmImplementation(methodHooks),
