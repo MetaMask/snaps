@@ -316,6 +316,9 @@ export type EndowmentGetterParams = {
   /**
    * The origin of the requesting subject.
    */
+  /**
+   * The origin of the requesting subject.
+   */
   origin: string;
 
   /**
