@@ -375,6 +375,7 @@ function getPermissionControllerMessenger() {
       'PermissionController:clearPermissions',
       'PermissionController:getSubjectNames',
       'PermissionController:getEndowments',
+      'PermissionController:hasPermission',
       'PermissionController:hasPermissions',
       'ApprovalController:hasRequest',
       'ApprovalController:addRequest',
@@ -4276,6 +4277,66 @@ describe('PermissionController', () => {
         messenger.call('PermissionController:getSubjectNames'),
       ).toStrictEqual(['foo']);
       expect(getSubjectNamesSpy).toHaveBeenCalledTimes(2);
+    });
+
+    it('action: PermissionController:hasPermission', () => {
+      const options = getPermissionControllerOptions();
+      const { messenger } = options;
+      const controller = new PermissionController<
+        DefaultPermissionSpecifications,
+        DefaultCaveatSpecifications
+      >(options);
+      const hasPermissionSpy = jest.spyOn(controller, 'hasPermission');
+
+      expect(
+        messenger.call(
+          'PermissionController:hasPermission',
+          'foo',
+          PermissionNames.wallet_getSecretArray,
+        ),
+      ).toStrictEqual(false);
+
+      controller.grantPermissions({
+        subject: { origin: 'foo' },
+        approvedPermissions: {
+          [PermissionNames.wallet_getSecretArray]: {},
+        },
+      });
+
+      expect(
+        messenger.call(
+          'PermissionController:hasPermission',
+          'foo',
+          PermissionNames.wallet_getSecretArray,
+        ),
+      ).toStrictEqual(true);
+
+      expect(
+        messenger.call(
+          'PermissionController:hasPermission',
+          'foo',
+          PermissionNames.wallet_getSecretObject,
+        ),
+      ).toStrictEqual(false);
+
+      expect(hasPermissionSpy).toHaveBeenCalledTimes(3);
+      expect(hasPermissionSpy).toHaveBeenNthCalledWith(
+        1,
+        'foo',
+        PermissionNames.wallet_getSecretArray,
+      );
+
+      expect(hasPermissionSpy).toHaveBeenNthCalledWith(
+        2,
+        'foo',
+        PermissionNames.wallet_getSecretArray,
+      );
+
+      expect(hasPermissionSpy).toHaveBeenNthCalledWith(
+        3,
+        'foo',
+        PermissionNames.wallet_getSecretObject,
+      );
     });
 
     it('action: PermissionController:hasPermissions', () => {

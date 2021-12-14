@@ -1,5 +1,5 @@
 import { JsonRpcRequest } from 'json-rpc-engine';
-import { SnapData } from '@metamask/snap-types';
+import { SnapExecutionData } from '@metamask/snap-types';
 import { SnapRpcHook } from './WebWorkerExecutionEnvironmentService';
 
 export interface SnapMetadata {
@@ -13,7 +13,7 @@ export type Command = (
 ) => Promise<unknown>;
 export type TerminateAll = () => Promise<void>;
 export type CreateSnapEnvironment = (metadata: SnapMetadata) => Promise<string>;
-export type ExecuteSnap = (snapData: SnapData) => Promise<unknown>;
+export type ExecuteSnap = (snapData: SnapExecutionData) => Promise<unknown>;
 export type GetRpcMessageHandler = (
   snapId: string,
 ) => Promise<SnapRpcHook | undefined>;
