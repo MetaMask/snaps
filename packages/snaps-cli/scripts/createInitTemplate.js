@@ -1,7 +1,10 @@
 const { promises: fs } = require('fs');
 const path = require('path');
 
-const EXAMPLE_PATH = path.join(__dirname, '../../example-snap/');
+const EXAMPLE_PATH = path.join(
+  __dirname,
+  '../../../node_modules/@metamask/snap-examples/examples/hello-snaps',
+);
 const TEMPLATE_PATH = 'src/cmds/init/init-template.json';
 
 createInitTemplate();
