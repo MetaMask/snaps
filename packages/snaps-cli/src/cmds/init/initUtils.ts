@@ -21,6 +21,11 @@ import {
 } from '../../utils';
 import { YargsArgs } from '../../types/yargs';
 
+/**
+ * This is a placeholder shasum that will be replaced at the end of the init command.
+ */
+const PLACEHOLDER_SHASUM = '2QqUxo5joo4kKKr7yiCjdYsZOZcIFBnIBEdwU9Yx7+M=';
+
 const NPM_PUBLIC_REGISTRY_URL = 'https://registry.npmjs.org';
 
 /**
@@ -82,8 +87,9 @@ function isYes(userInput: string | undefined) {
   return userInput && YES_VALUES.has(userInput.toLowerCase());
 }
 
+const DEFAULT_PERMISSION_KEY = 'snap_confirm';
 const getDefaultPermissions = () => {
-  return { snap_confirm: {} };
+  return { [DEFAULT_PERMISSION_KEY]: {} };
 };
 
 /**
@@ -98,12 +104,15 @@ const getDefaultPermissions = () => {
 export async function buildSnapManifest(
   argv: YargsArgs,
   packageJson: NpmSnapPackageJson,
-  shasum: string,
 ): Promise<[SnapManifest, { dist: string; outfileName: string; src: string }]> {
   const { outfileName } = argv;
   let { dist } = argv;
   let initialPermissions: Record<string, unknown> = getDefaultPermissions();
-  let { description = 'An example Snap.', name: proposedName } = packageJson;
+  let { description, name: proposedName } = packageJson;
+
+  if (!description) {
+    description = `The ${proposedName} Snap.`;
+  }
 
   try {
     const userInput = await prompt({
@@ -189,6 +198,14 @@ export async function buildSnapManifest(
       // We add the parenthetical default value ourselves
       question: `Initial permissions: [perm1 perm2 ...] ([snap_confirm])`,
     });
+
+    if (
+      !inputPermissions ||
+      inputPermissions.trim() === DEFAULT_PERMISSION_KEY
+    ) {
+      break;
+    }
+
     try {
       initialPermissions = inputPermissions
         .split(' ')
@@ -231,7 +248,7 @@ export async function buildSnapManifest(
         ? deepClone(packageJson.repository)
         : null,
       source: {
-        shasum,
+        shasum: PLACEHOLDER_SHASUM,
         location: {
           npm: {
             filePath: slash(pathUtils.join(dist, outfileName)),
