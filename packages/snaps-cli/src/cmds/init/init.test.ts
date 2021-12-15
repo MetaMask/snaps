@@ -11,6 +11,9 @@ describe('init module', () => {
     const buildMock = jest
       .spyOn(buildHandlerModule, 'build')
       .mockImplementation();
+    const updateShasumMock = jest
+      .spyOn(initHandlerModule, 'updateManifestShasum')
+      .mockImplementation(async () => undefined);
     jest.spyOn(console, 'log').mockImplementation();
 
     await initModule.handler({ ...(mockArgv as any) });
@@ -20,6 +23,7 @@ describe('init module', () => {
       manifest: false,
       eval: true,
     });
+    expect(updateShasumMock).toHaveBeenCalledWith();
     expect(global.console.log).toHaveBeenCalledTimes(2);
   });
 });

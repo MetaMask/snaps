@@ -1,9 +1,14 @@
 import { promises as fs } from 'fs';
 import pathUtils from 'path';
 import mkdirp from 'mkdirp';
-import { NpmSnapFileNames } from '@metamask/snap-controllers/dist/snaps/utils';
-import { CONFIG_FILE, logError, closePrompt } from '../../utils';
+import {
+  getSnapSourceShasum,
+  NpmSnapFileNames,
+  SnapManifest,
+} from '@metamask/snap-controllers';
+import { CONFIG_FILE, logError, closePrompt, readJsonFile } from '../../utils';
 import { YargsArgs } from '../../types/yargs';
+import { getWritableManifest } from '../manifest/manifestHandler';
 import template from './init-template.json';
 import {
   asyncPackageInit,
@@ -20,11 +25,7 @@ export async function initHandler(argv: YargsArgs) {
 
   console.log(`\nInit: Building '${NpmSnapFileNames.Manifest}'...\n`);
 
-  const [snapManifest, _newArgs] = await buildSnapManifest(
-    argv,
-    packageJson,
-    template.js.shasum,
-  );
+  const [snapManifest, _newArgs] = await buildSnapManifest(argv, packageJson);
 
   const newArgs = Object.keys(_newArgs)
     .sort()
@@ -55,7 +56,7 @@ export async function initHandler(argv: YargsArgs) {
       await mkdirp(pathUtils.dirname(src));
     }
 
-    await fs.writeFile(src, template.js.source);
+    await fs.writeFile(src, template.source);
     console.log(`Init: Created '${src}'.`);
   } catch (err) {
     logError(`Init Error: Failed to write '${src}'.`, err);
@@ -82,4 +83,25 @@ export async function initHandler(argv: YargsArgs) {
 
   closePrompt();
   return { ...argv, ...newArgs };
+}
+
+/**
+ * This updates the Snap shasum value of the manifest after building the Snap
+ * during the init command.
+ */
+export async function updateManifestShasum() {
+  const manifest = (await readJsonFile(
+    NpmSnapFileNames.Manifest,
+  )) as SnapManifest;
+
+  const bundleContents = await fs.readFile(
+    manifest.source.location.npm.filePath,
+    'utf8',
+  );
+
+  manifest.source.shasum = getSnapSourceShasum(bundleContents);
+  await fs.writeFile(
+    NpmSnapFileNames.Manifest,
+    JSON.stringify(getWritableManifest(manifest), null, 2),
+  );
 }

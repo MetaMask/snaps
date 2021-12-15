@@ -5,7 +5,7 @@ import {
 } from '@metamask/snap-controllers/dist/snaps';
 import * as utils from '../../utils';
 import {
-  DEFAULT_SNAP_SOURCE,
+  DEFAULT_SNAP_BUNDLE,
   FakeFsError,
   getPackageJson,
   getSnapManifest,
@@ -83,7 +83,7 @@ describe('manifest', () => {
 
     jest
       .spyOn(fs, 'readFile')
-      .mockImplementationOnce(() => Promise.resolve(DEFAULT_SNAP_SOURCE));
+      .mockImplementationOnce(() => Promise.resolve(DEFAULT_SNAP_BUNDLE));
 
     await manifestHandler(getMockArgv());
 
@@ -120,7 +120,7 @@ describe('manifest', () => {
 
     jest
       .spyOn(fs, 'readFile')
-      .mockImplementationOnce(() => Promise.resolve(DEFAULT_SNAP_SOURCE));
+      .mockImplementationOnce(() => Promise.resolve(DEFAULT_SNAP_BUNDLE));
 
     await manifestHandler(getMockArgv({ writeManifest: false }));
 
@@ -156,7 +156,7 @@ describe('manifest', () => {
 
     jest
       .spyOn(fs, 'readFile')
-      .mockImplementationOnce(() => Promise.resolve(DEFAULT_SNAP_SOURCE));
+      .mockImplementationOnce(() => Promise.resolve(DEFAULT_SNAP_BUNDLE));
 
     await manifestHandler(getMockArgv());
 
@@ -206,7 +206,7 @@ describe('manifest', () => {
 
     jest
       .spyOn(fs, 'readFile')
-      .mockImplementationOnce(() => Promise.resolve(DEFAULT_SNAP_SOURCE));
+      .mockImplementationOnce(() => Promise.resolve(DEFAULT_SNAP_BUNDLE));
 
     global.snaps.suppressWarnings = true;
 
@@ -311,7 +311,7 @@ describe('manifest', () => {
 
       jest
         .spyOn(fs, 'readFile')
-        .mockImplementationOnce(() => Promise.resolve(DEFAULT_SNAP_SOURCE));
+        .mockImplementationOnce(() => Promise.resolve(DEFAULT_SNAP_BUNDLE));
 
       await expect(manifestHandler(getMockArgv())).rejects.toThrow(
         /Missing file "package.json"/u,
@@ -428,7 +428,7 @@ describe('manifest', () => {
 
       jest
         .spyOn(fs, 'readFile')
-        .mockImplementationOnce(() => Promise.resolve(DEFAULT_SNAP_SOURCE));
+        .mockImplementationOnce(() => Promise.resolve(DEFAULT_SNAP_BUNDLE));
 
       await expect(manifestHandler(getMockArgv())).rejects.toThrow(
         /must have required property 'initialPermissions'/u,
@@ -457,7 +457,7 @@ describe('manifest', () => {
 
       jest
         .spyOn(fs, 'readFile')
-        .mockImplementationOnce(() => Promise.resolve(DEFAULT_SNAP_SOURCE));
+        .mockImplementationOnce(() => Promise.resolve(DEFAULT_SNAP_BUNDLE));
 
       await expect(manifestHandler(getMockArgv())).rejects.toThrow(
         /must have required property 'version'/u,
@@ -522,7 +522,7 @@ describe('manifest', () => {
 
       jest
         .spyOn(fs, 'readFile')
-        .mockImplementationOnce(() => Promise.resolve(DEFAULT_SNAP_SOURCE));
+        .mockImplementationOnce(() => Promise.resolve(DEFAULT_SNAP_BUNDLE));
 
       await manifestHandler(getMockArgv());
 
@@ -598,7 +598,7 @@ describe('manifest', () => {
 
       jest
         .spyOn(fs, 'readFile')
-        .mockImplementationOnce(() => Promise.resolve(DEFAULT_SNAP_SOURCE));
+        .mockImplementationOnce(() => Promise.resolve(DEFAULT_SNAP_BUNDLE));
 
       await expect(
         manifestHandler(getMockArgv({ writeManifest: false })),
@@ -638,7 +638,7 @@ describe('manifest', () => {
 
     jest
       .spyOn(fs, 'readFile')
-      .mockImplementationOnce(() => Promise.resolve(DEFAULT_SNAP_SOURCE));
+      .mockImplementationOnce(() => Promise.resolve(DEFAULT_SNAP_BUNDLE));
 
     jest.spyOn(fs, 'writeFile').mockImplementationOnce(() => {
       throw new Error('foo');
