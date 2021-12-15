@@ -1,10 +1,16 @@
 import { promises as fs } from 'fs';
 import mkdirp from 'mkdirp';
+import {
+  getSnapSourceShasum,
+  NpmSnapFileNames,
+} from '@metamask/snap-controllers';
 import { getPackageJson, getSnapManifest } from '../../../test/utils';
 import * as readlineUtils from '../../utils/readline';
 import * as miscUtils from '../../utils/misc';
+import * as fsUtils from '../../utils/fs';
+import { getWritableManifest } from '../manifest/manifestHandler';
 import * as initUtils from './initUtils';
-import { initHandler } from './initHandler';
+import { initHandler, updateManifestShasum } from './initHandler';
 import template from './init-template.json';
 
 jest.mock('mkdirp');
@@ -70,7 +76,7 @@ describe('initialize', () => {
       expect(fsWriteMock).toHaveBeenNthCalledWith(
         2,
         mockArgv.src,
-        template.js.source,
+        template.source,
       );
 
       expect(fsWriteMock).toHaveBeenNthCalledWith(
@@ -128,7 +134,7 @@ describe('initialize', () => {
       expect(fsWriteMock).toHaveBeenNthCalledWith(
         2,
         mockArgv.src,
-        template.js.source,
+        template.source,
       );
 
       expect(fsWriteMock).toHaveBeenNthCalledWith(
@@ -273,7 +279,7 @@ describe('initialize', () => {
       expect(fsWriteMock).toHaveBeenNthCalledWith(
         2,
         getMockArgv().src,
-        template.js.source,
+        template.source,
       );
 
       expect(mkdirpMock).toHaveBeenCalledTimes(1);
@@ -327,7 +333,7 @@ describe('initialize', () => {
       expect(fsWriteMock).toHaveBeenNthCalledWith(
         2,
         mockArgv.src,
-        template.js.source,
+        template.source,
       );
 
       expect(fsWriteMock).toHaveBeenNthCalledWith(
@@ -388,7 +394,7 @@ describe('initialize', () => {
       expect(fsWriteMock).toHaveBeenNthCalledWith(
         2,
         mockArgv.src,
-        template.js.source,
+        template.source,
       );
 
       expect(fsWriteMock).toHaveBeenNthCalledWith(
@@ -415,6 +421,39 @@ describe('initialize', () => {
       expect(mkdirpMock).toHaveBeenCalledTimes(1);
       expect(mkdirpMock).toHaveBeenNthCalledWith(1, 'src');
       expect(process.exit).toHaveBeenCalledWith(1);
+    });
+  });
+
+  describe('updateManifestShasum', () => {
+    it('updates the manifest shasum', async () => {
+      const mockBundleContents = 'console.log("Very serious business.");';
+      const expectedShasum = getSnapSourceShasum(mockBundleContents);
+
+      const readJsonFileMock = jest
+        .spyOn(fsUtils, 'readJsonFile')
+        .mockImplementationOnce(async () => getSnapManifest());
+      const readFileMock = jest
+        .spyOn(fs, 'readFile')
+        .mockImplementationOnce(async () => mockBundleContents);
+      const writeFileMock = jest.spyOn(fs, 'writeFile').mockImplementation();
+
+      await updateManifestShasum();
+
+      expect(readJsonFileMock).toHaveBeenCalledTimes(1);
+      expect(readJsonFileMock).toHaveBeenCalledWith(NpmSnapFileNames.Manifest);
+
+      expect(readFileMock).toHaveBeenCalledTimes(1);
+      expect(readFileMock).toHaveBeenCalledWith('dist/bundle.js', 'utf8');
+
+      expect(writeFileMock).toHaveBeenCalledTimes(1);
+      expect(writeFileMock).toHaveBeenCalledWith(
+        NpmSnapFileNames.Manifest,
+        JSON.stringify(
+          getWritableManifest(getSnapManifest({ shasum: expectedShasum })),
+          null,
+          2,
+        ),
+      );
     });
   });
 });

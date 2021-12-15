@@ -2,7 +2,7 @@ import yargs from 'yargs';
 import builders from '../../builders';
 import { YargsArgs } from '../../types/yargs';
 import { build } from '../build/buildHandler';
-import { initHandler } from './initHandler';
+import { initHandler, updateManifestShasum } from './initHandler';
 
 export = {
   command: ['init', 'i'],
@@ -26,6 +26,8 @@ async function init(argv: YargsArgs): Promise<void> {
     manifest: false,
     eval: true,
   });
+
+  await updateManifestShasum();
 
   console.log('\nSnap project successfully initiated!');
 }

@@ -3,7 +3,6 @@ import * as snapUtils from '@metamask/snap-controllers/dist/snaps';
 import initPackageJson from 'init-package-json';
 import mkdirp from 'mkdirp';
 import {
-  DEFAULT_SNAP_SHASUM,
   FakeFsError,
   getPackageJson,
   getSnapManifest,
@@ -33,6 +32,8 @@ jest.mock('init-package-json');
 
 jest.mock('mkdirp');
 const mkdirpMock = mkdirp as unknown as jest.Mock;
+
+const PLACEHOLDER_SHASUM = '2QqUxo5joo4kKKr7yiCjdYsZOZcIFBnIBEdwU9Yx7+M=';
 
 describe('initUtils', () => {
   describe('asyncPackageInit', () => {
@@ -147,7 +148,7 @@ describe('initUtils', () => {
     const NO = 'no';
     const VALID_PERMISSIONS_INPUT = 'snap_confirm snap_manageState';
 
-    it("applies default manifest values if user inputs 'yes'", async () => {
+    it('applies default manifest values if user inputs "yes"', async () => {
       const promptMock = jest
         .spyOn(readlineUtils, 'prompt')
         .mockImplementation(async () => 'y');
@@ -156,9 +157,44 @@ describe('initUtils', () => {
       const [manifest, argv] = await buildSnapManifest(
         getMockArgv(),
         getPackageJson(),
-        DEFAULT_SNAP_SHASUM,
       );
-      expect(manifest).toStrictEqual(getSnapManifest());
+      expect(manifest).toStrictEqual(
+        getSnapManifest({ shasum: PLACEHOLDER_SHASUM }),
+      );
+
+      expect(argv).toStrictEqual({
+        ...getMockArgv(),
+        src: 'src/index.js',
+      });
+
+      expect(promptMock).toHaveBeenCalledTimes(1);
+
+      expect(mkdirpMock).toHaveBeenCalledTimes(1);
+      expect(mkdirpMock).toHaveBeenCalledWith(getMockArgv().dist);
+
+      expect(global.console.log).toHaveBeenCalledTimes(1);
+    });
+
+    it('handles missing "description" property in package.json', async () => {
+      const promptMock = jest
+        .spyOn(readlineUtils, 'prompt')
+        .mockImplementation(async () => 'y');
+      jest.spyOn(console, 'log').mockImplementation();
+
+      const packageJson = getPackageJson();
+      delete packageJson.description;
+
+      const [manifest, argv] = await buildSnapManifest(
+        getMockArgv(),
+        packageJson,
+      );
+      expect(manifest).toStrictEqual(
+        getSnapManifest({
+          description: 'The @metamask/example-snap Snap.',
+          shasum: PLACEHOLDER_SHASUM,
+        }),
+      );
+
       expect(argv).toStrictEqual({
         ...getMockArgv(),
         src: 'src/index.js',
@@ -188,7 +224,7 @@ describe('initUtils', () => {
       });
 
       await expect(
-        buildSnapManifest(getMockArgv(), getPackageJson(), DEFAULT_SNAP_SHASUM),
+        buildSnapManifest(getMockArgv(), getPackageJson()),
       ).rejects.toThrow(new Error('process exit'));
       expect(promptMock).toHaveBeenCalledTimes(1);
       expect(global.console.log).toHaveBeenCalledTimes(1);
@@ -209,17 +245,14 @@ describe('initUtils', () => {
         .mockImplementationOnce(async () => VALID_PERMISSIONS_INPUT);
 
       expect(
-        await buildSnapManifest(
-          getMockArgv(),
-          getPackageJson(),
-          DEFAULT_SNAP_SHASUM,
-        ),
+        await buildSnapManifest(getMockArgv(), getPackageJson()),
       ).toStrictEqual([
         getSnapManifest({
           initialPermissions: {
             snap_confirm: {},
             snap_manageState: {},
           },
+          shasum: PLACEHOLDER_SHASUM,
         }),
         { dist, outfileName: 'bundle.js', src: 'src/index.js' },
       ]);
@@ -245,17 +278,14 @@ describe('initUtils', () => {
         .mockImplementation();
 
       expect(
-        await buildSnapManifest(
-          getMockArgv(),
-          getPackageJson(),
-          DEFAULT_SNAP_SHASUM,
-        ),
+        await buildSnapManifest(getMockArgv(), getPackageJson()),
       ).toStrictEqual([
         getSnapManifest({
           initialPermissions: {
             snap_confirm: {},
             snap_manageState: {},
           },
+          shasum: PLACEHOLDER_SHASUM,
         }),
         { dist, outfileName: 'bundle.js', src: 'src/index.js' },
       ]);
@@ -288,17 +318,14 @@ describe('initUtils', () => {
         .mockImplementation();
 
       expect(
-        await buildSnapManifest(
-          getMockArgv(),
-          getPackageJson(),
-          DEFAULT_SNAP_SHASUM,
-        ),
+        await buildSnapManifest(getMockArgv(), getPackageJson()),
       ).toStrictEqual([
         getSnapManifest({
           initialPermissions: {
             snap_confirm: {},
             snap_manageState: {},
           },
+          shasum: PLACEHOLDER_SHASUM,
         }),
         { dist, outfileName: 'bundle.js', src: 'src/index.js' },
       ]);
@@ -333,17 +360,14 @@ describe('initUtils', () => {
         .mockImplementation();
 
       expect(
-        await buildSnapManifest(
-          getMockArgv(),
-          getPackageJson(),
-          DEFAULT_SNAP_SHASUM,
-        ),
+        await buildSnapManifest(getMockArgv(), getPackageJson()),
       ).toStrictEqual([
         getSnapManifest({
           initialPermissions: {
             snap_confirm: {},
             snap_manageState: {},
           },
+          shasum: PLACEHOLDER_SHASUM,
         }),
         { dist, outfileName: 'bundle.js', src: 'src/index.js' },
       ]);
@@ -355,6 +379,40 @@ describe('initUtils', () => {
         new Error('invalid directory'),
       );
       expect(mkdirpMock).toHaveBeenCalledTimes(2);
+    });
+
+    it('handles "default" initialPermission input', async () => {
+      for (const mockInput of ['', 'snap_confirm']) {
+        const packageJson = getPackageJson();
+        const { dist } = getMockArgv();
+
+        const promptMock = jest
+          .spyOn(readlineUtils, 'prompt')
+          .mockImplementationOnce(async () => NO)
+          .mockImplementationOnce(async () => packageJson.name)
+          .mockImplementationOnce(async () => packageJson.description)
+          .mockImplementationOnce(async () => dist)
+          .mockImplementationOnce(async () => mockInput);
+
+        const logErrorMock = jest
+          .spyOn(miscUtils, 'logError')
+          .mockImplementation();
+
+        expect(
+          await buildSnapManifest(getMockArgv(), getPackageJson()),
+        ).toStrictEqual([
+          getSnapManifest({
+            shasum: PLACEHOLDER_SHASUM,
+          }),
+          { dist, outfileName: 'bundle.js', src: 'src/index.js' },
+        ]);
+
+        expect(promptMock).toHaveBeenCalledTimes(5);
+        expect(logErrorMock).not.toHaveBeenCalled();
+        expect(mkdirpMock).toHaveBeenCalledTimes(1);
+
+        jest.resetAllMocks();
+      }
     });
 
     it('handles invalid "initialPermissions" input', async () => {
@@ -375,17 +433,14 @@ describe('initUtils', () => {
         .mockImplementation();
 
       expect(
-        await buildSnapManifest(
-          getMockArgv(),
-          getPackageJson(),
-          DEFAULT_SNAP_SHASUM,
-        ),
+        await buildSnapManifest(getMockArgv(), getPackageJson()),
       ).toStrictEqual([
         getSnapManifest({
           initialPermissions: {
             snap_confirm: {},
             snap_manageState: {},
           },
+          shasum: PLACEHOLDER_SHASUM,
         }),
         { dist, outfileName: 'bundle.js', src: 'src/index.js' },
       ]);

@@ -10,7 +10,8 @@ type GetSnapManifestOptions = Partial<Omit<SnapManifest, 'source'>> & {
   registry?: string;
 };
 
-export const DEFAULT_SNAP_SOURCE = 'console.log("Hello, world!");';
+// A fake Snap source and its shasum.
+export const DEFAULT_SNAP_BUNDLE = 'console.log("Hello, world!");';
 export const DEFAULT_SNAP_SHASUM =
   'O4sADgTDj5EP86efVtOEI76NkKZeoKHRzQIlB1j48Lg=';
 
