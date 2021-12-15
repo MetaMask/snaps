@@ -123,9 +123,23 @@ export type SnapError = {
   data?: Json;
 };
 
+/**
+ * The return type of {@link SnapController._fetchSnap} and its sibling methods.
+ */
 type FetchSnapResult = {
+  /**
+   * The manifest of the fetched Snap.
+   */
   manifest: SnapManifest;
+
+  /**
+   * The source code of the fetched Snap.
+   */
   sourceCode: string;
+
+  /**
+   * The raw XML content of the Snap's SVG icon, if any.
+   */
   svgIcon?: string;
 };
 
