@@ -14,6 +14,7 @@ import {
 } from '@metamask/snap-types';
 import { nanoid } from 'nanoid';
 import isValidSemver from 'semver/functions/valid';
+import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import {
   PermissionConstraint,
   HasPermission,
@@ -41,10 +42,11 @@ export const controllerName = 'SnapController';
 
 export const SNAP_PREFIX = 'wallet_snap_';
 export const SNAP_PREFIX_REGEX = new RegExp(`^${SNAP_PREFIX}`, 'u');
-const SERIALIZABLE_SNAP_PROPERTIES = new Set([
+const TRUNCATED_SNAP_PROPERTIES = new Set([
   'initialPermissions',
   'id',
   'permissionName',
+  'version',
 ]);
 
 type RequestedSnapPermissions = {
@@ -61,6 +63,11 @@ export type SerializableSnap = {
   enabled: boolean;
 };
 
+export type TruncatedSnap = Pick<
+  SerializableSnap,
+  'id' | 'initialPermissions' | 'permissionName' | 'version'
+>;
+
 export type Snap = SerializableSnap & {
   sourceCode: string;
 };
@@ -71,10 +78,10 @@ export type SnapError = {
   data?: Json;
 };
 
-export type ProcessSnapReturnType =
-  | SerializableSnap
-  | { error: ReturnType<typeof serializeError> };
-export type InstallSnapsResult = Record<SnapId, ProcessSnapReturnType>;
+export type ProcessSnapResult =
+  | TruncatedSnap
+  | { error: SerializedEthereumRpcError };
+export type InstallSnapsResult = Record<SnapId, ProcessSnapResult>;
 
 // Types that probably should be defined elsewhere in prod
 type RemoveAllPermissionsFunction = (snapIds: string[]) => void;
@@ -99,12 +106,41 @@ export type SnapStateChange = {
   payload: [SnapControllerState, Patch[]];
 };
 
+/**
+ * Emitted when a Snap has been added to state during installation.
+ */
+export type SnapAdded = {
+  type: `${typeof controllerName}:snapAdded`;
+  payload: [snapId: string, snap: Snap];
+};
+
+/**
+ * Emitted when a Snap has been started after being added and authorized during
+ * installation.
+ */
+export type SnapInstalled = {
+  type: `${typeof controllerName}:snapInstalled`;
+  payload: [snapId: string];
+};
+
+/**
+ * Emitted when a Snap is removed.
+ */
+export type SnapRemoved = {
+  type: `${typeof controllerName}:snapRemoved`;
+  payload: [snapId: string];
+};
+
 // TODO: Create actions
 export type SnapControllerActions = never;
 
 export type AllowedActions = GetEndowments | HasPermission;
 
-export type SnapControllerEvents = SnapStateChange;
+export type SnapControllerEvents =
+  | SnapAdded
+  | SnapInstalled
+  | SnapRemoved
+  | SnapStateChange;
 
 export type AllowedEvents = ErrorMessageEvent | UnresponsiveMessageEvent;
 
@@ -423,38 +459,6 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Runs existing (installed) snaps.
-   * Deletes any snaps that cannot be started.
-   */
-  async runExistingSnaps(): Promise<void> {
-    const { snaps } = this.state;
-
-    if (Object.keys(snaps).length > 0) {
-      console.log('Starting existing snaps...', snaps);
-    } else {
-      console.log('No existing snaps to run.');
-      return;
-    }
-
-    await Promise.all(
-      Object.values(snaps).map(async ({ id: snapId, sourceCode }) => {
-        console.log(`Starting: ${snapId}`);
-
-        try {
-          await this._startSnap({
-            snapId,
-            sourceCode,
-          });
-        } catch (err) {
-          console.warn(`Failed to start "${snapId}", deleting it.`, err);
-          // Clean up failed snaps:
-          this.removeSnap(snapId);
-        }
-      }),
-    );
-  }
-
-  /**
    * Starts the given snap. Throws an error if no such snap exists
    * or if it is already running.
    *
@@ -557,7 +561,7 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap to check for.
    */
   has(snapId: SnapId): boolean {
-    return snapId in this.state.snaps;
+    return Boolean(this.get(snapId));
   }
 
   /**
@@ -577,18 +581,19 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The id of the Snap to get.
    */
-  getSerializable(snapId: SnapId): SerializableSnap | null {
+  getTruncated(snapId: SnapId): TruncatedSnap | null {
     const snap = this.get(snapId);
 
     return snap
-      ? // The cast to "any" of the accumulator object is due to a TypeScript bug
-        (Object.keys(snap).reduce((serialized, key) => {
-          if (SERIALIZABLE_SNAP_PROPERTIES.has(key as keyof Snap)) {
-            serialized[key] = snap[key as keyof SerializableSnap];
+      ? (Object.keys(snap).reduce((serialized, key) => {
+          if (TRUNCATED_SNAP_PROPERTIES.has(key)) {
+            serialized[key as keyof TruncatedSnap] = snap[
+              key as keyof TruncatedSnap
+            ] as any;
           }
 
           return serialized;
-        }, {} as any) as SerializableSnap)
+        }, {} as Partial<TruncatedSnap>) as TruncatedSnap)
       : null;
   }
 
@@ -695,6 +700,7 @@ export class SnapController extends BaseController<
         this._rpcHandlerMap.delete(snapId);
         delete state.snaps[snapId];
         delete state.snapStates[snapId];
+        this.messagingSystem.publish(`SnapController:snapRemoved`, snapId);
       });
     });
 
@@ -709,7 +715,7 @@ export class SnapController extends BaseController<
     return this._getPermissions(origin).reduce((permittedSnaps, perm) => {
       if (perm.parentCapability.startsWith(SNAP_PREFIX)) {
         const snapId = perm.parentCapability.replace(SNAP_PREFIX_REGEX, '');
-        const snap = this.getSerializable(snapId);
+        const snap = this.getTruncated(snapId);
 
         permittedSnaps[snapId] = snap || {
           error: serializeError(new Error('Snap permitted but not installed.')),
@@ -735,12 +741,19 @@ export class SnapController extends BaseController<
   ): Promise<InstallSnapsResult> {
     const result: InstallSnapsResult = {};
 
-    // use a for-loop so that we can return an object and await the resolution
-    // of each call to processRequestedSnap
     await Promise.all(
       Object.entries(requestedSnaps).map(
         async ([snapId, { version = 'latest' }]) => {
           const permissionName = SNAP_PREFIX + snapId;
+
+          if (!isValidSnapVersion(version)) {
+            result[snapId] = {
+              error: ethErrors.rpc.invalidParams(
+                `The "version" field must be a valid SemVer version or the string "latest" if specified. Received: "${version}".`,
+              ),
+            };
+            return;
+          }
 
           if (
             this.messagingSystem.call(
@@ -749,18 +762,10 @@ export class SnapController extends BaseController<
               permissionName,
             )
           ) {
-            if (isValidSnapVersion(version)) {
-              // attempt to install and run the snap, storing any errors that
-              // occur during the process
-              result[snapId] = {
-                ...(await this.processRequestedSnap(snapId, version)),
-              };
-            }
-
+            // Attempt to install and run the snap, storing any errors that
+            // occur during the process.
             result[snapId] = {
-              error: ethErrors.rpc.invalidParams(
-                `The "version" field must be a valid SemVer version or the string "latest" if specified. Received: "${version}".`,
-              ),
+              ...(await this.processRequestedSnap(snapId, version)),
             };
           } else {
             // only allow the installation of permitted snaps
@@ -784,14 +789,13 @@ export class SnapController extends BaseController<
    * @param version - The version of the snap to install.
    * @returns The resulting snap object, or an error if something went wrong.
    */
-  async processRequestedSnap(
+  private async processRequestedSnap(
     snapId: SnapId,
     version: string,
-  ): Promise<ProcessSnapReturnType> {
-    // If the snap is already installed, just return it
-    const snap = this.get(snapId);
-    if (snap) {
-      return this.getSerializable(snapId) as SerializableSnap;
+  ): Promise<ProcessSnapResult> {
+    const existingSnap = this.getTruncated(snapId);
+    if (existingSnap) {
+      return existingSnap;
     }
 
     try {
@@ -807,9 +811,14 @@ export class SnapController extends BaseController<
         sourceCode,
       });
 
-      return this.getSerializable(snapId) as SerializableSnap;
+      this.messagingSystem.publish(`SnapController:snapInstalled`, snapId);
+      return this.getTruncated(snapId) as TruncatedSnap;
     } catch (err) {
       console.error(`Error when adding snap.`, err);
+      if (this.has(snapId)) {
+        this.removeSnap(snapId);
+      }
+
       return { error: serializeError(err) };
     }
   }
@@ -976,6 +985,7 @@ export class SnapController extends BaseController<
       state.snaps[snapId] = snap;
     });
 
+    this.messagingSystem.publish(`SnapController:snapAdded`, snapId, snap);
     return snap;
   }
 
@@ -1066,7 +1076,7 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap.
    * @returns The snap's approvedPermissions.
    */
-  async authorize(snapId: SnapId): Promise<string[]> {
+  private async authorize(snapId: SnapId): Promise<string[]> {
     console.log(`Authorizing snap: ${snapId}`);
     const snapsState = this.state.snaps;
     const snap = snapsState[snapId];

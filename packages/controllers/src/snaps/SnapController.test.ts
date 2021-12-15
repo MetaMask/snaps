@@ -1,11 +1,14 @@
 import fs from 'fs';
 import { ControllerMessenger } from '@metamask/controllers/dist/ControllerMessenger';
 import { getPersistentState, Json } from '@metamask/controllers';
+import { serializeError } from 'eth-rpc-errors';
 import { WebWorkerExecutionEnvironmentService } from '../services/WebWorkerExecutionEnvironmentService';
 import { ExecutionEnvironmentService } from '../services/ExecutionEnvironmentService';
 import {
   AllowedActions,
   AllowedEvents,
+  TruncatedSnap,
+  Snap,
   SnapController,
   SnapControllerActions,
   SnapControllerEvents,
@@ -38,6 +41,10 @@ const getSnapControllerMessenger = (
     allowedEvents: [
       'ServiceMessenger:unhandledError',
       'ServiceMessenger:unresponsive',
+      'SnapController:snapAdded',
+      'SnapController:snapInstalled',
+      'SnapController:snapRemoved',
+      'SnapController:stateChange',
     ],
     allowedActions: [
       'PermissionController:getEndowments',
@@ -151,14 +158,23 @@ const getSnapControllerWithEES = (
   return [controller, _service] as const;
 };
 
+const FAKE_SNAP_ID = 'npm:example-snap';
+const FAKE_SNAP_SOURCE_CODE = `
+wallet.registerRpcMessageHandler(async (origin, request) => {
+  const {method, params, id} = request;
+  return method + id;
+});
+`;
+const FAKE_SNAP_SHASUM = getSnapSourceShasum(FAKE_SNAP_SOURCE_CODE);
+
 const getSnapManifest = ({
-  version = '0.0.0-development',
+  version = '1.0.0',
   proposedName = 'ExampleSnap',
   description = 'arbitraryDescription',
   filePath = 'dist/bundle.js',
   packageName = 'example-snap',
   initialPermissions = {},
-  shasum = '2QqUxo5joo4kKKr7yiCjdYsZOZcIFBnIBEdwU9Yx7+M=',
+  shasum = FAKE_SNAP_SHASUM,
 }: Pick<Partial<SnapManifest>, 'version' | 'proposedName' | 'description'> & {
   filePath?: string;
   initialPermissions?: Record<string, Record<string, Json>>;
@@ -185,6 +201,42 @@ const getSnapManifest = ({
     },
     initialPermissions,
     manifestVersion: '0.1',
+  } as const;
+};
+
+const getSnapObject = ({
+  initialPermissions = {},
+  id = FAKE_SNAP_ID,
+  permissionName = `wallet_snap_${FAKE_SNAP_ID}`,
+  version = '1.0.0',
+  manifest = getSnapManifest({ shasum: FAKE_SNAP_SHASUM }),
+  status = SnapStatus.stopped,
+  enabled = true,
+  sourceCode = FAKE_SNAP_SOURCE_CODE,
+} = {}): Snap => {
+  return {
+    initialPermissions,
+    id,
+    permissionName,
+    version,
+    manifest,
+    status,
+    enabled,
+    sourceCode,
+  } as const;
+};
+
+const getTruncatedSnap = ({
+  initialPermissions = {},
+  id = FAKE_SNAP_ID,
+  permissionName = `wallet_snap_${FAKE_SNAP_ID}`,
+  version = '1.0.0',
+} = {}): TruncatedSnap => {
+  return {
+    initialPermissions,
+    id,
+    permissionName,
+    version,
   } as const;
 };
 
@@ -421,7 +473,7 @@ describe('SnapController', () => {
     );
 
     expect(secondSnapController.isRunning('npm:foo')).toStrictEqual(false);
-    await secondSnapController.runExistingSnaps();
+    await secondSnapController.startSnap('npm:foo');
 
     expect(secondSnapController.state.snaps['npm:foo']).toBeDefined();
     expect(secondSnapController.isRunning('npm:foo')).toStrictEqual(true);
@@ -704,6 +756,138 @@ describe('SnapController', () => {
     expect(results).toStrictEqual('test1');
 
     snapController.destroy();
+  });
+
+  it('should install a Snap via installSnaps', async () => {
+    const executeSnapMock = jest.fn();
+    const messenger = getSnapControllerMessenger();
+    const snapController = getSnapController(
+      getSnapControllerOptions({
+        executeSnap: executeSnapMock,
+        messenger,
+      }),
+    );
+
+    const origin = 'foo.com';
+
+    const messengerCallMock = jest
+      .spyOn(messenger, 'call')
+      .mockImplementationOnce(() => true);
+    jest.spyOn(messenger, 'publish');
+
+    jest
+      .spyOn(snapController as any, '_fetchSnap')
+      .mockImplementationOnce(async () => [
+        getSnapManifest(),
+        FAKE_SNAP_SOURCE_CODE,
+      ]);
+
+    const eventSubscriptionPromise = Promise.all([
+      new Promise<void>((resolve) => {
+        messenger.subscribe('SnapController:snapAdded', (snapId, snap) => {
+          expect(snapId).toStrictEqual(FAKE_SNAP_ID);
+          expect(snap).toStrictEqual(
+            getSnapObject({ status: SnapStatus.installing }),
+          );
+          resolve();
+        });
+      }),
+      new Promise<void>((resolve) => {
+        messenger.subscribe('SnapController:snapInstalled', (snapId) => {
+          expect(snapId).toStrictEqual(FAKE_SNAP_ID);
+          resolve();
+        });
+      }),
+    ]);
+
+    const expectedSnapObject = getTruncatedSnap();
+
+    expect(
+      await snapController.installSnaps(origin, {
+        [FAKE_SNAP_ID]: {},
+      }),
+    ).toStrictEqual({
+      [FAKE_SNAP_ID]: expectedSnapObject,
+    });
+
+    expect(messengerCallMock).toHaveBeenCalledTimes(1);
+    expect(messengerCallMock).toHaveBeenNthCalledWith(
+      1,
+      'PermissionController:hasPermission',
+      origin,
+      expectedSnapObject.permissionName,
+    );
+
+    await eventSubscriptionPromise;
+  });
+
+  it('should remove a Snap that errors during installation after being added', async () => {
+    const executeSnapMock = jest.fn();
+    const messenger = getSnapControllerMessenger();
+    const snapController = getSnapController(
+      getSnapControllerOptions({
+        executeSnap: executeSnapMock,
+        messenger,
+      }),
+    );
+
+    const origin = 'foo.com';
+
+    const messengerCallMock = jest
+      .spyOn(messenger, 'call')
+      .mockImplementationOnce(() => true);
+
+    jest.spyOn(messenger, 'publish');
+    jest
+      .spyOn(snapController as any, '_fetchSnap')
+      .mockImplementationOnce(async () => [
+        getSnapManifest(),
+        FAKE_SNAP_SOURCE_CODE,
+      ]);
+
+    jest
+      .spyOn(snapController as any, 'authorize')
+      .mockImplementationOnce(() => {
+        throw new Error('foo');
+      });
+
+    const eventSubscriptionPromise = Promise.all([
+      new Promise<void>((resolve) => {
+        messenger.subscribe('SnapController:snapAdded', (snapId, snap) => {
+          expect(snapId).toStrictEqual(FAKE_SNAP_ID);
+          expect(snap).toStrictEqual(
+            getSnapObject({ status: SnapStatus.installing }),
+          );
+          resolve();
+        });
+      }),
+      new Promise<void>((resolve) => {
+        messenger.subscribe('SnapController:snapRemoved', (snapId) => {
+          expect(snapId).toStrictEqual(FAKE_SNAP_ID);
+          resolve();
+        });
+      }),
+    ]);
+
+    const expectedSnapObject = getTruncatedSnap();
+
+    expect(
+      await snapController.installSnaps(origin, {
+        [FAKE_SNAP_ID]: {},
+      }),
+    ).toStrictEqual({
+      [FAKE_SNAP_ID]: { error: serializeError(new Error('foo')) },
+    });
+
+    expect(messengerCallMock).toHaveBeenCalledTimes(1);
+    expect(messengerCallMock).toHaveBeenNthCalledWith(
+      1,
+      'PermissionController:hasPermission',
+      origin,
+      expectedSnapObject.permissionName,
+    );
+
+    await eventSubscriptionPromise;
   });
 
   it('should add a snap disable/enable it and still get a response from method "test"', async () => {
