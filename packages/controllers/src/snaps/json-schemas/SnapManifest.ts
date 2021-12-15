@@ -19,10 +19,9 @@ type Description = string;
  */
 type ProposedName = string;
 type NullQu0Arl1F = null;
-type StringG66CDL2Y = "git";
 type StringDj4X5WuP = string;
-type ObjectOfStringDj4X5WuPStringG66CDL2Y4XW4K3DM = {
-  type: StringG66CDL2Y;
+type ObjectOfStringDj4X5WuPStringDj4X5WuPHQwLk7Md = {
+  type: StringDj4X5WuP;
   url: StringDj4X5WuP;
 }
 /**
@@ -30,7 +29,7 @@ type ObjectOfStringDj4X5WuPStringG66CDL2Y4XW4K3DM = {
  * MAY be omitted. If present, MUST be equal to the corresponding package.json field.
  *
  */
-type Repository = NullQu0Arl1F | ObjectOfStringDj4X5WuPStringG66CDL2Y4XW4K3DM;
+type Repository = NullQu0Arl1F | ObjectOfStringDj4X5WuPStringDj4X5WuPHQwLk7Md;
 /**
  *
  * MUST be the Base64-encoded string representation of the SHA-256 hash of the Snap source file.
