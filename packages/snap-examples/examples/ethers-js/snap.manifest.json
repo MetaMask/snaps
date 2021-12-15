@@ -1,0 +1,21 @@
+{
+  "version": "1.0.0",
+  "description": "An example Snap that that uses ethers.js.",
+  "proposedName": "ethers-js-snap",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps-skunkworks.git"
+  },
+  "source": {
+    "shasum": "TYPwBSP8KRqXUWiH0V/rqx9H2HXWhIMOo73F/0jEryY=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "packageName": "ethers-js-snap",
+        "registry": "https://registry.npmjs.org"
+      }
+    }
+  },
+  "initialPermissions": {},
+  "manifestVersion": "0.1"
+}

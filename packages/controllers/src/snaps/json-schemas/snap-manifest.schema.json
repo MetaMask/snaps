@@ -47,7 +47,7 @@
           "properties": {
             "type": {
               "type": "string",
-              "enum": ["git"]
+              "minLength": 1
             },
             "url": {
               "type": "string",

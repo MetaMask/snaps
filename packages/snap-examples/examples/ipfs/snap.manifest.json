@@ -1,0 +1,21 @@
+{
+  "version": "1.0.0",
+  "description": "An example Snap that performs IPFS operations.",
+  "proposedName": "ipfs-snap",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps-skunkworks.git"
+  },
+  "source": {
+    "shasum": "V2AbL1M0/2eZINuZb1pT8AKcxW3VwcefrCxYsWRyWgk=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "packageName": "ipfs-snap",
+        "registry": "https://registry.npmjs.org"
+      }
+    }
+  },
+  "initialPermissions": {},
+  "manifestVersion": "0.1"
+}

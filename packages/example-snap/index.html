@@ -1,13 +1,11 @@
 <!doctype html>
-
 <html>
-
   </head>
-    <title>Hello Snaps!</title>
+    <title>Hello, Snaps!</title>
   </head>
 
   <body>
-    <h1>Hello Snaps!</h1>
+    <h1>Hello, Snaps!</h1>
     <details>
       <summary>Instructions</summary>
       <ul>
@@ -15,10 +13,10 @@
         <li>Please note that:</li>
         <ul>
           <li>
-            The Snap <b>package.json</b> must be located in located in the server root directory
+            The <code>snap.manifest.json</code> and <code>package.json</code> must be located in located in the server root directory..
           </li>
           <li>
-            The Snap bundle must be hosted at the location specified by <b>package.json:web3Wallet.bundle.url</b>
+            The Snap bundle must be hosted at the location specified by the <code>location</code> field of <code>snap.manifest.json</code>.
           </li>
         </ul>
       </ul>
@@ -66,5 +64,4 @@
     }
 
   </script>
-
 </html>

@@ -17,8 +17,7 @@
     },
     "private": {
       "type": "boolean",
-      "title": "Private",
-      "enum": [false]
+      "title": "Private"
     },
     "main": {
       "type": "string",
@@ -28,11 +27,11 @@
     "publishConfig": {
       "type": "object",
       "title": "Publish Config",
-      "required": ["access", "registry"],
+      "required": ["registry"],
       "properties": {
         "access": {
           "type": "string",
-          "enum": ["public"]
+          "minLength": 1
         },
         "registry": {
           "type": "string",
@@ -48,7 +47,7 @@
       "properties": {
         "type": {
           "type": "string",
-          "enum": ["git"]
+          "minLength": 1
         },
         "url": {
           "type": "string",
