@@ -48,6 +48,7 @@ type TruncatedSnapFields =
   | 'initialPermissions'
   | 'permissionName'
   | 'version';
+
 const TRUNCATED_SNAP_PROPERTIES = new Set<TruncatedSnapFields>([
   'initialPermissions',
   'id',
