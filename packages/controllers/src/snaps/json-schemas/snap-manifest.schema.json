@@ -89,6 +89,12 @@
                   "description": "The path to the Snap bundle file from the project root directory.",
                   "minLength": 1
                 },
+                "iconPath": {
+                  "type": "string",
+                  "title": "Icon Path",
+                  "description": "The path to an .svg file from the project root directory.",
+                  "pattern": "\\w+\\.svg$"
+                },
                 "packageName": {
                   "type": "string",
                   "title": "Package Name",

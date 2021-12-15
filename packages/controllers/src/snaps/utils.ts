@@ -27,6 +27,9 @@ export enum NpmSnapFileNames {
 
 export const LOCALHOST_HOSTNAMES = new Set(['localhost', '127.0.0.1']);
 
+const SVG_MAX_BYTE_SIZE = 100_000;
+const SVG_MAX_BYTE_SIZE_TEXT = `${Math.floor(SVG_MAX_BYTE_SIZE / 1000)}kb`;
+
 // This RegEx matches valid npm package names (with some exceptions) and space-
 // separated alphanumerical words, optionally with dashes and underscores.
 // The RegEx consists of two parts. The first part matches space-separated
@@ -41,6 +44,14 @@ export const PROPOSED_NAME_REGEX =
 
 type FetchContentTypes = 'text' | 'json' | 'arrayBuffer';
 
+type FetchReturnType<T extends FetchContentTypes> = T extends 'text'
+  ? string
+  : T extends 'json'
+  ? Json
+  : T extends 'arrayBuffer'
+  ? ArrayBuffer
+  : never;
+
 /**
  * @param url - The URL to fetch.
  * @param contentType - The content type of the response body.
@@ -50,7 +61,7 @@ export async function fetchContent<ContentType extends FetchContentTypes>(
   url: URL | string,
   contentType: ContentType,
   fetchFunction = fetch,
-): Promise<ReturnType<Response[ContentType]>> {
+): Promise<FetchReturnType<ContentType>> {
   const response = await fetchFunction(
     typeof url === 'string' ? url : url.toString(),
   );
@@ -86,6 +97,7 @@ export type UnvalidatedSnapFiles = {
   manifest?: Json;
   packageJson?: Json;
   sourceCode?: string;
+  svgIcon?: string;
 };
 
 /**
@@ -96,6 +108,7 @@ export type SnapFiles = {
   manifest: SnapManifest;
   packageJson: NpmSnapPackageJson;
   sourceCode: string;
+  svgIcon?: string;
 };
 
 /**
@@ -112,7 +125,7 @@ export async function fetchNpmSnap(
   packageName: string,
   version: string,
   fetchFunction = fetch,
-): Promise<[SnapManifest, string, NpmSnapPackageJson]> {
+): Promise<SnapFiles> {
   const [tarballResponse, actualVersion] = await fetchNpmTarball(
     packageName,
     version,
@@ -181,7 +194,7 @@ export class ProgrammaticallyFixableSnapError extends Error {
 export function validateNpmSnap(
   snapFiles: UnvalidatedSnapFiles,
   errorPrefix: `${string}: `,
-): [SnapManifest, string, NpmSnapPackageJson] {
+): SnapFiles {
   ExpectedSnapFiles.forEach((key) => {
     if (!snapFiles[key]) {
       throw new Error(
@@ -190,8 +203,8 @@ export function validateNpmSnap(
     }
   });
 
-  const { manifest, packageJson, sourceCode } =
-    snapFiles as Required<UnvalidatedSnapFiles>;
+  // Typecast: We are assured that the required files exist if we get here.
+  const { manifest, packageJson, sourceCode, svgIcon } = snapFiles as SnapFiles;
   try {
     validateSnapJsonFile(NpmSnapFileNames.Manifest, manifest);
   } catch (error) {
@@ -200,6 +213,11 @@ export function validateNpmSnap(
     );
   }
   const validatedManifest = manifest as SnapManifest;
+
+  const { iconPath } = validatedManifest.source.location.npm;
+  if (iconPath && !svgIcon) {
+    throw new Error(`${errorPrefix}Missing file "${iconPath}".`);
+  }
 
   try {
     validateSnapJsonFile(NpmSnapFileNames.PackageJson, packageJson);
@@ -218,7 +236,21 @@ export function validateNpmSnap(
     },
     errorPrefix,
   );
-  return [validatedManifest, sourceCode, validatedPackageJson];
+
+  if (svgIcon) {
+    if (Buffer.byteLength(svgIcon, 'utf8') > SVG_MAX_BYTE_SIZE) {
+      throw new Error(
+        `${errorPrefix}The specified SVG icon exceeds the maximum size of ${SVG_MAX_BYTE_SIZE_TEXT}.`,
+      );
+    }
+  }
+
+  return {
+    manifest: validatedManifest,
+    packageJson: validatedPackageJson,
+    sourceCode,
+    svgIcon,
+  };
 }
 
 /**
@@ -395,7 +427,7 @@ function createTarballExtractionStream(
             return next();
           }),
         );
-      } else if (/\w+\.js$/u.test(filePath)) {
+      } else if (/\w+\.(?:js|svg)$/u.test(filePath)) {
         return entryStream.pipe(
           concat((data) => {
             jsFileCache.set(filePath, data);
@@ -417,12 +449,16 @@ function createTarballExtractionStream(
   extractStream.on('finish', () => {
     if (isPlainObject(snapFiles.manifest)) {
       /* istanbul ignore next: optional chaining */
-      const bundlePath = (
-        snapFiles.manifest as unknown as Partial<SnapManifest>
-      ).source?.location?.npm?.filePath;
+      const { filePath: bundlePath, iconPath } =
+        (snapFiles.manifest as unknown as Partial<SnapManifest>).source
+          ?.location?.npm ?? {};
 
       if (bundlePath) {
         snapFiles.sourceCode = jsFileCache.get(bundlePath)?.toString('utf8');
+      }
+
+      if (typeof iconPath === 'string' && iconPath.endsWith('.svg')) {
+        snapFiles.svgIcon = jsFileCache.get(iconPath)?.toString('utf8');
       }
     }
     jsFileCache.clear();

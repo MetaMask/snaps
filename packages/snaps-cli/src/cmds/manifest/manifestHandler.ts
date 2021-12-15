@@ -39,15 +39,23 @@ export async function manifestHandler({
   let hasWarnings = false;
 
   const unvalidatedManifest = await readSnapJsonFile(NpmSnapFileNames.Manifest);
+
+  const iconPath =
+    unvalidatedManifest && typeof unvalidatedManifest === 'object'
+      ? (unvalidatedManifest as Partial<SnapManifest>).source?.location?.npm
+          ?.iconPath
+      : undefined;
+
   const snapFiles: UnvalidatedSnapFiles = {
     manifest: unvalidatedManifest,
     packageJson: await readSnapJsonFile(NpmSnapFileNames.PackageJson),
     sourceCode: await getSnapSourceCode(unvalidatedManifest),
+    svgIcon: iconPath && (await fs.readFile(iconPath, 'utf8')),
   };
 
   let manifest: SnapManifest | undefined;
   try {
-    [manifest] = validateNpmSnap(snapFiles, errorPrefix);
+    ({ manifest } = validateNpmSnap(snapFiles, errorPrefix));
   } catch (error) {
     if (writeManifest && error instanceof ProgrammaticallyFixableSnapError) {
       // If we get here, the files at least have the correct shape.

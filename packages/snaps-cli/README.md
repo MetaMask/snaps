@@ -47,6 +47,7 @@ Here's an example manifest:
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
+        "iconPath": "images/icon.svg",
         "packageName": "@metamask/example-snap",
         "registry": "https://registry.npmjs.org/"
       }
