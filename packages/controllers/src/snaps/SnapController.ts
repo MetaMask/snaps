@@ -42,7 +42,13 @@ export const controllerName = 'SnapController';
 
 export const SNAP_PREFIX = 'wallet_snap_';
 export const SNAP_PREFIX_REGEX = new RegExp(`^${SNAP_PREFIX}`, 'u');
-const TRUNCATED_SNAP_PROPERTIES = new Set([
+
+type TruncatedSnapFields =
+  | 'id'
+  | 'initialPermissions'
+  | 'permissionName'
+  | 'version';
+const TRUNCATED_SNAP_PROPERTIES = new Set<TruncatedSnapFields>([
   'initialPermissions',
   'id',
   'permissionName',
@@ -53,22 +59,62 @@ type RequestedSnapPermissions = {
   [permission: string]: Record<string, Json>;
 };
 
+/**
+ * A Snap as it exists in {@link SnapController} state.
+ */
 export type Snap = {
-  initialPermissions: RequestedSnapPermissions;
-  id: SnapId;
-  permissionName: string;
-  version: string;
-  manifest: SnapManifest;
-  status: SnapStatus;
+  /**
+   * Whether the Snap is enabled, which determines if it can be started.
+   */
   enabled: boolean;
+
+  /**
+   * The ID of the Snap.
+   */
+  id: SnapId;
+
+  /**
+   * The initial permissions of the Snap, which will be requested when it is
+   * installed.
+   */
+  initialPermissions: RequestedSnapPermissions;
+
+  /**
+   * The Snap's manifest file.
+   */
+  manifest: SnapManifest;
+
+  /**
+   * The name of the permission used to invoke the Snap.
+   */
+  permissionName: string;
+
+  /**
+   * The source code of the Snap.
+   */
   sourceCode: string;
+
+  /**
+   * The current status of the Snap, e.g. whether it's running or stopped.
+   */
+  status: SnapStatus;
+
+  /**
+   * The SVG icon of the Snap.
+   */
   svgIcon: string | null;
+
+  /**
+   * The version of the Snap.
+   */
+  version: string;
 };
 
-export type TruncatedSnap = Pick<
-  Snap,
-  'id' | 'initialPermissions' | 'permissionName' | 'version'
->;
+/**
+ * A {@link Snap} object with the fields that are relevant to an external
+ * caller.
+ */
+export type TruncatedSnap = Pick<Snap, TruncatedSnapFields>;
 
 export type SnapError = {
   message: string;
@@ -590,7 +636,7 @@ export class SnapController extends BaseController<
 
     return snap
       ? (Object.keys(snap).reduce((serialized, key) => {
-          if (TRUNCATED_SNAP_PROPERTIES.has(key)) {
+          if (TRUNCATED_SNAP_PROPERTIES.has(key as any)) {
             serialized[key as keyof TruncatedSnap] = snap[
               key as keyof TruncatedSnap
             ] as any;
