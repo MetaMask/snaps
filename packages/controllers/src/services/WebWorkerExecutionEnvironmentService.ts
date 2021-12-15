@@ -6,7 +6,7 @@ import ObjectMultiplex from '@metamask/object-multiplex';
 import { WorkerParentPostMessageStream } from '@metamask/post-message-stream';
 import { SNAP_STREAM_NAMES } from '@metamask/snap-workers';
 import { createStreamMiddleware } from 'json-rpc-middleware-stream';
-import { SnapData, ServiceMessenger } from '@metamask/snap-types';
+import { SnapExecutionData, ServiceMessenger } from '@metamask/snap-types';
 import {
   JsonRpcEngine,
   JsonRpcRequest,
@@ -209,7 +209,7 @@ export class WebWorkerExecutionEnvironmentService
     this._snapRpcHooks.set(snapId, rpcHook);
   }
 
-  async executeSnap(snapData: SnapData): Promise<unknown> {
+  async executeSnap(snapData: SnapExecutionData): Promise<unknown> {
     if (this.snapToWorkerMap.has(snapData.snapId)) {
       throw new Error(`Snap "${snapData.snapId}" is already being executed.`);
     }

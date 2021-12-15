@@ -1,6 +1,7 @@
 import { Json } from 'json-rpc-engine';
 import {
   PermissionSpecificationBuilder,
+  PermissionType,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
 } from '@metamask/snap-controllers';
@@ -40,6 +41,7 @@ type ManageStateSpecificationBuilderOptions = {
 };
 
 type ManageStateSpecification = ValidPermissionSpecification<{
+  permissionType: PermissionType.RestrictedMethod;
   targetKey: typeof methodName;
   methodImplementation: ReturnType<typeof getManageStateImplementation>;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
@@ -50,6 +52,7 @@ type ManageStateSpecification = ValidPermissionSpecification<{
  * your device.
  */
 const specificationBuilder: PermissionSpecificationBuilder<
+  PermissionType.RestrictedMethod,
   ManageStateSpecificationBuilderOptions,
   ManageStateSpecification
 > = ({
@@ -57,6 +60,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
   methodHooks,
 }: ManageStateSpecificationBuilderOptions) => {
   return {
+    permissionType: PermissionType.RestrictedMethod,
     targetKey: methodName,
     allowedCaveats,
     methodImplementation: getManageStateImplementation(methodHooks),

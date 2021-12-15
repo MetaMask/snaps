@@ -12,14 +12,14 @@ export function unauthorized(opts: UnauthorizedArg) {
   });
 }
 
-type MethodNotFoundArg = {
-  method: string;
-  data?: unknown;
-};
+export function methodNotFound(method: string, data?: unknown) {
+  const message = `The method "${method}" does not exist / is not available.`;
 
-export function methodNotFound(opts: MethodNotFoundArg) {
-  const message = `The method "${opts.method}" does not exist / is not available.`;
-  return ethErrors.rpc.methodNotFound({ data: opts.data, message });
+  const opts: Parameters<typeof ethErrors.rpc.methodNotFound>[0] = { message };
+  if (data !== undefined) {
+    opts.data = data;
+  }
+  return ethErrors.rpc.methodNotFound(opts);
 }
 
 type InvalidParamsArg = {
@@ -81,10 +81,20 @@ export class InvalidApprovedPermissionError extends Error {
     this.data = { origin, target, approvedPermission };
   }
 }
-
 export class PermissionDoesNotExistError extends Error {
   constructor(origin: string, target: string) {
     super(`Subject "${origin}" has no permission for "${target}".`);
+  }
+}
+
+export class EndowmentPermissionDoesNotExistError extends Error {
+  public data?: { origin: string };
+
+  constructor(target: string, origin?: string) {
+    super(`Subject "${origin}" has no permission for "${target}".`);
+    if (origin) {
+      this.data = { origin };
+    }
   }
 }
 
