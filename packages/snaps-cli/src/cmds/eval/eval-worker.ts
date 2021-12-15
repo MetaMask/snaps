@@ -14,8 +14,11 @@ type MockSnapProvider = EventEmitter & {
 };
 
 lockdown({
-  mathTaming: 'unsafe',
+  consoleTaming: 'unsafe',
   errorTaming: 'unsafe',
+  mathTaming: 'unsafe',
+  dateTaming: 'unsafe',
+  overrideTaming: 'severe',
 });
 
 if (parentPort !== null) {
