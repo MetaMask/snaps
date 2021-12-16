@@ -3,7 +3,7 @@ const path = require('path');
 
 const EXAMPLE_PATH = path.join(
   __dirname,
-  '../../../node_modules/@metamask/snap-examples/examples/hello-snaps',
+  '../../../node_modules/@metamask/example-snap',
 );
 const TEMPLATE_PATH = 'src/cmds/init/init-template.json';
 
