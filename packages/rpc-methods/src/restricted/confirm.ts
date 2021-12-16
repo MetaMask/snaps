@@ -113,7 +113,7 @@ function getValidatedParams(params: unknown): ConfirmFields {
   }
 
   if (
-    !description &&
+    description &&
     (typeof description !== 'string' || description.length > 140)
   ) {
     throw ethErrors.rpc.invalidParams({
@@ -123,7 +123,7 @@ function getValidatedParams(params: unknown): ConfirmFields {
   }
 
   if (
-    !textAreaContent &&
+    textAreaContent &&
     (typeof textAreaContent !== 'string' || textAreaContent.length > 1800)
   ) {
     throw ethErrors.rpc.invalidParams({

@@ -3,7 +3,7 @@ wallet.registerRpcMessageHandler(async (originString, requestObject) => {
     case 'hello':
       return wallet.request({
         method: 'snap_confirm',
-        params: [`Hello, ${originString}!`],
+        params: [{ prompt: `Hello, ${originString}!` }],
       });
     default:
       throw new Error('Method not found.');
