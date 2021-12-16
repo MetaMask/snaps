@@ -6,6 +6,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0]
+### Added
+- "Endowment" permissions ([#152](https://github.com/MetaMask/snaps-skunkworks/pull/152))
+- `SnapController` endowment permissions support ([#155](https://github.com/MetaMask/snaps-skunkworks/pull/155))
+- Network access endowment permission ([#154](https://github.com/MetaMask/snaps-skunkworks/pull/154))
+- Snap installation events ([#162](https://github.com/MetaMask/snaps-skunkworks/pull/162))
+
+### Changed
+- **BREAKING:** Refactor `SnapController` to support the new Snaps publishing specification ([#140](https://github.com/MetaMask/snaps-skunkworks/pull/140), [#157](https://github.com/MetaMask/snaps-skunkworks/pull/157), [#163](https://github.com/MetaMask/snaps-skunkworks/pull/163))
+  - This introduces several breaking changes to how Snaps are developed, hosted, and represented at runtime. See [the specification](https://github.com/MetaMask/specifications/blob/d4a5bf5d6990bb5b02a98bd3f95a24ffb28c701c/snaps/publishing.md) and the referenced pull requests for details.
+- **BREAKING:** Rename Snap `name` property to `id` ([#147](https://github.com/MetaMask/snaps-skunkworks/pull/147))
+- **BREAKING:** Introduce the required `permissionType` field to `PermissionController` permission specifications ([#152](https://github.com/MetaMask/snaps-skunkworks/pull/152))
+- Make `SubjectMetadataController` subject metadata `name` optional ([#151](https://github.com/MetaMask/snaps-skunkworks/pull/151))
+
+### Removed
+- **BREAKING:** Inline snap functionality ([#148](https://github.com/MetaMask/snaps-skunkworks/pull/148))
+
 ## [0.5.0]
 ### Changed
 - **BREAKING:** Update restricted RPC methods per new `PermissionController` ([#143](https://github.com/MetaMask/snaps-skunkworks/pull/143))
@@ -108,7 +125,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.3.0...v0.3.1

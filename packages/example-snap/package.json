@@ -1,6 +1,6 @@
 {
   "name": "@metamask/example-snap",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "An example MetaMask Snap.",
   "repository": {
     "type": "git",
@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@metamask/auto-changelog": "^2.5.0",
-    "@metamask/snaps-cli": "^0.5.0",
+    "@metamask/snaps-cli": "^0.6.0",
     "rimraf": "^3.0.2"
   },
   "publishConfig": {
