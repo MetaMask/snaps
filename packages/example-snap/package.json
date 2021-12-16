@@ -14,7 +14,7 @@
     "snap.manifest.json"
   ],
   "scripts": {
-    "build": "yarn mm-snap build",
+    "build": "mm-snap build",
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf dist/*",
     "test": "echo \"@metamask/example-snap has no tests.\"",
