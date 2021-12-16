@@ -172,11 +172,13 @@ const getSnapManifest = ({
   proposedName = 'ExampleSnap',
   description = 'arbitraryDescription',
   filePath = 'dist/bundle.js',
+  iconPath = 'images/icon.svg',
   packageName = 'example-snap',
   initialPermissions = {},
   shasum = FAKE_SNAP_SHASUM,
 }: Pick<Partial<SnapManifest>, 'version' | 'proposedName' | 'description'> & {
   filePath?: string;
+  iconPath?: string;
   initialPermissions?: Record<string, Record<string, Json>>;
   packageName?: string;
   shasum?: string;
@@ -194,6 +196,7 @@ const getSnapManifest = ({
       location: {
         npm: {
           filePath,
+          iconPath,
           packageName,
           registry: 'https://registry.npmjs.org',
         },
@@ -213,6 +216,7 @@ const getSnapObject = ({
   status = SnapStatus.stopped,
   enabled = true,
   sourceCode = FAKE_SNAP_SOURCE_CODE,
+  svgIcon = null,
 } = {}): Snap => {
   return {
     initialPermissions,
@@ -223,6 +227,7 @@ const getSnapObject = ({
     status,
     enabled,
     sourceCode,
+    svgIcon,
   } as const;
 };
 
@@ -446,6 +451,7 @@ describe('SnapController', () => {
               permissionName: 'fooperm',
               version: '0.0.1',
               sourceCode,
+              svgIcon: null,
               id: 'npm:foo',
               manifest: getSnapManifest({
                 shasum: getSnapSourceShasum(sourceCode),
@@ -777,10 +783,12 @@ describe('SnapController', () => {
 
     jest
       .spyOn(snapController as any, '_fetchSnap')
-      .mockImplementationOnce(async () => [
-        getSnapManifest(),
-        FAKE_SNAP_SOURCE_CODE,
-      ]);
+      .mockImplementationOnce(async () => {
+        return {
+          manifest: getSnapManifest(),
+          sourceCode: FAKE_SNAP_SOURCE_CODE,
+        };
+      });
 
     const eventSubscriptionPromise = Promise.all([
       new Promise<void>((resolve) => {
@@ -840,10 +848,12 @@ describe('SnapController', () => {
     jest.spyOn(messenger, 'publish');
     jest
       .spyOn(snapController as any, '_fetchSnap')
-      .mockImplementationOnce(async () => [
-        getSnapManifest(),
-        FAKE_SNAP_SOURCE_CODE,
-      ]);
+      .mockImplementationOnce(async () => {
+        return {
+          manifest: getSnapManifest(),
+          sourceCode: FAKE_SNAP_SOURCE_CODE,
+        };
+      });
 
     jest
       .spyOn(snapController as any, 'authorize')

@@ -44,6 +44,12 @@ type StringFpP4DSlq = string;
 type FilePath = string;
 /**
  *
+ * The path to an .svg file from the project root directory.
+ *
+ */
+type IconPath = string;
+/**
+ *
  * The Snap's npm package name.
  *
  */
@@ -56,6 +62,7 @@ type PackageName = string;
 type NpmRegistry = "https://registry.npmjs.org" | "https://registry.npmjs.org/";
 type Npm = {
   filePath: FilePath;
+  iconPath?: IconPath;
   packageName: PackageName;
   registry: NpmRegistry;
 }

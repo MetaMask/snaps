@@ -18,6 +18,10 @@ describe('fetchNpmSnap', () => {
       ).toString('utf8'),
     );
 
+    const expectedSvgContents = (
+      await readFile(require.resolve('@metamask/example-snap/images/icon.svg'))
+    ).toString('utf8');
+
     const tarballUrl = `https://registry.npmjs.org/@metamask/example-snap/-/example-snap-${exampleSnapVersion}.tgz`;
     fetchMock
       .mockResponseOnce(
@@ -47,7 +51,7 @@ describe('fetchNpmSnap', () => {
           }) as any,
       );
 
-    const [manifest, sourceCode] = await fetchNpmSnap(
+    const { manifest, sourceCode, svgIcon } = await fetchNpmSnap(
       '@metamask/example-snap',
       exampleSnapVersion,
     );
@@ -74,5 +78,7 @@ describe('fetchNpmSnap', () => {
         await readFile(require.resolve('@metamask/example-snap/dist/bundle.js'))
       ).toString('utf8'),
     );
+
+    expect(svgIcon).toStrictEqual(expectedSvgContents);
   });
 });

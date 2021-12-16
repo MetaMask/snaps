@@ -42,7 +42,14 @@ export const controllerName = 'SnapController';
 
 export const SNAP_PREFIX = 'wallet_snap_';
 export const SNAP_PREFIX_REGEX = new RegExp(`^${SNAP_PREFIX}`, 'u');
-const TRUNCATED_SNAP_PROPERTIES = new Set([
+
+type TruncatedSnapFields =
+  | 'id'
+  | 'initialPermissions'
+  | 'permissionName'
+  | 'version';
+
+const TRUNCATED_SNAP_PROPERTIES = new Set<TruncatedSnapFields>([
   'initialPermissions',
   'id',
   'permissionName',
@@ -53,29 +60,87 @@ type RequestedSnapPermissions = {
   [permission: string]: Record<string, Json>;
 };
 
-export type SerializableSnap = {
-  initialPermissions: RequestedSnapPermissions;
-  id: SnapId;
-  permissionName: string;
-  version: string;
-  manifest: SnapManifest;
-  status: SnapStatus;
+/**
+ * A Snap as it exists in {@link SnapController} state.
+ */
+export type Snap = {
+  /**
+   * Whether the Snap is enabled, which determines if it can be started.
+   */
   enabled: boolean;
-};
 
-export type TruncatedSnap = Pick<
-  SerializableSnap,
-  'id' | 'initialPermissions' | 'permissionName' | 'version'
->;
+  /**
+   * The ID of the Snap.
+   */
+  id: SnapId;
 
-export type Snap = SerializableSnap & {
+  /**
+   * The initial permissions of the Snap, which will be requested when it is
+   * installed.
+   */
+  initialPermissions: RequestedSnapPermissions;
+
+  /**
+   * The Snap's manifest file.
+   */
+  manifest: SnapManifest;
+
+  /**
+   * The name of the permission used to invoke the Snap.
+   */
+  permissionName: string;
+
+  /**
+   * The source code of the Snap.
+   */
   sourceCode: string;
+
+  /**
+   * The current status of the Snap, e.g. whether it's running or stopped.
+   */
+  status: SnapStatus;
+
+  /**
+   * The SVG icon of the Snap.
+   */
+  svgIcon: string | null;
+
+  /**
+   * The version of the Snap.
+   */
+  version: string;
 };
+
+/**
+ * A {@link Snap} object with the fields that are relevant to an external
+ * caller.
+ */
+export type TruncatedSnap = Pick<Snap, TruncatedSnapFields>;
 
 export type SnapError = {
   message: string;
   code: number;
   data?: Json;
+};
+
+/**
+ * The return type of {@link SnapController._fetchSnap} and its sibling methods.
+ */
+type FetchSnapResult = {
+  /**
+   * The manifest of the fetched Snap.
+   */
+  manifest: SnapManifest;
+
+  /**
+   * The source code of the fetched Snap.
+   */
+  sourceCode: string;
+
+  /**
+   * The raw XML content of the Snap's SVG icon, if any.
+   */
+  svgIcon?: string;
 };
 
 export type ProcessSnapResult =
@@ -208,7 +273,7 @@ export enum SnapStatusEvent {
 /**
  * Guard transitioning when the snap is disabled.
  */
-const disabledGuard = (serializedSnap: SerializableSnap) => {
+const disabledGuard = (serializedSnap: Snap) => {
   return serializedSnap.enabled;
 };
 
@@ -586,7 +651,7 @@ export class SnapController extends BaseController<
 
     return snap
       ? (Object.keys(snap).reduce((serialized, key) => {
-          if (TRUNCATED_SNAP_PROPERTIES.has(key)) {
+          if (TRUNCATED_SNAP_PROPERTIES.has(key as any)) {
             serialized[key as keyof TruncatedSnap] = snap[
               key as keyof TruncatedSnap
             ] as any;
@@ -940,13 +1005,16 @@ export class SnapController extends BaseController<
   private async _add(args: ValidatedAddSnapArgs): Promise<Snap> {
     const { id: snapId, version } = args;
 
-    let manifest: SnapManifest, sourceCode: string;
+    let manifest: SnapManifest, sourceCode: string, svgIcon: string | undefined;
     if ('manifest' in args) {
       manifest = args.manifest;
       sourceCode = args.sourceCode;
       validateSnapJsonFile(NpmSnapFileNames.Manifest, manifest);
     } else {
-      [manifest, sourceCode] = await this._fetchSnap(snapId, version);
+      ({ manifest, sourceCode, svgIcon } = await this._fetchSnap(
+        snapId,
+        version,
+      ));
     }
 
     if (typeof sourceCode !== 'string' || sourceCode.length === 0) {
@@ -963,14 +1031,15 @@ export class SnapController extends BaseController<
     }
 
     let snap: Snap = {
-      initialPermissions,
+      enabled: true,
       id: snapId,
+      initialPermissions,
+      manifest,
       permissionName: SNAP_PREFIX + snapId, // so we can easily correlate them
       sourceCode,
-      version: manifest.version,
-      manifest,
-      enabled: true,
+      svgIcon: svgIcon ?? null,
       status: snapStatusStateMachineConfig.initial,
+      version: manifest.version,
     };
 
     const snapsState = this.state.snaps;
@@ -999,7 +1068,7 @@ export class SnapController extends BaseController<
   private async _fetchSnap(
     snapId: ValidatedSnapId,
     version?: string,
-  ): Promise<[SnapManifest, string]> {
+  ): Promise<FetchSnapResult> {
     try {
       if (snapId.startsWith(SnapIdPrefixes.local)) {
         return this._fetchLocalSnap(snapId.replace(SnapIdPrefixes.local, ''));
@@ -1023,13 +1092,16 @@ export class SnapController extends BaseController<
   private async _fetchNpmSnap(
     packageName: string,
     version?: string,
-  ): Promise<[SnapManifest, string]> {
+  ): Promise<FetchSnapResult> {
     if (!isValidSnapVersion(version)) {
       throw new Error(`Received invalid Snap version: "${version}".`);
     }
 
-    const [manifest, sourceCode] = await fetchNpmSnap(packageName, version);
-    return [manifest, sourceCode];
+    const { manifest, sourceCode, svgIcon } = await fetchNpmSnap(
+      packageName,
+      version,
+    );
+    return { manifest, sourceCode, svgIcon };
   }
 
   /**
@@ -1040,7 +1112,7 @@ export class SnapController extends BaseController<
    */
   private async _fetchLocalSnap(
     localhostUrl: string,
-  ): Promise<[SnapManifest, string]> {
+  ): Promise<FetchSnapResult> {
     const manifestUrl = new URL(NpmSnapFileNames.Manifest, localhostUrl);
     if (!LOCALHOST_HOSTNAMES.has(manifestUrl.hostname)) {
       throw new Error(
@@ -1055,18 +1127,20 @@ export class SnapController extends BaseController<
     const {
       source: {
         location: {
-          npm: { filePath },
+          npm: { filePath, iconPath },
         },
       },
     } = manifest;
 
-    const sourceCode = await fetchContent(
-      new URL(filePath, localhostUrl),
-      'text',
-    );
-    validateSnapShasum(manifest, sourceCode);
+    const [sourceCode, svgIcon] = await Promise.all([
+      fetchContent(new URL(filePath, localhostUrl), 'text'),
+      iconPath
+        ? fetchContent(new URL(iconPath, localhostUrl), 'text')
+        : undefined,
+    ]);
 
-    return [manifest, sourceCode];
+    validateSnapShasum(manifest, sourceCode);
+    return { manifest, sourceCode, svgIcon };
   }
 
   /**
