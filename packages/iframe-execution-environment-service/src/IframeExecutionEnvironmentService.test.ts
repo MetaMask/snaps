@@ -26,7 +26,7 @@ describe('Iframe Controller', () => {
           // do nothing
         },
         iframeUrl: new URL(
-          'https://metamask.github.io/iframe-execution-environment/',
+          'https://metamask.github.io/iframe-execution-environment/0.3.2-test/',
         ),
       });
     expect(iframeExecutionEnvironmentService).toBeDefined();
@@ -51,7 +51,7 @@ describe('Iframe Controller', () => {
           // do nothing
         },
         iframeUrl: new URL(
-          'https://metamask.github.io/iframe-execution-environment/',
+          'https://metamask.github.io/iframe-execution-environment/0.3.2-test/',
         ),
       });
     const removeListener = fixJSDOMPostMessageEventSource(
@@ -87,7 +87,7 @@ describe('Iframe Controller', () => {
           // do nothing
         },
         iframeUrl: new URL(
-          'https://metamask.github.io/iframe-execution-environment/',
+          'https://metamask.github.io/iframe-execution-environment/0.3.2-test/',
         ),
       });
     const removeListener = fixJSDOMPostMessageEventSource(
@@ -129,7 +129,7 @@ describe('Iframe Controller', () => {
           // do nothing
         },
         iframeUrl: new URL(
-          'https://metamask.github.io/iframe-execution-environment/',
+          'https://metamask.github.io/iframe-execution-environment/0.3.2-test/',
         ),
       });
     const removeListener = fixJSDOMPostMessageEventSource(
