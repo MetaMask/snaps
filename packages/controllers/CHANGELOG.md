@@ -14,10 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Snap installation events ([#162](https://github.com/MetaMask/snaps-skunkworks/pull/162))
 
 ### Changed
-- **BREAKING:** Introduce the required `permissionType` field to permission specifications ([#152](https://github.com/MetaMask/snaps-skunkworks/pull/152))
-- **BREAKING:** Support the new Snaps publishing specification ([#140](https://github.com/MetaMask/snaps-skunkworks/pull/140), [#157](https://github.com/MetaMask/snaps-skunkworks/pull/157), [#163](https://github.com/MetaMask/snaps-skunkworks/pull/163))
+- **BREAKING:** Refactor `SnapController` to support the new Snaps publishing specification ([#140](https://github.com/MetaMask/snaps-skunkworks/pull/140), [#157](https://github.com/MetaMask/snaps-skunkworks/pull/157), [#163](https://github.com/MetaMask/snaps-skunkworks/pull/163))
   - This introduces several breaking changes to how Snaps are developed, hosted, and represented at runtime. See [the specification](https://github.com/MetaMask/specifications/blob/d4a5bf5d6990bb5b02a98bd3f95a24ffb28c701c/snaps/publishing.md) and the referenced pull requests for details.
 - **BREAKING:** Rename Snap `name` property to `id` ([#147](https://github.com/MetaMask/snaps-skunkworks/pull/147))
+- **BREAKING:** Introduce the required `permissionType` field to `PermissionController` permission specifications ([#152](https://github.com/MetaMask/snaps-skunkworks/pull/152))
 - Make `SubjectMetadataController` subject metadata `name` optional ([#151](https://github.com/MetaMask/snaps-skunkworks/pull/151))
 
 ### Removed

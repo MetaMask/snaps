@@ -8,9 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.6.0]
 ### Changed
-- **BREAKING:** Update all example Snaps per new publishing specification ([#157](https://github.com/MetaMask/snaps-skunkworks/pull/157))
 - **BREAKING:** Support the new Snaps publishing specification ([#140](https://github.com/MetaMask/snaps-skunkworks/pull/140))
   - This introduces several breaking changes to how Snaps are developed, hosted, and represented at runtime. See [the specification](https://github.com/MetaMask/specifications/blob/d4a5bf5d6990bb5b02a98bd3f95a24ffb28c701c/snaps/publishing.md) and the referenced pull request for details.
+- **BREAKING:** Update all example Snaps per new publishing specification ([#157](https://github.com/MetaMask/snaps-skunkworks/pull/157))
 
 ### Removed
 - **BREAKING:** "hello-snaps` example ([#157](https://github.com/MetaMask/snaps-skunkworks/pull/157))
