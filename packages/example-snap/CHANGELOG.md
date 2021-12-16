@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.6.0]
 ### Added
 - SVG icon ([#163](https://github.com/MetaMask/snaps-skunkworks/pull/163))
+  - Adds an icon file at `images/icon.svg` and a reference to it in `snap.manifest.json`.
 
 ### Changed
 - **BREAKING:** Support the new Snaps publishing specification ([#140](https://github.com/MetaMask/snaps-skunkworks/pull/140), [#157](https://github.com/MetaMask/snaps-skunkworks/pull/157))
