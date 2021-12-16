@@ -17,6 +17,11 @@ if [[ -z $OTP ]]; then
   exit 1
 fi
 
+if [[ $(git diff --quiet) != '' ]]; then
+  echo "Working tree dirty"
+  exit 1
+fi
+
 # Get the published version
 # If the package is not published, set the published version to "NULL"
 NPM_VERSION=$(npm show . version || echo "NULL")
@@ -27,6 +32,5 @@ LOCAL_VERSION=$(jq -r .version < package.json)
 
 # Publish the package if either condition is met
 if [[ $NPM_VERSION == "NULL" || $LOCAL_VERSION != "$NPM_VERSION" ]]; then
-  yarn publish:prep
   npm publish "--otp=$OTP"
 fi

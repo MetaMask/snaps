@@ -16,6 +16,7 @@
     "test": "yarn test:prepare && jest",
     "test:ci": "yarn test:prepare && ./scripts/test-ci.sh",
     "build:pre-tsc": "yarn build:ajv && node scripts/transpileSchemaTypes.js",
+    "build:post-tsc": "echo 'N/A'",
     "build:tsc": "tsc --project tsconfig.local.json",
     "ajv-compile": "ajv compile --strict=true --all-errors",
     "build:ajv": "./scripts/build-ajv.sh",
@@ -27,8 +28,7 @@
     "lint": "yarn lint:eslint && yarn lint:misc --check",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "yarn auto-changelog validate",
-    "publish": "../../scripts/publish-package.sh",
-    "publish:prep": "yarn lint && yarn build:clean"
+    "publish": "../../scripts/publish-package.sh"
   },
   "dependencies": {
     "@metamask/controllers": "^17.0.0",
