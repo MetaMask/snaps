@@ -7,12 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.6.0]
-### Uncategorized
-- Add Snap SVG icon support ([#163](https://github.com/MetaMask/snaps-skunkworks/pull/163))
-- Fix snaps-cli init command bugs ([#160](https://github.com/MetaMask/snaps-skunkworks/pull/160))
-- ses@0.15.3 ([#159](https://github.com/MetaMask/snaps-skunkworks/pull/159))
-- Snap Publishing v0.1 ([#140](https://github.com/MetaMask/snaps-skunkworks/pull/140))
-- Rename Snap "name" property to "id" ([#147](https://github.com/MetaMask/snaps-skunkworks/pull/147))
+### Added
+- Snap SVG icon support ([#163](https://github.com/MetaMask/snaps-skunkworks/pull/163))
+
+### Changed
+- **BREAKING:** Rename Snap `name` property to `id` ([#147](https://github.com/MetaMask/snaps-skunkworks/pull/147))
+- **BREAKING:** Support the new Snaps publishing specification ([#140](https://github.com/MetaMask/snaps-skunkworks/pull/140), [#160](https://github.com/MetaMask/snaps-skunkworks/pull/160))
+  - This introduces several breaking changes to how Snaps are developed, hosted, and represented at runtime. See [the specification](https://github.com/MetaMask/specifications/blob/d4a5bf5d6990bb5b02a98bd3f95a24ffb28c701c/snaps/publishing.md) and the referenced pull requests for details.
+- **BREAKING:** Update `ses` to version `^0.15.3` ([#159](https://github.com/MetaMask/snaps-skunkworks/pull/159))
+  - This will cause behavioral changes for code executed under SES, and may require modifications to code that previously executed without issues.
 
 ## [0.5.0]
 ### Changed

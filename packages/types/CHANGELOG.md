@@ -7,10 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.6.0]
-### Uncategorized
-- Use endowment permissions in SnapController ([#155](https://github.com/MetaMask/snaps-skunkworks/pull/155))
-- Snap Publishing v0.1 ([#140](https://github.com/MetaMask/snaps-skunkworks/pull/140))
-- Rename Snap "name" property to "id" ([#147](https://github.com/MetaMask/snaps-skunkworks/pull/147))
+### Added
+- `SnapExecutionData` type ([#155](https://github.com/MetaMask/snaps-skunkworks/pull/155))
+
+### Changed
+- **BREAKING:** Rename Snap `name` property to `id` ([#147](https://github.com/MetaMask/snaps-skunkworks/pull/147))
 
 ## [0.5.0]
 ### Changed
