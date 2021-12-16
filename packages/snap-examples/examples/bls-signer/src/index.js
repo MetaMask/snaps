@@ -45,7 +45,7 @@ async function getPubKey() {
 async function promptUser(message) {
   const response = await wallet.request({
     method: 'snap_confirm',
-    params: [message],
+    params: [{ prompt: message }],
   });
   return response;
 }
