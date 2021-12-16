@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0]
+### Uncategorized
+- Update `snap_confirm` parameters ([#158](https://github.com/MetaMask/snaps-skunkworks/pull/158))
+- Add "Endowment" permissions ([#152](https://github.com/MetaMask/snaps-skunkworks/pull/152))
+- Snap Publishing v0.1 ([#140](https://github.com/MetaMask/snaps-skunkworks/pull/140))
+- Fix restricted Snap method implementations ([#150](https://github.com/MetaMask/snaps-skunkworks/pull/150))
+- Improve types and documentation for `selectHooks` ([#149](https://github.com/MetaMask/snaps-skunkworks/pull/149))
+- Rename Snap "name" property to "id" ([#147](https://github.com/MetaMask/snaps-skunkworks/pull/147))
+
 ## [0.5.0]
 ### Added
 - Added `title` and `subtitle` to `snap_confirm` ([#145](https://github.com/MetaMask/snaps-skunkworks/pull/145))
@@ -58,7 +67,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.3.0...v0.3.1

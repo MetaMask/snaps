@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0]
+### Uncategorized
+- Add Snap SVG icon support ([#163](https://github.com/MetaMask/snaps-skunkworks/pull/163))
+- Add Snap installation events ([#162](https://github.com/MetaMask/snaps-skunkworks/pull/162))
+- Update example Snaps per new publishing specification ([#157](https://github.com/MetaMask/snaps-skunkworks/pull/157))
+- Use endowment permissions in SnapController ([#155](https://github.com/MetaMask/snaps-skunkworks/pull/155))
+- Add network access endowment ([#154](https://github.com/MetaMask/snaps-skunkworks/pull/154))
+- Add "Endowment" permissions ([#152](https://github.com/MetaMask/snaps-skunkworks/pull/152))
+- Clean up SnapController tests ([#156](https://github.com/MetaMask/snaps-skunkworks/pull/156))
+- Snap Publishing v0.1 ([#140](https://github.com/MetaMask/snaps-skunkworks/pull/140))
+- Make subject metadata "name" optional ([#151](https://github.com/MetaMask/snaps-skunkworks/pull/151))
+- Remove inline snap functionality ([#148](https://github.com/MetaMask/snaps-skunkworks/pull/148))
+- Rename Snap "name" property to "id" ([#147](https://github.com/MetaMask/snaps-skunkworks/pull/147))
+
 ## [0.5.0]
 ### Changed
 - **BREAKING:** Update restricted RPC methods per new `PermissionController` ([#143](https://github.com/MetaMask/snaps-skunkworks/pull/143))
@@ -108,7 +122,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.3.0...v0.3.1
