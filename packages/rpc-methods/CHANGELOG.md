@@ -7,9 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.6.1]
-### Uncategorized
-- Fix build and publish scripts ([#169](https://github.com/MetaMask/snaps-skunkworks/pull/169))
-- Fix various 0.6.0 bugs ([#168](https://github.com/MetaMask/snaps-skunkworks/pull/168))
+### Fixed
+- Fix `snap_confirm` validation logic ([#168](https://github.com/MetaMask/snaps-skunkworks/pull/168))
+  - [0.6.0] contained a bug where the method would reject most valid parameter combinations.
 
 ## [0.6.0]
 ### Added

@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.6.1]
-### Uncategorized
-- Fix build and publish scripts ([#169](https://github.com/MetaMask/snaps-skunkworks/pull/169))
+### Changed
+- No changes this release.
 
 ## [0.6.0]
 ### Changed
