@@ -55,7 +55,7 @@
     "node": ">=12.11.0"
   },
   "publishConfig": {
-    "access": "restricted",
+    "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
   "lavamoat": {
