@@ -5,15 +5,12 @@ set -e
 set -u
 set -o pipefail
 
-# This script publishes the package at the CWD if any of the following are true:
-# - the package has yet to be published
-# - the local version of the package is different from the most recently published version
+# This script installs all dependencies, builds all packages, ensures that the
+# git working tree remains cleans, then asks for an npm 2FA code and publishes
+# all packages.
 
 yarn setup
-yarn workspaces run clean
-yarn workspaces run build:pre-tsc
-yarn build:tsc
-yarn workspaces run build:post-tsc
+yarn build:clean
 yarn lint
 
 if [[ $(git diff --quiet) != '' ]]; then
