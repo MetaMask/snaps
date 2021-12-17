@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "setup": "yarn install && yarn allow-scripts",
-    "publish:all": "yarn setup && yarn workspaces run publish",
+    "publish:all": "./scripts/publish-all.sh",
     "link-packages": "./scripts/link-packages.sh",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!**/CHANGELOG.md' '**/*.yml' --ignore-path .gitignore",
@@ -19,10 +19,9 @@
     "lint": "yarn lint:eslint && yarn lint:misc --check",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "build:tsc": "tsc --build --force tsconfig.json",
-    "build:pre-tsc": "yarn workspace @metamask/snap-controllers run build:pre-tsc",
-    "build:post-tsc": "yarn workspace @metamask/snap-workers run build:post-tsc",
-    "build": "yarn build:pre-tsc && yarn build:tsc && yarn build:post-tsc",
-    "build:clean": "yarn workspaces run clean && yarn build",
+    "build": "yarn workspaces run build:pre-tsc && yarn build:tsc && yarn workspaces run build:post-tsc",
+    "build:clean": "yarn clean && yarn build",
+    "clean": "yarn workspaces run clean",
     "test": "yarn workspaces run test",
     "test:ci": "yarn workspaces run test:ci"
   },

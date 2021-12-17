@@ -19,12 +19,12 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "yarn auto-changelog validate",
     "build:tsc": "tsc --project tsconfig.json",
-    "build:post-tsc": "echo 'post-tsc-iframe-execution-env'",
-    "build": "yarn build:tsc && yarn build:post-tsc",
+    "build": "yarn build:tsc",
+    "build:pre-tsc": "echo 'N/A'",
+    "build:post-tsc": "echo 'N/A'",
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf dist/*",
-    "publish": "../../scripts/publish-package.sh",
-    "publish:prep": "yarn lint && yarn build:clean"
+    "publish": "../../scripts/publish-package.sh"
   },
   "dependencies": {
     "@metamask/controllers": "^17.0.0",
