@@ -5,4 +5,4 @@ export * from './utils';
 
 // TODO: Move these to the appropriate package
 export * as permissionRpcMethods from './rpc-methods';
-export * as endowmentBuilders from './endowments';
+export { endowmentPermissionBuilders } from './endowments';
