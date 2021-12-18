@@ -35,7 +35,7 @@ jobs:
       - name: Require clean working directory
         shell: bash
         run: |
-          if [[ $(git diff --quiet) != '' ]]; then
+          if [[ ! $(git diff --exit-code --quiet) ]]; then
             echo "Working tree dirty after building"
             exit 1
           fi
@@ -76,7 +76,7 @@ jobs:
       - name: Require clean working directory
         shell: bash
         run: |
-          if [[ $(git diff --quiet) != '' ]]; then
+          if [[ ! $(git diff --exit-code --quiet) ]]; then
             echo "Working tree dirty after building"
             exit 1
           fi

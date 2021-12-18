@@ -13,7 +13,7 @@ yarn setup
 yarn build:clean
 yarn lint
 
-if [[ $(git diff --quiet) != '' ]]; then
+if [[ ! $(git diff --exit-code --quiet) ]]; then
   echo "Working tree dirty after building"
   exit 1
 fi
