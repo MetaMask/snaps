@@ -19,6 +19,7 @@ fi
 
 if [[ ! $(git diff --exit-code --quiet) ]]; then
   echo "Working tree dirty"
+  git diff
   exit 1
 fi
 

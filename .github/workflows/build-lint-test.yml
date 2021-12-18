@@ -37,6 +37,7 @@ jobs:
         run: |
           if [[ ! $(git diff --exit-code --quiet) ]]; then
             echo "Working tree dirty after building"
+            git diff
             exit 1
           fi
       - run: yarn lint
@@ -78,6 +79,7 @@ jobs:
         run: |
           if [[ ! $(git diff --exit-code --quiet) ]]; then
             echo "Working tree dirty after building"
+            git diff
             exit 1
           fi
       - run: yarn workspace @metamask/snaps-cli run test
