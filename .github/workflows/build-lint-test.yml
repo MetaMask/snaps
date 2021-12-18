@@ -35,9 +35,8 @@ jobs:
       - name: Require clean working directory
         shell: bash
         run: |
-          if [[ ! $(git diff --exit-code) ]]; then
+          if ! git diff --exit-code; then
             echo "Working tree dirty after building"
-            git diff
             exit 1
           fi
       - run: yarn lint
@@ -77,9 +76,8 @@ jobs:
       - name: Require clean working directory
         shell: bash
         run: |
-          if [[ ! $(git diff --exit-code) ]]; then
+          if ! git diff --exit-code; then
             echo "Working tree dirty after building"
-            git diff
             exit 1
           fi
       - run: yarn workspace @metamask/snaps-cli run test
