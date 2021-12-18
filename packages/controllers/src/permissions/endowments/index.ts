@@ -1,5 +1,5 @@
 import { networkAccessEndowmentBuilder } from './network-access';
 
-export const builders = {
+export const endowmentPermissionBuilders = {
   [networkAccessEndowmentBuilder.targetKey]: networkAccessEndowmentBuilder,
 } as const;
