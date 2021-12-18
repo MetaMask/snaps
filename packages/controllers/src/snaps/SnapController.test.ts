@@ -216,7 +216,6 @@ const getSnapObject = ({
   status = SnapStatus.stopped,
   enabled = true,
   sourceCode = FAKE_SNAP_SOURCE_CODE,
-  svgIcon = null,
 } = {}): Snap => {
   return {
     initialPermissions,
@@ -227,7 +226,6 @@ const getSnapObject = ({
     status,
     enabled,
     sourceCode,
-    svgIcon,
   } as const;
 };
 
@@ -451,7 +449,6 @@ describe('SnapController', () => {
               permissionName: 'fooperm',
               version: '0.0.1',
               sourceCode,
-              svgIcon: null,
               id: 'npm:foo',
               manifest: getSnapManifest({
                 shasum: getSnapSourceShasum(sourceCode),
