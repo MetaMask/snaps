@@ -101,11 +101,6 @@ export type Snap = {
   status: SnapStatus;
 
   /**
-   * The SVG icon of the Snap.
-   */
-  svgIcon: string | null;
-
-  /**
    * The version of the Snap.
    */
   version: string;
@@ -176,7 +171,7 @@ export type SnapStateChange = {
  */
 export type SnapAdded = {
   type: `${typeof controllerName}:snapAdded`;
-  payload: [snapId: string, snap: Snap];
+  payload: [snapId: string, snap: Snap, svgIcon: string | undefined];
 };
 
 /**
@@ -1037,7 +1032,6 @@ export class SnapController extends BaseController<
       manifest,
       permissionName: SNAP_PREFIX + snapId, // so we can easily correlate them
       sourceCode,
-      svgIcon: svgIcon ?? null,
       status: snapStatusStateMachineConfig.initial,
       version: manifest.version,
     };
@@ -1054,7 +1048,12 @@ export class SnapController extends BaseController<
       state.snaps[snapId] = snap;
     });
 
-    this.messagingSystem.publish(`SnapController:snapAdded`, snapId, snap);
+    this.messagingSystem.publish(
+      `SnapController:snapAdded`,
+      snapId,
+      snap,
+      svgIcon,
+    );
     return snap;
   }
 
