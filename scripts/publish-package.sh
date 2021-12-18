@@ -17,7 +17,7 @@ if [[ -z $OTP ]]; then
   exit 1
 fi
 
-if [[ ! $(git diff --exit-code --quiet) ]]; then
+if [[ ! $(git diff --exit-code) ]]; then
   echo "Working tree dirty"
   git diff
   exit 1
