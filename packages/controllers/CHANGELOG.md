@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.6.2]
-### Uncategorized
-- Remove the svgIcon property from Snap state ([#172](https://github.com/MetaMask/snaps-skunkworks/pull/172))
-- Rename permission builder exports ([#171](https://github.com/MetaMask/snaps-skunkworks/pull/171))
+### Changed
+- **BREAKING:** Rename endowment permission builder exports ([#171](https://github.com/MetaMask/snaps-skunkworks/pull/171))
+
+### Removed
+- **BREAKING:** Remove the `svgIcon` property from Snap state ([#172](https://github.com/MetaMask/snaps-skunkworks/pull/172))
+  - The SVG icon content string is instead emitted with the `SnapController:snapAdded` event.
 
 ## [0.6.1]
 ### Changed
