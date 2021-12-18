@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-cli",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "A CLI for developing MetaMask Snaps.",
   "repository": {
     "type": "git",
@@ -36,7 +36,7 @@
     "publish": "../../scripts/publish-package.sh"
   },
   "dependencies": {
-    "@metamask/snap-controllers": "^0.6.1",
+    "@metamask/snap-controllers": "^0.6.2",
     "browserify": "^17.0.0",
     "chokidar": "^3.0.2",
     "fast-deep-equal": "^2.0.1",
