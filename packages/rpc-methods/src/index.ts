@@ -3,7 +3,7 @@ export {
   PermittedRpcMethodHooks,
 } from './permitted';
 export {
-  builders as restrictedMethodBuilders,
+  builders as restrictedMethodPermissionBuilders,
   RestrictedMethodHooks,
 } from './restricted';
 export { selectHooks } from './utils';
