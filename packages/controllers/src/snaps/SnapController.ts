@@ -557,7 +557,10 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap to disable.
    */
   disableSnap(snapId: SnapId): void {
-    this.stopSnap(snapId);
+    if (this.isRunning(snapId)) {
+      this.stopSnap(snapId);
+    }
+
     this.update((state: any) => {
       state.snaps[snapId].enabled = false;
     });
