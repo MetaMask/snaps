@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.6.3]
-### Uncategorized
-- Added guard for stop error in disableSnap ([#175](https://github.com/MetaMask/snaps-skunkworks/pull/175))
+### Added
+- Guard for stop error in disableSnap ([#175](https://github.com/MetaMask/snaps-skunkworks/pull/175))
 
 ## [0.6.2]
 ### Changed
