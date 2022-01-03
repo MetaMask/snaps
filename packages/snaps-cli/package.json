@@ -21,7 +21,7 @@
     "build:chmod": "chmod +x ./dist/main.js",
     "build": "yarn build:init-template && yarn build:typescript && yarn build:chmod",
     "build:pre-tsc": "echo 'N/A'",
-    "build:post-tsc": "./scripts/publish-prep.sh",
+    "build:post-tsc": "yarn build:init-template && yarn build:chmod",
     "build:clean": "yarn clean && yarn build",
     "build:watch": "tsc-watch --onSuccess 'yarn build:chmod'",
     "clean": "rimraf dist/*",
