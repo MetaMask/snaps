@@ -2482,10 +2482,10 @@
   resolved "https://registry.yarnpkg.com/@metamask/safe-event-emitter/-/safe-event-emitter-2.0.0.tgz#af577b477c683fad17c619a78208cede06f9605c"
   integrity sha512-/kSXhY692qiV1MXu6EeOZvg5nECLclxNXcKCxJ3cXQgYuRymRHpdx/t7JXfsK+JLjwA1e1c1/SBrlQYpusC29Q==
 
-"@nodefactory/strip-comments@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@nodefactory/strip-comments/-/strip-comments-1.0.1.tgz#65f73dd679f72c4a29ca5d69bd27c4f7a2624879"
-  integrity sha512-fCipRf8CerEzoWegXsdh2jJbIMPqa4lqjOZ6FZjEzKWS9xQQ4biD4feN+RDPo+EVi01TemEncVNPxDU5feoi5w==
+"@nodefactory/strip-comments@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@nodefactory/strip-comments/-/strip-comments-1.0.2.tgz#531ee3d53a1d22f14508e200f83f1e54235b1454"
+  integrity sha512-dcZC7N0xZfm2wnwnv0xyK+ak6qkonvxDypeFPLUP88kqvWzskOfv53tvEoAUGFeoddjOt2m56mtayb1gM/VY6A==
 
 "@nodelib/fs.scandir@2.1.4":
   version "2.1.4"
