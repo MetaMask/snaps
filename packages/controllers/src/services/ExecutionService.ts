@@ -1,6 +1,6 @@
-import { JsonRpcRequest } from 'json-rpc-engine';
 import { SnapExecutionData } from '@metamask/snap-types';
-import { SnapRpcHook } from './WebWorkerExecutionEnvironmentService';
+import { JsonRpcRequest } from 'json-rpc-engine';
+import { SnapRpcHook } from './AbstractExecutionService';
 
 export interface SnapMetadata {
   hostname: string;
@@ -18,7 +18,7 @@ export type GetRpcMessageHandler = (
   snapId: string,
 ) => Promise<SnapRpcHook | undefined>;
 
-export interface ExecutionEnvironmentService {
+export interface ExecutionService {
   terminateSnap: TerminateSnap;
   terminateAllSnaps: TerminateAll;
   executeSnap: ExecuteSnap;

@@ -1,10 +1,7 @@
-import { ethErrors, serializeError } from 'eth-rpc-errors';
-import type { Patch } from 'immer';
 import {
   BaseControllerV2 as BaseController,
   RestrictedControllerMessenger,
 } from '@metamask/controllers';
-import { Json } from 'json-rpc-engine';
 import {
   ErrorJSON,
   ErrorMessageEvent,
@@ -12,31 +9,34 @@ import {
   SnapId,
   UnresponsiveMessageEvent,
 } from '@metamask/snap-types';
+import { ethErrors, serializeError } from 'eth-rpc-errors';
+import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
+import type { Patch } from 'immer';
+import { Json } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
 import isValidSemver from 'semver/functions/valid';
-import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import {
-  PermissionConstraint,
-  HasPermission,
   GetEndowments,
+  HasPermission,
+  PermissionConstraint,
 } from '../permissions';
 import {
-  GetRpcMessageHandler,
   ExecuteSnap,
+  GetRpcMessageHandler,
   TerminateAll,
   TerminateSnap,
-} from '../services/ExecutionEnvironmentService';
+} from '../services/ExecutionService';
 import { timeSince } from '../utils';
+import { SnapManifest, validateSnapJsonFile } from './json-schemas';
 import {
-  LOCALHOST_HOSTNAMES,
-  SnapIdPrefixes,
-  NpmSnapFileNames,
-  validateSnapShasum,
-  ValidatedSnapId,
   fetchContent,
   fetchNpmSnap,
+  LOCALHOST_HOSTNAMES,
+  NpmSnapFileNames,
+  SnapIdPrefixes,
+  ValidatedSnapId,
+  validateSnapShasum,
 } from './utils';
-import { SnapManifest, validateSnapJsonFile } from './json-schemas';
 
 export const controllerName = 'SnapController';
 

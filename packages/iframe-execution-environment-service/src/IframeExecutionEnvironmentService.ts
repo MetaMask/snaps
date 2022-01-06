@@ -1,19 +1,16 @@
-import { Duplex } from 'stream';
+import { WindowPostMessageStream } from '@metamask/post-message-stream';
+import {
+  AbstractExecutionService,
+  setupMultiplex,
+  SetupSnapProvider,
+} from '@metamask/snap-controllers';
+import { ServiceMessenger } from '@metamask/snap-types';
+import { SNAP_STREAM_NAMES } from '@metamask/snap-workers';
+import { JsonRpcEngine } from 'json-rpc-engine';
+import { createStreamMiddleware } from 'json-rpc-middleware-stream';
 import { nanoid } from 'nanoid';
 import pump from 'pump';
-import ObjectMultiplex from '@metamask/object-multiplex';
-import { WindowPostMessageStream } from '@metamask/post-message-stream';
-import { SNAP_STREAM_NAMES } from '@metamask/snap-workers';
-import { createStreamMiddleware } from 'json-rpc-middleware-stream';
-import { SnapData, ServiceMessenger } from '@metamask/snap-types';
-import {
-  JsonRpcEngine,
-  JsonRpcRequest,
-  PendingJsonRpcResponse,
-} from 'json-rpc-engine';
-import { ExecutionEnvironmentService } from '@metamask/snap-controllers';
-
-export type SetupSnapProvider = (snapId: string, stream: Duplex) => void;
+import { Duplex } from 'stream';
 
 type IframeExecutionEnvironmentServiceArgs = {
   createWindowTimeout?: number;
@@ -30,44 +27,18 @@ type JobStreams = {
   _connection: WindowPostMessageStream;
 };
 
-// The snap is the callee
-export type SnapRpcHook = (
-  origin: string,
-  request: Record<string, unknown>,
-) => Promise<unknown>;
-
 type EnvMetadata = {
   id: string;
   streams: JobStreams;
   rpcEngine: JsonRpcEngine;
 };
 
-export class IframeExecutionEnvironmentService
-  implements ExecutionEnvironmentService
-{
-  private _snapRpcHooks: Map<string, SnapRpcHook>;
-
+export class IframeExecutionEnvironmentService extends AbstractExecutionService<EnvMetadata> {
   public _iframeWindow?: Window;
 
   public iframeUrl: URL;
 
-  private jobs: Map<string, EnvMetadata>;
-
-  private setupSnapProvider: SetupSnapProvider;
-
-  private snapToJobMap: Map<string, string>;
-
-  private jobToSnapMap: Map<string, string>;
-
   private _createWindowTimeout: number;
-
-  private _messenger: ServiceMessenger;
-
-  private _unresponsivePollingInterval: number;
-
-  private _unresponsiveTimeout: number;
-
-  private _timeoutForUnresponsiveMap: Map<string, number>;
 
   constructor({
     setupSnapProvider,
@@ -77,17 +48,14 @@ export class IframeExecutionEnvironmentService
     unresponsiveTimeout = 30000,
     createWindowTimeout = 60000,
   }: IframeExecutionEnvironmentServiceArgs) {
+    super({
+      setupSnapProvider,
+      messenger,
+      unresponsivePollingInterval,
+      unresponsiveTimeout,
+    });
     this._createWindowTimeout = createWindowTimeout;
     this.iframeUrl = iframeUrl;
-    this.setupSnapProvider = setupSnapProvider;
-    this.jobs = new Map();
-    this.snapToJobMap = new Map();
-    this.jobToSnapMap = new Map();
-    this._snapRpcHooks = new Map();
-    this._messenger = messenger;
-    this._unresponsivePollingInterval = unresponsivePollingInterval;
-    this._unresponsiveTimeout = unresponsiveTimeout;
-    this._timeoutForUnresponsiveMap = new Map();
   }
 
   private _setJob(jobId: string, jobWrapper: EnvMetadata): void {
@@ -96,43 +64,6 @@ export class IframeExecutionEnvironmentService
 
   private _deleteJob(jobId: string): void {
     this.jobs.delete(jobId);
-  }
-
-  private async _command(
-    jobId: string,
-    message: JsonRpcRequest<unknown>,
-  ): Promise<unknown> {
-    if (typeof message !== 'object') {
-      throw new Error('Must send object.');
-    }
-
-    const jobWrapper = this.jobs.get(jobId);
-    if (!jobWrapper) {
-      throw new Error(`Job with id "${jobId}" not found.`);
-    }
-
-    console.log('Parent: Sending Command', message);
-    const response: PendingJsonRpcResponse<unknown> =
-      await jobWrapper.rpcEngine.handle(message);
-    if (response.error) {
-      throw new Error(response.error.message);
-    }
-    return response.result;
-  }
-
-  public async terminateAllSnaps() {
-    for (const jobId of this.jobs.keys()) {
-      this.terminate(jobId);
-    }
-    this._snapRpcHooks.clear();
-  }
-
-  public async terminateSnap(snapId: string) {
-    const jobId = this.snapToJobMap.get(snapId);
-    if (!jobId) {
-      throw new Error(`Job not found for snap with id "${snapId}".`);
-    }
-    this.terminate(jobId);
   }
 
   public terminate(jobId: string): void {
@@ -166,132 +97,7 @@ export class IframeExecutionEnvironmentService
     console.log(`job: "${jobId}" terminated`);
   }
 
-  /**
-   * Gets the RPC message handler for the given snap.
-   *
-   * @param snapId - The id of the Snap whose message handler to get.
-   */
-  public async getRpcMessageHandler(snapId: string) {
-    return this._snapRpcHooks.get(snapId);
-  }
-
-  private _removeSnapHooks(snapId: string) {
-    this._snapRpcHooks.delete(snapId);
-  }
-
-  private _createSnapHooks(snapId: string, jobId: string) {
-    const rpcHook = async (
-      origin: string,
-      request: Record<string, unknown>,
-    ) => {
-      return await this._command(jobId, {
-        id: nanoid(),
-        jsonrpc: '2.0',
-        method: 'snapRpc',
-        params: {
-          origin,
-          request,
-          target: snapId,
-        },
-      });
-    };
-
-    this._snapRpcHooks.set(snapId, rpcHook);
-  }
-
-  public async executeSnap(snapData: SnapData): Promise<unknown> {
-    if (this.snapToJobMap.has(snapData.snapId)) {
-      throw new Error(`Snap "${snapData.snapId}" is already being executed.`);
-    }
-
-    const job = await this._init();
-    this._mapSnapAndJob(snapData.snapId, job.id);
-
-    let result;
-    try {
-      result = await this._command(job.id, {
-        jsonrpc: '2.0',
-        method: 'executeSnap',
-        params: snapData,
-        id: nanoid(),
-      });
-    } catch (error) {
-      this.terminate(job.id);
-      throw error;
-    }
-
-    this.setupSnapProvider(
-      snapData.snapId,
-      job.streams.rpc as unknown as Duplex,
-    );
-    // set up poll/ping for status to see if its up, if its not then emit event that it cant be reached
-    this._pollForJobStatus(snapData.snapId);
-    this._createSnapHooks(snapData.snapId, job.id);
-    return result;
-  }
-
-  _pollForJobStatus(snapId: string) {
-    const jobId = this.snapToJobMap.get(snapId);
-    if (!jobId) {
-      throw new Error('no job id found for snap');
-    }
-
-    const timeout = setTimeout(async () => {
-      this._getJobStatus(jobId)
-        .then(() => {
-          this._pollForJobStatus(snapId);
-        })
-        .catch(() => {
-          this._messenger.publish('ServiceMessenger:unresponsive', snapId);
-        });
-    }, this._unresponsivePollingInterval) as unknown as number;
-    this._timeoutForUnresponsiveMap.set(snapId, timeout);
-  }
-
-  async _getJobStatus(jobId: string) {
-    let resolve: any;
-    let reject: any;
-
-    const timeoutPromise = new Promise((res, rej) => {
-      resolve = res;
-      reject = rej;
-    });
-
-    const timeout = setTimeout(() => {
-      reject(new Error('ping request timed out'));
-    }, this._unresponsiveTimeout);
-
-    return Promise.race([
-      this._command(jobId, {
-        jsonrpc: '2.0',
-        method: 'ping',
-        params: [],
-        id: nanoid(),
-      }).then(() => {
-        clearTimeout(timeout);
-        resolve();
-      }),
-      timeoutPromise,
-    ]);
-  }
-
-  private _mapSnapAndJob(snapId: string, jobId: string): void {
-    this.snapToJobMap.set(snapId, jobId);
-    this.jobToSnapMap.set(jobId, snapId);
-  }
-
-  private _removeSnapAndJobMapping(jobId: string): void {
-    const snapId = this.jobToSnapMap.get(jobId);
-    if (!snapId) {
-      throw new Error(`job: "${jobId}" has no mapped snap.`);
-    }
-
-    this.jobToSnapMap.delete(jobId);
-    this.snapToJobMap.delete(snapId);
-    this._removeSnapHooks(snapId);
-  }
-
-  private async _init(): Promise<EnvMetadata> {
+  protected async _initJob(): Promise<EnvMetadata> {
     const jobId = nanoid();
     const streams = await this._initStreams(jobId);
     const rpcEngine = new JsonRpcEngine();
@@ -386,32 +192,4 @@ export class IframeExecutionEnvironmentService
       iframe.setAttribute('id', jobId);
     });
   }
-}
-
-/**
- * Sets up stream multiplexing for the given stream.
- *
- * @param connectionStream - the stream to mux
- * @param streamName - the name of the stream, for identification in errors
- * @return {stream.Stream} the multiplexed stream
- */
-function setupMultiplex(
-  connectionStream: Duplex,
-  streamName: string,
-): ObjectMultiplex {
-  const mux = new ObjectMultiplex();
-  pump(
-    connectionStream,
-    // Typecast: stream type mismatch
-    mux as unknown as Duplex,
-    connectionStream,
-    (err) => {
-      if (err) {
-        streamName
-          ? console.error(`"${streamName}" stream failure.`, err)
-          : console.error(err);
-      }
-    },
-  );
-  return mux;
 }
