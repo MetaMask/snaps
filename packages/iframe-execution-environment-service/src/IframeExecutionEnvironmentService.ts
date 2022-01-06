@@ -1,3 +1,4 @@
+import { Duplex } from 'stream';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import {
   AbstractExecutionService,
@@ -10,7 +11,6 @@ import { JsonRpcEngine } from 'json-rpc-engine';
 import { createStreamMiddleware } from 'json-rpc-middleware-stream';
 import { nanoid } from 'nanoid';
 import pump from 'pump';
-import { Duplex } from 'stream';
 
 type IframeExecutionEnvironmentServiceArgs = {
   createWindowTimeout?: number;

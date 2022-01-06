@@ -1,3 +1,4 @@
+import { Duplex } from 'stream';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { ServiceMessenger, SnapExecutionData } from '@metamask/snap-types';
 import {
@@ -7,7 +8,6 @@ import {
 } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
 import pump from 'pump';
-import { Duplex } from 'stream';
 import { ExecutionService } from '.';
 
 export type SetupSnapProvider = (snapId: string, stream: Duplex) => void;
@@ -74,6 +74,7 @@ export abstract class AbstractExecutionService<JobType extends Job>
   }
 
   abstract terminate(jobId: string): void;
+
   protected abstract _initJob(): Promise<JobType>;
 
   async terminateSnap(snapId: string) {
