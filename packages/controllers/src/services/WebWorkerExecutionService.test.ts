@@ -5,7 +5,7 @@ import {
   ServiceMessenger,
   UnresponsiveMessageEvent,
 } from '@metamask/snap-types';
-import { WebWorkerExecutionEnvironmentService } from './WebWorkerExecutionEnvironmentService';
+import { WebWorkerExecutionService } from './WebWorkerExecutionService';
 
 const workerCode = fs.readFileSync(
   require.resolve('@metamask/snap-workers/dist/SnapWorker.js'),
@@ -21,15 +21,14 @@ describe('Worker Controller', () => {
     >({
       name: 'ServiceMessenger',
     });
-    const webWorkerExecutionEnvironmentService =
-      new WebWorkerExecutionEnvironmentService({
-        messenger,
-        setupSnapProvider: () => {
-          // do nothing
-        },
-        workerUrl: new URL('https://foo.bar.baz'),
-      });
-    expect(webWorkerExecutionEnvironmentService).toBeDefined();
+    const webWorkerExecutionService = new WebWorkerExecutionService({
+      messenger,
+      setupSnapProvider: () => {
+        // do nothing
+      },
+      workerUrl: new URL('https://foo.bar.baz'),
+    });
+    expect(webWorkerExecutionService).toBeDefined();
   });
 
   it('can create a snap worker and start the snap', async () => {
@@ -40,16 +39,15 @@ describe('Worker Controller', () => {
     >({
       name: 'ServiceMessenger',
     });
-    const webWorkerExecutionEnvironmentService =
-      new WebWorkerExecutionEnvironmentService({
-        messenger,
-        setupSnapProvider: () => {
-          // do nothing
-        },
-        workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
-      });
+    const webWorkerExecutionService = new WebWorkerExecutionService({
+      messenger,
+      setupSnapProvider: () => {
+        // do nothing
+      },
+      workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
+    });
     const snapId = 'foo.bar.baz';
-    const response = await webWorkerExecutionEnvironmentService.executeSnap({
+    const response = await webWorkerExecutionService.executeSnap({
       snapId,
       sourceCode: `
         console.log('foo');
@@ -71,17 +69,16 @@ describe('Worker Controller', () => {
       name: 'ServiceMessenger',
       allowedEvents: ['ServiceMessenger:unresponsive'],
     });
-    const webWorkerExecutionEnvironmentService =
-      new WebWorkerExecutionEnvironmentService({
-        messenger,
-        setupSnapProvider: () => {
-          // do nothing
-        },
-        workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
-      });
+    const webWorkerExecutionService = new WebWorkerExecutionService({
+      messenger,
+      setupSnapProvider: () => {
+        // do nothing
+      },
+      workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
+    });
 
     const snapId = 'foo.bar.baz';
-    await webWorkerExecutionEnvironmentService.executeSnap({
+    await webWorkerExecutionService.executeSnap({
       snapId,
       sourceCode: `
         console.log('foo');
@@ -90,7 +87,7 @@ describe('Worker Controller', () => {
 
     // prevent command from returning
     // eslint-disable-next-line jest/prefer-spy-on
-    (webWorkerExecutionEnvironmentService as any)._command = jest.fn();
+    (webWorkerExecutionService as any)._command = jest.fn();
 
     // check for an error
     const promise = new Promise((resolve) => {

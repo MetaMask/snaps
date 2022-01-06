@@ -1,22 +1,22 @@
 import fs from 'fs';
-import { ControllerMessenger } from '@metamask/controllers/dist/ControllerMessenger';
 import { getPersistentState, Json } from '@metamask/controllers';
+import { ControllerMessenger } from '@metamask/controllers/dist/ControllerMessenger';
 import { serializeError } from 'eth-rpc-errors';
-import { WebWorkerExecutionEnvironmentService } from '../services/WebWorkerExecutionEnvironmentService';
-import { ExecutionEnvironmentService } from '../services/ExecutionEnvironmentService';
+import { ExecutionService } from '../services/ExecutionService';
+import { WebWorkerExecutionService } from '../services/WebWorkerExecutionService';
+import { SnapManifest } from './json-schemas';
 import {
   AllowedActions,
   AllowedEvents,
-  TruncatedSnap,
   Snap,
   SnapController,
   SnapControllerActions,
   SnapControllerEvents,
   SnapControllerState,
   SnapStatus,
+  TruncatedSnap,
 } from './SnapController';
 import { getSnapSourceShasum } from './utils';
-import { SnapManifest } from './json-schemas';
 
 const workerCode = fs.readFileSync(
   require.resolve('@metamask/snap-workers/dist/SnapWorker.js'),
@@ -113,13 +113,13 @@ const getSnapController = (options = getSnapControllerOptions()) => {
 const getWebWorkerEES = (
   messenger: ReturnType<typeof getSnapControllerMessenger>,
 ) =>
-  new WebWorkerExecutionEnvironmentService({
+  new WebWorkerExecutionService({
     messenger,
     setupSnapProvider: jest.fn(),
     workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
   });
 
-class ExecutionEnvironmentStub implements ExecutionEnvironmentService {
+class ExecutionEnvironmentStub implements ExecutionService {
   async terminateAllSnaps() {
     // empty stub
   }
@@ -283,7 +283,7 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
-  it('should add a snap and use its JSON-RPC api with a WebWorkerExecutionEnvironmentService', async () => {
+  it('should add a snap and use its JSON-RPC api with a WebWorkerExecutionService', async () => {
     const [snapController] = getSnapControllerWithEES();
 
     const sourceCode = `
@@ -318,7 +318,7 @@ describe('SnapController', () => {
 
   it('should add a snap and use its JSON-RPC api', async () => {
     const executionEnvironmentStub =
-      new ExecutionEnvironmentStub() as unknown as WebWorkerExecutionEnvironmentService;
+      new ExecutionEnvironmentStub() as unknown as WebWorkerExecutionService;
 
     const [snapController] = getSnapControllerWithEES(
       undefined,
@@ -486,7 +486,7 @@ describe('SnapController', () => {
 
   it('should add errors to the SnapControllers state', async () => {
     const executionEnvironmentStub =
-      new ExecutionEnvironmentStub() as unknown as WebWorkerExecutionEnvironmentService;
+      new ExecutionEnvironmentStub() as unknown as WebWorkerExecutionService;
 
     const [snapController] = getSnapControllerWithEES(
       undefined,
@@ -557,13 +557,11 @@ describe('SnapController', () => {
       ],
     });
 
-    const workerExecutionEnvironment = new WebWorkerExecutionEnvironmentService(
-      {
-        messenger: serviceMessenger,
-        setupSnapProvider: jest.fn(),
-        workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
-      },
-    );
+    const workerExecutionEnvironment = new WebWorkerExecutionService({
+      messenger: serviceMessenger,
+      setupSnapProvider: jest.fn(),
+      workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
+    });
 
     const [snapController] = getSnapControllerWithEES(
       getSnapControllerWithEESOptions({ messenger: snapControllerMessenger }),

@@ -33,7 +33,7 @@ type EnvMetadata = {
   rpcEngine: JsonRpcEngine;
 };
 
-export class IframeExecutionEnvironmentService extends AbstractExecutionService<EnvMetadata> {
+export class IframeExecutionService extends AbstractExecutionService<EnvMetadata> {
   public _iframeWindow?: Window;
 
   public iframeUrl: URL;

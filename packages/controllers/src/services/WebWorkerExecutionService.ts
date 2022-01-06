@@ -34,7 +34,7 @@ interface WorkerWrapper {
   worker: Worker;
 }
 
-export class WebWorkerExecutionEnvironmentService extends AbstractExecutionService<WorkerWrapper> {
+export class WebWorkerExecutionService extends AbstractExecutionService<WorkerWrapper> {
   public store: ObservableStore<{ workers: Record<string, WorkerWrapper> }>;
 
   private workerUrl: URL;
