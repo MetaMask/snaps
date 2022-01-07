@@ -18,9 +18,11 @@ describe('bundle', () => {
 
       const mockBrowserify = (browserify as jest.Mock).mockImplementation(
         () => ({
-          bundle: (cb: () => any) => {
-            cb();
-          },
+          transform: () => ({
+            bundle: (cb: () => any) => {
+              cb();
+            },
+          }),
         }),
       );
       const createStreamMock = jest

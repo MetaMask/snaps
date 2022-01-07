@@ -20,17 +20,37 @@ export function bundle(
 
   return new Promise((resolve, _reject) => {
     const bundleStream = createBundleStream(dest);
-    browserify(src, { debug }).bundle(
-      async (bundleError, bundleBuffer: Buffer) =>
-        await closeBundleStream({
-          bundleError,
-          bundleBuffer,
-          bundleStream,
-          src,
-          dest,
-          resolve,
-          argv,
-        }),
-    );
+    browserify(src, { debug })
+      .transform('babelify', {
+        presets: [
+          [
+            '@babel/preset-env',
+            {
+              targets: {
+                browsers: ['chrome >= 66', 'firefox >= 68'],
+              },
+            },
+          ],
+        ],
+        plugins: [
+          '@babel/plugin-transform-runtime',
+          '@babel/plugin-proposal-class-properties',
+          '@babel/plugin-proposal-object-rest-spread',
+          '@babel/plugin-proposal-optional-chaining',
+          '@babel/plugin-proposal-nullish-coalescing-operator',
+        ],
+      })
+      .bundle(
+        async (bundleError, bundleBuffer: Buffer) =>
+          await closeBundleStream({
+            bundleError,
+            bundleBuffer,
+            bundleStream,
+            src,
+            dest,
+            resolve,
+            argv,
+          }),
+      );
   });
 }
