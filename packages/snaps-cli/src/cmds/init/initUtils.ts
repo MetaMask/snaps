@@ -1,15 +1,16 @@
-import { promises as fs, existsSync } from 'fs';
+import { existsSync, promises as fs } from 'fs';
 import pathUtils from 'path';
-import {
-  NpmSnapPackageJson,
-  SnapManifest,
-  NpmSnapFileNames,
-  validateSnapJsonFile,
-  PROPOSED_NAME_REGEX,
-} from '@metamask/snap-controllers/dist/snaps';
 import initPackageJson from 'init-package-json';
 import mkdirp from 'mkdirp';
 import slash from 'slash';
+import {
+  NpmSnapFileNames,
+  NpmSnapPackageJson,
+  PROPOSED_NAME_REGEX,
+  SnapManifest,
+  validateSnapJsonFile,
+} from '@metamask/snap-controllers/dist/snaps';
+import { YargsArgs } from '../../types/yargs';
 import {
   CONFIG_FILE,
   deepClone,
@@ -19,7 +20,6 @@ import {
   readJsonFile,
   trimPathString,
 } from '../../utils';
-import { YargsArgs } from '../../types/yargs';
 
 /**
  * This is a placeholder shasum that will be replaced at the end of the init command.
@@ -35,9 +35,7 @@ const NPM_PUBLIC_REGISTRY_URL = 'https://registry.npmjs.org';
  *
  * @returns The contents of the `package.json` file.
  */
-export async function asyncPackageInit(): Promise<
-  Readonly<NpmSnapPackageJson>
-> {
+export async function asyncPackageInit(): Promise<Readonly<NpmSnapPackageJson> | null> {
   if (existsSync(NpmSnapFileNames.PackageJson)) {
     console.log(
       `Init: Attempting to use existing '${NpmSnapFileNames.PackageJson}'...`,
@@ -56,7 +54,8 @@ export async function asyncPackageInit(): Promise<
         `Init Error: Could not parse '${NpmSnapFileNames.PackageJson}'. Please verify that the file is correctly formatted and try again.`,
         error,
       );
-      process.exit(1);
+      process.exitCode = 1;
+      return null;
     }
   }
 
@@ -65,7 +64,8 @@ export async function asyncPackageInit(): Promise<
     logError(
       `Init Error: Found a 'yarn.lock' file but no '${NpmSnapFileNames.PackageJson}'. Please run 'yarn init' and try again.`,
     );
-    process.exit(1);
+    process.exitCode = 1;
+    return null;
   }
 
   // Run 'npm init'
@@ -104,7 +104,9 @@ const getDefaultPermissions = () => {
 export async function buildSnapManifest(
   argv: YargsArgs,
   packageJson: NpmSnapPackageJson,
-): Promise<[SnapManifest, { dist: string; outfileName: string; src: string }]> {
+): Promise<
+  [SnapManifest, { dist: string; outfileName: string; src: string }] | null
+> {
   const { outfileName } = argv;
   let { dist } = argv;
   let initialPermissions: Record<string, unknown> = getDefaultPermissions();
@@ -135,7 +137,8 @@ export async function buildSnapManifest(
     }
   } catch (err) {
     logError(`Init Error: ${err.message}`, err);
-    process.exit(1);
+    process.exitCode = 1;
+    return null;
   }
 
   let invalidProposedName = true;
@@ -289,7 +292,7 @@ const INIT_FILE_NAMES = new Set([
  * Checks whether any files in the current working directory will be overwritten
  * by the initialization process, and asks the user whether to continue if so.
  */
-export async function prepareWorkingDirectory(): Promise<void> {
+export async function prepareWorkingDirectory(): Promise<boolean> {
   const existingFiles = (await fs.readdir(process.cwd())).filter((item) =>
     INIT_FILE_NAMES.has(item.toString()),
   );
@@ -312,7 +315,10 @@ export async function prepareWorkingDirectory(): Promise<void> {
 
     if (!shouldContinue) {
       console.log(`Init: Exiting...`);
-      process.exit(1);
+      // eslint-disable-next-line require-atomic-updates
+      process.exitCode = 1;
+      return false;
     }
   }
+  return true;
 }

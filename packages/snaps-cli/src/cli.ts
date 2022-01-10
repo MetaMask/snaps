@@ -1,8 +1,7 @@
 import yargs, { Arguments } from 'yargs';
 import yargsType from 'yargs/yargs';
-
-import { applyConfig, sanitizeInputs, setSnapGlobals } from './utils';
 import builders from './builders';
+import { applyConfig, sanitizeInputs, setSnapGlobals } from './utils';
 
 export function cli(argv: string[], commands: any): void {
   const rawArgv = argv.slice(2);
@@ -51,7 +50,7 @@ export function cli(argv: string[], commands: any): void {
       if (err?.stack && global.snaps.verboseErrors) {
         console.error(err.stack);
       }
-      process.exit(1);
+      process.exitCode = 1;
     })
 
     .demandCommand(1, 'You must specify at least one command.')

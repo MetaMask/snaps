@@ -101,18 +101,14 @@ describe('cli', () => {
 
   describe('command failures', () => {
     it('handles an argument validation failure for a locally defined command', () => {
-      processExitSpy.mockImplementationOnce(() => {
-        throw new Error('process exited');
-      });
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       const mockServeHandler = jest.fn();
 
-      expect(() =>
-        cli(getMockArgv('serve', '--port', 'not-a-number'), [
-          { ...commandMap.serve, handler: mockServeHandler },
-        ]),
-      ).toThrow('process exited');
+      cli(getMockArgv('serve', '--port', 'not-a-number'), [
+        { ...commandMap.serve, handler: mockServeHandler },
+      ]);
 
+      expect(process.exitCode).toStrictEqual(1);
       expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
       expect(consoleErrorSpy).toHaveBeenCalledWith('Invalid port: NaN');
       expect(mockServeHandler).not.toHaveBeenCalled();
@@ -125,12 +121,11 @@ describe('cli', () => {
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       const mockServeHandler = jest.fn();
 
-      expect(() =>
-        cli(getMockArgv('serve', '--port', 'not-a-number', `--verboseErrors`), [
-          { ...commandMap.serve, handler: mockServeHandler },
-        ]),
-      ).toThrow('process exited');
+      cli(getMockArgv('serve', '--port', 'not-a-number', `--verboseErrors`), [
+        { ...commandMap.serve, handler: mockServeHandler },
+      ]);
 
+      expect(process.exitCode).toStrictEqual(1);
       expect(consoleErrorSpy).toHaveBeenCalledTimes(2);
       expect(consoleErrorSpy).toHaveBeenNthCalledWith(1, 'Invalid port: NaN');
       expect(mockServeHandler).not.toHaveBeenCalled();

@@ -1,17 +1,17 @@
 import { promises as fs } from 'fs';
-import mkdirp from 'mkdirp';
 import {
   getSnapSourceShasum,
   NpmSnapFileNames,
 } from '@metamask/snap-controllers';
+import mkdirp from 'mkdirp';
 import { getPackageJson, getSnapManifest } from '../../../test/utils';
-import * as readlineUtils from '../../utils/readline';
-import * as miscUtils from '../../utils/misc';
 import * as fsUtils from '../../utils/fs';
+import * as miscUtils from '../../utils/misc';
+import * as readlineUtils from '../../utils/readline';
 import { getWritableManifest } from '../manifest/manifestHandler';
-import * as initUtils from './initUtils';
-import { initHandler, updateManifestShasum } from './initHandler';
 import template from './init-template.json';
+import { initHandler, updateManifestShasum } from './initHandler';
+import * as initUtils from './initUtils';
 
 jest.mock('mkdirp');
 const mkdirpMock = mkdirp as unknown as jest.Mock;
@@ -165,17 +165,11 @@ describe('initialize', () => {
         // failed write to snap.manifest.json
         .mockRejectedValueOnce(new Error('failed to write'));
 
-      jest.spyOn(process, 'exit').mockImplementation(() => {
-        throw new Error('process exited');
-      });
-
       jest
         .spyOn(initUtils, 'asyncPackageInit')
         .mockImplementation(async () => getPackageJson());
 
-      await expect(initHandler(getMockArgv())).rejects.toThrow(
-        'process exited',
-      );
+      await expect(await initHandler(getMockArgv())).toBeNull();
       expect(logErrorMock).toHaveBeenCalledTimes(1);
       expect(logErrorMock).toHaveBeenNthCalledWith(
         1,
@@ -190,7 +184,7 @@ describe('initialize', () => {
         `${JSON.stringify(getSnapManifest(), null, 2)}\n`,
       );
 
-      expect(process.exit).toHaveBeenCalledWith(1);
+      expect(process.exitCode).toStrictEqual(1);
       expect(mkdirpMock).not.toHaveBeenCalled();
     });
 
@@ -206,17 +200,11 @@ describe('initialize', () => {
       const fsWriteMock = jest.spyOn(fs, 'writeFile').mockImplementation();
       mkdirpMock.mockRejectedValueOnce(new Error('failed to create directory'));
 
-      jest.spyOn(process, 'exit').mockImplementation(() => {
-        throw new Error('process exited');
-      });
-
       jest
         .spyOn(initUtils, 'asyncPackageInit')
         .mockImplementation(async () => getPackageJson());
 
-      await expect(initHandler(getMockArgv())).rejects.toThrow(
-        'process exited',
-      );
+      expect(await initHandler(getMockArgv())).toBeNull();
 
       expect(logErrorMock).toHaveBeenCalledTimes(1);
       expect(logErrorMock).toHaveBeenNthCalledWith(
@@ -234,7 +222,7 @@ describe('initialize', () => {
 
       expect(mkdirpMock).toHaveBeenCalledTimes(1);
       expect(mkdirpMock).toHaveBeenNthCalledWith(1, 'src');
-      expect(process.exit).toHaveBeenCalledWith(1);
+      expect(process.exitCode).toStrictEqual(1);
     });
 
     it('handles src file write failure', async () => {
@@ -251,17 +239,11 @@ describe('initialize', () => {
         .mockImplementationOnce(async () => undefined)
         .mockRejectedValueOnce(new Error('failed to write'));
 
-      jest.spyOn(process, 'exit').mockImplementation(() => {
-        throw new Error('process exited');
-      });
-
       jest
         .spyOn(initUtils, 'asyncPackageInit')
         .mockImplementation(async () => getPackageJson());
 
-      await expect(initHandler(getMockArgv())).rejects.toThrow(
-        'process exited',
-      );
+      expect(await initHandler(getMockArgv())).toBeNull();
       expect(logErrorMock).toHaveBeenCalledTimes(1);
       expect(logErrorMock).toHaveBeenNthCalledWith(
         1,
@@ -284,7 +266,7 @@ describe('initialize', () => {
 
       expect(mkdirpMock).toHaveBeenCalledTimes(1);
       expect(mkdirpMock).toHaveBeenNthCalledWith(1, 'src');
-      expect(process.exit).toHaveBeenCalledWith(1);
+      expect(process.exitCode).toStrictEqual(1);
     });
 
     it('handles index.html file write failure', async () => {
@@ -302,17 +284,11 @@ describe('initialize', () => {
         .mockImplementationOnce(async () => undefined)
         .mockRejectedValueOnce(new Error('failed to write'));
 
-      jest.spyOn(process, 'exit').mockImplementation(() => {
-        throw new Error('process exited');
-      });
-
       jest
         .spyOn(initUtils, 'asyncPackageInit')
         .mockImplementation(async () => getPackageJson());
 
-      await expect(initHandler(getMockArgv())).rejects.toThrow(
-        'process exited',
-      );
+      expect(await initHandler(getMockArgv())).toBeNull();
 
       const mockArgv = getMockArgv();
 
@@ -344,7 +320,7 @@ describe('initialize', () => {
 
       expect(mkdirpMock).toHaveBeenCalledTimes(1);
       expect(mkdirpMock).toHaveBeenNthCalledWith(1, 'src');
-      expect(process.exit).toHaveBeenCalledWith(1);
+      expect(process.exitCode).toStrictEqual(1);
     });
 
     it('handles snap.config.json file write failure', async () => {
@@ -363,17 +339,11 @@ describe('initialize', () => {
         .mockImplementationOnce(async () => undefined)
         .mockRejectedValueOnce(new Error('failed to write'));
 
-      jest.spyOn(process, 'exit').mockImplementation(() => {
-        throw new Error('process exited');
-      });
-
       jest
         .spyOn(initUtils, 'asyncPackageInit')
         .mockImplementation(async () => getPackageJson());
 
-      await expect(initHandler(getMockArgv())).rejects.toThrow(
-        'process exited',
-      );
+      expect(await initHandler(getMockArgv())).toBeNull();
 
       const mockArgv = getMockArgv();
 
@@ -420,7 +390,34 @@ describe('initialize', () => {
 
       expect(mkdirpMock).toHaveBeenCalledTimes(1);
       expect(mkdirpMock).toHaveBeenNthCalledWith(1, 'src');
-      expect(process.exit).toHaveBeenCalledWith(1);
+      expect(process.exitCode).toStrictEqual(1);
+    });
+
+    it('returns null on package init fail', async () => {
+      const asyncPackageInitMock = jest
+        .spyOn(initUtils, 'asyncPackageInit')
+        .mockImplementation(async () => null);
+
+      expect(await initHandler(getMockArgv())).toBeNull();
+      expect(asyncPackageInitMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('returns null on prepare working directory fail', async () => {
+      const prepareWorkingDirectoryMock = jest
+        .spyOn(initUtils, 'prepareWorkingDirectory')
+        .mockImplementation(async () => false);
+
+      expect(await initHandler(getMockArgv())).toBeNull();
+      expect(prepareWorkingDirectoryMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('returns null on manifest fail', async () => {
+      const buildSnapManifestMock = jest
+        .spyOn(initUtils, 'buildSnapManifest')
+        .mockImplementation(async () => null);
+
+      expect(await initHandler(getMockArgv())).toBeNull();
+      expect(buildSnapManifestMock).toHaveBeenCalledTimes(1);
     });
   });
 

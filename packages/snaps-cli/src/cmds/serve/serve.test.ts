@@ -54,7 +54,7 @@ describe('serve', () => {
       });
       mockServer.emit('close');
       await finishPromise;
-      expect(process.exit).toHaveBeenCalledWith(1);
+      expect(process.exitCode).toStrictEqual(1);
     });
 
     it('server handles "error" event correctly', async () => {
@@ -74,7 +74,7 @@ describe('serve', () => {
       });
       mockServer.emit('error');
       await finishPromise;
-      expect(process.exit).toHaveBeenCalledWith(1);
+      expect(process.exitCode).toStrictEqual(1);
     });
 
     it('server handles "request" event correctly', async () => {

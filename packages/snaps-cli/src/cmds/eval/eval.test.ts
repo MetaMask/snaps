@@ -48,17 +48,11 @@ describe('eval', () => {
           throw new Error();
         });
 
-      (process.exit as any).mockImplementationOnce(() => {
-        throw new Error('process exited');
-      });
-
-      await expect(async () => {
-        await snapEval(getMockArgv());
-      }).rejects.toThrow('process exited');
+      expect(await snapEval(getMockArgv())).toStrictEqual(false);
 
       expect(console.log).not.toHaveBeenCalled();
       expect(console.error).toHaveBeenCalledTimes(1);
-      expect(process.exit).toHaveBeenCalledTimes(1);
+      expect(process.exitCode).toStrictEqual(1);
     });
   });
 });

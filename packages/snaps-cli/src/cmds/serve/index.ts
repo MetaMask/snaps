@@ -4,7 +4,7 @@ import yargs from 'yargs';
 import builders from '../../builders';
 import { YargsArgs } from '../../types/yargs';
 import { validateDirPath } from '../../utils';
-import { logServerError, logServerListening, logRequest } from './serveUtils';
+import { logRequest, logServerError, logServerListening } from './serveUtils';
 
 export = {
   command: ['serve', 's'],
@@ -53,11 +53,11 @@ async function serve(argv: YargsArgs): Promise<void> {
 
   server.on('error', (error) => {
     logServerError(error, argv.port);
-    process.exit(1);
+    process.exitCode = 1;
   });
 
   server.on('close', () => {
     console.log('Server closed');
-    process.exit(1);
+    process.exitCode = 1;
   });
 }

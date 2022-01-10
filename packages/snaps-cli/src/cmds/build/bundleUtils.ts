@@ -2,6 +2,7 @@ import { createWriteStream } from 'fs';
 import stripComments from '@nodefactory/strip-comments';
 import { writeError } from '../../utils/misc';
 import { Option, YargsArgs } from '../../types/yargs';
+import { writeError } from '../../utils/misc';
 
 /**
  * Opens a stream to write the destination file path.

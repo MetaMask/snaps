@@ -13,7 +13,7 @@ import { logError } from './misc';
 export async function isDirectory(
   pathString: string,
   createDir: boolean,
-): Promise<boolean> {
+): Promise<boolean | null> {
   try {
     const stats = await fs.stat(pathString);
     return stats.isDirectory();
@@ -28,7 +28,8 @@ export async function isDirectory(
         return true;
       } catch (mkdirError) {
         logError(`Directory '${pathString}' could not be created.`, mkdirError);
-        process.exit(1);
+        process.exitCode = 1;
+        return null;
       }
     }
     return false;
