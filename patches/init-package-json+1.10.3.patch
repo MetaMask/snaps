@@ -1,0 +1,13 @@
+diff --git a/node_modules/init-package-json/default-input.js b/node_modules/init-package-json/default-input.js
+index 7d859a0..9394871 100644
+--- a/node_modules/init-package-json/default-input.js
++++ b/node_modules/init-package-json/default-input.js
+@@ -105,7 +105,7 @@ if (!package.main) {
+       else
+         f = f[0]
+ 
+-      var index = f || 'index.js'
++      var index = f || 'src/index.js'
+       return cb(null, yes ? index : prompt('entry point', index))
+     })
+   }
