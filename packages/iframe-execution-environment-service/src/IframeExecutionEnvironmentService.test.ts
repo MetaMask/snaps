@@ -4,8 +4,8 @@ import {
   ErrorMessageEvent,
   UnresponsiveMessageEvent,
 } from '@metamask/snap-types';
+import { IframeExecutionService } from './IframeExecutionService';
 import fixJSDOMPostMessageEventSource from './testHelpers/fixJSDOMPostMessageEventSource';
-import { IframeExecutionEnvironmentService } from './IframeExecutionEnvironmentService';
 
 describe('Iframe Controller', () => {
   it('can boot', async () => {
@@ -13,24 +13,23 @@ describe('Iframe Controller', () => {
       never,
       ErrorMessageEvent
     >();
-    const iframeExecutionEnvironmentService =
-      new IframeExecutionEnvironmentService({
-        messenger: controllerMessenger.getRestricted<
-          'ServiceMessenger',
-          never,
-          ErrorMessageEvent['type']
-        >({
-          name: 'ServiceMessenger',
-        }),
-        setupSnapProvider: () => {
-          // do nothing
-        },
-        iframeUrl: new URL(
-          'https://metamask.github.io/iframe-execution-environment/0.3.2-test/',
-        ),
-      });
-    expect(iframeExecutionEnvironmentService).toBeDefined();
-    await iframeExecutionEnvironmentService.terminateAllSnaps();
+    const iframeExecutionService = new IframeExecutionService({
+      messenger: controllerMessenger.getRestricted<
+        'ExecutionService',
+        never,
+        ErrorMessageEvent['type']
+      >({
+        name: 'ExecutionService',
+      }),
+      setupSnapProvider: () => {
+        // do nothing
+      },
+      iframeUrl: new URL(
+        'https://metamask.github.io/iframe-execution-environment/0.3.2-test/',
+      ),
+    });
+    expect(iframeExecutionService).toBeDefined();
+    await iframeExecutionService.terminateAllSnaps();
   });
 
   it('can create a snap worker and start the snap', async () => {
@@ -38,26 +37,25 @@ describe('Iframe Controller', () => {
       never,
       ErrorMessageEvent
     >();
-    const iframeExecutionEnvironmentService =
-      new IframeExecutionEnvironmentService({
-        messenger: controllerMessenger.getRestricted<
-          'ServiceMessenger',
-          never,
-          ErrorMessageEvent['type']
-        >({
-          name: 'ServiceMessenger',
-        }),
-        setupSnapProvider: () => {
-          // do nothing
-        },
-        iframeUrl: new URL(
-          'https://metamask.github.io/iframe-execution-environment/0.3.2-test/',
-        ),
-      });
+    const iframeExecutionService = new IframeExecutionService({
+      messenger: controllerMessenger.getRestricted<
+        'ExecutionService',
+        never,
+        ErrorMessageEvent['type']
+      >({
+        name: 'ExecutionService',
+      }),
+      setupSnapProvider: () => {
+        // do nothing
+      },
+      iframeUrl: new URL(
+        'https://metamask.github.io/iframe-execution-environment/0.3.2-test/',
+      ),
+    });
     const removeListener = fixJSDOMPostMessageEventSource(
-      iframeExecutionEnvironmentService,
+      iframeExecutionService,
     );
-    const response = await iframeExecutionEnvironmentService.executeSnap({
+    const response = await iframeExecutionService.executeSnap({
       snapId: 'TestSnap',
       sourceCode: `
         console.log('foo');
@@ -65,7 +63,7 @@ describe('Iframe Controller', () => {
     });
     expect(response).toStrictEqual('OK');
     removeListener();
-    await iframeExecutionEnvironmentService.terminateAllSnaps();
+    await iframeExecutionService.terminateAllSnaps();
   });
 
   it('can handle a crashed snap', async () => {
@@ -74,27 +72,26 @@ describe('Iframe Controller', () => {
       never,
       ErrorMessageEvent
     >();
-    const iframeExecutionEnvironmentService =
-      new IframeExecutionEnvironmentService({
-        messenger: controllerMessenger.getRestricted<
-          'ServiceMessenger',
-          never,
-          ErrorMessageEvent['type']
-        >({
-          name: 'ServiceMessenger',
-        }),
-        setupSnapProvider: () => {
-          // do nothing
-        },
-        iframeUrl: new URL(
-          'https://metamask.github.io/iframe-execution-environment/0.3.2-test/',
-        ),
-      });
+    const iframeExecutionService = new IframeExecutionService({
+      messenger: controllerMessenger.getRestricted<
+        'ExecutionService',
+        never,
+        ErrorMessageEvent['type']
+      >({
+        name: 'ExecutionService',
+      }),
+      setupSnapProvider: () => {
+        // do nothing
+      },
+      iframeUrl: new URL(
+        'https://metamask.github.io/iframe-execution-environment/0.3.2-test/',
+      ),
+    });
     const removeListener = fixJSDOMPostMessageEventSource(
-      iframeExecutionEnvironmentService,
+      iframeExecutionService,
     );
     const action = async () => {
-      await iframeExecutionEnvironmentService.executeSnap({
+      await iframeExecutionService.executeSnap({
         snapId: 'TestSnap',
         sourceCode: `
           throw new Error("potato");
@@ -105,7 +102,7 @@ describe('Iframe Controller', () => {
     await expect(action()).rejects.toThrow(
       /Error while running snap 'TestSnap'/u,
     );
-    await iframeExecutionEnvironmentService.terminateAllSnaps();
+    await iframeExecutionService.terminateAllSnaps();
     removeListener();
   });
 
@@ -114,30 +111,29 @@ describe('Iframe Controller', () => {
       never,
       UnresponsiveMessageEvent
     >().getRestricted<
-      'ServiceMessenger',
+      'ExecutionService',
       never,
       UnresponsiveMessageEvent['type']
     >({
-      name: 'ServiceMessenger',
-      allowedEvents: ['ServiceMessenger:unresponsive'],
+      name: 'ExecutionService',
+      allowedEvents: ['ExecutionService:unresponsive'],
     });
 
-    const iframeExecutionEnvironmentService =
-      new IframeExecutionEnvironmentService({
-        messenger,
-        setupSnapProvider: () => {
-          // do nothing
-        },
-        iframeUrl: new URL(
-          'https://metamask.github.io/iframe-execution-environment/0.3.2-test/',
-        ),
-      });
+    const iframeExecutionService = new IframeExecutionService({
+      messenger,
+      setupSnapProvider: () => {
+        // do nothing
+      },
+      iframeUrl: new URL(
+        'https://metamask.github.io/iframe-execution-environment/0.3.2-test/',
+      ),
+    });
     const removeListener = fixJSDOMPostMessageEventSource(
-      iframeExecutionEnvironmentService,
+      iframeExecutionService,
     );
     const snapId = 'foo.bar.baz';
 
-    await iframeExecutionEnvironmentService.executeSnap({
+    await iframeExecutionService.executeSnap({
       snapId,
       sourceCode: `
         console.log('foo');
@@ -145,11 +141,11 @@ describe('Iframe Controller', () => {
     });
     // prevent command from returning
     // eslint-disable-next-line jest/prefer-spy-on
-    (iframeExecutionEnvironmentService as any)._command = jest.fn();
+    (iframeExecutionService as any)._command = jest.fn();
 
     // check for an error
     const promise = new Promise((resolve) => {
-      messenger.subscribe('ServiceMessenger:unresponsive', resolve);
+      messenger.subscribe('ExecutionService:unresponsive', resolve);
     });
 
     const result = await promise;

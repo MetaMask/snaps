@@ -1,12 +1,11 @@
-import { IframeExecutionEnvironmentService } from '../IframeExecutionEnvironmentService';
+import { IframeExecutionService } from '../IframeExecutionService';
 
 // fix for jsdom does not setting event.origin or event.source: https://github.com/jsdom/jsdom/issues/2745
 const fixJSDOMPostMessageEventSource = (
-  iframeExecutionEnvironmentService: IframeExecutionEnvironmentService,
+  iframeExecutionService: IframeExecutionService,
 ) => {
-  const oldCreateWindow = (iframeExecutionEnvironmentService as any)
-    ._createWindow;
-  (iframeExecutionEnvironmentService as any)._createWindow = async (
+  const oldCreateWindow = (iframeExecutionService as any)._createWindow;
+  (iframeExecutionService as any)._createWindow = async (
     uri: string,
     envId: string,
     timeout: number,
@@ -62,8 +61,8 @@ const fixJSDOMPostMessageEventSource = (
         source = window;
         origin = window.location.origin;
       } else if (event.data.target === 'parent') {
-        source = iframeExecutionEnvironmentService._iframeWindow;
-        origin = iframeExecutionEnvironmentService.iframeUrl.toString();
+        source = iframeExecutionService._iframeWindow;
+        origin = iframeExecutionService.iframeUrl.toString();
       }
 
       if (event.data.target) {
