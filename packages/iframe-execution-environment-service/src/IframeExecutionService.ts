@@ -5,7 +5,7 @@ import {
   setupMultiplex,
   SetupSnapProvider,
 } from '@metamask/snap-controllers';
-import { ServiceMessenger } from '@metamask/snap-types';
+import { ExecutionServiceMessenger } from '@metamask/snap-types';
 import { SNAP_STREAM_NAMES } from '@metamask/snap-workers';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createStreamMiddleware } from 'json-rpc-middleware-stream';
@@ -16,7 +16,7 @@ type IframeExecutionEnvironmentServiceArgs = {
   createWindowTimeout?: number;
   setupSnapProvider: SetupSnapProvider;
   iframeUrl: URL;
-  messenger: ServiceMessenger;
+  messenger: ExecutionServiceMessenger;
   unresponsivePollingInterval?: number;
   unresponsiveTimeout?: number;
 };
@@ -151,7 +151,7 @@ export class IframeExecutionService extends AbstractExecutionService<EnvMetadata
         const snapId = this.jobToSnapMap.get(jobId);
         if (snapId) {
           this._messenger.publish(
-            'ServiceMessenger:unhandledError',
+            'ExecutionService:unhandledError',
             snapId,
             data.error,
           );

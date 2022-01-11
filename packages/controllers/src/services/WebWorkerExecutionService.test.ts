@@ -2,7 +2,7 @@ import fs from 'fs';
 import { ControllerMessenger } from '@metamask/controllers';
 import {
   ErrorMessageEvent,
-  ServiceMessenger,
+  ExecutionServiceMessenger,
   UnresponsiveMessageEvent,
 } from '@metamask/snap-types';
 import { WebWorkerExecutionService } from './WebWorkerExecutionService';
@@ -14,13 +14,14 @@ const workerCode = fs.readFileSync(
 
 describe('Worker Controller', () => {
   it('can boot', async () => {
-    const messenger: ServiceMessenger = new ControllerMessenger().getRestricted<
-      'ServiceMessenger',
-      never,
-      ErrorMessageEvent['type']
-    >({
-      name: 'ServiceMessenger',
-    });
+    const messenger: ExecutionServiceMessenger =
+      new ControllerMessenger().getRestricted<
+        'ExecutionService',
+        never,
+        ErrorMessageEvent['type']
+      >({
+        name: 'ExecutionService',
+      });
     const webWorkerExecutionService = new WebWorkerExecutionService({
       messenger,
       setupSnapProvider: () => {
@@ -32,13 +33,14 @@ describe('Worker Controller', () => {
   });
 
   it('can create a snap worker and start the snap', async () => {
-    const messenger: ServiceMessenger = new ControllerMessenger().getRestricted<
-      'ServiceMessenger',
-      never,
-      ErrorMessageEvent['type']
-    >({
-      name: 'ServiceMessenger',
-    });
+    const messenger: ExecutionServiceMessenger =
+      new ControllerMessenger().getRestricted<
+        'ExecutionService',
+        never,
+        ErrorMessageEvent['type']
+      >({
+        name: 'ExecutionService',
+      });
     const webWorkerExecutionService = new WebWorkerExecutionService({
       messenger,
       setupSnapProvider: () => {
@@ -62,12 +64,12 @@ describe('Worker Controller', () => {
       never,
       UnresponsiveMessageEvent
     >().getRestricted<
-      'ServiceMessenger',
+      'ExecutionService',
       never,
       UnresponsiveMessageEvent['type']
     >({
-      name: 'ServiceMessenger',
-      allowedEvents: ['ServiceMessenger:unresponsive'],
+      name: 'ExecutionService',
+      allowedEvents: ['ExecutionService:unresponsive'],
     });
     const webWorkerExecutionService = new WebWorkerExecutionService({
       messenger,
@@ -91,7 +93,7 @@ describe('Worker Controller', () => {
 
     // check for an error
     const promise = new Promise((resolve) => {
-      messenger.subscribe('ServiceMessenger:unresponsive', resolve);
+      messenger.subscribe('ExecutionService:unresponsive', resolve);
     });
 
     const result = await promise;

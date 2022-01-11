@@ -1,7 +1,7 @@
 import { Duplex } from 'stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { WorkerParentPostMessageStream } from '@metamask/post-message-stream';
-import { ServiceMessenger } from '@metamask/snap-types';
+import { ExecutionServiceMessenger } from '@metamask/snap-types';
 import { SNAP_STREAM_NAMES } from '@metamask/snap-workers';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createStreamMiddleware } from 'json-rpc-middleware-stream';
@@ -16,7 +16,7 @@ import {
 interface WorkerControllerArgs {
   setupSnapProvider: SetupSnapProvider;
   workerUrl: URL;
-  messenger: ServiceMessenger;
+  messenger: ExecutionServiceMessenger;
   unresponsivePollingInterval?: number;
   unresponsiveTimeout?: number;
 }
@@ -119,7 +119,7 @@ export class WebWorkerExecutionService extends AbstractExecutionService<WorkerWr
       if (this._messenger) {
         const snapId = this.jobToSnapMap.get(workerId);
         if (snapId) {
-          this._messenger.publish('ServiceMessenger:unhandledError', snapId, {
+          this._messenger.publish('ExecutionService:unhandledError', snapId, {
             code: ev.error.code,
             message: ev.error.message,
             data: ev.error.data,

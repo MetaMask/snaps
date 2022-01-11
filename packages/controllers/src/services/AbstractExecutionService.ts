@@ -1,6 +1,9 @@
 import { Duplex } from 'stream';
 import ObjectMultiplex from '@metamask/object-multiplex';
-import { ServiceMessenger, SnapExecutionData } from '@metamask/snap-types';
+import {
+  ExecutionServiceMessenger,
+  SnapExecutionData,
+} from '@metamask/snap-types';
 import {
   JsonRpcEngine,
   JsonRpcRequest,
@@ -14,7 +17,7 @@ export type SetupSnapProvider = (snapId: string, stream: Duplex) => void;
 
 type ExecutionServiceArgs = {
   setupSnapProvider: SetupSnapProvider;
-  messenger: ServiceMessenger;
+  messenger: ExecutionServiceMessenger;
   unresponsivePollingInterval?: number;
   unresponsiveTimeout?: number;
 };
@@ -48,7 +51,7 @@ export abstract class AbstractExecutionService<JobType extends Job>
 
   protected jobToSnapMap: Map<string, string>;
 
-  protected _messenger: ServiceMessenger;
+  protected _messenger: ExecutionServiceMessenger;
 
   protected _unresponsivePollingInterval: number;
 
@@ -183,7 +186,7 @@ export abstract class AbstractExecutionService<JobType extends Job>
           this._pollForJobStatus(snapId);
         })
         .catch(() => {
-          this._messenger.publish('ServiceMessenger:unresponsive', snapId);
+          this._messenger.publish('ExecutionService:unresponsive', snapId);
         });
     }, this._unresponsivePollingInterval) as unknown as number;
     this._timeoutForUnresponsiveMap.set(snapId, timeout);

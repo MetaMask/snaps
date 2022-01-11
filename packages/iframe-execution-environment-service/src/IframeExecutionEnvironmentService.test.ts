@@ -15,11 +15,11 @@ describe('Iframe Controller', () => {
     >();
     const iframeExecutionService = new IframeExecutionService({
       messenger: controllerMessenger.getRestricted<
-        'ServiceMessenger',
+        'ExecutionService',
         never,
         ErrorMessageEvent['type']
       >({
-        name: 'ServiceMessenger',
+        name: 'ExecutionService',
       }),
       setupSnapProvider: () => {
         // do nothing
@@ -39,11 +39,11 @@ describe('Iframe Controller', () => {
     >();
     const iframeExecutionService = new IframeExecutionService({
       messenger: controllerMessenger.getRestricted<
-        'ServiceMessenger',
+        'ExecutionService',
         never,
         ErrorMessageEvent['type']
       >({
-        name: 'ServiceMessenger',
+        name: 'ExecutionService',
       }),
       setupSnapProvider: () => {
         // do nothing
@@ -74,11 +74,11 @@ describe('Iframe Controller', () => {
     >();
     const iframeExecutionService = new IframeExecutionService({
       messenger: controllerMessenger.getRestricted<
-        'ServiceMessenger',
+        'ExecutionService',
         never,
         ErrorMessageEvent['type']
       >({
-        name: 'ServiceMessenger',
+        name: 'ExecutionService',
       }),
       setupSnapProvider: () => {
         // do nothing
@@ -111,12 +111,12 @@ describe('Iframe Controller', () => {
       never,
       UnresponsiveMessageEvent
     >().getRestricted<
-      'ServiceMessenger',
+      'ExecutionService',
       never,
       UnresponsiveMessageEvent['type']
     >({
-      name: 'ServiceMessenger',
-      allowedEvents: ['ServiceMessenger:unresponsive'],
+      name: 'ExecutionService',
+      allowedEvents: ['ExecutionService:unresponsive'],
     });
 
     const iframeExecutionService = new IframeExecutionService({
@@ -145,7 +145,7 @@ describe('Iframe Controller', () => {
 
     // check for an error
     const promise = new Promise((resolve) => {
-      messenger.subscribe('ServiceMessenger:unresponsive', resolve);
+      messenger.subscribe('ExecutionService:unresponsive', resolve);
     });
 
     const result = await promise;

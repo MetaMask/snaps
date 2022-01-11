@@ -429,12 +429,12 @@ export class SnapController extends BaseController<
     this._onUnresponsiveSnap = this._onUnresponsiveSnap.bind(this);
 
     this.messagingSystem.subscribe(
-      'ServiceMessenger:unhandledError',
+      'ExecutionService:unhandledError',
       this._onUnhandledSnapError,
     );
 
     this.messagingSystem.subscribe(
-      'ServiceMessenger:unresponsive',
+      'ExecutionService:unresponsive',
       this._onUnresponsiveSnap,
     );
 
@@ -1186,12 +1186,12 @@ export class SnapController extends BaseController<
     }
 
     this.messagingSystem.unsubscribe(
-      'ServiceMessenger:unhandledError',
+      'ExecutionService:unhandledError',
       this._onUnhandledSnapError,
     );
 
     this.messagingSystem.unsubscribe(
-      'ServiceMessenger:unresponsive',
+      'ExecutionService:unresponsive',
       this._onUnresponsiveSnap,
     );
   }

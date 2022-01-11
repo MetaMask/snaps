@@ -37,17 +37,17 @@ export type ErrorJSON = {
 };
 
 export type ErrorMessageEvent = {
-  type: 'ServiceMessenger:unhandledError';
+  type: 'ExecutionService:unhandledError';
   payload: [SnapId, ErrorJSON];
 };
 
 export type UnresponsiveMessageEvent = {
-  type: 'ServiceMessenger:unresponsive';
+  type: 'ExecutionService:unresponsive';
   payload: [SnapId];
 };
 
-export type ServiceMessenger = RestrictedControllerMessenger<
-  'ServiceMessenger',
+export type ExecutionServiceMessenger = RestrictedControllerMessenger<
+  'ExecutionService',
   never,
   ErrorMessageEvent | UnresponsiveMessageEvent,
   never,

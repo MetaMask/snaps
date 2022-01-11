@@ -39,8 +39,8 @@ const getSnapControllerMessenger = (
   >({
     name: 'SnapController',
     allowedEvents: [
-      'ServiceMessenger:unhandledError',
-      'ServiceMessenger:unresponsive',
+      'ExecutionService:unhandledError',
+      'ExecutionService:unresponsive',
       'SnapController:snapAdded',
       'SnapController:snapInstalled',
       'SnapController:snapRemoved',
@@ -56,10 +56,10 @@ const getWebWorkerEESMessenger = (
   messenger?: ReturnType<typeof getControllerMessenger>,
 ) =>
   (messenger ?? getControllerMessenger()).getRestricted({
-    name: 'ServiceMessenger',
+    name: 'ExecutionService',
     allowedEvents: [
-      'ServiceMessenger:unhandledError',
-      'ServiceMessenger:unresponsive',
+      'ExecutionService:unhandledError',
+      'ExecutionService:unresponsive',
     ],
   });
 
@@ -538,18 +538,18 @@ describe('SnapController', () => {
     const controllerMessenger = getControllerMessenger();
 
     const serviceMessenger = controllerMessenger.getRestricted({
-      name: 'ServiceMessenger',
+      name: 'ExecutionService',
       allowedEvents: [
-        'ServiceMessenger:unhandledError',
-        'ServiceMessenger:unresponsive',
+        'ExecutionService:unhandledError',
+        'ExecutionService:unresponsive',
       ],
     });
 
     const snapControllerMessenger = controllerMessenger.getRestricted({
       name: 'SnapController',
       allowedEvents: [
-        'ServiceMessenger:unhandledError',
-        'ServiceMessenger:unresponsive',
+        'ExecutionService:unhandledError',
+        'ExecutionService:unresponsive',
       ],
       allowedActions: [
         'PermissionController:getEndowments',
@@ -584,7 +584,7 @@ describe('SnapController', () => {
 
     // defer
     setTimeout(() => {
-      controllerMessenger.publish('ServiceMessenger:unhandledError', snap.id, {
+      controllerMessenger.publish('ExecutionService:unhandledError', snap.id, {
         message: 'foo',
         code: 123,
       });
@@ -592,7 +592,7 @@ describe('SnapController', () => {
 
     await new Promise((resolve) => {
       snapControllerMessenger.subscribe(
-        'ServiceMessenger:unhandledError',
+        'ExecutionService:unhandledError',
         () => {
           const localSnap = snapController.get(snap.id);
           expect(localSnap.status).toStrictEqual('crashed');
@@ -631,12 +631,12 @@ describe('SnapController', () => {
 
     // defer
     setTimeout(() => {
-      controllerMessenger.publish('ServiceMessenger:unresponsive', snap.id);
+      controllerMessenger.publish('ExecutionService:unresponsive', snap.id);
     }, 1);
 
     await new Promise((resolve) => {
       controllerMessenger.subscribe(
-        'ServiceMessenger:unresponsive',
+        'ExecutionService:unresponsive',
         async (snapId: string) => {
           const localSnap = snapController.get(snapId);
           expect(localSnap.status).toStrictEqual('crashed');
