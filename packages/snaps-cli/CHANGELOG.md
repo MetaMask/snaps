@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0]
+### Added
+- ESM support for `mm-snap build` ([#185](https://github.com/MetaMask/snaps-skunkworks/pull/185))
+  - The `build` command can now handle snap source code that includes ESM import / export statements. They will be transpiled to their CommonJS equivalents via Babel.
+
+### Fixed
+- Fix `mm-snap init` `src` default value ([#186](https://github.com/MetaMask/snaps-skunkworks/pull/186))
+  - It now correctly defaults to `src/index.js` instead of just `index.js`.
+- Fix comment stripping ([#189](https://github.com/MetaMask/snaps-skunkworks/pull/189))
+  - Comments wouldn't be stripped under certain circumstances due to a RegEx error, details [here](https://github.com/jonschlinkert/strip-comments/pull/49).
+
 ## [0.6.3]
 ### Changed
 - No changes this release.
@@ -73,7 +84,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Example snaps ([#72](https://github.com/MetaMask/snaps-skunkworks/pull/72))
   - The examples now live in their own package, [`@metamask/snap-examples`](https://npmjs.com/package/@metamask/snap-examples).
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.6.3...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.7.0...HEAD
+[0.7.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.6.3...v0.7.0
 [0.6.3]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.6.2...v0.6.3
 [0.6.2]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.6.1...v0.6.2
 [0.6.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.6.0...v0.6.1
