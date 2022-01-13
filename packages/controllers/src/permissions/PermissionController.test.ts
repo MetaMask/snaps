@@ -1,34 +1,34 @@
-import assert from 'assert';
 import {
-  ControllerMessenger,
-  Json,
-  AddApprovalRequest,
   AcceptRequest as AcceptApprovalRequest,
-  RejectRequest as RejectApprovalRequest,
+  AddApprovalRequest,
+  ControllerMessenger,
   HasApprovalRequest,
+  Json,
+  RejectRequest as RejectApprovalRequest,
 } from '@metamask/controllers';
+import assert from 'assert';
 import { JsonRpcEngine, PendingJsonRpcResponse } from 'json-rpc-engine';
-import { hasProperty, isPlainObject } from '../utils';
-import * as errors from './errors';
-import { EndowmentGetterParams } from './Permission';
 import {
   AsyncRestrictedMethod,
   Caveat,
-  constructPermission,
   CaveatConstraint,
-  PermissionConstraint,
+  CaveatMutatorOperation,
+  constructPermission,
+  ExtractSpecifications,
   MethodNames,
-  ValidPermission,
+  PermissionConstraint,
   PermissionController,
   PermissionControllerActions,
   PermissionControllerEvents,
   PermissionOptions,
+  PermissionType,
   RestrictedMethodOptions,
   RestrictedMethodParameters,
-  ExtractSpecifications,
-  CaveatMutatorOperation,
-  PermissionType,
+  ValidPermission,
 } from '.';
+import { hasProperty, isPlainObject } from '../utils';
+import * as errors from './errors';
+import { EndowmentGetterParams } from './Permission';
 
 // Caveat types and specifications
 
@@ -375,8 +375,11 @@ function getPermissionControllerMessenger() {
       'PermissionController:clearPermissions',
       'PermissionController:getSubjectNames',
       'PermissionController:getEndowments',
+      'PermissionController:getPermissions',
       'PermissionController:hasPermission',
       'PermissionController:hasPermissions',
+      'PermissionController:revokeAllPermissions',
+      'PermissionController:requestPermissions',
       'ApprovalController:hasRequest',
       'ApprovalController:addRequest',
       'ApprovalController:acceptRequest',
@@ -4365,6 +4368,94 @@ describe('PermissionController', () => {
       expect(hasPermissionsSpy).toHaveBeenCalledTimes(2);
       expect(hasPermissionsSpy).toHaveBeenNthCalledWith(1, 'foo');
       expect(hasPermissionsSpy).toHaveBeenNthCalledWith(2, 'foo');
+    });
+
+    it('action: PermissionController:getPermissions', () => {
+      const options = getPermissionControllerOptions();
+      const { messenger } = options;
+      const controller = new PermissionController<
+        DefaultPermissionSpecifications,
+        DefaultCaveatSpecifications
+      >(options);
+      const getPermissionsSpy = jest.spyOn(controller, 'getPermissions');
+
+      expect(
+        messenger.call('PermissionController:getPermissions', 'foo'),
+      ).toStrictEqual(undefined);
+
+      controller.grantPermissions({
+        subject: { origin: 'foo' },
+        approvedPermissions: {
+          wallet_getSecretArray: {},
+        },
+      });
+
+      expect(
+        Object.keys(
+          messenger.call('PermissionController:getPermissions', 'foo'),
+        ),
+      ).toStrictEqual(['wallet_getSecretArray']);
+
+      expect(getPermissionsSpy).toHaveBeenCalledTimes(3);
+      expect(getPermissionsSpy).toHaveBeenNthCalledWith(1, 'foo');
+      expect(getPermissionsSpy).toHaveBeenNthCalledWith(2, 'foo');
+    });
+
+    it('action: PermissionController:revokeAllPermissions', () => {
+      const options = getPermissionControllerOptions();
+      const { messenger } = options;
+      const controller = new PermissionController<
+        DefaultPermissionSpecifications,
+        DefaultCaveatSpecifications
+      >(options);
+
+      controller.grantPermissions({
+        subject: { origin: 'foo' },
+        approvedPermissions: {
+          wallet_getSecretArray: {},
+        },
+      });
+      const revokeAllPermissionsSpy = jest.spyOn(
+        controller,
+        'revokeAllPermissions',
+      );
+
+      expect(
+        controller.hasPermission('foo', 'wallet_getSecretArray'),
+      ).toStrictEqual(true);
+
+      messenger.call('PermissionController:revokeAllPermissions', 'foo');
+
+      expect(
+        controller.hasPermission('foo', 'wallet_getSecretArray'),
+      ).toStrictEqual(false);
+      expect(revokeAllPermissionsSpy).toHaveBeenCalledTimes(1);
+      expect(revokeAllPermissionsSpy).toHaveBeenNthCalledWith(1, 'foo');
+    });
+
+    it('action: PermissionsController:requestPermissions', async () => {
+      const options = getPermissionControllerOptions();
+      const { messenger } = options;
+      const controller = new PermissionController<
+        DefaultPermissionSpecifications,
+        DefaultCaveatSpecifications
+      >(options);
+
+      // TODO(ritave): requestPermissions calls unregistered action ApprovalController:addRequest that
+      //               can't be easily mocked, thus we mock the whole implementation
+      const requestPermissionsSpy = jest
+        .spyOn(controller, 'requestPermissions')
+        .mockImplementation();
+
+      await messenger.call(
+        'PermissionController:requestPermissions',
+        { origin: 'foo' },
+        {
+          wallet_getSecretArray: {},
+        },
+      );
+
+      expect(requestPermissionsSpy).toHaveBeenCalledTimes(1);
     });
   });
 
