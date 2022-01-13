@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.7.0]
-### Uncategorized
-- Extracted common code from ExecutionEnvironmentServices into an abstract class ([#188](https://github.com/MetaMask/snaps-skunkworks/pull/188))
+### Changed
+- **BREAKING:** Rename `ServiceMessenger` events to `ExecutionService` ([#188](https://github.com/MetaMask/snaps-skunkworks/pull/188))
 
 ## [0.6.3]
 ### Changed

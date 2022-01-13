@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.7.0]
-### Uncategorized
-- Enable bundling ESM source code with `mm-snap build` ([#185](https://github.com/MetaMask/snaps-skunkworks/pull/185))
+### Changed
+- No changes this release.
 
 ## [0.6.3]
 ### Changed

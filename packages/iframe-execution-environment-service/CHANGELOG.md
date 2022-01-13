@@ -7,8 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.7.0]
-### Uncategorized
-- Extracted common code from ExecutionEnvironmentServices into an abstract class ([#188](https://github.com/MetaMask/snaps-skunkworks/pull/188))
+### Changed
+- **BREAKING:** Rename execution environment service class and events ([#188](https://github.com/MetaMask/snaps-skunkworks/pull/188))
+  - `ServiceMessenger` events are now named `ExecutionService`.
+  - `IframeExecutionEnvironmentService` is now named `IframeExecutionService`.
 
 ## [0.6.3]
 ### Changed

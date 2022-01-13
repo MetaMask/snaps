@@ -7,11 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.7.0]
-### Uncategorized
+### Added
+- ESM support for `mm-snap build` ([#185](https://github.com/MetaMask/snaps-skunkworks/pull/185))
+  - The `build` command can now handle snap source code that includes ESM import / export statements. They will be transpiled to their CommonJS equivalents via Babel.
+
+### Fixed
 - Fix `mm-snap init` `src` default value ([#186](https://github.com/MetaMask/snaps-skunkworks/pull/186))
-- Enable bundling ESM source code with `mm-snap build` ([#185](https://github.com/MetaMask/snaps-skunkworks/pull/185))
-- Fix strip-comments ([#189](https://github.com/MetaMask/snaps-skunkworks/pull/189))
-- Fix snaps-cli build script ([#178](https://github.com/MetaMask/snaps-skunkworks/pull/178))
+  - It now correctly defaults to `src/index.js` instead of just `index.js`.
+- Fix comment stripping ([#189](https://github.com/MetaMask/snaps-skunkworks/pull/189))
+  - Comments wouldn't be stripped under certain circumstances due to a RegEx error, details [here](https://github.com/jonschlinkert/strip-comments/pull/49).
 
 ## [0.6.3]
 ### Changed
