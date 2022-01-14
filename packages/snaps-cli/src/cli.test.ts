@@ -115,9 +115,6 @@ describe('cli', () => {
     });
 
     it('handles an argument validation failure for a locally defined command, with verbose errors', () => {
-      processExitSpy.mockImplementationOnce(() => {
-        throw new Error('process exited');
-      });
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       const mockServeHandler = jest.fn();
 

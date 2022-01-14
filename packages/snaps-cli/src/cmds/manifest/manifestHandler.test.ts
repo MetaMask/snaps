@@ -68,7 +68,6 @@ describe('manifest', () => {
       });
 
     jest.spyOn(console, 'error').mockImplementation();
-    jest.spyOn(process, 'exit').mockImplementation();
 
     await (manifestModule as any).handler({ ...(foobar as any) });
     expect(manifestHandlerMock).toHaveBeenCalledWith(foobar);

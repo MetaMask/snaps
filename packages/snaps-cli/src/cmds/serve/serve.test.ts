@@ -30,7 +30,6 @@ describe('serve', () => {
     let mockServer: MockServer;
 
     beforeEach(() => {
-      jest.spyOn(process, 'exit').mockImplementation(() => undefined as never);
       jest.spyOn(serveUtils, 'logServerListening').mockImplementation();
       jest.spyOn(http, 'createServer').mockImplementation(() => {
         mockServer = getMockServer();
@@ -62,7 +61,6 @@ describe('serve', () => {
       const logServerErrorMock = jest
         .spyOn(serveUtils, 'logServerError')
         .mockImplementation();
-      jest.spyOn(process, 'exit').mockImplementation(() => undefined as never);
 
       await serve.handler(getMockArgv());
       const finishPromise = new Promise<void>((resolve, _) => {

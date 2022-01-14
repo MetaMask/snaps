@@ -14,7 +14,6 @@ describe('eval', () => {
     beforeEach(() => {
       jest.spyOn(console, 'log').mockImplementation(() => undefined);
       jest.spyOn(console, 'error').mockImplementation(() => undefined);
-      jest.spyOn(process, 'exit').mockImplementation(() => undefined as never);
       jest
         .spyOn(fsUtils, 'validateFilePath')
         .mockImplementation(async () => true);
