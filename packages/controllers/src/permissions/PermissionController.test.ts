@@ -1,3 +1,4 @@
+import assert from 'assert';
 import {
   AcceptRequest as AcceptApprovalRequest,
   AddApprovalRequest,
@@ -6,8 +7,10 @@ import {
   Json,
   RejectRequest as RejectApprovalRequest,
 } from '@metamask/controllers';
-import assert from 'assert';
 import { JsonRpcEngine, PendingJsonRpcResponse } from 'json-rpc-engine';
+import { hasProperty, isPlainObject } from '../utils';
+import * as errors from './errors';
+import { EndowmentGetterParams } from './Permission';
 import {
   AsyncRestrictedMethod,
   Caveat,
@@ -26,9 +29,6 @@ import {
   RestrictedMethodParameters,
   ValidPermission,
 } from '.';
-import { hasProperty, isPlainObject } from '../utils';
-import * as errors from './errors';
-import { EndowmentGetterParams } from './Permission';
 
 // Caveat types and specifications
 
@@ -4381,7 +4381,7 @@ describe('PermissionController', () => {
 
       expect(
         messenger.call('PermissionController:getPermissions', 'foo'),
-      ).toStrictEqual(undefined);
+      ).toBeUndefined();
 
       controller.grantPermissions({
         subject: { origin: 'foo' },

@@ -1,7 +1,7 @@
+import fs from 'fs';
 import { getPersistentState, Json } from '@metamask/controllers';
 import { ControllerMessenger } from '@metamask/controllers/dist/ControllerMessenger';
 import { serializeError } from 'eth-rpc-errors';
-import fs from 'fs';
 import { ExecutionService } from '../services/ExecutionService';
 import { WebWorkerExecutionService } from '../services/WebWorkerExecutionService';
 import { SnapManifest } from './json-schemas';
