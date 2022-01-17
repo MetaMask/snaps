@@ -15,7 +15,7 @@ export = {
       await manifestHandler(argv);
     } catch (err) {
       logError(err.message, err);
-      process.exitCode = 1;
+      throw err;
     }
   },
 };

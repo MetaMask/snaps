@@ -20,9 +20,6 @@ export = {
 async function init(argv: YargsArgs): Promise<void> {
   console.log();
   const newArgs = await initHandler(argv);
-  if (!newArgs) {
-    return;
-  }
 
   await build({
     ...newArgs,

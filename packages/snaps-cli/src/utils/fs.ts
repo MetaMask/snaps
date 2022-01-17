@@ -1,5 +1,5 @@
-import { promises as fs } from 'fs';
 import type { Json } from '@metamask/snap-controllers';
+import { promises as fs } from 'fs';
 import { logError } from './misc';
 
 /**
@@ -13,7 +13,7 @@ import { logError } from './misc';
 export async function isDirectory(
   pathString: string,
   createDir: boolean,
-): Promise<boolean | null> {
+): Promise<boolean> {
   try {
     const stats = await fs.stat(pathString);
     return stats.isDirectory();
@@ -28,8 +28,7 @@ export async function isDirectory(
         return true;
       } catch (mkdirError) {
         logError(`Directory '${pathString}' could not be created.`, mkdirError);
-        process.exitCode = 1;
-        return null;
+        throw mkdirError;
       }
     }
     return false;

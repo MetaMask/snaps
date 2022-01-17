@@ -1,6 +1,6 @@
+import initModule from '.';
 import * as buildHandlerModule from '../build/buildHandler';
 import * as initHandlerModule from './initHandler';
-import initModule from '.';
 
 describe('init module', () => {
   it('console logs if successful', async () => {
@@ -25,24 +25,5 @@ describe('init module', () => {
     });
     expect(updateShasumMock).toHaveBeenCalledWith();
     expect(global.console.log).toHaveBeenCalledTimes(2);
-  });
-
-  it('quits when init fails', async () => {
-    const mockArgv = { foo: 'bar' };
-    const initHandlerMock = jest
-      .spyOn(initHandlerModule, 'initHandler')
-      .mockImplementation(async () => null);
-    const buildMock = jest
-      .spyOn(buildHandlerModule, 'build')
-      .mockImplementation();
-    const updateShasumMock = jest
-      .spyOn(initHandlerModule, 'updateManifestShasum')
-      .mockImplementation();
-
-    await initModule.handler(mockArgv as any);
-
-    expect(initHandlerMock).toHaveBeenCalledWith(mockArgv);
-    expect(buildMock).toHaveBeenCalledTimes(0);
-    expect(updateShasumMock).toHaveBeenCalledTimes(0);
   });
 });

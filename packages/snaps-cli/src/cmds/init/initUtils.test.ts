@@ -1,6 +1,6 @@
-import fs from 'fs';
 import * as snapUtils from '@metamask/snap-controllers/dist/snaps';
 import { SnapManifest } from '@metamask/snap-controllers/dist/snaps';
+import fs from 'fs';
 import initPackageJson from 'init-package-json';
 import mkdirp from 'mkdirp';
 import {
@@ -76,12 +76,11 @@ describe('initUtils', () => {
         .spyOn(miscUtils, 'logError')
         .mockImplementation();
 
-      await expect(await asyncPackageInit()).toBeNull();
+      await expect(asyncPackageInit()).rejects.toThrow();
       expect(existsSyncMock).toHaveBeenCalled();
       expect(readFileMock).toHaveBeenCalledTimes(1);
       expect(parseMock).toHaveBeenCalledTimes(1);
       expect(logErrorMock).toHaveBeenCalledTimes(1);
-      expect(process.exitCode).toStrictEqual(1);
       expect(global.console.log).toHaveBeenCalledTimes(1);
     });
 
@@ -120,10 +119,9 @@ describe('initUtils', () => {
         .spyOn(miscUtils, 'logError')
         .mockImplementation();
 
-      await expect(await asyncPackageInit()).toBeNull();
+      await expect(asyncPackageInit()).rejects.toThrow();
       expect(existsSyncMock).toHaveBeenCalledTimes(2);
       expect(logErrorMock).toHaveBeenCalledTimes(1);
-      expect(process.exitCode).toStrictEqual(1);
     });
   });
 
@@ -215,12 +213,11 @@ describe('initUtils', () => {
         .mockImplementation();
 
       await expect(
-        await buildSnapManifest(getMockArgv(), getPackageJson()),
-      ).toBeNull();
+        buildSnapManifest(getMockArgv(), getPackageJson()),
+      ).rejects.toThrow();
       expect(promptMock).toHaveBeenCalledTimes(1);
       expect(global.console.log).toHaveBeenCalledTimes(1);
       expect(logErrorMock).toHaveBeenCalledTimes(2);
-      expect(process.exitCode).toStrictEqual(1);
     });
 
     it('handles valid user inputs when not using default values', async () => {
@@ -459,12 +456,11 @@ describe('initUtils', () => {
         .mockImplementation(async () => 'n');
       jest.spyOn(console, 'log').mockImplementation();
 
-      await prepareWorkingDirectory();
+      await expect(prepareWorkingDirectory()).rejects.toThrow();
       expect(warningMock).toHaveBeenCalledTimes(1);
       expect(readdirMock).toHaveBeenCalledTimes(1);
       expect(promptMock).toHaveBeenCalledTimes(1);
       expect(global.console.log).toHaveBeenCalledTimes(1);
-      expect(process.exitCode).toStrictEqual(1);
     });
 
     it('handles continue correctly', async () => {

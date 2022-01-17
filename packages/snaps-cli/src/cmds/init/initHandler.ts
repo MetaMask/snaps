@@ -1,11 +1,11 @@
-import { promises as fs } from 'fs';
-import pathUtils from 'path';
 import {
   getSnapSourceShasum,
   NpmSnapFileNames,
   SnapManifest,
 } from '@metamask/snap-controllers';
+import { promises as fs } from 'fs';
 import mkdirp from 'mkdirp';
+import pathUtils from 'path';
 import { YargsArgs } from '../../types/yargs';
 import { closePrompt, CONFIG_FILE, logError, readJsonFile } from '../../utils';
 import { getWritableManifest } from '../manifest/manifestHandler';
@@ -20,22 +20,12 @@ export async function initHandler(argv: YargsArgs) {
   console.log(`MetaMask Snaps: Initialize\n`);
 
   const packageJson = await asyncPackageInit();
-  if (packageJson === null) {
-    return null;
-  }
 
-  const success = await prepareWorkingDirectory();
-  if (success === false) {
-    return null;
-  }
+  await prepareWorkingDirectory();
 
   console.log(`\nInit: Building '${NpmSnapFileNames.Manifest}'...\n`);
 
-  const manifestAndArgs = await buildSnapManifest(argv, packageJson);
-  if (!manifestAndArgs) {
-    return null;
-  }
-  const [snapManifest, _newArgs] = manifestAndArgs;
+  const [snapManifest, _newArgs] = await buildSnapManifest(argv, packageJson);
 
   const newArgs = Object.keys(_newArgs)
     .sort()
@@ -54,8 +44,7 @@ export async function initHandler(argv: YargsArgs) {
       `Init Error: Failed to write '${NpmSnapFileNames.Manifest}'.`,
       err,
     );
-    process.exitCode = 1;
-    return null;
+    throw err;
   }
 
   console.log(`\nInit: Created '${NpmSnapFileNames.Manifest}'.`);
@@ -71,8 +60,7 @@ export async function initHandler(argv: YargsArgs) {
     console.log(`Init: Created '${src}'.`);
   } catch (err) {
     logError(`Init Error: Failed to write '${src}'.`, err);
-    process.exitCode = 1;
-    return null;
+    throw err;
   }
 
   // Write index.html
@@ -81,8 +69,7 @@ export async function initHandler(argv: YargsArgs) {
     console.log(`Init: Created 'index.html'.`);
   } catch (err) {
     logError(`Init Error: Failed to write 'index.html'.`, err);
-    process.exitCode = 1;
-    return null;
+    throw err;
   }
 
   // Write config file
@@ -91,8 +78,7 @@ export async function initHandler(argv: YargsArgs) {
     console.log(`Init: Wrote '${CONFIG_FILE}' config file`);
   } catch (err) {
     logError(`Init Error: Failed to write '${CONFIG_FILE}'.`, err);
-    process.exitCode = 1;
-    return null;
+    throw err;
   }
 
   closePrompt();
