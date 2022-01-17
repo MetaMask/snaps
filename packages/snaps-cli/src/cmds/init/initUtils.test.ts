@@ -1,6 +1,6 @@
+import fs from 'fs';
 import * as snapUtils from '@metamask/snap-controllers/dist/snaps';
 import { SnapManifest } from '@metamask/snap-controllers/dist/snaps';
-import fs from 'fs';
 import initPackageJson from 'init-package-json';
 import mkdirp from 'mkdirp';
 import {
@@ -76,7 +76,7 @@ describe('initUtils', () => {
         .spyOn(miscUtils, 'logError')
         .mockImplementation();
 
-      await expect(asyncPackageInit()).rejects.toThrow();
+      await expect(asyncPackageInit()).rejects.toThrow('error message');
       expect(existsSyncMock).toHaveBeenCalled();
       expect(readFileMock).toHaveBeenCalledTimes(1);
       expect(parseMock).toHaveBeenCalledTimes(1);
@@ -119,7 +119,9 @@ describe('initUtils', () => {
         .spyOn(miscUtils, 'logError')
         .mockImplementation();
 
-      await expect(asyncPackageInit()).rejects.toThrow();
+      await expect(asyncPackageInit()).rejects.toThrow(
+        'Already existing yarn.lock file found',
+      );
       expect(existsSyncMock).toHaveBeenCalledTimes(2);
       expect(logErrorMock).toHaveBeenCalledTimes(1);
     });
@@ -214,7 +216,7 @@ describe('initUtils', () => {
 
       await expect(
         buildSnapManifest(getMockArgv(), getPackageJson()),
-      ).rejects.toThrow();
+      ).rejects.toThrow('some file system error');
       expect(promptMock).toHaveBeenCalledTimes(1);
       expect(global.console.log).toHaveBeenCalledTimes(1);
       expect(logErrorMock).toHaveBeenCalledTimes(2);
@@ -456,7 +458,9 @@ describe('initUtils', () => {
         .mockImplementation(async () => 'n');
       jest.spyOn(console, 'log').mockImplementation();
 
-      await expect(prepareWorkingDirectory()).rejects.toThrow();
+      await expect(prepareWorkingDirectory()).rejects.toThrow(
+        'User refused to continue',
+      );
       expect(warningMock).toHaveBeenCalledTimes(1);
       expect(readdirMock).toHaveBeenCalledTimes(1);
       expect(promptMock).toHaveBeenCalledTimes(1);

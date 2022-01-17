@@ -1,9 +1,8 @@
+import { promises as fs } from 'fs';
 import {
   NpmSnapFileNames,
   SnapValidationFailureReason,
 } from '@metamask/snap-controllers/dist/snaps';
-import { promises as fs } from 'fs';
-import manifestModule from '.';
 import {
   DEFAULT_SNAP_BUNDLE,
   FakeFsError,
@@ -13,6 +12,7 @@ import {
 } from '../../../test/utils';
 import * as utils from '../../utils';
 import * as manifestHandlerModule from './manifestHandler';
+import manifestModule from '.';
 
 jest.mock('fs', () => ({
   promises: {
@@ -71,7 +71,7 @@ describe('manifest', () => {
 
     await expect(
       (manifestModule as any).handler({ ...(foobar as any) }),
-    ).rejects.toThrow();
+    ).rejects.toThrow('manifest failure');
     expect(manifestHandlerMock).toHaveBeenCalledWith(foobar);
     expect(console.error).toHaveBeenCalledTimes(1);
   });

@@ -1,6 +1,6 @@
-import evalModule from '.';
 import * as fsUtils from '../../utils/validate-fs';
 import * as workerEvalModule from './workerEval';
+import evalModule from '.';
 
 const snapEval = evalModule.handler;
 
@@ -47,7 +47,7 @@ describe('eval', () => {
           throw new Error();
         });
 
-      await expect(snapEval(getMockArgv())).rejects.toThrow();
+      await expect(snapEval(getMockArgv())).rejects.toThrow('');
 
       expect(console.log).not.toHaveBeenCalled();
       expect(console.error).toHaveBeenCalledTimes(1);

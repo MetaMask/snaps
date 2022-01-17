@@ -1,3 +1,5 @@
+import { existsSync, promises as fs } from 'fs';
+import pathUtils from 'path';
 import {
   NpmSnapFileNames,
   NpmSnapPackageJson,
@@ -5,10 +7,8 @@ import {
   SnapManifest,
   validateSnapJsonFile,
 } from '@metamask/snap-controllers/dist/snaps';
-import { existsSync, promises as fs } from 'fs';
 import initPackageJson from 'init-package-json';
 import mkdirp from 'mkdirp';
-import pathUtils from 'path';
 import slash from 'slash';
 import { YargsArgs } from '../../types/yargs';
 import {

@@ -103,7 +103,7 @@ describe('file system utilities', () => {
 
       jest.spyOn(console, 'error').mockImplementation();
 
-      await expect(isDirectory('wrong/path/', true)).rejects.toThrow();
+      await expect(isDirectory('wrong/path/', true)).rejects.toThrow('');
 
       expect(global.console.error).toHaveBeenCalledWith(
         "Directory 'wrong/path/' could not be created.",

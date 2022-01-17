@@ -1,11 +1,11 @@
+import { promises as fs } from 'fs';
+import pathUtils from 'path';
 import {
   getSnapSourceShasum,
   NpmSnapFileNames,
   SnapManifest,
 } from '@metamask/snap-controllers';
-import { promises as fs } from 'fs';
 import mkdirp from 'mkdirp';
-import pathUtils from 'path';
 import { YargsArgs } from '../../types/yargs';
 import { closePrompt, CONFIG_FILE, logError, readJsonFile } from '../../utils';
 import { getWritableManifest } from '../manifest/manifestHandler';

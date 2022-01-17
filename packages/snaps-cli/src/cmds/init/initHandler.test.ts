@@ -1,8 +1,8 @@
+import { promises as fs } from 'fs';
 import {
   getSnapSourceShasum,
   NpmSnapFileNames,
 } from '@metamask/snap-controllers';
-import { promises as fs } from 'fs';
 import mkdirp from 'mkdirp';
 import { getPackageJson, getSnapManifest } from '../../../test/utils';
 import * as fsUtils from '../../utils/fs';
@@ -169,7 +169,9 @@ describe('initialize', () => {
         .spyOn(initUtils, 'asyncPackageInit')
         .mockImplementation(async () => getPackageJson());
 
-      await expect(initHandler(getMockArgv())).rejects.toThrow();
+      await expect(initHandler(getMockArgv())).rejects.toThrow(
+        'failed to write',
+      );
       expect(logErrorMock).toHaveBeenCalledTimes(1);
       expect(logErrorMock).toHaveBeenNthCalledWith(
         1,
@@ -203,7 +205,9 @@ describe('initialize', () => {
         .spyOn(initUtils, 'asyncPackageInit')
         .mockImplementation(async () => getPackageJson());
 
-      await expect(initHandler(getMockArgv())).rejects.toThrow();
+      await expect(initHandler(getMockArgv())).rejects.toThrow(
+        'failed to create directory',
+      );
 
       expect(logErrorMock).toHaveBeenCalledTimes(1);
       expect(logErrorMock).toHaveBeenNthCalledWith(
@@ -241,7 +245,9 @@ describe('initialize', () => {
         .spyOn(initUtils, 'asyncPackageInit')
         .mockImplementation(async () => getPackageJson());
 
-      await expect(initHandler(getMockArgv())).rejects.toThrow();
+      await expect(initHandler(getMockArgv())).rejects.toThrow(
+        'failed to write',
+      );
       expect(logErrorMock).toHaveBeenCalledTimes(1);
       expect(logErrorMock).toHaveBeenNthCalledWith(
         1,
@@ -285,7 +291,9 @@ describe('initialize', () => {
         .spyOn(initUtils, 'asyncPackageInit')
         .mockImplementation(async () => getPackageJson());
 
-      await expect(initHandler(getMockArgv())).rejects.toThrow();
+      await expect(initHandler(getMockArgv())).rejects.toThrow(
+        'failed to write',
+      );
 
       const mockArgv = getMockArgv();
 
@@ -339,7 +347,9 @@ describe('initialize', () => {
         .spyOn(initUtils, 'asyncPackageInit')
         .mockImplementation(async () => getPackageJson());
 
-      await expect(initHandler(getMockArgv())).rejects.toThrow();
+      await expect(initHandler(getMockArgv())).rejects.toThrow(
+        'failed to write',
+      );
 
       const mockArgv = getMockArgv();
 
