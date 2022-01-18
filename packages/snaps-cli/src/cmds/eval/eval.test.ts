@@ -14,7 +14,6 @@ describe('eval', () => {
     beforeEach(() => {
       jest.spyOn(console, 'log').mockImplementation(() => undefined);
       jest.spyOn(console, 'error').mockImplementation(() => undefined);
-      jest.spyOn(process, 'exit').mockImplementation(() => undefined as never);
       jest
         .spyOn(fsUtils, 'validateFilePath')
         .mockImplementation(async () => true);
@@ -48,17 +47,10 @@ describe('eval', () => {
           throw new Error();
         });
 
-      (process.exit as any).mockImplementationOnce(() => {
-        throw new Error('process exited');
-      });
-
-      await expect(async () => {
-        await snapEval(getMockArgv());
-      }).rejects.toThrow('process exited');
+      await expect(snapEval(getMockArgv())).rejects.toThrow('');
 
       expect(console.log).not.toHaveBeenCalled();
       expect(console.error).toHaveBeenCalledTimes(1);
-      expect(process.exit).toHaveBeenCalledTimes(1);
     });
   });
 });

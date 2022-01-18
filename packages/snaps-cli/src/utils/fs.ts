@@ -28,7 +28,7 @@ export async function isDirectory(
         return true;
       } catch (mkdirError) {
         logError(`Directory '${pathString}' could not be created.`, mkdirError);
-        process.exit(1);
+        throw mkdirError;
       }
     }
     return false;

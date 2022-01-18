@@ -30,7 +30,6 @@ describe('serve', () => {
     let mockServer: MockServer;
 
     beforeEach(() => {
-      jest.spyOn(process, 'exit').mockImplementation(() => undefined as never);
       jest.spyOn(serveUtils, 'logServerListening').mockImplementation();
       jest.spyOn(http, 'createServer').mockImplementation(() => {
         mockServer = getMockServer();
@@ -54,7 +53,7 @@ describe('serve', () => {
       });
       mockServer.emit('close');
       await finishPromise;
-      expect(process.exit).toHaveBeenCalledWith(1);
+      expect(process.exitCode).toStrictEqual(1);
     });
 
     it('server handles "error" event correctly', async () => {
@@ -62,7 +61,6 @@ describe('serve', () => {
       const logServerErrorMock = jest
         .spyOn(serveUtils, 'logServerError')
         .mockImplementation();
-      jest.spyOn(process, 'exit').mockImplementation(() => undefined as never);
 
       await serve.handler(getMockArgv());
       const finishPromise = new Promise<void>((resolve, _) => {
@@ -74,7 +72,7 @@ describe('serve', () => {
       });
       mockServer.emit('error');
       await finishPromise;
-      expect(process.exit).toHaveBeenCalledWith(1);
+      expect(process.exitCode).toStrictEqual(1);
     });
 
     it('server handles "request" event correctly', async () => {

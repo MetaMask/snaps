@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs';
 import pathUtils from 'path';
 import rimraf from 'rimraf';
-import { isFile, isDirectory, readJsonFile } from './fs';
+import { isDirectory, isFile, readJsonFile } from './fs';
 
 /**
  * All test files will be created in this temporary directory, which is removed during cleanup.
@@ -101,14 +101,9 @@ describe('file system utilities', () => {
         isWatching: false,
       };
 
-      jest.spyOn(process, 'exit').mockImplementation(() => {
-        throw new Error('foo');
-      });
       jest.spyOn(console, 'error').mockImplementation();
 
-      await expect(isDirectory('wrong/path/', true)).rejects.toThrow(
-        new Error('foo'),
-      );
+      await expect(isDirectory('wrong/path/', true)).rejects.toThrow('');
 
       expect(global.console.error).toHaveBeenCalledWith(
         "Directory 'wrong/path/' could not be created.",

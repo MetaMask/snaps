@@ -1,7 +1,7 @@
 import yargs from 'yargs';
 import builders from '../../builders';
-import { logError } from '../../utils';
 import { YargsArgs } from '../../types/yargs';
+import { logError } from '../../utils';
 import { manifestHandler } from './manifestHandler';
 
 export = {
@@ -15,7 +15,7 @@ export = {
       await manifestHandler(argv);
     } catch (err) {
       logError(err.message, err);
-      process.exit(1);
+      throw err;
     }
   },
 };

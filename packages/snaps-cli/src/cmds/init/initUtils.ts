@@ -1,15 +1,16 @@
-import { promises as fs, existsSync } from 'fs';
+import { existsSync, promises as fs } from 'fs';
 import pathUtils from 'path';
 import {
-  NpmSnapPackageJson,
-  SnapManifest,
   NpmSnapFileNames,
-  validateSnapJsonFile,
+  NpmSnapPackageJson,
   PROPOSED_NAME_REGEX,
+  SnapManifest,
+  validateSnapJsonFile,
 } from '@metamask/snap-controllers/dist/snaps';
 import initPackageJson from 'init-package-json';
 import mkdirp from 'mkdirp';
 import slash from 'slash';
+import { YargsArgs } from '../../types/yargs';
 import {
   CONFIG_FILE,
   deepClone,
@@ -19,7 +20,6 @@ import {
   readJsonFile,
   trimPathString,
 } from '../../utils';
-import { YargsArgs } from '../../types/yargs';
 
 /**
  * This is a placeholder shasum that will be replaced at the end of the init command.
@@ -56,7 +56,7 @@ export async function asyncPackageInit(): Promise<
         `Init Error: Could not parse '${NpmSnapFileNames.PackageJson}'. Please verify that the file is correctly formatted and try again.`,
         error,
       );
-      process.exit(1);
+      throw error;
     }
   }
 
@@ -65,7 +65,7 @@ export async function asyncPackageInit(): Promise<
     logError(
       `Init Error: Found a 'yarn.lock' file but no '${NpmSnapFileNames.PackageJson}'. Please run 'yarn init' and try again.`,
     );
-    process.exit(1);
+    throw new Error('Already existing yarn.lock file found');
   }
 
   // Run 'npm init'
@@ -135,7 +135,7 @@ export async function buildSnapManifest(
     }
   } catch (err) {
     logError(`Init Error: ${err.message}`, err);
-    process.exit(1);
+    throw err;
   }
 
   let invalidProposedName = true;
@@ -312,7 +312,7 @@ export async function prepareWorkingDirectory(): Promise<void> {
 
     if (!shouldContinue) {
       console.log(`Init: Exiting...`);
-      process.exit(1);
+      throw new Error('User refused to continue');
     }
   }
 }

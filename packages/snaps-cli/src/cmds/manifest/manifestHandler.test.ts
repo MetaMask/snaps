@@ -3,7 +3,6 @@ import {
   NpmSnapFileNames,
   SnapValidationFailureReason,
 } from '@metamask/snap-controllers/dist/snaps';
-import * as utils from '../../utils';
 import {
   DEFAULT_SNAP_BUNDLE,
   FakeFsError,
@@ -11,6 +10,7 @@ import {
   getSnapManifest,
   resetSnapsGlobal,
 } from '../../../test/utils';
+import * as utils from '../../utils';
 import * as manifestHandlerModule from './manifestHandler';
 import manifestModule from '.';
 
@@ -68,12 +68,12 @@ describe('manifest', () => {
       });
 
     jest.spyOn(console, 'error').mockImplementation();
-    jest.spyOn(process, 'exit').mockImplementation();
 
-    await (manifestModule as any).handler({ ...(foobar as any) });
+    await expect(
+      (manifestModule as any).handler({ ...(foobar as any) }),
+    ).rejects.toThrow('manifest failure');
     expect(manifestHandlerMock).toHaveBeenCalledWith(foobar);
     expect(console.error).toHaveBeenCalledTimes(1);
-    expect(process.exit).toHaveBeenCalledWith(1);
   });
 
   it('successfully validates a snap.manifest.json file', async () => {

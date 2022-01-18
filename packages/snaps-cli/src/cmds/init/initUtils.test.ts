@@ -1,5 +1,6 @@
 import fs from 'fs';
 import * as snapUtils from '@metamask/snap-controllers/dist/snaps';
+import { SnapManifest } from '@metamask/snap-controllers/dist/snaps';
 import initPackageJson from 'init-package-json';
 import mkdirp from 'mkdirp';
 import {
@@ -7,6 +8,7 @@ import {
   getPackageJson,
   getSnapManifest,
 } from '../../../test/utils';
+import { YargsArgs } from '../../types/yargs';
 // We have to import utils separately or else we run into trouble with our mocks
 import * as fsUtils from '../../utils/fs';
 import * as miscUtils from '../../utils/misc';
@@ -73,18 +75,12 @@ describe('initUtils', () => {
       const logErrorMock = jest
         .spyOn(miscUtils, 'logError')
         .mockImplementation();
-      jest.spyOn(process, 'exit').mockImplementation(() => {
-        throw new Error('process exited');
-      });
 
-      await expect(asyncPackageInit()).rejects.toThrow(
-        new Error('process exited'),
-      );
+      await expect(asyncPackageInit()).rejects.toThrow('error message');
       expect(existsSyncMock).toHaveBeenCalled();
       expect(readFileMock).toHaveBeenCalledTimes(1);
       expect(parseMock).toHaveBeenCalledTimes(1);
       expect(logErrorMock).toHaveBeenCalledTimes(1);
-      expect(process.exit).toHaveBeenCalledWith(1);
       expect(global.console.log).toHaveBeenCalledTimes(1);
     });
 
@@ -122,18 +118,12 @@ describe('initUtils', () => {
       const logErrorMock = jest
         .spyOn(miscUtils, 'logError')
         .mockImplementation();
-      const processExitMock = jest
-        .spyOn(process, 'exit')
-        .mockImplementationOnce(() => {
-          throw new Error('process exited');
-        });
 
       await expect(asyncPackageInit()).rejects.toThrow(
-        new Error('process exited'),
+        'Already existing yarn.lock file found',
       );
       expect(existsSyncMock).toHaveBeenCalledTimes(2);
       expect(logErrorMock).toHaveBeenCalledTimes(1);
-      expect(processExitMock).toHaveBeenCalledWith(1);
     });
   });
 
@@ -154,10 +144,12 @@ describe('initUtils', () => {
         .mockImplementation(async () => 'y');
       jest.spyOn(console, 'log').mockImplementation();
 
-      const [manifest, argv] = await buildSnapManifest(
+      const manifestAndArgs = await buildSnapManifest(
         getMockArgv(),
         getPackageJson(),
       );
+      expect(manifestAndArgs).not.toBeNull();
+      const [manifest, argv] = manifestAndArgs as [SnapManifest, YargsArgs];
       expect(manifest).toStrictEqual(
         getSnapManifest({ shasum: PLACEHOLDER_SHASUM }),
       );
@@ -184,10 +176,12 @@ describe('initUtils', () => {
       const packageJson = getPackageJson();
       delete packageJson.description;
 
-      const [manifest, argv] = await buildSnapManifest(
+      const manifestAndArgs = await buildSnapManifest(
         getMockArgv(),
         packageJson,
       );
+      expect(manifestAndArgs).not.toBeNull();
+      const [manifest, argv] = manifestAndArgs as [SnapManifest, YargsArgs];
       expect(manifest).toStrictEqual(
         getSnapManifest({
           description: 'The @metamask/example-snap Snap.',
@@ -219,17 +213,13 @@ describe('initUtils', () => {
       const logErrorMock = jest
         .spyOn(miscUtils, 'logError')
         .mockImplementation();
-      jest.spyOn(process, 'exit').mockImplementationOnce(() => {
-        throw new Error('process exit');
-      });
 
       await expect(
         buildSnapManifest(getMockArgv(), getPackageJson()),
-      ).rejects.toThrow(new Error('process exit'));
+      ).rejects.toThrow('some file system error');
       expect(promptMock).toHaveBeenCalledTimes(1);
       expect(global.console.log).toHaveBeenCalledTimes(1);
       expect(logErrorMock).toHaveBeenCalledTimes(2);
-      expect(process.exit).toHaveBeenCalledWith(1);
     });
 
     it('handles valid user inputs when not using default values', async () => {
@@ -466,17 +456,15 @@ describe('initUtils', () => {
       const promptMock = jest
         .spyOn(readlineUtils, 'prompt')
         .mockImplementation(async () => 'n');
-      jest
-        .spyOn(process, 'exit')
-        .mockImplementationOnce(() => undefined as never);
       jest.spyOn(console, 'log').mockImplementation();
 
-      await prepareWorkingDirectory();
+      await expect(prepareWorkingDirectory()).rejects.toThrow(
+        'User refused to continue',
+      );
       expect(warningMock).toHaveBeenCalledTimes(1);
       expect(readdirMock).toHaveBeenCalledTimes(1);
       expect(promptMock).toHaveBeenCalledTimes(1);
       expect(global.console.log).toHaveBeenCalledTimes(1);
-      expect(process.exit).toHaveBeenCalledWith(1);
     });
 
     it('handles continue correctly', async () => {

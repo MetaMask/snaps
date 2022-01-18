@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs';
 import { Arguments } from 'yargs';
-import yargs from 'yargs/yargs';
 import yargsParse from 'yargs-parser';
+import yargs from 'yargs/yargs';
 import builders from '../builders';
 import { logError } from './misc';
 import { CONFIG_FILE } from '.';

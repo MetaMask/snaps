@@ -130,6 +130,8 @@ export async function writeError(
 
   // unless the watcher is active, exit
   if (!global.snaps.isWatching) {
+    // TODO(ritave): Remove process exit and change into collapse of functions
+    //               https://github.com/MetaMask/snaps-skunkworks/issues/81
     process.exit(1);
   }
 }
