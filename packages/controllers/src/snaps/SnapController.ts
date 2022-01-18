@@ -17,8 +17,10 @@ import { nanoid } from 'nanoid';
 import isValidSemver from 'semver/functions/valid';
 import {
   GetEndowments,
+  GetPermissions,
   HasPermission,
-  PermissionConstraint,
+  RequestPermissions,
+  RevokeAllPermissions,
 } from '../permissions';
 import {
   ExecuteSnap,
@@ -144,13 +146,7 @@ export type ProcessSnapResult =
 export type InstallSnapsResult = Record<SnapId, ProcessSnapResult>;
 
 // Types that probably should be defined elsewhere in prod
-type RemoveAllPermissionsFunction = (snapIds: string[]) => void;
 type CloseAllConnectionsFunction = (origin: string) => void;
-type RequestPermissionsFunction = (
-  origin: string,
-  requestedPermissions: RequestedSnapPermissions,
-) => Promise<PermissionConstraint[]>;
-type GetPermissionsFunction = (origin: string) => PermissionConstraint[];
 type StoredSnaps = Record<SnapId, Snap>;
 
 export type SnapControllerState = {
@@ -194,7 +190,12 @@ export type SnapRemoved = {
 // TODO: Create actions
 export type SnapControllerActions = never;
 
-export type AllowedActions = GetEndowments | HasPermission;
+export type AllowedActions =
+  | GetEndowments
+  | GetPermissions
+  | HasPermission
+  | RevokeAllPermissions
+  | RequestPermissions;
 
 export type SnapControllerEvents =
   | SnapAdded
@@ -217,11 +218,8 @@ type SnapControllerArgs = {
   closeAllConnections: CloseAllConnectionsFunction;
   endowmentPermissionNames: string[];
   executeSnap: ExecuteSnap;
-  getPermissions: GetPermissionsFunction;
   getRpcMessageHandler: GetRpcMessageHandler;
   messenger: SnapControllerMessenger;
-  removeAllPermissionsFor: RemoveAllPermissionsFunction;
-  requestPermissions: RequestPermissionsFunction;
   state?: SnapControllerState;
   terminateAllSnaps: TerminateAll;
   terminateSnap: TerminateSnap;
@@ -333,8 +331,6 @@ export class SnapController extends BaseController<
 
   private _executeSnap: ExecuteSnap;
 
-  private _getPermissions: GetPermissionsFunction;
-
   private _getRpcMessageHandler: GetRpcMessageHandler;
 
   /**
@@ -349,14 +345,10 @@ export class SnapController extends BaseController<
 
   private _idleTimeCheckInterval: number;
 
-  private _removeAllPermissionsFor: RemoveAllPermissionsFunction;
-
   private _rpcHandlerMap: Map<
     SnapId,
     (origin: string, request: Record<string, unknown>) => Promise<unknown>
   >;
-
-  private _requestPermissions: RequestPermissionsFunction;
 
   private _snapsBeingAdded: Map<string, Promise<Snap>>;
 
@@ -369,11 +361,8 @@ export class SnapController extends BaseController<
   constructor({
     closeAllConnections,
     executeSnap,
-    getPermissions,
     getRpcMessageHandler,
     messenger,
-    removeAllPermissionsFor,
-    requestPermissions,
     state,
     terminateAllSnaps,
     terminateSnap,
@@ -415,10 +404,7 @@ export class SnapController extends BaseController<
       state: { ...defaultState, ...state },
     });
 
-    this._removeAllPermissionsFor = removeAllPermissionsFor;
     this._closeAllConnections = closeAllConnections;
-    this._requestPermissions = requestPermissions;
-    this._getPermissions = getPermissions;
     this._endowmentPermissionNames = endowmentPermissionNames;
 
     this._terminateSnap = terminateSnap;
@@ -729,7 +715,13 @@ export class SnapController extends BaseController<
       this._closeAllConnections(snapId);
     });
     this._terminateAllSnaps();
-    this._removeAllPermissionsFor(snapIds);
+    snapIds.forEach((snapId) =>
+      this.messagingSystem.call(
+        'PermissionController:revokeAllPermissions',
+        snapId,
+      ),
+    );
+
     this.update((state: any) => {
       state.snaps = {};
       state.snapStates = {};
@@ -767,7 +759,12 @@ export class SnapController extends BaseController<
       });
     });
 
-    this._removeAllPermissionsFor(snapIds);
+    snapIds.forEach((snapId) =>
+      this.messagingSystem.call(
+        'PermissionController:revokeAllPermissions',
+        snapId,
+      ),
+    );
   }
 
   /**
@@ -775,7 +772,12 @@ export class SnapController extends BaseController<
    * @param origin - The origin whose permitted snaps to retrieve.
    */
   getPermittedSnaps(origin: string): InstallSnapsResult {
-    return this._getPermissions(origin).reduce((permittedSnaps, perm) => {
+    return Object.values(
+      this.messagingSystem.call(
+        'PermissionController:getPermissions',
+        origin,
+      ) ?? {},
+    ).reduce((permittedSnaps, perm) => {
       if (perm.parentCapability.startsWith(SNAP_PREFIX)) {
         const snapId = perm.parentCapability.replace(SNAP_PREFIX_REGEX, '');
         const snap = this.getTruncated(snapId);
@@ -1168,11 +1170,14 @@ export class SnapController extends BaseController<
     }
 
     try {
-      const approvedPermissions = await this._requestPermissions(
-        snapId,
+      const [approvedPermissions] = await this.messagingSystem.call(
+        'PermissionController:requestPermissions',
+        { origin: snapId },
         initialPermissions,
       );
-      return approvedPermissions.map((perm) => perm.parentCapability);
+      return Object.values(approvedPermissions).map(
+        (perm) => perm.parentCapability,
+      );
     } finally {
       this._snapsBeingAdded.delete(snapId);
     }

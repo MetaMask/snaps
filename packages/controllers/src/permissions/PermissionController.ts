@@ -1,85 +1,79 @@
 import {
-  Json,
-  BaseControllerV2 as BaseController,
-  RestrictedControllerMessenger,
-  AddApprovalRequest,
   AcceptRequest as AcceptApprovalRequest,
-  RejectRequest as RejectApprovalRequest,
+  AddApprovalRequest,
+  BaseControllerV2 as BaseController,
   HasApprovalRequest,
+  Json,
+  RejectRequest as RejectApprovalRequest,
+  RestrictedControllerMessenger,
   StateMetadata,
-} from '@metamask/controllers';
-// These are used in docstrings, but ESLint is ignorant of docstrings.
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import type {
-  ApprovalController,
-  ControllerMessenger,
 } from '@metamask/controllers';
 /* eslint-enable @typescript-eslint/no-unused-vars */
 import deepFreeze from 'deep-freeze-strict';
 import { castDraft, Draft, Patch } from 'immer';
 import { nanoid } from 'nanoid';
 import {
-  isPlainObject,
   hasProperty,
-  NonEmptyArray,
-  Mutable,
   isNonEmptyArray,
+  isPlainObject,
   isValidJson,
+  Mutable,
+  NonEmptyArray,
 } from '../utils';
 import {
+  CaveatConstraint,
+  CaveatSpecificationConstraint,
+  CaveatSpecificationMap,
   decorateWithCaveats,
   ExtractCaveat,
   ExtractCaveats,
-  CaveatSpecificationMap,
   ExtractCaveatValue,
-  CaveatConstraint,
-  CaveatSpecificationConstraint,
 } from './Caveat';
 import {
+  CaveatAlreadyExistsError,
+  CaveatDoesNotExistError,
+  CaveatInvalidJsonError,
+  CaveatMissingValueError,
+  DuplicateCaveatError,
+  EndowmentPermissionDoesNotExistError,
+  ForbiddenCaveatError,
+  internalError,
+  InvalidApprovedPermissionError,
+  InvalidCaveatError,
+  InvalidCaveatFieldsError,
+  InvalidCaveatsPropertyError,
+  InvalidCaveatTypeError,
+  invalidParams,
+  InvalidSubjectIdentifierError,
+  methodNotFound,
+  PermissionDoesNotExistError,
+  PermissionsRequestNotFoundError,
+  unauthorized,
+  UnrecognizedCaveatTypeError,
+  UnrecognizedSubjectError,
+  userRejectedRequest,
+} from './errors';
+import {
   constructPermission,
+  EndowmentSpecificationConstraint,
+  ExtractAllowedCaveatTypes,
+  ExtractPermissionSpecification,
   findCaveat,
-  PermissionConstraint,
+  hasSpecificationType,
   OriginString,
+  PermissionConstraint,
+  PermissionSpecificationConstraint,
+  PermissionSpecificationMap,
+  PermissionType,
   RequestedPermissions,
   RestrictedMethod,
   RestrictedMethodParameters,
-  ValidPermissionSpecification,
-  PermissionSpecificationMap,
-  ValidPermission,
-  ExtractAllowedCaveatTypes,
-  ExtractPermissionSpecification,
-  PermissionSpecificationConstraint,
-  PermissionType,
   RestrictedMethodSpecificationConstraint,
-  EndowmentSpecificationConstraint,
-  hasSpecificationType,
+  ValidPermission,
+  ValidPermissionSpecification,
 } from './Permission';
-import {
-  PermissionDoesNotExistError,
-  methodNotFound,
-  UnrecognizedSubjectError,
-  CaveatDoesNotExistError,
-  UnrecognizedCaveatTypeError,
-  CaveatMissingValueError,
-  InvalidCaveatFieldsError,
-  InvalidSubjectIdentifierError,
-  InvalidCaveatTypeError,
-  CaveatAlreadyExistsError,
-  InvalidCaveatError,
-  InvalidApprovedPermissionError,
-  unauthorized,
-  invalidParams,
-  internalError,
-  userRejectedRequest,
-  PermissionsRequestNotFoundError,
-  ForbiddenCaveatError,
-  CaveatInvalidJsonError,
-  DuplicateCaveatError,
-  InvalidCaveatsPropertyError,
-  EndowmentPermissionDoesNotExistError,
-} from './errors';
-import { MethodNames } from './utils';
 import { getPermissionMiddlewareFactory } from './permission-middleware';
+import { MethodNames } from './utils';
 
 /**
  * Metadata associated with {@link PermissionController} subjects.
@@ -193,6 +187,14 @@ export type GetSubjects = {
 };
 
 /**
+ * Gets the permissions for specified subject
+ */
+export type GetPermissions = {
+  type: `${typeof controllerName}:getPermissions`;
+  handler: GenericPermissionController['getPermissions'];
+};
+
+/**
  * Checks whether the specified subject has any permissions.
  */
 export type HasPermissions = {
@@ -206,6 +208,22 @@ export type HasPermissions = {
 export type HasPermission = {
   type: `${typeof controllerName}:hasPermission`;
   handler: GenericPermissionController['hasPermission'];
+};
+
+/**
+ * Requests given permissions for a specified origin
+ */
+export type RequestPermissions = {
+  type: `${typeof controllerName}:requestPermissions`;
+  handler: GenericPermissionController['requestPermissions'];
+};
+
+/**
+ * Removes all permissions for a given origin
+ */
+export type RevokeAllPermissions = {
+  type: `${typeof controllerName}:revokeAllPermissions`;
+  handler: GenericPermissionController['revokeAllPermissions'];
 };
 
 /**
@@ -233,8 +251,11 @@ export type PermissionControllerActions =
   | GetEndowments
   | GetPermissionControllerState
   | GetSubjects
+  | GetPermissions
   | HasPermission
-  | HasPermissions;
+  | HasPermissions
+  | RevokeAllPermissions
+  | RequestPermissions;
 
 /**
  * The generic state change event of the {@link PermissionController}.
@@ -631,6 +652,11 @@ export class PermissionController<
     );
 
     this.messagingSystem.registerActionHandler(
+      `${controllerName}:getPermissions`,
+      (origin: OriginString) => this.getPermissions(origin),
+    );
+
+    this.messagingSystem.registerActionHandler(
       `${controllerName}:hasPermission`,
       (origin: OriginString, targetName: string) =>
         this.hasPermission(origin, targetName),
@@ -639,6 +665,17 @@ export class PermissionController<
     this.messagingSystem.registerActionHandler(
       `${controllerName}:hasPermissions`,
       (origin: OriginString) => this.hasPermissions(origin),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:revokeAllPermissions`,
+      (origin: OriginString) => this.revokeAllPermissions(origin),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:requestPermissions`,
+      (subject: PermissionSubjectMetadata, permissions: RequestedPermissions) =>
+        this.requestPermissions(subject, permissions),
     );
   }
 

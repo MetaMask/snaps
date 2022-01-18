@@ -49,6 +49,9 @@ const getSnapControllerMessenger = (
     allowedActions: [
       'PermissionController:getEndowments',
       'PermissionController:hasPermission',
+      'PermissionController:getPermissions',
+      'PermissionController:requestPermissions',
+      'PermissionController:revokeAllPermissions',
     ],
   });
 
@@ -838,7 +841,8 @@ describe('SnapController', () => {
 
     const messengerCallMock = jest
       .spyOn(messenger, 'call')
-      .mockImplementationOnce(() => true);
+      .mockImplementationOnce(() => true)
+      .mockImplementation();
 
     jest.spyOn(messenger, 'publish');
     jest
@@ -884,7 +888,7 @@ describe('SnapController', () => {
       [FAKE_SNAP_ID]: { error: serializeError(new Error('foo')) },
     });
 
-    expect(messengerCallMock).toHaveBeenCalledTimes(1);
+    expect(messengerCallMock).toHaveBeenCalledTimes(2);
     expect(messengerCallMock).toHaveBeenNthCalledWith(
       1,
       'PermissionController:hasPermission',
