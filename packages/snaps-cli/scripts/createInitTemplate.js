@@ -29,7 +29,7 @@ async function createInitTemplate() {
     `${JSON.stringify(
       {
         html: html.toString(),
-        source: js.toString(),
+        source: js.toString().replace(/\r\n/gu, '\n'),
       },
       null,
       2,
