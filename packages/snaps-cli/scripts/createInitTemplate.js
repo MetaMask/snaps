@@ -28,8 +28,8 @@ async function createInitTemplate() {
     TEMPLATE_PATH,
     `${JSON.stringify(
       {
-        html: html.toString(),
-        source: js.toString().replace(/\r\n/gu, '\n'),
+        html: normalizeLinebreaks(html.toString()),
+        source: normalizeLinebreaks(js.toString()),
       },
       null,
       2,
@@ -41,4 +41,8 @@ async function createInitTemplate() {
   } catch (error) {
     console.error('Failed to delete temporary directory.', error);
   }
+}
+
+function normalizeLinebreaks(str) {
+  return str.replace(/\r\n/gu, '\n');
 }
