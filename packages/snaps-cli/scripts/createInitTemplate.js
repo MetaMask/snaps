@@ -10,6 +10,10 @@ createInitTemplate().catch((error) => {
   throw error;
 });
 
+/**
+ * Creates the `init-template.json` file used for the `mm-snap init` command.
+ * The template is based on the `@metamask/template-snap` snap.
+ */
 async function createInitTemplate() {
   const tmpdir = await fs.mkdtemp(path.join(os.tmpdir(), 'snaps-cli-build-'));
   await execa(
@@ -26,14 +30,16 @@ async function createInitTemplate() {
 
   await fs.writeFile(
     TEMPLATE_PATH,
-    `${JSON.stringify(
-      {
-        html: normalizeLinebreaks(html.toString()),
-        source: normalizeLinebreaks(js.toString()),
-      },
-      null,
-      2,
-    )}\n`,
+    normalizeLinebreaks(
+      `${JSON.stringify(
+        {
+          html: html.toString(),
+          source: js.toString(),
+        },
+        null,
+        2,
+      )}\n`,
+    ),
   );
 
   try {
@@ -43,6 +49,13 @@ async function createInitTemplate() {
   }
 }
 
+/**
+ * Replaces all windows CRLF / `\r\n` line breaks with LF / `\n` line breaks.
+ * Helps normalize line breaks if this script runs on Windows.
+ *
+ * @param {string} str - The string whose line breaks to normalize.
+ * @returns The string with `\n` line breaks.
+ */
 function normalizeLinebreaks(str) {
   return str.replace(/\r\n/gu, '\n');
 }
