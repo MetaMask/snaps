@@ -12,25 +12,21 @@ describe('fetchNpmSnap', () => {
   });
 
   it('fetches a package tarball, extracts the necessary files, and validates them', async () => {
-    const { version: exampleSnapVersion } = JSON.parse(
+    const { version: templateSnapVersion } = JSON.parse(
       (
-        await readFile(require.resolve('@metamask/example-snap/package.json'))
+        await readFile(require.resolve('@metamask/template-snap/package.json'))
       ).toString('utf8'),
     );
 
-    const expectedSvgContents = (
-      await readFile(require.resolve('@metamask/example-snap/images/icon.svg'))
-    ).toString('utf8');
-
-    const tarballUrl = `https://registry.npmjs.org/@metamask/example-snap/-/example-snap-${exampleSnapVersion}.tgz`;
+    const tarballUrl = `https://registry.npmjs.org/@metamask/template-snap/-/template-snap-${templateSnapVersion}.tgz`;
     fetchMock
       .mockResponseOnce(
         JSON.stringify({
           'dist-tags': {
-            latest: exampleSnapVersion,
+            latest: templateSnapVersion,
           },
           versions: {
-            [exampleSnapVersion]: {
+            [templateSnapVersion]: {
               dist: {
                 tarball: tarballUrl,
               },
@@ -45,21 +41,21 @@ describe('fetchNpmSnap', () => {
             body: createReadStream(
               path.resolve(
                 __dirname,
-                `../../test/fixtures/metamask-example-snap-${exampleSnapVersion}.tgz`,
+                `../../test/fixtures/metamask-template-snap-${templateSnapVersion}.tgz`,
               ),
             ),
           }) as any,
       );
 
     const { manifest, sourceCode, svgIcon } = await fetchNpmSnap(
-      '@metamask/example-snap',
-      exampleSnapVersion,
+      '@metamask/template-snap',
+      templateSnapVersion,
     );
 
     expect(fetchMock).toHaveBeenCalledTimes(2);
     expect(fetchMock).toHaveBeenNthCalledWith(
       1,
-      'https://registry.npmjs.org/@metamask/example-snap',
+      'https://registry.npmjs.org/@metamask/template-snap',
     );
     expect(fetchMock).toHaveBeenNthCalledWith(2, tarballUrl);
 
@@ -67,7 +63,7 @@ describe('fetchNpmSnap', () => {
       JSON.parse(
         (
           await readFile(
-            require.resolve('@metamask/example-snap/snap.manifest.json'),
+            require.resolve('@metamask/template-snap/snap.manifest.json'),
           )
         ).toString('utf8'),
       ),
@@ -75,10 +71,14 @@ describe('fetchNpmSnap', () => {
 
     expect(sourceCode).toStrictEqual(
       (
-        await readFile(require.resolve('@metamask/example-snap/dist/bundle.js'))
+        await readFile(
+          require.resolve('@metamask/template-snap/dist/bundle.js'),
+        )
       ).toString('utf8'),
     );
 
-    expect(svgIcon).toStrictEqual(expectedSvgContents);
+    expect(svgIcon?.startsWith('<svg') && svgIcon.endsWith('</svg>')).toBe(
+      true,
+    );
   });
 });

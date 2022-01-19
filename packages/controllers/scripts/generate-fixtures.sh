@@ -9,10 +9,7 @@ set -o pipefail
 cd "${0%/*}"
 
 # Cleanup
-rm -f ../test/fixtures/metamask-example-snap-*.tgz
-
-cd ../../example-snap
-# We have to invoke the binary directly for CI compatibility
-node ../snaps-cli/dist/main.js build
-npm pack
-mv ./metamask-example-snap-*.tgz ../controllers/test/fixtures
+cd ../test/fixtures
+rm -f ./*.tgz
+# Download template-snap package tarball
+npm pack @metamask/template-snap

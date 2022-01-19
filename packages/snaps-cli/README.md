@@ -35,12 +35,12 @@ Here's an example manifest:
 
 ```json
 {
-  "version": "0.2.2",
-  "proposedName": "@metamask/example-snap",
-  "description": "An example snap.",
+  "version": "0.7.0",
+  "proposedName": "@metamask/template-snap",
+  "description": "A MetaMask Snap template.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/example-snap.git"
+    "url": "https://github.com/MetaMask/template-snap.git"
   },
   "source": {
     "shasum": "w3FltkDjKQZiPwM+AThnmypt0OFF7hj4ycg/kxxv+nU=",
@@ -48,7 +48,7 @@ Here's an example manifest:
       "npm": {
         "filePath": "dist/bundle.js",
         "iconPath": "images/icon.svg",
-        "packageName": "@metamask/example-snap",
+        "packageName": "@metamask/template-snap",
         "registry": "https://registry.npmjs.org/"
       }
     }

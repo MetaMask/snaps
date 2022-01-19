@@ -1,4 +1,5 @@
 **/dist
+**/temp-*
 
 # sed backup files
 *.*-e

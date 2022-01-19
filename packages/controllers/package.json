@@ -57,6 +57,7 @@
     "@jest-runner/electron": "^3.0.1",
     "@json-schema-tools/transpiler": "^1.10.2",
     "@metamask/snap-types": "^0.7.0",
+    "@metamask/template-snap": "^0.7.0",
     "@types/concat-stream": "^1.6.1",
     "@types/gunzip-maybe": "^1.4.0",
     "@types/jest": "^26.0.23",

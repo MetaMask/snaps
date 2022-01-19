@@ -1,18 +1,27 @@
 const { promises: fs } = require('fs');
 const path = require('path');
+const os = require('os');
+const execa = require('execa');
+const { sync: rimraf } = require('rimraf');
 
-const EXAMPLE_PATH = path.join(
-  __dirname,
-  '../../../node_modules/@metamask/example-snap',
-);
 const TEMPLATE_PATH = 'src/cmds/init/init-template.json';
 
-createInitTemplate();
+createInitTemplate().catch((error) => {
+  throw error;
+});
 
 async function createInitTemplate() {
-  const html = await fs.readFile(path.join(EXAMPLE_PATH, 'index.html'));
+  const tmpdir = await fs.mkdtemp(path.join(os.tmpdir(), 'snaps-cli-build-'));
+  await execa(
+    'git',
+    ['clone', 'https://github.com/MetaMask/template-snap.git'],
+    { cwd: tmpdir },
+  );
+
+  const templateRepoPath = path.join(tmpdir, 'template-snap');
+  const html = await fs.readFile(path.join(templateRepoPath, 'index.html'));
   const js = await fs.readFile(
-    path.join(EXAMPLE_PATH, path.normalize('src/index.js')),
+    path.join(templateRepoPath, path.normalize('src/index.js')),
   );
 
   await fs.writeFile(
@@ -26,4 +35,10 @@ async function createInitTemplate() {
       2,
     )}\n`,
   );
+
+  try {
+    rimraf(tmpdir);
+  } catch (error) {
+    console.error('Failed to delete temporary directory.', error);
+  }
 }
