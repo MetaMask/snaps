@@ -30,16 +30,14 @@ async function createInitTemplate() {
 
   await fs.writeFile(
     TEMPLATE_PATH,
-    normalizeLinebreaks(
-      `${JSON.stringify(
-        {
-          html: html.toString(),
-          source: js.toString(),
-        },
-        null,
-        2,
-      )}\n`,
-    ),
+    `${JSON.stringify(
+      {
+        html: normalizeLinebreaks(html.toString()),
+        source: normalizeLinebreaks(js.toString()),
+      },
+      null,
+      2,
+    )}\n`,
   );
 
   try {
