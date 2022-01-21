@@ -52,11 +52,11 @@ const getSnapControllerMessenger = (
       'PermissionController:getPermissions',
       'PermissionController:requestPermissions',
       'PermissionController:revokeAllPermissions',
-      'SnapController:addSnap',
-      'SnapController:getSnap',
-      'SnapController:getSnapRpcHandler',
+      'SnapController:add',
+      'SnapController:get',
+      'SnapController:getRpcMessageHandler',
       'SnapController:getSnapState',
-      'SnapController:hasSnap',
+      'SnapController:has',
       'SnapController:updateSnapState',
     ],
   });
@@ -1030,7 +1030,7 @@ describe('SnapController', () => {
   });
 
   describe('controller actions', () => {
-    it('action: SnapController:addSnap', async () => {
+    it('action: SnapController:add', async () => {
       const executeSnapMock = jest.fn();
       const messenger = getSnapControllerMessenger();
       const snapController = getSnapController(
@@ -1062,7 +1062,7 @@ describe('SnapController', () => {
           };
         });
 
-      await messenger.call('SnapController:addSnap', {
+      await messenger.call('SnapController:add', {
         id: 'npm:fooSnap',
       });
 
@@ -1074,7 +1074,7 @@ describe('SnapController', () => {
       );
     });
 
-    it('action: SnapController:getSnap', async () => {
+    it('action: SnapController:get', async () => {
       const executeSnapMock = jest.fn();
       const messenger = getSnapControllerMessenger();
       const sourceCode = '// source code';
@@ -1106,13 +1106,13 @@ describe('SnapController', () => {
       );
 
       const getSpy = jest.spyOn(snapController, 'get');
-      const result = messenger.call('SnapController:getSnap', 'npm:fooSnap');
+      const result = messenger.call('SnapController:get', 'npm:fooSnap');
 
       expect(getSpy).toHaveBeenCalledTimes(1);
       expect(result).toMatchObject(fooSnapObject);
     });
 
-    it('action: SnapController:getSnapRpcHandler', async () => {
+    it('action: SnapController:getRpcMessageHandler', async () => {
       const executeSnapMock = jest.fn();
       const messenger = getSnapControllerMessenger();
       const sourceCode = '// source code';
@@ -1149,7 +1149,10 @@ describe('SnapController', () => {
       );
 
       expect(
-        await messenger.call('SnapController:getSnapRpcHandler', 'npm:fooSnap'),
+        await messenger.call(
+          'SnapController:getRpcMessageHandler',
+          'npm:fooSnap',
+        ),
       ).toStrictEqual(expect.any(Function));
       expect(getRpcMessageHandlerSpy).toHaveBeenCalledTimes(1);
     });
@@ -1184,7 +1187,7 @@ describe('SnapController', () => {
       expect(result).toStrictEqual({ fizz: 'buzz' });
     });
 
-    it('action: SnapController:hasSnap', async () => {
+    it('action: SnapController:has', async () => {
       const executeSnapMock = jest.fn();
       const messenger = getSnapControllerMessenger();
       const sourceCode = '// source code';
@@ -1215,7 +1218,7 @@ describe('SnapController', () => {
       );
 
       const hasSpy = jest.spyOn(snapController, 'has');
-      const result = messenger.call('SnapController:hasSnap', 'npm:fooSnap');
+      const result = messenger.call('SnapController:has', 'npm:fooSnap');
 
       expect(hasSpy).toHaveBeenCalledTimes(1);
       expect(result).toBe(true);

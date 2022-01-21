@@ -163,7 +163,7 @@ export type SnapControllerState = {
  * Adds the specified Snap to state. Used during installation.
  */
 export type AddSnap = {
-  type: `${typeof controllerName}:addSnap`;
+  type: `${typeof controllerName}:add`;
   handler: SnapController['add'];
 };
 
@@ -171,15 +171,15 @@ export type AddSnap = {
  * Gets the specified Snap from state.
  */
 export type GetSnap = {
-  type: `${typeof controllerName}:getSnap`;
+  type: `${typeof controllerName}:get`;
   handler: SnapController['get'];
 };
 
 /**
  * Gets the specified Snap's JSON-RPC message handler function.
  */
-export type GetSnapRpcHandler = {
-  type: `${typeof controllerName}:getSnapRpcHandler`;
+export type GetSnapRpcMessageHandler = {
+  type: `${typeof controllerName}:getRpcMessageHandler`;
   handler: SnapController['getRpcMessageHandler'];
 };
 
@@ -195,7 +195,7 @@ export type GetSnapState = {
  * Checks if the specified snap exists in state.
  */
 export type HasSnap = {
-  type: `${typeof controllerName}:hasSnap`;
+  type: `${typeof controllerName}:has`;
   handler: SnapController['has'];
 };
 
@@ -210,7 +210,7 @@ export type UpdateSnapState = {
 export type SnapControllerActions =
   | AddSnap
   | GetSnap
-  | GetSnapRpcHandler
+  | GetSnapRpcMessageHandler
   | GetSnapState
   | HasSnap
   | UpdateSnapState;
@@ -496,17 +496,17 @@ export class SnapController extends BaseController<
    */
   private registerMessageHandlers(): void {
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:addSnap`,
+      `${controllerName}:add`,
       (...args) => this.add(...args),
     );
 
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:getSnap`,
+      `${controllerName}:get`,
       (...args) => this.get(...args),
     );
 
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:getSnapRpcHandler`,
+      `${controllerName}:getRpcMessageHandler`,
       (...args) => this.getRpcMessageHandler(...args),
     );
 
@@ -516,7 +516,7 @@ export class SnapController extends BaseController<
     );
 
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:hasSnap`,
+      `${controllerName}:has`,
       (...args) => this.has(...args),
     );
 
