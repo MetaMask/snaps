@@ -157,6 +157,66 @@ export type SnapControllerState = {
   };
 };
 
+// Controller Messenger Actions
+
+/**
+ * Adds the specified Snap to state. Used during installation.
+ */
+export type AddSnap = {
+  type: `${typeof controllerName}:addSnap`;
+  handler: SnapController['add'];
+};
+
+/**
+ * Gets the specified Snap from state.
+ */
+export type GetSnap = {
+  type: `${typeof controllerName}:getSnap`;
+  handler: SnapController['get'];
+};
+
+/**
+ * Gets the specified Snap's JSON-RPC message handler function.
+ */
+export type GetSnapRpcHandler = {
+  type: `${typeof controllerName}:getSnapRpcHandler`;
+  handler: SnapController['getRpcMessageHandler'];
+};
+
+/**
+ * Gets the specified Snap's persisted state.
+ */
+export type GetSnapState = {
+  type: `${typeof controllerName}:getSnapState`;
+  handler: SnapController['getSnapState'];
+};
+
+/**
+ * Checks if the specified snap exists in state.
+ */
+export type HasSnap = {
+  type: `${typeof controllerName}:hasSnap`;
+  handler: SnapController['has'];
+};
+
+/**
+ * Updates the specified Snap's persisted state.
+ */
+export type UpdateSnapState = {
+  type: `${typeof controllerName}:updateSnapState`;
+  handler: SnapController['updateSnapState'];
+};
+
+export type SnapControllerActions =
+  | AddSnap
+  | GetSnap
+  | GetSnapRpcHandler
+  | GetSnapState
+  | HasSnap
+  | UpdateSnapState;
+
+// Controller Messenger Events
+
 export type SnapStateChange = {
   type: `${typeof controllerName}:stateChange`;
   payload: [SnapControllerState, Patch[]];
@@ -187,8 +247,11 @@ export type SnapRemoved = {
   payload: [snapId: string];
 };
 
-// TODO: Create actions
-export type SnapControllerActions = never;
+export type SnapControllerEvents =
+  | SnapAdded
+  | SnapInstalled
+  | SnapRemoved
+  | SnapStateChange;
 
 export type AllowedActions =
   | GetEndowments
@@ -197,15 +260,8 @@ export type AllowedActions =
   | RevokeAllPermissions
   | RequestPermissions;
 
-export type SnapControllerEvents =
-  | SnapAdded
-  | SnapInstalled
-  | SnapRemoved
-  | SnapStateChange;
-
 export type AllowedEvents = ErrorMessageEvent | UnresponsiveMessageEvent;
 
-// TODO: Use ControllerMessenger events
 type SnapControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
   SnapControllerActions | AllowedActions,
@@ -333,6 +389,8 @@ export class SnapController extends BaseController<
 
   private _getRpcMessageHandler: GetRpcMessageHandler;
 
+  private _idleTimeCheckInterval: number;
+
   /**
    * A {@link Map} of Snap IDs and the Unix timestamp of the most recent RPC
    * request received by the Snap.
@@ -342,8 +400,6 @@ export class SnapController extends BaseController<
   private _maxIdleTime: number;
 
   private _maxRequestTime: number;
-
-  private _idleTimeCheckInterval: number;
 
   private _rpcHandlerMap: Map<
     SnapId,
@@ -406,13 +462,20 @@ export class SnapController extends BaseController<
 
     this._closeAllConnections = closeAllConnections;
     this._endowmentPermissionNames = endowmentPermissionNames;
-
-    this._terminateSnap = terminateSnap;
-    this._terminateAllSnaps = terminateAllSnaps;
     this._executeSnap = executeSnap;
     this._getRpcMessageHandler = getRpcMessageHandler;
     this._onUnhandledSnapError = this._onUnhandledSnapError.bind(this);
     this._onUnresponsiveSnap = this._onUnresponsiveSnap.bind(this);
+    this._terminateSnap = terminateSnap;
+    this._terminateAllSnaps = terminateAllSnaps;
+
+    this._idleTimeCheckInterval = idleTimeCheckInterval;
+    this._lastRequestMap = new Map();
+    this._maxIdleTime = maxIdleTime;
+    this._maxRequestTime = maxRequestTime;
+    this._pollForLastRequestStatus();
+    this._rpcHandlerMap = new Map();
+    this._snapsBeingAdded = new Map();
 
     this.messagingSystem.subscribe(
       'ExecutionService:unhandledError',
@@ -424,13 +487,43 @@ export class SnapController extends BaseController<
       this._onUnresponsiveSnap,
     );
 
-    this._snapsBeingAdded = new Map();
-    this._maxIdleTime = maxIdleTime;
-    this._maxRequestTime = maxRequestTime;
-    this._idleTimeCheckInterval = idleTimeCheckInterval;
-    this._pollForLastRequestStatus();
-    this._lastRequestMap = new Map();
-    this._rpcHandlerMap = new Map();
+    this.registerMessageHandlers();
+  }
+
+  /**
+   * Constructor helper for registering the controller's messaging system
+   * actions.
+   */
+  private registerMessageHandlers(): void {
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:addSnap`,
+      (...args) => this.add(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:getSnap`,
+      (...args) => this.get(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:getSnapRpcHandler`,
+      (...args) => this.getRpcMessageHandler(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:getSnapState`,
+      (...args) => this.getSnapState(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:hasSnap`,
+      (...args) => this.has(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:updateSnapState`,
+      (...args) => this.updateSnapState(...args),
+    );
   }
 
   _pollForLastRequestStatus() {
