@@ -242,7 +242,6 @@ export type GetEndowments = {
   handler: GenericPermissionController['getEndowments'];
 };
 
-// TODO: Implement all desired actions
 /**
  * The {@link ControllerMessenger} actions of the {@link PermissionController}.
  */
