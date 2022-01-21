@@ -50,6 +50,7 @@ describe('fetchNpmSnap', () => {
     const { manifest, sourceCode, svgIcon } = await fetchNpmSnap(
       '@metamask/template-snap',
       templateSnapVersion,
+      'https://registry.npmjs.cf',
     );
 
     expect(fetchMock).toHaveBeenCalledTimes(2);

@@ -26,6 +26,7 @@ export enum NpmSnapFileNames {
 }
 
 export const LOCALHOST_HOSTNAMES = new Set(['localhost', '127.0.0.1']);
+export const DEFAULT_NPM_REGISTRY = 'https://registry.npmjs.org';
 
 const SVG_MAX_BYTE_SIZE = 100_000;
 const SVG_MAX_BYTE_SIZE_TEXT = `${Math.floor(SVG_MAX_BYTE_SIZE / 1000)}kb`;
@@ -124,11 +125,13 @@ export type SnapFiles = {
 export async function fetchNpmSnap(
   packageName: string,
   version: string,
+  registryUrl = DEFAULT_NPM_REGISTRY,
   fetchFunction = fetch,
 ): Promise<SnapFiles> {
   const [tarballResponse, actualVersion] = await fetchNpmTarball(
     packageName,
     version,
+    registryUrl,
     fetchFunction,
   );
 
@@ -328,10 +331,11 @@ type ResponseWithBody = Omit<Response, 'body'> & { body: ReadableStream };
 async function fetchNpmTarball(
   packageName: string,
   version: string,
+  registryUrl = DEFAULT_NPM_REGISTRY,
   fetchFunction = fetch,
 ): Promise<[ResponseWithBody, string]> {
   const packageMetadata = await fetchContent(
-    new URL(packageName, 'https://registry.npmjs.cf'),
+    new URL(packageName, registryUrl),
     'json',
     fetchFunction,
   );
