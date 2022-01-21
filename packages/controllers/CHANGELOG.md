@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.8.0]
-### Uncategorized
-- Remove example-snap package ([#195](https://github.com/MetaMask/snaps-skunkworks/pull/195))
-- Added PermissionsController actions that are used in SnapController ([#194](https://github.com/MetaMask/snaps-skunkworks/pull/194))
+### Added
+- Expose more `PermissionController` functionality via actions ([#194](https://github.com/MetaMask/snaps-skunkworks/pull/194))
+
+### Changed
+- **BREAKING:** Replace `PermissionController` functions with actions in `SnapController` ([#194](https://github.com/MetaMask/snaps-skunkworks/pull/194))
 
 ## [0.7.0]
 ### Changed

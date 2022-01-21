@@ -7,9 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.8.0]
-### Uncategorized
-- Remove example-snap package ([#195](https://github.com/MetaMask/snaps-skunkworks/pull/195))
-- Removed most of process.exit(1) ([#190](https://github.com/MetaMask/snaps-skunkworks/pull/190))
+### Changed
+- Update template snap created by `mm-snap init` ([#195](https://github.com/MetaMask/snaps-skunkworks/pull/195))
+- Exit by throwing errors instead of calling `process.exit` ([#190](https://github.com/MetaMask/snaps-skunkworks/pull/190))
 
 ## [0.7.0]
 ### Added
