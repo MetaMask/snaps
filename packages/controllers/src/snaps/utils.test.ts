@@ -18,7 +18,7 @@ describe('fetchNpmSnap', () => {
       ).toString('utf8'),
     );
 
-    const tarballUrl = `https://registry.npmjs.org/@metamask/template-snap/-/template-snap-${templateSnapVersion}.tgz`;
+    const tarballUrl = `https://registry.npmjs.cf/@metamask/template-snap/-/template-snap-${templateSnapVersion}.tgz`;
     fetchMock
       .mockResponseOnce(
         JSON.stringify({
@@ -55,7 +55,7 @@ describe('fetchNpmSnap', () => {
     expect(fetchMock).toHaveBeenCalledTimes(2);
     expect(fetchMock).toHaveBeenNthCalledWith(
       1,
-      'https://registry.npmjs.org/@metamask/template-snap',
+      'https://registry.npmjs.cf/@metamask/template-snap',
     );
     expect(fetchMock).toHaveBeenNthCalledWith(2, tarballUrl);
 

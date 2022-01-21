@@ -331,7 +331,7 @@ async function fetchNpmTarball(
   fetchFunction = fetch,
 ): Promise<[ResponseWithBody, string]> {
   const packageMetadata = await fetchContent(
-    new URL(packageName, 'https://registry.npmjs.org'),
+    new URL(packageName, 'https://registry.npmjs.cf'),
     'json',
     fetchFunction,
   );
