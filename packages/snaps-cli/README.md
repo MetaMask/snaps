@@ -7,7 +7,7 @@ A CLI for developing MetaMask Snaps.
 Use Node.js `12.11.0` or later.
 We recommend [nvm](https://github.com/nvm-sh/nvm) for managing Node.js versions.
 
-- `yarn global add snaps-cli`
+- `yarn global add @metamask/snaps-cli`
 
 ## Basic Usage
 
