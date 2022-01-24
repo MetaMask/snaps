@@ -27,7 +27,7 @@
     "publish": "../../scripts/publish-package.sh"
   },
   "dependencies": {
-    "@metamask/controllers": "^17.0.0"
+    "@metamask/controllers": "^22.0.0"
   },
   "devDependencies": {
     "@metamask/inpage-provider": "^8.0.4"
