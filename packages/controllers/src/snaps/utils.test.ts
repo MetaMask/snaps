@@ -19,6 +19,7 @@ describe('fetchNpmSnap', () => {
     );
 
     const tarballUrl = `https://registry.npmjs.cf/@metamask/template-snap/-/template-snap-${templateSnapVersion}.tgz`;
+    const tarballRegistry = `https://registry.npmjs.org/@metamask/template-snap/-/template-snap-${templateSnapVersion}.tgz`;
     fetchMock
       .mockResponseOnce(
         JSON.stringify({
@@ -28,7 +29,8 @@ describe('fetchNpmSnap', () => {
           versions: {
             [templateSnapVersion]: {
               dist: {
-                tarball: tarballUrl,
+                // return npmjs.org registry here so that we can check overriding it with npmjs.cf works
+                tarball: tarballRegistry,
               },
             },
           },

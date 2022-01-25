@@ -360,8 +360,14 @@ async function fetchNpmTarball(
     );
   }
 
+  // Override the tarball hostname/protocol with registryUrl hostname/protocol
+  const newRegistryUrl = new URL(registryUrl);
+  const newTarballUrl = new URL(tarballUrlString);
+  newTarballUrl.hostname = newRegistryUrl.hostname;
+  newTarballUrl.protocol = newRegistryUrl.protocol;
+
   // Perform a raw fetch because we want the Response object itself.
-  const tarballResponse = await fetchFunction(tarballUrlString);
+  const tarballResponse = await fetchFunction(newTarballUrl.toString());
   if (!tarballResponse.ok || !tarballResponse.body) {
     throw new Error(`Failed to fetch tarball for package "${packageName}".`);
   }
