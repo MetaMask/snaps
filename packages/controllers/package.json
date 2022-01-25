@@ -47,7 +47,7 @@
     "immer": "^9.0.6",
     "json-rpc-engine": "^6.1.0",
     "json-rpc-middleware-stream": "^3.0.0",
-    "nanoid": "^3.1.28",
+    "nanoid": "^3.1.31",
     "pump": "^3.0.0",
     "readable-web-to-node-stream": "^3.0.2",
     "semver": "^7.3.5",
