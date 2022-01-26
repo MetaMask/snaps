@@ -18,7 +18,8 @@ describe('fetchNpmSnap', () => {
       ).toString('utf8'),
     );
 
-    const tarballUrl = `https://registry.npmjs.org/@metamask/template-snap/-/template-snap-${templateSnapVersion}.tgz`;
+    const tarballUrl = `https://registry.npmjs.cf/@metamask/template-snap/-/template-snap-${templateSnapVersion}.tgz`;
+    const tarballRegistry = `https://registry.npmjs.org/@metamask/template-snap/-/template-snap-${templateSnapVersion}.tgz`;
     fetchMock
       .mockResponseOnce(
         JSON.stringify({
@@ -28,7 +29,8 @@ describe('fetchNpmSnap', () => {
           versions: {
             [templateSnapVersion]: {
               dist: {
-                tarball: tarballUrl,
+                // return npmjs.org registry here so that we can check overriding it with npmjs.cf works
+                tarball: tarballRegistry,
               },
             },
           },
@@ -50,12 +52,13 @@ describe('fetchNpmSnap', () => {
     const { manifest, sourceCode, svgIcon } = await fetchNpmSnap(
       '@metamask/template-snap',
       templateSnapVersion,
+      'https://registry.npmjs.cf',
     );
 
     expect(fetchMock).toHaveBeenCalledTimes(2);
     expect(fetchMock).toHaveBeenNthCalledWith(
       1,
-      'https://registry.npmjs.org/@metamask/template-snap',
+      'https://registry.npmjs.cf/@metamask/template-snap',
     );
     expect(fetchMock).toHaveBeenNthCalledWith(2, tarballUrl);
 

@@ -282,6 +282,7 @@ type SnapControllerArgs = {
   idleTimeCheckInterval?: number;
   maxIdleTime?: number;
   maxRequestTime?: number;
+  npmRegistryUrl?: string;
 };
 
 type AddSnapBase = {
@@ -414,6 +415,8 @@ export class SnapController extends BaseController<
 
   private _timeoutForLastRequestStatus?: number;
 
+  private _npmRegistryUrl?: string;
+
   constructor({
     closeAllConnections,
     executeSnap,
@@ -423,6 +426,7 @@ export class SnapController extends BaseController<
     terminateAllSnaps,
     terminateSnap,
     endowmentPermissionNames = [],
+    npmRegistryUrl,
     idleTimeCheckInterval = 5000,
     maxIdleTime = 30000,
     maxRequestTime = 60000,
@@ -476,6 +480,7 @@ export class SnapController extends BaseController<
     this._pollForLastRequestStatus();
     this._rpcHandlerMap = new Map();
     this._snapsBeingAdded = new Map();
+    this._npmRegistryUrl = npmRegistryUrl;
 
     this.messagingSystem.subscribe(
       'ExecutionService:unhandledError',
@@ -1197,6 +1202,7 @@ export class SnapController extends BaseController<
     const { manifest, sourceCode, svgIcon } = await fetchNpmSnap(
       packageName,
       version,
+      this._npmRegistryUrl,
     );
     return { manifest, sourceCode, svgIcon };
   }
