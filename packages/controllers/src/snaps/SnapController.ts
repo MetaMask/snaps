@@ -696,13 +696,17 @@ export class SnapController extends BaseController<
     const runtime = this._getSnapRuntimeData(snapId);
     runtime.lastRequest = null;
     this._closeAllConnections(snapId);
-    if (this.isRunning(snapId)) {
-      this._terminateSnap(snapId);
+
+    if (this.get(snapId) && this.isRunning(snapId)) {
+      await this._terminateSnap(snapId);
     }
 
     if (setNotRunning) {
       this._transitionSnapState(snapId, SnapStatusEvent.stop);
     }
+
+
+    // return Promise.resolve();
   }
 
   /**
@@ -850,8 +854,8 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The id of the Snap.
    */
-  removeSnap(snapId: SnapId): void {
-    this.removeSnaps([snapId]);
+  async removeSnap(snapId: SnapId): Promise<void> {
+    return this.removeSnaps([snapId]);
   }
 
   /**
@@ -860,15 +864,19 @@ export class SnapController extends BaseController<
    *
    * @param snapIds - The ids of the Snaps.
    */
-  removeSnaps(snapIds: string[]): void {
+  async removeSnaps(snapIds: string[]): Promise<void> {
     if (!Array.isArray(snapIds)) {
       throw new Error('Expected array of snap ids.');
     }
 
     this.update((state: any) => {
       snapIds.forEach((snapId) => {
+<<<<<<< HEAD
         this._stopSnap(snapId, false);
         this._snapsRuntimeData.delete(snapId);
+=======
+        this._rpcHandlerMap.delete(snapId);
+>>>>>>> 1808470 (Added failing test for removing stopped snaps)
         delete state.snaps[snapId];
         delete state.snapStates[snapId];
         this.messagingSystem.publish(`SnapController:snapRemoved`, snapId);
@@ -881,6 +889,8 @@ export class SnapController extends BaseController<
         snapId,
       ),
     );
+
+    await Promise.all(snapIds.map((snapId) => this._stopSnap(snapId, false)));
   }
 
   /**

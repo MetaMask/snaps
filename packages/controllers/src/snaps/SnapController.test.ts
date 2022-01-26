@@ -941,7 +941,7 @@ describe('SnapController', () => {
     await snapController.startSnap(snap.id);
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
 
-    snapController.stopSnap(snap.id);
+    await snapController.stopSnap(snap.id);
 
     snapController.disableSnap(snap.id);
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
