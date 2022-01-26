@@ -1,4 +1,5 @@
 import browserify from 'browserify';
+import { TranspilationModes } from '../../builders';
 import { bundle } from './bundle';
 import * as bundleUtils from './bundleUtils';
 
@@ -11,18 +12,20 @@ describe('bundle', () => {
   };
 
   describe('bundle', () => {
-    it('processes yargs properties correctly', async () => {
+    it('handles all options enabled', async () => {
       const mockArgv = {
         sourceMaps: true,
+        stripComments: true,
+        transpilationMode: TranspilationModes.all,
       };
 
+      const mockTransform = jest.fn();
       const mockBrowserify = (browserify as jest.Mock).mockImplementation(
         () => ({
-          transform: () => ({
-            bundle: (cb: () => any) => {
-              cb();
-            },
-          }),
+          transform: mockTransform,
+          bundle: (cb: () => any) => {
+            cb();
+          },
         }),
       );
       const createStreamMock = jest
@@ -35,8 +38,114 @@ describe('bundle', () => {
 
       await bundle('src', 'dest', mockArgv as any);
       expect(mockBrowserify).toHaveBeenCalledWith('src', { debug: true });
-      expect(createStreamMock).toHaveBeenCalled();
-      expect(closeStreamMock).toHaveBeenCalled();
+      expect(mockTransform).toHaveBeenCalledTimes(1);
+      expect(mockTransform).toHaveBeenCalledWith(
+        'babelify',
+        expect.objectContaining({ global: true }),
+      );
+      expect(createStreamMock).toHaveBeenCalledTimes(1);
+      expect(closeStreamMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('handles sourceMaps: false', async () => {
+      const mockArgv = {
+        sourceMaps: false,
+        stripComments: true,
+        transpilationMode: TranspilationModes.all,
+      };
+
+      const mockTransform = jest.fn();
+      const mockBrowserify = (browserify as jest.Mock).mockImplementation(
+        () => ({
+          transform: mockTransform,
+          bundle: (cb: () => any) => {
+            cb();
+          },
+        }),
+      );
+      const createStreamMock = jest
+        .spyOn(bundleUtils, 'createBundleStream')
+        .mockImplementation();
+      const closeStreamMock = jest
+        .spyOn(bundleUtils, 'closeBundleStream')
+        .mockImplementation((({ resolve }: { resolve: () => any }) =>
+          resolve()) as any);
+
+      await bundle('src', 'dest', mockArgv as any);
+      expect(mockBrowserify).toHaveBeenCalledWith('src', { debug: false });
+      expect(mockTransform).toHaveBeenCalledTimes(1);
+      expect(mockTransform).toHaveBeenCalledWith(
+        'babelify',
+        expect.objectContaining({ global: true }),
+      );
+      expect(createStreamMock).toHaveBeenCalledTimes(1);
+      expect(closeStreamMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('handles transpilationMode: localOnly', async () => {
+      const mockArgv = {
+        sourceMaps: true,
+        stripComments: true,
+        transpilationMode: TranspilationModes.localOnly,
+      };
+
+      const mockTransform = jest.fn();
+      const mockBrowserify = (browserify as jest.Mock).mockImplementation(
+        () => ({
+          transform: mockTransform,
+          bundle: (cb: () => any) => {
+            cb();
+          },
+        }),
+      );
+      const createStreamMock = jest
+        .spyOn(bundleUtils, 'createBundleStream')
+        .mockImplementation();
+      const closeStreamMock = jest
+        .spyOn(bundleUtils, 'closeBundleStream')
+        .mockImplementation((({ resolve }: { resolve: () => any }) =>
+          resolve()) as any);
+
+      await bundle('src', 'dest', mockArgv as any);
+      expect(mockBrowserify).toHaveBeenCalledWith('src', { debug: true });
+      expect(mockTransform).toHaveBeenCalledTimes(1);
+      expect(mockTransform).toHaveBeenCalledWith(
+        'babelify',
+        expect.objectContaining({ global: false }),
+      );
+      expect(createStreamMock).toHaveBeenCalledTimes(1);
+      expect(closeStreamMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('handles transpilationMode: none', async () => {
+      const mockArgv = {
+        sourceMaps: true,
+        stripComments: true,
+        transpilationMode: TranspilationModes.none,
+      };
+
+      const mockTransform = jest.fn();
+      const mockBrowserify = (browserify as jest.Mock).mockImplementation(
+        () => ({
+          transform: mockTransform,
+          bundle: (cb: () => any) => {
+            cb();
+          },
+        }),
+      );
+      const createStreamMock = jest
+        .spyOn(bundleUtils, 'createBundleStream')
+        .mockImplementation();
+      const closeStreamMock = jest
+        .spyOn(bundleUtils, 'closeBundleStream')
+        .mockImplementation((({ resolve }: { resolve: () => any }) =>
+          resolve()) as any);
+
+      await bundle('src', 'dest', mockArgv as any);
+      expect(mockBrowserify).toHaveBeenCalledWith('src', { debug: true });
+      expect(mockTransform).not.toHaveBeenCalled();
+      expect(createStreamMock).toHaveBeenCalledTimes(1);
+      expect(closeStreamMock).toHaveBeenCalledTimes(1);
     });
   });
 });

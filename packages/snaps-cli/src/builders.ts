@@ -1,29 +1,36 @@
 import { Options } from 'yargs';
 
 export type SnapsCliBuilders = {
-  readonly src: Readonly<Options>;
-  readonly dist: Readonly<Options>;
   readonly bundle: Readonly<Options>;
-  readonly root: Readonly<Options>;
-  readonly port: Readonly<Options>;
-  readonly sourceMaps: Readonly<Options>;
-  readonly stripComments: Readonly<Options>;
-  readonly outfileName: Readonly<Options>;
-  readonly manifest: Readonly<Options>;
-  readonly writeManifest: Readonly<Options>;
+  readonly dist: Readonly<Options>;
   readonly eval: Readonly<Options>;
-  readonly verboseErrors: Readonly<Options>;
+  readonly manifest: Readonly<Options>;
+  readonly outfileName: Readonly<Options>;
+  readonly port: Readonly<Options>;
+  readonly root: Readonly<Options>;
+  readonly sourceMaps: Readonly<Options>;
+  readonly src: Readonly<Options>;
+  readonly stripComments: Readonly<Options>;
   readonly suppressWarnings: Readonly<Options>;
+  readonly transpilationMode: Readonly<Options>;
+  readonly verboseErrors: Readonly<Options>;
+  readonly writeManifest: Readonly<Options>;
 };
 
+export enum TranspilationModes {
+  all = 'all',
+  localOnly = 'localOnly',
+  none = 'none',
+}
+
 const builders: SnapsCliBuilders = {
-  src: {
-    alias: 's',
-    describe: 'Source file',
+  bundle: {
+    alias: 'b',
+    describe: 'Snap bundle file',
     type: 'string',
     demandOption: true,
     normalize: true,
-    default: 'src/index.js',
+    default: 'dist/bundle.js',
   },
 
   dist: {
@@ -35,22 +42,20 @@ const builders: SnapsCliBuilders = {
     default: 'dist',
   },
 
-  bundle: {
-    alias: 'b',
-    describe: 'Snap bundle file',
-    type: 'string',
-    demandOption: true,
-    normalize: true,
-    default: 'dist/bundle.js',
+  eval: {
+    alias: 'e',
+    describe: 'Attempt to evaluate Snap bundle in SES',
+    type: 'boolean',
+    demandOption: false,
+    default: true,
   },
 
-  root: {
-    alias: 'r',
-    describe: 'Server root directory',
-    type: 'string',
-    demandOption: true,
-    normalize: true,
-    default: '.',
+  manifest: {
+    alias: 'm',
+    describe: 'Validate snap.manifest.json',
+    type: 'boolean',
+    demandOption: false,
+    default: true,
   },
 
   port: {
@@ -68,11 +73,37 @@ const builders: SnapsCliBuilders = {
     },
   },
 
+  outfileName: {
+    alias: 'n',
+    describe: 'Output file name',
+    type: 'string',
+    demandOption: false,
+    default: 'bundle.js',
+  },
+
+  root: {
+    alias: 'r',
+    describe: 'Server root directory',
+    type: 'string',
+    demandOption: true,
+    normalize: true,
+    default: '.',
+  },
+
   sourceMaps: {
     describe: 'Whether builds include sourcemaps',
     type: 'boolean',
     demandOption: false,
     default: false,
+  },
+
+  src: {
+    alias: 's',
+    describe: 'Source file',
+    type: 'string',
+    demandOption: true,
+    normalize: true,
+    default: 'src/index.js',
   },
 
   stripComments: {
@@ -83,35 +114,20 @@ const builders: SnapsCliBuilders = {
     default: false,
   },
 
-  outfileName: {
-    alias: 'n',
-    describe: 'Output file name',
+  suppressWarnings: {
+    type: 'boolean',
+    describe: 'Whether to suppress warnings',
+    demandOption: false,
+    default: false,
+  },
+
+  transpilationMode: {
     type: 'string',
+    describe:
+      'Whether to use Babel to transpile all source code (including dependencies), local source code only, or nothing.',
     demandOption: false,
-    default: 'bundle.js',
-  },
-
-  manifest: {
-    alias: 'm',
-    describe: 'Validate snap.manifest.json',
-    type: 'boolean',
-    demandOption: false,
-    default: true,
-  },
-
-  writeManifest: {
-    describe: 'Make necessary changes to the Snap manifest file',
-    type: 'boolean',
-    demandOption: false,
-    default: true,
-  },
-
-  eval: {
-    alias: 'e',
-    describe: 'Attempt to evaluate Snap bundle in SES',
-    type: 'boolean',
-    demandOption: false,
-    default: true,
+    default: TranspilationModes.all,
+    choices: Object.values(TranspilationModes),
   },
 
   verboseErrors: {
@@ -121,11 +137,11 @@ const builders: SnapsCliBuilders = {
     default: false,
   },
 
-  suppressWarnings: {
+  writeManifest: {
+    describe: 'Make necessary changes to the Snap manifest file',
     type: 'boolean',
-    describe: 'Suppress warnings',
     demandOption: false,
-    default: false,
+    default: true,
   },
 };
 
