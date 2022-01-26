@@ -26,6 +26,7 @@ export enum NpmSnapFileNames {
 }
 
 export const LOCALHOST_HOSTNAMES = new Set(['localhost', '127.0.0.1']);
+export const DEFAULT_NPM_REGISTRY = 'https://registry.npmjs.org';
 
 const SVG_MAX_BYTE_SIZE = 100_000;
 const SVG_MAX_BYTE_SIZE_TEXT = `${Math.floor(SVG_MAX_BYTE_SIZE / 1000)}kb`;
@@ -124,11 +125,13 @@ export type SnapFiles = {
 export async function fetchNpmSnap(
   packageName: string,
   version: string,
+  registryUrl = DEFAULT_NPM_REGISTRY,
   fetchFunction = fetch,
 ): Promise<SnapFiles> {
   const [tarballResponse, actualVersion] = await fetchNpmTarball(
     packageName,
     version,
+    registryUrl,
     fetchFunction,
   );
 
@@ -328,10 +331,11 @@ type ResponseWithBody = Omit<Response, 'body'> & { body: ReadableStream };
 async function fetchNpmTarball(
   packageName: string,
   version: string,
+  registryUrl = DEFAULT_NPM_REGISTRY,
   fetchFunction = fetch,
 ): Promise<[ResponseWithBody, string]> {
   const packageMetadata = await fetchContent(
-    new URL(packageName, 'https://registry.npmjs.org'),
+    new URL(packageName, registryUrl),
     'json',
     fetchFunction,
   );
@@ -356,8 +360,14 @@ async function fetchNpmTarball(
     );
   }
 
+  // Override the tarball hostname/protocol with registryUrl hostname/protocol
+  const newRegistryUrl = new URL(registryUrl);
+  const newTarballUrl = new URL(tarballUrlString);
+  newTarballUrl.hostname = newRegistryUrl.hostname;
+  newTarballUrl.protocol = newRegistryUrl.protocol;
+
   // Perform a raw fetch because we want the Response object itself.
-  const tarballResponse = await fetchFunction(tarballUrlString);
+  const tarballResponse = await fetchFunction(newTarballUrl.toString());
   if (!tarballResponse.ok || !tarballResponse.body) {
     throw new Error(`Failed to fetch tarball for package "${packageName}".`);
   }
