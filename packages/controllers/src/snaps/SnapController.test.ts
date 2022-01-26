@@ -1029,6 +1029,63 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
+  it('should send an rpc request and time out and then be removed', async () => {
+    const messenger = getSnapControllerMessenger();
+    jest.spyOn(messenger, 'call').mockImplementation(() => true);
+    const [snapController] = getSnapControllerWithEES(
+      getSnapControllerWithEESOptions({
+        messenger,
+        idleTimeCheckInterval: 30000,
+        maxIdleTime: 160000,
+        maxRequestTime: 50,
+      }),
+    );
+
+    const sourceCode = `
+      wallet.registerRpcMessageHandler(async (origin, request) => {
+        const {method, params, id} = request;
+        wallet.request({method: 'setState'})
+        return method + id;
+      });
+    `;
+
+    const snap = await snapController.add({
+      id: 'npm:example-snap',
+      sourceCode,
+      manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
+    });
+
+    // override handler to take too long to return
+    (snapController as any)._getRpcMessageHandler = async () => {
+      return async () => {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(undefined);
+          }, 300);
+        });
+      };
+    };
+
+    const handler = await snapController.getRpcMessageHandler(snap.id);
+
+    await snapController.startSnap(snap.id);
+    expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
+
+    await expect(
+      handler('foo.com', {
+        jsonrpc: '2.0',
+        method: 'test',
+        params: {},
+        id: 1,
+      }),
+    ).rejects.toThrow(/request timed out/u);
+    expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
+
+    await snapController.removeSnap(snap.id);
+
+    snapController.destroy();
+  });
+
   describe('controller actions', () => {
     it('action: SnapController:add', async () => {
       const executeSnapMock = jest.fn();

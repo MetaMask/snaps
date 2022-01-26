@@ -696,7 +696,10 @@ export class SnapController extends BaseController<
     const runtime = this._getSnapRuntimeData(snapId);
     runtime.lastRequest = null;
     this._closeAllConnections(snapId);
-    this._terminateSnap(snapId);
+    if (this.isRunning(snapId)) {
+      this._terminateSnap(snapId);
+    }
+
     if (setNotRunning) {
       this._transitionSnapState(snapId, SnapStatusEvent.stop);
     }
