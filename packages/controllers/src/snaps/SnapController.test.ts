@@ -1029,7 +1029,7 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
-  it('should send an rpc request and time out and then be removed', async () => {
+  it('should remove a snap that is stopped without errors', async () => {
     const messenger = getSnapControllerMessenger();
     jest.spyOn(messenger, 'call').mockImplementation(() => true);
     const [snapController] = getSnapControllerWithEES(
