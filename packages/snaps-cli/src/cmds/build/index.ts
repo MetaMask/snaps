@@ -8,13 +8,14 @@ export = {
   desc: 'Build Snap from source',
   builder: (yarg: yargs.Argv) => {
     yarg
-      .option('src', builders.src)
       .option('dist', builders.dist)
-      .option('outfileName', builders.outfileName)
-      .option('sourceMaps', builders.sourceMaps)
-      .option('stripComments', builders.stripComments)
       .option('eval', builders.eval)
       .option('manifest', builders.manifest)
+      .option('outfileName', builders.outfileName)
+      .option('sourceMaps', builders.sourceMaps)
+      .option('src', builders.src)
+      .option('stripComments', builders.stripComments)
+      .option('transpilationMode', builders.transpilationMode)
       .option('writeManifest', builders.writeManifest)
       .implies('writeManifest', 'manifest');
   },

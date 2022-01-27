@@ -1,3 +1,4 @@
 {
-  "port": 8084
+  "port": 8084,
+  "transpilationMode": "localOnly"
 }
