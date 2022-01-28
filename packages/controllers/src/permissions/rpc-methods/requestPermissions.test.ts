@@ -96,10 +96,10 @@ describe('requestPermissions RPC method', () => {
           data: { request: { ...req } },
         })
         .serialize();
-      delete expectedError.stack;
+      expectedError.stack = expect.any(String);
 
       const response: any = await engine.handle(req as any);
-      expect(response.error).toMatchObject(expectedError);
+      expect(response.error).toStrictEqual(expectedError);
       expect(mockRequestPermissionsForOrigin).not.toHaveBeenCalled();
     }
   });
@@ -128,10 +128,10 @@ describe('requestPermissions RPC method', () => {
           data: { request: { ...req } },
         })
         .serialize();
-      delete expectedError.stack;
+      expectedError.stack = expect.any(String);
 
       const response: any = await engine.handle(req as any);
-      expect(response.error).toMatchObject(expectedError);
+      expect(response.error).toStrictEqual(expectedError);
       expect(mockRequestPermissionsForOrigin).not.toHaveBeenCalled();
     }
   });
