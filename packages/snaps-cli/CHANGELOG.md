@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.0]
+### Added
+- Transpilation configuration ([#213](https://github.com/MetaMask/snaps-skunkworks/pull/213))
+  - `mm-snap build` now takes a `--transpilationMode` argument which determines what will be transpiled by Babel during building: all source code (including dependencies), local source code only, or nothing.
+
+### Fixed
+- `mm-snap build` command when CLI is installed globally ([#216](https://github.com/MetaMask/snaps-skunkworks/pull/216))
+- Update installation command in readme ([#205](https://github.com/MetaMask/snaps-skunkworks/pull/205))
+
 ## [0.8.0]
 ### Changed
 - Update template snap created by `mm-snap init` ([#195](https://github.com/MetaMask/snaps-skunkworks/pull/195))
@@ -89,7 +98,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Example snaps ([#72](https://github.com/MetaMask/snaps-skunkworks/pull/72))
   - The examples now live in their own package, [`@metamask/snap-examples`](https://npmjs.com/package/@metamask/snap-examples).
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.8.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.9.0...HEAD
+[0.9.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.6.3...v0.7.0
 [0.6.3]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.6.2...v0.6.3
