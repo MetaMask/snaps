@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.0]
+### Uncategorized
+- @metamask/controllers@25.1.0 ([#207](https://github.com/MetaMask/snaps-skunkworks/pull/207))
+- Return `null` from getSnapState if there is no state ([#203](https://github.com/MetaMask/snaps-skunkworks/pull/203))
+- Changed npm registry to be configurable ([#200](https://github.com/MetaMask/snaps-skunkworks/pull/200))
+- build(deps): bump nanoid from 3.1.28 to 3.1.31 ([#201](https://github.com/MetaMask/snaps-skunkworks/pull/201))
+
 ## [0.8.1]
 ### Added
 - A variety of `SnapController` actions ([#199](https://github.com/MetaMask/snaps-skunkworks/pull/199))
@@ -158,7 +165,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.8.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.9.0...HEAD
+[0.9.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.8.1...v0.9.0
 [0.8.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.8.0...v0.8.1
 [0.8.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.6.3...v0.7.0
