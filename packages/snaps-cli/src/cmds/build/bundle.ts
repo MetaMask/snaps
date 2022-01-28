@@ -4,7 +4,7 @@ import { TranspilationModes } from '../../builders';
 import { createBundleStream, closeBundleStream } from './bundleUtils';
 
 // We need to statically import all Browserify transforms and all Babel presets
-// presets and plugins, and calling `require` is the sanest way to do that.
+// and plugins, and calling `require` is the sanest way to do that.
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require */
 
 /**
