@@ -27,7 +27,7 @@
     "publish": "../../scripts/publish-package.sh"
   },
   "dependencies": {
-    "@metamask/controllers": "^17.0.0",
+    "@metamask/controllers": "^25.1.0",
     "@metamask/object-multiplex": "^1.2.0",
     "@metamask/post-message-stream": "^4.0.0",
     "@metamask/snap-controllers": "^0.8.0",
