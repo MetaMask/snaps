@@ -800,7 +800,7 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap whose state to get.
    */
   async getSnapState(snapId: SnapId): Promise<Json> {
-    return this.state.snapStates[snapId];
+    return this.state.snapStates[snapId] ?? null;
   }
 
   /**
