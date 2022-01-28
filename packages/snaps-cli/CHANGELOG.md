@@ -7,10 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.9.0]
-### Uncategorized
-- Fix `mm-snap build` command when CLI is installed globally ([#216](https://github.com/MetaMask/snaps-skunkworks/pull/216))
-- Enable transpilation configuration ([#213](https://github.com/MetaMask/snaps-skunkworks/pull/213))
-- Update snaps-cli installation command in readme ([#205](https://github.com/MetaMask/snaps-skunkworks/pull/205))
+### Added
+- Transpilation configuration ([#213](https://github.com/MetaMask/snaps-skunkworks/pull/213))
+  - `mm-snap build` now takes a `--transpilationMode` argument which determines what will be transpiled by Babel during building: all source code (including dependencies), local source code only, or nothing.
+
+### Fixed
+- `mm-snap build` command when CLI is installed globally ([#216](https://github.com/MetaMask/snaps-skunkworks/pull/216))
+- Update installation command in readme ([#205](https://github.com/MetaMask/snaps-skunkworks/pull/205))
 
 ## [0.8.0]
 ### Changed

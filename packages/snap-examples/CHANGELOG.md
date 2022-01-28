@@ -7,9 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.9.0]
-### Uncategorized
-- @metamask/controllers@25.1.0 ([#207](https://github.com/MetaMask/snaps-skunkworks/pull/207))
-- Enable transpilation configuration ([#213](https://github.com/MetaMask/snaps-skunkworks/pull/213))
+### Changed
+- No changes this release.
 
 ## [0.8.0]
 ### Changed

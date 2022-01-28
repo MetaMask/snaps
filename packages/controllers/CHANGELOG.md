@@ -7,11 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.9.0]
-### Uncategorized
-- @metamask/controllers@25.1.0 ([#207](https://github.com/MetaMask/snaps-skunkworks/pull/207))
-- Return `null` from getSnapState if there is no state ([#203](https://github.com/MetaMask/snaps-skunkworks/pull/203))
-- Changed npm registry to be configurable ([#200](https://github.com/MetaMask/snaps-skunkworks/pull/200))
-- build(deps): bump nanoid from 3.1.28 to 3.1.31 ([#201](https://github.com/MetaMask/snaps-skunkworks/pull/201))
+### Added
+- Make `SnapController` npm registry configurable ([#200](https://github.com/MetaMask/snaps-skunkworks/pull/200))
+
+### Changed
+- **BREAKING:** Return `null` from `SnapController.getSnapState` if the snap has no state ([#203](https://github.com/MetaMask/snaps-skunkworks/pull/203))
+  - Previously it would return `undefined` in this case.
+- `@metamask/controllers@^25.1.0` ([#207](https://github.com/MetaMask/snaps-skunkworks/pull/207))
 
 ## [0.8.1]
 ### Added

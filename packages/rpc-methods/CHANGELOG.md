@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.9.0]
-### Uncategorized
-- @metamask/controllers@25.1.0 ([#207](https://github.com/MetaMask/snaps-skunkworks/pull/207))
+### Changed
+- `@metamask/controllers@^25.1.0` ([#207](https://github.com/MetaMask/snaps-skunkworks/pull/207))
 
 ## [0.8.0]
 ### Changed
