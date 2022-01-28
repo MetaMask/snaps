@@ -99,7 +99,7 @@ describe('requestPermissions RPC method', () => {
       delete expectedError.stack;
 
       const response: any = await engine.handle(req as any);
-      expect(response.error).toStrictEqual(expectedError);
+      expect(response.error).toMatchObject(expectedError);
       expect(mockRequestPermissionsForOrigin).not.toHaveBeenCalled();
     }
   });
@@ -131,7 +131,7 @@ describe('requestPermissions RPC method', () => {
       delete expectedError.stack;
 
       const response: any = await engine.handle(req as any);
-      expect(response.error).toStrictEqual(expectedError);
+      expect(response.error).toMatchObject(expectedError);
       expect(mockRequestPermissionsForOrigin).not.toHaveBeenCalled();
     }
   });
