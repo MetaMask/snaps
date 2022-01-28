@@ -4,6 +4,7 @@ import { bundle } from './bundle';
 import * as bundleUtils from './bundleUtils';
 
 jest.mock('browserify');
+jest.mock('babelify', () => 'mockBabelify');
 
 describe('bundle', () => {
   global.snaps = {
@@ -40,7 +41,7 @@ describe('bundle', () => {
       expect(mockBrowserify).toHaveBeenCalledWith('src', { debug: true });
       expect(mockTransform).toHaveBeenCalledTimes(1);
       expect(mockTransform).toHaveBeenCalledWith(
-        'babelify',
+        'mockBabelify',
         expect.objectContaining({ global: true }),
       );
       expect(createStreamMock).toHaveBeenCalledTimes(1);
@@ -75,7 +76,7 @@ describe('bundle', () => {
       expect(mockBrowserify).toHaveBeenCalledWith('src', { debug: false });
       expect(mockTransform).toHaveBeenCalledTimes(1);
       expect(mockTransform).toHaveBeenCalledWith(
-        'babelify',
+        'mockBabelify',
         expect.objectContaining({ global: true }),
       );
       expect(createStreamMock).toHaveBeenCalledTimes(1);
@@ -110,7 +111,7 @@ describe('bundle', () => {
       expect(mockBrowserify).toHaveBeenCalledWith('src', { debug: true });
       expect(mockTransform).toHaveBeenCalledTimes(1);
       expect(mockTransform).toHaveBeenCalledWith(
-        'babelify',
+        'mockBabelify',
         expect.objectContaining({ global: false }),
       );
       expect(createStreamMock).toHaveBeenCalledTimes(1);
