@@ -3,6 +3,10 @@ import { YargsArgs } from '../../types/yargs';
 import { TranspilationModes } from '../../builders';
 import { createBundleStream, closeBundleStream } from './bundleUtils';
 
+// We need to statically import all Browserify transforms and all Babel presets
+// and plugins, and calling `require` is the sanest way to do that.
+/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require */
+
 /**
  * Builds a Snap bundle JSON file from its JavaScript source.
  *
@@ -25,11 +29,11 @@ export function bundle(
     const bundler = browserify(src, { debug });
 
     if (transpilationMode !== TranspilationModes.none) {
-      bundler.transform('babelify', {
+      bundler.transform(require('babelify'), {
         global: transpilationMode === TranspilationModes.all,
         presets: [
           [
-            '@babel/preset-env',
+            require('@babel/preset-env'),
             {
               targets: {
                 browsers: ['chrome >= 66', 'firefox >= 68'],
@@ -38,11 +42,11 @@ export function bundle(
           ],
         ],
         plugins: [
-          '@babel/plugin-transform-runtime',
-          '@babel/plugin-proposal-class-properties',
-          '@babel/plugin-proposal-object-rest-spread',
-          '@babel/plugin-proposal-optional-chaining',
-          '@babel/plugin-proposal-nullish-coalescing-operator',
+          require('@babel/plugin-transform-runtime'),
+          require('@babel/plugin-proposal-class-properties'),
+          require('@babel/plugin-proposal-object-rest-spread'),
+          require('@babel/plugin-proposal-optional-chaining'),
+          require('@babel/plugin-proposal-nullish-coalescing-operator'),
         ],
       });
     }
