@@ -205,7 +205,7 @@ describe('bundleUtils', () => {
   describe('processDependencies', () => {
     it('will modify the passed in argv argument with an empty option value if dependencies are not defined', () => {
       const transpiledDeps = undefined;
-      const transpilationMode = TranspilationModes.localOnlyAndDeps;
+      const transpilationMode = TranspilationModes.localAndDeps;
       const argv: Record<string, any> = { transpiledDeps, transpilationMode };
       processDependencies(argv as any);
       expect(argv.options).toStrictEqual({});
@@ -213,7 +213,7 @@ describe('bundleUtils', () => {
 
     it('will modify the passed in argv argument with a valid options object if dependencies are specified', () => {
       const transpiledDeps = ['airswap', 'filecoin', 'pify'];
-      const transpilationMode = TranspilationModes.localOnlyAndDeps;
+      const transpilationMode = TranspilationModes.localAndDeps;
       const argv: Record<string, any> = { transpiledDeps, transpilationMode };
       processDependencies(argv as any);
       expect(argv.options).toStrictEqual({
