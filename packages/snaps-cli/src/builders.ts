@@ -19,7 +19,7 @@ export type SnapsCliBuilders = {
 };
 
 export enum TranspilationModes {
-  localOnlyAndDeps = 'localOnlyAndDeps',
+  localAndDeps = 'localAndDeps',
   localOnly = 'localOnly',
   none = 'none',
 }

@@ -138,7 +138,7 @@ export function postProcess(
 export function processDependencies(argv: YargsArgs) {
   const { transpiledDeps, transpilationMode } = argv;
   const options: Record<string, any> = {};
-  if (transpilationMode === TranspilationModes.localOnlyAndDeps) {
+  if (transpilationMode === TranspilationModes.localAndDeps) {
     const regexpStr = getDependencyRegExp(transpiledDeps as string[]);
     if (regexpStr !== null) {
       options.ignore = regexpStr;
