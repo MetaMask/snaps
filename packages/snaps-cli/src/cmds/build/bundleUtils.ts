@@ -2,6 +2,7 @@ import { createWriteStream } from 'fs';
 import stripComments from '@nodefactory/strip-comments';
 import { writeError } from '../../utils/misc';
 import { Option, YargsArgs } from '../../types/yargs';
+import { TranspilationModes } from '../../builders';
 
 /**
  * Opens a stream to write the destination file path.
@@ -127,4 +128,57 @@ export function postProcess(
   }
 
   return processedString;
+}
+
+/**
+ * Processes dependencies and updates argv with an options object
+ * @param argv
+ */
+
+export function processDependencies(argv: YargsArgs) {
+  const { transpiledDeps, transpilationMode } = argv;
+  const options: Record<string, any> = {};
+  if (transpilationMode === TranspilationModes.localOnlyAndDeps) {
+    const regexpStr = getDependencyRegExp(transpiledDeps as string[]);
+    if (regexpStr !== null) {
+      options.ignore = regexpStr;
+    }
+  }
+  argv.options = options;
+}
+
+/**
+ * Processes a string of space delimited dependencies into one regex string
+ * @param dependencies
+ * @returns a regexp string
+ */
+export function getDependencyRegExp(dependencies: string[]): RegExp | null {
+  let regexp: string | null = null;
+  if (!dependencies || !dependencies.length) {
+    return regexp;
+  }
+
+  if (dependencies.includes('.')) {
+    return /\/node_modules\/(?!.+)/u;
+  }
+
+  const paths: string[] = sanitizeDependencyPaths(dependencies);
+  regexp = `/node_modules/(?!${paths.shift()}`;
+  paths.forEach((path) => (regexp += `|${path}`));
+  regexp += '/)';
+  return RegExp(regexp, 'u');
+}
+
+/**
+ * Helper function remove any leading or trailing slashes from dependency list
+ * @param dependencies
+ * @returns an array of sanitized paths
+ */
+export function sanitizeDependencyPaths(dependencies: string[]): string[] {
+  if (!dependencies.length) {
+    return [];
+  }
+  return dependencies.map((dependency) => {
+    return dependency.replace(/^[/\\]+/u, '').replace(/[/\\]+$/u, '');
+  });
 }

@@ -17,7 +17,7 @@ describe('bundle', () => {
       const mockArgv = {
         sourceMaps: true,
         stripComments: true,
-        transpilationMode: TranspilationModes.all,
+        transpilationMode: TranspilationModes.localOnly,
       };
 
       const mockTransform = jest.fn();
@@ -42,7 +42,7 @@ describe('bundle', () => {
       expect(mockTransform).toHaveBeenCalledTimes(1);
       expect(mockTransform).toHaveBeenCalledWith(
         'mockBabelify',
-        expect.objectContaining({ global: true }),
+        expect.objectContaining({ global: false }),
       );
       expect(createStreamMock).toHaveBeenCalledTimes(1);
       expect(closeStreamMock).toHaveBeenCalledTimes(1);
@@ -52,7 +52,7 @@ describe('bundle', () => {
       const mockArgv = {
         sourceMaps: false,
         stripComments: true,
-        transpilationMode: TranspilationModes.all,
+        transpilationMode: TranspilationModes.localOnly,
       };
 
       const mockTransform = jest.fn();
@@ -77,7 +77,7 @@ describe('bundle', () => {
       expect(mockTransform).toHaveBeenCalledTimes(1);
       expect(mockTransform).toHaveBeenCalledWith(
         'mockBabelify',
-        expect.objectContaining({ global: true }),
+        expect.objectContaining({ global: false }),
       );
       expect(createStreamMock).toHaveBeenCalledTimes(1);
       expect(closeStreamMock).toHaveBeenCalledTimes(1);

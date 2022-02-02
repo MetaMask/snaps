@@ -1,10 +1,14 @@
 import EventEmitter from 'events';
 import fs from 'fs';
+import { TranspilationModes } from '../../builders';
 import * as miscUtils from '../../utils/misc';
 import {
   createBundleStream,
   closeBundleStream,
   postProcess,
+  sanitizeDependencyPaths,
+  getDependencyRegExp,
+  processDependencies,
 } from './bundleUtils';
 
 jest.mock('fs', () => ({
@@ -147,6 +151,74 @@ describe('bundleUtils', () => {
 
     it('throws an error if the postprocessed string is empty', () => {
       expect(() => postProcess(' ')).toThrow(/^Bundled code is empty/u);
+    });
+  });
+
+  describe('sanitizeDependencyPaths', () => {
+    it('properly removes leading and trailing back and forward slashes from a list of dependencies', () => {
+      const unsanitizedPaths = [
+        '///\\@airswap////',
+        '/filsnap\\',
+        '/promisify/',
+      ];
+      expect(sanitizeDependencyPaths(unsanitizedPaths)).toStrictEqual([
+        '@airswap',
+        'filsnap',
+        'promisify',
+      ]);
+    });
+
+    it("properly returns an empty list if there aren't any dependencies", () => {
+      expect(sanitizeDependencyPaths([])).toStrictEqual([]);
+    });
+  });
+
+  describe('getDependencyRegExp', () => {
+    it("returns null if there aren't any dependencies", () => {
+      expect(getDependencyRegExp([])).toBeNull();
+    });
+
+    it('returns a valid regex statement for covering a wildcard', () => {
+      expect(getDependencyRegExp(['.'])).toStrictEqual(
+        /\/node_modules\/(?!.+)/u,
+      );
+    });
+
+    it('returns a valid regex statement for a single dependency', () => {
+      const exp = /\/node_modules\/(?!@airswap\/)/u;
+      expect(getDependencyRegExp(['@airswap'])).toStrictEqual(exp);
+    });
+
+    it('returns a valid regex statement for multiple dependencies', () => {
+      const exp =
+        /\/node_modules\/(?!@airswap|filecoin|@openzeppelin\/contracts\/)/u;
+      expect(
+        getDependencyRegExp([
+          '@airswap',
+          'filecoin',
+          '@openzeppelin/contracts',
+        ]),
+      ).toStrictEqual(exp);
+    });
+  });
+
+  describe('processDependencies', () => {
+    it('will modify the passed in argv argument with an empty option value if dependencies are not defined', () => {
+      const transpiledDeps = undefined;
+      const transpilationMode = TranspilationModes.localOnlyAndDeps;
+      const argv: Record<string, any> = { transpiledDeps, transpilationMode };
+      processDependencies(argv as any);
+      expect(argv.options).toStrictEqual({});
+    });
+
+    it('will modify the passed in argv argument with a valid options object if dependencies are specified', () => {
+      const transpiledDeps = ['airswap', 'filecoin', 'pify'];
+      const transpilationMode = TranspilationModes.localOnlyAndDeps;
+      const argv: Record<string, any> = { transpiledDeps, transpilationMode };
+      processDependencies(argv as any);
+      expect(argv.options).toStrictEqual({
+        ignore: /\/node_modules\/(?!airswap|filecoin|pify\/)/u,
+      });
     });
   });
 });
