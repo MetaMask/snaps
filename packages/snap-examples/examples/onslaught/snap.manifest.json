@@ -1,0 +1,17 @@
+{
+  "version": "1.0.0",
+  "description": "A stress test snap",
+  "proposedName": "onslaught",
+  "source": {
+    "shasum": "bkv75Xdq43Vt+SRy5NUrS4NtR7FekMEI/+WtQIr95q8=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "packageName": "onslaught",
+        "registry": "https://registry.npmjs.org"
+      }
+    }
+  },
+  "initialPermissions": {},
+  "manifestVersion": "0.1"
+}

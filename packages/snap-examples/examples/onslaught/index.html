@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+  </head>
+    <title>Onslaught</title>
+  </head>
+
+  <body>
+    <label for="startPort">The port of the first instance:</label>
+    <input type="number" id="startPort" value="8080"><br />
+    <label for="instanceCount">Amount of instances</label>
+    <input type="number" min="1" id="instanceCount" value="1"></input><br />
+    <button id="connect">Connect</button>
+  </body>
+
+  <script>
+    console.log(`local:${window.location.href}`);
+    const connectButton = document.querySelector('#connect')
+    const startPortElement = document.querySelector('#startPort');
+    const instanceCountElement = document.querySelector('#instanceCount');
+
+    connectButton.addEventListener('click', connect)
+
+    async function connect () {
+      const startPort = parseInt(startPortElement.value);
+      const instanceCount = parseInt(instanceCountElement.value);
+      for (var i = startPort; i < startPort + instanceCount; i++) {
+        const snapId = `local:${window.location.protocol}//${window.location.hostname}:${i}`;
+        await ethereum.request({
+          method: 'wallet_enable',
+          params: [{
+            wallet_snap: { [snapId]: {} },
+          }]
+        });
+        console.log(`${snapId} connected`);
+      }
+    }
+  </script>
+</html>
