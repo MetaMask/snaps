@@ -1,8 +1,9 @@
 import { createHash } from 'crypto';
-import { Readable } from 'stream';
 import type { Writable } from 'stream';
+import { Readable } from 'stream';
 import { Json } from '@metamask/controllers';
 import concat from 'concat-stream';
+import fetch from 'cross-fetch';
 import deepEqual from 'fast-deep-equal';
 import createGunzipStream from 'gunzip-maybe';
 import pump from 'pump';
@@ -43,31 +44,7 @@ const SVG_MAX_BYTE_SIZE_TEXT = `${Math.floor(SVG_MAX_BYTE_SIZE / 1000)}kb`;
 export const PROPOSED_NAME_REGEX =
   /^(?:[A-Za-z0-9-_]+( [A-Za-z0-9-_]+)*)|(?:(?:@[A-Za-z0-9-*~][A-Za-z0-9-*._~]*\/)?[A-Za-z0-9-~][A-Za-z0-9-._~]*)$/u;
 
-type FetchContentTypes = 'text' | 'json' | 'arrayBuffer';
-
-type FetchReturnType<T extends FetchContentTypes> = T extends 'text'
-  ? string
-  : T extends 'json'
-  ? Json
-  : T extends 'arrayBuffer'
-  ? ArrayBuffer
-  : never;
-
-/**
- * @param url - The URL to fetch.
- * @param contentType - The content type of the response body.
- * @returns The response body as the specified content type.
- */
-export async function fetchContent<ContentType extends FetchContentTypes>(
-  url: URL | string,
-  contentType: ContentType,
-  fetchFunction = fetch,
-): Promise<FetchReturnType<ContentType>> {
-  const response = await fetchFunction(
-    typeof url === 'string' ? url : url.toString(),
-  );
-  return await response[contentType]();
-}
+export const fetchContent = fetch;
 
 /**
  * Calculates the Base64-econded SHA-256 digest of a Snap source code string.
@@ -119,14 +96,14 @@ export type SnapFiles = {
  * @param version - The version of the package to fetch, or the string `latest`
  * to fetch the latest version.
  * @param fetchFunction - The fetch function to use. Defaults to the global
- * {@link fetch}. Useful for Node.js compatibility.
+ * {@link fetchContent}. Useful for Node.js compatibility.
  * @returns A tuple of the Snap manifest object and the Snap source code.
  */
 export async function fetchNpmSnap(
   packageName: string,
   version: string,
   registryUrl = DEFAULT_NPM_REGISTRY,
-  fetchFunction = fetch,
+  fetchFunction = fetchContent,
 ): Promise<SnapFiles> {
   const [tarballResponse, actualVersion] = await fetchNpmTarball(
     packageName,
@@ -324,7 +301,7 @@ type ResponseWithBody = Omit<Response, 'body'> & { body: ReadableStream };
  * @param version - The version of the package to fetch, or the string `latest`
  * to fetch the latest version.
  * @param fetchFunction - The fetch function to use. Defaults to the global
- * {@link fetch}. Useful for Node.js compatibility.
+ * {@link fetchContent}. Useful for Node.js compatibility.
  * @returns A tuple of the {@link Response} for the package tarball and the
  * actual version of the package.
  */
@@ -332,13 +309,11 @@ async function fetchNpmTarball(
   packageName: string,
   version: string,
   registryUrl = DEFAULT_NPM_REGISTRY,
-  fetchFunction = fetch,
+  fetchFunction = fetchContent,
 ): Promise<[ResponseWithBody, string]> {
-  const packageMetadata = await fetchContent(
-    new URL(packageName, registryUrl),
-    'json',
-    fetchFunction,
-  );
+  const packageMetadata = await (
+    await fetchFunction(new URL(packageName, registryUrl).toString())
+  ).json();
 
   if (!isPlainObject(packageMetadata)) {
     throw new Error(

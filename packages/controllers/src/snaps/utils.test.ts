@@ -53,6 +53,7 @@ describe('fetchNpmSnap', () => {
       '@metamask/template-snap',
       templateSnapVersion,
       'https://registry.npmjs.cf',
+      fetchMock,
     );
 
     expect(fetchMock).toHaveBeenCalledTimes(2);
