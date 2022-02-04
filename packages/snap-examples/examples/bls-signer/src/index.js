@@ -14,6 +14,7 @@ wallet.registerRpcMessageHandler(async (_originString, requestObject) => {
       const pubKey = await getPubKey();
       const data = requestObject.params[0];
       const approved = await promptUser(
+        'BLS signature request',
         `Do you want to BLS sign ${data} with ${pubKey}?`,
       );
       if (!approved) {
@@ -42,10 +43,10 @@ async function getPubKey() {
   return bls.getPublicKey(PRIV_KEY);
 }
 
-async function promptUser(message) {
+async function promptUser(header, message) {
   const response = await wallet.request({
     method: 'snap_confirm',
-    params: [{ prompt: message }],
+    params: [{ prompt: header, textAreaContent: message }],
   });
   return response;
 }

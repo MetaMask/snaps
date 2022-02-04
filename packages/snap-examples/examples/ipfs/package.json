@@ -18,6 +18,6 @@
   },
   "dependencies": {
     "eth-json-rpc-errors": "^1.1.0",
-    "ipfs-mini": "^1.1.5"
+    "uuid": "^8.3.2"
   }
 }

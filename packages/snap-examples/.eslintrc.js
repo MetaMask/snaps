@@ -14,6 +14,7 @@ module.exports = {
       rules: {
         'no-alert': 'off',
         'import/no-unresolved': 'off',
+        'node/no-unpublished-require': 'off',
       },
     },
   ],
