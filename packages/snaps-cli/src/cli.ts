@@ -7,6 +7,7 @@ export function cli(argv: string[], commands: any): void {
   const rawArgv = argv.slice(2);
   // eslint-disable-next-line @typescript-eslint/no-unused-expressions
   yargs(rawArgv)
+    .scriptName('mm-snap')
     .usage('Usage: $0 <command> [options]')
 
     .example('$0 init', `\tInitialize Snap package from scratch`)

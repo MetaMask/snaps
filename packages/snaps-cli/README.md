@@ -7,14 +7,41 @@ A CLI for developing MetaMask Snaps.
 Use Node.js `12.11.0` or later.
 We recommend [nvm](https://github.com/nvm-sh/nvm) for managing Node.js versions.
 
+Install a dev dependency in your snap project or globally using `yarn` or `npm`:
+
+- `npm install -g @metamask/snaps-cli`
 - `yarn global add @metamask/snaps-cli`
 
-## Basic Usage
+## Usage
 
-```bash
-mkdir mySnap
-cd mySnap
-mm-snap init
+```text
+Usage: mm-snap <command> [options]
+
+Commands:
+  mm-snap build     Build Snap from source                          [aliases: b]
+  mm-snap eval      Attempt to evaluate Snap bundle in SES          [aliases: e]
+  mm-snap init      Initialize Snap package                         [aliases: i]
+  mm-snap manifest  Validate the snap.manifest.json file            [aliases: m]
+  mm-snap serve     Locally serve Snap file(s) for testing          [aliases: s]
+  mm-snap watch     Build Snap on change                            [aliases: w]
+
+Options:
+      --version           Show version number                          [boolean]
+      --verboseErrors     Display original errors     [boolean] [default: false]
+      --suppressWarnings  Whether to suppress warnings[boolean] [default: false]
+  -h, --help              Show help                                    [boolean]
+
+Examples:
+  mm-snap init                              Initialize Snap package from scratch
+  mm-snap build -s src/index.js -d out      Build 'src/index.js' as
+                                            './out/bundle.js'
+  mm-snap build -s src/index.js -d out -n   Build 'src/index.js' as
+  snap.js                                   './out/snap.js'
+  mm-snap serve -r out                      Serve files in './out' on port 8080
+  mm-snap serve -r out -p 9000              Serve files in './out' on port 9000
+  mm-snap watch -s src/index.js -d out      Rebuild './out/bundle.js' on changes
+                                            to files in 'src/index.js' parent
+                                            and child directories
 ```
 
 ## MetaMask Snaps
@@ -80,12 +107,7 @@ snap-project/
 ```
 
 Source files other than `index.js` are located through its imports.
-The defaults can be overwritten using the `snap.config.json` config file,
-[see below](#configuration-file).
-
-## Usage
-
-Run `mm-snap --help` for usage instructions.
+The defaults can be overwritten using the `snap.config.json` [config file](#configuration-file).
 
 ### Configuration File
 
@@ -95,7 +117,7 @@ Example:
 
 ```json
 {
-  "src": "lib",
+  "src": "lib/index.js",
   "dist": "out",
   "port": 9000
 }
