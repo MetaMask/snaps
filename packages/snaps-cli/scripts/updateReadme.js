@@ -2,11 +2,16 @@ const { promises: fs } = require('fs');
 const path = require('path');
 const execa = require('execa');
 
+// These magic strings correspond to the README.md file.
 const README_HEADING_1 = '## Usage\n\n';
 const README_HEADING_2 = '\n\n## MetaMask Snaps';
 
 main();
 
+/**
+ * Updates the usage instructions in the readme per the current output of
+ * `mm-snap --help`.
+ */
 async function main() {
   const binPath = path.join(__dirname, '../dist/main.js');
   const readmePath = path.join(__dirname, '../README.md');
@@ -17,6 +22,7 @@ async function main() {
   const beginSlice =
     currentReadme.indexOf(README_HEADING_1) + README_HEADING_1.length;
   const endSlice = currentReadme.indexOf(README_HEADING_2);
+
   const newReadme = currentReadme
     .substring(0, beginSlice)
     .concat('```text\n')
