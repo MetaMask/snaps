@@ -10,7 +10,7 @@ export function cli(argv: string[], commands: any): void {
     .scriptName('mm-snap')
     .usage('Usage: $0 <command> [options]')
 
-    .example('$0 init', `\tInitialize Snap package from scratch`)
+    .example('$0 init', `\tInitialize a snap project in the current directory`)
     .example(
       '$0 build -s src/index.js -d out',
       `\tBuild 'src/index.js' as './out/bundle.js'`,

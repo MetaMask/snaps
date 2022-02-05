@@ -32,7 +32,8 @@ Options:
   -h, --help              Show help                                    [boolean]
 
 Examples:
-  mm-snap init                              Initialize Snap package from scratch
+  mm-snap init                              Initialize a snap project in the
+                                            current directory
   mm-snap build -s src/index.js -d out      Build 'src/index.js' as
                                             './out/bundle.js'
   mm-snap build -s src/index.js -d out -n   Build 'src/index.js' as
