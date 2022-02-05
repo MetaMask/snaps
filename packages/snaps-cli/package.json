@@ -20,7 +20,7 @@
     "build:tsc": "tsc --project ./tsconfig.local.json",
     "build:chmod": "chmod +x ./dist/main.js",
     "build:readme": "node ./scripts/updateReadme.js",
-    "build": "yarn build:init-template && yarn build:tsc && yarn build:post-tsc",
+    "build": "yarn build:pre-tsc && yarn build:tsc && yarn build:post-tsc",
     "build:pre-tsc": "yarn build:init-template",
     "build:post-tsc": "yarn build:chmod && yarn build:readme",
     "build:clean": "yarn clean && yarn build",
