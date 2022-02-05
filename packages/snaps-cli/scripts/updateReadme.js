@@ -23,6 +23,10 @@ async function main() {
     currentReadme.indexOf(README_HEADING_1) + README_HEADING_1.length;
   const endSlice = currentReadme.indexOf(README_HEADING_2);
 
+  if (beginSlice === -1 || endSlice === -1) {
+    throw new Error('Failed to match readme headings.');
+  }
+
   const newReadme = currentReadme
     .substring(0, beginSlice)
     .concat(usage)
