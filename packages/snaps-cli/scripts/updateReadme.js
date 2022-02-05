@@ -3,8 +3,8 @@ const path = require('path');
 const execa = require('execa');
 
 // These magic strings correspond to the README.md file.
-const README_HEADING_1 = '## Usage\n\n';
-const README_HEADING_2 = '\n\n## MetaMask Snaps';
+const README_HEADING_1 = '## Usage\n\n```text\n';
+const README_HEADING_2 = '\n```\n\n## MetaMask Snaps';
 
 main();
 
@@ -25,9 +25,7 @@ async function main() {
 
   const newReadme = currentReadme
     .substring(0, beginSlice)
-    .concat('```text\n')
     .concat(usage)
-    .concat('\n```')
     .concat(currentReadme.substring(endSlice));
 
   await fs.writeFile(readmePath, newReadme, 'utf8');
