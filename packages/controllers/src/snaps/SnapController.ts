@@ -108,6 +108,25 @@ export type Snap = {
   version: string;
 };
 
+export interface SnapRuntimeData {
+  /**
+   * RPC handler designated for the Snap
+   */
+  rpcHandler:
+    | null
+    | ((origin: string, request: Record<string, unknown>) => Promise<unknown>);
+
+  /**
+   * A timestamp for the last time the Snap received an RPC request
+   */
+  lastRequest: null | number;
+
+  /**
+   * A promise that resolves when the Snap has finished installing
+   */
+  installPromise: null | Promise<Snap>;
+}
+
 /**
  * A {@link Snap} object with the fields that are relevant to an external
  * caller.
@@ -396,18 +415,12 @@ export class SnapController extends BaseController<
    * A {@link Map} of Snap IDs and the Unix timestamp of the most recent RPC
    * request received by the Snap.
    */
-  private _lastRequestMap: Map<SnapId, number>;
 
   private _maxIdleTime: number;
 
   private _maxRequestTime: number;
 
-  private _rpcHandlerMap: Map<
-    SnapId,
-    (origin: string, request: Record<string, unknown>) => Promise<unknown>
-  >;
-
-  private _snapsBeingAdded: Map<string, Promise<Snap>>;
+  private _snapsRuntimeData: Map<SnapId, SnapRuntimeData>;
 
   private _terminateAllSnaps: TerminateAll;
 
@@ -474,12 +487,10 @@ export class SnapController extends BaseController<
     this._terminateAllSnaps = terminateAllSnaps;
 
     this._idleTimeCheckInterval = idleTimeCheckInterval;
-    this._lastRequestMap = new Map();
     this._maxIdleTime = maxIdleTime;
     this._maxRequestTime = maxRequestTime;
     this._pollForLastRequestStatus();
-    this._rpcHandlerMap = new Map();
-    this._snapsBeingAdded = new Map();
+    this._snapsRuntimeData = new Map();
     this._npmRegistryUrl = npmRegistryUrl;
 
     this.messagingSystem.subscribe(
@@ -539,8 +550,12 @@ export class SnapController extends BaseController<
   }
 
   _stopSnapsLastRequestPastMax() {
-    this._lastRequestMap.forEach(async (timestamp, snapId) => {
-      if (this._maxIdleTime && timeSince(timestamp) > this._maxIdleTime) {
+    this._snapsRuntimeData.forEach(async (runtime, snapId) => {
+      if (
+        runtime.lastRequest &&
+        this._maxIdleTime &&
+        timeSince(runtime.lastRequest) > this._maxIdleTime
+      ) {
         this.stopSnap(snapId);
       }
     });
@@ -679,7 +694,8 @@ export class SnapController extends BaseController<
    * Should only be set to false if the snap is about to be deleted.
    */
   private _stopSnap(snapId: SnapId, setNotRunning = true): void {
-    this._lastRequestMap.delete(snapId);
+    const runtime = this._getSnapRuntimeData(snapId);
+    runtime.lastRequest = null;
     this._closeAllConnections(snapId);
     this._terminateSnap(snapId);
     if (setNotRunning) {
@@ -850,7 +866,7 @@ export class SnapController extends BaseController<
     this.update((state: any) => {
       snapIds.forEach((snapId) => {
         this._stopSnap(snapId, false);
-        this._rpcHandlerMap.delete(snapId);
+        this._snapsRuntimeData.delete(snapId);
         delete state.snaps[snapId];
         delete state.snapStates[snapId];
         this.messagingSystem.publish(`SnapController:snapRemoved`, snapId);
@@ -1009,15 +1025,13 @@ export class SnapController extends BaseController<
       throw new Error(`Invalid add snap args for snap "${snapId}".`);
     }
 
-    if (!this._snapsBeingAdded.has(snapId)) {
+    const runtime = this._getSnapRuntimeData(snapId);
+    if (!runtime.installPromise) {
       console.log(`Adding snap: ${snapId}`);
-      this._snapsBeingAdded.set(
-        snapId,
-        this._add(args as ValidatedAddSnapArgs),
-      );
+      runtime.installPromise = this._add(args as ValidatedAddSnapArgs);
     }
 
-    return this._snapsBeingAdded.get(snapId) as Promise<Snap>;
+    return runtime.installPromise as Promise<Snap>;
   }
 
   private validateSnapId(snapId: unknown): void {
@@ -1278,7 +1292,8 @@ export class SnapController extends BaseController<
         (perm) => perm.parentCapability,
       );
     } finally {
-      this._snapsBeingAdded.delete(snapId);
+      const runtime = this._getSnapRuntimeData(snapId);
+      runtime.installPromise = null;
     }
   }
 
@@ -1310,7 +1325,8 @@ export class SnapController extends BaseController<
   ): Promise<
     (origin: string, request: Record<string, unknown>) => Promise<unknown>
   > {
-    const existingHandler = this._rpcHandlerMap.get(snapId);
+    const runtime = this._getSnapRuntimeData(snapId);
+    const existingHandler = runtime?.rpcHandler;
     if (existingHandler) {
       return existingHandler;
     }
@@ -1363,12 +1379,24 @@ export class SnapController extends BaseController<
       return result;
     };
 
-    this._rpcHandlerMap.set(snapId, rpcHandler);
+    runtime.rpcHandler = rpcHandler;
     return rpcHandler;
   }
 
   private _recordSnapRpcRequest(snapId: SnapId) {
-    this._lastRequestMap.set(snapId, Date.now());
+    const runtime = this._getSnapRuntimeData(snapId);
+    runtime.lastRequest = Date.now();
+  }
+
+  private _getSnapRuntimeData(snapId: SnapId) {
+    if (!this._snapsRuntimeData.has(snapId)) {
+      this._snapsRuntimeData.set(snapId, {
+        lastRequest: null,
+        rpcHandler: null,
+        installPromise: null,
+      });
+    }
+    return this._snapsRuntimeData.get(snapId) as SnapRuntimeData;
   }
 }
 
