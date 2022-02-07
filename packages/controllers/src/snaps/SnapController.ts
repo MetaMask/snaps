@@ -1216,6 +1216,10 @@ export class SnapController extends BaseController<
   private async _fetchLocalSnap(
     localhostUrl: string,
   ): Promise<FetchSnapResult> {
+    // Local snaps are mostly used for development purposes. Fetches were cached in the browser and were not requested
+    // afterwards which lead to confusing development where old versions of snaps were installed.
+    // Thus we disable caching
+    const fetchOptions: RequestInit = { cache: 'no-cache' };
     const manifestUrl = new URL(NpmSnapFileNames.Manifest, localhostUrl);
     if (!LOCALHOST_HOSTNAMES.has(manifestUrl.hostname)) {
       throw new Error(
@@ -1223,7 +1227,9 @@ export class SnapController extends BaseController<
       );
     }
 
-    const _manifest = await fetchContent(manifestUrl, 'json');
+    const _manifest = await (
+      await fetchContent(manifestUrl.toString(), fetchOptions)
+    ).json();
     validateSnapJsonFile(NpmSnapFileNames.Manifest, _manifest);
     const manifest = _manifest as SnapManifest;
 
@@ -1236,9 +1242,19 @@ export class SnapController extends BaseController<
     } = manifest;
 
     const [sourceCode, svgIcon] = await Promise.all([
-      fetchContent(new URL(filePath, localhostUrl), 'text'),
+      (
+        await fetchContent(
+          new URL(filePath, localhostUrl).toString(),
+          fetchOptions,
+        )
+      ).text(),
       iconPath
-        ? fetchContent(new URL(iconPath, localhostUrl), 'text')
+        ? (
+            await fetchContent(
+              new URL(iconPath, localhostUrl).toString(),
+              fetchOptions,
+            )
+          ).text()
         : undefined,
     ]);
 
