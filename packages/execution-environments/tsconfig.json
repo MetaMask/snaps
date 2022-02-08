@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.packages.json",
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "typeRoots": ["./node_modules/@types", "../../node_modules/@types"],
+    "resolveJsonModule": true
+  },
+  "include": ["./src", "./src/openrpc.json"],
+  "exclude": ["**/*.test.ts"]
+}
