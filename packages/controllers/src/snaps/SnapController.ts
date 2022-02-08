@@ -108,6 +108,10 @@ export type Snap = {
   version: string;
 };
 
+/**
+ * A wrapper type for any data stored during runtime of Snaps.
+ * It is not persisted in state as it contains non-serializable data and is only relevant for the current session.
+ */
 export interface SnapRuntimeData {
   /**
    * RPC handler designated for the Snap
@@ -117,7 +121,7 @@ export interface SnapRuntimeData {
     | ((origin: string, request: Record<string, unknown>) => Promise<unknown>);
 
   /**
-   * A timestamp for the last time the Snap received an RPC request
+   * A Unix timestamp for the last time the Snap received an RPC request
    */
   lastRequest: null | number;
 
@@ -410,11 +414,6 @@ export class SnapController extends BaseController<
   private _getRpcMessageHandler: GetRpcMessageHandler;
 
   private _idleTimeCheckInterval: number;
-
-  /**
-   * A {@link Map} of Snap IDs and the Unix timestamp of the most recent RPC
-   * request received by the Snap.
-   */
 
   private _maxIdleTime: number;
 
