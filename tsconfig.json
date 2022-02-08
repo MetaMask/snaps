@@ -1,7 +1,6 @@
 {
   "references": [
     { "path": "./packages/controllers" },
-    { "path": "./packages/execution-environments" },
     { "path": "./packages/iframe-execution-environment-service" },
     { "path": "./packages/rpc-methods" },
     { "path": "./packages/snaps-cli" },

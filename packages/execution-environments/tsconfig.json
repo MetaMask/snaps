@@ -4,6 +4,7 @@
     "composite": true,
     "outDir": "dist",
     "rootDir": "src",
+    "sourceMap": true,
     "typeRoots": ["./node_modules/@types", "../../node_modules/@types"],
     "resolveJsonModule": true
   },
