@@ -22,14 +22,14 @@ export function bundle(
   dest: string,
   argv: YargsArgs,
 ): Promise<boolean> {
-  const { sourceMaps: debug, transpilationMode, options } = argv;
+  const { sourceMaps: debug, transpilationMode, babelifyOptions } = argv;
 
   return new Promise((resolve, _reject) => {
     const bundleStream = createBundleStream(dest);
     const bundler = browserify(src, { debug });
     if (transpilationMode !== TranspilationModes.none) {
       bundler.transform(require('babelify'), {
-        global: transpilationMode !== TranspilationModes.localOnly,
+        global: transpilationMode === TranspilationModes.localAndDeps,
         presets: [
           [
             require('@babel/preset-env'),
@@ -47,7 +47,7 @@ export function bundle(
           require('@babel/plugin-proposal-optional-chaining'),
           require('@babel/plugin-proposal-nullish-coalescing-operator'),
         ],
-        ...(options as any),
+        ...(babelifyOptions as any),
       });
     }
 

@@ -127,7 +127,7 @@ const builders: SnapsCliBuilders = {
     describe:
       'Whether to use Babel to transpile all source code (including dependencies), local source code only, or nothing.',
     demandOption: false,
-    default: TranspilationModes.localOnly,
+    default: TranspilationModes.localAndDeps,
     choices: Object.values(TranspilationModes),
   },
 

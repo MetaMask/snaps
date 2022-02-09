@@ -137,14 +137,14 @@ export function postProcess(
 
 export function processDependencies(argv: YargsArgs) {
   const { transpiledDeps, transpilationMode } = argv;
-  const options: Record<string, any> = {};
+  const babelifyOptions: Record<string, any> = {};
   if (transpilationMode === TranspilationModes.localAndDeps) {
     const regexpStr = getDependencyRegExp(transpiledDeps as string[]);
     if (regexpStr !== null) {
-      options.ignore = regexpStr;
+      babelifyOptions.ignore = regexpStr;
     }
   }
-  argv.options = options;
+  argv.babelifyOptions = babelifyOptions;
 }
 
 /**
@@ -170,7 +170,7 @@ export function getDependencyRegExp(dependencies: string[]): RegExp | null {
 }
 
 /**
- * Helper function remove any leading or trailing slashes from dependency list
+ * Helper function remove any leading and trailing slashes from dependency list
  * @param dependencies
  * @returns an array of sanitized paths
  */
