@@ -179,14 +179,13 @@ describe('bundleUtils', () => {
     });
 
     it('returns a valid regex statement for covering a wildcard', () => {
-      expect(getDependencyRegExp(['.'])).toStrictEqual(
-        /\/node_modules\/(?!.+)/u,
-      );
+      const exp = /\/node_modules\/(?!.+)/u;
+      expect(getDependencyRegExp(['.'])).toStrictEqual([exp]);
     });
 
     it('returns a valid regex statement for a single dependency', () => {
       const exp = /\/node_modules\/(?!@airswap\/)/u;
-      expect(getDependencyRegExp(['@airswap'])).toStrictEqual(exp);
+      expect(getDependencyRegExp(['@airswap'])).toStrictEqual([exp]);
     });
 
     it('returns a valid regex statement for multiple dependencies', () => {
@@ -198,7 +197,7 @@ describe('bundleUtils', () => {
           'filecoin',
           '@openzeppelin/contracts',
         ]),
-      ).toStrictEqual(exp);
+      ).toStrictEqual([exp]);
     });
   });
 
@@ -208,7 +207,7 @@ describe('bundleUtils', () => {
       const transpilationMode = TranspilationModes.localAndDeps;
       const argv: Record<string, any> = { transpiledDeps, transpilationMode };
       processDependencies(argv as any);
-      expect(argv.babelifyOptions).toStrictEqual({});
+      expect(argv.babelifyOptions).toStrictEqual([{}]);
     });
 
     it('will modify the passed in argv argument with a valid options object if dependencies are specified', () => {
@@ -217,7 +216,7 @@ describe('bundleUtils', () => {
       const argv: Record<string, any> = { transpiledDeps, transpilationMode };
       processDependencies(argv as any);
       expect(argv.babelifyOptions).toStrictEqual({
-        ignore: /\/node_modules\/(?!airswap|filecoin|pify\/)/u,
+        ignore: [/\/node_modules\/(?!airswap|filecoin|pify\/)/u],
       });
     });
   });
