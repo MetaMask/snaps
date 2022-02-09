@@ -1,9 +1,9 @@
-// eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
-/// <reference path="../../node_modules/ses/index.d.ts" />
 import { Duplex } from 'stream';
 import { MetaMaskInpageProvider } from '@metamask/inpage-provider';
 import { SnapProvider } from '@metamask/snap-types';
 import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
+/* eslint-disable-next-line import/no-unassigned-import */
+import 'ses';
 import EEOpenRPCDocument from '../openrpc.json';
 import {
   Endowments,

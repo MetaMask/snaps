@@ -1,3 +1,6 @@
+/* eslint-disable-next-line import/no-unassigned-import */
+import 'ses';
+
 export function executeLockdownMore() {
   // Make all "object" and "function" own properties of globalThis
   // non-configurable and non-writable, when possible.

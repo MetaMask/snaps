@@ -1,3 +1,6 @@
+/* eslint-disable-next-line import/no-unassigned-import */
+import 'ses';
+
 export function executeLockdown() {
   try {
     lockdown({
