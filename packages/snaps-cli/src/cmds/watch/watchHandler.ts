@@ -8,6 +8,8 @@ import {
   validateFilePath,
   validateOutfileName,
 } from '../../utils';
+import { snapEval } from '../eval/evalHandler';
+import { manifestHandler } from '../manifest/manifestHandler';
 
 /**
  * Watch a directory and its subdirectories for changes, and build when files
@@ -45,18 +47,39 @@ export async function watch(argv: YargsArgs): Promise<void> {
       (str: string) => str !== '.' && str.startsWith('.'),
     ],
   });
-
+  let res;
   watcher
-    .on('ready', () => {
-      bundle(src, outfilePath, argv);
+    .on('ready', async () => {
+      res = await bundle(src, outfilePath, argv);
+      if (res && argv.eval) {
+        await snapEval({ ...argv, bundle: outfilePath });
+      }
+
+      if (argv.manifest) {
+        await manifestHandler(argv);
+      }
     })
-    .on('add', (path: string) => {
+    .on('add', async (path: string) => {
       console.log(`File added: ${path}`);
-      bundle(src, outfilePath, argv);
+      res = await bundle(src, outfilePath, argv);
+      if (res && argv.eval) {
+        await snapEval({ ...argv, bundle: outfilePath });
+      }
+
+      if (argv.manifest) {
+        await manifestHandler(argv);
+      }
     })
-    .on('change', (path: string) => {
+    .on('change', async (path: string) => {
       console.log(`File changed: ${path}`);
-      bundle(src, outfilePath, argv);
+      res = await bundle(src, outfilePath, argv);
+      if (res && argv.eval) {
+        await snapEval({ ...argv, bundle: outfilePath });
+      }
+
+      if (argv.manifest) {
+        await manifestHandler(argv);
+      }
     })
     .on('unlink', (path: string) => console.log(`File removed: ${path}`))
     .on('error', (err: Error) => {
