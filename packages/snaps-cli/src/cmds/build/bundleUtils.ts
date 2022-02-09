@@ -152,21 +152,21 @@ export function processDependencies(argv: YargsArgs) {
  * @param dependencies
  * @returns a regexp string
  */
-export function getDependencyRegExp(dependencies: string[]): RegExp | null {
+export function getDependencyRegExp(dependencies: string[]): RegExp[] | null {
   let regexp: string | null = null;
   if (!dependencies || !dependencies.length) {
     return regexp;
   }
 
   if (dependencies.includes('.')) {
-    return /\/node_modules\/(?!.+)/u;
+    return [/\/node_modules\/(?!.+)/u];
   }
 
   const paths: string[] = sanitizeDependencyPaths(dependencies);
   regexp = `/node_modules/(?!${paths.shift()}`;
   paths.forEach((path) => (regexp += `|${path}`));
   regexp += '/)';
-  return RegExp(regexp, 'u');
+  return [RegExp(regexp, 'u')];
 }
 
 /**
