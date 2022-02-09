@@ -208,7 +208,7 @@ describe('bundleUtils', () => {
       const transpilationMode = TranspilationModes.localAndDeps;
       const argv: Record<string, any> = { transpiledDeps, transpilationMode };
       processDependencies(argv as any);
-      expect(argv.options).toStrictEqual({});
+      expect(argv.babelifyOptions).toStrictEqual({});
     });
 
     it('will modify the passed in argv argument with a valid options object if dependencies are specified', () => {
@@ -216,7 +216,7 @@ describe('bundleUtils', () => {
       const transpilationMode = TranspilationModes.localAndDeps;
       const argv: Record<string, any> = { transpiledDeps, transpilationMode };
       processDependencies(argv as any);
-      expect(argv.options).toStrictEqual({
+      expect(argv.babelifyOptions).toStrictEqual({
         ignore: /\/node_modules\/(?!airswap|filecoin|pify\/)/u,
       });
     });
