@@ -6,7 +6,10 @@ import {
   ValidPermissionSpecification,
 } from '@metamask/snap-controllers';
 import { ethErrors } from 'eth-rpc-errors';
-import { NonEmptyArray } from '@metamask/snap-controllers/src/utils';
+import {
+  NonEmptyArray,
+  isValidJson,
+} from '@metamask/snap-controllers/src/utils';
 import { isPlainObject } from '../utils';
 
 const methodName = 'snap_manageState';
@@ -112,6 +115,14 @@ function getManageStateImplementation({
         if (!isPlainObject(newState)) {
           throw ethErrors.rpc.invalidParams({
             message: `Invalid ${method} "updateState" parameter: The new state must be a plain object.`,
+            data: {
+              receivedNewState:
+                typeof newState === 'undefined' ? 'undefined' : newState,
+            },
+          });
+        } else if (!isValidJson(newState)) {
+          throw ethErrors.rpc.invalidParams({
+            message: `Invalid ${method} "updateState" parameter: The new state must be JSON serializable.`,
             data: {
               receivedNewState:
                 typeof newState === 'undefined' ? 'undefined' : newState,
