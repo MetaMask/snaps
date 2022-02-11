@@ -41,6 +41,7 @@
         {
           "name": "endowments",
           "description": "A list of endowments to provide to SES",
+          "required": false,
           "schema": {
             "title": "Endowments",
             "description": "An array of the names of the endowments",

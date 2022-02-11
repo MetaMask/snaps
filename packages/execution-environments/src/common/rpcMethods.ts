@@ -1,5 +1,5 @@
 import { ExecuteSnap, Ping, SnapRpc } from '../__GENERATED__/openrpc';
-import { isJsonRpcRequest } from '../__GENERATED__/openrpc.guard';
+import { isEndowments, isJsonRpcRequest } from '../__GENERATED__/openrpc.guard';
 
 export type RpcMethodsMapping = {
   ping: Ping;
@@ -24,15 +24,11 @@ export function rpcMethods(
         throw new Error('sourceCode is not a string');
       }
 
-      if (!(endowments instanceof Array)) {
-        throw new Error('endowments is not an array');
-      }
-
-      endowments.forEach((endowment, i) => {
-        if (typeof endowment !== 'string') {
-          throw new Error(`endowment[${i}] is not a string`);
+      if (endowments !== undefined) {
+        if (!isEndowments(endowments)) {
+          throw new Error('endowment is not a proper Endowments object');
         }
-      });
+      }
 
       startSnap(snapName as string, sourceCode as string, endowments);
       return 'OK';

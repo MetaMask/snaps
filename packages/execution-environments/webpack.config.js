@@ -36,6 +36,10 @@ module.exports = (_, argv) => {
     },
     resolve: {
       extensions: ['.tsx', '.ts', '.js'],
+      alias: {
+        // Without this alias webpack tried to require ../../node_modules/stream/ which doesn't have Duplex, breaking the bundle
+        stream: 'stream-browserify',
+      },
     },
   };
   return config;

@@ -10,7 +10,7 @@
     "packages/*"
   ],
   "scripts": {
-    "setup": "yarn install && yarn allow-scripts",
+    "setup": "yarn install && yarn allow-scripts && yarn postinstall",
     "postinstall": "patch-package",
     "publish:all": "./scripts/publish-all.sh",
     "link-packages": "./scripts/link-packages.sh",

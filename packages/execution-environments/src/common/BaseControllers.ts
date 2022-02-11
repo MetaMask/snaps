@@ -1,9 +1,9 @@
-import { Duplex } from 'stream';
 import { MetaMaskInpageProvider } from '@metamask/inpage-provider';
 import { SnapProvider } from '@metamask/snap-types';
 import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
 /* eslint-disable-next-line import/no-unassigned-import */
 import 'ses';
+import { Duplex } from 'stream';
 import EEOpenRPCDocument from '../openrpc.json';
 import {
   Endowments,
@@ -150,7 +150,7 @@ export class BaseController {
   protected startSnap(
     snapName: string,
     sourceCode: string,
-    _endowments: Endowments,
+    _endowments?: Endowments,
   ) {
     console.log(`starting snap '${snapName}' in worker`);
     if (this.snapPromiseErrorHandler) {
@@ -178,7 +178,7 @@ export class BaseController {
       ...createTimeout(),
     };
 
-    _endowments.forEach((_endowment) => {
+    (_endowments || []).forEach((_endowment) => {
       if (!(_endowment in self)) {
         throw new Error(`Unknown endowment: "${_endowment}".`);
       }
