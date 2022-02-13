@@ -94,13 +94,27 @@ export function postProcess(
     processedString = stripComments(processedString);
   }
 
+  // Break up tokens that could be parsed as HTML comment terminators.
+  // The regular expressions below are written strangely so as to avoid the
+  // appearance of such tokens in our source code.
+  // Ref: https://github.com/endojs/endo/blob/70cc86eb400655e922413b99c38818d7b2e79da0/packages/ses/error-codes/SES_HTML_COMMENT_REJECTED.md
+  processedString = processedString.replace(
+    new RegExp(`<!${'--'}`, 'gu'),
+    '< !--',
+  );
+
+  processedString = processedString.replace(
+    new RegExp(`${'--'}>`, 'gu'),
+    '-- >',
+  );
+
   // stuff.eval(otherStuff) => (1, stuff.eval)(otherStuff)
   processedString = processedString.replace(
     /((?:\b[\w\d]*[\])]?\.)+eval)(\([^)]*\))/gu,
     '(1, $1)$2',
   );
 
-  // if we don't do the above, the below causes syntax errors if it encounters
+  // If we don't do the above, the below causes syntax errors if it encounters
   // things of the form: "something.eval(stuff)"
   // eval(stuff) => (1, eval)(stuff)
   processedString = processedString.replace(
