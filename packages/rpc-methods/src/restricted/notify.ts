@@ -98,22 +98,25 @@ function getValidatedParams(params: unknown): NotificationArgs {
     });
   }
 
-  const { prompt, description } = params[0];
+  const { type, message } = params[0];
 
-  if (!prompt || typeof prompt !== 'string' || prompt.length > 40) {
+  if (
+    !type ||
+    typeof type !== 'string' ||
+    !Object.values(NotificationType)
+      .map((n) => n.toString())
+      .includes(type)
+  ) {
     throw ethErrors.rpc.invalidParams({
-      message:
-        'Must specify a non-empty string "prompt" less than 40 characters long.',
+      message: 'Must specify a valid notification "type".',
     });
   }
 
-  if (
-    description &&
-    (typeof description !== 'string' || description.length > 140)
-  ) {
+  // @todo Choose sane message limit
+  if (!message || typeof message !== 'string' || message.length >= 200) {
     throw ethErrors.rpc.invalidParams({
       message:
-        '"description" must be a string no more than 140 characters long if specified.',
+        'Must specify a non-empty string "prompt" less than 200 characters long.',
     });
   }
 
