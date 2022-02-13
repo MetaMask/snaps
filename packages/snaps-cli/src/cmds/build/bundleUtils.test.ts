@@ -179,25 +179,27 @@ describe('bundleUtils', () => {
     });
 
     it('returns a valid regex statement for covering a wildcard', () => {
-      const exp = /\/node_modules\/(?!.+)/u;
-      expect(getDependencyRegExp(['.'])).toStrictEqual([exp]);
+      expect(getDependencyRegExp(['.'])).toStrictEqual(
+        /\/node_modules\/(?!.+)/u,
+      );
     });
 
     it('returns a valid regex statement for a single dependency', () => {
-      const exp = /\/node_modules\/(?!@airswap\/)/u;
-      expect(getDependencyRegExp(['@airswap'])).toStrictEqual([exp]);
+      expect(getDependencyRegExp(['@airswap'])).toStrictEqual(
+        /\/node_modules\/(?!@airswap\/)/u,
+      );
     });
 
     it('returns a valid regex statement for multiple dependencies', () => {
-      const exp =
-        /\/node_modules\/(?!@airswap|filecoin|@openzeppelin\/contracts\/)/u;
       expect(
         getDependencyRegExp([
           '@airswap',
           'filecoin',
           '@openzeppelin/contracts',
         ]),
-      ).toStrictEqual([exp]);
+      ).toStrictEqual(
+        /\/node_modules\/(?!@airswap|filecoin|@openzeppelin\/contracts\/)/u,
+      );
     });
   });
 
