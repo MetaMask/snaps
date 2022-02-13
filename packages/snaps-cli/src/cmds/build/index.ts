@@ -22,7 +22,17 @@ export = {
       .implies('writeManifest', 'manifest')
       .implies('transpiledDeps', 'transpilationMode')
       .middleware((argv) => {
-        processDependencies(argv as any);
+        if (!argv.transpilationMode) {
+          return;
+        }
+
+        if (argv.transpiledDeps && argv.transpilationMode !== 'localAndDeps') {
+          throw Error(
+            'Transpilation mode must be localAndDeps in order to transpile dependencies',
+          );
+        } else if (argv.transpiledDeps && argv.transpilationMode) {
+          processDependencies(argv as any);
+        }
       });
   },
   handler: (argv: YargsArgs) => build(argv),
