@@ -30,7 +30,7 @@ export = {
           throw Error(
             'Transpilation mode must be localAndDeps in order to transpile dependencies',
           );
-        } else if (argv.transpiledDeps && argv.transpilationMode) {
+        } else if (argv.transpiledDeps) {
           processDependencies(argv as any);
         }
       });
