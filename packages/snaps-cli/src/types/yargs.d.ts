@@ -15,6 +15,7 @@ type OptionalArguments<T = {}> = T & {
 type YargsArgs = {
   sourceMaps: boolean;
   stripComments: boolean;
+  transformHtmlComments: boolean;
   port: number;
   dist: string;
   src: string;
@@ -23,4 +24,5 @@ type YargsArgs = {
 
 type Option = {
   stripComments: boolean;
+  transformHtmlComments: boolean;
 } & Options;

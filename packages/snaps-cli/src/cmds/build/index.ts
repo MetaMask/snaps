@@ -16,6 +16,7 @@ export = {
       .option('src', builders.src)
       .option('stripComments', builders.stripComments)
       .option('transpilationMode', builders.transpilationMode)
+      .option('transformHtmlComments', builders.transformHtmlComments)
       .option('writeManifest', builders.writeManifest)
       .implies('writeManifest', 'manifest');
   },

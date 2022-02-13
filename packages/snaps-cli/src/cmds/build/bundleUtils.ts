@@ -55,6 +55,7 @@ export async function closeBundleStream({
     bundleStream.end(
       postProcess(bundleBuffer ? bundleBuffer.toString() : null, {
         stripComments: argv.stripComments,
+        transformHtmlComments: argv.transformHtmlComments,
       }) as string,
     );
 
@@ -100,15 +101,17 @@ export function postProcess(
   // Ref: https://github.com/endojs/endo/blob/70cc86eb400655e922413b99c38818d7b2e79da0/packages/ses/error-codes/SES_HTML_COMMENT_REJECTED.md
   // This aggressive hack may change the behavior of programs that contain HTML
   // comment terminators in string literals.
-  processedString = processedString.replace(
-    new RegExp(`<!${'--'}`, 'gu'),
-    '< !--',
-  );
+  if (options.transformHtmlComments) {
+    processedString = processedString.replace(
+      new RegExp(`<!${'--'}`, 'gu'),
+      '< !--',
+    );
 
-  processedString = processedString.replace(
-    new RegExp(`${'--'}>`, 'gu'),
-    '-- >',
-  );
+    processedString = processedString.replace(
+      new RegExp(`${'--'}>`, 'gu'),
+      '-- >',
+    );
+  }
 
   // stuff.eval(otherStuff) => (1, stuff.eval)(otherStuff)
   processedString = processedString.replace(

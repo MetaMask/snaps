@@ -144,7 +144,13 @@ describe('bundleUtils', () => {
         ['foo;\n<!--', 'foo;\n< !--'],
         ['-->\nbar', '-- >\nbar'],
       ].forEach(([input, output]) => {
-        expect(postProcess(input)).toStrictEqual(output);
+        expect(
+          postProcess(input, { transformHtmlComments: false }),
+        ).toStrictEqual(input);
+
+        expect(
+          postProcess(input, { transformHtmlComments: true }),
+        ).toStrictEqual(output);
       });
     });
 
