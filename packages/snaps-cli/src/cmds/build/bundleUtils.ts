@@ -98,6 +98,8 @@ export function postProcess(
   // The regular expressions below are written strangely so as to avoid the
   // appearance of such tokens in our source code.
   // Ref: https://github.com/endojs/endo/blob/70cc86eb400655e922413b99c38818d7b2e79da0/packages/ses/error-codes/SES_HTML_COMMENT_REJECTED.md
+  // This aggressive hack may change the behavior of programs that contain HTML
+  // comment terminators in string literals.
   processedString = processedString.replace(
     new RegExp(`<!${'--'}`, 'gu'),
     '< !--',
