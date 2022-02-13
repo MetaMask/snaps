@@ -32,7 +32,10 @@ export type NotifyMethodHooks = {
    * @param snapId - The ID of the Snap that created the confirmation.
    * @param args - The notification arguments.
    */
-  showNotification: (snapId: string, args: NotificationArgs) => Promise<void>;
+  showNotification: (
+    snapId: string,
+    args: NotificationArgs,
+  ) => Promise<boolean>;
 };
 
 type SpecificationBuilderOptions = {
@@ -71,7 +74,7 @@ export const notifyBuilder = Object.freeze({
 function getImplementation({ showNotification }: NotifyMethodHooks) {
   return async function confirmImplementation(
     args: RestrictedMethodOptions<[NotificationArgs]>,
-  ): Promise<void> {
+  ): Promise<boolean> {
     const {
       params,
       context: { origin },
