@@ -1,7 +1,11 @@
 import browserify from 'browserify';
 import { YargsArgs } from '../../types/yargs';
 import { TranspilationModes } from '../../builders';
-import { createBundleStream, closeBundleStream, processDependencies } from './bundleUtils';
+import {
+  createBundleStream,
+  closeBundleStream,
+  processDependencies,
+} from './bundleUtils';
 
 // We need to statically import all Browserify transforms and all Babel presets
 // and plugins, and calling `require` is the sanest way to do that.
