@@ -2,6 +2,7 @@ import { createWriteStream } from 'fs';
 import stripComments from '@nodefactory/strip-comments';
 import { writeError } from '../../utils/misc';
 import { Option, YargsArgs } from '../../types/yargs';
+import { TranspilationModes } from '../../builders';
 
 /**
  * Opens a stream to write the destination file path.
@@ -146,4 +147,59 @@ export function postProcess(
   }
 
   return processedString;
+}
+
+/**
+ * Processes dependencies and updates argv with an options object
+ * @param argv
+ */
+export function processDependencies(argv: YargsArgs) {
+  const { depsToTranspile, transpilationMode } = argv;
+  const babelifyOptions: Record<string, any> = {};
+  if (transpilationMode === TranspilationModes.localAndDeps) {
+    const regexpStr = getDependencyRegExp(depsToTranspile as string[]);
+    if (regexpStr !== null) {
+      babelifyOptions.ignore = [regexpStr];
+    }
+  }
+  return babelifyOptions;
+}
+
+/**
+ * Processes a string of space delimited dependencies into one regex string
+ * @param dependencies
+ * @returns a regexp string
+ */
+export function getDependencyRegExp(dependencies: string[]): RegExp | null {
+  let regexp: string | null = null;
+  if (!dependencies || dependencies.includes('.') || !dependencies.length) {
+    return regexp;
+  }
+  const paths: string[] = sanitizeDependencyPaths(dependencies);
+  regexp = `/node_modules/(?!${paths.shift()}`;
+  paths.forEach((path) => (regexp += `|${path}`));
+  regexp += '/)';
+  return RegExp(regexp, 'u');
+}
+
+/**
+ * Helper function remove any leading and trailing slashes from dependency list
+ * @param dependencies
+ * @returns an array of sanitized paths
+ */
+export function sanitizeDependencyPaths(dependencies: string[]): string[] {
+  return dependencies.map((dependency) => {
+    return dependency.replace(/^[/\\]+/u, '').replace(/[/\\]+$/u, '');
+  });
+}
+
+export function processInvalidTranspilation(argv: YargsArgs) {
+  if (
+    argv.depsToTranspile &&
+    argv.transpilationMode !== TranspilationModes.localAndDeps
+  ) {
+    throw new Error(
+      '"depsToTranspile" can only be specified if "transpilationMode" is set to "localAndDeps" .',
+    );
+  }
 }
