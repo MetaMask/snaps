@@ -14,10 +14,7 @@ export type SnapsCliBuilders = {
   readonly suppressWarnings: Readonly<Options>;
   readonly transpilationMode: Readonly<Options>;
   readonly transformHtmlComments: Readonly<Options>;
-<<<<<<< HEAD
   readonly depsToTranspile: Readonly<Options>;
-=======
->>>>>>> main
   readonly verboseErrors: Readonly<Options>;
   readonly writeManifest: Readonly<Options>;
 };
