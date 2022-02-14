@@ -13,6 +13,7 @@ export type SnapsCliBuilders = {
   readonly stripComments: Readonly<Options>;
   readonly suppressWarnings: Readonly<Options>;
   readonly transpilationMode: Readonly<Options>;
+  readonly transformHtmlComments: Readonly<Options>;
   readonly depsToTranspile: Readonly<Options>;
   readonly verboseErrors: Readonly<Options>;
   readonly writeManifest: Readonly<Options>;
@@ -127,8 +128,16 @@ const builders: SnapsCliBuilders = {
     describe:
       'Whether to use Babel to transpile all source code (including dependencies), local source code only, or nothing.',
     demandOption: false,
-    default: TranspilationModes.localAndDeps,
+    default: TranspilationModes.localOnly,
     choices: Object.values(TranspilationModes),
+  },
+
+  transformHtmlComments: {
+    type: 'boolean',
+    describe:
+      'Whether to break up HTML comment tokens wherever they appear in your source code.',
+    demandOption: true,
+    default: true,
   },
 
   depsToTranspile: {
