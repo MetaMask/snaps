@@ -12,7 +12,8 @@ export = {
       .option('dist', builders.dist)
       .option('outfileName', builders.outfileName)
       .option('sourceMaps', builders.sourceMaps)
-      .option('stripComments', builders.stripComments);
+      .option('stripComments', builders.stripComments)
+      .option('transformHtmlComments', builders.transformHtmlComments);
   },
   handler: (argv: YargsArgs) => watch(argv),
 };
