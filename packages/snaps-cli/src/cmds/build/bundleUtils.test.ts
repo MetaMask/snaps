@@ -139,6 +139,21 @@ describe('bundleUtils', () => {
       );
     });
 
+    it('breaks up HTML comment tokens', () => {
+      [
+        ['foo;\n<!--', 'foo;\n< !--'],
+        ['-->\nbar', '-- >\nbar'],
+      ].forEach(([input, output]) => {
+        expect(
+          postProcess(input, { transformHtmlComments: false }),
+        ).toStrictEqual(input);
+
+        expect(
+          postProcess(input, { transformHtmlComments: true }),
+        ).toStrictEqual(output);
+      });
+    });
+
     it('applies regeneratorRuntime hack', () => {
       expect(postProcess('(regeneratorRuntime)')).toStrictEqual(
         'var regeneratorRuntime;\n(regeneratorRuntime)',
