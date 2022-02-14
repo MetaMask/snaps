@@ -173,7 +173,7 @@ export function processDependencies(argv: YargsArgs) {
 export function getDependencyRegExp(dependencies: string[]): RegExp | null {
   let regexp: string | null = null;
   if (!dependencies || dependencies.includes('.') || !dependencies.length) {
-    return /\/node_modules\/(?!.+)/u;
+    return regexp;
   }
   const paths: string[] = sanitizeDependencyPaths(dependencies);
   regexp = `/node_modules/(?!${paths.shift()}`;
