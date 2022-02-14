@@ -549,6 +549,7 @@ export class SnapController extends BaseController<
   }
 
   _stopSnapsLastRequestPastMax() {
+<<<<<<< HEAD
     this._snapsRuntimeData.forEach(async (runtime, snapId) => {
       if (
         runtime.lastRequest &&
@@ -556,12 +557,19 @@ export class SnapController extends BaseController<
         timeSince(runtime.lastRequest) > this._maxIdleTime
       ) {
         this.stopSnap(snapId);
+=======
+    this._lastRequestMap.forEach(async (timestamp, snapId) => {
+      if (this._maxIdleTime && timeSince(timestamp) > this._maxIdleTime) {
+        console.log('max idle time is up stop', snapId);
+        this._stopSnap(snapId);
+>>>>>>> f8c5aba (wip wip)
       }
     });
   }
 
   _onUnresponsiveSnap(snapId: SnapId) {
     this._transitionSnapState(snapId, SnapStatusEvent.crash);
+    console.log('unresonsive snap', snapId);
     this._stopSnap(snapId, false);
     this.addSnapError({
       code: -32001, // just made this code up
@@ -574,6 +582,7 @@ export class SnapController extends BaseController<
 
   _onUnhandledSnapError(snapId: SnapId, error: ErrorJSON) {
     this._transitionSnapState(snapId, SnapStatusEvent.crash);
+    console.log('unhandled error', snapId);
     this._stopSnap(snapId, false);
     this.addSnapError(error);
   }
@@ -590,6 +599,7 @@ export class SnapController extends BaseController<
    * @param event - The event enum to use to transition
    */
   _transitionSnapState(snapId: SnapId, event: SnapStatusEvent) {
+    console.log('transitionSnapState', snapId, event);
     const snapStatus = this.state.snaps[snapId].status;
     let nextStatus =
       (snapStatusStateMachineConfig.states[snapStatus].on as any)[event] ??
@@ -654,14 +664,16 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The id of the Snap to disable.
    */
-  disableSnap(snapId: SnapId): void {
-    if (this.isRunning(snapId)) {
-      this.stopSnap(snapId);
-    }
-
+  disableSnap(snapId: SnapId): Promise<void> {
     this.update((state: any) => {
       state.snaps[snapId].enabled = false;
     });
+
+    if (this.isRunning(snapId)) {
+      return this.stopSnap(snapId);
+    }
+
+    return Promise.resolve();
   }
 
   /**
@@ -670,7 +682,7 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The id of the Snap to stop.
    */
-  stopSnap(snapId: SnapId): void {
+  stopSnap(snapId: SnapId): Promise<void> {
     const snap = this.get(snapId);
     if (!snap) {
       throw new Error(`Snap "${snapId}" not found.`);
@@ -680,8 +692,9 @@ export class SnapController extends BaseController<
       throw new Error(`Snap "${snapId}" already stopped.`);
     }
 
-    this._stopSnap(snapId);
-    console.log(`Snap "${snapId}" stopped.`);
+    return this._stopSnap(snapId).then(() => {
+      console.log(`Snap "${snapId}" stopped.`);
+    });
   }
 
   /**
@@ -705,8 +718,6 @@ export class SnapController extends BaseController<
       this._transitionSnapState(snapId, SnapStatusEvent.stop);
     }
 
-
-    // return Promise.resolve();
   }
 
   /**
@@ -1392,11 +1403,13 @@ export class SnapController extends BaseController<
 
       const timeoutPromise = new Promise((_resolve, reject) => {
         timeout = setTimeout(() => {
+          console.log('timeout promise stop', this._maxRequestTime);
           this._stopSnap(snapId);
           reject(new Error('The request timed out.'));
         }, this._maxRequestTime) as unknown as number;
       });
 
+      console.log('about to call promise race', handler, request);
       // This will either get the result or reject due to the timeout.
       const result = await Promise.race([
         handler(origin, request),
