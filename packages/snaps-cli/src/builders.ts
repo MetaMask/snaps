@@ -13,7 +13,7 @@ export type SnapsCliBuilders = {
   readonly stripComments: Readonly<Options>;
   readonly suppressWarnings: Readonly<Options>;
   readonly transpilationMode: Readonly<Options>;
-  readonly transpiledDeps: Readonly<Options>;
+  readonly depsToTranspile: Readonly<Options>;
   readonly verboseErrors: Readonly<Options>;
   readonly writeManifest: Readonly<Options>;
 };
@@ -131,11 +131,10 @@ const builders: SnapsCliBuilders = {
     choices: Object.values(TranspilationModes),
   },
 
-  transpiledDeps: {
+  depsToTranspile: {
     type: 'array',
     describe: 'Transpile only the listed dependencies.',
     demandOption: false,
-    default: '.',
   },
 
   verboseErrors: {

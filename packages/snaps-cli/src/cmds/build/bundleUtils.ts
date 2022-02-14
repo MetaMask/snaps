@@ -134,17 +134,16 @@ export function postProcess(
  * Processes dependencies and updates argv with an options object
  * @param argv
  */
-
 export function processDependencies(argv: YargsArgs) {
-  const { transpiledDeps, transpilationMode } = argv;
+  const { depsToTranspile, transpilationMode } = argv;
   const babelifyOptions: Record<string, any> = {};
   if (transpilationMode === TranspilationModes.localAndDeps) {
-    const regexpStr = getDependencyRegExp(transpiledDeps as string[]);
+    const regexpStr = getDependencyRegExp(depsToTranspile as string[]);
     if (regexpStr !== null) {
       babelifyOptions.ignore = [regexpStr];
     }
   }
-  argv.babelifyOptions = babelifyOptions;
+  return babelifyOptions;
 }
 
 /**
@@ -154,14 +153,9 @@ export function processDependencies(argv: YargsArgs) {
  */
 export function getDependencyRegExp(dependencies: string[]): RegExp | null {
   let regexp: string | null = null;
-  if (!dependencies || !dependencies.length) {
-    return regexp;
-  }
-
-  if (dependencies.includes('.')) {
+  if (!dependencies || dependencies.includes('.') || !dependencies.length) {
     return /\/node_modules\/(?!.+)/u;
   }
-
   const paths: string[] = sanitizeDependencyPaths(dependencies);
   regexp = `/node_modules/(?!${paths.shift()}`;
   paths.forEach((path) => (regexp += `|${path}`));
@@ -176,7 +170,7 @@ export function getDependencyRegExp(dependencies: string[]): RegExp | null {
  */
 export function sanitizeDependencyPaths(dependencies: string[]): string[] {
   if (!dependencies.length) {
-    return [];
+    return ['.'];
   }
   return dependencies.map((dependency) => {
     return dependency.replace(/^[/\\]+/u, '').replace(/[/\\]+$/u, '');

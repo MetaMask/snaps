@@ -168,14 +168,14 @@ describe('bundleUtils', () => {
       ]);
     });
 
-    it("properly returns an empty list if there aren't any dependencies", () => {
-      expect(sanitizeDependencyPaths([])).toStrictEqual([]);
+    it("properly returns a list with a wildcard `.` if there aren't any dependencies", () => {
+      expect(sanitizeDependencyPaths([])).toStrictEqual(['.']);
     });
   });
 
   describe('getDependencyRegExp', () => {
-    it("returns null if there aren't any dependencies", () => {
-      expect(getDependencyRegExp([])).toBeNull();
+    it("returns a wildcard regex statement if there aren't any dependencies", () => {
+      expect(getDependencyRegExp([])).toStrictEqual(/\/node_modules\/(?!.+)/u);
     });
 
     it('returns a valid regex statement for covering a wildcard', () => {
@@ -204,20 +204,22 @@ describe('bundleUtils', () => {
   });
 
   describe('processDependencies', () => {
-    it('will modify the passed in argv argument with an empty option value if dependencies are not defined', () => {
-      const transpiledDeps = undefined;
+    it('will return an object that with a wildcard ignore value if dependencies are not defined', () => {
+      const depsToTranspile = undefined;
       const transpilationMode = TranspilationModes.localAndDeps;
-      const argv: Record<string, any> = { transpiledDeps, transpilationMode };
-      processDependencies(argv as any);
-      expect(argv.babelifyOptions).toStrictEqual({});
+      const argv: Record<string, any> = { depsToTranspile, transpilationMode };
+      const babelifyOptions = processDependencies(argv as any);
+      expect(babelifyOptions).toStrictEqual({
+        ignore: [/\/node_modules\/(?!.+)/u],
+      });
     });
 
-    it('will modify the passed in argv argument with a valid options object if dependencies are specified', () => {
-      const transpiledDeps = ['airswap', 'filecoin', 'pify'];
+    it('will return an object with an ignore value if dependencies are specified', () => {
+      const depsToTranspile = ['airswap', 'filecoin', 'pify'];
       const transpilationMode = TranspilationModes.localAndDeps;
-      const argv: Record<string, any> = { transpiledDeps, transpilationMode };
-      processDependencies(argv as any);
-      expect(argv.babelifyOptions).toStrictEqual({
+      const argv: Record<string, any> = { depsToTranspile, transpilationMode };
+      const babelifyOptions = processDependencies(argv as any);
+      expect(babelifyOptions).toStrictEqual({
         ignore: [/\/node_modules\/(?!airswap|filecoin|pify\/)/u],
       });
     });
