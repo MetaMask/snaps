@@ -1,7 +1,7 @@
 import browserify from 'browserify';
 import { TranspilationModes } from '../../builders';
 import { bundle } from './bundle';
-import * as bundleUtils from './bundleUtils';
+import * as bundleUtils from './utils';
 
 jest.mock('browserify');
 jest.mock('babelify', () => 'mockBabelify');

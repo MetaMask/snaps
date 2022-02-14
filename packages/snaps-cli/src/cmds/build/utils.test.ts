@@ -9,7 +9,8 @@ import {
   sanitizeDependencyPaths,
   getDependencyRegExp,
   processDependencies,
-} from './bundleUtils';
+  processInvalidTranspilation,
+} from './utils';
 
 jest.mock('fs', () => ({
   createWriteStream: jest.fn(),
@@ -27,7 +28,7 @@ function getMockStream(): MockStream {
   return stream;
 }
 
-describe('bundleUtils', () => {
+describe('utils', () => {
   describe('createBundleStream', () => {
     let mockStream: MockStream;
 
@@ -167,10 +168,6 @@ describe('bundleUtils', () => {
         'promisify',
       ]);
     });
-
-    it("properly returns a list with a wildcard `.` if there aren't any dependencies", () => {
-      expect(sanitizeDependencyPaths([])).toStrictEqual(['.']);
-    });
   });
 
   describe('getDependencyRegExp', () => {
@@ -222,6 +219,17 @@ describe('bundleUtils', () => {
       expect(babelifyOptions).toStrictEqual({
         ignore: [/\/node_modules\/(?!airswap|filecoin|pify\/)/u],
       });
+    });
+  });
+
+  describe('processInvalidTranspilation', () => {
+    it('will throw an error if argv has a depsToTranspile property and a transpilationMode of anything other than localAndDeps', () => {
+      const depsToTranspile = ['airswap', 'filecoin', 'pify'];
+      const transpilationMode = TranspilationModes.localOnly;
+      const argv: Record<string, any> = { depsToTranspile, transpilationMode };
+      expect(() => processInvalidTranspilation(argv as any)).toThrow(
+        '"depsToTranspile" can only be specified if "transpilationMode" is set to "localAndDeps" .',
+      );
     });
   });
 });

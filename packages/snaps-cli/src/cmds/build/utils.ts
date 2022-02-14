@@ -169,10 +169,18 @@ export function getDependencyRegExp(dependencies: string[]): RegExp | null {
  * @returns an array of sanitized paths
  */
 export function sanitizeDependencyPaths(dependencies: string[]): string[] {
-  if (!dependencies.length) {
-    return ['.'];
-  }
   return dependencies.map((dependency) => {
     return dependency.replace(/^[/\\]+/u, '').replace(/[/\\]+$/u, '');
   });
+}
+
+export function processInvalidTranspilation(argv: YargsArgs) {
+  if (
+    argv.depsToTranspile &&
+    argv.transpilationMode !== TranspilationModes.localAndDeps
+  ) {
+    throw new Error(
+      '"depsToTranspile" can only be specified if "transpilationMode" is set to "localAndDeps" .',
+    );
+  }
 }

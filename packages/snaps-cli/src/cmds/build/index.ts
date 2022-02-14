@@ -2,6 +2,7 @@ import yargs from 'yargs';
 import builders from '../../builders';
 import { YargsArgs } from '../../types/yargs';
 import { build } from './buildHandler';
+import { processInvalidTranspilation } from './utils';
 
 export = {
   command: ['build', 'b'],
@@ -20,13 +21,7 @@ export = {
       .option('writeManifest', builders.writeManifest)
       .implies('writeManifest', 'manifest')
       .implies('depsToTranspile', 'transpilationMode')
-      .middleware((argv) => {
-        if (argv.depsToTranspile && argv.transpilationMode !== 'localAndDeps') {
-          throw Error(
-            '"transpilationMode" must be "localAndDeps" in order to transpile dependencies.',
-          );
-        }
-      });
+      .middleware((argv) => processInvalidTranspilation(argv as any));
   },
   handler: (argv: YargsArgs) => build(argv),
 };

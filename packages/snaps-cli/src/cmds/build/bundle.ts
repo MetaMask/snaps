@@ -5,7 +5,7 @@ import {
   createBundleStream,
   closeBundleStream,
   processDependencies,
-} from './bundleUtils';
+} from './utils';
 
 // We need to statically import all Browserify transforms and all Babel presets
 // and plugins, and calling `require` is the sanest way to do that.
