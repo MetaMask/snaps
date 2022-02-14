@@ -187,11 +187,11 @@ describe('utils', () => {
 
   describe('getDependencyRegExp', () => {
     it("returns null if there aren't any dependencies", () => {
-      expect(getDependencyRegExp([])).toBeNull;
+      expect(getDependencyRegExp([])).toBeNull();
     });
 
     it('returns null for covering a wildcard', () => {
-      expect(getDependencyRegExp(['.'])).toBeNull;
+      expect(getDependencyRegExp(['.'])).toBeNull();
     });
 
     it('returns a valid regex statement for a single dependency', () => {
@@ -244,4 +244,3 @@ describe('utils', () => {
     });
   });
 });
-
