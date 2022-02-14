@@ -4,12 +4,10 @@ import {
   PermissionType,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
+  isValidJson,
+  NonEmptyArray,
 } from '@metamask/snap-controllers';
 import { ethErrors } from 'eth-rpc-errors';
-import {
-  NonEmptyArray,
-  isValidJson,
-} from '@metamask/snap-controllers/src/utils';
 import { isPlainObject } from '../utils';
 
 const methodName = 'snap_manageState';
