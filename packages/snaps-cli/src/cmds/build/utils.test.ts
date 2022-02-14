@@ -186,14 +186,12 @@ describe('utils', () => {
   });
 
   describe('getDependencyRegExp', () => {
-    it("returns a wildcard regex statement if there aren't any dependencies", () => {
-      expect(getDependencyRegExp([])).toStrictEqual(/\/node_modules\/(?!.+)/u);
+    it("returns null if there aren't any dependencies", () => {
+      expect(getDependencyRegExp([])).toBeNull;
     });
 
-    it('returns a valid regex statement for covering a wildcard', () => {
-      expect(getDependencyRegExp(['.'])).toStrictEqual(
-        /\/node_modules\/(?!.+)/u,
-      );
+    it('returns null for covering a wildcard', () => {
+      expect(getDependencyRegExp(['.'])).toBeNull;
     });
 
     it('returns a valid regex statement for a single dependency', () => {
@@ -216,14 +214,12 @@ describe('utils', () => {
   });
 
   describe('processDependencies', () => {
-    it('will return an object that with a wildcard ignore value if dependencies are not defined', () => {
+    it('will return an empty object if dependencies are not defined', () => {
       const depsToTranspile = undefined;
       const transpilationMode = TranspilationModes.localAndDeps;
       const argv: Record<string, any> = { depsToTranspile, transpilationMode };
       const babelifyOptions = processDependencies(argv as any);
-      expect(babelifyOptions).toStrictEqual({
-        ignore: [/\/node_modules\/(?!.+)/u],
-      });
+      expect(babelifyOptions).toStrictEqual({});
     });
 
     it('will return an object with an ignore value if dependencies are specified', () => {
@@ -248,3 +244,4 @@ describe('utils', () => {
     });
   });
 });
+
