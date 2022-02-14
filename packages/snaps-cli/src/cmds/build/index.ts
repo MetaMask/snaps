@@ -2,6 +2,7 @@ import yargs from 'yargs';
 import builders from '../../builders';
 import { YargsArgs } from '../../types/yargs';
 import { build } from './buildHandler';
+import { processInvalidTranspilation } from './utils';
 
 export = {
   command: ['build', 'b'],
@@ -16,9 +17,12 @@ export = {
       .option('src', builders.src)
       .option('stripComments', builders.stripComments)
       .option('transpilationMode', builders.transpilationMode)
+      .option('depsToTranspile', builders.depsToTranspile)
       .option('transformHtmlComments', builders.transformHtmlComments)
       .option('writeManifest', builders.writeManifest)
-      .implies('writeManifest', 'manifest');
+      .implies('writeManifest', 'manifest')
+      .implies('depsToTranspile', 'transpilationMode')
+      .middleware((argv) => processInvalidTranspilation(argv as any));
   },
   handler: (argv: YargsArgs) => build(argv),
 };
