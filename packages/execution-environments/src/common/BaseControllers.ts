@@ -1,9 +1,9 @@
+import { Duplex } from 'stream';
 import { MetaMaskInpageProvider } from '@metamask/inpage-provider';
 import { SnapProvider } from '@metamask/snap-types';
 import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
 /* eslint-disable-next-line import/no-unassigned-import */
 import 'ses';
-import { Duplex } from 'stream';
 import EEOpenRPCDocument from '../openrpc.json';
 import {
   Endowments,
