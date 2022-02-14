@@ -29,7 +29,7 @@ type NotificationArgs = {
 export type NotifyMethodHooks = {
   // @todo Figure out if some of this exists already in the extension
   /**
-   * @param snapId - The ID of the Snap that created the confirmation.
+   * @param snapId - The ID of the Snap that created the notification.
    * @param args - The notification arguments.
    */
   showNotification: (
@@ -72,7 +72,7 @@ export const notifyBuilder = Object.freeze({
 } as const);
 
 function getImplementation({ showNotification }: NotifyMethodHooks) {
-  return async function confirmImplementation(
+  return async function implementation(
     args: RestrictedMethodOptions<[NotificationArgs]>,
   ): Promise<boolean> {
     const {
@@ -85,11 +85,11 @@ function getImplementation({ showNotification }: NotifyMethodHooks) {
 }
 
 /**
- * Validates the confirm method `params` and returns them cast to the correct
+ * Validates the notify method `params` and returns them cast to the correct
  * type. Throws if validation fails.
  *
  * @param params - The unvalidated params object from the method request.
- * @returns The validated confirm method parameter object.
+ * @returns The validated method parameter object.
  */
 function getValidatedParams(params: unknown): NotificationArgs {
   if (!Array.isArray(params) || !isPlainObject(params[0])) {
@@ -116,7 +116,7 @@ function getValidatedParams(params: unknown): NotificationArgs {
   if (!message || typeof message !== 'string' || message.length >= 200) {
     throw ethErrors.rpc.invalidParams({
       message:
-        'Must specify a non-empty string "prompt" less than 200 characters long.',
+        'Must specify a non-empty string "message" less than 200 characters long.',
     });
   }
 
