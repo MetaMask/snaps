@@ -4,3 +4,4 @@ export * from './resource';
 export * from './services';
 export * from './snaps';
 export * from './subject-metadata';
+export * from './utils';
