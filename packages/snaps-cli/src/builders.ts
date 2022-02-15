@@ -113,7 +113,7 @@ const builders: SnapsCliBuilders = {
     describe: 'Whether to remove code comments from the build output',
     type: 'boolean',
     demandOption: false,
-    default: false,
+    default: true,
   },
 
   suppressWarnings: {
