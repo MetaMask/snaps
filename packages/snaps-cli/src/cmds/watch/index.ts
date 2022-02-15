@@ -1,6 +1,7 @@
 import yargs from 'yargs';
 import builders from '../../builders';
 import { YargsArgs } from '../../types/yargs';
+import { processInvalidTranspilation } from '../build/utils';
 import { watch } from './watchHandler';
 
 export = {
@@ -15,9 +16,13 @@ export = {
       .option('sourceMaps', builders.sourceMaps)
       .option('stripComments', builders.stripComments)
       .option('transformHtmlComments', builders.transformHtmlComments)
+      .option('transpilationMode', builders.transpilationMode)
+      .option('depsToTranspile', builders.depsToTranspile)
       .option('manifest', builders.manifest)
       .option('writeManifest', builders.writeManifest)
-      .implies('writeManifest', 'manifest');
+      .implies('writeManifest', 'manifest')
+      .implies('depsToTranspile', 'transpilationMode')
+      .middleware((argv) => processInvalidTranspilation(argv as any));
   },
   handler: (argv: YargsArgs) => watch(argv),
 };
