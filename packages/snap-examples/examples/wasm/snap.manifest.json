@@ -1,0 +1,24 @@
+{
+  "version": "0.0.0",
+  "description": "An example Snap that uses WebAssembly.",
+  "proposedName": "wasm",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps-skunkworks.git"
+  },
+  "source": {
+    "shasum": "tTbdQWLR9c+Kg9BszBb3x7SDlEQdD8JDSOJIeqKl22c=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "packageName": "wasm",
+        "registry": "https://registry.npmjs.org"
+      }
+    }
+  },
+  "initialPermissions": {
+    "endowment:network-access": {},
+    "endowment:wasm": {}
+  },
+  "manifestVersion": "0.1"
+}

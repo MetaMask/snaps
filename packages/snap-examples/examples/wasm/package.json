@@ -1,0 +1,22 @@
+{
+  "name": "wasm",
+  "version": "0.0.0",
+  "private": true,
+  "description": "An example Snap that uses WebAssembly.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps-skunkworks.git"
+  },
+  "license": "ISC",
+  "main": "src/index.js",
+  "files": [
+    "dist/",
+    "snap.manifest.json"
+  ],
+  "scripts": {
+    "test": "echo 'Error: no test specified' && exit 1"
+  },
+  "dependencies": {
+    "eth-rpc-errors": "^4.0.3"
+  }
+}

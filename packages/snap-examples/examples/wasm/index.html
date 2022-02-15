@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+  </head>
+    <title>WebAssembly Example</title>
+  </head>
+
+  <body>
+    <h1>WebAssembly Snap Example!</h1>
+    <details>
+      <summary>Instructions</summary>
+      <ul>
+        <li>First, click "Connect". Then, try out the other buttons!</li>
+        <li>Please note that:</li>
+        <ul>
+          <li>
+            The <code>snap.manifest.json</code> and <code>package.json</code> must be located in located in the server root directory.
+          </li>
+          <li>
+            The Snap bundle must be hosted at the location specified by the <code>location</code> field of <code>snap.manifest.json</code>.
+          </li>
+        </ul>
+      </ul>
+    </details>
+    <br/>
+
+    <button class="connect">Connect</button>
+    <br>
+
+    <button class="callWasm">Call WebAssembly Function</button>
+  </body>
+
+  <script>
+    const snapId = `local:${window.location.href}`;
+
+    const connectButton = document.querySelector('button.connect')
+    const wasmButton = document.querySelector('button.callWasm')
+
+    connectButton.addEventListener('click', connect)
+    wasmButton.addEventListener('click', callWasm)
+
+    async function connect () {
+      await ethereum.request({
+        method: 'wallet_enable',
+        params: [{
+          wallet_snap: { [snapId]: {} },
+        }]
+      })
+    }
+
+    async function callWasm () {
+      try {
+        const response = await ethereum.request({
+          method: 'wallet_invokeSnap',
+          params: [snapId, {
+            method: 'callWasm'
+          }]
+        })
+
+        alert('Received: ' + JSON.stringify(response))
+      } catch (err) {
+        console.error(err)
+        alert('Problem happened: ' + err.message || err)
+      }
+    }
+  </script>
+</html>
