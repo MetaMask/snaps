@@ -54,27 +54,25 @@ const initializeWasm = async () => {
 };
 
 wallet.registerRpcMessageHandler(async (_originString, requestObject) => {
+  const { method, params } = requestObject;
+
   if (!wasm) {
     await initializeWasm();
   }
 
-  switch (requestObject.method) {
-    case 'callWasm':
-      return wasm.instance.exports.main();
-
-    // TODO: Do something with simple.wasm
-
-    default:
-      throw ethErrors.rpc.methodNotFound({ data: { request: requestObject } });
+  if (wasm.instance.exports[method]) {
+    return wasm.instance.exports[method](...params);
   }
+
+  throw ethErrors.rpc.methodNotFound({ data: { request: requestObject } });
 });
 
 // kudos: https://stackoverflow.com/a/71083193
 function arrayBufferFromHex(hexString) {
   return new Uint8Array(
     hexString
-      .replace(/^0x/i, '')
-      .match(/../g)
+      .replace(/^0x/iu, '')
+      .match(/../gu)
       .map((byte) => parseInt(byte, 16)),
   ).buffer;
 }
