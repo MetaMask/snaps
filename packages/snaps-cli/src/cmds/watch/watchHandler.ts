@@ -47,11 +47,10 @@ export async function watch(argv: YargsArgs): Promise<void> {
       (str: string) => str !== '.' && str.startsWith('.'),
     ],
   });
-  let res;
   watcher
     .on('ready', async () => {
-      res = await bundle(src, outfilePath, argv);
-      if (res && argv.eval) {
+      await bundle(src, outfilePath, argv);
+      if (argv.eval) {
         await snapEval({ ...argv, bundle: outfilePath });
       }
 
@@ -61,8 +60,8 @@ export async function watch(argv: YargsArgs): Promise<void> {
     })
     .on('add', async (path: string) => {
       console.log(`File added: ${path}`);
-      res = await bundle(src, outfilePath, argv);
-      if (res && argv.eval) {
+      await bundle(src, outfilePath, argv);
+      if (argv.eval) {
         await snapEval({ ...argv, bundle: outfilePath });
       }
 
@@ -72,8 +71,8 @@ export async function watch(argv: YargsArgs): Promise<void> {
     })
     .on('change', async (path: string) => {
       console.log(`File changed: ${path}`);
-      res = await bundle(src, outfilePath, argv);
-      if (res && argv.eval) {
+      await bundle(src, outfilePath, argv);
+      if (argv.eval) {
         await snapEval({ ...argv, bundle: outfilePath });
       }
 
