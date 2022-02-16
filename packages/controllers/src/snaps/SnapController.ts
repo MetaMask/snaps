@@ -14,7 +14,7 @@ import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import type { Patch } from 'immer';
 import { Json } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
-import isValidSemver from 'semver/functions/valid';
+import semver from 'semver';
 import {
   GetEndowments,
   GetPermissions,
@@ -921,13 +921,13 @@ export class SnapController extends BaseController<
 
     await Promise.all(
       Object.entries(requestedSnaps).map(
-        async ([snapId, { version = 'latest' }]) => {
+        async ([snapId, { version = '*' }]) => {
           const permissionName = SNAP_PREFIX + snapId;
 
           if (!isValidSnapVersion(version)) {
             result[snapId] = {
               error: ethErrors.rpc.invalidParams(
-                `The "version" field must be a valid SemVer version or the string "latest" if specified. Received: "${version}".`,
+                `The "version" field must be a valid SemVer version if specified. Received: "${version}".`,
               ),
             };
             return;
@@ -973,7 +973,15 @@ export class SnapController extends BaseController<
   ): Promise<ProcessSnapResult> {
     const existingSnap = this.getTruncated(snapId);
     if (existingSnap) {
-      return existingSnap;
+      if (semver.satisfies(existingSnap.version, version)) {
+        return existingSnap;
+      } else {
+        return {
+          error: ethErrors.rpc.invalidParams(
+            `Version mismatch with already installed snap. ${snapId}@${existingSnap.version} doesn't satisfy requested version ${version}`,
+          ),
+        };
+      }
     }
 
     try {
@@ -1114,7 +1122,7 @@ export class SnapController extends BaseController<
    * @returns The resulting snap object.
    */
   private async _add(args: ValidatedAddSnapArgs): Promise<Snap> {
-    const { id: snapId, version } = args;
+    const { id: snapId, version = '*' } = args;
 
     let manifest: SnapManifest, sourceCode: string, svgIcon: string | undefined;
     if ('manifest' in args) {
@@ -1126,6 +1134,12 @@ export class SnapController extends BaseController<
         snapId,
         version,
       ));
+    }
+
+    if (!semver.satisfies(manifest.version, version)) {
+      throw new Error(
+        `Version mismatch. Manifest for ${snapId} specifies version ${manifest.version} which doesn't satisfy requested version range ${version}`,
+      );
     }
 
     if (typeof sourceCode !== 'string' || sourceCode.length === 0) {
@@ -1416,8 +1430,5 @@ export class SnapController extends BaseController<
 }
 
 function isValidSnapVersion(version: unknown): version is string {
-  return Boolean(
-    typeof version === 'string' &&
-      (version === 'latest' || isValidSemver(version)),
-  );
+  return Boolean(typeof version === 'string' && semver.valid(version));
 }
