@@ -1,8 +1,8 @@
 import { executeLockdown } from '../common/lockdown/lockdown';
 import { executeLockdownMore } from '../common/lockdown/lockdown-more';
-import { IFrameController } from './IFrameController';
+import { IFrameSnapExecutor } from './IFrameSnapExecutor';
 
 executeLockdown();
 executeLockdownMore();
 
-IFrameController.initialize();
+IFrameSnapExecutor.initialize();

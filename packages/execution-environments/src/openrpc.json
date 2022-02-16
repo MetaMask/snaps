@@ -130,6 +130,7 @@
             {
               "name": "request",
               "value": {
+                "jsonrpc": "2.0",
                 "method": "hello",
                 "params": [],
                 "id": 1

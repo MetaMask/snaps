@@ -1,10 +1,10 @@
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import pump from 'pump';
-import { BaseController } from '../common/BaseControllers';
+import { BaseSnapExecutor } from '../common/BaseSnapExecutor';
 import { SNAP_STREAM_NAMES } from '../common/enums';
 
-export class IFrameController extends BaseController {
+export class IFrameSnapExecutor extends BaseSnapExecutor {
   static initialize() {
     console.log('Worker: Connecting to parent.');
 
@@ -25,6 +25,6 @@ export class IFrameController extends BaseController {
     const commandStream = mux.createStream(SNAP_STREAM_NAMES.COMMAND);
     const rpcStream = mux.createStream(SNAP_STREAM_NAMES.JSON_RPC);
 
-    return new IFrameController(commandStream, rpcStream);
+    return new IFrameSnapExecutor(commandStream, rpcStream);
   }
 }

@@ -1,5 +1,5 @@
-/* eslint-disable-next-line import/no-unassigned-import */
-import 'ses';
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
+/// <reference path="../../../../../node_modules/ses/index.d.ts" />
 
 export function executeLockdown() {
   try {

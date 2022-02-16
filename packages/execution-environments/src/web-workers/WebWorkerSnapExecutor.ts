@@ -1,10 +1,10 @@
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { WorkerPostMessageStream } from '@metamask/post-message-stream';
 import pump from 'pump';
-import { BaseController } from '../common/BaseControllers';
+import { BaseSnapExecutor } from '../common/BaseSnapExecutor';
 import { SNAP_STREAM_NAMES } from '../common/enums';
 
-export class WebWorkerController extends BaseController {
+export class WebWorkerSnapExecutor extends BaseSnapExecutor {
   static initalize() {
     console.log('Worker: Connecting to parent.');
 
@@ -19,6 +19,6 @@ export class WebWorkerController extends BaseController {
 
     const commandStream = mux.createStream(SNAP_STREAM_NAMES.COMMAND);
     const rpcStream = mux.createStream(SNAP_STREAM_NAMES.JSON_RPC) as any;
-    return new WebWorkerController(commandStream, rpcStream);
+    return new WebWorkerSnapExecutor(commandStream, rpcStream);
   }
 }
