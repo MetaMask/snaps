@@ -710,7 +710,6 @@ export class SnapController extends BaseController<
     if (setNotRunning) {
       this._transitionSnapState(snapId, SnapStatusEvent.stop);
     }
-
   }
 
   /**
