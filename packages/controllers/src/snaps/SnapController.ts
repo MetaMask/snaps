@@ -549,20 +549,13 @@ export class SnapController extends BaseController<
   }
 
   _stopSnapsLastRequestPastMax() {
-<<<<<<< HEAD
     this._snapsRuntimeData.forEach(async (runtime, snapId) => {
       if (
         runtime.lastRequest &&
         this._maxIdleTime &&
         timeSince(runtime.lastRequest) > this._maxIdleTime
       ) {
-        this.stopSnap(snapId);
-=======
-    this._lastRequestMap.forEach(async (timestamp, snapId) => {
-      if (this._maxIdleTime && timeSince(timestamp) > this._maxIdleTime) {
-        console.log('max idle time is up stop', snapId);
         this._stopSnap(snapId);
->>>>>>> f8c5aba (wip wip)
       }
     });
   }
@@ -705,7 +698,7 @@ export class SnapController extends BaseController<
    * @param setNotRunning - Whether to mark the snap as not running.
    * Should only be set to false if the snap is about to be deleted.
    */
-  private _stopSnap(snapId: SnapId, setNotRunning = true): void {
+  private async _stopSnap(snapId: SnapId, setNotRunning = true): Promise<void> {
     const runtime = this._getSnapRuntimeData(snapId);
     runtime.lastRequest = null;
     this._closeAllConnections(snapId);
@@ -882,12 +875,8 @@ export class SnapController extends BaseController<
 
     this.update((state: any) => {
       snapIds.forEach((snapId) => {
-<<<<<<< HEAD
         this._stopSnap(snapId, false);
         this._snapsRuntimeData.delete(snapId);
-=======
-        this._rpcHandlerMap.delete(snapId);
->>>>>>> 1808470 (Added failing test for removing stopped snaps)
         delete state.snaps[snapId];
         delete state.snapStates[snapId];
         this.messagingSystem.publish(`SnapController:snapRemoved`, snapId);

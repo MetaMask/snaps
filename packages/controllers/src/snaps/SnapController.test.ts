@@ -1042,7 +1042,7 @@ describe('SnapController', () => {
         messenger,
         idleTimeCheckInterval: 30000,
         maxIdleTime: 160000,
-        maxRequestTime: 5000,
+        maxRequestTime: 1000,
       }),
     );
 
@@ -1066,7 +1066,7 @@ describe('SnapController', () => {
         return new Promise((resolve) => {
           setTimeout(() => {
             resolve(undefined);
-          }, 300);
+          }, 30000);
         });
       };
     };
