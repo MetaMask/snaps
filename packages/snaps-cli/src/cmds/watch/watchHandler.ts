@@ -8,10 +8,7 @@ import {
   validateFilePath,
   validateOutfileName,
 } from '../../utils';
-import { snapEval } from '../eval/evalHandler';
-import { manifestHandler } from '../manifest/manifestHandler';
 import { processEval, processManifestCheck } from './utils';
-
 
 /**
  * Watch a directory and its subdirectories for changes, and build when files
