@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.0]
+### Uncategorized
+- Fix snap controller utils export ([#239](https://github.com/MetaMask/snaps-skunkworks/pull/239))
+- Snap Runtime Management refactor ([#229](https://github.com/MetaMask/snaps-skunkworks/pull/229))
+- Disable caching when fetching local snaps ([#227](https://github.com/MetaMask/snaps-skunkworks/pull/227))
+
 ## [0.9.0]
 ### Added
 - Make `SnapController` npm registry configurable ([#200](https://github.com/MetaMask/snaps-skunkworks/pull/200))
@@ -167,7 +173,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.9.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.0...HEAD
+[0.10.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.8.1...v0.9.0
 [0.8.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.8.0...v0.8.1
 [0.8.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.7.0...v0.8.0

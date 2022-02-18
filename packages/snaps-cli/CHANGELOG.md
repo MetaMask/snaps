@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.0]
+### Uncategorized
+- Ensure watch parity ([#241](https://github.com/MetaMask/snaps-skunkworks/pull/241))
+- Update dead link to new location ([#240](https://github.com/MetaMask/snaps-skunkworks/pull/240))
+- Remove comments by default ([#243](https://github.com/MetaMask/snaps-skunkworks/pull/243))
+- Update CLI with transpiledDeps flag ([#221](https://github.com/MetaMask/snaps-skunkworks/pull/221))
+- Add optional HTML comment transform ([#237](https://github.com/MetaMask/snaps-skunkworks/pull/237))
+- Add snaps-cli usage instructions to its readme ([#228](https://github.com/MetaMask/snaps-skunkworks/pull/228))
+
 ## [0.9.0]
 ### Added
 - Transpilation configuration ([#213](https://github.com/MetaMask/snaps-skunkworks/pull/213))
@@ -98,7 +107,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Example snaps ([#72](https://github.com/MetaMask/snaps-skunkworks/pull/72))
   - The examples now live in their own package, [`@metamask/snap-examples`](https://npmjs.com/package/@metamask/snap-examples).
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.9.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.0...HEAD
+[0.10.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.6.3...v0.7.0

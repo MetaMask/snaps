@@ -1,50 +1,49 @@
 {
-  "name": "@metamask/iframe-execution-environment-service",
+  "name": "@metamask/snap-workers",
   "version": "0.10.0",
+  "description": "Snap Web Workers for the MetaMask extension.",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps-skunkworks.git"
   },
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
-    "dist/",
-    "!dist/testHelpers"
+    "dist/"
   ],
   "scripts": {
-    "test": "jest",
+    "test": "echo 'N/A'",
     "test:ci": "yarn test",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "yarn auto-changelog validate",
-    "build:tsc": "tsc --project tsconfig.json",
-    "build": "yarn build:tsc",
+    "build:tsc": "tsc --project tsconfig.local.json",
     "build:pre-tsc": "echo 'N/A'",
-    "build:post-tsc": "echo 'N/A'",
+    "build:post-tsc": "node bundle.js",
+    "build": "yarn build:tsc && yarn build:post-tsc",
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf dist/*",
     "publish": "../../scripts/publish-package.sh"
   },
-  "dependencies": {
-    "@metamask/controllers": "^26.0.0",
-    "@metamask/execution-environments": "^0.10.0",
-    "@metamask/object-multiplex": "^1.2.0",
-    "@metamask/post-message-stream": "^4.0.0",
-    "@metamask/snap-controllers": "^0.10.0",
-    "@metamask/snap-types": "^0.10.0",
-    "eth-rpc-errors": "^4.0.3",
-    "json-rpc-engine": "^6.1.0",
-    "json-rpc-middleware-stream": "^3.0.0",
-    "nanoid": "^3.1.31",
-    "pump": "^3.0.0",
-    "stream": "^0.0.2"
-  },
   "devDependencies": {
-    "@jest/globals": "^27.0.6",
-    "@jest/types": "^27.0.6",
-    "jest": "27",
-    "ts-jest": "27"
+    "@metamask/inpage-provider": "^8.0.3",
+    "@metamask/object-multiplex": "^1.1.0",
+    "@metamask/post-message-stream": "4.0.0",
+    "@metamask/snap-types": "^0.10.0",
+    "@types/pump": "^1.1.0",
+    "@types/readable-stream": "^2.3.9",
+    "browserify": "16.2.3",
+    "end-of-stream": "^1.4.4",
+    "json-rpc-engine": "^6.1.0",
+    "pump": "^3.0.0",
+    "rimraf": "^2.7.1",
+    "ses": "^0.15.3",
+    "tinyify": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=12.11.0"
   },
   "publishConfig": {
     "access": "public",
