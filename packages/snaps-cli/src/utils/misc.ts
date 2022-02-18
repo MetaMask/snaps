@@ -43,12 +43,36 @@ export function setSnapGlobals(argv: Arguments) {
   }
 
   if (Object.prototype.hasOwnProperty.call(argv, 'verboseErrors')) {
-    global.snaps.verboseErrors = Boolean(argv.verboseErrors);
+    global.snaps.verboseErrors = booleanStringToBoolean(argv.verboseErrors);
   }
 
   if (Object.prototype.hasOwnProperty.call(argv, 'suppressWarnings')) {
-    global.snaps.suppressWarnings = Boolean(argv.suppressWarnings);
+    global.snaps.suppressWarnings = booleanStringToBoolean(
+      argv.suppressWarnings,
+    );
   }
+}
+
+/**
+ * Attempts to convert a string to a boolean and throws if the value is invalid.
+ *
+ * @param value - The value to convert to a boolean.
+ * @return `true` if the value is the string `"true"`, `false` if it is the
+ * string `"false"`, the value if it is already a boolean, or an error
+ * otherwise.
+ */
+export function booleanStringToBoolean(value: unknown): boolean {
+  if (typeof value === 'boolean') {
+    return value;
+  } else if (value === 'true') {
+    return true;
+  } else if (value === 'false') {
+    return false;
+  }
+
+  throw new Error(
+    `Expected a boolean or the strings "true" or "false". Received: "${value}"`,
+  );
 }
 
 /**

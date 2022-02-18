@@ -1,6 +1,7 @@
 import fs from 'fs';
 import pathUtils from 'path';
 import {
+  booleanStringToBoolean,
   trimPathString,
   logError,
   logWarning,
@@ -25,7 +26,7 @@ describe('misc', () => {
   // this is the yargs object created with cli command: mm-snap init
   const defaultArgv = {
     _: ['init'],
-    verboseErrors: false,
+    verboseErrors: true,
     'verbose-errors': false,
     suppressWarnings: false,
     'suppress-warnings': false,
@@ -66,7 +67,7 @@ describe('misc', () => {
 
   const unsanitizedArgv = {
     _: ['init'],
-    verboseErrors: false,
+    verboseErrors: true,
     'verbose-errors': false,
     suppressWarnings: false,
     'suppress-warnings': false,
@@ -84,7 +85,7 @@ describe('misc', () => {
 
   const sanitizedArgv = {
     _: ['init'],
-    verboseErrors: false,
+    verboseErrors: true,
     'verbose-errors': false,
     suppressWarnings: false,
     'suppress-warnings': false,
@@ -116,6 +117,24 @@ describe('misc', () => {
     global.snaps = {};
   });
 
+  describe('booleanStringToBoolean', () => {
+    it('returns boolean values directly', () => {
+      expect(booleanStringToBoolean(true)).toBe(true);
+      expect(booleanStringToBoolean(false)).toBe(false);
+    });
+
+    it('converts "true"/"false" strings to their corresponding booleans', () => {
+      expect(booleanStringToBoolean('true')).toBe(true);
+      expect(booleanStringToBoolean('false')).toBe(false);
+    });
+
+    it('throws if the value cannot be converted', () => {
+      expect(() => booleanStringToBoolean('foo')).toThrow(
+        'Expected a boolean or the strings "true" or "false". Received: "foo"',
+      );
+    });
+  });
+
   describe('setSnapGlobals', () => {
     it('sets global variables correctly', () => {
       setSnapGlobals(exampleArgv);
@@ -124,10 +143,10 @@ describe('misc', () => {
       expect(global.snaps.suppressWarnings).toStrictEqual(true);
     });
 
-    it('doesnt set global variables incorrectly', () => {
+    it('does not set global variables incorrectly', () => {
       setSnapGlobals(defaultArgv);
       expect(global.snaps.isWatching).toStrictEqual(false);
-      expect(global.snaps.verboseErrors).toStrictEqual(false);
+      expect(global.snaps.verboseErrors).toStrictEqual(true);
       expect(global.snaps.suppressWarnings).toStrictEqual(false);
     });
   });

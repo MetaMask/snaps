@@ -11,6 +11,7 @@ describe('main', () => {
     expect(cliModule.cli).toHaveBeenCalledTimes(1);
     expect(cliModule.cli).toHaveBeenCalledWith(process.argv, commands);
     expect(global.snaps).toStrictEqual({
+      // see test/setup.js
       verboseErrors: false,
       suppressWarnings: false,
       isWatching: false,
