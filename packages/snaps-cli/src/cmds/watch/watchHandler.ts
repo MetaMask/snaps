@@ -33,7 +33,7 @@ export async function watch(argv: YargsArgs): Promise<void> {
     src.indexOf('/') === -1 ? '.' : src.substring(0, src.lastIndexOf('/') + 1);
   const outfilePath = getOutfilePath(dist, outfileName as string);
 
-  const rebuild = async (path?: string, logMessage?: string) => {
+  const buildSnap = async (path?: string, logMessage?: string) => {
     if (logMessage !== undefined) {
       console.log(logMessage);
     }
@@ -69,9 +69,9 @@ export async function watch(argv: YargsArgs): Promise<void> {
       ],
     })
 
-    .on('ready', rebuild)
-    .on('add', (path) => rebuild(path, `File added: ${path}`))
-    .on('change', (path) => rebuild(path, `File changed: ${path}`))
+    .on('ready', buildSnap)
+    .on('add', (path) => buildSnap(path, `File added: ${path}`))
+    .on('change', (path) => buildSnap(path, `File changed: ${path}`))
     .on('unlink', (path) => console.log(`File removed: ${path}`))
     .on('error', (error: Error) => {
       logError(`Watcher error: ${error.message}`, error);
