@@ -92,7 +92,7 @@ describe('cli', () => {
           expect.objectContaining({
             _: [command],
             suppressWarnings: false,
-            verboseErrors: false,
+            verboseErrors: true,
           }),
         );
       });
@@ -104,9 +104,16 @@ describe('cli', () => {
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       const mockServeHandler = jest.fn();
 
-      cli(getMockArgv('serve', '--port', 'not-a-number'), [
-        { ...commandMap.serve, handler: mockServeHandler },
-      ]);
+      cli(
+        getMockArgv(
+          'serve',
+          '--port',
+          'not-a-number',
+          '--verboseErrors',
+          'false',
+        ),
+        [{ ...commandMap.serve, handler: mockServeHandler }],
+      );
 
       expect(process.exitCode).toStrictEqual(1);
       expect(consoleErrorSpy).toHaveBeenCalledTimes(1);

@@ -27,7 +27,7 @@ Commands:
 
 Options:
       --version           Show version number                          [boolean]
-      --verboseErrors     Display original errors     [boolean] [default: false]
+      --verboseErrors     Display original errors      [boolean] [default: true]
       --suppressWarnings  Whether to suppress warnings[boolean] [default: false]
   -h, --help              Show help                                    [boolean]
 
