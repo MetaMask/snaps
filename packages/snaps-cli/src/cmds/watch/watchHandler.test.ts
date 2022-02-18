@@ -236,7 +236,7 @@ describe('watch', () => {
           expect(bundleMock).toHaveBeenCalledTimes(1);
           expect(logErrorMock).toHaveBeenCalledTimes(1);
           expect(logErrorMock).toHaveBeenCalledWith(
-            'Error processing "foo/bar.js".',
+            'Error while processing "foo/bar.js".',
             expect.objectContaining({ message: 'build failure' }),
           );
           resolve();

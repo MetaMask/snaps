@@ -43,7 +43,14 @@ export async function watch(argv: YargsArgs): Promise<void> {
       await processManifestCheck(argv);
       await processEval({ ...argv, bundle: outfilePath });
     } catch (error) {
-      logError(`Error processing "${path}".`, error);
+      logError(
+        `Error ${
+          path === undefined
+            ? 'during initial build'
+            : `while processing "${path}"`
+        }.`,
+        error,
+      );
     }
   };
 
