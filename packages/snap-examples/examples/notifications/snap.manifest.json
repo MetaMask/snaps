@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "proposedName": "Notification Example Snap",
+  "description": "A notification example snap.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snap-template.git"
+  },
+  "source": {
+    "shasum": "uCi9PCammGidWGlpmxeq/LzHVOjaQ6LJUYC0GYa5kUs=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "packageName": "notification-snap",
+        "registry": "https://registry.npmjs.org/"
+      }
+    }
+  },
+  "initialPermissions": {
+    "snap_notify": {}
+  },
+  "manifestVersion": "0.1"
+}
