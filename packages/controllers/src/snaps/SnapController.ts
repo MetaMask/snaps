@@ -15,7 +15,6 @@ import type { Patch } from 'immer';
 import { Json } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
 import semver from 'semver';
-import { DEFAULT_REQUESTED_SNAP_VERSION } from '.';
 import {
   GetEndowments,
   GetPermissions,
@@ -32,6 +31,7 @@ import {
 import { timeSince } from '../utils';
 import { SnapManifest, validateSnapJsonFile } from './json-schemas';
 import {
+  DEFAULT_REQUESTED_SNAP_VERSION,
   fetchContent,
   fetchNpmSnap,
   LOCALHOST_HOSTNAMES,
@@ -976,13 +976,12 @@ export class SnapController extends BaseController<
     if (existingSnap) {
       if (semver.satisfies(existingSnap.version, version)) {
         return existingSnap;
-      } else {
-        return {
-          error: ethErrors.rpc.invalidParams(
-            `Version mismatch with already installed snap. ${snapId}@${existingSnap.version} doesn't satisfy requested version ${version}`,
-          ),
-        };
       }
+      return {
+        error: ethErrors.rpc.invalidParams(
+          `Version mismatch with already installed snap. ${snapId}@${existingSnap.version} doesn't satisfy requested version ${version}`,
+        ),
+      };
     }
 
     try {
@@ -1432,6 +1431,6 @@ export class SnapController extends BaseController<
 
 function isValidSnapVersionRange(version: unknown): version is string {
   return Boolean(
-    typeof version === 'string' && semver.validRange(version) != null,
+    typeof version === 'string' && semver.validRange(version) !== null,
   );
 }

@@ -1,14 +1,14 @@
+import { createHash } from 'crypto';
+import type { Writable } from 'stream';
+import { Readable } from 'stream';
 import { Json } from '@metamask/controllers';
 import concat from 'concat-stream';
 import fetch from 'cross-fetch';
-import { createHash } from 'crypto';
 import deepEqual from 'fast-deep-equal';
 import createGunzipStream from 'gunzip-maybe';
 import pump from 'pump';
 import { ReadableWebToNodeStream } from 'readable-web-to-node-stream';
 import semver from 'semver';
-import type { Writable } from 'stream';
-import { Readable } from 'stream';
 import { extract as tarExtract } from 'tar-stream';
 import { isPlainObject } from '../utils';
 import {
