@@ -1,6 +1,5 @@
 import chokidar from 'chokidar';
 import { YargsArgs } from '../../types/yargs';
-import { bundle } from '../build/bundle';
 import {
   logError,
   getOutfilePath,
@@ -8,6 +7,9 @@ import {
   validateFilePath,
   validateOutfileName,
 } from '../../utils';
+import { bundle } from '../build/bundle';
+import { snapEval } from '../eval/evalHandler';
+import { manifestHandler } from '../manifest/manifestHandler';
 
 /**
  * Watch a directory and its subdirectories for changes, and build when files
@@ -22,7 +24,7 @@ import {
  * @param argv.'outfileName' - The output file name
  */
 export async function watch(argv: YargsArgs): Promise<void> {
-  const { src, dist, outfileName } = argv;
+  const { dist, eval: shouldEval, manifest, outfileName, src } = argv;
   if (outfileName) {
     validateOutfileName(outfileName as string);
   }
@@ -32,37 +34,57 @@ export async function watch(argv: YargsArgs): Promise<void> {
     src.indexOf('/') === -1 ? '.' : src.substring(0, src.lastIndexOf('/') + 1);
   const outfilePath = getOutfilePath(dist, outfileName as string);
 
-  const watcher = chokidar.watch(rootDir, {
-    ignoreInitial: true,
-    ignored: [
-      '**/node_modules/**',
-      `**/${dist}/**`,
-      `**/test/**`,
-      `**/tests/**`,
-      `**/*.test.js`,
-      `**/*.test.ts`,
-      /* istanbul ignore next */
-      (str: string) => str !== '.' && str.startsWith('.'),
-    ],
-  });
+  const buildSnap = async (path?: string, logMessage?: string) => {
+    if (logMessage !== undefined) {
+      console.log(logMessage);
+    }
 
-  watcher
-    .on('ready', () => {
-      bundle(src, outfilePath, argv);
-    })
-    .on('add', (path: string) => {
-      console.log(`File added: ${path}`);
-      bundle(src, outfilePath, argv);
-    })
-    .on('change', (path: string) => {
-      console.log(`File changed: ${path}`);
-      bundle(src, outfilePath, argv);
-    })
-    .on('unlink', (path: string) => console.log(`File removed: ${path}`))
-    .on('error', (err: Error) => {
-      logError(`Watcher error: ${err.message}`, err);
-    });
+    try {
+      await bundle(src, outfilePath, argv);
 
-  watcher.add(`${rootDir}`);
+      if (manifest) {
+        await manifestHandler(argv);
+      }
+
+      if (shouldEval) {
+        await snapEval({ ...argv, bundle: outfilePath });
+      }
+    } catch (error) {
+      logError(
+        `Error ${
+          path === undefined
+            ? 'during initial build'
+            : `while processing "${path}"`
+        }.`,
+        error,
+      );
+    }
+  };
+
+  chokidar
+    .watch(rootDir, {
+      ignoreInitial: true,
+      ignored: [
+        '**/node_modules/**',
+        `**/${dist}/**`,
+        `**/test/**`,
+        `**/tests/**`,
+        `**/*.test.js`,
+        `**/*.test.ts`,
+        /* istanbul ignore next */
+        (str: string) => str !== '.' && str.startsWith('.'),
+      ],
+    })
+
+    .on('ready', buildSnap)
+    .on('add', (path) => buildSnap(path, `File added: ${path}`))
+    .on('change', (path) => buildSnap(path, `File changed: ${path}`))
+    .on('unlink', (path) => console.log(`File removed: ${path}`))
+    .on('error', (error: Error) => {
+      logError(`Watcher error: ${error.message}`, error);
+    })
+
+    .add(rootDir);
+
   console.log(`Watching '${rootDir}' for changes...`);
 }
