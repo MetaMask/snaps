@@ -33,42 +33,44 @@ export async function watch(argv: YargsArgs): Promise<void> {
     src.indexOf('/') === -1 ? '.' : src.substring(0, src.lastIndexOf('/') + 1);
   const outfilePath = getOutfilePath(dist, outfileName as string);
 
-  const watcher = chokidar.watch(rootDir, {
-    ignoreInitial: true,
-    ignored: [
-      '**/node_modules/**',
-      `**/${dist}/**`,
-      `**/test/**`,
-      `**/tests/**`,
-      `**/*.test.js`,
-      `**/*.test.ts`,
-      /* istanbul ignore next */
-      (str: string) => str !== '.' && str.startsWith('.'),
-    ],
-  });
-  watcher
-    .on('ready', async () => {
-      await bundle(src, outfilePath, argv);
-      processEval({ ...argv, bundle: outfilePath });
-      processManifestCheck(argv);
-    })
-    .on('add', async (path: string) => {
-      console.log(`File added: ${path}`);
-      await bundle(src, outfilePath, argv);
-      processEval({ ...argv, bundle: outfilePath });
-      processManifestCheck(argv);
-    })
-    .on('change', async (path: string) => {
-      console.log(`File changed: ${path}`);
-      await bundle(src, outfilePath, argv);
-      processEval({ ...argv, bundle: outfilePath });
-      processManifestCheck(argv);
-    })
-    .on('unlink', (path: string) => console.log(`File removed: ${path}`))
-    .on('error', (err: Error) => {
-      logError(`Watcher error: ${err.message}`, err);
-    });
+  const rebuild = async (path?: string, logMessage?: string) => {
+    if (logMessage !== undefined) {
+      console.log(logMessage);
+    }
 
-  watcher.add(`${rootDir}`);
+    try {
+      await bundle(src, outfilePath, argv);
+      await processManifestCheck(argv);
+      await processEval({ ...argv, bundle: outfilePath });
+    } catch (error) {
+      logError(`Error processing "${path}".`, error);
+    }
+  };
+
+  chokidar
+    .watch(rootDir, {
+      ignoreInitial: true,
+      ignored: [
+        '**/node_modules/**',
+        `**/${dist}/**`,
+        `**/test/**`,
+        `**/tests/**`,
+        `**/*.test.js`,
+        `**/*.test.ts`,
+        /* istanbul ignore next */
+        (str: string) => str !== '.' && str.startsWith('.'),
+      ],
+    })
+
+    .on('ready', rebuild)
+    .on('add', (path) => rebuild(path, `File added: ${path}`))
+    .on('change', (path) => rebuild(path, `File changed: ${path}`))
+    .on('unlink', (path) => console.log(`File removed: ${path}`))
+    .on('error', (error: Error) => {
+      logError(`Watcher error: ${error.message}`, error);
+    })
+
+    .add(rootDir);
+
   console.log(`Watching '${rootDir}' for changes...`);
 }

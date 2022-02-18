@@ -217,5 +217,35 @@ describe('watch', () => {
       await finishPromise;
       expect(global.console.log).toHaveBeenCalledTimes(1);
     });
+
+    it('watcher handles errors thrown while rebuilding correctly', async () => {
+      jest.spyOn(console, 'log').mockImplementation();
+      const logErrorMock = jest
+        .spyOn(miscUtils, 'logError')
+        .mockImplementation();
+      const bundleMock = jest.spyOn(build, 'bundle').mockImplementation(() => {
+        throw new Error('build failure');
+      });
+      jest
+        .spyOn(fsUtils, 'validateFilePath')
+        .mockImplementation(async () => true);
+
+      await watch.handler(getMockArgv());
+      const finishPromise = new Promise<void>((resolve, _) => {
+        watcherEmitter.on('add', () => {
+          expect(bundleMock).toHaveBeenCalledTimes(1);
+          expect(logErrorMock).toHaveBeenCalledTimes(1);
+          expect(logErrorMock).toHaveBeenCalledWith(
+            'Error processing "foo/bar.js".',
+            expect.objectContaining({ message: 'build failure' }),
+          );
+          resolve();
+        });
+      });
+      watcherEmitter.emit('add', 'foo/bar.js');
+
+      await finishPromise;
+      expect(global.console.log).toHaveBeenCalledTimes(2);
+    });
   });
 });
