@@ -1,6 +1,5 @@
 import chokidar from 'chokidar';
 import { YargsArgs } from '../../types/yargs';
-import { bundle } from '../build/bundle';
 import {
   logError,
   getOutfilePath,
@@ -8,7 +7,9 @@ import {
   validateFilePath,
   validateOutfileName,
 } from '../../utils';
-import { processEval, processManifestCheck } from './utils';
+import { bundle } from '../build/bundle';
+import { snapEval } from '../eval/evalHandler';
+import { manifestHandler } from '../manifest/manifestHandler';
 
 /**
  * Watch a directory and its subdirectories for changes, and build when files
@@ -23,7 +24,7 @@ import { processEval, processManifestCheck } from './utils';
  * @param argv.'outfileName' - The output file name
  */
 export async function watch(argv: YargsArgs): Promise<void> {
-  const { src, dist, outfileName } = argv;
+  const { dist, eval: shouldEval, manifest, outfileName, src } = argv;
   if (outfileName) {
     validateOutfileName(outfileName as string);
   }
@@ -40,8 +41,14 @@ export async function watch(argv: YargsArgs): Promise<void> {
 
     try {
       await bundle(src, outfilePath, argv);
-      await processManifestCheck(argv);
-      await processEval({ ...argv, bundle: outfilePath });
+
+      if (manifest) {
+        await manifestHandler(argv);
+      }
+
+      if (shouldEval) {
+        await snapEval({ ...argv, bundle: outfilePath });
+      }
     } catch (error) {
       logError(
         `Error ${
