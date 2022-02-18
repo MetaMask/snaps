@@ -7,13 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.10.0]
-### Uncategorized
-- Ensure watch parity ([#241](https://github.com/MetaMask/snaps-skunkworks/pull/241))
-- Update dead link to new location ([#240](https://github.com/MetaMask/snaps-skunkworks/pull/240))
-- Remove comments by default ([#243](https://github.com/MetaMask/snaps-skunkworks/pull/243))
-- Update CLI with transpiledDeps flag ([#221](https://github.com/MetaMask/snaps-skunkworks/pull/221))
-- Add optional HTML comment transform ([#237](https://github.com/MetaMask/snaps-skunkworks/pull/237))
-- Add snaps-cli usage instructions to its readme ([#228](https://github.com/MetaMask/snaps-skunkworks/pull/228))
+### Added
+- **BREAKING:** Transform HTML comments by default ([#237](https://github.com/MetaMask/snaps-skunkworks/pull/237))
+  - The strings `<!--` and `-->` will be transformed into `< !--` and `-- >` respectively by default. If these strings appear as operands in an expression or in a string literal, this transform will change the behavior of your program. This behavior was added because these strings are rejected by SES. The behavior can be toggled using `transformHtmlComments`.
+- `transpiledDeps` flag to `build` and `watch` commands ([#221](https://github.com/MetaMask/snaps-skunkworks/pull/221))
+  - This flag allows the user to specify which dependencies will be transpiled at build time if the `transpilationMode` is `localAndDeps`.
+- Add CLI usage instructions to readme ([#228](https://github.com/MetaMask/snaps-skunkworks/pull/228))
+
+### Changed
+- **BREAKING:** Strip comments in source code by default ([#243](https://github.com/MetaMask/snaps-skunkworks/pull/243))
+  - All comments will now be stripped from snap source code (including dependencies) by default.
+
+### Fixed
+- `watch` command parity with `build` command ([#241](https://github.com/MetaMask/snaps-skunkworks/pull/241))
+  - The `build` command had received a number of options that were not made available to the `watch` command. They now have the same options.
+- Update dead link in readme ([#240](https://github.com/MetaMask/snaps-skunkworks/pull/240))
 
 ## [0.9.0]
 ### Added

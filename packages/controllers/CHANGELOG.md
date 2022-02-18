@@ -7,10 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.10.0]
-### Uncategorized
-- Fix snap controller utils export ([#239](https://github.com/MetaMask/snaps-skunkworks/pull/239))
-- Snap Runtime Management refactor ([#229](https://github.com/MetaMask/snaps-skunkworks/pull/229))
+### Changed
 - Disable caching when fetching local snaps ([#227](https://github.com/MetaMask/snaps-skunkworks/pull/227))
+  - This ensures that the `SnapController` will always fetch the latest snap manifest and source code during local development.
 
 ## [0.9.0]
 ### Added

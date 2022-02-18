@@ -7,9 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.10.0]
-### Uncategorized
-- Update CLI with transpiledDeps flag ([#221](https://github.com/MetaMask/snaps-skunkworks/pull/221))
-- Fix snap-examples to work with 0.1 version ([#219](https://github.com/MetaMask/snaps-skunkworks/pull/219))
+### Fixed
+- Ensure that all examples work with the current Snaps implementation ([#219](https://github.com/MetaMask/snaps-skunkworks/pull/219))
 
 ## [0.9.0]
 ### Changed
