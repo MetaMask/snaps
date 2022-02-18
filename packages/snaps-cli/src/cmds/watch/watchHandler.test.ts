@@ -218,7 +218,7 @@ describe('watch', () => {
       expect(global.console.log).toHaveBeenCalledTimes(1);
     });
 
-    it('watcher handles errors thrown while rebuilding correctly', async () => {
+    it('watcher handles errors thrown during rebuilding', async () => {
       jest.spyOn(console, 'log').mockImplementation();
       const logErrorMock = jest
         .spyOn(miscUtils, 'logError')
