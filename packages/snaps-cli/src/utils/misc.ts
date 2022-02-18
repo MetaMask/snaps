@@ -71,7 +71,7 @@ export function booleanStringToBoolean(value: unknown): boolean {
   }
 
   throw new Error(
-    `Expected the string "true" or "false". Received: "${value}"`,
+    `Expected a boolean or the strings "true" or "false". Received: "${value}"`,
   );
 }
 

@@ -130,7 +130,7 @@ describe('misc', () => {
 
     it('throws if the value cannot be converted', () => {
       expect(() => booleanStringToBoolean('foo')).toThrow(
-        'Expected the string "true" or "false". Received: "foo"',
+        'Expected a boolean or the strings "true" or "false". Received: "foo"',
       );
     });
   });
