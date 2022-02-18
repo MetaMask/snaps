@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **BREAKING:** Strip comments in source code by default ([#243](https://github.com/MetaMask/snaps-skunkworks/pull/243))
   - All comments will now be stripped from snap source code (including dependencies) by default.
+- Set `verboseErrors` to `true` by default ([#249](https://github.com/MetaMask/snaps-skunkworks/pull/249))
 
 ### Fixed
 - `watch` command parity with `build` command ([#241](https://github.com/MetaMask/snaps-skunkworks/pull/241))
