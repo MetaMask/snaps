@@ -215,7 +215,11 @@ describe('watch', () => {
       expect(evalMock).toHaveBeenCalledTimes(1);
       expect(evalMock).toHaveBeenCalledWith(
         expect.objectContaining(
-          getMockArgv({ eval: true, manifest: true, bundle: 'dist/bundle.js' }),
+          getMockArgv({
+            eval: true,
+            manifest: true,
+            bundle: path.normalize('dist/bundle.js'),
+          }),
         ),
       );
       expect(global.console.log).toHaveBeenCalledTimes(2);
