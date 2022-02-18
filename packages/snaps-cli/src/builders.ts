@@ -150,7 +150,7 @@ const builders: SnapsCliBuilders = {
     type: 'boolean',
     describe: 'Display original errors',
     demandOption: false,
-    default: false,
+    default: true,
   },
 
   writeManifest: {
