@@ -27,8 +27,10 @@ export enum NpmSnapFileNames {
   Manifest = 'snap.manifest.json',
 }
 
-export const LOCALHOST_HOSTNAMES = new Set(['localhost', '127.0.0.1']);
+export const LOCALHOST_HOSTNAMES = new Set(['localhost', '127.0.0.1', '::1']);
 export const DEFAULT_NPM_REGISTRY = 'https://registry.npmjs.org';
+
+export const DEFAULT_REQUESTED_SNAP_VERSION = '*';
 
 const SVG_MAX_BYTE_SIZE = 100_000;
 const SVG_MAX_BYTE_SIZE_TEXT = `${Math.floor(SVG_MAX_BYTE_SIZE / 1000)}kb`;
@@ -322,7 +324,7 @@ async function fetchNpmTarball(
   }
 
   const targetVersion = semver.maxSatisfying(
-    Object.keys((packageMetadata as any)?.version || {}),
+    Object.keys((packageMetadata as any)?.versions || {}),
     version,
   );
 

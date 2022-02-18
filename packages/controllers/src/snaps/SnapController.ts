@@ -15,6 +15,7 @@ import type { Patch } from 'immer';
 import { Json } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
 import semver from 'semver';
+import { DEFAULT_REQUESTED_SNAP_VERSION } from '.';
 import {
   GetEndowments,
   GetPermissions,
@@ -921,13 +922,13 @@ export class SnapController extends BaseController<
 
     await Promise.all(
       Object.entries(requestedSnaps).map(
-        async ([snapId, { version = '*' }]) => {
+        async ([snapId, { version = DEFAULT_REQUESTED_SNAP_VERSION }]) => {
           const permissionName = SNAP_PREFIX + snapId;
 
-          if (!isValidSnapVersion(version)) {
+          if (!isValidSnapVersionRange(version)) {
             result[snapId] = {
               error: ethErrors.rpc.invalidParams(
-                `The "version" field must be a valid SemVer version if specified. Received: "${version}".`,
+                `The "version" field must be a valid SemVer version range if specified. Received: "${version}".`,
               ),
             };
             return;
@@ -1122,7 +1123,7 @@ export class SnapController extends BaseController<
    * @returns The resulting snap object.
    */
   private async _add(args: ValidatedAddSnapArgs): Promise<Snap> {
-    const { id: snapId, version = '*' } = args;
+    const { id: snapId, version = DEFAULT_REQUESTED_SNAP_VERSION } = args;
 
     let manifest: SnapManifest, sourceCode: string, svgIcon: string | undefined;
     if ('manifest' in args) {
@@ -1222,8 +1223,8 @@ export class SnapController extends BaseController<
     packageName: string,
     version?: string,
   ): Promise<FetchSnapResult> {
-    if (!isValidSnapVersion(version)) {
-      throw new Error(`Received invalid Snap version: "${version}".`);
+    if (!isValidSnapVersionRange(version)) {
+      throw new Error(`Received invalid Snap version range: "${version}".`);
     }
 
     const { manifest, sourceCode, svgIcon } = await fetchNpmSnap(
@@ -1429,6 +1430,8 @@ export class SnapController extends BaseController<
   }
 }
 
-function isValidSnapVersion(version: unknown): version is string {
-  return Boolean(typeof version === 'string' && semver.valid(version));
+function isValidSnapVersionRange(version: unknown): version is string {
+  return Boolean(
+    typeof version === 'string' && semver.validRange(version) != null,
+  );
 }
