@@ -8,6 +8,7 @@ module.exports = {
     './src/types/*',
     // TODO: Test the eval worker
     './src/cmds/eval/eval-worker.ts',
+    '.*__GENERATED__.*',
   ],
   coverageReporters: ['text', 'html'],
   coverageThreshold: {

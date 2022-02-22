@@ -1,7 +1,12 @@
 import yargs, { Arguments } from 'yargs';
 import yargsType from 'yargs/yargs';
 import builders from './builders';
-import { applyConfig, sanitizeInputs, setSnapGlobals } from './utils';
+import {
+  applyConfig,
+  loadConfig,
+  sanitizeInputs,
+  setSnapGlobals,
+} from './utils';
 
 export function cli(argv: string[], commands: any): void {
   const rawArgv = argv.slice(2);
@@ -39,7 +44,7 @@ export function cli(argv: string[], commands: any): void {
     // ref: https://yargs.js.org/docs/#api-reference-middlewarecallbacks-applybeforevalidation
     .middleware(
       ((yargsArgv: Arguments, yargsInstance: typeof yargsType) => {
-        applyConfig(rawArgv, yargsArgv, yargsInstance);
+        applyConfig(loadConfig(), rawArgv, yargsArgv, yargsInstance);
         setSnapGlobals(yargsArgv);
         sanitizeInputs(yargsArgv);
       }) as any,
