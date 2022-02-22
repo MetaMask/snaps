@@ -1088,6 +1088,8 @@ describe('SnapController', () => {
 
     await snapController.removeSnap(snap.id);
 
+    expect(snapController.state.snaps[snap.id]).toBeUndefined();
+
     snapController.destroy();
   });
 
