@@ -2,6 +2,8 @@ import EventEmitter from 'events';
 import path from 'path';
 import chokidar from 'chokidar';
 import * as build from '../build/bundle';
+import * as evalModule from '../eval/evalHandler';
+import * as manifest from '../manifest/manifestHandler';
 import * as fsUtils from '../../utils/validate-fs';
 import * as miscUtils from '../../utils/misc';
 import watch from '.';
@@ -26,11 +28,12 @@ describe('watch', () => {
     const mockDist = 'dist';
     const mockOutfileName = 'bundle.js';
 
-    const getMockArgv = () => {
+    const getMockArgv = (args: Record<string, unknown> = {}) => {
       return {
         src: mockSrc,
         dist: mockDist,
         outfileName: mockOutfileName,
+        ...args,
       } as any;
     };
 
@@ -97,7 +100,7 @@ describe('watch', () => {
       expect(chokidarMock.mock.calls[0][0]).toBe('foo/');
     });
 
-    it('watcher handles "changed" event correctly', async () => {
+    it('handles "changed" event correctly', async () => {
       jest.spyOn(console, 'log').mockImplementation();
       const bundleMock = jest.spyOn(build, 'bundle').mockImplementation();
       jest
@@ -122,7 +125,7 @@ describe('watch', () => {
       expect(global.console.log).toHaveBeenCalledTimes(2);
     });
 
-    it('watcher handles "ready" event correctly', async () => {
+    it('handles "ready" event correctly', async () => {
       jest.spyOn(console, 'log').mockImplementation();
       const bundleMock = jest.spyOn(build, 'bundle').mockImplementation();
       jest
@@ -147,7 +150,7 @@ describe('watch', () => {
       expect(global.console.log).toHaveBeenCalledTimes(1);
     });
 
-    it('watcher handles "add" event correctly', async () => {
+    it('handles "add" event correctly', async () => {
       jest.spyOn(console, 'log').mockImplementation();
       const bundleMock = jest.spyOn(build, 'bundle').mockImplementation();
       jest
@@ -172,7 +175,57 @@ describe('watch', () => {
       expect(global.console.log).toHaveBeenCalledTimes(2);
     });
 
-    it('watcher handles "unlink" event correctly', async () => {
+    it('calls the manifest handler if commanded', async () => {
+      jest.spyOn(console, 'log').mockImplementation();
+      const bundleMock = jest.spyOn(build, 'bundle').mockImplementation();
+
+      let resolveEvalPromise: (value?: unknown) => void;
+
+      // The manifest and eval handlers are called
+      const deferredEvalPromise = new Promise(
+        (resolve) => (resolveEvalPromise = resolve),
+      );
+      const manifestMock = jest
+        .spyOn(manifest, 'manifestHandler')
+        .mockImplementation();
+      const evalMock = jest
+        .spyOn(evalModule, 'snapEval')
+        .mockImplementation((() => {
+          resolveEvalPromise();
+        }) as any);
+      jest
+        .spyOn(fsUtils, 'validateFilePath')
+        .mockImplementation(async () => true);
+
+      await watch.handler(getMockArgv({ eval: true, manifest: true }));
+      const mockPath = path.normalize(`${mockDist}/${mockOutfileName}`);
+      watcherEmitter.emit('add');
+
+      await deferredEvalPromise;
+      expect(bundleMock).toHaveBeenCalledTimes(1);
+      expect(bundleMock).toHaveBeenCalledWith(
+        mockSrc,
+        mockPath,
+        getMockArgv({ eval: true, manifest: true }),
+      );
+      expect(manifestMock).toHaveBeenCalledTimes(1);
+      expect(manifestMock).toHaveBeenCalledWith(
+        expect.objectContaining(getMockArgv({ eval: true, manifest: true })),
+      );
+      expect(evalMock).toHaveBeenCalledTimes(1);
+      expect(evalMock).toHaveBeenCalledWith(
+        expect.objectContaining(
+          getMockArgv({
+            eval: true,
+            manifest: true,
+            bundle: path.normalize('dist/bundle.js'),
+          }),
+        ),
+      );
+      expect(global.console.log).toHaveBeenCalledTimes(2);
+    });
+
+    it('handles "unlink" event correctly', async () => {
       jest.spyOn(console, 'log').mockImplementation();
       const bundleMock = jest.spyOn(build, 'bundle').mockImplementation();
       jest
@@ -192,7 +245,7 @@ describe('watch', () => {
       expect(global.console.log).toHaveBeenCalledTimes(2);
     });
 
-    it('watcher handles "error" event correctly', async () => {
+    it('handles "error" event correctly', async () => {
       const mockError = new Error('error message');
       mockError.message = 'this is a message';
       jest.spyOn(console, 'log').mockImplementation();
@@ -216,6 +269,36 @@ describe('watch', () => {
 
       await finishPromise;
       expect(global.console.log).toHaveBeenCalledTimes(1);
+    });
+
+    it('handles errors thrown during rebuilding', async () => {
+      jest.spyOn(console, 'log').mockImplementation();
+      const logErrorMock = jest
+        .spyOn(miscUtils, 'logError')
+        .mockImplementation();
+      const bundleMock = jest.spyOn(build, 'bundle').mockImplementation(() => {
+        throw new Error('build failure');
+      });
+      jest
+        .spyOn(fsUtils, 'validateFilePath')
+        .mockImplementation(async () => true);
+
+      await watch.handler(getMockArgv());
+      const finishPromise = new Promise<void>((resolve, _) => {
+        watcherEmitter.on('add', () => {
+          expect(bundleMock).toHaveBeenCalledTimes(1);
+          expect(logErrorMock).toHaveBeenCalledTimes(1);
+          expect(logErrorMock).toHaveBeenCalledWith(
+            'Error while processing "foo/bar.js".',
+            expect.objectContaining({ message: 'build failure' }),
+          );
+          resolve();
+        });
+      });
+      watcherEmitter.emit('add', 'foo/bar.js');
+
+      await finishPromise;
+      expect(global.console.log).toHaveBeenCalledTimes(2);
     });
   });
 });
