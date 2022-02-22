@@ -1,8 +1,9 @@
 import chokidar from 'chokidar';
 import { YargsArgs } from '../../types/yargs';
 import {
-  logError,
   getOutfilePath,
+  loadConfig,
+  logError,
   validateDirPath,
   validateFilePath,
   validateOutfileName,
@@ -40,7 +41,7 @@ export async function watch(argv: YargsArgs): Promise<void> {
     }
 
     try {
-      await bundle(src, outfilePath, argv);
+      await bundle(src, outfilePath, argv, loadConfig().bundler);
 
       if (manifest) {
         await manifestHandler(argv);
