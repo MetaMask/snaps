@@ -4,40 +4,7 @@ const { ethErrors } = require('eth-rpc-errors');
 // - https://developer.mozilla.org/en-US/docs/WebAssembly/Using_the_JavaScript_API
 // - https://github.com/mdn/webassembly-examples/tree/06556204f687c00a5d9d3ab55805204cbb711d0c/js-api-examples
 
-// NOTE: I couldn't get fetching to work locally due to CORS issues
-// const WASM_SOURCE_URL = 'http://localhost:8082/program.wasm';
-
-// const importObject = {
-//   imports: { imported_func: (arg) => console.log(arg) }
-// };
-
 let wasm;
-
-// const initializeWasm = async () => {
-//   try {
-//     const response = await fetch(WASM_SOURCE_URL, {
-//       cache: 'no-cache',
-//       mode: 'no-cors',
-//       // headers: {
-//       //   'Content-Type': 'application/wasm'
-//       // }
-//     })
-
-//     if (response.status !== 200) {
-//       const message = `HTTP error: ${response.status}: ${response.statusText}`;
-//       console.error(message);
-//       throw message;
-//     }
-
-//     wasm = await WebAssembly.instantiateStreaming(
-//       response,
-//       // importObject,
-//     );
-//   } catch (error) {
-//     console.error('Failed to initialize WebAssembly module.', error);
-//     throw error;
-//   }
-// }
 
 // See scripts/makeWasm.js for how this was created.
 const PROGRAM_WASM_HEX =
