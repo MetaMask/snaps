@@ -8,7 +8,7 @@ import deepEqual from 'fast-deep-equal';
 import createGunzipStream from 'gunzip-maybe';
 import pump from 'pump';
 import { ReadableWebToNodeStream } from 'readable-web-to-node-stream';
-import semver from 'semver';
+import { maxSatisfying as maxSatisfyingSemver } from 'semver';
 import { extract as tarExtract } from 'tar-stream';
 import { isPlainObject } from '../utils';
 import {
@@ -323,8 +323,8 @@ async function fetchNpmTarball(
     );
   }
 
-  const targetVersion = semver.maxSatisfying(
-    Object.keys((packageMetadata as any)?.versions || {}),
+  const targetVersion = maxSatisfyingSemver(
+    Object.keys((packageMetadata as any)?.versions ?? {}),
     version,
   );
 

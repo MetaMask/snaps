@@ -14,7 +14,10 @@ import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import type { Patch } from 'immer';
 import { Json } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
-import semver from 'semver';
+import {
+  satisfies as satisfiesSemver,
+  validRange as validRangeSemver,
+} from 'semver';
 import {
   GetEndowments,
   GetPermissions,
@@ -974,7 +977,7 @@ export class SnapController extends BaseController<
   ): Promise<ProcessSnapResult> {
     const existingSnap = this.getTruncated(snapId);
     if (existingSnap) {
-      if (semver.satisfies(existingSnap.version, version)) {
+      if (satisfiesSemver(existingSnap.version, version)) {
         return existingSnap;
       }
       return {
@@ -1136,7 +1139,7 @@ export class SnapController extends BaseController<
       ));
     }
 
-    if (!semver.satisfies(manifest.version, version)) {
+    if (!satisfiesSemver(manifest.version, version)) {
       throw new Error(
         `Version mismatch. Manifest for ${snapId} specifies version ${manifest.version} which doesn't satisfy requested version range ${version}`,
       );
@@ -1431,6 +1434,6 @@ export class SnapController extends BaseController<
 
 function isValidSnapVersionRange(version: unknown): version is string {
   return Boolean(
-    typeof version === 'string' && semver.validRange(version) !== null,
+    typeof version === 'string' && validRangeSemver(version) !== null,
   );
 }
