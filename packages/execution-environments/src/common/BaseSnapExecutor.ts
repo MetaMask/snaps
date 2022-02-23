@@ -1,9 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
 /// <reference path="../../../../node_modules/ses/index.d.ts" />
-import { Duplex } from 'stream';
 import { MetaMaskInpageProvider } from '@metamask/inpage-provider';
 import { SnapProvider } from '@metamask/snap-types';
 import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
+import { Duplex } from 'stream';
 import EEOpenRPCDocument from '../openrpc.json';
 import {
   Endowments,
@@ -154,14 +154,14 @@ export class BaseSnapExecutor {
   ) {
     console.log(`starting snap '${snapName}' in worker`);
     if (this.snapPromiseErrorHandler) {
-      self?.removeEventListener(
+      self.removeEventListener(
         'unhandledrejection',
         this.snapPromiseErrorHandler,
       );
     }
 
     if (this.snapErrorHandler) {
-      self?.removeEventListener('error', this.snapErrorHandler);
+      self.removeEventListener('error', this.snapErrorHandler);
     }
 
     const wallet = this.createSnapProvider(snapName);
@@ -205,11 +205,8 @@ export class BaseSnapExecutor {
       });
       compartment.evaluate(sourceCode);
 
-      self?.addEventListener(
-        'unhandledrejection',
-        this.snapPromiseErrorHandler,
-      );
-      self?.addEventListener('error', this.snapErrorHandler);
+      self.addEventListener('unhandledrejection', this.snapPromiseErrorHandler);
+      self.addEventListener('error', this.snapErrorHandler);
     } catch (err) {
       this.removeSnap(snapName);
       throw new Error(
