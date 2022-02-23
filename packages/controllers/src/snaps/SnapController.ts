@@ -50,7 +50,7 @@ export const SNAP_PREFIX = 'wallet_snap_';
 export const SNAP_PREFIX_REGEX = new RegExp(`^${SNAP_PREFIX}`, 'u');
 
 // APIs exposed by default to the Snap without needing permissions
-const DEFAULT_EXPOSED_APIS = [
+export const DEFAULT_EXPOSED_APIS = [
   'atob',
   'btoa',
   'TextEncoder',

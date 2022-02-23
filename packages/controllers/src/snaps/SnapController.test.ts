@@ -8,6 +8,7 @@ import { SnapManifest } from './json-schemas';
 import {
   AllowedActions,
   AllowedEvents,
+  DEFAULT_EXPOSED_APIS,
   Snap,
   SnapController,
   SnapControllerActions,
@@ -409,7 +410,7 @@ describe('SnapController', () => {
     expect(executeSnapMock).toHaveBeenNthCalledWith(1, {
       snapId: 'npm:example-snap',
       sourceCode,
-      endowments: ['fooEndowment'],
+      endowments: [...DEFAULT_EXPOSED_APIS, 'fooEndowment'],
     });
     snapController.destroy();
   });
@@ -438,6 +439,7 @@ describe('SnapController', () => {
     expect(mockExecuteSnap).toHaveBeenCalledWith({
       snapId: id,
       sourceCode,
+      endowments: DEFAULT_EXPOSED_APIS,
     });
   });
 
