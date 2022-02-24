@@ -8,6 +8,7 @@ import deepEqual from 'fast-deep-equal';
 import createGunzipStream from 'gunzip-maybe';
 import pump from 'pump';
 import { ReadableWebToNodeStream } from 'readable-web-to-node-stream';
+import { maxSatisfying as maxSatisfyingSemver } from 'semver';
 import { extract as tarExtract } from 'tar-stream';
 import { isPlainObject } from '../utils';
 import {
@@ -26,8 +27,10 @@ export enum NpmSnapFileNames {
   Manifest = 'snap.manifest.json',
 }
 
-export const LOCALHOST_HOSTNAMES = new Set(['localhost', '127.0.0.1']);
+export const LOCALHOST_HOSTNAMES = new Set(['localhost', '127.0.0.1', '::1']);
 export const DEFAULT_NPM_REGISTRY = 'https://registry.npmjs.org';
+
+export const DEFAULT_REQUESTED_SNAP_VERSION = '*';
 
 const SVG_MAX_BYTE_SIZE = 100_000;
 const SVG_MAX_BYTE_SIZE_TEXT = `${Math.floor(SVG_MAX_BYTE_SIZE / 1000)}kb`;
@@ -298,8 +301,7 @@ type ResponseWithBody = Omit<Response, 'body'> & { body: ReadableStream };
  * the public npm registry. Throws an error if fetching fails.
  *
  * @param packageName - The name of the package whose tarball to fetch.
- * @param version - The version of the package to fetch, or the string `latest`
- * to fetch the latest version.
+ * @param version - The semver range of the package to fetch, max satisfying will be fetched
  * @param fetchFunction - The fetch function to use. Defaults to the global
  * {@link fetchContent}. Useful for Node.js compatibility.
  * @returns A tuple of the {@link Response} for the package tarball and the
@@ -321,10 +323,16 @@ async function fetchNpmTarball(
     );
   }
 
-  const targetVersion =
-    version === 'latest'
-      ? (packageMetadata as any)['dist-tags']?.latest
-      : version;
+  const targetVersion = maxSatisfyingSemver(
+    Object.keys((packageMetadata as any)?.versions ?? {}),
+    version,
+  );
+
+  if (targetVersion === null) {
+    throw new Error(
+      `Failed to find a matching version in npm metadata for package "${packageName}" and requested semver range "${version}"`,
+    );
+  }
 
   const tarballUrlString = (packageMetadata as any).versions?.[targetVersion]
     ?.dist?.tarball;
