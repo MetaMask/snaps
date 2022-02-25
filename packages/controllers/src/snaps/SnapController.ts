@@ -696,8 +696,8 @@ export class SnapController extends BaseController<
    * terminates its worker.
    *
    * @param snapId - The id of the Snap to stop.
-   * @param setNotRunning - Whether to mark the snap as not running.
-   * Should only be set to false if the snap is about to be deleted.
+   * @param setNotRunning - Whether to mark the snap as not running. Should
+   * only be set to `false` if the state is properly transitioned by the caller.
    */
   private async _stopSnap(snapId: SnapId, setNotRunning = true): Promise<void> {
     const runtime = this._getSnapRuntimeData(snapId);
@@ -873,24 +873,27 @@ export class SnapController extends BaseController<
       throw new Error('Expected array of snap ids.');
     }
 
-    this.update((state: any) => {
-      snapIds.forEach((snapId) => {
-        this._stopSnap(snapId, false);
+    await Promise.all(
+      snapIds.map(async (snapId) => {
+        // Disable the snap and revoke all of its permissions before deleting
+        // it. This ensures that the snap will not be restarted or otherwise
+        // affect the host environment while we are deleting it.
+        await this.disableSnap(snapId);
+        this.messagingSystem.call(
+          'PermissionController:revokeAllPermissions',
+          snapId,
+        );
+
         this._snapsRuntimeData.delete(snapId);
-        delete state.snaps[snapId];
-        delete state.snapStates[snapId];
+
+        this.update((state: any) => {
+          delete state.snaps[snapId];
+          delete state.snapStates[snapId];
+        });
+
         this.messagingSystem.publish(`SnapController:snapRemoved`, snapId);
-      });
-    });
-
-    snapIds.forEach((snapId) =>
-      this.messagingSystem.call(
-        'PermissionController:revokeAllPermissions',
-        snapId,
-      ),
+      }),
     );
-
-    await Promise.all(snapIds.map((snapId) => this._stopSnap(snapId, false)));
   }
 
   /**
