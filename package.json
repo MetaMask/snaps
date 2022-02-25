@@ -10,7 +10,8 @@
     "packages/*"
   ],
   "scripts": {
-    "setup": "yarn install && yarn allow-scripts",
+    "setup": "yarn install && yarn allow-scripts && yarn postinstall",
+    "postinstall": "patch-package",
     "publish:all": "./scripts/publish-all.sh",
     "link-packages": "./scripts/link-packages.sh",
     "lint:eslint": "eslint . --cache --ext js,ts",
@@ -44,6 +45,7 @@
     "eslint-plugin-jest": "^24.4.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.4.0",
+    "patch-package": "^6.4.7",
     "prettier": "^2.3.2",
     "rimraf": "^3.0.2",
     "typescript": "^4.3.5"

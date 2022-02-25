@@ -1,0 +1,189 @@
+{
+  "openrpc": "1.2.4",
+  "info": {
+    "title": "MetaMask Snaps Execution Environment API",
+    "version": "0.0.0-development"
+  },
+  "methods": [
+    {
+      "name": "ping",
+      "description": "confirms that a connection has been established with the execution environment",
+      "params": [],
+      "result": {
+        "name": "PingResult",
+        "schema": {
+          "$ref": "#/components/schemas/OK"
+        }
+      }
+    },
+    {
+      "name": "executeSnap",
+      "description": "executes a snap in the environment. The snap can then be interacted with via `snapRpc`",
+      "params": [
+        {
+          "name": "snapName",
+          "required": true,
+          "description": "the name of the snap",
+          "schema": {
+            "title": "SnapName",
+            "type": "string"
+          }
+        },
+        {
+          "name": "sourceCode",
+          "description": "a snaps source code that gets executed in the environment",
+          "required": true,
+          "schema": {
+            "title": "SourceCode",
+            "type": "string"
+          }
+        },
+        {
+          "name": "endowments",
+          "description": "A list of endowments to provide to SES",
+          "required": false,
+          "schema": {
+            "title": "Endowments",
+            "description": "An array of the names of the endowments",
+            "type": "array",
+            "items": {
+              "title": "Endowment",
+              "type": "string"
+            }
+          }
+        }
+      ],
+      "result": {
+        "name": "executeSnapResult",
+        "schema": {
+          "$ref": "#/components/schemas/OK"
+        }
+      },
+      "examples": [
+        {
+          "name": "BasicTestSnapExecuteExample",
+          "params": [
+            {
+              "name": "snapName",
+              "value": "TestSnap"
+            },
+            {
+              "name": "sourceCode",
+              "value": "wallet.registerRpcMessageHandler(async (_, request) => { return request.method + request.id })"
+            }
+          ],
+          "result": {
+            "name": "BasicTestSnapExampleResult",
+            "value": "OK"
+          }
+        }
+      ]
+    },
+    {
+      "name": "snapRpc",
+      "params": [
+        {
+          "name": "target",
+          "required": true,
+          "description": "the name of the snap method",
+          "schema": {
+            "title": "Target",
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "required": true,
+          "description": "Origin of the snap JSON-RPC request",
+          "schema": {
+            "title": "Origin",
+            "type": "string"
+          }
+        },
+        {
+          "name": "request",
+          "required": true,
+          "description": "JSON-RPC request",
+          "schema": {
+            "$ref": "#/components/schemas/JsonRpcRequest"
+          }
+        }
+      ],
+      "result": {
+        "name": "HandleSnapRpcResult",
+        "schema": {
+          "title": "SnapRpcResult"
+        }
+      },
+      "examples": [
+        {
+          "name": "TestSnapExample",
+          "params": [
+            {
+              "name": "target",
+              "value": "TestSnap"
+            },
+            {
+              "name": "origin",
+              "value": "foo.com"
+            },
+            {
+              "name": "request",
+              "value": {
+                "jsonrpc": "2.0",
+                "method": "hello",
+                "params": [],
+                "id": 1
+              }
+            }
+          ],
+          "result": {
+            "name": "TestSnapResultExample",
+            "value": "hello1"
+          }
+        }
+      ]
+    }
+  ],
+  "components": {
+    "schemas": {
+      "OK": {
+        "title": "OK",
+        "type": "string",
+        "const": "OK"
+      },
+      "JsonRpcRequest": {
+        "title": "JsonRpcRequest",
+        "type": "object",
+        "required": ["jsonrpc", "method"],
+        "properties": {
+          "jsonrpc": {
+            "title": "JSONRPCString",
+            "type": "string",
+            "const": "2.0"
+          },
+          "id": {
+            "title": "JSONRPCID",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
+          "method": {
+            "title": "JSONRPCMethod",
+            "description": "the name of the method",
+            "type": "string"
+          },
+          "params": {
+            "title": "JSONRPCParams",
+            "type": ["array", "object"]
+          }
+        }
+      }
+    }
+  }
+}
