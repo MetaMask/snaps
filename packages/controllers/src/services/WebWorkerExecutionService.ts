@@ -2,7 +2,7 @@ import { Duplex } from 'stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { WorkerParentPostMessageStream } from '@metamask/post-message-stream';
 import { ExecutionServiceMessenger } from '@metamask/snap-types';
-import { SNAP_STREAM_NAMES } from '@metamask/snap-workers';
+import { SNAP_STREAM_NAMES } from '@metamask/execution-environments';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createStreamMiddleware } from 'json-rpc-middleware-stream';
 import { nanoid } from 'nanoid';

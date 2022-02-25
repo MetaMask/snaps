@@ -1,6 +1,6 @@
 {
   "extends": "../../tsconfig.packages.json",
-  "references": [{ "path": "../workers" }],
+  "references": [{ "path": "../execution-environments" }],
   "compilerOptions": {
     "allowJs": true,
     "composite": true,

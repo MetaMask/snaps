@@ -19,7 +19,7 @@ import {
 import { getSnapSourceShasum } from './utils';
 
 const workerCode = fs.readFileSync(
-  require.resolve('@metamask/snap-workers/dist/SnapWorker.js'),
+  require.resolve('@metamask/execution-environments/dist/webworker.bundle.js'),
   'utf8',
 );
 
