@@ -559,7 +559,7 @@ export class SnapController extends BaseController<
         this._maxIdleTime &&
         timeSince(runtime.lastRequest) > this._maxIdleTime
       ) {
-        this.stopSnap(snapId);
+        this._stopSnap(snapId);
       }
     });
   }
@@ -658,14 +658,16 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The id of the Snap to disable.
    */
-  disableSnap(snapId: SnapId): void {
-    if (this.isRunning(snapId)) {
-      this.stopSnap(snapId);
-    }
-
+  disableSnap(snapId: SnapId): Promise<void> {
     this.update((state: any) => {
       state.snaps[snapId].enabled = false;
     });
+
+    if (this.isRunning(snapId)) {
+      return this.stopSnap(snapId);
+    }
+
+    return Promise.resolve();
   }
 
   /**
@@ -674,7 +676,7 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The id of the Snap to stop.
    */
-  stopSnap(snapId: SnapId): void {
+  stopSnap(snapId: SnapId): Promise<void> {
     const snap = this.get(snapId);
     if (!snap) {
       throw new Error(`Snap "${snapId}" not found.`);
@@ -684,8 +686,9 @@ export class SnapController extends BaseController<
       throw new Error(`Snap "${snapId}" already stopped.`);
     }
 
-    this._stopSnap(snapId);
-    console.log(`Snap "${snapId}" stopped.`);
+    return this._stopSnap(snapId).then(() => {
+      console.log(`Snap "${snapId}" stopped.`);
+    });
   }
 
   /**
@@ -693,14 +696,18 @@ export class SnapController extends BaseController<
    * terminates its worker.
    *
    * @param snapId - The id of the Snap to stop.
-   * @param setNotRunning - Whether to mark the snap as not running.
-   * Should only be set to false if the snap is about to be deleted.
+   * @param setNotRunning - Whether to mark the snap as not running. Should
+   * only be set to `false` if the state is properly transitioned by the caller.
    */
-  private _stopSnap(snapId: SnapId, setNotRunning = true): void {
+  private async _stopSnap(snapId: SnapId, setNotRunning = true): Promise<void> {
     const runtime = this._getSnapRuntimeData(snapId);
     runtime.lastRequest = null;
     this._closeAllConnections(snapId);
-    this._terminateSnap(snapId);
+
+    if (this.get(snapId) && this.isRunning(snapId)) {
+      await this._terminateSnap(snapId);
+    }
+
     if (setNotRunning) {
       this._transitionSnapState(snapId, SnapStatusEvent.stop);
     }
@@ -851,8 +858,8 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The id of the Snap.
    */
-  removeSnap(snapId: SnapId): void {
-    this.removeSnaps([snapId]);
+  async removeSnap(snapId: SnapId): Promise<void> {
+    return this.removeSnaps([snapId]);
   }
 
   /**
@@ -861,26 +868,31 @@ export class SnapController extends BaseController<
    *
    * @param snapIds - The ids of the Snaps.
    */
-  removeSnaps(snapIds: string[]): void {
+  async removeSnaps(snapIds: string[]): Promise<void> {
     if (!Array.isArray(snapIds)) {
       throw new Error('Expected array of snap ids.');
     }
 
-    this.update((state: any) => {
-      snapIds.forEach((snapId) => {
-        this._stopSnap(snapId, false);
-        this._snapsRuntimeData.delete(snapId);
-        delete state.snaps[snapId];
-        delete state.snapStates[snapId];
-        this.messagingSystem.publish(`SnapController:snapRemoved`, snapId);
-      });
-    });
+    await Promise.all(
+      snapIds.map(async (snapId) => {
+        // Disable the snap and revoke all of its permissions before deleting
+        // it. This ensures that the snap will not be restarted or otherwise
+        // affect the host environment while we are deleting it.
+        await this.disableSnap(snapId);
+        this.messagingSystem.call(
+          'PermissionController:revokeAllPermissions',
+          snapId,
+        );
 
-    snapIds.forEach((snapId) =>
-      this.messagingSystem.call(
-        'PermissionController:revokeAllPermissions',
-        snapId,
-      ),
+        this._snapsRuntimeData.delete(snapId);
+
+        this.update((state: any) => {
+          delete state.snaps[snapId];
+          delete state.snapStates[snapId];
+        });
+
+        this.messagingSystem.publish(`SnapController:snapRemoved`, snapId);
+      }),
     );
   }
 

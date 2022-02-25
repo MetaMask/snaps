@@ -721,7 +721,7 @@ describe('SnapController', () => {
     await snapController.startSnap(snap.id);
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
 
-    snapController.stopSnap(snap.id);
+    await snapController.stopSnap(snap.id);
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
 
     snapController.destroy();
@@ -909,6 +909,7 @@ describe('SnapController', () => {
     const [snapController] = getSnapControllerWithEES(
       getSnapControllerWithEESOptions({
         idleTimeCheckInterval: 1000,
+        maxRequestTime: 2000,
         maxIdleTime: 2000,
       }),
     );
@@ -941,9 +942,9 @@ describe('SnapController', () => {
     await snapController.startSnap(snap.id);
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
 
-    snapController.stopSnap(snap.id);
+    await snapController.stopSnap(snap.id);
 
-    snapController.disableSnap(snap.id);
+    await snapController.disableSnap(snap.id);
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
 
     await expect(snapController.startSnap(snap.id)).rejects.toThrow(
@@ -965,12 +966,15 @@ describe('SnapController', () => {
     snapController.enableSnap(snap.id);
     expect(snapController.state.snaps[snap.id].enabled).toStrictEqual(true);
 
+    expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
+    console.log('about to call handler', snapController.state);
     const result = await handler('foo.com', {
       jsonrpc: '2.0',
       method: 'test',
       params: {},
       id: 1,
     });
+    console.log('after handler', result, snapController.state);
     expect(result).toStrictEqual('test1');
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
 
@@ -1025,6 +1029,65 @@ describe('SnapController', () => {
       }),
     ).rejects.toThrow(/request timed out/u);
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
+
+    snapController.destroy();
+  });
+
+  it('should remove a snap that is stopped without errors', async () => {
+    const messenger = getSnapControllerMessenger();
+    jest.spyOn(messenger, 'call').mockImplementation(() => true);
+    const [snapController] = getSnapControllerWithEES(
+      getSnapControllerWithEESOptions({
+        messenger,
+        idleTimeCheckInterval: 30000,
+        maxIdleTime: 160000,
+        maxRequestTime: 1000,
+      }),
+    );
+
+    const sourceCode = `
+      wallet.registerRpcMessageHandler(async (origin, request) => {
+        const {method, params, id} = request;
+        wallet.request({method: 'setState'})
+        return method + id;
+      });
+    `;
+
+    const snap = await snapController.add({
+      id: 'npm:example-snap',
+      sourceCode,
+      manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
+    });
+
+    // override handler to take too long to return
+    (snapController as any)._getRpcMessageHandler = async () => {
+      return async () => {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(undefined);
+          }, 30000);
+        });
+      };
+    };
+
+    const handler = await snapController.getRpcMessageHandler(snap.id);
+
+    await snapController.startSnap(snap.id);
+    expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
+
+    await expect(
+      handler('foo.com', {
+        jsonrpc: '2.0',
+        method: 'test',
+        params: {},
+        id: 1,
+      }),
+    ).rejects.toThrow(/request timed out/u);
+    expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
+
+    await snapController.removeSnap(snap.id);
+
+    expect(snapController.state.snaps[snap.id]).toBeUndefined();
 
     snapController.destroy();
   });
