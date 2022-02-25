@@ -17,7 +17,7 @@
     "setup": "yarn install && yarn allow-scripts",
     "shasum": "node ./scripts/computeSnapShasum.js",
     "build:init-template": "node ./scripts/createInitTemplate.js && yarn prettier --check src/cmds/init/init-template.json",
-    "build:guards": "ts-auto-guard --guard-file-name='__GENERATED__' ./src/utils/snap-config.ts",
+    "build:guards": "ts-auto-guard --guard-file-name=__GENERATED__ ./src/utils/snap-config.ts",
     "build:tsc": "tsc --project ./tsconfig.local.json",
     "build:chmod": "chmod +x ./dist/main.js",
     "build:readme": "node ./scripts/updateReadme.js",
