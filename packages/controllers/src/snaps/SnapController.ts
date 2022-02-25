@@ -566,7 +566,6 @@ export class SnapController extends BaseController<
 
   _onUnresponsiveSnap(snapId: SnapId) {
     this._transitionSnapState(snapId, SnapStatusEvent.crash);
-    console.log('unresonsive snap', snapId);
     this._stopSnap(snapId, false);
     this.addSnapError({
       code: -32001, // just made this code up
@@ -579,7 +578,6 @@ export class SnapController extends BaseController<
 
   _onUnhandledSnapError(snapId: SnapId, error: ErrorJSON) {
     this._transitionSnapState(snapId, SnapStatusEvent.crash);
-    console.log('unhandled error', snapId);
     this._stopSnap(snapId, false);
     this.addSnapError(error);
   }
@@ -596,7 +594,6 @@ export class SnapController extends BaseController<
    * @param event - The event enum to use to transition
    */
   _transitionSnapState(snapId: SnapId, event: SnapStatusEvent) {
-    console.log('transitionSnapState', snapId, event);
     const snapStatus = this.state.snaps[snapId].status;
     let nextStatus =
       (snapStatusStateMachineConfig.states[snapStatus].on as any)[event] ??
@@ -1408,13 +1405,11 @@ export class SnapController extends BaseController<
 
       const timeoutPromise = new Promise((_resolve, reject) => {
         timeout = setTimeout(() => {
-          console.log('timeout promise stop', this._maxRequestTime);
           this._stopSnap(snapId);
           reject(new Error('The request timed out.'));
         }, this._maxRequestTime) as unknown as number;
       });
 
-      console.log('about to call promise race', handler, request);
       // This will either get the result or reject due to the timeout.
       const result = await Promise.race([
         handler(origin, request),
