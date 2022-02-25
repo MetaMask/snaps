@@ -57,6 +57,12 @@ export const DEFAULT_EXPOSED_APIS = [
   'TextEncoderStream',
   'TextDecoder',
   'TextDecoderStream',
+  'BigInt',
+  'console',
+  'crypto',
+  'Date',
+  'Math',
+  'SubtleCrypto',
 ];
 
 type TruncatedSnapFields =
