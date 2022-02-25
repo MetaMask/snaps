@@ -1,4 +1,3 @@
-/* eslint-disable import/first */
 import fs from 'fs';
 import { getPersistentState, Json } from '@metamask/controllers';
 import { ControllerMessenger } from '@metamask/controllers/dist/ControllerMessenger';
