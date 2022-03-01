@@ -63,6 +63,7 @@ export const DEFAULT_EXPOSED_APIS = [
   'Date',
   'Math',
   'SubtleCrypto',
+  'URL',
 ];
 
 type TruncatedSnapFields =
