@@ -1,12 +1,13 @@
 import {
   BaseControllerV2 as BaseController,
-  RestrictedControllerMessenger,
   GetEndowments,
   GetPermissions,
   HasPermission,
   HasPermissions,
   RequestPermissions,
+  RestrictedControllerMessenger,
   RevokeAllPermissions,
+  RevokePermissions,
 } from '@metamask/controllers';
 import {
   ErrorJSON,
@@ -21,17 +22,17 @@ import type { Patch } from 'immer';
 import { Json } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
 import {
+  gt as gtSemver,
   satisfies as satisfiesSemver,
   validRange as validRangeSemver,
 } from 'semver';
-
 import {
   ExecuteSnap,
   GetRpcMessageHandler,
   TerminateAll,
   TerminateSnap,
 } from '../services/ExecutionService';
-import { timeSince } from '../utils';
+import { isNonEmptyArray, objectDiff, timeSince } from '../utils';
 import { SnapManifest, validateSnapJsonFile } from './json-schemas';
 import {
   DEFAULT_REQUESTED_SNAP_VERSION,
@@ -39,10 +40,10 @@ import {
   fetchNpmSnap,
   LOCALHOST_HOSTNAMES,
   NpmSnapFileNames,
+  resolveVersion,
   SnapIdPrefixes,
   ValidatedSnapId,
   validateSnapShasum,
-  resolveVersion,
 } from './utils';
 
 export const controllerName = 'SnapController';
@@ -182,6 +183,11 @@ type FetchSnapResult = {
   sourceCode: string;
 
   /**
+   * Version of the fetched snap
+   */
+  version: string;
+
+  /**
    * The raw XML content of the Snap's SVG icon, if any.
    */
   svgIcon?: string;
@@ -305,6 +311,7 @@ export type AllowedActions =
   | GetPermissions
   | HasPermission
   | HasPermissions
+  | RevokePermissions
   | RevokeAllPermissions
   | RequestPermissions;
 
@@ -765,7 +772,7 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The id of the Snap to get.
    */
-  get(snapId: SnapId) {
+  get(snapId: SnapId): Snap | undefined {
     return this.state.snaps[snapId];
   }
 
@@ -1061,6 +1068,55 @@ export class SnapController extends BaseController<
   }
 
   /**
+   *
+   * @param snapId The id of the Snap to be updated
+   * @param newVersionRange A semver version range in which the maximum version will be chosen
+   * @returns @type {TruncatedSnap} if updated, @type {null} otherwise
+   */
+  async updateSnap(
+    snapId: SnapId,
+    newVersionRange: string = DEFAULT_REQUESTED_SNAP_VERSION,
+  ): Promise<TruncatedSnap | null> {
+    const snap = this.get(snapId);
+    if (snap === undefined) {
+      throw new Error(`Couldn't find snap ${snapId} to update`);
+    }
+
+    this.validateSnapId(snapId);
+
+    const newSnap = await this._fetchSnap(
+      snapId as ValidatedSnapId,
+      newVersionRange,
+    );
+    if (!gtSemver(newSnap.manifest.version, snap.version)) {
+      console.warn(
+        `Tried updating snap ${snapId} within ${newVersionRange} version range, but newer version ${snap.version} already set-up`,
+      );
+      return null;
+    }
+
+    const wasRunning = this.isRunning(snapId);
+
+    if (wasRunning) {
+      this._stopSnap(snapId);
+    }
+
+    await this._add({
+      id: snapId as ValidatedSnapId,
+      manifest: newSnap.manifest,
+      sourceCode: newSnap.sourceCode,
+    });
+
+    await this.authorize(snapId);
+
+    if (wasRunning) {
+      await this._startSnap({ snapId, sourceCode: newSnap.sourceCode });
+    }
+
+    return this.getTruncated(snapId);
+  }
+
+  /**
    * Returns a promise representing the complete installation of the requested snap.
    * If the snap is already being installed, the previously pending promise will be returned.
    *
@@ -1257,9 +1313,9 @@ export class SnapController extends BaseController<
     version?: string,
   ): Promise<FetchSnapResult> {
     try {
-      if (snapId.startsWith(SnapIdPrefixes.local)) {
+      if (isLocalSnap(snapId)) {
         return this._fetchLocalSnap(snapId.replace(SnapIdPrefixes.local, ''));
-      } else if (snapId.startsWith(SnapIdPrefixes.npm)) {
+      } else if (isNpmSnap(snapId)) {
         return this._fetchNpmSnap(
           snapId.replace(SnapIdPrefixes.npm, ''),
           version,
@@ -1324,6 +1380,7 @@ export class SnapController extends BaseController<
           npm: { filePath, iconPath },
         },
       },
+      version,
     } = manifest;
 
     const [sourceCode, svgIcon] = await Promise.all([
@@ -1344,7 +1401,7 @@ export class SnapController extends BaseController<
     ]);
 
     validateSnapShasum(manifest, sourceCode);
-    return { manifest, sourceCode, svgIcon };
+    return { manifest, sourceCode, svgIcon, version };
   }
 
   /**
@@ -1370,10 +1427,32 @@ export class SnapController extends BaseController<
     }
 
     try {
+      // After updating a snap, we revoke all unused permissions, and ask to authorize just the new ones
+      const alreadyApprovedPermissions = await this.messagingSystem.call(
+        'PermissionController:getPermissions',
+        snapId,
+      );
+
+      const newPermissions = objectDiff(
+        initialPermissions,
+        alreadyApprovedPermissions,
+      );
+
+      const unusedPermissions = Object.keys(
+        objectDiff(alreadyApprovedPermissions, initialPermissions),
+      );
+
+      if (isNonEmptyArray(unusedPermissions)) {
+        await this.messagingSystem.call(
+          'PermissionController:revokePermissions',
+          { [origin]: unusedPermissions },
+        );
+      }
+
       const [approvedPermissions] = await this.messagingSystem.call(
         'PermissionController:requestPermissions',
         { origin: snapId },
-        initialPermissions,
+        newPermissions,
       );
       return Object.values(approvedPermissions).map(
         (perm) => perm.parentCapability,
@@ -1501,4 +1580,12 @@ function isValidSnapVersionRange(version: unknown): version is string {
   return Boolean(
     typeof version === 'string' && validRangeSemver(version) !== null,
   );
+}
+
+function isLocalSnap(snapId: string): boolean {
+  return snapId.startsWith(SnapIdPrefixes.local);
+}
+
+function isNpmSnap(snapId: string): boolean {
+  return snapId.startsWith(SnapIdPrefixes.npm);
 }

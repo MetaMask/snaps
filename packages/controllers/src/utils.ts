@@ -52,6 +52,71 @@ export function isValidJson(value: unknown): value is Json {
   }
 }
 
+export function objectDiff<A, B>(a: A, b: B): Diff<A, B> {
+  return Object.entries(a).reduce((acc, [key, value]) => {
+    if (key in b) {
+      return acc;
+    }
+    acc[key] = value;
+    return acc;
+  }, {} as any);
+}
+
+/**
+ * Checks whether the type is composed of literal types
+ * @returns @type {true} if whole type is composed of literals, @type {false} if whole type is not literals, @type {boolean} if mixed
+ *
+ * @example
+ * ```
+ * type t1 = IsLiteral<1 | 2 | "asd" | true>;
+ * // t1 = true
+ *
+ * type t2 = IsLiteral<number | string>;
+ * // t2 = false
+ *
+ * type t3 = IsLiteral<1 | string>;
+ * // t3 = boolean
+ *
+ * const s = Symbol();
+ * type t4 = IsLiteral<typeof s>;
+ * // t4 = true
+ *
+ * type t5 = IsLiteral<symbol>
+ * // t5 = false;
+ * ```
+ */
+type IsLiteral<T> = T extends string | number | boolean | symbol
+  ? Extract<string | number | boolean | symbol, T> extends never
+    ? true
+    : false
+  : false;
+
+type _LiteralKeys<T> = NonNullable<
+  {
+    [Key in keyof T]: IsLiteral<Key> extends true ? Key : never;
+  }[keyof T]
+>;
+type _NonLiteralKeys<T> = NonNullable<
+  {
+    [Key in keyof T]: IsLiteral<Key> extends false ? Key : never;
+  }[keyof T]
+>;
+/**
+ * A difference of two objects based on their keys
+ *
+ * @example
+ * ```
+ * type t1 = Diff<{a: string, b: string}, {a: number}>
+ * // t1 = {b: string};
+ * type t2 = Diff<{a: string, 0: string}, Record<string, unknown>>;
+ * // t2 = { a?: string, 0: string};
+ * type t3 = Diff<{a: string, 0: string, 1: string}, Record<1 | string, unknown>>;
+ * // t3 = {a?: string, 0: string}
+ * ```
+ */
+export type Diff<A, B> = Omit<A, _LiteralKeys<B>> &
+  Partial<Pick<A, Extract<keyof A, _NonLiteralKeys<B>>>>;
+
 /**
  * Makes every specified property of the specified object type mutable.
  *
