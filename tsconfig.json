@@ -4,7 +4,7 @@
     { "path": "./packages/iframe-execution-environment-service" },
     { "path": "./packages/rpc-methods" },
     { "path": "./packages/snaps-cli" },
-    { "path": "./packages/workers" }
+    { "path": "./packages/execution-environments" }
   ],
   "files": [],
   "include": [],

@@ -1,6 +1,6 @@
 {
   "name": "@metamask/execution-environments",
-  "version": "0.0.0",
+  "version": "0.9.0",
   "description": "Snap sandbox environments for executing SES javascript",
   "repository": {
     "type": "git",
@@ -12,7 +12,7 @@
     "dist/"
   ],
   "scripts": {
-    "test": "jest --passWithNoTests",
+    "test": "jest",
     "test:ci": "yarn test",
     "test:watch": "jest --watch",
     "postinstall": "yarn build:typings",
