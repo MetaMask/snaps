@@ -13,14 +13,21 @@ export type SnapConfig = {
   bundler?: (bundler: browserify.BrowserifyObject) => void;
 };
 
-export function loadConfig(): SnapConfig {
+let snapConfigCache: SnapConfig | undefined;
+
+export function loadConfig(cached = true): SnapConfig {
+  if (snapConfigCache !== undefined && cached === true) {
+    return snapConfigCache;
+  }
+
   let config: any;
   try {
     // eslint-disable-next-line node/global-require, import/no-dynamic-require, @typescript-eslint/no-require-imports
     config = require(path.resolve(process.cwd(), CONFIG_FILE));
   } catch (err: any) {
     if (err.code === 'MODULE_NOT_FOUND') {
-      return {};
+      snapConfigCache = {};
+      return snapConfigCache;
     }
     logError(`Error during parsing of ${CONFIG_FILE}`, err);
     return process.exit(1);
@@ -32,6 +39,7 @@ export function loadConfig(): SnapConfig {
     );
     return process.exit(1);
   }
+  snapConfigCache = config;
   return config;
 }
 

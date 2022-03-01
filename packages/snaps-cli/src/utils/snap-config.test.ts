@@ -62,7 +62,7 @@ describe('snap-config', () => {
       };
       jest.doMock(CONFIG_FILE_LOCATION, () => config, { virtual: true });
 
-      const result = loadConfig();
+      const result = loadConfig(false);
 
       expect(result).toStrictEqual(config);
     });
@@ -81,7 +81,7 @@ describe('snap-config', () => {
         { virtual: true },
       );
 
-      const result = loadConfig();
+      const result = loadConfig(false);
 
       expect(result).toStrictEqual({});
       expect(mockLogError).not.toHaveBeenCalled();
@@ -100,7 +100,7 @@ describe('snap-config', () => {
         { virtual: true },
       );
 
-      loadConfig();
+      loadConfig(false);
 
       expect(mockLogError).toHaveBeenCalled();
       expect(process.exit).toHaveBeenCalledWith(1);
@@ -112,7 +112,7 @@ describe('snap-config', () => {
 
       jest.setMock(CONFIG_FILE_LOCATION, null);
 
-      loadConfig();
+      loadConfig(false);
 
       expect(mockLogError).toHaveBeenCalled();
       expect(process.exit).toHaveBeenCalledWith(1);

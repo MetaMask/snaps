@@ -55,7 +55,7 @@ export function setSnapGlobals(argv: Arguments) {
 
 /**
  * Attempts to convert a string to a boolean and throws if the value is invalid.
- *r
+ *
  * @param value - The value to convert to a boolean.
  * @return `true` if the value is the string `"true"`, `false` if it is the
  * string `"false"`, the value if it is already a boolean, or an error
