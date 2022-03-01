@@ -1142,7 +1142,7 @@ export class SnapController extends BaseController<
         }
       }
     }
-    return [...DEFAULT_EXPOSED_APIS, ...allEndowments];
+    return [...new Set([...DEFAULT_EXPOSED_APIS, ...allEndowments])];
   }
 
   /**
