@@ -14,6 +14,7 @@ import { isJsonRpcRequest } from '../__GENERATED__/openrpc.guard';
 import { rpcMethods, RpcMethodsMapping } from './rpcMethods';
 import { sortParamKeys } from './sortParams';
 import { createTimeout } from './timeout';
+import { createWASM } from './wasm';
 
 type SnapRpcHandler = (
   origin: string,
@@ -167,14 +168,9 @@ export class BaseSnapExecutor {
     const wallet = this.createSnapProvider(snapName);
 
     const endowments: Record<string, any> = {
-      BigInt,
       Buffer,
-      console,
-      crypto: self.crypto,
-      Date,
-      Math,
-      SubtleCrypto: self.SubtleCrypto,
       wallet,
+      WebAssembly: createWASM(),
       ...createTimeout(),
     };
 
