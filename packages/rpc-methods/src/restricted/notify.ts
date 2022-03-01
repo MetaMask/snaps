@@ -10,24 +10,24 @@ import { isPlainObject } from '../utils';
 
 const methodName = 'snap_notify';
 
+// Move all the types to a shared place when implementing more notifications
 export enum NotificationType {
   native = 'native',
 }
 
-type NotificationArgs = {
+export type NotificationArgs = {
   /**
-   * @todo
+   * Enum type to determine notification type. Currently only supports 'native'.
    */
   type: NotificationType;
 
   /**
-   * @todo
+   * A message to show on the notification.
    */
   message: string;
 };
 
 export type NotifyMethodHooks = {
-  // @todo Figure out if some of this exists already in the extension
   /**
    * @param snapId - The ID of the Snap that created the notification.
    * @param args - The notification arguments.

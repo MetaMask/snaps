@@ -8,6 +8,7 @@ import { manageStateBuilder, ManageStateMethodHooks } from './manageState';
 import { notifyBuilder, NotifyMethodHooks } from './notify';
 
 export { ManageStateOperation } from './manageState';
+export { NotificationArgs, NotificationType } from './notify';
 
 export type RestrictedMethodHooks = ConfirmMethodHooks &
   GetBip44EntropyMethodHooks &
