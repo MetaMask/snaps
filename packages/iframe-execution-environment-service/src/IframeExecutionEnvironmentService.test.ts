@@ -6,6 +6,7 @@ import {
 } from '@metamask/snap-types';
 import { IframeExecutionService } from './IframeExecutionService';
 import fixJSDOMPostMessageEventSource from './testHelpers/fixJSDOMPostMessageEventSource';
+import { DEFAULT_EXPOSED_APIS } from '@metamask/snap-controllers';
 
 describe('Iframe Controller', () => {
   it('can boot', async () => {
@@ -60,6 +61,7 @@ describe('Iframe Controller', () => {
       sourceCode: `
         console.log('foo');
       `,
+      endowments: DEFAULT_EXPOSED_APIS,
     });
     expect(response).toStrictEqual('OK');
     removeListener();
@@ -96,6 +98,7 @@ describe('Iframe Controller', () => {
         sourceCode: `
           throw new Error("potato");
         `,
+        endowments: DEFAULT_EXPOSED_APIS,
       });
     };
 
@@ -138,6 +141,7 @@ describe('Iframe Controller', () => {
       sourceCode: `
         console.log('foo');
       `,
+      endowments: DEFAULT_EXPOSED_APIS,
     });
     // prevent command from returning
     // eslint-disable-next-line jest/prefer-spy-on
