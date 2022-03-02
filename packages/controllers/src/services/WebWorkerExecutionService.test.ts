@@ -5,7 +5,7 @@ import {
   ExecutionServiceMessenger,
   UnresponsiveMessageEvent,
 } from '@metamask/snap-types';
-import { DEFAULT_EXPOSED_APIS } from '@metamask/snap-controllers';
+import { DEFAULT_EXPOSED_APIS } from '../snaps';
 import { WebWorkerExecutionService } from './WebWorkerExecutionService';
 
 const workerCode = fs.readFileSync(

@@ -4,9 +4,9 @@ import {
   ErrorMessageEvent,
   UnresponsiveMessageEvent,
 } from '@metamask/snap-types';
+import { DEFAULT_EXPOSED_APIS } from '@metamask/snap-controllers';
 import { IframeExecutionService } from './IframeExecutionService';
 import fixJSDOMPostMessageEventSource from './testHelpers/fixJSDOMPostMessageEventSource';
-import { DEFAULT_EXPOSED_APIS } from '@metamask/snap-controllers';
 
 describe('Iframe Controller', () => {
   it('can boot', async () => {
