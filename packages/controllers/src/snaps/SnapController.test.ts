@@ -44,6 +44,7 @@ const getSnapControllerMessenger = (
       'ExecutionService:unresponsive',
       'SnapController:snapAdded',
       'SnapController:snapInstalled',
+      'SnapController:snapUpdated',
       'SnapController:snapRemoved',
       'SnapController:stateChange',
     ],
@@ -606,7 +607,7 @@ describe('SnapController', () => {
         'ExecutionService:unhandledError',
         () => {
           const localSnap = snapController.get(snap.id);
-          expect(localSnap.status).toStrictEqual('crashed');
+          expect(localSnap?.status).toStrictEqual('crashed');
           resolve(undefined);
           snapController.destroy();
         },
@@ -650,7 +651,7 @@ describe('SnapController', () => {
         'ExecutionService:unresponsive',
         async (snapId: string) => {
           const localSnap = snapController.get(snapId);
-          expect(localSnap.status).toStrictEqual('crashed');
+          expect(localSnap?.status).toStrictEqual('crashed');
           resolve(undefined);
           snapController.destroy();
         },
@@ -1611,6 +1612,131 @@ describe('SnapController', () => {
           bar: 'baz',
         },
       });
+    });
+  });
+
+  describe('updateSnap', () => {
+    it('should throw an error on invalid snap id', async () => {
+      await expect(() => getSnapController().updateSnap('foo')).rejects.toThrow(
+        "Couldn't find snap",
+      );
+    });
+
+    it('should not update on older snap version downloaded', async () => {
+      const messenger = getSnapControllerMessenger();
+      const controller = getSnapController(
+        getSnapControllerOptions({ messenger }),
+      );
+      const fetchSnapSpy = jest.spyOn(controller as any, '_fetchSnap');
+      const onSnapUpdated = jest.fn();
+      const onSnapAdded = jest.fn();
+
+      fetchSnapSpy.mockImplementationOnce(async () => {
+        const manifest: SnapManifest = {
+          ...getSnapManifest(),
+          version: '0.9.0',
+        };
+        return {
+          manifest,
+          sourceCode: FAKE_SNAP_SOURCE_CODE,
+        };
+      });
+
+      const snap = await controller.add({
+        id: FAKE_SNAP_ID,
+        sourceCode: FAKE_SNAP_SOURCE_CODE,
+        manifest: getSnapManifest(),
+      });
+
+      messenger.subscribe('SnapController:snapUpdated', onSnapUpdated);
+      messenger.subscribe('SnapController:snapAdded', onSnapAdded);
+
+      const result = await controller.updateSnap(FAKE_SNAP_ID);
+
+      const newSnap = controller.get(FAKE_SNAP_ID);
+
+      expect(result).toBeNull();
+      expect(newSnap?.version).toStrictEqual(snap.version);
+      expect(fetchSnapSpy).toHaveBeenCalledTimes(1);
+      expect(onSnapUpdated).not.toHaveBeenCalled();
+      expect(onSnapAdded).not.toHaveBeenCalled();
+    });
+
+    it('should update a snap', async () => {
+      const messenger = getSnapControllerMessenger();
+      const controller = getSnapController(
+        getSnapControllerOptions({ messenger }),
+      );
+      const fetchSnapSpy = jest.spyOn(controller as any, '_fetchSnap');
+      const onSnapUpdated = jest.fn();
+      const onSnapAdded = jest.fn();
+
+      fetchSnapSpy.mockImplementationOnce(async () => {
+        const manifest: SnapManifest = {
+          ...getSnapManifest(),
+          version: '1.1.0',
+        };
+        return {
+          manifest,
+          sourceCode: FAKE_SNAP_SOURCE_CODE,
+        };
+      });
+
+      await controller.add({
+        id: FAKE_SNAP_ID,
+        sourceCode: FAKE_SNAP_SOURCE_CODE,
+        manifest: getSnapManifest(),
+      });
+
+      messenger.subscribe('SnapController:snapUpdated', onSnapUpdated);
+      messenger.subscribe('SnapController:snapAdded', onSnapAdded);
+
+      const result = await controller.updateSnap(FAKE_SNAP_ID);
+
+      const newSnap = controller.getTruncated(FAKE_SNAP_ID);
+
+      expect(result).toStrictEqual(newSnap);
+      expect(newSnap?.version).toStrictEqual('1.1.0');
+      expect(fetchSnapSpy).toHaveBeenCalledTimes(1);
+      expect(onSnapUpdated).toHaveBeenCalledTimes(1);
+      expect(onSnapAdded).toHaveBeenCalledTimes(1);
+    });
+
+    it('should stop and restart a live snap during update', async () => {
+      const controller = getSnapController();
+      const fetchSnapSpy = jest.spyOn(controller as any, '_fetchSnap');
+
+      fetchSnapSpy.mockImplementationOnce(async () => {
+        const manifest: SnapManifest = {
+          ...getSnapManifest(),
+          version: '1.1.0',
+        };
+        return {
+          manifest,
+          sourceCode: FAKE_SNAP_SOURCE_CODE,
+        };
+      });
+
+      await controller.add({
+        id: FAKE_SNAP_ID,
+        sourceCode: FAKE_SNAP_SOURCE_CODE,
+        manifest: getSnapManifest(),
+      });
+
+      await controller.startSnap(FAKE_SNAP_ID);
+
+      const startSnapSpy = jest.spyOn(controller as any, '_startSnap');
+      const stopSnapSpy = jest.spyOn(controller as any, '_stopSnap');
+
+      await controller.updateSnap(FAKE_SNAP_ID);
+
+      const isRunning = controller.isRunning(FAKE_SNAP_ID);
+
+      expect(fetchSnapSpy).toHaveBeenCalledTimes(1);
+      expect(isRunning).toStrictEqual(true);
+      expect(stopSnapSpy).toHaveBeenCalledTimes(1);
+      expect(startSnapSpy).toHaveBeenCalledTimes(1);
+      expect(stopSnapSpy).toHaveBeenCalledTimes(1);
     });
   });
 });

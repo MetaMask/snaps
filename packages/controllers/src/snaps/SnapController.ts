@@ -183,11 +183,6 @@ type FetchSnapResult = {
   sourceCode: string;
 
   /**
-   * Version of the fetched snap
-   */
-  version: string;
-
-  /**
    * The raw XML content of the Snap's SVG icon, if any.
    */
   svgIcon?: string;
@@ -300,11 +295,20 @@ export type SnapRemoved = {
   payload: [snapId: string];
 };
 
+/**
+ * Emitted when a Snap is updated
+ */
+export type SnapUpdated = {
+  type: `${typeof controllerName}:snapUpdated`;
+  payload: [snapId: string];
+};
+
 export type SnapControllerEvents =
   | SnapAdded
   | SnapInstalled
   | SnapRemoved
-  | SnapStateChange;
+  | SnapStateChange
+  | SnapUpdated;
 
 export type AllowedActions =
   | GetEndowments
@@ -342,7 +346,7 @@ type SnapControllerArgs = {
 
 type AddSnapBase = {
   id: SnapId;
-  version?: string;
+  versionRange?: string;
 };
 
 type AddSnapDirectlyArgs = AddSnapBase & {
@@ -1045,7 +1049,7 @@ export class SnapController extends BaseController<
     try {
       const { sourceCode } = await this.add({
         id: snapId,
-        version,
+        versionRange: version,
       });
 
       await this.authorize(snapId);
@@ -1082,8 +1086,6 @@ export class SnapController extends BaseController<
       throw new Error(`Couldn't find snap ${snapId} to update`);
     }
 
-    this.validateSnapId(snapId);
-
     const newSnap = await this._fetchSnap(
       snapId as ValidatedSnapId,
       newVersionRange,
@@ -1105,6 +1107,7 @@ export class SnapController extends BaseController<
       id: snapId as ValidatedSnapId,
       manifest: newSnap.manifest,
       sourceCode: newSnap.sourceCode,
+      versionRange: newVersionRange,
     });
 
     await this.authorize(snapId);
@@ -1112,6 +1115,8 @@ export class SnapController extends BaseController<
     if (wasRunning) {
       await this._startSnap({ snapId, sourceCode: newSnap.sourceCode });
     }
+
+    this.messagingSystem.publish('SnapController:snapUpdated', snapId);
 
     return this.getTruncated(snapId);
   }
@@ -1236,7 +1241,7 @@ export class SnapController extends BaseController<
    * @returns The resulting snap object.
    */
   private async _add(args: ValidatedAddSnapArgs): Promise<Snap> {
-    const { id: snapId, version = DEFAULT_REQUESTED_SNAP_VERSION } = args;
+    const { id: snapId, versionRange = DEFAULT_REQUESTED_SNAP_VERSION } = args;
 
     let manifest: SnapManifest, sourceCode: string, svgIcon: string | undefined;
     if ('manifest' in args) {
@@ -1246,13 +1251,13 @@ export class SnapController extends BaseController<
     } else {
       ({ manifest, sourceCode, svgIcon } = await this._fetchSnap(
         snapId,
-        version,
+        versionRange,
       ));
     }
 
-    if (!satisfiesSemver(manifest.version, version)) {
+    if (!satisfiesSemver(manifest.version, versionRange)) {
       throw new Error(
-        `Version mismatch. Manifest for ${snapId} specifies version ${manifest.version} which doesn't satisfy requested version range ${version}`,
+        `Version mismatch. Manifest for ${snapId} specifies version ${manifest.version} which doesn't satisfy requested version range ${versionRange}`,
       );
     }
 
@@ -1380,7 +1385,6 @@ export class SnapController extends BaseController<
           npm: { filePath, iconPath },
         },
       },
-      version,
     } = manifest;
 
     const [sourceCode, svgIcon] = await Promise.all([
@@ -1401,7 +1405,7 @@ export class SnapController extends BaseController<
     ]);
 
     validateSnapShasum(manifest, sourceCode);
-    return { manifest, sourceCode, svgIcon, version };
+    return { manifest, sourceCode, svgIcon };
   }
 
   /**
