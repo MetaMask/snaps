@@ -4,7 +4,6 @@ import {
   ErrorMessageEvent,
   UnresponsiveMessageEvent,
 } from '@metamask/snap-types';
-import { DEFAULT_EXPOSED_APIS } from '@metamask/snap-controllers';
 import { IframeExecutionService } from './IframeExecutionService';
 import fixJSDOMPostMessageEventSource from './testHelpers/fixJSDOMPostMessageEventSource';
 
@@ -61,7 +60,8 @@ describe('Iframe Controller', () => {
       sourceCode: `
         console.log('foo');
       `,
-      endowments: DEFAULT_EXPOSED_APIS,
+      // Was gonna use DEFAULT_EXPOSED_APIS here, but some are not implemented in JSDom, breaking tests.
+      endowments: ['console'],
     });
     expect(response).toStrictEqual('OK');
     removeListener();
@@ -98,7 +98,8 @@ describe('Iframe Controller', () => {
         sourceCode: `
           throw new Error("potato");
         `,
-        endowments: DEFAULT_EXPOSED_APIS,
+        // Was gonna use DEFAULT_EXPOSED_APIS here, but some are not implemented in JSDom, breaking tests.
+        endowments: [],
       });
     };
 
@@ -141,7 +142,8 @@ describe('Iframe Controller', () => {
       sourceCode: `
         console.log('foo');
       `,
-      endowments: DEFAULT_EXPOSED_APIS,
+      // Was gonna use DEFAULT_EXPOSED_APIS here, but some are not implemented in JSDom, breaking tests.
+      endowments: ['console'],
     });
     // prevent command from returning
     // eslint-disable-next-line jest/prefer-spy-on
