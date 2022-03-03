@@ -29,6 +29,7 @@
   "dependencies": {
     "@metamask/key-tree": "^3.0.1",
     "@metamask/snap-controllers": "^0.9.0",
+    "@metamask/types": "^1.1.0",
     "eth-rpc-errors": "^4.0.2"
   },
   "devDependencies": {

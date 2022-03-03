@@ -4,7 +4,7 @@ import {
   PendingJsonRpcResponse,
 } from 'json-rpc-engine';
 import { ethErrors } from 'eth-rpc-errors';
-import { PermittedHandlerExport } from '../../types';
+import { PermittedHandlerExport } from '@metamask/types';
 
 /**
  * `snap_getAppKey` gets the Snap's app key.

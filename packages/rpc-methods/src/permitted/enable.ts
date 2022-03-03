@@ -10,7 +10,7 @@ import {
   SNAP_PREFIX,
   SNAP_PREFIX_REGEX,
 } from '@metamask/snap-controllers';
-import { PermittedHandlerExport } from '../../types';
+import { PermittedHandlerExport } from '@metamask/types';
 import {
   handleInstallSnaps,
   InstallSnapsHook,

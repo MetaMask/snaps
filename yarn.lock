@@ -3582,6 +3582,11 @@
   resolved "https://registry.yarnpkg.com/@metamask/template-snap/-/template-snap-0.7.0.tgz#ad22bc45476cb355cd8e1eb41755b6b6fb8e7173"
   integrity sha512-5r6niUVp92P8pu9MubzTep3wdeGU9tco+jSIxNvIWyRKuG2bjNWKaEQYGliLBADfX5s3a6kKkt8E7GZNt6vG7w==
 
+"@metamask/types@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@metamask/types/-/types-1.1.0.tgz#9bd14b33427932833c50c9187298804a18c2e025"
+  integrity sha512-EEV/GjlYkOSfSPnYXfOosxa3TqYtIW3fhg6jdw+cok/OhMgNn4wCfbENFqjytrHMU2f7ZKtBAvtiP5V8H44sSw==
+
 "@nodefactory/strip-comments@^1.0.2":
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@nodefactory/strip-comments/-/strip-comments-1.0.2.tgz#531ee3d53a1d22f14508e200f83f1e54235b1454"

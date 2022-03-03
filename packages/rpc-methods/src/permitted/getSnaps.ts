@@ -3,7 +3,7 @@ import {
   JsonRpcEngineEndCallback,
 } from 'json-rpc-engine';
 import { InstallSnapsResult } from '@metamask/snap-controllers';
-import { PermittedHandlerExport } from '../../types';
+import { PermittedHandlerExport } from '@metamask/types';
 
 /**
  * `wallet_getSnaps` gets the requester's permitted and installed Snaps.

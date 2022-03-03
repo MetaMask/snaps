@@ -5,7 +5,7 @@ import {
 } from 'json-rpc-engine';
 import { ethErrors } from 'eth-rpc-errors';
 import { RequestedPermissions } from '@metamask/snap-controllers';
-import { PermittedHandlerExport } from '../../types';
+import { PermittedHandlerExport } from '@metamask/types';
 import {
   handleInstallSnaps,
   InstallSnapsHook,

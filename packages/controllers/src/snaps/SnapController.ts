@@ -24,7 +24,7 @@ import {
   HasPermission,
   RequestPermissions,
   RevokeAllPermissions,
-} from '../permissions';
+} from '@metamask/controllers';
 import {
   ExecuteSnap,
   GetRpcMessageHandler,
