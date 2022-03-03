@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-//import { DEFAULT_EXPOSED_APIS } from '@metamask/snap-controllers';
+// import { DEFAULT_EXPOSED_APIS } from '@metamask/snap-controllers';
 
 // Import instead
 export const DEFAULT_EXPOSED_APIS = [
