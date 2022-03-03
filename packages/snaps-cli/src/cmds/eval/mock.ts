@@ -21,6 +21,8 @@ export const ALL_APIS: string[] = [
   ...DEFAULT_EXPOSED_APIS,
   ...NETWORK_APIS,
   'WebAssembly',
+  'setTimeout',
+  'clearTimeout',
 ];
 
 type MockSnapProvider = EventEmitter & {
