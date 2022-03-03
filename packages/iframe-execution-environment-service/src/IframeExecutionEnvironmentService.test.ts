@@ -7,6 +7,9 @@ import {
 import { IframeExecutionService } from './IframeExecutionService';
 import fixJSDOMPostMessageEventSource from './testHelpers/fixJSDOMPostMessageEventSource';
 
+// We do not use our default endowments in these tests because JSDOM doesn't
+// implement all of them.
+
 describe('Iframe Controller', () => {
   it('can boot', async () => {
     const controllerMessenger = new ControllerMessenger<
@@ -60,7 +63,6 @@ describe('Iframe Controller', () => {
       sourceCode: `
         console.log('foo');
       `,
-      // Was gonna use DEFAULT_EXPOSED_APIS here, but some are not implemented in JSDom, breaking tests.
       endowments: ['console'],
     });
     expect(response).toStrictEqual('OK');
@@ -98,7 +100,6 @@ describe('Iframe Controller', () => {
         sourceCode: `
           throw new Error("potato");
         `,
-        // Was gonna use DEFAULT_EXPOSED_APIS here, but some are not implemented in JSDom, breaking tests.
         endowments: [],
       });
     };
@@ -142,7 +143,6 @@ describe('Iframe Controller', () => {
       sourceCode: `
         console.log('foo');
       `,
-      // Was gonna use DEFAULT_EXPOSED_APIS here, but some are not implemented in JSDom, breaking tests.
       endowments: ['console'],
     });
     // prevent command from returning

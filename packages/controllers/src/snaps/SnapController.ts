@@ -1144,7 +1144,7 @@ export class SnapController extends BaseController<
     const deduped = [...new Set([...DEFAULT_EXPOSED_APIS, ...allEndowments])];
     if (deduped.length < DEFAULT_EXPOSED_APIS.length + allEndowments.length) {
       console.error(
-        'Duplicates found in endowments, default APIs shouldnt be requested.',
+        'Duplicates found in endowments, default APIs should not be requested.',
         allEndowments,
       );
     }
