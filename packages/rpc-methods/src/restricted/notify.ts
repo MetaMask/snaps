@@ -85,7 +85,7 @@ function getImplementation({ showNotification }: NotifyMethodHooks) {
 
     if (result.isRateLimited) {
       throw ethErrors.rpc.limitExceeded({
-        message: `Notification type: ${validatedParams.type} is currently rate-limited. Please try again later.`,
+        message: `Notification type: "${validatedParams.type}" is currently rate-limited. Please try again later.`,
       });
     }
 
@@ -121,11 +121,11 @@ function getValidatedParams(params: unknown): NotificationArgs {
     });
   }
 
-  // @todo Choose sane message limit
-  if (!message || typeof message !== 'string' || message.length >= 200) {
+  // Set to the max message length on a Mac notification for now.
+  if (!message || typeof message !== 'string' || message.length >= 50) {
     throw ethErrors.rpc.invalidParams({
       message:
-        'Must specify a non-empty string "message" less than 200 characters long.',
+        'Must specify a non-empty string "message" less than 50 characters long.',
     });
   }
 
