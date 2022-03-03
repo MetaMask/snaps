@@ -49,6 +49,21 @@ export const controllerName = 'SnapController';
 export const SNAP_PREFIX = 'wallet_snap_';
 export const SNAP_PREFIX_REGEX = new RegExp(`^${SNAP_PREFIX}`, 'u');
 
+// APIs exposed by default to the Snap without needing permissions
+export const DEFAULT_EXPOSED_APIS = [
+  'atob',
+  'btoa',
+  'TextEncoder',
+  'TextDecoder',
+  'BigInt',
+  'console',
+  'crypto',
+  'Date',
+  'Math',
+  'SubtleCrypto',
+  'URL',
+];
+
 type TruncatedSnapFields =
   | 'id'
   | 'initialPermissions'
@@ -1093,9 +1108,9 @@ export class SnapController extends BaseController<
    * value that is not an array of strings.
    *
    * @param snapId - The id of the snap whose SES endowments to get.
-   * @returns An array of the names of the endowments, if any.
+   * @returns An array of the names of the endowments.
    */
-  private async _getEndowments(snapId: string): Promise<string[] | undefined> {
+  private async _getEndowments(snapId: string): Promise<string[]> {
     let allEndowments: string[] = [];
 
     for (const permissionName of this._endowmentPermissionNames) {
@@ -1126,7 +1141,14 @@ export class SnapController extends BaseController<
         }
       }
     }
-    return allEndowments.length > 0 ? allEndowments : undefined;
+    const deduped = [...new Set([...DEFAULT_EXPOSED_APIS, ...allEndowments])];
+    if (deduped.length < DEFAULT_EXPOSED_APIS.length + allEndowments.length) {
+      console.error(
+        'Duplicates found in endowments, default APIs should not be requested.',
+        allEndowments,
+      );
+    }
+    return deduped;
   }
 
   /**

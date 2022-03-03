@@ -5,6 +5,7 @@ import {
   ExecutionServiceMessenger,
   UnresponsiveMessageEvent,
 } from '@metamask/snap-types';
+import { DEFAULT_EXPOSED_APIS } from '../snaps';
 import { WebWorkerExecutionService } from './WebWorkerExecutionService';
 
 const workerCode = fs.readFileSync(
@@ -54,6 +55,7 @@ describe('Worker Controller', () => {
       sourceCode: `
         console.log('foo');
       `,
+      endowments: DEFAULT_EXPOSED_APIS,
     });
 
     expect(response).toStrictEqual('OK');
@@ -85,6 +87,7 @@ describe('Worker Controller', () => {
       sourceCode: `
         console.log('foo');
       `,
+      endowments: DEFAULT_EXPOSED_APIS,
     });
 
     // prevent command from returning

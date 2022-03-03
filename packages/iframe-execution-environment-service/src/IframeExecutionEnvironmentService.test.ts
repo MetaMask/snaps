@@ -7,6 +7,9 @@ import {
 import { IframeExecutionService } from './IframeExecutionService';
 import fixJSDOMPostMessageEventSource from './testHelpers/fixJSDOMPostMessageEventSource';
 
+// We do not use our default endowments in these tests because JSDOM doesn't
+// implement all of them.
+
 describe('Iframe Controller', () => {
   it('can boot', async () => {
     const controllerMessenger = new ControllerMessenger<
@@ -60,6 +63,7 @@ describe('Iframe Controller', () => {
       sourceCode: `
         console.log('foo');
       `,
+      endowments: ['console'],
     });
     expect(response).toStrictEqual('OK');
     removeListener();
@@ -96,6 +100,7 @@ describe('Iframe Controller', () => {
         sourceCode: `
           throw new Error("potato");
         `,
+        endowments: [],
       });
     };
 
@@ -138,6 +143,7 @@ describe('Iframe Controller', () => {
       sourceCode: `
         console.log('foo');
       `,
+      endowments: ['console'],
     });
     // prevent command from returning
     // eslint-disable-next-line jest/prefer-spy-on
