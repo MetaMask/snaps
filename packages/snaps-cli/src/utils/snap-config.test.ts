@@ -56,7 +56,7 @@ describe('snap-config', () => {
 
     it('handles a proper config file', () => {
       const config: SnapConfig = {
-        options: {
+        cliOptions: {
           port: 8080,
         },
       };
@@ -136,7 +136,7 @@ describe('snap-config', () => {
       const outfileName = 'foo.js';
       const dist = 'build';
       const config: SnapConfig = {
-        options: {
+        cliOptions: {
           dist,
           outfileName,
         },
@@ -154,11 +154,11 @@ describe('snap-config', () => {
       expect(argv.outfileName).toStrictEqual(outfileName);
     });
 
-    it('applies a valid config file, but ignores keys given on the command line', () => {
+    it('applies a valid config file, but prefers keys given on the command line', () => {
       const outfileName = 'foo.js';
       const configDist = 'build';
       const config: SnapConfig = {
-        options: {
+        cliOptions: {
           dist: configDist,
           outfileName,
         },
@@ -181,7 +181,7 @@ describe('snap-config', () => {
       const mockLogError = jest.spyOn(miscUtils, 'logError');
       jest.spyOn(console, 'warn').mockImplementation();
       const config: SnapConfig = {
-        options: { foo: 'bar' },
+        cliOptions: { foo: 'bar' },
       };
 
       applyConfig(

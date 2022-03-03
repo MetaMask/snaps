@@ -112,16 +112,35 @@ The defaults can be overwritten using the `snap.config.json` [config file](#conf
 
 ### Configuration File
 
-`snap.config.json` can be placed in the project root directory. It should have string keys matching command arguments.
-Values become argument defaults, which can still be overriden on the command line.
+`snap.config.js` can be placed in the project root directory. It can override cli options - the property `cliOptions` should have string keys matching command arguments. Values become argument defaults, which can still be overriden on the command line.
+
 Example:
 
-```json
-{
-  "src": "lib/index.js",
-  "dist": "out",
-  "port": 9000
-}
+```javascript
+module.exports = {
+  cliOptions: {
+    src: 'lib/index.js',
+    dist: 'out',
+    port: 9000,
+  },
+};
+```
+
+Should you want to customize your build process, you can provide `bundlerCustomizer` property. It's a function that takes one argument - [browserify object](https://github.com/browserify/browserify#api-example) which we use internally to bundle the snap. You can transform it in any way you want, for example adding plugins.
+
+Example:
+
+```javascript
+const brfs = require('brfs');
+
+module.exports = {
+  cliOptions: {
+    /* ... */
+  },
+  bundlerCustomizer: (bundler) => {
+    bundler.transform(brfs);
+  },
+};
 ```
 
 The configuration file should not be published.

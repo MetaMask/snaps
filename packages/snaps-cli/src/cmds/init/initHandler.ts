@@ -81,7 +81,7 @@ export async function initHandler(argv: YargsArgs) {
   // Write config file
   try {
     const defaultConfig: SnapConfig = {
-      options: newArgs,
+      cliOptions: newArgs,
     };
     const defaultConfigFile = `module.exports = ${JSON.stringify(
       defaultConfig,

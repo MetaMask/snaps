@@ -41,7 +41,7 @@ export async function watch(argv: YargsArgs): Promise<void> {
     }
 
     try {
-      await bundle(src, outfilePath, argv, loadConfig().bundler);
+      await bundle(src, outfilePath, argv, loadConfig().bundlerCustomizer);
 
       if (manifest) {
         await manifestHandler(argv);

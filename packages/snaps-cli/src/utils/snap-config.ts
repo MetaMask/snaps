@@ -9,8 +9,8 @@ import { isSnapConfig } from './snap-config.__GENERATED__';
 
 /** @see {isSnapConfig} ts-auto-guard:type-guard */
 export type SnapConfig = {
-  options?: Record<string, unknown>;
-  bundler?: (bundler: browserify.BrowserifyObject) => void;
+  cliOptions?: Record<string, unknown>;
+  bundlerCustomizer?: (bundler: browserify.BrowserifyObject) => void;
 };
 
 let snapConfigCache: SnapConfig | undefined;
@@ -94,7 +94,7 @@ export function applyConfig(
     );
   };
 
-  const cfg: Record<string, unknown> = snapConfig.options || {};
+  const cfg: Record<string, unknown> = snapConfig.cliOptions || {};
   for (const key of Object.keys(cfg)) {
     if (Object.hasOwnProperty.call(builders, key)) {
       if (shouldSetArg(key)) {
