@@ -198,6 +198,7 @@ export class BaseSnapExecutor {
       const compartment = new Compartment({
         ...endowments,
         window: { ...endowments },
+        self: { ...endowments },
       });
       compartment.evaluate(sourceCode);
 
