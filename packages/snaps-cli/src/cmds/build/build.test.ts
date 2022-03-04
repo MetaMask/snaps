@@ -1,7 +1,7 @@
 import path from 'path';
+import * as fsUtils from '../../utils/validate-fs';
 import * as snapEvalModule from '../eval/evalHandler';
 import * as manifestModule from '../manifest/manifestHandler';
-import * as fsUtils from '../../utils/validate-fs';
 import * as buildBundle from './bundle';
 import buildModule from '.';
 
@@ -49,6 +49,7 @@ describe('build', () => {
         mockArgv.src,
         outfilePath,
         mockArgv,
+        undefined,
       );
 
       expect(evalMock).toHaveBeenCalledWith({
@@ -91,6 +92,7 @@ describe('build', () => {
         mockArgv.src,
         outfilePath,
         mockArgv,
+        undefined,
       );
       expect(evalMock).not.toHaveBeenCalled();
       expect(manifestMock).not.toHaveBeenCalled();

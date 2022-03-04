@@ -88,7 +88,7 @@ describe('initialize', () => {
       expect(fsWriteMock).toHaveBeenNthCalledWith(
         4,
         miscUtils.CONFIG_FILE,
-        JSON.stringify(expected, null, 2),
+        expect.anything(),
       );
       expect(closePromptMock).toHaveBeenCalledTimes(1);
     });
@@ -146,7 +146,7 @@ describe('initialize', () => {
       expect(fsWriteMock).toHaveBeenNthCalledWith(
         4,
         miscUtils.CONFIG_FILE,
-        JSON.stringify(expected, null, 2),
+        expect.anything(),
       );
       expect(closePromptMock).toHaveBeenCalledTimes(1);
     });
@@ -327,7 +327,7 @@ describe('initialize', () => {
       expect(mkdirpMock).toHaveBeenNthCalledWith(1, 'src');
     });
 
-    it('handles snap.config.json file write failure', async () => {
+    it('handles snap.config.js file write failure', async () => {
       global.snaps = {
         verboseErrors: false,
       };
@@ -356,7 +356,7 @@ describe('initialize', () => {
       expect(logErrorMock).toHaveBeenCalledTimes(1);
       expect(logErrorMock).toHaveBeenNthCalledWith(
         1,
-        `Init Error: Failed to write 'snap.config.json'.`,
+        `Init Error: Failed to write 'snap.config.js'.`,
         new Error('failed to write'),
       );
 
@@ -382,16 +382,7 @@ describe('initialize', () => {
       expect(fsWriteMock).toHaveBeenNthCalledWith(
         4,
         miscUtils.CONFIG_FILE,
-        JSON.stringify(
-          {
-            dist: 'dist',
-            outfileName: 'bundle.js',
-            port: 8081,
-            src: 'src/index.js',
-          },
-          null,
-          2,
-        ),
+        expect.anything(),
       );
 
       expect(mkdirpMock).toHaveBeenCalledTimes(1);

@@ -1,9 +1,9 @@
-import browserify from 'browserify';
-import { YargsArgs } from '../../types/yargs';
+import browserify, { BrowserifyObject } from 'browserify';
 import { TranspilationModes } from '../../builders';
+import { YargsArgs } from '../../types/yargs';
 import {
-  createBundleStream,
   closeBundleStream,
+  createBundleStream,
   processDependencies,
 } from './utils';
 
@@ -12,7 +12,7 @@ import {
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require */
 
 /**
- * Builds a Snap bundle JSON file from its JavaScript source.
+ * Builds a Snap bundle JS file from its JavaScript source.
  *
  * @param src - The source file path.
  * @param dest - The destination file path.
@@ -25,6 +25,7 @@ export function bundle(
   src: string,
   dest: string,
   argv: YargsArgs,
+  bundlerTransform?: (bundler: BrowserifyObject) => void,
 ): Promise<boolean> {
   const { sourceMaps: debug, transpilationMode } = argv;
   const babelifyOptions = processDependencies(argv as any);
@@ -54,6 +55,8 @@ export function bundle(
         ...(babelifyOptions as any),
       });
     }
+
+    bundlerTransform?.(bundler);
 
     bundler.bundle(
       async (bundleError, bundleBuffer: Buffer) =>

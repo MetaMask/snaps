@@ -1,12 +1,13 @@
+import { YargsArgs } from '../../types/yargs';
 import {
   getOutfilePath,
+  loadConfig,
   validateDirPath,
   validateFilePath,
   validateOutfileName,
 } from '../../utils';
 import { snapEval } from '../eval/evalHandler';
 import { manifestHandler } from '../manifest/manifestHandler';
-import { YargsArgs } from '../../types/yargs';
 import { bundle } from './bundle';
 
 /**
@@ -29,7 +30,12 @@ export async function build(argv: YargsArgs): Promise<void> {
   await validateDirPath(dist, true);
 
   const outfilePath = getOutfilePath(dist, outfileName as string);
-  const result = await bundle(src, outfilePath, argv);
+  const result = await bundle(
+    src,
+    outfilePath,
+    argv,
+    loadConfig().bundlerCustomizer,
+  );
   if (result && argv.eval) {
     await snapEval({ ...argv, bundle: outfilePath });
   }

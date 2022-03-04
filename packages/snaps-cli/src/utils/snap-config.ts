@@ -1,10 +1,47 @@
-import { readFileSync } from 'fs';
+import path from 'path';
+import type browserify from 'browserify';
 import { Arguments } from 'yargs';
 import yargsParse from 'yargs-parser';
 import yargs from 'yargs/yargs';
 import builders from '../builders';
-import { logError } from './misc';
-import { CONFIG_FILE } from '.';
+import { CONFIG_FILE, logError } from './misc';
+import { isSnapConfig } from './snap-config.__GENERATED__';
+
+/** @see {isSnapConfig} ts-auto-guard:type-guard */
+export type SnapConfig = {
+  cliOptions?: Record<string, unknown>;
+  bundlerCustomizer?: (bundler: browserify.BrowserifyObject) => void;
+};
+
+let snapConfigCache: SnapConfig | undefined;
+
+export function loadConfig(cached = true): SnapConfig {
+  if (snapConfigCache !== undefined && cached === true) {
+    return snapConfigCache;
+  }
+
+  let config: any;
+  try {
+    // eslint-disable-next-line node/global-require, import/no-dynamic-require, @typescript-eslint/no-require-imports
+    config = require(path.resolve(process.cwd(), CONFIG_FILE));
+  } catch (err: any) {
+    if (err.code === 'MODULE_NOT_FOUND') {
+      snapConfigCache = {};
+      return snapConfigCache;
+    }
+    logError(`Error during parsing of ${CONFIG_FILE}`, err);
+    return process.exit(1);
+  }
+
+  if (!isSnapConfig(config)) {
+    logError(
+      `Can't validate ${CONFIG_FILE}. Ensure it's a proper javascript file and abides with the structure of a snap configuration file`,
+    );
+    return process.exit(1);
+  }
+  snapConfigCache = config;
+  return config;
+}
 
 // Note that the below function is necessary because yarg's .config() function
 // leaves much to be desired.
@@ -20,6 +57,7 @@ import { CONFIG_FILE } from '.';
  * on the command line.
  */
 export function applyConfig(
+  snapConfig: SnapConfig,
   processArgv: string[],
   yargsArgv: Arguments,
   yargsInstance: typeof yargs,
@@ -56,42 +94,17 @@ export function applyConfig(
     );
   };
 
-  // Now, we attempt to read and apply config from the config file, if any.
-  let cfg: Record<string, unknown> = {};
-  try {
-    cfg = JSON.parse(readFileSync(CONFIG_FILE, 'utf8'));
-  } catch (err) {
-    if (err.code === 'ENOENT') {
-      // If there's no config file, we're done here.
-      return;
-    }
-
-    logError(
-      `Error: "${CONFIG_FILE}" exists but could not be parsed. Ensure your config file is valid JSON and try again.`,
-      err,
-    );
-    process.exit(1);
-  }
-
-  if (cfg && typeof cfg === 'object' && !Array.isArray(cfg)) {
-    for (const key of Object.keys(cfg)) {
-      if (Object.hasOwnProperty.call(builders, key)) {
-        if (shouldSetArg(key)) {
-          yargsArgv[key] = cfg[key];
-        }
-      } else {
-        logError(
-          `Error: Encountered unrecognized config property "${key}" in config file "${CONFIG_FILE}". Remove the property and try again.`,
-        );
-        process.exit(1);
+  const cfg: Record<string, unknown> = snapConfig.cliOptions || {};
+  for (const key of Object.keys(cfg)) {
+    if (Object.hasOwnProperty.call(builders, key)) {
+      if (shouldSetArg(key)) {
+        yargsArgv[key] = cfg[key];
       }
+    } else {
+      logError(
+        `Error: Encountered unrecognized config property "options.${key}" in config file "${CONFIG_FILE}". Remove the property and try again.`,
+      );
+      process.exit(1);
     }
-  } else {
-    const cfgType = cfg === null ? 'null' : typeof cfg;
-
-    logError(
-      `Error: The config file must consist of a top-level JSON object. Received "${cfgType}" from "${CONFIG_FILE}". Fix your config file and try again.`,
-    );
-    process.exit(1);
   }
 }

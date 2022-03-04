@@ -1,11 +1,11 @@
 import EventEmitter from 'events';
 import path from 'path';
 import chokidar from 'chokidar';
+import * as miscUtils from '../../utils/misc';
+import * as fsUtils from '../../utils/validate-fs';
 import * as build from '../build/bundle';
 import * as evalModule from '../eval/evalHandler';
 import * as manifest from '../manifest/manifestHandler';
-import * as fsUtils from '../../utils/validate-fs';
-import * as miscUtils from '../../utils/misc';
 import watch from '.';
 
 type MockWatcher = {
@@ -115,6 +115,7 @@ describe('watch', () => {
             mockSrc,
             mockPath,
             getMockArgv(),
+            undefined,
           );
           resolve();
         });
@@ -140,6 +141,7 @@ describe('watch', () => {
             mockSrc,
             mockPath,
             getMockArgv(),
+            undefined,
           );
           resolve();
         });
@@ -165,6 +167,7 @@ describe('watch', () => {
             mockSrc,
             mockPath,
             getMockArgv(),
+            undefined,
           );
           resolve();
         });
@@ -207,6 +210,7 @@ describe('watch', () => {
         mockSrc,
         mockPath,
         getMockArgv({ eval: true, manifest: true }),
+        undefined,
       );
       expect(manifestMock).toHaveBeenCalledTimes(1);
       expect(manifestMock).toHaveBeenCalledWith(

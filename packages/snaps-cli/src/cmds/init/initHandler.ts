@@ -7,7 +7,13 @@ import {
 } from '@metamask/snap-controllers';
 import mkdirp from 'mkdirp';
 import { YargsArgs } from '../../types/yargs';
-import { closePrompt, CONFIG_FILE, logError, readJsonFile } from '../../utils';
+import {
+  closePrompt,
+  CONFIG_FILE,
+  logError,
+  readJsonFile,
+  SnapConfig,
+} from '../../utils';
 import { getWritableManifest } from '../manifest/manifestHandler';
 import template from './init-template.json';
 import {
@@ -74,7 +80,16 @@ export async function initHandler(argv: YargsArgs) {
 
   // Write config file
   try {
-    await fs.writeFile(CONFIG_FILE, JSON.stringify(newArgs, null, 2));
+    const defaultConfig: SnapConfig = {
+      cliOptions: newArgs,
+    };
+    const defaultConfigFile = `module.exports = ${JSON.stringify(
+      defaultConfig,
+      null,
+      2,
+    )}
+    `;
+    await fs.writeFile(CONFIG_FILE, defaultConfigFile);
     console.log(`Init: Wrote '${CONFIG_FILE}' config file`);
   } catch (err) {
     logError(`Init Error: Failed to write '${CONFIG_FILE}'.`, err);

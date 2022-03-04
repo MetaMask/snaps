@@ -15,7 +15,7 @@ export const permRequestKeys = [
   'proof',
 ];
 
-export const CONFIG_FILE = 'snap.config.json';
+export const CONFIG_FILE = 'snap.config.js';
 
 // CLI arguments whose values are file paths
 const pathArguments = new Set([
