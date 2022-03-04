@@ -7,9 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.10.0]
+### Added
+- Allow specifying a version range when installing snap ([#250](https://github.com/MetaMask/snaps-skunkworks/pull/250))
+- Add more safe default endowments to snaps ([#252](https://github.com/MetaMask/snaps-skunkworks/pull/252))
+
 ### Changed
+- **BREAKING:** Specify all endowments in the `SnapController` ([#252](https://github.com/MetaMask/snaps-skunkworks/pull/252)), ([#266](https://github.com/MetaMask/snaps-skunkworks/pull/266))
+  - Previously, default endowments were specified in the execution environment. Now, default endowments are specified in the `SnapController`, and the execution environment will only add endowments specified by the execution command, except for the `wallet` API object.
 - Disable caching when fetching local snaps ([#227](https://github.com/MetaMask/snaps-skunkworks/pull/227))
   - This ensures that the `SnapController` will always fetch the latest snap manifest and source code during local development.
+
+### Fixed
+- Prevent useless errors from being thrown when a snap is removed ([#215](https://github.com/MetaMask/snaps-skunkworks/pull/215))
 
 ## [0.9.0]
 ### Added

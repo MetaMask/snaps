@@ -13,8 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `transpiledDeps` flag to `build` and `watch` commands ([#221](https://github.com/MetaMask/snaps-skunkworks/pull/221))
   - This flag allows the user to specify which dependencies will be transpiled at build time if the `transpilationMode` is `localAndDeps`.
 - Add CLI usage instructions to readme ([#228](https://github.com/MetaMask/snaps-skunkworks/pull/228))
+- Build process customization ([#251](https://github.com/MetaMask/snaps-skunkworks/pull/251))
 
 ### Changed
+- **BREAKING:** Change config file format ([#251](https://github.com/MetaMask/snaps-skunkworks/pull/251))
+  - The CLI now expects a file `snap.config.js` instead of `snap.config.json`, with a different structure. See the README for details.
 - **BREAKING:** Strip comments in source code by default ([#243](https://github.com/MetaMask/snaps-skunkworks/pull/243))
   - All comments will now be stripped from snap source code (including dependencies) by default.
 - Set `verboseErrors` to `true` by default ([#249](https://github.com/MetaMask/snaps-skunkworks/pull/249))

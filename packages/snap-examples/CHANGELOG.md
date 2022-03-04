@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.10.0]
+### Changed
+- **BREAKING:** Update config files per `@metamask/snaps-cli@0.10.0` ([#251](https://github.com/MetaMask/snaps-skunkworks/pull/251))
+
 ### Fixed
 - Ensure that all examples work with the current Snaps implementation ([#219](https://github.com/MetaMask/snaps-skunkworks/pull/219))
 

@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.10.0]
+### Added
+- `snap_notify` RPC method ([#234](https://github.com/MetaMask/snaps-skunkworks/pull/234))
+
 ### Changed
 - **BREAKING:** Enforce JSON-compatibility of snap state ([#233](https://github.com/MetaMask/snaps-skunkworks/pull/233))
   - This state was always supposed to be JSON-compatible, it just wasn't enforced until now.
