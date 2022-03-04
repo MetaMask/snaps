@@ -32,10 +32,7 @@ export type NotifyMethodHooks = {
    * @param snapId - The ID of the Snap that created the notification.
    * @param args - The notification arguments.
    */
-  showNotification: (
-    snapId: string,
-    args: NotificationArgs,
-  ) => Promise<{ isRateLimited: boolean }>;
+  showNotification: (snapId: string, args: NotificationArgs) => Promise<null>;
 };
 
 type SpecificationBuilderOptions = {
@@ -81,15 +78,8 @@ function getImplementation({ showNotification }: NotifyMethodHooks) {
     } = args;
 
     const validatedParams = getValidatedParams(params);
-    const result = await showNotification(origin, validatedParams);
 
-    if (result.isRateLimited) {
-      throw ethErrors.rpc.limitExceeded({
-        message: `Notification type: "${validatedParams.type}" is currently rate-limited. Please try again later.`,
-      });
-    }
-
-    return null;
+    return await showNotification(origin, validatedParams);
   };
 }
 
