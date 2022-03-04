@@ -112,9 +112,7 @@ function getValidatedParams(params: unknown): NotificationArgs {
   if (
     !type ||
     typeof type !== 'string' ||
-    !Object.values(NotificationType)
-      .map((n) => n.toString())
-      .includes(type)
+    !(Object.values(NotificationType) as string[]).includes(type)
   ) {
     throw ethErrors.rpc.invalidParams({
       message: 'Must specify a valid notification "type".',
