@@ -8,14 +8,7 @@ enum GlobalObjectNames {
   window = 'window',
 }
 
-/**
- * A platform-agnostic alias for the root realm global object.
- */
 let _rootRealmGlobal: typeof globalThis;
-
-/**
- * The string literal corresponding to the name of the root realm global object.
- */
 let _rootRealmGlobalName: string;
 
 /* istanbul ignore next */
@@ -37,7 +30,14 @@ if (typeof globalThis !== 'undefined') {
 }
 /* eslint-enable no-negated-condition */
 
+/**
+ * A platform-agnostic alias for the root realm global object.
+ */
 const rootRealmGlobal = _rootRealmGlobal;
+
+/**
+ * The string literal corresponding to the name of the root realm global object.
+ */
 const rootRealmGlobalName = _rootRealmGlobalName;
 
 export { rootRealmGlobal, rootRealmGlobalName };
