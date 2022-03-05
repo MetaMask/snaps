@@ -8,7 +8,7 @@
  * @returns An object with the attenuated `setTimeout` and `clearTimeout`
  * functions.
  */
-export const createTimeout = () => {
+const createTimeout = () => {
   const registeredTimeouts = new Set<number>();
 
   const _setTimeout = (handler: TimerHandler, timeout?: number): number => {
@@ -37,3 +37,9 @@ export const createTimeout = () => {
 
   return { setTimeout: _setTimeout, clearTimeout: _clearTimeout } as const;
 };
+
+const endowmentModule = {
+  names: ['setTimeout', 'clearTimeout'] as const,
+  factory: createTimeout,
+};
+export default endowmentModule;

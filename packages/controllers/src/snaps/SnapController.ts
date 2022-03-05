@@ -53,15 +53,19 @@ export const SNAP_PREFIX_REGEX = new RegExp(`^${SNAP_PREFIX}`, 'u');
 export const DEFAULT_EXPOSED_APIS = [
   'atob',
   'btoa',
-  'TextEncoder',
-  'TextDecoder',
   'BigInt',
+  'Buffer',
   'console',
   'crypto',
   'Date',
   'Math',
+  'setTimeout',
+  'clearTimeout',
   'SubtleCrypto',
+  'TextDecoder',
+  'TextEncoder',
   'URL',
+  'WebAssembly',
 ];
 
 type TruncatedSnapFields =
