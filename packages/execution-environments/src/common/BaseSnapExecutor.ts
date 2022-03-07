@@ -13,8 +13,8 @@ import {
 import { isJsonRpcRequest } from '../__GENERATED__/openrpc.guard';
 import { rpcMethods, RpcMethodsMapping } from './rpcMethods';
 import { sortParamKeys } from './sortParams';
-import { createTimeout } from './timeout';
-import { createWASM } from './wasm';
+import { createEndowments } from './endowments';
+import { rootRealmGlobal } from './globalObject';
 
 type SnapRpcHandler = (
   origin: string,
@@ -155,36 +155,15 @@ export class BaseSnapExecutor {
   ) {
     console.log(`starting snap '${snapName}' in worker`);
     if (this.snapPromiseErrorHandler) {
-      self.removeEventListener(
+      rootRealmGlobal.removeEventListener(
         'unhandledrejection',
         this.snapPromiseErrorHandler,
       );
     }
 
     if (this.snapErrorHandler) {
-      self.removeEventListener('error', this.snapErrorHandler);
+      rootRealmGlobal.removeEventListener('error', this.snapErrorHandler);
     }
-
-    const wallet = this.createSnapProvider(snapName);
-
-    const endowments: Record<string, any> = {
-      Buffer,
-      wallet,
-      WebAssembly: createWASM(),
-      ...createTimeout(),
-    };
-
-    (_endowments || []).forEach((_endowment) => {
-      if (!(_endowment in self)) {
-        throw new Error(`Unknown endowment: "${_endowment}".`);
-      }
-
-      const globalValue = (self as any)[_endowment];
-      endowments[_endowment] =
-        typeof globalValue === 'function'
-          ? globalValue.bind(self)
-          : globalValue;
-    });
 
     this.snapErrorHandler = (error: ErrorEvent) => {
       this.errorHandler(error.error, { snapName });
@@ -194,7 +173,11 @@ export class BaseSnapExecutor {
       this.errorHandler(error.reason, { snapName });
     };
 
+    const wallet = this.createSnapProvider(snapName);
+
     try {
+      const endowments = createEndowments(wallet, _endowments);
+
       const compartment = new Compartment({
         ...endowments,
         window: { ...endowments },
@@ -202,8 +185,11 @@ export class BaseSnapExecutor {
       });
       compartment.evaluate(sourceCode);
 
-      self.addEventListener('unhandledrejection', this.snapPromiseErrorHandler);
-      self.addEventListener('error', this.snapErrorHandler);
+      rootRealmGlobal.addEventListener(
+        'unhandledrejection',
+        this.snapPromiseErrorHandler,
+      );
+      rootRealmGlobal.addEventListener('error', this.snapErrorHandler);
     } catch (err) {
       this.removeSnap(snapName);
       throw new Error(
