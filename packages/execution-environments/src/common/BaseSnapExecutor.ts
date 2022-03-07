@@ -174,9 +174,10 @@ export class BaseSnapExecutor {
     };
 
     const wallet = this.createSnapProvider(snapName);
-    const endowments = createEndowments(wallet, _endowments);
 
     try {
+      const endowments = createEndowments(wallet, _endowments);
+
       const compartment = new Compartment({
         ...endowments,
         window: { ...endowments },
