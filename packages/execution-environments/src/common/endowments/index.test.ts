@@ -65,6 +65,7 @@ describe('createEndowments', () => {
       'Buffer',
       'console',
       'Math',
+      'BigInt',
       'setTimeout',
       'clearTimeout',
       'WebAssembly',
@@ -75,6 +76,7 @@ describe('createEndowments', () => {
       Buffer,
       console,
       Math,
+      BigInt: expect.any(Function),
       setTimeout: expect.any(Function),
       clearTimeout: expect.any(Function),
       WebAssembly: { ...WebAssembly },
@@ -82,11 +84,19 @@ describe('createEndowments', () => {
 
     expect(endowments.wallet).toBe(mockWallet);
     expect(endowments.Buffer).toBe(Buffer);
-    expect(endowments.Math).toBe(Math);
     expect(endowments.console).toBe(console);
+    expect(endowments.Math).toBe(Math);
 
+    expect(endowments.BigInt).not.toBe(BigInt);
     expect(endowments.clearTimeout).not.toBe(clearTimeout);
     expect(endowments.setTimeout).not.toBe(setTimeout);
     expect(endowments.WebAssembly).not.toBe(WebAssembly);
+  });
+
+  it('throws an error for unrecognized endowments', () => {
+    const mockWallet = { foo: Symbol('bar') };
+    expect(() => createEndowments(mockWallet as any, ['foo'])).toThrow(
+      'Unknown endowment: "foo".',
+    );
   });
 });
