@@ -1,9 +1,9 @@
+import { InstallSnapsResult } from '@metamask/snap-controllers';
 import {
+  PermittedHandlerExport,
   PendingJsonRpcResponse,
   JsonRpcEngineEndCallback,
-} from 'json-rpc-engine';
-import { InstallSnapsResult } from '@metamask/snap-controllers';
-import { PermittedHandlerExport } from '@metamask/types';
+} from '@metamask/types';
 
 /**
  * `wallet_getSnaps` gets the requester's permitted and installed Snaps.

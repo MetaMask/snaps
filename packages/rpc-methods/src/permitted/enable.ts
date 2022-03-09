@@ -1,15 +1,15 @@
-import {
-  JsonRpcRequest,
-  PendingJsonRpcResponse,
-  JsonRpcEngineEndCallback,
-} from 'json-rpc-engine';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import {
   RequestedPermissions,
   PermissionConstraint,
 } from '@metamask/controllers';
 import { SNAP_PREFIX, SNAP_PREFIX_REGEX } from '@metamask/snap-controllers';
-import { PermittedHandlerExport } from '@metamask/types';
+import {
+  PermittedHandlerExport,
+  JsonRpcRequest,
+  PendingJsonRpcResponse,
+  JsonRpcEngineEndCallback,
+} from '@metamask/types';
 import {
   handleInstallSnaps,
   InstallSnapsHook,
