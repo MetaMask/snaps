@@ -87,9 +87,10 @@ describe('utils', () => {
       [
         ['/* delete me */postProcessMe', 'postProcessMe'],
         ['oi// hello\npostProcessMe', 'oi\npostProcessMe'],
+        ['oi/**********/\npostProcessMe//hello', 'oipostProcessMe'],
+        ['oi/***/\npostProcessMe//hello', 'oipostProcessMe'],
+        // This one is handled by our regex; strip-comments can't deal with it.
         ['oi/**/\npostProcessMe//hello', 'oi\npostProcessMe'],
-        ['oi/***/\npostProcessMe//hello', 'oi\npostProcessMe'],
-        ['oi/**********/\npostProcessMe//hello', 'oi\npostProcessMe'],
       ].forEach(([input, expected]) => {
         expect(postProcess(input, { stripComments: true })).toStrictEqual(
           expected,
