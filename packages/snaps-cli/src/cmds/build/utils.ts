@@ -1,30 +1,12 @@
-import { createWriteStream } from 'fs';
+import { promises as fs } from 'fs';
 import stripComments from '@nodefactory/strip-comments';
 import { writeError } from '../../utils/misc';
 import { Option, YargsArgs } from '../../types/yargs';
 import { TranspilationModes } from '../../builders';
 
-/**
- * Opens a stream to write the destination file path.
- *
- * @param dest - The output file path
- * @returns - The stream
- */
-export function createBundleStream(dest: string): NodeJS.WritableStream {
-  const stream = createWriteStream(dest, {
-    autoClose: false,
-    encoding: 'utf8',
-  });
-  stream.on('error', (err) => {
-    writeError('Write error:', err.message, err, dest);
-  });
-  return stream;
-}
-
-type CloseStreamArgs = {
+type WriteBundleFileArgs = {
   bundleError: Error;
   bundleBuffer: Buffer;
-  bundleStream: NodeJS.WritableStream;
   src: string;
   dest: string;
   resolve: (value: boolean) => void;
@@ -32,28 +14,35 @@ type CloseStreamArgs = {
 };
 
 /**
- * Postprocesses the bundle string and closes the write stream.
+ * Performs postprocessing on the bundle contents and writes them to disk.
+ * Intended to be used in the callback passed to the Browserify `.bundle()`
+ * call.
  *
- * @param stream - The write stream
- * @param bundleString - The bundle string
- * @param options - post process options
- * @param options.stripComments
+ * @param options - Options bag.
+ * @param options.bundleError - Any error received from Browserify.
+ * @param options.bundleBuffer - The {@link Buffer} with the bundle contents
+ * from Browserify.
+ * @param options.src - The source file path.
+ * @param options.dest - The destination file path.
+ * @param options.resolve - A {@link Promise} resolution function, so that we
+ * can use promises and `async`/`await` even though Browserify uses callbacks.
+ * @param options.argv - The Yargs `argv` object.
  */
-export async function closeBundleStream({
+export async function writeBundleFile({
   bundleError,
   bundleBuffer,
-  bundleStream,
   src,
   dest,
   resolve,
   argv,
-}: CloseStreamArgs) {
+}: WriteBundleFileArgs) {
   if (bundleError) {
     await writeError('Build error:', bundleError.message, bundleError);
   }
 
   try {
-    bundleStream.end(
+    await fs.writeFile(
+      dest,
       postProcess(bundleBuffer ? bundleBuffer.toString() : null, {
         stripComments: argv.stripComments,
         transformHtmlComments: argv.transformHtmlComments,
@@ -64,8 +53,8 @@ export async function closeBundleStream({
       console.log(`Build success: '${src}' bundled as '${dest}'!`);
     }
     resolve(true);
-  } catch (closeError) {
-    await writeError('Write error:', closeError.message, closeError, dest);
+  } catch (error) {
+    await writeError('Write error:', error.message, error, dest);
   }
 }
 

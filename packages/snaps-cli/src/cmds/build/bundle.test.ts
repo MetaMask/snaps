@@ -29,11 +29,8 @@ describe('bundle', () => {
           },
         }),
       );
-      const createStreamMock = jest
-        .spyOn(bundleUtils, 'createBundleStream')
-        .mockImplementation();
-      const closeStreamMock = jest
-        .spyOn(bundleUtils, 'closeBundleStream')
+      const writeBundleFileMock = jest
+        .spyOn(bundleUtils, 'writeBundleFile')
         .mockImplementation((({ resolve }: { resolve: () => any }) =>
           resolve()) as any);
 
@@ -44,8 +41,7 @@ describe('bundle', () => {
         'mockBabelify',
         expect.objectContaining({ global: false }),
       );
-      expect(createStreamMock).toHaveBeenCalledTimes(1);
-      expect(closeStreamMock).toHaveBeenCalledTimes(1);
+      expect(writeBundleFileMock).toHaveBeenCalledTimes(1);
     });
 
     it('handles sourceMaps: false', async () => {
@@ -64,11 +60,8 @@ describe('bundle', () => {
           },
         }),
       );
-      const createStreamMock = jest
-        .spyOn(bundleUtils, 'createBundleStream')
-        .mockImplementation();
-      const closeStreamMock = jest
-        .spyOn(bundleUtils, 'closeBundleStream')
+      const writeBundleFileMock = jest
+        .spyOn(bundleUtils, 'writeBundleFile')
         .mockImplementation((({ resolve }: { resolve: () => any }) =>
           resolve()) as any);
 
@@ -79,8 +72,7 @@ describe('bundle', () => {
         'mockBabelify',
         expect.objectContaining({ global: false }),
       );
-      expect(createStreamMock).toHaveBeenCalledTimes(1);
-      expect(closeStreamMock).toHaveBeenCalledTimes(1);
+      expect(writeBundleFileMock).toHaveBeenCalledTimes(1);
     });
 
     it('handles transpilationMode: localOnly', async () => {
@@ -99,11 +91,8 @@ describe('bundle', () => {
           },
         }),
       );
-      const createStreamMock = jest
-        .spyOn(bundleUtils, 'createBundleStream')
-        .mockImplementation();
-      const closeStreamMock = jest
-        .spyOn(bundleUtils, 'closeBundleStream')
+      const writeBundleFileMock = jest
+        .spyOn(bundleUtils, 'writeBundleFile')
         .mockImplementation((({ resolve }: { resolve: () => any }) =>
           resolve()) as any);
 
@@ -114,8 +103,7 @@ describe('bundle', () => {
         'mockBabelify',
         expect.objectContaining({ global: false }),
       );
-      expect(createStreamMock).toHaveBeenCalledTimes(1);
-      expect(closeStreamMock).toHaveBeenCalledTimes(1);
+      expect(writeBundleFileMock).toHaveBeenCalledTimes(1);
     });
 
     it('handles transpilationMode: none', async () => {
@@ -134,19 +122,15 @@ describe('bundle', () => {
           },
         }),
       );
-      const createStreamMock = jest
-        .spyOn(bundleUtils, 'createBundleStream')
-        .mockImplementation();
-      const closeStreamMock = jest
-        .spyOn(bundleUtils, 'closeBundleStream')
+      const writeBundleFileMock = jest
+        .spyOn(bundleUtils, 'writeBundleFile')
         .mockImplementation((({ resolve }: { resolve: () => any }) =>
           resolve()) as any);
 
       await bundle('src', 'dest', mockArgv as any);
       expect(mockBrowserify).toHaveBeenCalledWith('src', { debug: true });
       expect(mockTransform).not.toHaveBeenCalled();
-      expect(createStreamMock).toHaveBeenCalledTimes(1);
-      expect(closeStreamMock).toHaveBeenCalledTimes(1);
+      expect(writeBundleFileMock).toHaveBeenCalledTimes(1);
     });
 
     it('handles transpilationMode: localAndDeps', async () => {
@@ -165,11 +149,8 @@ describe('bundle', () => {
           },
         }),
       );
-      const createStreamMock = jest
-        .spyOn(bundleUtils, 'createBundleStream')
-        .mockImplementation();
-      const closeStreamMock = jest
-        .spyOn(bundleUtils, 'closeBundleStream')
+      const writeBundleFileMock = jest
+        .spyOn(bundleUtils, 'writeBundleFile')
         .mockImplementation((({ resolve }: { resolve: () => any }) =>
           resolve()) as any);
 
@@ -180,8 +161,7 @@ describe('bundle', () => {
         'mockBabelify',
         expect.objectContaining({ global: true }),
       );
-      expect(createStreamMock).toHaveBeenCalledTimes(1);
-      expect(closeStreamMock).toHaveBeenCalledTimes(1);
+      expect(writeBundleFileMock).toHaveBeenCalledTimes(1);
     });
   });
 });
