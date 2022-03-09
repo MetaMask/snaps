@@ -13,12 +13,6 @@ module.exports = {
       lines: 72,
       statements: 72,
     },
-    './src/permissions': {
-      branches: 100,
-      functions: 100,
-      lines: 100,
-      statements: 100,
-    },
   },
   silent: true,
   testTimeout: 5000,
