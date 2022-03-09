@@ -4,7 +4,7 @@ import {
   JsonRpcEngineEndCallback,
 } from 'json-rpc-engine';
 import { ethErrors } from 'eth-rpc-errors';
-import { RequestedPermissions } from '@metamask/snap-controllers';
+import { RequestedPermissions } from '@metamask/controllers';
 import { PermittedHandlerExport } from '@metamask/types';
 import {
   handleInstallSnaps,
