@@ -4,7 +4,7 @@ import { writeError } from '../../utils/misc';
 import { Option, YargsArgs } from '../../types/yargs';
 import { TranspilationModes } from '../../builders';
 
-type CloseStreamArgs = {
+type WriteBundleFileArgs = {
   bundleError: Error;
   bundleBuffer: Buffer;
   src: string;
@@ -14,21 +14,28 @@ type CloseStreamArgs = {
 };
 
 /**
- * Postprocesses the bundle string and closes the write stream.
+ * Performs postprocessing on the bundle contents and writes them to disk.
+ * Intended to be used in the callback passed to the Browserify `.bundle()`
+ * call.
  *
- * @param stream - The write stream
- * @param bundleString - The bundle string
- * @param options - post process options
- * @param options.stripComments
+ * @param options - Options bag.
+ * @param options.bundleError - Any error received from Browserify.
+ * @param options.bundleBuffer - The {@link Buffer} with the bundle contents
+ * from Browserify.
+ * @param options.src - The source file path.
+ * @param options.dest - The destination file path.
+ * @param options.resolve - A {@link Promise} resolution function, so that we
+ * can use promises and `async`/`await` even though Browserify uses callbacks.
+ * @param options.argv - The Yargs `argv` object.
  */
-export async function closeBundleStream({
+export async function writeBundleFile({
   bundleError,
   bundleBuffer,
   src,
   dest,
   resolve,
   argv,
-}: CloseStreamArgs) {
+}: WriteBundleFileArgs) {
   if (bundleError) {
     await writeError('Build error:', bundleError.message, bundleError);
   }
@@ -46,8 +53,8 @@ export async function closeBundleStream({
       console.log(`Build success: '${src}' bundled as '${dest}'!`);
     }
     resolve(true);
-  } catch (closeError) {
-    await writeError('Write error:', closeError.message, closeError, dest);
+  } catch (error) {
+    await writeError('Write error:', error.message, error, dest);
   }
 }
 

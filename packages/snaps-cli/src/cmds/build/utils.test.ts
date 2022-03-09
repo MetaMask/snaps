@@ -2,7 +2,7 @@ import { promises as fs } from 'fs';
 import { TranspilationModes } from '../../builders';
 import * as miscUtils from '../../utils/misc';
 import {
-  closeBundleStream,
+  writeBundleFile,
   postProcess,
   sanitizeDependencyPaths,
   getDependencyRegExp,
@@ -11,7 +11,7 @@ import {
 } from './utils';
 
 describe('utils', () => {
-  describe('closeBundleStream', () => {
+  describe('writeBundleFile', () => {
     it('writes to console error if there is a bundle Error', async () => {
       const writeErrorMock = jest
         .spyOn(miscUtils, 'writeError')
@@ -19,12 +19,12 @@ describe('utils', () => {
           throw new Error('error message');
         });
       await expect(
-        closeBundleStream({ bundleError: true } as any),
+        writeBundleFile({ bundleError: true } as any),
       ).rejects.toThrow('error message');
       expect(writeErrorMock).toHaveBeenCalledTimes(1);
     });
 
-    it('console logs if successfully closed bundle stream', async () => {
+    it('console logs after writing bundle to disk', async () => {
       const writeFileMock = jest.spyOn(fs, 'writeFile').mockImplementation();
       const writeErrorMock = jest
         .spyOn(miscUtils, 'writeError')
@@ -32,7 +32,7 @@ describe('utils', () => {
       const logMock = jest.spyOn(console, 'log').mockImplementation();
       const resolveMock = jest.fn();
 
-      await closeBundleStream({
+      await writeBundleFile({
         bundleError: false,
         bundleBuffer: 'foo',
         src: 'src',
@@ -46,7 +46,7 @@ describe('utils', () => {
       expect(resolveMock).toHaveBeenCalled();
     });
 
-    it('catches error if failed to close bundle stream', async () => {
+    it('catches error if writing bundle file fails', async () => {
       const logMock = jest.spyOn(console, 'log').mockImplementation();
       const writeFileMock = jest
         .spyOn(fs, 'writeFile')
@@ -60,7 +60,7 @@ describe('utils', () => {
         });
 
       await expect(
-        closeBundleStream({
+        writeBundleFile({
           bundleError: false,
           bundleBuffer: 'foo',
           src: 'src',

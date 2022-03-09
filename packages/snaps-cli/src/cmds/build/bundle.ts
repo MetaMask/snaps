@@ -1,7 +1,7 @@
 import browserify, { BrowserifyObject } from 'browserify';
 import { TranspilationModes } from '../../builders';
 import { YargsArgs } from '../../types/yargs';
-import { closeBundleStream, processDependencies } from './utils';
+import { writeBundleFile, processDependencies } from './utils';
 
 // We need to statically import all Browserify transforms and all Babel presets
 // and plugins, and calling `require` is the sanest way to do that.
@@ -55,7 +55,7 @@ export function bundle(
 
     bundler.bundle(
       async (bundleError, bundleBuffer: Buffer) =>
-        await closeBundleStream({
+        await writeBundleFile({
           bundleError,
           bundleBuffer,
           src,
