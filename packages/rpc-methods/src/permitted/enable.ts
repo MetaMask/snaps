@@ -7,9 +7,8 @@ import { ethErrors, serializeError } from 'eth-rpc-errors';
 import {
   RequestedPermissions,
   PermissionConstraint,
-  SNAP_PREFIX,
-  SNAP_PREFIX_REGEX,
-} from '@metamask/snap-controllers';
+} from '@metamask/controllers';
+import { SNAP_PREFIX, SNAP_PREFIX_REGEX } from '@metamask/snap-controllers';
 import { PermittedHandlerExport } from '@metamask/types';
 import {
   handleInstallSnaps,

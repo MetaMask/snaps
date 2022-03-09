@@ -4,9 +4,8 @@ import {
   PermissionType,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
-  isValidJson,
-  NonEmptyArray,
-} from '@metamask/snap-controllers';
+} from '@metamask/controllers';
+import { isValidJson, NonEmptyArray } from '@metamask/snap-controllers';
 import { ethErrors } from 'eth-rpc-errors';
 import { isPlainObject } from '../utils';
 
