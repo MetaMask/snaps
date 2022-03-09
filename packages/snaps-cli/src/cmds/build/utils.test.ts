@@ -89,6 +89,7 @@ describe('utils', () => {
         ['oi// hello\npostProcessMe', 'oi\npostProcessMe'],
         ['oi/**/\npostProcessMe//hello', 'oi\npostProcessMe'],
         ['oi/***/\npostProcessMe//hello', 'oi\npostProcessMe'],
+        ['oi/**********/\npostProcessMe//hello', 'oi\npostProcessMe'],
       ].forEach(([input, expected]) => {
         expect(postProcess(input, { stripComments: true })).toStrictEqual(
           expected,

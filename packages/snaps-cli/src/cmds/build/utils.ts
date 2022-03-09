@@ -86,7 +86,7 @@ export function postProcess(
     // following forms, and so we remove them manually first:
     //   /**/
     //   /***/
-    processedString = processedString.replace(/\/\*\*?\*\//gu, '');
+    processedString = processedString.replace(/\/\*\**\*\//gu, '');
 
     processedString = stripComments(processedString);
   }
