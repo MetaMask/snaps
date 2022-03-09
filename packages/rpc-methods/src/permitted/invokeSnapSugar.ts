@@ -1,11 +1,11 @@
+import { ethErrors } from 'eth-rpc-errors';
+import { SNAP_PREFIX } from '@metamask/snap-controllers';
 import {
+  PermittedHandlerExport,
   JsonRpcRequest,
   JsonRpcEngineNextCallback,
   JsonRpcEngineEndCallback,
-} from 'json-rpc-engine';
-import { ethErrors } from 'eth-rpc-errors';
-import { SNAP_PREFIX } from '@metamask/snap-controllers';
-import { PermittedHandlerExport } from '../../types';
+} from '@metamask/types';
 import { isPlainObject } from '../utils';
 
 /**

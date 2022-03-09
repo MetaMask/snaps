@@ -1,9 +1,6 @@
 import { ethErrors } from 'eth-rpc-errors';
-import {
-  SNAP_PREFIX,
-  InstallSnapsResult,
-  RequestedPermissions,
-} from '@metamask/snap-controllers';
+import { RequestedPermissions } from '@metamask/controllers';
+import { SNAP_PREFIX, InstallSnapsResult } from '@metamask/snap-controllers';
 
 import { isPlainObject } from '../../utils';
 

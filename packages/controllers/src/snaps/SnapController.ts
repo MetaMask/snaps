@@ -1,6 +1,11 @@
 import {
   BaseControllerV2 as BaseController,
   RestrictedControllerMessenger,
+  GetEndowments,
+  GetPermissions,
+  HasPermission,
+  RequestPermissions,
+  RevokeAllPermissions,
 } from '@metamask/controllers';
 import {
   ErrorJSON,
@@ -18,13 +23,7 @@ import {
   satisfies as satisfiesSemver,
   validRange as validRangeSemver,
 } from 'semver';
-import {
-  GetEndowments,
-  GetPermissions,
-  HasPermission,
-  RequestPermissions,
-  RevokeAllPermissions,
-} from '../permissions';
+
 import {
   ExecuteSnap,
   GetRpcMessageHandler,

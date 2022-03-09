@@ -1,10 +1,10 @@
+import { ethErrors } from 'eth-rpc-errors';
 import {
-  JsonRpcEngineEndCallback,
+  PermittedHandlerExport,
   JsonRpcRequest,
   PendingJsonRpcResponse,
-} from 'json-rpc-engine';
-import { ethErrors } from 'eth-rpc-errors';
-import { PermittedHandlerExport } from '../../types';
+  JsonRpcEngineEndCallback,
+} from '@metamask/types';
 
 /**
  * `snap_getAppKey` gets the Snap's app key.
