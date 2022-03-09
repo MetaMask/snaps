@@ -1,11 +1,7 @@
 import browserify, { BrowserifyObject } from 'browserify';
 import { TranspilationModes } from '../../builders';
 import { YargsArgs } from '../../types/yargs';
-import {
-  closeBundleStream,
-  createBundleStream,
-  processDependencies,
-} from './utils';
+import { closeBundleStream, processDependencies } from './utils';
 
 // We need to statically import all Browserify transforms and all Babel presets
 // and plugins, and calling `require` is the sanest way to do that.
@@ -30,7 +26,6 @@ export function bundle(
   const { sourceMaps: debug, transpilationMode } = argv;
   const babelifyOptions = processDependencies(argv as any);
   return new Promise((resolve, _reject) => {
-    const bundleStream = createBundleStream(dest);
     const bundler = browserify(src, { debug });
     if (transpilationMode !== TranspilationModes.none) {
       bundler.transform(require('babelify'), {
@@ -63,7 +58,6 @@ export function bundle(
         await closeBundleStream({
           bundleError,
           bundleBuffer,
-          bundleStream,
           src,
           dest,
           resolve,

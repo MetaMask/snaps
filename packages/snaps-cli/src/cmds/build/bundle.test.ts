@@ -29,9 +29,6 @@ describe('bundle', () => {
           },
         }),
       );
-      const createStreamMock = jest
-        .spyOn(bundleUtils, 'createBundleStream')
-        .mockImplementation();
       const closeStreamMock = jest
         .spyOn(bundleUtils, 'closeBundleStream')
         .mockImplementation((({ resolve }: { resolve: () => any }) =>
@@ -44,7 +41,6 @@ describe('bundle', () => {
         'mockBabelify',
         expect.objectContaining({ global: false }),
       );
-      expect(createStreamMock).toHaveBeenCalledTimes(1);
       expect(closeStreamMock).toHaveBeenCalledTimes(1);
     });
 
@@ -64,9 +60,6 @@ describe('bundle', () => {
           },
         }),
       );
-      const createStreamMock = jest
-        .spyOn(bundleUtils, 'createBundleStream')
-        .mockImplementation();
       const closeStreamMock = jest
         .spyOn(bundleUtils, 'closeBundleStream')
         .mockImplementation((({ resolve }: { resolve: () => any }) =>
@@ -79,7 +72,6 @@ describe('bundle', () => {
         'mockBabelify',
         expect.objectContaining({ global: false }),
       );
-      expect(createStreamMock).toHaveBeenCalledTimes(1);
       expect(closeStreamMock).toHaveBeenCalledTimes(1);
     });
 
@@ -99,9 +91,6 @@ describe('bundle', () => {
           },
         }),
       );
-      const createStreamMock = jest
-        .spyOn(bundleUtils, 'createBundleStream')
-        .mockImplementation();
       const closeStreamMock = jest
         .spyOn(bundleUtils, 'closeBundleStream')
         .mockImplementation((({ resolve }: { resolve: () => any }) =>
@@ -114,7 +103,6 @@ describe('bundle', () => {
         'mockBabelify',
         expect.objectContaining({ global: false }),
       );
-      expect(createStreamMock).toHaveBeenCalledTimes(1);
       expect(closeStreamMock).toHaveBeenCalledTimes(1);
     });
 
@@ -134,9 +122,6 @@ describe('bundle', () => {
           },
         }),
       );
-      const createStreamMock = jest
-        .spyOn(bundleUtils, 'createBundleStream')
-        .mockImplementation();
       const closeStreamMock = jest
         .spyOn(bundleUtils, 'closeBundleStream')
         .mockImplementation((({ resolve }: { resolve: () => any }) =>
@@ -145,7 +130,6 @@ describe('bundle', () => {
       await bundle('src', 'dest', mockArgv as any);
       expect(mockBrowserify).toHaveBeenCalledWith('src', { debug: true });
       expect(mockTransform).not.toHaveBeenCalled();
-      expect(createStreamMock).toHaveBeenCalledTimes(1);
       expect(closeStreamMock).toHaveBeenCalledTimes(1);
     });
 
@@ -165,9 +149,6 @@ describe('bundle', () => {
           },
         }),
       );
-      const createStreamMock = jest
-        .spyOn(bundleUtils, 'createBundleStream')
-        .mockImplementation();
       const closeStreamMock = jest
         .spyOn(bundleUtils, 'closeBundleStream')
         .mockImplementation((({ resolve }: { resolve: () => any }) =>
@@ -180,7 +161,6 @@ describe('bundle', () => {
         'mockBabelify',
         expect.objectContaining({ global: true }),
       );
-      expect(createStreamMock).toHaveBeenCalledTimes(1);
       expect(closeStreamMock).toHaveBeenCalledTimes(1);
     });
   });

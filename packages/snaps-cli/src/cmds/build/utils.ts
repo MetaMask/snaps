@@ -1,30 +1,12 @@
-import { createWriteStream } from 'fs';
+import { promises as fs } from 'fs';
 import stripComments from '@nodefactory/strip-comments';
 import { writeError } from '../../utils/misc';
 import { Option, YargsArgs } from '../../types/yargs';
 import { TranspilationModes } from '../../builders';
 
-/**
- * Opens a stream to write the destination file path.
- *
- * @param dest - The output file path
- * @returns - The stream
- */
-export function createBundleStream(dest: string): NodeJS.WritableStream {
-  const stream = createWriteStream(dest, {
-    autoClose: false,
-    encoding: 'utf8',
-  });
-  stream.on('error', (err) => {
-    writeError('Write error:', err.message, err, dest);
-  });
-  return stream;
-}
-
 type CloseStreamArgs = {
   bundleError: Error;
   bundleBuffer: Buffer;
-  bundleStream: NodeJS.WritableStream;
   src: string;
   dest: string;
   resolve: (value: boolean) => void;
@@ -42,7 +24,6 @@ type CloseStreamArgs = {
 export async function closeBundleStream({
   bundleError,
   bundleBuffer,
-  bundleStream,
   src,
   dest,
   resolve,
@@ -53,7 +34,8 @@ export async function closeBundleStream({
   }
 
   try {
-    bundleStream.end(
+    await fs.writeFile(
+      dest,
       postProcess(bundleBuffer ? bundleBuffer.toString() : null, {
         stripComments: argv.stripComments,
         transformHtmlComments: argv.transformHtmlComments,
