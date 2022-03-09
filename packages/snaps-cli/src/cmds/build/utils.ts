@@ -82,6 +82,11 @@ export function postProcess(
   let processedString = bundleString.trim();
 
   if (options.stripComments) {
+    // TODO: Upstream a better fix to @nodefactory/strip-comments
+    // The strip-comments package has issues with block comments of the
+    // form "/**/", and so we remove them manually first:
+    processedString = processedString.replace(/\/\*\*\//gu, '');
+
     processedString = stripComments(processedString);
   }
 
