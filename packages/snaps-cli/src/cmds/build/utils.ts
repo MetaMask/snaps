@@ -82,6 +82,12 @@ export function postProcess(
   let processedString = bundleString.trim();
 
   if (options.stripComments) {
+    // The strip-comments package has issues with block comments of the
+    // following forms, and so we remove them manually first:
+    //   /**/
+    //   /***/
+    processedString = processedString.replace(/\/\*\*?\*\//gu, '');
+
     processedString = stripComments(processedString);
   }
 

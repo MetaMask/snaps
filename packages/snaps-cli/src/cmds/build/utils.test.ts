@@ -84,9 +84,16 @@ describe('utils', () => {
     });
 
     it('strips comments if configured to do so', () => {
-      expect(
-        postProcess('/* delete me */postProcessMe', { stripComments: true }),
-      ).toStrictEqual('postProcessMe');
+      [
+        ['/* delete me */postProcessMe', 'postProcessMe'],
+        ['oi// hello\npostProcessMe', 'oi\npostProcessMe'],
+        ['oi/**/\npostProcessMe//hello', 'oi\npostProcessMe'],
+        ['oi/***/\npostProcessMe//hello', 'oi\npostProcessMe'],
+      ].forEach(([input, expected]) => {
+        expect(postProcess(input, { stripComments: true })).toStrictEqual(
+          expected,
+        );
+      });
     });
 
     it('ignores comments if configured to do so', () => {
