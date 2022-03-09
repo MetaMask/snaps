@@ -3,13 +3,15 @@ import {
   PermissionSpecificationBuilder,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
-  SNAP_PREFIX,
-  SnapController,
   PermissionType,
-} from '@metamask/snap-controllers';
+} from '@metamask/controllers';
 import { ethErrors } from 'eth-rpc-errors';
 
-import { NonEmptyArray } from '@metamask/snap-controllers/src/utils';
+import {
+  NonEmptyArray,
+  SNAP_PREFIX,
+  SnapController,
+} from '@metamask/snap-controllers';
 import { isPlainObject } from '../utils';
 
 const methodPrefix = SNAP_PREFIX;

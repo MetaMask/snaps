@@ -1,7 +1,5 @@
 export { Json } from '@metamask/controllers';
-export * from './permissions';
 export * from './resource';
 export * from './services';
 export * from './snaps';
-export * from './subject-metadata';
 export * from './utils';

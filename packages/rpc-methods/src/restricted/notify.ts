@@ -3,8 +3,8 @@ import {
   PermissionType,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
-} from '@metamask/snap-controllers';
-import { NonEmptyArray } from '@metamask/snap-controllers/src/utils';
+} from '@metamask/controllers';
+import { NonEmptyArray } from '@metamask/snap-controllers';
 import { ethErrors } from 'eth-rpc-errors';
 import { isPlainObject } from '../utils';
 

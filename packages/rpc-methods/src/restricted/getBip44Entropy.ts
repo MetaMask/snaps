@@ -3,10 +3,10 @@ import {
   PermissionType,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
-} from '@metamask/snap-controllers';
+} from '@metamask/controllers';
 import { ethErrors } from 'eth-rpc-errors';
 import { BIP44CoinTypeNode, JsonBIP44CoinTypeNode } from '@metamask/key-tree';
-import { NonEmptyArray } from '@metamask/snap-controllers/src/utils';
+import { NonEmptyArray } from '@metamask/snap-controllers';
 
 // TODO: Remove this after key-tree is bumped
 // We redeclare this type locally because the import relies on an interface,
