@@ -41,6 +41,7 @@ import {
   SnapIdPrefixes,
   ValidatedSnapId,
   validateSnapShasum,
+  resolveVersion,
 } from './utils';
 
 export const controllerName = 'SnapController';
@@ -955,7 +956,8 @@ export class SnapController extends BaseController<
 
     await Promise.all(
       Object.entries(requestedSnaps).map(
-        async ([snapId, { version = DEFAULT_REQUESTED_SNAP_VERSION }]) => {
+        async ([snapId, { version: rawVersion }]) => {
+          const version = resolveVersion(rawVersion);
           const permissionName = SNAP_PREFIX + snapId;
 
           if (!isValidSnapVersionRange(version)) {

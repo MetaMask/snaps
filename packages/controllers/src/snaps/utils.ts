@@ -509,3 +509,15 @@ function isValidUrl(maybeUrl: string): maybeUrl is string {
     return false;
   }
 }
+
+/**
+ * Resolve potential issues with version input, handling backwards compatiblity etc.
+ * @param version Version passed by a DApp trying to access a Snap
+ * @returns '*' if the version is undefined or 'latest' otherwise returns the specified version
+ */
+export function resolveVersion(version?: Json) {
+  if (version === undefined || version === 'latest') {
+    return DEFAULT_REQUESTED_SNAP_VERSION;
+  }
+  return version;
+}
