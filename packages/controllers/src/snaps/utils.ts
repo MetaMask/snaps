@@ -292,11 +292,6 @@ export function validateNpmSnapManifest(
 }
 
 /**
- * Like {@link Response}, but with a non-null {@link Response.body}.
- */
-type ResponseWithBody = Omit<Response, 'body'> & { body: ReadableStream };
-
-/**
  * Fetches the tarball (`.tgz` file) of the specified package and version from
  * the public npm registry. Throws an error if fetching fails.
  *
