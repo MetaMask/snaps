@@ -1426,6 +1426,15 @@ export class SnapController extends BaseController<
         );
       }
 
+      if (!Object.hasOwnProperty.call(request, 'jsonrpc')) {
+        request.jsonrpc = '2.0';
+      } else if (request.jsonrpc !== '2.0') {
+        throw ethErrors.rpc.invalidRequest({
+          message: 'Invalid "jsonrpc" property. Must be "2.0" if provided.',
+          data: request.jsonrpc,
+        });
+      }
+
       this._recordSnapRpcRequest(snapId);
 
       // Handle max request time
