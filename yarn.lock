@@ -3577,10 +3577,10 @@
   resolved "https://registry.yarnpkg.com/@metamask/types/-/types-1.1.0.tgz#9bd14b33427932833c50c9187298804a18c2e025"
   integrity sha512-EEV/GjlYkOSfSPnYXfOosxa3TqYtIW3fhg6jdw+cok/OhMgNn4wCfbENFqjytrHMU2f7ZKtBAvtiP5V8H44sSw==
 
-"@nodefactory/strip-comments@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@nodefactory/strip-comments/-/strip-comments-1.0.2.tgz#531ee3d53a1d22f14508e200f83f1e54235b1454"
-  integrity sha512-dcZC7N0xZfm2wnwnv0xyK+ak6qkonvxDypeFPLUP88kqvWzskOfv53tvEoAUGFeoddjOt2m56mtayb1gM/VY6A==
+"@nodefactory/strip-comments@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@nodefactory/strip-comments/-/strip-comments-1.0.4.tgz#d38110464ceb5a9227a310528756570d84d58265"
+  integrity sha512-Cj5eqb5l8+YuQikNSz6X+wosmzEALGFif5OWBZjmBXre71DJdV2Gz6USHgrRb0Et+R6BDfWU06TwIqp+7/+eag==
 
 "@nodelib/fs.scandir@2.1.4":
   version "2.1.4"
