@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - This flag allows the user to specify which dependencies will be transpiled at build time if the `transpilationMode` is `localAndDeps`.
 - Add CLI usage instructions to readme ([#228](https://github.com/MetaMask/snaps-skunkworks/pull/228))
 - Build process customization ([#251](https://github.com/MetaMask/snaps-skunkworks/pull/251))
+  - Builds can now be customized by adding a `bundlerCustomizer` function to `snap.config.js`. See the README for details.
 
 ### Changed
 - **BREAKING:** Change config file format ([#251](https://github.com/MetaMask/snaps-skunkworks/pull/251))
@@ -23,6 +24,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Set `verboseErrors` to `true` by default ([#249](https://github.com/MetaMask/snaps-skunkworks/pull/249))
 
 ### Fixed
+- Comment stripping bug ([#270](https://github.com/MetaMask/snaps-skunkworks/pull/270))
+  - Prior to this change, if the `--strip-comments` option was provided to `mm-snap build` and an empty block comment of the form `/**/` appeared anywhere in the source code (including dependencies), the remainder of the string after the empty block comment would be truncated. This was resolved by removing all instances of the string `/**/` from the raw bundle string.
+  - In an upcoming release, the string `/**/` will only be removed if it is in fact an empty block comment, and not if it e.g. appears in a string literal.
 - `watch` command parity with `build` command ([#241](https://github.com/MetaMask/snaps-skunkworks/pull/241))
   - The `build` command had received a number of options that were not made available to the `watch` command. They now have the same options.
 - Update dead link in readme ([#240](https://github.com/MetaMask/snaps-skunkworks/pull/240))

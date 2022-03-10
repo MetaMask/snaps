@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Disable caching when fetching local snaps ([#227](https://github.com/MetaMask/snaps-skunkworks/pull/227))
   - This ensures that the `SnapController` will always fetch the latest snap manifest and source code during local development.
 
+### Removed
+- **BREAKING:** Remove the `PermissionController` and `SubjectMetadataController` ([#261](https://github.com/MetaMask/snaps-skunkworks/pull/261))
+  - They are part of the [`@metamask/controllers`](https://npmjs.com/package/@metamask/controllers) as of version [26.0.0](https://github.com/MetaMask/controllers/releases/tag/v26.0.0) of that package.
+
 ### Fixed
 - Prevent useless errors from being thrown when a snap is removed ([#215](https://github.com/MetaMask/snaps-skunkworks/pull/215))
 
