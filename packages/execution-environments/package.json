@@ -33,7 +33,7 @@
     "auto-changelog-init": "auto-changelog init"
   },
   "dependencies": {
-    "@metamask/inpage-provider": "^8.1.0",
+    "@metamask/providers": "^8.1.1",
     "@metamask/object-multiplex": "^1.2.0",
     "@metamask/post-message-stream": "^4.0.0",
     "@metamask/snap-types": "^0.10.0",
