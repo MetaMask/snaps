@@ -30,7 +30,8 @@
     "build:tsc": "echo 'N/A'",
     "build": "yarn build:pre-tsc && yarn build:post-tsc",
     "build:typings": "open-rpc-typings -d ./src/openrpc.json --output-ts=./src/__GENERATED__/ --name-ts=openrpc && ts-auto-guard ./src/__GENERATED__/openrpc.ts --export-all",
-    "auto-changelog-init": "auto-changelog init"
+    "auto-changelog-init": "auto-changelog init",
+    "publish": "../../scripts/publish-package.sh"
   },
   "dependencies": {
     "@metamask/inpage-provider": "^8.1.0",
