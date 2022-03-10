@@ -4,6 +4,7 @@ import {
   GetEndowments,
   GetPermissions,
   HasPermission,
+  HasPermissions,
   RequestPermissions,
   RevokeAllPermissions,
 } from '@metamask/controllers';
@@ -303,6 +304,7 @@ export type AllowedActions =
   | GetEndowments
   | GetPermissions
   | HasPermission
+  | HasPermissions
   | RevokeAllPermissions
   | RequestPermissions;
 
@@ -908,17 +910,18 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Safely revokes all permissions granted to a Snap
-   * @param snapId The snap ID
+   * Safely revokes all permissions granted to a Snap.
+   *
+   * @param snapId - The snap ID.
    */
-  private revokeAllSnapPermissions(snapId: string) {
-    try {
+  private revokeAllSnapPermissions(snapId: string): void {
+    if (
+      this.messagingSystem.call('PermissionController:hasPermissions', snapId)
+    ) {
       this.messagingSystem.call(
         'PermissionController:revokeAllPermissions',
         snapId,
       );
-    } catch {
-      // This may throw if the Snap has not been completely added yet
     }
   }
 
