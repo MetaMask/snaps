@@ -9,19 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.10.0]
 ### Added
 - **BREAKING:** Transform HTML comments by default ([#237](https://github.com/MetaMask/snaps-skunkworks/pull/237))
-  - The strings `<!--` and `-->` will be transformed into `< !--` and `-- >` respectively by default. If these strings appear as operands in an expression or in a string literal, this transform will change the behavior of your program. This behavior was added because these strings are rejected by SES. The behavior can be toggled using `transformHtmlComments`.
-- `transpiledDeps` flag to `build` and `watch` commands ([#221](https://github.com/MetaMask/snaps-skunkworks/pull/221))
-  - This flag allows the user to specify which dependencies will be transpiled at build time if the `transpilationMode` is `localAndDeps`.
+  - The strings `<!--` and `-->` will be transformed into `< !--` and `-- >` respectively by default. If these strings appear as operands in an expression or in a string literal, this transform will change the behavior of your program. This behavior was added because these strings are rejected by SES. The behavior can be toggled using the `--transformHtmlComments` option.
+- `--transpiledDeps` flag to `build` and `watch` commands ([#221](https://github.com/MetaMask/snaps-skunkworks/pull/221))
+  - This flag allows the user to specify which dependencies will be transpiled at build time if the `--transpilationMode` is `--localAndDeps`.
 - Add CLI usage instructions to readme ([#228](https://github.com/MetaMask/snaps-skunkworks/pull/228))
 - Build process customization ([#251](https://github.com/MetaMask/snaps-skunkworks/pull/251))
   - Builds can now be customized by adding a `bundlerCustomizer` function to `snap.config.js`. See the README for details.
 
 ### Changed
-- **BREAKING:** Change config file format ([#251](https://github.com/MetaMask/snaps-skunkworks/pull/251))
+- **BREAKING:** Change Snap config file format ([#251](https://github.com/MetaMask/snaps-skunkworks/pull/251))
   - The CLI now expects a file `snap.config.js` instead of `snap.config.json`, with a different structure. See the README for details.
 - **BREAKING:** Strip comments in source code by default ([#243](https://github.com/MetaMask/snaps-skunkworks/pull/243))
   - All comments will now be stripped from snap source code (including dependencies) by default.
-- Set `verboseErrors` to `true` by default ([#249](https://github.com/MetaMask/snaps-skunkworks/pull/249))
+- Enable `--verboseErrors` by default ([#249](https://github.com/MetaMask/snaps-skunkworks/pull/249))
 
 ### Fixed
 - Comment stripping bug ([#270](https://github.com/MetaMask/snaps-skunkworks/pull/270))

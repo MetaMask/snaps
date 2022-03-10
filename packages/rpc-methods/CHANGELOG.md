@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - **BREAKING:** Enforce JSON-compatibility of snap state ([#233](https://github.com/MetaMask/snaps-skunkworks/pull/233))
-  - This state was always supposed to be JSON-compatible, it just wasn't enforced until now.
+  - This state was always supposed to be JSON-compatible, and this is now enforced.
 
 ## [0.9.0]
 ### Changed
