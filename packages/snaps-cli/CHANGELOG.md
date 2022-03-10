@@ -6,6 +6,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.0]
+### Added
+- **BREAKING:** Transform HTML comments by default ([#237](https://github.com/MetaMask/snaps-skunkworks/pull/237))
+  - The strings `<!--` and `-->` will be transformed into `< !--` and `-- >` respectively by default. If these strings appear as operands in an expression or in a string literal, this transform will change the behavior of your program. This behavior was added because these strings are rejected by SES. The behavior can be toggled using the `--transformHtmlComments` option.
+- `--transpiledDeps` flag to `build` and `watch` commands ([#221](https://github.com/MetaMask/snaps-skunkworks/pull/221))
+  - This flag allows the user to specify which dependencies will be transpiled at build time if the `--transpilationMode` is `--localAndDeps`.
+- Add CLI usage instructions to readme ([#228](https://github.com/MetaMask/snaps-skunkworks/pull/228))
+- Build process customization ([#251](https://github.com/MetaMask/snaps-skunkworks/pull/251))
+  - Builds can now be customized by adding a `bundlerCustomizer` function to `snap.config.js`. See the README for details.
+
+### Changed
+- **BREAKING:** Change Snap config file format ([#251](https://github.com/MetaMask/snaps-skunkworks/pull/251))
+  - The CLI now expects a file `snap.config.js` instead of `snap.config.json`, with a different structure. See the README for details.
+- **BREAKING:** Strip comments in source code by default ([#243](https://github.com/MetaMask/snaps-skunkworks/pull/243))
+  - All comments will now be stripped from snap source code (including dependencies) by default.
+- Enable `--verboseErrors` by default ([#249](https://github.com/MetaMask/snaps-skunkworks/pull/249))
+
+### Fixed
+- Comment stripping bug ([#270](https://github.com/MetaMask/snaps-skunkworks/pull/270))
+  - Prior to this change, if the `--strip-comments` option was provided to `mm-snap build` and an empty block comment of the form `/**/` appeared anywhere in the source code (including dependencies), the remainder of the string after the empty block comment would be truncated. This was resolved by removing all instances of the string `/**/` from the raw bundle string.
+  - In an upcoming release, the string `/**/` will only be removed if it is in fact an empty block comment, and not if it e.g. appears in a string literal.
+- `watch` command parity with `build` command ([#241](https://github.com/MetaMask/snaps-skunkworks/pull/241))
+  - The `build` command had received a number of options that were not made available to the `watch` command. They now have the same options.
+- Update dead link in readme ([#240](https://github.com/MetaMask/snaps-skunkworks/pull/240))
+
 ## [0.9.0]
 ### Added
 - Transpilation configuration ([#213](https://github.com/MetaMask/snaps-skunkworks/pull/213))
@@ -98,7 +123,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Example snaps ([#72](https://github.com/MetaMask/snaps-skunkworks/pull/72))
   - The examples now live in their own package, [`@metamask/snap-examples`](https://npmjs.com/package/@metamask/snap-examples).
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.9.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.0...HEAD
+[0.10.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.6.3...v0.7.0

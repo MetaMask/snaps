@@ -6,6 +6,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.0]
+### Added
+- Allow specifying a version range when installing snap ([#250](https://github.com/MetaMask/snaps-skunkworks/pull/250))
+- Add more safe default endowments to snaps ([#252](https://github.com/MetaMask/snaps-skunkworks/pull/252))
+
+### Changed
+- **BREAKING:** Specify all endowments in the `SnapController` ([#252](https://github.com/MetaMask/snaps-skunkworks/pull/252)), ([#266](https://github.com/MetaMask/snaps-skunkworks/pull/266))
+  - Previously, default endowments were specified in the execution environment. Now, default endowments are specified in the `SnapController`, and the execution environment will only add endowments specified by the execution command, except for the `wallet` API object.
+- Disable caching when fetching local snaps ([#227](https://github.com/MetaMask/snaps-skunkworks/pull/227))
+  - This ensures that the `SnapController` will always fetch the latest snap manifest and source code during local development.
+
+### Removed
+- **BREAKING:** Remove the `PermissionController` and `SubjectMetadataController` ([#261](https://github.com/MetaMask/snaps-skunkworks/pull/261))
+  - They are part of the [`@metamask/controllers`](https://npmjs.com/package/@metamask/controllers) as of version [26.0.0](https://github.com/MetaMask/controllers/releases/tag/v26.0.0) of that package.
+
+### Fixed
+- Prevent useless errors from being thrown when a snap is removed ([#215](https://github.com/MetaMask/snaps-skunkworks/pull/215))
+
 ## [0.9.0]
 ### Added
 - Make `SnapController` npm registry configurable ([#200](https://github.com/MetaMask/snaps-skunkworks/pull/200))
@@ -167,7 +185,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.9.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.0...HEAD
+[0.10.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.8.1...v0.9.0
 [0.8.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.8.0...v0.8.1
 [0.8.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.7.0...v0.8.0
