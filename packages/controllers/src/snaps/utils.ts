@@ -511,7 +511,7 @@ function isValidUrl(maybeUrl: string): maybeUrl is string {
  * @returns `*` if the version is `undefined` or `latest", otherwise returns
  * the specified version.
  */
-export function resolveVersion(version?: string): string {
+export function resolveVersion(version?: Json): Json {
   if (version === undefined || version === 'latest') {
     return DEFAULT_REQUESTED_SNAP_VERSION;
   }
