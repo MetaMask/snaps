@@ -1097,9 +1097,6 @@ describe('SnapController', () => {
   describe('getRpcMessageHandler', () => {
     it('handlers populate the "jsonrpc" property if missing', async () => {
       const snapId = 'fooSnap';
-      const executionEnvironmentStub =
-        new ExecutionEnvironmentStub() as unknown as WebWorkerExecutionService;
-
       const [snapController] = getSnapControllerWithEES(
         getSnapControllerWithEESOptions({
           state: {
@@ -1112,13 +1109,22 @@ describe('SnapController', () => {
             },
           } as any,
         }),
-        executionEnvironmentStub,
       );
-      const handle = await snapController.getRpcMessageHandler(snapId);
-      const request = { id: 1, method: 'bar' };
-      await handle('foo.com', request);
 
-      expect(request).toStrictEqual({ id: 1, method: 'bar', jsonrpc: '2.0' });
+      jest
+        .spyOn(snapController as any, '_getRpcMessageHandler')
+        .mockReturnValueOnce(
+          (async (_origin: string, request: unknown) => request) as any,
+        );
+
+      const handle = await snapController.getRpcMessageHandler(snapId);
+      const result = await handle('foo.com', { id: 1, method: 'bar' });
+
+      expect(result).toStrictEqual({
+        id: 1,
+        method: 'bar',
+        jsonrpc: '2.0',
+      });
     });
 
     it('handlers throw if the request has an invalid "jsonrpc" property', async () => {

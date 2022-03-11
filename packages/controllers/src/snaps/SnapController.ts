@@ -1426,8 +1426,9 @@ export class SnapController extends BaseController<
         );
       }
 
+      let _request = request;
       if (!Object.hasOwnProperty.call(request, 'jsonrpc')) {
-        request.jsonrpc = '2.0';
+        _request = { ...request, jsonrpc: '2.0' };
       } else if (request.jsonrpc !== '2.0') {
         throw ethErrors.rpc.invalidRequest({
           message: 'Invalid "jsonrpc" property. Must be "2.0" if provided.',
@@ -1449,7 +1450,7 @@ export class SnapController extends BaseController<
 
       // This will either get the result or reject due to the timeout.
       const result = await Promise.race([
-        handler(origin, request),
+        handler(origin, _request),
         timeoutPromise,
       ]);
 
