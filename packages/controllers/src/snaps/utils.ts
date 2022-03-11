@@ -349,7 +349,7 @@ async function fetchNpmTarball(
   if (!tarballResponse.ok) {
     throw new Error(`Failed to fetch tarball for package "${packageName}".`);
   }
-  const stream = await tarballResponse.blob().then((b) => b.stream());
+  const stream = await tarballResponse.blob().then((blob) => blob.stream());
 
   return [stream, targetVersion];
 }
@@ -506,11 +506,12 @@ function isValidUrl(maybeUrl: string): maybeUrl is string {
 }
 
 /**
- * Resolve potential issues with version input, handling backwards compatiblity etc.
- * @param version Version passed by a DApp trying to access a Snap
- * @returns '*' if the version is undefined or 'latest' otherwise returns the specified version
+ * Parse a version received by some subject attempting to access a snap.
+ * @param version - The received version value.
+ * @returns `*` if the version is `undefined` or `latest", otherwise returns
+ * the specified version.
  */
-export function resolveVersion(version?: Json) {
+export function resolveVersion(version?: string): string {
   if (version === undefined || version === 'latest') {
     return DEFAULT_REQUESTED_SNAP_VERSION;
   }

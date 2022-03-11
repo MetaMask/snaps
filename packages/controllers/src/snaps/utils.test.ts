@@ -92,15 +92,15 @@ describe('fetchNpmSnap', () => {
 });
 
 describe('resolveVersion', () => {
-  it('fixes backwards compatibility issue with usage of "latest" version', () => {
+  it('defaults "latest" to DEFAULT_REQUESTED_SNAP_VERSION', () => {
     expect(resolveVersion('latest')).toBe(DEFAULT_REQUESTED_SNAP_VERSION);
   });
 
-  it('defaults to DEFAULT_REQUESTED_SNAP_VERSION', () => {
+  it('defaults an undefined version to DEFAULT_REQUESTED_SNAP_VERSION', () => {
     expect(resolveVersion(undefined)).toBe(DEFAULT_REQUESTED_SNAP_VERSION);
   });
 
-  it('returns requested version for everything else', () => {
+  it('returns the requested version for everything else', () => {
     expect(resolveVersion('1.2.3')).toBe('1.2.3');
   });
 });
