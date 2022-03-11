@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.1]
+### Uncategorized
+- Populate `jsonrpc` field in Snap RPC requests ([#273](https://github.com/MetaMask/snaps-skunkworks/pull/273))
+- Latest build bug fixes ([#275](https://github.com/MetaMask/snaps-skunkworks/pull/275))
+
 ## [0.10.0]
 ### Added
 - Allow specifying a version range when installing snap ([#250](https://github.com/MetaMask/snaps-skunkworks/pull/250))
@@ -185,7 +190,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.1...HEAD
+[0.10.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.0...v0.10.1
 [0.10.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.8.1...v0.9.0
 [0.8.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.8.0...v0.8.1
