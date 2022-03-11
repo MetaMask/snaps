@@ -15,7 +15,6 @@
     "test": "jest",
     "test:ci": "yarn test",
     "test:watch": "jest --watch",
-    "postinstall": "yarn build:typings",
     "setup": "yarn install && yarn allow-scripts",
     "prepublishOnly": "yarn build:clean && yarn lint && yarn test",
     "lint:eslint": "eslint . --cache --ext js,ts",
