@@ -119,7 +119,7 @@ export async function fetchNpmSnap(
   const snapFiles: UnvalidatedSnapFiles = {};
   await new Promise<void>((resolve, reject) => {
     pump(
-      getResponseBodyStream(tarballResponse),
+      getNodeStream(tarballResponse),
       // The "gz" in "tgz" stands for "gzip". The tarball needs to be decompressed
       // before we can actually grab any files from it.
       createGunzipStream(),
@@ -292,11 +292,6 @@ export function validateNpmSnapManifest(
 }
 
 /**
- * Like {@link Response}, but with a non-null {@link Response.body}.
- */
-type ResponseWithBody = Omit<Response, 'body'> & { body: ReadableStream };
-
-/**
  * Fetches the tarball (`.tgz` file) of the specified package and version from
  * the public npm registry. Throws an error if fetching fails.
  *
@@ -312,7 +307,7 @@ async function fetchNpmTarball(
   version: string,
   registryUrl = DEFAULT_NPM_REGISTRY,
   fetchFunction = fetchContent,
-): Promise<[ResponseWithBody, string]> {
+): Promise<[ReadableStream, string]> {
   const packageMetadata = await (
     await fetchFunction(new URL(packageName, registryUrl).toString())
   ).json();
@@ -351,11 +346,12 @@ async function fetchNpmTarball(
 
   // Perform a raw fetch because we want the Response object itself.
   const tarballResponse = await fetchFunction(newTarballUrl.toString());
-  if (!tarballResponse.ok || !tarballResponse.body) {
+  if (!tarballResponse.ok) {
     throw new Error(`Failed to fetch tarball for package "${packageName}".`);
   }
+  const stream = await tarballResponse.blob().then((blob) => blob.stream());
 
-  return [tarballResponse as unknown as ResponseWithBody, targetVersion];
+  return [stream, targetVersion];
 }
 
 // The paths of files within npm tarballs appear to always be prefixed with
@@ -481,7 +477,7 @@ export function validateSnapShasum(
 }
 
 /**
- * Gets the body of a {@link fetch} response as a Node.js {@link Readable}
+ * Converts a {@link ReadableStream} to a Node.js {@link Readable}
  * stream. Returns the stream directly if it is already a Node.js stream.
  * We can't use the native Web {@link ReadableStream} directly because the
  * other stream libraries we use expect Node.js streams.
@@ -489,13 +485,12 @@ export function validateSnapShasum(
  * @param response - The response whose body stream to get.
  * @returns The response body stream, as a Node.js Readable stream.
  */
-function getResponseBodyStream(response: ResponseWithBody): Readable {
-  const { body } = response;
-  if (typeof body.getReader !== 'function') {
-    return body as unknown as Readable;
+function getNodeStream(stream: ReadableStream): Readable {
+  if (typeof stream.getReader !== 'function') {
+    return stream as unknown as Readable;
   }
 
-  return new ReadableWebToNodeStream(response.body);
+  return new ReadableWebToNodeStream(stream);
 }
 
 /**
@@ -508,4 +503,17 @@ function isValidUrl(maybeUrl: string): maybeUrl is string {
   } catch (_error) {
     return false;
   }
+}
+
+/**
+ * Parse a version received by some subject attempting to access a snap.
+ * @param version - The received version value.
+ * @returns `*` if the version is `undefined` or `latest", otherwise returns
+ * the specified version.
+ */
+export function resolveVersion(version?: Json): Json {
+  if (version === undefined || version === 'latest') {
+    return DEFAULT_REQUESTED_SNAP_VERSION;
+  }
+  return version;
 }
