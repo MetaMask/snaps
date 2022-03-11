@@ -3497,38 +3497,6 @@
   resolved "https://registry.yarnpkg.com/@metamask/eslint-config/-/eslint-config-8.0.0.tgz#f4e3bcd6b37ec135b5a72902b0526cba2a6b5a4d"
   integrity sha512-ZO9B3ohNhjomrufNAkxnDXV46Kut7NKzri7itDxUzHJncNtI1of7ewWh6fKPl/hr6Al6Gd7WgjPdJZGFpzKPQw==
 
-"@metamask/inpage-provider@^8.0.4":
-  version "8.0.4"
-  resolved "https://registry.yarnpkg.com/@metamask/inpage-provider/-/inpage-provider-8.0.4.tgz#6534fbdba4445a3aff639e32db66bb0ab5f0cd79"
-  integrity sha512-jdI0gVWW/0wQvKZe6shXl70cU+vIb8GpAimKFU4udc/HKtgp8tLd21ezq74RaMP/lHR+qq0coOQ2KnOnl8iNNg==
-  dependencies:
-    "@metamask/object-multiplex" "^1.1.0"
-    "@metamask/safe-event-emitter" "^2.0.0"
-    eth-rpc-errors "^4.0.2"
-    fast-deep-equal "^2.0.1"
-    is-stream "^2.0.0"
-    json-rpc-engine "^6.1.0"
-    json-rpc-middleware-stream "^3.0.0"
-    pump "^3.0.0"
-
-"@metamask/inpage-provider@^8.1.0":
-  version "8.1.0"
-  resolved "https://registry.yarnpkg.com/@metamask/inpage-provider/-/inpage-provider-8.1.0.tgz#409bb4483f3f2bfade668f4e30d36d1490975c33"
-  integrity sha512-RB2tUfj3DITNqjsFB0UvBGQYtsUHMGccsbA+2BkeE6h/UNTmc3onwmLY6z2yrEPZywpHJvj1FMiORdvtQPhOVg==
-  dependencies:
-    "@metamask/object-multiplex" "^1.1.0"
-    "@metamask/safe-event-emitter" "^2.0.0"
-    "@types/chrome" "^0.0.136"
-    detect-browser "^5.2.0"
-    eth-rpc-errors "^4.0.2"
-    extension-port-stream "^2.0.1"
-    fast-deep-equal "^2.0.1"
-    is-stream "^2.0.0"
-    json-rpc-engine "^6.1.0"
-    json-rpc-middleware-stream "^3.0.0"
-    pump "^3.0.0"
-    webextension-polyfill-ts "^0.25.0"
-
 "@metamask/key-tree@^3.0.1":
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/@metamask/key-tree/-/key-tree-3.0.1.tgz#e59b6c9c124c74382477f51a389815e849a16de7"
@@ -3576,6 +3544,24 @@
   dependencies:
     readable-stream "2.3.3"
 
+"@metamask/providers@^8.1.1":
+  version "8.1.1"
+  resolved "https://registry.yarnpkg.com/@metamask/providers/-/providers-8.1.1.tgz#7b0dbb54700c949aafba24c9b98e6f4e9d81f325"
+  integrity sha512-CG1sAuD6Mp4MZ5U90anf1FT0moDbStGXT+80TQFYXJbBeTQjhp321WgC/F2IgIJ3mFqOiByC3MQHLuunEVMQOA==
+  dependencies:
+    "@metamask/object-multiplex" "^1.1.0"
+    "@metamask/safe-event-emitter" "^2.0.0"
+    "@types/chrome" "^0.0.136"
+    detect-browser "^5.2.0"
+    eth-rpc-errors "^4.0.2"
+    extension-port-stream "^2.0.1"
+    fast-deep-equal "^2.0.1"
+    is-stream "^2.0.0"
+    json-rpc-engine "^6.1.0"
+    json-rpc-middleware-stream "^3.0.0"
+    pump "^3.0.0"
+    webextension-polyfill-ts "^0.25.0"
+
 "@metamask/safe-event-emitter@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/safe-event-emitter/-/safe-event-emitter-2.0.0.tgz#af577b477c683fad17c619a78208cede06f9605c"
@@ -3591,10 +3577,10 @@
   resolved "https://registry.yarnpkg.com/@metamask/types/-/types-1.1.0.tgz#9bd14b33427932833c50c9187298804a18c2e025"
   integrity sha512-EEV/GjlYkOSfSPnYXfOosxa3TqYtIW3fhg6jdw+cok/OhMgNn4wCfbENFqjytrHMU2f7ZKtBAvtiP5V8H44sSw==
 
-"@nodefactory/strip-comments@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@nodefactory/strip-comments/-/strip-comments-1.0.2.tgz#531ee3d53a1d22f14508e200f83f1e54235b1454"
-  integrity sha512-dcZC7N0xZfm2wnwnv0xyK+ak6qkonvxDypeFPLUP88kqvWzskOfv53tvEoAUGFeoddjOt2m56mtayb1gM/VY6A==
+"@nodefactory/strip-comments@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@nodefactory/strip-comments/-/strip-comments-1.0.4.tgz#d38110464ceb5a9227a310528756570d84d58265"
+  integrity sha512-Cj5eqb5l8+YuQikNSz6X+wosmzEALGFif5OWBZjmBXre71DJdV2Gz6USHgrRb0Et+R6BDfWU06TwIqp+7/+eag==
 
 "@nodelib/fs.scandir@2.1.4":
   version "2.1.4"

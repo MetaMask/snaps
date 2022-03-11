@@ -1,5 +1,5 @@
 import { Json, RestrictedControllerMessenger } from '@metamask/controllers';
-import { MetaMaskInpageProvider } from '@metamask/inpage-provider';
+import { MetaMaskInpageProvider } from '@metamask/providers';
 
 /**
  * Command request sent to a worker.

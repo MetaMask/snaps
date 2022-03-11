@@ -30,7 +30,7 @@
     "@metamask/controllers": "^26.0.0"
   },
   "devDependencies": {
-    "@metamask/inpage-provider": "^8.0.4"
+    "@metamask/providers": "^8.1.1"
   },
   "engines": {
     "node": ">=12.11.0"
