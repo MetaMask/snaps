@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.10.1]
-### Uncategorized
-- @nodefactory/strip-comments@1.0.4 ([#276](https://github.com/MetaMask/snaps-skunkworks/pull/276))
+### Fixed
+- Comment stripping will no longer remove empty block comments in strings ([#276](https://github.com/MetaMask/snaps-skunkworks/pull/276))
 
 ## [0.10.0]
 ### Added

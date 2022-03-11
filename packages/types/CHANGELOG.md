@@ -7,8 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.10.1]
-### Uncategorized
-- @metamask/providers@8.1.1 ([#272](https://github.com/MetaMask/snaps-skunkworks/pull/272))
+### Fixed
+- Removed deprecated package ([#272](https://github.com/MetaMask/snaps-skunkworks/pull/272))
+  - This package now uses the functionally equivalent `@metamask/providers` instead of the deprecated `@metamask/inpage-provider`.
 
 ## [0.10.0]
 ### Changed

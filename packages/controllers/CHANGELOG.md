@@ -7,9 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.10.1]
-### Uncategorized
+### Changed
 - Populate `jsonrpc` field in Snap RPC requests ([#273](https://github.com/MetaMask/snaps-skunkworks/pull/273))
-- Latest build bug fixes ([#275](https://github.com/MetaMask/snaps-skunkworks/pull/275))
+
+### Fixed
+- Various bugs ([#275](https://github.com/MetaMask/snaps-skunkworks/pull/275))
+  - Snap fetching during installation.
+  - Snap removal when cancelling a Snap installation request.
 
 ## [0.10.0]
 ### Added
