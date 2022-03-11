@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { getPersistentState, Json } from '@metamask/controllers';
 import { ControllerMessenger } from '@metamask/controllers/dist/ControllerMessenger';
-import { serializeError } from 'eth-rpc-errors';
+import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { ExecutionService } from '../services/ExecutionService';
 import { WebWorkerExecutionService } from '../services/WebWorkerExecutionService';
 import { SnapManifest } from './json-schemas';
@@ -1092,6 +1092,71 @@ describe('SnapController', () => {
     expect(snapController.state.snaps[snap.id]).toBeUndefined();
 
     snapController.destroy();
+  });
+
+  describe('getRpcMessageHandler', () => {
+    it('handlers populate the "jsonrpc" property if missing', async () => {
+      const snapId = 'fooSnap';
+      const [snapController] = getSnapControllerWithEES(
+        getSnapControllerWithEESOptions({
+          state: {
+            snaps: {
+              [snapId]: {
+                enabled: true,
+                id: snapId,
+                status: SnapStatus.running,
+              },
+            },
+          } as any,
+        }),
+      );
+
+      jest
+        .spyOn(snapController as any, '_getRpcMessageHandler')
+        .mockReturnValueOnce(
+          (async (_origin: string, request: unknown) => request) as any,
+        );
+
+      const handle = await snapController.getRpcMessageHandler(snapId);
+      const result = await handle('foo.com', { id: 1, method: 'bar' });
+
+      expect(result).toStrictEqual({
+        id: 1,
+        method: 'bar',
+        jsonrpc: '2.0',
+      });
+    });
+
+    it('handlers throw if the request has an invalid "jsonrpc" property', async () => {
+      const snapId = 'fooSnap';
+      const executionEnvironmentStub =
+        new ExecutionEnvironmentStub() as unknown as WebWorkerExecutionService;
+
+      const [snapController] = getSnapControllerWithEES(
+        getSnapControllerWithEESOptions({
+          state: {
+            snaps: {
+              [snapId]: {
+                enabled: true,
+                id: snapId,
+                status: SnapStatus.running,
+              },
+            },
+          } as any,
+        }),
+        executionEnvironmentStub,
+      );
+      const handle = await snapController.getRpcMessageHandler(snapId);
+
+      await expect(
+        handle('foo.com', { id: 1, method: 'bar', jsonrpc: 'kaplar' }),
+      ).rejects.toThrow(
+        ethErrors.rpc.invalidRequest({
+          message: 'Invalid "jsonrpc" property. Must be "2.0" if provided.',
+          data: 'kaplar',
+        }),
+      );
+    });
   });
 
   describe('controller actions', () => {
