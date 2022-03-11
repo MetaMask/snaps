@@ -4,6 +4,7 @@ import {
   GetEndowments,
   GetPermissions,
   HasPermission,
+  HasPermissions,
   RequestPermissions,
   RevokeAllPermissions,
 } from '@metamask/controllers';
@@ -41,6 +42,7 @@ import {
   SnapIdPrefixes,
   ValidatedSnapId,
   validateSnapShasum,
+  resolveVersion,
 } from './utils';
 
 export const controllerName = 'SnapController';
@@ -302,6 +304,7 @@ export type AllowedActions =
   | GetEndowments
   | GetPermissions
   | HasPermission
+  | HasPermissions
   | RevokeAllPermissions
   | RequestPermissions;
 
@@ -857,12 +860,7 @@ export class SnapController extends BaseController<
       this._closeAllConnections(snapId);
     });
     this._terminateAllSnaps();
-    snapIds.forEach((snapId) =>
-      this.messagingSystem.call(
-        'PermissionController:revokeAllPermissions',
-        snapId,
-      ),
-    );
+    snapIds.forEach(this.revokeAllSnapPermissions);
 
     this.update((state: any) => {
       state.snaps = {};
@@ -897,10 +895,7 @@ export class SnapController extends BaseController<
         // it. This ensures that the snap will not be restarted or otherwise
         // affect the host environment while we are deleting it.
         await this.disableSnap(snapId);
-        this.messagingSystem.call(
-          'PermissionController:revokeAllPermissions',
-          snapId,
-        );
+        this.revokeAllSnapPermissions(snapId);
 
         this._snapsRuntimeData.delete(snapId);
 
@@ -912,6 +907,22 @@ export class SnapController extends BaseController<
         this.messagingSystem.publish(`SnapController:snapRemoved`, snapId);
       }),
     );
+  }
+
+  /**
+   * Safely revokes all permissions granted to a Snap.
+   *
+   * @param snapId - The snap ID.
+   */
+  private revokeAllSnapPermissions(snapId: string): void {
+    if (
+      this.messagingSystem.call('PermissionController:hasPermissions', snapId)
+    ) {
+      this.messagingSystem.call(
+        'PermissionController:revokeAllPermissions',
+        snapId,
+      );
+    }
   }
 
   /**
@@ -955,7 +966,8 @@ export class SnapController extends BaseController<
 
     await Promise.all(
       Object.entries(requestedSnaps).map(
-        async ([snapId, { version = DEFAULT_REQUESTED_SNAP_VERSION }]) => {
+        async ([snapId, { version: rawVersion }]) => {
+          const version = resolveVersion(rawVersion);
           const permissionName = SNAP_PREFIX + snapId;
 
           if (!isValidSnapVersionRange(version)) {

@@ -2,7 +2,11 @@ import { createReadStream } from 'fs';
 import { readFile } from 'fs/promises';
 import path from 'path';
 import fetchMock from 'jest-fetch-mock';
-import { fetchNpmSnap } from './utils';
+import {
+  DEFAULT_REQUESTED_SNAP_VERSION,
+  fetchNpmSnap,
+  resolveVersion,
+} from './utils';
 
 fetchMock.enableMocks();
 
@@ -84,5 +88,19 @@ describe('fetchNpmSnap', () => {
     expect(svgIcon?.startsWith('<svg') && svgIcon.endsWith('</svg>')).toBe(
       true,
     );
+  });
+});
+
+describe('resolveVersion', () => {
+  it('defaults "latest" to DEFAULT_REQUESTED_SNAP_VERSION', () => {
+    expect(resolveVersion('latest')).toBe(DEFAULT_REQUESTED_SNAP_VERSION);
+  });
+
+  it('defaults an undefined version to DEFAULT_REQUESTED_SNAP_VERSION', () => {
+    expect(resolveVersion(undefined)).toBe(DEFAULT_REQUESTED_SNAP_VERSION);
+  });
+
+  it('returns the requested version for everything else', () => {
+    expect(resolveVersion('1.2.3')).toBe('1.2.3');
   });
 });
