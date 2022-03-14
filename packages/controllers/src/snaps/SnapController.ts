@@ -1540,6 +1540,30 @@ export class SnapController extends BaseController<
       return existingHandler;
     }
 
+    class QueueThing {
+      public readonly maxQueue: number;
+      private readonly locks: Map<string, number>;
+      constructor(maxQueue: number) {
+        this.maxQueue = maxQueue;
+        this.locks = new Map<string, number>();
+      }
+
+      public increment (origin: string) {
+        const currentCount = this.locks.get(origin) ?? 0;
+        if (currentCount > this.maxQueue) {
+          throw new Error('noooooo')
+        }
+        this.locks.set(origin, currentCount + 1);
+      }
+
+      public get (origin: string): number {
+        return this.locks.get(origin) ?? 0;
+      }
+    }
+
+    const locks = new QueueThing(5);
+    let startPromise: Promise<void> | null;
+
     const rpcHandler = async (
       origin: string,
       request: Record<string, unknown>,
@@ -1551,12 +1575,21 @@ export class SnapController extends BaseController<
       }
 
       if (this.state.snaps[snapId].status === SnapStatus.installing) {
-        throw new Error(`Snap "${snapId}" has not been started yet.`);
+        throw new Error(`Snap "${snapId}" is currently being installed. Please try again later.`);
       }
 
       if (!handler && this.isRunning(snapId) === false) {
-        // cold start
-        await this.startSnap(snapId);
+        if (startPromise === null) {
+          // cold start
+          startPromise = this.startSnap(snapId);
+        } else if (locks.get(origin) >= locks.maxQueue) {
+          throw new Error('Hang on a second.')
+        }
+
+        locks.increment(origin);
+        await startPromise;
+        // TODO: decrement locks
+        // TODO: set startPromise to null
         handler = await this._getRpcMessageHandler(snapId);
       }
 
