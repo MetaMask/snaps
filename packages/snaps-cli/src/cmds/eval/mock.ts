@@ -1,29 +1,9 @@
 import EventEmitter from 'events';
-// import { DEFAULT_EXPOSED_APIS } from '@metamask/snap-controllers';
+import { DEFAULT_EXPOSED_APIS } from '@metamask/snap-controllers';
 
-// Import instead
-export const DEFAULT_EXPOSED_APIS = [
-  'atob',
-  'btoa',
-  'TextEncoder',
-  'TextDecoder',
-  'BigInt',
-  'console',
-  'crypto',
-  'Date',
-  'Math',
-  'SubtleCrypto',
-  'URL',
-];
 const NETWORK_APIS = ['fetch', 'WebSocket'];
 
-export const ALL_APIS: string[] = [
-  ...DEFAULT_EXPOSED_APIS,
-  ...NETWORK_APIS,
-  'WebAssembly',
-  'setTimeout',
-  'clearTimeout',
-];
+export const ALL_APIS: string[] = [...DEFAULT_EXPOSED_APIS, ...NETWORK_APIS];
 
 type MockSnapProvider = EventEmitter & {
   registerRpcMessageHandler: () => any;
