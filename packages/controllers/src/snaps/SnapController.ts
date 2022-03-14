@@ -364,6 +364,7 @@ const defaultState: SnapControllerState = {
 export enum SnapStatus {
   installing = 'installing',
   running = 'running',
+  starting = 'starting',
   stopped = 'stopped',
   crashed = 'crashed',
 }
@@ -1182,12 +1183,19 @@ export class SnapController extends BaseController<
       throw new Error(`Snap "${snapId}" is already started.`);
     }
 
-    const result = await this._executeSnap({
-      ...snapData,
-      endowments: await this._getEndowments(snapId),
-    });
     this._transitionSnapState(snapId, SnapStatusEvent.start);
-    return result;
+    try {
+
+      const result = await this._executeSnap({
+        ...snapData,
+        endowments: await this._getEndowments(snapId),
+      });
+      this._transitionSnapState(snapId, SnapStatusEvent.started);
+      return result;
+    } catch (err) {
+      this._transitionSnapState(snapId, SnapStatusEvent.crash);
+      throw err;
+    }
   }
 
   /**
@@ -1562,7 +1570,6 @@ export class SnapController extends BaseController<
     }
 
     const locks = new QueueThing(5);
-    let startPromise: Promise<void> | null;
 
     const rpcHandler = async (
       origin: string,
@@ -1579,15 +1586,12 @@ export class SnapController extends BaseController<
       }
 
       if (!handler && this.isRunning(snapId) === false) {
-        if (startPromise === null) {
-          // cold start
-          startPromise = this.startSnap(snapId);
-        } else if (locks.get(origin) >= locks.maxQueue) {
+        if (this.state.snaps[snapId].status === SnapStatus.starting && locks.get(origin) >= locks.maxQueue) {
           throw new Error('Hang on a second.')
         }
 
         locks.increment(origin);
-        await startPromise;
+        await this.startSnap(snapId);
         // TODO: decrement locks
         // TODO: set startPromise to null
         handler = await this._getRpcMessageHandler(snapId);
