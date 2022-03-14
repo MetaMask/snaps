@@ -68,7 +68,6 @@ export const invokeSnapBuilder = Object.freeze({
 
 function getInvokeSnapImplementation({
   getSnap,
-  addSnap,
   getSnapRpcHandler,
 }: InvokeSnapMethodHooks) {
   return async function invokeSnap(
@@ -86,8 +85,8 @@ function getInvokeSnapImplementation({
     const snapIdString = method.substr(SNAP_PREFIX.length);
 
     if (!getSnap(snapIdString)) {
-      await addSnap({
-        id: snapIdString,
+      throw ethErrors.rpc.invalidRequest({
+        message: `${snapIdString} is not installed.`,
       });
     }
 
