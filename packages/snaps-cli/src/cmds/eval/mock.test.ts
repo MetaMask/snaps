@@ -9,12 +9,6 @@ describe('generateMockEndowments', () => {
     expect(await endowments.wallet.registerRpcMessageHandler()).toBe(true);
   });
 
-  it('returns mock class for classes', () => {
-    const endowments = generateMockEndowments();
-    const d = new endowments.Date();
-    expect(d.getTime()).toBe(true);
-  });
-
   it('returns mock class WebSocket', () => {
     const endowments = generateMockEndowments();
     const ws = new endowments.WebSocket();

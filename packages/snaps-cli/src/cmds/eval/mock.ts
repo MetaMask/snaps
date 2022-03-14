@@ -44,18 +44,24 @@ const mockWindow = {
 
 const generateMockEndowment = (key: string) => {
   const globalValue = (global as any)[key];
+  // @todo Decide if this is the case
+  // Default exposed APIs don't need to be mocked
+  if (globalValue && DEFAULT_EXPOSED_APIS.includes(key)) {
+    return globalValue;
+  }
+
+  // For certain values that dont exist in the Node.JS we have a pre-defined mock.
   if (!globalValue && key in mockWindow) {
     return (mockWindow as any)[key];
   }
+
   const type = typeof globalValue;
   const isFunction = type === 'function';
   if (isFunction && isConstructor(globalValue)) {
     return generateMockClass(globalValue);
-  } else if (isFunction || !globalValue) {
-    // Fall back to function mock for now
-    return mockFunction;
   }
-  return globalValue;
+  // Fall back to function mock for now
+  return mockFunction;
 };
 
 export const generateMockEndowments = () => {
