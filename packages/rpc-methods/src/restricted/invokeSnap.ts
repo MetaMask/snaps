@@ -86,7 +86,7 @@ function getInvokeSnapImplementation({
 
     if (!getSnap(snapIdString)) {
       throw ethErrors.rpc.invalidRequest({
-        message: `${snapIdString} is not installed.`,
+        message: `The snap "${snapIdString}" is not installed. This is a bug, please report it.`,
       });
     }
 
