@@ -3,7 +3,7 @@ const { resolve: pathResolve } = require('path');
 
 const execa = require('execa');
 
-const SNAPS_CLI_BIN_PATH = '../../../snaps-cli/dist/main.js';
+const SNAPS_CLI_BIN_PATH = '../../../cli/dist/main.js';
 
 const EXAMPLES_PATH = 'examples';
 
