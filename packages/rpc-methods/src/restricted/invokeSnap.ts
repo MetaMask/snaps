@@ -19,7 +19,6 @@ const targetKey = `${methodPrefix}*` as const;
 
 export type InvokeSnapMethodHooks = {
   getSnap: SnapController['get'];
-  addSnap: SnapController['add'];
   getSnapRpcHandler: SnapController['getRpcMessageHandler'];
 };
 
@@ -61,7 +60,6 @@ export const invokeSnapBuilder = Object.freeze({
   specificationBuilder,
   methodHooks: {
     getSnap: true,
-    addSnap: true,
     getSnapRpcHandler: true,
   },
 } as const);
