@@ -59,7 +59,7 @@ const generateMockEndowment = (key: string) => {
 };
 
 export const generateMockEndowments = () => {
-  return ALL_APIS.reduce(
+  return ALL_APIS.reduce<Record<string, any>>(
     (acc, cur) => ({ ...acc, [cur]: generateMockEndowment(cur) }),
     { wallet: getMockSnapProvider() },
   );
