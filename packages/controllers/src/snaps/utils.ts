@@ -1,6 +1,6 @@
 import { createHash } from 'crypto';
-import { Readable } from 'stream';
 import type { Writable } from 'stream';
+import { Readable } from 'stream';
 import { Json } from '@metamask/controllers';
 import concat from 'concat-stream';
 import fetch from 'cross-fetch';

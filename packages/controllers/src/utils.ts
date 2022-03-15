@@ -52,14 +52,56 @@ export function isValidJson(value: unknown): value is Json {
   }
 }
 
-export function objectDiff<A, B>(a: A, b: B): Diff<A, B> {
-  return Object.entries(a).reduce((acc, [key, value]) => {
-    if (key in b) {
-      return acc;
+/**
+ * Takes two objects and does a Set Difference of them.
+ * Set Difference is generally defined as follows:
+ * ```
+ * 𝑥 ∈ A ∖ B ⟺ 𝑥 ∈ A ∧ 𝑥 ∉ B
+ * ```
+ * Meaning that the returned object contains all properties of A expect
+ * those that also appear in B. Notice that properties that appear in B, but not in A, have no effect
+ *
+ * @see [Set Difference]{@link https://proofwiki.org/wiki/Definition:Set_Difference}
+ *
+ * @param objectA The object on which the difference is being calculated
+ * @param objectB The object whose properties will be removed from objectA
+ * @returns objectA without properties from objectB
+ */
+export function setDiff<
+  ObjectA extends Record<any, unknown>,
+  ObjectB extends Record<any, unknown>,
+>(objectA: ObjectA, objectB: ObjectB): Diff<ObjectA, ObjectB> {
+  return Object.entries(objectA).reduce((acc, [key, value]) => {
+    if (!(key in objectB)) {
+      acc[key] = value;
     }
-    acc[key] = value;
     return acc;
   }, {} as any);
+}
+
+/**
+ * Use in the default case of a switch that you want to be fully exhaustive.
+ * Using this function force the compiler to enforces exhaustivity during compile-time
+ *
+ * @example
+ * ```
+ * const snapPrefix = snapIdToSnapPrefix(snapId);
+ * switch (snapPrefix) {
+ *   case SnapIdPrefixes.local:
+ *     ...
+ *   case SnapIdPrefixes.npm:
+ *     ...
+ *   default:
+ *     assertExhaustive(snapPrefix);
+ * }
+ * ```
+ *
+ * @param x The object on which the switch is being operated
+ */
+export function assertExhaustive(_: never): never {
+  throw new Error(
+    'Invalid branch reached. Should be detected during compilation',
+  );
 }
 
 /**
@@ -91,11 +133,34 @@ type IsLiteral<T> = T extends string | number | boolean | symbol
     : false
   : false;
 
+/**
+ * Returns all keys of an object, that are literal, as an union
+ *
+ * @example
+ * ```
+ * type t1 = _LiteralKeys<{a: number, b: 0, c: 'foo', d: string}>
+ * // t1 = 'b' | 'c'
+ * ```
+ *
+ * @see [Literal types]{@link https://www.typescriptlang.org/docs/handbook/literal-types.html}
+ */
 type _LiteralKeys<T> = NonNullable<
   {
     [Key in keyof T]: IsLiteral<Key> extends true ? Key : never;
   }[keyof T]
 >;
+
+/**
+ * Returns all keys of an object, that are not literal, as an union
+ *
+ * @example
+ * ```
+ * type t1 = _NonLiteralKeys<{a: number, b: 0, c: 'foo', d: string}>
+ * // t1 = 'a' | 'd'
+ * ```
+ *
+ * @see [Literal types]{@link https://www.typescriptlang.org/docs/handbook/literal-types.html}
+ */
 type _NonLiteralKeys<T> = NonNullable<
   {
     [Key in keyof T]: IsLiteral<Key> extends false ? Key : never;

@@ -26,13 +26,14 @@ import {
   satisfies as satisfiesSemver,
   validRange as validRangeSemver,
 } from 'semver';
+import { assertExhaustive } from '..';
 import {
   ExecuteSnap,
   GetRpcMessageHandler,
   TerminateAll,
   TerminateSnap,
 } from '../services/ExecutionService';
-import { isNonEmptyArray, objectDiff, timeSince } from '../utils';
+import { isNonEmptyArray, setDiff, timeSince } from '../utils';
 import { SnapManifest, validateSnapJsonFile } from './json-schemas';
 import {
   DEFAULT_REQUESTED_SNAP_VERSION,
@@ -300,7 +301,7 @@ export type SnapRemoved = {
  */
 export type SnapUpdated = {
   type: `${typeof controllerName}:snapUpdated`;
-  payload: [snapId: string];
+  payload: [snapId: string, newVersion: string, oldVersion: string];
 };
 
 export type SnapControllerEvents =
@@ -377,6 +378,7 @@ export enum SnapStatusEvent {
   start = 'start',
   stop = 'stop',
   crash = 'crash',
+  update = 'update',
 }
 
 /**
@@ -414,6 +416,7 @@ const snapStatusStateMachineConfig = {
           target: SnapStatus.running,
           cond: disabledGuard,
         },
+        [SnapStatusEvent.update]: SnapStatus.installing,
       },
     },
     [SnapStatus.crashed]: {
@@ -1072,6 +1075,7 @@ export class SnapController extends BaseController<
   }
 
   /**
+   * Updates, re-authorizes and then restarts given snap.
    *
    * @param snapId The id of the Snap to be updated
    * @param newVersionRange A semver version range in which the maximum version will be chosen
@@ -1083,7 +1087,9 @@ export class SnapController extends BaseController<
   ): Promise<TruncatedSnap | null> {
     const snap = this.get(snapId);
     if (snap === undefined) {
-      throw new Error(`Couldn't find snap ${snapId} to update`);
+      throw new Error(
+        `Could not find snap ${snapId}. Install the snap before attempting to update it.`,
+      );
     }
 
     const newSnap = await this._fetchSnap(
@@ -1097,13 +1103,13 @@ export class SnapController extends BaseController<
       return null;
     }
 
-    const wasRunning = this.isRunning(snapId);
-
-    if (wasRunning) {
+    if (this.isRunning(snapId)) {
       this._stopSnap(snapId);
     }
 
-    await this._add({
+    this._transitionSnapState(snapId, SnapStatusEvent.update);
+
+    await this._set({
       id: snapId as ValidatedSnapId,
       manifest: newSnap.manifest,
       sourceCode: newSnap.sourceCode,
@@ -1112,11 +1118,14 @@ export class SnapController extends BaseController<
 
     await this.authorize(snapId);
 
-    if (wasRunning) {
-      await this._startSnap({ snapId, sourceCode: newSnap.sourceCode });
-    }
+    await this._startSnap({ snapId, sourceCode: newSnap.sourceCode });
 
-    this.messagingSystem.publish('SnapController:snapUpdated', snapId);
+    this.messagingSystem.publish(
+      'SnapController:snapUpdated',
+      snapId,
+      newSnap.manifest.version,
+      snap.version,
+    );
 
     return this.getTruncated(snapId);
   }
@@ -1147,7 +1156,7 @@ export class SnapController extends BaseController<
     const runtime = this._getSnapRuntimeData(snapId);
     if (!runtime.installPromise) {
       console.log(`Adding snap: ${snapId}`);
-      runtime.installPromise = this._add(args as ValidatedAddSnapArgs);
+      runtime.installPromise = this._set(args as ValidatedAddSnapArgs);
     }
 
     return runtime.installPromise as Promise<Snap>;
@@ -1240,7 +1249,7 @@ export class SnapController extends BaseController<
    * @param args - The add snap args.
    * @returns The resulting snap object.
    */
-  private async _add(args: ValidatedAddSnapArgs): Promise<Snap> {
+  private async _set(args: ValidatedAddSnapArgs): Promise<Snap> {
     const { id: snapId, versionRange = DEFAULT_REQUESTED_SNAP_VERSION } = args;
 
     let manifest: SnapManifest, sourceCode: string, svgIcon: string | undefined;
@@ -1318,18 +1327,19 @@ export class SnapController extends BaseController<
     version?: string,
   ): Promise<FetchSnapResult> {
     try {
-      if (isLocalSnap(snapId)) {
-        return this._fetchLocalSnap(snapId.replace(SnapIdPrefixes.local, ''));
-      } else if (isNpmSnap(snapId)) {
-        return this._fetchNpmSnap(
-          snapId.replace(SnapIdPrefixes.npm, ''),
-          version,
-        );
+      const snapPrefix = snapIdToSnapPrefix(snapId);
+      switch (snapPrefix) {
+        case SnapIdPrefixes.local:
+          return this._fetchLocalSnap(snapId.replace(SnapIdPrefixes.local, ''));
+        case SnapIdPrefixes.npm:
+          return this._fetchNpmSnap(
+            snapId.replace(SnapIdPrefixes.npm, ''),
+            version,
+          );
+        default:
+          // This whill fail to compile if the above switch is not fully exhaustive
+          return assertExhaustive(snapPrefix);
       }
-
-      // This should be impossible.
-      /* istanbul ignore next */
-      throw new Error(`Invalid Snap id: "${snapId}"`);
     } catch (error) {
       throw new Error(
         `Failed to fetch Snap "${snapId}": ${(error as Error).message}`,
@@ -1431,19 +1441,20 @@ export class SnapController extends BaseController<
     }
 
     try {
-      // After updating a snap, we revoke all unused permissions, and ask to authorize just the new ones
+      // If we are re-authorizing after updating a snap, we revoke all unused permissions,
+      // and only ask to authorize the new ones.
       const alreadyApprovedPermissions = await this.messagingSystem.call(
         'PermissionController:getPermissions',
         snapId,
       );
 
-      const newPermissions = objectDiff(
+      const newPermissions = setDiff(
         initialPermissions,
-        alreadyApprovedPermissions,
+        alreadyApprovedPermissions ?? {},
       );
 
       const unusedPermissions = Object.keys(
-        objectDiff(alreadyApprovedPermissions, initialPermissions),
+        setDiff(alreadyApprovedPermissions ?? {}, initialPermissions),
       );
 
       if (isNonEmptyArray(unusedPermissions)) {
@@ -1453,14 +1464,17 @@ export class SnapController extends BaseController<
         );
       }
 
-      const [approvedPermissions] = await this.messagingSystem.call(
-        'PermissionController:requestPermissions',
-        { origin: snapId },
-        newPermissions,
-      );
-      return Object.values(approvedPermissions).map(
-        (perm) => perm.parentCapability,
-      );
+      if (isNonEmptyArray(Object.keys(newPermissions))) {
+        const [approvedPermissions] = await this.messagingSystem.call(
+          'PermissionController:requestPermissions',
+          { origin: snapId },
+          newPermissions,
+        );
+        return Object.values(approvedPermissions).map(
+          (perm) => perm.parentCapability,
+        );
+      }
+      return [];
     } finally {
       const runtime = this._getSnapRuntimeData(snapId);
       runtime.installPromise = null;
@@ -1586,10 +1600,11 @@ function isValidSnapVersionRange(version: unknown): version is string {
   );
 }
 
-function isLocalSnap(snapId: string): boolean {
-  return snapId.startsWith(SnapIdPrefixes.local);
-}
-
-function isNpmSnap(snapId: string): boolean {
-  return snapId.startsWith(SnapIdPrefixes.npm);
+function snapIdToSnapPrefix(snapId: string): SnapIdPrefixes {
+  for (const prefix of Object.values(SnapIdPrefixes)) {
+    if (snapId.startsWith(prefix)) {
+      return prefix;
+    }
+  }
+  throw new Error(`Invalid or no prefix found for ${snapId}`);
 }
