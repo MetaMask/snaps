@@ -1,4 +1,5 @@
 import { EventEmitter } from 'stream';
+import crypto from 'crypto';
 import { generateMockEndowments } from './mock';
 
 describe('generateMockEndowments', () => {
@@ -24,5 +25,6 @@ describe('generateMockEndowments', () => {
     const endowments = generateMockEndowments();
     expect(endowments.Math).toStrictEqual(Math);
     expect(endowments.console).toStrictEqual(console);
+    expect(endowments.crypto).toStrictEqual(crypto);
   });
 });

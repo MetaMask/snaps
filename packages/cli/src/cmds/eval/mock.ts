@@ -1,4 +1,5 @@
 import EventEmitter from 'events';
+import crypto from 'crypto';
 import { DEFAULT_EXPOSED_APIS } from '@metamask/snap-controllers';
 
 const NETWORK_APIS = ['fetch', 'WebSocket'];
@@ -36,32 +37,33 @@ const generateMockClass = (value: any) => {
   return new Proxy(value, handler);
 };
 
-// Things not currently auto-mocked because of NodeJS
-// There are others that are just auto-mocked as functions because they don't exist on NodeJS global, but perhaps shouldn't be?
+// Things not currently auto-mocked because of NodeJS, by adding them here we have types for them and can use that to generate mocks if needed
 const mockWindow = {
-  WebSocket: generateMockClass(MockClass),
+  WebSocket: MockClass,
+  crypto,
+  SubtleCrypto: MockClass,
 };
 
 const generateMockEndowment = (key: string) => {
   const globalValue = (global as any)[key];
-  // @todo Decide if this is the case
+
   // Default exposed APIs don't need to be mocked
   if (globalValue && DEFAULT_EXPOSED_APIS.includes(key)) {
     return globalValue;
   }
 
-  // For certain values that dont exist in the Node.JS we have a pre-defined mock.
-  if (!globalValue && key in mockWindow) {
-    return (mockWindow as any)[key];
-  }
+  // Fall back to mockWindow for certain APIs not exposed in global in Node.JS
+  const globalOrMocked = globalValue ?? (mockWindow as any)[key];
 
-  const type = typeof globalValue;
+  const type = typeof globalOrMocked;
   const isFunction = type === 'function';
-  if (isFunction && isConstructor(globalValue)) {
-    return generateMockClass(globalValue);
+  if (isFunction && isConstructor(globalOrMocked)) {
+    return generateMockClass(globalOrMocked);
+  } else if (isFunction || !globalOrMocked) {
+    // Fall back to function mock for now
+    return mockFunction;
   }
-  // Fall back to function mock for now
-  return mockFunction;
+  return globalOrMocked;
 };
 
 export const generateMockEndowments = () => {
