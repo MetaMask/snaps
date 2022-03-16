@@ -19,7 +19,6 @@ const targetKey = `${methodPrefix}*` as const;
 
 export type InvokeSnapMethodHooks = {
   getSnap: SnapController['get'];
-  addSnap: SnapController['add'];
   getSnapRpcHandler: SnapController['getRpcMessageHandler'];
 };
 
@@ -61,14 +60,12 @@ export const invokeSnapBuilder = Object.freeze({
   specificationBuilder,
   methodHooks: {
     getSnap: true,
-    addSnap: true,
     getSnapRpcHandler: true,
   },
 } as const);
 
 function getInvokeSnapImplementation({
   getSnap,
-  addSnap,
   getSnapRpcHandler,
 }: InvokeSnapMethodHooks) {
   return async function invokeSnap(
@@ -86,8 +83,8 @@ function getInvokeSnapImplementation({
     const snapIdString = method.substr(SNAP_PREFIX.length);
 
     if (!getSnap(snapIdString)) {
-      await addSnap({
-        id: snapIdString,
+      throw ethErrors.rpc.invalidRequest({
+        message: `The snap "${snapIdString}" is not installed. This is a bug, please report it.`,
       });
     }
 
