@@ -45,6 +45,7 @@ import {
   ValidatedSnapId,
   validateSnapShasum,
 } from './utils';
+import { RequestQueue } from './RequestQueue';
 
 export const controllerName = 'SnapController';
 
@@ -1183,19 +1184,12 @@ export class SnapController extends BaseController<
       throw new Error(`Snap "${snapId}" is already started.`);
     }
 
+    const result = await this._executeSnap({
+      ...snapData,
+      endowments: await this._getEndowments(snapId),
+    });
     this._transitionSnapState(snapId, SnapStatusEvent.start);
-    try {
-
-      const result = await this._executeSnap({
-        ...snapData,
-        endowments: await this._getEndowments(snapId),
-      });
-      this._transitionSnapState(snapId, SnapStatusEvent.started);
-      return result;
-    } catch (err) {
-      this._transitionSnapState(snapId, SnapStatusEvent.crash);
-      throw err;
-    }
+    return result;
   }
 
   /**
@@ -1548,28 +1542,8 @@ export class SnapController extends BaseController<
       return existingHandler;
     }
 
-    class QueueThing {
-      public readonly maxQueue: number;
-      private readonly locks: Map<string, number>;
-      constructor(maxQueue: number) {
-        this.maxQueue = maxQueue;
-        this.locks = new Map<string, number>();
-      }
-
-      public increment (origin: string) {
-        const currentCount = this.locks.get(origin) ?? 0;
-        if (currentCount > this.maxQueue) {
-          throw new Error('noooooo')
-        }
-        this.locks.set(origin, currentCount + 1);
-      }
-
-      public get (origin: string): number {
-        return this.locks.get(origin) ?? 0;
-      }
-    }
-
-    const locks = new QueueThing(5);
+    const locks = new RequestQueue(5);
+    let startPromise: Promise<void> | null;
 
     const rpcHandler = async (
       origin: string,
@@ -1582,18 +1556,20 @@ export class SnapController extends BaseController<
       }
 
       if (this.state.snaps[snapId].status === SnapStatus.installing) {
-        throw new Error(`Snap "${snapId}" is currently being installed. Please try again later.`);
+        throw new Error(
+          `Snap "${snapId}" is currently being installed. Please try again later.`,
+        );
       }
 
       if (!handler && this.isRunning(snapId) === false) {
-        if (this.state.snaps[snapId].status === SnapStatus.starting && locks.get(origin) >= locks.maxQueue) {
-          throw new Error('Hang on a second.')
+        if (!startPromise) {
+          startPromise = this.startSnap(snapId);
         }
 
         locks.increment(origin);
-        await this.startSnap(snapId);
-        // TODO: decrement locks
-        // TODO: set startPromise to null
+        await startPromise;
+        locks.decrement(origin);
+        startPromise = null;
         handler = await this._getRpcMessageHandler(snapId);
       }
 
