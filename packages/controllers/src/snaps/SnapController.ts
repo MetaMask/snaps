@@ -365,7 +365,6 @@ const defaultState: SnapControllerState = {
 export enum SnapStatus {
   installing = 'installing',
   running = 'running',
-  starting = 'starting',
   stopped = 'stopped',
   crashed = 'crashed',
 }
