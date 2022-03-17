@@ -947,7 +947,9 @@ describe('SnapController', () => {
         params: {},
         id: 1,
       }),
-    ).rejects.toThrow(/^Snap "npm:example-snap" has not been started yet.$/u);
+    ).rejects.toThrow(
+      /^Snap "npm:example-snap" is currently being installed\. Please try again later\.$/u,
+    );
 
     await snapController.startSnap(snap.id);
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');

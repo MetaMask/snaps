@@ -1572,6 +1572,11 @@ export class SnapController extends BaseController<
         locks.increment(origin);
         await startPromise;
         locks.decrement(origin);
+        // There is no race condition when reassigning the startPromise
+        // calls to the rpcHandler will get popped off the call stack and when
+        // the startPromise is assigned to null it won't matter because this block of
+        // code will not be hit since the handler will now exist
+        // eslint-disable-next-line
         startPromise = null;
         handler = await this._getRpcMessageHandler(snapId);
       }
