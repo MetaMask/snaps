@@ -58,8 +58,8 @@ export function isValidJson(value: unknown): value is Json {
  * ```
  * 𝑥 ∈ A ∖ B ⟺ 𝑥 ∈ A ∧ 𝑥 ∉ B
  * ```
- * Meaning that the returned object contains all properties of A expect
- * those that also appear in B. Notice that properties that appear in B, but not in A, have no effect
+ * Meaning that the returned object contains all properties of A expect those that also
+ * appear in B. Notice that properties that appear in B, but not in A, have no effect.
  *
  * @see [Set Difference]{@link https://proofwiki.org/wiki/Definition:Set_Difference}
  *
@@ -71,17 +71,20 @@ export function setDiff<
   ObjectA extends Record<any, unknown>,
   ObjectB extends Record<any, unknown>,
 >(objectA: ObjectA, objectB: ObjectB): Diff<ObjectA, ObjectB> {
-  return Object.entries(objectA).reduce((acc, [key, value]) => {
-    if (!(key in objectB)) {
-      acc[key] = value;
-    }
-    return acc;
-  }, {} as any);
+  return Object.entries(objectA).reduce<Record<any, unknown>>(
+    (acc, [key, value]) => {
+      if (!(key in objectB)) {
+        acc[key] = value;
+      }
+      return acc;
+    },
+    {},
+  ) as Diff<ObjectA, ObjectB>;
 }
 
 /**
  * Use in the default case of a switch that you want to be fully exhaustive.
- * Using this function force the compiler to enforces exhaustivity during compile-time
+ * Using this function forces the compiler to enforces exhaustivity during compile-time
  *
  * @example
  * ```
@@ -96,8 +99,9 @@ export function setDiff<
  * }
  * ```
  *
- * @param x The object on which the switch is being operated
+ * @param _ The object on which the switch is being operated
  */
+/* istanbul ignore next */
 export function assertExhaustive(_: never): never {
   throw new Error(
     'Invalid branch reached. Should be detected during compilation',
@@ -166,8 +170,9 @@ type _NonLiteralKeys<T> = NonNullable<
     [Key in keyof T]: IsLiteral<Key> extends false ? Key : never;
   }[keyof T]
 >;
+
 /**
- * A difference of two objects based on their keys
+ * A set difference of two objects based on their keys
  *
  * @example
  * ```
@@ -178,6 +183,8 @@ type _NonLiteralKeys<T> = NonNullable<
  * type t3 = Diff<{a: string, 0: string, 1: string}, Record<1 | string, unknown>>;
  * // t3 = {a?: string, 0: string}
  * ```
+ *
+ * @see {@link setDiff} for the main use-case
  */
 export type Diff<A, B> = Omit<A, _LiteralKeys<B>> &
   Partial<Pick<A, Extract<keyof A, _NonLiteralKeys<B>>>>;

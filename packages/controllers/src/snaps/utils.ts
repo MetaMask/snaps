@@ -96,21 +96,20 @@ export type SnapFiles = {
  * Fetches a Snap from the public npm registry.
  *
  * @param packageName - The name of the package whose tarball to fetch.
- * @param version - The version of the package to fetch, or the string `latest`
- * to fetch the latest version.
+ * @param versionRange - The SemVer range of the package to fetch, max satisfying will be fetched
  * @param fetchFunction - The fetch function to use. Defaults to the global
  * {@link fetchContent}. Useful for Node.js compatibility.
  * @returns A tuple of the Snap manifest object and the Snap source code.
  */
 export async function fetchNpmSnap(
   packageName: string,
-  version: string,
+  versionRange: string,
   registryUrl = DEFAULT_NPM_REGISTRY,
   fetchFunction = fetchContent,
 ): Promise<SnapFiles> {
   const [tarballResponse, actualVersion] = await fetchNpmTarball(
     packageName,
-    version,
+    versionRange,
     registryUrl,
     fetchFunction,
   );
@@ -296,7 +295,7 @@ export function validateNpmSnapManifest(
  * the public npm registry. Throws an error if fetching fails.
  *
  * @param packageName - The name of the package whose tarball to fetch.
- * @param version - The semver range of the package to fetch, max satisfying will be fetched
+ * @param versionRange - The semver range of the package to fetch, max satisfying will be fetched
  * @param fetchFunction - The fetch function to use. Defaults to the global
  * {@link fetchContent}. Useful for Node.js compatibility.
  * @returns A tuple of the {@link Response} for the package tarball and the
@@ -304,7 +303,7 @@ export function validateNpmSnapManifest(
  */
 async function fetchNpmTarball(
   packageName: string,
-  version: string,
+  versionRange: string,
   registryUrl = DEFAULT_NPM_REGISTRY,
   fetchFunction = fetchContent,
 ): Promise<[ReadableStream, string]> {
@@ -320,12 +319,12 @@ async function fetchNpmTarball(
 
   const targetVersion = maxSatisfyingSemver(
     Object.keys((packageMetadata as any)?.versions ?? {}),
-    version,
+    versionRange,
   );
 
   if (targetVersion === null) {
     throw new Error(
-      `Failed to find a matching version in npm metadata for package "${packageName}" and requested semver range "${version}"`,
+      `Failed to find a matching version in npm metadata for package "${packageName}" and requested semver range "${versionRange}"`,
     );
   }
 

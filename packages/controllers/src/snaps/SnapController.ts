@@ -1082,7 +1082,7 @@ export class SnapController extends BaseController<
    * @returns @type {TruncatedSnap} if updated, @type {null} otherwise
    */
   async updateSnap(
-    snapId: SnapId,
+    snapId: ValidatedSnapId,
     newVersionRange: string = DEFAULT_REQUESTED_SNAP_VERSION,
   ): Promise<TruncatedSnap | null> {
     const snap = this.get(snapId);
@@ -1092,13 +1092,16 @@ export class SnapController extends BaseController<
       );
     }
 
-    const newSnap = await this._fetchSnap(
-      snapId as ValidatedSnapId,
-      newVersionRange,
-    );
+    if (!isValidSnapVersionRange(newVersionRange)) {
+      throw new Error(
+        `Received invalid Snap version range: "${newVersionRange}".`,
+      );
+    }
+
+    const newSnap = await this._fetchSnap(snapId, newVersionRange);
     if (!gtSemver(newSnap.manifest.version, snap.version)) {
       console.warn(
-        `Tried updating snap ${snapId} within ${newVersionRange} version range, but newer version ${snap.version} already set-up`,
+        `Tried updating snap "${snapId}" within "${newVersionRange}" version range, but newer version "${snap.version}" is already installed`,
       );
       return null;
     }
@@ -1110,7 +1113,7 @@ export class SnapController extends BaseController<
     this._transitionSnapState(snapId, SnapStatusEvent.update);
 
     await this._set({
-      id: snapId as ValidatedSnapId,
+      id: snapId,
       manifest: newSnap.manifest,
       sourceCode: newSnap.sourceCode,
       versionRange: newVersionRange,
@@ -1319,12 +1322,12 @@ export class SnapController extends BaseController<
    * Fetches the manifest and source code of a snap.
    *
    * @param snapId - The id of the Snap.
-   * @param version - The version of the Snap to fetch.
+   * @param versionRange - The SemVer version of the Snap to fetch.
    * @returns A tuple of the Snap manifest object and the Snap source code.
    */
   private async _fetchSnap(
     snapId: ValidatedSnapId,
-    version?: string,
+    versionRange: string = DEFAULT_REQUESTED_SNAP_VERSION,
   ): Promise<FetchSnapResult> {
     try {
       const snapPrefix = snapIdToSnapPrefix(snapId);
@@ -1334,8 +1337,9 @@ export class SnapController extends BaseController<
         case SnapIdPrefixes.npm:
           return this._fetchNpmSnap(
             snapId.replace(SnapIdPrefixes.npm, ''),
-            version,
+            versionRange,
           );
+        /* istanbul ignore next */
         default:
           // This whill fail to compile if the above switch is not fully exhaustive
           return assertExhaustive(snapPrefix);
@@ -1349,15 +1353,17 @@ export class SnapController extends BaseController<
 
   private async _fetchNpmSnap(
     packageName: string,
-    version?: string,
+    versionRange: string,
   ): Promise<FetchSnapResult> {
-    if (!isValidSnapVersionRange(version)) {
-      throw new Error(`Received invalid Snap version range: "${version}".`);
+    if (!isValidSnapVersionRange(versionRange)) {
+      throw new Error(
+        `Received invalid Snap version range: "${versionRange}".`,
+      );
     }
 
     const { manifest, sourceCode, svgIcon } = await fetchNpmSnap(
       packageName,
-      version,
+      versionRange,
       this._npmRegistryUrl,
     );
     return { manifest, sourceCode, svgIcon };
@@ -1452,7 +1458,8 @@ export class SnapController extends BaseController<
         initialPermissions,
         alreadyApprovedPermissions ?? {},
       );
-
+      // TODO(ritave): The assumption that these are unused only holds so long as we do not
+      //               permit dynamic permission requests.
       const unusedPermissions = Object.keys(
         setDiff(alreadyApprovedPermissions ?? {}, initialPermissions),
       );
@@ -1601,10 +1608,9 @@ function isValidSnapVersionRange(version: unknown): version is string {
 }
 
 function snapIdToSnapPrefix(snapId: string): SnapIdPrefixes {
-  for (const prefix of Object.values(SnapIdPrefixes)) {
-    if (snapId.startsWith(prefix)) {
-      return prefix;
-    }
+  const prefix = Object.values(SnapIdPrefixes).find(snapId.startsWith);
+  if (prefix !== undefined) {
+    return prefix;
   }
-  throw new Error(`Invalid or no prefix found for ${snapId}`);
+  throw new Error(`Invalid or no prefix found for "${snapId}"`);
 }

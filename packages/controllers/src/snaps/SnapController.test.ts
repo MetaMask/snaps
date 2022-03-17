@@ -1682,9 +1682,9 @@ describe('SnapController', () => {
 
   describe('updateSnap', () => {
     it('should throw an error on invalid snap id', async () => {
-      await expect(() => getSnapController().updateSnap('foo')).rejects.toThrow(
-        'Could not find snap',
-      );
+      await expect(() =>
+        getSnapController().updateSnap('local:foo'),
+      ).rejects.toThrow('Could not find snap');
     });
 
     it('should not update on older snap version downloaded', async () => {
@@ -1802,6 +1802,20 @@ describe('SnapController', () => {
       expect(stopSnapSpy).toHaveBeenCalledTimes(1);
       expect(startSnapSpy).toHaveBeenCalledTimes(1);
       expect(stopSnapSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should throw an error on invalid SemVer range', async () => {
+      const controller = getSnapController();
+
+      await controller.add({
+        id: FAKE_SNAP_ID,
+        sourceCode: FAKE_SNAP_SOURCE_CODE,
+        manifest: getSnapManifest(),
+      });
+
+      await expect(
+        controller.updateSnap(FAKE_SNAP_ID, 'this is not a version'),
+      ).rejects.toThrow('invalid Snap version range');
     });
   });
 });
