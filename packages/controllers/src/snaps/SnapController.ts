@@ -1541,7 +1541,7 @@ export class SnapController extends BaseController<
       return existingHandler;
     }
 
-    const locks = new RequestQueue(5);
+    const requestQueue = new RequestQueue(5);
     let startPromise: Promise<void> | null;
 
     const rpcHandler = async (
@@ -1560,24 +1560,34 @@ export class SnapController extends BaseController<
         );
       }
 
-      if (!handler && this.isRunning(snapId) === false) {
+      if (this.isRunning(snapId) === false) {
+        if (handler) {
+          throw new Error(
+            'This snap should not have a handler in its current state.',
+          );
+        }
+
         if (!startPromise) {
           startPromise = this.startSnap(snapId);
-        } else if (locks.get(origin) >= locks.maxQueue) {
+        } else if (requestQueue.get(origin) >= requestQueue.maxQueue) {
           throw new Error(
             'Exceeds maximum number of requests waiting to be resolved, please try again.',
           );
         }
 
-        locks.increment(origin);
-        await startPromise;
-        locks.decrement(origin);
-        // There is no race condition when reassigning the startPromise
-        // calls to the rpcHandler will get popped off the call stack and when
-        // the startPromise is assigned to null it won't matter because this block of
-        // code will not be hit since the handler will now exist
-        // eslint-disable-next-line
-        startPromise = null;
+        requestQueue.increment(origin);
+        try {
+          await startPromise;
+        } finally {
+          requestQueue.decrement(origin);
+          // No race condition, the only possible race condition that exists
+          // is if starting the snap fails and we immediately attempt to start the
+          // snap again, such that startPromise is reassigned to a new promise before
+          // every enqueued request reaches this line.
+          // That should be impossible.
+          // eslint-disable-next-line require-atomic-updates
+          startPromise = null;
+        }
         handler = await this._getRpcMessageHandler(snapId);
       }
 
