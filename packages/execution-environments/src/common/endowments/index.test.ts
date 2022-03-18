@@ -89,4 +89,11 @@ describe('createEndowments', () => {
     expect(endowments.setTimeout).not.toBe(setTimeout);
     expect(endowments.WebAssembly).not.toBe(WebAssembly);
   });
+
+  it('throws for unknown endowments', () => {
+    const mockWallet = { foo: Symbol('bar') };
+    expect(() => createEndowments(mockWallet as any, ['foo'])).toThrow(
+      'Unknown endowment: "foo"',
+    );
+  });
 });
