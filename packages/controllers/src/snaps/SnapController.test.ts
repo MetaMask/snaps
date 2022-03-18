@@ -443,7 +443,7 @@ describe('SnapController', () => {
     });
   });
 
-  it('should not delete existing snaps when using runExistinSnaps with a hydrated state', async () => {
+  it('should be able to rehydrate state', async () => {
     const mockExecuteSnap = jest.fn();
 
     const sourceCode = 'console.log("foo");';
@@ -1156,6 +1156,222 @@ describe('SnapController', () => {
           data: 'kaplar',
         }),
       );
+    });
+  });
+
+  describe('installSnaps', () => {
+    it('returns existing non-local snaps without reinstalling them', async () => {
+      const messenger = getSnapControllerMessenger();
+      const requester = 'baz.com';
+      const snapId = 'npm:fooSnap';
+      const version = '0.0.1';
+      const sourceCode = '// source code';
+      const fooSnapObject = {
+        initialPermissions: {},
+        permissionName: `wallet_snap_${snapId}`,
+        version,
+        sourceCode,
+        id: snapId,
+        manifest: getSnapManifest({
+          shasum: getSnapSourceShasum(sourceCode),
+          version,
+        }),
+        enabled: true,
+        status: SnapStatus.stopped,
+      };
+
+      const truncatedFooSnap = getTruncatedSnap({
+        id: snapId,
+        initialPermissions: fooSnapObject.initialPermissions,
+        permissionName: fooSnapObject.permissionName,
+        version: fooSnapObject.version,
+      });
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snapErrors: {},
+            snapStates: {},
+            snaps: {
+              [snapId]: fooSnapObject,
+            },
+          },
+        }),
+      );
+
+      const callActionMock = jest
+        .spyOn(messenger, 'call')
+        .mockImplementation(() => true);
+      const addMock = jest.spyOn(snapController, 'add').mockImplementation();
+
+      const result = await snapController.installSnaps(requester, {
+        [snapId]: {},
+      });
+      expect(result).toStrictEqual({ [snapId]: truncatedFooSnap });
+      expect(callActionMock).toHaveBeenCalledTimes(1);
+      expect(callActionMock).toHaveBeenCalledWith(
+        'PermissionController:hasPermission',
+        requester,
+        fooSnapObject.permissionName,
+      );
+      expect(addMock).not.toHaveBeenCalled();
+    });
+
+    it('reinstalls local snaps even if they are already installed (already stopped)', async () => {
+      const executeSnapMock = jest.fn();
+      const messenger = getSnapControllerMessenger();
+      const requester = 'baz.com';
+      const snapId = 'local:fooSnap';
+      const version = '0.0.1';
+      const sourceCode = '// source code';
+      const fooSnapObject = {
+        initialPermissions: {},
+        permissionName: `wallet_snap_${snapId}`,
+        version,
+        sourceCode,
+        id: snapId,
+        manifest: getSnapManifest({
+          shasum: getSnapSourceShasum(sourceCode),
+          version,
+        }),
+        enabled: true,
+        status: SnapStatus.stopped,
+      };
+
+      const truncatedFooSnap = getTruncatedSnap({
+        id: snapId,
+        initialPermissions: fooSnapObject.initialPermissions,
+        permissionName: fooSnapObject.permissionName,
+        version: fooSnapObject.version,
+      });
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          executeSnap: executeSnapMock,
+          messenger,
+          state: {
+            snapErrors: {},
+            snapStates: {},
+            snaps: {
+              [snapId]: fooSnapObject,
+            },
+          },
+        }),
+      );
+
+      const callActionMock = jest
+        .spyOn(messenger, 'call')
+        .mockImplementation(() => true);
+      const fetchSnapMock = jest
+        .spyOn(snapController as any, '_fetchSnap')
+        .mockImplementationOnce(() => {
+          return {
+            ...fooSnapObject,
+          };
+        });
+      const stopSnapSpy = jest.spyOn(snapController, 'stopSnap');
+
+      const result = await snapController.installSnaps(requester, {
+        [snapId]: {},
+      });
+      expect(result).toStrictEqual({ [snapId]: truncatedFooSnap });
+
+      expect(callActionMock).toHaveBeenCalledTimes(1);
+      expect(callActionMock).toHaveBeenCalledWith(
+        'PermissionController:hasPermission',
+        requester,
+        fooSnapObject.permissionName,
+      );
+
+      expect(executeSnapMock).toHaveBeenCalledTimes(1);
+      expect(executeSnapMock).toHaveBeenCalledWith(
+        expect.objectContaining({ snapId }),
+      );
+
+      expect(fetchSnapMock).toHaveBeenCalledTimes(1);
+      expect(fetchSnapMock).toHaveBeenCalledWith(snapId, '*');
+
+      expect(stopSnapSpy).not.toHaveBeenCalled();
+    });
+
+    it('reinstalls local snaps even if they are already installed (running)', async () => {
+      const executeSnapMock = jest.fn();
+      const messenger = getSnapControllerMessenger();
+      const requester = 'baz.com';
+      const snapId = 'local:fooSnap';
+      const version = '0.0.1';
+      const sourceCode = '// source code';
+      const fooSnapObject = {
+        initialPermissions: {},
+        permissionName: `wallet_snap_${snapId}`,
+        version,
+        sourceCode,
+        id: snapId,
+        manifest: getSnapManifest({
+          shasum: getSnapSourceShasum(sourceCode),
+          version,
+        }),
+        enabled: true,
+        // Set to "running"
+        status: SnapStatus.running,
+      };
+
+      const truncatedFooSnap = getTruncatedSnap({
+        id: snapId,
+        initialPermissions: fooSnapObject.initialPermissions,
+        permissionName: fooSnapObject.permissionName,
+        version: fooSnapObject.version,
+      });
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          executeSnap: executeSnapMock,
+          messenger,
+          state: {
+            snapErrors: {},
+            snapStates: {},
+            snaps: {
+              [snapId]: fooSnapObject,
+            },
+          },
+        }),
+      );
+
+      const callActionMock = jest
+        .spyOn(messenger, 'call')
+        .mockImplementation(() => true);
+      const fetchSnapMock = jest
+        .spyOn(snapController as any, '_fetchSnap')
+        .mockImplementationOnce(() => {
+          return {
+            ...fooSnapObject,
+          };
+        });
+      const stopSnapSpy = jest.spyOn(snapController, 'stopSnap');
+
+      const result = await snapController.installSnaps(requester, {
+        [snapId]: {},
+      });
+
+      expect(result).toStrictEqual({ [snapId]: truncatedFooSnap });
+
+      expect(callActionMock).toHaveBeenCalledTimes(1);
+      expect(callActionMock).toHaveBeenCalledWith(
+        'PermissionController:hasPermission',
+        requester,
+        fooSnapObject.permissionName,
+      );
+
+      expect(executeSnapMock).toHaveBeenCalledTimes(1);
+      expect(executeSnapMock).toHaveBeenCalledWith(
+        expect.objectContaining({ snapId }),
+      );
+
+      expect(fetchSnapMock).toHaveBeenCalledTimes(1);
+
+      expect(fetchSnapMock).toHaveBeenCalledWith(snapId, '*');
+      expect(stopSnapSpy).toHaveBeenCalledTimes(1);
     });
   });
 

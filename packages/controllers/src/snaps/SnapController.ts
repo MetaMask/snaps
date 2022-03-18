@@ -1018,7 +1018,8 @@ export class SnapController extends BaseController<
     version: string,
   ): Promise<ProcessSnapResult> {
     const existingSnap = this.getTruncated(snapId);
-    if (existingSnap) {
+    // For devX we always re-install local snaps.
+    if (existingSnap && !snapId.startsWith(SnapIdPrefixes.local)) {
       if (satisfiesSemver(existingSnap.version, version)) {
         return existingSnap;
       }
@@ -1027,6 +1028,11 @@ export class SnapController extends BaseController<
           `Version mismatch with already installed snap. ${snapId}@${existingSnap.version} doesn't satisfy requested version ${version}`,
         ),
       };
+    }
+
+    // Existing snaps must be stopped before overwriting
+    if (existingSnap && this.isRunning(snapId)) {
+      await this.stopSnap(snapId);
     }
 
     try {
