@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.10.4]
 ### Fixed
 - Fix endowed global functions with properties ([#294](https://github.com/MetaMask/snaps-skunkworks/pull/294))
+  - Endowments like `Date` were missing all properties except `name` and `length`, causing e.g. `Date.now` to be `undefined`. This is no longer the case.
 
 ## [0.10.3]
 ### Changed
