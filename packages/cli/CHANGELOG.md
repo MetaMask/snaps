@@ -7,9 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.10.3]
-### Uncategorized
+### Fixed
 - Improve dynamic mocking ([#262](https://github.com/MetaMask/snaps-skunkworks/pull/262))
-- Rename package directories ([#278](https://github.com/MetaMask/snaps-skunkworks/pull/278))
 
 ## [0.10.2]
 ### Fixed

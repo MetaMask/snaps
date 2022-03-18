@@ -7,9 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.10.3]
-### Uncategorized
+### Added
 - Add notification example snap ([#248](https://github.com/MetaMask/snaps-skunkworks/pull/248))
-- Rename package directories ([#278](https://github.com/MetaMask/snaps-skunkworks/pull/278))
 
 ## [0.10.0]
 ### Changed

@@ -7,9 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.10.3]
-### Uncategorized
+### Changed
 - Always reinstall local snaps ([#289](https://github.com/MetaMask/snaps-skunkworks/pull/289))
-- Update controller coverage minimums ([#285](https://github.com/MetaMask/snaps-skunkworks/pull/285))
 
 ## [0.10.2]
 ### Fixed
