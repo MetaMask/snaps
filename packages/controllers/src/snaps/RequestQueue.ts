@@ -1,4 +1,5 @@
 import { ReentrancyGuard } from './ReentrancyGuard';
+
 export class RequestQueue {
   public readonly maxQueue: number;
 
