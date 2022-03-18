@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.10.4]
-### Uncategorized
-- Stop binding function endowments to root globalThis ([#294](https://github.com/MetaMask/snaps-skunkworks/pull/294))
+### Fixed
+- Fix endowed global functions with properties ([#294](https://github.com/MetaMask/snaps-skunkworks/pull/294))
 
 ## [0.10.3]
 ### Changed
