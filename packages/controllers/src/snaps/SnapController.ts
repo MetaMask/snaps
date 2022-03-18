@@ -1018,19 +1018,23 @@ export class SnapController extends BaseController<
     version: string,
   ): Promise<ProcessSnapResult> {
     const existingSnap = this.getTruncated(snapId);
-    // For dev-ex we always re-install local Snaps
-    if (existingSnap && !snapId.startsWith(SnapIdPrefixes.local)) {
-      if (satisfiesSemver(existingSnap.version, version)) {
-        return existingSnap;
+    if (existingSnap) {
+      if (snapId.startsWith(SnapIdPrefixes.local)) {
+        // For devX we always re-install local snaps. They must be stopped
+        // before being reinstalled.
+        if (this.isRunning(snapId)) {
+          await this.stopSnap(snapId);
+        }
+      } else {
+        if (satisfiesSemver(existingSnap.version, version)) {
+          return existingSnap;
+        }
+        return {
+          error: ethErrors.rpc.invalidParams(
+            `Version mismatch with already installed snap. ${snapId}@${existingSnap.version} doesn't satisfy requested version ${version}`,
+          ),
+        };
       }
-      return {
-        error: ethErrors.rpc.invalidParams(
-          `Version mismatch with already installed snap. ${snapId}@${existingSnap.version} doesn't satisfy requested version ${version}`,
-        ),
-      };
-    } else if (this.isRunning(snapId)) {
-      // Local Snaps may still be running
-      await this.stopSnap(snapId);
     }
 
     try {
