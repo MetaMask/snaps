@@ -36,6 +36,9 @@ export function createEndowments(
 ): Record<string, unknown> {
   const attenuatedEndowments: Record<string, unknown> = {};
 
+  // TODO: All endowments should be hardened to prevent covert communication
+  // channels. Hardening the returned objects breaks tests elsewhere in the
+  // monorepo, so further research is needed.
   return endowments.reduce(
     (allEndowments, endowmentName) => {
       // First, check if the endowment has a factory, and default to that.
@@ -62,11 +65,7 @@ export function createEndowments(
           endowmentName
         ];
 
-        // Bind functions to prevent shenanigans.
-        allEndowments[endowmentName] =
-          typeof globalValue === 'function'
-            ? globalValue.bind(rootRealmGlobal)
-            : globalValue;
+        allEndowments[endowmentName] = globalValue;
       } else {
         // If we get to this point, we've been passed an endowment that doesn't
         // exist in our current environment.
