@@ -1,11 +1,15 @@
+import { ReentrancyGuard } from './ReentrancyGuard';
 export class RequestQueue {
   public readonly maxQueue: number;
 
   private readonly locks: Map<string, number>;
 
+  private readonly decrementGuard: ReentrancyGuard;
+
   constructor(maxQueue: number) {
     this.maxQueue = maxQueue;
     this.locks = new Map<string, number>();
+    this.decrementGuard = new ReentrancyGuard();
   }
 
   /**
@@ -27,6 +31,10 @@ export class RequestQueue {
    * @param origin
    */
   public decrement(origin: string) {
+    if (this.decrementGuard.getDecrementLockStatus(origin)) {
+      return;
+    }
+    this.decrementGuard.setDecrementLock(origin, true);
     const currentCount = this.locks.get(origin) ?? 0;
     if (currentCount === 0) {
       throw new Error(
@@ -34,6 +42,7 @@ export class RequestQueue {
       );
     }
     this.locks.set(origin, currentCount - 1);
+    this.decrementGuard.setDecrementLock(origin, false);
   }
 
   /**
