@@ -32,7 +32,9 @@ export class RequestQueue {
    */
   public decrement(origin: string) {
     if (this.decrementGuard.getDecrementLockStatus(origin)) {
-      return;
+      throw new Error(
+        `In the process of already decrementing the queue for ${origin}, try again later.`,
+      );
     }
     this.decrementGuard.setDecrementLock(origin, true);
     const currentCount = this.locks.get(origin) ?? 0;
