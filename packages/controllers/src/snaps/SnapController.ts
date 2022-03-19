@@ -16,7 +16,7 @@ import {
   SnapId,
   UnresponsiveMessageEvent,
 } from '@metamask/snap-types';
-import { ethErrors, serializeError } from 'eth-rpc-errors';
+import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import type { Patch } from 'immer';
 import { Json } from 'json-rpc-engine';
@@ -602,7 +602,8 @@ export class SnapController extends BaseController<
   async _onUnresponsiveSnap(snapId: SnapId) {
     await this._stopSnap(snapId, SnapStatusEvent.crash);
     this.addSnapError({
-      code: -32603,
+      // TODO: Standardize error code
+      code: errorCodes.rpc.internal,
       message: 'Snap Unresponsive',
       data: {
         snapId,
