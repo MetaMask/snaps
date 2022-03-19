@@ -76,8 +76,21 @@ export abstract class AbstractExecutionService<JobType extends Job>
     this._timeoutForUnresponsiveMap = new Map();
   }
 
+  /**
+   * Performs additional necessary work during job termination. **MUST** be
+   * implemented by concrete implementations. See
+   * {@link AbstractExecutionService.terminate} for details.
+   *
+   * @param job - The object corresponding to the job to be terminated.
+   */
   protected abstract _terminate(job: JobType): void;
 
+  /**
+   * Terminates the job with the specified ID and deletes all its associated
+   * data. Any subsequent messages targeting the job will fail with an error.
+   *
+   * @param jobId - The id of the job to be terminated.
+   */
   public terminate(jobId: string): void {
     const jobWrapper = this.jobs.get(jobId);
     if (!jobWrapper) {
