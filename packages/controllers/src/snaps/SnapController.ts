@@ -1098,7 +1098,7 @@ export class SnapController extends BaseController<
     }
 
     if (this.isRunning(snapId)) {
-      this._stopSnap(snapId);
+      this.stopSnap(snapId, SnapStatusEvent.stop);
     }
 
     this._transitionSnapState(snapId, SnapStatusEvent.update);
