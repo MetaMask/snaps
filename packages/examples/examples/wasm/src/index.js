@@ -29,8 +29,6 @@ wallet.registerRpcMessageHandler(async (_originString, requestObject) => {
     case 'callWasm':
       return wasm.instance.exports.main();
 
-    // TODO: Do something with simple.wasm
-
     default:
       throw ethErrors.rpc.methodNotFound({ data: { request: requestObject } });
   }
