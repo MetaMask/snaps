@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.5]
+### Fixed
+- Fix missing index.js ([#303](https://github.com/MetaMask/snaps-skunkworks/pull/303))
+
 ## [0.10.4]
 ### Fixed
 - Fix endowed global functions with properties ([#294](https://github.com/MetaMask/snaps-skunkworks/pull/294))
@@ -33,7 +37,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Previously, default endowments were specified in the execution environment itself. Now, all endowments must be specified in the `executeSnap` RPC parameters, except for the `wallet` API object.
 - Add endowments to the global `self` in addition to `window` ([#263](https://github.com/MetaMask/snaps-skunkworks/pull/263))
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.4...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.5...HEAD
+[0.10.5]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.4...v0.10.5
 [0.10.4]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.3...v0.10.4
 [0.10.3]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.2...v0.10.3
 [0.10.2]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.1...v0.10.2

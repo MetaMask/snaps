@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.5]
+### Changed
+- No changes this release.
+
 ## [0.10.3]
 ### Added
 - Add notification example snap ([#248](https://github.com/MetaMask/snaps-skunkworks/pull/248))
@@ -89,7 +93,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - This package was previously a subset of [`snaps-cli`](https://github.com/MetaMask/snaps-cli/tree/main/examples), which has been renamed to [`@metamask/snaps-cli`](https://npmjs.com/package/@metamask/snaps-cli).
   - Some examples have been deleted because they were outdated.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.3...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.5...HEAD
+[0.10.5]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.3...v0.10.5
 [0.10.3]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.0...v0.10.3
 [0.10.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.8.0...v0.9.0
