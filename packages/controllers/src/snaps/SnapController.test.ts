@@ -548,33 +548,11 @@ describe('SnapController', () => {
 
   it('should handle an error event on the controller messenger', async () => {
     const controllerMessenger = getControllerMessenger();
+    const serviceMessenger = getWebWorkerEESMessenger(controllerMessenger);
+    const snapControllerMessenger =
+      getSnapControllerMessenger(controllerMessenger);
 
-    const serviceMessenger = controllerMessenger.getRestricted({
-      name: 'ExecutionService',
-      allowedEvents: [
-        'ExecutionService:unhandledError',
-        'ExecutionService:unresponsive',
-      ],
-    });
-
-    const snapControllerMessenger = controllerMessenger.getRestricted({
-      name: 'SnapController',
-      allowedEvents: [
-        'ExecutionService:unhandledError',
-        'ExecutionService:unresponsive',
-      ],
-      allowedActions: [
-        'PermissionController:getEndowments',
-        'PermissionController:hasPermission',
-      ],
-    });
-
-    const workerExecutionEnvironment = new WebWorkerExecutionService({
-      messenger: serviceMessenger,
-      setupSnapProvider: jest.fn(),
-      workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
-    });
-
+    const workerExecutionEnvironment = getWebWorkerEES(serviceMessenger);
     const [snapController] = getSnapControllerWithEES(
       getSnapControllerWithEESOptions({ messenger: snapControllerMessenger }),
       workerExecutionEnvironment,
@@ -603,15 +581,12 @@ describe('SnapController', () => {
     }, 1);
 
     await new Promise((resolve) => {
-      snapControllerMessenger.subscribe(
-        'ExecutionService:unhandledError',
-        () => {
-          const localSnap = snapController.get(snap.id);
-          expect(localSnap?.status).toStrictEqual('crashed');
-          resolve(undefined);
-          snapController.destroy();
-        },
-      );
+      controllerMessenger.subscribe('SnapController:stateChange', (state) => {
+        const crashedSnap = state.snaps[snap.id];
+        expect(crashedSnap.status).toStrictEqual(SnapStatus.crashed);
+        resolve(undefined);
+        snapController.destroy();
+      });
     });
   });
 
@@ -647,15 +622,12 @@ describe('SnapController', () => {
     }, 1);
 
     await new Promise((resolve) => {
-      controllerMessenger.subscribe(
-        'ExecutionService:unresponsive',
-        async (snapId: string) => {
-          const localSnap = snapController.get(snapId);
-          expect(localSnap?.status).toStrictEqual('crashed');
-          resolve(undefined);
-          snapController.destroy();
-        },
-      );
+      controllerMessenger.subscribe('SnapController:stateChange', (state) => {
+        const crashedSnap = state.snaps[snap.id];
+        expect(crashedSnap.status).toStrictEqual(SnapStatus.crashed);
+        resolve(undefined);
+        snapController.destroy();
+      });
     });
   });
 
@@ -1414,7 +1386,7 @@ describe('SnapController', () => {
             ...fooSnapObject,
           };
         });
-      const stopSnapSpy = jest.spyOn(snapController, 'stopSnap');
+      const stopSnapSpy = jest.spyOn(snapController as any, 'stopSnap');
 
       const result = await snapController.installSnaps(requester, {
         [snapId]: {},
@@ -1791,7 +1763,7 @@ describe('SnapController', () => {
       await controller.startSnap(FAKE_SNAP_ID);
 
       const startSnapSpy = jest.spyOn(controller as any, '_startSnap');
-      const stopSnapSpy = jest.spyOn(controller as any, '_stopSnap');
+      const stopSnapSpy = jest.spyOn(controller as any, 'stopSnap');
 
       await controller.updateSnap(FAKE_SNAP_ID);
 

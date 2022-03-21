@@ -76,7 +76,49 @@ export abstract class AbstractExecutionService<JobType extends Job>
     this._timeoutForUnresponsiveMap = new Map();
   }
 
-  abstract terminate(jobId: string): void;
+  /**
+   * Performs additional necessary work during job termination. **MUST** be
+   * implemented by concrete implementations. See
+   * {@link AbstractExecutionService.terminate} for details.
+   *
+   * @param job - The object corresponding to the job to be terminated.
+   */
+  protected abstract _terminate(job: JobType): void;
+
+  /**
+   * Terminates the job with the specified ID and deletes all its associated
+   * data. Any subsequent messages targeting the job will fail with an error.
+   *
+   * @param jobId - The id of the job to be terminated.
+   */
+  public terminate(jobId: string): void {
+    const jobWrapper = this.jobs.get(jobId);
+    if (!jobWrapper) {
+      throw new Error(`Job with id "${jobId}" not found.`);
+    }
+
+    Object.values(jobWrapper.streams).forEach((stream) => {
+      try {
+        !stream.destroyed && stream.destroy();
+        stream.removeAllListeners();
+      } catch (err) {
+        console.log('Error while destroying stream', err);
+      }
+    });
+
+    this._terminate(jobWrapper);
+
+    const snapId = this.jobToSnapMap.get(jobId);
+    if (!snapId) {
+      throw new Error(`Failed to find a snap for job with id "${jobId}"`);
+    }
+
+    clearTimeout(this._timeoutForUnresponsiveMap.get(snapId));
+    this._timeoutForUnresponsiveMap.delete(snapId);
+    this._removeSnapAndJobMapping(jobId);
+    this.jobs.delete(jobId);
+    console.log(`job: "${jobId}" terminated`);
+  }
 
   protected abstract _initJob(): Promise<JobType>;
 
@@ -181,13 +223,15 @@ export abstract class AbstractExecutionService<JobType extends Job>
     }
 
     const timeout = setTimeout(async () => {
-      this._getJobStatus(jobId)
-        .then(() => {
-          this._pollForJobStatus(snapId);
-        })
-        .catch(() => {
+      try {
+        await this._getJobStatus(jobId);
+        this._pollForJobStatus(snapId);
+      } catch {
+        // The snap may have been terminated by the time we get here.
+        if (this.snapToJobMap.has(snapId)) {
           this._messenger.publish('ExecutionService:unresponsive', snapId);
-        });
+        }
+      }
     }, this._unresponsivePollingInterval) as unknown as number;
     this._timeoutForUnresponsiveMap.set(snapId, timeout);
   }

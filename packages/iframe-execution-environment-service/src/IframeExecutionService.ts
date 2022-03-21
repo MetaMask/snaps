@@ -58,43 +58,8 @@ export class IframeExecutionService extends AbstractExecutionService<EnvMetadata
     this.iframeUrl = iframeUrl;
   }
 
-  private _setJob(jobId: string, jobWrapper: EnvMetadata): void {
-    this.jobs.set(jobId, jobWrapper);
-  }
-
-  private _deleteJob(jobId: string): void {
-    this.jobs.delete(jobId);
-  }
-
-  public terminate(jobId: string): void {
-    const jobWrapper = this.jobs.get(jobId);
-
-    if (!jobWrapper) {
-      throw new Error(`Job with id "${jobId}" not found.`);
-    }
-
-    const snapId = this.jobToSnapMap.get(jobId);
-
-    if (!snapId) {
-      throw new Error(`Failed to find a snap for job with id "${jobId}"`);
-    }
-
-    Object.values(jobWrapper.streams).forEach((stream) => {
-      try {
-        if (stream && !stream.destroyed) {
-          stream.destroy();
-          stream.removeAllListeners();
-        }
-      } catch (err) {
-        console.log('Error while destroying stream', err);
-      }
-    });
+  protected _terminate(jobWrapper: EnvMetadata): void {
     document.getElementById(jobWrapper.id)?.remove();
-    clearTimeout(this._timeoutForUnresponsiveMap.get(snapId));
-    this._timeoutForUnresponsiveMap.delete(snapId);
-    this._removeSnapAndJobMapping(jobId);
-    this._deleteJob(jobId);
-    console.log(`job: "${jobId}" terminated`);
   }
 
   protected async _initJob(): Promise<EnvMetadata> {
@@ -113,7 +78,7 @@ export class IframeExecutionService extends AbstractExecutionService<EnvMetadata
       streams,
       rpcEngine,
     };
-    this._setJob(jobId, envMetadata);
+    this.jobs.set(jobId, envMetadata);
 
     await this._command(jobId, {
       jsonrpc: '2.0',

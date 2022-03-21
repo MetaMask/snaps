@@ -67,8 +67,6 @@ export class WebWorkerExecutionService extends AbstractExecutionService<WorkerWr
   }
 
   private _deleteWorker(workerId: string): void {
-    this.jobs.delete(workerId);
-
     const newWorkerState = {
       ...(this.store.getState().workers as Record<string, WorkerWrapper>),
     };
@@ -76,37 +74,9 @@ export class WebWorkerExecutionService extends AbstractExecutionService<WorkerWr
     this.store.updateState({ workers: newWorkerState });
   }
 
-  terminate(workerId: string): void {
-    const workerWrapper = this.jobs.get(workerId);
-
-    if (!workerWrapper) {
-      throw new Error(`Worker with id "${workerId}" not found.`);
-    }
-
-    const snapId = this._getSnapForJob(workerId);
-
-    if (!snapId) {
-      throw new Error(
-        `Failed to find a snap for worker with id "${workerId}".`,
-      );
-    }
-
-    Object.values(workerWrapper.streams).forEach((stream) => {
-      try {
-        !stream.destroyed && stream.destroy();
-        stream.removeAllListeners();
-      } catch (err) {
-        console.log('Error while destroying stream', err);
-      }
-    });
+  protected _terminate(workerWrapper: WorkerWrapper): void {
     workerWrapper.worker.terminate();
-    this._removeSnapAndJobMapping(workerId);
-    this._deleteWorker(workerId);
-
-    clearTimeout(this._timeoutForUnresponsiveMap.get(workerId));
-    this._timeoutForUnresponsiveMap.delete(workerId);
-
-    console.log(`worker:${workerId} terminated`);
+    this._deleteWorker(workerWrapper.id);
   }
 
   protected async _initJob(): Promise<WorkerWrapper> {
