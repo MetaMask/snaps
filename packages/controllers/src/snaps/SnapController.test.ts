@@ -1424,17 +1424,19 @@ describe('SnapController', () => {
 
     const snapController = getSnapController();
 
+    const snap = getSnapObject();
+
     const setSpy = jest
       .spyOn(snapController as any, '_set')
       .mockRejectedValueOnce(new Error('bar'))
-      .mockResolvedValue('baz');
+      .mockResolvedValue(snap);
 
     await expect(
       snapController.add({ id, manifest, sourceCode }),
     ).rejects.toThrow('bar');
     expect(setSpy).toHaveBeenCalledTimes(1);
 
-    expect(await snapController.add({ id, manifest, sourceCode })).toBe('baz');
+    expect(await snapController.add({ id, manifest, sourceCode })).toBe(snap);
     expect(setSpy).toHaveBeenCalledTimes(2);
   });
 
