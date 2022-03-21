@@ -1133,7 +1133,7 @@ export class SnapController extends BaseController<
    * or the snap's manifest and source code.
    * @returns The resulting snap object.
    */
-  async add(args: AddSnapArgs): Promise<Snap> {
+  add(args: AddSnapArgs): Promise<Snap> {
     const { id: _snapId } = args;
     this.validateSnapId(_snapId);
     const snapId: ValidatedSnapId = _snapId as ValidatedSnapId;
@@ -1150,15 +1150,16 @@ export class SnapController extends BaseController<
     const runtime = this._getSnapRuntimeData(snapId);
     if (!runtime.installPromise) {
       console.log(`Adding snap: ${snapId}`);
-      runtime.installPromise = this._set(args as ValidatedAddSnapArgs);
+      runtime.installPromise = this._set(args as ValidatedAddSnapArgs).catch(
+        (error) => {
+          // Reset promise so users can retry installation in case the problem is temporary
+          runtime.installPromise = null;
+          throw error;
+        },
+      );
     }
 
-    try {
-      return await runtime.installPromise;
-    } catch (err) {
-      runtime.installPromise = null;
-      throw err;
-    }
+    return runtime.installPromise;
   }
 
   private validateSnapId(snapId: unknown): void {
