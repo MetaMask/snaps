@@ -19,7 +19,7 @@ function getMockSnapProvider(): MockSnapProvider {
 }
 
 const isConstructor = (value: any) =>
-  Boolean(value.prototype) && Boolean(value.prototype.constructor.name);
+  Boolean(value?.prototype?.constructor.name);
 
 const mockFunction = () => true;
 class MockClass {}

@@ -65,7 +65,10 @@ export function createEndowments(
           endowmentName
         ];
 
-        allEndowments[endowmentName] = globalValue;
+        allEndowments[endowmentName] =
+          typeof globalValue === 'function' && !isConstructor(globalValue)
+            ? globalValue.bind(rootRealmGlobal)
+            : globalValue;
       } else {
         // If we get to this point, we've been passed an endowment that doesn't
         // exist in our current environment.
@@ -75,4 +78,19 @@ export function createEndowments(
     },
     { wallet } as Record<string, unknown>,
   );
+}
+
+/**
+ * Checks whether the specified function is a constructor.
+ *
+ * @param value - Any function value.
+ * @returns Whether the specified function is a constructor.
+ */
+// eslint-disable-next-line @typescript-eslint/ban-types
+function isConstructor<T extends Function>(value: T): boolean {
+  // In our current usage, the string `prototype.constructor.name` will never
+  // be empty, because you can't create a class with no name. Moreover, the
+  // `prototype.constructor.name` property is configurable but not writable, so
+  // we would have to try really hard to break this assumption.
+  return Boolean(value?.prototype?.constructor.name);
 }
