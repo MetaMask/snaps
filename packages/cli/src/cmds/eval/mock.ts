@@ -18,8 +18,9 @@ function getMockSnapProvider(): MockSnapProvider {
   return mockProvider as MockSnapProvider;
 }
 
-const isConstructor = (value: any) =>
-  Boolean(value?.prototype?.constructor.name);
+// eslint-disable-next-line @typescript-eslint/ban-types
+const isConstructor = (value: Function) =>
+  Boolean(typeof value?.prototype?.constructor.name === 'string');
 
 const mockFunction = () => true;
 class MockClass {}
