@@ -1763,7 +1763,7 @@ describe('SnapController', () => {
       await controller.startSnap(FAKE_SNAP_ID);
 
       const startSnapSpy = jest.spyOn(controller as any, '_startSnap');
-      const stopSnapSpy = jest.spyOn(controller as any, '_stopSnap');
+      const stopSnapSpy = jest.spyOn(controller as any, 'stopSnap');
 
       await controller.updateSnap(FAKE_SNAP_ID);
 
