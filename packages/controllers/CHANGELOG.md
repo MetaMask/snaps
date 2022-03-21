@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.10.6]
-### Uncategorized
-- Fix issue with detecting snap prefix ([#308](https://github.com/MetaMask/snaps-skunkworks/pull/308))
+### Fixed
+- Fix ID validation during Snap installation ([#308](https://github.com/MetaMask/snaps-skunkworks/pull/308))
 
 ## [0.10.5]
 ### Added

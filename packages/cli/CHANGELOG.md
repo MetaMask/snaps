@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.10.6]
-### Uncategorized
-- Bind functions but not constructors ([#311](https://github.com/MetaMask/snaps-skunkworks/pull/311))
+### Fixed
+- Fix endowment mocking during `mm-snap eval` ([#311](https://github.com/MetaMask/snaps-skunkworks/pull/311))
 
 ## [0.10.5]
 ### Changed

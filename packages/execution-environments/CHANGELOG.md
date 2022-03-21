@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.10.6]
-### Uncategorized
-- Bind functions but not constructors ([#311](https://github.com/MetaMask/snaps-skunkworks/pull/311))
+### Fixed
+- Fix function endowment bindings ([#311](https://github.com/MetaMask/snaps-skunkworks/pull/311))
 
 ## [0.10.5]
 ### Fixed
