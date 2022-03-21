@@ -1413,6 +1413,31 @@ describe('SnapController', () => {
     });
   });
 
+  it('should not persist failed install attempt for future use', async () => {
+    const id = 'npm:example-snap';
+    const sourceCode = 'foo';
+    const manifest = getSnapManifest({
+      version: '1.0.0',
+      initialPermissions: { eth_accounts: {} },
+      shasum: getSnapSourceShasum(sourceCode),
+    });
+
+    const snapController = getSnapController();
+
+    const addSpy = jest
+      .spyOn(snapController as any, '_add')
+      .mockRejectedValueOnce(new Error('bar'))
+      .mockResolvedValue('baz');
+
+    await expect(
+      snapController.add({ id, manifest, sourceCode }),
+    ).rejects.toThrow('bar');
+    expect(addSpy).toHaveBeenCalledTimes(1);
+
+    expect(await snapController.add({ id, manifest, sourceCode })).toBe('baz');
+    expect(addSpy).toHaveBeenCalledTimes(2);
+  });
+
   describe('controller actions', () => {
     it('action: SnapController:add', async () => {
       const executeSnapMock = jest.fn();
