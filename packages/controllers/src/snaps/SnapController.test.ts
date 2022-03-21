@@ -1386,7 +1386,7 @@ describe('SnapController', () => {
             ...fooSnapObject,
           };
         });
-      const stopSnapSpy = jest.spyOn(snapController as any, '_stopSnap');
+      const stopSnapSpy = jest.spyOn(snapController as any, 'stopSnap');
 
       const result = await snapController.installSnaps(requester, {
         [snapId]: {},

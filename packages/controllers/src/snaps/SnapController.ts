@@ -594,13 +594,13 @@ export class SnapController extends BaseController<
         this._maxIdleTime &&
         timeSince(runtime.lastRequest) > this._maxIdleTime
       ) {
-        this._stopSnap(snapId, SnapStatusEvent.stop);
+        this.stopSnap(snapId, SnapStatusEvent.stop);
       }
     });
   }
 
   async _onUnresponsiveSnap(snapId: SnapId) {
-    await this._stopSnap(snapId, SnapStatusEvent.crash);
+    await this.stopSnap(snapId, SnapStatusEvent.crash);
     this.addSnapError({
       // TODO: Standardize error code
       code: errorCodes.rpc.internal,
@@ -612,7 +612,7 @@ export class SnapController extends BaseController<
   }
 
   async _onUnhandledSnapError(snapId: SnapId, error: ErrorJSON) {
-    await this._stopSnap(snapId, SnapStatusEvent.crash);
+    await this.stopSnap(snapId, SnapStatusEvent.crash);
     this.addSnapError(error);
   }
 
@@ -701,31 +701,10 @@ export class SnapController extends BaseController<
     });
 
     if (this.isRunning(snapId)) {
-      return this._stopSnap(snapId, SnapStatusEvent.stop);
+      return this.stopSnap(snapId, SnapStatusEvent.stop);
     }
 
     return Promise.resolve();
-  }
-
-  /**
-   * Stops the given snap. Throws an error if no such snap exists
-   * or if it is already stopped.
-   *
-   * @param snapId - The id of the Snap to stop.
-   */
-  stopSnap(snapId: SnapId): Promise<void> {
-    const snap = this.get(snapId);
-    if (!snap) {
-      throw new Error(`Snap "${snapId}" not found.`);
-    }
-
-    if (!this.isRunning(snapId)) {
-      throw new Error(`Snap "${snapId}" already stopped.`);
-    }
-
-    return this._stopSnap(snapId, SnapStatusEvent.stop).then(() => {
-      console.log(`Snap "${snapId}" stopped.`);
-    });
   }
 
   /**
@@ -736,9 +715,11 @@ export class SnapController extends BaseController<
    * @param statusEvent - The Snap status event that caused the snap to be
    * stopped.
    */
-  private async _stopSnap(
+  public async stopSnap(
     snapId: SnapId,
-    statusEvent: SnapStatusEvent.stop | SnapStatusEvent.crash,
+    statusEvent:
+      | SnapStatusEvent.stop
+      | SnapStatusEvent.crash = SnapStatusEvent.stop,
   ): Promise<void> {
     const runtime = this._getSnapRuntimeData(snapId);
     if (!runtime) {
@@ -1056,7 +1037,7 @@ export class SnapController extends BaseController<
 
     // Existing snaps must be stopped before overwriting
     if (existingSnap && this.isRunning(snapId)) {
-      await this._stopSnap(snapId, SnapStatusEvent.stop);
+      await this.stopSnap(snapId, SnapStatusEvent.stop);
     }
 
     try {
@@ -1575,7 +1556,7 @@ export class SnapController extends BaseController<
 
       const timeoutPromise = new Promise((_resolve, reject) => {
         timeout = setTimeout(() => {
-          this._stopSnap(snapId, SnapStatusEvent.stop);
+          this.stopSnap(snapId, SnapStatusEvent.stop);
           reject(new Error('The request timed out.'));
         }, this._maxRequestTime) as unknown as number;
       });
