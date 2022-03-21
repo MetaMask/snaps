@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.10.5]
-### Uncategorized
-- Build execution-environments index.js ([#303](https://github.com/MetaMask/snaps-skunkworks/pull/303))
+### Fixed
+- Fix missing index.js ([#303](https://github.com/MetaMask/snaps-skunkworks/pull/303))
 
 ## [0.10.4]
 ### Fixed

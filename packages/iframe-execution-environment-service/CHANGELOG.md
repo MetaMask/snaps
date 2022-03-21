@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.10.5]
-### Uncategorized
+### Fixed
 - Fix snap crash handling ([#298](https://github.com/MetaMask/snaps-skunkworks/pull/298))
 
 ## [0.10.3]

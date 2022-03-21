@@ -7,10 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.10.5]
-### Uncategorized
+### Added
+- Add updateSnap function to SnapController ([#259](https://github.com/MetaMask/snaps-skunkworks/pull/259))
+
+### Fixed
 - Fix issue where installation errors were repeatedly thrown ([#301](https://github.com/MetaMask/snaps-skunkworks/pull/301))
 - Fix snap crash handling ([#298](https://github.com/MetaMask/snaps-skunkworks/pull/298))
-- Add updateSnap function to SnapController ([#259](https://github.com/MetaMask/snaps-skunkworks/pull/259))
 
 ## [0.10.3]
 ### Changed
