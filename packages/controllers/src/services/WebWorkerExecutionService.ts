@@ -67,8 +67,6 @@ export class WebWorkerExecutionService extends AbstractExecutionService<WorkerWr
   }
 
   private _deleteWorker(workerId: string): void {
-    this.jobs.delete(workerId);
-
     const newWorkerState = {
       ...(this.store.getState().workers as Record<string, WorkerWrapper>),
     };
