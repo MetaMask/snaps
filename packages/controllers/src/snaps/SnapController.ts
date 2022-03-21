@@ -1605,7 +1605,9 @@ function isValidSnapVersionRange(version: unknown): version is string {
 }
 
 function snapIdToSnapPrefix(snapId: string): SnapIdPrefixes {
-  const prefix = Object.values(SnapIdPrefixes).find(snapId.startsWith);
+  const prefix = Object.values(SnapIdPrefixes).find((p) =>
+    snapId.startsWith(p),
+  );
   if (prefix !== undefined) {
     return prefix;
   }
