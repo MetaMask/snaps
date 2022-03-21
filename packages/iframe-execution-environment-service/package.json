@@ -1,6 +1,6 @@
 {
   "name": "@metamask/iframe-execution-environment-service",
-  "version": "0.10.3",
+  "version": "0.10.5",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps-skunkworks.git"
@@ -28,11 +28,11 @@
   },
   "dependencies": {
     "@metamask/controllers": "^26.0.0",
-    "@metamask/execution-environments": "^0.10.4",
+    "@metamask/execution-environments": "^0.10.5",
     "@metamask/object-multiplex": "^1.2.0",
     "@metamask/post-message-stream": "^4.0.0",
-    "@metamask/snap-controllers": "^0.10.3",
-    "@metamask/snap-types": "^0.10.3",
+    "@metamask/snap-controllers": "^0.10.5",
+    "@metamask/snap-types": "^0.10.5",
     "eth-rpc-errors": "^4.0.3",
     "json-rpc-engine": "^6.1.0",
     "json-rpc-middleware-stream": "^3.0.0",
