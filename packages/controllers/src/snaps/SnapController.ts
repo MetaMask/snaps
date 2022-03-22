@@ -1563,7 +1563,7 @@ export class SnapController extends BaseController<
       if (this.isRunning(snapId) === false) {
         if (handler) {
           throw new Error(
-            'This snap should not have a handler in its current state.',
+            'This snap should not have a handler in its current state. This is a bug, please report it.',
           );
         }
 

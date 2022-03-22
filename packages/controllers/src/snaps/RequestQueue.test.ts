@@ -16,6 +16,19 @@ describe('RequestQueue', () => {
       queue.increment(origin);
       expect(queue.get(origin)).toBe(1);
     });
+
+    it('can handle an overflow case', () => {
+      const origin = 'npm:filsnap';
+      const queue = new RequestQueue(5);
+      queue.increment(origin);
+      queue.increment(origin);
+      queue.increment(origin);
+      queue.increment(origin);
+      queue.increment(origin);
+      expect(() => queue.increment(origin)).toThrow(
+        'Maximum number of requests reached. Try again later.',
+      );
+    })
   });
 
   describe('decrement', () => {
