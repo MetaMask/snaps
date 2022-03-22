@@ -48,6 +48,8 @@ jobs:
             echo "Working tree dirty after tests"
             exit 1
           fi
+      - name: CodeCov
+        uses: codecov/codecov-action@v2
       - name: Validate RC changelog
         if: ${{ startsWith(github.head_ref, 'release/') }}
         run: yarn lint:changelogs --rc
