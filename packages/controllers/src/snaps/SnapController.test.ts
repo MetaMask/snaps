@@ -1487,7 +1487,9 @@ describe('SnapController', () => {
         [id]: {},
       });
 
-      expect(result).toStrictEqual({ [id]: getTruncatedSnap({ initialPermissions }) });
+      expect(result).toStrictEqual({
+        [id]: getTruncatedSnap({ initialPermissions }),
+      });
       expect(fetchSnapMock).toHaveBeenCalled();
       expect(callActionMock).toHaveBeenCalledTimes(3);
     });
