@@ -1769,10 +1769,24 @@ describe('SnapController', () => {
 
       const result = await controller.updateSnap(FAKE_ORIGIN, FAKE_SNAP_ID);
 
-      const newSnap = controller.getTruncated(FAKE_SNAP_ID);
+      const newSnapTruncated = controller.getTruncated(FAKE_SNAP_ID);
 
-      expect(result).toStrictEqual(newSnap);
+      const newSnap = controller.get(FAKE_SNAP_ID);
+
+      expect(result).toStrictEqual(newSnapTruncated);
       expect(newSnap?.version).toStrictEqual('1.1.0');
+      expect(newSnap?.versionHistory).toStrictEqual([
+        {
+          origin: FAKE_ORIGIN,
+          version: '1.0.0',
+          date: expect.any(Number),
+        },
+        {
+          origin: FAKE_ORIGIN,
+          version: '1.1.0',
+          date: expect.any(Number),
+        },
+      ]);
       expect(fetchSnapSpy).toHaveBeenCalledTimes(1);
       expect(onSnapUpdated).toHaveBeenCalledTimes(1);
       expect(onSnapAdded).toHaveBeenCalledTimes(1);
