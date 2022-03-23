@@ -15,7 +15,7 @@ export class RequestQueue {
    */
   public increment(origin: string) {
     const currentCount = this.locks.get(origin) ?? 0;
-    if (currentCount + 1 > this.maxQueue) {
+    if (currentCount >= this.maxQueue) {
       throw new Error('Maximum number of requests reached. Try again later.');
     }
     this.locks.set(origin, currentCount + 1);
