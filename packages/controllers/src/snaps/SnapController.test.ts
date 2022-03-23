@@ -1925,4 +1925,46 @@ describe('SnapController', () => {
       );
     });
   });
+
+  describe('enableSnap/disableSnap', () => {
+    it('updates snap state correctly', async () => {
+      const id = 'npm:example-snap';
+      const sourceCode = 'foo';
+      const manifest = getSnapManifest({
+        version: '1.0.0',
+        initialPermissions: { eth_accounts: {} },
+        shasum: getSnapSourceShasum(sourceCode),
+      });
+
+      const snapController = getSnapController();
+
+      await snapController.add({ id, manifest, sourceCode });
+
+      await snapController.disableSnap(id);
+      expect(snapController.get(id)?.enabled).toBe(false);
+      snapController.enableSnap(id);
+      expect(snapController.get(id)?.enabled).toBe(true);
+    });
+
+    it('disableSnap also stops a running snap', async () => {
+      const id = 'npm:example-snap';
+      const sourceCode = 'foo';
+      const manifest = getSnapManifest({
+        version: '1.0.0',
+        initialPermissions: { eth_accounts: {} },
+        shasum: getSnapSourceShasum(sourceCode),
+      });
+
+      const snapController = getSnapController();
+
+      await snapController.add({ id, manifest, sourceCode });
+
+      await snapController.startSnap(id);
+
+      await snapController.disableSnap(id);
+      const snap = snapController.get(id);
+      expect(snap?.enabled).toBe(false);
+      expect(snap?.status).toBe(SnapStatus.stopped);
+    });
+  });
 });
