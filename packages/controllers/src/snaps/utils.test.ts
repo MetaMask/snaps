@@ -5,7 +5,9 @@ import fetchMock from 'jest-fetch-mock';
 import {
   DEFAULT_REQUESTED_SNAP_VERSION,
   fetchNpmSnap,
+  getSnapPrefix,
   resolveVersion,
+  SnapIdPrefixes,
 } from './utils';
 
 fetchMock.enableMocks();
@@ -102,5 +104,21 @@ describe('resolveVersion', () => {
 
   it('returns the requested version for everything else', () => {
     expect(resolveVersion('1.2.3')).toBe('1.2.3');
+  });
+});
+
+describe('getSnapPrefix', () => {
+  it('detects npm prefix', () => {
+    expect(getSnapPrefix('npm:example-snap')).toBe(SnapIdPrefixes.npm);
+  });
+
+  it('detects local prefix', () => {
+    expect(getSnapPrefix('local:fooSnap')).toBe(SnapIdPrefixes.local);
+  });
+
+  it('throws in case of invalid prefix', () => {
+    expect(() => getSnapPrefix('foo:fooSnap')).toThrow(
+      'Invalid or no prefix found for "foo:fooSnap"',
+    );
   });
 });

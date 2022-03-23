@@ -21,11 +21,7 @@ import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import type { Patch } from 'immer';
 import { Json } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
-import {
-  gt as gtSemver,
-  satisfies as satisfiesSemver,
-  validRange as validRangeSemver,
-} from 'semver';
+import { gt as gtSemver, satisfies as satisfiesSemver } from 'semver';
 import { assertExhaustive } from '..';
 import {
   ExecuteSnap,
@@ -39,6 +35,8 @@ import {
   DEFAULT_REQUESTED_SNAP_VERSION,
   fetchContent,
   fetchNpmSnap,
+  getSnapPrefix,
+  isValidSnapVersionRange,
   LOCALHOST_HOSTNAMES,
   NpmSnapFileNames,
   resolveVersion,
@@ -1361,7 +1359,7 @@ export class SnapController extends BaseController<
     versionRange: string = DEFAULT_REQUESTED_SNAP_VERSION,
   ): Promise<FetchSnapResult> {
     try {
-      const snapPrefix = snapIdToSnapPrefix(snapId);
+      const snapPrefix = getSnapPrefix(snapId);
       switch (snapPrefix) {
         case SnapIdPrefixes.local:
           return this._fetchLocalSnap(snapId.replace(SnapIdPrefixes.local, ''));
@@ -1630,20 +1628,4 @@ export class SnapController extends BaseController<
     }
     return this._snapsRuntimeData.get(snapId) as SnapRuntimeData;
   }
-}
-
-function isValidSnapVersionRange(version: unknown): version is string {
-  return Boolean(
-    typeof version === 'string' && validRangeSemver(version) !== null,
-  );
-}
-
-function snapIdToSnapPrefix(snapId: string): SnapIdPrefixes {
-  const prefix = Object.values(SnapIdPrefixes).find((p) =>
-    snapId.startsWith(p),
-  );
-  if (prefix !== undefined) {
-    return prefix;
-  }
-  throw new Error(`Invalid or no prefix found for "${snapId}"`);
 }
