@@ -1310,8 +1310,9 @@ export class SnapController extends BaseController<
     const existingSnap = snapsState[snapId];
 
     const { version } = manifest;
+    const previousVersionHistory = existingSnap?.versionHistory ?? [];
     const versionHistory = [
-      ...existingSnap?.versionHistory,
+      ...previousVersionHistory,
       {
         version,
         date: Date.now(),
