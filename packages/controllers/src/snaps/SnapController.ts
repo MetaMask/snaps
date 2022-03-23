@@ -1159,6 +1159,7 @@ export class SnapController extends BaseController<
 
     if (
       !args ||
+      !('origin' in args) ||
       !('id' in args) ||
       (!('manifest' in args) && 'sourceCode' in args) ||
       ('manifest' in args && !('sourceCode' in args))
