@@ -1446,6 +1446,51 @@ describe('SnapController', () => {
       expect(fetchSnapMock).toHaveBeenCalledWith(snapId, '*');
       expect(stopSnapSpy).toHaveBeenCalledTimes(1);
     });
+
+    it('should authorize permissions needed for snaps', async () => {
+      const id = 'npm:example-snap';
+      const sourceCode = 'foo';
+      const initialPermissions = { eth_accounts: {} };
+      const manifest = getSnapManifest({
+        version: '1.0.0',
+        initialPermissions,
+        shasum: getSnapSourceShasum(sourceCode),
+      });
+
+      const messenger = getSnapControllerMessenger();
+      const snapController = getSnapController(
+        getSnapControllerOptions({ messenger }),
+      );
+
+      const callActionMock = jest
+        .spyOn(messenger, 'call')
+        // @ts-expect-error TS doesn't like this
+        .mockImplementation((method, ...args) => {
+          console.log(method, args);
+          if (method === 'PermissionController:hasPermission') {
+            return true;
+          } else if (method === 'PermissionController:requestPermissions') {
+            return [{ eth_accounts: {} }];
+          } else if (method === 'PermissionController:getPermissions') {
+            return [];
+          }
+          return false;
+        });
+
+      const fetchSnapMock = jest
+        .spyOn(snapController as any, '_fetchSnap')
+        .mockImplementationOnce(() => {
+          return getSnapObject({ manifest });
+        });
+
+      const result = await snapController.installSnaps('foo.com', {
+        [id]: {},
+      });
+
+      expect(result).toStrictEqual({ [id]: getTruncatedSnap({ initialPermissions }) });
+      expect(fetchSnapMock).toHaveBeenCalled();
+      expect(callActionMock).toHaveBeenCalledTimes(3);
+    });
   });
 
   it('should not persist failed install attempt for future use', async () => {
