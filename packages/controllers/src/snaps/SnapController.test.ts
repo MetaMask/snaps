@@ -228,6 +228,9 @@ const getSnapObject = ({
   status = SnapStatus.stopped,
   enabled = true,
   sourceCode = FAKE_SNAP_SOURCE_CODE,
+  versionHistory = [
+    { origin: FAKE_ORIGIN, version: '1.0.0', date: 1648031330572 },
+  ],
 } = {}): Snap => {
   return {
     initialPermissions,
@@ -238,6 +241,7 @@ const getSnapObject = ({
     status,
     enabled,
     sourceCode,
+    versionHistory,
   } as const;
 };
 
@@ -461,18 +465,13 @@ describe('SnapController', () => {
           snapErrors: {},
           snapStates: {},
           snaps: {
-            'npm:foo': {
-              initialPermissions: {},
+            'npm:foo': getSnapObject({
               permissionName: 'fooperm',
               version: '0.0.1',
               sourceCode,
               id: 'npm:foo',
-              manifest: getSnapManifest({
-                shasum: getSnapSourceShasum(sourceCode),
-              }),
-              enabled: true,
               status: SnapStatus.installing,
-            },
+            }),
           },
         },
       }),
@@ -1217,8 +1216,7 @@ describe('SnapController', () => {
       const snapId = 'npm:fooSnap';
       const version = '0.0.1';
       const sourceCode = '// source code';
-      const fooSnapObject = {
-        initialPermissions: {},
+      const fooSnapObject = getSnapObject({
         permissionName: `wallet_snap_${snapId}`,
         version,
         sourceCode,
@@ -1229,7 +1227,7 @@ describe('SnapController', () => {
         }),
         enabled: true,
         status: SnapStatus.stopped,
-      };
+      });
 
       const truncatedFooSnap = getTruncatedSnap({
         id: snapId,
@@ -1276,8 +1274,7 @@ describe('SnapController', () => {
       const snapId = 'local:fooSnap';
       const version = '0.0.1';
       const sourceCode = '// source code';
-      const fooSnapObject = {
-        initialPermissions: {},
+      const fooSnapObject = getSnapObject({
         permissionName: `wallet_snap_${snapId}`,
         version,
         sourceCode,
@@ -1288,7 +1285,7 @@ describe('SnapController', () => {
         }),
         enabled: true,
         status: SnapStatus.stopped,
-      };
+      });
 
       const truncatedFooSnap = getTruncatedSnap({
         id: snapId,
@@ -1353,8 +1350,7 @@ describe('SnapController', () => {
       const snapId = 'local:fooSnap';
       const version = '0.0.1';
       const sourceCode = '// source code';
-      const fooSnapObject = {
-        initialPermissions: {},
+      const fooSnapObject = getSnapObject({
         permissionName: `wallet_snap_${snapId}`,
         version,
         sourceCode,
@@ -1366,7 +1362,7 @@ describe('SnapController', () => {
         enabled: true,
         // Set to "running"
         status: SnapStatus.running,
-      };
+      });
 
       const truncatedFooSnap = getTruncatedSnap({
         id: snapId,
@@ -1510,8 +1506,7 @@ describe('SnapController', () => {
       const executeSnapMock = jest.fn();
       const messenger = getSnapControllerMessenger();
       const sourceCode = '// source code';
-      const fooSnapObject = {
-        initialPermissions: {},
+      const fooSnapObject = getSnapObject({
         permissionName: 'fooperm',
         version: '0.0.1',
         sourceCode,
@@ -1521,7 +1516,7 @@ describe('SnapController', () => {
         }),
         enabled: true,
         status: SnapStatus.installing,
-      };
+      });
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -1548,7 +1543,7 @@ describe('SnapController', () => {
       const executeSnapMock = jest.fn();
       const messenger = getSnapControllerMessenger();
       const sourceCode = '// source code';
-      const fooSnapObject = {
+      const fooSnapObject = getSnapObject({
         initialPermissions: {},
         permissionName: 'fooperm',
         version: '0.0.1',
@@ -1559,7 +1554,7 @@ describe('SnapController', () => {
         }),
         enabled: true,
         status: SnapStatus.installing,
-      };
+      });
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -1632,8 +1627,7 @@ describe('SnapController', () => {
             snapErrors: {},
             snapStates: {},
             snaps: {
-              'npm:fooSnap': {
-                initialPermissions: {},
+              'npm:fooSnap': getSnapObject({
                 permissionName: 'fooperm',
                 version: '0.0.1',
                 sourceCode,
@@ -1643,7 +1637,7 @@ describe('SnapController', () => {
                 }),
                 enabled: true,
                 status: SnapStatus.installing,
-              },
+              }),
             },
           },
         }),
@@ -1669,8 +1663,7 @@ describe('SnapController', () => {
             snapErrors: {},
             snapStates: {},
             snaps: {
-              'npm:fooSnap': {
-                initialPermissions: {},
+              'npm:fooSnap': getSnapObject({
                 permissionName: 'fooperm',
                 version: '0.0.1',
                 sourceCode,
@@ -1680,7 +1673,7 @@ describe('SnapController', () => {
                 }),
                 enabled: true,
                 status: SnapStatus.installing,
-              },
+              }),
             },
           },
         }),
@@ -1703,7 +1696,7 @@ describe('SnapController', () => {
   describe('updateSnap', () => {
     it('should throw an error on invalid snap id', async () => {
       await expect(() =>
-        getSnapController().updateSnap('local:foo'),
+        getSnapController().updateSnap(FAKE_ORIGIN, 'local:foo'),
       ).rejects.toThrow('Could not find snap');
     });
 
@@ -1737,7 +1730,7 @@ describe('SnapController', () => {
       messenger.subscribe('SnapController:snapUpdated', onSnapUpdated);
       messenger.subscribe('SnapController:snapAdded', onSnapAdded);
 
-      const result = await controller.updateSnap(FAKE_SNAP_ID);
+      const result = await controller.updateSnap(FAKE_ORIGIN, FAKE_SNAP_ID);
 
       const newSnap = controller.get(FAKE_SNAP_ID);
 
@@ -1838,7 +1831,11 @@ describe('SnapController', () => {
       });
 
       await expect(
-        controller.updateSnap(FAKE_SNAP_ID, 'this is not a version'),
+        controller.updateSnap(
+          FAKE_ORIGIN,
+          FAKE_SNAP_ID,
+          'this is not a version',
+        ),
       ).rejects.toThrow('invalid Snap version range');
     });
   });
