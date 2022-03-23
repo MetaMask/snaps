@@ -177,6 +177,7 @@ wallet.registerRpcMessageHandler(async (origin, request) => {
 });
 `;
 const FAKE_SNAP_SHASUM = getSnapSourceShasum(FAKE_SNAP_SOURCE_CODE);
+const FAKE_ORIGIN = 'foo.com';
 
 const getSnapManifest = ({
   version = '1.0.0',
@@ -277,6 +278,7 @@ describe('SnapController', () => {
     `;
 
     const snap = await snapController.add({
+      origin: FAKE_ORIGIN,
       id: 'npm:example-snap',
       sourceCode,
       manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
@@ -306,6 +308,7 @@ describe('SnapController', () => {
     `;
 
     const snap = await snapController.add({
+      origin: FAKE_ORIGIN,
       id: 'npm:example-snap',
       sourceCode,
       manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
@@ -344,6 +347,7 @@ describe('SnapController', () => {
     `;
 
     const snap = await snapController.add({
+      origin: FAKE_ORIGIN,
       id: 'npm:example-snap',
       sourceCode,
       manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
@@ -381,6 +385,7 @@ describe('SnapController', () => {
     const sourceCode = `console.log('Hello, world!');`;
 
     const snap = await snapController.add({
+      origin: FAKE_ORIGIN,
       id: 'npm:example-snap',
       sourceCode,
       manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
@@ -431,7 +436,7 @@ describe('SnapController', () => {
       getSnapControllerOptions({ executeSnap: mockExecuteSnap }),
     );
 
-    await snapController.add({ id, manifest, sourceCode });
+    await snapController.add({ origin: FAKE_ORIGIN, id, manifest, sourceCode });
     await snapController.startSnap(id);
     await expect(snapController.startSnap(id)).rejects.toThrow(
       /^Snap "npm:example-snap" is already started.$/u,
@@ -566,6 +571,7 @@ describe('SnapController', () => {
     `;
 
     const snap = await snapController.add({
+      origin: FAKE_ORIGIN,
       id: 'npm:example-snap',
       sourceCode,
       manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
@@ -610,6 +616,7 @@ describe('SnapController', () => {
     `;
 
     const snap = await snapController.add({
+      origin: FAKE_ORIGIN,
       id: 'npm:example-snap',
       sourceCode,
       manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
@@ -648,6 +655,7 @@ describe('SnapController', () => {
     `;
 
     const snap = await snapController.add({
+      origin: FAKE_ORIGIN,
       id: 'npm:example-snap',
       sourceCode,
       manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
@@ -688,6 +696,7 @@ describe('SnapController', () => {
     `;
 
     const snap = await snapController.add({
+      origin: FAKE_ORIGIN,
       id: 'npm:example-snap',
       sourceCode,
       manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
@@ -719,6 +728,7 @@ describe('SnapController', () => {
     `;
 
     const snap = await snapController.add({
+      origin: FAKE_ORIGIN,
       id: 'npm:example-snap',
       sourceCode,
       manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
@@ -752,8 +762,6 @@ describe('SnapController', () => {
         messenger,
       }),
     );
-
-    const origin = 'foo.com';
 
     const messengerCallMock = jest
       .spyOn(messenger, 'call')
@@ -829,6 +837,7 @@ describe('SnapController', () => {
     const origin = 'foor.com';
 
     const snap = await controller.add({
+      origin: FAKE_ORIGIN,
       id: FAKE_SNAP_ID,
       manifest: getSnapManifest(),
       sourceCode: FAKE_SNAP_SOURCE_CODE,
@@ -865,6 +874,7 @@ describe('SnapController', () => {
 
     await expect(
       controller.add({
+        origin: FAKE_ORIGIN,
         id: FAKE_SNAP_ID,
         manifest: getSnapManifest(),
         sourceCode: FAKE_SNAP_SOURCE_CODE,
@@ -963,6 +973,7 @@ describe('SnapController', () => {
     `;
 
     const snap = await snapController.add({
+      origin: FAKE_ORIGIN,
       id: 'npm:example-snap',
       sourceCode,
       manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
@@ -1039,6 +1050,7 @@ describe('SnapController', () => {
     `;
 
     const snap = await snapController.add({
+      origin: FAKE_ORIGIN,
       id: 'npm:example-snap',
       sourceCode,
       manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
@@ -1094,6 +1106,7 @@ describe('SnapController', () => {
     `;
 
     const snap = await snapController.add({
+      origin: FAKE_ORIGIN,
       id: 'npm:example-snap',
       sourceCode,
       manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
@@ -1432,11 +1445,18 @@ describe('SnapController', () => {
       .mockResolvedValue(snap);
 
     await expect(
-      snapController.add({ id, manifest, sourceCode }),
+      snapController.add({ origin: FAKE_ORIGIN, id, manifest, sourceCode }),
     ).rejects.toThrow('bar');
     expect(setSpy).toHaveBeenCalledTimes(1);
 
-    expect(await snapController.add({ id, manifest, sourceCode })).toBe(snap);
+    expect(
+      await snapController.add({
+        origin: FAKE_ORIGIN,
+        id,
+        manifest,
+        sourceCode,
+      }),
+    ).toBe(snap);
     expect(setSpy).toHaveBeenCalledTimes(2);
   });
 
@@ -1474,6 +1494,7 @@ describe('SnapController', () => {
         });
 
       await messenger.call('SnapController:add', {
+        origin: FAKE_ORIGIN,
         id: 'npm:fooSnap',
       });
 
@@ -1707,6 +1728,7 @@ describe('SnapController', () => {
       });
 
       const snap = await controller.add({
+        origin: FAKE_ORIGIN,
         id: FAKE_SNAP_ID,
         sourceCode: FAKE_SNAP_SOURCE_CODE,
         manifest: getSnapManifest(),
@@ -1747,6 +1769,7 @@ describe('SnapController', () => {
       });
 
       await controller.add({
+        origin: FAKE_ORIGIN,
         id: FAKE_SNAP_ID,
         sourceCode: FAKE_SNAP_SOURCE_CODE,
         manifest: getSnapManifest(),
@@ -1755,7 +1778,7 @@ describe('SnapController', () => {
       messenger.subscribe('SnapController:snapUpdated', onSnapUpdated);
       messenger.subscribe('SnapController:snapAdded', onSnapAdded);
 
-      const result = await controller.updateSnap(FAKE_SNAP_ID);
+      const result = await controller.updateSnap(FAKE_ORIGIN, FAKE_SNAP_ID);
 
       const newSnap = controller.getTruncated(FAKE_SNAP_ID);
 
@@ -1782,6 +1805,7 @@ describe('SnapController', () => {
       });
 
       await controller.add({
+        origin: FAKE_ORIGIN,
         id: FAKE_SNAP_ID,
         sourceCode: FAKE_SNAP_SOURCE_CODE,
         manifest: getSnapManifest(),
@@ -1792,7 +1816,7 @@ describe('SnapController', () => {
       const startSnapSpy = jest.spyOn(controller as any, '_startSnap');
       const stopSnapSpy = jest.spyOn(controller as any, 'stopSnap');
 
-      await controller.updateSnap(FAKE_SNAP_ID);
+      await controller.updateSnap(FAKE_ORIGIN, FAKE_SNAP_ID);
 
       const isRunning = controller.isRunning(FAKE_SNAP_ID);
 
@@ -1807,6 +1831,7 @@ describe('SnapController', () => {
       const controller = getSnapController();
 
       await controller.add({
+        origin: FAKE_ORIGIN,
         id: FAKE_SNAP_ID,
         sourceCode: FAKE_SNAP_SOURCE_CODE,
         manifest: getSnapManifest(),

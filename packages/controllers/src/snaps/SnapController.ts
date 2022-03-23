@@ -132,6 +132,19 @@ export type Snap = {
    * The version of the Snap.
    */
   version: string;
+
+  /**
+   * The version history of the Snap.
+   * Can be used to derive when the Snap was installed, when it was updated to a certain version and who requested the change.
+   */
+  versionHistory: VersionHistory[];
+};
+
+export type VersionHistory = {
+  origin: string;
+  version: string;
+  // Unix timestamp
+  date: number;
 };
 
 /**
@@ -347,6 +360,7 @@ type SnapControllerArgs = {
 
 type AddSnapBase = {
   id: SnapId;
+  origin: string;
   versionRange?: string;
 };
 
@@ -994,7 +1008,7 @@ export class SnapController extends BaseController<
             // Attempt to install and run the snap, storing any errors that
             // occur during the process.
             result[snapId] = {
-              ...(await this.processRequestedSnap(snapId, version)),
+              ...(await this.processRequestedSnap(origin, snapId, version)),
             };
           } else {
             // only allow the installation of permitted snaps
@@ -1014,11 +1028,13 @@ export class SnapController extends BaseController<
    * Adds, authorizes, and runs the given snap with a snap provider.
    * Results from this method should be efficiently serializable.
    *
+   * @param origin - The origin requesting the snap.
    * @param snapId - The id of the snap.
    * @param version - The version of the snap to install.
    * @returns The resulting snap object, or an error if something went wrong.
    */
   private async processRequestedSnap(
+    origin: string,
     snapId: SnapId,
     version: string,
   ): Promise<ProcessSnapResult> {
@@ -1042,6 +1058,7 @@ export class SnapController extends BaseController<
 
     try {
       const { sourceCode } = await this.add({
+        origin,
         id: snapId,
         versionRange: version,
       });
@@ -1073,6 +1090,7 @@ export class SnapController extends BaseController<
    * @returns @type {TruncatedSnap} if updated, @type {null} otherwise
    */
   async updateSnap(
+    origin: string,
     snapId: ValidatedSnapId,
     newVersionRange: string = DEFAULT_REQUESTED_SNAP_VERSION,
   ): Promise<TruncatedSnap | null> {
@@ -1104,6 +1122,7 @@ export class SnapController extends BaseController<
     this._transitionSnapState(snapId, SnapStatusEvent.update);
 
     await this._set({
+      origin,
       id: snapId,
       manifest: newSnap.manifest,
       sourceCode: newSnap.sourceCode,
@@ -1245,12 +1264,15 @@ export class SnapController extends BaseController<
   /**
    * Internal method. See the "add" method.
    *
-   * @param snapId - The id of the Snap.
    * @param args - The add snap args.
    * @returns The resulting snap object.
    */
   private async _set(args: ValidatedAddSnapArgs): Promise<Snap> {
-    const { id: snapId, versionRange = DEFAULT_REQUESTED_SNAP_VERSION } = args;
+    const {
+      id: snapId,
+      versionRange = DEFAULT_REQUESTED_SNAP_VERSION,
+      origin,
+    } = args;
 
     let manifest: SnapManifest, sourceCode: string, svgIcon: string | undefined;
     if ('manifest' in args) {
@@ -1283,7 +1305,23 @@ export class SnapController extends BaseController<
       throw new Error(`Invalid initial permissions for snap "${snapId}".`);
     }
 
-    let snap: Snap = {
+    const snapsState = this.state.snaps;
+
+    const existingSnap = snapsState[snapId];
+
+    const { version } = manifest;
+    const versionHistory = [
+      ...existingSnap?.versionHistory,
+      {
+        version,
+        date: Date.now(),
+        origin,
+      },
+    ];
+
+    const snap: Snap = {
+      // restore relevant snap state if it exists
+      ...existingSnap,
       enabled: true,
       id: snapId,
       initialPermissions,
@@ -1291,15 +1329,9 @@ export class SnapController extends BaseController<
       permissionName: SNAP_PREFIX + snapId, // so we can easily correlate them
       sourceCode,
       status: snapStatusStateMachineConfig.initial,
-      version: manifest.version,
+      version,
+      versionHistory,
     };
-
-    const snapsState = this.state.snaps;
-
-    // restore relevant snap state if it exists
-    if (snapsState[snapId]) {
-      snap = { ...snapsState[snapId], ...snap };
-    }
 
     // store the snap back in state
     this.update((state: any) => {
