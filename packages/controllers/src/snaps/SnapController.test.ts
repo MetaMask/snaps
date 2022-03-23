@@ -229,7 +229,7 @@ const getSnapObject = ({
   enabled = true,
   sourceCode = FAKE_SNAP_SOURCE_CODE,
   versionHistory = [
-    { origin: FAKE_ORIGIN, version: '1.0.0', date: 1648031330572 },
+    { origin: FAKE_ORIGIN, version: '1.0.0', date: expect.any(Number) },
   ],
 } = {}): Snap => {
   return {
@@ -797,7 +797,7 @@ describe('SnapController', () => {
     const expectedSnapObject = getTruncatedSnap();
 
     expect(
-      await snapController.installSnaps(origin, {
+      await snapController.installSnaps(FAKE_ORIGIN, {
         [FAKE_SNAP_ID]: {},
       }),
     ).toStrictEqual({
@@ -808,7 +808,7 @@ describe('SnapController', () => {
     expect(messengerCallMock).toHaveBeenNthCalledWith(
       1,
       'PermissionController:hasPermission',
-      origin,
+      FAKE_ORIGIN,
       expectedSnapObject.permissionName,
     );
 
@@ -817,9 +817,8 @@ describe('SnapController', () => {
 
   it('should error on invalid semver range during installSnaps', async () => {
     const controller = getSnapController();
-    const origin = 'foo.com';
 
-    const result = await controller.installSnaps(origin, {
+    const result = await controller.installSnaps(FAKE_ORIGIN, {
       [FAKE_SNAP_ID]: { version: 'foo' },
     });
 
@@ -833,7 +832,6 @@ describe('SnapController', () => {
     const controller = getSnapController(
       getSnapControllerOptions({ messenger }),
     );
-    const origin = 'foor.com';
 
     const snap = await controller.add({
       origin: FAKE_ORIGIN,
@@ -848,7 +846,7 @@ describe('SnapController', () => {
       .spyOn(messenger, 'call')
       .mockImplementationOnce(() => true);
 
-    await controller.installSnaps(origin, {
+    await controller.installSnaps(FAKE_ORIGIN, {
       [FAKE_SNAP_ID]: { version: '>0.9.0 <1.1.0' },
     });
 
@@ -863,7 +861,7 @@ describe('SnapController', () => {
     expect(messengerCallMock).toHaveBeenNthCalledWith(
       1,
       'PermissionController:hasPermission',
-      origin,
+      FAKE_ORIGIN,
       newSnap?.permissionName,
     );
   });
@@ -891,8 +889,6 @@ describe('SnapController', () => {
         messenger,
       }),
     );
-
-    const origin = 'foo.com';
 
     const messengerCallMock = jest
       .spyOn(messenger, 'call')
@@ -936,7 +932,7 @@ describe('SnapController', () => {
     const expectedSnapObject = getTruncatedSnap();
 
     expect(
-      await snapController.installSnaps(origin, {
+      await snapController.installSnaps(FAKE_ORIGIN, {
         [FAKE_SNAP_ID]: {},
       }),
     ).toStrictEqual({
@@ -947,7 +943,7 @@ describe('SnapController', () => {
     expect(messengerCallMock).toHaveBeenNthCalledWith(
       1,
       'PermissionController:hasPermission',
-      origin,
+      FAKE_ORIGIN,
       expectedSnapObject.permissionName,
     );
 
