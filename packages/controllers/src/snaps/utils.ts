@@ -8,7 +8,10 @@ import deepEqual from 'fast-deep-equal';
 import createGunzipStream from 'gunzip-maybe';
 import pump from 'pump';
 import { ReadableWebToNodeStream } from 'readable-web-to-node-stream';
-import { maxSatisfying as maxSatisfyingSemver } from 'semver';
+import {
+  maxSatisfying as maxSatisfyingSemver,
+  validRange as validRangeSemver,
+} from 'semver';
 import { extract as tarExtract } from 'tar-stream';
 import { isPlainObject } from '../utils';
 import {
@@ -515,4 +518,34 @@ export function resolveVersion(version?: Json): Json {
     return DEFAULT_REQUESTED_SNAP_VERSION;
   }
   return version;
+}
+
+/**
+ * Checks whether a version range is valid.
+ *
+ * @param versionRange - A potential version range
+ * @returns True if the version range is valid
+ */
+export function isValidSnapVersionRange(
+  versionRange: unknown,
+): versionRange is string {
+  return Boolean(
+    typeof versionRange === 'string' && validRangeSemver(versionRange) !== null,
+  );
+}
+
+/**
+ * Gets the corresponding snap prefix from a snap id
+ *
+ * @param snapId - Snap id
+ * @returns The snap prefix from a snap id, i.e: "npm:"
+ */
+export function getSnapPrefix(snapId: string): SnapIdPrefixes {
+  const prefix = Object.values(SnapIdPrefixes).find((p) =>
+    snapId.startsWith(p),
+  );
+  if (prefix !== undefined) {
+    return prefix;
+  }
+  throw new Error(`Invalid or no prefix found for "${snapId}"`);
 }

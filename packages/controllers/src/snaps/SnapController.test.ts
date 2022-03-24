@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import { getPersistentState, Json } from '@metamask/controllers';
 import { ControllerMessenger } from '@metamask/controllers/dist/ControllerMessenger';
 import { EthereumRpcError, ethErrors, serializeError } from 'eth-rpc-errors';
+import fetchMock from 'jest-fetch-mock';
 import { ExecutionService } from '../services/ExecutionService';
 import { WebWorkerExecutionService } from '../services/WebWorkerExecutionService';
 import { SnapManifest } from './json-schemas';
@@ -17,7 +18,9 @@ import {
   SnapStatus,
   TruncatedSnap,
 } from './SnapController';
-import { getSnapSourceShasum } from './utils';
+import * as utils from './utils';
+
+const { getSnapSourceShasum } = utils;
 
 const workerCode = fs.readFileSync(
   require.resolve('@metamask/execution-environments/dist/webworker.bundle.js'),
@@ -258,6 +261,35 @@ const getTruncatedSnap = ({
     version,
   } as const;
 };
+
+jest.mock('./utils', () => ({
+  ...jest.requireActual<typeof utils>('./utils'),
+  fetchContent: fetchMock,
+  fetchNpmSnap: jest.fn().mockResolvedValue({
+    manifest: {
+      description: 'arbitraryDescription',
+      initialPermissions: {},
+      manifestVersion: '0.1',
+      proposedName: 'ExampleSnap',
+      repository: { type: 'git', url: 'https://github.com/example-snap' },
+      source: {
+        location: {
+          npm: {
+            filePath: 'dist/bundle.js',
+            iconPath: 'images/icon.svg',
+            packageName: 'example-snap',
+            registry: 'https://registry.npmjs.org',
+          },
+        },
+        shasum: 'vCmyHWIgnBwgiTqSXnd7LI7PbXSQim/JOotFfXkjAQk=',
+      },
+      version: '1.0.0',
+    },
+    sourceCode: '// foo',
+  }),
+}));
+
+fetchMock.enableMocks();
 
 /**
  * Note that fake timers cannot be used in these tests because of the Electron
@@ -1416,6 +1448,69 @@ describe('SnapController', () => {
       expect(fetchSnapMock).toHaveBeenCalledWith(snapId, '*');
       expect(stopSnapSpy).toHaveBeenCalledTimes(1);
     });
+
+    it('should authorize permissions needed for snaps', async () => {
+      const id = 'npm:example-snap';
+      const sourceCode = 'foo';
+      const initialPermissions = { eth_accounts: {} };
+      const manifest = getSnapManifest({
+        version: '1.0.0',
+        initialPermissions,
+        shasum: getSnapSourceShasum(sourceCode),
+      });
+
+      const messenger = getSnapControllerMessenger();
+      const snapController = getSnapController(
+        getSnapControllerOptions({ messenger }),
+      );
+
+      const callActionMock = jest
+        .spyOn(messenger, 'call')
+        // @ts-expect-error TS doesn't like this
+        .mockImplementation((method, ...args) => {
+          console.log(method, args);
+          if (method === 'PermissionController:hasPermission') {
+            return true;
+          } else if (method === 'PermissionController:requestPermissions') {
+            return [{ eth_accounts: {} }];
+          } else if (method === 'PermissionController:getPermissions') {
+            return [];
+          }
+          return false;
+        });
+
+      const fetchSnapMock = jest
+        .spyOn(snapController as any, '_fetchSnap')
+        .mockImplementationOnce(() => {
+          return getSnapObject({ manifest });
+        });
+
+      const result = await snapController.installSnaps(FAKE_ORIGIN, {
+        [id]: {},
+      });
+
+      expect(result).toStrictEqual({
+        [id]: getTruncatedSnap({ initialPermissions }),
+      });
+      expect(fetchSnapMock).toHaveBeenCalledTimes(1);
+      expect(callActionMock).toHaveBeenCalledTimes(3);
+      expect(callActionMock).toHaveBeenCalledWith(
+        'PermissionController:hasPermission',
+        FAKE_ORIGIN,
+        'wallet_snap_npm:example-snap',
+      );
+
+      expect(callActionMock).toHaveBeenCalledWith(
+        'PermissionController:getPermissions',
+        FAKE_SNAP_ID,
+      );
+
+      expect(callActionMock).toHaveBeenCalledWith(
+        'PermissionController:requestPermissions',
+        { origin: FAKE_SNAP_ID },
+        { eth_accounts: {} },
+      );
+    });
   });
 
   it('should not persist failed install attempt for future use', async () => {
@@ -1847,6 +1942,109 @@ describe('SnapController', () => {
           'this is not a version',
         ),
       ).rejects.toThrow('invalid Snap version range');
+    });
+  });
+
+  describe('_fetchSnap', () => {
+    const sourceCode = '// foo';
+    const shasum = 'vCmyHWIgnBwgiTqSXnd7LI7PbXSQim/JOotFfXkjAQk=';
+    it('can fetch NPM snaps', async () => {
+      const controller = getSnapController();
+
+      const result = await controller.add({
+        origin: FAKE_ORIGIN,
+        id: FAKE_SNAP_ID,
+      });
+      expect(result).toStrictEqual(
+        getSnapObject({
+          sourceCode,
+          status: SnapStatus.installing,
+          manifest: getSnapManifest({ shasum }),
+        }),
+      );
+    });
+
+    it('can fetch local snaps', async () => {
+      const controller = getSnapController();
+
+      fetchMock
+        .mockResponseOnce(
+          JSON.stringify(
+            getSnapManifest({
+              shasum,
+            }),
+          ),
+        )
+        .mockResponseOnce(sourceCode);
+
+      const id = 'local:https://localhost:8081';
+      const result = await controller.add({
+        origin: FAKE_ORIGIN,
+        id,
+      });
+      // Fetch is called 3 times, for fetching the manifest, the sourcecode and icon (icon just has the default response for now)
+      expect(fetchMock).toHaveBeenCalledTimes(3);
+      expect(result).toStrictEqual(
+        getSnapObject({
+          id,
+          sourceCode,
+          status: SnapStatus.installing,
+          manifest: getSnapManifest({ shasum }),
+          permissionName: 'wallet_snap_local:https://localhost:8081',
+        }),
+      );
+    });
+  });
+
+  describe('enableSnap/disableSnap', () => {
+    it('updates snap state correctly', async () => {
+      const id = 'npm:example-snap';
+      const sourceCode = 'foo';
+      const manifest = getSnapManifest({
+        version: '1.0.0',
+        initialPermissions: { eth_accounts: {} },
+        shasum: getSnapSourceShasum(sourceCode),
+      });
+
+      const snapController = getSnapController();
+
+      await snapController.add({
+        origin: FAKE_ORIGIN,
+        id,
+        manifest,
+        sourceCode,
+      });
+
+      await snapController.disableSnap(id);
+      expect(snapController.get(id)?.enabled).toBe(false);
+      snapController.enableSnap(id);
+      expect(snapController.get(id)?.enabled).toBe(true);
+    });
+
+    it('disableSnap also stops a running snap', async () => {
+      const id = 'npm:example-snap';
+      const sourceCode = 'foo';
+      const manifest = getSnapManifest({
+        version: '1.0.0',
+        initialPermissions: { eth_accounts: {} },
+        shasum: getSnapSourceShasum(sourceCode),
+      });
+
+      const snapController = getSnapController();
+
+      await snapController.add({
+        origin: FAKE_ORIGIN,
+        id,
+        manifest,
+        sourceCode,
+      });
+
+      await snapController.startSnap(id);
+
+      await snapController.disableSnap(id);
+      const snap = snapController.get(id);
+      expect(snap?.enabled).toBe(false);
+      expect(snap?.status).toBe(SnapStatus.stopped);
     });
   });
 });
