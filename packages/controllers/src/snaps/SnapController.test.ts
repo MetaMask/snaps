@@ -177,6 +177,7 @@ wallet.registerRpcMessageHandler(async (origin, request) => {
 });
 `;
 const FAKE_SNAP_SHASUM = getSnapSourceShasum(FAKE_SNAP_SOURCE_CODE);
+const FAKE_ORIGIN = 'foo.com';
 
 const getSnapManifest = ({
   version = '1.0.0',
@@ -227,6 +228,9 @@ const getSnapObject = ({
   status = SnapStatus.stopped,
   enabled = true,
   sourceCode = FAKE_SNAP_SOURCE_CODE,
+  versionHistory = [
+    { origin: FAKE_ORIGIN, version: '1.0.0', date: expect.any(Number) },
+  ],
 } = {}): Snap => {
   return {
     initialPermissions,
@@ -237,6 +241,7 @@ const getSnapObject = ({
     status,
     enabled,
     sourceCode,
+    versionHistory,
   } as const;
 };
 
@@ -277,6 +282,7 @@ describe('SnapController', () => {
     `;
 
     const snap = await snapController.add({
+      origin: FAKE_ORIGIN,
       id: 'npm:example-snap',
       sourceCode,
       manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
@@ -306,6 +312,7 @@ describe('SnapController', () => {
     `;
 
     const snap = await snapController.add({
+      origin: FAKE_ORIGIN,
       id: 'npm:example-snap',
       sourceCode,
       manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
@@ -344,6 +351,7 @@ describe('SnapController', () => {
     `;
 
     const snap = await snapController.add({
+      origin: FAKE_ORIGIN,
       id: 'npm:example-snap',
       sourceCode,
       manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
@@ -381,6 +389,7 @@ describe('SnapController', () => {
     const sourceCode = `console.log('Hello, world!');`;
 
     const snap = await snapController.add({
+      origin: FAKE_ORIGIN,
       id: 'npm:example-snap',
       sourceCode,
       manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
@@ -431,7 +440,7 @@ describe('SnapController', () => {
       getSnapControllerOptions({ executeSnap: mockExecuteSnap }),
     );
 
-    await snapController.add({ id, manifest, sourceCode });
+    await snapController.add({ origin: FAKE_ORIGIN, id, manifest, sourceCode });
     await snapController.startSnap(id);
     await expect(snapController.startSnap(id)).rejects.toThrow(
       /^Snap "npm:example-snap" is already started.$/u,
@@ -456,18 +465,13 @@ describe('SnapController', () => {
           snapErrors: {},
           snapStates: {},
           snaps: {
-            'npm:foo': {
-              initialPermissions: {},
+            'npm:foo': getSnapObject({
               permissionName: 'fooperm',
               version: '0.0.1',
               sourceCode,
               id: 'npm:foo',
-              manifest: getSnapManifest({
-                shasum: getSnapSourceShasum(sourceCode),
-              }),
-              enabled: true,
               status: SnapStatus.installing,
-            },
+            }),
           },
         },
       }),
@@ -566,6 +570,7 @@ describe('SnapController', () => {
     `;
 
     const snap = await snapController.add({
+      origin: FAKE_ORIGIN,
       id: 'npm:example-snap',
       sourceCode,
       manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
@@ -610,6 +615,7 @@ describe('SnapController', () => {
     `;
 
     const snap = await snapController.add({
+      origin: FAKE_ORIGIN,
       id: 'npm:example-snap',
       sourceCode,
       manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
@@ -648,6 +654,7 @@ describe('SnapController', () => {
     `;
 
     const snap = await snapController.add({
+      origin: FAKE_ORIGIN,
       id: 'npm:example-snap',
       sourceCode,
       manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
@@ -688,6 +695,7 @@ describe('SnapController', () => {
     `;
 
     const snap = await snapController.add({
+      origin: FAKE_ORIGIN,
       id: 'npm:example-snap',
       sourceCode,
       manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
@@ -719,6 +727,7 @@ describe('SnapController', () => {
     `;
 
     const snap = await snapController.add({
+      origin: FAKE_ORIGIN,
       id: 'npm:example-snap',
       sourceCode,
       manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
@@ -752,8 +761,6 @@ describe('SnapController', () => {
         messenger,
       }),
     );
-
-    const origin = 'foo.com';
 
     const messengerCallMock = jest
       .spyOn(messenger, 'call')
@@ -790,7 +797,7 @@ describe('SnapController', () => {
     const expectedSnapObject = getTruncatedSnap();
 
     expect(
-      await snapController.installSnaps(origin, {
+      await snapController.installSnaps(FAKE_ORIGIN, {
         [FAKE_SNAP_ID]: {},
       }),
     ).toStrictEqual({
@@ -801,7 +808,7 @@ describe('SnapController', () => {
     expect(messengerCallMock).toHaveBeenNthCalledWith(
       1,
       'PermissionController:hasPermission',
-      origin,
+      FAKE_ORIGIN,
       expectedSnapObject.permissionName,
     );
 
@@ -810,9 +817,8 @@ describe('SnapController', () => {
 
   it('should error on invalid semver range during installSnaps', async () => {
     const controller = getSnapController();
-    const origin = 'foo.com';
 
-    const result = await controller.installSnaps(origin, {
+    const result = await controller.installSnaps(FAKE_ORIGIN, {
       [FAKE_SNAP_ID]: { version: 'foo' },
     });
 
@@ -826,9 +832,9 @@ describe('SnapController', () => {
     const controller = getSnapController(
       getSnapControllerOptions({ messenger }),
     );
-    const origin = 'foor.com';
 
     const snap = await controller.add({
+      origin: FAKE_ORIGIN,
       id: FAKE_SNAP_ID,
       manifest: getSnapManifest(),
       sourceCode: FAKE_SNAP_SOURCE_CODE,
@@ -840,7 +846,7 @@ describe('SnapController', () => {
       .spyOn(messenger, 'call')
       .mockImplementationOnce(() => true);
 
-    await controller.installSnaps(origin, {
+    await controller.installSnaps(FAKE_ORIGIN, {
       [FAKE_SNAP_ID]: { version: '>0.9.0 <1.1.0' },
     });
 
@@ -855,7 +861,7 @@ describe('SnapController', () => {
     expect(messengerCallMock).toHaveBeenNthCalledWith(
       1,
       'PermissionController:hasPermission',
-      origin,
+      FAKE_ORIGIN,
       newSnap?.permissionName,
     );
   });
@@ -865,6 +871,7 @@ describe('SnapController', () => {
 
     await expect(
       controller.add({
+        origin: FAKE_ORIGIN,
         id: FAKE_SNAP_ID,
         manifest: getSnapManifest(),
         sourceCode: FAKE_SNAP_SOURCE_CODE,
@@ -882,8 +889,6 @@ describe('SnapController', () => {
         messenger,
       }),
     );
-
-    const origin = 'foo.com';
 
     const messengerCallMock = jest
       .spyOn(messenger, 'call')
@@ -927,7 +932,7 @@ describe('SnapController', () => {
     const expectedSnapObject = getTruncatedSnap();
 
     expect(
-      await snapController.installSnaps(origin, {
+      await snapController.installSnaps(FAKE_ORIGIN, {
         [FAKE_SNAP_ID]: {},
       }),
     ).toStrictEqual({
@@ -938,7 +943,7 @@ describe('SnapController', () => {
     expect(messengerCallMock).toHaveBeenNthCalledWith(
       1,
       'PermissionController:hasPermission',
-      origin,
+      FAKE_ORIGIN,
       expectedSnapObject.permissionName,
     );
 
@@ -963,6 +968,7 @@ describe('SnapController', () => {
     `;
 
     const snap = await snapController.add({
+      origin: FAKE_ORIGIN,
       id: 'npm:example-snap',
       sourceCode,
       manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
@@ -1039,6 +1045,7 @@ describe('SnapController', () => {
     `;
 
     const snap = await snapController.add({
+      origin: FAKE_ORIGIN,
       id: 'npm:example-snap',
       sourceCode,
       manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
@@ -1094,6 +1101,7 @@ describe('SnapController', () => {
     `;
 
     const snap = await snapController.add({
+      origin: FAKE_ORIGIN,
       id: 'npm:example-snap',
       sourceCode,
       manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
@@ -1204,8 +1212,7 @@ describe('SnapController', () => {
       const snapId = 'npm:fooSnap';
       const version = '0.0.1';
       const sourceCode = '// source code';
-      const fooSnapObject = {
-        initialPermissions: {},
+      const fooSnapObject = getSnapObject({
         permissionName: `wallet_snap_${snapId}`,
         version,
         sourceCode,
@@ -1216,7 +1223,7 @@ describe('SnapController', () => {
         }),
         enabled: true,
         status: SnapStatus.stopped,
-      };
+      });
 
       const truncatedFooSnap = getTruncatedSnap({
         id: snapId,
@@ -1263,8 +1270,7 @@ describe('SnapController', () => {
       const snapId = 'local:fooSnap';
       const version = '0.0.1';
       const sourceCode = '// source code';
-      const fooSnapObject = {
-        initialPermissions: {},
+      const fooSnapObject = getSnapObject({
         permissionName: `wallet_snap_${snapId}`,
         version,
         sourceCode,
@@ -1275,7 +1281,7 @@ describe('SnapController', () => {
         }),
         enabled: true,
         status: SnapStatus.stopped,
-      };
+      });
 
       const truncatedFooSnap = getTruncatedSnap({
         id: snapId,
@@ -1340,8 +1346,7 @@ describe('SnapController', () => {
       const snapId = 'local:fooSnap';
       const version = '0.0.1';
       const sourceCode = '// source code';
-      const fooSnapObject = {
-        initialPermissions: {},
+      const fooSnapObject = getSnapObject({
         permissionName: `wallet_snap_${snapId}`,
         version,
         sourceCode,
@@ -1353,7 +1358,7 @@ describe('SnapController', () => {
         enabled: true,
         // Set to "running"
         status: SnapStatus.running,
-      };
+      });
 
       const truncatedFooSnap = getTruncatedSnap({
         id: snapId,
@@ -1432,11 +1437,18 @@ describe('SnapController', () => {
       .mockResolvedValue(snap);
 
     await expect(
-      snapController.add({ id, manifest, sourceCode }),
+      snapController.add({ origin: FAKE_ORIGIN, id, manifest, sourceCode }),
     ).rejects.toThrow('bar');
     expect(setSpy).toHaveBeenCalledTimes(1);
 
-    expect(await snapController.add({ id, manifest, sourceCode })).toBe(snap);
+    expect(
+      await snapController.add({
+        origin: FAKE_ORIGIN,
+        id,
+        manifest,
+        sourceCode,
+      }),
+    ).toBe(snap);
     expect(setSpy).toHaveBeenCalledTimes(2);
   });
 
@@ -1474,6 +1486,7 @@ describe('SnapController', () => {
         });
 
       await messenger.call('SnapController:add', {
+        origin: FAKE_ORIGIN,
         id: 'npm:fooSnap',
       });
 
@@ -1489,8 +1502,7 @@ describe('SnapController', () => {
       const executeSnapMock = jest.fn();
       const messenger = getSnapControllerMessenger();
       const sourceCode = '// source code';
-      const fooSnapObject = {
-        initialPermissions: {},
+      const fooSnapObject = getSnapObject({
         permissionName: 'fooperm',
         version: '0.0.1',
         sourceCode,
@@ -1500,7 +1512,7 @@ describe('SnapController', () => {
         }),
         enabled: true,
         status: SnapStatus.installing,
-      };
+      });
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -1527,7 +1539,7 @@ describe('SnapController', () => {
       const executeSnapMock = jest.fn();
       const messenger = getSnapControllerMessenger();
       const sourceCode = '// source code';
-      const fooSnapObject = {
+      const fooSnapObject = getSnapObject({
         initialPermissions: {},
         permissionName: 'fooperm',
         version: '0.0.1',
@@ -1538,7 +1550,7 @@ describe('SnapController', () => {
         }),
         enabled: true,
         status: SnapStatus.installing,
-      };
+      });
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -1611,8 +1623,7 @@ describe('SnapController', () => {
             snapErrors: {},
             snapStates: {},
             snaps: {
-              'npm:fooSnap': {
-                initialPermissions: {},
+              'npm:fooSnap': getSnapObject({
                 permissionName: 'fooperm',
                 version: '0.0.1',
                 sourceCode,
@@ -1622,7 +1633,7 @@ describe('SnapController', () => {
                 }),
                 enabled: true,
                 status: SnapStatus.installing,
-              },
+              }),
             },
           },
         }),
@@ -1648,8 +1659,7 @@ describe('SnapController', () => {
             snapErrors: {},
             snapStates: {},
             snaps: {
-              'npm:fooSnap': {
-                initialPermissions: {},
+              'npm:fooSnap': getSnapObject({
                 permissionName: 'fooperm',
                 version: '0.0.1',
                 sourceCode,
@@ -1659,7 +1669,7 @@ describe('SnapController', () => {
                 }),
                 enabled: true,
                 status: SnapStatus.installing,
-              },
+              }),
             },
           },
         }),
@@ -1682,7 +1692,7 @@ describe('SnapController', () => {
   describe('updateSnap', () => {
     it('should throw an error on invalid snap id', async () => {
       await expect(() =>
-        getSnapController().updateSnap('local:foo'),
+        getSnapController().updateSnap(FAKE_ORIGIN, 'local:foo'),
       ).rejects.toThrow('Could not find snap');
     });
 
@@ -1707,6 +1717,7 @@ describe('SnapController', () => {
       });
 
       const snap = await controller.add({
+        origin: FAKE_ORIGIN,
         id: FAKE_SNAP_ID,
         sourceCode: FAKE_SNAP_SOURCE_CODE,
         manifest: getSnapManifest(),
@@ -1715,7 +1726,7 @@ describe('SnapController', () => {
       messenger.subscribe('SnapController:snapUpdated', onSnapUpdated);
       messenger.subscribe('SnapController:snapAdded', onSnapAdded);
 
-      const result = await controller.updateSnap(FAKE_SNAP_ID);
+      const result = await controller.updateSnap(FAKE_ORIGIN, FAKE_SNAP_ID);
 
       const newSnap = controller.get(FAKE_SNAP_ID);
 
@@ -1747,6 +1758,7 @@ describe('SnapController', () => {
       });
 
       await controller.add({
+        origin: FAKE_ORIGIN,
         id: FAKE_SNAP_ID,
         sourceCode: FAKE_SNAP_SOURCE_CODE,
         manifest: getSnapManifest(),
@@ -1755,12 +1767,26 @@ describe('SnapController', () => {
       messenger.subscribe('SnapController:snapUpdated', onSnapUpdated);
       messenger.subscribe('SnapController:snapAdded', onSnapAdded);
 
-      const result = await controller.updateSnap(FAKE_SNAP_ID);
+      const result = await controller.updateSnap(FAKE_ORIGIN, FAKE_SNAP_ID);
 
-      const newSnap = controller.getTruncated(FAKE_SNAP_ID);
+      const newSnapTruncated = controller.getTruncated(FAKE_SNAP_ID);
 
-      expect(result).toStrictEqual(newSnap);
+      const newSnap = controller.get(FAKE_SNAP_ID);
+
+      expect(result).toStrictEqual(newSnapTruncated);
       expect(newSnap?.version).toStrictEqual('1.1.0');
+      expect(newSnap?.versionHistory).toStrictEqual([
+        {
+          origin: FAKE_ORIGIN,
+          version: '1.0.0',
+          date: expect.any(Number),
+        },
+        {
+          origin: FAKE_ORIGIN,
+          version: '1.1.0',
+          date: expect.any(Number),
+        },
+      ]);
       expect(fetchSnapSpy).toHaveBeenCalledTimes(1);
       expect(onSnapUpdated).toHaveBeenCalledTimes(1);
       expect(onSnapAdded).toHaveBeenCalledTimes(1);
@@ -1782,6 +1808,7 @@ describe('SnapController', () => {
       });
 
       await controller.add({
+        origin: FAKE_ORIGIN,
         id: FAKE_SNAP_ID,
         sourceCode: FAKE_SNAP_SOURCE_CODE,
         manifest: getSnapManifest(),
@@ -1792,7 +1819,7 @@ describe('SnapController', () => {
       const startSnapSpy = jest.spyOn(controller as any, '_startSnap');
       const stopSnapSpy = jest.spyOn(controller as any, 'stopSnap');
 
-      await controller.updateSnap(FAKE_SNAP_ID);
+      await controller.updateSnap(FAKE_ORIGIN, FAKE_SNAP_ID);
 
       const isRunning = controller.isRunning(FAKE_SNAP_ID);
 
@@ -1807,13 +1834,18 @@ describe('SnapController', () => {
       const controller = getSnapController();
 
       await controller.add({
+        origin: FAKE_ORIGIN,
         id: FAKE_SNAP_ID,
         sourceCode: FAKE_SNAP_SOURCE_CODE,
         manifest: getSnapManifest(),
       });
 
       await expect(
-        controller.updateSnap(FAKE_SNAP_ID, 'this is not a version'),
+        controller.updateSnap(
+          FAKE_ORIGIN,
+          FAKE_SNAP_ID,
+          'this is not a version',
+        ),
       ).rejects.toThrow('invalid Snap version range');
     });
   });
