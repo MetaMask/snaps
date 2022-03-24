@@ -1485,15 +1485,31 @@ describe('SnapController', () => {
           return getSnapObject({ manifest });
         });
 
-      const result = await snapController.installSnaps('foo.com', {
+      const result = await snapController.installSnaps(FAKE_ORIGIN, {
         [id]: {},
       });
 
       expect(result).toStrictEqual({
         [id]: getTruncatedSnap({ initialPermissions }),
       });
-      expect(fetchSnapMock).toHaveBeenCalled();
+      expect(fetchSnapMock).toHaveBeenCalledTimes(1);
       expect(callActionMock).toHaveBeenCalledTimes(3);
+      expect(callActionMock).toHaveBeenCalledWith(
+        'PermissionController:hasPermission',
+        FAKE_ORIGIN,
+        'wallet_snap_npm:example-snap',
+      );
+
+      expect(callActionMock).toHaveBeenCalledWith(
+        'PermissionController:getPermissions',
+        FAKE_SNAP_ID,
+      );
+
+      expect(callActionMock).toHaveBeenCalledWith(
+        'PermissionController:requestPermissions',
+        { origin: FAKE_SNAP_ID },
+        { eth_accounts: {} },
+      );
     });
   });
 
@@ -1966,7 +1982,8 @@ describe('SnapController', () => {
         origin: FAKE_ORIGIN,
         id,
       });
-      expect(fetchMock).toHaveBeenCalled();
+      // Fetch is called 3 times, for fetching the manifest, the sourcecode and icon (icon just has the default response for now)
+      expect(fetchMock).toHaveBeenCalledTimes(3);
       expect(result).toStrictEqual(
         getSnapObject({
           id,
