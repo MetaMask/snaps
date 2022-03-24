@@ -18,7 +18,9 @@ import {
   SnapStatus,
   TruncatedSnap,
 } from './SnapController';
-import { getSnapSourceShasum } from './utils';
+import * as utils from './utils';
+
+const { getSnapSourceShasum } = utils;
 
 const workerCode = fs.readFileSync(
   require.resolve('@metamask/execution-environments/dist/webworker.bundle.js'),
@@ -261,7 +263,7 @@ const getTruncatedSnap = ({
 };
 
 jest.mock('./utils', () => ({
-  ...(jest.requireActual('./utils') as any),
+  ...jest.requireActual<typeof utils>('./utils'),
   fetchContent: fetchMock,
   fetchNpmSnap: jest.fn().mockResolvedValue({
     manifest: {
@@ -1933,7 +1935,10 @@ describe('SnapController', () => {
     it('can fetch NPM snaps', async () => {
       const controller = getSnapController();
 
-      const result = await controller.add({ id: FAKE_SNAP_ID });
+      const result = await controller.add({
+        origin: FAKE_ORIGIN,
+        id: FAKE_SNAP_ID,
+      });
       expect(result).toStrictEqual(
         getSnapObject({
           sourceCode,
@@ -1958,6 +1963,7 @@ describe('SnapController', () => {
 
       const id = 'local:https://localhost:8081';
       const result = await controller.add({
+        origin: FAKE_ORIGIN,
         id,
       });
       expect(fetchMock).toHaveBeenCalled();
@@ -1985,7 +1991,12 @@ describe('SnapController', () => {
 
       const snapController = getSnapController();
 
-      await snapController.add({ id, manifest, sourceCode });
+      await snapController.add({
+        origin: FAKE_ORIGIN,
+        id,
+        manifest,
+        sourceCode,
+      });
 
       await snapController.disableSnap(id);
       expect(snapController.get(id)?.enabled).toBe(false);
@@ -2004,7 +2015,12 @@ describe('SnapController', () => {
 
       const snapController = getSnapController();
 
-      await snapController.add({ id, manifest, sourceCode });
+      await snapController.add({
+        origin: FAKE_ORIGIN,
+        id,
+        manifest,
+        sourceCode,
+      });
 
       await snapController.startSnap(id);
 
