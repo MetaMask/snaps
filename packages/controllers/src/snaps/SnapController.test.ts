@@ -1467,6 +1467,169 @@ describe('SnapController', () => {
         { eth_accounts: {} },
       );
     });
+
+    it('returns an error on invalid snap id', async () => {
+      const snapId = 'foo';
+      const messenger = getSnapControllerMessenger();
+      const controller = getSnapController(
+        getSnapControllerOptions({ messenger }),
+      );
+
+      const callActionMock = jest
+        .spyOn(messenger, 'call')
+        .mockImplementationOnce(() => true);
+
+      const result = await controller.installSnaps(FAKE_ORIGIN, {
+        [snapId]: {},
+      });
+
+      expect(result).toStrictEqual({
+        [snapId]: { error: expect.any(EthereumRpcError) },
+      });
+      expect(callActionMock).toHaveBeenCalledTimes(1);
+      expect(callActionMock).toHaveBeenCalledWith(
+        'PermissionController:hasPermission',
+        FAKE_ORIGIN,
+        expect.anything(),
+      );
+    });
+
+    it('updates a snap', async () => {
+      const newVersion = '1.0.2';
+      const newVersionRange = '>=1.0.1';
+
+      const messenger = getSnapControllerMessenger();
+      const controller = getSnapController(
+        getSnapControllerOptions({ messenger }),
+      );
+
+      await controller.add({
+        id: FAKE_SNAP_ID,
+        manifest: getSnapManifest(),
+        origin: FAKE_ORIGIN,
+        sourceCode: FAKE_SNAP_SOURCE_CODE,
+      });
+
+      const callActionMock = jest
+        .spyOn(messenger, 'call')
+        .mockImplementationOnce(() => true);
+
+      const fetchSnapMock = jest
+        .spyOn(controller as any, '_fetchSnap')
+        .mockImplementationOnce(async () => ({
+          manifest: getSnapManifest({ version: newVersion }),
+          sourceCode: FAKE_SNAP_SOURCE_CODE,
+        }));
+
+      const result = await controller.installSnaps(FAKE_ORIGIN, {
+        [FAKE_SNAP_ID]: { version: newVersionRange },
+      });
+
+      expect(callActionMock).toHaveBeenCalledTimes(1);
+      expect(callActionMock).toHaveBeenCalledWith(
+        'PermissionController:hasPermission',
+        FAKE_ORIGIN,
+        expect.anything(),
+      );
+      expect(fetchSnapMock).toHaveBeenCalledTimes(1);
+      expect(fetchSnapMock).toHaveBeenCalledWith(FAKE_SNAP_ID, newVersionRange);
+      expect(result).toStrictEqual({
+        [FAKE_SNAP_ID]: {
+          id: FAKE_SNAP_ID,
+          initialPermissions: {},
+          permissionName: expect.anything(),
+          version: newVersion,
+        },
+      });
+    });
+
+    it("returns an error when didn't update", async () => {
+      // Scenario: a newer version is installed compared to requested version range
+      const newVersion = '0.9.0';
+      const newVersionRange = '^0.9.0';
+
+      const messenger = getSnapControllerMessenger();
+      const controller = getSnapController(
+        getSnapControllerOptions({ messenger }),
+      );
+
+      await controller.add({
+        id: FAKE_SNAP_ID,
+        manifest: getSnapManifest(),
+        origin: FAKE_ORIGIN,
+        sourceCode: FAKE_SNAP_SOURCE_CODE,
+      });
+
+      const callActionMock = jest
+        .spyOn(messenger, 'call')
+        .mockImplementationOnce(() => true);
+
+      const fetchSnapMock = jest
+        .spyOn(controller as any, '_fetchSnap')
+        .mockImplementationOnce(async () => ({
+          manifest: getSnapManifest({ version: newVersion }),
+          sourceCode: FAKE_SNAP_SOURCE_CODE,
+        }));
+
+      const result = await controller.installSnaps(FAKE_ORIGIN, {
+        [FAKE_SNAP_ID]: { version: newVersionRange },
+      });
+
+      expect(callActionMock).toHaveBeenCalledTimes(1);
+      expect(callActionMock).toHaveBeenCalledWith(
+        'PermissionController:hasPermission',
+        FAKE_ORIGIN,
+        expect.anything(),
+      );
+      expect(fetchSnapMock).toHaveBeenCalledTimes(1);
+      expect(fetchSnapMock).toHaveBeenCalledWith(FAKE_SNAP_ID, newVersionRange);
+      expect(result).toStrictEqual({
+        [FAKE_SNAP_ID]: { error: expect.any(EthereumRpcError) },
+      });
+    });
+
+    it('returns an error when a throw happens inside an update', async () => {
+      // Scenario: fetch fails
+      const newVersionRange = '^1.0.1';
+
+      const messenger = getSnapControllerMessenger();
+      const controller = getSnapController(
+        getSnapControllerOptions({ messenger }),
+      );
+
+      await controller.add({
+        id: FAKE_SNAP_ID,
+        manifest: getSnapManifest(),
+        origin: FAKE_ORIGIN,
+        sourceCode: FAKE_SNAP_SOURCE_CODE,
+      });
+
+      const callActionMock = jest
+        .spyOn(messenger, 'call')
+        .mockImplementationOnce(() => true);
+
+      const fetchSnapMock = jest
+        .spyOn(controller as any, '_fetchSnap')
+        .mockImplementationOnce(async () => {
+          throw new Error('foo');
+        });
+
+      const result = await controller.installSnaps(FAKE_ORIGIN, {
+        [FAKE_SNAP_ID]: { version: newVersionRange },
+      });
+
+      expect(callActionMock).toHaveBeenCalledTimes(1);
+      expect(callActionMock).toHaveBeenCalledWith(
+        'PermissionController:hasPermission',
+        FAKE_ORIGIN,
+        expect.anything(),
+      );
+      expect(fetchSnapMock).toHaveBeenCalledTimes(1);
+      expect(fetchSnapMock).toHaveBeenCalledWith(FAKE_SNAP_ID, newVersionRange);
+      expect(result).toStrictEqual({
+        [FAKE_SNAP_ID]: { error: expect.anything() },
+      });
+    });
   });
 
   it('should not persist failed install attempt for future use', async () => {
