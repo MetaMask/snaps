@@ -48,7 +48,7 @@ const generateMockEndowment = (key: string) => {
   const globalValue = (global as any)[key];
 
   // Default exposed APIs don't need to be mocked
-  if (globalValue && DEFAULT_ENDOWMENTS.has(key)) {
+  if (globalValue && DEFAULT_ENDOWMENTS.includes(key)) {
     return globalValue;
   }
 

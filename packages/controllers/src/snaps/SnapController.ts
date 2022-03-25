@@ -1232,14 +1232,21 @@ export class SnapController extends BaseController<
         }
       }
     }
-    const deduped = [...new Set([...DEFAULT_ENDOWMENTS, ...allEndowments])];
-    if (deduped.length < DEFAULT_ENDOWMENTS.size + allEndowments.length) {
+
+    const dedupedEndowments = [
+      ...new Set([...DEFAULT_ENDOWMENTS, ...allEndowments]),
+    ];
+
+    if (
+      dedupedEndowments.length <
+      DEFAULT_ENDOWMENTS.length + allEndowments.length
+    ) {
       console.error(
-        'Duplicates found in endowments, default APIs should not be requested.',
+        'Duplicate endowments found. Default endowments should not be requested.',
         allEndowments,
       );
     }
-    return deduped;
+    return dedupedEndowments;
   }
 
   /**

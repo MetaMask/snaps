@@ -481,7 +481,7 @@ describe('SnapController', () => {
     expect(mockExecuteSnap).toHaveBeenCalledWith({
       snapId: id,
       sourceCode,
-      endowments: DEFAULT_ENDOWMENTS,
+      endowments: [...DEFAULT_ENDOWMENTS],
     });
   });
 

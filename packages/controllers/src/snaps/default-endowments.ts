@@ -1,7 +1,7 @@
 /**
  * Global JavaScript APIs exposed by default to all snaps.
  */
-export const DEFAULT_ENDOWMENTS: ReadonlySet<string> = new Set([
+export const DEFAULT_ENDOWMENTS: readonly string[] = Object.freeze([
   'atob',
   'btoa',
   'BigInt',
