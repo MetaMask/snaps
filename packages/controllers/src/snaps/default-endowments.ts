@@ -1,0 +1,17 @@
+export const DEFAULT_ENDOWMENTS: ReadonlySet<string> = new Set([
+  'atob',
+  'btoa',
+  'BigInt',
+  'Buffer',
+  'console',
+  'crypto',
+  'Date',
+  'Math',
+  'setTimeout',
+  'clearTimeout',
+  'SubtleCrypto',
+  'TextDecoder',
+  'TextEncoder',
+  'URL',
+  'WebAssembly',
+]);

@@ -30,6 +30,7 @@ import {
   TerminateSnap,
 } from '../services/ExecutionService';
 import { isNonEmptyArray, setDiff, timeSince } from '../utils';
+import { DEFAULT_ENDOWMENTS } from './default-endowments';
 import { SnapManifest, validateSnapJsonFile } from './json-schemas';
 import {
   DEFAULT_REQUESTED_SNAP_VERSION,
@@ -51,24 +52,6 @@ export const SNAP_PREFIX = 'wallet_snap_';
 export const SNAP_PREFIX_REGEX = new RegExp(`^${SNAP_PREFIX}`, 'u');
 
 // APIs exposed by default to the Snap without needing permissions
-export const DEFAULT_EXPOSED_APIS = [
-  'atob',
-  'btoa',
-  'BigInt',
-  'Buffer',
-  'console',
-  'crypto',
-  'Date',
-  'Math',
-  'setTimeout',
-  'clearTimeout',
-  'SubtleCrypto',
-  'TextDecoder',
-  'TextEncoder',
-  'URL',
-  'WebAssembly',
-];
-
 type TruncatedSnapFields =
   | 'id'
   | 'initialPermissions'
@@ -1250,8 +1233,8 @@ export class SnapController extends BaseController<
         }
       }
     }
-    const deduped = [...new Set([...DEFAULT_EXPOSED_APIS, ...allEndowments])];
-    if (deduped.length < DEFAULT_EXPOSED_APIS.length + allEndowments.length) {
+    const deduped = [...new Set([...DEFAULT_ENDOWMENTS, ...allEndowments])];
+    if (deduped.length < DEFAULT_ENDOWMENTS.size + allEndowments.length) {
       console.error(
         'Duplicates found in endowments, default APIs should not be requested.',
         allEndowments,
