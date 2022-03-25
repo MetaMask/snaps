@@ -5,11 +5,11 @@ import { EthereumRpcError, ethErrors, serializeError } from 'eth-rpc-errors';
 import fetchMock from 'jest-fetch-mock';
 import { ExecutionService } from '../services/ExecutionService';
 import { WebWorkerExecutionService } from '../services/WebWorkerExecutionService';
+import { DEFAULT_ENDOWMENTS } from './default-endowments';
 import { SnapManifest } from './json-schemas';
 import {
   AllowedActions,
   AllowedEvents,
-  DEFAULT_EXPOSED_APIS,
   Snap,
   SnapController,
   SnapControllerActions,
@@ -452,7 +452,7 @@ describe('SnapController', () => {
     expect(executeSnapMock).toHaveBeenNthCalledWith(1, {
       snapId: 'npm:example-snap',
       sourceCode,
-      endowments: [...DEFAULT_EXPOSED_APIS, 'fooEndowment'],
+      endowments: [...DEFAULT_ENDOWMENTS, 'fooEndowment'],
     });
     snapController.destroy();
   });
@@ -481,7 +481,7 @@ describe('SnapController', () => {
     expect(mockExecuteSnap).toHaveBeenCalledWith({
       snapId: id,
       sourceCode,
-      endowments: DEFAULT_EXPOSED_APIS,
+      endowments: [...DEFAULT_ENDOWMENTS],
     });
   });
 

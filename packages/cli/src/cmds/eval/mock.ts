@@ -1,10 +1,10 @@
 import EventEmitter from 'events';
 import crypto from 'crypto';
-import { DEFAULT_EXPOSED_APIS } from '@metamask/snap-controllers';
+import { DEFAULT_ENDOWMENTS } from '@metamask/snap-controllers';
 
 const NETWORK_APIS = ['fetch', 'WebSocket'];
 
-export const ALL_APIS: string[] = [...DEFAULT_EXPOSED_APIS, ...NETWORK_APIS];
+export const ALL_APIS: string[] = [...DEFAULT_ENDOWMENTS, ...NETWORK_APIS];
 
 type MockSnapProvider = EventEmitter & {
   registerRpcMessageHandler: () => any;
@@ -48,7 +48,7 @@ const generateMockEndowment = (key: string) => {
   const globalValue = (global as any)[key];
 
   // Default exposed APIs don't need to be mocked
-  if (globalValue && DEFAULT_EXPOSED_APIS.includes(key)) {
+  if (globalValue && DEFAULT_ENDOWMENTS.includes(key)) {
     return globalValue;
   }
 
