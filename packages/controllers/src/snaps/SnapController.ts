@@ -51,7 +51,6 @@ export const controllerName = 'SnapController';
 export const SNAP_PREFIX = 'wallet_snap_';
 export const SNAP_PREFIX_REGEX = new RegExp(`^${SNAP_PREFIX}`, 'u');
 
-// APIs exposed by default to the Snap without needing permissions
 type TruncatedSnapFields =
   | 'id'
   | 'initialPermissions'
