@@ -14,9 +14,16 @@
     "snap.manifest.json"
   ],
   "scripts": {
+    "build": "mm-snap build",
+    "build:asc": "asc assembly/program.ts -o assembly/program.wasm",
+    "print:wasm": "node scripts/makeWasm.js",
+    "serve": "mm-snap serve",
     "test": "echo 'Error: no test specified' && exit 1"
   },
   "dependencies": {
     "eth-rpc-errors": "^4.0.3"
+  },
+  "devDependencies": {
+    "assemblyscript": "^0.19.23"
   }
 }

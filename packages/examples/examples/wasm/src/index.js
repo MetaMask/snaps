@@ -8,7 +8,7 @@ let wasm;
 
 // See scripts/makeWasm.js for how this was created.
 const PROGRAM_WASM_HEX =
-  '0061736d01000000018580808000016000017f0382808080000100048480808000017000000583808080000100010681808080000007918080800002066d656d6f72790200046d61696e00000a8a8080800001848080800000412a0b';
+  '0061736d0100000001060160017f017f0302010004040170000105030100000614037f0041080b7f01418880010b7f00418880010b071002036669620000066d656d6f727902000906010041010b000a40013e01047f4100210141012102200041004a044002400340200041016b2200210320030440200120026a210420022101200421020c010b0b0b20020f0b20010b';
 
 const initializeWasm = async () => {
   try {
@@ -27,7 +27,7 @@ wallet.registerRpcMessageHandler(async (_originString, requestObject) => {
 
   switch (requestObject.method) {
     case 'callWasm':
-      return wasm.instance.exports.main();
+      return wasm.instance.exports.fib(requestObject.params[0]);
 
     default:
       throw ethErrors.rpc.methodNotFound({ data: { request: requestObject } });

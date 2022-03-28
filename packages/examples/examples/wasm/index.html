@@ -26,6 +26,9 @@
     <button class="connect">Connect</button>
     <br>
 
+    <input type="number" class="num" value="4">
+    <br>
+
     <button class="callWasm">Call WebAssembly Function</button>
   </body>
 
@@ -49,10 +52,12 @@
 
     async function callWasm () {
       try {
+        const value = parseInt(document.querySelector("input.num").value, 10);
         const response = await ethereum.request({
           method: 'wallet_invokeSnap',
           params: [snapId, {
-            method: 'callWasm'
+            method: 'callWasm',
+            params: [value]
           }]
         })
 
