@@ -44,7 +44,7 @@ describe('Interval endowments', () => {
 
     [undefined, null, 'foo', {}, [], true].forEach((invalidInput) => {
       expect(() => _setInterval(invalidInput as any)).toThrow(
-        `The timeout handler must be a function. Received: ${typeof invalidInput}`,
+        `The interval handler must be a function. Received: ${typeof invalidInput}`,
       );
     });
   });
