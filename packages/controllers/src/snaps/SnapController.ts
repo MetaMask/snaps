@@ -1542,14 +1542,14 @@ export class SnapController extends BaseController<
     }
 
     const requestQueue = new RequestQueue(5);
-    let startPromise: Promise<void> | null;
+    // We need to set up this promise map to map snapIds to their respective startPromises,
+    // because otherwise we would lose context on the correct startPromise.
+    const startPromises = new Map<string, Promise<void>>();
 
     const rpcHandler = async (
       origin: string,
       request: Record<string, unknown>,
     ) => {
-      let handler = await this._getRpcMessageHandler(snapId);
-
       if (this.state.snaps[snapId].enabled === false) {
         throw new Error(`Snap "${snapId}" is disabled.`);
       }
@@ -1560,6 +1560,8 @@ export class SnapController extends BaseController<
         );
       }
 
+      let handler = await this._getRpcMessageHandler(snapId);
+
       if (this.isRunning(snapId) === false) {
         if (handler) {
           throw new Error(
@@ -1567,8 +1569,10 @@ export class SnapController extends BaseController<
           );
         }
 
-        if (!startPromise) {
-          startPromise = this.startSnap(snapId);
+        let localStartPromise = startPromises.get(snapId);
+        if (!localStartPromise) {
+          localStartPromise = this.startSnap(snapId);
+          startPromises.set(snapId, localStartPromise);
         } else if (requestQueue.get(origin) >= requestQueue.maxQueue) {
           throw new Error(
             'Exceeds maximum number of requests waiting to be resolved, please try again.',
@@ -1577,16 +1581,13 @@ export class SnapController extends BaseController<
 
         requestQueue.increment(origin);
         try {
-          await startPromise;
+          await localStartPromise;
         } finally {
           requestQueue.decrement(origin);
-          // No race condition, the only possible race condition that exists
-          // is if starting the snap fails and we immediately attempt to start the
-          // snap again, such that startPromise is reassigned to a new promise before
-          // every enqueued request reaches this line.
-          // That should be impossible.
-          // eslint-disable-next-line require-atomic-updates
-          startPromise = null;
+          // Only delete startPromise for a snap if its value hasn't changed
+          if (startPromises.get(snapId) === localStartPromise) {
+            startPromises.delete(snapId);
+          }
         }
         handler = await this._getRpcMessageHandler(snapId);
       }
