@@ -17,4 +17,6 @@ export const DEFAULT_ENDOWMENTS: readonly string[] = Object.freeze([
   'TextEncoder',
   'URL',
   'WebAssembly',
+  'setInterval',
+  'clearInterval',
 ]);
