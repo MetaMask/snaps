@@ -28,7 +28,7 @@ describe('RequestQueue', () => {
       expect(() => queue.increment(origin)).toThrow(
         'Maximum number of requests reached. Try again later.',
       );
-    })
+    });
   });
 
   describe('decrement', () => {
