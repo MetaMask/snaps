@@ -9,26 +9,23 @@
  * functions.
  */
 const createInterval = () => {
-  const registeredIntervals = new Set<number>();
+  const registeredIntervals = new Set<unknown>();
 
-  const _setInterval = (handler: TimerHandler, timeout?: number): number => {
+  const _setInterval = (handler: TimerHandler, timeout?: number): unknown => {
     if (typeof handler !== 'function') {
       throw new Error(
         `The interval handler must be a function. Received: ${typeof handler}`,
       );
     }
 
-    const handleWrapper: { handle: number } = { handle: NaN };
-    // @todo Should we return a number that we decide for NodeJS?
-    handleWrapper.handle = setInterval(handler, timeout) as any;
-
-    registeredIntervals.add(handleWrapper.handle);
-    return handleWrapper.handle;
+    const handle = setInterval(handler, timeout);
+    registeredIntervals.add(handle);
+    return handle;
   };
 
-  const _clearInterval = (handle: number): void => {
+  const _clearInterval = (handle: unknown): void => {
     if (registeredIntervals.has(handle)) {
-      clearInterval(handle);
+      clearInterval(handle as any);
       registeredIntervals.delete(handle);
     }
   };

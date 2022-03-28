@@ -9,28 +9,27 @@
  * functions.
  */
 const createTimeout = () => {
-  const registeredTimeouts = new Set<number>();
+  const registeredTimeouts = new Set<unknown>();
 
-  const _setTimeout = (handler: TimerHandler, timeout?: number): number => {
+  const _setTimeout = (handler: TimerHandler, timeout?: number): unknown => {
     if (typeof handler !== 'function') {
       throw new Error(
         `The timeout handler must be a function. Received: ${typeof handler}`,
       );
     }
 
-    const handleWrapper: { handle: number } = { handle: NaN };
-    handleWrapper.handle = setTimeout(() => {
-      registeredTimeouts.delete(handleWrapper.handle);
+    const handle = setTimeout(() => {
+      registeredTimeouts.delete(handle);
       handler();
-    }, timeout) as any;
+    }, timeout);
 
-    registeredTimeouts.add(handleWrapper.handle);
-    return handleWrapper.handle;
+    registeredTimeouts.add(handle);
+    return handle;
   };
 
-  const _clearTimeout = (handle: number): void => {
+  const _clearTimeout = (handle: unknown): void => {
     if (registeredTimeouts.has(handle)) {
-      clearTimeout(handle);
+      clearTimeout(handle as any);
       registeredTimeouts.delete(handle);
     }
   };
