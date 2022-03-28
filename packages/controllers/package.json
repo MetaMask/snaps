@@ -68,7 +68,7 @@
     "@types/semver": "^7.3.9",
     "@types/tar-stream": "^2.2.2",
     "ajv-cli": "^5.0.0",
-    "electron": "^12.1.0",
+    "electron": "^13.6.6",
     "jest": "^26.6.3",
     "jest-fetch-mock": "^3.0.3",
     "mkdirp": "^1.0.4",
