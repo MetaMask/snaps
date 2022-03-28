@@ -38,8 +38,8 @@ wallet.registerRpcMessageHandler(async (_originString, requestObject) => {
 function arrayBufferFromHex(hexString) {
   return new Uint8Array(
     hexString
-      .replace(/^0x/i, '')
-      .match(/../g)
+      .replace(/^0x/iu, '')
+      .match(/../gu)
       .map((byte) => parseInt(byte, 16)),
   ).buffer;
 }

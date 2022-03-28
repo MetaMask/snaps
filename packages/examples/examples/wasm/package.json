@@ -25,5 +25,8 @@
   },
   "devDependencies": {
     "assemblyscript": "^0.19.23"
+  },
+  "engines": {
+    "node": ">=12.11.0"
   }
 }

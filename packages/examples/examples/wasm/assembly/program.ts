@@ -1,3 +1,4 @@
+/* eslint-disable */
 // https://www.assemblyscript.org/introduction.html
 
 export function fib(n: i32): i32 {
