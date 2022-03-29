@@ -283,7 +283,7 @@ jest.mock('./utils', () => ({
             registry: 'https://registry.npmjs.org',
           },
         },
-        shasum: 'vCmyHWIgnBwgiTqSXnd7LI7PbXSQim/JOotFfXkjAQk=',
+        shasum: FAKE_SNAP_SHASUM,
       },
       version: '1.0.0',
     },
@@ -1849,7 +1849,7 @@ describe('SnapController', () => {
         getSnapObject({
           sourceCode,
           status: SnapStatus.installing,
-          manifest: getSnapManifest({ shasum }),
+          manifest: getSnapManifest({ shasum: FAKE_SNAP_SHASUM }),
         }),
       );
     });
