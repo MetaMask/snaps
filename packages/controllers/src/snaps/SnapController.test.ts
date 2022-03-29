@@ -287,7 +287,7 @@ jest.mock('./utils', () => ({
       },
       version: '1.0.0',
     },
-    sourceCode: '// foo',
+    sourceCode: FAKE_SNAP_SOURCE_CODE,
   }),
 }));
 
