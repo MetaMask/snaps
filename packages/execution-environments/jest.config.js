@@ -3,13 +3,13 @@ module.exports = {
   // Ensures that we collect coverage from all source files, not just tested
   // ones.
   collectCoverageFrom: ['./src/**/*.ts', '!./**/__GENERATED__/**'],
-  coverageReporters: ['text', 'html'],
+  coverageReporters: ['clover', 'json', 'lcov', 'text', 'json-summary'],
   coverageThreshold: {
     global: {
-      branches: 26,
-      functions: 27,
-      lines: 26,
-      statements: 26,
+      branches: 29.09,
+      functions: 32.61,
+      lines: 30.96,
+      statements: 31.4,
     },
   },
   moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'],

@@ -41,6 +41,13 @@ jobs:
           fi
       - run: yarn lint
       - run: yarn test:ci
+      - name: Require clean working directory
+        shell: bash
+        run: |
+          if ! git diff --exit-code; then
+            echo "Working tree dirty after tests"
+            exit 1
+          fi
       - name: Validate RC changelog
         if: ${{ startsWith(github.head_ref, 'release/') }}
         run: yarn lint:changelogs --rc

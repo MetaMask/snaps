@@ -13,6 +13,7 @@
   ],
   "scripts": {
     "test": "jest",
+    "posttest": "jest-it-up",
     "test:ci": "yarn test",
     "test:watch": "jest --watch",
     "setup": "yarn install && yarn allow-scripts",
@@ -51,6 +52,7 @@
     "concat": "^1.0.3",
     "copy-webpack-plugin": "^10.2.4",
     "jest": "^27.5.0",
+    "jest-it-up": "^2.0.0",
     "node-polyfill-webpack-plugin": "^1.1.4",
     "ts-auto-guard": "^2.3.0",
     "ts-jest": "^27.1.3",

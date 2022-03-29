@@ -12,6 +12,7 @@
   ],
   "scripts": {
     "test": "jest",
+    "posttest": "jest-it-up",
     "test:ci": "yarn test",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
@@ -44,6 +45,7 @@
     "@jest/globals": "^27.0.6",
     "@jest/types": "^27.0.6",
     "jest": "27",
+    "jest-it-up": "^2.0.0",
     "ts-jest": "27"
   },
   "publishConfig": {
