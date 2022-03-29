@@ -2,6 +2,7 @@ import { SnapProvider } from '@metamask/snap-types';
 import { rootRealmGlobal } from '../globalObject';
 import buffer from './buffer';
 import timeout from './timeout';
+import interval from './interval';
 import wasm from './wasm';
 
 /**
@@ -9,7 +10,7 @@ import wasm from './wasm';
  * the same factory function, but we only call each factory once for each snap.
  * See {@link createEndowments} for details.
  */
-const endowmentFactories = [buffer, timeout, wasm].reduce(
+const endowmentFactories = [buffer, timeout, interval, wasm].reduce(
   (factories, builder) => {
     builder.names.forEach((name) => {
       factories.set(name, builder.factory);
