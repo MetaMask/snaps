@@ -12,8 +12,8 @@
   ],
   "scripts": {
     "test": "jest",
-    "test:ci": "yarn test",
     "posttest": "jest-it-up",
+    "test:ci": "yarn test",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
