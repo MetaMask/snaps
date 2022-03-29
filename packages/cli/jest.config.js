@@ -10,7 +10,7 @@ module.exports = {
     './src/cmds/eval/eval-worker.ts',
     '.*__GENERATED__.*',
   ],
-  coverageReporters: ['text', 'html'],
+  coverageReporters: ['clover', 'json', 'lcov', 'text', 'json-summary'],
   coverageThreshold: {
     global: {
       branches: 91,

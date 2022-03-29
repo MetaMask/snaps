@@ -4,7 +4,7 @@ module.exports = {
     '<rootDir>/**/src/**/*.ts',
     '!<rootDir>/**/src/**/*.test.ts',
   ],
-  coverageReporters: ['text', 'html'],
+  coverageReporters: ['clover', 'json', 'lcov', 'text', 'json-summary'],
   coveragePathIgnorePatterns: ['/node_modules/', '/mocks/', '/test/'],
   coverageThreshold: {
     global: {

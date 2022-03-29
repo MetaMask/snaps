@@ -14,6 +14,7 @@
   "scripts": {
     "test:prepare": "yarn mkdirp test/fixtures && ./scripts/generate-fixtures.sh",
     "test": "yarn test:prepare && jest",
+    "posttest": "jest-it-up",
     "test:ci": "yarn test:prepare && ./scripts/test-ci.sh",
     "build:pre-tsc": "yarn build:ajv && node scripts/transpileSchemaTypes.js",
     "build:post-tsc": "echo 'N/A'",
@@ -71,6 +72,7 @@
     "electron": "^13.6.6",
     "jest": "^26.6.3",
     "jest-fetch-mock": "^3.0.3",
+    "jest-it-up": "^2.0.0",
     "mkdirp": "^1.0.4",
     "ts-jest": "^26.5.6"
   },
