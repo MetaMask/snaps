@@ -281,11 +281,11 @@ jest.mock('./utils', () => ({
             registry: 'https://registry.npmjs.org',
           },
         },
-        shasum: FAKE_SNAP_SHASUM,
+        shasum: 'vCmyHWIgnBwgiTqSXnd7LI7PbXSQim/JOotFfXkjAQk=',
       },
       version: '1.0.0',
     },
-    sourceCode: FAKE_SNAP_SOURCE_CODE,
+    sourceCode: '// foo',
   }),
 }));
 
@@ -1879,6 +1879,8 @@ describe('SnapController', () => {
 
   describe('_fetchSnap', () => {
     it('can fetch NPM snaps', async () => {
+      const sourceCode = '// foo';
+      const shasum = 'vCmyHWIgnBwgiTqSXnd7LI7PbXSQim/JOotFfXkjAQk=';
       const controller = getSnapController();
 
       const result = await controller.add({
@@ -1887,9 +1889,9 @@ describe('SnapController', () => {
       });
       expect(result).toStrictEqual(
         getSnapObject({
-          sourceCode: FAKE_SNAP_SOURCE_CODE,
+          sourceCode,
           status: SnapStatus.installing,
-          manifest: getSnapManifest({ shasum: FAKE_SNAP_SHASUM }),
+          manifest: getSnapManifest({ shasum }),
         }),
       );
     });
