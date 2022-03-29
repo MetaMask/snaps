@@ -1107,16 +1107,16 @@ describe('SnapController', () => {
         }),
       );
 
+      const mockMessageHandler = jest.fn();
       jest
         .spyOn(snapController as any, '_getRpcMessageHandler')
-        .mockReturnValueOnce(
-          (async (_origin: string, request: unknown) => request) as any,
-        );
+        .mockReturnValueOnce(mockMessageHandler as any);
 
       const handle = await snapController.getRpcMessageHandler(snapId);
-      const result = await handle('foo.com', { id: 1, method: 'bar' });
+      await handle('foo.com', { id: 1, method: 'bar' });
 
-      expect(result).toStrictEqual({
+      expect(mockMessageHandler).toHaveBeenCalledTimes(1);
+      expect(mockMessageHandler).toHaveBeenCalledWith('foo.com', {
         id: 1,
         method: 'bar',
         jsonrpc: '2.0',
