@@ -45,6 +45,7 @@ import {
   ValidatedSnapId,
   validateSnapShasum,
 } from './utils';
+import { RequestQueue } from './RequestQueue';
 
 export const controllerName = 'SnapController';
 
@@ -1540,23 +1541,54 @@ export class SnapController extends BaseController<
       return existingHandler;
     }
 
+    const requestQueue = new RequestQueue(5);
+    // We need to set up this promise map to map snapIds to their respective startPromises,
+    // because otherwise we would lose context on the correct startPromise.
+    const startPromises = new Map<string, Promise<void>>();
+
     const rpcHandler = async (
       origin: string,
       request: Record<string, unknown>,
     ) => {
-      let handler = await this._getRpcMessageHandler(snapId);
-
       if (this.state.snaps[snapId].enabled === false) {
         throw new Error(`Snap "${snapId}" is disabled.`);
       }
 
       if (this.state.snaps[snapId].status === SnapStatus.installing) {
-        throw new Error(`Snap "${snapId}" has not been started yet.`);
+        throw new Error(
+          `Snap "${snapId}" is currently being installed. Please try again later.`,
+        );
       }
 
-      if (!handler && this.isRunning(snapId) === false) {
-        // cold start
-        await this.startSnap(snapId);
+      let handler = await this._getRpcMessageHandler(snapId);
+
+      if (this.isRunning(snapId) === false) {
+        if (handler) {
+          throw new Error(
+            'This snap should not have a handler in its current state. This is a bug, please report it.',
+          );
+        }
+
+        let localStartPromise = startPromises.get(snapId);
+        if (!localStartPromise) {
+          localStartPromise = this.startSnap(snapId);
+          startPromises.set(snapId, localStartPromise);
+        } else if (requestQueue.get(origin) >= requestQueue.maxQueueSize) {
+          throw new Error(
+            'Exceeds maximum number of requests waiting to be resolved, please try again.',
+          );
+        }
+
+        requestQueue.increment(origin);
+        try {
+          await localStartPromise;
+        } finally {
+          requestQueue.decrement(origin);
+          // Only delete startPromise for a snap if its value hasn't changed
+          if (startPromises.get(snapId) === localStartPromise) {
+            startPromises.delete(snapId);
+          }
+        }
         handler = await this._getRpcMessageHandler(snapId);
       }
 
