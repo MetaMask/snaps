@@ -18,5 +18,8 @@
   },
   "dependencies": {
     "ethers": "^5.4.6"
+  },
+  "engines": {
+    "node": ">=14.0.0"
   }
 }

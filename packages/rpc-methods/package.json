@@ -38,7 +38,7 @@
     "json-rpc-engine": "^6.1.0"
   },
   "engines": {
-    "node": ">=12.11.0"
+    "node": ">=14.0.0"
   },
   "publishConfig": {
     "access": "public",

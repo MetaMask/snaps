@@ -27,7 +27,7 @@
     "lint:changelog": "yarn auto-changelog validate"
   },
   "engines": {
-    "node": ">=12.11.0"
+    "node": ">=14.0.0"
   },
   "publishConfig": {
     "access": "public",
