@@ -1,9 +1,4 @@
-import wasm from './wasm';
-
-const excludedProperties: readonly (string | symbol)[] = [
-  'compileStreaming',
-  'instantiateStreaming',
-];
+import wasm, { excludedProperties } from './wasm';
 
 describe('createWASM', () => {
   it('has expected properties', () => {

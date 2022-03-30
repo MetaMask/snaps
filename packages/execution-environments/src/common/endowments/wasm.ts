@@ -1,7 +1,7 @@
 type WebAssemblyKeys = keyof typeof WebAssembly;
 type WebAssemblyValues = typeof WebAssembly[WebAssemblyKeys];
 
-const excludedProperties: readonly (string | symbol)[] = [
+export const excludedProperties: readonly (string | symbol)[] = [
   'compileStreaming',
   'instantiateStreaming',
 ];
