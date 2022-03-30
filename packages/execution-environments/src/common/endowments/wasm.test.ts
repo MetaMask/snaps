@@ -1,5 +1,10 @@
 import wasm from './wasm';
 
+const excludedProperties: readonly (string | symbol)[] = [
+  'compileStreaming',
+  'instantiateStreaming',
+];
+
 describe('createWASM', () => {
   it('has expected properties', () => {
     expect(wasm).toMatchObject({
@@ -10,11 +15,21 @@ describe('createWASM', () => {
 
   it('has expected factory output', () => {
     const factoryOutput = wasm.factory();
+    const enumerableKeys = Object.keys(factoryOutput.WebAssembly);
+    const allKeys = Reflect.ownKeys(factoryOutput.WebAssembly);
 
     expect(factoryOutput).toMatchObject({ WebAssembly: expect.any(Object) });
-    expect(Object.keys(factoryOutput)).not.toContain([
-      'compileStreaming',
-      'instantiateStreaming',
-    ]);
+    expect(enumerableKeys).toStrictEqual(
+      Object.keys(WebAssembly).filter(
+        (key) => !excludedProperties.includes(key),
+      ),
+    );
+
+    expect(allKeys).toStrictEqual(
+      Reflect.ownKeys(WebAssembly).filter(
+        (key) => !excludedProperties.includes(key),
+      ),
+    );
+    expect(allKeys.length).toBeGreaterThan(enumerableKeys.length);
   });
 });

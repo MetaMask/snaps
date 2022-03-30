@@ -28,7 +28,7 @@ describe('createEndowments', () => {
 
     expect(endowments).toStrictEqual({
       wallet: mockWallet,
-      WebAssembly: { ...WebAssembly },
+      WebAssembly: expect.objectContaining(WebAssembly),
     });
     expect(endowments.WebAssembly).not.toBe(WebAssembly);
   });
