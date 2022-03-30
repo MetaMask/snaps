@@ -1,3 +1,11 @@
+type WebAssemblyKeys = keyof typeof WebAssembly;
+type WebAssemblyValues = typeof WebAssembly[WebAssemblyKeys];
+
+export const excludedProperties: readonly (string | symbol)[] = [
+  'compileStreaming',
+  'instantiateStreaming',
+];
+
 /**
  * Builds a cross-platform `WebAssembly` only consisting of functions present
  * both in the browser and Node.js.
@@ -6,8 +14,16 @@
  * and `instantiateStreaming`.
  */
 const createWasm = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { compileStreaming, instantiateStreaming, ...wasm } = WebAssembly;
+  const wasm: Record<WebAssemblyKeys, WebAssemblyValues> = Object.create(null);
+  (Reflect.ownKeys(WebAssembly) as WebAssemblyKeys[])
+    .filter((key) => !excludedProperties.includes(key))
+    .forEach((key) => {
+      Object.defineProperty(wasm, key, {
+        ...Reflect.getOwnPropertyDescriptor(WebAssembly, key),
+        value: WebAssembly[key],
+      });
+    });
+
   return { WebAssembly: wasm } as const;
 };
 
