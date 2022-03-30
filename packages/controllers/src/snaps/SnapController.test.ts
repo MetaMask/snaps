@@ -124,6 +124,14 @@ const getSnapController = (options = getSnapControllerOptions()) => {
   return new SnapController(options);
 };
 
+const getEmptySnapControllerState = () => {
+  return {
+    snaps: {},
+    snapStates: {},
+    snapErrors: {},
+  } as SnapControllerState;
+};
+
 const getWebWorkerEES = (
   messenger: ReturnType<typeof getSnapControllerMessenger>,
 ) =>
@@ -283,11 +291,11 @@ jest.mock('./utils', () => ({
             registry: 'https://registry.npmjs.org',
           },
         },
-        shasum: FAKE_SNAP_SHASUM,
+        shasum: 'vCmyHWIgnBwgiTqSXnd7LI7PbXSQim/JOotFfXkjAQk=',
       },
       version: '1.0.0',
     },
-    sourceCode: FAKE_SNAP_SOURCE_CODE,
+    sourceCode: '// foo',
   }),
 }));
 
@@ -1124,23 +1132,18 @@ describe('SnapController', () => {
     });
 
     it('handlers throw if the request has an invalid "jsonrpc" property', async () => {
-      const snapId = 'fooSnap';
-      const executionEnvironmentStub =
-        new ExecutionEnvironmentStub() as unknown as WebWorkerExecutionService;
-
-      const [snapController] = getSnapControllerWithEES(
-        getSnapControllerWithEESOptions({
+      const fakeSnap = getSnapObject({ status: SnapStatus.running });
+      const snapId = fakeSnap.id;
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          getRpcMessageHandler: (async () => () => undefined) as any,
           state: {
+            ...getEmptySnapControllerState(),
             snaps: {
-              [snapId]: {
-                enabled: true,
-                id: snapId,
-                status: SnapStatus.running,
-              },
+              [snapId]: fakeSnap,
             },
-          } as any,
+          },
         }),
-        executionEnvironmentStub,
       );
       const handle = await snapController.getRpcMessageHandler(snapId);
 
@@ -1152,6 +1155,56 @@ describe('SnapController', () => {
           data: 'kaplar',
         }),
       );
+    });
+
+    it('handlers will throw if there are too many pending requests before a snap has started', async () => {
+      const fakeSnap = getSnapObject({ status: SnapStatus.stopped });
+      const snapId = fakeSnap.id;
+      const mockGetRpcMessageHandler = jest.fn();
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          getRpcMessageHandler: mockGetRpcMessageHandler as any,
+          state: {
+            ...getEmptySnapControllerState(),
+            snaps: {
+              [snapId]: fakeSnap,
+            },
+          },
+        }),
+      );
+
+      let resolveExecutePromise: any;
+      const deferredExecutePromise = new Promise((res) => {
+        resolveExecutePromise = res;
+      });
+
+      jest
+        .spyOn(snapController as any, '_executeSnap')
+        .mockImplementation((() => deferredExecutePromise) as any);
+
+      const handle = await snapController.getRpcMessageHandler(snapId);
+
+      // Fill up the request queue
+      const finishPromise = Promise.all([
+        handle('foo.com', { id: 1, method: 'bar' }),
+        handle('foo.com', { id: 2, method: 'bar' }),
+        handle('foo.com', { id: 3, method: 'bar' }),
+        handle('foo.com', { id: 4, method: 'bar' }),
+        handle('foo.com', { id: 5, method: 'bar' }),
+      ]);
+
+      await expect(handle('foo.com', { id: 6, method: 'bar' })).rejects.toThrow(
+        'Exceeds maximum number of requests waiting to be resolved, please try again.',
+      );
+
+      // Before processing the pending requests,
+      // we need an rpc message handler function to be returned
+      const mockRpcMessageHandler = async () => undefined;
+      mockGetRpcMessageHandler.mockReturnValue(mockRpcMessageHandler);
+
+      // Resolve the promise that the pending requests are waiting for and wait for them to finish
+      resolveExecutePromise();
+      await finishPromise;
     });
   });
 
@@ -1849,7 +1902,7 @@ describe('SnapController', () => {
         getSnapObject({
           sourceCode,
           status: SnapStatus.installing,
-          manifest: getSnapManifest({ shasum: FAKE_SNAP_SHASUM }),
+          manifest: getSnapManifest({ shasum }),
         }),
       );
     });
