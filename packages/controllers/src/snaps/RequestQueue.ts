@@ -1,11 +1,11 @@
 export class RequestQueue {
-  public readonly maxQueue: number;
+  public readonly maxQueueSize: number;
 
-  private readonly locks: Map<string, number>;
+  private readonly queueSizes: Map<string, number>;
 
-  constructor(maxQueue: number) {
-    this.maxQueue = maxQueue;
-    this.locks = new Map<string, number>();
+  constructor(maxQueueSize: number) {
+    this.maxQueueSize = maxQueueSize;
+    this.queueSizes = new Map<string, number>();
   }
 
   /**
@@ -14,11 +14,11 @@ export class RequestQueue {
    * @param origin
    */
   public increment(origin: string) {
-    const currentCount = this.locks.get(origin) ?? 0;
-    if (currentCount >= this.maxQueue) {
+    const currentCount = this.queueSizes.get(origin) ?? 0;
+    if (currentCount >= this.maxQueueSize) {
       throw new Error('Maximum number of requests reached. Try again later.');
     }
-    this.locks.set(origin, currentCount + 1);
+    this.queueSizes.set(origin, currentCount + 1);
   }
 
   /**
@@ -27,13 +27,13 @@ export class RequestQueue {
    * @param origin
    */
   public decrement(origin: string) {
-    const currentCount = this.locks.get(origin) ?? 0;
+    const currentCount = this.queueSizes.get(origin) ?? 0;
     if (currentCount === 0) {
       throw new Error(
         `Cannot decrement, ${origin} does not have any outstanding requests.`,
       );
     }
-    this.locks.set(origin, currentCount - 1);
+    this.queueSizes.set(origin, currentCount - 1);
   }
 
   /**
@@ -42,6 +42,6 @@ export class RequestQueue {
    * @param origin
    */
   public get(origin: string): number {
-    return this.locks.get(origin) ?? 0;
+    return this.queueSizes.get(origin) ?? 0;
   }
 }

@@ -1573,7 +1573,7 @@ export class SnapController extends BaseController<
         if (!localStartPromise) {
           localStartPromise = this.startSnap(snapId);
           startPromises.set(snapId, localStartPromise);
-        } else if (requestQueue.get(origin) >= requestQueue.maxQueue) {
+        } else if (requestQueue.get(origin) >= requestQueue.maxQueueSize) {
           throw new Error(
             'Exceeds maximum number of requests waiting to be resolved, please try again.',
           );

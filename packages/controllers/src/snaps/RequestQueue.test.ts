@@ -4,8 +4,7 @@ describe('RequestQueue', () => {
   describe('constructor', () => {
     it('creates a request queue based on a length argument', () => {
       const queue = new RequestQueue(5);
-      expect(queue.maxQueue).toBe(5);
-      expect(queue instanceof RequestQueue).toBe(true);
+      expect(queue.maxQueueSize).toBe(5);
     });
   });
 
