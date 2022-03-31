@@ -2184,6 +2184,11 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
+"@chainsafe/strip-comments@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@chainsafe/strip-comments/-/strip-comments-1.0.5.tgz#f7805d893f375d8f6cd53edab52fda2b1131a973"
+  integrity sha512-OEbGi7STnVVdAM6xvCb+OOgrCAy4mljwWOlAtNvT5cAV/1R7U21VIm+GCx3wbMTckynAtaRDpY//qZIP4IM9fA==
+
 "@cnakazawa/watch@^1.0.3":
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@cnakazawa/watch/-/watch-1.0.4.tgz#f864ae85004d0fcab6f50be9141c4da368d1656a"
@@ -3608,11 +3613,6 @@
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@metamask/types/-/types-1.1.0.tgz#9bd14b33427932833c50c9187298804a18c2e025"
   integrity sha512-EEV/GjlYkOSfSPnYXfOosxa3TqYtIW3fhg6jdw+cok/OhMgNn4wCfbENFqjytrHMU2f7ZKtBAvtiP5V8H44sSw==
-
-"@nodefactory/strip-comments@^1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@nodefactory/strip-comments/-/strip-comments-1.0.4.tgz#d38110464ceb5a9227a310528756570d84d58265"
-  integrity sha512-Cj5eqb5l8+YuQikNSz6X+wosmzEALGFif5OWBZjmBXre71DJdV2Gz6USHgrRb0Et+R6BDfWU06TwIqp+7/+eag==
 
 "@nodelib/fs.scandir@2.1.4":
   version "2.1.4"

@@ -91,6 +91,8 @@ describe('utils', () => {
         ['oi/***/\npostProcessMe//hello', 'oipostProcessMe'],
         // We used to have issues with this one and our comment stripping
         ['oi/**/\npostProcessMe//hello', 'oi\npostProcessMe'],
+        ['foo/** /* **/bar', 'foobar'],
+        ['foo/** /** **/bar', 'foobar'],
       ].forEach(([input, expected]) => {
         expect(postProcess(input, { stripComments: true })).toStrictEqual(
           expected,

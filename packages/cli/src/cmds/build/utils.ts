@@ -1,5 +1,5 @@
 import { promises as fs } from 'fs';
-import stripComments from '@nodefactory/strip-comments';
+import stripComments from '@chainsafe/strip-comments';
 import { writeError } from '../../utils/misc';
 import { Option, YargsArgs } from '../../types/yargs';
 import { TranspilationModes } from '../../builders';
