@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.7]
+### Uncategorized
+- @chainsafe/strip-comments@1.0.5 ([#336](https://github.com/MetaMask/snaps-skunkworks/pull/336))
+- Bump minimum Node version from 12 to 14 ([#331](https://github.com/MetaMask/snaps-skunkworks/pull/331))
+- Add jest-it-up ([#329](https://github.com/MetaMask/snaps-skunkworks/pull/329))
+- Fix template files ([#330](https://github.com/MetaMask/snaps-skunkworks/pull/330))
+- Move default endowments into own file ([#321](https://github.com/MetaMask/snaps-skunkworks/pull/321))
+
 ## [0.10.6]
 ### Fixed
 - Fix endowment mocking during `mm-snap eval` ([#311](https://github.com/MetaMask/snaps-skunkworks/pull/311))
@@ -144,7 +152,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Example snaps ([#72](https://github.com/MetaMask/snaps-skunkworks/pull/72))
   - The examples now live in their own package, [`@metamask/snap-examples`](https://npmjs.com/package/@metamask/snap-examples).
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.6...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.7...HEAD
+[0.10.7]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.6...v0.10.7
 [0.10.6]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.5...v0.10.6
 [0.10.5]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.3...v0.10.5
 [0.10.3]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.2...v0.10.3
