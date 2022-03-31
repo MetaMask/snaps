@@ -7,13 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.10.7]
-
-### Fixed
-- Fix issue where comment stripping would create invalid bundles ([#336](https://github.com/MetaMask/snaps-skunkworks/pull/336))
-
 ### Changed
 - Bump minimum Node version from 12 to 14 ([#331](https://github.com/MetaMask/snaps-skunkworks/pull/331))
 - Update template files ([#330](https://github.com/MetaMask/snaps-skunkworks/pull/330))
+
+### Fixed
+- Fix issue where comment stripping would create invalid bundles ([#336](https://github.com/MetaMask/snaps-skunkworks/pull/336))
 
 ## [0.10.6]
 ### Fixed

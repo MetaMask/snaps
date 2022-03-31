@@ -12,9 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add setInterval and clearInterval as default endowments ([#326](https://github.com/MetaMask/snaps-skunkworks/pull/326))
 - Add queue for RPC requests to starting snaps ([#288](https://github.com/MetaMask/snaps-skunkworks/pull/288))
   - This improves the experience of invoking a starting snap, waiting for the snap to be ready instead of throwing an error.
-  
+
 ### Changed
 - Bump minimum Node version from 12 to 14 ([#331](https://github.com/MetaMask/snaps-skunkworks/pull/331))
+
 ## [0.10.6]
 ### Fixed
 - Fix ID validation during Snap installation ([#308](https://github.com/MetaMask/snaps-skunkworks/pull/308))
