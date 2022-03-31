@@ -7,12 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.10.7]
-### Uncategorized
-- @chainsafe/strip-comments@1.0.5 ([#336](https://github.com/MetaMask/snaps-skunkworks/pull/336))
+
+### Fixed
+- Fix issue where comment stripping would create invalid bundles ([#336](https://github.com/MetaMask/snaps-skunkworks/pull/336))
+
+### Changed
 - Bump minimum Node version from 12 to 14 ([#331](https://github.com/MetaMask/snaps-skunkworks/pull/331))
-- Add jest-it-up ([#329](https://github.com/MetaMask/snaps-skunkworks/pull/329))
-- Fix template files ([#330](https://github.com/MetaMask/snaps-skunkworks/pull/330))
-- Move default endowments into own file ([#321](https://github.com/MetaMask/snaps-skunkworks/pull/321))
+- Update template files ([#330](https://github.com/MetaMask/snaps-skunkworks/pull/330))
 
 ## [0.10.6]
 ### Fixed

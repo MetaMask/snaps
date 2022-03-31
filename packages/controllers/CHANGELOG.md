@@ -7,17 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.10.7]
-### Uncategorized
-- Enqueue rpc requests ([#288](https://github.com/MetaMask/snaps-skunkworks/pull/288))
-- Bump minimum Node version from 12 to 14 ([#331](https://github.com/MetaMask/snaps-skunkworks/pull/331))
-- Add jest-it-up ([#329](https://github.com/MetaMask/snaps-skunkworks/pull/329))
-- Snap controller tests refactor ([#328](https://github.com/MetaMask/snaps-skunkworks/pull/328))
+### Added
+- Add version history information ([#317](https://github.com/MetaMask/snaps-skunkworks/pull/317))
 - Add setInterval and clearInterval as default endowments ([#326](https://github.com/MetaMask/snaps-skunkworks/pull/326))
-- build(deps-dev): bump electron from 12.1.0 to 13.6.6 ([#324](https://github.com/MetaMask/snaps-skunkworks/pull/324))
-- Move default endowments into own file ([#321](https://github.com/MetaMask/snaps-skunkworks/pull/321))
-- Increase coverage ([#318](https://github.com/MetaMask/snaps-skunkworks/pull/318))
-- Add version history ([#317](https://github.com/MetaMask/snaps-skunkworks/pull/317))
-
+- Add queue for RPC requests to starting snaps ([#288](https://github.com/MetaMask/snaps-skunkworks/pull/288))
+  - This improves the experience of invoking a starting snap, waiting for the snap to be ready instead of throwing an error.
+  
+### Changed
+- Bump minimum Node version from 12 to 14 ([#331](https://github.com/MetaMask/snaps-skunkworks/pull/331))
 ## [0.10.6]
 ### Fixed
 - Fix ID validation during Snap installation ([#308](https://github.com/MetaMask/snaps-skunkworks/pull/308))
