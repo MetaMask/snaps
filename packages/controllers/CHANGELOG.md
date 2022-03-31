@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.7]
+### Added
+- Add version history information ([#317](https://github.com/MetaMask/snaps-skunkworks/pull/317))
+- Add setInterval and clearInterval as default endowments ([#326](https://github.com/MetaMask/snaps-skunkworks/pull/326))
+- Add queue for RPC requests to starting snaps ([#288](https://github.com/MetaMask/snaps-skunkworks/pull/288))
+  - This improves the experience of invoking a starting snap, waiting for the snap to be ready instead of throwing an error.
+
+### Changed
+- Bump minimum Node version from 12 to 14 ([#331](https://github.com/MetaMask/snaps-skunkworks/pull/331))
+
 ## [0.10.6]
 ### Fixed
 - Fix ID validation during Snap installation ([#308](https://github.com/MetaMask/snaps-skunkworks/pull/308))
@@ -215,7 +225,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.6...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.7...HEAD
+[0.10.7]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.6...v0.10.7
 [0.10.6]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.5...v0.10.6
 [0.10.5]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.3...v0.10.5
 [0.10.3]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.2...v0.10.3
