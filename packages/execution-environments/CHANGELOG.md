@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add setInterval and clearInterval as default endowments ([#326](https://github.com/MetaMask/snaps-skunkworks/pull/326))
 
 ### Changed
-- Bump minimum Node version from 12 to 14 ([#331](https://github.com/MetaMask/snaps-skunkworks/pull/331))
+- **BREAKING:** Bump minimum Node version from 12 to 14 ([#331](https://github.com/MetaMask/snaps-skunkworks/pull/331))
 
 ### Fixed
 - Fix missing properties on WebAssembly endowment ([#334](https://github.com/MetaMask/snaps-skunkworks/pull/334))

@@ -8,8 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.10.7]
 ### Changed
-- Bump minimum Node version from 12 to 14 ([#331](https://github.com/MetaMask/snaps-skunkworks/pull/331))
-- Update template files ([#330](https://github.com/MetaMask/snaps-skunkworks/pull/330))
+- **BREAKING:** Bump minimum Node version from 12 to 14 ([#331](https://github.com/MetaMask/snaps-skunkworks/pull/331))
+- Update `mm-snap init` template files ([#330](https://github.com/MetaMask/snaps-skunkworks/pull/330))
 
 ### Fixed
 - Fix issue where comment stripping would create invalid bundles ([#336](https://github.com/MetaMask/snaps-skunkworks/pull/336))
@@ -144,7 +144,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.0]
 ### Changed
-- **(BREAKING)** Rename package to `@metamask/snaps-cli` ([#72](https://github.com/MetaMask/snaps-skunkworks/pull/72))
+- **BREAKING:** Rename package to `@metamask/snaps-cli` ([#72](https://github.com/MetaMask/snaps-skunkworks/pull/72))
   - This package was previously named [`snaps-cli`](https://npmjs.com/package/snaps-cli).
   - As part of the renaming, and due to the scope of the changes to both this package and MetaMask Snaps generally, its versioning and changelog have been reset. The original changelog can be found [here](https://github.com/MetaMask/snaps-cli/blob/main/CHANGELOG.md).
 

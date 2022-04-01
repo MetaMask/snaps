@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.10.7]
 ### Changed
-- Bump minimum Node version from 12 to 14 ([#331](https://github.com/MetaMask/snaps-skunkworks/pull/331))
+- **BREAKING:** Bump minimum Node version from 12 to 14 ([#331](https://github.com/MetaMask/snaps-skunkworks/pull/331))
 
 ## [0.10.6]
 ### Changed
@@ -109,7 +109,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - License and readme files ([#71](https://github.com/MetaMask/snaps-skunkworks/pull/71))
 
 ### Changed
-- **(BREAKING)** Rename package to `@metamask/iframe-execution-environment-service` ([#73](https://github.com/MetaMask/snaps-skunkworks/pull/73))
+- **BREAKING:** Rename package to `@metamask/iframe-execution-environment-service` ([#73](https://github.com/MetaMask/snaps-skunkworks/pull/73))
 
 ## [0.0.8]
 ### Added

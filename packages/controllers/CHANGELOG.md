@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - This improves the experience of invoking a starting snap, waiting for the snap to be ready instead of throwing an error.
 
 ### Changed
-- Bump minimum Node version from 12 to 14 ([#331](https://github.com/MetaMask/snaps-skunkworks/pull/331))
+- **BREAKING:** Bump minimum Node version from 12 to 14 ([#331](https://github.com/MetaMask/snaps-skunkworks/pull/331))
 
 ## [0.10.6]
 ### Fixed
@@ -190,7 +190,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Readme file ([#71](https://github.com/MetaMask/snaps-skunkworks/pull/71))
 
 ### Changed
-- **(BREAKING)** Rename package to `@metamask/snap-controllers` ([#73](https://github.com/MetaMask/snaps-skunkworks/pull/73))
+- **BREAKING:** Rename package to `@metamask/snap-controllers` ([#73](https://github.com/MetaMask/snaps-skunkworks/pull/73))
 
 ## [0.0.9]
 ### Added
@@ -198,7 +198,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Plugins are not automatically running on boot, and we should never persist this state as `true`.
 
 ### Changed
-- **(BREAKING)** `@metamask/controllers@15.0.0` ([#66](https://github.com/MetaMask/snaps-skunkworks/pull/66))
+- **BREAKING:** `@metamask/controllers@15.0.0` ([#66](https://github.com/MetaMask/snaps-skunkworks/pull/66))
   - This may cause incompatibilities with other versions of the `@metamask/controllers` package.
 
 ## [0.0.7]
@@ -212,11 +212,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Execution environment OpenRPC spec ([#23](https://github.com/MetaMask/snaps-skunkworks/pull/23))
 
 ### Changed
-- **(BREAKING)** Migrate `CommandEngine` message format to JSON-RPC ([#11](https://github.com/MetaMask/snaps-skunkworks/pull/11))
-- **(BREAKING)** Refactor `PluginController` to use `BaseControllerV2` ([#13](https://github.com/MetaMask/snaps-skunkworks/pull/13))
-- **(BREAKING)** Use generic execution environment interface ([#19](https://github.com/MetaMask/snaps-skunkworks/pull/19))
-- **(BREAKING)** Restore origin parameter to `setupWorkerConnection`, rename to `setupPluginProvider` ([#20](https://github.com/MetaMask/snaps-skunkworks/pull/20))
-- **(BREAKING)** Rename some execution environment methods ([#23](https://github.com/MetaMask/snaps-skunkworks/pull/23))
+- **BREAKING:** Migrate `CommandEngine` message format to JSON-RPC ([#11](https://github.com/MetaMask/snaps-skunkworks/pull/11))
+- **BREAKING:** Refactor `PluginController` to use `BaseControllerV2` ([#13](https://github.com/MetaMask/snaps-skunkworks/pull/13))
+- **BREAKING:** Use generic execution environment interface ([#19](https://github.com/MetaMask/snaps-skunkworks/pull/19))
+- **BREAKING:** Restore origin parameter to `setupWorkerConnection`, rename to `setupPluginProvider` ([#20](https://github.com/MetaMask/snaps-skunkworks/pull/20))
+- **BREAKING:** Rename some execution environment methods ([#23](https://github.com/MetaMask/snaps-skunkworks/pull/23))
 
 ### Fixed
 - Ensure that the plugin `isRunning` check always runs when a plugin is started ([#21](https://github.com/MetaMask/snaps-skunkworks/pull/21))
