@@ -1,0 +1,47 @@
+diff --git a/node_modules/cross-fetch/LICENSE b/node_modules/cross-fetch/LICENSE
+old mode 100644
+new mode 100755
+diff --git a/node_modules/cross-fetch/README.md b/node_modules/cross-fetch/README.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/cross-fetch/dist/browser-polyfill.js b/node_modules/cross-fetch/dist/browser-polyfill.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/cross-fetch/dist/browser-ponyfill.js b/node_modules/cross-fetch/dist/browser-ponyfill.js
+old mode 100644
+new mode 100755
+index f216aa3..596f798
+--- a/node_modules/cross-fetch/dist/browser-ponyfill.js
++++ b/node_modules/cross-fetch/dist/browser-ponyfill.js
+@@ -543,8 +543,8 @@ __self__.fetch.ponyfill = true;
+ // Remove "polyfill" property added by whatwg-fetch
+ delete __self__.fetch.polyfill;
+ // Choose between native implementation (global) or custom implementation (__self__)
+-// var ctx = global.fetch ? global : __self__;
+-var ctx = __self__; // this line disable service worker support temporarily
++var ctx = global.fetch ? global : __self__;
++// var ctx = __self__; // this line disable service worker support temporarily
+ exports = ctx.fetch // To enable: import fetch from 'cross-fetch'
+ exports.default = ctx.fetch // For TypeScript consumers without esModuleInterop.
+ exports.fetch = ctx.fetch // To enable: import {fetch} from 'cross-fetch'
+diff --git a/node_modules/cross-fetch/dist/cross-fetch.js b/node_modules/cross-fetch/dist/cross-fetch.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/cross-fetch/dist/cross-fetch.js.map b/node_modules/cross-fetch/dist/cross-fetch.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/cross-fetch/dist/node-polyfill.js b/node_modules/cross-fetch/dist/node-polyfill.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/cross-fetch/dist/node-ponyfill.js b/node_modules/cross-fetch/dist/node-ponyfill.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/cross-fetch/dist/react-native-polyfill.js b/node_modules/cross-fetch/dist/react-native-polyfill.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/cross-fetch/dist/react-native-ponyfill.js b/node_modules/cross-fetch/dist/react-native-ponyfill.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/cross-fetch/index.d.ts b/node_modules/cross-fetch/index.d.ts
+old mode 100644
+new mode 100755
