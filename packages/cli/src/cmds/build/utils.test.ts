@@ -2,12 +2,12 @@ import { promises as fs } from 'fs';
 import { TranspilationModes } from '../../builders';
 import * as miscUtils from '../../utils/misc';
 import {
-  writeBundleFile,
-  postProcess,
-  sanitizeDependencyPaths,
   getDependencyRegExp,
+  postProcess,
   processDependencies,
   processInvalidTranspilation,
+  sanitizeDependencyPaths,
+  writeBundleFile,
 } from './utils';
 
 describe('utils', () => {
@@ -178,18 +178,25 @@ describe('utils', () => {
       const depsToTranspile = undefined;
       const transpilationMode = TranspilationModes.localAndDeps;
       const argv: Record<string, any> = { depsToTranspile, transpilationMode };
-      const babelifyOptions = processDependencies(argv as any);
-      expect(babelifyOptions).toStrictEqual({});
+      const babelOptions = processDependencies(argv as any);
+      expect(babelOptions).toStrictEqual({});
     });
 
     it('will return an object with an ignore value if dependencies are specified', () => {
       const depsToTranspile = ['airswap', 'filecoin', 'pify'];
       const transpilationMode = TranspilationModes.localAndDeps;
       const argv: Record<string, any> = { depsToTranspile, transpilationMode };
-      const babelifyOptions = processDependencies(argv as any);
-      expect(babelifyOptions).toStrictEqual({
+      const babelOptions = processDependencies(argv as any);
+      expect(babelOptions).toStrictEqual({
         ignore: [/\/node_modules\/(?!airswap|filecoin|pify\/)/u],
       });
+    });
+
+    it('will return an object with node_modules ignored if localOnly transpilation requested', () => {
+      const argv = { transpilationMode: TranspilationModes.localOnly };
+      const babelOptions = processDependencies(argv as any);
+
+      expect(babelOptions).toStrictEqual({ ignore: [/\/node_modules\//] });
     });
   });
 

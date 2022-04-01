@@ -1,15 +1,14 @@
-import { promises as fs } from 'fs';
 import stripComments from '@nodefactory/strip-comments';
-import { writeError } from '../../utils/misc';
-import { Option, YargsArgs } from '../../types/yargs';
+import type { RollupBabelOutputPluginOptions } from '@rollup/plugin-babel';
+import { promises as fs } from 'fs';
 import { TranspilationModes } from '../../builders';
+import { Option, YargsArgs } from '../../types/yargs';
+import { writeError } from '../../utils/misc';
 
 type WriteBundleFileArgs = {
-  bundleError: Error;
-  bundleBuffer: Buffer;
   src: string;
   dest: string;
-  resolve: (value: boolean) => void;
+  code: string;
   argv: YargsArgs;
 };
 
@@ -29,32 +28,25 @@ type WriteBundleFileArgs = {
  * @param options.argv - The Yargs `argv` object.
  */
 export async function writeBundleFile({
-  bundleError,
-  bundleBuffer,
   src,
   dest,
-  resolve,
+  code,
   argv,
-}: WriteBundleFileArgs) {
-  if (bundleError) {
-    await writeError('Build error:', bundleError.message, bundleError);
-  }
-
+}: WriteBundleFileArgs): Promise<boolean> {
   try {
     await fs.writeFile(
       dest,
-      postProcess(bundleBuffer ? bundleBuffer.toString() : null, {
+      postProcess(code, {
         stripComments: argv.stripComments,
         transformHtmlComments: argv.transformHtmlComments,
       }) as string,
     );
 
-    if (bundleBuffer) {
-      console.log(`Build success: '${src}' bundled as '${dest}'!`);
-    }
-    resolve(true);
+    console.log(`Build success: '${src}' bundled as '${dest}'!`);
+    return true;
   } catch (error) {
     await writeError('Write error:', error.message, error, dest);
+    return false;
   }
 }
 
@@ -117,14 +109,6 @@ export function postProcess(
     '$1(1, $2)$3',
   );
 
-  // Browserify provides the Buffer global as an argument to modules that use
-  // it, but this does not work in SES. Since we pass in Buffer as an endowment,
-  // we can simply remove the argument.
-  processedString = processedString.replace(
-    /^\(function \(Buffer\)\{$/gmu,
-    '(function (){',
-  );
-
   if (processedString.length === 0) {
     throw new Error(`Bundled code is empty after postprocessing.`);
   }
@@ -142,16 +126,20 @@ export function postProcess(
  * Processes dependencies and updates argv with an options object
  * @param argv
  */
-export function processDependencies(argv: YargsArgs) {
+export function processDependencies(
+  argv: YargsArgs,
+): RollupBabelOutputPluginOptions {
   const { depsToTranspile, transpilationMode } = argv;
-  const babelifyOptions: Record<string, any> = {};
+  const babelOptions: RollupBabelOutputPluginOptions = {};
   if (transpilationMode === TranspilationModes.localAndDeps) {
     const regexpStr = getDependencyRegExp(depsToTranspile as string[]);
     if (regexpStr !== null) {
-      babelifyOptions.ignore = [regexpStr];
+      babelOptions.ignore = [regexpStr];
     }
+  } else if (transpilationMode === TranspilationModes.localOnly) {
+    babelOptions.ignore = [/\/node_modules\//];
   }
-  return babelifyOptions;
+  return babelOptions;
 }
 
 /**

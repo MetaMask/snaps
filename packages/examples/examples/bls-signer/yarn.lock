@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@noble/bls12-381@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@noble/bls12-381/-/bls12-381-1.2.0.tgz#0d2f64a922a66fa07526080bcaf63fb7168f377c"
+  integrity sha512-4wulV2SGeu4UxlXkNT0K88sG5g23tzmLMGFZgHSMkwz2Cd2zx2YFJNTEghdLioNdludTZQ5iQpMkQxrtyuS0mw==
+
 eth-json-rpc-errors@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/eth-json-rpc-errors/-/eth-json-rpc-errors-1.1.0.tgz#2a4291fb20c0483c99b53286a814ed14ca4efb2e"
@@ -13,8 +18,3 @@ fast-safe-stringify@^2.0.6:
   version "2.0.7"
   resolved "https://registry.yarnpkg.com/fast-safe-stringify/-/fast-safe-stringify-2.0.7.tgz#124aa885899261f68aedb42a7c080de9da608743"
   integrity sha512-Utm6CdzT+6xsDk2m8S6uL8VHxNwI6Jub+e9NYTcAms28T84pTa25GJQV9j0CY0N1rM8hK4x6grpF2BQf+2qwVA==
-
-noble-bls12-381@^0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/noble-bls12-381/-/noble-bls12-381-0.2.3.tgz#e2dd1e4680cee7fdc079ee1a09ed7ffc55929caa"
-  integrity sha512-D8Zt8MgNvcIG0RFBBxMZ/3gGbv1Fd+jJJV4pNAvReSkA2EWsUPMsVcR3WSxjRILObsUoyu/2V+iW22N/YFZlYg==

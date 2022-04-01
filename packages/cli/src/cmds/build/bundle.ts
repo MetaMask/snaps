@@ -1,9 +1,14 @@
-import browserify, { BrowserifyObject } from 'browserify';
+import { getBabelOutputPlugin } from '@rollup/plugin-babel';
+import commonjs from '@rollup/plugin-commonjs';
+import json from '@rollup/plugin-json';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
+import { wasm } from '@rollup/plugin-wasm';
+import { OutputPlugin, Plugin, rollup } from 'rollup';
 import { TranspilationModes } from '../../builders';
 import { YargsArgs } from '../../types/yargs';
-import { writeBundleFile, processDependencies } from './utils';
+import { processDependencies, writeBundleFile } from './utils';
 
-// We need to statically import all Browserify transforms and all Babel presets
+// We need to statically import all Babel presets
 // and plugins, and calling `require` is the sanest way to do that.
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require */
 
@@ -17,23 +22,35 @@ import { writeBundleFile, processDependencies } from './utils';
  * @param argv.stripComments - Whether to remove comments from code.
  * @param argv.transpilationMode - The Babel transpilation mode.
  */
-export function bundle(
+export async function bundle(
   src: string,
   dest: string,
   argv: YargsArgs,
-  bundlerTransform?: (bundler: BrowserifyObject) => void,
+  bundlerCustomizer?: () => Plugin[],
 ): Promise<boolean> {
-  const { sourceMaps: debug, transpilationMode } = argv;
-  const babelifyOptions = processDependencies(argv as any);
-  return new Promise((resolve, _reject) => {
-    const bundler = browserify(src, { debug });
-    if (transpilationMode !== TranspilationModes.none) {
-      bundler.transform(require('babelify'), {
-        global: transpilationMode === TranspilationModes.localAndDeps,
+  const { sourceMaps: sourceMaps, transpilationMode } = argv;
+  const babelOptions = processDependencies(argv as any);
+
+  let inputPlugins: Plugin[] = [
+    nodeResolve({ browser: true, preferBuiltins: false }),
+    wasm({ maxFileSize: Infinity }), // maxFileSize set to Infinity - include all wasm files in the bundle instead of being seperate files
+    json(),
+    commonjs(),
+    ...(bundlerCustomizer?.() ?? []), // TODO(ritave): Do we want to allow the customizer to modify the whole plugin list or just append?
+  ];
+  let outputPlugins: OutputPlugin[] = [];
+
+  if (transpilationMode !== TranspilationModes.none) {
+    outputPlugins = [
+      ...outputPlugins,
+      getBabelOutputPlugin({
+        ...babelOptions,
+        filename: src, // Required for ignore option
         presets: [
           [
             require('@babel/preset-env'),
             {
+              modules: 'umd',
               targets: {
                 browsers: ['chrome >= 66', 'firefox >= 68'],
               },
@@ -47,22 +64,26 @@ export function bundle(
           require('@babel/plugin-proposal-optional-chaining'),
           require('@babel/plugin-proposal-nullish-coalescing-operator'),
         ],
-        ...(babelifyOptions as any),
-      });
-    }
+      }),
+    ];
+  }
 
-    bundlerTransform?.(bundler);
-
-    bundler.bundle(
-      async (bundleError, bundleBuffer: Buffer) =>
-        await writeBundleFile({
-          bundleError,
-          bundleBuffer,
-          src,
-          dest,
-          resolve,
-          argv,
-        }),
-    );
+  const bundler = await rollup({
+    input: src,
+    plugins: inputPlugins,
   });
+
+  try {
+    const { output } = await bundler.generate({
+      file: dest,
+      name: 'bundle',
+      format: transpilationMode === TranspilationModes.none ? 'iife' : 'esm', // We want babel to handle format transformation
+      sourcemap: sourceMaps ? 'inline' : false,
+      plugins: outputPlugins,
+    });
+
+    return await writeBundleFile({ src, dest, code: output[0].code, argv });
+  } finally {
+    await bundler.close();
+  }
 }

@@ -1,5 +1,5 @@
 import path from 'path';
-import type browserify from 'browserify';
+import type { Plugin } from 'rollup';
 import { Arguments } from 'yargs';
 import yargsParse from 'yargs-parser';
 import yargs from 'yargs/yargs';
@@ -10,7 +10,7 @@ import { isSnapConfig } from './snap-config.__GENERATED__';
 /** @see {isSnapConfig} ts-auto-guard:type-guard */
 export type SnapConfig = {
   cliOptions?: Record<string, unknown>;
-  bundlerCustomizer?: (bundler: browserify.BrowserifyObject) => void;
+  bundlerCustomizer?: () => Plugin[];
 };
 
 let snapConfigCache: SnapConfig | undefined;

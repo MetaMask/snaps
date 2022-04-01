@@ -1,5 +1,5 @@
 const { errors: rpcErrors } = require('eth-json-rpc-errors');
-const bls = require('noble-bls12-381');
+const bls = require('@noble/bls12-381');
 
 const DOMAIN = 2;
 
