@@ -250,13 +250,22 @@ export type UpdateSnapState = {
   handler: SnapController['updateSnapState'];
 };
 
+/**
+ * Clears the specified Snap's persisted state.
+ */
+export type ClearSnapState = {
+  type: `${typeof controllerName}:clearSnapState`;
+  handler: SnapController['clearSnapState'];
+};
+
 export type SnapControllerActions =
   | AddSnap
   | GetSnap
   | GetSnapRpcMessageHandler
   | GetSnapState
   | HasSnap
-  | UpdateSnapState;
+  | UpdateSnapState
+  | ClearSnapState;
 
 // Controller Messenger Events
 
@@ -573,6 +582,11 @@ export class SnapController extends BaseController<
       `${controllerName}:updateSnapState`,
       (...args) => this.updateSnapState(...args),
     );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:clearSnapState`,
+      (...args) => this.clearSnapState(...args),
+    );
   }
 
   _pollForLastRequestStatus() {
@@ -801,6 +815,18 @@ export class SnapController extends BaseController<
   async updateSnapState(snapId: SnapId, newSnapState: Json): Promise<void> {
     this.update((state: any) => {
       state.snapStates[snapId] = newSnapState;
+    });
+  }
+
+  /**
+   * Clears the state of the snap with the given id.
+   * This is distinct from the state MetaMask uses to manage snaps.
+   *
+   * @param snapId - The id of the Snap whose state should be cleared.
+   */
+  async clearSnapState(snapId: SnapId): Promise<void> {
+    this.update((state: any) => {
+      delete state.snapStates[snapId];
     });
   }
 

@@ -63,6 +63,7 @@ const getSnapControllerMessenger = (
       'SnapController:getSnapState',
       'SnapController:has',
       'SnapController:updateSnapState',
+      'SnapController:clearSnapState',
     ],
   });
 
@@ -1724,6 +1725,33 @@ describe('SnapController', () => {
           bar: 'baz',
         },
       });
+    });
+
+    it('action: SnapController:clearSnapState', async () => {
+      const executeSnapMock = jest.fn();
+      const messenger = getSnapControllerMessenger();
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          executeSnap: executeSnapMock,
+          messenger,
+          state: {
+            snapErrors: {},
+            snapStates: { [FAKE_SNAP_ID]: { foo: 'bar' } },
+            snaps: {
+              [FAKE_SNAP_ID]: getSnapObject({
+                status: SnapStatus.installing,
+              }),
+            },
+          },
+        }),
+      );
+
+      const clearSnapStateSpy = jest.spyOn(snapController, 'clearSnapState');
+      await messenger.call('SnapController:clearSnapState', FAKE_SNAP_ID);
+
+      expect(clearSnapStateSpy).toHaveBeenCalledTimes(1);
+      expect(snapController.state.snapStates).toStrictEqual({});
     });
   });
 
