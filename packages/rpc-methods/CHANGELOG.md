@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.10.7]
 ### Changed
-- Bump minimum Node version from 12 to 14 ([#331](https://github.com/MetaMask/snaps-skunkworks/pull/331))
+- **BREAKING:** Bump minimum Node version from 12 to 14 ([#331](https://github.com/MetaMask/snaps-skunkworks/pull/331))
 
 ## [0.10.6]
 ### Changed
@@ -110,12 +110,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Readme file ([#71](https://github.com/MetaMask/snaps-skunkworks/pull/71))
 
 ### Changed
-- **(BREAKING)** Rename package to `@metamask/rpc-methods` ([#73](https://github.com/MetaMask/snaps-skunkworks/pull/73))
+- **BREAKING:** Rename package to `@metamask/rpc-methods` ([#73](https://github.com/MetaMask/snaps-skunkworks/pull/73))
 
 ## [0.0.6]
 ### Changed
-- **(BREAKING)** Migrate `CommandEngine` message format to JSON-RPC ([#11](https://github.com/MetaMask/snaps-skunkworks/pull/11))
-- **(BREAKING)** Use generic execution environment interface ([#19](https://github.com/MetaMask/snaps-skunkworks/pull/19))
+- **BREAKING:** Migrate `CommandEngine` message format to JSON-RPC ([#11](https://github.com/MetaMask/snaps-skunkworks/pull/11))
+- **BREAKING:** Use generic execution environment interface ([#19](https://github.com/MetaMask/snaps-skunkworks/pull/19))
 
 ## [0.0.5]
 ### Added
