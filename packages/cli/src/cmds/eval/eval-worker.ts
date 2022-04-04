@@ -31,5 +31,6 @@ function getMockEndowments() {
   return {
     ...endowments,
     window: endowments,
+    self: endowments,
   };
 }
