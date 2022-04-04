@@ -63,6 +63,7 @@ const getSnapControllerMessenger = (
       'SnapController:getSnapState',
       'SnapController:has',
       'SnapController:updateSnapState',
+      'SnapController:clearSnapState',
     ],
   });
 
