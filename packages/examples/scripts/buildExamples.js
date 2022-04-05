@@ -36,6 +36,20 @@ async function buildExamples() {
             throw depsInstallError;
           }
 
+          // Some examples needs certain operations to run before it can be built
+          try {
+            await execa('yarn', ['prebuild'], {
+              cwd: exampleFilePath,
+            });
+          } catch (err) {
+            if (!err.message.includes('Command "prebuild" not found')) {
+              console.error(
+                `Unexpected error when running prebuild in "${exampleFilePath}.`,
+              );
+              throw err;
+            }
+          }
+
           try {
             await execa(
               'node',
