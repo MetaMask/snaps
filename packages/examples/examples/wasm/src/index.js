@@ -1,14 +1,11 @@
 const { ethErrors } = require('eth-rpc-errors');
+const { PROGRAM_WASM_HEX } = require('../build');
 
 // Ref:
 // - https://developer.mozilla.org/en-US/docs/WebAssembly/Using_the_JavaScript_API
 // - https://github.com/mdn/webassembly-examples/tree/06556204f687c00a5d9d3ab55805204cbb711d0c/js-api-examples
 
 let wasm;
-
-// See scripts/makeWasm.js for how this was created.
-const PROGRAM_WASM_HEX =
-  '0061736d0100000001060160017f017f0302010004040170000105030100000614037f0041080b7f01418880010b7f00418880010b071002036669620000066d656d6f727902000906010041010b000a40013e01047f4100210141012102200041004a044002400340200041016b2200210320030440200120026a210420022101200421020c010b0b0b20020f0b20010b';
 
 const initializeWasm = async () => {
   try {

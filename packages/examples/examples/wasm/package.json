@@ -14,9 +14,8 @@
     "snap.manifest.json"
   ],
   "scripts": {
-    "build": "mm-snap build",
-    "build:asc": "asc assembly/program.ts -o assembly/program.wasm",
-    "print:wasm": "node scripts/makeWasm.js",
+    "build": "yarn run build:wasm && mm-snap build",
+    "build:wasm": "asc assembly/program.ts -o build/program.wasm && node scripts/makeWasm.js",
     "serve": "mm-snap serve",
     "test": "echo 'Error: no test specified' && exit 1"
   },
