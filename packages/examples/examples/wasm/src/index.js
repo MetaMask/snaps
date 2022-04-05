@@ -22,13 +22,10 @@ wallet.registerRpcMessageHandler(async (_originString, requestObject) => {
     await initializeWasm();
   }
 
-  switch (requestObject.method) {
-    case 'callWasm':
-      return wasm.instance.exports.fib(requestObject.params[0]);
-
-    default:
-      throw ethErrors.rpc.methodNotFound({ data: { request: requestObject } });
+  if (wasm.instance.exports[requestObject.method]) {
+    return wasm.instance.exports[requestObject.method](...requestObject.params);
   }
+  throw ethErrors.rpc.methodNotFound({ data: { request: requestObject } });
 });
 
 // kudos: https://stackoverflow.com/a/71083193
