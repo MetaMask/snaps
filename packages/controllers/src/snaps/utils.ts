@@ -3,7 +3,6 @@ import type { Writable } from 'stream';
 import { Readable } from 'stream';
 import { Json } from '@metamask/controllers';
 import concat from 'concat-stream';
-import fetch from 'cross-fetch';
 import deepEqual from 'fast-deep-equal';
 import createGunzipStream from 'gunzip-maybe';
 import pump from 'pump';
