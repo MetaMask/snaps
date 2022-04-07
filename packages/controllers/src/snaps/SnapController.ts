@@ -926,6 +926,14 @@ export class SnapController extends BaseController<
         // affect the host environment while we are deleting it.
         await this.disableSnap(snapId);
         this.revokeAllSnapPermissions(snapId);
+        const snap = this.get(snapId);
+        if (snap) {
+          // Revoke all subjects access to the snap
+          await this.messagingSystem.call(
+            'PermissionController:revokePermissionForAllSubjects',
+            snap.permissionName,
+          );
+        }
 
         this._snapsRuntimeData.delete(snapId);
 
