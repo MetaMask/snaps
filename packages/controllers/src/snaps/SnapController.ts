@@ -34,7 +34,6 @@ import { DEFAULT_ENDOWMENTS } from './default-endowments';
 import { SnapManifest, validateSnapJsonFile } from './json-schemas';
 import {
   DEFAULT_REQUESTED_SNAP_VERSION,
-  fetchContent,
   fetchNpmSnap,
   getSnapPrefix,
   isValidSnapVersionRange,
@@ -1435,7 +1434,7 @@ export class SnapController extends BaseController<
     }
 
     const _manifest = await (
-      await fetchContent(manifestUrl.toString(), fetchOptions)
+      await fetch(manifestUrl.toString(), fetchOptions)
     ).json();
     validateSnapJsonFile(NpmSnapFileNames.Manifest, _manifest);
     const manifest = _manifest as SnapManifest;
@@ -1450,14 +1449,11 @@ export class SnapController extends BaseController<
 
     const [sourceCode, svgIcon] = await Promise.all([
       (
-        await fetchContent(
-          new URL(filePath, localhostUrl).toString(),
-          fetchOptions,
-        )
+        await fetch(new URL(filePath, localhostUrl).toString(), fetchOptions)
       ).text(),
       iconPath
         ? (
-            await fetchContent(
+            await fetch(
               new URL(iconPath, localhostUrl).toString(),
               fetchOptions,
             )
