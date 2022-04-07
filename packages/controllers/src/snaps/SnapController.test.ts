@@ -275,7 +275,6 @@ const getTruncatedSnap = ({
 
 jest.mock('./utils', () => ({
   ...jest.requireActual<typeof utils>('./utils'),
-  fetchContent: fetchMock,
   fetchNpmSnap: jest.fn().mockResolvedValue({
     manifest: {
       description: 'arbitraryDescription',
