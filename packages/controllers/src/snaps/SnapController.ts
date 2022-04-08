@@ -345,6 +345,7 @@ type SnapControllerArgs = {
   maxIdleTime?: number;
   maxRequestTime?: number;
   npmRegistryUrl?: string;
+  fetchFunction?: typeof fetch;
 };
 
 type AddSnapBase = {
@@ -471,6 +472,8 @@ export class SnapController extends BaseController<
 
   private _npmRegistryUrl?: string;
 
+  private _fetchFunction: typeof fetch;
+
   constructor({
     closeAllConnections,
     executeSnap,
@@ -484,6 +487,7 @@ export class SnapController extends BaseController<
     idleTimeCheckInterval = 5000,
     maxIdleTime = 30000,
     maxRequestTime = 60000,
+    fetchFunction = fetch,
   }: SnapControllerArgs) {
     super({
       messenger,
@@ -533,6 +537,7 @@ export class SnapController extends BaseController<
     this._pollForLastRequestStatus();
     this._snapsRuntimeData = new Map();
     this._npmRegistryUrl = npmRegistryUrl;
+    this._fetchFunction = fetchFunction;
 
     this.messagingSystem.subscribe(
       'ExecutionService:unhandledError',
@@ -1409,6 +1414,7 @@ export class SnapController extends BaseController<
       packageName,
       versionRange,
       this._npmRegistryUrl,
+      this._fetchFunction,
     );
     return { manifest, sourceCode, svgIcon };
   }
@@ -1434,7 +1440,7 @@ export class SnapController extends BaseController<
     }
 
     const _manifest = await (
-      await fetch(manifestUrl.toString(), fetchOptions)
+      await this._fetchFunction(manifestUrl.toString(), fetchOptions)
     ).json();
     validateSnapJsonFile(NpmSnapFileNames.Manifest, _manifest);
     const manifest = _manifest as SnapManifest;
@@ -1449,11 +1455,14 @@ export class SnapController extends BaseController<
 
     const [sourceCode, svgIcon] = await Promise.all([
       (
-        await fetch(new URL(filePath, localhostUrl).toString(), fetchOptions)
+        await this._fetchFunction(
+          new URL(filePath, localhostUrl).toString(),
+          fetchOptions,
+        )
       ).text(),
       iconPath
         ? (
-            await fetch(
+            await this._fetchFunction(
               new URL(iconPath, localhostUrl).toString(),
               fetchOptions,
             )
