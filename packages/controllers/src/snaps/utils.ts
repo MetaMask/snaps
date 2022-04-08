@@ -3,7 +3,6 @@ import type { Writable } from 'stream';
 import { Readable } from 'stream';
 import { Json } from '@metamask/controllers';
 import concat from 'concat-stream';
-import fetch from 'cross-fetch';
 import deepEqual from 'fast-deep-equal';
 import createGunzipStream from 'gunzip-maybe';
 import pump from 'pump';
@@ -49,8 +48,6 @@ const SVG_MAX_BYTE_SIZE_TEXT = `${Math.floor(SVG_MAX_BYTE_SIZE / 1000)}kb`;
 // https://github.com/SchemaStore/schemastore/blob/81a16897c1dabfd98c72242a5fd62eb080ff76d8/src/schemas/json/package.json#L132-L138
 export const PROPOSED_NAME_REGEX =
   /^(?:[A-Za-z0-9-_]+( [A-Za-z0-9-_]+)*)|(?:(?:@[A-Za-z0-9-*~][A-Za-z0-9-*._~]*\/)?[A-Za-z0-9-~][A-Za-z0-9-._~]*)$/u;
-
-export const fetchContent = fetch;
 
 /**
  * Calculates the Base64-econded SHA-256 digest of a Snap source code string.
@@ -101,14 +98,14 @@ export type SnapFiles = {
  * @param packageName - The name of the package whose tarball to fetch.
  * @param versionRange - The SemVer range of the package to fetch, max satisfying will be fetched
  * @param fetchFunction - The fetch function to use. Defaults to the global
- * {@link fetchContent}. Useful for Node.js compatibility.
+ * {@link fetch}. Useful for Node.js compatibility.
  * @returns A tuple of the Snap manifest object and the Snap source code.
  */
 export async function fetchNpmSnap(
   packageName: string,
   versionRange: string,
   registryUrl = DEFAULT_NPM_REGISTRY,
-  fetchFunction = fetchContent,
+  fetchFunction = fetch,
 ): Promise<SnapFiles> {
   const [tarballResponse, actualVersion] = await fetchNpmTarball(
     packageName,
@@ -300,7 +297,7 @@ export function validateNpmSnapManifest(
  * @param packageName - The name of the package whose tarball to fetch.
  * @param versionRange - The semver range of the package to fetch, max satisfying will be fetched
  * @param fetchFunction - The fetch function to use. Defaults to the global
- * {@link fetchContent}. Useful for Node.js compatibility.
+ * {@link fetch}. Useful for Node.js compatibility.
  * @returns A tuple of the {@link Response} for the package tarball and the
  * actual version of the package.
  */
@@ -308,7 +305,7 @@ async function fetchNpmTarball(
   packageName: string,
   versionRange: string,
   registryUrl = DEFAULT_NPM_REGISTRY,
-  fetchFunction = fetchContent,
+  fetchFunction = fetch,
 ): Promise<[ReadableStream, string]> {
   const packageMetadata = await (
     await fetchFunction(new URL(packageName, registryUrl).toString())
