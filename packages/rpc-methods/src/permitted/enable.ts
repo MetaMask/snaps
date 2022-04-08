@@ -47,6 +47,7 @@ export const enableWalletHandler: PermittedHandlerExport<
     getAccounts: true,
     installSnaps: true,
     requestPermissions: true,
+    getPermissions: true,
   },
 };
 
@@ -68,14 +69,40 @@ export type EnableWalletHooks = {
   requestPermissions: (
     permissions: RequestedPermissions,
   ) => Promise<PermissionConstraint[]>;
+
+  /**
+   * Gets the current permissions for the requesting origin.
+   * @returns The current permissions of the requesting origin.
+   */
+  getPermissions: () => Promise<Record<string, PermissionConstraint>>;
 };
+
+function hasPermissions(
+  existingPermissions: Record<string, PermissionConstraint>,
+  requestedPermissions: RequestedPermissions,
+): boolean {
+  return Object.entries(requestedPermissions).every(
+    ([target, requestedPermission]) => {
+      if (requestedPermission.caveats) {
+        return false;
+      }
+
+      return existingPermissions[target];
+    },
+  );
+}
 
 async function enableWallet(
   req: JsonRpcRequest<[RequestedPermissions]>,
   res: PendingJsonRpcResponse<EnableWalletResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { getAccounts, installSnaps, requestPermissions }: EnableWalletHooks,
+  {
+    getAccounts,
+    installSnaps,
+    requestPermissions,
+    getPermissions,
+  }: EnableWalletHooks,
 ): Promise<void> {
   if (!Array.isArray(req.params)) {
     return end(
@@ -97,7 +124,13 @@ async function enableWallet(
   try {
     // we expect the params to be the same as wallet_requestPermissions
     requestedPermissions = preprocessRequestedPermissions(req.params[0]);
-    result.permissions = await requestPermissions(requestedPermissions);
+    const existingPermissions = await getPermissions();
+    if (hasPermissions(existingPermissions, requestedPermissions)) {
+      result.permissions = Object.values(existingPermissions);
+    } else {
+      result.permissions = await requestPermissions(requestedPermissions);
+    }
+
     if (!result.permissions || !result.permissions.length) {
       throw ethErrors.provider.userRejectedRequest({ data: req });
     }
