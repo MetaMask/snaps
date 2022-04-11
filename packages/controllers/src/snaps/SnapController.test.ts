@@ -19,6 +19,7 @@ import {
   TruncatedSnap,
 } from './SnapController';
 import * as utils from './utils';
+import { SNAP_APPROVAL_UPDATE } from '.';
 
 const { getSnapSourceShasum } = utils;
 
@@ -52,6 +53,7 @@ const getSnapControllerMessenger = (
       'SnapController:stateChange',
     ],
     allowedActions: [
+      'ApprovalController:addRequest',
       'PermissionController:getEndowments',
       'PermissionController:hasPermission',
       'PermissionController:getPermissions',
@@ -1512,7 +1514,8 @@ describe('SnapController', () => {
 
       const callActionMock = jest
         .spyOn(messenger, 'call')
-        .mockImplementationOnce(() => true);
+        .mockImplementationOnce(() => true) // PermissionController:hasPermission
+        .mockImplementationOnce(async () => true); // ApprovalController:addRequest
 
       const fetchSnapMock = jest
         .spyOn(controller as any, '_fetchSnap')
@@ -1525,8 +1528,9 @@ describe('SnapController', () => {
         [FAKE_SNAP_ID]: { version: newVersionRange },
       });
 
-      expect(callActionMock).toHaveBeenCalledTimes(1);
-      expect(callActionMock).toHaveBeenCalledWith(
+      expect(callActionMock).toHaveBeenCalledTimes(2);
+      expect(callActionMock).toHaveBeenNthCalledWith(
+        1,
         'PermissionController:hasPermission',
         FAKE_ORIGIN,
         expect.anything(),
@@ -1971,6 +1975,7 @@ describe('SnapController', () => {
         getSnapControllerOptions({ messenger }),
       );
       const fetchSnapSpy = jest.spyOn(controller as any, '_fetchSnap');
+      const callActionSpy = jest.spyOn(messenger, 'call');
       const onSnapUpdated = jest.fn();
       const onSnapAdded = jest.fn();
 
@@ -1984,6 +1989,7 @@ describe('SnapController', () => {
           sourceCode: FAKE_SNAP_SOURCE_CODE,
         };
       });
+      callActionSpy.mockImplementationOnce(async () => true); // ApprovalController:addRequest
 
       await controller.add({
         origin: FAKE_ORIGIN,
@@ -2016,13 +2022,27 @@ describe('SnapController', () => {
         },
       ]);
       expect(fetchSnapSpy).toHaveBeenCalledTimes(1);
+      expect(callActionSpy).toHaveBeenCalledTimes(1);
+      expect(callActionSpy).toHaveBeenCalledWith(
+        'ApprovalController:addRequest',
+        {
+          origin: FAKE_ORIGIN,
+          type: SNAP_APPROVAL_UPDATE,
+          requestData: { snapId: FAKE_SNAP_ID, version: '1.1.0' },
+        },
+        true,
+      );
       expect(onSnapUpdated).toHaveBeenCalledTimes(1);
       expect(onSnapAdded).toHaveBeenCalledTimes(1);
     });
 
     it('should stop and restart a live snap during update', async () => {
-      const controller = getSnapController();
+      const messenger = getSnapControllerMessenger();
+      const controller = getSnapController(
+        getSnapControllerOptions({ messenger }),
+      );
       const fetchSnapSpy = jest.spyOn(controller as any, '_fetchSnap');
+      const callActionSpy = jest.spyOn(messenger, 'call');
 
       fetchSnapSpy.mockImplementationOnce(async () => {
         const manifest: SnapManifest = {
@@ -2034,6 +2054,7 @@ describe('SnapController', () => {
           sourceCode: FAKE_SNAP_SOURCE_CODE,
         };
       });
+      callActionSpy.mockImplementationOnce(async () => true); // ApprovalController:addRequest
 
       await controller.add({
         origin: FAKE_ORIGIN,
@@ -2075,6 +2096,55 @@ describe('SnapController', () => {
           'this is not a version',
         ),
       ).rejects.toThrow('invalid Snap version range');
+    });
+
+    it('should return null on update request denied', async () => {
+      const messenger = getSnapControllerMessenger();
+      const controller = getSnapController(
+        getSnapControllerOptions({ messenger }),
+      );
+      const fetchSnapSpy = jest.spyOn(controller as any, '_fetchSnap');
+      const callActionSpy = jest.spyOn(messenger, 'call');
+
+      fetchSnapSpy.mockImplementationOnce(async () => {
+        const manifest: SnapManifest = {
+          ...FAKE_SNAP_MANIFEST,
+          version: '1.1.0',
+        };
+        return {
+          manifest,
+          sourceCode: FAKE_SNAP_SOURCE_CODE,
+        };
+      });
+
+      callActionSpy.mockImplementationOnce(async () => false); // ApprovalController:addRequest
+
+      await controller.add({
+        origin: FAKE_ORIGIN,
+        id: FAKE_SNAP_ID,
+        sourceCode: FAKE_SNAP_SOURCE_CODE,
+        manifest: FAKE_SNAP_MANIFEST,
+      });
+
+      const result = await controller.updateSnap(FAKE_ORIGIN, FAKE_SNAP_ID);
+
+      const newSnap = controller.get(FAKE_SNAP_ID);
+
+      expect(result).toBeNull();
+      expect(newSnap?.version).toStrictEqual('1.0.0');
+      expect(fetchSnapSpy).toHaveBeenCalledTimes(1);
+      expect(callActionSpy).toHaveBeenCalledWith(
+        'ApprovalController:addRequest',
+        {
+          origin: FAKE_ORIGIN,
+          type: SNAP_APPROVAL_UPDATE,
+          requestData: {
+            snapId: FAKE_SNAP_ID,
+            version: '1.1.0',
+          },
+        },
+        true,
+      );
     });
   });
 

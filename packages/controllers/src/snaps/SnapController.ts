@@ -6,16 +6,14 @@ import {
   HasPermissions,
   RequestPermissions,
   RestrictedControllerMessenger,
-  RevokeAllPermissions,
-  RevokePermissions,
-  RevokePermissionForAllSubjects,
+  RevokeAllPermissions, RevokePermissionForAllSubjects, RevokePermissions
 } from '@metamask/controllers';
 import {
   ErrorJSON,
   ErrorMessageEvent,
   SnapData,
   SnapId,
-  UnresponsiveMessageEvent,
+  UnresponsiveMessageEvent
 } from '@metamask/snap-types';
 import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
@@ -28,30 +26,28 @@ import {
   ExecuteSnap,
   GetRpcMessageHandler,
   TerminateAll,
-  TerminateSnap,
+  TerminateSnap
 } from '../services/ExecutionService';
 import { isNonEmptyArray, setDiff, timeSince } from '../utils';
 import { DEFAULT_ENDOWMENTS } from './default-endowments';
 import { SnapManifest, validateSnapJsonFile } from './json-schemas';
+import { RequestQueue } from './RequestQueue';
 import {
   DEFAULT_REQUESTED_SNAP_VERSION,
-  fetchNpmSnap,
-  getSnapPrefix,
-  isValidSnapVersionRange,
+  fetchNpmSnap, getSnapPermissionName, getSnapPrefix, isValidSnapVersionRange,
   LOCALHOST_HOSTNAMES,
   NpmSnapFileNames,
   resolveVersion,
   SnapIdPrefixes,
   SNAP_PREFIX,
   ValidatedSnapId,
-  validateSnapShasum,
+  validateSnapShasum
 } from './utils';
-import { RequestQueue } from './RequestQueue';
-import { getSnapPermissionName } from '.';
-
 export const controllerName = 'SnapController';
 
 export const SNAP_PREFIX_REGEX = new RegExp(`^${SNAP_PREFIX}`, 'u');
+
+export const SNAP_APPROVAL_UPDATE = 'wallet_updateSnap';
 
 type TruncatedSnapFields =
   | 'id'
@@ -323,7 +319,12 @@ export type AllowedActions =
   | RevokePermissions
   | RequestPermissions
   | RevokeAllPermissions
+<<<<<<< HEAD
   | RevokePermissionForAllSubjects;
+=======
+  | RequestPermissions
+  | AddApprovalRequest;
+>>>>>>> 9ab8480 (Added a user approval request before updating a snap)
 
 export type AllowedEvents = ErrorMessageEvent | UnresponsiveMessageEvent;
 
@@ -1157,6 +1158,19 @@ export class SnapController extends BaseController<
       console.warn(
         `Tried updating snap "${snapId}" within "${newVersionRange}" version range, but newer version "${snap.version}" is already installed`,
       );
+      return null;
+    }
+
+    const isApproved = await this.messagingSystem.call(
+      'ApprovalController:addRequest',
+      {
+        origin,
+        type: SNAP_APPROVAL_UPDATE,
+        requestData: { snapId, version: newSnap.manifest.version },
+      },
+      true,
+    );
+    if (!isApproved) {
       return null;
     }
 
