@@ -18,6 +18,7 @@ export const getAppKeyHandler: PermittedHandlerExport<
   implementation: getAppKeyImplementation,
   hookNames: {
     getAppKey: true,
+    getUnlockPromise: true,
   },
 };
 
@@ -29,6 +30,12 @@ export type GetAppKeyHooks = {
    * @returns The requested app key.
    */
   getAppKey: (requestedAccount?: string) => Promise<string>;
+
+  /**
+   * Waits for the extension to be unlocked.
+   * @returns A promise that resolves once the extension is unlocked.
+   */
+  getUnlockPromise: (shouldShowUnlockRequest: boolean) => Promise<void>;
 };
 
 async function getAppKeyImplementation(
@@ -36,7 +43,7 @@ async function getAppKeyImplementation(
   res: PendingJsonRpcResponse<string>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { getAppKey }: GetAppKeyHooks,
+  { getAppKey, getUnlockPromise }: GetAppKeyHooks,
 ): Promise<void> {
   const [requestedAccount] = req?.params || [];
 
@@ -53,6 +60,7 @@ async function getAppKeyImplementation(
   }
 
   try {
+    await getUnlockPromise(true);
     res.result = await getAppKey(requestedAccount);
     return end();
   } catch (error) {
