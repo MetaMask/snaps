@@ -83,11 +83,14 @@ function hasPermissions(
 ): boolean {
   return Object.entries(requestedPermissions).every(
     ([target, requestedPermission]) => {
-      if (requestedPermission.caveats) {
+      if (
+        requestedPermission?.caveats &&
+        requestedPermission.caveats.length > 0
+      ) {
         return false;
       }
 
-      return existingPermissions[target];
+      return Object.hasOwnProperty.call(existingPermissions, target);
     },
   );
 }
