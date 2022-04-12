@@ -8,6 +8,7 @@ import {
   RestrictedControllerMessenger,
   RevokeAllPermissions,
   RevokePermissions,
+  RevokePermissionForAllSubjects,
 } from '@metamask/controllers';
 import {
   ErrorJSON,
@@ -319,8 +320,9 @@ export type AllowedActions =
   | HasPermission
   | HasPermissions
   | RevokePermissions
+  | RequestPermissions
   | RevokeAllPermissions
-  | RequestPermissions;
+  | RevokePermissionForAllSubjects;
 
 export type AllowedEvents = ErrorMessageEvent | UnresponsiveMessageEvent;
 
