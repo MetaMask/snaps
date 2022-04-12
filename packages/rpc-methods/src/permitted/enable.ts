@@ -77,6 +77,15 @@ export type EnableWalletHooks = {
   getPermissions: () => Promise<Record<string, PermissionConstraint>>;
 };
 
+/**
+ * Checks whether existing permissions satisfy the requested permissions
+ *
+ * Note: Currently, we don't compare caveats, if any caveats are requested, we always return false.
+ *
+ * @param existingPermissions - The existing permissions for the origin.
+ * @param requestedPermissions - The requested permissions for the origin.
+ * @returns True if the existing permissions satisfy the requested permissions, otherwise false.
+ */
 function hasPermissions(
   existingPermissions: Record<string, PermissionConstraint>,
   requestedPermissions: RequestedPermissions,
