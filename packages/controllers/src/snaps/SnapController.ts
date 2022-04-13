@@ -1,19 +1,23 @@
 import {
+  AddApprovalRequest,
   BaseControllerV2 as BaseController,
   GetEndowments,
   GetPermissions,
+  GrantPermissions,
   HasPermission,
   HasPermissions,
   RequestPermissions,
   RestrictedControllerMessenger,
-  RevokeAllPermissions, RevokePermissionForAllSubjects, RevokePermissions
+  RevokeAllPermissions,
+  RevokePermissionForAllSubjects,
+  RevokePermissions,
 } from '@metamask/controllers';
 import {
   ErrorJSON,
   ErrorMessageEvent,
   SnapData,
   SnapId,
-  UnresponsiveMessageEvent
+  UnresponsiveMessageEvent,
 } from '@metamask/snap-types';
 import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
@@ -26,7 +30,7 @@ import {
   ExecuteSnap,
   GetRpcMessageHandler,
   TerminateAll,
-  TerminateSnap
+  TerminateSnap,
 } from '../services/ExecutionService';
 import { isNonEmptyArray, setDiff, timeSince } from '../utils';
 import { DEFAULT_ENDOWMENTS } from './default-endowments';
@@ -34,14 +38,17 @@ import { SnapManifest, validateSnapJsonFile } from './json-schemas';
 import { RequestQueue } from './RequestQueue';
 import {
   DEFAULT_REQUESTED_SNAP_VERSION,
-  fetchNpmSnap, getSnapPermissionName, getSnapPrefix, isValidSnapVersionRange,
+  fetchNpmSnap,
+  getSnapPermissionName,
+  getSnapPrefix,
+  isValidSnapVersionRange,
   LOCALHOST_HOSTNAMES,
   NpmSnapFileNames,
   resolveVersion,
   SnapIdPrefixes,
   SNAP_PREFIX,
   ValidatedSnapId,
-  validateSnapShasum
+  validateSnapShasum,
 } from './utils';
 export const controllerName = 'SnapController';
 
@@ -319,12 +326,10 @@ export type AllowedActions =
   | RevokePermissions
   | RequestPermissions
   | RevokeAllPermissions
-<<<<<<< HEAD
-  | RevokePermissionForAllSubjects;
-=======
+  | RevokePermissionForAllSubjects
+  | GrantPermissions
   | RequestPermissions
   | AddApprovalRequest;
->>>>>>> 9ab8480 (Added a user approval request before updating a snap)
 
 export type AllowedEvents = ErrorMessageEvent | UnresponsiveMessageEvent;
 
@@ -1129,7 +1134,7 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Updates, re-authorizes and then restarts given snap.
+   * Ask a user for approval, updates, re-authorizes and then restarts given snap.
    *
    * @param snapId The id of the Snap to be updated
    * @param newVersionRange A semver version range in which the maximum version will be chosen
@@ -1161,12 +1166,23 @@ export class SnapController extends BaseController<
       return null;
     }
 
+    const { newPermissions, unusedPermissions } =
+      await this.calculatePermissionsDiff(
+        snapId,
+        newSnap.manifest.initialPermissions,
+      );
+
     const isApproved = await this.messagingSystem.call(
       'ApprovalController:addRequest',
       {
         origin,
         type: SNAP_APPROVAL_UPDATE,
-        requestData: { snapId, version: newSnap.manifest.version },
+        requestData: {
+          snapId,
+          version: newSnap.manifest.version,
+          newPermissions,
+          unusedPermissions,
+        },
       },
       true,
     );
@@ -1188,7 +1204,19 @@ export class SnapController extends BaseController<
       versionRange: newVersionRange,
     });
 
-    await this.authorize(snapId);
+    const unusedPermissionsKeys = Object.keys(unusedPermissions);
+    if (isNonEmptyArray(unusedPermissionsKeys)) {
+      this.messagingSystem.call('PermissionController:revokePermissions', {
+        [origin]: unusedPermissionsKeys,
+      });
+    }
+
+    if (isNonEmptyArray(Object.keys(newPermissions))) {
+      this.messagingSystem.call('PermissionController:grantPermissions', {
+        approvedPermissions: newPermissions,
+        subject: { origin: snapId },
+      });
+    }
 
     await this._startSnap({ snapId, sourceCode: newSnap.sourceCode });
 
@@ -1535,38 +1563,17 @@ export class SnapController extends BaseController<
     const snap = snapsState[snapId];
     const { initialPermissions } = snap;
 
-    // Don't prompt if there are no permissions requested:
-    if (Object.keys(initialPermissions).length === 0) {
-      return [];
-    }
-
-    if (initialPermissions === null) {
-      return [];
-    }
-
     try {
       // If we are re-authorizing after updating a snap, we revoke all unused permissions,
       // and only ask to authorize the new ones.
-      const alreadyApprovedPermissions = await this.messagingSystem.call(
-        'PermissionController:getPermissions',
-        snapId,
-      );
+      const { newPermissions, unusedPermissions } =
+        await this.calculatePermissionsDiff(snapId, initialPermissions);
+      const unusedPermissionsKeys = Object.keys(unusedPermissions);
 
-      const newPermissions = setDiff(
-        initialPermissions,
-        alreadyApprovedPermissions ?? {},
-      );
-      // TODO(ritave): The assumption that these are unused only holds so long as we do not
-      //               permit dynamic permission requests.
-      const unusedPermissions = Object.keys(
-        setDiff(alreadyApprovedPermissions ?? {}, initialPermissions),
-      );
-
-      if (isNonEmptyArray(unusedPermissions)) {
-        await this.messagingSystem.call(
-          'PermissionController:revokePermissions',
-          { [origin]: unusedPermissions },
-        );
+      if (isNonEmptyArray(unusedPermissionsKeys)) {
+        this.messagingSystem.call('PermissionController:revokePermissions', {
+          [origin]: unusedPermissionsKeys,
+        });
       }
 
       if (isNonEmptyArray(Object.keys(newPermissions))) {
@@ -1727,5 +1734,30 @@ export class SnapController extends BaseController<
       });
     }
     return this._snapsRuntimeData.get(snapId) as SnapRuntimeData;
+  }
+
+  private async calculatePermissionsDiff(
+    snapId: SnapId,
+    desiredPermissionsSet: RequestedSnapPermissions,
+  ): Promise<{
+    newPermissions: RequestedSnapPermissions;
+    unusedPermissions: RequestedSnapPermissions;
+  }> {
+    const alreadyApprovedPermissions = await this.messagingSystem.call(
+      'PermissionController:getPermissions',
+      snapId,
+    );
+
+    const newPermissions = setDiff(
+      desiredPermissionsSet,
+      alreadyApprovedPermissions ?? {},
+    );
+    // TODO(ritave): The assumption that these are unused only holds so long as we do not
+    //               permit dynamic permission requests.
+    const unusedPermissions = setDiff(
+      alreadyApprovedPermissions ?? {},
+      desiredPermissionsSet,
+    );
+    return { newPermissions, unusedPermissions };
   }
 }
