@@ -21,7 +21,7 @@ jest.mock('worker_threads', () => ({
         throw new Error('Mock worker ref already assigned!');
       }
 
-      // eslint-disable-next-line consistent-this
+      // eslint-disable-next-line consistent-this, @typescript-eslint/no-this-alias
       mockWorkerRef = this;
       this.constructorArgs = args;
       this.on = jest.spyOn(this as any, 'on') as any;
