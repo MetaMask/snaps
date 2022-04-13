@@ -4,6 +4,7 @@
     "esModuleInterop": true,
     "module": "CommonJS",
     "moduleResolution": "node",
+    "useUnknownInCatchVariables": false,
     "sourceMap": true,
     "strict": true,
     "target": "ES2017",
