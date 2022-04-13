@@ -1180,7 +1180,7 @@ export class SnapController extends BaseController<
 
     const runtime = this._getSnapRuntimeData(snapId);
     if (!runtime.installPromise) {
-      console.log(`Adding snap: ${snapId}`);
+      console.info(`Adding snap: ${snapId}`);
       runtime.installPromise = this._set(args as ValidatedAddSnapArgs);
     }
 
@@ -1482,7 +1482,7 @@ export class SnapController extends BaseController<
    * @returns The snap's approvedPermissions.
    */
   private async authorize(snapId: SnapId): Promise<string[]> {
-    console.log(`Authorizing snap: ${snapId}`);
+    console.info(`Authorizing snap: ${snapId}`);
     const snapsState = this.state.snaps;
     const snap = snapsState[snapId];
     const { initialPermissions } = snap;
