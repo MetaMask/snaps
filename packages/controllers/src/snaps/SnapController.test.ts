@@ -1,5 +1,11 @@
 import * as fs from 'fs';
-import { getPersistentState, Json } from '@metamask/controllers';
+import {
+  Caveat,
+  getPersistentState,
+  Json,
+  SubjectPermissions,
+  ValidPermission,
+} from '@metamask/controllers';
 import { ControllerMessenger } from '@metamask/controllers/dist/ControllerMessenger';
 import { EthereumRpcError, ethErrors, serializeError } from 'eth-rpc-errors';
 import fetchMock from 'jest-fetch-mock';
@@ -16,10 +22,10 @@ import {
   SnapControllerEvents,
   SnapControllerState,
   SnapStatus,
+  SNAP_APPROVAL_UPDATE,
   TruncatedSnap,
 } from './SnapController';
 import * as utils from './utils';
-import { SNAP_APPROVAL_UPDATE } from '.';
 
 const { getSnapSourceShasum } = utils;
 
@@ -57,6 +63,7 @@ const getSnapControllerMessenger = (
       'PermissionController:getEndowments',
       'PermissionController:hasPermission',
       'PermissionController:getPermissions',
+      'PermissionController:grantPermissions',
       'PermissionController:requestPermissions',
       'PermissionController:revokeAllPermissions',
       'SnapController:add',
@@ -746,7 +753,8 @@ describe('SnapController', () => {
 
     const messengerCallMock = jest
       .spyOn(messenger, 'call')
-      .mockImplementationOnce(() => true);
+      .mockImplementationOnce(() => true) // PermissionController:hasPermission
+      .mockImplementationOnce(async () => undefined); // PermissionController:getPermissions
     jest.spyOn(messenger, 'publish');
 
     jest
@@ -786,12 +794,18 @@ describe('SnapController', () => {
       [FAKE_SNAP_ID]: expectedSnapObject,
     });
 
-    expect(messengerCallMock).toHaveBeenCalledTimes(1);
+    expect(messengerCallMock).toHaveBeenCalledTimes(2);
     expect(messengerCallMock).toHaveBeenNthCalledWith(
       1,
       'PermissionController:hasPermission',
       FAKE_ORIGIN,
       expectedSnapObject.permissionName,
+    );
+
+    expect(messengerCallMock).toHaveBeenNthCalledWith(
+      2,
+      'PermissionController:getPermissions',
+      FAKE_SNAP_ID,
     );
 
     await eventSubscriptionPromise;
@@ -1303,7 +1317,8 @@ describe('SnapController', () => {
 
       const callActionMock = jest
         .spyOn(messenger, 'call')
-        .mockImplementation(() => true);
+        .mockImplementationOnce(() => true) // PermissionController:hasPermission
+        .mockImplementationOnce(async () => ({})); // PermissionController:getPermissions
       const fetchSnapMock = jest
         .spyOn(snapController as any, '_fetchSnap')
         .mockImplementationOnce(() => {
@@ -1318,11 +1333,18 @@ describe('SnapController', () => {
       });
       expect(result).toStrictEqual({ [snapId]: truncatedFooSnap });
 
-      expect(callActionMock).toHaveBeenCalledTimes(1);
-      expect(callActionMock).toHaveBeenCalledWith(
+      expect(callActionMock).toHaveBeenCalledTimes(2);
+      expect(callActionMock).toHaveBeenNthCalledWith(
+        1,
         'PermissionController:hasPermission',
         requester,
         fooSnapObject.permissionName,
+      );
+
+      expect(callActionMock).toHaveBeenNthCalledWith(
+        2,
+        'PermissionController:getPermissions',
+        snapId,
       );
 
       expect(executeSnapMock).toHaveBeenCalledTimes(1);
@@ -1376,7 +1398,8 @@ describe('SnapController', () => {
 
       const callActionMock = jest
         .spyOn(messenger, 'call')
-        .mockImplementation(() => true);
+        .mockImplementationOnce(() => true) // PermissionController:hasPermission
+        .mockImplementationOnce(async () => ({})); // PermissionController:getPermissions
       const fetchSnapMock = jest
         .spyOn(snapController as any, '_fetchSnap')
         .mockImplementationOnce(() => {
@@ -1392,11 +1415,18 @@ describe('SnapController', () => {
 
       expect(result).toStrictEqual({ [snapId]: truncatedFooSnap });
 
-      expect(callActionMock).toHaveBeenCalledTimes(1);
-      expect(callActionMock).toHaveBeenCalledWith(
+      expect(callActionMock).toHaveBeenCalledTimes(2);
+      expect(callActionMock).toHaveBeenNthCalledWith(
+        1,
         'PermissionController:hasPermission',
         requester,
         fooSnapObject.permissionName,
+      );
+
+      expect(callActionMock).toHaveBeenNthCalledWith(
+        2,
+        'PermissionController:getPermissions',
+        snapId,
       );
 
       expect(executeSnapMock).toHaveBeenCalledTimes(1);
@@ -1424,7 +1454,6 @@ describe('SnapController', () => {
 
       const callActionMock = jest
         .spyOn(messenger, 'call')
-        // @ts-expect-error TS doesn't like this
         .mockImplementation((method, ...args) => {
           console.log(method, args);
           if (method === 'PermissionController:hasPermission') {
@@ -1432,7 +1461,7 @@ describe('SnapController', () => {
           } else if (method === 'PermissionController:requestPermissions') {
             return [{ eth_accounts: {} }];
           } else if (method === 'PermissionController:getPermissions') {
-            return [];
+            return {};
           }
           return false;
         });
@@ -1452,18 +1481,21 @@ describe('SnapController', () => {
       });
       expect(fetchSnapMock).toHaveBeenCalledTimes(1);
       expect(callActionMock).toHaveBeenCalledTimes(3);
-      expect(callActionMock).toHaveBeenCalledWith(
+      expect(callActionMock).toHaveBeenNthCalledWith(
+        1,
         'PermissionController:hasPermission',
         FAKE_ORIGIN,
         'wallet_snap_npm:example-snap',
       );
 
-      expect(callActionMock).toHaveBeenCalledWith(
+      expect(callActionMock).toHaveBeenNthCalledWith(
+        2,
         'PermissionController:getPermissions',
         FAKE_SNAP_ID,
       );
 
-      expect(callActionMock).toHaveBeenCalledWith(
+      expect(callActionMock).toHaveBeenNthCalledWith(
+        3,
         'PermissionController:requestPermissions',
         { origin: FAKE_SNAP_ID },
         { eth_accounts: {} },
@@ -1515,6 +1547,7 @@ describe('SnapController', () => {
       const callActionMock = jest
         .spyOn(messenger, 'call')
         .mockImplementationOnce(() => true) // PermissionController:hasPermission
+        .mockImplementationOnce(async () => ({})) // PermissionController:getPermissions
         .mockImplementationOnce(async () => true); // ApprovalController:addRequest
 
       const fetchSnapMock = jest
@@ -1528,12 +1561,28 @@ describe('SnapController', () => {
         [FAKE_SNAP_ID]: { version: newVersionRange },
       });
 
-      expect(callActionMock).toHaveBeenCalledTimes(2);
+      expect(callActionMock).toHaveBeenCalledTimes(3);
       expect(callActionMock).toHaveBeenNthCalledWith(
         1,
         'PermissionController:hasPermission',
         FAKE_ORIGIN,
         expect.anything(),
+      );
+
+      expect(callActionMock).toHaveBeenNthCalledWith(
+        3,
+        'ApprovalController:addRequest',
+        {
+          origin: FAKE_ORIGIN,
+          type: SNAP_APPROVAL_UPDATE,
+          requestData: {
+            snapId: FAKE_SNAP_ID,
+            newVersion,
+            newPermissions: {},
+            approvedPermissions: {},
+          },
+        },
+        true,
       );
       expect(fetchSnapMock).toHaveBeenCalledTimes(1);
       expect(fetchSnapMock).toHaveBeenCalledWith(FAKE_SNAP_ID, newVersionRange);
@@ -1989,7 +2038,10 @@ describe('SnapController', () => {
           sourceCode: FAKE_SNAP_SOURCE_CODE,
         };
       });
-      callActionSpy.mockImplementationOnce(async () => true); // ApprovalController:addRequest
+
+      callActionSpy
+        .mockImplementationOnce(async () => ({})) // PermissionController:getPermissions
+        .mockImplementationOnce(async () => true); // ApprovalController:addRequest
 
       await controller.add({
         origin: FAKE_ORIGIN,
@@ -2022,13 +2074,25 @@ describe('SnapController', () => {
         },
       ]);
       expect(fetchSnapSpy).toHaveBeenCalledTimes(1);
-      expect(callActionSpy).toHaveBeenCalledTimes(1);
-      expect(callActionSpy).toHaveBeenCalledWith(
+      expect(callActionSpy).toHaveBeenCalledTimes(2);
+      expect(callActionSpy).toHaveBeenNthCalledWith(
+        1,
+        'PermissionController:getPermissions',
+        FAKE_SNAP_ID,
+      );
+
+      expect(callActionSpy).toHaveBeenNthCalledWith(
+        2,
         'ApprovalController:addRequest',
         {
           origin: FAKE_ORIGIN,
           type: SNAP_APPROVAL_UPDATE,
-          requestData: { snapId: FAKE_SNAP_ID, version: '1.1.0' },
+          requestData: {
+            snapId: FAKE_SNAP_ID,
+            newVersion: '1.1.0',
+            newPermissions: {},
+            approvedPermissions: {},
+          },
         },
         true,
       );
@@ -2054,7 +2118,10 @@ describe('SnapController', () => {
           sourceCode: FAKE_SNAP_SOURCE_CODE,
         };
       });
-      callActionSpy.mockImplementationOnce(async () => true); // ApprovalController:addRequest
+
+      callActionSpy
+        .mockImplementationOnce(async () => ({})) // PermissionController:getPermissions
+        .mockImplementationOnce(async () => true); // ApprovalController:addRequest
 
       await controller.add({
         origin: FAKE_ORIGIN,
@@ -2073,6 +2140,28 @@ describe('SnapController', () => {
       const isRunning = controller.isRunning(FAKE_SNAP_ID);
 
       expect(fetchSnapSpy).toHaveBeenCalledTimes(1);
+      expect(callActionSpy).toHaveBeenCalledTimes(2);
+      expect(callActionSpy).toHaveBeenNthCalledWith(
+        1,
+        'PermissionController:getPermissions',
+        FAKE_SNAP_ID,
+      );
+
+      expect(callActionSpy).toHaveBeenNthCalledWith(
+        2,
+        'ApprovalController:addRequest',
+        {
+          origin: FAKE_ORIGIN,
+          type: SNAP_APPROVAL_UPDATE,
+          requestData: {
+            snapId: FAKE_SNAP_ID,
+            newVersion: '1.1.0',
+            newPermissions: {},
+            approvedPermissions: {},
+          },
+        },
+        true,
+      );
       expect(isRunning).toStrictEqual(true);
       expect(stopSnapSpy).toHaveBeenCalledTimes(1);
       expect(startSnapSpy).toHaveBeenCalledTimes(1);
@@ -2117,7 +2206,9 @@ describe('SnapController', () => {
         };
       });
 
-      callActionSpy.mockImplementationOnce(async () => false); // ApprovalController:addRequest
+      callActionSpy
+        .mockImplementationOnce(async () => ({})) // PermissionController:getPermissions
+        .mockImplementationOnce(async () => false); // ApprovalController:addRequest
 
       await controller.add({
         origin: FAKE_ORIGIN,
@@ -2133,17 +2224,134 @@ describe('SnapController', () => {
       expect(result).toBeNull();
       expect(newSnap?.version).toStrictEqual('1.0.0');
       expect(fetchSnapSpy).toHaveBeenCalledTimes(1);
-      expect(callActionSpy).toHaveBeenCalledWith(
+      expect(callActionSpy).toHaveBeenCalledTimes(2);
+      expect(callActionSpy).toHaveBeenNthCalledWith(
+        1,
+        'PermissionController:getPermissions',
+        FAKE_SNAP_ID,
+      );
+
+      expect(callActionSpy).toHaveBeenNthCalledWith(
+        2,
         'ApprovalController:addRequest',
         {
           origin: FAKE_ORIGIN,
           type: SNAP_APPROVAL_UPDATE,
           requestData: {
             snapId: FAKE_SNAP_ID,
-            version: '1.1.0',
+            newVersion: '1.1.0',
+            newPermissions: {},
+            approvedPermissions: {},
           },
         },
         true,
+      );
+    });
+
+    it('should request approval for new and already approved permissions and revoke unused permissions', async () => {
+      const messenger = getSnapControllerMessenger();
+      const controller = getSnapController(
+        getSnapControllerOptions({ messenger }),
+      );
+
+      const initialPermissions = {
+        snap_confirm: {},
+        snap_manageState: {},
+      };
+      const approvedPermissions: SubjectPermissions<
+        ValidPermission<string, Caveat<string, any>>
+      > = {
+        snap_confirm: {
+          caveats: null,
+          parentCapability: 'snap_confirm',
+          id: '1',
+          date: 1,
+          invoker: FAKE_SNAP_ID,
+        },
+        snap_manageState: {
+          caveats: null,
+          parentCapability: 'snap_manageState',
+          id: '2',
+          date: 1,
+          invoker: FAKE_SNAP_ID,
+        },
+      };
+
+      const fetchSnapSpy = jest.spyOn(controller as any, '_fetchSnap');
+      const callActionSpy = jest.spyOn(messenger, 'call');
+
+      fetchSnapSpy.mockImplementationOnce(async () => {
+        const manifest: SnapManifest = getSnapManifest({
+          version: '1.1.0',
+          initialPermissions: {
+            snap_confirm: {},
+            'endowment:network-access': {},
+          },
+        });
+        return {
+          manifest,
+          sourceCode: FAKE_SNAP_SOURCE_CODE,
+        };
+      });
+
+      callActionSpy
+        .mockImplementationOnce(() => approvedPermissions) // PermissionController:getPermissions
+        .mockImplementationOnce(async () => true) // ApprovalController:addRequest
+        .mockImplementationOnce(() => {
+          /* do nothing */
+        }) // PermisionController:revokePermissions
+        .mockImplementationOnce(() => {
+          /* do nothing */
+        }); // PermissionController:grantPermissions
+
+      await controller.add({
+        origin: FAKE_ORIGIN,
+        id: FAKE_SNAP_ID,
+        sourceCode: FAKE_SNAP_SOURCE_CODE,
+        manifest: getSnapManifest({ initialPermissions }),
+      });
+
+      await controller.updateSnap(FAKE_ORIGIN, FAKE_SNAP_ID);
+
+      expect(fetchSnapSpy).toHaveBeenCalledTimes(1);
+      expect(callActionSpy).toHaveBeenCalledTimes(4);
+      expect(callActionSpy).toHaveBeenNthCalledWith(
+        1,
+        'PermissionController:getPermissions',
+        FAKE_SNAP_ID,
+      );
+
+      expect(callActionSpy).toHaveBeenNthCalledWith(
+        2,
+        'ApprovalController:addRequest',
+        {
+          origin: FAKE_ORIGIN,
+          type: SNAP_APPROVAL_UPDATE,
+          requestData: {
+            snapId: FAKE_SNAP_ID,
+            newVersion: '1.1.0',
+            newPermissions: { 'endowment:network-access': {} },
+            approvedPermissions: {
+              snap_confirm: approvedPermissions.snap_confirm,
+            },
+          },
+        },
+        true,
+      );
+
+      expect(callActionSpy).toHaveBeenNthCalledWith(
+        3,
+        'PermissionController:revokePermissions',
+        { [FAKE_SNAP_ID]: ['snap_manageState'] },
+      );
+
+      expect(callActionSpy).toHaveBeenNthCalledWith(
+        4,
+        'PermissionController:grantPermissions',
+        {
+          approvedPermissions: { 'endowment:network-access': {} },
+          subject: { origin: FAKE_SNAP_ID },
+        },
       );
     });
   });

@@ -1,6 +1,7 @@
 import {
   AddApprovalRequest,
   BaseControllerV2 as BaseController,
+  Caveat,
   GetEndowments,
   GetPermissions,
   GrantPermissions,
@@ -11,6 +12,8 @@ import {
   RevokeAllPermissions,
   RevokePermissionForAllSubjects,
   RevokePermissions,
+  SubjectPermissions,
+  ValidPermission,
 } from '@metamask/controllers';
 import {
   ErrorJSON,
@@ -50,6 +53,7 @@ import {
   ValidatedSnapId,
   validateSnapShasum,
 } from './utils';
+
 export const controllerName = 'SnapController';
 
 export const SNAP_PREFIX_REGEX = new RegExp(`^${SNAP_PREFIX}`, 'u');
@@ -1166,8 +1170,8 @@ export class SnapController extends BaseController<
       return null;
     }
 
-    const { newPermissions, unusedPermissions } =
-      await this.calculatePermissionsDiff(
+    const { newPermissions, unusedPermissions, approvedPermissions } =
+      await this.calculatePermissionsChange(
         snapId,
         newSnap.manifest.initialPermissions,
       );
@@ -1179,9 +1183,9 @@ export class SnapController extends BaseController<
         type: SNAP_APPROVAL_UPDATE,
         requestData: {
           snapId,
-          version: newSnap.manifest.version,
+          newVersion: newSnap.manifest.version,
           newPermissions,
-          unusedPermissions,
+          approvedPermissions,
         },
       },
       true,
@@ -1207,7 +1211,7 @@ export class SnapController extends BaseController<
     const unusedPermissionsKeys = Object.keys(unusedPermissions);
     if (isNonEmptyArray(unusedPermissionsKeys)) {
       this.messagingSystem.call('PermissionController:revokePermissions', {
-        [origin]: unusedPermissionsKeys,
+        [snapId]: unusedPermissionsKeys,
       });
     }
 
@@ -1567,12 +1571,12 @@ export class SnapController extends BaseController<
       // If we are re-authorizing after updating a snap, we revoke all unused permissions,
       // and only ask to authorize the new ones.
       const { newPermissions, unusedPermissions } =
-        await this.calculatePermissionsDiff(snapId, initialPermissions);
+        await this.calculatePermissionsChange(snapId, initialPermissions);
       const unusedPermissionsKeys = Object.keys(unusedPermissions);
 
       if (isNonEmptyArray(unusedPermissionsKeys)) {
         this.messagingSystem.call('PermissionController:revokePermissions', {
-          [origin]: unusedPermissionsKeys,
+          [snapId]: unusedPermissionsKeys,
         });
       }
 
@@ -1736,28 +1740,33 @@ export class SnapController extends BaseController<
     return this._snapsRuntimeData.get(snapId) as SnapRuntimeData;
   }
 
-  private async calculatePermissionsDiff(
+  private async calculatePermissionsChange(
     snapId: SnapId,
     desiredPermissionsSet: RequestedSnapPermissions,
   ): Promise<{
     newPermissions: RequestedSnapPermissions;
-    unusedPermissions: RequestedSnapPermissions;
+    unusedPermissions: SubjectPermissions<
+      ValidPermission<string, Caveat<string, any>>
+    >;
+    approvedPermissions: SubjectPermissions<
+      ValidPermission<string, Caveat<string, any>>
+    >;
   }> {
-    const alreadyApprovedPermissions = await this.messagingSystem.call(
-      'PermissionController:getPermissions',
-      snapId,
-    );
+    const oldPermissions =
+      (await this.messagingSystem.call(
+        'PermissionController:getPermissions',
+        snapId,
+      )) ?? {};
 
-    const newPermissions = setDiff(
-      desiredPermissionsSet,
-      alreadyApprovedPermissions ?? {},
-    );
+    const newPermissions = setDiff(desiredPermissionsSet, oldPermissions);
     // TODO(ritave): The assumption that these are unused only holds so long as we do not
     //               permit dynamic permission requests.
-    const unusedPermissions = setDiff(
-      alreadyApprovedPermissions ?? {},
-      desiredPermissionsSet,
-    );
-    return { newPermissions, unusedPermissions };
+    const unusedPermissions = setDiff(oldPermissions, desiredPermissionsSet);
+
+    // It's a Set Intersection of oldPermissions and desiredPermissionsSet
+    // oldPermissions ∖ (oldPermissions ∖ desiredPermissionsSet) ⟺ oldPermissions ∩ desiredPermissionsSet
+    const approvedPermissions = setDiff(oldPermissions, unusedPermissions);
+
+    return { newPermissions, unusedPermissions, approvedPermissions };
   }
 }
