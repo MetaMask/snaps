@@ -546,3 +546,15 @@ export function getSnapPrefix(snapId: string): SnapIdPrefixes {
   }
   throw new Error(`Invalid or no prefix found for "${snapId}"`);
 }
+
+export const SNAP_PREFIX = 'wallet_snap_';
+
+/**
+ * Gets permission name of a snap given its snap id
+ *
+ * @param snapId - Snap id
+ * @returns The permission name
+ */
+export function getSnapPermissionName(snapId: string): string {
+  return SNAP_PREFIX + snapId;
+}
