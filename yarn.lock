@@ -6051,6 +6051,7 @@ __metadata:
     "@metamask/snap-types": ^0.15.0
     "@metamask/template-snap": ^0.7.0
     "@metamask/utils": ^2.0.0
+    "@peculiar/webcrypto": ^1.3.3
     "@types/concat-stream": ^1.6.1
     "@types/deep-freeze-strict": ^1.1.0
     "@types/gunzip-maybe": ^1.4.0
@@ -6450,6 +6451,39 @@ __metadata:
   bin:
     open-rpc-typings: build/cli.js
   checksum: 6b9d98d54e13e8ad4f9368651ae0adf3ba14e8b854ee79897f42243b45430f7cc1182ec8d1c40f8b82cc15042894c580e068435ef39d39535d8f4292655475ee
+  languageName: node
+  linkType: hard
+
+"@peculiar/asn1-schema@npm:^2.1.6":
+  version: 2.1.8
+  resolution: "@peculiar/asn1-schema@npm:2.1.8"
+  dependencies:
+    asn1js: ^3.0.4
+    pvtsutils: ^1.3.2
+    tslib: ^2.4.0
+  checksum: a8724531eada4ca600f52dfebcb278a2eb6e10bbb7de7333758d92e17ad669fda2719b86c1c834eced4ff49fbe038f017158094bade370b6b80e0de7fefe94c6
+  languageName: node
+  linkType: hard
+
+"@peculiar/json-schema@npm:^1.1.12":
+  version: 1.1.12
+  resolution: "@peculiar/json-schema@npm:1.1.12"
+  dependencies:
+    tslib: ^2.0.0
+  checksum: b26ececdc23c5ef25837f8be8d1eb5e1c8bb6e9ae7227ac59ffea57fff56bd05137734e7685e9100595d3d88d906dff638ef8d1df54264c388d3eac1b05aa060
+  languageName: node
+  linkType: hard
+
+"@peculiar/webcrypto@npm:^1.3.3":
+  version: 1.4.0
+  resolution: "@peculiar/webcrypto@npm:1.4.0"
+  dependencies:
+    "@peculiar/asn1-schema": ^2.1.6
+    "@peculiar/json-schema": ^1.1.12
+    pvtsutils: ^1.3.2
+    tslib: ^2.4.0
+    webcrypto-core: ^1.7.4
+  checksum: 3a7a3c8f253170436f353a61b807d2e2e7a686e6a9607487fde6459ddfff34c8000414287a6cd904bd81e002ce4564811b3c7789a0fd932cf015df6c4002fd02
   languageName: node
   linkType: hard
 
@@ -8352,6 +8386,17 @@ __metadata:
   dependencies:
     safer-buffer: ~2.1.0
   checksum: aa5d6f77b1e0597df53824c68cfe82d1d89ce41cb3520148611f025fbb3101b2d25dd6a40ad34e4fac10f6b19ed5e8628cd4b7d212261e80e83f02b39ee5663c
+  languageName: node
+  linkType: hard
+
+"asn1js@npm:^3.0.1, asn1js@npm:^3.0.4":
+  version: 3.0.4
+  resolution: "asn1js@npm:3.0.4"
+  dependencies:
+    pvtsutils: ^1.3.2
+    pvutils: ^1.1.3
+    tslib: ^2.4.0
+  checksum: 7c3391aef48b40b50d780780689cfa7819632116b2759d1a654917e043534ec67f4b9ff90fa6894fbf470f72cd2273a029abb96e9993fad1004a655e2fbc687c
   languageName: node
   linkType: hard
 
@@ -19849,6 +19894,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pvtsutils@npm:^1.3.2":
+  version: 1.3.2
+  resolution: "pvtsutils@npm:1.3.2"
+  dependencies:
+    tslib: ^2.4.0
+  checksum: 9b8155611363e2f40276879f2454e60204b45be0cd0482f9373f369308a2e9c76d5d74cdf661a3f5aae8022d75ea159eb0ba38ee78fc782ee3051e4722db98d0
+  languageName: node
+  linkType: hard
+
+"pvutils@npm:^1.1.3":
+  version: 1.1.3
+  resolution: "pvutils@npm:1.1.3"
+  checksum: 2ee26a9e5176c348977d6ec00d8ee80bff62f51743b1c5fe8abeeb4c5d29d9959cdfe0ce146707a9e6801bce88190fed3002d720b072dc87d031c692820b44c9
+  languageName: node
+  linkType: hard
+
 "qs@npm:~6.5.2":
   version: 6.5.2
   resolution: "qs@npm:6.5.2"
@@ -23655,6 +23716,19 @@ __metadata:
     xhr2-cookies: ^1.1.0
     xmlhttprequest: "*"
   checksum: acec4beac2265a7ff864f35df5a709d086d2bdb4c0e1dbf323e07b963bee5662c1b18fd26c7f11595006a3a9288d769b75f6e43c5aa3bfc36e957650cd2ac4b6
+  languageName: node
+  linkType: hard
+
+"webcrypto-core@npm:^1.7.4":
+  version: 1.7.5
+  resolution: "webcrypto-core@npm:1.7.5"
+  dependencies:
+    "@peculiar/asn1-schema": ^2.1.6
+    "@peculiar/json-schema": ^1.1.12
+    asn1js: ^3.0.1
+    pvtsutils: ^1.3.2
+    tslib: ^2.4.0
+  checksum: f6e529ca5c1175b8ccead3547f60efa7a1f8e247aaeab3bd4f096eb9fda11cfc8e6b6fb574bbc5696f608958c491a27e9682c89204412f73fb430e5fcbe9ebac
   languageName: node
   linkType: hard
 
