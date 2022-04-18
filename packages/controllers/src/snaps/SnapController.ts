@@ -8,6 +8,7 @@ import {
   RestrictedControllerMessenger,
   RevokeAllPermissions,
   RevokePermissions,
+  RevokePermissionForAllSubjects,
 } from '@metamask/controllers';
 import {
   ErrorJSON,
@@ -41,14 +42,15 @@ import {
   NpmSnapFileNames,
   resolveVersion,
   SnapIdPrefixes,
+  SNAP_PREFIX,
   ValidatedSnapId,
   validateSnapShasum,
 } from './utils';
 import { RequestQueue } from './RequestQueue';
+import { getSnapPermissionName } from '.';
 
 export const controllerName = 'SnapController';
 
-export const SNAP_PREFIX = 'wallet_snap_';
 export const SNAP_PREFIX_REGEX = new RegExp(`^${SNAP_PREFIX}`, 'u');
 
 type TruncatedSnapFields =
@@ -319,8 +321,9 @@ export type AllowedActions =
   | HasPermission
   | HasPermissions
   | RevokePermissions
+  | RequestPermissions
   | RevokeAllPermissions
-  | RequestPermissions;
+  | RevokePermissionForAllSubjects;
 
 export type AllowedEvents = ErrorMessageEvent | UnresponsiveMessageEvent;
 
@@ -927,6 +930,13 @@ export class SnapController extends BaseController<
         await this.disableSnap(snapId);
         this.revokeAllSnapPermissions(snapId);
 
+        const permissionName = getSnapPermissionName(snapId);
+        // Revoke all subjects access to the snap
+        await this.messagingSystem.call(
+          'PermissionController:revokePermissionForAllSubjects',
+          permissionName,
+        );
+
         this._snapsRuntimeData.delete(snapId);
 
         this.update((state: any) => {
@@ -998,7 +1008,7 @@ export class SnapController extends BaseController<
       Object.entries(requestedSnaps).map(
         async ([snapId, { version: rawVersion }]) => {
           const version = resolveVersion(rawVersion);
-          const permissionName = SNAP_PREFIX + snapId;
+          const permissionName = getSnapPermissionName(snapId);
 
           if (!isValidSnapVersionRange(version)) {
             result[snapId] = {
@@ -1346,7 +1356,7 @@ export class SnapController extends BaseController<
       id: snapId,
       initialPermissions,
       manifest,
-      permissionName: SNAP_PREFIX + snapId, // so we can easily correlate them
+      permissionName: getSnapPermissionName(snapId), // so we can easily correlate them
       sourceCode,
       status: snapStatusStateMachineConfig.initial,
       version,

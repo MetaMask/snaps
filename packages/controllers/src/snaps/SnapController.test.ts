@@ -919,7 +919,7 @@ describe('SnapController', () => {
       [FAKE_SNAP_ID]: { error: serializeError(new Error('foo')) },
     });
 
-    expect(messengerCallMock).toHaveBeenCalledTimes(2);
+    expect(messengerCallMock).toHaveBeenCalledTimes(3);
     expect(messengerCallMock).toHaveBeenNthCalledWith(
       1,
       'PermissionController:hasPermission',

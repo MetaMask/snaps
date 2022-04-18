@@ -27,7 +27,7 @@
     "publish": "../../scripts/publish-package.sh"
   },
   "dependencies": {
-    "@metamask/controllers": "^26.0.0"
+    "@metamask/controllers": "^28.0.0"
   },
   "devDependencies": {
     "@metamask/providers": "^8.1.1"
