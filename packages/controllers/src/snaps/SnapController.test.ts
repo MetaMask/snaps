@@ -2228,7 +2228,10 @@ describe('SnapController', () => {
 
       const clearSnapStateSpy = jest.spyOn(snapController, 'clearSnapState');
       await messenger.call('SnapController:clearSnapState', FAKE_SNAP_ID);
-      const clearedState = await messenger.call('SnapController:getSnapState', FAKE_SNAP_ID);
+      const clearedState = await messenger.call(
+        'SnapController:getSnapState',
+        FAKE_SNAP_ID,
+      );
       expect(clearSnapStateSpy).toHaveBeenCalledTimes(1);
       expect(snapController.state.snapStates).toStrictEqual({});
       expect(clearedState).toBeNull();
