@@ -216,7 +216,7 @@ type StoredSnaps = Record<SnapId, Snap>;
 
 export type SnapControllerState = {
   snaps: StoredSnaps;
-  snapStates: Partial<Record<SnapId, string>>;
+  snapStates: Record<SnapId, string>;
   snapErrors: {
     [internalID: string]: SnapError & { internalID: string };
   };
