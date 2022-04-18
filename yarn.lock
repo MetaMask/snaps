@@ -5706,6 +5706,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/browser-passworder@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@metamask/browser-passworder@npm:3.0.0"
+  checksum: 2eccb399341b377b60b544bce758a597c77518983ef13bed50ca795e0053ab883570de884fcba8782a1edc8541b0e03d1124b4097e0bad5d70544e28e320685c
+  languageName: node
+  linkType: hard
+
 "@metamask/contract-metadata@npm:^1.33.0":
   version: 1.33.0
   resolution: "@metamask/contract-metadata@npm:1.33.0"
@@ -6030,6 +6037,7 @@ __metadata:
     "@json-schema-tools/transpiler": ^1.10.2
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
+    "@metamask/browser-passworder": ^3.0.0
     "@metamask/controllers": ^29.0.1
     "@metamask/eslint-config": ^8.0.0
     "@metamask/eslint-config-jest": ^8.0.0
