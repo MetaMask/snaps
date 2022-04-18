@@ -939,7 +939,7 @@ export class SnapController extends BaseController<
    * @param newSnapState - The new state of the snap.
    */
   async updateSnapState(snapId: SnapId, newSnapState: Json): Promise<void> {
-    const encrypted = await this._encryptSnapState(snapId, newSnapState);
+    const encrypted = await this.encryptSnapState(snapId, newSnapState);
     this.update((state: any) => {
       state.snapStates[snapId] = encrypted;
     });
@@ -1001,16 +1001,23 @@ export class SnapController extends BaseController<
    */
   async getSnapState(snapId: SnapId): Promise<Json> {
     const state = this.state.snapStates[snapId];
-    return state ? this._decryptSnapState(snapId, state) : null;
+    return state ? this.decryptSnapState(snapId, state) : null;
   }
 
-  async _encryptSnapState(snapId: SnapId, state: Json): Promise<string> {
-    const appKey = await this._getAppKey(snapId);
+  private async getEncryptionKey(snapId: SnapId): Promise<string> {
+    return this._getAppKey(`${snapId}_encryption`);
+  }
+
+  private async encryptSnapState(snapId: SnapId, state: Json): Promise<string> {
+    const appKey = await this.getEncryptionKey(snapId);
     return passworder.encrypt(appKey, state);
   }
 
-  async _decryptSnapState(snapId: SnapId, encrypted: string): Promise<Json> {
-    const appKey = await this._getAppKey(snapId);
+  private async decryptSnapState(
+    snapId: SnapId,
+    encrypted: string,
+  ): Promise<Json> {
+    const appKey = await this.getEncryptionKey(snapId);
     return passworder.decrypt(appKey, encrypted);
   }
 
