@@ -105,6 +105,7 @@ const getSnapControllerOptions = (
     requestPermissions: jest.fn(),
     closeAllConnections: jest.fn(),
     messenger: getSnapControllerMessenger(),
+    featureFlags: { dappsCanUpdateSnaps: true },
     state: undefined,
     ...opts,
   } as SnapControllerConstructorParams;

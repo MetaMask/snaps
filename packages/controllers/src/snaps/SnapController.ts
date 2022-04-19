@@ -345,6 +345,16 @@ type SnapControllerMessenger = RestrictedControllerMessenger<
   AllowedEvents['type']
 >;
 
+type FeatureFlags = {
+  /**
+   * We still need to implement new UI approval page in metamask-extension before we can allow DApps to update Snaps.
+   * After it's added, this flag can be removed.
+   * @see {SNAP_APPROVAL_UPDATE}
+   * @see {SnapController.processRequestedSnap}
+   */
+  dappsCanUpdateSnaps?: true;
+};
+
 type SnapControllerArgs = {
   closeAllConnections: CloseAllConnectionsFunction;
   endowmentPermissionNames: string[];
@@ -359,6 +369,7 @@ type SnapControllerArgs = {
   maxRequestTime?: number;
   npmRegistryUrl?: string;
   fetchFunction?: typeof fetch;
+  featureFlags: FeatureFlags;
 };
 
 type AddSnapBase = {
@@ -487,6 +498,8 @@ export class SnapController extends BaseController<
 
   private _fetchFunction: typeof fetch;
 
+  private featureFlags: FeatureFlags;
+
   constructor({
     closeAllConnections,
     executeSnap,
@@ -501,6 +514,7 @@ export class SnapController extends BaseController<
     maxIdleTime = 30000,
     maxRequestTime = 60000,
     fetchFunction = fetch,
+    featureFlags = {},
   }: SnapControllerArgs) {
     super({
       messenger,
@@ -551,6 +565,7 @@ export class SnapController extends BaseController<
     this._snapsRuntimeData = new Map();
     this._npmRegistryUrl = npmRegistryUrl;
     this._fetchFunction = fetchFunction;
+    this.featureFlags = featureFlags;
 
     this.messagingSystem.subscribe(
       'ExecutionService:unhandledError',
@@ -1087,22 +1102,30 @@ export class SnapController extends BaseController<
         return existingSnap;
       }
 
-      try {
-        const updateResult = await this.updateSnap(
-          origin,
-          snapId,
-          versionRange,
-        );
-        if (updateResult === null) {
-          return {
-            error: ethErrors.rpc.invalidParams(
-              `Snap "${snapId}@${existingSnap.version}" is already installed, couldn't update to a version inside requested "${versionRange}" range.`,
-            ),
-          };
+      if (this.featureFlags.dappsCanUpdateSnaps === true) {
+        try {
+          const updateResult = await this.updateSnap(
+            origin,
+            snapId,
+            versionRange,
+          );
+          if (updateResult === null) {
+            return {
+              error: ethErrors.rpc.invalidParams(
+                `Snap "${snapId}@${existingSnap.version}" is already installed, couldn't update to a version inside requested "${versionRange}" range.`,
+              ),
+            };
+          }
+          return updateResult;
+        } catch (err) {
+          return { error: serializeError(err) };
         }
-        return updateResult;
-      } catch (err) {
-        return { error: serializeError(err) };
+      } else {
+        return {
+          error: ethErrors.rpc.invalidParams(
+            `Version mismatch with already installed snap. ${snapId}@${existingSnap.version} doesn't satisfy requested version ${versionRange}`,
+          ),
+        };
       }
     }
 
