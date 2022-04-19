@@ -1,14 +1,19 @@
 import {
+  AddApprovalRequest,
   BaseControllerV2 as BaseController,
+  Caveat,
   GetEndowments,
   GetPermissions,
+  GrantPermissions,
   HasPermission,
   HasPermissions,
   RequestPermissions,
   RestrictedControllerMessenger,
   RevokeAllPermissions,
-  RevokePermissions,
   RevokePermissionForAllSubjects,
+  RevokePermissions,
+  SubjectPermissions,
+  ValidPermission,
 } from '@metamask/controllers';
 import {
   ErrorJSON,
@@ -33,9 +38,11 @@ import {
 import { isNonEmptyArray, setDiff, timeSince } from '../utils';
 import { DEFAULT_ENDOWMENTS } from './default-endowments';
 import { SnapManifest, validateSnapJsonFile } from './json-schemas';
+import { RequestQueue } from './RequestQueue';
 import {
   DEFAULT_REQUESTED_SNAP_VERSION,
   fetchNpmSnap,
+  getSnapPermissionName,
   getSnapPrefix,
   isValidSnapVersionRange,
   LOCALHOST_HOSTNAMES,
@@ -46,12 +53,12 @@ import {
   ValidatedSnapId,
   validateSnapShasum,
 } from './utils';
-import { RequestQueue } from './RequestQueue';
-import { getSnapPermissionName } from '.';
 
 export const controllerName = 'SnapController';
 
 export const SNAP_PREFIX_REGEX = new RegExp(`^${SNAP_PREFIX}`, 'u');
+
+export const SNAP_APPROVAL_UPDATE = 'wallet_updateSnap';
 
 type TruncatedSnapFields =
   | 'id'
@@ -323,7 +330,10 @@ export type AllowedActions =
   | RevokePermissions
   | RequestPermissions
   | RevokeAllPermissions
-  | RevokePermissionForAllSubjects;
+  | RevokePermissionForAllSubjects
+  | GrantPermissions
+  | RequestPermissions
+  | AddApprovalRequest;
 
 export type AllowedEvents = ErrorMessageEvent | UnresponsiveMessageEvent;
 
@@ -334,6 +344,16 @@ type SnapControllerMessenger = RestrictedControllerMessenger<
   AllowedActions['type'],
   AllowedEvents['type']
 >;
+
+type FeatureFlags = {
+  /**
+   * We still need to implement new UI approval page in metamask-extension before we can allow DApps to update Snaps.
+   * After it's added, this flag can be removed.
+   * @see {SNAP_APPROVAL_UPDATE}
+   * @see {SnapController.processRequestedSnap}
+   */
+  dappsCanUpdateSnaps?: true;
+};
 
 type SnapControllerArgs = {
   closeAllConnections: CloseAllConnectionsFunction;
@@ -349,6 +369,7 @@ type SnapControllerArgs = {
   maxRequestTime?: number;
   npmRegistryUrl?: string;
   fetchFunction?: typeof fetch;
+  featureFlags: FeatureFlags;
 };
 
 type AddSnapBase = {
@@ -477,6 +498,8 @@ export class SnapController extends BaseController<
 
   private _fetchFunction: typeof fetch;
 
+  private _featureFlags: FeatureFlags;
+
   constructor({
     closeAllConnections,
     executeSnap,
@@ -491,6 +514,7 @@ export class SnapController extends BaseController<
     maxIdleTime = 30000,
     maxRequestTime = 60000,
     fetchFunction = fetch,
+    featureFlags = {},
   }: SnapControllerArgs) {
     super({
       messenger,
@@ -541,6 +565,7 @@ export class SnapController extends BaseController<
     this._snapsRuntimeData = new Map();
     this._npmRegistryUrl = npmRegistryUrl;
     this._fetchFunction = fetchFunction;
+    this._featureFlags = featureFlags;
 
     this.messagingSystem.subscribe(
       'ExecutionService:unhandledError',
@@ -1050,26 +1075,58 @@ export class SnapController extends BaseController<
    * Results from this method should be efficiently serializable.
    *
    * @param origin - The origin requesting the snap.
-   * @param snapId - The id of the snap.
-   * @param version - The version of the snap to install.
+   * @param _snapId - The id of the snap.
+   * @param versionRange - The semver range of the snap to install.
    * @returns The resulting snap object, or an error if something went wrong.
    */
   private async processRequestedSnap(
     origin: string,
-    snapId: SnapId,
-    version: string,
+    _snapId: SnapId,
+    versionRange: string,
   ): Promise<ProcessSnapResult> {
-    const existingSnap = this.getTruncated(snapId);
-    // For devX we always re-install local snaps.
-    if (existingSnap && !snapId.startsWith(SnapIdPrefixes.local)) {
-      if (satisfiesSemver(existingSnap.version, version)) {
-        return existingSnap;
-      }
+    try {
+      this.validateSnapId(_snapId);
+    } catch (err) {
       return {
         error: ethErrors.rpc.invalidParams(
-          `Version mismatch with already installed snap. ${snapId}@${existingSnap.version} doesn't satisfy requested version ${version}`,
+          `"${_snapId}" is not a valid snap id.`,
         ),
       };
+    }
+    const snapId = _snapId as ValidatedSnapId;
+
+    const existingSnap = this.getTruncated(snapId);
+    // For devX we always re-install local snaps.
+    if (existingSnap && getSnapPrefix(snapId) !== SnapIdPrefixes.local) {
+      if (satisfiesSemver(existingSnap.version, versionRange)) {
+        return existingSnap;
+      }
+
+      if (this._featureFlags.dappsCanUpdateSnaps === true) {
+        try {
+          const updateResult = await this.updateSnap(
+            origin,
+            snapId,
+            versionRange,
+          );
+          if (updateResult === null) {
+            return {
+              error: ethErrors.rpc.invalidParams(
+                `Snap "${snapId}@${existingSnap.version}" is already installed, couldn't update to a version inside requested "${versionRange}" range.`,
+              ),
+            };
+          }
+          return updateResult;
+        } catch (err) {
+          return { error: serializeError(err) };
+        }
+      } else {
+        return {
+          error: ethErrors.rpc.invalidParams(
+            `Version mismatch with already installed snap. ${snapId}@${existingSnap.version} doesn't satisfy requested version ${versionRange}`,
+          ),
+        };
+      }
     }
 
     // Existing snaps must be stopped before overwriting
@@ -1081,7 +1138,7 @@ export class SnapController extends BaseController<
       const { sourceCode } = await this.add({
         origin,
         id: snapId,
-        versionRange: version,
+        versionRange,
       });
 
       await this.authorize(snapId);
@@ -1104,7 +1161,7 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Updates, re-authorizes and then restarts given snap.
+   * Ask a user for approval, updates, re-authorizes and then restarts given snap.
    *
    * @param snapId The id of the Snap to be updated
    * @param newVersionRange A semver version range in which the maximum version will be chosen
@@ -1136,6 +1193,30 @@ export class SnapController extends BaseController<
       return null;
     }
 
+    const { newPermissions, unusedPermissions, approvedPermissions } =
+      await this.calculatePermissionsChange(
+        snapId,
+        newSnap.manifest.initialPermissions,
+      );
+
+    const isApproved = await this.messagingSystem.call(
+      'ApprovalController:addRequest',
+      {
+        origin,
+        type: SNAP_APPROVAL_UPDATE,
+        requestData: {
+          snapId,
+          newVersion: newSnap.manifest.version,
+          newPermissions,
+          approvedPermissions,
+        },
+      },
+      true,
+    );
+    if (!isApproved) {
+      return null;
+    }
+
     if (this.isRunning(snapId)) {
       this.stopSnap(snapId, SnapStatusEvent.stop);
     }
@@ -1150,7 +1231,19 @@ export class SnapController extends BaseController<
       versionRange: newVersionRange,
     });
 
-    await this.authorize(snapId);
+    const unusedPermissionsKeys = Object.keys(unusedPermissions);
+    if (isNonEmptyArray(unusedPermissionsKeys)) {
+      this.messagingSystem.call('PermissionController:revokePermissions', {
+        [snapId]: unusedPermissionsKeys,
+      });
+    }
+
+    if (isNonEmptyArray(Object.keys(newPermissions))) {
+      this.messagingSystem.call('PermissionController:grantPermissions', {
+        approvedPermissions: newPermissions,
+        subject: { origin: snapId },
+      });
+    }
 
     await this._startSnap({ snapId, sourceCode: newSnap.sourceCode });
 
@@ -1497,38 +1590,17 @@ export class SnapController extends BaseController<
     const snap = snapsState[snapId];
     const { initialPermissions } = snap;
 
-    // Don't prompt if there are no permissions requested:
-    if (Object.keys(initialPermissions).length === 0) {
-      return [];
-    }
-
-    if (initialPermissions === null) {
-      return [];
-    }
-
     try {
       // If we are re-authorizing after updating a snap, we revoke all unused permissions,
       // and only ask to authorize the new ones.
-      const alreadyApprovedPermissions = await this.messagingSystem.call(
-        'PermissionController:getPermissions',
-        snapId,
-      );
+      const { newPermissions, unusedPermissions } =
+        await this.calculatePermissionsChange(snapId, initialPermissions);
+      const unusedPermissionsKeys = Object.keys(unusedPermissions);
 
-      const newPermissions = setDiff(
-        initialPermissions,
-        alreadyApprovedPermissions ?? {},
-      );
-      // TODO(ritave): The assumption that these are unused only holds so long as we do not
-      //               permit dynamic permission requests.
-      const unusedPermissions = Object.keys(
-        setDiff(alreadyApprovedPermissions ?? {}, initialPermissions),
-      );
-
-      if (isNonEmptyArray(unusedPermissions)) {
-        await this.messagingSystem.call(
-          'PermissionController:revokePermissions',
-          { [origin]: unusedPermissions },
-        );
+      if (isNonEmptyArray(unusedPermissionsKeys)) {
+        this.messagingSystem.call('PermissionController:revokePermissions', {
+          [snapId]: unusedPermissionsKeys,
+        });
       }
 
       if (isNonEmptyArray(Object.keys(newPermissions))) {
@@ -1689,5 +1761,35 @@ export class SnapController extends BaseController<
       });
     }
     return this._snapsRuntimeData.get(snapId) as SnapRuntimeData;
+  }
+
+  private async calculatePermissionsChange(
+    snapId: SnapId,
+    desiredPermissionsSet: RequestedSnapPermissions,
+  ): Promise<{
+    newPermissions: RequestedSnapPermissions;
+    unusedPermissions: SubjectPermissions<
+      ValidPermission<string, Caveat<string, any>>
+    >;
+    approvedPermissions: SubjectPermissions<
+      ValidPermission<string, Caveat<string, any>>
+    >;
+  }> {
+    const oldPermissions =
+      (await this.messagingSystem.call(
+        'PermissionController:getPermissions',
+        snapId,
+      )) ?? {};
+
+    const newPermissions = setDiff(desiredPermissionsSet, oldPermissions);
+    // TODO(ritave): The assumption that these are unused only holds so long as we do not
+    //               permit dynamic permission requests.
+    const unusedPermissions = setDiff(oldPermissions, desiredPermissionsSet);
+
+    // It's a Set Intersection of oldPermissions and desiredPermissionsSet
+    // oldPermissions ∖ (oldPermissions ∖ desiredPermissionsSet) ⟺ oldPermissions ∩ desiredPermissionsSet
+    const approvedPermissions = setDiff(oldPermissions, unusedPermissions);
+
+    return { newPermissions, unusedPermissions, approvedPermissions };
   }
 }
