@@ -498,7 +498,7 @@ export class SnapController extends BaseController<
 
   private _fetchFunction: typeof fetch;
 
-  private featureFlags: FeatureFlags;
+  private _featureFlags: FeatureFlags;
 
   constructor({
     closeAllConnections,
@@ -565,7 +565,7 @@ export class SnapController extends BaseController<
     this._snapsRuntimeData = new Map();
     this._npmRegistryUrl = npmRegistryUrl;
     this._fetchFunction = fetchFunction;
-    this.featureFlags = featureFlags;
+    this._featureFlags = featureFlags;
 
     this.messagingSystem.subscribe(
       'ExecutionService:unhandledError',
@@ -1102,7 +1102,7 @@ export class SnapController extends BaseController<
         return existingSnap;
       }
 
-      if (this.featureFlags.dappsCanUpdateSnaps === true) {
+      if (this._featureFlags.dappsCanUpdateSnaps === true) {
         try {
           const updateResult = await this.updateSnap(
             origin,
