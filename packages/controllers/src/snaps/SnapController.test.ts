@@ -2235,7 +2235,7 @@ describe('SnapController', () => {
                 status: SnapStatus.installing,
               }),
             },
-            
+
           },
         }),
       );
@@ -2262,6 +2262,34 @@ describe('SnapController', () => {
         'npm:fooSnap': await passworder.encrypt('npm:fooSnap_encryption', state),
         'npm:fooSnap2': await passworder.encrypt('npm:fooSnap2_encryption', state),
       });
+    });
+
+    it('should throw our custom error message in case decryption fails', async () => {
+      const executeSnapMock = jest.fn();
+      const messenger = getSnapControllerMessenger(undefined, false);
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          executeSnap: executeSnapMock,
+          messenger,
+          state: {
+            snapErrors: {},
+            snapStates: { [FAKE_SNAP_ID]: 'foo' },
+            snaps: {
+              [FAKE_SNAP_ID]: getSnapObject({
+                status: SnapStatus.installing,
+              }),
+            },
+          },
+        }),
+      );
+
+      const getSnapStateSpy = jest.spyOn(snapController, 'getSnapState');
+      expect(messenger.call(
+        'SnapController:getSnapState',
+        FAKE_SNAP_ID,
+      )).rejects.toThrow('Failed to decrypt snap state, the state must be corrupted.');
+      expect(getSnapStateSpy).toHaveBeenCalledTimes(1);
     });
 
     it('action: SnapController:clearSnapState', async () => {
