@@ -2206,7 +2206,7 @@ describe('SnapController', () => {
 
     it('should have different encryption for the same data stored by two different snaps', async () => {
       const executeSnapMock = jest.fn();
-      const messenger = getSnapControllerMessenger();
+      const messenger = getSnapControllerMessenger(undefined, false);
 
       const snapController = getSnapController(
         getSnapControllerOptions({
