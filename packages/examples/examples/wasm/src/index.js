@@ -1,4 +1,4 @@
-const { readFileSync } = require('fs');
+const fs = require('fs');
 const { ethErrors } = require('eth-rpc-errors');
 
 // Ref:
@@ -10,7 +10,7 @@ let wasm;
 const initializeWasm = async () => {
   try {
     const wasmBuffer = arrayBufferFromHex(
-      readFileSync('../build/program.wasm', 'utf8').toString('hex'),
+      fs.readFileSync(__dirname + '/../build/program.wasm').toString('hex'),
     );
     wasm = await WebAssembly.instantiate(wasmBuffer);
   } catch (error) {

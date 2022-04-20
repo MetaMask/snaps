@@ -1,4 +1,4 @@
-const brfs = require('brfs');
+// const brfs = require('brfs');
 
 module.exports = {
   cliOptions: {
@@ -6,6 +6,6 @@ module.exports = {
     transpilationMode: 'localOnly',
   },
   bundlerCustomizer: (bundler) => {
-    bundler.transform(brfs);
+    bundler.transform('brfs');
   },
 };
