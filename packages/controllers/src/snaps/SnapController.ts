@@ -155,8 +155,8 @@ export interface SnapRuntimeData {
    * RPC handler designated for the Snap
    */
   rpcHandler:
-    | null
-    | ((origin: string, request: Record<string, unknown>) => Promise<unknown>);
+  | null
+  | ((origin: string, request: Record<string, unknown>) => Promise<unknown>);
 }
 
 /**
@@ -826,14 +826,14 @@ export class SnapController extends BaseController<
 
     return snap
       ? (Object.keys(snap).reduce((serialized, key) => {
-          if (TRUNCATED_SNAP_PROPERTIES.has(key as any)) {
-            serialized[key as keyof TruncatedSnap] = snap[
-              key as keyof TruncatedSnap
-            ] as any;
-          }
+        if (TRUNCATED_SNAP_PROPERTIES.has(key as any)) {
+          serialized[key as keyof TruncatedSnap] = snap[
+            key as keyof TruncatedSnap
+          ] as any;
+        }
 
-          return serialized;
-        }, {} as Partial<TruncatedSnap>) as TruncatedSnap)
+        return serialized;
+      }, {} as Partial<TruncatedSnap>) as TruncatedSnap)
       : null;
   }
 
@@ -1316,10 +1316,11 @@ export class SnapController extends BaseController<
       throw new Error(`Snap "${snapId}" is already started.`);
     }
 
-    const result = await this._executeSnap({
+    const promise = this._executeSnap({
       ...snapData,
       endowments: await this._getEndowments(snapId),
     });
+    const result = await this._executeWithTimeout(snapId, promise);
     this._transitionSnapState(snapId, SnapStatusEvent.start);
     return result;
   }
@@ -1565,11 +1566,11 @@ export class SnapController extends BaseController<
       ).text(),
       iconPath
         ? (
-            await this._fetchFunction(
-              new URL(iconPath, localhostUrl).toString(),
-              fetchOptions,
-            )
-          ).text()
+          await this._fetchFunction(
+            new URL(iconPath, localhostUrl).toString(),
+            fetchOptions,
+          )
+        ).text()
         : undefined,
     ]);
 
@@ -1723,28 +1724,33 @@ export class SnapController extends BaseController<
 
       this._recordSnapRpcRequest(snapId);
 
-      // Handle max request time
-      let timeout: number | undefined;
-
-      const timeoutPromise = new Promise((_resolve, reject) => {
-        timeout = setTimeout(() => {
-          this.stopSnap(snapId, SnapStatusEvent.stop);
-          reject(new Error('The request timed out.'));
-        }, this._maxRequestTime) as unknown as number;
-      });
-
       // This will either get the result or reject due to the timeout.
-      const result = await Promise.race([
-        handler(origin, _request),
-        timeoutPromise,
-      ]);
-
-      clearTimeout(timeout);
-      return result;
+      return this._executeWithTimeout(snapId, handler(origin, _request))
     };
 
     runtime.rpcHandler = rpcHandler;
     return rpcHandler;
+  }
+
+  private async _executeWithTimeout(snapId: SnapId, promise: Promise<unknown>) {
+    // Handle max request time
+    let timeout: number | undefined;
+
+    const timeoutPromise = new Promise((_resolve, reject) => {
+      timeout = setTimeout(() => {
+        this.stopSnap(snapId, SnapStatusEvent.stop);
+        reject(new Error('The request timed out.'));
+      }, this._maxRequestTime) as unknown as number;
+    });
+
+    // This will either get the result or reject due to the timeout.
+    const result = await Promise.race([
+      promise,
+      timeoutPromise,
+    ]);
+
+    clearTimeout(timeout);
+    return result;
   }
 
   private _recordSnapRpcRequest(snapId: SnapId) {

@@ -1022,8 +1022,7 @@ describe('SnapController', () => {
     const [snapController] = getSnapControllerWithEES(
       getSnapControllerWithEESOptions({
         idleTimeCheckInterval: 30000,
-        maxIdleTime: 160000,
-        maxRequestTime: 50,
+        maxIdleTime: 160000
       }),
     );
 
@@ -1050,6 +1049,8 @@ describe('SnapController', () => {
     await snapController.startSnap(snap.id);
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
 
+    (snapController as any)._maxRequestTime = 50;
+
     await expect(
       handler('foo.com', {
         jsonrpc: '2.0',
@@ -1059,6 +1060,30 @@ describe('SnapController', () => {
       }),
     ).rejects.toThrow(/request timed out/u);
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
+
+    snapController.destroy();
+  });
+
+  it('should time out on stuck starting snap', async () => {
+    const executeSnap = jest.fn()
+    const snapController = getSnapController(getSnapControllerOptions({ executeSnap, maxRequestTime: 50 }));
+
+    const snap = await snapController.add({
+      origin: FAKE_ORIGIN,
+      id: FAKE_SNAP_ID,
+      sourceCode: FAKE_SNAP_SOURCE_CODE,
+      manifest: FAKE_SNAP_MANIFEST,
+    });
+
+    executeSnap.mockImplementation(() => {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(undefined);
+        }, 300);
+      });
+    })
+
+    await expect(snapController.startSnap(snap.id)).rejects.toThrow(/request timed out/u);;
 
     snapController.destroy();
   });
