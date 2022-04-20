@@ -1,5 +1,5 @@
+const { readFileSync } = require('fs');
 const { ethErrors } = require('eth-rpc-errors');
-const { PROGRAM_WASM_HEX } = require('../build');
 
 // Ref:
 // - https://developer.mozilla.org/en-US/docs/WebAssembly/Using_the_JavaScript_API
@@ -9,7 +9,9 @@ let wasm;
 
 const initializeWasm = async () => {
   try {
-    const wasmBuffer = arrayBufferFromHex(PROGRAM_WASM_HEX);
+    const wasmBuffer = arrayBufferFromHex(
+      readFileSync('../build/program.wasm', 'utf8').toString('hex'),
+    );
     wasm = await WebAssembly.instantiate(wasmBuffer);
   } catch (error) {
     console.error('Failed to initialize WebAssembly module.', error);
