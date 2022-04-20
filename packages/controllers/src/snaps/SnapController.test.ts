@@ -1022,7 +1022,7 @@ describe('SnapController', () => {
     const [snapController] = getSnapControllerWithEES(
       getSnapControllerWithEESOptions({
         idleTimeCheckInterval: 30000,
-        maxIdleTime: 160000
+        maxIdleTime: 160000,
       }),
     );
 
@@ -1065,8 +1065,10 @@ describe('SnapController', () => {
   });
 
   it('should time out on stuck starting snap', async () => {
-    const executeSnap = jest.fn()
-    const snapController = getSnapController(getSnapControllerOptions({ executeSnap, maxRequestTime: 50 }));
+    const executeSnap = jest.fn();
+    const snapController = getSnapController(
+      getSnapControllerOptions({ executeSnap, maxRequestTime: 50 }),
+    );
 
     const snap = await snapController.add({
       origin: FAKE_ORIGIN,
@@ -1081,9 +1083,11 @@ describe('SnapController', () => {
           resolve(undefined);
         }, 300);
       });
-    })
+    });
 
-    await expect(snapController.startSnap(snap.id)).rejects.toThrow(/request timed out/u);;
+    await expect(snapController.startSnap(snap.id)).rejects.toThrow(
+      /request timed out/u,
+    );
 
     snapController.destroy();
   });
