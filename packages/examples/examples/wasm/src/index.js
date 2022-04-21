@@ -1,5 +1,7 @@
+// Due to a bug of how brfs interacts with babel, we need to use require() syntax instead of import pattern
+// https://github.com/browserify/brfs/issues/39
+const fs = require('fs');
 const { ethErrors } = require('eth-rpc-errors');
-const { PROGRAM_WASM_HEX } = require('../build');
 
 // Ref:
 // - https://developer.mozilla.org/en-US/docs/WebAssembly/Using_the_JavaScript_API
@@ -9,7 +11,11 @@ let wasm;
 
 const initializeWasm = async () => {
   try {
-    const wasmBuffer = arrayBufferFromHex(PROGRAM_WASM_HEX);
+    // This will be resolved to a buffer with the file contents at build time.
+    // The path to the file must be in a string literal prefixed with __dirname
+    // in order for brfs to resolve the file correctly.
+    // eslint-disable-next-line node/no-sync, node/no-path-concat
+    const wasmBuffer = fs.readFileSync(`${__dirname}/../build/program.wasm`);
     wasm = await WebAssembly.instantiate(wasmBuffer);
   } catch (error) {
     console.error('Failed to initialize WebAssembly module.', error);
@@ -27,13 +33,3 @@ wallet.registerRpcMessageHandler(async (_originString, requestObject) => {
   }
   throw ethErrors.rpc.methodNotFound({ data: { request: requestObject } });
 });
-
-// kudos: https://stackoverflow.com/a/71083193
-function arrayBufferFromHex(hexString) {
-  return new Uint8Array(
-    hexString
-      .replace(/^0x/iu, '')
-      .match(/../gu)
-      .map((byte) => parseInt(byte, 16)),
-  ).buffer;
-}
