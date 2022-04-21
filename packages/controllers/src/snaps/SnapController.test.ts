@@ -1023,6 +1023,7 @@ describe('SnapController', () => {
       getSnapControllerWithEESOptions({
         idleTimeCheckInterval: 30000,
         maxIdleTime: 160000,
+        // Note that we are using the default maxRequestTime
       }),
     );
 
@@ -1049,6 +1050,7 @@ describe('SnapController', () => {
     await snapController.startSnap(snap.id);
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
 
+    // We set the maxRequestTime to a low enough value for it to time out
     (snapController as any)._maxRequestTime = 50;
 
     await expect(
