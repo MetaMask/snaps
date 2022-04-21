@@ -155,8 +155,8 @@ export interface SnapRuntimeData {
    * RPC handler designated for the Snap
    */
   rpcHandler:
-    | null
-    | ((origin: string, request: Record<string, unknown>) => Promise<unknown>);
+  | null
+  | ((origin: string, request: Record<string, unknown>) => Promise<unknown>);
 }
 
 /**
@@ -366,7 +366,8 @@ type SnapControllerArgs = {
   terminateSnap: TerminateSnap;
   idleTimeCheckInterval?: number;
   maxIdleTime?: number;
-  maxRequestTime?: number;
+  defaultRequestTimeout?: number;
+  maxRequestTimeout?: number;
   npmRegistryUrl?: string;
   fetchFunction?: typeof fetch;
   featureFlags: FeatureFlags;
@@ -484,7 +485,8 @@ export class SnapController extends BaseController<
 
   private _maxIdleTime: number;
 
-  private _maxRequestTime: number;
+  private _defaultRequestTimeout: number;
+  private _maxRequestTimeout: number;
 
   private _snapsRuntimeData: Map<SnapId, SnapRuntimeData>;
 
@@ -512,7 +514,8 @@ export class SnapController extends BaseController<
     npmRegistryUrl,
     idleTimeCheckInterval = 5000,
     maxIdleTime = 30000,
-    maxRequestTime = 60000,
+    defaultRequestTimeout = 60000,
+    maxRequestTimeout = 600000,
     fetchFunction = fetch,
     featureFlags = {},
   }: SnapControllerArgs) {
@@ -560,7 +563,8 @@ export class SnapController extends BaseController<
 
     this._idleTimeCheckInterval = idleTimeCheckInterval;
     this._maxIdleTime = maxIdleTime;
-    this._maxRequestTime = maxRequestTime;
+    this._defaultRequestTimeout = defaultRequestTimeout;
+    this._maxRequestTimeout = maxRequestTimeout;
     this._pollForLastRequestStatus();
     this._snapsRuntimeData = new Map();
     this._npmRegistryUrl = npmRegistryUrl;
@@ -826,14 +830,14 @@ export class SnapController extends BaseController<
 
     return snap
       ? (Object.keys(snap).reduce((serialized, key) => {
-          if (TRUNCATED_SNAP_PROPERTIES.has(key as any)) {
-            serialized[key as keyof TruncatedSnap] = snap[
-              key as keyof TruncatedSnap
-            ] as any;
-          }
+        if (TRUNCATED_SNAP_PROPERTIES.has(key as any)) {
+          serialized[key as keyof TruncatedSnap] = snap[
+            key as keyof TruncatedSnap
+          ] as any;
+        }
 
-          return serialized;
-        }, {} as Partial<TruncatedSnap>) as TruncatedSnap)
+        return serialized;
+      }, {} as Partial<TruncatedSnap>) as TruncatedSnap)
       : null;
   }
 
@@ -1565,11 +1569,11 @@ export class SnapController extends BaseController<
       ).text(),
       iconPath
         ? (
-            await this._fetchFunction(
-              new URL(iconPath, localhostUrl).toString(),
-              fetchOptions,
-            )
-          ).text()
+          await this._fetchFunction(
+            new URL(iconPath, localhostUrl).toString(),
+            fetchOptions,
+          )
+        ).text()
         : undefined,
     ]);
 
@@ -1663,11 +1667,13 @@ export class SnapController extends BaseController<
       origin: string,
       request: Record<string, unknown>,
     ) => {
-      if (this.state.snaps[snapId].enabled === false) {
+      const snap = this.get(snapId)!;
+
+      if (snap.enabled === false) {
         throw new Error(`Snap "${snapId}" is disabled.`);
       }
 
-      if (this.state.snaps[snapId].status === SnapStatus.installing) {
+      if (snap.status === SnapStatus.installing) {
         throw new Error(
           `Snap "${snapId}" is currently being installed. Please try again later.`,
         );
@@ -1723,6 +1729,8 @@ export class SnapController extends BaseController<
 
       this._recordSnapRpcRequest(snapId);
 
+      const requestTimeout = Math.min(snap.manifest.requestTimeout ?? this._defaultRequestTimeout, this._maxRequestTimeout);
+
       // Handle max request time
       let timeout: number | undefined;
 
@@ -1730,7 +1738,7 @@ export class SnapController extends BaseController<
         timeout = setTimeout(() => {
           this.stopSnap(snapId, SnapStatusEvent.stop);
           reject(new Error('The request timed out.'));
-        }, this._maxRequestTime) as unknown as number;
+        }, requestTimeout) as unknown as number;
       });
 
       // This will either get the result or reject due to the timeout.

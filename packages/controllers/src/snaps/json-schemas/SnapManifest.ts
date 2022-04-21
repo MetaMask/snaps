@@ -103,4 +103,5 @@ export type SnapManifest = {
   source: Source;
   initialPermissions: InitialPermissions;
   manifestVersion: ManifestVersion;
+  requestTimeout?: number;
 }
