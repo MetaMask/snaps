@@ -109,15 +109,13 @@ export abstract class AbstractExecutionService<JobType extends Job>
     this._terminate(jobWrapper);
 
     const snapId = this.jobToSnapMap.get(jobId);
-    if (!snapId) {
-      throw new Error(`Failed to find a snap for job with id "${jobId}"`);
+    if (snapId) {
+      clearTimeout(this._timeoutForUnresponsiveMap.get(snapId));
+      this._timeoutForUnresponsiveMap.delete(snapId);
+      this._removeSnapAndJobMapping(jobId);
+      this.jobs.delete(jobId);
+      console.log(`job: "${jobId}" terminated`);
     }
-
-    clearTimeout(this._timeoutForUnresponsiveMap.get(snapId));
-    this._timeoutForUnresponsiveMap.delete(snapId);
-    this._removeSnapAndJobMapping(jobId);
-    this.jobs.delete(jobId);
-    console.log(`job: "${jobId}" terminated`);
   }
 
   protected abstract _initJob(): Promise<JobType>;

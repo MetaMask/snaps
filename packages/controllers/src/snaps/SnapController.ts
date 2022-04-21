@@ -1328,7 +1328,7 @@ export class SnapController extends BaseController<
       return result;
     } catch (err) {
       await this._terminateSnap(snapId);
-      return null;
+      throw err;
     }
   }
 
