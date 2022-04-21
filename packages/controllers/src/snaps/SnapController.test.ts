@@ -951,7 +951,7 @@ describe('SnapController', () => {
     const [snapController] = getSnapControllerWithEES(
       getSnapControllerWithEESOptions({
         idleTimeCheckInterval: 1000,
-        maxRequestTime: 2000,
+        defaultRequestTimeout: 2000,
         maxIdleTime: 2000,
       }),
     );
@@ -1023,7 +1023,7 @@ describe('SnapController', () => {
       getSnapControllerWithEESOptions({
         idleTimeCheckInterval: 30000,
         maxIdleTime: 160000,
-        maxRequestTime: 50,
+        defaultRequestTimeout: 50,
       }),
     );
 
@@ -1071,7 +1071,7 @@ describe('SnapController', () => {
         messenger,
         idleTimeCheckInterval: 30000,
         maxIdleTime: 160000,
-        maxRequestTime: 1000,
+        defaultRequestTimeout: 1000,
       }),
     );
 
@@ -1122,11 +1122,11 @@ describe('SnapController', () => {
         getSnapControllerWithEESOptions({
           state: {
             snaps: {
-              [snapId]: {
+              [snapId]: getSnapObject({
                 enabled: true,
                 id: snapId,
                 status: SnapStatus.running,
-              },
+              }),
             },
           } as any,
         }),
