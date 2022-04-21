@@ -1732,6 +1732,12 @@ export class SnapController extends BaseController<
     return rpcHandler;
   }
 
+  /**
+   * Executes a given promise and rejects if the promise doesn't resolve before the timeout
+   * @param snapId - The snap id
+   * @param promise - The promise to await
+   * @returns The result of the promise or rejects if the promise times out
+   */
   private async _executeWithTimeout(snapId: SnapId, promise: Promise<unknown>) {
     // Handle max request time
     let timeout: number | undefined;
