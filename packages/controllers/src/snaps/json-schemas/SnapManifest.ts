@@ -92,6 +92,12 @@ type InitialPermissions = { [key: string]: any; }
 type ManifestVersion = "0.1";
 /**
  *
+ * MUST be less than 600000.
+ *
+ */
+type RequestTimeoutInMilliseconds = number;
+/**
+ *
  * The Snap manifest file MUST be named `snap.manifest.json` and located in the package root directory.
  *
  */
@@ -103,5 +109,5 @@ export type SnapManifest = {
   source: Source;
   initialPermissions: InitialPermissions;
   manifestVersion: ManifestVersion;
-  requestTimeout?: number;
+  requestTimeout?: RequestTimeoutInMilliseconds;
 }

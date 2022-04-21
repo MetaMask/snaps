@@ -126,6 +126,11 @@
       "title": "Manifest Version",
       "description": "The Snap manifest specification version targeted by the manifest.",
       "enum": ["0.1"]
+    },
+    "requestTimeout": {
+      "type": "number",
+      "title": "Request Timeout in milliseconds",
+      "description": "MUST be less than 600000."
     }
   }
 }
