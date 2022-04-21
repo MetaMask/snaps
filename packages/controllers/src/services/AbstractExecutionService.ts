@@ -39,8 +39,7 @@ type Job = {
 };
 
 export abstract class AbstractExecutionService<JobType extends Job>
-  implements ExecutionService
-{
+  implements ExecutionService {
   protected _snapRpcHooks: Map<string, SnapRpcHook>;
 
   protected jobs: Map<string, JobType>;
@@ -124,10 +123,9 @@ export abstract class AbstractExecutionService<JobType extends Job>
 
   async terminateSnap(snapId: string) {
     const jobId = this.snapToJobMap.get(snapId);
-    if (!jobId) {
-      throw new Error(`Job not found for snap with id "${snapId}".`);
+    if (jobId) {
+      this.terminate(jobId);
     }
-    this.terminate(jobId);
   }
 
   async terminateAllSnaps() {
@@ -153,6 +151,11 @@ export abstract class AbstractExecutionService<JobType extends Job>
 
     const job = await this._initJob();
     this._mapSnapAndJob(snapData.snapId, job.id);
+    await this._command(job.id, {
+      jsonrpc: '2.0',
+      method: 'ping',
+      id: nanoid(),
+    });
     this.setupSnapProvider(
       snapData.snapId,
       job.streams.rpc as unknown as Duplex,

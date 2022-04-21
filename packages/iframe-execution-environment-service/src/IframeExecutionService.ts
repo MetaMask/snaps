@@ -79,13 +79,7 @@ export class IframeExecutionService extends AbstractExecutionService<EnvMetadata
       rpcEngine,
     };
     this.jobs.set(jobId, envMetadata);
-
-    await this._command(jobId, {
-      jsonrpc: '2.0',
-      method: 'ping',
-      id: nanoid(),
-    });
-
+    
     return envMetadata;
   }
 
@@ -155,6 +149,7 @@ export class IframeExecutionService extends AbstractExecutionService<EnvMetadata
       document.body.appendChild(iframe);
       iframe.setAttribute('src', uri);
       iframe.setAttribute('id', jobId);
+      iframe.setAttribute('sandbox', 'allow-scripts');
     });
   }
 }
