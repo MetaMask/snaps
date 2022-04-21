@@ -1,5 +1,3 @@
-// const brfs = require('brfs');
-
 module.exports = {
   cliOptions: {
     port: 8082,
