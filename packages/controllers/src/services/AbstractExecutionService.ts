@@ -39,7 +39,8 @@ type Job = {
 };
 
 export abstract class AbstractExecutionService<JobType extends Job>
-  implements ExecutionService {
+  implements ExecutionService
+{
   protected _snapRpcHooks: Map<string, SnapRpcHook>;
 
   protected jobs: Map<string, JobType>;
@@ -156,6 +157,7 @@ export abstract class AbstractExecutionService<JobType extends Job>
       method: 'ping',
       id: nanoid(),
     });
+
     this.setupSnapProvider(
       snapData.snapId,
       job.streams.rpc as unknown as Duplex,

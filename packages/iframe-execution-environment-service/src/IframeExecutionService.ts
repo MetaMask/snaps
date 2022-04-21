@@ -79,7 +79,7 @@ export class IframeExecutionService extends AbstractExecutionService<EnvMetadata
       rpcEngine,
     };
     this.jobs.set(jobId, envMetadata);
-    
+
     return envMetadata;
   }
 
