@@ -22,7 +22,8 @@ const ManifestSortOrder: Record<keyof SnapManifest, number> = {
   repository: 3,
   source: 4,
   initialPermissions: 5,
-  manifestVersion: 6,
+  requestTimeout: 6,
+  manifestVersion: 7,
 };
 
 /**
