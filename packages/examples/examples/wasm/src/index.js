@@ -1,3 +1,5 @@
+// Due to a bug of how brfs interacts with babel, we need to use require() syntax instead of import pattern
+// https://github.com/browserify/brfs/issues/39
 const fs = require('fs');
 const { ethErrors } = require('eth-rpc-errors');
 
