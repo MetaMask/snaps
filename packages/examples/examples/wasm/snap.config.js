@@ -3,4 +3,7 @@ module.exports = {
     port: 8082,
     transpilationMode: 'localOnly',
   },
+  bundlerCustomizer: (bundler) => {
+    bundler.transform('brfs');
+  },
 };

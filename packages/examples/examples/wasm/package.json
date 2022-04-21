@@ -16,7 +16,7 @@
   "scripts": {
     "prebuild": "yarn run build:wasm",
     "build": "yarn run prebuild && mm-snap build",
-    "build:wasm": "asc assembly/program.ts -o build/program.wasm && node scripts/makeWasm.js",
+    "build:wasm": "asc assembly/program.ts -o build/program.wasm",
     "serve": "mm-snap serve",
     "test": "echo 'Error: no test specified' && exit 1"
   },
@@ -24,7 +24,8 @@
     "eth-rpc-errors": "^4.0.3"
   },
   "devDependencies": {
-    "assemblyscript": "^0.19.23"
+    "assemblyscript": "^0.19.23",
+    "brfs": "^2.0.2"
   },
   "engines": {
     "node": ">=12.11.0"
