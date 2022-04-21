@@ -1316,11 +1316,13 @@ export class SnapController extends BaseController<
       throw new Error(`Snap "${snapId}" is already started.`);
     }
 
-    const promise = this._executeSnap({
-      ...snapData,
-      endowments: await this._getEndowments(snapId),
-    });
-    const result = await this._executeWithTimeout(snapId, promise);
+    const result = await this._executeWithTimeout(
+      snapId,
+      this._executeSnap({
+        ...snapData,
+        endowments: await this._getEndowments(snapId),
+      }),
+    );
     this._transitionSnapState(snapId, SnapStatusEvent.start);
     return result;
   }
@@ -1733,10 +1735,12 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Executes a given promise and rejects if the promise doesn't resolve before the timeout
-   * @param snapId - The snap id
-   * @param promise - The promise to await
-   * @returns The result of the promise or rejects if the promise times out
+   * Awaits the specified promise and rejects if the promise doesn't resolve
+   * before the timeout.
+   *
+   * @param snapId - The snap id.
+   * @param promise - The promise to await.
+   * @returns The result of the promise or rejects if the promise times out.
    */
   private async _executeWithTimeout(snapId: SnapId, promise: Promise<unknown>) {
     // Handle max request time
