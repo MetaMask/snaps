@@ -11,9 +11,11 @@ let wasm;
 
 const initializeWasm = async () => {
   try {
-    const wasmBuffer = arrayBufferFromHex(
-      fs.readFileSync(__dirname + '/../build/program.wasm').toString('hex'),
-    );
+    // This will be resolved to a buffer with the file contents at build time.
+    // The path to the file must be in a string literal prefixed with __dirname
+    // in order for brfs to resolve the file correctly.
+    // eslint-disable-next-line node/no-sync, node/no-path-concat
+    const wasmBuffer = fs.readFileSync(`${__dirname}/../build/program.wasm`);
     wasm = await WebAssembly.instantiate(wasmBuffer);
   } catch (error) {
     console.error('Failed to initialize WebAssembly module.', error);
@@ -31,13 +33,3 @@ wallet.registerRpcMessageHandler(async (_originString, requestObject) => {
   }
   throw ethErrors.rpc.methodNotFound({ data: { request: requestObject } });
 });
-
-// kudos: https://stackoverflow.com/a/71083193
-function arrayBufferFromHex(hexString) {
-  return new Uint8Array(
-    hexString
-      .replace(/^0x/iu, '')
-      .match(/../gu)
-      .map((byte) => parseInt(byte, 16)),
-  ).buffer;
-}
