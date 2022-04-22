@@ -1316,12 +1316,20 @@ export class SnapController extends BaseController<
       throw new Error(`Snap "${snapId}" is already started.`);
     }
 
-    const result = await this._executeSnap({
-      ...snapData,
-      endowments: await this._getEndowments(snapId),
-    });
-    this._transitionSnapState(snapId, SnapStatusEvent.start);
-    return result;
+    try {
+      const result = await this._executeWithTimeout(
+        snapId,
+        this._executeSnap({
+          ...snapData,
+          endowments: await this._getEndowments(snapId),
+        }),
+      );
+      this._transitionSnapState(snapId, SnapStatusEvent.start);
+      return result;
+    } catch (err) {
+      await this._terminateSnap(snapId);
+      throw err;
+    }
   }
 
   /**
@@ -1723,28 +1731,38 @@ export class SnapController extends BaseController<
 
       this._recordSnapRpcRequest(snapId);
 
-      // Handle max request time
-      let timeout: number | undefined;
-
-      const timeoutPromise = new Promise((_resolve, reject) => {
-        timeout = setTimeout(() => {
-          this.stopSnap(snapId, SnapStatusEvent.stop);
-          reject(new Error('The request timed out.'));
-        }, this._maxRequestTime) as unknown as number;
-      });
-
       // This will either get the result or reject due to the timeout.
-      const result = await Promise.race([
-        handler(origin, _request),
-        timeoutPromise,
-      ]);
-
-      clearTimeout(timeout);
-      return result;
+      return this._executeWithTimeout(snapId, handler(origin, _request));
     };
 
     runtime.rpcHandler = rpcHandler;
     return rpcHandler;
+  }
+
+  /**
+   * Awaits the specified promise and rejects if the promise doesn't resolve
+   * before the timeout.
+   *
+   * @param snapId - The snap id.
+   * @param promise - The promise to await.
+   * @returns The result of the promise or rejects if the promise times out.
+   */
+  private async _executeWithTimeout(snapId: SnapId, promise: Promise<unknown>) {
+    // Handle max request time
+    let timeout: number | undefined;
+
+    const timeoutPromise = new Promise((_resolve, reject) => {
+      timeout = setTimeout(() => {
+        this.stopSnap(snapId, SnapStatusEvent.stop);
+        reject(new Error('The request timed out.'));
+      }, this._maxRequestTime) as unknown as number;
+    });
+
+    // This will either get the result or reject due to the timeout.
+    const result = await Promise.race([promise, timeoutPromise]);
+
+    clearTimeout(timeout);
+    return result;
   }
 
   private _recordSnapRpcRequest(snapId: SnapId) {
