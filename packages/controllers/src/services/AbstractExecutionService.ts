@@ -161,6 +161,8 @@ export abstract class AbstractExecutionService<JobType extends Job>
 
     const job = await this._initJob();
     this._mapSnapAndJob(snapData.snapId, job.id);
+    
+    // Ping the worker to ensure that it started up
     await this._command(job.id, {
       jsonrpc: '2.0',
       method: 'ping',
