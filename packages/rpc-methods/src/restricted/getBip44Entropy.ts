@@ -27,6 +27,12 @@ export type GetBip44EntropyMethodHooks = {
    * @returns The mnemonic of the user's primary keyring.
    */
   getMnemonic: () => Promise<string>;
+
+  /**
+   * Waits for the extension to be unlocked.
+   * @returns A promise that resolves once the extension is unlocked.
+   */
+  getUnlockPromise: (shouldShowUnlockRequest: boolean) => Promise<void>;
 };
 
 type GetBip44EntropySpecificationBuilderOptions = {
@@ -66,6 +72,7 @@ export const getBip44EntropyBuilder = Object.freeze({
   specificationBuilder,
   methodHooks: {
     getMnemonic: true,
+    getUnlockPromise: true,
   },
 } as const);
 
@@ -73,6 +80,7 @@ const ALL_DIGIT_REGEX = /^\d+$/u;
 
 function getBip44EntropyImplementation({
   getMnemonic,
+  getUnlockPromise,
 }: GetBip44EntropyMethodHooks) {
   return async function getBip44Entropy(
     args: RestrictedMethodOptions<void>,
@@ -83,6 +91,8 @@ function getBip44EntropyImplementation({
         message: `Invalid BIP-44 code: ${bip44Code}`,
       });
     }
+
+    await getUnlockPromise(true);
 
     return new BIP44CoinTypeNode([
       `bip39:${await getMnemonic()}`,
