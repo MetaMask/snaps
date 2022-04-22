@@ -1780,12 +1780,12 @@ export class SnapController extends BaseController<
 
   private _recordSnapRpcRequestStart(snapId: SnapId) {
     const runtime = this._getSnapRuntimeData(snapId);
-    runtime.currentRequests++;
+    runtime.currentRequests += 1;
   }
 
   private _recordSnapRpcRequestFinish(snapId: SnapId) {
     const runtime = this._getSnapRuntimeData(snapId);
-    runtime.currentRequests--;
+    runtime.currentRequests -= 1;
     if (runtime.currentRequests === 0) {
       runtime.lastRequest = Date.now();
     }
