@@ -152,6 +152,11 @@ export interface SnapRuntimeData {
   lastRequest: null | number;
 
   /**
+   * The current number of pending requests
+   */
+  pendingRequests: number;
+
+  /**
    * RPC handler designated for the Snap
    */
   rpcHandler:
@@ -631,6 +636,8 @@ export class SnapController extends BaseController<
   _stopSnapsLastRequestPastMax() {
     this._snapsRuntimeData.forEach(async (runtime, snapId) => {
       if (
+        runtime.pendingRequests === 0 &&
+        // lastRequest should always be set here but TypeScript wants this check
         runtime.lastRequest &&
         this._maxIdleTime &&
         timeSince(runtime.lastRequest) > this._maxIdleTime
@@ -1729,10 +1736,17 @@ export class SnapController extends BaseController<
         });
       }
 
-      this._recordSnapRpcRequest(snapId);
+      this._recordSnapRpcRequestStart(snapId);
 
       // This will either get the result or reject due to the timeout.
-      return this._executeWithTimeout(snapId, handler(origin, _request));
+      const result = await this._executeWithTimeout(
+        snapId,
+        handler(origin, _request),
+      );
+
+      this._recordSnapRpcRequestFinish(snapId);
+
+      return result;
     };
 
     runtime.rpcHandler = rpcHandler;
@@ -1765,9 +1779,18 @@ export class SnapController extends BaseController<
     return result;
   }
 
-  private _recordSnapRpcRequest(snapId: SnapId) {
+  private _recordSnapRpcRequestStart(snapId: SnapId) {
     const runtime = this._getSnapRuntimeData(snapId);
-    runtime.lastRequest = Date.now();
+    runtime.pendingRequests += 1;
+    runtime.lastRequest = null;
+  }
+
+  private _recordSnapRpcRequestFinish(snapId: SnapId) {
+    const runtime = this._getSnapRuntimeData(snapId);
+    runtime.pendingRequests -= 1;
+    if (runtime.pendingRequests === 0) {
+      runtime.lastRequest = Date.now();
+    }
   }
 
   private _getSnapRuntimeData(snapId: SnapId) {
@@ -1776,6 +1799,7 @@ export class SnapController extends BaseController<
         lastRequest: null,
         rpcHandler: null,
         installPromise: null,
+        pendingRequests: 0,
       });
     }
     return this._snapsRuntimeData.get(snapId) as SnapRuntimeData;
