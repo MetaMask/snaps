@@ -152,9 +152,9 @@ export interface SnapRuntimeData {
   lastRequest: null | number;
 
   /**
-   * The current number of actively executing requests
+   * The current number of pending requests
    */
-  currentRequests: number;
+  pendingRequests: number;
 
   /**
    * RPC handler designated for the Snap
@@ -636,7 +636,7 @@ export class SnapController extends BaseController<
   _stopSnapsLastRequestPastMax() {
     this._snapsRuntimeData.forEach(async (runtime, snapId) => {
       if (
-        runtime.currentRequests === 0 &&
+        runtime.pendingRequests === 0 &&
         runtime.lastRequest &&
         this._maxIdleTime &&
         timeSince(runtime.lastRequest) > this._maxIdleTime
@@ -1780,14 +1780,14 @@ export class SnapController extends BaseController<
 
   private _recordSnapRpcRequestStart(snapId: SnapId) {
     const runtime = this._getSnapRuntimeData(snapId);
-    runtime.currentRequests += 1;
+    runtime.pendingRequests += 1;
     runtime.lastRequest = null;
   }
 
   private _recordSnapRpcRequestFinish(snapId: SnapId) {
     const runtime = this._getSnapRuntimeData(snapId);
-    runtime.currentRequests -= 1;
-    if (runtime.currentRequests === 0) {
+    runtime.pendingRequests -= 1;
+    if (runtime.pendingRequests === 0) {
       runtime.lastRequest = Date.now();
     }
   }
