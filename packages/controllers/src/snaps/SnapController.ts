@@ -1799,7 +1799,7 @@ export class SnapController extends BaseController<
         lastRequest: null,
         rpcHandler: null,
         installPromise: null,
-        currentRequests: 0,
+        pendingRequests: 0,
       });
     }
     return this._snapsRuntimeData.get(snapId) as SnapRuntimeData;
