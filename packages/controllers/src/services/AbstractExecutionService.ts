@@ -88,6 +88,8 @@ export abstract class AbstractExecutionService<JobType extends Job>
   /**
    * Terminates the job with the specified ID and deletes all its associated
    * data. Any subsequent messages targeting the job will fail with an error.
+   * Throws an error if the specified job does not exist, or if termination
+   * fails unexpectedly.
    *
    * @param jobId - The id of the job to be terminated.
    */
@@ -102,12 +104,14 @@ export abstract class AbstractExecutionService<JobType extends Job>
         !stream.destroyed && stream.destroy();
         stream.removeAllListeners();
       } catch (err) {
-        console.log('Error while destroying stream', err);
+        console.error('Error while destroying stream', err);
       }
     });
 
     this._terminate(jobWrapper);
 
+    // A job may be terminated before a snap is executed, in which case there
+    // will be no snap ID associated with that job.
     const snapId = this.jobToSnapMap.get(jobId);
     if (snapId) {
       clearTimeout(this._timeoutForUnresponsiveMap.get(snapId));
@@ -120,6 +124,13 @@ export abstract class AbstractExecutionService<JobType extends Job>
 
   protected abstract _initJob(): Promise<JobType>;
 
+  /**
+   * Terminates the Snap with the specified ID. May throw an error if
+   * termination unexpectedly fails, but will not fail if no job for the snap
+   * with the specified ID is found.
+   *
+   * @param snapId - The ID of the snap to terminate.
+   */
   async terminateSnap(snapId: string) {
     const jobId = this.snapToJobMap.get(snapId);
     if (jobId) {
