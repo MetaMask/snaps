@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.0]
+### Uncategorized
+- Changed wasm example to use brfs ([#381](https://github.com/MetaMask/snaps-skunkworks/pull/381))
+- Fix WASM example config ([#371](https://github.com/MetaMask/snaps-skunkworks/pull/371))
+- Upgraded TypeScript version to minimum 4.4 ([#360](https://github.com/MetaMask/snaps-skunkworks/pull/360))
+- Add WebAssembly example snap ([#242](https://github.com/MetaMask/snaps-skunkworks/pull/242))
+- Fix changelogs ([#339](https://github.com/MetaMask/snaps-skunkworks/pull/339))
+
 ## [0.10.7]
 ### Changed
 - **BREAKING:** Bump minimum Node version from 12 to 14 ([#331](https://github.com/MetaMask/snaps-skunkworks/pull/331))
@@ -101,7 +109,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - This package was previously a subset of [`snaps-cli`](https://github.com/MetaMask/snaps-cli/tree/main/examples), which has been renamed to [`@metamask/snaps-cli`](https://npmjs.com/package/@metamask/snaps-cli).
   - Some examples have been deleted because they were outdated.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.7...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.11.0...HEAD
+[0.11.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.7...v0.11.0
 [0.10.7]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.6...v0.10.7
 [0.10.6]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.5...v0.10.6
 [0.10.5]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.3...v0.10.5

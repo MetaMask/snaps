@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.0]
+### Uncategorized
+- Upgraded TypeScript version to minimum 4.4 ([#360](https://github.com/MetaMask/snaps-skunkworks/pull/360))
+- Remove cross-fetch ([#349](https://github.com/MetaMask/snaps-skunkworks/pull/349))
+- Fix changelogs ([#339](https://github.com/MetaMask/snaps-skunkworks/pull/339))
+
 ## [0.10.7]
 ### Added
 - Add setInterval and clearInterval as default endowments ([#326](https://github.com/MetaMask/snaps-skunkworks/pull/326))
@@ -51,7 +57,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Previously, default endowments were specified in the execution environment itself. Now, all endowments must be specified in the `executeSnap` RPC parameters, except for the `wallet` API object.
 - Add endowments to the global `self` in addition to `window` ([#263](https://github.com/MetaMask/snaps-skunkworks/pull/263))
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.7...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.11.0...HEAD
+[0.11.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.7...v0.11.0
 [0.10.7]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.6...v0.10.7
 [0.10.6]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.5...v0.10.6
 [0.10.5]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.4...v0.10.5
