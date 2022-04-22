@@ -7,7 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.11.0]
-
 ### Added
 - Added ability to update snaps when installing them ([#322](https://github.com/MetaMask/snaps-skunkworks/pull/322))
 

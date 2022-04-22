@@ -7,13 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.11.0]
-### Fixed
-- Fix prompting for existing permissions ([#354](https://github.com/MetaMask/snaps-skunkworks/pull/354))
-
 ### Changed
 - Wait for unlock on some RPC methods ([#356](https://github.com/MetaMask/snaps-skunkworks/pull/356))
 - Use PermissionController:revokePermissionForAllSubjects ([#351](https://github.com/MetaMask/snaps-skunkworks/pull/351))
 - Upgraded TypeScript version to minimum 4.4 ([#360](https://github.com/MetaMask/snaps-skunkworks/pull/360))
+
+### Fixed
+- Fix prompting for existing permissions ([#354](https://github.com/MetaMask/snaps-skunkworks/pull/354))
 
 ## [0.10.7]
 ### Changed

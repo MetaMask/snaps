@@ -7,12 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.11.0]
-
 ### Added
 - Add clearSnapState ([#346](https://github.com/MetaMask/snaps-skunkworks/pull/346))
-
-### Fixed
-- Fix idle timeout implementation ([#385](https://github.com/MetaMask/snaps-skunkworks/pull/385))
 
 ### Changed
 - Robustify snap startup procedure and iframe error handling ([#379](https://github.com/MetaMask/snaps-skunkworks/pull/379))
@@ -21,6 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed console.logs to console.info ([#361](https://github.com/MetaMask/snaps-skunkworks/pull/361))
 - Upgraded TypeScript version to minimum 4.4 ([#360](https://github.com/MetaMask/snaps-skunkworks/pull/360))
 - Remove cross-fetch ([#349](https://github.com/MetaMask/snaps-skunkworks/pull/349))
+
+### Fixed
+- Fix idle timeout implementation ([#385](https://github.com/MetaMask/snaps-skunkworks/pull/385))
 
 ## [0.10.7]
 ### Added

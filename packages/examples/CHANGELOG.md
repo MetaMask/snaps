@@ -7,7 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.11.0]
-
 ### Added
 - Add WebAssembly example snap ([#242](https://github.com/MetaMask/snaps-skunkworks/pull/242), [#381](https://github.com/MetaMask/snaps-skunkworks/pull/381), [#371](https://github.com/MetaMask/snaps-skunkworks/pull/371))
 
