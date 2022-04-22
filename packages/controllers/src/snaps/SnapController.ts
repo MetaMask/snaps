@@ -637,6 +637,7 @@ export class SnapController extends BaseController<
     this._snapsRuntimeData.forEach(async (runtime, snapId) => {
       if (
         runtime.pendingRequests === 0 &&
+        // lastRequest should always be null here but TypeScript wants this check
         runtime.lastRequest &&
         this._maxIdleTime &&
         timeSince(runtime.lastRequest) > this._maxIdleTime
