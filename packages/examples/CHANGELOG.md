@@ -7,12 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.11.0]
-### Uncategorized
-- Changed wasm example to use brfs ([#381](https://github.com/MetaMask/snaps-skunkworks/pull/381))
-- Fix WASM example config ([#371](https://github.com/MetaMask/snaps-skunkworks/pull/371))
+
+### Added
+- Add WebAssembly example snap ([#242](https://github.com/MetaMask/snaps-skunkworks/pull/242), [#381](https://github.com/MetaMask/snaps-skunkworks/pull/381), [#371](https://github.com/MetaMask/snaps-skunkworks/pull/371))
+
+### Changed
 - Upgraded TypeScript version to minimum 4.4 ([#360](https://github.com/MetaMask/snaps-skunkworks/pull/360))
-- Add WebAssembly example snap ([#242](https://github.com/MetaMask/snaps-skunkworks/pull/242))
-- Fix changelogs ([#339](https://github.com/MetaMask/snaps-skunkworks/pull/339))
 
 ## [0.10.7]
 ### Changed

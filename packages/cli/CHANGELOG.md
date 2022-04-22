@@ -7,11 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.11.0]
-### Uncategorized
+### Added
+- Add self to mock endowments ([#341](https://github.com/MetaMask/snaps-skunkworks/pull/341))
+
+### Changed
 - Upgraded TypeScript version to minimum 4.4 ([#360](https://github.com/MetaMask/snaps-skunkworks/pull/360))
 - Update template files ([#350](https://github.com/MetaMask/snaps-skunkworks/pull/350))
-- Add self to mock endowments ([#341](https://github.com/MetaMask/snaps-skunkworks/pull/341))
-- Fix changelogs ([#339](https://github.com/MetaMask/snaps-skunkworks/pull/339))
 
 ## [0.10.7]
 ### Changed

@@ -7,9 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.11.0]
-### Uncategorized
+### Changed
 - Use PermissionController:revokePermissionForAllSubjects ([#351](https://github.com/MetaMask/snaps-skunkworks/pull/351))
-- Fix changelogs ([#339](https://github.com/MetaMask/snaps-skunkworks/pull/339))
 
 ## [0.10.7]
 ### Changed
