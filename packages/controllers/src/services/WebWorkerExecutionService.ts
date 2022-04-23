@@ -17,8 +17,6 @@ interface WorkerControllerArgs {
   setupSnapProvider: SetupSnapProvider;
   workerUrl: URL;
   messenger: ExecutionServiceMessenger;
-  unresponsivePollingInterval?: number;
-  unresponsiveTimeout?: number;
 }
 
 interface WorkerStreams {
@@ -43,14 +41,10 @@ export class WebWorkerExecutionService extends AbstractExecutionService<WorkerWr
     setupSnapProvider,
     workerUrl,
     messenger,
-    unresponsivePollingInterval = 5000,
-    unresponsiveTimeout = 30000,
   }: WorkerControllerArgs) {
     super({
       setupSnapProvider,
       messenger,
-      unresponsivePollingInterval,
-      unresponsiveTimeout,
     });
     this.workerUrl = workerUrl;
     this.store = new ObservableStore({ workers: {} });

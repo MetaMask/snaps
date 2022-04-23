@@ -18,8 +18,6 @@ export type SetupSnapProvider = (snapId: string, stream: Duplex) => void;
 type ExecutionServiceArgs = {
   setupSnapProvider: SetupSnapProvider;
   messenger: ExecutionServiceMessenger;
-  unresponsivePollingInterval?: number;
-  unresponsiveTimeout?: number;
 };
 
 // The snap is the callee
@@ -53,27 +51,13 @@ export abstract class AbstractExecutionService<JobType extends Job>
 
   protected _messenger: ExecutionServiceMessenger;
 
-  protected _unresponsivePollingInterval: number;
-
-  protected _unresponsiveTimeout: number;
-
-  protected _timeoutForUnresponsiveMap: Map<string, number>;
-
-  constructor({
-    setupSnapProvider,
-    messenger,
-    unresponsivePollingInterval = 5000,
-    unresponsiveTimeout = 30000,
-  }: ExecutionServiceArgs) {
+  constructor({ setupSnapProvider, messenger }: ExecutionServiceArgs) {
     this._snapRpcHooks = new Map();
     this.jobs = new Map();
     this.setupSnapProvider = setupSnapProvider;
     this.snapToJobMap = new Map();
     this.jobToSnapMap = new Map();
     this._messenger = messenger;
-    this._unresponsivePollingInterval = unresponsivePollingInterval;
-    this._unresponsiveTimeout = unresponsiveTimeout;
-    this._timeoutForUnresponsiveMap = new Map();
   }
 
   /**
@@ -110,16 +94,9 @@ export abstract class AbstractExecutionService<JobType extends Job>
 
     this._terminate(jobWrapper);
 
-    // A job may be terminated before a snap is executed, in which case there
-    // will be no snap ID associated with that job.
-    const snapId = this.jobToSnapMap.get(jobId);
-    if (snapId) {
-      clearTimeout(this._timeoutForUnresponsiveMap.get(snapId));
-      this._timeoutForUnresponsiveMap.delete(snapId);
-      this._removeSnapAndJobMapping(jobId);
-      this.jobs.delete(jobId);
-      console.log(`job: "${jobId}" terminated`);
-    }
+    this._removeSnapAndJobMapping(jobId);
+    this.jobs.delete(jobId);
+    console.log(`job: "${jobId}" terminated`);
   }
 
   protected abstract _initJob(): Promise<JobType>;
@@ -180,8 +157,6 @@ export abstract class AbstractExecutionService<JobType extends Job>
       params: snapData,
       id: nanoid(),
     });
-    // set up poll/ping for status to see if its up, if its not then emit event that it cant be reached
-    this._pollForJobStatus(snapData.snapId);
     this._createSnapHooks(snapData.snapId, job.id);
     return result;
   }
@@ -230,53 +205,6 @@ export abstract class AbstractExecutionService<JobType extends Job>
     };
 
     this._snapRpcHooks.set(snapId, rpcHook);
-  }
-
-  protected _pollForJobStatus(snapId: string) {
-    const jobId = this.snapToJobMap.get(snapId);
-    if (!jobId) {
-      throw new Error('no job id found for snap');
-    }
-
-    const timeout = setTimeout(async () => {
-      try {
-        await this._getJobStatus(jobId);
-        this._pollForJobStatus(snapId);
-      } catch {
-        // The snap may have been terminated by the time we get here.
-        if (this.snapToJobMap.has(snapId)) {
-          this._messenger.publish('ExecutionService:unresponsive', snapId);
-        }
-      }
-    }, this._unresponsivePollingInterval) as unknown as number;
-    this._timeoutForUnresponsiveMap.set(snapId, timeout);
-  }
-
-  protected async _getJobStatus(jobId: string) {
-    let resolve: any;
-    let reject: any;
-
-    const timeoutPromise = new Promise((res, rej) => {
-      resolve = res;
-      reject = rej;
-    });
-
-    const timeout = setTimeout(() => {
-      reject(new Error('ping request timed out'));
-    }, this._unresponsiveTimeout);
-
-    return Promise.race([
-      this._command(jobId, {
-        jsonrpc: '2.0',
-        method: 'ping',
-        params: [],
-        id: nanoid(),
-      }).then(() => {
-        clearTimeout(timeout);
-        resolve();
-      }),
-      timeoutPromise,
-    ]);
   }
 
   /**
