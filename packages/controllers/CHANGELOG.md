@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Robustify snap startup procedure and iframe error handling ([#379](https://github.com/MetaMask/snaps-skunkworks/pull/379))
 - Added ability to update snaps when installing them ([#322](https://github.com/MetaMask/snaps-skunkworks/pull/322))
-- Use PermissionController:revokePermissionForAllSubjects ([#351](https://github.com/MetaMask/snaps-skunkworks/pull/351))
+- **BREAKING:** Use PermissionController:revokePermissionForAllSubjects ([#351](https://github.com/MetaMask/snaps-skunkworks/pull/351))
 - Changed console.logs to console.info ([#361](https://github.com/MetaMask/snaps-skunkworks/pull/361))
 - Upgraded TypeScript version to minimum 4.4 ([#360](https://github.com/MetaMask/snaps-skunkworks/pull/360))
 - Remove cross-fetch ([#349](https://github.com/MetaMask/snaps-skunkworks/pull/349))
