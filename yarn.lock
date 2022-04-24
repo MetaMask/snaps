@@ -13419,15 +13419,10 @@ serve-handler@^6.1.1:
     path-to-regexp "2.2.1"
     range-parser "1.2.0"
 
-ses@^0.15.3:
-  version "0.15.3"
-  resolved "https://registry.yarnpkg.com/ses/-/ses-0.15.3.tgz#f9dcc640394787e17b7c66dc550133b2ec45df3e"
-  integrity sha512-DTESfYMwSYtIuwCGmOYwxrOngCvLmInu/UHeMRen1tx23bKAe7rFjQAvbkdGKQDBezdwnybFD3JUCPDxVeiVPA==
-
-ses@^0.15.7:
-  version "0.15.7"
-  resolved "https://registry.yarnpkg.com/ses/-/ses-0.15.7.tgz#53da049638bb34941befd1eccf34647c950f91a2"
-  integrity sha512-WqEanVAU/zMSoR/c/bHrAHTD7wMPm4zQrVCSXuzHxuvq4mM0xdrK/rEgQ35zQh7IyIg2n/aKDJWv3CL1quiJFA==
+ses@^0.15.15:
+  version "0.15.15"
+  resolved "https://registry.yarnpkg.com/ses/-/ses-0.15.15.tgz#082923a1cabeac3151f9b3867e325fe447ce037d"
+  integrity sha512-sJM4HRlM3VouA3RhRmS7wG5MRQPqZZnc6O4BvAefU7yeM+qp8EUfGAWQ9iB/X5cNh3+m5N9lC7DEpyxQ+E4D+w==
 
 set-blocking@^2.0.0, set-blocking@~2.0.0:
   version "2.0.0"
