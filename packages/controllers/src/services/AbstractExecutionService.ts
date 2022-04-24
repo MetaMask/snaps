@@ -11,7 +11,7 @@ import {
 } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
 import pump from 'pump';
-import { ExecutionService } from '.';
+import { ExecutionService } from './ExecutionService';
 
 export type SetupSnapProvider = (snapId: string, stream: Duplex) => void;
 

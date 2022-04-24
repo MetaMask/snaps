@@ -5,12 +5,11 @@ import {
   UnresponsiveMessageEvent,
 } from '@metamask/snap-types';
 import { IframeExecutionService } from './IframeExecutionService';
-import fixJSDOMPostMessageEventSource from './testHelpers/fixJSDOMPostMessageEventSource';
 
 // We do not use our default endowments in these tests because JSDOM doesn't
 // implement all of them.
 
-describe('Iframe Controller', () => {
+describe('IframeExecutionService', () => {
   it('can boot', async () => {
     const controllerMessenger = new ControllerMessenger<
       never,
@@ -55,9 +54,6 @@ describe('Iframe Controller', () => {
         'https://metamask.github.io/iframe-execution-environment/0.3.2-test/',
       ),
     });
-    const removeListener = fixJSDOMPostMessageEventSource(
-      iframeExecutionService,
-    );
     const response = await iframeExecutionService.executeSnap({
       snapId: 'TestSnap',
       sourceCode: `
@@ -66,7 +62,6 @@ describe('Iframe Controller', () => {
       endowments: ['console'],
     });
     expect(response).toStrictEqual('OK');
-    removeListener();
     await iframeExecutionService.terminateAllSnaps();
   });
 
@@ -91,9 +86,6 @@ describe('Iframe Controller', () => {
         'https://metamask.github.io/iframe-execution-environment/0.3.2-test/',
       ),
     });
-    const removeListener = fixJSDOMPostMessageEventSource(
-      iframeExecutionService,
-    );
     const action = async () => {
       await iframeExecutionService.executeSnap({
         snapId: 'TestSnap',
@@ -108,7 +100,6 @@ describe('Iframe Controller', () => {
       /Error while running snap 'TestSnap'/u,
     );
     await iframeExecutionService.terminateAllSnaps();
-    removeListener();
   });
 
   it('can handle a no ping reply', async () => {
@@ -132,10 +123,9 @@ describe('Iframe Controller', () => {
       iframeUrl: new URL(
         'https://metamask.github.io/iframe-execution-environment/0.3.2-test/',
       ),
+      unresponsiveTimeout: 0,
+      unresponsivePollingInterval: 0,
     });
-    const removeListener = fixJSDOMPostMessageEventSource(
-      iframeExecutionService,
-    );
     const snapId = 'foo.bar.baz';
 
     await iframeExecutionService.executeSnap({
@@ -147,7 +137,12 @@ describe('Iframe Controller', () => {
     });
     // prevent command from returning
     // eslint-disable-next-line jest/prefer-spy-on
-    (iframeExecutionService as any)._command = jest.fn();
+    (iframeExecutionService as any)._command = jest.fn(
+      () =>
+        new Promise(() => {
+          /* do nothing */
+        }),
+    );
 
     // check for an error
     const promise = new Promise((resolve) => {
@@ -156,6 +151,8 @@ describe('Iframe Controller', () => {
 
     const result = await promise;
     expect(result).toStrictEqual(snapId);
-    removeListener();
-  }, 60000);
+    // This line is important - the iframe is not cleaned up
+    // and Electron complaines that something tries to access a cross-origin frame during cleanup
+    await iframeExecutionService.terminateAllSnaps();
+  }, 1000);
 });

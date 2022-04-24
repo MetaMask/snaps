@@ -1,10 +1,10 @@
-import fs from 'fs';
 import { ControllerMessenger } from '@metamask/controllers';
 import {
   ErrorMessageEvent,
   ExecutionServiceMessenger,
   UnresponsiveMessageEvent,
 } from '@metamask/snap-types';
+import fs from 'fs';
 import { DEFAULT_ENDOWMENTS } from '../snaps';
 import { WebWorkerExecutionService } from './WebWorkerExecutionService';
 
@@ -13,7 +13,7 @@ const workerCode = fs.readFileSync(
   'utf8',
 );
 
-describe('Worker Controller', () => {
+describe('WebWorkerExecutionService', () => {
   it('can boot', async () => {
     const messenger: ExecutionServiceMessenger =
       new ControllerMessenger().getRestricted<
@@ -79,6 +79,8 @@ describe('Worker Controller', () => {
         // do nothing
       },
       workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
+      unresponsivePollingInterval: 0,
+      unresponsiveTimeout: 0,
     });
 
     const snapId = 'foo.bar.baz';
@@ -92,7 +94,12 @@ describe('Worker Controller', () => {
 
     // prevent command from returning
     // eslint-disable-next-line jest/prefer-spy-on
-    (webWorkerExecutionService as any)._command = jest.fn();
+    (webWorkerExecutionService as any)._command = jest.fn(
+      () =>
+        new Promise(() => {
+          /* do nothing */
+        }),
+    );
 
     // check for an error
     const promise = new Promise((resolve) => {
@@ -101,5 +108,5 @@ describe('Worker Controller', () => {
 
     const result = await promise;
     expect(result).toStrictEqual(snapId);
-  }, 60000);
+  }, 1000);
 });
