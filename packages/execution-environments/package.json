@@ -40,7 +40,7 @@
     "@metamask/snap-types": "^0.10.7",
     "eth-rpc-errors": "^4.0.3",
     "pump": "^3.0.0",
-    "ses": "^0.15.7",
+    "ses": "^0.15.15",
     "stream-browserify": "^3.0.0"
   },
   "devDependencies": {
