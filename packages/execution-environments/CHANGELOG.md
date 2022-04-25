@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.11.0]
 ### Changed
+- Bump `ses` to `0.15.15` ([#396](https://github.com/MetaMask/snaps-skunkworks/pull/396))
 - Upgraded TypeScript version to minimum 4.4 ([#360](https://github.com/MetaMask/snaps-skunkworks/pull/360))
 - Remove cross-fetch ([#349](https://github.com/MetaMask/snaps-skunkworks/pull/349))
 
