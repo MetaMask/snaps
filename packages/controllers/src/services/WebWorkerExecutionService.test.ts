@@ -3,7 +3,6 @@ import { ControllerMessenger } from '@metamask/controllers';
 import {
   ErrorMessageEvent,
   ExecutionServiceMessenger,
-  UnresponsiveMessageEvent,
 } from '@metamask/snap-types';
 import { DEFAULT_ENDOWMENTS } from '../snaps';
 import { WebWorkerExecutionService } from './WebWorkerExecutionService';

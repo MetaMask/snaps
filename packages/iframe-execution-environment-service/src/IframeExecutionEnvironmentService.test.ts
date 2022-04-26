@@ -1,9 +1,6 @@
-import { describe, expect, it, jest } from '@jest/globals';
+import { describe, expect, it } from '@jest/globals';
 import { ControllerMessenger } from '@metamask/controllers';
-import {
-  ErrorMessageEvent,
-  UnresponsiveMessageEvent,
-} from '@metamask/snap-types';
+import { ErrorMessageEvent } from '@metamask/snap-types';
 import { IframeExecutionService } from './IframeExecutionService';
 import fixJSDOMPostMessageEventSource from './testHelpers/fixJSDOMPostMessageEventSource';
 

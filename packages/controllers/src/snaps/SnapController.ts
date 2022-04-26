@@ -20,9 +20,8 @@ import {
   ErrorMessageEvent,
   SnapData,
   SnapId,
-  UnresponsiveMessageEvent,
 } from '@metamask/snap-types';
-import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
+import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import type { Patch } from 'immer';
 import { Json } from 'json-rpc-engine';
@@ -350,7 +349,7 @@ export type AllowedActions =
   | RequestPermissions
   | AddApprovalRequest;
 
-export type AllowedEvents = ErrorMessageEvent | UnresponsiveMessageEvent;
+export type AllowedEvents = ErrorMessageEvent;
 
 type SnapControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
@@ -569,7 +568,6 @@ export class SnapController extends BaseController<
     this._executeSnap = executeSnap;
     this._getRpcMessageHandler = getRpcMessageHandler;
     this._onUnhandledSnapError = this._onUnhandledSnapError.bind(this);
-    this._onUnresponsiveSnap = this._onUnresponsiveSnap.bind(this);
     this._terminateSnap = terminateSnap;
     this._terminateAllSnaps = terminateAllSnaps;
 
@@ -585,11 +583,6 @@ export class SnapController extends BaseController<
     this.messagingSystem.subscribe(
       'ExecutionService:unhandledError',
       this._onUnhandledSnapError,
-    );
-
-    this.messagingSystem.subscribe(
-      'ExecutionService:unresponsive',
-      this._onUnresponsiveSnap,
     );
 
     this.registerMessageHandlers();
@@ -654,18 +647,6 @@ export class SnapController extends BaseController<
       ) {
         this.stopSnap(snapId, SnapStatusEvent.stop);
       }
-    });
-  }
-
-  async _onUnresponsiveSnap(snapId: SnapId) {
-    await this.stopSnap(snapId, SnapStatusEvent.crash);
-    this.addSnapError({
-      // TODO: Standardize error code
-      code: errorCodes.rpc.internal,
-      message: 'Snap Unresponsive',
-      data: {
-        snapId,
-      },
     });
   }
 
@@ -1665,11 +1646,6 @@ export class SnapController extends BaseController<
     this.messagingSystem.unsubscribe(
       'ExecutionService:unhandledError',
       this._onUnhandledSnapError,
-    );
-
-    this.messagingSystem.unsubscribe(
-      'ExecutionService:unresponsive',
-      this._onUnresponsiveSnap,
     );
   }
 

@@ -51,7 +51,6 @@ const getSnapControllerMessenger = (
     name: 'SnapController',
     allowedEvents: [
       'ExecutionService:unhandledError',
-      'ExecutionService:unresponsive',
       'SnapController:snapAdded',
       'SnapController:snapInstalled',
       'SnapController:snapUpdated',
@@ -81,10 +80,7 @@ const getWebWorkerEESMessenger = (
 ) =>
   (messenger ?? getControllerMessenger()).getRestricted({
     name: 'ExecutionService',
-    allowedEvents: [
-      'ExecutionService:unhandledError',
-      'ExecutionService:unresponsive',
-    ],
+    allowedEvents: ['ExecutionService:unhandledError'],
   });
 
 type SnapControllerConstructorParams = ConstructorParameters<
@@ -604,41 +600,6 @@ describe('SnapController', () => {
         message: 'foo',
         code: 123,
       });
-    }, 1);
-
-    await new Promise((resolve) => {
-      controllerMessenger.subscribe('SnapController:stateChange', (state) => {
-        const crashedSnap = state.snaps[snap.id];
-        expect(crashedSnap.status).toStrictEqual(SnapStatus.crashed);
-        resolve(undefined);
-        snapController.destroy();
-      });
-    });
-  });
-
-  it('should handle an unresponsive event on the controller messenger', async () => {
-    const controllerMessenger = getControllerMessenger();
-    const serviceMessenger = getWebWorkerEESMessenger(controllerMessenger);
-    const snapControllerMessenger =
-      getSnapControllerMessenger(controllerMessenger);
-
-    const workerExecutionEnvironment = getWebWorkerEES(serviceMessenger);
-    const [snapController] = getSnapControllerWithEES(
-      getSnapControllerWithEESOptions({ messenger: snapControllerMessenger }),
-      workerExecutionEnvironment,
-    );
-
-    const snap = await snapController.add({
-      origin: FAKE_ORIGIN,
-      id: FAKE_SNAP_ID,
-      sourceCode: FAKE_SNAP_SOURCE_CODE,
-      manifest: FAKE_SNAP_MANIFEST,
-    });
-    await snapController.startSnap(snap.id);
-
-    // defer
-    setTimeout(() => {
-      controllerMessenger.publish('ExecutionService:unresponsive', snap.id);
     }, 1);
 
     await new Promise((resolve) => {
