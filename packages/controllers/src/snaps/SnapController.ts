@@ -518,7 +518,7 @@ export class SnapController extends BaseController<
     idleTimeCheckInterval = 5000,
     maxIdleTime = 30000,
     maxRequestTime = 60000,
-    fetchFunction = fetch,
+    fetchFunction = window.fetch.bind(window),
     featureFlags = {},
   }: SnapControllerArgs) {
     super({
