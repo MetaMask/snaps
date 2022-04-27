@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.11.1]
-### Uncategorized
-- Latest version bug fixes ([#402](https://github.com/MetaMask/snaps-skunkworks/pull/402))
+### Fixed
+- Fixed an issue with determining whether existing permissions satisfy requested permissions ([#402](https://github.com/MetaMask/snaps-skunkworks/pull/402))
 
 ## [0.11.0]
 ### Changed
