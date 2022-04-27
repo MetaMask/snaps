@@ -74,7 +74,9 @@ export type EnableWalletHooks = {
    * Gets the current permissions for the requesting origin.
    * @returns The current permissions of the requesting origin.
    */
-  getPermissions: () => Promise<Record<string, PermissionConstraint>>;
+  getPermissions: () => Promise<
+    Record<string, PermissionConstraint> | undefined
+  >;
 };
 
 /**
@@ -137,7 +139,10 @@ async function enableWallet(
     // we expect the params to be the same as wallet_requestPermissions
     requestedPermissions = preprocessRequestedPermissions(req.params[0]);
     const existingPermissions = await getPermissions();
-    if (hasPermissions(existingPermissions, requestedPermissions)) {
+    if (
+      existingPermissions &&
+      hasPermissions(existingPermissions, requestedPermissions)
+    ) {
       result.permissions = Object.values(existingPermissions);
     } else {
       result.permissions = await requestPermissions(requestedPermissions);
