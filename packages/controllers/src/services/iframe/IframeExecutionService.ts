@@ -36,19 +36,15 @@ export class IframeExecutionService extends AbstractExecutionService<EnvMetadata
 
   public iframeUrl: URL;
 
-  private _createWindowTimeout: number;
-
   constructor({
     setupSnapProvider,
     iframeUrl,
     messenger,
-    createWindowTimeout = 60000,
   }: IframeExecutionEnvironmentServiceArgs) {
     super({
       setupSnapProvider,
       messenger,
     });
-    this._createWindowTimeout = createWindowTimeout;
     this.iframeUrl = iframeUrl;
   }
 
@@ -81,7 +77,6 @@ export class IframeExecutionService extends AbstractExecutionService<EnvMetadata
     this._iframeWindow = await this._createWindow(
       this.iframeUrl.toString(),
       jobId,
-      this._createWindowTimeout,
     );
     const envStream = new WindowPostMessageStream({
       name: 'parent',
@@ -123,20 +118,12 @@ export class IframeExecutionService extends AbstractExecutionService<EnvMetadata
     };
   }
 
-  private _createWindow(
-    uri: string,
-    jobId: string,
-    timeout: number,
-  ): Promise<Window> {
+  private _createWindow(uri: string, jobId: string): Promise<Window> {
     const iframe = document.createElement('iframe');
-    return new Promise((resolve, reject) => {
-      const errorTimeout = setTimeout(() => {
-        iframe.remove();
-        reject(new Error(`Timed out creating iframe window: "${uri}"`));
-      }, timeout);
+    // This may run forever if the iframe never loads, but we wrap this call in a timeout elsewhere
+    return new Promise((resolve) => {
       iframe.addEventListener('load', () => {
         if (iframe.contentWindow) {
-          clearTimeout(errorTimeout);
           resolve(iframe.contentWindow);
         }
       });
