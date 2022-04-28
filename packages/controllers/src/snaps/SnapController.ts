@@ -796,6 +796,11 @@ export class SnapController extends BaseController<
     }
   }
 
+  /**
+   * Terminates the specified snap and emits the `snapTerminated` event.
+   *
+   * @param snapId - The snap to terminate.
+   */
   private async terminateSnap(snapId: SnapId) {
     await this._terminateSnap(snapId);
     this.messagingSystem.publish('SnapController:snapTerminated', snapId);
