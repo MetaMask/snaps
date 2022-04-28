@@ -320,12 +320,21 @@ export type SnapUpdated = {
   payload: [snapId: string, newVersion: string, oldVersion: string];
 };
 
+/**
+ * Emitted when a Snap is stopped.
+ */
+export type SnapStopped = {
+  type: `${typeof controllerName}:snapStopped`;
+  payload: [snapId: string];
+};
+
 export type SnapControllerEvents =
   | SnapAdded
   | SnapInstalled
   | SnapRemoved
   | SnapStateChange
-  | SnapUpdated;
+  | SnapUpdated
+  | SnapStopped;
 
 export type AllowedActions =
   | GetEndowments
@@ -778,13 +787,18 @@ export class SnapController extends BaseController<
     try {
       if (this.isRunning(snapId)) {
         this._closeAllConnections(snapId);
-        await this._terminateSnap(snapId);
+        await this.terminateSnap(snapId);
       }
     } finally {
       if (this.isRunning(snapId)) {
         this._transitionSnapState(snapId, statusEvent);
       }
     }
+  }
+
+  private async terminateSnap(snapId: SnapId) {
+    await this._terminateSnap(snapId);
+    this.messagingSystem.publish('SnapController:snapStopped', snapId);
   }
 
   /**
@@ -1334,7 +1348,7 @@ export class SnapController extends BaseController<
       this._transitionSnapState(snapId, SnapStatusEvent.start);
       return result;
     } catch (err) {
-      await this._terminateSnap(snapId);
+      await this.terminateSnap(snapId);
       throw err;
     }
   }
