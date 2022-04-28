@@ -321,10 +321,10 @@ export type SnapUpdated = {
 };
 
 /**
- * Emitted when a Snap is stopped.
+ * Emitted when a Snap is terminated. This is different from the snap being stopped as it can also be triggered when a snap fails initialization.
  */
-export type SnapStopped = {
-  type: `${typeof controllerName}:snapStopped`;
+export type SnapTerminated = {
+  type: `${typeof controllerName}:snapTerminated`;
   payload: [snapId: string];
 };
 
@@ -334,7 +334,7 @@ export type SnapControllerEvents =
   | SnapRemoved
   | SnapStateChange
   | SnapUpdated
-  | SnapStopped;
+  | SnapTerminated;
 
 export type AllowedActions =
   | GetEndowments
@@ -798,7 +798,7 @@ export class SnapController extends BaseController<
 
   private async terminateSnap(snapId: SnapId) {
     await this._terminateSnap(snapId);
-    this.messagingSystem.publish('SnapController:snapStopped', snapId);
+    this.messagingSystem.publish('SnapController:snapTerminated', snapId);
   }
 
   /**
