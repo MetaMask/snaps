@@ -34,7 +34,17 @@ const createTimeout = () => {
     }
   };
 
-  return { setTimeout: _setTimeout, clearTimeout: _clearTimeout } as const;
+  const _teardown = (): void => {
+    for (const timeout of registeredTimeouts) {
+      _clearTimeout(timeout);
+    }
+  };
+
+  return {
+    setTimeout: _setTimeout,
+    clearTimeout: _clearTimeout,
+    _teardown,
+  } as const;
 };
 
 const endowmentModule = {

@@ -39,6 +39,8 @@ export class BaseSnapExecutor {
 
   private snapPromiseErrorHandler?: (event: PromiseRejectionEvent) => void;
 
+  private endowmentTeardown?: () => void;
+
   protected constructor(commandStream: Duplex, rpcStream: Duplex) {
     this.snapRpcHandlers = new Map();
     this.commandStream = commandStream;
@@ -176,7 +178,13 @@ export class BaseSnapExecutor {
     const wallet = this.createSnapProvider(snapName);
 
     try {
-      const endowments = createEndowments(wallet, _endowments);
+      const { endowments, teardown: endowmentTeardown } = createEndowments(
+        wallet,
+        _endowments,
+      );
+
+      // @todo Figure out when to call this
+      this.endowmentTeardown = endowmentTeardown;
 
       const compartment = new Compartment({
         ...endowments,
