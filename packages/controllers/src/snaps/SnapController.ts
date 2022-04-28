@@ -321,7 +321,8 @@ export type SnapUpdated = {
 };
 
 /**
- * Emitted when a Snap is terminated. This is different from the snap being stopped as it can also be triggered when a snap fails initialization.
+ * Emitted when a Snap is terminated. This is different from the snap being
+ * stopped as it can also be triggered when a snap fails initialization.
  */
 export type SnapTerminated = {
   type: `${typeof controllerName}:snapTerminated`;
