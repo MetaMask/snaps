@@ -320,12 +320,22 @@ export type SnapUpdated = {
   payload: [snapId: string, newVersion: string, oldVersion: string];
 };
 
+/**
+ * Emitted when a Snap is terminated. This is different from the snap being
+ * stopped as it can also be triggered when a snap fails initialization.
+ */
+export type SnapTerminated = {
+  type: `${typeof controllerName}:snapTerminated`;
+  payload: [snapId: string];
+};
+
 export type SnapControllerEvents =
   | SnapAdded
   | SnapInstalled
   | SnapRemoved
   | SnapStateChange
-  | SnapUpdated;
+  | SnapUpdated
+  | SnapTerminated;
 
 export type AllowedActions =
   | GetEndowments
@@ -778,13 +788,23 @@ export class SnapController extends BaseController<
     try {
       if (this.isRunning(snapId)) {
         this._closeAllConnections(snapId);
-        await this._terminateSnap(snapId);
+        await this.terminateSnap(snapId);
       }
     } finally {
       if (this.isRunning(snapId)) {
         this._transitionSnapState(snapId, statusEvent);
       }
     }
+  }
+
+  /**
+   * Terminates the specified snap and emits the `snapTerminated` event.
+   *
+   * @param snapId - The snap to terminate.
+   */
+  private async terminateSnap(snapId: SnapId) {
+    await this._terminateSnap(snapId);
+    this.messagingSystem.publish('SnapController:snapTerminated', snapId);
   }
 
   /**
@@ -1334,7 +1354,7 @@ export class SnapController extends BaseController<
       this._transitionSnapState(snapId, SnapStatusEvent.start);
       return result;
     } catch (err) {
-      await this._terminateSnap(snapId);
+      await this.terminateSnap(snapId);
       throw err;
     }
   }
