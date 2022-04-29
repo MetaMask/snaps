@@ -101,15 +101,19 @@ export abstract class AbstractExecutionService<JobType extends Job>
     });
 
     // Ping worker and tell it to run teardown, continue with termination if it takes too long
-    await Promise.race([
-      this._command(jobId, {
-        jsonrpc: '2.0',
-        method: 'terminate',
-        params: [],
-        id: nanoid(),
-      }),
-      timeoutPromise,
-    ]);
+    try {
+      await Promise.race([
+        this._command(jobId, {
+          jsonrpc: '2.0',
+          method: 'terminate',
+          params: [],
+          id: nanoid(),
+        }),
+        timeoutPromise,
+      ]);
+    } catch {
+      // Ignore any potential errors, just keep terminating
+    }
 
     clearTimeout(timeout);
 
