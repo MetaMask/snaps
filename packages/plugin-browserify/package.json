@@ -1,6 +1,9 @@
 {
   "name": "@metamask/snaps-browserify",
   "version": "0.11.1",
+  "keywords": [
+    "browserify-plugin"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps-skunkworks.git"
@@ -8,9 +11,6 @@
   "main": "dist/index.js",
   "files": [
     "dist/"
-  ],
-  "keywords": [
-    "browserify-plugin"
   ],
   "scripts": {
     "test": "jest",
