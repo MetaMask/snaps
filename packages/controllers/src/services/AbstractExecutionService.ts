@@ -91,19 +91,11 @@ export abstract class AbstractExecutionService<JobType extends Job>
       throw new Error(`Job with id "${jobId}" not found.`);
     }
 
-    Object.values(jobWrapper.streams).forEach((stream) => {
-      try {
-        !stream.destroyed && stream.destroy();
-        stream.removeAllListeners();
-      } catch (err) {
-        console.error('Error while destroying stream', err);
-      }
-    });
-
     let timeout: number | undefined;
 
     const timeoutPromise = new Promise<void>((resolve) => {
       timeout = setTimeout(() => {
+        // No need to reject here, we just resolve and move on if the terminate request doesn't respond quickly
         resolve();
       }, this._terminationTimeout) as unknown as number;
     });
@@ -120,6 +112,15 @@ export abstract class AbstractExecutionService<JobType extends Job>
     ]);
 
     clearTimeout(timeout);
+
+    Object.values(jobWrapper.streams).forEach((stream) => {
+      try {
+        !stream.destroyed && stream.destroy();
+        stream.removeAllListeners();
+      } catch (err) {
+        console.error('Error while destroying stream', err);
+      }
+    });
 
     this._terminate(jobWrapper);
 
