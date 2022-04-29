@@ -631,7 +631,7 @@ export class SnapController extends BaseController<
 
   _pollForLastRequestStatus() {
     this._timeoutForLastRequestStatus = setTimeout(async () => {
-      this._stopSnapsLastRequestPastMax();
+      await this._stopSnapsLastRequestPastMax();
       this._pollForLastRequestStatus();
     }, this._idleTimeCheckInterval) as unknown as number;
   }
@@ -645,7 +645,7 @@ export class SnapController extends BaseController<
         this._maxIdleTime &&
         timeSince(runtime.lastRequest) > this._maxIdleTime
       ) {
-        this.stopSnap(snapId, SnapStatusEvent.stop);
+        await this.stopSnap(snapId, SnapStatusEvent.stop);
       }
     });
   }
@@ -1226,7 +1226,7 @@ export class SnapController extends BaseController<
     }
 
     if (this.isRunning(snapId)) {
-      this.stopSnap(snapId, SnapStatusEvent.stop);
+      await this.stopSnap(snapId, SnapStatusEvent.stop);
     }
 
     this._transitionSnapState(snapId, SnapStatusEvent.update);
@@ -1762,8 +1762,8 @@ export class SnapController extends BaseController<
     let timeout: number | undefined;
 
     const timeoutPromise = new Promise((_resolve, reject) => {
-      timeout = setTimeout(() => {
-        this.stopSnap(snapId, SnapStatusEvent.stop);
+      timeout = setTimeout(async () => {
+        await this.stopSnap(snapId, SnapStatusEvent.stop);
         reject(new Error('The request timed out.'));
       }, this._maxRequestTime) as unknown as number;
     });
