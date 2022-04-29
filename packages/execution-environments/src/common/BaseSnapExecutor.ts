@@ -56,6 +56,7 @@ export class BaseSnapExecutor {
         }
         return handler(origin, request);
       },
+      this.onTerminate.bind(this),
     );
   }
 
@@ -183,7 +184,6 @@ export class BaseSnapExecutor {
         _endowments,
       );
 
-      // @todo Figure out when to call this
       this.endowmentTeardown = endowmentTeardown;
 
       const compartment = new Compartment({
@@ -203,6 +203,12 @@ export class BaseSnapExecutor {
       throw new Error(
         `Error while running snap '${snapName}': ${(err as Error).message}`,
       );
+    }
+  }
+
+  protected onTerminate() {
+    if (this.endowmentTeardown) {
+      this.endowmentTeardown();
     }
   }
 

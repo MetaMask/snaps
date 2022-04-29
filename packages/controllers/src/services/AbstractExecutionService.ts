@@ -18,6 +18,7 @@ export type SetupSnapProvider = (snapId: string, stream: Duplex) => void;
 type ExecutionServiceArgs = {
   setupSnapProvider: SetupSnapProvider;
   messenger: ExecutionServiceMessenger;
+  terminationTimeout?: number;
 };
 
 // The snap is the callee
@@ -51,13 +52,20 @@ export abstract class AbstractExecutionService<JobType extends Job>
 
   protected _messenger: ExecutionServiceMessenger;
 
-  constructor({ setupSnapProvider, messenger }: ExecutionServiceArgs) {
+  protected _terminationTimeout: number;
+
+  constructor({
+    setupSnapProvider,
+    messenger,
+    terminationTimeout = 1000,
+  }: ExecutionServiceArgs) {
     this._snapRpcHooks = new Map();
     this.jobs = new Map();
     this.setupSnapProvider = setupSnapProvider;
     this.snapToJobMap = new Map();
     this.jobToSnapMap = new Map();
     this._messenger = messenger;
+    this._terminationTimeout = terminationTimeout;
   }
 
   /**
@@ -77,7 +85,7 @@ export abstract class AbstractExecutionService<JobType extends Job>
    *
    * @param jobId - The id of the job to be terminated.
    */
-  public terminate(jobId: string): void {
+  public async terminate(jobId: string): Promise<void> {
     const jobWrapper = this.jobs.get(jobId);
     if (!jobWrapper) {
       throw new Error(`Job with id "${jobId}" not found.`);
@@ -91,6 +99,27 @@ export abstract class AbstractExecutionService<JobType extends Job>
         console.error('Error while destroying stream', err);
       }
     });
+
+    let timeout: number | undefined;
+
+    const timeoutPromise = new Promise<void>((resolve) => {
+      timeout = setTimeout(() => {
+        resolve();
+      }, this._terminationTimeout) as unknown as number;
+    });
+
+    // Ping worker and tell it to run teardown, continue with termination if it takes too long
+    await Promise.race([
+      this._command(jobId, {
+        jsonrpc: '2.0',
+        method: 'terminate',
+        params: [],
+        id: nanoid(),
+      }),
+      timeoutPromise,
+    ]);
+
+    clearTimeout(timeout);
 
     this._terminate(jobWrapper);
 
@@ -116,13 +145,14 @@ export abstract class AbstractExecutionService<JobType extends Job>
   async terminateSnap(snapId: string) {
     const jobId = this.snapToJobMap.get(snapId);
     if (jobId) {
-      this.terminate(jobId);
+      await this.terminate(jobId);
     }
   }
 
   async terminateAllSnaps() {
     for (const workerId of this.jobs.keys()) {
-      this.terminate(workerId);
+      // @todo Promise.all
+      await this.terminate(workerId);
     }
     this._snapRpcHooks.clear();
   }
