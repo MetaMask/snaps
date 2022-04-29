@@ -151,10 +151,9 @@ export abstract class AbstractExecutionService<JobType extends Job>
   }
 
   async terminateAllSnaps() {
-    for (const workerId of this.jobs.keys()) {
-      // @todo Promise.all
-      await this.terminate(workerId);
-    }
+    await Promise.all(
+      [...this.jobs.keys()].map((workerId) => this.terminate(workerId)),
+    );
     this._snapRpcHooks.clear();
   }
 
