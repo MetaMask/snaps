@@ -99,4 +99,34 @@ describe('createEndowments', () => {
       'Unknown endowment: "foo"',
     );
   });
+
+  it('teardown calls all teardown functions', () => {
+    const mockWallet = { foo: Symbol('bar') };
+    const { endowments, teardown } = createEndowments(mockWallet as any, [
+      'setTimeout',
+      'clearTimeout',
+      'setInterval',
+      'clearInterval'
+    ]);
+
+    const clearTimeoutSpy = jest.spyOn(globalThis, 'clearTimeout');
+    const clearIntervalSpy = jest.spyOn(globalThis, 'clearInterval');
+
+    const { setInterval, setTimeout } = endowments as { setInterval: typeof globalThis.setInterval, setTimeout: typeof globalThis.setTimeout };
+    setTimeout(() => { }, 1000);
+    setInterval(() => { }, 1000);
+
+    teardown();
+
+    expect(clearTimeoutSpy).toHaveBeenCalledTimes(1);
+    expect(clearIntervalSpy).toHaveBeenCalledTimes(1);
+    expect(endowments).toMatchObject({
+      wallet: mockWallet,
+      setTimeout: expect.any(Function),
+      clearTimeout: expect.any(Function),
+      setInterval: expect.any(Function),
+      clearInterval: expect.any(Function),
+    });
+
+  });
 });

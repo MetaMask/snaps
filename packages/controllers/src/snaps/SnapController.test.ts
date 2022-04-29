@@ -645,6 +645,43 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
+  it('should still terminate if connection to worker has failed', async () => {
+    const options = getSnapControllerWithEESOptions({
+      idleTimeCheckInterval: 50,
+      maxIdleTime: 100
+    });
+    const worker = getWebWorkerEES(options.messenger)
+    const [snapController] = getSnapControllerWithEES(
+      options, worker
+    );
+
+    const snap = await snapController.add({
+      origin: FAKE_ORIGIN,
+      id: FAKE_SNAP_ID,
+      sourceCode: FAKE_SNAP_SOURCE_CODE,
+      manifest: FAKE_SNAP_MANIFEST,
+    });
+    await snapController.startSnap(snap.id);
+
+    const handler = await snapController.getRpcMessageHandler(snap.id);
+
+    (snapController as any)._maxRequestTime = 50;
+
+    (worker as any)._command = () => new Promise((resolve) => {
+      setTimeout(resolve, 2000);
+    });
+
+    await expect(handler('foo.com', {
+      jsonrpc: '2.0',
+      method: 'test',
+      params: {},
+      id: 1,
+    })).rejects.toThrow(/request timed out/u);;
+
+    expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
+    snapController.destroy();
+  });
+
   it('should add a snap and see its status', async () => {
     const [snapController] = getSnapControllerWithEES(
       getSnapControllerWithEESOptions({
