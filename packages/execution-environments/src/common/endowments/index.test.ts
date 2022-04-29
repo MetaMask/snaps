@@ -106,15 +106,23 @@ describe('createEndowments', () => {
       'setTimeout',
       'clearTimeout',
       'setInterval',
-      'clearInterval'
+      'clearInterval',
     ]);
 
     const clearTimeoutSpy = jest.spyOn(globalThis, 'clearTimeout');
     const clearIntervalSpy = jest.spyOn(globalThis, 'clearInterval');
 
-    const { setInterval, setTimeout } = endowments as { setInterval: typeof globalThis.setInterval, setTimeout: typeof globalThis.setTimeout };
-    setTimeout(() => { }, 1000);
-    setInterval(() => { }, 1000);
+    const { setInterval, setTimeout } = endowments as {
+      setInterval: typeof globalThis.setInterval;
+      setTimeout: typeof globalThis.setTimeout;
+    };
+    setTimeout(() => {
+      // no-op
+    }, 1000);
+
+    setInterval(() => {
+      // no-op
+    }, 1000);
 
     teardown();
 
@@ -127,6 +135,5 @@ describe('createEndowments', () => {
       setInterval: expect.any(Function),
       clearInterval: expect.any(Function),
     });
-
   });
 });

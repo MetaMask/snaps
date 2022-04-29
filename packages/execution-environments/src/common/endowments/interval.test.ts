@@ -29,14 +29,13 @@ describe('Interval endowments', () => {
   }, 300);
 
   it('_teardown should clear intervals', async () => {
-    const { setInterval: _setInterval, clearInterval: _clearInterval, _teardown } =
-      interval.factory();
+    const { setInterval: _setInterval, _teardown } = interval.factory();
 
     expect(
       await new Promise((resolve, reject) => {
         _setInterval(reject, 100);
         _teardown();
-        _setInterval(resolve, 200);
+        setInterval(resolve, 200);
       }),
     ).toBeUndefined();
   }, 300);
