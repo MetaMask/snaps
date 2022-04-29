@@ -3,11 +3,9 @@ import stripCommentsFn from '@chainsafe/strip-comments';
 import { Options } from './options';
 
 export function getTransform(
-  file: string,
+  _file: string,
   options: Partial<Options>,
 ): Transform {
-  console.log(file, options);
-
   return new Transform({
     transform(chunk, _, callback) {
       const code = chunk.toString();
@@ -39,7 +37,7 @@ export function getTransform(
  */
 export function postProcess(
   bundleString: string | null,
-  { stripComments = true, transformHtmlComments = true }: Partial<Options>,
+  { stripComments = true, transformHtmlComments = true }: Partial<Options> = {},
 ): string | null {
   if (typeof bundleString !== 'string') {
     return null;

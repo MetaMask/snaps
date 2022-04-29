@@ -3,6 +3,7 @@ module.exports = {
   // Ensures that we collect coverage from all source files, not just tested
   // ones.
   collectCoverageFrom: ['./src/**/*.ts'],
+  coveragePathIgnorePatterns: ['./src/index.ts'],
   coverageReporters: ['clover', 'json', 'lcov', 'text', 'json-summary'],
   coverageThreshold: {
     global: {
