@@ -46,6 +46,22 @@ describe('utils', () => {
       expect(resolveMock).toHaveBeenCalled();
     });
 
+    it('will fail if the bundleBuffer is null', async () => {
+      const writeErrorMock = jest
+        .spyOn(miscUtils, 'writeError')
+        .mockImplementation(() => {
+          throw new Error('error message');
+        });
+      await expect(
+        writeBundleFile({
+          bundleBuffer: null,
+          src: 'src',
+          dest: 'dest',
+        } as any),
+      ).rejects.toThrow('error message');
+      expect(writeErrorMock).toHaveBeenCalledTimes(1);
+    });
+
     it('catches error if writing bundle file fails', async () => {
       const logMock = jest.spyOn(console, 'log').mockImplementation();
       const writeFileMock = jest

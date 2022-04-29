@@ -18,7 +18,7 @@ function getMockSnapProvider(): MockSnapProvider {
   return mockProvider as MockSnapProvider;
 }
 
-const isConstructor = (value: any) =>
+export const isConstructor = (value: any) =>
   Boolean(typeof value?.prototype?.constructor?.name === 'string');
 
 const mockFunction = () => true;

@@ -48,10 +48,7 @@ export async function writeBundleFile({
         transformHtmlComments: argv.transformHtmlComments,
       }) as string,
     );
-
-    if (bundleBuffer) {
-      console.log(`Build success: '${src}' bundled as '${dest}'!`);
-    }
+    console.log(`Build success: '${src}' bundled as '${dest}'!`);
     resolve(true);
   } catch (error) {
     await writeError('Write error:', error.message, error, dest);

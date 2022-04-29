@@ -254,6 +254,7 @@ export async function buildSnapManifest(
             filePath: slash(pathUtils.join(dist, outfileName)),
             packageName: packageJson.name,
             registry: NPM_PUBLIC_REGISTRY_URL,
+            iconPath: 'icon.svg',
           } as const,
         },
       },

@@ -85,6 +85,8 @@ describe('manifest', () => {
       .spyOn(fs, 'readFile')
       .mockImplementationOnce(() => Promise.resolve(DEFAULT_SNAP_BUNDLE));
 
+    jest.spyOn(fs, 'readFile').mockImplementationOnce(async () => 'sourceCode');
+
     await manifestHandler(getMockArgv());
 
     expect(readJsonFileMock).toHaveBeenCalledTimes(2);
@@ -98,7 +100,7 @@ describe('manifest', () => {
       NpmSnapFileNames.PackageJson,
     );
 
-    expect(fs.readFile).toHaveBeenCalledTimes(1);
+    expect(fs.readFile).toHaveBeenCalledTimes(2);
     expect(fs.readFile).toHaveBeenNthCalledWith(1, 'dist/bundle.js', 'utf8');
 
     expect(fs.writeFile).toHaveBeenCalledTimes(1);
@@ -122,6 +124,8 @@ describe('manifest', () => {
       .spyOn(fs, 'readFile')
       .mockImplementationOnce(() => Promise.resolve(DEFAULT_SNAP_BUNDLE));
 
+    jest.spyOn(fs, 'readFile').mockImplementationOnce(async () => 'sourceCode');
+
     await manifestHandler(getMockArgv({ writeManifest: false }));
 
     expect(readJsonFileMock).toHaveBeenCalledTimes(2);
@@ -135,7 +139,7 @@ describe('manifest', () => {
       NpmSnapFileNames.PackageJson,
     );
 
-    expect(fs.readFile).toHaveBeenCalledTimes(1);
+    expect(fs.readFile).toHaveBeenCalledTimes(2);
     expect(fs.readFile).toHaveBeenNthCalledWith(1, 'dist/bundle.js', 'utf8');
 
     expect(fs.writeFile).not.toHaveBeenCalled();
@@ -158,6 +162,8 @@ describe('manifest', () => {
       .spyOn(fs, 'readFile')
       .mockImplementationOnce(() => Promise.resolve(DEFAULT_SNAP_BUNDLE));
 
+    jest.spyOn(fs, 'readFile').mockImplementationOnce(async () => 'sourceCode');
+
     await manifestHandler(getMockArgv());
 
     expect(readJsonFileMock).toHaveBeenCalledTimes(2);
@@ -171,7 +177,7 @@ describe('manifest', () => {
       NpmSnapFileNames.PackageJson,
     );
 
-    expect(fs.readFile).toHaveBeenCalledTimes(1);
+    expect(fs.readFile).toHaveBeenCalledTimes(2);
     expect(fs.readFile).toHaveBeenNthCalledWith(1, 'dist/bundle.js', 'utf8');
 
     const expectedManifest = getSnapManifest();
@@ -208,6 +214,8 @@ describe('manifest', () => {
       .spyOn(fs, 'readFile')
       .mockImplementationOnce(() => Promise.resolve(DEFAULT_SNAP_BUNDLE));
 
+    jest.spyOn(fs, 'readFile').mockImplementationOnce(async () => 'sourceCode');
+
     global.snaps.suppressWarnings = true;
 
     await manifestHandler(getMockArgv());
@@ -223,7 +231,7 @@ describe('manifest', () => {
       NpmSnapFileNames.PackageJson,
     );
 
-    expect(fs.readFile).toHaveBeenCalledTimes(1);
+    expect(fs.readFile).toHaveBeenCalledTimes(2);
     expect(fs.readFile).toHaveBeenNthCalledWith(1, 'dist/bundle.js', 'utf8');
 
     const expectedManifest = getSnapManifest();
@@ -313,6 +321,10 @@ describe('manifest', () => {
         .spyOn(fs, 'readFile')
         .mockImplementationOnce(() => Promise.resolve(DEFAULT_SNAP_BUNDLE));
 
+      jest
+        .spyOn(fs, 'readFile')
+        .mockImplementationOnce(async () => 'sourceCode');
+
       await expect(manifestHandler(getMockArgv())).rejects.toThrow(
         /Missing file "package.json"/u,
       );
@@ -328,7 +340,7 @@ describe('manifest', () => {
         NpmSnapFileNames.PackageJson,
       );
 
-      expect(fs.readFile).toHaveBeenCalledTimes(1);
+      expect(fs.readFile).toHaveBeenCalledTimes(2);
       expect(fs.readFile).toHaveBeenNthCalledWith(1, 'dist/bundle.js', 'utf8');
       expect(fs.writeFile).not.toHaveBeenCalled();
     });
@@ -341,6 +353,10 @@ describe('manifest', () => {
       jest
         .spyOn(fs, 'readFile')
         .mockImplementationOnce(() => Promise.resolve(''));
+
+      jest
+        .spyOn(fs, 'readFile')
+        .mockImplementationOnce(async () => 'sourceCode');
 
       await expect(manifestHandler(getMockArgv())).rejects.toThrow(
         /Missing file "source code bundle"/u,
@@ -357,7 +373,7 @@ describe('manifest', () => {
         NpmSnapFileNames.PackageJson,
       );
 
-      expect(fs.readFile).toHaveBeenCalledTimes(1);
+      expect(fs.readFile).toHaveBeenCalledTimes(2);
       expect(fs.readFile).toHaveBeenNthCalledWith(1, 'dist/bundle.js', 'utf8');
       expect(fs.writeFile).not.toHaveBeenCalled();
     });
@@ -430,6 +446,10 @@ describe('manifest', () => {
         .spyOn(fs, 'readFile')
         .mockImplementationOnce(() => Promise.resolve(DEFAULT_SNAP_BUNDLE));
 
+      jest
+        .spyOn(fs, 'readFile')
+        .mockImplementationOnce(async () => 'sourceCode');
+
       await expect(manifestHandler(getMockArgv())).rejects.toThrow(
         /must have required property 'initialPermissions'/u,
       );
@@ -445,7 +465,7 @@ describe('manifest', () => {
         NpmSnapFileNames.PackageJson,
       );
 
-      expect(fs.readFile).toHaveBeenCalledTimes(1);
+      expect(fs.readFile).toHaveBeenCalledTimes(2);
       expect(fs.readFile).toHaveBeenNthCalledWith(1, 'dist/bundle.js', 'utf8');
       expect(fs.writeFile).not.toHaveBeenCalled();
     });
@@ -458,6 +478,10 @@ describe('manifest', () => {
       jest
         .spyOn(fs, 'readFile')
         .mockImplementationOnce(() => Promise.resolve(DEFAULT_SNAP_BUNDLE));
+
+      jest
+        .spyOn(fs, 'readFile')
+        .mockImplementationOnce(async () => 'sourceCode');
 
       await expect(manifestHandler(getMockArgv())).rejects.toThrow(
         /must have required property 'version'/u,
@@ -474,7 +498,7 @@ describe('manifest', () => {
         NpmSnapFileNames.PackageJson,
       );
 
-      expect(fs.readFile).toHaveBeenCalledTimes(1);
+      expect(fs.readFile).toHaveBeenCalledTimes(2);
       expect(fs.readFile).toHaveBeenNthCalledWith(1, 'dist/bundle.js', 'utf8');
       expect(fs.writeFile).not.toHaveBeenCalled();
     });
@@ -524,6 +548,10 @@ describe('manifest', () => {
         .spyOn(fs, 'readFile')
         .mockImplementationOnce(() => Promise.resolve(DEFAULT_SNAP_BUNDLE));
 
+      jest
+        .spyOn(fs, 'readFile')
+        .mockImplementationOnce(async () => 'sourceCode');
+
       await manifestHandler(getMockArgv());
 
       expect(readJsonFileMock).toHaveBeenCalledTimes(2);
@@ -537,7 +565,7 @@ describe('manifest', () => {
         NpmSnapFileNames.PackageJson,
       );
 
-      expect(fs.readFile).toHaveBeenCalledTimes(1);
+      expect(fs.readFile).toHaveBeenCalledTimes(2);
       expect(fs.readFile).toHaveBeenNthCalledWith(1, 'dist/bundle.js', 'utf8');
 
       expect(fs.writeFile).toHaveBeenCalledTimes(1);
@@ -600,6 +628,10 @@ describe('manifest', () => {
         .spyOn(fs, 'readFile')
         .mockImplementationOnce(() => Promise.resolve(DEFAULT_SNAP_BUNDLE));
 
+      jest
+        .spyOn(fs, 'readFile')
+        .mockImplementationOnce(async () => 'sourceCode');
+
       await expect(
         manifestHandler(getMockArgv({ writeManifest: false })),
       ).rejects.toThrow(
@@ -620,7 +652,7 @@ describe('manifest', () => {
         NpmSnapFileNames.PackageJson,
       );
 
-      expect(fs.readFile).toHaveBeenCalledTimes(1);
+      expect(fs.readFile).toHaveBeenCalledTimes(2);
       expect(fs.readFile).toHaveBeenNthCalledWith(1, 'dist/bundle.js', 'utf8');
 
       expect(fs.writeFile).not.toHaveBeenCalled();
@@ -639,6 +671,8 @@ describe('manifest', () => {
     jest
       .spyOn(fs, 'readFile')
       .mockImplementationOnce(() => Promise.resolve(DEFAULT_SNAP_BUNDLE));
+
+    jest.spyOn(fs, 'readFile').mockImplementationOnce(async () => 'sourceCode');
 
     jest.spyOn(fs, 'writeFile').mockImplementationOnce(() => {
       throw new Error('foo');
@@ -659,7 +693,7 @@ describe('manifest', () => {
       NpmSnapFileNames.PackageJson,
     );
 
-    expect(fs.readFile).toHaveBeenCalledTimes(1);
+    expect(fs.readFile).toHaveBeenCalledTimes(2);
     expect(fs.readFile).toHaveBeenNthCalledWith(1, 'dist/bundle.js', 'utf8');
 
     expect(fs.writeFile).toHaveBeenCalledTimes(1);
