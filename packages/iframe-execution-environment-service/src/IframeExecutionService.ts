@@ -17,8 +17,6 @@ type IframeExecutionEnvironmentServiceArgs = {
   setupSnapProvider: SetupSnapProvider;
   iframeUrl: URL;
   messenger: ExecutionServiceMessenger;
-  unresponsivePollingInterval?: number;
-  unresponsiveTimeout?: number;
 };
 
 type JobStreams = {
@@ -44,15 +42,11 @@ export class IframeExecutionService extends AbstractExecutionService<EnvMetadata
     setupSnapProvider,
     iframeUrl,
     messenger,
-    unresponsivePollingInterval = 5000,
-    unresponsiveTimeout = 30000,
     createWindowTimeout = 60000,
   }: IframeExecutionEnvironmentServiceArgs) {
     super({
       setupSnapProvider,
       messenger,
-      unresponsivePollingInterval,
-      unresponsiveTimeout,
     });
     this._createWindowTimeout = createWindowTimeout;
     this.iframeUrl = iframeUrl;

@@ -1,9 +1,6 @@
-import { describe, expect, it, jest } from '@jest/globals';
+import { describe, expect, it } from '@jest/globals';
 import { ControllerMessenger } from '@metamask/controllers';
-import {
-  ErrorMessageEvent,
-  UnresponsiveMessageEvent,
-} from '@metamask/snap-types';
+import { ErrorMessageEvent } from '@metamask/snap-types';
 import { IframeExecutionService } from './IframeExecutionService';
 import fixJSDOMPostMessageEventSource from './testHelpers/fixJSDOMPostMessageEventSource';
 
@@ -110,52 +107,4 @@ describe('Iframe Controller', () => {
     await iframeExecutionService.terminateAllSnaps();
     removeListener();
   });
-
-  it('can handle a no ping reply', async () => {
-    const messenger = new ControllerMessenger<
-      never,
-      UnresponsiveMessageEvent
-    >().getRestricted<
-      'ExecutionService',
-      never,
-      UnresponsiveMessageEvent['type']
-    >({
-      name: 'ExecutionService',
-      allowedEvents: ['ExecutionService:unresponsive'],
-    });
-
-    const iframeExecutionService = new IframeExecutionService({
-      messenger,
-      setupSnapProvider: () => {
-        // do nothing
-      },
-      iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.3.2-test/',
-      ),
-    });
-    const removeListener = fixJSDOMPostMessageEventSource(
-      iframeExecutionService,
-    );
-    const snapId = 'foo.bar.baz';
-
-    await iframeExecutionService.executeSnap({
-      snapId,
-      sourceCode: `
-        console.log('foo');
-      `,
-      endowments: ['console'],
-    });
-    // prevent command from returning
-    // eslint-disable-next-line jest/prefer-spy-on
-    (iframeExecutionService as any)._command = jest.fn();
-
-    // check for an error
-    const promise = new Promise((resolve) => {
-      messenger.subscribe('ExecutionService:unresponsive', resolve);
-    });
-
-    const result = await promise;
-    expect(result).toStrictEqual(snapId);
-    removeListener();
-  }, 60000);
 });
