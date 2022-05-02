@@ -1,6 +1,6 @@
 import { Transform } from 'stream';
 import { BrowserifyObject } from 'browserify';
-import { postProcess, PostProcessOptions } from '@metamask/snaps-utils';
+import { postProcess, PostProcessOptions } from '@metamask/snap-utils';
 
 export type Options = PostProcessOptions;
 

@@ -30,7 +30,7 @@
     "publish": "../../scripts/publish-package.sh"
   },
   "dependencies": {
-    "@metamask/snaps-utils": "^0.11.1"
+    "@metamask/snap-utils": "^0.11.1"
   },
   "devDependencies": {
     "@types/browserify": "^12.0.37",

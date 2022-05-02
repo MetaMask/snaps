@@ -1,5 +1,5 @@
 {
-  "name": "@metamask/snaps-utils",
+  "name": "@metamask/snap-utils",
   "version": "0.11.1",
   "repository": {
     "type": "git",
