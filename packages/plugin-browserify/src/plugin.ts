@@ -1,4 +1,4 @@
-import { Transform } from 'stream';
+import { Transform, TransformCallback } from 'stream';
 import { BrowserifyObject } from 'browserify';
 import { postProcess, PostProcessOptions } from '@metamask/snap-utils';
 
@@ -16,16 +16,37 @@ export function getTransform(
   _file: string,
   options: Partial<Options>,
 ): Transform {
-  return new Transform({
-    transform(chunk, _, callback) {
-      const code = chunk.toString();
+  // return new Transform({
+  //   transform(chunk, _, callback) {
+  //     const code = chunk.toString();
+  //     const transformedCode = postProcess(code, options);
+  //
+  //     this.push(transformedCode);
+  //
+  //     callback();
+  //   },
+  // });
+
+  const Transformer = class extends Transform {
+    readonly #data: Buffer[] = [];
+
+    _transform(chunk: Buffer, _: BufferEncoding, callback: TransformCallback) {
+      // Collects all the chunks into an array.
+      this.#data.push(chunk);
+      callback();
+    }
+
+    _flush(callback: TransformCallback) {
+      // Merges all the chunks into a single string and processes it.
+      const code = Buffer.concat(this.#data).toString('utf-8');
       const transformedCode = postProcess(code, options);
 
       this.push(transformedCode);
-
       callback();
-    },
-  });
+    }
+  };
+
+  return new Transformer();
 }
 
 /**
