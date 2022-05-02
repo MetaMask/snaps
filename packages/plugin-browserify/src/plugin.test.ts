@@ -13,7 +13,7 @@ const toStream = (value: string) => {
 
 describe('getTransform', () => {
   it('returns a transform stream which processes the data', async () => {
-    const transform = getTransform('foo', {});
+    const transform = getTransform({});
     const stream = toStream(' foo bar ');
 
     const result = await new Promise((resolve) => {
@@ -58,8 +58,8 @@ describe('plugin', () => {
     const result = await new Promise((resolve, reject) => {
       const bundler = browserify();
 
-      bundler.plugin(plugin);
       bundler.add(value);
+      bundler.plugin(plugin);
 
       bundler.bundle((error, src) => {
         if (error) {

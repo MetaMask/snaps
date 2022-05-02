@@ -5,28 +5,12 @@ import { postProcess, PostProcessOptions } from '@metamask/snap-utils';
 export type Options = PostProcessOptions;
 
 /**
- * Get a transformer which can be used with the Browserify `transform` function.
- * It accepts a string input, which is post-processed and pushed to the output
- * stream.
+ * Get a transformer which can be used in the Browserify pipeline. It accepts a
+ * string input, which is post-processed and pushed to the output stream.
  *
- * @param _file
  * @param options
  */
-export function getTransform(
-  _file: string,
-  options: Partial<Options>,
-): Transform {
-  // return new Transform({
-  //   transform(chunk, _, callback) {
-  //     const code = chunk.toString();
-  //     const transformedCode = postProcess(code, options);
-  //
-  //     this.push(transformedCode);
-  //
-  //     callback();
-  //   },
-  // });
-
+export function getTransform(options: Partial<Options>): Transform {
   const Transformer = class extends Transform {
     readonly #data: Buffer[] = [];
 
@@ -60,5 +44,7 @@ export default function plugin(
   browserify: BrowserifyObject,
   options: Partial<Options>,
 ) {
-  browserify.transform(getTransform, options);
+  // Pushes the transform stream at the end of Browserify's pipeline. This
+  // ensures that the transform is run on the entire bundle.
+  browserify.pipeline.push(getTransform(options));
 }
