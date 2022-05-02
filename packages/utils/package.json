@@ -1,9 +1,6 @@
 {
-  "name": "@metamask/snaps-browserify",
+  "name": "@metamask/snaps-utils",
   "version": "0.11.1",
-  "keywords": [
-    "browserify-plugin"
-  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps-skunkworks.git"
@@ -30,13 +27,10 @@
     "publish": "../../scripts/publish-package.sh"
   },
   "dependencies": {
-    "@metamask/snaps-utils": "^0.11.1"
+    "@chainsafe/strip-comments": "^1.0.5"
   },
   "devDependencies": {
-    "@types/browserify": "^12.0.37",
     "@types/jest": "^27.4.1",
-    "browserify": "^17.0.0",
-    "concat-stream": "^2.0.0",
     "jest": "^27.5.1",
     "jest-it-up": "^2.0.0",
     "ts-jest": "^27.1.4",

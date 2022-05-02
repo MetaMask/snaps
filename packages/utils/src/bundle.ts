@@ -1,22 +1,9 @@
-import { Transform } from 'stream';
 import stripCommentsFn from '@chainsafe/strip-comments';
-import { Options } from './options';
 
-export function getTransform(
-  _file: string,
-  options: Partial<Options>,
-): Transform {
-  return new Transform({
-    transform(chunk, _, callback) {
-      const code = chunk.toString();
-      const transformedCode = postProcess(code, options);
-
-      this.push(transformedCode);
-
-      callback();
-    },
-  });
-}
+export type PostProcessOptions = {
+  stripComments: boolean;
+  transformHtmlComments: boolean;
+};
 
 /**
  * Post-processes a JavaScript bundle string such that it can be evaluated in
@@ -37,7 +24,10 @@ export function getTransform(
  */
 export function postProcess(
   bundleString: string | null,
-  { stripComments = true, transformHtmlComments = true }: Partial<Options> = {},
+  {
+    stripComments = true,
+    transformHtmlComments = true,
+  }: Partial<PostProcessOptions> = {},
 ): string | null {
   if (typeof bundleString !== 'string') {
     return null;
