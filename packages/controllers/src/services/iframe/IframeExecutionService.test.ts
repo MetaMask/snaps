@@ -1,4 +1,3 @@
-import { describe, expect, it } from '@jest/globals';
 import { ControllerMessenger } from '@metamask/controllers';
 import { ErrorMessageEvent } from '@metamask/snap-types';
 import { IframeExecutionService } from './IframeExecutionService';

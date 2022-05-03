@@ -6,7 +6,11 @@ import { JsonRpcEngine } from 'json-rpc-engine';
 import { createStreamMiddleware } from 'json-rpc-middleware-stream';
 import { nanoid } from 'nanoid';
 import pump from 'pump';
-import { AbstractExecutionService, setupMultiplex, SetupSnapProvider } from '../AbstractExecutionService';
+import {
+  AbstractExecutionService,
+  setupMultiplex,
+  SetupSnapProvider,
+} from '../AbstractExecutionService';
 
 type IframeExecutionEnvironmentServiceArgs = {
   createWindowTimeout?: number;
