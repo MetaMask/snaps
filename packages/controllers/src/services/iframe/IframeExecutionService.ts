@@ -1,16 +1,12 @@
 import { Duplex } from 'stream';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
-import {
-  AbstractExecutionService,
-  setupMultiplex,
-  SetupSnapProvider,
-} from '@metamask/snap-controllers';
 import { ExecutionServiceMessenger } from '@metamask/snap-types';
 import { SNAP_STREAM_NAMES } from '@metamask/execution-environments';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createStreamMiddleware } from 'json-rpc-middleware-stream';
 import { nanoid } from 'nanoid';
 import pump from 'pump';
+import { AbstractExecutionService, setupMultiplex, SetupSnapProvider } from '../AbstractExecutionService';
 
 type IframeExecutionEnvironmentServiceArgs = {
   createWindowTimeout?: number;
