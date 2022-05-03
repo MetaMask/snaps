@@ -5,7 +5,7 @@ wallet.registerRpcMessageHandler(async (originString, requestObject) => {
         method: 'snap_notify',
         params: [
           {
-            type: 'native',
+            type: 'inApp',
             message: `Hello, ${originString}!`,
           },
         ],
