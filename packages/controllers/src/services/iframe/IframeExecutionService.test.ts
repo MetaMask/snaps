@@ -7,7 +7,7 @@ import fixJSDOMPostMessageEventSource from './testHelpers/fixJSDOMPostMessageEve
 // We do not use our default endowments in these tests because JSDOM doesn't
 // implement all of them.
 
-describe('Iframe Controller', () => {
+describe('IframeExecutionService', () => {
   it('can boot', async () => {
     const controllerMessenger = new ControllerMessenger<
       never,
