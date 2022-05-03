@@ -21,9 +21,11 @@ describe('bundle', () => {
       };
 
       const mockTransform = jest.fn();
+      const mockPlugin = jest.fn();
       const mockBrowserify = (browserify as jest.Mock).mockImplementation(
         () => ({
           transform: mockTransform,
+          plugin: mockPlugin,
           bundle: (cb: () => any) => {
             cb();
           },
@@ -43,6 +45,10 @@ describe('bundle', () => {
         expect.objectContaining({ global: false }),
       );
       expect(mockBundlerTransform).toHaveBeenCalledTimes(1);
+      expect(mockPlugin).toHaveBeenCalledTimes(1);
+      expect(mockPlugin).toHaveBeenCalledWith('@metamask/snap-browserify', {
+        stripComments: true,
+      });
       expect(writeBundleFileMock).toHaveBeenCalledTimes(1);
     });
 
@@ -54,9 +60,11 @@ describe('bundle', () => {
       };
 
       const mockTransform = jest.fn();
+      const mockPlugin = jest.fn();
       const mockBrowserify = (browserify as jest.Mock).mockImplementation(
         () => ({
           transform: mockTransform,
+          plugin: mockPlugin,
           bundle: (cb: () => any) => {
             cb();
           },
@@ -74,6 +82,10 @@ describe('bundle', () => {
         'mockBabelify',
         expect.objectContaining({ global: false }),
       );
+      expect(mockPlugin).toHaveBeenCalledTimes(1);
+      expect(mockPlugin).toHaveBeenCalledWith('@metamask/snap-browserify', {
+        stripComments: true,
+      });
       expect(writeBundleFileMock).toHaveBeenCalledTimes(1);
     });
 
@@ -85,9 +97,11 @@ describe('bundle', () => {
       };
 
       const mockTransform = jest.fn();
+      const mockPlugin = jest.fn();
       const mockBrowserify = (browserify as jest.Mock).mockImplementation(
         () => ({
           transform: mockTransform,
+          plugin: mockPlugin,
           bundle: (cb: () => any) => {
             cb();
           },
@@ -105,6 +119,10 @@ describe('bundle', () => {
         'mockBabelify',
         expect.objectContaining({ global: false }),
       );
+      expect(mockPlugin).toHaveBeenCalledTimes(1);
+      expect(mockPlugin).toHaveBeenCalledWith('@metamask/snap-browserify', {
+        stripComments: true,
+      });
       expect(writeBundleFileMock).toHaveBeenCalledTimes(1);
     });
 
@@ -116,9 +134,11 @@ describe('bundle', () => {
       };
 
       const mockTransform = jest.fn();
+      const mockPlugin = jest.fn();
       const mockBrowserify = (browserify as jest.Mock).mockImplementation(
         () => ({
           transform: mockTransform,
+          plugin: mockPlugin,
           bundle: (cb: () => any) => {
             cb();
           },
@@ -132,6 +152,10 @@ describe('bundle', () => {
       await bundle('src', 'dest', mockArgv as any);
       expect(mockBrowserify).toHaveBeenCalledWith('src', { debug: true });
       expect(mockTransform).not.toHaveBeenCalled();
+      expect(mockPlugin).toHaveBeenCalledTimes(1);
+      expect(mockPlugin).toHaveBeenCalledWith('@metamask/snap-browserify', {
+        stripComments: true,
+      });
       expect(writeBundleFileMock).toHaveBeenCalledTimes(1);
     });
 
@@ -143,9 +167,11 @@ describe('bundle', () => {
       };
 
       const mockTransform = jest.fn();
+      const mockPlugin = jest.fn();
       const mockBrowserify = (browserify as jest.Mock).mockImplementation(
         () => ({
           transform: mockTransform,
+          plugin: mockPlugin,
           bundle: (cb: () => any) => {
             cb();
           },
@@ -163,6 +189,10 @@ describe('bundle', () => {
         'mockBabelify',
         expect.objectContaining({ global: true }),
       );
+      expect(mockPlugin).toHaveBeenCalledTimes(1);
+      expect(mockPlugin).toHaveBeenCalledWith('@metamask/snap-browserify', {
+        stripComments: true,
+      });
       expect(writeBundleFileMock).toHaveBeenCalledTimes(1);
     });
   });
