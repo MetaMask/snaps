@@ -1,4 +1,4 @@
-# @metamask/snap-webpack
+# @metamask/snaps-webpack-plugin
 
 A plugin for developing [MetaMask Snaps](https://docs.metamask.io/guide/snaps.html) using [Webpack](https://webpack.js.org/). This can be used as alternative to the `mm-snap` CLI `build` command. It transforms the bundle to fix common issues with SES. For a list of changes the plugin makes, you can refer to [the source code](../utils/src/bundle.ts).
 
@@ -8,8 +8,8 @@ Use Node.js `14.0.0` or later. We recommend using [nvm](https://github.com/nvm-s
 
 Install a dependency in your snap project using `yarn` or `npm`:
 
-- `npm install @metamask/snap-webpack`
-- `yarn add @metamask/snap-webpack`
+- `npm install @metamask/snaps-webpack-plugin`
+- `yarn add @metamask/snaps-webpack-plugin`
 
 ## Usage
 
@@ -18,11 +18,11 @@ Add the plugin to the `plugins` array in your Webpack configuration:
 ```ts
 // webpack.config.js
 
-import SnapWebpackPlugin from '@metamask/snap-webpack';
+import SnapsWebpackPlugin from '@metamask/snaps-webpack-plugin';
 
 export default {
   plugins: [
-    new SnapWebpackPlugin(options),
+    new SnapsWebpackPlugin(options),
   ]
 };
 ```
@@ -32,7 +32,7 @@ export default {
 All options are optional, and default to `true`.
 
 ```ts
-import { Options } from '@metamask/snap-webpack';
+import { Options } from '@metamask/snaps-webpack-plugin';
 
 const options: Options = {
   /**

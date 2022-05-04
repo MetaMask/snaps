@@ -1,8 +1,8 @@
-import { postProcess, PostProcessOptions } from '@metamask/snap-utils';
+import { postProcessBundle, PostProcessOptions } from '@metamask/snap-utils';
 import { Compiler, WebpackPluginInstance } from 'webpack';
 import { RawSource } from 'webpack-sources';
 
-const PLUGIN_NAME = 'SnapWebpackPlugin';
+const PLUGIN_NAME = 'SnapsWebpackPlugin';
 
 export type Options = PostProcessOptions;
 
@@ -18,7 +18,10 @@ export default class SnapWebpackPlugin implements WebpackPluginInstance {
       compilation.hooks.processAssets.tap(PLUGIN_NAME, (assets) => {
         Object.keys(assets).forEach((assetName) => {
           const asset = assets[assetName];
-          const processed = postProcess(asset.source() as string, this.options);
+          const processed = postProcessBundle(
+            asset.source() as string,
+            this.options,
+          );
 
           if (processed) {
             // For some reason the type of `RawSource` is not compatible with Webpack's own
