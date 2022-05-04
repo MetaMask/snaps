@@ -1,7 +1,7 @@
 import browserify, { BrowserifyObject } from 'browserify';
 import { TranspilationModes } from '../../builders';
 import { YargsArgs } from '../../types/yargs';
-import { writeBundleFile, processDependencies } from './utils';
+import { processDependencies, writeBundleFile } from './utils';
 
 // We need to statically import all Browserify transforms and all Babel presets
 // and plugins, and calling `require` is the sanest way to do that.
@@ -16,6 +16,7 @@ import { writeBundleFile, processDependencies } from './utils';
  * @param argv.sourceMaps - Whether to output sourcemaps.
  * @param argv.stripComments - Whether to remove comments from code.
  * @param argv.transpilationMode - The Babel transpilation mode.
+ * @param bundlerTransform
  */
 export function bundle(
   src: string,
@@ -27,6 +28,7 @@ export function bundle(
   const babelifyOptions = processDependencies(argv as any);
   return new Promise((resolve, _reject) => {
     const bundler = browserify(src, { debug });
+
     if (transpilationMode !== TranspilationModes.none) {
       bundler.transform(require('babelify'), {
         global: transpilationMode === TranspilationModes.localAndDeps,
@@ -53,6 +55,11 @@ export function bundle(
 
     bundlerTransform?.(bundler);
 
+    bundler.plugin('@metamask/snap-browserify', {
+      stripComments: argv.stripComments,
+      transformHtmlComments: argv.transformHtmlComments,
+    });
+
     bundler.bundle(
       async (bundleError, bundleBuffer: Buffer) =>
         await writeBundleFile({
@@ -61,7 +68,6 @@ export function bundle(
           src,
           dest,
           resolve,
-          argv,
         }),
     );
   });
