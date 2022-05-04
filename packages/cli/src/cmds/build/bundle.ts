@@ -55,7 +55,7 @@ export function bundle(
 
     bundlerTransform?.(bundler);
 
-    bundler.plugin('@metamask/snap-browserify', {
+    bundler.plugin('@metamask/snaps-browserify-plugin', {
       stripComments: argv.stripComments,
       transformHtmlComments: argv.transformHtmlComments,
     });

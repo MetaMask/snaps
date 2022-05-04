@@ -1,12 +1,12 @@
-import { postProcess } from './bundle';
+import { postProcessBundle } from './post-process';
 
-describe('postProcess', () => {
+describe('postProcessBundle', () => {
   it('handles null input', () => {
-    expect(postProcess(null)).toBeNull();
+    expect(postProcessBundle(null)).toBeNull();
   });
 
   it('trims the string', () => {
-    expect(postProcess(' trimMe ')).toStrictEqual('trimMe');
+    expect(postProcessBundle(' trimMe ')).toStrictEqual('trimMe');
   });
 
   it('strips comments', () => {
@@ -20,13 +20,13 @@ describe('postProcess', () => {
       ['foo/** /* **/bar', 'foobar'],
       ['foo/** /** **/bar', 'foobar'],
     ].forEach(([input, expected]) => {
-      expect(postProcess(input)).toStrictEqual(expected);
+      expect(postProcessBundle(input)).toStrictEqual(expected);
     });
   });
 
   it('ignores comments if configured to do so', () => {
     expect(
-      postProcess('/* leave me alone */postProcessMe', {
+      postProcessBundle('/* leave me alone */postProcessMe', {
         stripComments: false,
       }),
     ).toStrictEqual('/* leave me alone */postProcessMe');
@@ -38,22 +38,22 @@ describe('postProcess', () => {
       ['-->\nbar', '-- >\nbar'],
     ].forEach(([input, output]) => {
       expect(
-        postProcess(input, { transformHtmlComments: false }),
+        postProcessBundle(input, { transformHtmlComments: false }),
       ).toStrictEqual(input);
 
-      expect(postProcess(input, { transformHtmlComments: true })).toStrictEqual(
+      expect(postProcessBundle(input, { transformHtmlComments: true })).toStrictEqual(
         output,
       );
     });
   });
 
   it('applies regeneratorRuntime hack', () => {
-    expect(postProcess('(regeneratorRuntime)')).toStrictEqual(
+    expect(postProcessBundle('(regeneratorRuntime)')).toStrictEqual(
       'var regeneratorRuntime;\n(regeneratorRuntime)',
     );
   });
 
   it('throws an error if the postprocessed string is empty', () => {
-    expect(() => postProcess(' ')).toThrow(/^Bundled code is empty/u);
+    expect(() => postProcessBundle(' ')).toThrow(/^Bundled code is empty/u);
   });
 });
