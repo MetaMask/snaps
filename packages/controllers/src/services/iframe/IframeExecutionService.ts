@@ -118,9 +118,15 @@ export class IframeExecutionService extends AbstractExecutionService<EnvMetadata
     };
   }
 
+  /**
+   * Creates the iframe to be used as the execution environment
+   * This may run forever if the iframe never loads, but the promise should be wrapped in an initialization timeout in the SnapController
+   *
+   * @param uri - The iframe URI
+   * @param jobId - The job id
+   */
   private _createWindow(uri: string, jobId: string): Promise<Window> {
     const iframe = document.createElement('iframe');
-    // This may run forever if the iframe never loads, but we wrap this call in a timeout elsewhere
     return new Promise((resolve) => {
       iframe.addEventListener('load', () => {
         if (iframe.contentWindow) {
