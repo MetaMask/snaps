@@ -18,7 +18,7 @@ describe('generateMockEndowments', () => {
 
   it('returns mock function for functions', () => {
     // Remove fetch from isomorphic-fetch if present
-    Object.assign(globalThis, { ...globalThis, fetch: undefined })
+    Object.assign(globalThis, { ...globalThis, fetch: undefined });
     const endowments = generateMockEndowments();
     expect(endowments.fetch()).toBe(true);
   });
