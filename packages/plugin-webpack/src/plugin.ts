@@ -6,7 +6,7 @@ const PLUGIN_NAME = 'SnapsWebpackPlugin';
 
 export type Options = PostProcessOptions;
 
-export default class SnapWebpackPlugin implements WebpackPluginInstance {
+export default class SnapsWebpackPlugin implements WebpackPluginInstance {
   public readonly options: Partial<Options>;
 
   constructor(options: Partial<Options> = {}) {

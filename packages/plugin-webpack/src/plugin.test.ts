@@ -1,6 +1,8 @@
+/* eslint-disable jest/no-restricted-matchers */
+
 import webpack, { Stats } from 'webpack';
 import { createFsFromVolume, Volume } from 'memfs';
-import SnapWebpackPlugin from './plugin';
+import SnapsWebpackPlugin from './plugin';
 
 describe('SnapsWebpackPlugin', () => {
   it('processes files using Webpack', async () => {
@@ -16,7 +18,7 @@ describe('SnapsWebpackPlugin', () => {
         path: '/lib',
         filename: '[name].js',
       },
-      plugins: [new SnapWebpackPlugin()],
+      plugins: [new SnapsWebpackPlugin()],
     });
 
     bundler.inputFileSystem = fileSystem;
@@ -37,7 +39,6 @@ describe('SnapsWebpackPlugin', () => {
 
     const result = await fs.readFile('/lib/foo.js', 'utf-8');
 
-    // eslint-disable-next-line jest/no-restricted-matchers
     expect(result).toMatchSnapshot();
   });
 
@@ -54,7 +55,7 @@ describe('SnapsWebpackPlugin', () => {
         path: '/lib',
         filename: '[name].js',
       },
-      plugins: [new SnapWebpackPlugin()],
+      plugins: [new SnapsWebpackPlugin()],
     });
 
     bundler.inputFileSystem = fileSystem;
@@ -82,7 +83,6 @@ describe('SnapsWebpackPlugin', () => {
 
     const result = await fs.readFile('/lib/foo.js', 'utf-8');
 
-    // eslint-disable-next-line jest/no-restricted-matchers
     expect(result).toMatchSnapshot();
     expect(result).not.toContain(`// foo bar`);
     expect(result).not.toContain(`/* baz qux */`);
@@ -101,7 +101,7 @@ describe('SnapsWebpackPlugin', () => {
         path: '/lib',
         filename: '[name].js',
       },
-      plugins: [new SnapWebpackPlugin({ stripComments: false })],
+      plugins: [new SnapsWebpackPlugin({ stripComments: false })],
     });
 
     bundler.inputFileSystem = fileSystem;
@@ -129,7 +129,6 @@ describe('SnapsWebpackPlugin', () => {
 
     const result = await fs.readFile('/lib/foo.js', 'utf-8');
 
-    // eslint-disable-next-line jest/no-restricted-matchers
     expect(result).toMatchSnapshot();
     expect(result).toContain(`// foo bar`);
     expect(result).toContain(`/* baz qux */`);
@@ -148,7 +147,7 @@ describe('SnapsWebpackPlugin', () => {
         path: '/lib',
         filename: '[name].js',
       },
-      plugins: [new SnapWebpackPlugin()],
+      plugins: [new SnapsWebpackPlugin()],
     });
 
     bundler.inputFileSystem = fileSystem;
@@ -186,7 +185,6 @@ describe('SnapsWebpackPlugin', () => {
 
     const result = await fs.readFile('/lib/foo.js', 'utf-8');
 
-    // eslint-disable-next-line jest/no-restricted-matchers
     expect(result).toMatchSnapshot();
     expect(result).not.toContain(`// Sets foo to bar`);
     expect(result).not.toContain(`// Returns baz`);

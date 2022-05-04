@@ -21,9 +21,7 @@ Add the plugin to the `plugins` array in your Webpack configuration:
 import SnapsWebpackPlugin from '@metamask/snaps-webpack-plugin';
 
 export default {
-  plugins: [
-    new SnapsWebpackPlugin(options),
-  ]
+  plugins: [new SnapsWebpackPlugin(options)],
 };
 ```
 
