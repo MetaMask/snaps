@@ -41,9 +41,9 @@ describe('postProcessBundle', () => {
         postProcessBundle(input, { transformHtmlComments: false }),
       ).toStrictEqual(input);
 
-      expect(postProcessBundle(input, { transformHtmlComments: true })).toStrictEqual(
-        output,
-      );
+      expect(
+        postProcessBundle(input, { transformHtmlComments: true }),
+      ).toStrictEqual(output);
     });
   });
 

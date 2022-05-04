@@ -1,7 +1,7 @@
 import { Readable } from 'stream';
 import browserify from 'browserify';
 import concat from 'concat-stream';
-import plugin, { SnapsBrowserifyTransform  } from './plugin';
+import plugin, { SnapsBrowserifyTransform } from './plugin';
 
 const toStream = (value: string) => {
   const readable = new Readable();

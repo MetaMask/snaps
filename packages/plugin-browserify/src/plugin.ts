@@ -8,34 +8,34 @@ export type Options = PostProcessOptions;
  * A transform stream which can be used a the Browserify pipeline. It accepts a
  * string input, which is post-processed and pushed to the output stream.
  */
-  export class SnapsBrowserifyTransform extends Transform {
-    readonly #data: Buffer[] = [];
-    readonly #options: Partial<Options>;
+export class SnapsBrowserifyTransform extends Transform {
+  readonly #data: Buffer[] = [];
 
-    /**
-     *
-     * @param options
-     */
-    constructor(options: Partial<Options> = {}) {
-      super();
-      this.#options = { ...options };
-    }
+  readonly #options: Partial<Options>;
 
-    _transform(chunk: Buffer, _: BufferEncoding, callback: TransformCallback) {
-      // Collects all the chunks into an array.
-      this.#data.push(chunk);
-      callback();
-    }
+  /**
+   * @param options - The post-processing options.
+   */
+  constructor(options: Partial<Options> = {}) {
+    super();
+    this.#options = { ...options };
+  }
 
-    _flush(callback: TransformCallback) {
-      // Merges all the chunks into a single string and processes it.
-      const code = Buffer.concat(this.#data).toString('utf-8');
-      const transformedCode = postProcessBundle(code, this.#options);
+  _transform(chunk: Buffer, _: BufferEncoding, callback: TransformCallback) {
+    // Collects all the chunks into an array.
+    this.#data.push(chunk);
+    callback();
+  }
 
-      this.push(transformedCode);
-      callback();
-    }
-  };
+  _flush(callback: TransformCallback) {
+    // Merges all the chunks into a single string and processes it.
+    const code = Buffer.concat(this.#data).toString('utf-8');
+    const transformedCode = postProcessBundle(code, this.#options);
+
+    this.push(transformedCode);
+    callback();
+  }
+}
 
 /**
  * The Browserify plugin function. Can be passed to the Browserify `plugin`
