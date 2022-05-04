@@ -34,7 +34,7 @@ const createTimeout = () => {
     }
   };
 
-  const _teardown = (): void => {
+  const teardownFunction = (): void => {
     for (const timeout of registeredTimeouts) {
       _clearTimeout(timeout);
     }
@@ -43,7 +43,7 @@ const createTimeout = () => {
   return {
     setTimeout: _setTimeout,
     clearTimeout: _clearTimeout,
-    _teardown,
+    teardownFunction,
   } as const;
 };
 

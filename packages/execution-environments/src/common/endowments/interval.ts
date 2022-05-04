@@ -30,7 +30,7 @@ const createInterval = () => {
     }
   };
 
-  const _teardown = (): void => {
+  const teardownFunction = (): void => {
     for (const timeout of registeredIntervals) {
       _clearInterval(timeout);
     }
@@ -39,7 +39,7 @@ const createInterval = () => {
   return {
     setInterval: _setInterval,
     clearInterval: _clearInterval,
-    _teardown,
+    teardownFunction,
   } as const;
 };
 

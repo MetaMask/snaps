@@ -28,13 +28,13 @@ describe('Timeout endowments', () => {
     ).toBeUndefined();
   }, 300);
 
-  it('_teardown should clear timeouts', async () => {
-    const { setTimeout: _setTimeout, _teardown } = timeout.factory();
+  it('teardownFunction should clear timeouts', async () => {
+    const { setTimeout: _setTimeout, teardownFunction } = timeout.factory();
 
     expect(
       await new Promise((resolve, reject) => {
         _setTimeout(reject, 100);
-        _teardown();
+        teardownFunction();
         setTimeout(resolve, 200);
       }),
     ).toBeUndefined();

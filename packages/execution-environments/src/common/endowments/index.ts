@@ -5,6 +5,11 @@ import timeout from './timeout';
 import interval from './interval';
 import wasm from './wasm';
 
+type EndowmentFactoryResult = {
+  teardownFunction?: () => void;
+  [key: string]: unknown;
+};
+
 /**
  * A map of endowment names to their factory functions. Some endowments share
  * the same factory function, but we only call each factory once for each snap.
@@ -17,7 +22,7 @@ const endowmentFactories = [buffer, timeout, interval, wasm].reduce(
     });
     return factories;
   },
-  new Map<string, () => unknown>(),
+  new Map<string, () => EndowmentFactoryResult>(),
 );
 
 /**
@@ -52,14 +57,12 @@ export function createEndowments(
           // This may not have an actual use case, but, safety first.
 
           // We just confirmed that endowmentFactories has the specified key.
-
-          // @ts-expect-error Todo
-          const { _teardown, ...endowment } =
+          const { teardownFunction, ...endowment } =
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             endowmentFactories.get(endowmentName)!();
           Object.assign(attenuatedEndowments, endowment);
-          if (_teardown) {
-            teardowns.push(_teardown);
+          if (teardownFunction) {
+            teardowns.push(teardownFunction);
           }
         }
 
@@ -88,11 +91,8 @@ export function createEndowments(
     },
   );
 
-  const teardown = () => {
-    for (const f of result.teardowns) {
-      f();
-    }
-  };
+  const teardown = () =>
+    result.teardowns.forEach((teardownFunction) => teardownFunction());
   return { endowments: result.allEndowments, teardown };
 }
 
