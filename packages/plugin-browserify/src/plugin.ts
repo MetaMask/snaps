@@ -1,36 +1,40 @@
 import { Transform, TransformCallback } from 'stream';
 import { BrowserifyObject } from 'browserify';
-import { postProcess, PostProcessOptions } from '@metamask/snap-utils';
+import { postProcessBundle, PostProcessOptions } from '@metamask/snap-utils';
 
 export type Options = PostProcessOptions;
 
 /**
- * Get a transformer which can be used in the Browserify pipeline. It accepts a
+ * A transform stream which can be used a the Browserify pipeline. It accepts a
  * string input, which is post-processed and pushed to the output stream.
- *
- * @param options
  */
-export function getTransform(options: Partial<Options>): Transform {
-  const Transformer = class extends Transform {
-    readonly #data: Buffer[] = [];
+export class SnapsBrowserifyTransform extends Transform {
+  readonly #data: Buffer[] = [];
 
-    _transform(chunk: Buffer, _: BufferEncoding, callback: TransformCallback) {
-      // Collects all the chunks into an array.
-      this.#data.push(chunk);
-      callback();
-    }
+  readonly #options: Partial<Options>;
 
-    _flush(callback: TransformCallback) {
-      // Merges all the chunks into a single string and processes it.
-      const code = Buffer.concat(this.#data).toString('utf-8');
-      const transformedCode = postProcess(code, options);
+  /**
+   * @param options - The post-processing options.
+   */
+  constructor(options: Partial<Options> = {}) {
+    super();
+    this.#options = { ...options };
+  }
 
-      this.push(transformedCode);
-      callback();
-    }
-  };
+  _transform(chunk: Buffer, _: BufferEncoding, callback: TransformCallback) {
+    // Collects all the chunks into an array.
+    this.#data.push(chunk);
+    callback();
+  }
 
-  return new Transformer();
+  _flush(callback: TransformCallback) {
+    // Merges all the chunks into a single string and processes it.
+    const code = Buffer.concat(this.#data).toString('utf-8');
+    const transformedCode = postProcessBundle(code, this.#options);
+
+    this.push(transformedCode);
+    callback();
+  }
 }
 
 /**
@@ -46,5 +50,5 @@ export default function plugin(
 ) {
   // Pushes the transform stream at the end of Browserify's pipeline. This
   // ensures that the transform is run on the entire bundle.
-  browserify.pipeline.push(getTransform(options));
+  browserify.pipeline.push(new SnapsBrowserifyTransform(options));
 }

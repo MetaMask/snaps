@@ -1,4 +1,4 @@
-# @metamask/snap-browserify
+# @metamask/snaps-browserify-plugin
 
 A plugin for developing [MetaMask Snaps](https://docs.metamask.io/guide/snaps.html) using [Browserify](https://browserify.org/). This can be used as alternative to the `mm-snap` CLI `build` command. It transforms the bundle to fix common issues with SES. For a list of changes the plugin makes, you can refer to [the source code](../utils/src/bundle.ts).
 
@@ -8,8 +8,8 @@ Use Node.js `14.0.0` or later. We recommend using [nvm](https://github.com/nvm-s
 
 Install a dependency in your snap project using `yarn` or `npm`:
 
-- `npm install @metamask/snap-browserify`
-- `yarn add @metamask/snap-browserify`
+- `npm install @metamask/snaps-browserify-plugin`
+- `yarn add @metamask/snaps-browserify-plugin`
 
 ## Usage
 
@@ -17,7 +17,7 @@ Install a dependency in your snap project using `yarn` or `npm`:
 import browserify from 'browserify';
 
 const bundle = browserify();
-bundle.plugin('@metamask/snap-browserify', options);
+bundle.plugin('@metamask/snaps-browserify-plugin', options);
 ```
 
 ### Options
@@ -25,7 +25,7 @@ bundle.plugin('@metamask/snap-browserify', options);
 All options are optional, and default to `true`.
 
 ```ts
-import { Options } from '@metamask/snap-browserify';
+import { Options } from '@metamask/snaps-browserify-plugin';
 
 const options: Options = {
   /**
