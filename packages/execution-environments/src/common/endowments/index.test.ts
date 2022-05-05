@@ -3,17 +3,20 @@ import { createEndowments } from '.';
 describe('createEndowments', () => {
   it('handles no endowments', () => {
     const mockWallet = { foo: Symbol('bar') };
-    const endowments = createEndowments(mockWallet as any);
+    const { endowments } = createEndowments(mockWallet as any);
 
     expect(createEndowments(mockWallet as any, [])).toStrictEqual({
-      wallet: mockWallet,
+      endowments: {
+        wallet: mockWallet,
+      },
+      teardown: expect.any(Function),
     });
     expect(endowments.wallet).toBe(mockWallet);
   });
 
   it('handles unattenuated endowments', () => {
     const mockWallet = { foo: Symbol('bar') };
-    const endowments = createEndowments(mockWallet as any, ['Math']);
+    const { endowments } = createEndowments(mockWallet as any, ['Math']);
 
     expect(endowments).toStrictEqual({
       wallet: mockWallet,
@@ -24,7 +27,7 @@ describe('createEndowments', () => {
 
   it('handles factory endowments', () => {
     const mockWallet = { foo: Symbol('bar') };
-    const endowments = createEndowments(mockWallet as any, ['WebAssembly']);
+    const { endowments } = createEndowments(mockWallet as any, ['WebAssembly']);
 
     expect(endowments).toStrictEqual({
       wallet: mockWallet,
@@ -35,7 +38,7 @@ describe('createEndowments', () => {
 
   it('handles some endowments from the same factory', () => {
     const mockWallet = { foo: Symbol('bar') };
-    const endowments = createEndowments(mockWallet as any, ['setTimeout']);
+    const { endowments } = createEndowments(mockWallet as any, ['setTimeout']);
 
     expect(endowments).toMatchObject({
       wallet: mockWallet,
@@ -46,7 +49,7 @@ describe('createEndowments', () => {
 
   it('handles all endowments from the same factory', () => {
     const mockWallet = { foo: Symbol('bar') };
-    const endowments = createEndowments(mockWallet as any, [
+    const { endowments } = createEndowments(mockWallet as any, [
       'setTimeout',
       'clearTimeout',
     ]);
@@ -61,7 +64,7 @@ describe('createEndowments', () => {
 
   it('handles multiple endowments, factory and non-factory', () => {
     const mockWallet = { foo: Symbol('bar') };
-    const endowments = createEndowments(mockWallet as any, [
+    const { endowments } = createEndowments(mockWallet as any, [
       'Buffer',
       'console',
       'Math',
@@ -95,5 +98,42 @@ describe('createEndowments', () => {
     expect(() => createEndowments(mockWallet as any, ['foo'])).toThrow(
       'Unknown endowment: "foo"',
     );
+  });
+
+  it('teardown calls all teardown functions', () => {
+    const mockWallet = { foo: Symbol('bar') };
+    const { endowments, teardown } = createEndowments(mockWallet as any, [
+      'setTimeout',
+      'clearTimeout',
+      'setInterval',
+      'clearInterval',
+    ]);
+
+    const clearTimeoutSpy = jest.spyOn(globalThis, 'clearTimeout');
+    const clearIntervalSpy = jest.spyOn(globalThis, 'clearInterval');
+
+    const { setInterval, setTimeout } = endowments as {
+      setInterval: typeof globalThis.setInterval;
+      setTimeout: typeof globalThis.setTimeout;
+    };
+    setTimeout(() => {
+      // no-op
+    }, 1000);
+
+    setInterval(() => {
+      // no-op
+    }, 1000);
+
+    teardown();
+
+    expect(clearTimeoutSpy).toHaveBeenCalledTimes(1);
+    expect(clearIntervalSpy).toHaveBeenCalledTimes(1);
+    expect(endowments).toMatchObject({
+      wallet: mockWallet,
+      setTimeout: expect.any(Function),
+      clearTimeout: expect.any(Function),
+      setInterval: expect.any(Function),
+      clearInterval: expect.any(Function),
+    });
   });
 });

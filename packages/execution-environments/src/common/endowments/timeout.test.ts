@@ -28,6 +28,18 @@ describe('Timeout endowments', () => {
     ).toBeUndefined();
   }, 300);
 
+  it('teardownFunction should clear timeouts', async () => {
+    const { setTimeout: _setTimeout, teardownFunction } = timeout.factory();
+
+    expect(
+      await new Promise((resolve, reject) => {
+        _setTimeout(reject, 100);
+        teardownFunction();
+        setTimeout(resolve, 200);
+      }),
+    ).toBeUndefined();
+  }, 300);
+
   it('should not be able to clear a timeout created with the global setTimeout', async () => {
     const { clearTimeout: _clearTimeout } = timeout.factory();
 

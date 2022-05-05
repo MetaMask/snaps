@@ -1,8 +1,14 @@
-import { ExecuteSnap, Ping, SnapRpc } from '../__GENERATED__/openrpc';
+import {
+  ExecuteSnap,
+  Ping,
+  SnapRpc,
+  Terminate,
+} from '../__GENERATED__/openrpc';
 import { isEndowments, isJsonRpcRequest } from '../__GENERATED__/openrpc.guard';
 
 export type RpcMethodsMapping = {
   ping: Ping;
+  terminate: Terminate;
   executeSnap: ExecuteSnap;
   snapRpc: SnapRpc;
 };
@@ -10,9 +16,14 @@ export type RpcMethodsMapping = {
 export function rpcMethods(
   startSnap: (...args: Parameters<ExecuteSnap>) => void,
   invokeSnapRpc: SnapRpc,
+  onTerminate: () => void,
 ): RpcMethodsMapping {
   return {
     ping: async () => {
+      return 'OK';
+    },
+    terminate: async () => {
+      onTerminate();
       return 'OK';
     },
     executeSnap: async (snapName, sourceCode, endowments) => {

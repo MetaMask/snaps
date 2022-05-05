@@ -5,6 +5,11 @@ import timeout from './timeout';
 import interval from './interval';
 import wasm from './wasm';
 
+type EndowmentFactoryResult = {
+  teardownFunction?: () => void;
+  [key: string]: unknown;
+};
+
 /**
  * A map of endowment names to their factory functions. Some endowments share
  * the same factory function, but we only call each factory once for each snap.
@@ -17,7 +22,7 @@ const endowmentFactories = [buffer, timeout, interval, wasm].reduce(
     });
     return factories;
   },
-  new Map<string, () => unknown>(),
+  new Map<string, () => EndowmentFactoryResult>(),
 );
 
 /**
@@ -34,14 +39,14 @@ const endowmentFactories = [buffer, timeout, interval, wasm].reduce(
 export function createEndowments(
   wallet: SnapProvider,
   endowments: string[] = [],
-): Record<string, unknown> {
+): { endowments: Record<string, unknown>; teardown: () => void } {
   const attenuatedEndowments: Record<string, unknown> = {};
 
   // TODO: All endowments should be hardened to prevent covert communication
   // channels. Hardening the returned objects breaks tests elsewhere in the
   // monorepo, so further research is needed.
-  return endowments.reduce(
-    (allEndowments, endowmentName) => {
+  const result = endowments.reduce(
+    ({ allEndowments, teardowns }, endowmentName) => {
       // First, check if the endowment has a factory, and default to that.
       if (endowmentFactories.has(endowmentName)) {
         if (!Object.hasOwnProperty.call(attenuatedEndowments, endowmentName)) {
@@ -50,12 +55,15 @@ export function createEndowments(
           // `attenuatedEndowments` object, but will only be passed on to the snap
           // if explicitly listed among its endowment.
           // This may not have an actual use case, but, safety first.
-          Object.assign(
-            attenuatedEndowments,
-            // We just confirmed that endowmentFactories has the specified key.
+
+          // We just confirmed that endowmentFactories has the specified key.
+          const { teardownFunction, ...endowment } =
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            endowmentFactories.get(endowmentName)!(),
-          );
+            endowmentFactories.get(endowmentName)!();
+          Object.assign(attenuatedEndowments, endowment);
+          if (teardownFunction) {
+            teardowns.push(teardownFunction);
+          }
         }
 
         allEndowments[endowmentName] = attenuatedEndowments[endowmentName];
@@ -75,10 +83,17 @@ export function createEndowments(
         // exist in our current environment.
         throw new Error(`Unknown endowment: "${endowmentName}".`);
       }
-      return allEndowments;
+      return { allEndowments, teardowns };
     },
-    { wallet } as Record<string, unknown>,
+    {
+      allEndowments: { wallet } as Record<string, unknown>,
+      teardowns: [] as (() => void)[],
+    },
   );
+
+  const teardown = () =>
+    result.teardowns.forEach((teardownFunction) => teardownFunction());
+  return { endowments: result.allEndowments, teardown };
 }
 
 /**
