@@ -17,16 +17,18 @@ describe('mockUtils', () => {
       expect(ws.send()).toBe(true);
     });
 
-    it('returns mock function for functions', () => {
-      const endowments = generateMockEndowments();
-      expect(endowments.btoa()).toBe(true);
-    });
-
     it('returns some endowments unmocked', () => {
       const endowments = generateMockEndowments();
       expect(endowments.Math).toStrictEqual(Math);
       expect(endowments.console).toStrictEqual(console);
       expect(endowments.crypto).toStrictEqual(crypto);
+    });
+
+    it('returns mock function for functions', () => {
+      // Remove fetch from isomorphic-fetch if present
+      Object.assign(globalThis, { ...globalThis, fetch: undefined });
+      const endowments = generateMockEndowments();
+      expect(endowments.fetch()).toBe(true);
     });
   });
 

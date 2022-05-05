@@ -1,5 +1,5 @@
 {
-  "name": "@metamask/snap-browserify",
+  "name": "@metamask/snaps-browserify-plugin",
   "version": "0.11.1",
   "keywords": [
     "browserify-plugin"

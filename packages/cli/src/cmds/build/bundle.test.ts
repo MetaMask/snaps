@@ -46,9 +46,12 @@ describe('bundle', () => {
       );
       expect(mockBundlerTransform).toHaveBeenCalledTimes(1);
       expect(mockPlugin).toHaveBeenCalledTimes(1);
-      expect(mockPlugin).toHaveBeenCalledWith('@metamask/snap-browserify', {
-        stripComments: true,
-      });
+      expect(mockPlugin).toHaveBeenCalledWith(
+        '@metamask/snaps-browserify-plugin',
+        {
+          stripComments: true,
+        },
+      );
       expect(writeBundleFileMock).toHaveBeenCalledTimes(1);
     });
 
@@ -83,9 +86,12 @@ describe('bundle', () => {
         expect.objectContaining({ global: false }),
       );
       expect(mockPlugin).toHaveBeenCalledTimes(1);
-      expect(mockPlugin).toHaveBeenCalledWith('@metamask/snap-browserify', {
-        stripComments: true,
-      });
+      expect(mockPlugin).toHaveBeenCalledWith(
+        '@metamask/snaps-browserify-plugin',
+        {
+          stripComments: true,
+        },
+      );
       expect(writeBundleFileMock).toHaveBeenCalledTimes(1);
     });
 
@@ -120,9 +126,12 @@ describe('bundle', () => {
         expect.objectContaining({ global: false }),
       );
       expect(mockPlugin).toHaveBeenCalledTimes(1);
-      expect(mockPlugin).toHaveBeenCalledWith('@metamask/snap-browserify', {
-        stripComments: true,
-      });
+      expect(mockPlugin).toHaveBeenCalledWith(
+        '@metamask/snaps-browserify-plugin',
+        {
+          stripComments: true,
+        },
+      );
       expect(writeBundleFileMock).toHaveBeenCalledTimes(1);
     });
 
@@ -153,9 +162,12 @@ describe('bundle', () => {
       expect(mockBrowserify).toHaveBeenCalledWith('src', { debug: true });
       expect(mockTransform).not.toHaveBeenCalled();
       expect(mockPlugin).toHaveBeenCalledTimes(1);
-      expect(mockPlugin).toHaveBeenCalledWith('@metamask/snap-browserify', {
-        stripComments: true,
-      });
+      expect(mockPlugin).toHaveBeenCalledWith(
+        '@metamask/snaps-browserify-plugin',
+        {
+          stripComments: true,
+        },
+      );
       expect(writeBundleFileMock).toHaveBeenCalledTimes(1);
     });
 
@@ -190,9 +202,12 @@ describe('bundle', () => {
         expect.objectContaining({ global: true }),
       );
       expect(mockPlugin).toHaveBeenCalledTimes(1);
-      expect(mockPlugin).toHaveBeenCalledWith('@metamask/snap-browserify', {
-        stripComments: true,
-      });
+      expect(mockPlugin).toHaveBeenCalledWith(
+        '@metamask/snaps-browserify-plugin',
+        {
+          stripComments: true,
+        },
+      );
       expect(writeBundleFileMock).toHaveBeenCalledTimes(1);
     });
   });

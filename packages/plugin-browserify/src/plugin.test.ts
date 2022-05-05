@@ -1,7 +1,7 @@
 import { Readable } from 'stream';
 import browserify from 'browserify';
 import concat from 'concat-stream';
-import plugin, { getTransform } from './plugin';
+import plugin, { SnapsBrowserifyTransform } from './plugin';
 
 const toStream = (value: string) => {
   const readable = new Readable();
@@ -11,9 +11,22 @@ const toStream = (value: string) => {
   return readable;
 };
 
-describe('getTransform', () => {
-  it('returns a transform stream which processes the data', async () => {
-    const transform = getTransform({});
+describe('SnapsBrowserifyTransform', () => {
+  it('processes the data', async () => {
+    const transform = new SnapsBrowserifyTransform({});
+    const stream = toStream(' foo bar ');
+
+    const result = await new Promise((resolve) => {
+      const concatStream = concat((value) => resolve(value.toString('utf-8')));
+
+      stream.pipe(transform).pipe(concatStream);
+    });
+
+    expect(result).toBe('foo bar');
+  });
+
+  it('works without options', async () => {
+    const transform = new SnapsBrowserifyTransform();
     const stream = toStream(' foo bar ');
 
     const result = await new Promise((resolve) => {

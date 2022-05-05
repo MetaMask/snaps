@@ -22,7 +22,7 @@ export type PostProcessOptions = {
  * Defaults to `true`.
  * @returns - The post-processed bundle string.
  */
-export function postProcess(
+export function postProcessBundle(
   bundleString: string | null,
   {
     stripComments = true,
