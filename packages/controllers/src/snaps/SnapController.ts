@@ -641,16 +641,14 @@ export class SnapController extends BaseController<
     return Promise.all(
       entries
         .filter(
-          ([runtime]) =>
+          ([_snapId, runtime]) =>
             runtime.pendingRequests === 0 &&
             // lastRequest should always be set here but TypeScript wants this check
             runtime.lastRequest &&
             this._maxIdleTime &&
             timeSince(runtime.lastRequest) > this._maxIdleTime,
         )
-        .map(([_runtime, snapId]) =>
-          this.stopSnap(snapId, SnapStatusEvent.stop),
-        ),
+        .map(([snapId]) => this.stopSnap(snapId, SnapStatusEvent.stop)),
     );
   }
 
