@@ -636,18 +636,22 @@ export class SnapController extends BaseController<
     }, this._idleTimeCheckInterval) as unknown as number;
   }
 
-  _stopSnapsLastRequestPastMax() {
-    this._snapsRuntimeData.forEach(async (runtime, snapId) => {
-      if (
-        runtime.pendingRequests === 0 &&
-        // lastRequest should always be set here but TypeScript wants this check
-        runtime.lastRequest &&
-        this._maxIdleTime &&
-        timeSince(runtime.lastRequest) > this._maxIdleTime
-      ) {
-        await this.stopSnap(snapId, SnapStatusEvent.stop);
-      }
-    });
+  async _stopSnapsLastRequestPastMax() {
+    const entries = [...this._snapsRuntimeData.entries()];
+    return Promise.all(
+      entries
+        .filter(
+          ([runtime]) =>
+            runtime.pendingRequests === 0 &&
+            // lastRequest should always be set here but TypeScript wants this check
+            runtime.lastRequest &&
+            this._maxIdleTime &&
+            timeSince(runtime.lastRequest) > this._maxIdleTime,
+        )
+        .map(([_runtime, snapId]) =>
+          this.stopSnap(snapId, SnapStatusEvent.stop),
+        ),
+    );
   }
 
   async _onUnhandledSnapError(snapId: SnapId, error: ErrorJSON) {
