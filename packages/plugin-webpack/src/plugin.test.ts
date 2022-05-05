@@ -1,3 +1,4 @@
+// Allow Jest snapshots because the test outputs are illegible.
 /* eslint-disable jest/no-restricted-matchers */
 
 import webpack, { Stats } from 'webpack';
