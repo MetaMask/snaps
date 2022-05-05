@@ -39,7 +39,6 @@ export async function start(port = 6363) {
 
     server.on('error', (error) => {
       console.error('Server error', error);
-      process.exitCode = 1;
       reject(error);
     });
 
