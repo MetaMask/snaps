@@ -30,7 +30,7 @@ import * as utils from './utils';
 const { getSnapSourceShasum } = utils;
 
 const workerCode = fs.readFileSync(
-  require.resolve('@metamask/execution-environments/dist/webworker.bundle.js'),
+  require.resolve('@metamask/execution-environments/dist/webpack/webworker/bundle.js'),
   'utf8',
 );
 
