@@ -28,6 +28,18 @@ describe('Interval endowments', () => {
     ).toBeUndefined();
   }, 300);
 
+  it('teardownFunction should clear intervals', async () => {
+    const { setInterval: _setInterval, teardownFunction } = interval.factory();
+
+    expect(
+      await new Promise((resolve, reject) => {
+        _setInterval(reject, 100);
+        teardownFunction();
+        setInterval(resolve, 200);
+      }),
+    ).toBeUndefined();
+  }, 300);
+
   it('should not be able to clear an interval created with the global setInterval', async () => {
     const { clearInterval: _clearInterval } = interval.factory();
 

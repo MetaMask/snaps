@@ -30,7 +30,17 @@ const createInterval = () => {
     }
   };
 
-  return { setInterval: _setInterval, clearInterval: _clearInterval } as const;
+  const teardownFunction = (): void => {
+    for (const timeout of registeredIntervals) {
+      _clearInterval(timeout);
+    }
+  };
+
+  return {
+    setInterval: _setInterval,
+    clearInterval: _clearInterval,
+    teardownFunction,
+  } as const;
 };
 
 const endowmentModule = {
