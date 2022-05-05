@@ -7,21 +7,21 @@ import { stop as stopServer, start as startServer } from './testHelpers/server';
 // We do not use our default endowments in these tests because JSDOM doesn't
 // implement all of them.
 
-const iframeUrl = new URL(
-  'http://localhost:6363',
-);
+const iframeUrl = new URL('http://localhost:6363');
 
 describe('IframeExecutionService', () => {
-
+  // The tests start running before the server is ready if we dont use the done callback.
+  // eslint-disable-next-line jest/no-done-callback
   beforeAll(async (done) => {
     await startServer();
     done();
-  })
+  });
 
+  // eslint-disable-next-line jest/no-done-callback
   afterAll(async (done) => {
     await stopServer();
     done();
-  })
+  });
 
   it('can boot', async () => {
     const controllerMessenger = new ControllerMessenger<

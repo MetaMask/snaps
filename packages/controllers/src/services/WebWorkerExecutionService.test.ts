@@ -8,7 +8,9 @@ import { DEFAULT_ENDOWMENTS } from '../snaps';
 import { WebWorkerExecutionService } from './WebWorkerExecutionService';
 
 const workerCode = fs.readFileSync(
-  require.resolve('@metamask/execution-environments/dist/webpack/webworker/bundle.js'),
+  require.resolve(
+    '@metamask/execution-environments/dist/webpack/webworker/bundle.js',
+  ),
   'utf8',
 );
 
