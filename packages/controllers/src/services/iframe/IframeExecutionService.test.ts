@@ -62,8 +62,8 @@ describe('IframeExecutionService', () => {
       endowments: ['console'],
     });
     expect(response).toStrictEqual('OK');
-    removeListener();
     await iframeExecutionService.terminateAllSnaps();
+    removeListener();
   });
 
   it('can handle a crashed snap', async () => {
