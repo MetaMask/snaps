@@ -111,8 +111,8 @@ export abstract class AbstractExecutionService<JobType extends Job>
         }),
         timeoutPromise,
       ]);
-    } catch {
-      // Ignore any potential errors, just keep terminating
+    } catch (error) {
+      console.error(`Job "${jobId}" failed to terminate gracefully.`, error);
     }
 
     clearTimeout(timeout);
