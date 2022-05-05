@@ -12,7 +12,7 @@ import {
 } from '../__GENERATED__/openrpc';
 import { isJsonRpcRequest } from '../__GENERATED__/openrpc.guard';
 import { rpcMethods, RpcMethodsMapping } from './rpcMethods';
-import { sortParamKeys } from './sortParams';
+import { getSortedParams } from './sortParams';
 import { createEndowments } from './endowments';
 import { rootRealmGlobal } from './globalObject';
 
@@ -109,7 +109,7 @@ export class BaseSnapExecutor {
     }
 
     // support params by-name and by-position
-    const paramsAsArray = sortParamKeys(methodObject, params);
+    const paramsAsArray = getSortedParams(methodObject, params);
 
     try {
       const result = await (this.methods as any)[method](...paramsAsArray);
