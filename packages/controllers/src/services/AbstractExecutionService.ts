@@ -99,6 +99,11 @@ export abstract class AbstractExecutionService<JobType extends Job>
     console.log(`job: "${jobId}" terminated`);
   }
 
+  /**
+   * Abstract function implemented by implementing class that spins up a new worker for a job.
+   *
+   * Depending on the execution environment, this may run forever if the Snap fails to start up properly, therefore any call to this function should be wrapped in a timeout.
+   */
   protected abstract _initJob(): Promise<JobType>;
 
   /**
@@ -131,6 +136,13 @@ export abstract class AbstractExecutionService<JobType extends Job>
     return this._snapRpcHooks.get(snapId);
   }
 
+  /**
+   * Initializes and executes a snap, setting up the communication channels to the snap etc.
+   *
+   * Depending on the execution environment, this may run forever if the Snap fails to start up properly, therefore any call to this function should be wrapped in a timeout.
+   *
+   * @param snapData - Data needed for Snap execution.
+   */
   async executeSnap(snapData: SnapExecutionData): Promise<unknown> {
     if (this.snapToJobMap.has(snapData.snapId)) {
       throw new Error(`Snap "${snapData.snapId}" is already being executed.`);
