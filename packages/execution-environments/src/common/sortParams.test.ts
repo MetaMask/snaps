@@ -12,7 +12,7 @@ describe('getSortedParams', () => {
     expect(getSortedParams(method, params)).toStrictEqual(['dog', 'cat']);
   });
 
-  it('will return a by position-sorted array of param keys', () => {
+  it('will return a by position-sorted array of params', () => {
     const method = { params: [{ name: 'bar' }, { name: 'foo' }] };
     const params = { foo: 'val1', bar: 'val2' };
     expect(getSortedParams(method, params)).toStrictEqual(['val2', 'val1']);

@@ -2,6 +2,15 @@
 
 import { JSONRPCParams } from '../__GENERATED__/openrpc';
 
+/**
+ *
+ * @param method A method object pulled from the openRPC JSON document
+ * @param params An array or object of params
+ * @description This method will simply return an array of params
+ * if it is passed an array and will return a sorted param list based on the
+ * order in the method.params array if params is an object
+ * @returns An array of sorted params
+ */
 export const getSortedParams = (
   method: { params: { name: string }[] },
   params?: JSONRPCParams,
