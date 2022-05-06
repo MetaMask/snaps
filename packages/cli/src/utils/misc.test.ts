@@ -149,6 +149,14 @@ describe('misc', () => {
       expect(global.snaps.verboseErrors).toStrictEqual(true);
       expect(global.snaps.suppressWarnings).toStrictEqual(false);
     });
+
+    it('does not set global variables if they are not in argv', () => {
+      global.snaps = { isWatching: false };
+      const argv = { _: ['w', 'watch'], $0: '/usr/local/bin/mm-snap' };
+      setSnapGlobals(argv);
+      expect(global.snaps.verboseErrors).toBeUndefined();
+      expect(global.snaps.suppressWarnings).toBeUndefined();
+    });
   });
 
   describe('sanitizeInputs', () => {
@@ -258,6 +266,14 @@ describe('misc', () => {
       ).rejects.toThrow('process exited');
       expect(errorMock).toHaveBeenNthCalledWith(1, 'foo bar');
       expect(errorMock).toHaveBeenCalledTimes(2);
+    });
+
+    it('will not process an already processed prefix', async () => {
+      setIsWatching(true);
+      const prefix = 'Custom Error ';
+      const errorMock = jest.spyOn(console, 'error').mockImplementation();
+      await writeError(prefix, 'bar', new Error('error message'));
+      expect(errorMock).toHaveBeenCalledWith(`${prefix}bar`);
     });
   });
 
