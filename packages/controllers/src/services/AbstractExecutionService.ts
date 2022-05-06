@@ -18,6 +18,7 @@ export type SetupSnapProvider = (snapId: string, stream: Duplex) => void;
 type ExecutionServiceArgs = {
   setupSnapProvider: SetupSnapProvider;
   messenger: ExecutionServiceMessenger;
+  terminationTimeout?: number;
 };
 
 // The snap is the callee
@@ -51,13 +52,20 @@ export abstract class AbstractExecutionService<JobType extends Job>
 
   protected _messenger: ExecutionServiceMessenger;
 
-  constructor({ setupSnapProvider, messenger }: ExecutionServiceArgs) {
+  protected _terminationTimeout: number;
+
+  constructor({
+    setupSnapProvider,
+    messenger,
+    terminationTimeout = 1000,
+  }: ExecutionServiceArgs) {
     this._snapRpcHooks = new Map();
     this.jobs = new Map();
     this.setupSnapProvider = setupSnapProvider;
     this.snapToJobMap = new Map();
     this.jobToSnapMap = new Map();
     this._messenger = messenger;
+    this._terminationTimeout = terminationTimeout;
   }
 
   /**
@@ -77,11 +85,37 @@ export abstract class AbstractExecutionService<JobType extends Job>
    *
    * @param jobId - The id of the job to be terminated.
    */
-  public terminate(jobId: string): void {
+  public async terminate(jobId: string): Promise<void> {
     const jobWrapper = this.jobs.get(jobId);
     if (!jobWrapper) {
       throw new Error(`Job with id "${jobId}" not found.`);
     }
+
+    let timeout: number | undefined;
+
+    const timeoutPromise = new Promise<void>((resolve) => {
+      timeout = setTimeout(() => {
+        // No need to reject here, we just resolve and move on if the terminate request doesn't respond quickly
+        resolve();
+      }, this._terminationTimeout) as unknown as number;
+    });
+
+    // Ping worker and tell it to run teardown, continue with termination if it takes too long
+    try {
+      await Promise.race([
+        this._command(jobId, {
+          jsonrpc: '2.0',
+          method: 'terminate',
+          params: [],
+          id: nanoid(),
+        }),
+        timeoutPromise,
+      ]);
+    } catch (error) {
+      console.error(`Job "${jobId}" failed to terminate gracefully.`, error);
+    }
+
+    clearTimeout(timeout);
 
     Object.values(jobWrapper.streams).forEach((stream) => {
       try {
@@ -99,6 +133,11 @@ export abstract class AbstractExecutionService<JobType extends Job>
     console.log(`job: "${jobId}" terminated`);
   }
 
+  /**
+   * Abstract function implemented by implementing class that spins up a new worker for a job.
+   *
+   * Depending on the execution environment, this may run forever if the Snap fails to start up properly, therefore any call to this function should be wrapped in a timeout.
+   */
   protected abstract _initJob(): Promise<JobType>;
 
   /**
@@ -111,14 +150,14 @@ export abstract class AbstractExecutionService<JobType extends Job>
   async terminateSnap(snapId: string) {
     const jobId = this.snapToJobMap.get(snapId);
     if (jobId) {
-      this.terminate(jobId);
+      await this.terminate(jobId);
     }
   }
 
   async terminateAllSnaps() {
-    for (const workerId of this.jobs.keys()) {
-      this.terminate(workerId);
-    }
+    await Promise.all(
+      [...this.jobs.keys()].map((workerId) => this.terminate(workerId)),
+    );
     this._snapRpcHooks.clear();
   }
 
@@ -131,6 +170,13 @@ export abstract class AbstractExecutionService<JobType extends Job>
     return this._snapRpcHooks.get(snapId);
   }
 
+  /**
+   * Initializes and executes a snap, setting up the communication channels to the snap etc.
+   *
+   * Depending on the execution environment, this may run forever if the Snap fails to start up properly, therefore any call to this function should be wrapped in a timeout.
+   *
+   * @param snapData - Data needed for Snap execution.
+   */
   async executeSnap(snapData: SnapExecutionData): Promise<unknown> {
     if (this.snapToJobMap.has(snapData.snapId)) {
       throw new Error(`Snap "${snapData.snapId}" is already being executed.`);

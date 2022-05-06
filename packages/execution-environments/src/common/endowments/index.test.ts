@@ -4,12 +4,12 @@ describe('Endowment utils', () => {
   describe('createEndowments', () => {
     it('handles no endowments', () => {
       const mockWallet = { foo: Symbol('bar') };
-      const endowments = createEndowments(mockWallet as any);
-
       expect(createEndowments(mockWallet as any, [])).toStrictEqual({
-        wallet: mockWallet,
+        endowments: {
+          wallet: mockWallet,
+        },
+        teardown: expect.any(Function),
       });
-      expect(endowments.wallet).toBe(mockWallet);
     });
 
     it('handles unattenuated endowments', () => {
@@ -17,12 +17,15 @@ describe('Endowment utils', () => {
       const endowments = createEndowments(mockWallet as any, ['Math', 'Date']);
 
       expect(endowments).toStrictEqual({
-        wallet: mockWallet,
-        Math,
-        Date,
+        endowments: {
+          wallet: mockWallet,
+          Math,
+          Date,
+        },
+        teardown: expect.any(Function),
       });
-      expect(endowments.Math).toBe(Math);
-      expect(endowments.Date).toBe(Date);
+      expect(endowments.endowments.Math).toBe(Math);
+      expect(endowments.endowments.Date).toBe(Date);
     });
 
     it('handles factory endowments', () => {
@@ -33,7 +36,7 @@ describe('Endowment utils', () => {
         wallet: mockWallet,
         WebAssembly: expect.objectContaining(WebAssembly),
       });
-      expect(endowments.WebAssembly).not.toBe(WebAssembly);
+      expect(endowments.endowments.WebAssembly).not.toBe(WebAssembly);
     });
 
     it('handles some endowments from the same factory', () => {
@@ -44,7 +47,7 @@ describe('Endowment utils', () => {
         wallet: mockWallet,
         setTimeout: expect.any(Function),
       });
-      expect(endowments.setTimeout).not.toBe(setTimeout);
+      expect(endowments.endowments.setTimeout).not.toBe(setTimeout);
     });
 
     it('handles all endowments from the same factory', () => {
@@ -59,7 +62,7 @@ describe('Endowment utils', () => {
         setTimeout: expect.any(Function),
         clearTimeout: expect.any(Function),
       });
-      expect(endowments.clearTimeout).not.toBe(clearTimeout);
+      expect(endowments.endowments.clearTimeout).not.toBe(clearTimeout);
     });
 
     it('handles multiple endowments, factory and non-factory', () => {
@@ -83,14 +86,14 @@ describe('Endowment utils', () => {
         WebAssembly: { ...WebAssembly },
       });
 
-      expect(endowments.wallet).toBe(mockWallet);
-      expect(endowments.Buffer).toBe(Buffer);
-      expect(endowments.Math).toBe(Math);
-      expect(endowments.console).toBe(console);
+      expect(endowments.endowments.wallet).toBe(mockWallet);
+      expect(endowments.endowments.Buffer).toBe(Buffer);
+      expect(endowments.endowments.Math).toBe(Math);
+      expect(endowments.endowments.console).toBe(console);
 
-      expect(endowments.clearTimeout).not.toBe(clearTimeout);
-      expect(endowments.setTimeout).not.toBe(setTimeout);
-      expect(endowments.WebAssembly).not.toBe(WebAssembly);
+      expect(endowments.endowments.clearTimeout).not.toBe(clearTimeout);
+      expect(endowments.endowments.setTimeout).not.toBe(setTimeout);
+      expect(endowments.endowments.WebAssembly).not.toBe(WebAssembly);
     });
 
     it('throws for unknown endowments', () => {
@@ -98,6 +101,43 @@ describe('Endowment utils', () => {
       expect(() => createEndowments(mockWallet as any, ['foo'])).toThrow(
         'Unknown endowment: "foo"',
       );
+    });
+
+    it('teardown calls all teardown functions', () => {
+      const mockWallet = { foo: Symbol('bar') };
+      const { endowments, teardown } = createEndowments(mockWallet as any, [
+        'setTimeout',
+        'clearTimeout',
+        'setInterval',
+        'clearInterval',
+      ]);
+
+      const clearTimeoutSpy = jest.spyOn(globalThis, 'clearTimeout');
+      const clearIntervalSpy = jest.spyOn(globalThis, 'clearInterval');
+
+      const { setInterval, setTimeout } = endowments as {
+        setInterval: typeof globalThis.setInterval;
+        setTimeout: typeof globalThis.setTimeout;
+      };
+      setTimeout(() => {
+        // no-op
+      }, 1000);
+
+      setInterval(() => {
+        // no-op
+      }, 1000);
+
+      teardown();
+
+      expect(clearTimeoutSpy).toHaveBeenCalledTimes(1);
+      expect(clearIntervalSpy).toHaveBeenCalledTimes(1);
+      expect(endowments).toMatchObject({
+        wallet: mockWallet,
+        setTimeout: expect.any(Function),
+        clearTimeout: expect.any(Function),
+        setInterval: expect.any(Function),
+        clearInterval: expect.any(Function),
+      });
     });
   });
 

@@ -39,6 +39,8 @@ export class BaseSnapExecutor {
 
   private snapPromiseErrorHandler?: (event: PromiseRejectionEvent) => void;
 
+  private endowmentTeardown?: () => void;
+
   protected constructor(commandStream: Duplex, rpcStream: Duplex) {
     this.snapRpcHandlers = new Map();
     this.commandStream = commandStream;
@@ -54,6 +56,7 @@ export class BaseSnapExecutor {
         }
         return handler(origin, request);
       },
+      this.onTerminate.bind(this),
     );
   }
 
@@ -176,7 +179,12 @@ export class BaseSnapExecutor {
     const wallet = this.createSnapProvider(snapName);
 
     try {
-      const endowments = createEndowments(wallet, _endowments);
+      const { endowments, teardown: endowmentTeardown } = createEndowments(
+        wallet,
+        _endowments,
+      );
+
+      this.endowmentTeardown = endowmentTeardown;
 
       const compartment = new Compartment({
         ...endowments,
@@ -195,6 +203,12 @@ export class BaseSnapExecutor {
       throw new Error(
         `Error while running snap '${snapName}': ${(err as Error).message}`,
       );
+    }
+  }
+
+  protected onTerminate() {
+    if (this.endowmentTeardown) {
+      this.endowmentTeardown();
     }
   }
 

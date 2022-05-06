@@ -1,4 +1,3 @@
-import { describe, expect, it } from '@jest/globals';
 import { ControllerMessenger } from '@metamask/controllers';
 import { ErrorMessageEvent } from '@metamask/snap-types';
 import { IframeExecutionService } from './IframeExecutionService';
@@ -7,7 +6,7 @@ import fixJSDOMPostMessageEventSource from './testHelpers/fixJSDOMPostMessageEve
 // We do not use our default endowments in these tests because JSDOM doesn't
 // implement all of them.
 
-describe('Iframe Controller', () => {
+describe('IframeExecutionService', () => {
   it('can boot', async () => {
     const controllerMessenger = new ControllerMessenger<
       never,
@@ -63,8 +62,8 @@ describe('Iframe Controller', () => {
       endowments: ['console'],
     });
     expect(response).toStrictEqual('OK');
-    removeListener();
     await iframeExecutionService.terminateAllSnaps();
+    removeListener();
   });
 
   it('can handle a crashed snap', async () => {

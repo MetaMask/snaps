@@ -18,7 +18,7 @@ function getMockSnapProvider(): MockSnapProvider {
   return mockProvider as MockSnapProvider;
 }
 
-const isConstructor = (value: any) =>
+export const isConstructor = (value: any) =>
   Boolean(typeof value?.prototype?.constructor?.name === 'string');
 
 const mockFunction = () => true;
@@ -45,7 +45,7 @@ const mockWindow = {
 };
 
 const generateMockEndowment = (key: string) => {
-  const globalValue = (global as any)[key];
+  const globalValue = (globalThis as any)[key];
 
   // Default exposed APIs don't need to be mocked
   if (globalValue && DEFAULT_ENDOWMENTS.includes(key)) {

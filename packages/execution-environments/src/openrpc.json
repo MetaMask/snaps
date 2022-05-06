@@ -17,6 +17,17 @@
       }
     },
     {
+      "name": "terminate",
+      "description": "tells the execution environment that it is being shut down",
+      "params": [],
+      "result": {
+        "name": "TerminateResult",
+        "schema": {
+          "$ref": "#/components/schemas/OK"
+        }
+      }
+    },
+    {
       "name": "executeSnap",
       "description": "executes a snap in the environment. The snap can then be interacted with via `snapRpc`",
       "params": [

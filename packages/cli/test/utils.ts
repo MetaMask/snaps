@@ -8,6 +8,7 @@ type GetSnapManifestOptions = Partial<Omit<SnapManifest, 'source'>> & {
   filePath?: string;
   packageName?: string;
   registry?: string;
+  iconPath?: string;
 };
 
 // A fake Snap source and its shasum.
@@ -31,6 +32,7 @@ export const getSnapManifest = ({
   filePath = 'dist/bundle.js',
   packageName = '@metamask/example-snap',
   repository = getDefaultRepository(),
+  iconPath = 'icon.svg',
 }: GetSnapManifestOptions = {}): SnapManifest => {
   return {
     version,
@@ -44,6 +46,7 @@ export const getSnapManifest = ({
           filePath,
           packageName,
           registry: 'https://registry.npmjs.org',
+          iconPath,
         } as const,
       },
     },

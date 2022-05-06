@@ -1,16 +1,16 @@
 import { Duplex } from 'stream';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
-import {
-  AbstractExecutionService,
-  setupMultiplex,
-  SetupSnapProvider,
-} from '@metamask/snap-controllers';
 import { ExecutionServiceMessenger } from '@metamask/snap-types';
 import { SNAP_STREAM_NAMES } from '@metamask/execution-environments';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createStreamMiddleware } from 'json-rpc-middleware-stream';
 import { nanoid } from 'nanoid';
 import pump from 'pump';
+import {
+  AbstractExecutionService,
+  setupMultiplex,
+  SetupSnapProvider,
+} from '../AbstractExecutionService';
 
 type IframeExecutionEnvironmentServiceArgs = {
   createWindowTimeout?: number;
@@ -36,19 +36,15 @@ export class IframeExecutionService extends AbstractExecutionService<EnvMetadata
 
   public iframeUrl: URL;
 
-  private _createWindowTimeout: number;
-
   constructor({
     setupSnapProvider,
     iframeUrl,
     messenger,
-    createWindowTimeout = 60000,
   }: IframeExecutionEnvironmentServiceArgs) {
     super({
       setupSnapProvider,
       messenger,
     });
-    this._createWindowTimeout = createWindowTimeout;
     this.iframeUrl = iframeUrl;
   }
 
@@ -81,7 +77,6 @@ export class IframeExecutionService extends AbstractExecutionService<EnvMetadata
     this._iframeWindow = await this._createWindow(
       this.iframeUrl.toString(),
       jobId,
-      this._createWindowTimeout,
     );
     const envStream = new WindowPostMessageStream({
       name: 'parent',
@@ -123,20 +118,18 @@ export class IframeExecutionService extends AbstractExecutionService<EnvMetadata
     };
   }
 
-  private _createWindow(
-    uri: string,
-    jobId: string,
-    timeout: number,
-  ): Promise<Window> {
+  /**
+   * Creates the iframe to be used as the execution environment
+   * This may run forever if the iframe never loads, but the promise should be wrapped in an initialization timeout in the SnapController
+   *
+   * @param uri - The iframe URI
+   * @param jobId - The job id
+   */
+  private _createWindow(uri: string, jobId: string): Promise<Window> {
     const iframe = document.createElement('iframe');
-    return new Promise((resolve, reject) => {
-      const errorTimeout = setTimeout(() => {
-        iframe.remove();
-        reject(new Error(`Timed out creating iframe window: "${uri}"`));
-      }, timeout);
+    return new Promise((resolve) => {
       iframe.addEventListener('load', () => {
         if (iframe.contentWindow) {
-          clearTimeout(errorTimeout);
           resolve(iframe.contentWindow);
         }
       });

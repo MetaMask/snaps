@@ -1,7 +1,8 @@
 {
   "references": [
+    { "path": "./packages/utils/tsconfig.build.json" },
+    { "path": "./packages/plugin-browserify/tsconfig.build.json" },
     { "path": "./packages/controllers" },
-    { "path": "./packages/iframe-execution-environment-service" },
     { "path": "./packages/rpc-methods" },
     { "path": "./packages/cli" },
     { "path": "./packages/execution-environments" }

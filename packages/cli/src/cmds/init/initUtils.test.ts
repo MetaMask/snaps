@@ -202,6 +202,36 @@ describe('initUtils', () => {
       expect(global.console.log).toHaveBeenCalledTimes(1);
     });
 
+    it('handles missing "repository" property in package.json', async () => {
+      jest.spyOn(readlineUtils, 'prompt').mockImplementation(async () => 'y');
+      jest.spyOn(console, 'log').mockImplementation();
+      const packageJson = getPackageJson();
+      delete packageJson.repository;
+
+      const manifestAndArgs = await buildSnapManifest(
+        getMockArgv(),
+        packageJson,
+      );
+      expect(manifestAndArgs).not.toBeNull();
+      const [manifest] = manifestAndArgs as [SnapManifest, YargsArgs];
+      expect(manifest.repository).toBeNull();
+    });
+
+    it('handles missing "main" property in package.json', async () => {
+      jest.spyOn(readlineUtils, 'prompt').mockImplementation(async () => 'y');
+      jest.spyOn(console, 'log').mockImplementation();
+      const packageJson = getPackageJson();
+      delete packageJson.main;
+
+      const manifestAndArgs = await buildSnapManifest(
+        getMockArgv(),
+        packageJson,
+      );
+      expect(manifestAndArgs).not.toBeNull();
+      const [, argv] = manifestAndArgs as [SnapManifest, YargsArgs];
+      expect(argv.src).toBe('src/index.js');
+    });
+
     it('throws if the "dist" directory cannot be created', async () => {
       mkdirpMock.mockImplementationOnce(() => {
         throw new FakeFsError('some file system error', 'ERROR');
@@ -486,6 +516,16 @@ describe('initUtils', () => {
       expect(warningMock).toHaveBeenCalledTimes(1);
       expect(readdirMock).toHaveBeenCalledTimes(1);
       expect(promptMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('handles a situation where there are no existing files in the directory correctly', async () => {
+      const readdirMock = jest
+        .spyOn(fs.promises, 'readdir')
+        .mockImplementation(() => [] as any);
+      const promptMock = jest.spyOn(readlineUtils, 'prompt');
+      await prepareWorkingDirectory();
+      expect(readdirMock).toHaveBeenCalledTimes(1);
+      expect(promptMock).toHaveBeenCalledTimes(0);
     });
   });
 });
