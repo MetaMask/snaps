@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.12.0]
-### Uncategorized
-- Implement Webpack plugin ([#420](https://github.com/MetaMask/snaps-skunkworks/pull/420))
+### Changed
+- No changes this release.
 
 ## [0.11.1]
 ### Changed

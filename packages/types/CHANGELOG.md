@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.12.0]
-### Uncategorized
-- Remove unresponsive timeout ([#395](https://github.com/MetaMask/snaps-skunkworks/pull/395))
+### Removed
+- **BREAKING:** Remove `UnresponsiveMessageEvent` ([#395](https://github.com/MetaMask/snaps-skunkworks/pull/395))
 
 ## [0.11.1]
 ### Changed

@@ -7,10 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.12.0]
-### Uncategorized
-- Move `IframeExecutionService` to `snaps-controllers` package ([#415](https://github.com/MetaMask/snaps-skunkworks/pull/415))
-- Make some Browserify plugin edits ([#421](https://github.com/MetaMask/snaps-skunkworks/pull/421))
-- Implement Browserify Snaps transform ([#410](https://github.com/MetaMask/snaps-skunkworks/pull/410))
+### Changed
+- Use new Browserify plugin ([#410](https://github.com/MetaMask/snaps-skunkworks/pull/410), [#421](https://github.com/MetaMask/snaps-skunkworks/pull/421))
 
 ## [0.11.1]
 ### Changed

@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.12.0]
-### Uncategorized
+### Added
 - Add support for endowment teardown ([#407](https://github.com/MetaMask/snaps-skunkworks/pull/407))
 
 ## [0.11.1]
