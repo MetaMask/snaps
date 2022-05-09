@@ -1745,7 +1745,7 @@ export class SnapController extends BaseController<
         this._recordSnapRpcRequestFinish(snapId);
         return result;
       } catch (err) {
-        await this.stopSnap(snapId, SnapStatusEvent.stop);
+        await this.stopSnap(snapId, SnapStatusEvent.crash);
         throw err;
       }
     };
