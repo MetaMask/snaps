@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Emit `snapTerminated` event ([#406](https://github.com/MetaMask/snaps-skunkworks/pull/406))
 - Add `IframeExecutionService` previously published via `@metamask/iframe-execution-environment-service` ([#415](https://github.com/MetaMask/snaps-skunkworks/pull/415))
 
+### Fixed
+- Correctly categorize ungracefully terminated snaps as crashed ([#427](https://github.com/MetaMask/snaps-skunkworks/pull/427))
+
 ### Removed
 - Remove `_createWindowTimeout` ([#404](https://github.com/MetaMask/snaps-skunkworks/pull/404))
 - Remove unresponsive timeout ([#395](https://github.com/MetaMask/snaps-skunkworks/pull/395))
