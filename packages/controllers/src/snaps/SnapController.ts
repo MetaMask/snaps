@@ -767,7 +767,9 @@ export class SnapController extends BaseController<
       return;
     }
 
+    // Reset request tracking
     runtime.lastRequest = null;
+    runtime.pendingRequests = 0;
     try {
       if (this.isRunning(snapId)) {
         this._closeAllConnections(snapId);
