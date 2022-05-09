@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.12.0]
 ### Changed
-- Use new Browserify plugin ([#410](https://github.com/MetaMask/snaps-skunkworks/pull/410), [#421](https://github.com/MetaMask/snaps-skunkworks/pull/421))
+- No changes this release.
 
 ## [0.11.1]
 ### Changed

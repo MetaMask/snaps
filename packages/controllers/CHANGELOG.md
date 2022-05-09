@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add support for endowment teardown ([#407](https://github.com/MetaMask/snaps-skunkworks/pull/407))
 - Emit `snapTerminated` event ([#406](https://github.com/MetaMask/snaps-skunkworks/pull/406))
-- Add `IframeExecutionService` previously included via `@metamask/iframe-execution-environment-service` ([#415](https://github.com/MetaMask/snaps-skunkworks/pull/415))
+- Add `IframeExecutionService` previously published via `@metamask/iframe-execution-environment-service` ([#415](https://github.com/MetaMask/snaps-skunkworks/pull/415))
 
 ### Removed
 - Remove `_createWindowTimeout` ([#404](https://github.com/MetaMask/snaps-skunkworks/pull/404))
