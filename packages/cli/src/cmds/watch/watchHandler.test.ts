@@ -6,6 +6,7 @@ import * as fsUtils from '../../utils/validate-fs';
 import * as build from '../build/bundle';
 import * as evalModule from '../eval/evalHandler';
 import * as manifest from '../manifest/manifestHandler';
+import * as fileUtils from '../../utils/fs';
 import watch from '.';
 
 type MockWatcher = {
@@ -98,6 +99,39 @@ describe('watch', () => {
       expect(validateFilePathMock).toHaveBeenCalledWith('foo/index.js');
       expect(validateOutfileNameMock).toHaveBeenCalledWith(mockOutfileName);
       expect(chokidarMock.mock.calls[0][0]).toBe('foo/');
+    });
+
+    it('successfully handles when an outfileName is not provided', async () => {
+      jest.spyOn(chokidar, 'watch').mockImplementation(() => {
+        watcherEmitter = getMockWatcher();
+        return watcherEmitter as any;
+      });
+      jest.spyOn(console, 'log').mockImplementation();
+      jest
+        .spyOn(fsUtils, 'validateFilePath')
+        .mockImplementation(async () => true);
+      const mockArgs = getMockArgv();
+      delete mockArgs.outfileName;
+      await watch.handler(mockArgs);
+      expect(global.console.log).toHaveBeenCalledTimes(1);
+    });
+
+    it('successfully handles when only a filename is provided for src', async () => {
+      // the idea here is that the file name should pass the file path validation
+      // so that we can reach where the ternary resolves to the first expression
+      jest.spyOn(chokidar, 'watch').mockImplementation(() => {
+        watcherEmitter = getMockWatcher();
+        return watcherEmitter as any;
+      });
+      jest.spyOn(console, 'log').mockImplementation();
+      jest.spyOn(fileUtils, 'isFile').mockImplementation(async () => true);
+      jest
+        .spyOn(fsUtils, 'validateFilePath')
+        .mockImplementation(async () => true);
+      const mockArgs = getMockArgv();
+      mockArgs.src = 'index.js';
+      await watch.handler(mockArgs);
+      expect(global.console.log).toHaveBeenCalledTimes(1);
     });
 
     it('handles "changed" event correctly', async () => {
@@ -303,6 +337,34 @@ describe('watch', () => {
 
       await finishPromise;
       expect(global.console.log).toHaveBeenCalledTimes(2);
+    });
+
+    it('logs the proper message for errors during initial build', async () => {
+      jest.spyOn(console, 'log').mockImplementation();
+      const logErrorMock = jest
+        .spyOn(miscUtils, 'logError')
+        .mockImplementation();
+      const bundleMock = jest.spyOn(build, 'bundle').mockImplementation(() => {
+        throw new Error('build failure');
+      });
+      jest
+        .spyOn(fsUtils, 'validateFilePath')
+        .mockImplementation(async () => true);
+      await watch.handler(getMockArgv());
+      const finishPromise = new Promise<void>((resolve, _) => {
+        watcherEmitter.on('ready', () => {
+          expect(bundleMock).toHaveBeenCalledTimes(1);
+          expect(logErrorMock).toHaveBeenCalledTimes(1);
+          expect(logErrorMock).toHaveBeenCalledWith(
+            'Error during initial build.',
+            expect.objectContaining({ message: 'build failure' }),
+          );
+          resolve();
+        });
+      });
+      watcherEmitter.emit('ready');
+      await finishPromise;
+      expect(global.console.log).toHaveBeenCalledTimes(1);
     });
   });
 });

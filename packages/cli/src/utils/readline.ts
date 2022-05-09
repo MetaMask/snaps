@@ -9,7 +9,7 @@ type PromptArgs = {
   readlineInterface?: readline.Interface;
 };
 
-function openPrompt(): void {
+export function openPrompt(): void {
   singletonReadlineInterface = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
@@ -53,5 +53,7 @@ export function closePrompt(
 ): void {
   if (readlineInterface) {
     readlineInterface.close();
+  } else {
+    throw new Error('You are attempting to close a non existent prompt.');
   }
 }

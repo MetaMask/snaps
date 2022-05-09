@@ -1,5 +1,5 @@
 import readline from 'readline';
-import { prompt, closePrompt } from './readline';
+import { prompt, closePrompt, openPrompt } from '.';
 
 jest.mock('readline', () => {
   return { createInterface: jest.fn() };
@@ -36,6 +36,15 @@ describe('readline', () => {
       expect(promptResult).toStrictEqual('default');
     });
 
+    it('if the user fails to provide an input AND there is no defaultValue, it should resolve to an empty string', async () => {
+      questionMock = jest.fn((_, cb) => cb(''));
+      const promptResult = await prompt({
+        question: 'question',
+        readlineInterface: { question: questionMock } as any,
+      });
+      expect(promptResult).toStrictEqual('');
+    });
+
     it('if shouldClose is true, function should call close', async () => {
       questionMock = jest.fn((_, cb) => cb('answer '));
       await prompt({
@@ -61,11 +70,17 @@ describe('readline', () => {
   });
 
   describe('closePrompt', () => {
-    it('should close the readline interface', () => {
+    it('should close the provided readline interface', () => {
       const closeMock = jest.fn();
-
       closePrompt({ close: closeMock } as any);
       expect(closeMock).toHaveBeenCalled();
+    });
+
+    it('should throw an error if a readline interface is not provided', async () => {
+      openPrompt();
+      expect(() => closePrompt()).toThrow(
+        'You are attempting to close a non existent prompt.',
+      );
     });
   });
 });

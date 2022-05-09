@@ -6,6 +6,7 @@ import {
   loadConfig,
   sanitizeInputs,
   setSnapGlobals,
+  logError,
 } from './utils';
 
 export function cli(argv: string[], commands: any): void {
@@ -52,10 +53,7 @@ export function cli(argv: string[], commands: any): void {
     )
 
     .fail((msg: string, err: Error, _yargs) => {
-      console.error(msg || err.message);
-      if (err?.stack && global.snaps.verboseErrors) {
-        console.error(err.stack);
-      }
+      logError(msg, err);
       process.exitCode = 1;
     })
 

@@ -31,18 +31,20 @@ describe('bundle', () => {
           },
         }),
       );
+      const mockBundlerTransform = jest.fn();
       const writeBundleFileMock = jest
         .spyOn(bundleUtils, 'writeBundleFile')
         .mockImplementation((({ resolve }: { resolve: () => any }) =>
           resolve()) as any);
 
-      await bundle('src', 'dest', mockArgv as any);
+      await bundle('src', 'dest', mockArgv as any, mockBundlerTransform);
       expect(mockBrowserify).toHaveBeenCalledWith('src', { debug: true });
       expect(mockTransform).toHaveBeenCalledTimes(1);
       expect(mockTransform).toHaveBeenCalledWith(
         'mockBabelify',
         expect.objectContaining({ global: false }),
       );
+      expect(mockBundlerTransform).toHaveBeenCalledTimes(1);
       expect(mockPlugin).toHaveBeenCalledTimes(1);
       expect(mockPlugin).toHaveBeenCalledWith(
         '@metamask/snaps-browserify-plugin',
