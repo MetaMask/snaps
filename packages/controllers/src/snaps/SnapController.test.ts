@@ -679,7 +679,7 @@ describe('SnapController', () => {
       }),
     ).rejects.toThrow(/request timed out/u);
 
-    expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
+    expect(snapController.state.snaps[snap.id].status).toStrictEqual('crashed');
     snapController.destroy();
   });
 
@@ -1060,7 +1060,7 @@ describe('SnapController', () => {
         id: 1,
       }),
     ).rejects.toThrow(/request timed out/u);
-    expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
+    expect(snapController.state.snaps[snap.id].status).toStrictEqual('crashed');
 
     snapController.destroy();
   });
@@ -1136,7 +1136,7 @@ describe('SnapController', () => {
         id: 1,
       }),
     ).rejects.toThrow(/request timed out/u);
-    expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
+    expect(snapController.state.snaps[snap.id].status).toStrictEqual('crashed');
 
     await snapController.removeSnap(snap.id);
 
