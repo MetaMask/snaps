@@ -969,7 +969,7 @@ export class SnapController extends BaseController<
 
         const permissionName = getSnapPermissionName(snapId);
         // Revoke all subjects access to the snap
-        await this.messagingSystem.call(
+        this.messagingSystem.call(
           'PermissionController:revokePermissionForAllSubjects',
           permissionName,
         );
