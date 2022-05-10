@@ -33,8 +33,11 @@ describe('Endowment utils', () => {
       const endowments = createEndowments(mockWallet as any, ['WebAssembly']);
 
       expect(endowments).toStrictEqual({
-        wallet: mockWallet,
-        WebAssembly: expect.objectContaining(WebAssembly),
+        endowments: {
+          wallet: mockWallet,
+          WebAssembly: expect.objectContaining(WebAssembly),
+        },
+        teardown: expect.any(Function),
       });
       expect(endowments.endowments.WebAssembly).not.toBe(WebAssembly);
     });
@@ -44,8 +47,11 @@ describe('Endowment utils', () => {
       const endowments = createEndowments(mockWallet as any, ['setTimeout']);
 
       expect(endowments).toMatchObject({
-        wallet: mockWallet,
-        setTimeout: expect.any(Function),
+        endowments: {
+          wallet: mockWallet,
+          setTimeout: expect.any(Function),
+        },
+        teardown: expect.any(Function),
       });
       expect(endowments.endowments.setTimeout).not.toBe(setTimeout);
     });
@@ -58,9 +64,12 @@ describe('Endowment utils', () => {
       ]);
 
       expect(endowments).toMatchObject({
-        wallet: mockWallet,
-        setTimeout: expect.any(Function),
-        clearTimeout: expect.any(Function),
+        endowments: {
+          wallet: mockWallet,
+          setTimeout: expect.any(Function),
+          clearTimeout: expect.any(Function),
+        },
+        teardown: expect.any(Function),
       });
       expect(endowments.endowments.clearTimeout).not.toBe(clearTimeout);
     });
@@ -77,13 +86,16 @@ describe('Endowment utils', () => {
       ]);
 
       expect(endowments).toMatchObject({
-        wallet: mockWallet,
-        Buffer,
-        console,
-        Math,
-        setTimeout: expect.any(Function),
-        clearTimeout: expect.any(Function),
-        WebAssembly: { ...WebAssembly },
+        endowments: {
+          wallet: mockWallet,
+          Buffer,
+          console,
+          Math,
+          setTimeout: expect.any(Function),
+          clearTimeout: expect.any(Function),
+          WebAssembly: { ...WebAssembly },
+        },
+        teardown: expect.any(Function),
       });
 
       expect(endowments.endowments.wallet).toBe(mockWallet);
