@@ -94,7 +94,7 @@ const getSnapControllerOptions = (
     terminateAllSnaps: jest.fn(),
     terminateSnap: jest.fn(),
     executeSnap: jest.fn(),
-    endowmentPermissionNames: [],
+    environmentEndowmentPermissions: [],
     getRpcMessageHandler: jest.fn(),
     removeAllPermissionsFor: jest.fn(),
     getPermissions: jest.fn(),
@@ -116,7 +116,7 @@ const getSnapControllerWithEESOptions = (
   opts?: Partial<SnapControllerWithEESConstructorParams>,
 ) => {
   return {
-    endowmentPermissionNames: [],
+    environmentEndowmentPermissions: [],
     removeAllPermissionsFor: jest.fn(),
     getPermissions: jest.fn(),
     requestPermissions: jest.fn(),
@@ -406,7 +406,7 @@ describe('SnapController', () => {
 
     const snapController = getSnapController(
       getSnapControllerOptions({
-        endowmentPermissionNames: ['endowment:foo'],
+        environmentEndowmentPermissions: ['endowment:foo'],
         executeSnap: executeSnapMock,
         messenger,
       }),
@@ -679,7 +679,7 @@ describe('SnapController', () => {
       }),
     ).rejects.toThrow(/request timed out/u);
 
-    expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
+    expect(snapController.state.snaps[snap.id].status).toStrictEqual('crashed');
     snapController.destroy();
   });
 
@@ -1060,7 +1060,7 @@ describe('SnapController', () => {
         id: 1,
       }),
     ).rejects.toThrow(/request timed out/u);
-    expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
+    expect(snapController.state.snaps[snap.id].status).toStrictEqual('crashed');
 
     snapController.destroy();
   });
@@ -1136,7 +1136,7 @@ describe('SnapController', () => {
         id: 1,
       }),
     ).rejects.toThrow(/request timed out/u);
-    expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
+    expect(snapController.state.snaps[snap.id].status).toStrictEqual('crashed');
 
     await snapController.removeSnap(snap.id);
 
