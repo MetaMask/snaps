@@ -1,13 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`snapsPlugin applies a transform 1`] = `
+exports[`snaps applies a transform 1`] = `
 "
                         const foo = 'bar';
             console.log(foo);
 "
 `;
 
-exports[`snapsPlugin forwards the options 1`] = `
+exports[`snaps forwards the options 1`] = `
 "// foo bar
             /* baz qux */
             const foo = 'bar';
@@ -15,13 +15,13 @@ exports[`snapsPlugin forwards the options 1`] = `
 "
 `;
 
-exports[`snapsPlugin processes files using Rollup 1`] = `
+exports[`snaps processes files using Rollup 1`] = `
 "const foo = 'bar';
             console.log(foo);
 "
 `;
 
-exports[`snapsPlugin runs on the entire bundle 1`] = `
+exports[`snaps runs on the entire bundle 1`] = `
 "
             const bar = 'baz';
 
