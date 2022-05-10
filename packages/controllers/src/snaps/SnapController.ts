@@ -37,6 +37,7 @@ import {
 import { isNonEmptyArray, setDiff, timeSince } from '../utils';
 import { DEFAULT_ENDOWMENTS } from './default-endowments';
 import { SnapManifest, validateSnapJsonFile } from './json-schemas';
+import { LONG_RUNNING_PERMISSION } from './endowments';
 import { RequestQueue } from './RequestQueue';
 import {
   DEFAULT_REQUESTED_SNAP_VERSION,
@@ -1391,6 +1392,7 @@ export class SnapController extends BaseController<
 
     try {
       const result = await this._executeWithTimeout(
+        snapId,
         this._executeSnap({
           ...snapData,
           endowments: await this._getEndowments(snapId),
@@ -1801,6 +1803,7 @@ export class SnapController extends BaseController<
       // This will either get the result or reject due to the timeout.
       try {
         const result = await this._executeWithTimeout(
+          snapId,
           handler(origin, _request),
         );
         this._recordSnapRpcRequestFinish(snapId);
@@ -1823,7 +1826,18 @@ export class SnapController extends BaseController<
    * @param promise - The promise to await.
    * @returns The result of the promise or rejects if the promise times out.
    */
-  private async _executeWithTimeout(promise: Promise<unknown>) {
+  private async _executeWithTimeout(snapId: SnapId, promise: Promise<unknown>) {
+    const isLongRunning = this.messagingSystem.call(
+      'PermissionController:hasPermission',
+      snapId,
+      LONG_RUNNING_PERMISSION,
+    );
+
+    // Long running snaps have timeouts disabled
+    if (isLongRunning) {
+      return promise;
+    }
+
     // Handle max request time
     let timeout: number | undefined;
 

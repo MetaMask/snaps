@@ -5,3 +5,5 @@ export const endowmentPermissionBuilders = {
   [networkAccessEndowmentBuilder.targetKey]: networkAccessEndowmentBuilder,
   [longRunningEndowmentBuilder.targetKey]: longRunningEndowmentBuilder,
 } as const;
+
+export * from './constants';

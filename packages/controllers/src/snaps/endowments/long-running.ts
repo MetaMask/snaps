@@ -4,8 +4,9 @@ import {
   EndowmentGetterParams,
   ValidPermissionSpecification,
 } from '@metamask/controllers';
+import { LONG_RUNNING_PERMISSION } from './constants';
 
-const permissionName = 'endowment:long-running';
+const permissionName = LONG_RUNNING_PERMISSION;
 
 type LongRunningEndowmentSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;
