@@ -45,7 +45,7 @@ const getControllerMessenger = () =>
 
 const getSnapControllerMessenger = (
   messenger?: ReturnType<typeof getControllerMessenger>,
-  mocked = true
+  mocked = true,
 ) => {
   const m = (messenger ?? getControllerMessenger()).getRestricted<
     'SnapController',
@@ -91,8 +91,7 @@ const getSnapControllerMessenger = (
     });
   }
   return m;
-}
-
+};
 
 const getWebWorkerEESMessenger = (
   messenger?: ReturnType<typeof getControllerMessenger>,
