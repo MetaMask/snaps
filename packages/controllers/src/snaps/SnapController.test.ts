@@ -339,10 +339,7 @@ describe('SnapController', () => {
   });
 
   it('should create a worker and snap controller and add a snap and update its state', async () => {
-    const messenger = getSnapControllerMessenger();
-    const [snapController] = getSnapControllerWithEES(
-      getSnapControllerWithEESOptions({ messenger }),
-    );
+    const [snapController] = getSnapControllerWithEES();
 
     const snap = await snapController.add({
       origin: FAKE_ORIGIN,
@@ -364,10 +361,7 @@ describe('SnapController', () => {
   });
 
   it('should add a snap and use its JSON-RPC api with a WebWorkerExecutionService', async () => {
-    const messenger = getSnapControllerMessenger();
-    const [snapController] = getSnapControllerWithEES(
-      getSnapControllerWithEESOptions({ messenger }),
-    );
+    const [snapController] = getSnapControllerWithEES();
 
     const snap = await snapController.add({
       origin: FAKE_ORIGIN,
@@ -393,12 +387,11 @@ describe('SnapController', () => {
   });
 
   it('should add a snap and use its JSON-RPC api', async () => {
-    const messenger = getSnapControllerMessenger();
     const executionEnvironmentStub =
       new ExecutionEnvironmentStub() as unknown as WebWorkerExecutionService;
 
     const [snapController] = getSnapControllerWithEES(
-      getSnapControllerWithEESOptions({ messenger }),
+      getSnapControllerWithEESOptions(),
       executionEnvironmentStub,
     );
 
@@ -491,7 +484,6 @@ describe('SnapController', () => {
   });
 
   it('errors if attempting to start a snap that was already started', async () => {
-    const messenger = getSnapControllerMessenger();
     const manifest = {
       ...FAKE_SNAP_MANIFEST,
       initialPermissions: { eth_accounts: {} },
@@ -500,7 +492,7 @@ describe('SnapController', () => {
     const mockExecuteSnap = jest.fn();
 
     const snapController = getSnapController(
-      getSnapControllerOptions({ messenger, executeSnap: mockExecuteSnap }),
+      getSnapControllerOptions({ executeSnap: mockExecuteSnap }),
     );
 
     await snapController.add({
@@ -522,12 +514,10 @@ describe('SnapController', () => {
   });
 
   it('should be able to rehydrate state', async () => {
-    const messenger = getSnapControllerMessenger();
     const mockExecuteSnap = jest.fn();
 
     const firstSnapController = getSnapController(
       getSnapControllerOptions({
-        messenger,
         executeSnap: mockExecuteSnap,
         state: {
           snapErrors: {},
@@ -551,11 +541,9 @@ describe('SnapController', () => {
       firstSnapController.metadata,
     );
 
-    const secondMessenger = getSnapControllerMessenger();
     // create a new controller
     const secondSnapController = getSnapController(
       getSnapControllerOptions({
-        messenger: secondMessenger,
         executeSnap: mockExecuteSnap,
         state: persistedState as unknown as SnapControllerState,
       }),
@@ -659,10 +647,8 @@ describe('SnapController', () => {
   });
 
   it('should add a snap and use its JSON-RPC api and then get stopped from idling too long', async () => {
-    const messenger = getSnapControllerMessenger();
     const [snapController] = getSnapControllerWithEES(
       getSnapControllerWithEESOptions({
-        messenger,
         idleTimeCheckInterval: 50,
         maxIdleTime: 100,
       }),
@@ -694,9 +680,7 @@ describe('SnapController', () => {
   });
 
   it('should still terminate if connection to worker has failed', async () => {
-    const messenger = getSnapControllerMessenger();
     const options = getSnapControllerWithEESOptions({
-      messenger,
       idleTimeCheckInterval: 50,
       maxIdleTime: 100,
     });
@@ -734,10 +718,8 @@ describe('SnapController', () => {
   });
 
   it('should add a snap and see its status', async () => {
-    const messenger = getSnapControllerMessenger();
     const [snapController] = getSnapControllerWithEES(
       getSnapControllerWithEESOptions({
-        messenger,
         idleTimeCheckInterval: 1000,
         maxIdleTime: 2000,
       }),
@@ -760,10 +742,8 @@ describe('SnapController', () => {
   });
 
   it('should add a snap and stop it and have it start on-demand', async () => {
-    const messenger = getSnapControllerMessenger();
     const [snapController] = getSnapControllerWithEES(
       getSnapControllerWithEESOptions({
-        messenger,
         idleTimeCheckInterval: 1000,
         maxIdleTime: 2000,
       }),
@@ -797,7 +777,7 @@ describe('SnapController', () => {
 
   it('should install a Snap via installSnaps', async () => {
     const executeSnapMock = jest.fn();
-    const messenger = getSnapControllerMessenger();
+    const messenger = getSnapControllerMessenger(undefined, false);
     const snapController = getSnapController(
       getSnapControllerOptions({
         executeSnap: executeSnapMock,
@@ -1009,10 +989,8 @@ describe('SnapController', () => {
   });
 
   it('should add a snap disable/enable it and still get a response from method "test"', async () => {
-    const messenger = getSnapControllerMessenger();
     const [snapController] = getSnapControllerWithEES(
       getSnapControllerWithEESOptions({
-        messenger,
         idleTimeCheckInterval: 1000,
         maxRequestTime: 2000,
         maxIdleTime: 2000,
@@ -1195,10 +1173,9 @@ describe('SnapController', () => {
   });
 
   it('should time out on stuck starting snap', async () => {
-    const messenger = getSnapControllerMessenger();
     const executeSnap = jest.fn();
     const snapController = getSnapController(
-      getSnapControllerOptions({ messenger, executeSnap, maxRequestTime: 50 }),
+      getSnapControllerOptions({ executeSnap, maxRequestTime: 50 }),
     );
 
     const snap = await snapController.add({
@@ -1226,7 +1203,7 @@ describe('SnapController', () => {
   it('shouldnt time out a long running snap on start up', async () => {
     const messenger = getSnapControllerMessenger();
     jest.spyOn(messenger, 'call').mockImplementation(() => {
-            // Return true for everything here, so we signal that we have the long-running permission
+      // Return true for everything here, so we signal that we have the long-running permission
       return true;
     });
     const executeSnap = jest.fn();
@@ -1266,10 +1243,8 @@ describe('SnapController', () => {
   });
 
   it('should remove a snap that is stopped without errors', async () => {
-    const messenger = getSnapControllerMessenger();
     const [snapController] = getSnapControllerWithEES(
       getSnapControllerWithEESOptions({
-        messenger,
         idleTimeCheckInterval: 30000,
         maxIdleTime: 160000,
         maxRequestTime: 1000,
@@ -1318,11 +1293,9 @@ describe('SnapController', () => {
 
   describe('getRpcMessageHandler', () => {
     it('handlers populate the "jsonrpc" property if missing', async () => {
-      const messenger = getSnapControllerMessenger();
       const snapId = 'fooSnap';
       const [snapController] = getSnapControllerWithEES(
         getSnapControllerWithEESOptions({
-          messenger,
           state: {
             snaps: {
               [snapId]: {
@@ -1378,13 +1351,11 @@ describe('SnapController', () => {
     });
 
     it('handlers will throw if there are too many pending requests before a snap has started', async () => {
-      const messenger = getSnapControllerMessenger();
       const fakeSnap = getSnapObject({ status: SnapStatus.stopped });
       const snapId = fakeSnap.id;
       const mockGetRpcMessageHandler = jest.fn();
       const snapController = getSnapController(
         getSnapControllerOptions({
-          messenger,
           getRpcMessageHandler: mockGetRpcMessageHandler as any,
           state: {
             ...getEmptySnapControllerState(),
@@ -2709,10 +2680,7 @@ describe('SnapController', () => {
     });
 
     it('can fetch local snaps', async () => {
-      const messenger = getSnapControllerMessenger();
-      const controller = getSnapController(
-        getSnapControllerOptions({ messenger }),
-      );
+      const controller = getSnapController();
 
       fetchMock
         .mockResponseOnce(JSON.stringify(FAKE_SNAP_MANIFEST))
@@ -2760,15 +2728,12 @@ describe('SnapController', () => {
     });
 
     it('disableSnap also stops a running snap', async () => {
-      const messenger = getSnapControllerMessenger();
       const manifest = {
         ...FAKE_SNAP_MANIFEST,
         initialPermissions: { eth_accounts: {} },
       };
 
-      const snapController = getSnapController(
-        getSnapControllerOptions({ messenger }),
-      );
+      const snapController = getSnapController();
 
       await snapController.add({
         origin: FAKE_ORIGIN,
