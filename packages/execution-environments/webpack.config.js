@@ -31,7 +31,6 @@ module.exports = (_, argv) => {
       new CopyPlugin({
         patterns: [
           {
-            // For use in <script> tag along with the iframe bundle. Copied to ensure same version as bundled
             from: path.resolve(
               `${path.dirname(require.resolve('ses/package.json'))}`,
               'dist',
@@ -40,11 +39,7 @@ module.exports = (_, argv) => {
             to: path.resolve(ENVIRONMENTS, 'webworker/lockdown.umd.min.js'),
             toType: 'file',
           },
-        ],
-      }),
-      // @todo Deduplicate this
-      new CopyPlugin({
-        patterns: [
+          // @todo Merge this with above if possible
           {
             // For use in <script> tag along with the iframe bundle. Copied to ensure same version as bundled
             from: path.resolve(
@@ -55,10 +50,6 @@ module.exports = (_, argv) => {
             to: path.resolve(ENVIRONMENTS, 'iframe/lockdown.umd.min.js'),
             toType: 'file',
           },
-        ],
-      }),
-      new CopyPlugin({
-        patterns: [
           {
             from: path.resolve(
               'src',
