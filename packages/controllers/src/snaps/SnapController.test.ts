@@ -94,7 +94,7 @@ const getSnapControllerOptions = (
     terminateAllSnaps: jest.fn(),
     terminateSnap: jest.fn(),
     executeSnap: jest.fn(),
-    endowmentPermissionNames: [],
+    environmentEndowmentPermissions: [],
     getRpcMessageHandler: jest.fn(),
     removeAllPermissionsFor: jest.fn(),
     getPermissions: jest.fn(),
@@ -116,7 +116,7 @@ const getSnapControllerWithEESOptions = (
   opts?: Partial<SnapControllerWithEESConstructorParams>,
 ) => {
   return {
-    endowmentPermissionNames: [],
+    environmentEndowmentPermissions: [],
     removeAllPermissionsFor: jest.fn(),
     getPermissions: jest.fn(),
     requestPermissions: jest.fn(),
@@ -406,7 +406,7 @@ describe('SnapController', () => {
 
     const snapController = getSnapController(
       getSnapControllerOptions({
-        endowmentPermissionNames: ['endowment:foo'],
+        environmentEndowmentPermissions: ['endowment:foo'],
         executeSnap: executeSnapMock,
         messenger,
       }),
