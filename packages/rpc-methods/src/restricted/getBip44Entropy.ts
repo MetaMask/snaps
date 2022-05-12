@@ -8,17 +8,6 @@ import { ethErrors } from 'eth-rpc-errors';
 import { BIP44CoinTypeNode, JsonBIP44CoinTypeNode } from '@metamask/key-tree';
 import { NonEmptyArray } from '@metamask/snap-controllers';
 
-// TODO: Remove this after key-tree is bumped
-// We redeclare this type locally because the import relies on an interface,
-// which is incompatible with our Json type.
-type _JsonBIP44CoinTypeNode = {
-  // eslint-disable-next-line camelcase
-  coin_type: number;
-  depth: JsonBIP44CoinTypeNode['depth'];
-  key: string;
-  path: JsonBIP44CoinTypeNode['path'];
-};
-
 const methodPrefix = 'snap_getBip44Entropy_';
 const targetKey = `${methodPrefix}*` as const;
 
@@ -84,7 +73,7 @@ function getBip44EntropyImplementation({
 }: GetBip44EntropyMethodHooks) {
   return async function getBip44Entropy(
     args: RestrictedMethodOptions<void>,
-  ): Promise<_JsonBIP44CoinTypeNode> {
+  ): Promise<JsonBIP44CoinTypeNode> {
     const bip44Code = args.method.substr(methodPrefix.length);
     if (!ALL_DIGIT_REGEX.test(bip44Code)) {
       throw ethErrors.rpc.methodNotFound({
@@ -94,10 +83,12 @@ function getBip44EntropyImplementation({
 
     await getUnlockPromise(true);
 
-    return new BIP44CoinTypeNode([
+    const node = await BIP44CoinTypeNode.fromDerivationPath([
       `bip39:${await getMnemonic()}`,
       `bip32:44'`,
       `bip32:${Number(bip44Code)}'`,
-    ]).toJSON();
+    ]);
+
+    return node.toJSON();
   };
 }
