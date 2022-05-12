@@ -33,6 +33,7 @@ export function bundle(
       bundler.transform(require('babelify'), {
         global: transpilationMode === TranspilationModes.localAndDeps,
         presets: [
+          require('@babel/preset-typescript'),
           [
             require('@babel/preset-env'),
             {
