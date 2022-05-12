@@ -9,11 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.13.0]
 ### Added
 - Add long-running endowment permission ([#386](https://github.com/MetaMask/snaps-skunkworks/pull/386))
-- **BREAKING:** Add in-app notifications ([#419](https://github.com/MetaMask/snaps-skunkworks/pull/419))
 - Add `network-access` endowment from `controllers` ([#439](https://github.com/MetaMask/snaps-skunkworks/pull/439))
 
 ### Changed
 - **BREAKING:** Rename SnapController constructor argument ([#435](https://github.com/MetaMask/snaps-skunkworks/pull/435))
+- Bump `@metamask/controllers` to `29.0.1` ([#419](https://github.com/MetaMask/snaps-skunkworks/pull/419))
 
 ## [0.12.0]
 ### Added
