@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.13.0]
-### Uncategorized
-- BREAKING: Bump @metamask/key-tree to 4.0.0 ([#446](https://github.com/MetaMask/snaps-skunkworks/pull/446))
-- BREAKING: Implement In-app notifications ([#419](https://github.com/MetaMask/snaps-skunkworks/pull/419))
+### Added
+- **BREAKING:** Add in-app notifications ([#419](https://github.com/MetaMask/snaps-skunkworks/pull/419))
+
+### Changed
+- **BREAKING:** Bump `@metamask/key-tree` to `4.0.0` ([#446](https://github.com/MetaMask/snaps-skunkworks/pull/446))
 
 ## [0.12.0]
 ### Changed

@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.13.0]
-### Uncategorized
-- BREAKING: Run `IframeExecutionService` tests locally + `execution-environment` build changes ([#424](https://github.com/MetaMask/snaps-skunkworks/pull/424))
+### Changed
+- **BREAKING:** Change `execution-environment` build output ([#424](https://github.com/MetaMask/snaps-skunkworks/pull/424))
 
 ## [0.12.0]
 ### Added

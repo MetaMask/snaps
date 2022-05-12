@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.13.0]
-### Uncategorized
-- BREAKING: Implement In-app notifications ([#419](https://github.com/MetaMask/snaps-skunkworks/pull/419))
+### Changed
+- Bump `@metamask/controllers` to `29.0.1` ([#419](https://github.com/MetaMask/snaps-skunkworks/pull/419))
 
 ## [0.12.0]
 ### Removed

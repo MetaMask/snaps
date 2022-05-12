@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.13.0]
-### Uncategorized
-- Implement Rollup plugin ([#431](https://github.com/MetaMask/snaps-skunkworks/pull/431))
+### Added
+- Initial release ([#431](https://github.com/MetaMask/snaps-skunkworks/pull/431))
 
 [Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.13.0...HEAD
 [0.13.0]: https://github.com/MetaMask/snaps-skunkworks/releases/tag/v0.13.0

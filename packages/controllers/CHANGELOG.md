@@ -7,12 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.13.0]
-### Uncategorized
+### Added
 - Add long-running endowment permission ([#386](https://github.com/MetaMask/snaps-skunkworks/pull/386))
-- BREAKING: Implement In-app notifications ([#419](https://github.com/MetaMask/snaps-skunkworks/pull/419))
-- BREAKING: Run `IframeExecutionService` tests locally + `execution-environment` build changes ([#424](https://github.com/MetaMask/snaps-skunkworks/pull/424))
-- Move `network-access` endowment from `controllers` ([#439](https://github.com/MetaMask/snaps-skunkworks/pull/439))
-- BREAKING: Rename SnapController constructor argument ([#435](https://github.com/MetaMask/snaps-skunkworks/pull/435))
+- **BREAKING:** Add in-app notifications ([#419](https://github.com/MetaMask/snaps-skunkworks/pull/419))
+- Add `network-access` endowment from `controllers` ([#439](https://github.com/MetaMask/snaps-skunkworks/pull/439))
+
+### Changed
+- **BREAKING:** Rename SnapController constructor argument ([#435](https://github.com/MetaMask/snaps-skunkworks/pull/435))
 
 ## [0.12.0]
 ### Added
