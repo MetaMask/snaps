@@ -3,6 +3,8 @@ const { resolve: pathResolve } = require('path');
 
 const execa = require('execa');
 
+const SNAPS_CLI_BIN_PATH = '../../../cli/dist/main.js';
+
 const EXAMPLES_PATH = 'examples';
 
 buildExamples();
@@ -49,9 +51,18 @@ async function buildExamples() {
           }
 
           try {
-            await execa('yarn', ['build'], {
-              cwd: exampleFilePath,
-            });
+            await execa(
+              'node',
+              [
+                pathResolve(exampleFilePath, SNAPS_CLI_BIN_PATH),
+                'build',
+                '--sourceMaps',
+                '--stripComments',
+              ],
+              {
+                cwd: exampleFilePath,
+              },
+            );
           } catch (bundleError) {
             console.error(
               `Unexpected error while creating bundle in "${exampleFilePath}.`,
