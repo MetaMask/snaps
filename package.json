@@ -1,6 +1,6 @@
 {
   "name": "root",
-  "version": "0.11.1",
+  "version": "0.12.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -10,7 +10,7 @@
     "packages/*"
   ],
   "scripts": {
-    "setup": "yarn install && yarn allow-scripts && yarn postinstall",
+    "setup": "yarn install && yarn allow-scripts && yarn postinstall && yarn simple-git-hooks",
     "postinstall": "patch-package",
     "publish:all": "./scripts/publish-all.sh",
     "link-packages": "./scripts/link-packages.sh",
@@ -25,6 +25,20 @@
     "clean": "yarn workspaces run clean",
     "test": "yarn workspaces run test",
     "test:ci": "yarn workspaces run test:ci"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "yarn lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,ts}": [
+      "eslint --fix"
+    ],
+    "!(CHANGELOG).{json,yml,md}": [
+      "prettier --write"
+    ],
+    "CHANGELOG.md": [
+      "auto-changelog validate --file"
+    ]
   },
   "devDependencies": {
     "@jest-runner/electron": "^3.0.1",
@@ -45,9 +59,11 @@
     "eslint-plugin-jest": "^24.4.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.4.0",
+    "lint-staged": "^12.4.1",
     "patch-package": "^6.4.7",
     "prettier": "^2.3.2",
     "rimraf": "^3.0.2",
+    "simple-git-hooks": "^2.7.0",
     "typescript": "^4.4.0"
   },
   "engines": {
@@ -58,7 +74,8 @@
       "@jest-runner/electron": true,
       "@lavamoat/preinstall-always-fail": false,
       "core-js": true,
-      "electron": true
+      "electron": true,
+      "simple-git-hooks": false
     }
   }
 }

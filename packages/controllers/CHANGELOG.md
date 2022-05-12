@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.0]
+### Added
+- Add support for endowment teardown ([#407](https://github.com/MetaMask/snaps-skunkworks/pull/407))
+- Emit `snapTerminated` event ([#406](https://github.com/MetaMask/snaps-skunkworks/pull/406))
+- Add `IframeExecutionService` previously published via `@metamask/iframe-execution-environment-service` ([#415](https://github.com/MetaMask/snaps-skunkworks/pull/415))
+
+### Removed
+- Remove `_createWindowTimeout` ([#404](https://github.com/MetaMask/snaps-skunkworks/pull/404))
+- Remove unresponsive timeout ([#395](https://github.com/MetaMask/snaps-skunkworks/pull/395))
+
+### Fixed
+- Correctly categorize ungracefully terminated snaps as crashed ([#427](https://github.com/MetaMask/snaps-skunkworks/pull/427))
+
 ## [0.11.1]
 ### Changed
 - Always bind `fetch` by default ([#402](https://github.com/MetaMask/snaps-skunkworks/pull/402))
@@ -244,7 +257,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.11.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.12.0...HEAD
+[0.12.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.11.1...v0.12.0
 [0.11.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.11.0...v0.11.1
 [0.11.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.7...v0.11.0
 [0.10.7]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.6...v0.10.7

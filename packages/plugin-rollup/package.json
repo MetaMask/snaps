@@ -1,8 +1,9 @@
 {
-  "name": "@metamask/snaps-browserify-plugin",
+  "name": "@metamask/rollup-plugin-snaps",
   "version": "0.12.0",
   "keywords": [
-    "browserify-plugin"
+    "rollup",
+    "rollup-plugin"
   ],
   "repository": {
     "type": "git",
@@ -33,12 +34,11 @@
     "@metamask/snap-utils": "^0.12.0"
   },
   "devDependencies": {
-    "@types/browserify": "^12.0.37",
+    "@rollup/plugin-virtual": "^2.1.0",
     "@types/jest": "^27.4.1",
-    "browserify": "^17.0.0",
-    "concat-stream": "^2.0.0",
     "jest": "^27.5.1",
     "jest-it-up": "^2.0.0",
+    "rollup": "^2.72.1",
     "ts-jest": "^27.1.4",
     "typescript": "^4.4.0"
   },

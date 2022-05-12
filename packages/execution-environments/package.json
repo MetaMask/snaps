@@ -1,6 +1,6 @@
 {
   "name": "@metamask/execution-environments",
-  "version": "0.11.1",
+  "version": "0.12.0",
   "description": "Snap sandbox environments for executing SES javascript",
   "repository": {
     "type": "git",
@@ -26,7 +26,7 @@
     "clean": "rimraf dist src/__GENERATED__/",
     "build:clean": "yarn clean && yarn build",
     "build:pre-tsc": "yarn build:typings",
-    "build:post-tsc": "webpack --mode production && concat -o ./dist/webworker.bundle.js ./dist/lockdown.umd.min.js ./dist/webworker.bundle.js",
+    "build:post-tsc": "webpack --mode production && concat -o ./dist/webpack/webworker/bundle.js ./dist/webpack/webworker/lockdown.umd.min.js ./dist/webpack/webworker/bundle.js",
     "build:tsc": "tsc --project tsconfig.local.json",
     "build": "yarn build:pre-tsc && yarn build:tsc && yarn build:post-tsc",
     "build:typings": "open-rpc-typings -d ./src/openrpc.json --output-ts=./src/__GENERATED__/ --name-ts=openrpc && ts-auto-guard ./src/__GENERATED__/openrpc.ts --export-all",
@@ -37,7 +37,7 @@
     "@metamask/object-multiplex": "^1.2.0",
     "@metamask/post-message-stream": "^4.0.0",
     "@metamask/providers": "^8.1.1",
-    "@metamask/snap-types": "^0.11.1",
+    "@metamask/snap-types": "^0.12.0",
     "eth-rpc-errors": "^4.0.3",
     "pump": "^3.0.0",
     "ses": "^0.15.15",

@@ -2,11 +2,27 @@ import { ControllerMessenger } from '@metamask/controllers';
 import { ErrorMessageEvent } from '@metamask/snap-types';
 import { IframeExecutionService } from './IframeExecutionService';
 import fixJSDOMPostMessageEventSource from './testHelpers/fixJSDOMPostMessageEventSource';
+import { stop as stopServer, start as startServer } from './testHelpers/server';
 
 // We do not use our default endowments in these tests because JSDOM doesn't
 // implement all of them.
 
+const iframeUrl = new URL('http://localhost:6363');
+
 describe('IframeExecutionService', () => {
+  // The tests start running before the server is ready if we dont use the done callback.
+  // eslint-disable-next-line jest/no-done-callback
+  beforeAll(async (done) => {
+    await startServer();
+    done();
+  });
+
+  // eslint-disable-next-line jest/no-done-callback
+  afterAll(async (done) => {
+    await stopServer();
+    done();
+  });
+
   it('can boot', async () => {
     const controllerMessenger = new ControllerMessenger<
       never,
@@ -23,9 +39,7 @@ describe('IframeExecutionService', () => {
       setupSnapProvider: () => {
         // do nothing
       },
-      iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.3.2-test/',
-      ),
+      iframeUrl,
     });
     expect(iframeExecutionService).toBeDefined();
     await iframeExecutionService.terminateAllSnaps();
@@ -47,9 +61,7 @@ describe('IframeExecutionService', () => {
       setupSnapProvider: () => {
         // do nothing
       },
-      iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.3.2-test/',
-      ),
+      iframeUrl,
     });
     const removeListener = fixJSDOMPostMessageEventSource(
       iframeExecutionService,
@@ -83,9 +95,7 @@ describe('IframeExecutionService', () => {
       setupSnapProvider: () => {
         // do nothing
       },
-      iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.3.2-test/',
-      ),
+      iframeUrl,
     });
     const removeListener = fixJSDOMPostMessageEventSource(
       iframeExecutionService,
