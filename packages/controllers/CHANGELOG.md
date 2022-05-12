@@ -13,7 +13,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - **BREAKING:** Rename SnapController constructor argument ([#435](https://github.com/MetaMask/snaps-skunkworks/pull/435))
-- Bump `@metamask/controllers` to `29.0.1` ([#419](https://github.com/MetaMask/snaps-skunkworks/pull/419))
 
 ## [0.12.0]
 ### Added
