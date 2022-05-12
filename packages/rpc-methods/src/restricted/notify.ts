@@ -18,7 +18,7 @@ export enum NotificationType {
 
 export type NotificationArgs = {
   /**
-   * Enum type to determine notification type. Currently only supports 'native'.
+   * Enum type to determine notification type.
    */
   type: NotificationType;
 
