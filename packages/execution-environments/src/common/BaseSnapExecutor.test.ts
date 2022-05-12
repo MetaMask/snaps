@@ -1,12 +1,12 @@
+import { PassThrough } from 'stream';
 import ObjectMultiplex from '@metamask/object-multiplex';
-import { WorkerPostMessageStream } from '@metamask/post-message-stream';
 import pump from 'pump';
 import { BaseSnapExecutor } from './BaseSnapExecutor';
 import { SNAP_STREAM_NAMES } from './enums';
 
 class ExecutorMock extends BaseSnapExecutor {
   static initialize() {
-    const parentStream = new WorkerPostMessageStream();
+    const parentStream = new PassThrough();
     const mux = new ObjectMultiplex();
     pump(parentStream, mux as any, parentStream, (err) => {
       if (err) {
