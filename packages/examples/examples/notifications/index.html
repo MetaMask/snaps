@@ -25,17 +25,20 @@
     <br/>
 
     <button class="connect">Connect</button>
-    <button class="sendHello">Send Hello</button>
+    <button class="sendInApp">Send in-app notification</button>
+    <button class="sendNative">Send native notification</button>
   </body>
 
   <script>
     const snapId = `local:${window.location.href}`;
 
     const connectButton = document.querySelector('button.connect')
-    const sendButton = document.querySelector('button.sendHello')
+    const sendInAppButton = document.querySelector('button.sendInApp')
+    const sendNativeButton = document.querySelector('button.sendNative')
 
     connectButton.addEventListener('click', connect)
-    sendButton.addEventListener('click', send)
+    sendInAppButton.addEventListener('click', () => send('inApp'))
+    sendNativeButton.addEventListener('click', () => send('native'))
 
     // here we get permissions to interact with and install the snap
     async function connect () {
@@ -48,12 +51,12 @@
     }
 
     // here we call the snap's "hello" method
-    async function send () {
+    async function send (method) {
       try {
         const response = await ethereum.request({
           method: 'wallet_invokeSnap',
           params: [snapId, {
-            method: 'hello'
+            method: method
           }]
         })
       } catch (err) {
