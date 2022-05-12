@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.13.0]
+### Uncategorized
+- Add long-running endowment permission ([#386](https://github.com/MetaMask/snaps-skunkworks/pull/386))
+- BREAKING: Implement In-app notifications ([#419](https://github.com/MetaMask/snaps-skunkworks/pull/419))
+- BREAKING: Run `IframeExecutionService` tests locally + `execution-environment` build changes ([#424](https://github.com/MetaMask/snaps-skunkworks/pull/424))
+- Move `network-access` endowment from `controllers` ([#439](https://github.com/MetaMask/snaps-skunkworks/pull/439))
+- BREAKING: Rename SnapController constructor argument ([#435](https://github.com/MetaMask/snaps-skunkworks/pull/435))
+
 ## [0.12.0]
 ### Added
 - Add support for endowment teardown ([#407](https://github.com/MetaMask/snaps-skunkworks/pull/407))
@@ -257,7 +265,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.12.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.13.0...HEAD
+[0.13.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.11.1...v0.12.0
 [0.11.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.11.0...v0.11.1
 [0.11.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.7...v0.11.0
