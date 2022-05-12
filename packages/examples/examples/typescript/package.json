@@ -16,7 +16,7 @@
   "scripts": {
     "build:clean": "yarn clean && yarn build",
     "build:website": "node ./scripts/build-website.js",
-    "build": "mm-snap build --src ./src/index.ts",
+    "build": "mm-snap build",
     "serve": "mm-snap serve",
     "clean": "rimraf dist/*",
     "test": "echo 'TODO'",
