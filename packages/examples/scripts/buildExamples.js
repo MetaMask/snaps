@@ -3,8 +3,6 @@ const { resolve: pathResolve } = require('path');
 
 const execa = require('execa');
 
-const SNAPS_CLI_BIN_PATH = '../../../cli/dist/main.js';
-
 const EXAMPLES_PATH = 'examples';
 
 buildExamples();
@@ -18,12 +16,12 @@ async function buildExamples() {
       const exampleFileStat = await fs.stat(exampleFilePath);
 
       if (exampleFileStat.isDirectory()) {
-        const srcPath = pathResolve(exampleFilePath, 'src/index.js');
+        const srcPath = pathResolve(exampleFilePath, 'src');
         const pkgPath = pathResolve(exampleFilePath, 'package.json');
         const pkgStat = await fs.stat(pkgPath);
         const srcStat = await fs.stat(srcPath);
 
-        if (pkgStat.isFile() && srcStat.isFile()) {
+        if (pkgStat.isFile() && srcStat.isDirectory()) {
           try {
             // install dependencies
             await execa('yarn', ['install'], {
@@ -51,18 +49,9 @@ async function buildExamples() {
           }
 
           try {
-            await execa(
-              'node',
-              [
-                pathResolve(exampleFilePath, SNAPS_CLI_BIN_PATH),
-                'build',
-                '--sourceMaps',
-                '--stripComments',
-              ],
-              {
-                cwd: exampleFilePath,
-              },
-            );
+            await execa('yarn', ['build'], {
+              cwd: exampleFilePath,
+            });
           } catch (bundleError) {
             console.error(
               `Unexpected error while creating bundle in "${exampleFilePath}.`,

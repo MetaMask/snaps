@@ -15,7 +15,7 @@
   ],
   "scripts": {
     "prebuild": "yarn run build:wasm",
-    "build": "yarn run prebuild && mm-snap build",
+    "build": "mm-snap build",
     "build:wasm": "asc assembly/program.ts -o build/program.wasm",
     "serve": "mm-snap serve",
     "test": "echo 'Error: no test specified' && exit 1"

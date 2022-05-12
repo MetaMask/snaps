@@ -1,17 +1,17 @@
 {
   "version": "1.0.0",
-  "proposedName": "Notification Example Snap",
-  "description": "A notification example snap.",
+  "proposedName": "TypeScript Example Snap",
+  "description": "An example Snap written in TypeScript.",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snap-template.git"
   },
   "source": {
-    "shasum": "fq/XEzLmIId2mKFGvQfusaGe77gq7qs9nNR6ClE0Kx4=",
+    "shasum": "SHcVgTrKAzulZHMGQvAwrsFXeOjJYuT389XO1t1da3I=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
-        "packageName": "notification-snap",
+        "packageName": "typescript-snap",
         "registry": "https://registry.npmjs.org/"
       }
     }
