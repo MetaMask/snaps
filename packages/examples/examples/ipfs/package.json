@@ -14,10 +14,12 @@
     "snap.manifest.json"
   ],
   "scripts": {
-    "test": "echo 'Error: no test specified' && exit 1"
+    "test": "echo 'Error: no test specified' && exit 1",
+    "build": "mm-snap build"
   },
   "dependencies": {
     "eth-json-rpc-errors": "^1.1.0",
+    "mm-snap": "file:../../../cli",
     "uuid": "^8.3.2"
   },
   "engines": {

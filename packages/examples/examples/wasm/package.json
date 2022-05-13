@@ -21,7 +21,8 @@
     "test": "echo 'Error: no test specified' && exit 1"
   },
   "dependencies": {
-    "eth-rpc-errors": "^4.0.3"
+    "eth-rpc-errors": "^4.0.3",
+    "mm-snap": "file:../../../cli"
   },
   "devDependencies": {
     "assemblyscript": "^0.19.23",

@@ -14,10 +14,12 @@
     "snap.manifest.json"
   ],
   "scripts": {
-    "test": "echo 'Error: no test specified' && exit 1"
+    "test": "echo 'Error: no test specified' && exit 1",
+    "build": "mm-snap build"
   },
   "dependencies": {
-    "ethers": "^5.4.6"
+    "ethers": "^5.4.6",
+    "mm-snap": "file:../../../cli"
   },
   "engines": {
     "node": ">=14.0.0"
