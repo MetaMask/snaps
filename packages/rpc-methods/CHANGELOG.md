@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.13.0]
+### Added
+- **BREAKING:** Add in-app notifications ([#419](https://github.com/MetaMask/snaps-skunkworks/pull/419))
+
+### Changed
+- **BREAKING:** Bump `@metamask/key-tree` to `4.0.0` ([#446](https://github.com/MetaMask/snaps-skunkworks/pull/446))
+
 ## [0.12.0]
 ### Changed
 - No changes this release.
@@ -138,7 +145,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.12.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.13.0...HEAD
+[0.13.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.11.1...v0.12.0
 [0.11.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.11.0...v0.11.1
 [0.11.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.7...v0.11.0
