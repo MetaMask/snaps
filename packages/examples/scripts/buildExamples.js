@@ -24,7 +24,7 @@ async function buildExamples() {
         if (pkgStat.isFile() && srcStat.isFile()) {
           try {
             // install dependencies
-            await execa('yarn', ['install'], {
+            await execa('yarn', ['install', '--force'], {
               cwd: exampleFilePath,
             });
           } catch (depsInstallError) {
