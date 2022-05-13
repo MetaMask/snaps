@@ -1,7 +1,5 @@
 {
   "extends": "../../../../tsconfig.packages.json",
-  "compilerOptions": {
-    "types": ["./node_modules/@metamask/snap-types"]
-  },
+  "files": ["./node_modules/@metamask/snap-types/global.d.ts"],
   "include": ["src"]
 }

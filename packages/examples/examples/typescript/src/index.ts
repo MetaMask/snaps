@@ -15,4 +15,5 @@ wallet.registerRpcMessageHandler(async (originString, requestObject) => {
   }
 });
 
+// Just for compatibility with the ESLint `import/unambiguous` rule.
 export {};

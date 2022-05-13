@@ -9,7 +9,8 @@
   "main": "src/index.d.ts",
   "types": "src/index.d.ts",
   "files": [
-    "src"
+    "src",
+    "global.d.ts"
   ],
   "scripts": {
     "build": "echo 'N/A'",
