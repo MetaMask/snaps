@@ -26,6 +26,9 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "yarn auto-changelog validate"
   },
+  "dependencies": {
+    "mm-snap": "file:../../../cli"
+  },
   "engines": {
     "node": ">=14.0.0"
   },
