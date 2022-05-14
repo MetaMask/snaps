@@ -1,10 +1,10 @@
 {
   "extends": "../../tsconfig.packages.json",
-  "references": [{ "path": "../controllers" }],
   "compilerOptions": {
-    "outDir": "dist",
-    "rootDir": "src",
+    "outDir": "./dist",
+    "rootDir": "./src",
     "typeRoots": ["../../node_modules/@types", "./types"]
   },
-  "include": ["./src"]
+  "include": ["./src"],
+  "references": [{ "path": "../controllers" }]
 }

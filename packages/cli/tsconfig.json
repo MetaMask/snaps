@@ -4,9 +4,9 @@
     "forceConsistentCasingInFileNames": true,
     "inlineSources": true,
     "lib": ["DOM", "ES2020"],
-    "outDir": "dist",
+    "outDir": "./dist",
     "resolveJsonModule": true,
-    "rootDir": "src",
+    "rootDir": "./src",
     "skipLibCheck": false,
     "typeRoots": [
       "../../node_modules/@types",
@@ -14,5 +14,9 @@
       "./src/types"
     ]
   },
-  "include": ["./src/**/*.ts", "./src/**/*.json"]
+  "include": ["./src/**/*.ts", "./src/**/*.json"],
+  "references": [
+    { "path": "../controllers" },
+    { "path": "../plugin-browserify" }
+  ]
 }

@@ -23,7 +23,7 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "yarn auto-changelog validate",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
-    "clean": "rimraf dist src/__GENERATED__/",
+    "clean": "rimraf *.tsbuildinfo dist/* src/__GENERATED__/",
     "build:clean": "yarn clean && yarn build",
     "build:pre-tsc": "yarn build:typings",
     "build:post-tsc": "webpack --mode production && concat -o ./dist/webpack/webworker/bundle.js ./dist/webpack/webworker/lockdown.umd.min.js ./dist/webpack/webworker/bundle.js",

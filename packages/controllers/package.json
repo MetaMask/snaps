@@ -23,7 +23,7 @@
     "build:ajv": "./scripts/build-ajv.sh",
     "build": "yarn build:pre-tsc && yarn build:tsc",
     "build:clean": "yarn clean && yarn build",
-    "clean": "rimraf dist/*",
+    "clean": "rimraf *.tsbuildinfo dist/*",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check",

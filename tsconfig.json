@@ -1,4 +1,5 @@
 {
+  "files": [],
   "references": [
     { "path": "./packages/cli" },
     { "path": "./packages/controllers" },
@@ -8,8 +9,5 @@
     { "path": "./packages/plugin-webpack" },
     { "path": "./packages/rpc-methods" },
     { "path": "./packages/utils" }
-  ],
-  "files": [],
-  "include": [],
-  "exclude": ["**/node_modules"]
+  ]
 }
