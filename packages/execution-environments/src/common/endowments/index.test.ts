@@ -27,13 +27,13 @@ describe('createEndowments', () => {
 
   it('handles factory endowments', () => {
     const mockWallet = { foo: Symbol('bar') };
-    const { endowments } = createEndowments(mockWallet as any, ['WebAssembly']);
+    const { endowments } = createEndowments(mockWallet as any, ['setTimeout']);
 
     expect(endowments).toStrictEqual({
       wallet: mockWallet,
-      WebAssembly: expect.objectContaining(WebAssembly),
+      setTimeout: expect.any(Function),
     });
-    expect(endowments.WebAssembly).not.toBe(WebAssembly);
+    expect(endowments.setTimeout).not.toBe(setTimeout);
   });
 
   it('handles some endowments from the same factory', () => {
@@ -80,17 +80,17 @@ describe('createEndowments', () => {
       Math,
       setTimeout: expect.any(Function),
       clearTimeout: expect.any(Function),
-      WebAssembly: { ...WebAssembly },
+      WebAssembly,
     });
 
     expect(endowments.wallet).toBe(mockWallet);
     expect(endowments.Buffer).toBe(Buffer);
-    expect(endowments.Math).toBe(Math);
     expect(endowments.console).toBe(console);
+    expect(endowments.Math).toBe(Math);
+    expect(endowments.WebAssembly).toBe(WebAssembly);
 
     expect(endowments.clearTimeout).not.toBe(clearTimeout);
     expect(endowments.setTimeout).not.toBe(setTimeout);
-    expect(endowments.WebAssembly).not.toBe(WebAssembly);
   });
 
   it('throws for unknown endowments', () => {
