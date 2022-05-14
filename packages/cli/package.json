@@ -26,7 +26,7 @@
     "build:post-tsc": "yarn build:chmod && yarn build:readme",
     "build:clean": "yarn clean && yarn build",
     "build:watch": "tsc-watch --onSuccess 'yarn build:chmod'",
-    "clean": "rimraf dist/* src/**/*__GENERATED__*",
+    "clean": "rimraf *.tsbuildinfo dist/* src/**/*__GENERATED__*",
     "test": "yarn build:init-template && jest",
     "posttest": "jest-it-up",
     "test:watch": "yarn test --watch",

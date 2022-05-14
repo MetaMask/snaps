@@ -23,7 +23,7 @@
     "build:post-tsc": "echo 'N/A'",
     "build": "tsc --project tsconfig.local.json",
     "build:clean": "yarn clean && yarn build",
-    "clean": "rimraf dist/*",
+    "clean": "rimraf *.tsbuildinfo dist/*",
     "publish": "../../scripts/publish-package.sh"
   },
   "dependencies": {
