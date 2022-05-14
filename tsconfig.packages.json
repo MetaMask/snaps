@@ -3,6 +3,7 @@
     "composite": true,
     "declaration": true,
     "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
     "module": "CommonJS",
     "moduleResolution": "node",
     "useUnknownInCatchVariables": false,

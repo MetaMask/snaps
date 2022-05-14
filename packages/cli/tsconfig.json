@@ -1,7 +1,6 @@
 {
   "extends": "../../tsconfig.packages.json",
   "compilerOptions": {
-    "forceConsistentCasingInFileNames": true,
     "inlineSources": true,
     "lib": ["DOM", "ES2020"],
     "outDir": "./dist",
