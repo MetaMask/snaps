@@ -3,7 +3,6 @@ import { rootRealmGlobal } from '../globalObject';
 import buffer from './buffer';
 import timeout from './timeout';
 import interval from './interval';
-import wasm from './wasm';
 
 type EndowmentFactoryResult = {
   teardownFunction?: () => void;
@@ -15,7 +14,7 @@ type EndowmentFactoryResult = {
  * the same factory function, but we only call each factory once for each snap.
  * See {@link createEndowments} for details.
  */
-const endowmentFactories = [buffer, timeout, interval, wasm].reduce(
+const endowmentFactories = [buffer, timeout, interval].reduce(
   (factories, builder) => {
     builder.names.forEach((name) => {
       factories.set(name, builder.factory);
