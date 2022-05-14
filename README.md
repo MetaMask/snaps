@@ -21,6 +21,15 @@ You can also run `yarn build` in a workspace, although you have to ensure that t
 
 Repository-wide watching is currently not possible due to the build processes of some packages.
 
+#### Configuring TypeScript
+
+The TypeScript configuration of this monorepo is brittle, and requires manual maintenance.
+It uses TypeScript [project references](https://www.typescriptlang.org/docs/handbook/project-references.html) and `composite` sub-projects (i.e. monorepo package).
+In short, the [root `tsconfig.json`](./tsconfig.json) must contain an empty `files` array, and `references` to each interdependent project with a `tsconfig.json` in its root directory.
+Meanwhile, every sub-project must explicitly declare the relative paths its local dependencies via its `references` array.
+
+If building from the monorepo root suddenlyt starts to fail, check if the errors are referring to monorepo packages, and verify that their `tsconfig.json` files are configured correctly.
+
 ### Testing and Linting
 
 Run `yarn test` and `yarn lint` in the project root directory, or in a workspace.
