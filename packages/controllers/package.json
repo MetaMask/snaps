@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snap-controllers",
-  "version": "0.13.0",
+  "version": "0.13.1",
   "description": "Controllers for MetaMask Snaps.",
   "repository": {
     "type": "git",
@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@metamask/controllers": "^29.0.1",
-    "@metamask/execution-environments": "^0.13.0",
+    "@metamask/execution-environments": "^0.13.1",
     "@metamask/object-multiplex": "^1.1.0",
     "@metamask/obs-store": "^7.0.0",
     "@metamask/post-message-stream": "4.0.0",
@@ -58,7 +58,7 @@
   "devDependencies": {
     "@jest-runner/electron": "^3.0.1",
     "@json-schema-tools/transpiler": "^1.10.2",
-    "@metamask/snap-types": "^0.13.0",
+    "@metamask/snap-types": "^0.13.1",
     "@metamask/template-snap": "^0.7.0",
     "@types/concat-stream": "^1.6.1",
     "@types/gunzip-maybe": "^1.4.0",
