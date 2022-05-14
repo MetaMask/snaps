@@ -14,10 +14,10 @@ This is currently the only way to use `@lavamoat/allow-scripts` in monorepos.
 
 ### Building
 
-For local development, you should run `yarn build:clean` in the project root directory.
-This will always build the packages in the correct order.
+Run `yarn build` to build all packages in correct order.
+If you encounter any errors, try `yarn build:clean`, and if that fails, check the TypeScript configuration (see below).
 
-You can also run `yarn build` in a workspace, although you have to ensure that the projects are built in the correct order.
+You can also run `yarn build` in a specific package / workspace, although you have to ensure that its dependencies have been built.
 
 Repository-wide watching is currently not possible due to the build processes of some packages.
 
@@ -26,9 +26,13 @@ Repository-wide watching is currently not possible due to the build processes of
 The TypeScript configuration of this monorepo is brittle, and requires manual maintenance.
 It uses TypeScript [project references](https://www.typescriptlang.org/docs/handbook/project-references.html) and `composite` sub-projects (i.e. monorepo package).
 In short, the [root `tsconfig.json`](./tsconfig.json) must contain an empty `files` array, and `references` to each interdependent project with a `tsconfig.json` in its root directory.
-Meanwhile, every sub-project must explicitly declare the relative paths its local dependencies via its `references` array.
+Meanwhile, every sub-project must explicitly declare the relative paths to its local dependencies via its `references` array.
 
-If building from the monorepo root suddenlyt starts to fail, check if the errors are referring to monorepo packages, and verify that their `tsconfig.json` files are configured correctly.
+If building from the monorepo root suddenly starts to fail, check if the errors are referring to monorepo packages, and verify that their `tsconfig.json` files are configured correctly.
+
+Some packages do not require a `tsconfig.json` file.
+These packages must be explicitly ignored in the [TypeScript config lint script](./scripts/verify-tsconfig.mjs).
+If a package is neither referenced nor ignored, linting will fail.
 
 ### Testing and Linting
 
