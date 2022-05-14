@@ -38,9 +38,6 @@
     ],
     "!(CHANGELOG).{json,yml,md}": [
       "prettier --write"
-    ],
-    "CHANGELOG.md": [
-      "auto-changelog validate --file"
     ]
   },
   "devDependencies": {
