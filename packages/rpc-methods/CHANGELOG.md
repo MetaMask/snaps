@@ -7,8 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.14.0]
-### Uncategorized
-- Fix monorepo build pipeline ([#449](https://github.com/MetaMask/snaps-skunkworks/pull/449))
+### Changed
+- **BREAKING:** Increase TypeScript compilation target to ES2020 ([#449](https://github.com/MetaMask/snaps-skunkworks/pull/449))
+  - This should not be breaking for consumers on any non-deprecated browser or Node.js version.
 
 ## [0.13.0]
 ### Added

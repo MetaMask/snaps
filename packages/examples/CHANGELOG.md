@@ -7,9 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.14.0]
-### Uncategorized
-- Fix monorepo build pipeline ([#449](https://github.com/MetaMask/snaps-skunkworks/pull/449))
-- Build examples by running yarn build in each example ([#448](https://github.com/MetaMask/snaps-skunkworks/pull/448))
+### Changed
+- No changes this release.
 
 ## [0.13.0]
 ### Changed
