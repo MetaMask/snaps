@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "composite": true,
     "declaration": true,
     "esModuleInterop": true,
     "module": "CommonJS",
@@ -9,5 +10,6 @@
     "strict": true,
     "target": "ES2017",
     "typeRoots": ["./node_modules/@types"]
-  }
+  },
+  "exclude": ["**/*.test.ts", "**/__snapshots__/**/*.ts"]
 }

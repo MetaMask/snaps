@@ -1,13 +1,12 @@
 {
   "extends": "../../tsconfig.packages.json",
   "compilerOptions": {
-    "composite": true,
     "forceConsistentCasingInFileNames": true,
     "inlineSources": true,
     "lib": ["DOM", "ES2020"],
     "outDir": "dist",
-    "rootDir": "src",
     "resolveJsonModule": true,
+    "rootDir": "src",
     "skipLibCheck": false,
     "typeRoots": [
       "../../node_modules/@types",
@@ -15,6 +14,5 @@
       "./src/types"
     ]
   },
-  "include": ["./src/**/*.ts", "./src/**/*.json"],
-  "exclude": ["./src/**/*.test.ts"]
+  "include": ["./src/**/*.ts", "./src/**/*.json"]
 }
