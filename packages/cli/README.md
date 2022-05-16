@@ -159,4 +159,4 @@ The configuration file should not be published.
 - Arguments
   - `src` must be a file path when specified
   - `dist` and `root` must be directory paths when specified
-  - `transpilationMode` must be at least `local` for TypeScript Snaps
+  - `transpilationMode` must be at least `localOnly` for TypeScript Snaps
