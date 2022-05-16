@@ -13,13 +13,6 @@
     "global.d.ts"
   ],
   "scripts": {
-    "build": "echo 'N/A'",
-    "build:clean": "echo 'N/A'",
-    "build:pre-tsc": "echo 'N/A'",
-    "build:post-tsc": "echo 'N/A'",
-    "clean": "echo 'N/A'",
-    "test": "echo 'N/A'",
-    "test:ci": "yarn test",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
@@ -31,6 +24,7 @@
     "@metamask/controllers": "^29.0.1"
   },
   "devDependencies": {
+    "@metamask/auto-changelog": "^2.5.0",
     "@metamask/providers": "^8.1.1"
   },
   "engines": {

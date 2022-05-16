@@ -20,8 +20,6 @@
     "lint:changelog": "yarn auto-changelog validate",
     "build:tsc": "tsc --project tsconfig.local.json",
     "build": "yarn build:tsc",
-    "build:pre-tsc": "echo 'N/A'",
-    "build:post-tsc": "echo 'N/A'",
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf *.tsbuildinfo dist/*",
     "publish": "../../scripts/publish-package.sh"
@@ -30,10 +28,11 @@
     "@chainsafe/strip-comments": "^1.0.5"
   },
   "devDependencies": {
+    "@metamask/auto-changelog": "^2.5.0",
     "@types/jest": "^27.4.1",
-    "jest": "^27.5.1",
+    "jest": "^28.1.0",
     "jest-it-up": "^2.0.0",
-    "ts-jest": "^27.1.4",
+    "ts-jest": "^28.0.2",
     "typescript": "^4.4.0"
   },
   "engines": {

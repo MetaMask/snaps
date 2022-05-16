@@ -23,8 +23,6 @@
     "lint:changelog": "yarn auto-changelog validate",
     "build:tsc": "tsc --project tsconfig.local.json",
     "build": "yarn build:tsc",
-    "build:pre-tsc": "echo 'N/A'",
-    "build:post-tsc": "echo 'N/A'",
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf *.tsbuildinfo dist/*",
     "publish": "../../scripts/publish-package.sh"
@@ -33,6 +31,7 @@
     "@metamask/snap-utils": "^0.14.0"
   },
   "devDependencies": {
+    "@metamask/auto-changelog": "^2.5.0",
     "@types/browserify": "^12.0.37",
     "@types/jest": "^27.4.1",
     "browserify": "^17.0.0",

@@ -7,4 +7,4 @@ set -o pipefail
 
 # We have to use xvfb due to electron
 # Ref: https://github.com/facebook-atom/jest-electron-runner/issues/47#issuecomment-508556407
-xvfb-run -e /dev/stdout yarn test
+xvfb-run yarn test 2>&1
