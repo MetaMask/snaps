@@ -1,7 +1,6 @@
 import { ControllerMessenger } from '@metamask/controllers';
 import { ErrorMessageEvent } from '@metamask/snap-types';
 import { IframeExecutionService } from './IframeExecutionService';
-import fixJSDOMPostMessageEventSource from './testHelpers/fixJSDOMPostMessageEventSource';
 import { stop as stopServer, start as startServer } from './testHelpers/server';
 
 // We do not use our default endowments in these tests because JSDOM doesn't
@@ -63,9 +62,6 @@ describe('IframeExecutionService', () => {
       },
       iframeUrl,
     });
-    const removeListener = fixJSDOMPostMessageEventSource(
-      iframeExecutionService,
-    );
     const response = await iframeExecutionService.executeSnap({
       snapId: 'TestSnap',
       sourceCode: `
@@ -75,7 +71,6 @@ describe('IframeExecutionService', () => {
     });
     expect(response).toStrictEqual('OK');
     await iframeExecutionService.terminateAllSnaps();
-    removeListener();
   });
 
   it('can handle a crashed snap', async () => {
@@ -97,9 +92,6 @@ describe('IframeExecutionService', () => {
       },
       iframeUrl,
     });
-    const removeListener = fixJSDOMPostMessageEventSource(
-      iframeExecutionService,
-    );
     const action = async () => {
       await iframeExecutionService.executeSnap({
         snapId: 'TestSnap',
@@ -114,6 +106,5 @@ describe('IframeExecutionService', () => {
       /Error while running snap 'TestSnap'/u,
     );
     await iframeExecutionService.terminateAllSnaps();
-    removeListener();
   });
 });
