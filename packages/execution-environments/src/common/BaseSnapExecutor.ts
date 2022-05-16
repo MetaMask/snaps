@@ -1,5 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
 /// <reference path="../../../../node_modules/ses/index.d.ts" />
+// eslint-disable-next-line import/no-unassigned-import
+import 'ses';
 import { Duplex } from 'stream';
 import { MetaMaskInpageProvider } from '@metamask/providers';
 import { SnapProvider } from '@metamask/snap-types';
@@ -15,6 +17,7 @@ import { rpcMethods, RpcMethodsMapping } from './rpcMethods';
 import { getSortedParams } from './sortParams';
 import { createEndowments } from './endowments';
 import { rootRealmGlobal } from './globalObject';
+import { constructError } from './utils';
 
 type SnapRpcHandler = (
   origin: string,
@@ -60,17 +63,25 @@ export class BaseSnapExecutor {
     );
   }
 
-  private errorHandler(error: Error, data = {}) {
+  private errorHandler(
+    reason: string,
+    originalError: unknown,
+    data: Record<string, unknown>,
+  ) {
+    const error = new Error(reason);
+
+    const _originalError: Error | undefined = constructError(originalError);
+
     const serializedError = serializeError(error, {
-      fallbackError,
-      shouldIncludeStack: true,
+      shouldIncludeStack: false,
     });
+
     this.notify({
       error: {
         ...serializedError,
         data: {
           ...data,
-          stack: serializedError.stack,
+          originalError: _originalError,
         },
       },
     });
@@ -169,11 +180,13 @@ export class BaseSnapExecutor {
     }
 
     this.snapErrorHandler = (error: ErrorEvent) => {
-      this.errorHandler(error.error, { snapName });
+      this.errorHandler('Uncaught error in snap.', error.error, { snapName });
     };
 
     this.snapPromiseErrorHandler = (error: PromiseRejectionEvent) => {
-      this.errorHandler(error.reason, { snapName });
+      this.errorHandler('Unhandled promise rejection in snap.', error.reason, {
+        snapName,
+      });
     };
 
     const wallet = this.createSnapProvider(snapName);
@@ -186,18 +199,19 @@ export class BaseSnapExecutor {
 
       this.endowmentTeardown = endowmentTeardown;
 
-      const compartment = new Compartment({
-        ...endowments,
-        window: { ...endowments },
-        self: { ...endowments },
-      });
-      compartment.evaluate(sourceCode);
-
       rootRealmGlobal.addEventListener(
         'unhandledrejection',
         this.snapPromiseErrorHandler,
       );
       rootRealmGlobal.addEventListener('error', this.snapErrorHandler);
+
+      const compartment = new Compartment({
+        ...endowments,
+        window: { ...endowments },
+        self: { ...endowments },
+      });
+
+      compartment.evaluate(sourceCode);
     } catch (err) {
       this.removeSnap(snapName);
       throw new Error(
