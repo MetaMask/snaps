@@ -16,7 +16,6 @@
   ],
   "scripts": {
     "setup": "yarn install && yarn allow-scripts",
-    "test:ci": "yarn test",
     "lint:changelog": "yarn auto-changelog validate",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
