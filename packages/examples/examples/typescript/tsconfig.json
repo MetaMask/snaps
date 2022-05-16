@@ -1,5 +1,5 @@
 {
   "extends": "../../../../tsconfig.packages.json",
-  "files": ["./node_modules/@metamask/snap-types/global.d.ts"],
+  "files": ["../../../types/global.d.ts"],
   "include": ["src"]
 }

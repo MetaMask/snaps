@@ -5844,15 +5844,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/snap-types@file:../../../types::locator=typescript-snap%40workspace%3Apackages%2Fexamples%2Fexamples%2Ftypescript":
-  version: 0.14.0
-  resolution: "@metamask/snap-types@file:../../../types#../../../types::hash=6d5a12&locator=typescript-snap%40workspace%3Apackages%2Fexamples%2Fexamples%2Ftypescript"
-  dependencies:
-    "@metamask/controllers": ^29.0.1
-  checksum: c4eb735ebf0217e5a810ae5037c67b9a1f91cd48a70e45386b7e6bb52dcb0ddb780a6846548148c3264b03fb07e37a41d6a9337490794b6c50d5f19bb7ecc1e5
-  languageName: node
-  linkType: hard
-
 "@metamask/snap-utils@^0.14.0, @metamask/snap-utils@workspace:packages/utils":
   version: 0.0.0-use.local
   resolution: "@metamask/snap-utils@workspace:packages/utils"
@@ -21890,7 +21881,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "typescript-snap@workspace:packages/examples/examples/typescript"
   dependencies:
-    "@metamask/snap-types": "file:../../../types"
     typescript: ^4.6.4
   languageName: unknown
   linkType: soft

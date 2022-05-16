@@ -27,7 +27,6 @@
     "lint:changelog": "yarn auto-changelog validate"
   },
   "devDependencies": {
-    "@metamask/snap-types": "file:../../../types",
     "typescript": "^4.6.4"
   },
   "engines": {
