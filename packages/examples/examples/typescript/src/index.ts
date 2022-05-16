@@ -1,3 +1,5 @@
+const getMessage = (originString: string): string => `Hello, ${originString}!`;
+
 wallet.registerRpcMessageHandler(async (originString, requestObject) => {
   switch (requestObject.method) {
     case 'hello':
@@ -6,7 +8,7 @@ wallet.registerRpcMessageHandler(async (originString, requestObject) => {
         params: [
           {
             type: 'native',
-            message: `Hello, ${originString}!`,
+            message: getMessage(originString),
           },
         ],
       });
