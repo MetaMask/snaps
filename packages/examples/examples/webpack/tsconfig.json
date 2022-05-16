@@ -1,0 +1,8 @@
+{
+  "extends": "../../../../tsconfig.packages.json",
+  "files": [
+    "./node_modules/@metamask/snap-types/global.d.ts",
+    "./node_modules/webpack-dev-server/types/lib/Server.d.ts"
+  ],
+  "include": ["src", "webpack.config.ts"]
+}

@@ -1,0 +1,23 @@
+{
+  "version": "0.0.0",
+  "description": "An example Snap built using TypeScript and Webpack",
+  "proposedName": "webpack-snap",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps-skunkworks.git"
+  },
+  "source": {
+    "shasum": "eXgvA+Mhwc6T+64d6xpOuwUoSuq1IenzDZ3SICBCEMI=",
+    "location": {
+      "npm": {
+        "filePath": "snap.js",
+        "packageName": "webpack-snap",
+        "registry": "https://registry.npmjs.org"
+      }
+    }
+  },
+  "initialPermissions": {
+    "snap_notify": {}
+  },
+  "manifestVersion": "0.1"
+}
