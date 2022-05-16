@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "@jest-runner/electron": "^3.0.1",
-    "@lavamoat/allow-scripts": "^1.0.6",
+    "@lavamoat/allow-scripts": "^2.0.3",
     "@metamask/auto-changelog": "^2.5.0",
     "@metamask/eslint-config": "^8.0.0",
     "@metamask/eslint-config-jest": "^8.0.0",
@@ -75,7 +75,10 @@
       "@lavamoat/preinstall-always-fail": false,
       "core-js": true,
       "electron": true,
-      "simple-git-hooks": false
+      "simple-git-hooks": false,
+      "$root$": false,
+      "electron>@electron/get>global-agent>core-js": false
     }
-  }
+  },
+  "packageManager": "yarn@3.2.1"
 }

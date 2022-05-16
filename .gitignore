@@ -36,6 +36,9 @@ build/Release
 
 # Dependency directories
 node_modules/
+.yarn/*
+!.yarn/plugins
+!.yarn/releases
 
 # TypeScript v1 declaration files
 typings/
