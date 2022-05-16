@@ -12,15 +12,12 @@
     "dist/"
   ],
   "scripts": {
-    "test": "echo 'N/A'",
     "test:ci": "yarn test",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "yarn auto-changelog validate",
-    "build:pre-tsc": "echo 'N/A'",
-    "build:post-tsc": "echo 'N/A'",
     "build": "tsc --project tsconfig.local.json",
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf *.tsbuildinfo dist/*",

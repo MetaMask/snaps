@@ -24,8 +24,6 @@
     "lint:changelog": "yarn auto-changelog validate",
     "build:tsc": "tsc --project tsconfig.local.json",
     "build": "yarn build:tsc",
-    "build:pre-tsc": "echo 'N/A'",
-    "build:post-tsc": "echo 'N/A'",
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf *.tsbuildinfo dist/*",
     "publish": "../../scripts/publish-package.sh"

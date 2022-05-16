@@ -1,6 +1,7 @@
 {
   "name": "@metamask/snap-examples",
   "version": "0.14.0",
+  "private": true,
   "description": "Example MetaMask Snaps.",
   "repository": {
     "type": "git",
@@ -10,20 +11,19 @@
   "files": [
     "examples/"
   ],
+  "workspaces": [
+    "examples/*"
+  ],
   "scripts": {
     "setup": "yarn install && yarn allow-scripts",
-    "test": "echo 'N/A'",
     "test:ci": "yarn test",
     "lint:changelog": "yarn auto-changelog validate",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
-    "build": "node ./scripts/buildExamples.js",
-    "build:pre-tsc": "echo 'N/A'",
+    "build": "yarn workspaces foreach -pi run build",
     "build:post-tsc": "yarn build",
-    "build:clean": "echo 'N/A'",
-    "clean": "echo 'N/A'",
     "publish": "../../scripts/publish-package.sh"
   },
   "devDependencies": {

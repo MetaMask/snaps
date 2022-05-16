@@ -17,7 +17,6 @@
     "posttest": "jest-it-up",
     "test:ci": "yarn test:prepare && ./scripts/test-ci.sh",
     "build:pre-tsc": "yarn build:ajv && node scripts/transpileSchemaTypes.js",
-    "build:post-tsc": "echo 'N/A'",
     "build:tsc": "tsc --project tsconfig.local.json",
     "ajv-compile": "ajv compile --strict=true --all-errors",
     "build:ajv": "./scripts/build-ajv.sh",

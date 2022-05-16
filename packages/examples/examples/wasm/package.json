@@ -17,8 +17,7 @@
     "prebuild": "yarn run build:wasm",
     "build": "mm-snap build",
     "build:wasm": "asc assembly/program.ts -o build/program.wasm",
-    "serve": "mm-snap serve",
-    "test": "echo 'Error: no test specified' && exit 1"
+    "serve": "mm-snap serve"
   },
   "dependencies": {
     "eth-rpc-errors": "^4.0.3"
