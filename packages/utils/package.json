@@ -25,7 +25,8 @@
     "publish": "../../scripts/publish-package.sh"
   },
   "dependencies": {
-    "@chainsafe/strip-comments": "^1.0.5"
+    "@chainsafe/strip-comments": "^1.0.5",
+    "@metamask/utils": "^1.0.0"
   },
   "devDependencies": {
     "@metamask/auto-changelog": "^2.5.0",

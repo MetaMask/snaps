@@ -21,6 +21,7 @@ import {
   SnapData,
   SnapId,
 } from '@metamask/snap-types';
+import { hasProperty, isNonEmptyArray, timeSince } from '@metamask/utils';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import type { Patch } from 'immer';
@@ -34,7 +35,7 @@ import {
   TerminateAll,
   TerminateSnap,
 } from '../services/ExecutionService';
-import { isNonEmptyArray, setDiff, timeSince } from '../utils';
+import { setDiff } from '../utils';
 import { DEFAULT_ENDOWMENTS } from './default-endowments';
 import { SnapManifest, validateSnapJsonFile } from './json-schemas';
 import { LONG_RUNNING_PERMISSION } from './endowments';
@@ -1789,7 +1790,7 @@ export class SnapController extends BaseController<
       }
 
       let _request = request;
-      if (!Object.hasOwnProperty.call(request, 'jsonrpc')) {
+      if (!hasProperty(request, 'jsonrpc')) {
         _request = { ...request, jsonrpc: '2.0' };
       } else if (request.jsonrpc !== '2.0') {
         throw ethErrors.rpc.invalidRequest({

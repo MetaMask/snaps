@@ -1,4 +1,3 @@
-import { ethErrors, serializeError } from 'eth-rpc-errors';
 import {
   RequestedPermissions,
   PermissionConstraint,
@@ -10,6 +9,8 @@ import {
   PendingJsonRpcResponse,
   JsonRpcEngineEndCallback,
 } from '@metamask/types';
+import { hasProperty } from '@metamask/utils';
+import { ethErrors, serializeError } from 'eth-rpc-errors';
 import {
   handleInstallSnaps,
   InstallSnapsHook,
@@ -101,7 +102,7 @@ function hasPermissions(
         return false;
       }
 
-      return Object.hasOwnProperty.call(existingPermissions, target);
+      return hasProperty(existingPermissions, target);
     },
   );
 }

@@ -1,13 +1,12 @@
-import { Json } from 'json-rpc-engine';
 import {
   PermissionSpecificationBuilder,
   PermissionType,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
 } from '@metamask/controllers';
-import { isValidJson, NonEmptyArray } from '@metamask/snap-controllers';
+import { isObject, isValidJson, NonEmptyArray } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
-import { isPlainObject } from '../utils';
+import { Json } from 'json-rpc-engine';
 
 const methodName = 'snap_manageState';
 
@@ -109,7 +108,7 @@ function getManageStateImplementation({
         return await getSnapState(origin);
 
       case ManageStateOperation.updateState:
-        if (!isPlainObject(newState)) {
+        if (!isObject(newState)) {
           throw ethErrors.rpc.invalidParams({
             message: `Invalid ${method} "updateState" parameter: The new state must be a plain object.`,
             data: {

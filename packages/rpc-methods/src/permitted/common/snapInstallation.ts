@@ -1,8 +1,7 @@
 import { ethErrors } from 'eth-rpc-errors';
 import { RequestedPermissions } from '@metamask/controllers';
 import { SNAP_PREFIX, InstallSnapsResult } from '@metamask/snap-controllers';
-
-import { isPlainObject } from '../../utils';
+import { isObject } from '@metamask/utils';
 
 export { InstallSnapsResult } from '@metamask/snap-controllers';
 
@@ -14,7 +13,7 @@ export type InstallSnapsHook = (
 export function preprocessRequestedPermissions(
   requestedPermissions: RequestedPermissions,
 ): RequestedPermissions {
-  if (!isPlainObject(requestedPermissions)) {
+  if (!isObject(requestedPermissions)) {
     throw ethErrors.rpc.invalidRequest({ data: { requestedPermissions } });
   }
 
@@ -28,7 +27,7 @@ export function preprocessRequestedPermissions(
   return Object.keys(requestedPermissions).reduce(
     (newRequestedPermissions, permName) => {
       if (permName === 'wallet_snap') {
-        if (!isPlainObject(requestedPermissions[permName])) {
+        if (!isObject(requestedPermissions[permName])) {
           throw ethErrors.rpc.invalidParams({
             message: `Invalid params to 'wallet_requestPermissions'`,
             data: { requestedPermissions },
@@ -73,7 +72,7 @@ export async function handleInstallSnaps(
   requestedSnaps: RequestedPermissions,
   installSnaps: InstallSnapsHook,
 ): Promise<InstallSnapsResult> {
-  if (!isPlainObject(requestedSnaps)) {
+  if (!isObject(requestedSnaps)) {
     throw ethErrors.rpc.invalidParams({
       message: `Invalid snap installation params.`,
       data: { requestedSnaps },

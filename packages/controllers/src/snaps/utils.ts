@@ -1,7 +1,7 @@
 import { createHash } from 'crypto';
 import type { Writable } from 'stream';
 import { Readable } from 'stream';
-import { Json } from '@metamask/controllers';
+import { Json, isObject } from '@metamask/utils';
 import concat from 'concat-stream';
 import deepEqual from 'fast-deep-equal';
 import createGunzipStream from 'gunzip-maybe';
@@ -12,7 +12,6 @@ import {
   validRange as validRangeSemver,
 } from 'semver';
 import { extract as tarExtract } from 'tar-stream';
-import { isPlainObject } from '../utils';
 import {
   NpmSnapPackageJson,
   SnapManifest,
@@ -311,7 +310,7 @@ async function fetchNpmTarball(
     await fetchFunction(new URL(packageName, registryUrl).toString())
   ).json();
 
-  if (!isPlainObject(packageMetadata)) {
+  if (!isObject(packageMetadata)) {
     throw new Error(
       `Failed to fetch package "${packageName}" metadata from npm.`,
     );
@@ -435,7 +434,7 @@ function createTarballExtractionStream(
   // When we've read the entire tarball, attempt to grab the bundle file
   // contents from the .js file cache.
   extractStream.on('finish', () => {
-    if (isPlainObject(snapFiles.manifest)) {
+    if (isObject(snapFiles.manifest)) {
       /* istanbul ignore next: optional chaining */
       const { filePath: bundlePath, iconPath } =
         (snapFiles.manifest as unknown as Partial<SnapManifest>).source

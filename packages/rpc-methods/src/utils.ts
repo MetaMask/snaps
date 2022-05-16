@@ -1,9 +1,3 @@
-export function isPlainObject(
-  value: unknown,
-): value is Record<number | string | symbol, unknown> {
-  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
-}
-
 /**
  * Returns the subset of the specified `hooks` that are included in the
  * `hookNames` object. This is a Principle of Least Authority (POLA) measure

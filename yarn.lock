@@ -5615,6 +5615,7 @@ __metadata:
     "@metamask/post-message-stream": ^4.0.0
     "@metamask/providers": ^8.1.1
     "@metamask/snap-types": ^0.14.0
+    "@metamask/utils": ^1.0.0
     "@open-rpc/typings": ^1.12.1
     "@types/jest": ^27.4.0
     concat: ^1.0.3
@@ -5741,6 +5742,7 @@ __metadata:
     "@metamask/key-tree": ^4.0.0
     "@metamask/snap-controllers": ^0.14.0
     "@metamask/types": ^1.1.0
+    "@metamask/utils": ^1.0.0
     "@types/node": ^14.14.25
     eth-rpc-errors: ^4.0.2
     json-rpc-engine: ^6.1.0
@@ -5770,6 +5772,7 @@ __metadata:
     "@metamask/safe-event-emitter": ^2.0.0
     "@metamask/snap-types": ^0.14.0
     "@metamask/template-snap": ^0.7.0
+    "@metamask/utils": ^1.0.0
     "@types/concat-stream": ^1.6.1
     "@types/deep-freeze-strict": ^1.1.0
     "@types/gunzip-maybe": ^1.4.0
@@ -5850,6 +5853,7 @@ __metadata:
   dependencies:
     "@chainsafe/strip-comments": ^1.0.5
     "@metamask/auto-changelog": ^2.5.0
+    "@metamask/utils": ^1.0.0
     "@types/jest": ^27.4.1
     jest: ^28.1.0
     jest-it-up: ^2.0.0
@@ -5896,6 +5900,7 @@ __metadata:
     "@metamask/eslint-config-typescript": ^8.0.0
     "@metamask/snap-controllers": ^0.14.0
     "@metamask/snaps-browserify-plugin": ^0.14.0
+    "@metamask/utils": ^1.0.0
     "@types/browserify": ^12.0.36
     "@types/init-package-json": ^1.10.0
     "@types/is-url": ^1.2.28
@@ -5918,7 +5923,6 @@ __metadata:
     eslint-plugin-node: ^11.1.0
     eslint-plugin-prettier: ^3.4.0
     execa: ^5.1.1
-    fast-deep-equal: ^2.0.1
     init-package-json: ^1.10.3
     is-url: ^1.2.4
     jest: ^26.6.3
@@ -5973,6 +5977,15 @@ __metadata:
   version: 1.1.0
   resolution: "@metamask/types@npm:1.1.0"
   checksum: 500e8c076a2b0a6d688c8c465101256f090547d99c9a5585efe3d1db7a494b6b2712b127043fb316912caffc4fff78976b9a7780780abb68305e8a3bf812689c
+  languageName: node
+  linkType: hard
+
+"@metamask/utils@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/utils@npm:1.0.0"
+  dependencies:
+    fast-deep-equal: ^3.1.3
+  checksum: 1bafac589b9a33582d9b6c8f1db954b66a987e3361a7a323687c210c7e387915bda1ed2a72e24aea838f9b90f4c54e0ca87dcd78812e9fe312c63900b40290e5
   languageName: node
   linkType: hard
 
