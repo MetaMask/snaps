@@ -18,12 +18,12 @@ async function buildExamples() {
       const exampleFileStat = await fs.stat(exampleFilePath);
 
       if (exampleFileStat.isDirectory()) {
-        const srcPath = pathResolve(exampleFilePath, 'src/index.js');
+        const srcPath = pathResolve(exampleFilePath, 'src');
         const pkgPath = pathResolve(exampleFilePath, 'package.json');
         const pkgStat = await fs.stat(pkgPath);
         const srcStat = await fs.stat(srcPath);
 
-        if (pkgStat.isFile() && srcStat.isFile()) {
+        if (pkgStat.isFile() && srcStat.isDirectory()) {
           try {
             // install dependencies
             await execa('yarn', ['install'], {

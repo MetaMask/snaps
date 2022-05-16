@@ -1,0 +1,40 @@
+{
+  "name": "typescript-snap",
+  "version": "1.0.0",
+  "description": "The 'Hello, world!' of MetaMask Snaps, now written in TypeScript.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snap-template.git"
+  },
+  "license": "MIT",
+  "main": "src/index.ts",
+  "files": [
+    "dist/",
+    "images/",
+    "snap.manifest.json"
+  ],
+  "scripts": {
+    "build:clean": "yarn clean && yarn build",
+    "build:website": "node ./scripts/build-website.js",
+    "build": "mm-snap build",
+    "serve": "mm-snap serve",
+    "clean": "rimraf dist/*",
+    "test": "echo 'TODO'",
+    "lint:eslint": "eslint . --cache --ext js,ts",
+    "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path .gitignore",
+    "lint": "yarn lint:eslint && yarn lint:misc --check",
+    "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
+    "lint:changelog": "yarn auto-changelog validate"
+  },
+  "devDependencies": {
+    "@metamask/snap-types": "file:../../../types",
+    "typescript": "^4.6.4"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

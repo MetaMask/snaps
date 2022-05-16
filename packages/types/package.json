@@ -6,10 +6,11 @@
     "type": "git",
     "url": "https://github.com/MetaMask/snaps-skunkworks.git"
   },
-  "main": "index.d.ts",
-  "types": "index.d.ts",
+  "main": "src/index.d.ts",
+  "types": "src/index.d.ts",
   "files": [
-    "index.d.ts"
+    "src",
+    "global.d.ts"
   ],
   "scripts": {
     "build": "echo 'N/A'",
