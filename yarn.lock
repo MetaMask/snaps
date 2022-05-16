@@ -5455,7 +5455,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/auto-changelog@npm:^2.3.0, @metamask/auto-changelog@npm:^2.5.0":
+"@metamask/auto-changelog@npm:^2.5.0":
   version: 2.5.0
   resolution: "@metamask/auto-changelog@npm:2.5.0"
   dependencies:
@@ -5720,6 +5720,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@metamask/rollup-plugin-snaps@workspace:packages/plugin-rollup"
   dependencies:
+    "@metamask/auto-changelog": ^2.5.0
     "@metamask/snap-utils": ^0.14.0
     "@rollup/plugin-virtual": ^2.1.0
     "@types/jest": ^27.4.1
@@ -5735,6 +5736,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@metamask/rpc-methods@workspace:packages/rpc-methods"
   dependencies:
+    "@metamask/auto-changelog": ^2.5.0
     "@metamask/controllers": ^29.0.1
     "@metamask/key-tree": ^4.0.0
     "@metamask/snap-controllers": ^0.14.0
@@ -5759,6 +5761,7 @@ __metadata:
   dependencies:
     "@jest-runner/electron": ^3.0.1
     "@json-schema-tools/transpiler": ^1.10.2
+    "@metamask/auto-changelog": ^2.5.0
     "@metamask/controllers": ^29.0.1
     "@metamask/execution-environments": ^0.14.0
     "@metamask/object-multiplex": ^1.1.0
@@ -5806,7 +5809,7 @@ __metadata:
   resolution: "@metamask/snap-examples@workspace:packages/examples"
   dependencies:
     "@lavamoat/allow-scripts": ^1.0.5
-    "@metamask/auto-changelog": ^2.3.0
+    "@metamask/auto-changelog": ^2.5.0
     "@metamask/eslint-config": ^8.0.0
     "@metamask/eslint-config-jest": ^8.0.0
     "@metamask/eslint-config-nodejs": ^8.0.0
@@ -5835,6 +5838,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@metamask/snap-types@workspace:packages/types"
   dependencies:
+    "@metamask/auto-changelog": ^2.5.0
     "@metamask/controllers": ^29.0.1
     "@metamask/providers": ^8.1.1
   languageName: unknown
@@ -5845,6 +5849,7 @@ __metadata:
   resolution: "@metamask/snap-utils@workspace:packages/utils"
   dependencies:
     "@chainsafe/strip-comments": ^1.0.5
+    "@metamask/auto-changelog": ^2.5.0
     "@types/jest": ^27.4.1
     jest: ^28.1.0
     jest-it-up: ^2.0.0
@@ -5857,6 +5862,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@metamask/snaps-browserify-plugin@workspace:packages/plugin-browserify"
   dependencies:
+    "@metamask/auto-changelog": ^2.5.0
     "@metamask/snap-utils": ^0.14.0
     "@types/browserify": ^12.0.37
     "@types/jest": ^27.4.1
@@ -5941,6 +5947,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@metamask/snaps-webpack-plugin@workspace:packages/plugin-webpack"
   dependencies:
+    "@metamask/auto-changelog": ^2.5.0
     "@metamask/snap-utils": ^0.14.0
     "@types/jest": ^27.4.1
     "@types/webpack": ^5.28.0
@@ -9756,6 +9763,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cross-env@npm:^7.0.3":
+  version: 7.0.3
+  resolution: "cross-env@npm:7.0.3"
+  dependencies:
+    cross-spawn: ^7.0.1
+  bin:
+    cross-env: src/bin/cross-env.js
+    cross-env-shell: src/bin/cross-env-shell.js
+  checksum: 26f2f3ea2ab32617f57effb70d329c2070d2f5630adc800985d8b30b56e8bf7f5f439dd3a0358b79cee6f930afc23cf8e23515f17ccfb30092c6b62c6b630a79
+  languageName: node
+  linkType: hard
+
 "cross-fetch@npm:^2.1.0":
   version: 2.2.6
   resolution: "cross-fetch@npm:2.2.6"
@@ -9788,7 +9807,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-spawn@npm:^7.0.0, cross-spawn@npm:^7.0.2, cross-spawn@npm:^7.0.3":
+"cross-spawn@npm:^7.0.0, cross-spawn@npm:^7.0.1, cross-spawn@npm:^7.0.2, cross-spawn@npm:^7.0.3":
   version: 7.0.3
   resolution: "cross-spawn@npm:7.0.3"
   dependencies:
@@ -19849,6 +19868,7 @@ __metadata:
     "@types/node": ^14.14.25
     "@typescript-eslint/eslint-plugin": ^5.19.0
     "@typescript-eslint/parser": ^5.19.0
+    cross-env: ^7.0.3
     electron: ^13.6.6
     eslint: ^7.30.0
     eslint-config-prettier: ^8.3.0

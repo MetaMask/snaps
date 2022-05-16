@@ -33,6 +33,7 @@
     "webpack-sources": "^3.2.3"
   },
   "devDependencies": {
+    "@metamask/auto-changelog": "^2.5.0",
     "@types/jest": "^27.4.1",
     "@types/webpack": "^5.28.0",
     "@types/webpack-sources": "^3.2.0",

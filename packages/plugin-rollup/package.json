@@ -32,6 +32,7 @@
     "@metamask/snap-utils": "^0.14.0"
   },
   "devDependencies": {
+    "@metamask/auto-changelog": "^2.5.0",
     "@rollup/plugin-virtual": "^2.1.0",
     "@types/jest": "^27.4.1",
     "jest": "^27.5.1",

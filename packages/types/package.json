@@ -24,6 +24,7 @@
     "@metamask/controllers": "^29.0.1"
   },
   "devDependencies": {
+    "@metamask/auto-changelog": "^2.5.0",
     "@metamask/providers": "^8.1.1"
   },
   "engines": {
