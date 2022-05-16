@@ -1,5 +1,5 @@
 import { SnapExecutionData } from '@metamask/snap-types';
-import { JsonRpcRequest } from 'json-rpc-engine';
+import type { JsonRpcRequest } from '@metamask/utils';
 import { SnapRpcHook } from './AbstractExecutionService';
 
 export interface SnapMetadata {

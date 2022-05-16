@@ -21,11 +21,10 @@ import {
   SnapData,
   SnapId,
 } from '@metamask/snap-types';
-import { hasProperty, isNonEmptyArray, timeSince } from '@metamask/utils';
+import { hasProperty, isNonEmptyArray, Json, timeSince } from '@metamask/utils';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import type { Patch } from 'immer';
-import { Json } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
 import { gt as gtSemver, satisfies as satisfiesSemver } from 'semver';
 import { assertExhaustive } from '..';

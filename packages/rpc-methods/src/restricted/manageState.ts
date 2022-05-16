@@ -4,9 +4,8 @@ import {
   RestrictedMethodOptions,
   ValidPermissionSpecification,
 } from '@metamask/controllers';
-import { isObject, isValidJson, NonEmptyArray } from '@metamask/utils';
+import { isObject, isValidJson, Json, NonEmptyArray } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
-import { Json } from 'json-rpc-engine';
 
 const methodName = 'snap_manageState';
 

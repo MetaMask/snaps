@@ -6,8 +6,9 @@ import {
 } from '@metamask/snap-types';
 import {
   JsonRpcEngine,
-  JsonRpcRequest,
   PendingJsonRpcResponse,
+  // TODO: Replace with @metamask/utils version after bumping json-rpc-engine
+  JsonRpcRequest,
 } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
 import pump from 'pump';
