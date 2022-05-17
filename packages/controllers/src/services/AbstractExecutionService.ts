@@ -4,6 +4,7 @@ import {
   ExecutionServiceMessenger,
   SnapExecutionData,
 } from '@metamask/snap-types';
+import { Duration } from '@metamask/utils';
 import {
   JsonRpcEngine,
   PendingJsonRpcResponse,
@@ -58,7 +59,7 @@ export abstract class AbstractExecutionService<JobType extends Job>
   constructor({
     setupSnapProvider,
     messenger,
-    terminationTimeout = 1000,
+    terminationTimeout = Duration.Second,
   }: ExecutionServiceArgs) {
     this._snapRpcHooks = new Map();
     this.jobs = new Map();

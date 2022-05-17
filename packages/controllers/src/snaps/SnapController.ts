@@ -21,7 +21,14 @@ import {
   SnapData,
   SnapId,
 } from '@metamask/snap-types';
-import { hasProperty, isNonEmptyArray, Json, timeSince } from '@metamask/utils';
+import {
+  Duration,
+  hasProperty,
+  inMilliseconds,
+  isNonEmptyArray,
+  Json,
+  timeSince,
+} from '@metamask/utils';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import type { Patch } from 'immer';
@@ -586,9 +593,9 @@ export class SnapController extends BaseController<
     terminateSnap,
     environmentEndowmentPermissions = [],
     npmRegistryUrl,
-    idleTimeCheckInterval = 5000,
-    maxIdleTime = 30000,
-    maxRequestTime = 60000,
+    idleTimeCheckInterval = inMilliseconds(5, Duration.Second),
+    maxIdleTime = inMilliseconds(30, Duration.Second),
+    maxRequestTime = inMilliseconds(60, Duration.Second),
     fetchFunction = globalThis.fetch.bind(globalThis),
     featureFlags = {},
   }: SnapControllerArgs) {
