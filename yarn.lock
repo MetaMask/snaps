@@ -5852,7 +5852,6 @@ __metadata:
   dependencies:
     "@chainsafe/strip-comments": ^1.0.5
     "@metamask/auto-changelog": ^2.5.0
-    "@metamask/utils": ^1.0.0
     "@types/jest": ^27.4.1
     jest: ^28.1.0
     jest-it-up: ^2.0.0
@@ -5976,15 +5975,6 @@ __metadata:
   version: 1.1.0
   resolution: "@metamask/types@npm:1.1.0"
   checksum: 500e8c076a2b0a6d688c8c465101256f090547d99c9a5585efe3d1db7a494b6b2712b127043fb316912caffc4fff78976b9a7780780abb68305e8a3bf812689c
-  languageName: node
-  linkType: hard
-
-"@metamask/utils@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/utils@npm:1.0.0"
-  dependencies:
-    fast-deep-equal: ^3.1.3
-  checksum: 1bafac589b9a33582d9b6c8f1db954b66a987e3361a7a323687c210c7e387915bda1ed2a72e24aea838f9b90f4c54e0ca87dcd78812e9fe312c63900b40290e5
   languageName: node
   linkType: hard
 
