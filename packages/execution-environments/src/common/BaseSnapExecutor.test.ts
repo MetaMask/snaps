@@ -1,8 +1,6 @@
 import { PassThrough } from 'stream';
 import * as ethErrors from 'eth-rpc-errors';
 import { BaseSnapExecutor } from './BaseSnapExecutor';
-import { rootRealmGlobal } from './globalObject';
-import { exec } from 'child_process';
 
 class ExecutorMock extends BaseSnapExecutor {
   static initialize() {
@@ -93,5 +91,23 @@ describe('BaseSnapExecutor', () => {
         shouldIncludeStack: false,
       },
     );
+  });
+
+  it('should be able to handle a valid incoming JSON RPC request', () => {
+    const { commandStream, executor } = ExecutorMock.initialize();
+    executor.beginSnap(snapName, sourceCode, endowments);
+    const respondSpy = jest.spyOn(executor as any, 'respond');
+    const request = {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'snapRpc',
+      params: [
+        snapName,
+        'http://localhost:8080',
+        { jsonrpc: '2.0', id: 1, method: 'hallo' },
+      ],
+    };
+    commandStream.push(request);
+    expect(respondSpy).toHaveBeenCalledWith(1, { result: 'goededag!' });
   });
 });

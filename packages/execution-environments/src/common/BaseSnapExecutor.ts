@@ -91,7 +91,6 @@ export class BaseSnapExecutor {
     if (!isJsonRpcRequest(message)) {
       throw new Error('Command stream received a non Json Rpc Request');
     }
-
     const { id, method, params } = message;
 
     if (id === undefined) {
