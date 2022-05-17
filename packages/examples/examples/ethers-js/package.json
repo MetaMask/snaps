@@ -14,7 +14,8 @@
     "snap.manifest.json"
   ],
   "scripts": {
-    "build": "mm-snap build"
+    "build": "mm-snap build",
+    "clean": "rimraf 'dist/**'"
   },
   "dependencies": {
     "ethers": "^5.4.6"

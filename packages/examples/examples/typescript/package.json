@@ -18,7 +18,7 @@
     "build:website": "node ./scripts/build-website.js",
     "build": "mm-snap build",
     "serve": "mm-snap serve",
-    "clean": "rimraf dist/*",
+    "clean": "rimraf 'dist/*'",
     "test": "echo 'TODO'",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path .gitignore",
