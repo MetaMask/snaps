@@ -47,7 +47,7 @@
     "@babel/plugin-transform-runtime": "^7.16.7",
     "@babel/preset-env": "^7.16.7",
     "@babel/preset-typescript": "^7.16.7",
-    "@chainsafe/strip-comments": "^1.0.5",
+    "@chainsafe/strip-comments": "^1.0.7",
     "@metamask/snap-controllers": "^0.14.0",
     "@metamask/snaps-browserify-plugin": "^0.14.0",
     "babelify": "^10.0.0",

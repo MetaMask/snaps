@@ -3155,10 +3155,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@chainsafe/strip-comments@npm:^1.0.5":
-  version: 1.0.5
-  resolution: "@chainsafe/strip-comments@npm:1.0.5"
-  checksum: 5a50f2039a8719f91c88c0a153b7b0f2b68bc4d4a9165cf868e101ca8145237cd96dbe189dfe4985d57511cda029e842c296d241a14d3e0619a041c50fbcd18a
+"@chainsafe/strip-comments@npm:^1.0.7":
+  version: 1.0.7
+  resolution: "@chainsafe/strip-comments@npm:1.0.7"
+  checksum: fb46a06a7611d0f24d2e5da15c9fcf8c94472da59e7b13d59980f3f46e39fb340c505fecf2f08ba80167373e5b3b90d410596a2bcc33a7050e9d0e3c12803ff3
   languageName: node
   linkType: hard
 
@@ -5848,7 +5848,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@metamask/snap-utils@workspace:packages/utils"
   dependencies:
-    "@chainsafe/strip-comments": ^1.0.5
+    "@chainsafe/strip-comments": ^1.0.7
     "@metamask/auto-changelog": ^2.5.0
     "@types/jest": ^27.4.1
     jest: ^28.1.0
@@ -5887,7 +5887,7 @@ __metadata:
     "@babel/plugin-transform-runtime": ^7.16.7
     "@babel/preset-env": ^7.16.7
     "@babel/preset-typescript": ^7.16.7
-    "@chainsafe/strip-comments": ^1.0.5
+    "@chainsafe/strip-comments": ^1.0.7
     "@lavamoat/allow-scripts": ^1.0.6
     "@metamask/auto-changelog": ^2.5.0
     "@metamask/eslint-config": ^8.0.0
