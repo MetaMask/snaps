@@ -3,8 +3,10 @@ import { Configuration } from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { merge } from 'webpack-merge';
 import WebpackBarPlugin from 'webpackbar';
-import CopyWebpackPlugin from 'copy-webpack-plugin';
 import SnapsWebpackPlugin from '@metamask/snaps-webpack-plugin';
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+const HookShellScriptWebpackPlugin = require('hook-shell-script-webpack-plugin');
 
 // Configuration that is shared between the two bundles
 const common: Configuration = {
@@ -15,7 +17,7 @@ const common: Configuration = {
   output: {
     path: resolve(__dirname, 'dist'),
     filename: '[name].js',
-    publicPath: '/',
+    publicPath: './dist',
   },
   module: {
     rules: [
@@ -34,6 +36,9 @@ const common: Configuration = {
   },
   plugins: [new WebpackBarPlugin()],
   stats: 'errors-only',
+  watchOptions: {
+    ignored: ['**/snap.manifest.json'],
+  },
 };
 
 // Configuration for the Snap bundle
@@ -42,17 +47,10 @@ const snapConfig: Configuration = merge(common, {
     snap: './src/snap.ts',
   },
   plugins: [
-    new CopyWebpackPlugin({
-      patterns: [
-        {
-          from: './snap.manifest.json',
-        },
-        {
-          from: './package.json',
-        },
-      ],
-    }),
     new SnapsWebpackPlugin(),
+    new HookShellScriptWebpackPlugin({
+      afterEmit: ['yarn manifest', 'yarn eval'],
+    }),
   ],
 });
 
@@ -62,6 +60,7 @@ const webConfig: Configuration = merge(common, {
   plugins: [
     new HtmlWebpackPlugin({
       template: './src/index.html',
+      filename: '../index.html',
     }),
   ],
 });

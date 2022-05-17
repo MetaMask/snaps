@@ -1,6 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-shadow
-declare const wallet: any;
-
 wallet.registerRpcMessageHandler(
   async (originString: string, requestObject: Record<string, unknown>) => {
     switch (requestObject.method) {
@@ -30,4 +27,5 @@ wallet.registerRpcMessageHandler(
   },
 );
 
+// Just for compatibility with the ESLint `import/unambiguous` rule.
 export {};
