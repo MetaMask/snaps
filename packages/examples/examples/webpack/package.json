@@ -17,7 +17,7 @@
     "build": "webpack",
     "manifest": "mm-snap manifest --fix",
     "eval": "mm-snap eval -b dist/snap.js",
-    "serve": "concurrently \"webpack --watch\" \"http-server -c-1 --silent .\""
+    "serve": "concurrently \"webpack --watch\" \"http-server -c-1 .\""
   },
   "devDependencies": {
     "@babel/core": "^7.17.10",
