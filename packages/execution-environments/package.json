@@ -12,7 +12,7 @@
     "dist/"
   ],
   "scripts": {
-    "test": "jest",
+    "test": "jest && yarn posttest",
     "posttest": "jest-it-up",
     "test:ci": "yarn test",
     "test:watch": "jest --watch",

@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "test:prepare": "yarn mkdirp test/fixtures && ./scripts/generate-fixtures.sh",
-    "test": "yarn test:prepare && jest",
+    "test": "yarn test:prepare && jest && yarn posttest",
     "posttest": "jest-it-up",
     "test:ci": "yarn test:prepare && ./scripts/test-ci.sh",
     "build:pre-tsc": "yarn build:ajv && node scripts/transpileSchemaTypes.js",
