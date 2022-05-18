@@ -55,7 +55,7 @@ export class BaseSnapExecutor {
       (target, origin, request) => {
         const handler = this.snapRpcHandlers.get(target);
         if (!handler) {
-          throw new Error(`No RPC handler registered for snap "${target}`);
+          throw new Error(`No RPC handler registered for snap "${target}"`);
         }
         return handler(origin, request);
       },

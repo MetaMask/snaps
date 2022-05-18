@@ -95,8 +95,8 @@ describe('BaseSnapExecutor', () => {
 
   it('should be able to handle a valid incoming JSON RPC request', () => {
     const { commandStream, executor } = ExecutorMock.initialize();
+    const serializeErrorSpy = jest.spyOn(ethErrors, 'serializeError');
     executor.beginSnap(snapName, sourceCode, endowments);
-    const respondSpy = jest.spyOn(executor as any, 'respond');
     const request = {
       jsonrpc: '2.0',
       id: 1,
@@ -107,7 +107,103 @@ describe('BaseSnapExecutor', () => {
         { jsonrpc: '2.0', id: 1, method: 'hallo' },
       ],
     };
-    commandStream.push(request);
-    expect(respondSpy).toHaveBeenCalledWith(1, { result: 'goededag!' });
+    commandStream.write(request);
+    expect(serializeErrorSpy).not.toHaveBeenCalled();
+  });
+
+  it('should throw an error if a snapRpc method request is made for a snap that has not been started', () => {
+    const { commandStream } = ExecutorMock.initialize();
+    const globalErrorSpy = jest.spyOn(global, 'Error');
+    const request = {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'snapRpc',
+      params: [
+        snapName,
+        'http://localhost:8080',
+        { jsonrpc: '2.0', id: 1, method: 'hallo' },
+      ],
+    };
+    commandStream.write(request);
+    expect(globalErrorSpy).toHaveBeenCalledWith(
+      'No RPC handler registered for snap "npm:fooSnap"',
+    );
+  });
+
+  it('should throw an error if a JSON RPC request is sent without an id', () => {
+    const { commandStream, executor } = ExecutorMock.initialize();
+    const globalErrorSpy = jest.spyOn(global, 'Error');
+    executor.beginSnap(snapName, sourceCode, endowments);
+    const request = {
+      jsonrpc: '2.0',
+      method: 'snapRpc',
+      params: [
+        snapName,
+        'http://localhost:8080',
+        { jsonrpc: '2.0', id: 1, method: 'hallo' },
+      ],
+    };
+    commandStream.write(request);
+    expect(globalErrorSpy).toHaveBeenCalledWith('Notifications not supported');
+  });
+
+  it('should return an Open RPC document if the requested method is "rpc.discover"', () => {
+    const { commandStream, executor } = ExecutorMock.initialize();
+    const globalErrorSpy = jest.spyOn(global, 'Error');
+    const serializeErrorSpy = jest.spyOn(ethErrors, 'serializeError');
+    const methodNotFoundSpy = jest.spyOn(
+      ethErrors.ethErrors.rpc,
+      'methodNotFound',
+    );
+    executor.beginSnap(snapName, sourceCode, endowments);
+    const request = {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'rpc.discover',
+    };
+    commandStream.write(request);
+    expect(globalErrorSpy).not.toHaveBeenCalledWith();
+    expect(serializeErrorSpy).not.toHaveBeenCalledWith();
+    expect(methodNotFoundSpy).not.toHaveBeenCalled();
+  });
+
+  it('should notfiy with an error JSON RPC response if a method is not found', () => {
+    const { commandStream, executor } = ExecutorMock.initialize();
+    const methodNotFoundSpy = jest.spyOn(
+      ethErrors.ethErrors.rpc,
+      'methodNotFound',
+    );
+    executor.beginSnap(snapName, sourceCode, endowments);
+    const request = {
+      id: 1,
+      jsonrpc: '2.0',
+      method: 'getCats',
+    };
+    commandStream.write(request);
+    expect(methodNotFoundSpy).toHaveBeenCalled();
+  });
+
+  it('should call teardown function when a JSON RPC request with the method terminate is called', () => {
+    const { commandStream, executor } = ExecutorMock.initialize();
+    executor.beginSnap(snapName, sourceCode, endowments);
+    // need to disable dot-notation because typescript
+    // will complain about methods being private otherwise
+    // eslint-disable-next-line dot-notation
+    const terminateSpy = jest.spyOn(executor['methods'] as any, 'terminate');
+    const request = {
+      id: 1,
+      jsonrpc: '2.0',
+      method: 'terminate',
+    };
+    commandStream.write(request);
+    expect(terminateSpy).toHaveBeenCalled();
+  });
+
+  it('should thrown an error if a snap is attempted to be started twice', () => {
+    const { executor } = ExecutorMock.initialize();
+    executor.beginSnap(snapName, sourceCode, endowments);
+    expect(() => executor.beginSnap(snapName, sourceCode, endowments)).toThrow(
+      `Error while running snap 'npm:fooSnap': RPC handler already registered.`,
+    );
   });
 });
