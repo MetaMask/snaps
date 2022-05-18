@@ -9,7 +9,7 @@
  * functions.
  */
 const createTimeout = () => {
-  const registeredTimeouts = new Set<unknown>();
+  const registeredHandles = new Map<unknown, unknown>();
 
   const _setTimeout = (handler: TimerHandler, timeout?: number): unknown => {
     if (typeof handler !== 'function') {
@@ -18,25 +18,27 @@ const createTimeout = () => {
       );
     }
 
-    const handle = setTimeout(() => {
-      registeredTimeouts.delete(handle);
+    const handle = Object.freeze({});
+    const platformHandle = setTimeout(() => {
+      registeredHandles.delete(handle);
       handler();
     }, timeout);
 
-    registeredTimeouts.add(handle);
+    registeredHandles.set(handle, platformHandle);
     return handle;
   };
 
   const _clearTimeout = (handle: unknown): void => {
-    if (registeredTimeouts.has(handle)) {
-      clearTimeout(handle as any);
-      registeredTimeouts.delete(handle);
+    const platformHandle = registeredHandles.get(handle);
+    if (platformHandle !== undefined) {
+      clearTimeout(platformHandle as any);
+      registeredHandles.delete(handle);
     }
   };
 
   const teardownFunction = (): void => {
-    for (const timeout of registeredTimeouts) {
-      _clearTimeout(timeout);
+    for (const handle of registeredHandles.keys()) {
+      _clearTimeout(handle);
     }
   };
 
