@@ -1,12 +1,12 @@
 import { postProcessBundle, PostProcessOptions } from '@metamask/snap-utils';
-import { Compiler, WebpackPluginInstance } from 'webpack';
+import { Compiler } from 'webpack';
 import { RawSource } from 'webpack-sources';
 
 const PLUGIN_NAME = 'SnapsWebpackPlugin';
 
 export type Options = PostProcessOptions;
 
-export default class SnapsWebpackPlugin implements WebpackPluginInstance {
+export default class SnapsWebpackPlugin {
   public readonly options: Partial<Options>;
 
   constructor(options: Partial<Options> = {}) {

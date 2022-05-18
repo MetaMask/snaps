@@ -14,7 +14,7 @@
         <li>Please note that:</li>
         <ul>
           <li>
-            The <code>snap.manifest.json</code> and <code>package.json</code> must be located in located in the server root directory..
+            The <code>snap.manifest.json</code> and <code>package.json</code> must be located in the server root directory.
           </li>
           <li>
             The Snap bundle must be hosted at the location specified by the <code>location</code> field of <code>snap.manifest.json</code>.
@@ -53,7 +53,7 @@
     // here we call the snap's "hello" method
     async function send (method) {
       try {
-        const response = await ethereum.request({
+        await ethereum.request({
           method: 'wallet_invokeSnap',
           params: [snapId, {
             method: method

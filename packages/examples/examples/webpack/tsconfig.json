@@ -1,0 +1,5 @@
+{
+  "extends": "../../../../tsconfig.packages.json",
+  "files": ["../../../types/global.d.ts"],
+  "include": ["src", "webpack.config.ts"]
+}
