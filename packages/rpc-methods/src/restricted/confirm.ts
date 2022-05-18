@@ -4,9 +4,8 @@ import {
   RestrictedMethodOptions,
   ValidPermissionSpecification,
 } from '@metamask/controllers';
-import { NonEmptyArray } from '@metamask/snap-controllers';
+import { isObject, NonEmptyArray } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
-import { isPlainObject } from '../utils';
 
 const methodName = 'snap_confirm';
 
@@ -97,7 +96,7 @@ function getConfirmImplementation({ showConfirmation }: ConfirmMethodHooks) {
  * @returns The validated confirm method parameter object.
  */
 function getValidatedParams(params: unknown): ConfirmFields {
-  if (!Array.isArray(params) || !isPlainObject(params[0])) {
+  if (!Array.isArray(params) || !isObject(params[0])) {
     throw ethErrors.rpc.invalidParams({
       message: 'Expected array params with single object.',
     });

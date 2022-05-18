@@ -1,5 +1,6 @@
 import { promises as filesystem } from 'fs';
 import path from 'path';
+import { hasProperty } from '@metamask/utils';
 import rfdc from 'rfdc';
 import { Arguments } from 'yargs';
 
@@ -42,11 +43,11 @@ export function setSnapGlobals(argv: Arguments) {
     global.snaps.isWatching = false;
   }
 
-  if (Object.prototype.hasOwnProperty.call(argv, 'verboseErrors')) {
+  if (hasProperty(argv, 'verboseErrors')) {
     global.snaps.verboseErrors = booleanStringToBoolean(argv.verboseErrors);
   }
 
-  if (Object.prototype.hasOwnProperty.call(argv, 'suppressWarnings')) {
+  if (hasProperty(argv, 'suppressWarnings')) {
     global.snaps.suppressWarnings = booleanStringToBoolean(
       argv.suppressWarnings,
     );

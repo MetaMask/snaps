@@ -1,18 +1,12 @@
-import { Json } from 'json-rpc-engine';
 import {
   PermissionSpecificationBuilder,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
   PermissionType,
 } from '@metamask/controllers';
+import { SNAP_PREFIX, SnapController } from '@metamask/snap-controllers';
+import { isObject, Json, NonEmptyArray } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
-
-import {
-  NonEmptyArray,
-  SNAP_PREFIX,
-  SnapController,
-} from '@metamask/snap-controllers';
-import { isPlainObject } from '../utils';
 
 const methodPrefix = SNAP_PREFIX;
 const targetKey = `${methodPrefix}*` as const;
@@ -74,7 +68,7 @@ function getInvokeSnapImplementation({
     const { params = [], method, context } = options;
     const snapRpcRequest = params[0];
 
-    if (!isPlainObject(snapRpcRequest)) {
+    if (!isObject(snapRpcRequest)) {
       throw ethErrors.rpc.invalidParams({
         message: 'Must specify snap RPC request object as single parameter.',
       });

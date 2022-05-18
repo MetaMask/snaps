@@ -38,6 +38,7 @@
     "@metamask/post-message-stream": "^4.0.0",
     "@metamask/providers": "^8.1.1",
     "@metamask/snap-types": "^0.14.0",
+    "@metamask/utils": "^2.0.0",
     "eth-rpc-errors": "^4.0.3",
     "pump": "^3.0.0",
     "ses": "^0.15.15",

@@ -6,7 +6,7 @@ import {
 } from '@metamask/controllers';
 import { ethErrors } from 'eth-rpc-errors';
 import { BIP44CoinTypeNode, JsonBIP44CoinTypeNode } from '@metamask/key-tree';
-import { NonEmptyArray } from '@metamask/snap-controllers';
+import { NonEmptyArray } from '@metamask/utils';
 
 const methodPrefix = 'snap_getBip44Entropy_';
 const targetKey = `${methodPrefix}*` as const;

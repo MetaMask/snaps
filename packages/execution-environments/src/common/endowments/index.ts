@@ -1,4 +1,5 @@
 import { SnapProvider } from '@metamask/snap-types';
+import { hasProperty } from '@metamask/utils';
 import { rootRealmGlobal } from '../globalObject';
 import buffer from './buffer';
 import timeout from './timeout';
@@ -48,7 +49,7 @@ export function createEndowments(
     ({ allEndowments, teardowns }, endowmentName) => {
       // First, check if the endowment has a factory, and default to that.
       if (endowmentFactories.has(endowmentName)) {
-        if (!Object.hasOwnProperty.call(attenuatedEndowments, endowmentName)) {
+        if (!hasProperty(attenuatedEndowments, endowmentName)) {
           // Call the endowment factory for the current endowment. If the factory
           // creates multiple endowments, they will all be assigned to the
           // `attenuatedEndowments` object, but will only be passed on to the snap

@@ -4,9 +4,8 @@ import {
   RestrictedMethodOptions,
   ValidPermissionSpecification,
 } from '@metamask/controllers';
-import { NonEmptyArray } from '@metamask/snap-controllers';
+import { NonEmptyArray, isObject } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
-import { isPlainObject } from '../utils';
 
 const methodName = 'snap_notify';
 
@@ -117,7 +116,7 @@ function getImplementation({
  * @returns The validated method parameter object.
  */
 function getValidatedParams(params: unknown): NotificationArgs {
-  if (!Array.isArray(params) || !isPlainObject(params[0])) {
+  if (!Array.isArray(params) || !isObject(params[0])) {
     throw ethErrors.rpc.invalidParams({
       message: 'Expected array params with single object.',
     });

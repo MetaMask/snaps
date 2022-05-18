@@ -6,7 +6,7 @@ import {
   JsonRpcEngineNextCallback,
   JsonRpcEngineEndCallback,
 } from '@metamask/types';
-import { isPlainObject } from '../utils';
+import { isObject } from '@metamask/utils';
 
 /**
  * `wallet_invokeSnap` attempts to invoke an RPC method of the specified Snap.
@@ -30,7 +30,7 @@ async function invokeSnapSugar(
   if (
     !Array.isArray(req.params) ||
     typeof req.params[0] !== 'string' ||
-    !isPlainObject(req.params[1])
+    !isObject(req.params[1])
   ) {
     return end(
       ethErrors.rpc.invalidParams({
