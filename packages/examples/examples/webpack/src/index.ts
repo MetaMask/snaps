@@ -28,7 +28,7 @@ async function connect() {
   });
 }
 
-// here we call the snap's "hello" method
+// here we call the snap's "inApp" or "native" method
 async function send(method: string) {
   try {
     await ethereum.request({
