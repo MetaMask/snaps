@@ -1,5 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
 /// <reference path="../../../../../node_modules/ses/index.d.ts" />
+// eslint-disable-next-line import/no-unassigned-import
+import 'ses';
 
 export function executeLockdownMore() {
   // Make all "object" and "function" own properties of globalThis
@@ -85,6 +87,6 @@ export function executeLockdownMore() {
  * @param {Object} descriptor - The propertyName descriptor to check.
  * @returns {boolean} Whether the propertyName descriptor has any accessors.
  */
-function hasAccessor(descriptor: any) {
+function hasAccessor(descriptor: any): boolean {
   return 'set' in descriptor || 'get' in descriptor;
 }
