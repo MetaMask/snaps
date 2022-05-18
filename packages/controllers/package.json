@@ -58,7 +58,7 @@
   "devDependencies": {
     "@jest-runner/electron": "^3.0.1",
     "@json-schema-tools/transpiler": "^1.10.2",
-    "@metamask/auto-changelog": "^2.5.0",
+    "@metamask/auto-changelog": "^2.6.0",
     "@metamask/snap-types": "^0.14.0",
     "@metamask/template-snap": "^0.7.0",
     "@types/concat-stream": "^1.6.1",

@@ -46,7 +46,7 @@
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.0.0",
-    "@metamask/auto-changelog": "^2.5.0",
+    "@metamask/auto-changelog": "^2.6.0",
     "@open-rpc/typings": "^1.12.1",
     "@types/jest": "^27.4.0",
     "concat": "^1.0.3",
