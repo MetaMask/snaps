@@ -19,7 +19,7 @@
     "lint:changelog": "yarn auto-changelog validate",
     "build": "tsc --project tsconfig.local.json",
     "build:clean": "yarn clean && yarn build",
-    "clean": "rimraf *.tsbuildinfo dist/*",
+    "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
     "publish": "../../scripts/publish-package.sh"
   },
   "dependencies": {

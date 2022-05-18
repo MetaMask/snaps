@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "test:prepare": "yarn mkdirp test/fixtures && ./scripts/generate-fixtures.sh",
-    "test": "yarn test:prepare && jest",
+    "test": "yarn test:prepare && jest && yarn posttest",
     "posttest": "jest-it-up",
     "test:ci": "yarn test:prepare && ./scripts/test-ci.sh",
     "build:pre-tsc": "yarn build:ajv && node scripts/transpileSchemaTypes.js",
@@ -22,7 +22,7 @@
     "build:ajv": "./scripts/build-ajv.sh",
     "build": "yarn build:pre-tsc && yarn build:tsc",
     "build:clean": "yarn clean && yarn build",
-    "clean": "rimraf *.tsbuildinfo dist/*",
+    "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check",

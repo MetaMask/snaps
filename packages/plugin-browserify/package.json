@@ -13,7 +13,7 @@
     "dist/"
   ],
   "scripts": {
-    "test": "jest",
+    "test": "jest && yarn posttest",
     "posttest": "jest-it-up",
     "test:ci": "yarn test",
     "lint:eslint": "eslint . --cache --ext js,ts",
@@ -24,7 +24,7 @@
     "build:tsc": "tsc --project tsconfig.local.json",
     "build": "yarn build:tsc",
     "build:clean": "yarn clean && yarn build",
-    "clean": "rimraf *.tsbuildinfo dist/*",
+    "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
     "publish": "../../scripts/publish-package.sh"
   },
   "dependencies": {
