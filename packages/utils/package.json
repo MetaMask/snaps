@@ -28,7 +28,7 @@
     "@chainsafe/strip-comments": "^1.0.7"
   },
   "devDependencies": {
-    "@metamask/auto-changelog": "^2.5.0",
+    "@metamask/auto-changelog": "^2.6.0",
     "@types/jest": "^27.4.1",
     "jest": "^28.1.0",
     "jest-it-up": "^2.0.0",
