@@ -15,6 +15,7 @@
   ],
   "scripts": {
     "build": "webpack",
+    "clean": "rimraf 'dist/*'",
     "manifest": "mm-snap manifest --fix",
     "eval": "mm-snap eval -b dist/snap.js",
     "serve": "concurrently \"webpack --watch\" \"mm-snap serve\""

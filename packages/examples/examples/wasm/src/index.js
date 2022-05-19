@@ -23,7 +23,7 @@ const initializeWasm = async () => {
   }
 };
 
-module.exports.onRPC = async (_originString, requestObject) => {
+module.exports.onMessage = async (_originString, requestObject) => {
   if (!wasm) {
     await initializeWasm();
   }

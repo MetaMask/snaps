@@ -6,7 +6,7 @@ const ipfs = new IPFS({
   protocol: 'https',
 });
 
-module.exports.onRPC = async (_originString, requestObject) => {
+module.exports.onMessage = async (_originString, requestObject) => {
   switch (requestObject.method) {
     case 'add':
       return await ipfs.add(requestObject.params[0]);

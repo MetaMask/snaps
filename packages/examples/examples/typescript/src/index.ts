@@ -1,6 +1,6 @@
 const getMessage = (originString: string): string => `Hello, ${originString}!`;
 
-export async function onRPC(
+export async function onMessage(
   originString: string,
   requestObject: Record<string, unknown>,
 ) {

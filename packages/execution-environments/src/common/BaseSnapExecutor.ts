@@ -26,7 +26,7 @@ type EvaluationData = {
 };
 
 type SnapData = {
-  exports?: { onRPC?: SnapRpcHandler };
+  exports?: { onMessage?: SnapRpcHandler };
   runningEvaluations: Set<EvaluationData>;
   idleTeardown: () => void;
 };
@@ -59,11 +59,11 @@ export class BaseSnapExecutor {
       this.startSnap.bind(this),
       (target, origin, request) => {
         const data = this.snapData.get(target);
-        if (data?.exports?.onRPC === undefined) {
-          throw new Error(`No onRPC handler exported for snap "${target}`);
+        if (data?.exports?.onMessage === undefined) {
+          throw new Error(`No onMessage handler exported for snap "${target}`);
         }
         // We're capturing the handler in case someone modifies the data object before the call
-        const handler = data.exports.onRPC;
+        const handler = data.exports.onMessage;
         return this.executeInSnapContext(target, () =>
           handler(origin, request),
         );
@@ -246,15 +246,15 @@ export class BaseSnapExecutor {
   }
 
   private registerSnapExports(snapName: string, module: any) {
-    if (typeof module.exports?.onRPC === 'function') {
+    if (typeof module.exports?.onMessage === 'function') {
       const data = this.snapData.get(snapName);
       // Somebody deleted the Snap before we could register
       if (data !== undefined) {
         console.log(
           'Worker: Registering RPC message handler',
-          module.exports.onRPC,
+          module.exports.onMessage,
         );
-        data.exports = { ...data.exports, onRPC: module.export.onRPC };
+        data.exports = { ...data.exports, onMessage: module.exports.onMessage };
       }
     }
   }
