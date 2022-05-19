@@ -5,7 +5,7 @@ import { BaseSnapExecutor } from '../common/BaseSnapExecutor';
 import { SNAP_STREAM_NAMES } from '../common/enums';
 
 export class WebWorkerSnapExecutor extends BaseSnapExecutor {
-  static initalize() {
+  static initialize() {
     console.log('Worker: Connecting to parent.');
 
     const parentStream = new WorkerPostMessageStream();

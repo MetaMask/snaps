@@ -4,7 +4,7 @@ describe('Endowment utils', () => {
   describe('createEndowments', () => {
     it('handles no endowments', () => {
       const mockWallet = { foo: Symbol('bar') };
-      expect(createEndowments(mockWallet as any, [])).toStrictEqual({
+      expect(createEndowments(mockWallet as any)).toStrictEqual({
         endowments: {
           wallet: mockWallet,
         },

@@ -2,14 +2,23 @@ module.exports = {
   collectCoverage: true,
   // Ensures that we collect coverage from all source files, not just tested
   // ones.
-  collectCoverageFrom: ['./src/**/*.ts', '!./**/__GENERATED__/**'],
+  // 1. TODO: add coverage for lockdownMore once more research has been done into SES
+  // 2. skipping coverage for iframe and web-worker executors
+  // as the BaseSnapExecutor class is fully tested
+  collectCoverageFrom: [
+    './src/**/*.ts',
+    '!./**/__GENERATED__/**',
+    '!./src/common/lockdown/lockdown-more.ts',
+    '!./src/iframe/**',
+    '!./src/web-workers/**',
+  ],
   coverageReporters: ['clover', 'json', 'lcov', 'text', 'json-summary'],
   coverageThreshold: {
     global: {
-      branches: 81.36,
-      functions: 87.27,
-      lines: 77.74,
-      statements: 78.06,
+      branches: 98,
+      functions: 100,
+      lines: 100,
+      statements: 100,
     },
   },
   moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'],

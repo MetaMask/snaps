@@ -1,6 +1,12 @@
 import { executeLockdown } from './lockdown';
 
 describe('executeLockdown', () => {
+  // cleanup
+  const cachedGlobal = { ...globalThis };
+  afterAll(() => {
+    Object.assign(globalThis, cachedGlobal);
+  });
+
   it('should successfully lockdown the global environment', () => {
     Object.defineProperty(globalThis.process, 'domain', {
       value: null,
