@@ -3,3 +3,4 @@ export * from './json-schemas';
 export * from './utils';
 export * from './default-endowments';
 export * from './endowments';
+export * from './verified-snaps';
