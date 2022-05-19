@@ -10,7 +10,7 @@ const ethers = require('ethers');
  */
 const provider = new ethers.providers.Web3Provider(wallet);
 
-wallet.registerRpcMessageHandler(async (_originString, requestObject) => {
+module.exports.onRPC = async (_originString, requestObject) => {
   console.log('received request', requestObject);
   const privKey = await wallet.request({
     method: 'snap_getAppKey',
@@ -37,4 +37,4 @@ wallet.registerRpcMessageHandler(async (_originString, requestObject) => {
     default:
       throw new Error('Method not found.');
   }
-});
+};

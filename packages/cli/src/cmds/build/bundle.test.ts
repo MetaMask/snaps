@@ -38,7 +38,10 @@ describe('bundle', () => {
           resolve()) as any);
 
       await bundle('src', 'dest', mockArgv as any, mockBundlerTransform);
-      expect(mockBrowserify).toHaveBeenCalledWith('src', { debug: true });
+      expect(mockBrowserify).toHaveBeenCalledWith(
+        'src',
+        expect.objectContaining({ debug: true }),
+      );
       expect(mockTransform).toHaveBeenCalledTimes(1);
       expect(mockTransform).toHaveBeenCalledWith(
         'mockBabelify',
@@ -79,7 +82,10 @@ describe('bundle', () => {
           resolve()) as any);
 
       await bundle('src', 'dest', mockArgv as any);
-      expect(mockBrowserify).toHaveBeenCalledWith('src', { debug: false });
+      expect(mockBrowserify).toHaveBeenCalledWith(
+        'src',
+        expect.objectContaining({ debug: false }),
+      );
       expect(mockTransform).toHaveBeenCalledTimes(1);
       expect(mockTransform).toHaveBeenCalledWith(
         'mockBabelify',
@@ -119,7 +125,10 @@ describe('bundle', () => {
           resolve()) as any);
 
       await bundle('src', 'dest', mockArgv as any);
-      expect(mockBrowserify).toHaveBeenCalledWith('src', { debug: true });
+      expect(mockBrowserify).toHaveBeenCalledWith(
+        'src',
+        expect.objectContaining({ debug: true }),
+      );
       expect(mockTransform).toHaveBeenCalledTimes(1);
       expect(mockTransform).toHaveBeenCalledWith(
         'mockBabelify',
@@ -159,7 +168,10 @@ describe('bundle', () => {
           resolve()) as any);
 
       await bundle('src', 'dest', mockArgv as any);
-      expect(mockBrowserify).toHaveBeenCalledWith('src', { debug: true });
+      expect(mockBrowserify).toHaveBeenCalledWith(
+        'src',
+        expect.objectContaining({ debug: true }),
+      );
       expect(mockTransform).not.toHaveBeenCalled();
       expect(mockPlugin).toHaveBeenCalledTimes(1);
       expect(mockPlugin).toHaveBeenCalledWith(
@@ -195,7 +207,10 @@ describe('bundle', () => {
           resolve()) as any);
 
       await bundle('src', 'dest', mockArgv as any);
-      expect(mockBrowserify).toHaveBeenCalledWith('src', { debug: true });
+      expect(mockBrowserify).toHaveBeenCalledWith(
+        'src',
+        expect.objectContaining({ debug: true }),
+      );
       expect(mockTransform).toHaveBeenCalledTimes(1);
       expect(mockTransform).toHaveBeenCalledWith(
         'mockBabelify',

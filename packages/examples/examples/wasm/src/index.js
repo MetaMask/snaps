@@ -23,7 +23,7 @@ const initializeWasm = async () => {
   }
 };
 
-wallet.registerRpcMessageHandler(async (_originString, requestObject) => {
+module.exports.onRPC = async (_originString, requestObject) => {
   if (!wasm) {
     await initializeWasm();
   }
@@ -32,4 +32,4 @@ wallet.registerRpcMessageHandler(async (_originString, requestObject) => {
     return wasm.instance.exports[requestObject.method](...requestObject.params);
   }
   throw ethErrors.rpc.methodNotFound({ data: { request: requestObject } });
-});
+};

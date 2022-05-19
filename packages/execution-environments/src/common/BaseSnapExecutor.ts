@@ -1,9 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
 /// <reference path="../../../../node_modules/ses/index.d.ts" />
-import { Duplex } from 'stream';
 import { MetaMaskInpageProvider } from '@metamask/providers';
 import { SnapProvider } from '@metamask/snap-types';
 import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
+import { Duplex } from 'stream';
 import EEOpenRPCDocument from '../openrpc.json';
 import {
   Endowments,
@@ -26,7 +26,7 @@ type EvaluationData = {
 };
 
 type SnapData = {
-  rpcHandler?: SnapRpcHandler;
+  exports?: { onRPC?: SnapRpcHandler };
   runningEvaluations: Set<EvaluationData>;
   idleTeardown: () => void;
 };
@@ -59,11 +59,11 @@ export class BaseSnapExecutor {
       this.startSnap.bind(this),
       (target, origin, request) => {
         const data = this.snapData.get(target);
-        if (data?.rpcHandler === undefined) {
-          throw new Error(`No RPC handler registered for snap "${target}`);
+        if (data?.exports?.onRPC === undefined) {
+          throw new Error(`No onRPC handler exported for snap "${target}`);
         }
         // We're capturing the handler in case someone modifies the data object before the call
-        const handler = data.rpcHandler;
+        const handler = data.exports.onRPC;
         return this.executeInSnapContext(target, () =>
           handler(origin, request),
         );
@@ -188,7 +188,9 @@ export class BaseSnapExecutor {
       this.errorHandler(error.reason, { snapName });
     };
 
-    const wallet = this.createSnapProvider(snapName);
+    const wallet = this.createSnapProvider();
+    // We specifically use any because the Snap can modify the object any way they want
+    const snapModule: any = { exports: {} };
 
     try {
       const { endowments, teardown: endowmentTeardown } = createEndowments(
@@ -211,6 +213,8 @@ export class BaseSnapExecutor {
 
       const compartment = new Compartment({
         ...endowments,
+        module: snapModule,
+        exports: snapModule.exports,
         window: { ...endowments },
         self: { ...endowments },
       });
@@ -218,6 +222,7 @@ export class BaseSnapExecutor {
       await this.executeInSnapContext(snapName, () =>
         compartment.evaluate(sourceCode),
       );
+      this.registerSnapExports(snapName, snapModule);
     } catch (err) {
       this.removeSnap(snapName);
       throw new Error(
@@ -240,31 +245,27 @@ export class BaseSnapExecutor {
     this.snapData.clear();
   }
 
-  /**
-   * Sets up the given snap's RPC message handler, creates a hardened
-   * snap provider object (i.e. globalThis.wallet), and returns it.
-   */
-  private createSnapProvider(snapName: string): SnapProvider {
-    const snapProvider = new MetaMaskInpageProvider(this.rpcStream, {
-      shouldSendMetadata: false,
-    }) as unknown as Partial<SnapProvider>;
-
-    snapProvider.registerRpcMessageHandler = (func: SnapRpcHandler) => {
-      console.log('Worker: Registering RPC message handler', func);
+  private registerSnapExports(snapName: string, module: any) {
+    if (typeof module.exports?.onRPC === 'function') {
       const data = this.snapData.get(snapName);
-      if (data === undefined) {
-        throw new Error('Tried to register a handler for already removed snap');
+      // Somebody deleted the Snap before we could register
+      if (data !== undefined) {
+        console.log(
+          'Worker: Registering RPC message handler',
+          module.exports.onRPC,
+        );
+        data.exports = { ...data.exports, onRPC: module.export.onRPC };
       }
+    }
+  }
 
-      if (data?.rpcHandler !== undefined) {
-        throw new Error('RPC handler already registered.');
-      }
-      data.rpcHandler = func;
-    };
-
-    // TODO: harden throws an error. Why?
-    // return harden(snapProvider as SnapProvider);
-    return snapProvider as SnapProvider;
+  /**
+   * Creates a hardened snap provider object (i.e. globalThis.wallet), and returns it.
+   */
+  private createSnapProvider(): SnapProvider {
+    return new MetaMaskInpageProvider(this.rpcStream, {
+      shouldSendMetadata: false,
+    });
   }
 
   /**
@@ -314,7 +315,7 @@ export class BaseSnapExecutor {
     try {
       data.runningEvaluations.add(evaluationData);
       // Notice that we have to await this executor.
-      // If we didn't, we would decrease the amount of running evalauations
+      // If we didn't, we would decrease the amount of running evaluations
       // before the promise actually resolves
       return await Promise.race([executor(), stopPromise]);
     } finally {

@@ -6,7 +6,7 @@ const ipfs = new IPFS({
   protocol: 'https',
 });
 
-wallet.registerRpcMessageHandler(async (_originString, requestObject) => {
+module.exports.onRPC = async (_originString, requestObject) => {
   switch (requestObject.method) {
     case 'add':
       return await ipfs.add(requestObject.params[0]);
@@ -15,4 +15,4 @@ wallet.registerRpcMessageHandler(async (_originString, requestObject) => {
     default:
       throw rpcErrors.eth.methodNotFound(requestObject);
   }
-});
+};
