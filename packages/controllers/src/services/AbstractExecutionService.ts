@@ -4,10 +4,12 @@ import {
   ExecutionServiceMessenger,
   SnapExecutionData,
 } from '@metamask/snap-types';
+import { Duration } from '@metamask/utils';
 import {
   JsonRpcEngine,
-  JsonRpcRequest,
   PendingJsonRpcResponse,
+  // TODO: Replace with @metamask/utils version after bumping json-rpc-engine
+  JsonRpcRequest,
 } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
 import pump from 'pump';
@@ -57,7 +59,7 @@ export abstract class AbstractExecutionService<JobType extends Job>
   constructor({
     setupSnapProvider,
     messenger,
-    terminationTimeout = 1000,
+    terminationTimeout = Duration.Second,
   }: ExecutionServiceArgs) {
     this._snapRpcHooks = new Map();
     this.jobs = new Map();
@@ -91,10 +93,10 @@ export abstract class AbstractExecutionService<JobType extends Job>
       throw new Error(`Job with id "${jobId}" not found.`);
     }
 
-    let timeout: number | undefined;
+    let terminationTimeout: number | undefined;
 
-    const timeoutPromise = new Promise<void>((resolve) => {
-      timeout = setTimeout(() => {
+    const terminationTimeoutPromise = new Promise<void>((resolve) => {
+      terminationTimeout = setTimeout(() => {
         // No need to reject here, we just resolve and move on if the terminate request doesn't respond quickly
         resolve();
       }, this._terminationTimeout) as unknown as number;
@@ -109,13 +111,13 @@ export abstract class AbstractExecutionService<JobType extends Job>
           params: [],
           id: nanoid(),
         }),
-        timeoutPromise,
+        terminationTimeoutPromise,
       ]);
     } catch (error) {
       console.error(`Job "${jobId}" failed to terminate gracefully.`, error);
     }
 
-    clearTimeout(timeout);
+    clearTimeout(terminationTimeout);
 
     Object.values(jobWrapper.streams).forEach((stream) => {
       try {

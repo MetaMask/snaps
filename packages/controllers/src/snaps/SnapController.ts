@@ -21,10 +21,17 @@ import {
   SnapData,
   SnapId,
 } from '@metamask/snap-types';
+import {
+  Duration,
+  hasProperty,
+  inMilliseconds,
+  isNonEmptyArray,
+  Json,
+  timeSince,
+} from '@metamask/utils';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import type { Patch } from 'immer';
-import { Json } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
 import { gt as gtSemver, satisfies as satisfiesSemver } from 'semver';
 import { assertExhaustive } from '..';
@@ -34,9 +41,10 @@ import {
   TerminateAll,
   TerminateSnap,
 } from '../services/ExecutionService';
-import { isNonEmptyArray, setDiff, timeSince } from '../utils';
+import { setDiff } from '../utils';
 import { DEFAULT_ENDOWMENTS } from './default-endowments';
 import { SnapManifest, validateSnapJsonFile } from './json-schemas';
+import { LONG_RUNNING_PERMISSION } from './endowments';
 import { RequestQueue } from './RequestQueue';
 import {
   DEFAULT_REQUESTED_SNAP_VERSION,
@@ -370,19 +378,80 @@ type FeatureFlags = {
 };
 
 type SnapControllerArgs = {
+  /**
+   * A teardown function that allows the host to clean up its instrumentation
+   * for a running snap.
+   */
   closeAllConnections: CloseAllConnectionsFunction;
-  endowmentPermissionNames: string[];
+
+  /**
+   * The names of endowment permissions whose values are the names of JavaScript
+   * APIs that will be added to the snap execution environment at runtime.
+   */
+  environmentEndowmentPermissions: string[];
+
+  /**
+   * A function that causes a snap to be executed.
+   */
   executeSnap: ExecuteSnap;
+
+  /**
+   * A function that gets the RPC message handler function for a specific
+   * snap.
+   */
   getRpcMessageHandler: GetRpcMessageHandler;
+
+  /**
+   * The controller messenger.
+   */
   messenger: SnapControllerMessenger;
+
+  /**
+   * Persisted state that will be used for rehydration.
+   */
   state?: SnapControllerState;
+
+  /**
+   * A function that terminates all running snaps.
+   */
   terminateAllSnaps: TerminateAll;
+
+  /**
+   * A function that terminates a specific snap.
+   */
   terminateSnap: TerminateSnap;
+
+  /**
+   * How frequently to check whether a snap is idle.
+   */
   idleTimeCheckInterval?: number;
+
+  /**
+   * The maximum amount of time that a snap may be idle.
+   */
   maxIdleTime?: number;
+
+  /**
+   * The maximum amount of time a snap may take to process an RPC request,
+   * unless it is permitted to take longer.
+   */
   maxRequestTime?: number;
+
+  /**
+   * The npm registry URL that will be used to fetch published snaps.
+   */
   npmRegistryUrl?: string;
+
+  /**
+   * The function that will be used by the controller fo make network requests.
+   * Should be compatible with {@link fetch}.
+   */
   fetchFunction?: typeof fetch;
+
+  /**
+   * Flags that enable or disable features in the controller.
+   * See {@link FeatureFlags}.
+   */
   featureFlags: FeatureFlags;
 };
 
@@ -488,7 +557,7 @@ export class SnapController extends BaseController<
 > {
   private _closeAllConnections: CloseAllConnectionsFunction;
 
-  private _endowmentPermissionNames: string[];
+  private _environmentEndowmentPermissions: string[];
 
   private _executeSnap: ExecuteSnap;
 
@@ -522,11 +591,11 @@ export class SnapController extends BaseController<
     state,
     terminateAllSnaps,
     terminateSnap,
-    endowmentPermissionNames = [],
+    environmentEndowmentPermissions = [],
     npmRegistryUrl,
-    idleTimeCheckInterval = 5000,
-    maxIdleTime = 30000,
-    maxRequestTime = 60000,
+    idleTimeCheckInterval = inMilliseconds(5, Duration.Second),
+    maxIdleTime = inMilliseconds(30, Duration.Second),
+    maxRequestTime = inMilliseconds(60, Duration.Second),
     fetchFunction = globalThis.fetch.bind(globalThis),
     featureFlags = {},
   }: SnapControllerArgs) {
@@ -564,7 +633,7 @@ export class SnapController extends BaseController<
     });
 
     this._closeAllConnections = closeAllConnections;
-    this._endowmentPermissionNames = endowmentPermissionNames;
+    this._environmentEndowmentPermissions = environmentEndowmentPermissions;
     this._executeSnap = executeSnap;
     this._getRpcMessageHandler = getRpcMessageHandler;
     this._onUnhandledSnapError = this._onUnhandledSnapError.bind(this);
@@ -1330,6 +1399,7 @@ export class SnapController extends BaseController<
 
     try {
       const result = await this._executeWithTimeout(
+        snapId,
         this._executeSnap({
           ...snapData,
           endowments: await this._getEndowments(snapId),
@@ -1357,7 +1427,7 @@ export class SnapController extends BaseController<
   private async _getEndowments(snapId: string): Promise<string[]> {
     let allEndowments: string[] = [];
 
-    for (const permissionName of this._endowmentPermissionNames) {
+    for (const permissionName of this._environmentEndowmentPermissions) {
       if (
         this.messagingSystem.call(
           'PermissionController:hasPermission',
@@ -1726,7 +1796,7 @@ export class SnapController extends BaseController<
       }
 
       let _request = request;
-      if (!Object.hasOwnProperty.call(request, 'jsonrpc')) {
+      if (!hasProperty(request, 'jsonrpc')) {
         _request = { ...request, jsonrpc: '2.0' };
       } else if (request.jsonrpc !== '2.0') {
         throw ethErrors.rpc.invalidRequest({
@@ -1740,6 +1810,7 @@ export class SnapController extends BaseController<
       // This will either get the result or reject due to the timeout.
       try {
         const result = await this._executeWithTimeout(
+          snapId,
           handler(origin, _request),
         );
         this._recordSnapRpcRequestFinish(snapId);
@@ -1762,7 +1833,18 @@ export class SnapController extends BaseController<
    * @param promise - The promise to await.
    * @returns The result of the promise or rejects if the promise times out.
    */
-  private async _executeWithTimeout(promise: Promise<unknown>) {
+  private async _executeWithTimeout(snapId: SnapId, promise: Promise<unknown>) {
+    const isLongRunning = this.messagingSystem.call(
+      'PermissionController:hasPermission',
+      snapId,
+      LONG_RUNNING_PERMISSION,
+    );
+
+    // Long running snaps have timeouts disabled
+    if (isLongRunning) {
+      return promise;
+    }
+
     // Handle max request time
     let timeout: number | undefined;
 

@@ -1,15 +1,13 @@
 {
   "extends": "../../tsconfig.packages.json",
-  "references": [{ "path": "../execution-environments" }],
   "compilerOptions": {
     "allowJs": true,
-    "composite": true,
     "lib": ["DOM", "ES2020"],
-    "outDir": "dist",
+    "outDir": "./dist",
     "resolveJsonModule": true,
-    "rootDir": "src",
+    "rootDir": "./src",
     "typeRoots": ["../../node_modules/@types", "./node_modules/@types"]
   },
   "include": ["./src", "./src/snaps/json-schemas"],
-  "exclude": ["**/*.test.ts"]
+  "references": [{ "path": "../execution-environments" }]
 }

@@ -3,6 +3,7 @@ const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 
 const DIST = path.resolve(__dirname, 'dist');
+const ENVIRONMENTS = path.resolve(DIST, 'webpack');
 
 module.exports = (_, argv) => {
   const isProd = argv.mode === 'production';
@@ -22,13 +23,23 @@ module.exports = (_, argv) => {
       webworker: './src/web-workers/index.ts',
     },
     output: {
-      filename: '[name].bundle.js',
-      path: DIST,
+      filename: '[name]/bundle.js',
+      path: ENVIRONMENTS,
     },
     plugins: [
       new NodePolyfillPlugin(),
       new CopyPlugin({
         patterns: [
+          {
+            from: path.resolve(
+              `${path.dirname(require.resolve('ses/package.json'))}`,
+              'dist',
+              'lockdown.umd.min.js',
+            ),
+            to: path.resolve(ENVIRONMENTS, 'webworker/lockdown.umd.min.js'),
+            toType: 'file',
+          },
+          // @todo Merge this with above if possible
           {
             // For use in <script> tag along with the iframe bundle. Copied to ensure same version as bundled
             from: path.resolve(
@@ -36,7 +47,16 @@ module.exports = (_, argv) => {
               'dist',
               'lockdown.umd.min.js',
             ),
-            to: path.resolve(DIST, 'lockdown.umd.min.js'),
+            to: path.resolve(ENVIRONMENTS, 'iframe/lockdown.umd.min.js'),
+            toType: 'file',
+          },
+          {
+            from: path.resolve(
+              'src',
+              'iframe',
+              'index.html',
+            ),
+            to: path.resolve(ENVIRONMENTS, 'iframe/index.html'),
             toType: 'file',
           },
         ],

@@ -16,9 +16,9 @@
   "scripts": {
     "prebuild": "yarn run build:wasm",
     "build": "yarn run prebuild && mm-snap build",
+    "clean": "rimraf 'dist/*' 'build/*'",
     "build:wasm": "asc assembly/program.ts -o build/program.wasm",
-    "serve": "mm-snap serve",
-    "test": "echo 'Error: no test specified' && exit 1"
+    "serve": "mm-snap serve"
   },
   "dependencies": {
     "eth-rpc-errors": "^4.0.3"
@@ -28,6 +28,6 @@
     "brfs": "^2.0.2"
   },
   "engines": {
-    "node": ">=12.11.0"
+    "node": ">=14.0.0"
   }
 }

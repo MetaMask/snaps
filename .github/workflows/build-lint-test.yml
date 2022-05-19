@@ -11,25 +11,22 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [14.x, 16.x]
+        node-version: [14.x, 16.x, 18.x]
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Get Yarn cache directory
-        run: echo "::set-output name=YARN_CACHE_DIR::$(yarn cache dir)"
-        id: yarn-cache-dir
       - name: Get Yarn version
         run: echo "::set-output name=YARN_VERSION::$(yarn --version)"
         id: yarn-version
       - name: Cache yarn dependencies
         uses: actions/cache@v2
         with:
-          path: ${{ steps.yarn-cache-dir.outputs.YARN_CACHE_DIR }}
+          path: .yarn/cache
           key: yarn-cache-${{ runner.os }}-${{ steps.yarn-version.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}
-      - run: yarn install --frozen-lockfile
+      - run: yarn install --immutable
       - run: yarn allow-scripts
       - run: yarn build
       - name: Require clean working directory
@@ -67,19 +64,16 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: 14.x
-      - name: Get Yarn cache directory
-        run: echo "::set-output name=YARN_CACHE_DIR::$(yarn cache dir)"
-        id: yarn-cache-dir
+          node-version: 18.x
       - name: Get Yarn version
         run: echo "::set-output name=YARN_VERSION::$(yarn --version)"
         id: yarn-version
       - name: Cache yarn dependencies
         uses: actions/cache@v2
         with:
-          path: ${{ steps.yarn-cache-dir.outputs.YARN_CACHE_DIR }}
+          path: .yarn/cache
           key: yarn-cache-${{ runner.os }}-${{ steps.yarn-version.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}
-      - run: yarn install --frozen-lockfile
+      - run: yarn install --immutable
       - run: yarn allow-scripts
       - run: yarn build
       - name: Require clean working directory

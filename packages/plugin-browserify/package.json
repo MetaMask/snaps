@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-browserify-plugin",
-  "version": "0.12.0",
+  "version": "0.14.0",
   "keywords": [
     "browserify-plugin"
   ],
@@ -13,7 +13,7 @@
     "dist/"
   ],
   "scripts": {
-    "test": "jest",
+    "test": "jest && yarn posttest",
     "posttest": "jest-it-up",
     "test:ci": "yarn test",
     "lint:eslint": "eslint . --cache --ext js,ts",
@@ -21,18 +21,17 @@
     "lint": "yarn lint:eslint && yarn lint:misc --check",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "yarn auto-changelog validate",
-    "build:tsc": "tsc --project tsconfig.build.json",
+    "build:tsc": "tsc --project tsconfig.local.json",
     "build": "yarn build:tsc",
-    "build:pre-tsc": "echo 'N/A'",
-    "build:post-tsc": "echo 'N/A'",
     "build:clean": "yarn clean && yarn build",
-    "clean": "rimraf dist/*",
+    "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
     "publish": "../../scripts/publish-package.sh"
   },
   "dependencies": {
-    "@metamask/snap-utils": "^0.12.0"
+    "@metamask/snap-utils": "^0.14.0"
   },
   "devDependencies": {
+    "@metamask/auto-changelog": "^2.6.0",
     "@types/browserify": "^12.0.37",
     "@types/jest": "^27.4.1",
     "browserify": "^17.0.0",

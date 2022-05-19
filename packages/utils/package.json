@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snap-utils",
-  "version": "0.12.0",
+  "version": "0.14.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps-skunkworks.git"
@@ -10,7 +10,7 @@
     "dist/"
   ],
   "scripts": {
-    "test": "jest",
+    "test": "jest && yarn posttest",
     "posttest": "jest-it-up",
     "test:ci": "yarn test",
     "lint:eslint": "eslint . --cache --ext js,ts",
@@ -18,22 +18,21 @@
     "lint": "yarn lint:eslint && yarn lint:misc --check",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "yarn auto-changelog validate",
-    "build:tsc": "tsc --project tsconfig.build.json",
+    "build:tsc": "tsc --project tsconfig.local.json",
     "build": "yarn build:tsc",
-    "build:pre-tsc": "echo 'N/A'",
-    "build:post-tsc": "echo 'N/A'",
     "build:clean": "yarn clean && yarn build",
-    "clean": "rimraf dist/*",
+    "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
     "publish": "../../scripts/publish-package.sh"
   },
   "dependencies": {
-    "@chainsafe/strip-comments": "^1.0.5"
+    "@chainsafe/strip-comments": "^1.0.7"
   },
   "devDependencies": {
+    "@metamask/auto-changelog": "^2.6.0",
     "@types/jest": "^27.4.1",
-    "jest": "^27.5.1",
+    "jest": "^28.1.0",
     "jest-it-up": "^2.0.0",
-    "ts-jest": "^27.1.4",
+    "ts-jest": "^28.0.2",
     "typescript": "^4.4.0"
   },
   "engines": {

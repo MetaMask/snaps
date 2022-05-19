@@ -1,13 +1,13 @@
 {
-  "references": [
-    { "path": "./packages/utils/tsconfig.build.json" },
-    { "path": "./packages/plugin-browserify/tsconfig.build.json" },
-    { "path": "./packages/controllers" },
-    { "path": "./packages/rpc-methods" },
-    { "path": "./packages/cli" },
-    { "path": "./packages/execution-environments" }
-  ],
   "files": [],
-  "include": [],
-  "exclude": ["**/node_modules"]
+  "references": [
+    { "path": "./packages/cli" },
+    { "path": "./packages/controllers" },
+    { "path": "./packages/execution-environments" },
+    { "path": "./packages/plugin-browserify" },
+    { "path": "./packages/plugin-rollup" },
+    { "path": "./packages/plugin-webpack" },
+    { "path": "./packages/rpc-methods" },
+    { "path": "./packages/utils" }
+  ]
 }

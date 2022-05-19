@@ -32,7 +32,9 @@ export function bundle(
     if (transpilationMode !== TranspilationModes.none) {
       bundler.transform(require('babelify'), {
         global: transpilationMode === TranspilationModes.localAndDeps,
+        extensions: ['.js', '.ts'],
         presets: [
+          require('@babel/preset-typescript'),
           [
             require('@babel/preset-env'),
             {

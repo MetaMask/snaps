@@ -1,24 +1,18 @@
 {
   "name": "@metamask/snap-types",
-  "version": "0.12.0",
+  "version": "0.14.0",
   "description": "Shared types for MetaMask Snaps packages.",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps-skunkworks.git"
   },
-  "main": "index.d.ts",
-  "types": "index.d.ts",
+  "main": "src/index.d.ts",
+  "types": "src/index.d.ts",
   "files": [
-    "index.d.ts"
+    "src",
+    "global.d.ts"
   ],
   "scripts": {
-    "build": "echo 'N/A'",
-    "build:clean": "echo 'N/A'",
-    "build:pre-tsc": "echo 'N/A'",
-    "build:post-tsc": "echo 'N/A'",
-    "clean": "echo 'N/A'",
-    "test": "echo 'N/A'",
-    "test:ci": "yarn test",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
@@ -27,9 +21,10 @@
     "publish": "../../scripts/publish-package.sh"
   },
   "dependencies": {
-    "@metamask/controllers": "^28.0.0"
+    "@metamask/controllers": "^29.0.1"
   },
   "devDependencies": {
+    "@metamask/auto-changelog": "^2.6.0",
     "@metamask/providers": "^8.1.1"
   },
   "engines": {

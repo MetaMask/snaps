@@ -1,10 +1,10 @@
 {
   "extends": "../../tsconfig.packages.json",
   "compilerOptions": {
-    "composite": false,
     "outDir": "./dist",
     "rootDir": "./src",
     "typeRoots": ["./node_modules/@types"]
   },
-  "include": ["./src"]
+  "include": ["./src"],
+  "references": [{ "path": "../utils" }]
 }

@@ -1,13 +1,16 @@
 {
   "compilerOptions": {
+    "composite": true,
     "declaration": true,
     "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
     "module": "CommonJS",
     "moduleResolution": "node",
     "useUnknownInCatchVariables": false,
     "sourceMap": true,
     "strict": true,
-    "target": "ES2017",
+    "target": "ES2020",
     "typeRoots": ["./node_modules/@types"]
-  }
+  },
+  "exclude": ["**/*.test.ts", "**/__snapshots__/**/*.ts"]
 }

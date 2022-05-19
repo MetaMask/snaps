@@ -1,9 +1,9 @@
 import { SnapProvider } from '@metamask/snap-types';
+import { hasProperty } from '@metamask/utils';
 import { rootRealmGlobal } from '../globalObject';
 import buffer from './buffer';
 import timeout from './timeout';
 import interval from './interval';
-import wasm from './wasm';
 
 type EndowmentFactoryResult = {
   teardownFunction?: () => void;
@@ -15,7 +15,7 @@ type EndowmentFactoryResult = {
  * the same factory function, but we only call each factory once for each snap.
  * See {@link createEndowments} for details.
  */
-const endowmentFactories = [buffer, timeout, interval, wasm].reduce(
+const endowmentFactories = [buffer, timeout, interval].reduce(
   (factories, builder) => {
     builder.names.forEach((name) => {
       factories.set(name, builder.factory);
@@ -49,7 +49,7 @@ export function createEndowments(
     ({ allEndowments, teardowns }, endowmentName) => {
       // First, check if the endowment has a factory, and default to that.
       if (endowmentFactories.has(endowmentName)) {
-        if (!Object.hasOwnProperty.call(attenuatedEndowments, endowmentName)) {
+        if (!hasProperty(attenuatedEndowments, endowmentName)) {
           // Call the endowment factory for the current endowment. If the factory
           // creates multiple endowments, they will all be assigned to the
           // `attenuatedEndowments` object, but will only be passed on to the snap
