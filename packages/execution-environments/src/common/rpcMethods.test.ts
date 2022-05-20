@@ -28,7 +28,7 @@ describe('rpcMethods', () => {
     const onTerminate = jest.fn();
     const methodsObj = rpcMethods(startSnap, invokeSnapRpc, onTerminate);
     expect(await methodsObj.terminate()).toStrictEqual('OK');
-  })
+  });
 
   it("the executeSnap method will return 'OK'", async () => {
     const startSnap = jest.fn();
