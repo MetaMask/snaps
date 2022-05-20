@@ -30,20 +30,18 @@ describe('Endowment utils', () => {
 
     it('handles special cases where endowment is a function but not a constructor', () => {
       const mockWallet = { foo: Symbol('bar') };
-      const modifiedDate = { ...Date };
-      modifiedDate.prototype.constructor.name = {};
-      const endowments = createEndowments(mockWallet as any, ['Math', 'Date']);
-
-      expect(endowments).toStrictEqual({
-        endowments: {
-          wallet: mockWallet,
-          Math,
-          Date,
-        },
-        teardown: expect.any(Function),
-      });
+      const mockEndowment = () => {
+        return {};
+      };
+      Object.assign(globalThis, { mockEndowment });
+      const endowments = createEndowments(mockWallet as any, [
+        'Math',
+        'Date',
+        'mockEndowment',
+      ]);
       expect(endowments.endowments.Math).toBe(Math);
       expect(endowments.endowments.Date).toBe(Date);
+      expect(endowments.endowments.mockEndowment).toBeDefined();
     });
 
     it('handles factory endowments', () => {
@@ -57,7 +55,6 @@ describe('Endowment utils', () => {
         },
         teardown: expect.any(Function),
       });
-      expect(endowments.endowments.WebAssembly).not.toBe(WebAssembly);
     });
 
     it('handles some endowments from the same factory', () => {
@@ -123,7 +120,6 @@ describe('Endowment utils', () => {
 
       expect(endowments.endowments.clearTimeout).not.toBe(clearTimeout);
       expect(endowments.endowments.setTimeout).not.toBe(setTimeout);
-      expect(endowments.endowments.WebAssembly).not.toBe(WebAssembly);
     });
 
     it('throws for unknown endowments', () => {

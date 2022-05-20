@@ -1,6 +1,8 @@
 import { PassThrough } from 'stream';
 import * as ethErrors from 'eth-rpc-errors';
 import { BaseSnapExecutor } from './BaseSnapExecutor';
+// eslint-disable-next-line import/no-unassigned-import
+import 'ses';
 
 class ExecutorMock extends BaseSnapExecutor {
   static initialize() {
