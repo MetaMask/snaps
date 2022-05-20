@@ -7,9 +7,9 @@ import {
 import { Duration } from '@metamask/utils';
 import {
   JsonRpcEngine,
-  PendingJsonRpcResponse,
   // TODO: Replace with @metamask/utils version after bumping json-rpc-engine
   JsonRpcRequest,
+  PendingJsonRpcResponse,
 } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
 import pump from 'pump';
@@ -92,32 +92,6 @@ export abstract class AbstractExecutionService<JobType extends Job>
     if (!jobWrapper) {
       throw new Error(`Job with id "${jobId}" not found.`);
     }
-
-    let terminationTimeout: number | undefined;
-
-    const terminationTimeoutPromise = new Promise<void>((resolve) => {
-      terminationTimeout = setTimeout(() => {
-        // No need to reject here, we just resolve and move on if the terminate request doesn't respond quickly
-        resolve();
-      }, this._terminationTimeout) as unknown as number;
-    });
-
-    // Ping worker and tell it to run teardown, continue with termination if it takes too long
-    try {
-      await Promise.race([
-        this._command(jobId, {
-          jsonrpc: '2.0',
-          method: 'terminate',
-          params: [],
-          id: nanoid(),
-        }),
-        terminationTimeoutPromise,
-      ]);
-    } catch (error) {
-      console.error(`Job "${jobId}" failed to terminate gracefully.`, error);
-    }
-
-    clearTimeout(terminationTimeout);
 
     Object.values(jobWrapper.streams).forEach((stream) => {
       try {

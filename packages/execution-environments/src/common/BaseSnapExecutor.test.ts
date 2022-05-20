@@ -1,7 +1,6 @@
 // eslint-disable-next-line import/no-unassigned-import
 import 'ses';
 import { Duplex, DuplexOptions, Readable } from 'stream';
-import { promisify } from 'util';
 import { JsonRpcRequest } from '../__GENERATED__/openrpc';
 import { BaseSnapExecutor } from './BaseSnapExecutor';
 
@@ -26,12 +25,12 @@ class TwoWayPassThrough {
 
   readonly right: Duplex;
 
-  private lTor: TwoWayPassThroughBuffer = {
+  private leftToRight: TwoWayPassThroughBuffer = {
     buffer: [],
     canPush: false,
   };
 
-  private rTol: TwoWayPassThroughBuffer = {
+  private rightToLeft: TwoWayPassThroughBuffer = {
     buffer: [],
     canPush: false,
   };
@@ -40,35 +39,37 @@ class TwoWayPassThrough {
     this.left = new Duplex({
       ...opts,
       write: (chunk, encoding, callback) => {
-        this.lTor.buffer.push({ chunk, encoding });
-        TwoWayPassThrough.flush(this.lTor, this.right);
+        this.leftToRight.buffer.push({ chunk, encoding });
+        TwoWayPassThrough.flush(this.leftToRight, this.right);
         return callback();
       },
       read: () => {
-        this.rTol.canPush = true;
-        TwoWayPassThrough.flush(this.rTol, this.left);
+        this.rightToLeft.canPush = true;
+        TwoWayPassThrough.flush(this.rightToLeft, this.left);
       },
     });
 
     this.right = new Duplex({
       ...opts,
       write: (chunk, encoding, callback) => {
-        this.rTol.buffer.push({ chunk, encoding });
-        TwoWayPassThrough.flush(this.rTol, this.left);
+        this.rightToLeft.buffer.push({ chunk, encoding });
+        TwoWayPassThrough.flush(this.rightToLeft, this.left);
         return callback();
       },
       read: () => {
-        this.lTor.canPush = true;
-        TwoWayPassThrough.flush(this.lTor, this.right);
+        this.leftToRight.canPush = true;
+        TwoWayPassThrough.flush(this.leftToRight, this.right);
       },
     });
   }
 }
 
 class TestSnapExecutor extends BaseSnapExecutor {
-  public writeCommand: (message: JsonRpcRequest) => Promise<void>;
+  private commandLeft: Duplex;
 
-  public readCommand: () => JsonRpcRequest | null;
+  private readBuffer: any[] = [];
+
+  private readListeners: ((chunk: any) => void)[] = [];
 
   constructor() {
     const rpc = new TwoWayPassThrough({
@@ -85,8 +86,42 @@ class TestSnapExecutor extends BaseSnapExecutor {
 
     super(command.right, rpc.right);
 
-    this.writeCommand = promisify(command.left.write.bind(command.left));
-    this.readCommand = command.left.read.bind(command.left);
+    this.commandLeft = command.left;
+
+    this.commandLeft.on('data', (chunk) => {
+      this.readBuffer.push(chunk);
+      this.flushReads();
+    });
+  }
+
+  public writeCommand(message: JsonRpcRequest): Promise<void> {
+    return new Promise((resolve, reject) =>
+      this.commandLeft.write(message, (error) => {
+        if (error) {
+          return reject(error);
+        }
+        return resolve();
+      }),
+    );
+  }
+
+  public readCommand(): Promise<JsonRpcRequest> {
+    const promise = new Promise<JsonRpcRequest>((resolve) =>
+      this.readListeners.push(resolve),
+    );
+
+    this.flushReads();
+
+    return promise;
+  }
+
+  private flushReads() {
+    while (this.readBuffer.length && this.readListeners.length) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const chunk = this.readBuffer.shift()!;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.readListeners.shift()!(chunk);
+    }
   }
 }
 
@@ -124,7 +159,7 @@ describe('BaseSnapExecutor', () => {
         params: [FAKE_SNAP_NAME, CODE, TIMER_ENDOWMENTS],
       });
 
-      expect(executor.readCommand()).toStrictEqual({
+      expect(await executor.readCommand()).toStrictEqual({
         jsonrpc: '2.0',
         id: 1,
         result: 'OK',
@@ -161,13 +196,13 @@ describe('BaseSnapExecutor', () => {
         params: [FAKE_SNAP_NAME, CODE, TIMER_ENDOWMENTS],
       });
 
-      expect(executor.readCommand()).toStrictEqual({
+      expect(await executor.readCommand()).toStrictEqual({
         jsonrpc: '2.0',
         id: 1,
         result: 'OK',
       });
 
-      const rpcPromise = executor.writeCommand({
+      await executor.writeCommand({
         jsonrpc: '2.0',
         id: 2,
         method: 'snapRpc',
@@ -176,8 +211,7 @@ describe('BaseSnapExecutor', () => {
 
       jest.advanceTimersByTime(250);
 
-      await rpcPromise;
-      expect(executor.readCommand()).toStrictEqual({
+      expect(await executor.readCommand()).toStrictEqual({
         jsonrpc: '2.0',
         id: 2,
         result: 'SNAP OK',
@@ -237,13 +271,13 @@ describe('BaseSnapExecutor', () => {
           params: [SNAP_NAME_2, CODE_2, TIMER_ENDOWMENTS],
         });
 
-        expect(executor.readCommand()).toStrictEqual({
+        expect(await executor.readCommand()).toStrictEqual({
           jsonrpc: '2.0',
           id: 1,
           result: 'OK',
         });
 
-        expect(executor.readCommand()).toStrictEqual({
+        expect(await executor.readCommand()).toStrictEqual({
           jsonrpc: '2.0',
           id: 2,
           result: 'OK',
@@ -251,7 +285,7 @@ describe('BaseSnapExecutor', () => {
 
         // The order of below is extremely important!
 
-        const rpcSetPromise = executor.writeCommand({
+        await executor.writeCommand({
           jsonrpc: '2.0',
           id: 3,
           method: 'snapRpc',
@@ -268,7 +302,8 @@ describe('BaseSnapExecutor', () => {
             { jsonrpc: '2.0', method: 'getHandle' },
           ],
         });
-        const getHandleResult = executor.readCommand();
+
+        const getHandleResult = await executor.readCommand();
         expect(getHandleResult).toStrictEqual(
           expect.objectContaining({
             jsonrpc: '2.0',
@@ -291,7 +326,7 @@ describe('BaseSnapExecutor', () => {
           ],
         });
 
-        expect(executor.readCommand()).toStrictEqual({
+        expect(await executor.readCommand()).toStrictEqual({
           jsonrpc: '2.0',
           id: 5,
           result: 'SNAP 2 OK',
@@ -299,8 +334,7 @@ describe('BaseSnapExecutor', () => {
 
         jest.advanceTimersByTime(1000);
 
-        await rpcSetPromise;
-        expect(executor.readCommand()).toStrictEqual({
+        expect(await executor.readCommand()).toStrictEqual({
           jsonrpc: '2.0',
           id: 3,
           result: 'SNAP 1 OK',

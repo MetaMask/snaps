@@ -11,15 +11,21 @@ import {
   JsonRpcRequest,
 } from '../__GENERATED__/openrpc';
 import { isJsonRpcRequest } from '../__GENERATED__/openrpc.guard';
-import { rpcMethods, RpcMethodsMapping } from './rpcMethods';
-import { sortParamKeys } from './sortParams';
 import { createEndowments } from './endowments';
 import { rootRealmGlobal } from './globalObject';
+import { rpcMethods, RpcMethodsMapping } from './rpcMethods';
+import { sortParamKeys } from './sortParams';
 
 type SnapRpcHandler = (
   origin: string,
   request: JsonRpcRequest,
 ) => Promise<unknown>;
+
+type SnapData = {
+  rpcHandler?: SnapRpcHandler;
+  runningEvaluations: number;
+  idleTeardown: () => void;
+};
 
 const fallbackError = {
   code: errorCodes.rpc.internal,
@@ -27,7 +33,7 @@ const fallbackError = {
 };
 
 export class BaseSnapExecutor {
-  private snapRpcHandlers: Map<string, SnapRpcHandler>;
+  private snapData: Map<string, SnapData>;
 
   private commandStream: Duplex;
 
@@ -39,10 +45,8 @@ export class BaseSnapExecutor {
 
   private snapPromiseErrorHandler?: (event: PromiseRejectionEvent) => void;
 
-  private endowmentTeardown?: () => void;
-
   protected constructor(commandStream: Duplex, rpcStream: Duplex) {
-    this.snapRpcHandlers = new Map();
+    this.snapData = new Map();
     this.commandStream = commandStream;
     this.commandStream.on('data', this.onCommandRequest.bind(this));
     this.rpcStream = rpcStream;
@@ -50,13 +54,14 @@ export class BaseSnapExecutor {
     this.methods = rpcMethods(
       this.startSnap.bind(this),
       (target, origin, request) => {
-        const handler = this.snapRpcHandlers.get(target);
-        if (!handler) {
+        const data = this.snapData.get(target);
+        if (data?.rpcHandler === undefined) {
           throw new Error(`No RPC handler registered for snap "${target}`);
         }
-        return handler(origin, request);
+        return this.executeInSnapContext(target, () =>
+          data.rpcHandler?.(origin, request),
+        );
       },
-      this.onTerminate.bind(this),
     );
   }
 
@@ -151,7 +156,7 @@ export class BaseSnapExecutor {
    * @param {string} sourceCode - The source code of the snap, in IIFE format.
    * @param {Array} endowments - An array of the names of the endowments.
    */
-  protected startSnap(
+  protected async startSnap(
     snapName: string,
     sourceCode: string,
     _endowments?: Endowments,
@@ -184,14 +189,21 @@ export class BaseSnapExecutor {
         _endowments,
       );
 
-      this.endowmentTeardown = endowmentTeardown;
+      // !!! Ensure that this is the only place the data is being set. Other places load referenced object and change it's properties
+      this.snapData.set(snapName, {
+        idleTeardown: endowmentTeardown,
+        runningEvaluations: 0,
+      });
 
       const compartment = new Compartment({
         ...endowments,
         window: { ...endowments },
         self: { ...endowments },
       });
-      compartment.evaluate(sourceCode);
+
+      await this.executeInSnapContext(snapName, () =>
+        compartment.evaluate(sourceCode),
+      );
 
       rootRealmGlobal.addEventListener(
         'unhandledrejection',
@@ -206,12 +218,6 @@ export class BaseSnapExecutor {
     }
   }
 
-  protected onTerminate() {
-    if (this.endowmentTeardown) {
-      this.endowmentTeardown();
-    }
-  }
-
   /**
    * Sets up the given snap's RPC message handler, creates a hardened
    * snap provider object (i.e. globalThis.wallet), and returns it.
@@ -223,10 +229,15 @@ export class BaseSnapExecutor {
 
     snapProvider.registerRpcMessageHandler = (func: SnapRpcHandler) => {
       console.log('Worker: Registering RPC message handler', func);
-      if (this.snapRpcHandlers.has(snapName)) {
+      const data = this.snapData.get(snapName);
+      if (data === undefined) {
+        throw new Error('Tried to register a handler for already removed snap');
+      }
+
+      if (data?.rpcHandler !== undefined) {
         throw new Error('RPC handler already registered.');
       }
-      this.snapRpcHandlers.set(snapName, func);
+      data.rpcHandler = func;
     };
 
     // TODO: harden throws an error. Why?
@@ -239,6 +250,29 @@ export class BaseSnapExecutor {
    * - Deletes the snap's RPC handler, if any
    */
   private removeSnap(snapName: string): void {
-    this.snapRpcHandlers.delete(snapName);
+    this.snapData.delete(snapName);
+  }
+
+  private async executeInSnapContext<T>(
+    snapName: string,
+    exec: () => Promise<T> | T,
+  ): Promise<T> {
+    const data = this.snapData.get(snapName);
+    if (data === undefined) {
+      throw new Error(
+        `Tried to execute in context of non-existent snap "${snapName}"`,
+      );
+    }
+
+    try {
+      data.runningEvaluations += 1;
+
+      return await exec();
+    } finally {
+      data.runningEvaluations -= 1;
+      if (data.runningEvaluations === 0) {
+        data.idleTeardown();
+      }
+    }
   }
 }
