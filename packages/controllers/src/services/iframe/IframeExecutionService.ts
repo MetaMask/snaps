@@ -133,10 +133,11 @@ export class IframeExecutionService extends AbstractExecutionService<EnvMetadata
           resolve(iframe.contentWindow);
         }
       });
-      document.body.appendChild(iframe);
+      // Set attributes before adding the iframe to the DOM to trigger 'load' event once everything has been loaded.
       iframe.setAttribute('src', uri);
       iframe.setAttribute('id', jobId);
       iframe.setAttribute('sandbox', 'allow-scripts');
+      document.body.appendChild(iframe);
     });
   }
 }
