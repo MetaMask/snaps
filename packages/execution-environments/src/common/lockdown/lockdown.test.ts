@@ -1,4 +1,6 @@
 import { executeLockdown } from './lockdown';
+// eslint-disable-next-line import/no-unassigned-import
+import 'ses';
 
 describe('executeLockdown', () => {
   // cleanup

@@ -1,6 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
 /// <reference path="../../../../node_modules/ses/index.d.ts" />
-// eslint-disable-next-line import/no-unassigned-import
 import { Duplex } from 'stream';
 import { MetaMaskInpageProvider } from '@metamask/providers';
 import { SnapProvider } from '@metamask/snap-types';

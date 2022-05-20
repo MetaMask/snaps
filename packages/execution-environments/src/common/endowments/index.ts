@@ -90,9 +90,8 @@ export function createEndowments(
     },
   );
 
-  function teardown() {
+  const teardown = () =>
     result.teardowns.forEach((teardownFunction) => teardownFunction());
-  }
   return { endowments: result.allEndowments, teardown };
 }
 
