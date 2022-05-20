@@ -28,6 +28,24 @@ describe('Endowment utils', () => {
       expect(endowments.endowments.Date).toBe(Date);
     });
 
+    it('handles special cases where endowment is a function but not a constructor', () => {
+      const mockWallet = { foo: Symbol('bar') };
+      const modifiedDate = { ...Date };
+      modifiedDate.prototype.constructor.name = {};
+      const endowments = createEndowments(mockWallet as any, ['Math', 'Date']);
+
+      expect(endowments).toStrictEqual({
+        endowments: {
+          wallet: mockWallet,
+          Math,
+          Date,
+        },
+        teardown: expect.any(Function),
+      });
+      expect(endowments.endowments.Math).toBe(Math);
+      expect(endowments.endowments.Date).toBe(Date);
+    });
+
     it('handles factory endowments', () => {
       const mockWallet = { foo: Symbol('bar') };
       const endowments = createEndowments(mockWallet as any, ['WebAssembly']);

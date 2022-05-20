@@ -1,0 +1,23 @@
+{
+  "version": "0.0.0",
+  "description": "An example Snap built using TypeScript and Rollup",
+  "proposedName": "rollup-snap",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps-skunkworks.git"
+  },
+  "source": {
+    "shasum": "onBqHQYwRcMLpIIRE4iW7FbkAFjtLrCC1EHXowSt5vE=",
+    "location": {
+      "npm": {
+        "filePath": "dist/snap.js",
+        "packageName": "rollup-snap",
+        "registry": "https://registry.npmjs.org"
+      }
+    }
+  },
+  "initialPermissions": {
+    "snap_notify": {}
+  },
+  "manifestVersion": "0.1"
+}

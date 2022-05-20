@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.14.0]
+### Changed
+- **BREAKING:** Increase TypeScript compilation target to ES2020 ([#449](https://github.com/MetaMask/snaps-skunkworks/pull/449))
+  - This should not be breaking for consumers on any non-deprecated browser or Node.js version.
+
+## [0.13.0]
+### Added
+- Add long-running endowment permission ([#386](https://github.com/MetaMask/snaps-skunkworks/pull/386))
+- Add `network-access` endowment from `controllers` ([#439](https://github.com/MetaMask/snaps-skunkworks/pull/439))
+
+### Changed
+- **BREAKING:** Rename SnapController constructor argument ([#435](https://github.com/MetaMask/snaps-skunkworks/pull/435))
+
 ## [0.12.0]
 ### Added
 - Add support for endowment teardown ([#407](https://github.com/MetaMask/snaps-skunkworks/pull/407))
@@ -257,7 +270,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.12.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.14.0...HEAD
+[0.14.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.13.0...v0.14.0
+[0.13.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.11.1...v0.12.0
 [0.11.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.11.0...v0.11.1
 [0.11.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.10.7...v0.11.0

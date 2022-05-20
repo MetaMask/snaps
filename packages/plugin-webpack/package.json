@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-webpack-plugin",
-  "version": "0.12.0",
+  "version": "0.14.0",
   "keywords": [
     "webpack",
     "plugin"
@@ -14,7 +14,7 @@
     "dist/"
   ],
   "scripts": {
-    "test": "jest",
+    "test": "jest && yarn posttest",
     "posttest": "jest-it-up",
     "test:ci": "yarn test",
     "lint:eslint": "eslint . --cache --ext js,ts",
@@ -22,28 +22,26 @@
     "lint": "yarn lint:eslint && yarn lint:misc --check",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "yarn auto-changelog validate",
-    "build:tsc": "tsc --project tsconfig.build.json",
+    "build:tsc": "tsc --project tsconfig.local.json",
     "build": "yarn build:tsc",
-    "build:pre-tsc": "echo 'N/A'",
-    "build:post-tsc": "echo 'N/A'",
     "build:clean": "yarn clean && yarn build",
-    "clean": "rimraf dist/*",
+    "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
     "publish": "../../scripts/publish-package.sh"
   },
   "dependencies": {
-    "@metamask/snap-utils": "^0.12.0",
+    "@metamask/snap-utils": "^0.14.0",
     "webpack-sources": "^3.2.3"
   },
   "devDependencies": {
+    "@metamask/auto-changelog": "^2.6.0",
     "@types/jest": "^27.4.1",
-    "@types/webpack": "^5.28.0",
     "@types/webpack-sources": "^3.2.0",
     "jest": "^27.5.1",
     "jest-it-up": "^2.0.0",
     "memfs": "^3.4.1",
     "ts-jest": "^27.1.4",
     "typescript": "^4.4.0",
-    "webpack": "^5.72.0"
+    "webpack": "^5.72.1"
   },
   "engines": {
     "node": ">=14.0.0"

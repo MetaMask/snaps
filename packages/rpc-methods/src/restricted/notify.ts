@@ -4,20 +4,20 @@ import {
   RestrictedMethodOptions,
   ValidPermissionSpecification,
 } from '@metamask/controllers';
-import { NonEmptyArray } from '@metamask/snap-controllers';
+import { NonEmptyArray, isObject } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
-import { isPlainObject } from '../utils';
 
 const methodName = 'snap_notify';
 
 // Move all the types to a shared place when implementing more notifications
 export enum NotificationType {
   native = 'native',
+  inApp = 'inApp',
 }
 
 export type NotificationArgs = {
   /**
-   * Enum type to determine notification type. Currently only supports 'native'.
+   * Enum type to determine notification type.
    */
   type: NotificationType;
 
@@ -32,7 +32,19 @@ export type NotifyMethodHooks = {
    * @param snapId - The ID of the Snap that created the notification.
    * @param args - The notification arguments.
    */
-  showNotification: (snapId: string, args: NotificationArgs) => Promise<null>;
+  showNativeNotification: (
+    snapId: string,
+    args: NotificationArgs,
+  ) => Promise<null>;
+
+  /**
+   * @param snapId - The ID of the Snap that created the notification.
+   * @param args - The notification arguments.
+   */
+  showInAppNotification: (
+    snapId: string,
+    args: NotificationArgs,
+  ) => Promise<null>;
 };
 
 type SpecificationBuilderOptions = {
@@ -64,11 +76,15 @@ export const notifyBuilder = Object.freeze({
   targetKey: methodName,
   specificationBuilder,
   methodHooks: {
-    showNotification: true,
+    showNativeNotification: true,
+    showInAppNotification: true,
   },
 } as const);
 
-function getImplementation({ showNotification }: NotifyMethodHooks) {
+function getImplementation({
+  showNativeNotification,
+  showInAppNotification,
+}: NotifyMethodHooks) {
   return async function implementation(
     args: RestrictedMethodOptions<[NotificationArgs]>,
   ): Promise<null> {
@@ -79,7 +95,16 @@ function getImplementation({ showNotification }: NotifyMethodHooks) {
 
     const validatedParams = getValidatedParams(params);
 
-    return await showNotification(origin, validatedParams);
+    switch (validatedParams.type) {
+      case NotificationType.native:
+        return await showNativeNotification(origin, validatedParams);
+      case NotificationType.inApp:
+        return await showInAppNotification(origin, validatedParams);
+      default:
+        throw ethErrors.rpc.invalidParams({
+          message: 'Must specify a valid notification "type".',
+        });
+    }
   };
 }
 
@@ -91,7 +116,7 @@ function getImplementation({ showNotification }: NotifyMethodHooks) {
  * @returns The validated method parameter object.
  */
 function getValidatedParams(params: unknown): NotificationArgs {
-  if (!Array.isArray(params) || !isPlainObject(params[0])) {
+  if (!Array.isArray(params) || !isObject(params[0])) {
     throw ethErrors.rpc.invalidParams({
       message: 'Expected array params with single object.',
     });

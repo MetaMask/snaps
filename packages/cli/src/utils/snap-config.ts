@@ -1,4 +1,5 @@
 import path from 'path';
+import { hasProperty } from '@metamask/utils';
 import type browserify from 'browserify';
 import { Arguments } from 'yargs';
 import yargsParse from 'yargs-parser';
@@ -88,15 +89,12 @@ export function applyConfig(
   const commandOptions = new Set(Object.keys(options));
 
   const shouldSetArg = (key: string): boolean => {
-    return (
-      commandOptions.has(key) &&
-      !Object.prototype.hasOwnProperty.call(parsedProcessArgv, key)
-    );
+    return commandOptions.has(key) && !hasProperty(parsedProcessArgv, key);
   };
 
   const cfg: Record<string, unknown> = snapConfig.cliOptions || {};
   for (const key of Object.keys(cfg)) {
-    if (Object.hasOwnProperty.call(builders, key)) {
+    if (hasProperty(builders, key)) {
       if (shouldSetArg(key)) {
         yargsArgv[key] = cfg[key];
       }

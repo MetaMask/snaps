@@ -18,13 +18,11 @@
     "build:website": "node ./scripts/build-website.js",
     "build": "mm-snap build",
     "serve": "mm-snap serve",
-    "clean": "rimraf dist/*",
-    "test": "echo 'TODO'",
+    "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path .gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
-    "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
-    "lint:changelog": "yarn auto-changelog validate"
+    "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write"
   },
   "engines": {
     "node": ">=14.0.0"

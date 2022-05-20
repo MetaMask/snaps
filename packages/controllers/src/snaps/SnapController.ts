@@ -21,10 +21,17 @@ import {
   SnapData,
   SnapId,
 } from '@metamask/snap-types';
+import {
+  Duration,
+  hasProperty,
+  inMilliseconds,
+  isNonEmptyArray,
+  Json,
+  timeSince,
+} from '@metamask/utils';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import type { Patch } from 'immer';
-import { Json } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
 import { gt as gtSemver, satisfies as satisfiesSemver } from 'semver';
 import { assertExhaustive } from '..';
@@ -34,9 +41,10 @@ import {
   TerminateAll,
   TerminateSnap,
 } from '../services/ExecutionService';
-import { isNonEmptyArray, setDiff, timeSince } from '../utils';
+import { setDiff } from '../utils';
 import { DEFAULT_ENDOWMENTS } from './default-endowments';
 import { SnapManifest, validateSnapJsonFile } from './json-schemas';
+import { LONG_RUNNING_PERMISSION } from './endowments';
 import { RequestQueue } from './RequestQueue';
 import {
   DEFAULT_REQUESTED_SNAP_VERSION,
@@ -585,9 +593,9 @@ export class SnapController extends BaseController<
     terminateSnap,
     environmentEndowmentPermissions = [],
     npmRegistryUrl,
-    idleTimeCheckInterval = 5000,
-    maxIdleTime = 30000,
-    maxRequestTime = 60000,
+    idleTimeCheckInterval = inMilliseconds(5, Duration.Second),
+    maxIdleTime = inMilliseconds(30, Duration.Second),
+    maxRequestTime = inMilliseconds(60, Duration.Second),
     fetchFunction = globalThis.fetch.bind(globalThis),
     featureFlags = {},
   }: SnapControllerArgs) {
@@ -1391,6 +1399,7 @@ export class SnapController extends BaseController<
 
     try {
       const result = await this._executeWithTimeout(
+        snapId,
         this._executeSnap({
           ...snapData,
           endowments: await this._getEndowments(snapId),
@@ -1787,7 +1796,7 @@ export class SnapController extends BaseController<
       }
 
       let _request = request;
-      if (!Object.hasOwnProperty.call(request, 'jsonrpc')) {
+      if (!hasProperty(request, 'jsonrpc')) {
         _request = { ...request, jsonrpc: '2.0' };
       } else if (request.jsonrpc !== '2.0') {
         throw ethErrors.rpc.invalidRequest({
@@ -1801,6 +1810,7 @@ export class SnapController extends BaseController<
       // This will either get the result or reject due to the timeout.
       try {
         const result = await this._executeWithTimeout(
+          snapId,
           handler(origin, _request),
         );
         this._recordSnapRpcRequestFinish(snapId);
@@ -1823,7 +1833,18 @@ export class SnapController extends BaseController<
    * @param promise - The promise to await.
    * @returns The result of the promise or rejects if the promise times out.
    */
-  private async _executeWithTimeout(promise: Promise<unknown>) {
+  private async _executeWithTimeout(snapId: SnapId, promise: Promise<unknown>) {
+    const isLongRunning = this.messagingSystem.call(
+      'PermissionController:hasPermission',
+      snapId,
+      LONG_RUNNING_PERMISSION,
+    );
+
+    // Long running snaps have timeouts disabled
+    if (isLongRunning) {
+      return promise;
+    }
+
     // Handle max request time
     let timeout: number | undefined;
 
