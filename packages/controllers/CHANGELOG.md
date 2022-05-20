@@ -7,9 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.15.0]
-### Changed
-- Use @metamask/utils ([#460](https://github.com/MetaMask/snaps-skunkworks/pull/460))
-
 ### Fixed
 - Fix an issue with detecting iframe execution environment load ([#464](https://github.com/MetaMask/snaps-skunkworks/pull/464))
 
