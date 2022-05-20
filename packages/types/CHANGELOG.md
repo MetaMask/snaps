@@ -7,10 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.15.0]
-### Uncategorized
-- Update @metamask/auto-changelog to 2.6.0 ([#470](https://github.com/MetaMask/snaps-skunkworks/pull/470))
-- Upgrade Yarn to v3 ([#463](https://github.com/MetaMask/snaps-skunkworks/pull/463))
-- Support building TypeScript Snaps ([#443](https://github.com/MetaMask/snaps-skunkworks/pull/443))
+### Added
+- Add type for `wallet` global ([#443](https://github.com/MetaMask/snaps-skunkworks/pull/443))
 
 ## [0.14.0]
 ### Changed

@@ -7,14 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.15.0]
-### Uncategorized
+### Changed
+- `WebAssembly` is now exposed fully ([#459](https://github.com/MetaMask/snaps-skunkworks/pull/459))
+
+### Fixed
 - Fix interval handle leak ([#485](https://github.com/MetaMask/snaps-skunkworks/pull/485))
 - Fix timer handle leak ([#483](https://github.com/MetaMask/snaps-skunkworks/pull/483))
-- Update @metamask/auto-changelog to 2.6.0 ([#470](https://github.com/MetaMask/snaps-skunkworks/pull/470))
-- Use @metamask/utils ([#460](https://github.com/MetaMask/snaps-skunkworks/pull/460))
-- Fix yarn clean / build:clean not working on yarn 3 ([#469](https://github.com/MetaMask/snaps-skunkworks/pull/469))
-- Fix `jest-it-up` after Yarn 3 upgrade ([#467](https://github.com/MetaMask/snaps-skunkworks/pull/467))
-- Remove WASM endowment factory ([#459](https://github.com/MetaMask/snaps-skunkworks/pull/459))
 
 ## [0.14.0]
 ### Changed

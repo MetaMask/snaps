@@ -7,12 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.15.0]
-### Uncategorized
-- Update @metamask/auto-changelog to 2.6.0 ([#470](https://github.com/MetaMask/snaps-skunkworks/pull/470))
-- Fix yarn clean / build:clean not working on yarn 3 ([#469](https://github.com/MetaMask/snaps-skunkworks/pull/469))
-- @chainsafe/strip-comments@1.0.7 ([#468](https://github.com/MetaMask/snaps-skunkworks/pull/468))
-- Fix `jest-it-up` after Yarn 3 upgrade ([#467](https://github.com/MetaMask/snaps-skunkworks/pull/467))
-- Upgrade Yarn to v3 ([#463](https://github.com/MetaMask/snaps-skunkworks/pull/463))
+### Fixed
+- Fix an issue where comment stripping would break for large files ([#468](https://github.com/MetaMask/snaps-skunkworks/pull/468))
 
 ## [0.14.0]
 ### Changed
