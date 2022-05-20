@@ -26,7 +26,7 @@ type EvaluationData = {
 };
 
 type SnapData = {
-  exports?: { onMessage?: SnapRpcHandler };
+  exports: { onMessage?: SnapRpcHandler };
   runningEvaluations: Set<EvaluationData>;
   idleTeardown: () => void;
 };
@@ -189,7 +189,7 @@ export class BaseSnapExecutor {
     };
 
     const wallet = this.createSnapProvider();
-    // We specifically use any because the Snap can modify the object any way they want
+    // We specifically use any type because the Snap can modify the object any way they want
     const snapModule: any = { exports: {} };
 
     try {
@@ -203,6 +203,7 @@ export class BaseSnapExecutor {
       this.snapData.set(snapName, {
         idleTeardown: endowmentTeardown,
         runningEvaluations: new Set(),
+        exports: {},
       });
 
       rootRealmGlobal.addEventListener(
@@ -219,10 +220,10 @@ export class BaseSnapExecutor {
         self: { ...endowments },
       });
 
-      await this.executeInSnapContext(snapName, () =>
-        compartment.evaluate(sourceCode),
-      );
-      this.registerSnapExports(snapName, snapModule);
+      await this.executeInSnapContext(snapName, () => {
+        compartment.evaluate(sourceCode);
+        this.registerSnapExports(snapName, snapModule);
+      });
     } catch (err) {
       this.removeSnap(snapName);
       throw new Error(
@@ -245,16 +246,19 @@ export class BaseSnapExecutor {
     this.snapData.clear();
   }
 
-  private registerSnapExports(snapName: string, module: any) {
-    if (typeof module.exports?.onMessage === 'function') {
+  private registerSnapExports(snapName: string, snapModule: any) {
+    if (typeof snapModule?.exports?.onMessage === 'function') {
       const data = this.snapData.get(snapName);
       // Somebody deleted the Snap before we could register
       if (data !== undefined) {
         console.log(
           'Worker: Registering RPC message handler',
-          module.exports.onMessage,
+          snapModule.exports.onMessage,
         );
-        data.exports = { ...data.exports, onMessage: module.exports.onMessage };
+        data.exports = {
+          ...data.exports,
+          onMessage: snapModule.exports.onMessage,
+        };
       }
     }
   }

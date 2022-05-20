@@ -18,7 +18,7 @@ if (parentPort !== null) {
   parentPort.on('message', (message: { snapFilePath: string }) => {
     const { snapFilePath } = message;
 
-    const snapModule: any = { exports: {} };
+    const snapModule: { exports?: any } = { exports: {} };
 
     new Compartment({
       ...getMockEndowments(),
