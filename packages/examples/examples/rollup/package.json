@@ -22,9 +22,9 @@
   "devDependencies": {
     "@babel/core": "^7.17.12",
     "@babel/preset-typescript": "^7.17.12",
-    "@metamask/rollup-plugin-snaps": "^0.14.0",
-    "@metamask/snap-types": "^0.14.0",
-    "@metamask/snaps-cli": "^0.14.0",
+    "@metamask/rollup-plugin-snaps": "^0.15.0",
+    "@metamask/snap-types": "^0.15.0",
+    "@metamask/snaps-cli": "^0.15.0",
     "@rollup/plugin-babel": "^5.3.1",
     "@types/node": "^17.0.33",
     "concurrently": "^7.1.0",
