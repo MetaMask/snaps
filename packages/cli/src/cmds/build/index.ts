@@ -20,6 +20,7 @@ export = {
       .option('depsToTranspile', builders.depsToTranspile)
       .option('transformHtmlComments', builders.transformHtmlComments)
       .option('writeManifest', builders.writeManifest)
+      .option('passPlugin', builders.passPlugin)
       .implies('writeManifest', 'manifest')
       .implies('depsToTranspile', 'transpilationMode')
       .middleware((argv) => processInvalidTranspilation(argv as any));
