@@ -7,13 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.15.0]
-### Uncategorized
-- Remove strip-comments as a direct dependency of the CLI ([#488](https://github.com/MetaMask/snaps-skunkworks/pull/488))
-- Update @metamask/auto-changelog to 2.6.0 ([#470](https://github.com/MetaMask/snaps-skunkworks/pull/470))
-- Use @metamask/utils ([#460](https://github.com/MetaMask/snaps-skunkworks/pull/460))
-- Fix yarn clean / build:clean not working on yarn 3 ([#469](https://github.com/MetaMask/snaps-skunkworks/pull/469))
-- @chainsafe/strip-comments@1.0.7 ([#468](https://github.com/MetaMask/snaps-skunkworks/pull/468))
-- Support building TypeScript Snaps ([#443](https://github.com/MetaMask/snaps-skunkworks/pull/443))
+### Added
+- Add support for building TypeScript Snaps ([#443](https://github.com/MetaMask/snaps-skunkworks/pull/443))
+
+### Fixed
+- Fix an issue where comment stripping would break for large files ([#468](https://github.com/MetaMask/snaps-skunkworks/pull/468))
 
 ## [0.14.0]
 ### Changed

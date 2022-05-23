@@ -7,13 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.15.0]
-### Uncategorized
-- Fix issue with detecting iframe load ([#464](https://github.com/MetaMask/snaps-skunkworks/pull/464))
-- Update @metamask/auto-changelog to 2.6.0 ([#470](https://github.com/MetaMask/snaps-skunkworks/pull/470))
-- Use @metamask/utils ([#460](https://github.com/MetaMask/snaps-skunkworks/pull/460))
-- Fix yarn clean / build:clean not working on yarn 3 ([#469](https://github.com/MetaMask/snaps-skunkworks/pull/469))
-- Fix `jest-it-up` after Yarn 3 upgrade ([#467](https://github.com/MetaMask/snaps-skunkworks/pull/467))
-- Upgrade Yarn to v3 ([#463](https://github.com/MetaMask/snaps-skunkworks/pull/463))
+### Fixed
+- Fix an issue with detecting iframe execution environment load ([#464](https://github.com/MetaMask/snaps-skunkworks/pull/464))
 
 ## [0.14.0]
 ### Changed

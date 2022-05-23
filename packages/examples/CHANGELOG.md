@@ -7,14 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.15.0]
-### Uncategorized
+### Added
 - Add Rollup Snap example ([#472](https://github.com/MetaMask/snaps-skunkworks/pull/472))
-- Update @metamask/auto-changelog to 2.6.0 ([#470](https://github.com/MetaMask/snaps-skunkworks/pull/470))
 - Add Webpack Snap example ([#462](https://github.com/MetaMask/snaps-skunkworks/pull/462))
-- Fix yarn clean / build:clean not working on yarn 3 ([#469](https://github.com/MetaMask/snaps-skunkworks/pull/469))
-- @chainsafe/strip-comments@1.0.7 ([#468](https://github.com/MetaMask/snaps-skunkworks/pull/468))
-- Upgrade Yarn to v3 ([#463](https://github.com/MetaMask/snaps-skunkworks/pull/463))
-- Support building TypeScript Snaps ([#443](https://github.com/MetaMask/snaps-skunkworks/pull/443))
+- Add TypeScript Snap example ([#443](https://github.com/MetaMask/snaps-skunkworks/pull/443))
 
 ## [0.14.0]
 ### Changed

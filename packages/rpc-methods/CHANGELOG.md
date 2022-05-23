@@ -7,11 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.15.0]
-### Uncategorized
-- Update @metamask/auto-changelog to 2.6.0 ([#470](https://github.com/MetaMask/snaps-skunkworks/pull/470))
-- Use @metamask/utils ([#460](https://github.com/MetaMask/snaps-skunkworks/pull/460))
-- Fix yarn clean / build:clean not working on yarn 3 ([#469](https://github.com/MetaMask/snaps-skunkworks/pull/469))
-- Upgrade Yarn to v3 ([#463](https://github.com/MetaMask/snaps-skunkworks/pull/463))
+### Changed
+- No changes this release.
 
 ## [0.14.0]
 ### Changed
