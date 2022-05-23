@@ -7,10 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.15.0]
-### Changed
-- `WebAssembly` is now exposed fully ([#459](https://github.com/MetaMask/snaps-skunkworks/pull/459))
-
 ### Fixed
+- Added missing properties to `WebAssembly` global ([#459](https://github.com/MetaMask/snaps-skunkworks/pull/459))
 - Fix interval handle leak ([#485](https://github.com/MetaMask/snaps-skunkworks/pull/485))
 - Fix timer handle leak ([#483](https://github.com/MetaMask/snaps-skunkworks/pull/483))
 
