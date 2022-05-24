@@ -58,10 +58,10 @@ export class BaseSnapExecutor {
         if (data?.rpcHandler === undefined) {
           throw new Error(`No RPC handler registered for snap "${target}`);
         }
+        // We're capturing the handler in case someone modifies the data object before the call
+        const handler = data.rpcHandler;
         return this.executeInSnapContext(target, () =>
-          // We just confirmed the presence of this property.
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          data.rpcHandler!(origin, request),
+          handler(origin, request),
         );
       },
     );
@@ -280,6 +280,9 @@ export class BaseSnapExecutor {
 
     try {
       data.runningEvaluations += 1;
+      // Notice that we have to await this executor.
+      // If we didn't, we would decrease the amount of running evalauations
+      // before the promise actually resolves
       return await executor();
     } finally {
       data.runningEvaluations -= 1;
