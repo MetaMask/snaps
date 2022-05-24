@@ -1320,11 +1320,12 @@ describe('SnapController', () => {
     });
 
     it('handlers will throw if there are too many pending requests before a snap has started', async () => {
+      const messenger = getSnapControllerMessenger();
       const fakeSnap = getSnapObject({ status: SnapStatus.stopped });
       const snapId = fakeSnap.id;
-      const mockGetRpcRequestHandler = jest.fn();
       const snapController = getSnapController(
         getSnapControllerOptions({
+          messenger,
           state: {
             snaps: {
               [snapId]: fakeSnap,
@@ -1338,9 +1339,15 @@ describe('SnapController', () => {
         resolveExecutePromise = res;
       });
 
-      jest
-        .spyOn(snapController as any, '_executeSnap')
-        .mockImplementation((() => deferredExecutePromise) as any);
+      jest.spyOn(messenger, 'call').mockImplementation((method) => {
+        if (method === 'ExecutionService:executeSnap') {
+          return deferredExecutePromise;
+        } else if (method === 'ExecutionService:getRpcMessageHandler') {
+          // eslint-disable-next-line consistent-return
+          return;
+        }
+        return true;
+      });
 
       // Fill up the request queue
       const finishPromise = Promise.all([
@@ -1377,8 +1384,14 @@ describe('SnapController', () => {
 
       // Before processing the pending requests,
       // we need an rpc message handler function to be returned
-      const mockRpcRequestHandler = async () => undefined;
-      mockGetRpcRequestHandler.mockReturnValue(mockRpcRequestHandler);
+      jest.spyOn(messenger, 'call').mockImplementation((method) => {
+        if (method === 'ExecutionService:executeSnap') {
+          return deferredExecutePromise;
+        } else if (method === 'ExecutionService:getRpcMessageHandler') {
+          return (async () => undefined) as any;
+        }
+        return true;
+      });
 
       // Resolve the promise that the pending requests are waiting for and wait for them to finish
       resolveExecutePromise();
