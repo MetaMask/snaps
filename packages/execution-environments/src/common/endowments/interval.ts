@@ -9,7 +9,7 @@
  * functions.
  */
 const createInterval = () => {
-  const registeredIntervals = new Set<unknown>();
+  const registeredHandles = new Map<unknown, unknown>();
 
   const _setInterval = (handler: TimerHandler, timeout?: number): unknown => {
     if (typeof handler !== 'function') {
@@ -17,22 +17,23 @@ const createInterval = () => {
         `The interval handler must be a function. Received: ${typeof handler}`,
       );
     }
-
-    const handle = setInterval(handler, timeout);
-    registeredIntervals.add(handle);
+    const handle = Object.freeze({});
+    const platformHandle = setInterval(handler, timeout);
+    registeredHandles.set(handle, platformHandle);
     return handle;
   };
 
   const _clearInterval = (handle: unknown): void => {
-    if (registeredIntervals.has(handle)) {
-      clearInterval(handle as any);
-      registeredIntervals.delete(handle);
+    const platformHandle = registeredHandles.get(handle);
+    if (platformHandle !== undefined) {
+      clearInterval(platformHandle as any);
+      registeredHandles.delete(handle);
     }
   };
 
   const teardownFunction = (): void => {
-    for (const timeout of registeredIntervals) {
-      _clearInterval(timeout);
+    for (const handle of registeredHandles.keys()) {
+      _clearInterval(handle);
     }
   };
 
