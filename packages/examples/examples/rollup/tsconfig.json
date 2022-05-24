@@ -2,7 +2,8 @@
   "extends": "../../../../tsconfig.packages.json",
   "compilerOptions": {
     "composite": false,
-    "declaration": false
+    "declaration": false,
+    "typeRoots": ["../../../../node_modules/@types"]
   },
   "files": ["../../../types/global.d.ts"],
   "include": ["src"]
