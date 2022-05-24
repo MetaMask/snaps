@@ -9,18 +9,20 @@ import { stop as stopServer, start as startServer } from './testHelpers/server';
 const iframeUrl = new URL('http://localhost:6363');
 
 describe('IframeExecutionService', () => {
-  // The tests start running before the server is ready if we dont use the done callback.
+  // The tests start running before the server is ready if we don't use the done callback.
   // eslint-disable-next-line jest/no-done-callback
-  beforeAll((async (done: any) => {
-    await startServer();
-    done();
-  }) as any);
+  beforeAll((done) => {
+    startServer()
+      .then(done)
+      .catch((error) => done.fail(error));
+  });
 
   // eslint-disable-next-line jest/no-done-callback
-  afterAll((async (done: any) => {
-    await stopServer();
-    done();
-  }) as any);
+  afterAll((done) => {
+    stopServer()
+      .then(done)
+      .catch((error) => done.fail(error));
+  });
 
   it('can boot', async () => {
     const controllerMessenger = new ControllerMessenger<
