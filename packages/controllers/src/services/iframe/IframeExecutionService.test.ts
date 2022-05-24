@@ -12,16 +12,12 @@ describe('IframeExecutionService', () => {
   // The tests start running before the server is ready if we don't use the done callback.
   // eslint-disable-next-line jest/no-done-callback
   beforeAll((done) => {
-    startServer()
-      .then(done)
-      .catch((error) => done.fail(error));
+    startServer().then(done).catch(done.fail);
   });
 
   // eslint-disable-next-line jest/no-done-callback
   afterAll((done) => {
-    stopServer()
-      .then(done)
-      .catch((error) => done.fail(error));
+    stopServer().then(done).catch(done.fail);
   });
 
   it('can boot', async () => {
