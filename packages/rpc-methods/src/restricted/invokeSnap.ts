@@ -13,7 +13,7 @@ const targetKey = `${methodPrefix}*` as const;
 
 export type InvokeSnapMethodHooks = {
   getSnap: SnapController['get'];
-  getSnapRpcHandler: SnapController['getRpcMessageHandler'];
+  handleSnapRpcMessage: SnapController['handleRpcMessage'];
 };
 
 type InvokeSnapSpecificationBuilderOptions = {
@@ -54,13 +54,13 @@ export const invokeSnapBuilder = Object.freeze({
   specificationBuilder,
   methodHooks: {
     getSnap: true,
-    getSnapRpcHandler: true,
+    handleSnapRpcMessage: true,
   },
 } as const);
 
 function getInvokeSnapImplementation({
   getSnap,
-  getSnapRpcHandler,
+  handleSnapRpcMessage,
 }: InvokeSnapMethodHooks) {
   return async function invokeSnap(
     options: RestrictedMethodOptions<[Record<string, Json>]>,
@@ -82,17 +82,14 @@ function getInvokeSnapImplementation({
       });
     }
 
-    const handler = await getSnapRpcHandler(snapIdString);
-    if (!handler) {
-      throw ethErrors.rpc.methodNotFound({
-        message: `Snap RPC message handler not found for snap "${snapIdString}".`,
-      });
-    }
-
     const fromSubject = context.origin;
 
-    // Handler is an async function that takes an snapOriginString string and a request object.
+    // handleSnapRpcMessage is an async function that takes the snap id, a snapOriginString string and a request object.
     // It should return the result it would like returned to the fromDomain as part of response.result
-    return (await handler(fromSubject, snapRpcRequest)) as Json;
+    return (await handleSnapRpcMessage(
+      snapIdString,
+      fromSubject,
+      snapRpcRequest,
+    )) as Json;
   };
 }

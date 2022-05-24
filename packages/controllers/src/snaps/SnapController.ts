@@ -169,8 +169,8 @@ export interface SnapRuntimeData {
    * RPC handler designated for the Snap
    */
   rpcHandler:
-    | null
-    | ((origin: string, request: Record<string, unknown>) => Promise<unknown>);
+  | null
+  | ((origin: string, request: Record<string, unknown>) => Promise<unknown>);
 }
 
 /**
@@ -241,11 +241,11 @@ export type GetSnap = {
 };
 
 /**
- * Gets the specified Snap's JSON-RPC message handler function.
+ * Handles sending an inbound rpc message to a snap and returns its result.
  */
-export type GetSnapRpcMessageHandler = {
-  type: `${typeof controllerName}:getRpcMessageHandler`;
-  handler: SnapController['getRpcMessageHandler'];
+export type HandleSnapRpcMessage = {
+  type: `${typeof controllerName}:handleRpcMessage`;
+  handler: SnapController['handleRpcMessage'];
 };
 
 /**
@@ -283,7 +283,7 @@ export type ClearSnapState = {
 export type SnapControllerActions =
   | AddSnap
   | GetSnap
-  | GetSnapRpcMessageHandler
+  | HandleSnapRpcMessage
   | GetSnapState
   | HasSnap
   | UpdateSnapState
@@ -690,8 +690,8 @@ export class SnapController extends BaseController<
     );
 
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:getRpcMessageHandler`,
-      (...args) => this.getRpcMessageHandler(...args),
+      `${controllerName}:handleRpcMessage`,
+      (...args) => this.handleRpcMessage(...args),
     );
 
     this.messagingSystem.registerActionHandler(
@@ -924,14 +924,14 @@ export class SnapController extends BaseController<
 
     return snap
       ? (Object.keys(snap).reduce((serialized, key) => {
-          if (TRUNCATED_SNAP_PROPERTIES.has(key as any)) {
-            serialized[key as keyof TruncatedSnap] = snap[
-              key as keyof TruncatedSnap
-            ] as any;
-          }
+        if (TRUNCATED_SNAP_PROPERTIES.has(key as any)) {
+          serialized[key as keyof TruncatedSnap] = snap[
+            key as keyof TruncatedSnap
+          ] as any;
+        }
 
-          return serialized;
-        }, {} as Partial<TruncatedSnap>) as TruncatedSnap)
+        return serialized;
+      }, {} as Partial<TruncatedSnap>) as TruncatedSnap)
       : null;
   }
 
@@ -1696,11 +1696,11 @@ export class SnapController extends BaseController<
       ).text(),
       iconPath
         ? (
-            await this._fetchFunction(
-              new URL(iconPath, localhostUrl).toString(),
-              fetchOptions,
-            )
-          ).text()
+          await this._fetchFunction(
+            new URL(iconPath, localhostUrl).toString(),
+            fetchOptions,
+          )
+        ).text()
         : undefined,
     ]);
 
@@ -1764,12 +1764,24 @@ export class SnapController extends BaseController<
     );
   }
 
+  async handleRpcMessage(
+    snapId: SnapId,
+    origin: string,
+    request: Record<string, unknown>,
+  ): Promise<unknown> {
+    const handler = await this.getRpcMessageHandler(snapId);
+    if (!handler) {
+      throw new Error(`Snap RPC message handler not found for snap "${snapId}".`);
+    }
+    return handler(origin, request);
+  }
+
   /**
    * Gets the RPC message handler for the given snap.
    *
    * @param snapId - The id of the Snap whose message handler to get.
    */
-  async getRpcMessageHandler(
+  private async getRpcMessageHandler(
     snapId: SnapId,
   ): Promise<
     (origin: string, request: Record<string, unknown>) => Promise<unknown>
