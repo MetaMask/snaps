@@ -168,7 +168,6 @@ describe('BaseSnapExecutor', () => {
       jest.advanceTimersByTime(250);
 
       expect(consoleErrorSpy).not.toHaveBeenCalled();
-      consoleErrorSpy.mockRestore();
     });
 
     it("doesn't leak execution outside of expected timeshare during RPC calls", async () => {
@@ -220,7 +219,6 @@ describe('BaseSnapExecutor', () => {
       jest.advanceTimersByTime(250);
 
       expect(consoleErrorSpy).not.toHaveBeenCalled();
-      consoleErrorSpy.mockRestore();
     });
 
     it.each(['Timeout', 'Interval'])(
