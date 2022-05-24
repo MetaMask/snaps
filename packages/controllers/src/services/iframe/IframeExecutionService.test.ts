@@ -11,16 +11,16 @@ const iframeUrl = new URL('http://localhost:6363');
 describe('IframeExecutionService', () => {
   // The tests start running before the server is ready if we dont use the done callback.
   // eslint-disable-next-line jest/no-done-callback
-  beforeAll(async (done) => {
+  beforeAll((async (done: any) => {
     await startServer();
     done();
-  });
+  }) as any);
 
   // eslint-disable-next-line jest/no-done-callback
-  afterAll(async (done) => {
+  afterAll((async (done: any) => {
     await stopServer();
     done();
-  });
+  }) as any);
 
   it('can boot', async () => {
     const controllerMessenger = new ControllerMessenger<

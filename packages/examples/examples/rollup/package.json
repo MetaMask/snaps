@@ -22,16 +22,31 @@
   "devDependencies": {
     "@babel/core": "^7.17.12",
     "@babel/preset-typescript": "^7.17.12",
+    "@lavamoat/allow-scripts": "^2.0.3",
+    "@metamask/auto-changelog": "^2.6.0",
+    "@metamask/eslint-config": "^8.0.0",
+    "@metamask/eslint-config-jest": "^8.0.0",
+    "@metamask/eslint-config-nodejs": "^8.0.0",
+    "@metamask/eslint-config-typescript": "^8.0.0",
     "@metamask/rollup-plugin-snaps": "^0.15.0",
     "@metamask/snap-types": "^0.15.0",
     "@metamask/snaps-cli": "^0.15.0",
     "@rollup/plugin-babel": "^5.3.1",
     "@types/node": "^17.0.33",
     "concurrently": "^7.1.0",
+    "eslint": "^7.30.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-jest": "^24.4.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "prettier": "^2.3.2",
+    "prettier-plugin-packagejson": "^2.2.11",
+    "rimraf": "^3.0.2",
     "rollup": "^2.73.0",
     "rollup-plugin-execute": "^1.1.1",
     "tslib": "^2.4.0",
-    "typescript": "^4.6.4"
+    "typescript": "^4.4.0"
   },
   "engines": {
     "node": ">=14.0.0"
