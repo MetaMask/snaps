@@ -1,6 +1,6 @@
 # snaps-skunkworks
 
-Private monorepo for experimental snaps dependencies.
+Monorepo for experimental snaps dependencies.
 
 ## Contributing
 
