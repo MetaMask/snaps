@@ -41,7 +41,7 @@ import {
   TerminateAll,
   TerminateSnap,
 } from '../services/ExecutionService';
-import { hasTimeouted, setDiff, withTimeout } from '../utils';
+import { hasTimedOut, setDiff, withTimeout } from '../utils';
 import { DEFAULT_ENDOWMENTS } from './default-endowments';
 import { LONG_RUNNING_PERMISSION } from './endowments';
 import { SnapManifest, validateSnapJsonFile } from './json-schemas';
@@ -1832,11 +1832,12 @@ export class SnapController extends BaseController<
    * @param snapId - The snap id.
    * @param promise - The promise to await.
    * @returns The result of the promise or rejects if the promise times out.
+   * @template PromiseValue - The value of the Promise.
    */
-  private async _executeWithTimeout<T>(
+  private async _executeWithTimeout<PromiseValue>(
     snapId: SnapId,
-    promise: Promise<T>,
-  ): Promise<T> {
+    promise: Promise<PromiseValue>,
+  ): Promise<PromiseValue> {
     const isLongRunning = this.messagingSystem.call(
       'PermissionController:hasPermission',
       snapId,
@@ -1849,7 +1850,7 @@ export class SnapController extends BaseController<
     }
 
     const result = await withTimeout(promise, this._maxRequestTime);
-    if (result === hasTimeouted) {
+    if (result === hasTimedOut) {
       throw new Error('The request timed out.');
     }
     return result;

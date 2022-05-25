@@ -29,19 +29,21 @@ export function setDiff<
 }
 
 /**
- * A Promise that delays it's return for a given amount of milliseconds
- * @param ms Milliseconds to delay the execution for
- * @param result The result that you want to return from the promise after delay
- * @returns void if no result provided, result otherwise
+ * A Promise that delays it's return for a given amount of milliseconds.
+ *
+ * @param ms - Milliseconds to delay the execution for.
+ * @param result - The result to return from the Promise after delay.
+ * @returns void if no result provided, result otherwise.
+ * @template Result - The `result`.
  */
-export function delay<T = void>(
+export function delay<Result = void>(
   ms: number,
-  result?: T,
-): Promise<T> & { cancel: () => void } {
+  result?: Result,
+): Promise<Result> & { cancel: () => void } {
   let timeoutHandle: any;
   let rejectFunc: (reason: string) => void;
 
-  const promise: any = new Promise<T>((resolve: any, reject) => {
+  const promise: any = new Promise<Result>((resolve: any, reject) => {
     timeoutHandle = setTimeout(() => {
       timeoutHandle = undefined;
       result === undefined ? resolve() : resolve(result);
@@ -52,7 +54,7 @@ export function delay<T = void>(
   promise.cancel = () => {
     if (timeoutHandle !== undefined) {
       clearTimeout(timeoutHandle);
-      rejectFunc('delay has been canceled');
+      rejectFunc('The delay has been canceled.');
     }
   };
   return promise;
@@ -60,26 +62,31 @@ export function delay<T = void>(
 
 /*
  * We use a Symbol instead of rejecting the promise so that Errors thrown
- * by the main promise will propagate
+ * by the main promise will propagate.
  */
-export const hasTimeouted = Symbol(
+export const hasTimedOut = Symbol(
   'Used to check if the requested promise has timeout (see withTimeout)',
 );
+
 /**
- * Executes the given promise, if after ms milliseconds the promise doesn't
+ * Executes the given Promise, if after ms milliseconds the Promise doesn't
  * settle, we return earlier.
  *
- * **NOTE** We can't stop calculations inside the main promise, it'll still continute.
- *          It's just that the result is not going to be used anywhere
- * @param promise The promise that you want to execute
- * @param ms Amout of milliseconds to wait before finishing early
- * @returns T if promise returns correctly, hasTimeouted symbol if returning early
+ * **NOTE:** The given Promise is not cancelled or interrupted, and will continue
+ *          to execute uninterrupted. We will just discard its result if it does
+ *          not complete before the timeout.
+ *
+ * @param promise - The promise that you want to execute.
+ * @param ms - Amout of milliseconds to wait before finishing early.
+ * @returns The resolved `PromiseValue`, or the hasTimedOut symbol if
+ * returning early.
+ * @template PromiseValue - The value of the Promise.
  */
-export async function withTimeout<T = void>(
-  promise: Promise<T>,
+export async function withTimeout<PromisValue = void>(
+  promise: Promise<PromisValue>,
   ms: number,
-): Promise<T | typeof hasTimeouted> {
-  const delayPromise = delay(ms, hasTimeouted);
+): Promise<PromisValue | typeof hasTimedOut> {
+  const delayPromise = delay(ms, hasTimedOut);
   try {
     return await Promise.race([promise, delayPromise]);
   } finally {

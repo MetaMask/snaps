@@ -387,8 +387,8 @@ describe('BaseSnapExecutor', () => {
 
     expect(await executor.readCommand()).toStrictEqual({
       error: {
-        code: -32005,
-        message: `The Snap ${FAKE_SNAP_NAME} has been terminated during execution`,
+        code: -32603,
+        message: `The snap "${FAKE_SNAP_NAME}" has been terminated during execution.`,
         stack: expect.anything(),
       },
       id: 2,

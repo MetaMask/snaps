@@ -226,9 +226,14 @@ export class BaseSnapExecutor {
     }
   }
 
+  /**
+   * Cancels all running evaluations of all snaps and clears all snap data.
+   * **NOTE:** Should only be called in response to the `terminate` RPC command.
+   */
   protected onTerminate() {
-    // The teardown will also be called for each snap as soon
-    // as there are no more running evaluations for that snap
+    // `stop()` tears down snap endowments.
+    // Teardown will also be run for each snap as soon as there are
+    // no more running evaluations for that snap.
     this.snapData.forEach((data) =>
       data.runningEvaluations.forEach((evaluation) => evaluation.stop()),
     );
@@ -296,13 +301,16 @@ export class BaseSnapExecutor {
       (_, reject) =>
         (stop = () =>
           reject(
-            ethErrors.rpc.limitExceeded(
-              `The Snap ${snapName} has been terminated during execution`,
+            // TODO(rekmarks): Specify / standardize error code for this case.
+            ethErrors.rpc.internal(
+              `The snap "${snapName}" has been terminated during execution.`,
             ),
           )),
     );
+
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const evaluationData = { stop: stop! };
+
     try {
       data.runningEvaluations.add(evaluationData);
       // Notice that we have to await this executor.
