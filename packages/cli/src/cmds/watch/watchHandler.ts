@@ -11,6 +11,7 @@ import {
 import { bundle } from '../build/bundle';
 import { snapEval } from '../eval/evalHandler';
 import { manifestHandler } from '../manifest/manifestHandler';
+import { serve } from '../serve/serveHandler';
 
 /**
  * Watch a directory and its subdirectories for changes, and build when files
@@ -25,7 +26,14 @@ import { manifestHandler } from '../manifest/manifestHandler';
  * @param argv.'outfileName' - The output file name
  */
 export async function watch(argv: YargsArgs): Promise<void> {
-  const { dist, eval: shouldEval, manifest, outfileName, src } = argv;
+  const {
+    dist,
+    eval: shouldEval,
+    manifest,
+    outfileName,
+    src,
+    serve: shouldServe,
+  } = argv;
   if (outfileName) {
     validateOutfileName(outfileName as string);
   }
@@ -49,6 +57,10 @@ export async function watch(argv: YargsArgs): Promise<void> {
 
       if (shouldEval) {
         await snapEval({ ...argv, bundle: outfilePath });
+      }
+
+      if (shouldServe) {
+        await serve(argv);
       }
     } catch (error) {
       logError(

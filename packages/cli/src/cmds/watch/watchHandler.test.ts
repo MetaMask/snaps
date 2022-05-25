@@ -134,6 +134,13 @@ describe('watch', () => {
       expect(global.console.log).toHaveBeenCalledTimes(1);
     });
 
+    it('successfully serves a snap when the serve flag is provided', async () => {
+      jest.spyOn(console, 'log').mockImplementation();
+      jest.spyOn(fileUtils, 'isFile').mockImplementation(async () => true);
+      await watch.handler(getMockArgv({ serve: true }));
+      expect(global.console.log).toHaveBeenCalledWith(`\nStarting server...`);
+    });
+
     it('handles "changed" event correctly', async () => {
       jest.spyOn(console, 'log').mockImplementation();
       const bundleMock = jest.spyOn(build, 'bundle').mockImplementation();

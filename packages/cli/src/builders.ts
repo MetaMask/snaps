@@ -17,6 +17,7 @@ export type SnapsCliBuilders = {
   readonly depsToTranspile: Readonly<Options>;
   readonly verboseErrors: Readonly<Options>;
   readonly writeManifest: Readonly<Options>;
+  readonly serve: Readonly<Options>;
 };
 
 export enum TranspilationModes {
@@ -158,6 +159,13 @@ const builders: SnapsCliBuilders = {
     type: 'boolean',
     demandOption: false,
     default: true,
+  },
+
+  serve: {
+    describe: 'Serve Snap file(S) locally for testing',
+    type: 'boolean',
+    demandOption: false,
+    default: false,
   },
 };
 
