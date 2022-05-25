@@ -129,15 +129,17 @@ export class IframeExecutionService extends AbstractExecutionService<EnvMetadata
     const iframe = document.createElement('iframe');
     return new Promise((resolve) => {
       iframe.addEventListener('load', () => {
-        if (iframe.contentWindow) {
+        // Only resolve when the contentWindow is present and the contentDocument is null that seems to be true when the actual load event fires.
+        // We need this because this event is fired immediately after appending the iframe to the body.
+        if (iframe.contentWindow && iframe.contentDocument === null) {
           resolve(iframe.contentWindow);
         }
       });
-      // Set attributes before adding the iframe to the DOM to trigger 'load' event once everything has been loaded.
+      // We need to add the iframe to the DOM for CORS reasons, otherwise Chrome will not let us catch errors occurring inside the iframe.
+      document.body.appendChild(iframe);
       iframe.setAttribute('src', uri);
       iframe.setAttribute('id', jobId);
       iframe.setAttribute('sandbox', 'allow-scripts');
-      document.body.appendChild(iframe);
     });
   }
 }
