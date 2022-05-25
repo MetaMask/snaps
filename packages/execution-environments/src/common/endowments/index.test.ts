@@ -1,6 +1,14 @@
 import { createEndowments } from '.';
 
 describe('createEndowments', () => {
+  beforeAll(() => {
+    jest.useFakeTimers();
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
+  });
+
   it('handles no endowments', () => {
     const mockWallet = { foo: Symbol('bar') };
     const { endowments } = createEndowments(mockWallet as any);
@@ -116,15 +124,17 @@ describe('createEndowments', () => {
       setInterval: typeof globalThis.setInterval;
       setTimeout: typeof globalThis.setTimeout;
     };
+
     setTimeout(() => {
-      // no-op
+      throw new Error('timeout was called');
     }, 1000);
 
     setInterval(() => {
-      // no-op
+      throw new Error('interval was called');
     }, 1000);
 
     teardown();
+    jest.runAllTimers();
 
     expect(clearTimeoutSpy).toHaveBeenCalledTimes(1);
     expect(clearIntervalSpy).toHaveBeenCalledTimes(1);
@@ -135,5 +145,52 @@ describe('createEndowments', () => {
       setInterval: expect.any(Function),
       clearInterval: expect.any(Function),
     });
+  });
+
+  it('teardown can be called multiple times', async () => {
+    const { endowments, teardown } = createEndowments({} as any, [
+      'setTimeout',
+      'clearTimeout',
+      'setInterval',
+      'clearInterval',
+    ]);
+
+    const { setInterval, setTimeout } = endowments as {
+      setInterval: typeof globalThis.setInterval;
+      setTimeout: typeof globalThis.setTimeout;
+    };
+
+    const timeout = () =>
+      setTimeout(() => {
+        throw new Error('timeout was called');
+      }, 1000);
+    const interval = () =>
+      setInterval(() => {
+        throw new Error('interval was called');
+      }, 1000);
+
+    timeout();
+    interval();
+    teardown();
+    jest.runAllTimers();
+
+    timeout();
+    interval();
+    timeout();
+    interval();
+    teardown();
+    jest.runAllTimers();
+
+    teardown();
+    jest.runAllTimers();
+
+    let resolve: (result: unknown) => void;
+    const promise = new Promise((r) => (resolve = r));
+    setTimeout(() => resolve('OK'), 1000);
+    jest.runAllTimers();
+
+    expect(await promise).toStrictEqual('OK');
+    teardown();
+    jest.runAllTimers();
   });
 });

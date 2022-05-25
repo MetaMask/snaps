@@ -14,7 +14,7 @@ export type RpcMethodsMapping = {
 };
 
 export function rpcMethods(
-  startSnap: (...args: Parameters<ExecuteSnap>) => void,
+  startSnap: (...args: Parameters<ExecuteSnap>) => Promise<void>,
   invokeSnapRpc: SnapRpc,
   onTerminate: () => void,
 ): RpcMethodsMapping {
@@ -41,7 +41,7 @@ export function rpcMethods(
         }
       }
 
-      startSnap(snapName as string, sourceCode as string, endowments);
+      await startSnap(snapName as string, sourceCode as string, endowments);
       return 'OK';
     },
     snapRpc: async (target, origin, request) => {
