@@ -21,9 +21,13 @@ type SnapRpcHandler = (
   request: JsonRpcRequest,
 ) => Promise<unknown>;
 
+type EvaluationData = {
+  stop: () => void;
+};
+
 type SnapData = {
   rpcHandler?: SnapRpcHandler;
-  runningEvaluations: number;
+  runningEvaluations: Set<EvaluationData>;
   idleTeardown: () => void;
 };
 
@@ -64,6 +68,7 @@ export class BaseSnapExecutor {
           handler(origin, request),
         );
       },
+      this.onTerminate.bind(this),
     );
   }
 
@@ -195,7 +200,7 @@ export class BaseSnapExecutor {
       // Other methods access the object value and mutate its properties.
       this.snapData.set(snapName, {
         idleTeardown: endowmentTeardown,
-        runningEvaluations: 0,
+        runningEvaluations: new Set(),
       });
 
       const compartment = new Compartment({
@@ -219,6 +224,15 @@ export class BaseSnapExecutor {
         `Error while running snap '${snapName}': ${(err as Error).message}`,
       );
     }
+  }
+
+  protected onTerminate() {
+    // The teardown will also be called for each snap as soon
+    // as there are no more running evaluations for that snap
+    this.snapData.forEach((data) =>
+      data.runningEvaluations.forEach((evaluation) => evaluation.stop()),
+    );
+    this.snapData.clear();
   }
 
   /**
@@ -249,8 +263,7 @@ export class BaseSnapExecutor {
   }
 
   /**
-   * Removes the snap with the given name. Specifically:
-   * - Deletes the snap's RPC handler, if any
+   * Removes the snap with the given name.
    */
   private removeSnap(snapName: string): void {
     this.snapData.delete(snapName);
@@ -278,16 +291,28 @@ export class BaseSnapExecutor {
       );
     }
 
+    let stop: () => void;
+    const stopPromise = new Promise<never>(
+      (_, reject) =>
+        (stop = () =>
+          reject(
+            ethErrors.rpc.limitExceeded(
+              `The Snap ${snapName} has been terminated during execution`,
+            ),
+          )),
+    );
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const evaluationData = { stop: stop! };
     try {
-      data.runningEvaluations += 1;
+      data.runningEvaluations.add(evaluationData);
       // Notice that we have to await this executor.
       // If we didn't, we would decrease the amount of running evalauations
       // before the promise actually resolves
-      return await executor();
+      return await Promise.race([executor(), stopPromise]);
     } finally {
-      data.runningEvaluations -= 1;
+      data.runningEvaluations.delete(evaluationData);
 
-      if (data.runningEvaluations === 0) {
+      if (data.runningEvaluations.size === 0) {
         data.idleTeardown();
       }
     }

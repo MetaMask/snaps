@@ -29,6 +29,65 @@ export function setDiff<
 }
 
 /**
+ * A Promise that delays it's return for a given amount of milliseconds
+ * @param ms Milliseconds to delay the execution for
+ * @param result The result that you want to return from the promise after delay
+ * @returns void if no result provided, result otherwise
+ */
+export function delay<T = void>(
+  ms: number,
+  result?: T,
+): Promise<T> & { cancel: () => void } {
+  let timeoutHandle: any;
+  let rejectFunc: (reason: string) => void;
+
+  const promise: any = new Promise<T>((resolve: any, reject) => {
+    timeoutHandle = setTimeout(() => {
+      timeoutHandle = undefined;
+      result === undefined ? resolve() : resolve(result);
+    }, ms);
+    rejectFunc = reject;
+  });
+
+  promise.cancel = () => {
+    if (timeoutHandle !== undefined) {
+      clearTimeout(timeoutHandle);
+      rejectFunc('delay has been canceled');
+    }
+  };
+  return promise;
+}
+
+/*
+ * We use a Symbol instead of rejecting the promise so that Errors thrown
+ * by the main promise will propagate
+ */
+export const hasTimeouted = Symbol(
+  'Used to check if the requested promise has timeout (see withTimeout)',
+);
+/**
+ * Executes the given promise, if after ms milliseconds the promise doesn't
+ * settle, we return earlier.
+ *
+ * **NOTE** We can't stop calculations inside the main promise, it'll still continute.
+ *          It's just that the result is not going to be used anywhere
+ * @param promise The promise that you want to execute
+ * @param ms Amout of milliseconds to wait before finishing early
+ * @returns T if promise returns correctly, hasTimeouted symbol if returning early
+ */
+export async function withTimeout<T = void>(
+  promise: Promise<T>,
+  ms: number,
+): Promise<T | typeof hasTimeouted> {
+  const delayPromise = delay(ms, hasTimeouted);
+  try {
+    return await Promise.race([promise, delayPromise]);
+  } finally {
+    delayPromise.cancel();
+  }
+}
+
+/**
  * Use in the default case of a switch that you want to be fully exhaustive.
  * Using this function forces the compiler to enforces exhaustivity during compile-time
  *

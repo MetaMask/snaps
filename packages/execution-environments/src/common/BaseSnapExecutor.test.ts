@@ -340,4 +340,59 @@ describe('BaseSnapExecutor', () => {
       },
     );
   });
+
+  it('terminates a request when terminate RPC is called', async () => {
+    const CODE = `
+      wallet.registerRpcMessageHandler(() => new Promise(() => ({})));
+    `;
+    const executor = new TestSnapExecutor();
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'executeSnap',
+      params: [FAKE_SNAP_NAME, CODE, []],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        FAKE_SNAP_NAME,
+        FAKE_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 3,
+      method: 'terminate',
+      params: [],
+    });
+
+    // TODO(ritave): Make the test not depend on the return order of id 2 and 3
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 3,
+      jsonrpc: '2.0',
+      result: 'OK',
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      error: {
+        code: -32005,
+        message: `The Snap ${FAKE_SNAP_NAME} has been terminated during execution`,
+        stack: expect.anything(),
+      },
+      id: 2,
+      jsonrpc: '2.0',
+    });
+  });
 });

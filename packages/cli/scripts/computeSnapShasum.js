@@ -1,7 +1,5 @@
 const { readFileSync } = require('fs');
-const {
-  getSnapSourceShasum,
-} = require('@metamask/snap-controllers/dist/snaps/utils');
+const { getSnapSourceShasum } = require('@metamask/snap-controllers');
 const clipboardy = require('clipboardy');
 const yargs = require('yargs');
 

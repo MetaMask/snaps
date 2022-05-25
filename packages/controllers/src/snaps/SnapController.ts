@@ -41,10 +41,10 @@ import {
   TerminateAll,
   TerminateSnap,
 } from '../services/ExecutionService';
-import { setDiff } from '../utils';
+import { hasTimeouted, setDiff, withTimeout } from '../utils';
 import { DEFAULT_ENDOWMENTS } from './default-endowments';
-import { SnapManifest, validateSnapJsonFile } from './json-schemas';
 import { LONG_RUNNING_PERMISSION } from './endowments';
+import { SnapManifest, validateSnapJsonFile } from './json-schemas';
 import { RequestQueue } from './RequestQueue';
 import {
   DEFAULT_REQUESTED_SNAP_VERSION,
@@ -1833,7 +1833,10 @@ export class SnapController extends BaseController<
    * @param promise - The promise to await.
    * @returns The result of the promise or rejects if the promise times out.
    */
-  private async _executeWithTimeout(snapId: SnapId, promise: Promise<unknown>) {
+  private async _executeWithTimeout<T>(
+    snapId: SnapId,
+    promise: Promise<T>,
+  ): Promise<T> {
     const isLongRunning = this.messagingSystem.call(
       'PermissionController:hasPermission',
       snapId,
@@ -1845,19 +1848,10 @@ export class SnapController extends BaseController<
       return promise;
     }
 
-    // Handle max request time
-    let timeout: number | undefined;
-
-    const timeoutPromise = new Promise((_resolve, reject) => {
-      timeout = setTimeout(async () => {
-        reject(new Error('The request timed out.'));
-      }, this._maxRequestTime) as unknown as number;
-    });
-
-    // This will either get the result or reject due to the timeout.
-    const result = await Promise.race([promise, timeoutPromise]);
-
-    clearTimeout(timeout);
+    const result = await withTimeout(promise, this._maxRequestTime);
+    if (result === hasTimeouted) {
+      throw new Error('The request timed out.');
+    }
     return result;
   }
 

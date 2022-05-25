@@ -13,7 +13,8 @@ import {
 } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
 import pump from 'pump';
-import { ExecutionService } from '.';
+import { hasTimeouted, withTimeout } from '../utils';
+import { ExecutionService } from './ExecutionService';
 
 export type SetupSnapProvider = (snapId: string, stream: Duplex) => void;
 
@@ -91,6 +92,28 @@ export abstract class AbstractExecutionService<JobType extends Job>
     const jobWrapper = this.jobs.get(jobId);
     if (!jobWrapper) {
       throw new Error(`Job with id "${jobId}" not found.`);
+    }
+
+    // Ping worker and tell it to run teardown, continue with termination if it takes too long
+    const result = await withTimeout(
+      this._command(jobId, {
+        jsonrpc: '2.0',
+        method: 'terminate',
+        params: [],
+        id: nanoid(),
+      }),
+      this._terminationTimeout,
+    );
+    if (result === hasTimeouted || result !== 'OK') {
+      // We tried to shutdown gracefully but failed. This probably means the Snap is in infite loop and
+      // hogging down the whole JS process.
+      // TODO(ritave): It might be doing weird things such as posting a lot of setTimeouts. Add a test to ensure that this behaviour
+      //               doesn't leak into other workers. Especially important in IframeExecutionEnvironment since they all share the same
+      //               JS process.
+      console.error(
+        `Job "${jobId}" failed to terminate gracefully. Force killing it`,
+        result,
+      );
     }
 
     Object.values(jobWrapper.streams).forEach((stream) => {
