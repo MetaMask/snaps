@@ -127,19 +127,32 @@ export class IframeExecutionService extends AbstractExecutionService<EnvMetadata
    */
   private _createWindow(uri: string, jobId: string): Promise<Window> {
     const iframe = document.createElement('iframe');
-    return new Promise((resolve) => {
+    iframe.setAttribute('id', jobId);
+    iframe.setAttribute('sandbox', 'allow-scripts');
+
+    return new Promise((resolve, reject) => {
+      // We need to add the iframe to the DOM before populating it, otherwise
+      // Chrome will not let us catch errors occurring inside the iframe.
+      document.body.appendChild(iframe);
+
+      // We have to add the `load` listener after appending the iframe to the
+      // DOM but before adding the `src` attribute, because the event fires
+      // both when appending the iframe and when it's populated.
+      // Ref: https://stackoverflow.com/questions/10781880/dynamically-created-iframe-triggers-onload-event-twice/15880489#15880489
       iframe.addEventListener('load', () => {
-        // Only resolve when the contentWindow is present and the contentDocument is null that seems to be true when the actual load event fires.
-        // We need this because this event is fired immediately after appending the iframe to the body.
-        if (iframe.contentWindow && iframe.contentDocument === null) {
+        if (iframe.contentWindow) {
           resolve(iframe.contentWindow);
+        } else {
+          reject(
+            new Error(
+              `iframe.contentWindow not present on load for job "${jobId}".`,
+            ),
+          );
         }
       });
-      // We need to add the iframe to the DOM before populating it, otherwise Chrome will not let us catch errors occurring inside the iframe.
-      document.body.appendChild(iframe);
+
+      // This causes the `load` event to fire.
       iframe.setAttribute('src', uri);
-      iframe.setAttribute('id', jobId);
-      iframe.setAttribute('sandbox', 'allow-scripts');
     });
   }
 }
