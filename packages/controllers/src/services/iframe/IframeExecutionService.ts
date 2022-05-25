@@ -135,7 +135,7 @@ export class IframeExecutionService extends AbstractExecutionService<EnvMetadata
           resolve(iframe.contentWindow);
         }
       });
-      // We need to add the iframe to the DOM for CORS reasons, otherwise Chrome will not let us catch errors occurring inside the iframe.
+      // We need to add the iframe to the DOM before populating it, otherwise Chrome will not let us catch errors occurring inside the iframe.
       document.body.appendChild(iframe);
       iframe.setAttribute('src', uri);
       iframe.setAttribute('id', jobId);
