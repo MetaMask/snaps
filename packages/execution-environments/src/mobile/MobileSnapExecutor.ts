@@ -6,6 +6,7 @@ import { SNAP_STREAM_NAMES } from '../common/enums';
 import { MobilePostMessageStream } from './MobilePostMessageStream';
 
 export class MobileSnapExecutor extends BaseSnapExecutor {
+  public rootStream?: Duplex;
   public rpcStreamRef?: Duplex;
 
   public commandStreamRef?: Duplex;
@@ -35,9 +36,11 @@ export class MobileSnapExecutor extends BaseSnapExecutor {
       self.close();
     });
 
+
     const commandStreamRef = mux.createStream(SNAP_STREAM_NAMES.COMMAND);
     const rpcStreamRef = mux.createStream(SNAP_STREAM_NAMES.JSON_RPC);
     const executor = new MobileSnapExecutor(commandStreamRef, rpcStreamRef);
+    executor.rootStream = mux;
     executor.rpcStreamRef = rpcStreamRef;
     executor.commandStreamRef = commandStreamRef;
 
