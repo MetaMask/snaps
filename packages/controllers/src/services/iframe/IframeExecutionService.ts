@@ -129,23 +129,23 @@ export class IframeExecutionService extends AbstractExecutionService<EnvMetadata
   private _createWindow(uri: string, jobId: string): Promise<Window> {
     return new Promise((resolve, reject) => {
       const iframe = document.createElement('iframe');
-
-      // We need to add the iframe to the DOM before setting any properties on
-      // it, otherwise Chrome will not let us catch errors occurring inside the
-      // iframe. We wish we knew why this is the case.
-      document.body.appendChild(iframe);
+      // The order of operations appears to matter for everything except this
+      // attribute. We may as well set it here.
+      iframe.setAttribute('id', jobId);
 
       // In the past, we've had problems that appear to be symptomatic of the
       // iframe firing the `load` event before its scripts are actually loaded,
       // which has prevented snaps from executing properly. Therefore, we set
-      // the `src` attribute before attaching the `load` listener.
+      // the `src` attribute and append the iframe to the DOM before attaching
+      // the `load` listener.
       //
       // `load` should only fire when "all dependent resources" have been
       // loaded, which includes scripts.
       //
       // MDN article for `load` event: https://developer.mozilla.org/en-US/docs/Web/API/Window/load_event
-      // Ref re: `load` firing twice: https://stackoverflow.com/questions/10781880/dynamically-created-iframe-triggers-onload-event-twice/15880489#15880489
+      // Re: `load` firing twice: https://stackoverflow.com/questions/10781880/dynamically-created-iframe-triggers-onload-event-twice/15880489#15880489
       iframe.setAttribute('src', uri);
+      document.body.appendChild(iframe);
 
       iframe.addEventListener('load', () => {
         if (iframe.contentWindow) {
@@ -161,9 +161,14 @@ export class IframeExecutionService extends AbstractExecutionService<EnvMetadata
         }
       });
 
-      // We set these additional attributes after adding the `load` listener
-      // because this order appears to work dependably. ¯\_(ツ)_/¯
-      iframe.setAttribute('id', jobId);
+      // We need to set the sandbox attribute last, otherwise errors in the
+      // iframe will not be propagated via `error` and `unhandledrejection`
+      // events, and we cannot catch and handle them. We wish we knew why
+      // this was the case.
+      //
+      // We apply this property as a principle of least authority (POLA)
+      // measure.
+      // Ref: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#attr-sandbox
       iframe.setAttribute('sandbox', 'allow-scripts');
     });
   }
