@@ -1,5 +1,5 @@
 module.exports = {
-  collectCoverage: false,
+  collectCoverage: true,
   collectCoverageFrom: [
     '<rootDir>/**/src/**/*.ts',
     '!<rootDir>/**/src/**/*.test.ts',
