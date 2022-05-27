@@ -4,7 +4,7 @@ import path from 'path';
 import serveHandler from 'serve-handler';
 
 let server: http.Server;
-export async function start(port = 6363) {
+export async function start(port = 6364) {
   return new Promise<void>((resolve, reject) => {
     if (!Number.isSafeInteger(port) || port < 0) {
       reject(new Error(`Invalid port: "${port}"`));
