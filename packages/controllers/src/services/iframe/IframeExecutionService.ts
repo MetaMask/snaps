@@ -151,8 +151,8 @@ export class IframeExecutionService extends AbstractExecutionService<EnvMetadata
         if (iframe.contentWindow) {
           resolve(iframe.contentWindow);
         } else {
-          // This is mainly to keep TypeScript happy as we don't know of a case
-          // when this would happen. If it does happen, better to fail fast.
+          // We don't know of a case when this would happen, but better to fail
+          // fast if it does.
           reject(
             new Error(
               `iframe.contentWindow not present on load for job "${jobId}".`,
@@ -161,10 +161,13 @@ export class IframeExecutionService extends AbstractExecutionService<EnvMetadata
         }
       });
 
-      // We need to set the sandbox attribute last, otherwise errors in the
-      // iframe will not be propagated via `error` and `unhandledrejection`
-      // events, and we cannot catch and handle them. We wish we knew why
-      // this was the case.
+      // We need to set the sandbox attribute after appending the iframe to the
+      // DOM, otherwise errors in the iframe will not be propagated via `error`
+      // and `unhandledrejection` events, and we cannot catch and handle them.
+      // We wish we knew why this was the case.
+      //
+      // We set this property after adding the `load` listener because it
+      // appears to work dependably. ¯\_(ツ)_/¯
       //
       // We apply this property as a principle of least authority (POLA)
       // measure.
