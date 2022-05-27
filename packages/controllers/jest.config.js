@@ -1,5 +1,5 @@
 module.exports = {
-  collectCoverage: true,
+  collectCoverage: false,
   collectCoverageFrom: [
     '<rootDir>/**/src/**/*.ts',
     '!<rootDir>/**/src/**/*.test.ts',
@@ -10,12 +10,15 @@ module.exports = {
     global: {
       branches: 66.21,
       functions: 82.42,
-      lines: 83.46,
-      statements: 83.5,
+      lines: 83.48,
+      statements: 83.52,
     },
   },
-  silent: true,
-  testTimeout: 5000,
+  globals: {
+    'ts-jest': {
+      tsconfig: 'tsconfig.test.json',
+    },
+  },
   projects: [
     {
       displayName: 'runner: electron',
@@ -38,4 +41,6 @@ module.exports = {
       testRegex: ['\\.test\\.(ts|js)$'],
     },
   ],
+  silent: true,
+  testTimeout: 5000,
 };
