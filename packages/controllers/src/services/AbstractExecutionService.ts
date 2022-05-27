@@ -7,13 +7,14 @@ import {
 import { Duration } from '@metamask/utils';
 import {
   JsonRpcEngine,
-  PendingJsonRpcResponse,
   // TODO: Replace with @metamask/utils version after bumping json-rpc-engine
   JsonRpcRequest,
+  PendingJsonRpcResponse,
 } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
 import pump from 'pump';
-import { ExecutionService } from '.';
+import { hasTimedOut, withTimeout } from '../utils';
+import { ExecutionService } from './ExecutionService';
 
 export type SetupSnapProvider = (snapId: string, stream: Duplex) => void;
 
@@ -93,31 +94,25 @@ export abstract class AbstractExecutionService<JobType extends Job>
       throw new Error(`Job with id "${jobId}" not found.`);
     }
 
-    let terminationTimeout: number | undefined;
-
-    const terminationTimeoutPromise = new Promise<void>((resolve) => {
-      terminationTimeout = setTimeout(() => {
-        // No need to reject here, we just resolve and move on if the terminate request doesn't respond quickly
-        resolve();
-      }, this._terminationTimeout) as unknown as number;
-    });
-
     // Ping worker and tell it to run teardown, continue with termination if it takes too long
-    try {
-      await Promise.race([
-        this._command(jobId, {
-          jsonrpc: '2.0',
-          method: 'terminate',
-          params: [],
-          id: nanoid(),
-        }),
-        terminationTimeoutPromise,
-      ]);
-    } catch (error) {
-      console.error(`Job "${jobId}" failed to terminate gracefully.`, error);
-    }
+    const result = await withTimeout(
+      this._command(jobId, {
+        jsonrpc: '2.0',
+        method: 'terminate',
+        params: [],
+        id: nanoid(),
+      }),
+      this._terminationTimeout,
+    );
 
-    clearTimeout(terminationTimeout);
+    if (result === hasTimedOut || result !== 'OK') {
+      // We tried to shutdown gracefully but failed. This probably means the Snap is in infite loop and
+      // hogging down the whole JS process.
+      // TODO(ritave): It might be doing weird things such as posting a lot of setTimeouts. Add a test to ensure that this behaviour
+      //               doesn't leak into other workers. Especially important in IframeExecutionEnvironment since they all share the same
+      //               JS process.
+      console.error(`Job "${jobId}" failed to terminate gracefully.`, result);
+    }
 
     Object.values(jobWrapper.streams).forEach((stream) => {
       try {
@@ -132,7 +127,7 @@ export abstract class AbstractExecutionService<JobType extends Job>
 
     this._removeSnapAndJobMapping(jobId);
     this.jobs.delete(jobId);
-    console.log(`job: "${jobId}" terminated`);
+    console.log(`Job "${jobId}" terminated.`);
   }
 
   /**
@@ -158,7 +153,7 @@ export abstract class AbstractExecutionService<JobType extends Job>
 
   async terminateAllSnaps() {
     await Promise.all(
-      [...this.jobs.keys()].map((workerId) => this.terminate(workerId)),
+      [...this.jobs.keys()].map((jobId) => this.terminate(jobId)),
     );
     this._snapRpcHooks.clear();
   }

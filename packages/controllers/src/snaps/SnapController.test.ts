@@ -11,7 +11,9 @@ import { EthereumRpcError, ethErrors, serializeError } from 'eth-rpc-errors';
 import fetchMock from 'jest-fetch-mock';
 import { ExecutionService } from '../services/ExecutionService';
 import { WebWorkerExecutionService } from '../services/WebWorkerExecutionService';
+import { delay } from '../utils';
 import { DEFAULT_ENDOWMENTS } from './default-endowments';
+import { LONG_RUNNING_PERMISSION } from './endowments';
 import { SnapManifest } from './json-schemas';
 import {
   AllowedActions,
@@ -26,7 +28,6 @@ import {
   TruncatedSnap,
 } from './SnapController';
 import * as utils from './utils';
-import { LONG_RUNNING_PERMISSION } from './endowments';
 
 const { getSnapSourceShasum } = utils;
 
@@ -670,11 +671,9 @@ describe('SnapController', () => {
       id: 1,
     });
 
-    await new Promise((resolve) => {
-      setTimeout(resolve, 300);
-    });
+    await delay(300);
 
-    expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
+    expect(snapController.isRunning(snap.id)).toStrictEqual(false);
     snapController.destroy();
   });
 
