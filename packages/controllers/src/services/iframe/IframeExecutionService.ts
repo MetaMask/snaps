@@ -119,30 +119,40 @@ export class IframeExecutionService extends AbstractExecutionService<EnvMetadata
   }
 
   /**
-   * Creates the iframe to be used as the execution environment
-   * This may run forever if the iframe never loads, but the promise should be wrapped in an initialization timeout in the SnapController
+   * Creates the iframe to be used as the execution environment. This may run
+   * forever if the iframe never loads, but the promise should be wrapped in
+   * an initialization timeout in the SnapController.
    *
    * @param uri - The iframe URI
    * @param jobId - The job id
    */
   private _createWindow(uri: string, jobId: string): Promise<Window> {
-    const iframe = document.createElement('iframe');
-    iframe.setAttribute('id', jobId);
-    iframe.setAttribute('sandbox', 'allow-scripts');
-
     return new Promise((resolve, reject) => {
-      // We need to add the iframe to the DOM before populating it, otherwise
-      // Chrome will not let us catch errors occurring inside the iframe.
+      const iframe = document.createElement('iframe');
+
+      // We need to add the iframe to the DOM before setting any properties on
+      // it, otherwise Chrome will not let us catch errors occurring inside the
+      // iframe. We wish we knew why this is the case.
       document.body.appendChild(iframe);
 
-      // We have to add the `load` listener after appending the iframe to the
-      // DOM but before adding the `src` attribute, because the event fires
-      // both when appending the iframe and when it's populated.
-      // Ref: https://stackoverflow.com/questions/10781880/dynamically-created-iframe-triggers-onload-event-twice/15880489#15880489
+      // In the past, we've had problems that appear to be symptomatic of the
+      // iframe firing the `load` event before its scripts are actually loaded,
+      // which has prevented snaps from executing properly. Therefore, we set
+      // the `src` attribute before attaching the `load` listener.
+      //
+      // `load` should only fire when "all dependent resources" have been
+      // loaded, which includes scripts.
+      //
+      // MDN article for `load` event: https://developer.mozilla.org/en-US/docs/Web/API/Window/load_event
+      // Ref re: `load` firing twice: https://stackoverflow.com/questions/10781880/dynamically-created-iframe-triggers-onload-event-twice/15880489#15880489
+      iframe.setAttribute('src', uri);
+
       iframe.addEventListener('load', () => {
         if (iframe.contentWindow) {
           resolve(iframe.contentWindow);
         } else {
+          // This is mainly to keep TypeScript happy as we don't know of a case
+          // when this would happen. If it does happen, better to fail fast.
           reject(
             new Error(
               `iframe.contentWindow not present on load for job "${jobId}".`,
@@ -151,8 +161,10 @@ export class IframeExecutionService extends AbstractExecutionService<EnvMetadata
         }
       });
 
-      // This causes the `load` event to fire.
-      iframe.setAttribute('src', uri);
+      // We set these additional attributes after adding the `load` listener
+      // because this order appears to work dependably. ¯\_(ツ)_/¯
+      iframe.setAttribute('id', jobId);
+      iframe.setAttribute('sandbox', 'allow-scripts');
     });
   }
 }
