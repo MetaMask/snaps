@@ -1,9 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
 /// <reference path="../../../../node_modules/ses/index.d.ts" />
+import { Duplex } from 'stream';
 import { MetaMaskInpageProvider } from '@metamask/providers';
 import { SnapProvider } from '@metamask/snap-types';
 import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
-import { Duplex } from 'stream';
 import EEOpenRPCDocument from '../openrpc.json';
 import {
   Endowments,
@@ -255,6 +255,7 @@ export class BaseSnapExecutor {
           'Worker: Registering RPC message handler',
           snapModule.exports.onMessage,
         );
+
         data.exports = {
           ...data.exports,
           onMessage: snapModule.exports.onMessage,
