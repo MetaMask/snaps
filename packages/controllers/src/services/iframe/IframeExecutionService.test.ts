@@ -1,12 +1,16 @@
 import { ControllerMessenger } from '@metamask/controllers';
 import { ErrorMessageEvent } from '@metamask/snap-types';
 import { IframeExecutionService } from './IframeExecutionService';
-import { stop as stopServer, start as startServer } from './testHelpers/server';
+import {
+  PORT as serverPort,
+  stop as stopServer,
+  start as startServer,
+} from './test/server';
 
 // We do not use our default endowments in these tests because JSDOM doesn't
 // implement all of them.
 
-const iframeUrl = new URL('http://localhost:6363');
+const iframeUrl = new URL(`http://localhost:${serverPort}`);
 
 describe('IframeExecutionService', () => {
   // The tests start running before the server is ready if we don't use the done callback.

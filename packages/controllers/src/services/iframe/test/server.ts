@@ -3,8 +3,10 @@ import { promisify } from 'util';
 import path from 'path';
 import serveHandler from 'serve-handler';
 
+export const PORT = 6364;
+
 let server: http.Server;
-export async function start(port = 6363) {
+export async function start(port = PORT) {
   return new Promise<void>((resolve, reject) => {
     if (!Number.isSafeInteger(port) || port < 0) {
       reject(new Error(`Invalid port: "${port}"`));

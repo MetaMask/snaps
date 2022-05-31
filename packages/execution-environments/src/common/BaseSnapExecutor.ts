@@ -203,6 +203,12 @@ export class BaseSnapExecutor {
         runningEvaluations: new Set(),
       });
 
+      rootRealmGlobal.addEventListener(
+        'unhandledrejection',
+        this.snapPromiseErrorHandler,
+      );
+      rootRealmGlobal.addEventListener('error', this.snapErrorHandler);
+
       const compartment = new Compartment({
         ...endowments,
         window: { ...endowments },
@@ -212,12 +218,6 @@ export class BaseSnapExecutor {
       await this.executeInSnapContext(snapName, () =>
         compartment.evaluate(sourceCode),
       );
-
-      rootRealmGlobal.addEventListener(
-        'unhandledrejection',
-        this.snapPromiseErrorHandler,
-      );
-      rootRealmGlobal.addEventListener('error', this.snapErrorHandler);
     } catch (err) {
       this.removeSnap(snapName);
       throw new Error(
