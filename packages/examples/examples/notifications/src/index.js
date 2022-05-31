@@ -1,4 +1,4 @@
-wallet.registerRpcMessageHandler(async (originString, requestObject) => {
+module.exports.onMessage = async (originString, requestObject) => {
   switch (requestObject.method) {
     case 'inApp':
       return wallet.request({
@@ -23,4 +23,4 @@ wallet.registerRpcMessageHandler(async (originString, requestObject) => {
     default:
       throw new Error('Method not found.');
   }
-});
+};

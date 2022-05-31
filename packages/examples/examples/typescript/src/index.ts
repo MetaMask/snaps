@@ -1,6 +1,9 @@
 const getMessage = (originString: string): string => `Hello, ${originString}!`;
 
-wallet.registerRpcMessageHandler(async (originString, requestObject) => {
+export async function onMessage(
+  originString: string,
+  requestObject: Record<string, unknown>,
+) {
   switch (requestObject.method) {
     case 'hello':
       return wallet.request({
@@ -15,7 +18,4 @@ wallet.registerRpcMessageHandler(async (originString, requestObject) => {
     default:
       throw new Error('Method not found.');
   }
-});
-
-// Just for compatibility with the ESLint `import/unambiguous` rule.
-export {};
+}

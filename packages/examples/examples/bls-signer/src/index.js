@@ -5,7 +5,7 @@ const DOMAIN = 2;
 
 console.log('Hello from bls-snap!');
 
-wallet.registerRpcMessageHandler(async (_originString, requestObject) => {
+module.exports.onMessage = async (_originString, requestObject) => {
   switch (requestObject.method) {
     case 'getAccount':
       return await getPubKey();
@@ -34,7 +34,7 @@ wallet.registerRpcMessageHandler(async (_originString, requestObject) => {
     default:
       throw rpcErrors.methodNotFound(requestObject);
   }
-});
+};
 
 async function getPubKey() {
   const PRIV_KEY = await wallet.request({

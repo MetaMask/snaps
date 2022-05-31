@@ -208,10 +208,10 @@ const getSnapControllerWithEES = (
 
 const FAKE_SNAP_ID = 'npm:example-snap';
 const FAKE_SNAP_SOURCE_CODE = `
-wallet.registerRpcMessageHandler(async (origin, request) => {
+exports.onMessage = async (origin, request) => {
   const {method, params, id} = request;
   return method + id;
-});
+};
 `;
 const FAKE_SNAP_SHASUM = getSnapSourceShasum(FAKE_SNAP_SOURCE_CODE);
 const FAKE_ORIGIN = 'foo.com';

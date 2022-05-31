@@ -173,7 +173,7 @@ describe('BaseSnapExecutor', () => {
     it("doesn't leak execution outside of expected timeshare during RPC calls", async () => {
       // The 250 timeout should run and return a value, but all later timeouts should fail to execute
       const CODE = `
-        wallet.registerRpcMessageHandler(() => {
+        exports.onMessage = (() => {
           let resolve;
           const promise = new Promise((r) => { resolve = r; });
 
@@ -227,7 +227,7 @@ describe('BaseSnapExecutor', () => {
         // Since we don't know how the handle looks like we have to actually retrieve it after creating it
         const CODE_1 = `
           let handle;
-          wallet.registerRpcMessageHandler((origin, request) => {
+          exports.onMessage = ((origin, request) => {
             switch (request.method) {
               case 'set':
                 let resolve;
@@ -243,7 +243,7 @@ describe('BaseSnapExecutor', () => {
           });
         `;
         const CODE_2 = `
-          wallet.registerRpcMessageHandler((origin, request) => {
+          exports.onMessage = ((origin, request) => {
             const handle = request.params[0];
             clear${name}(handle);
             return 'SNAP 2 OK';
@@ -343,7 +343,7 @@ describe('BaseSnapExecutor', () => {
 
   it('terminates a request when terminate RPC is called', async () => {
     const CODE = `
-      wallet.registerRpcMessageHandler(() => new Promise(() => ({})));
+      exports.onMessage = (() => new Promise(() => ({})));
     `;
     const executor = new TestSnapExecutor();
 

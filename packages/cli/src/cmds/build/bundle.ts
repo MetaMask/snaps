@@ -27,7 +27,11 @@ export function bundle(
   const { sourceMaps: debug, transpilationMode } = argv;
   const babelifyOptions = processDependencies(argv as any);
   return new Promise((resolve, _reject) => {
-    const bundler = browserify(src, { debug });
+    const bundler = browserify(src, {
+      debug,
+      // Standalone is required to properly support Snaps using module.exports
+      standalone: '<snap>',
+    });
 
     if (transpilationMode !== TranspilationModes.none) {
       bundler.transform(require('babelify'), {
