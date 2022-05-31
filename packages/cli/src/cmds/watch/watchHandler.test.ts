@@ -102,10 +102,6 @@ describe('watch', () => {
     });
 
     it('successfully handles when an outfileName is not provided', async () => {
-      jest.spyOn(chokidar, 'watch').mockImplementation(() => {
-        watcherEmitter = getMockWatcher();
-        return watcherEmitter as any;
-      });
       jest.spyOn(console, 'log').mockImplementation();
       jest
         .spyOn(fsUtils, 'validateFilePath')
@@ -119,10 +115,6 @@ describe('watch', () => {
     it('successfully handles when only a filename is provided for src', async () => {
       // the idea here is that the file name should pass the file path validation
       // so that we can reach where the ternary resolves to the first expression
-      jest.spyOn(chokidar, 'watch').mockImplementation(() => {
-        watcherEmitter = getMockWatcher();
-        return watcherEmitter as any;
-      });
       jest.spyOn(console, 'log').mockImplementation();
       jest.spyOn(fileUtils, 'isFile').mockImplementation(async () => true);
       jest
@@ -137,6 +129,9 @@ describe('watch', () => {
     it('successfully serves a snap when the serve flag is provided', async () => {
       jest.spyOn(console, 'log').mockImplementation();
       jest.spyOn(fileUtils, 'isFile').mockImplementation(async () => true);
+      jest
+        .spyOn(fsUtils, 'validateFilePath')
+        .mockImplementation(async () => true);
       await watch.handler(getMockArgv({ serve: true }));
       expect(global.console.log).toHaveBeenCalledWith(`\nStarting server...`);
     });
