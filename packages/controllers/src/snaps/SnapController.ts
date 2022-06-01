@@ -33,7 +33,6 @@ import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
-import { gt as gtSemver } from 'semver';
 import { assertExhaustive } from '..';
 import {
   ExecuteSnap,
@@ -51,6 +50,7 @@ import {
   fetchNpmSnap,
   getSnapPermissionName,
   getSnapPrefix,
+  gtVersion,
   isValidSnapVersionRange,
   LOCALHOST_HOSTNAMES,
   NpmSnapFileNames,
@@ -1268,11 +1268,7 @@ export class SnapController extends BaseController<
     }
 
     const newSnap = await this._fetchSnap(snapId, newVersionRange);
-    if (
-      !gtSemver(newSnap.manifest.version, snap.version, {
-        includePrerelease: true,
-      })
-    ) {
+    if (!gtVersion(newSnap.manifest.version, snap.version)) {
       console.warn(
         `Tried updating snap "${snapId}" within "${newVersionRange}" version range, but newer version "${snap.version}" is already installed`,
       );

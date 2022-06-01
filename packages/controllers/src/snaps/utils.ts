@@ -8,6 +8,7 @@ import createGunzipStream from 'gunzip-maybe';
 import pump from 'pump';
 import { ReadableWebToNodeStream } from 'readable-web-to-node-stream';
 import {
+  gt as gtSemver,
   maxSatisfying as maxSatisfyingSemver,
   satisfies as satifiesSemver,
   validRange as validRangeSemver,
@@ -290,14 +291,17 @@ export function validateNpmSnapManifest(
   return [manifest, sourceCode, packageJson];
 }
 
+export function gtVersion(version1: string, version2: string) {
+  return gtSemver(version1, version2, { includePrerelease: true });
+}
+
 export function satifiesVersionRange(version: string, versionRange: string) {
   return satifiesSemver(version, versionRange, {
     includePrerelease: true,
   });
 }
 
-function getTargetVersion(versions: string[], versionRange: string) {
-  // @todo Test that this works for prerelease version range
+export function getTargetVersion(versions: string[], versionRange: string) {
   const maxSatisfyingNonPreRelease = maxSatisfyingSemver(
     versions,
     versionRange,
