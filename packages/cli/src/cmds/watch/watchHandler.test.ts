@@ -1,5 +1,6 @@
 import EventEmitter from 'events';
 import path from 'path';
+import http from 'http';
 import chokidar from 'chokidar';
 import * as miscUtils from '../../utils/misc';
 import * as fsUtils from '../../utils/validate-fs';
@@ -127,12 +128,38 @@ describe('watch', () => {
     });
 
     it('successfully serves a snap when the serve flag is provided', async () => {
+      jest
+        .spyOn(http, 'createServer')
+        .mockImplementation(
+          () => ({ listen: jest.fn(), on: jest.fn() } as any),
+        );
       jest.spyOn(console, 'log').mockImplementation();
       jest.spyOn(fileUtils, 'isFile').mockImplementation(async () => true);
       jest
         .spyOn(fsUtils, 'validateFilePath')
         .mockImplementation(async () => true);
-      await watch.handler(getMockArgv({ serve: true }));
+      jest.spyOn(fileUtils, 'isDirectory').mockImplementation(async () => true);
+      const bundleMock = jest.spyOn(build, 'bundle').mockImplementation();
+
+      const argv = getMockArgv({ serve: true });
+      await watch.handler(argv);
+      const mockPath = path.normalize(`${mockDist}/${mockOutfileName}`);
+      const readyPromise = new Promise<void>((resolve, _) => {
+        watcherEmitter.on('ready', () => {
+          expect(bundleMock).toHaveBeenCalledWith(
+            mockSrc,
+            mockPath,
+            argv,
+            undefined,
+          );
+          resolve();
+        });
+      });
+
+      watcherEmitter.emit('ready');
+      await readyPromise;
+      // Wait for other promises to resolve
+      await new Promise(process.nextTick);
       expect(global.console.log).toHaveBeenCalledWith(`\nStarting server...`);
     });
 
