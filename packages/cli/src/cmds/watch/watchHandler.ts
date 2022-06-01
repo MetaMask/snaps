@@ -58,10 +58,6 @@ export async function watch(argv: YargsArgs): Promise<void> {
       if (shouldEval) {
         await snapEval({ ...argv, bundle: outfilePath });
       }
-
-      if (shouldServe) {
-        await serve(argv);
-      }
     } catch (error) {
       logError(
         `Error ${
@@ -89,7 +85,12 @@ export async function watch(argv: YargsArgs): Promise<void> {
       ],
     })
 
-    .on('ready', buildSnap)
+    .on('ready', async () => {
+      await buildSnap();
+      if (shouldServe) {
+        await serve(argv);
+      }
+    })
     .on('add', (path) => buildSnap(path, `File added: ${path}`))
     .on('change', (path) => buildSnap(path, `File changed: ${path}`))
     .on('unlink', (path) => console.log(`File removed: ${path}`))
