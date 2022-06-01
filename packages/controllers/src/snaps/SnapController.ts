@@ -33,7 +33,7 @@ import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
-import { gt as gtSemver, satisfies as satisfiesSemver } from 'semver';
+import { gt as gtSemver } from 'semver';
 import { assertExhaustive } from '..';
 import {
   ExecuteSnap,
@@ -55,6 +55,7 @@ import {
   LOCALHOST_HOSTNAMES,
   NpmSnapFileNames,
   resolveVersion,
+  satifiesVersionRange,
   SnapIdPrefixes,
   SNAP_PREFIX,
   ValidatedSnapId,
@@ -1179,7 +1180,7 @@ export class SnapController extends BaseController<
     const existingSnap = this.getTruncated(snapId);
     // For devX we always re-install local snaps.
     if (existingSnap && getSnapPrefix(snapId) !== SnapIdPrefixes.local) {
-      if (satisfiesSemver(existingSnap.version, versionRange)) {
+      if (satifiesVersionRange(existingSnap.version, versionRange)) {
         return existingSnap;
       }
 
@@ -1267,7 +1268,11 @@ export class SnapController extends BaseController<
     }
 
     const newSnap = await this._fetchSnap(snapId, newVersionRange);
-    if (!gtSemver(newSnap.manifest.version, snap.version)) {
+    if (
+      !gtSemver(newSnap.manifest.version, snap.version, {
+        includePrerelease: true,
+      })
+    ) {
       console.warn(
         `Tried updating snap "${snapId}" within "${newVersionRange}" version range, but newer version "${snap.version}" is already installed`,
       );
@@ -1497,7 +1502,7 @@ export class SnapController extends BaseController<
       ));
     }
 
-    if (!satisfiesSemver(manifest.version, versionRange)) {
+    if (!satifiesVersionRange(manifest.version, versionRange)) {
       throw new Error(
         `Version mismatch. Manifest for ${snapId} specifies version ${manifest.version} which doesn't satisfy requested version range ${versionRange}`,
       );
