@@ -112,7 +112,7 @@ The defaults can be overwritten using the `snap.config.json` [config file](#conf
 
 ### Configuration File
 
-`snap.config.js` can be placed in the project root directory. It can override cli options - the property `cliOptions` should have string keys matching command arguments. Values become argument defaults, which can still be overriden on the command line.
+`snap.config.js` should be placed in the project root directory. It can override cli options - the property `cliOptions` should have string keys matching command arguments. Values become argument defaults, which can still be overridden on the command line.
 
 Example:
 
@@ -126,7 +126,7 @@ module.exports = {
 };
 ```
 
-Should you want to customize your build process, you can provide `bundlerCustomizer` property. It's a function that takes one argument - [browserify object](https://github.com/browserify/browserify#api-example) which we use internally to bundle the snap. You can transform it in any way you want, for example adding plugins.
+If you want to customize the Browserify build process, you can provide `bundlerCustomizer` property. It's a function that takes one argument - [browserify object](https://github.com/browserify/browserify#api-example) which we use internally to bundle the snap. You can transform it in any way you want, for example adding plugins.
 
 Example:
 
