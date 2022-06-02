@@ -8,7 +8,9 @@ import createGunzipStream from 'gunzip-maybe';
 import pump from 'pump';
 import { ReadableWebToNodeStream } from 'readable-web-to-node-stream';
 import {
+  gt as gtSemver,
   maxSatisfying as maxSatisfyingSemver,
+  satisfies as satifiesSemver,
   validRange as validRangeSemver,
 } from 'semver';
 import { extract as tarExtract } from 'tar-stream';
@@ -289,6 +291,33 @@ export function validateNpmSnapManifest(
   return [manifest, sourceCode, packageJson];
 }
 
+export function gtVersion(version1: string, version2: string) {
+  return gtSemver(version1, version2, { includePrerelease: true });
+}
+
+export function satifiesVersionRange(version: string, versionRange: string) {
+  return satifiesSemver(version, versionRange, {
+    includePrerelease: true,
+  });
+}
+
+export function getTargetVersion(versions: string[], versionRange: string) {
+  const maxSatisfyingNonPreRelease = maxSatisfyingSemver(
+    versions,
+    versionRange,
+  );
+
+  // By default don't use pre-release versions
+  if (maxSatisfyingNonPreRelease) {
+    return maxSatisfyingNonPreRelease;
+  }
+
+  // If no satisfying release version is found by default, try pre-release versions
+  return maxSatisfyingSemver(versions, versionRange, {
+    includePrerelease: true,
+  });
+}
+
 /**
  * Fetches the tarball (`.tgz` file) of the specified package and version from
  * the public npm registry. Throws an error if fetching fails.
@@ -316,7 +345,7 @@ async function fetchNpmTarball(
     );
   }
 
-  const targetVersion = maxSatisfyingSemver(
+  const targetVersion = getTargetVersion(
     Object.keys((packageMetadata as any)?.versions ?? {}),
     versionRange,
   );
@@ -526,7 +555,8 @@ export function isValidSnapVersionRange(
   versionRange: unknown,
 ): versionRange is string {
   return Boolean(
-    typeof versionRange === 'string' && validRangeSemver(versionRange) !== null,
+    typeof versionRange === 'string' &&
+      validRangeSemver(versionRange, { includePrerelease: true }) !== null,
   );
 }
 
