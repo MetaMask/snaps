@@ -368,7 +368,7 @@ describe('SnapController', () => {
     expect(snapState).toStrictEqual(state);
     expect(snapController.state.snapStates).toStrictEqual({
       'npm:example-snap': await passworder.encrypt(
-        'npm:example-snap_encryption',
+        'encryption:npm:example-snap',
         state,
       ),
     });
@@ -2108,7 +2108,7 @@ describe('SnapController', () => {
         fizz: 'buzz',
       };
       const encrypted = await passworder.encrypt(
-        'npm:fooSnap_encryption',
+        'encryption:npm:fooSnap',
         state,
       );
       const snapController = getSnapController(
@@ -2207,7 +2207,7 @@ describe('SnapController', () => {
       expect(updateSnapStateSpy).toHaveBeenCalledTimes(1);
       expect(snapController.state.snapStates).toStrictEqual({
         'npm:fooSnap': await passworder.encrypt(
-          'npm:fooSnap_encryption',
+          'encryption:npm:fooSnap',
           state,
         ),
       });
@@ -2267,11 +2267,11 @@ describe('SnapController', () => {
       expect(updateSnapStateSpy).toHaveBeenCalledTimes(2);
       expect(snapController.state.snapStates).toStrictEqual({
         'npm:fooSnap': await passworder.encrypt(
-          'npm:fooSnap_encryption',
+          'encryption:npm:fooSnap',
           state,
         ),
         'npm:fooSnap2': await passworder.encrypt(
-          'npm:fooSnap2_encryption',
+          'encryption:npm:fooSnap2',
           state,
         ),
       });

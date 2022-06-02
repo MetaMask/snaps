@@ -1005,7 +1005,7 @@ export class SnapController extends BaseController<
   }
 
   private async getEncryptionKey(snapId: SnapId): Promise<string> {
-    return this._getAppKey(`${snapId}_encryption`);
+    return this._getAppKey(`encryption:${snapId}`);
   }
 
   private async encryptSnapState(snapId: SnapId, state: Json): Promise<string> {
