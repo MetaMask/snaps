@@ -22,6 +22,7 @@ export = {
       .option('writeManifest', builders.writeManifest)
       .option('serve', builders.serve)
       .option('root', builders.root)
+      .option('port', builders.port)
       .implies('writeManifest', 'manifest')
       .implies('depsToTranspile', 'transpilationMode')
       .middleware((argv) => processInvalidTranspilation(argv as any));
