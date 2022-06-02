@@ -162,10 +162,10 @@ const builders: SnapsCliBuilders = {
   },
 
   serve: {
-    describe: 'Serve Snap file(S) locally for testing',
+    describe: 'Serve Snap file(s) locally for testing',
     type: 'boolean',
     demandOption: false,
-    default: false,
+    default: true,
   },
 };
 
