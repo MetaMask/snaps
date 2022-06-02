@@ -16,6 +16,9 @@ describe('endowment:network-access', () => {
     expect(specification.endowmentGetter()).toStrictEqual([
       'fetch',
       'WebSocket',
+      'Request',
+      'Headers',
+      'Response',
     ]);
   });
 });

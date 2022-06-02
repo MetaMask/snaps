@@ -307,15 +307,13 @@ describe('Network endowments', () => {
             throw new Error('onopen called');
           },
         ),
-      ).toThrow(new TypeError("Cannot read property 'call' of undefined"));
+      ).toThrow('Cannot read propert'); // different error messages on different node versions
 
       expect(() =>
         (socket as any)['#socket'].addEventListener('open', () => {
           throw new Error('onopen called');
         }),
-      ).toThrow(
-        new TypeError("Cannot read property 'addEventListener' of undefined"),
-      );
+      ).toThrow('Cannot read propert'); // different error messages on different node versions
     });
 
     it("can't be broken by dispatching close event before actual close happens", async () => {
