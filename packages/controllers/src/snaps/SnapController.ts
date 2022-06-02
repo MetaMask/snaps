@@ -369,7 +369,11 @@ type SnapControllerMessenger = RestrictedControllerMessenger<
   AllowedEvents['type']
 >;
 
-type GetAppKey = (subject: string) => Promise<string>;
+enum AppKeyType {
+  stateEncryption = 'stateEncryption',
+}
+
+type GetAppKey = (subject: string, appKeyType: AppKeyType) => Promise<string>;
 
 type FeatureFlags = {
   /**
@@ -1005,7 +1009,7 @@ export class SnapController extends BaseController<
   }
 
   private async getEncryptionKey(snapId: SnapId): Promise<string> {
-    return this._getAppKey(`encryption:${snapId}`);
+    return this._getAppKey(snapId, AppKeyType.stateEncryption);
   }
 
   private async encryptSnapState(snapId: SnapId, state: Json): Promise<string> {

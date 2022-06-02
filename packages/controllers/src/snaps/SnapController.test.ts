@@ -130,7 +130,9 @@ const getSnapControllerOptions = (
     getPermissions: jest.fn(),
     requestPermissions: jest.fn(),
     closeAllConnections: jest.fn(),
-    getAppKey: jest.fn().mockImplementation((snapId) => snapId),
+    getAppKey: jest
+      .fn()
+      .mockImplementation((snapId, appKeyType) => `${appKeyType}:${snapId}`),
     messenger: getSnapControllerMessenger(),
     featureFlags: { dappsCanUpdateSnaps: true },
     state: undefined,
@@ -152,7 +154,9 @@ const getSnapControllerWithEESOptions = (
     getPermissions: jest.fn(),
     requestPermissions: jest.fn(),
     closeAllConnections: jest.fn(),
-    getAppKey: jest.fn().mockImplementation((snapId) => snapId),
+    getAppKey: jest
+      .fn()
+      .mockImplementation((snapId, appKeyType) => `${appKeyType}:${snapId}`),
     messenger: getSnapControllerMessenger(),
     state: undefined,
     ...opts,
@@ -368,7 +372,7 @@ describe('SnapController', () => {
     expect(snapState).toStrictEqual(state);
     expect(snapController.state.snapStates).toStrictEqual({
       'npm:example-snap': await passworder.encrypt(
-        'encryption:npm:example-snap',
+        'stateEncryption:npm:example-snap',
         state,
       ),
     });
@@ -2108,7 +2112,7 @@ describe('SnapController', () => {
         fizz: 'buzz',
       };
       const encrypted = await passworder.encrypt(
-        'encryption:npm:fooSnap',
+        'stateEncryption:npm:fooSnap',
         state,
       );
       const snapController = getSnapController(
@@ -2207,7 +2211,7 @@ describe('SnapController', () => {
       expect(updateSnapStateSpy).toHaveBeenCalledTimes(1);
       expect(snapController.state.snapStates).toStrictEqual({
         'npm:fooSnap': await passworder.encrypt(
-          'encryption:npm:fooSnap',
+          'stateEncryption:npm:fooSnap',
           state,
         ),
       });
@@ -2267,11 +2271,11 @@ describe('SnapController', () => {
       expect(updateSnapStateSpy).toHaveBeenCalledTimes(2);
       expect(snapController.state.snapStates).toStrictEqual({
         'npm:fooSnap': await passworder.encrypt(
-          'encryption:npm:fooSnap',
+          'stateEncryption:npm:fooSnap',
           state,
         ),
         'npm:fooSnap2': await passworder.encrypt(
-          'encryption:npm:fooSnap2',
+          'stateEncryption:npm:fooSnap2',
           state,
         ),
       });
