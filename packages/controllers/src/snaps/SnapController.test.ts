@@ -2279,6 +2279,10 @@ describe('SnapController', () => {
           state,
         ),
       });
+
+      expect(snapController.state.snapStates['npm:fooSnap']).not.toStrictEqual(
+        snapController.state.snapStates['npm:fooSnap2'],
+      );
     });
 
     it('should throw our custom error message in case decryption fails', async () => {
