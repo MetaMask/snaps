@@ -164,6 +164,7 @@ describe('gtVersion', () => {
     expect(gtVersion('1.0.0-beta.2', '1.2.3')).toBe(false);
     expect(gtVersion('1.0.0', '1.0.0-beta.2')).toBe(true);
     expect(gtVersion('1.2.3-beta.1', '1.0.0')).toBe(true);
+    expect(gtVersion('1.2.3-beta.1', '1.2.3-alpha.2')).toBe(true);
   });
 });
 
@@ -181,6 +182,12 @@ describe('getTargetVersion', () => {
     expect(
       getTargetVersion(['1.0.0-beta.1', '1.0.0-beta.2'], '^1.0.0-beta.1'),
     ).toBe('1.0.0-beta.2');
+
+    expect(getTargetVersion(['1.0.0-alpha.2', '1.0.0-beta.1'], '*')).toBe(
+      '1.0.0-beta.1',
+    );
+
+    expect(getTargetVersion(['0.9.0', '1.0.0-alpha.0'], '*')).toBe('0.9.0');
   });
 
   it('doesnt return pre-release versions by default', () => {
@@ -213,5 +220,6 @@ describe('satifiesVersionRange', () => {
 
   it('prereleases can satisfy version range', () => {
     expect(satifiesVersionRange('1.0.0-beta.1', '*')).toBe(true);
+    expect(satifiesVersionRange('1.0.0-beta.1', '^1.0.0')).toBe(false);
   });
 });
