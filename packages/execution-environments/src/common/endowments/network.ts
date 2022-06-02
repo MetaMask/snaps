@@ -6,7 +6,7 @@ const createNetwork = () => {
 
   // Remove items from openConnections after they were garbage collected
   const cleanup = new FinalizationRegistry<() => void>(
-    /* istanbul ignore next: can't test garbage collection without modyfing node parameters */
+    /* istanbul ignore next: can't test garbage collection without modifying node parameters */
     (callback) => callback(),
   );
 
