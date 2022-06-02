@@ -369,7 +369,7 @@ type SnapControllerMessenger = RestrictedControllerMessenger<
   AllowedEvents['type']
 >;
 
-enum AppKeyType {
+export enum AppKeyType {
   stateEncryption = 'stateEncryption',
 }
 
