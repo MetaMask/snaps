@@ -9,6 +9,8 @@ import {
 import { ControllerMessenger } from '@metamask/controllers/dist/ControllerMessenger';
 import { EthereumRpcError, ethErrors, serializeError } from 'eth-rpc-errors';
 import fetchMock from 'jest-fetch-mock';
+import passworder from '@metamask/browser-passworder';
+import { Crypto } from '@peculiar/webcrypto';
 import { ExecutionService } from '../services/ExecutionService';
 import { WebWorkerExecutionService } from '../services/WebWorkerExecutionService';
 import { delay } from '../utils';
@@ -37,6 +39,15 @@ const workerCode = fs.readFileSync(
   ),
   'utf8',
 );
+
+const { subtle } = new Crypto();
+Object.defineProperty(window, 'crypto', {
+  value: {
+    ...window.crypto,
+    subtle,
+    getRandomValues: jest.fn().mockReturnValue(new Uint32Array(32)),
+  },
+});
 
 const getControllerMessenger = () =>
   new ControllerMessenger<
@@ -119,6 +130,9 @@ const getSnapControllerOptions = (
     getPermissions: jest.fn(),
     requestPermissions: jest.fn(),
     closeAllConnections: jest.fn(),
+    getAppKey: jest
+      .fn()
+      .mockImplementation((snapId, appKeyType) => `${appKeyType}:${snapId}`),
     messenger: getSnapControllerMessenger(),
     featureFlags: { dappsCanUpdateSnaps: true },
     state: undefined,
@@ -140,6 +154,9 @@ const getSnapControllerWithEESOptions = (
     getPermissions: jest.fn(),
     requestPermissions: jest.fn(),
     closeAllConnections: jest.fn(),
+    getAppKey: jest
+      .fn()
+      .mockImplementation((snapId, appKeyType) => `${appKeyType}:${snapId}`),
     messenger: getSnapControllerMessenger(),
     state: undefined,
     ...opts,
@@ -348,14 +365,16 @@ describe('SnapController', () => {
       manifest: FAKE_SNAP_MANIFEST,
     });
 
+    const state = { hello: 'world' };
     await snapController.startSnap(snap.id);
-    await snapController.updateSnapState(snap.id, { hello: 'world' });
+    await snapController.updateSnapState(snap.id, state);
     const snapState = await snapController.getSnapState(snap.id);
-    expect(snapState).toStrictEqual({ hello: 'world' });
+    expect(snapState).toStrictEqual(state);
     expect(snapController.state.snapStates).toStrictEqual({
-      'npm:example-snap': {
-        hello: 'world',
-      },
+      'npm:example-snap': await passworder.encrypt(
+        'stateEncryption:npm:example-snap',
+        state,
+      ),
     });
     snapController.destroy();
   });
@@ -2089,6 +2108,13 @@ describe('SnapController', () => {
       const executeSnapMock = jest.fn();
       const messenger = getSnapControllerMessenger(undefined, false);
 
+      const state = {
+        fizz: 'buzz',
+      };
+      const encrypted = await passworder.encrypt(
+        'stateEncryption:npm:fooSnap',
+        state,
+      );
       const snapController = getSnapController(
         getSnapControllerOptions({
           executeSnap: executeSnapMock,
@@ -2096,9 +2122,7 @@ describe('SnapController', () => {
           state: {
             snapErrors: {},
             snapStates: {
-              'npm:fooSnap': {
-                fizz: 'buzz',
-              },
+              'npm:fooSnap': encrypted,
             },
             snaps: {},
           },
@@ -2112,7 +2136,7 @@ describe('SnapController', () => {
       );
 
       expect(getSnapStateSpy).toHaveBeenCalledTimes(1);
-      expect(result).toStrictEqual({ fizz: 'buzz' });
+      expect(result).toStrictEqual(state);
     });
 
     it('action: SnapController:has', async () => {
@@ -2175,16 +2199,119 @@ describe('SnapController', () => {
       );
 
       const updateSnapStateSpy = jest.spyOn(snapController, 'updateSnapState');
-      await messenger.call('SnapController:updateSnapState', 'npm:fooSnap', {
+      const state = {
         bar: 'baz',
-      });
+      };
+      await messenger.call(
+        'SnapController:updateSnapState',
+        'npm:fooSnap',
+        state,
+      );
 
       expect(updateSnapStateSpy).toHaveBeenCalledTimes(1);
       expect(snapController.state.snapStates).toStrictEqual({
-        'npm:fooSnap': {
-          bar: 'baz',
-        },
+        'npm:fooSnap': await passworder.encrypt(
+          'stateEncryption:npm:fooSnap',
+          state,
+        ),
       });
+    });
+
+    it('should have different encryption for the same data stored by two different snaps', async () => {
+      const executeSnapMock = jest.fn();
+      const messenger = getSnapControllerMessenger(undefined, false);
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          executeSnap: executeSnapMock,
+          messenger,
+          state: {
+            snapErrors: {},
+            snapStates: {},
+            snaps: {
+              'npm:fooSnap': getSnapObject({
+                permissionName: 'fooperm',
+                version: '0.0.1',
+                sourceCode: FAKE_SNAP_SOURCE_CODE,
+                id: 'npm:fooSnap',
+                manifest: FAKE_SNAP_MANIFEST,
+                enabled: true,
+                status: SnapStatus.installing,
+              }),
+              'npm:fooSnap2': getSnapObject({
+                permissionName: 'fooperm2',
+                version: '0.0.1',
+                sourceCode: FAKE_SNAP_SOURCE_CODE,
+                id: 'npm:fooSnap2',
+                manifest: FAKE_SNAP_MANIFEST,
+                enabled: true,
+                status: SnapStatus.installing,
+              }),
+            },
+          },
+        }),
+      );
+
+      const updateSnapStateSpy = jest.spyOn(snapController, 'updateSnapState');
+      const state = {
+        bar: 'baz',
+      };
+      await messenger.call(
+        'SnapController:updateSnapState',
+        'npm:fooSnap',
+        state,
+      );
+
+      await messenger.call(
+        'SnapController:updateSnapState',
+        'npm:fooSnap2',
+        state,
+      );
+
+      expect(updateSnapStateSpy).toHaveBeenCalledTimes(2);
+      expect(snapController.state.snapStates).toStrictEqual({
+        'npm:fooSnap': await passworder.encrypt(
+          'stateEncryption:npm:fooSnap',
+          state,
+        ),
+        'npm:fooSnap2': await passworder.encrypt(
+          'stateEncryption:npm:fooSnap2',
+          state,
+        ),
+      });
+
+      expect(snapController.state.snapStates['npm:fooSnap']).not.toStrictEqual(
+        snapController.state.snapStates['npm:fooSnap2'],
+      );
+    });
+
+    it('should throw our custom error message in case decryption fails', async () => {
+      const executeSnapMock = jest.fn();
+      const messenger = getSnapControllerMessenger(undefined, false);
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          executeSnap: executeSnapMock,
+          messenger,
+          state: {
+            snapErrors: {},
+            snapStates: { [FAKE_SNAP_ID]: 'foo' },
+            snaps: {
+              [FAKE_SNAP_ID]: getSnapObject({
+                status: SnapStatus.installing,
+              }),
+            },
+          },
+        }),
+      );
+
+      const getSnapStateSpy = jest.spyOn(snapController, 'getSnapState');
+      await expect(
+        messenger.call('SnapController:getSnapState', FAKE_SNAP_ID),
+      ).rejects.toThrow(
+        'Failed to decrypt snap state, the state must be corrupted.',
+      );
+      expect(getSnapStateSpy).toHaveBeenCalledTimes(1);
     });
 
     it('action: SnapController:clearSnapState', async () => {
@@ -2197,7 +2324,7 @@ describe('SnapController', () => {
           messenger,
           state: {
             snapErrors: {},
-            snapStates: { [FAKE_SNAP_ID]: { foo: 'bar' } },
+            snapStates: { [FAKE_SNAP_ID]: 'foo' },
             snaps: {
               [FAKE_SNAP_ID]: getSnapObject({
                 status: SnapStatus.installing,
@@ -2209,9 +2336,13 @@ describe('SnapController', () => {
 
       const clearSnapStateSpy = jest.spyOn(snapController, 'clearSnapState');
       await messenger.call('SnapController:clearSnapState', FAKE_SNAP_ID);
-
+      const clearedState = await messenger.call(
+        'SnapController:getSnapState',
+        FAKE_SNAP_ID,
+      );
       expect(clearSnapStateSpy).toHaveBeenCalledTimes(1);
       expect(snapController.state.snapStates).toStrictEqual({});
+      expect(clearedState).toBeNull();
     });
   });
 

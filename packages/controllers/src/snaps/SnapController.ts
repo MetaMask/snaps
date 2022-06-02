@@ -29,6 +29,7 @@ import {
   Json,
   timeSince,
 } from '@metamask/utils';
+import passworder from '@metamask/browser-passworder';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import type { Patch } from 'immer';
@@ -215,7 +216,7 @@ type StoredSnaps = Record<SnapId, Snap>;
 
 export type SnapControllerState = {
   snaps: StoredSnaps;
-  snapStates: Record<SnapId, Json>;
+  snapStates: Record<SnapId, string>;
   snapErrors: {
     [internalID: string]: SnapError & { internalID: string };
   };
@@ -368,6 +369,12 @@ type SnapControllerMessenger = RestrictedControllerMessenger<
   AllowedEvents['type']
 >;
 
+export enum AppKeyType {
+  stateEncryption = 'stateEncryption',
+}
+
+type GetAppKey = (subject: string, appKeyType: AppKeyType) => Promise<string>;
+
 type FeatureFlags = {
   /**
    * We still need to implement new UI approval page in metamask-extension before we can allow DApps to update Snaps.
@@ -421,6 +428,11 @@ type SnapControllerArgs = {
    * A function that terminates a specific snap.
    */
   terminateSnap: TerminateSnap;
+
+  /**
+   * A function to get an "app key" for a specific subject.
+   */
+  getAppKey: GetAppKey;
 
   /**
    * How frequently to check whether a snap is idle.
@@ -576,6 +588,8 @@ export class SnapController extends BaseController<
 
   private _terminateSnap: TerminateSnap;
 
+  private _getAppKey: GetAppKey;
+
   private _timeoutForLastRequestStatus?: number;
 
   private _npmRegistryUrl?: string;
@@ -592,6 +606,7 @@ export class SnapController extends BaseController<
     state,
     terminateAllSnaps,
     terminateSnap,
+    getAppKey,
     environmentEndowmentPermissions = [],
     npmRegistryUrl,
     idleTimeCheckInterval = inMilliseconds(5, Duration.Second),
@@ -640,6 +655,7 @@ export class SnapController extends BaseController<
     this._onUnhandledSnapError = this._onUnhandledSnapError.bind(this);
     this._terminateSnap = terminateSnap;
     this._terminateAllSnaps = terminateAllSnaps;
+    this._getAppKey = getAppKey;
 
     this._idleTimeCheckInterval = idleTimeCheckInterval;
     this._maxIdleTime = maxIdleTime;
@@ -927,8 +943,9 @@ export class SnapController extends BaseController<
    * @param newSnapState - The new state of the snap.
    */
   async updateSnapState(snapId: SnapId, newSnapState: Json): Promise<void> {
+    const encrypted = await this.encryptSnapState(snapId, newSnapState);
     this.update((state: any) => {
-      state.snapStates[snapId] = newSnapState;
+      state.snapStates[snapId] = encrypted;
     });
   }
 
@@ -987,7 +1004,31 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap whose state to get.
    */
   async getSnapState(snapId: SnapId): Promise<Json> {
-    return this.state.snapStates[snapId] ?? null;
+    const state = this.state.snapStates[snapId];
+    return state ? this.decryptSnapState(snapId, state) : null;
+  }
+
+  private async getEncryptionKey(snapId: SnapId): Promise<string> {
+    return this._getAppKey(snapId, AppKeyType.stateEncryption);
+  }
+
+  private async encryptSnapState(snapId: SnapId, state: Json): Promise<string> {
+    const appKey = await this.getEncryptionKey(snapId);
+    return passworder.encrypt(appKey, state);
+  }
+
+  private async decryptSnapState(
+    snapId: SnapId,
+    encrypted: string,
+  ): Promise<Json> {
+    const appKey = await this.getEncryptionKey(snapId);
+    try {
+      return await passworder.decrypt(appKey, encrypted);
+    } catch (err) {
+      throw new Error(
+        'Failed to decrypt snap state, the state must be corrupted.',
+      );
+    }
   }
 
   /**
