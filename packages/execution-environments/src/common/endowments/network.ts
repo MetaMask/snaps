@@ -1,4 +1,4 @@
-type WebSocketCloseCallback = (this: WebSocket, ev: CloseEvent) => any;
+type WebSocketCallback = (this: WebSocket, ev: any) => any;
 
 const createNetwork = () => {
   // Open fetch calls or open body streams or open websockets
@@ -97,43 +97,47 @@ const createNetwork = () => {
     }
 
     /* istanbul ignore next: mock implementation has a bug https://github.com/thoov/mock-socket/issues/242 */
-    get onclose(): WebSocketCloseCallback | null {
-      return this.#socket.onclose;
+    get onclose(): WebSocketCallback | null {
+      return this.#oncloseOriginal;
     }
 
-    set onclose(callback: WebSocketCloseCallback | null) {
+    set onclose(callback: WebSocketCallback | null) {
       if (this.#isTornDown !== true) {
-        this.#socket.onclose = callback;
+        this.#oncloseOriginal = callback;
+        this.#socket.onclose = this.#createWrapped(callback);
       }
     }
 
     /* istanbul ignore next: mock implementation has a bug https://github.com/thoov/mock-socket/issues/242 */
     get onerror(): ((this: WebSocket, ev: Event) => any) | null {
-      return this.#socket.onerror;
+      return this.#onerrorOriginal;
     }
 
     set onerror(callback: ((this: WebSocket, ev: Event) => any) | null) {
-      this.#socket.onerror = callback;
+      this.#onerrorOriginal = callback;
+      this.#socket.onerror = this.#createWrapped(callback);
     }
 
     /* istanbul ignore next: mock implementation has a bug https://github.com/thoov/mock-socket/issues/242 */
     get onmessage(): ((this: WebSocket, ev: MessageEvent<any>) => any) | null {
-      return this.#socket.onmessage;
+      return this.#onmessageOriginal;
     }
 
     set onmessage(
       callback: ((this: WebSocket, ev: MessageEvent<any>) => any) | null,
     ) {
-      this.#socket.onmessage = callback;
+      this.#onmessageOriginal = callback;
+      this.#socket.onmessage = this.#createWrapped(callback);
     }
 
     /* istanbul ignore next: mock implementation has a bug https://github.com/thoov/mock-socket/issues/242 */
     get onopen(): ((this: WebSocket, ev: Event) => any) | null {
-      return this.#socket.onopen;
+      return this.#onopenOriginal;
     }
 
     set onopen(callback: ((this: WebSocket, ev: Event) => any) | null) {
-      this.#socket.onopen = callback;
+      this.#onopenOriginal = callback;
+      this.#socket.onopen = this.#createWrapped(callback);
     }
 
     close(code?: number, reason?: string): void {
@@ -202,10 +206,14 @@ const createNetwork = () => {
 
     addEventListener(type: any, listener: any, options?: any): void {
       if (this.#isTornDown !== true) {
-        if (type === 'close') {
-          this.#closeEvents.add(listener);
+        if (this.#events[type] === undefined) {
+          this.#events[type] = new Map();
         }
-        this.#socket.addEventListener(type, listener, options);
+        const wrapped = this.#createWrapped(listener);
+        if (wrapped !== null) {
+          this.#events[type].set(listener, wrapped);
+          this.#socket.addEventListener(type, wrapped, options);
+        }
       }
     }
 
@@ -222,8 +230,13 @@ const createNetwork = () => {
     ): void;
 
     removeEventListener(type: any, listener: any, options?: any): void {
-      this.#closeEvents.delete(listener);
-      this.#socket.removeEventListener(type, listener, options);
+      if (this.#events[type] !== undefined) {
+        const wrapped = this.#events[type].get(listener);
+        if (wrapped !== undefined) {
+          this.#events[type].delete(listener);
+          this.#socket.removeEventListener(type as any, wrapped, options);
+        }
+      }
     }
 
     dispatchEvent(event: Event): boolean {
@@ -237,10 +250,10 @@ const createNetwork = () => {
     #teardownClose() {
       // We clear all close listeners
       this.#socket.onclose = null;
-      for (const callback of this.#closeEvents) {
-        this.#socket.removeEventListener('close', callback);
+      for (const wrapped of this.#events.close?.values() ?? []) {
+        this.#socket.removeEventListener('close', wrapped);
       }
-      this.#closeEvents.clear();
+      this.#events.close?.clear();
 
       // We add our own listener
       let onClosedResolve: any;
@@ -257,6 +270,34 @@ const createNetwork = () => {
       return onClosed;
     }
 
+    #createWrapped(listener: WebSocketCallback): WebSocketCallback;
+
+    #createWrapped(listener: null): null;
+
+    #createWrapped(
+      listener: WebSocketCallback | null,
+    ): WebSocketCallback | null;
+
+    #createWrapped(
+      listener: WebSocketCallback | null,
+    ): WebSocketCallback | null {
+      if (listener === null) {
+        return null;
+      }
+
+      return (e) => {
+        listener.apply(this, [
+          {
+            ...e,
+            target: this,
+            currentTarget: this,
+            srcElement: this,
+            composedPath: () => [this],
+          },
+        ]);
+      };
+    }
+
     #socket: WebSocket;
 
     /**
@@ -264,7 +305,15 @@ const createNetwork = () => {
      */
     #isTornDown = false;
 
-    #closeEvents = new Set<WebSocketCloseCallback>();
+    #events: Record<string, Map<WebSocketCallback, WebSocketCallback>> = {};
+
+    #onopenOriginal: WebSocketCallback | null = null;
+
+    #onmessageOriginal: WebSocketCallback | null = null;
+
+    #onerrorOriginal: WebSocketCallback | null = null;
+
+    #oncloseOriginal: WebSocketCallback | null = null;
   };
 
   const teardownFunction = async () => {

@@ -172,16 +172,16 @@ describe('Network endowments', () => {
     it('can be torn down during use', async () => {
       const { WebSocket, teardownFunction } = network.factory();
 
-      let onOpenResolve: any;
-      const onOpen = new Promise((r) => (onOpenResolve = r));
+      let onClosedResolve: any;
+      const onClosed = new Promise((r) => (onClosedResolve = r));
 
       const socket = new WebSocket(WEBSOCKET_URL);
       socket.onopen = async () => {
         await teardownFunction();
-        onOpenResolve(true);
+        onClosedResolve();
       };
 
-      await onOpen;
+      await onClosed;
 
       expect(socket.readyState).toStrictEqual(socket.CLOSED);
     });
@@ -189,16 +189,19 @@ describe('Network endowments', () => {
     it('normal close() still calls onclose', async () => {
       const { WebSocket } = network.factory();
 
+      let onClosedResolve: any;
+      const onClosed = new Promise((r) => (onClosedResolve = r));
+
       const socket = new WebSocket(WEBSOCKET_URL);
-      let onCloseResolve: any;
-      const onClose = new Promise((r) => (onCloseResolve = r));
       socket.onclose = () => {
-        onCloseResolve(true);
+        onClosedResolve();
       };
 
       socket.close();
 
-      expect(await onClose).toStrictEqual(true);
+      await onClosed;
+
+      expect(socket.readyState).toStrictEqual(socket.CLOSED);
     });
 
     it("can't be escaped by attaching to close event", async () => {
@@ -355,6 +358,129 @@ describe('Network endowments', () => {
       await teardownFunction();
 
       expect(socket.readyState).toStrictEqual(socket.CLOSED);
+    });
+
+    it("can't be escaped by capturing this in the event handler", async () => {
+      const { WebSocket: _WebSocket } = network.factory();
+
+      server.on('connection', (response) => {
+        response.on('message', () => {
+          response.send('PONG');
+        });
+      });
+
+      const socket = new _WebSocket(WEBSOCKET_URL);
+
+      const validateThis = function () {
+        // @ts-expect-error An outer value of 'this' is shadowed by this container
+        expect(this as any).not.toBeInstanceOf(WebSocket); // eslint-disable-line no-invalid-this
+      };
+
+      let onCloseEventResolve: any;
+      let onCloseResolve: any;
+      const allClosed = Promise.all([
+        new Promise((r) => (onCloseEventResolve = r)),
+        new Promise((r) => (onCloseResolve = r)),
+      ]);
+
+      socket.onopen = function () {
+        validateThis();
+        socket.send('PING');
+      };
+
+      socket.onmessage = function () {
+        validateThis();
+        socket.dispatchEvent(new Event('error'));
+      };
+
+      socket.onerror = function () {
+        validateThis();
+        socket.close();
+      };
+
+      socket.onclose = function () {
+        validateThis();
+        onCloseResolve();
+      };
+
+      socket.addEventListener('open', function () {
+        validateThis();
+      });
+
+      socket.addEventListener('message', function () {
+        validateThis();
+      });
+
+      socket.addEventListener('error', function () {
+        validateThis();
+      });
+
+      socket.addEventListener('close', function () {
+        validateThis();
+        onCloseEventResolve();
+      });
+
+      await allClosed;
+    });
+
+    it("can't be escaped by capturing target from event", async () => {
+      const { WebSocket: _WebSocket } = network.factory();
+
+      server.on('connection', (response) => {
+        response.on('message', () => {
+          response.send('PONG');
+        });
+      });
+
+      const validateEvent = (e: Event) => {
+        expect(e.target).not.toBeInstanceOf(WebSocket);
+        expect(e.currentTarget).not.toBeInstanceOf(WebSocket);
+        expect(e.srcElement).not.toBeInstanceOf(WebSocket);
+        (e.composedPath?.() || []).forEach((path) =>
+          expect(path).not.toBeInstanceOf(WebSocket),
+        );
+      };
+
+      let onCloseEventResolve: any;
+      let onCloseResolve: any;
+      const allClosed = Promise.all([
+        new Promise((r) => (onCloseEventResolve = r)),
+        new Promise((r) => (onCloseResolve = r)),
+      ]);
+
+      const socket = new _WebSocket(WEBSOCKET_URL);
+
+      socket.onopen = (e) => {
+        validateEvent(e);
+        socket.send('PING');
+      };
+
+      socket.onmessage = (e) => {
+        validateEvent(e);
+        socket.dispatchEvent(new Event('error'));
+      };
+
+      socket.onerror = (e) => {
+        validateEvent(e);
+        socket.close();
+      };
+
+      socket.onclose = (e) => {
+        validateEvent(e);
+        onCloseResolve();
+      };
+      socket.addEventListener('open', (e) => validateEvent(e));
+
+      socket.addEventListener('message', (e) => validateEvent(e));
+
+      socket.addEventListener('error', (e) => validateEvent(e));
+
+      socket.addEventListener('close', (e) => {
+        validateEvent(e);
+        onCloseEventResolve();
+      });
+
+      await allClosed;
     });
   });
 });
