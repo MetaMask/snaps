@@ -441,7 +441,7 @@ describe('BaseSnapExecutor', () => {
       error: {
         code: -32603,
         data: expect.anything(),
-        message: "Cannot read properties of undefined (reading 'startSnap')",
+        message: expect.stringContaining('undefined'),
       },
     });
 
