@@ -1,0 +1,27 @@
+export function allProperties(obj: any): Set<[object, string | symbol]> {
+  const properties = new Set<[any, any]>();
+  let current = obj;
+  do {
+    for (const key of Reflect.ownKeys(obj)) {
+      properties.add([obj, key]);
+    }
+  } while (
+    (current = Reflect.getPrototypeOf(obj)) &&
+    current !== Object.prototype
+  );
+  return properties;
+}
+
+export function allFunctions(obj: any): (string | symbol)[] {
+  const result = [];
+  for (const [object, key] of allProperties(obj)) {
+    if (key === 'constructor') {
+      continue;
+    }
+    const descriptor = Reflect.getOwnPropertyDescriptor(object, key);
+    if (descriptor !== undefined && descriptor.value === 'function') {
+      result.push(key);
+    }
+  }
+  return result;
+}

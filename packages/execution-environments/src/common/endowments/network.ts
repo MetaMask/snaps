@@ -1,3 +1,5 @@
+import { allFunctions } from '../utils';
+
 type WebSocketCallback = (this: WebSocket, ev: any) => any;
 
 const createNetwork = () => {
@@ -286,12 +288,16 @@ const createNetwork = () => {
       }
 
       return (e) => {
+        const functions = allFunctions(e).map((key) => e[key].bind(this));
         listener.apply(this, [
           {
             ...e,
+            ...functions,
             target: this,
             currentTarget: this,
             srcElement: this,
+            ports: [this],
+            source: null,
             composedPath: () => [this],
           },
         ]);
