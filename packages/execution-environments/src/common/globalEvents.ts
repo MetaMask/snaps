@@ -2,7 +2,7 @@ import { rootRealmGlobal } from './globalObject';
 
 export function addEventListener(
   event: string,
-  listener: EventListenerOrEventListenerObject | any,
+  listener: (...args: any[]) => void,
 ) {
   if ('addEventListener' in rootRealmGlobal) {
     return rootRealmGlobal.addEventListener(event, listener);
@@ -17,7 +17,7 @@ export function addEventListener(
 
 export function removeEventListener(
   event: string,
-  listener: EventListenerOrEventListenerObject | any,
+  listener: (...args: any[]) => void,
 ) {
   if ('removeEventListener' in rootRealmGlobal) {
     return rootRealmGlobal.removeEventListener(event, listener);
