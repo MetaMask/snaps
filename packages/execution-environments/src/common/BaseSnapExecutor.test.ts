@@ -395,4 +395,56 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
     });
   });
+
+  it('blocks Snaps from escaping confinement by using unbound this', async () => {
+    const PAYLOAD = `
+    console.error("Hack the planet");
+    `;
+    const CODE = `
+      exports.onMessage = async function() {
+        await this.startSnap("payload", \`${PAYLOAD}\`, ['console'])
+        return 'PAYLOAD SENT';
+      }
+    `;
+
+    const executor = new TestSnapExecutor();
+
+    const consoleErrorSpy = jest.spyOn(console, 'error');
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'executeSnap',
+      params: [FAKE_SNAP_NAME, CODE, []],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        FAKE_SNAP_NAME,
+        FAKE_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 2,
+      error: {
+        code: -32603,
+        data: expect.anything(),
+        message: "Cannot read properties of undefined (reading 'startSnap')",
+      },
+    });
+
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
+  });
 });
