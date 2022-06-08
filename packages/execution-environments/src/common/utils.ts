@@ -6,7 +6,7 @@ export function allProperties(obj: any): Set<[object, string | symbol]> {
       properties.add([obj, key]);
     }
   } while (
-    (current = Reflect.getPrototypeOf(obj)) &&
+    (current = Reflect.getPrototypeOf(current)) &&
     current !== Object.prototype
   );
   return properties;
