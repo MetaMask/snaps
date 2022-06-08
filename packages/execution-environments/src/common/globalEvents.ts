@@ -5,7 +5,7 @@ export function addEventListener(
   listener: (...args: any[]) => void,
 ) {
   if ('addEventListener' in rootRealmGlobal) {
-    return rootRealmGlobal.addEventListener(event, listener);
+    return rootRealmGlobal.addEventListener(event.toLowerCase(), listener);
   }
 
   if (rootRealmGlobal.process && 'on' in rootRealmGlobal.process) {
@@ -20,7 +20,7 @@ export function removeEventListener(
   listener: (...args: any[]) => void,
 ) {
   if ('removeEventListener' in rootRealmGlobal) {
-    return rootRealmGlobal.removeEventListener(event, listener);
+    return rootRealmGlobal.removeEventListener(event.toLowerCase(), listener);
   }
 
   if (rootRealmGlobal.process && 'removeListener' in rootRealmGlobal.process) {

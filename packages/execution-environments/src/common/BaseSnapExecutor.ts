@@ -206,7 +206,7 @@ export class BaseSnapExecutor {
         exports: {},
       });
 
-      addEventListener('unhandledrejection', this.snapPromiseErrorHandler);
+      addEventListener('unhandledRejection', this.snapPromiseErrorHandler);
       addEventListener('error', this.snapErrorHandler);
 
       const compartment = new Compartment({
