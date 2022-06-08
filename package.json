@@ -23,10 +23,10 @@
     "build": "yarn build:pre-tsc && yarn build:tsc && yarn build:post-tsc",
     "build:clean": "yarn clean && yarn build",
     "build:tsc": "tsc --build",
-    "build:pre-tsc": "yarn workspaces foreach --parallel --topological run build:pre-tsc",
-    "build:post-tsc": "yarn workspaces foreach --parallel --topological run build:post-tsc",
-    "clean": "yarn workspaces foreach --parallel run clean",
-    "test": "yarn workspaces foreach --parallel run test",
+    "build:pre-tsc": "yarn workspaces foreach --parallel --topological -v run build:pre-tsc",
+    "build:post-tsc": "yarn workspaces foreach --parallel --topological -v run build:post-tsc",
+    "clean": "yarn workspaces foreach --parallel -v run clean",
+    "test": "yarn workspaces foreach --parallel -v run test",
     "test:ci": "yarn workspaces foreach --parallel run test:ci"
   },
   "simple-git-hooks": {
