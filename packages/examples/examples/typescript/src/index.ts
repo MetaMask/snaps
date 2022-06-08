@@ -1,4 +1,4 @@
-const getMessage = (originString: string): string => `Hello, ${originString}!`;
+import { getMessage } from './message';
 
 export async function onMessage(
   originString: string,

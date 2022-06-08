@@ -29,6 +29,7 @@ export function bundle(
   return new Promise((resolve, _reject) => {
     const bundler = browserify(src, {
       debug,
+      extensions: ['.js', '.ts'],
       // Standalone is required to properly support Snaps using module.exports
       standalone: '<snap>',
     });
