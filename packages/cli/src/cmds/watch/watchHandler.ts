@@ -1,3 +1,4 @@
+import http from 'http';
 import chokidar from 'chokidar';
 import { YargsArgs } from '../../types/yargs';
 import {
@@ -70,6 +71,8 @@ export async function watch(argv: YargsArgs): Promise<void> {
     }
   };
 
+  let server: http.Server;
+
   chokidar
     .watch(rootDir, {
       ignoreInitial: true,
@@ -88,12 +91,30 @@ export async function watch(argv: YargsArgs): Promise<void> {
     .on('ready', async () => {
       await buildSnap();
       if (shouldServe) {
-        await serve(argv);
+        server = await serve(argv);
       }
     })
-    .on('add', (path) => buildSnap(path, `File added: ${path}`))
-    .on('change', (path) => buildSnap(path, `File changed: ${path}`))
-    .on('unlink', (path) => console.log(`File removed: ${path}`))
+    .on('add', async (path) => {
+      if (server) {
+        server.close();
+      }
+      await buildSnap(path, `File added: ${path}`);
+      if (shouldServe) {
+        // eslint-disable-next-line require-atomic-updates
+        server = await serve(argv);
+      }
+    })
+    .on('change', async (path) => {
+      if (server) {
+        server.close();
+      }
+      await buildSnap(path, `File changed: ${path}`);
+      if (shouldServe) {
+        // eslint-disable-next-line require-atomic-updates
+        server = await serve(argv);
+      }
+    })
+    .on('unlink', async (path) => console.log(`File removed: ${path}`))
     .on('error', (error: Error) => {
       logError(`Watcher error: ${error.message}`, error);
     })

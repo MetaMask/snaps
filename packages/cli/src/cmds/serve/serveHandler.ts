@@ -12,7 +12,7 @@ import { logRequest, logServerError, logServerListening } from './serveUtils';
  * @param argv.root - The root directory path string
  * @param argv.port - The server port
  */
-export async function serve(argv: YargsArgs): Promise<void> {
+export async function serve(argv: YargsArgs): Promise<http.Server> {
   const { port, root: rootDir } = argv;
 
   await validateDirPath(rootDir as string, true);
@@ -49,4 +49,6 @@ export async function serve(argv: YargsArgs): Promise<void> {
     console.log('Server closed');
     process.exitCode = 1;
   });
+
+  return server;
 }
