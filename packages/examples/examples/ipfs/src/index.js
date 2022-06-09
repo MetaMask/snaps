@@ -6,13 +6,13 @@ const ipfs = new IPFS({
   protocol: 'https',
 });
 
-module.exports.onMessage = async (_originString, requestObject) => {
-  switch (requestObject.method) {
+module.exports.onRpcMessage = async ({ request }) => {
+  switch (request.method) {
     case 'add':
-      return await ipfs.add(requestObject.params[0]);
+      return await ipfs.add(request.params[0]);
     case 'cat':
-      return await ipfs.cat(requestObject.params[0]);
+      return await ipfs.cat(request.params[0]);
     default:
-      throw rpcErrors.eth.methodNotFound(requestObject);
+      throw rpcErrors.eth.methodNotFound(request);
   }
 };

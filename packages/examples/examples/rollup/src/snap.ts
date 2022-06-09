@@ -1,15 +1,18 @@
-export async function onMessage(
-  originString: string,
-  requestObject: Record<string, unknown>,
-) {
-  switch (requestObject.method) {
+export async function onRpcMessage({
+  origin,
+  request,
+}: {
+  origin: string;
+  request: Record<string, unknown>;
+}) {
+  switch (request.method) {
     case 'inApp':
       return wallet.request({
         method: 'snap_notify',
         params: [
           {
             type: 'inApp',
-            message: `Hello, ${originString}!`,
+            message: `Hello, ${origin}!`,
           },
         ],
       });
@@ -19,7 +22,7 @@ export async function onMessage(
         params: [
           {
             type: 'native',
-            message: `Hello, ${originString}!`,
+            message: `Hello, ${origin}!`,
           },
         ],
       });

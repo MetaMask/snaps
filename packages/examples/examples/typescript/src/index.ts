@@ -1,15 +1,15 @@
-import { OnMessageHandler } from '@metamask/snap-types';
+import { OnRpcMessageHandler } from '@metamask/snap-types';
 import { getMessage } from './message';
 
-export const onMessage: OnMessageHandler = (originString, requestObject) => {
-  switch (requestObject.method) {
+export const onMessage: OnRpcMessageHandler = ({ origin, request }) => {
+  switch (request.method) {
     case 'hello':
       return wallet.request({
         method: 'snap_notify',
         params: [
           {
             type: 'inapp',
-            message: getMessage(originString),
+            message: getMessage(origin),
           },
         ],
       });

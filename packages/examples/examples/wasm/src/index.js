@@ -23,13 +23,13 @@ const initializeWasm = async () => {
   }
 };
 
-module.exports.onMessage = async (_originString, requestObject) => {
+module.exports.onRpcMessage = async ({ request }) => {
   if (!wasm) {
     await initializeWasm();
   }
 
-  if (wasm.instance.exports[requestObject.method]) {
-    return wasm.instance.exports[requestObject.method](...requestObject.params);
+  if (wasm.instance.exports[request.method]) {
+    return wasm.instance.exports[request.method](...request.params);
   }
-  throw ethErrors.rpc.methodNotFound({ data: { request: requestObject } });
+  throw ethErrors.rpc.methodNotFound({ data: { request } });
 };

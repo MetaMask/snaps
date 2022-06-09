@@ -16,17 +16,17 @@ import { rootRealmGlobal } from './globalObject';
 import { rpcMethods, RpcMethodsMapping } from './rpcMethods';
 import { sortParamKeys } from './sortParams';
 
-type SnapRpcHandler = (
-  origin: string,
-  request: JsonRpcRequest,
-) => Promise<unknown>;
+type OnRpcMessageHandler = (args: {
+  origin: string;
+  request: JsonRpcRequest;
+}) => Promise<unknown>;
 
 type EvaluationData = {
   stop: () => void;
 };
 
 type SnapData = {
-  exports: { onMessage?: SnapRpcHandler };
+  exports: { onRpcMessage?: OnRpcMessageHandler };
   runningEvaluations: Set<EvaluationData>;
   idleTeardown: () => void;
 };
@@ -59,13 +59,15 @@ export class BaseSnapExecutor {
       this.startSnap.bind(this),
       (target, origin, request) => {
         const data = this.snapData.get(target);
-        if (data?.exports?.onMessage === undefined) {
-          throw new Error(`No onMessage handler exported for snap "${target}`);
+        if (data?.exports?.onRpcMessage === undefined) {
+          throw new Error(
+            `No onRpcMessage handler exported for snap "${target}`,
+          );
         }
         // We're capturing the handler in case someone modifies the data object before the call
-        const handler = data.exports.onMessage;
+        const handler = data.exports.onRpcMessage;
         return this.executeInSnapContext(target, () =>
-          handler(origin, request),
+          handler({ origin, request }),
         );
       },
       this.onTerminate.bind(this),
@@ -247,18 +249,18 @@ export class BaseSnapExecutor {
   }
 
   private registerSnapExports(snapName: string, snapModule: any) {
-    if (typeof snapModule?.exports?.onMessage === 'function') {
+    if (typeof snapModule?.exports?.onRpcMessage === 'function') {
       const data = this.snapData.get(snapName);
       // Somebody deleted the Snap before we could register
       if (data !== undefined) {
         console.log(
           'Worker: Registering RPC message handler',
-          snapModule.exports.onMessage,
+          snapModule.exports.onRpcMessage,
         );
 
         data.exports = {
           ...data.exports,
-          onMessage: snapModule.exports.onMessage,
+          onRpcMessage: snapModule.exports.onRpcMessage,
         };
       }
     }

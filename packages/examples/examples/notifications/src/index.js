@@ -1,12 +1,12 @@
-module.exports.onMessage = async (originString, requestObject) => {
-  switch (requestObject.method) {
+module.exports.onRpcMessage = async ({ origin, request }) => {
+  switch (request.method) {
     case 'inApp':
       return wallet.request({
         method: 'snap_notify',
         params: [
           {
             type: 'inApp',
-            message: `Hello, ${originString}!`,
+            message: `Hello, ${origin}!`,
           },
         ],
       });
@@ -16,7 +16,7 @@ module.exports.onMessage = async (originString, requestObject) => {
         params: [
           {
             type: 'native',
-            message: `Hello, ${originString}!`,
+            message: `Hello, ${origin}!`,
           },
         ],
       });

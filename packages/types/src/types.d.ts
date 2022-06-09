@@ -19,12 +19,12 @@ export type SnapExecutionData = SnapData & {
   endowments?: Json;
 };
 
-export type SnapRpcHandler = (
-  origin: string,
-  request: Record<string, unknown>,
-) => Promise<unknown>;
+export type SnapRpcHandler = (args: {
+  origin: string;
+  request: Record<string, unknown>;
+}) => Promise<unknown>;
 
-export type OnMessageHandler = SnapRpcHandler;
+export type OnRpcMessageHandler = SnapRpcHandler;
 
 export type SnapProvider = MetaMaskInpageProvider;
 

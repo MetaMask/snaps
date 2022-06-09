@@ -26,8 +26,8 @@ if (parentPort !== null) {
       exports: snapModule.exports,
     }).evaluate(readFileSync(snapFilePath, 'utf8'));
 
-    if (!snapModule.exports?.onMessage) {
-      console.warn("The Snap doesn't have onMessage export defined");
+    if (!snapModule.exports?.onRpcMessage) {
+      console.warn("The Snap doesn't have onRpcMessage export defined");
     }
 
     setTimeout(() => process.exit(0), 1000); // Hack to ensure worker exits

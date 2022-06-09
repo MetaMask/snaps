@@ -10,8 +10,8 @@ const ethers = require('ethers');
  */
 const provider = new ethers.providers.Web3Provider(wallet);
 
-module.exports.onMessage = async (_originString, requestObject) => {
-  console.log('received request', requestObject);
+module.exports.onRpcMessage = async ({ request }) => {
+  console.log('received request', request);
   const privKey = await wallet.request({
     method: 'snap_getAppKey',
   });
@@ -19,18 +19,18 @@ module.exports.onMessage = async (_originString, requestObject) => {
   const ethWallet = new ethers.Wallet(privKey, provider);
   console.dir(ethWallet);
 
-  switch (requestObject.method) {
+  switch (request.method) {
     case 'address':
       return ethWallet.address;
 
     case 'signMessage': {
-      const message = requestObject.params[0];
+      const message = request.params[0];
       console.log('trying to sign message', message);
       return ethWallet.signMessage(message);
     }
 
     case 'sign': {
-      const transaction = requestObject.params[0];
+      const transaction = request.params[0];
       return ethWallet.sign(transaction);
     }
 
