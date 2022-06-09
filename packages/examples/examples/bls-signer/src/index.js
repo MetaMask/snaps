@@ -5,14 +5,14 @@ const DOMAIN = 2;
 
 console.log('Hello from bls-snap!');
 
-module.exports.onRpcMessage = async (_originString, requestObject) => {
-  switch (requestObject.method) {
+module.exports.onRpcMessage = async ({ request }) => {
+  switch (request.method) {
     case 'getAccount':
       return await getPubKey();
 
     case 'signMessage': {
       const pubKey = await getPubKey();
-      const data = requestObject.params[0];
+      const data = request.params[0];
       const approved = await promptUser(
         'BLS signature request',
         `Do you want to BLS sign ${data} with ${pubKey}?`,
@@ -23,16 +23,12 @@ module.exports.onRpcMessage = async (_originString, requestObject) => {
       const PRIVATE_KEY = await wallet.request({
         method: 'snap_getAppKey',
       });
-      const signature = await bls.sign(
-        requestObject.params[0],
-        PRIVATE_KEY,
-        DOMAIN,
-      );
+      const signature = await bls.sign(request.params[0], PRIVATE_KEY, DOMAIN);
       return signature;
     }
 
     default:
-      throw rpcErrors.methodNotFound(requestObject);
+      throw rpcErrors.methodNotFound(request);
   }
 };
 
