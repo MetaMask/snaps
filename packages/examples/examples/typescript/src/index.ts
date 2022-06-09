@@ -1,16 +1,14 @@
+import { OnMessageHandler } from '@metamask/snap-types';
 import { getMessage } from './message';
 
-export async function onMessage(
-  originString: string,
-  requestObject: Record<string, unknown>,
-) {
+export const onMessage: OnMessageHandler = (originString, requestObject) => {
   switch (requestObject.method) {
     case 'hello':
       return wallet.request({
         method: 'snap_notify',
         params: [
           {
-            type: 'native',
+            type: 'inapp',
             message: getMessage(originString),
           },
         ],
@@ -18,4 +16,4 @@ export async function onMessage(
     default:
       throw new Error('Method not found.');
   }
-}
+};

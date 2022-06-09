@@ -24,6 +24,8 @@ export type SnapRpcHandler = (
   request: Record<string, unknown>,
 ) => Promise<unknown>;
 
+export type OnMessageHandler = SnapRpcHandler;
+
 export type SnapProvider = MetaMaskInpageProvider;
 
 export type SnapId = string;
