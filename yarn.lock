@@ -5713,21 +5713,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/contract-metadata@npm:^1.33.0":
-  version: 1.33.0
-  resolution: "@metamask/contract-metadata@npm:1.33.0"
-  checksum: f854b062c7404511827c6d08785f5e3b8498d5555e740dbbdb37833f3fe8f695bd222c5c4e2af65e9d3d2bd1a0a93b4eecbc379cc0d9523db4eaf56cfa8e612a
+"@metamask/contract-metadata@npm:^1.35.0":
+  version: 1.35.0
+  resolution: "@metamask/contract-metadata@npm:1.35.0"
+  checksum: d2bbb8bff2e2ebd4104512dbf4b2900fffd1f03125673b0d3ac58dac0e3b324402fec7170229dfdb601635d6d7074e0755f139149b3dc8640ee4703c17eb2383
   languageName: node
   linkType: hard
 
-"@metamask/controllers@npm:^29.0.1":
-  version: 29.0.1
-  resolution: "@metamask/controllers@npm:29.0.1"
+"@metamask/controllers@npm:^30.0.0":
+  version: 30.0.0
+  resolution: "@metamask/controllers@npm:30.0.0"
   dependencies:
     "@ethereumjs/common": ^2.3.1
     "@ethereumjs/tx": ^3.2.1
     "@keystonehq/metamask-airgapped-keyring": ^0.3.0
-    "@metamask/contract-metadata": ^1.33.0
+    "@metamask/contract-metadata": ^1.35.0
     "@metamask/metamask-eth-abis": 3.0.0
     "@metamask/types": ^1.1.0
     "@types/uuid": ^8.3.0
@@ -5739,7 +5739,7 @@ __metadata:
     eth-json-rpc-infura: ^5.1.0
     eth-keyring-controller: ^7.0.2
     eth-method-registry: 1.1.0
-    eth-phishing-detect: ^1.1.16
+    eth-phishing-detect: ^1.2.0
     eth-query: ^2.1.2
     eth-rpc-errors: ^4.0.0
     eth-sig-util: ^3.0.0
@@ -5759,7 +5759,7 @@ __metadata:
     uuid: ^8.3.2
     web3: ^0.20.7
     web3-provider-engine: ^16.0.3
-  checksum: 05d3f178c9ba964f5a3a8a3e1d04e797cb2a2c8b738311c5f5a23f2a73bc668819f788ff312e92985719f90b08bc4f022799b915424167cec3543a6e402eee19
+  checksum: 7a594896a7e08dcda8e02656cfa30f2a61decd11904e4d4cde38e85125bc245c2cca87ff6654ea8a7c1aea78d197388e9a38811dfa1eb9c41fe07a09b1fc2c84
   languageName: node
   linkType: hard
 
@@ -5998,7 +5998,7 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
-    "@metamask/controllers": ^29.0.1
+    "@metamask/controllers": ^30.0.0
     "@metamask/eslint-config": ^8.0.0
     "@metamask/eslint-config-jest": ^8.0.0
     "@metamask/eslint-config-nodejs": ^8.0.0
@@ -6038,7 +6038,7 @@ __metadata:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
     "@metamask/browser-passworder": ^3.0.0
-    "@metamask/controllers": ^29.0.1
+    "@metamask/controllers": ^30.0.0
     "@metamask/eslint-config": ^8.0.0
     "@metamask/eslint-config-jest": ^8.0.0
     "@metamask/eslint-config-nodejs": ^8.0.0
@@ -6101,7 +6101,7 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
-    "@metamask/controllers": ^29.0.1
+    "@metamask/controllers": ^30.0.0
     "@metamask/eslint-config": ^8.0.0
     "@metamask/eslint-config-jest": ^8.0.0
     "@metamask/eslint-config-nodejs": ^8.0.0
@@ -12141,12 +12141,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-phishing-detect@npm:^1.1.16":
-  version: 1.1.16
-  resolution: "eth-phishing-detect@npm:1.1.16"
+"eth-phishing-detect@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "eth-phishing-detect@npm:1.2.0"
   dependencies:
     fast-levenshtein: ^2.0.6
-  checksum: f8110984141a4d6375a54a0fe100cbe59e29b9b92bcc0f6bb4a99d035edad10578d7a4d8246bc17290a3199f9d6915da3b58f743ac9d58d99a9cba72cb7efa2a
+  checksum: 66a6a7c249ec8494e0360663596ce980ca75747cd202c47732eca0bfc7a97c6debbae359842e4f3e4ac7e6c44ab1f7f091c3aa7baa330449d3c1b7cc58608b71
   languageName: node
   linkType: hard
 

@@ -23,7 +23,7 @@
     "publish": "../../scripts/publish-package.sh"
   },
   "dependencies": {
-    "@metamask/controllers": "^29.0.1",
+    "@metamask/controllers": "^30.0.0",
     "@metamask/key-tree": "^4.0.0",
     "@metamask/snap-controllers": "^0.15.0",
     "@metamask/types": "^1.1.0",
