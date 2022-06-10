@@ -31,6 +31,7 @@
     "@metamask/eslint-config-nodejs": "^8.0.0",
     "@metamask/eslint-config-typescript": "^8.0.0",
     "@metamask/providers": "^9.0.0",
+    "@metamask/types": "^1.1.0",
     "eslint": "^7.30.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.23.4",
