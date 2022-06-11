@@ -12,6 +12,7 @@ import {
   resolveVersion,
   satifiesVersionRange,
   SnapIdPrefixes,
+  stripDotSlash,
 } from './utils';
 
 fetchMock.enableMocks();
@@ -94,6 +95,25 @@ describe('fetchNpmSnap', () => {
     expect(svgIcon?.startsWith('<svg') && svgIcon.endsWith('</svg>')).toBe(
       true,
     );
+  });
+});
+
+describe('stripDotSlash', () => {
+  it('handles inputs as expected', () => {
+    (
+      [
+        ['./foo', 'foo'],
+        ['./', ''],
+        ['', ''],
+        ['foo', 'foo'],
+        [undefined, undefined],
+        // Some contrived but illustrative examples
+        ['././', './'],
+        ['././foo', './foo'],
+      ] as const
+    ).forEach(([input, expected]) => {
+      expect(stripDotSlash(input)).toBe(expected);
+    });
   });
 });
 
