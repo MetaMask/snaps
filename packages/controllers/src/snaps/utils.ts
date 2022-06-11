@@ -460,14 +460,17 @@ function createTarballExtractionStream(
     return entryStream.resume();
   });
 
-  // When we've read the entire tarball, attempt to grab the bundle file
+  // Once we've read the entire tarball, attempt to grab the bundle file
   // contents from the .js file cache.
-  extractStream.on('finish', () => {
+  extractStream.once('finish', () => {
     if (isObject(snapFiles.manifest)) {
       /* istanbul ignore next: optional chaining */
-      const { filePath: bundlePath, iconPath } =
+      const { filePath: _bundlePath, iconPath: _iconPath } =
         (snapFiles.manifest as unknown as Partial<SnapManifest>).source
           ?.location?.npm ?? {};
+
+      const bundlePath = stripDotSlash(_bundlePath);
+      const iconPath = stripDotSlash(_iconPath);
 
       if (bundlePath) {
         snapFiles.sourceCode = jsFileCache.get(bundlePath)?.toString('utf8');
@@ -509,8 +512,8 @@ export function validateSnapShasum(
  * We can't use the native Web {@link ReadableStream} directly because the
  * other stream libraries we use expect Node.js streams.
  *
- * @param response - The response whose body stream to get.
- * @returns The response body stream, as a Node.js Readable stream.
+ * @param stream - The stream to convert.
+ * @returns The given stream as a Node.js Readable stream.
  */
 function getNodeStream(stream: ReadableStream): Readable {
   if (typeof stream.getReader !== 'function') {
@@ -533,7 +536,20 @@ function isValidUrl(maybeUrl: string): maybeUrl is string {
 }
 
 /**
+ * Strips the leading `./` from the specified string, or does nothing if no
+ * string is provided.
+ *
+ * @param pathString - The path string to normalize.
+ * @returns The specified path without a `./` prefix, or `undefined` if no
+ * string was provided.
+ */
+export function stripDotSlash(pathString?: string): string | undefined {
+  return pathString?.replace(/^\.\//u, '');
+}
+
+/**
  * Parse a version received by some subject attempting to access a snap.
+ *
  * @param version - The received version value.
  * @returns `*` if the version is `undefined` or `latest", otherwise returns
  * the specified version.
