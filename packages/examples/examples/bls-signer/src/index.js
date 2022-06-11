@@ -5,7 +5,7 @@ const DOMAIN = 2;
 
 console.log('Hello from bls-snap!');
 
-module.exports.onRpcMessage = async ({ request }) => {
+module.exports.onRpcRequest = async ({ request }) => {
   switch (request.method) {
     case 'getAccount':
       return await getPubKey();
