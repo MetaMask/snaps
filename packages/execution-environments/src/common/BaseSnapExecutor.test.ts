@@ -173,7 +173,7 @@ describe('BaseSnapExecutor', () => {
     it("doesn't leak execution outside of expected timeshare during RPC calls", async () => {
       // The 250 timeout should run and return a value, but all later timeouts should fail to execute
       const CODE = `
-        exports.onRpcMessage = (() => {
+        exports.onRpcRequest = (() => {
           let resolve;
           const promise = new Promise((r) => { resolve = r; });
 
@@ -227,7 +227,7 @@ describe('BaseSnapExecutor', () => {
         // Since we don't know how the handle looks like we have to actually retrieve it after creating it
         const CODE_1 = `
           let handle;
-          exports.onRpcMessage = (({ origin, request }) => {
+          exports.onRpcRequest = (({ origin, request }) => {
             switch (request.method) {
               case 'set':
                 let resolve;
@@ -243,7 +243,7 @@ describe('BaseSnapExecutor', () => {
           });
         `;
         const CODE_2 = `
-          exports.onRpcMessage = (({ origin, request }) => {
+          exports.onRpcRequest = (({ origin, request }) => {
             const handle = request.params[0];
             clear${name}(handle);
             return 'SNAP 2 OK';
@@ -343,7 +343,7 @@ describe('BaseSnapExecutor', () => {
 
   it('terminates a request when terminate RPC is called', async () => {
     const CODE = `
-      exports.onRpcMessage = (() => new Promise(() => ({})));
+      exports.onRpcRequest = (() => new Promise(() => ({})));
     `;
     const executor = new TestSnapExecutor();
 
@@ -401,7 +401,7 @@ describe('BaseSnapExecutor', () => {
     console.error("Hack the planet");
     `;
     const CODE = `
-      exports.onRpcMessage = async function() {
+      exports.onRpcRequest = async function() {
         await this.startSnap("payload", \`${PAYLOAD}\`, ['console'])
         return 'PAYLOAD SENT';
       }

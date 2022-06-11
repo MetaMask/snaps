@@ -1,4 +1,4 @@
-export async function onRpcMessage({
+export async function onRpcRequest({
   origin,
   request,
 }: {

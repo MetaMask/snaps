@@ -10,7 +10,7 @@ const ethers = require('ethers');
  */
 const provider = new ethers.providers.Web3Provider(wallet);
 
-module.exports.onRpcMessage = async ({ request }) => {
+module.exports.onRpcRequest = async ({ request }) => {
   console.log('received request', request);
   const privKey = await wallet.request({
     method: 'snap_getAppKey',
