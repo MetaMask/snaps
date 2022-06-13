@@ -13,7 +13,6 @@ type MockSnapProvider = EventEmitter & {
 
 function getMockSnapProvider(): MockSnapProvider {
   const mockProvider = new EventEmitter() as Partial<MockSnapProvider>;
-  mockProvider.registerRpcMessageHandler = () => true;
   mockProvider.request = async () => true;
   return mockProvider as MockSnapProvider;
 }

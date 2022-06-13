@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps-skunkworks.git"
   },
   "source": {
-    "shasum": "hzUNmZVCl+BZe5F1pzEEhS9YmjfmSjLf8Fm89SDEjVI=",
+    "shasum": "Mcq27as/wyqlrP7yvQKV6V17IFvcj15x1ibBkG4QEnE=",
     "location": {
       "npm": {
         "filePath": "dist/snap.js",
