@@ -7,17 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.16.0]
-### Uncategorized
-- Rename `onRpcMessage` to `onRpcRequest` ([#538](https://github.com/MetaMask/snaps-skunkworks/pull/538))
-- Strip leading `./` from paths in npm snap manifests ([#537](https://github.com/MetaMask/snaps-skunkworks/pull/537))
-- @metamask/controllers@30.0.0 ([#535](https://github.com/MetaMask/snaps-skunkworks/pull/535))
-- BREAKING: Rename `onMessage` to `onRpcMessage` and use named parameters ([#533](https://github.com/MetaMask/snaps-skunkworks/pull/533))
-- BREAKING: Add state encryption ([#369](https://github.com/MetaMask/snaps-skunkworks/pull/369))
+### Added
+- **BREAKING:** Add state encryption ([#369](https://github.com/MetaMask/snaps-skunkworks/pull/369))
+  - Breaks existing installed snaps that uses state, re-install is required.
+
+### Fixed
 - Allow version matching with prerelease versions ([#508](https://github.com/MetaMask/snaps-skunkworks/pull/508))
-- BREAKING: Moved Snaps to be based on CommonJS ([#481](https://github.com/MetaMask/snaps-skunkworks/pull/481))
 - Fix issue with iframe error reporting ([#501](https://github.com/MetaMask/snaps-skunkworks/pull/501))
-- Snaps can't now leak execution outside of expected running bounds ([#490](https://github.com/MetaMask/snaps-skunkworks/pull/490))
-- Fix various monorepo / workspace issues ([#496](https://github.com/MetaMask/snaps-skunkworks/pull/496))
+- Fix an issue with file paths with leading `./` in npm snap manifests ([#537](https://github.com/MetaMask/snaps-skunkworks/pull/537))
+
+### Changed
+- **BREAKING:** Snaps are now required to export `onRpcRequest` to receive RPC requests ([#481](https://github.com/MetaMask/snaps-skunkworks/pull/481), [#533](https://github.com/MetaMask/snaps-skunkworks/pull/533), [#538](https://github.com/MetaMask/snaps-skunkworks/pull/538))
+  - The type of the function is available in `@metamask/snap-types` as `OnRpcRequestHandler`
+- Snaps can no longer run timers outside of pending RPC requests ([#490](https://github.com/MetaMask/snaps-skunkworks/pull/490))
+- Bump `@metamask/controllers` to `30.0.0` ([#535](https://github.com/MetaMask/snaps-skunkworks/pull/535))
 
 ## [0.15.0]
 ### Fixed

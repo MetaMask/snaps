@@ -7,9 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.16.0]
-### Uncategorized
-- @metamask/controllers@30.0.0 ([#535](https://github.com/MetaMask/snaps-skunkworks/pull/535))
-- Fix various monorepo / workspace issues ([#496](https://github.com/MetaMask/snaps-skunkworks/pull/496))
+### Changed
+- Bump `@metamask/controllers` to `30.0.0` ([#535](https://github.com/MetaMask/snaps-skunkworks/pull/535))
 
 ## [0.15.0]
 ### Changed

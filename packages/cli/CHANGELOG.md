@@ -7,14 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.16.0]
-### Uncategorized
-- Rename `onRpcMessage` to `onRpcRequest` ([#538](https://github.com/MetaMask/snaps-skunkworks/pull/538))
-- BREAKING: Rename `onMessage` to `onRpcMessage` and use named parameters ([#533](https://github.com/MetaMask/snaps-skunkworks/pull/533))
-- Fix importing local files in typescript snaps ([#527](https://github.com/MetaMask/snaps-skunkworks/pull/527))
-- Update configuration file section in CLI Readme ([#509](https://github.com/MetaMask/snaps-skunkworks/pull/509))
-- BREAKING: Moved Snaps to be based on CommonJS ([#481](https://github.com/MetaMask/snaps-skunkworks/pull/481))
-- Snaps can't now leak execution outside of expected running bounds ([#490](https://github.com/MetaMask/snaps-skunkworks/pull/490))
-- Fix various monorepo / workspace issues ([#496](https://github.com/MetaMask/snaps-skunkworks/pull/496))
+### Changed
+- **BREAKING:** Snaps are now required to export `onRpcRequest` to receive RPC requests ([#481](https://github.com/MetaMask/snaps-skunkworks/pull/481), [#533](https://github.com/MetaMask/snaps-skunkworks/pull/533), [#538](https://github.com/MetaMask/snaps-skunkworks/pull/538))
+  - The type of the function is available in `@metamask/snap-types` as `OnRpcRequestHandler`
+### Fixed
+- Fix importing local files in TypeScript Snaps ([#527](https://github.com/MetaMask/snaps-skunkworks/pull/527))
 
 ## [0.15.0]
 ### Added
