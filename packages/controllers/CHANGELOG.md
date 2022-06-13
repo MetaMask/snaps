@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.16.0]
+### Uncategorized
+- Rename `onRpcMessage` to `onRpcRequest` ([#538](https://github.com/MetaMask/snaps-skunkworks/pull/538))
+- Strip leading `./` from paths in npm snap manifests ([#537](https://github.com/MetaMask/snaps-skunkworks/pull/537))
+- @metamask/controllers@30.0.0 ([#535](https://github.com/MetaMask/snaps-skunkworks/pull/535))
+- BREAKING: Rename `onMessage` to `onRpcMessage` and use named parameters ([#533](https://github.com/MetaMask/snaps-skunkworks/pull/533))
+- BREAKING: Add state encryption ([#369](https://github.com/MetaMask/snaps-skunkworks/pull/369))
+- Allow version matching with prerelease versions ([#508](https://github.com/MetaMask/snaps-skunkworks/pull/508))
+- BREAKING: Moved Snaps to be based on CommonJS ([#481](https://github.com/MetaMask/snaps-skunkworks/pull/481))
+- Fix issue with iframe error reporting ([#501](https://github.com/MetaMask/snaps-skunkworks/pull/501))
+- Snaps can't now leak execution outside of expected running bounds ([#490](https://github.com/MetaMask/snaps-skunkworks/pull/490))
+- Fix various monorepo / workspace issues ([#496](https://github.com/MetaMask/snaps-skunkworks/pull/496))
+
 ## [0.15.0]
 ### Fixed
 - Fix an issue with detecting iframe execution environment load ([#464](https://github.com/MetaMask/snaps-skunkworks/pull/464))
@@ -274,7 +287,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.15.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.16.0...HEAD
+[0.16.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.15.0...v0.16.0
 [0.15.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.14.0...v0.15.0
 [0.14.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.13.0...v0.14.0
 [0.13.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.12.0...v0.13.0

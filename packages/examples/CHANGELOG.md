@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.16.0]
+### Uncategorized
+- Rename `onRpcMessage` to `onRpcRequest` ([#538](https://github.com/MetaMask/snaps-skunkworks/pull/538))
+- BREAKING: Rename `onMessage` to `onRpcMessage` and use named parameters ([#533](https://github.com/MetaMask/snaps-skunkworks/pull/533))
+- Update TypeScript example to use `OnMessageHandler` ([#531](https://github.com/MetaMask/snaps-skunkworks/pull/531))
+- Add the --verbose flag to all 'yarn workspaces foreach' invocations ([#529](https://github.com/MetaMask/snaps-skunkworks/pull/529))
+- Add CLI as dependency to examples ([#528](https://github.com/MetaMask/snaps-skunkworks/pull/528))
+- Fix importing local files in typescript snaps ([#527](https://github.com/MetaMask/snaps-skunkworks/pull/527))
+- BREAKING: Moved Snaps to be based on CommonJS ([#481](https://github.com/MetaMask/snaps-skunkworks/pull/481))
+- Add Browserify Snap example ([#478](https://github.com/MetaMask/snaps-skunkworks/pull/478))
+- Fix various monorepo / workspace issues ([#496](https://github.com/MetaMask/snaps-skunkworks/pull/496))
+
 ## [0.15.0]
 ### Added
 - Add Rollup Snap example ([#472](https://github.com/MetaMask/snaps-skunkworks/pull/472))
@@ -130,7 +142,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - This package was previously a subset of [`snaps-cli`](https://github.com/MetaMask/snaps-cli/tree/main/examples), which has been renamed to [`@metamask/snaps-cli`](https://npmjs.com/package/@metamask/snaps-cli).
   - Some examples have been deleted because they were outdated.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.15.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.16.0...HEAD
+[0.16.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.15.0...v0.16.0
 [0.15.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.14.0...v0.15.0
 [0.14.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.13.0...v0.14.0
 [0.13.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.12.0...v0.13.0

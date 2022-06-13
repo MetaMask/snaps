@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.16.0]
+### Uncategorized
+- Update `onRpcMessageHandler` type ([#534](https://github.com/MetaMask/snaps-skunkworks/pull/534))
+- Rename `onRpcMessage` to `onRpcRequest` ([#538](https://github.com/MetaMask/snaps-skunkworks/pull/538))
+- @metamask/controllers@30.0.0 ([#535](https://github.com/MetaMask/snaps-skunkworks/pull/535))
+- BREAKING: Rename `onMessage` to `onRpcMessage` and use named parameters ([#533](https://github.com/MetaMask/snaps-skunkworks/pull/533))
+- Update TypeScript example to use `OnMessageHandler` ([#531](https://github.com/MetaMask/snaps-skunkworks/pull/531))
+- @metamask/providers@9.0.0 ([#530](https://github.com/MetaMask/snaps-skunkworks/pull/530))
+- BREAKING: Moved Snaps to be based on CommonJS ([#481](https://github.com/MetaMask/snaps-skunkworks/pull/481))
+- Fix various monorepo / workspace issues ([#496](https://github.com/MetaMask/snaps-skunkworks/pull/496))
+
 ## [0.15.0]
 ### Added
 - Add type for `wallet` global ([#443](https://github.com/MetaMask/snaps-skunkworks/pull/443))
@@ -129,7 +140,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.15.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.16.0...HEAD
+[0.16.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.15.0...v0.16.0
 [0.15.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.14.0...v0.15.0
 [0.14.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.13.0...v0.14.0
 [0.13.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.12.0...v0.13.0

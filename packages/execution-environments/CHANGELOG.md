@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.16.0]
+### Uncategorized
+- Rename `onRpcMessage` to `onRpcRequest` ([#538](https://github.com/MetaMask/snaps-skunkworks/pull/538))
+- BREAKING: Rename `onMessage` to `onRpcMessage` and use named parameters ([#533](https://github.com/MetaMask/snaps-skunkworks/pull/533))
+- @metamask/providers@9.0.0 ([#530](https://github.com/MetaMask/snaps-skunkworks/pull/530))
+- Added test that checks for unbound this escape ([#526](https://github.com/MetaMask/snaps-skunkworks/pull/526))
+- BREAKING: Moved Snaps to be based on CommonJS ([#481](https://github.com/MetaMask/snaps-skunkworks/pull/481))
+- Fix issue with iframe error reporting ([#501](https://github.com/MetaMask/snaps-skunkworks/pull/501))
+- Snaps can't now leak execution outside of expected running bounds ([#490](https://github.com/MetaMask/snaps-skunkworks/pull/490))
+- Fix various monorepo / workspace issues ([#496](https://github.com/MetaMask/snaps-skunkworks/pull/496))
+
 ## [0.15.0]
 ### Fixed
 - Added missing properties to `WebAssembly` global ([#459](https://github.com/MetaMask/snaps-skunkworks/pull/459))
@@ -80,7 +91,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Previously, default endowments were specified in the execution environment itself. Now, all endowments must be specified in the `executeSnap` RPC parameters, except for the `wallet` API object.
 - Add endowments to the global `self` in addition to `window` ([#263](https://github.com/MetaMask/snaps-skunkworks/pull/263))
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.15.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.16.0...HEAD
+[0.16.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.15.0...v0.16.0
 [0.15.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.14.0...v0.15.0
 [0.14.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.13.0...v0.14.0
 [0.13.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.12.0...v0.13.0
