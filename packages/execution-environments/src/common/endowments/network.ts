@@ -30,14 +30,14 @@ const createNetwork = () => {
     }
 
     let res: Response;
-    let openFethConnection: { cancel: () => Promise<void> } | undefined;
+    let openFetchConnection: { cancel: () => Promise<void> } | undefined;
     try {
       const fetchPromise = fetch(input, {
         ...init,
         signal: abortController.signal,
       });
 
-      openFethConnection = {
+      openFetchConnection = {
         cancel: async () => {
           abortController.abort();
           try {
@@ -47,12 +47,12 @@ const createNetwork = () => {
           }
         },
       };
-      openConnections.add(openFethConnection);
+      openConnections.add(openFetchConnection);
 
       res = await fetchPromise;
     } finally {
-      if (openFethConnection !== undefined) {
-        openConnections.delete(openFethConnection);
+      if (openFetchConnection !== undefined) {
+        openConnections.delete(openFetchConnection);
       }
     }
 
@@ -61,12 +61,18 @@ const createNetwork = () => {
       const openBodyConnection = {
         cancel:
           /* istanbul ignore next: see it.todo('can be torn down during body read') test */
-          async () => await body.deref()?.cancel(),
+          async () => {
+            try {
+              await body.deref()?.cancel();
+            } catch {
+              /* do nothing */
+            }
+          },
       };
       openConnections.add(openBodyConnection);
       cleanup.register(
         res.body,
-        /* istanbul ignore next: can't test garbage collection without modyfing node parameters */
+        /* istanbul ignore next: can't test garbage collection without modifying node parameters */
         () => openConnections.delete(openBodyConnection),
       );
     }
@@ -77,7 +83,7 @@ const createNetwork = () => {
    * This class wraps a WebSocket object instead of extending it.
    * That way, a bad actor can't get access to original methods using socket.prototype
    *
-   * When modyfing this class, ensure that no method calls any other method from the same class (#socket calls are fine).
+   * When modifying this class, ensure that no method calls any other method from the same class (#socket calls are fine).
    * Otherwise a bad actor could replace one of the implementations
    */
   const _WebSocket = class implements WebSocket {
@@ -88,17 +94,22 @@ const createNetwork = () => {
       // But you can capture the close itself
       const ref = new WeakRef(this.#teardownClose.bind(this));
       const openConnection = {
-        cancel: async () => await ref.deref()?.(),
+        cancel: async () => {
+          try {
+            await ref.deref()?.();
+          } catch {
+            /* do nothing */
+          }
+        },
       };
       openConnections.add(openConnection);
       cleanup.register(
         this,
-        /* istanbul ignore next: can't test garbage collection without modyfing node parameters */
+        /* istanbul ignore next: can't test garbage collection without modifying node parameters */
         () => openConnections.delete(openConnection),
       );
     }
 
-    /* istanbul ignore next: mock implementation has a bug https://github.com/thoov/mock-socket/issues/242 */
     get onclose(): WebSocketCallback | null {
       return this.#oncloseOriginal;
     }
@@ -110,7 +121,6 @@ const createNetwork = () => {
       }
     }
 
-    /* istanbul ignore next: mock implementation has a bug https://github.com/thoov/mock-socket/issues/242 */
     get onerror(): ((this: WebSocket, ev: Event) => any) | null {
       return this.#onerrorOriginal;
     }
@@ -120,7 +130,6 @@ const createNetwork = () => {
       this.#socket.onerror = this.#createWrapped(callback);
     }
 
-    /* istanbul ignore next: mock implementation has a bug https://github.com/thoov/mock-socket/issues/242 */
     get onmessage(): ((this: WebSocket, ev: MessageEvent<any>) => any) | null {
       return this.#onmessageOriginal;
     }
@@ -132,7 +141,6 @@ const createNetwork = () => {
       this.#socket.onmessage = this.#createWrapped(callback);
     }
 
-    /* istanbul ignore next: mock implementation has a bug https://github.com/thoov/mock-socket/issues/242 */
     get onopen(): ((this: WebSocket, ev: Event) => any) | null {
       return this.#onopenOriginal;
     }

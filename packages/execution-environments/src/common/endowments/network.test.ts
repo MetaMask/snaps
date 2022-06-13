@@ -118,28 +118,37 @@ describe('Network endowments', () => {
       });
 
       const socket = new _WebSocket(WEBSOCKET_URL, PROTOCOL);
-      socket.onmessage = (event: MessageEvent<any>) => {
+      const onmessageListener = (event: MessageEvent<any>) => {
         onResponseResolve(event.data);
         socket.close();
       };
+      socket.onmessage = onmessageListener;
+      expect(socket.onmessage).toStrictEqual(onmessageListener);
 
       const closeListener = () => {
         throw new Error('close event called');
       };
+      // Test that the removeEventListener actually removes the listener
       socket.addEventListener('close', closeListener);
       socket.removeEventListener('close', closeListener);
 
       let closedResolve: any;
       const closedPromise = new Promise((r) => (closedResolve = r));
-      socket.onclose = () => closedResolve();
+      const oncloseListener = () => closedResolve();
+      socket.onclose = oncloseListener;
+      expect(socket.onclose).toStrictEqual(oncloseListener);
 
-      socket.onopen = () => {
+      const onopenListener = () => {
         socket.send(MESSAGE_DATA);
       };
+      socket.onopen = onopenListener;
+      expect(socket.onopen).toStrictEqual(onopenListener);
 
-      socket.onerror = () => {
+      const onerrorListener = () => {
         onErrorResolve(true);
       };
+      socket.onerror = onerrorListener;
+      expect(socket.onerror).toStrictEqual(onerrorListener);
 
       socket.dispatchEvent(new Event('error'));
 
@@ -167,6 +176,19 @@ describe('Network endowments', () => {
       await closedPromise;
       expect(socket.readyState).toStrictEqual(socket.CLOSED);
       expect(socket.bufferedAmount).toStrictEqual(0);
+    });
+
+    it('works when passed null callbacks', async () => {
+      const { WebSocket, teardownFunction } = network.factory();
+      const socket = new WebSocket(WEBSOCKET_URL);
+
+      // None of them should throw
+      socket.onclose = null;
+      socket.onerror = null;
+      socket.onmessage = null;
+      socket.onopen = null;
+
+      await teardownFunction();
     });
 
     it('can be torn down during use', async () => {
@@ -278,7 +300,7 @@ describe('Network endowments', () => {
       expect(socket.readyState).toStrictEqual(socket.CLOSED);
     });
 
-    it("can't be escaped by modyfing private properties", async () => {
+    it("can't be escaped by modifying private properties", async () => {
       const { WebSocket, teardownFunction } = network.factory();
       const socket = new WebSocket(WEBSOCKET_URL);
 

@@ -2,8 +2,8 @@ export function allProperties(obj: any): Set<[object, string | symbol]> {
   const properties = new Set<[any, any]>();
   let current = obj;
   do {
-    for (const key of Reflect.ownKeys(obj)) {
-      properties.add([obj, key]);
+    for (const key of Reflect.ownKeys(current)) {
+      properties.add([current, key]);
     }
   } while (
     (current = Reflect.getPrototypeOf(current)) &&
@@ -19,7 +19,7 @@ export function allFunctions(obj: any): (string | symbol)[] {
       continue;
     }
     const descriptor = Reflect.getOwnPropertyDescriptor(object, key);
-    if (descriptor !== undefined && descriptor.value === 'function') {
+    if (descriptor !== undefined && typeof descriptor.value === 'function') {
       result.push(key);
     }
   }
