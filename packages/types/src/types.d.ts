@@ -22,7 +22,7 @@ export type SnapExecutionData = SnapData & {
 
 export type SnapRpcHandler = (args: {
   origin: string;
-  request: JsonRpcRequest<any[] | { [key: string]: any }>;
+  request: JsonRpcRequest<unknown[] | { [key: string]: unknown }>;
 }) => Promise<unknown>;
 
 export type OnRpcRequestHandler = SnapRpcHandler;
