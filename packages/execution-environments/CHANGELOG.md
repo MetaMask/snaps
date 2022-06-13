@@ -7,15 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.16.0]
-### Fixed
-- Fix issue with iframe error reporting ([#501](https://github.com/MetaMask/snaps-skunkworks/pull/501))
-
 ### Changed
 - **BREAKING:** Snaps are now required to export `onRpcRequest` to receive RPC requests ([#481](https://github.com/MetaMask/snaps-skunkworks/pull/481), [#533](https://github.com/MetaMask/snaps-skunkworks/pull/533), [#538](https://github.com/MetaMask/snaps-skunkworks/pull/538))
 - Snaps can no longer run timers outside of pending RPC requests ([#490](https://github.com/MetaMask/snaps-skunkworks/pull/490))
 - Bump `@metamask/providers` to `9.0.0` ([#530](https://github.com/MetaMask/snaps-skunkworks/pull/530))
+
 ### Removed
 - **BREAKING:** Remove `wallet.registerRpcMessageHandler` support [#481](https://github.com/MetaMask/snaps-skunkworks/pull/481)
+
+### Fixed
+- Fix issue with iframe error reporting ([#501](https://github.com/MetaMask/snaps-skunkworks/pull/501))
 
 ## [0.15.0]
 ### Fixed

@@ -10,13 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add `OnRpcRequestHandler` type ([#534](https://github.com/MetaMask/snaps-skunkworks/pull/534), [#531](https://github.com/MetaMask/snaps-skunkworks/pull/531), [#538](https://github.com/MetaMask/snaps-skunkworks/pull/538), [#533](https://github.com/MetaMask/snaps-skunkworks/pull/533))
 
-### Removed
-- **BREAKING:** Remove `wallet.registerRpcMessageHandler` [#481](https://github.com/MetaMask/snaps-skunkworks/pull/481)
-
 ### Changed
 - **BREAKING:** Change `SnapRpcHandler` type to reflect new function signature ([#534](https://github.com/MetaMask/snaps-skunkworks/pull/534), [#533](https://github.com/MetaMask/snaps-skunkworks/pull/533), [#481](https://github.com/MetaMask/snaps-skunkworks/pull/481))
 - Bump `@metamask/controllers` to `30.0.0` ([#535](https://github.com/MetaMask/snaps-skunkworks/pull/535))
 - Bump `@metamask/providers` to `9.0.0` ([#530](https://github.com/MetaMask/snaps-skunkworks/pull/530))
+
+### Removed
+- **BREAKING:** Remove `wallet.registerRpcMessageHandler` [#481](https://github.com/MetaMask/snaps-skunkworks/pull/481)
 
 ## [0.15.0]
 ### Added
