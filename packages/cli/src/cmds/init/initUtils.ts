@@ -10,6 +10,7 @@ import {
 import initPackageJson from 'init-package-json';
 import mkdirp from 'mkdirp';
 import slash from 'slash';
+import { Arguments } from 'yargs';
 import { YargsArgs } from '../../types/yargs';
 import {
   CONFIG_FILE,
@@ -33,11 +34,12 @@ const NPM_PUBLIC_REGISTRY_URL = 'https://registry.npmjs.org';
  * and parse the existing file if it already exists, otherwise will intialize
  * a brand new one.
  *
+ * @param argv - Yargs arguments object.
  * @returns The contents of the `package.json` file.
  */
-export async function asyncPackageInit(): Promise<
-  Readonly<NpmSnapPackageJson>
-> {
+export async function asyncPackageInit(
+  argv: YargsArgs,
+): Promise<Readonly<NpmSnapPackageJson>> {
   if (existsSync(NpmSnapFileNames.PackageJson)) {
     console.log(
       `Init: Attempting to use existing '${NpmSnapFileNames.PackageJson}'...`,
@@ -70,13 +72,20 @@ export async function asyncPackageInit(): Promise<
 
   // Run 'npm init'
   return new Promise((resolve, reject) => {
-    initPackageJson(process.cwd(), '', {}, (err, data) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(data);
-      }
-    });
+    initPackageJson(
+      process.cwd(),
+      '',
+      {
+        'init.main': argv.src,
+      },
+      (err, data) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(data);
+        }
+      },
+    );
   });
 }
 
@@ -273,7 +282,7 @@ export async function buildSnapManifest(
             filePath: slash(pathUtils.join(dist, outfileName)),
             packageName: packageJson.name,
             registry: NPM_PUBLIC_REGISTRY_URL,
-            iconPath: 'icon.svg',
+            iconPath: 'images/icon.svg',
           } as const,
         },
       },
@@ -290,10 +299,9 @@ export async function buildSnapManifest(
       );
     }
 
-    return [
-      manifest,
-      { dist, outfileName, src: packageJson.main || 'src/index.js' },
-    ];
+    const src = packageJson.main || 'src/index.js';
+
+    return [manifest, { dist, outfileName, src }];
   }
 }
 
@@ -335,4 +343,20 @@ export async function prepareWorkingDirectory(): Promise<void> {
       throw new Error('User refused to continue');
     }
   }
+}
+
+/**
+ * In case when TypeScript version is used, default source file
+ * will be updated if previous was not correct.
+ *
+ * @param yargsArgv - The Yargs arguments object.
+ * @returns Modified Yargs arguments object.
+ */
+export function correctDefaultArgs(yargsArgv: Arguments): Arguments {
+  if (yargsArgv.typescript && yargsArgv.src === 'src/index.js') {
+    yargsArgv.src = 'src/index.ts';
+    yargsArgv.s = 'src/index.ts';
+  }
+
+  return yargsArgv;
 }

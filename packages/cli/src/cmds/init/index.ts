@@ -1,8 +1,9 @@
-import yargs from 'yargs';
+import yargs, { Arguments } from 'yargs';
 import builders from '../../builders';
 import { YargsArgs } from '../../types/yargs';
 import { build } from '../build/buildHandler';
 import { initHandler, updateManifestShasum } from './initHandler';
+import { correctDefaultArgs } from './initUtils';
 
 export = {
   command: ['init', 'i'],
@@ -12,7 +13,14 @@ export = {
       .option('src', builders.src)
       .option('dist', builders.dist)
       .option('port', builders.port)
-      .option('outfileName', builders.outfileName);
+      .option('outfileName', builders.outfileName)
+      .option('typescript', builders.typescript)
+      .middleware(
+        ((yargsArgv: Arguments) => {
+          correctDefaultArgs(yargsArgv);
+        }) as any,
+        true,
+      );
   },
   handler: (argv: YargsArgs) => init(argv),
 };

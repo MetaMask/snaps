@@ -35,7 +35,7 @@ import {
 export async function initHandler(argv: YargsArgs) {
   console.log(`MetaMask Snaps: Initialize\n`);
 
-  const packageJson = await asyncPackageInit();
+  const packageJson = await asyncPackageInit(argv);
 
   await prepareWorkingDirectory();
 
@@ -67,12 +67,17 @@ export async function initHandler(argv: YargsArgs) {
 
   // Write main .js entry file
   const { src } = newArgs;
+
   try {
     if (pathUtils.basename(src) !== src) {
       await mkdirp(pathUtils.dirname(src));
     }
 
-    await fs.writeFile(src, template.source);
+    await fs.writeFile(
+      src,
+      argv.typescript ? template.typescriptSource : template.source,
+    );
+
     console.log(`Init: Created '${src}'.`);
   } catch (err) {
     logError(`Init Error: Failed to write '${src}'.`, err);
@@ -81,11 +86,26 @@ export async function initHandler(argv: YargsArgs) {
 
   // Write index.html
   try {
-    await fs.writeFile('index.html', template.html);
+    await fs.writeFile(
+      'index.html',
+      argv.typescript ? template.typescriptHtml : template.html,
+    );
+
     console.log(`Init: Created 'index.html'.`);
   } catch (err) {
     logError(`Init Error: Failed to write 'index.html'.`, err);
     throw err;
+  }
+
+  // Write tsconfig.json
+  if (argv.typescript) {
+    try {
+      await fs.writeFile('tsconfig.json', template.typescriptConfig);
+      console.log(`Init: Created 'tsconfig.json'.`);
+    } catch (err) {
+      logError(`Init Error: Failed to write 'tsconfig.json'.`, err);
+      throw err;
+    }
   }
 
   // Write config file
@@ -103,6 +123,20 @@ export async function initHandler(argv: YargsArgs) {
     console.log(`Init: Wrote '${CONFIG_FILE}' config file`);
   } catch (err) {
     logError(`Init Error: Failed to write '${CONFIG_FILE}'.`, err);
+    throw err;
+  }
+
+  // Write icon
+  const iconPath = 'images/icon.svg';
+  try {
+    if (pathUtils.basename(iconPath) !== iconPath) {
+      await mkdirp(pathUtils.dirname(iconPath));
+    }
+    await fs.writeFile(iconPath, template.icon);
+
+    console.log(`Init: Created '${iconPath}'.`);
+  } catch (err) {
+    logError(`Init Error: Failed to write '${iconPath}'.`, err);
     throw err;
   }
 

@@ -62,15 +62,15 @@ describe('initialize', () => {
       expect(await initHandler({ ...getMockArgv() })).toStrictEqual({
         ...expected,
       });
-      expect(global.console.log).toHaveBeenCalledTimes(6);
-      expect(fsWriteMock).toHaveBeenCalledTimes(4);
+      expect(global.console.log).toHaveBeenCalledTimes(7);
+      expect(fsWriteMock).toHaveBeenCalledTimes(5);
       expect(fsWriteMock).toHaveBeenNthCalledWith(
         1,
         'snap.manifest.json',
         `${JSON.stringify(getSnapManifest(), null, 2)}\n`,
       );
 
-      expect(mkdirpMock).toHaveBeenCalledTimes(1);
+      expect(mkdirpMock).toHaveBeenCalledTimes(2);
       expect(mkdirpMock).toHaveBeenNthCalledWith(1, 'src');
 
       expect(fsWriteMock).toHaveBeenNthCalledWith(
@@ -90,6 +90,79 @@ describe('initialize', () => {
         miscUtils.CONFIG_FILE,
         expect.anything(),
       );
+      expect(closePromptMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('successfully initializes a TypeScript Snap project', async () => {
+      const fsWriteMock = jest.spyOn(fs, 'writeFile').mockImplementation();
+
+      jest
+        .spyOn(initUtils, 'asyncPackageInit')
+        .mockImplementation(async () => getPackageJson());
+
+      const closePromptMock = jest
+        .spyOn(readlineUtils, 'closePrompt')
+        .mockImplementation();
+
+      const mockArgv = getMockArgv();
+      // Change mocked argv to enable typescript
+      mockArgv.typescript = true;
+      mockArgv.src = 'src/index.ts';
+      const expected = {
+        typescript: true,
+        dist: 'dist',
+        outfileName: 'bundle.js',
+        port: 8081,
+        src: 'src/index.ts',
+      };
+      jest
+        .spyOn(initUtils, 'buildSnapManifest')
+        .mockImplementation(async () => [getSnapManifest(), { ...mockArgv }]);
+
+      expect(await initHandler({ ...mockArgv })).toStrictEqual({
+        ...expected,
+      });
+      expect(global.console.log).toHaveBeenCalledTimes(8);
+      expect(fsWriteMock).toHaveBeenCalledTimes(6);
+      expect(fsWriteMock).toHaveBeenNthCalledWith(
+        1,
+        'snap.manifest.json',
+        `${JSON.stringify(getSnapManifest(), null, 2)}\n`,
+      );
+      expect(mkdirpMock).toHaveBeenCalledTimes(2);
+      expect(mkdirpMock).toHaveBeenNthCalledWith(1, 'src');
+      expect(fsWriteMock).toHaveBeenNthCalledWith(
+        2,
+        mockArgv.src,
+        template.typescriptSource,
+      );
+
+      expect(fsWriteMock).toHaveBeenNthCalledWith(
+        3,
+        'index.html',
+        template.typescriptHtml
+          .toString()
+          .replace(/_PORT_/gu, mockArgv.port.toString()),
+      );
+
+      expect(fsWriteMock).toHaveBeenNthCalledWith(
+        4,
+        'tsconfig.json',
+        template.typescriptConfig,
+      );
+
+      expect(fsWriteMock).toHaveBeenNthCalledWith(
+        5,
+        miscUtils.CONFIG_FILE,
+        expect.anything(),
+      );
+
+      expect(fsWriteMock).toHaveBeenNthCalledWith(
+        6,
+        'images/icon.svg',
+        template.icon,
+      );
+
       expect(closePromptMock).toHaveBeenCalledTimes(1);
     });
 
@@ -121,15 +194,15 @@ describe('initialize', () => {
       expect(await initHandler({ ...mockArgv })).toStrictEqual({
         ...expected,
       });
-      expect(global.console.log).toHaveBeenCalledTimes(6);
-      expect(fsWriteMock).toHaveBeenCalledTimes(4);
+      expect(global.console.log).toHaveBeenCalledTimes(7);
+      expect(fsWriteMock).toHaveBeenCalledTimes(5);
       expect(fsWriteMock).toHaveBeenNthCalledWith(
         1,
         'snap.manifest.json',
         `${JSON.stringify(getSnapManifest(), null, 2)}\n`,
       );
 
-      expect(mkdirpMock).not.toHaveBeenCalled();
+      expect(mkdirpMock).toHaveBeenCalledTimes(1);
 
       expect(fsWriteMock).toHaveBeenNthCalledWith(
         2,
@@ -327,6 +400,47 @@ describe('initialize', () => {
       expect(mkdirpMock).toHaveBeenNthCalledWith(1, 'src');
     });
 
+    it('handles tsconfig file write failure', async () => {
+      global.snaps = {
+        verboseErrors: false,
+      };
+
+      const logErrorMock = jest
+        .spyOn(miscUtils, 'logError')
+        .mockImplementation();
+
+      const fsWriteMock = jest
+        .spyOn(fs, 'writeFile')
+        .mockImplementationOnce(async () => undefined)
+        .mockImplementationOnce(async () => undefined)
+        .mockImplementationOnce(async () => undefined)
+        .mockRejectedValueOnce(new Error('failed to write'));
+
+      jest
+        .spyOn(initUtils, 'asyncPackageInit')
+        .mockImplementation(async () => getPackageJson());
+
+      const mockArgv = getMockArgv();
+      mockArgv.typescript = true;
+      await expect(initHandler(mockArgv)).rejects.toThrow('failed to write');
+      expect(logErrorMock).toHaveBeenCalledTimes(1);
+      expect(logErrorMock).toHaveBeenNthCalledWith(
+        1,
+        `Init Error: Failed to write 'tsconfig.json'.`,
+        new Error('failed to write'),
+      );
+      expect(fsWriteMock).toHaveBeenCalledTimes(4);
+
+      expect(fsWriteMock).toHaveBeenNthCalledWith(
+        4,
+        'tsconfig.json',
+        template.typescriptConfig,
+      );
+
+      expect(mkdirpMock).toHaveBeenCalledTimes(1);
+      expect(mkdirpMock).toHaveBeenNthCalledWith(1, 'src');
+    });
+
     it('handles snap.config.js file write failure', async () => {
       global.snaps = {
         verboseErrors: false,
@@ -387,6 +501,46 @@ describe('initialize', () => {
 
       expect(mkdirpMock).toHaveBeenCalledTimes(1);
       expect(mkdirpMock).toHaveBeenNthCalledWith(1, 'src');
+    });
+
+    it('handles icon file write failure', async () => {
+      global.snaps = {
+        verboseErrors: false,
+      };
+
+      const logErrorMock = jest
+        .spyOn(miscUtils, 'logError')
+        .mockImplementation();
+
+      const fsWriteMock = jest
+        .spyOn(fs, 'writeFile')
+        .mockImplementationOnce(async () => undefined)
+        .mockImplementationOnce(async () => undefined)
+        .mockImplementationOnce(async () => undefined)
+        .mockImplementationOnce(async () => undefined)
+        .mockImplementationOnce(async () => undefined)
+        .mockRejectedValueOnce(new Error('failed to write'));
+
+      jest
+        .spyOn(initUtils, 'asyncPackageInit')
+        .mockImplementation(async () => getPackageJson());
+
+      const mockArgv = getMockArgv();
+      mockArgv.typescript = true;
+      await expect(initHandler(mockArgv)).rejects.toThrow('failed to write');
+      expect(logErrorMock).toHaveBeenCalledTimes(1);
+      expect(logErrorMock).toHaveBeenNthCalledWith(
+        1,
+        `Init Error: Failed to write 'images/icon.svg'.`,
+        new Error('failed to write'),
+      );
+      expect(fsWriteMock).toHaveBeenCalledTimes(6);
+
+      expect(fsWriteMock).toHaveBeenNthCalledWith(
+        6,
+        'images/icon.svg',
+        template.icon,
+      );
     });
   });
 
