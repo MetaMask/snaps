@@ -125,9 +125,7 @@ describe('Network endowments', () => {
       socket.onmessage = onmessageListener;
       expect(socket.onmessage).toStrictEqual(onmessageListener);
 
-      const closeListener = () => {
-        throw new Error('close event called');
-      };
+      const closeListener = jest.fn();
       // Test that the removeEventListener actually removes the listener
       socket.addEventListener('close', closeListener);
       socket.removeEventListener('close', closeListener);
@@ -176,19 +174,30 @@ describe('Network endowments', () => {
       await closedPromise;
       expect(socket.readyState).toStrictEqual(socket.CLOSED);
       expect(socket.bufferedAmount).toStrictEqual(0);
+      expect(closeListener).not.toHaveBeenCalled();
     });
 
     it('works when passed null callbacks', async () => {
       const { WebSocket, teardownFunction } = network.factory();
       const socket = new WebSocket(WEBSOCKET_URL);
 
+      const fn = jest.fn();
+
+      socket.onclose = fn;
+      socket.onerror = fn;
+      socket.onmessage = fn;
+      socket.onopen = fn;
       // None of them should throw
-      socket.onclose = null;
-      socket.onerror = null;
-      socket.onmessage = null;
-      socket.onopen = null;
+      expect(() => {
+        socket.onclose = null;
+        socket.onerror = null;
+        socket.onmessage = null;
+        socket.onopen = null;
+      }).not.toThrow();
 
       await teardownFunction();
+
+      expect(fn).not.toHaveBeenCalled();
     });
 
     it('can be torn down during use', async () => {
