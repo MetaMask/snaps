@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add CLI as dependency to examples ([#528](https://github.com/MetaMask/snaps-skunkworks/pull/528))
 
 ### Changed
-- **BREAKING:** Update examples to use CommonJS exported `onRpcRequest` and named parameters ([#481](https://github.com/MetaMask/snaps-skunkworks/pull/481), [#533](https://github.com/MetaMask/snaps-skunkworks/pull/533), [#538](https://github.com/MetaMask/snaps-skunkworks/pull/538))
+- **BREAKING:** Update examples to use CommonJS exported `onRpcRequest` and named parameters ([#481](https://github.com/MetaMask/snaps-skunkworks/pull/481), [#533](https://github.com/MetaMask/snaps-skunkworks/pull/533), [#538](https://github.com/MetaMask/snaps-skunkworks/pull/538), [#541](https://github.com/MetaMask/snaps-skunkworks/pull/541))
 - Update TypeScript example to use `OnRpcRequestHandler` ([#531](https://github.com/MetaMask/snaps-skunkworks/pull/531), [#533](https://github.com/MetaMask/snaps-skunkworks/pull/533), [#538](https://github.com/MetaMask/snaps-skunkworks/pull/538))
 - Update TypeScript example to use multiple files ([#527](https://github.com/MetaMask/snaps-skunkworks/pull/527))
 
