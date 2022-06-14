@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.16.0]
 ### Changed
-- Bump `@metamask/controllers` to `30.0.0` ([#535](https://github.com/MetaMask/snaps-skunkworks/pull/535))
+- No changes this release.
 
 ## [0.15.0]
 ### Changed

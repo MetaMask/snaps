@@ -8,14 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.16.0]
 ### Added
-- **BREAKING:** Add state encryption ([#369](https://github.com/MetaMask/snaps-skunkworks/pull/369))
-  - Breaks existing installed snaps that uses state, re-install is required.
+- **BREAKING:** Encrypt Snap state by default ([#369](https://github.com/MetaMask/snaps-skunkworks/pull/369))
+  - Breaks existing installed snaps that use `snap_manageState`. All such Snaps must be reinstalled.
 
 ### Changed
 - **BREAKING:** Snaps are now required to export `onRpcRequest` to receive RPC requests ([#481](https://github.com/MetaMask/snaps-skunkworks/pull/481), [#533](https://github.com/MetaMask/snaps-skunkworks/pull/533), [#538](https://github.com/MetaMask/snaps-skunkworks/pull/538))
-  - The type of the function is available in `@metamask/snap-types` as `OnRpcRequestHandler`
+  - The type of the function is available in `@metamask/snap-types` as `OnRpcRequestHandler`.
 - Snaps can no longer run timers outside of pending RPC requests ([#490](https://github.com/MetaMask/snaps-skunkworks/pull/490))
-- Bump `@metamask/controllers` to `30.0.0` ([#535](https://github.com/MetaMask/snaps-skunkworks/pull/535))
 
 ### Fixed
 - Allow version matching with prerelease versions ([#508](https://github.com/MetaMask/snaps-skunkworks/pull/508))

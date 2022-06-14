@@ -9,11 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.16.0]
 ### Changed
 - **BREAKING:** Snaps are now required to export `onRpcRequest` to receive RPC requests ([#481](https://github.com/MetaMask/snaps-skunkworks/pull/481), [#533](https://github.com/MetaMask/snaps-skunkworks/pull/533), [#538](https://github.com/MetaMask/snaps-skunkworks/pull/538), [#541](https://github.com/MetaMask/snaps-skunkworks/pull/541), [#544](https://github.com/MetaMask/snaps-skunkworks/pull/544))
-  - The type of the function is available in `@metamask/snap-types` as `OnRpcRequestHandler`
+  - The type of the function is available in `@metamask/snap-types` as `OnRpcRequestHandler`.
 
 ### Fixed
 - Fix importing local files in TypeScript Snaps ([#527](https://github.com/MetaMask/snaps-skunkworks/pull/527))
-- Fix build command when running the CLI installed globally ([#542](https://github.com/MetaMask/snaps-skunkworks/pull/542))
+- Fix `build` command when the CLI is installed globally ([#542](https://github.com/MetaMask/snaps-skunkworks/pull/542))
 
 ## [0.15.0]
 ### Added
