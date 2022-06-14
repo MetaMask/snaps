@@ -36,7 +36,7 @@
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
-    "publish": "../../scripts/publish-package.sh"
+    "publish:package": "../../scripts/publish-package.sh"
   },
   "dependencies": {
     "@babel/core": "^7.16.7",

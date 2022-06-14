@@ -22,7 +22,7 @@
     "build": "yarn build:tsc",
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
-    "publish": "../../scripts/publish-package.sh"
+    "publish:package": "../../scripts/publish-package.sh"
   },
   "dependencies": {
     "@chainsafe/strip-comments": "^1.0.7"
