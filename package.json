@@ -10,6 +10,7 @@
     "packages/*"
   ],
   "scripts": {
+    "setup": "yarn install",
     "postinstall": "patch-package && simple-git-hooks",
     "publish:all": "./scripts/publish-all.sh",
     "link-packages": "./scripts/link-packages.sh",
