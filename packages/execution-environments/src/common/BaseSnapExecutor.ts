@@ -19,6 +19,7 @@ import { sortParamKeys } from './sortParams';
 type OnRpcRequestHandler = (args: {
   origin: string;
   request: JsonRpcRequest;
+  wallet: MetaMaskInpageProvider;
 }) => Promise<unknown>;
 
 type EvaluationData = {
@@ -29,6 +30,7 @@ type SnapData = {
   exports: { onRpcRequest?: OnRpcRequestHandler };
   runningEvaluations: Set<EvaluationData>;
   idleTeardown: () => void;
+  wallet: MetaMaskInpageProvider;
 };
 
 const fallbackError = {
@@ -67,7 +69,7 @@ export class BaseSnapExecutor {
         // We're capturing the handler in case someone modifies the data object before the call
         const handler = data.exports.onRpcRequest;
         return this.executeInSnapContext(target, () =>
-          handler({ origin, request }),
+          handler({ origin, request, wallet: data.wallet }),
         );
       },
       this.onTerminate.bind(this),
@@ -206,6 +208,7 @@ export class BaseSnapExecutor {
         idleTeardown: endowmentTeardown,
         runningEvaluations: new Set(),
         exports: {},
+        wallet,
       });
 
       rootRealmGlobal.addEventListener(
