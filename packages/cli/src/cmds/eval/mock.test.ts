@@ -8,7 +8,6 @@ describe('mockUtils', () => {
       const endowments = generateMockEndowments();
       expect(endowments.wallet).toBeInstanceOf(EventEmitter);
       expect(await endowments.wallet.request()).toBe(true);
-      expect(await endowments.wallet.registerRpcMessageHandler()).toBe(true);
     });
 
     it('returns mock class WebSocket', () => {
