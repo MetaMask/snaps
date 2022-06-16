@@ -24,6 +24,8 @@ Commands:
   mm-snap manifest  Validate the snap.manifest.json file            [aliases: m]
   mm-snap serve     Locally serve Snap file(s) for testing          [aliases: s]
   mm-snap watch     Build Snap on change                            [aliases: w]
+  mm-snap sign      Sign Snap package
+  mm-snap verify    Verify signed Snap package
 
 Options:
       --version           Show version number                          [boolean]

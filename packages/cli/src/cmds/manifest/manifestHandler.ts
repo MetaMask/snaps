@@ -161,7 +161,7 @@ export async function manifestHandler({
  * @param snapJsonFileName - The name of the file to read.
  * @returns The parsed JSON file.
  */
-async function readSnapJsonFile(
+export async function readSnapJsonFile(
   snapJsonFileName: NpmSnapFileNames,
 ): Promise<Json> {
   try {
