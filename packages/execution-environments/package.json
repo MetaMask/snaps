@@ -16,7 +16,6 @@
     "posttest": "jest-it-up",
     "test:ci": "yarn test",
     "test:watch": "jest --watch",
-    "setup": "yarn install && yarn allow-scripts",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path .gitignore",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",

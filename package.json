@@ -10,8 +10,7 @@
     "packages/*"
   ],
   "scripts": {
-    "setup": "yarn install && yarn allow-scripts && yarn postinstall && yarn simple-git-hooks",
-    "postinstall": "patch-package",
+    "postinstall": "patch-package && simple-git-hooks",
     "publish:all": "./scripts/publish-all.sh",
     "link-packages": "./scripts/link-packages.sh",
     "lint:eslint": "eslint . --cache --ext js,ts",

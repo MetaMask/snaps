@@ -9,7 +9,7 @@ set -o pipefail
 # git working tree remains cleans, then asks for an npm 2FA code and publishes
 # all packages.
 
-yarn setup
+yarn install
 yarn build:clean
 yarn lint
 
