@@ -4732,6 +4732,7 @@ __metadata:
     tar-stream: ^2.2.0
     ts-jest: ^27.1.5
     typescript: ^4.4.0
+    xstate: ^4.32.1
   languageName: unknown
   linkType: soft
 
@@ -20857,6 +20858,13 @@ __metadata:
   version: 1.8.0
   resolution: "xmlhttprequest@npm:1.8.0"
   checksum: c891cf0d7884b4f5cce835aa01f1965727cd352cbd2d7a2e0605bf11ec99ae2198364cca54656ec8b2581a5704dee6c2bf9911922a0ff2a71b613455d32e81b7
+  languageName: node
+  linkType: hard
+
+"xstate@npm:^4.32.1":
+  version: 4.32.1
+  resolution: "xstate@npm:4.32.1"
+  checksum: c16298b2b3dab7689da99d5b1e5128d2ca3bf381f37c8cb95e4af83bb1044b9251629fc00758f7f31785a72c2ddddd26f602b2801e6068cd78373b7f6dd6c28b
   languageName: node
   linkType: hard
 

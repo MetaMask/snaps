@@ -54,7 +54,8 @@
     "pump": "^3.0.0",
     "readable-web-to-node-stream": "^3.0.2",
     "semver": "^7.3.5",
-    "tar-stream": "^2.2.0"
+    "tar-stream": "^2.2.0",
+    "xstate": "^4.32.1"
   },
   "devDependencies": {
     "@json-schema-tools/transpiler": "^1.10.2",

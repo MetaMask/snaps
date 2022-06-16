@@ -29,6 +29,7 @@ import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
+import { createMachine, MachineConfig, StateSchema, State } from 'xstate';
 import {
   assertExhaustive,
   ErrorMessageEvent,
@@ -85,16 +86,17 @@ type RequestedSnapPermissions = {
 /**
  * A Snap as it exists in {@link SnapController} state.
  */
-export type Snap = {
+export type SnapMachine = MachineConfig<
+  SnapContext,
+  StateSchema<typeof snapStatusStateMachineConfig>,
+  SnapStatusEvent
+> & { id: string };
+
+export type SnapContext = {
   /**
    * Whether the Snap is enabled, which determines if it can be started.
    */
   enabled: boolean;
-
-  /**
-   * The ID of the Snap.
-   */
-  id: SnapId;
 
   /**
    * The initial permissions of the Snap, which will be requested when it is
@@ -116,11 +118,6 @@ export type Snap = {
    * The source code of the Snap.
    */
   sourceCode: string;
-
-  /**
-   * The current status of the Snap, e.g. whether it's running or stopped.
-   */
-  status: SnapStatus;
 
   /**
    * The version of the Snap.
@@ -207,12 +204,23 @@ export type ProcessSnapResult =
 
 export type InstallSnapsResult = Record<SnapId, ProcessSnapResult>;
 
+type SnapMachineState = State<
+  SnapContext,
+  SnapStatusEvent,
+  StateSchema<SnapMachine>
+>;
+
+type Snap = Omit<
+  SnapMachineState,
+  'machine' | 'configuration' | 'transitions' | 'tags'
+> & { tags: string[] };
+
 // Types that probably should be defined elsewhere in prod
 type CloseAllConnectionsFunction = (origin: string) => void;
 type StoredSnaps = Record<SnapId, Snap>;
 
 export type SnapControllerState = {
-  snaps: StoredSnaps;
+  snaps: Record<SnapId, Snap>;
   snapStates: Record<SnapId, string>;
   snapErrors: {
     [internalID: string]: SnapError & { internalID: string };
@@ -486,12 +494,11 @@ export enum SnapStatus {
   crashed = 'crashed',
 }
 
-export enum SnapStatusEvent {
-  start = 'start',
-  stop = 'stop',
-  crash = 'crash',
-  update = 'update',
-}
+export type SnapStatusEvent =
+  | { type: 'start' }
+  | { type: 'stop' }
+  | { type: 'crash' }
+  | { type: 'update' };
 
 /**
  * Guard transitioning when the snap is disabled.
@@ -499,8 +506,8 @@ export enum SnapStatusEvent {
  * @param serializedSnap - The snap metadata.
  * @returns A boolean signalling whether the passed snap is enabled or not.
  */
-const disabledGuard = (serializedSnap: Snap) => {
-  return serializedSnap.enabled;
+const disabledGuard = (context: SnapContext) => {
+  return context.enabled;
 };
 
 /**
@@ -509,11 +516,10 @@ const disabledGuard = (serializedSnap: Snap) => {
  * Supports a very minimal subset of XState conventions outlined in `_transitionSnapState`.
  */
 const snapStatusStateMachineConfig = {
-  initial: SnapStatus.installing,
   states: {
     [SnapStatus.installing]: {
       on: {
-        [SnapStatusEvent.start]: {
+        start: {
           target: SnapStatus.running,
           cond: disabledGuard,
         },
@@ -521,22 +527,22 @@ const snapStatusStateMachineConfig = {
     },
     [SnapStatus.running]: {
       on: {
-        [SnapStatusEvent.stop]: SnapStatus.stopped,
-        [SnapStatusEvent.crash]: SnapStatus.crashed,
+        stop: SnapStatus.stopped,
+        crash: SnapStatus.crashed,
       },
     },
     [SnapStatus.stopped]: {
       on: {
-        [SnapStatusEvent.start]: {
+        start: {
           target: SnapStatus.running,
           cond: disabledGuard,
         },
-        [SnapStatusEvent.update]: SnapStatus.installing,
+        update: SnapStatus.installing,
       },
     },
     [SnapStatus.crashed]: {
       on: {
-        [SnapStatusEvent.start]: {
+        start: {
           target: SnapStatus.running,
           cond: disabledGuard,
         },
@@ -612,7 +618,7 @@ export class SnapController extends BaseController<
                 return {
                   ...snap,
                   // At the time state is rehydrated, no snap will be running.
-                  status: SnapStatus.stopped,
+                  status: 'stopped',
                 };
               })
               .reduce((memo: Record<string, Snap>, snap) => {
@@ -810,7 +816,7 @@ export class SnapController extends BaseController<
     });
 
     if (this.isRunning(snapId)) {
-      return this.stopSnap(snapId, SnapStatusEvent.stop);
+      return this.stopSnap(snapId, 'stop');
     }
 
     return Promise.resolve();
@@ -826,9 +832,7 @@ export class SnapController extends BaseController<
    */
   public async stopSnap(
     snapId: SnapId,
-    statusEvent:
-      | SnapStatusEvent.stop
-      | SnapStatusEvent.crash = SnapStatusEvent.stop,
+    statusEvent: 'stop' | 'crash' = 'stop',
   ): Promise<void> {
     const runtime = this._getSnapRuntimeData(snapId);
     if (!runtime) {
@@ -1598,24 +1602,35 @@ export class SnapController extends BaseController<
       },
     ];
 
-    const snap: Snap = {
-      // Restore relevant snap state if it exists
+    const snap = createMachine({
       ...existingSnap,
-
-      // Note that the snap will be enabled even if it was previously disabled.
-      enabled: true,
-
-      // So we can easily correlate the snap with its permission
-      permissionName: getSnapPermissionName(snapId),
-
       id: snapId,
-      initialPermissions,
-      manifest,
-      sourceCode,
-      status: snapStatusStateMachineConfig.initial,
-      version,
-      versionHistory,
-    };
+      initial: 'installing',
+      context: {
+        initialPermissions,
+        enabled: true,
+        manifest,
+        permissionName: getSnapPermissionName(snapId),
+        sourceCode,
+        version,
+        versionHistory,
+      } as SnapContext,
+      ...snapStatusStateMachineConfig,
+    });
+
+    // {
+    //   // restore relevant snap state if it exists
+    //   ...existingSnap,
+    //   enabled: true,
+    //   id: snapId,
+    //   initialPermissions,
+    //   manifest,
+    //   permissionName: getSnapPermissionName(snapId), // so we can easily correlate them
+    //   sourceCode,
+    //   status:
+    //   version,
+    //   versionHistory,
+    // };
 
     // store the snap back in state
     this.update((state: any) => {
