@@ -7,7 +7,6 @@ const NETWORK_APIS = ['fetch', 'WebSocket'];
 export const ALL_APIS: string[] = [...DEFAULT_ENDOWMENTS, ...NETWORK_APIS];
 
 type MockSnapProvider = EventEmitter & {
-  registerRpcMessageHandler: () => any;
   request: () => Promise<any>;
 };
 

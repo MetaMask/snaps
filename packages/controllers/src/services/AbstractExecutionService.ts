@@ -163,7 +163,7 @@ export abstract class AbstractExecutionService<JobType extends Job>
    *
    * @param snapId - The id of the Snap whose message handler to get.
    */
-  async getRpcMessageHandler(snapId: string) {
+  async getRpcRequestHandler(snapId: string) {
     return this._snapRpcHooks.get(snapId);
   }
 
