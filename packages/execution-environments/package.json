@@ -1,6 +1,6 @@
 {
   "name": "@metamask/execution-environments",
-  "version": "0.15.0",
+  "version": "0.16.0",
   "description": "Snap sandbox environments for executing SES javascript",
   "repository": {
     "type": "git",
@@ -16,7 +16,6 @@
     "posttest": "jest-it-up",
     "test:ci": "yarn test",
     "test:watch": "jest --watch",
-    "setup": "yarn install && yarn allow-scripts",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path .gitignore",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
@@ -30,13 +29,13 @@
     "build": "yarn build:pre-tsc && yarn build:tsc && yarn build:post-tsc",
     "build:typings": "open-rpc-typings -d ./src/openrpc.json --output-ts=./src/__GENERATED__/ --name-ts=openrpc && ts-auto-guard ./src/__GENERATED__/openrpc.ts --export-all",
     "auto-changelog-init": "auto-changelog init",
-    "publish": "../../scripts/publish-package.sh"
+    "publish:package": "../../scripts/publish-package.sh"
   },
   "dependencies": {
     "@metamask/object-multiplex": "^1.2.0",
     "@metamask/post-message-stream": "^4.0.0",
     "@metamask/providers": "^9.0.0",
-    "@metamask/snap-types": "^0.15.0",
+    "@metamask/snap-types": "^0.16.0",
     "@metamask/utils": "^2.0.0",
     "eth-rpc-errors": "^4.0.3",
     "pump": "^3.0.0",

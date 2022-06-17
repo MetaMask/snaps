@@ -27,7 +27,6 @@ jobs:
           path: .yarn/cache
           key: yarn-cache-${{ runner.os }}-${{ steps.yarn-version.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}
       - run: yarn install --immutable
-      - run: yarn allow-scripts
       - run: yarn build
       - name: Require clean working directory
         shell: bash
@@ -76,7 +75,6 @@ jobs:
       # To use the --immutable flag, we have to install all dependencies, not
       # just the ones we need.
       - run: yarn install --immutable
-      - run: yarn allow-scripts
       - name: Build @metamask/snaps-cli and its dependents only
         shell: bash
         run: |

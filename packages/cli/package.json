@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-cli",
-  "version": "0.15.0",
+  "version": "0.16.0",
   "description": "A CLI for developing MetaMask Snaps.",
   "repository": {
     "type": "git",
@@ -14,7 +14,6 @@
     "dist/"
   ],
   "scripts": {
-    "setup": "yarn install && yarn allow-scripts",
     "shasum": "node ./scripts/computeSnapShasum.js",
     "build:init-template": "node ./scripts/createInitTemplate.js && yarn prettier --check src/cmds/init/init-template.json",
     "build:guards": "ts-auto-guard --guard-file-name=__GENERATED__ ./src/utils/snap-config.ts",
@@ -36,7 +35,7 @@
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
-    "publish": "../../scripts/publish-package.sh"
+    "publish:package": "../../scripts/publish-package.sh"
   },
   "dependencies": {
     "@babel/core": "^7.16.7",
@@ -47,8 +46,8 @@
     "@babel/plugin-transform-runtime": "^7.16.7",
     "@babel/preset-env": "^7.16.7",
     "@babel/preset-typescript": "^7.16.7",
-    "@metamask/snap-controllers": "^0.15.0",
-    "@metamask/snaps-browserify-plugin": "^0.15.0",
+    "@metamask/snap-controllers": "^0.16.0",
+    "@metamask/snaps-browserify-plugin": "^0.16.0",
     "@metamask/utils": "^2.0.0",
     "babelify": "^10.0.0",
     "browserify": "^17.0.0",

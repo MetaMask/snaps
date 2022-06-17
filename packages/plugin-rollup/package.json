@@ -1,6 +1,6 @@
 {
   "name": "@metamask/rollup-plugin-snaps",
-  "version": "0.15.0",
+  "version": "0.16.0",
   "keywords": [
     "rollup",
     "rollup-plugin"
@@ -26,10 +26,10 @@
     "build": "yarn build:tsc",
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
-    "publish": "../../scripts/publish-package.sh"
+    "publish:package": "../../scripts/publish-package.sh"
   },
   "dependencies": {
-    "@metamask/snap-utils": "^0.15.0"
+    "@metamask/snap-utils": "^0.16.0"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.0.3",

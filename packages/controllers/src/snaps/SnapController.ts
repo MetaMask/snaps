@@ -241,11 +241,11 @@ export type GetSnap = {
 };
 
 /**
- * Gets the specified Snap's JSON-RPC message handler function.
+ * Handles sending an inbound rpc message to a snap and returns its result.
  */
-export type GetSnapRpcMessageHandler = {
-  type: `${typeof controllerName}:getRpcMessageHandler`;
-  handler: SnapController['getRpcMessageHandler'];
+export type HandleSnapRpcMessage = {
+  type: `${typeof controllerName}:handleRpcMessage`;
+  handler: SnapController['handleRpcMessage'];
 };
 
 /**
@@ -283,7 +283,7 @@ export type ClearSnapState = {
 export type SnapControllerActions =
   | AddSnap
   | GetSnap
-  | GetSnapRpcMessageHandler
+  | HandleSnapRpcMessage
   | GetSnapState
   | HasSnap
   | UpdateSnapState
@@ -690,8 +690,8 @@ export class SnapController extends BaseController<
     );
 
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:getRpcMessageHandler`,
-      (...args) => this.getRpcMessageHandler(...args),
+      `${controllerName}:handleRpcMessage`,
+      (...args) => this.handleRpcMessage(...args),
     );
 
     this.messagingSystem.registerActionHandler(
@@ -1765,11 +1765,33 @@ export class SnapController extends BaseController<
   }
 
   /**
+   * Passes a JSON-RPC request object to the RPC handler function of a snap.
+   *
+   * @param snapId - The ID of the recipient snap.
+   * @param origin - The origin of the RPC request.
+   * @param request - The JSON-RPC request object.
+   * @returns The result of the JSON-RPC request.
+   */
+  async handleRpcMessage(
+    snapId: SnapId,
+    origin: string,
+    request: Record<string, unknown>,
+  ): Promise<unknown> {
+    const handler = await this.getRpcMessageHandler(snapId);
+    if (!handler) {
+      throw new Error(
+        `Snap RPC message handler not found for snap "${snapId}".`,
+      );
+    }
+    return handler(origin, request);
+  }
+
+  /**
    * Gets the RPC message handler for the given snap.
    *
    * @param snapId - The id of the Snap whose message handler to get.
    */
-  async getRpcMessageHandler(
+  private async getRpcMessageHandler(
     snapId: SnapId,
   ): Promise<
     (origin: string, request: Record<string, unknown>) => Promise<unknown>

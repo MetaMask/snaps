@@ -1,6 +1,6 @@
 {
   "name": "root",
-  "version": "0.15.0",
+  "version": "0.16.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -10,8 +10,8 @@
     "packages/*"
   ],
   "scripts": {
-    "setup": "yarn install && yarn allow-scripts && yarn postinstall && yarn simple-git-hooks",
-    "postinstall": "patch-package",
+    "setup": "yarn install",
+    "postinstall": "patch-package && simple-git-hooks",
     "publish:all": "./scripts/publish-all.sh",
     "link-packages": "./scripts/link-packages.sh",
     "lint:eslint": "eslint . --cache --ext js,ts",
