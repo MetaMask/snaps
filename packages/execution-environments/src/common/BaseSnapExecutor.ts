@@ -28,7 +28,7 @@ type EvaluationData = {
 type SnapData = {
   exports: { onRpcRequest?: OnRpcRequestHandler };
   runningEvaluations: Set<EvaluationData>;
-  idleTeardown: () => void;
+  idleTeardown: () => Promise<void>;
 };
 
 const fallbackError = {
@@ -329,7 +329,7 @@ export class BaseSnapExecutor {
       data.runningEvaluations.delete(evaluationData);
 
       if (data.runningEvaluations.size === 0) {
-        data.idleTeardown();
+        await data.idleTeardown();
       }
     }
   }
