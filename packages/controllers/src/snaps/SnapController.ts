@@ -37,7 +37,7 @@ import {
   TerminateAllSnapsAction,
   TerminateSnapAction,
 } from '..';
-import { setDiff } from '../utils';
+import { hasTimedOut, setDiff, withTimeout } from '../utils';
 import { DEFAULT_ENDOWMENTS } from './default-endowments';
 import { LONG_RUNNING_PERMISSION } from './endowments';
 import { SnapManifest, validateSnapJsonFile } from './json-schemas';
