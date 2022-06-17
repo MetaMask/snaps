@@ -1764,6 +1764,14 @@ export class SnapController extends BaseController<
     );
   }
 
+  /**
+   * Passes a JSON-RPC request object to the RPC handler function of a snap.
+   *
+   * @param snapId - The ID of the recipient snap.
+   * @param origin - The origin of the RPC request.
+   * @param request - The JSON-RPC request object.
+   * @returns The result of the JSON-RPC request.
+   */
   async handleRpcMessage(
     snapId: SnapId,
     origin: string,
