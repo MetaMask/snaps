@@ -1,4 +1,4 @@
-import { Worker } from 'worker_threads';
+import { fork } from 'child_process';
 import pathUtils from 'path';
 
 /**
@@ -10,17 +10,13 @@ import pathUtils from 'path';
  */
 export function workerEval(bundlePath: string): Promise<null> {
   return new Promise((resolve) => {
-    new Worker(getEvalWorkerPath())
-      .on('exit', (exitCode: number) => {
-        if (exitCode === 0) {
-          resolve(null);
-        } else {
-          throw new Error(`Worker exited abnormally! Code: ${exitCode}`);
-        }
-      })
-      .postMessage({
-        snapFilePath: bundlePath,
-      });
+    fork(getEvalWorkerPath(), [bundlePath]).on('exit', (exitCode: number) => {
+      if (exitCode === 0) {
+        resolve(null);
+      } else {
+        throw new Error(`Worker exited abnormally! Code: ${exitCode}`);
+      }
+    });
   });
 }
 
