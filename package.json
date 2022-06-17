@@ -52,7 +52,7 @@
     "@types/node": "^14.14.25",
     "@typescript-eslint/eslint-plugin": "^5.19.0",
     "@typescript-eslint/parser": "^5.19.0",
-    "electron": "^13.6.6",
+    "electron": "^15.5.5",
     "eslint": "^7.30.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.23.4",
