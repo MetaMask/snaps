@@ -26,4 +26,4 @@ if [[ -z $OTP ]]; then
   exit 1
 fi
 
-yarn workspaces foreach --no-private --verbose run publish "$OTP"
+yarn workspaces foreach --no-private --verbose run publish:package "$OTP"

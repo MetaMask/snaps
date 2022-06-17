@@ -20,7 +20,7 @@
     "build": "tsc --project tsconfig.local.json",
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
-    "publish": "../../scripts/publish-package.sh"
+    "publish:package": "../../scripts/publish-package.sh"
   },
   "dependencies": {
     "@metamask/controllers": "^30.0.0",
