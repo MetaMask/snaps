@@ -13,7 +13,7 @@ const targetKey = `${methodPrefix}*` as const;
 
 export type InvokeSnapMethodHooks = {
   getSnap: SnapController['get'];
-  handleSnapRpcMessage: SnapController['handleRpcMessage'];
+  handleSnapRpcRequest: SnapController['handleRpcRequest'];
 };
 
 type InvokeSnapSpecificationBuilderOptions = {
@@ -54,13 +54,13 @@ export const invokeSnapBuilder = Object.freeze({
   specificationBuilder,
   methodHooks: {
     getSnap: true,
-    handleSnapRpcMessage: true,
+    handleSnapRpcRequest: true,
   },
 } as const);
 
 function getInvokeSnapImplementation({
   getSnap,
-  handleSnapRpcMessage,
+  handleSnapRpcRequest,
 }: InvokeSnapMethodHooks) {
   return async function invokeSnap(
     options: RestrictedMethodOptions<[Record<string, Json>]>,
@@ -84,9 +84,9 @@ function getInvokeSnapImplementation({
 
     const fromSubject = context.origin;
 
-    // handleSnapRpcMessage is an async function that takes the snap id, a snapOriginString string and a request object.
+    // handleSnapRpcRequest is an async function that takes the snap id, a snapOriginString string and a request object.
     // It should return the result it would like returned to the fromDomain as part of response.result
-    return (await handleSnapRpcMessage(
+    return (await handleSnapRpcRequest(
       snapIdString,
       fromSubject,
       snapRpcRequest,

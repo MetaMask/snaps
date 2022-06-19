@@ -37,7 +37,7 @@ import { nanoid } from 'nanoid';
 import { assertExhaustive } from '..';
 import {
   ExecuteSnap,
-  GetRpcMessageHandler,
+  GetRpcRequestHandler,
   TerminateAll,
   TerminateSnap,
 } from '../services/ExecutionService';
@@ -243,9 +243,9 @@ export type GetSnap = {
 /**
  * Handles sending an inbound rpc message to a snap and returns its result.
  */
-export type HandleSnapRpcMessage = {
-  type: `${typeof controllerName}:handleRpcMessage`;
-  handler: SnapController['handleRpcMessage'];
+export type HandleSnapRpcRequest = {
+  type: `${typeof controllerName}:handleRpcRequest`;
+  handler: SnapController['handleRpcRequest'];
 };
 
 /**
@@ -283,7 +283,7 @@ export type ClearSnapState = {
 export type SnapControllerActions =
   | AddSnap
   | GetSnap
-  | HandleSnapRpcMessage
+  | HandleSnapRpcRequest
   | GetSnapState
   | HasSnap
   | UpdateSnapState
@@ -407,7 +407,7 @@ type SnapControllerArgs = {
    * A function that gets the RPC message handler function for a specific
    * snap.
    */
-  getRpcMessageHandler: GetRpcMessageHandler;
+  getRpcRequestHandler: GetRpcRequestHandler;
 
   /**
    * The controller messenger.
@@ -574,7 +574,7 @@ export class SnapController extends BaseController<
 
   private _executeSnap: ExecuteSnap;
 
-  private _getRpcMessageHandler: GetRpcMessageHandler;
+  private _getRpcRequestHandler: GetRpcRequestHandler;
 
   private _idleTimeCheckInterval: number;
 
@@ -601,7 +601,7 @@ export class SnapController extends BaseController<
   constructor({
     closeAllConnections,
     executeSnap,
-    getRpcMessageHandler,
+    getRpcRequestHandler,
     messenger,
     state,
     terminateAllSnaps,
@@ -651,7 +651,7 @@ export class SnapController extends BaseController<
     this._closeAllConnections = closeAllConnections;
     this._environmentEndowmentPermissions = environmentEndowmentPermissions;
     this._executeSnap = executeSnap;
-    this._getRpcMessageHandler = getRpcMessageHandler;
+    this._getRpcRequestHandler = getRpcRequestHandler;
     this._onUnhandledSnapError = this._onUnhandledSnapError.bind(this);
     this._terminateSnap = terminateSnap;
     this._terminateAllSnaps = terminateAllSnaps;
@@ -690,8 +690,8 @@ export class SnapController extends BaseController<
     );
 
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:handleRpcMessage`,
-      (...args) => this.handleRpcMessage(...args),
+      `${controllerName}:handleRpcRequest`,
+      (...args) => this.handleRpcRequest(...args),
     );
 
     this.messagingSystem.registerActionHandler(
@@ -1772,12 +1772,12 @@ export class SnapController extends BaseController<
    * @param request - The JSON-RPC request object.
    * @returns The result of the JSON-RPC request.
    */
-  async handleRpcMessage(
+  async handleRpcRequest(
     snapId: SnapId,
     origin: string,
     request: Record<string, unknown>,
   ): Promise<unknown> {
-    const handler = await this.getRpcMessageHandler(snapId);
+    const handler = await this.getRpcRequestHandler(snapId);
     if (!handler) {
       throw new Error(
         `Snap RPC message handler not found for snap "${snapId}".`,
@@ -1791,7 +1791,7 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The id of the Snap whose message handler to get.
    */
-  private async getRpcMessageHandler(
+  private async getRpcRequestHandler(
     snapId: SnapId,
   ): Promise<
     (origin: string, request: Record<string, unknown>) => Promise<unknown>
@@ -1821,7 +1821,7 @@ export class SnapController extends BaseController<
         );
       }
 
-      let handler = await this._getRpcMessageHandler(snapId);
+      let handler = await this._getRpcRequestHandler(snapId);
 
       if (this.isRunning(snapId) === false) {
         if (handler) {
@@ -1850,7 +1850,7 @@ export class SnapController extends BaseController<
             startPromises.delete(snapId);
           }
         }
-        handler = await this._getRpcMessageHandler(snapId);
+        handler = await this._getRpcRequestHandler(snapId);
       }
 
       if (!handler) {
