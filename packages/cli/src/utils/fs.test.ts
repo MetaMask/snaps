@@ -8,14 +8,24 @@ import { isDirectory, isFile, readJsonFile } from './fs';
  */
 const BASE_PATH = pathUtils.join(__dirname, '__TEST__fs-sandbox');
 
+/**
+ * @param path
+ */
 function getPath(path?: string) {
   return path ? pathUtils.join(BASE_PATH, path) : BASE_PATH;
 }
 
+/**
+ * @param fileName
+ * @param data
+ */
 async function createFile(fileName: string, data: string) {
   await fs.writeFile(getPath(fileName), data);
 }
 
+/**
+ * @param dirName
+ */
 async function createDir(dirName?: string) {
   await fs.mkdir(getPath(dirName));
 }
@@ -26,6 +36,8 @@ const isFileRegEx = /\w+\.\w+$/u;
  * Given any number of path strings, sequentially creates the given files and/or directories.
  * - File paths with a file name including its file extension, e.g. foo.txt
  * - Parent directories must be specified before their contents, or an error will be thrown
+ *
+ * @param paths
  */
 async function createTestFiles(...paths: (string | [string, string])[]) {
   await createDir();

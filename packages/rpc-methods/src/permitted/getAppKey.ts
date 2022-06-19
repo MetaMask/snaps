@@ -25,6 +25,7 @@ export const getAppKeyHandler: PermittedHandlerExport<
 export type GetAppKeyHooks = {
   /**
    * A bound function that gets the app key for a particular snap.
+   *
    * @param requestedAccount - The requested account to get the app key for, if
    * any.
    * @returns The requested app key.
@@ -33,11 +34,21 @@ export type GetAppKeyHooks = {
 
   /**
    * Waits for the extension to be unlocked.
+   *
    * @returns A promise that resolves once the extension is unlocked.
    */
   getUnlockPromise: (shouldShowUnlockRequest: boolean) => Promise<void>;
 };
 
+/**
+ * @param req
+ * @param res
+ * @param _next
+ * @param end
+ * @param options0
+ * @param options0.getAppKey
+ * @param options0.getUnlockPromise
+ */
 async function getAppKeyImplementation(
   req: JsonRpcRequest<[string]>,
   res: PendingJsonRpcResponse<string>,

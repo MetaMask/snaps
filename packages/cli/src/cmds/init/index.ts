@@ -17,6 +17,9 @@ export = {
   handler: (argv: YargsArgs) => init(argv),
 };
 
+/**
+ * @param argv
+ */
 async function init(argv: YargsArgs): Promise<void> {
   console.log();
   const newArgs = await initHandler(argv);

@@ -9,6 +9,9 @@ type PromptArgs = {
   readlineInterface?: readline.Interface;
 };
 
+/**
+ *
+ */
 export function openPrompt(): void {
   singletonReadlineInterface = readline.createInterface({
     input: process.stdin,
@@ -16,6 +19,13 @@ export function openPrompt(): void {
   });
 }
 
+/**
+ * @param options0
+ * @param options0.question
+ * @param options0.defaultValue
+ * @param options0.shouldClose
+ * @param options0.readlineInterface
+ */
 export function prompt({
   question,
   defaultValue,
@@ -48,6 +58,9 @@ export function prompt({
   });
 }
 
+/**
+ * @param readlineInterface
+ */
 export function closePrompt(
   readlineInterface = singletonReadlineInterface,
 ): void {

@@ -34,6 +34,14 @@ export type InstallSnapsHooks = {
   installSnaps: InstallSnapsHook;
 };
 
+/**
+ * @param req
+ * @param res
+ * @param _next
+ * @param end
+ * @param options0
+ * @param options0.installSnaps
+ */
 async function installSnapsImplementation(
   req: JsonRpcRequest<[RequestedPermissions]>,
   res: PendingJsonRpcResponse<InstallSnapsResult>,

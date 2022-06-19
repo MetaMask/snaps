@@ -10,6 +10,9 @@ const FILE_PREFIX =
 
 main();
 
+/**
+ *
+ */
 function main() {
   [
     [snapManifestSchema, 'SnapManifest'],
@@ -19,6 +22,10 @@ function main() {
   });
 }
 
+/**
+ * @param schema
+ * @param primaryExportName
+ */
 function transpileSchema(schema, primaryExportName) {
   return FILE_PREFIX.concat(
     new Transpiler(schema)
@@ -37,6 +44,10 @@ function transpileSchema(schema, primaryExportName) {
   );
 }
 
+/**
+ * @param typeSource
+ * @param primaryExportName
+ */
 function writeSchema(typeSource, primaryExportName) {
   writeFileSync(
     path.resolve(

@@ -10,6 +10,9 @@ type MockSnapProvider = EventEmitter & {
   request: () => Promise<any>;
 };
 
+/**
+ *
+ */
 function getMockSnapProvider(): MockSnapProvider {
   const mockProvider = new EventEmitter() as Partial<MockSnapProvider>;
   mockProvider.request = async () => true;

@@ -20,7 +20,7 @@ export type PostProcessOptions = {
  * @param options.stripComments - Whether to strip comments. Defaults to `true`.
  * @param options.transformHtmlComments - Whether to transform HTML comments.
  * Defaults to `true`.
- * @returns - The post-processed bundle string.
+ * @returns The post-processed bundle string.
  */
 export function postProcessBundle(
   bundleString: string | null,

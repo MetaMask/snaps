@@ -1,3 +1,6 @@
+/**
+ * @param obj
+ */
 export function allProperties(obj: any): Set<[object, string | symbol]> {
   const properties = new Set<[any, any]>();
   let current = obj;
@@ -12,6 +15,9 @@ export function allProperties(obj: any): Set<[object, string | symbol]> {
   return properties;
 }
 
+/**
+ * @param obj
+ */
 export function allFunctions(obj: any): (string | symbol)[] {
   const result = [];
   for (const [object, key] of allProperties(obj)) {

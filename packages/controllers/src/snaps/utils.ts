@@ -98,6 +98,7 @@ export type SnapFiles = {
  *
  * @param packageName - The name of the package whose tarball to fetch.
  * @param versionRange - The SemVer range of the package to fetch, max satisfying will be fetched
+ * @param registryUrl
  * @param fetchFunction - The fetch function to use. Defaults to the global
  * {@link fetch}. Useful for Node.js compatibility.
  * @returns A tuple of the Snap manifest object and the Snap source code.
@@ -240,10 +241,13 @@ export function validateNpmSnap(
  * Validates the fields of an npm Snap manifest that has already passed JSON
  * Schema validation.
  *
+ * @param manifest.manifest
  * @param manifest - The npm Snap manifest to validate.
  * @param packageJson - The npm Snap's `package.json`.
  * @param sourceCode - The Snap's source code.
+ * @param manifest.packageJson
  * @param errorPrefix - The prefix for error messages.
+ * @param manifest.sourceCode
  */
 export function validateNpmSnapManifest(
   { manifest, packageJson, sourceCode }: SnapFiles,
@@ -291,16 +295,28 @@ export function validateNpmSnapManifest(
   return [manifest, sourceCode, packageJson];
 }
 
+/**
+ * @param version1
+ * @param version2
+ */
 export function gtVersion(version1: string, version2: string) {
   return gtSemver(version1, version2, { includePrerelease: true });
 }
 
+/**
+ * @param version
+ * @param versionRange
+ */
 export function satifiesVersionRange(version: string, versionRange: string) {
   return satifiesSemver(version, versionRange, {
     includePrerelease: true,
   });
 }
 
+/**
+ * @param versions
+ * @param versionRange
+ */
 export function getTargetVersion(versions: string[], versionRange: string) {
   const maxSatisfyingNonPreRelease = maxSatisfyingSemver(
     versions,
@@ -324,6 +340,7 @@ export function getTargetVersion(versions: string[], versionRange: string) {
  *
  * @param packageName - The name of the package whose tarball to fetch.
  * @param versionRange - The semver range of the package to fetch, max satisfying will be fetched
+ * @param registryUrl
  * @param fetchFunction - The fetch function to use. Defaults to the global
  * {@link fetch}. Useful for Node.js compatibility.
  * @returns A tuple of the {@link Response} for the package tarball and the
@@ -492,6 +509,7 @@ function createTarballExtractionStream(
  *
  * @param manifest - The manifest whose shasum to validate.
  * @param sourceCode - The source code of the snap.
+ * @param errorMessage
  */
 export function validateSnapShasum(
   manifest: SnapManifest,

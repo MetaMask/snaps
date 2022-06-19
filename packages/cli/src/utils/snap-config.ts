@@ -16,6 +16,9 @@ export type SnapConfig = {
 
 let snapConfigCache: SnapConfig | undefined;
 
+/**
+ * @param cached
+ */
 export function loadConfig(cached = true): SnapConfig {
   if (snapConfigCache !== undefined && cached === true) {
     return snapConfigCache;
@@ -56,6 +59,11 @@ export function loadConfig(cached = true): SnapConfig {
  *
  * Arguments are only set per the snap-cli config file if they were not specified
  * on the command line.
+ *
+ * @param snapConfig
+ * @param processArgv
+ * @param yargsArgv
+ * @param yargsInstance
  */
 export function applyConfig(
   snapConfig: SnapConfig,

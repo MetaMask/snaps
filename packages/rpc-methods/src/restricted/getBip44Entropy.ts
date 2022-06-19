@@ -19,6 +19,7 @@ export type GetBip44EntropyMethodHooks = {
 
   /**
    * Waits for the extension to be unlocked.
+   *
    * @returns A promise that resolves once the extension is unlocked.
    */
   getUnlockPromise: (shouldShowUnlockRequest: boolean) => Promise<void>;
@@ -39,6 +40,10 @@ type GetBip44EntropySpecification = ValidPermissionSpecification<{
 /**
  * `snap_getBip44Entropy_*` lets the Snap control private keys for a particular
  * BIP-32 coin type.
+ *
+ * @param options0
+ * @param options0.allowedCaveats
+ * @param options0.methodHooks
  */
 const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.RestrictedMethod,
@@ -67,6 +72,11 @@ export const getBip44EntropyBuilder = Object.freeze({
 
 const ALL_DIGIT_REGEX = /^\d+$/u;
 
+/**
+ * @param options0
+ * @param options0.getMnemonic
+ * @param options0.getUnlockPromise
+ */
 function getBip44EntropyImplementation({
   getMnemonic,
   getUnlockPromise,

@@ -2,6 +2,9 @@ import { YargsArgs } from '../../types/yargs';
 import { logError, validateFilePath } from '../../utils';
 import { workerEval } from './workerEval';
 
+/**
+ * @param argv
+ */
 export async function snapEval(argv: YargsArgs): Promise<void> {
   const { bundle: bundlePath } = argv;
   await validateFilePath(bundlePath as string);

@@ -27,6 +27,14 @@ export type GetSnapsHooks = {
   getSnaps: () => InstallSnapsResult;
 };
 
+/**
+ * @param _req
+ * @param res
+ * @param _next
+ * @param end
+ * @param options0
+ * @param options0.getSnaps
+ */
 async function getSnapsImplementation(
   _req: unknown,
   res: PendingJsonRpcResponse<InstallSnapsResult>,

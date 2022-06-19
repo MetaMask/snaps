@@ -21,6 +21,12 @@ export const invokeSnapSugarHandler: PermittedHandlerExport<
   hookNames: undefined,
 };
 
+/**
+ * @param req
+ * @param _res
+ * @param next
+ * @param end
+ */
 async function invokeSnapSugar(
   req: JsonRpcRequest<unknown>,
   _res: unknown,

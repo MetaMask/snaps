@@ -47,6 +47,7 @@ export async function writeBundleFile({
 
 /**
  * Processes dependencies and updates argv with an options object
+ *
  * @param argv
  */
 export function processDependencies(argv: YargsArgs) {
@@ -63,6 +64,7 @@ export function processDependencies(argv: YargsArgs) {
 
 /**
  * Processes a string of space delimited dependencies into one regex string
+ *
  * @param dependencies
  * @returns a regexp string
  */
@@ -80,6 +82,7 @@ export function getDependencyRegExp(dependencies: string[]): RegExp | null {
 
 /**
  * Helper function remove any leading and trailing slashes from dependency list
+ *
  * @param dependencies
  * @returns an array of sanitized paths
  */
@@ -89,6 +92,9 @@ export function sanitizeDependencyPaths(dependencies: string[]): string[] {
   });
 }
 
+/**
+ * @param argv
+ */
 export function processInvalidTranspilation(argv: YargsArgs) {
   if (
     argv.depsToTranspile &&

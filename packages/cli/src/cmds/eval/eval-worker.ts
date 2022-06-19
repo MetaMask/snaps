@@ -34,6 +34,9 @@ if (parentPort !== null) {
   });
 }
 
+/**
+ *
+ */
 function getMockEndowments() {
   const endowments = generateMockEndowments();
   return {

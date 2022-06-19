@@ -10,6 +10,9 @@ export type InstallSnapsHook = (
 ) => Promise<InstallSnapsResult>;
 
 // preprocess requested permissions to support 'wallet_snap' syntactic sugar
+/**
+ * @param requestedPermissions
+ */
 export function preprocessRequestedPermissions(
   requestedPermissions: RequestedPermissions,
 ): RequestedPermissions {
@@ -67,6 +70,9 @@ export function preprocessRequestedPermissions(
 /**
  * Typechecks the requested snaps and passes them to the permissions
  * controller for installation.
+ *
+ * @param requestedSnaps
+ * @param installSnaps
  */
 export async function handleInstallSnaps(
   requestedSnaps: RequestedPermissions,

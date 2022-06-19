@@ -1,3 +1,8 @@
+/**
+ * @param options0
+ * @param options0.origin
+ * @param options0.request
+ */
 export async function onRpcRequest({
   origin,
   request,

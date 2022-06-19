@@ -17,6 +17,9 @@ sendInAppButton.addEventListener('click', () => send('inApp'));
 sendNativeButton.addEventListener('click', () => send('native'));
 
 // here we get permissions to interact with and install the snap
+/**
+ *
+ */
 async function connect() {
   await ethereum.request({
     method: 'wallet_enable',
@@ -29,6 +32,9 @@ async function connect() {
 }
 
 // here we call the snap's "inApp" or "native" method
+/**
+ * @param method
+ */
 async function send(method: string) {
   try {
     await ethereum.request({

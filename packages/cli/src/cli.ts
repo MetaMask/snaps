@@ -9,6 +9,10 @@ import {
   logError,
 } from './utils';
 
+/**
+ * @param argv
+ * @param commands
+ */
 export function cli(argv: string[], commands: any): void {
   const rawArgv = argv.slice(2);
   // eslint-disable-next-line @typescript-eslint/no-unused-expressions

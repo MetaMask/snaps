@@ -379,6 +379,7 @@ type FeatureFlags = {
   /**
    * We still need to implement new UI approval page in metamask-extension before we can allow DApps to update Snaps.
    * After it's added, this flag can be removed.
+   *
    * @see {SNAP_APPROVAL_UPDATE}
    * @see {SnapController.processRequestedSnap}
    */
@@ -507,6 +508,8 @@ export enum SnapStatusEvent {
 
 /**
  * Guard transitioning when the snap is disabled.
+ *
+ * @param serializedSnap
  */
 const disabledGuard = (serializedSnap: Snap) => {
   return serializedSnap.enabled;
@@ -1115,6 +1118,7 @@ export class SnapController extends BaseController<
 
   /**
    * Gets the serialized permitted snaps of the given origin, if any.
+   *
    * @param origin - The origin whose permitted snaps to retrieve.
    */
   getPermittedSnaps(origin: string): InstallSnapsResult {
@@ -1286,8 +1290,9 @@ export class SnapController extends BaseController<
   /**
    * Ask a user for approval, updates, re-authorizes and then restarts given snap.
    *
-   * @param snapId The id of the Snap to be updated
-   * @param newVersionRange A semver version range in which the maximum version will be chosen
+   * @param origin
+   * @param snapId - The id of the Snap to be updated
+   * @param newVersionRange - A semver version range in which the maximum version will be chosen
    * @returns @type {TruncatedSnap} if updated, @type {null} otherwise
    */
   async updateSnap(

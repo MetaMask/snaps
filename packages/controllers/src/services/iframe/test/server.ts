@@ -6,6 +6,9 @@ import serveHandler from 'serve-handler';
 export const PORT = 6364;
 
 let server: http.Server;
+/**
+ * @param port
+ */
 export async function start(port = PORT) {
   return new Promise<void>((resolve, reject) => {
     if (!Number.isSafeInteger(port) || port < 0) {
@@ -51,6 +54,9 @@ export async function start(port = PORT) {
   });
 }
 
+/**
+ *
+ */
 export async function stop() {
   const close = promisify(server.close);
   await close();

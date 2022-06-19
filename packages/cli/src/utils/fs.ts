@@ -8,7 +8,7 @@ import { logError } from './misc';
  *
  * @param pathString - The path string to check
  * @param createDir - Whether to create the directory if it doesn't exist
- * @returns - Whether the given path is an existing directory
+ * @returns Whether the given path is an existing directory
  */
 export async function isDirectory(
   pathString: string,

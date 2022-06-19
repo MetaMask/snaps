@@ -81,6 +81,11 @@ export const notifyBuilder = Object.freeze({
   },
 } as const);
 
+/**
+ * @param options0
+ * @param options0.showNativeNotification
+ * @param options0.showInAppNotification
+ */
 function getImplementation({
   showNativeNotification,
   showInAppNotification,

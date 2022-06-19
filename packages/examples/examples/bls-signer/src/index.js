@@ -32,6 +32,9 @@ module.exports.onRpcRequest = async ({ request }) => {
   }
 };
 
+/**
+ *
+ */
 async function getPubKey() {
   const PRIV_KEY = await wallet.request({
     method: 'snap_getAppKey',
@@ -39,6 +42,10 @@ async function getPubKey() {
   return bls.getPublicKey(PRIV_KEY);
 }
 
+/**
+ * @param header
+ * @param message
+ */
 async function promptUser(header, message) {
   const response = await wallet.request({
     method: 'snap_confirm',

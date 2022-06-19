@@ -159,11 +159,12 @@ export class BaseSnapExecutor {
    * Attempts to evaluate a snap in SES.
    * Generates the APIs for the snap. May throw on error.
    *
-   * @param {string} snapName - The name of the snap.
-   * @param {Array<string>} approvedPermissions - The snap's approved permissions.
+   * @param snapName - The name of the snap.
+   * @param approvedPermissions - The snap's approved permissions.
    * Should always be a value returned from the permissions controller.
-   * @param {string} sourceCode - The source code of the snap, in IIFE format.
-   * @param {Array} endowments - An array of the names of the endowments.
+   * @param sourceCode - The source code of the snap, in IIFE format.
+   * @param endowments - An array of the names of the endowments.
+   * @param _endowments
    */
   protected async startSnap(
     snapName: string,
@@ -236,7 +237,7 @@ export class BaseSnapExecutor {
 
   /**
    * Cancels all running evaluations of all snaps and clears all snap data.
-   * **NOTE:** Should only be called in response to the `terminate` RPC command.
+   * NOTE:** Should only be called in response to the `terminate` RPC command.
    */
   protected onTerminate() {
     // `stop()` tears down snap endowments.
@@ -277,6 +278,8 @@ export class BaseSnapExecutor {
 
   /**
    * Removes the snap with the given name.
+   *
+   * @param snapName
    */
   private removeSnap(snapName: string): void {
     this.snapData.delete(snapName);

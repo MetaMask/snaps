@@ -22,6 +22,9 @@ import {
   prepareWorkingDirectory,
 } from './initUtils';
 
+/**
+ * @param argv
+ */
 export async function initHandler(argv: YargsArgs) {
   console.log(`MetaMask Snaps: Initialize\n`);
 

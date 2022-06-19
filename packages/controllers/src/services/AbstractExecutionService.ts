@@ -251,6 +251,7 @@ export abstract class AbstractExecutionService<JobType extends Job>
   }
 
   /**
+   * @param snapId
    * @returns The ID of the snap's job.
    */
   protected _getJobForSnap(snapId: string): string | undefined {
@@ -258,6 +259,7 @@ export abstract class AbstractExecutionService<JobType extends Job>
   }
 
   /**
+   * @param jobId
    * @returns The ID jobs's snap.
    */
   _getSnapForJob(jobId: string): string | undefined {
@@ -286,7 +288,7 @@ export abstract class AbstractExecutionService<JobType extends Job>
  *
  * @param connectionStream - the stream to mux
  * @param streamName - the name of the stream, for identification in errors
- * @return {stream.Stream} the multiplexed stream
+ * @returns the multiplexed stream
  */
 export function setupMultiplex(
   connectionStream: Duplex,

@@ -7,7 +7,8 @@ import { isFile, isDirectory } from './fs';
  *
  * @param srcFilePath - The source file path
  * @param outDir - The out file directory
- * @returns - The complete out file path
+ * @param outFileName
+ * @returns The complete out file path
  */
 export function getOutfilePath(outDir: string, outFileName: string): string {
   return pathUtils.join(outDir, outFileName || 'bundle.js');
@@ -18,7 +19,7 @@ export function getOutfilePath(outDir: string, outFileName: string): string {
  * Throws on validation failure
  *
  * @param filename - The file name to validate
- * @returns - True if validation succeeded
+ * @returns True if validation succeeded
  */
 export function validateOutfileName(filename: string): boolean {
   if (
@@ -36,7 +37,7 @@ export function validateOutfileName(filename: string): boolean {
  * Throws on validation failure
  *
  * @param filePath - The file path to validate
- * @returns - True if validation succeeded
+ * @returns True if validation succeeded
  */
 export async function validateFilePath(filePath: string): Promise<boolean> {
   const exists = await isFile(filePath);
@@ -53,8 +54,9 @@ export async function validateFilePath(filePath: string): Promise<boolean> {
  * Throws on validation failure.
  *
  * @param dirPath - The directory path to validate
+ * @param dirName
  * @param createDir - Whether to create the directory if it doesn't exist
- * @returns - True if validation succeeded
+ * @returns True if validation succeeded
  */
 export async function validateDirPath(
   dirName: string,

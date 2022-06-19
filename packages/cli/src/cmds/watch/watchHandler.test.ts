@@ -13,6 +13,9 @@ type MockWatcher = {
   add: () => void;
 } & EventEmitter;
 
+/**
+ *
+ */
 function getMockWatcher(): MockWatcher {
   const watcher: MockWatcher = new EventEmitter() as any;
   watcher.add = () => undefined;

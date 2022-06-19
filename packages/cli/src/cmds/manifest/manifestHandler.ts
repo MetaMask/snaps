@@ -31,6 +31,7 @@ const ManifestSortOrder: Record<keyof SnapManifest, number> = {
  * fails.
  *
  * @param argv - The Yargs `argv` object.
+ * @param argv.writeManifest
  */
 export async function manifestHandler({
   writeManifest,
@@ -146,6 +147,9 @@ export async function manifestHandler({
     console.log(`Manifest Success: Validated snap.manifest.json!`);
   }
 
+  /**
+   * @param message
+   */
   function logManifestWarning(message: string) {
     if (!global.snaps.suppressWarnings) {
       hasWarnings = true;

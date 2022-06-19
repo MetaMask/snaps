@@ -58,7 +58,7 @@ export function setSnapGlobals(argv: Arguments) {
  * Attempts to convert a string to a boolean and throws if the value is invalid.
  *
  * @param value - The value to convert to a boolean.
- * @return `true` if the value is the string `"true"`, `false` if it is the
+ * @returns `true` if the value is the string `"true"`, `false` if it is the
  * string `"false"`, the value if it is already a boolean, or an error
  * otherwise.
  */
@@ -115,6 +115,7 @@ export function logError(msg: string, err?: Error): void {
  * Logs a warning message to console.
  *
  * @param msg - The warning message
+ * @param error
  */
 export function logWarning(msg: string, error?: Error): void {
   if (msg && !global.snaps.suppressWarnings) {
@@ -166,7 +167,7 @@ export async function writeError(
  * given path string.
  *
  * @param pathString - The path string to trim.
- * @returns - The trimmed path string.
+ * @returns The trimmed path string.
  */
 export function trimPathString(pathString: string): string {
   return pathString.replace(/^[./]+|[./]+$/gu, '');

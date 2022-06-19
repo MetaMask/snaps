@@ -1,6 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
 /// <reference path="../../../../../node_modules/ses/index.d.ts" />
 
+/**
+ *
+ */
 export function executeLockdownMore() {
   // Make all "object" and "function" own properties of globalThis
   // non-configurable and non-writable, when possible.
@@ -82,8 +85,8 @@ export function executeLockdownMore() {
  * We want to make globals non-writable, and we can't set the `writable`
  * property and accessor properties at the same time.
  *
- * @param {Object} descriptor - The propertyName descriptor to check.
- * @returns {boolean} Whether the propertyName descriptor has any accessors.
+ * @param descriptor - The propertyName descriptor to check.
+ * @returns Whether the propertyName descriptor has any accessors.
  */
 function hasAccessor(descriptor: any) {
   return 'set' in descriptor || 'get' in descriptor;

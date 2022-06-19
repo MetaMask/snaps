@@ -65,6 +65,7 @@ export type EnableWalletHooks = {
 
   /**
    * Initiates a permission request for the requesting origin.
+   *
    * @returns The result of the permissions request.
    */
   requestPermissions: (
@@ -73,6 +74,7 @@ export type EnableWalletHooks = {
 
   /**
    * Gets the current permissions for the requesting origin.
+   *
    * @returns The current permissions of the requesting origin.
    */
   getPermissions: () => Promise<
@@ -107,6 +109,17 @@ function hasPermissions(
   );
 }
 
+/**
+ * @param req
+ * @param res
+ * @param _next
+ * @param end
+ * @param options0
+ * @param options0.getAccounts
+ * @param options0.installSnaps
+ * @param options0.requestPermissions
+ * @param options0.getPermissions
+ */
 async function enableWallet(
   req: JsonRpcRequest<[RequestedPermissions]>,
   res: PendingJsonRpcResponse<EnableWalletResult>,

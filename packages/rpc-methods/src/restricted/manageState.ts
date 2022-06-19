@@ -48,6 +48,10 @@ type ManageStateSpecification = ValidPermissionSpecification<{
 /**
  * `snap_manageState` let's the Snap store and manage some of its state on
  * your device.
+ *
+ * @param options0
+ * @param options0.allowedCaveats
+ * @param options0.methodHooks
  */
 const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.RestrictedMethod,
@@ -81,6 +85,12 @@ export enum ManageStateOperation {
   updateState = 'update',
 }
 
+/**
+ * @param options0
+ * @param options0.clearSnapState
+ * @param options0.getSnapState
+ * @param options0.updateSnapState
+ */
 function getManageStateImplementation({
   clearSnapState,
   getSnapState,

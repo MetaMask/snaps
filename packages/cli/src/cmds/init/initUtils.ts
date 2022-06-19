@@ -83,6 +83,9 @@ export async function asyncPackageInit(): Promise<
 const YES = 'yes';
 const YES_VALUES = new Set([YES, 'y']);
 
+/**
+ * @param userInput
+ */
 function isYes(userInput: string | undefined) {
   return userInput && YES_VALUES.has(userInput.toLowerCase());
 }
@@ -232,6 +235,9 @@ export async function buildSnapManifest(
 
   return endSnapManifest();
 
+  /**
+   *
+   */
   function endSnapManifest(): [
     SnapManifest,
     {

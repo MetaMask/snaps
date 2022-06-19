@@ -50,6 +50,10 @@ type ConfirmSpecification = ValidPermissionSpecification<{
 
 /**
  * `snap_confirm` lets the Snap display a confirmation dialog to the user.
+ *
+ * @param options0
+ * @param options0.allowedCaveats
+ * @param options0.methodHooks
  */
 const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.RestrictedMethod,
@@ -75,6 +79,10 @@ export const confirmBuilder = Object.freeze({
   },
 } as const);
 
+/**
+ * @param options0
+ * @param options0.showConfirmation
+ */
 function getConfirmImplementation({ showConfirmation }: ConfirmMethodHooks) {
   return async function confirmImplementation(
     args: RestrictedMethodOptions<[ConfirmFields]>,

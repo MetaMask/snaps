@@ -1,6 +1,9 @@
 import { Worker } from 'worker_threads';
 import pathUtils from 'path';
 
+/**
+ * @param bundlePath
+ */
 export function workerEval(bundlePath: string): Promise<null> {
   return new Promise((resolve) => {
     new Worker(getEvalWorkerPath())

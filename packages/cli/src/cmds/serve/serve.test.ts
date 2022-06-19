@@ -17,6 +17,9 @@ type MockServer = {
   listen: ({ port }: { port: string }, callback: () => void) => void;
 } & EventEmitter;
 
+/**
+ *
+ */
 function getMockServer(): MockServer {
   const server: MockServer = new EventEmitter() as any;
   server.listen = (_port, callback) => callback();

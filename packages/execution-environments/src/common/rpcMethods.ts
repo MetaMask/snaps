@@ -13,6 +13,11 @@ export type RpcMethodsMapping = {
   snapRpc: SnapRpc;
 };
 
+/**
+ * @param startSnap
+ * @param invokeSnapRpc
+ * @param onTerminate
+ */
 export function rpcMethods(
   startSnap: (...args: Parameters<ExecuteSnap>) => Promise<void>,
   invokeSnapRpc: SnapRpc,
