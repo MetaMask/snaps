@@ -11,8 +11,9 @@ console.log('Hello from bls-snap!');
  * @param {object} args - The request handler args as object.
  * @param {JsonRpcRequest<unknown[] | Record<string, unknown>>} args.request - A
  * validated JSON-RPC request object.
- * @returns {boolean} `true` if the request succeeded, `false` otherwise.
+ * @returns {unknown} The response, based on the request method.
  * @throws If the request method is not valid for this snap.
+ * @throws If the user denied a signature request.
  */
 module.exports.onRpcRequest = async ({ request }) => {
   switch (request.method) {

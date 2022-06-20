@@ -8,8 +8,9 @@ import { getMessage } from './message';
  * @param args.origin - The origin of the request, e.g., the website that
  * invoked the snap.
  * @param args.request - A validated JSON-RPC request object.
- * @returns `true` if the request succeeded, `false` otherwise.
+ * @returns `null` if the request succeeded.
  * @throws If the request method is not valid for this snap.
+ * @throws If the `snap_notify` call failed.
  */
 export const onRpcRequest: OnRpcRequestHandler = ({ origin, request }) => {
   switch (request.method) {

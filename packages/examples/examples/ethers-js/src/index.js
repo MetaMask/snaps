@@ -17,7 +17,7 @@ const provider = new ethers.providers.Web3Provider(wallet);
  * @param {object} args - The request handler args as object.
  * @param {JsonRpcRequest<unknown[] | Record<string, unknown>>} args.request - A
  * validated JSON-RPC request object.
- * @returns {boolean} `true` if the request succeeded, `false` otherwise.
+ * @returns {unknown} The response, based on the request method.
  * @throws If the request method is not valid for this snap.
  */
 module.exports.onRpcRequest = async ({ request }) => {

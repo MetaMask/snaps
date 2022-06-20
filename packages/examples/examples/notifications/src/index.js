@@ -6,8 +6,9 @@
  * that invoked the snap.
  * @param {JsonRpcRequest<unknown[] | Record<string, unknown>>} args.request - A
  * validated JSON-RPC request object.
- * @returns {boolean} `true` if the request succeeded, `false` otherwise.
+ * @returns {boolean} `null` if the request succeeded.
  * @throws If the request method is not valid for this snap.
+ * @throws If the `snap_notify` call failed.
  */
 module.exports.onRpcRequest = async ({ origin, request }) => {
   switch (request.method) {

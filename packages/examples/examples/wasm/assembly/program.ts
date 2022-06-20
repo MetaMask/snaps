@@ -5,7 +5,7 @@
  * Get a fibonacci number after `n` iterations (Fₙ), starting from 1.
  *
  * @param n - The number of iterations.
- * @returns The fibonacci number for Fₙ.
+ * @returns The `nth` fibonacci number (Fₙ).
  */
 export function fib(n: i32): i32 {
   var a = 0, b = 1;
