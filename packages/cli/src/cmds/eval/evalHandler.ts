@@ -3,7 +3,10 @@ import { logError, validateFilePath } from '../../utils';
 import { workerEval } from './workerEval';
 
 /**
- * @param argv
+ * Runs the snap in a worker, to ensure SES compatibility.
+ *
+ * @param argv - The Yargs arguments object.
+ * @throws If the eval failed.
  */
 export async function snapEval(argv: YargsArgs): Promise<void> {
   const { bundle: bundlePath } = argv;

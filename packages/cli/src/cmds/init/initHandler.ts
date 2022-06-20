@@ -23,7 +23,13 @@ import {
 } from './initUtils';
 
 /**
- * @param argv
+ * Creates a new snap package, based on one of the provided templates. This
+ * creates all the necessary files, like `package.json`, `snap.config.js`, etc.
+ * to start developing a snap.
+ *
+ * @param argv - The Yargs arguments object.
+ * @returns The Yargs arguments augmented with the new arguments.
+ * @throws If initialization of the snap package failed.
  */
 export async function initHandler(argv: YargsArgs) {
   console.log(`MetaMask Snaps: Initialize\n`);
