@@ -53,7 +53,7 @@ async function createInitTemplate() {
  * Helps normalize line breaks if this script runs on Windows.
  *
  * @param {string} str - The string whose line breaks to normalize.
- * @returns The string with `\n` line breaks.
+ * @returns {string} The string with `\n` line breaks.
  */
 function normalizeLinebreaks(str) {
   return str.replace(/\r\n/gu, '\n');

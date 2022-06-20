@@ -10,8 +10,11 @@ import {
 } from './utils';
 
 /**
- * @param argv
- * @param commands
+ * The main CLI entry point function. This processes the command line args, and
+ * runs the appropriate function.
+ *
+ * @param argv - The raw command line arguments, i.e., `process.argv`.
+ * @param commands - The list of commands to use.
  */
 export function cli(argv: string[], commands: any): void {
   const rawArgv = argv.slice(2);

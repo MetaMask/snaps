@@ -84,13 +84,23 @@ const YES = 'yes';
 const YES_VALUES = new Set([YES, 'y']);
 
 /**
- * @param userInput
+ * Checks if user input provided over a prompt is "yes", i.e., if the value is
+ * truthy and in the {@link YES_VALUES} set.
+ *
+ * @param userInput - The user input to check.
+ * @returns `true` if the user input is "yes", `false` otherwise.
  */
 function isYes(userInput: string | undefined) {
   return userInput && YES_VALUES.has(userInput.toLowerCase());
 }
 
 const DEFAULT_PERMISSION_KEY = 'snap_confirm';
+
+/**
+ * Get the default permissions to write to the snap manifest.
+ *
+ * @returns An object containing the default permissions.
+ */
 const getDefaultPermissions = () => {
   return { [DEFAULT_PERMISSION_KEY]: {} };
 };
@@ -100,9 +110,8 @@ const getDefaultPermissions = () => {
  *
  * @param argv - The `yargs` `argv` object.
  * @param packageJson - The `package.json` object.
- * @param shasum - The shasum of the Snap source file.
- * @returns A tuple of the resulting Snap manifest object and a new `argv` object
- * with properties to match the manifest.
+ * @returns A tuple of the resulting Snap manifest object and a new `argv`
+ * object with properties to match the manifest.
  */
 export async function buildSnapManifest(
   argv: YargsArgs,
@@ -236,7 +245,11 @@ export async function buildSnapManifest(
   return endSnapManifest();
 
   /**
+   * Get the final snap manifest object and return it, along with the dist and
+   * file names.
    *
+   * @returns A tuple of the resulting snap manifest object and an object
+   * containing the dist and file names.
    */
   function endSnapManifest(): [
     SnapManifest,

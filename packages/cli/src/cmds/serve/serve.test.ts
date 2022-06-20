@@ -5,6 +5,11 @@ import * as fsUtils from '../../utils/validate-fs';
 import * as serveUtils from './serveUtils';
 import serve from '.';
 
+/**
+ * Get a mocked Yargs argv object.
+ *
+ * @returns The mocked args object.
+ */
 const getMockArgv = () =>
   ({
     root: '.',
@@ -18,7 +23,9 @@ type MockServer = {
 } & EventEmitter;
 
 /**
+ * Get a mocked HTTP server, with Jest spies attached to some of its methods.
  *
+ * @returns The mocked server.
  */
 function getMockServer(): MockServer {
   const server: MockServer = new EventEmitter() as any;
