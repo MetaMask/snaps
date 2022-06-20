@@ -32,12 +32,12 @@ export const invokeSnapSugarHandler: PermittedHandlerExport<
  * @param end - The `json-rpc-engine` "end" callback.
  * @returns Nothing.
  */
-async function invokeSnapSugar(
+function invokeSnapSugar(
   req: JsonRpcRequest<unknown>,
   _res: unknown,
   next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
-): Promise<void> {
+): void {
   if (
     !Array.isArray(req.params) ||
     typeof req.params[0] !== 'string' ||

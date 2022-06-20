@@ -94,7 +94,8 @@ export enum ManageStateOperation {
  * @param hooks.clearSnapState - A function that clears the state stored for a snap.
  * @param hooks.getSnapState - A function that fetches the persisted decrypted state for a snap.
  * @param hooks.updateSnapState - A function that updates the state stored for a snap.
- * @returns The method implementation which either returns `null` for a successful state update/deletion or returns the decrypted state, may also throw in case of errors.
+ * @returns The method implementation which either returns `null` for a successful state update/deletion or returns the decrypted state.
+ * @throws If the params are invalid.
  */
 function getManageStateImplementation({
   clearSnapState,

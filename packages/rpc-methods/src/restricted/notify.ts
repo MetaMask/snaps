@@ -96,7 +96,8 @@ export const notifyBuilder = Object.freeze({
  * @param hooks - The RPC method hooks.
  * @param hooks.showNativeNotification - A function that shows a native browser notification.
  * @param hooks.showInAppNotification - A function that shows a notification in the MetaMask UI.
- * @returns The method implementation which returns `null` on success and throws in case of errors.
+ * @returns The method implementation which returns `null` on success.
+ * @throws If the params are invalid.
  */
 function getImplementation({
   showNativeNotification,

@@ -72,7 +72,8 @@ export const invokeSnapBuilder = Object.freeze({
  * @param hooks - The RPC method hooks.
  * @param hooks.getSnap - A function that retrieves all information stored about a snap.
  * @param hooks.handleSnapRpcRequest - A function that sends an RPC request to a snap's RPC handler or throws if that fails.
- * @returns The method implementation which returns the result of `handleSnapRpcRequest` or throws in case of errors.
+ * @returns The method implementation which returns the result of `handleSnapRpcRequest`.
+ * @throws If the params are invalid.
  */
 function getInvokeSnapImplementation({
   getSnap,

@@ -80,7 +80,8 @@ const ALL_DIGIT_REGEX = /^\d+$/u;
  * @param hooks - The RPC method hooks.
  * @param hooks.getMnemonic - A function to retrieve the Secret Recovery Phrase of the user.
  * @param hooks.getUnlockPromise - A function that resolves once the MetaMask extension is unlocked and prompts the user to unlock their MetaMask if it is locked.
- * @returns The method implementation which returns a `BIP44CoinTypeNode` or throws.
+ * @returns The method implementation which returns a `BIP44CoinTypeNode`.
+ * @throws If the params are invalid.
  */
 function getBip44EntropyImplementation({
   getMnemonic,

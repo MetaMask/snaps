@@ -75,7 +75,8 @@ export function preprocessRequestedPermissions(
  *
  * @param requestedSnaps - An object containing the requested snaps to be installed, the key of the object is the snap id and the value is potential extra data, i.e. version.
  * @param installSnaps - A function that tries to install a given snap, prompting the user if necessary.
- * @returns An object containing the installed snaps, may throw on errors.
+ * @returns An object containing the installed snaps.
+ * @throws If the params are invalid or the snap installation fails.
  */
 export async function handleInstallSnaps(
   requestedSnaps: RequestedPermissions,

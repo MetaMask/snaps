@@ -40,13 +40,13 @@ export type GetSnapsHooks = {
  * @param hooks.getSnaps - A function that returns the snaps available for the requesting origin.
  * @returns Nothing.
  */
-async function getSnapsImplementation(
+function getSnapsImplementation(
   _req: unknown,
   res: PendingJsonRpcResponse<InstallSnapsResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
   { getSnaps }: GetSnapsHooks,
-): Promise<void> {
+): void {
   // getSnaps is already bound to the origin
   res.result = getSnaps();
   return end();
