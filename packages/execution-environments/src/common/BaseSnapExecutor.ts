@@ -13,7 +13,10 @@ import {
 import { isJsonRpcRequest } from '../__GENERATED__/openrpc.guard';
 import { createEndowments } from './endowments';
 import { rootRealmGlobal } from './globalObject';
-import { rpcMethods, RpcMethodsMapping } from './rpcMethods';
+import {
+  getCommandMethodImplementations,
+  CommandMethodsMapping,
+} from './commands';
 import { sortParamKeys } from './sortParams';
 
 type OnRpcRequestHandler = (args: {
@@ -43,7 +46,7 @@ export class BaseSnapExecutor {
 
   private rpcStream: Duplex;
 
-  private methods: RpcMethodsMapping;
+  private methods: CommandMethodsMapping;
 
   private snapErrorHandler?: (event: ErrorEvent) => void;
 
@@ -55,7 +58,7 @@ export class BaseSnapExecutor {
     this.commandStream.on('data', this.onCommandRequest.bind(this));
     this.rpcStream = rpcStream;
 
-    this.methods = rpcMethods(
+    this.methods = getCommandMethodImplementations(
       this.startSnap.bind(this),
       (target, origin, request) => {
         const data = this.snapData.get(target);
