@@ -35,12 +35,17 @@ export type InstallSnapsHooks = {
 };
 
 /**
- * @param req
- * @param res
- * @param _next
- * @param end
- * @param options0
- * @param options0.installSnaps
+ * The `wallet_installSnaps` method implementation.
+ * Tries to install the requested snaps and adds them to the JSON-RPC response. May throw in case of errors.
+ *
+ * @param req - The JSON-RPC request object.
+ * @param res - The JSON-RPC response object.
+ * @param _next - The `json-rpc-engine` "next" callback. Not used by this
+ * function.
+ * @param end - The `json-rpc-engine` "end" callback.
+ * @param hooks - The RPC method hooks.
+ * @param hooks.installSnaps - A function that tries to install a given snap, prompting the user if necessary.
+ * @returns Nothing.
  */
 async function installSnapsImplementation(
   req: JsonRpcRequest<[RequestedPermissions]>,

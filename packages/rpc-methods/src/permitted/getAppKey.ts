@@ -41,13 +41,18 @@ export type GetAppKeyHooks = {
 };
 
 /**
- * @param req
- * @param res
- * @param _next
- * @param end
- * @param options0
- * @param options0.getAppKey
- * @param options0.getUnlockPromise
+ * The `snap_getAppKey` method implementation.
+ * Tries to fetch an "app key" for the requesting snap and adds it to the JSON-RPC response. May throw in case of errors.
+ *
+ * @param req - The JSON-RPC request object.
+ * @param res - The JSON-RPC response object.
+ * @param _next - The `json-rpc-engine` "next" callback. Not used by this
+ * function.
+ * @param end - The `json-rpc-engine` "end" callback.
+ * @param hooks - The RPC method hooks.
+ * @param hooks.getAppKey - A function that retrieves an "app key" for the requesting snap.
+ * @param hooks.getUnlockPromise - A function that resolves once the MetaMask extension is unlocked and prompts the user to unlock their MetaMask if it is locked.
+ * @returns Nothing.
  */
 async function getAppKeyImplementation(
   req: JsonRpcRequest<[string]>,

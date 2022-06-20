@@ -49,11 +49,13 @@ type ConfirmSpecification = ValidPermissionSpecification<{
 }>;
 
 /**
+ * The specification builder for the `snap_confirm` permission.
  * `snap_confirm` lets the Snap display a confirmation dialog to the user.
  *
- * @param options0
- * @param options0.allowedCaveats
- * @param options0.methodHooks
+ * @param options - The specification builder options.
+ * @param options.allowedCaveats - The optional allowed caveats for the permission.
+ * @param options.methodHooks - The RPC method hooks needed by the method implementation.
+ * @returns The specification for the `snap_confirm` permission.
  */
 const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.RestrictedMethod,
@@ -80,8 +82,11 @@ export const confirmBuilder = Object.freeze({
 } as const);
 
 /**
- * @param options0
- * @param options0.showConfirmation
+ * Builds the method implementation for `snap_confirm`.
+ *
+ * @param hooks - The RPC method hooks.
+ * @param hooks.showConfirmation - A function that shows a confirmation in the MetaMask UI and returns a `boolean` that signals whether the user approved or denied the confirmation.
+ * @returns The method implementation which returns `true` if the user approved the confirmation, otherwise `false`.
  */
 function getConfirmImplementation({ showConfirmation }: ConfirmMethodHooks) {
   return async function confirmImplementation(
