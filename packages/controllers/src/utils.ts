@@ -8,9 +8,9 @@
  * appear in B. Notice that properties that appear in B, but not in A, have no effect.
  *
  * @see [Set Difference]{@link https://proofwiki.org/wiki/Definition:Set_Difference}
- * @param objectA - The object on which the difference is being calculated
- * @param objectB - The object whose properties will be removed from objectA
- * @returns objectA without properties from objectB
+ * @param objectA - The object on which the difference is being calculated.
+ * @param objectB - The object whose properties will be removed from objectA.
+ * @returns The objectA without properties from objectB.
  */
 export function setDiff<
   ObjectA extends Record<any, unknown>,
@@ -32,7 +32,7 @@ export function setDiff<
  *
  * @param ms - Milliseconds to delay the execution for.
  * @param result - The result to return from the Promise after delay.
- * @returns void if no result provided, result otherwise.
+ * @returns A promise that is void if no result provided, result otherwise.
  * @template Result - The `result`.
  */
 export function delay<Result = void>(
@@ -71,9 +71,7 @@ export const hasTimedOut = Symbol(
  * Executes the given Promise, if after ms milliseconds the Promise doesn't
  * settle, we return earlier.
  *
- * NOTE:** The given Promise is not cancelled or interrupted, and will continue
- *          to execute uninterrupted. We will just discard its result if it does
- *          not complete before the timeout.
+ * NOTE:** The given Promise is not cancelled or interrupted, and will continue to execute uninterrupted. We will just discard its result if it does not complete before the timeout.
  *
  * @param promise - The promise that you want to execute.
  * @param ms - Amout of milliseconds to wait before finishing early.
@@ -93,9 +91,10 @@ export async function withTimeout<PromisValue = void>(
   }
 }
 
+/* istanbul ignore next */
 /**
  * Use in the default case of a switch that you want to be fully exhaustive.
- * Using this function forces the compiler to enforces exhaustivity during compile-time
+ * Using this function forces the compiler to enforces exhaustivity during compile-time.
  *
  * @example
  * ```
@@ -109,11 +108,7 @@ export async function withTimeout<PromisValue = void>(
  *     assertExhaustive(snapPrefix);
  * }
  * ```
- * @param _ - The object on which the switch is being operated
- */
-/* istanbul ignore next */
-/**
- * @param _
+ * @param _ - The object on which the switch is being operated.
  */
 export function assertExhaustive(_: never): never {
   throw new Error(
