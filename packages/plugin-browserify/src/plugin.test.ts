@@ -3,6 +3,13 @@ import browserify from 'browserify';
 import concat from 'concat-stream';
 import plugin, { SnapsBrowserifyTransform } from './plugin';
 
+/**
+ * Takes a string value and pushes it to a readable stream. Used for testing
+ * purposes.
+ *
+ * @param value - The value to push to a readable stream.
+ * @returns The readable stream containing the value.
+ */
 const toStream = (value: string) => {
   const readable = new Readable();
   readable.push(value);
