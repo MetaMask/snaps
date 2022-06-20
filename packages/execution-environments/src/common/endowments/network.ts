@@ -2,6 +2,14 @@ import { allFunctions } from '../utils';
 
 type WebSocketCallback = (this: WebSocket, ev: any) => any;
 
+/**
+ * Create a network endowment, consisting of a `WebSocket` object and `fetch`
+ * function. This wraps the original implementations of `WebSocket` and `fetch`,
+ * to ensure that a bad actor cannot get access to the original objects.
+ *
+ * @returns An object containing a wrapped `WebSocket` class and `fetch`
+ * function, as well as a teardown function.
+ */
 const createNetwork = () => {
   // Open fetch calls or open body streams or open websockets
   const openConnections = new Set<{ cancel: () => Promise<void> }>();
@@ -81,10 +89,12 @@ const createNetwork = () => {
 
   /**
    * This class wraps a WebSocket object instead of extending it.
-   * That way, a bad actor can't get access to original methods using socket.prototype
+   * That way, a bad actor can't get access to original methods using
+   * `socket.prototype`.
    *
-   * When modifying this class, ensure that no method calls any other method from the same class (#socket calls are fine).
-   * Otherwise a bad actor could replace one of the implementations
+   * When modifying this class, ensure that no method calls any other method
+   * from the same class (#socket calls are fine). Otherwise, a bad actor could
+   * replace one of the implementations
    */
   const _WebSocket = class implements WebSocket {
     constructor(url: string | URL, protocols?: string | string[]) {

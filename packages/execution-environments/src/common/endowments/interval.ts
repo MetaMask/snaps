@@ -3,7 +3,7 @@
  * that:
  * - `setInterval` throws if its "handler" parameter is not a function.
  * - `clearInterval` only clears timeouts created by its sibling `setInterval`,
- *   or else no-ops.
+ * or else no-ops.
  *
  * @returns An object with the attenuated `setInterval` and `clearInterval`
  * functions.

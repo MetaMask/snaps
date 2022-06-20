@@ -2,7 +2,9 @@
 /// <reference path="../../../../../node_modules/ses/index.d.ts" />
 
 /**
+ * Execute SES lockdown in the current context.
  *
+ * @throws If the SES lockdown failed.
  */
 export function executeLockdown() {
   try {
