@@ -1,4 +1,4 @@
-import stripCommentsFn from '@chainsafe/strip-comments';
+import { stripComments as stripCommentsFn } from './strip';
 
 export type PostProcessOptions = {
   stripComments: boolean;
