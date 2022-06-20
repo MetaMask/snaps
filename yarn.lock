@@ -3912,6 +3912,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@es-joy/jsdoccomment@npm:0.10.8":
+  version: 0.10.8
+  resolution: "@es-joy/jsdoccomment@npm:0.10.8"
+  dependencies:
+    comment-parser: 1.2.4
+    esquery: ^1.4.0
+    jsdoc-type-pratt-parser: 1.1.1
+  checksum: 3e144ef393459a541b64f6c9c8e62fb6d9b47e1a2c626410487ede12c472064f6ce6e0911df60b42ccf126d5a66102707eef59ca14767cb7aeb5e608b227558d
+  languageName: node
+  linkType: hard
+
 "@eslint/eslintrc@npm:^0.4.2":
   version: 0.4.2
   resolution: "@eslint/eslintrc@npm:0.4.2"
@@ -5763,51 +5774,52 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eslint-config-jest@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@metamask/eslint-config-jest@npm:8.0.0"
+"@metamask/eslint-config-jest@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@metamask/eslint-config-jest@npm:9.0.0"
   peerDependencies:
-    "@metamask/eslint-config": ^8.0.0
+    "@metamask/eslint-config": ^9.0.0
     eslint: ^7.23.0
     eslint-plugin-jest: ^24.1.3
-  checksum: 493590360fbf70fc8b1efbe56af55bd066681c1c706d01362b9b213e07b28d2758db4c8444d9472a04639a34f1472650bc43e24c7e0fbc3a5ae2cda6ac6779d5
+  checksum: 74ddc7953691cc1e5fe76616fa7e0aaff3c671fae0187851bb90122662cd6a1346ae92ff1f3c28cc1beeeb31a8e86e6ca99062313e7674792a42ab56309efd20
   languageName: node
   linkType: hard
 
-"@metamask/eslint-config-nodejs@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@metamask/eslint-config-nodejs@npm:8.0.0"
+"@metamask/eslint-config-nodejs@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@metamask/eslint-config-nodejs@npm:9.0.0"
   peerDependencies:
-    "@metamask/eslint-config": ^8.0.0
+    "@metamask/eslint-config": ^9.0.0
     eslint: ^7.23.0
     eslint-plugin-node: ^11.1.0
-  checksum: e5083cb4d893837863e2ce67e048bb81c252df673d46198faea2bd85c2b35a4388529c9a71ee3377e9792fca8c2a393760b46f7ab869bac772234d99dfa057d3
+  checksum: c4e502741f12f252fb01a391b7c733c76b447eadc7d26360b349aa2e768c52d04b30436e92d3db7969540faace68ab4d05f379a0f54d433778bf467f44469ba0
   languageName: node
   linkType: hard
 
-"@metamask/eslint-config-typescript@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@metamask/eslint-config-typescript@npm:8.0.0"
+"@metamask/eslint-config-typescript@npm:^9.0.1":
+  version: 9.0.1
+  resolution: "@metamask/eslint-config-typescript@npm:9.0.1"
   peerDependencies:
-    "@metamask/eslint-config": ^8.0.0
+    "@metamask/eslint-config": ^9.0.0
     "@typescript-eslint/eslint-plugin": ^4.20.0
     "@typescript-eslint/parser": ^4.20.0
     eslint: ^7.23.0
     typescript: ^4.0.7
-  checksum: 04fb43c91f07345cb8bf25b3e78eb14a355d6f33d72a9acc17d0118433bae2f4f18c5d4c34ae7c55af22a3e1d8eaa1c96348909d13e20e0fc73c03409172fef1
+  checksum: df6c630e285b1a125caffce1988c23b3ba0f76507c337a849fb30fb5f9b9df4bb563419f9bb2ec7e39072601b7e95a4d5be52ddff1643bde65206f33d73440d3
   languageName: node
   linkType: hard
 
-"@metamask/eslint-config@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@metamask/eslint-config@npm:8.0.0"
+"@metamask/eslint-config@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@metamask/eslint-config@npm:9.0.0"
   peerDependencies:
     eslint: ^7.23.0
     eslint-config-prettier: ^8.1.0
     eslint-plugin-import: ^2.22.1
+    eslint-plugin-jsdoc: ^36.1.0
     eslint-plugin-prettier: ^3.3.1
     prettier: ^2.2.1
-  checksum: c4a91efaf58d61951b517f8678670977f85b74fea2a0cbabf5ff9c0fa0484801537eb41bd0512108865d6f4cbf79bc85a6e6c99c32be361796becd057dbd0e96
+  checksum: e44768e5f674e61743f1b147c589932e11f6d717b3f52b4b44ee3ab6b0b1078d379aea93473204c740fdff4b309393fc361c1e63c9cecc59ed5c8ab704eb6d20
   languageName: node
   linkType: hard
 
@@ -5843,10 +5855,10 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
-    "@metamask/eslint-config": ^8.0.0
-    "@metamask/eslint-config-jest": ^8.0.0
-    "@metamask/eslint-config-nodejs": ^8.0.0
-    "@metamask/eslint-config-typescript": ^8.0.0
+    "@metamask/eslint-config": ^9.0.0
+    "@metamask/eslint-config-jest": ^9.0.0
+    "@metamask/eslint-config-nodejs": ^9.0.0
+    "@metamask/eslint-config-typescript": ^9.0.1
     "@metamask/object-multiplex": ^1.2.0
     "@metamask/post-message-stream": ^4.0.0
     "@metamask/providers": ^9.0.0
@@ -5861,6 +5873,7 @@ __metadata:
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
     eslint-plugin-jest: ^24.4.0
+    eslint-plugin-jsdoc: ^36.1.0
     eslint-plugin-node: ^11.1.0
     eslint-plugin-prettier: ^3.4.0
     eth-rpc-errors: ^4.0.3
@@ -5972,10 +5985,10 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
-    "@metamask/eslint-config": ^8.0.0
-    "@metamask/eslint-config-jest": ^8.0.0
-    "@metamask/eslint-config-nodejs": ^8.0.0
-    "@metamask/eslint-config-typescript": ^8.0.0
+    "@metamask/eslint-config": ^9.0.0
+    "@metamask/eslint-config-jest": ^9.0.0
+    "@metamask/eslint-config-nodejs": ^9.0.0
+    "@metamask/eslint-config-typescript": ^9.0.1
     "@metamask/snap-utils": ^0.16.0
     "@rollup/plugin-virtual": ^2.1.0
     "@types/jest": ^27.5.1
@@ -5983,6 +5996,7 @@ __metadata:
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
     eslint-plugin-jest: ^24.4.0
+    eslint-plugin-jsdoc: ^36.1.0
     eslint-plugin-node: ^11.1.0
     eslint-plugin-prettier: ^3.4.0
     jest: ^27.5.1
@@ -6003,10 +6017,10 @@ __metadata:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
     "@metamask/controllers": ^30.0.0
-    "@metamask/eslint-config": ^8.0.0
-    "@metamask/eslint-config-jest": ^8.0.0
-    "@metamask/eslint-config-nodejs": ^8.0.0
-    "@metamask/eslint-config-typescript": ^8.0.0
+    "@metamask/eslint-config": ^9.0.0
+    "@metamask/eslint-config-jest": ^9.0.0
+    "@metamask/eslint-config-nodejs": ^9.0.0
+    "@metamask/eslint-config-typescript": ^9.0.1
     "@metamask/key-tree": ^4.0.0
     "@metamask/snap-controllers": ^0.16.0
     "@metamask/types": ^1.1.0
@@ -6016,6 +6030,7 @@ __metadata:
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
     eslint-plugin-jest: ^24.4.0
+    eslint-plugin-jsdoc: ^36.1.0
     eslint-plugin-node: ^11.1.0
     eslint-plugin-prettier: ^3.4.0
     eth-rpc-errors: ^4.0.2
@@ -6043,10 +6058,10 @@ __metadata:
     "@metamask/auto-changelog": ^2.6.0
     "@metamask/browser-passworder": ^3.0.0
     "@metamask/controllers": ^30.0.0
-    "@metamask/eslint-config": ^8.0.0
-    "@metamask/eslint-config-jest": ^8.0.0
-    "@metamask/eslint-config-nodejs": ^8.0.0
-    "@metamask/eslint-config-typescript": ^8.0.0
+    "@metamask/eslint-config": ^9.0.0
+    "@metamask/eslint-config-jest": ^9.0.0
+    "@metamask/eslint-config-nodejs": ^9.0.0
+    "@metamask/eslint-config-typescript": ^9.0.1
     "@metamask/execution-environments": ^0.16.0
     "@metamask/object-multiplex": ^1.1.0
     "@metamask/obs-store": ^7.0.0
@@ -6073,6 +6088,7 @@ __metadata:
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
     eslint-plugin-jest: ^24.4.0
+    eslint-plugin-jsdoc: ^36.1.0
     eslint-plugin-node: ^11.1.0
     eslint-plugin-prettier: ^3.4.0
     eth-rpc-errors: ^4.0.2
@@ -6106,16 +6122,17 @@ __metadata:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
     "@metamask/controllers": ^30.0.0
-    "@metamask/eslint-config": ^8.0.0
-    "@metamask/eslint-config-jest": ^8.0.0
-    "@metamask/eslint-config-nodejs": ^8.0.0
-    "@metamask/eslint-config-typescript": ^8.0.0
+    "@metamask/eslint-config": ^9.0.0
+    "@metamask/eslint-config-jest": ^9.0.0
+    "@metamask/eslint-config-nodejs": ^9.0.0
+    "@metamask/eslint-config-typescript": ^9.0.1
     "@metamask/providers": ^9.0.0
     "@metamask/types": ^1.1.0
     eslint: ^7.30.0
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
     eslint-plugin-jest: ^24.4.0
+    eslint-plugin-jsdoc: ^36.1.0
     eslint-plugin-node: ^11.1.0
     eslint-plugin-prettier: ^3.4.0
     prettier: ^2.3.2
@@ -6132,15 +6149,16 @@ __metadata:
     "@chainsafe/strip-comments": ^1.0.7
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
-    "@metamask/eslint-config": ^8.0.0
-    "@metamask/eslint-config-jest": ^8.0.0
-    "@metamask/eslint-config-nodejs": ^8.0.0
-    "@metamask/eslint-config-typescript": ^8.0.0
+    "@metamask/eslint-config": ^9.0.0
+    "@metamask/eslint-config-jest": ^9.0.0
+    "@metamask/eslint-config-nodejs": ^9.0.0
+    "@metamask/eslint-config-typescript": ^9.0.1
     "@types/jest": ^27.5.1
     eslint: ^7.30.0
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
     eslint-plugin-jest: ^24.4.0
+    eslint-plugin-jsdoc: ^36.1.0
     eslint-plugin-node: ^11.1.0
     eslint-plugin-prettier: ^3.4.0
     jest: ^27.5.1
@@ -6159,10 +6177,10 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
-    "@metamask/eslint-config": ^8.0.0
-    "@metamask/eslint-config-jest": ^8.0.0
-    "@metamask/eslint-config-nodejs": ^8.0.0
-    "@metamask/eslint-config-typescript": ^8.0.0
+    "@metamask/eslint-config": ^9.0.0
+    "@metamask/eslint-config-jest": ^9.0.0
+    "@metamask/eslint-config-nodejs": ^9.0.0
+    "@metamask/eslint-config-typescript": ^9.0.1
     "@metamask/snap-utils": ^0.16.0
     "@types/browserify": ^12.0.37
     "@types/jest": ^27.5.1
@@ -6172,6 +6190,7 @@ __metadata:
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
     eslint-plugin-jest: ^24.4.0
+    eslint-plugin-jsdoc: ^36.1.0
     eslint-plugin-node: ^11.1.0
     eslint-plugin-prettier: ^3.4.0
     jest: ^27.5.1
@@ -6198,10 +6217,10 @@ __metadata:
     "@babel/preset-typescript": ^7.16.7
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
-    "@metamask/eslint-config": ^8.0.0
-    "@metamask/eslint-config-jest": ^8.0.0
-    "@metamask/eslint-config-nodejs": ^8.0.0
-    "@metamask/eslint-config-typescript": ^8.0.0
+    "@metamask/eslint-config": ^9.0.0
+    "@metamask/eslint-config-jest": ^9.0.0
+    "@metamask/eslint-config-nodejs": ^9.0.0
+    "@metamask/eslint-config-typescript": ^9.0.1
     "@metamask/snap-controllers": ^0.16.0
     "@metamask/snaps-browserify-plugin": ^0.16.0
     "@metamask/utils": ^2.0.0
@@ -6224,6 +6243,7 @@ __metadata:
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
     eslint-plugin-jest: ^24.4.0
+    eslint-plugin-jsdoc: ^36.1.0
     eslint-plugin-node: ^11.1.0
     eslint-plugin-prettier: ^3.4.0
     execa: ^5.1.1
@@ -6258,10 +6278,10 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
-    "@metamask/eslint-config": ^8.0.0
-    "@metamask/eslint-config-jest": ^8.0.0
-    "@metamask/eslint-config-nodejs": ^8.0.0
-    "@metamask/eslint-config-typescript": ^8.0.0
+    "@metamask/eslint-config": ^9.0.0
+    "@metamask/eslint-config-jest": ^9.0.0
+    "@metamask/eslint-config-nodejs": ^9.0.0
+    "@metamask/eslint-config-typescript": ^9.0.1
     "@metamask/snap-utils": ^0.16.0
     "@types/jest": ^27.5.1
     "@types/webpack-sources": ^3.2.0
@@ -6269,6 +6289,7 @@ __metadata:
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
     eslint-plugin-jest: ^24.4.0
+    eslint-plugin-jsdoc: ^36.1.0
     eslint-plugin-node: ^11.1.0
     eslint-plugin-prettier: ^3.4.0
     jest: ^27.5.1
@@ -9099,15 +9120,16 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
-    "@metamask/eslint-config": ^8.0.0
-    "@metamask/eslint-config-jest": ^8.0.0
-    "@metamask/eslint-config-nodejs": ^8.0.0
-    "@metamask/eslint-config-typescript": ^8.0.0
+    "@metamask/eslint-config": ^9.0.0
+    "@metamask/eslint-config-jest": ^9.0.0
+    "@metamask/eslint-config-nodejs": ^9.0.0
+    "@metamask/eslint-config-typescript": ^9.0.1
     "@metamask/snaps-cli": ^0.16.0
     eslint: ^7.30.0
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
     eslint-plugin-jest: ^24.4.0
+    eslint-plugin-jsdoc: ^36.1.0
     eslint-plugin-node: ^11.1.0
     eslint-plugin-prettier: ^3.4.0
     eth-json-rpc-errors: ^1.1.0
@@ -9349,6 +9371,10 @@ __metadata:
     "@babel/core": ^7.17.12
     "@babel/preset-env": ^7.17.12
     "@babel/preset-typescript": ^7.17.12
+    "@metamask/eslint-config": ^9.0.0
+    "@metamask/eslint-config-jest": ^9.0.0
+    "@metamask/eslint-config-nodejs": ^9.0.0
+    "@metamask/eslint-config-typescript": ^9.0.1
     "@metamask/snap-types": ^0.16.0
     "@metamask/snaps-browserify-plugin": ^0.16.0
     "@metamask/snaps-cli": ^0.16.0
@@ -9360,8 +9386,17 @@ __metadata:
     babelify: ^10.0.0
     browserify: ^17.0.0
     concurrently: ^7.1.0
+    eslint: ^7.30.0
+    eslint-config-prettier: ^8.3.0
+    eslint-plugin-import: ^2.23.4
+    eslint-plugin-jest: ^24.4.0
+    eslint-plugin-jsdoc: ^36.1.0
+    eslint-plugin-node: ^11.1.0
+    eslint-plugin-prettier: ^3.4.0
     gulp: ^4.0.2
     gulp-exec: ^5.0.0
+    prettier: ^2.3.2
+    prettier-plugin-packagejson: ^2.2.11
     ts-node: ^10.7.0
     typescript: ^4.6.4
     vinyl-source-stream: ^2.0.0
@@ -10328,6 +10363,13 @@ __metadata:
   version: 8.3.0
   resolution: "commander@npm:8.3.0"
   checksum: 0f82321821fc27b83bd409510bb9deeebcfa799ff0bf5d102128b500b7af22872c0c92cb6a0ebc5a4cf19c6b550fba9cedfa7329d18c6442a625f851377bacf0
+  languageName: node
+  linkType: hard
+
+"comment-parser@npm:1.2.4":
+  version: 1.2.4
+  resolution: "comment-parser@npm:1.2.4"
+  checksum: 36ac280bce4c472fac22b3ec4d8aebb4d3d7c22c6808c70174f4deabee3b82144db66f8bd61eca9c514a6d0f12f6087ddab99e7d531e660d0da793b4730fd445
   languageName: node
   linkType: hard
 
@@ -11887,6 +11929,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eslint-plugin-jsdoc@npm:^36.1.0":
+  version: 36.1.1
+  resolution: "eslint-plugin-jsdoc@npm:36.1.1"
+  dependencies:
+    "@es-joy/jsdoccomment": 0.10.8
+    comment-parser: 1.2.4
+    debug: ^4.3.2
+    esquery: ^1.4.0
+    jsdoc-type-pratt-parser: ^1.1.1
+    lodash: ^4.17.21
+    regextras: ^0.8.0
+    semver: ^7.3.5
+    spdx-expression-parse: ^3.0.1
+  peerDependencies:
+    eslint: ^6.0.0 || ^7.0.0
+  checksum: ceaca9f5c39dbbab4cbb2f302e787d1581919273b4a25adca9d1b6d83fbca66a0e58da024bc1f3f21c8710f473745a297cb2a1fe5ed56c9d1f16967995293620
+  languageName: node
+  linkType: hard
+
 "eslint-plugin-node@npm:^11.1.0":
   version: 11.1.0
   resolution: "eslint-plugin-node@npm:11.1.0"
@@ -12507,15 +12568,16 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
-    "@metamask/eslint-config": ^8.0.0
-    "@metamask/eslint-config-jest": ^8.0.0
-    "@metamask/eslint-config-nodejs": ^8.0.0
-    "@metamask/eslint-config-typescript": ^8.0.0
+    "@metamask/eslint-config": ^9.0.0
+    "@metamask/eslint-config-jest": ^9.0.0
+    "@metamask/eslint-config-nodejs": ^9.0.0
+    "@metamask/eslint-config-typescript": ^9.0.1
     "@metamask/snaps-cli": ^0.16.0
     eslint: ^7.30.0
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
     eslint-plugin-jest: ^24.4.0
+    eslint-plugin-jsdoc: ^36.1.0
     eslint-plugin-node: ^11.1.0
     eslint-plugin-prettier: ^3.4.0
     ethers: ^5.4.6
@@ -12818,10 +12880,10 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
-    "@metamask/eslint-config": ^8.0.0
-    "@metamask/eslint-config-jest": ^8.0.0
-    "@metamask/eslint-config-nodejs": ^8.0.0
-    "@metamask/eslint-config-typescript": ^8.0.0
+    "@metamask/eslint-config": ^9.0.0
+    "@metamask/eslint-config-jest": ^9.0.0
+    "@metamask/eslint-config-nodejs": ^9.0.0
+    "@metamask/eslint-config-typescript": ^9.0.1
     "@metamask/snaps-cli": ^0.16.0
     "@typescript-eslint/eslint-plugin": ^5.19.0
     "@typescript-eslint/parser": ^5.19.0
@@ -12829,6 +12891,7 @@ __metadata:
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
     eslint-plugin-jest: ^24.4.0
+    eslint-plugin-jsdoc: ^36.1.0
     eslint-plugin-node: ^11.1.0
     eslint-plugin-prettier: ^3.4.0
     prettier: ^2.3.2
@@ -14764,15 +14827,16 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
-    "@metamask/eslint-config": ^8.0.0
-    "@metamask/eslint-config-jest": ^8.0.0
-    "@metamask/eslint-config-nodejs": ^8.0.0
-    "@metamask/eslint-config-typescript": ^8.0.0
+    "@metamask/eslint-config": ^9.0.0
+    "@metamask/eslint-config-jest": ^9.0.0
+    "@metamask/eslint-config-nodejs": ^9.0.0
+    "@metamask/eslint-config-typescript": ^9.0.1
     "@metamask/snaps-cli": ^0.16.0
     eslint: ^7.30.0
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
     eslint-plugin-jest: ^24.4.0
+    eslint-plugin-jsdoc: ^36.1.0
     eslint-plugin-node: ^11.1.0
     eslint-plugin-prettier: ^3.4.0
     eth-json-rpc-errors: ^1.1.0
@@ -16892,6 +16956,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jsdoc-type-pratt-parser@npm:1.1.1":
+  version: 1.1.1
+  resolution: "jsdoc-type-pratt-parser@npm:1.1.1"
+  checksum: 90522d1da193e1280c3e041561de20cb2f580dd823ad60f5c08e8f429dacc2e944259ed682c98c62d32f3fc8148a79becb47a47455a8093cebb5377b1c2ecbf2
+  languageName: node
+  linkType: hard
+
+"jsdoc-type-pratt-parser@npm:^1.1.1":
+  version: 1.2.0
+  resolution: "jsdoc-type-pratt-parser@npm:1.2.0"
+  checksum: 8be7a0e1373ad7662edd2e0f804dda462e9c56c9297aa722466ebe4bfd8c96ecdc5ce42ca91e0ca97ff6cc5c7ca730a9f5a0bc6939d7695559f0a8b95e3a2ca2
+  languageName: node
+  linkType: hard
+
 "jsdom@npm:^15.2.1":
   version: 15.2.1
   resolution: "jsdom@npm:15.2.1"
@@ -18670,15 +18748,16 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
-    "@metamask/eslint-config": ^8.0.0
-    "@metamask/eslint-config-jest": ^8.0.0
-    "@metamask/eslint-config-nodejs": ^8.0.0
-    "@metamask/eslint-config-typescript": ^8.0.0
+    "@metamask/eslint-config": ^9.0.0
+    "@metamask/eslint-config-jest": ^9.0.0
+    "@metamask/eslint-config-nodejs": ^9.0.0
+    "@metamask/eslint-config-typescript": ^9.0.1
     "@metamask/snaps-cli": ^0.16.0
     eslint: ^7.30.0
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
     eslint-plugin-jest: ^24.4.0
+    eslint-plugin-jsdoc: ^36.1.0
     eslint-plugin-node: ^11.1.0
     eslint-plugin-prettier: ^3.4.0
     prettier: ^2.3.2
@@ -20460,6 +20539,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"regextras@npm:^0.8.0":
+  version: 0.8.0
+  resolution: "regextras@npm:0.8.0"
+  checksum: b7ec5b32a2b98b4b27048d44f8ab90009873c1307f2cf89321aa8c4cbb8147f1bee07863f4dadf585546ca0b91a234ad9804954dea5fc029421f6c25a4523798
+  languageName: node
+  linkType: hard
+
 "regjsgen@npm:^0.5.1":
   version: 0.5.2
   resolution: "regjsgen@npm:0.5.2"
@@ -20933,10 +21019,10 @@ __metadata:
     "@babel/preset-typescript": ^7.17.12
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
-    "@metamask/eslint-config": ^8.0.0
-    "@metamask/eslint-config-jest": ^8.0.0
-    "@metamask/eslint-config-nodejs": ^8.0.0
-    "@metamask/eslint-config-typescript": ^8.0.0
+    "@metamask/eslint-config": ^9.0.0
+    "@metamask/eslint-config-jest": ^9.0.0
+    "@metamask/eslint-config-nodejs": ^9.0.0
+    "@metamask/eslint-config-typescript": ^9.0.1
     "@metamask/rollup-plugin-snaps": ^0.16.0
     "@metamask/snap-types": ^0.16.0
     "@metamask/snaps-cli": ^0.16.0
@@ -20947,6 +21033,7 @@ __metadata:
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
     eslint-plugin-jest: ^24.4.0
+    eslint-plugin-jsdoc: ^36.1.0
     eslint-plugin-node: ^11.1.0
     eslint-plugin-prettier: ^3.4.0
     prettier: ^2.3.2
@@ -20994,10 +21081,10 @@ __metadata:
     "@jest-runner/electron": ^3.0.1
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
-    "@metamask/eslint-config": ^8.0.0
-    "@metamask/eslint-config-jest": ^8.0.0
-    "@metamask/eslint-config-nodejs": ^8.0.0
-    "@metamask/eslint-config-typescript": ^8.0.0
+    "@metamask/eslint-config": ^9.0.0
+    "@metamask/eslint-config-jest": ^9.0.0
+    "@metamask/eslint-config-nodejs": ^9.0.0
+    "@metamask/eslint-config-typescript": ^9.0.1
     "@types/jest": ^27.5.1
     "@types/node": ^14.14.25
     "@typescript-eslint/eslint-plugin": ^5.19.0
@@ -21007,6 +21094,7 @@ __metadata:
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
     eslint-plugin-jest: ^24.4.0
+    eslint-plugin-jsdoc: ^36.1.0
     eslint-plugin-node: ^11.1.0
     eslint-plugin-prettier: ^3.4.0
     jest: ^27.5.1
@@ -21770,7 +21858,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"spdx-expression-parse@npm:^3.0.0":
+"spdx-expression-parse@npm:^3.0.0, spdx-expression-parse@npm:^3.0.1":
   version: 3.0.1
   resolution: "spdx-expression-parse@npm:3.0.1"
   dependencies:
@@ -23162,16 +23250,17 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
-    "@metamask/eslint-config": ^8.0.0
-    "@metamask/eslint-config-jest": ^8.0.0
-    "@metamask/eslint-config-nodejs": ^8.0.0
-    "@metamask/eslint-config-typescript": ^8.0.0
+    "@metamask/eslint-config": ^9.0.0
+    "@metamask/eslint-config-jest": ^9.0.0
+    "@metamask/eslint-config-nodejs": ^9.0.0
+    "@metamask/eslint-config-typescript": ^9.0.1
     "@metamask/snap-types": ^0.16.0
     "@metamask/snaps-cli": ^0.16.0
     eslint: ^7.30.0
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
     eslint-plugin-jest: ^24.4.0
+    eslint-plugin-jsdoc: ^36.1.0
     eslint-plugin-node: ^11.1.0
     eslint-plugin-prettier: ^3.4.0
     prettier: ^2.3.2
@@ -23773,10 +23862,10 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
-    "@metamask/eslint-config": ^8.0.0
-    "@metamask/eslint-config-jest": ^8.0.0
-    "@metamask/eslint-config-nodejs": ^8.0.0
-    "@metamask/eslint-config-typescript": ^8.0.0
+    "@metamask/eslint-config": ^9.0.0
+    "@metamask/eslint-config-jest": ^9.0.0
+    "@metamask/eslint-config-nodejs": ^9.0.0
+    "@metamask/eslint-config-typescript": ^9.0.1
     "@metamask/snaps-cli": ^0.16.0
     assemblyscript: ^0.19.23
     brfs: ^2.0.2
@@ -23784,6 +23873,7 @@ __metadata:
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
     eslint-plugin-jest: ^24.4.0
+    eslint-plugin-jsdoc: ^36.1.0
     eslint-plugin-node: ^11.1.0
     eslint-plugin-prettier: ^3.4.0
     eth-rpc-errors: ^4.0.3
@@ -23988,10 +24078,10 @@ __metadata:
     "@babel/preset-typescript": ^7.16.7
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
-    "@metamask/eslint-config": ^8.0.0
-    "@metamask/eslint-config-jest": ^8.0.0
-    "@metamask/eslint-config-nodejs": ^8.0.0
-    "@metamask/eslint-config-typescript": ^8.0.0
+    "@metamask/eslint-config": ^9.0.0
+    "@metamask/eslint-config-jest": ^9.0.0
+    "@metamask/eslint-config-nodejs": ^9.0.0
+    "@metamask/eslint-config-typescript": ^9.0.1
     "@metamask/snap-types": ^0.16.0
     "@metamask/snaps-cli": ^0.16.0
     "@metamask/snaps-webpack-plugin": ^0.16.0
@@ -24002,6 +24092,7 @@ __metadata:
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
     eslint-plugin-jest: ^24.4.0
+    eslint-plugin-jsdoc: ^36.1.0
     eslint-plugin-node: ^11.1.0
     eslint-plugin-prettier: ^3.4.0
     hook-shell-script-webpack-plugin: ^0.1.4

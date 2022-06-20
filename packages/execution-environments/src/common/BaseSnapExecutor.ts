@@ -13,7 +13,10 @@ import {
 import { isJsonRpcRequest } from '../__GENERATED__/openrpc.guard';
 import { createEndowments } from './endowments';
 import { rootRealmGlobal } from './globalObject';
-import { rpcMethods, RpcMethodsMapping } from './rpcMethods';
+import {
+  getCommandMethodImplementations,
+  CommandMethodsMapping,
+} from './commands';
 import { sortParamKeys } from './sortParams';
 
 type OnRpcRequestHandler = (args: {
@@ -43,7 +46,7 @@ export class BaseSnapExecutor {
 
   private rpcStream: Duplex;
 
-  private methods: RpcMethodsMapping;
+  private methods: CommandMethodsMapping;
 
   private snapErrorHandler?: (event: ErrorEvent) => void;
 
@@ -55,7 +58,7 @@ export class BaseSnapExecutor {
     this.commandStream.on('data', this.onCommandRequest.bind(this));
     this.rpcStream = rpcStream;
 
-    this.methods = rpcMethods(
+    this.methods = getCommandMethodImplementations(
       this.startSnap.bind(this),
       (target, origin, request) => {
         const data = this.snapData.get(target);
@@ -156,20 +159,18 @@ export class BaseSnapExecutor {
   }
 
   /**
-   * Attempts to evaluate a snap in SES.
-   * Generates the APIs for the snap. May throw on error.
+   * Attempts to evaluate a snap in SES. Generates APIs for the snap. May throw
+   * on errors.
    *
-   * @param {string} snapName - The name of the snap.
-   * @param {Array<string>} approvedPermissions - The snap's approved permissions.
-   * Should always be a value returned from the permissions controller.
-   * @param {string} sourceCode - The source code of the snap, in IIFE format.
-   * @param {Array} endowments - An array of the names of the endowments.
+   * @param snapName - The name of the snap.
+   * @param sourceCode - The source code of the snap, in IIFE format.
+   * @param _endowments - An array of the names of the endowments.
    */
   protected async startSnap(
     snapName: string,
     sourceCode: string,
     _endowments?: Endowments,
-  ) {
+  ): Promise<void> {
     console.log(`starting snap '${snapName}' in worker`);
     if (this.snapPromiseErrorHandler) {
       rootRealmGlobal.removeEventListener(
@@ -236,7 +237,7 @@ export class BaseSnapExecutor {
 
   /**
    * Cancels all running evaluations of all snaps and clears all snap data.
-   * **NOTE:** Should only be called in response to the `terminate` RPC command.
+   * NOTE:** Should only be called in response to the `terminate` RPC command.
    */
   protected onTerminate() {
     // `stop()` tears down snap endowments.
@@ -267,7 +268,9 @@ export class BaseSnapExecutor {
   }
 
   /**
-   * Creates a hardened snap provider object (i.e. globalThis.wallet), and returns it.
+   * Instantiates a snap provider object (i.e. `globalThis.wallet`).
+   *
+   * @returns The snap provider object.
    */
   private createSnapProvider(): SnapProvider {
     return new MetaMaskInpageProvider(this.rpcStream, {
@@ -277,6 +280,8 @@ export class BaseSnapExecutor {
 
   /**
    * Removes the snap with the given name.
+   *
+   * @param snapName - The name of the snap to remove.
    */
   private removeSnap(snapName: string): void {
     this.snapData.delete(snapName);

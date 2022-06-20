@@ -16,6 +16,15 @@ export type SnapConfig = {
 
 let snapConfigCache: SnapConfig | undefined;
 
+/**
+ * Attempt to load the snap config file (`snap.config.js`). By default will use
+ * the cached config, if it was loaded before, and `cached` is `true`. If the
+ * config file is not found, or the config is invalid, this function will kill
+ * the process.
+ *
+ * @param cached - Whether to use the cached config. Defaults to `true`.
+ * @returns The snap config.
+ */
 export function loadConfig(cached = true): SnapConfig {
   if (snapConfigCache !== undefined && cached === true) {
     return snapConfigCache;
@@ -44,7 +53,7 @@ export function loadConfig(cached = true): SnapConfig {
   return config;
 }
 
-// Note that the below function is necessary because yarg's .config() function
+// Note that the below function is necessary because yargs' .config() function
 // leaves much to be desired.
 //
 // In particular, it will set all properties included in the config file
@@ -56,6 +65,11 @@ export function loadConfig(cached = true): SnapConfig {
  *
  * Arguments are only set per the snap-cli config file if they were not specified
  * on the command line.
+ *
+ * @param snapConfig - The snap config.
+ * @param processArgv - The command line arguments, i.e., `process.argv`.
+ * @param yargsArgv - The processed `yargs` arguments.
+ * @param yargsInstance - An instance of `yargs`.
  */
 export function applyConfig(
   snapConfig: SnapConfig,

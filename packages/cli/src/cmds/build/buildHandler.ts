@@ -16,10 +16,10 @@ import { bundle } from './bundle';
  *
  * Creates destination directory if it doesn't exist.
  *
- * @param argv - argv from Yargs
- * @param argv.src - The source file path
- * @param argv.dist - The output directory path
- * @param argv.outfileName - The output file name
+ * @param argv - Argv from Yargs.
+ * @param argv.src - The source file path.
+ * @param argv.dist - The output directory path.
+ * @param argv.outfileName - The output file name.
  */
 export async function build(argv: YargsArgs): Promise<void> {
   const { src, dist, outfileName } = argv;

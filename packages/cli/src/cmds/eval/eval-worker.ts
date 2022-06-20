@@ -34,6 +34,13 @@ if (parentPort !== null) {
   });
 }
 
+/**
+ * Get mock endowments that don't do anything. This is useful for running the
+ * eval, for snaps that try to communicate with the extension on initialisation,
+ * for example.
+ *
+ * @returns The mock endowments.
+ */
 function getMockEndowments() {
   const endowments = generateMockEndowments();
   return {

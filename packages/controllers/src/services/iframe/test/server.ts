@@ -6,6 +6,11 @@ import serveHandler from 'serve-handler';
 export const PORT = 6364;
 
 let server: http.Server;
+/**
+ * Starts a local server that serves the iframe execution environment.
+ *
+ * @param port - The port to start the server on.
+ */
 export async function start(port = PORT) {
   return new Promise<void>((resolve, reject) => {
     if (!Number.isSafeInteger(port) || port < 0) {
@@ -51,6 +56,9 @@ export async function start(port = PORT) {
   });
 }
 
+/**
+ * Stops the local server.
+ */
 export async function stop() {
   const close = promisify(server.close);
   await close();

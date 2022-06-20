@@ -59,6 +59,15 @@ type Specification = ValidPermissionSpecification<{
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
 }>;
 
+/**
+ * The specification builder for the `snap_notify` permission.
+ * `snap_notify` allows snaps to send multiple types of notifications to its users.
+ *
+ * @param options - The specification builder options.
+ * @param options.allowedCaveats - The optional allowed caveats for the permission.
+ * @param options.methodHooks - The RPC method hooks needed by the method implementation.
+ * @returns The specification for the `snap_notify` permission.
+ */
 const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.RestrictedMethod,
   SpecificationBuilderOptions,
@@ -81,6 +90,15 @@ export const notifyBuilder = Object.freeze({
   },
 } as const);
 
+/**
+ * Builds the method implementation for `snap_notify`.
+ *
+ * @param hooks - The RPC method hooks.
+ * @param hooks.showNativeNotification - A function that shows a native browser notification.
+ * @param hooks.showInAppNotification - A function that shows a notification in the MetaMask UI.
+ * @returns The method implementation which returns `null` on success.
+ * @throws If the params are invalid.
+ */
 function getImplementation({
   showNativeNotification,
   showInAppNotification,

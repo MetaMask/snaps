@@ -10,7 +10,7 @@ type EndowmentFactoryResult = {
   /**
    * A function that performs any necessary teardown when the snap becomes idle.
    *
-   * **NOTE:** The endowments are not reconstructed if the snap is re-invoked
+   * NOTE:** The endowments are not reconstructed if the snap is re-invoked
    * before being terminated, so the teardown operation must not render the
    * endowments unusable; it should simply restore the endowments to their
    * original state.
