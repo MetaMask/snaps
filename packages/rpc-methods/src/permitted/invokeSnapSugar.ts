@@ -22,17 +22,23 @@ export const invokeSnapSugarHandler: PermittedHandlerExport<
 };
 
 /**
- * @param req
- * @param _res
- * @param next
- * @param end
+ * The `wallet_invokeSnap` method implementation.
+ * Reroutes incoming JSON-RPC requests that are targeting snaps, by modifying the method and params.
+ *
+ * @param req - The JSON-RPC request object.
+ * @param _res - The JSON-RPC response object. Not used by this
+ * function.
+ * @param next - The `json-rpc-engine` "next" callback.
+ * @param end - The `json-rpc-engine` "end" callback.
+ * @returns Nothing.
+ * @throws If the params are invalid.
  */
-async function invokeSnapSugar(
+function invokeSnapSugar(
   req: JsonRpcRequest<unknown>,
   _res: unknown,
   next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
-): Promise<void> {
+): void {
   if (
     !Array.isArray(req.params) ||
     typeof req.params[0] !== 'string' ||

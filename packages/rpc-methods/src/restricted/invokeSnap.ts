@@ -29,13 +29,17 @@ type InvokeSnapSpecification = ValidPermissionSpecification<{
 }>;
 
 /**
+ * The specification builder for the `wallet_snap_*` permission.
+ *
  * `wallet_snap_*` attempts to invoke an RPC method of the specified Snap.
+ *
  * Requesting its corresponding permission will attempt to connect to the Snap,
  * and install it if it's not avaialble yet.
  *
- * @param options0
- * @param options0.allowedCaveats
- * @param options0.methodHooks
+ * @param options - The specification builder options.
+ * @param options.allowedCaveats - The optional allowed caveats for the permission.
+ * @param options.methodHooks - The RPC method hooks needed by the method implementation.
+ * @returns The specification for the `wallet_snap_*` permission.
  */
 const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.RestrictedMethod,
@@ -63,9 +67,13 @@ export const invokeSnapBuilder = Object.freeze({
 } as const);
 
 /**
- * @param options0
- * @param options0.getSnap
- * @param options0.handleSnapRpcRequest
+ * Builds the method implementation for `wallet_snap_*`.
+ *
+ * @param hooks - The RPC method hooks.
+ * @param hooks.getSnap - A function that retrieves all information stored about a snap.
+ * @param hooks.handleSnapRpcRequest - A function that sends an RPC request to a snap's RPC handler or throws if that fails.
+ * @returns The method implementation which returns the result of `handleSnapRpcRequest`.
+ * @throws If the params are invalid.
  */
 function getInvokeSnapImplementation({
   getSnap,
