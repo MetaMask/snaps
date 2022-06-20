@@ -55,8 +55,7 @@ async function getPubKey() {
 }
 
 /**
- * Prompts the user to approve a request, with the `header` as prompt, and an
- * optional `message`.
+ * Displays a prompt to the user in the MetaMask UI.
  *
  * @param {string} header - A prompt, phrased as a question, no greater than 40
  * characters long.

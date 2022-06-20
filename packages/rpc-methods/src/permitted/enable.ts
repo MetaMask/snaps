@@ -110,15 +110,22 @@ function hasPermissions(
 }
 
 /**
- * @param req
- * @param res
- * @param _next
- * @param end
- * @param options0
- * @param options0.getAccounts
- * @param options0.installSnaps
- * @param options0.requestPermissions
- * @param options0.getPermissions
+ * The `wallet_enable` method implementation. See {@link enableWalletHandler}
+ * for more information.
+ *
+ * @param req - The JSON-RPC request object.
+ * @param res - The JSON-RPC response object.
+ * @param _next - The `json-rpc-engine` "next" callback. Not used by this
+ * function.
+ * @param end - The `json-rpc-engine` "end" callback.
+ * @param hooks - The RPC method hooks.
+ * @param hooks.getAccounts - Gets the user's Ethereum account addresses.
+ * @param hooks.installSnaps - A function that installs permitted snaps.
+ * @param hooks.requestPermissions - A function that requests permissions on
+ * behalf of a subject.
+ * @param hooks.getPermissions - A function that gets the current permissions
+ * of a subject.
+ * @returns Nothing.
  */
 async function enableWallet(
   req: JsonRpcRequest<[RequestedPermissions]>,
@@ -146,11 +153,11 @@ async function enableWallet(
     snaps: {},
   };
 
-  // request the permissions
+  // Request the permissions
 
   let requestedPermissions: RequestedPermissions;
   try {
-    // we expect the params to be the same as wallet_requestPermissions
+    // We expect the params to be the same as wallet_requestPermissions
     requestedPermissions = preprocessRequestedPermissions(req.params[0]);
     const existingPermissions = await getPermissions();
     if (
@@ -169,18 +176,18 @@ async function enableWallet(
     return end(err);
   }
 
-  // install snaps, if any
+  // Install snaps, if any
 
-  // get the names of the approved snaps
+  // Get the names of the approved snaps
   const requestedSnaps: RequestedPermissions = result.permissions
-    // requestPermissions returns all permissions for the domain,
+    // RequestPermissions returns all permissions for the domain,
     // so we're filtering out non-snap and preexisting permissions
     .filter(
       (perm) =>
         perm.parentCapability.startsWith(SNAP_PREFIX) &&
         perm.parentCapability in requestedPermissions,
     )
-    // convert from namespaced permissions to snap ids
+    // Convert from namespaced permissions to snap ids
     .reduce((_requestedSnaps, perm) => {
       const snapId = perm.parentCapability.replace(SNAP_PREFIX_REGEX, '');
       _requestedSnaps[snapId] = requestedPermissions[perm.parentCapability];
@@ -189,7 +196,7 @@ async function enableWallet(
 
   try {
     if (Object.keys(requestedSnaps).length > 0) {
-      // this throws if requestedSnaps is empty
+      // This throws if requestedSnaps is empty
       result.snaps = await handleInstallSnaps(requestedSnaps, installSnaps);
     }
   } catch (err) {
@@ -199,10 +206,10 @@ async function enableWallet(
     result.errors.push(serializeError(err));
   }
 
-  // get whatever accounts we have
+  // Get whatever accounts we have
   result.accounts = await getAccounts();
 
-  // return the result
+  // Return the result
   res.result = result;
   return end();
 }

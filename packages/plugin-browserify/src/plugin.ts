@@ -71,10 +71,10 @@ export class SnapsBrowserifyTransform extends Transform {
  * Defaults to `true`.
  */
 export default function plugin(
-  browserify: BrowserifyObject,
+  browserifyInstance: BrowserifyObject,
   options: Partial<Options>,
-) {
+): void {
   // Pushes the transform stream at the end of Browserify's pipeline. This
   // ensures that the transform is run on the entire bundle.
-  browserify.pipeline.push(new SnapsBrowserifyTransform(options));
+  browserifyInstance.pipeline.push(new SnapsBrowserifyTransform(options));
 }
