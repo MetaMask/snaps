@@ -5,6 +5,13 @@ import { BaseSnapExecutor } from '../common/BaseSnapExecutor';
 import { SNAP_STREAM_NAMES } from '../common/enums';
 
 export class IFrameSnapExecutor extends BaseSnapExecutor {
+  /**
+   * Initialize the IFrameSnapExecutor. This creates a post message stream from
+   * and to the parent window, for two-way communication with the iframe.
+   *
+   * @returns An instance of `IFrameSnapExecutor`, with the initialized post
+   * message streams.
+   */
   static initialize() {
     console.log('Worker: Connecting to parent.');
 

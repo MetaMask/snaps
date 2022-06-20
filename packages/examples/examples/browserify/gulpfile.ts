@@ -17,6 +17,12 @@ const bundler = browserify({
   .transform('babelify', { extensions: ['.ts'], ...babelConfig })
   .plugin('@metamask/snaps-browserify-plugin');
 
+/**
+ * Runs the Browserify bundler, writes the output to the `dist` folder, and runs
+ * `yarn manifest` and `yarn eval` afterwards.
+ *
+ * @returns A `ReadWriteStream` of the bundle.
+ */
 export const build = () => {
   return bundler
     .bundle()
@@ -26,6 +32,12 @@ export const build = () => {
     .pipe(exec('yarn eval'));
 };
 
+/**
+ * Builds and watches the `src` folder for changes, and rebuilds the bundle when
+ * necessary.
+ *
+ * @returns A `ReadWriteStream` of the bundle.
+ */
 export const watch = () => {
   const watcher = watchify(bundler);
   watcher.on('update', build);

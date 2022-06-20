@@ -6,9 +6,9 @@ import { logError } from './misc';
  * Checks whether the given path string resolves to an existing directory, and
  * optionally creates the directory if it doesn't exist.
  *
- * @param pathString - The path string to check
- * @param createDir - Whether to create the directory if it doesn't exist
- * @returns Whether the given path is an existing directory
+ * @param pathString - The path string to check.
+ * @param createDir - Whether to create the directory if it doesn't exist.
+ * @returns Whether the given path is an existing directory.
  */
 export async function isDirectory(
   pathString: string,
@@ -38,8 +38,8 @@ export async function isDirectory(
 /**
  * Checks whether the given path string resolves to an existing file.
  *
- * @param pathString - The path string to check
- * @returns Whether the given path is an existing file
+ * @param pathString - The path string to check.
+ * @returns Whether the given path is an existing file.
  */
 export async function isFile(pathString: string): Promise<boolean> {
   try {

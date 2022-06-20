@@ -7,7 +7,9 @@ export const PORT = 6364;
 
 let server: http.Server;
 /**
- * @param port
+ * Starts a local server that serves the iframe execution environment.
+ *
+ * @param port - The port to start the server on.
  */
 export async function start(port = PORT) {
   return new Promise<void>((resolve, reject) => {
@@ -55,7 +57,7 @@ export async function start(port = PORT) {
 }
 
 /**
- *
+ * Stops the local server.
  */
 export async function stop() {
   const close = promisify(server.close);

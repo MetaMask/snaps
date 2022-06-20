@@ -3,7 +3,7 @@
  * that:
  * - `setTimeout` throws if its "handler" parameter is not a function.
  * - `clearTimeout` only clears timeouts created by its sibling `setTimeout`,
- *   or else no-ops.
+ * or else no-ops.
  *
  * @returns An object with the attenuated `setTimeout` and `clearTimeout`
  * functions.

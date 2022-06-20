@@ -38,12 +38,14 @@ type GetBip44EntropySpecification = ValidPermissionSpecification<{
 }>;
 
 /**
+ * The specification builder for the `snap_getBip44Entropy_*` permission.
  * `snap_getBip44Entropy_*` lets the Snap control private keys for a particular
  * BIP-32 coin type.
  *
- * @param options0
- * @param options0.allowedCaveats
- * @param options0.methodHooks
+ * @param options - The specification builder options.
+ * @param options.allowedCaveats - The optional allowed caveats for the permission.
+ * @param options.methodHooks - The RPC method hooks needed by the method implementation.
+ * @returns The specification for the `snap_getBip44Entropy_*` permission.
  */
 const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.RestrictedMethod,
@@ -73,9 +75,13 @@ export const getBip44EntropyBuilder = Object.freeze({
 const ALL_DIGIT_REGEX = /^\d+$/u;
 
 /**
- * @param options0
- * @param options0.getMnemonic
- * @param options0.getUnlockPromise
+ * Builds the method implementation for `snap_getBip44Entropy_*`.
+ *
+ * @param hooks - The RPC method hooks.
+ * @param hooks.getMnemonic - A function to retrieve the Secret Recovery Phrase of the user.
+ * @param hooks.getUnlockPromise - A function that resolves once the MetaMask extension is unlocked and prompts the user to unlock their MetaMask if it is locked.
+ * @returns The method implementation which returns a `BIP44CoinTypeNode`.
+ * @throws If the params are invalid.
  */
 function getBip44EntropyImplementation({
   getMnemonic,
