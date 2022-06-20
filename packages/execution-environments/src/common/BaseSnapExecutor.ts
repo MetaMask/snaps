@@ -159,21 +159,18 @@ export class BaseSnapExecutor {
   }
 
   /**
-   * Attempts to evaluate a snap in SES.
-   * Generates the APIs for the snap. May throw on error.
+   * Attempts to evaluate a snap in SES. Generates APIs for the snap. May throw
+   * on errors.
    *
    * @param snapName - The name of the snap.
-   * @param approvedPermissions - The snap's approved permissions.
-   * Should always be a value returned from the permissions controller.
    * @param sourceCode - The source code of the snap, in IIFE format.
-   * @param endowments - An array of the names of the endowments.
-   * @param _endowments
+   * @param _endowments - An array of the names of the endowments.
    */
   protected async startSnap(
     snapName: string,
     sourceCode: string,
     _endowments?: Endowments,
-  ) {
+  ): Promise<void> {
     console.log(`starting snap '${snapName}' in worker`);
     if (this.snapPromiseErrorHandler) {
       rootRealmGlobal.removeEventListener(
@@ -271,7 +268,9 @@ export class BaseSnapExecutor {
   }
 
   /**
-   * Creates a hardened snap provider object (i.e. globalThis.wallet), and returns it.
+   * Instantiates a snap provider object (i.e. `globalThis.wallet`).
+   *
+   * @returns The snap provider object.
    */
   private createSnapProvider(): SnapProvider {
     return new MetaMaskInpageProvider(this.rpcStream, {
@@ -282,7 +281,7 @@ export class BaseSnapExecutor {
   /**
    * Removes the snap with the given name.
    *
-   * @param snapName
+   * @param snapName - The name of the snap to remove.
    */
   private removeSnap(snapName: string): void {
     this.snapData.delete(snapName);
