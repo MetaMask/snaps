@@ -28,7 +28,8 @@ import {
  * to start developing a snap.
  *
  * @param argv - The Yargs arguments object.
- * @returns The Yargs arguments augmented with the new arguments.
+ * @returns The Yargs arguments augmented with the new `dist`, `outfileName` and
+ * `src` properties.
  * @throws If initialization of the snap package failed.
  */
 export async function initHandler(argv: YargsArgs) {
