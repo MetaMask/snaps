@@ -1,5 +1,9 @@
 /**
- * @param obj
+ * Get all properties of an object, including its prototype chain.
+ *
+ * @param obj - The object to get all properties for.
+ * @returns All properties of `obj` as a tuple set, containing the property name
+ * and value.
  */
 export function allProperties(obj: any): Set<[object, string | symbol]> {
   const properties = new Set<[any, any]>();
@@ -16,7 +20,11 @@ export function allProperties(obj: any): Set<[object, string | symbol]> {
 }
 
 /**
- * @param obj
+ * Get all functions of an object, including its prototype chain. This does not
+ * include constructor functions.
+ *
+ * @param obj - The object to get all functions for.
+ * @returns An array with all functions of `obj` as string or symbol.
  */
 export function allFunctions(obj: any): (string | symbol)[] {
   const result = [];
