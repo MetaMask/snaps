@@ -5,4 +5,4 @@ import { WebWorkerSnapExecutor } from './WebWorkerSnapExecutor';
 executeLockdown();
 executeLockdownMore();
 
-WebWorkerSnapExecutor.initalize();
+WebWorkerSnapExecutor.initialize();

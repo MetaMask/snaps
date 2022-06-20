@@ -2,6 +2,15 @@
 
 import { JSONRPCParams } from '../__GENERATED__/openrpc';
 
+/**
+ * Deterministically sort JSON-RPC parameter keys.
+ *
+ * @param method - The JSON-RPC method.
+ * @param method.params - The parameters of the JSON-RPC method.
+ * @param params - JSON-RPC parameters as object or array.
+ * @returns The sorted parameter keys. If `params` is not provided, this returns
+ * an empty array. If `params` is an array, this returns the same `params`.
+ */
 export const sortParamKeys = (
   method: { params: { name: string }[] },
   params?: JSONRPCParams,

@@ -2,7 +2,7 @@
 /// <reference path="../../../../../node_modules/ses/index.d.ts" />
 
 /**
- * Execute SES lockdown in the current context.
+ * Execute SES lockdown in the current context, i.e., the current iframe.
  *
  * @throws If the SES lockdown failed.
  */
