@@ -19,7 +19,7 @@ export function getOutfilePath(outDir: string, outFileName: string): string {
  *
  * @param filename - The file name to validate.
  * @returns `true` if validation succeeded.
- * @throws If file name is name is invalid.
+ * @throws If the file name is name is invalid.
  */
 export function validateOutfileName(filename: string): boolean {
   if (
