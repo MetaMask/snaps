@@ -310,7 +310,7 @@ export function gtVersion(version1: string, version2: string): boolean {
  *
  * @param version - The SemVer version to check.
  * @param versionRange - The SemVer version range to check against.
- * @returns Whether the version satisfied the version rnage.
+ * @returns Whether the version satisfied the version range.
  */
 export function satifiesVersionRange(
   version: string,
@@ -322,8 +322,9 @@ export function satifiesVersionRange(
 }
 
 /**
- * Return the highest version in the list that satisfies the range,
- * or `null` if none of them do.
+ * Return the highest version in the list that satisfies the range, or `null` if
+ * none of them do. For the satisfaction check, pre-release versions will only
+ * be checked if no satisfactory non-prerelease version is found first.
  *
  * @param versions - The list of version to check.
  * @param versionRange - The SemVer version range to check against.

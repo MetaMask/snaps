@@ -18,7 +18,7 @@ export function getOutfilePath(outDir: string, outFileName: string): string {
  * Throws on validation failure.
  *
  * @param filename - The file name to validate.
- * @returns `true` if validation succeeded, `false` otherwise.
+ * @returns `true` if validation succeeded, otherwise an error will be thrown.
  */
 export function validateOutfileName(filename: string): boolean {
   if (
@@ -35,7 +35,7 @@ export function validateOutfileName(filename: string): boolean {
  * Validates a file path. Throws on validation failure.
  *
  * @param filePath - The file path to validate.
- * @returns `true` if validation succeeded, `false` otherwise.
+ * @returns `true` if validation succeeded, otherwise an error will be thrown.
  */
 export async function validateFilePath(filePath: string): Promise<boolean> {
   const exists = await isFile(filePath);
@@ -52,8 +52,8 @@ export async function validateFilePath(filePath: string): Promise<boolean> {
  *
  * @param dirPath - The directory path to validate.
  * @param createDir - Whether to create the directory if it doesn't exist.
- * @returns `true` if validation succeeded or the directory was created, and
- * `false` otherwise.
+ * @returns `true` if validation succeeded or the directory was created,
+ * otherwise an error will be thrown.
  */
 export async function validateDirPath(
   dirPath: string,
