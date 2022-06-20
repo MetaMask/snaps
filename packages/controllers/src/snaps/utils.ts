@@ -522,7 +522,7 @@ function createTarballExtractionStream(
 }
 
 /**
- * Checks whether the `source.shasum` property a Snap manifest matches the
+ * Checks whether the `source.shasum` property of a Snap manifest matches the
  * shasum of a snap source code string.
  *
  * @param manifest - The manifest whose shasum to validate.
@@ -603,7 +603,7 @@ export function resolveVersion(version?: Json): Json {
  * Checks whether a SemVer version range is valid.
  *
  * @param versionRange - A potential version range.
- * @returns `true` if the version range is valid, and `false` oterwise.
+ * @returns `true` if the version range is valid, and `false` otherwise.
  */
 export function isValidSnapVersionRange(
   versionRange: unknown,
