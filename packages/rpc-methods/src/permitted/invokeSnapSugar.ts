@@ -31,6 +31,7 @@ export const invokeSnapSugarHandler: PermittedHandlerExport<
  * @param next - The `json-rpc-engine` "next" callback.
  * @param end - The `json-rpc-engine` "end" callback.
  * @returns Nothing.
+ * @throws If the params are invalid.
  */
 function invokeSnapSugar(
   req: JsonRpcRequest<unknown>,
