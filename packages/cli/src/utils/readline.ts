@@ -26,7 +26,7 @@ export function openPrompt(): void {
  *
  * @param args - The prompt arguments.
  * @param args.question - The question to ask.
- * @param args.defaultValue - The default value to use, if none is provided.
+ * @param args.defaultValue - The default value to use, if no answer is provided.
  * @param args.shouldClose - Whether to close the readline interface after
  * prompting.
  * @param args.readlineInterface - The readline interface to use. Uses the
