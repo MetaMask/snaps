@@ -21,8 +21,8 @@ type NetworkAccessEndowmentSpecification = ValidPermissionSpecification<{
  * enable network access. This is intended to populate the endowments of the
  * SES Compartment in which a Snap executes.
  *
- * @param _builderOptions - optional specification builder options
- * @returns The specification for the network endowment
+ * @param _builderOptions - Optional specification builder options.
+ * @returns The specification for the network endowment.
  */
 const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.Endowment,

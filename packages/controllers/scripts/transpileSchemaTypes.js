@@ -11,7 +11,7 @@ const FILE_PREFIX =
 main();
 
 /**
- *
+ * Main function of the script.
  */
 function main() {
   [
@@ -23,8 +23,11 @@ function main() {
 }
 
 /**
- * @param schema
- * @param primaryExportName
+ * Transpiles a given JSON schema to TypeScript.
+ *
+ * @param {object} schema - The schema JSON.
+ * @param {string} primaryExportName - The name of the primary export for the schema.
+ * @returns {string} The TypeScript source code transpiled from the schema.
  */
 function transpileSchema(schema, primaryExportName) {
   return FILE_PREFIX.concat(
@@ -45,8 +48,10 @@ function transpileSchema(schema, primaryExportName) {
 }
 
 /**
- * @param typeSource
- * @param primaryExportName
+ * Writes a transpiled schema to disk.
+ *
+ * @param {string} typeSource - The TypeScript source code resulting from the transpilation.
+ * @param {string} primaryExportName - The name of the primary export for the schema.
  */
 function writeSchema(typeSource, primaryExportName) {
   writeFileSync(

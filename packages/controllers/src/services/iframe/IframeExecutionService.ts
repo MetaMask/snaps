@@ -123,8 +123,9 @@ export class IframeExecutionService extends AbstractExecutionService<EnvMetadata
    * forever if the iframe never loads, but the promise should be wrapped in
    * an initialization timeout in the SnapController.
    *
-   * @param uri - The iframe URI
-   * @param jobId - The job id
+   * @param uri - The iframe URI.
+   * @param jobId - The job id.
+   * @returns A promise that resolves to the contentWindow of the iframe.
    */
   private _createWindow(uri: string, jobId: string): Promise<Window> {
     return new Promise((resolve, reject) => {
