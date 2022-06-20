@@ -33,7 +33,9 @@ module.exports.onRpcRequest = async ({ request }) => {
 };
 
 /**
+ * Gets the BLS public key corresponding to this snap's app key.
  *
+ * @returns {Uint8Array} The BLS public key.
  */
 async function getPubKey() {
   const PRIV_KEY = await wallet.request({
@@ -43,8 +45,12 @@ async function getPubKey() {
 }
 
 /**
- * @param header
- * @param message
+ * Displays a prompt to the user inside MetaMask.
+ *
+ * @param {string} header - The prompt header.
+ * @param {string} message - The prompt message.
+ * @returns {boolean} `true` if the user accepted the prompt, and `false`
+ * otherwise.
  */
 async function promptUser(header, message) {
   const response = await wallet.request({
