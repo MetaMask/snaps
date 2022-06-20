@@ -3,7 +3,7 @@ const snaps = require('@metamask/rollup-plugin-snaps').default;
 const execute = require('rollup-plugin-execute');
 
 /**
- * @type {import('rollup').RollupOptions}
+ * @type {RollupOptions}
  */
 const snapConfig = {
   input: './src/snap.ts',
@@ -20,7 +20,7 @@ const snapConfig = {
 };
 
 /**
- * @type {import('rollup').RollupOptions}
+ * @type {RollupOptions}
  */
 const webConfig = {
   input: './src/index.ts',

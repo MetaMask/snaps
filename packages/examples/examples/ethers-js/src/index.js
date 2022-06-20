@@ -1,5 +1,6 @@
 /**
- * This example will use its app key as a signing key, and sign anything it is asked to.
+ * This example will use its app key as a signing key, and sign anything it is
+ * asked to.
  */
 
 const ethers = require('ethers');
@@ -10,6 +11,15 @@ const ethers = require('ethers');
  */
 const provider = new ethers.providers.Web3Provider(wallet);
 
+/**
+ * Handle incoming JSON-RPC requests, sent through `wallet_invokeSnap`.
+ *
+ * @param {object} args - The request handler args as object.
+ * @param {JsonRpcRequest<unknown[] | Record<string, unknown>>} args.request - A
+ * validated JSON-RPC request object.
+ * @returns {boolean} `true` if the request succeeded, `false` otherwise.
+ * @throws If the request method is not valid for this snap.
+ */
 module.exports.onRpcRequest = async ({ request }) => {
   console.log('received request', request);
   const privKey = await wallet.request({
