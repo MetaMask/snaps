@@ -64,8 +64,8 @@ export class SnapsBrowserifyTransform extends Transform {
  * The Browserify plugin function. Can be passed to the Browserify `plugin`
  * function, or used by simply passing the package name to `plugin`.
  *
- * @param browserify
- * @param options
+ * @param browserifyInstance - The Browserify instance.
+ * @param options - The plugin options.
  * @param options.stripComments - Whether to strip comments. Defaults to `true`.
  * @param options.transformHtmlComments - Whether to transform HTML comments.
  * Defaults to `true`.
