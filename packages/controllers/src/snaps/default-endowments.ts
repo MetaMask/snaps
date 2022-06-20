@@ -20,4 +20,8 @@ export const DEFAULT_ENDOWMENTS: readonly string[] = Object.freeze([
   'setInterval',
   'clearInterval',
   'AbortController', // Used by fetch, but also as API for some packages that don't do network connections
+  'snap:ethereum',
+  'snap:storage',
+  'snap:metamask',
+  'snap:crypto',
 ]);

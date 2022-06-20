@@ -4,7 +4,12 @@ import { rootRealmGlobal } from '../globalObject';
 import buffer from './buffer';
 import interval from './interval';
 import network from './network';
+import snap from './snap';
 import timeout from './timeout';
+
+type FactoryParameters = {
+  ethereum: SnapProvider;
+};
 
 type EndowmentFactoryResult = {
   /**
@@ -24,14 +29,14 @@ type EndowmentFactoryResult = {
  * the same factory function, but we only call each factory once for each snap.
  * See {@link createEndowments} for details.
  */
-const endowmentFactories = [buffer, timeout, interval, network].reduce(
+const endowmentFactories = [buffer, timeout, interval, network, snap].reduce(
   (factories, builder) => {
     builder.names.forEach((name) => {
       factories.set(name, builder.factory);
     });
     return factories;
   },
-  new Map<string, () => EndowmentFactoryResult>(),
+  new Map<string, (params: FactoryParameters) => EndowmentFactoryResult>(),
 );
 
 /**
@@ -41,12 +46,12 @@ const endowmentFactories = [buffer, timeout, interval, network].reduce(
  * such attenuated / modified endowments. Otherwise, the value that's on the
  * root realm global will be used.
  *
- * @param wallet - The Snap's provider object.
+ * @param ethereum - The Snap's provider object.
  * @param endowments - The list of endowments to provide to the snap.
  * @returns An object containing the Snap's endowments.
  */
 export function createEndowments(
-  wallet: SnapProvider,
+  ethereum: SnapProvider,
   endowments: string[] = [],
 ): { endowments: Record<string, unknown>; teardown: () => Promise<void> } {
   const attenuatedEndowments: Record<string, unknown> = {};
@@ -68,7 +73,7 @@ export function createEndowments(
           // We just confirmed that endowmentFactories has the specified key.
           const { teardownFunction, ...endowment } =
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            endowmentFactories.get(endowmentName)!();
+            endowmentFactories.get(endowmentName)!({ ethereum });
           Object.assign(attenuatedEndowments, endowment);
           if (teardownFunction) {
             teardowns.push(teardownFunction);
@@ -95,7 +100,7 @@ export function createEndowments(
       return { allEndowments, teardowns };
     },
     {
-      allEndowments: { wallet } as Record<string, unknown>,
+      allEndowments: { wallet: ethereum } as Record<string, unknown>,
       teardowns: [] as (() => void)[],
     },
   );
