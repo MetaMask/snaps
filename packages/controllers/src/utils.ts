@@ -108,9 +108,9 @@ export async function withTimeout<PromisValue = void>(
  *     assertExhaustive(snapPrefix);
  * }
  * ```
- * @param _ - The object on which the switch is being operated.
+ * @param _object - The object on which the switch is being operated.
  */
-export function assertExhaustive(_: never): never {
+export function assertExhaustive(_object: never): never {
   throw new Error(
     'Invalid branch reached. Should be detected during compilation',
   );
