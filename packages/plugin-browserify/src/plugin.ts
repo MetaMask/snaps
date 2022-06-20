@@ -13,9 +13,6 @@ export class SnapsBrowserifyTransform extends Transform {
 
   readonly #options: Partial<Options>;
 
-  /**
-   * @param options - The post-processing options.
-   */
   constructor(options: Partial<Options> = {}) {
     super();
     this.#options = { ...options };
@@ -41,14 +38,14 @@ export class SnapsBrowserifyTransform extends Transform {
  * The Browserify plugin function. Can be passed to the Browserify `plugin`
  * function, or used by simply passing the package name to `plugin`.
  *
- * @param browserify
- * @param options
+ * @param browserifyInstance - The Browserify instance.
+ * @param options - Plugin options.
  */
 export default function plugin(
-  browserify: BrowserifyObject,
+  browserifyInstance: BrowserifyObject,
   options: Partial<Options>,
-) {
+): void {
   // Pushes the transform stream at the end of Browserify's pipeline. This
   // ensures that the transform is run on the entire bundle.
-  browserify.pipeline.push(new SnapsBrowserifyTransform(options));
+  browserifyInstance.pipeline.push(new SnapsBrowserifyTransform(options));
 }

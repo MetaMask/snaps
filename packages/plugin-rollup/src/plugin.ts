@@ -4,7 +4,10 @@ import { Plugin } from 'rollup';
 export type Options = PostProcessOptions;
 
 /**
- * @param options
+ * Creates a Snaps Rollup plugin instance.
+ *
+ * @param options - The plugin options.
+ * @returns The Rollup plugin object.
  */
 export default function snaps(options: Partial<Options> = {}): Plugin {
   return {
