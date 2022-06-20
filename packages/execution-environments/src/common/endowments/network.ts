@@ -7,6 +7,9 @@ type WebSocketCallback = (this: WebSocket, ev: any) => any;
  * function. This wraps the original implementations of `WebSocket` and `fetch`,
  * to ensure that a bad actor cannot get access to the original objects.
  *
+ * This also allows us to provide a teardown function, so that we can cancel any
+ * pending requests, streams, etc. that may be open when a snap is terminated.
+ *
  * @returns An object containing a wrapped `WebSocket` class and `fetch`
  * function, as well as a teardown function.
  */
