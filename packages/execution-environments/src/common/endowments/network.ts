@@ -4,11 +4,13 @@ type WebSocketCallback = (this: WebSocket, ev: any) => any;
 
 /**
  * Create a network endowment, consisting of a `WebSocket` object and `fetch`
- * function. This wraps the original implementations of `WebSocket` and `fetch`,
- * to ensure that a bad actor cannot get access to the original objects.
+ * function. This allows us to provide a teardown function, so that we can cancel
+ * any pending requests, connections, streams, etc. that may be open when a snap
+ * is terminated.
  *
- * This also allows us to provide a teardown function, so that we can cancel any
- * pending requests, streams, etc. that may be open when a snap is terminated.
+ * This wraps the original implementations of `WebSocket` and `fetch`,
+ * to ensure that a bad actor cannot get access to the original objects, thus
+ * potentially preventing the network requests from being torn down.
  *
  * @returns An object containing a wrapped `WebSocket` class and `fetch`
  * function, as well as a teardown function.
