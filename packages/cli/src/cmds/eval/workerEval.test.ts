@@ -1,43 +1,16 @@
-import EventEmitter from 'events';
+import { fork } from 'child_process';
 import pathUtils from 'path';
 import { workerEval } from './workerEval';
 
-type MockWorkerInterface = {
-  constructorArgs: unknown[];
-  postMessage: () => void;
-} & EventEmitter;
-
-let mockWorkerRef: MockWorkerInterface;
-
-jest.mock('worker_threads', () => ({
-  Worker: class MockWorker extends EventEmitter implements MockWorkerInterface {
-    public constructorArgs: unknown[];
-
-    postMessage: () => void;
-
-    constructor(...args: unknown[]) {
-      super();
-      if (mockWorkerRef) {
-        throw new Error('Mock worker ref already assigned!');
-      }
-
-      // eslint-disable-next-line consistent-this, @typescript-eslint/no-this-alias
-      mockWorkerRef = this;
-      this.constructorArgs = args;
-      this.on = jest.spyOn(this as any, 'on') as any;
-      // eslint-disable-next-line jest/prefer-spy-on
-      this.postMessage = jest.fn();
-    }
-  },
-}));
+jest.mock('child_process');
 
 describe('workerEval', () => {
   const mockBundlePath = './snap.js';
   const workerPathRegex = /eval-worker\.js$/u;
+  const forkMock = fork as jest.MockedFunction<typeof fork>;
 
   beforeEach(() => {
     jest.spyOn(pathUtils, 'join');
-    (mockWorkerRef as any) = undefined;
   });
 
   afterEach(() => {
@@ -45,34 +18,40 @@ describe('workerEval', () => {
   });
 
   it('worker eval handles 0 exit code', async () => {
+    const onFn = jest
+      .fn()
+      .mockImplementation((_event: string, cb: (exitCode: number) => void) =>
+        cb(0),
+      );
+    forkMock.mockReturnValue({ on: onFn } as any);
     const evalPromise = workerEval(mockBundlePath);
-    mockWorkerRef.emit('exit', 0);
     const result = await evalPromise;
 
     expect(result).toBeNull();
-    expect(mockWorkerRef.constructorArgs).toStrictEqual([
+    expect(forkMock).toHaveBeenCalledWith(
       expect.stringMatching(workerPathRegex),
-    ]);
-    expect(mockWorkerRef.on).toHaveBeenCalledTimes(1);
-    expect(mockWorkerRef.postMessage).toHaveBeenCalledWith({
-      snapFilePath: mockBundlePath,
-    });
+      [mockBundlePath],
+    );
+    expect(onFn).toHaveBeenCalledTimes(1);
   });
 
   it('worker eval handles non-0 exit code', async () => {
     const exitCode = 1;
-    await expect(async () => {
-      const evalPromise = workerEval(mockBundlePath);
-      mockWorkerRef.emit('exit', exitCode);
-      await evalPromise;
-    }).rejects.toThrow(`Worker exited abnormally! Code: ${exitCode}`);
+    const onFn = jest
+      .fn()
+      .mockImplementation((_event: string, cb: (exitCode: number) => void) =>
+        cb(exitCode),
+      );
+    forkMock.mockReturnValue({ on: onFn } as any);
 
-    expect(mockWorkerRef.constructorArgs).toStrictEqual([
+    await expect(workerEval(mockBundlePath)).rejects.toThrow(
+      `Worker exited abnormally! Code: ${exitCode}`,
+    );
+
+    expect(forkMock).toHaveBeenCalledWith(
       expect.stringMatching(workerPathRegex),
-    ]);
-    expect(mockWorkerRef.on).toHaveBeenCalledTimes(1);
-    expect(mockWorkerRef.postMessage).toHaveBeenCalledWith({
-      snapFilePath: mockBundlePath,
-    });
+      [mockBundlePath],
+    );
+    expect(onFn).toHaveBeenCalledTimes(1);
   });
 });
