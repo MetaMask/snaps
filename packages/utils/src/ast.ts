@@ -83,10 +83,19 @@ export function postProcessAST(
           }
         });
       }
+    },
 
-      // Browserify provides the Buffer global as an argument to modules that
-      // use it, but this does not work in SES. Since we pass in Buffer as an
+    FunctionExpression(path) {
+      const { node } = path;
+
+      // Browserify provides the `Buffer` global as an argument to modules that
+      // use it, but this does not work in SES. Since we pass in `Buffer` as an
       // endowment, we can simply remove the argument.
+      //
+      // Note that this only removes `Buffer` from a wrapped function
+      // expression, e.g., `(function (Buffer) { ... })`. Regular functions
+      // are not affected.
+      //
       // TODO: Since we're working on the AST level, we could check the scope
       // of the function expression, and possibly prevent false positives?
       if (node.type === 'FunctionExpression' && node.extra?.parenthesized) {
@@ -94,13 +103,13 @@ export function postProcessAST(
           (param) => !(param.type === 'Identifier' && param.name === 'Buffer'),
         );
       }
+    },
+
+    CallExpression(path) {
+      const { node } = path;
 
       // Replace `eval(foo)` with `(1, eval)(foo)`.
-      if (
-        node.type === 'CallExpression' &&
-        node.callee.type === 'Identifier' &&
-        node.callee.name === 'eval'
-      ) {
+      if (node.callee.type === 'Identifier' && node.callee.name === 'eval') {
         path.replaceWith(
           evalWrapper({
             REF: node.callee,
@@ -112,10 +121,13 @@ export function postProcessAST(
         // again.
         path.skip();
       }
+    },
+
+    MemberExpression(path) {
+      const { node } = path;
 
       // Replace `object.eval(foo)` with `(1, object.eval)(foo)`.
       if (
-        node.type === 'MemberExpression' &&
         node.property.type === 'Identifier' &&
         node.property.name === 'eval'
       ) {
