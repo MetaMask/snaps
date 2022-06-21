@@ -40,7 +40,7 @@ new Compartment({
 }).evaluate(readFileSync(snapFilePath, 'utf8'));
 
 if (!snapModule.exports?.onRpcRequest) {
-  console.warn("The Snap doesn't have onRpcRequest export defined");
+  console.warn(`The Snap doesn't have an "onRpcRequest" export defined.`);
 }
 
 setTimeout(() => process.exit(0), 1000); // Hack to ensure worker exits

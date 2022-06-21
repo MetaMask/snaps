@@ -43,6 +43,7 @@ describe('workerEval', () => {
         cb(exitCode),
       );
     forkMock.mockReturnValue({ on: onFn } as any);
+
     await expect(workerEval(mockBundlePath)).rejects.toThrow(
       `Worker exited abnormally! Code: ${exitCode}`,
     );
