@@ -1,9 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`snaps applies a transform 1`] = `
-"
-                        const foo = 'bar';
-            console.log(foo);
+"const foo = 'bar';
+console.log(foo);
 "
 `;
 
@@ -17,16 +16,13 @@ exports[`snaps forwards the options 1`] = `
 
 exports[`snaps processes files using Rollup 1`] = `
 "const foo = 'bar';
-            console.log(foo);
+console.log(foo);
 "
 `;
 
 exports[`snaps runs on the entire bundle 1`] = `
-"
-            const bar = 'baz';
-
-
-            const foo = bar;
-            console.log(foo);
+"const bar = 'baz';
+const foo = bar;
+console.log(foo);
 "
 `;

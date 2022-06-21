@@ -202,11 +202,17 @@ describe('bundle', () => {
       expect(mockTransform).toHaveBeenCalledTimes(1);
       expect(mockTransform).toHaveBeenCalledWith(
         'mockBabelify',
-        expect.objectContaining({ global: true }),
+        expect.objectContaining({
+          global: true,
+          generatorOpts: { comments: false },
+          parserOpts: {
+            attachComment: false,
+          },
+        }),
       );
       expect(mockPlugin).toHaveBeenCalledTimes(1);
       expect(mockPlugin).toHaveBeenCalledWith(expect.any(Function), {
-        stripComments: true,
+        stripComments: false,
       });
       expect(writeBundleFileMock).toHaveBeenCalledTimes(1);
     });
