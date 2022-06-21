@@ -58,6 +58,12 @@ export function bundle(
           require('@babel/plugin-proposal-optional-chaining'),
           require('@babel/plugin-proposal-nullish-coalescing-operator'),
         ],
+        parserOpts: {
+          attachComment: !argv.stripComments,
+        },
+        generatorOpts: {
+          comments: !argv.stripComments,
+        },
         ...(babelifyOptions as any),
       });
     }
@@ -65,7 +71,10 @@ export function bundle(
     bundlerTransform?.(bundler);
 
     bundler.plugin(plugin, {
-      stripComments: argv.stripComments,
+      // If Babel has run on all code, comments will already be stripped
+      stripComments:
+        transpilationMode !== TranspilationModes.localAndDeps &&
+        argv.stripComments,
       transformHtmlComments: argv.transformHtmlComments,
     });
 
