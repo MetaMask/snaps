@@ -83,7 +83,7 @@ const getSnapControllerMessenger = (
       'PermissionController:revokeAllPermissions',
       'SnapController:add',
       'SnapController:get',
-      'SnapController:getRpcMessageHandler',
+      'SnapController:handleRpcRequest',
       'SnapController:getSnapState',
       'SnapController:has',
       'SnapController:updateSnapState',
@@ -125,7 +125,7 @@ const getSnapControllerOptions = (
     terminateSnap: jest.fn(),
     executeSnap: jest.fn(),
     environmentEndowmentPermissions: [],
-    getRpcMessageHandler: jest.fn(),
+    getRpcRequestHandler: jest.fn(),
     removeAllPermissionsFor: jest.fn(),
     getPermissions: jest.fn(),
     requestPermissions: jest.fn(),
@@ -142,7 +142,7 @@ const getSnapControllerOptions = (
 
 type SnapControllerWithEESConstructorParams = Omit<
   SnapControllerConstructorParams,
-  'terminateAllSnaps' | 'terminateSnap' | 'executeSnap' | 'getRpcMessageHandler'
+  'terminateAllSnaps' | 'terminateSnap' | 'executeSnap' | 'getRpcRequestHandler'
 >;
 
 const getSnapControllerWithEESOptions = (
@@ -189,7 +189,7 @@ class ExecutionEnvironmentStub implements ExecutionService {
     // empty stub
   }
 
-  async getRpcMessageHandler() {
+  async getRpcRequestHandler() {
     return (_: any, request: Record<string, unknown>) => {
       return new Promise((resolve) => {
         const results = `${request.method}${request.id}`;
@@ -217,7 +217,7 @@ const getSnapControllerWithEES = (
     terminateAllSnaps: _service.terminateAllSnaps.bind(_service),
     terminateSnap: _service.terminateSnap.bind(_service),
     executeSnap: _service.executeSnap.bind(_service),
-    getRpcMessageHandler: _service.getRpcMessageHandler.bind(_service),
+    getRpcRequestHandler: _service.getRpcRequestHandler.bind(_service),
     ...options,
   });
   return [controller, _service] as const;
@@ -225,7 +225,7 @@ const getSnapControllerWithEES = (
 
 const FAKE_SNAP_ID = 'npm:example-snap';
 const FAKE_SNAP_SOURCE_CODE = `
-exports.onMessage = async (origin, request) => {
+exports.onRpcRequest = async ({ origin, request }) => {
   const {method, params, id} = request;
   return method + id;
 };
@@ -390,12 +390,8 @@ describe('SnapController', () => {
     });
 
     await snapController.startSnap(snap.id);
-    const handle = await snapController.getRpcMessageHandler(snap.id);
-    if (!handle) {
-      throw Error('rpc handler not found');
-    }
 
-    const result = await handle('foo.com', {
+    const result = await snapController.handleRpcRequest(snap.id, 'foo.com', {
       jsonrpc: '2.0',
       method: 'test',
       params: {},
@@ -422,12 +418,8 @@ describe('SnapController', () => {
     });
 
     await snapController.startSnap(snap.id);
-    const handle = await snapController.getRpcMessageHandler(snap.id);
-    if (!handle) {
-      throw Error('rpc handler not found');
-    }
 
-    const result = await handle('foo.com', {
+    const result = await snapController.handleRpcRequest(snap.id, 'foo.com', {
       jsonrpc: '2.0',
       method: 'test',
       params: {},
@@ -681,9 +673,7 @@ describe('SnapController', () => {
     });
     await snapController.startSnap(snap.id);
 
-    const handler = await snapController.getRpcMessageHandler(snap.id);
-
-    await handler('foo.com', {
+    await snapController.handleRpcRequest(snap.id, 'foo.com', {
       jsonrpc: '2.0',
       method: 'test',
       params: {},
@@ -712,8 +702,6 @@ describe('SnapController', () => {
     });
     await snapController.startSnap(snap.id);
 
-    const handler = await snapController.getRpcMessageHandler(snap.id);
-
     (snapController as any)._maxRequestTime = 50;
 
     (worker as any)._command = () =>
@@ -722,7 +710,7 @@ describe('SnapController', () => {
       });
 
     await expect(
-      handler('foo.com', {
+      snapController.handleRpcRequest(snap.id, 'foo.com', {
         jsonrpc: '2.0',
         method: 'test',
         params: {},
@@ -773,15 +761,13 @@ describe('SnapController', () => {
       manifest: FAKE_SNAP_MANIFEST,
     });
 
-    const handler = await snapController.getRpcMessageHandler(snap.id);
-
     await snapController.startSnap(snap.id);
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
 
     await snapController.stopSnap(snap.id);
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
 
-    const results = await handler('foo.com', {
+    const results = await snapController.handleRpcRequest(snap.id, 'foo.com', {
       jsonrpc: '2.0',
       method: 'test',
       params: {},
@@ -1021,10 +1007,8 @@ describe('SnapController', () => {
       manifest: FAKE_SNAP_MANIFEST,
     });
 
-    const handler = await snapController.getRpcMessageHandler(snap.id);
-
     await expect(
-      handler('foo.com', {
+      snapController.handleRpcRequest(snap.id, 'foo.com', {
         jsonrpc: '2.0',
         method: 'test',
         params: {},
@@ -1047,7 +1031,7 @@ describe('SnapController', () => {
     );
 
     await expect(
-      handler('foo.com', {
+      snapController.handleRpcRequest(snap.id, 'foo.com', {
         jsonrpc: '2.0',
         method: 'test',
         params: {},
@@ -1063,7 +1047,7 @@ describe('SnapController', () => {
 
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
     console.log('about to call handler', snapController.state);
-    const result = await handler('foo.com', {
+    const result = await snapController.handleRpcRequest(snap.id, 'foo.com', {
       jsonrpc: '2.0',
       method: 'test',
       params: {},
@@ -1095,7 +1079,7 @@ describe('SnapController', () => {
     });
 
     // override handler to take too long to return
-    (snapController as any)._getRpcMessageHandler = async () => {
+    (snapController as any)._getRpcRequestHandler = async () => {
       return async () => {
         return new Promise((resolve) => {
           setTimeout(() => {
@@ -1105,8 +1089,6 @@ describe('SnapController', () => {
       };
     };
 
-    const handler = await snapController.getRpcMessageHandler(snap.id);
-
     await snapController.startSnap(snap.id);
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
 
@@ -1114,7 +1096,7 @@ describe('SnapController', () => {
     (snapController as any)._maxRequestTime = 50;
 
     await expect(
-      handler('foo.com', {
+      snapController.handleRpcRequest(snap.id, 'foo.com', {
         jsonrpc: '2.0',
         method: 'test',
         params: {},
@@ -1149,7 +1131,7 @@ describe('SnapController', () => {
     });
 
     // override handler to take too long to return
-    (snapController as any)._getRpcMessageHandler = async () => {
+    (snapController as any)._getRpcRequestHandler = async () => {
       return async () => {
         return new Promise((resolve) => {
           setTimeout(() => {
@@ -1159,15 +1141,13 @@ describe('SnapController', () => {
       };
     };
 
-    const handler = await snapController.getRpcMessageHandler(snap.id);
-
     await snapController.startSnap(snap.id);
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
 
     // We set the maxRequestTime to a low enough value for it to time out if it werent a long running snap
     (snapController as any)._maxRequestTime = 50;
 
-    const handlerPromise = handler('foo.com', {
+    const handlerPromise = snapController.handleRpcRequest(snap.id, 'foo.com', {
       jsonrpc: '2.0',
       method: 'test',
       params: {},
@@ -1276,7 +1256,7 @@ describe('SnapController', () => {
     });
 
     // override handler to take too long to return
-    (snapController as any)._getRpcMessageHandler = async () => {
+    (snapController as any)._getRpcRequestHandler = async () => {
       return async () => {
         return new Promise((resolve) => {
           setTimeout(() => {
@@ -1286,13 +1266,11 @@ describe('SnapController', () => {
       };
     };
 
-    const handler = await snapController.getRpcMessageHandler(snap.id);
-
     await snapController.startSnap(snap.id);
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
 
     await expect(
-      handler('foo.com', {
+      snapController.handleRpcRequest(snap.id, 'foo.com', {
         jsonrpc: '2.0',
         method: 'test',
         params: {},
@@ -1308,7 +1286,7 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
-  describe('getRpcMessageHandler', () => {
+  describe('getRpcRequestHandler', () => {
     it('handlers populate the "jsonrpc" property if missing', async () => {
       const snapId = 'fooSnap';
       const [snapController] = getSnapControllerWithEES(
@@ -1327,11 +1305,13 @@ describe('SnapController', () => {
 
       const mockMessageHandler = jest.fn();
       jest
-        .spyOn(snapController as any, '_getRpcMessageHandler')
+        .spyOn(snapController as any, '_getRpcRequestHandler')
         .mockReturnValueOnce(mockMessageHandler as any);
 
-      const handle = await snapController.getRpcMessageHandler(snapId);
-      await handle('foo.com', { id: 1, method: 'bar' });
+      await snapController.handleRpcRequest(snapId, 'foo.com', {
+        id: 1,
+        method: 'bar',
+      });
 
       expect(mockMessageHandler).toHaveBeenCalledTimes(1);
       expect(mockMessageHandler).toHaveBeenCalledWith('foo.com', {
@@ -1346,7 +1326,7 @@ describe('SnapController', () => {
       const snapId = fakeSnap.id;
       const snapController = getSnapController(
         getSnapControllerOptions({
-          getRpcMessageHandler: (async () => () => undefined) as any,
+          getRpcRequestHandler: (async () => () => undefined) as any,
           state: {
             ...getEmptySnapControllerState(),
             snaps: {
@@ -1355,10 +1335,12 @@ describe('SnapController', () => {
           },
         }),
       );
-      const handle = await snapController.getRpcMessageHandler(snapId);
-
       await expect(
-        handle('foo.com', { id: 1, method: 'bar', jsonrpc: 'kaplar' }),
+        snapController.handleRpcRequest(snapId, 'foo.com', {
+          id: 1,
+          method: 'bar',
+          jsonrpc: 'kaplar',
+        }),
       ).rejects.toThrow(
         ethErrors.rpc.invalidRequest({
           message: 'Invalid "jsonrpc" property. Must be "2.0" if provided.',
@@ -1370,10 +1352,10 @@ describe('SnapController', () => {
     it('handlers will throw if there are too many pending requests before a snap has started', async () => {
       const fakeSnap = getSnapObject({ status: SnapStatus.stopped });
       const snapId = fakeSnap.id;
-      const mockGetRpcMessageHandler = jest.fn();
+      const mockGetRpcRequestHandler = jest.fn();
       const snapController = getSnapController(
         getSnapControllerOptions({
-          getRpcMessageHandler: mockGetRpcMessageHandler as any,
+          getRpcRequestHandler: mockGetRpcRequestHandler as any,
           state: {
             ...getEmptySnapControllerState(),
             snaps: {
@@ -1392,25 +1374,43 @@ describe('SnapController', () => {
         .spyOn(snapController as any, '_executeSnap')
         .mockImplementation((() => deferredExecutePromise) as any);
 
-      const handle = await snapController.getRpcMessageHandler(snapId);
-
       // Fill up the request queue
       const finishPromise = Promise.all([
-        handle('foo.com', { id: 1, method: 'bar' }),
-        handle('foo.com', { id: 2, method: 'bar' }),
-        handle('foo.com', { id: 3, method: 'bar' }),
-        handle('foo.com', { id: 4, method: 'bar' }),
-        handle('foo.com', { id: 5, method: 'bar' }),
+        snapController.handleRpcRequest(snapId, 'foo.com', {
+          id: 1,
+          method: 'bar',
+        }),
+        snapController.handleRpcRequest(snapId, 'foo.com', {
+          id: 2,
+          method: 'bar',
+        }),
+        snapController.handleRpcRequest(snapId, 'foo.com', {
+          id: 3,
+          method: 'bar',
+        }),
+        snapController.handleRpcRequest(snapId, 'foo.com', {
+          id: 4,
+          method: 'bar',
+        }),
+        snapController.handleRpcRequest(snapId, 'foo.com', {
+          id: 5,
+          method: 'bar',
+        }),
       ]);
 
-      await expect(handle('foo.com', { id: 6, method: 'bar' })).rejects.toThrow(
+      await expect(
+        snapController.handleRpcRequest(snapId, 'foo.com', {
+          id: 6,
+          method: 'bar',
+        }),
+      ).rejects.toThrow(
         'Exceeds maximum number of requests waiting to be resolved, please try again.',
       );
 
       // Before processing the pending requests,
       // we need an rpc message handler function to be returned
-      const mockRpcMessageHandler = async () => undefined;
-      mockGetRpcMessageHandler.mockReturnValue(mockRpcMessageHandler);
+      const mockRpcRequestHandler = async () => undefined;
+      mockGetRpcRequestHandler.mockReturnValue(mockRpcRequestHandler);
 
       // Resolve the promise that the pending requests are waiting for and wait for them to finish
       resolveExecutePromise();
@@ -2062,7 +2062,7 @@ describe('SnapController', () => {
       expect(result).toMatchObject(fooSnapObject);
     });
 
-    it('action: SnapController:getRpcMessageHandler', async () => {
+    it('action: SnapController:handleRpcRequest', async () => {
       const executeSnapMock = jest.fn();
       const messenger = getSnapControllerMessenger(undefined, false);
       const fooSnapObject = getSnapObject({
@@ -2073,7 +2073,7 @@ describe('SnapController', () => {
         id: 'npm:fooSnap',
         manifest: FAKE_SNAP_MANIFEST,
         enabled: true,
-        status: SnapStatus.installing,
+        status: SnapStatus.running,
       });
 
       const snapController = getSnapController(
@@ -2090,18 +2090,19 @@ describe('SnapController', () => {
         }),
       );
 
-      const getRpcMessageHandlerSpy = jest.spyOn(
-        snapController,
-        'getRpcMessageHandler',
-      );
+      const handleRpcRequestSpy = jest
+        .spyOn(snapController, 'handleRpcRequest')
+        .mockResolvedValueOnce(true);
 
       expect(
         await messenger.call(
-          'SnapController:getRpcMessageHandler',
+          'SnapController:handleRpcRequest',
           'npm:fooSnap',
+          'foo',
+          {},
         ),
-      ).toStrictEqual(expect.any(Function));
-      expect(getRpcMessageHandlerSpy).toHaveBeenCalledTimes(1);
+      ).toStrictEqual(true);
+      expect(handleRpcRequestSpy).toHaveBeenCalledTimes(1);
     });
 
     it('action: SnapController:getSnapState', async () => {

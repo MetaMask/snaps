@@ -80,7 +80,7 @@
             },
             {
               "name": "sourceCode",
-              "value": "wallet.registerRpcMessageHandler(async (_, request) => { return request.method + request.id })"
+              "value": "module.exports.onRpcRequest = async ({ request }) => { return request.method + request.id }"
             }
           ],
           "result": {

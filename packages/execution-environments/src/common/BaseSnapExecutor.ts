@@ -13,22 +13,25 @@ import {
 import { isJsonRpcRequest } from '../__GENERATED__/openrpc.guard';
 import { createEndowments } from './endowments';
 import { rootRealmGlobal } from './globalObject';
-import { rpcMethods, RpcMethodsMapping } from './rpcMethods';
+import {
+  getCommandMethodImplementations,
+  CommandMethodsMapping,
+} from './commands';
 import { sortParamKeys } from './sortParams';
 
-type SnapRpcHandler = (
-  origin: string,
-  request: JsonRpcRequest,
-) => Promise<unknown>;
+type OnRpcRequestHandler = (args: {
+  origin: string;
+  request: JsonRpcRequest;
+}) => Promise<unknown>;
 
 type EvaluationData = {
   stop: () => void;
 };
 
 type SnapData = {
-  exports: { onMessage?: SnapRpcHandler };
+  exports: { onRpcRequest?: OnRpcRequestHandler };
   runningEvaluations: Set<EvaluationData>;
-  idleTeardown: () => void;
+  idleTeardown: () => Promise<void>;
 };
 
 const fallbackError = {
@@ -43,7 +46,7 @@ export class BaseSnapExecutor {
 
   private rpcStream: Duplex;
 
-  private methods: RpcMethodsMapping;
+  private methods: CommandMethodsMapping;
 
   private snapErrorHandler?: (event: ErrorEvent) => void;
 
@@ -55,17 +58,19 @@ export class BaseSnapExecutor {
     this.commandStream.on('data', this.onCommandRequest.bind(this));
     this.rpcStream = rpcStream;
 
-    this.methods = rpcMethods(
+    this.methods = getCommandMethodImplementations(
       this.startSnap.bind(this),
       (target, origin, request) => {
         const data = this.snapData.get(target);
-        if (data?.exports?.onMessage === undefined) {
-          throw new Error(`No onMessage handler exported for snap "${target}`);
+        if (data?.exports?.onRpcRequest === undefined) {
+          throw new Error(
+            `No onRpcRequest handler exported for snap "${target}`,
+          );
         }
         // We're capturing the handler in case someone modifies the data object before the call
-        const handler = data.exports.onMessage;
+        const handler = data.exports.onRpcRequest;
         return this.executeInSnapContext(target, () =>
-          handler(origin, request),
+          handler({ origin, request }),
         );
       },
       this.onTerminate.bind(this),
@@ -154,20 +159,18 @@ export class BaseSnapExecutor {
   }
 
   /**
-   * Attempts to evaluate a snap in SES.
-   * Generates the APIs for the snap. May throw on error.
+   * Attempts to evaluate a snap in SES. Generates APIs for the snap. May throw
+   * on errors.
    *
-   * @param {string} snapName - The name of the snap.
-   * @param {Array<string>} approvedPermissions - The snap's approved permissions.
-   * Should always be a value returned from the permissions controller.
-   * @param {string} sourceCode - The source code of the snap, in IIFE format.
-   * @param {Array} endowments - An array of the names of the endowments.
+   * @param snapName - The name of the snap.
+   * @param sourceCode - The source code of the snap, in IIFE format.
+   * @param _endowments - An array of the names of the endowments.
    */
   protected async startSnap(
     snapName: string,
     sourceCode: string,
     _endowments?: Endowments,
-  ) {
+  ): Promise<void> {
     console.log(`starting snap '${snapName}' in worker`);
     if (this.snapPromiseErrorHandler) {
       rootRealmGlobal.removeEventListener(
@@ -234,7 +237,7 @@ export class BaseSnapExecutor {
 
   /**
    * Cancels all running evaluations of all snaps and clears all snap data.
-   * **NOTE:** Should only be called in response to the `terminate` RPC command.
+   * NOTE:** Should only be called in response to the `terminate` RPC command.
    */
   protected onTerminate() {
     // `stop()` tears down snap endowments.
@@ -247,25 +250,27 @@ export class BaseSnapExecutor {
   }
 
   private registerSnapExports(snapName: string, snapModule: any) {
-    if (typeof snapModule?.exports?.onMessage === 'function') {
+    if (typeof snapModule?.exports?.onRpcRequest === 'function') {
       const data = this.snapData.get(snapName);
       // Somebody deleted the Snap before we could register
       if (data !== undefined) {
         console.log(
           'Worker: Registering RPC message handler',
-          snapModule.exports.onMessage,
+          snapModule.exports.onRpcRequest,
         );
 
         data.exports = {
           ...data.exports,
-          onMessage: snapModule.exports.onMessage,
+          onRpcRequest: snapModule.exports.onRpcRequest,
         };
       }
     }
   }
 
   /**
-   * Creates a hardened snap provider object (i.e. globalThis.wallet), and returns it.
+   * Instantiates a snap provider object (i.e. `globalThis.wallet`).
+   *
+   * @returns The snap provider object.
    */
   private createSnapProvider(): SnapProvider {
     return new MetaMaskInpageProvider(this.rpcStream, {
@@ -275,6 +280,8 @@ export class BaseSnapExecutor {
 
   /**
    * Removes the snap with the given name.
+   *
+   * @param snapName - The name of the snap to remove.
    */
   private removeSnap(snapName: string): void {
     this.snapData.delete(snapName);
@@ -327,7 +334,7 @@ export class BaseSnapExecutor {
       data.runningEvaluations.delete(evaluationData);
 
       if (data.runningEvaluations.size === 0) {
-        data.idleTeardown();
+        await data.idleTeardown();
       }
     }
   }

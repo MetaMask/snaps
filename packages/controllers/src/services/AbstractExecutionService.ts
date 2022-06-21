@@ -159,11 +159,12 @@ export abstract class AbstractExecutionService<JobType extends Job>
   }
 
   /**
-   * Gets the RPC message handler for the given snap.
+   * Gets the RPC request handler for the given snap.
    *
    * @param snapId - The id of the Snap whose message handler to get.
+   * @returns The RPC request handler for the snap.
    */
-  async getRpcMessageHandler(snapId: string) {
+  async getRpcRequestHandler(snapId: string) {
     return this._snapRpcHooks.get(snapId);
   }
 
@@ -173,8 +174,10 @@ export abstract class AbstractExecutionService<JobType extends Job>
    * Depending on the execution environment, this may run forever if the Snap fails to start up properly, therefore any call to this function should be wrapped in a timeout.
    *
    * @param snapData - Data needed for Snap execution.
+   * @returns A string `OK` if execution succeeded.
+   * @throws If the execution service returns an error.
    */
-  async executeSnap(snapData: SnapExecutionData): Promise<unknown> {
+  async executeSnap(snapData: SnapExecutionData): Promise<string> {
     if (this.snapToJobMap.has(snapData.snapId)) {
       throw new Error(`Snap "${snapData.snapId}" is already being executed.`);
     }
@@ -201,7 +204,7 @@ export abstract class AbstractExecutionService<JobType extends Job>
       id: nanoid(),
     });
     this._createSnapHooks(snapData.snapId, job.id);
-    return result;
+    return result as string;
   }
 
   protected async _command(
@@ -251,6 +254,9 @@ export abstract class AbstractExecutionService<JobType extends Job>
   }
 
   /**
+   * Gets the job id for a given snap.
+   *
+   * @param snapId - A given snap id.
    * @returns The ID of the snap's job.
    */
   protected _getJobForSnap(snapId: string): string | undefined {
@@ -258,7 +264,10 @@ export abstract class AbstractExecutionService<JobType extends Job>
   }
 
   /**
-   * @returns The ID jobs's snap.
+   * Gets the snap id for a given job.
+   *
+   * @param jobId - A given job id.
+   * @returns The ID of the snap that is running the job.
    */
   _getSnapForJob(jobId: string): string | undefined {
     return this.jobToSnapMap.get(jobId);
@@ -284,9 +293,9 @@ export abstract class AbstractExecutionService<JobType extends Job>
 /**
  * Sets up stream multiplexing for the given stream.
  *
- * @param connectionStream - the stream to mux
- * @param streamName - the name of the stream, for identification in errors
- * @return {stream.Stream} the multiplexed stream
+ * @param connectionStream - The stream to mux.
+ * @param streamName - The name of the stream, for identification in errors.
+ * @returns The multiplexed stream.
  */
 export function setupMultiplex(
   connectionStream: Duplex,

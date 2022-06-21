@@ -1,6 +1,6 @@
 {
   "name": "root",
-  "version": "0.15.0",
+  "version": "0.16.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -10,24 +10,24 @@
     "packages/*"
   ],
   "scripts": {
-    "setup": "yarn install && yarn allow-scripts && yarn postinstall && yarn simple-git-hooks",
-    "postinstall": "patch-package",
+    "setup": "yarn install",
+    "postinstall": "patch-package && simple-git-hooks",
     "publish:all": "./scripts/publish-all.sh",
     "link-packages": "./scripts/link-packages.sh",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!**/CHANGELOG.md' '**/*.yml' --ignore-path .gitignore",
-    "lint:changelogs": "yarn workspaces foreach --parallel run lint:changelog",
+    "lint:changelogs": "yarn workspaces foreach --parallel --verbose run lint:changelog",
     "lint:tsconfig": "node scripts/verify-tsconfig.mjs",
     "lint": "yarn lint:tsconfig && yarn lint:eslint && yarn lint:misc --check",
     "lint:fix": "yarn lint:tsconfig && yarn lint:eslint --fix && yarn lint:misc --write",
     "build": "yarn build:pre-tsc && yarn build:tsc && yarn build:post-tsc",
     "build:clean": "yarn clean && yarn build",
     "build:tsc": "tsc --build",
-    "build:pre-tsc": "yarn workspaces foreach --parallel --topological run build:pre-tsc",
-    "build:post-tsc": "yarn workspaces foreach --parallel --topological run build:post-tsc",
-    "clean": "yarn workspaces foreach --parallel run clean",
-    "test": "yarn workspaces foreach --parallel run test",
-    "test:ci": "yarn workspaces foreach --parallel run test:ci"
+    "build:pre-tsc": "yarn workspaces foreach --parallel --topological --verbose run build:pre-tsc",
+    "build:post-tsc": "yarn workspaces foreach --parallel --topological --verbose run build:post-tsc",
+    "clean": "yarn workspaces foreach --parallel --verbose run clean",
+    "test": "yarn workspaces foreach --parallel --verbose run test",
+    "test:ci": "yarn workspaces foreach --parallel --verbose run test:ci"
   },
   "simple-git-hooks": {
     "pre-commit": "yarn lint-staged"
@@ -44,10 +44,10 @@
     "@jest-runner/electron": "^3.0.1",
     "@lavamoat/allow-scripts": "^2.0.3",
     "@metamask/auto-changelog": "^2.6.0",
-    "@metamask/eslint-config": "^8.0.0",
-    "@metamask/eslint-config-jest": "^8.0.0",
-    "@metamask/eslint-config-nodejs": "^8.0.0",
-    "@metamask/eslint-config-typescript": "^8.0.0",
+    "@metamask/eslint-config": "^9.0.0",
+    "@metamask/eslint-config-jest": "^9.0.0",
+    "@metamask/eslint-config-nodejs": "^9.0.0",
+    "@metamask/eslint-config-typescript": "^9.0.1",
     "@types/jest": "^27.5.1",
     "@types/node": "^14.14.25",
     "@typescript-eslint/eslint-plugin": "^5.19.0",
@@ -57,6 +57,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-jest": "^24.4.0",
+    "eslint-plugin-jsdoc": "^36.1.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.4.0",
     "jest": "^27.5.1",

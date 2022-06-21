@@ -8,10 +8,9 @@
  * appear in B. Notice that properties that appear in B, but not in A, have no effect.
  *
  * @see [Set Difference]{@link https://proofwiki.org/wiki/Definition:Set_Difference}
- *
- * @param objectA The object on which the difference is being calculated
- * @param objectB The object whose properties will be removed from objectA
- * @returns objectA without properties from objectB
+ * @param objectA - The object on which the difference is being calculated.
+ * @param objectB - The object whose properties will be removed from objectA.
+ * @returns The objectA without properties from objectB.
  */
 export function setDiff<
   ObjectA extends Record<any, unknown>,
@@ -33,7 +32,7 @@ export function setDiff<
  *
  * @param ms - Milliseconds to delay the execution for.
  * @param result - The result to return from the Promise after delay.
- * @returns void if no result provided, result otherwise.
+ * @returns A promise that is void if no result provided, result otherwise.
  * @template Result - The `result`.
  */
 export function delay<Result = void>(
@@ -72,15 +71,13 @@ export const hasTimedOut = Symbol(
  * Executes the given Promise, if after ms milliseconds the Promise doesn't
  * settle, we return earlier.
  *
- * **NOTE:** The given Promise is not cancelled or interrupted, and will continue
- *          to execute uninterrupted. We will just discard its result if it does
- *          not complete before the timeout.
+ * NOTE:** The given Promise is not cancelled or interrupted, and will continue to execute uninterrupted. We will just discard its result if it does not complete before the timeout.
  *
  * @param promise - The promise that you want to execute.
  * @param ms - Amout of milliseconds to wait before finishing early.
  * @returns The resolved `PromiseValue`, or the hasTimedOut symbol if
  * returning early.
- * @template PromiseValue - The value of the Promise.
+ * @template PromiseValue- - The value of the Promise.
  */
 export async function withTimeout<PromisValue = void>(
   promise: Promise<PromisValue>,
@@ -94,9 +91,10 @@ export async function withTimeout<PromisValue = void>(
   }
 }
 
+/* istanbul ignore next */
 /**
  * Use in the default case of a switch that you want to be fully exhaustive.
- * Using this function forces the compiler to enforces exhaustivity during compile-time
+ * Using this function forces the compiler to enforces exhaustivity during compile-time.
  *
  * @example
  * ```
@@ -110,11 +108,9 @@ export async function withTimeout<PromisValue = void>(
  *     assertExhaustive(snapPrefix);
  * }
  * ```
- *
- * @param _ The object on which the switch is being operated
+ * @param _object - The object on which the switch is being operated.
  */
-/* istanbul ignore next */
-export function assertExhaustive(_: never): never {
+export function assertExhaustive(_object: never): never {
   throw new Error(
     'Invalid branch reached. Should be detected during compilation',
   );
@@ -122,8 +118,8 @@ export function assertExhaustive(_: never): never {
 
 /**
  * Checks whether the type is composed of literal types
- * @returns @type {true} if whole type is composed of literals, @type {false} if whole type is not literals, @type {boolean} if mixed
  *
+ * @returns @type {true} if whole type is composed of literals, @type {false} if whole type is not literals, @type {boolean} if mixed
  * @example
  * ```
  * type t1 = IsLiteral<1 | 2 | "asd" | true>;
@@ -157,7 +153,6 @@ type IsLiteral<T> = T extends string | number | boolean | symbol
  * type t1 = _LiteralKeys<{a: number, b: 0, c: 'foo', d: string}>
  * // t1 = 'b' | 'c'
  * ```
- *
  * @see [Literal types]{@link https://www.typescriptlang.org/docs/handbook/literal-types.html}
  */
 type _LiteralKeys<T> = NonNullable<
@@ -174,7 +169,6 @@ type _LiteralKeys<T> = NonNullable<
  * type t1 = _NonLiteralKeys<{a: number, b: 0, c: 'foo', d: string}>
  * // t1 = 'a' | 'd'
  * ```
- *
  * @see [Literal types]{@link https://www.typescriptlang.org/docs/handbook/literal-types.html}
  */
 type _NonLiteralKeys<T> = NonNullable<
@@ -195,7 +189,6 @@ type _NonLiteralKeys<T> = NonNullable<
  * type t3 = Diff<{a: string, 0: string, 1: string}, Record<1 | string, unknown>>;
  * // t3 = {a?: string, 0: string}
  * ```
- *
  * @see {@link setDiff} for the main use-case
  */
 export type Diff<A, B> = Omit<A, _LiteralKeys<B>> &

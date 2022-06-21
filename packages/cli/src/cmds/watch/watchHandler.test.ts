@@ -14,6 +14,12 @@ type MockWatcher = {
   add: () => void;
 } & EventEmitter;
 
+/**
+ * Get a mocked chokidar watcher, with Jest spies attached to some of its
+ * methods.
+ *
+ * @returns The mocked watcher.
+ */
 function getMockWatcher(): MockWatcher {
   const watcher: MockWatcher = new EventEmitter() as any;
   watcher.add = () => undefined;

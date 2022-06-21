@@ -16,9 +16,10 @@ createInitTemplate().catch((error) => {
  */
 async function createInitTemplate() {
   const tmpdir = await fs.mkdtemp(path.join(os.tmpdir(), 'snaps-cli-build-'));
+  // Clone the develop branch of template-snap
   await execa(
     'git',
-    ['clone', 'https://github.com/MetaMask/template-snap.git'],
+    ['clone', '-b', 'develop', 'https://github.com/MetaMask/template-snap.git'],
     { cwd: tmpdir },
   );
 
@@ -52,7 +53,7 @@ async function createInitTemplate() {
  * Helps normalize line breaks if this script runs on Windows.
  *
  * @param {string} str - The string whose line breaks to normalize.
- * @returns The string with `\n` line breaks.
+ * @returns {string} The string with `\n` line breaks.
  */
 function normalizeLinebreaks(str) {
   return str.replace(/\r\n/gu, '\n');

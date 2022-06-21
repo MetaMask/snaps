@@ -1,5 +1,6 @@
 import { Json, RestrictedControllerMessenger } from '@metamask/controllers';
 import { MetaMaskInpageProvider } from '@metamask/providers';
+import { JsonRpcRequest } from '@metamask/types';
 
 /**
  * Command request sent to a worker.
@@ -19,10 +20,12 @@ export type SnapExecutionData = SnapData & {
   endowments?: Json;
 };
 
-export type SnapRpcHandler = (
-  origin: string,
-  request: Record<string, unknown>,
-) => Promise<unknown>;
+export type SnapRpcHandler = (args: {
+  origin: string;
+  request: JsonRpcRequest<unknown[] | { [key: string]: unknown }>;
+}) => Promise<unknown>;
+
+export type OnRpcRequestHandler = SnapRpcHandler;
 
 export type SnapProvider = MetaMaskInpageProvider;
 

@@ -14,7 +14,7 @@ export type Command = (
 export type TerminateAll = () => Promise<void>;
 export type CreateSnapEnvironment = (metadata: SnapMetadata) => Promise<string>;
 export type ExecuteSnap = (snapData: SnapExecutionData) => Promise<unknown>;
-export type GetRpcMessageHandler = (
+export type GetRpcRequestHandler = (
   snapId: string,
 ) => Promise<SnapRpcHook | undefined>;
 
@@ -22,5 +22,5 @@ export interface ExecutionService {
   terminateSnap: TerminateSnap;
   terminateAllSnaps: TerminateAll;
   executeSnap: ExecuteSnap;
-  getRpcMessageHandler: GetRpcMessageHandler;
+  getRpcRequestHandler: GetRpcRequestHandler;
 }

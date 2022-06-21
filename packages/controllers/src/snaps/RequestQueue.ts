@@ -9,9 +9,9 @@ export class RequestQueue {
   }
 
   /**
-   * Increments the queue count for a particular origin
+   * Increments the queue count for a particular origin.
    *
-   * @param origin
+   * @param origin - A string identifying the origin.
    */
   public increment(origin: string) {
     const currentCount = this.queueSizes.get(origin) ?? 0;
@@ -22,9 +22,9 @@ export class RequestQueue {
   }
 
   /**
-   * Decrements the queue count for a particular origin
+   * Decrements the queue count for a particular origin.
    *
-   * @param origin
+   * @param origin - A string identifying the origin.
    */
   public decrement(origin: string) {
     const currentCount = this.queueSizes.get(origin) ?? 0;
@@ -37,9 +37,10 @@ export class RequestQueue {
   }
 
   /**
-   * Gets the queue count for a particular origin
+   * Gets the queue count for a particular origin.
    *
-   * @param origin
+   * @param origin - A string identifying the origin.
+   * @returns The queue count for the origin.
    */
   public get(origin: string): number {
     return this.queueSizes.get(origin) ?? 0;

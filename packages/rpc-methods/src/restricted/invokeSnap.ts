@@ -13,7 +13,7 @@ const targetKey = `${methodPrefix}*` as const;
 
 export type InvokeSnapMethodHooks = {
   getSnap: SnapController['get'];
-  getSnapRpcHandler: SnapController['getRpcMessageHandler'];
+  handleSnapRpcRequest: SnapController['handleRpcRequest'];
 };
 
 type InvokeSnapSpecificationBuilderOptions = {
@@ -29,9 +29,17 @@ type InvokeSnapSpecification = ValidPermissionSpecification<{
 }>;
 
 /**
+ * The specification builder for the `wallet_snap_*` permission.
+ *
  * `wallet_snap_*` attempts to invoke an RPC method of the specified Snap.
+ *
  * Requesting its corresponding permission will attempt to connect to the Snap,
  * and install it if it's not avaialble yet.
+ *
+ * @param options - The specification builder options.
+ * @param options.allowedCaveats - The optional allowed caveats for the permission.
+ * @param options.methodHooks - The RPC method hooks needed by the method implementation.
+ * @returns The specification for the `wallet_snap_*` permission.
  */
 const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.RestrictedMethod,
@@ -54,13 +62,22 @@ export const invokeSnapBuilder = Object.freeze({
   specificationBuilder,
   methodHooks: {
     getSnap: true,
-    getSnapRpcHandler: true,
+    handleSnapRpcRequest: true,
   },
 } as const);
 
+/**
+ * Builds the method implementation for `wallet_snap_*`.
+ *
+ * @param hooks - The RPC method hooks.
+ * @param hooks.getSnap - A function that retrieves all information stored about a snap.
+ * @param hooks.handleSnapRpcRequest - A function that sends an RPC request to a snap's RPC handler or throws if that fails.
+ * @returns The method implementation which returns the result of `handleSnapRpcRequest`.
+ * @throws If the params are invalid.
+ */
 function getInvokeSnapImplementation({
   getSnap,
-  getSnapRpcHandler,
+  handleSnapRpcRequest,
 }: InvokeSnapMethodHooks) {
   return async function invokeSnap(
     options: RestrictedMethodOptions<[Record<string, Json>]>,
@@ -82,17 +99,14 @@ function getInvokeSnapImplementation({
       });
     }
 
-    const handler = await getSnapRpcHandler(snapIdString);
-    if (!handler) {
-      throw ethErrors.rpc.methodNotFound({
-        message: `Snap RPC message handler not found for snap "${snapIdString}".`,
-      });
-    }
-
     const fromSubject = context.origin;
 
-    // Handler is an async function that takes an snapOriginString string and a request object.
+    // handleSnapRpcRequest is an async function that takes the snap id, a snapOriginString string and a request object.
     // It should return the result it would like returned to the fromDomain as part of response.result
-    return (await handler(fromSubject, snapRpcRequest)) as Json;
+    return (await handleSnapRpcRequest(
+      snapIdString,
+      fromSubject,
+      snapRpcRequest,
+    )) as Json;
   };
 }

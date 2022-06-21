@@ -27,13 +27,26 @@ export type GetSnapsHooks = {
   getSnaps: () => InstallSnapsResult;
 };
 
-async function getSnapsImplementation(
+/**
+ * The `wallet_getSnaps` method implementation.
+ * Fetches available snaps for the requesting origin and adds them to the JSON-RPC response.
+ *
+ * @param _req - The JSON-RPC request object. Not used by this function.
+ * @param res - The JSON-RPC response object.
+ * @param _next - The `json-rpc-engine` "next" callback. Not used by this
+ * function.
+ * @param end - The `json-rpc-engine` "end" callback.
+ * @param hooks - The RPC method hooks.
+ * @param hooks.getSnaps - A function that returns the snaps available for the requesting origin.
+ * @returns Nothing.
+ */
+function getSnapsImplementation(
   _req: unknown,
   res: PendingJsonRpcResponse<InstallSnapsResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
   { getSnaps }: GetSnapsHooks,
-): Promise<void> {
+): void {
   // getSnaps is already bound to the origin
   res.result = getSnaps();
   return end();

@@ -9,6 +9,12 @@ const { ethErrors } = require('eth-rpc-errors');
 
 let wasm;
 
+/**
+ * Load and initialize the WASM module. This modifies the global `wasm`
+ * variable, with the instantiated module.
+ *
+ * @throws If the WASM module failed to initialize.
+ */
 const initializeWasm = async () => {
   try {
     // This will be resolved to a buffer with the file contents at build time.
@@ -23,13 +29,22 @@ const initializeWasm = async () => {
   }
 };
 
-module.exports.onMessage = async (_originString, requestObject) => {
+/**
+ * Handle incoming JSON-RPC requests, sent through `wallet_invokeSnap`.
+ *
+ * @param {object} args - The request handler args as object.
+ * @param {JsonRpcRequest<unknown[] | Record<string, unknown>>} args.request - A
+ * validated JSON-RPC request object.
+ * @returns {number} The resulting number returned by WASM.
+ * @throws If the request method is not valid for this snap.
+ */
+module.exports.onRpcRequest = async ({ request }) => {
   if (!wasm) {
     await initializeWasm();
   }
 
-  if (wasm.instance.exports[requestObject.method]) {
-    return wasm.instance.exports[requestObject.method](...requestObject.params);
+  if (wasm.instance.exports[request.method]) {
+    return wasm.instance.exports[request.method](...request.params);
   }
-  throw ethErrors.rpc.methodNotFound({ data: { request: requestObject } });
+  throw ethErrors.rpc.methodNotFound({ data: { request } });
 };
