@@ -93,7 +93,7 @@ export async function watch(argv: YargsArgs): Promise<void> {
     })
     .on('add', (path) => buildSnap(path, `File added: ${path}`))
     .on('change', (path) => buildSnap(path, `File changed: ${path}`))
-    .on('unlink', async (path) => console.log(`File removed: ${path}`))
+    .on('unlink', (path) => console.log(`File removed: ${path}`))
     .on('error', (error: Error) => {
       logError(`Watcher error: ${error.message}`, error);
     })
