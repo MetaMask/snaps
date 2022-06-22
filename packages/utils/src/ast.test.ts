@@ -186,6 +186,19 @@ describe('postProcessAST', () => {
     `);
   });
 
+  it(`doesn't break on empty string literals`, () => {
+    const code = `
+      const foo = '';
+    `;
+
+    const ast = getAST(code);
+    const processedCode = postProcessAST(ast);
+
+    expect(getCode(processedCode)).toMatchInlineSnapshot(
+      `"const foo = \\"\\";"`,
+    );
+  });
+
   it('processes all the things', () => {
     const code = `
       (function (Buffer, foo) {

@@ -204,6 +204,11 @@ export function postProcessAST(ast: Node): Node {
         return;
       }
 
+      // Break up tokens that could be parsed as HTML comment terminators, or
+      // `import()` statements.
+      // For reference:
+      // - https://github.com/endojs/endo/blob/70cc86eb400655e922413b99c38818d7b2e79da0/packages/ses/error-codes/SES_HTML_COMMENT_REJECTED.md
+      // - https://github.com/MetaMask/snaps-skunkworks/issues/505
       const expressions = node.quasis.reduce<Expression[]>(
         (acc, quasi, index) => {
           const replacement = breakTokens(quasi.value.raw).map((token) =>
@@ -244,18 +249,19 @@ export function postProcessAST(ast: Node): Node {
       // - https://github.com/endojs/endo/blob/70cc86eb400655e922413b99c38818d7b2e79da0/packages/ses/error-codes/SES_HTML_COMMENT_REJECTED.md
       // - https://github.com/MetaMask/snaps-skunkworks/issues/505
       const tokens = breakTokens(node.value);
-      const replacement = tokens
-        .slice(1)
-        .reduce<Expression>(
-          (acc, value) => binaryExpression('+', acc, stringLiteral(value)),
-          stringLiteral(tokens[0]),
-        );
+      const replacement = tokens.slice(1).reduce<Expression>(
+        (acc, value) => binaryExpression('+', acc, stringLiteral(value)),
+        // In the case of an empty string, `tokens[0]` will be undefined, so
+        // we provide a fallback value of an empty string.
+        stringLiteral(tokens[0] ?? ''),
+      );
 
       path.replaceWith(replacement as Node);
       path.skip();
     },
   };
 
+  // Modifies the AST in place.
   traverse(ast, handler);
 
   return ast;
