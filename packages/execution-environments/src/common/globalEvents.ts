@@ -1,5 +1,13 @@
 import { rootRealmGlobal } from './globalObject';
 
+/**
+ * Adds an event listener platform agnostically, trying both `globalThis.addEventListener` and `globalThis.process.on`
+ *
+ * @param event - The event to listen for.
+ * @param listener - The listener to be triggered when the event occurs.
+ * @returns The result of the platform agnostic operation if any.
+ * @throws If none of the platform options are present.
+ */
 export function addEventListener(
   event: string,
   listener: (...args: any[]) => void,
@@ -15,6 +23,14 @@ export function addEventListener(
   throw new Error('Platform agnostic addEventListener failed');
 }
 
+/**
+ * Removes an event listener platform agnostically, trying both `globalThis.removeEventListener` and `globalThis.process.removeListener`
+ *
+ * @param event - The event to remove the listener for.
+ * @param listener - The currently attached listener.
+ * @returns The result of the platform agnostic operation if any.
+ * @throws If none of the platform options are present.
+ */
 export function removeEventListener(
   event: string,
   listener: (...args: any[]) => void,
