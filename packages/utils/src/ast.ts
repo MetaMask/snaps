@@ -1,8 +1,14 @@
 import { parse } from '@babel/parser';
-import traverse, { Node } from '@babel/traverse';
+import traverse, { Node, TraverseOptions } from '@babel/traverse';
 import generate from '@babel/generator';
 import template from '@babel/template';
-import { binaryExpression, Expression, stringLiteral } from '@babel/types';
+import {
+  binaryExpression,
+  Expression,
+  stringLiteral,
+  templateElement,
+  templateLiteral,
+} from '@babel/types';
 
 const COMMENTS_KEYS = [
   'innerComments',
@@ -61,7 +67,33 @@ const regeneratorRuntimeWrapper = template.smart(`
 `);
 
 /**
- * Post process code with AST  such that it can be evaluated in SES.
+ * Breaks up tokens that would otherwise result in SES errors. The tokens are
+ * broken up in a non-destructive way where possible. Currently works with:
+ * - HTML comment tags `<!--` and `-->`, broken up into `<!`, `--`, and `--`,
+ * `>`.
+ * - `import(n)` statements, broken up into `import`, `(n)`.
+ *
+ * @param value - The string value to break up.
+ * @returns The string split into an array, in a way that it can be joined
+ * together to form the same string, but with the tokens separated into single
+ * array elements.
+ */
+function breakTokens(value: string): string[] {
+  // The RegEx below consists of multiple groups joined by a boolean OR.
+  // Each part consists of two groups which capture a part of each string
+  // which needs to be split up, e.g., `<!--` is split into `<!` and `--`.
+  const tokens = value.split(/(<!)(--)|(--)(>)|(import)(\(.*?\))/gu);
+
+  return (
+    tokens
+      // TODO: The `split` above results in some values being `undefined`.
+      // There may be a better solution to avoid having to filter those out.
+      .filter((token) => token !== '' && token !== undefined)
+  );
+}
+
+/**
+ * Post process code with AST such that it can be evaluated in SES.
  *
  * Currently:
  * - Makes all direct calls to eval indirect.
@@ -78,7 +110,7 @@ export function postProcessAST(
   ast: Node,
   { stripComments = true }: Partial<PostProcessASTOptions> = {},
 ): Node {
-  traverse(ast, {
+  const handler: TraverseOptions = {
     enter(path) {
       const { node } = path;
 
@@ -178,6 +210,47 @@ export function postProcessAST(
       }
     },
 
+    TemplateLiteral(path) {
+      const { node } = path;
+
+      // This checks if the template literal was visited before. Without this,
+      // it would cause an infinite loop resulting in a stack overflow. We can't
+      // skip the path here, because we need to visit the children of the node.
+      if (path.getData('visited')) {
+        return;
+      }
+
+      const expressions = node.quasis.reduce<Expression[]>(
+        (acc, quasi, index) => {
+          const replacement = breakTokens(quasi.value.raw).map((token) =>
+            stringLiteral(token),
+          );
+
+          if (node.expressions[index]) {
+            return [
+              ...acc,
+              ...replacement,
+              node.expressions[index],
+            ] as Expression[];
+          }
+
+          return [...acc, ...replacement];
+        },
+        [],
+      );
+
+      path.replaceWith(
+        templateLiteral(
+          new Array(expressions.length + 1)
+            .fill(undefined)
+            .map(() => templateElement({ cooked: '', raw: '' })),
+          expressions,
+        ) as Node,
+      );
+
+      path.setData('visited', true);
+    },
+
     StringLiteral(path) {
       const { node } = path;
 
@@ -186,27 +259,20 @@ export function postProcessAST(
       // For reference:
       // - https://github.com/endojs/endo/blob/70cc86eb400655e922413b99c38818d7b2e79da0/packages/ses/error-codes/SES_HTML_COMMENT_REJECTED.md
       // - https://github.com/MetaMask/snaps-skunkworks/issues/505
-      //
-      // The RegEx below consists of multiple groups joined by a boolean OR.
-      // Each part consists of two groups which capture a part of each string
-      // which needs to be split up, e.g., `<!--` is split into `<!` and `--`.
-      const tokens = node.value.split(/(<!)(--)|(--)(>)|(import)(\(.*?\))/gu);
+      const tokens = breakTokens(node.value);
       const replacement = tokens
-        // TODO: The `split` above results in some values being `undefined`.
-        // There may be a better solution to avoid having to filter those out.
-        .filter((value) => value !== '' && value !== undefined)
-        .reduce<Expression | undefined>((acc, value) => {
-          if (acc) {
-            return binaryExpression('+', acc, stringLiteral(value));
-          }
+        .slice(1)
+        .reduce<Expression>(
+          (acc, value) => binaryExpression('+', acc, stringLiteral(value)),
+          stringLiteral(tokens[0]),
+        );
 
-          return stringLiteral(value);
-        }, undefined);
-
-      path.replaceWith((replacement as Node) || stringLiteral(''));
+      path.replaceWith(replacement as Node);
       path.skip();
     },
-  });
+  };
+
+  traverse(ast, handler);
 
   return ast;
 }
