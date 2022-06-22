@@ -6,19 +6,19 @@ describe('postProcessBundle', () => {
   });
 
   it('trims the string', () => {
-    expect(postProcessBundle(' trimMe ')).toStrictEqual('trimMe');
+    expect(postProcessBundle(' trimMe(); ')).toStrictEqual('trimMe();');
   });
 
   it('strips comments', () => {
     [
-      ['/* delete me */postProcessMe', 'postProcessMe'],
-      ['oi// hello\npostProcessMe', 'oi\npostProcessMe'],
-      ['oi/**********/\npostProcessMe//hello', 'oipostProcessMe'],
-      ['oi/***/\npostProcessMe//hello', 'oipostProcessMe'],
+      ['/* delete me */postProcessMe();', 'postProcessMe();'],
+      ['oi();// hello\npostProcessMe();', 'oi();\npostProcessMe();'],
+      ['oi();/**********/\npostProcessMe();//hello', 'oi();\npostProcessMe();'],
+      ['oi();/***/\npostProcessMe();//hello', 'oi();\npostProcessMe();'],
       // We used to have issues with this one and our comment stripping
-      ['oi/**/\npostProcessMe//hello', 'oi\npostProcessMe'],
-      ['foo/** /* **/bar', 'foobar'],
-      ['foo/** /** **/bar', 'foobar'],
+      ['oi();/**/\npostProcessMe();//hello', 'oi();\npostProcessMe();'],
+      ['foo();/** /* **/bar();', 'foo();\nbar();'],
+      ['foo();/** /** **/bar();', 'foo();\nbar();'],
     ].forEach(([input, expected]) => {
       expect(postProcessBundle(input)).toStrictEqual(expected);
     });
@@ -26,16 +26,35 @@ describe('postProcessBundle', () => {
 
   it('ignores comments if configured to do so', () => {
     expect(
-      postProcessBundle('/* leave me alone */postProcessMe', {
+      postProcessBundle('/* leave me alone */postProcessMe();', {
         stripComments: false,
       }),
-    ).toStrictEqual('/* leave me alone */postProcessMe');
+    ).toStrictEqual('/* leave me alone */postProcessMe();');
   });
 
+  it('strips HTML comment tokens', () => {
+    [
+      ['foo();\n<!--', 'foo();'],
+      ['-->\nbar()', 'bar();'],
+    ].forEach(([input, output]) => {
+      expect(
+        postProcessBundle(input, {
+          stripComments: false,
+          transformHtmlComments: false,
+        }),
+      ).toStrictEqual(input);
+
+      expect(postProcessBundle(input, { stripComments: true })).toStrictEqual(
+        output,
+      );
+    });
+  });
+
+  // @todo This should rewrite literals to "<!" + "--"
   it('breaks up HTML comment tokens', () => {
     [
-      ['foo;\n<!--', 'foo;\n< !--'],
-      ['-->\nbar', '-- >\nbar'],
+      [`foo('<!--');`, `foo('< !--');`],
+      [`const bar = '-->';`, `const bar = '-- >';`],
     ].forEach(([input, output]) => {
       expect(
         postProcessBundle(input, { transformHtmlComments: false }),
@@ -48,8 +67,10 @@ describe('postProcessBundle', () => {
   });
 
   it('applies regeneratorRuntime hack', () => {
-    expect(postProcessBundle('(regeneratorRuntime)')).toStrictEqual(
-      'var regeneratorRuntime;\n(regeneratorRuntime)',
+    expect(
+      postProcessBundle('var _marked = [a].map(regeneratorRuntime.mark);'),
+    ).toStrictEqual(
+      'var regeneratorRuntime;\nvar _marked = [a].map(regeneratorRuntime.mark);',
     );
   });
 
