@@ -10,12 +10,6 @@ import generate from '@babel/generator';
 export function stripComments(code: string): string {
   const ast = parse(code, { attachComment: false }) as any;
 
-  const output = generate(
-    ast,
-    {
-      comments: false,
-    },
-    code,
-  );
+  const output = generate(ast, {}, code);
   return output.code;
 }

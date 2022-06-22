@@ -204,7 +204,6 @@ describe('bundle', () => {
         'mockBabelify',
         expect.objectContaining({
           global: true,
-          generatorOpts: { comments: false },
           parserOpts: {
             attachComment: false,
           },
@@ -212,7 +211,7 @@ describe('bundle', () => {
       );
       expect(mockPlugin).toHaveBeenCalledTimes(1);
       expect(mockPlugin).toHaveBeenCalledWith(expect.any(Function), {
-        stripComments: false,
+        stripComments: true,
       });
       expect(writeBundleFileMock).toHaveBeenCalledTimes(1);
     });

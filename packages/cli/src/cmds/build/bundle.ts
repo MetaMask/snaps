@@ -61,9 +61,6 @@ export function bundle(
         parserOpts: {
           attachComment: !argv.stripComments,
         },
-        generatorOpts: {
-          comments: !argv.stripComments,
-        },
         ...(babelifyOptions as any),
       });
     }
@@ -71,10 +68,7 @@ export function bundle(
     bundlerTransform?.(bundler);
 
     bundler.plugin(plugin, {
-      // If Babel has run on all code, comments will already be stripped
-      stripComments:
-        transpilationMode !== TranspilationModes.localAndDeps &&
-        argv.stripComments,
+      stripComments: argv.stripComments,
       transformHtmlComments: argv.transformHtmlComments,
     });
 
