@@ -15,9 +15,8 @@ describe('ChildProcessSnapExecutor', () => {
 
     const onSpy = jest
       .spyOn(globalThis.process, 'on')
-      .mockImplementation((event, listener) =>
-        // @ts-expect-error Imperfect mock
-        parentEmitter.on(event, listener),
+      .mockImplementation(
+        (event, listener) => parentEmitter.on(event, listener) as any,
       );
     const sendSpy = jest
       .spyOn(globalThis.process, 'send')
@@ -39,7 +38,6 @@ describe('ChildProcessSnapExecutor', () => {
     const waitForResponse = (response: JsonRpcSuccess<string>) =>
       new Promise((resolve) => {
         childEmitter.on('message', ({ data }) => {
-          console.log(data.data, response);
           if (
             data.data.id === response.id &&
             data.data.result === response.result
