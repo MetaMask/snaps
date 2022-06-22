@@ -19,7 +19,10 @@ const COMMENTS_KEYS = [
  * @throws If the code contains syntax errors.
  */
 export function getAST(code: string): Node {
-  const ast = parse(code);
+  // Note: We set `errorRecovery` to `true` because Babel otherwise immediately
+  // throws if it fails to parse the code. This way we can handle the error by
+  // looking at `ast.errors`.
+  const ast = parse(code, { errorRecovery: true });
 
   if (ast.errors?.length > 0) {
     throw new Error(

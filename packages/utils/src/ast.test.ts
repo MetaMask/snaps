@@ -29,7 +29,7 @@ describe('postProcessAST', () => {
     const processedCode = postProcessAST(ast, { stripComments: true });
 
     expect(getCode(processedCode)).toMatchInlineSnapshot(
-      `"const foo = 'bar';"`,
+      `"const foo = \\"bar\\";"`,
     );
   });
 
@@ -66,11 +66,11 @@ describe('postProcessAST', () => {
 
     expect(getCode(processedCode)).toMatchInlineSnapshot(`
       "(function (foo) {
-        const bar = 'baz';
+        const bar = \\"baz\\";
       });
 
       function foo(Buffer) {
-        const bar = 'baz';
+        const bar = \\"baz\\";
       }"
     `);
   });
@@ -100,7 +100,7 @@ describe('postProcessAST', () => {
     const processedCode = postProcessAST(ast);
 
     expect(getCode(processedCode)).toMatchInlineSnapshot(
-      `"const foo = 'regeneratorRuntime';"`,
+      `"const foo = \\"regeneratorRuntime\\";"`,
     );
   });
 
