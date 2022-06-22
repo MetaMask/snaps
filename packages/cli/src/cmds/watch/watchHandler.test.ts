@@ -1,5 +1,6 @@
 import EventEmitter from 'events';
 import path from 'path';
+import http from 'http';
 import chokidar from 'chokidar';
 import * as miscUtils from '../../utils/misc';
 import * as fsUtils from '../../utils/validate-fs';
@@ -108,10 +109,6 @@ describe('watch', () => {
     });
 
     it('successfully handles when an outfileName is not provided', async () => {
-      jest.spyOn(chokidar, 'watch').mockImplementation(() => {
-        watcherEmitter = getMockWatcher();
-        return watcherEmitter as any;
-      });
       jest.spyOn(console, 'log').mockImplementation();
       jest
         .spyOn(fsUtils, 'validateFilePath')
@@ -125,10 +122,6 @@ describe('watch', () => {
     it('successfully handles when only a filename is provided for src', async () => {
       // the idea here is that the file name should pass the file path validation
       // so that we can reach where the ternary resolves to the first expression
-      jest.spyOn(chokidar, 'watch').mockImplementation(() => {
-        watcherEmitter = getMockWatcher();
-        return watcherEmitter as any;
-      });
       jest.spyOn(console, 'log').mockImplementation();
       jest.spyOn(fileUtils, 'isFile').mockImplementation(async () => true);
       jest
@@ -138,6 +131,42 @@ describe('watch', () => {
       mockArgs.src = 'index.js';
       await watch.handler(mockArgs);
       expect(global.console.log).toHaveBeenCalledTimes(1);
+    });
+
+    it('successfully serves a snap when the serve flag is provided', async () => {
+      jest
+        .spyOn(http, 'createServer')
+        .mockImplementation(
+          () => ({ listen: jest.fn(), on: jest.fn() } as any),
+        );
+      jest.spyOn(console, 'log').mockImplementation();
+      jest.spyOn(fileUtils, 'isFile').mockImplementation(async () => true);
+      jest
+        .spyOn(fsUtils, 'validateFilePath')
+        .mockImplementation(async () => true);
+      jest.spyOn(fileUtils, 'isDirectory').mockImplementation(async () => true);
+      const bundleMock = jest.spyOn(build, 'bundle').mockImplementation();
+
+      const argv = getMockArgv({ serve: true });
+      await watch.handler(argv);
+      const mockPath = path.normalize(`${mockDist}/${mockOutfileName}`);
+      const readyPromise = new Promise<void>((resolve, _) => {
+        watcherEmitter.on('ready', () => {
+          expect(bundleMock).toHaveBeenCalledWith(
+            mockSrc,
+            mockPath,
+            argv,
+            undefined,
+          );
+          resolve();
+        });
+      });
+
+      watcherEmitter.emit('ready');
+      await readyPromise;
+      // Wait for other promises to resolve
+      await new Promise(process.nextTick);
+      expect(global.console.log).toHaveBeenCalledWith(`\nStarting server...`);
     });
 
     it('handles "changed" event correctly', async () => {
