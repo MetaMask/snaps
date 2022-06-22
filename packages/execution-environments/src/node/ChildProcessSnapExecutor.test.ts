@@ -13,10 +13,10 @@ describe('ChildProcessSnapExecutor', () => {
     const parentEmitter = new EventEmitter();
     const childEmitter = new EventEmitter();
 
-    // @ts-expect-error Imperfect mock
     const onSpy = jest
       .spyOn(globalThis.process, 'on')
       .mockImplementation((event, listener) =>
+        // @ts-expect-error Imperfect mock
         parentEmitter.on(event, listener),
       );
     const sendSpy = jest
