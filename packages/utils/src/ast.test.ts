@@ -104,11 +104,35 @@ describe('postProcessAST', () => {
     );
   });
 
+  it('breaks up HTML comment terminators in string literals', () => {
+    const code = `
+      const foo = '<!-- bar -->';
+    `;
+
+    const ast = getAST(code);
+    const processedCode = postProcessAST(ast, { stripComments: false });
+
+    expect(getCode(processedCode)).toMatchInlineSnapshot(
+      `"const foo = \\"<!\\" + \\"--\\" + \\" bar \\" + \\"--\\" + \\">\\";"`,
+    );
+  });
+
+  it('breaks up HTML comment terminators in comments', () => {
+    const code = `
+      <!-- foo -->
+    `;
+
+    const ast = getAST(code);
+    const processedCode = postProcessAST(ast, { stripComments: false });
+
+    expect(getCode(processedCode)).toMatchInlineSnapshot(`"// foo -- >"`);
+  });
+
   it('processes all the things', () => {
     const code = `
       (function (Buffer, foo) {
         // Sets 'bar' to 'baz'
-        const bar = 'baz';
+        const bar = '<!-- baz -->';
         eval(foo);
         foo.eval('bar');
 
@@ -122,7 +146,7 @@ describe('postProcessAST', () => {
     expect(getCode(processedCode)).toMatchInlineSnapshot(`
       "(function (foo) {
         var regeneratorRuntime;
-        const bar = 'baz';
+        const bar = \\"<!\\" + \\"--\\" + \\" baz \\" + \\"--\\" + \\">\\";
         (1, eval)(foo);
         (1, foo.eval)('bar');
         regeneratorRuntime.foo();

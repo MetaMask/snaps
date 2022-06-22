@@ -50,7 +50,6 @@ describe('postProcessBundle', () => {
     });
   });
 
-  // @todo This should rewrite literals to "<!" + "--"
   it('breaks up HTML comment tokens', () => {
     [
       [`foo('<!--');`, `foo('< !--');`],

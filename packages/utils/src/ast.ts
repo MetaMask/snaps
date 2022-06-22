@@ -2,6 +2,7 @@ import { parse } from '@babel/parser';
 import traverse, { Node } from '@babel/traverse';
 import generate from '@babel/generator';
 import template from '@babel/template';
+import { binaryExpression, Expression, stringLiteral } from '@babel/types';
 
 const COMMENTS_KEYS = [
   'innerComments',
@@ -39,7 +40,7 @@ export function getCode(ast: Node): string {
   return generate(ast).code;
 }
 
-export type PostProcessOptions = {
+export type PostProcessASTOptions = {
   stripComments: boolean;
   transformHtmlComments: boolean;
 };
@@ -57,7 +58,13 @@ const regeneratorRuntimeWrapper = template.smart(`
 `);
 
 /**
- * Post process code with AST.
+ * Post process code with AST  such that it can be evaluated in SES.
+ *
+ * Currently:
+ * - Makes all direct calls to eval indirect.
+ * - Handles certain Babel-related edge cases.
+ * - Removes the `Buffer` provided by Browserify.
+ * - Optionally removes comments.
  *
  * @param ast - The AST to post process.
  * @param options - The post-process options.
@@ -66,23 +73,36 @@ const regeneratorRuntimeWrapper = template.smart(`
  */
 export function postProcessAST(
   ast: Node,
-  { stripComments = true }: Partial<PostProcessOptions> = {},
+  { stripComments = true }: Partial<PostProcessASTOptions> = {},
 ): Node {
   traverse(ast, {
     enter(path) {
       const { node } = path;
 
-      // Strip comments if enabled
-      if (stripComments) {
+      COMMENTS_KEYS.forEach((key) => {
+        const comments = node[key];
+        if (!comments) {
+          return;
+        }
+
         // Sets the comment value to `null` if defined. Simply setting the keys
         // to null results in a bunch of unnecessary keys being added to each
         // node.
-        COMMENTS_KEYS.forEach((key) => {
-          if (node[key]) {
-            node[key] = null;
-          }
+        if (stripComments) {
+          node[key] = null;
+          return;
+        }
+
+        // Break up tokens that could be parsed as HTML comment terminators. The
+        // regular expressions below are written strangely so as to avoid the
+        // appearance of such tokens in our source code. For reference:
+        // https://github.com/endojs/endo/blob/70cc86eb400655e922413b99c38818d7b2e79da0/packages/ses/error-codes/SES_HTML_COMMENT_REJECTED.md
+        comments.forEach((comment) => {
+          comment.value = comment.value
+            .replace(new RegExp(`<!${'--'}`, 'gu'), '< !--')
+            .replace(new RegExp(`${'--'}>`, 'gu'), '-- >');
         });
-      }
+      });
     },
 
     FunctionExpression(path) {
@@ -151,6 +171,40 @@ export function postProcessAST(
       if (node.name === 'regeneratorRuntime') {
         path.insertBefore(regeneratorRuntimeWrapper());
         path.stop();
+      }
+    },
+
+    StringLiteral(path) {
+      const { node } = path;
+
+      // Break up tokens that could be parsed as HTML comment terminators. The
+      // regular expressions below are written strangely so as to avoid the
+      // appearance of such tokens in our source code. For reference:
+      // https://github.com/endojs/endo/blob/70cc86eb400655e922413b99c38818d7b2e79da0/packages/ses/error-codes/SES_HTML_COMMENT_REJECTED.md
+      if (node.value.includes('<!--') || node.value.includes('-->')) {
+        const tokens = node.value.split(/(<!--|-->)/gu);
+        const replacement = tokens
+          .reduce<string[]>((acc, token) => {
+            if (token === '<!--') {
+              return [...acc, '<!', '--'];
+            }
+
+            if (token === '-->') {
+              return [...acc, '--', '>'];
+            }
+
+            return [...acc, token];
+          }, [])
+          .filter((value) => value !== '')
+          .reduce<Expression | undefined>((acc, value) => {
+            if (acc) {
+              return binaryExpression('+', acc, stringLiteral(value));
+            }
+
+            return stringLiteral(value);
+          }, undefined);
+
+        path.replaceWith(replacement as Node);
       }
     },
   });
