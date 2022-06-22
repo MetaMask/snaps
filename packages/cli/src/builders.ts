@@ -174,7 +174,7 @@ const builders: SnapsCliBuilders = {
     describe: 'Use TypeScript template',
     type: 'boolean',
     demandOption: false,
-    default: false,
+    default: true,
   },
 };
 
