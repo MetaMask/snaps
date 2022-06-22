@@ -5,4 +5,4 @@ import { ChildProcessSnapExecutor } from './ChildProcessSnapExecutor';
 executeLockdown();
 executeLockdownMore();
 
-ChildProcessSnapExecutor.initalize();
+ChildProcessSnapExecutor.initialize();

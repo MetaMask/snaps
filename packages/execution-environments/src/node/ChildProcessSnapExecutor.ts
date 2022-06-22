@@ -5,7 +5,7 @@ import { SNAP_STREAM_NAMES } from '../common/enums';
 import { ChildProcessMessageStream } from './ChildProcessMessageStream';
 
 export class ChildProcessSnapExecutor extends BaseSnapExecutor {
-  static initalize() {
+  static initialize() {
     console.log('Worker: Connecting to parent.');
 
     const parentStream = new ChildProcessMessageStream();
