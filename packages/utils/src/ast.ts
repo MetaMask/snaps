@@ -97,6 +97,8 @@ function breakTokens(value: string): string[] {
  * - Handles certain Babel-related edge cases.
  * - Removes the `Buffer` provided by Browserify.
  * - Optionally removes comments.
+ * - Breaks up tokens that would otherwise result in SES errors, such as HTML
+ * comment tags `<!--` and `-->` and `import(n)` statements.
  *
  * @param ast - The AST to post process.
  * @returns The modified AST.
@@ -211,6 +213,10 @@ export function postProcessAST(ast: Node): Node {
       // - https://github.com/MetaMask/snaps-skunkworks/issues/505
       const expressions = node.quasis.reduce<Expression[]>(
         (acc, quasi, index) => {
+          // Note: Template literals have two variants, "cooked" and "raw". Here
+          // we just use the raw version, but this might break code that uses
+          // the cooked version. For reference:
+          // https://exploringjs.com/impatient-js/ch_template-literals.html#template-strings-cooked-vs-raw
           const replacement = breakTokens(quasi.value.raw).map((token) =>
             stringLiteral(token),
           );
