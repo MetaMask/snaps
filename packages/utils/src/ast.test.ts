@@ -8,6 +8,16 @@ describe('getAST', () => {
     expect(getAST(code)).toMatchSnapshot();
   });
 
+  it(`doesn't attach comments to the AST if configured`, () => {
+    const code = `
+      // This is a comment.
+      const foo = 'bar';
+    `;
+
+    const ast = getAST(code, false);
+    expect(getCode(ast)).not.toContain('// This is a comment.');
+  });
+
   it('forwards parser errors', () => {
     // Invalid code
     const code = `const foo bar;`;
@@ -19,20 +29,6 @@ describe('getAST', () => {
 });
 
 describe('postProcessAST', () => {
-  it('strips comments', () => {
-    const code = `
-      // This is a comment
-      const foo = 'bar';
-    `;
-
-    const ast = getAST(code);
-    const processedCode = postProcessAST(ast, { stripComments: true });
-
-    expect(getCode(processedCode)).toMatchInlineSnapshot(
-      `"const foo = \\"bar\\";"`,
-    );
-  });
-
   it('wraps eval', () => {
     const code = `
       eval(bar);
@@ -157,8 +153,6 @@ describe('postProcessAST', () => {
     const ast = getAST(code);
     const processedCode = postProcessAST(ast);
 
-    console.log(getCode(processedCode));
-
     expect(getCode(processedCode)).toMatchInlineSnapshot(`
       "const foo = \`\${\\"foo bar \\"}\${\\"import\\"}\${\\"()\\"}\${\\" baz\\"}\`;
       const bar = \`\${\\"foo bar \\"}\${\\"import\\"}\${\\"(this works too)\\"}\${\\" baz\\"}\`;
@@ -172,7 +166,7 @@ describe('postProcessAST', () => {
     `;
 
     const ast = getAST(code);
-    const processedCode = postProcessAST(ast, { stripComments: false });
+    const processedCode = postProcessAST(ast);
 
     expect(getCode(processedCode)).toMatchInlineSnapshot(`"// foo -- >"`);
   });
@@ -184,7 +178,7 @@ describe('postProcessAST', () => {
     `;
 
     const ast = getAST(code);
-    const processedCode = postProcessAST(ast, { stripComments: false });
+    const processedCode = postProcessAST(ast);
 
     expect(getCode(processedCode)).toMatchInlineSnapshot(`
       "// Foo bar import\\\\() baz
@@ -203,7 +197,7 @@ describe('postProcessAST', () => {
       });
     `;
 
-    const ast = getAST(code);
+    const ast = getAST(code, false);
     const processedCode = postProcessAST(ast);
 
     expect(getCode(processedCode)).toMatchInlineSnapshot(`

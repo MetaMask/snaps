@@ -21,14 +21,15 @@ const COMMENTS_KEYS = [
  * uses Babel's parser to generate the AST.
  *
  * @param code - The code to parse.
+ * @param attachComment - Whether to attach comments to the AST.
  * @returns The AST representation of the code.
  * @throws If the code contains syntax errors.
  */
-export function getAST(code: string): Node {
+export function getAST(code: string, attachComment = true): Node {
   // Note: We set `errorRecovery` to `true` because Babel otherwise immediately
   // throws if it fails to parse the code. This way we can handle the error by
   // looking at `ast.errors`.
-  const ast = parse(code, { errorRecovery: true });
+  const ast = parse(code, { errorRecovery: true, attachComment });
 
   if (ast.errors?.length > 0) {
     throw new Error(
@@ -43,16 +44,12 @@ export function getAST(code: string): Node {
  * Turn Babel's abstract syntax tree (AST) representation back into a string.
  *
  * @param ast - The AST to generate code from.
+ * @param code - The original code, used for source maps.
  * @returns The generated code.
  */
-export function getCode(ast: Node): string {
-  return generate(ast).code;
+export function getCode(ast: Node, code?: string): string {
+  return generate(ast, {}, code).code;
 }
-
-export type PostProcessASTOptions = {
-  stripComments: boolean;
-  transformHtmlComments: boolean;
-};
 
 const evalWrapper = template.smart(`
   (1, REF)(ARGS)
@@ -102,14 +99,9 @@ function breakTokens(value: string): string[] {
  * - Optionally removes comments.
  *
  * @param ast - The AST to post process.
- * @param options - The post-process options.
- * @param options.stripComments - Whether to strip comments. Defaults to `true`.
  * @returns The modified AST.
  */
-export function postProcessAST(
-  ast: Node,
-  { stripComments = true }: Partial<PostProcessASTOptions> = {},
-): Node {
+export function postProcessAST(ast: Node): Node {
   const handler: TraverseOptions = {
     enter(path) {
       const { node } = path;
@@ -117,14 +109,6 @@ export function postProcessAST(
       COMMENTS_KEYS.forEach((key) => {
         const comments = node[key];
         if (!comments) {
-          return;
-        }
-
-        // Sets the comment value to `null` if defined. Simply setting the keys
-        // to null results in a bunch of unnecessary keys being added to each
-        // node.
-        if (stripComments) {
-          node[key] = null;
           return;
         }
 
