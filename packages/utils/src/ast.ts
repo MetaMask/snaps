@@ -203,7 +203,7 @@ export function postProcessAST(
           return stringLiteral(value);
         }, undefined);
 
-      path.replaceWith(replacement as Node);
+      path.replaceWith((replacement as Node) || stringLiteral(''));
       path.skip();
     },
   });
