@@ -1,5 +1,7 @@
 import { getAST, getCode, postProcessAST, PostProcessASTOptions } from './ast';
 
+export type PostProcessOptions = PostProcessASTOptions;
+
 /**
  * Post-processes a JavaScript bundle string such that it can be evaluated in
  * SES.
@@ -23,7 +25,7 @@ export function postProcessBundle(
   {
     stripComments = true,
     transformHtmlComments = true,
-  }: Partial<PostProcessASTOptions> = {},
+  }: Partial<PostProcessOptions> = {},
 ): string | null {
   if (typeof bundleString !== 'string') {
     return null;
