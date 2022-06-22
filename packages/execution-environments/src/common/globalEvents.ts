@@ -12,11 +12,18 @@ export function addEventListener(
   event: string,
   listener: (...args: any[]) => void,
 ) {
-  if ('addEventListener' in rootRealmGlobal) {
+  if (
+    'addEventListener' in rootRealmGlobal &&
+    typeof rootRealmGlobal.addEventListener === 'function'
+  ) {
     return rootRealmGlobal.addEventListener(event.toLowerCase(), listener);
   }
 
-  if (rootRealmGlobal.process && 'on' in rootRealmGlobal.process) {
+  if (
+    rootRealmGlobal.process &&
+    'on' in rootRealmGlobal.process &&
+    typeof rootRealmGlobal.process.on === 'function'
+  ) {
     return rootRealmGlobal.process.on(event, listener);
   }
 
@@ -35,11 +42,18 @@ export function removeEventListener(
   event: string,
   listener: (...args: any[]) => void,
 ) {
-  if ('removeEventListener' in rootRealmGlobal) {
+  if (
+    'removeEventListener' in rootRealmGlobal &&
+    typeof rootRealmGlobal.removeEventListener === 'function'
+  ) {
     return rootRealmGlobal.removeEventListener(event.toLowerCase(), listener);
   }
 
-  if (rootRealmGlobal.process && 'removeListener' in rootRealmGlobal.process) {
+  if (
+    rootRealmGlobal.process &&
+    'removeListener' in rootRealmGlobal.process &&
+    typeof rootRealmGlobal.process.removeListener === 'function'
+  ) {
     return rootRealmGlobal.process.removeListener(event, listener);
   }
 
