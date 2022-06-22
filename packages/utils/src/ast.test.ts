@@ -110,11 +110,26 @@ describe('postProcessAST', () => {
     `;
 
     const ast = getAST(code);
-    const processedCode = postProcessAST(ast, { stripComments: false });
+    const processedCode = postProcessAST(ast);
 
     expect(getCode(processedCode)).toMatchInlineSnapshot(
       `"const foo = \\"<!\\" + \\"--\\" + \\" bar \\" + \\"--\\" + \\">\\";"`,
     );
+  });
+
+  it('breaks up `import()` in string literals', () => {
+    const code = `
+      const foo = 'foo bar import() baz';
+      const bar = 'foo bar import(this works too) baz';
+    `;
+
+    const ast = getAST(code);
+    const processedCode = postProcessAST(ast);
+
+    expect(getCode(processedCode)).toMatchInlineSnapshot(`
+      "const foo = \\"foo bar \\" + \\"import\\" + \\"()\\" + \\" baz\\";
+      const bar = \\"foo bar \\" + \\"import\\" + \\"(this works too)\\" + \\" baz\\";"
+    `);
   });
 
   it('breaks up HTML comment terminators in comments', () => {
@@ -128,15 +143,29 @@ describe('postProcessAST', () => {
     expect(getCode(processedCode)).toMatchInlineSnapshot(`"// foo -- >"`);
   });
 
+  it('breaks up `import()` in comments', () => {
+    const code = `
+      // Foo bar import() baz
+      // Foo bar import(baz) qux
+    `;
+
+    const ast = getAST(code);
+    const processedCode = postProcessAST(ast, { stripComments: false });
+
+    expect(getCode(processedCode)).toMatchInlineSnapshot(`
+      "// Foo bar import\\\\() baz
+      // Foo bar import\\\\(baz) qux"
+    `);
+  });
+
   it('processes all the things', () => {
     const code = `
       (function (Buffer, foo) {
         // Sets 'bar' to 'baz'
-        const bar = '<!-- baz -->';
+        const bar = '<!-- baz --> import(); import(foo);';
+        regeneratorRuntime.foo();
         eval(foo);
         foo.eval('bar');
-
-        regeneratorRuntime.foo();
       });
     `;
 
@@ -146,10 +175,10 @@ describe('postProcessAST', () => {
     expect(getCode(processedCode)).toMatchInlineSnapshot(`
       "(function (foo) {
         var regeneratorRuntime;
-        const bar = \\"<!\\" + \\"--\\" + \\" baz \\" + \\"--\\" + \\">\\";
-        (1, eval)(foo);
-        (1, foo.eval)('bar');
+        const bar = \\"<!\\" + \\"--\\" + \\" baz \\" + \\"--\\" + \\">\\" + \\" \\" + \\"import\\" + \\"()\\" + \\"; \\" + \\"import\\" + \\"(foo)\\" + \\";\\";
         regeneratorRuntime.foo();
+        eval(foo);
+        foo.eval('bar');
       });"
     `);
   });

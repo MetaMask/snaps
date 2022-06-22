@@ -100,7 +100,8 @@ export function postProcessAST(
         comments.forEach((comment) => {
           comment.value = comment.value
             .replace(new RegExp(`<!${'--'}`, 'gu'), '< !--')
-            .replace(new RegExp(`${'--'}>`, 'gu'), '-- >');
+            .replace(new RegExp(`${'--'}>`, 'gu'), '-- >')
+            .replace(/import(\(.*\))/gu, 'import\\$1');
         });
       });
     },
@@ -177,35 +178,30 @@ export function postProcessAST(
     StringLiteral(path) {
       const { node } = path;
 
-      // Break up tokens that could be parsed as HTML comment terminators. The
-      // regular expressions below are written strangely so as to avoid the
-      // appearance of such tokens in our source code. For reference:
-      // https://github.com/endojs/endo/blob/70cc86eb400655e922413b99c38818d7b2e79da0/packages/ses/error-codes/SES_HTML_COMMENT_REJECTED.md
-      if (node.value.includes('<!--') || node.value.includes('-->')) {
-        const tokens = node.value.split(/(<!--|-->)/gu);
-        const replacement = tokens
-          .reduce<string[]>((acc, token) => {
-            if (token === '<!--') {
-              return [...acc, '<!', '--'];
-            }
+      // Break up tokens that could be parsed as HTML comment terminators, or
+      // `import()` statements.
+      // For reference:
+      // - https://github.com/endojs/endo/blob/70cc86eb400655e922413b99c38818d7b2e79da0/packages/ses/error-codes/SES_HTML_COMMENT_REJECTED.md
+      // - https://github.com/MetaMask/snaps-skunkworks/issues/505
+      //
+      // The RegEx below consists of multiple groups joined by a boolean OR.
+      // Each part consists of two groups which capture a part of each string
+      // which needs to be split up, e.g., `<!--` is split into `<!` and `--`.
+      const tokens = node.value.split(/(<!)(--)|(--)(>)|(import)(\(.*?\))/gu);
+      const replacement = tokens
+        // TODO: The `split` above results in some values being `undefined`.
+        // There may be a better solution to avoid having to filter those out.
+        .filter((value) => value !== '' && value !== undefined)
+        .reduce<Expression | undefined>((acc, value) => {
+          if (acc) {
+            return binaryExpression('+', acc, stringLiteral(value));
+          }
 
-            if (token === '-->') {
-              return [...acc, '--', '>'];
-            }
+          return stringLiteral(value);
+        }, undefined);
 
-            return [...acc, token];
-          }, [])
-          .filter((value) => value !== '')
-          .reduce<Expression | undefined>((acc, value) => {
-            if (acc) {
-              return binaryExpression('+', acc, stringLiteral(value));
-            }
-
-            return stringLiteral(value);
-          }, undefined);
-
-        path.replaceWith(replacement as Node);
-      }
+      path.replaceWith(replacement as Node);
+      path.skip();
     },
   });
 
