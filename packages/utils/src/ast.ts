@@ -292,12 +292,12 @@ export function postProcessAST(ast: Node): Node {
         return;
       }
 
-      const replacement = tokens.slice(1).reduce<Expression>(
-        (acc, value) => binaryExpression('+', acc, stringLiteral(value)),
-        // In the case of an empty string, `tokens[0]` will be undefined, so
-        // we provide a fallback value of an empty string.
-        stringLiteral(tokens[0]),
-      );
+      const replacement = tokens
+        .slice(1)
+        .reduce<Expression>(
+          (acc, value) => binaryExpression('+', acc, stringLiteral(value)),
+          stringLiteral(tokens[0]),
+        );
 
       path.replaceWith(replacement as Node);
       path.skip();
