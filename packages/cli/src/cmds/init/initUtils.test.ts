@@ -563,7 +563,7 @@ describe('initUtils', () => {
         outfileName: 'bundle.js',
         src: customFileName,
         port: 8081,
-        typescript: true,
+        template: 'typescript',
       } as unknown as Arguments;
       expect(correctDefaultArgs(mockArgv)).toStrictEqual({
         ...mockArgv,

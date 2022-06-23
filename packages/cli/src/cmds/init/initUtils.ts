@@ -368,6 +368,6 @@ export function correctDefaultArgs(yargsArgv: Arguments): Arguments {
  * @param templateType - String value of the template parameter passed from CLI.
  * @returns True or false.
  */
-export function isTemplateTypescript(templateType: any): boolean {
+export function isTemplateTypescript(templateType: string): boolean {
   return templateType === 'typescript';
 }

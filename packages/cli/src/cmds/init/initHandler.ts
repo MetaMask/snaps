@@ -51,6 +51,7 @@ export async function initHandler(argv: YargsArgs) {
       return sorted;
     }, {} as YargsArgs);
 
+  const isTypeScript = isTemplateTypescript(argv.template as string);
   try {
     await fs.writeFile(
       NpmSnapFileNames.Manifest,
@@ -76,9 +77,7 @@ export async function initHandler(argv: YargsArgs) {
 
     await fs.writeFile(
       src,
-      isTemplateTypescript(argv.template)
-        ? template.typescriptSource
-        : template.source,
+      isTypeScript ? template.typescriptSource : template.source,
     );
 
     console.log(`Init: Created '${src}'.`);
@@ -91,9 +90,7 @@ export async function initHandler(argv: YargsArgs) {
   try {
     await fs.writeFile(
       'index.html',
-      isTemplateTypescript(argv.template)
-        ? template.typescriptHtml
-        : template.html,
+      isTypeScript ? template.typescriptHtml : template.html,
     );
 
     console.log(`Init: Created 'index.html'.`);
@@ -103,7 +100,7 @@ export async function initHandler(argv: YargsArgs) {
   }
 
   // Write tsconfig.json
-  if (isTemplateTypescript(argv.template)) {
+  if (isTypeScript) {
     try {
       await fs.writeFile('tsconfig.json', template.typescriptConfig);
       console.log(`Init: Created 'tsconfig.json'.`);
