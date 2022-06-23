@@ -15,6 +15,7 @@ import {
   SnapConfig,
 } from '../../utils';
 import { getWritableManifest } from '../manifest/manifestHandler';
+import { TemplateType } from '../../builders';
 import template from './init-template.json';
 import {
   asyncPackageInit,
@@ -51,7 +52,7 @@ export async function initHandler(argv: YargsArgs) {
       return sorted;
     }, {} as YargsArgs);
 
-  const isTypeScript = isTemplateTypescript(argv.template as string);
+  const isTypeScript = isTemplateTypescript(argv.template as TemplateType);
   try {
     await fs.writeFile(
       NpmSnapFileNames.Manifest,

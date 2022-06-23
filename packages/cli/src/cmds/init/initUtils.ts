@@ -21,6 +21,7 @@ import {
   readJsonFile,
   trimPathString,
 } from '../../utils';
+import { TemplateType } from '../../builders';
 
 /**
  * This is a placeholder shasum that will be replaced at the end of the init command.
@@ -354,7 +355,10 @@ export async function prepareWorkingDirectory(): Promise<void> {
  * @returns Modified Yargs arguments object.
  */
 export function correctDefaultArgs(yargsArgv: Arguments): Arguments {
-  if (yargsArgv.template === 'typescript' && yargsArgv.src === 'src/index.js') {
+  if (
+    yargsArgv.template === TemplateType.TypeScript &&
+    yargsArgv.src === 'src/index.js'
+  ) {
     yargsArgv.src = 'src/index.ts';
     yargsArgv.s = 'src/index.ts';
   }
@@ -368,6 +372,6 @@ export function correctDefaultArgs(yargsArgv: Arguments): Arguments {
  * @param templateType - String value of the template parameter passed from CLI.
  * @returns True or false.
  */
-export function isTemplateTypescript(templateType: string): boolean {
-  return templateType === 'typescript';
+export function isTemplateTypescript(templateType: TemplateType): boolean {
+  return templateType === TemplateType.TypeScript;
 }

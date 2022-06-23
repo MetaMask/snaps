@@ -14,6 +14,7 @@ import { YargsArgs } from '../../types/yargs';
 import * as fsUtils from '../../utils/fs';
 import * as miscUtils from '../../utils/misc';
 import * as readlineUtils from '../../utils/readline';
+import { TemplateType } from '../../builders';
 import {
   asyncPackageInit,
   buildSnapManifest,
@@ -548,7 +549,7 @@ describe('initUtils', () => {
         outfileName: 'bundle.js',
         src: 'src/index.js',
         port: 8081,
-        template: 'typescript',
+        template: TemplateType.TypeScript,
       } as unknown as Arguments;
       expect(correctDefaultArgs(mockArgv)).toStrictEqual({
         ...mockArgv,
@@ -563,7 +564,7 @@ describe('initUtils', () => {
         outfileName: 'bundle.js',
         src: customFileName,
         port: 8081,
-        template: 'typescript',
+        template: TemplateType.TypeScript,
       } as unknown as Arguments;
       expect(correctDefaultArgs(mockArgv)).toStrictEqual({
         ...mockArgv,

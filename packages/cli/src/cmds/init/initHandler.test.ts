@@ -9,6 +9,7 @@ import * as fsUtils from '../../utils/fs';
 import * as miscUtils from '../../utils/misc';
 import * as readlineUtils from '../../utils/readline';
 import { getWritableManifest } from '../manifest/manifestHandler';
+import { TemplateType } from '../../builders';
 import template from './init-template.json';
 import { initHandler, updateManifestShasum } from './initHandler';
 import * as initUtils from './initUtils';
@@ -106,10 +107,10 @@ describe('initialize', () => {
 
       const mockArgv = getMockArgv();
       // Change mocked argv to enable typescript
-      mockArgv.template = 'typescript';
+      mockArgv.template = TemplateType.TypeScript;
       mockArgv.src = 'src/index.ts';
       const expected = {
-        template: 'typescript',
+        template: TemplateType.TypeScript,
         dist: 'dist',
         outfileName: 'bundle.js',
         port: 8081,
@@ -421,7 +422,7 @@ describe('initialize', () => {
         .mockImplementation(async () => getPackageJson());
 
       const mockArgv = getMockArgv();
-      mockArgv.template = 'typescript';
+      mockArgv.template = TemplateType.TypeScript;
       await expect(initHandler(mockArgv)).rejects.toThrow('failed to write');
       expect(logErrorMock).toHaveBeenCalledTimes(1);
       expect(logErrorMock).toHaveBeenNthCalledWith(

@@ -27,6 +27,11 @@ export enum TranspilationModes {
   none = 'none',
 }
 
+export enum TemplateType {
+  TypeScript = 'typescript',
+  JavaScript = 'javascript',
+}
+
 const builders: SnapsCliBuilders = {
   bundle: {
     alias: 'b',
@@ -174,7 +179,8 @@ const builders: SnapsCliBuilders = {
     describe: 'Specify which template to use (TypeScript or JavaScript)',
     type: 'string',
     demandOption: false,
-    default: 'typescript',
+    default: TemplateType.TypeScript,
+    choices: Object.values(TemplateType),
   },
 };
 
