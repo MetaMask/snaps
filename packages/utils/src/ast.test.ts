@@ -115,8 +115,6 @@ describe('postProcessAST', () => {
     const ast = getAST(code);
     const processedCode = postProcessAST(ast);
 
-    // a <!-- b is expected to comment out b
-    // a --> b is expected to work as a -- > b
     expect(getCode(processedCode)).toMatchInlineSnapshot(`
       "let a = 5;
       let b = 7;
