@@ -77,8 +77,13 @@ describe('postProcessAST', () => {
 
   it('inserts the regenerator runtime global when used', () => {
     const code = `
-      regeneratorRuntime.foo();
-      regeneratorRuntime.bar();
+      function foo() {
+        regeneratorRuntime.foo();
+      }
+
+      function bar() {
+        regeneratorRuntime.bar();
+      }
     `;
 
     const ast = getAST(code);
@@ -86,8 +91,14 @@ describe('postProcessAST', () => {
 
     expect(getCode(processedCode)).toMatchInlineSnapshot(`
       "var regeneratorRuntime;
-      regeneratorRuntime.foo();
-      regeneratorRuntime.bar();"
+
+      function foo() {
+        regeneratorRuntime.foo();
+      }
+
+      function bar() {
+        regeneratorRuntime.bar();
+      }"
     `);
   });
 
@@ -237,8 +248,9 @@ describe('postProcessAST', () => {
     const processedCode = postProcessAST(ast);
 
     expect(getCode(processedCode)).toMatchInlineSnapshot(`
-      "(function (foo) {
-        var regeneratorRuntime;
+      "var regeneratorRuntime;
+
+      (function (foo) {
         const bar = \\"<!\\" + \\"--\\" + \\" baz \\" + \\"--\\" + \\">\\" + \\" \\" + \\"import\\" + \\"()\\" + \\"; \\" + \\"import\\" + \\"(foo)\\" + \\";\\";
         regeneratorRuntime.foo();
         eval(foo);

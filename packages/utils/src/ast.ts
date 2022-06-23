@@ -73,7 +73,7 @@ const objectEvalWrapper = template.smart(`
   (1, OBJECT.REF)
 `);
 
-const regeneratorRuntimeWrapper = template.smart(`
+const regeneratorRuntimeWrapper = template.statement(`
   var regeneratorRuntime;
 `);
 
@@ -199,7 +199,17 @@ export function postProcessAST(ast: Node): Node {
 
       // Insert `regeneratorRuntime` global if it's used in the code.
       if (node.name === 'regeneratorRuntime') {
-        path.insertBefore(regeneratorRuntimeWrapper());
+        const program = path.findParent(
+          (parent) => parent.node.type === 'Program',
+        );
+
+        // We know that `program` is a Program node here, but this keeps
+        // TypeScript happy.
+        if (program?.node.type === 'Program') {
+          program?.node.body.unshift(regeneratorRuntimeWrapper());
+        }
+
+        // This stops it from inserting `regeneratorRuntime` multiple times.
         path.stop();
       }
     },
