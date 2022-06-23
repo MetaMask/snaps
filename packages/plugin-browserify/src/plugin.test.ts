@@ -29,7 +29,7 @@ describe('SnapsBrowserifyTransform', () => {
       stream.pipe(transform).pipe(concatStream);
     });
 
-    expect(result).toBe(`const foo = "bar";`);
+    expect(result).toBe(`const foo = 'bar';`);
   });
 
   it('works without options', async () => {
@@ -42,7 +42,7 @@ describe('SnapsBrowserifyTransform', () => {
       stream.pipe(transform).pipe(concatStream);
     });
 
-    expect(result).toBe(`const foo = "bar";`);
+    expect(result).toBe(`const foo = 'bar';`);
   });
 });
 
@@ -65,7 +65,7 @@ describe('plugin', () => {
       });
     });
 
-    expect(result).toContain(`const foo = "bar";`);
+    expect(result).toContain(`const foo = 'bar';`);
   });
 
   it('applies a transform', async () => {

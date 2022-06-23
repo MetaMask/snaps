@@ -3,7 +3,7 @@
 exports[`SnapsWebpackPlugin applies a transform 1`] = `
 "(() => {
   var __webpack_exports__ = {};
-  const foo = \\"bar\\";
+  const foo = 'bar';
 })();"
 `;
 
@@ -15,7 +15,7 @@ exports[`SnapsWebpackPlugin forwards the options 1`] = `
 
   /* baz qux */
 
-  const foo = \\"bar\\";
+  const foo = 'bar';
   /******/
 })();"
 `;
@@ -23,7 +23,7 @@ exports[`SnapsWebpackPlugin forwards the options 1`] = `
 exports[`SnapsWebpackPlugin processes files using Webpack 1`] = `
 "(() => {
   var __webpack_exports__ = {};
-  const foo = \\"bar\\";
+  const foo = 'bar';
 })();"
 `;
 
@@ -38,7 +38,7 @@ exports[`SnapsWebpackPlugin runs on the entire bundle 1`] = `
       \\"bar\\": () => bar
     });
 
-    const bar = \\"baz\\";
+    const bar = 'baz';
   }];
   var __webpack_module_cache__ = {};
 
@@ -77,13 +77,13 @@ exports[`SnapsWebpackPlugin runs on the entire bundle 1`] = `
 
   (() => {
     __webpack_require__.r = exports => {
-      if (typeof Symbol !== \\"undefined\\" && Symbol.toStringTag) {
+      if (typeof Symbol !== 'undefined' && Symbol.toStringTag) {
         Object.defineProperty(exports, Symbol.toStringTag, {
-          value: \\"Module\\"
+          value: 'Module'
         });
       }
 
-      Object.defineProperty(exports, \\"__esModule\\", {
+      Object.defineProperty(exports, '__esModule', {
         value: true
       });
     };
