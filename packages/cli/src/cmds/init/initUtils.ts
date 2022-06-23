@@ -299,9 +299,10 @@ export async function buildSnapManifest(
       );
     }
 
-    const src = packageJson.main || 'src/index.js';
-
-    return [manifest, { dist, outfileName, src }];
+    return [
+      manifest,
+      { dist, outfileName, src: packageJson.main || 'src/index.js' },
+    ];
   }
 }
 

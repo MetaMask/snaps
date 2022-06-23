@@ -64,7 +64,7 @@ function normalizeLinebreaks(str) {
 }
 
 /**
- * Retrieves source code of index.js and index.html files from
+ * Retrieves required template files from
  * specified repository.
  *
  * @param {string} tmpdir - Temporary directory used for handling template files.
@@ -77,6 +77,7 @@ async function getTemplateFromRepository(tmpdir, isTypeScript = false) {
     ? REPO_TEMPLATE_TYPESCRIPT_SNAP
     : REPO_TEMPLATE_SNAP;
 
+  // Clone the develop branch of the repository
   await execa(
     'git',
     [
