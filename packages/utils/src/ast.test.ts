@@ -23,7 +23,7 @@ describe('getAST', () => {
     const code = `const foo bar;`;
 
     expect(() => getAST(code)).toThrow(
-      `'Const declarations' require an initialization value.`,
+      `Failed to parse the provided code to an AST:`,
     );
   });
 });

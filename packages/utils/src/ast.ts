@@ -33,7 +33,7 @@ export function getAST(code: string, attachComment = true): Node {
 
   if (ast.errors?.length > 0) {
     throw new Error(
-      `Failed to parse the provided code to an AST: ${ast.errors.join('\n')}`,
+      `Failed to parse the provided code to an AST:\n${ast.errors.join('\n')}`,
     );
   }
 
@@ -156,7 +156,7 @@ export function postProcessAST(ast: Node): Node {
           evalWrapper({
             REF: node.callee,
             ARGS: node.arguments,
-          }) as any,
+          }) as Node,
         );
       }
     },
