@@ -40,7 +40,7 @@ export function getAST(code: string, attachComment = true): Node {
     // Strict mode isn't enabled by default, so we need to enable it here.
     strictMode: true,
 
-    // If this is disables, the AST does not include any comments. This is
+    // If this is disabled, the AST does not include any comments. This is
     // useful for performance reasons, and we use it for stripping comments.
     attachComment,
   });
