@@ -8,14 +8,33 @@ import { isDirectory, isFile, readJsonFile } from './fs';
  */
 const BASE_PATH = pathUtils.join(__dirname, '__TEST__fs-sandbox');
 
+/**
+ * Get a path relative to the base path directory.
+ *
+ * @param path - The path to get relative to the base path. If no path is
+ * provided, the base path will be returned.
+ * @returns The provided path relative to the base path.
+ */
 function getPath(path?: string) {
   return path ? pathUtils.join(BASE_PATH, path) : BASE_PATH;
 }
 
+/**
+ * Create a file with the given file name and path.
+ *
+ * @param fileName - The name of the file to create, relative to the base path.
+ * @param data - The data to write to the file.
+ */
 async function createFile(fileName: string, data: string) {
   await fs.writeFile(getPath(fileName), data);
 }
 
+/**
+ * Create a directory with the given path.
+ *
+ * @param dirName - The name of the directory to create, relative to the base
+ * path.
+ */
 async function createDir(dirName?: string) {
   await fs.mkdir(getPath(dirName));
 }
@@ -23,9 +42,14 @@ async function createDir(dirName?: string) {
 const isFileRegEx = /\w+\.\w+$/u;
 
 /**
- * Given any number of path strings, sequentially creates the given files and/or directories.
- * - File paths with a file name including its file extension, e.g. foo.txt
- * - Parent directories must be specified before their contents, or an error will be thrown
+ * Given any number of path strings, sequentially creates the given files and/or
+ * directories.
+ *
+ * - File paths with a file name including its file extension, e.g., `foo.txt`.
+ * - Parent directories must be specified before their contents, or an error
+ * will be thrown.
+ *
+ * @param paths - The paths to create.
  */
 async function createTestFiles(...paths: (string | [string, string])[]) {
   await createDir();

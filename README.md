@@ -1,12 +1,12 @@
 # snaps-skunkworks
 
-Private monorepo for experimental snaps dependencies.
+Monorepo for experimental snaps dependencies.
 
 ## Contributing
 
 ### Installing
 
-Run `yarn setup` in the project root directory.
+Run `yarn install` in the project root directory.
 Do **not** run any installation commands in individual workspaces.
 
 If you add a dependency with a lifecycle script, said dependency must be added to the `devDependencies` and `lavamoat.allow-scripts` config of the root `package.json` file.

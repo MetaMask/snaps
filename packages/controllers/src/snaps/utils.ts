@@ -8,7 +8,9 @@ import createGunzipStream from 'gunzip-maybe';
 import pump from 'pump';
 import { ReadableWebToNodeStream } from 'readable-web-to-node-stream';
 import {
+  gt as gtSemver,
   maxSatisfying as maxSatisfyingSemver,
+  satisfies as satifiesSemver,
   validRange as validRangeSemver,
 } from 'semver';
 import { extract as tarExtract } from 'tar-stream';
@@ -95,7 +97,9 @@ export type SnapFiles = {
  * Fetches a Snap from the public npm registry.
  *
  * @param packageName - The name of the package whose tarball to fetch.
- * @param versionRange - The SemVer range of the package to fetch, max satisfying will be fetched
+ * @param versionRange - The SemVer range of the package to fetch. The highest
+ * version satisfying the range will be fetched.
+ * @param registryUrl - The URL of the npm registry to fetch from.
  * @param fetchFunction - The fetch function to use. Defaults to the global
  * {@link fetch}. Useful for Node.js compatibility.
  * @returns A tuple of the Snap manifest object and the Snap source code.
@@ -167,8 +171,6 @@ export class ProgrammaticallyFixableSnapError extends Error {
  *
  * @param snapFiles - The object containing the expected Snap file contents,
  * if any.
- * @param packageName - The name of the package whose tarball to fetch.
- * @param version - The version of the package to fetch, or the string `latest`.
  * @param errorPrefix - The prefix of the error message.
  * @returns A tuple of the Snap manifest object and the Snap source code.
  */
@@ -238,10 +240,13 @@ export function validateNpmSnap(
  * Validates the fields of an npm Snap manifest that has already passed JSON
  * Schema validation.
  *
- * @param manifest - The npm Snap manifest to validate.
- * @param packageJson - The npm Snap's `package.json`.
- * @param sourceCode - The Snap's source code.
+ * @param snapFiles - The relevant snap files to validate.
+ * @param snapFiles.manifest - The npm Snap manifest to validate.
+ * @param snapFiles.packageJson - The npm Snap's `package.json`.
+ * @param snapFiles.sourceCode - The Snap's source code.
  * @param errorPrefix - The prefix for error messages.
+ * @returns A tuple containing the validated snap manifest, snap source code,
+ * and `package.json`.
  */
 export function validateNpmSnapManifest(
   { manifest, packageJson, sourceCode }: SnapFiles,
@@ -290,11 +295,70 @@ export function validateNpmSnapManifest(
 }
 
 /**
+ * Checks whether a SemVer version is greater than another.
+ *
+ * @param version1 - The left-hand version.
+ * @param version2 - The right-hand version.
+ * @returns `version1 > version2`.
+ */
+export function gtVersion(version1: string, version2: string): boolean {
+  return gtSemver(version1, version2, { includePrerelease: true });
+}
+
+/**
+ * Returns whether a SemVer version satisfies a SemVer range.
+ *
+ * @param version - The SemVer version to check.
+ * @param versionRange - The SemVer version range to check against.
+ * @returns Whether the version satisfied the version range.
+ */
+export function satifiesVersionRange(
+  version: string,
+  versionRange: string,
+): boolean {
+  return satifiesSemver(version, versionRange, {
+    includePrerelease: true,
+  });
+}
+
+/**
+ * Return the highest version in the list that satisfies the range, or `null` if
+ * none of them do. For the satisfaction check, pre-release versions will only
+ * be checked if no satisfactory non-prerelease version is found first.
+ *
+ * @param versions - The list of version to check.
+ * @param versionRange - The SemVer version range to check against.
+ * @returns The highest version in the list that satisfies the range,
+ * or `null` if none of them do.
+ */
+export function getTargetVersion(
+  versions: string[],
+  versionRange: string,
+): string | null {
+  const maxSatisfyingNonPreRelease = maxSatisfyingSemver(
+    versions,
+    versionRange,
+  );
+
+  // By default don't use pre-release versions
+  if (maxSatisfyingNonPreRelease) {
+    return maxSatisfyingNonPreRelease;
+  }
+
+  // If no satisfying release version is found by default, try pre-release versions
+  return maxSatisfyingSemver(versions, versionRange, {
+    includePrerelease: true,
+  });
+}
+
+/**
  * Fetches the tarball (`.tgz` file) of the specified package and version from
  * the public npm registry. Throws an error if fetching fails.
  *
  * @param packageName - The name of the package whose tarball to fetch.
- * @param versionRange - The semver range of the package to fetch, max satisfying will be fetched
+ * @param versionRange - The SemVer range of the package to fetch. The highest
+ * version satisfying the range will be fetched.
+ * @param registryUrl - The URL of the npm registry to fetch the tarball from.
  * @param fetchFunction - The fetch function to use. Defaults to the global
  * {@link fetch}. Useful for Node.js compatibility.
  * @returns A tuple of the {@link Response} for the package tarball and the
@@ -316,7 +380,7 @@ async function fetchNpmTarball(
     );
   }
 
-  const targetVersion = maxSatisfyingSemver(
+  const targetVersion = getTargetVersion(
     Object.keys((packageMetadata as any)?.versions ?? {}),
     versionRange,
   );
@@ -431,14 +495,17 @@ function createTarballExtractionStream(
     return entryStream.resume();
   });
 
-  // When we've read the entire tarball, attempt to grab the bundle file
+  // Once we've read the entire tarball, attempt to grab the bundle file
   // contents from the .js file cache.
-  extractStream.on('finish', () => {
+  extractStream.once('finish', () => {
     if (isObject(snapFiles.manifest)) {
       /* istanbul ignore next: optional chaining */
-      const { filePath: bundlePath, iconPath } =
+      const { filePath: _bundlePath, iconPath: _iconPath } =
         (snapFiles.manifest as unknown as Partial<SnapManifest>).source
           ?.location?.npm ?? {};
+
+      const bundlePath = stripDotSlash(_bundlePath);
+      const iconPath = stripDotSlash(_iconPath);
 
       if (bundlePath) {
         snapFiles.sourceCode = jsFileCache.get(bundlePath)?.toString('utf8');
@@ -455,11 +522,12 @@ function createTarballExtractionStream(
 }
 
 /**
- * Checks whether the source.shasum property of the specified Snap manifest
- * matches the shasum of the specified snap source code string.
+ * Checks whether the `source.shasum` property of a Snap manifest matches the
+ * shasum of a snap source code string.
  *
  * @param manifest - The manifest whose shasum to validate.
  * @param sourceCode - The source code of the snap.
+ * @param errorMessage - The error message to throw if validation fails.
  */
 export function validateSnapShasum(
   manifest: SnapManifest,
@@ -480,8 +548,8 @@ export function validateSnapShasum(
  * We can't use the native Web {@link ReadableStream} directly because the
  * other stream libraries we use expect Node.js streams.
  *
- * @param response - The response whose body stream to get.
- * @returns The response body stream, as a Node.js Readable stream.
+ * @param stream - The stream to convert.
+ * @returns The given stream as a Node.js Readable stream.
  */
 function getNodeStream(stream: ReadableStream): Readable {
   if (typeof stream.getReader !== 'function') {
@@ -492,6 +560,8 @@ function getNodeStream(stream: ReadableStream): Readable {
 }
 
 /**
+ * Checks whether a URL is valid.
+ *
  * @param maybeUrl - The string to check.
  * @returns Whether the specified string is a valid URL.
  */
@@ -504,7 +574,20 @@ function isValidUrl(maybeUrl: string): maybeUrl is string {
 }
 
 /**
+ * Strips the leading `./` from a string, or does nothing if no string is
+ * provided.
+ *
+ * @param pathString - The path string to normalize.
+ * @returns The specified path without a `./` prefix, or `undefined` if no
+ * string was provided.
+ */
+export function stripDotSlash(pathString?: string): string | undefined {
+  return pathString?.replace(/^\.\//u, '');
+}
+
+/**
  * Parse a version received by some subject attempting to access a snap.
+ *
  * @param version - The received version value.
  * @returns `*` if the version is `undefined` or `latest", otherwise returns
  * the specified version.
@@ -517,24 +600,25 @@ export function resolveVersion(version?: Json): Json {
 }
 
 /**
- * Checks whether a version range is valid.
+ * Checks whether a SemVer version range is valid.
  *
- * @param versionRange - A potential version range
- * @returns True if the version range is valid
+ * @param versionRange - A potential version range.
+ * @returns `true` if the version range is valid, and `false` otherwise.
  */
 export function isValidSnapVersionRange(
   versionRange: unknown,
 ): versionRange is string {
   return Boolean(
-    typeof versionRange === 'string' && validRangeSemver(versionRange) !== null,
+    typeof versionRange === 'string' &&
+      validRangeSemver(versionRange, { includePrerelease: true }) !== null,
   );
 }
 
 /**
- * Gets the corresponding snap prefix from a snap id
+ * Extracts the snap prefix from a snap ID.
  *
- * @param snapId - Snap id
- * @returns The snap prefix from a snap id, i.e: "npm:"
+ * @param snapId - The snap ID to extract the prefix from.
+ * @returns The snap prefix from a snap id, e.g. `npm:`.
  */
 export function getSnapPrefix(snapId: string): SnapIdPrefixes {
   const prefix = Object.values(SnapIdPrefixes).find((p) =>
@@ -549,10 +633,10 @@ export function getSnapPrefix(snapId: string): SnapIdPrefixes {
 export const SNAP_PREFIX = 'wallet_snap_';
 
 /**
- * Gets permission name of a snap given its snap id
+ * Computes the permission name of a snap from its snap ID.
  *
- * @param snapId - Snap id
- * @returns The permission name
+ * @param snapId - The snap ID.
+ * @returns The permission name corresponding to the given snap ID.
  */
 export function getSnapPermissionName(snapId: string): string {
   return SNAP_PREFIX + snapId;

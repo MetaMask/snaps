@@ -21,7 +21,7 @@ type LongRunningEndowmentSpecification = ValidPermissionSpecification<{
  * during snap lifecycle management. Essentially, it allows a snap to take an
  * infinite amount of time to process a request.
  *
- * @param _builderOptions - optional specification builder options.
+ * @param _builderOptions - Optional specification builder options.
  * @returns The specification for the long-running endowment.
  */
 const specificationBuilder: PermissionSpecificationBuilder<

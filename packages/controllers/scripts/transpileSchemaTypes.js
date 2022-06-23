@@ -10,6 +10,9 @@ const FILE_PREFIX =
 
 main();
 
+/**
+ * Main function of the script.
+ */
 function main() {
   [
     [snapManifestSchema, 'SnapManifest'],
@@ -19,6 +22,13 @@ function main() {
   });
 }
 
+/**
+ * Transpiles a given JSON schema to TypeScript.
+ *
+ * @param {object} schema - The schema JSON.
+ * @param {string} primaryExportName - The name of the primary export for the schema.
+ * @returns {string} The TypeScript source code transpiled from the schema.
+ */
 function transpileSchema(schema, primaryExportName) {
   return FILE_PREFIX.concat(
     new Transpiler(schema)
@@ -37,6 +47,12 @@ function transpileSchema(schema, primaryExportName) {
   );
 }
 
+/**
+ * Writes a transpiled schema to disk.
+ *
+ * @param {string} typeSource - The TypeScript source code resulting from the transpilation.
+ * @param {string} primaryExportName - The name of the primary export for the schema.
+ */
 function writeSchema(typeSource, primaryExportName) {
   writeFileSync(
     path.resolve(

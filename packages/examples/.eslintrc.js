@@ -15,6 +15,8 @@ module.exports = {
         'no-alert': 'off',
         'import/no-unresolved': 'off',
         'node/no-unpublished-require': 'off',
+        'no-shadow': ['error', { allow: ['origin'] }],
+        '@typescript-eslint/no-shadow': ['error', { allow: ['origin'] }],
       },
     },
   ],

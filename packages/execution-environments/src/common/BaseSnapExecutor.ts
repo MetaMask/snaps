@@ -11,16 +11,28 @@ import {
   JsonRpcRequest,
 } from '../__GENERATED__/openrpc';
 import { isJsonRpcRequest } from '../__GENERATED__/openrpc.guard';
-import { rpcMethods, RpcMethodsMapping } from './rpcMethods';
-import { getSortedParams } from './sortParams';
 import { createEndowments } from './endowments';
 import { rootRealmGlobal } from './globalObject';
-import { constructError } from './utils';
+import {
+  getCommandMethodImplementations,
+  CommandMethodsMapping,
+} from './commands';
+import { sortParamKeys } from './sortParams';
 
-type SnapRpcHandler = (
-  origin: string,
-  request: JsonRpcRequest,
-) => Promise<unknown>;
+type OnRpcRequestHandler = (args: {
+  origin: string;
+  request: JsonRpcRequest;
+}) => Promise<unknown>;
+
+type EvaluationData = {
+  stop: () => void;
+};
+
+type SnapData = {
+  exports: { onRpcRequest?: OnRpcRequestHandler };
+  runningEvaluations: Set<EvaluationData>;
+  idleTeardown: () => Promise<void>;
+};
 
 const fallbackError = {
   code: errorCodes.rpc.internal,
@@ -28,34 +40,38 @@ const fallbackError = {
 };
 
 export class BaseSnapExecutor {
-  private snapRpcHandlers: Map<string, SnapRpcHandler>;
+  private snapData: Map<string, SnapData>;
 
   private commandStream: Duplex;
 
   private rpcStream: Duplex;
 
-  private methods: RpcMethodsMapping;
+  private methods: CommandMethodsMapping;
 
   private snapErrorHandler?: (event: ErrorEvent) => void;
 
   private snapPromiseErrorHandler?: (event: PromiseRejectionEvent) => void;
 
-  private endowmentTeardown?: () => void;
-
   protected constructor(commandStream: Duplex, rpcStream: Duplex) {
-    this.snapRpcHandlers = new Map();
+    this.snapData = new Map();
     this.commandStream = commandStream;
     this.commandStream.on('data', this.onCommandRequest.bind(this));
     this.rpcStream = rpcStream;
 
-    this.methods = rpcMethods(
+    this.methods = getCommandMethodImplementations(
       this.startSnap.bind(this),
       (target, origin, request) => {
-        const handler = this.snapRpcHandlers.get(target);
-        if (!handler) {
-          throw new Error(`No RPC handler registered for snap "${target}"`);
+        const data = this.snapData.get(target);
+        if (data?.exports?.onRpcRequest === undefined) {
+          throw new Error(
+            `No onRpcRequest handler exported for snap "${target}`,
+          );
         }
-        return handler(origin, request);
+        // We're capturing the handler in case someone modifies the data object before the call
+        const handler = data.exports.onRpcRequest;
+        return this.executeInSnapContext(target, () =>
+          handler({ origin, request }),
+        );
       },
       this.onTerminate.bind(this),
     );
@@ -120,7 +136,7 @@ export class BaseSnapExecutor {
     }
 
     // support params by-name and by-position
-    const paramsAsArray = getSortedParams(methodObject, params);
+    const paramsAsArray = sortParamKeys(methodObject, params);
 
     try {
       const result = await (this.methods as any)[method](...paramsAsArray);
@@ -150,20 +166,18 @@ export class BaseSnapExecutor {
   }
 
   /**
-   * Attempts to evaluate a snap in SES.
-   * Generates the APIs for the snap. May throw on error.
+   * Attempts to evaluate a snap in SES. Generates APIs for the snap. May throw
+   * on errors.
    *
-   * @param {string} snapName - The name of the snap.
-   * @param {Array<string>} approvedPermissions - The snap's approved permissions.
-   * Should always be a value returned from the permissions controller.
-   * @param {string} sourceCode - The source code of the snap, in IIFE format.
-   * @param {Array} endowments - An array of the names of the endowments.
+   * @param snapName - The name of the snap.
+   * @param sourceCode - The source code of the snap, in IIFE format.
+   * @param _endowments - An array of the names of the endowments.
    */
-  protected startSnap(
+  protected async startSnap(
     snapName: string,
     sourceCode: string,
     _endowments?: Endowments,
-  ) {
+  ): Promise<void> {
     console.log(`starting snap '${snapName}' in worker`);
     if (this.snapPromiseErrorHandler) {
       rootRealmGlobal.removeEventListener(
@@ -186,7 +200,9 @@ export class BaseSnapExecutor {
       });
     };
 
-    const wallet = this.createSnapProvider(snapName);
+    const wallet = this.createSnapProvider();
+    // We specifically use any type because the Snap can modify the object any way they want
+    const snapModule: any = { exports: {} };
 
     try {
       const { endowments, teardown: endowmentTeardown } = createEndowments(
@@ -194,7 +210,13 @@ export class BaseSnapExecutor {
         _endowments,
       );
 
-      this.endowmentTeardown = endowmentTeardown;
+      // !!! Ensure that this is the only place the data is being set.
+      // Other methods access the object value and mutate its properties.
+      this.snapData.set(snapName, {
+        idleTeardown: endowmentTeardown,
+        runningEvaluations: new Set(),
+        exports: {},
+      });
 
       rootRealmGlobal.addEventListener(
         'unhandledrejection',
@@ -204,11 +226,16 @@ export class BaseSnapExecutor {
 
       const compartment = new Compartment({
         ...endowments,
+        module: snapModule,
+        exports: snapModule.exports,
         window: { ...endowments },
         self: { ...endowments },
       });
 
-      compartment.evaluate(sourceCode);
+      await this.executeInSnapContext(snapName, () => {
+        compartment.evaluate(sourceCode);
+        this.registerSnapExports(snapName, snapModule);
+      });
     } catch (err) {
       this.removeSnap(snapName);
       throw new Error(
@@ -217,39 +244,107 @@ export class BaseSnapExecutor {
     }
   }
 
+  /**
+   * Cancels all running evaluations of all snaps and clears all snap data.
+   * NOTE:** Should only be called in response to the `terminate` RPC command.
+   */
   protected onTerminate() {
-    if (this.endowmentTeardown) {
-      this.endowmentTeardown();
+    // `stop()` tears down snap endowments.
+    // Teardown will also be run for each snap as soon as there are
+    // no more running evaluations for that snap.
+    this.snapData.forEach((data) =>
+      data.runningEvaluations.forEach((evaluation) => evaluation.stop()),
+    );
+    this.snapData.clear();
+  }
+
+  private registerSnapExports(snapName: string, snapModule: any) {
+    if (typeof snapModule?.exports?.onRpcRequest === 'function') {
+      const data = this.snapData.get(snapName);
+      // Somebody deleted the Snap before we could register
+      if (data !== undefined) {
+        console.log(
+          'Worker: Registering RPC message handler',
+          snapModule.exports.onRpcRequest,
+        );
+
+        data.exports = {
+          ...data.exports,
+          onRpcRequest: snapModule.exports.onRpcRequest,
+        };
+      }
     }
   }
 
   /**
-   * Sets up the given snap's RPC message handler, creates a hardened
-   * snap provider object (i.e. globalThis.wallet), and returns it.
+   * Instantiates a snap provider object (i.e. `globalThis.wallet`).
+   *
+   * @returns The snap provider object.
    */
-  private createSnapProvider(snapName: string): SnapProvider {
-    const snapProvider = new MetaMaskInpageProvider(this.rpcStream, {
+  private createSnapProvider(): SnapProvider {
+    return new MetaMaskInpageProvider(this.rpcStream, {
       shouldSendMetadata: false,
-    }) as unknown as Partial<SnapProvider>;
-
-    snapProvider.registerRpcMessageHandler = (func: SnapRpcHandler) => {
-      console.log('Worker: Registering RPC message handler', func);
-      if (this.snapRpcHandlers.has(snapName)) {
-        throw new Error('RPC handler already registered.');
-      }
-      this.snapRpcHandlers.set(snapName, func);
-    };
-
-    // TODO: harden throws an error. Why?
-    // return harden(snapProvider as SnapProvider);
-    return snapProvider as SnapProvider;
+    });
   }
 
   /**
-   * Removes the snap with the given name. Specifically:
-   * - Deletes the snap's RPC handler, if any
+   * Removes the snap with the given name.
+   *
+   * @param snapName - The name of the snap to remove.
    */
   private removeSnap(snapName: string): void {
-    this.snapRpcHandlers.delete(snapName);
+    this.snapData.delete(snapName);
+  }
+
+  /**
+   * Calls the specified executor function in the context of the specified snap.
+   * Essentially, this means that the operation performed by the executor is
+   * counted as an evaluation of the specified snap. When the count of running
+   * evaluations of a snap reaches zero, its endowments are torn down.
+   *
+   * @param snapName - The name of the snap whose context to execute in.
+   * @param executor - The function that will be executed in the snap's context.
+   * @returns The executor's return value.
+   * @template Result - The return value of the executor.
+   */
+  private async executeInSnapContext<Result>(
+    snapName: string,
+    executor: () => Promise<Result> | Result,
+  ): Promise<Result> {
+    const data = this.snapData.get(snapName);
+    if (data === undefined) {
+      throw new Error(
+        `Tried to execute in context of unknown snap: "${snapName}".`,
+      );
+    }
+
+    let stop: () => void;
+    const stopPromise = new Promise<never>(
+      (_, reject) =>
+        (stop = () =>
+          reject(
+            // TODO(rekmarks): Specify / standardize error code for this case.
+            ethErrors.rpc.internal(
+              `The snap "${snapName}" has been terminated during execution.`,
+            ),
+          )),
+    );
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const evaluationData = { stop: stop! };
+
+    try {
+      data.runningEvaluations.add(evaluationData);
+      // Notice that we have to await this executor.
+      // If we didn't, we would decrease the amount of running evaluations
+      // before the promise actually resolves
+      return await Promise.race([executor(), stopPromise]);
+    } finally {
+      data.runningEvaluations.delete(evaluationData);
+
+      if (data.runningEvaluations.size === 0) {
+        await data.idleTeardown();
+      }
+    }
   }
 }

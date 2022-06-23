@@ -46,8 +46,14 @@ type ManageStateSpecification = ValidPermissionSpecification<{
 }>;
 
 /**
- * `snap_manageState` let's the Snap store and manage some of its state on
+ * The specification builder for the `snap_manageState` permission.
+ * `snap_manageState` lets the Snap store and manage some of its state on
  * your device.
+ *
+ * @param options - The specification builder options.
+ * @param options.allowedCaveats - The optional allowed caveats for the permission.
+ * @param options.methodHooks - The RPC method hooks needed by the method implementation.
+ * @returns The specification for the `snap_manageState` permission.
  */
 const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.RestrictedMethod,
@@ -81,6 +87,16 @@ export enum ManageStateOperation {
   updateState = 'update',
 }
 
+/**
+ * Builds the method implementation for `snap_manageState`.
+ *
+ * @param hooks - The RPC method hooks.
+ * @param hooks.clearSnapState - A function that clears the state stored for a snap.
+ * @param hooks.getSnapState - A function that fetches the persisted decrypted state for a snap.
+ * @param hooks.updateSnapState - A function that updates the state stored for a snap.
+ * @returns The method implementation which either returns `null` for a successful state update/deletion or returns the decrypted state.
+ * @throws If the params are invalid.
+ */
 function getManageStateImplementation({
   clearSnapState,
   getSnapState,

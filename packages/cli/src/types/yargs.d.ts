@@ -21,6 +21,7 @@ type YargsArgs = {
   src: string;
   eval: boolean;
   outfileName: string;
+  serve: boolean;
 } & OptionalArguments;
 
 type Option = {

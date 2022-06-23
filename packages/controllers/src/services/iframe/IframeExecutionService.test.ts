@@ -1,26 +1,27 @@
 import { ControllerMessenger } from '@metamask/controllers';
 import { ErrorMessageEvent } from '@metamask/snap-types';
 import { IframeExecutionService } from './IframeExecutionService';
-import fixJSDOMPostMessageEventSource from './testHelpers/fixJSDOMPostMessageEventSource';
-import { stop as stopServer, start as startServer } from './testHelpers/server';
+import {
+  PORT as serverPort,
+  stop as stopServer,
+  start as startServer,
+} from './test/server';
 
 // We do not use our default endowments in these tests because JSDOM doesn't
 // implement all of them.
 
-const iframeUrl = new URL('http://localhost:6363');
+const iframeUrl = new URL(`http://localhost:${serverPort}`);
 
 describe('IframeExecutionService', () => {
-  // The tests start running before the server is ready if we dont use the done callback.
+  // The tests start running before the server is ready if we don't use the done callback.
   // eslint-disable-next-line jest/no-done-callback
-  beforeAll(async (done) => {
-    await startServer();
-    done();
+  beforeAll((done) => {
+    startServer().then(done).catch(done.fail);
   });
 
   // eslint-disable-next-line jest/no-done-callback
-  afterAll(async (done) => {
-    await stopServer();
-    done();
+  afterAll((done) => {
+    stopServer().then(done).catch(done.fail);
   });
 
   it('can boot', async () => {
@@ -63,9 +64,6 @@ describe('IframeExecutionService', () => {
       },
       iframeUrl,
     });
-    const removeListener = fixJSDOMPostMessageEventSource(
-      iframeExecutionService,
-    );
     const response = await iframeExecutionService.executeSnap({
       snapId: 'TestSnap',
       sourceCode: `
@@ -75,7 +73,6 @@ describe('IframeExecutionService', () => {
     });
     expect(response).toStrictEqual('OK');
     await iframeExecutionService.terminateAllSnaps();
-    removeListener();
   });
 
   it('can handle a crashed snap', async () => {
@@ -97,9 +94,6 @@ describe('IframeExecutionService', () => {
       },
       iframeUrl,
     });
-    const removeListener = fixJSDOMPostMessageEventSource(
-      iframeExecutionService,
-    );
     const action = async () => {
       await iframeExecutionService.executeSnap({
         snapId: 'TestSnap',
@@ -114,6 +108,5 @@ describe('IframeExecutionService', () => {
       /Error while running snap 'TestSnap'/u,
     );
     await iframeExecutionService.terminateAllSnaps();
-    removeListener();
   });
 });

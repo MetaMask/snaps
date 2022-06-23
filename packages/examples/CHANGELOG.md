@@ -6,6 +6,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.16.0]
+### Added
+- Add Browserify Snap example ([#478](https://github.com/MetaMask/snaps-skunkworks/pull/478))
+- Add CLI as dependency to examples ([#528](https://github.com/MetaMask/snaps-skunkworks/pull/528))
+
+### Changed
+- **BREAKING:** Update examples to use CommonJS exported `onRpcRequest` and named parameters ([#481](https://github.com/MetaMask/snaps-skunkworks/pull/481), [#533](https://github.com/MetaMask/snaps-skunkworks/pull/533), [#538](https://github.com/MetaMask/snaps-skunkworks/pull/538), [#541](https://github.com/MetaMask/snaps-skunkworks/pull/541))
+- Update TypeScript example to use `OnRpcRequestHandler` ([#531](https://github.com/MetaMask/snaps-skunkworks/pull/531), [#533](https://github.com/MetaMask/snaps-skunkworks/pull/533), [#538](https://github.com/MetaMask/snaps-skunkworks/pull/538))
+- Update TypeScript example to use multiple files ([#527](https://github.com/MetaMask/snaps-skunkworks/pull/527))
+
+## [0.15.0]
+### Added
+- Add Rollup Snap example ([#472](https://github.com/MetaMask/snaps-skunkworks/pull/472))
+- Add Webpack Snap example ([#462](https://github.com/MetaMask/snaps-skunkworks/pull/462))
+- Add TypeScript Snap example ([#443](https://github.com/MetaMask/snaps-skunkworks/pull/443))
+
 ## [0.14.0]
 ### Changed
 - No changes this release.
@@ -124,7 +140,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - This package was previously a subset of [`snaps-cli`](https://github.com/MetaMask/snaps-cli/tree/main/examples), which has been renamed to [`@metamask/snaps-cli`](https://npmjs.com/package/@metamask/snaps-cli).
   - Some examples have been deleted because they were outdated.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.14.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.16.0...HEAD
+[0.16.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.15.0...v0.16.0
+[0.15.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.14.0...v0.15.0
 [0.14.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.13.0...v0.14.0
 [0.13.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.11.1...v0.12.0

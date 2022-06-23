@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.16.0]
+### Added
+- Add `OnRpcRequestHandler` type ([#534](https://github.com/MetaMask/snaps-skunkworks/pull/534), [#531](https://github.com/MetaMask/snaps-skunkworks/pull/531), [#538](https://github.com/MetaMask/snaps-skunkworks/pull/538), [#533](https://github.com/MetaMask/snaps-skunkworks/pull/533))
+
+### Changed
+- **BREAKING:** Change `SnapRpcHandler` type to reflect new function signature ([#534](https://github.com/MetaMask/snaps-skunkworks/pull/534), [#533](https://github.com/MetaMask/snaps-skunkworks/pull/533), [#481](https://github.com/MetaMask/snaps-skunkworks/pull/481))
+
+### Removed
+- **BREAKING:** Remove `wallet.registerRpcMessageHandler` [#481](https://github.com/MetaMask/snaps-skunkworks/pull/481)
+
+## [0.15.0]
+### Added
+- Add type for `wallet` global ([#443](https://github.com/MetaMask/snaps-skunkworks/pull/443))
+
 ## [0.14.0]
 ### Changed
 - No changes this release.
@@ -125,7 +139,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.14.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.16.0...HEAD
+[0.16.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.15.0...v0.16.0
+[0.15.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.14.0...v0.15.0
 [0.14.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.13.0...v0.14.0
 [0.13.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.11.1...v0.12.0

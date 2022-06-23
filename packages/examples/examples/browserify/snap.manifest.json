@@ -1,0 +1,23 @@
+{
+  "version": "0.0.0",
+  "description": "An example Snap built using TypeScript and Browserify",
+  "proposedName": "browserify-snap",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps-skunkworks.git"
+  },
+  "source": {
+    "shasum": "Mcq27as/wyqlrP7yvQKV6V17IFvcj15x1ibBkG4QEnE=",
+    "location": {
+      "npm": {
+        "filePath": "dist/snap.js",
+        "packageName": "browserify-snap",
+        "registry": "https://registry.npmjs.org"
+      }
+    }
+  },
+  "initialPermissions": {
+    "snap_notify": {}
+  },
+  "manifestVersion": "0.1"
+}

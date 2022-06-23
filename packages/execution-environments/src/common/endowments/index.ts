@@ -2,11 +2,20 @@ import { SnapProvider } from '@metamask/snap-types';
 import { hasProperty } from '@metamask/utils';
 import { rootRealmGlobal } from '../globalObject';
 import buffer from './buffer';
-import timeout from './timeout';
 import interval from './interval';
+import network from './network';
+import timeout from './timeout';
 
 type EndowmentFactoryResult = {
-  teardownFunction?: () => void;
+  /**
+   * A function that performs any necessary teardown when the snap becomes idle.
+   *
+   * NOTE:** The endowments are not reconstructed if the snap is re-invoked
+   * before being terminated, so the teardown operation must not render the
+   * endowments unusable; it should simply restore the endowments to their
+   * original state.
+   */
+  teardownFunction?: () => Promise<void> | void;
   [key: string]: unknown;
 };
 
@@ -15,7 +24,7 @@ type EndowmentFactoryResult = {
  * the same factory function, but we only call each factory once for each snap.
  * See {@link createEndowments} for details.
  */
-const endowmentFactories = [buffer, timeout, interval].reduce(
+const endowmentFactories = [buffer, timeout, interval, network].reduce(
   (factories, builder) => {
     builder.names.forEach((name) => {
       factories.set(name, builder.factory);
@@ -39,7 +48,7 @@ const endowmentFactories = [buffer, timeout, interval].reduce(
 export function createEndowments(
   wallet: SnapProvider,
   endowments: string[] = [],
-): { endowments: Record<string, unknown>; teardown: () => void } {
+): { endowments: Record<string, unknown>; teardown: () => Promise<void> } {
   const attenuatedEndowments: Record<string, unknown> = {};
 
   // TODO: All endowments should be hardened to prevent covert communication
@@ -90,8 +99,11 @@ export function createEndowments(
     },
   );
 
-  const teardown = () =>
-    result.teardowns.forEach((teardownFunction) => teardownFunction());
+  const teardown = async () => {
+    await Promise.all(
+      result.teardowns.map((teardownFunction) => teardownFunction()),
+    );
+  };
   return { endowments: result.allEndowments, teardown };
 }
 

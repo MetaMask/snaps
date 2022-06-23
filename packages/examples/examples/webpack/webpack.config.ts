@@ -1,9 +1,9 @@
 import { resolve } from 'path';
-import { Configuration } from 'webpack';
+import SnapsWebpackPlugin from '@metamask/snaps-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import { Configuration } from 'webpack';
 import { merge } from 'webpack-merge';
 import WebpackBarPlugin from 'webpackbar';
-import SnapsWebpackPlugin from '@metamask/snaps-webpack-plugin';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const HookShellScriptWebpackPlugin = require('hook-shell-script-webpack-plugin');
@@ -45,6 +45,10 @@ const common: Configuration = {
 const snapConfig: Configuration = merge(common, {
   entry: {
     snap: './src/snap.ts',
+  },
+  output: {
+    // Required so that webpack doesn't mangle our `exports` variable
+    libraryTarget: 'commonjs',
   },
   plugins: [
     new SnapsWebpackPlugin(),

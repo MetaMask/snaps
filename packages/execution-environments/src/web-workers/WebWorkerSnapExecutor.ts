@@ -5,6 +5,13 @@ import { BaseSnapExecutor } from '../common/BaseSnapExecutor';
 import { SNAP_STREAM_NAMES } from '../common/enums';
 
 export class WebWorkerSnapExecutor extends BaseSnapExecutor {
+  /**
+   * Initialize the WebWorkerSnapExecutor. This creates a post message stream
+   * from and to the parent, for two-way communication with the web worker.
+   *
+   * @returns An instance of `WebWorkerSnapExecutor`, with the initialized post
+   * message streams.
+   */
   static initialize() {
     console.log('Worker: Connecting to parent.');
 

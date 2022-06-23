@@ -7,20 +7,34 @@ const NETWORK_APIS = ['fetch', 'WebSocket'];
 export const ALL_APIS: string[] = [...DEFAULT_ENDOWMENTS, ...NETWORK_APIS];
 
 type MockSnapProvider = EventEmitter & {
-  registerRpcMessageHandler: () => any;
   request: () => Promise<any>;
 };
 
+/**
+ * Get a mock snap provider, that always returns `true` for requests.
+ *
+ * @returns A mocked snap provider.
+ */
 function getMockSnapProvider(): MockSnapProvider {
   const mockProvider = new EventEmitter() as Partial<MockSnapProvider>;
-  mockProvider.registerRpcMessageHandler = () => true;
   mockProvider.request = async () => true;
   return mockProvider as MockSnapProvider;
 }
 
+/**
+ * Check if a value is a constructor.
+ *
+ * @param value - The value to check.
+ * @returns `true` if the value is a constructor, or `false` otherwise.
+ */
 export const isConstructor = (value: any) =>
   Boolean(typeof value?.prototype?.constructor?.name === 'string');
 
+/**
+ * A function that always returns `true`.
+ *
+ * @returns `true`.
+ */
 const mockFunction = () => true;
 class MockClass {}
 
@@ -33,6 +47,13 @@ const handler = {
   },
 };
 
+/**
+ * Generate a mock class for a given value. The value is wrapped in a Proxy, and
+ * all methods are replaced with a mock function.
+ *
+ * @param value - The value to mock.
+ * @returns A mock class.
+ */
 const generateMockClass = (value: any) => {
   return new Proxy(value, handler);
 };
@@ -44,6 +65,14 @@ const mockWindow = {
   SubtleCrypto: MockClass,
 };
 
+/**
+ * Generate a mock endowment for a certain class or function on the `globalThis`
+ * object.
+ *
+ * @param key - The key to generate the mock endowment for.
+ * @returns A mocked class or function. If the key is part of the default
+ * endowments, the original value is returned.
+ */
 const generateMockEndowment = (key: string) => {
   const globalValue = (globalThis as any)[key];
 
@@ -66,6 +95,11 @@ const generateMockEndowment = (key: string) => {
   return globalOrMocked;
 };
 
+/**
+ * Generate mock endowments for all the APIs as defined in {@link ALL_APIS}.
+ *
+ * @returns A map of endowments.
+ */
 export const generateMockEndowments = () => {
   return ALL_APIS.reduce<Record<string, any>>(
     (acc, cur) => ({ ...acc, [cur]: generateMockEndowment(cur) }),

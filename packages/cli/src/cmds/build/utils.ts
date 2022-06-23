@@ -46,8 +46,10 @@ export async function writeBundleFile({
 }
 
 /**
- * Processes dependencies and updates argv with an options object
- * @param argv
+ * Processes dependencies and updates `argv` with an options object.
+ *
+ * @param argv - The Yargs arguments object.
+ * @returns An object with options that can be passed to Babelify.
  */
 export function processDependencies(argv: YargsArgs) {
   const { depsToTranspile, transpilationMode } = argv;
@@ -62,9 +64,10 @@ export function processDependencies(argv: YargsArgs) {
 }
 
 /**
- * Processes a string of space delimited dependencies into one regex string
- * @param dependencies
- * @returns a regexp string
+ * Processes a string of space delimited dependencies into one RegExp string.
+ *
+ * @param dependencies - An array of dependencies to add to the RegExp.
+ * @returns A RegExp object.
  */
 export function getDependencyRegExp(dependencies: string[]): RegExp | null {
   let regexp: string | null = null;
@@ -79,9 +82,10 @@ export function getDependencyRegExp(dependencies: string[]): RegExp | null {
 }
 
 /**
- * Helper function remove any leading and trailing slashes from dependency list
- * @param dependencies
- * @returns an array of sanitized paths
+ * Helper function remove any leading and trailing slashes from dependency list.
+ *
+ * @param dependencies - An array of dependencies to sanitize.
+ * @returns An array of sanitized paths.
  */
 export function sanitizeDependencyPaths(dependencies: string[]): string[] {
   return dependencies.map((dependency) => {
@@ -89,6 +93,15 @@ export function sanitizeDependencyPaths(dependencies: string[]): string[] {
   });
 }
 
+/**
+ * Check the Yargs argv object, to see if the provided options are valid. The
+ * options are invalid if both `depsToTranspile` are provided, and
+ * `transpilationMode` is not set to `localAndDeps`.
+ *
+ * @param argv - The Yargs arguments object.
+ * @throws If the `depsToTranspile` is set, and `transpilationMode` is not set
+ * to `localAndDeps`.
+ */
 export function processInvalidTranspilation(argv: YargsArgs) {
   if (
     argv.depsToTranspile &&

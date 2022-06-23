@@ -31,6 +31,7 @@ const ManifestSortOrder: Record<keyof SnapManifest, number> = {
  * fails.
  *
  * @param argv - The Yargs `argv` object.
+ * @param argv.writeManifest - Whether to write the fixed manifest to disk.
  */
 export async function manifestHandler({
   writeManifest,
@@ -146,6 +147,11 @@ export async function manifestHandler({
     console.log(`Manifest Success: Validated snap.manifest.json!`);
   }
 
+  /**
+   * Logs a manifest warning, if `suppressWarnings` is not enabled.
+   *
+   * @param message - The message to log.
+   */
   function logManifestWarning(message: string) {
     if (!global.snaps.suppressWarnings) {
       hasWarnings = true;

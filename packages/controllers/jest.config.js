@@ -8,14 +8,17 @@ module.exports = {
   coveragePathIgnorePatterns: ['/node_modules/', '/mocks/', '/test/'],
   coverageThreshold: {
     global: {
-      branches: 63.96,
-      functions: 82.7,
-      lines: 82.4,
-      statements: 82.44,
+      branches: 67.02,
+      functions: 83.25,
+      lines: 84,
+      statements: 84.03,
     },
   },
-  silent: true,
-  testTimeout: 5000,
+  globals: {
+    'ts-jest': {
+      tsconfig: 'tsconfig.test.json',
+    },
+  },
   projects: [
     {
       displayName: 'runner: electron',
@@ -38,4 +41,6 @@ module.exports = {
       testRegex: ['\\.test\\.(ts|js)$'],
     },
   ],
+  silent: true,
+  testTimeout: 5000,
 };

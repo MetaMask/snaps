@@ -17,6 +17,13 @@ export = {
   handler: (argv: YargsArgs) => init(argv),
 };
 
+/**
+ * The main entrypoint for the init command. This calls the init handler to
+ * initialize the snap package, builds the snap, and then updates the manifest
+ * with the shasum of the built snap.
+ *
+ * @param argv - The Yargs arguments object.
+ */
 async function init(argv: YargsArgs): Promise<void> {
   console.log();
   const newArgs = await initHandler(argv);

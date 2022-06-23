@@ -29,32 +29,34 @@ import {
   Json,
   timeSince,
 } from '@metamask/utils';
+import passworder from '@metamask/browser-passworder';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
-import { gt as gtSemver, satisfies as satisfiesSemver } from 'semver';
 import { assertExhaustive } from '..';
 import {
   ExecuteSnap,
-  GetRpcMessageHandler,
+  GetRpcRequestHandler,
   TerminateAll,
   TerminateSnap,
 } from '../services/ExecutionService';
-import { setDiff } from '../utils';
+import { hasTimedOut, setDiff, withTimeout } from '../utils';
 import { DEFAULT_ENDOWMENTS } from './default-endowments';
-import { SnapManifest, validateSnapJsonFile } from './json-schemas';
 import { LONG_RUNNING_PERMISSION } from './endowments';
+import { SnapManifest, validateSnapJsonFile } from './json-schemas';
 import { RequestQueue } from './RequestQueue';
 import {
   DEFAULT_REQUESTED_SNAP_VERSION,
   fetchNpmSnap,
   getSnapPermissionName,
   getSnapPrefix,
+  gtVersion,
   isValidSnapVersionRange,
   LOCALHOST_HOSTNAMES,
   NpmSnapFileNames,
   resolveVersion,
+  satifiesVersionRange,
   SnapIdPrefixes,
   SNAP_PREFIX,
   ValidatedSnapId,
@@ -214,7 +216,7 @@ type StoredSnaps = Record<SnapId, Snap>;
 
 export type SnapControllerState = {
   snaps: StoredSnaps;
-  snapStates: Record<SnapId, Json>;
+  snapStates: Record<SnapId, string>;
   snapErrors: {
     [internalID: string]: SnapError & { internalID: string };
   };
@@ -239,11 +241,11 @@ export type GetSnap = {
 };
 
 /**
- * Gets the specified Snap's JSON-RPC message handler function.
+ * Handles sending an inbound rpc message to a snap and returns its result.
  */
-export type GetSnapRpcMessageHandler = {
-  type: `${typeof controllerName}:getRpcMessageHandler`;
-  handler: SnapController['getRpcMessageHandler'];
+export type HandleSnapRpcRequest = {
+  type: `${typeof controllerName}:handleRpcRequest`;
+  handler: SnapController['handleRpcRequest'];
 };
 
 /**
@@ -281,7 +283,7 @@ export type ClearSnapState = {
 export type SnapControllerActions =
   | AddSnap
   | GetSnap
-  | GetSnapRpcMessageHandler
+  | HandleSnapRpcRequest
   | GetSnapState
   | HasSnap
   | UpdateSnapState
@@ -367,10 +369,17 @@ type SnapControllerMessenger = RestrictedControllerMessenger<
   AllowedEvents['type']
 >;
 
+export enum AppKeyType {
+  stateEncryption = 'stateEncryption',
+}
+
+type GetAppKey = (subject: string, appKeyType: AppKeyType) => Promise<string>;
+
 type FeatureFlags = {
   /**
    * We still need to implement new UI approval page in metamask-extension before we can allow DApps to update Snaps.
    * After it's added, this flag can be removed.
+   *
    * @see {SNAP_APPROVAL_UPDATE}
    * @see {SnapController.processRequestedSnap}
    */
@@ -399,7 +408,7 @@ type SnapControllerArgs = {
    * A function that gets the RPC message handler function for a specific
    * snap.
    */
-  getRpcMessageHandler: GetRpcMessageHandler;
+  getRpcRequestHandler: GetRpcRequestHandler;
 
   /**
    * The controller messenger.
@@ -420,6 +429,11 @@ type SnapControllerArgs = {
    * A function that terminates a specific snap.
    */
   terminateSnap: TerminateSnap;
+
+  /**
+   * A function to get an "app key" for a specific subject.
+   */
+  getAppKey: GetAppKey;
 
   /**
    * How frequently to check whether a snap is idle.
@@ -494,6 +508,9 @@ export enum SnapStatusEvent {
 
 /**
  * Guard transitioning when the snap is disabled.
+ *
+ * @param serializedSnap - The snap metadata.
+ * @returns A boolean signalling whether the passed snap is enabled or not.
  */
 const disabledGuard = (serializedSnap: Snap) => {
   return serializedSnap.enabled;
@@ -561,7 +578,7 @@ export class SnapController extends BaseController<
 
   private _executeSnap: ExecuteSnap;
 
-  private _getRpcMessageHandler: GetRpcMessageHandler;
+  private _getRpcRequestHandler: GetRpcRequestHandler;
 
   private _idleTimeCheckInterval: number;
 
@@ -575,6 +592,8 @@ export class SnapController extends BaseController<
 
   private _terminateSnap: TerminateSnap;
 
+  private _getAppKey: GetAppKey;
+
   private _timeoutForLastRequestStatus?: number;
 
   private _npmRegistryUrl?: string;
@@ -586,11 +605,12 @@ export class SnapController extends BaseController<
   constructor({
     closeAllConnections,
     executeSnap,
-    getRpcMessageHandler,
+    getRpcRequestHandler,
     messenger,
     state,
     terminateAllSnaps,
     terminateSnap,
+    getAppKey,
     environmentEndowmentPermissions = [],
     npmRegistryUrl,
     idleTimeCheckInterval = inMilliseconds(5, Duration.Second),
@@ -635,10 +655,11 @@ export class SnapController extends BaseController<
     this._closeAllConnections = closeAllConnections;
     this._environmentEndowmentPermissions = environmentEndowmentPermissions;
     this._executeSnap = executeSnap;
-    this._getRpcMessageHandler = getRpcMessageHandler;
+    this._getRpcRequestHandler = getRpcRequestHandler;
     this._onUnhandledSnapError = this._onUnhandledSnapError.bind(this);
     this._terminateSnap = terminateSnap;
     this._terminateAllSnaps = terminateAllSnaps;
+    this._getAppKey = getAppKey;
 
     this._idleTimeCheckInterval = idleTimeCheckInterval;
     this._maxIdleTime = maxIdleTime;
@@ -673,8 +694,8 @@ export class SnapController extends BaseController<
     );
 
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:getRpcMessageHandler`,
-      (...args) => this.getRpcMessageHandler(...args),
+      `${controllerName}:handleRpcRequest`,
+      (...args) => this.handleRpcRequest(...args),
     );
 
     this.messagingSystem.registerActionHandler(
@@ -734,8 +755,8 @@ export class SnapController extends BaseController<
    * - .on supports {target, cond} object
    * - the arguments for `cond` is the `SerializedSnap` instead of Xstate convention of `(event, context) => boolean`
    *
-   * @param snapId - The id of the snap to transition
-   * @param event - The event enum to use to transition
+   * @param snapId - The id of the snap to transition.
+   * @param event - The event enum to use to transition.
    */
   _transitionSnapState(snapId: SnapId, event: SnapStatusEvent) {
     const snapStatus = this.state.snaps[snapId].status;
@@ -801,6 +822,7 @@ export class SnapController extends BaseController<
    * Disables the given snap. A snap can only be started if it is enabled.
    *
    * @param snapId - The id of the Snap to disable.
+   * @returns A promise that resolves once the snap has been disabled.
    */
   disableSnap(snapId: SnapId): Promise<void> {
     this.update((state: any) => {
@@ -866,6 +888,7 @@ export class SnapController extends BaseController<
    * Throws an error if the snap doesn't exist.
    *
    * @param snapId - The id of the Snap to check.
+   * @returns `true` if the snap is running, otherwise `false`.
    */
   isRunning(snapId: SnapId): boolean {
     const snap = this.get(snapId);
@@ -880,6 +903,7 @@ export class SnapController extends BaseController<
    * Returns whether the given snap has been added to state.
    *
    * @param snapId - The id of the Snap to check for.
+   * @returns `true` if the snap exists in the controller state, otherwise `false`.
    */
   has(snapId: SnapId): boolean {
     return Boolean(this.get(snapId));
@@ -891,6 +915,7 @@ export class SnapController extends BaseController<
    * the snap sourceCode may be quite large.
    *
    * @param snapId - The id of the Snap to get.
+   * @returns The entire snap object from the controller state.
    */
   get(snapId: SnapId): Snap | undefined {
     return this.state.snaps[snapId];
@@ -901,6 +926,7 @@ export class SnapController extends BaseController<
    * non-serializable or expensive-to-serialize data.
    *
    * @param snapId - The id of the Snap to get.
+   * @returns A truncated version of the snap state, that is less expensive to serialize.
    */
   getTruncated(snapId: SnapId): TruncatedSnap | null {
     const snap = this.get(snapId);
@@ -926,8 +952,9 @@ export class SnapController extends BaseController<
    * @param newSnapState - The new state of the snap.
    */
   async updateSnapState(snapId: SnapId, newSnapState: Json): Promise<void> {
+    const encrypted = await this.encryptSnapState(snapId, newSnapState);
     this.update((state: any) => {
-      state.snapStates[snapId] = newSnapState;
+      state.snapStates[snapId] = encrypted;
     });
   }
 
@@ -944,9 +971,9 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Adds error from a snap to the SnapControllers state.
+   * Adds error from a snap to the SnapController state.
    *
-   * @param snapError - The error to store on the SnapController
+   * @param snapError - The error to store on the SnapController.
    */
   addSnapError(snapError: SnapError): void {
     this.update((state: any) => {
@@ -961,7 +988,7 @@ export class SnapController extends BaseController<
   /**
    * Removes an error by internalID from a the SnapControllers state.
    *
-   * @param internalID - The internal error ID to remove on the SnapController
+   * @param internalID - The internal error ID to remove on the SnapController.
    */
   async removeSnapError(internalID: string) {
     this.update((state: any) => {
@@ -984,9 +1011,35 @@ export class SnapController extends BaseController<
    * This is distinct from the state MetaMask uses to manage snaps.
    *
    * @param snapId - The id of the Snap whose state to get.
+   * @returns A promise that resolves with the decrypted snap state or null if no state exists.
+   * @throws If the snap state decryption fails.
    */
   async getSnapState(snapId: SnapId): Promise<Json> {
-    return this.state.snapStates[snapId] ?? null;
+    const state = this.state.snapStates[snapId];
+    return state ? this.decryptSnapState(snapId, state) : null;
+  }
+
+  private async getEncryptionKey(snapId: SnapId): Promise<string> {
+    return this._getAppKey(snapId, AppKeyType.stateEncryption);
+  }
+
+  private async encryptSnapState(snapId: SnapId, state: Json): Promise<string> {
+    const appKey = await this.getEncryptionKey(snapId);
+    return passworder.encrypt(appKey, state);
+  }
+
+  private async decryptSnapState(
+    snapId: SnapId,
+    encrypted: string,
+  ): Promise<Json> {
+    const appKey = await this.getEncryptionKey(snapId);
+    try {
+      return await passworder.decrypt(appKey, encrypted);
+    } catch (err) {
+      throw new Error(
+        'Failed to decrypt snap state, the state must be corrupted.',
+      );
+    }
   }
 
   /**
@@ -1012,6 +1065,7 @@ export class SnapController extends BaseController<
    * and listeners.
    *
    * @param snapId - The id of the Snap.
+   * @returns A promise that resolves once the snap has been removed.
    */
   async removeSnap(snapId: SnapId): Promise<void> {
     return this.removeSnaps([snapId]);
@@ -1073,7 +1127,9 @@ export class SnapController extends BaseController<
 
   /**
    * Gets the serialized permitted snaps of the given origin, if any.
+   *
    * @param origin - The origin whose permitted snaps to retrieve.
+   * @returns The serialized permitted snaps for the origin.
    */
   getPermittedSnaps(origin: string): InstallSnapsResult {
     return Object.values(
@@ -1179,7 +1235,7 @@ export class SnapController extends BaseController<
     const existingSnap = this.getTruncated(snapId);
     // For devX we always re-install local snaps.
     if (existingSnap && getSnapPrefix(snapId) !== SnapIdPrefixes.local) {
-      if (satisfiesSemver(existingSnap.version, versionRange)) {
+      if (satifiesVersionRange(existingSnap.version, versionRange)) {
         return existingSnap;
       }
 
@@ -1244,9 +1300,10 @@ export class SnapController extends BaseController<
   /**
    * Ask a user for approval, updates, re-authorizes and then restarts given snap.
    *
-   * @param snapId The id of the Snap to be updated
-   * @param newVersionRange A semver version range in which the maximum version will be chosen
-   * @returns @type {TruncatedSnap} if updated, @type {null} otherwise
+   * @param origin - The origin requesting the snap update.
+   * @param snapId - The id of the Snap to be updated.
+   * @param newVersionRange - A semver version range in which the maximum version will be chosen.
+   * @returns The snap metadata if updated, `null` otherwise.
    */
   async updateSnap(
     origin: string,
@@ -1267,7 +1324,7 @@ export class SnapController extends BaseController<
     }
 
     const newSnap = await this._fetchSnap(snapId, newVersionRange);
-    if (!gtSemver(newSnap.manifest.version, snap.version)) {
+    if (!gtVersion(newSnap.manifest.version, snap.version)) {
       console.warn(
         `Tried updating snap "${snapId}" within "${newVersionRange}" version range, but newer version "${snap.version}" is already installed`,
       );
@@ -1342,9 +1399,8 @@ export class SnapController extends BaseController<
    * Returns a promise representing the complete installation of the requested snap.
    * If the snap is already being installed, the previously pending promise will be returned.
    *
-   * @param snapId - The id of the Snap.
-   * @param args - Object containing either the URL of the snap's manifest,
-   * or the snap's manifest and source code.
+   * @param args - Object containing the snap id and either the URL of the snap's manifest,
+   * or the snap's manifest and source code. The object may also optionally contain a target version.
    * @returns The resulting snap object.
    */
   async add(args: AddSnapArgs): Promise<Snap> {
@@ -1497,7 +1553,7 @@ export class SnapController extends BaseController<
       ));
     }
 
-    if (!satisfiesSemver(manifest.version, versionRange)) {
+    if (!satifiesVersionRange(manifest.version, versionRange)) {
       throw new Error(
         `Version mismatch. Manifest for ${snapId} specifies version ${manifest.version} which doesn't satisfy requested version range ${versionRange}`,
       );
@@ -1723,11 +1779,34 @@ export class SnapController extends BaseController<
   }
 
   /**
+   * Passes a JSON-RPC request object to the RPC handler function of a snap.
+   *
+   * @param snapId - The ID of the recipient snap.
+   * @param origin - The origin of the RPC request.
+   * @param request - The JSON-RPC request object.
+   * @returns The result of the JSON-RPC request.
+   */
+  async handleRpcRequest(
+    snapId: SnapId,
+    origin: string,
+    request: Record<string, unknown>,
+  ): Promise<unknown> {
+    const handler = await this.getRpcRequestHandler(snapId);
+    if (!handler) {
+      throw new Error(
+        `Snap RPC message handler not found for snap "${snapId}".`,
+      );
+    }
+    return handler(origin, request);
+  }
+
+  /**
    * Gets the RPC message handler for the given snap.
    *
    * @param snapId - The id of the Snap whose message handler to get.
+   * @returns The RPC handler for the given snap.
    */
-  async getRpcMessageHandler(
+  private async getRpcRequestHandler(
     snapId: SnapId,
   ): Promise<
     (origin: string, request: Record<string, unknown>) => Promise<unknown>
@@ -1757,7 +1836,7 @@ export class SnapController extends BaseController<
         );
       }
 
-      let handler = await this._getRpcMessageHandler(snapId);
+      let handler = await this._getRpcRequestHandler(snapId);
 
       if (this.isRunning(snapId) === false) {
         if (handler) {
@@ -1786,7 +1865,7 @@ export class SnapController extends BaseController<
             startPromises.delete(snapId);
           }
         }
-        handler = await this._getRpcMessageHandler(snapId);
+        handler = await this._getRpcRequestHandler(snapId);
       }
 
       if (!handler) {
@@ -1832,8 +1911,12 @@ export class SnapController extends BaseController<
    * @param snapId - The snap id.
    * @param promise - The promise to await.
    * @returns The result of the promise or rejects if the promise times out.
+   * @template PromiseValue - The value of the Promise.
    */
-  private async _executeWithTimeout(snapId: SnapId, promise: Promise<unknown>) {
+  private async _executeWithTimeout<PromiseValue>(
+    snapId: SnapId,
+    promise: Promise<PromiseValue>,
+  ): Promise<PromiseValue> {
     const isLongRunning = this.messagingSystem.call(
       'PermissionController:hasPermission',
       snapId,
@@ -1845,19 +1928,10 @@ export class SnapController extends BaseController<
       return promise;
     }
 
-    // Handle max request time
-    let timeout: number | undefined;
-
-    const timeoutPromise = new Promise((_resolve, reject) => {
-      timeout = setTimeout(async () => {
-        reject(new Error('The request timed out.'));
-      }, this._maxRequestTime) as unknown as number;
-    });
-
-    // This will either get the result or reject due to the timeout.
-    const result = await Promise.race([promise, timeoutPromise]);
-
-    clearTimeout(timeout);
+    const result = await withTimeout(promise, this._maxRequestTime);
+    if (result === hasTimedOut) {
+      throw new Error('The request timed out.');
+    }
     return result;
   }
 
