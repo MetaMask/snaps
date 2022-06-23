@@ -14,10 +14,8 @@ export class ChildProcessMessageStream extends BasePostMessageStream {
   }
 
   protected _postMessage(data: StreamData): void {
-    if (!globalThis.process.send) {
-      throw new Error('Process.send is not available');
-    }
-    globalThis.process.send({ data });
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    globalThis.process.send!({ data });
   }
 
   private _onMessage(message: any): void {

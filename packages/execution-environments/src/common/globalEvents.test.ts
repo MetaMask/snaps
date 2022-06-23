@@ -1,6 +1,18 @@
 import { addEventListener, removeEventListener } from './globalEvents';
 
+const originalAddEventListener = globalThis.addEventListener;
+const originalRemoveEventListener = globalThis.removeEventListener;
+const originalProcess = globalThis.process;
+
 describe('addEventListener', () => {
+  afterEach(() => {
+    Object.assign(globalThis, {
+      ...globalThis,
+      addEventListener: originalAddEventListener,
+      process: originalProcess,
+    });
+  });
+
   it('uses addEventListener by default', () => {
     const spy = jest.spyOn(globalThis, 'addEventListener');
     const listener = () => undefined;
@@ -16,9 +28,30 @@ describe('addEventListener', () => {
     addEventListener('foo', listener);
     expect(spy).toHaveBeenCalledWith('foo', listener);
   });
+
+  it('throws otherwise', () => {
+    // Remove addEventListener
+    Object.assign(globalThis, {
+      ...globalThis,
+      process: { ...globalThis.process, on: undefined },
+      addEventListener: undefined,
+    });
+    const listener = () => undefined;
+    expect(() => {
+      addEventListener('foo', listener);
+    }).toThrow('Platform agnostic addEventListener failed');
+  });
 });
 
 describe('removeEventListener', () => {
+  afterEach(() => {
+    Object.assign(globalThis, {
+      ...globalThis,
+      removeEventListener: originalRemoveEventListener,
+      process: originalProcess,
+    });
+  });
+
   it('uses addEventListener by default', () => {
     const spy = jest.spyOn(globalThis, 'removeEventListener');
     const listener = () => undefined;
@@ -27,7 +60,6 @@ describe('removeEventListener', () => {
   });
 
   it('uses on in Node.js', () => {
-    const originalRemoveEventListener = globalThis.removeEventListener;
     // Remove removeEventListener
     Object.assign(globalThis, {
       ...globalThis,
@@ -37,11 +69,18 @@ describe('removeEventListener', () => {
     const listener = () => undefined;
     removeEventListener('foo', listener);
     expect(spy).toHaveBeenCalledWith('foo', listener);
+  });
 
-    // Restore
+  it('throws otherwise', () => {
+    // Remove removeEventListener
     Object.assign(globalThis, {
       ...globalThis,
-      removeEventListener: originalRemoveEventListener,
+      process: { ...globalThis.process, removeListener: undefined },
+      removeEventListener: undefined,
     });
+    const listener = () => undefined;
+    expect(() => {
+      removeEventListener('foo', listener);
+    }).toThrow('Platform agnostic removeEventListener failed');
   });
 });
