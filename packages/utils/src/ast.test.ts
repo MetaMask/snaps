@@ -121,7 +121,7 @@ describe('postProcessAST', () => {
       "let a = 5;
       let b = 7;
       const c = a-- > b;
-      const d = a; // b;"
+      const d = a < ! --b;"
     `);
   });
 

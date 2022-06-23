@@ -26,10 +26,24 @@ const COMMENTS_KEYS = [
  * @throws If the code contains syntax errors.
  */
 export function getAST(code: string, attachComment = true): Node {
-  // Note: We set `errorRecovery` to `true` because Babel otherwise immediately
-  // throws if it fails to parse the code. This way we can handle the error by
-  // looking at `ast.errors`.
-  const ast = parse(code, { errorRecovery: true, attachComment });
+  const ast = parse(code, {
+    // We set `errorRecovery` to `true` because Babel otherwise immediately
+    // throws if it fails to parse the code. This way we can handle the error by
+    // looking at `ast.errors`.
+    errorRecovery: true,
+
+    // This apparently changes how Babel processes HTML terminators, parsing
+    // `<!--` as `< ! --` instead, which is what we want.
+    sourceType: 'module',
+
+    // Strict mode is enabled by default, if `sourceType` is set to `module`. We
+    // add this option here to make it explicit.
+    strictMode: true,
+
+    // If this is disables, the AST does not include any comments. This is
+    // useful for performance reasons, and we use it for stripping comments.
+    attachComment,
+  });
 
   if (ast.errors?.length > 0) {
     throw new Error(
