@@ -8,9 +8,10 @@ console.log(foo);
 
 exports[`snaps forwards the options 1`] = `
 "// foo bar
-            /* baz qux */
-            const foo = 'bar';
-            console.log(foo);
+
+/* baz qux */
+const foo = 'bar';
+console.log(foo);
 "
 `;
 

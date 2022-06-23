@@ -8,15 +8,16 @@ exports[`SnapsWebpackPlugin applies a transform 1`] = `
 `;
 
 exports[`SnapsWebpackPlugin forwards the options 1`] = `
-"/******/ (() => { // webpackBootstrap
-var __webpack_exports__ = {};
+"/******/
+(() => {
+  // webpackBootstrap
+  var __webpack_exports__ = {}; // foo bar
 
-        // foo bar
-        /* baz qux */
-        const foo = 'bar';
-     
-/******/ })()
-;"
+  /* baz qux */
+
+  const foo = 'bar';
+  /******/
+})();"
 `;
 
 exports[`SnapsWebpackPlugin processes files using Webpack 1`] = `

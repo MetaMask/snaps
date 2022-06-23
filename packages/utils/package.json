@@ -36,6 +36,9 @@
     "semver": "^7.3.7"
   },
   "devDependencies": {
+    "@babel/template": "^7.16.7",
+    "@babel/traverse": "^7.18.5",
+    "@babel/types": "^7.17.0",
     "@json-schema-tools/transpiler": "^1.10.2",
     "@lavamoat/allow-scripts": "^2.0.3",
     "@metamask/auto-changelog": "^2.6.0",

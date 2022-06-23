@@ -29,7 +29,7 @@ describe('postProcessBundle', () => {
       postProcessBundle('/* leave me alone */postProcessMe();', {
         stripComments: false,
       }),
-    ).toStrictEqual('/* leave me alone */postProcessMe();');
+    ).toStrictEqual('/* leave me alone */\npostProcessMe();');
   });
 
   it('strips HTML comment tokens', () => {
@@ -37,32 +37,16 @@ describe('postProcessBundle', () => {
       ['foo();\n<!--', 'foo();'],
       ['-->\nbar()', 'bar();'],
     ].forEach(([input, output]) => {
-      expect(
-        postProcessBundle(input, {
-          stripComments: false,
-          transformHtmlComments: false,
-        }),
-      ).toStrictEqual(input);
-
-      expect(postProcessBundle(input, { stripComments: true })).toStrictEqual(
-        output,
-      );
+      expect(postProcessBundle(input)).toStrictEqual(output);
     });
   });
 
-  // @todo This should rewrite literals to "<!" + "--"
   it('breaks up HTML comment tokens', () => {
     [
-      [`foo('<!--');`, `foo('< !--');`],
-      [`const bar = '-->';`, `const bar = '-- >';`],
+      [`foo('<!--');`, `foo("<!" + "--");`],
+      [`const bar = '-->';`, `const bar = "--" + ">";`],
     ].forEach(([input, output]) => {
-      expect(
-        postProcessBundle(input, { transformHtmlComments: false }),
-      ).toStrictEqual(input);
-
-      expect(
-        postProcessBundle(input, { transformHtmlComments: true }),
-      ).toStrictEqual(output);
+      expect(postProcessBundle(input)).toStrictEqual(output);
     });
   });
 
@@ -70,7 +54,7 @@ describe('postProcessBundle', () => {
     expect(
       postProcessBundle('var _marked = [a].map(regeneratorRuntime.mark);'),
     ).toStrictEqual(
-      'var regeneratorRuntime;\nvar _marked = [a].map(regeneratorRuntime.mark);',
+      'var regeneratorRuntime;\n\nvar _marked = [a].map(regeneratorRuntime.mark);',
     );
   });
 
