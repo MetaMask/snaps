@@ -5,6 +5,7 @@ import template from '@babel/template';
 import {
   binaryExpression,
   Expression,
+  Identifier,
   stringLiteral,
   templateElement,
   templateLiteral,
@@ -34,10 +35,9 @@ export function getAST(code: string, attachComment = true): Node {
 
     // This apparently changes how Babel processes HTML terminators, parsing
     // `<!--` as `< ! --` instead, which is what we want.
-    sourceType: 'module',
+    sourceType: 'unambiguous',
 
-    // Strict mode is enabled by default, if `sourceType` is set to `module`. We
-    // add this option here to make it explicit.
+    // Strict mode isn't enabled by default, so we need to enable it here.
     strictMode: true,
 
     // If this is disables, the AST does not include any comments. This is
@@ -206,11 +206,19 @@ export function postProcessAST(ast: Node): Node {
         // We know that `program` is a Program node here, but this keeps
         // TypeScript happy.
         if (program?.node.type === 'Program') {
+          const body = program.node.body[0];
+
+          // This stops it from inserting `regeneratorRuntime` multiple times.
+          if (
+            body.type === 'VariableDeclaration' &&
+            (body.declarations[0].id as Identifier).name ===
+              'regeneratorRuntime'
+          ) {
+            return;
+          }
+
           program?.node.body.unshift(regeneratorRuntimeWrapper());
         }
-
-        // This stops it from inserting `regeneratorRuntime` multiple times.
-        path.stop();
       }
     },
 

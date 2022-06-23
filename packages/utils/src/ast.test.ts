@@ -238,7 +238,7 @@ describe('postProcessAST', () => {
       (function (Buffer, foo) {
         // Sets 'bar' to 'baz'
         const bar = '<!-- baz --> import(); import(foo);';
-        regeneratorRuntime.foo();
+        regeneratorRuntime.foo('import()');
         eval(foo);
         foo.eval('bar');
       });
@@ -252,9 +252,9 @@ describe('postProcessAST', () => {
 
       (function (foo) {
         const bar = \\"<!\\" + \\"--\\" + \\" baz \\" + \\"--\\" + \\">\\" + \\" \\" + \\"import\\" + \\"()\\" + \\"; \\" + \\"import\\" + \\"(foo)\\" + \\";\\";
-        regeneratorRuntime.foo();
-        eval(foo);
-        foo.eval('bar');
+        regeneratorRuntime.foo(\\"import\\" + \\"()\\");
+        (1, eval)(foo);
+        (1, foo.eval)(\\"bar\\");
       });"
     `);
   });
