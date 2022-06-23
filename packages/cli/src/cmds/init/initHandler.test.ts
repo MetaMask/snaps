@@ -106,10 +106,10 @@ describe('initialize', () => {
 
       const mockArgv = getMockArgv();
       // Change mocked argv to enable typescript
-      mockArgv.typescript = true;
+      mockArgv.template = 'typescript';
       mockArgv.src = 'src/index.ts';
       const expected = {
-        typescript: true,
+        template: 'typescript',
         dist: 'dist',
         outfileName: 'bundle.js',
         port: 8081,
@@ -421,7 +421,7 @@ describe('initialize', () => {
         .mockImplementation(async () => getPackageJson());
 
       const mockArgv = getMockArgv();
-      mockArgv.typescript = true;
+      mockArgv.template = 'typescript';
       await expect(initHandler(mockArgv)).rejects.toThrow('failed to write');
       expect(logErrorMock).toHaveBeenCalledTimes(1);
       expect(logErrorMock).toHaveBeenNthCalledWith(
@@ -526,7 +526,7 @@ describe('initialize', () => {
         .mockImplementation(async () => getPackageJson());
 
       const mockArgv = getMockArgv();
-      mockArgv.typescript = true;
+      mockArgv.template = 'typescript';
       await expect(initHandler(mockArgv)).rejects.toThrow('failed to write');
       expect(logErrorMock).toHaveBeenCalledTimes(1);
       expect(logErrorMock).toHaveBeenNthCalledWith(

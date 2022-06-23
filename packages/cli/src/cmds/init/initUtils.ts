@@ -354,10 +354,20 @@ export async function prepareWorkingDirectory(): Promise<void> {
  * @returns Modified Yargs arguments object.
  */
 export function correctDefaultArgs(yargsArgv: Arguments): Arguments {
-  if (yargsArgv.typescript && yargsArgv.src === 'src/index.js') {
+  if (yargsArgv.template === 'typescript' && yargsArgv.src === 'src/index.js') {
     yargsArgv.src = 'src/index.ts';
     yargsArgv.s = 'src/index.ts';
   }
 
   return yargsArgv;
+}
+
+/**
+ * Check if template argument is 'typescript'.
+ *
+ * @param templateType - String value of the template parameter passed from CLI.
+ * @returns True or false.
+ */
+export function isTemplateTypescript(templateType: any): boolean {
+  return templateType === 'typescript';
 }

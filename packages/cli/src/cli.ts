@@ -25,8 +25,8 @@ export function cli(argv: string[], commands: any): void {
 
     .example('$0 init', `\tInitialize a snap project in the current directory`)
     .example(
-      '$0 init --typescript false',
-      `\tInitialize a snap javascript project in the current directory`,
+      '$0 init --template javascript',
+      `\tInitialize a snap JavaScript project in the current directory`,
     )
     .example(
       '$0 build -s src/index.js -d out',

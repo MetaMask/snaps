@@ -18,7 +18,7 @@ export type SnapsCliBuilders = {
   readonly verboseErrors: Readonly<Options>;
   readonly writeManifest: Readonly<Options>;
   readonly serve: Readonly<Options>;
-  readonly typescript: Readonly<Options>;
+  readonly template: Readonly<Options>;
 };
 
 export enum TranspilationModes {
@@ -169,12 +169,12 @@ const builders: SnapsCliBuilders = {
     default: true,
   },
 
-  typescript: {
-    alias: 'ts',
-    describe: 'Use TypeScript template',
-    type: 'boolean',
+  template: {
+    alias: 't',
+    describe: 'Specify which template to use (TypeScript or JavaScript)',
+    type: 'string',
     demandOption: false,
-    default: true,
+    default: 'typescript',
   },
 };
 

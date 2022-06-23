@@ -14,7 +14,7 @@ export = {
       .option('dist', builders.dist)
       .option('port', builders.port)
       .option('outfileName', builders.outfileName)
-      .option('typescript', builders.typescript)
+      .option('template', builders.template)
       .middleware(
         ((yargsArgv: Arguments) => {
           correctDefaultArgs(yargsArgv);
