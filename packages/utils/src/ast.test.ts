@@ -100,6 +100,27 @@ describe('postProcessAST', () => {
     );
   });
 
+  it('breaks up HTML comment terminators in operators', () => {
+    const code = `
+      let a = 5;
+      let b = 7;
+      const c = a --> b;
+      const d = a <!-- b;
+    `;
+
+    const ast = getAST(code);
+    const processedCode = postProcessAST(ast);
+
+    // a <!-- b is expected to comment out b
+    // a --> b is expected to work as a -- > b
+    expect(getCode(processedCode)).toMatchInlineSnapshot(`
+      "let a = 5;
+      let b = 7;
+      const c = a-- > b;
+      const d = a; // b;"
+    `);
+  });
+
   it('breaks up HTML comment terminators in string literals', () => {
     const code = `
       const foo = '<!-- bar -->';
