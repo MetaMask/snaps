@@ -26,9 +26,12 @@
   },
   "dependencies": {
     "@babel/generator": "^7.18.2",
-    "@babel/parser": "^7.18.5"
+    "@babel/parser": "^7.18.5",
+    "@babel/template": "^7.16.7",
+    "@babel/traverse": "^7.18.5"
   },
   "devDependencies": {
+    "@babel/types": "^7.17.0",
     "@lavamoat/allow-scripts": "^2.0.3",
     "@metamask/auto-changelog": "^2.6.0",
     "@metamask/eslint-config": "^9.0.0",
