@@ -555,5 +555,20 @@ describe('initUtils', () => {
         src: 'src/index.ts',
       });
     });
+
+    it('should not change custom source file name when typescript is enabled', () => {
+      const customFileName = 'src/foo.ts';
+      const mockArgv = {
+        dist: 'dist',
+        outfileName: 'bundle.js',
+        src: customFileName,
+        port: 8081,
+        typescript: true,
+      } as unknown as Arguments;
+      expect(correctDefaultArgs(mockArgv)).toStrictEqual({
+        ...mockArgv,
+        src: customFileName,
+      });
+    });
   });
 });
