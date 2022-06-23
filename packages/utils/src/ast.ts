@@ -1,5 +1,5 @@
 import { parse } from '@babel/parser';
-import traverse, { Node, TraverseOptions } from '@babel/traverse';
+import traverse, { Node } from '@babel/traverse';
 import generate from '@babel/generator';
 import template from '@babel/template';
 import {
@@ -118,7 +118,8 @@ function breakTokens(value: string): string[] {
  * @returns The modified AST.
  */
 export function postProcessAST(ast: Node): Node {
-  const handler: TraverseOptions = {
+  // Modifies the AST in place.
+  traverse(ast, {
     enter(path) {
       const { node } = path;
 
@@ -240,12 +241,12 @@ export function postProcessAST(ast: Node): Node {
       const expressions = node.quasis.reduce<Expression[]>(
         (acc, quasi, index) => {
           // Note: Template literals have two variants, "cooked" and "raw". Here
-          // we just use the raw version, but this might break code that uses
-          // the cooked version. For reference:
+          // we use the cooked version, with a fallback to the raw version. This
+          // might break the template literal.
           // https://exploringjs.com/impatient-js/ch_template-literals.html#template-strings-cooked-vs-raw
-          const replacement = breakTokens(quasi.value.raw).map((token) =>
-            stringLiteral(token),
-          );
+          const replacement = breakTokens(
+            quasi.value.cooked ?? quasi.value.raw,
+          ).map((token) => stringLiteral(token));
 
           if (node.expressions[index]) {
             return [
@@ -291,10 +292,7 @@ export function postProcessAST(ast: Node): Node {
       path.replaceWith(replacement as Node);
       path.skip();
     },
-  };
-
-  // Modifies the AST in place.
-  traverse(ast, handler);
+  });
 
   return ast;
 }
