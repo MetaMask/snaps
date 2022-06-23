@@ -261,6 +261,11 @@ export function postProcessAST(ast: Node): Node {
         [],
       );
 
+      // Only update the node if something changed.
+      if (expressions.length <= node.quasis.length) {
+        return;
+      }
+
       path.replaceWith(
         templateLiteral(
           new Array(expressions.length + 1)
@@ -282,6 +287,12 @@ export function postProcessAST(ast: Node): Node {
       // - https://github.com/endojs/endo/blob/70cc86eb400655e922413b99c38818d7b2e79da0/packages/ses/error-codes/SES_HTML_COMMENT_REJECTED.md
       // - https://github.com/MetaMask/snaps-skunkworks/issues/505
       const tokens = breakTokens(node.value);
+
+      // Only update the node if the string literal was broken up.
+      if (tokens.length <= 1) {
+        return;
+      }
+
       const replacement = tokens.slice(1).reduce<Expression>(
         (acc, value) => binaryExpression('+', acc, stringLiteral(value)),
         // In the case of an empty string, `tokens[0]` will be undefined, so

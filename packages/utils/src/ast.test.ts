@@ -66,11 +66,11 @@ describe('postProcessAST', () => {
 
     expect(getCode(processedCode)).toMatchInlineSnapshot(`
       "(function (foo) {
-        const bar = \\"baz\\";
+        const bar = 'baz';
       });
 
       function foo(Buffer) {
-        const bar = \\"baz\\";
+        const bar = 'baz';
       }"
     `);
   });
@@ -111,7 +111,7 @@ describe('postProcessAST', () => {
     const processedCode = postProcessAST(ast);
 
     expect(getCode(processedCode)).toMatchInlineSnapshot(
-      `"const foo = \\"regeneratorRuntime\\";"`,
+      `"const foo = 'regeneratorRuntime';"`,
     );
   });
 
@@ -228,9 +228,24 @@ describe('postProcessAST', () => {
     const ast = getAST(code);
     const processedCode = postProcessAST(ast);
 
-    expect(getCode(processedCode)).toMatchInlineSnapshot(
-      `"const foo = \\"\\";"`,
-    );
+    expect(getCode(processedCode)).toMatchInlineSnapshot(`"const foo = '';"`);
+  });
+
+  it(`doesn't process values that don't contain special tokens`, () => {
+    const code = `
+      const empty = '';
+      const foo = 'foo';
+      const bar = \`bar\${foo}\`;
+    `;
+
+    const ast = getAST(code);
+    const processedCode = postProcessAST(ast);
+
+    expect(getCode(processedCode)).toMatchInlineSnapshot(`
+      "const empty = '';
+      const foo = 'foo';
+      const bar = \`bar\${foo}\`;"
+    `);
   });
 
   it('processes all the things', () => {
@@ -254,7 +269,7 @@ describe('postProcessAST', () => {
         const bar = \\"<!\\" + \\"--\\" + \\" baz \\" + \\"--\\" + \\">\\" + \\" \\" + \\"import\\" + \\"()\\" + \\"; \\" + \\"import\\" + \\"(foo)\\" + \\";\\";
         regeneratorRuntime.foo(\\"import\\" + \\"()\\");
         (1, eval)(foo);
-        (1, foo.eval)(\\"bar\\");
+        (1, foo.eval)('bar');
       });"
     `);
   });
