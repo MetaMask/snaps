@@ -527,7 +527,7 @@ describe('initialize', () => {
         .mockImplementation(async () => getPackageJson());
 
       const mockArgv = getMockArgv();
-      mockArgv.template = 'typescript';
+      mockArgv.template = TemplateType.TypeScript;
       await expect(initHandler(mockArgv)).rejects.toThrow('failed to write');
       expect(logErrorMock).toHaveBeenCalledTimes(1);
       expect(logErrorMock).toHaveBeenNthCalledWith(
