@@ -241,12 +241,11 @@ export function postProcessAST(ast: Node): Node {
       const expressions = node.quasis.reduce<Expression[]>(
         (acc, quasi, index) => {
           // Note: Template literals have two variants, "cooked" and "raw". Here
-          // we use the cooked version, with a fallback to the raw version. This
-          // might break the template literal.
+          // we use the cooked version.
           // https://exploringjs.com/impatient-js/ch_template-literals.html#template-strings-cooked-vs-raw
-          const replacement = breakTokens(
-            quasi.value.cooked ?? quasi.value.raw,
-          ).map((token) => stringLiteral(token));
+          const replacement = breakTokens(quasi.value.cooked as string).map(
+            (token) => stringLiteral(token),
+          );
 
           if (node.expressions[index]) {
             return [
@@ -297,7 +296,7 @@ export function postProcessAST(ast: Node): Node {
         (acc, value) => binaryExpression('+', acc, stringLiteral(value)),
         // In the case of an empty string, `tokens[0]` will be undefined, so
         // we provide a fallback value of an empty string.
-        stringLiteral(tokens[0] ?? ''),
+        stringLiteral(tokens[0]),
       );
 
       path.replaceWith(replacement as Node);
