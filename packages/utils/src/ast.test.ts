@@ -34,6 +34,8 @@ describe('postProcessAST', () => {
       eval(bar);
       foo.eval(bar, baz);
       foo.bar.eval(baz, qux);
+      eval('<!-- foo -->');
+      foo.eval('<!-- bar -->');
     `;
 
     const ast = getAST(code);
@@ -42,7 +44,9 @@ describe('postProcessAST', () => {
     expect(getCode(processedCode)).toMatchInlineSnapshot(`
       "(1, eval)(bar);
       (1, foo.eval)(bar, baz);
-      (1, foo.bar.eval)(baz, qux);"
+      (1, foo.bar.eval)(baz, qux);
+      (1, eval)(\\"<!\\" + \\"--\\" + \\" foo \\" + \\"--\\" + \\">\\");
+      (1, foo.eval)(\\"<!\\" + \\"--\\" + \\" bar \\" + \\"--\\" + \\">\\");"
     `);
   });
 

@@ -158,10 +158,6 @@ export function postProcessAST(ast: Node): Node {
             ARGS: node.arguments,
           }) as any,
         );
-
-        // Need to skip the path here, to prevent the node from being visited
-        // again.
-        path.skip();
       }
     },
 
@@ -171,7 +167,9 @@ export function postProcessAST(ast: Node): Node {
       // Replace `object.eval(foo)` with `(1, object.eval)(foo)`.
       if (
         node.property.type === 'Identifier' &&
-        node.property.name === 'eval'
+        node.property.name === 'eval' &&
+        // If the expression is already wrapped we can ignore it
+        path.parent.type !== 'SequenceExpression'
       ) {
         path.replaceWith(
           objectEvalWrapper({
@@ -179,10 +177,6 @@ export function postProcessAST(ast: Node): Node {
             REF: node.property,
           }) as any,
         );
-
-        // Need to skip the path here, to prevent the node from being visited
-        // again.
-        path.skip();
       }
     },
 
