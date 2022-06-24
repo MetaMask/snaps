@@ -34,6 +34,8 @@ Options:
 Examples:
   mm-snap init                              Initialize a snap project in the
                                             current directory
+  mm-snap init --template javascript        Initialize a snap JavaScript project
+                                            in the current directory
   mm-snap build -s src/index.js -d out      Build 'src/index.js' as
                                             './out/bundle.js'
   mm-snap build -s src/index.js -d out -n   Build 'src/index.js' as
