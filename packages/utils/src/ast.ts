@@ -18,6 +18,15 @@ const COMMENTS_KEYS = [
   'trailingComments',
 ] as const;
 
+// The RegEx below consists of multiple groups joined by a boolean OR.
+// Each part consists of two groups which capture a part of each string
+// which needs to be split up, e.g., `<!--` is split into `<!` and `--`.
+const TOKEN_REGEX = /(<!)(--)|(--)(>)|(import)(\(.*?\))/gu;
+
+// An empty template element, i.e., a part of a template literal without any
+// value ("").
+const EMPTY_TEMPLATE_ELEMENT = templateElement({ raw: '', cooked: '' });
+
 /**
  * Get the abstract syntax tree (AST) representation of the given code. This
  * uses Babel's parser to generate the AST.
@@ -91,10 +100,7 @@ const regeneratorRuntimeWrapper = template.statement(`
  * array elements.
  */
 function breakTokens(value: string): string[] {
-  // The RegEx below consists of multiple groups joined by a boolean OR.
-  // Each part consists of two groups which capture a part of each string
-  // which needs to be split up, e.g., `<!--` is split into `<!` and `--`.
-  const tokens = value.split(/(<!)(--)|(--)(>)|(import)(\(.*?\))/gu);
+  const tokens = value.split(TOKEN_REGEX);
   return (
     tokens
       // TODO: The `split` above results in some values being `undefined`.
@@ -102,8 +108,6 @@ function breakTokens(value: string): string[] {
       .filter((token) => token !== '' && token !== undefined)
   );
 }
-
-const EMPTY_TEMPLATE_ELEMENT = templateElement({ raw: '', cooked: '' });
 
 /**
  * Breaks up tokens that would otherwise result in SES errors. The tokens are
@@ -119,9 +123,7 @@ const EMPTY_TEMPLATE_ELEMENT = templateElement({ raw: '', cooked: '' });
 function breakTokensTemplateLiteral(
   value: string,
 ): [TemplateElement[], Expression[]] {
-  const matches = Array.from(
-    value.matchAll(/(<!)(--)|(--)(>)|(import)(\(.*?\))/gu),
-  );
+  const matches = Array.from(value.matchAll(TOKEN_REGEX));
 
   if (matches.length > 0) {
     const output = matches.reduce<[TemplateElement[], Expression[]]>(
