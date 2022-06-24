@@ -171,7 +171,7 @@ describe('postProcessAST', () => {
     const processedCode = postProcessAST(ast);
 
     expect(getCode(processedCode)).toMatchInlineSnapshot(
-      `"const foo = \`\${\\"<!\\"}\${\\"--\\"}\${\\" bar \\"}\${\\"--\\"}\${\\">\\"}\${\\" \\"}\${\\"<!\\" + \\"--\\" + \\" baz \\" + \\"--\\" + \\">\\"}\${\\" \\"}\${qux}\`;"`,
+      `"const foo = \`\${\\"<!\\"}\${\\"--\\"} bar \${\\"--\\"}\${\\">\\"} \${\\"<!\\" + \\"--\\" + \\" baz \\" + \\"--\\" + \\">\\"} \${qux}\`;"`,
     );
   });
 
@@ -187,12 +187,11 @@ describe('postProcessAST', () => {
     const ast = getAST(code);
     const processedCode = postProcessAST(ast);
 
-    console.log(getCode(processedCode));
-
     expect(getCode(processedCode)).toMatchInlineSnapshot(`
-      "const foo = \`\${\\"foo bar \\"}\${\\"import\\"}\${\\"()\\"}\${\\" baz\\"}\`;
-      const bar = \`\${\\"foo bar \\"}\${\\"import\\"}\${\\"(this works too)\\"}\${\\" baz\\"}\`;
-      foo\`\${\\"\\\\n        foo \\"}\${\\"import\\"}\${\\"()\\"}\${\\" \\"}\${\\"import\\" + \\"(bar)\\"} \${qux}      \`;"
+      "const foo = \`foo bar \${\\"import\\"}\${\\"()\\"} baz\`;
+      const bar = \`foo bar \${\\"import\\"}\${\\"(this works too)\\"} baz\`;
+      foo\`
+              foo \${\\"import\\"}\${\\"()\\"} \${\\"import\\" + \\"(bar)\\"} \${qux}      \`;"
     `);
   });
 
@@ -255,6 +254,7 @@ describe('postProcessAST', () => {
       (function (Buffer, foo) {
         // Sets 'bar' to 'baz'
         const bar = '<!-- baz --> import(); import(foo);';
+        const baz = \`<!-- baz --> \${'import();'} import(foo);\`;
         regeneratorRuntime.foo('import()');
         eval(foo);
         foo.eval('bar');
@@ -269,6 +269,7 @@ describe('postProcessAST', () => {
 
       (function (foo) {
         const bar = \\"<!\\" + \\"--\\" + \\" baz \\" + \\"--\\" + \\">\\" + \\" \\" + \\"import\\" + \\"()\\" + \\"; \\" + \\"import\\" + \\"(foo)\\" + \\";\\";
+        const baz = \`\${\\"<!\\"}\${\\"--\\"} baz \${\\"--\\"}\${\\">\\"} \${\\"import\\" + \\"()\\" + \\";\\"} \${\\"import\\"}\${\\"(foo)\\"};\`;
         regeneratorRuntime.foo(\\"import\\" + \\"()\\");
         (1, eval)(foo);
         (1, foo.eval)('bar');
