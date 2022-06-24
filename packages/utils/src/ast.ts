@@ -7,6 +7,7 @@ import {
   Expression,
   Identifier,
   stringLiteral,
+  TemplateElement,
   templateElement,
   templateLiteral,
 } from '@babel/types';
@@ -238,39 +239,44 @@ export function postProcessAST(ast: Node): Node {
       // For reference:
       // - https://github.com/endojs/endo/blob/70cc86eb400655e922413b99c38818d7b2e79da0/packages/ses/error-codes/SES_HTML_COMMENT_REJECTED.md
       // - https://github.com/MetaMask/snaps-skunkworks/issues/505
-      const expressions = node.quasis.reduce<Expression[]>(
-        (acc, quasi, index) => {
+      const [replacementQuasis, replacementExpressions] = node.quasis.reduce<
+        [TemplateElement[], Expression[]]
+      >(
+        ([elements, expressions], quasi, index) => {
           // Note: Template literals have two variants, "cooked" and "raw". Here
           // we use the cooked version.
           // https://exploringjs.com/impatient-js/ch_template-literals.html#template-strings-cooked-vs-raw
-          const replacement = breakTokens(quasi.value.cooked as string).map(
-            (token) => stringLiteral(token),
-          );
+          const tokens = breakTokens(quasi.value.cooked as string);
 
-          if (node.expressions[index]) {
+          // Only update the node if something changed.
+          if (tokens.length <= 1) {
             return [
-              ...acc,
-              ...replacement,
-              node.expressions[index],
-            ] as Expression[];
+              [...elements, quasi],
+              [...expressions, node.expressions[index] as Expression],
+            ];
           }
 
-          return [...acc, ...replacement];
-        },
-        [],
-      );
+          const replacement = tokens.map((token) => stringLiteral(token));
+          const quasis = new Array(replacement.length + 1)
+            .fill(undefined)
+            .map(() => templateElement({ raw: '', cooked: '' }));
 
-      // Only update the node if something changed.
-      if (expressions.length <= node.quasis.length) {
-        return;
-      }
+          return [
+            [...elements, ...quasis],
+            [
+              ...expressions,
+              ...replacement,
+              node.expressions[index] as Expression,
+            ],
+          ];
+        },
+        [[], []],
+      );
 
       path.replaceWith(
         templateLiteral(
-          new Array(expressions.length + 1)
-            .fill(undefined)
-            .map(() => templateElement({ cooked: '', raw: '' })),
-          expressions,
+          replacementQuasis,
+          replacementExpressions.filter((e) => e !== undefined),
         ) as Node,
       );
 

@@ -187,10 +187,12 @@ describe('postProcessAST', () => {
     const ast = getAST(code);
     const processedCode = postProcessAST(ast);
 
+    console.log(getCode(processedCode));
+
     expect(getCode(processedCode)).toMatchInlineSnapshot(`
       "const foo = \`\${\\"foo bar \\"}\${\\"import\\"}\${\\"()\\"}\${\\" baz\\"}\`;
       const bar = \`\${\\"foo bar \\"}\${\\"import\\"}\${\\"(this works too)\\"}\${\\" baz\\"}\`;
-      foo\`\${\\"\\\\n        foo \\"}\${\\"import\\"}\${\\"()\\"}\${\\" \\"}\${\\"import\\" + \\"(bar)\\"}\${\\" \\"}\${qux}\${\\"      \\"}\`;"
+      foo\`\${\\"\\\\n        foo \\"}\${\\"import\\"}\${\\"()\\"}\${\\" \\"}\${\\"import\\" + \\"(bar)\\"} \${qux}      \`;"
     `);
   });
 
