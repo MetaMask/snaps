@@ -1,14 +1,14 @@
 import { ControllerMessenger } from '@metamask/controllers';
 import { ErrorJSON, ErrorMessageEvent, SnapId } from '@metamask/snap-types';
-import { NodeExecutionService } from './NodeExecutionService';
+import { NodeProcessExecutionService } from './NodeProcessExecutionService';
 
-describe('NodeExecutionService', () => {
+describe('NodeProcessExecutionService', () => {
   it('can boot', async () => {
     const controllerMessenger = new ControllerMessenger<
       never,
       ErrorMessageEvent
     >();
-    const service = new NodeExecutionService({
+    const service = new NodeProcessExecutionService({
       messenger: controllerMessenger.getRestricted<
         'ExecutionService',
         never,
@@ -29,7 +29,7 @@ describe('NodeExecutionService', () => {
       never,
       ErrorMessageEvent
     >();
-    const service = new NodeExecutionService({
+    const service = new NodeProcessExecutionService({
       messenger: controllerMessenger.getRestricted<
         'ExecutionService',
         never,
@@ -58,7 +58,7 @@ describe('NodeExecutionService', () => {
       never,
       ErrorMessageEvent
     >();
-    const service = new NodeExecutionService({
+    const service = new NodeProcessExecutionService({
       messenger: controllerMessenger.getRestricted<
         'ExecutionService',
         never,
@@ -92,7 +92,7 @@ describe('NodeExecutionService', () => {
       never,
       ErrorMessageEvent
     >();
-    const service = new NodeExecutionService({
+    const service = new NodeProcessExecutionService({
       messenger: controllerMessenger.getRestricted<
         'ExecutionService',
         never,
@@ -133,7 +133,7 @@ describe('NodeExecutionService', () => {
       never,
       ErrorMessageEvent
     >();
-    const service = new NodeExecutionService({
+    const service = new NodeProcessExecutionService({
       messenger: controllerMessenger.getRestricted<
         'ExecutionService',
         never,
@@ -187,11 +187,10 @@ describe('NodeExecutionService', () => {
       }),
     ).toBe('foo');
 
-    // eslint-disable-next-line jest/prefer-strict-equal
-    expect(await unhandledErrorPromise).toEqual({
+    expect(await unhandledErrorPromise).toStrictEqual({
       code: -32603,
       data: { snapName: 'TestSnap' },
-      message: 'Unhandled promise rejection in snap.',
+      message: 'Execution Environment Error',
     });
 
     await service.terminateAllSnaps();

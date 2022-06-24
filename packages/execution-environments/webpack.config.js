@@ -16,13 +16,14 @@ module.exports = (_, argv) => {
       devtool: 'inline-source-map',
     };
   }
-
+  
   const nodeConfig = {
     ...extraOptions,
     mode: argv.mode,
     target: 'node',
     entry: {
-      node: './src/node/index.ts',
+      'node-process': './src/node-process/index.ts',
+      'node-thread': './src/node-thread/index.ts',
     },
     output: {
       filename: '[name]/bundle.js',
@@ -31,14 +32,22 @@ module.exports = (_, argv) => {
     plugins: [
       new CopyPlugin({
         patterns: [
-
           {
             from: path.resolve(
               `${path.dirname(require.resolve('ses/package.json'))}`,
               'dist',
               'lockdown.umd.min.js',
             ),
-            to: path.resolve(ENVIRONMENTS, 'node/lockdown.umd.min.js'),
+            to: path.resolve(ENVIRONMENTS, 'node-process/lockdown.umd.min.js'),
+            toType: 'file',
+          },
+          {
+            from: path.resolve(
+              `${path.dirname(require.resolve('ses/package.json'))}`,
+              'dist',
+              'lockdown.umd.min.js',
+            ),
+            to: path.resolve(ENVIRONMENTS, 'node-thread/lockdown.umd.min.js'),
             toType: 'file',
           },
         ],
