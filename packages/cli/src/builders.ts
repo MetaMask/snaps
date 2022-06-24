@@ -18,12 +18,18 @@ export type SnapsCliBuilders = {
   readonly verboseErrors: Readonly<Options>;
   readonly writeManifest: Readonly<Options>;
   readonly serve: Readonly<Options>;
+  readonly template: Readonly<Options>;
 };
 
 export enum TranspilationModes {
   localAndDeps = 'localAndDeps',
   localOnly = 'localOnly',
   none = 'none',
+}
+
+export enum TemplateType {
+  TypeScript = 'typescript',
+  JavaScript = 'javascript',
 }
 
 const builders: SnapsCliBuilders = {
@@ -166,6 +172,15 @@ const builders: SnapsCliBuilders = {
     type: 'boolean',
     demandOption: false,
     default: true,
+  },
+
+  template: {
+    alias: 't',
+    describe: 'Specify which template to use (TypeScript or JavaScript)',
+    type: 'string',
+    demandOption: false,
+    default: TemplateType.TypeScript,
+    choices: Object.values(TemplateType),
   },
 };
 
