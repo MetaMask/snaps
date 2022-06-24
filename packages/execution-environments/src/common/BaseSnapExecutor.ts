@@ -18,6 +18,7 @@ import {
   CommandMethodsMapping,
 } from './commands';
 import { sortParamKeys } from './sortParams';
+import { constructError } from './utils';
 
 type OnRpcRequestHandler = (args: {
   origin: string;

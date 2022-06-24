@@ -36,7 +36,7 @@ describe('Endowment utils', () => {
         Date,
       });
       expect(endowments.Math).toBe(Math);
-      expect(endowments.Math).toBe(Date);
+      expect(endowments.Date).toBe(Date);
     });
 
     it('handles special cases where endowment is a function but not a constructor', () => {

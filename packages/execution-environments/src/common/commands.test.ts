@@ -1,14 +1,21 @@
-import { rpcMethods, RpcMethodsMapping } from './rpcMethods';
+import {
+  CommandMethodsMapping,
+  getCommandMethodImplementations,
+} from './commands';
 
-describe('rpcMethods', () => {
+describe('getCommandMethodImplementations', () => {
   it('will return an object with ping, executeSnap, snapRpc and terminate methods', () => {
     const startSnap = jest.fn();
     const invokeSnapRpc = jest.fn();
     const onTerminate = jest.fn();
-    const methodsObj = rpcMethods(startSnap, invokeSnapRpc, onTerminate);
+    const methodsObj = getCommandMethodImplementations(
+      startSnap,
+      invokeSnapRpc,
+      onTerminate,
+    );
     ['ping', 'executeSnap', 'snapRpc', 'terminate'].forEach((method) => {
       expect(
-        typeof methodsObj[method as keyof RpcMethodsMapping],
+        typeof methodsObj[method as keyof CommandMethodsMapping],
       ).toStrictEqual('function');
     });
     expect(Object.keys(methodsObj)).toHaveLength(4);
@@ -18,7 +25,11 @@ describe('rpcMethods', () => {
     const startSnap = jest.fn();
     const invokeSnapRpc = jest.fn();
     const onTerminate = jest.fn();
-    const methodsObj = rpcMethods(startSnap, invokeSnapRpc, onTerminate);
+    const methodsObj = getCommandMethodImplementations(
+      startSnap,
+      invokeSnapRpc,
+      onTerminate,
+    );
     expect(await methodsObj.ping()).toStrictEqual('OK');
   });
 
@@ -26,7 +37,11 @@ describe('rpcMethods', () => {
     const startSnap = jest.fn();
     const invokeSnapRpc = jest.fn();
     const onTerminate = jest.fn();
-    const methodsObj = rpcMethods(startSnap, invokeSnapRpc, onTerminate);
+    const methodsObj = getCommandMethodImplementations(
+      startSnap,
+      invokeSnapRpc,
+      onTerminate,
+    );
     expect(await methodsObj.terminate()).toStrictEqual('OK');
   });
 
@@ -34,7 +49,11 @@ describe('rpcMethods', () => {
     const startSnap = jest.fn();
     const invokeSnapRpc = jest.fn();
     const onTerminate = jest.fn();
-    const methodsObj = rpcMethods(startSnap, invokeSnapRpc, onTerminate);
+    const methodsObj = getCommandMethodImplementations(
+      startSnap,
+      invokeSnapRpc,
+      onTerminate,
+    );
     expect(
       await methodsObj.executeSnap('foo', 'code', ['endowment1', 'endowment2']),
     ).toStrictEqual('OK');
@@ -44,7 +63,11 @@ describe('rpcMethods', () => {
     const startSnap = jest.fn();
     const invokeSnapRpc = jest.fn();
     const onTerminate = jest.fn();
-    const methodsObj = rpcMethods(startSnap, invokeSnapRpc, onTerminate);
+    const methodsObj = getCommandMethodImplementations(
+      startSnap,
+      invokeSnapRpc,
+      onTerminate,
+    );
     await expect(async () => {
       await methodsObj.executeSnap(1 as any, 'code', [
         'endowment1',
@@ -57,7 +80,11 @@ describe('rpcMethods', () => {
     const startSnap = jest.fn();
     const invokeSnapRpc = jest.fn();
     const onTerminate = jest.fn();
-    const methodsObj = rpcMethods(startSnap, invokeSnapRpc, onTerminate);
+    const methodsObj = getCommandMethodImplementations(
+      startSnap,
+      invokeSnapRpc,
+      onTerminate,
+    );
     await expect(async () => {
       await methodsObj.executeSnap('foo', 2 as any, [
         'endowment1',
@@ -70,7 +97,11 @@ describe('rpcMethods', () => {
     const startSnap = jest.fn();
     const invokeSnapRpc = jest.fn();
     const onTerminate = jest.fn();
-    const methodsObj = rpcMethods(startSnap, invokeSnapRpc, onTerminate);
+    const methodsObj = getCommandMethodImplementations(
+      startSnap,
+      invokeSnapRpc,
+      onTerminate,
+    );
     await expect(async () => {
       await methodsObj.executeSnap('foo', 'code', ['endowment1', 2 as any]);
     }).rejects.toThrow('endowment is not a proper Endowments object');
@@ -80,7 +111,11 @@ describe('rpcMethods', () => {
     const startSnap = jest.fn();
     const invokeSnapRpc = jest.fn();
     const onTerminate = jest.fn();
-    const methodsObj = rpcMethods(startSnap, invokeSnapRpc, onTerminate);
+    const methodsObj = getCommandMethodImplementations(
+      startSnap,
+      invokeSnapRpc,
+      onTerminate,
+    );
     const rpcRequest = { jsonrpc: '2.0', method: 'hello' };
     await methodsObj.snapRpc('foo', 'bar', rpcRequest as any);
     expect(invokeSnapRpc).toHaveBeenCalledTimes(1);
@@ -90,7 +125,11 @@ describe('rpcMethods', () => {
     const startSnap = jest.fn();
     const invokeSnapRpc = jest.fn();
     const onTerminate = jest.fn();
-    const methodsObj = rpcMethods(startSnap, invokeSnapRpc, onTerminate);
+    const methodsObj = getCommandMethodImplementations(
+      startSnap,
+      invokeSnapRpc,
+      onTerminate,
+    );
     const rpcRequest = { jsonrpc: '2.0', method: 'hello' };
     await expect(async () => {
       await methodsObj.snapRpc(2 as any, 'bar', rpcRequest as any);
@@ -101,7 +140,11 @@ describe('rpcMethods', () => {
     const startSnap = jest.fn();
     const invokeSnapRpc = jest.fn();
     const onTerminate = jest.fn();
-    const methodsObj = rpcMethods(startSnap, invokeSnapRpc, onTerminate);
+    const methodsObj = getCommandMethodImplementations(
+      startSnap,
+      invokeSnapRpc,
+      onTerminate,
+    );
     const rpcRequest = { jsonrpc: '2.0', method: 'hello' };
     await expect(async () => {
       await methodsObj.snapRpc('foo', 2 as any, rpcRequest as any);
@@ -112,7 +155,11 @@ describe('rpcMethods', () => {
     const startSnap = jest.fn();
     const invokeSnapRpc = jest.fn();
     const onTerminate = jest.fn();
-    const methodsObj = rpcMethods(startSnap, invokeSnapRpc, onTerminate);
+    const methodsObj = getCommandMethodImplementations(
+      startSnap,
+      invokeSnapRpc,
+      onTerminate,
+    );
     const rpcRequest = { method: 'hello' };
     await expect(async () => {
       await methodsObj.snapRpc('foo', 'bar', rpcRequest as any);
