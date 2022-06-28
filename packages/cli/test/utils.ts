@@ -55,7 +55,7 @@ export const getSnapManifest = ({
   filePath = 'dist/bundle.js',
   packageName = '@metamask/example-snap',
   repository = getDefaultRepository(),
-  iconPath = 'icon.svg',
+  iconPath = 'images/icon.svg',
 }: GetSnapManifestOptions = {}): SnapManifest => {
   return {
     version,

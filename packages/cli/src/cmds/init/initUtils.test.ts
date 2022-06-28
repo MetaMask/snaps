@@ -3,6 +3,7 @@ import * as snapUtils from '@metamask/snap-controllers/dist/snaps';
 import { SnapManifest } from '@metamask/snap-controllers/dist/snaps';
 import initPackageJson from 'init-package-json';
 import mkdirp from 'mkdirp';
+import { Arguments } from 'yargs';
 import {
   FakeFsError,
   getPackageJson,
@@ -13,9 +14,11 @@ import { YargsArgs } from '../../types/yargs';
 import * as fsUtils from '../../utils/fs';
 import * as miscUtils from '../../utils/misc';
 import * as readlineUtils from '../../utils/readline';
+import { TemplateType } from '../../builders';
 import {
   asyncPackageInit,
   buildSnapManifest,
+  correctDefaultArgs,
   prepareWorkingDirectory,
 } from './initUtils';
 
@@ -29,13 +32,19 @@ jest.mock('fs', () => ({
 }));
 
 jest.mock('@metamask/snap-controllers/dist/snaps');
-
 jest.mock('init-package-json');
-
 jest.mock('mkdirp');
-const mkdirpMock = mkdirp as unknown as jest.Mock;
 
+const mkdirpMock = mkdirp as unknown as jest.Mock;
 const PLACEHOLDER_SHASUM = '2QqUxo5joo4kKKr7yiCjdYsZOZcIFBnIBEdwU9Yx7+M=';
+const getMockedArgv = () => {
+  return {
+    dist: 'dist',
+    outfileName: 'bundle.js',
+    src: 'src/index.js',
+    port: 8081,
+  } as any;
+};
 
 describe('initUtils', () => {
   describe('asyncPackageInit', () => {
@@ -54,7 +63,7 @@ describe('initUtils', () => {
 
       jest.spyOn(console, 'log').mockImplementation();
 
-      await asyncPackageInit();
+      await asyncPackageInit(getMockedArgv());
       expect(existsSyncMock).toHaveBeenCalledTimes(1);
       expect(readJsonFileMock).toHaveBeenCalledTimes(1);
       expect(validateSnapJsonFileMock).toHaveBeenCalledTimes(1);
@@ -76,7 +85,9 @@ describe('initUtils', () => {
         .spyOn(miscUtils, 'logError')
         .mockImplementation();
 
-      await expect(asyncPackageInit()).rejects.toThrow('error message');
+      await expect(asyncPackageInit(getMockedArgv())).rejects.toThrow(
+        'error message',
+      );
       expect(existsSyncMock).toHaveBeenCalled();
       expect(readFileMock).toHaveBeenCalledTimes(1);
       expect(parseMock).toHaveBeenCalledTimes(1);
@@ -93,7 +104,9 @@ describe('initUtils', () => {
         (_, __, ___, cb) => cb(new Error('initpackage error'), true),
       );
 
-      await expect(asyncPackageInit()).rejects.toThrow('initpackage error');
+      await expect(asyncPackageInit(getMockedArgv())).rejects.toThrow(
+        'initpackage error',
+      );
       expect(existsSyncMock).toHaveBeenCalledTimes(2);
     });
 
@@ -106,7 +119,7 @@ describe('initUtils', () => {
         (_, __, ___, cb) => cb(false, true),
       );
 
-      await asyncPackageInit();
+      await asyncPackageInit(getMockedArgv());
       expect(existsSyncMock).toHaveBeenCalledTimes(2);
     });
 
@@ -119,7 +132,7 @@ describe('initUtils', () => {
         .spyOn(miscUtils, 'logError')
         .mockImplementation();
 
-      await expect(asyncPackageInit()).rejects.toThrow(
+      await expect(asyncPackageInit(getMockedArgv())).rejects.toThrow(
         'Already existing yarn.lock file found',
       );
       expect(existsSyncMock).toHaveBeenCalledTimes(2);
@@ -526,6 +539,37 @@ describe('initUtils', () => {
       await prepareWorkingDirectory();
       expect(readdirMock).toHaveBeenCalledTimes(1);
       expect(promptMock).toHaveBeenCalledTimes(0);
+    });
+  });
+
+  describe('correctDefaultArgs', () => {
+    it('should change default source file from index.js to index.ts when typescript is enabled', () => {
+      const mockArgv = {
+        dist: 'dist',
+        outfileName: 'bundle.js',
+        src: 'src/index.js',
+        port: 8081,
+        template: TemplateType.TypeScript,
+      } as unknown as Arguments;
+      expect(correctDefaultArgs(mockArgv)).toStrictEqual({
+        ...mockArgv,
+        src: 'src/index.ts',
+      });
+    });
+
+    it('should not change custom source file name when typescript is enabled', () => {
+      const customFileName = 'src/foo.ts';
+      const mockArgv = {
+        dist: 'dist',
+        outfileName: 'bundle.js',
+        src: customFileName,
+        port: 8081,
+        template: TemplateType.TypeScript,
+      } as unknown as Arguments;
+      expect(correctDefaultArgs(mockArgv)).toStrictEqual({
+        ...mockArgv,
+        src: customFileName,
+      });
     });
   });
 });
