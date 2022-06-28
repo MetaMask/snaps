@@ -343,10 +343,6 @@ jest.mock('./utils', () => ({
 
 fetchMock.enableMocks();
 
-/**
- * Note that fake timers cannot be used in these tests because of the Electron
- * environment we use.
- */
 describe('SnapController', () => {
   it('should create a snap controller and execution service', async () => {
     const [snapController, service] = getSnapControllerWithEES();
