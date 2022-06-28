@@ -19,6 +19,7 @@ export class IFrameSnapExecutor extends BaseSnapExecutor {
       name: 'child',
       target: 'parent',
       targetWindow: self.parent,
+      targetOrigin: '*',
     });
 
     const mux = new ObjectMultiplex();

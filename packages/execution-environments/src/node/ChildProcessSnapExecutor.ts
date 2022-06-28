@@ -1,21 +1,14 @@
 import ObjectMultiplex from '@metamask/object-multiplex';
-import { WebWorkerPostMessageStream } from '@metamask/post-message-stream';
 import pump from 'pump';
+import { ProcessMessageStream } from '@metamask/post-message-stream';
 import { BaseSnapExecutor } from '../common/BaseSnapExecutor';
 import { SNAP_STREAM_NAMES } from '../common/enums';
 
-export class WebWorkerSnapExecutor extends BaseSnapExecutor {
-  /**
-   * Initialize the WebWorkerSnapExecutor. This creates a post message stream
-   * from and to the parent, for two-way communication with the web worker.
-   *
-   * @returns An instance of `WebWorkerSnapExecutor`, with the initialized post
-   * message streams.
-   */
+export class ChildProcessSnapExecutor extends BaseSnapExecutor {
   static initialize() {
     console.log('Worker: Connecting to parent.');
 
-    const parentStream = new WebWorkerPostMessageStream();
+    const parentStream = new ProcessMessageStream();
     const mux = new ObjectMultiplex();
     pump(parentStream, mux as any, parentStream, (err) => {
       if (err) {
@@ -26,6 +19,6 @@ export class WebWorkerSnapExecutor extends BaseSnapExecutor {
 
     const commandStream = mux.createStream(SNAP_STREAM_NAMES.COMMAND);
     const rpcStream = mux.createStream(SNAP_STREAM_NAMES.JSON_RPC) as any;
-    return new WebWorkerSnapExecutor(commandStream, rpcStream);
+    return new ChildProcessSnapExecutor(commandStream, rpcStream);
   }
 }
