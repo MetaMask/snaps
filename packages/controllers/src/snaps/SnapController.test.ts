@@ -1,4 +1,3 @@
-import * as fs from 'fs';
 import {
   Caveat,
   getPersistentState,
@@ -12,7 +11,7 @@ import fetchMock from 'jest-fetch-mock';
 import passworder from '@metamask/browser-passworder';
 import { Crypto } from '@peculiar/webcrypto';
 import { ExecutionService } from '../services/ExecutionService';
-import { WebWorkerExecutionService } from '../services/WebWorkerExecutionService';
+import { NodeExecutionService } from '../services/node';
 import { delay } from '../utils';
 import { DEFAULT_ENDOWMENTS } from './default-endowments';
 import { LONG_RUNNING_PERMISSION } from './endowments';
@@ -32,13 +31,6 @@ import {
 import * as utils from './utils';
 
 const { getSnapSourceShasum } = utils;
-
-const workerCode = fs.readFileSync(
-  require.resolve(
-    '@metamask/execution-environments/dist/webpack/webworker/bundle.js',
-  ),
-  'utf8',
-);
 
 const { subtle } = new Crypto();
 Object.defineProperty(window, 'crypto', {
@@ -105,10 +97,10 @@ const getSnapControllerMessenger = (
   return m;
 };
 
-const getWebWorkerEESMessenger = (
-  messenger?: ReturnType<typeof getControllerMessenger>,
+const getNodeEESMessenger = (
+  messenger: ReturnType<typeof getControllerMessenger>,
 ) =>
-  (messenger ?? getControllerMessenger()).getRestricted({
+  messenger.getRestricted({
     name: 'ExecutionService',
     allowedEvents: ['ExecutionService:unhandledError'],
   });
@@ -146,18 +138,16 @@ type SnapControllerWithEESConstructorParams = Omit<
 >;
 
 const getSnapControllerWithEESOptions = (
+  messenger: ReturnType<typeof getControllerMessenger>,
   opts?: Partial<SnapControllerWithEESConstructorParams>,
 ) => {
   return {
     environmentEndowmentPermissions: [],
-    removeAllPermissionsFor: jest.fn(),
-    getPermissions: jest.fn(),
-    requestPermissions: jest.fn(),
     closeAllConnections: jest.fn(),
     getAppKey: jest
       .fn()
       .mockImplementation((snapId, appKeyType) => `${appKeyType}:${snapId}`),
-    messenger: getSnapControllerMessenger(),
+    messenger: getSnapControllerMessenger(messenger),
     state: undefined,
     ...opts,
   } as SnapControllerWithEESConstructorParams;
@@ -175,13 +165,10 @@ const getEmptySnapControllerState = () => {
   } as SnapControllerState;
 };
 
-const getWebWorkerEES = (
-  messenger: ReturnType<typeof getSnapControllerMessenger>,
-) =>
-  new WebWorkerExecutionService({
+const getNodeEES = (messenger: ReturnType<typeof getNodeEESMessenger>) =>
+  new NodeExecutionService({
     messenger,
     setupSnapProvider: jest.fn(),
-    workerUrl: new URL(URL.createObjectURL(new Blob([workerCode]))),
   });
 
 class ExecutionEnvironmentStub implements ExecutionService {
@@ -208,11 +195,12 @@ class ExecutionEnvironmentStub implements ExecutionService {
 }
 
 const getSnapControllerWithEES = (
-  options = getSnapControllerWithEESOptions(),
-  service?: ReturnType<typeof getWebWorkerEES>,
+  messenger = getControllerMessenger(),
+  options = getSnapControllerWithEESOptions(messenger),
+  service?: ReturnType<typeof getNodeEES>,
 ) => {
-  const { messenger } = options;
-  const _service = service || getWebWorkerEES(messenger);
+  const executionServiceMessenger = getNodeEESMessenger(messenger);
+  const _service = service || getNodeEES(executionServiceMessenger);
   const controller = new SnapController({
     terminateAllSnaps: _service.terminateAllSnaps.bind(_service),
     terminateSnap: _service.terminateSnap.bind(_service),
@@ -375,7 +363,7 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
-  it('should add a snap and use its JSON-RPC api with a WebWorkerExecutionService', async () => {
+  it('should add a snap and use its JSON-RPC api with a NodeExecutionService', async () => {
     const [snapController] = getSnapControllerWithEES();
 
     const snap = await snapController.add({
@@ -399,10 +387,12 @@ describe('SnapController', () => {
 
   it('should add a snap and use its JSON-RPC api', async () => {
     const executionEnvironmentStub =
-      new ExecutionEnvironmentStub() as unknown as WebWorkerExecutionService;
+      new ExecutionEnvironmentStub() as unknown as NodeExecutionService;
 
+    const messenger = getControllerMessenger();
     const [snapController] = getSnapControllerWithEES(
-      getSnapControllerWithEESOptions(),
+      messenger,
+      getSnapControllerWithEESOptions(messenger),
       executionEnvironmentStub,
     );
 
@@ -566,10 +556,12 @@ describe('SnapController', () => {
   });
 
   it('should add errors to the SnapControllers state', async () => {
+    const rootMessenger = getControllerMessenger();
     const executionEnvironmentStub =
-      new ExecutionEnvironmentStub() as unknown as WebWorkerExecutionService;
+      new ExecutionEnvironmentStub() as unknown as NodeExecutionService;
 
     const [snapController] = getSnapControllerWithEES(
+      rootMessenger,
       undefined,
       executionEnvironmentStub,
     );
@@ -617,13 +609,16 @@ describe('SnapController', () => {
 
   it('should handle an error event on the controller messenger', async () => {
     const controllerMessenger = getControllerMessenger();
-    const serviceMessenger = getWebWorkerEESMessenger(controllerMessenger);
+    const serviceMessenger = getNodeEESMessenger(controllerMessenger);
     const snapControllerMessenger =
       getSnapControllerMessenger(controllerMessenger);
 
-    const workerExecutionEnvironment = getWebWorkerEES(serviceMessenger);
+    const workerExecutionEnvironment = getNodeEES(serviceMessenger);
     const [snapController] = getSnapControllerWithEES(
-      getSnapControllerWithEESOptions({ messenger: snapControllerMessenger }),
+      controllerMessenger,
+      getSnapControllerWithEESOptions(controllerMessenger, {
+        messenger: snapControllerMessenger,
+      }),
       workerExecutionEnvironment,
     );
 
@@ -654,8 +649,10 @@ describe('SnapController', () => {
   });
 
   it('should add a snap and use its JSON-RPC api and then get stopped from idling too long', async () => {
+    const rootMessenger = getControllerMessenger();
     const [snapController] = getSnapControllerWithEES(
-      getSnapControllerWithEESOptions({
+      rootMessenger,
+      getSnapControllerWithEESOptions(rootMessenger, {
         idleTimeCheckInterval: 50,
         maxIdleTime: 100,
       }),
@@ -683,12 +680,17 @@ describe('SnapController', () => {
   });
 
   it('should still terminate if connection to worker has failed', async () => {
-    const options = getSnapControllerWithEESOptions({
+    const rootMessenger = getControllerMessenger();
+    const options = getSnapControllerWithEESOptions(rootMessenger, {
       idleTimeCheckInterval: 50,
       maxIdleTime: 100,
     });
-    const worker = getWebWorkerEES(options.messenger);
-    const [snapController] = getSnapControllerWithEES(options, worker);
+    const worker = getNodeEES(options.messenger);
+    const [snapController] = getSnapControllerWithEES(
+      rootMessenger,
+      options,
+      worker,
+    );
 
     const snap = await snapController.add({
       origin: FAKE_ORIGIN,
@@ -719,8 +721,10 @@ describe('SnapController', () => {
   });
 
   it('should add a snap and see its status', async () => {
+    const rootMessenger = getControllerMessenger();
     const [snapController] = getSnapControllerWithEES(
-      getSnapControllerWithEESOptions({
+      rootMessenger,
+      getSnapControllerWithEESOptions(rootMessenger, {
         idleTimeCheckInterval: 1000,
         maxIdleTime: 2000,
       }),
@@ -743,8 +747,10 @@ describe('SnapController', () => {
   });
 
   it('should add a snap and stop it and have it start on-demand', async () => {
+    const rootMessenger = getControllerMessenger();
     const [snapController] = getSnapControllerWithEES(
-      getSnapControllerWithEESOptions({
+      rootMessenger,
+      getSnapControllerWithEESOptions(rootMessenger, {
         idleTimeCheckInterval: 1000,
         maxIdleTime: 2000,
       }),
@@ -988,8 +994,10 @@ describe('SnapController', () => {
   });
 
   it('should add a snap disable/enable it and still get a response from method "test"', async () => {
+    const rootMessenger = getControllerMessenger();
     const [snapController] = getSnapControllerWithEES(
-      getSnapControllerWithEESOptions({
+      rootMessenger,
+      getSnapControllerWithEESOptions(rootMessenger, {
         idleTimeCheckInterval: 1000,
         maxRequestTime: 2000,
         maxIdleTime: 2000,
@@ -1057,9 +1065,11 @@ describe('SnapController', () => {
   });
 
   it('should send an rpc request and time out', async () => {
-    const messenger = getSnapControllerMessenger();
+    const rootMessenger = getControllerMessenger();
+    const messenger = getSnapControllerMessenger(rootMessenger);
     const [snapController] = getSnapControllerWithEES(
-      getSnapControllerWithEESOptions({
+      rootMessenger,
+      getSnapControllerWithEESOptions(rootMessenger, {
         messenger,
         idleTimeCheckInterval: 30000,
         maxIdleTime: 160000,
@@ -1105,13 +1115,15 @@ describe('SnapController', () => {
   });
 
   it('should not time out long running snaps', async () => {
+    const rootMessenger = getControllerMessenger();
     const messenger = getSnapControllerMessenger();
     jest.spyOn(messenger, 'call').mockImplementation(() => {
       // Return true for everything here, so we signal that we have the long-running permission
       return true;
     });
     const [snapController] = getSnapControllerWithEES(
-      getSnapControllerWithEESOptions({
+      rootMessenger,
+      getSnapControllerWithEESOptions(rootMessenger, {
         messenger,
         idleTimeCheckInterval: 30000,
         maxIdleTime: 160000,
@@ -1236,8 +1248,10 @@ describe('SnapController', () => {
   });
 
   it('should remove a snap that is stopped without errors', async () => {
+    const rootMessenger = getControllerMessenger();
     const [snapController] = getSnapControllerWithEES(
-      getSnapControllerWithEESOptions({
+      rootMessenger,
+      getSnapControllerWithEESOptions(rootMessenger, {
         idleTimeCheckInterval: 30000,
         maxIdleTime: 160000,
         maxRequestTime: 1000,
@@ -1284,9 +1298,11 @@ describe('SnapController', () => {
 
   describe('getRpcRequestHandler', () => {
     it('handlers populate the "jsonrpc" property if missing', async () => {
+      const rootMessenger = getControllerMessenger();
       const snapId = 'fooSnap';
       const [snapController] = getSnapControllerWithEES(
-        getSnapControllerWithEESOptions({
+        rootMessenger,
+        getSnapControllerWithEESOptions(rootMessenger, {
           state: {
             snaps: {
               [snapId]: {
