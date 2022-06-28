@@ -21,6 +21,7 @@ module.exports = {
   },
   preset: 'ts-jest',
   testRegex: ['\\.test\\.(ts|js)$'],
+  testEnvironmentOptions: { resources: 'usable' },
   silent: true,
   testTimeout: 5000,
 };
