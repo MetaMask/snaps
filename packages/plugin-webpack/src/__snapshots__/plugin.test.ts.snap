@@ -11,6 +11,17 @@ var __webpack_exports__ = {};
 ;"
 `;
 
+exports[`SnapsWebpackPlugin applies a transform 2`] = `
+" (() => { 
+var __webpack_exports__ = {};
+
+        
+                const foo = 'bar';
+     
+ })()
+;"
+`;
+
 exports[`SnapsWebpackPlugin forwards the options 1`] = `
 "/******/ (() => { // webpackBootstrap
 var __webpack_exports__ = {};
