@@ -1,6 +1,6 @@
 import { Duplex } from 'stream';
 import { ChildProcess, fork } from 'child_process';
-import { WindowPostMessageStream } from '@metamask/post-message-stream';
+import { ProcessParentMessageStream } from '@metamask/post-message-stream';
 import { SNAP_STREAM_NAMES } from '@metamask/execution-environments';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createStreamMiddleware } from 'json-rpc-middleware-stream';
@@ -10,12 +10,11 @@ import {
   AbstractExecutionService,
   setupMultiplex,
 } from '../AbstractExecutionService';
-import { ChildProcessParentMessageStream } from './ChildProcessParentMessageStream';
 
 type JobStreams = {
   command: Duplex;
   rpc: Duplex | null;
-  _connection: WindowPostMessageStream;
+  _connection: ProcessParentMessageStream;
 };
 
 type EnvMetadata = {
@@ -54,7 +53,7 @@ export class NodeExecutionService extends AbstractExecutionService<EnvMetadata> 
 
   private async _initStreams(jobId: string): Promise<any> {
     const process = this._createProcess();
-    const envStream = new ChildProcessParentMessageStream({
+    const envStream = new ProcessParentMessageStream({
       process,
     });
     // Typecast justification: stream type mismatch
