@@ -20,7 +20,6 @@ module.exports = (_, argv) => {
     mode: argv.mode,
     entry: {
       iframe: './src/iframe/index.ts',
-      webworker: './src/web-workers/index.ts',
       node: './src/node/index.ts',
     },
     output: {
@@ -31,15 +30,6 @@ module.exports = (_, argv) => {
       new NodePolyfillPlugin(),
       new CopyPlugin({
         patterns: [
-          {
-            from: path.resolve(
-              `${path.dirname(require.resolve('ses/package.json'))}`,
-              'dist',
-              'lockdown.umd.min.js',
-            ),
-            to: path.resolve(ENVIRONMENTS, 'webworker/lockdown.umd.min.js'),
-            toType: 'file',
-          },
           {
             from: path.resolve(
               `${path.dirname(require.resolve('ses/package.json'))}`,
