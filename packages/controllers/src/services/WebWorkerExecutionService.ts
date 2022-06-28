@@ -1,6 +1,6 @@
 import { Duplex } from 'stream';
 import { ObservableStore } from '@metamask/obs-store';
-import { WorkerParentPostMessageStream } from '@metamask/post-message-stream';
+import { WebWorkerParentPostMessageStream } from '@metamask/post-message-stream';
 import { ExecutionServiceMessenger } from '@metamask/snap-types';
 import { SNAP_STREAM_NAMES } from '@metamask/execution-environments';
 import { JsonRpcEngine } from 'json-rpc-engine';
@@ -22,7 +22,7 @@ interface WorkerControllerArgs {
 interface WorkerStreams {
   command: Duplex;
   rpc: Duplex | null;
-  _connection: WorkerParentPostMessageStream;
+  _connection: WebWorkerParentPostMessageStream;
 }
 
 interface WorkerWrapper {
@@ -119,7 +119,7 @@ export class WebWorkerExecutionService extends AbstractExecutionService<WorkerWr
   }
 
   _initWorkerStreams(worker: Worker, workerId: string): WorkerStreams {
-    const workerStream = new WorkerParentPostMessageStream({ worker });
+    const workerStream = new WebWorkerParentPostMessageStream({ worker });
     // Typecast justification: stream type mismatch
     const mux = setupMultiplex(
       workerStream as unknown as Duplex,
