@@ -135,7 +135,7 @@ function breakTokensTemplateLiteral(
         const prefix = value.slice(
           index === 0
             ? 0
-            : (values[index - 1].index ?? 0) + values[index - 1][0].length,
+            : (values[index - 1].index as number) + values[index - 1][0].length,
           rawMatch.index,
         );
 
@@ -153,7 +153,9 @@ function breakTokensTemplateLiteral(
 
     // Add the text after the last match to the output.
     const lastMatch = matches[matches.length - 1];
-    const suffix = value.slice((lastMatch.index ?? 0) + lastMatch[0].length);
+    const suffix = value.slice(
+      (lastMatch.index as number) + lastMatch[0].length,
+    );
 
     return [
       [...output[0], templateElement({ raw: suffix, cooked: suffix })],
