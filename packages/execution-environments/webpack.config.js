@@ -15,12 +15,53 @@ module.exports = (_, argv) => {
       devtool: 'inline-source-map',
     };
   }
-  const config = {
+  
+  const nodeConfig = {
+    ...extraOptions,
+    mode: argv.mode,
+    target: 'node',
+    entry: {
+      node: './src/node/index.ts',
+    },
+    output: {
+      filename: '[name]/bundle.js',
+      path: ENVIRONMENTS,
+    },
+    plugins: [
+      new CopyPlugin({
+        patterns: [
+          
+          {
+            from: path.resolve(
+              `${path.dirname(require.resolve('ses/package.json'))}`,
+              'dist',
+              'lockdown.umd.min.js',
+            ),
+            to: path.resolve(ENVIRONMENTS, 'node/lockdown.umd.min.js'),
+            toType: 'file',
+          },
+        ],
+      }),
+    ],
+    module: {
+      rules: [
+        {
+          test: /\.tsx?$/u,
+          use: 'ts-loader',
+          exclude: /node_modules/u,
+        },
+      ],
+    },
+    resolve: {
+      extensions: ['.tsx', '.ts', '.js'],
+    },
+  };
+
+  const browserConfig = {
     ...extraOptions,
     mode: argv.mode,
     entry: {
       iframe: './src/iframe/index.ts',
-      node: './src/node/index.ts',
     },
     output: {
       filename: '[name]/bundle.js',
@@ -36,7 +77,25 @@ module.exports = (_, argv) => {
               'dist',
               'lockdown.umd.min.js',
             ),
+            to: path.resolve(ENVIRONMENTS, 'webworker/lockdown.umd.min.js'),
+            toType: 'file',
+          },
+          {
+            from: path.resolve(
+              `${path.dirname(require.resolve('ses/package.json'))}`,
+              'dist',
+              'lockdown.umd.min.js',
+            ),
             to: path.resolve(ENVIRONMENTS, 'node/lockdown.umd.min.js'),
+            toType: 'file',
+          },
+          {
+            from: path.resolve(
+              `${path.dirname(require.resolve('ses/package.json'))}`,
+              'dist',
+              'lockdown.umd.min.js',
+            ),
+            to: path.resolve(ENVIRONMENTS, 'node-thread/lockdown.umd.min.js'),
             toType: 'file',
           },
           // @todo Merge this with above if possible
@@ -76,5 +135,5 @@ module.exports = (_, argv) => {
       },
     },
   };
-  return config;
+  return [browserConfig, nodeConfig];
 };
