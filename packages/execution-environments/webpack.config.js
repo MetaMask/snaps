@@ -21,6 +21,7 @@ module.exports = (_, argv) => {
     entry: {
       iframe: './src/iframe/index.ts',
       webworker: './src/web-workers/index.ts',
+      node: './src/node/index.ts',
     },
     output: {
       filename: '[name]/bundle.js',
@@ -39,6 +40,15 @@ module.exports = (_, argv) => {
             to: path.resolve(ENVIRONMENTS, 'webworker/lockdown.umd.min.js'),
             toType: 'file',
           },
+          {
+            from: path.resolve(
+              `${path.dirname(require.resolve('ses/package.json'))}`,
+              'dist',
+              'lockdown.umd.min.js',
+            ),
+            to: path.resolve(ENVIRONMENTS, 'node/lockdown.umd.min.js'),
+            toType: 'file',
+          },
           // @todo Merge this with above if possible
           {
             // For use in <script> tag along with the iframe bundle. Copied to ensure same version as bundled
@@ -51,11 +61,7 @@ module.exports = (_, argv) => {
             toType: 'file',
           },
           {
-            from: path.resolve(
-              'src',
-              'iframe',
-              'index.html',
-            ),
+            from: path.resolve('src', 'iframe', 'index.html'),
             to: path.resolve(ENVIRONMENTS, 'iframe/index.html'),
             toType: 'file',
           },
@@ -76,6 +82,7 @@ module.exports = (_, argv) => {
       alias: {
         // Without this alias webpack tried to require ../../node_modules/stream/ which doesn't have Duplex, breaking the bundle
         stream: 'stream-browserify',
+        'worker_threads': false
       },
     },
   };

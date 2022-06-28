@@ -82,6 +82,7 @@ export class IframeExecutionService extends AbstractExecutionService<EnvMetadata
       name: 'parent',
       target: 'child',
       targetWindow: this._iframeWindow,
+      targetOrigin: '*',
     });
     // Typecast justification: stream type mismatch
     const mux = setupMultiplex(

@@ -12,11 +12,11 @@ import {
 } from '../__GENERATED__/openrpc';
 import { isJsonRpcRequest } from '../__GENERATED__/openrpc.guard';
 import { createEndowments } from './endowments';
-import { rootRealmGlobal } from './globalObject';
 import {
   getCommandMethodImplementations,
   CommandMethodsMapping,
 } from './commands';
+import { removeEventListener, addEventListener } from './globalEvents';
 import { sortParamKeys } from './sortParams';
 import { constructError } from './utils';
 
@@ -181,14 +181,11 @@ export class BaseSnapExecutor {
   ): Promise<void> {
     console.log(`starting snap '${snapName}' in worker`);
     if (this.snapPromiseErrorHandler) {
-      rootRealmGlobal.removeEventListener(
-        'unhandledrejection',
-        this.snapPromiseErrorHandler,
-      );
+      removeEventListener('unhandledrejection', this.snapPromiseErrorHandler);
     }
 
     if (this.snapErrorHandler) {
-      rootRealmGlobal.removeEventListener('error', this.snapErrorHandler);
+      removeEventListener('error', this.snapErrorHandler);
     }
 
     this.snapErrorHandler = (error: ErrorEvent) => {
@@ -219,11 +216,8 @@ export class BaseSnapExecutor {
         exports: {},
       });
 
-      rootRealmGlobal.addEventListener(
-        'unhandledrejection',
-        this.snapPromiseErrorHandler,
-      );
-      rootRealmGlobal.addEventListener('error', this.snapErrorHandler);
+      addEventListener('unhandledRejection', this.snapPromiseErrorHandler);
+      addEventListener('error', this.snapErrorHandler);
 
       const compartment = new Compartment({
         ...endowments,
