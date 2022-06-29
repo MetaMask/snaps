@@ -18,6 +18,7 @@ import {
 } from './commands';
 import { removeEventListener, addEventListener } from './globalEvents';
 import { sortParamKeys } from './sortParams';
+import { constructError } from './utils';
 
 type OnRpcRequestHandler = (args: {
   origin: string;
@@ -77,17 +78,25 @@ export class BaseSnapExecutor {
     );
   }
 
-  private errorHandler(error: Error, data = {}) {
+  private errorHandler(
+    reason: string,
+    originalError: unknown,
+    data: Record<string, unknown>,
+  ) {
+    const error = new Error(reason);
+
+    const _originalError: Error | undefined = constructError(originalError);
+
     const serializedError = serializeError(error, {
-      fallbackError,
-      shouldIncludeStack: true,
+      shouldIncludeStack: false,
     });
+
     this.notify({
       error: {
         ...serializedError,
         data: {
           ...data,
-          stack: serializedError.stack,
+          originalError: _originalError,
         },
       },
     });
@@ -97,7 +106,6 @@ export class BaseSnapExecutor {
     if (!isJsonRpcRequest(message)) {
       throw new Error('Command stream received a non Json Rpc Request');
     }
-
     const { id, method, params } = message;
 
     if (id === undefined) {
@@ -181,11 +189,13 @@ export class BaseSnapExecutor {
     }
 
     this.snapErrorHandler = (error: ErrorEvent) => {
-      this.errorHandler(error.error, { snapName });
+      this.errorHandler('Uncaught error in snap.', error.error, { snapName });
     };
 
     this.snapPromiseErrorHandler = (error: PromiseRejectionEvent) => {
-      this.errorHandler(error.reason, { snapName });
+      this.errorHandler('Unhandled promise rejection in snap.', error.reason, {
+        snapName,
+      });
     };
 
     const wallet = this.createSnapProvider();

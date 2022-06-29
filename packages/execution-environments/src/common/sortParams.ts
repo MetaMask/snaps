@@ -30,8 +30,14 @@ export const sortParamKeys = (
   }
 
   const methodParamsOrder: { [k: string]: number } = method.params
-    .map((p) => p.name)
-    .reduce((m, pn, i) => ({ ...m, [pn]: i }), {});
+    .map((param) => param.name)
+    .reduce(
+      (paramsOrderObj, paramsName, i) => ({
+        ...paramsOrderObj,
+        [paramsName]: i,
+      }),
+      {},
+    );
 
   return Object.entries(params)
     .sort(

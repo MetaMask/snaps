@@ -190,7 +190,7 @@ describe('NodeExecutionService', () => {
     expect(await unhandledErrorPromise).toStrictEqual({
       code: -32603,
       data: { snapName: 'TestSnap' },
-      message: 'Execution Environment Error',
+      message: 'Unhandled promise rejection in snap.',
     });
 
     await service.terminateAllSnaps();

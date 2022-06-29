@@ -82,7 +82,6 @@ export function createEndowments(
         const globalValue = (rootRealmGlobal as Record<string, unknown>)[
           endowmentName
         ];
-
         allEndowments[endowmentName] =
           typeof globalValue === 'function' && !isConstructor(globalValue)
             ? globalValue.bind(rootRealmGlobal)
@@ -116,7 +115,7 @@ export function createEndowments(
  */
 // `Function` is exactly what we want here.
 // eslint-disable-next-line @typescript-eslint/ban-types
-function isConstructor<T extends Function>(value: T): boolean {
+export function isConstructor<T extends Function>(value: T): boolean {
   // In our current usage, the string `prototype.constructor.name` should never
   // be empty, because you can't create a class with no name, and the
   // `prototype.constructor.name` property is configurable but not writable.

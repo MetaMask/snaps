@@ -87,6 +87,6 @@ export function executeLockdownMore() {
  * @param descriptor - The propertyName descriptor to check.
  * @returns Whether the propertyName descriptor has any accessors.
  */
-function hasAccessor(descriptor: any) {
+function hasAccessor(descriptor: any): boolean {
   return 'set' in descriptor || 'get' in descriptor;
 }

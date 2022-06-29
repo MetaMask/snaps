@@ -1,4 +1,24 @@
 /**
+ * Takes an error that was thrown, determines if it is
+ * an error object. If it is then it will return that. Otherwise,
+ * an error object is created with the original error message.
+ *
+ * @param originalError - The error that was originally thrown.
+ * @returns An error object.
+ */
+export function constructError(originalError: unknown) {
+  let _originalError: Error | undefined;
+  if (originalError instanceof Error) {
+    _originalError = originalError;
+  } else if (typeof originalError === 'string') {
+    _originalError = new Error(originalError);
+    // The stack is useless in this case.
+    delete _originalError.stack;
+  }
+  return _originalError;
+}
+
+/**
  * Get all properties of an object, including its prototype chain.
  *
  * @param obj - The object to get all properties for.
