@@ -18,6 +18,7 @@ import {
   ExecutionService,
   ExecutionServiceMessenger,
 } from './ExecutionService';
+import { createOutboundRequestMiddleware } from './createOutboundRequestMiddleware';
 
 const controllerName = 'ExecutionService';
 
@@ -310,10 +311,15 @@ export abstract class AbstractExecutionService<WorkerType>
       id: nanoid(),
     });
 
-    this.setupSnapProvider(
+    const rpcStream = job.streams.rpc as unknown as Duplex;
+
+    const middleware = createOutboundRequestMiddleware(
+      this._messenger,
       snapData.snapId,
-      job.streams.rpc as unknown as Duplex,
     );
+    pump(rpcStream, middleware, rpcStream);
+
+    this.setupSnapProvider(snapData.snapId, rpcStream);
 
     const result = await this._command(job.id, {
       jsonrpc: '2.0',
