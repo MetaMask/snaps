@@ -8,10 +8,10 @@ module.exports = {
   coveragePathIgnorePatterns: ['/node_modules/', '/mocks/', '/test/'],
   coverageThreshold: {
     global: {
-      branches: 67.37,
-      functions: 83.67,
-      lines: 84.6,
-      statements: 84.63,
+      branches: 64.39,
+      functions: 84.06,
+      lines: 84.43,
+      statements: 84.46,
     },
   },
   globals: {
@@ -21,7 +21,7 @@ module.exports = {
   },
   preset: 'ts-jest',
   testRegex: ['\\.test\\.(ts|js)$'],
-  testEnvironmentOptions: { resources: 'usable' },
+  testEnvironmentOptions: { resources: 'usable', runScripts: 'dangerously' },
   silent: true,
   testTimeout: 5000,
 };

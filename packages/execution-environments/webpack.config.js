@@ -62,6 +62,7 @@ module.exports = (_, argv) => {
     mode: argv.mode,
     entry: {
       iframe: './src/iframe/index.ts',
+      'iframe-test': './src/iframe-test/index.ts',
     },
     output: {
       filename: '[name]/bundle.js',
@@ -110,8 +111,23 @@ module.exports = (_, argv) => {
             toType: 'file',
           },
           {
+            // For use in <script> tag along with the iframe bundle. Copied to ensure same version as bundled
+            from: path.resolve(
+              `${path.dirname(require.resolve('ses/package.json'))}`,
+              'dist',
+              'lockdown.umd.min.js',
+            ),
+            to: path.resolve(ENVIRONMENTS, 'iframe-test/lockdown.umd.min.js'),
+            toType: 'file',
+          },
+          {
             from: path.resolve('src', 'iframe', 'index.html'),
             to: path.resolve(ENVIRONMENTS, 'iframe/index.html'),
+            toType: 'file',
+          },
+          {
+            from: path.resolve('src', 'iframe', 'index.html'),
+            to: path.resolve(ENVIRONMENTS, 'iframe-test/index.html'),
             toType: 'file',
           },
         ],

@@ -18,7 +18,7 @@ export async function start(port = PORT) {
     }
 
     const bundlePath = require.resolve(
-      '@metamask/execution-environments/dist/webpack/iframe/bundle.js',
+      '@metamask/execution-environments/dist/webpack/iframe-test/bundle.js',
     );
     const publicPath = path.resolve(bundlePath, '../');
 
