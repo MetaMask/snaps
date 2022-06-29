@@ -119,6 +119,7 @@ describe('getCommandMethodImplementations', () => {
     const rpcRequest = { jsonrpc: '2.0', method: 'hello' };
     await methodsObj.snapRpc('foo', 'bar', rpcRequest as any);
     expect(invokeSnapRpc).toHaveBeenCalledTimes(1);
+    expect(invokeSnapRpc).toHaveBeenCalledWith('foo', 'bar', rpcRequest);
   });
 
   it('the snapRpc method will throw an error if the target is not a string', async () => {
