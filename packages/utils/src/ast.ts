@@ -7,6 +7,7 @@ import {
   Expression,
   Identifier,
   stringLiteral,
+  TemplateElement,
   templateElement,
   templateLiteral,
 } from '@babel/types';
@@ -16,6 +17,15 @@ const COMMENTS_KEYS = [
   'leadingComments',
   'trailingComments',
 ] as const;
+
+// The RegEx below consists of multiple groups joined by a boolean OR.
+// Each part consists of two groups which capture a part of each string
+// which needs to be split up, e.g., `<!--` is split into `<!` and `--`.
+const TOKEN_REGEX = /(<!)(--)|(--)(>)|(import)(\(.*?\))/gu;
+
+// An empty template element, i.e., a part of a template literal without any
+// value ("").
+const EMPTY_TEMPLATE_ELEMENT = templateElement({ raw: '', cooked: '' });
 
 /**
  * Get the abstract syntax tree (AST) representation of the given code. This
@@ -90,17 +100,71 @@ const regeneratorRuntimeWrapper = template.statement(`
  * array elements.
  */
 function breakTokens(value: string): string[] {
-  // The RegEx below consists of multiple groups joined by a boolean OR.
-  // Each part consists of two groups which capture a part of each string
-  // which needs to be split up, e.g., `<!--` is split into `<!` and `--`.
-  const tokens = value.split(/(<!)(--)|(--)(>)|(import)(\(.*?\))/gu);
-
+  const tokens = value.split(TOKEN_REGEX);
   return (
     tokens
       // TODO: The `split` above results in some values being `undefined`.
       // There may be a better solution to avoid having to filter those out.
       .filter((token) => token !== '' && token !== undefined)
   );
+}
+
+/**
+ * Breaks up tokens that would otherwise result in SES errors. The tokens are
+ * broken up in a non-destructive way where possible. Currently works with:
+ * - HTML comment tags `<!--` and `-->`, broken up into `<!`, `--`, and `--`,
+ * `>`.
+ * - `import(n)` statements, broken up into `import`, `(n)`.
+ *
+ * @param value - The string value to break up.
+ * @returns The string split into a tuple consisting of the new template
+ * elements and string literal expressions.
+ */
+function breakTokensTemplateLiteral(
+  value: string,
+): [TemplateElement[], Expression[]] {
+  const matches = Array.from(value.matchAll(TOKEN_REGEX));
+
+  if (matches.length > 0) {
+    const output = matches.reduce<[TemplateElement[], Expression[]]>(
+      ([elements, expressions], rawMatch, index, values) => {
+        const [, first, last] = rawMatch.filter((raw) => raw !== undefined);
+
+        // Slice the text in front of the match, which does not need to be
+        // broken up.
+        const prefix = value.slice(
+          index === 0
+            ? 0
+            : (values[index - 1].index as number) + values[index - 1][0].length,
+          rawMatch.index,
+        );
+
+        return [
+          [
+            ...elements,
+            templateElement({ raw: prefix, cooked: prefix }),
+            EMPTY_TEMPLATE_ELEMENT,
+          ],
+          [...expressions, stringLiteral(first), stringLiteral(last)],
+        ];
+      },
+      [[], []],
+    );
+
+    // Add the text after the last match to the output.
+    const lastMatch = matches[matches.length - 1];
+    const suffix = value.slice(
+      (lastMatch.index as number) + lastMatch[0].length,
+    );
+
+    return [
+      [...output[0], templateElement({ raw: suffix, cooked: suffix })],
+      output[1],
+    ];
+  }
+
+  // If there are no matches, simply return the original value.
+  return [[templateElement({ raw: value, cooked: value })], []];
 }
 
 /**
@@ -238,39 +302,41 @@ export function postProcessAST(ast: Node): Node {
       // For reference:
       // - https://github.com/endojs/endo/blob/70cc86eb400655e922413b99c38818d7b2e79da0/packages/ses/error-codes/SES_HTML_COMMENT_REJECTED.md
       // - https://github.com/MetaMask/snaps-skunkworks/issues/505
-      const expressions = node.quasis.reduce<Expression[]>(
-        (acc, quasi, index) => {
+      const [replacementQuasis, replacementExpressions] = node.quasis.reduce<
+        [TemplateElement[], Expression[]]
+      >(
+        ([elements, expressions], quasi, index) => {
           // Note: Template literals have two variants, "cooked" and "raw". Here
           // we use the cooked version.
           // https://exploringjs.com/impatient-js/ch_template-literals.html#template-strings-cooked-vs-raw
-          const replacement = breakTokens(quasi.value.cooked as string).map(
-            (token) => stringLiteral(token),
+          const tokens = breakTokensTemplateLiteral(
+            quasi.value.cooked as string,
           );
 
-          if (node.expressions[index]) {
+          // Only update the node if something changed.
+          if (tokens[0].length <= 1) {
             return [
-              ...acc,
-              ...replacement,
-              node.expressions[index],
-            ] as Expression[];
+              [...elements, quasi],
+              [...expressions, node.expressions[index] as Expression],
+            ];
           }
 
-          return [...acc, ...replacement];
+          return [
+            [...elements, ...tokens[0]],
+            [
+              ...expressions,
+              ...tokens[1],
+              node.expressions[index] as Expression,
+            ],
+          ];
         },
-        [],
+        [[], []],
       );
-
-      // Only update the node if something changed.
-      if (expressions.length <= node.quasis.length) {
-        return;
-      }
 
       path.replaceWith(
         templateLiteral(
-          new Array(expressions.length + 1)
-            .fill(undefined)
-            .map(() => templateElement({ cooked: '', raw: '' })),
-          expressions,
+          replacementQuasis,
+          replacementExpressions.filter((e) => e !== undefined),
         ) as Node,
       );
 
