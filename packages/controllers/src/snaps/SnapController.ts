@@ -141,6 +141,11 @@ export type VersionHistory = {
   date: number;
 };
 
+export type PendingRequest = {
+  requestId: string;
+  // Timeout
+};
+
 /**
  * A wrapper type for any data stored during runtime of Snaps.
  * It is not persisted in state as it contains non-serializable data and is only relevant for the current session.
@@ -157,9 +162,9 @@ export interface SnapRuntimeData {
   lastRequest: null | number;
 
   /**
-   * The current number of pending requests
+   * The current pending requests
    */
-  pendingRequests: number;
+  pendingRequests: PendingRequest[];
 
   /**
    * RPC handler designated for the Snap
@@ -704,7 +709,7 @@ export class SnapController extends BaseController<
       entries
         .filter(
           ([_snapId, runtime]) =>
-            runtime.pendingRequests === 0 &&
+            runtime.pendingRequests.length === 0 &&
             // lastRequest should always be set here but TypeScript wants this check
             runtime.lastRequest &&
             this._maxIdleTime &&
@@ -837,7 +842,7 @@ export class SnapController extends BaseController<
 
     // Reset request tracking
     runtime.lastRequest = null;
-    runtime.pendingRequests = 0;
+    runtime.pendingRequests = [];
     try {
       if (this.isRunning(snapId)) {
         this._closeAllConnections(snapId);
@@ -1890,7 +1895,7 @@ export class SnapController extends BaseController<
         });
       }
 
-      this._recordSnapRpcRequestStart(snapId);
+      this._recordSnapRpcRequestStart(snapId, request.id as string);
 
       // This will either get the result or reject due to the timeout.
       try {
@@ -1898,7 +1903,7 @@ export class SnapController extends BaseController<
           snapId,
           handler(origin, _request),
         );
-        this._recordSnapRpcRequestFinish(snapId);
+        this._recordSnapRpcRequestFinish(snapId, request.id as string);
         return result;
       } catch (err) {
         await this.stopSnap(snapId, SnapStatusEvent.crash);
@@ -1941,16 +1946,19 @@ export class SnapController extends BaseController<
     return result;
   }
 
-  private _recordSnapRpcRequestStart(snapId: SnapId) {
+  private _recordSnapRpcRequestStart(snapId: SnapId, requestId: string) {
     const runtime = this._getSnapRuntimeData(snapId);
-    runtime.pendingRequests += 1;
+    runtime.pendingRequests.push({ requestId });
     runtime.lastRequest = null;
   }
 
-  private _recordSnapRpcRequestFinish(snapId: SnapId) {
+  private _recordSnapRpcRequestFinish(snapId: SnapId, requestId: string) {
     const runtime = this._getSnapRuntimeData(snapId);
-    runtime.pendingRequests -= 1;
-    if (runtime.pendingRequests === 0) {
+    runtime.pendingRequests = runtime.pendingRequests.filter(
+      (r) => r.requestId !== requestId,
+    );
+
+    if (runtime.pendingRequests.length === 0) {
       runtime.lastRequest = Date.now();
     }
   }
@@ -1961,7 +1969,7 @@ export class SnapController extends BaseController<
         lastRequest: null,
         rpcHandler: null,
         installPromise: null,
-        pendingRequests: 0,
+        pendingRequests: [],
       });
     }
     return this._snapsRuntimeData.get(snapId) as SnapRuntimeData;
