@@ -313,13 +313,13 @@ export abstract class AbstractExecutionService<WorkerType>
 
     const rpcStream = job.streams.rpc as unknown as Duplex;
 
-    const middleware = createOutboundRequestMiddleware(
+    const wrappedStream = createOutboundRequestMiddleware(
+      rpcStream,
       this._messenger,
       snapData.snapId,
     );
-    pump(rpcStream, middleware, rpcStream);
 
-    this.setupSnapProvider(snapData.snapId, rpcStream);
+    this.setupSnapProvider(snapData.snapId, wrappedStream);
 
     const result = await this._command(job.id, {
       jsonrpc: '2.0',
