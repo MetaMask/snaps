@@ -142,7 +142,10 @@ function breakTokensTemplateLiteral(
         return [
           [
             ...elements,
-            templateElement({ raw: prefix, cooked: prefix }),
+            templateElement({
+              raw: getRawTemplateValue(prefix),
+              cooked: prefix,
+            }),
             EMPTY_TEMPLATE_ELEMENT,
           ],
           [...expressions, stringLiteral(first), stringLiteral(last)],
@@ -158,13 +161,31 @@ function breakTokensTemplateLiteral(
     );
 
     return [
-      [...output[0], templateElement({ raw: suffix, cooked: suffix })],
+      [
+        ...output[0],
+        templateElement({ raw: getRawTemplateValue(suffix), cooked: suffix }),
+      ],
       output[1],
     ];
   }
 
   // If there are no matches, simply return the original value.
-  return [[templateElement({ raw: value, cooked: value })], []];
+  return [
+    [templateElement({ raw: getRawTemplateValue(value), cooked: value })],
+    [],
+  ];
+}
+
+/**
+ * Get a raw template literal value from a cooked value. This adds a backslash
+ * before every '`', '\' and '${' characters.
+ *
+ * @see https://github.com/babel/babel/issues/9242#issuecomment-532529613
+ * @param value - The cooked string to get the raw string for.
+ * @returns The value as raw value.
+ */
+function getRawTemplateValue(value: string) {
+  return value.replace(/\\|`|\$\{/gu, '\\$&');
 }
 
 /**

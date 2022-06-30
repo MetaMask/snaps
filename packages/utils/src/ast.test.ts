@@ -249,6 +249,18 @@ describe('postProcessAST', () => {
     `);
   });
 
+  it(`doesn't break template literals with special characters`, () => {
+    // eslint-disable-next-line
+    const code = 'const foo = `<!-- \\` ${foo} \\` -->`;';
+
+    const ast = getAST(code);
+    const processedCode = postProcessAST(ast);
+
+    expect(getCode(processedCode)).toMatchInlineSnapshot(
+      `"const foo = \`\${\\"<!\\"}\${\\"--\\"} \\\\\` \${foo} \\\\\` \${\\"--\\"}\${\\">\\"}\`;"`,
+    );
+  });
+
   it('processes all the things', () => {
     const code = `
       (function (Buffer, foo) {
