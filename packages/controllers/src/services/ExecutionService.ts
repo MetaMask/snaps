@@ -16,12 +16,28 @@ export interface ExecutionService {
   getRpcRequestHandler: GetRpcRequestHandler;
 }
 
+const controllerName = 'ExecutionService';
+
 export type ErrorMessageEvent = {
   type: 'ExecutionService:unhandledError';
   payload: [SnapId, ErrorJSON];
 };
 
-const controllerName = 'ExecutionService';
+export type OutboundRequest = {
+  type: 'ExecutionService:outboundRequest';
+  payload: [SnapId];
+};
+
+export type OutboundResponse = {
+  type: 'ExecutionService:outboundResponse';
+  payload: [SnapId];
+};
+
+export type ExecutionServiceEvents =
+  | ErrorMessageEvent
+  | OutboundRequest
+  | OutboundResponse;
+
 
 /**
  * Gets the RPC message handler for a snap.
@@ -64,7 +80,7 @@ export type ExecutionServiceActions =
 export type ExecutionServiceMessenger = RestrictedControllerMessenger<
   'ExecutionService',
   ExecutionServiceActions,
-  ErrorMessageEvent,
+  ExecutionServiceEvents,
   ExecutionServiceActions['type'],
-  ErrorMessageEvent['type']
+  ExecutionServiceEvents['type']
 >;

@@ -22,9 +22,9 @@ export const createOutboundRequestMiddleware = (messenger: ExecutionServiceMesse
             const data = chunk.data;
             if (!(chunk.data.id in idMap)) {
                 idMap[chunk.data.id] = { data };
-                //messenger.call('SnapController:OnOutboundRequestStart' as never, snapId as never);
+                messenger.publish('ExecutionService:outboundRequest' as const, snapId);
             } else {
-                //messenger.call('SnapController:OnOutboundRequestEnd' as never, snapId as never);
+                messenger.publish('ExecutionService:outboundResponse' as const, snapId);
             }
         }
         console.log(snapId, "OUTBOUND", chunk);
