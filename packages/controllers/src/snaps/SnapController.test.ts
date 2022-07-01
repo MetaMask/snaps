@@ -70,6 +70,7 @@ const getSnapControllerMessenger = (
       'SnapController:snapAdded',
       'SnapController:snapBlocked',
       'SnapController:snapInstalled',
+      'SnapController:snapUnblocked',
       'SnapController:snapUpdated',
       'SnapController:snapRemoved',
       'SnapController:stateChange',

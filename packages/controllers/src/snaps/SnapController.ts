@@ -117,6 +117,11 @@ export type Snap = {
   blocked: boolean;
 
   /**
+   * Information detailing why the snap is blocked.
+   */
+  blockInformation?: BlockedSnapInfo;
+
+  /**
    * The name of the permission used to invoke the Snap.
    */
   permissionName: string;
@@ -347,6 +352,14 @@ export type SnapRemoved = {
 };
 
 /**
+ * Emitted when an installed snap has been unblocked.
+ */
+export type SnapUnblocked = {
+  type: `${typeof controllerName}:snapUnblocked`;
+  payload: [snapId: string];
+};
+
+/**
  * Emitted when a snap is updated.
  */
 export type SnapUpdated = {
@@ -369,6 +382,7 @@ export type SnapControllerEvents =
   | SnapInstalled
   | SnapRemoved
   | SnapStateChange
+  | SnapUnblocked
   | SnapUpdated
   | SnapTerminated;
 
@@ -418,6 +432,7 @@ export type CheckSnapBlockListArg = Record<SnapId, SemVerVersion>;
 export type CheckSnapBlockListResult = Record<
   SnapId,
   {
+    blocked: boolean;
     reason?: string;
     infoUrl?: string;
   }
@@ -565,7 +580,6 @@ const disabledGuard = (serializedSnap: Snap) => {
   return serializedSnap.enabled;
 };
 
-// TODO(rekmarks): Add `blocked` state, prevent blocked snaps from being started.
 /**
  * The state machine configuration for a snaps `status` state.
  * Using a state machine for a snaps `status` ensures that the snap transitions to a valid next lifecycle state.
@@ -810,8 +824,15 @@ export class SnapController extends BaseController<
     }
 
     await Promise.all(
-      Object.entries(blockedSnaps).map(([snapId, blockedSnapInfo]) =>
-        this.blockSnap(snapId, blockedSnapInfo),
+      Object.entries(blockedSnaps).map(
+        ([snapId, { blocked, infoUrl, reason }]) => {
+          if (blocked) {
+            return this._blockSnap(snapId, { infoUrl, reason });
+          }
+
+          this._unblockSnap(snapId);
+          return Promise.resolve();
+        },
       ),
     );
   }
@@ -823,7 +844,7 @@ export class SnapController extends BaseController<
    * @param snapId - The snap to block.
    * @param blockedSnapInfo - Information detailing why the snap is blocked.
    */
-  async blockSnap(
+  private async _blockSnap(
     snapId: SnapId,
     blockedSnapInfo: BlockedSnapInfo,
   ): Promise<void> {
@@ -832,9 +853,12 @@ export class SnapController extends BaseController<
     }
 
     try {
-      if (this.isRunning(snapId)) {
-        await this.stopSnap(snapId);
-      }
+      this.update((state: any) => {
+        state.snaps[snapId].blocked = true;
+        state.snaps[snapId].blockInformation = blockedSnapInfo;
+      });
+
+      await this.disableSnap(snapId);
     } catch (error) {
       console.error(
         `Encountered error when stopping blocked snap "${snapId}".`,
@@ -842,15 +866,32 @@ export class SnapController extends BaseController<
       );
     }
 
-    this.update((state: any) => {
-      state.snaps[snapId].blocked = true;
-    });
-
     this.messagingSystem.publish(
       `${controllerName}:snapBlocked`,
       snapId,
       blockedSnapInfo,
     );
+  }
+
+  /**
+   * Unblocks a snap so that it can be enabled and started again. Emits
+   * {@link SnapUnblocked}. Does nothing if the snap is not installed.
+   *
+   * @param snapId - The snap to unblock.
+   */
+  private async _unblockSnap(snapId: SnapId): Promise<void> {
+    if (!this.has(snapId) || !this.state.snaps[snapId].blocked) {
+      return;
+    }
+
+    this.update((state: any) => {
+      state.snaps[snapId].blocked = false;
+      delete state.snaps[snapId].blockInformation;
+    });
+
+    this.enableSnap(snapId);
+
+    this.messagingSystem.publish(`${controllerName}:snapUnblocked`, snapId);
   }
 
   /**
@@ -953,11 +994,20 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Enables the given snap. A snap can only be started if it is enabled.
+   * Enables the given snap. A snap can only be started if it is enabled. A snap
+   * can only be enabled if it isn't blocked.
    *
    * @param snapId - The id of the Snap to enable.
    */
   enableSnap(snapId: SnapId): void {
+    if (!this.has(snapId)) {
+      throw new Error(`Snap "${snapId}" not found.`);
+    }
+
+    if (this.state.snaps[snapId].blocked) {
+      throw new Error(`Snap "${snapId}" is blocked and cannot be enabled.`);
+    }
+
     this.update((state: any) => {
       state.snaps[snapId].enabled = true;
     });
@@ -1754,6 +1804,7 @@ export class SnapController extends BaseController<
       version,
       versionHistory,
     };
+    delete snap.blockInformation;
 
     // store the snap back in state
     this.update((state: any) => {
