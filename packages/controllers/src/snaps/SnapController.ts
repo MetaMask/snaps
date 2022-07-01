@@ -29,15 +29,14 @@ import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
+import { assertExhaustive, hasTimedOut, setDiff, withTimer } from '../utils';
 import {
-  assertExhaustive,
-  ErrorMessageEvent,
   ExecuteSnapAction,
+  ExecutionServiceEvents,
   GetRpcRequestHandlerAction,
   TerminateAllSnapsAction,
   TerminateSnapAction,
 } from '..';
-import { hasTimedOut, setDiff, withTimeout } from '../utils';
 import { DEFAULT_ENDOWMENTS } from './default-endowments';
 import { LONG_RUNNING_PERMISSION } from './endowments';
 import { SnapManifest, validateSnapJsonFile } from './json-schemas';
@@ -58,6 +57,7 @@ import {
   ValidatedSnapId,
   validateSnapShasum,
 } from './utils';
+import { Timer } from './Timer';
 
 export const controllerName = 'SnapController';
 
@@ -143,7 +143,7 @@ export type VersionHistory = {
 
 export type PendingRequest = {
   requestId: string;
-  // Timeout
+  timer: Timer;
 };
 
 /**
@@ -365,7 +365,7 @@ export type AllowedActions =
   | TerminateAllSnapsAction
   | TerminateSnapAction;
 
-export type AllowedEvents = ErrorMessageEvent;
+export type AllowedEvents = ExecutionServiceEvents;
 
 type SnapControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
@@ -643,6 +643,8 @@ export class SnapController extends BaseController<
     this._maxRequestTime = maxRequestTime;
     this._npmRegistryUrl = npmRegistryUrl;
     this._onUnhandledSnapError = this._onUnhandledSnapError.bind(this);
+    this._onOutboundRequest = this._onOutboundRequest.bind(this);
+    this._onOutboundResponse = this._onOutboundResponse.bind(this);
     this._snapsRuntimeData = new Map();
 
     this._pollForLastRequestStatus();
@@ -650,6 +652,16 @@ export class SnapController extends BaseController<
     this.messagingSystem.subscribe(
       'ExecutionService:unhandledError',
       this._onUnhandledSnapError,
+    );
+
+    this.messagingSystem.subscribe(
+      'ExecutionService:outboundRequest',
+      this._onOutboundRequest,
+    );
+
+    this.messagingSystem.subscribe(
+      'ExecutionService:outboundResponse',
+      this._onOutboundResponse,
     );
 
     this.registerMessageHandlers();
@@ -722,6 +734,20 @@ export class SnapController extends BaseController<
   async _onUnhandledSnapError(snapId: SnapId, error: ErrorJSON) {
     await this.stopSnap(snapId, SnapStatusEvent.crash);
     this.addSnapError(error);
+  }
+
+  async _onOutboundRequest(snapId: SnapId) {
+    const runtime = this._getSnapRuntimeData(snapId);
+    runtime.pendingRequests.forEach((pendingRequest) =>
+      pendingRequest.timer.pause(),
+    );
+  }
+
+  async _onOutboundResponse(snapId: SnapId) {
+    const runtime = this._getSnapRuntimeData(snapId);
+    runtime.pendingRequests.forEach((pendingRequest) =>
+      pendingRequest.timer.resume(),
+    );
   }
 
   /**
@@ -1895,13 +1921,15 @@ export class SnapController extends BaseController<
         });
       }
 
-      this._recordSnapRpcRequestStart(snapId, request.id as string);
+      const timer = new Timer(this._maxRequestTime);
+      this._recordSnapRpcRequestStart(snapId, request.id as string, timer);
 
       // This will either get the result or reject due to the timeout.
       try {
         const result = await this._executeWithTimeout(
           snapId,
           handler(origin, _request),
+          timer,
         );
         this._recordSnapRpcRequestFinish(snapId, request.id as string);
         return result;
@@ -1921,12 +1949,14 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The snap id.
    * @param promise - The promise to await.
+   * @param timer - An optional timer object to control the timeout.
    * @returns The result of the promise or rejects if the promise times out.
    * @template PromiseValue - The value of the Promise.
    */
   private async _executeWithTimeout<PromiseValue>(
     snapId: SnapId,
     promise: Promise<PromiseValue>,
+    timer?: Timer,
   ): Promise<PromiseValue> {
     const isLongRunning = this.messagingSystem.call(
       'PermissionController:hasPermission',
@@ -1939,16 +1969,23 @@ export class SnapController extends BaseController<
       return promise;
     }
 
-    const result = await withTimeout(promise, this._maxRequestTime);
+    const result = await withTimer(
+      promise,
+      timer ?? new Timer(this._maxRequestTime),
+    );
     if (result === hasTimedOut) {
       throw new Error('The request timed out.');
     }
     return result;
   }
 
-  private _recordSnapRpcRequestStart(snapId: SnapId, requestId: string) {
+  private _recordSnapRpcRequestStart(
+    snapId: SnapId,
+    requestId: string,
+    timer: Timer,
+  ) {
     const runtime = this._getSnapRuntimeData(snapId);
-    runtime.pendingRequests.push({ requestId });
+    runtime.pendingRequests.push({ requestId, timer });
     runtime.lastRequest = null;
   }
 
