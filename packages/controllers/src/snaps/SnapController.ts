@@ -112,6 +112,11 @@ export type Snap = {
   manifest: SnapManifest;
 
   /**
+   * Whether the Snap is blocked.
+   */
+  blocked: boolean;
+
+  /**
    * The name of the permission used to invoke the Snap.
    */
   permissionName: string;
@@ -208,6 +213,7 @@ type FetchSnapResult = {
 export type ProcessSnapResult =
   | TruncatedSnap
   | { error: SerializedEthereumRpcError };
+
 export type InstallSnapsResult = Record<SnapId, ProcessSnapResult>;
 
 // Types that probably should be defined elsewhere in prod
@@ -280,14 +286,23 @@ export type ClearSnapState = {
   handler: SnapController['clearSnapState'];
 };
 
+/**
+ * Checks all installed snaps against the blocklist.
+ */
+export type CheckBlockList = {
+  type: `${typeof controllerName}:checkBlockList`;
+  handler: SnapController['checkBlockList'];
+};
+
 export type SnapControllerActions =
   | AddSnap
+  | CheckBlockList
+  | ClearSnapState
   | GetSnap
-  | HandleSnapRpcRequest
   | GetSnapState
+  | HandleSnapRpcRequest
   | HasSnap
-  | UpdateSnapState
-  | ClearSnapState;
+  | UpdateSnapState;
 
 // Controller Messenger Events
 
@@ -304,8 +319,18 @@ export type SnapAdded = {
   payload: [snapId: string, snap: Snap, svgIcon: string | undefined];
 };
 
+type BlockedSnapInfo = { infoUrl?: string; reason?: string };
+
 /**
- * Emitted when a Snap has been started after being added and authorized during
+ * Emitted when an installed snap has been blocked.
+ */
+export type SnapBlocked = {
+  type: `${typeof controllerName}:snapBlocked`;
+  payload: [snapId: string, blockedSnapInfo?: BlockedSnapInfo];
+};
+
+/**
+ * Emitted when a snap has been started after being added and authorized during
  * installation.
  */
 export type SnapInstalled = {
@@ -314,7 +339,7 @@ export type SnapInstalled = {
 };
 
 /**
- * Emitted when a Snap is removed.
+ * Emitted when a snap is removed.
  */
 export type SnapRemoved = {
   type: `${typeof controllerName}:snapRemoved`;
@@ -322,7 +347,7 @@ export type SnapRemoved = {
 };
 
 /**
- * Emitted when a Snap is updated
+ * Emitted when a snap is updated.
  */
 export type SnapUpdated = {
   type: `${typeof controllerName}:snapUpdated`;
@@ -340,6 +365,7 @@ export type SnapTerminated = {
 
 export type SnapControllerEvents =
   | SnapAdded
+  | SnapBlocked
   | SnapInstalled
   | SnapRemoved
   | SnapStateChange
@@ -386,6 +412,24 @@ type FeatureFlags = {
   dappsCanUpdateSnaps?: true;
 };
 
+type SemVerVersion = string;
+export type CheckSnapBlockListArg = Record<SnapId, SemVerVersion>;
+
+export type CheckSnapBlockListResult = Record<
+  SnapId,
+  {
+    reason?: string;
+    infoUrl?: string;
+  }
+>;
+
+/**
+ * Checks whether a version of a snap is blocked.
+ */
+export type CheckSnapBlockList = (
+  snapsToCheck: CheckSnapBlockListArg,
+) => Promise<CheckSnapBlockListResult>;
+
 type SnapControllerArgs = {
   /**
    * A teardown function that allows the host to clean up its instrumentation
@@ -405,15 +449,58 @@ type SnapControllerArgs = {
   executeSnap: ExecuteSnap;
 
   /**
+   * The function that will be used by the controller fo make network requests.
+   * Should be compatible with {@link fetch}.
+   */
+  fetchFunction?: typeof fetch;
+
+  /**
+   * Flags that enable or disable features in the controller.
+   * See {@link FeatureFlags}.
+   */
+  featureFlags: FeatureFlags;
+
+  /**
+   * A function to get an "app key" for a specific subject.
+   */
+  getAppKey: GetAppKey;
+
+  /**
    * A function that gets the RPC message handler function for a specific
    * snap.
    */
   getRpcRequestHandler: GetRpcRequestHandler;
 
   /**
+   * How frequently to check whether a snap is idle.
+   */
+  idleTimeCheckInterval?: number;
+
+  /**
+   * A function that checks whether the specified snap and version is blocked.
+   */
+  checkBlockList?: CheckSnapBlockList;
+
+  /**
+   * The maximum amount of time that a snap may be idle.
+   */
+  maxIdleTime?: number;
+
+  /**
    * The controller messenger.
    */
   messenger: SnapControllerMessenger;
+
+  /**
+   * The maximum amount of time a snap may take to process an RPC request,
+   * unless it is permitted to take longer.
+   */
+  maxRequestTime?: number;
+
+  /**
+   * The npm registry URL that will be used to fetch published snaps.
+   */
+  npmRegistryUrl?: string;
 
   /**
    * Persisted state that will be used for rehydration.
@@ -429,44 +516,6 @@ type SnapControllerArgs = {
    * A function that terminates a specific snap.
    */
   terminateSnap: TerminateSnap;
-
-  /**
-   * A function to get an "app key" for a specific subject.
-   */
-  getAppKey: GetAppKey;
-
-  /**
-   * How frequently to check whether a snap is idle.
-   */
-  idleTimeCheckInterval?: number;
-
-  /**
-   * The maximum amount of time that a snap may be idle.
-   */
-  maxIdleTime?: number;
-
-  /**
-   * The maximum amount of time a snap may take to process an RPC request,
-   * unless it is permitted to take longer.
-   */
-  maxRequestTime?: number;
-
-  /**
-   * The npm registry URL that will be used to fetch published snaps.
-   */
-  npmRegistryUrl?: string;
-
-  /**
-   * The function that will be used by the controller fo make network requests.
-   * Should be compatible with {@link fetch}.
-   */
-  fetchFunction?: typeof fetch;
-
-  /**
-   * Flags that enable or disable features in the controller.
-   * See {@link FeatureFlags}.
-   */
-  featureFlags: FeatureFlags;
 };
 
 type AddSnapBase = {
@@ -516,6 +565,7 @@ const disabledGuard = (serializedSnap: Snap) => {
   return serializedSnap.enabled;
 };
 
+// TODO(rekmarks): Add `blocked` state, prevent blocked snaps from being started.
 /**
  * The state machine configuration for a snaps `status` state.
  * Using a state machine for a snaps `status` ensures that the snap transitions to a valid next lifecycle state.
@@ -578,13 +628,23 @@ export class SnapController extends BaseController<
 
   private _executeSnap: ExecuteSnap;
 
+  private _featureFlags: FeatureFlags;
+
+  private _fetchFunction: typeof fetch;
+
+  private _getAppKey: GetAppKey;
+
   private _getRpcRequestHandler: GetRpcRequestHandler;
 
   private _idleTimeCheckInterval: number;
 
+  private _checkSnapBlockList?: CheckSnapBlockList;
+
   private _maxIdleTime: number;
 
   private _maxRequestTime: number;
+
+  private _npmRegistryUrl?: string;
 
   private _snapsRuntimeData: Map<SnapId, SnapRuntimeData>;
 
@@ -592,15 +652,7 @@ export class SnapController extends BaseController<
 
   private _terminateSnap: TerminateSnap;
 
-  private _getAppKey: GetAppKey;
-
   private _timeoutForLastRequestStatus?: number;
-
-  private _npmRegistryUrl?: string;
-
-  private _fetchFunction: typeof fetch;
-
-  private _featureFlags: FeatureFlags;
 
   constructor({
     closeAllConnections,
@@ -614,6 +666,7 @@ export class SnapController extends BaseController<
     environmentEndowmentPermissions = [],
     npmRegistryUrl,
     idleTimeCheckInterval = inMilliseconds(5, Duration.Second),
+    checkBlockList,
     maxIdleTime = inMilliseconds(30, Duration.Second),
     maxRequestTime = inMilliseconds(60, Duration.Second),
     fetchFunction = globalThis.fetch.bind(globalThis),
@@ -655,20 +708,21 @@ export class SnapController extends BaseController<
     this._closeAllConnections = closeAllConnections;
     this._environmentEndowmentPermissions = environmentEndowmentPermissions;
     this._executeSnap = executeSnap;
-    this._getRpcRequestHandler = getRpcRequestHandler;
-    this._onUnhandledSnapError = this._onUnhandledSnapError.bind(this);
-    this._terminateSnap = terminateSnap;
-    this._terminateAllSnaps = terminateAllSnaps;
+    this._featureFlags = featureFlags;
+    this._fetchFunction = fetchFunction;
     this._getAppKey = getAppKey;
-
+    this._getRpcRequestHandler = getRpcRequestHandler;
     this._idleTimeCheckInterval = idleTimeCheckInterval;
+    this._checkSnapBlockList = checkBlockList;
     this._maxIdleTime = maxIdleTime;
     this._maxRequestTime = maxRequestTime;
-    this._pollForLastRequestStatus();
-    this._snapsRuntimeData = new Map();
     this._npmRegistryUrl = npmRegistryUrl;
-    this._fetchFunction = fetchFunction;
-    this._featureFlags = featureFlags;
+    this._onUnhandledSnapError = this._onUnhandledSnapError.bind(this);
+    this._snapsRuntimeData = new Map();
+    this._terminateAllSnaps = terminateAllSnaps;
+    this._terminateSnap = terminateSnap;
+
+    this._pollForLastRequestStatus();
 
     this.messagingSystem.subscribe(
       'ExecutionService:unhandledError',
@@ -689,18 +743,28 @@ export class SnapController extends BaseController<
     );
 
     this.messagingSystem.registerActionHandler(
+      `${controllerName}:checkBlockList`,
+      () => this.checkBlockList(),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:clearSnapState`,
+      (...args) => this.clearSnapState(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
       `${controllerName}:get`,
       (...args) => this.get(...args),
     );
 
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:handleRpcRequest`,
-      (...args) => this.handleRpcRequest(...args),
+      `${controllerName}:getSnapState`,
+      (...args) => this.getSnapState(...args),
     );
 
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:getSnapState`,
-      (...args) => this.getSnapState(...args),
+      `${controllerName}:handleRpcRequest`,
+      (...args) => this.handleRpcRequest(...args),
     );
 
     this.messagingSystem.registerActionHandler(
@@ -712,11 +776,6 @@ export class SnapController extends BaseController<
       `${controllerName}:updateSnapState`,
       (...args) => this.updateSnapState(...args),
     );
-
-    this.messagingSystem.registerActionHandler(
-      `${controllerName}:clearSnapState`,
-      (...args) => this.clearSnapState(...args),
-    );
   }
 
   _pollForLastRequestStatus() {
@@ -724,6 +783,92 @@ export class SnapController extends BaseController<
       await this._stopSnapsLastRequestPastMax();
       this._pollForLastRequestStatus();
     }, this._idleTimeCheckInterval) as unknown as number;
+  }
+
+  /**
+   * Checks all installed and unblocked snaps against the block list and blocks
+   * snaps as appropriate. See {@link SnapController.blockSnap} for more
+   * information.
+   */
+  async checkBlockList(): Promise<void> {
+    if (!this._checkSnapBlockList) {
+      return;
+    }
+
+    const blockedSnaps = await this._checkSnapBlockList(
+      Object.values(this.state.snaps).reduce((blockListArg, snap) => {
+        if (!snap.blocked) {
+          blockListArg[snap.id] = snap.version;
+        }
+
+        return blockListArg;
+      }, {} as Record<SnapId, SemVerVersion>),
+    );
+
+    if (Object.keys(blockedSnaps).length === 0) {
+      return;
+    }
+
+    await Promise.all(
+      Object.entries(blockedSnaps).map(([snapId, blockedSnapInfo]) =>
+        this.blockSnap(snapId, blockedSnapInfo),
+      ),
+    );
+  }
+
+  /**
+   * Blocks an installed snap and prevents it from being started again. Emits
+   * {@link SnapBlocked}. Does nothing if the snap is not installed.
+   *
+   * @param snapId - The snap to block.
+   * @param blockedSnapInfo - Information detailing why the snap is blocked.
+   */
+  async blockSnap(
+    snapId: SnapId,
+    blockedSnapInfo?: BlockedSnapInfo,
+  ): Promise<void> {
+    if (!this.has(snapId)) {
+      return;
+    }
+
+    try {
+      if (this.isRunning(snapId)) {
+        await this.stopSnap(snapId);
+      }
+    } catch (error) {
+      console.error(
+        `Encountered error when stopping blocked snap "${snapId}".`,
+        error,
+      );
+    }
+
+    this.update((state: any) => {
+      state.snaps[snapId].blocked = true;
+    });
+
+    this.messagingSystem.publish(
+      `${controllerName}:snapBlocked`,
+      snapId,
+      blockedSnapInfo,
+    );
+  }
+
+  /**
+   * Checks whether a version of a snap is blocked.
+   *
+   * @param snapId - The snap id to check.
+   * @param version - The version of the snap to check.
+   * @returns Whether the version of the snap is blocked or not.
+   */
+  async isBlocked(
+    snapId: ValidatedSnapId,
+    version: SemVerVersion,
+  ): Promise<boolean> {
+    if (this._checkSnapBlockList) {
+      const result = await this._checkSnapBlockList({ [snapId]: version });
+      return Boolean(result[snapId]);
+    }
+    return false;
   }
 
   async _stopSnapsLastRequestPastMax() {
@@ -1351,6 +1496,7 @@ export class SnapController extends BaseController<
       },
       true,
     );
+
     if (!isApproved) {
       return null;
     }
@@ -1361,7 +1507,7 @@ export class SnapController extends BaseController<
 
     this._transitionSnapState(snapId, SnapStatusEvent.update);
 
-    await this._set({
+    await this._fetchAndSet({
       origin,
       id: snapId,
       manifest: newSnap.manifest,
@@ -1421,7 +1567,7 @@ export class SnapController extends BaseController<
     const runtime = this._getSnapRuntimeData(snapId);
     if (!runtime.installPromise) {
       console.info(`Adding snap: ${snapId}`);
-      runtime.installPromise = this._set(args as ValidatedAddSnapArgs);
+      runtime.installPromise = this._fetchAndSet(args as ValidatedAddSnapArgs);
     }
 
     try {
@@ -1529,12 +1675,13 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Internal method. See the "add" method.
+   * Internal method. See {@link SnapController.add} and
+   * {@link SnapController.updateSnap}.
    *
    * @param args - The add snap args.
    * @returns The resulting snap object.
    */
-  private async _set(args: ValidatedAddSnapArgs): Promise<Snap> {
+  private async _fetchAndSet(args: ValidatedAddSnapArgs): Promise<Snap> {
     const {
       id: snapId,
       versionRange = DEFAULT_REQUESTED_SNAP_VERSION,
@@ -1552,10 +1699,17 @@ export class SnapController extends BaseController<
         versionRange,
       ));
     }
+    const { version } = manifest;
 
-    if (!satifiesVersionRange(manifest.version, versionRange)) {
+    if (!satifiesVersionRange(version, versionRange)) {
       throw new Error(
-        `Version mismatch. Manifest for ${snapId} specifies version ${manifest.version} which doesn't satisfy requested version range ${versionRange}`,
+        `Version mismatch. Manifest for "${snapId}" specifies version "${version}" which doesn't satisfy requested version range "${versionRange}"`,
+      );
+    }
+
+    if (await this.isBlocked(snapId, version)) {
+      throw ethErrors.provider.unauthorized(
+        `"${snapId}" version "${version}" is blocked.`,
       );
     }
 
@@ -1576,7 +1730,6 @@ export class SnapController extends BaseController<
 
     const existingSnap = snapsState[snapId];
 
-    const { version } = manifest;
     const previousVersionHistory = existingSnap?.versionHistory ?? [];
     const versionHistory = [
       ...previousVersionHistory,
@@ -1590,6 +1743,7 @@ export class SnapController extends BaseController<
     const snap: Snap = {
       // restore relevant snap state if it exists
       ...existingSnap,
+      blocked: false,
       enabled: true,
       id: snapId,
       initialPermissions,

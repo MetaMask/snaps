@@ -68,6 +68,7 @@ const getSnapControllerMessenger = (
     allowedEvents: [
       'ExecutionService:unhandledError',
       'SnapController:snapAdded',
+      'SnapController:snapBlocked',
       'SnapController:snapInstalled',
       'SnapController:snapUpdated',
       'SnapController:snapRemoved',
@@ -82,6 +83,7 @@ const getSnapControllerMessenger = (
       'PermissionController:requestPermissions',
       'PermissionController:revokeAllPermissions',
       'SnapController:add',
+      'SnapController:checkBlockList',
       'SnapController:get',
       'SnapController:handleRpcRequest',
       'SnapController:getSnapState',
@@ -289,6 +291,7 @@ const getSnapObject = ({
   ],
 } = {}): Snap => {
   return {
+    blocked: false,
     initialPermissions,
     id,
     permissionName,
@@ -1960,7 +1963,7 @@ describe('SnapController', () => {
     const snap = getSnapObject();
 
     const setSpy = jest
-      .spyOn(snapController as any, '_set')
+      .spyOn(snapController as any, '_fetchAndSet')
       .mockRejectedValueOnce(new Error('bar'))
       .mockResolvedValue(snap);
 
@@ -2026,6 +2029,25 @@ describe('SnapController', () => {
       expect(snapController.state.snaps['npm:fooSnap']).toMatchObject(
         fooSnapObject,
       );
+    });
+
+    it('action: SnapController:checkBlockList', async () => {
+      const executeSnapMock = jest.fn();
+      const messenger = getSnapControllerMessenger(undefined, false);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          executeSnap: executeSnapMock,
+          messenger,
+        }),
+      );
+
+      const checkBlockListSpy = jest
+        .spyOn(snapController, 'checkBlockList')
+        .mockImplementation();
+
+      await messenger.call('SnapController:checkBlockList');
+
+      expect(checkBlockListSpy).toHaveBeenCalledTimes(1);
     });
 
     it('action: SnapController:get', async () => {
