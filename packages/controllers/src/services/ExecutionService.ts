@@ -38,7 +38,6 @@ export type ExecutionServiceEvents =
   | OutboundRequest
   | OutboundResponse;
 
-
 /**
  * Gets the RPC message handler for a snap.
  */
