@@ -220,7 +220,7 @@ const getNodeEES = (messenger: ReturnType<typeof getNodeEESMessenger>) =>
           res.result = { isUnlocked: false, accounts: [] };
           return end();
         } else if (req.method === 'eth_blockNumber') {
-          res.result = '42';
+          res.result = '0xa70e75';
           return end();
         }
         return next();
@@ -1194,6 +1194,7 @@ describe('SnapController', () => {
     });
 
     jest
+      // Cast because we are mocking a private property
       .spyOn(service, 'setupSnapProvider' as any)
       .mockImplementation((_snapId, rpcStream) => {
         const mux = setupMultiplex(rpcStream as Duplex, 'foo');
@@ -1204,7 +1205,7 @@ describe('SnapController', () => {
             res.result = { isUnlocked: false, accounts: [] };
           } else if (req.method === 'eth_blockNumber') {
             await new Promise((resolve) => setTimeout(resolve, 400));
-            res.result = '42';
+            res.result = '0xa70e77';
           }
         });
         engine.push(middleware);
@@ -1225,7 +1226,7 @@ describe('SnapController', () => {
         params: {},
         id: 1,
       }),
-    ).toBe('42');
+    ).toBe('0xa70e77');
 
     snapController.destroy();
     await service.terminateAllSnaps();
