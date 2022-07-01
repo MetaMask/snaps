@@ -83,13 +83,13 @@ const getSnapControllerMessenger = (
       'PermissionController:requestPermissions',
       'PermissionController:revokeAllPermissions',
       'SnapController:add',
-      'SnapController:checkBlockList',
       'SnapController:get',
       'SnapController:handleRpcRequest',
       'SnapController:getSnapState',
       'SnapController:has',
       'SnapController:updateSnapState',
       'SnapController:clearSnapState',
+      'SnapController:updateBlockedSnaps',
     ],
   });
   if (mocked) {
@@ -2042,10 +2042,10 @@ describe('SnapController', () => {
       );
 
       const checkBlockListSpy = jest
-        .spyOn(snapController, 'checkBlockList')
+        .spyOn(snapController, 'updateBlockedSnaps')
         .mockImplementation();
 
-      await messenger.call('SnapController:checkBlockList');
+      await messenger.call('SnapController:updateBlockedSnaps');
 
       expect(checkBlockListSpy).toHaveBeenCalledTimes(1);
     });

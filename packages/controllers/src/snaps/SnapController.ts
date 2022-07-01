@@ -289,19 +289,19 @@ export type ClearSnapState = {
 /**
  * Checks all installed snaps against the blocklist.
  */
-export type CheckBlockList = {
-  type: `${typeof controllerName}:checkBlockList`;
-  handler: SnapController['checkBlockList'];
+export type UpdateBlockedSnaps = {
+  type: `${typeof controllerName}:updateBlockedSnaps`;
+  handler: SnapController['updateBlockedSnaps'];
 };
 
 export type SnapControllerActions =
   | AddSnap
-  | CheckBlockList
   | ClearSnapState
   | GetSnap
   | GetSnapState
   | HandleSnapRpcRequest
   | HasSnap
+  | UpdateBlockedSnaps
   | UpdateSnapState;
 
 // Controller Messenger Events
@@ -326,7 +326,7 @@ type BlockedSnapInfo = { infoUrl?: string; reason?: string };
  */
 export type SnapBlocked = {
   type: `${typeof controllerName}:snapBlocked`;
-  payload: [snapId: string, blockedSnapInfo?: BlockedSnapInfo];
+  payload: [snapId: string, blockedSnapInfo: BlockedSnapInfo];
 };
 
 /**
@@ -743,11 +743,6 @@ export class SnapController extends BaseController<
     );
 
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:checkBlockList`,
-      () => this.checkBlockList(),
-    );
-
-    this.messagingSystem.registerActionHandler(
       `${controllerName}:clearSnapState`,
       (...args) => this.clearSnapState(...args),
     );
@@ -773,6 +768,11 @@ export class SnapController extends BaseController<
     );
 
     this.messagingSystem.registerActionHandler(
+      `${controllerName}:updateBlockedSnaps`,
+      () => this.updateBlockedSnaps(),
+    );
+
+    this.messagingSystem.registerActionHandler(
       `${controllerName}:updateSnapState`,
       (...args) => this.updateSnapState(...args),
     );
@@ -790,7 +790,7 @@ export class SnapController extends BaseController<
    * snaps as appropriate. See {@link SnapController.blockSnap} for more
    * information.
    */
-  async checkBlockList(): Promise<void> {
+  async updateBlockedSnaps(): Promise<void> {
     if (!this._checkSnapBlockList) {
       return;
     }
@@ -825,7 +825,7 @@ export class SnapController extends BaseController<
    */
   async blockSnap(
     snapId: SnapId,
-    blockedSnapInfo?: BlockedSnapInfo,
+    blockedSnapInfo: BlockedSnapInfo,
   ): Promise<void> {
     if (!this.has(snapId)) {
       return;
