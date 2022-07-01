@@ -738,6 +738,8 @@ export class SnapController extends BaseController<
 
   async _onOutboundRequest(snapId: SnapId) {
     const runtime = this._getSnapRuntimeData(snapId);
+    // Ideally we would only pause the pending request that is making the outbound request
+    // but right now we don't have a way to know which request initiated the outbound request
     runtime.pendingRequests.forEach((pendingRequest) =>
       pendingRequest.timer.pause(),
     );
