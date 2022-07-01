@@ -872,9 +872,10 @@ export class SnapController extends BaseController<
 
   /**
    * Unblocks a snap so that it can be enabled and started again. Emits
-   * {@link SnapUnblocked}. Does nothing if the snap is not installed.
+   * {@link SnapUnblocked}. Does nothing if the snap is not installed or already
+   * unblocked.
    *
-   * @param snapId - The snap to unblock.
+   * @param snapId - The id of the snap to unblock.
    */
   private async _unblockSnap(snapId: SnapId): Promise<void> {
     if (!this.has(snapId) || !this.state.snaps[snapId].blocked) {
@@ -885,8 +886,6 @@ export class SnapController extends BaseController<
       state.snaps[snapId].blocked = false;
       delete state.snaps[snapId].blockInformation;
     });
-
-    this.enableSnap(snapId);
 
     this.messagingSystem.publish(`${controllerName}:snapUnblocked`, snapId);
   }
@@ -1490,7 +1489,14 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Ask a user for approval, updates, re-authorizes and then restarts given snap.
+   * Updates an already-installed snap. The flow is similar to
+   * {@link SnapController.installSnaps}. The user will be asked if they want
+   * to update, then approve any permission changes, and then the snap will be
+   * restarted. If the snap was blocked, a successful update will cause it to
+   * be unblocked and enabled so that it can be restarted.
+   *
+   * The update will fail if the user rejects any prompt or if the new version
+   * of the snap is blocked.
    *
    * @param origin - The origin requesting the snap update.
    * @param snapId - The id of the Snap to be updated.
@@ -1722,8 +1728,12 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Internal method. See {@link SnapController.add} and
-   * {@link SnapController.updateSnap}.
+   * Fetches a snap and sets it in state. Called when a snap is installed or
+   * updated. The snap will be unblocked and enabled by the time this method
+   * regardless, regardless of their previous state.
+   *
+   * See {@link SnapController.add} and {@link SnapController.updateSnap} for
+   * usage.
    *
    * @param args - The add snap args.
    * @returns The resulting snap object.
@@ -1788,19 +1798,25 @@ export class SnapController extends BaseController<
     ];
 
     const snap: Snap = {
-      // restore relevant snap state if it exists
+      // Restore relevant snap state if it exists
       ...existingSnap,
+
+      // Note that the snap will be unblocked and enabled
       blocked: false,
       enabled: true,
+
+      // So we can easily correlate the snap with its permission
+      permissionName: getSnapPermissionName(snapId),
+
       id: snapId,
       initialPermissions,
       manifest,
-      permissionName: getSnapPermissionName(snapId), // so we can easily correlate them
       sourceCode,
       status: snapStatusStateMachineConfig.initial,
       version,
       versionHistory,
     };
+    // If the snap was blocked, it isn't any longer
     delete snap.blockInformation;
 
     // store the snap back in state
