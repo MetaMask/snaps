@@ -284,9 +284,11 @@ export class BaseSnapExecutor {
 
     provider.request = async (args) => {
       this.notify({ result: { type: 'OutboundRequest' } });
-      const result = await originalRequest(args);
-      this.notify({ result: { type: 'OutboundResponse' } });
-      return result;
+      try {
+        return await originalRequest(args);
+      } finally {
+        this.notify({ result: { type: 'OutboundResponse' } });
+      }
     };
 
     return provider;
