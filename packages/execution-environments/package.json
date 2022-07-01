@@ -21,7 +21,7 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "yarn auto-changelog validate",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
-    "clean": "rimraf '*.tsbuildinfo' 'dist/*' 'src/__GENERATED__/' 'coverage/*'",
+    "clean": "rimraf '*.tsbuildinfo' 'dist/*' 'src/__GENERATED__/' 'coverage/*' '__test__/*'",
     "build:clean": "yarn clean && yarn build",
     "build:pre-tsc": "yarn build:typings",
     "build:post-tsc": "webpack --mode production && concat -o ./dist/webpack/node/bundle.js ./dist/webpack/node/lockdown.umd.min.js ./dist/webpack/node/bundle.js",

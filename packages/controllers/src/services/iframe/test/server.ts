@@ -17,8 +17,12 @@ export async function start(port = PORT) {
       reject(new Error(`Invalid port: "${port}"`));
     }
 
-    const bundlePath = require.resolve(
-      '@metamask/execution-environments/dist/webpack/iframe-test/bundle.js',
+    const executionEnvPath = require.resolve(
+      '@metamask/execution-environments',
+    );
+    const bundlePath = path.resolve(
+      executionEnvPath,
+      '../../__test__/iframe-test/bundle.js',
     );
     const publicPath = path.resolve(bundlePath, '../');
 
