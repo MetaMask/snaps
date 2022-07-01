@@ -60,6 +60,7 @@ import {
   SnapIdPrefixes,
   SNAP_PREFIX,
   ValidatedSnapId,
+  validateSnapPermissions,
   validateSnapShasum,
 } from './utils';
 
@@ -1571,6 +1572,9 @@ export class SnapController extends BaseController<
     ) {
       throw new Error(`Invalid initial permissions for snap "${snapId}".`);
     }
+
+    // Will throw if the permissions are invalid
+    validateSnapPermissions(initialPermissions);
 
     const snapsState = this.state.snaps;
 

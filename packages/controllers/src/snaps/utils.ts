@@ -641,3 +641,38 @@ export const SNAP_PREFIX = 'wallet_snap_';
 export function getSnapPermissionName(snapId: string): string {
   return SNAP_PREFIX + snapId;
 }
+
+// @todo Decide if we want to allow other permissions
+const ALLOWED_SIGNER_SNAP_PERMISSIONS = ['snap_confirm'];
+const SIGNER_SNAP_PERMISSION_PREFIX = 'snap_getBip44Entropy_';
+
+/**
+ * Validates a set of snap permissions to make sure there are no disallowed combinations of permissions.
+ *
+ * @param permissions - The set of requested permissions for a snap.
+ * @throws If the validation fails.
+ */
+export function validateSnapPermissions(
+  permissions: SnapManifest['initialPermissions'],
+) {
+  const permissionKeys = Object.keys(permissions);
+  const isSignerSnap = permissionKeys.some((key) =>
+    key.startsWith(SIGNER_SNAP_PERMISSION_PREFIX),
+  );
+  if (!isSignerSnap) {
+    // No more validation at this time
+    return;
+  }
+  const disallowedPermissions = permissionKeys.filter(
+    (key) =>
+      !key.startsWith(SIGNER_SNAP_PERMISSION_PREFIX) &&
+      !ALLOWED_SIGNER_SNAP_PERMISSIONS.includes(key),
+  );
+  if (disallowedPermissions.length > 0) {
+    throw new Error(
+      `The snap includes disallowed permissions that cannot be paired with ${SIGNER_SNAP_PERMISSION_PREFIX}*, those permissions are: ${disallowedPermissions.join(
+        ', ',
+      )}`,
+    );
+  }
+}

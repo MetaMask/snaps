@@ -2,6 +2,7 @@ import { createReadStream } from 'fs';
 import { readFile } from 'fs/promises';
 import path from 'path';
 import fetchMock from 'jest-fetch-mock';
+import { validateSnapPermissions } from '..';
 import {
   DEFAULT_REQUESTED_SNAP_VERSION,
   fetchNpmSnap,
@@ -241,5 +242,45 @@ describe('satifiesVersionRange', () => {
   it('prereleases can satisfy version range', () => {
     expect(satifiesVersionRange('1.0.0-beta.1', '*')).toBe(true);
     expect(satifiesVersionRange('1.0.0-beta.1', '^1.0.0')).toBe(false);
+  });
+});
+
+describe('validateSnapPermissions', () => {
+  it('doesnt throw on non-signer snaps', () => {
+    expect(() =>
+      validateSnapPermissions({
+        snap_confirm: {},
+        'endowment:network-access': {},
+      }),
+    ).not.toThrow();
+  });
+
+  it('throws on signer snaps that implement invalid combinations', () => {
+    expect(() =>
+      validateSnapPermissions({
+        snap_confirm: {},
+        'endowment:network-access': {},
+        snap_getBip44Entropy_1: {},
+      }),
+    ).toThrow(
+      'The snap includes disallowed permissions that cannot be paired with snap_getBip44Entropy_*, those permissions are: endowment:network-access',
+    );
+  });
+
+  it('doesnt throw on signer snaps that dont implement invalid combinations', () => {
+    expect(() =>
+      validateSnapPermissions({ snap_confirm: {}, snap_getBip44Entropy_1: {} }),
+    ).not.toThrow();
+
+    expect(() =>
+      validateSnapPermissions({ snap_getBip44Entropy_1: {} }),
+    ).not.toThrow();
+
+    expect(() =>
+      validateSnapPermissions({
+        snap_getBip44Entropy_1: {},
+        snap_getBip44Entropy_2: {},
+      }),
+    ).not.toThrow();
   });
 });
