@@ -922,7 +922,7 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the snap to check.
    * @param version - The version to check.
    */
-  private async _assertIsNotBlocked(
+  private async _assertIsUnblocked(
     snapId: ValidatedSnapId,
     version: SemVerVersion,
   ) {
@@ -1556,7 +1556,7 @@ export class SnapController extends BaseController<
       return null;
     }
 
-    await this._assertIsNotBlocked(snapId, newVersion);
+    await this._assertIsUnblocked(snapId, newVersion);
 
     const { newPermissions, unusedPermissions, approvedPermissions } =
       await this.calculatePermissionsChange(
@@ -1658,7 +1658,7 @@ export class SnapController extends BaseController<
         }
 
         const fetchedSnap = await this._fetchSnap(snapId, args.versionRange);
-        await this._assertIsNotBlocked(snapId, fetchedSnap.manifest.version);
+        await this._assertIsUnblocked(snapId, fetchedSnap.manifest.version);
 
         return this._set({
           ...args,
