@@ -69,6 +69,9 @@ export const SNAP_PREFIX_REGEX = new RegExp(`^${SNAP_PREFIX}`, 'u');
 
 export const SNAP_APPROVAL_UPDATE = 'wallet_updateSnap';
 
+const BLOCK_LIST_UNDEFINED_ERROR =
+  'There is no snap block list defined for this controller.';
+
 type TruncatedSnapFields =
   | 'id'
   | 'initialPermissions'
@@ -533,21 +536,28 @@ type SnapControllerArgs = {
   terminateSnap: TerminateSnap;
 };
 
-type AddSnapBase = {
+type AddSnapArgsBase = {
   id: SnapId;
   origin: string;
   versionRange?: string;
 };
 
-type AddSnapDirectlyArgs = AddSnapBase & {
+// A snap can either directly, with manifest and source code, or it can be
+// fetched and then added.
+type AddSnapArgs =
+  | AddSnapArgsBase
+  | (AddSnapArgsBase & {
+      manifest: SnapManifest;
+      sourceCode: string;
+    });
+
+// When we set a snap, we need all required properties to be present and
+// validated.
+type SetSnapArgs = Omit<AddSnapArgs, 'id'> & {
+  id: ValidatedSnapId;
   manifest: SnapManifest;
   sourceCode: string;
-};
-
-type AddSnapArgs = AddSnapBase | AddSnapDirectlyArgs;
-
-type ValidatedAddSnapArgs = Omit<AddSnapDirectlyArgs, 'id'> & {
-  id: ValidatedSnapId;
+  svgIcon?: string;
 };
 
 const defaultState: SnapControllerState = {
@@ -806,7 +816,7 @@ export class SnapController extends BaseController<
    */
   async updateBlockedSnaps(): Promise<void> {
     if (!this._checkSnapBlockList) {
-      return;
+      throw new Error(BLOCK_LIST_UNDEFINED_ERROR);
     }
 
     const blockedSnaps = await this._checkSnapBlockList(
@@ -815,10 +825,6 @@ export class SnapController extends BaseController<
         return blockListArg;
       }, {} as Record<SnapId, SemVerVersion>),
     );
-
-    if (Object.keys(blockedSnaps).length === 0) {
-      return;
-    }
 
     await Promise.all(
       Object.entries(blockedSnaps).map(
@@ -901,11 +907,30 @@ export class SnapController extends BaseController<
     snapId: ValidatedSnapId,
     version: SemVerVersion,
   ): Promise<boolean> {
-    if (this._checkSnapBlockList) {
-      const result = await this._checkSnapBlockList({ [snapId]: version });
-      return Boolean(result[snapId]);
+    if (!this._checkSnapBlockList) {
+      throw new Error(BLOCK_LIST_UNDEFINED_ERROR);
     }
-    return false;
+
+    const result = await this._checkSnapBlockList({ [snapId]: version });
+    return result[snapId].blocked;
+  }
+
+  /**
+   * Asserts that a version of a snap is not blocked. Succeeds automatically
+   * if {@link SnapController._checkSnapBlockList} is undefined.
+   *
+   * @param snapId - The id of the snap to check.
+   * @param version - The version to check.
+   */
+  private async _assertIsNotBlocked(
+    snapId: ValidatedSnapId,
+    version: SemVerVersion,
+  ) {
+    if (this._checkSnapBlockList && (await this.isBlocked(snapId, version))) {
+      throw new Error(
+        `Cannot install version "${version}" of snap "${snapId}": the version is blocked.`,
+      );
+    }
   }
 
   async _stopSnapsLastRequestPastMax() {
@@ -1517,17 +1542,20 @@ export class SnapController extends BaseController<
 
     if (!isValidSnapVersionRange(newVersionRange)) {
       throw new Error(
-        `Received invalid Snap version range: "${newVersionRange}".`,
+        `Received invalid snap version range: "${newVersionRange}".`,
       );
     }
 
     const newSnap = await this._fetchSnap(snapId, newVersionRange);
-    if (!gtVersion(newSnap.manifest.version, snap.version)) {
+    const newVersion = newSnap.manifest.version;
+    if (!gtVersion(newVersion, snap.version)) {
       console.warn(
-        `Tried updating snap "${snapId}" within "${newVersionRange}" version range, but newer version "${snap.version}" is already installed`,
+        `Tried updating snap "${snapId}" within "${newVersionRange}" version range, but newer version "${newVersion}" is already installed`,
       );
       return null;
     }
+
+    await this._assertIsNotBlocked(snapId, newVersion);
 
     const { newPermissions, unusedPermissions, approvedPermissions } =
       await this.calculatePermissionsChange(
@@ -1560,7 +1588,7 @@ export class SnapController extends BaseController<
 
     this._transitionSnapState(snapId, SnapStatusEvent.update);
 
-    await this._fetchAndSet({
+    this._set({
       origin,
       id: snapId,
       manifest: newSnap.manifest,
@@ -1620,15 +1648,32 @@ export class SnapController extends BaseController<
     const runtime = this._getSnapRuntimeData(snapId);
     if (!runtime.installPromise) {
       console.info(`Adding snap: ${snapId}`);
-      runtime.installPromise = this._fetchAndSet(args as ValidatedAddSnapArgs);
+
+      // If fetching and setting the snap succeeds, this property will be set
+      // to null in the authorize() method.
+      runtime.installPromise = (async () => {
+        if ('manifest' in args && 'sourceCode' in args) {
+          return this._set({ ...args, id: snapId });
+        }
+
+        const fetchedSnap = await this._fetchSnap(snapId, args.versionRange);
+        await this._assertIsNotBlocked(snapId, fetchedSnap.manifest.version);
+
+        return this._set({
+          ...args,
+          ...fetchedSnap,
+          id: snapId,
+        });
+      })();
     }
 
     try {
       return await runtime.installPromise;
-    } catch (err) {
-      // Reset promise so users can retry installation in case the problem is temporary
+    } catch (error) {
+      // Reset promise so users can retry installation in case the problem is
+      // temporary.
       runtime.installPromise = null;
-      throw err;
+      throw error;
     }
   }
 
@@ -1728,9 +1773,12 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Fetches a snap and sets it in state. Called when a snap is installed or
-   * updated. The snap will be unblocked and enabled by the time this method
-   * regardless, regardless of their previous state.
+   * Sets a snap in state. Called when a snap is installed or updated. Performs
+   * various validation checks on the received arguments, and will throw if
+   * validation fails.
+   *
+   * The snap will be unblocked and enabled by the time this method returns,
+   * regardless of their previous state.
    *
    * See {@link SnapController.add} and {@link SnapController.updateSnap} for
    * usage.
@@ -1738,35 +1786,22 @@ export class SnapController extends BaseController<
    * @param args - The add snap args.
    * @returns The resulting snap object.
    */
-  private async _fetchAndSet(args: ValidatedAddSnapArgs): Promise<Snap> {
+  private _set(args: SetSnapArgs): Snap {
     const {
       id: snapId,
-      versionRange = DEFAULT_REQUESTED_SNAP_VERSION,
       origin,
+      manifest,
+      sourceCode,
+      svgIcon,
+      versionRange = DEFAULT_REQUESTED_SNAP_VERSION,
     } = args;
 
-    let manifest: SnapManifest, sourceCode: string, svgIcon: string | undefined;
-    if ('manifest' in args) {
-      manifest = args.manifest;
-      sourceCode = args.sourceCode;
-      validateSnapJsonFile(NpmSnapFileNames.Manifest, manifest);
-    } else {
-      ({ manifest, sourceCode, svgIcon } = await this._fetchSnap(
-        snapId,
-        versionRange,
-      ));
-    }
+    validateSnapJsonFile(NpmSnapFileNames.Manifest, manifest);
     const { version } = manifest;
 
     if (!satifiesVersionRange(version, versionRange)) {
       throw new Error(
         `Version mismatch. Manifest for "${snapId}" specifies version "${version}" which doesn't satisfy requested version range "${versionRange}"`,
-      );
-    }
-
-    if (await this.isBlocked(snapId, version)) {
-      throw ethErrors.provider.unauthorized(
-        `"${snapId}" version "${version}" is blocked.`,
       );
     }
 
