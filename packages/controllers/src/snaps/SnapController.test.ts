@@ -68,9 +68,7 @@ const getSnapControllerMessenger = (
     allowedEvents: [
       'ExecutionService:unhandledError',
       'SnapController:snapAdded',
-      'SnapController:snapBlocked',
       'SnapController:snapInstalled',
-      'SnapController:snapUnblocked',
       'SnapController:snapUpdated',
       'SnapController:snapRemoved',
       'SnapController:stateChange',
@@ -90,7 +88,6 @@ const getSnapControllerMessenger = (
       'SnapController:has',
       'SnapController:updateSnapState',
       'SnapController:clearSnapState',
-      'SnapController:updateBlockedSnaps',
     ],
   });
 
@@ -297,7 +294,6 @@ const getSnapManifest = ({
 };
 
 const getSnapObject = ({
-  blocked = false,
   enabled = true,
   id = MOCK_SNAP_ID,
   initialPermissions = {},
@@ -311,7 +307,6 @@ const getSnapObject = ({
   ],
 } = {}): Snap => {
   return {
-    blocked,
     initialPermissions,
     id,
     permissionName,
@@ -322,64 +317,6 @@ const getSnapObject = ({
     sourceCode,
     versionHistory,
   } as const;
-};
-
-/**
- * Gets a whole suite of associated snap data, including the snap's id, origin,
- * package name, source code, shasum, manifest, and SnapController state object.
- *
- * @param options - Options bag.
- * @param options.id - The id of the snap.
- * @param options.origin - The origin associated with the snap's installation
- * request.
- * @param options.sourceCode - The snap's source code. Will be used to compute
- * the snap's shasum.
- * @param options.blocked - Whether the snap's state object should indicate that
- * the snap is blocked.
- * @param options.enabled - Whether the snap's state object should should
- * indicate that the snap is enabled. Must not be `true` if the snap is blocked.
- * @returns The mock snap data.
- */
-const getMockSnapData = ({
-  blocked = false,
-  enabled = true,
-  id,
-  origin,
-  sourceCode,
-}: {
-  id: string;
-  origin: string;
-  sourceCode?: string;
-  blocked?: boolean;
-  enabled?: boolean;
-}) => {
-  if (blocked && enabled) {
-    throw new Error('A snap may not be enabled if it is blocked.');
-  }
-
-  const packageName = `${id}-package`;
-  const _sourceCode = sourceCode ?? `${MOCK_SNAP_SOURCE_CODE}// ${id}\n`;
-  const shasum = getSnapSourceShasum(_sourceCode);
-  const manifest = getSnapManifest({
-    packageName,
-    shasum,
-  });
-
-  return {
-    id,
-    origin,
-    packageName,
-    shasum,
-    sourceCode: _sourceCode,
-    manifest,
-    stateObject: getSnapObject({
-      blocked,
-      enabled,
-      id,
-      manifest,
-      sourceCode,
-    }),
-  };
 };
 
 const getTruncatedSnap = ({
@@ -1533,38 +1470,6 @@ describe('SnapController', () => {
         }),
       ).rejects.toThrow('Version mismatch');
     });
-
-    it('throws if the fetched version of the snap is blocked', async () => {
-      const checkBlockListSpy = jest.fn();
-      const controller = getSnapController(
-        getSnapControllerOptions({
-          checkBlockList: checkBlockListSpy,
-        }),
-      );
-      const fetchSnapSpy = jest.spyOn(controller as any, '_fetchSnap');
-
-      fetchSnapSpy.mockImplementationOnce(async () => {
-        const manifest: SnapManifest = {
-          ...getSnapManifest(),
-          version: '1.1.0',
-        };
-        return {
-          manifest,
-          sourceCode: MOCK_SNAP_SOURCE_CODE,
-        };
-      });
-
-      checkBlockListSpy.mockResolvedValueOnce({
-        [MOCK_SNAP_ID]: { blocked: true },
-      });
-
-      await expect(
-        controller.add({
-          id: MOCK_SNAP_ID,
-          origin: 'foo.com',
-        }),
-      ).rejects.toThrow('Cannot install version "1.1.0" of snap');
-    });
   });
 
   describe('installSnaps', () => {
@@ -2119,40 +2024,6 @@ describe('SnapController', () => {
       ).rejects.toThrow('Received invalid snap version range');
     });
 
-    it('throws an error if the new version of the snap is blocked', async () => {
-      const checkBlockListSpy = jest.fn();
-      const controller = getSnapController(
-        getSnapControllerOptions({
-          checkBlockList: checkBlockListSpy,
-          state: {
-            snaps: {
-              [MOCK_SNAP_ID]: getSnapObject(),
-            },
-          },
-        }),
-      );
-      const fetchSnapSpy = jest.spyOn(controller as any, '_fetchSnap');
-
-      fetchSnapSpy.mockImplementationOnce(async () => {
-        const manifest: SnapManifest = {
-          ...getSnapManifest(),
-          version: '1.1.0',
-        };
-        return {
-          manifest,
-          sourceCode: MOCK_SNAP_SOURCE_CODE,
-        };
-      });
-
-      checkBlockListSpy.mockResolvedValueOnce({
-        [MOCK_SNAP_ID]: { blocked: true },
-      });
-
-      await expect(
-        controller.updateSnap(MOCK_ORIGIN, MOCK_SNAP_ID),
-      ).rejects.toThrow('Cannot install version "1.1.0" of snap');
-    });
-
     it('does not update on older snap version downloaded', async () => {
       const messenger = getSnapControllerMessenger();
       const controller = getSnapController(
@@ -2658,308 +2529,6 @@ describe('SnapController', () => {
       expect(snap?.enabled).toBe(false);
       expect(snap?.status).toBe(SnapStatus.stopped);
     });
-
-    it('enableSnap throws an error if the specified snap is blocked', async () => {
-      const snapId = 'npm:fooSnap';
-      const mockSnapObject = getSnapObject({
-        initialPermissions: {},
-        permissionName: 'fooperm',
-        version: '0.0.1',
-        sourceCode: MOCK_SNAP_SOURCE_CODE,
-        id: snapId,
-        manifest: getSnapManifest(),
-        status: SnapStatus.running,
-        blocked: true,
-        enabled: false,
-      });
-
-      const snapController = getSnapController(
-        getSnapControllerOptions({
-          state: {
-            snaps: {
-              [snapId]: mockSnapObject,
-            },
-          },
-        }),
-      );
-
-      expect(() => snapController.enableSnap('npm:fooSnap')).toThrow(
-        `Snap "${snapId}" is blocked and cannot be enabled.`,
-      );
-    });
-  });
-
-  describe('isBlocked', () => {
-    it('throws an error if _checkSnapBlockList is undefined', async () => {
-      const snapController = getSnapController();
-      await expect(
-        snapController.isBlocked('npm:example', '1.0.0'),
-      ).rejects.toThrow(
-        'There is no snap block list defined for this controller.',
-      );
-    });
-
-    it('does nothing if _checkSnapBlockList is undefined', async () => {
-      const checkBlockListSpy = jest.fn();
-      const snapId = 'npm:example';
-
-      const snapController = getSnapController(
-        getSnapControllerOptions({
-          checkBlockList: checkBlockListSpy,
-        }),
-      );
-
-      checkBlockListSpy.mockResolvedValueOnce({
-        [snapId]: { blocked: false },
-      });
-      expect(await snapController.isBlocked(snapId, '1.0.0')).toBe(false);
-
-      checkBlockListSpy.mockResolvedValueOnce({
-        [snapId]: { blocked: true },
-      });
-      expect(await snapController.isBlocked(snapId, '1.0.0')).toBe(true);
-    });
-  });
-
-  describe('updateBlockedSnaps', () => {
-    it('throws an error if _checkSnapBlockList is undefined', async () => {
-      const snapController = getSnapController();
-      await expect(snapController.updateBlockedSnaps()).rejects.toThrow(
-        'There is no snap block list defined for this controller.',
-      );
-    });
-
-    it('blocks snaps as expected', async () => {
-      const messenger = getSnapControllerMessenger();
-      const publishMock = jest.spyOn(messenger, 'publish');
-
-      const checkBlockListSpy = jest.fn();
-
-      const mockSnapA = getMockSnapData({
-        id: 'npm:exampleA',
-        origin: 'foo.com',
-      });
-
-      const mockSnapB = getMockSnapData({
-        id: 'npm:exampleB',
-        origin: 'bar.io',
-      });
-
-      const snapController = getSnapController(
-        getSnapControllerOptions({
-          messenger,
-          checkBlockList: checkBlockListSpy,
-          state: {
-            snaps: {
-              [mockSnapA.id]: mockSnapA.stateObject,
-              [mockSnapB.id]: mockSnapB.stateObject,
-            },
-          },
-        }),
-      );
-
-      // Block snap A, ignore B.
-      checkBlockListSpy.mockResolvedValueOnce({
-        [mockSnapA.id]: { blocked: true },
-      });
-      await snapController.updateBlockedSnaps();
-
-      // A is blocked and disabled
-      expect(snapController.get(mockSnapA.id)?.blocked).toBe(true);
-      expect(snapController.get(mockSnapA.id)?.enabled).toBe(false);
-
-      // B is unblocked and enabled
-      expect(snapController.get(mockSnapB.id)?.blocked).toBe(false);
-      expect(snapController.get(mockSnapB.id)?.enabled).toBe(true);
-
-      expect(publishMock).toHaveBeenLastCalledWith(
-        'SnapController:snapBlocked',
-        mockSnapA.id,
-        {
-          infoUrl: undefined,
-          reason: undefined,
-        },
-      );
-    });
-
-    it('stops running snaps when they are blocked', async () => {
-      const checkBlockListSpy = jest.fn();
-
-      const mockSnap = getMockSnapData({
-        id: 'npm:example',
-        origin: 'foo.com',
-      });
-
-      const snapController = getSnapController(
-        getSnapControllerOptions({
-          checkBlockList: checkBlockListSpy,
-          state: {
-            snaps: {
-              [mockSnap.id]: mockSnap.stateObject,
-            },
-          },
-        }),
-      );
-
-      await snapController.startSnap(mockSnap.id);
-
-      // Block the snap
-      checkBlockListSpy.mockResolvedValueOnce({
-        [mockSnap.id]: { blocked: true },
-      });
-      await snapController.updateBlockedSnaps();
-
-      // The snap is blocked, disabled, and stopped
-      expect(snapController.get(mockSnap.id)?.blocked).toBe(true);
-      expect(snapController.get(mockSnap.id)?.enabled).toBe(false);
-      expect(snapController.isRunning(mockSnap.id)).toBe(false);
-    });
-
-    it('unblocks snaps as expected', async () => {
-      const messenger = getSnapControllerMessenger();
-      const publishMock = jest.spyOn(messenger, 'publish');
-
-      const checkBlockListSpy = jest.fn();
-
-      const mockSnapA = getMockSnapData({
-        id: 'npm:exampleA',
-        origin: 'foo.com',
-        blocked: true,
-        enabled: false,
-      });
-
-      const mockSnapB = getMockSnapData({
-        id: 'npm:exampleB',
-        origin: 'bar.io',
-      });
-
-      const snapController = getSnapController(
-        getSnapControllerOptions({
-          messenger,
-          checkBlockList: checkBlockListSpy,
-          state: {
-            snaps: {
-              [mockSnapA.id]: mockSnapA.stateObject,
-              [mockSnapB.id]: mockSnapB.stateObject,
-            },
-          },
-        }),
-      );
-
-      // A is blocked and disabled
-      expect(snapController.get(mockSnapA.id)?.blocked).toBe(true);
-      expect(snapController.get(mockSnapA.id)?.enabled).toBe(false);
-
-      // B is unblocked and enabled
-      expect(snapController.get(mockSnapB.id)?.blocked).toBe(false);
-      expect(snapController.get(mockSnapB.id)?.enabled).toBe(true);
-
-      // Indicate that both snaps A and B are unblocked, and update blocked
-      // states.
-      checkBlockListSpy.mockResolvedValueOnce({
-        [mockSnapA.id]: { blocked: false },
-        [mockSnapB.id]: { blocked: false },
-      });
-      await snapController.updateBlockedSnaps();
-
-      // A is unblocked, but still disabled
-      expect(snapController.get(mockSnapA.id)?.blocked).toBe(false);
-      expect(snapController.get(mockSnapA.id)?.enabled).toBe(false);
-
-      // B remains unblocked and enabled
-      expect(snapController.get(mockSnapB.id)?.blocked).toBe(false);
-      expect(snapController.get(mockSnapB.id)?.enabled).toBe(true);
-
-      expect(publishMock).toHaveBeenLastCalledWith(
-        'SnapController:snapUnblocked',
-        mockSnapA.id,
-      );
-    });
-
-    it('updating blocked snaps does not throw if a snap is removed while fetching the blocklist', async () => {
-      const consoleErrorSpy = jest.spyOn(console, 'error');
-      const checkBlockListSpy = jest.fn();
-
-      const mockSnap = getMockSnapData({
-        id: 'npm:example',
-        origin: 'foo.com',
-      });
-
-      const snapController = getSnapController(
-        getSnapControllerOptions({
-          checkBlockList: checkBlockListSpy,
-          state: {
-            snaps: {
-              [mockSnap.id]: mockSnap.stateObject,
-            },
-          },
-        }),
-      );
-
-      // Block the snap
-      let resolveBlockListPromise: any;
-      checkBlockListSpy.mockReturnValueOnce(
-        new Promise<unknown>((resolve) => (resolveBlockListPromise = resolve)),
-      );
-
-      const updateBlockList = snapController.updateBlockedSnaps();
-
-      // Remove the snap while waiting for the blocklist
-      snapController.removeSnap(mockSnap.id);
-
-      // Resolve the blocklist and wait for the call to complete
-      resolveBlockListPromise({
-        [mockSnap.id]: { blocked: true },
-      });
-      await updateBlockList;
-
-      // The snap was removed, no errors were thrown
-      expect(snapController.has(mockSnap.id)).toBe(false);
-      expect(consoleErrorSpy).not.toHaveBeenCalled();
-    });
-
-    it('logs but does not throw unexpected errors while blocking', async () => {
-      const consoleErrorSpy = jest.spyOn(console, 'error');
-      const checkBlockListSpy = jest.fn();
-
-      const mockSnap = getMockSnapData({
-        id: 'npm:example',
-        origin: 'foo.com',
-      });
-
-      const snapController = getSnapController(
-        getSnapControllerOptions({
-          checkBlockList: checkBlockListSpy,
-          state: {
-            snaps: {
-              [mockSnap.id]: mockSnap.stateObject,
-            },
-          },
-        }),
-      );
-
-      await snapController.startSnap(mockSnap.id);
-
-      jest.spyOn(snapController, 'stopSnap').mockImplementationOnce(() => {
-        throw new Error('foo');
-      });
-
-      // Block the snap
-      checkBlockListSpy.mockResolvedValueOnce({
-        [mockSnap.id]: { blocked: true },
-      });
-      await snapController.updateBlockedSnaps();
-
-      // A is blocked and disabled
-      expect(snapController.get(mockSnap.id)?.blocked).toBe(true);
-      expect(snapController.get(mockSnap.id)?.enabled).toBe(false);
-
-      expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        `Encountered error when stopping blocked snap "${mockSnap.id}".`,
-        new Error('foo'),
-      );
-    });
   });
 
   describe('SnapController actions', () => {
@@ -3005,27 +2574,6 @@ describe('SnapController', () => {
         expect(snapController.state.snaps['npm:fooSnap']).toMatchObject(
           fooSnapObject,
         );
-      });
-    });
-
-    describe('SnapController:updateBlockedSnaps', () => {
-      it('calls SnapController.updateBlockedSnaps()', async () => {
-        const executeSnapMock = jest.fn();
-        const messenger = getSnapControllerMessenger(undefined, false);
-        const snapController = getSnapController(
-          getSnapControllerOptions({
-            executeSnap: executeSnapMock,
-            messenger,
-          }),
-        );
-
-        const checkBlockListSpy = jest
-          .spyOn(snapController, 'updateBlockedSnaps')
-          .mockImplementation();
-
-        await messenger.call('SnapController:updateBlockedSnaps');
-
-        expect(checkBlockListSpy).toHaveBeenCalledTimes(1);
       });
     });
 

@@ -69,9 +69,6 @@ export const SNAP_PREFIX_REGEX = new RegExp(`^${SNAP_PREFIX}`, 'u');
 
 export const SNAP_APPROVAL_UPDATE = 'wallet_updateSnap';
 
-const BLOCK_LIST_UNDEFINED_ERROR =
-  'There is no snap block list defined for this controller.';
-
 type TruncatedSnapFields =
   | 'id'
   | 'initialPermissions'
@@ -113,16 +110,6 @@ export type Snap = {
    * The Snap's manifest file.
    */
   manifest: SnapManifest;
-
-  /**
-   * Whether the Snap is blocked.
-   */
-  blocked: boolean;
-
-  /**
-   * Information detailing why the snap is blocked.
-   */
-  blockInformation?: BlockedSnapInfo;
 
   /**
    * The name of the permission used to invoke the Snap.
@@ -294,14 +281,6 @@ export type ClearSnapState = {
   handler: SnapController['clearSnapState'];
 };
 
-/**
- * Checks all installed snaps against the blocklist.
- */
-export type UpdateBlockedSnaps = {
-  type: `${typeof controllerName}:updateBlockedSnaps`;
-  handler: SnapController['updateBlockedSnaps'];
-};
-
 export type SnapControllerActions =
   | AddSnap
   | ClearSnapState
@@ -309,7 +288,6 @@ export type SnapControllerActions =
   | GetSnapState
   | HandleSnapRpcRequest
   | HasSnap
-  | UpdateBlockedSnaps
   | UpdateSnapState;
 
 // Controller Messenger Events
@@ -325,16 +303,6 @@ export type SnapStateChange = {
 export type SnapAdded = {
   type: `${typeof controllerName}:snapAdded`;
   payload: [snapId: string, snap: Snap, svgIcon: string | undefined];
-};
-
-type BlockedSnapInfo = { infoUrl?: string; reason?: string };
-
-/**
- * Emitted when an installed snap has been blocked.
- */
-export type SnapBlocked = {
-  type: `${typeof controllerName}:snapBlocked`;
-  payload: [snapId: string, blockedSnapInfo: BlockedSnapInfo];
 };
 
 /**
@@ -355,14 +323,7 @@ export type SnapRemoved = {
 };
 
 /**
- * Emitted when an installed snap has been unblocked.
- */
-export type SnapUnblocked = {
-  type: `${typeof controllerName}:snapUnblocked`;
-  payload: [snapId: string];
-};
-
-/**
+ * /**
  * Emitted when a snap is updated.
  */
 export type SnapUpdated = {
@@ -381,11 +342,9 @@ export type SnapTerminated = {
 
 export type SnapControllerEvents =
   | SnapAdded
-  | SnapBlocked
   | SnapInstalled
   | SnapRemoved
   | SnapStateChange
-  | SnapUnblocked
   | SnapUpdated
   | SnapTerminated;
 
@@ -428,25 +387,6 @@ type FeatureFlags = {
    */
   dappsCanUpdateSnaps?: true;
 };
-
-type SemVerVersion = string;
-export type CheckSnapBlockListArg = Record<SnapId, SemVerVersion>;
-
-export type CheckSnapBlockListResult = Record<
-  SnapId,
-  {
-    blocked: boolean;
-    reason?: string;
-    infoUrl?: string;
-  }
->;
-
-/**
- * Checks whether a version of a snap is blocked.
- */
-export type CheckSnapBlockList = (
-  snapsToCheck: CheckSnapBlockListArg,
-) => Promise<CheckSnapBlockListResult>;
 
 type SnapControllerArgs = {
   /**
@@ -493,11 +433,6 @@ type SnapControllerArgs = {
    * How frequently to check whether a snap is idle.
    */
   idleTimeCheckInterval?: number;
-
-  /**
-   * A function that checks whether the specified snap and version is blocked.
-   */
-  checkBlockList?: CheckSnapBlockList;
 
   /**
    * The maximum amount of time that a snap may be idle.
@@ -662,8 +597,6 @@ export class SnapController extends BaseController<
 
   private _idleTimeCheckInterval: number;
 
-  private _checkSnapBlockList?: CheckSnapBlockList;
-
   private _maxIdleTime: number;
 
   private _maxRequestTime: number;
@@ -690,7 +623,6 @@ export class SnapController extends BaseController<
     environmentEndowmentPermissions = [],
     npmRegistryUrl,
     idleTimeCheckInterval = inMilliseconds(5, Duration.Second),
-    checkBlockList,
     maxIdleTime = inMilliseconds(30, Duration.Second),
     maxRequestTime = inMilliseconds(60, Duration.Second),
     fetchFunction = globalThis.fetch.bind(globalThis),
@@ -737,7 +669,6 @@ export class SnapController extends BaseController<
     this._getAppKey = getAppKey;
     this._getRpcRequestHandler = getRpcRequestHandler;
     this._idleTimeCheckInterval = idleTimeCheckInterval;
-    this._checkSnapBlockList = checkBlockList;
     this._maxIdleTime = maxIdleTime;
     this._maxRequestTime = maxRequestTime;
     this._npmRegistryUrl = npmRegistryUrl;
@@ -792,11 +723,6 @@ export class SnapController extends BaseController<
     );
 
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:updateBlockedSnaps`,
-      () => this.updateBlockedSnaps(),
-    );
-
-    this.messagingSystem.registerActionHandler(
       `${controllerName}:updateSnapState`,
       (...args) => this.updateSnapState(...args),
     );
@@ -807,130 +733,6 @@ export class SnapController extends BaseController<
       await this._stopSnapsLastRequestPastMax();
       this._pollForLastRequestStatus();
     }, this._idleTimeCheckInterval) as unknown as number;
-  }
-
-  /**
-   * Checks all installed and unblocked snaps against the block list and blocks
-   * snaps as appropriate. See {@link SnapController.blockSnap} for more
-   * information.
-   */
-  async updateBlockedSnaps(): Promise<void> {
-    if (!this._checkSnapBlockList) {
-      throw new Error(BLOCK_LIST_UNDEFINED_ERROR);
-    }
-
-    const blockedSnaps = await this._checkSnapBlockList(
-      Object.values(this.state.snaps).reduce((blockListArg, snap) => {
-        blockListArg[snap.id] = snap.version;
-        return blockListArg;
-      }, {} as Record<SnapId, SemVerVersion>),
-    );
-
-    await Promise.all(
-      Object.entries(blockedSnaps).map(
-        ([snapId, { blocked, infoUrl, reason }]) => {
-          if (blocked) {
-            return this._blockSnap(snapId, { infoUrl, reason });
-          }
-
-          this._unblockSnap(snapId);
-          return Promise.resolve();
-        },
-      ),
-    );
-  }
-
-  /**
-   * Blocks an installed snap and prevents it from being started again. Emits
-   * {@link SnapBlocked}. Does nothing if the snap is not installed.
-   *
-   * @param snapId - The snap to block.
-   * @param blockedSnapInfo - Information detailing why the snap is blocked.
-   */
-  private async _blockSnap(
-    snapId: SnapId,
-    blockedSnapInfo: BlockedSnapInfo,
-  ): Promise<void> {
-    if (!this.has(snapId)) {
-      return;
-    }
-
-    try {
-      this.update((state: any) => {
-        state.snaps[snapId].blocked = true;
-        state.snaps[snapId].blockInformation = blockedSnapInfo;
-      });
-
-      await this.disableSnap(snapId);
-    } catch (error) {
-      console.error(
-        `Encountered error when stopping blocked snap "${snapId}".`,
-        error,
-      );
-    }
-
-    this.messagingSystem.publish(
-      `${controllerName}:snapBlocked`,
-      snapId,
-      blockedSnapInfo,
-    );
-  }
-
-  /**
-   * Unblocks a snap so that it can be enabled and started again. Emits
-   * {@link SnapUnblocked}. Does nothing if the snap is not installed or already
-   * unblocked.
-   *
-   * @param snapId - The id of the snap to unblock.
-   */
-  private async _unblockSnap(snapId: SnapId): Promise<void> {
-    if (!this.has(snapId) || !this.state.snaps[snapId].blocked) {
-      return;
-    }
-
-    this.update((state: any) => {
-      state.snaps[snapId].blocked = false;
-      delete state.snaps[snapId].blockInformation;
-    });
-
-    this.messagingSystem.publish(`${controllerName}:snapUnblocked`, snapId);
-  }
-
-  /**
-   * Checks whether a version of a snap is blocked.
-   *
-   * @param snapId - The snap id to check.
-   * @param version - The version of the snap to check.
-   * @returns Whether the version of the snap is blocked or not.
-   */
-  async isBlocked(
-    snapId: ValidatedSnapId,
-    version: SemVerVersion,
-  ): Promise<boolean> {
-    if (!this._checkSnapBlockList) {
-      throw new Error(BLOCK_LIST_UNDEFINED_ERROR);
-    }
-
-    const result = await this._checkSnapBlockList({ [snapId]: version });
-    return result[snapId].blocked;
-  }
-
-  /**
-   * Asserts that a version of a snap is not blocked. Succeeds automatically
-   * if {@link SnapController._checkSnapBlockList} is undefined.
-   *
-   * @param snapId - The id of the snap to check.
-   * @param version - The version to check.
-   */
-  private async _assertIsNotBlocked(
-    snapId: ValidatedSnapId,
-    version: SemVerVersion,
-  ) {
-    if (this._checkSnapBlockList && (await this.isBlocked(snapId, version))) {
-      throw new Error(
-        `Cannot install version "${version}" of snap "${snapId}": the version is blocked.`,
-      );
-    }
   }
 
   async _stopSnapsLastRequestPastMax() {
@@ -1015,18 +817,13 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Enables the given snap. A snap can only be started if it is enabled. A snap
-   * can only be enabled if it isn't blocked.
+   * Enables the given snap. A snap can only be started if it is enabled.
    *
    * @param snapId - The id of the Snap to enable.
    */
   enableSnap(snapId: SnapId): void {
     if (!this.has(snapId)) {
       throw new Error(`Snap "${snapId}" not found.`);
-    }
-
-    if (this.state.snaps[snapId].blocked) {
-      throw new Error(`Snap "${snapId}" is blocked and cannot be enabled.`);
     }
 
     this.update((state: any) => {
@@ -1517,11 +1314,9 @@ export class SnapController extends BaseController<
    * Updates an already-installed snap. The flow is similar to
    * {@link SnapController.installSnaps}. The user will be asked if they want
    * to update, then approve any permission changes, and then the snap will be
-   * restarted. If the snap was blocked, a successful update will cause it to
-   * be unblocked and enabled so that it can be restarted.
+   * restarted.
    *
-   * The update will fail if the user rejects any prompt or if the new version
-   * of the snap is blocked.
+   * The update will fail if the user rejects any prompt.
    *
    * @param origin - The origin requesting the snap update.
    * @param snapId - The id of the Snap to be updated.
@@ -1554,8 +1349,6 @@ export class SnapController extends BaseController<
       );
       return null;
     }
-
-    await this._assertIsNotBlocked(snapId, newVersion);
 
     const { newPermissions, unusedPermissions, approvedPermissions } =
       await this.calculatePermissionsChange(
@@ -1657,7 +1450,6 @@ export class SnapController extends BaseController<
         }
 
         const fetchedSnap = await this._fetchSnap(snapId, args.versionRange);
-        await this._assertIsNotBlocked(snapId, fetchedSnap.manifest.version);
 
         return this._set({
           ...args,
@@ -1777,8 +1569,8 @@ export class SnapController extends BaseController<
    * various validation checks on the received arguments, and will throw if
    * validation fails.
    *
-   * The snap will be unblocked and enabled by the time this method returns,
-   * regardless of their previous state.
+   * The snap will be enabled by the time this method returns, regardless of its
+   * previous state.
    *
    * See {@link SnapController.add} and {@link SnapController.updateSnap} for
    * usage.
@@ -1836,8 +1628,7 @@ export class SnapController extends BaseController<
       // Restore relevant snap state if it exists
       ...existingSnap,
 
-      // Note that the snap will be unblocked and enabled
-      blocked: false,
+      // Note that the snap will be enabled even if it was previously disabled.
       enabled: true,
 
       // So we can easily correlate the snap with its permission
@@ -1851,8 +1642,6 @@ export class SnapController extends BaseController<
       version,
       versionHistory,
     };
-    // If the snap was blocked, it isn't any longer
-    delete snap.blockInformation;
 
     // store the snap back in state
     this.update((state: any) => {
