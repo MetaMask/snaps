@@ -897,7 +897,7 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Checks whether a version of a snap is blocked.
+   * Checks the block list to determine whether a version of a snap is blocked.
    *
    * @param snapId - The snap id to check.
    * @param version - The version of the snap to check.
@@ -1778,8 +1778,8 @@ export class SnapController extends BaseController<
    * various validation checks on the received arguments, and will throw if
    * validation fails.
    *
-   * The snap will be unblocked and enabled by the time this method returns,
-   * regardless of their previous state.
+   * The snap will be unblocked and enabled when this method returns, regardless
+   * of its previous state.
    *
    * See {@link SnapController.add} and {@link SnapController.updateSnap} for
    * usage.
@@ -1837,7 +1837,8 @@ export class SnapController extends BaseController<
       // Restore relevant snap state if it exists
       ...existingSnap,
 
-      // Note that the snap will be unblocked and enabled
+      // Note that the snap will be unblocked and enabled, regardless of its
+      // previous state.
       blocked: false,
       enabled: true,
 
