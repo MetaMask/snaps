@@ -3025,22 +3025,19 @@ describe('SnapController', () => {
 
     describe('SnapController:updateBlockedSnaps', () => {
       it('calls SnapController.updateBlockedSnaps()', async () => {
-        const executeSnapMock = jest.fn();
         const messenger = getSnapControllerMessenger(undefined, false);
         const snapController = getSnapController(
           getSnapControllerOptions({
-            executeSnap: executeSnapMock,
             messenger,
           }),
         );
 
-        const checkBlockListSpy = jest
+        const updateBlockedSnapsSpy = jest
           .spyOn(snapController, 'updateBlockedSnaps')
           .mockImplementation();
 
         await messenger.call('SnapController:updateBlockedSnaps');
-
-        expect(checkBlockListSpy).toHaveBeenCalledTimes(1);
+        expect(updateBlockedSnapsSpy).toHaveBeenCalledTimes(1);
       });
     });
 
