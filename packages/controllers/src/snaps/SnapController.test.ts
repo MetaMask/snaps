@@ -2549,6 +2549,13 @@ describe('SnapController', () => {
       expect(snapController.get(MOCK_SNAP_ID)?.enabled).toBe(false);
       expect(snapController.isRunning(MOCK_SNAP_ID)).toBe(false);
     });
+
+    it('throws an error if the specified snap does not exist', () => {
+      const snapController = getSnapController();
+      expect(() => snapController.disableSnap(MOCK_SNAP_ID)).toThrow(
+        `Snap "${MOCK_SNAP_ID}" not found.`,
+      );
+    });
   });
 
   describe('SnapController actions', () => {

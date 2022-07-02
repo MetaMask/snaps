@@ -838,10 +838,11 @@ export class SnapController extends BaseController<
    * @returns A promise that resolves once the snap has been disabled.
    */
   disableSnap(snapId: SnapId): Promise<void> {
+    if (!this.has(snapId)) {
+      throw new Error(`Snap "${snapId}" not found.`);
+    }
+
     this.update((state: any) => {
-      if (!state.snaps[snapId]) {
-        throw new Error(`Snap "${snapId}" not found.`);
-      }
       state.snaps[snapId].enabled = false;
     });
 
