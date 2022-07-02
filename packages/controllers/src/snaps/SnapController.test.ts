@@ -2485,49 +2485,69 @@ describe('SnapController', () => {
     });
   });
 
-  describe('enableSnap/disableSnap', () => {
-    it('enables / disables snaps correctly', async () => {
-      const manifest = {
-        ...getSnapManifest(),
-        initialPermissions: { eth_accounts: {} },
-      };
+  describe('enableSnap', () => {
+    it('enables a disabled snap', () => {
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          state: {
+            snaps: {
+              [MOCK_SNAP_ID]: { ...getSnapObject(), enabled: false },
+            },
+          },
+        }),
+      );
 
-      const snapController = getSnapController();
-
-      await snapController.add({
-        origin: MOCK_ORIGIN,
-        id: MOCK_SNAP_ID,
-        manifest,
-        sourceCode: MOCK_SNAP_SOURCE_CODE,
-      });
-
-      await snapController.disableSnap(MOCK_SNAP_ID);
       expect(snapController.get(MOCK_SNAP_ID)?.enabled).toBe(false);
+
       snapController.enableSnap(MOCK_SNAP_ID);
       expect(snapController.get(MOCK_SNAP_ID)?.enabled).toBe(true);
     });
 
-    it('disableSnap also stops a running snap', async () => {
-      const manifest = {
-        ...getSnapManifest(),
-        initialPermissions: { eth_accounts: {} },
-      };
-
+    it('throws an error if the specified snap does not exist', () => {
       const snapController = getSnapController();
+      expect(() => snapController.enableSnap(MOCK_SNAP_ID)).toThrow(
+        `Snap "${MOCK_SNAP_ID}" not found.`,
+      );
+    });
+  });
 
-      await snapController.add({
-        origin: MOCK_ORIGIN,
-        id: MOCK_SNAP_ID,
-        manifest,
-        sourceCode: MOCK_SNAP_SOURCE_CODE,
-      });
+  describe('disableSnap', () => {
+    it('disables a snap', async () => {
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          state: {
+            snaps: {
+              [MOCK_SNAP_ID]: { ...getSnapObject(), enabled: true },
+            },
+          },
+        }),
+      );
 
-      await snapController.startSnap(MOCK_SNAP_ID);
+      expect(snapController.get(MOCK_SNAP_ID)?.enabled).toBe(true);
 
       await snapController.disableSnap(MOCK_SNAP_ID);
-      const snap = snapController.get(MOCK_SNAP_ID);
-      expect(snap?.enabled).toBe(false);
-      expect(snap?.status).toBe(SnapStatus.stopped);
+      expect(snapController.get(MOCK_SNAP_ID)?.enabled).toBe(false);
+    });
+
+    it('stops a running snap when disabling it', async () => {
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          state: {
+            snaps: {
+              [MOCK_SNAP_ID]: { ...getSnapObject(), enabled: true },
+            },
+          },
+        }),
+      );
+
+      expect(snapController.get(MOCK_SNAP_ID)?.enabled).toBe(true);
+
+      await snapController.startSnap(MOCK_SNAP_ID);
+      expect(snapController.isRunning(MOCK_SNAP_ID)).toBe(true);
+
+      await snapController.disableSnap(MOCK_SNAP_ID);
+      expect(snapController.get(MOCK_SNAP_ID)?.enabled).toBe(false);
+      expect(snapController.isRunning(MOCK_SNAP_ID)).toBe(false);
     });
   });
 
