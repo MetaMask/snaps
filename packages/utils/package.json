@@ -25,13 +25,10 @@
     "publish:package": "../../scripts/publish-package.sh"
   },
   "dependencies": {
-    "@babel/generator": "^7.18.2",
-    "@babel/parser": "^7.18.5",
-    "@babel/template": "^7.16.7",
-    "@babel/traverse": "^7.18.5"
+    "@babel/core": "^7.18.6",
+    "@babel/types": "^7.18.7"
   },
   "devDependencies": {
-    "@babel/types": "^7.17.0",
     "@lavamoat/allow-scripts": "^2.0.3",
     "@metamask/auto-changelog": "^2.6.0",
     "@metamask/eslint-config": "^9.0.0",

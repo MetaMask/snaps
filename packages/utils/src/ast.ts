@@ -1,7 +1,3 @@
-import { parse } from '@babel/parser';
-import traverse, { Node } from '@babel/traverse';
-import generate from '@babel/generator';
-import template from '@babel/template';
 import {
   binaryExpression,
   Expression,
@@ -11,12 +7,7 @@ import {
   templateElement,
   templateLiteral,
 } from '@babel/types';
-
-const COMMENTS_KEYS = [
-  'innerComments',
-  'leadingComments',
-  'trailingComments',
-] as const;
+import { transformSync, Node, Visitor, template, PluginObj } from '@babel/core';
 
 // The RegEx below consists of multiple groups joined by a boolean OR.
 // Each part consists of two groups which capture a part of each string
@@ -27,59 +18,11 @@ const TOKEN_REGEX = /(<!)(--)|(--)(>)|(import)(\(.*?\))/gu;
 // value ("").
 const EMPTY_TEMPLATE_ELEMENT = templateElement({ raw: '', cooked: '' });
 
-/**
- * Get the abstract syntax tree (AST) representation of the given code. This
- * uses Babel's parser to generate the AST.
- *
- * @param code - The code to parse.
- * @param attachComment - Whether to attach comments to the AST.
- * @returns The AST representation of the code.
- * @throws If the code contains syntax errors.
- */
-export function getAST(code: string, attachComment = true): Node {
-  const ast = parse(code, {
-    // We set `errorRecovery` to `true` because Babel otherwise immediately
-    // throws if it fails to parse the code. This way we can handle the error by
-    // looking at `ast.errors`.
-    errorRecovery: true,
-
-    // This apparently changes how Babel processes HTML terminators, parsing
-    // `<!--` as `< ! --` instead, which is what we want.
-    sourceType: 'unambiguous',
-
-    // Strict mode isn't enabled by default, so we need to enable it here.
-    strictMode: true,
-
-    // If this is disabled, the AST does not include any comments. This is
-    // useful for performance reasons, and we use it for stripping comments.
-    attachComment,
-  });
-
-  if (ast.errors?.length > 0) {
-    throw new Error(
-      `Failed to parse the provided code to an AST:\n${ast.errors.join('\n')}`,
-    );
-  }
-
-  return ast as Node;
-}
-
-/**
- * Turn Babel's abstract syntax tree (AST) representation back into a string.
- *
- * @param ast - The AST to generate code from.
- * @param code - The original code, used for source maps.
- * @returns The generated code.
- */
-export function getCode(ast: Node, code?: string): string {
-  return generate(ast, {}, code).code;
-}
-
-const evalWrapper = template.smart(`
+const evalWrapper = template.statement(`
   (1, REF)(ARGS)
 `);
 
-const objectEvalWrapper = template.smart(`
+const objectEvalWrapper = template.statement(`
   (1, OBJECT.REF)
 `);
 
@@ -199,34 +142,25 @@ function getRawTemplateValue(value: string) {
  * - Breaks up tokens that would otherwise result in SES errors, such as HTML
  * comment tags `<!--` and `-->` and `import(n)` statements.
  *
- * @param ast - The AST to post process.
- * @returns The modified AST.
+ * @param code - The code to post process.
+ * @param attachComments - Whether to include comments in the output.
+ * @returns The modified code.
  */
-export function postProcessAST(ast: Node): Node {
-  // Modifies the AST in place.
-  traverse(ast, {
-    enter(path) {
-      const { node } = path;
+export function postProcessAST(code: string, attachComments = true): string {
+  const pre: PluginObj['pre'] = ({ ast }) => {
+    ast.comments?.forEach((comment) => {
+      // Break up tokens that could be parsed as HTML comment terminators. The
+      // regular expressions below are written strangely so as to avoid the
+      // appearance of such tokens in our source code. For reference:
+      // https://github.com/endojs/endo/blob/70cc86eb400655e922413b99c38818d7b2e79da0/packages/ses/error-codes/SES_HTML_COMMENT_REJECTED.md
+      comment.value = comment.value
+        .replace(new RegExp(`<!${'--'}`, 'gu'), '< !--')
+        .replace(new RegExp(`${'--'}>`, 'gu'), '-- >')
+        .replace(/import(\(.*\))/gu, 'import\\$1');
+    });
+  };
 
-      COMMENTS_KEYS.forEach((key) => {
-        const comments = node[key];
-        if (!comments) {
-          return;
-        }
-
-        // Break up tokens that could be parsed as HTML comment terminators. The
-        // regular expressions below are written strangely so as to avoid the
-        // appearance of such tokens in our source code. For reference:
-        // https://github.com/endojs/endo/blob/70cc86eb400655e922413b99c38818d7b2e79da0/packages/ses/error-codes/SES_HTML_COMMENT_REJECTED.md
-        comments.forEach((comment) => {
-          comment.value = comment.value
-            .replace(new RegExp(`<!${'--'}`, 'gu'), '< !--')
-            .replace(new RegExp(`${'--'}>`, 'gu'), '-- >')
-            .replace(/import(\(.*\))/gu, 'import\\$1');
-        });
-      });
-    },
-
+  const visitor: Visitor<Node> = {
     FunctionExpression(path) {
       const { node } = path;
 
@@ -256,7 +190,7 @@ export function postProcessAST(ast: Node): Node {
           evalWrapper({
             REF: node.callee,
             ARGS: node.arguments,
-          }) as Node,
+          }),
         );
       }
     },
@@ -275,7 +209,7 @@ export function postProcessAST(ast: Node): Node {
           objectEvalWrapper({
             OBJECT: node.object,
             REF: node.property,
-          }) as any,
+          }),
         );
       }
     },
@@ -337,13 +271,13 @@ export function postProcessAST(ast: Node): Node {
           // Only update the node if something changed.
           if (tokens[0].length <= 1) {
             return [
-              [...elements, quasi],
+              [...elements, quasi as TemplateElement],
               [...expressions, node.expressions[index] as Expression],
             ];
           }
 
           return [
-            [...elements, ...tokens[0]],
+            [...elements, ...(tokens[0] as TemplateElement[])],
             [
               ...expressions,
               ...tokens[1],
@@ -389,7 +323,40 @@ export function postProcessAST(ast: Node): Node {
       path.replaceWith(replacement as Node);
       path.skip();
     },
-  });
 
-  return ast;
+    BinaryExpression(path) {
+      const source = path.getSource();
+
+      // Throw an error if HTML comments are used as a binary expression.
+      if (source.includes('<!--') || source.includes('-->')) {
+        throw new Error('HTML comments (`<!--` and `-->`) are not allowed.');
+      }
+    },
+  };
+
+  try {
+    const file = transformSync(code, {
+      // Prevent Babel from searching for a config file.
+      configFile: false,
+      comments: attachComments,
+      parserOpts: {
+        // Strict mode isn't enabled by default, so we need to enable it here.
+        strictMode: true,
+      },
+      plugins: [
+        () => ({
+          pre,
+          visitor,
+        }),
+      ],
+    });
+
+    if (!file?.code) {
+      throw new Error('Bundled code is empty.');
+    }
+
+    return file.code;
+  } catch (error) {
+    throw new Error(`Failed to post process code:\n${error.message}`);
+  }
 }

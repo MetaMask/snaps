@@ -32,15 +32,6 @@ describe('postProcessBundle', () => {
     ).toStrictEqual('/* leave me alone */\npostProcessMe();');
   });
 
-  it('strips HTML comment tokens', () => {
-    [
-      ['foo();\n<!--', 'foo();'],
-      ['-->\nbar()', 'bar();'],
-    ].forEach(([input, output]) => {
-      expect(postProcessBundle(input)).toStrictEqual(output);
-    });
-  });
-
   it('breaks up HTML comment tokens', () => {
     [
       [`foo('<!--');`, `foo("<!" + "--");`],
@@ -59,6 +50,6 @@ describe('postProcessBundle', () => {
   });
 
   it('throws an error if the postprocessed string is empty', () => {
-    expect(() => postProcessBundle(' ')).toThrow(/^Bundled code is empty/u);
+    expect(() => postProcessBundle(' ')).toThrow('Bundled code is empty.');
   });
 });

@@ -1,32 +1,4 @@
-import { getAST, getCode, postProcessAST } from './ast';
-
-describe('getAST', () => {
-  it('returns an AST for the provided code', () => {
-    const code = `const foo = 'bar'; console.log(foo);`;
-
-    // eslint-disable-next-line jest/no-restricted-matchers
-    expect(getAST(code)).toMatchSnapshot();
-  });
-
-  it(`doesn't attach comments to the AST if configured`, () => {
-    const code = `
-      // This is a comment.
-      const foo = 'bar';
-    `;
-
-    const ast = getAST(code, false);
-    expect(getCode(ast)).not.toContain('// This is a comment.');
-  });
-
-  it('forwards parser errors', () => {
-    // Invalid code
-    const code = `const foo bar;`;
-
-    expect(() => getAST(code)).toThrow(
-      `Failed to parse the provided code to an AST:`,
-    );
-  });
-});
+import { postProcessAST } from './ast';
 
 describe('postProcessAST', () => {
   it('wraps eval', () => {
@@ -38,10 +10,8 @@ describe('postProcessAST', () => {
       foo.eval('<!-- bar -->');
     `;
 
-    const ast = getAST(code);
-    const processedCode = postProcessAST(ast);
-
-    expect(getCode(processedCode)).toMatchInlineSnapshot(`
+    const processedCode = postProcessAST(code);
+    expect(processedCode).toMatchInlineSnapshot(`
       "(1, eval)(bar);
       (1, foo.eval)(bar, baz);
       (1, foo.bar.eval)(baz, qux);
@@ -61,10 +31,8 @@ describe('postProcessAST', () => {
       }
     `;
 
-    const ast = getAST(code);
-    const processedCode = postProcessAST(ast);
-
-    expect(getCode(processedCode)).toMatchInlineSnapshot(`
+    const processedCode = postProcessAST(code);
+    expect(processedCode).toMatchInlineSnapshot(`
       "(function (foo) {
         const bar = 'baz';
       });
@@ -86,10 +54,8 @@ describe('postProcessAST', () => {
       }
     `;
 
-    const ast = getAST(code);
-    const processedCode = postProcessAST(ast);
-
-    expect(getCode(processedCode)).toMatchInlineSnapshot(`
+    const processedCode = postProcessAST(code);
+    expect(processedCode).toMatchInlineSnapshot(`
       "var regeneratorRuntime;
 
       function foo() {
@@ -107,31 +73,10 @@ describe('postProcessAST', () => {
       const foo = 'regeneratorRuntime';
     `;
 
-    const ast = getAST(code);
-    const processedCode = postProcessAST(ast);
-
-    expect(getCode(processedCode)).toMatchInlineSnapshot(
+    const processedCode = postProcessAST(code);
+    expect(processedCode).toMatchInlineSnapshot(
       `"const foo = 'regeneratorRuntime';"`,
     );
-  });
-
-  it('breaks up HTML comment terminators in operators', () => {
-    const code = `
-      let a = 5;
-      let b = 7;
-      const c = a --> b;
-      const d = a <!-- b;
-    `;
-
-    const ast = getAST(code);
-    const processedCode = postProcessAST(ast);
-
-    expect(getCode(processedCode)).toMatchInlineSnapshot(`
-      "let a = 5;
-      let b = 7;
-      const c = a-- > b;
-      const d = a < ! --b;"
-    `);
   });
 
   it('breaks up HTML comment terminators in string literals', () => {
@@ -139,10 +84,8 @@ describe('postProcessAST', () => {
       const foo = '<!-- bar -->';
     `;
 
-    const ast = getAST(code);
-    const processedCode = postProcessAST(ast);
-
-    expect(getCode(processedCode)).toMatchInlineSnapshot(
+    const processedCode = postProcessAST(code);
+    expect(processedCode).toMatchInlineSnapshot(
       `"const foo = \\"<!\\" + \\"--\\" + \\" bar \\" + \\"--\\" + \\">\\";"`,
     );
   });
@@ -153,10 +96,8 @@ describe('postProcessAST', () => {
       const bar = 'foo bar import(this works too) baz';
     `;
 
-    const ast = getAST(code);
-    const processedCode = postProcessAST(ast);
-
-    expect(getCode(processedCode)).toMatchInlineSnapshot(`
+    const processedCode = postProcessAST(code);
+    expect(processedCode).toMatchInlineSnapshot(`
       "const foo = \\"foo bar \\" + \\"import\\" + \\"()\\" + \\" baz\\";
       const bar = \\"foo bar \\" + \\"import\\" + \\"(this works too)\\" + \\" baz\\";"
     `);
@@ -167,10 +108,8 @@ describe('postProcessAST', () => {
       const foo = \`<!-- bar --> \${'<!-- baz -->'} \${qux}\`;
     `;
 
-    const ast = getAST(code);
-    const processedCode = postProcessAST(ast);
-
-    expect(getCode(processedCode)).toMatchInlineSnapshot(
+    const processedCode = postProcessAST(code);
+    expect(processedCode).toMatchInlineSnapshot(
       `"const foo = \`\${\\"<!\\"}\${\\"--\\"} bar \${\\"--\\"}\${\\">\\"} \${\\"<!\\" + \\"--\\" + \\" baz \\" + \\"--\\" + \\">\\"} \${qux}\`;"`,
     );
   });
@@ -184,10 +123,8 @@ describe('postProcessAST', () => {
       \`;
     `;
 
-    const ast = getAST(code);
-    const processedCode = postProcessAST(ast);
-
-    expect(getCode(processedCode)).toMatchInlineSnapshot(`
+    const processedCode = postProcessAST(code);
+    expect(processedCode).toMatchInlineSnapshot(`
       "const foo = \`foo bar \${\\"import\\"}\${\\"()\\"} baz\`;
       const bar = \`foo bar \${\\"import\\"}\${\\"(this works too)\\"} baz\`;
       foo\`
@@ -197,13 +134,11 @@ describe('postProcessAST', () => {
 
   it('breaks up HTML comment terminators in comments', () => {
     const code = `
-      <!-- foo -->
+      // <!-- foo -->
     `;
 
-    const ast = getAST(code);
-    const processedCode = postProcessAST(ast);
-
-    expect(getCode(processedCode)).toMatchInlineSnapshot(`"// foo -- >"`);
+    const processedCode = postProcessAST(code);
+    expect(processedCode).toMatchInlineSnapshot(`"// < !-- foo -- >"`);
   });
 
   it('breaks up `import()` in comments', () => {
@@ -212,10 +147,8 @@ describe('postProcessAST', () => {
       // Foo bar import(baz) qux
     `;
 
-    const ast = getAST(code);
-    const processedCode = postProcessAST(ast);
-
-    expect(getCode(processedCode)).toMatchInlineSnapshot(`
+    const processedCode = postProcessAST(code);
+    expect(processedCode).toMatchInlineSnapshot(`
       "// Foo bar import\\\\() baz
       // Foo bar import\\\\(baz) qux"
     `);
@@ -226,10 +159,8 @@ describe('postProcessAST', () => {
       const foo = '';
     `;
 
-    const ast = getAST(code);
-    const processedCode = postProcessAST(ast);
-
-    expect(getCode(processedCode)).toMatchInlineSnapshot(`"const foo = '';"`);
+    const processedCode = postProcessAST(code);
+    expect(processedCode).toMatchInlineSnapshot(`"const foo = '';"`);
   });
 
   it(`doesn't process values that don't contain special tokens`, () => {
@@ -239,10 +170,8 @@ describe('postProcessAST', () => {
       const bar = \`bar\${foo}\`;
     `;
 
-    const ast = getAST(code);
-    const processedCode = postProcessAST(ast);
-
-    expect(getCode(processedCode)).toMatchInlineSnapshot(`
+    const processedCode = postProcessAST(code);
+    expect(processedCode).toMatchInlineSnapshot(`
       "const empty = '';
       const foo = 'foo';
       const bar = \`bar\${foo}\`;"
@@ -253,13 +182,20 @@ describe('postProcessAST', () => {
     // eslint-disable-next-line
     const code = 'const foo = `<!-- \\` ${foo} \\` -->`;';
 
-    const ast = getAST(code);
-    const processedCode = postProcessAST(ast);
-
-    expect(getCode(processedCode)).toMatchInlineSnapshot(
+    const processedCode = postProcessAST(code);
+    expect(processedCode).toMatchInlineSnapshot(
       `"const foo = \`\${\\"<!\\"}\${\\"--\\"} \\\\\` \${foo} \\\\\` \${\\"--\\"}\${\\">\\"}\`;"`,
     );
   });
+
+  it.each(['const a = b <!-- c;', 'const a = b --> c;'])(
+    'throws an error when HTML comment tokens are used',
+    (code) => {
+      expect(() => postProcessAST(code)).toThrow(
+        'HTML comments (`<!--` and `-->`) are not allowed.',
+      );
+    },
+  );
 
   it('processes all the things', () => {
     const code = `
@@ -273,10 +209,8 @@ describe('postProcessAST', () => {
       });
     `;
 
-    const ast = getAST(code, false);
-    const processedCode = postProcessAST(ast);
-
-    expect(getCode(processedCode)).toMatchInlineSnapshot(`
+    const processedCode = postProcessAST(code, false);
+    expect(processedCode).toMatchInlineSnapshot(`
       "var regeneratorRuntime;
 
       (function (foo) {
@@ -287,5 +221,12 @@ describe('postProcessAST', () => {
         (1, foo.eval)('bar');
       });"
     `);
+  });
+
+  it('forwards parser errors', () => {
+    // Invalid code
+    const code = `const`;
+
+    expect(() => postProcessAST(code)).toThrow(`Failed to post process code`);
   });
 });

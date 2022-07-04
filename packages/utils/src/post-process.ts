@@ -1,4 +1,4 @@
-import { getAST, getCode, postProcessAST } from './ast';
+import { postProcessAST } from './ast';
 
 export type PostProcessOptions = {
   stripComments: boolean;
@@ -28,13 +28,5 @@ export function postProcessBundle(
     return null;
   }
 
-  const ast = getAST(bundleString, !stripComments);
-  const processedAST = postProcessAST(ast);
-  const processedString = getCode(processedAST, bundleString);
-
-  if (processedString.length === 0) {
-    throw new Error(`Bundled code is empty after postprocessing.`);
-  }
-
-  return processedString;
+  return postProcessAST(bundleString, !stripComments);
 }
