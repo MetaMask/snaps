@@ -355,10 +355,15 @@ export function postProcessBundle(
     const file = transformSync(code, {
       // Prevent Babel from searching for a config file.
       configFile: false,
-      comments: !stripComments,
+      // comments: !stripComments,
       parserOpts: {
         // Strict mode isn't enabled by default, so we need to enable it here.
         strictMode: true,
+
+        // If this is disabled, the AST does not include any comments. This is
+        // useful for performance reasons, and we use it for stripping comments.
+        // @ts-expect-error Missing in the `@babel/core` types.
+        attachComment: !stripComments,
       },
       // By default, Babel optimises bundles that exceed 500 KB, but that
       // results in characters which look like HTML comments, which breaks SES.
