@@ -355,7 +355,6 @@ export function postProcessBundle(
     const file = transformSync(code, {
       // Prevent Babel from searching for a config file.
       configFile: false,
-      // comments: !stripComments,
       parserOpts: {
         // Strict mode isn't enabled by default, so we need to enable it here.
         strictMode: true,
