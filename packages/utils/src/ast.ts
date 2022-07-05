@@ -343,6 +343,9 @@ export function postProcessAST(code: string, attachComments = true): string {
         // Strict mode isn't enabled by default, so we need to enable it here.
         strictMode: true,
       },
+      // By default, Babel optimises bundles that exceed 500 KB, but that
+      // results in characters which look like HTML comments, which breaks SES.
+      compact: false,
       plugins: [
         () => ({
           pre,
