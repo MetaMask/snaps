@@ -28,17 +28,14 @@
     "publish:package": "../../scripts/publish-package.sh"
   },
   "dependencies": {
-    "@babel/generator": "^7.18.2",
-    "@babel/parser": "^7.18.5",
+    "@babel/core": "^7.18.6",
     "@metamask/utils": "^2.0.0",
     "ajv": "^8.11.0",
     "fast-deep-equal": "^3.1.3",
     "semver": "^7.3.7"
   },
   "devDependencies": {
-    "@babel/template": "^7.16.7",
-    "@babel/traverse": "^7.18.5",
-    "@babel/types": "^7.17.0",
+    "@babel/types": "^7.18.7",
     "@json-schema-tools/transpiler": "^1.10.2",
     "@lavamoat/allow-scripts": "^2.0.3",
     "@metamask/auto-changelog": "^2.6.0",
