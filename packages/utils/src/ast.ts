@@ -329,7 +329,12 @@ export function postProcessAST(code: string, attachComments = true): string {
 
       // Throw an error if HTML comments are used as a binary expression.
       if (source.includes('<!--') || source.includes('-->')) {
-        throw new Error('HTML comments (`<!--` and `-->`) are not allowed.');
+        throw new Error(
+          'Using HTML comments (`<!--` and `-->`) as operators is not allowed. The behaviour of ' +
+            'these comments is ambiguous, and differs per browser and environment. If you want ' +
+            'to use them as operators, break them up into separate characters, i.e., `a-- > b` ' +
+            'and `a < ! --b`.',
+        );
       }
     },
   };

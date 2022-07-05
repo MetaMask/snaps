@@ -189,10 +189,10 @@ describe('postProcessAST', () => {
   });
 
   it.each(['const a = b <!-- c;', 'const a = b --> c;'])(
-    'throws an error when HTML comment tokens are used',
+    'throws an error when HTML comment tokens are used as operators',
     (code) => {
       expect(() => postProcessAST(code)).toThrow(
-        'HTML comments (`<!--` and `-->`) are not allowed.',
+        'Using HTML comments (`<!--` and `-->`) as operators is not allowed.',
       );
     },
   );
