@@ -8,8 +8,8 @@ module.exports = {
   coveragePathIgnorePatterns: ['/node_modules/', '/mocks/', '/test/'],
   coverageThreshold: {
     global: {
-      branches: 67.37,
-      functions: 83.67,
+      branches: 64.75,
+      functions: 84.62,
       lines: 84.6,
       statements: 84.63,
     },
@@ -21,23 +21,18 @@ module.exports = {
   },
   projects: [
     {
-      displayName: 'runner: electron',
       preset: 'ts-jest',
-      runner: '@jest-runner/electron',
-      // Note that this environment does not support fake timers.
-      testEnvironment: '@jest-runner/electron/environment',
-      testMatch: [
-        '<rootDir>/src/snaps/**/*.test.ts',
-        '<rootDir>/src/services/**/*.test.ts',
-      ],
+      testMatch: ['<rootDir>/src/services/iframe/*.test.ts'],
+      testEnvironment: 'jsdom',
+      testEnvironmentOptions: {
+        resources: 'usable',
+        runScripts: 'dangerously',
+      },
     },
     {
-      displayName: 'runner: default',
       preset: 'ts-jest',
-      testPathIgnorePatterns: [
-        '<rootDir>/src/snaps/*',
-        '<rootDir>/src/services/*',
-      ],
+      testPathIgnorePatterns: ['<rootDir>/src/services/iframe/*'],
+      testEnvironment: 'jsdom',
       testRegex: ['\\.test\\.(ts|js)$'],
     },
   ],

@@ -4,6 +4,7 @@ const CopyPlugin = require('copy-webpack-plugin');
 
 const DIST = path.resolve(__dirname, 'dist');
 const ENVIRONMENTS = path.resolve(DIST, 'webpack');
+const UNSAFE_ENVIRONMENTS = path.resolve(__dirname, '__test__')
 
 module.exports = (_, argv) => {
   const isProd = argv.mode === 'production';
@@ -15,12 +16,12 @@ module.exports = (_, argv) => {
       devtool: 'inline-source-map',
     };
   }
-  const config = {
+
+  const nodeConfig = {
     ...extraOptions,
     mode: argv.mode,
+    target: 'node',
     entry: {
-      iframe: './src/iframe/index.ts',
-      webworker: './src/web-workers/index.ts',
       node: './src/node/index.ts',
     },
     output: {
@@ -28,18 +29,9 @@ module.exports = (_, argv) => {
       path: ENVIRONMENTS,
     },
     plugins: [
-      new NodePolyfillPlugin(),
       new CopyPlugin({
         patterns: [
-          {
-            from: path.resolve(
-              `${path.dirname(require.resolve('ses/package.json'))}`,
-              'dist',
-              'lockdown.umd.min.js',
-            ),
-            to: path.resolve(ENVIRONMENTS, 'webworker/lockdown.umd.min.js'),
-            toType: 'file',
-          },
+
           {
             from: path.resolve(
               `${path.dirname(require.resolve('ses/package.json'))}`,
@@ -49,6 +41,37 @@ module.exports = (_, argv) => {
             to: path.resolve(ENVIRONMENTS, 'node/lockdown.umd.min.js'),
             toType: 'file',
           },
+        ],
+      }),
+    ],
+    module: {
+      rules: [
+        {
+          test: /\.tsx?$/u,
+          use: 'ts-loader',
+          exclude: /node_modules/u,
+        },
+      ],
+    },
+    resolve: {
+      extensions: ['.tsx', '.ts', '.js'],
+    },
+  };
+
+  const browserConfig = {
+    ...extraOptions,
+    mode: argv.mode,
+    entry: {
+      iframe: './src/iframe/index.ts'
+    },
+    output: {
+      filename: '[name]/bundle.js',
+      path: ENVIRONMENTS,
+    },
+    plugins: [
+      new NodePolyfillPlugin(),
+      new CopyPlugin({
+        patterns: [
           // @todo Merge this with above if possible
           {
             // For use in <script> tag along with the iframe bundle. Copied to ensure same version as bundled
@@ -86,5 +109,57 @@ module.exports = (_, argv) => {
       },
     },
   };
-  return config;
+
+  const unsafeConfig = {
+    ...extraOptions,
+    mode: argv.mode,
+    entry: {
+      'iframe-test': './src/iframe-test/index.ts',
+    },
+    output: {
+      filename: '[name]/bundle.js',
+      path: UNSAFE_ENVIRONMENTS,
+    },
+    plugins: [
+      new NodePolyfillPlugin(),
+      new CopyPlugin({
+        patterns: [
+          {
+            // For use in <script> tag along with the iframe bundle. Copied to ensure same version as bundled
+            from: path.resolve(
+              `${path.dirname(require.resolve('ses/package.json'))}`,
+              'dist',
+              'lockdown.umd.min.js',
+            ),
+            to: path.resolve(UNSAFE_ENVIRONMENTS, 'iframe-test/lockdown.umd.min.js'),
+            toType: 'file',
+          },
+          {
+            from: path.resolve('src', 'iframe', 'index.html'),
+            to: path.resolve(UNSAFE_ENVIRONMENTS, 'iframe-test/index.html'),
+            toType: 'file',
+          },
+        ],
+      }),
+    ],
+    module: {
+      rules: [
+        {
+          test: /\.tsx?$/u,
+          use: 'ts-loader',
+          exclude: /node_modules/u,
+        },
+      ],
+    },
+    resolve: {
+      extensions: ['.tsx', '.ts', '.js'],
+      alias: {
+        // Without this alias webpack tried to require ../../node_modules/stream/ which doesn't have Duplex, breaking the bundle
+        stream: 'stream-browserify',
+        'worker_threads': false
+      },
+    },
+  };
+
+  return [browserConfig, nodeConfig, unsafeConfig];
 };
