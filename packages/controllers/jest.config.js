@@ -8,10 +8,10 @@ module.exports = {
   coveragePathIgnorePatterns: ['/node_modules/', '/mocks/', '/test/'],
   coverageThreshold: {
     global: {
-      branches: 64.39,
-      functions: 84.07,
-      lines: 84.43,
-      statements: 84.47,
+      branches: 64.75,
+      functions: 84.62,
+      lines: 84.6,
+      statements: 84.63,
     },
   },
   globals: {
@@ -19,10 +19,23 @@ module.exports = {
       tsconfig: 'tsconfig.test.json',
     },
   },
-  preset: 'ts-jest',
-  testRegex: ['\\.test\\.(ts|js)$'],
-  testEnvironment: 'jsdom',
-  testEnvironmentOptions: { resources: 'usable', runScripts: 'dangerously' },
+  projects: [
+    {
+      preset: 'ts-jest',
+      testMatch: ['<rootDir>/src/services/iframe/*.test.ts'],
+      testEnvironment: 'jsdom',
+      testEnvironmentOptions: {
+        resources: 'usable',
+        runScripts: 'dangerously',
+      },
+    },
+    {
+      preset: 'ts-jest',
+      testPathIgnorePatterns: ['<rootDir>/src/services/iframe/*'],
+      testEnvironment: 'jsdom',
+      testRegex: ['\\.test\\.(ts|js)$'],
+    },
+  ],
   silent: true,
   testTimeout: 5000,
 };
