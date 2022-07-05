@@ -162,9 +162,14 @@ export interface SnapRuntimeData {
   lastRequest: null | number;
 
   /**
-   * The current pending requests
+   * The current pending inbound requests
    */
-  pendingRequests: PendingRequest[];
+  pendingInboundRequests: PendingRequest[];
+
+  /**
+   * The current pending outbound requests
+   */
+  pendingOutboundRequests: number;
 
   /**
    * RPC handler designated for the Snap
@@ -740,16 +745,20 @@ export class SnapController extends BaseController<
     const runtime = this._getSnapRuntimeData(snapId);
     // Ideally we would only pause the pending request that is making the outbound request
     // but right now we don't have a way to know which request initiated the outbound request
-    runtime.pendingRequests.forEach((pendingRequest) =>
+    runtime.pendingInboundRequests.forEach((pendingRequest) =>
       pendingRequest.timer.pause(),
     );
+    runtime.pendingOutboundRequests += 1;
   }
 
   async _onOutboundResponse(snapId: SnapId) {
     const runtime = this._getSnapRuntimeData(snapId);
-    runtime.pendingRequests.forEach((pendingRequest) =>
-      pendingRequest.timer.resume(),
-    );
+    runtime.pendingOutboundRequests -= 1;
+    if (runtime.pendingOutboundRequests === 0) {
+      runtime.pendingInboundRequests.forEach((pendingRequest) =>
+        pendingRequest.timer.resume(),
+      );
+    }
   }
 
   /**
@@ -870,7 +879,8 @@ export class SnapController extends BaseController<
 
     // Reset request tracking
     runtime.lastRequest = null;
-    runtime.pendingRequests = [];
+    runtime.pendingInboundRequests = [];
+    runtime.pendingOutboundRequests = 0;
     try {
       if (this.isRunning(snapId)) {
         this._closeAllConnections(snapId);
@@ -1987,17 +1997,17 @@ export class SnapController extends BaseController<
     timer: Timer,
   ) {
     const runtime = this._getSnapRuntimeData(snapId);
-    runtime.pendingRequests.push({ requestId, timer });
+    runtime.pendingInboundRequests.push({ requestId, timer });
     runtime.lastRequest = null;
   }
 
   private _recordSnapRpcRequestFinish(snapId: SnapId, requestId: string) {
     const runtime = this._getSnapRuntimeData(snapId);
-    runtime.pendingRequests = runtime.pendingRequests.filter(
+    runtime.pendingInboundRequests = runtime.pendingInboundRequests.filter(
       (r) => r.requestId !== requestId,
     );
 
-    if (runtime.pendingRequests.length === 0) {
+    if (runtime.pendingInboundRequests.length === 0) {
       runtime.lastRequest = Date.now();
     }
   }
@@ -2008,7 +2018,8 @@ export class SnapController extends BaseController<
         lastRequest: null,
         rpcHandler: null,
         installPromise: null,
-        pendingRequests: [],
+        pendingInboundRequests: [],
+        pendingOutboundRequests: 0,
       });
     }
     return this._snapsRuntimeData.get(snapId) as SnapRuntimeData;
