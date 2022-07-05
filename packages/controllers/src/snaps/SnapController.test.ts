@@ -337,10 +337,11 @@ describe('SnapController', () => {
     expect(service).toBeDefined();
     expect(snapController).toBeDefined();
     snapController.destroy();
+    await service.terminateAllSnaps();
   });
 
   it('should create a worker and snap controller and add a snap and update its state', async () => {
-    const [snapController] = getSnapControllerWithEES();
+    const [snapController, service] = getSnapControllerWithEES();
 
     const snap = await snapController.add({
       origin: FAKE_ORIGIN,
@@ -361,10 +362,11 @@ describe('SnapController', () => {
       ),
     });
     snapController.destroy();
+    await service.terminateAllSnaps();
   });
 
   it('should add a snap and use its JSON-RPC api with a NodeExecutionService', async () => {
-    const [snapController] = getSnapControllerWithEES();
+    const [snapController, service] = getSnapControllerWithEES();
 
     const snap = await snapController.add({
       origin: FAKE_ORIGIN,
@@ -383,6 +385,7 @@ describe('SnapController', () => {
     });
     expect(result).toStrictEqual('test1');
     snapController.destroy();
+    await service.terminateAllSnaps();
   });
 
   it('should add a snap and use its JSON-RPC api', async () => {
@@ -646,11 +649,12 @@ describe('SnapController', () => {
         snapController.destroy();
       });
     });
+    await workerExecutionEnvironment.terminateAllSnaps();
   });
 
   it('should add a snap and use its JSON-RPC api and then get stopped from idling too long', async () => {
     const rootMessenger = getControllerMessenger();
-    const [snapController] = getSnapControllerWithEES(
+    const [snapController, service] = getSnapControllerWithEES(
       rootMessenger,
       getSnapControllerWithEESOptions(rootMessenger, {
         idleTimeCheckInterval: 50,
@@ -677,6 +681,8 @@ describe('SnapController', () => {
 
     expect(snapController.isRunning(snap.id)).toStrictEqual(false);
     snapController.destroy();
+
+    await service.terminateAllSnaps();
   });
 
   it('should still terminate if connection to worker has failed', async () => {
@@ -686,7 +692,7 @@ describe('SnapController', () => {
       maxIdleTime: 100,
     });
     const worker = getNodeEES(options.messenger);
-    const [snapController] = getSnapControllerWithEES(
+    const [snapController, service] = getSnapControllerWithEES(
       rootMessenger,
       options,
       worker,
@@ -718,11 +724,13 @@ describe('SnapController', () => {
 
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('crashed');
     snapController.destroy();
+
+    await service.terminateAllSnaps();
   });
 
   it('should add a snap and see its status', async () => {
     const rootMessenger = getControllerMessenger();
-    const [snapController] = getSnapControllerWithEES(
+    const [snapController, service] = getSnapControllerWithEES(
       rootMessenger,
       getSnapControllerWithEESOptions(rootMessenger, {
         idleTimeCheckInterval: 1000,
@@ -744,11 +752,12 @@ describe('SnapController', () => {
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
 
     snapController.destroy();
+    await service.terminateAllSnaps();
   });
 
   it('should add a snap and stop it and have it start on-demand', async () => {
     const rootMessenger = getControllerMessenger();
-    const [snapController] = getSnapControllerWithEES(
+    const [snapController, service] = getSnapControllerWithEES(
       rootMessenger,
       getSnapControllerWithEESOptions(rootMessenger, {
         idleTimeCheckInterval: 1000,
@@ -778,6 +787,7 @@ describe('SnapController', () => {
     expect(results).toStrictEqual('test1');
 
     snapController.destroy();
+    await service.terminateAllSnaps();
   });
 
   it('should install a Snap via installSnaps', async () => {
@@ -995,7 +1005,7 @@ describe('SnapController', () => {
 
   it('should add a snap disable/enable it and still get a response from method "test"', async () => {
     const rootMessenger = getControllerMessenger();
-    const [snapController] = getSnapControllerWithEES(
+    const [snapController, service] = getSnapControllerWithEES(
       rootMessenger,
       getSnapControllerWithEESOptions(rootMessenger, {
         idleTimeCheckInterval: 1000,
@@ -1062,12 +1072,13 @@ describe('SnapController', () => {
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
 
     snapController.destroy();
+    await service.terminateAllSnaps();
   });
 
   it('should send an rpc request and time out', async () => {
     const rootMessenger = getControllerMessenger();
     const messenger = getSnapControllerMessenger(rootMessenger);
-    const [snapController] = getSnapControllerWithEES(
+    const [snapController, service] = getSnapControllerWithEES(
       rootMessenger,
       getSnapControllerWithEESOptions(rootMessenger, {
         messenger,
@@ -1112,6 +1123,7 @@ describe('SnapController', () => {
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('crashed');
 
     snapController.destroy();
+    await service.terminateAllSnaps();
   });
 
   it('should not time out long running snaps', async () => {
@@ -1121,7 +1133,7 @@ describe('SnapController', () => {
       // Return true for everything here, so we signal that we have the long-running permission
       return true;
     });
-    const [snapController] = getSnapControllerWithEES(
+    const [snapController, service] = getSnapControllerWithEES(
       rootMessenger,
       getSnapControllerWithEESOptions(rootMessenger, {
         messenger,
@@ -1175,6 +1187,7 @@ describe('SnapController', () => {
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
 
     snapController.destroy();
+    await service.terminateAllSnaps();
   });
 
   it('should time out on stuck starting snap', async () => {
@@ -1249,7 +1262,7 @@ describe('SnapController', () => {
 
   it('should remove a snap that is stopped without errors', async () => {
     const rootMessenger = getControllerMessenger();
-    const [snapController] = getSnapControllerWithEES(
+    const [snapController, service] = getSnapControllerWithEES(
       rootMessenger,
       getSnapControllerWithEESOptions(rootMessenger, {
         idleTimeCheckInterval: 30000,
@@ -1294,13 +1307,14 @@ describe('SnapController', () => {
     expect(snapController.state.snaps[snap.id]).toBeUndefined();
 
     snapController.destroy();
+    await service.terminateAllSnaps();
   });
 
   describe('getRpcRequestHandler', () => {
     it('handlers populate the "jsonrpc" property if missing', async () => {
       const rootMessenger = getControllerMessenger();
       const snapId = 'fooSnap';
-      const [snapController] = getSnapControllerWithEES(
+      const [snapController, service] = getSnapControllerWithEES(
         rootMessenger,
         getSnapControllerWithEESOptions(rootMessenger, {
           state: {
@@ -1331,6 +1345,7 @@ describe('SnapController', () => {
         method: 'bar',
         jsonrpc: '2.0',
       });
+      await service.terminateAllSnaps();
     });
 
     it('handlers throw if the request has an invalid "jsonrpc" property', async () => {
