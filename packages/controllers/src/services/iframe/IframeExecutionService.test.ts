@@ -163,6 +163,9 @@ describe('IframeExecutionService', () => {
       iframeUrl,
     });
     const snapId = 'TestSnap';
+    const removeListener = fixJSDOMPostMessageEventSource(
+      iframeExecutionService,
+    );
     const executeResult = await iframeExecutionService.executeSnap({
       snapId,
       sourceCode: `
@@ -196,5 +199,6 @@ describe('IframeExecutionService', () => {
     );
 
     await iframeExecutionService.terminateAllSnaps();
+    removeListener();
   });
 });
