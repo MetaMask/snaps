@@ -5,6 +5,7 @@ import buffer from './buffer';
 import interval from './interval';
 import network from './network';
 import timeout from './timeout';
+import crypto from './crypto';
 
 type EndowmentFactoryResult = {
   /**
@@ -24,7 +25,7 @@ type EndowmentFactoryResult = {
  * the same factory function, but we only call each factory once for each snap.
  * See {@link createEndowments} for details.
  */
-const endowmentFactories = [buffer, timeout, interval, network].reduce(
+const endowmentFactories = [buffer, timeout, interval, network, crypto].reduce(
   (factories, builder) => {
     builder.names.forEach((name) => {
       factories.set(name, builder.factory);

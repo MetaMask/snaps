@@ -21,10 +21,10 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "yarn auto-changelog validate",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
-    "clean": "rimraf '*.tsbuildinfo' 'dist/*' 'src/__GENERATED__/' 'coverage/*'",
+    "clean": "rimraf '*.tsbuildinfo' 'dist/*' 'src/__GENERATED__/' 'coverage/*' '__test__/*'",
     "build:clean": "yarn clean && yarn build",
     "build:pre-tsc": "yarn build:typings",
-    "build:post-tsc": "webpack --mode production && concat -o ./dist/webpack/webworker/bundle.js ./dist/webpack/webworker/lockdown.umd.min.js ./dist/webpack/webworker/bundle.js && concat -o ./dist/webpack/node/bundle.js ./dist/webpack/node/lockdown.umd.min.js ./dist/webpack/node/bundle.js",
+    "build:post-tsc": "webpack --mode production && concat -o ./dist/webpack/node/bundle.js ./dist/webpack/node/lockdown.umd.min.js ./dist/webpack/node/bundle.js",
     "build:tsc": "tsc --project tsconfig.local.json",
     "build": "yarn build:pre-tsc && yarn build:tsc && yarn build:post-tsc",
     "build:typings": "open-rpc-typings -d ./src/openrpc.json --output-ts=./src/__GENERATED__/ --name-ts=openrpc && ts-auto-guard ./src/__GENERATED__/openrpc.ts --export-all",
@@ -78,7 +78,7 @@
     "webpack-cli": "^4.9.2"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=16.0.0"
   },
   "publishConfig": {
     "access": "public",
