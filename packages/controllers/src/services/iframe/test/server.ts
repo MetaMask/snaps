@@ -1,5 +1,4 @@
 import http from 'http';
-import { promisify } from 'util';
 import path from 'path';
 import serveHandler from 'serve-handler';
 
@@ -64,6 +63,13 @@ export async function start(port = PORT) {
  * Stops the local server.
  */
 export async function stop() {
-  const close = promisify(server.close);
-  await close();
+  await new Promise<void>((resolve, reject) => {
+    server.close((err) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
 }
