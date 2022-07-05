@@ -1,5 +1,9 @@
 import { ControllerMessenger } from '@metamask/controllers';
+import { JsonRpcEngine } from 'json-rpc-engine';
+import { createEngineStream } from 'json-rpc-middleware-stream';
+import pump from 'pump';
 import { ErrorMessageEvent } from '../ExecutionService';
+import { setupMultiplex } from '../AbstractExecutionService';
 import { IframeExecutionService } from './IframeExecutionService';
 import fixJSDOMPostMessageEventSource from './test/fixJSDOMPostMessageEventSource';
 import {
@@ -121,5 +125,76 @@ describe('IframeExecutionService', () => {
     );
     await iframeExecutionService.terminateAllSnaps();
     removeListener();
+  });
+
+  it('can detect outbound requests', async () => {
+    expect.assertions(4);
+    const controllerMessenger = new ControllerMessenger<
+      never,
+      ErrorMessageEvent
+    >();
+    const messenger = controllerMessenger.getRestricted<
+      'ExecutionService',
+      never,
+      ErrorMessageEvent['type']
+    >({
+      name: 'ExecutionService',
+    });
+    const publishSpy = jest.spyOn(messenger, 'publish');
+    const iframeExecutionService = new IframeExecutionService({
+      messenger,
+      setupSnapProvider: (_snapId, rpcStream) => {
+        const mux = setupMultiplex(rpcStream, 'foo');
+        const stream = mux.createStream('metamask-provider');
+        const engine = new JsonRpcEngine();
+        engine.push((req, res, next, end) => {
+          if (req.method === 'metamask_getProviderState') {
+            res.result = { isUnlocked: false, accounts: [] };
+            return end();
+          } else if (req.method === 'eth_blockNumber') {
+            res.result = '0xa70e75';
+            return end();
+          }
+          return next();
+        });
+        const providerStream = createEngineStream({ engine });
+        pump(stream, providerStream, stream);
+      },
+      iframeUrl,
+    });
+    const snapId = 'TestSnap';
+    const executeResult = await iframeExecutionService.executeSnap({
+      snapId,
+      sourceCode: `
+      module.exports.onRpcRequest = () => wallet.request({ method: 'eth_blockNumber', params: [] });
+      `,
+      endowments: [],
+    });
+
+    expect(executeResult).toBe('OK');
+
+    const handler = await iframeExecutionService.getRpcRequestHandler(snapId);
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const result = await handler!('foo', {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'foobar',
+      params: [],
+    });
+
+    expect(result).toBe('0xa70e75');
+
+    expect(publishSpy).toHaveBeenCalledWith(
+      'ExecutionService:outboundRequest',
+      'TestSnap',
+    );
+
+    expect(publishSpy).toHaveBeenCalledWith(
+      'ExecutionService:outboundResponse',
+      'TestSnap',
+    );
+
+    await iframeExecutionService.terminateAllSnaps();
   });
 });
