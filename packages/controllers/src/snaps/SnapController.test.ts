@@ -150,15 +150,19 @@ const getSnapControllerOptions = (
 type SnapControllerWithEESConstructorParams = Omit<
   SnapControllerConstructorParams,
   'terminateAllSnaps' | 'terminateSnap' | 'executeSnap' | 'getRpcRequestHandler'
-> & { rootMessenger?: ReturnType<typeof getControllerMessenger> };
+>;
 
-type PartialSnapControllerWithEESConstructorParams = Omit<
+type GetSnapControllerWithEESOptionsParam = Omit<
   PartialSnapControllerConstructorParams,
-  'terminateAllSnaps' | 'terminateSnap' | 'executeSnap' | 'getRpcRequestHandler'
+  | 'executeSnap'
+  | 'getRpcRequestHandler'
+  | 'terminateAllSnaps'
+  | 'terminateSnap'
+  | 'messenger'
 > & { rootMessenger?: ReturnType<typeof getControllerMessenger> };
 
 const getSnapControllerWithEESOptions = (
-  opts: PartialSnapControllerWithEESConstructorParams = {},
+  opts: GetSnapControllerWithEESOptionsParam = {},
 ) => {
   const { rootMessenger = getControllerMessenger() } = opts;
 
@@ -169,7 +173,6 @@ const getSnapControllerWithEESOptions = (
       .fn()
       .mockImplementation((snapId, appKeyType) => `${appKeyType}:${snapId}`),
     messenger: getSnapControllerMessenger(rootMessenger),
-    state: undefined,
     ...opts,
     rootMessenger,
   } as SnapControllerWithEESConstructorParams & {
@@ -406,7 +409,7 @@ describe('SnapController', () => {
       new ExecutionEnvironmentStub() as unknown as NodeExecutionService;
 
     const [snapController] = getSnapControllerWithEES(
-      undefined,
+      getSnapControllerWithEESOptions(),
       executionEnvironmentStub,
     );
 
@@ -618,12 +621,9 @@ describe('SnapController', () => {
   });
 
   it('handles an error event on the controller messenger', async () => {
-    const rootMessenger = getControllerMessenger();
-    const [snapController, service] = getSnapControllerWithEES(
-      getSnapControllerWithEESOptions({
-        rootMessenger,
-      }),
-    );
+    const options = getSnapControllerWithEESOptions();
+    const { rootMessenger } = options;
+    const [snapController, service] = getSnapControllerWithEES(options);
 
     const snap = await snapController.add({
       origin: MOCK_ORIGIN,
@@ -1096,20 +1096,18 @@ describe('SnapController', () => {
   });
 
   it('does not time out snaps that are permitted to be long-running', async () => {
-    const messenger = getSnapControllerMessenger();
-    jest.spyOn(messenger, 'call').mockImplementation(() => {
+    const options = getSnapControllerWithEESOptions({
+      idleTimeCheckInterval: 30000,
+      maxIdleTime: 160000,
+      // Note that we are using the default maxRequestTime
+    });
+
+    jest.spyOn(options.messenger, 'call').mockImplementation(() => {
       // Return true for everything here, so we signal that we have the long-running permission
       return true;
     });
 
-    const [snapController, service] = getSnapControllerWithEES(
-      getSnapControllerWithEESOptions({
-        messenger,
-        idleTimeCheckInterval: 30000,
-        maxIdleTime: 160000,
-        // Note that we are using the default maxRequestTime
-      }),
-    );
+    const [snapController, service] = getSnapControllerWithEES(options);
 
     const snap = await snapController.add({
       origin: MOCK_ORIGIN,
