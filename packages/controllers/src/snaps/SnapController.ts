@@ -162,12 +162,12 @@ export interface SnapRuntimeData {
   lastRequest: null | number;
 
   /**
-   * The current pending inbound requests
+   * The current pending inbound requests, meaning requests that are processed by snaps.
    */
   pendingInboundRequests: PendingRequest[];
 
   /**
-   * The current pending outbound requests
+   * The current pending outbound requests, meaning requests made from snaps towards the MetaMask extension.
    */
   pendingOutboundRequests: number;
 
@@ -726,7 +726,7 @@ export class SnapController extends BaseController<
       entries
         .filter(
           ([_snapId, runtime]) =>
-            runtime.pendingRequests.length === 0 &&
+            runtime.pendingInboundRequests.length === 0 &&
             // lastRequest should always be set here but TypeScript wants this check
             runtime.lastRequest &&
             this._maxIdleTime &&
