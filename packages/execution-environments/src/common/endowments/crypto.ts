@@ -1,7 +1,12 @@
 import { rootRealmGlobal } from '../globalObject';
 
 const createCrypto = () => {
-  if ('crypto' in rootRealmGlobal && 'SubtleCrypto' in rootRealmGlobal) {
+  if (
+    'crypto' in rootRealmGlobal &&
+    typeof rootRealmGlobal.crypto === 'object' &&
+    'SubtleCrypto' in rootRealmGlobal &&
+    typeof rootRealmGlobal.SubtleCrypto === 'object'
+  ) {
     return {
       crypto: rootRealmGlobal.crypto,
       SubtleCrypto: rootRealmGlobal.SubtleCrypto,
