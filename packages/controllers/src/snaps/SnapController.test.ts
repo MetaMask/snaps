@@ -181,14 +181,6 @@ const getSnapController = (options = getSnapControllerOptions()) => {
   return new SnapController(options);
 };
 
-const getEmptySnapControllerState = () => {
-  return {
-    snaps: {},
-    snapStates: {},
-    snapErrors: {},
-  } as SnapControllerState;
-};
-
 const getNodeEES = (messenger: ReturnType<typeof getNodeEESMessenger>) =>
   new NodeExecutionService({
     messenger,
@@ -562,7 +554,7 @@ describe('SnapController', () => {
     const secondSnapController = getSnapController(
       getSnapControllerOptions({
         executeSnap: mockExecuteSnap,
-        state: persistedState as unknown as SnapControllerState,
+        state: persistedState,
       }),
     );
 
@@ -1327,7 +1319,6 @@ describe('SnapController', () => {
         getSnapControllerOptions({
           getRpcRequestHandler: (async () => () => undefined) as any,
           state: {
-            ...getEmptySnapControllerState(),
             snaps: {
               [snapId]: fakeSnap,
             },
@@ -1356,7 +1347,6 @@ describe('SnapController', () => {
         getSnapControllerOptions({
           getRpcRequestHandler: mockGetRpcRequestHandler as any,
           state: {
-            ...getEmptySnapControllerState(),
             snaps: {
               [snapId]: fakeSnap,
             },
