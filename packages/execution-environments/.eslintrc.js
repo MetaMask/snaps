@@ -4,5 +4,6 @@ module.exports = {
     'src/openrpc.json',
     'src/__GENERATED__/',
     'webpack.config.js',
+    '__test__/',
   ],
 };
