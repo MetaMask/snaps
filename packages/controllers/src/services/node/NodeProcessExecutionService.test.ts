@@ -187,10 +187,11 @@ describe('NodeProcessExecutionService', () => {
       }),
     ).toBe('foo');
 
-    expect(await unhandledErrorPromise).toStrictEqual({
+    // eslint-disable-next-line jest/prefer-strict-equal
+    expect(await unhandledErrorPromise).toEqual({
       code: -32603,
       data: { snapName: 'TestSnap' },
-      message: 'Execution Environment Error',
+      message: 'Unhandled promise rejection in snap.',
     });
 
     await service.terminateAllSnaps();

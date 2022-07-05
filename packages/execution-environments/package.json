@@ -24,7 +24,7 @@
     "clean": "rimraf '*.tsbuildinfo' 'dist/*' 'src/__GENERATED__/' 'coverage/*' '__test__/*'",
     "build:clean": "yarn clean && yarn build",
     "build:pre-tsc": "yarn build:typings",
-    "build:post-tsc": "webpack --mode production && concat -o ./dist/webpack/node/bundle.js ./dist/webpack/node/lockdown.umd.min.js ./dist/webpack/node/bundle.js && concat -o ./dist/webpack/node-thread/bundle.js ./dist/webpack/node-thread/lockdown.umd.min.js ./dist/webpack/node-thread/bundle.js",
+    "build:post-tsc": "webpack --mode production && concat -o ./dist/webpack/node-process/bundle.js ./dist/webpack/node-process/lockdown.umd.min.js ./dist/webpack/node-process/bundle.js && concat -o ./dist/webpack/node-thread/bundle.js ./dist/webpack/node-thread/lockdown.umd.min.js ./dist/webpack/node-thread/bundle.js",
     "build:tsc": "tsc --project tsconfig.local.json",
     "build": "yarn build:pre-tsc && yarn build:tsc && yarn build:post-tsc",
     "build:typings": "open-rpc-typings -d ./src/openrpc.json --output-ts=./src/__GENERATED__/ --name-ts=openrpc && ts-auto-guard ./src/__GENERATED__/openrpc.ts --export-all",
