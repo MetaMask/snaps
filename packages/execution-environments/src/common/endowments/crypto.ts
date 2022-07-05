@@ -7,7 +7,8 @@ const createCrypto = () => {
       SubtleCrypto: rootRealmGlobal.SubtleCrypto,
     };
   }
-  // @todo Figure out if this is enough
+  // For now, we expose the experimental webcrypto API for Node.js execution environments
+  // @todo Figure out if this is enough long-term or if we should use a polyfill.
   /* eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require */
   const crypto = require('crypto').webcrypto;
   return { crypto, SubtleCrypto: crypto.subtle } as const;

@@ -1,6 +1,6 @@
 import { IframeExecutionService } from '../IframeExecutionService';
 
-// fix for jsdom does not setting event.origin or event.source: https://github.com/jsdom/jsdom/issues/2745
+// Fix for JSDOM does not setting `event.origin` or `event.source`: https://github.com/jsdom/jsdom/issues/2745
 const fixJSDOMPostMessageEventSource = (
   iframeExecutionService: IframeExecutionService,
 ) => {

@@ -72,15 +72,6 @@ module.exports = (_, argv) => {
       new NodePolyfillPlugin(),
       new CopyPlugin({
         patterns: [
-          {
-            from: path.resolve(
-              `${path.dirname(require.resolve('ses/package.json'))}`,
-              'dist',
-              'lockdown.umd.min.js',
-            ),
-            to: path.resolve(ENVIRONMENTS, 'webworker/lockdown.umd.min.js'),
-            toType: 'file',
-          },
           // @todo Merge this with above if possible
           {
             // For use in <script> tag along with the iframe bundle. Copied to ensure same version as bundled
