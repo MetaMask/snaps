@@ -15,7 +15,7 @@
     "test:prepare": "yarn mkdirp test/fixtures && ./scripts/generate-fixtures.sh",
     "test": "yarn test:prepare && jest && yarn posttest",
     "posttest": "jest-it-up",
-    "test:ci": "yarn test:prepare && ./scripts/test-ci.sh",
+    "test:ci": "yarn test",
     "build:pre-tsc": "yarn build:ajv && node scripts/transpileSchemaTypes.js",
     "build:tsc": "tsc --project tsconfig.local.json",
     "ajv-compile": "ajv compile --strict=true --all-errors",
