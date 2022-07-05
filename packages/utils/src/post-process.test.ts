@@ -1,6 +1,6 @@
 import { postProcessBundle } from './post-process';
 
-describe('postProcessAST', () => {
+describe('postProcessBundle', () => {
   it('handles null input', () => {
     expect(postProcessBundle(null)).toBeNull();
   });
