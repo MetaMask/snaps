@@ -381,7 +381,7 @@ describe('SnapController', () => {
     await service.terminateAllSnaps();
   });
 
-  it('adds a snap and uses its JSON-RPC api with a WebWorkerExecutionService', async () => {
+  it('adds a snap and uses its JSON-RPC api with a NodeThreadExecutionService', async () => {
     const [snapController, service] = getSnapControllerWithEES();
 
     const snap = await snapController.add({
