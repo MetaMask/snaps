@@ -11,7 +11,7 @@ import fetchMock from 'jest-fetch-mock';
 import passworder from '@metamask/browser-passworder';
 import { Crypto } from '@peculiar/webcrypto';
 import { ExecutionService } from '../services/ExecutionService';
-import { NodeExecutionService } from '../services/node';
+import { NodeThreadExecutionService } from '../services/node';
 import { delay } from '../utils';
 import { DEFAULT_ENDOWMENTS } from './default-endowments';
 import { LONG_RUNNING_PERMISSION } from './endowments';
@@ -166,7 +166,7 @@ const getEmptySnapControllerState = () => {
 };
 
 const getNodeEES = (messenger: ReturnType<typeof getNodeEESMessenger>) =>
-  new NodeExecutionService({
+  new NodeThreadExecutionService({
     messenger,
     setupSnapProvider: jest.fn(),
   });
@@ -390,7 +390,7 @@ describe('SnapController', () => {
 
   it('should add a snap and use its JSON-RPC api', async () => {
     const executionEnvironmentStub =
-      new ExecutionEnvironmentStub() as unknown as NodeExecutionService;
+      new ExecutionEnvironmentStub() as unknown as NodeThreadExecutionService;
 
     const messenger = getControllerMessenger();
     const [snapController] = getSnapControllerWithEES(
@@ -561,7 +561,7 @@ describe('SnapController', () => {
   it('should add errors to the SnapControllers state', async () => {
     const rootMessenger = getControllerMessenger();
     const executionEnvironmentStub =
-      new ExecutionEnvironmentStub() as unknown as NodeExecutionService;
+      new ExecutionEnvironmentStub() as unknown as NodeThreadExecutionService;
 
     const [snapController] = getSnapControllerWithEES(
       rootMessenger,

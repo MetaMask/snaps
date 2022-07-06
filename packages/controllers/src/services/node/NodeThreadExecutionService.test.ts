@@ -1,14 +1,14 @@
 import { ControllerMessenger } from '@metamask/controllers';
 import { ErrorJSON, ErrorMessageEvent, SnapId } from '@metamask/snap-types';
-import { NodeExecutionService } from './NodeExecutionService';
+import { NodeThreadExecutionService } from './NodeThreadExecutionService';
 
-describe('NodeExecutionService', () => {
+describe('NodeThreadExecutionService', () => {
   it('can boot', async () => {
     const controllerMessenger = new ControllerMessenger<
       never,
       ErrorMessageEvent
     >();
-    const service = new NodeExecutionService({
+    const service = new NodeThreadExecutionService({
       messenger: controllerMessenger.getRestricted<
         'ExecutionService',
         never,
@@ -29,7 +29,7 @@ describe('NodeExecutionService', () => {
       never,
       ErrorMessageEvent
     >();
-    const service = new NodeExecutionService({
+    const service = new NodeThreadExecutionService({
       messenger: controllerMessenger.getRestricted<
         'ExecutionService',
         never,
@@ -58,7 +58,7 @@ describe('NodeExecutionService', () => {
       never,
       ErrorMessageEvent
     >();
-    const service = new NodeExecutionService({
+    const service = new NodeThreadExecutionService({
       messenger: controllerMessenger.getRestricted<
         'ExecutionService',
         never,
@@ -92,7 +92,7 @@ describe('NodeExecutionService', () => {
       never,
       ErrorMessageEvent
     >();
-    const service = new NodeExecutionService({
+    const service = new NodeThreadExecutionService({
       messenger: controllerMessenger.getRestricted<
         'ExecutionService',
         never,
@@ -133,7 +133,7 @@ describe('NodeExecutionService', () => {
       never,
       ErrorMessageEvent
     >();
-    const service = new NodeExecutionService({
+    const service = new NodeThreadExecutionService({
       messenger: controllerMessenger.getRestricted<
         'ExecutionService',
         never,
