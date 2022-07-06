@@ -7,6 +7,8 @@ import network from './network';
 import timeout from './timeout';
 import crypto from './crypto';
 
+type TeardownFunction = () => Promise<void> | void;
+
 type EndowmentFactoryResult = {
   /**
    * A function that performs any necessary teardown when the snap becomes idle.
@@ -16,7 +18,7 @@ type EndowmentFactoryResult = {
    * endowments unusable; it should simply restore the endowments to their
    * original state.
    */
-  teardownFunction?: () => Promise<void> | void;
+  teardownFunction?: TeardownFunction;
   [key: string]: unknown;
 };
 
@@ -55,7 +57,10 @@ export function createEndowments(
   // TODO: All endowments should be hardened to prevent covert communication
   // channels. Hardening the returned objects breaks tests elsewhere in the
   // monorepo, so further research is needed.
-  const result = endowments.reduce(
+  const result = endowments.reduce<{
+    allEndowments: Record<string, unknown>;
+    teardowns: TeardownFunction[];
+  }>(
     ({ allEndowments, teardowns }, endowmentName) => {
       // First, check if the endowment has a factory, and default to that.
       if (endowmentFactories.has(endowmentName)) {
@@ -95,8 +100,8 @@ export function createEndowments(
       return { allEndowments, teardowns };
     },
     {
-      allEndowments: { wallet } as Record<string, unknown>,
-      teardowns: [] as (() => void)[],
+      allEndowments: { wallet },
+      teardowns: [],
     },
   );
 

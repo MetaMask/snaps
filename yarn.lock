@@ -2501,6 +2501,7 @@ __metadata:
     eslint-plugin-node: ^11.1.0
     eslint-plugin-prettier: ^3.4.0
     eth-rpc-errors: ^4.0.3
+    isomorphic-unfetch: ^3.1.0
     jest: ^27.5.1
     jest-fetch-mock: ^3.0.3
     jest-it-up: ^2.0.0
@@ -2519,6 +2520,7 @@ __metadata:
     typescript: ^4.4.0
     webpack: ^5.68.0
     webpack-cli: ^4.9.2
+    ws: ^8.8.0
   languageName: unknown
   linkType: soft
 
@@ -10775,6 +10777,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"isomorphic-unfetch@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "isomorphic-unfetch@npm:3.1.0"
+  dependencies:
+    node-fetch: ^2.6.1
+    unfetch: ^4.2.0
+  checksum: 82b92fe4ec2823a81ab0fc0d11bd94d710e6f9a940d56b3cba31896d4345ec9ffc7949f4ff31ebcae84f6b95f7ebf3474c4c7452b834eb4078ea3f2c37e459c5
+  languageName: node
+  linkType: hard
+
 "isstream@npm:~0.1.2":
   version: 0.1.2
   resolution: "isstream@npm:0.1.2"
@@ -16727,6 +16739,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"unfetch@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "unfetch@npm:4.2.0"
+  checksum: 6a4b2557e1d921eaa80c4425ce27a404945ec26491ed06e62598f333996a91a44c7908cb26dc7c2746d735762b13276cf4aa41829b4c8f438dde63add3045d7a
+  languageName: node
+  linkType: hard
+
 "unicode-canonical-property-names-ecmascript@npm:^2.0.0":
   version: 2.0.0
   resolution: "unicode-canonical-property-names-ecmascript@npm:2.0.0"
@@ -17690,6 +17709,21 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: 078fa2dbc06b31a45e0057b19e2930d26c222622e355955afe019c9b9b25f62eb2a8eff7cceabdad04910ecd2bd6ef4fa48e6f3673f2fdddff02a6e4c2459584
+  languageName: node
+  linkType: hard
+
+"ws@npm:^8.8.0":
+  version: 8.8.0
+  resolution: "ws@npm:8.8.0"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ^5.0.2
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: 6ceed1ca1cb800ef60c7fc8346c7d5d73d73be754228eb958765abf5d714519338efa20ffe674167039486eb3a813aae5a497f8d319e16b4d96216a31df5bd95
   languageName: node
   linkType: hard
 

@@ -106,7 +106,10 @@ const createNetwork = () => {
     (callback) => callback(),
   );
 
-  const _fetch: typeof fetch = async (
+  // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+  const fetch = require('isomorphic-unfetch');
+
+  const _fetch: typeof globalThis['fetch'] = async (
     input: RequestInfo,
     init?: RequestInit,
   ): Promise<Response> => {
@@ -177,6 +180,14 @@ const createNetwork = () => {
     return res;
   };
 
+  // TODO: The `ws` module for Node.js only partially implements `WebSocket`, so some functionality
+  // might break in a Node.js environment.
+  const WebSocketImpl =
+    typeof globalThis.WebSocket === 'function'
+      ? globalThis.WebSocket
+      : // eslint-disable-next-line @typescript-eslint/no-require-imports
+        require('ws');
+
   /**
    * This class wraps a WebSocket object instead of extending it.
    * That way, a bad actor can't get access to original methods using
@@ -188,7 +199,7 @@ const createNetwork = () => {
    */
   const _WebSocket = class implements WebSocket {
     constructor(url: string | URL, protocols?: string | string[]) {
-      this.#socket = new WebSocket(url, protocols);
+      this.#socket = new WebSocketImpl(url, protocols);
 
       // You can't call ref.deref()?.#teardownClose()
       // But you can capture the close itself

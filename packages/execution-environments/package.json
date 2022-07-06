@@ -39,9 +39,11 @@
     "@metamask/snap-utils": "^0.20.0",
     "@metamask/utils": "^2.0.0",
     "eth-rpc-errors": "^4.0.3",
+    "isomorphic-unfetch": "^3.1.0",
     "pump": "^3.0.0",
     "ses": "^0.15.15",
-    "stream-browserify": "^3.0.0"
+    "stream-browserify": "^3.0.0",
+    "ws": "^8.8.0"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.0.3",
