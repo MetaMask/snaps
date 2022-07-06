@@ -1838,7 +1838,10 @@ export class SnapController extends BaseController<
         );
       }
 
-      let handler = await this._getRpcRequestHandler(snapId);
+      let handler = await this.messagingSystem.call(
+        'ExecutionService:getRpcRequestHandler',
+        snapId,
+      );
 
       if (this.isRunning(snapId) === false) {
         if (handler) {
@@ -1867,7 +1870,11 @@ export class SnapController extends BaseController<
             startPromises.delete(snapId);
           }
         }
-        handler = await this._getRpcRequestHandler(snapId);
+
+        handler = await this.messagingSystem.call(
+          'ExecutionService:getRpcRequestHandler',
+          snapId,
+        );
       }
 
       if (!handler) {
