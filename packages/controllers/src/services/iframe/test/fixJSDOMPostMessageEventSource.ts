@@ -61,7 +61,9 @@ const fixJSDOMPostMessageEventSource = (
         source = window;
         origin = window.location.origin;
       } else if (event.data.target === 'parent') {
-        source = iframeExecutionService._iframeWindow;
+        // eslint-disable-next-line dot-notation
+        const { worker } = iframeExecutionService['jobs'].values().next().value;
+        source = worker;
         origin = iframeExecutionService.iframeUrl.toString();
       }
 
