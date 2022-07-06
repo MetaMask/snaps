@@ -35,7 +35,7 @@ export type SnapRpcHook = (
 
 export type JobStreams = {
   command: Duplex;
-  rpc: Duplex | null;
+  rpc: Duplex;
   _connection: BasePostMessageStream;
 };
 

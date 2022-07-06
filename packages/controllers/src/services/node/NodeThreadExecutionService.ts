@@ -6,10 +6,10 @@ import {
 import { AbstractExecutionService, Job } from '..';
 
 export class NodeThreadExecutionService extends AbstractExecutionService<Worker> {
-  protected _initEnvStream(): {
+  protected async _initEnvStream(): Promise<{
     worker: Worker;
     stream: BasePostMessageStream;
-  } {
+  }> {
     const worker = new Worker(
       require.resolve(
         '@metamask/execution-environments/dist/webpack/node-thread/bundle.js',

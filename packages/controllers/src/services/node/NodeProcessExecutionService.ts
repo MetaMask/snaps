@@ -6,10 +6,10 @@ import {
 import { AbstractExecutionService, Job } from '..';
 
 export class NodeProcessExecutionService extends AbstractExecutionService<ChildProcess> {
-  protected _initEnvStream(): {
+  protected async _initEnvStream(): Promise<{
     worker: ChildProcess;
     stream: BasePostMessageStream;
-  } {
+  }> {
     const worker = fork(
       require.resolve(
         '@metamask/execution-environments/dist/webpack/node-process/bundle.js',
