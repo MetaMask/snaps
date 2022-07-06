@@ -1,5 +1,6 @@
 import { ControllerMessenger } from '@metamask/controllers';
-import { ErrorJSON, ErrorMessageEvent, SnapId } from '@metamask/snap-types';
+import { ErrorJSON, SnapId } from '@metamask/snap-types';
+import { ErrorMessageEvent } from '../ExecutionService';
 import { NodeProcessExecutionService } from './NodeProcessExecutionService';
 
 describe('NodeProcessExecutionService', () => {
