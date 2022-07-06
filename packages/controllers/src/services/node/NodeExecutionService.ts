@@ -4,7 +4,7 @@ import { JsonRpcEngine } from 'json-rpc-engine';
 import { createStreamMiddleware } from 'json-rpc-middleware-stream';
 import { nanoid } from 'nanoid';
 import pump from 'pump';
-import { BasePostMessageStream } from '@metamask/post-message-stream/dist/BasePostMessageStream';
+import { BasePostMessageStream } from '@metamask/post-message-stream';
 import {
   AbstractExecutionService,
   setupMultiplex,

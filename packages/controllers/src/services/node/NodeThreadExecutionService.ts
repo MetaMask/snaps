@@ -1,6 +1,8 @@
 import { Worker } from 'worker_threads';
-import { BasePostMessageStream } from '@metamask/post-message-stream/dist/BasePostMessageStream';
-import { ThreadParentMessageStream } from '@metamask/post-message-stream';
+import {
+  ThreadParentMessageStream,
+  BasePostMessageStream,
+} from '@metamask/post-message-stream';
 import { EnvMetadata, NodeExecutionService } from './NodeExecutionService';
 
 export class NodeThreadExecutionService extends NodeExecutionService<Worker> {
