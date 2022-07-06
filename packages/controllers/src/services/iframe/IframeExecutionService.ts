@@ -1,33 +1,19 @@
-import { Duplex } from 'stream';
 import {
   WindowPostMessageStream,
   BasePostMessageStream,
 } from '@metamask/post-message-stream';
 import { ExecutionServiceMessenger } from '@metamask/snap-types';
-import { JsonRpcEngine } from 'json-rpc-engine';
 
 import {
+  Job,
   AbstractExecutionService,
   SetupSnapProvider,
 } from '../AbstractExecutionService';
 
 type IframeExecutionEnvironmentServiceArgs = {
-  createWindowTimeout?: number;
   setupSnapProvider: SetupSnapProvider;
   iframeUrl: URL;
   messenger: ExecutionServiceMessenger;
-};
-
-type JobStreams = {
-  command: Duplex;
-  rpc: Duplex | null;
-  _connection: WindowPostMessageStream;
-};
-
-type EnvMetadata = {
-  id: string;
-  streams: JobStreams;
-  rpcEngine: JsonRpcEngine;
 };
 
 export class IframeExecutionService extends AbstractExecutionService<Window> {
@@ -45,7 +31,7 @@ export class IframeExecutionService extends AbstractExecutionService<Window> {
     this.iframeUrl = iframeUrl;
   }
 
-  protected _terminate(jobWrapper: EnvMetadata): void {
+  protected _terminate(jobWrapper: Job<Window>): void {
     document.getElementById(jobWrapper.id)?.remove();
   }
 
