@@ -208,6 +208,7 @@ type FetchSnapResult = {
 export type ProcessSnapResult =
   | TruncatedSnap
   | { error: SerializedEthereumRpcError };
+
 export type InstallSnapsResult = Record<SnapId, ProcessSnapResult>;
 
 // Types that probably should be defined elsewhere in prod
@@ -282,12 +283,12 @@ export type ClearSnapState = {
 
 export type SnapControllerActions =
   | AddSnap
+  | ClearSnapState
   | GetSnap
-  | HandleSnapRpcRequest
   | GetSnapState
+  | HandleSnapRpcRequest
   | HasSnap
-  | UpdateSnapState
-  | ClearSnapState;
+  | UpdateSnapState;
 
 // Controller Messenger Events
 
@@ -305,7 +306,7 @@ export type SnapAdded = {
 };
 
 /**
- * Emitted when a Snap has been started after being added and authorized during
+ * Emitted when a snap has been started after being added and authorized during
  * installation.
  */
 export type SnapInstalled = {
@@ -314,7 +315,7 @@ export type SnapInstalled = {
 };
 
 /**
- * Emitted when a Snap is removed.
+ * Emitted when a snap is removed.
  */
 export type SnapRemoved = {
   type: `${typeof controllerName}:snapRemoved`;
@@ -322,7 +323,7 @@ export type SnapRemoved = {
 };
 
 /**
- * Emitted when a Snap is updated
+ * Emitted when a snap is updated.
  */
 export type SnapUpdated = {
   type: `${typeof controllerName}:snapUpdated`;
@@ -405,15 +406,53 @@ type SnapControllerArgs = {
   executeSnap: ExecuteSnap;
 
   /**
+   * The function that will be used by the controller fo make network requests.
+   * Should be compatible with {@link fetch}.
+   */
+  fetchFunction?: typeof fetch;
+
+  /**
+   * Flags that enable or disable features in the controller.
+   * See {@link FeatureFlags}.
+   */
+  featureFlags: FeatureFlags;
+
+  /**
+   * A function to get an "app key" for a specific subject.
+   */
+  getAppKey: GetAppKey;
+
+  /**
    * A function that gets the RPC message handler function for a specific
    * snap.
    */
   getRpcRequestHandler: GetRpcRequestHandler;
 
   /**
+   * How frequently to check whether a snap is idle.
+   */
+  idleTimeCheckInterval?: number;
+
+  /**
+   * The maximum amount of time that a snap may be idle.
+   */
+  maxIdleTime?: number;
+
+  /**
    * The controller messenger.
    */
   messenger: SnapControllerMessenger;
+
+  /**
+   * The maximum amount of time a snap may take to process an RPC request,
+   * unless it is permitted to take longer.
+   */
+  maxRequestTime?: number;
+
+  /**
+   * The npm registry URL that will be used to fetch published snaps.
+   */
+  npmRegistryUrl?: string;
 
   /**
    * Persisted state that will be used for rehydration.
@@ -429,61 +468,30 @@ type SnapControllerArgs = {
    * A function that terminates a specific snap.
    */
   terminateSnap: TerminateSnap;
-
-  /**
-   * A function to get an "app key" for a specific subject.
-   */
-  getAppKey: GetAppKey;
-
-  /**
-   * How frequently to check whether a snap is idle.
-   */
-  idleTimeCheckInterval?: number;
-
-  /**
-   * The maximum amount of time that a snap may be idle.
-   */
-  maxIdleTime?: number;
-
-  /**
-   * The maximum amount of time a snap may take to process an RPC request,
-   * unless it is permitted to take longer.
-   */
-  maxRequestTime?: number;
-
-  /**
-   * The npm registry URL that will be used to fetch published snaps.
-   */
-  npmRegistryUrl?: string;
-
-  /**
-   * The function that will be used by the controller fo make network requests.
-   * Should be compatible with {@link fetch}.
-   */
-  fetchFunction?: typeof fetch;
-
-  /**
-   * Flags that enable or disable features in the controller.
-   * See {@link FeatureFlags}.
-   */
-  featureFlags: FeatureFlags;
 };
 
-type AddSnapBase = {
+type AddSnapArgsBase = {
   id: SnapId;
   origin: string;
   versionRange?: string;
 };
 
-type AddSnapDirectlyArgs = AddSnapBase & {
+// A snap can either be added directly, with manifest and source code, or it
+// can be fetched and then added.
+type AddSnapArgs =
+  | AddSnapArgsBase
+  | (AddSnapArgsBase & {
+      manifest: SnapManifest;
+      sourceCode: string;
+    });
+
+// When we set a snap, we need all required properties to be present and
+// validated.
+type SetSnapArgs = Omit<AddSnapArgs, 'id'> & {
+  id: ValidatedSnapId;
   manifest: SnapManifest;
   sourceCode: string;
-};
-
-type AddSnapArgs = AddSnapBase | AddSnapDirectlyArgs;
-
-type ValidatedAddSnapArgs = Omit<AddSnapDirectlyArgs, 'id'> & {
-  id: ValidatedSnapId;
+  svgIcon?: string;
 };
 
 const defaultState: SnapControllerState = {
@@ -578,6 +586,12 @@ export class SnapController extends BaseController<
 
   private _executeSnap: ExecuteSnap;
 
+  private _featureFlags: FeatureFlags;
+
+  private _fetchFunction: typeof fetch;
+
+  private _getAppKey: GetAppKey;
+
   private _getRpcRequestHandler: GetRpcRequestHandler;
 
   private _idleTimeCheckInterval: number;
@@ -586,21 +600,15 @@ export class SnapController extends BaseController<
 
   private _maxRequestTime: number;
 
+  private _npmRegistryUrl?: string;
+
   private _snapsRuntimeData: Map<SnapId, SnapRuntimeData>;
 
   private _terminateAllSnaps: TerminateAll;
 
   private _terminateSnap: TerminateSnap;
 
-  private _getAppKey: GetAppKey;
-
   private _timeoutForLastRequestStatus?: number;
-
-  private _npmRegistryUrl?: string;
-
-  private _fetchFunction: typeof fetch;
-
-  private _featureFlags: FeatureFlags;
 
   constructor({
     closeAllConnections,
@@ -655,20 +663,20 @@ export class SnapController extends BaseController<
     this._closeAllConnections = closeAllConnections;
     this._environmentEndowmentPermissions = environmentEndowmentPermissions;
     this._executeSnap = executeSnap;
-    this._getRpcRequestHandler = getRpcRequestHandler;
-    this._onUnhandledSnapError = this._onUnhandledSnapError.bind(this);
-    this._terminateSnap = terminateSnap;
-    this._terminateAllSnaps = terminateAllSnaps;
+    this._featureFlags = featureFlags;
+    this._fetchFunction = fetchFunction;
     this._getAppKey = getAppKey;
-
+    this._getRpcRequestHandler = getRpcRequestHandler;
     this._idleTimeCheckInterval = idleTimeCheckInterval;
     this._maxIdleTime = maxIdleTime;
     this._maxRequestTime = maxRequestTime;
-    this._pollForLastRequestStatus();
-    this._snapsRuntimeData = new Map();
     this._npmRegistryUrl = npmRegistryUrl;
-    this._fetchFunction = fetchFunction;
-    this._featureFlags = featureFlags;
+    this._onUnhandledSnapError = this._onUnhandledSnapError.bind(this);
+    this._snapsRuntimeData = new Map();
+    this._terminateAllSnaps = terminateAllSnaps;
+    this._terminateSnap = terminateSnap;
+
+    this._pollForLastRequestStatus();
 
     this.messagingSystem.subscribe(
       'ExecutionService:unhandledError',
@@ -689,18 +697,23 @@ export class SnapController extends BaseController<
     );
 
     this.messagingSystem.registerActionHandler(
+      `${controllerName}:clearSnapState`,
+      (...args) => this.clearSnapState(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
       `${controllerName}:get`,
       (...args) => this.get(...args),
     );
 
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:handleRpcRequest`,
-      (...args) => this.handleRpcRequest(...args),
+      `${controllerName}:getSnapState`,
+      (...args) => this.getSnapState(...args),
     );
 
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:getSnapState`,
-      (...args) => this.getSnapState(...args),
+      `${controllerName}:handleRpcRequest`,
+      (...args) => this.handleRpcRequest(...args),
     );
 
     this.messagingSystem.registerActionHandler(
@@ -711,11 +724,6 @@ export class SnapController extends BaseController<
     this.messagingSystem.registerActionHandler(
       `${controllerName}:updateSnapState`,
       (...args) => this.updateSnapState(...args),
-    );
-
-    this.messagingSystem.registerActionHandler(
-      `${controllerName}:clearSnapState`,
-      (...args) => this.clearSnapState(...args),
     );
   }
 
@@ -813,6 +821,10 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap to enable.
    */
   enableSnap(snapId: SnapId): void {
+    if (!this.has(snapId)) {
+      throw new Error(`Snap "${snapId}" not found.`);
+    }
+
     this.update((state: any) => {
       state.snaps[snapId].enabled = true;
     });
@@ -825,10 +837,11 @@ export class SnapController extends BaseController<
    * @returns A promise that resolves once the snap has been disabled.
    */
   disableSnap(snapId: SnapId): Promise<void> {
+    if (!this.has(snapId)) {
+      throw new Error(`Snap "${snapId}" not found.`);
+    }
+
     this.update((state: any) => {
-      if (!state.snaps[snapId]) {
-        throw new Error(`Snap "${snapId}" not found.`);
-      }
       state.snaps[snapId].enabled = false;
     });
 
@@ -1298,7 +1311,12 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Ask a user for approval, updates, re-authorizes and then restarts given snap.
+   * Updates an already-installed snap. The flow is similar to
+   * {@link SnapController.installSnaps}. The user will be asked if they want
+   * to update, then approve any permission changes, and then the snap will be
+   * restarted.
+   *
+   * The update will fail if the user rejects any prompt.
    *
    * @param origin - The origin requesting the snap update.
    * @param snapId - The id of the Snap to be updated.
@@ -1319,14 +1337,15 @@ export class SnapController extends BaseController<
 
     if (!isValidSnapVersionRange(newVersionRange)) {
       throw new Error(
-        `Received invalid Snap version range: "${newVersionRange}".`,
+        `Received invalid snap version range: "${newVersionRange}".`,
       );
     }
 
     const newSnap = await this._fetchSnap(snapId, newVersionRange);
-    if (!gtVersion(newSnap.manifest.version, snap.version)) {
+    const newVersion = newSnap.manifest.version;
+    if (!gtVersion(newVersion, snap.version)) {
       console.warn(
-        `Tried updating snap "${snapId}" within "${newVersionRange}" version range, but newer version "${snap.version}" is already installed`,
+        `Tried updating snap "${snapId}" within "${newVersionRange}" version range, but newer version "${newVersion}" is already installed`,
       );
       return null;
     }
@@ -1351,6 +1370,7 @@ export class SnapController extends BaseController<
       },
       true,
     );
+
     if (!isApproved) {
       return null;
     }
@@ -1361,7 +1381,7 @@ export class SnapController extends BaseController<
 
     this._transitionSnapState(snapId, SnapStatusEvent.update);
 
-    await this._set({
+    this._set({
       origin,
       id: snapId,
       manifest: newSnap.manifest,
@@ -1421,15 +1441,31 @@ export class SnapController extends BaseController<
     const runtime = this._getSnapRuntimeData(snapId);
     if (!runtime.installPromise) {
       console.info(`Adding snap: ${snapId}`);
-      runtime.installPromise = this._set(args as ValidatedAddSnapArgs);
+
+      // If fetching and setting the snap succeeds, this property will be set
+      // to null in the authorize() method.
+      runtime.installPromise = (async () => {
+        if ('manifest' in args && 'sourceCode' in args) {
+          return this._set({ ...args, id: snapId });
+        }
+
+        const fetchedSnap = await this._fetchSnap(snapId, args.versionRange);
+
+        return this._set({
+          ...args,
+          ...fetchedSnap,
+          id: snapId,
+        });
+      })();
     }
 
     try {
       return await runtime.installPromise;
-    } catch (err) {
-      // Reset promise so users can retry installation in case the problem is temporary
+    } catch (error) {
+      // Reset promise so users can retry installation in case the problem is
+      // temporary.
       runtime.installPromise = null;
-      throw err;
+      throw error;
     }
   }
 
@@ -1529,33 +1565,35 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Internal method. See the "add" method.
+   * Sets a snap in state. Called when a snap is installed or updated. Performs
+   * various validation checks on the received arguments, and will throw if
+   * validation fails.
+   *
+   * The snap will be enabled by the time this method returns, regardless of its
+   * previous state.
+   *
+   * See {@link SnapController.add} and {@link SnapController.updateSnap} for
+   * usage.
    *
    * @param args - The add snap args.
    * @returns The resulting snap object.
    */
-  private async _set(args: ValidatedAddSnapArgs): Promise<Snap> {
+  private _set(args: SetSnapArgs): Snap {
     const {
       id: snapId,
-      versionRange = DEFAULT_REQUESTED_SNAP_VERSION,
       origin,
+      manifest,
+      sourceCode,
+      svgIcon,
+      versionRange = DEFAULT_REQUESTED_SNAP_VERSION,
     } = args;
 
-    let manifest: SnapManifest, sourceCode: string, svgIcon: string | undefined;
-    if ('manifest' in args) {
-      manifest = args.manifest;
-      sourceCode = args.sourceCode;
-      validateSnapJsonFile(NpmSnapFileNames.Manifest, manifest);
-    } else {
-      ({ manifest, sourceCode, svgIcon } = await this._fetchSnap(
-        snapId,
-        versionRange,
-      ));
-    }
+    validateSnapJsonFile(NpmSnapFileNames.Manifest, manifest);
+    const { version } = manifest;
 
-    if (!satifiesVersionRange(manifest.version, versionRange)) {
+    if (!satifiesVersionRange(version, versionRange)) {
       throw new Error(
-        `Version mismatch. Manifest for ${snapId} specifies version ${manifest.version} which doesn't satisfy requested version range ${versionRange}`,
+        `Version mismatch. Manifest for "${snapId}" specifies version "${version}" which doesn't satisfy requested version range "${versionRange}"`,
       );
     }
 
@@ -1576,7 +1614,6 @@ export class SnapController extends BaseController<
 
     const existingSnap = snapsState[snapId];
 
-    const { version } = manifest;
     const previousVersionHistory = existingSnap?.versionHistory ?? [];
     const versionHistory = [
       ...previousVersionHistory,
@@ -1588,13 +1625,18 @@ export class SnapController extends BaseController<
     ];
 
     const snap: Snap = {
-      // restore relevant snap state if it exists
+      // Restore relevant snap state if it exists
       ...existingSnap,
+
+      // Note that the snap will be enabled even if it was previously disabled.
       enabled: true,
+
+      // So we can easily correlate the snap with its permission
+      permissionName: getSnapPermissionName(snapId),
+
       id: snapId,
       initialPermissions,
       manifest,
-      permissionName: getSnapPermissionName(snapId), // so we can easily correlate them
       sourceCode,
       status: snapStatusStateMachineConfig.initial,
       version,
