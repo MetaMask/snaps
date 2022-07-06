@@ -11,7 +11,7 @@ import fetchMock from 'jest-fetch-mock';
 import passworder from '@metamask/browser-passworder';
 import { Crypto } from '@peculiar/webcrypto';
 import { ExecutionService } from '../services/ExecutionService';
-import { NodeExecutionService } from '../services/node';
+import { NodeThreadExecutionService } from '../services/node';
 import { delay } from '../utils';
 import { DEFAULT_ENDOWMENTS } from './default-endowments';
 import { LONG_RUNNING_PERMISSION } from './endowments';
@@ -155,13 +155,17 @@ type SnapControllerWithEESConstructorParams = Omit<
   'terminateAllSnaps' | 'terminateSnap' | 'executeSnap' | 'getRpcRequestHandler'
 > & { rootMessenger?: ReturnType<typeof getControllerMessenger> };
 
-type PartialSnapControllerWithEESConstructorParams = Omit<
+type GetSnapControllerWithEESOptionsParam = Omit<
   PartialSnapControllerConstructorParams,
-  'terminateAllSnaps' | 'terminateSnap' | 'executeSnap' | 'getRpcRequestHandler'
+  | 'executeSnap'
+  | 'getRpcRequestHandler'
+  | 'terminateAllSnaps'
+  | 'terminateSnap'
+  | 'messenger'
 > & { rootMessenger?: ReturnType<typeof getControllerMessenger> };
 
 const getSnapControllerWithEESOptions = (
-  opts: PartialSnapControllerWithEESConstructorParams = {},
+  opts: GetSnapControllerWithEESOptionsParam = {},
 ) => {
   const { rootMessenger = getControllerMessenger() } = opts;
 
@@ -172,7 +176,6 @@ const getSnapControllerWithEESOptions = (
       .fn()
       .mockImplementation((snapId, appKeyType) => `${appKeyType}:${snapId}`),
     messenger: getSnapControllerMessenger(rootMessenger),
-    state: undefined,
     ...opts,
     rootMessenger,
   } as SnapControllerWithEESConstructorParams & {
@@ -184,16 +187,8 @@ const getSnapController = (options = getSnapControllerOptions()) => {
   return new SnapController(options);
 };
 
-const getEmptySnapControllerState = () => {
-  return {
-    snaps: {},
-    snapStates: {},
-    snapErrors: {},
-  } as SnapControllerState;
-};
-
 const getNodeEES = (messenger: ReturnType<typeof getNodeEESMessenger>) =>
-  new NodeExecutionService({
+  new NodeThreadExecutionService({
     messenger,
     setupSnapProvider: jest.fn(),
   });
@@ -449,7 +444,7 @@ describe('SnapController', () => {
     await service.terminateAllSnaps();
   });
 
-  it('adds a snap and uses its JSON-RPC api with a WebWorkerExecutionService', async () => {
+  it('adds a snap and uses its JSON-RPC api with a NodeThreadExecutionService', async () => {
     const [snapController, service] = getSnapControllerWithEES();
 
     const snap = await snapController.add({
@@ -474,10 +469,10 @@ describe('SnapController', () => {
 
   it('adds a snap and uses its JSON-RPC API', async () => {
     const executionEnvironmentStub =
-      new ExecutionEnvironmentStub() as unknown as NodeExecutionService;
+      new ExecutionEnvironmentStub() as unknown as NodeThreadExecutionService;
 
     const [snapController] = getSnapControllerWithEES(
-      undefined,
+      getSnapControllerWithEESOptions(),
       executionEnvironmentStub,
     );
 
@@ -625,7 +620,7 @@ describe('SnapController', () => {
     const secondSnapController = getSnapController(
       getSnapControllerOptions({
         executeSnap: mockExecuteSnap,
-        state: persistedState as unknown as SnapControllerState,
+        state: persistedState,
       }),
     );
 
@@ -640,7 +635,7 @@ describe('SnapController', () => {
 
   it(`adds errors to the controller's state`, async () => {
     const executionEnvironmentStub =
-      new ExecutionEnvironmentStub() as unknown as NodeExecutionService;
+      new ExecutionEnvironmentStub() as unknown as NodeThreadExecutionService;
 
     const [snapController] = getSnapControllerWithEES(
       getSnapControllerWithEESOptions(),
@@ -689,12 +684,9 @@ describe('SnapController', () => {
   });
 
   it('handles an error event on the controller messenger', async () => {
-    const rootMessenger = getControllerMessenger();
-    const [snapController, service] = getSnapControllerWithEES(
-      getSnapControllerWithEESOptions({
-        rootMessenger,
-      }),
-    );
+    const options = getSnapControllerWithEESOptions();
+    const { rootMessenger } = options;
+    const [snapController, service] = getSnapControllerWithEES(options);
 
     const snap = await snapController.add({
       origin: MOCK_ORIGIN,
@@ -1167,20 +1159,18 @@ describe('SnapController', () => {
   });
 
   it('does not time out snaps that are permitted to be long-running', async () => {
-    const messenger = getSnapControllerMessenger();
-    jest.spyOn(messenger, 'call').mockImplementation(() => {
+    const options = getSnapControllerWithEESOptions({
+      idleTimeCheckInterval: 30000,
+      maxIdleTime: 160000,
+      // Note that we are using the default maxRequestTime
+    });
+
+    jest.spyOn(options.messenger, 'call').mockImplementation(() => {
       // Return true for everything here, so we signal that we have the long-running permission
       return true;
     });
 
-    const [snapController, service] = getSnapControllerWithEES(
-      getSnapControllerWithEESOptions({
-        messenger,
-        idleTimeCheckInterval: 30000,
-        maxIdleTime: 160000,
-        // Note that we are using the default maxRequestTime
-      }),
-    );
+    const [snapController, service] = getSnapControllerWithEES(options);
 
     const snap = await snapController.add({
       origin: MOCK_ORIGIN,
@@ -1390,7 +1380,6 @@ describe('SnapController', () => {
         getSnapControllerOptions({
           getRpcRequestHandler: (async () => () => undefined) as any,
           state: {
-            ...getEmptySnapControllerState(),
             snaps: {
               [snapId]: fakeSnap,
             },
@@ -1419,7 +1408,6 @@ describe('SnapController', () => {
         getSnapControllerOptions({
           getRpcRequestHandler: mockGetRpcRequestHandler as any,
           state: {
-            ...getEmptySnapControllerState(),
             snaps: {
               [snapId]: fakeSnap,
             },
@@ -3023,24 +3011,6 @@ describe('SnapController', () => {
       });
     });
 
-    describe('SnapController:updateBlockedSnaps', () => {
-      it('calls SnapController.updateBlockedSnaps()', async () => {
-        const messenger = getSnapControllerMessenger(undefined, false);
-        const snapController = getSnapController(
-          getSnapControllerOptions({
-            messenger,
-          }),
-        );
-
-        const updateBlockedSnapsSpy = jest
-          .spyOn(snapController, 'updateBlockedSnaps')
-          .mockImplementation();
-
-        await messenger.call('SnapController:updateBlockedSnaps');
-        expect(updateBlockedSnapsSpy).toHaveBeenCalledTimes(1);
-      });
-    });
-
     describe('SnapController:get', () => {
       it('gets a snap', async () => {
         const executeSnapMock = jest.fn();
@@ -3360,6 +3330,24 @@ describe('SnapController', () => {
         expect(clearSnapStateSpy).toHaveBeenCalledTimes(1);
         expect(snapController.state.snapStates).toStrictEqual({});
         expect(clearedState).toBeNull();
+      });
+    });
+
+    describe('SnapController:updateBlockedSnaps', () => {
+      it('calls SnapController.updateBlockedSnaps()', async () => {
+        const messenger = getSnapControllerMessenger(undefined, false);
+        const snapController = getSnapController(
+          getSnapControllerOptions({
+            messenger,
+          }),
+        );
+
+        const updateBlockedSnapsSpy = jest
+          .spyOn(snapController, 'updateBlockedSnaps')
+          .mockImplementation();
+
+        await messenger.call('SnapController:updateBlockedSnaps');
+        expect(updateBlockedSnapsSpy).toHaveBeenCalledTimes(1);
       });
     });
   });

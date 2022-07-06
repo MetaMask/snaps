@@ -1,11 +1,10 @@
 import { Duplex } from 'stream';
-import { ChildProcess, fork } from 'child_process';
-import { ProcessParentMessageStream } from '@metamask/post-message-stream';
 import { SNAP_STREAM_NAMES } from '@metamask/execution-environments';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createStreamMiddleware } from 'json-rpc-middleware-stream';
 import { nanoid } from 'nanoid';
 import pump from 'pump';
+import { BasePostMessageStream } from '@metamask/post-message-stream';
 import {
   AbstractExecutionService,
   setupMultiplex,
@@ -14,24 +13,27 @@ import {
 type JobStreams = {
   command: Duplex;
   rpc: Duplex | null;
-  _connection: ProcessParentMessageStream;
+  _connection: BasePostMessageStream;
 };
 
-type EnvMetadata = {
+export type EnvMetadata<EnvProcessType> = {
   id: string;
   streams: JobStreams;
   rpcEngine: JsonRpcEngine;
-  process: ChildProcess;
+  worker: EnvProcessType;
 };
 
-export class NodeExecutionService extends AbstractExecutionService<EnvMetadata> {
-  protected _terminate(jobWrapper: EnvMetadata): void {
-    jobWrapper.process.kill();
-  }
+export abstract class NodeExecutionService<
+  EnvProcessType,
+> extends AbstractExecutionService<EnvMetadata<EnvProcessType>> {
+  protected abstract _initEnvStream(): {
+    worker: EnvProcessType;
+    stream: BasePostMessageStream;
+  };
 
-  protected async _initJob(): Promise<EnvMetadata> {
+  protected async _initJob(): Promise<EnvMetadata<EnvProcessType>> {
     const jobId = nanoid();
-    const { streams, process } = await this._initStreams(jobId);
+    const { streams, worker } = await this._initStreams(jobId);
     const rpcEngine = new JsonRpcEngine();
 
     const jsonRpcConnection = createStreamMiddleware();
@@ -44,7 +46,7 @@ export class NodeExecutionService extends AbstractExecutionService<EnvMetadata> 
       id: jobId,
       streams,
       rpcEngine,
-      process,
+      worker,
     };
     this.jobs.set(jobId, envMetadata);
 
@@ -52,10 +54,7 @@ export class NodeExecutionService extends AbstractExecutionService<EnvMetadata> 
   }
 
   private async _initStreams(jobId: string): Promise<any> {
-    const process = this._createProcess();
-    const envStream = new ProcessParentMessageStream({
-      process,
-    });
+    const { worker, stream: envStream } = this._initEnvStream();
     // Typecast justification: stream type mismatch
     const mux = setupMultiplex(
       envStream as unknown as Duplex,
@@ -90,16 +89,7 @@ export class NodeExecutionService extends AbstractExecutionService<EnvMetadata> 
         rpc: rpcStream,
         _connection: envStream,
       },
-      process,
+      worker,
     };
-  }
-
-  private _createProcess(): ChildProcess {
-    const process = fork(
-      require.resolve(
-        '@metamask/execution-environments/dist/webpack/node/bundle.js',
-      ),
-    );
-    return process;
   }
 }

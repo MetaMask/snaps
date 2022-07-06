@@ -542,8 +542,8 @@ type AddSnapArgsBase = {
   versionRange?: string;
 };
 
-// A snap can either directly, with manifest and source code, or it can be
-// fetched and then added.
+// A snap can either be added directly, with manifest and source code, or it
+// can be fetched and then added.
 type AddSnapArgs =
   | AddSnapArgsBase
   | (AddSnapArgsBase & {
@@ -1778,8 +1778,8 @@ export class SnapController extends BaseController<
    * various validation checks on the received arguments, and will throw if
    * validation fails.
    *
-   * The snap will be unblocked and enabled when this method returns, regardless
-   * of its previous state.
+   * The snap will be enabled and unblocked by the time this method returns,
+   * regardless of its previous state.
    *
    * See {@link SnapController.add} and {@link SnapController.updateSnap} for
    * usage.

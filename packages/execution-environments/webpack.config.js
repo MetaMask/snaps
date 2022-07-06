@@ -4,7 +4,7 @@ const CopyPlugin = require('copy-webpack-plugin');
 
 const DIST = path.resolve(__dirname, 'dist');
 const ENVIRONMENTS = path.resolve(DIST, 'webpack');
-const UNSAFE_ENVIRONMENTS = path.resolve(__dirname, '__test__')
+const UNSAFE_ENVIRONMENTS = path.resolve(__dirname, '__test__');
 
 module.exports = (_, argv) => {
   const isProd = argv.mode === 'production';
@@ -22,7 +22,8 @@ module.exports = (_, argv) => {
     mode: argv.mode,
     target: 'node',
     entry: {
-      node: './src/node/index.ts',
+      'node-process': './src/node-process/index.ts',
+      'node-thread': './src/node-thread/index.ts',
     },
     output: {
       filename: '[name]/bundle.js',
@@ -31,14 +32,22 @@ module.exports = (_, argv) => {
     plugins: [
       new CopyPlugin({
         patterns: [
-
           {
             from: path.resolve(
               `${path.dirname(require.resolve('ses/package.json'))}`,
               'dist',
               'lockdown.umd.min.js',
             ),
-            to: path.resolve(ENVIRONMENTS, 'node/lockdown.umd.min.js'),
+            to: path.resolve(ENVIRONMENTS, 'node-process/lockdown.umd.min.js'),
+            toType: 'file',
+          },
+          {
+            from: path.resolve(
+              `${path.dirname(require.resolve('ses/package.json'))}`,
+              'dist',
+              'lockdown.umd.min.js',
+            ),
+            to: path.resolve(ENVIRONMENTS, 'node-thread/lockdown.umd.min.js'),
             toType: 'file',
           },
         ],
@@ -62,7 +71,7 @@ module.exports = (_, argv) => {
     ...extraOptions,
     mode: argv.mode,
     entry: {
-      iframe: './src/iframe/index.ts'
+      iframe: './src/iframe/index.ts',
     },
     output: {
       filename: '[name]/bundle.js',
@@ -105,7 +114,7 @@ module.exports = (_, argv) => {
       alias: {
         // Without this alias webpack tried to require ../../node_modules/stream/ which doesn't have Duplex, breaking the bundle
         stream: 'stream-browserify',
-        'worker_threads': false
+        worker_threads: false,
       },
     },
   };
@@ -131,7 +140,10 @@ module.exports = (_, argv) => {
               'dist',
               'lockdown.umd.min.js',
             ),
-            to: path.resolve(UNSAFE_ENVIRONMENTS, 'iframe-test/lockdown.umd.min.js'),
+            to: path.resolve(
+              UNSAFE_ENVIRONMENTS,
+              'iframe-test/lockdown.umd.min.js',
+            ),
             toType: 'file',
           },
           {
@@ -156,7 +168,7 @@ module.exports = (_, argv) => {
       alias: {
         // Without this alias webpack tried to require ../../node_modules/stream/ which doesn't have Duplex, breaking the bundle
         stream: 'stream-browserify',
-        'worker_threads': false
+        worker_threads: false,
       },
     },
   };
