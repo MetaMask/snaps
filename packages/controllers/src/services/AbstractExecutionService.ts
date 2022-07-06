@@ -221,7 +221,8 @@ export abstract class AbstractExecutionService<WorkerType>
       if (data.id !== null && data.id !== undefined) {
         return;
       }
-      const snapId = this.jobToSnapMap.get(jobId);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const snapId = this.jobToSnapMap.get(jobId)!;
       if (data.result?.type === 'OutboundRequest') {
         this._messenger.publish('ExecutionService:outboundRequest', snapId);
       } else if (data.result?.type === 'OutboundResponse') {
