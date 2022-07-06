@@ -3,9 +3,9 @@ import {
   ProcessParentMessageStream,
   BasePostMessageStream,
 } from '@metamask/post-message-stream';
-import { EnvMetadata, NodeExecutionService } from './NodeExecutionService';
+import { AbstractExecutionService, Job } from '..';
 
-export class NodeProcessExecutionService extends NodeExecutionService<ChildProcess> {
+export class NodeProcessExecutionService extends AbstractExecutionService<ChildProcess> {
   protected _initEnvStream(): {
     worker: ChildProcess;
     stream: BasePostMessageStream;
@@ -19,7 +19,7 @@ export class NodeProcessExecutionService extends NodeExecutionService<ChildProce
     return { worker, stream };
   }
 
-  protected _terminate(jobWrapper: EnvMetadata<ChildProcess>): void {
+  protected _terminate(jobWrapper: Job<ChildProcess>): void {
     jobWrapper.worker.kill();
   }
 }

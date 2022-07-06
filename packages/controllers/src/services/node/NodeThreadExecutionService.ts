@@ -3,9 +3,9 @@ import {
   ThreadParentMessageStream,
   BasePostMessageStream,
 } from '@metamask/post-message-stream';
-import { EnvMetadata, NodeExecutionService } from './NodeExecutionService';
+import { AbstractExecutionService, Job } from '..';
 
-export class NodeThreadExecutionService extends NodeExecutionService<Worker> {
+export class NodeThreadExecutionService extends AbstractExecutionService<Worker> {
   protected _initEnvStream(): {
     worker: Worker;
     stream: BasePostMessageStream;
@@ -19,7 +19,7 @@ export class NodeThreadExecutionService extends NodeExecutionService<Worker> {
     return { worker, stream };
   }
 
-  protected _terminate(jobWrapper: EnvMetadata<Worker>): void {
+  protected _terminate(jobWrapper: Job<Worker>): void {
     jobWrapper.worker.terminate();
   }
 }
