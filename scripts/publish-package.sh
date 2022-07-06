@@ -24,7 +24,7 @@ fi
 
 # Get the published version
 # If the package is not published, set the published version to "NULL"
-NPM_VERSION=$(npm show . version || echo "NULL")
+NPM_VERSION=$(npm show . version --workspaces=false || echo "NULL")
 
 # Get the local version of the package, from package.json
 # The jq "r" flag gives us the raw, unquoted output
