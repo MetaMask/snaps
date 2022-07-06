@@ -323,7 +323,6 @@ export type SnapRemoved = {
 };
 
 /**
- * /**
  * Emitted when a snap is updated.
  */
 export type SnapUpdated = {
@@ -477,8 +476,8 @@ type AddSnapArgsBase = {
   versionRange?: string;
 };
 
-// A snap can either directly, with manifest and source code, or it can be
-// fetched and then added.
+// A snap can either be added directly, with manifest and source code, or it
+// can be fetched and then added.
 type AddSnapArgs =
   | AddSnapArgsBase
   | (AddSnapArgsBase & {
