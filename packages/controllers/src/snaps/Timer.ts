@@ -12,7 +12,7 @@ export class Timer {
   }
 
   isStarted() {
-    return this._timeout && this._start;
+    return Boolean(this._timeout && this._start);
   }
 
   isFinished() {
@@ -35,7 +35,7 @@ export class Timer {
   }
 
   start(callback: () => void) {
-    if (this.isStarted()) {
+    if (this._callback) {
       return;
     }
     this._callback = callback;
@@ -43,7 +43,7 @@ export class Timer {
   }
 
   resume() {
-    if (this.isFinished()) {
+    if (this.isStarted() || this.isFinished()) {
       return;
     }
     this._start = Date.now();

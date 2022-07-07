@@ -1232,6 +1232,64 @@ describe('SnapController', () => {
     await service.terminateAllSnaps();
   });
 
+  it('does not timeout while waiting for response from MetaMask when snap does multiple calls', async () => {
+    const [snapController, service] = getSnapControllerWithEES(
+      getSnapControllerWithEESOptions({
+        idleTimeCheckInterval: 30000,
+        maxIdleTime: 160000,
+      }),
+    );
+    const sourceCode = `
+    const fetch = async () => parseInt(await wallet.request({ method: 'eth_blockNumber', params: [] }), 16);
+    module.exports.onRpcRequest = async () => (await fetch()) + (await fetch());
+    `;
+
+    const snap = await snapController.add({
+      origin: MOCK_ORIGIN,
+      id: MOCK_SNAP_ID,
+      sourceCode,
+      manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
+    });
+
+    jest
+      // Cast because we are mocking a private property
+      .spyOn(service, 'setupSnapProvider' as any)
+      .mockImplementation((_snapId, rpcStream) => {
+        const mux = setupMultiplex(rpcStream as Duplex, 'foo');
+        const stream = mux.createStream('metamask-provider');
+        const engine = new JsonRpcEngine();
+        const middleware = createAsyncMiddleware(async (req, res, _next) => {
+          if (req.method === 'metamask_getProviderState') {
+            res.result = { isUnlocked: false, accounts: [] };
+          } else if (req.method === 'eth_blockNumber') {
+            await new Promise((resolve) => setTimeout(resolve, 400));
+            res.result = '0xa70e77';
+          }
+        });
+        engine.push(middleware);
+        const providerStream = createEngineStream({ engine });
+        pump(stream, providerStream, stream);
+      });
+
+    await snapController.startSnap(snap.id);
+    expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
+
+    // Max request time should be shorter than eth_blockNumber takes to respond
+    (snapController as any)._maxRequestTime = 300;
+
+    expect(
+      await snapController.handleRpcRequest(snap.id, 'foo.com', {
+        jsonrpc: '2.0',
+        method: 'test',
+        params: {},
+        id: 1,
+      }),
+    ).toBe(21896430);
+
+    snapController.destroy();
+    await service.terminateAllSnaps();
+  });
+
   it('does not time out snaps that are permitted to be long-running', async () => {
     const options = getSnapControllerWithEESOptions({
       idleTimeCheckInterval: 30000,

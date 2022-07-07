@@ -8,10 +8,10 @@ module.exports = {
   coveragePathIgnorePatterns: ['/node_modules/', '/mocks/', '/test/'],
   coverageThreshold: {
     global: {
-      branches: 65.97,
+      branches: 67.24,
       functions: 86.36,
-      lines: 83.9,
-      statements: 83.95,
+      lines: 84.2,
+      statements: 84.25,
     },
   },
   globals: {
