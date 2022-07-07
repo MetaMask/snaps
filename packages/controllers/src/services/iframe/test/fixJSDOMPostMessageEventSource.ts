@@ -61,8 +61,8 @@ const fixJSDOMPostMessageEventSource = (
         source = window;
         origin = window.location.origin;
       } else if (event.data.target === 'parent') {
-        // eslint-disable-next-line dot-notation
-        const { worker } = iframeExecutionService['jobs'].values().next().value;
+        // @ts-expect-error Accessing private property
+        const { worker } = iframeExecutionService.jobs.values().next().value;
         source = worker;
         origin = iframeExecutionService.iframeUrl.toString();
       }
