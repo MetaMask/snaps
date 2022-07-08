@@ -1818,6 +1818,16 @@ export class SnapController extends BaseController<
       'ExecutionService:unhandledError',
       this._onUnhandledSnapError,
     );
+
+    this.messagingSystem.unsubscribe(
+      'ExecutionService:outboundRequest',
+      this._onOutboundRequest,
+    );
+
+    this.messagingSystem.unsubscribe(
+      'ExecutionService:outboundResponse',
+      this._onOutboundResponse,
+    );
   }
 
   /**
