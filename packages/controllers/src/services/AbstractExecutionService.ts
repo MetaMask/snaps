@@ -1,9 +1,6 @@
 import { Duplex } from 'stream';
 import ObjectMultiplex from '@metamask/object-multiplex';
-import {
-  ExecutionServiceMessenger,
-  SnapExecutionData,
-} from '@metamask/snap-types';
+import { SnapExecutionData } from '@metamask/snap-types';
 import { SNAP_STREAM_NAMES } from '@metamask/execution-environments';
 import { Duration } from '@metamask/utils';
 import {
@@ -17,7 +14,12 @@ import pump from 'pump';
 import { createStreamMiddleware } from 'json-rpc-middleware-stream';
 import { BasePostMessageStream } from '@metamask/post-message-stream';
 import { hasTimedOut, withTimeout } from '../utils';
-import { ExecutionService } from './ExecutionService';
+import {
+  ExecutionService,
+  ExecutionServiceMessenger,
+} from './ExecutionService';
+
+const controllerName = 'ExecutionService';
 
 export type SetupSnapProvider = (snapId: string, stream: Duplex) => void;
 
@@ -75,6 +77,34 @@ export abstract class AbstractExecutionService<WorkerType>
     this.jobToSnapMap = new Map();
     this._messenger = messenger;
     this._terminationTimeout = terminationTimeout;
+
+    this.registerMessageHandlers();
+  }
+
+  /**
+   * Constructor helper for registering the controller's messaging system
+   * actions.
+   */
+  private registerMessageHandlers(): void {
+    this._messenger.registerActionHandler(
+      `${controllerName}:getRpcRequestHandler`,
+      (snapId: string) => this.getRpcRequestHandler(snapId),
+    );
+
+    this._messenger.registerActionHandler(
+      `${controllerName}:executeSnap`,
+      (snapData: SnapExecutionData) => this.executeSnap(snapData),
+    );
+
+    this._messenger.registerActionHandler(
+      `${controllerName}:terminateSnap`,
+      (snapId: string) => this.terminateSnap(snapId),
+    );
+
+    this._messenger.registerActionHandler(
+      `${controllerName}:terminateAllSnaps`,
+      () => this.terminateAllSnaps(),
+    );
   }
 
   /**

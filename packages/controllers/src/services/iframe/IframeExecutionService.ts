@@ -2,13 +2,12 @@ import {
   WindowPostMessageStream,
   BasePostMessageStream,
 } from '@metamask/post-message-stream';
-import { ExecutionServiceMessenger } from '@metamask/snap-types';
-
 import {
   Job,
   AbstractExecutionService,
   SetupSnapProvider,
 } from '../AbstractExecutionService';
+import { ExecutionServiceMessenger } from '../ExecutionService';
 
 type IframeExecutionEnvironmentServiceArgs = {
   setupSnapProvider: SetupSnapProvider;
