@@ -3,13 +3,13 @@ import {
   ThreadParentMessageStream,
   BasePostMessageStream,
 } from '@metamask/post-message-stream';
-import { EnvMetadata, NodeExecutionService } from './NodeExecutionService';
+import { AbstractExecutionService, Job } from '..';
 
-export class NodeThreadExecutionService extends NodeExecutionService<Worker> {
-  protected _initEnvStream(): {
+export class NodeThreadExecutionService extends AbstractExecutionService<Worker> {
+  protected async _initEnvStream(): Promise<{
     worker: Worker;
     stream: BasePostMessageStream;
-  } {
+  }> {
     const worker = new Worker(
       require.resolve(
         '@metamask/execution-environments/dist/webpack/node-thread/bundle.js',
@@ -19,7 +19,7 @@ export class NodeThreadExecutionService extends NodeExecutionService<Worker> {
     return { worker, stream };
   }
 
-  protected _terminate(jobWrapper: EnvMetadata<Worker>): void {
+  protected _terminate(jobWrapper: Job<Worker>): void {
     jobWrapper.worker.terminate();
   }
 }

@@ -3,13 +3,13 @@ import {
   ProcessParentMessageStream,
   BasePostMessageStream,
 } from '@metamask/post-message-stream';
-import { EnvMetadata, NodeExecutionService } from './NodeExecutionService';
+import { AbstractExecutionService, Job } from '..';
 
-export class NodeProcessExecutionService extends NodeExecutionService<ChildProcess> {
-  protected _initEnvStream(): {
+export class NodeProcessExecutionService extends AbstractExecutionService<ChildProcess> {
+  protected async _initEnvStream(): Promise<{
     worker: ChildProcess;
     stream: BasePostMessageStream;
-  } {
+  }> {
     const worker = fork(
       require.resolve(
         '@metamask/execution-environments/dist/webpack/node-process/bundle.js',
@@ -19,7 +19,7 @@ export class NodeProcessExecutionService extends NodeExecutionService<ChildProce
     return { worker, stream };
   }
 
-  protected _terminate(jobWrapper: EnvMetadata<ChildProcess>): void {
+  protected _terminate(jobWrapper: Job<ChildProcess>): void {
     jobWrapper.worker.kill();
   }
 }

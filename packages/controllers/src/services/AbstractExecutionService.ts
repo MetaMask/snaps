@@ -4,6 +4,7 @@ import {
   ExecutionServiceMessenger,
   SnapExecutionData,
 } from '@metamask/snap-types';
+import { SNAP_STREAM_NAMES } from '@metamask/execution-environments';
 import { Duration } from '@metamask/utils';
 import {
   JsonRpcEngine,
@@ -13,6 +14,8 @@ import {
 } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
 import pump from 'pump';
+import { createStreamMiddleware } from 'json-rpc-middleware-stream';
+import { BasePostMessageStream } from '@metamask/post-message-stream';
 import { hasTimedOut, withTimeout } from '../utils';
 import { ExecutionService } from './ExecutionService';
 
@@ -30,22 +33,25 @@ export type SnapRpcHook = (
   request: Record<string, unknown>,
 ) => Promise<unknown>;
 
-interface JobStreams {
-  rpc: Duplex | null;
-}
+export type JobStreams = {
+  command: Duplex;
+  rpc: Duplex;
+  _connection: BasePostMessageStream;
+};
 
-type Job = {
+export type Job<WorkerType> = {
   id: string;
   streams: JobStreams;
   rpcEngine: JsonRpcEngine;
+  worker: WorkerType;
 };
 
-export abstract class AbstractExecutionService<JobType extends Job>
+export abstract class AbstractExecutionService<WorkerType>
   implements ExecutionService
 {
   protected _snapRpcHooks: Map<string, SnapRpcHook>;
 
-  protected jobs: Map<string, JobType>;
+  protected jobs: Map<string, Job<WorkerType>>;
 
   protected setupSnapProvider: SetupSnapProvider;
 
@@ -78,7 +84,7 @@ export abstract class AbstractExecutionService<JobType extends Job>
    *
    * @param job - The object corresponding to the job to be terminated.
    */
-  protected abstract _terminate(job: JobType): void;
+  protected abstract _terminate(job: Job<WorkerType>): void;
 
   /**
    * Terminates the job with the specified ID and deletes all its associated
@@ -131,11 +137,93 @@ export abstract class AbstractExecutionService<JobType extends Job>
   }
 
   /**
+   * Initiates a job for a snap.
+   *
+   * Depending on the execution environment, this may run forever if the Snap fails to start up properly, therefore any call to this function should be wrapped in a timeout.
+   *
+   * @returns Information regarding the created job.
+   */
+  protected async _initJob(): Promise<Job<WorkerType>> {
+    const jobId = nanoid();
+    const { streams, worker } = await this._initStreams(jobId);
+    const rpcEngine = new JsonRpcEngine();
+
+    const jsonRpcConnection = createStreamMiddleware();
+
+    pump(jsonRpcConnection.stream, streams.command, jsonRpcConnection.stream);
+
+    rpcEngine.push(jsonRpcConnection.middleware);
+
+    const envMetadata = {
+      id: jobId,
+      streams,
+      rpcEngine,
+      worker,
+    };
+    this.jobs.set(jobId, envMetadata);
+
+    return envMetadata;
+  }
+
+  /**
+   * Sets up the streams for an initiated job.
+   *
+   * Depending on the execution environment, this may run forever if the Snap fails to start up properly, therefore any call to this function should be wrapped in a timeout.
+   *
+   * @param jobId - The id of the job.
+   * @returns The streams to communicate with the worker and the worker itself.
+   */
+  protected async _initStreams(
+    jobId: string,
+  ): Promise<{ streams: JobStreams; worker: WorkerType }> {
+    const { worker, stream: envStream } = await this._initEnvStream(jobId);
+    // Typecast justification: stream type mismatch
+    const mux = setupMultiplex(
+      envStream as unknown as Duplex,
+      `Job: "${jobId}"`,
+    );
+
+    const commandStream = mux.createStream(SNAP_STREAM_NAMES.COMMAND);
+    // Handle out-of-band errors, i.e. errors thrown from the snap outside of the req/res cycle.
+    const errorHandler = (data: any) => {
+      if (
+        data.error &&
+        (data.id === null || data.id === undefined) // only out of band errors (i.e. no id)
+      ) {
+        const snapId = this.jobToSnapMap.get(jobId);
+        if (snapId) {
+          this._messenger.publish(
+            'ExecutionService:unhandledError',
+            snapId,
+            data.error,
+          );
+        }
+        commandStream.removeListener('data', errorHandler);
+      }
+    };
+    commandStream.on('data', errorHandler);
+    const rpcStream = mux.createStream(SNAP_STREAM_NAMES.JSON_RPC);
+
+    // Typecast: stream type mismatch
+    return {
+      streams: {
+        command: commandStream as unknown as Duplex,
+        rpc: rpcStream,
+        _connection: envStream,
+      },
+      worker,
+    };
+  }
+
+  /**
    * Abstract function implemented by implementing class that spins up a new worker for a job.
    *
    * Depending on the execution environment, this may run forever if the Snap fails to start up properly, therefore any call to this function should be wrapped in a timeout.
    */
-  protected abstract _initJob(): Promise<JobType>;
+  protected abstract _initEnvStream(jobId: string): Promise<{
+    worker: WorkerType;
+    stream: BasePostMessageStream;
+  }>;
 
   /**
    * Terminates the Snap with the specified ID. May throw an error if
