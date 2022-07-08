@@ -807,8 +807,7 @@ describe('SnapController', () => {
 
     const eventSubscriptionPromise = Promise.all([
       new Promise<void>((resolve) => {
-        messenger.subscribe('SnapController:snapAdded', (snapId, snap) => {
-          expect(snapId).toStrictEqual(MOCK_SNAP_ID);
+        messenger.subscribe('SnapController:snapAdded', (snap) => {
           expect(snap).toStrictEqual(
             getSnapObject({ status: SnapStatus.installing }),
           );
@@ -941,8 +940,7 @@ describe('SnapController', () => {
 
     const eventSubscriptionPromise = Promise.all([
       new Promise<void>((resolve) => {
-        messenger.subscribe('SnapController:snapAdded', (snapId, snap) => {
-          expect(snapId).toStrictEqual(MOCK_SNAP_ID);
+        messenger.subscribe('SnapController:snapAdded', (snap) => {
           expect(snap).toStrictEqual(
             getSnapObject({ status: SnapStatus.installing }),
           );

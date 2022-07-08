@@ -302,7 +302,7 @@ export type SnapStateChange = {
  */
 export type SnapAdded = {
   type: `${typeof controllerName}:snapAdded`;
-  payload: [snapId: string, snap: Snap, svgIcon: string | undefined];
+  payload: [snap: Snap, svgIcon: string | undefined];
 };
 
 /**
@@ -1654,12 +1654,7 @@ export class SnapController extends BaseController<
       state.snaps[snapId] = snap;
     });
 
-    this.messagingSystem.publish(
-      `SnapController:snapAdded`,
-      snapId,
-      snap,
-      svgIcon,
-    );
+    this.messagingSystem.publish(`SnapController:snapAdded`, snap, svgIcon);
     return snap;
   }
 
