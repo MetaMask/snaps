@@ -413,6 +413,11 @@ type SnapControllerArgs = {
   featureFlags: FeatureFlags;
 
   /**
+   * A function to get an "app key" for a specific subject.
+   */
+  getAppKey: GetAppKey;
+
+  /**
    * How frequently to check whether a snap is idle.
    */
   idleTimeCheckInterval?: number;

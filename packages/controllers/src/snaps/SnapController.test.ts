@@ -433,13 +433,13 @@ describe('SnapController', () => {
   });
 
   it('adds a snap and uses its JSON-RPC API', async () => {
-    const messenger = getControllerMessenger();
+    const rootMessenger = getControllerMessenger();
     const executionEnvironmentStub = new ExecutionEnvironmentStub(
-      getNodeEESMessenger(messenger),
+      getNodeEESMessenger(rootMessenger),
     ) as unknown as NodeThreadExecutionService;
 
     const [snapController] = getSnapControllerWithEES(
-      getSnapControllerWithEESOptions(),
+      getSnapControllerWithEESOptions({ rootMessenger }),
       executionEnvironmentStub,
     );
 
@@ -1100,34 +1100,32 @@ describe('SnapController', () => {
   });
 
   it('times out an RPC request that takes too long', async () => {
-    const rootMessenger = getControllerMessenger();
-    const messenger = getSnapControllerMessenger(rootMessenger, false);
-    jest.spyOn(messenger, 'call').mockImplementation((method, ...args) => {
-      // override handler to take too long to return
-      if (method === 'ExecutionService:getRpcRequestHandler') {
-        return (async () => {
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              resolve(undefined);
-            }, 300);
-          });
-        }) as any;
-      } else if (
-        method === 'PermissionController:hasPermission' &&
-        args[1] === LONG_RUNNING_PERMISSION
-      ) {
-        return false;
-      }
-      return true;
+    const options = getSnapControllerWithEESOptions({
+      idleTimeCheckInterval: 30000,
+      maxIdleTime: 160000,
+      // Note that we are using the default maxRequestTime
     });
-    const [snapController, service] = getSnapControllerWithEES(
-      getSnapControllerWithEESOptions({
-        rootMessenger,
-        idleTimeCheckInterval: 30000,
-        maxIdleTime: 160000,
-        // Note that we are using the default maxRequestTime
-      }),
-    );
+    jest
+      .spyOn(options.messenger, 'call')
+      .mockImplementation((method, ...args) => {
+        // override handler to take too long to return
+        if (method === 'ExecutionService:getRpcRequestHandler') {
+          return (async () => {
+            return new Promise((resolve) => {
+              setTimeout(() => {
+                resolve(undefined);
+              }, 300);
+            });
+          }) as any;
+        } else if (
+          method === 'PermissionController:hasPermission' &&
+          args[1] === LONG_RUNNING_PERMISSION
+        ) {
+          return false;
+        }
+        return true;
+      });
+    const [snapController, service] = getSnapControllerWithEES(options);
 
     const snap = await snapController.add({
       origin: MOCK_ORIGIN,
