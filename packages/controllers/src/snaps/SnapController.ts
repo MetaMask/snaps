@@ -302,7 +302,7 @@ export type SnapStateChange = {
  */
 export type SnapAdded = {
   type: `${typeof controllerName}:snapAdded`;
-  payload: [snapId: string, snap: Snap, svgIcon: string | undefined];
+  payload: [snap: Snap, svgIcon: string | undefined];
 };
 
 /**
@@ -311,7 +311,7 @@ export type SnapAdded = {
  */
 export type SnapInstalled = {
   type: `${typeof controllerName}:snapInstalled`;
-  payload: [snapId: string];
+  payload: [snap: TruncatedSnap];
 };
 
 /**
@@ -319,7 +319,7 @@ export type SnapInstalled = {
  */
 export type SnapRemoved = {
   type: `${typeof controllerName}:snapRemoved`;
-  payload: [snapId: string];
+  payload: [snap: TruncatedSnap];
 };
 
 /**
@@ -327,7 +327,7 @@ export type SnapRemoved = {
  */
 export type SnapUpdated = {
   type: `${typeof controllerName}:snapUpdated`;
-  payload: [snapId: string, newVersion: string, oldVersion: string];
+  payload: [snap: TruncatedSnap, oldVersion: string];
 };
 
 /**
@@ -336,7 +336,7 @@ export type SnapUpdated = {
  */
 export type SnapTerminated = {
   type: `${typeof controllerName}:snapTerminated`;
-  payload: [snapId: string];
+  payload: [snap: TruncatedSnap];
 };
 
 export type SnapControllerEvents =
@@ -893,7 +893,10 @@ export class SnapController extends BaseController<
    */
   private async terminateSnap(snapId: SnapId) {
     await this._terminateSnap(snapId);
-    this.messagingSystem.publish('SnapController:snapTerminated', snapId);
+    this.messagingSystem.publish(
+      'SnapController:snapTerminated',
+      this.getTruncated(snapId) as TruncatedSnap,
+    );
   }
 
   /**
@@ -1097,6 +1100,7 @@ export class SnapController extends BaseController<
 
     await Promise.all(
       snapIds.map(async (snapId) => {
+        const truncated = this.getTruncated(snapId) as TruncatedSnap;
         // Disable the snap and revoke all of its permissions before deleting
         // it. This ensures that the snap will not be restarted or otherwise
         // affect the host environment while we are deleting it.
@@ -1117,7 +1121,7 @@ export class SnapController extends BaseController<
           delete state.snapStates[snapId];
         });
 
-        this.messagingSystem.publish(`SnapController:snapRemoved`, snapId);
+        this.messagingSystem.publish(`SnapController:snapRemoved`, truncated);
       }),
     );
   }
@@ -1298,8 +1302,10 @@ export class SnapController extends BaseController<
         sourceCode,
       });
 
-      this.messagingSystem.publish(`SnapController:snapInstalled`, snapId);
-      return this.getTruncated(snapId) as TruncatedSnap;
+      const truncated = this.getTruncated(snapId) as TruncatedSnap;
+
+      this.messagingSystem.publish(`SnapController:snapInstalled`, truncated);
+      return truncated;
     } catch (err) {
       console.error(`Error when adding snap.`, err);
       if (this.has(snapId)) {
@@ -1405,14 +1411,14 @@ export class SnapController extends BaseController<
 
     await this._startSnap({ snapId, sourceCode: newSnap.sourceCode });
 
+    const truncatedSnap = this.getTruncated(snapId) as TruncatedSnap;
+
     this.messagingSystem.publish(
       'SnapController:snapUpdated',
-      snapId,
-      newSnap.manifest.version,
+      truncatedSnap,
       snap.version,
     );
-
-    return this.getTruncated(snapId);
+    return truncatedSnap;
   }
 
   /**
@@ -1648,12 +1654,7 @@ export class SnapController extends BaseController<
       state.snaps[snapId] = snap;
     });
 
-    this.messagingSystem.publish(
-      `SnapController:snapAdded`,
-      snapId,
-      snap,
-      svgIcon,
-    );
+    this.messagingSystem.publish(`SnapController:snapAdded`, snap, svgIcon);
     return snap;
   }
 

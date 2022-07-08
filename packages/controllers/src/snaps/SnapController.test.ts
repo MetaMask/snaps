@@ -807,8 +807,7 @@ describe('SnapController', () => {
 
     const eventSubscriptionPromise = Promise.all([
       new Promise<void>((resolve) => {
-        messenger.subscribe('SnapController:snapAdded', (snapId, snap) => {
-          expect(snapId).toStrictEqual(MOCK_SNAP_ID);
+        messenger.subscribe('SnapController:snapAdded', (snap) => {
           expect(snap).toStrictEqual(
             getSnapObject({ status: SnapStatus.installing }),
           );
@@ -816,8 +815,8 @@ describe('SnapController', () => {
         });
       }),
       new Promise<void>((resolve) => {
-        messenger.subscribe('SnapController:snapInstalled', (snapId) => {
-          expect(snapId).toStrictEqual(MOCK_SNAP_ID);
+        messenger.subscribe('SnapController:snapInstalled', (truncatedSnap) => {
+          expect(truncatedSnap).toStrictEqual(getTruncatedSnap());
           resolve();
         });
       }),
@@ -941,8 +940,7 @@ describe('SnapController', () => {
 
     const eventSubscriptionPromise = Promise.all([
       new Promise<void>((resolve) => {
-        messenger.subscribe('SnapController:snapAdded', (snapId, snap) => {
-          expect(snapId).toStrictEqual(MOCK_SNAP_ID);
+        messenger.subscribe('SnapController:snapAdded', (snap) => {
           expect(snap).toStrictEqual(
             getSnapObject({ status: SnapStatus.installing }),
           );
@@ -950,8 +948,8 @@ describe('SnapController', () => {
         });
       }),
       new Promise<void>((resolve) => {
-        messenger.subscribe('SnapController:snapRemoved', (snapId) => {
-          expect(snapId).toStrictEqual(MOCK_SNAP_ID);
+        messenger.subscribe('SnapController:snapRemoved', (truncatedSnap) => {
+          expect(truncatedSnap).toStrictEqual(getTruncatedSnap());
           resolve();
         });
       }),
