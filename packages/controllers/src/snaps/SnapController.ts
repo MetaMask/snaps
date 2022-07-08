@@ -15,12 +15,7 @@ import {
   SubjectPermissions,
   ValidPermission,
 } from '@metamask/controllers';
-import {
-  ErrorJSON,
-  ErrorMessageEvent,
-  SnapData,
-  SnapId,
-} from '@metamask/snap-types';
+import { ErrorJSON, SnapData, SnapId } from '@metamask/snap-types';
 import {
   Duration,
   hasProperty,
@@ -34,13 +29,14 @@ import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
-import { assertExhaustive } from '..';
 import {
-  ExecuteSnap,
-  GetRpcRequestHandler,
-  TerminateAll,
-  TerminateSnap,
-} from '../services/ExecutionService';
+  assertExhaustive,
+  ErrorMessageEvent,
+  ExecuteSnapAction,
+  GetRpcRequestHandlerAction,
+  TerminateAllSnapsAction,
+  TerminateSnapAction,
+} from '..';
 import { hasTimedOut, setDiff, withTimeout } from '../utils';
 import { DEFAULT_ENDOWMENTS } from './default-endowments';
 import { LONG_RUNNING_PERMISSION } from './endowments';
@@ -324,7 +320,7 @@ export type SnapStateChange = {
  */
 export type SnapAdded = {
   type: `${typeof controllerName}:snapAdded`;
-  payload: [snapId: string, snap: Snap, svgIcon: string | undefined];
+  payload: [snap: Snap, svgIcon: string | undefined];
 };
 
 type BlockedSnapInfo = { infoUrl?: string; reason?: string };
@@ -343,7 +339,7 @@ export type SnapBlocked = {
  */
 export type SnapInstalled = {
   type: `${typeof controllerName}:snapInstalled`;
-  payload: [snapId: string];
+  payload: [snap: TruncatedSnap];
 };
 
 /**
@@ -351,7 +347,7 @@ export type SnapInstalled = {
  */
 export type SnapRemoved = {
   type: `${typeof controllerName}:snapRemoved`;
-  payload: [snapId: string];
+  payload: [snap: TruncatedSnap];
 };
 
 /**
@@ -367,7 +363,7 @@ export type SnapUnblocked = {
  */
 export type SnapUpdated = {
   type: `${typeof controllerName}:snapUpdated`;
-  payload: [snapId: string, newVersion: string, oldVersion: string];
+  payload: [snap: TruncatedSnap, oldVersion: string];
 };
 
 /**
@@ -376,7 +372,7 @@ export type SnapUpdated = {
  */
 export type SnapTerminated = {
   type: `${typeof controllerName}:snapTerminated`;
-  payload: [snapId: string];
+  payload: [snap: TruncatedSnap];
 };
 
 export type SnapControllerEvents =
@@ -400,7 +396,11 @@ export type AllowedActions =
   | RevokePermissionForAllSubjects
   | GrantPermissions
   | RequestPermissions
-  | AddApprovalRequest;
+  | AddApprovalRequest
+  | GetRpcRequestHandlerAction
+  | ExecuteSnapAction
+  | TerminateAllSnapsAction
+  | TerminateSnapAction;
 
 export type AllowedEvents = ErrorMessageEvent;
 
@@ -462,11 +462,6 @@ type SnapControllerArgs = {
   environmentEndowmentPermissions: string[];
 
   /**
-   * A function that causes a snap to be executed.
-   */
-  executeSnap: ExecuteSnap;
-
-  /**
    * The function that will be used by the controller fo make network requests.
    * Should be compatible with {@link fetch}.
    */
@@ -482,12 +477,6 @@ type SnapControllerArgs = {
    * A function to get an "app key" for a specific subject.
    */
   getAppKey: GetAppKey;
-
-  /**
-   * A function that gets the RPC message handler function for a specific
-   * snap.
-   */
-  getRpcRequestHandler: GetRpcRequestHandler;
 
   /**
    * How frequently to check whether a snap is idle.
@@ -524,16 +513,6 @@ type SnapControllerArgs = {
    * Persisted state that will be used for rehydration.
    */
   state?: SnapControllerState;
-
-  /**
-   * A function that terminates all running snaps.
-   */
-  terminateAllSnaps: TerminateAll;
-
-  /**
-   * A function that terminates a specific snap.
-   */
-  terminateSnap: TerminateSnap;
 };
 
 type AddSnapArgsBase = {
@@ -650,15 +629,9 @@ export class SnapController extends BaseController<
 
   private _environmentEndowmentPermissions: string[];
 
-  private _executeSnap: ExecuteSnap;
-
   private _featureFlags: FeatureFlags;
 
   private _fetchFunction: typeof fetch;
-
-  private _getAppKey: GetAppKey;
-
-  private _getRpcRequestHandler: GetRpcRequestHandler;
 
   private _idleTimeCheckInterval: number;
 
@@ -672,20 +645,14 @@ export class SnapController extends BaseController<
 
   private _snapsRuntimeData: Map<SnapId, SnapRuntimeData>;
 
-  private _terminateAllSnaps: TerminateAll;
-
-  private _terminateSnap: TerminateSnap;
+  private _getAppKey: GetAppKey;
 
   private _timeoutForLastRequestStatus?: number;
 
   constructor({
     closeAllConnections,
-    executeSnap,
-    getRpcRequestHandler,
     messenger,
     state,
-    terminateAllSnaps,
-    terminateSnap,
     getAppKey,
     environmentEndowmentPermissions = [],
     npmRegistryUrl,
@@ -731,11 +698,10 @@ export class SnapController extends BaseController<
 
     this._closeAllConnections = closeAllConnections;
     this._environmentEndowmentPermissions = environmentEndowmentPermissions;
-    this._executeSnap = executeSnap;
     this._featureFlags = featureFlags;
     this._fetchFunction = fetchFunction;
+    this._onUnhandledSnapError = this._onUnhandledSnapError.bind(this);
     this._getAppKey = getAppKey;
-    this._getRpcRequestHandler = getRpcRequestHandler;
     this._idleTimeCheckInterval = idleTimeCheckInterval;
     this._checkSnapBlockList = checkBlockList;
     this._maxIdleTime = maxIdleTime;
@@ -743,8 +709,6 @@ export class SnapController extends BaseController<
     this._npmRegistryUrl = npmRegistryUrl;
     this._onUnhandledSnapError = this._onUnhandledSnapError.bind(this);
     this._snapsRuntimeData = new Map();
-    this._terminateAllSnaps = terminateAllSnaps;
-    this._terminateSnap = terminateSnap;
 
     this._pollForLastRequestStatus();
 
@@ -1096,8 +1060,11 @@ export class SnapController extends BaseController<
    * @param snapId - The snap to terminate.
    */
   private async terminateSnap(snapId: SnapId) {
-    await this._terminateSnap(snapId);
-    this.messagingSystem.publish('SnapController:snapTerminated', snapId);
+    await this.messagingSystem.call('ExecutionService:terminateSnap', snapId);
+    this.messagingSystem.publish(
+      'SnapController:snapTerminated',
+      this.getTruncated(snapId) as TruncatedSnap,
+    );
   }
 
   /**
@@ -1268,7 +1235,7 @@ export class SnapController extends BaseController<
     snapIds.forEach((snapId) => {
       this._closeAllConnections(snapId);
     });
-    this._terminateAllSnaps();
+    this.messagingSystem.call('ExecutionService:terminateAllSnaps');
     snapIds.forEach(this.revokeAllSnapPermissions);
 
     this.update((state: any) => {
@@ -1301,6 +1268,7 @@ export class SnapController extends BaseController<
 
     await Promise.all(
       snapIds.map(async (snapId) => {
+        const truncated = this.getTruncated(snapId) as TruncatedSnap;
         // Disable the snap and revoke all of its permissions before deleting
         // it. This ensures that the snap will not be restarted or otherwise
         // affect the host environment while we are deleting it.
@@ -1321,7 +1289,7 @@ export class SnapController extends BaseController<
           delete state.snapStates[snapId];
         });
 
-        this.messagingSystem.publish(`SnapController:snapRemoved`, snapId);
+        this.messagingSystem.publish(`SnapController:snapRemoved`, truncated);
       }),
     );
   }
@@ -1502,8 +1470,10 @@ export class SnapController extends BaseController<
         sourceCode,
       });
 
-      this.messagingSystem.publish(`SnapController:snapInstalled`, snapId);
-      return this.getTruncated(snapId) as TruncatedSnap;
+      const truncated = this.getTruncated(snapId) as TruncatedSnap;
+
+      this.messagingSystem.publish(`SnapController:snapInstalled`, truncated);
+      return truncated;
     } catch (err) {
       console.error(`Error when adding snap.`, err);
       if (this.has(snapId)) {
@@ -1613,14 +1583,14 @@ export class SnapController extends BaseController<
 
     await this._startSnap({ snapId, sourceCode: newSnap.sourceCode });
 
+    const truncatedSnap = this.getTruncated(snapId) as TruncatedSnap;
+
     this.messagingSystem.publish(
       'SnapController:snapUpdated',
-      snapId,
-      newSnap.manifest.version,
+      truncatedSnap,
       snap.version,
     );
-
-    return this.getTruncated(snapId);
+    return truncatedSnap;
   }
 
   /**
@@ -1701,7 +1671,7 @@ export class SnapController extends BaseController<
     try {
       const result = await this._executeWithTimeout(
         snapId,
-        this._executeSnap({
+        this.messagingSystem.call('ExecutionService:executeSnap', {
           ...snapData,
           endowments: await this._getEndowments(snapId),
         }),
@@ -1861,12 +1831,7 @@ export class SnapController extends BaseController<
       state.snaps[snapId] = snap;
     });
 
-    this.messagingSystem.publish(
-      `SnapController:snapAdded`,
-      snapId,
-      snap,
-      svgIcon,
-    );
+    this.messagingSystem.publish(`SnapController:snapAdded`, snap, svgIcon);
     return snap;
   }
 
@@ -2091,7 +2056,10 @@ export class SnapController extends BaseController<
         );
       }
 
-      let handler = await this._getRpcRequestHandler(snapId);
+      let handler = await this.messagingSystem.call(
+        'ExecutionService:getRpcRequestHandler',
+        snapId,
+      );
 
       if (this.isRunning(snapId) === false) {
         if (handler) {
@@ -2120,7 +2088,11 @@ export class SnapController extends BaseController<
             startPromises.delete(snapId);
           }
         }
-        handler = await this._getRpcRequestHandler(snapId);
+
+        handler = await this.messagingSystem.call(
+          'ExecutionService:getRpcRequestHandler',
+          snapId,
+        );
       }
 
       if (!handler) {

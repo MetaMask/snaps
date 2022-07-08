@@ -1,4 +1,4 @@
-import { Json, RestrictedControllerMessenger } from '@metamask/controllers';
+import { Json } from '@metamask/controllers';
 import { MetaMaskInpageProvider } from '@metamask/providers';
 import { JsonRpcRequest } from '@metamask/types';
 
@@ -36,16 +36,3 @@ export type ErrorJSON = {
   code: number;
   data?: Json;
 };
-
-export type ErrorMessageEvent = {
-  type: 'ExecutionService:unhandledError';
-  payload: [SnapId, ErrorJSON];
-};
-
-export type ExecutionServiceMessenger = RestrictedControllerMessenger<
-  'ExecutionService',
-  never,
-  ErrorMessageEvent,
-  never,
-  ErrorMessageEvent['type']
->;

@@ -1,5 +1,5 @@
 import { ControllerMessenger } from '@metamask/controllers';
-import { ErrorMessageEvent } from '@metamask/snap-types';
+import { ErrorMessageEvent } from '../ExecutionService';
 import { IframeExecutionService } from './IframeExecutionService';
 import fixJSDOMPostMessageEventSource from './test/fixJSDOMPostMessageEventSource';
 import {
