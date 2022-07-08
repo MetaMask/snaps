@@ -327,7 +327,7 @@ export type SnapRemoved = {
  */
 export type SnapUpdated = {
   type: `${typeof controllerName}:snapUpdated`;
-  payload: [snap: TruncatedSnap, newVersion: string, oldVersion: string];
+  payload: [snap: TruncatedSnap, oldVersion: string];
 };
 
 /**
@@ -1411,15 +1411,14 @@ export class SnapController extends BaseController<
 
     await this._startSnap({ snapId, sourceCode: newSnap.sourceCode });
 
-    const truncated = this.getTruncated(snapId) as TruncatedSnap;
+    const truncatedSnap = this.getTruncated(snapId) as TruncatedSnap;
+
     this.messagingSystem.publish(
       'SnapController:snapUpdated',
-      truncated,
-      newSnap.manifest.version,
+      truncatedSnap,
       snap.version,
     );
-
-    return truncated;
+    return truncatedSnap;
   }
 
   /**
