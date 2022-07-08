@@ -2820,7 +2820,7 @@ describe('SnapController', () => {
       );
     });
 
-    it('does nothing if _checkSnapBlockList is undefined', async () => {
+    it('returns whether a version of a snap is blocked', async () => {
       const checkBlockListSpy = jest.fn();
       const snapId = 'npm:example';
 

@@ -784,10 +784,13 @@ export class SnapController extends BaseController<
     }
 
     const blockedSnaps = await this._checkSnapBlockList(
-      Object.values(this.state.snaps).reduce((blockListArg, snap) => {
-        blockListArg[snap.id] = snap.version;
-        return blockListArg;
-      }, {} as Record<SnapId, SemVerVersion>),
+      Object.values(this.state.snaps).reduce<Record<SnapId, SemVerVersion>>(
+        (blockListArg, snap) => {
+          blockListArg[snap.id] = snap.version;
+          return blockListArg;
+        },
+        {},
+      ),
     );
 
     await Promise.all(
