@@ -1,3 +1,6 @@
+// Allow Jest snapshots because the test outputs are illegible.
+/* eslint-disable jest/no-restricted-matchers */
+
 import { Readable } from 'stream';
 import browserify from 'browserify';
 import concat from 'concat-stream';
@@ -65,7 +68,7 @@ describe('plugin', () => {
       });
     });
 
-    expect(result).toContain(`const foo = 'bar';`);
+    expect(result).toMatchSnapshot();
   });
 
   it('applies a transform', async () => {
@@ -90,8 +93,7 @@ describe('plugin', () => {
       });
     });
 
-    expect(result).not.toContain(`// foo bar`);
-    expect(result).not.toContain(`/* baz qux */`);
+    expect(result).toMatchSnapshot();
   });
 
   it('forwards the options', async () => {
@@ -116,7 +118,27 @@ describe('plugin', () => {
       });
     });
 
-    expect(result).toContain(`// foo bar`);
-    expect(result).toContain(`/* baz qux */`);
+    expect(result).toMatchSnapshot();
+  });
+
+  it('generates a source map', async () => {
+    const value = toStream(`const foo = 'bar';`);
+
+    const result = await new Promise((resolve, reject) => {
+      const bundler = browserify({ debug: true });
+
+      bundler.plugin(plugin);
+      bundler.add(value);
+
+      bundler.bundle((error, src) => {
+        if (error) {
+          return reject(error);
+        }
+
+        return resolve(src.toString('utf-8'));
+      });
+    });
+
+    expect(result).toMatchSnapshot();
   });
 });
