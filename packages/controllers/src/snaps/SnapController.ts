@@ -1332,10 +1332,14 @@ export class SnapController extends BaseController<
         origin,
         type: SNAP_APPROVAL_UPDATE,
         requestData: {
+          // First two keys mirror installation params
+          metadata: { id: nanoid(), origin: snapId, dappOrigin: origin },
+          permissions: newPermissions,
           snapId,
           newVersion: newSnap.manifest.version,
           newPermissions,
           approvedPermissions,
+          unusedPermissions,
         },
       },
       true,
