@@ -1,6 +1,10 @@
-import { postProcessBundle, PostProcessOptions } from '@metamask/snap-utils';
+import {
+  postProcessBundle,
+  PostProcessOptions,
+  SourceMap,
+} from '@metamask/snap-utils';
 import { Compiler } from 'webpack';
-import { RawSource } from 'webpack-sources';
+import { RawSource, SourceMapSource } from 'webpack-sources';
 
 const PLUGIN_NAME = 'SnapsWebpackPlugin';
 
@@ -28,22 +32,30 @@ export default class SnapsWebpackPlugin {
    * @param compiler - The Webpack compiler.
    */
   apply(compiler: Compiler) {
+    const { devtool } = compiler.options;
+
     compiler.hooks.compilation.tap(PLUGIN_NAME, (compilation) => {
       compilation.hooks.processAssets.tap(PLUGIN_NAME, (assets) => {
         Object.keys(assets).forEach((assetName) => {
           const asset = assets[assetName];
-          const processed = postProcessBundle(
-            asset.source() as string,
-            this.options,
-          );
+          const processed = postProcessBundle(asset.source() as string, {
+            ...this.options,
+            sourceMap: Boolean(devtool),
+            inputSourceMap: devtool ? (asset.map() as SourceMap) : undefined,
+          });
 
           if (processed) {
+            const replacement = processed.sourceMap
+              ? new SourceMapSource(
+                  processed.code,
+                  assetName,
+                  processed.sourceMap,
+                )
+              : new RawSource(processed.code);
+
             // For some reason the type of `RawSource` is not compatible with Webpack's own
             // `Source`, but works fine when casting it to `any`.
-            compilation.updateAsset(
-              assetName,
-              new RawSource(processed.code) as any,
-            );
+            compilation.updateAsset(assetName, replacement as any);
           }
         });
       });
