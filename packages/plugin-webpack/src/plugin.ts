@@ -40,7 +40,10 @@ export default class SnapsWebpackPlugin {
           if (processed) {
             // For some reason the type of `RawSource` is not compatible with Webpack's own
             // `Source`, but works fine when casting it to `any`.
-            compilation.updateAsset(assetName, new RawSource(processed) as any);
+            compilation.updateAsset(
+              assetName,
+              new RawSource(processed.code) as any,
+            );
           }
         });
       });

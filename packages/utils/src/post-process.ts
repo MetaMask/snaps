@@ -9,8 +9,48 @@ import {
 } from '@babel/types';
 import { transformSync, Node, Visitor, template, PluginObj } from '@babel/core';
 
+/**
+ * Source map declaration taken from `@babel/core`. Babel doesn't export the
+ * type for this, so it's copied from the source code instead here.
+ */
+export type SourceMap = {
+  version: number;
+  sources: string[];
+  names: string[];
+  sourceRoot?: string | undefined;
+  sourcesContent?: string[] | undefined;
+  mappings: string;
+  file: string;
+};
+
+/**
+ * The post process options.
+ *
+ * @property stripComments - Whether to strip comments. Defaults to `true`.
+ * @property sourceMap - Whether to generate a source map for the modified code.
+ * See also `inputSourceMap`.
+ * @property inputSourceMap - The source map for the input code. When provided,
+ * the source map will be used to generate a source map for the modified code.
+ * This ensures that the source map is correct for the modified code, and still
+ * points to the original source. If not provided, a new source map will be
+ * generated instead.
+ */
 export type PostProcessOptions = {
-  stripComments: boolean;
+  stripComments?: boolean;
+  sourceMap?: boolean;
+  inputSourceMap?: SourceMap;
+};
+
+/**
+ * The post processed bundle output.
+ *
+ * @property code - The modified code.
+ * @property sourceMap - The source map for the modified code, if the source map
+ * option was enabled.
+ */
+export type PostProcessedBundle = {
+  code: string;
+  sourceMap?: SourceMap | null;
 };
 
 // The RegEx below consists of multiple groups joined by a boolean OR.
@@ -151,12 +191,24 @@ function getRawTemplateValue(value: string) {
  * @param code - The code to post process.
  * @param options - The post-process options.
  * @param options.stripComments - Whether to strip comments. Defaults to `true`.
- * @returns The modified code.
+ * @param options.sourceMap - Whether to generate a source map for the modified
+ * code. See also `inputSourceMap`.
+ * @param options.inputSourceMap - The source map for the input code. When
+ * provided, the source map will be used to generate a source map for the
+ * modified code. This ensures that the source map is correct for the modified
+ * code, and still points to the original source. If not provided, a new source
+ * map will be generated instead.
+ * @returns An object containing the modified code, and source map, or null if
+ * the provided code is null.
  */
 export function postProcessBundle(
   code: string | null,
-  { stripComments = true }: Partial<PostProcessOptions> = {},
-): string | null {
+  {
+    stripComments = true,
+    sourceMap: sourceMaps,
+    inputSourceMap,
+  }: Partial<PostProcessOptions> = {},
+): PostProcessedBundle | null {
   if (typeof code !== 'string') {
     return null;
   }
@@ -357,6 +409,7 @@ export function postProcessBundle(
     const file = transformSync(code, {
       // Prevent Babel from searching for a config file.
       configFile: false,
+
       parserOpts: {
         // Strict mode isn't enabled by default, so we need to enable it here.
         strictMode: true,
@@ -365,9 +418,17 @@ export function postProcessBundle(
         // useful for performance reasons, and we use it for stripping comments.
         attachComment: !stripComments,
       },
+
       // By default, Babel optimises bundles that exceed 500 KB, but that
       // results in characters which look like HTML comments, which breaks SES.
       compact: false,
+
+      // This configures Babel to generate a new source map from the existing
+      // source map if specified. If `sourceMap` is `true` but an input source
+      // map is not provided, a new source map will be generated instead.
+      inputSourceMap,
+      sourceMaps,
+
       plugins: [
         () => ({
           pre,
@@ -380,7 +441,7 @@ export function postProcessBundle(
       throw new Error('Bundled code is empty.');
     }
 
-    return file.code;
+    return { code: file.code, sourceMap: file.map };
   } catch (error) {
     throw new Error(`Failed to post process code:\n${error.message}`);
   }

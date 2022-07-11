@@ -1,5 +1,6 @@
 /* eslint-disable jest/no-restricted-matchers */
 
+import * as path from 'path';
 import { rollup } from 'rollup';
 import virtual from '@rollup/plugin-virtual';
 import snaps from './plugin';
@@ -104,5 +105,45 @@ describe('snaps', () => {
     expect(code).toMatchSnapshot();
     expect(code).not.toContain(`// Sets foo to bar`);
     expect(code).not.toContain(`// Returns baz`);
+  });
+
+  it('generates a source map', async () => {
+    const bundler = await rollup({
+      // Rollup doesn't generate source maps from virtual files for some reason,
+      // so we need to use a real file.
+      input: path.resolve(__dirname, './__fixtures__/source-map.ts'),
+      output: {
+        sourcemap: true,
+      },
+      plugins: [snaps()],
+    });
+
+    const bundle = await bundler.generate({ sourcemap: true });
+    await bundler.close();
+
+    const { map } = bundle.output[0];
+    expect(map).toMatchInlineSnapshot(`
+      SourceMap {
+        "file": "source-map.js",
+        "mappings": "AAGA,MAAMA,GAAG,GAAG,KAAZ,CAAA;AACAC,OAAO,CAACC,GAAR,CAAYF,GAAZ,CAAA",
+        "names": Array [
+          "foo",
+          "console",
+          "log",
+        ],
+        "sources": Array [
+          "src/__fixtures__/source-map.ts",
+        ],
+        "sourcesContent": Array [
+          "// This file is only used for testing source map generation.
+
+      // eslint-disable-next-line import/unambiguous
+      const foo = 'bar';
+      console.log(foo);
+      ",
+        ],
+        "version": 3,
+      }
+    `);
   });
 });

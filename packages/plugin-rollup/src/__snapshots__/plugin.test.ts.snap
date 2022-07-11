@@ -23,6 +23,7 @@ console.log(foo);
 
 exports[`snaps runs on the entire bundle 1`] = `
 "const bar = 'baz';
+
 const foo = bar;
 console.log(foo);
 "
