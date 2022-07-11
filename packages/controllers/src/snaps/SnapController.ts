@@ -522,8 +522,8 @@ export type SnapEvent =
   | { type: SnapStatusEvent.stop }
   | { type: SnapStatusEvent.crash }
   | { type: SnapStatusEvent.update }
-  | { type: SnapStatusEvent.enable }
-  | { type: SnapStatusEvent.disable };
+  | { type: SnapStatusEvent.enable; enabled: boolean }
+  | { type: SnapStatusEvent.disable; enabled: boolean };
 
 export type SnapContext = {
   enabled: boolean;
@@ -1697,6 +1697,7 @@ export class SnapController extends BaseController<
       SnapContext,
       SnapEvent,
       Typestate<SnapContext>
+      // @ts-expect-error wrong typing rn
     >({
       id: snapId,
       initial: 'installing',
