@@ -1743,23 +1743,11 @@ export class SnapController extends BaseController<
     const { initialPermissions } = snap;
 
     try {
-      // If we are re-authorizing after updating a snap, we revoke all unused permissions,
-      // and only ask to authorize the new ones.
-      const { newPermissions, unusedPermissions } =
-        await this.calculatePermissionsChange(snapId, initialPermissions);
-      const unusedPermissionsKeys = Object.keys(unusedPermissions);
-
-      if (isNonEmptyArray(unusedPermissionsKeys)) {
-        this.messagingSystem.call('PermissionController:revokePermissions', {
-          [snapId]: unusedPermissionsKeys,
-        });
-      }
-
-      if (isNonEmptyArray(Object.keys(newPermissions))) {
+      if (isNonEmptyArray(Object.keys(initialPermissions))) {
         const [approvedPermissions] = await this.messagingSystem.call(
           'PermissionController:requestPermissions',
           { origin: snapId },
-          newPermissions,
+          initialPermissions,
         );
         return Object.values(approvedPermissions).map(
           (perm) => perm.parentCapability,
