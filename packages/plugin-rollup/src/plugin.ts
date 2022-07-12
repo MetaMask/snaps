@@ -1,5 +1,5 @@
 import { postProcessBundle, PostProcessOptions } from '@metamask/snap-utils';
-import { Plugin, TransformResult } from 'rollup';
+import { Plugin, SourceMapInput } from 'rollup';
 
 export type Options = Omit<PostProcessOptions, 'sourceMap' | 'inputSourceMap'>;
 
@@ -14,8 +14,14 @@ export default function snaps(options: Partial<Options> = {}): Plugin {
   return {
     name: '@metamask/rollup-plugin-snaps',
 
-    transform(code: string): TransformResult {
+    renderChunk(code: string): { code: string; map?: SourceMapInput } | null {
+      // Rollup internally merges the new source map with the old one, so there
+      // is no need to pass the current source map to the function.
       const result = postProcessBundle(code, { ...options, sourceMap: true });
+
+      // `postProcessBundle` returns `null` if the input code is `null`, which
+      // should never be the case.
+      /* istanbul ignore next */
       if (!result) {
         return null;
       }
