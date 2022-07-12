@@ -434,11 +434,12 @@ export type CheckSnapBlockListArg = Record<SnapId, SemVerVersion>;
 
 export type CheckSnapBlockListResult = Record<
   SnapId,
-  {
-    blocked: boolean;
-    reason?: string;
-    infoUrl?: string;
-  }
+  | {
+      blocked: true;
+      reason?: string;
+      infoUrl?: string;
+    }
+  | { blocked: false }
 >;
 
 /**
@@ -774,9 +775,9 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Checks all installed and unblocked snaps against the block list and blocks
-   * snaps as appropriate. See {@link SnapController.blockSnap} for more
-   * information.
+   * Checks all installed and unblocked snaps against the block list and
+   * blocks/unblocks snaps as appropriate. See {@link SnapController.blockSnap}
+   * for more information.
    */
   async updateBlockedSnaps(): Promise<void> {
     if (!this._checkSnapBlockList) {
@@ -795,13 +796,12 @@ export class SnapController extends BaseController<
 
     await Promise.all(
       Object.entries(blockedSnaps).map(
-        ([snapId, { blocked, infoUrl, reason }]) => {
+        ([snapId, { blocked, ...blockData }]) => {
           if (blocked) {
-            return this._blockSnap(snapId, { infoUrl, reason });
+            return this._blockSnap(snapId, blockData);
           }
 
-          this._unblockSnap(snapId);
-          return Promise.resolve();
+          return this._unblockSnap(snapId);
         },
       ),
     );
@@ -1488,14 +1488,16 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Updates an already-installed snap. The flow is similar to
+   * Updates an installed snap. The flow is similar to
    * {@link SnapController.installSnaps}. The user will be asked if they want
-   * to update, then approve any permission changes, and then the snap will be
-   * restarted. If the snap was blocked, a successful update will cause it to
-   * be unblocked and enabled so that it can be restarted.
+   * to update, then approve any permission changes, and finally the snap will
+   * be restarted.
    *
    * The update will fail if the user rejects any prompt or if the new version
    * of the snap is blocked.
+   *
+   * If the original version of the snap was blocked and the update succeeded,
+   * the snap will be unblocked and enabled before it is restarted.
    *
    * @param origin - The origin requesting the snap update.
    * @param snapId - The id of the Snap to be updated.
