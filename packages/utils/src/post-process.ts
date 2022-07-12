@@ -37,7 +37,7 @@ export type SourceMap = {
  */
 export type PostProcessOptions = {
   stripComments?: boolean;
-  sourceMap?: boolean;
+  sourceMap?: boolean | 'inline';
   inputSourceMap?: SourceMap;
 };
 

@@ -1,7 +1,7 @@
 import { Transform, TransformCallback } from 'stream';
 import { BrowserifyObject } from 'browserify';
 import { postProcessBundle, PostProcessOptions } from '@metamask/snap-utils';
-import { fromObject, fromSource } from 'convert-source-map';
+import { fromSource } from 'convert-source-map';
 
 export type Options = PostProcessOptions;
 
@@ -61,18 +61,12 @@ export class SnapsBrowserifyTransform extends Transform {
 
     const result = postProcessBundle(code, {
       ...this.#options,
-      sourceMap: Boolean(inputSourceMap),
+      sourceMap: Boolean(inputSourceMap) && 'inline',
       inputSourceMap,
     });
 
     if (result) {
-      // If the original code contains a source map, we add the modified source
-      // map to the modified code here, as an inline comment.
-      const processedCode = inputSourceMap
-        ? `${result.code}\n${fromObject(result.sourceMap).toComment()}`
-        : result.code;
-
-      this.push(processedCode);
+      this.push(result.code);
     }
 
     callback();
