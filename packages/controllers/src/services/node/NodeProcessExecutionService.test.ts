@@ -1,3 +1,4 @@
+import assert from 'assert';
 import { ControllerMessenger } from '@metamask/controllers';
 import { ErrorJSON, SnapId } from '@metamask/snap-types';
 import { JsonRpcEngine } from 'json-rpc-engine';
