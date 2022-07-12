@@ -1,3 +1,4 @@
+import { Duplex } from 'stream';
 import {
   Caveat,
   getPersistentState,
@@ -11,9 +12,13 @@ import fetchMock from 'jest-fetch-mock';
 import passworder from '@metamask/browser-passworder';
 import { Crypto } from '@peculiar/webcrypto';
 import { SnapExecutionData } from '@metamask/snap-types';
+import { createEngineStream } from 'json-rpc-middleware-stream';
+import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
+import pump from 'pump';
 import { ExecutionService } from '../services/ExecutionService';
 import { NodeThreadExecutionService } from '../services/node';
 import { delay } from '../utils';
+import { setupMultiplex } from '../services';
 import { DEFAULT_ENDOWMENTS } from './default-endowments';
 import { LONG_RUNNING_PERMISSION } from './endowments';
 import { SnapManifest } from './json-schemas';
@@ -60,6 +65,8 @@ const getSnapControllerMessenger = (
     name: 'SnapController',
     allowedEvents: [
       'ExecutionService:unhandledError',
+      'ExecutionService:outboundRequest',
+      'ExecutionService:outboundResponse',
       'SnapController:snapAdded',
       'SnapController:snapInstalled',
       'SnapController:snapUpdated',
@@ -108,7 +115,11 @@ const getNodeEESMessenger = (
 ) =>
   messenger.getRestricted({
     name: 'ExecutionService',
-    allowedEvents: ['ExecutionService:unhandledError'],
+    allowedEvents: [
+      'ExecutionService:unhandledError',
+      'ExecutionService:outboundRequest',
+      'ExecutionService:outboundResponse',
+    ],
     allowedActions: [
       'ExecutionService:executeSnap',
       'ExecutionService:getRpcRequestHandler',
@@ -197,10 +208,28 @@ const getSnapController = (options = getSnapControllerOptions()) => {
   return new SnapController(options);
 };
 
+const MOCK_BLOCK_NUMBER = '0xa70e75';
+
 const getNodeEES = (messenger: ReturnType<typeof getNodeEESMessenger>) =>
   new NodeThreadExecutionService({
     messenger,
-    setupSnapProvider: jest.fn(),
+    setupSnapProvider: jest.fn().mockImplementation((_snapId, rpcStream) => {
+      const mux = setupMultiplex(rpcStream, 'foo');
+      const stream = mux.createStream('metamask-provider');
+      const engine = new JsonRpcEngine();
+      engine.push((req, res, next, end) => {
+        if (req.method === 'metamask_getProviderState') {
+          res.result = { isUnlocked: false, accounts: [] };
+          return end();
+        } else if (req.method === 'eth_blockNumber') {
+          res.result = MOCK_BLOCK_NUMBER;
+          return end();
+        }
+        return next();
+      });
+      const providerStream = createEngineStream({ engine });
+      pump(stream, providerStream, stream);
+    }),
   });
 
 class ExecutionEnvironmentStub implements ExecutionService {
@@ -1143,6 +1172,123 @@ describe('SnapController', () => {
       }),
     ).rejects.toThrow(/request timed out/u);
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('crashed');
+
+    snapController.destroy();
+    await service.terminateAllSnaps();
+  });
+
+  it('does not timeout while waiting for response from MetaMask', async () => {
+    const [snapController, service] = getSnapControllerWithEES(
+      getSnapControllerWithEESOptions({
+        idleTimeCheckInterval: 30000,
+        maxIdleTime: 160000,
+      }),
+    );
+    const sourceCode = `
+    module.exports.onRpcRequest = () => wallet.request({ method: 'eth_blockNumber', params: [] });
+    `;
+
+    const snap = await snapController.add({
+      origin: MOCK_ORIGIN,
+      id: MOCK_SNAP_ID,
+      sourceCode,
+      manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
+    });
+
+    const blockNumber = '0xa70e77';
+
+    jest
+      // Cast because we are mocking a private property
+      .spyOn(service, 'setupSnapProvider' as any)
+      .mockImplementation((_snapId, rpcStream) => {
+        const mux = setupMultiplex(rpcStream as Duplex, 'foo');
+        const stream = mux.createStream('metamask-provider');
+        const engine = new JsonRpcEngine();
+        const middleware = createAsyncMiddleware(async (req, res, _next) => {
+          if (req.method === 'metamask_getProviderState') {
+            res.result = { isUnlocked: false, accounts: [] };
+          } else if (req.method === 'eth_blockNumber') {
+            await new Promise((resolve) => setTimeout(resolve, 400));
+            res.result = blockNumber;
+          }
+        });
+        engine.push(middleware);
+        const providerStream = createEngineStream({ engine });
+        pump(stream, providerStream, stream);
+      });
+
+    await snapController.startSnap(snap.id);
+    expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
+
+    // Max request time should be shorter than eth_blockNumber takes to respond
+    (snapController as any)._maxRequestTime = 300;
+
+    expect(
+      await snapController.handleRpcRequest(snap.id, 'foo.com', {
+        jsonrpc: '2.0',
+        method: 'test',
+        params: {},
+        id: 1,
+      }),
+    ).toBe(blockNumber);
+
+    snapController.destroy();
+    await service.terminateAllSnaps();
+  });
+
+  it('does not timeout while waiting for response from MetaMask when snap does multiple calls', async () => {
+    const [snapController, service] = getSnapControllerWithEES(
+      getSnapControllerWithEESOptions({
+        idleTimeCheckInterval: 30000,
+        maxIdleTime: 160000,
+      }),
+    );
+    const sourceCode = `
+    const fetch = async () => parseInt(await wallet.request({ method: 'eth_blockNumber', params: [] }), 16);
+    module.exports.onRpcRequest = async () => (await fetch()) + (await fetch());
+    `;
+
+    const snap = await snapController.add({
+      origin: MOCK_ORIGIN,
+      id: MOCK_SNAP_ID,
+      sourceCode,
+      manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
+    });
+
+    jest
+      // Cast because we are mocking a private property
+      .spyOn(service, 'setupSnapProvider' as any)
+      .mockImplementation((_snapId, rpcStream) => {
+        const mux = setupMultiplex(rpcStream as Duplex, 'foo');
+        const stream = mux.createStream('metamask-provider');
+        const engine = new JsonRpcEngine();
+        const middleware = createAsyncMiddleware(async (req, res, _next) => {
+          if (req.method === 'metamask_getProviderState') {
+            res.result = { isUnlocked: false, accounts: [] };
+          } else if (req.method === 'eth_blockNumber') {
+            await new Promise((resolve) => setTimeout(resolve, 400));
+            res.result = '0xa70e77';
+          }
+        });
+        engine.push(middleware);
+        const providerStream = createEngineStream({ engine });
+        pump(stream, providerStream, stream);
+      });
+
+    await snapController.startSnap(snap.id);
+    expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
+
+    // Max request time should be shorter than eth_blockNumber takes to respond
+    (snapController as any)._maxRequestTime = 300;
+
+    expect(
+      await snapController.handleRpcRequest(snap.id, 'foo.com', {
+        jsonrpc: '2.0',
+        method: 'test',
+        params: {},
+        id: 1,
+      }),
+    ).toBe(21896430);
 
     snapController.destroy();
     await service.terminateAllSnaps();

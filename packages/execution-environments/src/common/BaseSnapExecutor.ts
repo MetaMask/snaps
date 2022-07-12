@@ -277,9 +277,21 @@ export class BaseSnapExecutor {
    * @returns The snap provider object.
    */
   private createSnapProvider(): SnapProvider {
-    return new MetaMaskInpageProvider(this.rpcStream, {
+    const provider = new MetaMaskInpageProvider(this.rpcStream, {
       shouldSendMetadata: false,
     });
+    const originalRequest = provider.request;
+
+    provider.request = async (args) => {
+      this.notify({ result: { type: 'OutboundRequest' } });
+      try {
+        return await originalRequest(args);
+      } finally {
+        this.notify({ result: { type: 'OutboundResponse' } });
+      }
+    };
+
+    return provider;
   }
 
   /**

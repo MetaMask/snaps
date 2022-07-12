@@ -29,15 +29,14 @@ import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
+import { assertExhaustive, hasTimedOut, setDiff, withTimeout } from '../utils';
 import {
-  assertExhaustive,
-  ErrorMessageEvent,
   ExecuteSnapAction,
+  ExecutionServiceEvents,
   GetRpcRequestHandlerAction,
   TerminateAllSnapsAction,
   TerminateSnapAction,
 } from '..';
-import { hasTimedOut, setDiff, withTimeout } from '../utils';
 import { DEFAULT_ENDOWMENTS } from './default-endowments';
 import { LONG_RUNNING_PERMISSION } from './endowments';
 import { SnapManifest, validateSnapJsonFile } from './json-schemas';
@@ -58,6 +57,7 @@ import {
   ValidatedSnapId,
   validateSnapShasum,
 } from './utils';
+import { Timer } from './Timer';
 
 export const controllerName = 'SnapController';
 
@@ -141,6 +141,11 @@ export type VersionHistory = {
   date: number;
 };
 
+export type PendingRequest = {
+  requestId: unknown;
+  timer: Timer;
+};
+
 /**
  * A wrapper type for any data stored during runtime of Snaps.
  * It is not persisted in state as it contains non-serializable data and is only relevant for the current session.
@@ -157,9 +162,14 @@ export interface SnapRuntimeData {
   lastRequest: null | number;
 
   /**
-   * The current number of pending requests
+   * The current pending inbound requests, meaning requests that are processed by snaps.
    */
-  pendingRequests: number;
+  pendingInboundRequests: PendingRequest[];
+
+  /**
+   * The current pending outbound requests, meaning requests made from snaps towards the MetaMask extension.
+   */
+  pendingOutboundRequests: number;
 
   /**
    * RPC handler designated for the Snap
@@ -360,7 +370,7 @@ export type AllowedActions =
   | TerminateAllSnapsAction
   | TerminateSnapAction;
 
-export type AllowedEvents = ErrorMessageEvent;
+export type AllowedEvents = ExecutionServiceEvents;
 
 type SnapControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
@@ -638,6 +648,8 @@ export class SnapController extends BaseController<
     this._maxRequestTime = maxRequestTime;
     this._npmRegistryUrl = npmRegistryUrl;
     this._onUnhandledSnapError = this._onUnhandledSnapError.bind(this);
+    this._onOutboundRequest = this._onOutboundRequest.bind(this);
+    this._onOutboundResponse = this._onOutboundResponse.bind(this);
     this._snapsRuntimeData = new Map();
 
     this._pollForLastRequestStatus();
@@ -645,6 +657,16 @@ export class SnapController extends BaseController<
     this.messagingSystem.subscribe(
       'ExecutionService:unhandledError',
       this._onUnhandledSnapError,
+    );
+
+    this.messagingSystem.subscribe(
+      'ExecutionService:outboundRequest',
+      this._onOutboundRequest,
+    );
+
+    this.messagingSystem.subscribe(
+      'ExecutionService:outboundResponse',
+      this._onOutboundResponse,
     );
 
     this.registerMessageHandlers();
@@ -704,7 +726,7 @@ export class SnapController extends BaseController<
       entries
         .filter(
           ([_snapId, runtime]) =>
-            runtime.pendingRequests === 0 &&
+            runtime.pendingInboundRequests.length === 0 &&
             // lastRequest should always be set here but TypeScript wants this check
             runtime.lastRequest &&
             this._maxIdleTime &&
@@ -717,6 +739,26 @@ export class SnapController extends BaseController<
   async _onUnhandledSnapError(snapId: SnapId, error: ErrorJSON) {
     await this.stopSnap(snapId, SnapStatusEvent.crash);
     this.addSnapError(error);
+  }
+
+  async _onOutboundRequest(snapId: SnapId) {
+    const runtime = this._getSnapRuntimeData(snapId);
+    // Ideally we would only pause the pending request that is making the outbound request
+    // but right now we don't have a way to know which request initiated the outbound request
+    runtime.pendingInboundRequests.forEach((pendingRequest) =>
+      pendingRequest.timer.pause(),
+    );
+    runtime.pendingOutboundRequests += 1;
+  }
+
+  async _onOutboundResponse(snapId: SnapId) {
+    const runtime = this._getSnapRuntimeData(snapId);
+    runtime.pendingOutboundRequests -= 1;
+    if (runtime.pendingOutboundRequests === 0) {
+      runtime.pendingInboundRequests.forEach((pendingRequest) =>
+        pendingRequest.timer.resume(),
+      );
+    }
   }
 
   /**
@@ -837,7 +879,8 @@ export class SnapController extends BaseController<
 
     // Reset request tracking
     runtime.lastRequest = null;
-    runtime.pendingRequests = 0;
+    runtime.pendingInboundRequests = [];
+    runtime.pendingOutboundRequests = 0;
     try {
       if (this.isRunning(snapId)) {
         this._closeAllConnections(snapId);
@@ -1775,6 +1818,16 @@ export class SnapController extends BaseController<
       'ExecutionService:unhandledError',
       this._onUnhandledSnapError,
     );
+
+    this.messagingSystem.unsubscribe(
+      'ExecutionService:outboundRequest',
+      this._onOutboundRequest,
+    );
+
+    this.messagingSystem.unsubscribe(
+      'ExecutionService:outboundResponse',
+      this._onOutboundResponse,
+    );
   }
 
   /**
@@ -1890,15 +1943,17 @@ export class SnapController extends BaseController<
         });
       }
 
-      this._recordSnapRpcRequestStart(snapId);
+      const timer = new Timer(this._maxRequestTime);
+      this._recordSnapRpcRequestStart(snapId, request.id, timer);
 
       // This will either get the result or reject due to the timeout.
       try {
         const result = await this._executeWithTimeout(
           snapId,
           handler(origin, _request),
+          timer,
         );
-        this._recordSnapRpcRequestFinish(snapId);
+        this._recordSnapRpcRequestFinish(snapId, request.id);
         return result;
       } catch (err) {
         await this.stopSnap(snapId, SnapStatusEvent.crash);
@@ -1916,12 +1971,14 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The snap id.
    * @param promise - The promise to await.
+   * @param timer - An optional timer object to control the timeout.
    * @returns The result of the promise or rejects if the promise times out.
    * @template PromiseValue - The value of the Promise.
    */
   private async _executeWithTimeout<PromiseValue>(
     snapId: SnapId,
     promise: Promise<PromiseValue>,
+    timer?: Timer,
   ): Promise<PromiseValue> {
     const isLongRunning = this.messagingSystem.call(
       'PermissionController:hasPermission',
@@ -1934,23 +1991,30 @@ export class SnapController extends BaseController<
       return promise;
     }
 
-    const result = await withTimeout(promise, this._maxRequestTime);
+    const result = await withTimeout(promise, timer ?? this._maxRequestTime);
     if (result === hasTimedOut) {
       throw new Error('The request timed out.');
     }
     return result;
   }
 
-  private _recordSnapRpcRequestStart(snapId: SnapId) {
+  private _recordSnapRpcRequestStart(
+    snapId: SnapId,
+    requestId: unknown,
+    timer: Timer,
+  ) {
     const runtime = this._getSnapRuntimeData(snapId);
-    runtime.pendingRequests += 1;
+    runtime.pendingInboundRequests.push({ requestId, timer });
     runtime.lastRequest = null;
   }
 
-  private _recordSnapRpcRequestFinish(snapId: SnapId) {
+  private _recordSnapRpcRequestFinish(snapId: SnapId, requestId: unknown) {
     const runtime = this._getSnapRuntimeData(snapId);
-    runtime.pendingRequests -= 1;
-    if (runtime.pendingRequests === 0) {
+    runtime.pendingInboundRequests = runtime.pendingInboundRequests.filter(
+      (r) => r.requestId !== requestId,
+    );
+
+    if (runtime.pendingInboundRequests.length === 0) {
       runtime.lastRequest = Date.now();
     }
   }
@@ -1961,7 +2025,8 @@ export class SnapController extends BaseController<
         lastRequest: null,
         rpcHandler: null,
         installPromise: null,
-        pendingRequests: 0,
+        pendingInboundRequests: [],
+        pendingOutboundRequests: 0,
       });
     }
     return this._snapsRuntimeData.get(snapId) as SnapRuntimeData;
