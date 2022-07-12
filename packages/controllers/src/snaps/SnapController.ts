@@ -532,25 +532,33 @@ export type SnapContext = {
 /**
  * Guard transitioning when the snap is disabled.
  *
- * @param serializedSnap - The snap metadata.
+ * @param context - The snap machine context.
  * @returns A boolean signalling whether the passed snap is enabled or not.
  */
 const disabledGuard = (context: SnapContext) => {
   return context.enabled;
 };
 
+/**
+ * Action to enable a snap in machine context
+ */
+
 const enableSnap = assign({
-  enabled: (context: SnapContext) => (context.enabled = true),
+  enabled: true,
 });
 
+/**
+ * Action to disable a snap in machine context
+ */
+
 const disableSnap = assign({
-  enabled: (context: SnapContext) => (context.enabled = false),
+  enabled: false,
 });
 
 /**
  * The state machine configuration for a snaps `status` state.
  * Using a state machine for a snaps `status` ensures that the snap transitions to a valid next lifecycle state.
- * Supports a very minimal subset of XState conventions outlined in `_transitionSnapState`.
+ * This configuration is provided to XState's `createMachine` method in order to template the machine.
  */
 const snapStatusStateMachineConfig = {
   states: {
@@ -794,11 +802,7 @@ export class SnapController extends BaseController<
 
   /**
    * Transitions between states using `snapStatusStateMachineConfig` as the template to figure out the next state.
-   * This transition function uses a very minimal subset of XState conventions:
-   * - supports initial state
-   * - .on supports raw event target string
-   * - .on supports {target, cond} object
-   * - the arguments for `cond` is the `SerializedSnap` instead of Xstate convention of `(event, context) => boolean`
+   * Uses XState to ensure legal state transition and update snap status in the controller state.
    *
    * @param snapId - The id of the snap to transition.
    * @param event - The event enum to use to transition.
@@ -864,11 +868,10 @@ export class SnapController extends BaseController<
       throw new Error(`Snap "${snapId}" not found.`);
     }
 
+    this._transitionSnapState(snapId, SnapStatusEvent.disable);
+
+    // @TODO: Figure out if this belongs here
     this.update((state: any) => {
-      if (!state.snaps[snapId]) {
-        throw new Error(`Snap "${snapId}" not found.`);
-      }
-      this._transitionSnapState(snapId, SnapStatusEvent.disable);
       state.snaps[snapId].enabled = false;
     });
 
@@ -1684,20 +1687,27 @@ export class SnapController extends BaseController<
     return snap;
   }
 
+  /**
+   * create an Xstate machine for a snap and starts the interpreter for it.
+   *
+   * @param args - The snapId to identify the machine and optionally the state and context of the snap if it's restored.
+   */
+
   private _createMachine({
     snapId,
-    context = { enabled: false },
+    context = { enabled: true },
     state,
   }: {
     snapId: SnapId;
-    context: SnapContext;
+    context?: SnapContext;
     state?: SnapStatus;
   }) {
     const snapMachine = createMachine<
       SnapContext,
       SnapEvent,
       Typestate<SnapContext>
-      // @ts-expect-error wrong typing rn
+      // @TODO: Figure out the right type
+      // @ts-expect-error wrong typing on xstate machine
     >({
       id: snapId,
       initial: 'installing',
@@ -2038,12 +2048,8 @@ export class SnapController extends BaseController<
 
   private _getSnapRuntimeData(snapId: SnapId) {
     if (!this._snapsRuntimeData.has(snapId)) {
-      const { status, enabled } = this.state.snaps[snapId];
-
       const interpreter = this._createMachine({
         snapId,
-        state: status,
-        context: { enabled },
       });
 
       this._snapsRuntimeData.set(snapId, {
