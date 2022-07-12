@@ -69,7 +69,6 @@ export function bundle(
 
     bundler.plugin(plugin, {
       stripComments: argv.stripComments,
-      transformHtmlComments: argv.transformHtmlComments,
     });
 
     bundler.bundle(
