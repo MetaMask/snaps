@@ -2050,6 +2050,10 @@ export class SnapController extends BaseController<
     if (!this._snapsRuntimeData.has(snapId)) {
       const interpreter = this._createMachine({
         snapId,
+        context: {
+          enabled: this.state.snaps[snapId]?.enabled ?? true,
+        },
+        state: this.state.snaps[snapId]?.status,
       });
 
       this._snapsRuntimeData.set(snapId, {
