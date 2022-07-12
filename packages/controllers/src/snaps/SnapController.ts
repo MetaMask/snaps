@@ -539,19 +539,10 @@ const disabledGuard = (context: SnapContext) => {
   return context.enabled;
 };
 
-/**
- * Action to enable a snap in machine context
- */
-
-const enableSnap = assign({
+const enable = assign({
   enabled: true,
 });
-
-/**
- * Action to disable a snap in machine context
- */
-
-const disableSnap = assign({
+const disable = assign({
   enabled: false,
 });
 
@@ -565,10 +556,12 @@ const snapStatusStateMachineConfig = {
     installing: {
       on: {
         enable: {
-          action: enableSnap,
+          target: SnapStatus.installing,
+          actions: enable,
         },
         disable: {
-          action: disableSnap,
+          target: SnapStatus.installing,
+          actions: disable,
         },
         start: {
           target: SnapStatus.running,
@@ -579,10 +572,12 @@ const snapStatusStateMachineConfig = {
     running: {
       on: {
         enable: {
-          action: enableSnap,
+          target: SnapStatus.running,
+          actions: enable,
         },
         disable: {
-          action: disableSnap,
+          target: SnapStatus.running,
+          actions: disable,
         },
         stop: SnapStatus.stopped,
         crash: SnapStatus.crashed,
@@ -591,10 +586,12 @@ const snapStatusStateMachineConfig = {
     stopped: {
       on: {
         enable: {
-          action: enableSnap,
+          target: SnapStatus.stopped,
+          actions: enable,
         },
         disable: {
-          action: disableSnap,
+          target: SnapStatus.stopped,
+          actions: disable,
         },
         start: {
           target: SnapStatus.running,
@@ -606,10 +603,12 @@ const snapStatusStateMachineConfig = {
     crashed: {
       on: {
         enable: {
-          action: enableSnap,
+          target: SnapStatus.crashed,
+          actions: enable,
         },
         disable: {
-          action: disableSnap,
+          target: SnapStatus.crashed,
+          actions: disable,
         },
         start: {
           target: SnapStatus.running,
@@ -813,6 +812,7 @@ export class SnapController extends BaseController<
     interpreter.send(event);
 
     this.update((state: any) => {
+      state.snaps[snapId].enabled = interpreter.state.context.enabled;
       state.snaps[snapId].status = interpreter.state.value;
     });
   }
@@ -850,11 +850,6 @@ export class SnapController extends BaseController<
     }
 
     this._transitionSnapState(snapId, SnapStatusEvent.enable);
-
-    // @TODO: Figure out if this belongs here
-    this.update((state: any) => {
-      state.snaps[snapId].enabled = true;
-    });
   }
 
   /**
@@ -869,11 +864,6 @@ export class SnapController extends BaseController<
     }
 
     this._transitionSnapState(snapId, SnapStatusEvent.disable);
-
-    // @TODO: Figure out if this belongs here
-    this.update((state: any) => {
-      state.snaps[snapId].enabled = false;
-    });
 
     if (this.isRunning(snapId)) {
       return this.stopSnap(snapId, SnapStatusEvent.stop);
@@ -1706,8 +1696,7 @@ export class SnapController extends BaseController<
       SnapContext,
       SnapEvent,
       Typestate<SnapContext>
-      // @TODO: Figure out the right type
-      // @ts-expect-error wrong typing on xstate machine
+      // @ts-expect-error testing
     >({
       id: snapId,
       initial: 'installing',
