@@ -881,7 +881,7 @@ describe('SnapController', () => {
       [MOCK_SNAP_ID]: expectedSnapObject,
     });
 
-    expect(messengerCallMock).toHaveBeenCalledTimes(4);
+    expect(messengerCallMock).toHaveBeenCalledTimes(3);
     expect(messengerCallMock).toHaveBeenNthCalledWith(
       1,
       'PermissionController:hasPermission',
@@ -891,18 +891,12 @@ describe('SnapController', () => {
 
     expect(messengerCallMock).toHaveBeenNthCalledWith(
       2,
-      'PermissionController:getPermissions',
-      MOCK_SNAP_ID,
-    );
-
-    expect(messengerCallMock).toHaveBeenNthCalledWith(
-      3,
       'ExecutionService:executeSnap',
       expect.any(Object),
     );
 
     expect(messengerCallMock).toHaveBeenNthCalledWith(
-      4,
+      3,
       'PermissionController:hasPermission',
       MOCK_SNAP_ID,
       LONG_RUNNING_PERMISSION,
@@ -1656,7 +1650,7 @@ describe('SnapController', () => {
       });
       expect(result).toStrictEqual({ [snapId]: truncatedFooSnap });
 
-      expect(callActionMock).toHaveBeenCalledTimes(4);
+      expect(callActionMock).toHaveBeenCalledTimes(3);
       expect(callActionMock).toHaveBeenNthCalledWith(
         1,
         'PermissionController:hasPermission',
@@ -1666,18 +1660,12 @@ describe('SnapController', () => {
 
       expect(callActionMock).toHaveBeenNthCalledWith(
         2,
-        'PermissionController:getPermissions',
-        snapId,
-      );
-
-      expect(callActionMock).toHaveBeenNthCalledWith(
-        3,
         'ExecutionService:executeSnap',
         expect.objectContaining({}),
       );
 
       expect(callActionMock).toHaveBeenNthCalledWith(
-        4,
+        3,
         'PermissionController:hasPermission',
         snapId,
         LONG_RUNNING_PERMISSION,
@@ -1749,7 +1737,7 @@ describe('SnapController', () => {
 
       expect(result).toStrictEqual({ [snapId]: truncatedFooSnap });
 
-      expect(callActionMock).toHaveBeenCalledTimes(5);
+      expect(callActionMock).toHaveBeenCalledTimes(4);
       expect(callActionMock).toHaveBeenNthCalledWith(
         1,
         'PermissionController:hasPermission',
@@ -1765,18 +1753,12 @@ describe('SnapController', () => {
 
       expect(callActionMock).toHaveBeenNthCalledWith(
         3,
-        'PermissionController:getPermissions',
-        snapId,
-      );
-
-      expect(callActionMock).toHaveBeenNthCalledWith(
-        4,
         'ExecutionService:executeSnap',
         expect.objectContaining({ snapId }),
       );
 
       expect(callActionMock).toHaveBeenNthCalledWith(
-        5,
+        4,
         'PermissionController:hasPermission',
         snapId,
         LONG_RUNNING_PERMISSION,
@@ -1827,7 +1809,7 @@ describe('SnapController', () => {
         [MOCK_SNAP_ID]: getTruncatedSnap({ initialPermissions }),
       });
       expect(fetchSnapMock).toHaveBeenCalledTimes(1);
-      expect(callActionMock).toHaveBeenCalledTimes(5);
+      expect(callActionMock).toHaveBeenCalledTimes(4);
       expect(callActionMock).toHaveBeenNthCalledWith(
         1,
         'PermissionController:hasPermission',
@@ -1837,25 +1819,19 @@ describe('SnapController', () => {
 
       expect(callActionMock).toHaveBeenNthCalledWith(
         2,
-        'PermissionController:getPermissions',
-        MOCK_SNAP_ID,
-      );
-
-      expect(callActionMock).toHaveBeenNthCalledWith(
-        3,
         'PermissionController:requestPermissions',
         { origin: MOCK_SNAP_ID },
         { eth_accounts: {} },
       );
 
       expect(callActionMock).toHaveBeenNthCalledWith(
-        4,
+        3,
         'ExecutionService:executeSnap',
         expect.objectContaining({}),
       );
 
       expect(callActionMock).toHaveBeenNthCalledWith(
-        5,
+        4,
         'PermissionController:hasPermission',
         MOCK_SNAP_ID,
         LONG_RUNNING_PERMISSION,
@@ -1949,10 +1925,17 @@ describe('SnapController', () => {
           origin: MOCK_ORIGIN,
           type: SNAP_APPROVAL_UPDATE,
           requestData: {
+            metadata: {
+              id: expect.any(String),
+              dappOrigin: MOCK_ORIGIN,
+              origin: MOCK_SNAP_ID,
+            },
+            permissions: {},
             snapId: MOCK_SNAP_ID,
             newVersion,
             newPermissions: {},
             approvedPermissions: {},
+            unusedPermissions: {},
           },
         },
         true,
@@ -2227,10 +2210,17 @@ describe('SnapController', () => {
           origin: MOCK_ORIGIN,
           type: SNAP_APPROVAL_UPDATE,
           requestData: {
+            metadata: {
+              id: expect.any(String),
+              dappOrigin: MOCK_ORIGIN,
+              origin: MOCK_SNAP_ID,
+            },
+            permissions: {},
             snapId: MOCK_SNAP_ID,
             newVersion: '1.1.0',
             newPermissions: {},
             approvedPermissions: {},
+            unusedPermissions: {},
           },
         },
         true,
@@ -2328,10 +2318,17 @@ describe('SnapController', () => {
           origin: MOCK_ORIGIN,
           type: SNAP_APPROVAL_UPDATE,
           requestData: {
+            metadata: {
+              id: expect.any(String),
+              dappOrigin: MOCK_ORIGIN,
+              origin: MOCK_SNAP_ID,
+            },
+            permissions: {},
             snapId: MOCK_SNAP_ID,
             newVersion: '1.1.0',
             newPermissions: {},
             approvedPermissions: {},
+            unusedPermissions: {},
           },
         },
         true,
@@ -2411,10 +2408,17 @@ describe('SnapController', () => {
           origin: MOCK_ORIGIN,
           type: SNAP_APPROVAL_UPDATE,
           requestData: {
+            metadata: {
+              id: expect.any(String),
+              dappOrigin: MOCK_ORIGIN,
+              origin: MOCK_SNAP_ID,
+            },
+            permissions: {},
             snapId: MOCK_SNAP_ID,
             newVersion: '1.1.0',
             newPermissions: {},
             approvedPermissions: {},
+            unusedPermissions: {},
           },
         },
         true,
@@ -2508,11 +2512,20 @@ describe('SnapController', () => {
           origin: MOCK_ORIGIN,
           type: SNAP_APPROVAL_UPDATE,
           requestData: {
+            metadata: {
+              id: expect.any(String),
+              dappOrigin: MOCK_ORIGIN,
+              origin: MOCK_SNAP_ID,
+            },
+            permissions: { 'endowment:network-access': {} },
             snapId: MOCK_SNAP_ID,
             newVersion: '1.1.0',
             newPermissions: { 'endowment:network-access': {} },
             approvedPermissions: {
               snap_confirm: approvedPermissions.snap_confirm,
+            },
+            unusedPermissions: {
+              snap_manageState: approvedPermissions.snap_manageState,
             },
           },
         },
