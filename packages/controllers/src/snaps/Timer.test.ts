@@ -60,7 +60,7 @@ describe('Timer', () => {
     const callback = () => undefined;
     timer.start(callback);
     expect(setTimeoutSpy).toHaveBeenCalledWith(expect.any(Function), 1000);
-    timer.start(callback);
+    expect(() => timer.start(callback)).toThrow('Timer is already started');
     expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
   });
 

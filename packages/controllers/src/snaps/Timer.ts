@@ -36,7 +36,7 @@ export class Timer {
 
   start(callback: () => void) {
     if (this._callback) {
-      return;
+      throw new Error('Timer is already started');
     }
     this._callback = callback;
     this.resume();

@@ -41,24 +41,7 @@ export function delay<Result = void>(
   ms: number,
   result?: Result,
 ): Promise<Result> & { cancel: () => void } {
-  let timeoutHandle: any;
-  let rejectFunc: (reason: string) => void;
-
-  const promise: any = new Promise<Result>((resolve: any, reject) => {
-    timeoutHandle = setTimeout(() => {
-      timeoutHandle = undefined;
-      result === undefined ? resolve() : resolve(result);
-    }, ms);
-    rejectFunc = reject;
-  });
-
-  promise.cancel = () => {
-    if (timeoutHandle !== undefined) {
-      clearTimeout(timeoutHandle);
-      rejectFunc('The delay has been canceled.');
-    }
-  };
-  return promise;
+  return delayWithTimer(new Timer(ms), result);
 }
 
 /**
@@ -73,7 +56,7 @@ export function delayWithTimer<Result = void>(
   timer: Timer,
   result?: Result,
 ): Promise<Result> & { cancel: () => void } {
-  let rejectFunc: (reason: string) => void;
+  let rejectFunc: (reason: Error) => void;
   const promise: any = new Promise<Result>((resolve: any, reject) => {
     timer.start(() => {
       result === undefined ? resolve() : resolve(result);
@@ -84,7 +67,7 @@ export function delayWithTimer<Result = void>(
   promise.cancel = () => {
     if (!timer.isFinished()) {
       timer.cancel();
-      rejectFunc('The delay has been canceled.');
+      rejectFunc(new Error('The delay has been canceled.'));
     }
   };
   return promise;
@@ -99,44 +82,22 @@ export const hasTimedOut = Symbol(
 );
 
 /**
- * Executes the given Promise, if after ms milliseconds the Promise doesn't
- * settle, we return earlier.
+ * Executes the given Promise, if the Timer expires before the Promise settles, we return earlier.
  *
  * NOTE:** The given Promise is not cancelled or interrupted, and will continue to execute uninterrupted. We will just discard its result if it does not complete before the timeout.
  *
  * @param promise - The promise that you want to execute.
- * @param ms - Amount of milliseconds to wait before finishing early.
+ * @param timerOrMs - The timer controlling the timeout or a ms value.
  * @returns The resolved `PromiseValue`, or the hasTimedOut symbol if
  * returning early.
  * @template PromiseValue- - The value of the Promise.
  */
 export async function withTimeout<PromiseValue = void>(
   promise: Promise<PromiseValue>,
-  ms: number,
+  timerOrMs: Timer | number,
 ): Promise<PromiseValue | typeof hasTimedOut> {
-  const delayPromise = delay(ms, hasTimedOut);
-  try {
-    return await Promise.race([promise, delayPromise]);
-  } finally {
-    delayPromise.cancel();
-  }
-}
-
-/**
- * Executes the given Promise, if the Timer expires before the Promise settles, we return earlier.
- *
- * NOTE:** The given Promise is not cancelled or interrupted, and will continue to execute uninterrupted. We will just discard its result if it does not complete before the timeout.
- *
- * @param promise - The promise that you want to execute.
- * @param timer - The timer controlling the timeout.
- * @returns The resolved `PromiseValue`, or the hasTimedOut symbol if
- * returning early.
- * @template PromiseValue- - The value of the Promise.
- */
-export async function withTimer<PromiseValue = void>(
-  promise: Promise<PromiseValue>,
-  timer: Timer,
-): Promise<PromiseValue | typeof hasTimedOut> {
+  const timer =
+    typeof timerOrMs === 'number' ? new Timer(timerOrMs) : timerOrMs;
   const delayPromise = delayWithTimer(timer, hasTimedOut);
   try {
     return await Promise.race([promise, delayPromise]);

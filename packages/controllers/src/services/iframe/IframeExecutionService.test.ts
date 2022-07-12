@@ -128,6 +128,7 @@ describe('IframeExecutionService', () => {
   });
 
   it('can detect outbound requests', async () => {
+    const blockNumber = '0xa70e75';
     expect.assertions(4);
     const controllerMessenger = new ControllerMessenger<
       never,
@@ -152,7 +153,7 @@ describe('IframeExecutionService', () => {
             res.result = { isUnlocked: false, accounts: [] };
             return end();
           } else if (req.method === 'eth_blockNumber') {
-            res.result = '0xa70e75';
+            res.result = blockNumber;
             return end();
           }
           return next();
@@ -178,15 +179,16 @@ describe('IframeExecutionService', () => {
 
     const handler = await iframeExecutionService.getRpcRequestHandler(snapId);
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const result = await handler!('foo', {
+    assert(handler !== undefined);
+
+    const result = await handler('foo', {
       jsonrpc: '2.0',
       id: 1,
       method: 'foobar',
       params: [],
     });
 
-    expect(result).toBe('0xa70e75');
+    expect(result).toBe(blockNumber);
 
     expect(publishSpy).toHaveBeenCalledWith(
       'ExecutionService:outboundRequest',

@@ -29,7 +29,7 @@ import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
-import { assertExhaustive, hasTimedOut, setDiff, withTimer } from '../utils';
+import { assertExhaustive, hasTimedOut, setDiff, withTimeout } from '../utils';
 import {
   ExecuteSnapAction,
   ExecutionServiceEvents,
@@ -142,7 +142,7 @@ export type VersionHistory = {
 };
 
 export type PendingRequest = {
-  requestId: string;
+  requestId: unknown;
   timer: Timer;
 };
 
@@ -1944,7 +1944,7 @@ export class SnapController extends BaseController<
       }
 
       const timer = new Timer(this._maxRequestTime);
-      this._recordSnapRpcRequestStart(snapId, request.id as string, timer);
+      this._recordSnapRpcRequestStart(snapId, request.id, timer);
 
       // This will either get the result or reject due to the timeout.
       try {
@@ -1953,7 +1953,7 @@ export class SnapController extends BaseController<
           handler(origin, _request),
           timer,
         );
-        this._recordSnapRpcRequestFinish(snapId, request.id as string);
+        this._recordSnapRpcRequestFinish(snapId, request.id);
         return result;
       } catch (err) {
         await this.stopSnap(snapId, SnapStatusEvent.crash);
@@ -1991,10 +1991,7 @@ export class SnapController extends BaseController<
       return promise;
     }
 
-    const result = await withTimer(
-      promise,
-      timer ?? new Timer(this._maxRequestTime),
-    );
+    const result = await withTimeout(promise, timer ?? this._maxRequestTime);
     if (result === hasTimedOut) {
       throw new Error('The request timed out.');
     }
@@ -2003,7 +2000,7 @@ export class SnapController extends BaseController<
 
   private _recordSnapRpcRequestStart(
     snapId: SnapId,
-    requestId: string,
+    requestId: unknown,
     timer: Timer,
   ) {
     const runtime = this._getSnapRuntimeData(snapId);
@@ -2011,7 +2008,7 @@ export class SnapController extends BaseController<
     runtime.lastRequest = null;
   }
 
-  private _recordSnapRpcRequestFinish(snapId: SnapId, requestId: string) {
+  private _recordSnapRpcRequestFinish(snapId: SnapId, requestId: unknown) {
     const runtime = this._getSnapRuntimeData(snapId);
     runtime.pendingInboundRequests = runtime.pendingInboundRequests.filter(
       (r) => r.requestId !== requestId,

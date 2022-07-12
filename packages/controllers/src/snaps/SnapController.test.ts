@@ -208,6 +208,8 @@ const getSnapController = (options = getSnapControllerOptions()) => {
   return new SnapController(options);
 };
 
+const MOCK_BLOCK_NUMBER = '0xa70e75';
+
 const getNodeEES = (messenger: ReturnType<typeof getNodeEESMessenger>) =>
   new NodeThreadExecutionService({
     messenger,
@@ -220,7 +222,7 @@ const getNodeEES = (messenger: ReturnType<typeof getNodeEESMessenger>) =>
           res.result = { isUnlocked: false, accounts: [] };
           return end();
         } else if (req.method === 'eth_blockNumber') {
-          res.result = '0xa70e75';
+          res.result = MOCK_BLOCK_NUMBER;
           return end();
         }
         return next();
@@ -1193,6 +1195,8 @@ describe('SnapController', () => {
       manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
     });
 
+    const blockNumber = '0xa70e77';
+
     jest
       // Cast because we are mocking a private property
       .spyOn(service, 'setupSnapProvider' as any)
@@ -1205,7 +1209,7 @@ describe('SnapController', () => {
             res.result = { isUnlocked: false, accounts: [] };
           } else if (req.method === 'eth_blockNumber') {
             await new Promise((resolve) => setTimeout(resolve, 400));
-            res.result = '0xa70e77';
+            res.result = blockNumber;
           }
         });
         engine.push(middleware);
@@ -1226,7 +1230,7 @@ describe('SnapController', () => {
         params: {},
         id: 1,
       }),
-    ).toBe('0xa70e77');
+    ).toBe(blockNumber);
 
     snapController.destroy();
     await service.terminateAllSnaps();

@@ -95,12 +95,12 @@ class TestSnapExecutor extends BaseSnapExecutor {
 
     this.commandLeft.on('data', (chunk) => {
       this.commandBuffer.push(chunk);
-      this.flushReads(this.commandBuffer, this.commandListeners);
+      TestSnapExecutor.flushReads(this.commandBuffer, this.commandListeners);
     });
 
     this.rpcLeft.on('data', (chunk) => {
       this.rpcBuffer.push(chunk);
-      this.flushReads(this.rpcBuffer, this.rpcListeners);
+      TestSnapExecutor.flushReads(this.rpcBuffer, this.rpcListeners);
     });
   }
 
@@ -120,12 +120,15 @@ class TestSnapExecutor extends BaseSnapExecutor {
       this.commandListeners.push(resolve),
     );
 
-    this.flushReads(this.commandBuffer, this.commandListeners);
+    TestSnapExecutor.flushReads(this.commandBuffer, this.commandListeners);
 
     return promise;
   }
 
-  private flushReads(readBuffer: any[], listeners: ((chunk: any) => void)[]) {
+  private static flushReads(
+    readBuffer: any[],
+    listeners: ((chunk: any) => void)[],
+  ) {
     while (readBuffer.length && listeners.length) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const chunk = readBuffer.shift()!;
@@ -153,7 +156,7 @@ class TestSnapExecutor extends BaseSnapExecutor {
       (resolve) => this.rpcListeners.push(resolve),
     );
 
-    this.flushReads(this.rpcBuffer, this.rpcListeners);
+    TestSnapExecutor.flushReads(this.rpcBuffer, this.rpcListeners);
 
     return promise;
   }

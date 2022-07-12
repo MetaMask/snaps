@@ -120,9 +120,10 @@ describe('NodeProcessExecutionService', () => {
 
     const hook = await service.getRpcRequestHandler(snapId);
 
+    assert(hook !== undefined);
+
     await expect(
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      hook!('fooOrigin', {
+      hook('fooOrigin', {
         jsonrpc: '2.0',
         method: 'foo',
         params: {},
@@ -173,6 +174,8 @@ describe('NodeProcessExecutionService', () => {
 
     const hook = await service.getRpcRequestHandler(snapId);
 
+    assert(hook !== undefined);
+
     const unhandledErrorPromise = new Promise((resolve) => {
       controllerMessenger.subscribe(
         'ExecutionService:unhandledError',
@@ -183,8 +186,7 @@ describe('NodeProcessExecutionService', () => {
     });
 
     expect(
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await hook!('fooOrigin', {
+      await hook('fooOrigin', {
         jsonrpc: '2.0',
         method: '',
         params: {},
@@ -204,6 +206,7 @@ describe('NodeProcessExecutionService', () => {
 
   it('can detect outbound requests', async () => {
     expect.assertions(4);
+    const blockNumber = '0xa70e75';
     const controllerMessenger = new ControllerMessenger<
       never,
       ErrorMessageEvent
@@ -227,7 +230,7 @@ describe('NodeProcessExecutionService', () => {
             res.result = { isUnlocked: false, accounts: [] };
             return end();
           } else if (req.method === 'eth_blockNumber') {
-            res.result = '0xa70e75';
+            res.result = blockNumber;
             return end();
           }
           return next();
@@ -249,15 +252,16 @@ describe('NodeProcessExecutionService', () => {
 
     const handler = await service.getRpcRequestHandler(snapId);
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const result = await handler!('foo', {
+    assert(handler !== undefined);
+
+    const result = await handler('foo', {
       jsonrpc: '2.0',
       id: 1,
       method: 'foobar',
       params: [],
     });
 
-    expect(result).toBe('0xa70e75');
+    expect(result).toBe(blockNumber);
 
     expect(publishSpy).toHaveBeenCalledWith(
       'ExecutionService:outboundRequest',
