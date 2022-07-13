@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@metamask/object-multiplex": "^1.2.0",
-    "@metamask/post-message-stream": "^5.1.0",
+    "@metamask/post-message-stream": "^6.0.0",
     "@metamask/providers": "^9.0.0",
     "@metamask/snap-types": "^0.16.0",
     "@metamask/utils": "^2.0.0",
