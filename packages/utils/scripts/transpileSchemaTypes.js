@@ -1,8 +1,8 @@
 const { writeFileSync } = require('fs');
 const path = require('path');
 const { Transpiler } = require('@json-schema-tools/transpiler');
-const snapManifestSchema = require('../src/snaps/json-schemas/snap-manifest.schema.json');
-const npmSnapPackageJsonSchema = require('../src/snaps/json-schemas/npm-snap-package-json.schema.json');
+const snapManifestSchema = require('../src/json-schemas/snap-manifest.schema.json');
+const npmSnapPackageJsonSchema = require('../src/json-schemas/npm-snap-package-json.schema.json');
 
 // A comment warning against modifying generated files.
 const FILE_PREFIX =
@@ -55,10 +55,7 @@ function transpileSchema(schema, primaryExportName) {
  */
 function writeSchema(typeSource, primaryExportName) {
   writeFileSync(
-    path.resolve(
-      __dirname,
-      `../src/snaps/json-schemas/${primaryExportName}.ts`,
-    ),
+    path.resolve(__dirname, `../src/json-schemas/${primaryExportName}.ts`),
     typeSource,
   );
 }

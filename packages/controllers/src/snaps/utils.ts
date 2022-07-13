@@ -18,7 +18,7 @@ import {
   NpmSnapPackageJson,
   SnapManifest,
   validateSnapJsonFile,
-} from './json-schemas';
+} from '@metamask/snap-utils';
 
 export enum SnapIdPrefixes {
   npm = 'npm:',

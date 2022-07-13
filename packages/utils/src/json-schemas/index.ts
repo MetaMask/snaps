@@ -1,9 +1,8 @@
+import { NpmSnapFileNames } from '../file-names';
 import validateNpmSnapPackageJson from './validateNpmSnapPackageJson.js';
 import validateSnapManifest from './validateSnapManifest.js';
 
-import { NpmSnapFileNames } from '../utils';
-
-export { NpmSnapPackageJson } from './NpmSnapPackageJson'
+export { NpmSnapPackageJson } from './NpmSnapPackageJson';
 export { SnapManifest } from './SnapManifest';
 
 /**
@@ -13,7 +12,10 @@ export { SnapManifest } from './SnapManifest';
  * @param fileName - The name of Snap JSON file to validate.
  * @param content - The contents of the file.
  */
-export function validateSnapJsonFile(fileName: NpmSnapFileNames, content: unknown): void {
+export function validateSnapJsonFile(
+  fileName: NpmSnapFileNames,
+  content: unknown,
+): void {
   let errors;
   switch (fileName) {
     case NpmSnapFileNames.Manifest:
@@ -23,7 +25,7 @@ export function validateSnapJsonFile(fileName: NpmSnapFileNames, content: unknow
           // it internally due to TS@<4.4 limitations.
           (content as any).repository = null;
         }
-      } 
+      }
 
       errors = validateSnapManifest(content);
       break;
@@ -35,15 +37,23 @@ export function validateSnapJsonFile(fileName: NpmSnapFileNames, content: unknow
   }
 
   if (errors && errors.length !== 0) {
-    throw new Error(`${
-      errors.reduce((allErrors, errorObject: { instancePath?: string, message?: string } = {}) => {
-        const { instancePath, message = 'unknown error' } = errorObject;
-        const currentString = instancePath
-          ? `\t${instancePath}\n\t${message}\n\n`
-          : `\t${message}\n\n`
+    throw new Error(
+      `${errors
+        .reduce(
+          (
+            allErrors,
+            errorObject: { instancePath?: string; message?: string } = {},
+          ) => {
+            const { instancePath, message = 'unknown error' } = errorObject;
+            const currentString = instancePath
+              ? `\t${instancePath}\n\t${message}\n\n`
+              : `\t${message}\n\n`;
 
-        return `${allErrors}${currentString}`
-      }, '').replace(/\n$/u, '')
-    }`)
+            return `${allErrors}${currentString}`;
+          },
+          '',
+        )
+        .replace(/\n$/u, '')}`,
+    );
   }
 }

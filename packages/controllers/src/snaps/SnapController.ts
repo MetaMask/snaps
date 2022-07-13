@@ -29,6 +29,7 @@ import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
+import { SnapManifest, validateSnapJsonFile } from '@metamask/snap-utils';
 import { assertExhaustive, hasTimedOut, setDiff, withTimeout } from '../utils';
 import {
   ExecuteSnapAction,
@@ -39,7 +40,6 @@ import {
 } from '..';
 import { DEFAULT_ENDOWMENTS } from './default-endowments';
 import { LONG_RUNNING_PERMISSION } from './endowments';
-import { SnapManifest, validateSnapJsonFile } from './json-schemas';
 import { RequestQueue } from './RequestQueue';
 import {
   DEFAULT_REQUESTED_SNAP_VERSION,

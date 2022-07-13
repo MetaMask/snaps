@@ -9,5 +9,12 @@
     "typeRoots": ["../../node_modules/@types", "./node_modules/@types"]
   },
   "include": ["./src", "./src/snaps/json-schemas"],
-  "references": [{ "path": "../execution-environments" }]
+  "references": [
+    {
+      "path": "../utils"
+    },
+    {
+      "path": "../execution-environments"
+    }
+  ]
 }

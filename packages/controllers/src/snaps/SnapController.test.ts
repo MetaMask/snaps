@@ -15,13 +15,13 @@ import { SnapExecutionData } from '@metamask/snap-types';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
 import pump from 'pump';
+import { SnapManifest } from '@metamask/snap-utils';
 import { ExecutionService } from '../services/ExecutionService';
 import { NodeThreadExecutionService } from '../services/node';
 import { delay } from '../utils';
 import { setupMultiplex } from '../services';
 import { DEFAULT_ENDOWMENTS } from './default-endowments';
 import { LONG_RUNNING_PERMISSION } from './endowments';
-import { SnapManifest } from './json-schemas';
 import {
   AllowedActions,
   AllowedEvents,

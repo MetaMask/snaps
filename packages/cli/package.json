@@ -47,6 +47,7 @@
     "@babel/preset-env": "^7.16.7",
     "@babel/preset-typescript": "^7.16.7",
     "@metamask/snap-controllers": "^0.18.1",
+    "@metamask/snap-utils": "^0.18.1",
     "@metamask/snaps-browserify-plugin": "^0.18.1",
     "@metamask/utils": "^2.0.0",
     "babelify": "^10.0.0",

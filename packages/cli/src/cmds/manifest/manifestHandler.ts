@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs';
-import type { Json, SnapManifest } from '@metamask/snap-controllers';
+import { NpmSnapFileNames, SnapManifest } from '@metamask/snap-utils';
 import {
-  NpmSnapFileNames,
+  Json,
   UnvalidatedSnapFiles,
   validateNpmSnap,
   validateNpmSnapManifest,
@@ -9,7 +9,7 @@ import {
   ProgrammaticallyFixableSnapError,
   SnapValidationFailureReason,
   SnapFiles,
-} from '@metamask/snap-controllers/dist/snaps/utils';
+} from '@metamask/snap-controllers';
 import { deepClone, readJsonFile } from '../../utils';
 import { YargsArgs } from '../../types/yargs';
 
