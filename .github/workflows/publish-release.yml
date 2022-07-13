@@ -15,9 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          # We check out the release pull request's base branch, which will be
-          # used as the base branch for all git operations.
-          ref: ${{ github.event.pull_request.base.ref }}
+          ref: ${{ github.sha }}
       - name: Get Node.js version
         id: nvm
         run: echo ::set-output name=NODE_VERSION::$(cat .nvmrc)
@@ -28,3 +26,52 @@ jobs:
         id: publish-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: |
+          yarn install --immutable
+          yarn build
+      - uses: actions/cache@v3
+        id: restore-build
+        with:
+          path: |
+            ./packages/**/dist
+            ./node_modules
+          key: ${{ github.sha }}
+
+  npm-publish-dry-run:
+    runs-on: ubuntu-latest
+    needs: publish-release
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/cache@v3
+        id: restore-build
+        with:
+          path: |
+            ./packages/**/dist
+            ./node_modules
+          key: ${{ github.sha }}
+      - run: npm config set ignore-scripts true
+      - name: Dry Run Publish
+        uses: MetaMask/action-npm-publish@v1.2.0
+
+  npm-publish:
+    environment: npm-publish
+    runs-on: ubuntu-latest
+    needs: npm-publish-dry-run
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/cache@v3
+        id: restore-build
+        with:
+          path: |
+            ./packages/**/dist
+            ./node_modules
+          key: ${{ github.sha }}
+      - run: npm config set ignore-scripts true
+      - name: Publish
+        uses: MetaMask/action-npm-publish@v1.2.0
+        with:
+          npm-token: ${{ secrets.NPM_TOKEN }}
