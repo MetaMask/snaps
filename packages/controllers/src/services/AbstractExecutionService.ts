@@ -214,24 +214,29 @@ export abstract class AbstractExecutionService<WorkerType>
     );
 
     const commandStream = mux.createStream(SNAP_STREAM_NAMES.COMMAND);
+
     // Handle out-of-band errors, i.e. errors thrown from the snap outside of the req/res cycle.
-    const errorHandler = (data: any) => {
-      if (
-        data.error &&
-        (data.id === null || data.id === undefined) // only out of band errors (i.e. no id)
-      ) {
-        const snapId = this.jobToSnapMap.get(jobId);
-        if (snapId) {
-          this._messenger.publish(
-            'ExecutionService:unhandledError',
-            snapId,
-            data.error,
-          );
-        }
-        commandStream.removeListener('data', errorHandler);
+    // Also keep track of outbound request/responses
+    const notificationHandler = (data: any) => {
+      if (data.id !== null && data.id !== undefined) {
+        return;
+      }
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const snapId = this.jobToSnapMap.get(jobId)!;
+      if (data.result?.type === 'OutboundRequest') {
+        this._messenger.publish('ExecutionService:outboundRequest', snapId);
+      } else if (data.result?.type === 'OutboundResponse') {
+        this._messenger.publish('ExecutionService:outboundResponse', snapId);
+      } else if (data.error) {
+        this._messenger.publish(
+          'ExecutionService:unhandledError',
+          snapId,
+          data.error,
+        );
+        commandStream.removeListener('data', notificationHandler);
       }
     };
-    commandStream.on('data', errorHandler);
+    commandStream.on('data', notificationHandler);
     const rpcStream = mux.createStream(SNAP_STREAM_NAMES.JSON_RPC);
 
     // Typecast: stream type mismatch
@@ -310,10 +315,9 @@ export abstract class AbstractExecutionService<WorkerType>
       id: nanoid(),
     });
 
-    this.setupSnapProvider(
-      snapData.snapId,
-      job.streams.rpc as unknown as Duplex,
-    );
+    const rpcStream = job.streams.rpc as unknown as Duplex;
+
+    this.setupSnapProvider(snapData.snapId, rpcStream);
 
     const result = await this._command(job.id, {
       jsonrpc: '2.0',

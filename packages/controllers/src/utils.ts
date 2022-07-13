@@ -1,3 +1,5 @@
+import { Timer } from './snaps/Timer';
+
 /**
  * Takes two objects and does a Set Difference of them.
  * Set Difference is generally defined as follows:
@@ -39,21 +41,33 @@ export function delay<Result = void>(
   ms: number,
   result?: Result,
 ): Promise<Result> & { cancel: () => void } {
-  let timeoutHandle: any;
-  let rejectFunc: (reason: string) => void;
+  return delayWithTimer(new Timer(ms), result);
+}
 
+/**
+ * A Promise that delays it's return by using a pausable Timer.
+ *
+ * @param timer - Timer used to control the delay.
+ * @param result - The result to return from the Promise after delay.
+ * @returns A promise that is void if no result provided, result otherwise.
+ * @template Result - The `result`.
+ */
+export function delayWithTimer<Result = void>(
+  timer: Timer,
+  result?: Result,
+): Promise<Result> & { cancel: () => void } {
+  let rejectFunc: (reason: Error) => void;
   const promise: any = new Promise<Result>((resolve: any, reject) => {
-    timeoutHandle = setTimeout(() => {
-      timeoutHandle = undefined;
+    timer.start(() => {
       result === undefined ? resolve() : resolve(result);
-    }, ms);
+    });
     rejectFunc = reject;
   });
 
   promise.cancel = () => {
-    if (timeoutHandle !== undefined) {
-      clearTimeout(timeoutHandle);
-      rejectFunc('The delay has been canceled.');
+    if (!timer.isFinished()) {
+      timer.cancel();
+      rejectFunc(new Error('The delay has been canceled.'));
     }
   };
   return promise;
@@ -68,22 +82,23 @@ export const hasTimedOut = Symbol(
 );
 
 /**
- * Executes the given Promise, if after ms milliseconds the Promise doesn't
- * settle, we return earlier.
+ * Executes the given Promise, if the Timer expires before the Promise settles, we return earlier.
  *
  * NOTE:** The given Promise is not cancelled or interrupted, and will continue to execute uninterrupted. We will just discard its result if it does not complete before the timeout.
  *
  * @param promise - The promise that you want to execute.
- * @param ms - Amout of milliseconds to wait before finishing early.
+ * @param timerOrMs - The timer controlling the timeout or a ms value.
  * @returns The resolved `PromiseValue`, or the hasTimedOut symbol if
  * returning early.
  * @template PromiseValue- - The value of the Promise.
  */
-export async function withTimeout<PromisValue = void>(
-  promise: Promise<PromisValue>,
-  ms: number,
-): Promise<PromisValue | typeof hasTimedOut> {
-  const delayPromise = delay(ms, hasTimedOut);
+export async function withTimeout<PromiseValue = void>(
+  promise: Promise<PromiseValue>,
+  timerOrMs: Timer | number,
+): Promise<PromiseValue | typeof hasTimedOut> {
+  const timer =
+    typeof timerOrMs === 'number' ? new Timer(timerOrMs) : timerOrMs;
+  const delayPromise = delayWithTimer(timer, hasTimedOut);
   try {
     return await Promise.race([promise, delayPromise]);
   } finally {

@@ -1,6 +1,7 @@
 // eslint-disable-next-line import/no-unassigned-import
 import 'ses';
 import { Duplex, DuplexOptions, Readable } from 'stream';
+import { JsonRpcResponse } from '@metamask/utils';
 import { JsonRpcRequest } from '../__GENERATED__/openrpc';
 import { BaseSnapExecutor } from './BaseSnapExecutor';
 
@@ -67,9 +68,15 @@ class TwoWayPassThrough {
 class TestSnapExecutor extends BaseSnapExecutor {
   private commandLeft: Duplex;
 
-  private readBuffer: any[] = [];
+  private rpcLeft: Duplex;
 
-  private readListeners: ((chunk: any) => void)[] = [];
+  private commandBuffer: any[] = [];
+
+  private rpcBuffer: any[] = [];
+
+  private commandListeners: ((chunk: any) => void)[] = [];
+
+  private rpcListeners: ((chunk: any) => void)[] = [];
 
   constructor() {
     const rpc = new TwoWayPassThrough({
@@ -80,17 +87,20 @@ class TestSnapExecutor extends BaseSnapExecutor {
       objectMode: true,
       allowHalfOpen: false,
     });
-    rpc.left.on('data', () => {
-      /* do nothing */
-    });
 
     super(command.right, rpc.right);
 
     this.commandLeft = command.left;
+    this.rpcLeft = rpc.left;
 
     this.commandLeft.on('data', (chunk) => {
-      this.readBuffer.push(chunk);
-      this.flushReads();
+      this.commandBuffer.push(chunk);
+      TestSnapExecutor.flushReads(this.commandBuffer, this.commandListeners);
+    });
+
+    this.rpcLeft.on('data', (chunk) => {
+      this.rpcBuffer.push(chunk);
+      TestSnapExecutor.flushReads(this.rpcBuffer, this.rpcListeners);
     });
   }
 
@@ -107,21 +117,48 @@ class TestSnapExecutor extends BaseSnapExecutor {
 
   public readCommand(): Promise<JsonRpcRequest> {
     const promise = new Promise<JsonRpcRequest>((resolve) =>
-      this.readListeners.push(resolve),
+      this.commandListeners.push(resolve),
     );
 
-    this.flushReads();
+    TestSnapExecutor.flushReads(this.commandBuffer, this.commandListeners);
 
     return promise;
   }
 
-  private flushReads() {
-    while (this.readBuffer.length && this.readListeners.length) {
+  private static flushReads(
+    readBuffer: any[],
+    listeners: ((chunk: any) => void)[],
+  ) {
+    while (readBuffer.length && listeners.length) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const chunk = this.readBuffer.shift()!;
+      const chunk = readBuffer.shift()!;
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.readListeners.shift()!(chunk);
+      listeners.shift()!(chunk);
     }
+  }
+
+  public writeRpc(message: {
+    name: string;
+    data: JsonRpcResponse;
+  }): Promise<void> {
+    return new Promise((resolve, reject) =>
+      this.rpcLeft.write(message, (error) => {
+        if (error) {
+          return reject(error);
+        }
+        return resolve();
+      }),
+    );
+  }
+
+  public readRpc(): Promise<{ name: string; data: JsonRpcRequest }> {
+    const promise = new Promise<{ name: string; data: JsonRpcRequest }>(
+      (resolve) => this.rpcListeners.push(resolve),
+    );
+
+    TestSnapExecutor.flushReads(this.rpcBuffer, this.rpcListeners);
+
+    return promise;
   }
 }
 
@@ -393,6 +430,95 @@ describe('BaseSnapExecutor', () => {
       },
       id: 2,
       jsonrpc: '2.0',
+    });
+  });
+
+  it('reports when outbound requests are made', async () => {
+    const CODE = `
+      module.exports.onRpcRequest = () => wallet.request({ method: 'eth_blockNumber', params: [] });
+    `;
+    const executor = new TestSnapExecutor();
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'executeSnap',
+      params: [FAKE_SNAP_NAME, CODE, []],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        FAKE_SNAP_NAME,
+        FAKE_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      result: { type: 'OutboundRequest' },
+    });
+
+    const providerRequest = await executor.readRpc();
+    expect(providerRequest).toStrictEqual({
+      name: 'metamask-provider',
+      data: {
+        id: expect.any(Number),
+        jsonrpc: '2.0',
+        method: 'metamask_getProviderState',
+        params: undefined,
+      },
+    });
+
+    await executor.writeRpc({
+      name: 'metamask-provider',
+      data: {
+        jsonrpc: '2.0',
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        id: providerRequest.data.id!,
+        result: { isUnlocked: false, accounts: [] },
+      },
+    });
+
+    const blockNumRequest = await executor.readRpc();
+    expect(blockNumRequest).toStrictEqual({
+      name: 'metamask-provider',
+      data: {
+        id: expect.any(Number),
+        jsonrpc: '2.0',
+        method: 'eth_blockNumber',
+        params: [],
+      },
+    });
+
+    await executor.writeRpc({
+      name: 'metamask-provider',
+      data: {
+        jsonrpc: '2.0',
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        id: blockNumRequest.data.id!,
+        result: '0xa70e77',
+      },
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      result: { type: 'OutboundResponse' },
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: '0xa70e77',
     });
   });
 

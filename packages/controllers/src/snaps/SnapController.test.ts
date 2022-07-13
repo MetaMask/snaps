@@ -1,3 +1,4 @@
+import { Duplex } from 'stream';
 import {
   Caveat,
   getPersistentState,
@@ -11,9 +12,13 @@ import fetchMock from 'jest-fetch-mock';
 import passworder from '@metamask/browser-passworder';
 import { Crypto } from '@peculiar/webcrypto';
 import { SnapExecutionData } from '@metamask/snap-types';
+import { createEngineStream } from 'json-rpc-middleware-stream';
+import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
+import pump from 'pump';
 import { ExecutionService } from '../services/ExecutionService';
 import { NodeThreadExecutionService } from '../services/node';
 import { delay } from '../utils';
+import { setupMultiplex } from '../services';
 import { DEFAULT_ENDOWMENTS } from './default-endowments';
 import { LONG_RUNNING_PERMISSION } from './endowments';
 import { SnapManifest } from './json-schemas';
@@ -60,6 +65,8 @@ const getSnapControllerMessenger = (
     name: 'SnapController',
     allowedEvents: [
       'ExecutionService:unhandledError',
+      'ExecutionService:outboundRequest',
+      'ExecutionService:outboundResponse',
       'SnapController:snapAdded',
       'SnapController:snapBlocked',
       'SnapController:snapInstalled',
@@ -111,7 +118,11 @@ const getNodeEESMessenger = (
 ) =>
   messenger.getRestricted({
     name: 'ExecutionService',
-    allowedEvents: ['ExecutionService:unhandledError'],
+    allowedEvents: [
+      'ExecutionService:unhandledError',
+      'ExecutionService:outboundRequest',
+      'ExecutionService:outboundResponse',
+    ],
     allowedActions: [
       'ExecutionService:executeSnap',
       'ExecutionService:getRpcRequestHandler',
@@ -200,10 +211,28 @@ const getSnapController = (options = getSnapControllerOptions()) => {
   return new SnapController(options);
 };
 
+const MOCK_BLOCK_NUMBER = '0xa70e75';
+
 const getNodeEES = (messenger: ReturnType<typeof getNodeEESMessenger>) =>
   new NodeThreadExecutionService({
     messenger,
-    setupSnapProvider: jest.fn(),
+    setupSnapProvider: jest.fn().mockImplementation((_snapId, rpcStream) => {
+      const mux = setupMultiplex(rpcStream, 'foo');
+      const stream = mux.createStream('metamask-provider');
+      const engine = new JsonRpcEngine();
+      engine.push((req, res, next, end) => {
+        if (req.method === 'metamask_getProviderState') {
+          res.result = { isUnlocked: false, accounts: [] };
+          return end();
+        } else if (req.method === 'eth_blockNumber') {
+          res.result = MOCK_BLOCK_NUMBER;
+          return end();
+        }
+        return next();
+      });
+      const providerStream = createEngineStream({ engine });
+      pump(stream, providerStream, stream);
+    }),
   });
 
 class ExecutionEnvironmentStub implements ExecutionService {
@@ -944,7 +973,7 @@ describe('SnapController', () => {
       [MOCK_SNAP_ID]: expectedSnapObject,
     });
 
-    expect(messengerCallMock).toHaveBeenCalledTimes(4);
+    expect(messengerCallMock).toHaveBeenCalledTimes(3);
     expect(messengerCallMock).toHaveBeenNthCalledWith(
       1,
       'PermissionController:hasPermission',
@@ -954,18 +983,12 @@ describe('SnapController', () => {
 
     expect(messengerCallMock).toHaveBeenNthCalledWith(
       2,
-      'PermissionController:getPermissions',
-      MOCK_SNAP_ID,
-    );
-
-    expect(messengerCallMock).toHaveBeenNthCalledWith(
-      3,
       'ExecutionService:executeSnap',
       expect.any(Object),
     );
 
     expect(messengerCallMock).toHaveBeenNthCalledWith(
-      4,
+      3,
       'PermissionController:hasPermission',
       MOCK_SNAP_ID,
       LONG_RUNNING_PERMISSION,
@@ -1212,6 +1235,123 @@ describe('SnapController', () => {
       }),
     ).rejects.toThrow(/request timed out/u);
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('crashed');
+
+    snapController.destroy();
+    await service.terminateAllSnaps();
+  });
+
+  it('does not timeout while waiting for response from MetaMask', async () => {
+    const [snapController, service] = getSnapControllerWithEES(
+      getSnapControllerWithEESOptions({
+        idleTimeCheckInterval: 30000,
+        maxIdleTime: 160000,
+      }),
+    );
+    const sourceCode = `
+    module.exports.onRpcRequest = () => wallet.request({ method: 'eth_blockNumber', params: [] });
+    `;
+
+    const snap = await snapController.add({
+      origin: MOCK_ORIGIN,
+      id: MOCK_SNAP_ID,
+      sourceCode,
+      manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
+    });
+
+    const blockNumber = '0xa70e77';
+
+    jest
+      // Cast because we are mocking a private property
+      .spyOn(service, 'setupSnapProvider' as any)
+      .mockImplementation((_snapId, rpcStream) => {
+        const mux = setupMultiplex(rpcStream as Duplex, 'foo');
+        const stream = mux.createStream('metamask-provider');
+        const engine = new JsonRpcEngine();
+        const middleware = createAsyncMiddleware(async (req, res, _next) => {
+          if (req.method === 'metamask_getProviderState') {
+            res.result = { isUnlocked: false, accounts: [] };
+          } else if (req.method === 'eth_blockNumber') {
+            await new Promise((resolve) => setTimeout(resolve, 400));
+            res.result = blockNumber;
+          }
+        });
+        engine.push(middleware);
+        const providerStream = createEngineStream({ engine });
+        pump(stream, providerStream, stream);
+      });
+
+    await snapController.startSnap(snap.id);
+    expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
+
+    // Max request time should be shorter than eth_blockNumber takes to respond
+    (snapController as any)._maxRequestTime = 300;
+
+    expect(
+      await snapController.handleRpcRequest(snap.id, 'foo.com', {
+        jsonrpc: '2.0',
+        method: 'test',
+        params: {},
+        id: 1,
+      }),
+    ).toBe(blockNumber);
+
+    snapController.destroy();
+    await service.terminateAllSnaps();
+  });
+
+  it('does not timeout while waiting for response from MetaMask when snap does multiple calls', async () => {
+    const [snapController, service] = getSnapControllerWithEES(
+      getSnapControllerWithEESOptions({
+        idleTimeCheckInterval: 30000,
+        maxIdleTime: 160000,
+      }),
+    );
+    const sourceCode = `
+    const fetch = async () => parseInt(await wallet.request({ method: 'eth_blockNumber', params: [] }), 16);
+    module.exports.onRpcRequest = async () => (await fetch()) + (await fetch());
+    `;
+
+    const snap = await snapController.add({
+      origin: MOCK_ORIGIN,
+      id: MOCK_SNAP_ID,
+      sourceCode,
+      manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
+    });
+
+    jest
+      // Cast because we are mocking a private property
+      .spyOn(service, 'setupSnapProvider' as any)
+      .mockImplementation((_snapId, rpcStream) => {
+        const mux = setupMultiplex(rpcStream as Duplex, 'foo');
+        const stream = mux.createStream('metamask-provider');
+        const engine = new JsonRpcEngine();
+        const middleware = createAsyncMiddleware(async (req, res, _next) => {
+          if (req.method === 'metamask_getProviderState') {
+            res.result = { isUnlocked: false, accounts: [] };
+          } else if (req.method === 'eth_blockNumber') {
+            await new Promise((resolve) => setTimeout(resolve, 400));
+            res.result = '0xa70e77';
+          }
+        });
+        engine.push(middleware);
+        const providerStream = createEngineStream({ engine });
+        pump(stream, providerStream, stream);
+      });
+
+    await snapController.startSnap(snap.id);
+    expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
+
+    // Max request time should be shorter than eth_blockNumber takes to respond
+    (snapController as any)._maxRequestTime = 300;
+
+    expect(
+      await snapController.handleRpcRequest(snap.id, 'foo.com', {
+        jsonrpc: '2.0',
+        method: 'test',
+        params: {},
+        id: 1,
+      }),
+    ).toBe(21896430);
 
     snapController.destroy();
     await service.terminateAllSnaps();
@@ -1751,7 +1891,7 @@ describe('SnapController', () => {
       });
       expect(result).toStrictEqual({ [snapId]: truncatedFooSnap });
 
-      expect(callActionMock).toHaveBeenCalledTimes(4);
+      expect(callActionMock).toHaveBeenCalledTimes(3);
       expect(callActionMock).toHaveBeenNthCalledWith(
         1,
         'PermissionController:hasPermission',
@@ -1761,18 +1901,12 @@ describe('SnapController', () => {
 
       expect(callActionMock).toHaveBeenNthCalledWith(
         2,
-        'PermissionController:getPermissions',
-        snapId,
-      );
-
-      expect(callActionMock).toHaveBeenNthCalledWith(
-        3,
         'ExecutionService:executeSnap',
         expect.objectContaining({}),
       );
 
       expect(callActionMock).toHaveBeenNthCalledWith(
-        4,
+        3,
         'PermissionController:hasPermission',
         snapId,
         LONG_RUNNING_PERMISSION,
@@ -1844,7 +1978,7 @@ describe('SnapController', () => {
 
       expect(result).toStrictEqual({ [snapId]: truncatedFooSnap });
 
-      expect(callActionMock).toHaveBeenCalledTimes(5);
+      expect(callActionMock).toHaveBeenCalledTimes(4);
       expect(callActionMock).toHaveBeenNthCalledWith(
         1,
         'PermissionController:hasPermission',
@@ -1860,18 +1994,12 @@ describe('SnapController', () => {
 
       expect(callActionMock).toHaveBeenNthCalledWith(
         3,
-        'PermissionController:getPermissions',
-        snapId,
-      );
-
-      expect(callActionMock).toHaveBeenNthCalledWith(
-        4,
         'ExecutionService:executeSnap',
         expect.objectContaining({ snapId }),
       );
 
       expect(callActionMock).toHaveBeenNthCalledWith(
-        5,
+        4,
         'PermissionController:hasPermission',
         snapId,
         LONG_RUNNING_PERMISSION,
@@ -1922,7 +2050,7 @@ describe('SnapController', () => {
         [MOCK_SNAP_ID]: getTruncatedSnap({ initialPermissions }),
       });
       expect(fetchSnapMock).toHaveBeenCalledTimes(1);
-      expect(callActionMock).toHaveBeenCalledTimes(5);
+      expect(callActionMock).toHaveBeenCalledTimes(4);
       expect(callActionMock).toHaveBeenNthCalledWith(
         1,
         'PermissionController:hasPermission',
@@ -1932,25 +2060,19 @@ describe('SnapController', () => {
 
       expect(callActionMock).toHaveBeenNthCalledWith(
         2,
-        'PermissionController:getPermissions',
-        MOCK_SNAP_ID,
-      );
-
-      expect(callActionMock).toHaveBeenNthCalledWith(
-        3,
         'PermissionController:requestPermissions',
         { origin: MOCK_SNAP_ID },
         { eth_accounts: {} },
       );
 
       expect(callActionMock).toHaveBeenNthCalledWith(
-        4,
+        3,
         'ExecutionService:executeSnap',
         expect.objectContaining({}),
       );
 
       expect(callActionMock).toHaveBeenNthCalledWith(
-        5,
+        4,
         'PermissionController:hasPermission',
         MOCK_SNAP_ID,
         LONG_RUNNING_PERMISSION,
@@ -2044,10 +2166,17 @@ describe('SnapController', () => {
           origin: MOCK_ORIGIN,
           type: SNAP_APPROVAL_UPDATE,
           requestData: {
+            metadata: {
+              id: expect.any(String),
+              dappOrigin: MOCK_ORIGIN,
+              origin: MOCK_SNAP_ID,
+            },
+            permissions: {},
             snapId: MOCK_SNAP_ID,
             newVersion,
             newPermissions: {},
             approvedPermissions: {},
+            unusedPermissions: {},
           },
         },
         true,
@@ -2356,10 +2485,17 @@ describe('SnapController', () => {
           origin: MOCK_ORIGIN,
           type: SNAP_APPROVAL_UPDATE,
           requestData: {
+            metadata: {
+              id: expect.any(String),
+              dappOrigin: MOCK_ORIGIN,
+              origin: MOCK_SNAP_ID,
+            },
+            permissions: {},
             snapId: MOCK_SNAP_ID,
             newVersion: '1.1.0',
             newPermissions: {},
             approvedPermissions: {},
+            unusedPermissions: {},
           },
         },
         true,
@@ -2457,10 +2593,17 @@ describe('SnapController', () => {
           origin: MOCK_ORIGIN,
           type: SNAP_APPROVAL_UPDATE,
           requestData: {
+            metadata: {
+              id: expect.any(String),
+              dappOrigin: MOCK_ORIGIN,
+              origin: MOCK_SNAP_ID,
+            },
+            permissions: {},
             snapId: MOCK_SNAP_ID,
             newVersion: '1.1.0',
             newPermissions: {},
             approvedPermissions: {},
+            unusedPermissions: {},
           },
         },
         true,
@@ -2540,10 +2683,17 @@ describe('SnapController', () => {
           origin: MOCK_ORIGIN,
           type: SNAP_APPROVAL_UPDATE,
           requestData: {
+            metadata: {
+              id: expect.any(String),
+              dappOrigin: MOCK_ORIGIN,
+              origin: MOCK_SNAP_ID,
+            },
+            permissions: {},
             snapId: MOCK_SNAP_ID,
             newVersion: '1.1.0',
             newPermissions: {},
             approvedPermissions: {},
+            unusedPermissions: {},
           },
         },
         true,
@@ -2637,11 +2787,20 @@ describe('SnapController', () => {
           origin: MOCK_ORIGIN,
           type: SNAP_APPROVAL_UPDATE,
           requestData: {
+            metadata: {
+              id: expect.any(String),
+              dappOrigin: MOCK_ORIGIN,
+              origin: MOCK_SNAP_ID,
+            },
+            permissions: { 'endowment:network-access': {} },
             snapId: MOCK_SNAP_ID,
             newVersion: '1.1.0',
             newPermissions: { 'endowment:network-access': {} },
             approvedPermissions: {
               snap_confirm: approvedPermissions.snap_confirm,
+            },
+            unusedPermissions: {
+              snap_manageState: approvedPermissions.snap_manageState,
             },
           },
         },
