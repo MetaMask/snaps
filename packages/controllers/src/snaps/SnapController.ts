@@ -797,7 +797,7 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Checks all installed and unblocked snaps against the block list and
+   * Checks all installed snaps against the block list and
    * blocks/unblocks snaps as appropriate. See {@link SnapController.blockSnap}
    * for more information.
    */
@@ -915,7 +915,7 @@ export class SnapController extends BaseController<
     snapId: ValidatedSnapId,
     version: SemVerVersion,
   ) {
-    if (this._checkSnapBlockList && (await this.isBlocked(snapId, version))) {
+    if (await this.isBlocked(snapId, version)) {
       throw new Error(
         `Cannot install version "${version}" of snap "${snapId}": the version is blocked.`,
       );

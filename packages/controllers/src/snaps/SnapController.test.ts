@@ -25,6 +25,7 @@ import { SnapManifest } from './json-schemas';
 import {
   AllowedActions,
   AllowedEvents,
+  CheckSnapBlockListArg,
   Snap,
   SnapController,
   SnapControllerActions,
@@ -152,6 +153,14 @@ const getSnapControllerOptions = (
       .mockImplementation((snapId, appKeyType) => `${appKeyType}:${snapId}`),
     messenger: getSnapControllerMessenger(),
     featureFlags: { dappsCanUpdateSnaps: true },
+    checkBlockList: jest
+      .fn()
+      .mockImplementation(async (snaps: CheckSnapBlockListArg) => {
+        return Object.keys(snaps).reduce(
+          (acc, snapId) => ({ ...acc, [snapId]: { blocked: false } }),
+          {},
+        );
+      }),
     state: undefined,
     ...opts,
   } as SnapControllerConstructorParams;
@@ -2971,7 +2980,9 @@ describe('SnapController', () => {
 
   describe('isBlocked', () => {
     it('throws an error if _checkSnapBlockList is undefined', async () => {
-      const snapController = getSnapController();
+      const snapController = getSnapController(
+        getSnapControllerOptions({ checkBlockList: undefined }),
+      );
       await expect(
         snapController.isBlocked('npm:example', '1.0.0'),
       ).rejects.toThrow(
@@ -3003,7 +3014,9 @@ describe('SnapController', () => {
 
   describe('updateBlockedSnaps', () => {
     it('throws an error if _checkSnapBlockList is undefined', async () => {
-      const snapController = getSnapController();
+      const snapController = getSnapController(
+        getSnapControllerOptions({ checkBlockList: undefined }),
+      );
       await expect(snapController.updateBlockedSnaps()).rejects.toThrow(
         'There is no snap block list defined for this controller.',
       );
@@ -3038,9 +3051,11 @@ describe('SnapController', () => {
         }),
       );
 
+      const reason = 'foo';
+      const infoUrl = 'foobar.com';
       // Block snap A, ignore B.
       checkBlockListSpy.mockResolvedValueOnce({
-        [mockSnapA.id]: { blocked: true },
+        [mockSnapA.id]: { blocked: true, reason, infoUrl },
       });
       await snapController.updateBlockedSnaps();
 
@@ -3056,8 +3071,8 @@ describe('SnapController', () => {
         'SnapController:snapBlocked',
         mockSnapA.id,
         {
-          infoUrl: undefined,
-          reason: undefined,
+          infoUrl,
+          reason,
         },
       );
     });
