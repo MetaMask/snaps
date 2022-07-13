@@ -6,6 +6,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.17.0]
+### Uncategorized
+- Bump `post-message-stream` ([#622](https://github.com/MetaMask/snaps-skunkworks/pull/622))
+- Add snap blocklist functionality ([#597](https://github.com/MetaMask/snaps-skunkworks/pull/597))
+- Monitor outbound snap requests to pause request timeout ([#593](https://github.com/MetaMask/snaps-skunkworks/pull/593))
+- Refactor Update Snap slightly ([#614](https://github.com/MetaMask/snaps-skunkworks/pull/614))
+- BREAKING: Remove ExecutionService actions from constructor arguments ([#486](https://github.com/MetaMask/snaps-skunkworks/pull/486))
+- BREAKING: Emit appropriate snap objects for SnapController events ([#608](https://github.com/MetaMask/snaps-skunkworks/pull/608))
+- Simplify ExecutionServices ([#604](https://github.com/MetaMask/snaps-skunkworks/pull/604))
+- Refactor snap fetching logic and SnapController tests ([#595](https://github.com/MetaMask/snaps-skunkworks/pull/595))
+- Add `worker_threads` execution environment ([#587](https://github.com/MetaMask/snaps-skunkworks/pull/587))
+- Remove WebWorker implementation ([#591](https://github.com/MetaMask/snaps-skunkworks/pull/591))
+- Bump minimum Node version to 16 ([#601](https://github.com/MetaMask/snaps-skunkworks/pull/601))
+- Increase execution environments coverage ([#482](https://github.com/MetaMask/snaps-skunkworks/pull/482))
+- Add Node.js `child_process` execution environment ([#523](https://github.com/MetaMask/snaps-skunkworks/pull/523))
+- @metamask/eslint config@9.0.0 ([#559](https://github.com/MetaMask/snaps-skunkworks/pull/559))
+- Rename rpcMessage to rpcRequest ([#557](https://github.com/MetaMask/snaps-skunkworks/pull/557))
+- Added network endowment teardown ([#514](https://github.com/MetaMask/snaps-skunkworks/pull/514))
+- BREAKING: Replace `getRpcMessageHandler` action with `handleRpcMessage` ([#497](https://github.com/MetaMask/snaps-skunkworks/pull/497))
+- Rename package `publish` command to `publish:package` ([#547](https://github.com/MetaMask/snaps-skunkworks/pull/547))
+
 ## [0.16.0]
 ### Added
 - **BREAKING:** Encrypt Snap state by default ([#369](https://github.com/MetaMask/snaps-skunkworks/pull/369))
@@ -289,7 +310,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.16.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.17.0...HEAD
+[0.17.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.16.0...v0.17.0
 [0.16.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.15.0...v0.16.0
 [0.15.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.14.0...v0.15.0
 [0.14.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.13.0...v0.14.0
