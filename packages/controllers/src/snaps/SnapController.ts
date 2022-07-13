@@ -65,9 +65,6 @@ export const SNAP_PREFIX_REGEX = new RegExp(`^${SNAP_PREFIX}`, 'u');
 
 export const SNAP_APPROVAL_UPDATE = 'wallet_updateSnap';
 
-const BLOCK_LIST_UNDEFINED_ERROR =
-  'There is no snap block list defined for this controller.';
-
 type TruncatedSnapFields =
   | 'id'
   | 'initialPermissions'
@@ -497,7 +494,7 @@ type SnapControllerArgs = {
   /**
    * A function that checks whether the specified snap and version is blocked.
    */
-  checkBlockList?: CheckSnapBlockList;
+  checkBlockList: CheckSnapBlockList;
 
   /**
    * The maximum amount of time that a snap may be idle.
@@ -646,7 +643,7 @@ export class SnapController extends BaseController<
 
   private _idleTimeCheckInterval: number;
 
-  private _checkSnapBlockList?: CheckSnapBlockList;
+  private _checkSnapBlockList: CheckSnapBlockList;
 
   private _maxIdleTime: number;
 
@@ -802,10 +799,6 @@ export class SnapController extends BaseController<
    * for more information.
    */
   async updateBlockedSnaps(): Promise<void> {
-    if (!this._checkSnapBlockList) {
-      throw new Error(BLOCK_LIST_UNDEFINED_ERROR);
-    }
-
     const blockedSnaps = await this._checkSnapBlockList(
       Object.values(this.state.snaps).reduce<Record<SnapId, SemVerVersion>>(
         (blockListArg, snap) => {
@@ -896,10 +889,6 @@ export class SnapController extends BaseController<
     snapId: ValidatedSnapId,
     version: SemVerVersion,
   ): Promise<boolean> {
-    if (!this._checkSnapBlockList) {
-      throw new Error(BLOCK_LIST_UNDEFINED_ERROR);
-    }
-
     const result = await this._checkSnapBlockList({ [snapId]: version });
     return result[snapId].blocked;
   }

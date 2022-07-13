@@ -2979,17 +2979,6 @@ describe('SnapController', () => {
   });
 
   describe('isBlocked', () => {
-    it('throws an error if _checkSnapBlockList is undefined', async () => {
-      const snapController = getSnapController(
-        getSnapControllerOptions({ checkBlockList: undefined }),
-      );
-      await expect(
-        snapController.isBlocked('npm:example', '1.0.0'),
-      ).rejects.toThrow(
-        'There is no snap block list defined for this controller.',
-      );
-    });
-
     it('returns whether a version of a snap is blocked', async () => {
       const checkBlockListSpy = jest.fn();
       const snapId = 'npm:example';
@@ -3013,15 +3002,6 @@ describe('SnapController', () => {
   });
 
   describe('updateBlockedSnaps', () => {
-    it('throws an error if _checkSnapBlockList is undefined', async () => {
-      const snapController = getSnapController(
-        getSnapControllerOptions({ checkBlockList: undefined }),
-      );
-      await expect(snapController.updateBlockedSnaps()).rejects.toThrow(
-        'There is no snap block list defined for this controller.',
-      );
-    });
-
     it('blocks snaps as expected', async () => {
       const messenger = getSnapControllerMessenger();
       const publishMock = jest.spyOn(messenger, 'publish');
