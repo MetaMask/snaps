@@ -7,10 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.17.0]
-### Uncategorized
-- Bump minimum Node version to 16 ([#601](https://github.com/MetaMask/snaps-skunkworks/pull/601))
-- @metamask/eslint config@9.0.0 ([#559](https://github.com/MetaMask/snaps-skunkworks/pull/559))
-- Rename package `publish` command to `publish:package` ([#547](https://github.com/MetaMask/snaps-skunkworks/pull/547))
+### Changed
+- **BREAKING:** Bump minimum Node version to 16 ([#601](https://github.com/MetaMask/snaps-skunkworks/pull/601))
 
 ## [0.16.0]
 ### Changed

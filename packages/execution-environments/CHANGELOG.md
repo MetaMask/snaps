@@ -7,18 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.17.0]
-### Uncategorized
-- Bump `post-message-stream` ([#622](https://github.com/MetaMask/snaps-skunkworks/pull/622))
-- Monitor outbound snap requests to pause request timeout ([#593](https://github.com/MetaMask/snaps-skunkworks/pull/593))
-- Add `worker_threads` execution environment ([#587](https://github.com/MetaMask/snaps-skunkworks/pull/587))
-- Remove WebWorker implementation ([#591](https://github.com/MetaMask/snaps-skunkworks/pull/591))
-- Bump minimum Node version to 16 ([#601](https://github.com/MetaMask/snaps-skunkworks/pull/601))
-- Increase execution environments coverage ([#482](https://github.com/MetaMask/snaps-skunkworks/pull/482))
+### Added
 - Add Node.js `child_process` execution environment ([#523](https://github.com/MetaMask/snaps-skunkworks/pull/523))
-- @metamask/eslint config@9.0.0 ([#559](https://github.com/MetaMask/snaps-skunkworks/pull/559))
+- Add Node.js `worker_threads` execution environment ([#587](https://github.com/MetaMask/snaps-skunkworks/pull/587))
 - Added network endowment teardown ([#514](https://github.com/MetaMask/snaps-skunkworks/pull/514))
-- Rename package `publish` command to `publish:package` ([#547](https://github.com/MetaMask/snaps-skunkworks/pull/547))
-- Add Yarn 3 `allow-scripts` plugin ([#545](https://github.com/MetaMask/snaps-skunkworks/pull/545))
+
+### Changed
+- **BREAKING:** Bump minimum Node version to 16 ([#601](https://github.com/MetaMask/snaps-skunkworks/pull/601))
+- Monitor outbound snap requests to pause request timeout ([#593](https://github.com/MetaMask/snaps-skunkworks/pull/593))
+
+### Removed
+- Remove WebWorker implementation ([#591](https://github.com/MetaMask/snaps-skunkworks/pull/591))
 
 ## [0.16.0]
 ### Changed

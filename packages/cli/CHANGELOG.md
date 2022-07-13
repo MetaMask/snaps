@@ -7,16 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.17.0]
-### Uncategorized
-- Bump minimum Node version to 16 ([#601](https://github.com/MetaMask/snaps-skunkworks/pull/601))
-- Update template ([#589](https://github.com/MetaMask/snaps-skunkworks/pull/589))
-- Add support for TypeScript when using init command ([#546](https://github.com/MetaMask/snaps-skunkworks/pull/546))
-- Add serve to watch ([#507](https://github.com/MetaMask/snaps-skunkworks/pull/507))
+### Added
+- Add a TypeScript template for `mm-snap init` ([#546](https://github.com/MetaMask/snaps-skunkworks/pull/546))
+- Add serving to `mm-snap watch` ([#507](https://github.com/MetaMask/snaps-skunkworks/pull/507))
+
+### Changed
+- **BREAKING:** Bump minimum Node version to 16 ([#601](https://github.com/MetaMask/snaps-skunkworks/pull/601))
+
+### Fixed
 - Fix segfault when using `mm-snap watch` ([#556](https://github.com/MetaMask/snaps-skunkworks/pull/556))
-- @metamask/eslint config@9.0.0 ([#559](https://github.com/MetaMask/snaps-skunkworks/pull/559))
-- Rename rpcMessage to rpcRequest ([#557](https://github.com/MetaMask/snaps-skunkworks/pull/557))
-- Rename package `publish` command to `publish:package` ([#547](https://github.com/MetaMask/snaps-skunkworks/pull/547))
-- Add Yarn 3 `allow-scripts` plugin ([#545](https://github.com/MetaMask/snaps-skunkworks/pull/545))
 
 ## [0.16.0]
 ### Changed

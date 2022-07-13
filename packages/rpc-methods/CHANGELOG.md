@@ -7,12 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.17.0]
-### Uncategorized
-- Bump minimum Node version to 16 ([#601](https://github.com/MetaMask/snaps-skunkworks/pull/601))
-- @metamask/eslint config@9.0.0 ([#559](https://github.com/MetaMask/snaps-skunkworks/pull/559))
-- Rename rpcMessage to rpcRequest ([#557](https://github.com/MetaMask/snaps-skunkworks/pull/557))
-- BREAKING: Replace `getRpcMessageHandler` action with `handleRpcMessage` ([#497](https://github.com/MetaMask/snaps-skunkworks/pull/497))
-- Rename package `publish` command to `publish:package` ([#547](https://github.com/MetaMask/snaps-skunkworks/pull/547))
+### Changed
+- **BREAKING:** Bump minimum Node version to 16 ([#601](https://github.com/MetaMask/snaps-skunkworks/pull/601))
+- **BREAKING:** Replace `getRpcMessageHandler` action with `handleRpcRequest` ([#497](https://github.com/MetaMask/snaps-skunkworks/pull/497), [#557](https://github.com/MetaMask/snaps-skunkworks/pull/557))
 
 ## [0.16.0]
 ### Changed
