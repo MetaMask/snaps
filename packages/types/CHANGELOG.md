@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.17.0]
+### Changed
+- **BREAKING:** Bump minimum Node version to 16 ([#601](https://github.com/MetaMask/snaps-skunkworks/pull/601))
+
+### Removed
+- Remove `ErrorMessageEvent` and `ExecutionServiceMessenger` types ([#486](https://github.com/MetaMask/snaps-skunkworks/pull/486))
+  - These types are now available via `@metamask/snap-controllers`
+
 ## [0.16.0]
 ### Added
 - Add `OnRpcRequestHandler` type ([#534](https://github.com/MetaMask/snaps-skunkworks/pull/534), [#531](https://github.com/MetaMask/snaps-skunkworks/pull/531), [#538](https://github.com/MetaMask/snaps-skunkworks/pull/538), [#533](https://github.com/MetaMask/snaps-skunkworks/pull/533))
@@ -139,7 +147,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.16.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.17.0...HEAD
+[0.17.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.16.0...v0.17.0
 [0.16.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.15.0...v0.16.0
 [0.15.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.14.0...v0.15.0
 [0.14.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.13.0...v0.14.0

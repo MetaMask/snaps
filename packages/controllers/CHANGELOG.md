@@ -6,6 +6,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.17.0]
+### Added
+- Add snap blocklist functionality ([#597](https://github.com/MetaMask/snaps-skunkworks/pull/597))
+- Add Node.js `worker_threads` execution environment ([#587](https://github.com/MetaMask/snaps-skunkworks/pull/587))
+- Add Node.js `child_process` execution environment ([#523](https://github.com/MetaMask/snaps-skunkworks/pull/523))
+- Added network endowment teardown ([#514](https://github.com/MetaMask/snaps-skunkworks/pull/514))
+
+### Changed
+- **BREAKING:** Bump minimum Node version to 16 ([#601](https://github.com/MetaMask/snaps-skunkworks/pull/601))
+- **BREAKING:** Remove ExecutionService actions from constructor arguments ([#486](https://github.com/MetaMask/snaps-skunkworks/pull/486))
+- **BREAKING:** Emit appropriate snap objects for SnapController events ([#608](https://github.com/MetaMask/snaps-skunkworks/pull/608))
+- **BREAKING:** Replace `getRpcMessageHandler` action with `handleRpcRequest` ([#497](https://github.com/MetaMask/snaps-skunkworks/pull/497), [#557](https://github.com/MetaMask/snaps-skunkworks/pull/557))
+- Monitor outbound snap requests to pause request timeout ([#593](https://github.com/MetaMask/snaps-skunkworks/pull/593))
+- Change Update Snap `requestData` ([#614](https://github.com/MetaMask/snaps-skunkworks/pull/614))
+
+### Removed
+- Remove WebWorker implementation ([#591](https://github.com/MetaMask/snaps-skunkworks/pull/591))
+
 ## [0.16.0]
 ### Added
 - **BREAKING:** Encrypt Snap state by default ([#369](https://github.com/MetaMask/snaps-skunkworks/pull/369))
@@ -289,7 +307,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.16.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.17.0...HEAD
+[0.17.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.16.0...v0.17.0
 [0.16.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.15.0...v0.16.0
 [0.15.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.14.0...v0.15.0
 [0.14.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.13.0...v0.14.0

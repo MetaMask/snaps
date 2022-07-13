@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.17.0]
+### Added
+- Add Node.js `child_process` execution environment ([#523](https://github.com/MetaMask/snaps-skunkworks/pull/523))
+- Add Node.js `worker_threads` execution environment ([#587](https://github.com/MetaMask/snaps-skunkworks/pull/587))
+- Added network endowment teardown ([#514](https://github.com/MetaMask/snaps-skunkworks/pull/514))
+
+### Changed
+- **BREAKING:** Bump minimum Node version to 16 ([#601](https://github.com/MetaMask/snaps-skunkworks/pull/601))
+- Monitor outbound snap requests to pause request timeout ([#593](https://github.com/MetaMask/snaps-skunkworks/pull/593))
+
+### Removed
+- Remove WebWorker implementation ([#591](https://github.com/MetaMask/snaps-skunkworks/pull/591))
+
 ## [0.16.0]
 ### Changed
 - **BREAKING:** Snaps are now required to export `onRpcRequest` to receive RPC requests ([#481](https://github.com/MetaMask/snaps-skunkworks/pull/481), [#533](https://github.com/MetaMask/snaps-skunkworks/pull/533), [#538](https://github.com/MetaMask/snaps-skunkworks/pull/538), [#541](https://github.com/MetaMask/snaps-skunkworks/pull/541))
@@ -91,7 +104,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Previously, default endowments were specified in the execution environment itself. Now, all endowments must be specified in the `executeSnap` RPC parameters, except for the `wallet` API object.
 - Add endowments to the global `self` in addition to `window` ([#263](https://github.com/MetaMask/snaps-skunkworks/pull/263))
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.16.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.17.0...HEAD
+[0.17.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.16.0...v0.17.0
 [0.16.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.15.0...v0.16.0
 [0.15.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.14.0...v0.15.0
 [0.14.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.13.0...v0.14.0
