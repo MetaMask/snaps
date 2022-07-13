@@ -10,5 +10,5 @@
     ]
   },
   "include": ["./src"],
-  "references": [{ "path": "../controllers" }]
+  "references": [{ "path": "../utils" }, { "path": "../controllers" }]
 }

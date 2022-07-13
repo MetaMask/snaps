@@ -4,9 +4,10 @@ import {
   ValidPermissionSpecification,
   PermissionType,
 } from '@metamask/controllers';
-import { SNAP_PREFIX, SnapController } from '@metamask/snap-controllers';
+import { SnapController } from '@metamask/snap-controllers';
 import { isObject, Json, NonEmptyArray } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
+import { SNAP_PREFIX } from '@metamask/snap-utils';
 
 const methodPrefix = SNAP_PREFIX;
 const targetKey = `${methodPrefix}*` as const;

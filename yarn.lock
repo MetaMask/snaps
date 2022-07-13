@@ -4645,6 +4645,7 @@ __metadata:
     "@metamask/eslint-config-typescript": ^9.0.1
     "@metamask/key-tree": ^4.0.0
     "@metamask/snap-controllers": ^0.18.1
+    "@metamask/snap-utils": ^0.18.1
     "@metamask/types": ^1.1.0
     "@metamask/utils": ^2.0.0
     "@types/node": ^14.14.25
@@ -4772,9 +4773,14 @@ __metadata:
     "@metamask/eslint-config-jest": ^9.0.0
     "@metamask/eslint-config-nodejs": ^9.0.0
     "@metamask/eslint-config-typescript": ^9.0.1
+    "@metamask/utils": ^2.0.0
+    "@types/gunzip-maybe": ^1.4.0
     "@types/jest": ^27.5.1
+    "@types/pump": ^1.1.1
+    "@types/semver": ^7.3.10
     ajv: ^8.11.0
     ajv-cli: ^5.0.0
+    concat-stream: ^2.0.0
     eslint: ^7.30.0
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
@@ -4782,11 +4788,19 @@ __metadata:
     eslint-plugin-jsdoc: ^36.1.0
     eslint-plugin-node: ^11.1.0
     eslint-plugin-prettier: ^3.4.0
+    fast-deep-equal: ^3.1.3
+    gunzip-maybe: ^1.4.2
     jest: ^27.5.1
+    jest-fetch-mock: ^3.0.3
     jest-it-up: ^2.0.0
+    mkdirp: ^1.0.4
     prettier: ^2.3.2
     prettier-plugin-packagejson: ^2.2.11
+    pump: ^3.0.0
+    readable-web-to-node-stream: ^3.0.2
     rimraf: ^3.0.2
+    semver: ^7.3.7
+    tar-stream: ^2.2.0
     ts-jest: ^27.1.5
     typescript: ^4.4.0
   languageName: unknown
@@ -5669,6 +5683,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/pump@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "@types/pump@npm:1.1.1"
+  dependencies:
+    "@types/node": "*"
+  checksum: dd4a1485f2f6052cacb71a94b48d9f360e07a2fc3fac03782ae4caa9856e6df7017ee89515d70ecefcfe281553311cde4a3748219c9fcd757fdb77f3a47e0f29
+  languageName: node
+  linkType: hard
+
 "@types/readable-stream@npm:^2.3.9":
   version: 2.3.9
   resolution: "@types/readable-stream@npm:2.3.9"
@@ -5695,6 +5718,13 @@ __metadata:
   dependencies:
     "@types/node": "*"
   checksum: f89b71360e3fe5a02f649746832fc7af4c5c5b8f85897a2e74d5df40f2e02e4c3b8cca5c7c9b92282870bf03724ce142f817d5d07f5acf2f1c5769ab7403e65a
+  languageName: node
+  linkType: hard
+
+"@types/semver@npm:^7.3.10":
+  version: 7.3.10
+  resolution: "@types/semver@npm:7.3.10"
+  checksum: 7047c2822b1759b2b950f39cfcf261f2b9dca47b4b55bdebba0905a8553631f1531eb0f59264ffe4834d1198c8331c8e0010a4cd742f4e0b60abbf399d134364
   languageName: node
   linkType: hard
 
@@ -17873,6 +17903,17 @@ __metadata:
   bin:
     semver: bin/semver.js
   checksum: 96451bfd7cba9b60ee87571959dc47e87c95b2fe58a9312a926340fee9907fc7bc062c352efdaf5bb24b2dff59c145e14faf7eb9d718a84b4751312531b39f43
+  languageName: node
+  linkType: hard
+
+"semver@npm:^7.3.7":
+  version: 7.3.7
+  resolution: "semver@npm:7.3.7"
+  dependencies:
+    lru-cache: ^6.0.0
+  bin:
+    semver: bin/semver.js
+  checksum: 2fa3e877568cd6ce769c75c211beaed1f9fce80b28338cadd9d0b6c40f2e2862bafd62c19a6cff42f3d54292b7c623277bcab8816a2b5521cf15210d43e75232
   languageName: node
   linkType: hard
 

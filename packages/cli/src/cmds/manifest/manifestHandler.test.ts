@@ -2,7 +2,7 @@ import { promises as fs } from 'fs';
 import {
   NpmSnapFileNames,
   SnapValidationFailureReason,
-} from '@metamask/snap-controllers/dist/snaps';
+} from '@metamask/snap-utils';
 import {
   DEFAULT_SNAP_BUNDLE,
   FakeFsError,

@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 import crypto from 'crypto';
-import { DEFAULT_ENDOWMENTS } from '@metamask/snap-controllers';
+import { DEFAULT_ENDOWMENTS } from '@metamask/snap-utils';
 
 const NETWORK_APIS = ['fetch', 'WebSocket'];
 

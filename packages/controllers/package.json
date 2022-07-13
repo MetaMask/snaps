@@ -15,8 +15,7 @@
     "dist/"
   ],
   "scripts": {
-    "test:prepare": "yarn mkdirp test/fixtures && ./scripts/generate-fixtures.sh",
-    "test": "yarn test:prepare && jest && yarn posttest",
+    "test": "jest && yarn posttest",
     "posttest": "jest-it-up",
     "test:ci": "yarn test",
     "build:tsc": "tsc --project tsconfig.local.json",

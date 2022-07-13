@@ -1,12 +1,13 @@
 import { existsSync, promises as fs } from 'fs';
 import pathUtils from 'path';
-import { PROPOSED_NAME_REGEX } from '@metamask/snap-controllers';
 import {
+  PROPOSED_NAME_REGEX,
   NpmSnapFileNames,
   SnapManifest,
   NpmSnapPackageJson,
   validateSnapJsonFile,
 } from '@metamask/snap-utils';
+
 import initPackageJson from 'init-package-json';
 import mkdirp from 'mkdirp';
 import slash from 'slash';

@@ -10,7 +10,8 @@
     "dist/"
   ],
   "scripts": {
-    "test": "jest && yarn posttest",
+    "test:prepare": "yarn mkdirp test/fixtures && ./scripts/generate-fixtures.sh",
+    "test": "yarn test:prepare && jest && yarn posttest",
     "posttest": "jest-it-up",
     "test:ci": "yarn test",
     "lint:eslint": "eslint . --cache --ext js,ts",
@@ -29,7 +30,15 @@
   },
   "dependencies": {
     "@chainsafe/strip-comments": "^1.0.7",
-    "ajv": "^8.11.0"
+    "@metamask/utils": "^2.0.0",
+    "ajv": "^8.11.0",
+    "concat-stream": "^2.0.0",
+    "fast-deep-equal": "^3.1.3",
+    "gunzip-maybe": "^1.4.2",
+    "pump": "^3.0.0",
+    "readable-web-to-node-stream": "^3.0.2",
+    "semver": "^7.3.7",
+    "tar-stream": "^2.2.0"
   },
   "devDependencies": {
     "@json-schema-tools/transpiler": "^1.10.2",
@@ -39,7 +48,10 @@
     "@metamask/eslint-config-jest": "^9.0.0",
     "@metamask/eslint-config-nodejs": "^9.0.0",
     "@metamask/eslint-config-typescript": "^9.0.1",
+    "@types/gunzip-maybe": "^1.4.0",
     "@types/jest": "^27.5.1",
+    "@types/pump": "^1.1.1",
+    "@types/semver": "^7.3.10",
     "ajv-cli": "^5.0.0",
     "eslint": "^7.30.0",
     "eslint-config-prettier": "^8.3.0",
@@ -49,7 +61,9 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.4.0",
     "jest": "^27.5.1",
+    "jest-fetch-mock": "^3.0.3",
     "jest-it-up": "^2.0.0",
+    "mkdirp": "^1.0.4",
     "prettier": "^2.3.2",
     "prettier-plugin-packagejson": "^2.2.11",
     "rimraf": "^3.0.2",

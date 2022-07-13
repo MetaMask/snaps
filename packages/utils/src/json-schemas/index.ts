@@ -1,4 +1,4 @@
-import { NpmSnapFileNames } from '../file-names';
+import { NpmSnapFileNames } from '../types';
 import validateNpmSnapPackageJson from './validateNpmSnapPackageJson.js';
 import validateSnapManifest from './validateSnapManifest.js';
 
