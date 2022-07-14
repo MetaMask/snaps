@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.18.0]
-### Uncategorized
-- BREAKING: Reduce TypeScript compilation target to ES2017 ([#628](https://github.com/MetaMask/snaps-skunkworks/pull/628))
-- Fix crypto endowment ([#631](https://github.com/MetaMask/snaps-skunkworks/pull/631))
+### Changed
+- **BREAKING:** Reduce TypeScript compilation target to ES2017 ([#628](https://github.com/MetaMask/snaps-skunkworks/pull/628))
+
+### Fixed
+- Fix `crypto` and `SubtleCrypto` endowments ([#631](https://github.com/MetaMask/snaps-skunkworks/pull/631))
 
 ## [0.17.0]
 ### Added

@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.18.0]
+### Changed
+- **BREAKING:** Reduce TypeScript compilation target to ES2017 ([#628](https://github.com/MetaMask/snaps-skunkworks/pull/628))
 
 ## [0.17.0]
 ### Changed

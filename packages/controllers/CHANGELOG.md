@@ -7,9 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.18.0]
-### Uncategorized
-- BREAKING: Reduce TypeScript compilation target to ES2017 ([#628](https://github.com/MetaMask/snaps-skunkworks/pull/628))
-- BREAKING: Add browser entrypoint for execution services ([#629](https://github.com/MetaMask/snaps-skunkworks/pull/629))
+### Changed
+- **BREAKING:** Reduce TypeScript compilation target to ES2017 ([#628](https://github.com/MetaMask/snaps-skunkworks/pull/628))
+- **BREAKING:** Add browser entrypoint for execution services ([#629](https://github.com/MetaMask/snaps-skunkworks/pull/629))
+  - Node.js execution services are now omitted in browser environments
 
 ## [0.17.0]
 ### Added
