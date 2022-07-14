@@ -73,3 +73,6 @@ typings/
 
 # Mac files
 .DS_Store
+
+# IntelliJ IDE
+.idea
