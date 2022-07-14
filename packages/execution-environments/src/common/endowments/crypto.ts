@@ -5,7 +5,7 @@ const createCrypto = () => {
     'crypto' in rootRealmGlobal &&
     typeof rootRealmGlobal.crypto === 'object' &&
     'SubtleCrypto' in rootRealmGlobal &&
-    typeof rootRealmGlobal.SubtleCrypto === 'object'
+    typeof rootRealmGlobal.SubtleCrypto === 'function'
   ) {
     return {
       crypto: rootRealmGlobal.crypto,
@@ -16,7 +16,7 @@ const createCrypto = () => {
   // @todo Figure out if this is enough long-term or if we should use a polyfill.
   /* eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require */
   const crypto = require('crypto').webcrypto;
-  return { crypto, SubtleCrypto: crypto.subtle } as const;
+  return { crypto, SubtleCrypto: crypto.subtle.constructor } as const;
 };
 
 const endowmentModule = {
