@@ -4768,6 +4768,7 @@ __metadata:
     "@types/jest": ^27.5.1
     "@types/pump": ^1.1.1
     "@types/semver": ^7.3.10
+    "@types/tar-stream": ^2.2.2
     ajv: ^8.11.0
     ajv-cli: ^5.0.0
     concat-stream: ^2.0.0
@@ -5751,6 +5752,15 @@ __metadata:
   version: 0.0.30
   resolution: "@types/strip-json-comments@npm:0.0.30"
   checksum: 829ddd389645073f347c5b1924a8c34b8813af29756576e511c46f40e218193cf93ccbade62661d47fc70f707e98f410331729b8c20edfcb2e807d51df1ad4b7
+  languageName: node
+  linkType: hard
+
+"@types/tar-stream@npm:^2.2.2":
+  version: 2.2.2
+  resolution: "@types/tar-stream@npm:2.2.2"
+  dependencies:
+    "@types/node": "*"
+  checksum: 4b33bc0d53770e952d6e2e8acb8889190510326a3e255d0c6edd94136d6027ecae939a7b49188d1d02d774328d9a3742ff633d505709d1a1200b3413c88d793d
   languageName: node
   linkType: hard
 

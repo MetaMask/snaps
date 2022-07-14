@@ -52,6 +52,7 @@
     "@types/jest": "^27.5.1",
     "@types/pump": "^1.1.1",
     "@types/semver": "^7.3.10",
+    "@types/tar-stream": "^2.2.2",
     "ajv-cli": "^5.0.0",
     "eslint": "^7.30.0",
     "eslint-config-prettier": "^8.3.0",
