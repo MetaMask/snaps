@@ -1,7 +1,10 @@
 import crypto from './crypto';
 
 jest.mock('crypto', () => ({
-  webcrypto: { mock: true, subtle: { mock: true } },
+  webcrypto: {
+    mock: true,
+    subtle: { mock: true, constructor: { mock: true } },
+  },
 }));
 
 describe('Crypto endowment', () => {
@@ -19,7 +22,7 @@ describe('Crypto endowment', () => {
     });
 
     Object.defineProperty(window, 'SubtleCrypto', {
-      value: {},
+      value: () => undefined,
       writable: true,
     });
 
@@ -36,8 +39,12 @@ describe('Crypto endowment', () => {
   });
 
   it('returns Node.js webcrypto module', () => {
-    expect(crypto.factory()).toStrictEqual({
-      crypto: { mock: true, subtle: { mock: true } },
+    // eslint-disable-next-line jest/prefer-strict-equal
+    expect(crypto.factory()).toEqual({
+      crypto: {
+        mock: true,
+        subtle: { mock: true, constructor: { mock: true } },
+      },
       SubtleCrypto: { mock: true },
     });
   });
