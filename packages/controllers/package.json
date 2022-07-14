@@ -7,6 +7,9 @@
     "url": "https://github.com/MetaMask/snaps-skunkworks.git"
   },
   "main": "dist/index.js",
+  "browser": {
+    "./dist/services": "./dist/services/browser.js"
+  },
   "types": "dist/index.d.ts",
   "files": [
     "dist/"
