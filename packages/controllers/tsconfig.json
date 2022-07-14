@@ -10,11 +10,7 @@
   },
   "include": ["./src"],
   "references": [
-    {
-      "path": "../utils"
-    },
-    {
-      "path": "../execution-environments"
-    }
+    { "path": "../utils" },
+    { "path": "../execution-environments" }
   ]
 }
