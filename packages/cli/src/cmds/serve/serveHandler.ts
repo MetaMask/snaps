@@ -32,8 +32,8 @@ export async function serve(argv: YargsArgs): Promise<void> {
             },
             {
               key: 'Access-Control-Allow-Origin',
-              value: '*'
-            }
+              value: '*',
+            },
           ],
         },
       ],
