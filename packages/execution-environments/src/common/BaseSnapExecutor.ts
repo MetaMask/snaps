@@ -91,12 +91,19 @@ export class BaseSnapExecutor {
       shouldIncludeStack: false,
     });
 
+    const { message: originalMessage, stack: originalStack } = serializeError(
+      _originalError,
+      {
+        shouldIncludeStack: true,
+      },
+    );
+
     this.notify({
       error: {
         ...serializedError,
         data: {
           ...data,
-          originalError: _originalError,
+          originalError: { message: originalMessage, stack: originalStack },
         },
       },
     });
@@ -193,9 +200,13 @@ export class BaseSnapExecutor {
     };
 
     this.snapPromiseErrorHandler = (error: PromiseRejectionEvent) => {
-      this.errorHandler('Unhandled promise rejection in snap.', error.reason, {
-        snapName,
-      });
+      this.errorHandler(
+        'Unhandled promise rejection in snap.',
+        error instanceof Error ? error : error.reason,
+        {
+          snapName,
+        },
+      );
     };
 
     const wallet = this.createSnapProvider();
