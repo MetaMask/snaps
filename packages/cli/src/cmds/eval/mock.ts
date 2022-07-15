@@ -59,7 +59,7 @@ const generateMockClass = (value: any) => {
 };
 
 // Things not currently auto-mocked because of NodeJS, by adding them here we have types for them and can use that to generate mocks if needed
-const mockWindow = {
+const mockWindow: Record<string, unknown> = {
   WebSocket: MockClass,
   crypto,
   SubtleCrypto: MockClass,
@@ -82,7 +82,7 @@ const generateMockEndowment = (key: string) => {
   }
 
   // Fall back to mockWindow for certain APIs not exposed in global in Node.JS
-  const globalOrMocked = globalValue ?? (mockWindow as any)[key];
+  const globalOrMocked = mockWindow[key];
 
   const type = typeof globalOrMocked;
   const isFunction = type === 'function';
