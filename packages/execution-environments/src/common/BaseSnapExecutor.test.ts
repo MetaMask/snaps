@@ -465,7 +465,7 @@ describe('BaseSnapExecutor', () => {
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
-      result: { type: 'OutboundRequest' },
+      method: 'OutboundRequest',
     });
 
     const providerRequest = await executor.readRpc();
@@ -512,7 +512,7 @@ describe('BaseSnapExecutor', () => {
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
-      result: { type: 'OutboundResponse' },
+      method: 'OutboundResponse',
     });
 
     expect(await executor.readCommand()).toStrictEqual({
