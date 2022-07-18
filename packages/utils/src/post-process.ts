@@ -74,8 +74,6 @@ function breakTokensTemplateLiteral(
   // should only be used in environments where the function is supported.
   const matches: RegExpMatchArray[] = Array.from(value.matchAll(TOKEN_REGEX));
 
-  console.log(matches);
-
   if (matches.length > 0) {
     const output = matches.reduce<[TemplateElement[], Expression[]]>(
       ([elements, expressions], rawMatch, index, values) => {
