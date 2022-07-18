@@ -23,8 +23,10 @@ import {
 } from './initUtils';
 
 jest.mock('fs', () => ({
+  ...jest.requireActual('fs'),
   existsSync: jest.fn(),
   promises: {
+    ...jest.requireActual('fs').promises,
     mkdir: jest.fn(),
     readdir: jest.fn(),
     readFile: jest.fn(),

@@ -18,7 +18,6 @@ export = {
       .option('stripComments', builders.stripComments)
       .option('transpilationMode', builders.transpilationMode)
       .option('depsToTranspile', builders.depsToTranspile)
-      .option('transformHtmlComments', builders.transformHtmlComments)
       .option('writeManifest', builders.writeManifest)
       .implies('writeManifest', 'manifest')
       .implies('depsToTranspile', 'transpilationMode')
