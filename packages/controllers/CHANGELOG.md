@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.18.1]
-### Uncategorized
-- Fix error serialization issues ([#637](https://github.com/MetaMask/snaps-skunkworks/pull/637))
+### Changed
+- No changes this release.
 
 ## [0.18.0]
 ### Changed
