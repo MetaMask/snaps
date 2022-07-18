@@ -1,6 +1,6 @@
 import fs from 'fs';
-import * as snapUtils from '@metamask/snap-controllers/dist/snaps';
-import { SnapManifest } from '@metamask/snap-controllers/dist/snaps';
+import { SnapManifest } from '@metamask/snap-utils';
+import * as snapUtils from '@metamask/snap-utils';
 import initPackageJson from 'init-package-json';
 import mkdirp from 'mkdirp';
 import { Arguments } from 'yargs';
@@ -31,7 +31,7 @@ jest.mock('fs', () => ({
   },
 }));
 
-jest.mock('@metamask/snap-controllers/dist/snaps');
+jest.mock('@metamask/snap-utils');
 jest.mock('init-package-json');
 jest.mock('mkdirp');
 

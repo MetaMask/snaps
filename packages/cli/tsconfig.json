@@ -14,8 +14,5 @@
     ]
   },
   "include": ["./src/**/*.ts", "./src/**/*.json"],
-  "references": [
-    { "path": "../controllers" },
-    { "path": "../plugin-browserify" }
-  ]
+  "references": [{ "path": "../utils" }, { "path": "../plugin-browserify" }]
 }

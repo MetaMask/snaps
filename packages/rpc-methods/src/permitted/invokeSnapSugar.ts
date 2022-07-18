@@ -1,5 +1,5 @@
 import { ethErrors } from 'eth-rpc-errors';
-import { SNAP_PREFIX } from '@metamask/snap-controllers';
+import { SNAP_PREFIX } from '@metamask/snap-utils';
 import {
   PermittedHandlerExport,
   JsonRpcRequest,

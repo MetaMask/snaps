@@ -5,8 +5,8 @@ import {
   Json,
   SubjectPermissions,
   ValidPermission,
+  ControllerMessenger,
 } from '@metamask/controllers';
-import { ControllerMessenger } from '@metamask/controllers/dist/ControllerMessenger';
 import { EthereumRpcError, ethErrors, serializeError } from 'eth-rpc-errors';
 import fetchMock from 'jest-fetch-mock';
 import passworder from '@metamask/browser-passworder';
@@ -15,13 +15,16 @@ import { SnapExecutionData } from '@metamask/snap-types';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
 import pump from 'pump';
+import {
+  SnapManifest,
+  DEFAULT_ENDOWMENTS,
+  getSnapSourceShasum,
+} from '@metamask/snap-utils';
 import { ExecutionService } from '../services/ExecutionService';
-import { NodeThreadExecutionService } from '../services/node';
+import { NodeThreadExecutionService, setupMultiplex } from '../services';
 import { delay } from '../utils';
-import { setupMultiplex } from '../services';
-import { DEFAULT_ENDOWMENTS } from './default-endowments';
+
 import { LONG_RUNNING_PERMISSION } from './endowments';
-import { SnapManifest } from './json-schemas';
 import {
   AllowedActions,
   AllowedEvents,
@@ -35,9 +38,6 @@ import {
   SNAP_APPROVAL_UPDATE,
   TruncatedSnap,
 } from './SnapController';
-import * as utils from './utils';
-
-const { getSnapSourceShasum } = utils;
 
 const { subtle } = new Crypto();
 Object.defineProperty(window, 'crypto', {
@@ -448,8 +448,8 @@ const getTruncatedSnap = ({
   } as const;
 };
 
-jest.mock('./utils', () => ({
-  ...jest.requireActual<typeof utils>('./utils'),
+jest.mock('./utils/npm', () => ({
+  ...jest.requireActual('./utils/npm'),
   fetchNpmSnap: jest.fn().mockResolvedValue({
     manifest: {
       description: 'arbitraryDescription',

@@ -1,9 +1,11 @@
 {
   "extends": "../../tsconfig.packages.json",
   "compilerOptions": {
+    "allowJs": true,
     "outDir": "./dist",
     "rootDir": "./src",
+    "resolveJsonModule": true,
     "typeRoots": ["../../node_modules/@types", "./node_modules/@types"]
   },
-  "include": ["./src"]
+  "include": ["./src", "./src/json-schemas"]
 }

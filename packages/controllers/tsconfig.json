@@ -8,6 +8,9 @@
     "rootDir": "./src",
     "typeRoots": ["../../node_modules/@types", "./node_modules/@types"]
   },
-  "include": ["./src", "./src/snaps/json-schemas"],
-  "references": [{ "path": "../execution-environments" }]
+  "include": ["./src"],
+  "references": [
+    { "path": "../utils" },
+    { "path": "../execution-environments" }
+  ]
 }

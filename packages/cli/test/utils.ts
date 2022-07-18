@@ -1,7 +1,4 @@
-import {
-  NpmSnapPackageJson,
-  SnapManifest,
-} from '@metamask/snap-controllers/dist/snaps';
+import { NpmSnapPackageJson, SnapManifest } from '@metamask/snap-utils';
 
 type GetSnapManifestOptions = Partial<Omit<SnapManifest, 'source'>> & {
   shasum?: string;

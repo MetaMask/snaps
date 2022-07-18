@@ -1,8 +1,5 @@
 import { promises as fs } from 'fs';
-import {
-  getSnapSourceShasum,
-  NpmSnapFileNames,
-} from '@metamask/snap-controllers';
+import { getSnapSourceShasum, NpmSnapFileNames } from '@metamask/snap-utils';
 import mkdirp from 'mkdirp';
 import { getPackageJson, getSnapManifest } from '../../../test/utils';
 import * as fsUtils from '../../utils/fs';

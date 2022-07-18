@@ -29,21 +29,11 @@ import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
-import { assertExhaustive, hasTimedOut, setDiff, withTimeout } from '../utils';
 import {
-  ExecuteSnapAction,
-  ExecutionServiceEvents,
-  GetRpcRequestHandlerAction,
-  TerminateAllSnapsAction,
-  TerminateSnapAction,
-} from '..';
-import { DEFAULT_ENDOWMENTS } from './default-endowments';
-import { LONG_RUNNING_PERMISSION } from './endowments';
-import { SnapManifest, validateSnapJsonFile } from './json-schemas';
-import { RequestQueue } from './RequestQueue';
-import {
+  SnapManifest,
+  validateSnapJsonFile,
+  DEFAULT_ENDOWMENTS,
   DEFAULT_REQUESTED_SNAP_VERSION,
-  fetchNpmSnap,
   getSnapPermissionName,
   getSnapPrefix,
   gtVersion,
@@ -56,7 +46,20 @@ import {
   SNAP_PREFIX,
   ValidatedSnapId,
   validateSnapShasum,
-} from './utils';
+} from '@metamask/snap-utils';
+import { assertExhaustive, hasTimedOut, setDiff, withTimeout } from '../utils';
+import {
+  ExecuteSnapAction,
+  ExecutionServiceEvents,
+  GetRpcRequestHandlerAction,
+  TerminateAllSnapsAction,
+  TerminateSnapAction,
+} from '..';
+import { fetchNpmSnap } from './utils';
+
+import { LONG_RUNNING_PERMISSION } from './endowments';
+import { RequestQueue } from './RequestQueue';
+
 import { Timer } from './Timer';
 
 export const controllerName = 'SnapController';
