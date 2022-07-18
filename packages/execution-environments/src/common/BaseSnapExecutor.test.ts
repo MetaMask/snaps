@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-unassigned-import
 import 'ses';
-import { Duplex, DuplexOptions, Readable } from 'stream';
+import { Duplex, DuplexOptions, EventEmitter, Readable } from 'stream';
 import { JsonRpcResponse } from '@metamask/utils';
 import { JsonRpcRequest } from '../__GENERATED__/openrpc';
 import { BaseSnapExecutor } from './BaseSnapExecutor';
@@ -519,6 +519,183 @@ describe('BaseSnapExecutor', () => {
       id: 2,
       jsonrpc: '2.0',
       result: '0xa70e77',
+    });
+  });
+
+  it('notifies execution service of out of band errors via unhandledrejection', async () => {
+    const CODE = `
+    module.exports.onRpcRequest = async () => 'foo';
+    `;
+    const executor = new TestSnapExecutor();
+    const emitter = new EventEmitter();
+
+    jest
+      .spyOn(window, 'addEventListener')
+      .mockImplementation((type, listener) =>
+        emitter.on(type, listener as any),
+      );
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'executeSnap',
+      params: [FAKE_SNAP_NAME, CODE, []],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        FAKE_SNAP_NAME,
+        FAKE_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: 'foo',
+    });
+
+    const testError = new Error('test error');
+    emitter.emit('unhandledrejection', { reason: testError });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      error: {
+        code: -32603,
+        data: {
+          stack: testError.stack,
+          snapName: 'local:foo',
+        },
+        message: testError.message,
+      },
+    });
+  });
+
+  it('notifies execution service of out of band errors via unhandledrejection when event is error', async () => {
+    const CODE = `
+    module.exports.onRpcRequest = async () => 'foo';
+    `;
+    const executor = new TestSnapExecutor();
+    const emitter = new EventEmitter();
+
+    jest
+      .spyOn(window, 'addEventListener')
+      .mockImplementation((type, listener) =>
+        emitter.on(type, listener as any),
+      );
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'executeSnap',
+      params: [FAKE_SNAP_NAME, CODE, []],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        FAKE_SNAP_NAME,
+        FAKE_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: 'foo',
+    });
+
+    const testError = new Error('test error');
+    emitter.emit('unhandledrejection', testError);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      error: {
+        code: -32603,
+        data: {
+          stack: testError.stack,
+          snapName: 'local:foo',
+        },
+        message: testError.message,
+      },
+    });
+  });
+
+  it('notifies execution service of out of band errors via error', async () => {
+    const CODE = `
+    module.exports.onRpcRequest = async () => 'foo';
+    `;
+    const executor = new TestSnapExecutor();
+    const emitter = new EventEmitter();
+
+    jest
+      .spyOn(window, 'addEventListener')
+      .mockImplementation((type, listener) =>
+        emitter.on(type, listener as any),
+      );
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'executeSnap',
+      params: [FAKE_SNAP_NAME, CODE, []],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        FAKE_SNAP_NAME,
+        FAKE_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: 'foo',
+    });
+
+    const testError = new Error('test error');
+    emitter.emit('error', { error: testError });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      error: {
+        code: -32603,
+        data: {
+          stack: testError.stack,
+          snapName: 'local:foo',
+        },
+        message: testError.message,
+      },
     });
   });
 

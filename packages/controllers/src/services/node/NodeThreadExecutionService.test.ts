@@ -198,8 +198,11 @@ describe('NodeThreadExecutionService', () => {
     // eslint-disable-next-line jest/prefer-strict-equal
     expect(await unhandledErrorPromise).toEqual({
       code: -32603,
-      data: { snapName: 'TestSnap' },
-      message: 'Unhandled promise rejection in snap.',
+      data: {
+        snapName: 'TestSnap',
+        stack: expect.any(String),
+      },
+      message: 'random error inside',
     });
 
     await service.terminateAllSnaps();
