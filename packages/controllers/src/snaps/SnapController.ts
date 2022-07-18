@@ -34,7 +34,6 @@ import {
   validateSnapJsonFile,
   DEFAULT_ENDOWMENTS,
   DEFAULT_REQUESTED_SNAP_VERSION,
-  fetchNpmSnap,
   getSnapPermissionName,
   getSnapPrefix,
   gtVersion,
@@ -56,6 +55,7 @@ import {
   TerminateAllSnapsAction,
   TerminateSnapAction,
 } from '..';
+import { fetchNpmSnap } from './utils';
 
 import { LONG_RUNNING_PERMISSION } from './endowments';
 import { RequestQueue } from './RequestQueue';

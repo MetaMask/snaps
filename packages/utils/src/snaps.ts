@@ -1,7 +1,6 @@
 import { createHash } from 'crypto';
 import { SnapManifest } from './json-schemas';
 import { SnapIdPrefixes, SnapValidationFailureReason } from './types';
-import { ProgrammaticallyFixableSnapError } from './npm';
 
 export const LOCALHOST_HOSTNAMES = new Set(['localhost', '127.0.0.1', '::1']);
 export const SNAP_PREFIX = 'wallet_snap_';
@@ -17,6 +16,19 @@ export const SNAP_PREFIX = 'wallet_snap_';
 // https://github.com/SchemaStore/schemastore/blob/81a16897c1dabfd98c72242a5fd62eb080ff76d8/src/schemas/json/package.json#L132-L138
 export const PROPOSED_NAME_REGEX =
   /^(?:[A-Za-z0-9-_]+( [A-Za-z0-9-_]+)*)|(?:(?:@[A-Za-z0-9-*~][A-Za-z0-9-*._~]*\/)?[A-Za-z0-9-~][A-Za-z0-9-._~]*)$/u;
+
+/**
+ * An error indicating that a Snap validation failure is programmatically
+ * fixable during development.
+ */
+export class ProgrammaticallyFixableSnapError extends Error {
+  reason: SnapValidationFailureReason;
+
+  constructor(message: string, reason: SnapValidationFailureReason) {
+    super(message);
+    this.reason = reason;
+  }
+}
 
 /**
  * Calculates the Base64-encoded SHA-256 digest of a Snap source code string.

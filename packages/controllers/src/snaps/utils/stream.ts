@@ -3,8 +3,11 @@ import { ReadableWebToNodeStream } from 'readable-web-to-node-stream';
 import { extract as tarExtract } from 'tar-stream';
 import concat from 'concat-stream';
 import { isObject } from '@metamask/utils';
-import { SnapManifest } from './json-schemas';
-import { NpmSnapFileNames, UnvalidatedSnapFiles } from './types';
+import {
+  SnapManifest,
+  NpmSnapFileNames,
+  UnvalidatedSnapFiles,
+} from '@metamask/snap-utils';
 
 // The paths of files within npm tarballs appear to always be prefixed with
 // "package/".

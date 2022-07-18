@@ -448,10 +448,8 @@ const getTruncatedSnap = ({
   } as const;
 };
 
-jest.mock('@metamask/snap-utils', () => ({
-  ...jest.requireActual<typeof import('@metamask/snap-utils')>(
-    '@metamask/snap-utils',
-  ),
+jest.mock('./utils/npm', () => ({
+  ...jest.requireActual('./utils/npm'),
   fetchNpmSnap: jest.fn().mockResolvedValue({
     manifest: {
       description: 'arbitraryDescription',

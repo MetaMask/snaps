@@ -41,7 +41,7 @@ describe('fetchNpmSnap', () => {
             body: createReadStream(
               path.resolve(
                 __dirname,
-                `../test/fixtures/metamask-template-snap-${templateSnapVersion}.tgz`,
+                `../../../test/fixtures/metamask-template-snap-${templateSnapVersion}.tgz`,
               ),
             ),
           }) as any,

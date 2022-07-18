@@ -2,21 +2,21 @@ import { isObject } from '@metamask/utils';
 import pump from 'pump';
 import createGunzipStream from 'gunzip-maybe';
 import deepEqual from 'fast-deep-equal';
-import { validateSnapShasum } from './snaps';
 import {
   NpmSnapPackageJson,
   SnapManifest,
   validateSnapJsonFile,
-} from './json-schemas';
-import { createTarballExtractionStream, getNodeStream } from './stream';
-import {
+  validateSnapShasum,
   NpmSnapFileNames,
   SnapFiles,
   SnapValidationFailureReason,
   UnvalidatedSnapFiles,
-} from './types';
-import { isValidUrl } from './url';
-import { getTargetVersion } from './versions';
+  isValidUrl,
+  getTargetVersion,
+  ProgrammaticallyFixableSnapError,
+} from '@metamask/snap-utils';
+
+import { createTarballExtractionStream, getNodeStream } from './stream';
 
 export const DEFAULT_NPM_REGISTRY = 'https://registry.npmjs.org';
 
@@ -30,19 +30,6 @@ const SnapFileNameFromKey = {
   packageJson: NpmSnapFileNames.PackageJson,
   sourceCode: 'source code bundle',
 } as const;
-
-/**
- * An error indicating that a Snap validation failure is programmatically
- * fixable during development.
- */
-export class ProgrammaticallyFixableSnapError extends Error {
-  reason: SnapValidationFailureReason;
-
-  constructor(message: string, reason: SnapValidationFailureReason) {
-    super(message);
-    this.reason = reason;
-  }
-}
 
 /**
  * Fetches a Snap from the public npm registry.
