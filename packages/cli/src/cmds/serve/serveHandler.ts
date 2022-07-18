@@ -30,6 +30,10 @@ export async function serve(argv: YargsArgs): Promise<void> {
               key: 'Cache-Control',
               value: 'no-cache',
             },
+            {
+              key: 'Access-Control-Allow-Origin',
+              value: '*',
+            },
           ],
         },
       ],
