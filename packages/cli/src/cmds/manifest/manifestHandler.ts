@@ -3,12 +3,12 @@ import {
   NpmSnapFileNames,
   SnapManifest,
   UnvalidatedSnapFiles,
-  validateNpmSnap,
-  validateNpmSnapManifest,
   getSnapSourceShasum,
   ProgrammaticallyFixableSnapError,
   SnapValidationFailureReason,
   SnapFiles,
+  validateNpmSnap,
+  validateNpmSnapManifest,
 } from '@metamask/snap-utils';
 import { Json } from '@metamask/utils';
 
