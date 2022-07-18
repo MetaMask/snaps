@@ -573,13 +573,11 @@ describe('BaseSnapExecutor', () => {
       error: {
         code: -32603,
         data: {
-          originalError: {
-            message: testError.message,
-            stack: testError.stack,
-          },
+          stack: testError.stack,
           snapName: 'local:foo',
         },
-        message: 'Unhandled promise rejection in snap.',
+        message: testError.message,
+        stack: testError.stack,
       },
     });
   });
@@ -635,13 +633,11 @@ describe('BaseSnapExecutor', () => {
       error: {
         code: -32603,
         data: {
-          originalError: {
-            message: testError.message,
-            stack: testError.stack,
-          },
+          stack: testError.stack,
           snapName: 'local:foo',
         },
-        message: 'Unhandled promise rejection in snap.',
+        message: testError.message,
+        stack: testError.stack,
       },
     });
   });
@@ -697,13 +693,11 @@ describe('BaseSnapExecutor', () => {
       error: {
         code: -32603,
         data: {
-          originalError: {
-            message: testError.message,
-            stack: testError.stack,
-          },
+          stack: testError.stack,
           snapName: 'local:foo',
         },
-        message: 'Uncaught error in snap.',
+        message: testError.message,
+        stack: testError.stack,
       },
     });
   });

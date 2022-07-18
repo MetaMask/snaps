@@ -200,12 +200,10 @@ describe('NodeProcessExecutionService', () => {
       code: -32603,
       data: {
         snapName: 'TestSnap',
-        originalError: {
-          message: 'random error inside',
-          stack: expect.any(String),
-        },
+        stack: expect.any(String),
       },
-      message: 'Unhandled promise rejection in snap.',
+      message: 'random error inside',
+      stack: expect.any(String),
     });
 
     await service.terminateAllSnaps();

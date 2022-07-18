@@ -78,28 +78,17 @@ export class BaseSnapExecutor {
     );
   }
 
-  private errorHandler(
-    reason: string,
-    originalError: unknown,
-    data: Record<string, unknown>,
-  ) {
-    const error = new Error(reason);
-
-    const _originalError: Error | undefined = constructError(originalError);
-
-    const serializedError = serializeError(error, {
-      shouldIncludeStack: false,
+  private errorHandler(error: unknown, data: Record<string, unknown>) {
+    const serializedError = serializeError(constructError(error), {
+      fallbackError,
+      shouldIncludeStack: true,
     });
-
     this.notify({
       error: {
         ...serializedError,
         data: {
           ...data,
-          originalError: {
-            message: _originalError?.message,
-            stack: _originalError?.stack,
-          },
+          stack: serializedError.stack,
         },
       },
     });
@@ -192,17 +181,13 @@ export class BaseSnapExecutor {
     }
 
     this.snapErrorHandler = (error: ErrorEvent) => {
-      this.errorHandler('Uncaught error in snap.', error.error, { snapName });
+      this.errorHandler(error.error, { snapName });
     };
 
     this.snapPromiseErrorHandler = (error: PromiseRejectionEvent) => {
-      this.errorHandler(
-        'Unhandled promise rejection in snap.',
-        error instanceof Error ? error : error.reason,
-        {
-          snapName,
-        },
-      );
+      this.errorHandler(error instanceof Error ? error : error.reason, {
+        snapName,
+      });
     };
 
     const wallet = this.createSnapProvider();
