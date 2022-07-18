@@ -91,19 +91,15 @@ export class BaseSnapExecutor {
       shouldIncludeStack: false,
     });
 
-    const { message: originalMessage, stack: originalStack } = serializeError(
-      _originalError,
-      {
-        shouldIncludeStack: true,
-      },
-    );
-
     this.notify({
       error: {
         ...serializedError,
         data: {
           ...data,
-          originalError: { message: originalMessage, stack: originalStack },
+          originalError: {
+            message: _originalError?.message,
+            stack: _originalError?.stack,
+          },
         },
       },
     });
