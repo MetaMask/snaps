@@ -82,7 +82,7 @@ const generateMockEndowment = (key: string) => {
   }
 
   // Fall back to mockWindow for certain APIs not exposed in global in Node.JS
-  const globalOrMocked = globalValue ?? (mockWindow as any)[key];
+  const globalOrMocked = globalValue ?? mockWindow[key];
 
   const type = typeof globalOrMocked;
   const isFunction = type === 'function';
