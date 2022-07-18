@@ -15,7 +15,9 @@ import * as manifestHandlerModule from './manifestHandler';
 import manifestModule from '.';
 
 jest.mock('fs', () => ({
+  ...jest.requireActual('fs'),
   promises: {
+    ...jest.requireActual('fs').promises,
     writeFile: jest.fn(),
     readFile: jest.fn(),
   },
