@@ -70,7 +70,11 @@ function breakTokens(value: string): string[] {
 function breakTokensTemplateLiteral(
   value: string,
 ): [TemplateElement[], Expression[]] {
-  const matches = Array.from(value.matchAll(TOKEN_REGEX));
+  // @ts-expect-error `matchAll` is not available in ES2017, but this code
+  // should only be used in environments where the function is supported.
+  const matches: RegExpMatchArray[] = Array.from(value.matchAll(TOKEN_REGEX));
+
+  console.log(matches);
 
   if (matches.length > 0) {
     const output = matches.reduce<[TemplateElement[], Expression[]]>(
