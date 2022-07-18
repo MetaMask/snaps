@@ -79,16 +79,17 @@ export class BaseSnapExecutor {
   }
 
   private errorHandler(error: unknown, data: Record<string, unknown>) {
-    const serializedError = serializeError(constructError(error), {
+    const constructedError = constructError(error);
+    const serializedError = serializeError(constructedError, {
       fallbackError,
-      shouldIncludeStack: true,
+      shouldIncludeStack: false,
     });
     this.notify({
       error: {
         ...serializedError,
         data: {
           ...data,
-          stack: serializedError.stack,
+          stack: constructedError?.stack,
         },
       },
     });

@@ -577,7 +577,6 @@ describe('BaseSnapExecutor', () => {
           snapName: 'local:foo',
         },
         message: testError.message,
-        stack: testError.stack,
       },
     });
   });
@@ -637,7 +636,6 @@ describe('BaseSnapExecutor', () => {
           snapName: 'local:foo',
         },
         message: testError.message,
-        stack: testError.stack,
       },
     });
   });
@@ -697,7 +695,6 @@ describe('BaseSnapExecutor', () => {
           snapName: 'local:foo',
         },
         message: testError.message,
-        stack: testError.stack,
       },
     });
   });

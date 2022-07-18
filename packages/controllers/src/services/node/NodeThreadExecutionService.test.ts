@@ -203,7 +203,6 @@ describe('NodeThreadExecutionService', () => {
         stack: expect.any(String),
       },
       message: 'random error inside',
-      stack: expect.any(String),
     });
 
     await service.terminateAllSnaps();
