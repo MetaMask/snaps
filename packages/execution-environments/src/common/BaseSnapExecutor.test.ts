@@ -570,13 +570,16 @@ describe('BaseSnapExecutor', () => {
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
-      error: {
-        code: -32603,
-        data: {
-          stack: testError.stack,
-          snapName: 'local:foo',
+      method: 'UnhandledError',
+      params: {
+        error: {
+          code: -32603,
+          data: {
+            stack: testError.stack,
+            snapName: 'local:foo',
+          },
+          message: testError.message,
         },
-        message: testError.message,
       },
     });
   });
@@ -629,13 +632,16 @@ describe('BaseSnapExecutor', () => {
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
-      error: {
-        code: -32603,
-        data: {
-          stack: testError.stack,
-          snapName: 'local:foo',
+      method: 'UnhandledError',
+      params: {
+        error: {
+          code: -32603,
+          data: {
+            stack: testError.stack,
+            snapName: 'local:foo',
+          },
+          message: testError.message,
         },
-        message: testError.message,
       },
     });
   });
@@ -688,13 +694,16 @@ describe('BaseSnapExecutor', () => {
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
-      error: {
-        code: -32603,
-        data: {
-          stack: testError.stack,
-          snapName: 'local:foo',
+      method: 'UnhandledError',
+      params: {
+        error: {
+          code: -32603,
+          data: {
+            stack: testError.stack,
+            snapName: 'local:foo',
+          },
+          message: testError.message,
         },
-        message: testError.message,
       },
     });
   });
