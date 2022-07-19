@@ -1,0 +1,47 @@
+{
+  "name": "@metamask/snaps-renderer",
+  "version": "0.18.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps-skunkworks.git"
+  },
+  "main": "dist/index.js",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "test": "jest && yarn posttest",
+    "posttest": "jest-it-up",
+    "test:ci": "yarn test",
+    "lint:eslint": "eslint . --cache --ext js,ts",
+    "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
+    "lint": "yarn lint:eslint && yarn lint:misc --check",
+    "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
+    "lint:changelog": "yarn auto-changelog validate",
+    "ajv-compile": "ajv compile --strict=true --all-errors",
+    "build:ajv": "./scripts/build-ajv.sh",
+    "build:pre-tsc": "yarn build:ajv && node scripts/transpileSchemaTypes.js",
+    "build:tsc": "tsc --project tsconfig.local.json",
+    "build": "yarn build:pre-tsc && yarn build:tsc",
+    "build:clean": "yarn clean && yarn build",
+    "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
+    "publish:package": "../../scripts/publish-package.sh",
+    "start": "gatsby develop"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.15",
+    "gatsby": "^4.18.2",
+    "typescript": "^4.7.4"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}
