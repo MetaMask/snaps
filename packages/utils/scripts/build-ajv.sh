@@ -15,11 +15,11 @@ function ajv_compile() {
 # encountered during validation.
 SED_REGEX='s/return errors === 0;\}$/return vErrors;\}/'
 
-FILE_1='src/snaps/json-schemas/validateSnapManifest.js'
-FILE_2='src/snaps/json-schemas/validateNpmSnapPackageJson.js'
+FILE_1='src/json-schemas/validateSnapManifest.js'
+FILE_2='src/json-schemas/validateNpmSnapPackageJson.js'
 
-ajv_compile 'src/snaps/json-schemas/snap-manifest.schema.json' "$FILE_1"
-ajv_compile 'src/snaps/json-schemas/npm-snap-package-json.schema.json' "$FILE_2"
+ajv_compile 'src/json-schemas/snap-manifest.schema.json' "$FILE_1"
+ajv_compile 'src/json-schemas/npm-snap-package-json.schema.json' "$FILE_2"
 
 # Modify the return value of the validation functions.
 sed -i'' -e "$SED_REGEX" "$FILE_1" "$FILE_2"

@@ -4,6 +4,7 @@ import { Duplex } from 'stream';
 import { MetaMaskInpageProvider } from '@metamask/providers';
 import { SnapProvider } from '@metamask/snap-types';
 import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
+import { JsonRpcNotification } from '@metamask/utils';
 import EEOpenRPCDocument from '../openrpc.json';
 import {
   Endowments,
@@ -68,6 +69,7 @@ export class BaseSnapExecutor {
             `No onRpcRequest handler exported for snap "${target}`,
           );
         }
+
         // We're capturing the handler in case someone modifies the data object before the call
         const handler = data.exports.onRpcRequest;
         return this.executeInSnapContext(target, () =>
@@ -78,25 +80,21 @@ export class BaseSnapExecutor {
     );
   }
 
-  private errorHandler(
-    reason: string,
-    originalError: unknown,
-    data: Record<string, unknown>,
-  ) {
-    const error = new Error(reason);
-
-    const _originalError: Error | undefined = constructError(originalError);
-
-    const serializedError = serializeError(error, {
+  private errorHandler(error: unknown, data: Record<string, unknown>) {
+    const constructedError = constructError(error);
+    const serializedError = serializeError(constructedError, {
+      fallbackError,
       shouldIncludeStack: false,
     });
-
     this.notify({
-      error: {
-        ...serializedError,
-        data: {
-          ...data,
-          originalError: _originalError,
+      method: 'UnhandledError',
+      params: {
+        error: {
+          ...serializedError,
+          data: {
+            ...data,
+            stack: constructedError?.stack,
+          },
         },
       },
     });
@@ -151,7 +149,12 @@ export class BaseSnapExecutor {
     }
   }
 
-  protected notify(requestObject: Record<string, unknown>) {
+  protected notify(
+    requestObject: Omit<
+      JsonRpcNotification<Record<string, unknown> | unknown[]>,
+      'jsonrpc'
+    >,
+  ) {
     this.commandStream.write({
       ...requestObject,
       jsonrpc: '2.0',
@@ -189,11 +192,11 @@ export class BaseSnapExecutor {
     }
 
     this.snapErrorHandler = (error: ErrorEvent) => {
-      this.errorHandler('Uncaught error in snap.', error.error, { snapName });
+      this.errorHandler(error.error, { snapName });
     };
 
     this.snapPromiseErrorHandler = (error: PromiseRejectionEvent) => {
-      this.errorHandler('Unhandled promise rejection in snap.', error.reason, {
+      this.errorHandler(error instanceof Error ? error : error.reason, {
         snapName,
       });
     };
@@ -283,11 +286,11 @@ export class BaseSnapExecutor {
     const originalRequest = provider.request;
 
     provider.request = async (args) => {
-      this.notify({ result: { type: 'OutboundRequest' } });
+      this.notify({ method: 'OutboundRequest' });
       try {
         return await originalRequest(args);
       } finally {
-        this.notify({ result: { type: 'OutboundResponse' } });
+        this.notify({ method: 'OutboundResponse' });
       }
     };
 

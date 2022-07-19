@@ -1,5 +1,5 @@
 import { promises as fs } from 'fs';
-import type { Json } from '@metamask/snap-controllers';
+import type { Json } from '@metamask/utils';
 import { logError } from './misc';
 
 /**

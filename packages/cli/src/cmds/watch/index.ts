@@ -15,7 +15,6 @@ export = {
       .option('outfileName', builders.outfileName)
       .option('sourceMaps', builders.sourceMaps)
       .option('stripComments', builders.stripComments)
-      .option('transformHtmlComments', builders.transformHtmlComments)
       .option('transpilationMode', builders.transpilationMode)
       .option('depsToTranspile', builders.depsToTranspile)
       .option('manifest', builders.manifest)

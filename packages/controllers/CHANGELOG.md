@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.18.1]
+### Changed
+- No changes this release.
+
+## [0.18.0]
+### Changed
+- Reduce TypeScript compilation target to ES2017 ([#628](https://github.com/MetaMask/snaps-skunkworks/pull/628))
+- **BREAKING:** Add browser entrypoint for execution services ([#629](https://github.com/MetaMask/snaps-skunkworks/pull/629))
+  - Node.js execution services are now omitted in browser environments
+
 ## [0.17.0]
 ### Added
 - Add snap blocklist functionality ([#597](https://github.com/MetaMask/snaps-skunkworks/pull/597))
@@ -307,7 +317,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.17.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.18.1...HEAD
+[0.18.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.18.0...v0.18.1
+[0.18.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.17.0...v0.18.0
 [0.17.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.16.0...v0.17.0
 [0.16.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.15.0...v0.16.0
 [0.15.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.14.0...v0.15.0

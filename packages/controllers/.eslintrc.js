@@ -4,6 +4,4 @@ module.exports = {
   rules: {
     '@typescript-eslint/consistent-type-definitions': 'off',
   },
-
-  ignorePatterns: ['src/snaps/json-schemas'],
 };

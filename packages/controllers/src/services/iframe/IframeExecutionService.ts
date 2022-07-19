@@ -5,27 +5,24 @@ import {
 import {
   Job,
   AbstractExecutionService,
-  SetupSnapProvider,
+  ExecutionServiceArgs,
 } from '../AbstractExecutionService';
-import { ExecutionServiceMessenger } from '../ExecutionService';
 
 type IframeExecutionEnvironmentServiceArgs = {
-  setupSnapProvider: SetupSnapProvider;
   iframeUrl: URL;
-  messenger: ExecutionServiceMessenger;
-};
+} & ExecutionServiceArgs;
 
 export class IframeExecutionService extends AbstractExecutionService<Window> {
   public iframeUrl: URL;
 
   constructor({
-    setupSnapProvider,
     iframeUrl,
     messenger,
+    setupSnapProvider,
   }: IframeExecutionEnvironmentServiceArgs) {
     super({
-      setupSnapProvider,
       messenger,
+      setupSnapProvider,
     });
     this.iframeUrl = iframeUrl;
   }

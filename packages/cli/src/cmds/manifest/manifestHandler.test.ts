@@ -2,7 +2,7 @@ import { promises as fs } from 'fs';
 import {
   NpmSnapFileNames,
   SnapValidationFailureReason,
-} from '@metamask/snap-controllers/dist/snaps';
+} from '@metamask/snap-utils';
 import {
   DEFAULT_SNAP_BUNDLE,
   FakeFsError,
@@ -15,7 +15,9 @@ import * as manifestHandlerModule from './manifestHandler';
 import manifestModule from '.';
 
 jest.mock('fs', () => ({
+  ...jest.requireActual('fs'),
   promises: {
+    ...jest.requireActual('fs').promises,
     writeFile: jest.fn(),
     readFile: jest.fn(),
   },
