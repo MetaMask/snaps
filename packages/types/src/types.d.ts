@@ -27,7 +27,9 @@ export type SnapRpcHandler = (args: {
 
 export type OnRpcRequestHandler = SnapRpcHandler;
 
+// @todo improve type
 export type OnTxConfirmationHandler = (args: {
+  origin: string;
   transaction: { [key: string]: unknown };
 }) => Promise<string>;
 

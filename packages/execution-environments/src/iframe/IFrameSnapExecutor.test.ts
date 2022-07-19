@@ -7,6 +7,7 @@ import { IFrameSnapExecutor } from './IFrameSnapExecutor';
 
 const FAKE_ORIGIN = 'origin:foo';
 const FAKE_SNAP_NAME = 'local:foo';
+const ON_RPC_REQUEST = 'onRpcRequest';
 
 describe('IFrameSnapExecutor', () => {
   it('receives and processes commands', async () => {
@@ -86,7 +87,12 @@ describe('IFrameSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [FAKE_SNAP_NAME, FAKE_ORIGIN, { jsonrpc: '2.0', method: '' }],
+      params: [
+        FAKE_SNAP_NAME,
+        ON_RPC_REQUEST,
+        FAKE_ORIGIN,
+        { jsonrpc: '2.0', method: '' },
+      ],
     });
 
     expect(

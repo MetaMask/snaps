@@ -7,6 +7,8 @@ import { ErrorMessageEvent } from '../ExecutionService';
 import { setupMultiplex } from '../AbstractExecutionService';
 import { NodeThreadExecutionService } from './NodeThreadExecutionService';
 
+const ON_RPC_REQUEST = 'onRpcRequest';
+
 describe('NodeThreadExecutionService', () => {
   it('can boot', async () => {
     const controllerMessenger = new ControllerMessenger<

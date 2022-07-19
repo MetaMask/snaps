@@ -42,11 +42,20 @@ const fallbackError = {
   message: 'Execution Environment Error',
 };
 
+export type InvokeSnapArgs = Parameters<
+  OnRpcRequestHandler | OnTxConfirmationHandler
+>[0];
+
 export type InvokeSnap = (
   target: Target,
   handler: keyof SnapExports,
-  args: Parameters<OnRpcRequestHandler | OnTxConfirmationHandler>[0],
+  args: InvokeSnapArgs,
 ) => Promise<unknown>;
+
+const SNAP_EXPORTS: (keyof SnapExports)[] = [
+  'onRpcRequest',
+  'onTxConfirmation',
+];
 
 export class BaseSnapExecutor {
   private snapData: Map<string, SnapData>;
@@ -80,7 +89,8 @@ export class BaseSnapExecutor {
         // We're capturing the handler in case someone modifies the data object before the call
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const handler = data.exports[handlerName]!;
-        return this.executeInSnapContext(target, () => handler(args));
+        // @todo fix type
+        return this.executeInSnapContext(target, () => handler(args as any));
       },
       this.onTerminate.bind(this),
     );
@@ -263,21 +273,23 @@ export class BaseSnapExecutor {
   }
 
   private registerSnapExports(snapName: string, snapModule: any) {
-    if (typeof snapModule?.exports?.onRpcRequest === 'function') {
-      const data = this.snapData.get(snapName);
-      // Somebody deleted the Snap before we could register
-      if (data !== undefined) {
-        console.log(
-          'Worker: Registering RPC message handler',
-          snapModule.exports.onRpcRequest,
-        );
+    SNAP_EXPORTS.forEach((exportName) => {
+      if (typeof snapModule?.exports?.[exportName] === 'function') {
+        const data = this.snapData.get(snapName);
+        // Somebody deleted the Snap before we could register
+        if (data !== undefined) {
+          console.log(
+            `Worker: Registering ${exportName} handler'`,
+            snapModule.exports[exportName],
+          );
 
-        data.exports = {
-          ...data.exports,
-          onRpcRequest: snapModule.exports.onRpcRequest,
-        };
+          data.exports = {
+            ...data.exports,
+            [exportName]: snapModule.exports[exportName],
+          };
+        }
       }
-    }
+    });
   }
 
   /**

@@ -7,6 +7,7 @@ import { BaseSnapExecutor } from './BaseSnapExecutor';
 
 const FAKE_ORIGIN = 'origin:foo';
 const FAKE_SNAP_NAME = 'local:foo';
+const ON_RPC_REQUEST = 'onRpcRequest';
 
 type TwoWayPassThroughBuffer = {
   buffer: { chunk: any; encoding: BufferEncoding }[];
@@ -242,7 +243,12 @@ describe('BaseSnapExecutor', () => {
         jsonrpc: '2.0',
         id: 2,
         method: 'snapRpc',
-        params: [FAKE_SNAP_NAME, FAKE_ORIGIN, { jsonrpc: '2.0', method: '' }],
+        params: [
+          FAKE_SNAP_NAME,
+          ON_RPC_REQUEST,
+          FAKE_ORIGIN,
+          { jsonrpc: '2.0', method: '' },
+        ],
       });
 
       jest.advanceTimersByTime(250);
@@ -324,7 +330,12 @@ describe('BaseSnapExecutor', () => {
           jsonrpc: '2.0',
           id: 3,
           method: 'snapRpc',
-          params: [SNAP_NAME_1, FAKE_ORIGIN, { jsonrpc: '2.0', method: 'set' }],
+          params: [
+            SNAP_NAME_1,
+            ON_RPC_REQUEST,
+            FAKE_ORIGIN,
+            { jsonrpc: '2.0', method: 'set' },
+          ],
         });
 
         await executor.writeCommand({
@@ -333,6 +344,7 @@ describe('BaseSnapExecutor', () => {
           method: 'snapRpc',
           params: [
             SNAP_NAME_1,
+            ON_RPC_REQUEST,
             FAKE_ORIGIN,
             { jsonrpc: '2.0', method: 'getHandle' },
           ],
@@ -356,6 +368,7 @@ describe('BaseSnapExecutor', () => {
           method: 'snapRpc',
           params: [
             SNAP_NAME_2,
+            ON_RPC_REQUEST,
             FAKE_ORIGIN,
             { jsonrpc: '2.0', method: '', params: [handle] },
           ],
@@ -403,6 +416,7 @@ describe('BaseSnapExecutor', () => {
       method: 'snapRpc',
       params: [
         FAKE_SNAP_NAME,
+        ON_RPC_REQUEST,
         FAKE_ORIGIN,
         { jsonrpc: '2.0', method: '', params: [] },
       ],
@@ -458,6 +472,7 @@ describe('BaseSnapExecutor', () => {
       method: 'snapRpc',
       params: [
         FAKE_SNAP_NAME,
+        ON_RPC_REQUEST,
         FAKE_ORIGIN,
         { jsonrpc: '2.0', method: '', params: [] },
       ],
@@ -554,6 +569,7 @@ describe('BaseSnapExecutor', () => {
       method: 'snapRpc',
       params: [
         FAKE_SNAP_NAME,
+        ON_RPC_REQUEST,
         FAKE_ORIGIN,
         { jsonrpc: '2.0', method: '', params: [] },
       ],
@@ -616,6 +632,7 @@ describe('BaseSnapExecutor', () => {
       method: 'snapRpc',
       params: [
         FAKE_SNAP_NAME,
+        ON_RPC_REQUEST,
         FAKE_ORIGIN,
         { jsonrpc: '2.0', method: '', params: [] },
       ],
@@ -678,6 +695,7 @@ describe('BaseSnapExecutor', () => {
       method: 'snapRpc',
       params: [
         FAKE_SNAP_NAME,
+        ON_RPC_REQUEST,
         FAKE_ORIGIN,
         { jsonrpc: '2.0', method: '', params: [] },
       ],
@@ -705,6 +723,47 @@ describe('BaseSnapExecutor', () => {
           message: testError.message,
         },
       },
+    });
+  });
+
+  it('supports onTxConfirmation export', async () => {
+    const CODE = `
+      module.exports.onTxConfirmation = ({ transaction }) => transaction;
+    `;
+    const executor = new TestSnapExecutor();
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'executeSnap',
+      params: [FAKE_SNAP_NAME, CODE, []],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    // @todo
+    const transaction = { maxFeePerGas: '0x' };
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        FAKE_SNAP_NAME,
+        'onTxConfirmation',
+        FAKE_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: transaction },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: transaction,
     });
   });
 
@@ -742,6 +801,7 @@ describe('BaseSnapExecutor', () => {
       method: 'snapRpc',
       params: [
         FAKE_SNAP_NAME,
+        ON_RPC_REQUEST,
         FAKE_ORIGIN,
         { jsonrpc: '2.0', method: '', params: [] },
       ],

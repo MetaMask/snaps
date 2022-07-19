@@ -281,7 +281,7 @@ class ExecutionEnvironmentStub implements ExecutionService {
   }
 
   async getRpcRequestHandler(_snapId: string) {
-    return (_: any, request: Record<string, unknown>) => {
+    return (_origin: any, _handler: any, request: Record<string, unknown>) => {
       return new Promise((resolve) => {
         const results = `${request.method}${request.id}`;
         resolve(results);
@@ -1602,7 +1602,6 @@ describe('SnapController', () => {
           jsonrpc: '2.0',
         },
       );
-
       await service.terminateAllSnaps();
     });
 
