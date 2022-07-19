@@ -71,7 +71,7 @@ export function getCommandMethodImplementations(
         throw new Error('request is not a proper JSON RPC Request');
       }
 
-      return invokeSnapRpc(target, origin, request);
+      return (await invokeSnapRpc(target, origin, request)) ?? null;
     },
   };
 }

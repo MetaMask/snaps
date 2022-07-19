@@ -1,8 +1,13 @@
 import { Duplex } from 'stream';
 import ObjectMultiplex from '@metamask/object-multiplex';
-import { SnapExecutionData } from '@metamask/snap-types';
+import { ErrorJSON, SnapExecutionData } from '@metamask/snap-types';
 import { SNAP_STREAM_NAMES } from '@metamask/execution-environments';
-import { Duration } from '@metamask/utils';
+import {
+  Duration,
+  isJsonRpcRequest,
+  isObject,
+  JsonRpcNotification,
+} from '@metamask/utils';
 import {
   JsonRpcEngine,
   // TODO: Replace with @metamask/utils version after bumping json-rpc-engine
@@ -23,7 +28,7 @@ const controllerName = 'ExecutionService';
 
 export type SetupSnapProvider = (snapId: string, stream: Duplex) => void;
 
-type ExecutionServiceArgs = {
+export type ExecutionServiceArgs = {
   setupSnapProvider: SetupSnapProvider;
   messenger: ExecutionServiceMessenger;
   terminationTimeout?: number;
@@ -217,23 +222,40 @@ export abstract class AbstractExecutionService<WorkerType>
 
     // Handle out-of-band errors, i.e. errors thrown from the snap outside of the req/res cycle.
     // Also keep track of outbound request/responses
-    const notificationHandler = (data: any) => {
-      if (data.id !== null && data.id !== undefined) {
+    const notificationHandler = (
+      message: JsonRpcRequest<unknown> | JsonRpcNotification<unknown>,
+    ) => {
+      if (isJsonRpcRequest(message)) {
         return;
       }
+
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const snapId = this.jobToSnapMap.get(jobId)!;
-      if (data.result?.type === 'OutboundRequest') {
+      if (message.method === 'OutboundRequest') {
         this._messenger.publish('ExecutionService:outboundRequest', snapId);
-      } else if (data.result?.type === 'OutboundResponse') {
+      } else if (message.method === 'OutboundResponse') {
         this._messenger.publish('ExecutionService:outboundResponse', snapId);
-      } else if (data.error) {
-        this._messenger.publish(
-          'ExecutionService:unhandledError',
-          snapId,
-          data.error,
+      } else if (message.method === 'UnhandledError') {
+        if (isObject(message.params) && message.params.error) {
+          this._messenger.publish(
+            'ExecutionService:unhandledError',
+            snapId,
+            message.params.error as ErrorJSON,
+          );
+          commandStream.removeListener('data', notificationHandler);
+        } else {
+          console.error(
+            new Error(
+              `Received malformed "${message.method}" command stream notification.`,
+            ),
+          );
+        }
+      } else {
+        console.error(
+          new Error(
+            `Received unexpected command stream notification "${message.method}".`,
+          ),
         );
-        commandStream.removeListener('data', notificationHandler);
       }
     };
     commandStream.on('data', notificationHandler);

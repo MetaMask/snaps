@@ -4,6 +4,7 @@ import { Duplex } from 'stream';
 import { MetaMaskInpageProvider } from '@metamask/providers';
 import { SnapProvider } from '@metamask/snap-types';
 import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
+import { JsonRpcNotification } from '@metamask/utils';
 import EEOpenRPCDocument from '../openrpc.json';
 import {
   Endowments,
@@ -68,6 +69,7 @@ export class BaseSnapExecutor {
             `No onRpcRequest handler exported for snap "${target}`,
           );
         }
+
         // We're capturing the handler in case someone modifies the data object before the call
         const handler = data.exports.onRpcRequest;
         return this.executeInSnapContext(target, () =>
@@ -85,11 +87,14 @@ export class BaseSnapExecutor {
       shouldIncludeStack: false,
     });
     this.notify({
-      error: {
-        ...serializedError,
-        data: {
-          ...data,
-          stack: constructedError?.stack,
+      method: 'UnhandledError',
+      params: {
+        error: {
+          ...serializedError,
+          data: {
+            ...data,
+            stack: constructedError?.stack,
+          },
         },
       },
     });
@@ -144,7 +149,12 @@ export class BaseSnapExecutor {
     }
   }
 
-  protected notify(requestObject: Record<string, unknown>) {
+  protected notify(
+    requestObject: Omit<
+      JsonRpcNotification<Record<string, unknown> | unknown[]>,
+      'jsonrpc'
+    >,
+  ) {
     this.commandStream.write({
       ...requestObject,
       jsonrpc: '2.0',
@@ -276,11 +286,11 @@ export class BaseSnapExecutor {
     const originalRequest = provider.request;
 
     provider.request = async (args) => {
-      this.notify({ result: { type: 'OutboundRequest' } });
+      this.notify({ method: 'OutboundRequest' });
       try {
         return await originalRequest(args);
       } finally {
-        this.notify({ result: { type: 'OutboundResponse' } });
+        this.notify({ method: 'OutboundResponse' });
       }
     };
 
