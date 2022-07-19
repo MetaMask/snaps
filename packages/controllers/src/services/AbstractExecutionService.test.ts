@@ -62,7 +62,7 @@ describe('AbstractExecutionService', () => {
     );
   });
 
-  it('throws for malformed UnhandledError notification', async () => {
+  it('logs error for malformed UnhandledError notification', async () => {
     const consoleErrorSpy = jest.spyOn(console, 'error');
 
     const controllerMessenger = new ControllerMessenger<
