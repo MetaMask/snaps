@@ -23,7 +23,7 @@ describe('AbstractExecutionService', () => {
     jest.restoreAllMocks();
   });
 
-  it('throws for unrecognized notifications', async () => {
+  it('logs error for unrecognized notifications', async () => {
     const consoleErrorSpy = jest.spyOn(console, 'error');
 
     const controllerMessenger = new ControllerMessenger<
