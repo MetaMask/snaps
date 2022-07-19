@@ -109,4 +109,33 @@ describe('AbstractExecutionService', () => {
     expect(consoleErrorSpy).toHaveBeenNthCalledWith(1, expectedError);
     expect(consoleErrorSpy).toHaveBeenNthCalledWith(2, expectedError);
   });
+
+  it('throws an error if RPC request handler is unavailable', async () => {
+    const controllerMessenger = new ControllerMessenger<
+      never,
+      ErrorMessageEvent
+    >();
+    const service = new MockExecutionService(
+      controllerMessenger.getRestricted<
+        'ExecutionService',
+        never,
+        ErrorMessageEvent['type']
+      >({
+        name: 'ExecutionService',
+      }),
+    );
+    jest
+      .spyOn(service as any, 'getRpcRequestHandler')
+      .mockResolvedValueOnce(undefined);
+
+    const snapId = 'TestSnap';
+    await expect(
+      service.handleRpcRequest(snapId, 'foo.com', {
+        id: 6,
+        method: 'bar',
+      }),
+    ).rejects.toThrow(
+      `Snap execution service returned no RPC handler for running snap "${snapId}".`,
+    );
+  });
 });

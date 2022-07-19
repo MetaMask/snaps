@@ -51,7 +51,7 @@ import { assertExhaustive, hasTimedOut, setDiff, withTimeout } from '../utils';
 import {
   ExecuteSnapAction,
   ExecutionServiceEvents,
-  GetRpcRequestHandlerAction,
+  HandleRpcRequestAction,
   TerminateAllSnapsAction,
   TerminateSnapAction,
 } from '..';
@@ -407,7 +407,7 @@ export type AllowedActions =
   | GrantPermissions
   | RequestPermissions
   | AddApprovalRequest
-  | GetRpcRequestHandlerAction
+  | HandleRpcRequestAction
   | ExecuteSnapAction
   | TerminateAllSnapsAction
   | TerminateSnapAction;
@@ -2098,18 +2098,7 @@ export class SnapController extends BaseController<
         );
       }
 
-      let handler = await this.messagingSystem.call(
-        'ExecutionService:getRpcRequestHandler',
-        snapId,
-      );
-
       if (this.isRunning(snapId) === false) {
-        if (handler) {
-          throw new Error(
-            'This snap should not have a handler in its current state. This is a bug, please report it.',
-          );
-        }
-
         let localStartPromise = startPromises.get(snapId);
         if (!localStartPromise) {
           localStartPromise = this.startSnap(snapId);
@@ -2130,17 +2119,6 @@ export class SnapController extends BaseController<
             startPromises.delete(snapId);
           }
         }
-
-        handler = await this.messagingSystem.call(
-          'ExecutionService:getRpcRequestHandler',
-          snapId,
-        );
-      }
-
-      if (!handler) {
-        throw new Error(
-          `Snap execution service returned no RPC handler for running snap "${snapId}".`,
-        );
       }
 
       let _request = request;
@@ -2156,11 +2134,18 @@ export class SnapController extends BaseController<
       const timer = new Timer(this._maxRequestTime);
       this._recordSnapRpcRequestStart(snapId, request.id, timer);
 
+      const handleRpcRequestPromise = this.messagingSystem.call(
+        'ExecutionService:handleRpcRequest',
+        snapId,
+        origin,
+        _request,
+      );
+
       // This will either get the result or reject due to the timeout.
       try {
         const result = await this._executeWithTimeout(
           snapId,
-          handler(origin, _request),
+          handleRpcRequestPromise,
           timer,
         );
         this._recordSnapRpcRequestFinish(snapId, request.id);
