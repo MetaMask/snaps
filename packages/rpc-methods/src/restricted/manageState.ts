@@ -92,7 +92,7 @@ export enum ManageStateOperation {
   updateState = 'update',
 }
 
-export const STORAGE_SIZE_LIMIT = 100000000; // In bytes (100MB)
+export const STORAGE_SIZE_LIMIT = 104857600; // In bytes (100MB)
 
 /**
  * Builds the method implementation for `snap_manageState`.
