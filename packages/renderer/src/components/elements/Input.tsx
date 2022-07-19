@@ -1,12 +1,15 @@
 import { FunctionComponent } from 'react';
-import { Input as InputElement } from '../../elements';
+import { FragmentStruct, Input as InputElement, InputStruct } from '../../elements';
+import { useElement } from './useElement';
 
 export type InputProps = {
   element: InputElement;
 }
 
 export const Input: FunctionComponent<InputProps> = ({ element }) => {
+  const { placeholder } = useElement(element, InputStruct);
+
   return (
-    <input placeholder={element.name} value={element.value} />
+    <input placeholder={placeholder} />
   );
 };

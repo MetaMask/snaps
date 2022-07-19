@@ -5,10 +5,9 @@ export const fragment = (...children: Element[]): Fragment => ({
   children,
 });
 
-export const input = (name: string, value?: string): Input => ({
+export const input = (placeholder?: string): Input => ({
   type: 'input',
-  name,
-  value,
+  placeholder,
 });
 
 export const row = (...children: Element[]): Row => ({

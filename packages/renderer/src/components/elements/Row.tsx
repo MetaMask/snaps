@@ -1,6 +1,7 @@
 import { FunctionComponent } from 'react';
-import { Row as RowElement } from '../../elements';
+import { Row as RowElement, RowStruct } from '../../elements';
 import { Renderer } from '../Renderer';
+import { useElement } from './useElement';
 
 import './Row.css';
 
@@ -9,9 +10,11 @@ export type RowProps = {
 }
 
 export const Row: FunctionComponent<RowProps> = ({ element }) => {
+  const { children } = useElement(element, RowStruct);
+
   return (
     <div className="row">
-      {element.children?.map((child, index) => <Renderer key={`element-${index}`} element={child} />)}
+      {children?.map((child, index) => <Renderer key={`element-${index}`} element={child} />)}
     </div>
   );
 };
