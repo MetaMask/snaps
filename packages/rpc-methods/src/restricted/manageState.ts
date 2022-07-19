@@ -4,7 +4,12 @@ import {
   RestrictedMethodOptions,
   ValidPermissionSpecification,
 } from '@metamask/controllers';
-import { isObject, isValidJson, Json, NonEmptyArray } from '@metamask/utils';
+import {
+  Json,
+  NonEmptyArray,
+  isObject,
+  validateJsonAndGetSize,
+} from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
 const methodName = 'snap_manageState';
@@ -87,6 +92,8 @@ export enum ManageStateOperation {
   updateState = 'update',
 }
 
+export const STORAGE_SIZE_LIMIT = 104857600; // In bytes (100MB)
+
 /**
  * Builds the method implementation for `snap_manageState`.
  *
@@ -131,9 +138,21 @@ function getManageStateImplementation({
                 typeof newState === 'undefined' ? 'undefined' : newState,
             },
           });
-        } else if (!isValidJson(newState)) {
+        }
+        // eslint-disable-next-line no-case-declarations
+        const [isValid, plainTextSizeInBytes] =
+          validateJsonAndGetSize(newState);
+        if (!isValid) {
           throw ethErrors.rpc.invalidParams({
             message: `Invalid ${method} "updateState" parameter: The new state must be JSON serializable.`,
+            data: {
+              receivedNewState:
+                typeof newState === 'undefined' ? 'undefined' : newState,
+            },
+          });
+        } else if (plainTextSizeInBytes > STORAGE_SIZE_LIMIT) {
+          throw ethErrors.rpc.invalidParams({
+            message: `Invalid ${method} "updateState" parameter: The new state must not exceed ${STORAGE_SIZE_LIMIT} bytes in size.`,
             data: {
               receivedNewState:
                 typeof newState === 'undefined' ? 'undefined' : newState,
