@@ -189,8 +189,6 @@ describe('IframeExecutionService', () => {
       },
     );
 
-    assert(result !== undefined);
-
     expect(result).toBe(blockNumber);
 
     expect(publishSpy).toHaveBeenCalledWith(

@@ -1,14 +1,14 @@
 import { SnapExports } from '@metamask/snap-types';
+import { JsonRpcRequest } from '@metamask/utils';
 import {
   ExecuteSnap,
   Origin,
   Ping,
   SnapRpc,
   Terminate,
-  JsonRpcRequest,
 } from '../__GENERATED__/openrpc';
 import { isEndowments, isJsonRpcRequest } from '../__GENERATED__/openrpc.guard';
-import { InvokeSnap } from './BaseSnapExecutor';
+import { InvokeSnap, InvokeSnapArgs } from './BaseSnapExecutor';
 
 export type CommandMethodsMapping = {
   ping: Ping;
@@ -17,13 +17,24 @@ export type CommandMethodsMapping = {
   snapRpc: SnapRpc;
 };
 
+/**
+ * Formats the arguments for the given handler.
+ *
+ * @param origin - The origin of the request.
+ * @param handler - The handler to pass the request to.
+ * @param request - The request object.
+ * @returns The formatted arguments.
+ */
 function getHandlerArguments(
   origin: Origin,
   handler: keyof SnapExports,
-  request: JsonRpcRequest,
-) {
+  request: JsonRpcRequest<unknown[] | { [key: string]: unknown }>,
+): InvokeSnapArgs {
   if (handler === 'onTxConfirmation') {
-    return { origin, transaction: request };
+    return {
+      origin,
+      transaction: request.params as { [key: string]: unknown },
+    };
   }
 
   return { origin, request };
@@ -91,7 +102,12 @@ export function getCommandMethodImplementations(
         (await invokeSnap(
           target,
           handler as any,
-          getHandlerArguments(origin, handler as any, request),
+          getHandlerArguments(
+            origin,
+            handler as any,
+            // Specifically casting to other JsonRpcRequest type here on purpose, to stop using the OpenRPC type.
+            request as JsonRpcRequest<unknown[] | { [key: string]: unknown }>,
+          ),
         )) ?? null
       );
     },

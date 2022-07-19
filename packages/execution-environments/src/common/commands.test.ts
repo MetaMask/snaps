@@ -117,9 +117,12 @@ describe('getCommandMethodImplementations', () => {
       onTerminate,
     );
     const rpcRequest = { jsonrpc: '2.0', method: 'hello' };
-    await methodsObj.snapRpc('foo', 'bar', rpcRequest as any);
+    await methodsObj.snapRpc('foo', 'onRpcRequest', 'bar', rpcRequest as any);
     expect(invokeSnapRpc).toHaveBeenCalledTimes(1);
-    expect(invokeSnapRpc).toHaveBeenCalledWith('foo', 'bar', rpcRequest);
+    expect(invokeSnapRpc).toHaveBeenCalledWith('foo', 'onRpcRequest', {
+      origin: 'bar',
+      request: rpcRequest,
+    });
   });
 
   it('the snapRpc method will throw an error if the target is not a string', async () => {
@@ -133,7 +136,12 @@ describe('getCommandMethodImplementations', () => {
     );
     const rpcRequest = { jsonrpc: '2.0', method: 'hello' };
     await expect(async () => {
-      await methodsObj.snapRpc(2 as any, 'bar', rpcRequest as any);
+      await methodsObj.snapRpc(
+        2 as any,
+        'onRpcRequest',
+        'bar',
+        rpcRequest as any,
+      );
     }).rejects.toThrow('target is not a string');
   });
 
@@ -148,7 +156,12 @@ describe('getCommandMethodImplementations', () => {
     );
     const rpcRequest = { jsonrpc: '2.0', method: 'hello' };
     await expect(async () => {
-      await methodsObj.snapRpc('foo', 2 as any, rpcRequest as any);
+      await methodsObj.snapRpc(
+        'foo',
+        'onRpcRequest',
+        2 as any,
+        rpcRequest as any,
+      );
     }).rejects.toThrow('origin is not a string');
   });
 
@@ -163,7 +176,7 @@ describe('getCommandMethodImplementations', () => {
     );
     const rpcRequest = { method: 'hello' };
     await expect(async () => {
-      await methodsObj.snapRpc('foo', 'bar', rpcRequest as any);
+      await methodsObj.snapRpc('foo', 'onRpcRequest', 'bar', rpcRequest as any);
     }).rejects.toThrow('request is not a proper JSON RPC Request');
   });
 });
