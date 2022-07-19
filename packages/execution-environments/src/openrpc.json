@@ -96,9 +96,18 @@
         {
           "name": "target",
           "required": true,
-          "description": "the name of the snap method",
+          "description": "the name of the snap",
           "schema": {
             "title": "Target",
+            "type": "string"
+          }
+        },
+        {
+          "name": "handler",
+          "required": true,
+          "description": "the handler to trigger on the snap",
+          "schema": {
+            "title": "Handler",
             "type": "string"
           }
         },

@@ -27,6 +27,10 @@ export type SnapRpcHandler = (args: {
 
 export type OnRpcRequestHandler = SnapRpcHandler;
 
+export type OnTxConfirmationHandler = (args: {
+  transaction: { [key: string]: unknown };
+}) => Promise<string>;
+
 export type SnapProvider = MetaMaskInpageProvider;
 
 export type SnapId = string;
@@ -36,3 +40,10 @@ export type ErrorJSON = {
   code: number;
   data?: Json;
 };
+
+export type SnapExports = {
+  onRpcRequest?: OnRpcRequestHandler;
+  onTxConfirmation?: OnTxConfirmationHandler;
+};
+
+export type HandlerType = keyof SnapExports;

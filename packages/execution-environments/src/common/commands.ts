@@ -1,10 +1,14 @@
+import { SnapExports } from '@metamask/snap-types';
 import {
   ExecuteSnap,
+  Origin,
   Ping,
   SnapRpc,
   Terminate,
+  JsonRpcRequest,
 } from '../__GENERATED__/openrpc';
 import { isEndowments, isJsonRpcRequest } from '../__GENERATED__/openrpc.guard';
+import { InvokeSnap } from './BaseSnapExecutor';
 
 export type CommandMethodsMapping = {
   ping: Ping;
@@ -13,12 +17,24 @@ export type CommandMethodsMapping = {
   snapRpc: SnapRpc;
 };
 
+function getHandlerArguments(
+  origin: Origin,
+  handler: keyof SnapExports,
+  request: JsonRpcRequest,
+) {
+  if (handler === 'onTxConfirmation') {
+    return { origin, transaction: request };
+  }
+
+  return { origin, request };
+}
+
 /**
  * Gets an object mapping internal, "command" JSON-RPC method names to their
  * implementations.
  *
  * @param startSnap - A function that starts a snap.
- * @param invokeSnapRpc - A function that invokes the RPC method handler of a
+ * @param invokeSnap - A function that invokes the RPC method handler of a
  * snap.
  * @param onTerminate - A function that will be called when this executor is
  * terminated in order to handle cleanup tasks.
@@ -26,7 +42,7 @@ export type CommandMethodsMapping = {
  */
 export function getCommandMethodImplementations(
   startSnap: (...args: Parameters<ExecuteSnap>) => Promise<void>,
-  invokeSnapRpc: SnapRpc,
+  invokeSnap: InvokeSnap,
   onTerminate: () => void,
 ): CommandMethodsMapping {
   return {
@@ -58,7 +74,7 @@ export function getCommandMethodImplementations(
       return 'OK';
     },
 
-    snapRpc: async (target, origin, request) => {
+    snapRpc: async (target, handler, origin, request) => {
       if (typeof target !== 'string') {
         throw new Error('target is not a string');
       }
@@ -71,7 +87,13 @@ export function getCommandMethodImplementations(
         throw new Error('request is not a proper JSON RPC Request');
       }
 
-      return (await invokeSnapRpc(target, origin, request)) ?? null;
+      return (
+        (await invokeSnap(
+          target,
+          handler as any,
+          getHandlerArguments(origin, handler as any, request),
+        )) ?? null
+      );
     },
   };
 }
