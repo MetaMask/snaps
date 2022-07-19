@@ -1,6 +1,10 @@
 import { Duplex } from 'stream';
 import ObjectMultiplex from '@metamask/object-multiplex';
-import { ErrorJSON, SnapExecutionData } from '@metamask/snap-types';
+import {
+  ErrorJSON,
+  SnapExecutionData,
+  HandlerType,
+} from '@metamask/snap-types';
 import { SNAP_STREAM_NAMES } from '@metamask/execution-environments';
 import {
   Duration,
@@ -37,6 +41,7 @@ export type ExecutionServiceArgs = {
 // The snap is the callee
 export type SnapRpcHook = (
   origin: string,
+  handler: HandlerType,
   request: Record<string, unknown>,
 ) => Promise<unknown>;
 
@@ -381,6 +386,7 @@ export abstract class AbstractExecutionService<WorkerType>
   protected _createSnapHooks(snapId: string, workerId: string) {
     const rpcHook = async (
       origin: string,
+      handler: HandlerType,
       request: Record<string, unknown>,
     ) => {
       return await this._command(workerId, {
@@ -389,6 +395,7 @@ export abstract class AbstractExecutionService<WorkerType>
         method: 'snapRpc',
         params: {
           origin,
+          handler,
           request,
           target: snapId,
         },
@@ -439,12 +446,14 @@ export abstract class AbstractExecutionService<WorkerType>
    *
    * @param snapId - The ID of the recipient snap.
    * @param origin - The origin of the RPC request.
+   * @handler - The handler to trigger on the snap.
    * @param request - The JSON-RPC request object.
    * @returns Promise that can handle the request.
    */
   public async handleRpcRequest(
     snapId: string,
     origin: string,
+    handler: HandlerType,
     request: Record<string, unknown>,
   ): Promise<unknown> {
     const rpcRequestHandler = await this.getRpcRequestHandler(snapId);
@@ -455,7 +464,7 @@ export abstract class AbstractExecutionService<WorkerType>
       );
     }
 
-    return rpcRequestHandler(origin, request);
+    return rpcRequestHandler(origin, handler, request);
   }
 }
 

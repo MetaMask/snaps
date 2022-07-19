@@ -16,7 +16,7 @@ import {
   SubjectPermissions,
   ValidPermission,
 } from '@metamask/controllers';
-import { ErrorJSON, SnapData, SnapId } from '@metamask/snap-types';
+import { ErrorJSON, SnapData, SnapId, HandlerType } from '@metamask/snap-types';
 import {
   assert,
   DEFAULT_ENDOWMENTS,
@@ -193,7 +193,11 @@ export interface SnapRuntimeData {
    */
   rpcHandler:
     | null
-    | ((origin: string, request: Record<string, unknown>) => Promise<unknown>);
+    | ((
+        origin: string,
+        handlerName: HandlerType,
+        request: Record<string, unknown>,
+      ) => Promise<unknown>);
 
   /**
    * The finite state machine interpreter for possible states that the Snap can be in such as stopped, running, blocked
@@ -2125,7 +2129,7 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Passes a JSON-RPC request object to the RPC handler function of a snap.
+   * Passes a JSON-RPC request object to the RPC handler function of a snap, triggering the onRpcRequest handler.
    *
    * @param snapId - The ID of the recipient snap.
    * @param origin - The origin of the RPC request.
@@ -2137,13 +2141,47 @@ export class SnapController extends BaseController<
     origin: string,
     request: Record<string, unknown>,
   ): Promise<unknown> {
+    return this.handleRequest(snapId, origin, 'onRpcRequest', request);
+  }
+
+  /**
+   * Passes a JSON-RPC request object to the RPC handler function of a snap, triggering the onTxConfirmation handler.
+   *
+   * @param snapId - The ID of the recipient snap.
+   * @param origin - The origin of the RPC request.
+   * @param request - The JSON-RPC request object.
+   * @returns The result of the JSON-RPC request.
+   */
+  async handleTxInsightRequest(
+    snapId: SnapId,
+    origin: string,
+    request: Record<string, unknown>,
+  ): Promise<unknown> {
+    return this.handleRequest(snapId, origin, 'onTxConfirmation', request);
+  }
+
+  /**
+   * Passes a JSON-RPC request object to the RPC handler function of a snap.
+   *
+   * @param snapId - The ID of the recipient snap.
+   * @param origin - The origin of the RPC request.
+   * @param handlerName - The handler to trigger on the snap for the request.
+   * @param request - The JSON-RPC request object.
+   * @returns The result of the JSON-RPC request.
+   */
+  private async handleRequest(
+    snapId: SnapId,
+    origin: string,
+    handlerName: HandlerType,
+    request: Record<string, unknown>,
+  ): Promise<unknown> {
     const handler = await this.getRpcRequestHandler(snapId);
     if (!handler) {
       throw new Error(
         `Snap RPC message handler not found for snap "${snapId}".`,
       );
     }
-    return handler(origin, request);
+    return handler(origin, handlerName, request);
   }
 
   /**
@@ -2155,7 +2193,11 @@ export class SnapController extends BaseController<
   private async getRpcRequestHandler(
     snapId: SnapId,
   ): Promise<
-    (origin: string, request: Record<string, unknown>) => Promise<unknown>
+    (
+      origin: string,
+      handler: HandlerType,
+      request: Record<string, unknown>,
+    ) => Promise<unknown>
   > {
     const runtime = this.getRuntimeOrDefault(snapId);
     const existingHandler = runtime.rpcHandler;
@@ -2170,6 +2212,7 @@ export class SnapController extends BaseController<
 
     const rpcHandler = async (
       origin: string,
+      handlerName: HandlerType,
       request: Record<string, unknown>,
     ) => {
       if (this.state.snaps[snapId].enabled === false) {
@@ -2221,6 +2264,7 @@ export class SnapController extends BaseController<
       const handleRpcRequestPromise = this.messagingSystem.call(
         'ExecutionService:handleRpcRequest',
         snapId,
+        handlerName,
         origin,
         _request,
       );
