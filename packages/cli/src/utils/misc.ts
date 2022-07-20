@@ -4,6 +4,7 @@ import { hasProperty } from '@metamask/utils';
 import rfdc from 'rfdc';
 import { Arguments } from 'yargs';
 
+// TODO: Use `utils` package.
 export const deepClone = rfdc({ proto: false, circles: false });
 
 export const permRequestKeys = [

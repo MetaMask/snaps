@@ -1,6 +1,7 @@
 import { promises as fs } from 'fs';
-import type { Json } from '@metamask/utils';
-import { logError } from './misc';
+import pathUtils from 'path';
+import { Json } from '@metamask/utils';
+import { NpmSnapFileNames } from './types';
 
 /**
  * Checks whether the given path string resolves to an existing directory, and
@@ -23,14 +24,10 @@ export async function isDirectory(
         return false;
       }
 
-      try {
-        await fs.mkdir(pathString);
-        return true;
-      } catch (mkdirError) {
-        logError(`Directory '${pathString}' could not be created.`, mkdirError);
-        throw mkdirError;
-      }
+      await fs.mkdir(pathString);
+      return true;
     }
+
     return false;
   }
 }
@@ -56,10 +53,39 @@ export async function isFile(pathString: string): Promise<boolean> {
  * @param pathString - The path to the JSON file.
  * @returns The parsed contents of the JSON file.
  */
-export async function readJsonFile(pathString: string): Promise<Json> {
+export async function readJsonFile<Type = Json>(
+  pathString: string,
+): Promise<Type> {
   if (!pathString.endsWith('.json')) {
     throw new Error('The specified file must be a ".json" file.');
   }
 
   return JSON.parse(await fs.readFile(pathString, 'utf8'));
+}
+
+/**
+ * Utility function for reading `package.json` or the Snap manifest file.
+ * These are assumed to be in the current working directory.
+ *
+ * @param pathString - The base path of the file to read.
+ * @param snapJsonFileName - The name of the file to read.
+ * @returns The parsed JSON file.
+ */
+export async function readSnapJsonFile(
+  pathString: string,
+  snapJsonFileName: NpmSnapFileNames,
+): Promise<Json> {
+  const path = pathUtils.join(pathString, snapJsonFileName);
+
+  try {
+    return await readJsonFile(path);
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      throw new Error(
+        `Could not find '${path}'. Please ensure that the file exists.`,
+      );
+    }
+
+    throw error;
+  }
 }

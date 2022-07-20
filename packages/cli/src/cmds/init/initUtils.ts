@@ -6,6 +6,7 @@ import {
   SnapManifest,
   NpmSnapPackageJson,
   validateSnapJsonFile,
+  readJsonFile,
 } from '@metamask/snap-utils';
 
 import initPackageJson from 'init-package-json';
@@ -19,7 +20,6 @@ import {
   logError,
   logWarning,
   prompt,
-  readJsonFile,
   trimPathString,
 } from '../../utils';
 import { TemplateType } from '../../builders';

@@ -1,17 +1,22 @@
 import { promises as fs } from 'fs';
-import { getSnapSourceShasum, NpmSnapFileNames } from '@metamask/snap-utils';
+import {
+  getSnapSourceShasum,
+  NpmSnapFileNames,
+  getWritableManifest,
+} from '@metamask/snap-utils';
 import mkdirp from 'mkdirp';
+import * as snapUtils from '@metamask/snap-utils';
 import { getPackageJson, getSnapManifest } from '../../../test/utils';
-import * as fsUtils from '../../utils/fs';
 import * as miscUtils from '../../utils/misc';
 import * as readlineUtils from '../../utils/readline';
-import { getWritableManifest } from '../manifest/manifestHandler';
 import { TemplateType } from '../../builders';
 import template from './init-template.json';
 import { initHandler, updateManifestShasum } from './initHandler';
 import * as initUtils from './initUtils';
 
 jest.mock('mkdirp');
+jest.mock('@metamask/snap-utils');
+
 const mkdirpMock = mkdirp as unknown as jest.Mock;
 
 const getMockArgv = () => {
@@ -548,7 +553,7 @@ describe('initialize', () => {
       const expectedShasum = getSnapSourceShasum(mockBundleContents);
 
       const readJsonFileMock = jest
-        .spyOn(fsUtils, 'readJsonFile')
+        .spyOn(snapUtils, 'readJsonFile')
         .mockImplementationOnce(async () => getSnapManifest());
       const readFileMock = jest
         .spyOn(fs, 'readFile')
