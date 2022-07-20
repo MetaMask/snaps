@@ -37,12 +37,14 @@ export type ExecutionServiceArgs = {
   terminationTimeout?: number;
 };
 
+export type SnapRpcHookArgs = {
+  origin: string;
+  handler: HandlerType;
+  request: Record<string, unknown>;
+};
+
 // The snap is the callee
-export type SnapRpcHook = (
-  origin: string,
-  handler: HandlerType,
-  request: Record<string, unknown>,
-) => Promise<unknown>;
+export type SnapRpcHook = (options: SnapRpcHookArgs) => Promise<unknown>;
 
 export type JobStreams = {
   command: Duplex;
@@ -383,11 +385,7 @@ export abstract class AbstractExecutionService<WorkerType>
   }
 
   protected _createSnapHooks(snapId: string, workerId: string) {
-    const rpcHook = async (
-      origin: string,
-      handler: HandlerType,
-      request: Record<string, unknown>,
-    ) => {
+    const rpcHook = async ({ origin, handler, request }: SnapRpcHookArgs) => {
       return await this._command(workerId, {
         id: nanoid(),
         jsonrpc: '2.0',
@@ -444,16 +442,12 @@ export abstract class AbstractExecutionService<WorkerType>
    * Handle RPC request.
    *
    * @param snapId - The ID of the recipient snap.
-   * @param origin - The origin of the RPC request.
-   * @handler - The handler to trigger on the snap.
-   * @param request - The JSON-RPC request object.
+   * @param options - Bag of options to pass to the RPC handler.
    * @returns Promise that can handle the request.
    */
   public async handleRpcRequest(
     snapId: string,
-    origin: string,
-    handler: HandlerType,
-    request: Record<string, unknown>,
+    options: SnapRpcHookArgs,
   ): Promise<unknown> {
     const rpcRequestHandler = await this.getRpcRequestHandler(snapId);
 
@@ -463,7 +457,7 @@ export abstract class AbstractExecutionService<WorkerType>
       );
     }
 
-    return rpcRequestHandler(origin, handler, request);
+    return rpcRequestHandler(options);
   }
 }
 
