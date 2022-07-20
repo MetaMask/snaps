@@ -4,9 +4,9 @@ import {
   EndowmentGetterParams,
   ValidPermissionSpecification,
 } from '@metamask/controllers';
-import { LONG_RUNNING_PERMISSION } from './constants';
+import { SnapEndowments } from './enum';
 
-const permissionName = LONG_RUNNING_PERMISSION;
+const permissionName = SnapEndowments.longRunning;
 
 type LongRunningEndowmentSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;

@@ -1,11 +1,12 @@
 import { longRunningEndowmentBuilder } from './long-running';
 import { networkAccessEndowmentBuilder } from './network-access';
-import { txInsightEndowmentBuilder } from './tx-insight';
+import { transactionInsightEndowmentBuilder } from './transaction-insight';
 
 export const endowmentPermissionBuilders = {
   [networkAccessEndowmentBuilder.targetKey]: networkAccessEndowmentBuilder,
   [longRunningEndowmentBuilder.targetKey]: longRunningEndowmentBuilder,
-  [txInsightEndowmentBuilder.targetKey]: txInsightEndowmentBuilder,
+  [transactionInsightEndowmentBuilder.targetKey]:
+    transactionInsightEndowmentBuilder,
 } as const;
 
-export * from './constants';
+export * from './enum';

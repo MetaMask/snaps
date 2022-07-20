@@ -4,11 +4,11 @@ import {
   EndowmentGetterParams,
   ValidPermissionSpecification,
 } from '@metamask/controllers';
-import { TX_INSIGHT_PERMISSION } from './constants';
+import { SnapEndowments } from './enum';
 
-const permissionName = TX_INSIGHT_PERMISSION;
+const permissionName = SnapEndowments.transactionInsight;
 
-type LongRunningEndowmentSpecification = ValidPermissionSpecification<{
+type TransactionInsightEndowmentSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;
   targetKey: typeof permissionName;
   endowmentGetter: (_options?: any) => undefined;
@@ -16,7 +16,7 @@ type LongRunningEndowmentSpecification = ValidPermissionSpecification<{
 }>;
 
 /**
- * `endowment:tx-insight` returns nothing; it is intended to be used as a flag
+ * `endowment:transaction-insight` returns nothing; it is intended to be used as a flag
  * by the extension to detect whether the snap has the capability to show information on the tx confirmation screen.
  *
  * @param _builderOptions - Optional specification builder options.
@@ -25,7 +25,7 @@ type LongRunningEndowmentSpecification = ValidPermissionSpecification<{
 const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.Endowment,
   any,
-  LongRunningEndowmentSpecification
+  TransactionInsightEndowmentSpecification
 > = (_builderOptions?: any) => {
   return {
     permissionType: PermissionType.Endowment,
@@ -35,7 +35,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
   };
 };
 
-export const txInsightEndowmentBuilder = Object.freeze({
+export const transactionInsightEndowmentBuilder = Object.freeze({
   targetKey: permissionName,
   specificationBuilder,
 } as const);
