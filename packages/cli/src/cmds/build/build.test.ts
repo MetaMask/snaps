@@ -1,7 +1,7 @@
 import path from 'path';
 import * as fsUtils from '../../utils/validate-fs';
 import * as snapEvalModule from '../eval/evalHandler';
-import * as manifestModule from '../manifest/manifestHandler';
+import * as manifestModule from '../manifest/manifest-handler';
 import * as buildBundle from './bundle';
 import buildModule from '.';
 

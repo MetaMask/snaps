@@ -1,30 +1,41 @@
 import { promises as fs } from 'fs';
+import pathUtils from 'path';
+import { Json } from '@metamask/utils';
+import { validateNpmSnap, validateNpmSnapManifest } from './npm';
 import {
   NpmSnapFileNames,
-  SnapManifest,
-  UnvalidatedSnapFiles,
-  getSnapSourceShasum,
-  ProgrammaticallyFixableSnapError,
-  SnapValidationFailureReason,
   SnapFiles,
-  validateNpmSnap,
-  validateNpmSnapManifest,
-} from '@metamask/snap-utils';
-import { Json } from '@metamask/utils';
+  SnapValidationFailureReason,
+  UnvalidatedSnapFiles,
+} from './types';
+import { SnapManifest } from './json-schemas';
+import { readSnapJsonFile } from './fs';
+import { getSnapSourceShasum, ProgrammaticallyFixableSnapError } from './snaps';
+import { deepClone } from './deep-clone';
 
-import { deepClone, readJsonFile } from '../../utils';
-import { YargsArgs } from '../../types/yargs';
-
-const errorPrefix = 'Manifest Error: ';
-
-const ManifestSortOrder: Record<keyof SnapManifest, number> = {
+const MANIFEST_SORT_ORDER: Record<keyof SnapManifest, number> = {
   version: 1,
-  proposedName: 2,
   description: 2,
-  repository: 3,
-  source: 4,
-  initialPermissions: 5,
-  manifestVersion: 6,
+  proposedName: 3,
+  repository: 4,
+  source: 5,
+  initialPermissions: 6,
+  manifestVersion: 7,
+};
+
+/**
+ * The result from the `checkManifest` function.
+ *
+ * @property updated - Whether the manifest was updated.
+ * @property warnings - An array of warnings that were encountered during
+ * processing of the manifest files. These warnings are not logged to the
+ * console automatically, so depending on the environment the function is called
+ * in, a different method for logging can be used.
+ */
+export type CheckManifestResult = {
+  manifest: SnapManifest;
+  updated?: boolean;
+  warnings: string[];
 };
 
 /**
@@ -32,33 +43,43 @@ const ManifestSortOrder: Record<keyof SnapManifest, number> = {
  * the fixed version to disk if `writeManifest` is true. Throws if validation
  * fails.
  *
- * @param argv - The Yargs `argv` object.
- * @param argv.writeManifest - Whether to write the fixed manifest to disk.
+ * @param basePath - The path to the folder with the manifest files.
+ * @param writeManifest - Whether to write the fixed manifest to disk.
+ * @returns Whether the manifest was updated, and an array of warnings that
+ * were encountered during processing of the manifest files.
  */
-export async function manifestHandler({
-  writeManifest,
-}: YargsArgs): Promise<void> {
-  let didUpdate = false;
-  let hasWarnings = false;
+export async function checkManifest(
+  basePath: string,
+  writeManifest = true,
+): Promise<CheckManifestResult> {
+  const warnings: string[] = [];
+  let updated = false;
 
-  const unvalidatedManifest = await readSnapJsonFile(NpmSnapFileNames.Manifest);
+  const unvalidatedManifest = await readSnapJsonFile(
+    basePath,
+    NpmSnapFileNames.Manifest,
+  );
 
   const iconPath =
     unvalidatedManifest && typeof unvalidatedManifest === 'object'
-      ? (unvalidatedManifest as Partial<SnapManifest>).source?.location?.npm
+      ? /* istanbul ignore next */
+        (unvalidatedManifest as Partial<SnapManifest>).source?.location?.npm
           ?.iconPath
-      : undefined;
+      : /* istanbul ignore next */
+        undefined;
 
   const snapFiles: UnvalidatedSnapFiles = {
     manifest: unvalidatedManifest,
-    packageJson: await readSnapJsonFile(NpmSnapFileNames.PackageJson),
-    sourceCode: await getSnapSourceCode(unvalidatedManifest),
-    svgIcon: iconPath && (await fs.readFile(iconPath, 'utf8')),
+    packageJson: await readSnapJsonFile(basePath, NpmSnapFileNames.PackageJson),
+    sourceCode: await getSnapSourceCode(basePath, unvalidatedManifest),
+    svgIcon:
+      iconPath &&
+      (await fs.readFile(pathUtils.join(basePath, iconPath), 'utf8')),
   };
 
   let manifest: SnapManifest | undefined;
   try {
-    ({ manifest } = validateNpmSnap(snapFiles, errorPrefix));
+    ({ manifest } = validateNpmSnap(snapFiles));
   } catch (error) {
     if (writeManifest && error instanceof ProgrammaticallyFixableSnapError) {
       // If we get here, the files at least have the correct shape.
@@ -73,10 +94,7 @@ export async function manifestHandler({
         manifest = fixManifest(partiallyValidatedFiles, error);
 
         try {
-          validateNpmSnapManifest(
-            { ...partiallyValidatedFiles, manifest },
-            errorPrefix,
-          );
+          validateNpmSnapManifest({ ...partiallyValidatedFiles, manifest });
 
           isInvalid = false;
         } catch (nextValidationError) {
@@ -88,13 +106,13 @@ export async function manifestHandler({
             (attempts === maxAttempts && !isInvalid)
           ) {
             throw new Error(
-              `Internal Error: Failed to fix manifest. This is a bug, please report it. Reason:\n${error.message}`,
+              `Internal error: Failed to fix manifest. This is a bug, please report it. Reason:\n${error.message}`,
             );
           }
         }
       }
 
-      didUpdate = true;
+      updated = true;
     } else {
       throw error;
     }
@@ -112,7 +130,7 @@ export async function manifestHandler({
   );
 
   if (missingRecommendedFields.length > 0) {
-    logManifestWarning(
+    warnings.push(
       `Missing recommended package.json properties:\n${missingRecommendedFields.reduce(
         (allMissing, currentField) => {
           return `${allMissing}\t${currentField}\n`;
@@ -122,93 +140,18 @@ export async function manifestHandler({
     );
   }
 
-  // Validation complete, finish work and notify user.
-
   if (writeManifest) {
     try {
       await fs.writeFile(
-        NpmSnapFileNames.Manifest,
+        pathUtils.join(basePath, NpmSnapFileNames.Manifest),
         `${JSON.stringify(getWritableManifest(validatedManifest), null, 2)}\n`,
       );
-
-      if (didUpdate) {
-        console.log(`Manifest: Updated snap.manifest.json`);
-      }
     } catch (error) {
-      throw new Error(
-        `${errorPrefix}Failed to update snap.manifest.json: ${error.message}`,
-      );
+      throw new Error(`Failed to update snap.manifest.json: ${error.message}`);
     }
   }
 
-  if (hasWarnings) {
-    console.log(
-      `Manifest Warning: Validation of snap.manifest.json completed with warnings. See above.`,
-    );
-  } else {
-    console.log(`Manifest Success: Validated snap.manifest.json!`);
-  }
-
-  /**
-   * Logs a manifest warning, if `suppressWarnings` is not enabled.
-   *
-   * @param message - The message to log.
-   */
-  function logManifestWarning(message: string) {
-    if (!global.snaps.suppressWarnings) {
-      hasWarnings = true;
-      console.warn(`Manifest Warning: ${message}`);
-    }
-  }
-}
-
-/**
- * Utility function for reading `package.json` or the Snap manifest file.
- * These are assumed to be in the current working directory.
- *
- * @param snapJsonFileName - The name of the file to read.
- * @returns The parsed JSON file.
- */
-async function readSnapJsonFile(
-  snapJsonFileName: NpmSnapFileNames,
-): Promise<Json> {
-  try {
-    return await readJsonFile(snapJsonFileName);
-  } catch (error) {
-    if (error.code === 'ENOENT') {
-      throw new Error(
-        `${errorPrefix}Could not find '${snapJsonFileName}'. Please ensure that ` +
-          `you are running the command in the project root directory.`,
-      );
-    }
-    throw new Error(`${errorPrefix}${error.message}`);
-  }
-}
-
-/**
- * Given an unvalidated Snap manifest, attempts to extract the location of the
- * bundle source file location and read the file.
- *
- * @param manifest - The unvalidated Snap manifest file contents.
- * @returns The contents of the bundle file, if any.
- */
-async function getSnapSourceCode(manifest: Json): Promise<string | undefined> {
-  if (manifest && typeof manifest === 'object' && !Array.isArray(manifest)) {
-    /* istanbul ignore next: optional chaining */
-    const sourceFilePath = (manifest as Partial<SnapManifest>).source?.location
-      ?.npm?.filePath;
-
-    try {
-      return sourceFilePath
-        ? await fs.readFile(sourceFilePath, 'utf8')
-        : undefined;
-    } catch (error) {
-      throw new Error(
-        `Manifest Error: Failed to read Snap bundle file: ${error.message}`,
-      );
-    }
-  }
-  return undefined;
+  return { manifest: validatedManifest, updated, warnings };
 }
 
 /**
@@ -220,7 +163,7 @@ async function getSnapSourceCode(manifest: Json): Promise<string | undefined> {
  * @param error - The {@link ProgrammaticallyFixableSnapError} that was thrown.
  * @returns A copy of the manifest file where the cause of the error is fixed.
  */
-function fixManifest(
+export function fixManifest(
   snapFiles: SnapFiles,
   error: ProgrammaticallyFixableSnapError,
 ): SnapManifest {
@@ -259,6 +202,34 @@ function fixManifest(
 }
 
 /**
+ * Given an unvalidated Snap manifest, attempts to extract the location of the
+ * bundle source file location and read the file.
+ *
+ * @param basePath - The path to the folder with the manifest files.
+ * @param manifest - The unvalidated Snap manifest file contents.
+ * @returns The contents of the bundle file, if any.
+ */
+export async function getSnapSourceCode(
+  basePath: string,
+  manifest: Json,
+): Promise<string | undefined> {
+  if (manifest && typeof manifest === 'object' && !Array.isArray(manifest)) {
+    const sourceFilePath = (manifest as Partial<SnapManifest>).source?.location
+      ?.npm?.filePath;
+
+    try {
+      return sourceFilePath
+        ? await fs.readFile(pathUtils.join(basePath, sourceFilePath), 'utf8')
+        : undefined;
+    } catch (error) {
+      throw new Error(`Failed to read Snap bundle file: ${error.message}`);
+    }
+  }
+
+  return undefined;
+}
+
+/**
  * Sorts the given manifest in our preferred sort order and removes the
  * `repository` field if it is falsy (it may be `null`).
  *
@@ -267,14 +238,18 @@ function fixManifest(
  */
 export function getWritableManifest(manifest: SnapManifest): SnapManifest {
   const { repository, ...remaining } = manifest;
-  return (
-    Object.keys(
-      repository ? { ...remaining, repository } : remaining,
-    ) as (keyof SnapManifest)[]
-  )
-    .sort((a, b) => ManifestSortOrder[a] - ManifestSortOrder[b])
-    .reduce((outManifest, key) => {
-      (outManifest as any)[key] = manifest[key];
-      return outManifest;
-    }, {} as SnapManifest);
+
+  const keys = Object.keys(
+    repository ? { ...remaining, repository } : remaining,
+  ) as (keyof SnapManifest)[];
+
+  return keys
+    .sort((a, b) => MANIFEST_SORT_ORDER[a] - MANIFEST_SORT_ORDER[b])
+    .reduce(
+      (result, key) => ({
+        ...result,
+        [key]: manifest[key],
+      }),
+      {} as SnapManifest,
+    );
 }

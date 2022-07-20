@@ -5014,8 +5014,10 @@ __metadata:
     fast-deep-equal: ^3.1.3
     jest: ^27.5.1
     jest-it-up: ^2.0.0
+    memfs: ^3.4.7
     prettier: ^2.3.2
     prettier-plugin-packagejson: ^2.2.11
+    rfdc: ^1.3.0
     rimraf: ^3.0.2
     semver: ^7.3.7
     ts-jest: ^27.1.5
@@ -11835,7 +11837,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fs-monkey@npm:1.0.3":
+"fs-monkey@npm:1.0.3, fs-monkey@npm:^1.0.3":
   version: 1.0.3
   resolution: "fs-monkey@npm:1.0.3"
   checksum: cf50804833f9b88a476911ae911fe50f61a98d986df52f890bd97e7262796d023698cb2309fa9b74fdd8974f04315b648748a0a8ee059e7d5257b293bfc409c0
@@ -12534,13 +12536,6 @@ __metadata:
   dependencies:
     parse-passwd: ^1.0.0
   checksum: 18dd4db87052c6a2179d1813adea0c4bfcfa4f9996f0e226fefb29eb3d548e564350fa28ec46b0bf1fbc0a1d2d6922ceceb80093115ea45ff8842a4990139250
-  languageName: node
-  linkType: hard
-
-"hook-shell-script-webpack-plugin@npm:^0.1.4":
-  version: 0.1.4
-  resolution: "hook-shell-script-webpack-plugin@npm:0.1.4"
-  checksum: 880115222c8ad047464f0b49b04d56fe2b806f6c907b1f3ac0ad114ea5365a420db188ac0f9f1b21b0844273c570b6671a35e1b33513db9579831ee8c8358a58
   languageName: node
   linkType: hard
 
@@ -15119,6 +15114,15 @@ __metadata:
   dependencies:
     fs-monkey: 1.0.3
   checksum: 6d2f49d447d1be24ff9c747618933784eeb059189bc6a0d77b7a51c7daf06e2d3a74674a2e2ff1520e2c312bf91e719ed37144cf05087379b3ba0aef0b6aa062
+  languageName: node
+  linkType: hard
+
+"memfs@npm:^3.4.7":
+  version: 3.4.7
+  resolution: "memfs@npm:3.4.7"
+  dependencies:
+    fs-monkey: ^1.0.3
+  checksum: fab88266dc576dc4999e38bdf531d703fb798affac2e0dd3fc17470878486844027b2766008ba80c0103b443f52cf9068a5c00f4e1ecf04106f4b29c11855822
   languageName: node
   linkType: hard
 
@@ -20637,7 +20641,6 @@ __metadata:
     eslint-plugin-jsdoc: ^36.1.0
     eslint-plugin-node: ^11.1.0
     eslint-plugin-prettier: ^3.4.0
-    hook-shell-script-webpack-plugin: ^0.1.4
     html-webpack-plugin: ^5.5.0
     prettier: ^2.3.2
     prettier-plugin-packagejson: ^2.2.11

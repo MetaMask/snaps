@@ -1,5 +1,5 @@
 import pathUtils from 'path';
-import { isFile, isDirectory } from './fs';
+import { isFile, isDirectory } from '@metamask/snap-utils';
 
 /**
  * Gets the complete out file path from an output file name and parent

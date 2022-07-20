@@ -10,7 +10,7 @@ import {
 } from '../../utils';
 import { bundle } from '../build/bundle';
 import { snapEval } from '../eval/evalHandler';
-import { manifestHandler } from '../manifest/manifestHandler';
+import { manifestHandler } from '../manifest/manifest-handler';
 import { serve } from '../serve/serveHandler';
 
 /**

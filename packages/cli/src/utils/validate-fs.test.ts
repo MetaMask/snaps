@@ -1,11 +1,13 @@
 import path from 'path';
+import * as snapUtils from '@metamask/snap-utils';
 import {
   getOutfilePath,
   validateOutfileName,
   validateFilePath,
   validateDirPath,
 } from './validate-fs';
-import * as filesystem from './fs';
+
+jest.mock('@metamask/snap-utils');
 
 describe('validate', () => {
   describe('getOutfilePath', () => {
@@ -55,13 +57,13 @@ describe('validate', () => {
 
   describe('validates a file path', () => {
     it('checks whether the given path string resolves to an existing file', async () => {
-      jest.spyOn(filesystem, 'isFile').mockReturnValue(Promise.resolve(true));
+      jest.spyOn(snapUtils, 'isFile').mockResolvedValue(true);
       const result = await validateFilePath('/some/file/path.js');
       expect(result).toStrictEqual(true);
     });
 
     it('checks whether an invalid path string throws an error', async () => {
-      jest.spyOn(filesystem, 'isFile').mockReturnValue(Promise.resolve(false));
+      jest.spyOn(snapUtils, 'isFile').mockResolvedValue(false);
       await expect(validateFilePath('/some/file/path.js')).rejects.toThrow(
         "Invalid params: '/some/file/path.js' is not a file or does not exist.",
       );
@@ -70,17 +72,13 @@ describe('validate', () => {
 
   describe('validates a directory path', () => {
     it('checks whether the given path string resolves to an existing directory', async () => {
-      jest
-        .spyOn(filesystem, 'isDirectory')
-        .mockReturnValue(Promise.resolve(true));
+      jest.spyOn(snapUtils, 'isDirectory').mockResolvedValue(true);
       const result = await validateDirPath('/some/directory', true);
       expect(result).toStrictEqual(true);
     });
 
     it('checks whether an invalid path string to a directory throws an error', async () => {
-      jest
-        .spyOn(filesystem, 'isDirectory')
-        .mockReturnValue(Promise.resolve(false));
+      jest.spyOn(snapUtils, 'isDirectory').mockResolvedValue(false);
 
       await expect(validateDirPath('/some/directory', true)).rejects.toThrow(
         "Invalid params: '/some/directory' is not a directory or could not be created.",
