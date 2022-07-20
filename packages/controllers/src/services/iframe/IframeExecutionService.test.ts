@@ -179,17 +179,16 @@ describe('IframeExecutionService', () => {
 
     expect(executeResult).toBe('OK');
 
-    const result = await iframeExecutionService.handleRpcRequest(
-      snapId,
-      HandlerType.onRpcRequest,
-      'foo',
-      {
+    const result = await await iframeExecutionService.handleRpcRequest(snapId, {
+      origin: 'foo',
+      handler: HandlerType.onRpcRequest,
+      request: {
         jsonrpc: '2.0',
         id: 1,
         method: 'foobar',
         params: [],
       },
-    );
+    });
 
     expect(result).toBe(blockNumber);
 

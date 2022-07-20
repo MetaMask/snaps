@@ -292,7 +292,7 @@ class ExecutionEnvironmentStub implements ExecutionService {
   }
 
   async getRpcRequestHandler(_snapId: string) {
-    return (_origin: any, _handler: any, request: Record<string, unknown>) => {
+    return ({ request }: SnapRpcHookArgs) => {
       return new Promise((resolve) => {
         const results = `${request.method}${request.id}`;
         resolve(results);
@@ -1597,26 +1597,22 @@ describe('SnapController', () => {
           return true;
         });
 
-      await snapController.handleRpcRequest(
-        snapId,
-        HandlerType.onRpcRequest,
-        'foo.com',
-        {
-          id: 1,
-          method: 'bar',
-        },
-      );
+      await snapController.handleRpcRequest(snapId, 'foo.com', {
+        id: 1,
+        method: 'bar',
+      });
 
-      expect(spyOnMessengerCall).toHaveBeenCalledTimes(2);
+      expect(spyOnMessengerCall).toHaveBeenCalledTimes(1);
       expect(spyOnMessengerCall).toHaveBeenCalledWith(
         'ExecutionService:handleRpcRequest',
-        snapId,
-        HandlerType.onRpcRequest,
-        'foo.com',
         {
-          id: 1,
-          method: 'bar',
-          jsonrpc: '2.0',
+          origin: 'foo.com',
+          handler: HandlerType.onRpcRequest,
+          request: {
+            id: 1,
+            method: 'bar',
+            jsonrpc: '2.0',
+          },
         },
       );
       await service.terminateAllSnaps();
