@@ -1,11 +1,14 @@
 import { ControllerMessenger } from '@metamask/controllers';
 import { ErrorJSON, SnapId } from '@metamask/snap-types';
+import { HandlerType } from '@metamask/execution-environments';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import pump from 'pump';
 import { ErrorMessageEvent } from '../ExecutionService';
 import { setupMultiplex } from '../AbstractExecutionService';
 import { NodeProcessExecutionService } from './NodeProcessExecutionService';
+
+const ON_RPC_REQUEST = HandlerType.onRpcRequest;
 
 describe('NodeProcessExecutionService', () => {
   it('can boot', async () => {
@@ -119,7 +122,7 @@ describe('NodeProcessExecutionService', () => {
     });
 
     await expect(
-      service.handleRpcRequest(snapId, 'fooOrigin', {
+      service.handleRpcRequest(snapId, ON_RPC_REQUEST, 'fooOrigin', {
         jsonrpc: '2.0',
         method: 'foo',
         params: {},
@@ -177,12 +180,17 @@ describe('NodeProcessExecutionService', () => {
       );
     });
 
-    const result = await service.handleRpcRequest(snapId, 'fooOrigin', {
-      jsonrpc: '2.0',
-      method: '',
-      params: {},
-      id: 1,
-    });
+    const result = await service.handleRpcRequest(
+      snapId,
+      ON_RPC_REQUEST,
+      'fooOrigin',
+      {
+        jsonrpc: '2.0',
+        method: '',
+        params: {},
+        id: 1,
+      },
+    );
 
     expect(result).toBe('foo');
 
@@ -245,12 +253,17 @@ describe('NodeProcessExecutionService', () => {
 
     expect(executeResult).toBe('OK');
 
-    const result = await service.handleRpcRequest(snapId, 'foo', {
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'foobar',
-      params: [],
-    });
+    const result = await service.handleRpcRequest(
+      snapId,
+      ON_RPC_REQUEST,
+      'foo',
+      {
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'foobar',
+        params: [],
+      },
+    );
 
     expect(result).toBe(blockNumber);
 

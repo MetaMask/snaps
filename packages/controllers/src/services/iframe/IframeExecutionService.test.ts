@@ -3,6 +3,7 @@ import { ControllerMessenger } from '@metamask/controllers';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import pump from 'pump';
+import { HandlerType } from '@metamask/execution-environments';
 import { ErrorMessageEvent } from '../ExecutionService';
 import { setupMultiplex } from '../AbstractExecutionService';
 import { IframeExecutionService } from './IframeExecutionService';
@@ -180,6 +181,7 @@ describe('IframeExecutionService', () => {
 
     const result = await iframeExecutionService.handleRpcRequest(
       snapId,
+      HandlerType.onRpcRequest,
       'foo',
       {
         jsonrpc: '2.0',

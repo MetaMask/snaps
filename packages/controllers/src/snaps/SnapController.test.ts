@@ -14,6 +14,7 @@ import {
   getSnapPermissionName,
   getSnapSourceShasum,
   SnapManifest,
+  HandlerType,
 } from '@metamask/snap-utils';
 import { Crypto } from '@peculiar/webcrypto';
 import { EthereumRpcError, ethErrors, serializeError } from 'eth-rpc-errors';
@@ -1596,15 +1597,21 @@ describe('SnapController', () => {
           return true;
         });
 
-      await snapController.handleRpcRequest(snapId, 'foo.com', {
-        id: 1,
-        method: 'bar',
-      });
+      await snapController.handleRpcRequest(
+        snapId,
+        HandlerType.onRpcRequest,
+        'foo.com',
+        {
+          id: 1,
+          method: 'bar',
+        },
+      );
 
       expect(spyOnMessengerCall).toHaveBeenCalledTimes(2);
       expect(spyOnMessengerCall).toHaveBeenCalledWith(
         'ExecutionService:handleRpcRequest',
         snapId,
+        HandlerType.onRpcRequest,
         'foo.com',
         {
           id: 1,

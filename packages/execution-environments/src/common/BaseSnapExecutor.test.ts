@@ -4,10 +4,11 @@ import { Duplex, DuplexOptions, EventEmitter, Readable } from 'stream';
 import { JsonRpcResponse } from '@metamask/utils';
 import { JsonRpcRequest } from '../__GENERATED__/openrpc';
 import { BaseSnapExecutor } from './BaseSnapExecutor';
+import { HandlerType } from './enums';
 
 const FAKE_ORIGIN = 'origin:foo';
 const FAKE_SNAP_NAME = 'local:foo';
-const ON_RPC_REQUEST = 'onRpcRequest';
+const ON_RPC_REQUEST = HandlerType.onRpcRequest;
 
 type TwoWayPassThroughBuffer = {
   buffer: { chunk: any; encoding: BufferEncoding }[];
@@ -754,7 +755,7 @@ describe('BaseSnapExecutor', () => {
       method: 'snapRpc',
       params: [
         FAKE_SNAP_NAME,
-        'onTxConfirmation',
+        HandlerType.onTxConfirmation,
         FAKE_ORIGIN,
         { jsonrpc: '2.0', method: '', params: transaction },
       ],

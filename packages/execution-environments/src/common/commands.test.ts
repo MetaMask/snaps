@@ -2,6 +2,7 @@ import {
   CommandMethodsMapping,
   getCommandMethodImplementations,
 } from './commands';
+import { HandlerType } from './enums';
 
 describe('getCommandMethodImplementations', () => {
   it('will return an object with ping, executeSnap, snapRpc and terminate methods', () => {
@@ -117,12 +118,21 @@ describe('getCommandMethodImplementations', () => {
       onTerminate,
     );
     const rpcRequest = { jsonrpc: '2.0', method: 'hello' };
-    await methodsObj.snapRpc('foo', 'onRpcRequest', 'bar', rpcRequest as any);
+    await methodsObj.snapRpc(
+      'foo',
+      HandlerType.onRpcRequest,
+      'bar',
+      rpcRequest as any,
+    );
     expect(invokeSnapRpc).toHaveBeenCalledTimes(1);
-    expect(invokeSnapRpc).toHaveBeenCalledWith('foo', 'onRpcRequest', {
-      origin: 'bar',
-      request: rpcRequest,
-    });
+    expect(invokeSnapRpc).toHaveBeenCalledWith(
+      'foo',
+      HandlerType.onRpcRequest,
+      {
+        origin: 'bar',
+        request: rpcRequest,
+      },
+    );
   });
 
   it('the snapRpc method will throw an error if the target is not a string', async () => {
@@ -138,7 +148,7 @@ describe('getCommandMethodImplementations', () => {
     await expect(async () => {
       await methodsObj.snapRpc(
         2 as any,
-        'onRpcRequest',
+        HandlerType.onRpcRequest,
         'bar',
         rpcRequest as any,
       );
@@ -158,7 +168,7 @@ describe('getCommandMethodImplementations', () => {
     await expect(async () => {
       await methodsObj.snapRpc(
         'foo',
-        'onRpcRequest',
+        HandlerType.onRpcRequest,
         2 as any,
         rpcRequest as any,
       );
@@ -176,7 +186,12 @@ describe('getCommandMethodImplementations', () => {
     );
     const rpcRequest = { method: 'hello' };
     await expect(async () => {
-      await methodsObj.snapRpc('foo', 'onRpcRequest', 'bar', rpcRequest as any);
+      await methodsObj.snapRpc(
+        'foo',
+        HandlerType.onRpcRequest,
+        'bar',
+        rpcRequest as any,
+      );
     }).rejects.toThrow('request is not a proper JSON RPC Request');
   });
 });
