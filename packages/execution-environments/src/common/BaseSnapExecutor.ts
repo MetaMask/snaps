@@ -18,6 +18,7 @@ import {
   Target,
 } from '../__GENERATED__/openrpc';
 import { isJsonRpcRequest } from '../__GENERATED__/openrpc.guard';
+import { HandlerType } from '..';
 import { createEndowments } from './endowments';
 import {
   getCommandMethodImplementations,
@@ -48,14 +49,9 @@ export type InvokeSnapArgs = Parameters<
 
 export type InvokeSnap = (
   target: Target,
-  handler: keyof SnapExports,
+  handler: HandlerType,
   args: InvokeSnapArgs,
 ) => Promise<unknown>;
-
-const SNAP_EXPORTS: (keyof SnapExports)[] = [
-  'onRpcRequest',
-  'onTxConfirmation',
-];
 
 export class BaseSnapExecutor {
   private snapData: Map<string, SnapData>;
@@ -273,7 +269,7 @@ export class BaseSnapExecutor {
   }
 
   private registerSnapExports(snapName: string, snapModule: any) {
-    SNAP_EXPORTS.forEach((exportName) => {
+    Object.keys(HandlerType).forEach((exportName) => {
       if (typeof snapModule?.exports?.[exportName] === 'function') {
         const data = this.snapData.get(snapName);
         // Somebody deleted the Snap before we could register

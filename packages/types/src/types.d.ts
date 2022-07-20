@@ -47,5 +47,3 @@ export type SnapExports = {
   onRpcRequest?: OnRpcRequestHandler;
   onTxConfirmation?: OnTxConfirmationHandler;
 };
-
-export type HandlerType = keyof SnapExports;

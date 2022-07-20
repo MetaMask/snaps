@@ -1,4 +1,3 @@
-import { SnapExports } from '@metamask/snap-types';
 import { JsonRpcRequest } from '@metamask/utils';
 import {
   ExecuteSnap,
@@ -9,6 +8,7 @@ import {
 } from '../__GENERATED__/openrpc';
 import { isEndowments, isJsonRpcRequest } from '../__GENERATED__/openrpc.guard';
 import { InvokeSnap, InvokeSnapArgs } from './BaseSnapExecutor';
+import { HandlerType } from './enums';
 
 export type CommandMethodsMapping = {
   ping: Ping;
@@ -27,10 +27,10 @@ export type CommandMethodsMapping = {
  */
 function getHandlerArguments(
   origin: Origin,
-  handler: keyof SnapExports,
+  handler: HandlerType,
   request: JsonRpcRequest<unknown[] | { [key: string]: unknown }>,
 ): InvokeSnapArgs {
-  if (handler === 'onTxConfirmation') {
+  if (handler === HandlerType.onTxConfirmation) {
     return {
       origin,
       transaction: request.params as { [key: string]: unknown },

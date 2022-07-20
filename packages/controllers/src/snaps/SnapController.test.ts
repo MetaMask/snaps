@@ -20,6 +20,7 @@ import {
   DEFAULT_ENDOWMENTS,
   getSnapSourceShasum,
 } from '@metamask/snap-utils';
+import { HandlerType } from '@metamask/execution-environments';
 import { ExecutionService } from '../services/ExecutionService';
 import { NodeThreadExecutionService, setupMultiplex } from '../services';
 import { delay } from '../utils';
@@ -1586,7 +1587,11 @@ describe('SnapController', () => {
           return true;
         });
 
-      await snapController.handleRpcRequest(snapId, 'foo.com', {
+      await snapController.handleRpcRequest(
+        snapId,
+        HandlerType.onRpcRequest,
+        'foo.com',
+        {
         id: 1,
         method: 'bar',
       });
@@ -1595,6 +1600,7 @@ describe('SnapController', () => {
       expect(spyOnMessengerCall).toHaveBeenCalledWith(
         'ExecutionService:handleRpcRequest',
         snapId,
+        HandlerType.onRpcRequest,
         'foo.com',
         {
           id: 1,

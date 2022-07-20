@@ -1,11 +1,10 @@
 import { Duplex } from 'stream';
 import ObjectMultiplex from '@metamask/object-multiplex';
+import { ErrorJSON, SnapExecutionData } from '@metamask/snap-types';
 import {
-  ErrorJSON,
-  SnapExecutionData,
+  SNAP_STREAM_NAMES,
   HandlerType,
-} from '@metamask/snap-types';
-import { SNAP_STREAM_NAMES } from '@metamask/execution-environments';
+} from '@metamask/execution-environments';
 import {
   Duration,
   isJsonRpcRequest,

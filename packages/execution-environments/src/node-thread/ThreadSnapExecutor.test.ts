@@ -3,12 +3,12 @@ import 'ses';
 import { EventEmitter } from 'stream';
 import { parentPort } from 'worker_threads';
 import { Json, JsonRpcSuccess } from '@metamask/utils';
-import { SNAP_STREAM_NAMES } from '../common/enums';
+import { SNAP_STREAM_NAMES, HandlerType } from '../common/enums';
 import { ThreadSnapExecutor } from './ThreadSnapExecutor';
 
 const FAKE_ORIGIN = 'origin:foo';
 const FAKE_SNAP_NAME = 'local:foo';
-const ON_RPC_REQUEST = 'onRpcRequest';
+const ON_RPC_REQUEST = HandlerType.onRpcRequest;
 
 jest.mock('worker_threads', () => ({
   parentPort: {

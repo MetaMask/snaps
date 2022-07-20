@@ -2,12 +2,12 @@
 import 'ses';
 import { EventEmitter } from 'stream';
 import { Json, JsonRpcSuccess } from '@metamask/utils';
-import { SNAP_STREAM_NAMES } from '../common/enums';
+import { SNAP_STREAM_NAMES, HandlerType } from '../common/enums';
 import { IFrameSnapExecutor } from './IFrameSnapExecutor';
 
 const FAKE_ORIGIN = 'origin:foo';
 const FAKE_SNAP_NAME = 'local:foo';
-const ON_RPC_REQUEST = 'onRpcRequest';
+const ON_RPC_REQUEST = HandlerType.onRpcRequest;
 
 describe('IFrameSnapExecutor', () => {
   it('receives and processes commands', async () => {

@@ -1,5 +1,6 @@
 import { ControllerMessenger } from '@metamask/controllers';
 import { ErrorJSON, SnapId } from '@metamask/snap-types';
+import { HandlerType } from '@metamask/execution-environments';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import pump from 'pump';
@@ -7,7 +8,7 @@ import { ErrorMessageEvent } from '../ExecutionService';
 import { setupMultiplex } from '../AbstractExecutionService';
 import { NodeThreadExecutionService } from './NodeThreadExecutionService';
 
-const ON_RPC_REQUEST = 'onRpcRequest';
+const ON_RPC_REQUEST = HandlerType.onRpcRequest;
 
 describe('NodeThreadExecutionService', () => {
   it('can boot', async () => {
