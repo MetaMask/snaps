@@ -28,7 +28,7 @@ export type SnapRpcHandler = (args: {
 export type OnRpcRequestHandler = SnapRpcHandler;
 
 // @todo improve type
-export type OnTxConfirmationHandler = (args: {
+export type GetTransactionInsightHandler = (args: {
   origin: string;
   transaction: { [key: string]: unknown };
 }) => Promise<string>;
@@ -45,5 +45,5 @@ export type ErrorJSON = {
 
 export type SnapExports = {
   onRpcRequest?: OnRpcRequestHandler;
-  onTxConfirmation?: OnTxConfirmationHandler;
+  getTransactionInsight?: GetTransactionInsightHandler;
 };

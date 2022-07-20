@@ -5,7 +5,7 @@ import { MetaMaskInpageProvider } from '@metamask/providers';
 import {
   SnapProvider,
   OnRpcRequestHandler,
-  OnTxConfirmationHandler,
+  GetTransactionInsightHandler,
   SnapExports,
 } from '@metamask/snap-types';
 import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
@@ -44,7 +44,7 @@ const fallbackError = {
 };
 
 export type InvokeSnapArgs = Parameters<
-  OnRpcRequestHandler | OnTxConfirmationHandler
+  OnRpcRequestHandler | GetTransactionInsightHandler
 >[0];
 
 export type InvokeSnap = (

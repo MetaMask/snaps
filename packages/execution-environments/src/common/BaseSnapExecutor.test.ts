@@ -727,9 +727,9 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
-  it('supports onTxConfirmation export', async () => {
+  it('supports getTransactionInsight export', async () => {
     const CODE = `
-      module.exports.onTxConfirmation = ({ transaction }) => transaction;
+      module.exports.getTransactionInsight = ({ transaction }) => transaction;
     `;
     const executor = new TestSnapExecutor();
 
@@ -755,7 +755,7 @@ describe('BaseSnapExecutor', () => {
       method: 'snapRpc',
       params: [
         FAKE_SNAP_NAME,
-        HandlerType.onTxConfirmation,
+        HandlerType.getTransactionInsight,
         FAKE_ORIGIN,
         { jsonrpc: '2.0', method: '', params: transaction },
       ],

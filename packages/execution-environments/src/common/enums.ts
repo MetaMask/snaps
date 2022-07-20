@@ -5,5 +5,5 @@ export enum SNAP_STREAM_NAMES {
 
 export enum HandlerType {
   onRpcRequest = 'onRpcRequest',
-  onTxConfirmation = 'onTxConfirmation',
+  getTransactionInsight = 'getTransactionInsight',
 }
