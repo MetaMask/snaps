@@ -1,5 +1,6 @@
 import { PermissionType } from '@metamask/controllers';
 import { networkAccessEndowmentBuilder } from './network-access';
+import { SnapEndowments } from './enum';
 
 describe('endowment:network-access', () => {
   it('builds the expected permission specification', () => {
@@ -8,7 +9,7 @@ describe('endowment:network-access', () => {
     );
     expect(specification).toStrictEqual({
       permissionType: PermissionType.Endowment,
-      targetKey: 'endowment:network-access',
+      targetKey: SnapEndowments.networkAccess,
       endowmentGetter: expect.any(Function),
       allowedCaveats: null,
     });

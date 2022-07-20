@@ -27,7 +27,7 @@ import { NodeThreadExecutionService, setupMultiplex } from '../services';
 import { ExecutionService } from '../services/ExecutionService';
 import { delay } from '../utils';
 
-import { LONG_RUNNING_PERMISSION } from './endowments';
+import { SnapEndowments } from './endowments';
 import {
   AllowedActions,
   AllowedEvents,
@@ -115,7 +115,7 @@ const getSnapControllerMessenger = (
       // Return false for long-running by default, and true for everything else.
       if (
         method === 'PermissionController:hasPermission' &&
-        args[1] === LONG_RUNNING_PERMISSION
+        args[1] === SnapEndowments.longRunning
       ) {
         return false;
       }
@@ -207,7 +207,7 @@ const getSnapControllerWithEESOptions = (
       // Mock long running permission, call actual implementation for everything else
       if (
         method === 'PermissionController:hasPermission' &&
-        args[1] === LONG_RUNNING_PERMISSION
+        args[1] === SnapEndowments.longRunning
       ) {
         return false;
       }
@@ -645,7 +645,7 @@ describe('SnapController', () => {
       4,
       'PermissionController:hasPermission',
       MOCK_SNAP_ID,
-      LONG_RUNNING_PERMISSION,
+      SnapEndowments.longRunning,
     );
     snapController.destroy();
   });
@@ -688,7 +688,7 @@ describe('SnapController', () => {
       2,
       'PermissionController:hasPermission',
       MOCK_SNAP_ID,
-      LONG_RUNNING_PERMISSION,
+      SnapEndowments.longRunning,
     );
   });
 
@@ -959,7 +959,7 @@ describe('SnapController', () => {
           return {};
         } else if (
           method === 'PermissionController:hasPermission' &&
-          args[1] === LONG_RUNNING_PERMISSION
+          args[1] === SnapEndowments.longRunning
         ) {
           return false;
         }
@@ -1021,7 +1021,7 @@ describe('SnapController', () => {
       3,
       'PermissionController:hasPermission',
       MOCK_SNAP_ID,
-      LONG_RUNNING_PERMISSION,
+      SnapEndowments.longRunning,
     );
 
     await eventSubscriptionPromise;
@@ -1233,7 +1233,7 @@ describe('SnapController', () => {
           });
         } else if (
           method === 'PermissionController:hasPermission' &&
-          args[1] === LONG_RUNNING_PERMISSION
+          args[1] === SnapEndowments.longRunning
         ) {
           return false;
         }
@@ -1535,7 +1535,7 @@ describe('SnapController', () => {
           });
         } else if (
           method === 'PermissionController:hasPermission' &&
-          args[1] === LONG_RUNNING_PERMISSION
+          args[1] === SnapEndowments.longRunning
         ) {
           return false;
         }
@@ -1943,7 +1943,7 @@ describe('SnapController', () => {
         3,
         'PermissionController:hasPermission',
         snapId,
-        LONG_RUNNING_PERMISSION,
+        SnapEndowments.longRunning,
       );
 
       expect(fetchSnapMock).toHaveBeenCalledTimes(1);
@@ -2051,7 +2051,7 @@ describe('SnapController', () => {
         7,
         'PermissionController:hasPermission',
         snapId,
-        LONG_RUNNING_PERMISSION,
+        SnapEndowments.longRunning,
       );
 
       expect(fetchSnapMock).toHaveBeenCalledTimes(2);
@@ -2125,7 +2125,7 @@ describe('SnapController', () => {
         4,
         'PermissionController:hasPermission',
         MOCK_SNAP_ID,
-        LONG_RUNNING_PERMISSION,
+        SnapEndowments.longRunning,
       );
     });
 
@@ -2249,7 +2249,7 @@ describe('SnapController', () => {
         9,
         'PermissionController:hasPermission',
         MOCK_SNAP_ID,
-        LONG_RUNNING_PERMISSION,
+        SnapEndowments.longRunning,
       );
       expect(fetchSnapMock).toHaveBeenCalledTimes(2);
       expect(fetchSnapMock).toHaveBeenNthCalledWith(
@@ -2575,7 +2575,7 @@ describe('SnapController', () => {
         8,
         'PermissionController:hasPermission',
         MOCK_SNAP_ID,
-        LONG_RUNNING_PERMISSION,
+        SnapEndowments.longRunning,
       );
       expect(onSnapUpdated).toHaveBeenCalledTimes(1);
       expect(onSnapAdded).toHaveBeenCalledTimes(1);
@@ -2641,7 +2641,7 @@ describe('SnapController', () => {
         2,
         'PermissionController:hasPermission',
         MOCK_SNAP_ID,
-        LONG_RUNNING_PERMISSION,
+        SnapEndowments.longRunning,
       );
 
       expect(callActionSpy).toHaveBeenNthCalledWith(
@@ -2684,7 +2684,7 @@ describe('SnapController', () => {
         7,
         'PermissionController:hasPermission',
         MOCK_SNAP_ID,
-        LONG_RUNNING_PERMISSION,
+        SnapEndowments.longRunning,
       );
       expect(isRunning).toStrictEqual(true);
       expect(stopSnapSpy).toHaveBeenCalledTimes(1);
@@ -2905,7 +2905,7 @@ describe('SnapController', () => {
         11,
         'PermissionController:hasPermission',
         MOCK_SNAP_ID,
-        LONG_RUNNING_PERMISSION,
+        SnapEndowments.longRunning,
       );
     });
 

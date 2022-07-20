@@ -61,11 +61,11 @@ import {
   TerminateSnapAction,
 } from '../services/ExecutionService';
 import { assertExhaustive, hasTimedOut, setDiff, withTimeout } from '../utils';
-import { LONG_RUNNING_PERMISSION } from './endowments';
 import { RequestQueue } from './RequestQueue';
 import { fetchNpmSnap } from './utils';
 
 import { Timer } from './Timer';
+import { SnapEndowments } from './endowments';
 
 export const controllerName = 'SnapController';
 
@@ -2317,7 +2317,7 @@ export class SnapController extends BaseController<
     const isLongRunning = await this.messagingSystem.call(
       'PermissionController:hasPermission',
       snapId,
-      LONG_RUNNING_PERMISSION,
+      SnapEndowments.longRunning,
     );
 
     // Long running snaps have timeouts disabled
