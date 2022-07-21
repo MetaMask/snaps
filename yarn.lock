@@ -3018,6 +3018,7 @@ __metadata:
     "@types/tar-stream": ^2.2.2
     "@xstate/fsm": ^2.0.0
     concat-stream: ^2.0.0
+    cron-parser: ^4.5.0
     eslint: ^7.30.0
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
@@ -3096,6 +3097,7 @@ __metadata:
     "@scure/base": ^1.1.1
     "@types/jest": ^27.5.1
     "@types/semver": ^7.3.10
+    cron-parser: ^4.5.0
     eslint: ^7.30.0
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
@@ -6961,6 +6963,15 @@ __metadata:
   version: 1.1.1
   resolution: "create-require@npm:1.1.1"
   checksum: a9a1503d4390d8b59ad86f4607de7870b39cad43d929813599a23714831e81c520bddf61bcdd1f8e30f05fd3a2b71ae8538e946eb2786dc65c2bbc520f692eff
+  languageName: node
+  linkType: hard
+
+"cron-parser@npm:^4.5.0":
+  version: 4.5.0
+  resolution: "cron-parser@npm:4.5.0"
+  dependencies:
+    luxon: ^2.4.0
+  checksum: 9e5a6d07c2d86fb27b5701067018776aaf9ad4bf9f57a0f02e5f7c33d3d46dd804802ed74c54f001b18db540293633f1904632efdab3466e1f5630b953de26eb
   languageName: node
   linkType: hard
 
@@ -12282,6 +12293,13 @@ __metadata:
   version: 2.2.1
   resolution: "ltgt@npm:2.2.1"
   checksum: 7e3874296f7538bc8087b428ac4208008d7b76916354b34a08818ca7c83958c1df10ec427eeeaad895f6b81e41e24745b18d30f89abcc21d228b94f6961d50a2
+  languageName: node
+  linkType: hard
+
+"luxon@npm:^2.4.0":
+  version: 2.5.0
+  resolution: "luxon@npm:2.5.0"
+  checksum: 2fccce6bbdfc8f13c5a8c148ff045ab3b10f4f80cac28dd92575588fffce9b2d7197096d7fedcc61a6245b59f4233507797f530e63f22b9ae4c425dff2909ae3
   languageName: node
   linkType: hard
 

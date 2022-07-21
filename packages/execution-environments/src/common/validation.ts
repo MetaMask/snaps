@@ -29,6 +29,7 @@ const VALIDATION_FUNCTIONS = {
   [HandlerType.OnRpcRequest]: validateFunctionExport,
   [HandlerType.OnTransaction]: validateFunctionExport,
   [HandlerType.SnapKeyring]: validateKeyringExport,
+  [HandlerType.OnCronjob]: validateFunctionExport,
 };
 
 /**

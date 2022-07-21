@@ -18,6 +18,8 @@ export type OnTransactionHandler = (args: {
   chainId: string;
 }) => Promise<OnTransactionResponse>;
 
+export type OnCronjobHandler = SnapRpcHandler;
+
 export type SnapProvider = MetaMaskInpageProvider;
 
 // CAIP2 - https://github.com/ChainAgnostic/CAIPs/blob/master/CAIPs/caip-2.md
@@ -57,6 +59,7 @@ export interface SnapKeyring {
 export type SnapFunctionExports = {
   onRpcRequest?: OnRpcRequestHandler;
   onTransaction?: OnTransactionHandler;
+  onCronjob?: OnCronjobHandler;
 };
 
 export type SnapExports = SnapFunctionExports & {

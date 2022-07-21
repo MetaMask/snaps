@@ -10,6 +10,10 @@ import {
   SnapControllerEvents,
   SnapEndowments,
 } from '../snaps';
+import {
+  CronjobControllerActions,
+  CronjobControllerEvents,
+} from '../cronjob/CronjobController';
 import { getNodeEES, getNodeEESMessenger } from './execution-environment';
 
 export const getControllerMessenger = () =>
@@ -200,4 +204,63 @@ export const getPersistedSnapsState = (
     },
     {} as PersistedSnapControllerState['snaps'],
   );
+};
+
+// Mock controller messenger for Cronjob Controller
+export const getRootCronjobControllerMessenger = () =>
+  new ControllerMessenger<
+    CronjobControllerActions | AllowedActions,
+    CronjobControllerEvents | AllowedEvents
+  >();
+
+export const getRestrictedCronjobControllerMessenger = (
+  messenger: ReturnType<
+    typeof getRootCronjobControllerMessenger
+  > = getRootCronjobControllerMessenger(),
+  mocked = true,
+) => {
+  const m = messenger.getRestricted<
+    'CronjobController',
+    CronjobControllerActions['type'] | AllowedActions['type'],
+    CronjobControllerEvents['type'] | AllowedEvents['type']
+  >({
+    name: 'CronjobController',
+    allowedEvents: [
+      'ExecutionService:unhandledError',
+      'ExecutionService:outboundRequest',
+      'ExecutionService:outboundResponse',
+      'SnapController:snapAdded',
+      'SnapController:snapBlocked',
+      'SnapController:snapInstalled',
+      'SnapController:snapUnblocked',
+      'SnapController:snapUpdated',
+      'SnapController:snapRemoved',
+    ],
+    allowedActions: [
+      'ApprovalController:addRequest',
+      'ExecutionService:executeSnap',
+      'ExecutionService:terminateAllSnaps',
+      'ExecutionService:terminateSnap',
+      'ExecutionService:handleRpcRequest',
+      'PermissionController:getEndowments',
+      'PermissionController:hasPermission',
+      'PermissionController:hasPermissions',
+      'PermissionController:getPermissions',
+      'SnapController:handleRequest',
+    ],
+  });
+
+  if (mocked) {
+    jest.spyOn(m, 'call').mockImplementation((method, ...args) => {
+      // Return false for long-running by default, and true for everything else.
+      if (
+        method === 'PermissionController:hasPermission' &&
+        args[1] === SnapEndowments.LongRunning
+      ) {
+        return false;
+      }
+      return true;
+    });
+  }
+  return m;
 };
