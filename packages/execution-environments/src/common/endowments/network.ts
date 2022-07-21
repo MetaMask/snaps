@@ -26,7 +26,7 @@ const createNetwork = () => {
   );
 
   const _fetch: typeof fetch = async (
-    input: URL | RequestInfo,
+    input: RequestInfo,
     init?: RequestInit,
   ): Promise<Response> => {
     const abortController = new AbortController();
