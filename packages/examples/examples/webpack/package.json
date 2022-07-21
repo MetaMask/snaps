@@ -42,6 +42,7 @@
     "eslint-plugin-jsdoc": "^36.1.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.4.0",
+    "hook-shell-script-webpack-plugin": "^0.1.4",
     "html-webpack-plugin": "^5.5.0",
     "prettier": "^2.3.2",
     "prettier-plugin-packagejson": "^2.2.11",

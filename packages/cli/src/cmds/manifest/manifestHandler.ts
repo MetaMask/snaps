@@ -43,7 +43,7 @@ export async function manifestHandler({ writeManifest }: YargsArgs) {
  */
 function logManifestWarning(message: string) {
   if (!global.snaps.suppressWarnings) {
-    console.warn(`Manifest Warning: ${message}`);
+    console.log(`Manifest Warning: ${message}`);
   }
 }
 

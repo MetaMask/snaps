@@ -12538,6 +12538,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"hook-shell-script-webpack-plugin@npm:^0.1.4":
+  version: 0.1.4
+  resolution: "hook-shell-script-webpack-plugin@npm:0.1.4"
+  checksum: 880115222c8ad047464f0b49b04d56fe2b806f6c907b1f3ac0ad114ea5365a420db188ac0f9f1b21b0844273c570b6671a35e1b33513db9579831ee8c8358a58
+  languageName: node
+  linkType: hard
+
 "hosted-git-info@npm:^2.1.4, hosted-git-info@npm:^2.7.1":
   version: 2.8.9
   resolution: "hosted-git-info@npm:2.8.9"
@@ -20640,6 +20647,7 @@ __metadata:
     eslint-plugin-jsdoc: ^36.1.0
     eslint-plugin-node: ^11.1.0
     eslint-plugin-prettier: ^3.4.0
+    hook-shell-script-webpack-plugin: ^0.1.4
     html-webpack-plugin: ^5.5.0
     prettier: ^2.3.2
     prettier-plugin-packagejson: ^2.2.11
