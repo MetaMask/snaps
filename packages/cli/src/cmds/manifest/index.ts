@@ -2,7 +2,7 @@ import yargs from 'yargs';
 import builders from '../../builders';
 import { YargsArgs } from '../../types/yargs';
 import { logError } from '../../utils';
-import { manifestHandler } from './manifest-handler';
+import { manifestHandler } from './manifestHandler';
 
 export = {
   command: ['manifest', 'm'],

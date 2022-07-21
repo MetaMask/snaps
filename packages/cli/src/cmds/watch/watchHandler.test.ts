@@ -6,7 +6,7 @@ import * as miscUtils from '../../utils/misc';
 import * as fsUtils from '../../utils/validate-fs';
 import * as build from '../build/bundle';
 import * as evalModule from '../eval/evalHandler';
-import * as manifest from '../manifest/manifest-handler';
+import * as manifest from '../manifest/manifestHandler';
 import watch from '.';
 
 jest.mock('@metamask/snap-utils', () => ({
