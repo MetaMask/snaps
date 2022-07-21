@@ -4,17 +4,12 @@ import {
   NpmSnapFileNames,
   SnapManifest,
   getSnapSourceShasum,
+  getWritableManifest,
+  readJsonFile,
 } from '@metamask/snap-utils';
 import mkdirp from 'mkdirp';
 import { YargsArgs } from '../../types/yargs';
-import {
-  closePrompt,
-  CONFIG_FILE,
-  logError,
-  readJsonFile,
-  SnapConfig,
-} from '../../utils';
-import { getWritableManifest } from '../manifest/manifestHandler';
+import { closePrompt, CONFIG_FILE, logError, SnapConfig } from '../../utils';
 import { TemplateType } from '../../builders';
 import template from './init-template.json';
 import {
@@ -152,9 +147,7 @@ export async function initHandler(argv: YargsArgs) {
  * during the init command.
  */
 export async function updateManifestShasum() {
-  const manifest = (await readJsonFile(
-    NpmSnapFileNames.Manifest,
-  )) as SnapManifest;
+  const manifest = await readJsonFile<SnapManifest>(NpmSnapFileNames.Manifest);
 
   const bundleContents = await fs.readFile(
     manifest.source.location.npm.filePath,

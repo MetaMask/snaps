@@ -11,7 +11,6 @@ import {
 } from '../../../test/utils';
 import { YargsArgs } from '../../types/yargs';
 // We have to import utils separately or else we run into trouble with our mocks
-import * as fsUtils from '../../utils/fs';
 import * as miscUtils from '../../utils/misc';
 import * as readlineUtils from '../../utils/readline';
 import { TemplateType } from '../../builders';
@@ -33,7 +32,11 @@ jest.mock('fs', () => ({
   },
 }));
 
-jest.mock('@metamask/snap-utils');
+jest.mock('@metamask/snap-utils', () => ({
+  ...jest.requireActual('@metamask/snap-utils'),
+  readJsonFile: jest.fn(),
+  validateSnapJsonFile: jest.fn(),
+}));
 jest.mock('init-package-json');
 jest.mock('mkdirp');
 
@@ -56,7 +59,7 @@ describe('initUtils', () => {
         .mockImplementation(() => true);
 
       const readJsonFileMock = jest
-        .spyOn(fsUtils, 'readJsonFile')
+        .spyOn(snapUtils, 'readJsonFile')
         .mockImplementationOnce(async () => '');
 
       const validateSnapJsonFileMock = jest
@@ -72,16 +75,15 @@ describe('initUtils', () => {
       expect(global.console.log).toHaveBeenCalledTimes(2);
     });
 
-    it('throws error if unable to parse packagejson', async () => {
+    it('throws error if unable to parse package.json', async () => {
       const existsSyncMock = jest
         .spyOn(fs, 'existsSync')
         .mockImplementation(() => true);
-      const readFileMock = jest
-        .spyOn(fs.promises, 'readFile')
-        .mockImplementationOnce(async () => '');
-      const parseMock = jest.spyOn(JSON, 'parse').mockImplementation(() => {
-        throw new Error('error message');
-      });
+      const parseMock = jest
+        .spyOn(snapUtils, 'readJsonFile')
+        .mockImplementation(() => {
+          throw new Error('error message');
+        });
       jest.spyOn(console, 'log').mockImplementation();
       const logErrorMock = jest
         .spyOn(miscUtils, 'logError')
@@ -91,7 +93,6 @@ describe('initUtils', () => {
         'error message',
       );
       expect(existsSyncMock).toHaveBeenCalled();
-      expect(readFileMock).toHaveBeenCalledTimes(1);
       expect(parseMock).toHaveBeenCalledTimes(1);
       expect(logErrorMock).toHaveBeenCalledTimes(1);
       expect(global.console.log).toHaveBeenCalledTimes(1);

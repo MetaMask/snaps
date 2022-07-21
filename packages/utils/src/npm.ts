@@ -41,12 +41,12 @@ export const SnapFileNameFromKey = {
  */
 export function validateNpmSnap(
   snapFiles: UnvalidatedSnapFiles,
-  errorPrefix: `${string}: `,
+  errorPrefix?: `${string}: `,
 ): SnapFiles {
   EXPECTED_SNAP_FILES.forEach((key) => {
     if (!snapFiles[key]) {
       throw new Error(
-        `${errorPrefix}Missing file "${SnapFileNameFromKey[key]}".`,
+        `${errorPrefix ?? ''}Missing file "${SnapFileNameFromKey[key]}".`,
       );
     }
   });
@@ -57,38 +57,41 @@ export function validateNpmSnap(
     validateSnapJsonFile(NpmSnapFileNames.Manifest, manifest);
   } catch (error) {
     throw new Error(
-      `${errorPrefix}"${NpmSnapFileNames.Manifest}" is invalid:\n${error.message}`,
+      `${errorPrefix ?? ''}"${NpmSnapFileNames.Manifest}" is invalid:\n${
+        error.message
+      }`,
     );
   }
   const validatedManifest = manifest as SnapManifest;
 
   const { iconPath } = validatedManifest.source.location.npm;
   if (iconPath && !svgIcon) {
-    throw new Error(`${errorPrefix}Missing file "${iconPath}".`);
+    throw new Error(`Missing file "${iconPath}".`);
   }
 
   try {
     validateSnapJsonFile(NpmSnapFileNames.PackageJson, packageJson);
   } catch (error) {
     throw new Error(
-      `${errorPrefix}"${NpmSnapFileNames.PackageJson}" is invalid:\n${error.message}`,
+      `${errorPrefix ?? ''}"${NpmSnapFileNames.PackageJson}" is invalid:\n${
+        error.message
+      }`,
     );
   }
   const validatedPackageJson = packageJson as NpmSnapPackageJson;
 
-  validateNpmSnapManifest(
-    {
-      manifest: validatedManifest,
-      packageJson: validatedPackageJson,
-      sourceCode,
-    },
-    errorPrefix,
-  );
+  validateNpmSnapManifest({
+    manifest: validatedManifest,
+    packageJson: validatedPackageJson,
+    sourceCode,
+  });
 
   if (svgIcon) {
     if (Buffer.byteLength(svgIcon, 'utf8') > SVG_MAX_BYTE_SIZE) {
       throw new Error(
-        `${errorPrefix}The specified SVG icon exceeds the maximum size of ${SVG_MAX_BYTE_SIZE_TEXT}.`,
+        `${
+          errorPrefix ?? ''
+        }The specified SVG icon exceeds the maximum size of ${SVG_MAX_BYTE_SIZE_TEXT}.`,
       );
     }
   }
@@ -109,14 +112,14 @@ export function validateNpmSnap(
  * @param snapFiles.manifest - The npm Snap manifest to validate.
  * @param snapFiles.packageJson - The npm Snap's `package.json`.
  * @param snapFiles.sourceCode - The Snap's source code.
- * @param errorPrefix - The prefix for error messages.
  * @returns A tuple containing the validated snap manifest, snap source code,
  * and `package.json`.
  */
-export function validateNpmSnapManifest(
-  { manifest, packageJson, sourceCode }: SnapFiles,
-  errorPrefix: `${string}: `,
-): [SnapManifest, string, NpmSnapPackageJson] {
+export function validateNpmSnapManifest({
+  manifest,
+  packageJson,
+  sourceCode,
+}: SnapFiles): [SnapManifest, string, NpmSnapPackageJson] {
   const packageJsonName = packageJson.name;
   const packageJsonVersion = packageJson.version;
   const packageJsonRepository = packageJson.repository;
@@ -127,14 +130,14 @@ export function validateNpmSnapManifest(
 
   if (packageJsonName !== manifestPackageName) {
     throw new ProgrammaticallyFixableSnapError(
-      `${errorPrefix}"${NpmSnapFileNames.Manifest}" npm package name ("${manifestPackageName}") does not match the "${NpmSnapFileNames.PackageJson}" "name" field ("${packageJsonName}").`,
+      `"${NpmSnapFileNames.Manifest}" npm package name ("${manifestPackageName}") does not match the "${NpmSnapFileNames.PackageJson}" "name" field ("${packageJsonName}").`,
       SnapValidationFailureReason.NameMismatch,
     );
   }
 
   if (packageJsonVersion !== manifestPackageVersion) {
     throw new ProgrammaticallyFixableSnapError(
-      `${errorPrefix}"${NpmSnapFileNames.Manifest}" npm package version ("${manifestPackageVersion}") does not match the "${NpmSnapFileNames.PackageJson}" "version" field ("${packageJsonVersion}").`,
+      `"${NpmSnapFileNames.Manifest}" npm package version ("${manifestPackageVersion}") does not match the "${NpmSnapFileNames.PackageJson}" "version" field ("${packageJsonVersion}").`,
       SnapValidationFailureReason.VersionMismatch,
     );
   }
@@ -146,7 +149,7 @@ export function validateNpmSnapManifest(
     !deepEqual(packageJsonRepository, manifestRepository)
   ) {
     throw new ProgrammaticallyFixableSnapError(
-      `${errorPrefix}"${NpmSnapFileNames.Manifest}" "repository" field does not match the "${NpmSnapFileNames.PackageJson}" "repository" field.`,
+      `"${NpmSnapFileNames.Manifest}" "repository" field does not match the "${NpmSnapFileNames.PackageJson}" "repository" field.`,
       SnapValidationFailureReason.RepositoryMismatch,
     );
   }
@@ -154,7 +157,7 @@ export function validateNpmSnapManifest(
   validateSnapShasum(
     manifest,
     sourceCode,
-    `${errorPrefix}"${NpmSnapFileNames.Manifest}" "shasum" field does not match computed shasum.`,
+    `"${NpmSnapFileNames.Manifest}" "shasum" field does not match computed shasum.`,
   );
   return [manifest, sourceCode, packageJson];
 }

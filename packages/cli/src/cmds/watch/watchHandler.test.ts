@@ -7,8 +7,13 @@ import * as fsUtils from '../../utils/validate-fs';
 import * as build from '../build/bundle';
 import * as evalModule from '../eval/evalHandler';
 import * as manifest from '../manifest/manifestHandler';
-import * as fileUtils from '../../utils/fs';
 import watch from '.';
+
+jest.mock('@metamask/snap-utils', () => ({
+  ...jest.requireActual('@metamask/snap-utils'),
+  isFile: () => true,
+  isDirectory: () => true,
+}));
 
 type MockWatcher = {
   add: () => void;
@@ -123,7 +128,6 @@ describe('watch', () => {
       // the idea here is that the file name should pass the file path validation
       // so that we can reach where the ternary resolves to the first expression
       jest.spyOn(console, 'log').mockImplementation();
-      jest.spyOn(fileUtils, 'isFile').mockImplementation(async () => true);
       jest
         .spyOn(fsUtils, 'validateFilePath')
         .mockImplementation(async () => true);
@@ -140,11 +144,9 @@ describe('watch', () => {
           () => ({ listen: jest.fn(), on: jest.fn() } as any),
         );
       jest.spyOn(console, 'log').mockImplementation();
-      jest.spyOn(fileUtils, 'isFile').mockImplementation(async () => true);
       jest
         .spyOn(fsUtils, 'validateFilePath')
         .mockImplementation(async () => true);
-      jest.spyOn(fileUtils, 'isDirectory').mockImplementation(async () => true);
       const bundleMock = jest.spyOn(build, 'bundle').mockImplementation();
 
       const argv = getMockArgv({ serve: true });
