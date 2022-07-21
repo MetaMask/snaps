@@ -26,9 +26,14 @@ const MANIFEST_SORT_ORDER: Record<keyof SnapManifest, number> = {
 /**
  * The result from the `checkManifest` function.
  *
+ * @property manifest - The fixed manifest object.
  * @property updated - Whether the manifest was updated.
  * @property warnings - An array of warnings that were encountered during
  * processing of the manifest files. These warnings are not logged to the
+ * console automatically, so depending on the environment the function is called
+ * in, a different method for logging can be used.
+ * @property errors - An array of errors that were encountered during
+ * processing of the manifest files. These errors are not logged to the
  * console automatically, so depending on the environment the function is called
  * in, a different method for logging can be used.
  */
@@ -36,6 +41,7 @@ export type CheckManifestResult = {
   manifest: SnapManifest;
   updated?: boolean;
   warnings: string[];
+  errors: string[];
 };
 
 /**
@@ -53,6 +59,8 @@ export async function checkManifest(
   writeManifest = true,
 ): Promise<CheckManifestResult> {
   const warnings: string[] = [];
+  const errors: string[] = [];
+
   let updated = false;
 
   const unvalidatedManifest = await readSnapJsonFile(
@@ -81,7 +89,9 @@ export async function checkManifest(
   try {
     ({ manifest } = validateNpmSnap(snapFiles));
   } catch (error) {
-    if (writeManifest && error instanceof ProgrammaticallyFixableSnapError) {
+    if (error instanceof ProgrammaticallyFixableSnapError) {
+      errors.push(error.message);
+
       // If we get here, the files at least have the correct shape.
       const partiallyValidatedFiles = snapFiles as SnapFiles;
 
@@ -116,6 +126,8 @@ export async function checkManifest(
               `Internal error: Failed to fix manifest. This is a bug, please report it. Reason:\n${error.message}`,
             );
           }
+
+          errors.push(currentError.message);
         }
       }
 
@@ -154,11 +166,13 @@ export async function checkManifest(
         `${JSON.stringify(getWritableManifest(validatedManifest), null, 2)}\n`,
       );
     } catch (error) {
+      // Note: This error isn't pushed to the errors array, because it's not an
+      // error in the manifest itself.
       throw new Error(`Failed to update snap.manifest.json: ${error.message}`);
     }
   }
 
-  return { manifest: validatedManifest, updated, warnings };
+  return { manifest: validatedManifest, updated, warnings, errors };
 }
 
 /**

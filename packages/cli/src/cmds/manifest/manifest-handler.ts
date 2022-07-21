@@ -13,12 +13,17 @@ const ERROR_PREFIX = 'Manifest Error: ';
  */
 export async function manifestHandler({ writeManifest }: YargsArgs) {
   try {
-    const { warnings } = await checkManifest(
+    const { warnings, errors } = await checkManifest(
       process.cwd(),
       Boolean(writeManifest),
     );
 
-    if (warnings) {
+    if (!writeManifest && errors.length > 0) {
+      console.error(`${ERROR_PREFIX}The manifest is invalid.`);
+      errors.forEach(logManifestError);
+    }
+
+    if (warnings.length > 0) {
       console.warn(
         'Manifest Warning: Validation of snap.manifest.json completed with warnings.',
       );
@@ -38,4 +43,13 @@ function logManifestWarning(message: string) {
   if (!global.snaps.suppressWarnings) {
     console.warn(`Manifest Warning: ${message}`);
   }
+}
+
+/**
+ * Logs a manifest error.
+ *
+ * @param message - The message to log.
+ */
+function logManifestError(message: string) {
+  console.error(`${ERROR_PREFIX}${message}`);
 }

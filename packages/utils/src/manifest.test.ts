@@ -20,6 +20,7 @@ import {
 } from './__test__';
 import { SnapManifest } from './json-schemas';
 import { ProgrammaticallyFixableSnapError } from './snaps';
+import * as npm from './npm';
 
 jest.mock('fs');
 
@@ -108,19 +109,38 @@ describe('checkManifest', () => {
     expect(warnings[0]).toMatch('Missing recommended package.json properties');
   });
 
-  it('throws an error if the manifest is invalid and writeManifest is false', async () => {
+  it('return errors if the manifest is invalid', async () => {
     await fs.writeFile(
       MANIFEST_PATH,
       JSON.stringify(
         getSnapManifest({
+          version: '0.0.1',
           shasum: '29MYwcRiruhy9BEJpN/TBIhxoD3t0P4OdXztV9rW8tc=',
         }),
       ),
     );
 
-    await expect(checkManifest(BASE_PATH, false)).rejects.toThrow(
-      '"snap.manifest.json" "shasum" field does not match computed shasum.',
+    const { manifest, updated, errors, warnings } = await checkManifest(
+      BASE_PATH,
+      false,
     );
+
+    expect(manifest).toStrictEqual(getSnapManifest());
+    expect(updated).toBe(true);
+    expect(warnings).toHaveLength(0);
+
+    expect(errors).toStrictEqual([
+      '"snap.manifest.json" npm package version ("0.0.1") does not match the "package.json" "version" field ("1.0.0").',
+      '"snap.manifest.json" "shasum" field does not match computed shasum.',
+    ]);
+  });
+
+  it('throws an error if the error is not programmatically fixable', async () => {
+    jest.spyOn(npm, 'validateNpmSnap').mockImplementation(() => {
+      throw new Error('foo');
+    });
+
+    await expect(checkManifest(BASE_PATH)).rejects.toThrow('foo');
   });
 
   it('throws an error if writing the manifest fails', async () => {
