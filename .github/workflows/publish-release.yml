@@ -1,30 +1,93 @@
 name: Publish Release
 
 on:
-  pull_request:
-    types: [closed]
+  push:
+    branches: [main]
 
 jobs:
-  publish-release:
-    permissions:
-      contents: write
-    if: |
-      github.event.pull_request.merged == true &&
-      startsWith(github.event.pull_request.head.ref, 'release/')
+  check-release:
+    # release merge commits come from GitHub user
+    if: github.event.head_commit.committer.name == 'GitHub'
+    outputs:
+      IS_RELEASE: ${{ steps.check-release.outputs.IS_RELEASE }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
-          # We check out the release pull request's base branch, which will be
-          # used as the base branch for all git operations.
-          ref: ${{ github.event.pull_request.base.ref }}
+          ref: ${{ github.sha }}
+          # we need this commit + the last so we can compare below
+          fetch-depth: 2
+      # exit early if the version has not changed
+      - name: Check Release
+        id: check-release
+        run: ./scripts/check-release.sh ${{ github.event.before }}
+
+  publish-release:
+    permissions:
+      contents: write
+    if: needs.check-release.outputs.IS_RELEASE == 'true'
+    runs-on: ubuntu-latest
+    needs: check-release
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.sha }}
       - name: Get Node.js version
         id: nvm
         run: echo ::set-output name=NODE_VERSION::$(cat .nvmrc)
       - uses: actions/setup-node@v2
         with:
           node-version: ${{ steps.nvm.outputs.NODE_VERSION }}
-      - uses: MetaMask/action-publish-release@v1
+      - uses: MetaMask/action-publish-release@v2.0.0
         id: publish-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: |
+          yarn install --immutable
+          yarn build
+      - uses: actions/cache@v3
+        id: restore-build
+        with:
+          path: |
+            ./packages/**/dist
+            ./node_modules
+          key: ${{ github.sha }}
+
+  npm-publish-dry-run:
+    runs-on: ubuntu-latest
+    needs: publish-release
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/cache@v3
+        id: restore-build
+        with:
+          path: |
+            ./packages/**/dist
+            ./node_modules
+          key: ${{ github.sha }}
+      - run: npm config set ignore-scripts true
+      - name: Dry Run Publish
+        uses: MetaMask/action-npm-publish@v1.2.0
+
+  npm-publish:
+    environment: npm-publish
+    runs-on: ubuntu-latest
+    needs: npm-publish-dry-run
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/cache@v3
+        id: restore-build
+        with:
+          path: |
+            ./packages/**/dist
+            ./node_modules
+          key: ${{ github.sha }}
+      - run: npm config set ignore-scripts true
+      - name: Publish
+        uses: MetaMask/action-npm-publish@v1.2.0
+        with:
+          npm-token: ${{ secrets.NPM_TOKEN }}
