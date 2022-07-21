@@ -91,8 +91,9 @@ describe('checkManifest', () => {
     expect(updated).toBe(true);
     expect(warnings).toHaveLength(0);
 
-    const { source } = await readJsonFile<SnapManifest>(MANIFEST_PATH);
+    const { source, version } = await readJsonFile<SnapManifest>(MANIFEST_PATH);
     expect(source.shasum).toBe('O4sADgTDj5EP86efVtOEI76NkKZeoKHRzQIlB1j48Lg=');
+    expect(version).toBe('1.0.0');
   });
 
   it('returns a warning if package.json is missing recommended fields', async () => {
