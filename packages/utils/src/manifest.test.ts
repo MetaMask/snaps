@@ -75,6 +75,26 @@ describe('checkManifest', () => {
     expect(source.shasum).toBe('O4sADgTDj5EP86efVtOEI76NkKZeoKHRzQIlB1j48Lg=');
   });
 
+  it('fixes multiple problems in the manifest', async () => {
+    await fs.writeFile(
+      MANIFEST_PATH,
+      JSON.stringify(
+        getSnapManifest({
+          version: '0.0.1',
+          shasum: '29MYwcRiruhy9BEJpN/TBIhxoD3t0P4OdXztV9rW8tc=',
+        }),
+      ),
+    );
+
+    const { manifest, updated, warnings } = await checkManifest(BASE_PATH);
+    expect(manifest).toStrictEqual(getSnapManifest());
+    expect(updated).toBe(true);
+    expect(warnings).toHaveLength(0);
+
+    const { source } = await readJsonFile<SnapManifest>(MANIFEST_PATH);
+    expect(source.shasum).toBe('O4sADgTDj5EP86efVtOEI76NkKZeoKHRzQIlB1j48Lg=');
+  });
+
   it('returns a warning if package.json is missing recommended fields', async () => {
     await fs.writeFile(
       PACKAGE_JSON_PATH,

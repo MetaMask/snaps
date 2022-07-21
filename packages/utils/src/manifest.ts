@@ -86,18 +86,25 @@ export async function checkManifest(
       const partiallyValidatedFiles = snapFiles as SnapFiles;
 
       let isInvalid = true;
+      let currentError = error;
       const maxAttempts = Object.keys(SnapValidationFailureReason).length;
 
       // Attempt to fix all fixable validation failure reasons. All such reasons
       // are enumerated by the SnapValidationFailureReason enum, so we only
       for (let attempts = 1; isInvalid && attempts <= maxAttempts; attempts++) {
-        manifest = fixManifest(partiallyValidatedFiles, error);
+        manifest = fixManifest(
+          manifest
+            ? { ...partiallyValidatedFiles, manifest }
+            : partiallyValidatedFiles,
+          currentError,
+        );
 
         try {
           validateNpmSnapManifest({ ...partiallyValidatedFiles, manifest });
 
           isInvalid = false;
         } catch (nextValidationError) {
+          currentError = nextValidationError;
           /* istanbul ignore next: this should be impossible */
           if (
             !(
