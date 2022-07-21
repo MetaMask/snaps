@@ -34,7 +34,7 @@ describe('manifestHandler', () => {
   });
 
   it('logs manifest warnings', async () => {
-    jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+    jest.spyOn(console, 'log').mockImplementation(() => undefined);
 
     checkManifestMock.mockResolvedValueOnce({
       warnings: ['foo', 'bar'],
@@ -42,15 +42,15 @@ describe('manifestHandler', () => {
 
     await manifestHandler(getMockArgv());
 
-    expect(console.warn).toHaveBeenCalledTimes(3);
-    expect(console.warn).toHaveBeenCalledWith('Manifest Warning: foo');
-    expect(console.warn).toHaveBeenCalledWith('Manifest Warning: bar');
+    expect(console.log).toHaveBeenCalledTimes(3);
+    expect(console.log).toHaveBeenCalledWith('Manifest Warning: foo');
+    expect(console.log).toHaveBeenCalledWith('Manifest Warning: bar');
   });
 
   it('suppresses manifest warnings', async () => {
     global.snaps.suppressWarnings = true;
 
-    jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+    jest.spyOn(console, 'log').mockImplementation(() => undefined);
 
     checkManifestMock.mockResolvedValueOnce({
       errors: [],
@@ -59,7 +59,7 @@ describe('manifestHandler', () => {
 
     await manifestHandler(getMockArgv({ writeManifest: false }));
 
-    expect(console.warn).toHaveBeenCalledTimes(1);
+    expect(console.log).toHaveBeenCalledTimes(1);
   });
 
   it('forwards manifest errors', async () => {

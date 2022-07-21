@@ -26,7 +26,7 @@ export async function manifestHandler({ writeManifest }: YargsArgs) {
     }
 
     if (warnings.length > 0) {
-      console.warn(
+      console.log(
         'Manifest Warning: Validation of snap.manifest.json completed with warnings.',
       );
       warnings.forEach(logManifestWarning);
