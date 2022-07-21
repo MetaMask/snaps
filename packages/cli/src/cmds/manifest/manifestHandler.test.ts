@@ -15,13 +15,18 @@ const checkManifestMock = checkManifest as jest.MockedFunction<
 describe('manifestHandler', () => {
   it('logs manifest errors if writeManifest is disabled', async () => {
     jest.spyOn(console, 'error').mockImplementation(() => undefined);
+    jest.spyOn(process, 'exit').mockImplementation((code) => {
+      throw new Error(`exit ${code}`);
+    });
 
     checkManifestMock.mockResolvedValueOnce({
       errors: ['foo', 'bar'],
       warnings: [],
     } as unknown as CheckManifestResult);
 
-    await manifestHandler(getMockArgv({ writeManifest: false }));
+    await expect(
+      manifestHandler(getMockArgv({ writeManifest: false })),
+    ).rejects.toThrow('exit 1');
 
     expect(console.error).toHaveBeenCalledTimes(3);
     expect(console.error).toHaveBeenCalledWith('Manifest Error: foo');

@@ -100,7 +100,9 @@ export async function checkManifest(
       const maxAttempts = Object.keys(SnapValidationFailureReason).length;
 
       // Attempt to fix all fixable validation failure reasons. All such reasons
-      // are enumerated by the SnapValidationFailureReason enum, so we only
+      // are enumerated by the `SnapValidationFailureReason` enum, so we only
+      // attempt to fix the manifest the same amount of times as there are
+      // reasons in the enum.
       for (let attempts = 1; isInvalid && attempts <= maxAttempts; attempts++) {
         manifest = fixManifest(
           manifest

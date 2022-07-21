@@ -2,7 +2,7 @@ import { YargsArgs } from '../../types/yargs';
 import { manifestHandler } from './manifestHandler';
 import index from '.';
 
-jest.mock('./manifest-handler');
+jest.mock('./manifestHandler');
 
 const getMockArgv = ({ writeManifest = true } = {}) => {
   return { writeManifest } as unknown as YargsArgs;

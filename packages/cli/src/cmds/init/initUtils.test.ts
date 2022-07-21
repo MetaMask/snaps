@@ -32,7 +32,11 @@ jest.mock('fs', () => ({
   },
 }));
 
-jest.mock('@metamask/snap-utils');
+jest.mock('@metamask/snap-utils', () => ({
+  ...jest.requireActual('@metamask/snap-utils'),
+  readJsonFile: jest.fn(),
+  validateSnapJsonFile: jest.fn(),
+}));
 jest.mock('init-package-json');
 jest.mock('mkdirp');
 

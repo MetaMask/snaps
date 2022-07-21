@@ -21,6 +21,8 @@ export async function manifestHandler({ writeManifest }: YargsArgs) {
     if (!writeManifest && errors.length > 0) {
       console.error(`${ERROR_PREFIX}The manifest is invalid.`);
       errors.forEach(logManifestError);
+
+      process.exit(1);
     }
 
     if (warnings.length > 0) {

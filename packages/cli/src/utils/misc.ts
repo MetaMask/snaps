@@ -1,11 +1,7 @@
 import { promises as filesystem } from 'fs';
 import path from 'path';
 import { hasProperty } from '@metamask/utils';
-import rfdc from 'rfdc';
 import { Arguments } from 'yargs';
-
-// TODO: Use `utils` package.
-export const deepClone = rfdc({ proto: false, circles: false });
 
 export const permRequestKeys = [
   '@context',

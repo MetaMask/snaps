@@ -7,8 +7,8 @@ import {
   NpmSnapPackageJson,
   validateSnapJsonFile,
   readJsonFile,
+  deepClone,
 } from '@metamask/snap-utils';
-
 import initPackageJson from 'init-package-json';
 import mkdirp from 'mkdirp';
 import slash from 'slash';
@@ -16,7 +16,6 @@ import { Arguments } from 'yargs';
 import { YargsArgs } from '../../types/yargs';
 import {
   CONFIG_FILE,
-  deepClone,
   logError,
   logWarning,
   prompt,
