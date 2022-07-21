@@ -96,6 +96,7 @@ const getSnapControllerMessenger = (
       'SnapController:add',
       'SnapController:get',
       'SnapController:handleRpcRequest',
+      'SnapController:handleTransactionInsightRequest',
       'SnapController:getSnapState',
       'SnapController:has',
       'SnapController:updateSnapState',
@@ -3453,6 +3454,47 @@ describe('SnapController', () => {
           ),
         ).toStrictEqual(true);
         expect(handleRpcRequestSpy).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('SnapController:handleTransactionInsightRequest', () => {
+      it('handles a transaction insight request', async () => {
+        const messenger = getSnapControllerMessenger(undefined, false);
+        const fooSnapObject = getSnapObject({
+          initialPermissions: {},
+          permissionName: 'fooperm',
+          version: '0.0.1',
+          sourceCode: MOCK_SNAP_SOURCE_CODE,
+          id: 'npm:fooSnap',
+          manifest: getSnapManifest(),
+          enabled: true,
+          status: SnapStatus.running,
+        });
+
+        const snapController = getSnapController(
+          getSnapControllerOptions({
+            messenger,
+            state: {
+              snaps: {
+                'npm:fooSnap': fooSnapObject,
+              },
+            },
+          }),
+        );
+
+        const handleRequestSpy = jest
+          .spyOn(snapController, 'handleTransactionInsightRequest')
+          .mockResolvedValueOnce(true);
+
+        expect(
+          await messenger.call(
+            'SnapController:handleTransactionInsightRequest',
+            'npm:fooSnap',
+            'foo',
+            {},
+          ),
+        ).toStrictEqual(true);
+        expect(handleRequestSpy).toHaveBeenCalledTimes(1);
       });
     });
 

@@ -269,6 +269,14 @@ export type HandleSnapRpcRequest = {
 };
 
 /**
+ * Handles sending an inbound transaction insight message to a snap and returns its result.
+ */
+export type HandleSnapTransactionInsightRequest = {
+  type: `${typeof controllerName}:handleTransactionInsightRequest`;
+  handler: SnapController['handleTransactionInsightRequest'];
+};
+
+/**
  * Gets the specified Snap's persisted state.
  */
 export type GetSnapState = {
@@ -314,6 +322,7 @@ export type SnapControllerActions =
   | GetSnap
   | GetSnapState
   | HandleSnapRpcRequest
+  | HandleSnapTransactionInsightRequest
   | HasSnap
   | UpdateBlockedSnaps
   | UpdateSnapState;
@@ -771,6 +780,11 @@ export class SnapController extends BaseController<
     this.messagingSystem.registerActionHandler(
       `${controllerName}:handleRpcRequest`,
       (...args) => this.handleRpcRequest(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:handleTransactionInsightRequest`,
+      (...args) => this.handleTransactionInsightRequest(...args),
     );
 
     this.messagingSystem.registerActionHandler(
