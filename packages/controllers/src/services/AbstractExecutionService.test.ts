@@ -124,9 +124,6 @@ describe('AbstractExecutionService', () => {
         name: 'ExecutionService',
       }),
     );
-    jest
-      .spyOn(service as any, 'getRpcRequestHandler')
-      .mockResolvedValueOnce(undefined);
 
     const snapId = 'TestSnap';
     await expect(
