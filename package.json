@@ -30,7 +30,7 @@
     "test:ci": "yarn workspaces foreach --parallel --verbose run test:ci"
   },
   "simple-git-hooks": {
-    "pre-commit": "yarn lint-staged"
+    "pre-commit": "yarn lint-staged && yarn dedupe --check"
   },
   "lint-staged": {
     "*.{js,ts}": [

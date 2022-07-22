@@ -363,7 +363,6 @@ export function postProcessBundle(
 
         // If this is disabled, the AST does not include any comments. This is
         // useful for performance reasons, and we use it for stripping comments.
-        // @ts-expect-error Missing in the `@babel/core` types.
         attachComment: !stripComments,
       },
       // By default, Babel optimises bundles that exceed 500 KB, but that
