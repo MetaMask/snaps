@@ -2195,9 +2195,7 @@ export class SnapController extends BaseController<
       const handleRpcRequestPromise = this.messagingSystem.call(
         'ExecutionService:handleRpcRequest',
         snapId,
-        handlerName,
-        origin,
-        _request,
+        { origin, handler: handlerType, request: _request },
       );
 
       // This will either get the result or reject due to the timeout.
