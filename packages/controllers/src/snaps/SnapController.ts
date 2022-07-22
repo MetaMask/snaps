@@ -55,6 +55,7 @@ import {
   HandleRpcRequestAction,
   SnapRpcHook,
   SnapRpcHookArgs,
+  TerminateAllSnapsAction,
   TerminateSnapAction,
 } from '..';
 import { fetchNpmSnap } from './utils';

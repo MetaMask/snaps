@@ -1,4 +1,5 @@
 import { ControllerMessenger } from '@metamask/controllers';
+import { HandlerType } from '@metamask/execution-environments';
 import {
   ErrorMessageEvent,
   ExecutionServiceMessenger,
@@ -127,9 +128,13 @@ describe('AbstractExecutionService', () => {
 
     const snapId = 'TestSnap';
     await expect(
-      service.handleRpcRequest(snapId, 'foo.com', {
-        id: 6,
-        method: 'bar',
+      service.handleRpcRequest(snapId, {
+        origin: 'foo.com',
+        handler: HandlerType.onRpcRequest,
+        request: {
+          id: 6,
+          method: 'bar',
+        },
       }),
     ).rejects.toThrow(
       `Snap execution service returned no RPC handler for running snap "${snapId}".`,

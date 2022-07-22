@@ -99,8 +99,8 @@ export abstract class AbstractExecutionService<WorkerType>
   private registerMessageHandlers(): void {
     this._messenger.registerActionHandler(
       `${controllerName}:handleRpcRequest`,
-      (snapId: string, origin: string, _request: Record<string, unknown>) =>
-        this.handleRpcRequest(snapId, origin, _request),
+      (snapId: string, options: SnapRpcHookArgs) =>
+        this.handleRpcRequest(snapId, options),
     );
 
     this._messenger.registerActionHandler(
