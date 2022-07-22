@@ -79,9 +79,9 @@ const getSnapControllerMessenger = (
     allowedActions: [
       'ApprovalController:addRequest',
       'ExecutionService:executeSnap',
-      'ExecutionService:getRpcRequestHandler',
       'ExecutionService:terminateAllSnaps',
       'ExecutionService:terminateSnap',
+      'ExecutionService:handleRpcRequest',
       'PermissionController:getEndowments',
       'PermissionController:hasPermission',
       'PermissionController:getPermissions',
@@ -126,7 +126,7 @@ const getNodeEESMessenger = (
     ],
     allowedActions: [
       'ExecutionService:executeSnap',
-      'ExecutionService:getRpcRequestHandler',
+      'ExecutionService:handleRpcRequest',
       'ExecutionService:terminateAllSnaps',
       'ExecutionService:terminateSnap',
     ],
@@ -247,8 +247,9 @@ const getNodeEES = (messenger: ReturnType<typeof getNodeEESMessenger>) =>
 class ExecutionEnvironmentStub implements ExecutionService {
   constructor(messenger: ReturnType<typeof getNodeEESMessenger>) {
     messenger.registerActionHandler(
-      'ExecutionService:getRpcRequestHandler',
-      (snapId: string) => this.getRpcRequestHandler(snapId),
+      `ExecutionService:handleRpcRequest`,
+      (snapId: string, origin: string, _request: Record<string, unknown>) =>
+        this.handleRpcRequest(snapId, origin, _request),
     );
 
     messenger.registerActionHandler(
@@ -264,6 +265,15 @@ class ExecutionEnvironmentStub implements ExecutionService {
     messenger.registerActionHandler('ExecutionService:terminateAllSnaps', () =>
       this.terminateAllSnaps(),
     );
+  }
+
+  async handleRpcRequest(
+    snapId: string,
+    origin: string,
+    request: Record<string, unknown>,
+  ): Promise<unknown> {
+    const handler = await this.getRpcRequestHandler(snapId);
+    return handler(origin, request);
   }
 
   async terminateAllSnaps() {
@@ -1204,14 +1214,12 @@ describe('SnapController', () => {
       .spyOn(options.messenger, 'call')
       .mockImplementation((method, ...args) => {
         // override handler to take too long to return
-        if (method === 'ExecutionService:getRpcRequestHandler') {
-          return (async () => {
-            return new Promise((resolve) => {
-              setTimeout(() => {
-                resolve(undefined);
-              }, 300);
-            });
-          }) as any;
+        if (method === 'ExecutionService:handleRpcRequest') {
+          return new Promise((resolve) => {
+            setTimeout(() => {
+              resolve(undefined);
+            }, 300);
+          });
         } else if (
           method === 'PermissionController:hasPermission' &&
           args[1] === LONG_RUNNING_PERMISSION
@@ -1375,14 +1383,12 @@ describe('SnapController', () => {
 
     jest.spyOn(options.messenger, 'call').mockImplementation((method) => {
       // override handler to take too long to return
-      if (method === 'ExecutionService:getRpcRequestHandler') {
-        return (async () => {
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              resolve(undefined);
-            }, 300);
-          });
-        }) as any;
+      if (method === 'ExecutionService:handleRpcRequest') {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(undefined);
+          }, 300);
+        });
       }
       // Return true for everything here, so we signal that we have the long-running permission
       return true;
@@ -1510,14 +1516,12 @@ describe('SnapController', () => {
       .spyOn(options.messenger, 'call')
       .mockImplementation((method, ...args) => {
         // override handler to take too long to return
-        if (method === 'ExecutionService:getRpcRequestHandler') {
-          return (async () => {
-            return new Promise((resolve) => {
-              setTimeout(() => {
-                resolve(undefined);
-              }, 30000);
-            });
-          }) as any;
+        if (method === 'ExecutionService:handleRpcRequest') {
+          return new Promise((resolve) => {
+            setTimeout(() => {
+              resolve(undefined);
+            }, 30000);
+          });
         } else if (
           method === 'PermissionController:hasPermission' &&
           args[1] === LONG_RUNNING_PERMISSION
@@ -1573,24 +1577,32 @@ describe('SnapController', () => {
       const [snapController, service] = getSnapControllerWithEES(options);
 
       const mockMessageHandler = jest.fn();
-      jest.spyOn(options.messenger, 'call').mockImplementation((method) => {
-        if (method === 'ExecutionService:getRpcRequestHandler') {
-          return mockMessageHandler as any;
-        }
-        return true;
-      });
+      const spyOnMessengerCall = jest
+        .spyOn(options.messenger, 'call')
+        .mockImplementation((method) => {
+          if (method === 'ExecutionService:handleRpcRequest') {
+            return mockMessageHandler as any;
+          }
+          return true;
+        });
 
       await snapController.handleRpcRequest(snapId, 'foo.com', {
         id: 1,
         method: 'bar',
       });
 
-      expect(mockMessageHandler).toHaveBeenCalledTimes(1);
-      expect(mockMessageHandler).toHaveBeenCalledWith('foo.com', {
-        id: 1,
-        method: 'bar',
-        jsonrpc: '2.0',
-      });
+      expect(spyOnMessengerCall).toHaveBeenCalledTimes(2);
+      expect(spyOnMessengerCall).toHaveBeenCalledWith(
+        'ExecutionService:handleRpcRequest',
+        snapId,
+        'foo.com',
+        {
+          id: 1,
+          method: 'bar',
+          jsonrpc: '2.0',
+        },
+      );
+
       await service.terminateAllSnaps();
     });
 
@@ -1643,9 +1655,6 @@ describe('SnapController', () => {
       jest.spyOn(messenger, 'call').mockImplementation((method) => {
         if (method === 'ExecutionService:executeSnap') {
           return deferredExecutePromise;
-        } else if (method === 'ExecutionService:getRpcRequestHandler') {
-          // eslint-disable-next-line consistent-return
-          return;
         }
         return true;
       });
@@ -1688,8 +1697,8 @@ describe('SnapController', () => {
       jest.spyOn(messenger, 'call').mockImplementation((method) => {
         if (method === 'ExecutionService:executeSnap') {
           return deferredExecutePromise;
-        } else if (method === 'ExecutionService:getRpcRequestHandler') {
-          return (async () => undefined) as any;
+        } else if (method === 'ExecutionService:handleRpcRequest') {
+          return Promise.resolve(undefined);
         }
         return true;
       });

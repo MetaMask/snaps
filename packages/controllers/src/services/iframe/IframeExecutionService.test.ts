@@ -178,16 +178,18 @@ describe('IframeExecutionService', () => {
 
     expect(executeResult).toBe('OK');
 
-    const handler = await iframeExecutionService.getRpcRequestHandler(snapId);
+    const result = await iframeExecutionService.handleRpcRequest(
+      snapId,
+      'foo',
+      {
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'foobar',
+        params: [],
+      },
+    );
 
-    assert(handler !== undefined);
-
-    const result = await handler('foo', {
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'foobar',
-      params: [],
-    });
+    assert(result !== undefined);
 
     expect(result).toBe(blockNumber);
 

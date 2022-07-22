@@ -1,4 +1,3 @@
-import assert from 'assert';
 import { ControllerMessenger } from '@metamask/controllers';
 import { ErrorJSON, SnapId } from '@metamask/snap-types';
 import { JsonRpcEngine } from 'json-rpc-engine';
@@ -119,12 +118,8 @@ describe('NodeProcessExecutionService', () => {
       endowments: [],
     });
 
-    const hook = await service.getRpcRequestHandler(snapId);
-
-    assert(hook !== undefined);
-
     await expect(
-      hook('fooOrigin', {
+      service.handleRpcRequest(snapId, 'fooOrigin', {
         jsonrpc: '2.0',
         method: 'foo',
         params: {},
@@ -156,8 +151,8 @@ describe('NodeProcessExecutionService', () => {
     await service.executeSnap({
       snapId,
       sourceCode: `
-      module.exports.onRpcRequest = async () => 
-      { 
+      module.exports.onRpcRequest = async () =>
+      {
         new Promise((resolve, _reject) => {
           let num = 0;
           while (num < 100) {
@@ -173,10 +168,6 @@ describe('NodeProcessExecutionService', () => {
       endowments: [],
     });
 
-    const hook = await service.getRpcRequestHandler(snapId);
-
-    assert(hook !== undefined);
-
     const unhandledErrorPromise = new Promise((resolve) => {
       controllerMessenger.subscribe(
         'ExecutionService:unhandledError',
@@ -186,14 +177,14 @@ describe('NodeProcessExecutionService', () => {
       );
     });
 
-    expect(
-      await hook('fooOrigin', {
-        jsonrpc: '2.0',
-        method: '',
-        params: {},
-        id: 1,
-      }),
-    ).toBe('foo');
+    const result = await service.handleRpcRequest(snapId, 'fooOrigin', {
+      jsonrpc: '2.0',
+      method: '',
+      params: {},
+      id: 1,
+    });
+
+    expect(result).toBe('foo');
 
     // eslint-disable-next-line jest/prefer-strict-equal
     expect(await unhandledErrorPromise).toEqual({
@@ -254,11 +245,7 @@ describe('NodeProcessExecutionService', () => {
 
     expect(executeResult).toBe('OK');
 
-    const handler = await service.getRpcRequestHandler(snapId);
-
-    assert(handler !== undefined);
-
-    const result = await handler('foo', {
+    const result = await service.handleRpcRequest(snapId, 'foo', {
       jsonrpc: '2.0',
       id: 1,
       method: 'foobar',

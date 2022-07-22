@@ -92,8 +92,9 @@ export abstract class AbstractExecutionService<WorkerType>
    */
   private registerMessageHandlers(): void {
     this._messenger.registerActionHandler(
-      `${controllerName}:getRpcRequestHandler`,
-      (snapId: string) => this.getRpcRequestHandler(snapId),
+      `${controllerName}:handleRpcRequest`,
+      (snapId: string, origin: string, _request: Record<string, unknown>) =>
+        this.handleRpcRequest(snapId, origin, _request),
     );
 
     this._messenger.registerActionHandler(
@@ -309,7 +310,7 @@ export abstract class AbstractExecutionService<WorkerType>
    * @param snapId - The id of the Snap whose message handler to get.
    * @returns The RPC request handler for the snap.
    */
-  async getRpcRequestHandler(snapId: string) {
+  private async getRpcRequestHandler(snapId: string) {
     return this._snapRpcHooks.get(snapId);
   }
 
@@ -431,6 +432,30 @@ export abstract class AbstractExecutionService<WorkerType>
     this.jobToSnapMap.delete(jobId);
     this.snapToJobMap.delete(snapId);
     this._removeSnapHooks(snapId);
+  }
+
+  /**
+   * Handle RPC request.
+   *
+   * @param snapId - The ID of the recipient snap.
+   * @param origin - The origin of the RPC request.
+   * @param request - The JSON-RPC request object.
+   * @returns Promise that can handle the request.
+   */
+  public async handleRpcRequest(
+    snapId: string,
+    origin: string,
+    request: Record<string, unknown>,
+  ): Promise<unknown> {
+    const rpcRequestHandler = await this.getRpcRequestHandler(snapId);
+
+    if (!rpcRequestHandler) {
+      throw new Error(
+        `Snap execution service returned no RPC handler for running snap "${snapId}".`,
+      );
+    }
+
+    return rpcRequestHandler(origin, request);
   }
 }
 

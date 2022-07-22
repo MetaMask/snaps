@@ -1,19 +1,20 @@
 import { RestrictedControllerMessenger } from '@metamask/controllers';
 import { SnapExecutionData, SnapId, ErrorJSON } from '@metamask/snap-types';
-import { SnapRpcHook } from './AbstractExecutionService';
 
 type TerminateSnap = (snapId: string) => Promise<void>;
 type TerminateAll = () => Promise<void>;
 type ExecuteSnap = (snapData: SnapExecutionData) => Promise<unknown>;
-type GetRpcRequestHandler = (
+type HandleRpcRequest = (
   snapId: string,
-) => Promise<SnapRpcHook | undefined>;
+  origin: string,
+  _request: Record<string, unknown>,
+) => Promise<unknown>;
 
 export interface ExecutionService {
   terminateSnap: TerminateSnap;
   terminateAllSnaps: TerminateAll;
   executeSnap: ExecuteSnap;
-  getRpcRequestHandler: GetRpcRequestHandler;
+  handleRpcRequest: HandleRpcRequest;
 }
 
 const controllerName = 'ExecutionService';
@@ -39,11 +40,11 @@ export type ExecutionServiceEvents =
   | OutboundResponse;
 
 /**
- * Gets the RPC message handler for a snap.
+ * Handles RPC request.
  */
-export type GetRpcRequestHandlerAction = {
-  type: `${typeof controllerName}:getRpcRequestHandler`;
-  handler: ExecutionService['getRpcRequestHandler'];
+export type HandleRpcRequestAction = {
+  type: `${typeof controllerName}:handleRpcRequest`;
+  handler: ExecutionService['handleRpcRequest'];
 };
 
 /**
@@ -71,7 +72,7 @@ export type TerminateAllSnapsAction = {
 };
 
 export type ExecutionServiceActions =
-  | GetRpcRequestHandlerAction
+  | HandleRpcRequestAction
   | ExecuteSnapAction
   | TerminateSnapAction
   | TerminateAllSnapsAction;
