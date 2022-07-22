@@ -260,8 +260,8 @@ class ExecutionEnvironmentStub implements ExecutionService {
   constructor(messenger: ReturnType<typeof getNodeEESMessenger>) {
     messenger.registerActionHandler(
       `ExecutionService:handleRpcRequest`,
-      (snapId: string, origin: string, _request: Record<string, unknown>) =>
-        this.handleRpcRequest(snapId, origin, _request),
+      (snapId: string, options: SnapRpcHookArgs) =>
+        this.handleRpcRequest(snapId, options),
     );
 
     messenger.registerActionHandler(
@@ -281,11 +281,10 @@ class ExecutionEnvironmentStub implements ExecutionService {
 
   async handleRpcRequest(
     snapId: string,
-    origin: string,
-    request: Record<string, unknown>,
+    options: SnapRpcHookArgs,
   ): Promise<unknown> {
     const handler = await this.getRpcRequestHandler(snapId);
-    return handler(origin, request);
+    return handler(options);
   }
 
   async terminateAllSnaps() {
@@ -1603,9 +1602,10 @@ describe('SnapController', () => {
         method: 'bar',
       });
 
-      expect(spyOnMessengerCall).toHaveBeenCalledTimes(1);
+      expect(spyOnMessengerCall).toHaveBeenCalledTimes(2);
       expect(spyOnMessengerCall).toHaveBeenCalledWith(
         'ExecutionService:handleRpcRequest',
+        snapId,
         {
           origin: 'foo.com',
           handler: HandlerType.onRpcRequest,
