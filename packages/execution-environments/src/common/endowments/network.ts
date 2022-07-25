@@ -1,6 +1,92 @@
-import { allFunctions } from '../utils';
+import { allFunctions, proxyifyPromise } from '../utils';
 
 type WebSocketCallback = (this: WebSocket, ev: any) => any;
+
+/**
+ * This class wraps a Response object.
+ * That way, a teardown process can stop any processes left.
+ */
+class ResponseWrapper implements Response {
+  private readonly teardownRef: { lastTeardown: number };
+
+  #ogResponse: Response;
+
+  constructor(ogResponse: Response, teardownRef: { lastTeardown: number }) {
+    this.#ogResponse = ogResponse;
+    this.teardownRef = teardownRef;
+  }
+
+  get body(): ReadableStream<Uint8Array> | null {
+    // Where readable and writeable are passthrough, until teardown where they become silent
+    // 1. cancel() needs stop closing the stream
+    // const { readable, writable } = new TransformStream();
+    // return this.#ogResponse.body?.pipeThrough({
+    //   readable,
+    //   writable,
+    // }) as ReadableStream<Uint8Array>;
+    return this.#ogResponse.body;
+  }
+
+  get bodyUsed() {
+    return this.#ogResponse.bodyUsed;
+  }
+
+  get headers() {
+    return this.#ogResponse.headers;
+  }
+
+  get ok() {
+    return this.#ogResponse.ok;
+  }
+
+  get redirected() {
+    return this.#ogResponse.redirected;
+  }
+
+  get status() {
+    return this.#ogResponse.status;
+  }
+
+  get statusText() {
+    return this.#ogResponse.statusText;
+  }
+
+  get type() {
+    return this.#ogResponse.type;
+  }
+
+  get url() {
+    return this.#ogResponse.url;
+  }
+
+  text() {
+    return proxyifyPromise<string>(this.#ogResponse.text(), this as any);
+  }
+
+  arrayBuffer(): Promise<ArrayBuffer> {
+    return proxyifyPromise<ArrayBuffer>(
+      this.#ogResponse.arrayBuffer(),
+      this as any,
+    );
+  }
+
+  blob(): Promise<Blob> {
+    return proxyifyPromise<Blob>(this.#ogResponse.blob(), this as any);
+  }
+
+  clone(): Response {
+    const newResponse = this.#ogResponse.clone();
+    return new ResponseWrapper(newResponse, this.teardownRef);
+  }
+
+  formData(): Promise<FormData> {
+    return proxyifyPromise<FormData>(this.#ogResponse.formData(), this as any);
+  }
+
+  json(): Promise<any> {
+    return proxyifyPromise(this.#ogResponse.json(), this as any);
+  }
+}
 
 /**
  * Create a network endowment, consisting of a `WebSocket` object and `fetch`
@@ -18,6 +104,8 @@ type WebSocketCallback = (this: WebSocket, ev: any) => any;
 const createNetwork = () => {
   // Open fetch calls or open body streams or open websockets
   const openConnections = new Set<{ cancel: () => Promise<void> }>();
+  // Track last teardown count
+  const teardownRef = { lastTeardown: 0 };
 
   // Remove items from openConnections after they were garbage collected
   const cleanup = new FinalizationRegistry<() => void>(
@@ -62,7 +150,10 @@ const createNetwork = () => {
       };
       openConnections.add(openFetchConnection);
 
-      res = await fetchPromise;
+      res = new ResponseWrapper(
+        await proxyifyPromise(fetchPromise, teardownRef),
+        teardownRef,
+      ) as unknown as Response;
     } finally {
       if (openFetchConnection !== undefined) {
         openConnections.delete(openFetchConnection);
@@ -71,6 +162,7 @@ const createNetwork = () => {
 
     if (res.body !== null) {
       const body = new WeakRef<ReadableStream>(res.body);
+
       const openBodyConnection = {
         cancel:
           /* istanbul ignore next: see it.todo('can be torn down during body read') test */
@@ -346,6 +438,7 @@ const createNetwork = () => {
   };
 
   const teardownFunction = async () => {
+    teardownRef.lastTeardown += 1;
     const promises: Promise<void>[] = [];
     openConnections.forEach(({ cancel }) => promises.push(cancel()));
     openConnections.clear();
