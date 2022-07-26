@@ -2690,7 +2690,11 @@ __metadata:
     "@types/jest": ^27.5.1
     "@types/pump": ^1.1.1
     "@types/readable-stream": ^2.3.9
+    "@types/semver": ^7.3.9
     "@types/tar-stream": ^2.2.2
+    "@xstate/fsm": ^2.0.0
+    ajv: ^8.8.2
+    async-mutex: ^0.3.2
     concat-stream: ^2.0.0
     deep-freeze-strict: ^1.1.1
     eslint: ^7.30.0
@@ -3651,7 +3655,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/semver@npm:^7.3.10":
+"@types/semver@npm:^7.3.10, @types/semver@npm:^7.3.9":
   version: 7.3.10
   resolution: "@types/semver@npm:7.3.10"
   checksum: 7047c2822b1759b2b950f39cfcf261f2b9dca47b4b55bdebba0905a8553631f1531eb0f59264ffe4834d1198c8331c8e0010a4cd742f4e0b60abbf399d134364
@@ -4166,6 +4170,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@xstate/fsm@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@xstate/fsm@npm:2.0.0"
+  checksum: 8da3e3b726cb02e6a7ae7fc912917fe5892e37511c62af4b07339675910ee4ed4c2dc99b520e529ff14b5f3ff519f7a613e15fda0cf01e3cc7359a2200df322c
+  languageName: node
+  linkType: hard
+
 "@xtuc/ieee754@npm:^1.2.0":
   version: 1.2.0
   resolution: "@xtuc/ieee754@npm:1.2.0"
@@ -4423,7 +4434,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ajv@npm:^8.0.0, ajv@npm:^8.0.1, ajv@npm:^8.11.0, ajv@npm:^8.8.0":
+"ajv@npm:^8.0.0, ajv@npm:^8.0.1, ajv@npm:^8.11.0, ajv@npm:^8.8.0, ajv@npm:^8.8.2":
   version: 8.11.0
   resolution: "ajv@npm:8.11.0"
   dependencies:
@@ -4915,6 +4926,15 @@ __metadata:
   dependencies:
     tslib: ^2.0.0
   checksum: f50102e0c57f6a958528cff7dff13da070897f17107b42274417a7248905b927b6e51c3387f8aed1f5cd6005b0e692d64a83a0789be602e4e7e7da4afe08b889
+  languageName: node
+  linkType: hard
+
+"async-mutex@npm:^0.3.2":
+  version: 0.3.2
+  resolution: "async-mutex@npm:0.3.2"
+  dependencies:
+    tslib: ^2.3.1
+  checksum: 620b771dfdea1cad0a6b712915c31a1e3ca880a8cf1eae92b4590f435995e0260929c6ebaae0b9126b1456790ea498064b5bb9a506948cda760f48d3d0dcc4c8
   languageName: node
   linkType: hard
 
@@ -16440,7 +16460,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.0.0, tslib@npm:^2.0.3, tslib@npm:^2.1.0, tslib@npm:^2.3.0, tslib@npm:^2.4.0":
+"tslib@npm:^2.0.0, tslib@npm:^2.0.3, tslib@npm:^2.1.0, tslib@npm:^2.3.0, tslib@npm:^2.3.1, tslib@npm:^2.4.0":
   version: 2.4.0
   resolution: "tslib@npm:2.4.0"
   checksum: 8c4aa6a3c5a754bf76aefc38026134180c053b7bd2f81338cb5e5ebf96fefa0f417bff221592bf801077f5bf990562f6264fecbc42cd3309b33872cb6fc3b113
