@@ -1,3 +1,4 @@
+import { EventObject, StateMachine, Typestate } from '@xstate/fsm';
 import { Timer } from './snaps/Timer';
 
 /**
@@ -104,6 +105,91 @@ export async function withTimeout<PromiseValue = void>(
   } finally {
     delayPromise.cancel();
   }
+}
+
+/**
+ * Waits for a specific state to be reached in a xstate state machine
+ *
+ * @param interpreter The state machine that will be observed
+ * @param target The state value that will be waited for. Can also be an array to wait for any of the states
+ * @returns A promise resolving when the given state is reached
+ *
+ * @example
+ * ```
+ * const config = {
+ *  initial: 'running',
+ *  states: {
+ *    running: {
+ *      STOP: 'stopping'
+ *    },
+ *    stopping: {
+ *      actions: 'executeStop',
+ *      STOPPED: 'stopped'
+ *    },
+ *    stopped: {
+ *    }
+ *  }
+ * };
+ * // ...
+ * interpreter.send('STOP');
+ * await waitFor(interpreter, 'stopped');
+ * console.log("The machine has stopped");
+ * ```
+ */
+// TODO(ritave): Narrow return type to only states with value in target param
+export async function waitForState<
+  TContext extends object,
+  TEvent extends EventObject,
+  TState extends Typestate<TContext> = {
+    value: any;
+    context: TContext;
+  },
+>(
+  interpreter: StateMachine.Service<TContext, TEvent, TState>,
+  target: TState['value'] | Array<TState['value']>,
+): Promise<StateMachine.State<TContext, TEvent, TState>> {
+  const targetArray = Array.isArray(target) ? target : [target];
+
+  type Result = StateMachine.State<TContext, TEvent, TState>;
+
+  let resolve: (state: Result) => void;
+  const promise = new Promise<Result>((r) => {
+    resolve = r;
+  });
+
+  const { unsubscribe } = interpreter.subscribe((state) => {
+    if (targetArray.some((target) => state.matches(target))) {
+      unsubscribe();
+      resolve(state);
+    }
+  });
+
+  return promise;
+}
+
+/**
+ * Ensure that the interpreter is strict.
+ * Strict means that the transition must occur.
+ * The event must exist in .on {} state config and it's guard must succeed.
+ *
+ * The error will be thrown when an invalid `interpreter.send()` is called
+ * and will be bubbled there
+ *
+ * **TODO(ritave): Doesn't support self transitions**
+ *
+ * @param interpreter - The interpreter that will be force into strict mode
+ * @throw {@link Error} Thrown when the transition is invalid
+ */
+export function forceStrict(interpreter: StateMachine.Service<any, any, any>) {
+  // As soon as a listener subscribes, it is called. It might be called in
+  // an initial state which doesn't have the .changed property
+  let onInitialCalled = false;
+  interpreter.subscribe((state) => {
+    if (onInitialCalled && !state.changed) {
+      throw new Error('Invalid state transition');
+    }
+    onInitialCalled = true;
+  });
 }
 
 /* istanbul ignore next */
