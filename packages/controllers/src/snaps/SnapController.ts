@@ -246,7 +246,10 @@ export type SnapControllerState = {
   };
 };
 
-// #region Controller Messenger
+//////////////////////////////////
+// #region Controller Messenger //
+//////////////////////////////////
+
 // Controller Messenger Actions
 
 /**
@@ -397,6 +400,7 @@ export type SnapControllerEvents =
   | SnapRemoved
   | SnapStateChange
   | SnapUnblocked
+  | SnapUpdated
   | SnapTerminated;
 
 export type AllowedActions =
@@ -562,7 +566,9 @@ const defaultState: SnapControllerState = {
   snapStates: {},
 };
 
-// #region Snap status
+/////////////////////////
+// #region Snap status //
+/////////////////////////
 
 /**
  * @deprecated Use {@link StatusStates}. (eg `StatusStates['value']`).
@@ -596,9 +602,11 @@ type StatusEvents =
   | { type: 'SET_SNAP'; newVersion: SetSnapArgs };
 
 type StatusStates =
-  | { value: 'installing'; context: { snap?: Snap } }
+  | { value: 'installing'; context: {} }
   | {
       value:
+        | 'installing:authorize'
+        | 'updating'
         | 'stopped'
         | 'starting'
         | 'running'
@@ -695,6 +703,7 @@ function transformSetSnap(ctx: StatusContext, event: StatusEvents | InitEvent) {
   ctx.snap = snap;
 }
 
+// TODO(ritave): Move to xstate package and use nested states for installing / updating / stopping / starting?
 const statusConfig: StateMachine.Config<
   StatusContext,
   StatusEvents,
@@ -703,11 +712,26 @@ const statusConfig: StateMachine.Config<
   initial: 'installing',
   states: {
     installing: {
-      entry: [transformStatus('installing'), 'updateState'],
+      entry: ['effectInstallSnap'],
+      on: {
+        SET_SNAP: {
+          target: 'installing:authorize',
+          actions: [transformSetSnap, 'updateState', 'effectSnapAdded'],
+        },
+      },
+    },
+    'installing:authorize': {
+      entry: ['effectAuthorize'],
+      exit: ['effectSnapInstalled'],
+      on: {
+        START: 'starting',
+      },
+    },
+    updating: {
       on: {
         SET_SNAP: {
           target: 'starting',
-          actions: [transformSetSnap, 'updateState', 'effectSnapAdded'],
+          actions: [transformSetSnap, 'updateState'],
         },
       },
     },
@@ -728,6 +752,7 @@ const statusConfig: StateMachine.Config<
         UPDATE: 'stopping',
       },
     },
+    // stopping is a passthrough state - effectStopSnap will forward the previous event again after stopping
     stopping: {
       entry: [transformStatus('stopping'), 'updateState', 'effectStopSnap'],
       on: {
@@ -735,7 +760,7 @@ const statusConfig: StateMachine.Config<
         CRASH: { target: 'stopped', actions: 'effectOnCrash' },
         DISABLE: 'disabled',
         BLOCK: 'blocked',
-        UPDATE: { target: 'installing', actions: 'effectUpdateSnap' },
+        UPDATE: 'updating',
       },
     },
     stopped: {
@@ -744,7 +769,7 @@ const statusConfig: StateMachine.Config<
         START: 'running',
         DISABLE: 'disabled',
         BLOCK: 'blocked',
-        UPDATE: { target: 'installing', actions: 'effectUpdateSnap' },
+        UPDATE: 'updating',
       },
     },
     disabled: {
@@ -921,6 +946,8 @@ export class SnapController extends BaseController<
             state.snaps[snap.id] = snap;
           });
         },
+        effectAuthorize: this.effectAuthorize.bind(this),
+        effectSnapInstalled: this.effectSnapInstalled.bind(this),
         effectSnapAdded: this.effectSnapAdded.bind(this),
         effectStartSnap: this.effectStartSnap.bind(this),
         effectStopSnap: this.effectStopSnap.bind(this),
@@ -1704,19 +1731,9 @@ export class SnapController extends BaseController<
       return null;
     }
 
-    if (this.isRunning(snapId)) {
-      await this.stopSnap(snapId, SnapStatusEvent.stop);
-    }
-
-    this._transitionSnapState(snapId, SnapStatusEvent.update);
-
-    this._set({
-      origin,
-      id: snapId,
-      manifest: newSnap.manifest,
-      sourceCode: newSnap.sourceCode,
-      versionRange: newVersionRange,
-    });
+    const interpreter = this._transitionSnapState(snapId, 'UPDATE');
+    // Wait until the snap has been stopped and moved to installing phase
+    await waitForState(interpreter, 'installing');
 
     const unusedPermissionsKeys = Object.keys(unusedPermissions);
     if (isNonEmptyArray(unusedPermissionsKeys)) {
@@ -1732,7 +1749,17 @@ export class SnapController extends BaseController<
       });
     }
 
-    await this._startSnap({ snapId, sourceCode: newSnap.sourceCode });
+    // Set new snap and start it
+    this._transitionSnapState(snapId, {
+      type: 'SET_SNAP',
+      newVersion: {
+        id: snapId,
+        manifest: newSnap.manifest,
+        sourceCode: newSnap.sourceCode,
+        versionRange: newVersionRange,
+        origin,
+      },
+    });
 
     const truncatedSnap = this.getTruncated(snapId) as TruncatedSnap;
 
@@ -1741,8 +1768,6 @@ export class SnapController extends BaseController<
       truncatedSnap,
       snap.version,
     );
-
-    this._transitionSnapState(snapId, 'START');
 
     return truncatedSnap;
   }
@@ -1778,17 +1803,20 @@ export class SnapController extends BaseController<
       // to null in the authorize() method.
       runtime.installPromise = (async () => {
         if ('manifest' in args && 'sourceCode' in args) {
-          return this._set({ ...args, id: snapId });
+          this._transitionSnapState(snapId, {
+            type: 'SET_SNAP',
+            newVersion: { ...args, id: snapId },
+          });
+        } else {
+          const fetchedSnap = await this._fetchSnap(snapId, args.versionRange);
+          await this._assertIsUnblocked(snapId, fetchedSnap.manifest.version);
+          this._transitionSnapState(snapId, {
+            type: 'SET_SNAP',
+            newVersion: { ...args, ...fetchedSnap, id: snapId },
+          });
         }
 
-        const fetchedSnap = await this._fetchSnap(snapId, args.versionRange);
-        await this._assertIsUnblocked(snapId, fetchedSnap.manifest.version);
-
-        return this._set({
-          ...args,
-          ...fetchedSnap,
-          id: snapId,
-        });
+        return this.get(snapId)!;
       })();
     }
 
@@ -1980,37 +2008,6 @@ export class SnapController extends BaseController<
 
     validateSnapShasum(manifest, sourceCode);
     return { manifest, sourceCode, svgIcon };
-  }
-
-  /**
-   * Initiates a request for the given snap's initial permissions.
-   * Must be called in order. See processRequestedSnap.
-   *
-   * @param snapId - The id of the Snap.
-   * @returns The snap's approvedPermissions.
-   */
-  private async authorize(snapId: SnapId): Promise<string[]> {
-    console.info(`Authorizing snap: ${snapId}`);
-    const snapsState = this.state.snaps;
-    const snap = snapsState[snapId];
-    const { initialPermissions } = snap;
-
-    try {
-      if (isNonEmptyArray(Object.keys(initialPermissions))) {
-        const [approvedPermissions] = await this.messagingSystem.call(
-          'PermissionController:requestPermissions',
-          { origin: snapId },
-          initialPermissions,
-        );
-        return Object.values(approvedPermissions).map(
-          (perm) => perm.parentCapability,
-        );
-      }
-      return [];
-    } finally {
-      const runtime = this._getSnapRuntimeData(snapId);
-      runtime.installPromise = null;
-    }
   }
 
   destroy() {
@@ -2250,6 +2247,24 @@ export class SnapController extends BaseController<
     const approvedPermissions = setDiff(oldPermissions, unusedPermissions);
 
     return { newPermissions, unusedPermissions, approvedPermissions };
+  }
+
+  private async effectAuthorize(ctx: StatusContext) {
+    const snap = ctx.snap!;
+    // TODO(ritave): What if denied permissions?
+    await this.messagingSystem.call(
+      'PermissionController:requestPermissions',
+      { origin: snap.id },
+      snap.initialPermissions,
+    );
+    this._transitionSnapState(snap.id, 'START');
+  }
+
+  private effectSnapInstalled(ctx: StatusContext) {
+    this.messagingSystem.publish(
+      `SnapController:snapInstalled`,
+      truncateSnap(ctx.snap!),
+    );
   }
 
   private async effectStartSnap(ctx: StatusContext) {
