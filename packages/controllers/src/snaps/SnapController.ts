@@ -319,6 +319,36 @@ export type UpdateBlockedSnaps = {
   handler: SnapController['updateBlockedSnaps'];
 };
 
+export type EnableSnap = {
+  type: `${typeof controllerName}:enable`;
+  handler: SnapController['enableSnap'];
+};
+
+export type DisableSnap = {
+  type: `${typeof controllerName}:disable`;
+  handler: SnapController['disableSnap'];
+};
+
+export type RemoveSnap = {
+  type: `${typeof controllerName}:remove`;
+  handler: SnapController['removeSnap'];
+};
+
+export type GetSnaps = {
+  type: `${typeof controllerName}:getSnaps`;
+  handler: SnapController['getPermittedSnaps'];
+};
+
+export type InstallSnaps = {
+  type: `${typeof controllerName}:install`;
+  handler: SnapController['installSnaps'];
+};
+
+export type RemoveSnapError = {
+  type: `${typeof controllerName}:removeSnapError`;
+  handler: SnapController['removeSnapError'];
+};
+
 export type SnapControllerActions =
   | AddSnap
   | ClearSnapState
@@ -327,7 +357,13 @@ export type SnapControllerActions =
   | HandleSnapRpcRequest
   | HasSnap
   | UpdateBlockedSnaps
-  | UpdateSnapState;
+  | UpdateSnapState
+  | EnableSnap
+  | DisableSnap
+  | RemoveSnap
+  | GetSnaps
+  | InstallSnaps
+  | RemoveSnapError;
 
 // Controller Messenger Events
 
@@ -827,6 +863,36 @@ export class SnapController extends BaseController<
     this.messagingSystem.registerActionHandler(
       `${controllerName}:updateSnapState`,
       (...args) => this.updateSnapState(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:enable`,
+      (...args) => this.enableSnap(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:disable`,
+      (...args) => this.disableSnap(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:remove`,
+      (...args) => this.removeSnap(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:getSnaps`,
+      (...args) => this.getPermittedSnaps(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:install`,
+      (...args) => this.installSnaps(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:removeSnapError`,
+      (...args) => this.removeSnapError(...args),
     );
   }
 
