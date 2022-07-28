@@ -1434,9 +1434,12 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The snap ID.
    */
-  private revokeAllSnapPermissions(snapId: string): void {
+  private async revokeAllSnapPermissions(snapId: string): Promise<void> {
     if (
-      this.messagingSystem.call('PermissionController:hasPermissions', snapId)
+      await this.messagingSystem.call(
+        'PermissionController:hasPermissions',
+        snapId,
+      )
     ) {
       this.messagingSystem.call(
         'PermissionController:revokeAllPermissions',
@@ -1451,12 +1454,12 @@ export class SnapController extends BaseController<
    * @param origin - The origin whose permitted snaps to retrieve.
    * @returns The serialized permitted snaps for the origin.
    */
-  getPermittedSnaps(origin: string): InstallSnapsResult {
+  async getPermittedSnaps(origin: string): Promise<InstallSnapsResult> {
     return Object.values(
-      this.messagingSystem.call(
+      (await this.messagingSystem.call(
         'PermissionController:getPermissions',
         origin,
-      ) ?? {},
+      )) ?? {},
     ).reduce((permittedSnaps, perm) => {
       if (perm.parentCapability.startsWith(SNAP_PREFIX)) {
         const snapId = perm.parentCapability.replace(SNAP_PREFIX_REGEX, '');
@@ -1502,7 +1505,7 @@ export class SnapController extends BaseController<
           }
 
           if (
-            this.messagingSystem.call(
+            await this.messagingSystem.call(
               'PermissionController:hasPermission',
               origin,
               permissionName,
@@ -1706,13 +1709,16 @@ export class SnapController extends BaseController<
 
     const unusedPermissionsKeys = Object.keys(unusedPermissions);
     if (isNonEmptyArray(unusedPermissionsKeys)) {
-      this.messagingSystem.call('PermissionController:revokePermissions', {
-        [snapId]: unusedPermissionsKeys,
-      });
+      await this.messagingSystem.call(
+        'PermissionController:revokePermissions',
+        {
+          [snapId]: unusedPermissionsKeys,
+        },
+      );
     }
 
     if (isNonEmptyArray(Object.keys(newPermissions))) {
-      this.messagingSystem.call('PermissionController:grantPermissions', {
+      await this.messagingSystem.call('PermissionController:grantPermissions', {
         approvedPermissions: newPermissions,
         subject: { origin: snapId },
       });
@@ -1822,7 +1828,7 @@ export class SnapController extends BaseController<
 
     for (const permissionName of this._environmentEndowmentPermissions) {
       if (
-        this.messagingSystem.call(
+        await this.messagingSystem.call(
           'PermissionController:hasPermission',
           snapId,
           permissionName,
@@ -2253,7 +2259,7 @@ export class SnapController extends BaseController<
     promise: Promise<PromiseValue>,
     timer?: Timer,
   ): Promise<PromiseValue> {
-    const isLongRunning = this.messagingSystem.call(
+    const isLongRunning = await this.messagingSystem.call(
       'PermissionController:hasPermission',
       snapId,
       LONG_RUNNING_PERMISSION,
