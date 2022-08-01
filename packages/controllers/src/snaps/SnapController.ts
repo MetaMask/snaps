@@ -58,6 +58,7 @@ import {
   TerminateSnapAction,
 } from '..';
 import {
+  assert,
   assertExhaustive,
   forceStrict,
   hasTimedOut,
@@ -581,6 +582,7 @@ export enum SnapStatus {
   crashed = 'crashed',
 }
 
+// TODO(ritave): Add error list to bubble, add runtime data, add messaging system
 type StatusContext = { snap?: Snap };
 
 type StatusEvents =
@@ -620,26 +622,24 @@ function transformBlock(
   { snap }: StatusContext,
   event: StatusEvents | InitEvent,
 ) {
-  if (event.type !== 'BLOCK') {
-    throw new Error('transformBlock action used in wrong transition');
-  }
-  snap!.blockInformation = event.reason;
+  assert(event.type === 'BLOCK' && snap !== undefined);
+  snap.blockInformation = event.reason;
 }
 
 function transformUnblock({ snap }: StatusContext) {
-  delete snap!.blockInformation;
+  assert(snap !== undefined);
+  delete snap.blockInformation;
 }
 
 function transformStatus(value: StatusStates['value']) {
   return ({ snap }: StatusContext) => {
-    snap!.status = value;
+    assert(snap !== undefined);
+    snap.status = value;
   };
 }
 
 function transformSetSnap(ctx: StatusContext, event: StatusEvents | InitEvent) {
-  if (event.type !== 'SET_SNAP') {
-    throw new Error('transformSetSnap action used in wrong transition');
-  }
+  assert(event.type === 'SET_SNAP');
   const {
     id: snapId,
     origin,
@@ -683,6 +683,8 @@ function transformSetSnap(ctx: StatusContext, event: StatusEvents | InitEvent) {
   ];
 
   const snap: Snap = {
+    status: statusConfig.initial as StatusStates['value'],
+
     // Restore relevant snap state if it exists
     ...existingSnap,
 
@@ -693,7 +695,6 @@ function transformSetSnap(ctx: StatusContext, event: StatusEvents | InitEvent) {
     initialPermissions,
     manifest,
     sourceCode,
-    status: statusConfig.initial as StatusStates['value'],
     version,
     versionHistory,
   };
@@ -712,71 +713,111 @@ const statusConfig: StateMachine.Config<
   initial: 'installing',
   states: {
     installing: {
-      entry: ['effectInstallSnap'],
+      entry: 'effectInstallSnap',
       on: {
         SET_SNAP: {
-          target: 'installing:authorize',
           actions: [transformSetSnap, 'updateState', 'effectSnapAdded'],
+          target: 'installing:authorize',
         },
       },
     },
     'installing:authorize': {
-      entry: ['effectAuthorize'],
-      exit: ['effectSnapInstalled'],
+      entry: 'effectAuthorize',
+      exit: 'effectSnapInstalled',
       on: {
-        START: 'starting',
+        START: {
+          target: 'starting',
+        },
       },
     },
     updating: {
+      exit: [transformStatus('updating'), 'effectSnapUpdated'],
       on: {
         SET_SNAP: {
-          target: 'starting',
           actions: [transformSetSnap, 'updateState'],
+          target: 'starting',
         },
       },
     },
     starting: {
       entry: [transformStatus('starting'), 'updateState', 'effectStartSnap'],
       on: {
-        STARTED: 'running',
-        STOP: 'stopped',
+        STARTED: {
+          target: 'running',
+        },
+        STOP: {
+          target: 'stopped',
+        },
       },
     },
     running: {
       entry: [transformStatus('running'), 'updateState'],
       on: {
-        STOP: 'stopping',
-        DISABLE: 'stopping',
-        BLOCK: 'stopping',
-        CRASH: 'stopping',
-        UPDATE: 'stopping',
+        STOP: {
+          target: 'stopping',
+        },
+        DISABLE: {
+          target: 'stopping',
+        },
+        BLOCK: {
+          target: 'stopping',
+        },
+        CRASH: {
+          target: 'stopping',
+        },
+        UPDATE: {
+          target: 'stopping',
+        },
       },
     },
-    // stopping is a passthrough state - effectStopSnap will forward the previous event again after stopping
     stopping: {
       entry: [transformStatus('stopping'), 'updateState', 'effectStopSnap'],
       on: {
-        STOP: 'stopped',
-        CRASH: { target: 'stopped', actions: 'effectOnCrash' },
-        DISABLE: 'disabled',
-        BLOCK: 'blocked',
-        UPDATE: 'updating',
+        STOP: {
+          target: 'stopped',
+        },
+        CRASH: {
+          actions: 'effectOnCrash',
+          target: 'stopped',
+        },
+        DISABLE: {
+          target: 'disabled',
+        },
+        BLOCK: {
+          target: 'blocked',
+        },
+        UPDATE: {
+          target: 'updating',
+        },
       },
     },
     stopped: {
       entry: [transformStatus('stopped'), 'updateState'],
       on: {
-        START: 'running',
-        DISABLE: 'disabled',
-        BLOCK: 'blocked',
-        UPDATE: 'updating',
+        START: {
+          target: 'running',
+        },
+        DISABLE: {
+          target: 'disabled',
+        },
+        BLOCK: {
+          target: 'blocked',
+        },
+        UPDATE: {
+          target: 'updating',
+        },
       },
     },
     disabled: {
       entry: [transformStatus('disabled'), 'updateState', 'effectDisableSnap'],
       on: {
-        ENABLE: { target: 'stopped', actions: ['effectEnableSnap'] },
-        BLOCK: 'blocked',
+        ENABLE: {
+          actions: 'effectEnableSnap',
+          target: 'stopped',
+        },
+        BLOCK: {
+          target: 'blocked',
+        },
       },
     },
     blocked: {
@@ -788,7 +829,9 @@ const statusConfig: StateMachine.Config<
       ],
       exit: [transformUnblock, 'updateState', 'effectUnblockSnap'],
       on: {
-        UNBLOCK: 'disabled',
+        UNBLOCK: {
+          target: 'disabled',
+        },
       },
     },
   },
@@ -1140,7 +1183,11 @@ export class SnapController extends BaseController<
     } else {
       interpreter = this._transitionSnapState(snapId, 'START');
     }
-    const state = await waitForState(interpreter, ['stopped', 'running']);
+    const state = await waitForState(interpreter, [
+      'stopped',
+      'running',
+    ] as const);
+
     if (state.value === 'stopped') {
       throw new Error(`Failed to start snap "${snapId}"`);
     }
@@ -1733,7 +1780,7 @@ export class SnapController extends BaseController<
 
     const interpreter = this._transitionSnapState(snapId, 'UPDATE');
     // Wait until the snap has been stopped and moved to installing phase
-    await waitForState(interpreter, 'installing');
+    await waitForState(interpreter, 'updating');
 
     const unusedPermissionsKeys = Object.keys(unusedPermissions);
     if (isNonEmptyArray(unusedPermissionsKeys)) {
@@ -1802,19 +1849,21 @@ export class SnapController extends BaseController<
       // If fetching and setting the snap succeeds, this property will be set
       // to null in the authorize() method.
       runtime.installPromise = (async () => {
+        let interpreter;
         if ('manifest' in args && 'sourceCode' in args) {
-          this._transitionSnapState(snapId, {
+          interpreter = this._transitionSnapState(snapId, {
             type: 'SET_SNAP',
             newVersion: { ...args, id: snapId },
           });
         } else {
           const fetchedSnap = await this._fetchSnap(snapId, args.versionRange);
           await this._assertIsUnblocked(snapId, fetchedSnap.manifest.version);
-          this._transitionSnapState(snapId, {
+          interpreter = this._transitionSnapState(snapId, {
             type: 'SET_SNAP',
             newVersion: { ...args, ...fetchedSnap, id: snapId },
           });
         }
+        await waitForState(interpreter, 'starting');
 
         return this.get(snapId)!;
       })();
@@ -2249,9 +2298,9 @@ export class SnapController extends BaseController<
     return { newPermissions, unusedPermissions, approvedPermissions };
   }
 
-  private async effectAuthorize(ctx: StatusContext) {
-    const snap = ctx.snap!;
-    // TODO(ritave): What if denied permissions?
+  private async effectAuthorize({ snap }: StatusContext) {
+    assert(snap !== undefined);
+    // TODO(ritave): What happens if denied permissions?
     await this.messagingSystem.call(
       'PermissionController:requestPermissions',
       { origin: snap.id },
@@ -2260,15 +2309,16 @@ export class SnapController extends BaseController<
     this._transitionSnapState(snap.id, 'START');
   }
 
-  private effectSnapInstalled(ctx: StatusContext) {
+  private effectSnapInstalled({ snap }: StatusContext) {
+    assert(snap !== undefined);
     this.messagingSystem.publish(
       `SnapController:snapInstalled`,
-      truncateSnap(ctx.snap!),
+      truncateSnap(snap),
     );
   }
 
-  private async effectStartSnap(ctx: StatusContext) {
-    const snap = ctx.snap!;
+  private async effectStartSnap({ snap }: StatusContext) {
+    assert(snap !== undefined);
     try {
       await this._executeWithTimeout(
         snap.id,
@@ -2289,21 +2339,16 @@ export class SnapController extends BaseController<
     { snap }: StatusContext,
     event: StatusEvents | InitEvent,
   ) {
-    if (event.type !== 'SET_SNAP') {
-      throw new Error('effectSnapAdded used with wrong event');
-    }
+    assert(event.type === 'SET_SNAP' && snap !== undefined);
     const { svgIcon } = event.newVersion;
-    this.messagingSystem.publish(`SnapController:snapAdded`, snap!, svgIcon);
+    this.messagingSystem.publish(`SnapController:snapAdded`, snap, svgIcon);
   }
 
   private async effectStopSnap(
-    ctx: StatusContext,
+    { snap }: StatusContext,
     event: StatusEvents | InitEvent,
   ) {
-    if (event.type === 'xstate.init') {
-      throw new Error('Assertion: Unexpected InitEvent');
-    }
-    const snap = ctx.snap!;
+    assert(event.type !== 'xstate.init' && snap !== undefined);
 
     const runtime = this._getSnapRuntimeData(snap.id);
     runtime.lastRequest = null;
@@ -2313,7 +2358,7 @@ export class SnapController extends BaseController<
 
     await this.messagingSystem.call('ExecutionService:terminateSnap', snap.id);
     // TODO(ritave): Should the transition happen after publish?
-    this._transitionSnapState(snap!.id, event);
+    this._transitionSnapState(snap.id, event);
     this.messagingSystem.publish(
       'SnapController:snapTerminated',
       this.getTruncated(snap.id) as TruncatedSnap,
@@ -2324,24 +2369,21 @@ export class SnapController extends BaseController<
     { snap }: StatusContext,
     event: StatusEvents | InitEvent,
   ) {
-    if (event.type !== 'BLOCK') {
-      throw new Error('Unexpected event');
-    }
+    assert(event.type === 'BLOCK' && snap !== undefined);
     this.messagingSystem.publish(
       `${controllerName}:snapBlocked`,
-      snap!.id,
+      snap.id,
       event.reason,
     );
   }
 
   private effectUnblockSnap({ snap }: StatusContext) {
-    this.messagingSystem.publish(`${controllerName}:snapUnblocked`, snap!.id);
+    assert(snap !== undefined);
+    this.messagingSystem.publish(`${controllerName}:snapUnblocked`, snap.id);
   }
 
   private effectOnCrash(_: StatusContext, event: StatusEvents | InitEvent) {
-    if (event.type !== 'CRASH') {
-      throw new Error('Unexpected event');
-    }
+    assert(event.type === 'CRASH');
     this.addSnapError(event.error);
   }
 }

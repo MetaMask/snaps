@@ -1,6 +1,34 @@
 import { EventObject, StateMachine, Typestate } from '@xstate/fsm';
 import { Timer } from './snaps/Timer';
 
+declare interface AssertionError extends Error {
+  code: 'ERR_ASSERTION';
+}
+let assert: (value: any, message?: string | Error) => asserts value;
+let AssertionError: new (options: { message: string }) => AssertionError;
+
+if (typeof window === 'undefined') {
+  ({ assert, AssertionError } = require('assert'));
+} else {
+  AssertionError = class extends Error {
+    constructor(options: { message: string }) {
+      super(options.message);
+    }
+
+    code = 'ERR_ASSERTION' as const;
+  };
+  assert = (value, message) => {
+    if (!value) {
+      if (message instanceof Error) {
+        throw message;
+      }
+      throw new AssertionError({ message: message ?? 'Assertion failed' });
+    }
+  };
+}
+
+export { assert, AssertionError };
+
 /**
  * Takes two objects and does a Set Difference of them.
  * Set Difference is generally defined as follows:
@@ -46,7 +74,6 @@ export function delay<Result = void>(
 }
 
 /**
- * A Promise that delays it's return by using a pausable Timer.
  *
  * @param timer - Timer used to control the delay.
  * @param result - The result to return from the Promise after delay.
@@ -74,9 +101,10 @@ export function delayWithTimer<Result = void>(
   return promise;
 }
 
-/*
+/**
  * We use a Symbol instead of rejecting the promise so that Errors thrown
  * by the main promise will propagate.
+ * @see {@link withTimeout}
  */
 export const hasTimedOut = Symbol(
   'Used to check if the requested promise has timeout (see withTimeout)',
@@ -85,7 +113,7 @@ export const hasTimedOut = Symbol(
 /**
  * Executes the given Promise, if the Timer expires before the Promise settles, we return earlier.
  *
- * NOTE:** The given Promise is not cancelled or interrupted, and will continue to execute uninterrupted. We will just discard its result if it does not complete before the timeout.
+ * **NOTE:** The given Promise is not cancelled or interrupted, and will continue to execute uninterrupted. We will just discard its result if it does not complete before the timeout.
  *
  * @param promise - The promise that you want to execute.
  * @param timerOrMs - The timer controlling the timeout or a ms value.
@@ -107,6 +135,20 @@ export async function withTimeout<PromiseValue = void>(
   }
 }
 
+/**
+ * Given Value param, narrows TState union to states that intersect with the Value parameter
+ * @see {@link waitForState}
+ */
+type _StateNarrowedByValue<
+  TContext extends object,
+  TEvent extends EventObject,
+  TState extends Typestate<TContext>,
+  Value extends TState['value'] | readonly TState['value'][],
+> = StateMachine.State<
+  TContext,
+  TEvent,
+  ExtractOnProp<TState, 'value', ToUnion<EnsureInArray<Value>>>
+>;
 /**
  * Waits for a specific state to be reached in a xstate state machine
  *
@@ -136,21 +178,18 @@ export async function withTimeout<PromiseValue = void>(
  * console.log("The machine has stopped");
  * ```
  */
-// TODO(ritave): Narrow return type to only states with value in target param
 export async function waitForState<
   TContext extends object,
   TEvent extends EventObject,
-  TState extends Typestate<TContext> = {
-    value: any;
-    context: TContext;
-  },
+  TState extends Typestate<TContext>,
+  Value extends TState['value'],
 >(
   interpreter: StateMachine.Service<TContext, TEvent, TState>,
-  target: TState['value'] | Array<TState['value']>,
-): Promise<StateMachine.State<TContext, TEvent, TState>> {
+  target: Value | readonly Value[],
+): Promise<_StateNarrowedByValue<TContext, TEvent, TState, Value>> {
   const targetArray = Array.isArray(target) ? target : [target];
 
-  type Result = StateMachine.State<TContext, TEvent, TState>;
+  type Result = _StateNarrowedByValue<TContext, TEvent, TState, Value>;
 
   let resolve: (state: Result) => void;
   const promise = new Promise<Result>((r) => {
@@ -160,12 +199,43 @@ export async function waitForState<
   const { unsubscribe } = interpreter.subscribe((state) => {
     if (targetArray.some((target) => state.matches(target))) {
       unsubscribe();
-      resolve(state);
+      resolve(state as any);
     }
   });
 
   return promise;
 }
+
+/**
+ * Wraps a type in array if already isn't an array
+ */
+type EnsureInArray<T> = T extends Array<any> ? T : Array<T>;
+
+/**
+ * Converts an array to a union of it's possible value types
+ */
+type ToUnion<T extends Array<any>> = T[number];
+
+/**
+ * Similar to {@link Extract}.
+ * It extracts objects from a union based on a type of one of it's properties
+ *
+ * @example
+ * ```typescript
+ * type Test = ExtractOnProp<
+ *   | { value: 'test1' | 'test2', prop1: any }
+ *   | { value: 'test3', prop2: any },
+ *   'value',
+ *   'test1'>;
+ * // Test == { value: 'test1', prop1: any }
+ * ```
+ */
+// https://stackoverflow.com/a/73160226/4783965
+type ExtractOnProp<T, Key extends keyof T, ValueType> = T extends unknown
+  ? ValueType extends T[Key]
+    ? { [P in keyof T]: P extends Key ? T[P] & ValueType : T[P] }
+    : never
+  : never;
 
 /**
  * Ensure that the interpreter is strict.
@@ -212,9 +282,9 @@ export function forceStrict(interpreter: StateMachine.Service<any, any, any>) {
  * @param _object - The object on which the switch is being operated.
  */
 export function assertExhaustive(_object: never): never {
-  throw new Error(
-    'Invalid branch reached. Should be detected during compilation',
-  );
+  throw new AssertionError({
+    message: 'Invalid branch reached. Should be detected during compilation',
+  });
 }
 
 /**
