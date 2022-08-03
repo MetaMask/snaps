@@ -1,6 +1,8 @@
-import { readFileSync } from 'fs';
-// eslint-disable-next-line import/no-unassigned-import
+/* eslint-disable import/no-unassigned-import */
+
 import 'ses/lockdown';
+
+import { readFileSync } from 'fs';
 import { generateMockEndowments } from './mock';
 
 declare let lockdown: any, Compartment: any;
@@ -11,6 +13,14 @@ lockdown({
   mathTaming: 'unsafe',
   dateTaming: 'unsafe',
   overrideTaming: 'severe',
+
+  // TODO: See if there's an easier way to do this. This file is ran in a
+  // separate process, so we can't mock SES with Jest.
+  ...(process.env.NODE_ENV === 'test'
+    ? {
+        domainTaming: 'unsafe',
+      }
+    : {}),
 });
 
 /**

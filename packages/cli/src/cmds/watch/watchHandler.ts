@@ -1,15 +1,14 @@
 import chokidar from 'chokidar';
-import { YargsArgs } from '../../types/yargs';
 import {
   getOutfilePath,
-  loadConfig,
-  logError,
   validateDirPath,
   validateFilePath,
   validateOutfileName,
-} from '../../utils';
+} from '@metamask/snap-utils';
+import { YargsArgs } from '../../types/yargs';
+import { loadConfig, logError } from '../../utils';
 import { bundle } from '../build/bundle';
-import { snapEval } from '../eval/evalHandler';
+import { evalHandler } from '../eval/evalHandler';
 import { manifestHandler } from '../manifest/manifestHandler';
 import { serve } from '../serve/serveHandler';
 
@@ -56,7 +55,7 @@ export async function watch(argv: YargsArgs): Promise<void> {
       }
 
       if (shouldEval) {
-        await snapEval({ ...argv, bundle: outfilePath });
+        await evalHandler({ ...argv, bundle: outfilePath });
       }
     } catch (error) {
       logError(

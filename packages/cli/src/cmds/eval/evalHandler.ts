@@ -1,6 +1,6 @@
+import { evalBundle } from '@metamask/snap-utils';
 import { YargsArgs } from '../../types/yargs';
-import { logError, validateFilePath } from '../../utils';
-import { workerEval } from './workerEval';
+import { logError } from '../../utils';
 
 /**
  * Runs the snap in a worker, to ensure SES compatibility.
@@ -9,14 +9,14 @@ import { workerEval } from './workerEval';
  * @returns A promise that resolves once the eval has finished.
  * @throws If the eval failed.
  */
-export async function snapEval(argv: YargsArgs): Promise<void> {
+export async function evalHandler(argv: YargsArgs): Promise<void> {
   const { bundle: bundlePath } = argv;
-  await validateFilePath(bundlePath as string);
+
   try {
-    await workerEval(bundlePath as string);
+    await evalBundle(bundlePath as string);
     console.log(`Eval Success: evaluated '${bundlePath}' in SES!`);
-  } catch (err) {
-    logError(`Snap evaluation error: ${err.message}`, err);
-    throw err;
+  } catch (error) {
+    logError(`Snap evaluation error: ${error.message}`, error);
+    throw error;
   }
 }

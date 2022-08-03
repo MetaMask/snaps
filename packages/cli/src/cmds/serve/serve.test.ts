@@ -1,9 +1,16 @@
 import EventEmitter from 'events';
 import http from 'http';
 import serveHandler from 'serve-handler';
-import * as fsUtils from '../../utils/validate-fs';
+import * as snapUtils from '@metamask/snap-utils';
 import * as serveUtils from './serveUtils';
 import serve from '.';
+
+jest.mock('@metamask/snap-utils', () => ({
+  validateDirPath: jest.fn(),
+  validateFilePath: jest.fn(),
+  validateOutfileName: jest.fn(),
+  getOutfilePath: () => 'dist/bundle.js',
+}));
 
 /**
  * Get a mocked Yargs argv object.
@@ -47,7 +54,7 @@ describe('serve', () => {
       });
 
       jest
-        .spyOn(fsUtils, 'validateDirPath')
+        .spyOn(snapUtils, 'validateDirPath')
         .mockImplementation(async () => true);
     });
 

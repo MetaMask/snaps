@@ -3,14 +3,19 @@ module.exports = {
   // Ensures that we collect coverage from all source files, not just tested
   // ones.
   collectCoverageFrom: ['./src/**/*.ts'],
-  coveragePathIgnorePatterns: ['./src/index.ts'],
+  coveragePathIgnorePatterns: [
+    './src/index.ts',
+    // Jest currently doesn't collect coverage for child processes.
+    // https://github.com/facebook/jest/issues/5274
+    './src/eval-worker.ts',
+  ],
   coverageReporters: ['clover', 'json', 'lcov', 'text', 'json-summary'],
   coverageThreshold: {
     global: {
-      branches: 80,
-      functions: 94.82,
-      lines: 94.09,
-      statements: 94.21,
+      branches: 83.41,
+      functions: 96,
+      lines: 95.34,
+      statements: 95.46,
     },
   },
   globals: {

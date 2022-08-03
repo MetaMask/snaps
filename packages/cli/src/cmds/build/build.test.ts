@@ -1,11 +1,18 @@
 import path from 'path';
-import * as fsUtils from '../../utils/validate-fs';
+import * as snapUtils from '@metamask/snap-utils';
 import * as snapEvalModule from '../eval/evalHandler';
 import * as manifestModule from '../manifest/manifestHandler';
 import * as buildBundle from './bundle';
 import buildModule from '.';
 
 const build = buildModule.handler;
+
+jest.mock('@metamask/snap-utils', () => ({
+  validateDirPath: jest.fn(),
+  validateFilePath: jest.fn(),
+  validateOutfileName: jest.fn(),
+  getOutfilePath: () => 'dist/bundle.js',
+}));
 
 describe('build', () => {
   describe('build', () => {
@@ -26,19 +33,19 @@ describe('build', () => {
         `${mockArgv.dist}/${mockArgv.outfileName}`,
       );
       const validateOutfileNameMock = jest
-        .spyOn(fsUtils, 'validateOutfileName')
+        .spyOn(snapUtils, 'validateOutfileName')
         .mockImplementation();
       const validateFilePathMock = jest
-        .spyOn(fsUtils, 'validateFilePath')
+        .spyOn(snapUtils, 'validateFilePath')
         .mockImplementation();
       const validateDirPathMock = jest
-        .spyOn(fsUtils, 'validateDirPath')
+        .spyOn(snapUtils, 'validateDirPath')
         .mockImplementation();
       const bundleMock = jest
         .spyOn(buildBundle, 'bundle')
         .mockImplementation(async () => true);
       const evalMock = jest
-        .spyOn(snapEvalModule, 'snapEval')
+        .spyOn(snapEvalModule, 'evalHandler')
         .mockImplementation();
       const manifestMock = jest
         .spyOn(manifestModule, 'manifestHandler')
@@ -69,19 +76,19 @@ describe('build', () => {
       };
       const outfilePath = path.normalize(`${mockArgv.dist}/bundle.js`);
       const validateOutfileNameMock = jest
-        .spyOn(fsUtils, 'validateOutfileName')
+        .spyOn(snapUtils, 'validateOutfileName')
         .mockImplementation();
       const validateFilePathMock = jest
-        .spyOn(fsUtils, 'validateFilePath')
+        .spyOn(snapUtils, 'validateFilePath')
         .mockImplementation();
       const validateDirPathMock = jest
-        .spyOn(fsUtils, 'validateDirPath')
+        .spyOn(snapUtils, 'validateDirPath')
         .mockImplementation();
       const bundleMock = jest
         .spyOn(buildBundle, 'bundle')
         .mockImplementation(async () => true);
       const evalMock = jest
-        .spyOn(snapEvalModule, 'snapEval')
+        .spyOn(snapEvalModule, 'evalHandler')
         .mockImplementation();
       const manifestMock = jest
         .spyOn(manifestModule, 'manifestHandler')
@@ -110,11 +117,11 @@ describe('build', () => {
         manifest: true,
       };
 
-      jest.spyOn(fsUtils, 'validateOutfileName').mockImplementation();
-      jest.spyOn(fsUtils, 'validateFilePath').mockImplementation();
-      jest.spyOn(fsUtils, 'validateDirPath').mockImplementation();
+      jest.spyOn(snapUtils, 'validateOutfileName').mockImplementation();
+      jest.spyOn(snapUtils, 'validateFilePath').mockImplementation();
+      jest.spyOn(snapUtils, 'validateDirPath').mockImplementation();
       const evalMock = jest
-        .spyOn(snapEvalModule, 'snapEval')
+        .spyOn(snapEvalModule, 'evalHandler')
         .mockImplementation();
       jest.spyOn(manifestModule, 'manifestHandler').mockImplementation();
       jest.spyOn(buildBundle, 'bundle').mockImplementation();

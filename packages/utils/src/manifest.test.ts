@@ -15,6 +15,7 @@ import { readJsonFile } from './fs';
 import {
   DEFAULT_SNAP_BUNDLE,
   DEFAULT_SNAP_ICON,
+  DEFAULT_SNAP_SHASUM,
   getPackageJson,
   getSnapManifest,
 } from './__test__';
@@ -73,7 +74,7 @@ describe('checkManifest', () => {
     expect(warnings).toHaveLength(0);
 
     const { source } = await readJsonFile<SnapManifest>(MANIFEST_PATH);
-    expect(source.shasum).toBe('O4sADgTDj5EP86efVtOEI76NkKZeoKHRzQIlB1j48Lg=');
+    expect(source.shasum).toBe(DEFAULT_SNAP_SHASUM);
   });
 
   it('fixes multiple problems in the manifest', async () => {
@@ -93,7 +94,7 @@ describe('checkManifest', () => {
     expect(warnings).toHaveLength(0);
 
     const { source, version } = await readJsonFile<SnapManifest>(MANIFEST_PATH);
-    expect(source.shasum).toBe('O4sADgTDj5EP86efVtOEI76NkKZeoKHRzQIlB1j48Lg=');
+    expect(source.shasum).toBe(DEFAULT_SNAP_SHASUM);
     expect(version).toBe('1.0.0');
   });
 
