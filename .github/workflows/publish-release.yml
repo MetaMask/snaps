@@ -5,29 +5,22 @@ on:
     branches: [main]
 
 jobs:
-  check-release:
+  is-release:
     # release merge commits come from GitHub user
     if: github.event.head_commit.committer.name == 'GitHub'
     outputs:
-      IS_RELEASE: ${{ steps.check-release.outputs.IS_RELEASE }}
+      IS_RELEASE: ${{ steps.is-release.outputs.IS_RELEASE }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-        with:
-          ref: ${{ github.sha }}
-          # we need this commit + the last so we can compare below
-          fetch-depth: 2
-      # exit early if the version has not changed
-      - name: Check Release
-        id: check-release
-        run: ./scripts/check-release.sh ${{ github.event.before }}
+      - uses: MetaMask/action-is-release@v1.0
+        id: is-release
 
   publish-release:
     permissions:
       contents: write
-    if: needs.check-release.outputs.IS_RELEASE == 'true'
+    if: needs.is-release.outputs.IS_RELEASE == 'true'
     runs-on: ubuntu-latest
-    needs: check-release
+    needs: is-release
     steps:
       - uses: actions/checkout@v2
         with:
