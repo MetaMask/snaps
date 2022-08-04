@@ -1,42 +1,41 @@
-import { Duplex } from 'stream';
+import passworder from '@metamask/browser-passworder';
 import {
   Caveat,
+  ControllerMessenger,
   getPersistentState,
   Json,
   SubjectPermissions,
   ValidPermission,
-  ControllerMessenger,
 } from '@metamask/controllers';
-import { EthereumRpcError, ethErrors, serializeError } from 'eth-rpc-errors';
-import fetchMock from 'jest-fetch-mock';
-import passworder from '@metamask/browser-passworder';
-import { Crypto } from '@peculiar/webcrypto';
 import { SnapExecutionData } from '@metamask/snap-types';
-import { createEngineStream } from 'json-rpc-middleware-stream';
-import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
-import pump from 'pump';
 import {
-  SnapManifest,
   DEFAULT_ENDOWMENTS,
   getSnapSourceShasum,
+  SnapManifest,
 } from '@metamask/snap-utils';
-import { ExecutionService } from '../services/ExecutionService';
+import { Crypto } from '@peculiar/webcrypto';
+import { EthereumRpcError, ethErrors, serializeError } from 'eth-rpc-errors';
+import fetchMock from 'jest-fetch-mock';
+import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
+import { createEngineStream } from 'json-rpc-middleware-stream';
+import pump from 'pump';
+import { Duplex } from 'stream';
 import { NodeThreadExecutionService, setupMultiplex } from '../services';
+import { ExecutionService } from '../services/ExecutionService';
 import { delay } from '../utils';
 
 import { LONG_RUNNING_PERMISSION } from './endowments';
+import { isBlocked, isEnabled, Snap, Status, TruncatedSnap } from './Snap';
 import {
   AllowedActions,
   AllowedEvents,
   CheckSnapBlockListArg,
-  Snap,
   SnapController,
   SnapControllerActions,
   SnapControllerEvents,
   SnapControllerState,
   SnapStatus,
   SNAP_APPROVAL_UPDATE,
-  TruncatedSnap,
 } from './SnapController';
 
 const { subtle } = new Crypto();
@@ -359,28 +358,24 @@ const getSnapManifest = ({
 };
 
 const getSnapObject = ({
-  blocked = false,
-  enabled = true,
   id = MOCK_SNAP_ID,
   initialPermissions = {},
   manifest = getSnapManifest(),
   permissionName = `wallet_snap_${MOCK_SNAP_ID}`,
   sourceCode = MOCK_SNAP_SOURCE_CODE,
-  status = SnapStatus.stopped,
+  status = 'stopped' as Status,
   version = '1.0.0',
   versionHistory = [
     { origin: MOCK_ORIGIN, version: '1.0.0', date: expect.any(Number) },
   ],
 } = {}): Snap => {
   return {
-    blocked,
     initialPermissions,
     id,
     permissionName,
     version,
     manifest,
     status,
-    enabled,
     sourceCode,
     versionHistory,
   } as const;
@@ -403,8 +398,7 @@ const getSnapObject = ({
  * @returns The mock snap data.
  */
 const getMockSnapData = ({
-  blocked = false,
-  enabled = true,
+  status,
   id,
   origin,
   sourceCode,
@@ -412,13 +406,8 @@ const getMockSnapData = ({
   id: string;
   origin: string;
   sourceCode?: string;
-  blocked?: boolean;
-  enabled?: boolean;
+  status?: Status;
 }) => {
-  if (blocked && enabled) {
-    throw new Error('A snap may not be enabled if it is blocked.');
-  }
-
   const packageName = `${id}-package`;
   const _sourceCode = sourceCode ?? `${MOCK_SNAP_SOURCE_CODE}// ${id}\n`;
   const shasum = getSnapSourceShasum(_sourceCode);
@@ -435,8 +424,7 @@ const getMockSnapData = ({
     sourceCode: _sourceCode,
     manifest,
     stateObject: getSnapObject({
-      blocked,
-      enabled,
+      status,
       id,
       manifest,
       sourceCode,
@@ -1183,10 +1171,10 @@ describe('SnapController', () => {
     ).rejects.toThrow(/^Snap "npm:example-snap" is disabled.$/u);
 
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
-    expect(snapController.state.snaps[snap.id].enabled).toStrictEqual(false);
+    expect(isEnabled(snapController.state.snaps[snap.id])).toStrictEqual(false);
 
     snapController.enableSnap(snap.id);
-    expect(snapController.state.snaps[snap.id].enabled).toStrictEqual(true);
+    expect(isEnabled(snapController.state.snaps[snap.id])).toStrictEqual(true);
 
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
 
@@ -1805,7 +1793,6 @@ describe('SnapController', () => {
         sourceCode: MOCK_SNAP_SOURCE_CODE,
         id: snapId,
         manifest: { ...getSnapManifest(), version },
-        enabled: true,
         status: SnapStatus.stopped,
       });
 
@@ -1862,7 +1849,6 @@ describe('SnapController', () => {
         sourceCode: MOCK_SNAP_SOURCE_CODE,
         id: snapId,
         manifest: { ...getSnapManifest(), version },
-        enabled: true,
         status: SnapStatus.stopped,
       });
 
@@ -1947,7 +1933,6 @@ describe('SnapController', () => {
         sourceCode: MOCK_SNAP_SOURCE_CODE,
         id: snapId,
         manifest: { ...getSnapManifest(), version },
-        enabled: true,
         // Set to "running"
         status: SnapStatus.running,
       });
@@ -2900,16 +2885,16 @@ describe('SnapController', () => {
         getSnapControllerOptions({
           state: {
             snaps: {
-              [MOCK_SNAP_ID]: { ...getSnapObject(), enabled: false },
+              [MOCK_SNAP_ID]: getSnapObject({ status: 'disabled' }),
             },
           },
         }),
       );
 
-      expect(snapController.get(MOCK_SNAP_ID)?.enabled).toBe(false);
+      expect(isEnabled(snapController.getExpect(MOCK_SNAP_ID))).toBe(false);
 
       snapController.enableSnap(MOCK_SNAP_ID);
-      expect(snapController.get(MOCK_SNAP_ID)?.enabled).toBe(true);
+      expect(isEnabled(snapController.getExpect(MOCK_SNAP_ID))).toBe(true);
     });
 
     it('throws an error if the specified snap does not exist', () => {
@@ -2924,11 +2909,7 @@ describe('SnapController', () => {
         getSnapControllerOptions({
           state: {
             snaps: {
-              [MOCK_SNAP_ID]: {
-                ...getSnapObject(),
-                blocked: true,
-                enabled: false,
-              },
+              [MOCK_SNAP_ID]: getSnapObject({ status: 'blocked' }),
             },
           },
         }),
@@ -2946,16 +2927,16 @@ describe('SnapController', () => {
         getSnapControllerOptions({
           state: {
             snaps: {
-              [MOCK_SNAP_ID]: { ...getSnapObject(), enabled: true },
+              [MOCK_SNAP_ID]: getSnapObject({ status: 'stopped' }),
             },
           },
         }),
       );
 
-      expect(snapController.get(MOCK_SNAP_ID)?.enabled).toBe(true);
+      expect(isEnabled(snapController.getExpect(MOCK_SNAP_ID))).toBe(true);
 
       await snapController.disableSnap(MOCK_SNAP_ID);
-      expect(snapController.get(MOCK_SNAP_ID)?.enabled).toBe(false);
+      expect(isEnabled(snapController.getExpect(MOCK_SNAP_ID))).toBe(false);
     });
 
     it('stops a running snap when disabling it', async () => {
@@ -2963,19 +2944,19 @@ describe('SnapController', () => {
         getSnapControllerOptions({
           state: {
             snaps: {
-              [MOCK_SNAP_ID]: { ...getSnapObject(), enabled: true },
+              [MOCK_SNAP_ID]: getSnapObject({ status: 'stopped' }),
             },
           },
         }),
       );
 
-      expect(snapController.get(MOCK_SNAP_ID)?.enabled).toBe(true);
+      expect(isEnabled(snapController.getExpect(MOCK_SNAP_ID))).toBe(true);
 
       await snapController.startSnap(MOCK_SNAP_ID);
       expect(snapController.isRunning(MOCK_SNAP_ID)).toBe(true);
 
       await snapController.disableSnap(MOCK_SNAP_ID);
-      expect(snapController.get(MOCK_SNAP_ID)?.enabled).toBe(false);
+      expect(isEnabled(snapController.getExpect(MOCK_SNAP_ID))).toBe(false);
       expect(snapController.isRunning(MOCK_SNAP_ID)).toBe(false);
     });
 
@@ -3001,12 +2982,12 @@ describe('SnapController', () => {
       checkBlockListSpy.mockResolvedValueOnce({
         [snapId]: { blocked: false },
       });
-      expect(await snapController.isBlocked(snapId, '1.0.0')).toBe(false);
+      expect(await snapController.checkBlocked(snapId, '1.0.0')).toBe(false);
 
       checkBlockListSpy.mockResolvedValueOnce({
         [snapId]: { blocked: true },
       });
-      expect(await snapController.isBlocked(snapId, '1.0.0')).toBe(true);
+      expect(await snapController.checkBlocked(snapId, '1.0.0')).toBe(true);
     });
   });
 
@@ -3049,12 +3030,12 @@ describe('SnapController', () => {
       await snapController.updateBlockedSnaps();
 
       // A is blocked and disabled
-      expect(snapController.get(mockSnapA.id)?.blocked).toBe(true);
-      expect(snapController.get(mockSnapA.id)?.enabled).toBe(false);
+      expect(isBlocked(snapController.getExpect(mockSnapA.id))).toBe(true);
+      expect(isEnabled(snapController.getExpect(mockSnapA.id))).toBe(false);
 
       // B is unblocked and enabled
-      expect(snapController.get(mockSnapB.id)?.blocked).toBe(false);
-      expect(snapController.get(mockSnapB.id)?.enabled).toBe(true);
+      expect(isBlocked(snapController.getExpect(mockSnapB.id))).toBe(false);
+      expect(isEnabled(snapController.getExpect(mockSnapB.id))).toBe(true);
 
       expect(publishMock).toHaveBeenLastCalledWith(
         'SnapController:snapBlocked',
@@ -3094,8 +3075,8 @@ describe('SnapController', () => {
       await snapController.updateBlockedSnaps();
 
       // The snap is blocked, disabled, and stopped
-      expect(snapController.get(mockSnap.id)?.blocked).toBe(true);
-      expect(snapController.get(mockSnap.id)?.enabled).toBe(false);
+      expect(isBlocked(snapController.getExpect(mockSnap.id))).toBe(true);
+      expect(isEnabled(snapController.getExpect(mockSnap.id))).toBe(false);
       expect(snapController.isRunning(mockSnap.id)).toBe(false);
     });
 
@@ -3108,8 +3089,7 @@ describe('SnapController', () => {
       const mockSnapA = getMockSnapData({
         id: 'npm:exampleA',
         origin: 'foo.com',
-        blocked: true,
-        enabled: false,
+        status: 'blocked',
       });
 
       const mockSnapB = getMockSnapData({
@@ -3131,12 +3111,12 @@ describe('SnapController', () => {
       );
 
       // A is blocked and disabled
-      expect(snapController.get(mockSnapA.id)?.blocked).toBe(true);
-      expect(snapController.get(mockSnapA.id)?.enabled).toBe(false);
+      expect(isBlocked(snapController.getExpect(mockSnapA.id))).toBe(true);
+      expect(isEnabled(snapController.getExpect(mockSnapA.id))).toBe(false);
 
       // B is unblocked and enabled
-      expect(snapController.get(mockSnapB.id)?.blocked).toBe(false);
-      expect(snapController.get(mockSnapB.id)?.enabled).toBe(true);
+      expect(isBlocked(snapController.getExpect(mockSnapB.id))).toBe(false);
+      expect(isEnabled(snapController.getExpect(mockSnapB.id))).toBe(true);
 
       // Indicate that both snaps A and B are unblocked, and update blocked
       // states.
@@ -3147,12 +3127,12 @@ describe('SnapController', () => {
       await snapController.updateBlockedSnaps();
 
       // A is unblocked, but still disabled
-      expect(snapController.get(mockSnapA.id)?.blocked).toBe(false);
-      expect(snapController.get(mockSnapA.id)?.enabled).toBe(false);
+      expect(isBlocked(snapController.getExpect(mockSnapA.id))).toBe(false);
+      expect(isEnabled(snapController.getExpect(mockSnapA.id))).toBe(false);
 
       // B remains unblocked and enabled
-      expect(snapController.get(mockSnapB.id)?.blocked).toBe(false);
-      expect(snapController.get(mockSnapB.id)?.enabled).toBe(true);
+      expect(isBlocked(snapController.getExpect(mockSnapB.id))).toBe(false);
+      expect(isEnabled(snapController.getExpect(mockSnapB.id))).toBe(true);
 
       expect(publishMock).toHaveBeenLastCalledWith(
         'SnapController:snapUnblocked',
@@ -3235,8 +3215,8 @@ describe('SnapController', () => {
       await snapController.updateBlockedSnaps();
 
       // A is blocked and disabled
-      expect(snapController.get(mockSnap.id)?.blocked).toBe(true);
-      expect(snapController.get(mockSnap.id)?.enabled).toBe(false);
+      expect(isBlocked(snapController.getExpect(mockSnap.id))).toBe(true);
+      expect(isEnabled(snapController.getExpect(mockSnap.id))).toBe(false);
 
       expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
       expect(consoleErrorSpy).toHaveBeenCalledWith(
@@ -3299,7 +3279,6 @@ describe('SnapController', () => {
           sourceCode: MOCK_SNAP_SOURCE_CODE,
           id: 'npm:fooSnap',
           manifest: getSnapManifest(),
-          enabled: true,
           status: SnapStatus.installing,
         });
 
@@ -3332,7 +3311,6 @@ describe('SnapController', () => {
           sourceCode: MOCK_SNAP_SOURCE_CODE,
           id: 'npm:fooSnap',
           manifest: getSnapManifest(),
-          enabled: true,
           status: SnapStatus.running,
         });
 
@@ -3437,7 +3415,6 @@ describe('SnapController', () => {
                   sourceCode: MOCK_SNAP_SOURCE_CODE,
                   id: 'npm:fooSnap',
                   manifest: getSnapManifest(),
-                  enabled: true,
                   status: SnapStatus.installing,
                 }),
               },
@@ -3468,7 +3445,6 @@ describe('SnapController', () => {
                   sourceCode: MOCK_SNAP_SOURCE_CODE,
                   id: 'npm:fooSnap',
                   manifest: getSnapManifest(),
-                  enabled: true,
                   status: SnapStatus.installing,
                 }),
               },
@@ -3512,7 +3488,6 @@ describe('SnapController', () => {
                   sourceCode: MOCK_SNAP_SOURCE_CODE,
                   id: 'npm:fooSnap',
                   manifest: getSnapManifest(),
-                  enabled: true,
                   status: SnapStatus.installing,
                 }),
                 'npm:fooSnap2': getSnapObject({
@@ -3521,7 +3496,6 @@ describe('SnapController', () => {
                   sourceCode: MOCK_SNAP_SOURCE_CODE,
                   id: 'npm:fooSnap2',
                   manifest: getSnapManifest(),
-                  enabled: true,
                   status: SnapStatus.installing,
                 }),
               },

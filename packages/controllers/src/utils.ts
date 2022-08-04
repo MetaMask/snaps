@@ -1,3 +1,4 @@
+import { Duration, inMilliseconds } from '@metamask/utils';
 import { EventObject, StateMachine, Typestate } from '@xstate/fsm';
 import { Timer } from './snaps/Timer';
 
@@ -61,29 +62,18 @@ export function setDiff<
 /**
  * A Promise that delays it's return for a given amount of milliseconds.
  *
- * @param ms - Milliseconds to delay the execution for.
+ * @param timerOrMs - Milliseconds to delay the execution for or a {@link Timer} to be used.
  * @param result - The result to return from the Promise after delay.
  * @returns A promise that is void if no result provided, result otherwise.
  * @template Result - The `result`.
  */
 export function delay<Result = void>(
-  ms: number,
+  timerOrMs: Timer | number,
   result?: Result,
 ): Promise<Result> & { cancel: () => void } {
-  return delayWithTimer(new Timer(ms), result);
-}
+  const timer =
+    typeof timerOrMs === 'number' ? new Timer(timerOrMs) : timerOrMs;
 
-/**
- *
- * @param timer - Timer used to control the delay.
- * @param result - The result to return from the Promise after delay.
- * @returns A promise that is void if no result provided, result otherwise.
- * @template Result - The `result`.
- */
-export function delayWithTimer<Result = void>(
-  timer: Timer,
-  result?: Result,
-): Promise<Result> & { cancel: () => void } {
   let rejectFunc: (reason: Error) => void;
   const promise: any = new Promise<Result>((resolve: any, reject) => {
     timer.start(() => {
@@ -127,7 +117,7 @@ export async function withTimeout<PromiseValue = void>(
 ): Promise<PromiseValue | typeof hasTimedOut> {
   const timer =
     typeof timerOrMs === 'number' ? new Timer(timerOrMs) : timerOrMs;
-  const delayPromise = delayWithTimer(timer, hasTimedOut);
+  const delayPromise = delay(timer, hasTimedOut);
   try {
     return await Promise.race([promise, delayPromise]);
   } finally {
@@ -186,24 +176,39 @@ export async function waitForState<
 >(
   interpreter: StateMachine.Service<TContext, TEvent, TState>,
   target: Value | readonly Value[],
+  timeoutMs: number = inMilliseconds(1, Duration.Second),
 ): Promise<_StateNarrowedByValue<TContext, TEvent, TState, Value>> {
   const targetArray = Array.isArray(target) ? target : [target];
-
   type Result = _StateNarrowedByValue<TContext, TEvent, TState, Value>;
+
+  // xstate/fsm calls the listener during the initial subscription, which means
+  // that unsubscribe call may be not yet initialized when the current state fits
+  const matches = (
+    state: StateMachine.State<TContext, TEvent, TState>,
+  ): state is Result => targetArray.some((target) => state.matches(target));
+  if (matches(interpreter.state)) {
+    return interpreter.state;
+  }
 
   let resolve: (state: Result) => void;
   const promise = new Promise<Result>((r) => {
     resolve = r;
   });
-
   const { unsubscribe } = interpreter.subscribe((state) => {
-    if (targetArray.some((target) => state.matches(target))) {
+    if (matches(state)) {
       unsubscribe();
-      resolve(state as any);
+      resolve(state);
     }
   });
+  const result = await withTimeout(promise, timeoutMs);
+  if (result === hasTimedOut) {
+    unsubscribe();
+    throw new AssertionError({
+      message: 'Waiting for state transition has timed out',
+    });
+  }
 
-  return promise;
+  return result;
 }
 
 /**
