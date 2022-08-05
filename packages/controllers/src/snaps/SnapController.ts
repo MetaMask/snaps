@@ -1574,14 +1574,16 @@ export class SnapController extends BaseController<
         newSnap.manifest.initialPermissions,
       );
 
+    const id = nanoid();
     const isApproved = await this.messagingSystem.call(
       'ApprovalController:addRequest',
       {
         origin,
+        id,
         type: SNAP_APPROVAL_UPDATE,
         requestData: {
           // First two keys mirror installation params
-          metadata: { id: nanoid(), origin: snapId, dappOrigin: origin },
+          metadata: { id, origin: snapId, dappOrigin: origin },
           permissions: newPermissions,
           snapId,
           newVersion: newSnap.manifest.version,
