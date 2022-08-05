@@ -38,14 +38,14 @@ type GetEd25519EntropySpecification = ValidPermissionSpecification<{
 }>;
 
 /**
- * The specification builder for the `snap_getBip44Entropy_*` permission.
- * `snap_getBip44Entropy_*` lets the Snap control private keys for a particular
+ * The specification builder for the `snap_getEd25519Entropy_*` permission.
+ * `snap_getEd25519Entropy_*` lets the Snap control private keys for a particular
  * BIP-32 coin type.
  *
  * @param options - The specification builder options.
  * @param options.allowedCaveats - The optional allowed caveats for the permission.
  * @param options.methodHooks - The RPC method hooks needed by the method implementation.
- * @returns The specification for the `snap_getBip44Entropy_*` permission.
+ * @returns The specification for the `snap_getEd25519Entropy_*` permission.
  */
 const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.RestrictedMethod,
