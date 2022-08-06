@@ -7,7 +7,34 @@ exports[`SnapsWebpackPlugin applies a transform 1`] = `
 })();"
 `;
 
+exports[`SnapsWebpackPlugin applies a transform 2`] = `
+"(() => {
+  var __webpack_exports__ = {};
+  const foo = 'bar';
+})();"
+`;
+
 exports[`SnapsWebpackPlugin forwards the options 1`] = `
+"/******/
+(() => {
+  // webpackBootstrap
+  var __webpack_exports__ = {}; // foo bar
+
+  /* baz qux */
+
+  const foo = 'bar';
+  /******/
+})();"
+`;
+
+exports[`SnapsWebpackPlugin forwards the options 2`] = `
+"(() => {
+  var __webpack_exports__ = {};
+  const foo = 'bar';
+})();"
+`;
+
+exports[`SnapsWebpackPlugin forwards the options 3`] = `
 "/******/
 (() => {
   // webpackBootstrap
