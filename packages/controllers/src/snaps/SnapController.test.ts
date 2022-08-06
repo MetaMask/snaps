@@ -2182,6 +2182,7 @@ describe('SnapController', () => {
         'ApprovalController:addRequest',
         {
           origin: MOCK_ORIGIN,
+          id: expect.any(String),
           type: SNAP_APPROVAL_UPDATE,
           requestData: {
             metadata: {
@@ -2501,6 +2502,7 @@ describe('SnapController', () => {
         'ApprovalController:addRequest',
         {
           origin: MOCK_ORIGIN,
+          id: expect.any(String),
           type: SNAP_APPROVAL_UPDATE,
           requestData: {
             metadata: {
@@ -2609,6 +2611,7 @@ describe('SnapController', () => {
         'ApprovalController:addRequest',
         {
           origin: MOCK_ORIGIN,
+          id: expect.any(String),
           type: SNAP_APPROVAL_UPDATE,
           requestData: {
             metadata: {
@@ -2699,6 +2702,7 @@ describe('SnapController', () => {
         'ApprovalController:addRequest',
         {
           origin: MOCK_ORIGIN,
+          id: expect.any(String),
           type: SNAP_APPROVAL_UPDATE,
           requestData: {
             metadata: {
@@ -2803,6 +2807,7 @@ describe('SnapController', () => {
         'ApprovalController:addRequest',
         {
           origin: MOCK_ORIGIN,
+          id: expect.any(String),
           type: SNAP_APPROVAL_UPDATE,
           requestData: {
             metadata: {
