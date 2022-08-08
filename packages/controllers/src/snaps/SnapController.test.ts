@@ -6,6 +6,7 @@ import {
   SubjectPermissions,
   ValidPermission,
   ControllerMessenger,
+  ApprovalController,
 } from '@metamask/controllers';
 import { EthereumRpcError, ethErrors, serializeError } from 'eth-rpc-errors';
 import fetchMock from 'jest-fetch-mock';
@@ -2850,6 +2851,158 @@ describe('SnapController', () => {
         'PermissionController:hasPermission',
         MOCK_SNAP_ID,
         LONG_RUNNING_PERMISSION,
+      );
+    });
+
+    it("will assign and maintain matching ids to the approval request object and it's metadata property", async () => {
+      const messenger = getControllerMessenger();
+      const snapControllerMessenger = messenger.getRestricted<
+        'SnapController',
+        SnapControllerActions['type'] | AllowedActions['type'],
+        SnapControllerEvents['type'] | AllowedEvents['type']
+      >({
+        name: 'SnapController',
+        allowedEvents: [
+          'ExecutionService:unhandledError',
+          'ExecutionService:outboundRequest',
+          'ExecutionService:outboundResponse',
+          'SnapController:snapAdded',
+          'SnapController:snapBlocked',
+          'SnapController:snapInstalled',
+          'SnapController:snapUnblocked',
+          'SnapController:snapUpdated',
+          'SnapController:snapRemoved',
+          'SnapController:stateChange',
+        ],
+        allowedActions: [
+          'ApprovalController:addRequest',
+          'ExecutionService:executeSnap',
+          'ExecutionService:terminateAllSnaps',
+          'ExecutionService:terminateSnap',
+          'ExecutionService:handleRpcRequest',
+          'PermissionController:getEndowments',
+          'PermissionController:hasPermission',
+          'PermissionController:getPermissions',
+          'PermissionController:grantPermissions',
+          'PermissionController:requestPermissions',
+          'PermissionController:revokeAllPermissions',
+          'SnapController:add',
+          'SnapController:get',
+          'SnapController:handleRpcRequest',
+          'SnapController:getSnapState',
+          'SnapController:has',
+          'SnapController:updateSnapState',
+          'SnapController:clearSnapState',
+          'SnapController:updateBlockedSnaps',
+        ],
+      });
+      const approvalControllerMessenger = messenger.getRestricted({
+        name: 'ApprovalController',
+      });
+      const snapController = getSnapController(
+        getSnapControllerOptions({ messenger: snapControllerMessenger }),
+      );
+      const approvalController = new ApprovalController({
+        messenger: approvalControllerMessenger as any,
+        showApprovalRequest: jest.fn(),
+      });
+      const initialPermissions = {
+        snap_confirm: {},
+        snap_manageState: {},
+      };
+      const approvedPermissions: SubjectPermissions<
+        ValidPermission<string, Caveat<string, any>>
+      > = {
+        snap_confirm: {
+          caveats: null,
+          parentCapability: 'snap_confirm',
+          id: '1',
+          date: 1,
+          invoker: MOCK_SNAP_ID,
+        },
+        snap_manageState: {
+          caveats: null,
+          parentCapability: 'snap_manageState',
+          id: '2',
+          date: 1,
+          invoker: MOCK_SNAP_ID,
+        },
+      };
+
+      let requestId: string, metadataId: string;
+
+      const fetchSnapSpy = jest.spyOn(snapController as any, '_fetchSnap');
+      const callActionSpy = jest.spyOn(messenger, 'call');
+
+      // the point at which the approval request's information is added to state
+      const validateAddParamsSpy = jest.spyOn(
+        approvalController as any,
+        '_validateAddParams',
+      );
+
+      fetchSnapSpy.mockImplementationOnce(async () => {
+        const manifest: SnapManifest = getSnapManifest({
+          version: '1.1.0',
+          initialPermissions: {
+            snap_confirm: {},
+            'endowment:network-access': {},
+          },
+        });
+        return {
+          manifest,
+          sourceCode: MOCK_SNAP_SOURCE_CODE,
+        };
+      });
+
+      callActionSpy.mockImplementation((method, request) => {
+        if (
+          method === 'PermissionController:hasPermission' ||
+          method === 'ApprovalController:addRequest'
+        ) {
+          if (method === 'ApprovalController:addRequest') {
+            // we're capturing the ids before the hit the actual ApprovalController's addRequest method
+            requestId = (request as any).id;
+            metadataId = (request as any).metadata.id;
+          }
+          return true;
+        } else if (method === 'PermissionController:getPermissions') {
+          return approvedPermissions;
+        } else if (
+          method === 'PermissionController:revokePermissions' ||
+          method === 'PermissionController:grantPermissions'
+        ) {
+          return undefined;
+        }
+        return false;
+      });
+
+      await snapController.add({
+        origin: MOCK_ORIGIN,
+        id: MOCK_SNAP_ID,
+        sourceCode: MOCK_SNAP_SOURCE_CODE,
+        manifest: getSnapManifest({ initialPermissions }),
+      });
+
+      await snapController.updateSnap(MOCK_ORIGIN, MOCK_SNAP_ID);
+
+      expect(validateAddParamsSpy).toHaveBeenNthCalledWith(
+        1,
+        requestId,
+        MOCK_ORIGIN,
+        SNAP_APPROVAL_UPDATE,
+        {
+          metadata: {
+            id: metadataId,
+            dappOrigin: MOCK_ORIGIN,
+            origin: MOCK_SNAP_ID,
+          },
+          permissions: {},
+          snapId: MOCK_SNAP_ID,
+          newVersion: '1.1.0',
+          newPermissions: {},
+          approvedPermissions: {},
+          unusedPermissions: {},
+        },
       );
     });
   });
