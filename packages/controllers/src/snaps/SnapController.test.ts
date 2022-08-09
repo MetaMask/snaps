@@ -53,11 +53,11 @@ const getControllerMessenger = () =>
     SnapControllerEvents | AllowedEvents
   >();
 
-const getSnapControllerMessenger = (
-  messenger?: ReturnType<typeof getControllerMessenger>,
-  mocked = true,
-) => {
-  const m = (messenger ?? getControllerMessenger()).getRestricted<
+const getSnapControllerMessenger = ({
+  messenger = getControllerMessenger(),
+  mockExternal = true,
+} = {}) => {
+  const m = messenger.getRestricted<
     'SnapController',
     SnapControllerActions['type'] | AllowedActions['type'],
     SnapControllerEvents['type'] | AllowedEvents['type']
@@ -98,16 +98,17 @@ const getSnapControllerMessenger = (
     ],
   });
 
-  if (mocked) {
-    jest.spyOn(m, 'call').mockImplementation((method, ...args) => {
-      // Return false for long-running by default, and true for everything else.
-      if (
-        method === 'PermissionController:hasPermission' &&
-        args[1] === LONG_RUNNING_PERMISSION
-      ) {
-        return false;
+  if (mockExternal) {
+    const ogCall = m.call.bind(m);
+    jest.spyOn(m as any, 'call').mockImplementation((method, ...args) => {
+      switch (method) {
+        case 'ApprovalController:addRequest':
+          return true;
+        case 'PermissionController:hasPermission':
+          return args[1] !== LONG_RUNNING_PERMISSION;
+        default:
+          return ogCall(method as any, ...(args as unknown as any));
       }
-      return true;
     });
   }
   return m;
@@ -182,10 +183,10 @@ const getSnapControllerWithEESOptions = (
   opts: GetSnapControllerWithEESOptionsParam = {},
 ) => {
   const { rootMessenger = getControllerMessenger() } = opts;
-  const snapControllerMessenger = getSnapControllerMessenger(
-    rootMessenger,
-    false,
-  );
+  const snapControllerMessenger = getSnapControllerMessenger({
+    messenger: rootMessenger,
+    mockExternal: false,
+  });
   const originalCall = snapControllerMessenger.call.bind(
     snapControllerMessenger,
   );
@@ -922,7 +923,7 @@ describe('SnapController', () => {
   });
 
   it('installs a Snap via installSnaps', async () => {
-    const messenger = getSnapControllerMessenger(undefined, false);
+    const messenger = getSnapControllerMessenger({ mockExternal: false });
     const snapController = getSnapController(
       getSnapControllerOptions({
         messenger,
@@ -3229,7 +3230,7 @@ describe('SnapController', () => {
   describe('SnapController actions', () => {
     describe('SnapController:add', () => {
       it('adds a snap to state', async () => {
-        const messenger = getSnapControllerMessenger(undefined, false);
+        const messenger = getSnapControllerMessenger({ mockExternal: false });
         const snapController = getSnapController(
           getSnapControllerOptions({
             messenger,
@@ -3272,7 +3273,7 @@ describe('SnapController', () => {
 
     describe('SnapController:get', () => {
       it('gets a snap', async () => {
-        const messenger = getSnapControllerMessenger(undefined, false);
+        const messenger = getSnapControllerMessenger({ mockExternal: false });
         const fooSnapObject = getSnapObject({
           permissionName: 'fooperm',
           version: '0.0.1',
@@ -3303,7 +3304,7 @@ describe('SnapController', () => {
 
     describe('SnapController:handleRpcRequest', () => {
       it('handles a snap RPC request', async () => {
-        const messenger = getSnapControllerMessenger(undefined, false);
+        const messenger = getSnapControllerMessenger({ mockExternal: false });
         const fooSnapObject = getSnapObject({
           initialPermissions: {},
           permissionName: 'fooperm',
@@ -3343,7 +3344,7 @@ describe('SnapController', () => {
 
     describe('SnapController:getSnapState', () => {
       it(`gets the snap's state`, async () => {
-        const messenger = getSnapControllerMessenger(undefined, false);
+        const messenger = getSnapControllerMessenger({ mockExternal: false });
 
         const state = {
           fizz: 'buzz',
@@ -3374,7 +3375,7 @@ describe('SnapController', () => {
       });
 
       it('throws custom error message in case decryption fails', async () => {
-        const messenger = getSnapControllerMessenger(undefined, false);
+        const messenger = getSnapControllerMessenger({ mockExternal: false });
 
         const snapController = getSnapController(
           getSnapControllerOptions({
@@ -3402,7 +3403,7 @@ describe('SnapController', () => {
 
     describe('SnapController:has', () => {
       it('checks if a snap exists in state', async () => {
-        const messenger = getSnapControllerMessenger(undefined, false);
+        const messenger = getSnapControllerMessenger({ mockExternal: false });
 
         const snapController = getSnapController(
           getSnapControllerOptions({
@@ -3432,7 +3433,7 @@ describe('SnapController', () => {
 
     describe('SnapController:updateSnapState', () => {
       it(`updates the snap's state`, async () => {
-        const messenger = getSnapControllerMessenger(undefined, false);
+        const messenger = getSnapControllerMessenger({ mockExternal: false });
 
         const snapController = getSnapController(
           getSnapControllerOptions({
@@ -3475,7 +3476,7 @@ describe('SnapController', () => {
       });
 
       it('has different encryption for the same data stored by two different snaps', async () => {
-        const messenger = getSnapControllerMessenger(undefined, false);
+        const messenger = getSnapControllerMessenger({ mockExternal: false });
 
         const snapController = getSnapController(
           getSnapControllerOptions({
@@ -3542,7 +3543,7 @@ describe('SnapController', () => {
 
     describe('SnapController:clearSnapState', () => {
       it('clears the state of a snap', async () => {
-        const messenger = getSnapControllerMessenger(undefined, false);
+        const messenger = getSnapControllerMessenger({ mockExternal: false });
 
         const snapController = getSnapController(
           getSnapControllerOptions({
@@ -3572,7 +3573,7 @@ describe('SnapController', () => {
 
     describe('SnapController:updateBlockedSnaps', () => {
       it('calls SnapController.updateBlockedSnaps()', async () => {
-        const messenger = getSnapControllerMessenger(undefined, false);
+        const messenger = getSnapControllerMessenger({ mockExternal: false });
         const snapController = getSnapController(
           getSnapControllerOptions({
             messenger,

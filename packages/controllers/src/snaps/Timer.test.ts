@@ -1,77 +1,182 @@
 import { Timer } from './Timer';
 
 describe('Timer', () => {
-  jest.useFakeTimers();
-  const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
-  const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
-
-  afterEach(() => {
-    jest.clearAllMocks();
+  beforeAll(() => {
+    jest.useFakeTimers();
   });
 
   it('can pause and resume a timeout', () => {
     const timer = new Timer(1000);
-    const callback = () => undefined;
+    const callback = jest.fn();
     timer.start(callback);
-    expect(setTimeoutSpy).toHaveBeenCalledWith(expect.any(Function), 1000);
-    expect(timer.isStarted()).toBe(true);
+
     jest.advanceTimersByTime(500);
+    expect(callback).not.toHaveBeenCalled();
     timer.pause();
-    expect(clearTimeoutSpy).toHaveBeenCalledWith(expect.any(Number));
+    jest.advanceTimersByTime(500);
+    expect(callback).not.toHaveBeenCalled();
     timer.resume();
-    expect(setTimeoutSpy).toHaveBeenCalledWith(expect.any(Function), 500);
+    expect(callback).not.toHaveBeenCalled();
+    jest.advanceTimersByTime(500);
+    expect(callback).toHaveBeenCalled();
   });
 
-  it('functions as a timeout', () => {
+  it('calls the callback', () => {
     const timer = new Timer(1000);
-    const callback = jest.fn();
+    const callback = jest.fn(() => {
+      expect(timer.status).toStrictEqual('finished');
+    });
     timer.start(callback);
-    expect(setTimeoutSpy).toHaveBeenCalledWith(expect.any(Function), 1000);
-    expect(timer.isStarted()).toBe(true);
     jest.advanceTimersByTime(1000);
-    expect(callback).toHaveBeenCalledWith();
-    expect(timer.isFinished()).toBe(true);
+
+    expect(callback).toHaveBeenCalled();
+    expect(timer.status).toStrictEqual('finished');
   });
 
-  it('can cancel a timeout', () => {
+  it('can cancel', () => {
     const timer = new Timer(1000);
     const callback = jest.fn();
     timer.start(callback);
-    expect(setTimeoutSpy).toHaveBeenCalledWith(expect.any(Function), 1000);
     timer.cancel();
-    expect(clearTimeoutSpy).toHaveBeenCalledWith(expect.any(Number));
     jest.advanceTimersByTime(1000);
     expect(callback).not.toHaveBeenCalled();
   });
 
-  it('doesnt pause if already paused', () => {
-    const timer = new Timer(1000);
-    const callback = () => undefined;
+  it('works with +Infinity', () => {
+    const timer = new Timer(Infinity);
+    expect(timer.status).toStrictEqual('stopped');
+
+    const callback = jest.fn();
+
     timer.start(callback);
-    expect(setTimeoutSpy).toHaveBeenCalledWith(expect.any(Function), 1000);
+    expect(timer.status).toStrictEqual('running');
+
+    jest.advanceTimersByTime(Number.MAX_SAFE_INTEGER);
+    expect(timer.status).toStrictEqual('running');
+
     timer.pause();
-    expect(clearTimeoutSpy).toHaveBeenCalledWith(expect.any(Number));
-    timer.pause();
-    expect(clearTimeoutSpy).toHaveBeenCalledTimes(1);
+    expect(timer.status).toStrictEqual('paused');
+
+    timer.cancel();
+    expect(timer.status).toStrictEqual('finished');
+
+    expect(callback).not.toHaveBeenCalled();
   });
 
-  it('doesnt start if already started', () => {
+  it('throws when trying to resume when not paused', () => {
+    const MSG = 'Tried to resume';
     const timer = new Timer(1000);
-    const callback = () => undefined;
-    timer.start(callback);
-    expect(setTimeoutSpy).toHaveBeenCalledWith(expect.any(Function), 1000);
-    expect(() => timer.start(callback)).toThrow('Timer is already started');
-    expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
+
+    expect(() => timer.resume()).toThrow(MSG);
+    expect(timer.status).toStrictEqual('stopped');
+
+    timer.start(jest.fn());
+    expect(() => timer.resume()).toThrow(MSG);
+    expect(timer.status).toStrictEqual('running');
+
+    timer.cancel();
+    expect(() => timer.resume()).toThrow(MSG);
+    expect(timer.status).toStrictEqual('finished');
   });
 
-  it('doesnt resume if already finished', () => {
+  it('throws when trying to start when was already started', () => {
+    const MSG = 'Tried to start';
+    const timer = new Timer(1000);
+    timer.start(jest.fn());
+
+    expect(() => timer.start(jest.fn())).toThrow(MSG);
+    expect(timer.status).toStrictEqual('running');
+
+    timer.pause();
+    expect(() => timer.start(jest.fn())).toThrow(MSG);
+    expect(timer.status).toStrictEqual('paused');
+
+    timer.cancel();
+    expect(() => timer.start(jest.fn())).toThrow(MSG);
+    expect(timer.status).toStrictEqual('finished');
+  });
+
+  it('throws when trying to pause when not running', () => {
+    const MSG = 'Tried to pause';
+    const timer = new Timer(1000);
+
+    expect(() => timer.pause()).toThrow(MSG);
+    expect(timer.status).toStrictEqual('stopped');
+
+    timer.start(jest.fn());
+    timer.pause();
+    expect(() => timer.pause()).toThrow(MSG);
+    expect(timer.status).toStrictEqual('paused');
+
+    timer.cancel();
+    expect(() => timer.pause()).toThrow(MSG);
+    expect(timer.status).toStrictEqual('finished');
+  });
+
+  it('throws when trying to cancel when not running', () => {
+    const MSG = 'Tried to cancel';
+    const timer = new Timer(1000);
+
+    expect(() => timer.cancel()).toThrow(MSG);
+    expect(timer.status).toStrictEqual('stopped');
+
+    timer.start(jest.fn());
+
+    timer.cancel();
+    expect(() => timer.cancel()).toThrow(MSG);
+    expect(timer.status).toStrictEqual('finished');
+  });
+
+  it('reports status', () => {
     const timer = new Timer(1000);
     const callback = jest.fn();
+
+    expect(timer.status).toStrictEqual('stopped');
+
     timer.start(callback);
-    expect(setTimeoutSpy).toHaveBeenCalledWith(expect.any(Function), 1000);
-    jest.advanceTimersByTime(1000);
-    expect(callback).toHaveBeenCalledWith();
+    expect(timer.status).toStrictEqual('running');
+
+    timer.pause();
+    expect(timer.status).toStrictEqual('paused');
+
     timer.resume();
-    expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
+    expect(timer.status).toStrictEqual('running');
+
+    jest.advanceTimersByTime(1000);
+    expect(timer.status).toStrictEqual('finished');
+
+    expect(callback).toHaveBeenCalled();
+  });
+
+  it('works with negative numbers', async () => {
+    const timer = new Timer(-1000);
+
+    let resolve: () => void;
+    const called = new Promise<void>((r) => (resolve = r));
+
+    timer.start(resolve!);
+
+    jest.advanceTimersByTime(0);
+    await called;
+  });
+
+  it('works with -Infinity', async () => {
+    const timer = new Timer(-Infinity);
+
+    let resolve: () => void;
+    const called = new Promise<void>((r) => (resolve = r));
+    timer.start(resolve!);
+
+    jest.advanceTimersByTime(0);
+    await called;
+  });
+
+  it('throws when NaN given', () => {
+    const ERROR = new TypeError("Can't start a timer with NaN time");
+    // You can't create NaNs with bit operations in JavaScript to mangle NaN bits
+    // which would check different kinds of NaNs
+    // we have to rely on the NaN object
+    expect(() => new Timer(NaN)).toThrow(ERROR);
+    expect(() => new Timer(Math.sqrt(-1))).toThrow(ERROR);
   });
 });

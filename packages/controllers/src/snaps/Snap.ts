@@ -4,7 +4,9 @@ import {
   getSnapPermissionName,
   NpmSnapFileNames,
   satisfiesVersionRange,
+  SnapIdPrefixes,
   SnapManifest,
+  ValidatedSnapId,
   validateSnapJsonFile,
 } from '@metamask/snap-utils';
 import { Json } from '@metamask/utils';
@@ -88,26 +90,31 @@ export type StatusContext = { snap?: Snap };
 export type StatusEvents =
   | {
       type:
+        | 'INSTALLED'
         | 'START'
         | 'STARTED'
         | 'STOP'
         | 'DISABLE'
         | 'ENABLE'
-        | 'UPDATE'
         | 'UNBLOCK';
+    }
+  | {
+      type: 'INSTALL' | 'UPDATE';
+      origin: string;
+      snapId: SnapId;
+      versionRange: string;
     }
   | { type: 'CRASH'; error: SnapError }
   | {
       type: 'BLOCK';
       reason: BlockedSnapInfo;
-    }
-  | { type: 'SET_SNAP'; newVersion: SetSnapArgs };
+    };
 
 export type StatusStates =
-  | { value: 'installing'; context: {} }
+  | { value: 'uninstalled'; context: {} }
+  | { value: 'installing'; context: { snap?: Snap } }
   | {
       value:
-        | 'installing:authorize'
         | 'updating'
         | 'stopped'
         | 'starting'
@@ -125,11 +132,7 @@ export function isRunning(snap: Snap) {
 }
 
 export function isInstalling(snap: Snap) {
-  return (
-    snap.status === 'installing' ||
-    snap.status === 'installing:authorize' ||
-    snap.status === 'updating'
-  );
+  return snap.status === 'installing' || snap.status === 'updating';
 }
 
 export function isEnabled(snap: Snap) {
@@ -146,6 +149,22 @@ export function isStarting(snap: Snap) {
 
 export function isStopping(snap: Snap) {
   return snap.status === 'stopping';
+}
+
+export function validateSnapId(
+  snapId: unknown,
+): asserts snapId is ValidatedSnapId {
+  if (!snapId || typeof snapId !== 'string') {
+    throw new Error(`Invalid snap id: Not a string. Received "${snapId}"`);
+  }
+
+  for (const prefix of Object.values(SnapIdPrefixes)) {
+    if (snapId.startsWith(prefix) && snapId.replace(prefix, '').length > 0) {
+      return;
+    }
+  }
+
+  throw new Error(`Invalid snap id. Received: "${snapId}"`);
 }
 
 function transformBlock(
@@ -171,15 +190,14 @@ function transformStatus(value: StatusStates['value']) {
   };
 }
 
-function transformSetSnap(ctx: StatusContext, event: StatusEvents | InitEvent) {
-  assert(event.type === 'SET_SNAP');
+export function transformSetSnap(ctx: StatusContext, data: SetSnapArgs) {
   const {
     id: snapId,
     origin,
     manifest,
     sourceCode,
     versionRange = DEFAULT_REQUESTED_SNAP_VERSION,
-  } = event.newVersion;
+  } = data;
 
   validateSnapJsonFile(NpmSnapFileNames.Manifest, manifest);
   const { version } = manifest;
@@ -216,7 +234,7 @@ function transformSetSnap(ctx: StatusContext, event: StatusEvents | InitEvent) {
   ];
 
   const snap: Snap = {
-    status: statusConfig.initial as Status,
+    status: 'installing',
 
     // Restore relevant snap state if it exists
     ...existingSnap,
@@ -235,41 +253,37 @@ function transformSetSnap(ctx: StatusContext, event: StatusEvents | InitEvent) {
   delete snap.blockInformation;
 
   ctx.snap = snap;
+  return snap;
 }
 
 // TODO(ritave): Move to xstate package and use nested states for installing / updating / stopping / starting?
-// TODO(ritave): Extract into separate file
 export const statusConfig: StateMachine.Config<
   StatusContext,
   StatusEvents,
   StatusStates
 > = {
-  initial: 'installing',
+  initial: 'uninstalled',
   states: {
-    installing: {
-      entry: 'effectInstallSnap',
+    uninstalled: {
       on: {
-        SET_SNAP: {
-          target: 'installing:authorize',
-          actions: [transformSetSnap, 'updateState', 'effectSnapAdded'],
-        },
+        INSTALL: 'installing',
       },
     },
-    'installing:authorize': {
-      entry: 'effectAuthorize',
-      exit: 'effectSnapInstalled',
+    installing: {
+      entry: ['effectInstallSnap'],
+      exit: ['effectSnapInstalled'],
       on: {
-        START: {
+        INSTALLED: {
           target: 'starting',
         },
       },
     },
     updating: {
-      exit: [transformStatus('updating'), 'effectSnapUpdated'],
+      entry: [transformStatus('updating'), 'updateState', 'effectUpdateSnap'],
+      exit: ['effectSnapInstalled', 'effectSnapUpdated'],
       on: {
-        SET_SNAP: {
+        INSTALLED: {
           target: 'starting',
-          actions: [transformSetSnap, 'updateState'],
         },
       },
     },
@@ -294,6 +308,9 @@ export const statusConfig: StateMachine.Config<
         UPDATE: {
           target: 'stopping',
         },
+        INSTALL: {
+          target: 'stopping',
+        },
       },
     },
     running: {
@@ -312,6 +329,9 @@ export const statusConfig: StateMachine.Config<
           target: 'stopping',
         },
         UPDATE: {
+          target: 'stopping',
+        },
+        INSTALL: {
           target: 'stopping',
         },
       },
@@ -335,6 +355,9 @@ export const statusConfig: StateMachine.Config<
         UPDATE: {
           target: 'updating',
         },
+        INSTALL: {
+          target: 'installing',
+        },
       },
     },
     stopped: {
@@ -352,6 +375,9 @@ export const statusConfig: StateMachine.Config<
         UPDATE: {
           target: 'updating',
         },
+        INSTALL: {
+          target: 'installing',
+        },
       },
     },
     disabled: {
@@ -363,6 +389,12 @@ export const statusConfig: StateMachine.Config<
         },
         BLOCK: {
           target: 'blocked',
+        },
+        UPDATE: {
+          target: 'updating',
+        },
+        INSTALL: {
+          target: 'installing',
         },
       },
     },
@@ -377,6 +409,12 @@ export const statusConfig: StateMachine.Config<
       on: {
         UNBLOCK: {
           target: 'disabled',
+        },
+        UPDATE: {
+          target: 'updating',
+        },
+        INSTALL: {
+          target: 'installing',
         },
       },
     },

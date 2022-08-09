@@ -58,12 +58,16 @@ import {
   TerminateSnapAction,
 } from '..';
 import {
+  forceStrict,
+  validateMachine,
+  waitForStateEnter,
+  waitForStateExit,
+} from '../fsm';
+import {
   assert,
   assertExhaustive,
-  forceStrict,
   hasTimedOut,
   setDiff,
-  waitForState,
   withTimeout,
 } from '../utils';
 import { LONG_RUNNING_PERMISSION } from './endowments';
@@ -82,8 +86,10 @@ import {
   StatusContext,
   StatusEvents,
   StatusStates,
+  transformSetSnap,
   TruncatedSnap,
   truncateSnap,
+  validateSnapId,
 } from './Snap';
 import { Timer } from './Timer';
 
@@ -103,11 +109,6 @@ export type PendingRequest = {
  * It is not persisted in state as it contains non-serializable data and is only relevant for the current session.
  */
 export interface SnapRuntimeData {
-  /**
-   * A promise that resolves when the Snap has finished installing
-   */
-  installPromise: null | Promise<Snap>;
-
   /**
    * A Unix timestamp for the last time the Snap received an RPC request
    */
@@ -195,14 +196,6 @@ export type SnapControllerState = {
 // Controller Messenger Actions
 
 /**
- * Adds the specified Snap to state. Used during installation.
- */
-export type AddSnap = {
-  type: `${typeof controllerName}:add`;
-  handler: SnapController['add'];
-};
-
-/**
  * Gets the specified Snap from state.
  */
 export type GetSnap = {
@@ -259,7 +252,6 @@ export type UpdateBlockedSnaps = {
 };
 
 export type SnapControllerActions =
-  | AddSnap
   | ClearSnapState
   | GetSnap
   | GetSnapState
@@ -378,16 +370,7 @@ export enum AppKeyType {
 
 type GetAppKey = (subject: string, appKeyType: AppKeyType) => Promise<string>;
 
-type FeatureFlags = {
-  /**
-   * We still need to implement new UI approval page in metamask-extension before we can allow DApps to update Snaps.
-   * After it's added, this flag can be removed.
-   *
-   * @see {SNAP_APPROVAL_UPDATE}
-   * @see {SnapController.processRequestedSnap}
-   */
-  dappsCanUpdateSnaps?: true;
-};
+type FeatureFlags = {};
 
 type SemVerVersion = string;
 export type CheckSnapBlockListArg = Record<SnapId, SemVerVersion>;
@@ -647,17 +630,11 @@ export class SnapController extends BaseController<
 
     this._statusMachine = createMachine(statusConfig, {
       actions: {
-        updateState: ({ snap }) => {
-          if (!snap) {
-            return;
-          }
-          this.update((state: any) => {
-            state.snaps[snap.id] = snap;
-          });
-        },
-        effectAuthorize: this.effectAuthorize.bind(this),
+        updateState: this.effectUpdateControllerSnap.bind(this),
+        effectSnapInstall: this.effectSnapInstall.bind(this),
         effectSnapInstalled: this.effectSnapInstalled.bind(this),
-        effectSnapAdded: this.effectSnapAdded.bind(this),
+        effectSnapUpdate: this.effectSnapUpdate.bind(this),
+        effectSnapUpdated: this.effectSnapUpdated.bind(this),
         effectStartSnap: this.effectStartSnap.bind(this),
         effectStopSnap: this.effectStopSnap.bind(this),
         effectBlockSnap: this.effectBlockSnap.bind(this),
@@ -665,6 +642,7 @@ export class SnapController extends BaseController<
         effectOnCrash: this.effectOnCrash.bind(this),
       },
     });
+    validateMachine(this._statusMachine);
   }
 
   /**
@@ -672,11 +650,6 @@ export class SnapController extends BaseController<
    * actions.
    */
   private registerMessageHandlers(): void {
-    this.messagingSystem.registerActionHandler(
-      `${controllerName}:add`,
-      (...args) => this.add(...args),
-    );
-
     this.messagingSystem.registerActionHandler(
       `${controllerName}:clearSnapState`,
       (...args) => this.clearSnapState(...args),
@@ -738,15 +711,17 @@ export class SnapController extends BaseController<
 
     await Promise.all(
       Object.entries(blockedSnaps).map(
-        ([snapId, { blocked, ...blockData }]) => {
+        async ([snapId, { blocked, ...blockData }]) => {
           if (blocked) {
-            return this.transition(snapId, {
+            const interpreter = this.transition(snapId, {
               type: 'BLOCK',
               reason: blockData,
             });
+            await waitForStateEnter(interpreter, 'blocked');
           }
           if (this.isBlocked(snapId)) {
-            return this.transition(snapId, 'UNBLOCK');
+            const interpreter = this.transition(snapId, 'UNBLOCK');
+            await waitForStateEnter(interpreter, 'disabled');
           }
         },
       ),
@@ -806,7 +781,7 @@ export class SnapController extends BaseController<
   }
 
   async _onOutboundRequest(snapId: SnapId) {
-    const runtime = this.getRuntimeOrDefault(snapId);
+    const runtime = this.getRuntimeExpect(snapId);
     // Ideally we would only pause the pending request that is making the outbound request
     // but right now we don't have a way to know which request initiated the outbound request
     runtime.pendingInboundRequests.forEach((pendingRequest) =>
@@ -816,7 +791,7 @@ export class SnapController extends BaseController<
   }
 
   async _onOutboundResponse(snapId: SnapId) {
-    const runtime = this.getRuntimeOrDefault(snapId);
+    const runtime = this.getRuntimeExpect(snapId);
     runtime.pendingOutboundRequests -= 1;
     if (runtime.pendingOutboundRequests === 0) {
       runtime.pendingInboundRequests.forEach((pendingRequest) =>
@@ -829,7 +804,7 @@ export class SnapController extends BaseController<
     snapId: SnapId,
     event: StatusEvents | StatusEvents['type'],
   ) {
-    const { interpreter } = this.getRuntimeOrDefault(snapId);
+    const { interpreter } = this.getRuntimeExpect(snapId);
     interpreter.send(event);
     return interpreter;
   }
@@ -844,16 +819,13 @@ export class SnapController extends BaseController<
     assert(!isRunning(snap), new Error(`Snap "${snapId}" is already started.`));
     let interpreter;
     if (isStarting(snap)) {
-      ({ interpreter } = this.getRuntimeOrDefault(snapId));
+      ({ interpreter } = this.getRuntimeExpect(snapId));
     } else {
       interpreter = this.transition(snapId, 'START');
     }
-    const state = await waitForState(interpreter, [
-      'stopping',
-      'running',
-    ] as const);
+    const state = await waitForStateExit(interpreter, 'starting');
 
-    if (state.value === 'stopping') {
+    if (state.value !== 'running') {
       throw new Error(`Failed to start snap "${snapId}"`);
     }
   }
@@ -865,7 +837,8 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap to enable.
    */
   enableSnap(snapId: SnapId) {
-    this.getExpect(snapId);
+    const snap = this.getExpect(snapId);
+    assert(!isEnabled(snap), `Snap "${snapId}" is already enabled.`);
     if (this.isBlocked(snapId)) {
       throw new Error(`Snap "${snapId}" is blocked and cannot be enabled.`);
     }
@@ -882,7 +855,7 @@ export class SnapController extends BaseController<
   async disableSnap(snapId: SnapId): Promise<void> {
     this.getExpect(snapId);
     const interpreter = this.transition(snapId, 'DISABLE');
-    await waitForState(interpreter, 'disabled');
+    await waitForStateEnter(interpreter, 'disabled');
   }
 
   /**
@@ -896,11 +869,11 @@ export class SnapController extends BaseController<
   public async stopSnap(snapId: SnapId): Promise<void> {
     let interpreter;
     if (isStopping(this.getExpect(snapId))) {
-      ({ interpreter } = this.getRuntimeOrDefault(snapId));
+      ({ interpreter } = this.getRuntimeExpect(snapId));
     } else {
       interpreter = this.transition(snapId, 'STOP');
     }
-    await waitForState(interpreter, 'stopped');
+    await waitForStateEnter(interpreter, 'stopped');
   }
 
   /**
@@ -985,6 +958,17 @@ export class SnapController extends BaseController<
   getTruncated(snapId: SnapId): TruncatedSnap | null {
     const snap = this.get(snapId);
     return snap ? truncateSnap(snap) : null;
+  }
+
+  /**
+   * Gets the snap with the given id, throw if it doesn't exist.
+   *
+   * @throws {@link Error}. If snap doesn't exist
+   * @param snapId - The id of the snap to get.
+   * @returns A truncated version of the snap state, that is less expensive to serialize.
+   */
+  getTruncatedExpect(snapId: SnapId): TruncatedSnap {
+    return truncateSnap(this.getExpect(snapId));
   }
 
   /**
@@ -1127,13 +1111,13 @@ export class SnapController extends BaseController<
 
     await Promise.all(
       snapIds.map(async (snapId) => {
-        const truncated = this.getTruncated(snapId) as TruncatedSnap;
+        const truncated = this.getTruncatedExpect(snapId);
         // Disable the snap and revoke all of its permissions before deleting
         // it. This ensures that the snap will not be restarted or otherwise
         // affect the host environment while we are deleting it.
         await this.disableSnap(snapId);
-        const runtime = this.getRuntimeOrDefault(snapId);
-        runtime.interpreter.stop();
+        const runtime = this.getRuntime(snapId);
+        runtime?.interpreter.stop();
         this.revokeAllSnapPermissions(snapId);
 
         const permissionName = getSnapPermissionName(snapId);
@@ -1264,70 +1248,65 @@ export class SnapController extends BaseController<
    */
   private async processRequestedSnap(
     origin: string,
-    _snapId: SnapId,
+    snapId: SnapId,
     versionRange: string,
   ): Promise<ProcessSnapResult> {
     try {
-      this.validateSnapId(_snapId);
+      validateSnapId(snapId);
     } catch (err) {
       return {
         error: ethErrors.rpc.invalidParams(
-          `"${_snapId}" is not a valid snap id.`,
+          `"${snapId}" is not a valid snap id.`,
         ),
       };
     }
-    const snapId = _snapId as ValidatedSnapId;
 
-    const existingSnap = this.getTruncated(snapId);
-    // For devX we always re-install local snaps.
-    if (existingSnap && getSnapPrefix(snapId) !== SnapIdPrefixes.local) {
-      if (satisfiesVersionRange(existingSnap.version, versionRange)) {
-        return existingSnap;
-      }
+    // The snap might not yet be in state, but the installation process might be already started
+    let runtime = this.getRuntime(snapId);
 
-      if (this._featureFlags.dappsCanUpdateSnaps === true) {
-        try {
-          const updateResult = await this.updateSnap(
-            origin,
-            snapId,
-            versionRange,
-          );
-          if (updateResult === null) {
-            return {
-              error: ethErrors.rpc.invalidParams(
-                `Snap "${snapId}@${existingSnap.version}" is already installed, couldn't update to a version inside requested "${versionRange}" range.`,
-              ),
-            };
-          }
-          return updateResult;
-        } catch (err) {
-          return { error: serializeError(err) };
-        }
-      } else {
-        return {
-          error: ethErrors.rpc.invalidParams(
-            `Version mismatch with already installed snap. ${snapId}@${existingSnap.version} doesn't satisfy requested version ${versionRange}`,
-          ),
-        };
-      }
-    }
-
-    // Existing snaps must be stopped before overwriting
-    if (existingSnap && this.isRunning(snapId)) {
-      await this.stopSnap(snapId);
+    if (
+      runtime !== undefined &&
+      ['installing', 'updating'].includes(runtime.interpreter.state.value)
+    ) {
+      throw new Error(`The snap "${snapId}" is already being installed`);
     }
 
     try {
-      const truncated = truncateSnap(
-        await this.add({
-          origin,
-          id: snapId,
-          versionRange,
-        }),
-      );
+      const existingSnap = this.get(snapId);
 
-      this.messagingSystem.publish(`SnapController:snapInstalled`, truncated);
-      return truncated;
+      // For devX we always re-install local snaps.
+      if (existingSnap && getSnapPrefix(snapId) !== SnapIdPrefixes.local) {
+        if (satisfiesVersionRange(existingSnap.version, versionRange)) {
+          return existingSnap;
+        }
+
+        const updateResult = await this.updateSnap(
+          origin,
+          snapId,
+          versionRange,
+        );
+        if (updateResult === null) {
+          return {
+            error: ethErrors.rpc.invalidParams(
+              `Snap "${snapId}@${existingSnap.version}" is already installed, couldn't update to a version inside requested "${versionRange}" range.`,
+            ),
+          };
+        }
+        return updateResult;
+      }
+
+      // If it doesn't exist, create the runtime
+      runtime = this.getRuntimeOrDefault(snapId);
+      this.transition(snapId, {
+        type: 'INSTALL',
+        origin,
+        snapId,
+        versionRange,
+      });
+      await waitForStateExit(runtime.interpreter, 'installing', Infinity);
+      await waitForStateEnter(runtime.interpreter, ['running', 'stopped']);
+
+      return truncateSnap(this.getExpect(snapId));
     } catch (err) {
       console.error(`Error when adding snap.`, err);
       if (this.has(snapId)) {
@@ -1368,165 +1347,18 @@ export class SnapController extends BaseController<
       );
     }
 
-    const newSnap = await this._fetchSnap(snapId, newVersionRange);
-    const newVersion = newSnap.manifest.version;
-    if (!gtVersion(newVersion, snap.version)) {
-      console.warn(
-        `Tried updating snap "${snapId}" within "${newVersionRange}" version range, but newer version "${newVersion}" is already installed`,
-      );
-      return null;
-    }
-
-    await this._assertIsUnblocked(snapId, newVersion);
-
-    const { newPermissions, unusedPermissions, approvedPermissions } =
-      await this.calculatePermissionsChange(
-        snapId,
-        newSnap.manifest.initialPermissions,
-      );
-
-    const isApproved = await this.messagingSystem.call(
-      'ApprovalController:addRequest',
-      {
-        origin,
-        type: SNAP_APPROVAL_UPDATE,
-        requestData: {
-          // First two keys mirror installation params
-          metadata: { id: nanoid(), origin: snapId, dappOrigin: origin },
-          permissions: newPermissions,
-          snapId,
-          newVersion: newSnap.manifest.version,
-          newPermissions,
-          approvedPermissions,
-          unusedPermissions,
-        },
-      },
-      true,
-    );
-
-    if (!isApproved) {
-      return null;
-    }
-
-    const interpreter = this.transition(snapId, 'UPDATE');
-    // Wait until the snap has been stopped and moved to installing phase
-    await waitForState(interpreter, 'updating');
-
-    const unusedPermissionsKeys = Object.keys(unusedPermissions);
-    if (isNonEmptyArray(unusedPermissionsKeys)) {
-      this.messagingSystem.call('PermissionController:revokePermissions', {
-        [snapId]: unusedPermissionsKeys,
-      });
-    }
-
-    if (isNonEmptyArray(Object.keys(newPermissions))) {
-      this.messagingSystem.call('PermissionController:grantPermissions', {
-        approvedPermissions: newPermissions,
-        subject: { origin: snapId },
-      });
-    }
-
-    // Set new snap and start it
-    this.transition(snapId, {
-      type: 'SET_SNAP',
-      newVersion: {
-        id: snapId,
-        manifest: newSnap.manifest,
-        sourceCode: newSnap.sourceCode,
-        versionRange: newVersionRange,
-        origin,
-      },
-    });
-
-    const truncatedSnap = this.getTruncated(snapId) as TruncatedSnap;
-
-    this.messagingSystem.publish(
-      'SnapController:snapUpdated',
-      truncatedSnap,
-      snap.version,
-    );
-
-    return truncatedSnap;
-  }
-
-  /**
-   * Returns a promise representing the complete installation of the requested snap.
-   * If the snap is already being installed, the previously pending promise will be returned.
-   *
-   * @param args - Object containing the snap id and either the URL of the snap's manifest,
-   * or the snap's manifest and source code. The object may also optionally contain a target version.
-   * @returns The resulting snap object.
-   */
-  async add(args: AddSnapArgs): Promise<Snap> {
-    const { id: _snapId } = args;
-    this.validateSnapId(_snapId);
-    const snapId: ValidatedSnapId = _snapId as ValidatedSnapId;
-
-    if (
-      !args ||
-      !('origin' in args) ||
-      !('id' in args) ||
-      (!('manifest' in args) && 'sourceCode' in args) ||
-      ('manifest' in args && !('sourceCode' in args))
-    ) {
-      throw new Error(`Invalid add snap args for snap "${snapId}".`);
-    }
-
     const runtime = this.getRuntimeOrDefault(snapId);
-    if (!runtime.installPromise) {
-      console.info(`Adding snap: ${snapId}`);
+    this.transition(snapId, {
+      type: 'UPDATE',
+      origin,
+      snapId,
+      versionRange: newVersionRange,
+    });
+    await waitForStateExit(runtime.interpreter, 'updating', Infinity);
+    await waitForStateEnter(runtime.interpreter, ['stopped', 'running']);
 
-      // If fetching and setting the snap succeeds, this property will be set
-      // to null in the authorize() method.
-      runtime.installPromise = (async () => {
-        let interpreter;
-        if ('manifest' in args && 'sourceCode' in args) {
-          interpreter = this.transition(snapId, {
-            type: 'SET_SNAP',
-            newVersion: { ...args, id: snapId },
-          });
-        } else {
-          const fetchedSnap = await this._fetchSnap(snapId, args.versionRange);
-          await this._assertIsUnblocked(snapId, fetchedSnap.manifest.version);
-          interpreter = this.transition(snapId, {
-            type: 'SET_SNAP',
-            newVersion: { ...args, ...fetchedSnap, id: snapId },
-          });
-        }
-        const state = await waitForState(interpreter, [
-          'running',
-          'stopped',
-        ] as const);
-        if (state.value === 'stopped') {
-          throw new Error('Failed to start snap during installation');
-        }
-
-        return this.getExpect(snapId);
-      })();
-    }
-
-    try {
-      return await runtime.installPromise;
-    } catch (error) {
-      // Reset promise so users can retry installation in case the problem is
-      // temporary.
-      runtime.installPromise = null;
-      throw error;
-    }
-  }
-
-  private validateSnapId(snapId: unknown): void {
-    if (!snapId || typeof snapId !== 'string') {
-      throw new Error(`Invalid snap id: Not a string. Received "${snapId}"`);
-    }
-
-    for (const prefix of Object.values(SnapIdPrefixes)) {
-      if (snapId.startsWith(prefix) && snapId.replace(prefix, '').length > 0) {
-        return;
-      }
-    }
-
-    throw new Error(`Invalid snap id. Received: "${snapId}"`);
+    const truncatedSnap = this.getTruncatedExpect(snapId);
+    return truncatedSnap;
   }
 
   /**
@@ -1751,7 +1583,7 @@ export class SnapController extends BaseController<
   ): Promise<
     (origin: string, request: Record<string, unknown>) => Promise<unknown>
   > {
-    const runtime = this.getRuntimeOrDefault(snapId);
+    const runtime = this.getRuntimeExpect(snapId);
     const existingHandler = runtime?.rpcHandler;
     if (existingHandler) {
       return existingHandler;
@@ -1865,13 +1697,13 @@ export class SnapController extends BaseController<
     requestId: unknown,
     timer: Timer,
   ) {
-    const runtime = this.getRuntimeOrDefault(snapId);
+    const runtime = this.getRuntimeExpect(snapId);
     runtime.pendingInboundRequests.push({ requestId, timer });
     runtime.lastRequest = null;
   }
 
   private _recordSnapRpcRequestFinish(snapId: SnapId, requestId: unknown) {
-    const runtime = this.getRuntimeOrDefault(snapId);
+    const runtime = this.getRuntimeExpect(snapId);
     runtime.pendingInboundRequests = runtime.pendingInboundRequests.filter(
       (r) => r.requestId !== requestId,
     );
@@ -1881,9 +1713,13 @@ export class SnapController extends BaseController<
     }
   }
 
+  private getRuntime(snapId: SnapId): SnapRuntimeData | undefined {
+    return this._snapsRuntimeData.get(snapId);
+  }
+
   private getRuntimeExpect(snapId: SnapId): SnapRuntimeData {
-    const runtime = this._snapsRuntimeData.get(snapId);
-    assert(runtime !== undefined, `Snap ${snapId} runtime data not found`);
+    const runtime = this.getRuntime(snapId);
+    assert(runtime !== undefined, `Snap "${snapId}" runtime data not found`);
     return runtime;
   }
 
@@ -1901,7 +1737,6 @@ export class SnapController extends BaseController<
       this._snapsRuntimeData.set(snapId, {
         lastRequest: null,
         rpcHandler: null,
-        installPromise: null,
         pendingInboundRequests: [],
         pendingOutboundRequests: 0,
         interpreter,
@@ -1940,17 +1775,49 @@ export class SnapController extends BaseController<
     return { newPermissions, unusedPermissions, approvedPermissions };
   }
 
-  private async effectAuthorize({ snap }: StatusContext) {
+  private effectUpdateControllerSnap({ snap }: StatusContext) {
     assert(snap !== undefined);
+    this.update((state: any) => {
+      state.snaps[snap.id] = snap;
+    });
+  }
+
+  private async effectSnapInstall(
+    ctx: StatusContext,
+    event: StatusEvents | InitEvent,
+  ) {
+    assert(event.type === 'INSTALL');
+    const { snapId, origin, versionRange } = event;
+
+    validateSnapId(snapId);
+
+    const fetchedSnap = await this._fetchSnap(snapId, versionRange);
+    await this._assertIsUnblocked(snapId, fetchedSnap.manifest.version);
+
+    const snap = transformSetSnap(ctx, {
+      ...fetchedSnap,
+      origin,
+      versionRange,
+      id: snapId,
+    });
+
+    this.effectUpdateControllerSnap(ctx);
+
+    // Required to update ui with the icon
+    this.messagingSystem.publish(
+      `SnapController:snapAdded`,
+      snap,
+      fetchedSnap.svgIcon,
+    );
+
     // TODO(ritave): What happens if denied permissions?
     await this.messagingSystem.call(
       'PermissionController:requestPermissions',
       { origin: snap.id },
       snap.initialPermissions,
     );
-    const runtime = this.getRuntimeOrDefault(snap.id);
-    runtime.installPromise = null;
-    this.transition(snap.id, 'START');
+
+    this.transition(snapId, 'INSTALLED');
   }
 
   private effectSnapInstalled({ snap }: StatusContext) {
@@ -1958,6 +1825,97 @@ export class SnapController extends BaseController<
     this.messagingSystem.publish(
       `SnapController:snapInstalled`,
       truncateSnap(snap),
+    );
+  }
+
+  private async effectSnapUpdate(
+    ctx: StatusContext,
+    event: StatusEvents | InitEvent,
+  ) {
+    const { snap } = ctx;
+    assert(snap !== undefined);
+
+    assert(event.type === 'UPDATE');
+    const { snapId, origin, versionRange } = event;
+    validateSnapId(snapId);
+
+    const newSnap = await this._fetchSnap(snapId, versionRange);
+    const newVersion = newSnap.manifest.version;
+    if (!gtVersion(newVersion, snap.version)) {
+      console.warn(
+        `Tried updating snap "${snapId}" within "${versionRange}" version range, but newer version "${newVersion}" is already installed`,
+      );
+      return;
+      // TODO(ritave): What to do here?
+    }
+
+    await this._assertIsUnblocked(snapId, newVersion);
+
+    const { newPermissions, unusedPermissions, approvedPermissions } =
+      await this.calculatePermissionsChange(
+        snapId,
+        newSnap.manifest.initialPermissions,
+      );
+
+    const isApproved = await this.messagingSystem.call(
+      'ApprovalController:addRequest',
+      {
+        origin,
+        type: SNAP_APPROVAL_UPDATE,
+        requestData: {
+          // First two keys mirror installation params
+          metadata: { id: nanoid(), origin: snapId, dappOrigin: origin },
+          permissions: newPermissions,
+          snapId,
+          newVersion: newSnap.manifest.version,
+          newPermissions,
+          approvedPermissions,
+          unusedPermissions,
+        },
+      },
+      true,
+    );
+
+    if (!isApproved) {
+      // TODO(ritave): What to do here?
+      return;
+    }
+
+    const unusedPermissionsKeys = Object.keys(unusedPermissions);
+    if (isNonEmptyArray(unusedPermissionsKeys)) {
+      this.messagingSystem.call('PermissionController:revokePermissions', {
+        [snapId]: unusedPermissionsKeys,
+      });
+    }
+
+    if (isNonEmptyArray(Object.keys(newPermissions))) {
+      this.messagingSystem.call('PermissionController:grantPermissions', {
+        approvedPermissions: newPermissions,
+        subject: { origin: snapId },
+      });
+    }
+
+    transformSetSnap(ctx, {
+      id: snapId,
+      manifest: newSnap.manifest,
+      sourceCode: newSnap.sourceCode,
+      versionRange,
+      origin,
+    });
+    this.effectUpdateControllerSnap(ctx);
+
+    // Set new snap and start it
+    this.transition(snapId, 'INSTALLED');
+  }
+
+  private effectSnapUpdated({ snap }: StatusContext) {
+    assert(snap !== undefined);
+    assert(snap.versionHistory.length >= 2);
+
+    this.messagingSystem.publish(
+      'SnapController:snapUpdated',
+      truncateSnap(snap),
+      snap.versionHistory[snap.versionHistory.length - 2].version,
     );
   }
 
@@ -1983,22 +1941,14 @@ export class SnapController extends BaseController<
     }
   }
 
-  private effectSnapAdded(
-    { snap }: StatusContext,
-    event: StatusEvents | InitEvent,
-  ) {
-    assert(event.type === 'SET_SNAP' && snap !== undefined);
-    const { svgIcon } = event.newVersion;
-    this.messagingSystem.publish(`SnapController:snapAdded`, snap, svgIcon);
-  }
-
   private async effectStopSnap(
     { snap }: StatusContext,
     event: StatusEvents | InitEvent,
   ) {
-    assert(event.type !== 'xstate.init' && snap !== undefined);
+    assert(event.type !== 'xstate.init');
+    assert(snap !== undefined);
 
-    const runtime = this.getRuntimeOrDefault(snap.id);
+    const runtime = this.getRuntimeExpect(snap.id);
     runtime.lastRequest = null;
     runtime.pendingInboundRequests = [];
     runtime.pendingOutboundRequests = 0;
@@ -2017,7 +1967,8 @@ export class SnapController extends BaseController<
     { snap }: StatusContext,
     event: StatusEvents | InitEvent,
   ) {
-    assert(event.type === 'BLOCK' && snap !== undefined);
+    assert(event.type === 'BLOCK');
+    assert(snap !== undefined);
     this.messagingSystem.publish(
       `${controllerName}:snapBlocked`,
       snap.id,

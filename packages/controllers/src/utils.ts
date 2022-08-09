@@ -1,5 +1,3 @@
-import { Duration, inMilliseconds } from '@metamask/utils';
-import { EventObject, StateMachine, Typestate } from '@xstate/fsm';
 import { Timer } from './snaps/Timer';
 
 declare interface AssertionError extends Error {
@@ -83,7 +81,7 @@ export function delay<Result = void>(
   });
 
   promise.cancel = () => {
-    if (!timer.isFinished()) {
+    if (timer.status !== 'finished') {
       timer.cancel();
       rejectFunc(new Error('The delay has been canceled.'));
     }
@@ -123,148 +121,6 @@ export async function withTimeout<PromiseValue = void>(
   } finally {
     delayPromise.cancel();
   }
-}
-
-/**
- * Given Value param, narrows TState union to states that intersect with the Value parameter
- * @see {@link waitForState}
- */
-type _StateNarrowedByValue<
-  TContext extends object,
-  TEvent extends EventObject,
-  TState extends Typestate<TContext>,
-  Value extends TState['value'] | readonly TState['value'][],
-> = StateMachine.State<
-  TContext,
-  TEvent,
-  ExtractOnProp<TState, 'value', ToUnion<EnsureInArray<Value>>>
->;
-/**
- * Waits for a specific state to be reached in a xstate state machine
- *
- * @param interpreter The state machine that will be observed
- * @param target The state value that will be waited for. Can also be an array to wait for any of the states
- * @returns A promise resolving when the given state is reached
- *
- * @example
- * ```
- * const config = {
- *  initial: 'running',
- *  states: {
- *    running: {
- *      STOP: 'stopping'
- *    },
- *    stopping: {
- *      actions: 'executeStop',
- *      STOPPED: 'stopped'
- *    },
- *    stopped: {
- *    }
- *  }
- * };
- * // ...
- * interpreter.send('STOP');
- * await waitFor(interpreter, 'stopped');
- * console.log("The machine has stopped");
- * ```
- */
-export async function waitForState<
-  TContext extends object,
-  TEvent extends EventObject,
-  TState extends Typestate<TContext>,
-  Value extends TState['value'],
->(
-  interpreter: StateMachine.Service<TContext, TEvent, TState>,
-  target: Value | readonly Value[],
-  timeoutMs: number = inMilliseconds(1, Duration.Second),
-): Promise<_StateNarrowedByValue<TContext, TEvent, TState, Value>> {
-  const targetArray = Array.isArray(target) ? target : [target];
-  type Result = _StateNarrowedByValue<TContext, TEvent, TState, Value>;
-
-  // xstate/fsm calls the listener during the initial subscription, which means
-  // that unsubscribe call may be not yet initialized when the current state fits
-  const matches = (
-    state: StateMachine.State<TContext, TEvent, TState>,
-  ): state is Result => targetArray.some((target) => state.matches(target));
-  if (matches(interpreter.state)) {
-    return interpreter.state;
-  }
-
-  let resolve: (state: Result) => void;
-  const promise = new Promise<Result>((r) => {
-    resolve = r;
-  });
-  const { unsubscribe } = interpreter.subscribe((state) => {
-    if (matches(state)) {
-      unsubscribe();
-      resolve(state);
-    }
-  });
-  const result = await withTimeout(promise, timeoutMs);
-  if (result === hasTimedOut) {
-    unsubscribe();
-    throw new AssertionError({
-      message: 'Waiting for state transition has timed out',
-    });
-  }
-
-  return result;
-}
-
-/**
- * Wraps a type in array if already isn't an array
- */
-type EnsureInArray<T> = T extends Array<any> ? T : Array<T>;
-
-/**
- * Converts an array to a union of it's possible value types
- */
-type ToUnion<T extends Array<any>> = T[number];
-
-/**
- * Similar to {@link Extract}.
- * It extracts objects from a union based on a type of one of it's properties
- *
- * @example
- * ```typescript
- * type Test = ExtractOnProp<
- *   | { value: 'test1' | 'test2', prop1: any }
- *   | { value: 'test3', prop2: any },
- *   'value',
- *   'test1'>;
- * // Test == { value: 'test1', prop1: any }
- * ```
- */
-// https://stackoverflow.com/a/73160226/4783965
-type ExtractOnProp<T, Key extends keyof T, ValueType> = T extends unknown
-  ? ValueType extends T[Key]
-    ? { [P in keyof T]: P extends Key ? T[P] & ValueType : T[P] }
-    : never
-  : never;
-
-/**
- * Ensure that the interpreter is strict.
- * Strict means that the transition must occur.
- * The event must exist in .on {} state config and it's guard must succeed.
- *
- * The error will be thrown when an invalid `interpreter.send()` is called
- * and will be bubbled there
- *
- * **TODO(ritave): Doesn't support self transitions**
- *
- * @param interpreter - The interpreter that will be force into strict mode
- * @throw {@link Error} Thrown when the transition is invalid
- */
-export function forceStrict(interpreter: StateMachine.Service<any, any, any>) {
-  // As soon as a listener subscribes, it is called. It might be called in
-  // an initial state which doesn't have the .changed property
-  let onInitialCalled = false;
-  interpreter.subscribe((state) => {
-    if (onInitialCalled && !state.changed) {
-      throw new Error('Invalid state transition');
-    }
-    onInitialCalled = true;
-  });
 }
 
 /* istanbul ignore next */
