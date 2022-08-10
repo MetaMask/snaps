@@ -2955,10 +2955,7 @@ describe('SnapController', () => {
         };
       });
 
-      const originalCall = snapControllerMessenger.call.bind(
-        snapControllerMessenger,
-      );
-      callActionSpy.mockImplementation((method, request, bool) => {
+      callActionSpy.mockImplementation((method, request) => {
         if (
           method === 'PermissionController:hasPermission' ||
           method === 'ApprovalController:addRequest'
@@ -2967,7 +2964,7 @@ describe('SnapController', () => {
             // we're capturing the ids before we hit the actual ApprovalController's addRequest method
             requestId = (request as any).id;
             metadataId = (request as any).requestData.metadata.id;
-            return originalCall(method, request, bool);
+            return approvalController.add(request);
           }
           return true;
         } else if (method === 'PermissionController:getPermissions') {
