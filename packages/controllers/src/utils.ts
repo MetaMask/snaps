@@ -1,5 +1,40 @@
 import { Timer } from './snaps/Timer';
 
+declare interface AssertionError extends Error {
+  code: 'ERR_ASSERTION';
+}
+let _assert: (value: any, message?: string | Error) => asserts value;
+let _AssertionError: new (options: { message: string }) => AssertionError;
+
+/* istanbul ignore next */
+if (typeof window === 'undefined') {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  ({ _assert, _AssertionError } = require('assert'));
+} else {
+  _AssertionError = class extends Error {
+    constructor(options: { message: string }) {
+      super(options.message);
+    }
+
+    code = 'ERR_ASSERTION' as const;
+  };
+
+  _assert = (value, message) => {
+    if (!value) {
+      if (message instanceof Error) {
+        throw message;
+      }
+      throw new _AssertionError({ message: message ?? 'Assertion failed' });
+    }
+  };
+}
+
+const assert: (value: any, message?: string | Error) => asserts value = _assert;
+const AssertionError: new (options: { message: string }) => AssertionError =
+  _AssertionError;
+
+export { assert, AssertionError };
+
 /**
  * Takes two objects and does a Set Difference of them.
  * Set Difference is generally defined as follows:
@@ -65,7 +100,7 @@ export function delayWithTimer<Result = void>(
   });
 
   promise.cancel = () => {
-    if (!timer.isFinished()) {
+    if (timer.status !== 'finished') {
       timer.cancel();
       rejectFunc(new Error('The delay has been canceled.'));
     }

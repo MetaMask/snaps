@@ -41,6 +41,7 @@
     "@metamask/snap-utils": "^0.18.1",
     "@metamask/utils": "^2.0.0",
     "@types/deep-freeze-strict": "^1.1.0",
+    "@xstate/fsm": "^2.0.0",
     "concat-stream": "^2.0.0",
     "deep-freeze-strict": "^1.1.1",
     "eth-rpc-errors": "^4.0.2",
@@ -93,5 +94,12 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
+  },
+  "lavamoat": {
+    "allowScripts": {
+      "@metamask/controllers>babel-runtime>core-js": false,
+      "@metamask/controllers>ethereumjs-util>ethereum-cryptography>keccak": false,
+      "@metamask/controllers>ethereumjs-util>ethereum-cryptography>secp256k1": false
+    }
   }
 }
