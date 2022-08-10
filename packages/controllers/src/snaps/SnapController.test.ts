@@ -6,7 +6,6 @@ import {
   SubjectPermissions,
   ValidPermission,
   ControllerMessenger,
-  ApprovalController,
 } from '@metamask/controllers';
 import { EthereumRpcError, ethErrors, serializeError } from 'eth-rpc-errors';
 import fetchMock from 'jest-fetch-mock';
@@ -2854,59 +2853,16 @@ describe('SnapController', () => {
       );
     });
 
-    it("will assign and maintain matching ids to the approval request object and it's metadata property", async () => {
-      const messenger = getControllerMessenger();
-      const snapControllerMessenger = messenger.getRestricted<
-        'SnapController',
-        SnapControllerActions['type'] | AllowedActions['type'],
-        SnapControllerEvents['type'] | AllowedEvents['type']
-      >({
-        name: 'SnapController',
-        allowedEvents: [
-          'ExecutionService:unhandledError',
-          'ExecutionService:outboundRequest',
-          'ExecutionService:outboundResponse',
-          'SnapController:snapAdded',
-          'SnapController:snapBlocked',
-          'SnapController:snapInstalled',
-          'SnapController:snapUnblocked',
-          'SnapController:snapUpdated',
-          'SnapController:snapRemoved',
-          'SnapController:stateChange',
-        ],
-        allowedActions: [
-          'ApprovalController:addRequest',
-          'ExecutionService:executeSnap',
-          'ExecutionService:terminateAllSnaps',
-          'ExecutionService:terminateSnap',
-          'ExecutionService:handleRpcRequest',
-          'PermissionController:getEndowments',
-          'PermissionController:hasPermission',
-          'PermissionController:getPermissions',
-          'PermissionController:grantPermissions',
-          'PermissionController:requestPermissions',
-          'PermissionController:revokeAllPermissions',
-          'PermissionController:revokePermissions',
-          'SnapController:add',
-          'SnapController:get',
-          'SnapController:handleRpcRequest',
-          'SnapController:getSnapState',
-          'SnapController:has',
-          'SnapController:updateSnapState',
-          'SnapController:clearSnapState',
-          'SnapController:updateBlockedSnaps',
-        ],
-      });
-      const approvalControllerMessenger = messenger.getRestricted({
-        name: 'ApprovalController',
-      });
+    it('assigns the same id to the approval request and the request metadata', async () => {
+      expect.assertions(1);
+
+      const messenger = getSnapControllerMessenger();
       const snapController = getSnapController(
-        getSnapControllerOptions({ messenger: snapControllerMessenger }),
+        getSnapControllerOptions({
+          messenger,
+        }),
       );
-      const approvalController = new ApprovalController({
-        messenger: approvalControllerMessenger as any,
-        showApprovalRequest: jest.fn(),
-      });
+
       const initialPermissions = {
         snap_confirm: {},
         snap_manageState: {},
@@ -2930,16 +2886,8 @@ describe('SnapController', () => {
         },
       };
 
-      let requestId: string | undefined, metadataId: string | undefined;
-
       const fetchSnapSpy = jest.spyOn(snapController as any, '_fetchSnap');
       const callActionSpy = jest.spyOn(messenger, 'call');
-
-      // the point at which the approval request's information is added to state
-      const validateAddParamsSpy = jest.spyOn(
-        approvalController as any,
-        '_validateAddParams',
-      );
 
       fetchSnapSpy.mockImplementationOnce(async () => {
         const manifest: SnapManifest = getSnapManifest({
@@ -2955,17 +2903,16 @@ describe('SnapController', () => {
         };
       });
 
-      callActionSpy.mockImplementation((method, request) => {
+      callActionSpy.mockImplementation((method, request: any) => {
         if (
           method === 'PermissionController:hasPermission' ||
           method === 'ApprovalController:addRequest'
         ) {
           if (method === 'ApprovalController:addRequest') {
-            // we're capturing the ids before we hit the actual ApprovalController's addRequest method
-            requestId = (request as any).id;
-            metadataId = (request as any).requestData.metadata.id;
-            return approvalController.add(request);
+            // eslint-disable-next-line jest/no-conditional-expect
+            expect(request.id).toBe(request.requestData.metadata.id);
           }
+
           return true;
         } else if (method === 'PermissionController:getPermissions') {
           return approvedPermissions;
@@ -2986,26 +2933,6 @@ describe('SnapController', () => {
       });
 
       await snapController.updateSnap(MOCK_ORIGIN, MOCK_SNAP_ID);
-
-      expect(validateAddParamsSpy).toHaveBeenNthCalledWith(
-        1,
-        requestId,
-        MOCK_ORIGIN,
-        SNAP_APPROVAL_UPDATE,
-        {
-          metadata: {
-            id: metadataId,
-            dappOrigin: MOCK_ORIGIN,
-            origin: MOCK_SNAP_ID,
-          },
-          permissions: {},
-          snapId: MOCK_SNAP_ID,
-          newVersion: '1.1.0',
-          newPermissions: {},
-          approvedPermissions: {},
-          unusedPermissions: {},
-        },
-      );
     });
   });
 
