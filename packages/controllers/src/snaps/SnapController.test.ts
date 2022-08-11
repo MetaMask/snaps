@@ -2947,19 +2947,26 @@ describe('SnapController', () => {
       const fetchSnapSpy = jest.spyOn(snapController as any, '_fetchSnap');
       const callActionSpy = jest.spyOn(messenger, 'call');
 
-      fetchSnapSpy.mockImplementationOnce(async () => {
-        const manifest: SnapManifest = getSnapManifest({
-          version: '1.1.0',
-          initialPermissions: {
-            snap_confirm: {},
-            'endowment:network-access': {},
-          },
+      fetchSnapSpy
+        .mockImplementationOnce(async () => {
+          return {
+            manifest: getSnapManifest({ initialPermissions }),
+            sourceCode: MOCK_SNAP_SOURCE_CODE,
+          };
+        })
+        .mockImplementationOnce(async () => {
+          const manifest: SnapManifest = getSnapManifest({
+            version: '1.1.0',
+            initialPermissions: {
+              snap_confirm: {},
+              'endowment:network-access': {},
+            },
+          });
+          return {
+            manifest,
+            sourceCode: MOCK_SNAP_SOURCE_CODE,
+          };
         });
-        return {
-          manifest,
-          sourceCode: MOCK_SNAP_SOURCE_CODE,
-        };
-      });
 
       callActionSpy.mockImplementation((method, request: any) => {
         if (
@@ -2979,17 +2986,18 @@ describe('SnapController', () => {
           method === 'PermissionController:grantPermissions'
         ) {
           return undefined;
+        } else if (method === 'PermissionController:requestPermissions') {
+          return Promise.resolve([
+            approvedPermissions,
+            { id: nanoid(), origin: MOCK_SNAP_ID },
+          ] as const);
         }
-        return false;
+        return undefined;
       });
 
-      await snapController.add({
-        origin: MOCK_ORIGIN,
-        id: MOCK_SNAP_ID,
-        sourceCode: MOCK_SNAP_SOURCE_CODE,
-        manifest: getSnapManifest({ initialPermissions }),
-      });
-
+      console.log(
+        await snapController.installSnaps(MOCK_ORIGIN, { [MOCK_SNAP_ID]: {} }),
+      );
       await snapController.updateSnap(MOCK_ORIGIN, MOCK_SNAP_ID);
     });
   });

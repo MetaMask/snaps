@@ -43,20 +43,13 @@ import {
   Json,
   timeSince,
 } from '@metamask/utils';
+import { createMachine, interpret, StateMachine } from '@xstate/fsm';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
-import { createMachine, interpret, StateMachine } from '@xstate/fsm';
 
 import { forceStrict, validateMachine } from '../fsm';
-import {
-  assert,
-  assertExhaustive,
-  hasTimedOut,
-  setDiff,
-  withTimeout,
-} from '../utils';
 import {
   ExecuteSnapAction,
   ExecutionServiceEvents,
@@ -64,9 +57,16 @@ import {
   TerminateAllSnapsAction,
   TerminateSnapAction,
 } from '../services/ExecutionService';
-import { fetchNpmSnap } from './utils';
+import {
+  assert,
+  assertExhaustive,
+  hasTimedOut,
+  setDiff,
+  withTimeout,
+} from '../utils';
 import { LONG_RUNNING_PERMISSION } from './endowments';
 import { RequestQueue } from './RequestQueue';
+import { fetchNpmSnap } from './utils';
 
 import { Timer } from './Timer';
 
