@@ -47,3 +47,9 @@ export type SnapExports = {
   onRpcRequest?: OnRpcRequestHandler;
   getTransactionInsight?: GetTransactionInsightHandler;
 };
+
+type ObjectParameters<
+  Type extends Record<string, (...args: any[]) => unknown>,
+> = Parameters<Type[keyof Type]>;
+
+export type SnapExportsParameters = ObjectParameters<SnapExports>;
