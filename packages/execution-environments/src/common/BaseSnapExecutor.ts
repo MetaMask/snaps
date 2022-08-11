@@ -4,9 +4,8 @@ import { Duplex } from 'stream';
 import { MetaMaskInpageProvider } from '@metamask/providers';
 import {
   SnapProvider,
-  OnRpcRequestHandler,
-  GetTransactionInsightHandler,
   SnapExports,
+  SnapExportsParameters,
 } from '@metamask/snap-types';
 import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
 import { JsonRpcNotification } from '@metamask/utils';
@@ -43,9 +42,7 @@ const fallbackError = {
   message: 'Execution Environment Error',
 };
 
-export type InvokeSnapArgs = Parameters<
-  OnRpcRequestHandler | GetTransactionInsightHandler
->[0];
+export type InvokeSnapArgs = SnapExportsParameters[0];
 
 export type InvokeSnap = (
   target: Target,

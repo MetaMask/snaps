@@ -178,7 +178,7 @@ describe('IframeExecutionService', () => {
 
     expect(executeResult).toBe('OK');
 
-    const result = await await iframeExecutionService.handleRpcRequest(snapId, {
+    const result = await iframeExecutionService.handleRpcRequest(snapId, {
       origin: 'foo',
       handler: HandlerType.onRpcRequest,
       request: {
