@@ -180,7 +180,7 @@ describe('IframeExecutionService', () => {
 
     const result = await iframeExecutionService.handleRpcRequest(snapId, {
       origin: 'foo',
-      handler: HandlerType.onRpcRequest,
+      handler: HandlerType.OnRpcRequest,
       request: {
         jsonrpc: '2.0',
         id: 1,
