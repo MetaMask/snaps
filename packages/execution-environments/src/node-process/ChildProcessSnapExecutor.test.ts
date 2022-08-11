@@ -7,7 +7,7 @@ import { ChildProcessSnapExecutor } from './ChildProcessSnapExecutor';
 
 const FAKE_ORIGIN = 'origin:foo';
 const FAKE_SNAP_NAME = 'local:foo';
-const ON_RPC_REQUEST = HandlerType.onRpcRequest;
+const ON_RPC_REQUEST = HandlerType.OnRpcRequest;
 
 describe('ChildProcessSnapExecutor', () => {
   it('receives and processes commands', async () => {

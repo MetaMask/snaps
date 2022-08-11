@@ -8,7 +8,7 @@ import { ErrorMessageEvent } from '../ExecutionService';
 import { setupMultiplex } from '../AbstractExecutionService';
 import { NodeThreadExecutionService } from './NodeThreadExecutionService';
 
-const ON_RPC_REQUEST = HandlerType.onRpcRequest;
+const ON_RPC_REQUEST = HandlerType.OnRpcRequest;
 
 describe('NodeThreadExecutionService', () => {
   it('can boot', async () => {

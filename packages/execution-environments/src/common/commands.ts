@@ -30,7 +30,7 @@ function getHandlerArguments(
   handler: HandlerType,
   request: JsonRpcRequest<unknown[] | { [key: string]: unknown }>,
 ): InvokeSnapArgs {
-  if (handler === HandlerType.getTransactionInsight) {
+  if (handler === HandlerType.GetTransactionInsight) {
     return {
       origin,
       transaction: request.params as { [key: string]: unknown },

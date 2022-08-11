@@ -120,14 +120,14 @@ describe('getCommandMethodImplementations', () => {
     const rpcRequest = { jsonrpc: '2.0', method: 'hello' };
     await methodsObj.snapRpc(
       'foo',
-      HandlerType.onRpcRequest,
+      HandlerType.OnRpcRequest,
       'bar',
       rpcRequest as any,
     );
     expect(invokeSnapRpc).toHaveBeenCalledTimes(1);
     expect(invokeSnapRpc).toHaveBeenCalledWith(
       'foo',
-      HandlerType.onRpcRequest,
+      HandlerType.OnRpcRequest,
       {
         origin: 'bar',
         request: rpcRequest,
@@ -148,7 +148,7 @@ describe('getCommandMethodImplementations', () => {
     await expect(async () => {
       await methodsObj.snapRpc(
         2 as any,
-        HandlerType.onRpcRequest,
+        HandlerType.OnRpcRequest,
         'bar',
         rpcRequest as any,
       );
@@ -168,7 +168,7 @@ describe('getCommandMethodImplementations', () => {
     await expect(async () => {
       await methodsObj.snapRpc(
         'foo',
-        HandlerType.onRpcRequest,
+        HandlerType.OnRpcRequest,
         2 as any,
         rpcRequest as any,
       );
@@ -188,7 +188,7 @@ describe('getCommandMethodImplementations', () => {
     await expect(async () => {
       await methodsObj.snapRpc(
         'foo',
-        HandlerType.onRpcRequest,
+        HandlerType.OnRpcRequest,
         'bar',
         rpcRequest as any,
       );

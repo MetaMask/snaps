@@ -1602,7 +1602,7 @@ describe('SnapController', () => {
         snapId,
         {
           origin: 'foo.com',
-          handler: HandlerType.onRpcRequest,
+          handler: HandlerType.OnRpcRequest,
           request: {
             id: 1,
             method: 'bar',

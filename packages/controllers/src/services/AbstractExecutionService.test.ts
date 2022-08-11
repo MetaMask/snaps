@@ -130,7 +130,7 @@ describe('AbstractExecutionService', () => {
     await expect(
       service.handleRpcRequest(snapId, {
         origin: 'foo.com',
-        handler: HandlerType.onRpcRequest,
+        handler: HandlerType.OnRpcRequest,
         request: {
           id: 6,
           method: 'bar',

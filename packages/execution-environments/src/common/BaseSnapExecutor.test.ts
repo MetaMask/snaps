@@ -8,7 +8,7 @@ import { HandlerType } from './enums';
 
 const FAKE_ORIGIN = 'origin:foo';
 const FAKE_SNAP_NAME = 'local:foo';
-const ON_RPC_REQUEST = HandlerType.onRpcRequest;
+const ON_RPC_REQUEST = HandlerType.OnRpcRequest;
 
 type TwoWayPassThroughBuffer = {
   buffer: { chunk: any; encoding: BufferEncoding }[];
@@ -756,7 +756,7 @@ describe('BaseSnapExecutor', () => {
       method: 'snapRpc',
       params: [
         FAKE_SNAP_NAME,
-        HandlerType.getTransactionInsight,
+        HandlerType.GetTransactionInsight,
         FAKE_ORIGIN,
         { jsonrpc: '2.0', method: '', params: transaction },
       ],

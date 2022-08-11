@@ -2073,7 +2073,7 @@ export class SnapController extends BaseController<
     return this.handleRequest({
       snapId,
       origin,
-      handler: HandlerType.onRpcRequest,
+      handler: HandlerType.OnRpcRequest,
       request,
     });
   }
@@ -2094,7 +2094,7 @@ export class SnapController extends BaseController<
     return this.handleRequest({
       snapId,
       origin,
-      handler: HandlerType.getTransactionInsight,
+      handler: HandlerType.GetTransactionInsight,
       request,
     });
   }
