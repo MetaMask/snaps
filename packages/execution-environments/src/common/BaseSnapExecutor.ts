@@ -19,7 +19,7 @@ import {
 } from './commands';
 import { removeEventListener, addEventListener } from './globalEvents';
 import { sortParamKeys } from './sortParams';
-import { constructError, proxyifyPromise } from './utils';
+import { constructError, withTeardown } from './utils';
 
 type OnRpcRequestHandler = (args: {
   origin: string;
@@ -290,7 +290,7 @@ export class BaseSnapExecutor {
     provider.request = async (args) => {
       this.notify({ method: 'OutboundRequest' });
       try {
-        return await proxyifyPromise(originalRequest(args), this as any);
+        return await withTeardown(originalRequest(args), this as any);
       } finally {
         this.notify({ method: 'OutboundResponse' });
       }

@@ -1,4 +1,4 @@
-import { allFunctions, proxyifyPromise } from '../utils';
+import { allFunctions, withTeardown } from '../utils';
 
 type WebSocketCallback = (this: WebSocket, ev: any) => any;
 
@@ -60,18 +60,18 @@ class ResponseWrapper implements Response {
   }
 
   text() {
-    return proxyifyPromise<string>(this.#ogResponse.text(), this as any);
+    return withTeardown<string>(this.#ogResponse.text(), this as any);
   }
 
   arrayBuffer(): Promise<ArrayBuffer> {
-    return proxyifyPromise<ArrayBuffer>(
+    return withTeardown<ArrayBuffer>(
       this.#ogResponse.arrayBuffer(),
       this as any,
     );
   }
 
   blob(): Promise<Blob> {
-    return proxyifyPromise<Blob>(this.#ogResponse.blob(), this as any);
+    return withTeardown<Blob>(this.#ogResponse.blob(), this as any);
   }
 
   clone(): Response {
@@ -80,11 +80,11 @@ class ResponseWrapper implements Response {
   }
 
   formData(): Promise<FormData> {
-    return proxyifyPromise<FormData>(this.#ogResponse.formData(), this as any);
+    return withTeardown<FormData>(this.#ogResponse.formData(), this as any);
   }
 
   json(): Promise<any> {
-    return proxyifyPromise(this.#ogResponse.json(), this as any);
+    return withTeardown(this.#ogResponse.json(), this as any);
   }
 }
 
@@ -151,7 +151,7 @@ const createNetwork = () => {
       openConnections.add(openFetchConnection);
 
       res = new ResponseWrapper(
-        await proxyifyPromise(fetchPromise, teardownRef),
+        await withTeardown(fetchPromise, teardownRef),
         teardownRef,
       ) as unknown as Response;
     } finally {
