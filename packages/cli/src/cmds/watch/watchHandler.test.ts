@@ -14,7 +14,7 @@ jest.mock('@metamask/snap-utils', () => ({
   validateDirPath: jest.fn(),
   validateFilePath: jest.fn(),
   validateOutfileName: jest.fn(),
-  getOutfilePath: () => 'dist/bundle.js',
+  getOutfilePath: () => path.normalize('dist/bundle.js'),
   isFile: () => true,
   isDirectory: () => true,
 }));

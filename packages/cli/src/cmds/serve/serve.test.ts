@@ -1,5 +1,6 @@
 import EventEmitter from 'events';
 import http from 'http';
+import path from 'path';
 import serveHandler from 'serve-handler';
 import * as snapUtils from '@metamask/snap-utils';
 import * as serveUtils from './serveUtils';
@@ -9,7 +10,7 @@ jest.mock('@metamask/snap-utils', () => ({
   validateDirPath: jest.fn(),
   validateFilePath: jest.fn(),
   validateOutfileName: jest.fn(),
-  getOutfilePath: () => 'dist/bundle.js',
+  getOutfilePath: () => path.normalize('dist/bundle.js'),
 }));
 
 /**
