@@ -19,7 +19,7 @@ import {
 } from './commands';
 import { removeEventListener, addEventListener } from './globalEvents';
 import { sortParamKeys } from './sortParams';
-import { constructError } from './utils';
+import { constructError, withTeardown } from './utils';
 
 type OnRpcRequestHandler = (args: {
   origin: string;
@@ -53,6 +53,8 @@ export class BaseSnapExecutor {
   private snapErrorHandler?: (event: ErrorEvent) => void;
 
   private snapPromiseErrorHandler?: (event: PromiseRejectionEvent) => void;
+
+  private lastTeardown = 0;
 
   protected constructor(commandStream: Duplex, rpcStream: Duplex) {
     this.snapData = new Map();
@@ -288,7 +290,7 @@ export class BaseSnapExecutor {
     provider.request = async (args) => {
       this.notify({ method: 'OutboundRequest' });
       try {
-        return await originalRequest(args);
+        return await withTeardown(originalRequest(args), this as any);
       } finally {
         this.notify({ method: 'OutboundResponse' });
       }
@@ -353,6 +355,7 @@ export class BaseSnapExecutor {
       data.runningEvaluations.delete(evaluationData);
 
       if (data.runningEvaluations.size === 0) {
+        this.lastTeardown += 1;
         await data.idleTeardown();
       }
     }
