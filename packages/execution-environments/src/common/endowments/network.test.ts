@@ -54,7 +54,8 @@ describe('Network endowments', () => {
     it.todo('reason from AbortController.abort() is passed down');
 
     it('should not expose then or catch after teardown has been called', async () => {
-      fetchMock.mockOnce('Resolved');
+      let fetchResolve: ((result: string) => void) | null = null;
+      fetchMock.mockOnce(() => new Promise((r) => (fetchResolve = r)));
 
       const { fetch, teardownFunction } = network.factory();
       const ErrorProxy = jest
@@ -71,7 +72,10 @@ describe('Network endowments', () => {
         })
         .catch((e) => console.log(e));
 
-      await teardownFunction();
+      const teardownPromise = teardownFunction();
+      (fetchResolve as any)('Resolved');
+      await teardownPromise;
+      await new Promise((r) => setTimeout(() => r('Resolved'), 0));
 
       expect(ErrorProxy).not.toHaveBeenCalled();
     });
