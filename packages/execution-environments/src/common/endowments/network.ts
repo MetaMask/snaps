@@ -146,7 +146,7 @@ const createNetwork = () => {
       res = new ResponseWrapper(
         await withTeardown(fetchPromise, teardownRef),
         teardownRef,
-      ) as unknown as Response;
+      );
     } finally {
       if (openFetchConnection !== undefined) {
         openConnections.delete(openFetchConnection);

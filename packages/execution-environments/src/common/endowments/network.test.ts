@@ -552,6 +552,7 @@ describe('Network endowments', () => {
       const result = await fetch('foo.com');
 
       expect(result).toBeDefined();
+      expect(result.bodyUsed).toBe(false);
       expect(await result.text()).toBe(RESULT);
       expect(result.body).toBeDefined();
       expect(result.bodyUsed).toBe(true);
