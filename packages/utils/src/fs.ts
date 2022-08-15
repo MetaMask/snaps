@@ -114,7 +114,7 @@ export function validateOutfileName(filename: string): boolean {
   if (
     !filename.endsWith('.js') ||
     filename === '.js' ||
-    filename.indexOf('/') !== -1
+    pathUtils.normalize(filename).indexOf(pathUtils.sep) !== -1
   ) {
     throw new Error(`Invalid outfile name: ${filename}. Must be a .js file`);
   }
