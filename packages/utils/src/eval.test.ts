@@ -8,6 +8,9 @@ const WORKER_PATH = join(__dirname, 'eval-worker.ts');
 const TEMPORARY_FOLDER = join(__dirname, '__test__/temporary');
 const BUNDLE_PATH = join(TEMPORARY_FOLDER, 'bundle.js');
 
+// This test takes a long time to run in CI.
+jest.setTimeout(30000);
+
 jest.mock('child_process');
 
 describe('evalBundle', () => {
