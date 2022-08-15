@@ -17,13 +17,6 @@ class ResponseWrapper implements Response {
   }
 
   get body(): ReadableStream<Uint8Array> | null {
-    // Where readable and writeable are passthrough, until teardown where they become silent
-    // 1. cancel() needs stop closing the stream
-    // const { readable, writable } = new TransformStream();
-    // return this.#ogResponse.body?.pipeThrough({
-    //   readable,
-    //   writable,
-    // }) as ReadableStream<Uint8Array>;
     return this.#ogResponse.body;
   }
 
