@@ -1,7 +1,7 @@
 import yargs from 'yargs';
 import builders from '../../builders';
 import { YargsArgs } from '../../types/yargs';
-import { snapEval } from './evalHandler';
+import { evalHandler } from './evalHandler';
 
 export = {
   command: ['eval', 'e'],
@@ -9,5 +9,5 @@ export = {
   builder: (yarg: yargs.Argv) => {
     yarg.option('bundle', builders.bundle);
   },
-  handler: (argv: YargsArgs) => snapEval(argv),
+  handler: (argv: YargsArgs) => evalHandler(argv),
 };

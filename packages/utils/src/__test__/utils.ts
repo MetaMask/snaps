@@ -9,9 +9,14 @@ type GetSnapManifestOptions = Partial<Omit<SnapManifest, 'source'>> & {
 };
 
 // A fake Snap source and its shasum.
-export const DEFAULT_SNAP_BUNDLE = 'console.log("Hello, world!");';
+export const DEFAULT_SNAP_BUNDLE = `
+  module.exports.onRpcRequest = () => {
+    console.log("Hello, world!");
+  };
+`;
+
 export const DEFAULT_SNAP_SHASUM =
-  'O4sADgTDj5EP86efVtOEI76NkKZeoKHRzQIlB1j48Lg=';
+  '7M36IIyPfcCA9jTuoo6lXCYSN97mcJWxC+MGAo1xRL4=';
 
 export const DEFAULT_SNAP_ICON = '<svg />';
 

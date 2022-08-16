@@ -2,8 +2,8 @@ import EventEmitter from 'events';
 import path from 'path';
 import http from 'http';
 import chokidar from 'chokidar';
+import * as snapUtils from '@metamask/snap-utils';
 import * as miscUtils from '../../utils/misc';
-import * as fsUtils from '../../utils/validate-fs';
 import * as build from '../build/bundle';
 import * as evalModule from '../eval/evalHandler';
 import * as manifest from '../manifest/manifestHandler';
@@ -11,6 +11,10 @@ import watch from '.';
 
 jest.mock('@metamask/snap-utils', () => ({
   ...jest.requireActual('@metamask/snap-utils'),
+  validateDirPath: jest.fn(),
+  validateFilePath: jest.fn(),
+  validateOutfileName: jest.fn(),
+  getOutfilePath: () => path.normalize('dist/bundle.js'),
   isFile: () => true,
   isDirectory: () => true,
 }));
@@ -66,17 +70,14 @@ describe('watch', () => {
         });
       jest.spyOn(console, 'log').mockImplementation();
       const validateDirPathMock = jest
-        .spyOn(fsUtils, 'validateDirPath')
+        .spyOn(snapUtils, 'validateDirPath')
         .mockImplementation(async () => true);
       const validateFilePathMock = jest
-        .spyOn(fsUtils, 'validateFilePath')
+        .spyOn(snapUtils, 'validateFilePath')
         .mockImplementation(async () => true);
       const validateOutfileNameMock = jest
-        .spyOn(fsUtils, 'validateOutfileName')
+        .spyOn(snapUtils, 'validateOutfileName')
         .mockImplementation(() => true);
-      jest
-        .spyOn(fsUtils, 'getOutfilePath')
-        .mockImplementation(() => 'dist/bundle.js');
 
       await watch.handler(getMockArgv());
       expect(validateDirPathMock).toHaveBeenCalledWith(mockDist, true);
@@ -94,17 +95,14 @@ describe('watch', () => {
         });
       jest.spyOn(console, 'log').mockImplementation();
       const validateDirPathMock = jest
-        .spyOn(fsUtils, 'validateDirPath')
+        .spyOn(snapUtils, 'validateDirPath')
         .mockImplementation(async () => true);
       const validateFilePathMock = jest
-        .spyOn(fsUtils, 'validateFilePath')
+        .spyOn(snapUtils, 'validateFilePath')
         .mockImplementation(async () => true);
       const validateOutfileNameMock = jest
-        .spyOn(fsUtils, 'validateOutfileName')
+        .spyOn(snapUtils, 'validateOutfileName')
         .mockImplementation(() => true);
-      jest
-        .spyOn(fsUtils, 'getOutfilePath')
-        .mockImplementation(() => 'dist/bundle.js');
 
       await watch.handler({ ...getMockArgv(), src: 'foo/index.js' });
       expect(validateDirPathMock).toHaveBeenCalledWith(mockDist, true);
@@ -116,7 +114,7 @@ describe('watch', () => {
     it('successfully handles when an outfileName is not provided', async () => {
       jest.spyOn(console, 'log').mockImplementation();
       jest
-        .spyOn(fsUtils, 'validateFilePath')
+        .spyOn(snapUtils, 'validateFilePath')
         .mockImplementation(async () => true);
       const mockArgs = getMockArgv();
       delete mockArgs.outfileName;
@@ -129,7 +127,7 @@ describe('watch', () => {
       // so that we can reach where the ternary resolves to the first expression
       jest.spyOn(console, 'log').mockImplementation();
       jest
-        .spyOn(fsUtils, 'validateFilePath')
+        .spyOn(snapUtils, 'validateFilePath')
         .mockImplementation(async () => true);
       const mockArgs = getMockArgv();
       mockArgs.src = 'index.js';
@@ -145,7 +143,7 @@ describe('watch', () => {
         );
       jest.spyOn(console, 'log').mockImplementation();
       jest
-        .spyOn(fsUtils, 'validateFilePath')
+        .spyOn(snapUtils, 'validateFilePath')
         .mockImplementation(async () => true);
       const bundleMock = jest.spyOn(build, 'bundle').mockImplementation();
 
@@ -175,7 +173,7 @@ describe('watch', () => {
       jest.spyOn(console, 'log').mockImplementation();
       const bundleMock = jest.spyOn(build, 'bundle').mockImplementation();
       jest
-        .spyOn(fsUtils, 'validateFilePath')
+        .spyOn(snapUtils, 'validateFilePath')
         .mockImplementation(async () => true);
 
       await watch.handler(getMockArgv());
@@ -201,7 +199,7 @@ describe('watch', () => {
       jest.spyOn(console, 'log').mockImplementation();
       const bundleMock = jest.spyOn(build, 'bundle').mockImplementation();
       jest
-        .spyOn(fsUtils, 'validateFilePath')
+        .spyOn(snapUtils, 'validateFilePath')
         .mockImplementation(async () => true);
 
       await watch.handler(getMockArgv());
@@ -227,7 +225,7 @@ describe('watch', () => {
       jest.spyOn(console, 'log').mockImplementation();
       const bundleMock = jest.spyOn(build, 'bundle').mockImplementation();
       jest
-        .spyOn(fsUtils, 'validateFilePath')
+        .spyOn(snapUtils, 'validateFilePath')
         .mockImplementation(async () => true);
 
       await watch.handler(getMockArgv());
@@ -263,12 +261,12 @@ describe('watch', () => {
         .spyOn(manifest, 'manifestHandler')
         .mockImplementation();
       const evalMock = jest
-        .spyOn(evalModule, 'snapEval')
+        .spyOn(evalModule, 'evalHandler')
         .mockImplementation((() => {
           resolveEvalPromise();
         }) as any);
       jest
-        .spyOn(fsUtils, 'validateFilePath')
+        .spyOn(snapUtils, 'validateFilePath')
         .mockImplementation(async () => true);
 
       await watch.handler(getMockArgv({ eval: true, manifest: true }));
@@ -304,7 +302,7 @@ describe('watch', () => {
       jest.spyOn(console, 'log').mockImplementation();
       const bundleMock = jest.spyOn(build, 'bundle').mockImplementation();
       jest
-        .spyOn(fsUtils, 'validateFilePath')
+        .spyOn(snapUtils, 'validateFilePath')
         .mockImplementation(async () => true);
 
       await watch.handler(getMockArgv());
@@ -329,7 +327,7 @@ describe('watch', () => {
         .mockImplementation();
       const bundleMock = jest.spyOn(build, 'bundle').mockImplementation();
       jest
-        .spyOn(fsUtils, 'validateFilePath')
+        .spyOn(snapUtils, 'validateFilePath')
         .mockImplementation(async () => true);
 
       await watch.handler(getMockArgv());
@@ -355,7 +353,7 @@ describe('watch', () => {
         throw new Error('build failure');
       });
       jest
-        .spyOn(fsUtils, 'validateFilePath')
+        .spyOn(snapUtils, 'validateFilePath')
         .mockImplementation(async () => true);
 
       await watch.handler(getMockArgv());
@@ -385,7 +383,7 @@ describe('watch', () => {
         throw new Error('build failure');
       });
       jest
-        .spyOn(fsUtils, 'validateFilePath')
+        .spyOn(snapUtils, 'validateFilePath')
         .mockImplementation(async () => true);
       await watch.handler(getMockArgv());
       const finishPromise = new Promise<void>((resolve, _) => {
