@@ -1,10 +1,10 @@
+import { assert } from '@metamask/snap-utils';
 import {
   EventObject,
   InterpreterStatus,
   StateMachine,
   Typestate,
 } from '@xstate/fsm';
-import { assert } from './utils';
 
 /**
  * Validates the set-up of a @xstate/fsm machine.

@@ -1,6 +1,6 @@
-import { assert } from '../utils';
+import { assert } from '@metamask/snap-utils';
 
-export type Status = 'stopped' | 'paused' | 'running' | 'finished';
+export type TimerStatus = 'stopped' | 'paused' | 'running' | 'finished';
 
 export class Timer {
   private state:
@@ -23,7 +23,7 @@ export class Timer {
    * If `ms` is smaller or equal to zero (including -Infinity), the callback is added to the event loop and executed async immediately
    * If `ms` is +Infinity the timer never finishes.
    *
-   * @throws {@link TypeError}. If `ms` is NaN.
+   * @throws {@link TypeError}. If `ms` is NaN or negative.
    * @param ms - The number of milliseconds before the callback is called after started.
    */
   constructor(ms: number) {
@@ -31,10 +31,11 @@ export class Timer {
       !Number.isNaN(ms),
       new TypeError("Can't start a timer with NaN time"),
     );
+    assert(ms >= 0, new TypeError("Can't start a timer with negative time"));
     this.state = { value: 'stopped', remaining: ms };
   }
 
-  get status(): Status {
+  get status(): TimerStatus {
     return this.state.value;
   }
 

@@ -1,32 +1,4 @@
-import { assert, AssertionError, setDiff } from './utils';
-
-describe('assert', () => {
-  it('succeeds', () => {
-    expect(() => assert(true)).not.toThrow();
-  });
-
-  it('narrows type scope', () => {
-    const item: { foo: 1 } | undefined = { foo: 1 };
-
-    assert(item !== undefined);
-
-    // This will fail to compile otherwise
-    expect(item.foo).toStrictEqual(1);
-  });
-
-  it('throws', () => {
-    expect(() => assert(false, 'Thrown')).toThrow(
-      new AssertionError({ message: 'Thrown' }),
-    );
-  });
-
-  it('throw custom error', () => {
-    class MyError extends Error {}
-    expect(() => assert(false, new MyError('Thrown'))).toThrow(
-      new MyError('Thrown'),
-    );
-  });
-});
+import { setDiff } from './utils';
 
 describe('setDiff', () => {
   it('does nothing on empty type {}-B', () => {

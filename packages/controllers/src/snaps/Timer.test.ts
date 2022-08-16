@@ -148,31 +148,10 @@ describe('Timer', () => {
     expect(callback).toHaveBeenCalled();
   });
 
-  it('works with negative numbers', async () => {
-    const timer = new Timer(-1000);
-
-    let resolve: () => void;
-    const called = new Promise<void>((r) => (resolve = r));
-
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    timer.start(resolve!);
-
-    jest.advanceTimersByTime(0);
-    // eslint-disable-next-line jest/no-restricted-matchers
-    await expect(called).resolves.not.toThrow();
-  });
-
-  it('works with -Infinity', async () => {
-    const timer = new Timer(-Infinity);
-
-    let resolve: () => void;
-    const called = new Promise<void>((r) => (resolve = r));
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    timer.start(resolve!);
-
-    jest.advanceTimersByTime(0);
-    // eslint-disable-next-line jest/no-restricted-matchers
-    await expect(called).resolves.not.toThrow();
+  it('throws when negative number given', () => {
+    const ERROR = new TypeError("Can't start a timer with negative time");
+    expect(() => new Timer(-1000)).toThrow(ERROR);
+    expect(() => new Timer(-Infinity)).toThrow(ERROR);
   });
 
   it('throws when NaN given', () => {

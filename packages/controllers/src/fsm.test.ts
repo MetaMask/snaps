@@ -1,7 +1,7 @@
+import { AssertionError } from '@metamask/snap-utils';
 import { createMachine, interpret, StateMachine } from '@xstate/fsm';
 import { InitEvent } from '@xstate/fsm/lib/types';
 import { forceStrict, validateMachine } from './fsm';
-import { AssertionError } from './utils';
 
 type Context = Record<string, never>;
 
@@ -79,9 +79,7 @@ describe('forceStrict', () => {
   });
 
   it('throws when not started', () => {
-    expect(() => interpreter.send('toB')).toThrow(
-      new AssertionError({ message: 'Interpreter is stopped' }),
-    );
+    expect(() => interpreter.send('toB')).toThrow(AssertionError);
   });
 
   it("doesn't throw on valid transition", () => {
@@ -100,7 +98,7 @@ describe('forceStrict', () => {
   it('throws on guard fail', () => {
     interpreter.start();
     expect(() => interpreter.send({ type: 'toC', guardTrap: true })).toThrow(
-      new AssertionError({ message: 'Invalid state transition' }),
+      AssertionError,
     );
   });
 });

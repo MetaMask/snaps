@@ -18,6 +18,7 @@ import {
 } from '@metamask/controllers';
 import { ErrorJSON, SnapData, SnapId } from '@metamask/snap-types';
 import {
+  assert,
   DEFAULT_ENDOWMENTS,
   DEFAULT_REQUESTED_SNAP_VERSION,
   getSnapPermissionName,
@@ -32,6 +33,7 @@ import {
   SnapManifest,
   SNAP_PREFIX,
   ValidatedSnapId,
+  validateSnapId,
   validateSnapJsonFile,
   validateSnapShasum,
 } from '@metamask/snap-utils';
@@ -57,13 +59,7 @@ import {
   TerminateAllSnapsAction,
   TerminateSnapAction,
 } from '../services/ExecutionService';
-import {
-  assert,
-  assertExhaustive,
-  hasTimedOut,
-  setDiff,
-  withTimeout,
-} from '../utils';
+import { assertExhaustive, hasTimedOut, setDiff, withTimeout } from '../utils';
 import { LONG_RUNNING_PERMISSION } from './endowments';
 import { RequestQueue } from './RequestQueue';
 import { fetchNpmSnap } from './utils';
@@ -571,15 +567,19 @@ const defaultState: SnapControllerState = {
   snapStates: {},
 };
 
-/**
- * @deprecated Use {@link Status}
- */
-export enum SnapStatus {
-  installing = 'installing',
-  running = 'running',
-  stopped = 'stopped',
-  crashed = 'crashed',
-}
+export const SnapStatus = {
+  installing: 'installing',
+  running: 'running',
+  stopped: 'stopped',
+  crashed: 'crashed',
+} as const;
+
+export const SnapEvents = {
+  start: 'START',
+  stop: 'STOP',
+  crash: 'CRASH',
+  update: 'UPDATE',
+} as const;
 
 type StatusContext = { snapId: string };
 type StatusEvents = { type: 'START' | 'STOP' | 'CRASH' | 'UPDATE' };
@@ -588,28 +588,6 @@ type StatusStates = {
   context: StatusContext;
 };
 export type Status = StatusStates['value'];
-
-/**
- * Asserts the provided object is a snapId with a supported prefix.
- *
- * @param snapId - The object to validate.
- * @throws {@link Error}. If the validation fails.
- */
-export function validateSnapId(
-  snapId: unknown,
-): asserts snapId is ValidatedSnapId {
-  if (!snapId || typeof snapId !== 'string') {
-    throw new Error(`Invalid snap id: Not a string. Received "${snapId}"`);
-  }
-
-  for (const prefix of Object.values(SnapIdPrefixes)) {
-    if (snapId.startsWith(prefix) && snapId.replace(prefix, '').length > 0) {
-      return;
-    }
-  }
-
-  throw new Error(`Invalid snap id. Received: "${snapId}"`);
-}
 
 /**
  * Truncates the properties of a snap to only ones that are easily serializable.
@@ -667,7 +645,7 @@ export class SnapController extends BaseController<
 
   private _timeoutForLastRequestStatus?: number;
 
-  private _statusMachine: StateMachine.Machine<
+  private _statusMachine!: StateMachine.Machine<
     StatusContext,
     StatusEvents,
     StatusStates
@@ -753,6 +731,11 @@ export class SnapController extends BaseController<
       this._onOutboundResponse,
     );
 
+    this.initializeStateMachine();
+    this.registerMessageHandlers();
+  }
+
+  private initializeStateMachine() {
     const disableGuard = ({ snapId }: StatusContext) => {
       return this.getExpect(snapId).enabled;
     };
@@ -788,11 +771,8 @@ export class SnapController extends BaseController<
         },
       },
     };
-
     this._statusMachine = createMachine(statusConfig);
     validateMachine(this._statusMachine);
-
-    this.registerMessageHandlers();
   }
 
   /**
@@ -1130,7 +1110,7 @@ export class SnapController extends BaseController<
     await this.messagingSystem.call('ExecutionService:terminateSnap', snapId);
     this.messagingSystem.publish(
       'SnapController:snapTerminated',
-      this.getTruncatedExpect(snapId) as TruncatedSnap,
+      this.getTruncatedExpect(snapId),
     );
   }
 
@@ -1173,7 +1153,7 @@ export class SnapController extends BaseController<
    * the snap sourceCode may be quite large.
    *
    * @see {@link SnapController.get}
-   * @throws {@link Error}. If snap doesn't exist
+   * @throws {@link Error}. If the snap doesn't exist
    * @param snapId - The id of the snap to get.
    * @returns The entire snap object.
    */

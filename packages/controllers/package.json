@@ -80,6 +80,7 @@
     "jest": "^27.5.1",
     "jest-fetch-mock": "^3.0.3",
     "jest-it-up": "^2.0.0",
+    "jsdom": "^19.0.0",
     "mkdirp": "^1.0.4",
     "prettier": "^2.3.2",
     "prettier-plugin-packagejson": "^2.2.11",
@@ -94,12 +95,5 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
-  },
-  "lavamoat": {
-    "allowScripts": {
-      "@metamask/controllers>babel-runtime>core-js": false,
-      "@metamask/controllers>ethereumjs-util>ethereum-cryptography>keccak": false,
-      "@metamask/controllers>ethereumjs-util>ethereum-cryptography>secp256k1": false
-    }
   }
 }

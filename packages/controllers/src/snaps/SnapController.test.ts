@@ -40,7 +40,6 @@ import {
   SNAP_APPROVAL_UPDATE,
   Status,
   TruncatedSnap,
-  validateSnapId,
 } from './SnapController';
 
 const { subtle } = new Crypto();
@@ -489,20 +488,6 @@ jest.mock('./utils/npm', () => ({
 }));
 
 fetchMock.enableMocks();
-
-describe('validateSnapId', () => {
-  it('throws if not string', () => {
-    const MSG = 'Invalid snap id: Not a string.';
-    expect(() => validateSnapId(undefined)).toThrow(MSG);
-    expect(() => validateSnapId({})).toThrow(MSG);
-    expect(() => validateSnapId(null)).toThrow(MSG);
-    expect(() =>
-      validateSnapId(() => {
-        /* do nothing */
-      }),
-    ).toThrow(MSG);
-  });
-});
 
 describe('SnapController', () => {
   it('creates a snap controller and execution service', async () => {
