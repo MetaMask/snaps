@@ -45,7 +45,7 @@ type GetBip32EntropySpecification = ValidPermissionSpecification<{
 }>;
 
 type GetBip32EntropyParameters = {
-  path: (`${number}` | `${number}'`)[];
+  path: ['m', ...(`${number}` | `${number}'`)[]];
   curve: 'secp256k1' | 'ed25519';
 };
 
@@ -223,7 +223,7 @@ export const getBip32EntropyCaveatSpecificationBuilder: CaveatSpecificationConst
  * @returns The method implementation which returns a `JsonSLIP10Node`.
  * @throws If the params are invalid.
  */
-function getBip32EntropyImplementation({
+export function getBip32EntropyImplementation({
   getMnemonic,
   getUnlockPromise,
 }: GetBip32EntropyMethodHooks) {
@@ -240,7 +240,9 @@ function getBip32EntropyImplementation({
       curve: params.curve,
       derivationPath: [
         `bip39:${await getMnemonic()}`,
-        ...params.path.map<BIP32Node>((index) => `bip32:${index}`),
+        ...params.path
+          .slice(1)
+          .map<BIP32Node>((index) => `bip32:${index}` as BIP32Node),
       ],
     });
 
