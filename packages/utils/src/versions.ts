@@ -2,7 +2,7 @@ import { Json } from '@metamask/utils';
 import {
   gt as gtSemver,
   maxSatisfying as maxSatisfyingSemver,
-  satisfies as satifiesSemver,
+  satisfies as satisfiesSemver,
   validRange as validRangeSemver,
 } from 'semver';
 
@@ -26,11 +26,11 @@ export function gtVersion(version1: string, version2: string): boolean {
  * @param versionRange - The SemVer version range to check against.
  * @returns Whether the version satisfied the version range.
  */
-export function satifiesVersionRange(
+export function satisfiesVersionRange(
   version: string,
   versionRange: string,
 ): boolean {
-  return satifiesSemver(version, versionRange, {
+  return satisfiesSemver(version, versionRange, {
     includePrerelease: true,
   });
 }
