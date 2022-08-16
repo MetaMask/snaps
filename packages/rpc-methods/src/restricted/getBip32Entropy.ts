@@ -8,7 +8,7 @@ import {
   PermissionValidatorConstraint,
 } from '@metamask/controllers';
 import { ethErrors } from 'eth-rpc-errors';
-import { NonEmptyArray } from '@metamask/utils';
+import { hasProperty, isPlainObject, NonEmptyArray } from '@metamask/utils';
 import { BIP32Node, JsonSLIP10Node, SLIP10Node } from '@metamask/key-tree';
 
 import { SnapCaveatType } from '../caveats';
@@ -33,7 +33,6 @@ export type GetBip32EntropyMethodHooks = {
 };
 
 type GetBip32EntropySpecificationBuilderOptions = {
-  allowedCaveats?: Readonly<NonEmptyArray<string>> | null;
   methodHooks: GetBip32EntropyMethodHooks;
 };
 
@@ -47,7 +46,7 @@ type GetBip32EntropySpecification = ValidPermissionSpecification<{
 
 type GetBip32EntropyParameters = {
   path: (`${number}` | `${number}'`)[];
-  curve?: 'secp256k1' | 'ed25519';
+  curve: 'secp256k1' | 'ed25519';
 };
 
 /**
@@ -59,15 +58,9 @@ type GetBip32EntropyParameters = {
  * @param value - The value to validate.
  * @throws If the value is invalid.
  */
-function validatePath(
+export function validatePath(
   value: unknown,
 ): asserts value is GetBip32EntropyParameters {
-  // TODO: Use `@metamask/utils`. The extension currently uses an old version of
-  // `utils`, so this is just a workaround for testing.
-  const isPlainObject = (v: unknown): v is Record<string, unknown> => {
-    return true;
-  };
-
   if (!isPlainObject(value)) {
     throw ethErrors.rpc.invalidParams({
       message: 'Expected a plain object.',
@@ -75,7 +68,7 @@ function validatePath(
   }
 
   if (
-    !('path' in value) ||
+    !hasProperty(value, 'path') ||
     !Array.isArray(value.path) ||
     value.path.length === 0
   ) {
@@ -107,7 +100,7 @@ function validatePath(
   }
 
   if (
-    !('curve' in value) ||
+    !hasProperty(value, 'curve') ||
     (value.curve !== 'secp256k1' && value.curve !== 'ed25519')
   ) {
     throw ethErrors.rpc.invalidParams({
@@ -115,7 +108,10 @@ function validatePath(
     });
   }
 
-  if (value.curve === 'ed25519' && value.path.some((v) => !v.endsWith("'"))) {
+  if (
+    value.curve === 'ed25519' &&
+    value.path.slice(1).some((v) => !v.endsWith("'"))
+  ) {
     throw ethErrors.rpc.invalidParams({
       message: `Invalid "path" parameter. Ed25519 does not support unhardened paths.`,
     });
@@ -129,9 +125,9 @@ function validatePath(
  * @param caveat - The caveat to validate.
  * @throws If the value is invalid.
  */
-function validateCaveatPaths(caveat: Caveat<string, any>) {
+export function validateCaveatPaths(caveat: Caveat<string, any>) {
   if (
-    !('value' in caveat) ||
+    !hasProperty(caveat, 'value') ||
     !Array.isArray(caveat.value) ||
     caveat.value.length === 0
   ) {
@@ -149,7 +145,6 @@ function validateCaveatPaths(caveat: Caveat<string, any>) {
  * BIP-32 node.
  *
  * @param options - The specification builder options.
- * @param options.allowedCaveats - The optional allowed caveats for the permission.
  * @param options.methodHooks - The RPC method hooks needed by the method implementation.
  * @returns The specification for the `snap_getBip32Entropy` permission.
  */
@@ -157,17 +152,11 @@ const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.RestrictedMethod,
   GetBip32EntropySpecificationBuilderOptions,
   GetBip32EntropySpecification
-> = ({
-  allowedCaveats = null,
-  methodHooks,
-}: GetBip32EntropySpecificationBuilderOptions) => {
+> = ({ methodHooks }: GetBip32EntropySpecificationBuilderOptions) => {
   return {
     permissionType: PermissionType.RestrictedMethod,
     targetKey,
-    allowedCaveats: [
-      SnapCaveatType.PermittedDerivationPaths,
-      ...(allowedCaveats ?? []),
-    ],
+    allowedCaveats: [SnapCaveatType.PermittedDerivationPaths],
     methodImplementation: getBip32EntropyImplementation(methodHooks),
     validator: ({ caveats }) => {
       if (
@@ -245,13 +234,13 @@ function getBip32EntropyImplementation({
 
     // `args.params` is validated by the decorator, so it's safe to assert here.
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const derivationPath = args.params!.path!;
+    const params = args.params!;
 
     const node = await SLIP10Node.fromDerivationPath({
-      curve: args.params?.curve ?? 'secp256k1',
+      curve: params.curve,
       derivationPath: [
         `bip39:${await getMnemonic()}`,
-        ...derivationPath.map<BIP32Node>((index) => `bip32:${index}`),
+        ...params.path.map<BIP32Node>((index) => `bip32:${index}`),
       ],
     });
 
