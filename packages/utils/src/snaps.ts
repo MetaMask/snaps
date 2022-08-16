@@ -88,3 +88,25 @@ export function getSnapPrefix(snapId: string): SnapIdPrefixes {
 export function getSnapPermissionName(snapId: string): string {
   return SNAP_PREFIX + snapId;
 }
+
+/**
+ * Asserts the provided object is a snapId with a supported prefix.
+ *
+ * @param snapId - The object to validate.
+ * @throws {@link Error}. If the validation fails.
+ */
+export function validateSnapId(
+  snapId: unknown,
+): asserts snapId is ValidatedSnapId {
+  if (!snapId || typeof snapId !== 'string') {
+    throw new Error(`Invalid snap id. Not a string. Received "${snapId}"`);
+  }
+
+  for (const prefix of Object.values(SnapIdPrefixes)) {
+    if (snapId.startsWith(prefix) && snapId.replace(prefix, '').length > 0) {
+      return;
+    }
+  }
+
+  throw new Error(`Invalid snap id. Unknown prefix. Received: "${snapId}"`);
+}

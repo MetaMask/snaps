@@ -2691,6 +2691,7 @@ __metadata:
     "@types/pump": ^1.1.1
     "@types/readable-stream": ^2.3.9
     "@types/tar-stream": ^2.2.2
+    "@xstate/fsm": ^2.0.0
     concat-stream: ^2.0.0
     deep-freeze-strict: ^1.1.1
     eslint: ^7.30.0
@@ -2706,6 +2707,7 @@ __metadata:
     jest: ^27.5.1
     jest-fetch-mock: ^3.0.3
     jest-it-up: ^2.0.0
+    jsdom: ^19.0.0
     json-rpc-engine: ^6.1.0
     json-rpc-middleware-stream: ^3.0.0
     mkdirp: ^1.0.4
@@ -4164,6 +4166,13 @@ __metadata:
     webpack-dev-server:
       optional: true
   checksum: 8b273f906aeffa60c7d5700ae25f98d4b66b7e922cad38acb9575d55ff83872cd20b9894aacfa81c4d54e5b51b16253ae0e70c5e9e0608dc8768276e15c74536
+  languageName: node
+  linkType: hard
+
+"@xstate/fsm@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@xstate/fsm@npm:2.0.0"
+  checksum: 8da3e3b726cb02e6a7ae7fc912917fe5892e37511c62af4b07339675910ee4ed4c2dc99b520e529ff14b5f3ff519f7a613e15fda0cf01e3cc7359a2200df322c
   languageName: node
   linkType: hard
 
