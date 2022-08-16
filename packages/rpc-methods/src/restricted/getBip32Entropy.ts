@@ -95,7 +95,7 @@ export function validatePath(
 
   if (value.path.length < 3) {
     throw ethErrors.rpc.invalidParams({
-      message: `Invalid "path" parameter. Paths must have at least two indices.`,
+      message: `Invalid "path" parameter. Paths must have a length of at least three.`,
     });
   }
 

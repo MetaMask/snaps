@@ -44,10 +44,10 @@ describe('validatePath', () => {
   });
 
   it.each([{ path: ['m'] }, { path: ['m', "44'"] }])(
-    'throws if the path has less than two indices',
+    'throws if the path has a length of less than three',
     (value) => {
       expect(() => validatePath(value)).toThrow(
-        'Invalid "path" parameter. Paths must have at least two indices.',
+        'Invalid "path" parameter. Paths must have a length of at least three.',
       );
     },
   );
