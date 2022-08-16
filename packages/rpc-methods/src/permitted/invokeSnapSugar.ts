@@ -1,5 +1,4 @@
 import { ethErrors } from 'eth-rpc-errors';
-import { SNAP_PREFIX } from '@metamask/snap-utils';
 import {
   PermittedHandlerExport,
   JsonRpcRequest,
@@ -7,6 +6,9 @@ import {
   JsonRpcEngineEndCallback,
 } from '@metamask/types';
 import { isObject } from '@metamask/utils';
+
+// TODO: Remove
+const SNAP_PREFIX = 'wallet_snap_';
 
 /**
  * `wallet_invokeSnap` attempts to invoke an RPC method of the specified Snap.
