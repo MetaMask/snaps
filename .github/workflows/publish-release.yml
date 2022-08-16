@@ -6,8 +6,8 @@ on:
 
 jobs:
   is-release:
-    # release merge commits come from GitHub user
-    if: github.event.head_commit.committer.name == 'GitHub'
+    # release merge commits come from github-actions
+    if: startsWith(github.event.commits[0].author.name, 'github-actions')
     outputs:
       IS_RELEASE: ${{ steps.is-release.outputs.IS_RELEASE }}
     runs-on: ubuntu-latest
