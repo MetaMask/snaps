@@ -1,3 +1,4 @@
+import { SnapCaveatType } from '../caveats';
 import { confirmBuilder, ConfirmMethodHooks } from './confirm';
 import {
   getBip44EntropyBuilder,
@@ -6,7 +7,10 @@ import {
 import { invokeSnapBuilder, InvokeSnapMethodHooks } from './invokeSnap';
 import { manageStateBuilder, ManageStateMethodHooks } from './manageState';
 import { notifyBuilder, NotifyMethodHooks } from './notify';
-import { getBip32EntropyBuilder } from './getBip32Entropy';
+import {
+  getBip32EntropyBuilder,
+  getBip32EntropyCaveatSpecificationBuilder,
+} from './getBip32Entropy';
 
 export { ManageStateOperation } from './manageState';
 export { NotificationArgs, NotificationType } from './notify';
@@ -24,4 +28,9 @@ export const builders = {
   [invokeSnapBuilder.targetKey]: invokeSnapBuilder,
   [manageStateBuilder.targetKey]: manageStateBuilder,
   [notifyBuilder.targetKey]: notifyBuilder,
+} as const;
+
+export const caveatSpecifications = {
+  [SnapCaveatType.PermittedDerivationPaths]:
+    getBip32EntropyCaveatSpecificationBuilder,
 } as const;

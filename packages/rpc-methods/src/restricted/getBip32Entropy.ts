@@ -1,12 +1,20 @@
 import {
+  constructPermission,
+  PermissionFactory,
   PermissionSpecificationBuilder,
   PermissionType,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
+  CaveatSpecificationConstraint,
+  Caveat,
 } from '@metamask/controllers';
 import { ethErrors } from 'eth-rpc-errors';
 import { NonEmptyArray } from '@metamask/utils';
 import { BIP32Node, JsonSLIP10Node, SLIP10Node } from '@metamask/key-tree';
+
+import { SnapCaveatType } from '../caveats';
+
+const DERIVATION_PATH_REGEX = /^m(\/[0-9]+'?)+$/u;
 
 const targetKey = 'snap_getBip32Entropy';
 
@@ -37,9 +45,74 @@ type GetBip32EntropySpecification = ValidPermissionSpecification<{
 }>;
 
 type GetBip32EntropyParameters = {
-  path: string[];
+  path: string;
   curve?: 'secp256k1' | 'ed25519';
 };
+
+// TODO: See if this is necessary.
+const getBip32EntropyFactory: PermissionFactory<any, any> = (
+  permissionOptions,
+) => {
+  return constructPermission(permissionOptions);
+};
+
+/**
+ * Validate a path object.
+ *
+ * @param value - The value to validate.
+ * @throws If the value is invalid.
+ */
+function validatePath(
+  value: unknown,
+): asserts value is GetBip32EntropyParameters {
+  // TODO: Use `@metamask/utils`. The extension currently uses an old version of
+  // `utils`, so this is just a workaround for testing.
+  const isPlainObject = (v: unknown): v is Record<string, unknown> => {
+    return true;
+  };
+
+  if (!isPlainObject(value)) {
+    throw ethErrors.rpc.invalidParams({
+      message: 'Expected a plain object.',
+    });
+  }
+
+  if (
+    !('path' in value) ||
+    typeof value.path !== 'string' ||
+    !DERIVATION_PATH_REGEX.test(value.path)
+  ) {
+    throw ethErrors.rpc.invalidParams({
+      message: `Invalid "path" parameter. The path must be a valid BIP-32 derivation path.`,
+    });
+  }
+
+  if (
+    !('curve' in value) ||
+    (value.curve !== 'secp256k1' && value.curve !== 'ed25519')
+  ) {
+    throw ethErrors.rpc.invalidParams({
+      message: `Invalid "curve" parameter. The curve must be "secp256k1" or "ed25519".`,
+    });
+  }
+}
+
+/**
+ * Validate the path values associated with a caveat. This validates that the
+ * value is a non-empty array with valid derivation paths and curves.
+ *
+ * @param value - The value to validate.
+ * @throws If the value is invalid.
+ */
+function validateCaveatPaths(value: unknown) {
+  if (!Array.isArray(value) || value.length === 0) {
+    throw ethErrors.rpc.invalidParams({
+      message: 'Expected non-empty array of paths.',
+    });
+  }
+
+  value.forEach((path) => validatePath(path));
+}
 
 /**
  * The specification builder for the `snap_getBip32Entropy` permission.
@@ -62,7 +135,11 @@ const specificationBuilder: PermissionSpecificationBuilder<
   return {
     permissionType: PermissionType.RestrictedMethod,
     targetKey,
-    allowedCaveats,
+    allowedCaveats: [
+      SnapCaveatType.PermittedDerivationPaths,
+      ...(allowedCaveats ?? []),
+    ],
+    factory: getBip32EntropyFactory,
     methodImplementation: getBip32EntropyImplementation(methodHooks),
   };
 };
@@ -75,6 +152,38 @@ export const getBip32EntropyBuilder = Object.freeze({
     getUnlockPromise: true,
   },
 } as const);
+
+export const getBip32EntropyCaveatSpecificationBuilder: CaveatSpecificationConstraint =
+  Object.freeze({
+    type: SnapCaveatType.PermittedDerivationPaths,
+    decorator: (
+      method,
+      caveat: Caveat<
+        SnapCaveatType.PermittedDerivationPaths,
+        GetBip32EntropyParameters[]
+      >,
+    ) => {
+      return async (args) => {
+        const { params } = args;
+        validatePath(params);
+
+        const path = caveat.value.find(
+          (caveatPath) =>
+            caveatPath.path === params.path &&
+            caveatPath.curve === params.curve,
+        );
+
+        if (!path) {
+          throw ethErrors.rpc.invalidParams({
+            message: 'Requested path is not permitted.',
+          });
+        }
+
+        return await method(args);
+      };
+    },
+    validator: (caveat) => validateCaveatPaths(caveat.value),
+  });
 
 /**
  * Builds the method implementation for `snap_getBip32Entropy`.
@@ -103,14 +212,14 @@ function getBip32EntropyImplementation({
 
     await getUnlockPromise(true);
 
-    // TODO: Verify that the derivation path is valid/allowed.
     const node = await SLIP10Node.fromDerivationPath({
       curve: args.params?.curve ?? 'secp256k1',
       derivationPath: [
         `bip39:${await getMnemonic()}`,
-        ...derivationPath.map<BIP32Node>(
-          (index) => `bip32:${index}` as BIP32Node,
-        ),
+        ...derivationPath
+          .split('/')
+          .slice(1)
+          .map((index) => `bip32:${index}` as BIP32Node),
       ],
     });
 
