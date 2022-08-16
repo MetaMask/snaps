@@ -1,20 +1,20 @@
 import {
-  constructPermission,
-  PermissionFactory,
   PermissionSpecificationBuilder,
   PermissionType,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
   CaveatSpecificationConstraint,
   Caveat,
+  PermissionValidatorConstraint,
 } from '@metamask/controllers';
 import { ethErrors } from 'eth-rpc-errors';
 import { NonEmptyArray } from '@metamask/utils';
 import { BIP32Node, JsonSLIP10Node, SLIP10Node } from '@metamask/key-tree';
 
 import { SnapCaveatType } from '../caveats';
+import { isEqual } from '../utils';
 
-const DERIVATION_PATH_REGEX = /^m(\/[0-9]+'?)+$/u;
+const INDEX_REGEX = /^\d+'?$/u;
 
 const targetKey = 'snap_getBip32Entropy';
 
@@ -42,22 +42,19 @@ type GetBip32EntropySpecification = ValidPermissionSpecification<{
   targetKey: typeof targetKey;
   methodImplementation: ReturnType<typeof getBip32EntropyImplementation>;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
+  validator: PermissionValidatorConstraint;
 }>;
 
 type GetBip32EntropyParameters = {
-  path: string;
+  path: (`${number}` | `${number}'`)[];
   curve?: 'secp256k1' | 'ed25519';
 };
 
-// TODO: See if this is necessary.
-const getBip32EntropyFactory: PermissionFactory<any, any> = (
-  permissionOptions,
-) => {
-  return constructPermission(permissionOptions);
-};
-
 /**
- * Validate a path object.
+ * Validate a caveat path object. The object must consist of a `path` array and
+ * optionally a `curve` string. Paths must start with `m`, and must contain at
+ * least two indices. If `ed25519` is used, this checks if all the path indices
+ * are hardened.
  *
  * @param value - The value to validate.
  * @throws If the value is invalid.
@@ -79,11 +76,33 @@ function validatePath(
 
   if (
     !('path' in value) ||
-    typeof value.path !== 'string' ||
-    !DERIVATION_PATH_REGEX.test(value.path)
+    !Array.isArray(value.path) ||
+    value.path.length === 0
   ) {
     throw ethErrors.rpc.invalidParams({
-      message: `Invalid "path" parameter. The path must be a valid BIP-32 derivation path.`,
+      message: `Invalid "path" parameter. The path must be a non-empty BIP-32 derivation path array.`,
+    });
+  }
+
+  if (value.path[0] !== 'm') {
+    throw ethErrors.rpc.invalidParams({
+      message: `Invalid "path" parameter. The path must start with "m".`,
+    });
+  }
+
+  if (
+    value.path
+      .slice(1)
+      .some((v) => typeof v !== 'string' || !INDEX_REGEX.test(v))
+  ) {
+    throw ethErrors.rpc.invalidParams({
+      message: `Invalid "path" parameter. The path must be a valid BIP-32 derivation path array.`,
+    });
+  }
+
+  if (value.path.length < 3) {
+    throw ethErrors.rpc.invalidParams({
+      message: `Invalid "path" parameter. Paths must have at least two indices.`,
     });
   }
 
@@ -95,23 +114,33 @@ function validatePath(
       message: `Invalid "curve" parameter. The curve must be "secp256k1" or "ed25519".`,
     });
   }
+
+  if (value.curve === 'ed25519' && value.path.some((v) => !v.endsWith("'"))) {
+    throw ethErrors.rpc.invalidParams({
+      message: `Invalid "path" parameter. Ed25519 does not support unhardened paths.`,
+    });
+  }
 }
 
 /**
  * Validate the path values associated with a caveat. This validates that the
  * value is a non-empty array with valid derivation paths and curves.
  *
- * @param value - The value to validate.
+ * @param caveat - The caveat to validate.
  * @throws If the value is invalid.
  */
-function validateCaveatPaths(value: unknown) {
-  if (!Array.isArray(value) || value.length === 0) {
+function validateCaveatPaths(caveat: Caveat<string, any>) {
+  if (
+    !('value' in caveat) ||
+    !Array.isArray(caveat.value) ||
+    caveat.value.length === 0
+  ) {
     throw ethErrors.rpc.invalidParams({
       message: 'Expected non-empty array of paths.',
     });
   }
 
-  value.forEach((path) => validatePath(path));
+  caveat.value.forEach((path) => validatePath(path));
 }
 
 /**
@@ -139,8 +168,17 @@ const specificationBuilder: PermissionSpecificationBuilder<
       SnapCaveatType.PermittedDerivationPaths,
       ...(allowedCaveats ?? []),
     ],
-    factory: getBip32EntropyFactory,
     methodImplementation: getBip32EntropyImplementation(methodHooks),
+    validator: ({ caveats }) => {
+      if (
+        caveats?.length !== 1 ||
+        caveats[0].type !== SnapCaveatType.PermittedDerivationPaths
+      ) {
+        throw ethErrors.rpc.invalidParams({
+          message: 'Expected a single "permittedDerivationPaths" caveat.',
+        });
+      }
+    },
   };
 };
 
@@ -169,20 +207,21 @@ export const getBip32EntropyCaveatSpecificationBuilder: CaveatSpecificationConst
 
         const path = caveat.value.find(
           (caveatPath) =>
-            caveatPath.path === params.path &&
+            isEqual(params.path, caveatPath.path) &&
             caveatPath.curve === params.curve,
         );
 
         if (!path) {
           throw ethErrors.rpc.invalidParams({
-            message: 'Requested path is not permitted.',
+            message:
+              'The requested path is not permitted. Allowed paths must be specified in the snap manifest.',
           });
         }
 
         return await method(args);
       };
     },
-    validator: (caveat) => validateCaveatPaths(caveat.value),
+    validator: (caveat) => validateCaveatPaths(caveat),
   });
 
 /**
@@ -202,24 +241,17 @@ function getBip32EntropyImplementation({
   return async function getBip32Entropy(
     args: RestrictedMethodOptions<GetBip32EntropyParameters>,
   ): Promise<JsonSLIP10Node> {
-    // TODO: Verify shape of `args.params`.
-    const derivationPath = args.params?.path;
-    if (!derivationPath) {
-      throw ethErrors.rpc.invalidParams({
-        message: `Missing "path" parameter.`,
-      });
-    }
-
     await getUnlockPromise(true);
+
+    // `args.params` is validated by the decorator, so it's safe to assert here.
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const derivationPath = args.params!.path!;
 
     const node = await SLIP10Node.fromDerivationPath({
       curve: args.params?.curve ?? 'secp256k1',
       derivationPath: [
         `bip39:${await getMnemonic()}`,
-        ...derivationPath
-          .split('/')
-          .slice(1)
-          .map((index) => `bip32:${index}` as BIP32Node),
+        ...derivationPath.map<BIP32Node>((index) => `bip32:${index}`),
       ],
     });
 
