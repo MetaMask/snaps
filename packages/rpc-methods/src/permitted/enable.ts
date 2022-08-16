@@ -11,15 +11,13 @@ import {
 } from '@metamask/types';
 import { hasProperty } from '@metamask/utils';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
+import { SNAP_PREFIX } from '@metamask/snap-utils';
 import {
   handleInstallSnaps,
   InstallSnapsHook,
   InstallSnapsResult,
   preprocessRequestedPermissions,
 } from './common/snapInstallation';
-
-// TODO: Remove
-const SNAP_PREFIX = 'wallet_snap_';
 
 type SerializedEthereumRpcError = ReturnType<typeof serializeError>;
 

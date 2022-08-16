@@ -2,9 +2,7 @@ import { ethErrors } from 'eth-rpc-errors';
 import { RequestedPermissions } from '@metamask/controllers';
 import { InstallSnapsResult } from '@metamask/snap-controllers';
 import { isObject } from '@metamask/utils';
-
-// TODO: Remove
-const SNAP_PREFIX = 'wallet_snap_';
+import { SNAP_PREFIX } from '@metamask/snap-utils';
 
 export { InstallSnapsResult } from '@metamask/snap-controllers';
 

@@ -7,9 +7,7 @@ import {
 import { SnapController } from '@metamask/snap-controllers';
 import { isObject, Json, NonEmptyArray } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
-
-// TODO: Remove
-const SNAP_PREFIX = 'wallet_snap_';
+import { SNAP_PREFIX } from '@metamask/snap-utils';
 
 const methodPrefix = SNAP_PREFIX;
 const targetKey = `${methodPrefix}*` as const;
