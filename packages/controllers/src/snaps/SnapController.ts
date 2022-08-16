@@ -735,6 +735,15 @@ export class SnapController extends BaseController<
     this.registerMessageHandlers();
   }
 
+  /**
+   * We track status of a Snap using a finite-state-machine.
+   * It keeps track of whether the snap is started / stopped / etc.
+   *
+   * @see {@link SnapController.transition} for interacting with the machine.
+   */
+  // We initialize the machine in the instance because the status is currently tightly coupled
+  // with the SnapController - the guard checks for enabled status inside the SnapController state.
+  // In the future, side-effects could be added to the machine during transitions.
   private initializeStateMachine() {
     const disableGuard = ({ snapId }: StatusContext) => {
       return this.getExpect(snapId).enabled;
