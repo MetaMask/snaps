@@ -1,13 +1,13 @@
+import { getSnapPrefix } from './snaps';
+import { SnapIdPrefixes } from './types';
 import {
   DEFAULT_REQUESTED_SNAP_VERSION,
   getTargetVersion,
   gtVersion,
   isValidSnapVersionRange,
   resolveVersion,
-  satifiesVersionRange,
+  satisfiesVersionRange,
 } from './versions';
-import { getSnapPrefix } from './snaps';
-import { SnapIdPrefixes } from './types';
 
 describe('resolveVersion', () => {
   it('defaults "latest" to DEFAULT_REQUESTED_SNAP_VERSION', () => {
@@ -116,22 +116,22 @@ describe('getTargetVersion', () => {
 
 describe('satifiesVersionRange', () => {
   it('supports *', () => {
-    expect(satifiesVersionRange('3.0.0', '*')).toBe(true);
+    expect(satisfiesVersionRange('3.0.0', '*')).toBe(true);
   });
 
   it('supports exact versions', () => {
-    expect(satifiesVersionRange('1.0.0-beta.1', '1.0.0-beta.1')).toBe(true);
-    expect(satifiesVersionRange('1.0.0', '1.0.0')).toBe(true);
-    expect(satifiesVersionRange('1.2.3', '1.0.0')).toBe(false);
+    expect(satisfiesVersionRange('1.0.0-beta.1', '1.0.0-beta.1')).toBe(true);
+    expect(satisfiesVersionRange('1.0.0', '1.0.0')).toBe(true);
+    expect(satisfiesVersionRange('1.2.3', '1.0.0')).toBe(false);
   });
 
   it('supports non-exact version ranges', () => {
-    expect(satifiesVersionRange('1.2.3', '^1.0.0')).toBe(true);
-    expect(satifiesVersionRange('2.0.0', '^1.0.0')).toBe(false);
+    expect(satisfiesVersionRange('1.2.3', '^1.0.0')).toBe(true);
+    expect(satisfiesVersionRange('2.0.0', '^1.0.0')).toBe(false);
   });
 
   it('prereleases can satisfy version range', () => {
-    expect(satifiesVersionRange('1.0.0-beta.1', '*')).toBe(true);
-    expect(satifiesVersionRange('1.0.0-beta.1', '^1.0.0')).toBe(false);
+    expect(satisfiesVersionRange('1.0.0-beta.1', '*')).toBe(true);
+    expect(satisfiesVersionRange('1.0.0-beta.1', '^1.0.0')).toBe(false);
   });
 });

@@ -821,4 +821,351 @@ describe('BaseSnapExecutor', () => {
 
     expect(consoleErrorSpy).not.toHaveBeenCalled();
   });
+
+  it('does not return control to a snap after idle teardown', async () => {
+    jest.useRealTimers();
+    const consoleLogSpy = jest.spyOn(console, 'log');
+    const consoleWarnSpy = jest.spyOn(console, 'warn');
+    const TIMER_ENDOWMENTS = ['setTimeout', 'clearTimeout', 'console'];
+    const CODE = `
+      let promise;
+
+      module.exports.onRpcRequest = async ({request}) => {
+        switch (request.method) {
+          case 'first':
+            promise = wallet.request({ method: 'eth_blockNumber', params: [] })
+              .then(() => console.log('Jailbreak'));
+            return 'FIRST OK';
+          case 'second':
+            const timeout = new Promise((r) => setTimeout(() => r('TIMEOUT_RESOLVED_FROM_SECOND_CALL'), 1000));
+            return Promise.race([timeout, promise.then(() => 'SECOND OK')]);
+        }
+      }
+    `;
+    const executor = new TestSnapExecutor();
+
+    // --- Execute Snap
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'executeSnap',
+      params: [FAKE_SNAP_NAME, CODE, TIMER_ENDOWMENTS],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    // --- Call Snap RPC
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        FAKE_SNAP_NAME,
+        FAKE_ORIGIN,
+        { jsonrpc: '2.0', method: 'first', params: [] },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      method: 'OutboundRequest',
+    });
+
+    const providerRequest = await executor.readRpc();
+    expect(providerRequest).toStrictEqual({
+      name: 'metamask-provider',
+      data: {
+        id: expect.any(Number),
+        jsonrpc: '2.0',
+        method: 'metamask_getProviderState',
+        params: undefined,
+      },
+    });
+
+    await executor.writeRpc({
+      name: 'metamask-provider',
+      data: {
+        jsonrpc: '2.0',
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        id: providerRequest.data.id!,
+        result: { isUnlocked: false, accounts: [] },
+      },
+    });
+
+    const blockNumRequest = await executor.readRpc();
+    expect(blockNumRequest).toStrictEqual({
+      name: 'metamask-provider',
+      data: {
+        id: expect.any(Number),
+        jsonrpc: '2.0',
+        method: 'eth_blockNumber',
+        params: [],
+      },
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: 'FIRST OK',
+    });
+
+    // --- Call Snap RPC for the second time
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 3,
+      method: 'snapRpc',
+      params: [
+        FAKE_SNAP_NAME,
+        FAKE_ORIGIN,
+        { jsonrpc: '2.0', method: 'second', params: [] },
+      ],
+    });
+
+    await executor.writeRpc({
+      name: 'metamask-provider',
+      data: {
+        jsonrpc: '2.0',
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        id: blockNumRequest.data.id!,
+        result: '0xa70e77',
+      },
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 3,
+      jsonrpc: '2.0',
+      result: 'TIMEOUT_RESOLVED_FROM_SECOND_CALL',
+    });
+
+    expect(consoleLogSpy).not.toHaveBeenCalledWith('Jailbreak');
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      'Late promise received after Snap finished execution. Promise will be dropped.',
+    );
+  });
+
+  it('does not return control to a snap after idle teardown when request fails', async () => {
+    jest.useRealTimers();
+    const consoleLogSpy = jest.spyOn(console, 'log');
+    const consoleWarnSpy = jest.spyOn(console, 'warn');
+    const TIMER_ENDOWMENTS = ['setTimeout', 'clearTimeout', 'console'];
+    const CODE = `
+      let promise;
+
+      module.exports.onRpcRequest = async ({request}) => {
+        switch (request.method) {
+          case 'first':
+            promise = wallet.request({ method: 'eth_blockNumber', params: [] })
+              .catch(() => console.log('Jailbreak'));
+            return 'FIRST OK';
+          case 'second':
+            const timeout = new Promise((r) => setTimeout(() => r('TIMEOUT_RESOLVED_FROM_SECOND_CALL'), 1000));
+            return Promise.race([timeout, promise.then(() => 'SECOND OK')]);
+        }
+      }
+    `;
+    const executor = new TestSnapExecutor();
+
+    // --- Execute Snap
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'executeSnap',
+      params: [FAKE_SNAP_NAME, CODE, TIMER_ENDOWMENTS],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    // --- Call Snap RPC
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        FAKE_SNAP_NAME,
+        FAKE_ORIGIN,
+        { jsonrpc: '2.0', method: 'first', params: [] },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      method: 'OutboundRequest',
+    });
+
+    const providerRequest = await executor.readRpc();
+    expect(providerRequest).toStrictEqual({
+      name: 'metamask-provider',
+      data: {
+        id: expect.any(Number),
+        jsonrpc: '2.0',
+        method: 'metamask_getProviderState',
+        params: undefined,
+      },
+    });
+
+    await executor.writeRpc({
+      name: 'metamask-provider',
+      data: {
+        jsonrpc: '2.0',
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        id: providerRequest.data.id!,
+        result: { isUnlocked: false, accounts: [] },
+      },
+    });
+
+    const blockNumRequest = await executor.readRpc();
+    expect(blockNumRequest).toStrictEqual({
+      name: 'metamask-provider',
+      data: {
+        id: expect.any(Number),
+        jsonrpc: '2.0',
+        method: 'eth_blockNumber',
+        params: [],
+      },
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: 'FIRST OK',
+    });
+
+    // --- Call Snap RPC for the second time
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 3,
+      method: 'snapRpc',
+      params: [
+        FAKE_SNAP_NAME,
+        FAKE_ORIGIN,
+        { jsonrpc: '2.0', method: 'second', params: [] },
+      ],
+    });
+
+    await executor.writeRpc({
+      name: 'metamask-provider',
+      data: {
+        jsonrpc: '2.0',
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        id: blockNumRequest.data.id!,
+        error: {
+          message: 'Error in RPC request',
+          code: -1000,
+        },
+      },
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 3,
+      jsonrpc: '2.0',
+      result: 'TIMEOUT_RESOLVED_FROM_SECOND_CALL',
+    });
+
+    expect(consoleLogSpy).not.toHaveBeenCalledWith('Jailbreak');
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      'Late promise received after Snap finished execution. Promise will be dropped.',
+    );
+  });
+
+  it('should handle promise rejection that is passed through the proxy', async () => {
+    // This will ensure that the reject(reason); is called from inside the proxy method
+    // when the original promise throws an error (i.e. RPC request fails).
+    const CODE = `
+      module.exports.onRpcRequest = () => wallet.request({ method: 'eth_blockNumber', params: [] });
+    `;
+    const executor = new TestSnapExecutor();
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'executeSnap',
+      params: [FAKE_SNAP_NAME, CODE, []],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        FAKE_SNAP_NAME,
+        FAKE_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      method: 'OutboundRequest',
+    });
+
+    const providerRequest = await executor.readRpc();
+    expect(providerRequest).toStrictEqual({
+      name: 'metamask-provider',
+      data: {
+        id: expect.any(Number),
+        jsonrpc: '2.0',
+        method: 'metamask_getProviderState',
+        params: undefined,
+      },
+    });
+
+    await executor.writeRpc({
+      name: 'metamask-provider',
+      data: {
+        jsonrpc: '2.0',
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        id: providerRequest.data.id!,
+        result: { isUnlocked: false, accounts: [] },
+      },
+    });
+
+    const blockNumRequest = await executor.readRpc();
+    expect(blockNumRequest).toStrictEqual({
+      name: 'metamask-provider',
+      data: {
+        id: expect.any(Number),
+        jsonrpc: '2.0',
+        method: 'eth_blockNumber',
+        params: [],
+      },
+    });
+
+    await executor.writeRpc({
+      name: 'metamask-provider',
+      data: {
+        jsonrpc: '2.0',
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        id: blockNumRequest.data.id!,
+        error: {
+          message: 'Error in RPC request. Cannot get block number.',
+          code: -1000,
+        },
+      },
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      method: 'OutboundResponse',
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      error: expect.anything(),
+    });
+  });
 });
