@@ -1,6 +1,23 @@
+import { ReadableStream } from 'node:stream/web';
 import fetchMock from 'jest-fetch-mock';
 import { Server as WebSocketServer } from 'mock-socket';
 import network from './network';
+
+/**
+ * Convert ReadableStream to String.
+ *
+ * @param stream - ReadableStream instance.
+ * @returns String representation of streamed data.
+ */
+async function streamToString(stream: ReadableStream): Promise<string> {
+  const chunks = [];
+  for await (const chunk of stream) {
+    console.log('chunk', chunk);
+    chunks.push(chunk);
+  }
+  const buffer = Buffer.concat(chunks);
+  return buffer.toString('utf-8');
+}
 
 describe('Network endowments', () => {
   describe('fetch', () => {
@@ -18,6 +35,27 @@ describe('Network endowments', () => {
       const { fetch } = network.factory();
       const result = await (await fetch('foo.com')).text();
       expect(result).toStrictEqual(RESULT);
+    });
+
+    it('fetches and reads body directly', async () => {
+      const RESULT = 'OK';
+      fetchMock.mockOnce(async () => RESULT);
+      const { fetch } = network.factory();
+      const res = await fetch('foo.com');
+      const result = await streamToString(res.body as ReadableStream);
+      expect(result).toStrictEqual(RESULT);
+    });
+
+    it('abort body reader after teardown is called', async () => {
+      const RESULT = 'OK';
+      fetchMock.mockOnce(async () => RESULT);
+      const { fetch, teardownFunction } = network.factory();
+      const res = await fetch('foo.com');
+      const body = res?.body;
+      const reader = body?.getReader();
+      await teardownFunction();
+      const readerResult = await reader?.read();
+      expect(readerResult?.value).toBeUndefined();
     });
 
     it('can use AbortController normally', async () => {

@@ -1,3 +1,4 @@
+import { Duplex } from 'stream';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import pump from 'pump';
@@ -33,6 +34,9 @@ export class IFrameSnapExecutor extends BaseSnapExecutor {
     const commandStream = mux.createStream(SNAP_STREAM_NAMES.COMMAND);
     const rpcStream = mux.createStream(SNAP_STREAM_NAMES.JSON_RPC);
 
-    return new IFrameSnapExecutor(commandStream, rpcStream);
+    return new IFrameSnapExecutor(
+      commandStream as unknown as Duplex,
+      rpcStream as unknown as Duplex,
+    );
   }
 }

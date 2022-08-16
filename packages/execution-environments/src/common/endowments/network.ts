@@ -1,85 +1,7 @@
-import { allFunctions, withTeardown } from '../utils';
+import { ReadableStream } from 'node:stream/web';
+import { allFunctions, ResponseWrapper, withTeardown } from '../utils';
 
 type WebSocketCallback = (this: WebSocket, ev: any) => any;
-
-/**
- * This class wraps a Response object.
- * That way, a teardown process can stop any processes left.
- */
-class ResponseWrapper implements Response {
-  private readonly teardownRef: { lastTeardown: number };
-
-  #ogResponse: Response;
-
-  constructor(ogResponse: Response, teardownRef: { lastTeardown: number }) {
-    this.#ogResponse = ogResponse;
-    this.teardownRef = teardownRef;
-  }
-
-  get body(): ReadableStream<Uint8Array> | null {
-    return this.#ogResponse.body;
-  }
-
-  get bodyUsed() {
-    return this.#ogResponse.bodyUsed;
-  }
-
-  get headers() {
-    return this.#ogResponse.headers;
-  }
-
-  get ok() {
-    return this.#ogResponse.ok;
-  }
-
-  get redirected() {
-    return this.#ogResponse.redirected;
-  }
-
-  get status() {
-    return this.#ogResponse.status;
-  }
-
-  get statusText() {
-    return this.#ogResponse.statusText;
-  }
-
-  get type() {
-    return this.#ogResponse.type;
-  }
-
-  get url() {
-    return this.#ogResponse.url;
-  }
-
-  text() {
-    return withTeardown<string>(this.#ogResponse.text(), this as any);
-  }
-
-  arrayBuffer(): Promise<ArrayBuffer> {
-    return withTeardown<ArrayBuffer>(
-      this.#ogResponse.arrayBuffer(),
-      this as any,
-    );
-  }
-
-  blob(): Promise<Blob> {
-    return withTeardown<Blob>(this.#ogResponse.blob(), this as any);
-  }
-
-  clone(): Response {
-    const newResponse = this.#ogResponse.clone();
-    return new ResponseWrapper(newResponse, this.teardownRef);
-  }
-
-  formData(): Promise<FormData> {
-    return withTeardown<FormData>(this.#ogResponse.formData(), this as any);
-  }
-
-  json(): Promise<any> {
-    return withTeardown(this.#ogResponse.json(), this as any);
-  }
-}
 
 /**
  * Create a network endowment, consisting of a `WebSocket` object and `fetch`
@@ -97,6 +19,7 @@ class ResponseWrapper implements Response {
 const createNetwork = () => {
   // Open fetch calls or open body streams or open websockets
   const openConnections = new Set<{ cancel: () => Promise<void> }>();
+  const wrappedResponses = new Set<ResponseWrapper>();
   // Track last teardown count
   const teardownRef = { lastTeardown: 0 };
 
@@ -147,6 +70,7 @@ const createNetwork = () => {
         await withTeardown(fetchPromise, teardownRef),
         teardownRef,
       );
+      wrappedResponses.add(res as ResponseWrapper);
     } finally {
       if (openFetchConnection !== undefined) {
         openConnections.delete(openFetchConnection);
@@ -154,7 +78,7 @@ const createNetwork = () => {
     }
 
     if (res.body !== null) {
-      const body = new WeakRef<ReadableStream>(res.body);
+      const body = new WeakRef<ReadableStream>(res.body as ReadableStream<any>);
 
       const openBodyConnection = {
         cancel:
@@ -435,6 +359,10 @@ const createNetwork = () => {
     const promises: Promise<void>[] = [];
     openConnections.forEach(({ cancel }) => promises.push(cancel()));
     openConnections.clear();
+    for (const r of wrappedResponses) {
+      await r.responseWrapperTeardownFunction();
+    }
+    wrappedResponses.clear();
     await Promise.all(promises);
   };
 

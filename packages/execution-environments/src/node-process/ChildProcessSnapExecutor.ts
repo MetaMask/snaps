@@ -1,3 +1,4 @@
+import { Duplex } from 'stream';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import pump from 'pump';
 import { ProcessMessageStream } from '@metamask/post-message-stream';
@@ -19,6 +20,9 @@ export class ChildProcessSnapExecutor extends BaseSnapExecutor {
 
     const commandStream = mux.createStream(SNAP_STREAM_NAMES.COMMAND);
     const rpcStream = mux.createStream(SNAP_STREAM_NAMES.JSON_RPC) as any;
-    return new ChildProcessSnapExecutor(commandStream, rpcStream);
+    return new ChildProcessSnapExecutor(
+      commandStream as unknown as Duplex,
+      rpcStream,
+    );
   }
 }
