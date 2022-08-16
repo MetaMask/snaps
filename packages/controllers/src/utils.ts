@@ -65,7 +65,7 @@ export function delayWithTimer<Result = void>(
   });
 
   promise.cancel = () => {
-    if (!timer.isFinished()) {
+    if (timer.status !== 'finished') {
       timer.cancel();
       rejectFunc(new Error('The delay has been canceled.'));
     }

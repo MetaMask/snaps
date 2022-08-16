@@ -19,5 +19,9 @@ export const DEFAULT_ENDOWMENTS: readonly string[] = Object.freeze([
   'WebAssembly',
   'setInterval',
   'clearInterval',
-  'AbortController', // Used by fetch, but also as API for some packages that don't do network connections
+  // Used by fetch, but also as API for some packages that don't do network connections
+  // https://github.com/MetaMask/snaps-skunkworks/issues/662
+  // https://github.com/MetaMask/snaps-skunkworks/discussions/678
+  'AbortController',
+  'AbortSignal',
 ]);

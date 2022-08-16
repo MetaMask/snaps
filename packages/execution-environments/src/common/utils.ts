@@ -59,3 +59,41 @@ export function allFunctions(obj: any): (string | symbol)[] {
   }
   return result;
 }
+
+/**
+ * Make proxy for Promise and handle the teardown process properly.
+ * If the teardown is called in the meanwhile, Promise result will not be
+ * exposed to the snap anymore and warning will be logged to the console.
+ *
+ * @param originalPromise - Original promise.
+ * @param teardownRef - Reference containing teardown count.
+ * @param teardownRef.lastTeardown - Number of the last teardown.
+ * @returns New proxy promise.
+ */
+export function withTeardown<T>(
+  originalPromise: Promise<T>,
+  teardownRef: { lastTeardown: number },
+): Promise<T> {
+  const myTeardown = teardownRef.lastTeardown;
+  return new Promise<T>((resolve, reject) => {
+    originalPromise
+      .then((value) => {
+        if (teardownRef.lastTeardown === myTeardown) {
+          resolve(value);
+        } else {
+          console.warn(
+            'Late promise received after Snap finished execution. Promise will be dropped.',
+          );
+        }
+      })
+      .catch((reason) => {
+        if (teardownRef.lastTeardown === myTeardown) {
+          reject(reason);
+        } else {
+          console.warn(
+            'Late promise received after Snap finished execution. Promise will be dropped.',
+          );
+        }
+      });
+  });
+}
