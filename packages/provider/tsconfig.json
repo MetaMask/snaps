@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.packages.json",
+  "compilerOptions": {
+    "allowJs": true,
+    "lib": ["DOM", "ES2020"],
+    "outDir": "./dist",
+    "resolveJsonModule": true,
+    "rootDir": "./src",
+    "typeRoots": ["../../node_modules/@types", "./node_modules/@types"]
+  },
+  "include": ["./src"],
+  "references": [
+    { "path": "../utils" },
+    { "path": "../execution-environments" }
+  ]
+}

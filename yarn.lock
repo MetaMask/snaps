@@ -2884,6 +2884,39 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/multichain-provider@workspace:packages/provider":
+  version: 0.0.0-use.local
+  resolution: "@metamask/multichain-provider@workspace:packages/provider"
+  dependencies:
+    "@lavamoat/allow-scripts": ^2.0.3
+    "@metamask/auto-changelog": ^2.6.0
+    "@metamask/eslint-config": ^9.0.0
+    "@metamask/eslint-config-jest": ^9.0.0
+    "@metamask/eslint-config-nodejs": ^9.0.0
+    "@metamask/eslint-config-typescript": ^9.0.1
+    "@metamask/object-multiplex": ^1.2.0
+    "@metamask/safe-event-emitter": ^2.0.0
+    "@types/jest": ^27.5.1
+    eslint: ^7.30.0
+    eslint-config-prettier: ^8.3.0
+    eslint-plugin-import: ^2.23.4
+    eslint-plugin-jest: ^24.4.0
+    eslint-plugin-jsdoc: ^36.1.0
+    eslint-plugin-node: ^11.1.0
+    eslint-plugin-prettier: ^3.4.0
+    jest: ^27.5.1
+    jest-it-up: ^2.0.0
+    json-rpc-engine: ^6.1.0
+    json-rpc-middleware-stream: ^3.0.0
+    prettier: ^2.3.2
+    prettier-plugin-packagejson: ^2.2.11
+    pump: ^3.0.0
+    rimraf: ^3.0.2
+    ts-jest: ^27.1.5
+    typescript: ^4.4.0
+  languageName: unknown
+  linkType: soft
+
 "@metamask/object-multiplex@npm:^1.1.0, @metamask/object-multiplex@npm:^1.2.0":
   version: 1.2.0
   resolution: "@metamask/object-multiplex@npm:1.2.0"
