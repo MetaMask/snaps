@@ -7,10 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.19.0]
-### Uncategorized
-- Add `snap_getBip32Entropy` method ([#683](https://github.com/MetaMask/snaps-skunkworks/pull/683))
+### Added
+- **BREAKING:** Add `snap_getBip32Entropy` method ([#683](https://github.com/MetaMask/snaps-skunkworks/pull/683))
 - Add new validation and limit for storage ([#621](https://github.com/MetaMask/snaps-skunkworks/pull/621))
-- Move JSON schemas and controller utils to utils package ([#623](https://github.com/MetaMask/snaps-skunkworks/pull/623))
 
 ## [0.18.1]
 ### Changed

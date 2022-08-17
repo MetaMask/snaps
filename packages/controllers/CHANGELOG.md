@@ -7,13 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.19.0]
-### Uncategorized
-- Moved SnapController to xstate ([#676](https://github.com/MetaMask/snaps-skunkworks/pull/676))
-- Fix update snap request object ([#673](https://github.com/MetaMask/snaps-skunkworks/pull/673))
-- Remove reliance on getRpcRequestHandler ([#645](https://github.com/MetaMask/snaps-skunkworks/pull/645))
-- Dedupe yarn.lock ([#617](https://github.com/MetaMask/snaps-skunkworks/pull/617))
-- Send valid JSON-RPC notifications from executors ([#639](https://github.com/MetaMask/snaps-skunkworks/pull/639))
-- Move JSON schemas and controller utils to utils package ([#623](https://github.com/MetaMask/snaps-skunkworks/pull/623))
+### Fixed
+- Fixed update snap approval missing metadata ([#673](https://github.com/MetaMask/snaps-skunkworks/pull/673))
+- Fixed executors sending malformed JSON-RPC notifications ([#639](https://github.com/MetaMask/snaps-skunkworks/pull/639))
 
 ## [0.18.1]
 ### Changed

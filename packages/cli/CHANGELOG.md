@@ -7,13 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.19.0]
-### Uncategorized
-- Move eval functionality to utils package ([#666](https://github.com/MetaMask/snaps-skunkworks/pull/666))
-- Dedupe yarn.lock ([#617](https://github.com/MetaMask/snaps-skunkworks/pull/617))
-- Move manifest handling functionality to utils ([#652](https://github.com/MetaMask/snaps-skunkworks/pull/652))
-- BREAKING: Replace RegEx-based bundle processing and comment stripping with an AST-based solution ([#583](https://github.com/MetaMask/snaps-skunkworks/pull/583))
-- Move JSON schemas and controller utils to utils package ([#623](https://github.com/MetaMask/snaps-skunkworks/pull/623))
+### Added
 - Add 'Access-Control-Allow-Origin': * to serve ([#638](https://github.com/MetaMask/snaps-skunkworks/pull/638))
+
+### Changed
+- **BREAKING:** Replace RegEx-based bundle processing and comment stripping with an AST-based solution ([#583](https://github.com/MetaMask/snaps-skunkworks/pull/583))
 
 ## [0.18.1]
 ### Changed

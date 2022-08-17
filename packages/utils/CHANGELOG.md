@@ -7,14 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.19.0]
-### Uncategorized
+### Changed
 - Move eval functionality to utils package ([#666](https://github.com/MetaMask/snaps-skunkworks/pull/666))
-- Moved SnapController to xstate ([#676](https://github.com/MetaMask/snaps-skunkworks/pull/676))
-- Added AbortSignal to default endowments ([#682](https://github.com/MetaMask/snaps-skunkworks/pull/682))
-- Dedupe yarn.lock ([#617](https://github.com/MetaMask/snaps-skunkworks/pull/617))
 - Move manifest handling functionality to utils ([#652](https://github.com/MetaMask/snaps-skunkworks/pull/652))
-- BREAKING: Replace RegEx-based bundle processing and comment stripping with an AST-based solution ([#583](https://github.com/MetaMask/snaps-skunkworks/pull/583))
 - Move JSON schemas and controller utils to utils package ([#623](https://github.com/MetaMask/snaps-skunkworks/pull/623))
+
+### Fixed
+- Fixed missing AbortSignal in default endowments ([#682](https://github.com/MetaMask/snaps-skunkworks/pull/682))
 
 ## [0.18.1]
 ### Changed

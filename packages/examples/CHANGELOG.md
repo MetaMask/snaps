@@ -7,10 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.19.0]
-### Uncategorized
-- Dedupe yarn.lock ([#617](https://github.com/MetaMask/snaps-skunkworks/pull/617))
-- Move manifest handling functionality to utils ([#652](https://github.com/MetaMask/snaps-skunkworks/pull/652))
-- BREAKING: Replace RegEx-based bundle processing and comment stripping with an AST-based solution ([#583](https://github.com/MetaMask/snaps-skunkworks/pull/583))
+### Changed
+- No changes this release.
 
 ## [0.18.1]
 ### Changed

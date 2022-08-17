@@ -7,10 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.19.0]
-### Uncategorized
-- Make improvements so teardown cannot be escaped by late returning promises ([#661](https://github.com/MetaMask/snaps-skunkworks/pull/661))
-- Dedupe yarn.lock ([#617](https://github.com/MetaMask/snaps-skunkworks/pull/617))
-- Send valid JSON-RPC notifications from executors ([#639](https://github.com/MetaMask/snaps-skunkworks/pull/639))
+### Fixed
+- Fixed network teardown so that snaps can't be escape by late returning promises ([#661](https://github.com/MetaMask/snaps-skunkworks/pull/661))
 
 ## [0.18.1]
 ### Fixed
