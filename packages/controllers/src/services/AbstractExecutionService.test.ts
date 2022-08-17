@@ -1,5 +1,5 @@
 import { ControllerMessenger } from '@metamask/controllers';
-import { HandlerType } from '@metamask/execution-environments';
+import { HandlerType } from '@metamask/snap-utils';
 import {
   ErrorMessageEvent,
   ExecutionServiceMessenger,

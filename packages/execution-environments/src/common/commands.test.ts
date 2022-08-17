@@ -1,8 +1,8 @@
+import { HandlerType } from '@metamask/snap-utils';
 import {
   CommandMethodsMapping,
   getCommandMethodImplementations,
 } from './commands';
-import { HandlerType } from './enums';
 
 describe('getCommandMethodImplementations', () => {
   it('will return an object with ping, executeSnap, snapRpc and terminate methods', () => {

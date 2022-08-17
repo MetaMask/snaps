@@ -9,6 +9,7 @@ import {
 } from '@metamask/snap-types';
 import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
 import { JsonRpcNotification } from '@metamask/utils';
+import { HandlerType } from '@metamask/snap-utils';
 import EEOpenRPCDocument from '../openrpc.json';
 import {
   Endowments,
@@ -17,7 +18,6 @@ import {
   Target,
 } from '../__GENERATED__/openrpc';
 import { isJsonRpcRequest } from '../__GENERATED__/openrpc.guard';
-import { HandlerType } from '..';
 import { createEndowments } from './endowments';
 import {
   getCommandMethodImplementations,
@@ -47,7 +47,7 @@ export type InvokeSnapArgs = SnapExportsParameters[0];
 export type InvokeSnap = (
   target: Target,
   handler: HandlerType,
-  args: InvokeSnapArgs,
+  args: InvokeSnapArgs | undefined,
 ) => Promise<unknown>;
 
 export class BaseSnapExecutor {

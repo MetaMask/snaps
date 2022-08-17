@@ -8,7 +8,7 @@ import {
   SubjectPermissions,
   ValidPermission,
 } from '@metamask/controllers';
-import { SnapExecutionData } from '@metamask/snap-types';
+import { SnapExecutionData, SnapRpcHookArgs } from '@metamask/snap-types';
 import {
   DEFAULT_ENDOWMENTS,
   getSnapPermissionName,
@@ -95,8 +95,7 @@ const getSnapControllerMessenger = (
       'PermissionController:revokeAllPermissions',
       'SnapController:add',
       'SnapController:get',
-      'SnapController:handleRpcRequest',
-      'SnapController:handleTransactionInsightRequest',
+      'SnapController:handleRequest',
       'SnapController:getSnapState',
       'SnapController:has',
       'SnapController:updateSnapState',

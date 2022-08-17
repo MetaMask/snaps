@@ -2,7 +2,7 @@
 import 'ses';
 import { EventEmitter } from 'stream';
 import { Json, JsonRpcSuccess } from '@metamask/utils';
-import { SNAP_STREAM_NAMES, HandlerType } from '../common/enums';
+import { SNAP_STREAM_NAMES, HandlerType } from '@metamask/snap-utils';
 import { IFrameSnapExecutor } from './IFrameSnapExecutor';
 
 const FAKE_ORIGIN = 'origin:foo';

@@ -1,8 +1,8 @@
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import pump from 'pump';
+import { SNAP_STREAM_NAMES } from '@metamask/snap-utils';
 import { BaseSnapExecutor } from '../common/BaseSnapExecutor';
-import { SNAP_STREAM_NAMES } from '../common/enums';
 
 export class IFrameSnapExecutor extends BaseSnapExecutor {
   /**

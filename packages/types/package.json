@@ -21,7 +21,8 @@
     "publish:package": "../../scripts/publish-package.sh"
   },
   "dependencies": {
-    "@metamask/controllers": "^30.0.0"
+    "@metamask/controllers": "^30.0.0",
+    "@metamask/snap-utils": "workspace:^"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.0.3",

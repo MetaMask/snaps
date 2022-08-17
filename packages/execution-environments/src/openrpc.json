@@ -108,7 +108,8 @@
           "description": "the handler to trigger on the snap",
           "schema": {
             "title": "Handler",
-            "type": "string"
+            "type": "string",
+            "enum": ["onRpcRequest", "onTransactionInsight"]
           }
         },
         {

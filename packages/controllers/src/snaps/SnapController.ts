@@ -16,10 +16,16 @@ import {
   SubjectPermissions,
   ValidPermission,
 } from '@metamask/controllers';
-import { ErrorJSON, SnapData, SnapId } from '@metamask/snap-types';
-import { HandlerType } from '@metamask/execution-environments';
+import {
+  ErrorJSON,
+  SnapData,
+  SnapId,
+  SnapRpcHook,
+  SnapRpcHookArgs,
+} from '@metamask/snap-types';
 import {
   assert,
+  assertExhaustive,
   DEFAULT_ENDOWMENTS,
   DEFAULT_REQUESTED_SNAP_VERSION,
   getSnapPermissionName,
@@ -57,17 +63,15 @@ import {
   ExecuteSnapAction,
   ExecutionServiceEvents,
   HandleRpcRequestAction,
-  SnapRpcHook,
-  SnapRpcHookArgs,
   TerminateAllSnapsAction,
   TerminateSnapAction,
 } from '../services/ExecutionService';
-import { assertExhaustive, hasTimedOut, setDiff, withTimeout } from '../utils';
+import { hasTimedOut, setDiff, withTimeout } from '../utils';
+import { SnapEndowments } from './endowments';
 import { RequestQueue } from './RequestQueue';
 import { fetchNpmSnap } from './utils';
 
 import { Timer } from './Timer';
-import { SnapEndowments } from './endowments';
 
 export const controllerName = 'SnapController';
 
@@ -273,19 +277,11 @@ export type GetSnap = {
 };
 
 /**
- * Handles sending an inbound rpc message to a snap and returns its result.
+ * Handles sending an inbound request to a snap and returns its result.
  */
-export type HandleSnapRpcRequest = {
-  type: `${typeof controllerName}:handleRpcRequest`;
-  handler: SnapController['handleRpcRequest'];
-};
-
-/**
- * Handles sending an inbound transaction insight message to a snap and returns its result.
- */
-export type HandleSnapTransactionInsightRequest = {
-  type: `${typeof controllerName}:handleTransactionInsightRequest`;
-  handler: SnapController['handleTransactionInsightRequest'];
+export type HandleSnapRequest = {
+  type: `${typeof controllerName}:handleRequest`;
+  handler: SnapController['handleRequest'];
 };
 
 /**
@@ -363,8 +359,7 @@ export type SnapControllerActions =
   | ClearSnapState
   | GetSnap
   | GetSnapState
-  | HandleSnapRpcRequest
-  | HandleSnapTransactionInsightRequest
+  | HandleSnapRequest
   | HasSnap
   | UpdateBlockedSnaps
   | UpdateSnapState
@@ -856,13 +851,8 @@ export class SnapController extends BaseController<
     );
 
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:handleRpcRequest`,
-      (...args) => this.handleRpcRequest(...args),
-    );
-
-    this.messagingSystem.registerActionHandler(
-      `${controllerName}:handleTransactionInsightRequest`,
-      (...args) => this.handleTransactionInsightRequest(...args),
+      `${controllerName}:handleRequest`,
+      (...args) => this.handleRequest(...args),
     );
 
     this.messagingSystem.registerActionHandler(
@@ -2140,48 +2130,6 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Passes a JSON-RPC request object to the RPC handler function of a snap, triggering the onRpcRequest handler.
-   *
-   * @param snapId - The ID of the recipient snap.
-   * @param origin - The origin of the RPC request.
-   * @param request - The JSON-RPC request object.
-   * @returns The result of the JSON-RPC request.
-   */
-  async handleRpcRequest(
-    snapId: SnapId,
-    origin: string,
-    request: Record<string, unknown>,
-  ): Promise<unknown> {
-    return this.handleRequest({
-      snapId,
-      origin,
-      handler: HandlerType.OnRpcRequest,
-      request,
-    });
-  }
-
-  /**
-   * Passes a JSON-RPC request object to the RPC handler function of a snap, triggering the getTransactionInsightHandler handler.
-   *
-   * @param snapId - The ID of the recipient snap.
-   * @param origin - The origin of the RPC request.
-   * @param request - The JSON-RPC request object.
-   * @returns The result of the JSON-RPC request.
-   */
-  async handleTransactionInsightRequest(
-    snapId: SnapId,
-    origin: string,
-    request: Record<string, unknown>,
-  ): Promise<unknown> {
-    return this.handleRequest({
-      snapId,
-      origin,
-      handler: HandlerType.GetTransactionInsight,
-      request,
-    });
-  }
-
-  /**
    * Passes a JSON-RPC request object to the RPC handler function of a snap.
    *
    * @param options - A bag of options.
@@ -2191,7 +2139,7 @@ export class SnapController extends BaseController<
    * @param options.request - The JSON-RPC request object.
    * @returns The result of the JSON-RPC request.
    */
-  private async handleRequest({
+  async handleRequest({
     snapId,
     origin,
     handler: handlerType,
