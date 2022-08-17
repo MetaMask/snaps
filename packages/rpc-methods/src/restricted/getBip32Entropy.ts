@@ -180,8 +180,11 @@ export const getBip32EntropyBuilder = Object.freeze({
   },
 } as const);
 
-export const getBip32EntropyCaveatSpecificationBuilder: CaveatSpecificationConstraint =
-  Object.freeze({
+export const getBip32EntropyCaveatSpecifications: Record<
+  SnapCaveatType,
+  CaveatSpecificationConstraint
+> = {
+  [SnapCaveatType.PermittedDerivationPaths]: Object.freeze({
     type: SnapCaveatType.PermittedDerivationPaths,
     decorator: (
       method,
@@ -211,7 +214,8 @@ export const getBip32EntropyCaveatSpecificationBuilder: CaveatSpecificationConst
       };
     },
     validator: (caveat) => validateCaveatPaths(caveat),
-  });
+  }),
+};
 
 /**
  * Builds the method implementation for `snap_getBip32Entropy`.

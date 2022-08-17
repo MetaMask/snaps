@@ -1,7 +1,7 @@
 import { SnapCaveatType } from '../caveats';
 import {
   getBip32EntropyBuilder,
-  getBip32EntropyCaveatSpecificationBuilder,
+  getBip32EntropyCaveatSpecifications,
   getBip32EntropyImplementation,
   validateCaveatPaths,
   validatePath,
@@ -139,7 +139,7 @@ describe('specificationBuilder', () => {
   });
 });
 
-describe('getBip32EntropyCaveatSpecificationBuilder', () => {
+describe('getBip32EntropyCaveatSpecifications', () => {
   describe('decorator', () => {
     const params = { path: ['m', "44'", "60'"], curve: 'secp256k1' };
 
@@ -147,7 +147,9 @@ describe('getBip32EntropyCaveatSpecificationBuilder', () => {
       const fn = jest.fn().mockImplementation(() => 'foo');
 
       expect(
-        await getBip32EntropyCaveatSpecificationBuilder.decorator(fn, {
+        await getBip32EntropyCaveatSpecifications[
+          SnapCaveatType.PermittedDerivationPaths
+        ].decorator(fn, {
           type: SnapCaveatType.PermittedDerivationPaths,
           value: [params],
           // @ts-expect-error Missing other required properties.
@@ -159,7 +161,9 @@ describe('getBip32EntropyCaveatSpecificationBuilder', () => {
       const fn = jest.fn().mockImplementation(() => 'foo');
 
       await expect(
-        getBip32EntropyCaveatSpecificationBuilder.decorator(fn, {
+        getBip32EntropyCaveatSpecifications[
+          SnapCaveatType.PermittedDerivationPaths
+        ].decorator(fn, {
           type: SnapCaveatType.PermittedDerivationPaths,
           value: [params],
           // @ts-expect-error Missing other required properties.
@@ -173,7 +177,9 @@ describe('getBip32EntropyCaveatSpecificationBuilder', () => {
       const fn = jest.fn().mockImplementation(() => 'foo');
 
       await expect(
-        getBip32EntropyCaveatSpecificationBuilder.decorator(fn, {
+        getBip32EntropyCaveatSpecifications[
+          SnapCaveatType.PermittedDerivationPaths
+        ].decorator(fn, {
           type: SnapCaveatType.PermittedDerivationPaths,
           value: [params],
           // @ts-expect-error Missing other required properties.
@@ -187,7 +193,9 @@ describe('getBip32EntropyCaveatSpecificationBuilder', () => {
   describe('validator', () => {
     it('throws if the caveat values are invalid', () => {
       expect(() =>
-        getBip32EntropyCaveatSpecificationBuilder.validator?.({
+        getBip32EntropyCaveatSpecifications[
+          SnapCaveatType.PermittedDerivationPaths
+        ].validator?.({
           type: SnapCaveatType.PermittedDerivationPaths,
           value: [{ path: ['foo'], curve: 'secp256k1' }],
         }),
