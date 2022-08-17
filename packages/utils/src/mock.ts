@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 import crypto from 'crypto';
-import { DEFAULT_ENDOWMENTS } from '@metamask/snap-utils';
+import { DEFAULT_ENDOWMENTS } from './default-endowments';
 
 const NETWORK_APIS = ['fetch', 'WebSocket'];
 
@@ -58,7 +58,8 @@ const generateMockClass = (value: any) => {
   return new Proxy(value, handler);
 };
 
-// Things not currently auto-mocked because of NodeJS, by adding them here we have types for them and can use that to generate mocks if needed
+// Things not currently auto-mocked because of NodeJS, by adding them here we
+// have types for them and can use that to generate mocks if needed.
 const mockWindow: Record<string, unknown> = {
   WebSocket: MockClass,
   crypto,

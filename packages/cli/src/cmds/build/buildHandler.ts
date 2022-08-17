@@ -1,13 +1,13 @@
-import { YargsArgs } from '../../types/yargs';
 import {
   getOutfilePath,
-  loadConfig,
   validateDirPath,
   validateFilePath,
   validateOutfileName,
-} from '../../utils';
-import { snapEval } from '../eval/evalHandler';
+} from '@metamask/snap-utils';
+import { YargsArgs } from '../../types/yargs';
+import { loadConfig } from '../../utils';
 import { manifestHandler } from '../manifest/manifestHandler';
+import { evalHandler } from '../eval/evalHandler';
 import { bundle } from './bundle';
 
 /**
@@ -37,7 +37,7 @@ export async function build(argv: YargsArgs): Promise<void> {
     loadConfig().bundlerCustomizer,
   );
   if (result && argv.eval) {
-    await snapEval({ ...argv, bundle: outfilePath });
+    await evalHandler({ ...argv, bundle: outfilePath });
   }
 
   if (argv.manifest) {
