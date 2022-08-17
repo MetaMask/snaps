@@ -33,7 +33,6 @@
   "dependencies": {
     "@metamask/browser-passworder": "^3.0.0",
     "@metamask/controllers": "^30.0.0",
-    "@metamask/execution-environments": "^0.19.1",
     "@metamask/object-multiplex": "^1.1.0",
     "@metamask/post-message-stream": "^6.0.0",
     "@metamask/snap-utils": "^0.19.1",

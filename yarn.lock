@@ -2472,7 +2472,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/execution-environments@^0.19.1, @metamask/execution-environments@workspace:packages/execution-environments":
+"@metamask/execution-environments@workspace:packages/execution-environments":
   version: 0.0.0-use.local
   resolution: "@metamask/execution-environments@workspace:packages/execution-environments"
   dependencies:
@@ -2486,7 +2486,7 @@ __metadata:
     "@metamask/post-message-stream": ^6.0.0
     "@metamask/providers": ^9.0.0
     "@metamask/snap-types": ^0.19.1
-    "@metamask/snap-utils": "workspace:^"
+    "@metamask/snap-utils": ^0.19.1
     "@metamask/utils": ^2.0.0
     "@open-rpc/typings": ^1.12.1
     "@types/jest": ^27.5.1
@@ -2678,7 +2678,6 @@ __metadata:
     "@metamask/eslint-config-jest": ^9.0.0
     "@metamask/eslint-config-nodejs": ^9.0.0
     "@metamask/eslint-config-typescript": ^9.0.1
-    "@metamask/execution-environments": ^0.19.1
     "@metamask/object-multiplex": ^1.1.0
     "@metamask/post-message-stream": ^6.0.0
     "@metamask/snap-types": ^0.19.1
@@ -2724,7 +2723,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/snap-types@^0.19.1, @metamask/snap-types@workspace:^, @metamask/snap-types@workspace:packages/types":
+"@metamask/snap-types@^0.19.1, @metamask/snap-types@workspace:packages/types":
   version: 0.0.0-use.local
   resolution: "@metamask/snap-types@workspace:packages/types"
   dependencies:
@@ -2736,7 +2735,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^9.0.0
     "@metamask/eslint-config-typescript": ^9.0.1
     "@metamask/providers": ^9.0.0
-    "@metamask/snap-utils": "workspace:^"
+    "@metamask/snap-utils": ^0.19.1
     "@metamask/types": ^1.1.0
     eslint: ^7.30.0
     eslint-config-prettier: ^8.3.0
@@ -2752,7 +2751,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/snap-utils@^0.19.1, @metamask/snap-utils@workspace:^, @metamask/snap-utils@workspace:packages/utils":
+"@metamask/snap-utils@^0.19.1, @metamask/snap-utils@workspace:packages/utils":
   version: 0.0.0-use.local
   resolution: "@metamask/snap-utils@workspace:packages/utils"
   dependencies:
@@ -2765,7 +2764,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^9.0.0
     "@metamask/eslint-config-nodejs": ^9.0.0
     "@metamask/eslint-config-typescript": ^9.0.1
-    "@metamask/snap-types": "workspace:^"
+    "@metamask/snap-types": ^0.19.1
     "@metamask/utils": ^2.0.0
     "@types/jest": ^27.5.1
     "@types/semver": ^7.3.10

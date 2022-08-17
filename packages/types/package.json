@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@metamask/controllers": "^30.0.0",
-    "@metamask/snap-utils": "workspace:^"
+    "@metamask/snap-utils": "^0.19.1"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.0.3",

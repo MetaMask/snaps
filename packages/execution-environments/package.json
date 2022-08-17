@@ -36,7 +36,7 @@
     "@metamask/post-message-stream": "^6.0.0",
     "@metamask/providers": "^9.0.0",
     "@metamask/snap-types": "^0.19.1",
-    "@metamask/snap-utils": "workspace:^",
+    "@metamask/snap-utils": "^0.19.1",
     "@metamask/utils": "^2.0.0",
     "eth-rpc-errors": "^4.0.3",
     "pump": "^3.0.0",

@@ -25,15 +25,15 @@ export type CommandMethodsMapping = {
  * @param request - The request object.
  * @returns The formatted arguments.
  */
-// eslint-disable-next-line consistent-return
 function getHandlerArguments(
   origin: Origin,
   handler: HandlerType,
   request: JsonRpcRequest<unknown[] | { [key: string]: unknown }>,
-): InvokeSnapArgs | undefined {
-  const { transaction, metadata, chainId } = request.params as {
-    [key: string]: any;
-  };
+): InvokeSnapArgs {
+  const { transaction, metadata, chainId } = request.params as Record<
+    string,
+    any
+  >;
   switch (handler) {
     case HandlerType.OnTransactionInsight:
       return {
@@ -45,7 +45,7 @@ function getHandlerArguments(
     case HandlerType.OnRpcRequest:
       return { origin, request };
     default:
-      assertExhaustive(handler as never);
+      return assertExhaustive(handler);
   }
 }
 
