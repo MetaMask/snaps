@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.18.2]
+### Uncategorized
+- Move eval functionality to utils package ([#666](https://github.com/MetaMask/snaps-skunkworks/pull/666))
+- Dedupe yarn.lock ([#617](https://github.com/MetaMask/snaps-skunkworks/pull/617))
+- Move manifest handling functionality to utils ([#652](https://github.com/MetaMask/snaps-skunkworks/pull/652))
+- BREAKING: Replace RegEx-based bundle processing and comment stripping with an AST-based solution ([#583](https://github.com/MetaMask/snaps-skunkworks/pull/583))
+- Move JSON schemas and controller utils to utils package ([#623](https://github.com/MetaMask/snaps-skunkworks/pull/623))
+- Add 'Access-Control-Allow-Origin': * to serve ([#638](https://github.com/MetaMask/snaps-skunkworks/pull/638))
+
 ## [0.18.1]
 ### Changed
 - No changes this release.
@@ -214,7 +223,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Example snaps ([#72](https://github.com/MetaMask/snaps-skunkworks/pull/72))
   - The examples now live in their own package, [`@metamask/snap-examples`](https://npmjs.com/package/@metamask/snap-examples).
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.18.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.18.2...HEAD
+[0.18.2]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.18.1...v0.18.2
 [0.18.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.18.0...v0.18.1
 [0.18.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.17.0...v0.18.0
 [0.17.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.16.0...v0.17.0

@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.18.2]
+### Uncategorized
+- Make improvements so teardown cannot be escaped by late returning promises ([#661](https://github.com/MetaMask/snaps-skunkworks/pull/661))
+- Dedupe yarn.lock ([#617](https://github.com/MetaMask/snaps-skunkworks/pull/617))
+- Send valid JSON-RPC notifications from executors ([#639](https://github.com/MetaMask/snaps-skunkworks/pull/639))
+
 ## [0.18.1]
 ### Fixed
 - Fix error serialization issues ([#637](https://github.com/MetaMask/snaps-skunkworks/pull/637))
@@ -115,7 +121,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Previously, default endowments were specified in the execution environment itself. Now, all endowments must be specified in the `executeSnap` RPC parameters, except for the `wallet` API object.
 - Add endowments to the global `self` in addition to `window` ([#263](https://github.com/MetaMask/snaps-skunkworks/pull/263))
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.18.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.18.2...HEAD
+[0.18.2]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.18.1...v0.18.2
 [0.18.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.18.0...v0.18.1
 [0.18.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.17.0...v0.18.0
 [0.17.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.16.0...v0.17.0
