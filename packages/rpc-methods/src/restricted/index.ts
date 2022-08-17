@@ -6,6 +6,10 @@ import {
 import { invokeSnapBuilder, InvokeSnapMethodHooks } from './invokeSnap';
 import { manageStateBuilder, ManageStateMethodHooks } from './manageState';
 import { notifyBuilder, NotifyMethodHooks } from './notify';
+import {
+  getBip32EntropyBuilder,
+  getBip32EntropyCaveatSpecifications,
+} from './getBip32Entropy';
 
 export { ManageStateOperation } from './manageState';
 export { NotificationArgs, NotificationType } from './notify';
@@ -18,8 +22,13 @@ export type RestrictedMethodHooks = ConfirmMethodHooks &
 
 export const builders = {
   [confirmBuilder.targetKey]: confirmBuilder,
+  [getBip32EntropyBuilder.targetKey]: getBip32EntropyBuilder,
   [getBip44EntropyBuilder.targetKey]: getBip44EntropyBuilder,
   [invokeSnapBuilder.targetKey]: invokeSnapBuilder,
   [manageStateBuilder.targetKey]: manageStateBuilder,
   [notifyBuilder.targetKey]: notifyBuilder,
+} as const;
+
+export const caveatSpecifications = {
+  ...getBip32EntropyCaveatSpecifications,
 } as const;
