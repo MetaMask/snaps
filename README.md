@@ -40,7 +40,13 @@ Run `yarn test` and `yarn lint` in the project root directory, or in a workspace
 
 ### Publishing
 
-Follow the usual release automation workflow, the publish locally from the monorepo root using:
+1. Run [Create Release Pull Request workflow](https://github.com/MetaMask/snaps-skunkworks/actions/workflows/create-release-pr.yml)
+2. Checkout the created branch.
+3. Update CHANGELOG.md in each package, moving changes to their categories and make them more descriptive.
+4. Run `yarn install` in root to update `yarn.lock`.
+5. Run `yarn build` in `packages/examples` to update snap manifests
+
+To publish locally from the monorepo root use:
 
 ```sh
 yarn publish:all --otp=YOUR_NPM_OTP_CODE
