@@ -45,6 +45,8 @@ Run `yarn test` and `yarn lint` in the project root directory, or in a workspace
 3. Update CHANGELOG.md in each package, moving changes to their categories and make them more descriptive.
 4. Run `yarn install` in root to update `yarn.lock`.
 5. Run `yarn build` in `packages/examples` to update snap manifests
+6. Get the PR merged, Publish Release workflow will start on main branch.
+7. After the workflow does a dry run, manually approve the deployment in Github Actions tab.
 
 To publish locally from the monorepo root use:
 
