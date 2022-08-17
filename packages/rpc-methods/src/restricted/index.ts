@@ -1,6 +1,7 @@
 import { confirmBuilder, ConfirmMethodHooks } from './confirm';
 import {
   getBip44EntropyBuilder,
+  getBip44EntropyCaveatSpecifications,
   GetBip44EntropyMethodHooks,
 } from './getBip44Entropy';
 import { invokeSnapBuilder, InvokeSnapMethodHooks } from './invokeSnap';
@@ -10,6 +11,7 @@ import {
   getBip32EntropyBuilder,
   getBip32EntropyCaveatSpecifications,
 } from './getBip32Entropy';
+import { getBip44EntropyLegacyBuilder } from './getBip44EntropyLegacy';
 
 export { ManageStateOperation } from './manageState';
 export { NotificationArgs, NotificationType } from './notify';
@@ -24,6 +26,7 @@ export const builders = {
   [confirmBuilder.targetKey]: confirmBuilder,
   [getBip32EntropyBuilder.targetKey]: getBip32EntropyBuilder,
   [getBip44EntropyBuilder.targetKey]: getBip44EntropyBuilder,
+  [getBip44EntropyLegacyBuilder.targetKey]: getBip44EntropyLegacyBuilder,
   [invokeSnapBuilder.targetKey]: invokeSnapBuilder,
   [manageStateBuilder.targetKey]: manageStateBuilder,
   [notifyBuilder.targetKey]: notifyBuilder,
@@ -31,4 +34,5 @@ export const builders = {
 
 export const caveatSpecifications = {
   ...getBip32EntropyCaveatSpecifications,
+  ...getBip44EntropyCaveatSpecifications,
 } as const;
