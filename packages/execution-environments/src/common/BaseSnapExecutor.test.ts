@@ -2,9 +2,9 @@
 import 'ses';
 import { Duplex, DuplexOptions, EventEmitter, Readable } from 'stream';
 import { JsonRpcResponse } from '@metamask/utils';
+import { HandlerType } from '@metamask/snap-utils';
 import { JsonRpcRequest } from '../__GENERATED__/openrpc';
 import { BaseSnapExecutor } from './BaseSnapExecutor';
-import { HandlerType } from './enums';
 
 const FAKE_ORIGIN = 'origin:foo';
 const FAKE_SNAP_NAME = 'local:foo';
@@ -727,9 +727,9 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
-  it('supports getTransactionInsight export', async () => {
+  it('supports onTransactionInsight export', async () => {
     const CODE = `
-      module.exports.getTransactionInsight = ({ transaction }) => transaction;
+      module.exports.onTransactionInsight = ({ transaction }) => transaction;
     `;
     const executor = new TestSnapExecutor();
 
@@ -756,7 +756,7 @@ describe('BaseSnapExecutor', () => {
       method: 'snapRpc',
       params: [
         FAKE_SNAP_NAME,
-        HandlerType.GetTransactionInsight,
+        HandlerType.OnTransactionInsight,
         FAKE_ORIGIN,
         { jsonrpc: '2.0', method: '', params: transaction },
       ],

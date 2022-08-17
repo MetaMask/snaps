@@ -1,4 +1,5 @@
 import { JsonRpcRequest } from '@metamask/utils';
+import { assertExhaustive, HandlerType } from '@metamask/snap-utils';
 import {
   ExecuteSnap,
   Origin,
@@ -8,7 +9,6 @@ import {
 } from '../__GENERATED__/openrpc';
 import { isEndowments, isJsonRpcRequest } from '../__GENERATED__/openrpc.guard';
 import { InvokeSnap, InvokeSnapArgs } from './BaseSnapExecutor';
-import { HandlerType } from './enums';
 
 export type CommandMethodsMapping = {
   ping: Ping;
@@ -25,19 +25,38 @@ export type CommandMethodsMapping = {
  * @param request - The request object.
  * @returns The formatted arguments.
  */
+// eslint-disable-next-line consistent-return
 function getHandlerArguments(
   origin: Origin,
   handler: HandlerType,
   request: JsonRpcRequest<unknown[] | { [key: string]: unknown }>,
-): InvokeSnapArgs {
-  if (handler === HandlerType.GetTransactionInsight) {
-    return {
-      origin,
-      transaction: request.params as { [key: string]: unknown },
-    };
+): InvokeSnapArgs | undefined {
+  const { transaction, metadata, chainId } = request.params as {
+    [key: string]: any;
+  };
+  switch (handler) {
+    case HandlerType.OnTransactionInsight:
+      return {
+        origin,
+        transaction,
+        metadata,
+        chainId,
+      };
+    case HandlerType.OnRpcRequest:
+      return { origin, request };
+    default:
+      assertExhaustive(handler as never);
   }
+}
 
-  return { origin, request };
+/**
+ * Typeguard to ensure a handler is part of the HandlerType.
+ *
+ * @param handler - The handler to pass the request to.
+ * @returns A boolean.
+ */
+function isHandler(handler: string): handler is HandlerType {
+  return handler in HandlerType;
 }
 
 /**
@@ -98,13 +117,17 @@ export function getCommandMethodImplementations(
         throw new Error('request is not a proper JSON RPC Request');
       }
 
+      if (!isHandler(handler)) {
+        throw new Error('Incorrect handler type.');
+      }
+
       return (
         (await invokeSnap(
           target,
-          handler as any,
+          handler,
           getHandlerArguments(
             origin,
-            handler as any,
+            handler,
             // Specifically casting to other JsonRpcRequest type here on purpose, to stop using the OpenRPC type.
             request as JsonRpcRequest<unknown[] | { [key: string]: unknown }>,
           ),

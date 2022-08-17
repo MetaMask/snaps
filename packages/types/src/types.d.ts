@@ -1,6 +1,7 @@
 import { Json } from '@metamask/controllers';
 import { MetaMaskInpageProvider } from '@metamask/providers';
 import { JsonRpcRequest } from '@metamask/types';
+import { HandlerType } from '@metamask/snap-utils';
 
 /**
  * Command request sent to a worker.
@@ -27,15 +28,33 @@ export type SnapRpcHandler = (args: {
 
 export type OnRpcRequestHandler = SnapRpcHandler;
 
+export type TransactionInsight = {
+  insights: { [key: string]: unknown };
+  cancel?: boolean;
+};
+
 // @todo improve type
-export type GetTransactionInsightHandler = (args: {
+export type OnTransactionInsightHandler = (args: {
   origin: string;
   transaction: { [key: string]: unknown };
-}) => Promise<string>;
+  metadata: { [key: string]: unknown };
+  chainId: ChainId;
+}) => Promise<TransactionInsight>;
+
+export type SnapRpcHookArgs = {
+  origin: string;
+  handler: HandlerType;
+  request: Record<string, unknown>;
+};
+
+// The snap is the callee
+export type SnapRpcHook = (options: SnapRpcHookArgs) => Promise<unknown>;
 
 export type SnapProvider = MetaMaskInpageProvider;
 
 export type SnapId = string;
+
+export type ChainId = string;
 
 export type ErrorJSON = {
   message: string;
@@ -45,7 +64,7 @@ export type ErrorJSON = {
 
 export type SnapExports = {
   onRpcRequest?: OnRpcRequestHandler;
-  getTransactionInsight?: GetTransactionInsightHandler;
+  onTransactionInsight?: OnTransactionInsightHandler;
 };
 
 type ObjectParameters<

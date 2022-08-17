@@ -1,10 +1,12 @@
 import { Duplex } from 'stream';
 import ObjectMultiplex from '@metamask/object-multiplex';
-import { ErrorJSON, SnapExecutionData } from '@metamask/snap-types';
 import {
-  SNAP_STREAM_NAMES,
-  HandlerType,
-} from '@metamask/execution-environments';
+  ErrorJSON,
+  SnapExecutionData,
+  SnapRpcHook,
+  SnapRpcHookArgs,
+} from '@metamask/snap-types';
+import { SNAP_STREAM_NAMES } from '@metamask/snap-utils';
 import {
   Duration,
   isJsonRpcRequest,
@@ -36,15 +38,6 @@ export type ExecutionServiceArgs = {
   messenger: ExecutionServiceMessenger;
   terminationTimeout?: number;
 };
-
-export type SnapRpcHookArgs = {
-  origin: string;
-  handler: HandlerType;
-  request: Record<string, unknown>;
-};
-
-// The snap is the callee
-export type SnapRpcHook = (options: SnapRpcHookArgs) => Promise<unknown>;
 
 export type JobStreams = {
   command: Duplex;

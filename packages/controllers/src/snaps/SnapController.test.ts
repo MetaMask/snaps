@@ -8,14 +8,15 @@ import {
   SubjectPermissions,
   ValidPermission,
 } from '@metamask/controllers';
-import { SnapExecutionData } from '@metamask/snap-types';
+import { SnapExecutionData, SnapRpcHookArgs } from '@metamask/snap-types';
 import {
   DEFAULT_ENDOWMENTS,
   getSnapPermissionName,
   getSnapSourceShasum,
   SnapManifest,
+  HandlerType,
 } from '@metamask/snap-utils';
-import { HandlerType } from '@metamask/execution-environments';
+
 import { Crypto } from '@peculiar/webcrypto';
 import { EthereumRpcError, ethErrors, serializeError } from 'eth-rpc-errors';
 import fetchMock from 'jest-fetch-mock';
@@ -23,11 +24,7 @@ import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { nanoid } from 'nanoid';
 import pump from 'pump';
-import {
-  NodeThreadExecutionService,
-  setupMultiplex,
-  SnapRpcHookArgs,
-} from '../services';
+import { NodeThreadExecutionService, setupMultiplex } from '../services';
 import { ExecutionService } from '../services/ExecutionService';
 import { delay } from '../utils';
 
@@ -98,8 +95,7 @@ const getSnapControllerMessenger = (
       'PermissionController:revokeAllPermissions',
       'SnapController:add',
       'SnapController:get',
-      'SnapController:handleRpcRequest',
-      'SnapController:handleTransactionInsightRequest',
+      'SnapController:handleRequest',
       'SnapController:getSnapState',
       'SnapController:has',
       'SnapController:updateSnapState',

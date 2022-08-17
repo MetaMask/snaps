@@ -1,4 +1,5 @@
 import { createHash } from 'crypto';
+import { ChainId } from '@metamask/snap-types';
 import { SnapManifest } from './json-schemas';
 import { SnapIdPrefixes, SnapValidationFailureReason } from './types';
 
@@ -109,4 +110,16 @@ export function validateSnapId(
   }
 
   throw new Error(`Invalid snap id. Unknown prefix. Received: "${snapId}"`);
+}
+
+/**
+ * Typeguard to ensure a chainId follows the CAIP-2 standard.
+ *
+ * @param chainId - The chainId being tested.
+ * @returns A boolean.
+ */
+export function isCaipChainId(chainId: any): chainId is ChainId {
+  const caipRegex =
+    /^(?<namespace>[-a-z0-9]{3,8}):(?<reference>[-a-zA-Z0-9]{1,32})$/u;
+  return caipRegex.test(chainId);
 }
