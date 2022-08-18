@@ -6,5 +6,6 @@
     "resolveJsonModule": true,
     "typeRoots": ["../../node_modules/@types", "./node_modules/@types"]
   },
-  "include": ["./src", "./src/openrpc.json"]
+  "include": ["./src", "./src/openrpc.json"],
+  "references": [{ "path": "../utils" }]
 }
