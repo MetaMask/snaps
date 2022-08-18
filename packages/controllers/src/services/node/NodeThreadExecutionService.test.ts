@@ -3,7 +3,7 @@ import { SnapId } from '@metamask/snap-utils';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import pump from 'pump';
-import { ErrorMessageEvent } from '../ExecutionService';
+import { ErrorMessageEvent, SnapErrorJson } from '../ExecutionService';
 import { setupMultiplex } from '../AbstractExecutionService';
 import { NodeThreadExecutionService } from './NodeThreadExecutionService';
 

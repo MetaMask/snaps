@@ -12,7 +12,6 @@ import {
   DEFAULT_ENDOWMENTS,
   getSnapPermissionName,
   getSnapSourceShasum,
-  SnapExecutionData,
   SnapManifest,
 } from '@metamask/snap-utils';
 import { Crypto } from '@peculiar/webcrypto';
@@ -23,7 +22,10 @@ import { createEngineStream } from 'json-rpc-middleware-stream';
 import { nanoid } from 'nanoid';
 import pump from 'pump';
 import { NodeThreadExecutionService, setupMultiplex } from '../services';
-import { ExecutionService } from '../services/ExecutionService';
+import {
+  ExecutionService,
+  SnapExecutionData,
+} from '../services/ExecutionService';
 import { delay } from '../utils';
 
 import { LONG_RUNNING_PERMISSION } from './endowments';

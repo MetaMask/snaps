@@ -1,12 +1,6 @@
 import { Json } from '@metamask/utils';
 import { NpmSnapPackageJson, SnapManifest } from './json-schemas';
 
-export type SnapExecutionData = {
-  snapId: string;
-  sourceCode: string;
-  endowments?: Json;
-};
-
 export type SnapId = string;
 
 /**

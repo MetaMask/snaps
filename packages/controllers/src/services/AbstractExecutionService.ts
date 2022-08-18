@@ -1,6 +1,5 @@
 import { Duplex } from 'stream';
 import ObjectMultiplex from '@metamask/object-multiplex';
-import { SnapExecutionData } from '@metamask/snap-utils';
 import { SNAP_STREAM_NAMES } from '@metamask/execution-environments';
 import {
   Duration,
@@ -23,6 +22,7 @@ import {
   ExecutionService,
   ExecutionServiceMessenger,
   SnapErrorJson,
+  SnapExecutionData,
 } from './ExecutionService';
 
 const controllerName = 'ExecutionService';
