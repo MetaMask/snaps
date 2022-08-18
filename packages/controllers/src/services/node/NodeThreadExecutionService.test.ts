@@ -1,5 +1,5 @@
 import { ControllerMessenger } from '@metamask/controllers';
-import { ErrorJSON, SnapId } from '@metamask/snap-types';
+import { SnapId } from '@metamask/snap-utils';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import pump from 'pump';
@@ -171,7 +171,7 @@ describe('NodeThreadExecutionService', () => {
     const unhandledErrorPromise = new Promise((resolve) => {
       controllerMessenger.subscribe(
         'ExecutionService:unhandledError',
-        (_snapId: SnapId, error: ErrorJSON) => {
+        (_snapId: SnapId, error: SnapErrorJson) => {
           resolve(error);
         },
       );

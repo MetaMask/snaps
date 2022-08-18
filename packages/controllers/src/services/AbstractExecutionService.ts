@@ -1,6 +1,6 @@
 import { Duplex } from 'stream';
 import ObjectMultiplex from '@metamask/object-multiplex';
-import { ErrorJSON, SnapExecutionData } from '@metamask/snap-utils';
+import { SnapExecutionData } from '@metamask/snap-utils';
 import { SNAP_STREAM_NAMES } from '@metamask/execution-environments';
 import {
   Duration,
@@ -22,6 +22,7 @@ import { hasTimedOut, withTimeout } from '../utils';
 import {
   ExecutionService,
   ExecutionServiceMessenger,
+  SnapErrorJson,
 } from './ExecutionService';
 
 const controllerName = 'ExecutionService';
@@ -241,7 +242,7 @@ export abstract class AbstractExecutionService<WorkerType>
           this._messenger.publish(
             'ExecutionService:unhandledError',
             snapId,
-            message.params.error as ErrorJSON,
+            message.params.error as SnapErrorJson,
           );
           commandStream.removeListener('data', notificationHandler);
         } else {

@@ -18,7 +18,6 @@ import {
 } from '@metamask/controllers';
 import {
   assert,
-  ErrorJSON,
   DEFAULT_ENDOWMENTS,
   DEFAULT_REQUESTED_SNAP_VERSION,
   getSnapPermissionName,
@@ -57,6 +56,7 @@ import {
   ExecuteSnapAction,
   ExecutionServiceEvents,
   HandleRpcRequestAction,
+  SnapErrorJson,
   TerminateAllSnapsAction,
   TerminateSnapAction,
 } from '../services/ExecutionService';
@@ -972,7 +972,7 @@ export class SnapController extends BaseController<
     );
   }
 
-  async _onUnhandledSnapError(snapId: SnapId, error: ErrorJSON) {
+  async _onUnhandledSnapError(snapId: SnapId, error: SnapErrorJson) {
     await this.stopSnap(snapId, 'CRASH');
     this.addSnapError(error);
   }
