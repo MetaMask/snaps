@@ -2,7 +2,7 @@
 /// <reference path="../../../../node_modules/ses/index.d.ts" />
 import { Duplex } from 'stream';
 import { MetaMaskInpageProvider } from '@metamask/providers';
-import { SnapProvider } from '@metamask/snap-types';
+import { SnapProvider } from '@metamask/snap-utils';
 import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
 import { JsonRpcNotification } from '@metamask/utils';
 import EEOpenRPCDocument from '../openrpc.json';

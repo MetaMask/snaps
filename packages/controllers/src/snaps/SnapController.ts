@@ -16,7 +16,6 @@ import {
   SubjectPermissions,
   ValidPermission,
 } from '@metamask/controllers';
-import { ErrorJSON, SnapData, SnapId } from '@metamask/snap-types';
 import {
   assert,
   DEFAULT_ENDOWMENTS,
@@ -36,6 +35,9 @@ import {
   validateSnapId,
   validateSnapJsonFile,
   validateSnapShasum,
+  ErrorJSON,
+  SnapData,
+  SnapId,
 } from '@metamask/snap-utils';
 import {
   Duration,

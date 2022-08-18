@@ -8,12 +8,12 @@ import {
   SubjectPermissions,
   ValidPermission,
 } from '@metamask/controllers';
-import { SnapExecutionData } from '@metamask/snap-types';
 import {
   DEFAULT_ENDOWMENTS,
   getSnapPermissionName,
   getSnapSourceShasum,
   SnapManifest,
+  SnapExecutionData,
 } from '@metamask/snap-utils';
 import { Crypto } from '@peculiar/webcrypto';
 import { EthereumRpcError, ethErrors, serializeError } from 'eth-rpc-errors';

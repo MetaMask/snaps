@@ -5,6 +5,6 @@
     "declaration": false,
     "typeRoots": ["../../../../node_modules/@types"]
   },
-  "files": ["../../../types/global.d.ts"],
+  "files": ["../../../utils/global.d.ts"],
   "include": ["src"]
 }
