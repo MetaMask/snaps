@@ -1,8 +1,6 @@
 import { MetaMaskInpageProvider } from '@metamask/providers';
 import { JsonRpcRequest } from '@metamask/types';
 
-export { Json, JsonRpcResponse, JsonRpcRequest } from '@metamask/types';
-
 export type SnapRpcHandler = (args: {
   origin: string;
   request: JsonRpcRequest<unknown[] | { [key: string]: unknown }>;
