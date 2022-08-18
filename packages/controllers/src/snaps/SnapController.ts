@@ -16,9 +16,9 @@ import {
   SubjectPermissions,
   ValidPermission,
 } from '@metamask/controllers';
-import { ErrorJSON, SnapData, SnapId } from '@metamask/snap-types';
 import {
   assert,
+  ErrorJSON,
   DEFAULT_ENDOWMENTS,
   DEFAULT_REQUESTED_SNAP_VERSION,
   getSnapPermissionName,
@@ -29,6 +29,7 @@ import {
   NpmSnapFileNames,
   resolveVersion,
   satisfiesVersionRange,
+  SnapId,
   SnapIdPrefixes,
   SnapManifest,
   SNAP_PREFIX,
@@ -1718,7 +1719,7 @@ export class SnapController extends BaseController<
     }
   }
 
-  private async _startSnap(snapData: SnapData) {
+  private async _startSnap(snapData: { snapId: string; sourceCode: string }) {
     const { snapId } = snapData;
     if (this.isRunning(snapId)) {
       throw new Error(`Snap "${snapId}" is already started.`);

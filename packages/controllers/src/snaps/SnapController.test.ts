@@ -8,11 +8,11 @@ import {
   SubjectPermissions,
   ValidPermission,
 } from '@metamask/controllers';
-import { SnapExecutionData } from '@metamask/snap-types';
 import {
   DEFAULT_ENDOWMENTS,
   getSnapPermissionName,
   getSnapSourceShasum,
+  SnapExecutionData,
   SnapManifest,
 } from '@metamask/snap-utils';
 import { Crypto } from '@peculiar/webcrypto';
