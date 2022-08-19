@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.19.1]
+
 ## [0.19.0]
 ### Fixed
 - Fixed network teardown so that snaps can't be escape by late returning promises ([#661](https://github.com/MetaMask/snaps-skunkworks/pull/661))
@@ -119,7 +121,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Previously, default endowments were specified in the execution environment itself. Now, all endowments must be specified in the `executeSnap` RPC parameters, except for the `wallet` API object.
 - Add endowments to the global `self` in addition to `window` ([#263](https://github.com/MetaMask/snaps-skunkworks/pull/263))
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.19.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.19.1...HEAD
+[0.19.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.19.0...v0.19.1
 [0.19.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.18.1...v0.19.0
 [0.18.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.18.0...v0.18.1
 [0.18.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.17.0...v0.18.0
