@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.19.1]
-### Uncategorized
+### Added
 - Generate source maps from modified code ([#615](https://github.com/MetaMask/snaps-skunkworks/pull/615))
 
 ## [0.19.0]

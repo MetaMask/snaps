@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.19.1]
+### Fixed
+- Fixed 0.19.0 not being able to run ([#697](https://github.com/MetaMask/snaps-skunkworks/pull/697))
 
 ## [0.19.0]
 ### Added
