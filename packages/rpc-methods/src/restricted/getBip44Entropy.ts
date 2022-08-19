@@ -45,24 +45,28 @@ type GetBip44EntropyParams = {
 };
 
 /**
- * Validate a single coin type value. Checks if the value is a non-negative
- * integer (>= 0).
+ * Validate the params for `snap_getBip44Entropy`.
  *
- * @param coinType - The coin type to validate.
- * @throws If the coin type is invalid.
+ * @param value - The params to validate.
+ * @throws If the params are invalid.
  */
-export function validateCoinType(
-  coinType: unknown,
-): asserts coinType is number {
+export function validateParams(
+  value: unknown,
+): asserts value is GetBip44EntropyParams {
+  if (!isPlainObject(value) || !hasProperty(value, 'coinType')) {
+    throw ethErrors.rpc.invalidParams({
+      message: 'Expected a plain object containing a coin type.',
+    });
+  }
+
   if (
-    typeof coinType !== 'number' ||
-    !Number.isInteger(coinType) ||
-    coinType < 0
+    typeof value.coinType !== 'number' ||
+    !Number.isInteger(value.coinType) ||
+    value.coinType < 0
   ) {
     throw ethErrors.rpc.invalidParams({
-      data: {
-        message: 'Coin type must be a non-negative integer.',
-      },
+      message:
+        'Invalid "coinType" parameter. Coin type must be a non-negative integer.',
     });
   }
 }
@@ -81,33 +85,11 @@ export function validateCaveat(caveat: Caveat<string, any>) {
     caveat.value.length === 0
   ) {
     throw ethErrors.rpc.invalidParams({
-      data: {
-        message: 'Expected non-empty array of coin types.',
-      },
+      message: 'Expected non-empty array of coin types.',
     });
   }
 
-  caveat.value.forEach(validateCoinType);
-}
-
-/**
- * Validate the params for `snap_getBip44Entropy`.
- *
- * @param value - The params to validate.
- * @throws If the params are invalid.
- */
-export function validateParams(
-  value: unknown,
-): asserts value is GetBip44EntropyParams {
-  if (!isPlainObject(value) || !hasProperty(value, 'coinType')) {
-    throw ethErrors.rpc.invalidParams({
-      data: {
-        message: 'Expected a plain object containing a coin type.',
-      },
-    });
-  }
-
-  validateCoinType(value.coinType);
+  caveat.value.forEach(validateParams);
 }
 
 /**
@@ -188,7 +170,7 @@ export const getBip44EntropyCaveatSpecifications: Record<
 };
 
 /**
- * Builds the method implementation for `snap_getBip44Entropy_*`.
+ * Builds the method implementation for `snap_getBip44Entropy`.
  *
  * @param hooks - The RPC method hooks.
  * @param hooks.getMnemonic - A function to retrieve the Secret Recovery Phrase
@@ -199,7 +181,7 @@ export const getBip44EntropyCaveatSpecifications: Record<
  * @returns The method implementation which returns a `BIP44CoinTypeNode`.
  * @throws If the params are invalid.
  */
-function getBip44EntropyImplementation({
+export function getBip44EntropyImplementation({
   getMnemonic,
   getUnlockPromise,
 }: GetBip44EntropyMethodHooks) {
