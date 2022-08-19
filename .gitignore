@@ -1,5 +1,5 @@
 **/dist
-**/*__GENERATED__*
+**/src/**/*__GENERATED__*
 
 # sed backup files
 *.*-e
