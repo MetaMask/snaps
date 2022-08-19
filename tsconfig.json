@@ -7,6 +7,7 @@
     { "path": "./packages/plugin-browserify" },
     { "path": "./packages/plugin-rollup" },
     { "path": "./packages/plugin-webpack" },
+    { "path": "./packages/provider" },
     { "path": "./packages/rpc-methods" },
     { "path": "./packages/utils" }
   ]
