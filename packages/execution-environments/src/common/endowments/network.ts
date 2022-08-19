@@ -106,8 +106,11 @@ const createNetwork = () => {
     (callback) => callback(),
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-  const fetch = require('isomorphic-unfetch');
+  const fetch =
+    typeof globalThis.fetch === 'function'
+      ? globalThis.fetch
+      : // eslint-disable-next-line @typescript-eslint/no-require-imports
+        require('isomorphic-unfetch');
 
   const _fetch: typeof globalThis['fetch'] = async (
     input: RequestInfo,
