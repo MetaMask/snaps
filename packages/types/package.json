@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snap-types",
-  "version": "0.19.0",
+  "version": "0.19.1",
   "description": "Shared types for MetaMask Snaps packages.",
   "repository": {
     "type": "git",
