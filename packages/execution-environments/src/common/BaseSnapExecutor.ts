@@ -75,14 +75,8 @@ export class BaseSnapExecutor {
       this.startSnap.bind(this),
       (target, handlerName, args) => {
         const data = this.snapData.get(target);
-        if (data?.exports?.[handlerName] === undefined) {
-          throw new Error(
-            `No ${handlerName} handler exported for snap "${target}`,
-          );
-        }
-
         // We're capturing the handler in case someone modifies the data object before the call
-        const handler = data.exports[handlerName];
+        const handler = data?.exports[handlerName];
         assert(
           handler !== undefined,
           `No ${handlerName} handler exported for snap "${target}`,
