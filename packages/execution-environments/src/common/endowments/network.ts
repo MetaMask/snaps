@@ -110,7 +110,7 @@ const createNetwork = () => {
     typeof globalThis.fetch === 'function'
       ? globalThis.fetch
       : // eslint-disable-next-line @typescript-eslint/no-require-imports
-        require('isomorphic-unfetch');
+        require('node-fetch');
 
   const _fetch: typeof globalThis['fetch'] = async (
     input: RequestInfo,
