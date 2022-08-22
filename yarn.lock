@@ -2679,16 +2679,13 @@ __metadata:
     "@metamask/eslint-config-typescript": ^9.0.1
     "@metamask/execution-environments": ^0.19.1
     "@metamask/object-multiplex": ^1.1.0
-    "@metamask/obs-store": ^7.0.0
     "@metamask/post-message-stream": ^6.0.0
-    "@metamask/safe-event-emitter": ^2.0.0
     "@metamask/snap-types": ^0.19.1
     "@metamask/snap-utils": ^0.19.1
     "@metamask/template-snap": ^0.7.0
     "@metamask/utils": ^2.0.0
     "@peculiar/webcrypto": ^1.3.3
     "@types/concat-stream": ^2.0.0
-    "@types/deep-freeze-strict": ^1.1.0
     "@types/gunzip-maybe": ^1.4.0
     "@types/jest": ^27.5.1
     "@types/pump": ^1.1.1
@@ -2696,7 +2693,6 @@ __metadata:
     "@types/tar-stream": ^2.2.2
     "@xstate/fsm": ^2.0.0
     concat-stream: ^2.0.0
-    deep-freeze-strict: ^1.1.1
     eslint: ^7.30.0
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
@@ -3373,13 +3369,6 @@ __metadata:
   version: 1.5.2
   resolution: "@types/convert-source-map@npm:1.5.2"
   checksum: 39ab9185ab45567a47cdaa2262fdc55aaf79a6658574eb514f2b90195505fa026b03c7f9147e61100ed21eb71adbb350997e24c9ddd9512408dcb9820d6c5e9a
-  languageName: node
-  linkType: hard
-
-"@types/deep-freeze-strict@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@types/deep-freeze-strict@npm:1.1.0"
-  checksum: 29819f8e53cd6e0e82be7878a113291363c4c5f7e43804f71a37667d845e68977245985c1f116cb04dc1c4eceffa499735b26acf5a3d25a30fc4557a88e95b18
   languageName: node
   linkType: hard
 
