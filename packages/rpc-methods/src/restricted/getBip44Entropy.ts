@@ -62,7 +62,8 @@ export function validateParams(
   if (
     typeof value.coinType !== 'number' ||
     !Number.isInteger(value.coinType) ||
-    value.coinType < 0
+    value.coinType < 0 ||
+    value.coinType > 0x7fffffff
   ) {
     throw ethErrors.rpc.invalidParams({
       message:

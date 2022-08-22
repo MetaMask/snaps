@@ -20,16 +20,27 @@ describe('validateParams', () => {
     },
   );
 
-  it.each([{}, [], true, false, null, undefined, 'foo', -1, 1.1])(
-    'throws an error if the coin type is invalid',
-    (value) => {
-      expect(() => {
-        validateParams({ coinType: value });
-      }).toThrow(
-        'Invalid "coinType" parameter. Coin type must be a non-negative integer.',
-      );
-    },
-  );
+  it.each([
+    {},
+    [],
+    true,
+    false,
+    null,
+    undefined,
+    'foo',
+    -1,
+    1.1,
+    Infinity,
+    -Infinity,
+    NaN,
+    0x80000000,
+  ])('throws an error if the coin type is invalid', (value) => {
+    expect(() => {
+      validateParams({ coinType: value });
+    }).toThrow(
+      'Invalid "coinType" parameter. Coin type must be a non-negative integer.',
+    );
+  });
 });
 
 describe('validateCaveat', () => {
@@ -44,11 +55,25 @@ describe('validateCaveat', () => {
     );
   });
 
-  it('throws if the caveat values are invalid', () => {
+  it.each([
+    {},
+    [],
+    true,
+    false,
+    null,
+    undefined,
+    'foo',
+    -1,
+    1.1,
+    Infinity,
+    -Infinity,
+    NaN,
+    0x80000000,
+  ])('throws if the caveat values are invalid', (value) => {
     expect(() =>
       validateCaveat({
         type: SnapCaveatType.PermittedCoinTypes,
-        value: [{ coinType: -1 }],
+        value: [{ coinType: value }],
       }),
     ).toThrow(
       'Invalid "coinType" parameter. Coin type must be a non-negative integer.',
