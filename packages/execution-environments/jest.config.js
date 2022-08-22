@@ -8,8 +8,8 @@ module.exports = {
     global: {
       branches: 84.33,
       functions: 92.91,
-      lines: 86.65,
-      statements: 86.86,
+      lines: 86.67,
+      statements: 86.88,
     },
   },
   moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'],
