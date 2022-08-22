@@ -268,7 +268,7 @@ export class BaseSnapExecutor {
   }
 
   private registerSnapExports(snapName: string, snapModule: any) {
-    Object.keys(HandlerType).forEach((exportName) => {
+    Object.values(HandlerType).forEach((exportName) => {
       if (typeof snapModule?.exports?.[exportName] === 'function') {
         const data = this.snapData.get(snapName);
         // Somebody deleted the Snap before we could register
