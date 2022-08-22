@@ -109,7 +109,7 @@
           "schema": {
             "title": "Handler",
             "type": "string",
-            "enum": ["onRpcRequest", "onTransactionInsight"]
+            "enum": ["onRpcRequest", "onTransaction"]
           }
         },
         {

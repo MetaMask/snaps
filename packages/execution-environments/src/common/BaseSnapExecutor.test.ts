@@ -727,9 +727,9 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
-  it('supports onTransactionInsight export', async () => {
+  it('supports onTransaction export', async () => {
     const CODE = `
-      module.exports.onTransactionInsight = ({ origin, transaction, chainId, metadata }) => ({ origin, transaction, chainId, metadata });
+      module.exports.onTransaction = ({ origin, transaction, chainId, metadata }) => ({ origin, transaction, chainId, metadata });
     `;
     const executor = new TestSnapExecutor();
 
@@ -750,7 +750,7 @@ describe('BaseSnapExecutor', () => {
     // We also have to decide on the shape of that object.
     const transaction = { maxFeePerGas: '0x' };
 
-    const params = { transaction, metadata: {}, chainId: '0x1' };
+    const params = { transaction, metadata: {}, chainId: 'eip155:1' };
 
     await executor.writeCommand({
       jsonrpc: '2.0',
@@ -758,7 +758,7 @@ describe('BaseSnapExecutor', () => {
       method: 'snapRpc',
       params: [
         FAKE_SNAP_NAME,
-        HandlerType.OnTransactionInsight,
+        HandlerType.OnTransaction,
         FAKE_ORIGIN,
         { jsonrpc: '2.0', method: 'foo', params },
       ],

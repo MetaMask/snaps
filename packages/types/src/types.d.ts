@@ -28,18 +28,16 @@ export type SnapRpcHandler = (args: {
 
 export type OnRpcRequestHandler = SnapRpcHandler;
 
-export type TransactionInsight = {
+export type OnTransactionResponse = {
   insights: { [key: string]: unknown };
-  cancel?: boolean;
 };
 
 // @todo improve type
-export type OnTransactionInsightHandler = (args: {
+export type OnTransactionHandler = (args: {
   origin: string;
   transaction: { [key: string]: unknown };
-  metadata: { [key: string]: unknown };
   chainId: ChainId;
-}) => Promise<TransactionInsight>;
+}) => Promise<OnTransactionResponse>;
 
 export type SnapRpcHookArgs = {
   origin: string;
@@ -62,7 +60,7 @@ export type ErrorJSON = {
 
 export type SnapExports = {
   onRpcRequest?: OnRpcRequestHandler;
-  onTransactionInsight?: OnTransactionInsightHandler;
+  onTransaction?: OnTransactionHandler;
 };
 
 type ObjectParameters<

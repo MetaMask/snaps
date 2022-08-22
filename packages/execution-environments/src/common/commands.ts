@@ -31,7 +31,7 @@ function getHandlerArguments(
   request: JsonRpcRequest<unknown[] | { [key: string]: unknown }>,
 ): InvokeSnapArgs {
   switch (handler) {
-    case HandlerType.OnTransactionInsight:
+    case HandlerType.OnTransaction:
       // eslint-disable-next-line no-case-declarations
       const { transaction, metadata, chainId } = request.params as Record<
         string,

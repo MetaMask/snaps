@@ -50,7 +50,7 @@ export enum SNAP_STREAM_NAMES {
 
 export enum HandlerType {
   OnRpcRequest = 'onRpcRequest',
-  OnTransactionInsight = 'onTransactionInsight',
+  OnTransaction = 'onTransaction',
 }
 
 export type SnapId = string;

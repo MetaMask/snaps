@@ -3662,7 +3662,7 @@ describe('SnapController', () => {
       expect(
         await messenger.call('SnapController:handleRequest', {
           snapId: 'npm:fooSnap',
-          handler: HandlerType.OnTransactionInsight,
+          handler: HandlerType.OnTransaction,
           origin: 'foo',
           request: {},
         }),

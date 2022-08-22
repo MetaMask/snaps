@@ -9,7 +9,7 @@ import {
 } from '@metamask/snap-types';
 import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
 import { JsonRpcNotification } from '@metamask/utils';
-import { HandlerType } from '@metamask/snap-utils';
+import { assert, HandlerType } from '@metamask/snap-utils';
 import EEOpenRPCDocument from '../openrpc.json';
 import {
   Endowments,
@@ -82,8 +82,11 @@ export class BaseSnapExecutor {
         }
 
         // We're capturing the handler in case someone modifies the data object before the call
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const handler = data.exports[handlerName]!;
+        const handler = data.exports[handlerName];
+        assert(
+          handler !== undefined,
+          `No ${handlerName} handler exported for snap "${target}`,
+        );
         // @todo fix type
         return this.executeInSnapContext(target, () => handler(args as any));
       },
