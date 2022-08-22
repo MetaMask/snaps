@@ -33,14 +33,10 @@ function getHandlerArguments(
   switch (handler) {
     case HandlerType.OnTransaction:
       // eslint-disable-next-line no-case-declarations
-      const { transaction, metadata, chainId } = request.params as Record<
-        string,
-        any
-      >;
+      const { transaction, chainId } = request.params as Record<string, any>;
       return {
         origin,
         transaction,
-        metadata,
         chainId,
       };
     case HandlerType.OnRpcRequest:

@@ -1,5 +1,4 @@
 import { createHash } from 'crypto';
-import { ChainId } from '@metamask/snap-types';
 import { SnapManifest } from './json-schemas';
 import { SnapIdPrefixes, SnapValidationFailureReason, ChainId } from './types';
 
