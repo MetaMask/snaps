@@ -89,6 +89,7 @@ const getSnapControllerMessenger = (
       'ExecutionService:handleRpcRequest',
       'PermissionController:getEndowments',
       'PermissionController:hasPermission',
+      'PermissionController:hasPermissions',
       'PermissionController:getPermissions',
       'PermissionController:grantPermissions',
       'PermissionController:requestPermissions',
@@ -101,6 +102,12 @@ const getSnapControllerMessenger = (
       'SnapController:updateSnapState',
       'SnapController:clearSnapState',
       'SnapController:updateBlockedSnaps',
+      'SnapController:enable',
+      'SnapController:disable',
+      'SnapController:remove',
+      'SnapController:getSnaps',
+      'SnapController:install',
+      'SnapController:removeSnapError',
     ],
   });
 
@@ -536,11 +543,16 @@ describe('SnapController', () => {
 
     await snapController.startSnap(snap.id);
 
-    const result = await snapController.handleRpcRequest(snap.id, 'foo.com', {
-      jsonrpc: '2.0',
-      method: 'test',
-      params: {},
-      id: 1,
+    const result = await snapController.handleRequest({
+      snapId: snap.id,
+      origin: 'foo.com',
+      handler: HandlerType.OnRpcRequest,
+      request: {
+        jsonrpc: '2.0',
+        method: 'test',
+        params: {},
+        id: 1,
+      },
     });
     expect(result).toStrictEqual('test1');
     snapController.destroy();
@@ -567,11 +579,16 @@ describe('SnapController', () => {
 
     await snapController.startSnap(snap.id);
 
-    const result = await snapController.handleRpcRequest(snap.id, 'foo.com', {
-      jsonrpc: '2.0',
-      method: 'test',
-      params: {},
-      id: 1,
+    const result = await snapController.handleRequest({
+      snapId: snap.id,
+      origin: 'foo.com',
+      handler: HandlerType.OnRpcRequest,
+      request: {
+        jsonrpc: '2.0',
+        method: 'test',
+        params: {},
+        id: 1,
+      },
     });
     expect(result).toStrictEqual('test1');
     snapController.destroy();
@@ -824,11 +841,16 @@ describe('SnapController', () => {
     });
     await snapController.startSnap(snap.id);
 
-    await snapController.handleRpcRequest(snap.id, 'foo.com', {
-      jsonrpc: '2.0',
-      method: 'test',
-      params: {},
-      id: 1,
+    await snapController.handleRequest({
+      snapId: snap.id,
+      origin: 'foo.com',
+      handler: HandlerType.OnRpcRequest,
+      request: {
+        jsonrpc: '2.0',
+        method: 'test',
+        params: {},
+        id: 1,
+      },
     });
 
     await delay(300);
@@ -865,11 +887,16 @@ describe('SnapController', () => {
       });
 
     await expect(
-      snapController.handleRpcRequest(snap.id, 'foo.com', {
-        jsonrpc: '2.0',
-        method: 'test',
-        params: {},
-        id: 1,
+      snapController.handleRequest({
+        snapId: snap.id,
+        origin: 'foo.com',
+        handler: HandlerType.OnRpcRequest,
+        request: {
+          jsonrpc: '2.0',
+          method: 'test',
+          params: {},
+          id: 1,
+        },
       }),
     ).rejects.toThrow(/request timed out/u);
 
@@ -925,11 +952,16 @@ describe('SnapController', () => {
     await snapController.stopSnap(snap.id);
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
 
-    const results = await snapController.handleRpcRequest(snap.id, 'foo.com', {
-      jsonrpc: '2.0',
-      method: 'test',
-      params: {},
-      id: 1,
+    const results = await snapController.handleRequest({
+      snapId: snap.id,
+      origin: 'foo.com',
+      handler: HandlerType.OnRpcRequest,
+      request: {
+        jsonrpc: '2.0',
+        method: 'test',
+        params: {},
+        id: 1,
+      },
     });
     expect(results).toStrictEqual('test1');
 
@@ -1155,11 +1187,16 @@ describe('SnapController', () => {
     });
 
     await expect(
-      snapController.handleRpcRequest(snap.id, 'foo.com', {
-        jsonrpc: '2.0',
-        method: 'test',
-        params: {},
-        id: 1,
+      snapController.handleRequest({
+        snapId: snap.id,
+        origin: 'foo.com',
+        handler: HandlerType.OnRpcRequest,
+        request: {
+          jsonrpc: '2.0',
+          method: 'test',
+          params: {},
+          id: 1,
+        },
       }),
     ).rejects.toThrow(
       /^Snap "npm:example-snap" is currently being installed\. Please try again later\.$/u,
@@ -1178,11 +1215,16 @@ describe('SnapController', () => {
     );
 
     await expect(
-      snapController.handleRpcRequest(snap.id, 'foo.com', {
-        jsonrpc: '2.0',
-        method: 'test',
-        params: {},
-        id: 1,
+      snapController.handleRequest({
+        snapId: snap.id,
+        origin: 'foo.com',
+        handler: HandlerType.OnRpcRequest,
+        request: {
+          jsonrpc: '2.0',
+          method: 'test',
+          params: {},
+          id: 1,
+        },
       }),
     ).rejects.toThrow(/^Snap "npm:example-snap" is disabled.$/u);
 
@@ -1194,11 +1236,16 @@ describe('SnapController', () => {
 
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
 
-    const result = await snapController.handleRpcRequest(snap.id, 'foo.com', {
-      jsonrpc: '2.0',
-      method: 'test',
-      params: {},
-      id: 1,
+    const result = await snapController.handleRequest({
+      snapId: snap.id,
+      origin: 'foo.com',
+      handler: HandlerType.OnRpcRequest,
+      request: {
+        jsonrpc: '2.0',
+        method: 'test',
+        params: {},
+        id: 1,
+      },
     });
 
     expect(result).toStrictEqual('test1');
@@ -1248,11 +1295,16 @@ describe('SnapController', () => {
     (snapController as any)._maxRequestTime = 50;
 
     await expect(
-      snapController.handleRpcRequest(snap.id, 'foo.com', {
-        jsonrpc: '2.0',
-        method: 'test',
-        params: {},
-        id: 1,
+      snapController.handleRequest({
+        snapId: snap.id,
+        origin: 'foo.com',
+        handler: HandlerType.OnRpcRequest,
+        request: {
+          jsonrpc: '2.0',
+          method: 'test',
+          params: {},
+          id: 1,
+        },
       }),
     ).rejects.toThrow(/request timed out/u);
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('crashed');
@@ -1308,11 +1360,16 @@ describe('SnapController', () => {
     (snapController as any)._maxRequestTime = 300;
 
     expect(
-      await snapController.handleRpcRequest(snap.id, 'foo.com', {
-        jsonrpc: '2.0',
-        method: 'test',
-        params: {},
-        id: 1,
+      await snapController.handleRequest({
+        snapId: snap.id,
+        origin: 'foo.com',
+        handler: HandlerType.OnRpcRequest,
+        request: {
+          jsonrpc: '2.0',
+          method: 'test',
+          params: {},
+          id: 1,
+        },
       }),
     ).toBe(blockNumber);
 
@@ -1366,11 +1423,16 @@ describe('SnapController', () => {
     (snapController as any)._maxRequestTime = 300;
 
     expect(
-      await snapController.handleRpcRequest(snap.id, 'foo.com', {
-        jsonrpc: '2.0',
-        method: 'test',
-        params: {},
-        id: 1,
+      await snapController.handleRequest({
+        snapId: snap.id,
+        origin: 'foo.com',
+        handler: HandlerType.OnRpcRequest,
+        request: {
+          jsonrpc: '2.0',
+          method: 'test',
+          params: {},
+          id: 1,
+        },
       }),
     ).toBe(21896430);
 
@@ -1413,11 +1475,16 @@ describe('SnapController', () => {
     // We set the maxRequestTime to a low enough value for it to time out if it werent a long running snap
     (snapController as any)._maxRequestTime = 50;
 
-    const handlerPromise = snapController.handleRpcRequest(snap.id, 'foo.com', {
-      jsonrpc: '2.0',
-      method: 'test',
-      params: {},
-      id: 1,
+    const handlerPromise = snapController.handleRequest({
+      snapId: snap.id,
+      origin: 'foo.com',
+      handler: HandlerType.OnRpcRequest,
+      request: {
+        jsonrpc: '2.0',
+        method: 'test',
+        params: {},
+        id: 1,
+      },
     });
 
     const timeoutPromise = new Promise<boolean>((resolve) => {
@@ -1547,11 +1614,16 @@ describe('SnapController', () => {
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
 
     await expect(
-      snapController.handleRpcRequest(snap.id, 'foo.com', {
-        jsonrpc: '2.0',
-        method: 'test',
-        params: {},
-        id: 1,
+      snapController.handleRequest({
+        snapId: snap.id,
+        origin: 'foo.com',
+        handler: HandlerType.OnRpcRequest,
+        request: {
+          jsonrpc: '2.0',
+          method: 'test',
+          params: {},
+          id: 1,
+        },
       }),
     ).rejects.toThrow(/request timed out/u);
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('crashed');
@@ -1590,9 +1662,16 @@ describe('SnapController', () => {
           return true;
         });
 
-      await snapController.handleRpcRequest(snapId, 'foo.com', {
-        id: 1,
-        method: 'bar',
+      await snapController.handleRequest({
+        snapId,
+        origin: 'foo.com',
+        handler: HandlerType.OnRpcRequest,
+        request: {
+          jsonrpc: '2.0',
+          method: 'bar',
+          params: {},
+          id: 1,
+        },
       });
 
       expect(spyOnMessengerCall).toHaveBeenCalledTimes(2);
@@ -1606,6 +1685,7 @@ describe('SnapController', () => {
             id: 1,
             method: 'bar',
             jsonrpc: '2.0',
+            params: {},
           },
         },
       );
@@ -1625,10 +1705,15 @@ describe('SnapController', () => {
         }),
       );
       await expect(
-        snapController.handleRpcRequest(snapId, 'foo.com', {
-          id: 1,
-          method: 'bar',
-          jsonrpc: 'kaplar',
+        snapController.handleRequest({
+          snapId,
+          origin: 'foo.com',
+          handler: HandlerType.OnRpcRequest,
+          request: {
+            jsonrpc: 'kaplar',
+            method: 'bar',
+            id: 1,
+          },
         }),
       ).rejects.toThrow(
         ethErrors.rpc.invalidRequest({
@@ -1667,32 +1752,74 @@ describe('SnapController', () => {
 
       // Fill up the request queue
       const finishPromise = Promise.all([
-        snapController.handleRpcRequest(snapId, 'foo.com', {
-          id: 1,
-          method: 'bar',
+        snapController.handleRequest({
+          snapId,
+          origin: 'foo.com',
+          handler: HandlerType.OnRpcRequest,
+          request: {
+            jsonrpc: '2.0',
+            method: 'bar',
+            params: {},
+            id: 1,
+          },
         }),
-        snapController.handleRpcRequest(snapId, 'foo.com', {
-          id: 2,
-          method: 'bar',
+        snapController.handleRequest({
+          snapId,
+          origin: 'foo.com',
+          handler: HandlerType.OnRpcRequest,
+          request: {
+            jsonrpc: '2.0',
+            method: 'bar',
+            params: {},
+            id: 2,
+          },
         }),
-        snapController.handleRpcRequest(snapId, 'foo.com', {
-          id: 3,
-          method: 'bar',
+        snapController.handleRequest({
+          snapId,
+          origin: 'foo.com',
+          handler: HandlerType.OnRpcRequest,
+          request: {
+            jsonrpc: '2.0',
+            method: 'bar',
+            params: {},
+            id: 3,
+          },
         }),
-        snapController.handleRpcRequest(snapId, 'foo.com', {
-          id: 4,
-          method: 'bar',
+        snapController.handleRequest({
+          snapId,
+          origin: 'foo.com',
+          handler: HandlerType.OnRpcRequest,
+          request: {
+            jsonrpc: '2.0',
+            method: 'bar',
+            params: {},
+            id: 4,
+          },
         }),
-        snapController.handleRpcRequest(snapId, 'foo.com', {
-          id: 5,
-          method: 'bar',
+        snapController.handleRequest({
+          snapId,
+          origin: 'foo.com',
+          handler: HandlerType.OnRpcRequest,
+          request: {
+            jsonrpc: '2.0',
+            method: 'bar',
+            params: {},
+            id: 5,
+          },
         }),
       ]);
 
       await expect(
-        snapController.handleRpcRequest(snapId, 'foo.com', {
-          id: 6,
-          method: 'bar',
+        snapController.handleRequest({
+          snapId,
+          origin: 'foo.com',
+          handler: HandlerType.OnRpcRequest,
+          request: {
+            jsonrpc: '2.0',
+            method: 'bar',
+            params: {},
+            id: 6,
+          },
         }),
       ).rejects.toThrow(
         'Exceeds maximum number of requests waiting to be resolved, please try again.',
@@ -2015,7 +2142,7 @@ describe('SnapController', () => {
         3,
         'PermissionController:hasPermission',
         snapId,
-        LONG_RUNNING_PERMISSION,
+        SnapEndowments.longRunning,
       );
 
       expect(callActionMock).toHaveBeenNthCalledWith(
@@ -3463,7 +3590,7 @@ describe('SnapController', () => {
       });
     });
 
-    describe('SnapController:handleRpcRequest', () => {
+    describe('SnapController:handleRequest', () => {
       it('handles a snap RPC request', async () => {
         const messenger = getSnapControllerMessenger(undefined, false);
         const fooSnapObject = getSnapObject({
@@ -3489,297 +3616,447 @@ describe('SnapController', () => {
         );
 
         const handleRpcRequestSpy = jest
-          .spyOn(snapController, 'handleRpcRequest')
+          .spyOn(snapController, 'handleRequest')
           .mockResolvedValueOnce(true);
 
         expect(
-          await messenger.call(
-            'SnapController:handleRpcRequest',
-            'npm:fooSnap',
-            'foo',
-            {},
-          ),
+          await messenger.call('SnapController:handleRequest', {
+            snapId: 'npm:fooSnap',
+            handler: HandlerType.OnRpcRequest,
+            origin: 'foo',
+            request: {},
+          }),
         ).toStrictEqual(true);
         expect(handleRpcRequestSpy).toHaveBeenCalledTimes(1);
       });
     });
 
-    describe('SnapController:handleTransactionInsightRequest', () => {
-      it('handles a transaction insight request', async () => {
-        const messenger = getSnapControllerMessenger(undefined, false);
-        const fooSnapObject = getSnapObject({
-          initialPermissions: {},
-          permissionName: 'fooperm',
-          version: '0.0.1',
-          sourceCode: MOCK_SNAP_SOURCE_CODE,
-          id: 'npm:fooSnap',
-          manifest: getSnapManifest(),
-          enabled: true,
-          status: SnapStatus.running,
-        });
-
-        const snapController = getSnapController(
-          getSnapControllerOptions({
-            messenger,
-            state: {
-              snaps: {
-                'npm:fooSnap': fooSnapObject,
-              },
-            },
-          }),
-        );
-
-        const handleRequestSpy = jest
-          .spyOn(snapController, 'handleTransactionInsightRequest')
-          .mockResolvedValueOnce(true);
-
-        expect(
-          await messenger.call(
-            'SnapController:handleTransactionInsightRequest',
-            'npm:fooSnap',
-            'foo',
-            {},
-          ),
-        ).toStrictEqual(true);
-        expect(handleRequestSpy).toHaveBeenCalledTimes(1);
+    it('handles a transaction insight request', async () => {
+      const messenger = getSnapControllerMessenger(undefined, false);
+      const fooSnapObject = getSnapObject({
+        initialPermissions: {},
+        permissionName: 'fooperm',
+        version: '0.0.1',
+        sourceCode: MOCK_SNAP_SOURCE_CODE,
+        id: 'npm:fooSnap',
+        manifest: getSnapManifest(),
+        enabled: true,
+        status: SnapStatus.running,
       });
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: {
+              'npm:fooSnap': fooSnapObject,
+            },
+          },
+        }),
+      );
+
+      const handleRpcRequestSpy = jest
+        .spyOn(snapController, 'handleRequest')
+        .mockResolvedValueOnce(true);
+
+      expect(
+        await messenger.call('SnapController:handleRequest', {
+          snapId: 'npm:fooSnap',
+          handler: HandlerType.OnTransactionInsight,
+          origin: 'foo',
+          request: {},
+        }),
+      ).toStrictEqual(true);
+      expect(handleRpcRequestSpy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('SnapController:getSnapState', () => {
+    it(`gets the snap's state`, async () => {
+      const messenger = getSnapControllerMessenger(undefined, false);
+
+      const state = {
+        fizz: 'buzz',
+      };
+      const encrypted = await passworder.encrypt(
+        'stateEncryption:npm:fooSnap',
+        state,
+      );
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snapStates: {
+              'npm:fooSnap': encrypted,
+            },
+          },
+        }),
+      );
+
+      const getSnapStateSpy = jest.spyOn(snapController, 'getSnapState');
+      const result = await messenger.call(
+        'SnapController:getSnapState',
+        'npm:fooSnap',
+      );
+
+      expect(getSnapStateSpy).toHaveBeenCalledTimes(1);
+      expect(result).toStrictEqual(state);
     });
 
-    describe('SnapController:getSnapState', () => {
-      it(`gets the snap's state`, async () => {
-        const messenger = getSnapControllerMessenger(undefined, false);
+    it('throws custom error message in case decryption fails', async () => {
+      const messenger = getSnapControllerMessenger(undefined, false);
 
-        const state = {
-          fizz: 'buzz',
-        };
-        const encrypted = await passworder.encrypt(
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snapStates: { [MOCK_SNAP_ID]: 'foo' },
+            snaps: {
+              [MOCK_SNAP_ID]: getSnapObject({
+                status: SnapStatus.installing,
+              }),
+            },
+          },
+        }),
+      );
+
+      const getSnapStateSpy = jest.spyOn(snapController, 'getSnapState');
+      await expect(
+        messenger.call('SnapController:getSnapState', MOCK_SNAP_ID),
+      ).rejects.toThrow(
+        'Failed to decrypt snap state, the state must be corrupted.',
+      );
+      expect(getSnapStateSpy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('SnapController:has', () => {
+    it('checks if a snap exists in state', async () => {
+      const messenger = getSnapControllerMessenger(undefined, false);
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: {
+              'npm:fooSnap': getSnapObject({
+                permissionName: 'fooperm',
+                version: '0.0.1',
+                sourceCode: MOCK_SNAP_SOURCE_CODE,
+                id: 'npm:fooSnap',
+                manifest: getSnapManifest(),
+                enabled: true,
+                status: SnapStatus.installing,
+              }),
+            },
+          },
+        }),
+      );
+
+      const hasSpy = jest.spyOn(snapController, 'has');
+      const result = messenger.call('SnapController:has', 'npm:fooSnap');
+
+      expect(hasSpy).toHaveBeenCalledTimes(1);
+      expect(result).toBe(true);
+    });
+  });
+
+  describe('SnapController:updateSnapState', () => {
+    it(`updates the snap's state`, async () => {
+      const messenger = getSnapControllerMessenger(undefined, false);
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: {
+              'npm:fooSnap': getSnapObject({
+                permissionName: 'fooperm',
+                version: '0.0.1',
+                sourceCode: MOCK_SNAP_SOURCE_CODE,
+                id: 'npm:fooSnap',
+                manifest: getSnapManifest(),
+                enabled: true,
+                status: SnapStatus.installing,
+              }),
+            },
+          },
+        }),
+      );
+
+      const updateSnapStateSpy = jest.spyOn(snapController, 'updateSnapState');
+      const state = {
+        bar: 'baz',
+      };
+      await messenger.call(
+        'SnapController:updateSnapState',
+        'npm:fooSnap',
+        state,
+      );
+
+      expect(updateSnapStateSpy).toHaveBeenCalledTimes(1);
+      expect(snapController.state.snapStates).toStrictEqual({
+        'npm:fooSnap': await passworder.encrypt(
           'stateEncryption:npm:fooSnap',
           state,
-        );
+        ),
+      });
+    });
+
+    it('has different encryption for the same data stored by two different snaps', async () => {
+      const messenger = getSnapControllerMessenger(undefined, false);
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: {
+              'npm:fooSnap': getSnapObject({
+                permissionName: 'fooperm',
+                version: '0.0.1',
+                sourceCode: MOCK_SNAP_SOURCE_CODE,
+                id: 'npm:fooSnap',
+                manifest: getSnapManifest(),
+                enabled: true,
+                status: SnapStatus.installing,
+              }),
+              'npm:fooSnap2': getSnapObject({
+                permissionName: 'fooperm2',
+                version: '0.0.1',
+                sourceCode: MOCK_SNAP_SOURCE_CODE,
+                id: 'npm:fooSnap2',
+                manifest: getSnapManifest(),
+                enabled: true,
+                status: SnapStatus.installing,
+              }),
+            },
+          },
+        }),
+      );
+
+      const updateSnapStateSpy = jest.spyOn(snapController, 'updateSnapState');
+      const state = {
+        bar: 'baz',
+      };
+      await messenger.call(
+        'SnapController:updateSnapState',
+        'npm:fooSnap',
+        state,
+      );
+
+      await messenger.call(
+        'SnapController:updateSnapState',
+        'npm:fooSnap2',
+        state,
+      );
+
+      expect(updateSnapStateSpy).toHaveBeenCalledTimes(2);
+      expect(snapController.state.snapStates).toStrictEqual({
+        'npm:fooSnap': await passworder.encrypt(
+          'stateEncryption:npm:fooSnap',
+          state,
+        ),
+        'npm:fooSnap2': await passworder.encrypt(
+          'stateEncryption:npm:fooSnap2',
+          state,
+        ),
+      });
+
+      expect(snapController.state.snapStates['npm:fooSnap']).not.toStrictEqual(
+        snapController.state.snapStates['npm:fooSnap2'],
+      );
+    });
+  });
+
+  describe('SnapController:clearSnapState', () => {
+    it('clears the state of a snap', async () => {
+      const messenger = getSnapControllerMessenger(undefined, false);
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snapStates: { [MOCK_SNAP_ID]: 'foo' },
+            snaps: {
+              [MOCK_SNAP_ID]: getSnapObject({
+                status: SnapStatus.installing,
+              }),
+            },
+          },
+        }),
+      );
+
+      const clearSnapStateSpy = jest.spyOn(snapController, 'clearSnapState');
+      await messenger.call('SnapController:clearSnapState', MOCK_SNAP_ID);
+      const clearedState = await messenger.call(
+        'SnapController:getSnapState',
+        MOCK_SNAP_ID,
+      );
+      expect(clearSnapStateSpy).toHaveBeenCalledTimes(1);
+      expect(snapController.state.snapStates).toStrictEqual({});
+      expect(clearedState).toBeNull();
+    });
+  });
+
+  describe('SnapController:updateBlockedSnaps', () => {
+    it('calls SnapController.updateBlockedSnaps()', async () => {
+      const messenger = getSnapControllerMessenger(undefined, false);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+        }),
+      );
+
+      const updateBlockedSnapsSpy = jest
+        .spyOn(snapController, 'updateBlockedSnaps')
+        .mockImplementation();
+
+      await messenger.call('SnapController:updateBlockedSnaps');
+      expect(updateBlockedSnapsSpy).toHaveBeenCalledTimes(1);
+    });
+
+    describe('SnapController:enable', () => {
+      it('calls SnapController.enableSnap()', async () => {
+        const messenger = getSnapControllerMessenger(undefined, false);
+        const mockSnap = getMockSnapData({
+          id: 'npm:example',
+          origin: 'foo.com',
+          enabled: false,
+        });
+
         const snapController = getSnapController(
           getSnapControllerOptions({
             messenger,
             state: {
-              snapStates: {
-                'npm:fooSnap': encrypted,
+              snaps: {
+                [mockSnap.id]: mockSnap.stateObject,
               },
             },
           }),
         );
 
-        const getSnapStateSpy = jest.spyOn(snapController, 'getSnapState');
+        await messenger.call('SnapController:enable', mockSnap.id);
+        expect(snapController.state.snaps[mockSnap.id].enabled).toBe(true);
+      });
+    });
+
+    describe('SnapController:disable', () => {
+      it('calls SnapController.disableSnap()', async () => {
+        const messenger = getSnapControllerMessenger(undefined, false);
+        const mockSnap = getMockSnapData({
+          id: 'npm:example',
+          origin: 'foo.com',
+          enabled: true,
+        });
+
+        const snapController = getSnapController(
+          getSnapControllerOptions({
+            messenger,
+            state: {
+              snaps: {
+                [mockSnap.id]: mockSnap.stateObject,
+              },
+            },
+          }),
+        );
+
+        await messenger.call('SnapController:disable', mockSnap.id);
+        expect(snapController.state.snaps[mockSnap.id].enabled).toBe(false);
+      });
+    });
+
+    describe('SnapController:remove', () => {
+      it('calls SnapController.removeSnap()', async () => {
+        const messenger = getSnapControllerMessenger(undefined, false);
+        const mockSnap = getMockSnapData({
+          id: 'npm:example',
+          origin: 'foo.com',
+          enabled: true,
+        });
+
+        const snapController = getSnapController(
+          getSnapControllerOptions({
+            messenger,
+            state: {
+              snaps: {
+                [mockSnap.id]: mockSnap.stateObject,
+              },
+            },
+          }),
+        );
+
+        const originalCall = messenger.call.bind(messenger);
+
+        jest.spyOn(messenger, 'call').mockImplementation((method, ...args) => {
+          // Mock out permission requests
+          if (
+            method === 'PermissionController:hasPermissions' ||
+            method === 'PermissionController:revokeAllPermissions' ||
+            method === 'PermissionController:revokePermissionForAllSubjects'
+          ) {
+            return true;
+          }
+          return originalCall(method, ...args);
+        });
+
+        await messenger.call('SnapController:remove', mockSnap.id);
+        expect(snapController.state.snaps[mockSnap.id]).toBeUndefined();
+      });
+    });
+
+    describe('SnapController:getSnaps', () => {
+      it('calls SnapController.getPermittedSnaps()', async () => {
+        const messenger = getSnapControllerMessenger(undefined, false);
+        const mockSnap = getMockSnapData({
+          id: 'npm:example',
+          origin: 'foo.com',
+        });
+
+        const originalCall = messenger.call.bind(messenger);
+
+        jest.spyOn(messenger, 'call').mockImplementation((method, ...args) => {
+          if (method === 'PermissionController:getPermissions') {
+            return {
+              'wallet_snap_npm:example': {
+                caveats: null,
+                date: 1661166080905,
+                id: 'VyAsBJiDDKawv_XlNcm13',
+                invoker: 'https://metamask.github.io',
+                parentCapability: 'wallet_snap_npm:example',
+              },
+            };
+          }
+          return originalCall(method, ...args);
+        });
+
+        getSnapController(
+          getSnapControllerOptions({
+            messenger,
+            state: {
+              snaps: {
+                [mockSnap.id]: mockSnap.stateObject,
+              },
+            },
+          }),
+        );
+
         const result = await messenger.call(
-          'SnapController:getSnapState',
-          'npm:fooSnap',
+          'SnapController:getSnaps',
+          mockSnap.origin,
         );
-
-        expect(getSnapStateSpy).toHaveBeenCalledTimes(1);
-        expect(result).toStrictEqual(state);
-      });
-
-      it('throws custom error message in case decryption fails', async () => {
-        const messenger = getSnapControllerMessenger(undefined, false);
-
-        const snapController = getSnapController(
-          getSnapControllerOptions({
-            messenger,
-            state: {
-              snapStates: { [MOCK_SNAP_ID]: 'foo' },
-              snaps: {
-                [MOCK_SNAP_ID]: getSnapObject({
-                  status: SnapStatus.installing,
-                }),
-              },
-            },
-          }),
-        );
-
-        const getSnapStateSpy = jest.spyOn(snapController, 'getSnapState');
-        await expect(
-          messenger.call('SnapController:getSnapState', MOCK_SNAP_ID),
-        ).rejects.toThrow(
-          'Failed to decrypt snap state, the state must be corrupted.',
-        );
-        expect(getSnapStateSpy).toHaveBeenCalledTimes(1);
-      });
-    });
-
-    describe('SnapController:has', () => {
-      it('checks if a snap exists in state', async () => {
-        const messenger = getSnapControllerMessenger(undefined, false);
-
-        const snapController = getSnapController(
-          getSnapControllerOptions({
-            messenger,
-            state: {
-              snaps: {
-                'npm:fooSnap': getSnapObject({
-                  permissionName: 'fooperm',
-                  version: '0.0.1',
-                  sourceCode: MOCK_SNAP_SOURCE_CODE,
-                  id: 'npm:fooSnap',
-                  manifest: getSnapManifest(),
-                  enabled: true,
-                  status: SnapStatus.installing,
-                }),
-              },
-            },
-          }),
-        );
-
-        const hasSpy = jest.spyOn(snapController, 'has');
-        const result = messenger.call('SnapController:has', 'npm:fooSnap');
-
-        expect(hasSpy).toHaveBeenCalledTimes(1);
-        expect(result).toBe(true);
-      });
-    });
-
-    describe('SnapController:updateSnapState', () => {
-      it(`updates the snap's state`, async () => {
-        const messenger = getSnapControllerMessenger(undefined, false);
-
-        const snapController = getSnapController(
-          getSnapControllerOptions({
-            messenger,
-            state: {
-              snaps: {
-                'npm:fooSnap': getSnapObject({
-                  permissionName: 'fooperm',
-                  version: '0.0.1',
-                  sourceCode: MOCK_SNAP_SOURCE_CODE,
-                  id: 'npm:fooSnap',
-                  manifest: getSnapManifest(),
-                  enabled: true,
-                  status: SnapStatus.installing,
-                }),
-              },
-            },
-          }),
-        );
-
-        const updateSnapStateSpy = jest.spyOn(
-          snapController,
-          'updateSnapState',
-        );
-        const state = {
-          bar: 'baz',
-        };
-        await messenger.call(
-          'SnapController:updateSnapState',
-          'npm:fooSnap',
-          state,
-        );
-
-        expect(updateSnapStateSpy).toHaveBeenCalledTimes(1);
-        expect(snapController.state.snapStates).toStrictEqual({
-          'npm:fooSnap': await passworder.encrypt(
-            'stateEncryption:npm:fooSnap',
-            state,
-          ),
+        expect(result).toStrictEqual({
+          'npm:example': {
+            id: 'npm:example',
+            initialPermissions: {},
+            permissionName: 'wallet_snap_npm:example-snap',
+            version: '1.0.0',
+          },
         });
       });
-
-      it('has different encryption for the same data stored by two different snaps', async () => {
-        const messenger = getSnapControllerMessenger(undefined, false);
-
-        const snapController = getSnapController(
-          getSnapControllerOptions({
-            messenger,
-            state: {
-              snaps: {
-                'npm:fooSnap': getSnapObject({
-                  permissionName: 'fooperm',
-                  version: '0.0.1',
-                  sourceCode: MOCK_SNAP_SOURCE_CODE,
-                  id: 'npm:fooSnap',
-                  manifest: getSnapManifest(),
-                  enabled: true,
-                  status: SnapStatus.installing,
-                }),
-                'npm:fooSnap2': getSnapObject({
-                  permissionName: 'fooperm2',
-                  version: '0.0.1',
-                  sourceCode: MOCK_SNAP_SOURCE_CODE,
-                  id: 'npm:fooSnap2',
-                  manifest: getSnapManifest(),
-                  enabled: true,
-                  status: SnapStatus.installing,
-                }),
-              },
-            },
-          }),
-        );
-
-        const updateSnapStateSpy = jest.spyOn(
-          snapController,
-          'updateSnapState',
-        );
-        const state = {
-          bar: 'baz',
-        };
-        await messenger.call(
-          'SnapController:updateSnapState',
-          'npm:fooSnap',
-          state,
-        );
-
-        await messenger.call(
-          'SnapController:updateSnapState',
-          'npm:fooSnap2',
-          state,
-        );
-
-        expect(updateSnapStateSpy).toHaveBeenCalledTimes(2);
-        expect(snapController.state.snapStates).toStrictEqual({
-          'npm:fooSnap': await passworder.encrypt(
-            'stateEncryption:npm:fooSnap',
-            state,
-          ),
-          'npm:fooSnap2': await passworder.encrypt(
-            'stateEncryption:npm:fooSnap2',
-            state,
-          ),
-        });
-
-        expect(
-          snapController.state.snapStates['npm:fooSnap'],
-        ).not.toStrictEqual(snapController.state.snapStates['npm:fooSnap2']);
-      });
     });
 
-    describe('SnapController:clearSnapState', () => {
-      it('clears the state of a snap', async () => {
-        const messenger = getSnapControllerMessenger(undefined, false);
-
-        const snapController = getSnapController(
-          getSnapControllerOptions({
-            messenger,
-            state: {
-              snapStates: { [MOCK_SNAP_ID]: 'foo' },
-              snaps: {
-                [MOCK_SNAP_ID]: getSnapObject({
-                  status: SnapStatus.installing,
-                }),
-              },
-            },
-          }),
-        );
-
-        const clearSnapStateSpy = jest.spyOn(snapController, 'clearSnapState');
-        await messenger.call('SnapController:clearSnapState', MOCK_SNAP_ID);
-        const clearedState = await messenger.call(
-          'SnapController:getSnapState',
-          MOCK_SNAP_ID,
-        );
-        expect(clearSnapStateSpy).toHaveBeenCalledTimes(1);
-        expect(snapController.state.snapStates).toStrictEqual({});
-        expect(clearedState).toBeNull();
-      });
-    });
-
-    describe('SnapController:updateBlockedSnaps', () => {
-      it('calls SnapController.updateBlockedSnaps()', async () => {
+    describe('SnapController:install', () => {
+      it('calls SnapController.installSnaps()', async () => {
         const messenger = getSnapControllerMessenger(undefined, false);
         const snapController = getSnapController(
           getSnapControllerOptions({
@@ -3787,12 +4064,33 @@ describe('SnapController', () => {
           }),
         );
 
-        const updateBlockedSnapsSpy = jest
-          .spyOn(snapController, 'updateBlockedSnaps')
+        const installSnapsSpy = jest
+          .spyOn(snapController, 'installSnaps')
           .mockImplementation();
 
-        await messenger.call('SnapController:updateBlockedSnaps');
-        expect(updateBlockedSnapsSpy).toHaveBeenCalledTimes(1);
+        const snaps = { [MOCK_SNAP_ID]: {} };
+        await messenger.call('SnapController:install', 'foo', snaps);
+        expect(installSnapsSpy).toHaveBeenCalledTimes(1);
+        expect(installSnapsSpy).toHaveBeenCalledWith('foo', snaps);
+      });
+    });
+
+    describe('SnapController:removeSnapError', () => {
+      it('calls SnapController.removeSnapError()', async () => {
+        const messenger = getSnapControllerMessenger(undefined, false);
+        const snapController = getSnapController(
+          getSnapControllerOptions({
+            messenger,
+            state: {
+              snapErrors: {
+                foo: { internalID: 'foo', message: 'bar', code: -1 },
+              },
+            },
+          }),
+        );
+
+        await messenger.call('SnapController:removeSnapError', 'foo');
+        expect(snapController.state.snapErrors.foo).toBeUndefined();
       });
     });
   });

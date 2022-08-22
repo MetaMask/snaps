@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.19.1]
+### Fixed
+- Fixed 0.19.0 not being able to run ([#697](https://github.com/MetaMask/snaps-skunkworks/pull/697))
+
 ## [0.19.0]
 ### Added
 - Add 'Access-Control-Allow-Origin': * to serve ([#638](https://github.com/MetaMask/snaps-skunkworks/pull/638))
@@ -221,7 +225,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Example snaps ([#72](https://github.com/MetaMask/snaps-skunkworks/pull/72))
   - The examples now live in their own package, [`@metamask/snap-examples`](https://npmjs.com/package/@metamask/snap-examples).
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.19.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.19.1...HEAD
+[0.19.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.19.0...v0.19.1
 [0.19.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.18.1...v0.19.0
 [0.18.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.18.0...v0.18.1
 [0.18.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.17.0...v0.18.0
