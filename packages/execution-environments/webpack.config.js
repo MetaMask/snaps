@@ -117,6 +117,10 @@ module.exports = (_, argv) => {
         child_process: false,
         fs: false
       },
+      fallback: {
+        net: false,
+        tls: false
+      }
     },
   };
 
@@ -172,7 +176,11 @@ module.exports = (_, argv) => {
         child_process: false,
         fs: false
       },
-    },
+      fallback: {
+        net: false,
+        tls: false
+      }
+    }
   };
 
   return [browserConfig, nodeConfig, unsafeConfig];
