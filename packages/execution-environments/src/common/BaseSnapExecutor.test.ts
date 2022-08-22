@@ -865,6 +865,7 @@ describe('BaseSnapExecutor', () => {
       method: 'snapRpc',
       params: [
         FAKE_SNAP_NAME,
+        ON_RPC_REQUEST,
         FAKE_ORIGIN,
         { jsonrpc: '2.0', method: 'first', params: [] },
       ],
@@ -920,6 +921,7 @@ describe('BaseSnapExecutor', () => {
       method: 'snapRpc',
       params: [
         FAKE_SNAP_NAME,
+        ON_RPC_REQUEST,
         FAKE_ORIGIN,
         { jsonrpc: '2.0', method: 'second', params: [] },
       ],
@@ -990,6 +992,7 @@ describe('BaseSnapExecutor', () => {
       method: 'snapRpc',
       params: [
         FAKE_SNAP_NAME,
+        ON_RPC_REQUEST,
         FAKE_ORIGIN,
         { jsonrpc: '2.0', method: 'first', params: [] },
       ],
@@ -1045,6 +1048,7 @@ describe('BaseSnapExecutor', () => {
       method: 'snapRpc',
       params: [
         FAKE_SNAP_NAME,
+        ON_RPC_REQUEST,
         FAKE_ORIGIN,
         { jsonrpc: '2.0', method: 'second', params: [] },
       ],
@@ -1102,6 +1106,7 @@ describe('BaseSnapExecutor', () => {
       method: 'snapRpc',
       params: [
         FAKE_SNAP_NAME,
+        ON_RPC_REQUEST,
         FAKE_ORIGIN,
         { jsonrpc: '2.0', method: '', params: [] },
       ],

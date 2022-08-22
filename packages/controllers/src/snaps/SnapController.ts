@@ -19,7 +19,6 @@ import {
 import {
   ErrorJSON,
   SnapData,
-  SnapId,
   SnapRpcHook,
   SnapRpcHookArgs,
 } from '@metamask/snap-types';
@@ -43,6 +42,7 @@ import {
   validateSnapId,
   validateSnapJsonFile,
   validateSnapShasum,
+  SnapId,
 } from '@metamask/snap-utils';
 import {
   Duration,
@@ -2174,7 +2174,7 @@ export class SnapController extends BaseController<
 
     const rpcHandler = async ({
       origin,
-      handler: handlerName,
+      handler: handlerType,
       request,
     }: SnapRpcHookArgs) => {
       if (this.state.snaps[snapId].enabled === false) {

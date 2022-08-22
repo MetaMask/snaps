@@ -7,14 +7,14 @@ import {
 import { SnapController } from '@metamask/snap-controllers';
 import { isObject, Json, NonEmptyArray } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
-import { SNAP_PREFIX } from '@metamask/snap-utils';
+import { SNAP_PREFIX, HandlerType } from '@metamask/snap-utils';
 
 const methodPrefix = SNAP_PREFIX;
 const targetKey = `${methodPrefix}*` as const;
 
 export type InvokeSnapMethodHooks = {
   getSnap: SnapController['get'];
-  handleSnapRpcRequest: SnapController['handleRpcRequest'];
+  handleSnapRpcRequest: SnapController['handleRequest'];
 };
 
 type InvokeSnapSpecificationBuilderOptions = {
@@ -84,30 +84,29 @@ function getInvokeSnapImplementation({
     options: RestrictedMethodOptions<[Record<string, Json>]>,
   ): Promise<Json> {
     const { params = [], method, context } = options;
-    const snapRpcRequest = params[0];
+    const request = params[0];
 
-    if (!isObject(snapRpcRequest)) {
+    if (!isObject(request)) {
       throw ethErrors.rpc.invalidParams({
         message: 'Must specify snap RPC request object as single parameter.',
       });
     }
 
-    const snapIdString = method.substr(SNAP_PREFIX.length);
+    const snapId = method.substr(SNAP_PREFIX.length);
 
-    if (!getSnap(snapIdString)) {
+    if (!getSnap(snapId)) {
       throw ethErrors.rpc.invalidRequest({
-        message: `The snap "${snapIdString}" is not installed. This is a bug, please report it.`,
+        message: `The snap "${snapId}" is not installed. This is a bug, please report it.`,
       });
     }
 
-    const fromSubject = context.origin;
+    const { origin } = context;
 
-    // handleSnapRpcRequest is an async function that takes the snap id, a snapOriginString string and a request object.
-    // It should return the result it would like returned to the fromDomain as part of response.result
-    return (await handleSnapRpcRequest(
-      snapIdString,
-      fromSubject,
-      snapRpcRequest,
-    )) as Json;
+    return (await handleSnapRpcRequest({
+      snapId,
+      origin,
+      request,
+      handler: HandlerType.OnRpcRequest,
+    })) as Json;
   };
 }

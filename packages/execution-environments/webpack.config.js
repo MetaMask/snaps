@@ -114,6 +114,8 @@ module.exports = (_, argv) => {
       alias: {
         // Without this alias webpack tried to require ../../node_modules/stream/ which doesn't have Duplex, breaking the bundle
         stream: 'stream-browserify',
+        child_process: false,
+        fs: false
       },
     },
   };
@@ -167,6 +169,8 @@ module.exports = (_, argv) => {
       alias: {
         // Without this alias webpack tried to require ../../node_modules/stream/ which doesn't have Duplex, breaking the bundle
         stream: 'stream-browserify',
+        child_process: false,
+        fs: false
       },
     },
   };
