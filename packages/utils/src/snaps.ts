@@ -1,7 +1,6 @@
 import { createHash } from 'crypto';
-import { ChainId } from '@metamask/snap-types';
 import { SnapManifest } from './json-schemas';
-import { SnapIdPrefixes, SnapValidationFailureReason } from './types';
+import { SnapIdPrefixes, SnapValidationFailureReason, ChainId } from './types';
 
 export const LOCALHOST_HOSTNAMES = new Set(['localhost', '127.0.0.1', '::1']);
 export const SNAP_PREFIX = 'wallet_snap_';

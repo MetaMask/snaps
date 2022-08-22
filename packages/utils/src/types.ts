@@ -52,3 +52,7 @@ export enum HandlerType {
   OnRpcRequest = 'onRpcRequest',
   OnTransactionInsight = 'onTransactionInsight',
 }
+
+export type SnapId = string;
+
+export type ChainId = string;

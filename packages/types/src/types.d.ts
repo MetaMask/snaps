@@ -1,7 +1,7 @@
 import { Json } from '@metamask/controllers';
 import { MetaMaskInpageProvider } from '@metamask/providers';
 import { JsonRpcRequest } from '@metamask/types';
-import { HandlerType } from '@metamask/snap-utils';
+import { HandlerType, ChainId } from '@metamask/snap-utils';
 
 /**
  * Command request sent to a worker.
@@ -51,10 +51,6 @@ export type SnapRpcHookArgs = {
 export type SnapRpcHook = (options: SnapRpcHookArgs) => Promise<unknown>;
 
 export type SnapProvider = MetaMaskInpageProvider;
-
-export type SnapId = string;
-
-export type ChainId = string;
 
 export type ErrorJSON = {
   message: string;
