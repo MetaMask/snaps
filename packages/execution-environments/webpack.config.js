@@ -119,7 +119,7 @@ module.exports = (_, argv) => {
       },
       fallback: {
         net: false,
-        tls: false
+        tls: false,
       }
     },
   };
@@ -178,7 +178,7 @@ module.exports = (_, argv) => {
       },
       fallback: {
         net: false,
-        tls: false
+        tls: false,
       }
     }
   };
