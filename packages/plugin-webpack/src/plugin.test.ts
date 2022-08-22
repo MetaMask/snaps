@@ -190,4 +190,44 @@ describe('SnapsWebpackPlugin', () => {
     expect(result).not.toContain(`// Sets foo to bar`);
     expect(result).not.toContain(`// Returns baz`);
   });
+
+  it('generates a source map', async () => {
+    const fileSystem = createFsFromVolume(new Volume());
+    const { promises: fs } = fileSystem;
+
+    const bundler = webpack({
+      mode: 'none',
+      devtool: 'source-map',
+      entry: {
+        foo: '/foo.js',
+      },
+      output: {
+        path: '/lib',
+        filename: '[name].js',
+      },
+      plugins: [new SnapsWebpackPlugin()],
+    });
+
+    bundler.inputFileSystem = fileSystem;
+    bundler.outputFileSystem = fileSystem;
+
+    await fs.mkdir('/lib', { recursive: true });
+    await fs.writeFile('/foo.js', `const foo = 'bar';`);
+
+    await new Promise<Stats>((resolve, reject) =>
+      bundler.run((error, stats) => {
+        if (error || !stats) {
+          return reject(error);
+        }
+
+        return resolve(stats);
+      }),
+    );
+
+    const result = await fs.readFile('/lib/foo.js.map', 'utf-8');
+
+    expect(result).toMatchInlineSnapshot(
+      `"{\\"version\\":3,\\"file\\":\\"foo.js\\",\\"mappings\\":\\";;EAAA\\",\\"names\\":[],\\"sourceRoot\\":\\"\\",\\"sources\\":[\\"webpack://@metamask/snaps-webpack-plugin/../foo.js\\"],\\"sourcesContent\\":[\\"const foo = 'bar';\\"]}"`,
+    );
+  });
 });

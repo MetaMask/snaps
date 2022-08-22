@@ -1,5 +1,4 @@
-/* eslint-disable jest/no-restricted-matchers */
-
+import * as path from 'path';
 import { rollup } from 'rollup';
 import virtual from '@rollup/plugin-virtual';
 import snaps from './plugin';
@@ -23,7 +22,11 @@ describe('snaps', () => {
     await bundler.close();
 
     const { code } = bundle.output[0];
-    expect(code).toMatchSnapshot();
+    expect(code).toMatchInlineSnapshot(`
+      "const foo = 'bar';
+      console.log(foo);
+      "
+    `);
   });
 
   it('applies a transform', async () => {
@@ -46,9 +49,11 @@ describe('snaps', () => {
     await bundler.close();
 
     const { code } = bundle.output[0];
-    expect(code).toMatchSnapshot();
-    expect(code).not.toContain(`// foo bar`);
-    expect(code).not.toContain(`/* baz qux */`);
+    expect(code).toMatchInlineSnapshot(`
+      "const foo = 'bar';
+      console.log(foo);
+      "
+    `);
   });
 
   it('forwards the options', async () => {
@@ -71,9 +76,14 @@ describe('snaps', () => {
     await bundler.close();
 
     const { code } = bundle.output[0];
-    expect(code).toMatchSnapshot();
-    expect(code).toContain(`// foo bar`);
-    expect(code).toContain(`/* baz qux */`);
+    expect(code).toMatchInlineSnapshot(`
+      "// foo bar
+
+      /* baz qux */
+      const foo = 'bar';
+      console.log(foo);
+      "
+    `);
   });
 
   it('runs on the entire bundle', async () => {
@@ -101,8 +111,51 @@ describe('snaps', () => {
     await bundler.close();
 
     const { code } = bundle.output[0];
-    expect(code).toMatchSnapshot();
-    expect(code).not.toContain(`// Sets foo to bar`);
-    expect(code).not.toContain(`// Returns baz`);
+    expect(code).toMatchInlineSnapshot(`
+      "const bar = 'baz';
+      const foo = bar;
+      console.log(foo);
+      "
+    `);
+  });
+
+  it('generates a source map', async () => {
+    const bundler = await rollup({
+      // Rollup doesn't generate source maps from virtual files for some reason,
+      // so we need to use a real file.
+      input: path.resolve(__dirname, './__fixtures__/source-map.ts'),
+      output: {
+        sourcemap: true,
+      },
+      plugins: [snaps()],
+    });
+
+    const bundle = await bundler.generate({ sourcemap: true });
+    await bundler.close();
+
+    const { map } = bundle.output[0];
+    expect(map).toMatchInlineSnapshot(`
+      SourceMap {
+        "file": "source-map.js",
+        "mappings": "AAGA,MAAMA,GAAG,GAAG,KAAZ;AACAC,OAAO,CAACC,GAAR,CAAYF,GAAZ",
+        "names": Array [
+          "foo",
+          "console",
+          "log",
+        ],
+        "sources": Array [
+          "src/__fixtures__/source-map.ts",
+        ],
+        "sourcesContent": Array [
+          "// This file is only used for testing source map generation.
+
+      // eslint-disable-next-line import/unambiguous
+      const foo = 'bar';
+      console.log(foo);
+      ",
+        ],
+        "version": 3,
+      }
+    `);
   });
 });

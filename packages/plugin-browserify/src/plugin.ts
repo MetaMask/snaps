@@ -1,6 +1,7 @@
 import { Transform, TransformCallback } from 'stream';
 import { BrowserifyObject } from 'browserify';
 import { postProcessBundle, PostProcessOptions } from '@metamask/snap-utils';
+import { fromSource } from 'convert-source-map';
 
 export type Options = PostProcessOptions;
 
@@ -53,9 +54,21 @@ export class SnapsBrowserifyTransform extends Transform {
   _flush(callback: TransformCallback) {
     // Merges all the chunks into a single string and processes it.
     const code = Buffer.concat(this.#data).toString('utf-8');
-    const transformedCode = postProcessBundle(code, this.#options);
 
-    this.push(transformedCode);
+    // Browserify uses inline source maps, so we attempt to read it here, and
+    // convert it to an object.
+    const inputSourceMap = fromSource(code)?.toObject() ?? undefined;
+
+    const result = postProcessBundle(code, {
+      ...this.#options,
+      sourceMap: Boolean(inputSourceMap) && 'inline',
+      inputSourceMap,
+    });
+
+    if (result) {
+      this.push(result.code);
+    }
+
     callback();
   }
 }
