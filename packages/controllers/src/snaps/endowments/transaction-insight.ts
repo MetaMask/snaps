@@ -24,7 +24,7 @@ type TransactionInsightEndowmentSpecification = ValidPermissionSpecification<{
  */
 const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.Endowment,
-  never,
+  any,
   TransactionInsightEndowmentSpecification
 > = (_builderOptions?: unknown) => {
   return {
