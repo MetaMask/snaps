@@ -2,11 +2,12 @@
 import 'ses';
 import { EventEmitter } from 'stream';
 import { Json, JsonRpcSuccess } from '@metamask/utils';
-import { SNAP_STREAM_NAMES } from '../common/enums';
+import { SNAP_STREAM_NAMES, HandlerType } from '@metamask/snap-utils';
 import { ChildProcessSnapExecutor } from './ChildProcessSnapExecutor';
 
 const FAKE_ORIGIN = 'origin:foo';
 const FAKE_SNAP_NAME = 'local:foo';
+const ON_RPC_REQUEST = HandlerType.OnRpcRequest;
 
 describe('ChildProcessSnapExecutor', () => {
   it('receives and processes commands', async () => {
@@ -69,7 +70,12 @@ describe('ChildProcessSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [FAKE_SNAP_NAME, FAKE_ORIGIN, { jsonrpc: '2.0', method: '' }],
+      params: [
+        FAKE_SNAP_NAME,
+        ON_RPC_REQUEST,
+        FAKE_ORIGIN,
+        { jsonrpc: '2.0', method: '' },
+      ],
     });
 
     expect(

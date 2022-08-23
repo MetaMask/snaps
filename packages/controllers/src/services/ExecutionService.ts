@@ -1,14 +1,15 @@
 import { RestrictedControllerMessenger } from '@metamask/controllers';
-import { SnapId } from '@metamask/snap-utils';
+import { SnapId, SnapRpcHookArgs } from '@metamask/snap-utils';
+
 import { Json } from '@metamask/types';
 
 type TerminateSnap = (snapId: string) => Promise<void>;
 type TerminateAll = () => Promise<void>;
 type ExecuteSnap = (snapData: SnapExecutionData) => Promise<unknown>;
+
 type HandleRpcRequest = (
   snapId: string,
-  origin: string,
-  _request: Record<string, unknown>,
+  options: SnapRpcHookArgs,
 ) => Promise<unknown>;
 
 export interface ExecutionService {

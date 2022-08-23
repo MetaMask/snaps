@@ -1,8 +1,8 @@
-import assert from 'assert';
 import { ControllerMessenger } from '@metamask/controllers';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import pump from 'pump';
+import { HandlerType } from '@metamask/snap-utils';
 import { ErrorMessageEvent } from '../ExecutionService';
 import { setupMultiplex } from '../AbstractExecutionService';
 import { IframeExecutionService } from './IframeExecutionService';
@@ -178,18 +178,16 @@ describe('IframeExecutionService', () => {
 
     expect(executeResult).toBe('OK');
 
-    const result = await iframeExecutionService.handleRpcRequest(
-      snapId,
-      'foo',
-      {
+    const result = await iframeExecutionService.handleRpcRequest(snapId, {
+      origin: 'foo',
+      handler: HandlerType.OnRpcRequest,
+      request: {
         jsonrpc: '2.0',
         id: 1,
         method: 'foobar',
         params: [],
       },
-    );
-
-    assert(result !== undefined);
+    });
 
     expect(result).toBe(blockNumber);
 

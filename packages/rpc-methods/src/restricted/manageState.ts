@@ -129,7 +129,7 @@ function getManageStateImplementation({
       case ManageStateOperation.getState:
         return await getSnapState(origin);
 
-      case ManageStateOperation.updateState:
+      case ManageStateOperation.updateState: {
         if (!isObject(newState)) {
           throw ethErrors.rpc.invalidParams({
             message: `Invalid ${method} "updateState" parameter: The new state must be a plain object.`,
@@ -139,7 +139,6 @@ function getManageStateImplementation({
             },
           });
         }
-        // eslint-disable-next-line no-case-declarations
         const [isValid, plainTextSizeInBytes] =
           validateJsonAndGetSize(newState);
         if (!isValid) {
@@ -162,7 +161,7 @@ function getManageStateImplementation({
 
         await updateSnapState(origin, newState);
         return null;
-
+      }
       default:
         throw ethErrors.rpc.invalidParams(
           `Invalid ${method} operation: "${operation}"`,

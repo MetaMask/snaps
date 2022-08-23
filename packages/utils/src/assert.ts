@@ -22,3 +22,28 @@ export function assert(value: any, message?: string | Error): asserts value {
     throw new AssertionError({ message: message ?? 'Assertion failed' });
   }
 }
+
+/* istanbul ignore next */
+/**
+ * Use in the default case of a switch that you want to be fully exhaustive.
+ * Using this function forces the compiler to enforces exhaustivity during compile-time.
+ *
+ * @example
+ * ```
+ * const snapPrefix = snapIdToSnapPrefix(snapId);
+ * switch (snapPrefix) {
+ *   case SnapIdPrefixes.local:
+ *     ...
+ *   case SnapIdPrefixes.npm:
+ *     ...
+ *   default:
+ *     assertExhaustive(snapPrefix);
+ * }
+ * ```
+ * @param _object - The object on which the switch is being operated.
+ */
+export function assertExhaustive(_object: never): never {
+  throw new Error(
+    'Invalid branch reached. Should be detected during compilation',
+  );
+}

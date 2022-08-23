@@ -1,13 +1,14 @@
 import { PermissionType } from '@metamask/controllers';
-import { longRunningEndowmentBuilder } from './long-running';
+import { transactionInsightEndowmentBuilder } from './transaction-insight';
 import { SnapEndowments } from '.';
 
-describe('endowment:long-running', () => {
+describe('endowment:transaction-insight', () => {
   it('builds the expected permission specification', () => {
-    const specification = longRunningEndowmentBuilder.specificationBuilder({});
+    const specification =
+      transactionInsightEndowmentBuilder.specificationBuilder({});
     expect(specification).toStrictEqual({
       permissionType: PermissionType.Endowment,
-      targetKey: SnapEndowments.longRunning,
+      targetKey: SnapEndowments.transactionInsight,
       endowmentGetter: expect.any(Function),
       allowedCaveats: null,
     });

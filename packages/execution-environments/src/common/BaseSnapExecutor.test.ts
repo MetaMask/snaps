@@ -2,11 +2,13 @@
 import 'ses';
 import { Duplex, DuplexOptions, EventEmitter, Readable } from 'stream';
 import { JsonRpcResponse } from '@metamask/utils';
+import { HandlerType } from '@metamask/snap-utils';
 import { JsonRpcRequest } from '../__GENERATED__/openrpc';
 import { BaseSnapExecutor } from './BaseSnapExecutor';
 
 const FAKE_ORIGIN = 'origin:foo';
 const FAKE_SNAP_NAME = 'local:foo';
+const ON_RPC_REQUEST = HandlerType.OnRpcRequest;
 
 type TwoWayPassThroughBuffer = {
   buffer: { chunk: any; encoding: BufferEncoding }[];
@@ -242,7 +244,12 @@ describe('BaseSnapExecutor', () => {
         jsonrpc: '2.0',
         id: 2,
         method: 'snapRpc',
-        params: [FAKE_SNAP_NAME, FAKE_ORIGIN, { jsonrpc: '2.0', method: '' }],
+        params: [
+          FAKE_SNAP_NAME,
+          ON_RPC_REQUEST,
+          FAKE_ORIGIN,
+          { jsonrpc: '2.0', method: '' },
+        ],
       });
 
       jest.advanceTimersByTime(250);
@@ -324,7 +331,12 @@ describe('BaseSnapExecutor', () => {
           jsonrpc: '2.0',
           id: 3,
           method: 'snapRpc',
-          params: [SNAP_NAME_1, FAKE_ORIGIN, { jsonrpc: '2.0', method: 'set' }],
+          params: [
+            SNAP_NAME_1,
+            ON_RPC_REQUEST,
+            FAKE_ORIGIN,
+            { jsonrpc: '2.0', method: 'set' },
+          ],
         });
 
         await executor.writeCommand({
@@ -333,6 +345,7 @@ describe('BaseSnapExecutor', () => {
           method: 'snapRpc',
           params: [
             SNAP_NAME_1,
+            ON_RPC_REQUEST,
             FAKE_ORIGIN,
             { jsonrpc: '2.0', method: 'getHandle' },
           ],
@@ -356,6 +369,7 @@ describe('BaseSnapExecutor', () => {
           method: 'snapRpc',
           params: [
             SNAP_NAME_2,
+            ON_RPC_REQUEST,
             FAKE_ORIGIN,
             { jsonrpc: '2.0', method: '', params: [handle] },
           ],
@@ -403,6 +417,7 @@ describe('BaseSnapExecutor', () => {
       method: 'snapRpc',
       params: [
         FAKE_SNAP_NAME,
+        ON_RPC_REQUEST,
         FAKE_ORIGIN,
         { jsonrpc: '2.0', method: '', params: [] },
       ],
@@ -458,6 +473,7 @@ describe('BaseSnapExecutor', () => {
       method: 'snapRpc',
       params: [
         FAKE_SNAP_NAME,
+        ON_RPC_REQUEST,
         FAKE_ORIGIN,
         { jsonrpc: '2.0', method: '', params: [] },
       ],
@@ -554,6 +570,7 @@ describe('BaseSnapExecutor', () => {
       method: 'snapRpc',
       params: [
         FAKE_SNAP_NAME,
+        ON_RPC_REQUEST,
         FAKE_ORIGIN,
         { jsonrpc: '2.0', method: '', params: [] },
       ],
@@ -616,6 +633,7 @@ describe('BaseSnapExecutor', () => {
       method: 'snapRpc',
       params: [
         FAKE_SNAP_NAME,
+        ON_RPC_REQUEST,
         FAKE_ORIGIN,
         { jsonrpc: '2.0', method: '', params: [] },
       ],
@@ -678,6 +696,7 @@ describe('BaseSnapExecutor', () => {
       method: 'snapRpc',
       params: [
         FAKE_SNAP_NAME,
+        ON_RPC_REQUEST,
         FAKE_ORIGIN,
         { jsonrpc: '2.0', method: '', params: [] },
       ],
@@ -705,6 +724,50 @@ describe('BaseSnapExecutor', () => {
           message: testError.message,
         },
       },
+    });
+  });
+
+  it('supports onTransaction export', async () => {
+    const CODE = `
+      module.exports.onTransaction = ({ origin, transaction, chainId }) => ({ origin, transaction, chainId });
+    `;
+    const executor = new TestSnapExecutor();
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'executeSnap',
+      params: [FAKE_SNAP_NAME, CODE, []],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    // TODO: Updating the value to be closer to the value we expect from the extension.
+    // We also have to decide on the shape of that object.
+    const transaction = { maxFeePerGas: '0x' };
+
+    const params = { transaction, chainId: 'eip155:1' };
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        FAKE_SNAP_NAME,
+        HandlerType.OnTransaction,
+        FAKE_ORIGIN,
+        { jsonrpc: '2.0', method: 'foo', params },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: { ...params, origin: FAKE_ORIGIN },
     });
   });
 
@@ -742,6 +805,7 @@ describe('BaseSnapExecutor', () => {
       method: 'snapRpc',
       params: [
         FAKE_SNAP_NAME,
+        ON_RPC_REQUEST,
         FAKE_ORIGIN,
         { jsonrpc: '2.0', method: '', params: [] },
       ],
@@ -803,6 +867,7 @@ describe('BaseSnapExecutor', () => {
       method: 'snapRpc',
       params: [
         FAKE_SNAP_NAME,
+        ON_RPC_REQUEST,
         FAKE_ORIGIN,
         { jsonrpc: '2.0', method: 'first', params: [] },
       ],
@@ -858,6 +923,7 @@ describe('BaseSnapExecutor', () => {
       method: 'snapRpc',
       params: [
         FAKE_SNAP_NAME,
+        ON_RPC_REQUEST,
         FAKE_ORIGIN,
         { jsonrpc: '2.0', method: 'second', params: [] },
       ],
@@ -928,6 +994,7 @@ describe('BaseSnapExecutor', () => {
       method: 'snapRpc',
       params: [
         FAKE_SNAP_NAME,
+        ON_RPC_REQUEST,
         FAKE_ORIGIN,
         { jsonrpc: '2.0', method: 'first', params: [] },
       ],
@@ -983,6 +1050,7 @@ describe('BaseSnapExecutor', () => {
       method: 'snapRpc',
       params: [
         FAKE_SNAP_NAME,
+        ON_RPC_REQUEST,
         FAKE_ORIGIN,
         { jsonrpc: '2.0', method: 'second', params: [] },
       ],
@@ -1040,6 +1108,7 @@ describe('BaseSnapExecutor', () => {
       method: 'snapRpc',
       params: [
         FAKE_SNAP_NAME,
+        ON_RPC_REQUEST,
         FAKE_ORIGIN,
         { jsonrpc: '2.0', method: '', params: [] },
       ],

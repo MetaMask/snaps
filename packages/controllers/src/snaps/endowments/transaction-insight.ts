@@ -6,29 +6,27 @@ import {
 } from '@metamask/controllers';
 import { SnapEndowments } from './enum';
 
-const permissionName = SnapEndowments.longRunning;
+const permissionName = SnapEndowments.transactionInsight;
 
-type LongRunningEndowmentSpecification = ValidPermissionSpecification<{
+type TransactionInsightEndowmentSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;
   targetKey: typeof permissionName;
-  endowmentGetter: (_options?: any) => undefined;
+  endowmentGetter: (_options?: EndowmentGetterParams) => undefined;
   allowedCaveats: null;
 }>;
 
 /**
- * `endowment:long-running` returns nothing; it is intended to be used as a flag
- * by the `SnapController` to make it ignore the request processing timeout
- * during snap lifecycle management. Essentially, it allows a snap to take an
- * infinite amount of time to process a request.
+ * `endowment:transaction-insight` returns nothing; it is intended to be used as a flag
+ * by the extension to detect whether the snap has the capability to show information on the transaction confirmation screen.
  *
  * @param _builderOptions - Optional specification builder options.
- * @returns The specification for the long-running endowment.
+ * @returns The specification for the transaction-insight endowment.
  */
 const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.Endowment,
   any,
-  LongRunningEndowmentSpecification
-> = (_builderOptions?: any) => {
+  TransactionInsightEndowmentSpecification
+> = (_builderOptions?: unknown) => {
   return {
     permissionType: PermissionType.Endowment,
     targetKey: permissionName,
@@ -37,7 +35,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
   };
 };
 
-export const longRunningEndowmentBuilder = Object.freeze({
+export const transactionInsightEndowmentBuilder = Object.freeze({
   targetKey: permissionName,
   specificationBuilder,
 } as const);

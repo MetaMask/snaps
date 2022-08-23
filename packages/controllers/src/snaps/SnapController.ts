@@ -18,6 +18,7 @@ import {
 } from '@metamask/controllers';
 import {
   assert,
+  assertExhaustive,
   DEFAULT_ENDOWMENTS,
   DEFAULT_REQUESTED_SNAP_VERSION,
   getSnapPermissionName,
@@ -31,6 +32,8 @@ import {
   SnapId,
   SnapIdPrefixes,
   SnapManifest,
+  SnapRpcHook,
+  SnapRpcHookArgs,
   SNAP_PREFIX,
   ValidatedSnapId,
   validateSnapId,
@@ -60,8 +63,8 @@ import {
   TerminateAllSnapsAction,
   TerminateSnapAction,
 } from '../services/ExecutionService';
-import { assertExhaustive, hasTimedOut, setDiff, withTimeout } from '../utils';
-import { LONG_RUNNING_PERMISSION } from './endowments';
+import { hasTimedOut, setDiff, withTimeout } from '../utils';
+import { SnapEndowments } from './endowments';
 import { RequestQueue } from './RequestQueue';
 import { fetchNpmSnap } from './utils';
 
@@ -192,9 +195,7 @@ export interface SnapRuntimeData {
   /**
    * RPC handler designated for the Snap
    */
-  rpcHandler:
-    | null
-    | ((origin: string, request: Record<string, unknown>) => Promise<unknown>);
+  rpcHandler: null | SnapRpcHook;
 
   /**
    * The finite state machine interpreter for possible states that the Snap can be in such as stopped, running, blocked
@@ -273,11 +274,11 @@ export type GetSnap = {
 };
 
 /**
- * Handles sending an inbound rpc message to a snap and returns its result.
+ * Handles sending an inbound request to a snap and returns its result.
  */
-export type HandleSnapRpcRequest = {
-  type: `${typeof controllerName}:handleRpcRequest`;
-  handler: SnapController['handleRpcRequest'];
+export type HandleSnapRequest = {
+  type: `${typeof controllerName}:handleRequest`;
+  handler: SnapController['handleRequest'];
 };
 
 /**
@@ -355,7 +356,7 @@ export type SnapControllerActions =
   | ClearSnapState
   | GetSnap
   | GetSnapState
-  | HandleSnapRpcRequest
+  | HandleSnapRequest
   | HasSnap
   | UpdateBlockedSnaps
   | UpdateSnapState
@@ -847,8 +848,8 @@ export class SnapController extends BaseController<
     );
 
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:handleRpcRequest`,
-      (...args) => this.handleRpcRequest(...args),
+      `${controllerName}:handleRequest`,
+      (...args) => this.handleRequest(...args),
     );
 
     this.messagingSystem.registerActionHandler(
@@ -2128,23 +2129,26 @@ export class SnapController extends BaseController<
   /**
    * Passes a JSON-RPC request object to the RPC handler function of a snap.
    *
-   * @param snapId - The ID of the recipient snap.
-   * @param origin - The origin of the RPC request.
-   * @param request - The JSON-RPC request object.
+   * @param options - A bag of options.
+   * @param options.snapId - The ID of the recipient snap.
+   * @param options.origin - The origin of the RPC request.
+   * @param options.handler - The handler to trigger on the snap for the request.
+   * @param options.request - The JSON-RPC request object.
    * @returns The result of the JSON-RPC request.
    */
-  async handleRpcRequest(
-    snapId: SnapId,
-    origin: string,
-    request: Record<string, unknown>,
-  ): Promise<unknown> {
+  async handleRequest({
+    snapId,
+    origin,
+    handler: handlerType,
+    request,
+  }: SnapRpcHookArgs & { snapId: SnapId }): Promise<unknown> {
     const handler = await this.getRpcRequestHandler(snapId);
     if (!handler) {
       throw new Error(
         `Snap RPC message handler not found for snap "${snapId}".`,
       );
     }
-    return handler(origin, request);
+    return handler({ origin, handler: handlerType, request });
   }
 
   /**
@@ -2153,11 +2157,7 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap whose message handler to get.
    * @returns The RPC handler for the given snap.
    */
-  private async getRpcRequestHandler(
-    snapId: SnapId,
-  ): Promise<
-    (origin: string, request: Record<string, unknown>) => Promise<unknown>
-  > {
+  private async getRpcRequestHandler(snapId: SnapId): Promise<SnapRpcHook> {
     const runtime = this.getRuntimeOrDefault(snapId);
     const existingHandler = runtime.rpcHandler;
     if (existingHandler) {
@@ -2169,10 +2169,11 @@ export class SnapController extends BaseController<
     // because otherwise we would lose context on the correct startPromise.
     const startPromises = new Map<string, Promise<void>>();
 
-    const rpcHandler = async (
-      origin: string,
-      request: Record<string, unknown>,
-    ) => {
+    const rpcHandler = async ({
+      origin,
+      handler: handlerType,
+      request,
+    }: SnapRpcHookArgs) => {
       if (this.state.snaps[snapId].enabled === false) {
         throw new Error(`Snap "${snapId}" is disabled.`);
       }
@@ -2222,8 +2223,7 @@ export class SnapController extends BaseController<
       const handleRpcRequestPromise = this.messagingSystem.call(
         'ExecutionService:handleRpcRequest',
         snapId,
-        origin,
-        _request,
+        { origin, handler: handlerType, request: _request },
       );
 
       // This will either get the result or reject due to the timeout.
@@ -2263,7 +2263,7 @@ export class SnapController extends BaseController<
     const isLongRunning = await this.messagingSystem.call(
       'PermissionController:hasPermission',
       snapId,
-      LONG_RUNNING_PERMISSION,
+      SnapEndowments.longRunning,
     );
 
     // Long running snaps have timeouts disabled

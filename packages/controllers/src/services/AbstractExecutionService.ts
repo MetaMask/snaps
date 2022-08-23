@@ -1,6 +1,11 @@
 import { Duplex } from 'stream';
 import ObjectMultiplex from '@metamask/object-multiplex';
-import { SNAP_STREAM_NAMES } from '@metamask/execution-environments';
+import {
+  SnapRpcHook,
+  SnapRpcHookArgs,
+  SNAP_STREAM_NAMES,
+} from '@metamask/snap-utils';
+
 import {
   Duration,
   isJsonRpcRequest,
@@ -34,12 +39,6 @@ export type ExecutionServiceArgs = {
   messenger: ExecutionServiceMessenger;
   terminationTimeout?: number;
 };
-
-// The snap is the callee
-export type SnapRpcHook = (
-  origin: string,
-  request: Record<string, unknown>,
-) => Promise<unknown>;
 
 export type JobStreams = {
   command: Duplex;
@@ -94,8 +93,8 @@ export abstract class AbstractExecutionService<WorkerType>
   private registerMessageHandlers(): void {
     this._messenger.registerActionHandler(
       `${controllerName}:handleRpcRequest`,
-      (snapId: string, origin: string, _request: Record<string, unknown>) =>
-        this.handleRpcRequest(snapId, origin, _request),
+      (snapId: string, options: SnapRpcHookArgs) =>
+        this.handleRpcRequest(snapId, options),
     );
 
     this._messenger.registerActionHandler(
@@ -380,16 +379,14 @@ export abstract class AbstractExecutionService<WorkerType>
   }
 
   protected _createSnapHooks(snapId: string, workerId: string) {
-    const rpcHook = async (
-      origin: string,
-      request: Record<string, unknown>,
-    ) => {
+    const rpcHook = async ({ origin, handler, request }: SnapRpcHookArgs) => {
       return await this._command(workerId, {
         id: nanoid(),
         jsonrpc: '2.0',
         method: 'snapRpc',
         params: {
           origin,
+          handler,
           request,
           target: snapId,
         },
@@ -439,14 +436,12 @@ export abstract class AbstractExecutionService<WorkerType>
    * Handle RPC request.
    *
    * @param snapId - The ID of the recipient snap.
-   * @param origin - The origin of the RPC request.
-   * @param request - The JSON-RPC request object.
+   * @param options - Bag of options to pass to the RPC handler.
    * @returns Promise that can handle the request.
    */
   public async handleRpcRequest(
     snapId: string,
-    origin: string,
-    request: Record<string, unknown>,
+    options: SnapRpcHookArgs,
   ): Promise<unknown> {
     const rpcRequestHandler = await this.getRpcRequestHandler(snapId);
 
@@ -456,7 +451,7 @@ export abstract class AbstractExecutionService<WorkerType>
       );
     }
 
-    return rpcRequestHandler(origin, request);
+    return rpcRequestHandler(options);
   }
 }
 

@@ -213,12 +213,12 @@ export function fixManifest(
       break;
 
     /* istanbul ignore next */
-    default:
-      // eslint-disable-next-line no-case-declarations
+    default: {
       const failureReason: never = error.reason;
       throw new Error(
         `Unrecognized validation failure reason: '${failureReason}'`,
       );
+    }
   }
 
   return manifestCopy;

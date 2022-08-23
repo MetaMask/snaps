@@ -1,11 +1,13 @@
 import { ControllerMessenger } from '@metamask/controllers';
-import { SnapId } from '@metamask/snap-utils';
+import { HandlerType, SnapId } from '@metamask/snap-utils';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import pump from 'pump';
 import { ErrorMessageEvent, SnapErrorJson } from '../ExecutionService';
 import { setupMultiplex } from '../AbstractExecutionService';
 import { NodeProcessExecutionService } from './NodeProcessExecutionService';
+
+const ON_RPC_REQUEST = HandlerType.OnRpcRequest;
 
 describe('NodeProcessExecutionService', () => {
   it('can boot', async () => {
@@ -119,11 +121,15 @@ describe('NodeProcessExecutionService', () => {
     });
 
     await expect(
-      service.handleRpcRequest(snapId, 'fooOrigin', {
-        jsonrpc: '2.0',
-        method: 'foo',
-        params: {},
-        id: 1,
+      service.handleRpcRequest(snapId, {
+        origin: 'fooOrigin',
+        handler: ON_RPC_REQUEST,
+        request: {
+          jsonrpc: '2.0',
+          method: 'foo',
+          params: {},
+          id: 1,
+        },
       }),
     ).rejects.toThrow('foobar');
     await service.terminateAllSnaps();
@@ -177,14 +183,18 @@ describe('NodeProcessExecutionService', () => {
       );
     });
 
-    const result = await service.handleRpcRequest(snapId, 'fooOrigin', {
-      jsonrpc: '2.0',
-      method: '',
-      params: {},
-      id: 1,
-    });
-
-    expect(result).toBe('foo');
+    expect(
+      await service.handleRpcRequest(snapId, {
+        origin: 'fooOrigin',
+        handler: ON_RPC_REQUEST,
+        request: {
+          jsonrpc: '2.0',
+          method: '',
+          params: {},
+          id: 1,
+        },
+      }),
+    ).toBe('foo');
 
     // eslint-disable-next-line jest/prefer-strict-equal
     expect(await unhandledErrorPromise).toEqual({
@@ -245,11 +255,15 @@ describe('NodeProcessExecutionService', () => {
 
     expect(executeResult).toBe('OK');
 
-    const result = await service.handleRpcRequest(snapId, 'foo', {
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'foobar',
-      params: [],
+    const result = await service.handleRpcRequest(snapId, {
+      origin: 'foo',
+      handler: ON_RPC_REQUEST,
+      request: {
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'foobar',
+        params: [],
+      },
     });
 
     expect(result).toBe(blockNumber);

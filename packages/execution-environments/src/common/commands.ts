@@ -1,10 +1,14 @@
+import { JsonRpcRequest } from '@metamask/utils';
+import { assertExhaustive, HandlerType } from '@metamask/snap-utils';
 import {
   ExecuteSnap,
+  Origin,
   Ping,
   SnapRpc,
   Terminate,
 } from '../__GENERATED__/openrpc';
 import { isEndowments, isJsonRpcRequest } from '../__GENERATED__/openrpc.guard';
+import { InvokeSnap, InvokeSnapArgs } from './BaseSnapExecutor';
 
 export type CommandMethodsMapping = {
   ping: Ping;
@@ -13,12 +17,54 @@ export type CommandMethodsMapping = {
   snapRpc: SnapRpc;
 };
 
+// TODO: Add validation in cases.
+/**
+ * Formats the arguments for the given handler.
+ *
+ * @param origin - The origin of the request.
+ * @param handler - The handler to pass the request to.
+ * @param request - The request object.
+ * @returns The formatted arguments.
+ */
+function getHandlerArguments(
+  origin: Origin,
+  handler: HandlerType,
+  request: JsonRpcRequest<unknown[] | { [key: string]: unknown }>,
+): InvokeSnapArgs {
+  switch (handler) {
+    case HandlerType.OnTransaction: {
+      const { transaction, chainId } = request.params as Record<string, any>;
+      return {
+        origin,
+        transaction,
+        chainId,
+      };
+    }
+
+    case HandlerType.OnRpcRequest:
+      return { origin, request };
+
+    default:
+      return assertExhaustive(handler);
+  }
+}
+
+/**
+ * Typeguard to ensure a handler is part of the HandlerType.
+ *
+ * @param handler - The handler to pass the request to.
+ * @returns A boolean.
+ */
+function isHandler(handler: string): handler is HandlerType {
+  return Object.values(HandlerType).includes(handler as HandlerType);
+}
+
 /**
  * Gets an object mapping internal, "command" JSON-RPC method names to their
  * implementations.
  *
  * @param startSnap - A function that starts a snap.
- * @param invokeSnapRpc - A function that invokes the RPC method handler of a
+ * @param invokeSnap - A function that invokes the RPC method handler of a
  * snap.
  * @param onTerminate - A function that will be called when this executor is
  * terminated in order to handle cleanup tasks.
@@ -26,7 +72,7 @@ export type CommandMethodsMapping = {
  */
 export function getCommandMethodImplementations(
   startSnap: (...args: Parameters<ExecuteSnap>) => Promise<void>,
-  invokeSnapRpc: SnapRpc,
+  invokeSnap: InvokeSnap,
   onTerminate: () => void,
 ): CommandMethodsMapping {
   return {
@@ -58,7 +104,7 @@ export function getCommandMethodImplementations(
       return 'OK';
     },
 
-    snapRpc: async (target, origin, request) => {
+    snapRpc: async (target, handler, origin, request) => {
       if (typeof target !== 'string') {
         throw new Error('target is not a string');
       }
@@ -71,7 +117,22 @@ export function getCommandMethodImplementations(
         throw new Error('request is not a proper JSON RPC Request');
       }
 
-      return (await invokeSnapRpc(target, origin, request)) ?? null;
+      if (!isHandler(handler)) {
+        throw new Error('Incorrect handler type.');
+      }
+
+      return (
+        (await invokeSnap(
+          target,
+          handler,
+          getHandlerArguments(
+            origin,
+            handler,
+            // Specifically casting to other JsonRpcRequest type here on purpose, to stop using the OpenRPC type.
+            request as JsonRpcRequest<unknown[] | { [key: string]: unknown }>,
+          ),
+        )) ?? null
+      );
     },
   };
 }

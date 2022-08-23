@@ -2,14 +2,20 @@
 /// <reference path="../../../../node_modules/ses/index.d.ts" />
 import { Duplex } from 'stream';
 import { MetaMaskInpageProvider } from '@metamask/providers';
-import { SnapProvider } from '@metamask/snap-types';
+import { SnapProvider, SnapExports } from '@metamask/snap-types';
 import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
 import { JsonRpcNotification } from '@metamask/utils';
+import {
+  assert,
+  HandlerType,
+  SnapExportsParameters,
+} from '@metamask/snap-utils';
 import EEOpenRPCDocument from '../openrpc.json';
 import {
   Endowments,
   JSONRPCID,
   JsonRpcRequest,
+  Target,
 } from '../__GENERATED__/openrpc';
 import { isJsonRpcRequest } from '../__GENERATED__/openrpc.guard';
 import { createEndowments } from './endowments';
@@ -21,17 +27,12 @@ import { removeEventListener, addEventListener } from './globalEvents';
 import { sortParamKeys } from './sortParams';
 import { constructError, withTeardown } from './utils';
 
-type OnRpcRequestHandler = (args: {
-  origin: string;
-  request: JsonRpcRequest;
-}) => Promise<unknown>;
-
 type EvaluationData = {
   stop: () => void;
 };
 
 type SnapData = {
-  exports: { onRpcRequest?: OnRpcRequestHandler };
+  exports: SnapExports;
   runningEvaluations: Set<EvaluationData>;
   idleTeardown: () => Promise<void>;
 };
@@ -40,6 +41,14 @@ const fallbackError = {
   code: errorCodes.rpc.internal,
   message: 'Execution Environment Error',
 };
+
+export type InvokeSnapArgs = SnapExportsParameters[0];
+
+export type InvokeSnap = (
+  target: Target,
+  handler: HandlerType,
+  args: InvokeSnapArgs | undefined,
+) => Promise<unknown>;
 
 export class BaseSnapExecutor {
   private snapData: Map<string, SnapData>;
@@ -64,19 +73,16 @@ export class BaseSnapExecutor {
 
     this.methods = getCommandMethodImplementations(
       this.startSnap.bind(this),
-      (target, origin, request) => {
+      (target, handlerName, args) => {
         const data = this.snapData.get(target);
-        if (data?.exports?.onRpcRequest === undefined) {
-          throw new Error(
-            `No onRpcRequest handler exported for snap "${target}`,
-          );
-        }
-
         // We're capturing the handler in case someone modifies the data object before the call
-        const handler = data.exports.onRpcRequest;
-        return this.executeInSnapContext(target, () =>
-          handler({ origin, request }),
+        const handler = data?.exports[handlerName];
+        assert(
+          handler !== undefined,
+          `No ${handlerName} handler exported for snap "${target}`,
         );
+        // TODO: fix type
+        return this.executeInSnapContext(target, () => handler(args as any));
       },
       this.onTerminate.bind(this),
     );
@@ -259,21 +265,23 @@ export class BaseSnapExecutor {
   }
 
   private registerSnapExports(snapName: string, snapModule: any) {
-    if (typeof snapModule?.exports?.onRpcRequest === 'function') {
-      const data = this.snapData.get(snapName);
-      // Somebody deleted the Snap before we could register
-      if (data !== undefined) {
-        console.log(
-          'Worker: Registering RPC message handler',
-          snapModule.exports.onRpcRequest,
-        );
+    Object.values(HandlerType).forEach((exportName) => {
+      if (typeof snapModule?.exports?.[exportName] === 'function') {
+        const data = this.snapData.get(snapName);
+        // Somebody deleted the Snap before we could register
+        if (data !== undefined) {
+          console.log(
+            `Worker: Registering ${exportName} handler'`,
+            snapModule.exports[exportName],
+          );
 
-        data.exports = {
-          ...data.exports,
-          onRpcRequest: snapModule.exports.onRpcRequest,
-        };
+          data.exports = {
+            ...data.exports,
+            [exportName]: snapModule.exports[exportName],
+          };
+        }
       }
-    }
+    });
   }
 
   /**
