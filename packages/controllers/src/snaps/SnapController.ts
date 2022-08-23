@@ -50,6 +50,7 @@ import {
   RequestedSnapPermissions,
   ProcessSnapResult,
   SNAP_PREFIX_REGEX,
+  fromEntries,
 } from '@metamask/snap-utils';
 import {
   Duration,
@@ -2000,7 +2001,7 @@ export class SnapController extends BaseController<
   private processSnapPermissions(
     initialPermissions: RequestedSnapPermissions,
   ): RequestedSnapPermissions {
-    return Object.fromEntries(
+    return fromEntries(
       Object.entries(initialPermissions).map(([initialPermission, value]) => {
         if (hasProperty(caveatMappers, initialPermission)) {
           return [initialPermission, caveatMappers[initialPermission](value)];

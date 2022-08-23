@@ -7,6 +7,7 @@ export * from './json-schemas';
 export * from './manifest';
 export * from './mock';
 export * from './npm';
+export * from './object';
 export * from './post-process';
 export * from './snaps';
 export * from './types';
