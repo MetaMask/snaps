@@ -115,10 +115,13 @@ export function validateSnapId(
  * Typeguard to ensure a chainId follows the CAIP-2 standard.
  *
  * @param chainId - The chainId being tested.
- * @returns A boolean.
+ * @returns `true` if the value is a valid CAIP chain id, and `false` otherwise.
  */
-export function isCaipChainId(chainId: any): boolean {
-  const caipRegex =
-    /^(?<namespace>[-a-z0-9]{3,8}):(?<reference>[-a-zA-Z0-9]{1,32})$/u;
-  return caipRegex.test(chainId);
+export function isCaipChainId(chainId: unknown): chainId is string {
+  return (
+    typeof chainId === 'string' &&
+    /^(?<namespace>[-a-z0-9]{3,8}):(?<reference>[-a-zA-Z0-9]{1,32})$/u.test(
+      chainId,
+    )
+  );
 }
