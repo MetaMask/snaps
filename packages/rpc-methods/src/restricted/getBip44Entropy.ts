@@ -6,6 +6,7 @@ import {
   PermissionValidatorConstraint,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
+  PermissionConstraint,
 } from '@metamask/controllers';
 import { ethErrors } from 'eth-rpc-errors';
 import { BIP44CoinTypeNode, JsonBIP44CoinTypeNode } from '@metamask/key-tree';
@@ -15,7 +16,7 @@ import {
   Json,
   NonEmptyArray,
 } from '@metamask/utils';
-import { PermissionConstraint } from '@metamask/controllers/dist/permissions/Permission';
+
 import { SnapCaveatType } from '../caveats';
 
 const targetKey = 'snap_getBip44Entropy';

@@ -27,7 +27,7 @@ import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { nanoid } from 'nanoid';
 import pump from 'pump';
-import { SnapCaveatType } from '@metamask/rpc-methods/dist/caveats';
+import { SnapCaveatType } from '@metamask/rpc-methods';
 import { NodeThreadExecutionService, setupMultiplex } from '../services';
 import {
   ExecutionService,

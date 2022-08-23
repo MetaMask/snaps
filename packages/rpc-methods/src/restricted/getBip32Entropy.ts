@@ -6,6 +6,7 @@ import {
   CaveatSpecificationConstraint,
   Caveat,
   PermissionValidatorConstraint,
+  PermissionConstraint,
 } from '@metamask/controllers';
 import { ethErrors } from 'eth-rpc-errors';
 import {
@@ -16,7 +17,6 @@ import {
 } from '@metamask/utils';
 import { BIP32Node, JsonSLIP10Node, SLIP10Node } from '@metamask/key-tree';
 
-import { PermissionConstraint } from '@metamask/controllers/dist/permissions/Permission';
 import { SnapCaveatType } from '../caveats';
 import { isEqual } from '../utils';
 

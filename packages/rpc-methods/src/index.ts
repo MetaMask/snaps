@@ -8,4 +8,5 @@ export {
   caveatMappers,
   RestrictedMethodHooks,
 } from './restricted';
+export { SnapCaveatType } from './caveats';
 export { selectHooks } from './utils';
