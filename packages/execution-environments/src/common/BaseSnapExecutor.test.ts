@@ -746,7 +746,7 @@ describe('BaseSnapExecutor', () => {
       result: 'OK',
     });
 
-    // @todo Updating the value to be closer to the value we expect from the extension.
+    // TODO: Updating the value to be closer to the value we expect from the extension.
     // We also have to decide on the shape of that object.
     const transaction = { maxFeePerGas: '0x' };
 

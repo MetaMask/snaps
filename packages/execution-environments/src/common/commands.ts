@@ -17,6 +17,7 @@ export type CommandMethodsMapping = {
   snapRpc: SnapRpc;
 };
 
+// TODO: Add validation in cases.
 /**
  * Formats the arguments for the given handler.
  *
@@ -31,16 +32,18 @@ function getHandlerArguments(
   request: JsonRpcRequest<unknown[] | { [key: string]: unknown }>,
 ): InvokeSnapArgs {
   switch (handler) {
-    case HandlerType.OnTransaction:
-      // eslint-disable-next-line no-case-declarations
+    case HandlerType.OnTransaction: {
       const { transaction, chainId } = request.params as Record<string, any>;
       return {
         origin,
         transaction,
         chainId,
       };
+    }
+
     case HandlerType.OnRpcRequest:
       return { origin, request };
+
     default:
       return assertExhaustive(handler);
   }

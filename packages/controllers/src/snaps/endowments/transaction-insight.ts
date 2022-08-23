@@ -11,7 +11,7 @@ const permissionName = SnapEndowments.transactionInsight;
 type TransactionInsightEndowmentSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;
   targetKey: typeof permissionName;
-  endowmentGetter: (_options?: any) => undefined;
+  endowmentGetter: (_options?: EndowmentGetterParams) => undefined;
   allowedCaveats: null;
 }>;
 
@@ -24,9 +24,9 @@ type TransactionInsightEndowmentSpecification = ValidPermissionSpecification<{
  */
 const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.Endowment,
-  any,
+  never,
   TransactionInsightEndowmentSpecification
-> = (_builderOptions?: any) => {
+> = (_builderOptions?: unknown) => {
   return {
     permissionType: PermissionType.Endowment,
     targetKey: permissionName,

@@ -81,7 +81,7 @@ module.exports = (_, argv) => {
       new NodePolyfillPlugin(),
       new CopyPlugin({
         patterns: [
-          // @todo Merge this with above if possible
+          // TODO: Merge this with above if possible
           {
             // For use in <script> tag along with the iframe bundle. Copied to ensure same version as bundled
             from: path.resolve(

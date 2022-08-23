@@ -81,7 +81,7 @@ export class BaseSnapExecutor {
           handler !== undefined,
           `No ${handlerName} handler exported for snap "${target}`,
         );
-        // @todo fix type
+        // TODO: fix type
         return this.executeInSnapContext(target, () => handler(args as any));
       },
       this.onTerminate.bind(this),

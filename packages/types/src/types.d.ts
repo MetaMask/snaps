@@ -12,7 +12,7 @@ export type OnTransactionResponse = {
   insights: { [key: string]: unknown };
 };
 
-// @todo improve type
+// TODO: improve type
 export type OnTransactionHandler = (args: {
   origin: string;
   transaction: { [key: string]: unknown };
