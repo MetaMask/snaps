@@ -1,6 +1,6 @@
 import { createHash } from 'crypto';
 import { SnapManifest } from './json-schemas';
-import { SnapIdPrefixes, SnapValidationFailureReason, ChainId } from './types';
+import { SnapIdPrefixes, SnapValidationFailureReason } from './types';
 
 export const LOCALHOST_HOSTNAMES = new Set(['localhost', '127.0.0.1', '::1']);
 export const SNAP_PREFIX = 'wallet_snap_';
@@ -117,7 +117,7 @@ export function validateSnapId(
  * @param chainId - The chainId being tested.
  * @returns A boolean.
  */
-export function isCaipChainId(chainId: any): chainId is ChainId {
+export function isCaipChainId(chainId: any): boolean {
   const caipRegex =
     /^(?<namespace>[-a-z0-9]{3,8}):(?<reference>[-a-zA-Z0-9]{1,32})$/u;
   return caipRegex.test(chainId);

@@ -1,3 +1,4 @@
+import { SnapExports } from '@metamask/snap-types';
 import { Json } from '@metamask/utils';
 import { NpmSnapPackageJson, SnapManifest } from './json-schemas';
 
@@ -22,10 +23,15 @@ export type SnapFiles = {
   svgIcon?: string;
 };
 
+/**
+ * The possible prefixes for snap ids.
+ */
 export enum SnapIdPrefixes {
   npm = 'npm:',
   local = 'local:',
 }
+
+export type SnapId = string;
 
 export enum NpmSnapFileNames {
   PackageJson = 'package.json',
@@ -53,6 +59,17 @@ export enum HandlerType {
   OnTransaction = 'onTransaction',
 }
 
-export type SnapId = string;
+export type SnapRpcHookArgs = {
+  origin: string;
+  handler: HandlerType;
+  request: Record<string, unknown>;
+};
 
-export type ChainId = string;
+// The snap is the callee
+export type SnapRpcHook = (options: SnapRpcHookArgs) => Promise<unknown>;
+
+type ObjectParameters<
+  Type extends Record<string, (...args: any[]) => unknown>,
+> = Parameters<Type[keyof Type]>;
+
+export type SnapExportsParameters = ObjectParameters<SnapExports>;

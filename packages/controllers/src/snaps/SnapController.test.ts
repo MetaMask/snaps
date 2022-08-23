@@ -8,8 +8,8 @@ import {
   SubjectPermissions,
   ValidPermission,
 } from '@metamask/controllers';
-import { SnapExecutionData, SnapRpcHookArgs } from '@metamask/snap-types';
 import {
+  SnapRpcHookArgs,
   DEFAULT_ENDOWMENTS,
   getSnapPermissionName,
   getSnapSourceShasum,
@@ -25,7 +25,10 @@ import { createEngineStream } from 'json-rpc-middleware-stream';
 import { nanoid } from 'nanoid';
 import pump from 'pump';
 import { NodeThreadExecutionService, setupMultiplex } from '../services';
-import { ExecutionService } from '../services/ExecutionService';
+import {
+  ExecutionService,
+  SnapExecutionData,
+} from '../services/ExecutionService';
 import { delay } from '../utils';
 
 import { SnapEndowments } from './endowments';

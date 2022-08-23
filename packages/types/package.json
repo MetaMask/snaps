@@ -1,7 +1,7 @@
 {
   "name": "@metamask/snap-types",
   "version": "0.19.1",
-  "description": "Shared types for MetaMask Snaps packages.",
+  "description": "TypeScript types for developing MetaMask Snaps.",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps-skunkworks.git"
