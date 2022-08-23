@@ -1,6 +1,8 @@
 import { Json } from '@metamask/utils';
 import { NpmSnapPackageJson, SnapManifest } from './json-schemas';
 
+export type SnapId = string;
+
 /**
  * An object for storing parsed but unvalidated Snap file contents.
  */
@@ -22,6 +24,9 @@ export type SnapFiles = {
   svgIcon?: string;
 };
 
+/**
+ * The possible prefixes for snap ids.
+ */
 export enum SnapIdPrefixes {
   npm = 'npm:',
   local = 'local:',

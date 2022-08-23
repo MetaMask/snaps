@@ -16,7 +16,6 @@ import {
   SubjectPermissions,
   ValidPermission,
 } from '@metamask/controllers';
-import { ErrorJSON, SnapData, SnapId } from '@metamask/snap-types';
 import {
   assert,
   DEFAULT_ENDOWMENTS,
@@ -29,6 +28,7 @@ import {
   NpmSnapFileNames,
   resolveVersion,
   satisfiesVersionRange,
+  SnapId,
   SnapIdPrefixes,
   SnapManifest,
   SNAP_PREFIX,
@@ -56,6 +56,7 @@ import {
   ExecuteSnapAction,
   ExecutionServiceEvents,
   HandleRpcRequestAction,
+  SnapErrorJson,
   TerminateAllSnapsAction,
   TerminateSnapAction,
 } from '../services/ExecutionService';
@@ -1037,7 +1038,7 @@ export class SnapController extends BaseController<
     );
   }
 
-  async _onUnhandledSnapError(snapId: SnapId, error: ErrorJSON) {
+  async _onUnhandledSnapError(snapId: SnapId, error: SnapErrorJson) {
     await this.stopSnap(snapId, 'CRASH');
     this.addSnapError(error);
   }
@@ -1790,7 +1791,7 @@ export class SnapController extends BaseController<
     }
   }
 
-  private async _startSnap(snapData: SnapData) {
+  private async _startSnap(snapData: { snapId: string; sourceCode: string }) {
     const { snapId } = snapData;
     if (this.isRunning(snapId)) {
       throw new Error(`Snap "${snapId}" is already started.`);

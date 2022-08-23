@@ -1,5 +1,6 @@
 import { RestrictedControllerMessenger } from '@metamask/controllers';
-import { SnapExecutionData, SnapId, ErrorJSON } from '@metamask/snap-types';
+import { SnapId } from '@metamask/snap-utils';
+import { Json } from '@metamask/types';
 
 type TerminateSnap = (snapId: string) => Promise<void>;
 type TerminateAll = () => Promise<void>;
@@ -17,11 +18,23 @@ export interface ExecutionService {
   handleRpcRequest: HandleRpcRequest;
 }
 
+export type SnapExecutionData = {
+  snapId: string;
+  sourceCode: string;
+  endowments?: Json;
+};
+
+export type SnapErrorJson = {
+  message: string;
+  code: number;
+  data?: Json;
+};
+
 const controllerName = 'ExecutionService';
 
 export type ErrorMessageEvent = {
   type: 'ExecutionService:unhandledError';
-  payload: [SnapId, ErrorJSON];
+  payload: [SnapId, SnapErrorJson];
 };
 
 export type OutboundRequest = {

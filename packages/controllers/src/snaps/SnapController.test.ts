@@ -8,7 +8,6 @@ import {
   SubjectPermissions,
   ValidPermission,
 } from '@metamask/controllers';
-import { SnapExecutionData } from '@metamask/snap-types';
 import {
   DEFAULT_ENDOWMENTS,
   getSnapPermissionName,
@@ -23,7 +22,10 @@ import { createEngineStream } from 'json-rpc-middleware-stream';
 import { nanoid } from 'nanoid';
 import pump from 'pump';
 import { NodeThreadExecutionService, setupMultiplex } from '../services';
-import { ExecutionService } from '../services/ExecutionService';
+import {
+  ExecutionService,
+  SnapExecutionData,
+} from '../services/ExecutionService';
 import { delay } from '../utils';
 
 import { LONG_RUNNING_PERMISSION } from './endowments';
