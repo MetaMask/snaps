@@ -164,7 +164,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
         caveats[0].type !== SnapCaveatType.PermittedDerivationPaths
       ) {
         throw ethErrors.rpc.invalidParams({
-          message: 'Expected a single "permittedDerivationPaths" caveat.',
+          message: `Expected a single "${SnapCaveatType.PermittedDerivationPaths}" caveat.`,
         });
       }
     },
@@ -181,7 +181,7 @@ export const getBip32EntropyBuilder = Object.freeze({
 } as const);
 
 export const getBip32EntropyCaveatSpecifications: Record<
-  SnapCaveatType,
+  SnapCaveatType.PermittedDerivationPaths,
   CaveatSpecificationConstraint
 > = {
   [SnapCaveatType.PermittedDerivationPaths]: Object.freeze({
