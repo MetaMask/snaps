@@ -27,6 +27,7 @@ import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { nanoid } from 'nanoid';
 import pump from 'pump';
+import { SnapCaveatType } from '@metamask/rpc-methods/dist/caveats';
 import { NodeThreadExecutionService, setupMultiplex } from '../services';
 import {
   ExecutionService,
@@ -344,7 +345,7 @@ const getSnapManifest = ({
 }: Pick<Partial<SnapManifest>, 'version' | 'proposedName' | 'description'> & {
   filePath?: string;
   iconPath?: string;
-  initialPermissions?: Record<string, Record<string, Json>>;
+  initialPermissions?: Record<string, Record<string, Json> | Json[]>;
   packageName?: string;
   shasum?: string;
 } = {}) => {
@@ -2246,6 +2247,50 @@ describe('SnapController', () => {
         'PermissionController:hasPermission',
         MOCK_SNAP_ID,
         SnapEndowments.longRunning,
+      );
+    });
+
+    it('maps permission caveats to the proper format', async () => {
+      const initialPermissions = {
+        snap_getBip32Entropy: [{ path: ['m', "44'", "60'"] }],
+      };
+
+      const manifest = {
+        ...getSnapManifest(),
+        initialPermissions,
+      };
+
+      const messenger = getSnapControllerMessenger();
+      const snapController = getSnapController(
+        getSnapControllerOptions({ messenger }),
+      );
+
+      const callActionMock = jest.spyOn(messenger, 'call');
+
+      jest
+        .spyOn(snapController as any, '_fetchSnap')
+        .mockImplementationOnce(() => {
+          return getSnapObject({ manifest });
+        });
+
+      await snapController.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: {},
+      });
+
+      expect(callActionMock).toHaveBeenNthCalledWith(
+        2,
+        'PermissionController:requestPermissions',
+        { origin: MOCK_SNAP_ID },
+        {
+          snap_getBip32Entropy: {
+            caveats: [
+              {
+                type: SnapCaveatType.PermittedDerivationPaths,
+                value: [{ path: ['m', "44'", "60'"] }],
+              },
+            ],
+          },
+        },
       );
     });
 
