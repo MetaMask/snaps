@@ -13,8 +13,11 @@ import {
   DEFAULT_ENDOWMENTS,
   getSnapPermissionName,
   getSnapSourceShasum,
+  Snap,
   SnapManifest,
   HandlerType,
+  Status,
+  TruncatedSnap,
 } from '@metamask/snap-utils';
 
 import { Crypto } from '@peculiar/webcrypto';
@@ -36,15 +39,12 @@ import {
   AllowedActions,
   AllowedEvents,
   CheckSnapBlockListArg,
-  Snap,
   SnapController,
   SnapControllerActions,
   SnapControllerEvents,
   SnapControllerState,
   SnapStatus,
   SNAP_APPROVAL_UPDATE,
-  Status,
-  TruncatedSnap,
 } from './SnapController';
 
 const { subtle } = new Crypto();
