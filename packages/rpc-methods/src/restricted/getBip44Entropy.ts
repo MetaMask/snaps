@@ -9,7 +9,13 @@ import {
 } from '@metamask/controllers';
 import { ethErrors } from 'eth-rpc-errors';
 import { BIP44CoinTypeNode, JsonBIP44CoinTypeNode } from '@metamask/key-tree';
-import { hasProperty, isPlainObject, NonEmptyArray } from '@metamask/utils';
+import {
+  hasProperty,
+  isPlainObject,
+  Json,
+  NonEmptyArray,
+} from '@metamask/utils';
+import { PermissionConstraint } from '@metamask/controllers/dist/permissions/Permission';
 import { SnapCaveatType } from '../caveats';
 
 const targetKey = 'snap_getBip44Entropy';
@@ -144,11 +150,15 @@ export const getBip44EntropyBuilder = Object.freeze({
  * @returns The caveat specification.
  */
 export function getBip44EntropyCaveatMapper(
-  value: unknown,
-): Caveat<SnapCaveatType.PermittedCoinTypes, any> {
+  value: Json,
+): Pick<PermissionConstraint, 'caveats'> {
   return {
-    type: SnapCaveatType.PermittedCoinTypes,
-    value,
+    caveats: [
+      {
+        type: SnapCaveatType.PermittedCoinTypes,
+        value,
+      },
+    ],
   };
 }
 

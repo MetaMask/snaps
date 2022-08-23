@@ -8,9 +8,15 @@ import {
   PermissionValidatorConstraint,
 } from '@metamask/controllers';
 import { ethErrors } from 'eth-rpc-errors';
-import { hasProperty, isPlainObject, NonEmptyArray } from '@metamask/utils';
+import {
+  hasProperty,
+  isPlainObject,
+  Json,
+  NonEmptyArray,
+} from '@metamask/utils';
 import { BIP32Node, JsonSLIP10Node, SLIP10Node } from '@metamask/key-tree';
 
+import { PermissionConstraint } from '@metamask/controllers/dist/permissions/Permission';
 import { SnapCaveatType } from '../caveats';
 import { isEqual } from '../utils';
 
@@ -189,11 +195,15 @@ export const getBip32EntropyBuilder = Object.freeze({
  * @returns The caveat specification.
  */
 export function getBip32EntropyCaveatMapper(
-  value: unknown,
-): Caveat<SnapCaveatType.PermittedDerivationPaths, any> {
+  value: Json,
+): Pick<PermissionConstraint, 'caveats'> {
   return {
-    type: SnapCaveatType.PermittedDerivationPaths,
-    value,
+    caveats: [
+      {
+        type: SnapCaveatType.PermittedDerivationPaths,
+        value,
+      },
+    ],
   };
 }
 

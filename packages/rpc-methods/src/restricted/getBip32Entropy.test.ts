@@ -148,10 +148,14 @@ describe('getBip32EntropyCaveatMapper', () => {
         { path: ['m', "0'", "0'"], curve: 'ed25519' },
       ]),
     ).toStrictEqual({
-      type: SnapCaveatType.PermittedDerivationPaths,
-      value: [
-        { path: ['m', "44'", "60'"], curve: 'secp256k1' },
-        { path: ['m', "0'", "0'"], curve: 'ed25519' },
+      caveats: [
+        {
+          type: SnapCaveatType.PermittedDerivationPaths,
+          value: [
+            { path: ['m', "44'", "60'"], curve: 'secp256k1' },
+            { path: ['m', "0'", "0'"], curve: 'ed25519' },
+          ],
+        },
       ],
     });
   });

@@ -1,4 +1,5 @@
-import { Caveat } from '@metamask/controllers';
+import { PermissionConstraint } from '@metamask/controllers';
+import { Json } from '@metamask/utils';
 import { confirmBuilder, ConfirmMethodHooks } from './confirm';
 import {
   getBip44EntropyBuilder,
@@ -42,7 +43,7 @@ export const caveatSpecifications = {
 
 export const caveatMappers: Record<
   string,
-  (value: unknown) => Caveat<any, any>
+  (value: Json) => Pick<PermissionConstraint, 'caveats'>
 > = {
   [getBip32EntropyBuilder.targetKey]: getBip32EntropyCaveatMapper,
   [getBip44EntropyBuilder.targetKey]: getBip44EntropyCaveatMapper,

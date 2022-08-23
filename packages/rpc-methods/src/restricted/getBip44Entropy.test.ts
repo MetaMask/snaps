@@ -131,13 +131,17 @@ describe('getBip44EntropyCaveatMapper', () => {
         },
       ]),
     ).toStrictEqual({
-      type: SnapCaveatType.PermittedCoinTypes,
-      value: [
+      caveats: [
         {
-          coinType: 1,
-        },
-        {
-          coinType: 60,
+          type: SnapCaveatType.PermittedCoinTypes,
+          value: [
+            {
+              coinType: 1,
+            },
+            {
+              coinType: 60,
+            },
+          ],
         },
       ],
     });
