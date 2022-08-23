@@ -2,7 +2,7 @@ import {
   RequestedPermissions,
   PermissionConstraint,
 } from '@metamask/controllers';
-import { SNAP_PREFIX_REGEX } from '@metamask/snap-controllers';
+import { SNAP_PREFIX_REGEX, SNAP_PREFIX } from '@metamask/snap-utils';
 import {
   PermittedHandlerExport,
   JsonRpcRequest,
@@ -11,7 +11,7 @@ import {
 } from '@metamask/types';
 import { hasProperty } from '@metamask/utils';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
-import { SNAP_PREFIX } from '@metamask/snap-utils';
+
 import {
   handleInstallSnaps,
   InstallSnapsHook,

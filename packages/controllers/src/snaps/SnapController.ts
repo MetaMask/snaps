@@ -39,6 +39,17 @@ import {
   validateSnapId,
   validateSnapJsonFile,
   validateSnapShasum,
+  TruncatedSnapFields,
+  Snap,
+  StatusContext,
+  StatusEvents,
+  StatusStates,
+  BlockedSnapInfo,
+  TruncatedSnap,
+  InstallSnapsResult,
+  RequestedSnapPermissions,
+  ProcessSnapResult,
+  SNAP_PREFIX_REGEX,
 } from '@metamask/snap-utils';
 import {
   Duration,
@@ -50,10 +61,10 @@ import {
 } from '@metamask/utils';
 import { createMachine, interpret, StateMachine } from '@xstate/fsm';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
-import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
 
+import { caveatMappers } from '@metamask/rpc-methods';
 import { forceStrict, validateMachine } from '../fsm';
 import {
   ExecuteSnapAction,
@@ -72,15 +83,7 @@ import { Timer } from './Timer';
 
 export const controllerName = 'SnapController';
 
-export const SNAP_PREFIX_REGEX = new RegExp(`^${SNAP_PREFIX}`, 'u');
-
 export const SNAP_APPROVAL_UPDATE = 'wallet_updateSnap';
-
-type TruncatedSnapFields =
-  | 'id'
-  | 'initialPermissions'
-  | 'permissionName'
-  | 'version';
 
 const TRUNCATED_SNAP_PROPERTIES = new Set<TruncatedSnapFields>([
   'initialPermissions',
@@ -89,79 +92,6 @@ const TRUNCATED_SNAP_PROPERTIES = new Set<TruncatedSnapFields>([
   'version',
 ]);
 
-type RequestedSnapPermissions = {
-  [permission: string]: Record<string, Json>;
-};
-
-/**
- * A Snap as it exists in {@link SnapController} state.
- */
-export type Snap = {
-  /**
-   * Whether the Snap is enabled, which determines if it can be started.
-   */
-  enabled: boolean;
-
-  /**
-   * The ID of the Snap.
-   */
-  id: SnapId;
-
-  /**
-   * The initial permissions of the Snap, which will be requested when it is
-   * installed.
-   */
-  initialPermissions: RequestedSnapPermissions;
-
-  /**
-   * The Snap's manifest file.
-   */
-  manifest: SnapManifest;
-
-  /**
-   * Whether the Snap is blocked.
-   */
-  blocked: boolean;
-
-  /**
-   * Information detailing why the snap is blocked.
-   */
-  blockInformation?: BlockedSnapInfo;
-
-  /**
-   * The name of the permission used to invoke the Snap.
-   */
-  permissionName: string;
-
-  /**
-   * The source code of the Snap.
-   */
-  sourceCode: string;
-
-  /**
-   * The current status of the Snap, e.g. whether it's running or stopped.
-   */
-  status: Status;
-
-  /**
-   * The version of the Snap.
-   */
-  version: string;
-
-  /**
-   * The version history of the Snap.
-   * Can be used to derive when the Snap was installed, when it was updated to a certain version and who requested the change.
-   */
-  versionHistory: VersionHistory[];
-};
-
-export type VersionHistory = {
-  origin: string;
-  version: string;
-  // Unix timestamp
-  date: number;
-};
-
 export type PendingRequest = {
   requestId: unknown;
   timer: Timer;
@@ -169,7 +99,8 @@ export type PendingRequest = {
 
 /**
  * A wrapper type for any data stored during runtime of Snaps.
- * It is not persisted in state as it contains non-serializable data and is only relevant for the current session.
+ * It is not persisted in state as it contains non-serializable data and is only relevant for the
+ * current session.
  */
 export interface SnapRuntimeData {
   /**
@@ -188,7 +119,8 @@ export interface SnapRuntimeData {
   pendingInboundRequests: PendingRequest[];
 
   /**
-   * The current pending outbound requests, meaning requests made from snaps towards the MetaMask extension.
+   * The current pending outbound requests, meaning requests made from snaps towards the MetaMask
+   * extension.
    */
   pendingOutboundRequests: number;
 
@@ -198,18 +130,13 @@ export interface SnapRuntimeData {
   rpcHandler: null | SnapRpcHook;
 
   /**
-   * The finite state machine interpreter for possible states that the Snap can be in such as stopped, running, blocked
+   * The finite state machine interpreter for possible states that the Snap can be in such as
+   * stopped, running, blocked
    *
    * @see {@link SnapController:constructor}
    */
   interpreter: StateMachine.Service<StatusContext, StatusEvents, StatusStates>;
 }
-
-/**
- * A {@link Snap} object with the fields that are relevant to an external
- * caller.
- */
-export type TruncatedSnap = Pick<Snap, TruncatedSnapFields>;
 
 export type SnapError = {
   message: string;
@@ -236,12 +163,6 @@ type FetchSnapResult = {
    */
   svgIcon?: string;
 };
-
-export type ProcessSnapResult =
-  | TruncatedSnap
-  | { error: SerializedEthereumRpcError };
-
-export type InstallSnapsResult = Record<SnapId, ProcessSnapResult>;
 
 // Types that probably should be defined elsewhere in prod
 type CloseAllConnectionsFunction = (origin: string) => void;
@@ -382,8 +303,6 @@ export type SnapAdded = {
   payload: [snap: Snap, svgIcon: string | undefined];
 };
 
-type BlockedSnapInfo = { infoUrl?: string; reason?: string };
-
 /**
  * Emitted when an installed snap has been blocked.
  */
@@ -479,8 +398,8 @@ type GetAppKey = (subject: string, appKeyType: AppKeyType) => Promise<string>;
 
 type FeatureFlags = {
   /**
-   * We still need to implement new UI approval page in metamask-extension before we can allow DApps to update Snaps.
-   * After it's added, this flag can be removed.
+   * We still need to implement new UI approval page in metamask-extension before we can allow
+   * DApps to update Snaps. After it's added, this flag can be removed.
    *
    * @see {SNAP_APPROVAL_UPDATE}
    * @see {SnapController.processRequestedSnap}
@@ -618,14 +537,6 @@ export const SnapEvents = {
   crash: 'CRASH',
   update: 'UPDATE',
 } as const;
-
-type StatusContext = { snapId: string };
-type StatusEvents = { type: 'START' | 'STOP' | 'CRASH' | 'UPDATE' };
-type StatusStates = {
-  value: 'installing' | 'running' | 'stopped' | 'crashed';
-  context: StatusContext;
-};
-export type Status = StatusStates['value'];
 
 /**
  * Truncates the properties of a snap to only ones that are easily serializable.
@@ -1065,12 +976,13 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Transitions between states using `snapStatusStateMachineConfig` as the template to figure out the next state.
-   * This transition function uses a very minimal subset of XState conventions:
+   * Transitions between states using `snapStatusStateMachineConfig` as the template to figure out
+   * the next state. This transition function uses a very minimal subset of XState conventions:
    * - supports initial state
    * - .on supports raw event target string
    * - .on supports {target, cond} object
-   * - the arguments for `cond` is the `SerializedSnap` instead of Xstate convention of `(event, context) => boolean`
+   * - the arguments for `cond` is the `SerializedSnap` instead of Xstate convention of `(event,
+   * context) => boolean`
    *
    * @param snapId - The id of the snap to transition.
    * @param event - The event enum to use to transition.
@@ -1743,7 +1655,8 @@ export class SnapController extends BaseController<
    * If the snap is already being installed, the previously pending promise will be returned.
    *
    * @param args - Object containing the snap id and either the URL of the snap's manifest,
-   * or the snap's manifest and source code. The object may also optionally contain a target version.
+   * or the snap's manifest and source code. The object may also optionally contain a target
+   * version.
    * @returns The resulting snap object.
    */
   async add(args: AddSnapArgs): Promise<Snap> {
@@ -2073,6 +1986,32 @@ export class SnapController extends BaseController<
   }
 
   /**
+   * Map initial permissions as defined in a Snap manifest to something that can
+   * be processed by the PermissionsController. Each caveat mapping function
+   * should return a valid permission caveat value.
+   *
+   * This function does not validate the caveat values, since that is done by
+   * the PermissionsController itself, upon requesting the permissions.
+   *
+   * @param initialPermissions - The initial permissions to process.
+   * @returns The processed permissions.
+   * @private
+   */
+  private processSnapPermissions(
+    initialPermissions: RequestedSnapPermissions,
+  ): RequestedSnapPermissions {
+    return Object.fromEntries(
+      Object.entries(initialPermissions).map(([initialPermission, value]) => {
+        if (hasProperty(caveatMappers, initialPermission)) {
+          return [initialPermission, caveatMappers[initialPermission](value)];
+        }
+
+        return [initialPermission, value];
+      }),
+    );
+  }
+
+  /**
    * Initiates a request for the given snap's initial permissions.
    * Must be called in order. See processRequestedSnap.
    *
@@ -2087,10 +2026,13 @@ export class SnapController extends BaseController<
 
     try {
       if (isNonEmptyArray(Object.keys(initialPermissions))) {
+        const processedPermissions =
+          this.processSnapPermissions(initialPermissions);
+
         const [approvedPermissions] = await this.messagingSystem.call(
           'PermissionController:requestPermissions',
           { origin: snapId },
-          initialPermissions,
+          processedPermissions,
         );
         return Object.values(approvedPermissions).map(
           (perm) => perm.parentCapability,

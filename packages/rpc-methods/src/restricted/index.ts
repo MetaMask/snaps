@@ -1,6 +1,8 @@
+import { Caveat } from '@metamask/controllers';
 import { confirmBuilder, ConfirmMethodHooks } from './confirm';
 import {
   getBip44EntropyBuilder,
+  getBip44EntropyCaveatMapper,
   getBip44EntropyCaveatSpecifications,
   GetBip44EntropyMethodHooks,
 } from './getBip44Entropy';
@@ -9,6 +11,7 @@ import { manageStateBuilder, ManageStateMethodHooks } from './manageState';
 import { notifyBuilder, NotifyMethodHooks } from './notify';
 import {
   getBip32EntropyBuilder,
+  getBip32EntropyCaveatMapper,
   getBip32EntropyCaveatSpecifications,
 } from './getBip32Entropy';
 import { getBip44EntropyLegacyBuilder } from './getBip44EntropyLegacy';
@@ -36,3 +39,11 @@ export const caveatSpecifications = {
   ...getBip32EntropyCaveatSpecifications,
   ...getBip44EntropyCaveatSpecifications,
 } as const;
+
+export const caveatMappers: Record<
+  string,
+  (value: unknown) => Caveat<any, any>
+> = {
+  [getBip32EntropyBuilder.targetKey]: getBip32EntropyCaveatMapper,
+  [getBip44EntropyBuilder.targetKey]: getBip44EntropyCaveatMapper,
+};

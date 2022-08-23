@@ -180,6 +180,23 @@ export const getBip32EntropyBuilder = Object.freeze({
   },
 } as const);
 
+/**
+ * Map a raw value from the `initialPermissions` to a caveat specification.
+ * Note that this function does not do any validation, that's handled by the
+ * PermissionsController when the permission is requested.
+ *
+ * @param value - The raw value from the `initialPermissions`.
+ * @returns The caveat specification.
+ */
+export function getBip32EntropyCaveatMapper(
+  value: unknown,
+): Caveat<SnapCaveatType.PermittedDerivationPaths, any> {
+  return {
+    type: SnapCaveatType.PermittedDerivationPaths,
+    value,
+  };
+}
+
 export const getBip32EntropyCaveatSpecifications: Record<
   SnapCaveatType.PermittedDerivationPaths,
   CaveatSpecificationConstraint
