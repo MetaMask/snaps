@@ -1,4 +1,4 @@
-import { assert } from '@metamask/snap-utils';
+import { assert, flatMap } from '@metamask/snap-utils';
 import {
   EventObject,
   InterpreterStatus,
@@ -35,15 +35,13 @@ export function validateMachine<
   };
   const allActions = new Set<string>();
   const addActions = (actions: any) =>
-    toArray(actions)
-      .flatMap<string>((action) => {
-        if (typeof action === 'string') {
-          return [action];
-        }
-        assert(typeof action === 'function');
-        return [];
-      })
-      .forEach(allActions.add.bind(allActions));
+    flatMap(toArray(actions), (action) => {
+      if (typeof action === 'string') {
+        return [action];
+      }
+      assert(typeof action === 'function');
+      return [];
+    }).forEach(allActions.add.bind(allActions));
 
   for (const state of Object.values<typeof typed.config.states[string]>(
     typed.config.states,
