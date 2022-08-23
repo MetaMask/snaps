@@ -1,8 +1,6 @@
 import { MetaMaskInpageProvider } from '@metamask/providers';
 import { JsonRpcRequest } from '@metamask/types';
 
-export type ChainId = `0x${string}`;
-
 export type SnapRpcHandler = (args: {
   origin: string;
   request: JsonRpcRequest<unknown[] | { [key: string]: unknown }>;
@@ -18,7 +16,7 @@ export type OnTransactionResponse = {
 export type OnTransactionHandler = (args: {
   origin: string;
   transaction: { [key: string]: unknown };
-  chainId: ChainId;
+  chainId: string;
 }) => Promise<OnTransactionResponse>;
 
 export type SnapProvider = MetaMaskInpageProvider;
