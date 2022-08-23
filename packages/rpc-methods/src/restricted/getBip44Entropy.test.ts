@@ -1,6 +1,7 @@
 import { SnapCaveatType } from '../caveats';
 import {
   getBip44EntropyBuilder,
+  getBip44EntropyCaveatMapper,
   getBip44EntropyCaveatSpecifications,
   getBip44EntropyImplementation,
   validateCaveat,
@@ -114,6 +115,31 @@ describe('specificationBuilder', () => {
           ],
         }),
       ).toThrow('Expected a single "permittedCoinTypes" caveat.');
+    });
+  });
+});
+
+describe('getBip44EntropyCaveatMapper', () => {
+  it('returns a caveat value for an array of coin types', () => {
+    expect(
+      getBip44EntropyCaveatMapper([
+        {
+          coinType: 1,
+        },
+        {
+          coinType: 60,
+        },
+      ]),
+    ).toStrictEqual({
+      type: SnapCaveatType.PermittedCoinTypes,
+      value: [
+        {
+          coinType: 1,
+        },
+        {
+          coinType: 60,
+        },
+      ],
     });
   });
 });
