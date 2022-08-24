@@ -1,9 +1,13 @@
 import { createHash } from 'crypto';
+import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
+import { Json } from '@metamask/utils';
 import { SnapManifest } from './json-schemas';
-import { SnapIdPrefixes, SnapValidationFailureReason } from './types';
+import { SnapId, SnapIdPrefixes, SnapValidationFailureReason } from './types';
 
 export const LOCALHOST_HOSTNAMES = new Set(['localhost', '127.0.0.1', '::1']);
 export const SNAP_PREFIX = 'wallet_snap_';
+
+export const SNAP_PREFIX_REGEX = new RegExp(`^${SNAP_PREFIX}`, 'u');
 
 // This RegEx matches valid npm package names (with some exceptions) and space-
 // separated alphanumerical words, optionally with dashes and underscores.
@@ -16,6 +20,107 @@ export const SNAP_PREFIX = 'wallet_snap_';
 // https://github.com/SchemaStore/schemastore/blob/81a16897c1dabfd98c72242a5fd62eb080ff76d8/src/schemas/json/package.json#L132-L138
 export const PROPOSED_NAME_REGEX =
   /^(?:[A-Za-z0-9-_]+( [A-Za-z0-9-_]+)*)|(?:(?:@[A-Za-z0-9-*~][A-Za-z0-9-*._~]*\/)?[A-Za-z0-9-~][A-Za-z0-9-._~]*)$/u;
+
+export type RequestedSnapPermissions = {
+  [permission: string]: Record<string, Json>;
+};
+
+export type BlockedSnapInfo = { infoUrl?: string; reason?: string };
+
+export type StatusContext = { snapId: string };
+export type StatusEvents = { type: 'START' | 'STOP' | 'CRASH' | 'UPDATE' };
+export type StatusStates = {
+  value: 'installing' | 'running' | 'stopped' | 'crashed';
+  context: StatusContext;
+};
+export type Status = StatusStates['value'];
+
+export type VersionHistory = {
+  origin: string;
+  version: string;
+  // Unix timestamp
+  date: number;
+};
+
+/**
+ * A Snap as it exists in {@link SnapController} state.
+ */
+export type Snap = {
+  /**
+   * Whether the Snap is enabled, which determines if it can be started.
+   */
+  enabled: boolean;
+
+  /**
+   * The ID of the Snap.
+   */
+  id: SnapId;
+
+  /**
+   * The initial permissions of the Snap, which will be requested when it is
+   * installed.
+   */
+  initialPermissions: RequestedSnapPermissions;
+
+  /**
+   * The Snap's manifest file.
+   */
+  manifest: SnapManifest;
+
+  /**
+   * Whether the Snap is blocked.
+   */
+  blocked: boolean;
+
+  /**
+   * Information detailing why the snap is blocked.
+   */
+  blockInformation?: BlockedSnapInfo;
+
+  /**
+   * The name of the permission used to invoke the Snap.
+   */
+  permissionName: string;
+
+  /**
+   * The source code of the Snap.
+   */
+  sourceCode: string;
+
+  /**
+   * The current status of the Snap, e.g. whether it's running or stopped.
+   */
+  status: Status;
+
+  /**
+   * The version of the Snap.
+   */
+  version: string;
+
+  /**
+   * The version history of the Snap.
+   * Can be used to derive when the Snap was installed, when it was updated to a certain version and who requested the change.
+   */
+  versionHistory: VersionHistory[];
+};
+
+export type TruncatedSnapFields =
+  | 'id'
+  | 'initialPermissions'
+  | 'permissionName'
+  | 'version';
+
+/**
+ * A {@link Snap} object with the fields that are relevant to an external
+ * caller.
+ */
+export type TruncatedSnap = Pick<Snap, TruncatedSnapFields>;
+
+export type ProcessSnapResult =
+  | TruncatedSnap
+  | { error: SerializedEthereumRpcError };
+
+export type InstallSnapsResult = Record<SnapId, ProcessSnapResult>;
 
 /**
  * An error indicating that a Snap validation failure is programmatically

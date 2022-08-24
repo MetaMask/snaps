@@ -1,6 +1,7 @@
 import { SnapCaveatType } from '../caveats';
 import {
   getBip32EntropyBuilder,
+  getBip32EntropyCaveatMapper,
   getBip32EntropyCaveatSpecifications,
   getBip32EntropyImplementation,
   validateCaveatPaths,
@@ -135,6 +136,27 @@ describe('specificationBuilder', () => {
           ],
         }),
       ).toThrow('Expected a single "permittedDerivationPaths" caveat.');
+    });
+  });
+});
+
+describe('getBip32EntropyCaveatMapper', () => {
+  it('returns a caveat value for an array of paths', () => {
+    expect(
+      getBip32EntropyCaveatMapper([
+        { path: ['m', "44'", "60'"], curve: 'secp256k1' },
+        { path: ['m', "0'", "0'"], curve: 'ed25519' },
+      ]),
+    ).toStrictEqual({
+      caveats: [
+        {
+          type: SnapCaveatType.PermittedDerivationPaths,
+          value: [
+            { path: ['m', "44'", "60'"], curve: 'secp256k1' },
+            { path: ['m', "0'", "0'"], curve: 'ed25519' },
+          ],
+        },
+      ],
     });
   });
 });

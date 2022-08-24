@@ -6,9 +6,15 @@ import {
   CaveatSpecificationConstraint,
   Caveat,
   PermissionValidatorConstraint,
+  PermissionConstraint,
 } from '@metamask/controllers';
 import { ethErrors } from 'eth-rpc-errors';
-import { hasProperty, isPlainObject, NonEmptyArray } from '@metamask/utils';
+import {
+  hasProperty,
+  isPlainObject,
+  Json,
+  NonEmptyArray,
+} from '@metamask/utils';
 import { BIP32Node, JsonSLIP10Node, SLIP10Node } from '@metamask/key-tree';
 
 import { SnapCaveatType } from '../caveats';
@@ -179,6 +185,27 @@ export const getBip32EntropyBuilder = Object.freeze({
     getUnlockPromise: true,
   },
 } as const);
+
+/**
+ * Map a raw value from the `initialPermissions` to a caveat specification.
+ * Note that this function does not do any validation, that's handled by the
+ * PermissionsController when the permission is requested.
+ *
+ * @param value - The raw value from the `initialPermissions`.
+ * @returns The caveat specification.
+ */
+export function getBip32EntropyCaveatMapper(
+  value: Json,
+): Pick<PermissionConstraint, 'caveats'> {
+  return {
+    caveats: [
+      {
+        type: SnapCaveatType.PermittedDerivationPaths,
+        value,
+      },
+    ],
+  };
+}
 
 export const getBip32EntropyCaveatSpecifications: Record<
   SnapCaveatType.PermittedDerivationPaths,

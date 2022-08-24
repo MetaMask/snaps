@@ -10,6 +10,7 @@
   "include": ["./src"],
   "references": [
     { "path": "../utils" },
-    { "path": "../execution-environments" }
+    { "path": "../execution-environments" },
+    { "path": "../rpc-methods" }
   ]
 }

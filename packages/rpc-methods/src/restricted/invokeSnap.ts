@@ -4,17 +4,27 @@ import {
   ValidPermissionSpecification,
   PermissionType,
 } from '@metamask/controllers';
-import { SnapController } from '@metamask/snap-controllers';
 import { isObject, Json, NonEmptyArray } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
-import { SNAP_PREFIX, HandlerType } from '@metamask/snap-utils';
+import {
+  Snap,
+  SNAP_PREFIX,
+  SnapId,
+  HandlerType,
+  SnapRpcHookArgs,
+} from '@metamask/snap-utils';
 
 const methodPrefix = SNAP_PREFIX;
 const targetKey = `${methodPrefix}*` as const;
 
 export type InvokeSnapMethodHooks = {
-  getSnap: SnapController['get'];
-  handleSnapRpcRequest: SnapController['handleRequest'];
+  getSnap: (snapId: SnapId) => Snap | undefined;
+  handleSnapRpcRequest: ({
+    snapId,
+    origin,
+    handler: handlerType,
+    request,
+  }: SnapRpcHookArgs & { snapId: SnapId }) => Promise<unknown>;
 };
 
 type InvokeSnapSpecificationBuilderOptions = {

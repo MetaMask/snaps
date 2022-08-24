@@ -6,10 +6,17 @@ import {
   PermissionValidatorConstraint,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
+  PermissionConstraint,
 } from '@metamask/controllers';
 import { ethErrors } from 'eth-rpc-errors';
 import { BIP44CoinTypeNode, JsonBIP44CoinTypeNode } from '@metamask/key-tree';
-import { hasProperty, isPlainObject, NonEmptyArray } from '@metamask/utils';
+import {
+  hasProperty,
+  isPlainObject,
+  Json,
+  NonEmptyArray,
+} from '@metamask/utils';
+
 import { SnapCaveatType } from '../caveats';
 
 const targetKey = 'snap_getBip44Entropy';
@@ -134,6 +141,27 @@ export const getBip44EntropyBuilder = Object.freeze({
     getUnlockPromise: true,
   },
 } as const);
+
+/**
+ * Map a raw value from the `initialPermissions` to a caveat specification.
+ * Note that this function does not do any validation, that's handled by the
+ * PermissionsController when the permission is requested.
+ *
+ * @param value - The raw value from the `initialPermissions`.
+ * @returns The caveat specification.
+ */
+export function getBip44EntropyCaveatMapper(
+  value: Json,
+): Pick<PermissionConstraint, 'caveats'> {
+  return {
+    caveats: [
+      {
+        type: SnapCaveatType.PermittedCoinTypes,
+        value,
+      },
+    ],
+  };
+}
 
 export const getBip44EntropyCaveatSpecifications: Record<
   SnapCaveatType.PermittedCoinTypes,
