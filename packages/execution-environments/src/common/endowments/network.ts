@@ -1,4 +1,5 @@
 import { allFunctions, withTeardown } from '../utils';
+import { rootRealmGlobal } from '../globalObject';
 
 type WebSocketCallback = (this: WebSocket, ev: any) => any;
 
@@ -107,12 +108,12 @@ const createNetwork = () => {
   );
 
   const fetch =
-    typeof globalThis.fetch === 'function'
-      ? globalThis.fetch
+    typeof rootRealmGlobal.fetch === 'function'
+      ? rootRealmGlobal.fetch
       : // eslint-disable-next-line @typescript-eslint/no-require-imports
         require('node-fetch');
 
-  const _fetch: typeof globalThis['fetch'] = async (
+  const _fetch: typeof rootRealmGlobal['fetch'] = async (
     input: RequestInfo,
     init?: RequestInit,
   ): Promise<Response> => {
@@ -186,8 +187,8 @@ const createNetwork = () => {
   // TODO: The `ws` module for Node.js only partially implements `WebSocket`, so some functionality
   // might break in a Node.js environment.
   const WebSocketImpl =
-    typeof globalThis.WebSocket === 'function'
-      ? globalThis.WebSocket
+    typeof rootRealmGlobal.WebSocket === 'function'
+      ? rootRealmGlobal.WebSocket
       : // eslint-disable-next-line @typescript-eslint/no-require-imports
         require('ws');
 
