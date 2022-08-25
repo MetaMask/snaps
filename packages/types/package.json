@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snap-types",
-  "version": "0.19.1",
+  "version": "0.20.0",
   "description": "TypeScript types for developing MetaMask Snaps.",
   "repository": {
     "type": "git",
@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@metamask/controllers": "^30.0.0",
-    "@metamask/snap-utils": "^0.19.1"
+    "@metamask/snap-utils": "^0.20.0"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.0.3",

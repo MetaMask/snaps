@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-webpack-plugin",
-  "version": "0.19.1",
+  "version": "0.20.0",
   "keywords": [
     "webpack",
     "plugin"
@@ -29,7 +29,7 @@
     "publish:package": "../../scripts/publish-package.sh"
   },
   "dependencies": {
-    "@metamask/snap-utils": "^0.19.1",
+    "@metamask/snap-utils": "^0.20.0",
     "webpack-sources": "^3.2.3"
   },
   "devDependencies": {

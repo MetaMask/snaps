@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.20.0]
+### Uncategorized
+- BREAKING: Simplify manifest format for permission caveats ([#705](https://github.com/MetaMask/snaps-skunkworks/pull/705))
+- Reduce TypeScript compilation target for `snap-controllers` ([#708](https://github.com/MetaMask/snaps-skunkworks/pull/708))
+- BREAKING: Transaction Insight API ([#642](https://github.com/MetaMask/snaps-skunkworks/pull/642))
+- Move all internal types from @metamask/snap-types to @metamask/snap-utils ([#695](https://github.com/MetaMask/snaps-skunkworks/pull/695))
+
 ## [0.19.1]
 ### Added
 - Generate source maps from modified code ([#615](https://github.com/MetaMask/snaps-skunkworks/pull/615))
@@ -52,7 +59,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release ([#410](https://github.com/MetaMask/snaps-skunkworks/pull/410), [#421](https://github.com/MetaMask/snaps-skunkworks/pull/421))
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.19.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.20.0...HEAD
+[0.20.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.19.1...v0.20.0
 [0.19.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.19.0...v0.19.1
 [0.19.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.18.1...v0.19.0
 [0.18.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.18.0...v0.18.1
