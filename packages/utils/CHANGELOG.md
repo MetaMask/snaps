@@ -7,11 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.20.0]
-### Uncategorized
-- BREAKING: Simplify manifest format for permission caveats ([#705](https://github.com/MetaMask/snaps-skunkworks/pull/705))
+### Added
+- **BREAKING:** Add Transaction Insight API ([#642](https://github.com/MetaMask/snaps-skunkworks/pull/642))
+- Add internal types from `@metamask/snap-types` ([#695](https://github.com/MetaMask/snaps-skunkworks/pull/695))
+
+### Changed
+- **BREAKING:** Simplify manifest format for permission caveats ([#705](https://github.com/MetaMask/snaps-skunkworks/pull/705))
 - Reduce TypeScript compilation target for `snap-controllers` ([#708](https://github.com/MetaMask/snaps-skunkworks/pull/708))
-- BREAKING: Transaction Insight API ([#642](https://github.com/MetaMask/snaps-skunkworks/pull/642))
-- Move all internal types from @metamask/snap-types to @metamask/snap-utils ([#695](https://github.com/MetaMask/snaps-skunkworks/pull/695))
 
 ## [0.19.1]
 ### Added

@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.20.0]
-### Uncategorized
-- BREAKING: Transaction Insight API ([#642](https://github.com/MetaMask/snaps-skunkworks/pull/642))
-- Move all internal types from @metamask/snap-types to @metamask/snap-utils ([#695](https://github.com/MetaMask/snaps-skunkworks/pull/695))
+### Added
+- **BREAKING:** Add Transaction Insight API ([#642](https://github.com/MetaMask/snaps-skunkworks/pull/642))
+
+### Removed
+- **BREAKING:** Move all internal types from `@metamask/snap-types` to `@metamask/snap-utils` ([#695](https://github.com/MetaMask/snaps-skunkworks/pull/695))
+  - Previously accessible types can now be accessed by importing `@metamask/snap-utils`
 
 ## [0.19.1]
 ### Changed

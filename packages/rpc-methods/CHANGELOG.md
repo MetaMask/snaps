@@ -7,10 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.20.0]
-### Uncategorized
-- BREAKING: Simplify manifest format for permission caveats ([#705](https://github.com/MetaMask/snaps-skunkworks/pull/705))
-- BREAKING: Transaction Insight API ([#642](https://github.com/MetaMask/snaps-skunkworks/pull/642))
+### Added
+- **BREAKING:** Add Transaction Insight API ([#642](https://github.com/MetaMask/snaps-skunkworks/pull/642))
 - Add `snap_getBip44Entropy` RPC method and deprecate `snap_getBip44Entropy_*` ([#690](https://github.com/MetaMask/snaps-skunkworks/pull/690))
+
+### Changed
+- **BREAKING:** Simplify manifest format for permission caveats ([#705](https://github.com/MetaMask/snaps-skunkworks/pull/705))
 
 ## [0.19.1]
 ### Changed
