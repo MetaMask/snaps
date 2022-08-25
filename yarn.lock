@@ -5408,33 +5408,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bls-signer@workspace:packages/examples/examples/bls-signer":
-  version: 0.0.0-use.local
-  resolution: "bls-signer@workspace:packages/examples/examples/bls-signer"
-  dependencies:
-    "@lavamoat/allow-scripts": ^2.0.3
-    "@metamask/auto-changelog": ^2.6.0
-    "@metamask/eslint-config": ^9.0.0
-    "@metamask/eslint-config-jest": ^9.0.0
-    "@metamask/eslint-config-nodejs": ^9.0.0
-    "@metamask/eslint-config-typescript": ^9.0.1
-    "@metamask/snaps-cli": ^0.21.0
-    eslint: ^7.30.0
-    eslint-config-prettier: ^8.3.0
-    eslint-plugin-import: ^2.23.4
-    eslint-plugin-jest: ^24.4.0
-    eslint-plugin-jsdoc: ^36.1.0
-    eslint-plugin-node: ^11.1.0
-    eslint-plugin-prettier: ^3.4.0
-    eth-json-rpc-errors: ^1.1.0
-    noble-bls12-381: ^0.2.3
-    prettier: ^2.3.2
-    prettier-plugin-packagejson: ^2.2.11
-    rimraf: ^3.0.2
-    typescript: ^4.4.0
-  languageName: unknown
-  linkType: soft
-
 "bn.js@npm:4.11.6":
   version: 4.11.6
   resolution: "bn.js@npm:4.11.6"
@@ -8021,15 +7994,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-json-rpc-errors@npm:^1.1.0":
-  version: 1.1.1
-  resolution: "eth-json-rpc-errors@npm:1.1.1"
-  dependencies:
-    fast-safe-stringify: ^2.0.6
-  checksum: 7f8e9f2ef77d17f0df738d167f46bb12d0d302389ae7520522136c910e75791559bfc80eb768369418dce8b08793ad8719cb736867f12c9b8587185de1ee6731
-  languageName: node
-  linkType: hard
-
 "eth-json-rpc-filters@npm:^4.2.1":
   version: 4.2.2
   resolution: "eth-json-rpc-filters@npm:4.2.2"
@@ -8368,33 +8332,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethers-js-snap@workspace:packages/examples/examples/ethers-js":
-  version: 0.0.0-use.local
-  resolution: "ethers-js-snap@workspace:packages/examples/examples/ethers-js"
-  dependencies:
-    "@lavamoat/allow-scripts": ^2.0.3
-    "@metamask/auto-changelog": ^2.6.0
-    "@metamask/eslint-config": ^9.0.0
-    "@metamask/eslint-config-jest": ^9.0.0
-    "@metamask/eslint-config-nodejs": ^9.0.0
-    "@metamask/eslint-config-typescript": ^9.0.1
-    "@metamask/snaps-cli": ^0.21.0
-    eslint: ^7.30.0
-    eslint-config-prettier: ^8.3.0
-    eslint-plugin-import: ^2.23.4
-    eslint-plugin-jest: ^24.4.0
-    eslint-plugin-jsdoc: ^36.1.0
-    eslint-plugin-node: ^11.1.0
-    eslint-plugin-prettier: ^3.4.0
-    ethers: ^5.4.6
-    prettier: ^2.3.2
-    prettier-plugin-packagejson: ^2.2.11
-    rimraf: ^3.0.2
-    typescript: ^4.4.0
-  languageName: unknown
-  linkType: soft
-
-"ethers@npm:^5.4.1, ethers@npm:^5.4.6":
+"ethers@npm:^5.4.1":
   version: 5.6.6
   resolution: "ethers@npm:5.6.6"
   dependencies:
@@ -10212,33 +10150,6 @@ __metadata:
   checksum: a2ade53eb339fb0cbe9e69a44caab10d6e3784662285eb5d2677117ee4facc33a64679051c35e0dfdb1a3983a51ce2f5d2cb36446d52e10d01881789b76e28fb
   languageName: node
   linkType: hard
-
-"ipfs-snap@workspace:packages/examples/examples/ipfs":
-  version: 0.0.0-use.local
-  resolution: "ipfs-snap@workspace:packages/examples/examples/ipfs"
-  dependencies:
-    "@lavamoat/allow-scripts": ^2.0.3
-    "@metamask/auto-changelog": ^2.6.0
-    "@metamask/eslint-config": ^9.0.0
-    "@metamask/eslint-config-jest": ^9.0.0
-    "@metamask/eslint-config-nodejs": ^9.0.0
-    "@metamask/eslint-config-typescript": ^9.0.1
-    "@metamask/snaps-cli": ^0.21.0
-    eslint: ^7.30.0
-    eslint-config-prettier: ^8.3.0
-    eslint-plugin-import: ^2.23.4
-    eslint-plugin-jest: ^24.4.0
-    eslint-plugin-jsdoc: ^36.1.0
-    eslint-plugin-node: ^11.1.0
-    eslint-plugin-prettier: ^3.4.0
-    eth-json-rpc-errors: ^1.1.0
-    prettier: ^2.3.2
-    prettier-plugin-packagejson: ^2.2.11
-    rimraf: ^3.0.2
-    typescript: ^4.4.0
-    uuid: ^8.3.2
-  languageName: unknown
-  linkType: soft
 
 "is-absolute@npm:^1.0.0":
   version: 1.0.0
@@ -12741,13 +12652,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"noble-bls12-381@npm:^0.2.3":
-  version: 0.2.6
-  resolution: "noble-bls12-381@npm:0.2.6"
-  checksum: aa14c3e0bfb0771b2f79d343bf3b08b9040813a74043ad44827836cb41b740a044c8bcf31e81cd340c5667db0efc9d520e7faf119bde755589461553c4b0e721
-  languageName: node
-  linkType: hard
-
 "node-addon-api@npm:^2.0.0":
   version: 2.0.2
   resolution: "node-addon-api@npm:2.0.2"
@@ -12915,31 +12819,6 @@ __metadata:
   checksum: 88eeb4da891e10b1318c4b2476b6e2ecbeb5ff97d946815ffea7794c31a89017c70d7f34b3c2ebf23ef4e9fc9fb99f7dffe36da22011b5b5c6ffa34f4873ec20
   languageName: node
   linkType: hard
-
-"notification-snap@workspace:packages/examples/examples/notifications":
-  version: 0.0.0-use.local
-  resolution: "notification-snap@workspace:packages/examples/examples/notifications"
-  dependencies:
-    "@lavamoat/allow-scripts": ^2.0.3
-    "@metamask/auto-changelog": ^2.6.0
-    "@metamask/eslint-config": ^9.0.0
-    "@metamask/eslint-config-jest": ^9.0.0
-    "@metamask/eslint-config-nodejs": ^9.0.0
-    "@metamask/eslint-config-typescript": ^9.0.1
-    "@metamask/snaps-cli": ^0.21.0
-    eslint: ^7.30.0
-    eslint-config-prettier: ^8.3.0
-    eslint-plugin-import: ^2.23.4
-    eslint-plugin-jest: ^24.4.0
-    eslint-plugin-jsdoc: ^36.1.0
-    eslint-plugin-node: ^11.1.0
-    eslint-plugin-prettier: ^3.4.0
-    prettier: ^2.3.2
-    prettier-plugin-packagejson: ^2.2.11
-    rimraf: ^3.0.2
-    typescript: ^4.4.0
-  languageName: unknown
-  linkType: soft
 
 "now-and-later@npm:^2.0.0":
   version: 2.0.1
