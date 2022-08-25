@@ -15,7 +15,6 @@ import {
   getBip32EntropyCaveatMapper,
   getBip32EntropyCaveatSpecifications,
 } from './getBip32Entropy';
-import { getBip44EntropyLegacyBuilder } from './getBip44EntropyLegacy';
 
 export { ManageStateOperation } from './manageState';
 export { NotificationArgs, NotificationType } from './notify';
@@ -30,7 +29,6 @@ export const builders = {
   [confirmBuilder.targetKey]: confirmBuilder,
   [getBip32EntropyBuilder.targetKey]: getBip32EntropyBuilder,
   [getBip44EntropyBuilder.targetKey]: getBip44EntropyBuilder,
-  [getBip44EntropyLegacyBuilder.targetKey]: getBip44EntropyLegacyBuilder,
   [invokeSnapBuilder.targetKey]: invokeSnapBuilder,
   [manageStateBuilder.targetKey]: manageStateBuilder,
   [notifyBuilder.targetKey]: notifyBuilder,
