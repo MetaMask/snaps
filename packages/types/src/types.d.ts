@@ -1,5 +1,5 @@
 import { MetaMaskInpageProvider } from '@metamask/providers';
-import { JsonRpcRequest } from '@metamask/types';
+import { Json, JsonRpcRequest } from '@metamask/types';
 
 export type SnapRpcHandler = (args: {
   origin: string;
@@ -21,7 +21,46 @@ export type OnTransactionHandler = (args: {
 
 export type SnapProvider = MetaMaskInpageProvider;
 
-export type SnapExports = {
+// CAIP2 - https://github.com/ChainAgnostic/CAIPs/blob/master/CAIPs/caip-2.md
+type ChainId = string;
+// CAIP10 - https://github.com/ChainAgnostic/CAIPs/blob/master/CAIPs/caip-10.md
+type AccountId = string;
+
+type RequestArguments = {
+  method: string;
+  params: unknown[];
+};
+
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export interface SnapKeyring {
+  getAccounts(): Promise<AccountId[]>;
+  handleRequest(data: {
+    chainId: ChainId;
+    origin: string;
+    request: RequestArguments;
+  }): Promise<Json>;
+  on(
+    data: {
+      chainId: ChainId;
+      origin: string;
+      eventName: string;
+    },
+    listener: (...args: unknown[]) => void,
+  ): void;
+  off(data: { chainId: ChainId; origin: string; eventName: string }): void;
+
+  addAccount?(chainId: ChainId): Promise<AccountId>;
+  removeAccount?(accountId: AccountId): Promise<void>;
+
+  importAccount?(chainId: ChainId, data: Json): Promise<AccountId>;
+  exportAccount?(accountId: AccountId): Promise<Json>;
+}
+
+export type SnapFunctionExports = {
   onRpcRequest?: OnRpcRequestHandler;
   onTransaction?: OnTransactionHandler;
+};
+
+export type SnapExports = SnapFunctionExports & {
+  keyring?: SnapKeyring;
 };

@@ -8,6 +8,7 @@ import { JsonRpcNotification } from '@metamask/utils';
 import {
   assert,
   HandlerType,
+  SNAP_EXPORT_NAMES,
   SnapExportsParameters,
 } from '@metamask/snap-utils';
 import EEOpenRPCDocument from '../openrpc.json';
@@ -26,6 +27,7 @@ import {
 import { removeEventListener, addEventListener } from './globalEvents';
 import { sortParamKeys } from './sortParams';
 import { constructError, withTeardown } from './utils';
+import { wrapKeyring } from './keyring';
 
 type EvaluationData = {
   stop: () => void;
@@ -76,7 +78,10 @@ export class BaseSnapExecutor {
       (target, handlerName, args) => {
         const data = this.snapData.get(target);
         // We're capturing the handler in case someone modifies the data object before the call
-        const handler = data?.exports[handlerName];
+        const handler =
+          handlerName === HandlerType.SnapKeyring
+            ? wrapKeyring(data?.exports.keyring)
+            : data?.exports[handlerName];
         assert(
           handler !== undefined,
           `No ${handlerName} handler exported for snap "${target}`,
@@ -265,22 +270,17 @@ export class BaseSnapExecutor {
   }
 
   private registerSnapExports(snapName: string, snapModule: any) {
-    Object.values(HandlerType).forEach((exportName) => {
-      if (typeof snapModule?.exports?.[exportName] === 'function') {
-        const data = this.snapData.get(snapName);
-        // Somebody deleted the Snap before we could register
-        if (data !== undefined) {
-          console.log(
-            `Worker: Registering ${exportName} handler'`,
-            snapModule.exports[exportName],
-          );
+    const data = this.snapData.get(snapName);
+    // Somebody deleted the Snap before we could register
+    if (!data) {
+      return;
+    }
 
-          data.exports = {
-            ...data.exports,
-            [exportName]: snapModule.exports[exportName],
-          };
-        }
-      }
+    SNAP_EXPORT_NAMES.forEach((exportName) => {
+      data.exports = {
+        ...data.exports,
+        [exportName]: snapModule.exports[exportName],
+      };
     });
   }
 

@@ -771,6 +771,131 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
+  it('supports keyring export', async () => {
+    const CODE = `
+      class Keyring {
+        async handleRequest({request}) {
+          switch(request.method){
+            case 'eth_signTransaction':
+              return request.params;
+          }
+        }
+      }
+      module.exports.keyring = new Keyring();
+    `;
+    const executor = new TestSnapExecutor();
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'executeSnap',
+      params: [FAKE_SNAP_NAME, CODE, []],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    const keyringRequest = {
+      method: 'handleRequest',
+      params: {
+        chainId: 'eip155:1',
+        origin: FAKE_ORIGIN,
+        request: {
+          method: 'eth_signTransaction',
+          params: { foo: 'bar' },
+        },
+      },
+    };
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        FAKE_SNAP_NAME,
+        HandlerType.SnapKeyring,
+        FAKE_ORIGIN,
+        { jsonrpc: '2.0', ...keyringRequest },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: { foo: 'bar' },
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 3,
+      method: 'snapRpc',
+      params: [
+        FAKE_SNAP_NAME,
+        HandlerType.SnapKeyring,
+        FAKE_ORIGIN,
+        { jsonrpc: '2.0', method: 'foo' },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 3,
+      jsonrpc: '2.0',
+      error: {
+        code: -32603,
+        data: {
+          originalError: {},
+        },
+        message: 'Keyring does not expose foo',
+      },
+    });
+  });
+
+  it('throws if snap doesnt export keyring', async () => {
+    const CODE = `
+    `;
+    const executor = new TestSnapExecutor();
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'executeSnap',
+      params: [FAKE_SNAP_NAME, CODE, []],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        FAKE_SNAP_NAME,
+        HandlerType.SnapKeyring,
+        FAKE_ORIGIN,
+        { jsonrpc: '2.0', method: 'foo' },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      error: {
+        code: -32603,
+        data: {
+          originalError: {},
+        },
+        message: 'Keyring not exported',
+      },
+    });
+  });
+
   it('blocks Snaps from escaping confinement by using unbound this', async () => {
     const PAYLOAD = `
     console.error("Hack the planet");
