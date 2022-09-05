@@ -1,4 +1,5 @@
 import { SnapKeyring } from '@metamask/snap-types';
+import { JsonRpcRequest } from '@metamask/utils';
 
 /**
  * Wraps a SnapKeyring class, returning a handler that can route requests to the exposed functions by the class.
@@ -11,7 +12,11 @@ export function wrapKeyring(keyring?: SnapKeyring) {
     throw new Error('Keyring not exported');
   }
 
-  const keyringHandler = ({ request }: any) => {
+  const keyringHandler = ({
+    request,
+  }: {
+    request: JsonRpcRequest<{ [key: string]: unknown }>;
+  }) => {
     const { method, params } = request;
     if (!(method in keyring)) {
       throw new Error(`Keyring does not expose ${method}`);
