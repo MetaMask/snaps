@@ -52,7 +52,7 @@ type GetBip32PublicKeyParameters = {
 
 /**
  * The specification builder for the `snap_getBip32PublicKey` permission.
- * `snap_getBip32PublicKey` lets the Snap control private keys for a particular
+ * `snap_getBip32PublicKey` lets the Snap retrieve public keys for a particular
  * BIP-32 node.
  *
  * @param options - The specification builder options.
