@@ -1,7 +1,6 @@
 import { SnapCaveatType } from '../caveats';
 import {
   getBip32PublicKeyBuilder,
-  getBip32PublicKeyCaveatMapper,
   getBip32PublicKeyCaveatSpecifications,
   getBip32PublicKeyImplementation,
 } from './getBip32PublicKey';
@@ -42,27 +41,6 @@ describe('specificationBuilder', () => {
           ],
         }),
       ).toThrow('Expected a single "permittedDerivationPaths" caveat.');
-    });
-  });
-});
-
-describe('getBip32PublicKeyCaveatMapper', () => {
-  it('returns a caveat value for an array of paths', () => {
-    expect(
-      getBip32PublicKeyCaveatMapper([
-        { path: ['m', "44'", "60'"], curve: 'secp256k1' },
-        { path: ['m', "0'", "0'"], curve: 'ed25519' },
-      ]),
-    ).toStrictEqual({
-      caveats: [
-        {
-          type: SnapCaveatType.PermittedDerivationPaths,
-          value: [
-            { path: ['m', "44'", "60'"], curve: 'secp256k1' },
-            { path: ['m', "0'", "0'"], curve: 'ed25519' },
-          ],
-        },
-      ],
     });
   });
 });
@@ -146,10 +124,13 @@ describe('getBip32PublicKeyImplementation', () => {
           getMnemonic,
           // @ts-expect-error Missing other required properties.
         })({
-          params: { path: ['m', "44'", "60'"], curve: 'secp256k1' },
+          params: {
+            path: ['m', "44'", "60'", "0'", '0', '1'],
+            curve: 'secp256k1',
+          },
         }),
       ).toMatchInlineSnapshot(
-        `"041e31e8432aab932fe18b5f9798b7252394ff0b943920b40c50a79301062df5ece2b884a45c456241e35000137e6dbd92c9119ccd5f46cc92ba9568ca661b994b"`,
+        `"04b21938e18aec1e2e7478988ccae5b556597d771c8e46ac2c8ea2a4a1a80619679230a109cd30e8af15856b15799e38991e45e55f406a8a24d5605ba0757da53c"`,
       );
     });
 
@@ -166,13 +147,13 @@ describe('getBip32PublicKeyImplementation', () => {
           // @ts-expect-error Missing other required properties.
         })({
           params: {
-            path: ['m', "44'", "60'"],
+            path: ['m', "44'", "60'", '1', '2', '3'],
             curve: 'secp256k1',
             compressed: true,
           },
         }),
       ).toMatchInlineSnapshot(
-        `"031e31e8432aab932fe18b5f9798b7252394ff0b943920b40c50a79301062df5ec"`,
+        `"03a797bad3e493c256dc3064a8dd9f214f246e3ef954c767d8c6548040eee645b7"`,
       );
     });
   });

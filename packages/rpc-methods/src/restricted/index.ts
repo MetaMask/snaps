@@ -18,7 +18,6 @@ import {
 } from './getBip32Entropy';
 import {
   getBip32PublicKeyBuilder,
-  getBip32PublicKeyCaveatMapper,
   GetBip32PublicKeyMethodHooks,
 } from './getBip32PublicKey';
 
@@ -54,6 +53,6 @@ export const caveatMappers: Record<
   (value: Json) => Pick<PermissionConstraint, 'caveats'>
 > = {
   [getBip32EntropyBuilder.targetKey]: getBip32EntropyCaveatMapper,
-  [getBip32PublicKeyBuilder.targetKey]: getBip32PublicKeyCaveatMapper,
+  [getBip32PublicKeyBuilder.targetKey]: getBip32EntropyCaveatMapper,
   [getBip44EntropyBuilder.targetKey]: getBip44EntropyCaveatMapper,
 };
