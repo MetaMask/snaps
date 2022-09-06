@@ -35,7 +35,6 @@ function getHandlerArguments(
     case HandlerType.OnTransaction: {
       const { transaction, chainId } = request.params as Record<string, any>;
       return {
-        origin,
         transaction,
         chainId,
       };

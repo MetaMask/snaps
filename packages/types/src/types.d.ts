@@ -14,7 +14,6 @@ export type OnTransactionResponse = {
 
 // TODO: improve type
 export type OnTransactionHandler = (args: {
-  origin: string;
   transaction: { [key: string]: unknown };
   chainId: string;
 }) => Promise<OnTransactionResponse>;
