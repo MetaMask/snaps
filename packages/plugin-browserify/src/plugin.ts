@@ -1,24 +1,68 @@
 import { Transform, TransformCallback } from 'stream';
-import fs from 'fs';
+import { promises as fs } from 'fs';
 import os from 'os';
 import pathUtils from 'path';
 import { BrowserifyObject } from 'browserify';
 import {
+  checkManifest,
   evalBundle,
   postProcessBundle,
   PostProcessOptions,
 } from '@metamask/snap-utils';
 import { fromSource } from 'convert-source-map';
-import ReadableStream = NodeJS.ReadableStream;
 
 const TEMP_BUNDLE_PATH = pathUtils.join(os.tmpdir(), 'snaps-bundle.js');
 
 export type PluginOptions = {
   eval?: boolean;
-  fixManifest?: boolean;
+  manifestPath?: string;
+  writeManifest?: boolean;
 };
 
 export type Options = PluginOptions & PostProcessOptions;
+
+/**
+ * Run eval on the processed bundle and fix the manifest, if configured.
+ *
+ * @param options - The plugin options.
+ * @param code - The code to eval, if the eval option is enabled.
+ */
+async function postBundle(options: Partial<Options>, code: string) {
+  if (options.eval) {
+    await fs.mkdir(pathUtils.dirname(TEMP_BUNDLE_PATH), { recursive: true });
+    await fs.writeFile(TEMP_BUNDLE_PATH, code);
+
+    await evalBundle(TEMP_BUNDLE_PATH)
+      .catch((error) => {
+        throw new Error(`Snap evaluation error: ${error.toString()}`);
+      })
+      .finally(() => fs.unlink(TEMP_BUNDLE_PATH));
+  }
+
+  if (options.manifestPath) {
+    const { errors, warnings } = await checkManifest(
+      options.manifestPath,
+      options.writeManifest,
+    );
+
+    if (!options.writeManifest && errors.length > 0) {
+      console.error(`Manifest Error: The manifest is invalid.`);
+      errors.forEach((error) => console.error(`Manifest Error: ${error}`));
+
+      process.exit(1);
+    }
+
+    if (warnings.length > 0) {
+      console.log(
+        'Manifest Warning: Validation of snap.manifest.json completed with warnings.',
+      );
+
+      warnings.forEach((warning) =>
+        console.log(`Manifest Warning: ${warning}`),
+      );
+    }
+  }
+}
 
 /**
  * A transform stream which can be used in the Browserify pipeline. It accepts a
@@ -80,49 +124,17 @@ export class SnapsBrowserifyTransform extends Transform {
       inputSourceMap,
     });
 
-    if (result) {
-      this.push(result.code);
-    }
-
-    callback();
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    postBundle(this.#options, result!.code)
+      .catch((error) => {
+        callback(error);
+      })
+      .finally(() => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.push(result!.code);
+        callback();
+      });
   }
-}
-
-/**
- * Write a bundle to a temporary file.
- *
- * @param path - The path to write the bundle to.
- * @param bundleStream - The Browserify bundle stream.
- * @returns A promise that resolves once the stream has finished writing.
- */
-async function writeBundle(
-  path: string,
-  bundleStream: ReadableStream,
-): Promise<void> {
-  const tempStream = fs.createWriteStream(path);
-
-  bundleStream.pipe(tempStream);
-
-  return new Promise((resolve, reject) => {
-    tempStream.on('finish', resolve);
-    tempStream.on('error', reject);
-  });
-}
-
-/**
- * Asynchronously wait for the `bundle` event to be emitted by the given
- * Browserify instance.
- *
- * @param browserifyInstance - The Browserify instance.
- * @returns A promise that resolves with the emitted bundle stream.
- */
-async function waitForBundle(
-  browserifyInstance: BrowserifyObject,
-): Promise<ReadableStream> {
-  return new Promise<ReadableStream>((resolve, reject) => {
-    browserifyInstance.on('bundle', resolve);
-    browserifyInstance.on('error', reject);
-  });
 }
 
 /**
@@ -134,24 +146,26 @@ async function waitForBundle(
  * @param options.stripComments - Whether to strip comments. Defaults to `true`.
  * @param options.eval - Whether to evaluate the bundle to test SES
  * compatibility. Defaults to `true`.
- * @param options.fixManifest - Whether to fix the manifest. Defaults to `true`.
+ * @param options.manifestPath - The path to the manifest file. If provided,
+ * the manifest will be validated. Defaults to
+ * `process.cwd() + '/snap.manifest.json'`.
+ * @param options.writeManifest - Whether to fix the manifest.
  * Defaults to `true`.
  */
-export default async function plugin(
+export default function plugin(
   browserifyInstance: BrowserifyObject,
   options: Partial<Options>,
-): Promise<void> {
-  const defaultOptions = { eval: true, fixManifest: true, ...options };
+): void {
+  const defaultOptions = {
+    eval: true,
+    manifestPath: pathUtils.join(process.cwd(), 'snap.manifest.json'),
+    writeManifest: true,
+    ...options,
+  };
 
   // Pushes the transform stream at the end of Browserify's pipeline. This
   // ensures that the transform is run on the entire bundle.
-  browserifyInstance.pipeline.push(new SnapsBrowserifyTransform(options));
-
-  if (defaultOptions.eval) {
-    const bundleStream = await waitForBundle(browserifyInstance);
-
-    await writeBundle(TEMP_BUNDLE_PATH, bundleStream);
-    await evalBundle(TEMP_BUNDLE_PATH);
-    await fs.promises.unlink(TEMP_BUNDLE_PATH);
-  }
+  browserifyInstance.pipeline.push(
+    new SnapsBrowserifyTransform(defaultOptions),
+  );
 }

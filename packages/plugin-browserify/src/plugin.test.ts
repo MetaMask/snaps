@@ -2,9 +2,21 @@
 /* eslint-disable jest/no-restricted-matchers */
 
 import { Readable } from 'stream';
-import browserify from 'browserify';
+import pathUtils from 'path';
+import os from 'os';
+import browserify, { Options as BrowserifyOptions } from 'browserify';
 import concat from 'concat-stream';
-import plugin, { SnapsBrowserifyTransform } from './plugin';
+import { checkManifest, evalBundle } from '@metamask/snap-utils';
+import plugin, { Options, SnapsBrowserifyTransform } from './plugin';
+import { DEFAULT_SNAP_BUNDLE, getSnapManifest } from './__test__';
+
+jest.mock('fs');
+
+jest.mock('@metamask/snap-utils', () => ({
+  ...jest.requireActual('@metamask/snap-utils'),
+  evalBundle: jest.fn(),
+  checkManifest: jest.fn(),
+}));
 
 /**
  * Takes a string value and pushes it to a readable stream. Used for testing
@@ -21,9 +33,38 @@ const toStream = (value: string) => {
   return readable;
 };
 
+type BundleOptions = {
+  code?: string;
+  options?: Options;
+  browserifyOptions?: BrowserifyOptions;
+};
+
+const bundle = async ({
+  code = DEFAULT_SNAP_BUNDLE,
+  options = { eval: false, manifestPath: undefined },
+  browserifyOptions,
+}: BundleOptions = {}) => {
+  const value = toStream(code);
+
+  return await new Promise((resolve, reject) => {
+    const bundler = browserify(browserifyOptions);
+
+    bundler.plugin(plugin, options);
+    bundler.add(value);
+
+    bundler.bundle((error, src) => {
+      if (error) {
+        return reject(error);
+      }
+
+      return resolve(src.toString('utf-8'));
+    });
+  });
+};
+
 describe('SnapsBrowserifyTransform', () => {
   it('processes the data', async () => {
-    const transform = new SnapsBrowserifyTransform({});
+    const transform = new SnapsBrowserifyTransform({ eval: false });
     const stream = toStream(` const foo = 'bar'; `);
 
     const result = await new Promise((resolve) => {
@@ -51,94 +92,152 @@ describe('SnapsBrowserifyTransform', () => {
 
 describe('plugin', () => {
   it('processes files using Browserify', async () => {
-    const value = toStream(`const foo = 'bar';`);
-
-    const result = await new Promise((resolve, reject) => {
-      const bundler = browserify();
-
-      bundler.plugin(plugin);
-      bundler.add(value);
-
-      bundler.bundle((error, src) => {
-        if (error) {
-          return reject(error);
-        }
-
-        return resolve(src.toString('utf-8'));
-      });
-    });
+    const result = await bundle();
 
     expect(result).toMatchSnapshot();
   });
 
   it('applies a transform', async () => {
-    const value = toStream(`
-      // foo bar
-      /* baz qux */
-      const foo = 'bar';
-    `);
-
-    const result = await new Promise((resolve, reject) => {
-      const bundler = browserify();
-
-      bundler.add(value);
-      bundler.plugin(plugin);
-
-      bundler.bundle((error, src) => {
-        if (error) {
-          return reject(error);
-        }
-
-        return resolve(src.toString('utf-8'));
-      });
+    const result = await bundle({
+      code: `
+        // foo bar
+        /* baz qux */
+        const foo = 'bar';
+      `,
     });
 
     expect(result).toMatchSnapshot();
   });
 
   it('forwards the options', async () => {
-    const value = toStream(`
-      // foo bar
-      /* baz qux */
-      const foo = 'bar';
-    `);
-
-    const result = await new Promise((resolve, reject) => {
-      const bundler = browserify();
-
-      bundler.plugin(plugin, { stripComments: false });
-      bundler.add(value);
-
-      bundler.bundle((error, src) => {
-        if (error) {
-          return reject(error);
-        }
-
-        return resolve(src.toString('utf-8'));
-      });
+    const result = await bundle({
+      code: `
+        // foo bar
+        /* baz qux */
+        const foo = 'bar';
+      `,
+      options: {
+        eval: false,
+        manifestPath: undefined,
+        stripComments: false,
+      },
     });
 
     expect(result).toMatchSnapshot();
   });
 
   it('generates a source map', async () => {
-    const value = toStream(`const foo = 'bar';`);
+    const result = await bundle({ browserifyOptions: { debug: true } });
 
-    const result = await new Promise((resolve, reject) => {
-      const bundler = browserify({ debug: true });
+    expect(result).toMatchSnapshot();
+  });
 
-      bundler.plugin(plugin);
+  it('evals the bundle if configured', async () => {
+    const mock = evalBundle as jest.MockedFunction<typeof evalBundle>;
+    mock.mockResolvedValue(null);
+
+    await bundle({ options: { eval: true, manifestPath: undefined } });
+
+    expect(mock).toHaveBeenCalledTimes(1);
+    expect(mock).toHaveBeenCalledWith(
+      pathUtils.join(os.tmpdir(), 'snaps-bundle.js'),
+    );
+  });
+
+  it('checks the manifest if configured', async () => {
+    const mock = checkManifest as jest.MockedFunction<typeof checkManifest>;
+    mock.mockResolvedValue({
+      manifest: getSnapManifest(),
+      warnings: [],
+      errors: [],
+    });
+
+    await bundle({ options: { eval: false, manifestPath: 'foo' } });
+
+    expect(mock).toHaveBeenCalledTimes(1);
+    expect(mock).toHaveBeenCalledWith('foo', true);
+  });
+
+  it('does not fix the manifest if configured', async () => {
+    const mock = checkManifest as jest.MockedFunction<typeof checkManifest>;
+    mock.mockResolvedValue({
+      manifest: getSnapManifest(),
+      warnings: [],
+      errors: [],
+    });
+
+    await bundle({
+      options: { eval: false, manifestPath: 'foo', writeManifest: false },
+    });
+
+    expect(mock).toHaveBeenCalledTimes(1);
+    expect(mock).toHaveBeenCalledWith('foo', false);
+  });
+
+  it('logs manifest errors if writeManifest is disabled and exits with error code 1', async () => {
+    jest.spyOn(console, 'error').mockImplementation(() => undefined);
+    jest.spyOn(process, 'exit').mockImplementation((code) => {
+      throw new Error(`exit ${code}`);
+    });
+
+    const mock = checkManifest as jest.MockedFunction<typeof checkManifest>;
+    mock.mockResolvedValue({
+      manifest: getSnapManifest(),
+      warnings: [],
+      errors: ['foo', 'bar'],
+    });
+
+    await expect(
+      bundle({
+        options: { eval: false, manifestPath: 'foo', writeManifest: false },
+      }),
+    ).rejects.toThrow('exit 1');
+
+    expect(console.error).toHaveBeenCalledTimes(3);
+    expect(console.error).toHaveBeenCalledWith('Manifest Error: foo');
+    expect(console.error).toHaveBeenCalledWith('Manifest Error: bar');
+  });
+
+  it('logs manifest warnings', async () => {
+    jest.spyOn(console, 'log').mockImplementation(() => undefined);
+
+    const mock = checkManifest as jest.MockedFunction<typeof checkManifest>;
+    mock.mockResolvedValue({
+      manifest: getSnapManifest(),
+      warnings: ['foo', 'bar'],
+      errors: [],
+    });
+
+    await bundle({
+      options: { eval: false, manifestPath: 'foo' },
+    });
+
+    expect(console.log).toHaveBeenCalledTimes(3);
+    expect(console.log).toHaveBeenCalledWith('Manifest Warning: foo');
+    expect(console.log).toHaveBeenCalledWith('Manifest Warning: bar');
+  });
+
+  it('forwards errors', async () => {
+    const mock = evalBundle as jest.MockedFunction<typeof evalBundle>;
+    mock.mockRejectedValue('foo');
+
+    const value = toStream(DEFAULT_SNAP_BUNDLE);
+
+    const error: Error = await new Promise((resolve) => {
+      const bundler = browserify();
+
+      bundler.plugin(plugin, {
+        eval: true,
+      });
       bundler.add(value);
 
-      bundler.bundle((error, src) => {
-        if (error) {
-          return reject(error);
-        }
-
-        return resolve(src.toString('utf-8'));
+      bundler.bundle((err) => {
+        // To test the error, the promise is resolved with the error, rather
+        // than rejecting it.
+        resolve(err);
       });
     });
 
-    expect(result).toMatchSnapshot();
+    expect(error.message).toBe('Snap evaluation error: foo');
   });
 });
