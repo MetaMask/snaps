@@ -1,6 +1,7 @@
 const path = require('path');
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const { IgnorePlugin } = require("webpack");
 
 const DIST = path.resolve(__dirname, 'dist');
 const ENVIRONMENTS = path.resolve(DIST, 'webpack');
@@ -52,6 +53,7 @@ module.exports = (_, argv) => {
           },
         ],
       }),
+      new IgnorePlugin({ resourceRegExp: /node:stream\/web/ }),
     ],
     module: {
       rules: [
@@ -99,6 +101,7 @@ module.exports = (_, argv) => {
           },
         ],
       }),
+      new IgnorePlugin({ resourceRegExp: /node:stream\/web/ })
     ],
     module: {
       rules: [
@@ -154,6 +157,7 @@ module.exports = (_, argv) => {
           },
         ],
       }),
+      new IgnorePlugin({ resourceRegExp: /node:stream\/web/ })
     ],
     module: {
       rules: [
