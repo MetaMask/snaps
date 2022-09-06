@@ -51,6 +51,8 @@ describe('bundle', () => {
       expect(mockPlugin).toHaveBeenCalledTimes(1);
       expect(mockPlugin).toHaveBeenCalledWith(expect.any(Function), {
         stripComments: true,
+        eval: false,
+        manifestPath: undefined,
       });
       expect(writeBundleFileMock).toHaveBeenCalledTimes(1);
     });
@@ -91,6 +93,8 @@ describe('bundle', () => {
       expect(mockPlugin).toHaveBeenCalledTimes(1);
       expect(mockPlugin).toHaveBeenCalledWith(expect.any(Function), {
         stripComments: true,
+        eval: false,
+        manifestPath: undefined,
       });
       expect(writeBundleFileMock).toHaveBeenCalledTimes(1);
     });
@@ -131,6 +135,8 @@ describe('bundle', () => {
       expect(mockPlugin).toHaveBeenCalledTimes(1);
       expect(mockPlugin).toHaveBeenCalledWith(expect.any(Function), {
         stripComments: true,
+        eval: false,
+        manifestPath: undefined,
       });
       expect(writeBundleFileMock).toHaveBeenCalledTimes(1);
     });
@@ -167,6 +173,8 @@ describe('bundle', () => {
       expect(mockPlugin).toHaveBeenCalledTimes(1);
       expect(mockPlugin).toHaveBeenCalledWith(expect.any(Function), {
         stripComments: true,
+        eval: false,
+        manifestPath: undefined,
       });
       expect(writeBundleFileMock).toHaveBeenCalledTimes(1);
     });
@@ -212,6 +220,8 @@ describe('bundle', () => {
       expect(mockPlugin).toHaveBeenCalledTimes(1);
       expect(mockPlugin).toHaveBeenCalledWith(expect.any(Function), {
         stripComments: true,
+        eval: false,
+        manifestPath: undefined,
       });
       expect(writeBundleFileMock).toHaveBeenCalledTimes(1);
     });
