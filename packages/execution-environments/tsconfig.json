@@ -4,7 +4,8 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "resolveJsonModule": true,
-    "typeRoots": ["../../node_modules/@types", "./node_modules/@types"]
+    "typeRoots": ["./node_modules/@types", "../../node_modules/@types"],
+    "skipLibCheck": true
   },
   "include": ["./src", "./src/openrpc.json"],
   "references": [{ "path": "../utils" }]

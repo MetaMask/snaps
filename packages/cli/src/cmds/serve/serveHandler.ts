@@ -42,7 +42,7 @@ export async function serve(argv: YargsArgs): Promise<void> {
 
   server.listen({ port }, () => logServerListening(port));
 
-  server.on('request', (request) => logRequest(request));
+  server.on('request', (request) => logRequest(request as { url: string }));
 
   server.on('error', (error) => {
     logServerError(error, argv.port);
