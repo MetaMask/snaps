@@ -1,4 +1,7 @@
-import { SnapFunctionExports } from '@metamask/snap-types';
+import {
+  SnapFunctionExports,
+  SnapKeyring as Keyring,
+} from '@metamask/snap-types';
 import { Json } from '@metamask/utils';
 import { NpmSnapPackageJson, SnapManifest } from './json-schemas';
 
@@ -57,10 +60,10 @@ export enum SNAP_STREAM_NAMES {
 export enum HandlerType {
   OnRpcRequest = 'onRpcRequest',
   OnTransaction = 'onTransaction',
-  SnapKeyring = 'snapKeyring',
+  SnapKeyring = 'keyring',
 }
 
-export const SNAP_EXPORT_NAMES = ['onRpcRequest', 'onTransaction', 'keyring'];
+export const SNAP_EXPORT_NAMES = Object.values(HandlerType);
 
 export type SnapRpcHookArgs = {
   origin: string;
@@ -75,4 +78,12 @@ type ObjectParameters<
   Type extends Record<string, (...args: any[]) => unknown>,
 > = Parameters<Type[keyof Type]>;
 
-export type SnapExportsParameters = ObjectParameters<SnapFunctionExports>;
+type KeyringParameter<Fn> = Fn extends (...args: any[]) => unknown
+  ? Parameters<Fn>
+  : never;
+
+type KeyringParameters = KeyringParameter<Keyring[keyof Keyring]>;
+
+export type SnapExportsParameters =
+  | ObjectParameters<SnapFunctionExports>
+  | KeyringParameters;
