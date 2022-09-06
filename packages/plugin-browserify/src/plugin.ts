@@ -1,9 +1,24 @@
 import { Transform, TransformCallback } from 'stream';
+import fs from 'fs';
+import os from 'os';
+import pathUtils from 'path';
 import { BrowserifyObject } from 'browserify';
-import { postProcessBundle, PostProcessOptions } from '@metamask/snap-utils';
+import {
+  evalBundle,
+  postProcessBundle,
+  PostProcessOptions,
+} from '@metamask/snap-utils';
 import { fromSource } from 'convert-source-map';
+import ReadableStream = NodeJS.ReadableStream;
 
-export type Options = PostProcessOptions;
+const TEMP_BUNDLE_PATH = pathUtils.join(os.tmpdir(), 'snaps-bundle.js');
+
+export type PluginOptions = {
+  eval?: boolean;
+  fixManifest?: boolean;
+};
+
+export type Options = PluginOptions & PostProcessOptions;
 
 /**
  * A transform stream which can be used in the Browserify pipeline. It accepts a
@@ -74,20 +89,69 @@ export class SnapsBrowserifyTransform extends Transform {
 }
 
 /**
+ * Write a bundle to a temporary file.
+ *
+ * @param path - The path to write the bundle to.
+ * @param bundleStream - The Browserify bundle stream.
+ * @returns A promise that resolves once the stream has finished writing.
+ */
+async function writeBundle(
+  path: string,
+  bundleStream: ReadableStream,
+): Promise<void> {
+  const tempStream = fs.createWriteStream(path);
+
+  bundleStream.pipe(tempStream);
+
+  return new Promise((resolve, reject) => {
+    tempStream.on('finish', resolve);
+    tempStream.on('error', reject);
+  });
+}
+
+/**
+ * Asynchronously wait for the `bundle` event to be emitted by the given
+ * Browserify instance.
+ *
+ * @param browserifyInstance - The Browserify instance.
+ * @returns A promise that resolves with the emitted bundle stream.
+ */
+async function waitForBundle(
+  browserifyInstance: BrowserifyObject,
+): Promise<ReadableStream> {
+  return new Promise<ReadableStream>((resolve, reject) => {
+    browserifyInstance.on('bundle', resolve);
+    browserifyInstance.on('error', reject);
+  });
+}
+
+/**
  * The Browserify plugin function. Can be passed to the Browserify `plugin`
  * function, or used by simply passing the package name to `plugin`.
  *
  * @param browserifyInstance - The Browserify instance.
  * @param options - The plugin options.
  * @param options.stripComments - Whether to strip comments. Defaults to `true`.
- * @param options.transformHtmlComments - Whether to transform HTML comments.
+ * @param options.eval - Whether to evaluate the bundle to test SES
+ * compatibility. Defaults to `true`.
+ * @param options.fixManifest - Whether to fix the manifest. Defaults to `true`.
  * Defaults to `true`.
  */
-export default function plugin(
+export default async function plugin(
   browserifyInstance: BrowserifyObject,
   options: Partial<Options>,
-): void {
+): Promise<void> {
+  const defaultOptions = { eval: true, fixManifest: true, ...options };
+
   // Pushes the transform stream at the end of Browserify's pipeline. This
   // ensures that the transform is run on the entire bundle.
   browserifyInstance.pipeline.push(new SnapsBrowserifyTransform(options));
+
+  if (defaultOptions.eval) {
+    const bundleStream = await waitForBundle(browserifyInstance);
+
+    await writeBundle(TEMP_BUNDLE_PATH, bundleStream);
+    await evalBundle(TEMP_BUNDLE_PATH);
+    await fs.promises.unlink(TEMP_BUNDLE_PATH);
+  }
 }
