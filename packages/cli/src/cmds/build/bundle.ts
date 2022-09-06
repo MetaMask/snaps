@@ -69,6 +69,8 @@ export function bundle(
 
     bundler.plugin(plugin, {
       stripComments: argv.stripComments,
+      manifestPath: undefined,
+      eval: false,
     });
 
     bundler.bundle(
