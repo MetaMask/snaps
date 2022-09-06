@@ -729,7 +729,7 @@ describe('BaseSnapExecutor', () => {
 
   it('supports onTransaction export', async () => {
     const CODE = `
-      module.exports.onTransaction = ({ origin, transaction, chainId }) => ({ origin, transaction, chainId });
+      module.exports.onTransaction = ({ transaction, chainId }) => ({ transaction, chainId });
     `;
     const executor = new TestSnapExecutor();
 
@@ -767,7 +767,7 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       id: 2,
       jsonrpc: '2.0',
-      result: { ...params, origin: FAKE_ORIGIN },
+      result: params,
     });
   });
 
