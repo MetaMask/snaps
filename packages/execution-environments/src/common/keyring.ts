@@ -15,7 +15,7 @@ export function wrapKeyring(keyring?: SnapKeyring) {
   const keyringHandler = ({
     request,
   }: {
-    request: JsonRpcRequest<{ [key: string]: unknown }>;
+    request: JsonRpcRequest<unknown[]>;
   }) => {
     const { method, params } = request;
     if (!(method in keyring)) {
@@ -23,7 +23,7 @@ export function wrapKeyring(keyring?: SnapKeyring) {
     }
     // @ts-expect-error TODO: Figure out how to type this better
     const func = keyring[method];
-    return func(params);
+    return func(...(params ?? []));
   };
   return keyringHandler;
 }

@@ -800,14 +800,16 @@ describe('BaseSnapExecutor', () => {
 
     const keyringRequest = {
       method: 'handleRequest',
-      params: {
-        chainId: 'eip155:1',
-        origin: FAKE_ORIGIN,
-        request: {
-          method: 'eth_signTransaction',
-          params: { foo: 'bar' },
+      params: [
+        {
+          chainId: 'eip155:1',
+          origin: FAKE_ORIGIN,
+          request: {
+            method: 'eth_signTransaction',
+            params: { foo: 'bar' },
+          },
         },
-      },
+      ],
     };
 
     await executor.writeCommand({
@@ -850,6 +852,97 @@ describe('BaseSnapExecutor', () => {
         },
         message: 'Keyring does not expose foo',
       },
+    });
+  });
+
+  it('supports keyring export with multiple args', async () => {
+    const CODE = `
+      class Keyring {
+        async importAccount(chainId, data) {
+          return chainId + ':' + data;
+        }
+      }
+      module.exports.keyring = new Keyring();
+    `;
+    const executor = new TestSnapExecutor();
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'executeSnap',
+      params: [FAKE_SNAP_NAME, CODE, []],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    const keyringRequest = {
+      method: 'importAccount',
+      params: ['eip155:1', 'foo'],
+    };
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        FAKE_SNAP_NAME,
+        HandlerType.SnapKeyring,
+        FAKE_ORIGIN,
+        { jsonrpc: '2.0', ...keyringRequest },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: 'eip155:1:foo',
+    });
+  });
+
+  it('supports keyring export with no args', async () => {
+    const CODE = `
+      class Keyring {
+        async getAccounts() {
+          return ['eip155:1:foo'];
+        }
+      }
+      module.exports.keyring = new Keyring();
+    `;
+    const executor = new TestSnapExecutor();
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'executeSnap',
+      params: [FAKE_SNAP_NAME, CODE, []],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        FAKE_SNAP_NAME,
+        HandlerType.SnapKeyring,
+        FAKE_ORIGIN,
+        { jsonrpc: '2.0', method: 'getAccounts' },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: ['eip155:1:foo'],
     });
   });
 
