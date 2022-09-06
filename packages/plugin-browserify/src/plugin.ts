@@ -32,8 +32,6 @@ async function postBundle(options: Partial<Options>, code: string) {
     await fs.mkdir(pathUtils.dirname(TEMP_BUNDLE_PATH), { recursive: true });
     await fs.writeFile(TEMP_BUNDLE_PATH, code);
 
-    console.log(code);
-
     await evalBundle(TEMP_BUNDLE_PATH)
       .catch((error) => {
         throw new Error(`Snap evaluation error: ${error.toString()}`);
@@ -45,6 +43,7 @@ async function postBundle(options: Partial<Options>, code: string) {
     const { errors, warnings } = await checkManifest(
       pathUtils.dirname(options.manifestPath),
       options.writeManifest,
+      code,
     );
 
     if (!options.writeManifest && errors.length > 0) {
