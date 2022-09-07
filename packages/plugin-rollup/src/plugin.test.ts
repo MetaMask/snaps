@@ -18,6 +18,7 @@ type BundleOptions = {
   options?: Options;
   files?: RollupVirtualOptions;
   outputOptions?: OutputOptions;
+  writeOptions?: OutputOptions;
   input?: string;
 };
 
@@ -26,6 +27,7 @@ const bundle = async ({
   options = { eval: false, manifestPath: undefined },
   files,
   outputOptions = {},
+  writeOptions = { file: 'bundle.js' },
   input = 'foo',
 }: BundleOptions = {}): Promise<RollupOutput> => {
   const bundler = await rollup({
@@ -41,9 +43,7 @@ const bundle = async ({
   });
 
   const output = await bundler.generate(outputOptions);
-  await bundler.write({
-    file: 'bundle.js',
-  });
+  await bundler.write(writeOptions);
 
   await bundler.close();
 
@@ -283,5 +283,20 @@ describe('snaps', () => {
         },
       }),
     ).rejects.toThrow('foo');
+  });
+
+  it('shows a warning if no output file is configured', async () => {
+    jest.spyOn(console, 'log').mockImplementation(() => undefined);
+
+    await bundle({
+      writeOptions: {
+        dir: 'dist',
+      },
+    });
+
+    expect(console.log).toHaveBeenCalledTimes(1);
+    expect(console.log).toHaveBeenCalledWith(
+      'No output file specified, skipping bundle validation.',
+    );
   });
 });
