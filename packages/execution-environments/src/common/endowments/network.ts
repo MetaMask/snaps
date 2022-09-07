@@ -1,4 +1,3 @@
-import { ReadableStream } from 'node:stream/web';
 import { allFunctions, ResponseWrapper, withTeardown } from '../utils';
 
 type WebSocketCallback = (this: WebSocket, ev: any) => any;

@@ -1,9 +1,10 @@
-import {
-  ReadableStream,
-  ReadableWritablePair,
-  WritableStream,
-} from 'node:stream/web';
 import { Readable } from 'stream';
+import { rootRealmGlobal } from './globalObject';
+
+// prettier-ignore
+/* istanbul ignore next */
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { ReadableStream } = 'ReadableStream' in rootRealmGlobal ? rootRealmGlobal : require('node:stream/web');
 
 /**
  * Takes an error that was thrown, determines if it is
@@ -120,7 +121,7 @@ export function convertBody(body: any): ReadableStream {
   }
   const readable = Readable.from(body);
   return new ReadableStream({
-    start(controller) {
+    start(controller: { close: () => void }) {
       readable.on('end', () => {
         try {
           controller.close();
@@ -158,6 +159,8 @@ export class ResponseBodyStreamWrapper implements ReadableStream {
   }
 
   [Symbol.asyncIterator](): AsyncIterableIterator<any> {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     return this.#originalBody[Symbol.asyncIterator]();
   }
 
@@ -197,9 +200,9 @@ export class ResponseBodyStreamWrapper implements ReadableStream {
     ];
   }
 
-  values(options?: { preventCancel?: boolean }): AsyncIterableIterator<any> {
-    return this.#originalBody.values(options);
-  }
+  // values(options?: { preventCancel?: boolean }): AsyncIterableIterator<any> {
+  //   return this.#originalBody.values(options);
+  // }
 
   /**
    * Handles teardown process of the ReadableStream instance.
