@@ -80,7 +80,7 @@ export class BaseSnapExecutor {
         // We're capturing the handler in case someone modifies the data object before the call
         const handler =
           handlerName === HandlerType.SnapKeyring
-            ? wrapKeyring(data?.exports.keyring)
+            ? wrapKeyring(this.notify.bind(this), data?.exports.keyring)
             : data?.exports[handlerName];
         assert(
           handler !== undefined,

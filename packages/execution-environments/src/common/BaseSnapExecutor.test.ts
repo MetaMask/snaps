@@ -903,6 +903,106 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
+  it('supports keyring export using events', async () => {
+    const CODE = `
+      class Keyring {
+
+        eventListeners = {};
+
+        async importAccount(chainId, data) {
+          const listener = this.eventListeners[chainId + "accountsChanged"];
+          if (listener) {
+            listener(data);
+          }
+          return chainId + ':' + data;
+        }
+        async on({ chainId, origin, eventName }, listener) {
+          const id = chainId + eventName;
+          this.eventListeners[id] = listener;
+        }
+      }
+      module.exports.keyring = new Keyring();
+    `;
+    const executor = new TestSnapExecutor();
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'executeSnap',
+      params: [FAKE_SNAP_NAME, CODE, []],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    const keyringRequest = {
+      method: 'on',
+      params: [
+        {
+          chainId: 'eip155:1',
+          origin: FAKE_ORIGIN,
+          eventName: 'accountsChanged',
+        },
+      ],
+    };
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        FAKE_SNAP_NAME,
+        HandlerType.SnapKeyring,
+        FAKE_ORIGIN,
+        { jsonrpc: '2.0', ...keyringRequest },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: null,
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 3,
+      method: 'snapRpc',
+      params: [
+        FAKE_SNAP_NAME,
+        HandlerType.SnapKeyring,
+        FAKE_ORIGIN,
+        {
+          jsonrpc: '2.0',
+          method: 'importAccount',
+          params: ['eip155:1', 'foo'],
+        },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      method: 'SnapKeyringEvent',
+      params: {
+        args: 'foo',
+        data: {
+          chainId: 'eip155:1',
+          eventName: 'accountsChanged',
+          origin: FAKE_ORIGIN,
+        },
+      },
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 3,
+      jsonrpc: '2.0',
+      result: 'eip155:1:foo',
+    });
+  });
+
   it('supports keyring export with no args', async () => {
     const CODE = `
       class Keyring {
