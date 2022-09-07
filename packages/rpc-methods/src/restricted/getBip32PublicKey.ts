@@ -114,7 +114,7 @@ export const getBip32PublicKeyCaveatSpecifications: Record<
         );
 
         if (!path) {
-          throw ethErrors.rpc.invalidParams({
+          throw ethErrors.provider.unauthorized({
             message:
               'The requested path is not permitted. Allowed paths must be specified in the snap manifest.',
           });
