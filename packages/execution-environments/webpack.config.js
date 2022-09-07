@@ -53,7 +53,7 @@ module.exports = (_, argv) => {
           },
         ],
       }),
-      new IgnorePlugin({ resourceRegExp: /node:stream\/web/ }),
+      // new IgnorePlugin({ resourceRegExp: /node:stream\/web/ }),
     ],
     module: {
       rules: [
