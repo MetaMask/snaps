@@ -152,10 +152,10 @@ describe('plugin', () => {
       errors: [],
     });
 
-    await bundle({ options: { eval: false, manifestPath: 'foo' } });
+    await bundle({ options: { eval: false, manifestPath: '/foo' } });
 
     expect(mock).toHaveBeenCalledTimes(1);
-    expect(mock).toHaveBeenCalledWith('foo', true);
+    expect(mock).toHaveBeenCalledWith('/', true, expect.any(String));
   });
 
   it('does not fix the manifest if configured', async () => {
@@ -167,11 +167,11 @@ describe('plugin', () => {
     });
 
     await bundle({
-      options: { eval: false, manifestPath: 'foo', writeManifest: false },
+      options: { eval: false, manifestPath: '/foo', writeManifest: false },
     });
 
     expect(mock).toHaveBeenCalledTimes(1);
-    expect(mock).toHaveBeenCalledWith('foo', false);
+    expect(mock).toHaveBeenCalledWith('/', false, expect.any(String));
   });
 
   it('logs manifest errors if writeManifest is disabled and exits with error code 1', async () => {
