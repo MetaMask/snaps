@@ -49,7 +49,7 @@ const bundle = async ({
   return await new Promise((resolve, reject) => {
     const bundler = browserify(browserifyOptions);
 
-    bundler.plugin(plugin, options);
+    bundler.plugin<Options>(plugin, options);
     bundler.add(value);
 
     bundler.bundle((error, src) => {
@@ -226,7 +226,7 @@ describe('plugin', () => {
     const error: Error = await new Promise((resolve) => {
       const bundler = browserify();
 
-      bundler.plugin(plugin, {
+      bundler.plugin<Options>(plugin, {
         eval: true,
       });
       bundler.add(value);
