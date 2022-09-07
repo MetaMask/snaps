@@ -33,7 +33,7 @@ export function wrapKeyring(
     let args = params;
     // @ts-expect-error TODO: Figure out how to type this better
     const func = keyring[method].bind(keyring);
-    // Special cases for registering events
+    // Special case for registering events
     if (method === 'on') {
       const data = args?.[0];
       // TODO Is this safe?
@@ -43,8 +43,6 @@ export function wrapKeyring(
           params: { data, args: listenerArgs },
         });
       args = [data, listener];
-    } else if (method === 'off') {
-      // TODO
     }
     return func(...(args ?? []));
   };
