@@ -22,9 +22,9 @@ export type OnTransactionHandler = (args: {
 export type SnapProvider = MetaMaskInpageProvider;
 
 // CAIP2 - https://github.com/ChainAgnostic/CAIPs/blob/master/CAIPs/caip-2.md
-type ChainId = string;
+type ChainId = `${string}:${string | number}`;
 // CAIP10 - https://github.com/ChainAgnostic/CAIPs/blob/master/CAIPs/caip-10.md
-type AccountId = string;
+type AccountId = `${ChainId}:${string}`;
 
 export type RequestArguments = Pick<
   JsonRpcRequest<{ [key: string]: unknown }>,
