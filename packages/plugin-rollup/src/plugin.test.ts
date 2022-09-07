@@ -1,54 +1,79 @@
-import * as path from 'path';
-import { rollup } from 'rollup';
-import virtual from '@rollup/plugin-virtual';
-import snaps from './plugin';
+import { promises as fs } from 'fs';
+import virtual, { RollupVirtualOptions } from '@rollup/plugin-virtual';
+import { OutputOptions, rollup, RollupOutput } from 'rollup';
+import { checkManifest, evalBundle } from '@metamask/snap-utils';
+import snaps, { Options } from './plugin';
+import { DEFAULT_SNAP_BUNDLE, getSnapManifest } from './__test__';
+
+jest.mock('fs');
+
+jest.mock('@metamask/snap-utils', () => ({
+  ...jest.requireActual('@metamask/snap-utils'),
+  evalBundle: jest.fn(),
+  checkManifest: jest.fn(),
+}));
+
+type BundleOptions = {
+  code?: string;
+  options?: Options;
+  files?: RollupVirtualOptions;
+  outputOptions?: OutputOptions;
+  input?: string;
+};
+
+const bundle = async ({
+  code = DEFAULT_SNAP_BUNDLE,
+  options = { eval: false, manifestPath: undefined },
+  files,
+  outputOptions = {},
+  input = 'foo',
+}: BundleOptions = {}): Promise<RollupOutput> => {
+  const bundler = await rollup({
+    input,
+    plugins: [
+      virtual({
+        foo: code,
+        ...files,
+      }),
+      snaps(options),
+    ],
+    onwarn: (warning) => console.log(warning.message),
+  });
+
+  const output = await bundler.generate(outputOptions);
+  await bundler.write({
+    file: 'bundle.js',
+  });
+
+  await bundler.close();
+
+  return output;
+};
 
 describe('snaps', () => {
   it('processes files using Rollup', async () => {
-    const bundler = await rollup({
-      input: 'foo',
-      plugins: [
-        virtual({
-          foo: `
-            const foo = 'bar';
-            console.log(foo);
-          `,
-        }),
-        snaps(),
-      ],
-    });
+    const { output } = await bundle();
 
-    const bundle = await bundler.generate({});
-    await bundler.close();
-
-    const { code } = bundle.output[0];
+    const { code } = output[0];
     expect(code).toMatchInlineSnapshot(`
-      "const foo = 'bar';
-      console.log(foo);
+      "module.exports.onRpcRequest = () => {
+        console.log(\\"Hello, world!\\");
+      };
       "
     `);
   });
 
   it('applies a transform', async () => {
-    const bundler = await rollup({
-      input: 'foo',
-      plugins: [
-        virtual({
-          foo: `
-            // foo bar
-            /* baz qux */
-            const foo = 'bar';
-            console.log(foo);
-          `,
-        }),
-        snaps(),
-      ],
+    const { output } = await bundle({
+      code: `
+        // foo bar
+        /* baz qux */
+        const foo = 'bar';
+        console.log(foo);
+      `,
     });
 
-    const bundle = await bundler.generate({});
-    await bundler.close();
-
-    const { code } = bundle.output[0];
+    const { code } = output[0];
     expect(code).toMatchInlineSnapshot(`
       "const foo = 'bar';
       console.log(foo);
@@ -57,25 +82,21 @@ describe('snaps', () => {
   });
 
   it('forwards the options', async () => {
-    const bundler = await rollup({
-      input: 'foo',
-      plugins: [
-        virtual({
-          foo: `
-            // foo bar
-            /* baz qux */
-            const foo = 'bar';
-            console.log(foo);
-          `,
-        }),
-        snaps({ stripComments: false }),
-      ],
+    const { output } = await bundle({
+      code: `
+        // foo bar
+        /* baz qux */
+        const foo = 'bar';
+        console.log(foo);
+      `,
+      options: {
+        eval: false,
+        manifestPath: undefined,
+        stripComments: false,
+      },
     });
 
-    const bundle = await bundler.generate({});
-    await bundler.close();
-
-    const { code } = bundle.output[0];
+    const { code } = output[0];
     expect(code).toMatchInlineSnapshot(`
       "// foo bar
 
@@ -87,30 +108,23 @@ describe('snaps', () => {
   });
 
   it('runs on the entire bundle', async () => {
-    const bundler = await rollup({
-      input: 'foo',
-      plugins: [
-        virtual({
-          foo: `
-            import { bar } from 'bar';
+    const { output } = await bundle({
+      code: `
+        import { bar } from 'bar';
 
-            // Sets foo to bar
-            const foo = bar;
-            console.log(foo);
-          `,
-          bar: `
-            // Returns baz
-            export const bar = 'baz';
-          `,
-        }),
-        snaps(),
-      ],
+        // Sets foo to bar
+        const foo = bar;
+        console.log(foo);
+      `,
+      files: {
+        bar: `
+          // Returns baz
+          export const bar = 'baz';
+        `,
+      },
     });
 
-    const bundle = await bundler.generate({});
-    await bundler.close();
-
-    const { code } = bundle.output[0];
+    const { code } = output[0];
     expect(code).toMatchInlineSnapshot(`
       "const bar = 'baz';
       const foo = bar;
@@ -120,42 +134,154 @@ describe('snaps', () => {
   });
 
   it('generates a source map', async () => {
-    const bundler = await rollup({
+    await fs.writeFile('/source-map.ts', DEFAULT_SNAP_BUNDLE);
+
+    const { output } = await bundle({
       // Rollup doesn't generate source maps from virtual files for some reason,
       // so we need to use a real file.
-      input: path.resolve(__dirname, './__fixtures__/source-map.ts'),
-      output: {
+      input: '/source-map.ts',
+      outputOptions: {
         sourcemap: true,
       },
-      plugins: [snaps()],
     });
 
-    const bundle = await bundler.generate({ sourcemap: true });
-    await bundler.close();
-
-    const { map } = bundle.output[0];
+    const { map } = output[0];
     expect(map).toMatchInlineSnapshot(`
       SourceMap {
         "file": "source-map.js",
-        "mappings": "AAGA,MAAMA,GAAG,GAAG,KAAZ;AACAC,OAAO,CAACC,GAAR,CAAYF,GAAZ",
+        "mappings": "AACEA,MAAM,CAACC,OAAP,CAAeC,YAAf,GAA8B,MAAM;EAClCC,OAAO,CAACC,GAAR,CAAY,eAAZ;AACD,CAFD",
         "names": Array [
-          "foo",
+          "module",
+          "exports",
+          "onRpcRequest",
           "console",
           "log",
         ],
         "sources": Array [
-          "src/__fixtures__/source-map.ts",
+          "../../../../../../../source-map.ts",
         ],
         "sourcesContent": Array [
-          "// This file is only used for testing source map generation.
-
-      // eslint-disable-next-line import/unambiguous
-      const foo = 'bar';
-      console.log(foo);
+          "
+        module.exports.onRpcRequest = () => {
+          console.log(\\"Hello, world!\\");
+        };
       ",
         ],
         "version": 3,
       }
     `);
+  });
+
+  it('evals the bundle if configured', async () => {
+    const mock = evalBundle as jest.MockedFunction<typeof evalBundle>;
+    mock.mockResolvedValue(null);
+
+    await bundle({
+      options: {
+        eval: true,
+        manifestPath: undefined,
+      },
+    });
+
+    expect(mock).toHaveBeenCalledTimes(1);
+    expect(mock).toHaveBeenCalledWith('bundle.js');
+  });
+
+  it('checks the manifest if configured', async () => {
+    const mock = checkManifest as jest.MockedFunction<typeof checkManifest>;
+    mock.mockResolvedValue({
+      manifest: getSnapManifest(),
+      errors: [],
+      warnings: [],
+    });
+
+    await bundle({
+      options: {
+        eval: false,
+        manifestPath: '/snap.manifest.json',
+      },
+    });
+
+    expect(mock).toHaveBeenCalledTimes(1);
+    expect(mock).toHaveBeenCalledWith('/', true, expect.any(String));
+  });
+
+  it('does not fix the manifest if configured', async () => {
+    const mock = checkManifest as jest.MockedFunction<typeof checkManifest>;
+    mock.mockResolvedValue({
+      manifest: getSnapManifest(),
+      errors: [],
+      warnings: [],
+    });
+
+    await bundle({
+      options: {
+        eval: false,
+        manifestPath: '/snap.manifest.json',
+        writeManifest: false,
+      },
+    });
+
+    expect(mock).toHaveBeenCalledTimes(1);
+    expect(mock).toHaveBeenCalledWith('/', false, expect.any(String));
+  });
+
+  it('logs manifest errors if writeManifest is disabled', async () => {
+    jest.spyOn(console, 'error').mockImplementation(() => undefined);
+
+    const mock = checkManifest as jest.MockedFunction<typeof checkManifest>;
+    mock.mockResolvedValue({
+      manifest: getSnapManifest(),
+      errors: ['foo', 'bar'],
+      warnings: [],
+    });
+
+    await expect(
+      bundle({
+        options: {
+          eval: false,
+          manifestPath: '/snap.manifest.json',
+          writeManifest: false,
+        },
+      }),
+    ).rejects.toThrow('Manifest Error: The manifest is invalid.\nfoo\nbar');
+  });
+
+  it('logs manifest warnings', async () => {
+    jest.spyOn(console, 'log').mockImplementation(() => undefined);
+
+    const mock = checkManifest as jest.MockedFunction<typeof checkManifest>;
+    mock.mockResolvedValue({
+      manifest: getSnapManifest(),
+      errors: [],
+      warnings: ['foo', 'bar'],
+    });
+
+    await bundle({
+      options: {
+        eval: false,
+        manifestPath: '/snap.manifest.json',
+        writeManifest: false,
+      },
+    });
+
+    expect(console.log).toHaveBeenCalledTimes(1);
+    expect(console.log).toHaveBeenCalledWith(
+      'Manifest Warning: Validation of snap.manifest.json completed with warnings.\nfoo\nbar',
+    );
+  });
+
+  it('forwards errors', async () => {
+    const mock = evalBundle as jest.MockedFunction<typeof evalBundle>;
+    mock.mockRejectedValue(new Error('foo'));
+
+    await expect(
+      bundle({
+        options: {
+          eval: true,
+          manifestPath: undefined,
+        },
+      }),
+    ).rejects.toThrow('foo');
   });
 });

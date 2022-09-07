@@ -2615,6 +2615,7 @@ __metadata:
     eslint-plugin-prettier: ^3.4.0
     jest: ^27.5.1
     jest-it-up: ^2.0.0
+    memfs: ^3.4.7
     prettier: ^2.3.2
     prettier-plugin-packagejson: ^2.2.11
     rimraf: ^3.0.2
@@ -14723,13 +14724,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rollup-plugin-execute@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "rollup-plugin-execute@npm:1.1.1"
-  checksum: c31e8e7eb9d9321d6ccc87278128a0e7603a4552550a9e7509cc08e3109e98fe2750c9e6266e14cc922c0e17c42bbddb34bf2611f39087449215a1fa694a6878
-  languageName: node
-  linkType: hard
-
 "rollup-snap@workspace:packages/examples/examples/rollup":
   version: 0.0.0-use.local
   resolution: "rollup-snap@workspace:packages/examples/examples/rollup"
@@ -14759,7 +14753,6 @@ __metadata:
     prettier-plugin-packagejson: ^2.2.11
     rimraf: ^3.0.2
     rollup: ^2.73.0
-    rollup-plugin-execute: ^1.1.1
     tslib: ^2.4.0
     typescript: ^4.4.0
   languageName: unknown

@@ -1,6 +1,5 @@
 const { babel } = require('@rollup/plugin-babel');
 const snaps = require('@metamask/rollup-plugin-snaps').default;
-const execute = require('rollup-plugin-execute');
 
 /**
  * @type {RollupOptions}
@@ -12,11 +11,7 @@ const snapConfig = {
     format: 'cjs',
     sourcemap: true,
   },
-  plugins: [
-    babel({ babelHelpers: 'bundled', extensions: ['.ts'] }),
-    snaps(),
-    execute(['yarn manifest', 'yarn eval']),
-  ],
+  plugins: [babel({ babelHelpers: 'bundled', extensions: ['.ts'] }), snaps()],
 };
 
 /**

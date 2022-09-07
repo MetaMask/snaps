@@ -13,13 +13,14 @@ import { fromSource } from 'convert-source-map';
 
 const TEMP_BUNDLE_PATH = pathUtils.join(os.tmpdir(), 'snaps-bundle.js');
 
-export type PluginOptions = {
+type PluginOptions = {
   eval?: boolean;
   manifestPath?: string;
   writeManifest?: boolean;
 };
 
-export type Options = PluginOptions & PostProcessOptions;
+export type Options = PluginOptions &
+  Omit<PostProcessOptions, 'sourceMap' | 'inputSourceMap'>;
 
 /**
  * Run eval on the processed bundle and fix the manifest, if configured.

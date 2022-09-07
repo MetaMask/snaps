@@ -16,8 +16,6 @@
   "scripts": {
     "build": "rollup --config",
     "clean": "rimraf 'dist/*'",
-    "manifest": "mm-snap manifest --fix",
-    "eval": "mm-snap eval -b dist/snap.js",
     "serve": "concurrently \"rollup --config --watch\" \"mm-snap serve\""
   },
   "devDependencies": {
@@ -46,7 +44,6 @@
     "prettier-plugin-packagejson": "^2.2.11",
     "rimraf": "^3.0.2",
     "rollup": "^2.73.0",
-    "rollup-plugin-execute": "^1.1.1",
     "tslib": "^2.4.0",
     "typescript": "^4.4.0"
   },
