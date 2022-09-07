@@ -185,7 +185,7 @@ export const getBip44EntropyCaveatSpecifications: Record<
         );
 
         if (!coinType) {
-          throw ethErrors.rpc.invalidParams({
+          throw ethErrors.provider.unauthorized({
             message:
               'The requested coin type is not permitted. Allowed coin types must be specified in the snap manifest.',
           });
