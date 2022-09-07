@@ -21,13 +21,14 @@ export type Options = PluginOptions &
  * Creates a Snaps Rollup plugin instance.
  *
  * @param options - The plugin options.
+ * @param options.stripComments - Whether to strip comments. Defaults to `true`.
  * @param options.eval - Whether to evaluate the bundle to test SES
  * compatibility. Defaults to `true`.
  * @param options.manifestPath - The path to the manifest file. If provided,
  * the manifest will be validated. Defaults to
  * `process.cwd() + '/snap.manifest.json'`.
- * @param options.writeManifest - Whether to fix the manifest.
- * Defaults to `true`.
+ * @param options.writeManifest - Whether to fix the manifest. Defaults to
+ * `true`.
  * @returns The Rollup plugin object.
  */
 export default function snaps(options: Partial<Options>): Plugin {
