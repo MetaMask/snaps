@@ -5,9 +5,6 @@ import { Configuration } from 'webpack';
 import { merge } from 'webpack-merge';
 import WebpackBarPlugin from 'webpackbar';
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-const HookShellScriptWebpackPlugin = require('hook-shell-script-webpack-plugin');
-
 // Configuration that is shared between the two bundles
 const common: Configuration = {
   // For simplicity, we don't do any optimisations here. Ideally, this would be
@@ -50,12 +47,7 @@ const snapConfig: Configuration = merge(common, {
     // Required so that webpack doesn't mangle our `exports` variable
     libraryTarget: 'commonjs',
   },
-  plugins: [
-    new SnapsWebpackPlugin(),
-    new HookShellScriptWebpackPlugin({
-      afterEmit: ['yarn manifest', 'yarn eval'],
-    }),
-  ],
+  plugins: [new SnapsWebpackPlugin()],
 });
 
 // Configuration for the website bundle

@@ -156,7 +156,7 @@ export class SnapsBrowserifyTransform extends Transform {
  */
 export default function plugin(
   browserifyInstance: BrowserifyObject,
-  options: Partial<Options>,
+  options?: Partial<Options>,
 ): void {
   const defaultOptions = {
     eval: true,

@@ -1,6 +1,6 @@
 # @metamask/snaps-browserify-plugin
 
-A plugin for developing [MetaMask Snaps](https://docs.metamask.io/guide/snaps.html) using [Browserify](https://browserify.org/). This can be used as alternative to the `mm-snap` CLI `build` command. It transforms the bundle to fix common issues with SES. For a list of changes the plugin makes, you can refer to [the source code](../utils/src/bundle.ts).
+A plugin for developing [MetaMask Snaps](https://docs.metamask.io/guide/snaps.html) using [Browserify](https://browserify.org/). This can be used as alternative to the `mm-snap` CLI `build` command. It transforms the bundle to fix common issues with SES. For a list of changes the plugin makes, you can refer to [the source code](../utils/src/post-process.ts).
 
 ## Installation
 

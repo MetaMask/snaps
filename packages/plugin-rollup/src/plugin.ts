@@ -31,7 +31,7 @@ export type Options = PluginOptions &
  * `true`.
  * @returns The Rollup plugin object.
  */
-export default function snaps(options: Partial<Options>): Plugin {
+export default function snaps(options?: Partial<Options>): Plugin {
   const defaultOptions = {
     eval: true,
     manifestPath: pathUtils.join(process.cwd(), 'snap.manifest.json'),

@@ -37,7 +37,7 @@ export default class SnapsWebpackPlugin {
    * @param options.writeManifest - Whether to fix the manifest.
    * Defaults to `true`.
    */
-  constructor(options: Partial<Options>) {
+  constructor(options?: Partial<Options>) {
     this.options = {
       eval: true,
       manifestPath: pathUtils.join(process.cwd(), 'snap.manifest.json'),
