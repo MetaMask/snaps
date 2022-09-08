@@ -3968,5 +3968,86 @@ describe('SnapController', () => {
         expect(snapController.state.snapErrors.foo).toBeUndefined();
       });
     });
+
+    describe('SnapController.getKeyringSnaps', () => {
+      it('finds matching keyring snaps', async () => {
+        const messenger = getSnapControllerMessenger(undefined, false);
+        const mockSnap = getMockSnapData({
+          id: 'npm:example',
+          origin: 'foo.com',
+          enabled: true,
+        });
+
+        const snapController = getSnapController(
+          getSnapControllerOptions({
+            messenger,
+            state: {
+              snaps: {
+                [mockSnap.id]: mockSnap.stateObject,
+              },
+            },
+          }),
+        );
+
+        const requestedNamespaces = {
+          eip155: {
+            methods: [
+              'eth_signTransaction',
+              'eth_accounts',
+              'eth_sign',
+              'personal_sign',
+              'eth_signTypedData',
+            ],
+            events: ['accountsChanged'],
+            chains: [
+              {
+                id: 'eip155:1',
+                name: 'Ethereum (Mainnet)',
+              },
+            ],
+          },
+          bip122: {
+            methods: ['signPBST', 'getExtendedPublicKey'],
+            chains: [
+              {
+                id: 'bip122:000000000019d6689c085ae165831e93',
+                name: 'Bitcoin (Mainnet)',
+              },
+              {
+                id: 'bip122:000000000933ea01ad0ee984209779ba',
+                name: 'Bitcoin (Testnet)',
+              },
+            ],
+          },
+        };
+
+        const caveats = [{ value: { namespaces: requestedNamespaces } }];
+
+        const originalCall = messenger.call.bind(messenger);
+
+        jest.spyOn(messenger, 'call').mockImplementation((method, ...args) => {
+          if (method === 'PermissionController:getPermissions') {
+            return {
+              snap_keyring: {
+                caveats,
+                date: 1661166080905,
+                id: 'VyAsBJiDDKawv_XlNcm13',
+                invoker: 'https://metamask.github.io',
+                parentCapability: 'snap_keyring',
+              },
+            } as any;
+          }
+          return originalCall(method, ...args);
+        });
+
+        const result = await snapController.getKeyringSnaps(
+          requestedNamespaces,
+        );
+        expect(result).toStrictEqual({
+          bip122: 'npm:example',
+          eip155: 'npm:example',
+        });
+      });
+    });
   });
 });
