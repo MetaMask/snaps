@@ -65,19 +65,17 @@ export default class SnapsWebpackPlugin {
             inputSourceMap: devtool ? (asset.map() as SourceMap) : undefined,
           });
 
-          if (processed) {
-            const replacement = processed.sourceMap
-              ? new SourceMapSource(
-                  processed.code,
-                  assetName,
-                  processed.sourceMap,
-                )
-              : new RawSource(processed.code);
+          const replacement = processed.sourceMap
+            ? new SourceMapSource(
+                processed.code,
+                assetName,
+                processed.sourceMap,
+              )
+            : new RawSource(processed.code);
 
-            // For some reason the type of `RawSource` is not compatible with Webpack's own
-            // `Source`, but works fine when casting it to `any`.
-            compilation.updateAsset(assetName, replacement as any);
-          }
+          // For some reason the type of `RawSource` is not compatible with Webpack's own
+          // `Source`, but works fine when casting it to `any`.
+          compilation.updateAsset(assetName, replacement as any);
         });
       });
     });

@@ -175,11 +175,6 @@ describe('plugin', () => {
   });
 
   it('logs manifest errors if writeManifest is disabled and exits with error code 1', async () => {
-    jest.spyOn(console, 'error').mockImplementation(() => undefined);
-    jest.spyOn(process, 'exit').mockImplementation((code) => {
-      throw new Error(`exit ${code}`);
-    });
-
     const mock = checkManifest as jest.MockedFunction<typeof checkManifest>;
     mock.mockResolvedValue({
       manifest: getSnapManifest(),
@@ -191,11 +186,7 @@ describe('plugin', () => {
       bundle({
         options: { eval: false, manifestPath: 'foo', writeManifest: false },
       }),
-    ).rejects.toThrow('exit 1');
-
-    expect(console.error).toHaveBeenCalledTimes(3);
-    expect(console.error).toHaveBeenCalledWith('Manifest Error: foo');
-    expect(console.error).toHaveBeenCalledWith('Manifest Error: bar');
+    ).rejects.toThrow('Manifest Error: The manifest is invalid.\nfoo\nbar');
   });
 
   it('logs manifest warnings', async () => {

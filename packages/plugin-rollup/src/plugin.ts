@@ -50,13 +50,6 @@ export default function snaps(options?: Partial<Options>): Plugin {
         sourceMap: true,
       });
 
-      // `postProcessBundle` returns `null` if the input code is `null`, which
-      // should never be the case.
-      /* istanbul ignore next */
-      if (!result) {
-        return null;
-      }
-
       return { code: result.code, map: result.sourceMap };
     },
 

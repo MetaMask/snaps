@@ -48,10 +48,9 @@ async function postBundle(options: Partial<Options>, code: string) {
     );
 
     if (!options.writeManifest && errors.length > 0) {
-      console.error(`Manifest Error: The manifest is invalid.`);
-      errors.forEach((error) => console.error(`Manifest Error: ${error}`));
-
-      process.exit(1);
+      throw new Error(
+        `Manifest Error: The manifest is invalid.\n${errors.join('\n')}`,
+      );
     }
 
     if (warnings.length > 0) {
@@ -126,14 +125,12 @@ export class SnapsBrowserifyTransform extends Transform {
       inputSourceMap,
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    postBundle(this.#options, result!.code)
+    postBundle(this.#options, result.code)
       .catch((error) => {
         callback(error);
       })
       .finally(() => {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.push(result!.code);
+        this.push(result.code);
         callback();
       });
   }

@@ -8,8 +8,6 @@ import { checkManifest, evalBundle } from '@metamask/snap-utils';
 import SnapsWebpackPlugin, { Options } from './plugin';
 import { DEFAULT_SNAP_BUNDLE, getSnapManifest } from './__test__';
 
-jest.setTimeout(10000);
-
 jest.mock('@metamask/snap-utils', () => ({
   ...jest.requireActual('@metamask/snap-utils'),
   evalBundle: jest.fn(),

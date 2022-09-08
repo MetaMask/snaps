@@ -1,10 +1,6 @@
 import { postProcessBundle } from './post-process';
 
 describe('postProcessBundle', () => {
-  it('handles null input', () => {
-    expect(postProcessBundle(null)).toBeNull();
-  });
-
   it('trims the string', () => {
     expect(postProcessBundle(' trimMe(); ')).toStrictEqual(
       expect.objectContaining({
