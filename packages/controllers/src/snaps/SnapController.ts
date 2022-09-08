@@ -2315,11 +2315,11 @@ export class SnapController extends BaseController<
     const snaps = await this.getPermissionsForAllSnaps();
     const snapNamespaces = Object.entries(snaps)
       .filter(([_, permissions]) => hasProperty(permissions, 'snap_keyring'))
-      .reduce(
+      .reduce<Record<string, Record<string, Namespace>>>(
         (acc, [id, permissions]) => ({
           ...acc,
-          // @ts-expect-error Fix typing
-          [id]: permissions.snap_keyring.caveats[0].namespaces,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          [id]: permissions.snap_keyring!.caveats![0].value.namespaces,
         }),
         {},
       );

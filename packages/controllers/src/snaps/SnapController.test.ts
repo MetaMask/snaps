@@ -4194,7 +4194,7 @@ describe('SnapController', () => {
           },
         };
 
-        const caveats = [{ namespaces: requestedNamespaces }];
+        const caveats = [{ value: { namespaces: requestedNamespaces } }];
 
         const originalCall = messenger.call.bind(messenger);
 
