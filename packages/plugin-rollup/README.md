@@ -1,10 +1,10 @@
 # @metamask/rollup-plugin-snaps
 
-A plugin for developing [MetaMask Snaps](https://docs.metamask.io/guide/snaps.html) using [Rollup](https://rollupjs.org/). This can be used as alternative to the `mm-snap` CLI `build` command. It transforms the bundle to fix common issues with SES. For a list of changes the plugin makes, you can refer to [the source code](../utils/src/bundle.ts).
+A plugin for developing [MetaMask Snaps](https://docs.metamask.io/guide/snaps.html) using [Rollup](https://rollupjs.org/). This can be used as alternative to the `mm-snap` CLI `build` command. It transforms the bundle to fix common issues with SES. For a list of changes the plugin makes, you can refer to [the source code](../utils/src/post-process.ts).
 
 ## Installation
 
-Use Node.js `14.0.0` or later. We recommend using [nvm](https://github.com/nvm-sh/nvm) for managing Node.js versions.
+Use Node.js `16.0.0` or later. We recommend using [nvm](https://github.com/nvm-sh/nvm) for managing Node.js versions.
 
 Install a dependency in your snap project using `yarn` or `npm`:
 
@@ -39,9 +39,22 @@ const options: Options = {
   stripComments: true,
 
   /**
-   * Whether to break up tokens that could be parsed as HTML comment terminators. This may change
-   * the behaviour of programs that contain HTML comment terminators in string literals.
+   * Whether to evaluate the bundle with SES, to ensure SES compatibility.
    */
-  transformHtmlComments: true,
+  eval: true,
+
+  /**
+   * The path to the Snap manifest file. If set, it will be checked and automatically updated with
+   * the bundle's hash, if `writeManifest` is enabled. Defaults to `snap/manifest.json` in the
+   * current working directory.
+   */
+  manifestPath: './snap.manifest.json',
+
+  /**
+   * Whether to write the updated Snap manifest file to disk. If `manifestPath` is not set, this
+   * option has no effect. If this is disabled, an error will be thrown if the manifest file is
+   * invalid.
+   */
+  writeManifest: true,
 };
 ```

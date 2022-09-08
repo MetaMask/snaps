@@ -202,17 +202,13 @@ function getRawTemplateValue(value: string) {
  * the provided code is null.
  */
 export function postProcessBundle(
-  code: string | null,
+  code: string,
   {
     stripComments = true,
     sourceMap: sourceMaps,
     inputSourceMap,
   }: Partial<PostProcessOptions> = {},
-): PostProcessedBundle | null {
-  if (typeof code !== 'string') {
-    return null;
-  }
-
+): PostProcessedBundle {
   const pre: PluginObj['pre'] = ({ ast }) => {
     ast.comments?.forEach((comment) => {
       // Break up tokens that could be parsed as HTML comment terminators. The

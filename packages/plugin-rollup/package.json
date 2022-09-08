@@ -49,6 +49,7 @@
     "eslint-plugin-prettier": "^3.4.0",
     "jest": "^27.5.1",
     "jest-it-up": "^2.0.0",
+    "memfs": "^3.4.7",
     "prettier": "^2.3.2",
     "prettier-plugin-packagejson": "^2.2.11",
     "rimraf": "^3.0.2",

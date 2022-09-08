@@ -4,13 +4,11 @@ import source from 'vinyl-source-stream';
 import watchify from 'watchify';
 import babelConfig from './babel.config.json';
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports,@typescript-eslint/no-var-requires
-const exec = require('gulp-exec');
-
 const ENTRY_POINT = './src/snap.ts';
 
 const bundler = browserify({
   entries: [ENTRY_POINT],
+  standalone: '<snap>',
   cache: {},
   packageCache: {},
 })
@@ -24,12 +22,7 @@ const bundler = browserify({
  * @returns A `ReadWriteStream` of the bundle.
  */
 export const build = () => {
-  return bundler
-    .bundle()
-    .pipe(source('snap.js'))
-    .pipe(dest('./dist'))
-    .pipe(exec('yarn manifest'))
-    .pipe(exec('yarn eval'));
+  return bundler.bundle().pipe(source('snap.js')).pipe(dest('./dist'));
 };
 
 /**

@@ -2615,6 +2615,7 @@ __metadata:
     eslint-plugin-prettier: ^3.4.0
     jest: ^27.5.1
     jest-it-up: ^2.0.0
+    memfs: ^3.4.7
     prettier: ^2.3.2
     prettier-plugin-packagejson: ^2.2.11
     rimraf: ^3.0.2
@@ -2819,6 +2820,7 @@ __metadata:
     eslint-plugin-prettier: ^3.4.0
     jest: ^27.5.1
     jest-it-up: ^2.0.0
+    memfs: ^3.4.7
     prettier: ^2.3.2
     prettier-plugin-packagejson: ^2.2.11
     rimraf: ^3.0.2
@@ -5593,7 +5595,6 @@ __metadata:
     eslint-plugin-node: ^11.1.0
     eslint-plugin-prettier: ^3.4.0
     gulp: ^4.0.2
-    gulp-exec: ^5.0.0
     prettier: ^2.3.2
     prettier-plugin-packagejson: ^2.2.11
     ts-node: ^10.7.0
@@ -9609,16 +9610,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"gulp-exec@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "gulp-exec@npm:5.0.0"
-  dependencies:
-    plugin-error: ^1.0.1
-    through2: ^3.0.1
-  checksum: c27577aa7b9f43a3fad9e3a8c0e0335f898ac3a93bc599a24d47e2e6f88addde6c260177de47ddda2c6031aa5bdb586012cec33ff467882dc1bdb1f773b6546d
-  languageName: node
-  linkType: hard
-
 "gulp@npm:^4.0.2":
   version: 4.0.2
   resolution: "gulp@npm:4.0.2"
@@ -9825,13 +9816,6 @@ __metadata:
   dependencies:
     parse-passwd: ^1.0.0
   checksum: 18dd4db87052c6a2179d1813adea0c4bfcfa4f9996f0e226fefb29eb3d548e564350fa28ec46b0bf1fbc0a1d2d6922ceceb80093115ea45ff8842a4990139250
-  languageName: node
-  linkType: hard
-
-"hook-shell-script-webpack-plugin@npm:^0.1.4":
-  version: 0.1.4
-  resolution: "hook-shell-script-webpack-plugin@npm:0.1.4"
-  checksum: 880115222c8ad047464f0b49b04d56fe2b806f6c907b1f3ac0ad114ea5365a420db188ac0f9f1b21b0844273c570b6671a35e1b33513db9579831ee8c8358a58
   languageName: node
   linkType: hard
 
@@ -13782,18 +13766,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"plugin-error@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "plugin-error@npm:1.0.1"
-  dependencies:
-    ansi-colors: ^1.0.1
-    arr-diff: ^4.0.0
-    arr-union: ^3.1.0
-    extend-shallow: ^3.0.2
-  checksum: 5cacd34372b909f07125829c2876707f4add64dcdf0dd8bd23d7ceac70eeb961c038a9707a998cc498bf8d478cc81f8d85b82584313926fe61a8fa294f79f3e4
-  languageName: node
-  linkType: hard
-
 "posix-character-classes@npm:^0.1.0":
   version: 0.1.1
   resolution: "posix-character-classes@npm:0.1.1"
@@ -14239,17 +14211,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"readable-stream@npm:2 || 3, readable-stream@npm:3, readable-stream@npm:^3.0.2, readable-stream@npm:^3.1.1, readable-stream@npm:^3.4.0, readable-stream@npm:^3.5.0, readable-stream@npm:^3.6.0":
-  version: 3.6.0
-  resolution: "readable-stream@npm:3.6.0"
-  dependencies:
-    inherits: ^2.0.3
-    string_decoder: ^1.1.1
-    util-deprecate: ^1.0.1
-  checksum: d4ea81502d3799439bb955a3a5d1d808592cf3133350ed352aeaa499647858b27b1c4013984900238b0873ec8d0d8defce72469fb7a83e61d53f5ad61cb80dc8
-  languageName: node
-  linkType: hard
-
 "readable-stream@npm:2.3.3":
   version: 2.3.3
   resolution: "readable-stream@npm:2.3.3"
@@ -14262,6 +14223,17 @@ __metadata:
     string_decoder: ~1.0.3
     util-deprecate: ~1.0.1
   checksum: 76f9863065d7edc14abd78e68784048487e83a4b6908336ba3eacb5e9544d642ad60836f91fab16e1dc6ad9e493dfe6c2e5b65f370ec65454d415efa50361a76
+  languageName: node
+  linkType: hard
+
+"readable-stream@npm:3, readable-stream@npm:^3.0.2, readable-stream@npm:^3.1.1, readable-stream@npm:^3.4.0, readable-stream@npm:^3.5.0, readable-stream@npm:^3.6.0":
+  version: 3.6.0
+  resolution: "readable-stream@npm:3.6.0"
+  dependencies:
+    inherits: ^2.0.3
+    string_decoder: ^1.1.1
+    util-deprecate: ^1.0.1
+  checksum: d4ea81502d3799439bb955a3a5d1d808592cf3133350ed352aeaa499647858b27b1c4013984900238b0873ec8d0d8defce72469fb7a83e61d53f5ad61cb80dc8
   languageName: node
   linkType: hard
 
@@ -14745,13 +14717,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rollup-plugin-execute@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "rollup-plugin-execute@npm:1.1.1"
-  checksum: c31e8e7eb9d9321d6ccc87278128a0e7603a4552550a9e7509cc08e3109e98fe2750c9e6266e14cc922c0e17c42bbddb34bf2611f39087449215a1fa694a6878
-  languageName: node
-  linkType: hard
-
 "rollup-snap@workspace:packages/examples/examples/rollup":
   version: 0.0.0-use.local
   resolution: "rollup-snap@workspace:packages/examples/examples/rollup"
@@ -14781,7 +14746,6 @@ __metadata:
     prettier-plugin-packagejson: ^2.2.11
     rimraf: ^3.0.2
     rollup: ^2.73.0
-    rollup-plugin-execute: ^1.1.1
     tslib: ^2.4.0
     typescript: ^4.4.0
   languageName: unknown
@@ -16105,16 +16069,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"through2@npm:^3.0.1":
-  version: 3.0.2
-  resolution: "through2@npm:3.0.2"
-  dependencies:
-    inherits: ^2.0.4
-    readable-stream: 2 || 3
-  checksum: 47c9586c735e7d9cbbc1029f3ff422108212f7cc42e06d5cc9fff7901e659c948143c790e0d0d41b1b5f89f1d1200bdd200c7b72ad34f42f9edbeb32ea49e8b7
-  languageName: node
-  linkType: hard
-
 "through2@npm:^4.0.2":
   version: 4.0.2
   resolution: "through2@npm:4.0.2"
@@ -17340,7 +17294,6 @@ __metadata:
     eslint-plugin-jsdoc: ^36.1.0
     eslint-plugin-node: ^11.1.0
     eslint-plugin-prettier: ^3.4.0
-    hook-shell-script-webpack-plugin: ^0.1.4
     html-webpack-plugin: ^5.5.0
     prettier: ^2.3.2
     prettier-plugin-packagejson: ^2.2.11

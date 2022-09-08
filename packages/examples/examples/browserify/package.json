@@ -46,7 +46,6 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.4.0",
     "gulp": "^4.0.2",
-    "gulp-exec": "^5.0.0",
     "prettier": "^2.3.2",
     "prettier-plugin-packagejson": "^2.2.11",
     "ts-node": "^10.7.0",

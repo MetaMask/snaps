@@ -51,12 +51,14 @@ export type CheckManifestResult = {
  *
  * @param basePath - The path to the folder with the manifest files.
  * @param writeManifest - Whether to write the fixed manifest to disk.
+ * @param sourceCode - The source code of the Snap.
  * @returns Whether the manifest was updated, and an array of warnings that
  * were encountered during processing of the manifest files.
  */
 export async function checkManifest(
   basePath: string,
   writeManifest = true,
+  sourceCode?: string,
 ): Promise<CheckManifestResult> {
   const warnings: string[] = [];
   const errors: string[] = [];
@@ -79,7 +81,8 @@ export async function checkManifest(
   const snapFiles: UnvalidatedSnapFiles = {
     manifest: unvalidatedManifest,
     packageJson: await readSnapJsonFile(basePath, NpmSnapFileNames.PackageJson),
-    sourceCode: await getSnapSourceCode(basePath, unvalidatedManifest),
+    sourceCode:
+      sourceCode ?? (await getSnapSourceCode(basePath, unvalidatedManifest)),
     svgIcon:
       iconPath &&
       (await fs.readFile(pathUtils.join(basePath, iconPath), 'utf8')),

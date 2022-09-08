@@ -1,5 +1,5 @@
 import browserify, { BrowserifyObject } from 'browserify';
-import plugin from '@metamask/snaps-browserify-plugin';
+import plugin, { Options } from '@metamask/snaps-browserify-plugin';
 import { TranspilationModes } from '../../builders';
 import { YargsArgs } from '../../types/yargs';
 import { processDependencies, writeBundleFile } from './utils';
@@ -67,8 +67,10 @@ export function bundle(
 
     bundlerTransform?.(bundler);
 
-    bundler.plugin(plugin, {
+    bundler.plugin<Options>(plugin, {
       stripComments: argv.stripComments,
+      manifestPath: undefined,
+      eval: false,
     });
 
     bundler.bundle(
