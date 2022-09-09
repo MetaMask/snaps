@@ -15,6 +15,7 @@
       "require": "./dist/test-utils/index.js"
     }
   },
+  "main": "dist/index.js",
   "typesVersions": {
     "*": {
       "*": [
