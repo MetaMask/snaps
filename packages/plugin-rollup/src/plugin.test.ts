@@ -1,9 +1,13 @@
 import { promises as fs } from 'fs';
 import virtual, { RollupVirtualOptions } from '@rollup/plugin-virtual';
 import { OutputOptions, rollup, RollupOutput } from 'rollup';
-import { checkManifest, evalBundle } from '@metamask/snap-utils';
+import {
+  checkManifest,
+  evalBundle,
+  DEFAULT_SNAP_BUNDLE,
+  getSnapManifest,
+} from '@metamask/snap-utils';
 import snaps, { Options } from './plugin';
-import { DEFAULT_SNAP_BUNDLE, getSnapManifest } from './__test__';
 
 jest.mock('fs');
 
