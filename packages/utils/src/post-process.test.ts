@@ -51,12 +51,12 @@ describe('postProcessBundle', () => {
 
     const processedCode = postProcessBundle(code);
     expect(processedCode).toMatchInlineSnapshot(`
-      Object {
+      {
         "code": "(1, eval)(bar);
       (1, foo.eval)(bar, baz);
       (1, foo.bar.eval)(baz, qux);
-      (1, eval)(\\"<!\\" + \\"--\\" + \\" foo \\" + \\"--\\" + \\">\\");
-      (1, foo.eval)(\\"<!\\" + \\"--\\" + \\" bar \\" + \\"--\\" + \\">\\");",
+      (1, eval)("<!" + "--" + " foo " + "--" + ">");
+      (1, foo.eval)("<!" + "--" + " bar " + "--" + ">");",
         "sourceMap": null,
       }
     `);
@@ -75,7 +75,7 @@ describe('postProcessBundle', () => {
 
     const processedCode = postProcessBundle(code);
     expect(processedCode).toMatchInlineSnapshot(`
-      Object {
+      {
         "code": "(function (foo) {
         const bar = 'baz';
       });
@@ -101,7 +101,7 @@ describe('postProcessBundle', () => {
 
     const processedCode = postProcessBundle(code);
     expect(processedCode).toMatchInlineSnapshot(`
-      Object {
+      {
         "code": "var regeneratorRuntime;
 
       function foo() {
@@ -119,7 +119,7 @@ describe('postProcessBundle', () => {
   it('inserts the regenerator runtime global when used indirectly', () => {
     expect(postProcessBundle('var _marked = [a].map(regeneratorRuntime.mark);'))
       .toMatchInlineSnapshot(`
-      Object {
+      {
         "code": "var regeneratorRuntime;
 
       var _marked = [a].map(regeneratorRuntime.mark);",
@@ -135,7 +135,7 @@ describe('postProcessBundle', () => {
 
     const processedCode = postProcessBundle(code);
     expect(processedCode).toMatchInlineSnapshot(`
-      Object {
+      {
         "code": "const foo = 'regeneratorRuntime';",
         "sourceMap": null,
       }
@@ -149,8 +149,8 @@ describe('postProcessBundle', () => {
 
     const processedCode = postProcessBundle(code);
     expect(processedCode).toMatchInlineSnapshot(`
-      Object {
-        "code": "const foo = \\"<!\\" + \\"--\\" + \\" bar \\" + \\"--\\" + \\">\\";",
+      {
+        "code": "const foo = "<!" + "--" + " bar " + "--" + ">";",
         "sourceMap": null,
       }
     `);
@@ -164,9 +164,9 @@ describe('postProcessBundle', () => {
 
     const processedCode = postProcessBundle(code);
     expect(processedCode).toMatchInlineSnapshot(`
-      Object {
-        "code": "const foo = \\"foo bar \\" + \\"import\\" + \\"()\\" + \\" baz\\";
-      const bar = \\"foo bar \\" + \\"import\\" + \\"(this works too)\\" + \\" baz\\";",
+      {
+        "code": "const foo = "foo bar " + "import" + "()" + " baz";
+      const bar = "foo bar " + "import" + "(this works too)" + " baz";",
         "sourceMap": null,
       }
     `);
@@ -179,8 +179,8 @@ describe('postProcessBundle', () => {
 
     const processedCode = postProcessBundle(code);
     expect(processedCode).toMatchInlineSnapshot(`
-      Object {
-        "code": "const foo = \`\${\\"<!\\"}\${\\"--\\"} bar \${\\"--\\"}\${\\">\\"} \${\\"<!\\" + \\"--\\" + \\" baz \\" + \\"--\\" + \\">\\"} \${qux}\`;",
+      {
+        "code": "const foo = \`\${"<!"}\${"--"} bar \${"--"}\${">"} \${"<!" + "--" + " baz " + "--" + ">"} \${qux}\`;",
         "sourceMap": null,
       }
     `);
@@ -197,11 +197,11 @@ describe('postProcessBundle', () => {
 
     const processedCode = postProcessBundle(code);
     expect(processedCode).toMatchInlineSnapshot(`
-      Object {
-        "code": "const foo = \`foo bar \${\\"import\\"}\${\\"()\\"} baz\`;
-      const bar = \`foo bar \${\\"import\\"}\${\\"(this works too)\\"} baz\`;
+      {
+        "code": "const foo = \`foo bar \${"import"}\${"()"} baz\`;
+      const bar = \`foo bar \${"import"}\${"(this works too)"} baz\`;
       foo\`
-              foo \${\\"import\\"}\${\\"()\\"} \${\\"import\\" + \\"(bar)\\"} \${qux}      \`;",
+              foo \${"import"}\${"()"} \${"import" + "(bar)"} \${qux}      \`;",
         "sourceMap": null,
       }
     `);
@@ -214,7 +214,7 @@ describe('postProcessBundle', () => {
 
     const processedCode = postProcessBundle(code, { stripComments: false });
     expect(processedCode).toMatchInlineSnapshot(`
-      Object {
+      {
         "code": "// < !-- foo -- >",
         "sourceMap": null,
       }
@@ -229,9 +229,9 @@ describe('postProcessBundle', () => {
 
     const processedCode = postProcessBundle(code, { stripComments: false });
     expect(processedCode).toMatchInlineSnapshot(`
-      Object {
-        "code": "// Foo bar import\\\\() baz
-      // Foo bar import\\\\(baz) qux",
+      {
+        "code": "// Foo bar import\\() baz
+      // Foo bar import\\(baz) qux",
         "sourceMap": null,
       }
     `);
@@ -244,7 +244,7 @@ describe('postProcessBundle', () => {
 
     const processedCode = postProcessBundle(code);
     expect(processedCode).toMatchInlineSnapshot(`
-      Object {
+      {
         "code": "const foo = '';",
         "sourceMap": null,
       }
@@ -260,7 +260,7 @@ describe('postProcessBundle', () => {
 
     const processedCode = postProcessBundle(code);
     expect(processedCode).toMatchInlineSnapshot(`
-      Object {
+      {
         "code": "const empty = '';
       const foo = 'foo';
       const bar = \`bar\${foo}\`;",
@@ -275,8 +275,8 @@ describe('postProcessBundle', () => {
 
     const processedCode = postProcessBundle(code);
     expect(processedCode).toMatchInlineSnapshot(`
-      Object {
-        "code": "const foo = \`\${\\"<!\\"}\${\\"--\\"} \\\\\` \${foo} \\\\\` \${\\"--\\"}\${\\">\\"}\`;",
+      {
+        "code": "const foo = \`\${"<!"}\${"--"} \\\` \${foo} \\\` \${"--"}\${">"}\`;",
         "sourceMap": null,
       }
     `);
@@ -309,13 +309,13 @@ describe('postProcessBundle', () => {
 
     const processedCode = postProcessBundle(code);
     expect(processedCode).toMatchInlineSnapshot(`
-      Object {
+      {
         "code": "var regeneratorRuntime;
 
       (function (foo) {
-        const bar = \\"<!\\" + \\"--\\" + \\" baz \\" + \\"--\\" + \\">\\" + \\" \\" + \\"import\\" + \\"()\\" + \\"; \\" + \\"import\\" + \\"(foo)\\" + \\";\\";
-        const baz = \`\${\\"<!\\"}\${\\"--\\"} baz \${\\"--\\"}\${\\">\\"} \${\\"import\\" + \\"()\\" + \\";\\"} \${\\"import\\"}\${\\"(foo)\\"};\`;
-        regeneratorRuntime.foo(\\"import\\" + \\"()\\");
+        const bar = "<!" + "--" + " baz " + "--" + ">" + " " + "import" + "()" + "; " + "import" + "(foo)" + ";";
+        const baz = \`\${"<!"}\${"--"} baz \${"--"}\${">"} \${"import" + "()" + ";"} \${"import"}\${"(foo)"};\`;
+        regeneratorRuntime.foo("import" + "()");
         (1, eval)(foo);
         (1, foo.eval)('bar');
       });",
@@ -343,19 +343,19 @@ describe('postProcessBundle', () => {
     });
 
     expect(processedCode).toMatchInlineSnapshot(`
-      Object {
+      {
         "code": "const foo = 'bar';",
-        "sourceMap": Object {
+        "sourceMap": {
           "file": undefined,
           "mappings": "AACM,MAAMA,GAAG,GAAG,KAAZ",
-          "names": Array [
+          "names": [
             "foo",
           ],
           "sourceRoot": undefined,
-          "sources": Array [
+          "sources": [
             "unknown",
           ],
-          "sourcesContent": Array [
+          "sourcesContent": [
             "
             const foo = 'bar';
           ",
@@ -376,7 +376,7 @@ describe('postProcessBundle', () => {
     });
 
     expect(processedCode).toMatchInlineSnapshot(`
-      Object {
+      {
         "code": "const foo = 'bar';
       //# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJmb28iXSwic291cmNlcyI6WyJ1bmtub3duIl0sInNvdXJjZXNDb250ZW50IjpbIlxuICAgICAgY29uc3QgZm9vID0gJ2Jhcic7XG4gICAgIl0sIm1hcHBpbmdzIjoiQUFDTSxNQUFNQSxHQUFHLEdBQUcsS0FBWiJ9",
         "sourceMap": null,
@@ -408,26 +408,26 @@ describe('postProcessBundle', () => {
     });
 
     expect(processedCode).toMatchInlineSnapshot(`
-      Object {
-        "code": "\\"use strict\\";
+      {
+        "code": ""use strict";
 
-      Object.defineProperty(exports, \\"__esModule\\", {
+      Object.defineProperty(exports, "__esModule", {
         value: true
       });
       exports.foo = void 0;
       exports.foo = 'bar';",
-        "sourceMap": Object {
+        "sourceMap": {
           "file": undefined,
           "mappings": ";;;;;AAAaA,OAAG,CAAGC,GAAN,GAAY,MAAZ",
-          "names": Array [
+          "names": [
             "exports",
             "foo",
           ],
           "sourceRoot": "",
-          "sources": Array [
+          "sources": [
             "../src/foo.ts",
           ],
-          "sourcesContent": Array [
+          "sourcesContent": [
             null,
           ],
           "version": 3,

@@ -5,10 +5,9 @@ import initPackageJson from 'init-package-json';
 import mkdirp from 'mkdirp';
 import { Arguments } from 'yargs';
 import {
-  FakeFsError,
   getPackageJson,
   getSnapManifest,
-} from '../../../test/utils';
+} from '@metamask/snap-utils/test-utils';
 import { YargsArgs } from '../../types/yargs';
 // We have to import utils separately or else we run into trouble with our mocks
 import * as miscUtils from '../../utils/misc';
@@ -20,6 +19,19 @@ import {
   correctDefaultArgs,
   prepareWorkingDirectory,
 } from './initUtils';
+
+/**
+ * A fake Node.js file system error.
+ * Basically, {@link Error} but with a `code` property.
+ */
+class FakeFsError extends Error {
+  code: string;
+
+  constructor(message: string, code: string) {
+    super(message);
+    this.code = code;
+  }
+}
 
 jest.mock('fs', () => ({
   ...jest.requireActual('fs'),

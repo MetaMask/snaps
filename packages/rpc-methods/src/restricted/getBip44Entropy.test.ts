@@ -229,7 +229,7 @@ describe('getBip44EntropyImplementation', () => {
           params: { coinType: 1 },
         }),
       ).toMatchInlineSnapshot(`
-        Object {
+        {
           "chainCode": "50ccfa58a885b48b5eed09486b3948e8454f34856fb81da5d7b8519d7997abd1",
           "coin_type": 1,
           "depth": 2,

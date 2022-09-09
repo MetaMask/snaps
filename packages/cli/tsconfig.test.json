@@ -1,8 +1,0 @@
-{
-  "extends": "./tsconfig.local.json",
-  "compilerOptions": {
-    "rootDir": "."
-  },
-  "include": ["./src/**/*.ts", "./src/**/*.json", "./test/utils.ts"],
-  "exclude": ["./node_modules"]
-}

@@ -14,11 +14,6 @@ module.exports = {
       statements: 93.89,
     },
   },
-  globals: {
-    'ts-jest': {
-      tsconfig: 'tsconfig.test.json',
-    },
-  },
   projects: [
     {
       preset: 'ts-jest',

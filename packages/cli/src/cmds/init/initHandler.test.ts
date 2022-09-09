@@ -6,7 +6,10 @@ import {
 } from '@metamask/snap-utils';
 import mkdirp from 'mkdirp';
 import * as snapUtils from '@metamask/snap-utils';
-import { getPackageJson, getSnapManifest } from '../../../test/utils';
+import {
+  getPackageJson,
+  getSnapManifest,
+} from '@metamask/snap-utils/test-utils';
 import * as miscUtils from '../../utils/misc';
 import * as readlineUtils from '../../utils/readline';
 import { TemplateType } from '../../builders';
