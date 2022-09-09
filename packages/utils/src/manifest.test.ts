@@ -18,7 +18,7 @@ import {
   DEFAULT_SNAP_SHASUM,
   getPackageJson,
   getSnapManifest,
-} from './__test__';
+} from './test-utils';
 import { SnapManifest } from './json-schemas';
 import { ProgrammaticallyFixableSnapError } from './snaps';
 import * as npm from './npm';

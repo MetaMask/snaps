@@ -10,6 +10,7 @@ export * from './npm';
 export * from './object';
 export * from './post-process';
 export * from './snaps';
+export * from './test-utils';
 export * from './types';
 export * from './url';
 export * from './versions';

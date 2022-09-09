@@ -1,4 +1,6 @@
 import { NpmSnapPackageJson, SnapManifest } from '../json-schemas';
+import { DEFAULT_SNAP_SHASUM } from './snap';
+import { PartialOrNull } from './types';
 
 type GetSnapManifestOptions = Partial<Omit<SnapManifest, 'source'>> & {
   shasum?: string;
@@ -7,18 +9,6 @@ type GetSnapManifestOptions = Partial<Omit<SnapManifest, 'source'>> & {
   registry?: string;
   iconPath?: string;
 };
-
-// A fake Snap source and its shasum.
-export const DEFAULT_SNAP_BUNDLE = `
-  module.exports.onRpcRequest = () => {
-    console.log("Hello, world!");
-  };
-`;
-
-export const DEFAULT_SNAP_SHASUM =
-  '7M36IIyPfcCA9jTuoo6lXCYSN97mcJWxC+MGAo1xRL4=';
-
-export const DEFAULT_SNAP_ICON = '<svg />';
 
 /**
  * Get the default package repository, in a format compatible with
@@ -81,8 +71,6 @@ export const getSnapManifest = ({
     manifestVersion: '0.1' as const,
   };
 };
-
-type PartialOrNull<T> = { [P in keyof T]?: T[P] | undefined | null };
 
 /**
  * Get a mock `package.json`, based on the provided options. This is useful for

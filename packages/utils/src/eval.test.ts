@@ -1,7 +1,7 @@
 import { join } from 'path';
 import { promises as fs } from 'fs';
 import childProcess from 'child_process';
-import { DEFAULT_SNAP_BUNDLE } from './__test__';
+import { DEFAULT_SNAP_BUNDLE } from './test-utils';
 import { evalBundle } from './eval';
 
 const WORKER_PATH = join(__dirname, 'eval-worker.ts');
