@@ -28,6 +28,7 @@ import { removeEventListener, addEventListener } from './globalEvents';
 import { sortParamKeys } from './sortParams';
 import { constructError, withTeardown } from './utils';
 import { wrapKeyring } from './keyring';
+import { validateExport } from './validation';
 
 type EvaluationData = {
   stop: () => void;
@@ -277,10 +278,13 @@ export class BaseSnapExecutor {
     }
 
     SNAP_EXPORT_NAMES.forEach((exportName) => {
-      data.exports = {
-        ...data.exports,
-        [exportName]: snapModule.exports[exportName],
-      };
+      const snapExport = snapModule.exports[exportName];
+      if (validateExport(exportName, snapExport)) {
+        data.exports = {
+          ...data.exports,
+          [exportName]: snapExport,
+        };
+      }
     });
   }
 
