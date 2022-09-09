@@ -1,5 +1,6 @@
-import { isCaipChainId, validateSnapId } from './snaps';
+import { getSnapSourceShasum, isCaipChainId, validateSnapId } from './snaps';
 import { SnapIdPrefixes } from './types';
+import { DEFAULT_SNAP_BUNDLE, DEFAULT_SNAP_SHASUM } from './__test__';
 
 describe('validateSnapId', () => {
   it.each([undefined, {}, null, true, 2])('throws for non-strings', (value) => {
@@ -37,5 +38,15 @@ describe('isCaipChainId', () => {
     'cosmos:cosmoshub-2',
   ])('returns true for valid IDs', (value) => {
     expect(isCaipChainId(value)).toBe(true);
+  });
+});
+
+describe('getSnapSourceShasum', () => {
+  it('supports both strings and buffers', () => {
+    const stringShasum = getSnapSourceShasum(DEFAULT_SNAP_BUNDLE);
+    expect(stringShasum).toBe(DEFAULT_SNAP_SHASUM);
+    expect(getSnapSourceShasum(Buffer.from(DEFAULT_SNAP_BUNDLE))).toBe(
+      stringShasum,
+    );
   });
 });
