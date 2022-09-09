@@ -85,7 +85,7 @@ export type Snap = {
   /**
    * The source code of the Snap.
    */
-  sourceCode: string;
+  sourceCode: ArrayBuffer;
 
   /**
    * The current status of the Snap, e.g. whether it's running or stopped.
@@ -141,9 +141,12 @@ export class ProgrammaticallyFixableSnapError extends Error {
  * @param sourceCode - The source code of a Snap as a UTF-8 string or Buffer.
  * @returns The Base64-encoded SHA-256 digest of the source code.
  */
-export function getSnapSourceShasum(sourceCode: string | Buffer): string {
-  const sourceCodeBuffer =
-    typeof sourceCode === 'string' ? Buffer.from(sourceCode) : sourceCode;
+export function getSnapSourceShasum(
+  sourceCode: string | ArrayBuffer | Buffer,
+): string {
+  const sourceCodeBuffer = Buffer.isBuffer(sourceCode)
+    ? sourceCode
+    : Buffer.from(sourceCode as any);
   return createHash('sha256').update(sourceCodeBuffer).digest('base64');
 }
 
@@ -159,7 +162,7 @@ export type ValidatedSnapId = `local:${string}` | `npm:${string}`;
  */
 export function validateSnapShasum(
   manifest: SnapManifest,
-  sourceCode: string | Buffer,
+  sourceCode: string | ArrayBuffer | Buffer,
   errorMessage = 'Invalid Snap manifest: manifest shasum does not match computed shasum.',
 ): void {
   if (manifest.source.shasum !== getSnapSourceShasum(sourceCode)) {

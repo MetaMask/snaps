@@ -8,7 +8,7 @@ import { NpmSnapPackageJson, SnapManifest } from './json-schemas';
 export type UnvalidatedSnapFiles = {
   manifest?: Json;
   packageJson?: Json;
-  sourceCode?: string;
+  sourceCode?: ArrayBuffer;
   svgIcon?: string;
 };
 
@@ -19,7 +19,7 @@ export type UnvalidatedSnapFiles = {
 export type SnapFiles = {
   manifest: SnapManifest;
   packageJson: NpmSnapPackageJson;
-  sourceCode: string;
+  sourceCode: ArrayBuffer;
   svgIcon?: string;
 };
 

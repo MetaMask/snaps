@@ -46,7 +46,7 @@
           "required": true,
           "schema": {
             "title": "SourceCode",
-            "type": "string"
+            "type": "object"
           }
         },
         {

@@ -97,7 +97,7 @@ export default class SnapsWebpackPlugin {
           const { errors, warnings } = await checkManifest(
             pathUtils.dirname(this.options.manifestPath),
             this.options.writeManifest,
-            content.toString('utf-8'),
+            content,
           );
 
           if (!this.options.writeManifest && errors.length > 0) {

@@ -44,7 +44,7 @@ async function postBundle(options: Partial<Options>, code: string) {
     const { errors, warnings } = await checkManifest(
       pathUtils.dirname(options.manifestPath),
       options.writeManifest,
-      code,
+      Buffer.from(code),
     );
 
     if (!options.writeManifest && errors.length > 0) {

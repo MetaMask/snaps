@@ -119,7 +119,7 @@ export function validateNpmSnapManifest({
   manifest,
   packageJson,
   sourceCode,
-}: SnapFiles): [SnapManifest, string, NpmSnapPackageJson] {
+}: SnapFiles): [SnapManifest, ArrayBuffer, NpmSnapPackageJson] {
   const packageJsonName = packageJson.name;
   const packageJsonVersion = packageJson.version;
   const packageJsonRepository = packageJson.repository;

@@ -58,7 +58,7 @@ export type CheckManifestResult = {
 export async function checkManifest(
   basePath: string,
   writeManifest = true,
-  sourceCode?: string,
+  sourceCode?: Buffer,
 ): Promise<CheckManifestResult> {
   const warnings: string[] = [];
   const errors: string[] = [];
@@ -238,14 +238,14 @@ export function fixManifest(
 export async function getSnapSourceCode(
   basePath: string,
   manifest: Json,
-): Promise<string | undefined> {
+): Promise<Buffer | undefined> {
   if (manifest && typeof manifest === 'object' && !Array.isArray(manifest)) {
     const sourceFilePath = (manifest as Partial<SnapManifest>).source?.location
       ?.npm?.filePath;
 
     try {
       return sourceFilePath
-        ? await fs.readFile(pathUtils.join(basePath, sourceFilePath), 'utf8')
+        ? await fs.readFile(pathUtils.join(basePath, sourceFilePath))
         : undefined;
     } catch (error) {
       throw new Error(`Failed to read Snap bundle file: ${error.message}`);

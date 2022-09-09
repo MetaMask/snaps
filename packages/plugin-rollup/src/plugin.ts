@@ -69,7 +69,7 @@ export default function snaps(options?: Partial<Options>): Plugin {
         const { errors, warnings } = await checkManifest(
           pathUtils.dirname(defaultOptions.manifestPath),
           defaultOptions.writeManifest,
-          await fs.readFile(output.file, 'utf8'),
+          await fs.readFile(output.file),
         );
 
         if (!defaultOptions.writeManifest && errors.length > 0) {

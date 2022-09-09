@@ -157,7 +157,7 @@ type FetchSnapResult = {
   /**
    * The source code of the fetched Snap.
    */
-  sourceCode: string;
+  sourceCode: ArrayBuffer;
 
   /**
    * The raw XML content of the Snap's SVG icon, if any.
@@ -507,7 +507,7 @@ type AddSnapArgs =
   | AddSnapArgsBase
   | (AddSnapArgsBase & {
       manifest: SnapManifest;
-      sourceCode: string;
+      sourceCode: ArrayBuffer;
     });
 
 // When we set a snap, we need all required properties to be present and
@@ -515,7 +515,7 @@ type AddSnapArgs =
 type SetSnapArgs = Omit<AddSnapArgs, 'id'> & {
   id: ValidatedSnapId;
   manifest: SnapManifest;
-  sourceCode: string;
+  sourceCode: ArrayBuffer;
   svgIcon?: string;
 };
 
@@ -1706,7 +1706,10 @@ export class SnapController extends BaseController<
     }
   }
 
-  private async _startSnap(snapData: { snapId: string; sourceCode: string }) {
+  private async _startSnap(snapData: {
+    snapId: string;
+    sourceCode: ArrayBuffer;
+  }) {
     const { snapId } = snapData;
     if (this.isRunning(snapId)) {
       throw new Error(`Snap "${snapId}" is already started.`);
@@ -1820,7 +1823,7 @@ export class SnapController extends BaseController<
       );
     }
 
-    if (typeof sourceCode !== 'string' || sourceCode.length === 0) {
+    if (!(sourceCode instanceof ArrayBuffer) || sourceCode.byteLength === 0) {
       throw new Error(`Invalid source code for snap "${snapId}".`);
     }
 
@@ -1986,7 +1989,7 @@ export class SnapController extends BaseController<
     validateSnapShasum(manifest, sourceCodeBuffer);
     return {
       manifest,
-      sourceCode: new TextDecoder('utf8').decode(sourceCode),
+      sourceCode,
       svgIcon,
     };
   }

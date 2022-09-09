@@ -187,7 +187,7 @@ export class BaseSnapExecutor {
    */
   protected async startSnap(
     snapName: string,
-    sourceCode: string,
+    sourceCode: ArrayBuffer,
     _endowments?: Endowments,
   ): Promise<void> {
     console.log(`starting snap '${snapName}' in worker`);
@@ -238,8 +238,10 @@ export class BaseSnapExecutor {
         self: { ...endowments },
       });
 
+      const sourceCodeString = new TextDecoder('utf8').decode(sourceCode);
+
       await this.executeInSnapContext(snapName, () => {
-        compartment.evaluate(sourceCode);
+        compartment.evaluate(sourceCodeString);
         this.registerSnapExports(snapName, snapModule);
       });
     } catch (err) {

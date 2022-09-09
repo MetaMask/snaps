@@ -21,7 +21,7 @@ export interface ExecutionService {
 
 export type SnapExecutionData = {
   snapId: string;
-  sourceCode: string;
+  sourceCode: ArrayBuffer;
   endowments?: Json;
 };
 

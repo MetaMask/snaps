@@ -130,7 +130,7 @@ export function createTarballExtractionStream(
       const iconPath = stripDotSlash(_iconPath);
 
       if (bundlePath) {
-        snapFiles.sourceCode = jsFileCache.get(bundlePath)?.toString('utf8');
+        snapFiles.sourceCode = jsFileCache.get(bundlePath);
       }
 
       if (typeof iconPath === 'string' && iconPath.endsWith('.svg')) {

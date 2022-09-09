@@ -89,17 +89,13 @@ export function getCommandMethodImplementations(
         throw new Error('snapName is not a string');
       }
 
-      if (typeof sourceCode !== 'string') {
-        throw new Error('sourceCode is not a string');
-      }
-
       if (endowments !== undefined) {
         if (!isEndowments(endowments)) {
           throw new Error('endowment is not a proper Endowments object');
         }
       }
 
-      await startSnap(snapName as string, sourceCode as string, endowments);
+      await startSnap(snapName, sourceCode, endowments);
       return 'OK';
     },
 
