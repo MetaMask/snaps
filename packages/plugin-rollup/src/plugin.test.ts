@@ -2,11 +2,10 @@ import { promises as fs } from 'fs';
 import virtual, { RollupVirtualOptions } from '@rollup/plugin-virtual';
 import { OutputOptions, rollup, RollupOutput } from 'rollup';
 import {
-  checkManifest,
-  evalBundle,
   DEFAULT_SNAP_BUNDLE,
   getSnapManifest,
-} from '@metamask/snap-utils';
+} from '@metamask/snap-utils/test-utils';
+import { checkManifest, evalBundle } from '@metamask/snap-utils';
 import snaps, { Options } from './plugin';
 
 jest.mock('fs');
@@ -61,7 +60,7 @@ describe('snaps', () => {
     const { code } = output[0];
     expect(code).toMatchInlineSnapshot(`
       "module.exports.onRpcRequest = () => {
-        console.log(\\"Hello, world!\\");
+        console.log("Hello, world!");
       };
       "
     `);
@@ -154,20 +153,20 @@ describe('snaps', () => {
       SourceMap {
         "file": "source-map.js",
         "mappings": "AACEA,MAAM,CAACC,OAAP,CAAeC,YAAf,GAA8B,MAAM;EAClCC,OAAO,CAACC,GAAR,CAAY,eAAZ;AACD,CAFD",
-        "names": Array [
+        "names": [
           "module",
           "exports",
           "onRpcRequest",
           "console",
           "log",
         ],
-        "sources": Array [
+        "sources": [
           "../../../../../../../source-map.ts",
         ],
-        "sourcesContent": Array [
+        "sourcesContent": [
           "
         module.exports.onRpcRequest = () => {
-          console.log(\\"Hello, world!\\");
+          console.log("Hello, world!");
         };
       ",
         ],

@@ -6,11 +6,11 @@ exports[`plugin applies a transform 1`] = `
     function o(i, f) {
       if (!n[i]) {
         if (!e[i]) {
-          var c = \\"function\\" == typeof require && require;
+          var c = "function" == typeof require && require;
           if (!f && c) return c(i, !0);
           if (u) return u(i, !0);
-          var a = new Error(\\"Cannot find module '\\" + i + \\"'\\");
-          throw a.code = \\"MODULE_NOT_FOUND\\", a;
+          var a = new Error("Cannot find module '" + i + "'");
+          throw a.code = "MODULE_NOT_FOUND", a;
         }
 
         var p = n[i] = {
@@ -25,7 +25,7 @@ exports[`plugin applies a transform 1`] = `
       return n[i].exports;
     }
 
-    for (var u = \\"function\\" == typeof require && require, i = 0; i < t.length; i++) o(t[i]);
+    for (var u = "function" == typeof require && require, i = 0; i < t.length; i++) o(t[i]);
 
     return o;
   }
@@ -44,11 +44,11 @@ exports[`plugin forwards the options 1`] = `
     function o(i, f) {
       if (!n[i]) {
         if (!e[i]) {
-          var c = \\"function\\" == typeof require && require;
+          var c = "function" == typeof require && require;
           if (!f && c) return c(i, !0);
           if (u) return u(i, !0);
-          var a = new Error(\\"Cannot find module '\\" + i + \\"'\\");
-          throw a.code = \\"MODULE_NOT_FOUND\\", a;
+          var a = new Error("Cannot find module '" + i + "'");
+          throw a.code = "MODULE_NOT_FOUND", a;
         }
 
         var p = n[i] = {
@@ -63,7 +63,7 @@ exports[`plugin forwards the options 1`] = `
       return n[i].exports;
     }
 
-    for (var u = \\"function\\" == typeof require && require, i = 0; i < t.length; i++) o(t[i]);
+    for (var u = "function" == typeof require && require, i = 0; i < t.length; i++) o(t[i]);
 
     return o;
   }
@@ -85,11 +85,11 @@ exports[`plugin generates a source map 1`] = `
     function o(i, f) {
       if (!n[i]) {
         if (!e[i]) {
-          var c = \\"function\\" == typeof require && require;
+          var c = "function" == typeof require && require;
           if (!f && c) return c(i, !0);
           if (u) return u(i, !0);
-          var a = new Error(\\"Cannot find module '\\" + i + \\"'\\");
-          throw a.code = \\"MODULE_NOT_FOUND\\", a;
+          var a = new Error("Cannot find module '" + i + "'");
+          throw a.code = "MODULE_NOT_FOUND", a;
         }
 
         var p = n[i] = {
@@ -104,7 +104,7 @@ exports[`plugin generates a source map 1`] = `
       return n[i].exports;
     }
 
-    for (var u = \\"function\\" == typeof require && require, i = 0; i < t.length; i++) o(t[i]);
+    for (var u = "function" == typeof require && require, i = 0; i < t.length; i++) o(t[i]);
 
     return o;
   }
@@ -113,7 +113,7 @@ exports[`plugin generates a source map 1`] = `
 })()({
   1: [function (require, module, exports) {
     module.exports.onRpcRequest = () => {
-      console.log(\\"Hello, world!\\");
+      console.log("Hello, world!");
     };
   }, {}]
 }, {}, [1]);
@@ -126,11 +126,11 @@ exports[`plugin processes files using Browserify 1`] = `
     function o(i, f) {
       if (!n[i]) {
         if (!e[i]) {
-          var c = \\"function\\" == typeof require && require;
+          var c = "function" == typeof require && require;
           if (!f && c) return c(i, !0);
           if (u) return u(i, !0);
-          var a = new Error(\\"Cannot find module '\\" + i + \\"'\\");
-          throw a.code = \\"MODULE_NOT_FOUND\\", a;
+          var a = new Error("Cannot find module '" + i + "'");
+          throw a.code = "MODULE_NOT_FOUND", a;
         }
 
         var p = n[i] = {
@@ -145,7 +145,7 @@ exports[`plugin processes files using Browserify 1`] = `
       return n[i].exports;
     }
 
-    for (var u = \\"function\\" == typeof require && require, i = 0; i < t.length; i++) o(t[i]);
+    for (var u = "function" == typeof require && require, i = 0; i < t.length; i++) o(t[i]);
 
     return o;
   }
@@ -154,7 +154,7 @@ exports[`plugin processes files using Browserify 1`] = `
 })()({
   1: [function (require, module, exports) {
     module.exports.onRpcRequest = () => {
-      console.log(\\"Hello, world!\\");
+      console.log("Hello, world!");
     };
   }, {}]
 }, {}, [1]);"

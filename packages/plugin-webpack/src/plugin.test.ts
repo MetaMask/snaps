@@ -5,11 +5,10 @@ import webpack, { Stats, Configuration } from 'webpack';
 import { createFsFromVolume, IFs, Volume } from 'memfs';
 import { IPromisesAPI } from 'memfs/lib/promises';
 import {
-  checkManifest,
-  evalBundle,
   DEFAULT_SNAP_BUNDLE,
   getSnapManifest,
-} from '@metamask/snap-utils';
+} from '@metamask/snap-utils/test-utils';
+import { checkManifest, evalBundle } from '@metamask/snap-utils';
 import SnapsWebpackPlugin, { Options } from './plugin';
 
 jest.mock('@metamask/snap-utils', () => ({

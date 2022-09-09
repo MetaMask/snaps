@@ -7,11 +7,10 @@ import os from 'os';
 import browserify, { Options as BrowserifyOptions } from 'browserify';
 import concat from 'concat-stream';
 import {
-  checkManifest,
-  evalBundle,
   DEFAULT_SNAP_BUNDLE,
   getSnapManifest,
-} from '@metamask/snap-utils';
+} from '@metamask/snap-utils/test-utils';
+import { checkManifest, evalBundle } from '@metamask/snap-utils';
 import plugin, { Options, SnapsBrowserifyTransform } from './plugin';
 
 jest.mock('fs');

@@ -5,7 +5,26 @@
     "type": "git",
     "url": "https://github.com/MetaMask/snaps-skunkworks.git"
   },
-  "main": "dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    },
+    "./test-utils": {
+      "import": "./dist/test-utils/index.js",
+      "require": "./dist/test-utils/index.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "dist/index.d.ts"
+      ],
+      "test-utils": [
+        "dist/test-utils/index.d.ts"
+      ]
+    }
+  },
   "files": [
     "dist/"
   ],
