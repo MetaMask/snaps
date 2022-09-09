@@ -138,11 +138,13 @@ export class ProgrammaticallyFixableSnapError extends Error {
 /**
  * Calculates the Base64-encoded SHA-256 digest of a Snap source code string.
  *
- * @param sourceCode - The UTF-8 string source code of a Snap.
+ * @param sourceCode - The source code of a Snap as a UTF-8 string or Buffer.
  * @returns The Base64-encoded SHA-256 digest of the source code.
  */
-export function getSnapSourceShasum(sourceCode: string): string {
-  return createHash('sha256').update(sourceCode, 'utf8').digest('base64');
+export function getSnapSourceShasum(sourceCode: string | Buffer): string {
+  const sourceCodeBuffer =
+    typeof sourceCode === 'string' ? Buffer.from(sourceCode) : sourceCode;
+  return createHash('sha256').update(sourceCodeBuffer).digest('base64');
 }
 
 export type ValidatedSnapId = `local:${string}` | `npm:${string}`;
@@ -152,12 +154,12 @@ export type ValidatedSnapId = `local:${string}` | `npm:${string}`;
  * shasum of a snap source code string.
  *
  * @param manifest - The manifest whose shasum to validate.
- * @param sourceCode - The source code of the snap.
+ * @param sourceCode - The source code of the snap as a Buffer or string.
  * @param errorMessage - The error message to throw if validation fails.
  */
 export function validateSnapShasum(
   manifest: SnapManifest,
-  sourceCode: string,
+  sourceCode: string | Buffer,
   errorMessage = 'Invalid Snap manifest: manifest shasum does not match computed shasum.',
 ): void {
   if (manifest.source.shasum !== getSnapSourceShasum(sourceCode)) {

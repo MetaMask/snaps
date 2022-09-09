@@ -1971,7 +1971,7 @@ export class SnapController extends BaseController<
           new URL(filePath, localhostUrl).toString(),
           fetchOptions,
         )
-      ).text(),
+      ).arrayBuffer(),
       iconPath
         ? (
             await this._fetchFunction(
@@ -1982,8 +1982,13 @@ export class SnapController extends BaseController<
         : undefined,
     ]);
 
-    validateSnapShasum(manifest, sourceCode);
-    return { manifest, sourceCode, svgIcon };
+    const sourceCodeBuffer = Buffer.from(sourceCode);
+    validateSnapShasum(manifest, sourceCodeBuffer);
+    return {
+      manifest,
+      sourceCode: new TextDecoder('utf8').decode(sourceCode),
+      svgIcon,
+    };
   }
 
   /**
