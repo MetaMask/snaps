@@ -226,8 +226,10 @@ export const getBip32EntropyCaveatSpecifications: Record<
 
         const path = caveat.value.find(
           (caveatPath) =>
-            isEqual(params.path, caveatPath.path) &&
-            caveatPath.curve === params.curve,
+            isEqual(
+              params.path.slice(0, caveatPath.path.length),
+              caveatPath.path,
+            ) && caveatPath.curve === params.curve,
         );
 
         if (!path) {
