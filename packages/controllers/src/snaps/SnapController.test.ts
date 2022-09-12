@@ -1121,6 +1121,42 @@ describe('SnapController', () => {
     );
   });
 
+  it('fails to install snap if user rejects installation', async () => {
+    const messenger = getSnapControllerMessenger(undefined, false);
+    const controller = getSnapController(
+      getSnapControllerOptions({ messenger }),
+    );
+
+    jest.spyOn(messenger, 'call').mockImplementation((method) => {
+      if (method === 'ApprovalController:addRequest') {
+        return false;
+      }
+      return true;
+    });
+
+    jest
+      .spyOn(controller as any, '_fetchSnap')
+      .mockImplementationOnce(async () => {
+        return {
+          manifest: getSnapManifest(),
+          sourceCode: MOCK_SNAP_SOURCE_CODE,
+        };
+      });
+
+    const result = await controller.installSnaps(MOCK_ORIGIN, {
+      [MOCK_SNAP_ID]: {},
+    });
+
+    const { code, message } = serializeError(
+      ethErrors.provider.userRejectedRequest(),
+    );
+
+    expect(result).toStrictEqual({
+      [MOCK_SNAP_ID]: { error: expect.objectContaining({ code, message }) },
+    });
+    expect(controller.get(MOCK_SNAP_ID)).toBeUndefined();
+  });
+
   it('removes a snap that errors during installation after being added', async () => {
     const messenger = getSnapControllerMessenger();
     const snapController = getSnapController(
