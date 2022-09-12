@@ -8,7 +8,6 @@ import {
   GrantPermissions,
   HasPermission,
   HasPermissions,
-  RequestPermissions,
   RestrictedControllerMessenger,
   RevokeAllPermissions,
   RevokePermissionForAllSubjects,
@@ -372,11 +371,9 @@ export type AllowedActions =
   | HasPermission
   | HasPermissions
   | RevokePermissions
-  | RequestPermissions
   | RevokeAllPermissions
   | RevokePermissionForAllSubjects
   | GrantPermissions
-  | RequestPermissions
   | AddApprovalRequest
   | HandleRpcRequestAction
   | ExecuteSnapAction
@@ -2050,7 +2047,7 @@ export class SnapController extends BaseController<
       );
 
       if (!isApproved) {
-        // TODO: Throw same error we did before
+        throw ethErrors.provider.userRejectedRequest();
       }
 
       if (isNonEmptyArray(Object.keys(processedPermissions))) {

@@ -11,7 +11,6 @@ import {
 import {
   SnapRpcHookArgs,
   DEFAULT_ENDOWMENTS,
-  getSnapPermissionName,
   getSnapSourceShasum,
   Snap,
   SnapManifest,
@@ -25,7 +24,6 @@ import { EthereumRpcError, ethErrors, serializeError } from 'eth-rpc-errors';
 import fetchMock from 'jest-fetch-mock';
 import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
-import { nanoid } from 'nanoid';
 import pump from 'pump';
 import { SnapCaveatType } from '@metamask/rpc-methods';
 import { NodeThreadExecutionService, setupMultiplex } from '../services';
@@ -96,7 +94,6 @@ const getSnapControllerMessenger = (
       'PermissionController:hasPermissions',
       'PermissionController:getPermissions',
       'PermissionController:grantPermissions',
-      'PermissionController:requestPermissions',
       'PermissionController:revokeAllPermissions',
       'SnapController:add',
       'SnapController:get',
@@ -2041,7 +2038,10 @@ describe('SnapController', () => {
       const callActionMock = jest
         .spyOn(messenger, 'call')
         .mockImplementation((method) => {
-          if (method === 'PermissionController:hasPermission') {
+          if (
+            method === 'PermissionController:hasPermission' ||
+            method === 'ApprovalController:addRequest'
+          ) {
             return true;
           } else if (method === 'PermissionController:getPermissions') {
             return {};
@@ -2126,7 +2126,10 @@ describe('SnapController', () => {
       const callActionMock = jest
         .spyOn(messenger, 'call')
         .mockImplementation((method) => {
-          if (method === 'PermissionController:hasPermission') {
+          if (
+            method === 'PermissionController:hasPermission' ||
+            method === 'ApprovalController:addRequest'
+          ) {
             return true;
           } else if (method === 'PermissionController:getPermissions') {
             return {};
@@ -2265,10 +2268,11 @@ describe('SnapController', () => {
       const callActionMock = jest
         .spyOn(messenger, 'call')
         .mockImplementation((method) => {
-          if (method === 'PermissionController:hasPermission') {
+          if (
+            method === 'PermissionController:hasPermission' ||
+            method === 'ApprovalController:addRequest'
+          ) {
             return true;
-          } else if (method === 'PermissionController:requestPermissions') {
-            return [{ eth_accounts: {} }];
           } else if (method === 'PermissionController:getPermissions') {
             return {};
           }
@@ -3177,11 +3181,6 @@ describe('SnapController', () => {
           method === 'PermissionController:grantPermissions'
         ) {
           return undefined;
-        } else if (method === 'PermissionController:requestPermissions') {
-          return Promise.resolve([
-            approvedPermissions,
-            { id: nanoid(), origin: getSnapPermissionName(MOCK_SNAP_ID) },
-          ] as const);
         }
         return false;
       });
@@ -3331,11 +3330,6 @@ describe('SnapController', () => {
           method === 'PermissionController:grantPermissions'
         ) {
           return undefined;
-        } else if (method === 'PermissionController:requestPermissions') {
-          return Promise.resolve([
-            approvedPermissions,
-            { id: nanoid(), origin: MOCK_SNAP_ID },
-          ] as const);
         }
         return undefined;
       });
