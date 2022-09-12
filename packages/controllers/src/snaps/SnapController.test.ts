@@ -2252,7 +2252,9 @@ describe('SnapController', () => {
 
     it('maps permission caveats to the proper format', async () => {
       const initialPermissions = {
-        snap_getBip32Entropy: [{ path: ['m', "44'", "60'"] }],
+        snap_getBip32Entropy: [
+          { path: ['m', "44'", "60'"], curve: 'secp256k1' },
+        ],
       };
 
       const manifest = {
@@ -2286,10 +2288,75 @@ describe('SnapController', () => {
             caveats: [
               {
                 type: SnapCaveatType.PermittedDerivationPaths,
-                value: [{ path: ['m', "44'", "60'"] }],
+                value: [{ path: ['m', "44'", "60'"], curve: 'secp256k1' }],
               },
             ],
           },
+        },
+      );
+    });
+
+    it('maps permission caveats to the proper format when updating snaps', async () => {
+      const initialPermissions = {
+        snap_getBip32Entropy: [
+          { path: ['m', "44'", "60'"], curve: 'secp256k1' },
+        ],
+      };
+
+      const manifest = {
+        ...getSnapManifest({ version: '1.1.0' }),
+        initialPermissions,
+      };
+
+      const messenger = getSnapControllerMessenger();
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: {
+              [MOCK_SNAP_ID]: getSnapObject(),
+            },
+          },
+        }),
+      );
+
+      const callActionMock = jest.spyOn(messenger, 'call');
+
+      callActionMock.mockImplementation((method) => {
+        if (
+          method === 'PermissionController:hasPermission' ||
+          method === 'ApprovalController:addRequest'
+        ) {
+          return true;
+        } else if (method === 'PermissionController:getPermissions') {
+          return {};
+        }
+        return false;
+      });
+
+      jest
+        .spyOn(snapController as any, '_fetchSnap')
+        .mockImplementationOnce(() => {
+          return getSnapObject({ manifest });
+        });
+
+      await snapController.updateSnap(MOCK_ORIGIN, MOCK_SNAP_ID);
+
+      expect(callActionMock).toHaveBeenNthCalledWith(
+        3,
+        'PermissionController:grantPermissions',
+        {
+          approvedPermissions: {
+            snap_getBip32Entropy: {
+              caveats: [
+                {
+                  type: SnapCaveatType.PermittedDerivationPaths,
+                  value: [{ path: ['m', "44'", "60'"], curve: 'secp256k1' }],
+                },
+              ],
+            },
+          },
+          subject: { origin: MOCK_SNAP_ID },
         },
       );
     });

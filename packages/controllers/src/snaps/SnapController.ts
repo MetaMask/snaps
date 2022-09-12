@@ -1577,11 +1577,12 @@ export class SnapController extends BaseController<
 
     await this._assertIsUnblocked(snapId, newVersion);
 
+    const processedPermissions = this.processSnapPermissions(
+      newSnap.manifest.initialPermissions,
+    );
+
     const { newPermissions, unusedPermissions, approvedPermissions } =
-      await this.calculatePermissionsChange(
-        snapId,
-        newSnap.manifest.initialPermissions,
-      );
+      await this.calculatePermissionsChange(snapId, processedPermissions);
 
     const id = nanoid();
     const isApproved = await this.messagingSystem.call(
