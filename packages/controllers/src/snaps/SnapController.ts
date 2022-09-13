@@ -8,7 +8,6 @@ import {
   GrantPermissions,
   HasPermission,
   HasPermissions,
-  RequestPermissions,
   RestrictedControllerMessenger,
   RevokeAllPermissions,
   RevokePermissionForAllSubjects,
@@ -84,6 +83,8 @@ import { Timer } from './Timer';
 
 export const controllerName = 'SnapController';
 
+// TODO: Figure out how to name these
+export const SNAP_APPROVAL_INSTALL = 'wallet_installSnap';
 export const SNAP_APPROVAL_UPDATE = 'wallet_updateSnap';
 
 const TRUNCATED_SNAP_PROPERTIES = new Set<TruncatedSnapFields>([
@@ -370,11 +371,9 @@ export type AllowedActions =
   | HasPermission
   | HasPermissions
   | RevokePermissions
-  | RequestPermissions
   | RevokeAllPermissions
   | RevokePermissionForAllSubjects
   | GrantPermissions
-  | RequestPermissions
   | AddApprovalRequest
   | HandleRpcRequestAction
   | ExecuteSnapAction
@@ -1515,7 +1514,7 @@ export class SnapController extends BaseController<
         versionRange,
       });
 
-      await this.authorize(snapId);
+      await this.authorize(origin, snapId);
 
       await this._startSnap({
         snapId,
@@ -2017,30 +2016,49 @@ export class SnapController extends BaseController<
    * Initiates a request for the given snap's initial permissions.
    * Must be called in order. See processRequestedSnap.
    *
+   * @param origin - The origin of the install request.
    * @param snapId - The id of the Snap.
    * @returns The snap's approvedPermissions.
    */
-  private async authorize(snapId: SnapId): Promise<string[]> {
+  private async authorize(origin: string, snapId: SnapId): Promise<void> {
     console.info(`Authorizing snap: ${snapId}`);
     const snapsState = this.state.snaps;
     const snap = snapsState[snapId];
     const { initialPermissions } = snap;
 
     try {
-      if (isNonEmptyArray(Object.keys(initialPermissions))) {
-        const processedPermissions =
-          this.processSnapPermissions(initialPermissions);
+      const processedPermissions =
+        this.processSnapPermissions(initialPermissions);
+      const id = nanoid();
+      const isApproved = await this.messagingSystem.call(
+        'ApprovalController:addRequest',
+        {
+          origin,
+          id,
+          type: SNAP_APPROVAL_INSTALL,
+          requestData: {
+            // Mirror previous installation metadata
+            metadata: { id, origin: snapId, dappOrigin: origin },
+            permissions: processedPermissions,
+            snapId,
+          },
+        },
+        true,
+      );
 
-        const [approvedPermissions] = await this.messagingSystem.call(
-          'PermissionController:requestPermissions',
-          { origin: snapId },
-          processedPermissions,
-        );
-        return Object.values(approvedPermissions).map(
-          (perm) => perm.parentCapability,
+      if (!isApproved) {
+        throw ethErrors.provider.userRejectedRequest();
+      }
+
+      if (isNonEmptyArray(Object.keys(processedPermissions))) {
+        await this.messagingSystem.call(
+          'PermissionController:grantPermissions',
+          {
+            approvedPermissions: processedPermissions,
+            subject: { origin: snapId },
+          },
         );
       }
-      return [];
     } finally {
       const runtime = this.getRuntimeExpect(snapId);
       runtime.installPromise = null;
