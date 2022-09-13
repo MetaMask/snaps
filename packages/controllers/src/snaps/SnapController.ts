@@ -410,7 +410,8 @@ type FeatureFlags = {
 };
 
 type SemVerVersion = string;
-export type CheckSnapBlockListArg = Record<SnapId, SemVerVersion>;
+type SnapInfo = { snapVersion: SemVerVersion; sourceShaSum?: string };
+export type CheckSnapBlockListArg = Record<SnapId, SnapInfo>;
 
 export type CheckSnapBlockListResult = Record<
   SnapId,
@@ -828,9 +829,12 @@ export class SnapController extends BaseController<
    */
   async updateBlockedSnaps(): Promise<void> {
     const blockedSnaps = await this._checkSnapBlockList(
-      Object.values(this.state.snaps).reduce<Record<SnapId, SemVerVersion>>(
+      Object.values(this.state.snaps).reduce<CheckSnapBlockListArg>(
         (blockListArg, snap) => {
-          blockListArg[snap.id] = snap.version;
+          blockListArg[snap.id] = {
+            snapVersion: snap.version,
+            sourceShaSum: snap.manifest.source.shasum,
+          };
           return blockListArg;
         },
         {},
@@ -911,13 +915,17 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The snap id to check.
    * @param version - The version of the snap to check.
+   * @param sourceShaSum - The shasum of the snap's source code.
    * @returns Whether the version of the snap is blocked or not.
    */
   async isBlocked(
     snapId: ValidatedSnapId,
     version: SemVerVersion,
+    sourceShaSum: string,
   ): Promise<boolean> {
-    const result = await this._checkSnapBlockList({ [snapId]: version });
+    const result = await this._checkSnapBlockList({
+      [snapId]: { snapVersion: version, sourceShaSum },
+    });
     return result[snapId].blocked;
   }
 
@@ -927,12 +935,14 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The id of the snap to check.
    * @param version - The version to check.
+   * @param sourceShaSum - Shasum of the snap's source code.
    */
   private async _assertIsUnblocked(
     snapId: ValidatedSnapId,
     version: SemVerVersion,
+    sourceShaSum: string,
   ) {
-    if (await this.isBlocked(snapId, version)) {
+    if (await this.isBlocked(snapId, version, sourceShaSum)) {
       throw new Error(
         `Cannot install version "${version}" of snap "${snapId}": the version is blocked.`,
       );
@@ -1582,7 +1592,11 @@ export class SnapController extends BaseController<
       return null;
     }
 
-    await this._assertIsUnblocked(snapId, newVersion);
+    await this._assertIsUnblocked(
+      snapId,
+      newVersion,
+      newSnap.manifest.source.shasum,
+    );
 
     const processedPermissions = this.processSnapPermissions(
       newSnap.manifest.initialPermissions,
@@ -1694,7 +1708,11 @@ export class SnapController extends BaseController<
         }
 
         const fetchedSnap = await this._fetchSnap(snapId, args.versionRange);
-        await this._assertIsUnblocked(snapId, fetchedSnap.manifest.version);
+        await this._assertIsUnblocked(
+          snapId,
+          fetchedSnap.manifest.version,
+          fetchedSnap.manifest.source.shasum,
+        );
 
         return this._set({
           ...args,
