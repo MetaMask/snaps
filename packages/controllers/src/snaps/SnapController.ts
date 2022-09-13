@@ -710,6 +710,11 @@ export class SnapController extends BaseController<
             START: { target: 'running', cond: disableGuard },
           },
         },
+        updating: {
+          on: {
+            START: { target: 'running', cond: disableGuard },
+          },
+        },
         running: {
           on: {
             STOP: 'stopped',
@@ -719,7 +724,7 @@ export class SnapController extends BaseController<
         stopped: {
           on: {
             START: { target: 'running', cond: disableGuard },
-            UPDATE: 'installing',
+            UPDATE: 'updating',
           },
         },
         crashed: {
@@ -1377,11 +1382,12 @@ export class SnapController extends BaseController<
     ).reduce((permittedSnaps, perm) => {
       if (perm.parentCapability.startsWith(SNAP_PREFIX)) {
         const snapId = perm.parentCapability.replace(SNAP_PREFIX_REGEX, '');
-        const snap = this.getTruncated(snapId);
+        const snap = this.get(snapId);
+        const truncatedSnap = this.getTruncated(snapId);
 
-        permittedSnaps[snapId] = snap || {
-          error: serializeError(new Error('Snap permitted but not installed.')),
-        };
+        if (truncatedSnap && snap?.status !== 'installing') {
+          permittedSnaps[snapId] = truncatedSnap;
+        }
       }
       return permittedSnaps;
     }, {} as InstallSnapsResult);

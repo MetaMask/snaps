@@ -30,7 +30,7 @@ export type BlockedSnapInfo = { infoUrl?: string; reason?: string };
 export type StatusContext = { snapId: string };
 export type StatusEvents = { type: 'START' | 'STOP' | 'CRASH' | 'UPDATE' };
 export type StatusStates = {
-  value: 'installing' | 'running' | 'stopped' | 'crashed';
+  value: 'installing' | 'updating' | 'running' | 'stopped' | 'crashed';
   context: StatusContext;
 };
 export type Status = StatusStates['value'];
