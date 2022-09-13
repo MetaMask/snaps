@@ -1,11 +1,14 @@
-import { promises as fs } from 'fs';
+import { promises as fs, extra as fsExtra } from 'fs';
+import os from 'os';
 import pathUtils from 'path';
+import { exec } from 'child_process';
 import {
   NpmSnapFileNames,
   SnapManifest,
   getSnapSourceShasum,
   getWritableManifest,
   readJsonFile,
+  satisfiesVersionRange,
 } from '@metamask/snap-utils';
 import mkdirp from 'mkdirp';
 import { YargsArgs } from '../../types/yargs';
@@ -19,6 +22,11 @@ import {
   prepareWorkingDirectory,
 } from './initUtils';
 
+const SATISFIED_VERSION = '>=16';
+
+const TEMPLATE_GIT_URL =
+  'https://github.com/MetaMask/template-snap-monorepo.git';
+
 /**
  * Creates a new snap package, based on one of the provided templates. This
  * creates all the necessary files, like `package.json`, `snap.config.js`, etc.
@@ -30,111 +38,40 @@ import {
  * @throws If initialization of the snap package failed.
  */
 export async function initHandler(argv: YargsArgs) {
-  console.log(`MetaMask Snaps: Initialize\n`);
+  const isVersionSupported = satisfiesVersionRange(
+    process.version,
+    SATISFIED_VERSION,
+  );
 
-  const packageJson = await asyncPackageInit(argv);
+  if (!isVersionSupported) {
+    console.error(
+      `Init Error: You are using an outdated version of Node (${process.version}). Please update to Node ${SATISFIED_VERSION}.`,
+    );
+  }
 
   await prepareWorkingDirectory();
 
-  console.log(`\nInit: Building '${NpmSnapFileNames.Manifest}'...\n`);
-
-  const [snapManifest, _newArgs] = await buildSnapManifest(argv, packageJson);
-
-  const newArgs = Object.keys(_newArgs)
-    .sort()
-    .reduce((sorted, key) => {
-      sorted[key] = _newArgs[key as keyof typeof _newArgs];
-      return sorted;
-    }, {} as YargsArgs);
-
-  const isTypeScript = isTemplateTypescript(argv.template as TemplateType);
   try {
-    await fs.writeFile(
-      NpmSnapFileNames.Manifest,
-      `${JSON.stringify(snapManifest, null, 2)}\n`,
+    // create temporary folder to clone template;
+    const tmpDirPrefix = 'snap-template-tmp';
+    const tmpDir = await fs.mkdtemp(pathUtils.join(os.tmpdir(), tmpDirPrefix));
+    await mkdirp(tmpDir);
+
+    exec(
+      `git clone ${TEMPLATE_GIT_URL}`,
+      {
+        cwd: tmpDir,
+      },
+      (err, stdout, stderr) => {
+        if (err) {
+          throw err;
+        }
+        console.log(stdout);
+        console.error(stderr);
+      },
     );
   } catch (err) {
-    logError(
-      `Init Error: Failed to write '${NpmSnapFileNames.Manifest}'.`,
-      err,
-    );
-    throw err;
-  }
-
-  console.log(`\nInit: Created '${NpmSnapFileNames.Manifest}'.`);
-
-  // Write main .js entry file
-  const { src } = newArgs;
-
-  try {
-    if (pathUtils.basename(src) !== src) {
-      await mkdirp(pathUtils.dirname(src));
-    }
-
-    await fs.writeFile(
-      src,
-      isTypeScript ? template.typescriptSource : template.source,
-    );
-
-    console.log(`Init: Created '${src}'.`);
-  } catch (err) {
-    logError(`Init Error: Failed to write '${src}'.`, err);
-    throw err;
-  }
-
-  // Write index.html
-  try {
-    await fs.writeFile(
-      'index.html',
-      isTypeScript ? template.typescriptHtml : template.html,
-    );
-
-    console.log(`Init: Created 'index.html'.`);
-  } catch (err) {
-    logError(`Init Error: Failed to write 'index.html'.`, err);
-    throw err;
-  }
-
-  // Write tsconfig.json
-  if (isTypeScript) {
-    try {
-      await fs.writeFile('tsconfig.json', template.typescriptConfig);
-      console.log(`Init: Created 'tsconfig.json'.`);
-    } catch (err) {
-      logError(`Init Error: Failed to write 'tsconfig.json'.`, err);
-      throw err;
-    }
-  }
-
-  // Write config file
-  try {
-    const defaultConfig: SnapConfig = {
-      cliOptions: newArgs,
-    };
-    const defaultConfigFile = `module.exports = ${JSON.stringify(
-      defaultConfig,
-      null,
-      2,
-    )}
-    `;
-    await fs.writeFile(CONFIG_FILE, defaultConfigFile);
-    console.log(`Init: Wrote '${CONFIG_FILE}' config file`);
-  } catch (err) {
-    logError(`Init Error: Failed to write '${CONFIG_FILE}'.`, err);
-    throw err;
-  }
-
-  // Write icon
-  const iconPath = 'images/icon.svg';
-  try {
-    if (pathUtils.basename(iconPath) !== iconPath) {
-      await mkdirp(pathUtils.dirname(iconPath));
-    }
-    await fs.writeFile(iconPath, template.icon);
-
-    console.log(`Init: Created '${iconPath}'.`);
-  } catch (err) {
-    logError(`Init Error: Failed to write '${iconPath}'.`, err);
+    logError(`Init Error: Failed to create temporary directory.`, err);
     throw err;
   }
 

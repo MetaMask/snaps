@@ -309,11 +309,20 @@ export async function buildSnapManifest(
 }
 
 const INIT_FILE_NAMES = new Set([
-  'src',
-  'index.html',
-  CONFIG_FILE,
+  'packages',
+  '.yarn',
   'dist',
-  NpmSnapFileNames.Manifest,
+  'tsconfig.json',
+  '.github',
+  '.eslintrc.js',
+  '.gitignore',
+  '.nvmrc',
+  '.prettierrc.js',
+  '.yarnrc.yml',
+  'LICENSE.APACHE2',
+  'LICENSE.MIT0',
+  'README.md',
+  'tsconfig.json',
 ]);
 
 /**
