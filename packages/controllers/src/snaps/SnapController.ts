@@ -526,6 +526,7 @@ const defaultState: SnapControllerState = {
 
 export const SnapStatus = {
   installing: 'installing',
+  updating: 'updating',
   running: 'running',
   stopped: 'stopped',
   crashed: 'crashed',
@@ -1385,7 +1386,7 @@ export class SnapController extends BaseController<
         const snap = this.get(snapId);
         const truncatedSnap = this.getTruncated(snapId);
 
-        if (truncatedSnap && snap?.status !== 'installing') {
+        if (truncatedSnap && snap?.status !== SnapStatus.installing) {
           permittedSnaps[snapId] = truncatedSnap;
         }
       }
