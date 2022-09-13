@@ -6,6 +6,7 @@ import {
   getBip32EntropyImplementation,
   validateCaveatPaths,
   validatePath,
+  validatePathLength,
 } from './getBip32Entropy';
 
 const TEST_SECRET_RECOVERY_PHRASE =
@@ -44,15 +45,6 @@ describe('validatePath', () => {
     );
   });
 
-  it.each([{ path: ['m'] }, { path: ['m', "44'"] }])(
-    'throws if the path has a length of less than three',
-    (value) => {
-      expect(() => validatePath(value)).toThrow(
-        'Invalid "path" parameter. Paths must have a length of at least three.',
-      );
-    },
-  );
-
   it('throws if the curve is invalid', () => {
     expect(() =>
       validatePath({ path: ['m', "44'", "60'"], curve: 'foo' }),
@@ -80,6 +72,38 @@ describe('validatePath', () => {
   });
 });
 
+describe('validatePathLength', () => {
+  it.each([
+    { path: ['m'], curve: 'secp256k1' },
+    { path: ['m', "44'"], curve: 'secp256k1' },
+  ])('throws if the path has a length of less than three', (value) => {
+    expect(() => validatePathLength(value as any)).toThrow(
+      'Invalid "path" parameter. Paths must have a length of at least three.',
+    );
+
+    expect(() => validatePathLength(value as any, true)).toThrow(
+      'Invalid "path" parameter. Paths must have a length of at least three.',
+    );
+  });
+
+  it('throws if exceptions are disabled and the path is permitted', () => {
+    expect(() =>
+      validatePathLength(
+        { path: ['m', `5265220'`], curve: 'secp256k1' },
+        false,
+      ),
+    ).toThrow(
+      'Invalid "path" parameter. Paths must have a length of at least three.',
+    );
+  });
+
+  it('does not throw if exceptions are enabled and the path is permitted', () => {
+    expect(() =>
+      validatePathLength({ path: ['m', `5265220'`], curve: 'secp256k1' }, true),
+    ).not.toThrow();
+  });
+});
+
 describe('validateCaveatPaths', () => {
   it.each([[], null, undefined, 'foo'])(
     'throws if the value is not an array or empty',
@@ -100,6 +124,17 @@ describe('validateCaveatPaths', () => {
         value: [{ path: ['foo'], curve: 'secp256k1' }],
       }),
     ).toThrow('Invalid "path" parameter. The path must start with "m".');
+  });
+
+  it('throws if the length is too short', () => {
+    expect(() =>
+      validateCaveatPaths({
+        type: SnapCaveatType.PermittedDerivationPaths,
+        value: [{ path: ['m'], curve: 'secp256k1' }],
+      }),
+    ).toThrow(
+      'Invalid "path" parameter. Paths must have a length of at least three.',
+    );
   });
 });
 

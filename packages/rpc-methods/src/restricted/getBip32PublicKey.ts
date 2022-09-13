@@ -13,7 +13,11 @@ import { BIP32Node, SLIP10Node } from '@metamask/key-tree';
 
 import { SnapCaveatType } from '../caveats';
 import { isEqual } from '../utils';
-import { validateCaveatPaths, validatePath } from './getBip32Entropy';
+import {
+  validateCaveatPaths,
+  validatePath,
+  validatePathLength,
+} from './getBip32Entropy';
 
 const targetKey = 'snap_getBip32PublicKey';
 
@@ -106,6 +110,7 @@ export const getBip32PublicKeyCaveatSpecifications: Record<
       return async (args) => {
         const { params } = args;
         validatePath(params);
+        validatePathLength(params);
 
         const path = caveat.value.find(
           (caveatPath) =>

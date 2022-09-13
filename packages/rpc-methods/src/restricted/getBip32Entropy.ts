@@ -22,6 +22,21 @@ import { isEqual } from '../utils';
 
 const INDEX_REGEX = /^\d+'?$/u;
 
+/**
+ * Derivation path purposes (i.e., index 0) that a Snap can request as
+ * permission, without requiring a second node.
+ *
+ * These nodes still require a minimum depth of 2 (e.g., m/0'/1') when requested
+ * through the `snap_getBip32Entropy` method.
+ */
+const DERIVATION_STANDARDS_EXCEPTIONS = [
+  // `0x80505744`, a magic value used by Ledger's password manager app.
+  `5265220'`,
+];
+
+const MINIMUM_PATH_LENGTH = 3;
+const MINIMUM_PATH_EXCEPTION_LENGTH = 2;
+
 const targetKey = 'snap_getBip32Entropy';
 
 export type GetBip32EntropyMethodHooks = {
@@ -99,12 +114,6 @@ export function validatePath(
     });
   }
 
-  if (value.path.length < 3) {
-    throw ethErrors.rpc.invalidParams({
-      message: `Invalid "path" parameter. Paths must have a length of at least three.`,
-    });
-  }
-
   if (
     !hasProperty(value, 'curve') ||
     (value.curve !== 'secp256k1' && value.curve !== 'ed25519')
@@ -120,6 +129,37 @@ export function validatePath(
   ) {
     throw ethErrors.rpc.invalidParams({
       message: `Invalid "path" parameter. Ed25519 does not support unhardened paths.`,
+    });
+  }
+}
+
+/**
+ * Validate the BIP-32 derivation path length.
+ *
+ * @param value - The value to validate.
+ * @param useExceptions - Whether to allow the use of exceptions.
+ * @throws If the derivation path is too short.
+ */
+export function validatePathLength(
+  value: GetBip32EntropyParameters,
+  useExceptions = false,
+) {
+  if (
+    useExceptions &&
+    DERIVATION_STANDARDS_EXCEPTIONS.includes(value.path[1])
+  ) {
+    if (value.path.length < MINIMUM_PATH_EXCEPTION_LENGTH) {
+      throw ethErrors.rpc.invalidParams({
+        message: `Invalid "path" parameter. Paths must have a length of at least two.`,
+      });
+    }
+
+    return;
+  }
+
+  if (value.path.length < MINIMUM_PATH_LENGTH) {
+    throw ethErrors.rpc.invalidParams({
+      message: `Invalid "path" parameter. Paths must have a length of at least three.`,
     });
   }
 }
@@ -142,7 +182,10 @@ export function validateCaveatPaths(caveat: Caveat<string, any>) {
     });
   }
 
-  caveat.value.forEach((path) => validatePath(path));
+  caveat.value.forEach((path) => {
+    validatePath(path);
+    validatePathLength(path, true);
+  });
 }
 
 /**
