@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "@metamask/browser-passworder": "^3.0.0",
-    "@metamask/controllers": "^30.0.0",
+    "@metamask/controllers": "^31.0.0",
     "@metamask/execution-environments": "^0.20.0",
     "@metamask/object-multiplex": "^1.1.0",
     "@metamask/post-message-stream": "^6.0.0",
