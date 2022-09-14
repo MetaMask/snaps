@@ -4,7 +4,7 @@ import { Duplex } from 'stream';
 import { MetaMaskInpageProvider } from '@metamask/providers';
 import { SnapProvider, SnapExports } from '@metamask/snap-types';
 import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
-import { JsonRpcNotification } from '@metamask/utils';
+import { isObject, isValidJson, JsonRpcNotification } from '@metamask/utils';
 import {
   assert,
   HandlerType,
@@ -169,6 +169,12 @@ export class BaseSnapExecutor {
       'jsonrpc'
     >,
   ) {
+    if (!isValidJson(requestObject) || !isObject(requestObject)) {
+      throw new Error(
+        'JSON-RPC notifications must be JSON serializable objects',
+      );
+    }
+
     this.commandStream.write({
       ...requestObject,
       jsonrpc: '2.0',
@@ -277,15 +283,13 @@ export class BaseSnapExecutor {
       return;
     }
 
-    SNAP_EXPORT_NAMES.forEach((exportName) => {
+    data.exports = SNAP_EXPORT_NAMES.reduce((acc, exportName) => {
       const snapExport = snapModule.exports[exportName];
       if (validateExport(exportName, snapExport)) {
-        data.exports = {
-          ...data.exports,
-          [exportName]: snapExport,
-        };
+        return { ...acc, [exportName]: snapExport };
       }
-    });
+      return acc;
+    }, {});
   }
 
   /**

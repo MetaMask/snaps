@@ -36,7 +36,6 @@ export function wrapKeyring(
     // Special case for registering events
     if (method === 'on') {
       const data = args?.[0];
-      // TODO Is this safe?
       const listener = (listenerArgs: unknown) =>
         notify({
           method: 'SnapKeyringEvent',
