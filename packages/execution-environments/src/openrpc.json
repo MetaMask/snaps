@@ -109,7 +109,7 @@
           "schema": {
             "title": "Handler",
             "type": "string",
-            "enum": ["onRpcRequest", "onTransaction"]
+            "enum": ["onRpcRequest", "onTransaction", "keyring"]
           }
         },
         {
