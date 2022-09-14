@@ -50,6 +50,8 @@ import {
   ProcessSnapResult,
   SNAP_PREFIX_REGEX,
   fromEntries,
+  SnapStatus,
+  SnapStatusEvents,
 } from '@metamask/snap-utils';
 import {
   Duration,
@@ -524,21 +526,6 @@ const defaultState: SnapControllerState = {
   snapStates: {},
 };
 
-export const SnapStatus = {
-  installing: 'installing',
-  updating: 'updating',
-  running: 'running',
-  stopped: 'stopped',
-  crashed: 'crashed',
-} as const;
-
-export const SnapEvents = {
-  start: 'START',
-  stop: 'STOP',
-  crash: 'CRASH',
-  update: 'UPDATE',
-} as const;
-
 /**
  * Truncates the properties of a snap to only ones that are easily serializable.
  *
@@ -633,7 +620,7 @@ export class SnapController extends BaseController<
                 return {
                   ...snap,
                   // At the time state is rehydrated, no snap will be running.
-                  status: SnapStatus.stopped,
+                  status: SnapStatus.Stopped,
                 };
               })
               .reduce((memo: Record<string, Snap>, snap) => {
@@ -952,12 +939,12 @@ export class SnapController extends BaseController<
             this._maxIdleTime &&
             timeSince(runtime.lastRequest) > this._maxIdleTime,
         )
-        .map(([snapId]) => this.stopSnap(snapId, 'STOP')),
+        .map(([snapId]) => this.stopSnap(snapId, SnapStatusEvents.Stop)),
     );
   }
 
   async _onUnhandledSnapError(snapId: SnapId, error: SnapErrorJson) {
-    await this.stopSnap(snapId, 'CRASH');
+    await this.stopSnap(snapId, SnapStatusEvents.Crash);
     this.addSnapError(error);
   }
 
@@ -1057,7 +1044,7 @@ export class SnapController extends BaseController<
     });
 
     if (this.isRunning(snapId)) {
-      return this.stopSnap(snapId, 'STOP');
+      return this.stopSnap(snapId, SnapStatusEvents.Stop);
     }
 
     return Promise.resolve();
@@ -1073,7 +1060,9 @@ export class SnapController extends BaseController<
    */
   public async stopSnap(
     snapId: SnapId,
-    statusEvent: StatusEvents['type'] & ('STOP' | 'CRASH') = 'STOP',
+    statusEvent:
+      | SnapStatusEvents.Stop
+      | SnapStatusEvents.Crash = SnapStatusEvents.Stop,
   ): Promise<void> {
     const runtime = this.getRuntime(snapId);
     if (!runtime) {
@@ -1386,7 +1375,7 @@ export class SnapController extends BaseController<
         const snap = this.get(snapId);
         const truncatedSnap = this.getTruncated(snapId);
 
-        if (truncatedSnap && snap?.status !== SnapStatus.installing) {
+        if (truncatedSnap && snap?.status !== SnapStatus.Installing) {
           permittedSnaps[snapId] = truncatedSnap;
         }
       }
@@ -1511,7 +1500,7 @@ export class SnapController extends BaseController<
 
     // Existing snaps must be stopped before overwriting
     if (existingSnap && this.isRunning(snapId)) {
-      await this.stopSnap(snapId, 'STOP');
+      await this.stopSnap(snapId, SnapStatusEvents.Stop);
     }
 
     try {
@@ -1616,10 +1605,10 @@ export class SnapController extends BaseController<
     }
 
     if (this.isRunning(snapId)) {
-      await this.stopSnap(snapId, 'STOP');
+      await this.stopSnap(snapId, SnapStatusEvents.Stop);
     }
 
-    this.transition(snapId, 'UPDATE');
+    this.transition(snapId, SnapStatusEvents.Update);
 
     this._set({
       origin,
@@ -1727,7 +1716,7 @@ export class SnapController extends BaseController<
           endowments: await this._getEndowments(snapId),
         }),
       );
-      this.transition(snapId, 'START');
+      this.transition(snapId, SnapStatusEvents.Start);
       return result;
     } catch (err) {
       await this.terminateSnap(snapId);
@@ -2147,7 +2136,7 @@ export class SnapController extends BaseController<
         throw new Error(`Snap "${snapId}" is disabled.`);
       }
 
-      if (this.state.snaps[snapId].status === SnapStatus.installing) {
+      if (this.state.snaps[snapId].status === SnapStatus.Installing) {
         throw new Error(
           `Snap "${snapId}" is currently being installed. Please try again later.`,
         );
@@ -2205,7 +2194,7 @@ export class SnapController extends BaseController<
         this._recordSnapRpcRequestFinish(snapId, request.id);
         return result;
       } catch (err) {
-        await this.stopSnap(snapId, 'CRASH');
+        await this.stopSnap(snapId, SnapStatusEvents.Crash);
         throw err;
       }
     };
