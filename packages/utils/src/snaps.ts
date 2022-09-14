@@ -27,10 +27,25 @@ export type RequestedSnapPermissions = {
 
 export type BlockedSnapInfo = { infoUrl?: string; reason?: string };
 
+export enum SnapStatus {
+  Installing = 'installing',
+  Updating = 'updating',
+  Running = 'running',
+  Stopped = 'stopped',
+  Crashed = 'crashed',
+}
+
+export enum SnapStatusEvents {
+  Start = 'START',
+  Stop = 'STOP',
+  Crash = 'CRASH',
+  Update = 'UPDATE',
+}
+
 export type StatusContext = { snapId: string };
-export type StatusEvents = { type: 'START' | 'STOP' | 'CRASH' | 'UPDATE' };
+export type StatusEvents = { type: SnapStatusEvents };
 export type StatusStates = {
-  value: 'installing' | 'running' | 'stopped' | 'crashed';
+  value: SnapStatus;
   context: StatusContext;
 };
 export type Status = StatusStates['value'];

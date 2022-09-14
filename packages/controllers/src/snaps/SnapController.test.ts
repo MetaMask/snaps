@@ -17,6 +17,7 @@ import {
   HandlerType,
   Status,
   TruncatedSnap,
+  SnapStatus,
 } from '@metamask/snap-utils';
 
 import { Crypto } from '@peculiar/webcrypto';
@@ -42,7 +43,6 @@ import {
   SnapControllerActions,
   SnapControllerEvents,
   SnapControllerState,
-  SnapStatus,
   SNAP_APPROVAL_UPDATE,
 } from './SnapController';
 
@@ -713,7 +713,7 @@ describe('SnapController', () => {
               version: '0.0.1',
               sourceCode: MOCK_SNAP_SOURCE_CODE,
               id: 'npm:foo',
-              status: SnapStatus.installing,
+              status: SnapStatus.Installing,
             }),
           },
         },
@@ -818,7 +818,7 @@ describe('SnapController', () => {
     await new Promise((resolve) => {
       rootMessenger.subscribe('SnapController:stateChange', (state) => {
         const crashedSnap = state.snaps[snap.id];
-        expect(crashedSnap.status).toStrictEqual(SnapStatus.crashed);
+        expect(crashedSnap.status).toStrictEqual(SnapStatus.Crashed);
         resolve(undefined);
         snapController.destroy();
       });
@@ -1006,7 +1006,7 @@ describe('SnapController', () => {
       new Promise<void>((resolve) => {
         messenger.subscribe('SnapController:snapAdded', (snap) => {
           expect(snap).toStrictEqual(
-            getSnapObject({ status: SnapStatus.installing }),
+            getSnapObject({ status: SnapStatus.Installing }),
           );
           resolve();
         });
@@ -1190,7 +1190,7 @@ describe('SnapController', () => {
       new Promise<void>((resolve) => {
         messenger.subscribe('SnapController:snapAdded', (snap) => {
           expect(snap).toStrictEqual(
-            getSnapObject({ status: SnapStatus.installing }),
+            getSnapObject({ status: SnapStatus.Installing }),
           );
           resolve();
         });
@@ -1699,7 +1699,7 @@ describe('SnapController', () => {
             [snapId]: {
               enabled: true,
               id: snapId,
-              status: SnapStatus.running,
+              status: SnapStatus.Running,
             } as any,
           },
         },
@@ -1747,7 +1747,7 @@ describe('SnapController', () => {
     });
 
     it('handlers throw if the request has an invalid "jsonrpc" property', async () => {
-      const fakeSnap = getSnapObject({ status: SnapStatus.running });
+      const fakeSnap = getSnapObject({ status: SnapStatus.Running });
       const snapId = fakeSnap.id;
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -1779,7 +1779,7 @@ describe('SnapController', () => {
 
     it('handlers will throw if there are too many pending requests before a snap has started', async () => {
       const messenger = getSnapControllerMessenger();
-      const fakeSnap = getSnapObject({ status: SnapStatus.stopped });
+      const fakeSnap = getSnapObject({ status: SnapStatus.Stopped });
       const snapId = fakeSnap.id;
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -1993,7 +1993,7 @@ describe('SnapController', () => {
         id: snapId,
         manifest: { ...getSnapManifest(), version },
         enabled: true,
-        status: SnapStatus.stopped,
+        status: SnapStatus.Stopped,
       });
 
       const truncatedFooSnap = getTruncatedSnap({
@@ -2050,7 +2050,7 @@ describe('SnapController', () => {
         id: snapId,
         manifest: { ...getSnapManifest(), version },
         enabled: true,
-        status: SnapStatus.stopped,
+        status: SnapStatus.Stopped,
       });
 
       const truncatedFooSnap = getTruncatedSnap({
@@ -3390,7 +3390,7 @@ describe('SnapController', () => {
       expect(result).toStrictEqual(
         getSnapObject({
           sourceCode,
-          status: SnapStatus.installing,
+          status: SnapStatus.Installing,
           manifest: getSnapManifest({ shasum }),
         }),
       );
@@ -3414,7 +3414,7 @@ describe('SnapController', () => {
         getSnapObject({
           id,
           sourceCode: MOCK_SNAP_SOURCE_CODE,
-          status: SnapStatus.installing,
+          status: SnapStatus.Installing,
           manifest: getSnapManifest(),
           permissionName: 'wallet_snap_local:https://localhost:8081',
         }),
@@ -3792,7 +3792,7 @@ describe('SnapController', () => {
           id: 'npm:fooSnap',
           manifest: getSnapManifest(),
           enabled: true,
-          status: SnapStatus.installing,
+          status: SnapStatus.Installing,
         };
 
         const addSpy = jest.spyOn(snapController, 'add');
@@ -3828,7 +3828,7 @@ describe('SnapController', () => {
           id: 'npm:fooSnap',
           manifest: getSnapManifest(),
           enabled: true,
-          status: SnapStatus.installing,
+          status: SnapStatus.Installing,
         });
 
         const snapController = getSnapController(
@@ -3861,7 +3861,7 @@ describe('SnapController', () => {
           id: 'npm:fooSnap',
           manifest: getSnapManifest(),
           enabled: true,
-          status: SnapStatus.running,
+          status: SnapStatus.Running,
         });
 
         const snapController = getSnapController(
@@ -3901,7 +3901,7 @@ describe('SnapController', () => {
         id: 'npm:fooSnap',
         manifest: getSnapManifest(),
         enabled: true,
-        status: SnapStatus.running,
+        status: SnapStatus.Running,
       });
 
       const snapController = getSnapController(
@@ -3973,7 +3973,7 @@ describe('SnapController', () => {
             snapStates: { [MOCK_SNAP_ID]: 'foo' },
             snaps: {
               [MOCK_SNAP_ID]: getSnapObject({
-                status: SnapStatus.installing,
+                status: SnapStatus.Installing,
               }),
             },
           },
@@ -4006,7 +4006,7 @@ describe('SnapController', () => {
                 id: 'npm:fooSnap',
                 manifest: getSnapManifest(),
                 enabled: true,
-                status: SnapStatus.installing,
+                status: SnapStatus.Installing,
               }),
             },
           },
@@ -4037,7 +4037,7 @@ describe('SnapController', () => {
                 id: 'npm:fooSnap',
                 manifest: getSnapManifest(),
                 enabled: true,
-                status: SnapStatus.installing,
+                status: SnapStatus.Installing,
               }),
             },
           },
@@ -4078,7 +4078,7 @@ describe('SnapController', () => {
                 id: 'npm:fooSnap',
                 manifest: getSnapManifest(),
                 enabled: true,
-                status: SnapStatus.installing,
+                status: SnapStatus.Installing,
               }),
               'npm:fooSnap2': getSnapObject({
                 permissionName: 'fooperm2',
@@ -4087,7 +4087,7 @@ describe('SnapController', () => {
                 id: 'npm:fooSnap2',
                 manifest: getSnapManifest(),
                 enabled: true,
-                status: SnapStatus.installing,
+                status: SnapStatus.Installing,
               }),
             },
           },
@@ -4139,7 +4139,7 @@ describe('SnapController', () => {
             snapStates: { [MOCK_SNAP_ID]: 'foo' },
             snaps: {
               [MOCK_SNAP_ID]: getSnapObject({
-                status: SnapStatus.installing,
+                status: SnapStatus.Installing,
               }),
             },
           },
