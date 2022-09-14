@@ -3,9 +3,9 @@ import {
   PermissionType,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
-  CaveatSpecificationConstraint,
   Caveat,
   PermissionValidatorConstraint,
+  RestrictedMethodCaveatSpecificationConstraint,
 } from '@metamask/controllers';
 import { ethErrors } from 'eth-rpc-errors';
 import { NonEmptyArray } from '@metamask/utils';
@@ -92,7 +92,7 @@ export const getBip32PublicKeyBuilder = Object.freeze({
 
 export const getBip32PublicKeyCaveatSpecifications: Record<
   SnapCaveatType.PermittedDerivationPaths,
-  CaveatSpecificationConstraint
+  RestrictedMethodCaveatSpecificationConstraint
 > = {
   [SnapCaveatType.PermittedDerivationPaths]: Object.freeze({
     type: SnapCaveatType.PermittedDerivationPaths,
