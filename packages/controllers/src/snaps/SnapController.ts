@@ -691,33 +691,45 @@ export class SnapController extends BaseController<
       StatusEvents,
       StatusStates
     > = {
-      initial: 'installing',
+      initial: SnapStatus.Installing,
       states: {
-        installing: {
+        [SnapStatus.Installing]: {
           on: {
-            START: { target: 'running', cond: disableGuard },
+            [SnapStatusEvents.Start]: {
+              target: SnapStatus.Running,
+              cond: disableGuard,
+            },
           },
         },
-        updating: {
+        [SnapStatus.Updating]: {
           on: {
-            START: { target: 'running', cond: disableGuard },
+            [SnapStatusEvents.Start]: {
+              target: SnapStatus.Running,
+              cond: disableGuard,
+            },
           },
         },
-        running: {
+        [SnapStatus.Running]: {
           on: {
-            STOP: 'stopped',
-            CRASH: 'crashed',
+            [SnapStatusEvents.Stop]: SnapStatus.Stopped,
+            [SnapStatusEvents.Crash]: SnapStatus.Crashed,
           },
         },
-        stopped: {
+        [SnapStatus.Stopped]: {
           on: {
-            START: { target: 'running', cond: disableGuard },
-            UPDATE: 'updating',
+            [SnapStatusEvents.Start]: {
+              target: SnapStatus.Running,
+              cond: disableGuard,
+            },
+            [SnapStatusEvents.Update]: SnapStatus.Updating,
           },
         },
-        crashed: {
+        [SnapStatus.Crashed]: {
           on: {
-            START: { target: 'running', cond: disableGuard },
+            [SnapStatusEvents.Start]: {
+              target: SnapStatus.Running,
+              cond: disableGuard,
+            },
           },
         },
       },
