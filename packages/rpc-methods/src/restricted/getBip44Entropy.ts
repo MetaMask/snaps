@@ -1,12 +1,12 @@
 import {
   Caveat,
-  CaveatSpecificationConstraint,
   PermissionSpecificationBuilder,
   PermissionType,
   PermissionValidatorConstraint,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
   PermissionConstraint,
+  RestrictedMethodCaveatSpecificationConstraint,
 } from '@metamask/controllers';
 import { ethErrors } from 'eth-rpc-errors';
 import { BIP44CoinTypeNode, JsonBIP44CoinTypeNode } from '@metamask/key-tree';
@@ -165,7 +165,7 @@ export function getBip44EntropyCaveatMapper(
 
 export const getBip44EntropyCaveatSpecifications: Record<
   SnapCaveatType.PermittedCoinTypes,
-  CaveatSpecificationConstraint
+  RestrictedMethodCaveatSpecificationConstraint
 > = {
   [SnapCaveatType.PermittedCoinTypes]: Object.freeze({
     type: SnapCaveatType.PermittedCoinTypes,

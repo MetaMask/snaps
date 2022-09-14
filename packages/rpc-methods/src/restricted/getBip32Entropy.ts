@@ -3,10 +3,10 @@ import {
   PermissionType,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
-  CaveatSpecificationConstraint,
   Caveat,
   PermissionValidatorConstraint,
   PermissionConstraint,
+  RestrictedMethodCaveatSpecificationConstraint,
 } from '@metamask/controllers';
 import { ethErrors } from 'eth-rpc-errors';
 import {
@@ -209,7 +209,7 @@ export function getBip32EntropyCaveatMapper(
 
 export const getBip32EntropyCaveatSpecifications: Record<
   SnapCaveatType.PermittedDerivationPaths,
-  CaveatSpecificationConstraint
+  RestrictedMethodCaveatSpecificationConstraint
 > = {
   [SnapCaveatType.PermittedDerivationPaths]: Object.freeze({
     type: SnapCaveatType.PermittedDerivationPaths,
