@@ -234,6 +234,7 @@ describe('getBip44EntropyImplementation', () => {
           "coin_type": 1,
           "depth": 2,
           "index": 2147483649,
+          "masterFingerprint": 2923603358,
           "parentFingerprint": 2557986109,
           "path": "m / bip32:44' / bip32:1'",
           "privateKey": "c73cedb996e7294f032766853a8b7ba11ab4ce9755fc052f2f7b9000044c99af",
