@@ -3519,8 +3519,8 @@ describe('SnapController', () => {
     it('returns whether a version of a snap is blocked', async () => {
       const checkBlockListSpy = jest.fn();
       const snapId = 'npm:example';
-      const snapVersion = '1.0.0';
-      const sourceShaSum = 'source-shasum';
+      const version = '1.0.0';
+      const shasum = 'source-shasum';
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -3533,7 +3533,10 @@ describe('SnapController', () => {
       });
 
       expect(
-        await snapController.isBlocked(snapId, snapVersion, sourceShaSum),
+        await snapController.isBlocked(snapId, {
+          version,
+          shasum,
+        }),
       ).toBe(false);
 
       checkBlockListSpy.mockResolvedValueOnce({
@@ -3541,13 +3544,16 @@ describe('SnapController', () => {
       });
 
       expect(
-        await snapController.isBlocked(snapId, snapVersion, sourceShaSum),
+        await snapController.isBlocked(snapId, {
+          version,
+          shasum,
+        }),
       ).toBe(true);
 
       expect(checkBlockListSpy).toHaveBeenCalledWith({
         [snapId]: {
-          snapVersion,
-          sourceShaSum,
+          version,
+          shasum,
         },
       });
     });
@@ -3594,12 +3600,12 @@ describe('SnapController', () => {
       // Ensure that CheckSnapBlockListArg is correct
       expect(checkBlockListSpy).toHaveBeenCalledWith({
         [mockSnapA.id]: {
-          snapVersion: mockSnapA.manifest.version,
-          sourceShaSum: mockSnapA.manifest.source.shasum,
+          version: mockSnapA.manifest.version,
+          shasum: mockSnapA.manifest.source.shasum,
         },
         [mockSnapB.id]: {
-          snapVersion: mockSnapB.manifest.version,
-          sourceShaSum: mockSnapB.manifest.source.shasum,
+          version: mockSnapB.manifest.version,
+          shasum: mockSnapB.manifest.source.shasum,
         },
       });
 
