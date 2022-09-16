@@ -410,7 +410,7 @@ type FeatureFlags = {
 };
 
 type SemVerVersion = string;
-type SnapInfo = { snapVersion: SemVerVersion; sourceShaSum?: string };
+type SnapInfo = { snapVersion: SemVerVersion; sourceShaSum: string };
 export type CheckSnapBlockListArg = Record<SnapId, SnapInfo>;
 
 export type CheckSnapBlockListResult = Record<
