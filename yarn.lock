@@ -2890,7 +2890,7 @@ __metadata:
     "@metamask/snap-utils": ^0.20.0
     "@metamask/types": ^1.1.0
     "@metamask/utils": ^2.1.0
-    "@types/node": ^16.11.59
+    "@types/node": ^14.14.25
     eslint: ^7.30.0
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
@@ -3869,13 +3869,6 @@ __metadata:
   version: 14.14.45
   resolution: "@types/node@npm:14.14.45"
   checksum: 3870a0128011b01c6fb6655e0f682b1b660e141f84d76c70fe503f5c7cf38bd06fc7b9a7d3c760601bce0598421f552695de40f095863ede29a6e22a13213b3e
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:^16.11.59":
-  version: 16.11.59
-  resolution: "@types/node@npm:16.11.59"
-  checksum: b3a2986ef8f8216bb7fd1187dcf2e69aca3e6b6b5fdfd6abf4cf11c44e3cdd587fae875a28dc4ef257e2b369e2c5290642aff6a0a9d702f3385a78f561293259
   languageName: node
   linkType: hard
 
