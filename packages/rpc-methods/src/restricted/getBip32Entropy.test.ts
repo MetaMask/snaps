@@ -198,6 +198,41 @@ describe('getBip32EntropyCaveatSpecifications', () => {
       ).toBe('foo');
     });
 
+    it('allows deriving deep nodes', async () => {
+      const fn = jest.fn().mockImplementation(() => 'foo');
+
+      expect(
+        await getBip32EntropyCaveatSpecifications[
+          SnapCaveatType.PermittedDerivationPaths
+        ].decorator(fn, {
+          type: SnapCaveatType.PermittedDerivationPaths,
+          value: [params],
+          // @ts-expect-error Missing other required properties.
+        })({
+          params: {
+            path: [
+              'm',
+              "44'",
+              "60'",
+              "0'",
+              '0',
+              '1',
+              '2',
+              '3',
+              '4',
+              '5',
+              '6',
+              '7',
+              '8',
+              '9',
+              '10',
+            ],
+            curve: 'secp256k1',
+          },
+        }),
+      ).toBe('foo');
+    });
+
     it('throws if the path is invalid', async () => {
       const fn = jest.fn().mockImplementation(() => 'foo');
 
