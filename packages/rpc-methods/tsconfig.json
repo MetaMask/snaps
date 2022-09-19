@@ -7,8 +7,7 @@
       "../../node_modules/@types",
       "./node_modules/@types",
       "./types"
-    ],
-    "skipLibCheck": true
+    ]
   },
   "include": ["./src"],
   "references": [{ "path": "../utils" }]
