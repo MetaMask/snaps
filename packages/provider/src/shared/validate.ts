@@ -1,4 +1,4 @@
-import { JsonRpcResponse, JsonRpcSuccess } from 'json-rpc-engine';
+import type { JsonRpcResponse, JsonRpcSuccess } from 'json-rpc-engine';
 import {
   AccountID,
   accountIdRe,

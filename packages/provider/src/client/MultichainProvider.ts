@@ -14,7 +14,7 @@ import {
   assertIsConnectArguments,
   assertIsRequest,
   assertNotErrorResp,
-} from './validate';
+} from '../shared/validate';
 
 import {
   ChainId,
@@ -22,18 +22,18 @@ import {
   Provider,
   RequestArguments,
   Session,
-} from './Provider';
+} from '../shared/Provider';
 
 const STREAM_NAME = 'metamask-provider-multichain';
 
 const debug = Debug('MultichainProvider');
 
-export class MultichainProvider extends SafeEventEmitter implements Provider {
+export class MultiChainProvider extends SafeEventEmitter implements Provider {
   #rpcEngine = new JsonRpcEngine();
   #rpcConnection = createStreamMiddleware();
   #isConnected = false;
 
-  constructor(connection: Duplex) {
+  constructor(connection: Duplex = HACK_findInjectedStream()) {
     super();
 
     this.#rpcConnection.events.on(
@@ -138,6 +138,15 @@ export class MultichainProvider extends SafeEventEmitter implements Provider {
         throw new Error(`Not implemented notification ${notification.method}`);
     }
   }
+}
+
+function HACK_findInjectedStream(): Duplex {
+  const stream: Duplex | undefined = (window as any)?.metamask?.internal
+    ?.HACK_multiChainStream;
+  if (stream == undefined) {
+    throw new ReferenceError("Can't find stream injected by MetaMask");
+  }
+  return stream;
 }
 
 type MetamaskNotification =
