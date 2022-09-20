@@ -119,6 +119,11 @@ export interface SnapRuntimeData {
   lastRequest: null | number;
 
   /**
+   * The current number of open sessions where this Snap is being used
+   */
+  openSessions: number;
+
+  /**
    * The current pending inbound requests, meaning requests that are processed by snaps.
    */
   pendingInboundRequests: PendingRequest[];
@@ -262,9 +267,24 @@ export type RemoveSnap = {
   handler: SnapController['removeSnap'];
 };
 
-export type GetSnaps = {
-  type: `${typeof controllerName}:getSnaps`;
+export type GetPermittedSnaps = {
+  type: `${typeof controllerName}:getPermittedSnaps`;
   handler: SnapController['getPermittedSnaps'];
+};
+
+export type GetAllSnaps = {
+  type: `${typeof controllerName}:getAllSnaps`;
+  handler: SnapController['getAllSnaps'];
+};
+
+export type OnSessionOpen = {
+  type: `${typeof controllerName}:onSessionOpen`;
+  handler: SnapController['onSessionOpen'];
+};
+
+export type OnSessionClose = {
+  type: `${typeof controllerName}:onSessionClose`;
+  handler: SnapController['onSessionOpen'];
 };
 
 export type InstallSnaps = {
@@ -289,9 +309,12 @@ export type SnapControllerActions =
   | EnableSnap
   | DisableSnap
   | RemoveSnap
-  | GetSnaps
+  | GetPermittedSnaps
   | InstallSnaps
-  | RemoveSnapError;
+  | RemoveSnapError
+  | GetAllSnaps
+  | OnSessionOpen
+  | OnSessionClose;
 
 // Controller Messenger Events
 
@@ -801,7 +824,7 @@ export class SnapController extends BaseController<
     );
 
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:getSnaps`,
+      `${controllerName}:getPermittedSnaps`,
       (...args) => this.getPermittedSnaps(...args),
     );
 
@@ -813,6 +836,21 @@ export class SnapController extends BaseController<
     this.messagingSystem.registerActionHandler(
       `${controllerName}:removeSnapError`,
       (...args) => this.removeSnapError(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:getAllSnaps`,
+      (...args) => this.getAllSnaps(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:onSessionOpen`,
+      (...args) => this.onSessionOpen(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:onSessionClose`,
+      (...args) => this.onSessionClose(...args),
     );
   }
 
@@ -952,6 +990,7 @@ export class SnapController extends BaseController<
       entries
         .filter(
           ([_snapId, runtime]) =>
+            runtime.openSessions === 0 &&
             runtime.pendingInboundRequests.length === 0 &&
             // lastRequest should always be set here but TypeScript wants this check
             runtime.lastRequest &&
@@ -1374,6 +1413,38 @@ export class SnapController extends BaseController<
         snapId,
       );
     }
+  }
+
+  /**
+   * Handles increasing the openSessions counter on session open.
+   *
+   * @param snapId - The snap id of the snap the session was opened with.
+   */
+  onSessionOpen(snapId: SnapId) {
+    const runtime = this.getRuntimeOrDefault(snapId);
+    runtime.openSessions += 1;
+  }
+
+  /**
+   * Handles decreasing the openSessions counter on session close.
+   *
+   * @param snapId - The snap id of the snap the session was closed with.
+   */
+  onSessionClose(snapId: SnapId) {
+    const runtime = this.getRuntimeOrDefault(snapId);
+    runtime.openSessions -= 1;
+  }
+
+  /**
+   * Gets all snaps in their truncated format.
+   *
+   * @returns All installed snaps in their truncated format.
+   */
+  getAllSnaps(): TruncatedSnap[] {
+    return Object.keys(this.state.snaps).map(
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      (snapId) => this.getTruncated(snapId)!,
+    );
   }
 
   /**
@@ -2312,6 +2383,7 @@ export class SnapController extends BaseController<
         lastRequest: null,
         rpcHandler: null,
         installPromise: null,
+        openSessions: 0,
         pendingInboundRequests: [],
         pendingOutboundRequests: 0,
         interpreter,
