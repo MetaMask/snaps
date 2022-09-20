@@ -6,6 +6,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.21.0]
+### Added
+- Add `snap_getBip32PublicKey` RPC method ([#729](https://github.com/MetaMask/snaps-skunkworks/pull/729))
+
+### Changed
+- Expose master fingerprints on BIP-32 and SLIP-10 nodes ([#773](https://github.com/MetaMask/snaps-skunkworks/pull/773))
+  - Accomplished by bumping `@metamask/key-tree` to `5.0.2`
+- Allow deriving child nodes with `getBip32Entropy` ([#751](https://github.com/MetaMask/snaps-skunkworks/pull/751))
+
+### Removed
+- **BREAKING:** Remove deprecated `snap_getBip44Entropy_*` method ([#717](https://github.com/MetaMask/snaps-skunkworks/pull/717))
+
+### Fixed
+- Fix race condition in `wallet_getSnaps` ([#756](https://github.com/MetaMask/snaps-skunkworks/pull/756))
+- Fix fingerprint derivation on BIP-32 and SLIP-10 nodes ([#773](https://github.com/MetaMask/snaps-skunkworks/pull/773))
+  - Accomplished by bumping `@metamask/key-tree` to `5.0.2`
+
 ## [0.20.0]
 ### Added
 - **BREAKING:** Add Transaction Insight API ([#642](https://github.com/MetaMask/snaps-skunkworks/pull/642))
@@ -188,7 +205,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.20.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.21.0...HEAD
+[0.21.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.20.0...v0.21.0
 [0.20.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.19.1...v0.20.0
 [0.19.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.19.0...v0.19.1
 [0.19.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.18.1...v0.19.0
