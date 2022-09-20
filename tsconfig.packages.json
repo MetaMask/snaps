@@ -9,8 +9,7 @@
     "useUnknownInCatchVariables": false,
     "sourceMap": true,
     "strict": true,
-    "target": "ES2017",
-    "skipLibCheck": true
+    "target": "ES2017"
   },
   "exclude": ["**/__snapshots__/**", "**/test/**", "**/*.test.ts"]
 }

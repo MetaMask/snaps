@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@metamask/controllers": "^31.0.0",
-    "@metamask/key-tree": "^5.0.1",
+    "@metamask/key-tree": "^5.0.2",
     "@metamask/snap-utils": "^0.20.0",
     "@metamask/types": "^1.1.0",
     "@metamask/utils": "^2.1.0",
