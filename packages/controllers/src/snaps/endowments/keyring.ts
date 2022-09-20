@@ -2,6 +2,7 @@ import { isNamespacesObject, SnapCaveatType } from '@metamask/snap-utils';
 import {
   Caveat,
   CaveatSpecificationConstraint,
+  EndowmentGetterParams,
   PermissionSpecificationBuilder,
   PermissionType,
   PermissionValidatorConstraint,
@@ -9,13 +10,14 @@ import {
 } from '@metamask/controllers';
 import { hasProperty, isPlainObject, NonEmptyArray } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
+import { SnapEndowments } from './enum';
 
-const targetKey = 'endowment:keyring';
+const targetKey = SnapEndowments.Keyring;
 
-// @ts-expect-error TODO: Pending `controllers` release.
 type KeyringSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;
   targetKey: typeof targetKey;
+  endowmentGetter: (_options?: any) => undefined;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
   validator: PermissionValidatorConstraint;
 }>;
@@ -29,16 +31,16 @@ type KeyringSpecificationBuilderOptions = {
  *
  * @returns The specification for the keyring endowment permission.
  */
-export const specificationBuilder: PermissionSpecificationBuilder<
+const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.Endowment,
   KeyringSpecificationBuilderOptions,
-  // @ts-expect-error TODO: Pending `controllers` release.
   KeyringSpecification
 > = (): KeyringSpecification => {
   return {
     permissionType: PermissionType.Endowment,
     targetKey,
-    allowedCaveats: [SnapCaveatType.PermittedDerivationPaths],
+    allowedCaveats: [SnapCaveatType.SnapKeyring],
+    endowmentGetter: (_getterOptions?: EndowmentGetterParams) => undefined,
     validator: ({ caveats }) => {
       if (
         caveats?.length !== 1 ||
@@ -51,6 +53,11 @@ export const specificationBuilder: PermissionSpecificationBuilder<
     },
   };
 };
+
+export const keyringEndowmentBuilder = Object.freeze({
+  targetKey,
+  specificationBuilder,
+} as const);
 
 /**
  * Validate the namespaces value of a caveat. This does not validate the type or
@@ -77,7 +84,6 @@ export const keyringCaveatSpecifications: Record<
   SnapCaveatType.SnapKeyring,
   CaveatSpecificationConstraint
 > = {
-  // @ts-expect-error TODO: Pending `controllers` release.
   [SnapCaveatType.SnapKeyring]: Object.freeze({
     type: SnapCaveatType.SnapKeyring,
     validator: (caveat: Caveat<string, any>) => validateCaveatNamespace(caveat),

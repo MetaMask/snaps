@@ -6,7 +6,7 @@ import {
 } from '@metamask/controllers';
 import { SnapEndowments } from './enum';
 
-const permissionName = SnapEndowments.longRunning;
+const permissionName = SnapEndowments.LongRunning;
 
 type LongRunningEndowmentSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;
