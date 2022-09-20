@@ -1,4 +1,9 @@
-describe('MultichainProvidr', () => {
+describe('MultiChainProvider', () => {
+  describe('HACK_multiChainStream', () => {
+    it.todo('finds the stream and uses it');
+    it.todo('throws an error when not found');
+  });
+
   describe('connect', () => {
     it.todo('validates arguments');
     it.todo('connects');

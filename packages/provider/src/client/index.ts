@@ -1,2 +1,2 @@
-export * from './MultichainProvider';
-export * from './Provider';
+export * from '../shared/Provider';
+export * from './MultiChainProvider';
