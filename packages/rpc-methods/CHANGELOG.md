@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `snap_getBip32PublicKey` RPC method ([#729](https://github.com/MetaMask/snaps-skunkworks/pull/729))
 
 ### Changed
-- Expose fingerprints on key-tree nodes ([#773](https://github.com/MetaMask/snaps-skunkworks/pull/773))
+- Expose master fingerprints on BIP-32 and SLIP-10 nodes ([#773](https://github.com/MetaMask/snaps-skunkworks/pull/773))
   - Accomplished by bumping `@metamask/key-tree` to `5.0.2`
 - Allow deriving child nodes with `getBip32Entropy` ([#751](https://github.com/MetaMask/snaps-skunkworks/pull/751))
 
@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fix race condition in `wallet_getSnaps` ([#756](https://github.com/MetaMask/snaps-skunkworks/pull/756))
+- Fix fingerprint derivation on BIP-32 and SLIP-10 nodes ([#773](https://github.com/MetaMask/snaps-skunkworks/pull/773))
+  - Accomplished by bumping `@metamask/key-tree` to `5.0.2`
 
 ## [0.20.0]
 ### Added
