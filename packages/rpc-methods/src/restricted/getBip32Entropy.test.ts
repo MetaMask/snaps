@@ -294,7 +294,7 @@ describe('getBip32EntropyImplementation', () => {
           params: { path: ['m', "44'", "60'"], curve: 'secp256k1' },
         }),
       ).toMatchInlineSnapshot(`
-        Object {
+        {
           "chainCode": "c4d424c253ca0eab92de6d8c819a37889e15a11bbf1cb6a48ffca2faef1f4d4d",
           "curve": "secp256k1",
           "depth": 2,
@@ -322,7 +322,7 @@ describe('getBip32EntropyImplementation', () => {
           },
         }),
       ).toMatchInlineSnapshot(`
-        Object {
+        {
           "chainCode": "6265b647bc0e70480f29856be102fe866ea6a8ec9e2926c198c2e9c4cd268a43",
           "curve": "secp256k1",
           "depth": 5,

@@ -19,11 +19,6 @@ module.exports = {
       statements: 100,
     },
   },
-  globals: {
-    'ts-jest': {
-      tsconfig: 'tsconfig.test.json',
-    },
-  },
   moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'],
   preset: 'ts-jest',
   // "resetMocks" resets all mocks, including mocked modules, to jest.fn(),

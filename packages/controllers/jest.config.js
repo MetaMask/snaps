@@ -14,11 +14,6 @@ module.exports = {
       statements: 93.89,
     },
   },
-  globals: {
-    'ts-jest': {
-      tsconfig: 'tsconfig.test.json',
-    },
-  },
   projects: [
     {
       preset: 'ts-jest',
@@ -27,12 +22,16 @@ module.exports = {
       testEnvironmentOptions: {
         resources: 'usable',
         runScripts: 'dangerously',
+        customExportConditions: ['node', 'node-addons'],
       },
     },
     {
       preset: 'ts-jest',
       testPathIgnorePatterns: ['<rootDir>/src/services/iframe/*'],
       testEnvironment: 'jsdom',
+      testEnvironmentOptions: {
+        customExportConditions: ['node', 'node-addons'],
+      },
       testRegex: ['\\.test\\.(ts|js)$'],
     },
   ],
