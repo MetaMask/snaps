@@ -322,7 +322,7 @@ describe('getBip32EntropyImplementation', () => {
           },
         }),
       ).toMatchInlineSnapshot(`
-        Object {
+        {
           "chainCode": "6265b647bc0e70480f29856be102fe866ea6a8ec9e2926c198c2e9c4cd268a43",
           "curve": "secp256k1",
           "depth": 5,
