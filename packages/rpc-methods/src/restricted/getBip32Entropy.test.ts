@@ -299,8 +299,8 @@ describe('getBip32EntropyImplementation', () => {
           "curve": "secp256k1",
           "depth": 2,
           "index": 2147483708,
-          "masterFingerprint": 2923603358,
-          "parentFingerprint": 2557986109,
+          "masterFingerprint": 1404659567,
+          "parentFingerprint": 1829122711,
           "privateKey": "ca8d3571710e2b08628926f0ec14983aded0fd039518c59522c004e0e7eb4f5a",
           "publicKey": "041e31e8432aab932fe18b5f9798b7252394ff0b943920b40c50a79301062df5ece2b884a45c456241e35000137e6dbd92c9119ccd5f46cc92ba9568ca661b994b",
         }
@@ -327,8 +327,8 @@ describe('getBip32EntropyImplementation', () => {
           "curve": "secp256k1",
           "depth": 5,
           "index": 1,
-          "masterFingerprint": 2923603358,
-          "parentFingerprint": 4280199180,
+          "masterFingerprint": 1404659567,
+          "parentFingerprint": 942995271,
           "privateKey": "4adb19cafa5fdf467215fa30b56a50facac2dee40a7015063c6a7a0f1f4e2576",
           "publicKey": "04b21938e18aec1e2e7478988ccae5b556597d771c8e46ac2c8ea2a4a1a80619679230a109cd30e8af15856b15799e38991e45e55f406a8a24d5605ba0757da53c",
         }
