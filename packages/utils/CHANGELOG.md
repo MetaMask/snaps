@@ -7,9 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.21.0]
-### Uncategorized
-- Stop including `installing` snaps in `wallet_getSnaps` ([#765](https://github.com/MetaMask/snaps-skunkworks/pull/765))
-- Export test utils from utils package ([#743](https://github.com/MetaMask/snaps-skunkworks/pull/743))
+### Changed
 - Run eval and fix manifest in bundler plugins ([#731](https://github.com/MetaMask/snaps-skunkworks/pull/731))
 
 ## [0.20.0]

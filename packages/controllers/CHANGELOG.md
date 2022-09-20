@@ -7,11 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.21.0]
-### Uncategorized
-- BREAKING: Add changes to support blocking snaps by shasum ([#767](https://github.com/MetaMask/snaps-skunkworks/pull/767))
-- Bump `@metamask/controllers` to `31.0.0` ([#769](https://github.com/MetaMask/snaps-skunkworks/pull/769))
+### Changed
+- **BREAKING:** Add changes to support blocking snaps by shasum ([#767](https://github.com/MetaMask/snaps-skunkworks/pull/767))
+- **BREAKING:** Rework snap install logic ([#754](https://github.com/MetaMask/snaps-skunkworks/pull/754))
 - Stop including `installing` snaps in `wallet_getSnaps` ([#765](https://github.com/MetaMask/snaps-skunkworks/pull/765))
-- BREAKING: Rework snap install logic ([#754](https://github.com/MetaMask/snaps-skunkworks/pull/754))
+
+### Fixed
 - Process snap permissions before snap update ([#753](https://github.com/MetaMask/snaps-skunkworks/pull/753))
 - Only pause running timers ([#725](https://github.com/MetaMask/snaps-skunkworks/pull/725))
 

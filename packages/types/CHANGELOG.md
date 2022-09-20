@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.21.0]
-### Uncategorized
-- BREAKING: Remove origin from TX insight payload ([#730](https://github.com/MetaMask/snaps-skunkworks/pull/730))
-- Fix snap-types dependencies ([#718](https://github.com/MetaMask/snaps-skunkworks/pull/718))
+### Removed
+- **BREAKING:** Remove origin parameter from transaction insight payload ([#730](https://github.com/MetaMask/snaps-skunkworks/pull/730))
+
+### Fixed
+- Fix missing dependencies ([#718](https://github.com/MetaMask/snaps-skunkworks/pull/718))
 
 ## [0.20.0]
 ### Added
