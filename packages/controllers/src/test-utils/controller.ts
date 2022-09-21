@@ -74,7 +74,7 @@ export const getSnapControllerMessenger = (
       // Return false for long-running by default, and true for everything else.
       if (
         method === 'PermissionController:hasPermission' &&
-        args[1] === SnapEndowments.longRunning
+        args[1] === SnapEndowments.LongRunning
       ) {
         return false;
       }
@@ -148,7 +148,7 @@ export const getSnapControllerWithEESOptions = (
       // Mock long running permission, call actual implementation for everything else
       if (
         method === 'PermissionController:hasPermission' &&
-        args[1] === SnapEndowments.longRunning
+        args[1] === SnapEndowments.LongRunning
       ) {
         return false;
       }

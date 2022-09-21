@@ -8,7 +8,7 @@ describe('endowment:transaction-insight', () => {
       transactionInsightEndowmentBuilder.specificationBuilder({});
     expect(specification).toStrictEqual({
       permissionType: PermissionType.Endowment,
-      targetKey: SnapEndowments.transactionInsight,
+      targetKey: SnapEndowments.TransactionInsight,
       endowmentGetter: expect.any(Function),
       allowedCaveats: null,
     });

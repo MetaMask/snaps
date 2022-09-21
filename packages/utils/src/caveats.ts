@@ -8,4 +8,9 @@ export enum SnapCaveatType {
    * Permitted coin types, used by `snap_getBip44Entropy`.
    */
   PermittedCoinTypes = 'permittedCoinTypes',
+
+  /**
+   * Permission to use the Snap keyring API.
+   */
+  SnapKeyring = 'snapKeyring',
 }

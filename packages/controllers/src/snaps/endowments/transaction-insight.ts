@@ -6,7 +6,7 @@ import {
 } from '@metamask/controllers';
 import { SnapEndowments } from './enum';
 
-const permissionName = SnapEndowments.transactionInsight;
+const permissionName = SnapEndowments.TransactionInsight;
 
 type TransactionInsightEndowmentSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;

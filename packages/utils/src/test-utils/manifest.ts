@@ -1,4 +1,5 @@
 import { NpmSnapPackageJson, SnapManifest } from '../json-schemas';
+import { Chain, Namespace } from '../namespace';
 import { DEFAULT_SNAP_SHASUM } from './snap';
 import { PartialOrNull } from './types';
 
@@ -105,3 +106,21 @@ export const getPackageJson = ({
     return packageJson;
   }, {} as NpmSnapPackageJson);
 };
+
+export const getChain = ({
+  id = 'eip155:1',
+  name = 'Ethereum Mainnet',
+}: Partial<Chain> = {}): Chain => ({
+  id,
+  name,
+});
+
+export const getNamespace = ({
+  chains = [getChain()],
+  methods = ['eth_signTransaction', 'eth_accounts'],
+  events = ['accountsChanged'],
+}: Partial<Namespace> = {}): Namespace => ({
+  chains,
+  methods,
+  events,
+});

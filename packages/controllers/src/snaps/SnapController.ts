@@ -2246,7 +2246,7 @@ export class SnapController extends BaseController<
     const isLongRunning = await this.messagingSystem.call(
       'PermissionController:hasPermission',
       snapId,
-      SnapEndowments.longRunning,
+      SnapEndowments.LongRunning,
     );
 
     // Long running snaps have timeouts disabled
