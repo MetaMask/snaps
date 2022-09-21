@@ -1432,11 +1432,11 @@ export class SnapController extends BaseController<
    */
   onSessionClose(snapId: SnapId) {
     const runtime = this.getRuntimeOrDefault(snapId);
-    runtime.openSessions -= 1;
     assert(
-      runtime.openSessions >= 0,
+      runtime.openSessions > 0,
       new Error(`Session management is in an invalid state.`),
     );
+    runtime.openSessions -= 1;
   }
 
   /**
