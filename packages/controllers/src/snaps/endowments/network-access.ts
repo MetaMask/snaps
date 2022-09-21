@@ -6,7 +6,7 @@ import {
 } from '@metamask/controllers';
 import { SnapEndowments } from './enum';
 
-const permissionName = SnapEndowments.networkAccess;
+const permissionName = SnapEndowments.NetworkAccess;
 
 type NetworkAccessEndowmentSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;

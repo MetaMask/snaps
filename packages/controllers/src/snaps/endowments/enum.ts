@@ -1,5 +1,6 @@
 export enum SnapEndowments {
-  networkAccess = 'endowment:network-access',
-  longRunning = 'endowment:long-running',
-  transactionInsight = 'endowment:transaction-insight',
+  NetworkAccess = 'endowment:network-access',
+  LongRunning = 'endowment:long-running',
+  TransactionInsight = 'endowment:transaction-insight',
+  Keyring = 'endowment:keyring',
 }
