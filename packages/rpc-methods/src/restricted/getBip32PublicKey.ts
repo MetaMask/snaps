@@ -10,8 +10,7 @@ import {
 import { ethErrors } from 'eth-rpc-errors';
 import { NonEmptyArray } from '@metamask/utils';
 import { BIP32Node, SLIP10Node } from '@metamask/key-tree';
-
-import { SnapCaveatType } from '../caveats';
+import { SnapCaveatType } from '@metamask/snap-utils';
 import { isEqual } from '../utils';
 import { validateCaveatPaths, validatePath } from './getBip32Entropy';
 
