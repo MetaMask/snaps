@@ -2693,7 +2693,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controllers@npm:^31.0.0, @metamask/controllers@npm:^31.1.0":
+"@metamask/controllers@npm:^31.0.0":
   version: 31.1.0
   resolution: "@metamask/controllers@npm:31.1.0"
   dependencies:
@@ -2819,7 +2819,6 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
-    "@metamask/controllers": ^31.1.0
     "@metamask/eslint-config": ^9.0.0
     "@metamask/eslint-config-jest": ^9.0.0
     "@metamask/eslint-config-nodejs": ^9.0.0
@@ -3135,7 +3134,7 @@ __metadata:
     rimraf: ^3.0.2
     semver: ^7.3.7
     ses: ^0.15.17
-    superstruct: ^0.16.0
+    superstruct: 0.16.0
     ts-jest: ^29.0.0
     typescript: ^4.4.0
   languageName: unknown
@@ -16218,7 +16217,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"superstruct@npm:^0.16.0":
+"superstruct@npm:0.16.0":
   version: 0.16.0
   resolution: "superstruct@npm:0.16.0"
   checksum: 1979c287f95f2a9dece537f74f5330b0b831965030fe025e2d52dfb3ecdf8974251371cc22d5cdf36960639b039687e5a236881f6ec7cf33d5c8fdc348f13a46
