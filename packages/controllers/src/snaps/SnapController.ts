@@ -1433,6 +1433,10 @@ export class SnapController extends BaseController<
   onSessionClose(snapId: SnapId) {
     const runtime = this.getRuntimeOrDefault(snapId);
     runtime.openSessions -= 1;
+    assert(
+      runtime.openSessions >= 0,
+      new Error(`Session management is in an invalid state.`),
+    );
   }
 
   /**
@@ -1441,10 +1445,7 @@ export class SnapController extends BaseController<
    * @returns All installed snaps in their truncated format.
    */
   getAllSnaps(): TruncatedSnap[] {
-    return Object.keys(this.state.snaps).map(
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      (snapId) => this.getTruncated(snapId)!,
-    );
+    return Object.values(this.state.snaps).map(truncateSnap);
   }
 
   /**
