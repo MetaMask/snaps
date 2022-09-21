@@ -1,4 +1,4 @@
-import { getChain, getNamespace } from './__test__';
+import { getChain, getNamespace } from './test-utils';
 import { isNamespace, isNamespacesObject } from './namespace';
 
 describe('isNamespace', () => {
