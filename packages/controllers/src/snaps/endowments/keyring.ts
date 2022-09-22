@@ -79,7 +79,15 @@ function validateCaveatNamespace(caveat: Caveat<string, any>): void {
     });
   }
 
-  if (!isNamespacesObject(caveat.value)) {
+  const { value } = caveat;
+
+  if (!hasProperty(value, 'namespaces') || !isPlainObject(value)) {
+    throw ethErrors.rpc.invalidParams({
+      message: 'Expected a plain object.',
+    });
+  }
+
+  if (!isNamespacesObject(value.namespaces)) {
     throw ethErrors.rpc.invalidParams({
       message: 'Expected a valid namespaces object.',
     });

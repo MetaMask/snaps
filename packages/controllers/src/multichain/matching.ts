@@ -1,8 +1,8 @@
 import {
   ConnectArguments,
   NamespaceId,
-  RequestNamespace,
   SnapId,
+  Namespace,
 } from '@metamask/snap-utils';
 
 /**
@@ -14,7 +14,7 @@ import {
  */
 export function findMatchingKeyringSnaps(
   requestedNamespaces: ConnectArguments['requiredNamespaces'],
-  snaps: Record<SnapId, Record<NamespaceId, RequestNamespace>>,
+  snaps: Record<SnapId, Record<NamespaceId, Namespace>>,
 ): Record<NamespaceId, SnapId[]> {
   const snapEntries = Object.entries(snaps);
   return Object.entries(requestedNamespaces).reduce<
@@ -45,13 +45,13 @@ export function findMatchingKeyringSnaps(
  */
 function matchNamespace(
   requestedNamespace: ConnectArguments['requiredNamespaces'][NamespaceId],
-  potentialMatchNamespace: RequestNamespace,
+  potentialMatchNamespace: Namespace,
 ) {
   // TODO: Determine if those types are actually identical for requested and potential match.
   if (
     !requestedNamespace.chains.every((requestedChain) =>
       potentialMatchNamespace.chains.some(
-        (potentialMatchChain) => potentialMatchChain === requestedChain,
+        (potentialMatchChain) => potentialMatchChain.id === requestedChain,
       ),
     )
   ) {

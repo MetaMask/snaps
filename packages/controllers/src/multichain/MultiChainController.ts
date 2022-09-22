@@ -185,14 +185,21 @@ export class MultiChainController extends BaseController<
 
     const snaps = this.messagingSystem.call('SnapController:getAll');
 
+    const availableNamespaces = await snaps.reduce<
+      Promise<Record<SnapId, Record<NamespaceId, Namespace>>>
+    >(async (previousPromise, snap) => {
+      const acc = await previousPromise;
+      const snapNamespaces = await this.snapToNamespaces(snap);
+      if (snapNamespaces !== null) {
+        return { ...acc, [snap.id]: snapNamespaces };
+      }
+      return acc;
+    }, Promise.resolve({}));
+
     // The magical matching algorithm specified in SIP-2
     const namespaceToSnaps = findMatchingKeyringSnaps(
       connection.requiredNamespaces,
-      fromEntries(
-        snaps
-          .map((snap) => [snap.id, this.snapToNamespaces(snap)])
-          .filter(([_, namespace]) => namespace !== null),
-      ),
+      availableNamespaces,
     );
 
     const possibleAccounts = await this.namespacesToAccounts(
@@ -303,7 +310,7 @@ export class MultiChainController extends BaseController<
     const keyringPermission = permissions?.[SnapEndowments.Keyring];
     // Null if this snap doesn't expose keyrings
     // TODO: Verify that this is enough
-    return keyringPermission?.caveats?.[0]?.value ?? null;
+    return keyringPermission?.caveats?.[0]?.value?.namespaces ?? null;
   }
 
   private async namespacesToAccounts(
@@ -312,10 +319,14 @@ export class MultiChainController extends BaseController<
     requestedNamespaces: Record<NamespaceId, RequestNamespace>,
   ): Promise<Record<NamespaceId, { snapId: SnapId; accounts: AccountId[] }[]>> {
     const allSnaps = flatten(Object.values(namespacesAndSnaps));
-    const dedupedSnaps = [...new Set(allSnaps)];
+    const dedupedSnaps = [...new Set(allSnaps)] as SnapId[];
     // TODO: Make sure this is properly parallelized
-    const allAccounts: Record<string, AccountId[]> = await dedupedSnaps.reduce(
-      async (acc, snapId) => {
+    const allAccounts = await dedupedSnaps.reduce<
+      Promise<Record<string, AccountId[]>>
+    >(
+      // @ts-expect-error Fix this?
+      async (previousPromise, snapId) => {
+        const acc = await previousPromise;
         return {
           ...acc,
           [snapId]: await this.snapRequest({
@@ -325,25 +336,25 @@ export class MultiChainController extends BaseController<
           }),
         };
       },
-      {},
+      Promise.resolve({}),
     );
 
     return Object.keys(namespacesAndSnaps).reduce((acc, namespaceId) => {
       const { chains } = requestedNamespaces[namespaceId];
 
-      const result = Object.entries(allAccounts).reduce(
-        (accList, [snapId, accounts]) => {
-          const filteredAccounts = accounts.filter((account) => {
-            const { chainId: parsedChainId } = parseAccountId(account);
-            return chains.some((chainId) => chainId === parsedChainId);
-          });
-          if (filteredAccounts.length > 0) {
-            return [...accList, { snapId, accounts: filteredAccounts }];
-          }
-          return accList;
-        },
-        [],
-      );
+      const result = Object.entries(allAccounts).reduce<
+        { snapId: SnapId; accounts: AccountId[] }[]
+      >((accList, [snapId, accounts]) => {
+        // @ts-expect-error Fix this?
+        const filteredAccounts = accounts.filter((account) => {
+          const { chainId: parsedChainId } = parseAccountId(account);
+          return chains.some((chainId) => chainId === parsedChainId);
+        });
+        if (filteredAccounts.length > 0) {
+          return [...accList, { snapId, accounts: filteredAccounts }];
+        }
+        return accList;
+      }, []);
 
       return { ...acc, [namespaceId]: result };
     }, {});
