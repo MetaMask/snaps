@@ -11,7 +11,6 @@ export * from './mock';
 export * from './namespace';
 export * from './npm';
 export * from './object';
-export * from './Option';
 export * from './post-process';
 export * from './snaps';
 export * from './types';
