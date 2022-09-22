@@ -25,15 +25,16 @@ export function createMultiChainMiddleware({
     origin: string,
     data: { chainId: ChainId; request: RequestArguments },
   ) => Promise<unknown>;
-  getOrigin(req: JsonRpcRequest<unknown>): string;
-}): JsonRpcMiddleware<any, any> {
+}): JsonRpcMiddleware<JsonRpcRequest<unknown>, any> {
   return createAsyncMiddleware(async function middleware(req, res, next) {
     // This is added by other middleware
-    const { origin } = req as any;
-    if (req.method !== 'wallet_multiChainRequestHack') {
+    const { origin, params: unwrapped } = req as JsonRpcRequest<
+      JsonRpcRequest<unknown>
+    > & { origin: string };
+    if (req.method !== 'wallet_multiChainRequestHack' || !unwrapped) {
       return next();
     }
-    const unwrapped = req.params;
+
     switch (unwrapped.method) {
       case 'caip_request': {
         assertIsRequest(req.params);
