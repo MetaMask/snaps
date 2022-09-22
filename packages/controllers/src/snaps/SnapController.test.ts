@@ -12,6 +12,7 @@ import {
   SnapManifest,
   HandlerType,
   SnapStatus,
+  getSnapPermissionName
 } from '@metamask/snap-utils';
 import { Crypto } from '@peculiar/webcrypto';
 import { EthereumRpcError, ethErrors, serializeError } from 'eth-rpc-errors';
@@ -1161,6 +1162,68 @@ describe('SnapController', () => {
     );
 
     snapController.destroy();
+  });
+
+  it('does not kill snaps with open sessions', async () => {
+    const options = getSnapControllerWithEESOptions({
+      idleTimeCheckInterval: 100,
+      maxIdleTime: 500,
+    });
+    const [snapController, service] = getSnapControllerWithEES(options);
+    const sourceCode = `
+    module.exports.onRpcRequest = () => 'foo bar';
+    `;
+
+    const snap = await snapController.add({
+      origin: MOCK_ORIGIN,
+      id: MOCK_SNAP_ID,
+      sourceCode,
+      manifest: getSnapManifest({ shasum: getSnapSourceShasum(sourceCode) }),
+    });
+
+    await snapController.startSnap(snap.id);
+    expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
+
+    await options.rootMessenger.call(
+      'SnapController:onSessionOpen',
+      MOCK_SNAP_ID,
+    );
+
+    expect(
+      await snapController.handleRequest({
+        snapId: snap.id,
+        origin: 'foo.com',
+        handler: HandlerType.OnRpcRequest,
+        request: {
+          jsonrpc: '2.0',
+          method: 'test',
+          params: {},
+          id: 1,
+        },
+      }),
+    ).toBe('foo bar');
+
+    await new Promise<void>((resolve) => {
+      setTimeout(() => resolve(), 501);
+    });
+
+    // Should still be running after idle timeout
+    expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
+
+    await options.rootMessenger.call(
+      'SnapController:onSessionClose',
+      MOCK_SNAP_ID,
+    );
+
+    await new Promise<void>((resolve) => {
+      setTimeout(() => resolve(), 101);
+    });
+
+    // Should be terminated by idle timeout now
+    expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
+
+    snapController.destroy();
+    await service.terminateAllSnaps();
   });
 
   it('shouldnt time out a long running snap on start up', async () => {
@@ -3879,7 +3942,7 @@ describe('SnapController', () => {
       });
     });
 
-    describe('SnapController:getSnaps', () => {
+    describe('SnapController:getPermittedSnaps', () => {
       it('calls SnapController.getPermittedSnaps()', async () => {
         const messenger = getSnapControllerMessenger(undefined, false);
         const mockSnap = getMockSnapData({
@@ -3916,7 +3979,7 @@ describe('SnapController', () => {
         );
 
         const result = await messenger.call(
-          'SnapController:getSnaps',
+          'SnapController:getPermittedSnaps',
           mockSnap.origin,
         );
         expect(result).toStrictEqual({
@@ -3927,6 +3990,37 @@ describe('SnapController', () => {
             version: '1.0.0',
           },
         });
+      });
+    });
+
+    describe('SnapController:getAllSnaps', () => {
+      it('calls SnapController.getAllSnaps()', async () => {
+        const messenger = getSnapControllerMessenger(undefined, false);
+        const mockSnap = getMockSnapData({
+          id: 'npm:example',
+          origin: 'foo.com',
+        });
+
+        getSnapController(
+          getSnapControllerOptions({
+            messenger,
+            state: {
+              snaps: {
+                [mockSnap.id]: mockSnap.stateObject,
+              },
+            },
+          }),
+        );
+
+        const result = await messenger.call('SnapController:getAllSnaps');
+        expect(result).toStrictEqual([
+          {
+            id: mockSnap.id,
+            initialPermissions: mockSnap.manifest.initialPermissions,
+            permissionName: getSnapPermissionName(mockSnap.id),
+            version: mockSnap.manifest.version,
+          },
+        ]);
       });
     });
 
