@@ -22,6 +22,7 @@ import {
   fromEntries,
   SessionNamespace,
   Namespace,
+  flatten,
 } from '@metamask/snap-utils';
 import {
   GetAllSnaps,
@@ -195,7 +196,9 @@ export class MultiChainController extends BaseController<
     );
 
     const possibleAccounts = await this.namespacesToAccounts(
-      Object.keys(namespaceToSnaps),
+      origin,
+      namespaceToSnaps,
+      connection.requiredNamespaces,
     );
 
     // TODO(ritave): Get user approval for connection
@@ -276,13 +279,13 @@ export class MultiChainController extends BaseController<
     snapId: string;
     origin: string;
     method: string;
-    args: unknown;
+    args?: unknown;
   }) {
     return this.messagingSystem.call('SnapController:handleRequest', {
       snapId,
       origin,
       handler: HandlerType.SnapKeyring,
-      request: { method, params: [args] },
+      request: { method, params: args ? [args] : [] },
     });
   }
 
@@ -304,9 +307,46 @@ export class MultiChainController extends BaseController<
   }
 
   private async namespacesToAccounts(
-    _namespaces: NamespaceId[],
+    origin: string,
+    namespacesAndSnaps: Record<NamespaceId, SnapId[]>,
+    requestedNamespaces: Record<NamespaceId, RequestNamespace>,
   ): Promise<Record<NamespaceId, { snapId: SnapId; accounts: AccountId[] }[]>> {
-    throw new Error('Not implemented.');
+    const allSnaps = flatten(Object.values(namespacesAndSnaps));
+    const dedupedSnaps = [...new Set(allSnaps)];
+    // TODO: Make sure this is properly parallelized
+    const allAccounts: Record<string, AccountId[]> = await dedupedSnaps.reduce(
+      async (acc, snapId) => {
+        return {
+          ...acc,
+          [snapId]: await this.snapRequest({
+            snapId,
+            origin,
+            method: 'getAccounts',
+          }),
+        };
+      },
+      {},
+    );
+
+    return Object.keys(namespacesAndSnaps).reduce((acc, namespaceId) => {
+      const { chains } = requestedNamespaces[namespaceId];
+
+      const result = Object.entries(allAccounts).reduce(
+        (accList, [snapId, accounts]) => {
+          const filteredAccounts = accounts.filter((account) => {
+            const { chainId: parsedChainId } = parseAccountId(account);
+            return chains.some((chainId) => chainId === parsedChainId);
+          });
+          if (filteredAccounts.length > 0) {
+            return [...accList, { snapId, accounts: filteredAccounts }];
+          }
+          return accList;
+        },
+        [],
+      );
+
+      return { ...acc, [namespaceId]: result };
+    }, {});
   }
 
   private async resolveConflicts(

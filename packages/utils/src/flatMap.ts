@@ -1,5 +1,5 @@
 // Flattens at depth 1
-const flatten = (array: any[]) => {
+export const flatten = (array: any[]) => {
   return array.reduce((acc, cur) => {
     if (Array.isArray(cur)) {
       return [...acc, ...cur];
