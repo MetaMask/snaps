@@ -2,7 +2,14 @@ import {
   BaseControllerV2 as BaseController,
   RestrictedControllerMessenger,
 } from '@metamask/controllers';
-import { assert, Maybe, Option, Snap, SnapId } from '@metamask/snap-utils';
+import {
+  assert,
+  HandlerType,
+  Maybe,
+  Option,
+  Snap,
+  SnapId,
+} from '@metamask/snap-utils';
 import {
   AccountID,
   accountIdRe,
@@ -57,6 +64,9 @@ type MultiChainControllerArgs = {
   messenger: MultiChainControllerMessenger;
 };
 
+/**
+ * @param chainId
+ */
 function parseChainId(chainId: ChainId): {
   namespace: NamespaceId;
   reference: string;
@@ -69,6 +79,9 @@ function parseChainId(chainId: ChainId): {
   };
 }
 
+/**
+ * @param accountId
+ */
 function parseAccountId(accountId: AccountID): {
   chain: { namespace: NamespaceId; reference: string };
   chainId: ChainId;
@@ -189,6 +202,7 @@ export class MultiChainController extends BaseController<
       'SnapController:incActiveRefs',
       Object.values(session.handlingSnaps),
     );
+
     this.update((state) => {
       state.sessions[origin] = session;
     });
