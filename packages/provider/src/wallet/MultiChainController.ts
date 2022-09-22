@@ -129,7 +129,7 @@ export class MultiChainController extends BaseController<
       'No session to close',
     );
 
-    await this.notify(origin, { method: 'metamask_disconnect' });
+    await this.notify(origin, { method: 'multichainHack_metamask_disconnect' });
 
     this.update((state) => {
       delete state.sessions[origin];
