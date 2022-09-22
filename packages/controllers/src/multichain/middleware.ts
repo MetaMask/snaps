@@ -46,13 +46,13 @@ export function createMultiChainMiddleware({
 
     switch (unwrapped.method) {
       case 'caip_request': {
-        assertIsRequestArguments(req.params);
+        assertIsRequestArguments(unwrapped.params);
         res.result = await onRequest(origin, unwrapped.params);
         return;
       }
 
       case 'metamask_handshake': {
-        assertIsConnectArguments(req.params);
+        assertIsConnectArguments(unwrapped.params);
         res.result = await onConnect(origin, unwrapped.params);
         return;
       }
