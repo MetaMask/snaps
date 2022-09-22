@@ -19,6 +19,7 @@ import {
   TruncatedSnap,
   SnapId,
   fromEntries,
+  SessionNamespace,
 } from '@metamask/snap-utils';
 import {
   GetAllSnaps,
@@ -193,7 +194,7 @@ export class MultiChainController extends BaseController<
     const chosenAccounts = await this.resolveConflicts(possibleAccounts);
     // TODO(ritave): Save the approved permissions
 
-    const providedNamespaces: Record<NamespaceId, RequestNamespace> =
+    const providedNamespaces: Record<NamespaceId, SessionNamespace> =
       fromEntries(
         Object.entries(connection.requiredNamespaces)
           .filter(([namespaceId]) => chosenAccounts[namespaceId] !== null)

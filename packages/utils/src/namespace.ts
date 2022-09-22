@@ -72,7 +72,7 @@ export const RequestNamespaceStruct = assign(
 export type RequestNamespace = Infer<typeof RequestNamespaceStruct>;
 
 export const SessionNamespaceStruct = assign(
-  omit(NamespaceStruct, ['chains']),
+  RequestNamespaceStruct,
   object({ accounts: array(AccountIdStruct) }),
 );
 export type SessionNamespace = Infer<typeof SessionNamespaceStruct>;
