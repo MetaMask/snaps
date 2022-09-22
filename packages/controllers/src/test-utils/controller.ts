@@ -63,9 +63,12 @@ export const getSnapControllerMessenger = (
       'SnapController:enable',
       'SnapController:disable',
       'SnapController:remove',
-      'SnapController:getSnaps',
+      'SnapController:getAllSnaps',
+      'SnapController:getPermittedSnaps',
       'SnapController:install',
       'SnapController:removeSnapError',
+      'SnapController:onSessionOpen',
+      'SnapController:onSessionClose',
     ],
   });
 
