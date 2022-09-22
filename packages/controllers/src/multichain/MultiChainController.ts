@@ -9,7 +9,6 @@ import {
   CHAIN_ID_REGEX,
   ChainId,
   ConnectArguments,
-  fromEntries,
   HandlerType,
   isAccountId,
   isChainId,
@@ -19,9 +18,16 @@ import {
   RequestArguments,
   RequestNamespace,
   Session,
-  Snap,
+  TruncatedSnap,
   SnapId,
+  fromEntries,
 } from '@metamask/snap-utils';
+import {
+  GetAllSnaps,
+  HandleSnapRequest,
+  OnSessionClose,
+  OnSessionOpen,
+} from '../snaps';
 import { findMatchingKeyringSnaps } from './matching';
 
 const controllerName = 'MultiChainController';
@@ -30,11 +36,17 @@ const defaultState: MultiChainControllerState = {
   sessions: {},
 };
 
+type AllowedActions =
+  | GetAllSnaps
+  | OnSessionOpen
+  | OnSessionClose
+  | HandleSnapRequest;
+
 type MultiChainControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
+  AllowedActions,
   any,
-  any,
-  any,
+  AllowedActions['type'],
   any
 >;
 
@@ -152,9 +164,10 @@ export class MultiChainController extends BaseController<
       delete state.sessions[origin];
     });
 
-    await this.messagingSystem.call(
-      'SnapController:decActiveRefs',
-      Object.values(handlingSnaps),
+    await Promise.all(
+      Object.values(handlingSnaps).map((snapId) =>
+        this.messagingSystem.call('SnapController:onSessionClose', snapId),
+      ),
     );
   }
 
@@ -166,19 +179,12 @@ export class MultiChainController extends BaseController<
       some: () => this.closeSession(origin),
     });
 
-    const snaps: Record<SnapId, Snap> = this.messagingSystem.call(
-      'SnapController:getAll',
-    );
+    const snaps = this.messagingSystem.call('SnapController:getAll');
 
     // The magical matching algorithm specified in SIP-2
     const namespaceToSnaps = findMatchingKeyringSnaps(
       connection.requiredNamespaces,
-      fromEntries(
-        Object.entries(snaps).map(([snapId, snap]) => [
-          snapId,
-          this.snapToNamespaces(snap),
-        ]),
-      ),
+      fromEntries(snaps.map((snap) => [snap.id, this.snapToNamespaces(snap)])),
     );
 
     const possibleAccounts = await this.namespacesToAccounts(
@@ -217,9 +223,10 @@ export class MultiChainController extends BaseController<
       ),
     };
 
-    await this.messagingSystem.call(
-      'SnapController:incActiveRefs',
-      Object.values(session.handlingSnaps),
+    await Promise.all(
+      Object.values(session.handlingSnaps).map((snapId) =>
+        this.messagingSystem.call('SnapController:onSessionOpen', snapId),
+      ),
     );
 
     this.update((state) => {
@@ -258,7 +265,9 @@ export class MultiChainController extends BaseController<
     await this.closeSession(origin);
   }
 
-  private snapToNamespaces(_snap: Snap): Record<NamespaceId, RequestNamespace> {
+  private snapToNamespaces(
+    _snap: TruncatedSnap,
+  ): Record<NamespaceId, RequestNamespace> {
     throw new Error('Not implemented.');
   }
 

@@ -1,3 +1,2 @@
-export * from './client';
-export * from './shared';
-export * from './wallet';
+export * from './MultiChainProvider';
+export * from './Provider';

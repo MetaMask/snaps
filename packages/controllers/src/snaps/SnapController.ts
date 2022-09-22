@@ -268,12 +268,12 @@ export type RemoveSnap = {
 };
 
 export type GetPermittedSnaps = {
-  type: `${typeof controllerName}:getPermittedSnaps`;
+  type: `${typeof controllerName}:getPermitted`;
   handler: SnapController['getPermittedSnaps'];
 };
 
 export type GetAllSnaps = {
-  type: `${typeof controllerName}:getAllSnaps`;
+  type: `${typeof controllerName}:getAll`;
   handler: SnapController['getAllSnaps'];
 };
 
@@ -824,7 +824,7 @@ export class SnapController extends BaseController<
     );
 
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:getPermittedSnaps`,
+      `${controllerName}:getPermitted`,
       (...args) => this.getPermittedSnaps(...args),
     );
 
@@ -839,7 +839,7 @@ export class SnapController extends BaseController<
     );
 
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:getAllSnaps`,
+      `${controllerName}:getAll`,
       (...args) => this.getAllSnaps(...args),
     );
 

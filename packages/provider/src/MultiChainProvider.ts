@@ -1,5 +1,4 @@
 import SafeEventEmitter from '@metamask/safe-event-emitter';
-import { JsonRpcRequest, JsonRpcResponse } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
 import {
   assertIsConnectArguments,
@@ -11,8 +10,12 @@ import {
   RequestNamespace,
   Session,
 } from '@metamask/snap-utils';
-import { assertIsJsonRpcSuccess } from '@metamask/utils';
-import { Provider } from '../shared';
+import {
+  assertIsJsonRpcSuccess,
+  JsonRpcRequest,
+  JsonRpcResponse,
+} from '@metamask/utils';
+import { Provider } from './Provider';
 
 export class MultiChainProvider extends SafeEventEmitter implements Provider {
   #isConnected = false;
@@ -103,7 +106,11 @@ export class MultiChainProvider extends SafeEventEmitter implements Provider {
     return (window as any)?.ethereum;
   }
 
-  #rpcRequest(payload: { method: string } & Partial<JsonRpcRequest<unknown>>) {
+  #rpcRequest(
+    payload: { method: string } & Partial<
+      JsonRpcRequest<unknown[] | Record<string, unknown>>
+    >,
+  ) {
     if (payload.jsonrpc === undefined) {
       payload.jsonrpc = '2.0';
     }

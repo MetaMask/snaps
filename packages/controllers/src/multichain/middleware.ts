@@ -6,13 +6,22 @@ import {
   JsonRpcRequest,
 } from 'json-rpc-engine';
 import {
+  assertIsConnectArguments,
+  assertIsRequestArguments,
   ChainId,
   ConnectArguments,
   RequestArguments,
   Session,
-} from '../client';
-import { assertIsConnectArguments, assertIsRequest } from '../shared/validate';
+} from '@metamask/snap-utils';
 
+/**
+ * Creates a middleware that handles requests to the multichain controller.
+ *
+ * @param hooks - The hooks required by the middleware.
+ * @param hooks.onConnect - The onConnect hook.
+ * @param hooks.onRequest - The onRequest hook.
+ * @returns The middleware.
+ */
 export function createMultiChainMiddleware({
   onConnect,
   onRequest,
@@ -37,7 +46,7 @@ export function createMultiChainMiddleware({
 
     switch (unwrapped.method) {
       case 'caip_request': {
-        assertIsRequest(req.params);
+        assertIsRequestArguments(req.params);
         res.result = await onRequest(origin, unwrapped.params);
         return;
       }
