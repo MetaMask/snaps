@@ -12,9 +12,7 @@ import {
   HandlerType,
   isAccountId,
   isChainId,
-  Maybe,
   NamespaceId,
-  Option,
   RequestArguments,
   RequestNamespace,
   Session,
@@ -149,14 +147,13 @@ export class MultiChainController extends BaseController<
     this.notify = notify;
   }
 
-  getSession(origin: string): Option<SessionData> {
-    return Maybe(this.state.sessions[origin]);
+  getSession(origin: string): SessionData | undefined {
+    return this.state.sessions[origin];
   }
 
   async closeSession(origin: string): Promise<void> {
-    const { handlingSnaps } = this.getSession(origin).expect(
-      'No session to close',
-    );
+    const session = this.getSession(origin);
+    assert(session, new Error('No session to close'));
 
     await this.notify(origin, { method: 'multichainHack_metamask_disconnect' });
 
@@ -165,7 +162,7 @@ export class MultiChainController extends BaseController<
     });
 
     await Promise.all(
-      Object.values(handlingSnaps).map((snapId) =>
+      Object.values(session.handlingSnaps).map((snapId) =>
         this.messagingSystem.call('SnapController:onSessionClose', snapId),
       ),
     );
@@ -175,9 +172,10 @@ export class MultiChainController extends BaseController<
     origin: string,
     connection: ConnectArguments,
   ): Promise<Session> {
-    await this.getSession(origin).switchPartial({
-      some: () => this.closeSession(origin),
-    });
+    const existingSession = this.getSession(origin);
+    if (existingSession) {
+      await this.closeSession(origin);
+    }
 
     const snaps = this.messagingSystem.call('SnapController:getAll');
 
@@ -240,9 +238,8 @@ export class MultiChainController extends BaseController<
     origin: string,
     data: { chainId: ChainId; request: RequestArguments },
   ): Promise<unknown> {
-    const session = this.getSession(origin).expect(
-      `Session for "${origin}" doesn't exist`,
-    );
+    const session = this.getSession(origin);
+    assert(session, new Error(`Session for "${origin}" doesn't exist`));
     const { namespace } = parseChainId(data.chainId);
     assert(
       session.providedNamespaces[namespace]?.chains.includes(data.chainId),
