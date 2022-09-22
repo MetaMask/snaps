@@ -1,3 +1,5 @@
+/* eslint-disable consistent-return */
+/* eslint-disable default-case */
 import {
   createAsyncMiddleware,
   JsonRpcMiddleware,
@@ -12,7 +14,6 @@ import {
 import { assertIsConnectArguments, assertIsRequest } from '../shared/validate';
 
 export function createMultiChainMiddleware({
-  getOrigin,
   onConnect,
   onRequest,
 }: {
@@ -27,16 +28,24 @@ export function createMultiChainMiddleware({
   getOrigin(req: JsonRpcRequest<unknown>): string;
 }): JsonRpcMiddleware<any, any> {
   return createAsyncMiddleware(async function middleware(req, res, next) {
-    const origin = getOrigin(req);
-    switch (req.method) {
-      case 'caip_request':
+    // This is added by other middleware
+    const { origin } = req as any;
+    if (req.method !== 'wallet_multiChainRequestHack') {
+      return next();
+    }
+    const unwrapped = req.params;
+    switch (unwrapped.method) {
+      case 'caip_request': {
         assertIsRequest(req.params);
-        res.result = await onRequest(origin, req.params);
+        res.result = await onRequest(origin, unwrapped.params);
         return;
-      case 'metamask_handshake':
+      }
+
+      case 'metamask_handshake': {
         assertIsConnectArguments(req.params);
-        res.result = await onConnect(origin, req.params);
+        res.result = await onConnect(origin, unwrapped.params);
         return;
+      }
     }
     return next();
   });

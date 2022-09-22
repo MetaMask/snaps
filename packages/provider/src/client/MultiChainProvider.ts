@@ -1,15 +1,6 @@
-import ObjectMultiplex from '@metamask/object-multiplex';
 import SafeEventEmitter from '@metamask/safe-event-emitter';
-import Debug from 'debug';
-import {
-  JsonRpcEngine,
-  JsonRpcRequest,
-  JsonRpcResponse,
-} from 'json-rpc-engine';
-import { createStreamMiddleware } from 'json-rpc-middleware-stream';
+import { JsonRpcRequest, JsonRpcResponse } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
-import pump from 'pump';
-import type { Duplex } from 'stream';
 import {
   assertIsConnectArguments,
   assertIsRequest,
@@ -24,32 +15,26 @@ import {
   Session,
 } from '../shared/Provider';
 
-const STREAM_NAME = 'metamask-provider-multichain';
-
-const debug = Debug('MultichainProvider');
-
 export class MultiChainProvider extends SafeEventEmitter implements Provider {
-  #rpcEngine = new JsonRpcEngine();
-  #rpcConnection = createStreamMiddleware();
   #isConnected = false;
 
-  constructor(connection: Duplex = HACK_findInjectedStream()) {
+  constructor() {
     super();
 
-    this.#rpcConnection.events.on(
-      'notification',
-      this.#onNotification.bind(this),
-    );
+    const provider = this.#getProvider();
+    provider.on('metamask_disconnect', () => {
+      this.#isConnected = false;
+      this.emit('session_delete');
+    });
 
-    const mux = new ObjectMultiplex();
-
-    pump(connection, mux, connection);
-    pump(
-      this.#rpcConnection.stream,
-      mux.createStream(STREAM_NAME),
-      this.#rpcConnection.stream,
-    );
-    this.#rpcEngine.push(this.#rpcConnection.middleware);
+    provider.on('metamask_event', (notification: MetamaskNotification) => {
+      this.emit('session_event', {
+        params: {
+          chainId: notification.params.chainId,
+          event: notification.params.event,
+        },
+      });
+    });
   }
 
   async connect(
@@ -105,52 +90,27 @@ export class MultiChainProvider extends SafeEventEmitter implements Provider {
     return response.result as T;
   }
 
-  #rpcRequest<T>(
-    payload: { method: string } & Partial<JsonRpcRequest<unknown>>,
-  ) {
+  #getProvider() {
+    return (window as any)?.ethereum;
+  }
+
+  #rpcRequest(payload: { method: string } & Partial<JsonRpcRequest<unknown>>) {
     if (payload.jsonrpc === undefined) {
       payload.jsonrpc = '2.0';
     }
+
     if (payload.id === undefined) {
       payload.id = nanoid();
     }
 
-    return this.#rpcEngine.handle<unknown, T>(
-      payload as JsonRpcRequest<unknown>,
-    );
-  }
-
-  #onNotification(notification: MetamaskNotification) {
-    debug('Received notification', notification);
-    switch (notification.method) {
-      case 'metamask_disconnect':
-        this.#isConnected = false;
-        return this.emit('session_delete');
-      case 'metamask_event':
-        return this.emit('session_event', {
-          params: {
-            chainId: notification.params.chainId,
-            event: notification.params.event,
-          },
-        });
-      default:
-        // @ts-expect-error Defensive programming, shouldn't be reached in practice
-        throw new Error(`Not implemented notification ${notification.method}`);
-    }
+    return this.#getProvider().request({
+      method: 'wallet_multiChainRequestHack',
+      params: payload,
+    });
   }
 }
 
-function HACK_findInjectedStream(): Duplex {
-  const stream: Duplex | undefined = (window as any)?.metamask?.internal
-    ?.HACK_multiChainStream;
-  if (stream == undefined) {
-    throw new ReferenceError("Can't find stream injected by MetaMask");
-  }
-  return stream;
-}
-
-type MetamaskNotification =
-  | {
-      method: 'metamask_disconnect';
-    }
-  | { method: 'metamask_event'; params: { chainId: ChainId; event: Event } };
+type MetamaskNotification = {
+  method: 'metamask_event';
+  params: { chainId: ChainId; event: Event };
+};
