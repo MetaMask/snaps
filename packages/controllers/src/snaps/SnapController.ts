@@ -77,7 +77,7 @@ import {
   TerminateSnapAction,
 } from '../services/ExecutionService';
 import { hasTimedOut, setDiff, withTimeout } from '../utils';
-import { SnapEndowments } from './endowments';
+import { endowmentCaveatMappers, SnapEndowments } from './endowments';
 import { RequestQueue } from './RequestQueue';
 import { fetchNpmSnap } from './utils';
 
@@ -2098,6 +2098,11 @@ export class SnapController extends BaseController<
       Object.entries(initialPermissions).map(([initialPermission, value]) => {
         if (hasProperty(caveatMappers, initialPermission)) {
           return [initialPermission, caveatMappers[initialPermission](value)];
+        } else if (hasProperty(endowmentCaveatMappers, initialPermission)) {
+          return [
+            initialPermission,
+            endowmentCaveatMappers[initialPermission](value),
+          ];
         }
 
         return [initialPermission, value];

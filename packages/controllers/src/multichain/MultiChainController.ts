@@ -1,5 +1,6 @@
 import {
   BaseControllerV2 as BaseController,
+  GetPermissions,
   RestrictedControllerMessenger,
 } from '@metamask/controllers';
 import {
@@ -20,12 +21,14 @@ import {
   SnapId,
   fromEntries,
   SessionNamespace,
+  Namespace,
 } from '@metamask/snap-utils';
 import {
   GetAllSnaps,
   HandleSnapRequest,
   OnSessionClose,
   OnSessionOpen,
+  SnapEndowments,
 } from '../snaps';
 import { findMatchingKeyringSnaps } from './matching';
 
@@ -39,7 +42,8 @@ type AllowedActions =
   | GetAllSnaps
   | OnSessionOpen
   | OnSessionClose
-  | HandleSnapRequest;
+  | HandleSnapRequest
+  | GetPermissions;
 
 type MultiChainControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
@@ -183,7 +187,11 @@ export class MultiChainController extends BaseController<
     // The magical matching algorithm specified in SIP-2
     const namespaceToSnaps = findMatchingKeyringSnaps(
       connection.requiredNamespaces,
-      fromEntries(snaps.map((snap) => [snap.id, this.snapToNamespaces(snap)])),
+      fromEntries(
+        snaps
+          .map((snap) => [snap.id, this.snapToNamespaces(snap)])
+          .filter(([_, namespace]) => namespace !== null),
+      ),
     );
 
     const possibleAccounts = await this.namespacesToAccounts(
@@ -251,11 +259,30 @@ export class MultiChainController extends BaseController<
 
     // TODO(ritave): Get permission for origin connecting to snap, or get user approval
 
+    return this.snapRequest({
+      snapId,
+      origin,
+      method: 'handleRequest',
+      args: data,
+    });
+  }
+
+  private async snapRequest({
+    snapId,
+    origin,
+    method,
+    args,
+  }: {
+    snapId: string;
+    origin: string;
+    method: string;
+    args: unknown;
+  }) {
     return this.messagingSystem.call('SnapController:handleRequest', {
       snapId,
       origin,
       handler: HandlerType.SnapKeyring,
-      request: { method: 'handleRequest', params: [{ ...data, origin }] },
+      request: { method, params: [args] },
     });
   }
 
@@ -263,13 +290,20 @@ export class MultiChainController extends BaseController<
     await this.closeSession(origin);
   }
 
-  private snapToNamespaces(
-    _snap: TruncatedSnap,
-  ): Record<NamespaceId, RequestNamespace> {
-    throw new Error('Not implemented.');
+  private async snapToNamespaces(
+    snap: TruncatedSnap,
+  ): Promise<Record<NamespaceId, Namespace> | null> {
+    const permissions = await this.messagingSystem.call(
+      'PermissionController:getPermissions',
+      snap.id,
+    );
+    const keyringPermission = permissions?.[SnapEndowments.Keyring];
+    // Null if this snap doesn't expose keyrings
+    // TODO: Verify that this is enough
+    return keyringPermission?.caveats?.[0]?.value ?? null;
   }
 
-  private namespacesToAccounts(
+  private async namespacesToAccounts(
     _namespaces: NamespaceId[],
   ): Promise<Record<NamespaceId, { snapId: SnapId; accounts: AccountId[] }[]>> {
     throw new Error('Not implemented.');

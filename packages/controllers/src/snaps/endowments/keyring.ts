@@ -3,12 +3,18 @@ import {
   Caveat,
   CaveatSpecificationConstraint,
   EndowmentGetterParams,
+  PermissionConstraint,
   PermissionSpecificationBuilder,
   PermissionType,
   PermissionValidatorConstraint,
   ValidPermissionSpecification,
 } from '@metamask/controllers';
-import { hasProperty, isPlainObject, NonEmptyArray } from '@metamask/utils';
+import {
+  hasProperty,
+  isPlainObject,
+  Json,
+  NonEmptyArray,
+} from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 import { SnapEndowments } from './enum';
 
@@ -78,6 +84,27 @@ function validateCaveatNamespace(caveat: Caveat<string, any>): void {
       message: 'Expected a valid namespaces object.',
     });
   }
+}
+
+/**
+ * Map a raw value from the `initialPermissions` to a caveat specification.
+ * Note that this function does not do any validation, that's handled by the
+ * PermissionsController when the permission is requested.
+ *
+ * @param value - The raw value from the `initialPermissions`.
+ * @returns The caveat specification.
+ */
+export function getKeyringCaveatMapper(
+  value: Json,
+): Pick<PermissionConstraint, 'caveats'> {
+  return {
+    caveats: [
+      {
+        type: SnapCaveatType.SnapKeyring,
+        value,
+      },
+    ],
+  };
 }
 
 export const keyringCaveatSpecifications: Record<

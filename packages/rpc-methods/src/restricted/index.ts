@@ -44,7 +44,6 @@ export const builders = {
 
 export const caveatSpecifications = {
   ...getBip32EntropyCaveatSpecifications,
-  ...getBip32EntropyCaveatSpecifications,
   ...getBip44EntropyCaveatSpecifications,
 } as const;
 
