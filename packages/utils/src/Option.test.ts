@@ -57,6 +57,17 @@ describe('Option', () => {
     });
   });
 
+  describe('Symbol.iterator', () => {
+    it('iterates on Some', () => {
+      expect([...Some(NUMBER)]).toStrictEqual([NUMBER]);
+      expect([...Some(NUMBER).values()]).toStrictEqual([NUMBER]);
+    });
+    it('returns empty iterator on None', () => {
+      expect([...None()]).toStrictEqual([]);
+      expect([...None().values()]).toStrictEqual([]);
+    });
+  });
+
   describe('switch', () => {
     it('works with 2 args', () => {
       expect(
@@ -195,7 +206,7 @@ describe('Option', () => {
     });
   });
 
-  describe('flatten', () => {
+  describe('flat', () => {
     it('flattens', () => {
       expect(Some(Some(NUMBER)).flat().expect()).toStrictEqual(NUMBER);
     });
@@ -230,6 +241,9 @@ describe('Option', () => {
           .flat(Infinity)
           .expect(),
       ).toStrictEqual(NUMBER);
+    });
+    it('works correctly if depth > actual levels', () => {
+      expect(Some(Some(NUMBER)).flat(3).expect()).toStrictEqual(NUMBER);
     });
   });
 

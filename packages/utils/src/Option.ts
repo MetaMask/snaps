@@ -22,8 +22,8 @@ export function None<T>(): Option<T> {
   return Option.None();
 }
 /**
- * @see {@link Option.flat}
- * @see {@link Array.flat}
+ * @see {@link Option.flat} for usage.
+ * @see {@link Array.flat} for the original type.
  */
 // TODO(ritave): Make fully recursive when we move to TS4.8 https://github.com/microsoft/TypeScript/issues/14833#issuecomment-1238924118
 type FlatOption<Opt, Depth extends number> = {
@@ -79,6 +79,25 @@ export class Option<T> {
 
   get isNone() {
     return isNone(this.data);
+  }
+
+  // Iteration
+  /**
+   * Returns an iterator with a single or zero items.
+   * @see {@link Option.values}
+   * @returns `[data]` on Some, `[]` on None
+   */
+  [Symbol.iterator]() {
+    return this.values();
+  }
+  /**
+   * Returns an iterator with a single or zero items
+   * @returns `[data]` on Some, `[]` on None
+   */
+  *values() {
+    if (isSome(this.data)) {
+      yield this.data;
+    }
   }
 
   // Exhaustive logic
@@ -217,7 +236,7 @@ export class Option<T> {
 
     let result: Option<any> = this;
     while (result.data instanceof Option && myDepth > 0) {
-      result = result.expect();
+      result = result.data;
       myDepth -= 1;
     }
     return result;

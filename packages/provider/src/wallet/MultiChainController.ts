@@ -238,10 +238,19 @@ export class MultiChainController extends BaseController<
     Record<NamespaceId, { snapId: SnapId; accounts: AccountID[] } | null>
   > {
     return Object.fromEntries(
-      Object.entries(options).map(([namespace, snaps]) => [
-        namespace,
-        snaps[0] ?? null,
-      ]),
+      Object.entries(options).map(([namespace, snaps]) => {
+        // TODO(ritave): Show actual user connection interface
+        if (snaps.length === 0) {
+          console.warn(
+            `Warning when resolving conflicts - there are no snaps that support the requested namespace "${namespace}"`,
+          );
+        } else if (snaps.length > 1) {
+          console.warn(
+            `Warning when resolving conflicts - there are multiple snaps that support requested namespace "${namespace}". Selecting "${snaps[0].snapId}"`,
+          );
+        }
+        return [namespace, snaps[0] ?? null];
+      }),
     );
   }
 }
