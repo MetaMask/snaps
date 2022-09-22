@@ -8,7 +8,20 @@ import {
   record,
   size,
   string,
+  omit,
+  assign,
+  unknown,
+  assert,
+  partial,
+  pick,
 } from 'superstruct';
+import { JsonRpcRequestStruct } from '@metamask/utils';
+
+export const CHAIN_ID_REGEX =
+  /^(?<namespace>[-a-z0-9]{3,8}):(?<reference>[-a-zA-Z0-9]{1,32})$/u;
+
+export const ACCOUNT_ID_REGEX =
+  /^(?<chainId>(?<namespace>[-a-z0-9]{3,8}):(?<reference>[-a-zA-Z0-9]{1,32})):(?<accountAddress>[a-zA-Z0-9]{1,64})$/u;
 
 /**
  * A helper struct for a string with a minimum length of 1 and a maximum length
@@ -19,11 +32,11 @@ export const LimitedString = size(string(), 1, 40);
 /**
  * A CAIP-2 chain ID, i.e., a human-readable namespace and reference.
  */
-export const ChainIdStruct = pattern(
-  string(),
-  /^[-a-z0-9]{3,8}:[-a-zA-Z0-9]{1,32}$/u,
-);
+export const ChainIdStruct = pattern(string(), CHAIN_ID_REGEX);
 export type ChainId = `${string}:${string}`;
+
+export const AccountIdStruct = pattern(string(), ACCOUNT_ID_REGEX);
+export type AccountId = `${ChainId}:${string}`;
 
 /**
  * A chain descriptor.
@@ -52,17 +65,132 @@ export const NamespaceStruct = object({
 });
 export type Namespace = Infer<typeof NamespaceStruct>;
 
+export const RequestNamespaceStruct = assign(
+  omit(NamespaceStruct, ['chains']),
+  object({ chains: array(ChainIdStruct) }),
+);
+export type RequestNamespace = Infer<typeof RequestNamespaceStruct>;
+
+export const SessionNamespaceStruct = assign(
+  omit(NamespaceStruct, ['chains']),
+  object({ accounts: array(AccountIdStruct) }),
+);
+export type SessionNamespace = Infer<typeof SessionNamespaceStruct>;
+
+export const EventStruct = object({
+  name: string(),
+  data: unknown(),
+});
+export type Event = Infer<typeof EventStruct>;
+
 /**
  * A CAIP-2 namespace, i.e., the first part of a chain ID.
  */
-export const NamespaceKeyStruct = pattern(string(), /^[-a-z0-9]{3,8}$/u);
-export type NamespaceKey = Infer<typeof NamespaceKeyStruct>;
+export const NamespaceIdStruct = pattern(string(), /^[-a-z0-9]{3,8}$/u);
+export type NamespaceId = Infer<typeof NamespaceIdStruct>;
 
 /**
  * An object mapping CAIP-2 namespaces to their values.
  */
-export const NamespacesStruct = record(NamespaceKeyStruct, NamespaceStruct);
+export const NamespacesStruct = record(NamespaceIdStruct, NamespaceStruct);
 export type Namespaces = Infer<typeof NamespacesStruct>;
+
+export const SessionStruct = object({
+  namespaces: record(NamespaceIdStruct, SessionNamespaceStruct),
+});
+export type Session = Infer<typeof SessionStruct>;
+
+export const ConnectArgumentsStruct = object({
+  requiredNamespaces: record(NamespaceIdStruct, RequestNamespaceStruct),
+});
+export type ConnectArguments = Infer<typeof ConnectArgumentsStruct>;
+
+// TODO: Fix this type.
+export const RequestArgumentsStruct: any = assign(
+  partial(pick(JsonRpcRequestStruct, ['id', 'jsonrpc'])),
+  omit(JsonRpcRequestStruct, ['id', 'jsonrpc']),
+);
+export type RequestArguments = Infer<typeof RequestArgumentsStruct>;
+
+export const MultiChainRequestStruct = object({
+  chainId: ChainIdStruct,
+  request: RequestArgumentsStruct,
+});
+export type MultiChainRequest = Infer<typeof MultiChainRequestStruct>;
+
+/**
+ * Check if the given value is a CAIP-2 namespace ID.
+ *
+ * @param value - The value to check.
+ * @returns Whether the value is a CAIP-2 namespace ID.
+ */
+export function isNamespaceId(value: unknown): value is NamespaceId {
+  return is(value, NamespaceIdStruct);
+}
+
+/**
+ * Check if the given value is a CAIP-2 chain ID.
+ *
+ * @param value - The value to check.
+ * @returns Whether the value is a CAIP-2 chain ID.
+ */
+export function isChainId(value: unknown): value is ChainId {
+  return is(value, ChainIdStruct);
+}
+
+/**
+ * Check if the given value is a CAIP-10 account ID.
+ *
+ * @param value - The value to check.
+ * @returns Whether the value is a CAIP-10 account ID.
+ */
+export function isAccountId(value: unknown): value is AccountId {
+  return is(value, AccountIdStruct);
+}
+
+/**
+ * Check if the given value is a connect arguments object.
+ *
+ * @param value - The value to check.
+ * @returns Whether the value is a valid connect arguments object.
+ */
+export function isConnectArguments(value: unknown): value is ConnectArguments {
+  return is(value, ConnectArgumentsStruct);
+}
+
+/**
+ * Assert that the given value is a connect arguments object.
+ *
+ * @param value - The value to check.
+ * @throws If the value is not a valid connect arguments object.
+ */
+export function assertIsConnectArguments(
+  value: unknown,
+): asserts value is ConnectArguments {
+  assert(value, ConnectArgumentsStruct);
+}
+
+/**
+ * Check if the given value is a request arguments object.
+ *
+ * @param value - The value to check.
+ * @returns Whether the value is a valid request arguments object.
+ */
+export function isRequestArguments(value: unknown): value is RequestArguments {
+  return is(value, RequestArgumentsStruct);
+}
+
+/**
+ * Assert that the given value is a request arguments object.
+ *
+ * @param value - The value to check.
+ * @throws If the value is not a valid request arguments object.
+ */
+export function assertIsRequestArguments(
+  value: unknown,
+): asserts value is RequestArguments {
+  assert(value, RequestArgumentsStruct);
+}
 
 /**
  * Check if a value is a namespace.

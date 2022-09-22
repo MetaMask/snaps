@@ -3,17 +3,16 @@ import { JsonRpcRequest, JsonRpcResponse } from 'json-rpc-engine';
 import { nanoid } from 'nanoid';
 import {
   assertIsConnectArguments,
-  assertIsRequest,
-  assertNotErrorResp,
-} from '../shared/validate';
-
-import {
+  assertIsRequestArguments,
   ChainId,
   ConnectArguments,
-  Provider,
+  NamespaceId,
   RequestArguments,
+  RequestNamespace,
   Session,
-} from '../shared/Provider';
+} from '@metamask/snap-utils';
+import { assertIsJsonRpcSuccess } from '@metamask/utils';
+import { Provider } from '../shared';
 
 export class MultiChainProvider extends SafeEventEmitter implements Provider {
   #isConnected = false;
@@ -44,27 +43,31 @@ export class MultiChainProvider extends SafeEventEmitter implements Provider {
     args: ConnectArguments,
   ): Promise<{ approval(): Promise<Session> }> {
     assertIsConnectArguments(args);
+
     // We're injected, we don't need to establish connection to the wallet
     // and can just return approval straight away
     return {
       approval: async () => {
         const requiredNamespaces = Object.entries(
           args.requiredNamespaces,
-        ).reduce<any>((acc, [id, definition]) => {
-          acc[id] = {
-            chains: definition.chains,
-            methods: definition.methods ?? [],
-            events: definition.events ?? [],
-          };
-          return acc;
-        }, {});
+        ).reduce<Record<NamespaceId, RequestNamespace>>(
+          (acc, [id, definition]) => {
+            acc[id] = {
+              chains: definition.chains,
+              methods: definition.methods ?? [],
+              events: definition.events ?? [],
+            };
+            return acc;
+          },
+          {},
+        );
 
         this.#isConnected = false;
         const response: JsonRpcResponse<Session> = await this.#rpcRequest({
           method: 'metamask_handshake',
           params: { requiredNamespaces },
         });
-        assertNotErrorResp(response);
+        assertIsJsonRpcSuccess(response);
         this.#isConnected = true;
 
         const session = response.result as Session;
@@ -74,14 +77,16 @@ export class MultiChainProvider extends SafeEventEmitter implements Provider {
     };
   }
 
-  async request<T>(args: {
+  async request(args: {
     chainId: ChainId;
     request: RequestArguments;
-  }): Promise<T> {
+  }): Promise<unknown> {
     if (!this.#isConnected) {
       throw new Error('No session connected');
     }
-    assertIsRequest(args);
+
+    assertIsRequestArguments(args);
+
     const response = await this.#rpcRequest({
       method: 'caip_request',
       params: {
@@ -89,8 +94,9 @@ export class MultiChainProvider extends SafeEventEmitter implements Provider {
         request: { method: args.request.method, params: args.request.params },
       },
     });
-    assertNotErrorResp(response);
-    return response.result as T;
+
+    assertIsJsonRpcSuccess(response);
+    return response.result;
   }
 
   #getProvider() {

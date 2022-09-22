@@ -3,24 +3,25 @@ import {
   RestrictedControllerMessenger,
 } from '@metamask/controllers';
 import {
+  ACCOUNT_ID_REGEX,
+  AccountId,
   assert,
+  CHAIN_ID_REGEX,
+  ChainId,
+  ConnectArguments,
+  fromEntries,
   HandlerType,
+  isAccountId,
+  isChainId,
   Maybe,
+  NamespaceId,
   Option,
+  RequestArguments,
+  RequestNamespace,
+  Session,
   Snap,
   SnapId,
 } from '@metamask/snap-utils';
-import {
-  AccountID,
-  accountIdRe,
-  ChainId,
-  chainIdRe,
-  ConnectArgumentsFull,
-  Namespace,
-  NamespaceId,
-  RequestArguments,
-  Session,
-} from '../client';
 import { findMatchingKeyringSnaps } from './matching';
 
 const controllerName = 'MultiChainController';
@@ -37,16 +38,10 @@ type MultiChainControllerMessenger = RestrictedControllerMessenger<
   any
 >;
 
-type RequestedNamespace = {
-  methods: string[];
-  events: string[];
-  chains: ChainId[];
-};
-
 type SessionData = {
   origin: string;
-  requestedNamespaces: Record<NamespaceId, RequestedNamespace>;
-  providedNamespaces: Record<NamespaceId, Namespace>;
+  requestedNamespaces: Record<NamespaceId, RequestNamespace>;
+  providedNamespaces: Record<NamespaceId, RequestNamespace>;
   handlingSnaps: Record<NamespaceId, SnapId>;
 };
 
@@ -65,36 +60,58 @@ type MultiChainControllerArgs = {
 };
 
 /**
- * @param chainId
+ * Parse a chain ID string to an object containing the namespace and reference.
+ * This validates the chain ID before parsing it.
+ *
+ * @param chainId - The chain ID to validate and parse.
+ * @returns The parsed chain ID.
  */
-function parseChainId(chainId: ChainId): {
+export function parseChainId(chainId: ChainId): {
   namespace: NamespaceId;
   reference: string;
 } {
-  const match = chainIdRe.exec(chainId);
-  assert(match !== null);
+  if (!isChainId(chainId)) {
+    throw new Error('Invalid chain ID.');
+  }
+
+  const match = CHAIN_ID_REGEX.exec(chainId);
+  if (!match?.groups) {
+    throw new Error('Invalid chain ID.');
+  }
+
   return {
-    namespace: match.groups!.namespace,
-    reference: match.groups!.reference,
+    namespace: match.groups.namespace,
+    reference: match.groups.reference,
   };
 }
 
 /**
- * @param accountId
+ * Parse an account ID to an object containing the chain, chain ID and address.
+ * This validates the account ID before parsing it.
+ *
+ * @param accountId - The account ID to validate and parse.
+ * @returns The parsed account ID.
  */
-function parseAccountId(accountId: AccountID): {
+export function parseAccountId(accountId: AccountId): {
   chain: { namespace: NamespaceId; reference: string };
   chainId: ChainId;
   address: string;
 } {
-  const match = accountIdRe.exec(accountId);
-  assert(match != null);
+  if (!isAccountId(accountId)) {
+    throw new Error('Invalid account ID.');
+  }
+
+  const match = ACCOUNT_ID_REGEX.exec(accountId);
+  if (!match?.groups) {
+    throw new Error('Invalid account ID.');
+  }
+
   return {
-    address: match.groups!.accountAddress,
-    chainId: match.groups!.chainId,
+    address: match.groups.accountAddress,
+    chainId: match.groups.chainId as ChainId,
     chain: {
-      namespace: match.groups!.namespace,
-      reference: match.groups!.reference,
+      namespace: match.groups.namespace,
+      reference: match.groups.reference,
     },
   };
 }
@@ -143,7 +160,7 @@ export class MultiChainController extends BaseController<
 
   async onConnect(
     origin: string,
-    connection: ConnectArgumentsFull,
+    connection: ConnectArguments,
   ): Promise<Session> {
     await this.getSession(origin).switchPartial({
       some: () => this.closeSession(origin),
@@ -156,7 +173,7 @@ export class MultiChainController extends BaseController<
     // The magical matching algorithm specified in SIP-2
     const namespaceToSnaps = findMatchingKeyringSnaps(
       connection.requiredNamespaces,
-      Object.fromEntries(
+      fromEntries(
         Object.entries(snaps).map(([snapId, snap]) => [
           snapId,
           this.snapToNamespaces(snap),
@@ -172,13 +189,14 @@ export class MultiChainController extends BaseController<
     const chosenAccounts = await this.resolveConflicts(possibleAccounts);
     // TODO(ritave): Save the approved permissions
 
-    const providedNamespaces: Record<NamespaceId, Namespace> =
-      Object.fromEntries(
+    const providedNamespaces: Record<NamespaceId, RequestNamespace> =
+      fromEntries(
         Object.entries(connection.requiredNamespaces)
           .filter(([namespaceId]) => chosenAccounts[namespaceId] !== null)
           .map(([namespaceId, namespace]) => [
             namespaceId,
             {
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               accounts: chosenAccounts[namespaceId]!.accounts,
               chains: namespace.chains,
               events: namespace.events,
@@ -191,9 +209,10 @@ export class MultiChainController extends BaseController<
       origin,
       requestedNamespaces: connection.requiredNamespaces,
       providedNamespaces,
-      handlingSnaps: Object.fromEntries(
+      handlingSnaps: fromEntries(
         Object.entries(chosenAccounts)
           .filter(([, data]) => data !== null)
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           .map(([namespaceId, data]) => [namespaceId, data!.snapId]),
       ),
     };
@@ -206,6 +225,7 @@ export class MultiChainController extends BaseController<
     this.update((state) => {
       state.sessions[origin] = session;
     });
+
     return { namespaces: providedNamespaces };
   }
 
@@ -238,20 +258,22 @@ export class MultiChainController extends BaseController<
     await this.closeSession(origin);
   }
 
-  private snapToNamespaces(snap: Snap): Record<NamespaceId, Namespace> {}
+  private snapToNamespaces(_snap: Snap): Record<NamespaceId, RequestNamespace> {
+    throw new Error('Not implemented.');
+  }
 
   private namespacesToAccounts(
-    namespaces: NamespaceId[],
-  ): Promise<
-    Record<NamespaceId, { snapId: SnapId; accounts: AccountID[] }[]>
-  > {}
+    _namespaces: NamespaceId[],
+  ): Promise<Record<NamespaceId, { snapId: SnapId; accounts: AccountId[] }[]>> {
+    throw new Error('Not implemented.');
+  }
 
   private async resolveConflicts(
-    options: Record<NamespaceId, { snapId: SnapId; accounts: AccountID[] }[]>,
+    options: Record<NamespaceId, { snapId: SnapId; accounts: AccountId[] }[]>,
   ): Promise<
-    Record<NamespaceId, { snapId: SnapId; accounts: AccountID[] } | null>
+    Record<NamespaceId, { snapId: SnapId; accounts: AccountId[] } | null>
   > {
-    return Object.fromEntries(
+    return fromEntries(
       Object.entries(options).map(([namespace, snaps]) => {
         // TODO(ritave): Show actual user connection interface
         if (snaps.length === 0) {
