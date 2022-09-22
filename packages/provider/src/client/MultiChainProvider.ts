@@ -22,19 +22,22 @@ export class MultiChainProvider extends SafeEventEmitter implements Provider {
     super();
 
     const provider = this.#getProvider();
-    provider.on('metamask_disconnect', () => {
+    provider.on('multichainHack_metamask_disconnect', () => {
       this.#isConnected = false;
       this.emit('session_delete');
     });
 
-    provider.on('metamask_event', (notification: MetamaskNotification) => {
-      this.emit('session_event', {
-        params: {
-          chainId: notification.params.chainId,
-          event: notification.params.event,
-        },
-      });
-    });
+    provider.on(
+      'multichainHack_metamask_event',
+      (notification: MetamaskNotification) => {
+        this.emit('session_event', {
+          params: {
+            chainId: notification.params.chainId,
+            event: notification.params.event,
+          },
+        });
+      },
+    );
   }
 
   async connect(
@@ -111,6 +114,6 @@ export class MultiChainProvider extends SafeEventEmitter implements Provider {
 }
 
 type MetamaskNotification = {
-  method: 'metamask_event';
+  method: 'multichainHack_metamask_event';
   params: { chainId: ChainId; event: Event };
 };
