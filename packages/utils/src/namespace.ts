@@ -171,25 +171,27 @@ export function assertIsConnectArguments(
 }
 
 /**
- * Check if the given value is a request arguments object.
+ * Check if the given value is a multi chain request object.
  *
  * @param value - The value to check.
- * @returns Whether the value is a valid request arguments object.
+ * @returns Whether the value is a valid multi chain request object.
  */
-export function isRequestArguments(value: unknown): value is RequestArguments {
-  return is(value, RequestArgumentsStruct);
+export function isMultiChainRequest(
+  value: unknown,
+): value is MultiChainRequest {
+  return is(value, MultiChainRequestStruct);
 }
 
 /**
- * Assert that the given value is a request arguments object.
+ * Assert that the given value is a multi chain request object.
  *
  * @param value - The value to check.
  * @throws If the value is not a valid request arguments object.
  */
-export function assertIsRequestArguments(
+export function assertIsMultiChainRequest(
   value: unknown,
-): asserts value is RequestArguments {
-  assert(value, RequestArgumentsStruct);
+): asserts value is MultiChainRequest {
+  assert(value, MultiChainRequestStruct);
 }
 
 /**

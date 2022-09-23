@@ -7,11 +7,10 @@ import {
 } from 'json-rpc-engine';
 import {
   assertIsConnectArguments,
-  assertIsRequestArguments,
-  ChainId,
+  assertIsMultiChainRequest,
   ConnectArguments,
-  RequestArguments,
   Session,
+  MultiChainRequest,
 } from '@metamask/snap-utils';
 
 /**
@@ -30,10 +29,7 @@ export function createMultiChainMiddleware({
     origin: string,
     requestedNamespaces: ConnectArguments,
   ) => Promise<Session>;
-  onRequest: (
-    origin: string,
-    data: { chainId: ChainId; request: RequestArguments },
-  ) => Promise<unknown>;
+  onRequest: (origin: string, data: MultiChainRequest) => Promise<unknown>;
 }): JsonRpcMiddleware<JsonRpcRequest<unknown>, any> {
   return createAsyncMiddleware(async function middleware(req, res, next) {
     // This is added by other middleware
@@ -46,7 +42,7 @@ export function createMultiChainMiddleware({
 
     switch (unwrapped.method) {
       case 'caip_request': {
-        assertIsRequestArguments(unwrapped.params);
+        assertIsMultiChainRequest(unwrapped.params);
         res.result = await onRequest(origin, unwrapped.params);
         return;
       }

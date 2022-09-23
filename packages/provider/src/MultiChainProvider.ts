@@ -2,7 +2,7 @@ import SafeEventEmitter from '@metamask/safe-event-emitter';
 import { nanoid } from 'nanoid';
 import {
   assertIsConnectArguments,
-  assertIsRequestArguments,
+  assertIsMultiChainRequest,
   ChainId,
   ConnectArguments,
   NamespaceId,
@@ -88,7 +88,7 @@ export class MultiChainProvider extends SafeEventEmitter implements Provider {
       throw new Error('No session connected');
     }
 
-    assertIsRequestArguments(args);
+    assertIsMultiChainRequest(args);
 
     const response = await this.#rpcRequest({
       method: 'caip_request',
