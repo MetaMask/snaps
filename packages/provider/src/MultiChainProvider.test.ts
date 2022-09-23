@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/unambiguous
 describe('MultiChainProvider', () => {
   describe('HACK_multiChainStream', () => {
     it.todo('finds the stream and uses it');
