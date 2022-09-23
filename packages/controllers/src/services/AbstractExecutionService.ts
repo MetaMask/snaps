@@ -224,7 +224,9 @@ export abstract class AbstractExecutionService<WorkerType>
     // Handle out-of-band errors, i.e. errors thrown from the snap outside of the req/res cycle.
     // Also keep track of outbound request/responses
     const notificationHandler = (
-      message: JsonRpcRequest<unknown> | JsonRpcNotification<unknown>,
+      message:
+        | JsonRpcRequest<unknown>
+        | JsonRpcNotification<unknown[] | Record<string, unknown>>,
     ) => {
       if (!isJsonRpcNotification(message)) {
         return;
