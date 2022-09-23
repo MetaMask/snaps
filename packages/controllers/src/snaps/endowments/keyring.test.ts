@@ -1,6 +1,5 @@
 import { PermissionType } from '@metamask/controllers';
 import { SnapCaveatType } from '@metamask/snap-utils';
-import { getNamespace } from '@metamask/snap-utils/test-utils';
 import { SnapEndowments } from './enum';
 import {
   keyringCaveatSpecifications,
@@ -62,7 +61,9 @@ describe('keyringCaveatSpecifications', () => {
       expect(() =>
         keyringCaveatSpecifications[SnapCaveatType.SnapKeyring].validator?.({
           type: SnapCaveatType.SnapKeyring,
-          value: getNamespace(),
+          value: {
+            namespaces: undefined,
+          },
         }),
       ).toThrow('Expected a valid namespaces object.');
     });

@@ -12,7 +12,7 @@ import {
   SnapManifest,
   HandlerType,
   SnapStatus,
-  getSnapPermissionName
+  getSnapPermissionName,
 } from '@metamask/snap-utils';
 import { Crypto } from '@peculiar/webcrypto';
 import { EthereumRpcError, ethErrors, serializeError } from 'eth-rpc-errors';
@@ -3942,7 +3942,7 @@ describe('SnapController', () => {
       });
     });
 
-    describe('SnapController:getPermittedSnaps', () => {
+    describe('SnapController:getPermitted', () => {
       it('calls SnapController.getPermittedSnaps()', async () => {
         const messenger = getSnapControllerMessenger(undefined, false);
         const mockSnap = getMockSnapData({
@@ -3979,7 +3979,7 @@ describe('SnapController', () => {
         );
 
         const result = await messenger.call(
-          'SnapController:getPermittedSnaps',
+          'SnapController:getPermitted',
           mockSnap.origin,
         );
         expect(result).toStrictEqual({
@@ -4012,7 +4012,7 @@ describe('SnapController', () => {
           }),
         );
 
-        const result = await messenger.call('SnapController:getAllSnaps');
+        const result = await messenger.call('SnapController:getAll');
         expect(result).toStrictEqual([
           {
             id: mockSnap.id,
