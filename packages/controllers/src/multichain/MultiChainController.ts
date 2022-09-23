@@ -1,6 +1,8 @@
 import {
+  AddApprovalRequest,
   BaseControllerV2 as BaseController,
   GetPermissions,
+  GrantPermissions,
   RestrictedControllerMessenger,
 } from '@metamask/controllers';
 import {
@@ -23,7 +25,10 @@ import {
   SessionNamespace,
   Namespace,
   flatten,
+  getSnapPermissionName,
 } from '@metamask/snap-utils';
+import { hasProperty } from '@metamask/utils';
+import { nanoid } from 'nanoid';
 import {
   GetAllSnaps,
   HandleSnapRequest,
@@ -44,7 +49,9 @@ type AllowedActions =
   | OnSessionOpen
   | OnSessionClose
   | HandleSnapRequest
-  | GetPermissions;
+  | GetPermissions
+  | AddApprovalRequest
+  | GrantPermissions;
 
 type MultiChainControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
@@ -203,15 +210,71 @@ export class MultiChainController extends BaseController<
       availableNamespaces,
     );
 
+    const permissions = await this.messagingSystem.call(
+      'PermissionController:getPermissions',
+      origin,
+    );
+
+    const approvedNamespacesAndSnaps = Object.entries(namespaceToSnaps).reduce(
+      (acc, [namespace, snapIds]) => {
+        // If snap already is approved for use, solve conflict by using that snap
+        const approvedSnap = snapIds.find((snapId) => {
+          return (
+            permissions &&
+            hasProperty(permissions, getSnapPermissionName(snapId))
+          );
+        });
+
+        if (approvedSnap) {
+          return { ...acc, [namespace]: [approvedSnap] };
+        }
+        return acc;
+      },
+      {},
+    );
+
+    const hasConflicts = Object.keys(namespaceToSnaps).some(
+      (namespace) => !hasProperty(approvedNamespacesAndSnaps, namespace),
+    );
+
+    const filteredNamespacesAndSnaps = hasConflicts
+      ? namespaceToSnaps
+      : approvedNamespacesAndSnaps;
+
     const possibleAccounts = await this.namespacesToAccounts(
       origin,
-      namespaceToSnaps,
+      filteredNamespacesAndSnaps,
       connection.requiredNamespaces,
     );
 
-    // TODO(ritave): Get user approval for connection
-    const chosenAccounts = await this.resolveConflicts(possibleAccounts);
-    // TODO(ritave): Save the approved permissions
+    // If current configuration doesn't solve request, we need to show a prompt.
+    const resolvedAccounts = hasConflicts
+      ? await this.resolveConflicts(origin, possibleAccounts)
+      : possibleAccounts;
+    const chosenAccounts = fromEntries(
+      Object.entries(resolvedAccounts).map(([namespace, snapIds]) => [
+        namespace,
+        snapIds[0] ?? null,
+      ]),
+    );
+
+    const approvedPermissions = Object.values(chosenAccounts).reduce(
+      (acc, cur) => {
+        if (cur) {
+          return {
+            ...acc,
+            [getSnapPermissionName(cur.snapId)]: {},
+          };
+        }
+        return acc;
+      },
+      {},
+    );
+    // TODO: Save the approved permissions
+    await this.messagingSystem.call('PermissionController:grantPermissions', {
+      approvedPermissions,
+      subject: { origin },
+    });
 
     const providedNamespaces: Record<NamespaceId, SessionNamespace> =
       fromEntries(
@@ -362,24 +425,29 @@ export class MultiChainController extends BaseController<
   }
 
   private async resolveConflicts(
-    options: Record<NamespaceId, { snapId: SnapId; accounts: AccountId[] }[]>,
+    origin: string,
+    possibleAccounts: Record<
+      NamespaceId,
+      { snapId: SnapId; accounts: AccountId[] }[]
+    >,
   ): Promise<
     Record<NamespaceId, { snapId: SnapId; accounts: AccountId[] } | null>
   > {
-    return fromEntries(
-      Object.entries(options).map(([namespace, snaps]) => {
-        // TODO(ritave): Show actual user connection interface
-        if (snaps.length === 0) {
-          console.warn(
-            `Warning when resolving conflicts - there are no snaps that support the requested namespace "${namespace}"`,
-          );
-        } else if (snaps.length > 1) {
-          console.warn(
-            `Warning when resolving conflicts - there are multiple snaps that support requested namespace "${namespace}". Selecting "${snaps[0].snapId}"`,
-          );
-        }
-        return [namespace, snaps[0] ?? null];
-      }),
-    );
+    // TODO: Get user approval for connection
+    const id = nanoid();
+    const result = (await this.messagingSystem.call(
+      'ApprovalController:addRequest',
+      {
+        origin,
+        id,
+        type: 'multichain_connect',
+        requestData: {
+          possibleAccounts,
+        },
+      },
+      true,
+    )) as Record<NamespaceId, { snapId: SnapId; accounts: AccountId[] } | null>;
+
+    return result;
   }
 }
