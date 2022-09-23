@@ -3179,7 +3179,7 @@ __metadata:
     rimraf: ^3.0.2
     semver: ^7.3.7
     ses: ^0.15.17
-    superstruct: 0.16.0
+    superstruct: ^0.16.5
     ts-jest: ^29.0.0
     typescript: ^4.4.0
   languageName: unknown
@@ -16330,17 +16330,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"superstruct@npm:0.16.0":
-  version: 0.16.0
-  resolution: "superstruct@npm:0.16.0"
-  checksum: 1979c287f95f2a9dece537f74f5330b0b831965030fe025e2d52dfb3ecdf8974251371cc22d5cdf36960639b039687e5a236881f6ec7cf33d5c8fdc348f13a46
-  languageName: node
-  linkType: hard
-
-"superstruct@npm:^0.16.0":
-  version: 0.16.4
-  resolution: "superstruct@npm:0.16.4"
-  checksum: e2215c9558ddf6d1409de137612c1b142deaac8d92bcc9ef99dc086604040710f4b2874ed95c8bdc72e54dcbba6351ab9fbb4c6a8642f8acfb558ee8c6c4b2b2
+"superstruct@npm:^0.16.0, superstruct@npm:^0.16.5":
+  version: 0.16.5
+  resolution: "superstruct@npm:0.16.5"
+  checksum: 9f843c38695b584a605ae9b028629de18a85bd0dca0e9449b4ab98bb7b9ac3d82599870acbab9fbd2ee454c6b187af7e61562e252dfadabd974191ab4ab2e3ce
   languageName: node
   linkType: hard
 

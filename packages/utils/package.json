@@ -57,7 +57,7 @@
     "rfdc": "^1.3.0",
     "semver": "^7.3.7",
     "ses": "^0.15.17",
-    "superstruct": "0.16.0"
+    "superstruct": "^0.16.5"
   },
   "devDependencies": {
     "@babel/types": "^7.18.7",
