@@ -123,7 +123,9 @@ export type TruncatedSnapFields =
   | 'id'
   | 'initialPermissions'
   | 'permissionName'
-  | 'version';
+  | 'version'
+  | 'enabled'
+  | 'blocked';
 
 /**
  * A {@link Snap} object with the fields that are relevant to an external

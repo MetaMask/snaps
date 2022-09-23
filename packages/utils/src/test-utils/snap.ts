@@ -54,12 +54,16 @@ export const getTruncatedSnap = ({
   id = MOCK_SNAP_ID,
   permissionName = `wallet_snap_${id}`,
   version = getSnapManifest().version,
+  enabled = true,
+  blocked = false,
 }: Partial<TruncatedSnap> = {}): TruncatedSnap => {
   return {
     initialPermissions,
     id,
     permissionName,
     version,
+    enabled,
+    blocked,
   } as const;
 };
 

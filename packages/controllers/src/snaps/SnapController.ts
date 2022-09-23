@@ -82,7 +82,6 @@ import { RequestQueue } from './RequestQueue';
 import { fetchNpmSnap } from './utils';
 
 import { Timer } from './Timer';
-import { findMatchingKeyringSnaps, Namespace } from './keyring';
 
 export const controllerName = 'SnapController';
 
@@ -95,6 +94,8 @@ const TRUNCATED_SNAP_PROPERTIES = new Set<TruncatedSnapFields>([
   'id',
   'permissionName',
   'version',
+  'enabled',
+  'blocked',
 ]);
 
 export type PendingRequest = {
@@ -2426,43 +2427,5 @@ export class SnapController extends BaseController<
     const approvedPermissions = setDiff(oldPermissions, unusedPermissions);
 
     return { newPermissions, unusedPermissions, approvedPermissions };
-  }
-
-  public async getKeyringSnaps(requestedNamespaces: Record<string, Namespace>) {
-    const snaps = await this.getPermissionsForAllSnaps();
-    const snapNamespaces = Object.entries(snaps)
-      .filter(([_, permissions]) => hasProperty(permissions, 'snap_keyring'))
-      .reduce<Record<string, Record<string, Namespace>>>(
-        (acc, [id, permissions]) => ({
-          ...acc,
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          [id]: permissions.snap_keyring!.caveats![0].value.namespaces,
-        }),
-        {},
-      );
-    return findMatchingKeyringSnaps(requestedNamespaces, snapNamespaces);
-  }
-
-  private async getPermissionsForAllSnaps(): Promise<
-    Record<SnapId, Awaited<ReturnType<typeof this.getSnapPermissions>>>
-  > {
-    return Object.entries(this.state.snaps)
-      .filter(([_, snap]) => snap.enabled && !snap.blocked)
-      .reduce(
-        async (acc, [id]) => ({
-          ...acc,
-          [id]: await this.getSnapPermissions(id),
-        }),
-        {},
-      );
-  }
-
-  private async getSnapPermissions(snapId: SnapId) {
-    return (
-      (await this.messagingSystem.call(
-        'PermissionController:getPermissions',
-        snapId,
-      )) ?? {}
-    );
   }
 }

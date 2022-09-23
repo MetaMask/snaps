@@ -1,8 +1,29 @@
-import { findMatchingKeyringSnaps } from './keyring';
+import { findMatchingKeyringSnaps } from './matching';
 
 describe('findMatchingKeyringSnaps', () => {
   it('finds matching keyring snaps', () => {
     const requestedNamespaces = {
+      eip155: {
+        methods: [
+          'eth_signTransaction',
+          'eth_accounts',
+          'eth_sign',
+          'personal_sign',
+          'eth_signTypedData',
+        ],
+        events: ['accountsChanged'],
+        chains: ['eip155:1'],
+      },
+      bip122: {
+        methods: ['signPBST', 'getExtendedPublicKey'],
+        chains: [
+          'bip122:000000000019d6689c085ae165831e93',
+          'bip122:000000000933ea01ad0ee984209779ba',
+        ],
+      },
+    };
+
+    const exposedNamespaces = {
       eip155: {
         methods: [
           'eth_signTransaction',
@@ -34,11 +55,14 @@ describe('findMatchingKeyringSnaps', () => {
       },
     };
 
-    const snaps = { foo: requestedNamespaces };
+    const snaps = {
+      foo: exposedNamespaces,
+      bar: { bip122: exposedNamespaces.bip122 },
+    };
 
     expect(findMatchingKeyringSnaps(requestedNamespaces, snaps)).toStrictEqual({
-      bip122: 'foo',
-      eip155: 'foo',
+      bip122: ['foo', 'bar'],
+      eip155: ['foo'],
     });
   });
 
@@ -53,6 +77,20 @@ describe('findMatchingKeyringSnaps', () => {
           'eth_signTypedData',
         ],
         events: ['accountsChanged'],
+        chains: ['eip155:1'],
+      },
+    };
+
+    const exposedNamespaces = {
+      eip155: {
+        methods: [
+          'eth_signTransaction',
+          'eth_accounts',
+          'eth_sign',
+          'personal_sign',
+          'eth_signTypedData',
+        ],
+        events: [],
         chains: [
           {
             id: 'eip155:1',
@@ -63,11 +101,11 @@ describe('findMatchingKeyringSnaps', () => {
     };
 
     const snaps = {
-      foo: { eip155: { ...requestedNamespaces.eip155, events: [] } },
+      foo: exposedNamespaces,
     };
 
     expect(findMatchingKeyringSnaps(requestedNamespaces, snaps)).toStrictEqual({
-      eip155: null,
+      eip155: [],
     });
   });
 
@@ -82,6 +120,14 @@ describe('findMatchingKeyringSnaps', () => {
           'eth_signTypedData',
         ],
         events: ['accountsChanged'],
+        chains: ['eip155:1'],
+      },
+    };
+
+    const exposedNamespaces = {
+      eip155: {
+        methods: [],
+        events: ['accountsChanged'],
         chains: [
           {
             id: 'eip155:1',
@@ -92,11 +138,11 @@ describe('findMatchingKeyringSnaps', () => {
     };
 
     const snaps = {
-      foo: { eip155: { ...requestedNamespaces.eip155, methods: [] } },
+      foo: exposedNamespaces,
     };
 
     expect(findMatchingKeyringSnaps(requestedNamespaces, snaps)).toStrictEqual({
-      eip155: null,
+      eip155: [],
     });
   });
 });

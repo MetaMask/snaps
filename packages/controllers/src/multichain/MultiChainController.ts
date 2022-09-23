@@ -183,9 +183,10 @@ export class MultiChainController extends BaseController<
       await this.closeSession(origin);
     }
 
-    const snaps = this.messagingSystem.call('SnapController:getAll');
+    const snaps = await this.messagingSystem.call('SnapController:getAll');
+    const filteredSnaps = snaps.filter((snap) => snap.enabled && !snap.blocked);
 
-    const availableNamespaces = await snaps.reduce<
+    const availableNamespaces = await filteredSnaps.reduce<
       Promise<Record<SnapId, Record<NamespaceId, Namespace>>>
     >(async (previousPromise, snap) => {
       const acc = await previousPromise;
