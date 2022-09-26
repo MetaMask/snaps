@@ -59,8 +59,15 @@ describe('snaps', () => {
 
     const { code } = output[0];
     expect(code).toMatchInlineSnapshot(`
-      "module.exports.onRpcRequest = () => {
+      "module.exports.onRpcRequest = ({
+        request
+      }) => {
         console.log("Hello, world!");
+        const {
+          method,
+          id
+        } = request;
+        return method + id;
       };
       "
     `);
@@ -152,21 +159,27 @@ describe('snaps', () => {
     expect(map).toMatchInlineSnapshot(`
       SourceMap {
         "file": "source-map.js",
-        "mappings": "AACEA,MAAM,CAACC,OAAP,CAAeC,YAAf,GAA8B,MAAM;EAClCC,OAAO,CAACC,GAAR,CAAY,eAAZ;AACD,CAFD",
+        "mappings": "AACEA,MAAM,CAACC,OAAP,CAAeC,YAAf,GAA8B,CAAC;EAAEC;AAAF,CAAD,KAAiB;EAC7CC,OAAO,CAACC,GAAR,CAAY,eAAZ;EAEA,MAAM;IAAEC,MAAF;IAAUC;EAAV,IAAiBJ,OAAvB;EACA,OAAOG,MAAM,GAAGC,EAAhB;AACD,CALD",
         "names": [
           "module",
           "exports",
           "onRpcRequest",
+          "request",
           "console",
           "log",
+          "method",
+          "id",
         ],
         "sources": [
           "../../../../../../../source-map.ts",
         ],
         "sourcesContent": [
           "
-        module.exports.onRpcRequest = () => {
+        module.exports.onRpcRequest = ({ request }) => {
           console.log("Hello, world!");
+
+          const { method, id } = request;
+          return method + id;
         };
       ",
         ],
