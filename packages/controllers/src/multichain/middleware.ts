@@ -30,7 +30,7 @@ export function createMultiChainMiddleware({
     requestedNamespaces: ConnectArguments,
   ) => Promise<Session>;
   onRequest: (origin: string, data: MultiChainRequest) => Promise<unknown>;
-}): JsonRpcMiddleware<JsonRpcRequest<unknown>, any> {
+}): JsonRpcMiddleware<Omit<JsonRpcRequest<unknown>, 'id' | 'jsonrpc'>, any> {
   return createAsyncMiddleware(async function middleware(req, res, next) {
     // This is added by other middleware
     const { origin, params: unwrapped } = req as JsonRpcRequest<
