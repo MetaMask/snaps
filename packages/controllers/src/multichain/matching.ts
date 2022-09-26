@@ -14,7 +14,7 @@ import {
  */
 export function findMatchingKeyringSnaps(
   requestedNamespaces: ConnectArguments['requiredNamespaces'],
-  snaps: Record<SnapId, Record<NamespaceId, Namespace>>,
+  snaps: Record<SnapId, Record<NamespaceId, Namespace> | null>,
 ): Record<NamespaceId, SnapId[]> {
   const snapEntries = Object.entries(snaps);
   return Object.entries(requestedNamespaces).reduce<
@@ -22,7 +22,7 @@ export function findMatchingKeyringSnaps(
   >((acc, [requestedNamespaceId, currentRequestedNamespace]) => {
     const matchedSnaps = snapEntries
       .filter(([, namespaces]) => {
-        const potentialMatch = namespaces[requestedNamespaceId];
+        const potentialMatch = namespaces?.[requestedNamespaceId];
         return (
           potentialMatch !== undefined &&
           matchNamespace(currentRequestedNamespace, potentialMatch)

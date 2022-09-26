@@ -13,8 +13,6 @@ import {
   ChainId,
   ConnectArguments,
   HandlerType,
-  isAccountId,
-  isChainId,
   NamespaceId,
   RequestArguments,
   RequestNamespace,
@@ -93,10 +91,6 @@ export function parseChainId(chainId: ChainId): {
   namespace: NamespaceId;
   reference: string;
 } {
-  if (!isChainId(chainId)) {
-    throw new Error('Invalid chain ID.');
-  }
-
   const match = CHAIN_ID_REGEX.exec(chainId);
   if (!match?.groups) {
     throw new Error('Invalid chain ID.');
@@ -120,10 +114,6 @@ export function parseAccountId(accountId: AccountId): {
   chainId: ChainId;
   address: string;
 } {
-  if (!isAccountId(accountId)) {
-    throw new Error('Invalid account ID.');
-  }
-
   const match = ACCOUNT_ID_REGEX.exec(accountId);
   if (!match?.groups) {
     throw new Error('Invalid account ID.');
@@ -166,7 +156,7 @@ export class MultiChainController extends BaseController<
 
   async closeSession(origin: string): Promise<void> {
     const session = this.getSession(origin);
-    assert(session, new Error('No session to close'));
+    assert(session, 'No session to close');
 
     await this.notify(origin, { method: 'multichainHack_metamask_disconnect' });
 
@@ -193,16 +183,14 @@ export class MultiChainController extends BaseController<
     const snaps = await this.messagingSystem.call('SnapController:getAll');
     const filteredSnaps = snaps.filter((snap) => snap.enabled && !snap.blocked);
 
-    const availableNamespaces = await filteredSnaps.reduce<
-      Promise<Record<SnapId, Record<NamespaceId, Namespace>>>
-    >(async (previousPromise, snap) => {
-      const acc = await previousPromise;
-      const snapNamespaces = await this.snapToNamespaces(snap);
-      if (snapNamespaces !== null) {
-        return { ...acc, [snap.id]: snapNamespaces };
-      }
-      return acc;
-    }, Promise.resolve({}));
+    const availableNamespaces = fromEntries(
+      await Promise.all(
+        filteredSnaps.map(async (snap) => [
+          snap.id,
+          await this.snapToNamespaces(snap),
+        ]),
+      ),
+    );
 
     // The magical matching algorithm specified in SIP-2
     const namespaceToSnaps = findMatchingKeyringSnaps(
@@ -322,7 +310,7 @@ export class MultiChainController extends BaseController<
     data: { chainId: ChainId; request: RequestArguments },
   ): Promise<unknown> {
     const session = this.getSession(origin);
-    assert(session, new Error(`Session for "${origin}" doesn't exist`));
+    assert(session, `Session for "${origin}" doesn't exist`);
     const { namespace } = parseChainId(data.chainId);
     assert(
       session.providedNamespaces[namespace]?.chains.includes(data.chainId),
