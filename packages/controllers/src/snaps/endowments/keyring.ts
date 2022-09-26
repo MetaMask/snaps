@@ -1,5 +1,4 @@
 import {
-  assert,
   isNamespacesObject,
   Namespaces,
   SnapCaveatType,
@@ -19,6 +18,7 @@ import {
   isPlainObject,
   Json,
   NonEmptyArray,
+  assert,
 } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 import { SnapEndowments } from './enum';

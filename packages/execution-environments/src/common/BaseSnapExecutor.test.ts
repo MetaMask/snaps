@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-unassigned-import
 import 'ses';
 import { Duplex, DuplexOptions, EventEmitter, Readable } from 'stream';
-import { JsonRpcResponse } from '@metamask/utils';
+import { Json, JsonRpcResponse } from '@metamask/utils';
 import { HandlerType } from '@metamask/snap-utils';
 import { JsonRpcRequest } from '../__GENERATED__/openrpc';
 import { BaseSnapExecutor } from './BaseSnapExecutor';
@@ -141,7 +141,7 @@ class TestSnapExecutor extends BaseSnapExecutor {
 
   public writeRpc(message: {
     name: string;
-    data: JsonRpcResponse;
+    data: JsonRpcResponse<Json>;
   }): Promise<void> {
     return new Promise((resolve, reject) =>
       this.rpcLeft.write(message, (error) => {

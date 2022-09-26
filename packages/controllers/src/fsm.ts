@@ -1,4 +1,5 @@
-import { assert, flatMap } from '@metamask/snap-utils';
+import { assert } from '@metamask/utils';
+import { flatMap } from '@metamask/snap-utils';
 import {
   EventObject,
   InterpreterStatus,

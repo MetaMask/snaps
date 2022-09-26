@@ -10,7 +10,6 @@ import {
 import {
   parseAccountId,
   AccountId,
-  assert,
   parseChainId,
   ChainId,
   ConnectArguments,
@@ -29,7 +28,7 @@ import {
   Namespaces,
 } from '@metamask/snap-utils';
 import { SnapKeyring } from '@metamask/snap-types';
-import { hasProperty } from '@metamask/utils';
+import { hasProperty, assert } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 import {
   GetAllSnaps,
