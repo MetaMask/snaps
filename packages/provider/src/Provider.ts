@@ -3,6 +3,7 @@ import {
   ConnectArguments,
   RequestArguments,
   Session,
+  Event,
 } from '@metamask/snap-utils';
 
 /* eslint-disable camelcase */

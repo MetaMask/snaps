@@ -1,5 +1,5 @@
-import { getChain, getNamespace } from './test-utils';
-import { isNamespace, isNamespacesObject } from './namespace';
+import { getChain, getNamespace, getSessionNamespace } from './test-utils';
+import { assertIsSession, isNamespace, isNamespacesObject } from './namespace';
 
 describe('isNamespace', () => {
   it.each([
@@ -59,5 +59,64 @@ describe('isNamespacesObject', () => {
     { foobarbaz: getNamespace() },
   ])('returns false for an invalid namespaces object', (object) => {
     expect(isNamespacesObject(object)).toBe(false);
+  });
+});
+
+describe('assertIsSession', () => {
+  it.each([
+    {
+      namespaces: {},
+    },
+    {
+      namespaces: {
+        eip155: getSessionNamespace(),
+        bip122: getSessionNamespace(),
+      },
+    },
+    {
+      namespaces: {
+        eip155: getSessionNamespace(),
+      },
+    },
+    {
+      namespaces: {
+        bip122: getSessionNamespace(),
+      },
+    },
+  ])('does not throw for a valid session', (session) => {
+    expect(() => assertIsSession(session)).not.toThrow();
+  });
+
+  it.each([
+    true,
+    false,
+    null,
+    undefined,
+    1,
+    'foo',
+    {},
+    { namespaces: true },
+    { namespaces: false },
+    { namespaces: null },
+    { namespaces: undefined },
+    { namespaces: 1 },
+    { namespaces: 'foo' },
+    { namespaces: { eip155: {} } },
+    { namespaces: { eip155: [], bip122: [] } },
+    { namespaces: { eip155: true, bip122: true } },
+    { namespaces: { eip155: false, bip122: false } },
+    { namespaces: { eip155: null, bip122: null } },
+    { namespaces: { eip155: undefined, bip122: undefined } },
+    { namespaces: { eip155: 1, bip122: 1 } },
+    { namespaces: { eip155: 'foo', bip122: 'foo' } },
+    { namespaces: { eip155: { methods: [] }, bip122: { methods: [] } } },
+    {
+      namespaces: { eip155: { chains: ['foo'] }, bip122: { chains: ['foo'] } },
+    },
+    { namespaces: { a: getNamespace() } },
+    { namespaces: { eip155: getNamespace(), a: getNamespace() } },
+    { namespaces: { foobarbaz: getNamespace() } },
+  ])('throws for an invalid session', (session) => {
+    expect(() => assertIsSession(session)).toThrow('Invalid session');
   });
 });

@@ -1,3 +1,5 @@
+import { Struct, assert as assertSuperstruct } from 'superstruct';
+
 export class AssertionError extends Error {
   constructor(options: { message: string }) {
     super(options.message);
@@ -19,14 +21,38 @@ export function assert(value: any, message?: string | Error): asserts value {
     if (message instanceof Error) {
       throw message;
     }
+
     throw new AssertionError({ message: message ?? 'Assertion failed' });
+  }
+}
+
+/**
+ * Assert a value against a Superstruct struct.
+ *
+ * @param value - The value to validate.
+ * @param struct - The struct to validate against.
+ * @param errorPrefix - A prefix to add to the error message. Defaults to
+ * "Assertion failed".
+ * @throws If the value is not valid.
+ */
+export function assertStruct<T, S>(
+  value: unknown,
+  struct: Struct<T, S>,
+  errorPrefix = 'Assertion failed',
+): asserts value is T {
+  try {
+    assertSuperstruct(value, struct);
+  } catch (error) {
+    throw new AssertionError({
+      message: `${errorPrefix}: ${error.message}`,
+    });
   }
 }
 
 /* istanbul ignore next */
 /**
  * Use in the default case of a switch that you want to be fully exhaustive.
- * Using this function forces the compiler to enforces exhaustivity during compile-time.
+ * Using this function forces the compiler to enforce exhaustivity during compile-time.
  *
  * @example
  * ```

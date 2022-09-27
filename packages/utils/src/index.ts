@@ -9,6 +9,7 @@ export * from './json-schemas';
 export * from './manifest';
 export * from './mock';
 export * from './namespace';
+export * from './notification';
 export * from './npm';
 export * from './object';
 export * from './post-process';
