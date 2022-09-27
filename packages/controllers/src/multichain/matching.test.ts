@@ -1,3 +1,4 @@
+import { MOCK_EIP155_NAMESPACE, MOCK_NAMESPACES } from '../test-utils';
 import { findMatchingKeyringSnaps } from './matching';
 
 describe('findMatchingKeyringSnaps', () => {
@@ -23,37 +24,7 @@ describe('findMatchingKeyringSnaps', () => {
       },
     };
 
-    const exposedNamespaces = {
-      eip155: {
-        methods: [
-          'eth_signTransaction',
-          'eth_accounts',
-          'eth_sign',
-          'personal_sign',
-          'eth_signTypedData',
-        ],
-        events: ['accountsChanged'],
-        chains: [
-          {
-            id: 'eip155:1',
-            name: 'Ethereum (Mainnet)',
-          },
-        ],
-      },
-      bip122: {
-        methods: ['signPBST', 'getExtendedPublicKey'],
-        chains: [
-          {
-            id: 'bip122:000000000019d6689c085ae165831e93',
-            name: 'Bitcoin (Mainnet)',
-          },
-          {
-            id: 'bip122:000000000933ea01ad0ee984209779ba',
-            name: 'Bitcoin (Testnet)',
-          },
-        ],
-      },
-    };
+    const exposedNamespaces = MOCK_NAMESPACES;
 
     const snaps = {
       foo: exposedNamespaces,
@@ -83,20 +54,8 @@ describe('findMatchingKeyringSnaps', () => {
 
     const exposedNamespaces = {
       eip155: {
-        methods: [
-          'eth_signTransaction',
-          'eth_accounts',
-          'eth_sign',
-          'personal_sign',
-          'eth_signTypedData',
-        ],
+        ...MOCK_EIP155_NAMESPACE,
         events: [],
-        chains: [
-          {
-            id: 'eip155:1',
-            name: 'Ethereum (Mainnet)',
-          },
-        ],
       },
     };
 

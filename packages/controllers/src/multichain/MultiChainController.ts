@@ -272,7 +272,7 @@ export class MultiChainController extends BaseController<
     const providedNamespaces: Record<NamespaceId, SessionNamespace> =
       fromEntries(
         Object.entries(connection.requiredNamespaces)
-          .filter(([namespaceId]) => resolvedAccounts[namespaceId] !== null)
+          .filter(([namespaceId]) => resolvedAccounts[namespaceId]?.accounts)
           .map(([namespaceId, namespace]) => [
             namespaceId,
             {
@@ -401,7 +401,10 @@ export class MultiChainController extends BaseController<
           snapId,
           origin,
           method: 'getAccounts',
-        }).catch(() => null);
+        }).catch((err) => {
+          console.error(err);
+          return null;
+        });
         // Ignore errors for now
         const acc = await previousPromise;
         if (request) {
