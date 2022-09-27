@@ -15,6 +15,7 @@ import {
   pick,
 } from 'superstruct';
 import { JsonRpcRequestStruct } from '@metamask/utils';
+import { assertStruct } from './assert';
 
 export const CHAIN_ID_REGEX =
   /^(?<namespace>[-a-z0-9]{3,8}):(?<reference>[-a-zA-Z0-9]{1,32})$/u;
@@ -92,6 +93,16 @@ export const SessionStruct = object({
   namespaces: record(NamespaceIdStruct, SessionNamespaceStruct),
 });
 export type Session = Infer<typeof SessionStruct>;
+
+/**
+ * Asserts that the given value is a valid `Session`.
+ *
+ * @param value - The value to assert.
+ * @throws If the value is not a valid `Session`.
+ */
+export function assertIsSession(value: unknown): asserts value is Session {
+  assertStruct(value, SessionStruct, 'Invalid session');
+}
 
 export const ConnectArgumentsStruct = object({
   requiredNamespaces: record(NamespaceIdStruct, RequestNamespaceStruct),

@@ -89,10 +89,7 @@ describe('assertIsEvent', () => {
     { name: undefined, data: {} },
     { name: 1, data: {} },
   ])(`throws for an invalid event`, (event) => {
-    // This throws a different error depending on the input, so we can't use a
-    // single message here.
-    // eslint-disable-next-line jest/require-to-throw-message
-    expect(() => assertIsEvent(event)).toThrow();
+    expect(() => assertIsEvent(event)).toThrow('Invalid event');
   });
 });
 
@@ -288,7 +285,8 @@ describe('assertIsMetaMaskNotification', () => {
       params: { chainId: 'foo', event: { name: 1, data: {} } },
     },
   ])('throws for an invalid notification', (notification) => {
-    // eslint-disable-next-line jest/require-to-throw-message
-    expect(() => assertIsMetaMaskNotification(notification)).toThrow();
+    expect(() => assertIsMetaMaskNotification(notification)).toThrow(
+      'Invalid notification',
+    );
   });
 });

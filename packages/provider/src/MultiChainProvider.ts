@@ -4,6 +4,7 @@ import {
   assertIsConnectArguments,
   assertIsMetaMaskNotification,
   assertIsMultiChainRequest,
+  assertIsSession,
   ChainId,
   ConnectArguments,
   NamespaceId,
@@ -78,9 +79,11 @@ export class MultiChainProvider extends SafeEventEmitter implements Provider {
         });
 
         assertIsJsonRpcSuccess(response);
+        assertIsSession(response.result);
+
         this.#isConnected = true;
 
-        const session = response.result as Session;
+        const session = response.result;
         this.emit('session_update', { params: session });
         return session;
       },
