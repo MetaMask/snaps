@@ -2908,6 +2908,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^9.0.0
     "@metamask/eslint-config-typescript": ^9.0.1
     "@metamask/safe-event-emitter": ^2.0.0
+    "@metamask/snap-types": "workspace:^"
     "@metamask/snap-utils": ^0.21.0
     "@metamask/utils": ^3.0.1
     "@types/jest": ^27.5.1
@@ -3113,7 +3114,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/snap-types@^0.21.0, @metamask/snap-types@workspace:packages/types":
+"@metamask/snap-types@^0.21.0, @metamask/snap-types@workspace:^, @metamask/snap-types@workspace:packages/types":
   version: 0.0.0-use.local
   resolution: "@metamask/snap-types@workspace:packages/types"
   dependencies:

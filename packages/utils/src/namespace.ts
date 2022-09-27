@@ -10,7 +10,6 @@ import {
   string,
   omit,
   assign,
-  unknown,
   assert,
   partial,
   pick,
@@ -76,12 +75,6 @@ export const SessionNamespaceStruct = assign(
   object({ accounts: array(AccountIdStruct) }),
 );
 export type SessionNamespace = Infer<typeof SessionNamespaceStruct>;
-
-export const EventStruct = object({
-  name: string(),
-  data: unknown(),
-});
-export type Event = Infer<typeof EventStruct>;
 
 /**
  * A CAIP-2 namespace, i.e., the first part of a chain ID.

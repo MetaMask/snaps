@@ -2,6 +2,7 @@ import SafeEventEmitter from '@metamask/safe-event-emitter';
 import { nanoid } from 'nanoid';
 import {
   assertIsConnectArguments,
+  assertIsMetaMaskNotification,
   assertIsMultiChainRequest,
   ChainId,
   ConnectArguments,
@@ -10,12 +11,18 @@ import {
   RequestNamespace,
   Session,
 } from '@metamask/snap-utils';
-import {
-  assertIsJsonRpcSuccess,
-  JsonRpcRequest,
-  JsonRpcResponse,
-} from '@metamask/utils';
+import { assertIsJsonRpcSuccess, JsonRpcRequest } from '@metamask/utils';
+import type { SnapProvider } from '@metamask/snap-types';
 import { Provider } from './Provider';
+
+declare global {
+  // Declaration merging doesn't work with types, so we have to use an interface
+  // here.
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+  interface Window {
+    ethereum: SnapProvider;
+  }
+}
 
 export class MultiChainProvider extends SafeEventEmitter implements Provider {
   #isConnected = false;
@@ -29,17 +36,16 @@ export class MultiChainProvider extends SafeEventEmitter implements Provider {
       this.emit('session_delete');
     });
 
-    provider.on(
-      'multichainHack_metamask_event',
-      (notification: MetamaskNotification) => {
-        this.emit('session_event', {
-          params: {
-            chainId: notification.params.chainId,
-            event: notification.params.event,
-          },
-        });
-      },
-    );
+    provider.on('multichainHack_metamask_event', (notification) => {
+      assertIsMetaMaskNotification(notification);
+
+      this.emit('session_event', {
+        params: {
+          chainId: notification.params.chainId,
+          event: notification.params.event,
+        },
+      });
+    });
   }
 
   async connect(
@@ -66,10 +72,11 @@ export class MultiChainProvider extends SafeEventEmitter implements Provider {
         );
 
         this.#isConnected = false;
-        const response: JsonRpcResponse<Session> = await this.#rpcRequest({
+        const response = await this.#rpcRequest({
           method: 'metamask_handshake',
           params: { requiredNamespaces },
         });
+
         assertIsJsonRpcSuccess(response);
         this.#isConnected = true;
 
@@ -103,7 +110,7 @@ export class MultiChainProvider extends SafeEventEmitter implements Provider {
   }
 
   #getProvider() {
-    return (window as any)?.ethereum;
+    return window.ethereum;
   }
 
   #rpcRequest(
@@ -125,8 +132,3 @@ export class MultiChainProvider extends SafeEventEmitter implements Provider {
     });
   }
 }
-
-type MetamaskNotification = {
-  method: 'multichainHack_metamask_event';
-  params: { chainId: ChainId; event: Event };
-};
