@@ -3,6 +3,7 @@ import {
   BaseControllerV2 as BaseController,
   GetPermissions,
   GrantPermissions,
+  HasPermission,
   RestrictedControllerMessenger,
 } from '@metamask/controllers';
 import {
@@ -48,6 +49,7 @@ type AllowedActions =
   | OnSessionClose
   | HandleSnapRequest
   | GetPermissions
+  | HasPermission
   | AddApprovalRequest
   | GrantPermissions;
 
@@ -246,6 +248,8 @@ export class MultiChainController extends BaseController<
       ]),
     );
 
+    // TODO: In the future, use another permission here to not give full permission after handshake.
+    // Instead we should use a less scary permission.
     const approvedPermissions = Object.values(chosenAccounts).reduce(
       (acc, cur) => {
         if (cur) {
@@ -258,7 +262,7 @@ export class MultiChainController extends BaseController<
       },
       {},
     );
-    // TODO: Save the approved permissions
+
     await this.messagingSystem.call('PermissionController:grantPermissions', {
       approvedPermissions,
       subject: { origin },
@@ -305,7 +309,7 @@ export class MultiChainController extends BaseController<
     return { namespaces: providedNamespaces };
   }
 
-  onRequest(
+  async onRequest(
     origin: string,
     data: { chainId: ChainId; request: RequestArguments },
   ): Promise<unknown> {
@@ -318,8 +322,23 @@ export class MultiChainController extends BaseController<
     );
     const snapId = session.handlingSnaps[namespace];
     assert(snapId !== undefined);
+    const permissionName = getSnapPermissionName(snapId);
 
-    // TODO(ritave): Get permission for origin connecting to snap, or get user approval
+    // Check if origin has permission to communicate with this Snap.
+    const hasPermission = await this.messagingSystem.call(
+      'PermissionController:hasPermission',
+      origin,
+      permissionName,
+    );
+
+    if (!hasPermission) {
+      // TODO: Get permission for origin connecting to snap, or get user approval
+      // In the future this is where we should prompt for this permission.
+      // In this iteration, we will grant this permission in onConnect.
+      throw new Error(
+        `${origin} does not have permission to communicate with ${snapId}`,
+      );
+    }
 
     return this.snapRequest({
       snapId,
@@ -372,21 +391,25 @@ export class MultiChainController extends BaseController<
   ): Promise<Record<NamespaceId, { snapId: SnapId; accounts: AccountId[] }[]>> {
     const allSnaps = flatten(Object.values(namespacesAndSnaps));
     const dedupedSnaps = [...new Set(allSnaps)] as SnapId[];
-    // TODO: Make sure this is properly parallelized
     const allAccounts = await dedupedSnaps.reduce<
       Promise<Record<string, AccountId[]>>
     >(
       // @ts-expect-error Fix this?
       async (previousPromise, snapId) => {
+        const request = await this.snapRequest({
+          snapId,
+          origin,
+          method: 'getAccounts',
+        }).catch(() => null);
+        // Ignore errors for now
         const acc = await previousPromise;
-        return {
-          ...acc,
-          [snapId]: await this.snapRequest({
-            snapId,
-            origin,
-            method: 'getAccounts',
-          }),
-        };
+        if (request) {
+          return {
+            ...acc,
+            [snapId]: request,
+          };
+        }
+        return acc;
       },
       Promise.resolve({}),
     );
@@ -421,7 +444,7 @@ export class MultiChainController extends BaseController<
   ): Promise<
     Record<NamespaceId, { snapId: SnapId; accounts: AccountId[] } | null>
   > {
-    // TODO: Get user approval for connection
+    // Get user approval for connection
     const id = nanoid();
     const result = (await this.messagingSystem.call(
       'ApprovalController:addRequest',
