@@ -2,7 +2,6 @@ import { Duplex } from 'stream';
 import passworder from '@metamask/browser-passworder';
 import {
   Caveat,
-  ControllerMessenger,
   getPersistentState,
   SubjectPermissions,
   ValidPermission,
@@ -36,20 +35,16 @@ import { NodeThreadExecutionService, setupMultiplex } from '../services';
 import { delay } from '../utils';
 import {
   ExecutionEnvironmentStub,
-  getNodeEES,
+  getControllerMessenger,
   getNodeEESMessenger,
+  getSnapController,
+  getSnapControllerMessenger,
+  getSnapControllerOptions,
+  getSnapControllerWithEES,
+  getSnapControllerWithEESOptions,
 } from '../test-utils';
 import { SnapEndowments } from './endowments';
-import {
-  AllowedActions,
-  AllowedEvents,
-  CheckSnapBlockListArg,
-  SnapController,
-  SnapControllerActions,
-  SnapControllerEvents,
-  SnapControllerState,
-  SNAP_APPROVAL_UPDATE,
-} from './SnapController';
+import { SNAP_APPROVAL_UPDATE, SnapControllerState } from './SnapController';
 
 const { subtle } = new Crypto();
 Object.defineProperty(window, 'crypto', {
@@ -59,178 +54,6 @@ Object.defineProperty(window, 'crypto', {
     getRandomValues: jest.fn().mockReturnValue(new Uint32Array(32)),
   },
 });
-
-const getControllerMessenger = () =>
-  new ControllerMessenger<
-    SnapControllerActions | AllowedActions,
-    SnapControllerEvents | AllowedEvents
-  >();
-
-const getSnapControllerMessenger = (
-  messenger: ReturnType<
-    typeof getControllerMessenger
-  > = getControllerMessenger(),
-  mocked = true,
-) => {
-  const m = messenger.getRestricted<
-    'SnapController',
-    SnapControllerActions['type'] | AllowedActions['type'],
-    SnapControllerEvents['type'] | AllowedEvents['type']
-  >({
-    name: 'SnapController',
-    allowedEvents: [
-      'ExecutionService:unhandledError',
-      'ExecutionService:outboundRequest',
-      'ExecutionService:outboundResponse',
-      'SnapController:snapAdded',
-      'SnapController:snapBlocked',
-      'SnapController:snapInstalled',
-      'SnapController:snapUnblocked',
-      'SnapController:snapUpdated',
-      'SnapController:snapRemoved',
-      'SnapController:stateChange',
-    ],
-    allowedActions: [
-      'ApprovalController:addRequest',
-      'ExecutionService:executeSnap',
-      'ExecutionService:terminateAllSnaps',
-      'ExecutionService:terminateSnap',
-      'ExecutionService:handleRpcRequest',
-      'PermissionController:getEndowments',
-      'PermissionController:hasPermission',
-      'PermissionController:hasPermissions',
-      'PermissionController:getPermissions',
-      'PermissionController:grantPermissions',
-      'PermissionController:revokeAllPermissions',
-      'SnapController:add',
-      'SnapController:get',
-      'SnapController:handleRequest',
-      'SnapController:getSnapState',
-      'SnapController:has',
-      'SnapController:updateSnapState',
-      'SnapController:clearSnapState',
-      'SnapController:updateBlockedSnaps',
-      'SnapController:enable',
-      'SnapController:disable',
-      'SnapController:remove',
-      'SnapController:getSnaps',
-      'SnapController:install',
-      'SnapController:removeSnapError',
-    ],
-  });
-
-  if (mocked) {
-    jest.spyOn(m, 'call').mockImplementation((method, ...args) => {
-      // Return false for long-running by default, and true for everything else.
-      if (
-        method === 'PermissionController:hasPermission' &&
-        args[1] === SnapEndowments.longRunning
-      ) {
-        return false;
-      }
-      return true;
-    });
-  }
-  return m;
-};
-
-type SnapControllerConstructorParams = ConstructorParameters<
-  typeof SnapController
->[0];
-
-type PartialSnapControllerConstructorParams = Partial<
-  Omit<ConstructorParameters<typeof SnapController>[0], 'state'> & {
-    state: Partial<SnapControllerConstructorParams['state']>;
-  }
->;
-
-const getSnapControllerOptions = (
-  opts?: PartialSnapControllerConstructorParams,
-) => {
-  const options = {
-    environmentEndowmentPermissions: [],
-    closeAllConnections: jest.fn(),
-    getAppKey: jest
-      .fn()
-      .mockImplementation((snapId, appKeyType) => `${appKeyType}:${snapId}`),
-    messenger: getSnapControllerMessenger(),
-    featureFlags: { dappsCanUpdateSnaps: true },
-    checkBlockList: jest
-      .fn()
-      .mockImplementation(async (snaps: CheckSnapBlockListArg) => {
-        return Object.keys(snaps).reduce(
-          (acc, snapId) => ({ ...acc, [snapId]: { blocked: false } }),
-          {},
-        );
-      }),
-    state: undefined,
-    ...opts,
-  } as SnapControllerConstructorParams;
-
-  options.state = {
-    snaps: {},
-    snapErrors: {},
-    snapStates: {},
-    ...options.state,
-  };
-  return options;
-};
-
-type GetSnapControllerWithEESOptionsParam = Omit<
-  PartialSnapControllerConstructorParams,
-  'messenger'
-> & { rootMessenger?: ReturnType<typeof getControllerMessenger> };
-
-const getSnapControllerWithEESOptions = (
-  opts: GetSnapControllerWithEESOptionsParam = {},
-) => {
-  const { rootMessenger = getControllerMessenger() } = opts;
-  const snapControllerMessenger = getSnapControllerMessenger(
-    rootMessenger,
-    false,
-  );
-  const originalCall = snapControllerMessenger.call.bind(
-    snapControllerMessenger,
-  );
-  jest
-    .spyOn(snapControllerMessenger, 'call')
-    .mockImplementation((method, ...args) => {
-      // Mock long running permission, call actual implementation for everything else
-      if (
-        method === 'PermissionController:hasPermission' &&
-        args[1] === SnapEndowments.longRunning
-      ) {
-        return false;
-      }
-      return originalCall(method, ...args);
-    });
-  return {
-    environmentEndowmentPermissions: [],
-    closeAllConnections: jest.fn(),
-    getAppKey: jest
-      .fn()
-      .mockImplementation((snapId, appKeyType) => `${appKeyType}:${snapId}`),
-    messenger: snapControllerMessenger,
-    ...opts,
-    rootMessenger,
-  } as SnapControllerConstructorParams & {
-    rootMessenger: ReturnType<typeof getControllerMessenger>;
-  };
-};
-
-const getSnapController = (options = getSnapControllerOptions()) => {
-  return new SnapController(options);
-};
-
-const getSnapControllerWithEES = (
-  options = getSnapControllerWithEESOptions(),
-  service?: ReturnType<typeof getNodeEES>,
-) => {
-  const _service =
-    service ?? getNodeEES(getNodeEESMessenger(options.rootMessenger));
-  const controller = new SnapController(options);
-  return [controller, _service] as const;
-};
 
 jest.mock('./utils/npm', () => ({
   ...jest.requireActual('./utils/npm'),
