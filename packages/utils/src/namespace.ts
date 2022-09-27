@@ -24,6 +24,55 @@ export const ACCOUNT_ID_REGEX =
   /^(?<chainId>(?<namespace>[-a-z0-9]{3,8}):(?<reference>[-a-zA-Z0-9]{1,32})):(?<accountAddress>[a-zA-Z0-9]{1,64})$/u;
 
 /**
+ * Parse a chain ID string to an object containing the namespace and reference.
+ * This validates the chain ID before parsing it.
+ *
+ * @param chainId - The chain ID to validate and parse.
+ * @returns The parsed chain ID.
+ */
+export function parseChainId(chainId: ChainId): {
+  namespace: NamespaceId;
+  reference: string;
+} {
+  const match = CHAIN_ID_REGEX.exec(chainId);
+  if (!match?.groups) {
+    throw new Error('Invalid chain ID.');
+  }
+
+  return {
+    namespace: match.groups.namespace,
+    reference: match.groups.reference,
+  };
+}
+
+/**
+ * Parse an account ID to an object containing the chain, chain ID and address.
+ * This validates the account ID before parsing it.
+ *
+ * @param accountId - The account ID to validate and parse.
+ * @returns The parsed account ID.
+ */
+export function parseAccountId(accountId: AccountId): {
+  chain: { namespace: NamespaceId; reference: string };
+  chainId: ChainId;
+  address: string;
+} {
+  const match = ACCOUNT_ID_REGEX.exec(accountId);
+  if (!match?.groups) {
+    throw new Error('Invalid account ID.');
+  }
+
+  return {
+    address: match.groups.accountAddress,
+    chainId: match.groups.chainId as ChainId,
+    chain: {
+      namespace: match.groups.namespace,
+      reference: match.groups.reference,
+    },
+  };
+}
+
+/**
  * A helper struct for a string with a minimum length of 1 and a maximum length
  * of 40.
  */

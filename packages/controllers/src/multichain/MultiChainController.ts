@@ -7,10 +7,10 @@ import {
   RestrictedControllerMessenger,
 } from '@metamask/controllers';
 import {
-  ACCOUNT_ID_REGEX,
+  parseAccountId,
   AccountId,
   assert,
-  CHAIN_ID_REGEX,
+  parseChainId,
   ChainId,
   ConnectArguments,
   HandlerType,
@@ -81,55 +81,6 @@ type MultiChainControllerArgs = {
   notify: Notify;
   messenger: MultiChainControllerMessenger;
 };
-
-/**
- * Parse a chain ID string to an object containing the namespace and reference.
- * This validates the chain ID before parsing it.
- *
- * @param chainId - The chain ID to validate and parse.
- * @returns The parsed chain ID.
- */
-export function parseChainId(chainId: ChainId): {
-  namespace: NamespaceId;
-  reference: string;
-} {
-  const match = CHAIN_ID_REGEX.exec(chainId);
-  if (!match?.groups) {
-    throw new Error('Invalid chain ID.');
-  }
-
-  return {
-    namespace: match.groups.namespace,
-    reference: match.groups.reference,
-  };
-}
-
-/**
- * Parse an account ID to an object containing the chain, chain ID and address.
- * This validates the account ID before parsing it.
- *
- * @param accountId - The account ID to validate and parse.
- * @returns The parsed account ID.
- */
-export function parseAccountId(accountId: AccountId): {
-  chain: { namespace: NamespaceId; reference: string };
-  chainId: ChainId;
-  address: string;
-} {
-  const match = ACCOUNT_ID_REGEX.exec(accountId);
-  if (!match?.groups) {
-    throw new Error('Invalid account ID.');
-  }
-
-  return {
-    address: match.groups.accountAddress,
-    chainId: match.groups.chainId as ChainId,
-    chain: {
-      namespace: match.groups.namespace,
-      reference: match.groups.reference,
-    },
-  };
-}
 
 // TODO(ritave): Support for legacy ethereum operations, not just snaps
 export class MultiChainController extends BaseController<
@@ -366,10 +317,6 @@ export class MultiChainController extends BaseController<
       handler: HandlerType.SnapKeyring,
       request: { method, params: args ? [args] : [] },
     });
-  }
-
-  async onSessionDisconnect(origin: string): Promise<void> {
-    await this.closeSession(origin);
   }
 
   private async snapToNamespaces(

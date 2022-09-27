@@ -37,6 +37,82 @@ describe('findMatchingKeyringSnaps', () => {
     });
   });
 
+  it('allows omitting of methods', () => {
+    const requestedNamespaces = {
+      eip155: {
+        events: ['accountsChanged'],
+        chains: ['eip155:1'],
+      },
+    };
+
+    const exposedNamespaces = {
+      eip155: {
+        ...MOCK_EIP155_NAMESPACE,
+        methods: undefined,
+      },
+    };
+
+    const snaps = {
+      foo: exposedNamespaces,
+    };
+
+    expect(findMatchingKeyringSnaps(requestedNamespaces, snaps)).toStrictEqual({
+      eip155: ['foo'],
+    });
+  });
+
+  it('doesnt match namespaces that are null', () => {
+    const requestedNamespaces = {
+      eip155: {
+        methods: [
+          'eth_signTransaction',
+          'eth_accounts',
+          'eth_sign',
+          'personal_sign',
+          'eth_signTypedData',
+        ],
+        events: ['accountsChanged'],
+        chains: ['eip155:1', 'eip155:966'],
+      },
+    };
+
+    const snaps = {
+      foo: null,
+    };
+
+    expect(findMatchingKeyringSnaps(requestedNamespaces, snaps)).toStrictEqual({
+      eip155: [],
+    });
+  });
+
+  it('doesnt match namespaces that dont support all chains', () => {
+    const requestedNamespaces = {
+      eip155: {
+        methods: [
+          'eth_signTransaction',
+          'eth_accounts',
+          'eth_sign',
+          'personal_sign',
+          'eth_signTypedData',
+        ],
+        events: ['accountsChanged'],
+        chains: ['eip155:1', 'eip155:966'],
+      },
+    };
+
+    const exposedNamespaces = {
+      eip155: MOCK_EIP155_NAMESPACE,
+    };
+
+    const snaps = {
+      foo: exposedNamespaces,
+    };
+
+    expect(findMatchingKeyringSnaps(requestedNamespaces, snaps)).toStrictEqual({
+      eip155: [],
+    });
+  });
+
   it('doesnt match namespaces that dont support all events', () => {
     const requestedNamespaces = {
       eip155: {

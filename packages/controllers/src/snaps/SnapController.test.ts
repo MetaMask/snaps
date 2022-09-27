@@ -12,6 +12,7 @@ import {
   SnapManifest,
   HandlerType,
   SnapStatus,
+  SnapCaveatType,
 } from '@metamask/snap-utils';
 import { Crypto } from '@peculiar/webcrypto';
 import { EthereumRpcError, ethErrors, serializeError } from 'eth-rpc-errors';
@@ -19,7 +20,6 @@ import fetchMock from 'jest-fetch-mock';
 import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import pump from 'pump';
-import { SnapCaveatType } from '@metamask/rpc-methods';
 import {
   getSnapManifest,
   getSnapObject,
@@ -42,6 +42,8 @@ import {
   getSnapControllerOptions,
   getSnapControllerWithEES,
   getSnapControllerWithEESOptions,
+  MOCK_KEYRING_SNAP,
+  MOCK_NAMESPACES,
 } from '../test-utils';
 import { SnapEndowments } from './endowments';
 import { SNAP_APPROVAL_UPDATE, SnapControllerState } from './SnapController';
@@ -2070,6 +2072,66 @@ describe('SnapController', () => {
                   value: [{ path: ['m', "44'", "60'"], curve: 'secp256k1' }],
                 },
               ],
+            },
+          },
+          subject: { origin: MOCK_SNAP_ID },
+        },
+      );
+    });
+
+    it('maps endowment permission caveats to the proper format', async () => {
+      const { manifest } = MOCK_KEYRING_SNAP;
+
+      const messenger = getSnapControllerMessenger();
+      const snapController = getSnapController(
+        getSnapControllerOptions({ messenger }),
+      );
+
+      const callActionMock = jest.spyOn(messenger, 'call');
+
+      jest
+        .spyOn(snapController as any, '_fetchSnap')
+        .mockImplementationOnce(() => {
+          return getSnapObject({ manifest });
+        });
+
+      await snapController.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: {},
+      });
+
+      const caveat = {
+        type: SnapCaveatType.SnapKeyring,
+        value: { namespaces: MOCK_NAMESPACES },
+      };
+
+      expect(callActionMock).toHaveBeenNthCalledWith(
+        2,
+        'ApprovalController:addRequest',
+        expect.objectContaining({
+          requestData: {
+            metadata: {
+              origin: MOCK_SNAP_ID,
+              dappOrigin: MOCK_ORIGIN,
+              id: expect.any(String),
+            },
+            permissions: {
+              [SnapEndowments.Keyring]: {
+                caveats: [caveat],
+              },
+            },
+            snapId: MOCK_SNAP_ID,
+          },
+        }),
+        true,
+      );
+
+      expect(callActionMock).toHaveBeenNthCalledWith(
+        3,
+        'PermissionController:grantPermissions',
+        {
+          approvedPermissions: {
+            [SnapEndowments.Keyring]: {
+              caveats: [caveat],
             },
           },
           subject: { origin: MOCK_SNAP_ID },

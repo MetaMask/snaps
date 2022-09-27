@@ -1,5 +1,11 @@
 import { getChain, getNamespace, getSessionNamespace } from './test-utils';
-import { assertIsSession, isNamespace, isNamespacesObject } from './namespace';
+import {
+  assertIsSession,
+  isNamespace,
+  isNamespacesObject,
+  parseAccountId,
+  parseChainId,
+} from './namespace';
 
 describe('isNamespace', () => {
   it.each([
@@ -118,5 +124,147 @@ describe('assertIsSession', () => {
     { namespaces: { foobarbaz: getNamespace() } },
   ])('throws for an invalid session', (session) => {
     expect(() => assertIsSession(session)).toThrow('Invalid session');
+  });
+});
+
+describe('parseChainId', () => {
+  it('parses valid chain ids', () => {
+    expect(parseChainId('eip155:1')).toMatchInlineSnapshot(`
+      {
+        "namespace": "eip155",
+        "reference": "1",
+      }
+    `);
+
+    expect(
+      parseChainId('bip122:000000000019d6689c085ae165831e93'),
+    ).toMatchInlineSnapshot(
+      `
+      {
+        "namespace": "bip122",
+        "reference": "000000000019d6689c085ae165831e93",
+      }
+    `,
+    );
+
+    expect(parseChainId('cosmos:cosmoshub-3')).toMatchInlineSnapshot(
+      `
+      {
+        "namespace": "cosmos",
+        "reference": "cosmoshub-3",
+      }
+    `,
+    );
+
+    expect(
+      parseChainId('polkadot:b0a8d493285c2df73290dfb7e61f870f'),
+    ).toMatchInlineSnapshot(
+      `
+      {
+        "namespace": "polkadot",
+        "reference": "b0a8d493285c2df73290dfb7e61f870f",
+      }
+    `,
+    );
+  });
+
+  it.each([
+    true,
+    false,
+    null,
+    undefined,
+    1,
+    'foo',
+    'foobarbazquz:1',
+    'foo:',
+    'foo:foobarbazquzfoobarbazquzfoobarbazquzfoobarbazquzfoobarbazquzfoobarbazquz',
+  ])('throws for invalid input', (input) => {
+    expect(() => parseChainId(input as any)).toThrow('Invalid chain ID.');
+  });
+});
+
+describe('parseAccountId', () => {
+  it('parses valid account ids', () => {
+    expect(
+      parseAccountId('eip155:1:0xab16a96d359ec26a11e2c2b3d8f8b8942d5bfcdb'),
+    ).toMatchInlineSnapshot(
+      `
+      {
+        "address": "0xab16a96d359ec26a11e2c2b3d8f8b8942d5bfcdb",
+        "chain": {
+          "namespace": "eip155",
+          "reference": "1",
+        },
+        "chainId": "eip155:1",
+      }
+    `,
+    );
+
+    expect(
+      parseAccountId(
+        'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
+      ),
+    ).toMatchInlineSnapshot(
+      `
+      {
+        "address": "128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6",
+        "chain": {
+          "namespace": "bip122",
+          "reference": "000000000019d6689c085ae165831e93",
+        },
+        "chainId": "bip122:000000000019d6689c085ae165831e93",
+      }
+    `,
+    );
+
+    expect(
+      parseAccountId(
+        'cosmos:cosmoshub-3:cosmos1t2uflqwqe0fsj0shcfkrvpukewcw40yjj6hdc0',
+      ),
+    ).toMatchInlineSnapshot(
+      `
+      {
+        "address": "cosmos1t2uflqwqe0fsj0shcfkrvpukewcw40yjj6hdc0",
+        "chain": {
+          "namespace": "cosmos",
+          "reference": "cosmoshub-3",
+        },
+        "chainId": "cosmos:cosmoshub-3",
+      }
+    `,
+    );
+
+    expect(
+      parseAccountId(
+        'polkadot:b0a8d493285c2df73290dfb7e61f870f:5hmuyxw9xdgbpptgypokw4thfyoe3ryenebr381z9iaegmfy',
+      ),
+    ).toMatchInlineSnapshot(
+      `
+      {
+        "address": "5hmuyxw9xdgbpptgypokw4thfyoe3ryenebr381z9iaegmfy",
+        "chain": {
+          "namespace": "polkadot",
+          "reference": "b0a8d493285c2df73290dfb7e61f870f",
+        },
+        "chainId": "polkadot:b0a8d493285c2df73290dfb7e61f870f",
+      }
+    `,
+    );
+  });
+
+  it.each([
+    true,
+    false,
+    null,
+    undefined,
+    1,
+    'foo',
+    'foobarbazquz:1',
+    'foo:',
+    'foo:foobarbazquzfoobarbazquzfoobarbazquzfoobarbazquzfoobarbazquzfoobarbazquz',
+    'eip155:1',
+    'eip155:1:',
+  ])('throws for invalid input', (input) => {
+    expect(() => parseAccountId(input as any)).toThrow('Invalid account ID.');
   });
 });
