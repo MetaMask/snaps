@@ -241,10 +241,12 @@ export class MultiChainController extends BaseController<
     const resolvedAccounts = hasConflicts
       ? await this.resolveConflicts(origin, possibleAccounts)
       : fromEntries(
-          Object.entries(possibleAccounts).map(([namespace, snapIds]) => [
-            namespace,
-            snapIds[0] ?? null,
-          ]),
+          Object.entries(possibleAccounts).map(
+            ([namespace, snapAndAccounts]) => [
+              namespace,
+              snapAndAccounts[0] ?? null,
+            ],
+          ),
         );
 
     // TODO: In the future, use another permission here to not give full permission after handshake.
