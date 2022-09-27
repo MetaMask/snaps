@@ -240,17 +240,16 @@ export class MultiChainController extends BaseController<
     // If current configuration doesn't solve request, we need to show a prompt.
     const resolvedAccounts = hasConflicts
       ? await this.resolveConflicts(origin, possibleAccounts)
-      : possibleAccounts;
-    const chosenAccounts = fromEntries(
-      Object.entries(resolvedAccounts).map(([namespace, snapIds]) => [
-        namespace,
-        snapIds[0] ?? null,
-      ]),
-    );
+      : fromEntries(
+          Object.entries(possibleAccounts).map(([namespace, snapIds]) => [
+            namespace,
+            snapIds[0] ?? null,
+          ]),
+        );
 
     // TODO: In the future, use another permission here to not give full permission after handshake.
     // Instead we should use a less scary permission.
-    const approvedPermissions = Object.values(chosenAccounts).reduce(
+    const approvedPermissions = Object.values(resolvedAccounts).reduce(
       (acc, cur) => {
         if (cur) {
           return {
@@ -271,12 +270,12 @@ export class MultiChainController extends BaseController<
     const providedNamespaces: Record<NamespaceId, SessionNamespace> =
       fromEntries(
         Object.entries(connection.requiredNamespaces)
-          .filter(([namespaceId]) => chosenAccounts[namespaceId] !== null)
+          .filter(([namespaceId]) => resolvedAccounts[namespaceId] !== null)
           .map(([namespaceId, namespace]) => [
             namespaceId,
             {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              accounts: chosenAccounts[namespaceId]!.accounts,
+              accounts: resolvedAccounts[namespaceId]!.accounts,
               chains: namespace.chains,
               events: namespace.events,
               methods: namespace.methods,
@@ -289,7 +288,7 @@ export class MultiChainController extends BaseController<
       requestedNamespaces: connection.requiredNamespaces,
       providedNamespaces,
       handlingSnaps: fromEntries(
-        Object.entries(chosenAccounts)
+        Object.entries(resolvedAccounts)
           .filter(([, data]) => data !== null)
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           .map(([namespaceId, data]) => [namespaceId, data!.snapId]),
