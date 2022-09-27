@@ -12,7 +12,6 @@ import {
   SnapManifest,
   HandlerType,
   SnapStatus,
-  getSnapPermissionName,
 } from '@metamask/snap-utils';
 import { Crypto } from '@peculiar/webcrypto';
 import { EthereumRpcError, ethErrors, serializeError } from 'eth-rpc-errors';
