@@ -62,7 +62,9 @@ export const getMultiChainControllerWithEES = () => {
   const snapControllerOptions = getSnapControllerWithEESOptions({
     rootMessenger,
   });
-  const [snapController] = getSnapControllerWithEES(snapControllerOptions);
+  const [snapController, executionService] = getSnapControllerWithEES(
+    snapControllerOptions,
+  );
   const multiChainControllerMessenger =
     getMultiChainControllerMessenger(rootMessenger);
   const multiChainController = new MultiChainController({
@@ -76,6 +78,7 @@ export const getMultiChainControllerWithEES = () => {
     multiChainController,
     snapController,
     snapControllerMessenger: snapControllerOptions.messenger,
+    executionService,
   };
 };
 

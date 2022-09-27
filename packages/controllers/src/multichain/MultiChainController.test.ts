@@ -17,6 +17,7 @@ describe('MultiChainController', () => {
         multiChainController,
         multiChainControllerMessenger,
         snapController,
+        executionService,
       } = getMultiChainControllerWithEES();
 
       const snap = await snapController.add(MOCK_KEYRING_SNAP);
@@ -73,6 +74,9 @@ describe('MultiChainController', () => {
         },
       });
       expect(messengerCallMock).toHaveBeenCalledTimes(7);
+
+      snapController.destroy();
+      await executionService.terminateAllSnaps();
     });
   });
 
@@ -82,6 +86,7 @@ describe('MultiChainController', () => {
         multiChainController,
         multiChainControllerMessenger,
         snapController,
+        executionService,
       } = getMultiChainControllerWithEES();
 
       const snap = await snapController.add(MOCK_KEYRING_SNAP);
@@ -136,6 +141,9 @@ describe('MultiChainController', () => {
       });
       expect(result).toEqual(['eip155:1:foo']);
       expect(messengerCallMock).toHaveBeenCalledTimes(9);
+
+      snapController.destroy();
+      await executionService.terminateAllSnaps();
     });
   });
 });
