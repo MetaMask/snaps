@@ -1,13 +1,6 @@
-import {
-  assert,
-  Infer,
-  is,
-  literal,
-  object,
-  string,
-  unknown,
-} from 'superstruct';
+import { Infer, is, literal, object, string, unknown } from 'superstruct';
 import { ChainIdStruct } from './namespace';
+import { assertStruct } from './assert';
 
 export const EventStruct = object({
   name: string(),
@@ -33,7 +26,7 @@ export function isEvent(value: unknown): value is Event {
  * @throws If the value is not a SIP-2 event.
  */
 export function assertIsEvent(value: unknown): asserts value is Event {
-  assert(value, EventStruct);
+  assertStruct(value, EventStruct, 'Invalid event');
 }
 
 export const MetaMaskNotificationStruct = object({
@@ -67,5 +60,5 @@ export function isMetaMaskNotification(
 export function assertIsMetaMaskNotification(
   value: unknown,
 ): asserts value is MetaMaskNotification {
-  assert(value, MetaMaskNotificationStruct);
+  assertStruct(value, MetaMaskNotificationStruct, 'Invalid notification');
 }
