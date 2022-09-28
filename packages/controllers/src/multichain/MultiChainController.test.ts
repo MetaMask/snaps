@@ -145,7 +145,7 @@ describe('MultiChainController', () => {
       });
 
       expect(messengerCallMock).toHaveBeenCalledWith(
-        'SnapController:onSessionClose',
+        'SnapController:decrementActiveReferences',
         MOCK_SNAP_ID,
       );
 

@@ -29,8 +29,8 @@ export const getMultiChainControllerMessenger = (
       'ApprovalController:addRequest',
       'SnapController:getAll',
       'SnapController:handleRequest',
-      'SnapController:onSessionOpen',
-      'SnapController:onSessionClose',
+      'SnapController:incrementActiveReferences',
+      'SnapController:decrementActiveReferences',
     ],
   });
 };

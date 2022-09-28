@@ -30,12 +30,12 @@ export function wrapKeyring(
     if (!(method in keyring)) {
       throw new Error(`Keyring does not expose ${method}`);
     }
-    let args = params;
+    let args = params ?? [];
     // @ts-expect-error TODO: Figure out how to type this better
     const func = keyring[method].bind(keyring);
     // Special case for registering events
     if (method === 'on') {
-      const data = args?.[0];
+      const data = args[0];
       const listener = (listenerArgs: unknown) =>
         notify({
           method: 'SnapKeyringEvent',
@@ -43,7 +43,7 @@ export function wrapKeyring(
         });
       args = [data, listener];
     }
-    return func(...(args ?? []));
+    return func(...args);
   };
   return keyringHandler;
 }

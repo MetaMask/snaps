@@ -67,8 +67,8 @@ export const getSnapControllerMessenger = (
       'SnapController:getPermitted',
       'SnapController:install',
       'SnapController:removeSnapError',
-      'SnapController:onSessionOpen',
-      'SnapController:onSessionClose',
+      'SnapController:incrementActiveReferences',
+      'SnapController:decrementActiveReferences',
     ],
   });
 

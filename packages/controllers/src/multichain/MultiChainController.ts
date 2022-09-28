@@ -31,8 +31,8 @@ import { nanoid } from 'nanoid';
 import {
   GetAllSnaps,
   HandleSnapRequest,
-  OnSessionClose,
-  OnSessionOpen,
+  IncrementActiveReferences,
+  DecrementActiveReferences,
   SnapEndowments,
 } from '../snaps';
 import { findMatchingKeyringSnaps } from './matching';
@@ -45,8 +45,8 @@ const defaultState: MultiChainControllerState = {
 
 type AllowedActions =
   | GetAllSnaps
-  | OnSessionOpen
-  | OnSessionClose
+  | IncrementActiveReferences
+  | DecrementActiveReferences
   | HandleSnapRequest
   | GetPermissions
   | HasPermission
@@ -119,7 +119,10 @@ export class MultiChainController extends BaseController<
 
     await Promise.all(
       Object.values(session.handlingSnaps).map((snapId) =>
-        this.messagingSystem.call('SnapController:onSessionClose', snapId),
+        this.messagingSystem.call(
+          'SnapController:decrementActiveReferences',
+          snapId,
+        ),
       ),
     );
   }
@@ -250,7 +253,10 @@ export class MultiChainController extends BaseController<
 
     await Promise.all(
       Object.values(session.handlingSnaps).map((snapId) =>
-        this.messagingSystem.call('SnapController:onSessionOpen', snapId),
+        this.messagingSystem.call(
+          'SnapController:incrementActiveReferences',
+          snapId,
+        ),
       ),
     );
 

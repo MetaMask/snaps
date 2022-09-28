@@ -1186,7 +1186,7 @@ describe('SnapController', () => {
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
 
     await options.rootMessenger.call(
-      'SnapController:onSessionOpen',
+      'SnapController:incrementActiveReferences',
       MOCK_SNAP_ID,
     );
 
@@ -1212,7 +1212,7 @@ describe('SnapController', () => {
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
 
     await options.rootMessenger.call(
-      'SnapController:onSessionClose',
+      'SnapController:decrementActiveReferences',
       MOCK_SNAP_ID,
     );
 

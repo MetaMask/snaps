@@ -120,9 +120,9 @@ export interface SnapRuntimeData {
   lastRequest: null | number;
 
   /**
-   * The current number of open sessions where this Snap is being used
+   * The current number of active references where this Snap is being used
    */
-  openSessions: number;
+  activeReferences: number;
 
   /**
    * The current pending inbound requests, meaning requests that are processed by snaps.
@@ -278,14 +278,14 @@ export type GetAllSnaps = {
   handler: SnapController['getAllSnaps'];
 };
 
-export type OnSessionOpen = {
-  type: `${typeof controllerName}:onSessionOpen`;
-  handler: SnapController['onSessionOpen'];
+export type IncrementActiveReferences = {
+  type: `${typeof controllerName}:incrementActiveReferences`;
+  handler: SnapController['incrementActiveReferences'];
 };
 
-export type OnSessionClose = {
-  type: `${typeof controllerName}:onSessionClose`;
-  handler: SnapController['onSessionOpen'];
+export type DecrementActiveReferences = {
+  type: `${typeof controllerName}:decrementActiveReferences`;
+  handler: SnapController['decrementActiveReferences'];
 };
 
 export type InstallSnaps = {
@@ -314,8 +314,8 @@ export type SnapControllerActions =
   | InstallSnaps
   | RemoveSnapError
   | GetAllSnaps
-  | OnSessionOpen
-  | OnSessionClose;
+  | IncrementActiveReferences
+  | DecrementActiveReferences;
 
 // Controller Messenger Events
 
@@ -845,13 +845,13 @@ export class SnapController extends BaseController<
     );
 
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:onSessionOpen`,
-      (...args) => this.onSessionOpen(...args),
+      `${controllerName}:incrementActiveReferences`,
+      (...args) => this.incrementActiveReferences(...args),
     );
 
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:onSessionClose`,
-      (...args) => this.onSessionClose(...args),
+      `${controllerName}:decrementActiveReferences`,
+      (...args) => this.decrementActiveReferences(...args),
     );
   }
 
@@ -991,7 +991,7 @@ export class SnapController extends BaseController<
       entries
         .filter(
           ([_snapId, runtime]) =>
-            runtime.openSessions === 0 &&
+            runtime.activeReferences === 0 &&
             runtime.pendingInboundRequests.length === 0 &&
             // lastRequest should always be set here but TypeScript wants this check
             runtime.lastRequest &&
@@ -1417,27 +1417,27 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Handles increasing the openSessions counter on session open.
+   * Handles incrementing the activeReferences counter.
    *
-   * @param snapId - The snap id of the snap the session was opened with.
+   * @param snapId - The snap id of the snap that was referenced.
    */
-  onSessionOpen(snapId: SnapId) {
+  incrementActiveReferences(snapId: SnapId) {
     const runtime = this.getRuntimeOrDefault(snapId);
-    runtime.openSessions += 1;
+    runtime.activeReferences += 1;
   }
 
   /**
-   * Handles decreasing the openSessions counter on session close.
+   * Handles decrement the activeReferences counter.
    *
-   * @param snapId - The snap id of the snap the session was closed with.
+   * @param snapId - The snap id of the snap that was referenced..
    */
-  onSessionClose(snapId: SnapId) {
+  decrementActiveReferences(snapId: SnapId) {
     const runtime = this.getRuntimeOrDefault(snapId);
     assert(
-      runtime.openSessions > 0,
-      new Error(`Session management is in an invalid state.`),
+      runtime.activeReferences > 0,
+      'SnapController reference management is in an invalid state.',
     );
-    runtime.openSessions -= 1;
+    runtime.activeReferences -= 1;
   }
 
   /**
@@ -2390,7 +2390,7 @@ export class SnapController extends BaseController<
         lastRequest: null,
         rpcHandler: null,
         installPromise: null,
-        openSessions: 0,
+        activeReferences: 0,
         pendingInboundRequests: [],
         pendingOutboundRequests: 0,
         interpreter,

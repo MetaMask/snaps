@@ -1,5 +1,3 @@
-/* eslint-disable consistent-return */
-/* eslint-disable default-case */
 import {
   createAsyncMiddleware,
   JsonRpcMiddleware,
@@ -44,15 +42,19 @@ export function createMultiChainMiddleware({
       case 'caip_request': {
         assertIsMultiChainRequest(unwrapped.params);
         res.result = await onRequest(origin, unwrapped.params);
+        // eslint-disable-next-line consistent-return
         return;
       }
 
       case 'metamask_handshake': {
         assertIsConnectArguments(unwrapped.params);
         res.result = await onConnect(origin, unwrapped.params);
+        // eslint-disable-next-line consistent-return
         return;
       }
+
+      default:
+        return next();
     }
-    return next();
   });
 }
