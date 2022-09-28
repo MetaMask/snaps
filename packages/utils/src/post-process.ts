@@ -1,13 +1,24 @@
 import {
+  Node,
+  NodePath,
+  PluginObj,
+  template,
+  transformSync,
+  Visitor,
+} from '@babel/core';
+import {
   binaryExpression,
   Expression,
   Identifier,
+  isAssignmentExpression,
+  isStringLiteral,
   stringLiteral,
   TemplateElement,
   templateElement,
   templateLiteral,
+  toComputedKey,
+  valueToNode,
 } from '@babel/types';
-import { transformSync, Node, Visitor, template, PluginObj } from '@babel/core';
 
 /**
  * Source map declaration taken from `@babel/core`. Babel doesn't export the
@@ -34,11 +45,13 @@ export type SourceMap = {
  * This ensures that the source map is correct for the modified code, and still
  * points to the original source. If not provided, a new source map will be
  * generated instead.
+ * @property dotenv - An object of process.env variables that will be replaced in the resulting bundle with raw strings.
  */
 export type PostProcessOptions = {
   stripComments?: boolean;
   sourceMap?: boolean | 'inline';
   inputSourceMap?: SourceMap;
+  dotenv?: Record<string, string>;
 };
 
 /**
@@ -166,6 +179,22 @@ function breakTokensTemplateLiteral(
 }
 
 /**
+ * Returns whether the path is in the left part of an assignment.
+ *
+ * @example
+ * ```
+ * obj.prop = 5;
+ * isLeftSideOfAssignment(obj.prop) === true
+ * ```
+ *
+ * @param path The path to check.
+ * @returns Whether the checked path is on the left
+ */
+function isLeftSideOfAssignment(path: NodePath<Expression>) {
+  return isAssignmentExpression(path.parent) && path.parent.left === path.node;
+}
+
+/**
  * Get a raw template literal value from a cooked value. This adds a backslash
  * before every '`', '\' and '${' characters.
  *
@@ -207,6 +236,7 @@ export function postProcessBundle(
     stripComments = true,
     sourceMap: sourceMaps,
     inputSourceMap,
+    dotenv,
   }: Partial<PostProcessOptions> = {},
 ): PostProcessedBundle {
   const pre: PluginObj['pre'] = ({ ast }) => {
@@ -259,6 +289,22 @@ export function postProcessBundle(
 
     MemberExpression(path) {
       const { node } = path;
+
+      // Replace process.env with raw string.
+      if (
+        dotenv !== undefined &&
+        path.get('object').matchesPattern('process.env')
+      ) {
+        const key = toComputedKey(node);
+        if (
+          isStringLiteral(key) &&
+          !isLeftSideOfAssignment(path) &&
+          key.value in dotenv
+        ) {
+          path.replaceWith(valueToNode(dotenv[key.value]));
+          (visitor.StringLiteral as any)(path);
+        }
+      }
 
       // Replace `object.eval(foo)` with `(1, object.eval)(foo)`.
       if (

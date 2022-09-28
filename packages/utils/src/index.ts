@@ -1,7 +1,9 @@
 export * from './assert';
 export * from './deep-clone';
 export * from './default-endowments';
+export * as dotenvSnap from './dotenv';
 export * from './eval';
+export * from './flatMap';
 export * from './fs';
 export * from './json-schemas';
 export * from './manifest';
@@ -13,4 +15,3 @@ export * from './snaps';
 export * from './types';
 export * from './url';
 export * from './versions';
-export * from './flatMap';

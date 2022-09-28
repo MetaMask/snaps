@@ -1,15 +1,16 @@
-import { Transform, TransformCallback } from 'stream';
-import { promises as fs } from 'fs';
-import os from 'os';
-import pathUtils from 'path';
-import { BrowserifyObject } from 'browserify';
 import {
   checkManifest,
+  dotenvSnap,
   evalBundle,
   postProcessBundle,
   PostProcessOptions,
 } from '@metamask/snap-utils';
+import { BrowserifyObject } from 'browserify';
 import { fromSource } from 'convert-source-map';
+import { promises as fs } from 'fs';
+import os from 'os';
+import pathUtils from 'path';
+import { Transform, TransformCallback } from 'stream';
 
 const TEMP_BUNDLE_PATH = pathUtils.join(os.tmpdir(), 'snaps-bundle.js');
 
@@ -17,10 +18,11 @@ type PluginOptions = {
   eval?: boolean;
   manifestPath?: string;
   writeManifest?: boolean;
+  dotenv?: boolean;
 };
 
 export type Options = PluginOptions &
-  Omit<PostProcessOptions, 'sourceMap' | 'inputSourceMap'>;
+  Omit<PostProcessOptions, 'sourceMap' | 'inputSourceMap' | 'dotenv'>;
 
 /**
  * Run eval on the processed bundle and fix the manifest, if configured.
@@ -111,7 +113,7 @@ export class SnapsBrowserifyTransform extends Transform {
    *
    * @param callback - The callback to call when the stream is finished.
    */
-  _flush(callback: TransformCallback) {
+  async _flush(callback: TransformCallback) {
     // Merges all the chunks into a single string and processes it.
     const code = Buffer.concat(this.#data).toString('utf-8');
 
@@ -119,10 +121,13 @@ export class SnapsBrowserifyTransform extends Transform {
     // convert it to an object.
     const inputSourceMap = fromSource(code)?.toObject() ?? undefined;
 
+    const dotenv = this.#options.dotenv ? await dotenvSnap.parse() : undefined;
+
     const result = postProcessBundle(code, {
       ...this.#options,
       sourceMap: Boolean(inputSourceMap) && 'inline',
       inputSourceMap,
+      dotenv,
     });
 
     postBundle(this.#options, result.code)
@@ -159,6 +164,7 @@ export default function plugin(
     eval: true,
     manifestPath: pathUtils.join(process.cwd(), 'snap.manifest.json'),
     writeManifest: true,
+    dotenv: true,
     ...options,
   };
 
