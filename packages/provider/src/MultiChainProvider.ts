@@ -16,7 +16,14 @@ import { assertIsJsonRpcSuccess, JsonRpcRequest } from '@metamask/utils';
 import type { SnapProvider } from '@metamask/snap-types';
 import { Provider } from './Provider';
 
-declare const ethereum: SnapProvider;
+declare global {
+  // Declaration merging doesn't work with types, so we have to use an interface
+  // here.
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+  interface Window {
+    ethereum: SnapProvider;
+  }
+}
 
 export class MultiChainProvider extends SafeEventEmitter implements Provider {
   #isConnected = false;
@@ -137,7 +144,7 @@ export class MultiChainProvider extends SafeEventEmitter implements Provider {
    * @returns The injected provider.
    */
   #getProvider() {
-    return ethereum;
+    return window.ethereum;
   }
 
   /**
