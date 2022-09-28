@@ -8,5 +8,5 @@
     "typeRoots": ["../../node_modules/@types", "./node_modules/@types"]
   },
   "include": ["./src"],
-  "references": [{ "path": "../utils" }, { "path": "../types" }]
+  "references": [{ "path": "../utils" }]
 }
