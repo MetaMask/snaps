@@ -24,4 +24,7 @@ export const DEFAULT_ENDOWMENTS: readonly string[] = Object.freeze([
   // https://github.com/MetaMask/snaps-skunkworks/discussions/678
   'AbortController',
   'AbortSignal',
+  // Useful when sending multi-part.
+  // https://github.com/MetaMask/snaps-skunkworks/issues/680
+  'FormData',
 ]);
