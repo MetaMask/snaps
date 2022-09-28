@@ -8,8 +8,5 @@
     "typeRoots": ["../../node_modules/@types", "./node_modules/@types"]
   },
   "include": ["./src"],
-  "references": [
-    { "path": "../utils" },
-    { "path": "../execution-environments" }
-  ]
+  "references": [{ "path": "../utils" }]
 }

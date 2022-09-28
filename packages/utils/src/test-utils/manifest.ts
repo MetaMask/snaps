@@ -1,5 +1,10 @@
 import { NpmSnapPackageJson, SnapManifest } from '../json-schemas';
-import { Chain, Namespace, SessionNamespace } from '../namespace';
+import {
+  Chain,
+  Namespace,
+  RequestNamespace,
+  SessionNamespace,
+} from '../namespace';
 import { DEFAULT_SNAP_SHASUM } from './snap';
 import { PartialOrNull } from './types';
 
@@ -120,6 +125,16 @@ export const getNamespace = ({
   methods = ['eth_signTransaction', 'eth_accounts'],
   events = ['accountsChanged'],
 }: Partial<Namespace> = {}): Namespace => ({
+  chains,
+  methods,
+  events,
+});
+
+export const getRequestNamespace = ({
+  chains = ['eip155:1'],
+  methods = ['eth_signTransaction', 'eth_accounts'],
+  events = ['accountsChanged'],
+}: Partial<RequestNamespace> = {}): RequestNamespace => ({
   chains,
   methods,
   events,

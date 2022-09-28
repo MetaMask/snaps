@@ -7,10 +7,10 @@ module.exports = {
   coverageReporters: ['clover', 'json', 'lcov', 'text', 'json-summary'],
   coverageThreshold: {
     global: {
-      branches: 0,
-      functions: 0,
-      lines: 0,
-      statements: 0,
+      branches: 100,
+      functions: 100,
+      lines: 100,
+      statements: 100,
     },
   },
   moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'],
@@ -22,7 +22,10 @@ module.exports = {
   // original implementations, between each test. It does not affect mocked
   // modules.
   restoreMocks: true,
-  testEnvironment: 'node',
+  testEnvironment: 'jsdom',
+  testEnvironmentOptions: {
+    customExportConditions: ['node', 'node-addons'],
+  },
   testRegex: ['\\.test\\.(ts|js)$'],
   testTimeout: 2500,
 };
