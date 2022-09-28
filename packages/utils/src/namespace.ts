@@ -10,7 +10,6 @@ import {
   string,
   omit,
   assign,
-  assert,
   partial,
   pick,
 } from 'superstruct';
@@ -160,8 +159,7 @@ export const ConnectArgumentsStruct = object({
 });
 export type ConnectArguments = Infer<typeof ConnectArgumentsStruct>;
 
-// TODO: Fix this type.
-export const RequestArgumentsStruct: any = assign(
+export const RequestArgumentsStruct = assign(
   partial(pick(JsonRpcRequestStruct, ['id', 'jsonrpc'])),
   omit(JsonRpcRequestStruct, ['id', 'jsonrpc']),
 );
@@ -232,7 +230,7 @@ export function isConnectArguments(value: unknown): value is ConnectArguments {
 export function assertIsConnectArguments(
   value: unknown,
 ): asserts value is ConnectArguments {
-  assert(value, ConnectArgumentsStruct);
+  assertStruct(value, ConnectArgumentsStruct, 'Invalid connect arguments');
 }
 
 /**
@@ -256,7 +254,7 @@ export function isMultiChainRequest(
 export function assertIsMultiChainRequest(
   value: unknown,
 ): asserts value is MultiChainRequest {
-  assert(value, MultiChainRequestStruct);
+  assertStruct(value, MultiChainRequestStruct, 'Invalid request arguments');
 }
 
 /**

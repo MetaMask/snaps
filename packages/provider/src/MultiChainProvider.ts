@@ -16,14 +16,7 @@ import { assertIsJsonRpcSuccess, JsonRpcRequest } from '@metamask/utils';
 import type { SnapProvider } from '@metamask/snap-types';
 import { Provider } from './Provider';
 
-declare global {
-  // Declaration merging doesn't work with types, so we have to use an interface
-  // here.
-  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-  interface Window {
-    ethereum: SnapProvider;
-  }
-}
+declare const ethereum: SnapProvider;
 
 export class MultiChainProvider extends SafeEventEmitter implements Provider {
   #isConnected = false;
@@ -32,6 +25,7 @@ export class MultiChainProvider extends SafeEventEmitter implements Provider {
     super();
 
     const provider = this.#getProvider();
+
     provider.on('multichainHack_metamask_disconnect', () => {
       this.#isConnected = false;
       this.emit('session_delete');
@@ -49,13 +43,30 @@ export class MultiChainProvider extends SafeEventEmitter implements Provider {
     });
   }
 
+  /**
+   * Get whether the provider is connected to the upstream wallet.
+   *
+   * @returns Whether the provider is connected to the upstream wallet.
+   */
+  get isConnected() {
+    return this.#isConnected;
+  }
+
+  /**
+   * Connect to MetaMask and request a session with the given namespace(s).
+   *
+   * @param args - The connection arguments.
+   * @param args.requiredNamespaces - The namespaces to request.
+   * @returns An object containing an `approval` function, which can be called
+   * to connect to the wallet.
+   */
   async connect(
     args: ConnectArguments,
   ): Promise<{ approval(): Promise<Session> }> {
     assertIsConnectArguments(args);
 
     // We're injected, we don't need to establish connection to the wallet
-    // and can just return approval straight away
+    // and can just return approval straight away.
     return {
       approval: async () => {
         const requiredNamespaces = Object.entries(
@@ -90,12 +101,20 @@ export class MultiChainProvider extends SafeEventEmitter implements Provider {
     };
   }
 
+  /**
+   * Send a multichain request to the wallet.
+   *
+   * @param args - The multichain request arguments.
+   * @param args.chainId - The chain ID to use for the request.
+   * @param args.request - The JSON-RPC request to send.
+   * @returns The JSON-RPC response.
+   */
   async request(args: {
     chainId: ChainId;
     request: RequestArguments;
   }): Promise<unknown> {
     if (!this.#isConnected) {
-      throw new Error('No session connected');
+      throw new Error('No session connected.');
     }
 
     assertIsMultiChainRequest(args);
@@ -112,26 +131,33 @@ export class MultiChainProvider extends SafeEventEmitter implements Provider {
     return response.result;
   }
 
+  /**
+   * Get the provider that is injected by the wallet, i.e., `window.ethereum`.
+   *
+   * @returns The injected provider.
+   */
   #getProvider() {
-    return window.ethereum;
+    return ethereum;
   }
 
-  #rpcRequest(
+  /**
+   * Send an RPC request to the wallet.
+   *
+   * @param payload - The JSON-RPC request to send.
+   * @returns The JSON-RPC response.
+   */
+  async #rpcRequest(
     payload: { method: string } & Partial<
       JsonRpcRequest<unknown[] | Record<string, unknown>>
     >,
   ) {
-    if (payload.jsonrpc === undefined) {
-      payload.jsonrpc = '2.0';
-    }
-
-    if (payload.id === undefined) {
-      payload.id = nanoid();
-    }
-
-    return this.#getProvider().request({
+    return await this.#getProvider().request({
       method: 'wallet_multiChainRequestHack',
-      params: payload,
+      params: {
+        jsonrpc: '2.0',
+        id: nanoid(),
+        ...payload,
+      },
     });
   }
 }
