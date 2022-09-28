@@ -25,6 +25,7 @@ import {
   Namespace,
   flatten,
   getSnapPermissionName,
+  isAccountIdArray,
 } from '@metamask/snap-utils';
 import { hasProperty } from '@metamask/utils';
 import { nanoid } from 'nanoid';
@@ -223,32 +224,45 @@ export class MultiChainController extends BaseController<
       subject: { origin },
     });
 
-    const providedNamespaces: Record<NamespaceId, SessionNamespace> =
-      fromEntries(
-        Object.entries(connection.requiredNamespaces)
-          .filter(([namespaceId]) => resolvedAccounts[namespaceId]?.accounts)
-          .map(([namespaceId, namespace]) => [
-            namespaceId,
-            {
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              accounts: resolvedAccounts[namespaceId]!.accounts,
+    const providedNamespaces = Object.entries(
+      connection.requiredNamespaces,
+    ).reduce<Record<NamespaceId, SessionNamespace>>(
+      (acc, [namespaceId, namespace]) => {
+        const accounts = resolvedAccounts[namespaceId]?.accounts;
+        if (accounts) {
+          return {
+            ...acc,
+            [namespaceId]: {
+              accounts,
               chains: namespace.chains,
               events: namespace.events,
               methods: namespace.methods,
             },
-          ]),
-      );
+          };
+        }
+        return acc;
+      },
+      {},
+    );
+
+    const handlingSnaps = Object.entries(resolvedAccounts).reduce(
+      (acc, [namespaceId, accountsAndSnap]) => {
+        if (accountsAndSnap) {
+          return {
+            ...acc,
+            [namespaceId]: accountsAndSnap.snapId,
+          };
+        }
+        return acc;
+      },
+      {},
+    );
 
     const session: SessionData = {
       origin,
       requestedNamespaces: connection.requiredNamespaces,
       providedNamespaces,
-      handlingSnaps: fromEntries(
-        Object.entries(resolvedAccounts)
-          .filter(([, data]) => data !== null)
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          .map(([namespaceId, data]) => [namespaceId, data!.snapId]),
-      ),
+      handlingSnaps,
     };
 
     await Promise.all(
@@ -325,6 +339,27 @@ export class MultiChainController extends BaseController<
     });
   }
 
+  private async getSnapAccounts(
+    origin: string,
+    snapId: SnapId,
+  ): Promise<AccountId[] | null> {
+    try {
+      const result = await this.snapRequest({
+        snapId,
+        origin,
+        method: 'getAccounts',
+      });
+
+      if (isAccountIdArray(result)) {
+        return result;
+      }
+    } catch (error) {
+      // Ignore errors for now
+      console.error(error);
+    }
+    return null;
+  }
+
   private async snapToNamespaces(
     snap: TruncatedSnap,
   ): Promise<Record<NamespaceId, Namespace> | null> {
@@ -347,29 +382,17 @@ export class MultiChainController extends BaseController<
     const dedupedSnaps = [...new Set(allSnaps)] as SnapId[];
     const allAccounts = await dedupedSnaps.reduce<
       Promise<Record<string, AccountId[]>>
-    >(
-      // @ts-expect-error Fix this?
-      async (previousPromise, snapId) => {
-        const request = await this.snapRequest({
-          snapId,
-          origin,
-          method: 'getAccounts',
-        }).catch((err) => {
-          console.error(err);
-          return null;
-        });
-        // Ignore errors for now
-        const acc = await previousPromise;
-        if (request) {
-          return {
-            ...acc,
-            [snapId]: request,
-          };
-        }
-        return acc;
-      },
-      Promise.resolve({}),
-    );
+    >(async (previousPromise, snapId) => {
+      const request = await this.getSnapAccounts(origin, snapId);
+      const acc = await previousPromise;
+      if (request) {
+        return {
+          ...acc,
+          [snapId]: request,
+        };
+      }
+      return acc;
+    }, Promise.resolve({}));
 
     return Object.keys(namespacesAndSnaps).reduce((acc, namespaceId) => {
       const { chains } = requestedNamespaces[namespaceId];
@@ -377,7 +400,6 @@ export class MultiChainController extends BaseController<
       const result = Object.entries(allAccounts).reduce<
         { snapId: SnapId; accounts: AccountId[] }[]
       >((accList, [snapId, accounts]) => {
-        // @ts-expect-error Fix this?
         const filteredAccounts = accounts.filter((account) => {
           const { chainId: parsedChainId } = parseAccountId(account);
           return chains.some((chainId) => chainId === parsedChainId);

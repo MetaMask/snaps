@@ -87,6 +87,8 @@ export type ChainId = `${string}:${string}`;
 export const AccountIdStruct = pattern(string(), ACCOUNT_ID_REGEX);
 export type AccountId = `${ChainId}:${string}`;
 
+export const AccountIdArrayStruct = array(AccountIdStruct);
+
 /**
  * A chain descriptor.
  */
@@ -199,6 +201,16 @@ export function isChainId(value: unknown): value is ChainId {
  */
 export function isAccountId(value: unknown): value is AccountId {
   return is(value, AccountIdStruct);
+}
+
+/**
+ * Check if the given value is an array of CAIP-10 account IDs.
+ *
+ * @param value - The value to check.
+ * @returns Whether the value is an array of CAIP-10 account IDs.
+ */
+export function isAccountIdArray(value: unknown): value is AccountId[] {
+  return is(value, AccountIdArrayStruct);
 }
 
 /**
