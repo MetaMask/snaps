@@ -79,9 +79,9 @@ describe('MultiChainProvider', () => {
       }));
 
       const provider = new MultiChainProvider();
-      expect(provider.isConnected).toBe(false);
-
       const { approval } = await provider.connect({ requiredNamespaces: {} });
+
+      expect(provider.isConnected).toBe(false);
       await approval();
 
       expect(provider.isConnected).toBe(true);
@@ -162,12 +162,13 @@ describe('MultiChainProvider', () => {
       }));
 
       const provider = new MultiChainProvider();
-      expect(provider.isConnected).toBe(false);
 
       const listener = jest.fn();
       provider.on('session_update', listener);
 
       const { approval } = await provider.connect({ requiredNamespaces: {} });
+      expect(provider.isConnected).toBe(false);
+
       await expect(approval()).rejects.toThrow(
         'Invalid session: At path: namespaces.eip155 -- Expected an object, but received: "foo"',
       );
@@ -191,12 +192,11 @@ describe('MultiChainProvider', () => {
       }));
 
       const provider = new MultiChainProvider();
-      expect(provider.isConnected).toBe(false);
 
       const { approval } = await provider.connect({ requiredNamespaces: {} });
-      await expect(approval()).rejects.toThrow(
-        'Not a successful JSON-RPC response: At path: result -- Expected the value to satisfy a union of `literal | boolean | number | string | lazy | lazy`, but received: undefined.',
-      );
+      expect(provider.isConnected).toBe(false);
+
+      await expect(approval()).rejects.toThrow('JSON-RPC request failed: foo');
     });
   });
 
@@ -295,6 +295,35 @@ describe('MultiChainProvider', () => {
           },
         },
       });
+
+      await provider.request({
+        chainId: 'eip155:1',
+        request: {
+          method: 'eth_sendTransaction',
+        },
+      });
+
+      expect(request).toHaveBeenCalledTimes(3);
+      expect(request).toHaveBeenNthCalledWith(3, {
+        method: 'wallet_multiChainRequestHack',
+        params: {
+          id: expect.any(String),
+          jsonrpc: '2.0',
+          method: 'caip_request',
+          params: {
+            chainId: 'eip155:1',
+            request: {
+              method: 'eth_sendTransaction',
+              params: undefined,
+            },
+          },
+        },
+      });
+
+      const firstId = (request.mock.calls[1][0].params as { id: string }).id;
+      const secondId = (request.mock.calls[2][0].params as { id: string }).id;
+
+      expect(firstId).not.toBe(secondId);
     });
 
     it('throws on JSON-RPC errors', async () => {
@@ -320,9 +349,7 @@ describe('MultiChainProvider', () => {
             method: 'eth_accounts',
           },
         }),
-      ).rejects.toThrow(
-        'Not a successful JSON-RPC response: At path: result -- Expected the value to satisfy a union of `literal | boolean | number | string | lazy | lazy`, but received: undefined.',
-      );
+      ).rejects.toThrow('JSON-RPC request failed: foo');
     });
   });
 

@@ -2,6 +2,7 @@ import SafeEventEmitter from '@metamask/safe-event-emitter';
 import { nanoid } from 'nanoid';
 import {
   assertIsConnectArguments,
+  assertIsJsonRpcSuccess,
   assertIsMetaMaskNotification,
   assertIsMultiChainRequest,
   assertIsSession,
@@ -12,7 +13,7 @@ import {
   RequestNamespace,
   Session,
 } from '@metamask/snap-utils';
-import { assertIsJsonRpcSuccess, JsonRpcRequest } from '@metamask/utils';
+import { JsonRpcRequest } from '@metamask/utils';
 import type { SnapProvider } from '@metamask/snap-types';
 import { Provider } from './Provider';
 
@@ -109,7 +110,9 @@ export class MultiChainProvider extends SafeEventEmitter implements Provider {
   }
 
   /**
-   * Send a multichain request to the wallet.
+   * Send a multichain request to the wallet. The provider must be connected to
+   * the wallet using {@link MultiChainProvider#connect} before this method can
+   * be called.
    *
    * @param args - The multichain request arguments.
    * @param args.chainId - The chain ID to use for the request.
