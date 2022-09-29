@@ -81,7 +81,6 @@ type Notify = (
 ) => Promise<void>;
 
 type MultiChainControllerArgs = {
-  // A function that should handle JSON-RPC notifications
   notify: Notify;
   messenger: MultiChainControllerMessenger;
 };
@@ -92,8 +91,15 @@ export class MultiChainController extends BaseController<
   MultiChainControllerState,
   MultiChainControllerMessenger
 > {
-  private notify: Notify;
+  readonly #notify: Notify;
 
+  /**
+   * Construct a new {@link MultiChainController} instance.
+   *
+   * @param args - The arguments to construct the controller with.
+   * @param args.messenger - The controller messenger to use.
+   * @param args.notify - A function that should handle JSON-RPC notifications.
+   */
   constructor({ messenger, notify }: MultiChainControllerArgs) {
     super({
       messenger,
@@ -104,18 +110,32 @@ export class MultiChainController extends BaseController<
       state: defaultState,
     });
 
-    this.notify = notify;
+    this.#notify = notify;
   }
 
+  /**
+   * Get an open session for the given origin.
+   *
+   * @param origin - The origin to get the session for.
+   * @returns The session, if it exists, or `undefined` otherwise.
+   */
   getSession(origin: string): SessionData | undefined {
     return this.state.sessions[origin];
   }
 
+  /**
+   * Close a session for the given origin.
+   *
+   * @param origin - The origin to close the session for.
+   * @throws If the session does not exist.
+   */
   async closeSession(origin: string): Promise<void> {
     const session = this.getSession(origin);
-    assert(session, 'No session to close');
+    assert(session, 'No session to close.');
 
-    await this.notify(origin, { method: 'multichainHack_metamask_disconnect' });
+    await this.#notify(origin, {
+      method: 'multichainHack_metamask_disconnect',
+    });
 
     this.update((state) => {
       delete state.sessions[origin];
@@ -131,6 +151,16 @@ export class MultiChainController extends BaseController<
     );
   }
 
+  /**
+   * Handles a new connection from the given origin. This will create a new
+   * session, and close any existing session for the origin.
+   *
+   * @param origin - The origin to create the session for.
+   * @param connection - The connection arguments.
+   * @param connection.requiredNamespaces - The namespaces that the origin
+   * requires.
+   * @returns The session that was created.
+   */
   async onConnect(
     origin: string,
     connection: ConnectArguments,
@@ -143,7 +173,7 @@ export class MultiChainController extends BaseController<
     const snaps = await this.messagingSystem.call('SnapController:getAll');
     const filteredSnaps = snaps.filter((snap) => snap.enabled && !snap.blocked);
 
-    // Get available namespaces supported by currently installed Snaps
+    // Get available namespaces supported by currently installed Snaps.
     const availableNamespaces = fromEntries(
       await Promise.all(
         filteredSnaps.map(async (snap) => [
@@ -153,7 +183,7 @@ export class MultiChainController extends BaseController<
       ),
     );
 
-    // The magical matching algorithm specified in SIP-2
+    // The magical matching algorithm specified in SIP-2.
     const namespaceToSnaps = findMatchingKeyringSnaps(
       connection.requiredNamespaces,
       availableNamespaces,
@@ -164,11 +194,11 @@ export class MultiChainController extends BaseController<
       origin,
     );
 
-    // Find namespaces that can be satisfied with existing approved snaps
+    // Find namespaces that can be satisfied with existing approved Snaps.
     const approvedNamespacesAndSnaps = Object.entries(namespaceToSnaps).reduce<
       Record<NamespaceId, SnapId[]>
     >((acc, [namespace, snapIds]) => {
-      // If snap already is approved for use, solve conflict by using that snap
+      // If Snap already is approved for use, solve conflict by using that Snap.
       const approvedSnap = snapIds.find((snapId) => {
         return (
           permissions && hasProperty(permissions, getSnapPermissionName(snapId))
@@ -185,20 +215,20 @@ export class MultiChainController extends BaseController<
       (namespace) => !hasProperty(approvedNamespacesAndSnaps, namespace),
     );
 
-    // Use already approved snaps if they satisfy the requested namespaces
+    // Use already approved snaps if they satisfy the requested namespaces.
     const filteredNamespacesAndSnaps = hasConflicts
       ? namespaceToSnaps
       : approvedNamespacesAndSnaps;
 
-    // Fetch possible accounts from snaps
+    // Fetch possible accounts from snaps.
     const possibleAccounts = await this.namespacesToAccounts(
       origin,
       filteredNamespacesAndSnaps,
       connection.requiredNamespaces,
     );
 
-    // If currently installed snaps / configuration doesn't solve request, we need to show a prompt.
-    // This is handled by resolveConflicts
+    // If currently installed Snaps / configuration doesn't solve request, we
+    // need to show a prompt. This is handled by `resolveConflicts`.
     const resolvedAccounts = hasConflicts
       ? await this.resolveConflicts(origin, possibleAccounts)
       : fromEntries(
@@ -210,7 +240,7 @@ export class MultiChainController extends BaseController<
           ),
         );
 
-    // Aggregate information about session namespaces
+    // Aggregate information about session namespaces.
     const providedNamespaces = Object.entries(
       connection.requiredNamespaces,
     ).reduce<Record<NamespaceId, SessionNamespace>>(
@@ -229,7 +259,7 @@ export class MultiChainController extends BaseController<
       {},
     );
 
-    // Collect information about handler snaps for each namespace
+    // Collect information about handler Snaps for each namespace.
     const handlingSnaps = Object.entries(resolvedAccounts).reduce<
       Record<NamespaceId, SnapId>
     >((acc, [namespaceId, accountsAndSnap]) => {
@@ -246,7 +276,7 @@ export class MultiChainController extends BaseController<
       handlingSnaps,
     };
 
-    // Makes sure used snaps aren't killed while they are serving the session
+    // Makes sure used Snaps aren't killed while they are serving the session.
     await Promise.all(
       Object.values(session.handlingSnaps).map((snapId) =>
         this.messagingSystem.call(
@@ -263,19 +293,34 @@ export class MultiChainController extends BaseController<
     return { namespaces: providedNamespaces };
   }
 
+  /**
+   * Handle an incoming multichain request from the given origin. This will
+   * forward the request to the appropriate Snap, and return the response.
+   *
+   * @param origin - The origin to handle the request for.
+   * @param data - The request data.
+   * @param data.chainId - The chain ID for the request.
+   * @param data.request - The request arguments, i.e., the method and params.
+   * @returns The response from the Snap.
+   * @throws If the session does not exist, or the session does not provide the
+   * requested namespace.
+   */
   async onRequest(
     origin: string,
     data: { chainId: ChainId; request: RequestArguments },
   ): Promise<unknown> {
     const session = this.getSession(origin);
-    assert(session, `Session for "${origin}" doesn't exist`);
+    assert(session, `Session for "${origin}" doesn't exist.`);
+
     const { namespace } = parseChainId(data.chainId);
     assert(
       session.providedNamespaces[namespace]?.chains.includes(data.chainId),
-      `Session for "${origin}" not connected to "${data.chainId}" chain`,
+      `Session for "${origin}" is not connected to "${data.chainId}" chain.`,
     );
+
     const snapId = session.handlingSnaps[namespace];
     assert(snapId !== undefined);
+
     const permissionName = getSnapPermissionName(snapId);
 
     // Check if origin has permission to communicate with this Snap.
@@ -285,12 +330,12 @@ export class MultiChainController extends BaseController<
       permissionName,
     );
 
-    // TODO: Get permission for origin connecting to snap, or get user approval
+    // TODO: Get permission for origin connecting to snap, or get user approval.
     // In the future this is where we should prompt for this permission.
-    // In this iteration, we will grant this permission in onConnect.
+    // In this iteration, we will grant this permission in `onConnect`.
     assert(
       hasPermission,
-      `${origin} does not have permission to communicate with ${snapId}`,
+      `${origin} does not have permission to communicate with ${snapId}.`,
     );
 
     return this.snapRequest({
@@ -301,6 +346,16 @@ export class MultiChainController extends BaseController<
     });
   }
 
+  /**
+   * Send a request to the given Snap.
+   *
+   * @param args - The request arguments.
+   * @param args.snapId - The ID of the Snap to send the request to.
+   * @param args.origin - The origin of the request.
+   * @param args.method - The request method.
+   * @param args.args - The request params.
+   * @returns The response from the Snap.
+   */
   private async snapRequest({
     snapId,
     origin,
@@ -320,6 +375,17 @@ export class MultiChainController extends BaseController<
     });
   }
 
+  /**
+   * Get the accounts from a Snap.
+   *
+   * This verifies that the accounts returned by the snap are valid CAIP-10
+   * account IDs.
+   *
+   * @param origin - The origin of the request.
+   * @param snapId - The ID of the Snap to get the accounts from.
+   * @returns The accounts, or `null` if the Snap does not have any accounts, or
+   * the accounts are invalid (i.e., not valid CAIP-10 account IDs).
+   */
   private async getSnapAccounts(
     origin: string,
     snapId: SnapId,
@@ -338,9 +404,17 @@ export class MultiChainController extends BaseController<
       // Ignore errors for now
       console.error(error);
     }
+
     return null;
   }
 
+  /**
+   * Get the namespaces for the given Snap, as described in the Snap's manifest.
+   *
+   * @param snap - The Snap to get the namespaces for.
+   * @returns The namespaces, or `null` if the Snap does not have any
+   * namespaces.
+   */
   private async snapToNamespaces(
     snap: TruncatedSnap,
   ): Promise<Namespaces | null> {
@@ -353,6 +427,19 @@ export class MultiChainController extends BaseController<
     return getKeyringCaveatNamespaces(keyringPermission);
   }
 
+  /**
+   * Maps from an object of namespace IDs and Snap IDs, and an object of
+   * namespace IDs and requested namespaces, to an object of namespace IDs and
+   * resolved accounts, with the Snap ID providing the accounts.
+   *
+   * @param origin - The origin of the request.
+   * @param namespacesAndSnaps - An object of namespace IDs and Snap IDs
+   * providing the namespace.
+   * @param requestedNamespaces - An object of namespace IDs and requested
+   * namespaces.
+   * @returns An object of namespace IDs and resolved accounts, with the Snap ID
+   * providing the accounts.
+   */
   private async namespacesToAccounts(
     origin: string,
     namespacesAndSnaps: Record<NamespaceId, SnapId[]>,
@@ -397,6 +484,16 @@ export class MultiChainController extends BaseController<
     }, {});
   }
 
+  /**
+   * If multiple Snap IDs are provided for a namespace, this method will
+   * determine which Snap ID to use for the namespace, by showing the user a
+   * prompt.
+   *
+   * @param origin - The origin of the request.
+   * @param possibleAccounts - An object containing the accounts provided by
+   * each Snap ID for each namespace.
+   * @returns An object containing the Snap ID to use for each namespace.
+   */
   private async resolveConflicts(
     origin: string,
     possibleAccounts: Record<
@@ -406,7 +503,7 @@ export class MultiChainController extends BaseController<
   ): Promise<
     Record<NamespaceId, { snapId: SnapId; accounts: AccountId[] } | null>
   > {
-    // Get user approval for connection
+    // Get user approval for connection.
     const id = nanoid();
     const resolvedAccounts = (await this.messagingSystem.call(
       'ApprovalController:addRequest',
@@ -421,9 +518,11 @@ export class MultiChainController extends BaseController<
       true,
     )) as Record<NamespaceId, { snapId: SnapId; accounts: AccountId[] } | null>;
 
-    // TODO: In the future, use another permission here to not give full permission after handshake.
-    // Instead we should give origin only a read-only access to list of accounts without allowing provider.request() talking to a snap before additional user approval.
-    // The additional approval would be requested in onRequest.
+    // TODO: In the future, use another permission here to not give full
+    // permission after handshake.
+    // Instead we should give origin only a read-only access to list of accounts
+    // without allowing provider.request() talking to a snap before additional
+    // user approval. The additional approval would be requested in `onRequest`.
     const approvedPermissions = Object.values(resolvedAccounts).reduce<
       Record<string, Partial<PermissionConstraint>>
     >((acc, cur) => {
