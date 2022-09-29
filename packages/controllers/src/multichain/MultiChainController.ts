@@ -347,13 +347,14 @@ export class MultiChainController extends BaseController<
   }
 
   /**
-   * Send a request to the given Snap.
+   * Send a request to the given Snap. This calls the given method with the
+   * given arguments on the keyring class in the given Snap.
    *
-   * @param args - The request arguments.
-   * @param args.snapId - The ID of the Snap to send the request to.
-   * @param args.origin - The origin of the request.
-   * @param args.method - The request method.
-   * @param args.args - The request params.
+   * @param options - The request options.
+   * @param options.snapId - The ID of the Snap to send the request to.
+   * @param options.origin - The origin of the request.
+   * @param options.method - The request method.
+   * @param options.args - The request params.
    * @returns The response from the Snap.
    */
   private async snapRequest({
@@ -376,9 +377,9 @@ export class MultiChainController extends BaseController<
   }
 
   /**
-   * Get the accounts from a Snap.
+   * Get the accounts exposed by the Snap's keyring.
    *
-   * This verifies that the accounts returned by the snap are valid CAIP-10
+   * This also verifies that the accounts returned by the snap are valid CAIP-10
    * account IDs.
    *
    * @param origin - The origin of the request.
