@@ -38,6 +38,8 @@
     "@metamask/snap-types": "^0.21.0",
     "@metamask/snap-utils": "^0.21.0",
     "@metamask/utils": "^2.0.0",
+    "@ssttevee/blob-ponyfill": "^0.1.0",
+    "@ssttevee/formdata-ponyfill": "^0.1.4",
     "eth-rpc-errors": "^4.0.3",
     "pump": "^3.0.0",
     "ses": "^0.15.15",

@@ -1,3 +1,4 @@
+import { rootRealmGlobal } from '../globalObject';
 import { allFunctions, withTeardown } from '../utils';
 
 type WebSocketCallback = (this: WebSocket, ev: any) => any;
@@ -438,15 +439,26 @@ const createNetwork = () => {
     await Promise.all(promises);
   };
 
+  // Required by @ssttevee/formdata-ponyfill
+  /* istanbul ignore next */
+  if (!rootRealmGlobal.Blob) {
+    /* eslint-disable-next-line @typescript-eslint/no-require-imports */
+    rootRealmGlobal.Blob = require('@ssttevee/blob-ponyfill');
+  }
+
   return {
     fetch: _fetch,
     WebSocket: _WebSocket,
+    FormData:
+      /* istanbul ignore next */
+      /* eslint-disable-next-line @typescript-eslint/no-require-imports */
+      rootRealmGlobal.FormData ?? require('@ssttevee/formdata-ponyfill'),
     teardownFunction,
   };
 };
 
 const endowmentModule = {
-  names: ['fetch', 'WebSocket'] as const,
+  names: ['fetch', 'WebSocket', 'FormData'] as const,
   factory: createNetwork,
 };
 export default endowmentModule;

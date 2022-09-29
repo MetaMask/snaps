@@ -2538,6 +2538,8 @@ __metadata:
     "@metamask/snap-utils": ^0.21.0
     "@metamask/utils": ^2.0.0
     "@open-rpc/typings": ^1.12.1
+    "@ssttevee/blob-ponyfill": ^0.1.0
+    "@ssttevee/formdata-ponyfill": ^0.1.4
     "@types/jest": ^27.5.1
     "@types/node": ^17.0.36
     concat: ^1.0.3
@@ -3269,6 +3271,29 @@ __metadata:
   dependencies:
     "@sinonjs/commons": ^1.7.0
   checksum: 7d3aef54e17c1073101cb64d953157c19d62a40e261a30923fa1ee337b049c5f29cc47b1f0c477880f42b5659848ba9ab897607ac8ea4acd5c30ddcfac57fca6
+  languageName: node
+  linkType: hard
+
+"@ssttevee/blob-ponyfill@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "@ssttevee/blob-ponyfill@npm:0.1.0"
+  dependencies:
+    "@ssttevee/u8-utils": ^0.1.3
+  checksum: ba456dbbe1f33ed6f296a76895766ccd6088b6866eb77325eaed49ec5cf64ff4a47f3f25299991d028ef7e6f535247d917f4afa18f78ae3ec39805c8fa5ce913
+  languageName: node
+  linkType: hard
+
+"@ssttevee/formdata-ponyfill@npm:^0.1.4":
+  version: 0.1.4
+  resolution: "@ssttevee/formdata-ponyfill@npm:0.1.4"
+  checksum: 337a32cb2df402b597dd3334eeacbca0be71f955746e5348a358ffae8683e8c3b19e0dbfb37863b73f463c201fd5bbfbc2246f8c6e16b543ad9902ff0e79131d
+  languageName: node
+  linkType: hard
+
+"@ssttevee/u8-utils@npm:^0.1.3":
+  version: 0.1.7
+  resolution: "@ssttevee/u8-utils@npm:0.1.7"
+  checksum: e953a990aed64502083d19ab9dd292f7d61e3c5ba736362d5e5e83ec28425cb91ff677f2602cc7ec02f852486ff848bfc61fde55dd54ec8918992540dcb5646e
   languageName: node
   linkType: hard
 

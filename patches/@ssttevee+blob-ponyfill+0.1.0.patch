@@ -1,0 +1,48 @@
+diff --git a/node_modules/@ssttevee/blob-ponyfill/file.js b/node_modules/@ssttevee/blob-ponyfill/file.js
+index b06ca9a..fba6704 100644
+--- a/node_modules/@ssttevee/blob-ponyfill/file.js
++++ b/node_modules/@ssttevee/blob-ponyfill/file.js
+@@ -1,4 +1,4 @@
+-import Blob from './blob';
++import Blob from './blob.js';
+ const $$filename = Symbol('filename');
+ const $$modified = Symbol('modified');
+ export default class FileImpl extends Blob {
+diff --git a/node_modules/@ssttevee/blob-ponyfill/filereader.js b/node_modules/@ssttevee/blob-ponyfill/filereader.js
+index 4ea6930..2f3bbb2 100644
+--- a/node_modules/@ssttevee/blob-ponyfill/filereader.js
++++ b/node_modules/@ssttevee/blob-ponyfill/filereader.js
+@@ -1,6 +1,6 @@
+ var _a, _b, _c, _d, _e;
+-import { $$size, $$buffers } from './blob';
+-import { bufferToBinaryString, bufferToDataURL, bufferToText } from './transform';
++import { $$size, $$buffers } from './blob.js';
++import { bufferToBinaryString, bufferToDataURL, bufferToText } from './transform.js';
+ const $$state = Symbol('state');
+ const $$result = Symbol('result');
+ const $$error = Symbol('error');
+diff --git a/node_modules/@ssttevee/blob-ponyfill/filereadersync.js b/node_modules/@ssttevee/blob-ponyfill/filereadersync.js
+index 5397c03..b4250a1 100644
+--- a/node_modules/@ssttevee/blob-ponyfill/filereadersync.js
++++ b/node_modules/@ssttevee/blob-ponyfill/filereadersync.js
+@@ -1,5 +1,5 @@
+-import { $$merged } from './blob';
+-import { bufferToText, bufferToDataURL, bufferToBinaryString } from './transform';
++import { $$merged } from './blob.js';
++import { bufferToText, bufferToDataURL, bufferToBinaryString } from './transform.js';
+ export default class FileReaderSyncImpl {
+     readAsArrayBuffer(blob) {
+         return blob[$$merged].buffer;
+diff --git a/node_modules/@ssttevee/blob-ponyfill/index.js b/node_modules/@ssttevee/blob-ponyfill/index.js
+index b21a246..b62286a 100644
+--- a/node_modules/@ssttevee/blob-ponyfill/index.js
++++ b/node_modules/@ssttevee/blob-ponyfill/index.js
+@@ -1,4 +1,4 @@
+-export { default, default as Blob } from './blob';
+-export { default as File } from './file';
+-export { default as FileReader } from './filereader';
+-export { default as FileReaderSync } from './filereadersync';
++export { default, default as Blob } from './blob.js';
++export { default as File } from './file.js';
++export { default as FileReader } from './filereader.js';
++export { default as FileReaderSync } from './filereadersync.js';
