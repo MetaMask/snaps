@@ -68,9 +68,11 @@ describe('createMultiChainMiddleware', () => {
       params: {} as any,
     };
     const res = { jsonrpc: '2.0' as const, id: 1 };
+    const originalRes = { ...res };
 
     middleware(req, res, next, end);
     expect(next).toHaveBeenCalled();
+    expect(res).toStrictEqual(originalRes);
   });
 
   it('skips request if unwrapped method doesnt match', () => {

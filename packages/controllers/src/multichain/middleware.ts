@@ -9,6 +9,7 @@ import {
   ConnectArguments,
   Session,
   MultiChainRequest,
+  assert,
 } from '@metamask/snap-utils';
 
 /**
@@ -34,27 +35,29 @@ export function createMultiChainMiddleware({
     const { origin, params: unwrapped } = req as JsonRpcRequest<
       JsonRpcRequest<unknown>
     > & { origin: string };
-    if (req.method !== 'wallet_multiChainRequestHack' || !unwrapped) {
-      return next();
+    if (req.method !== 'wallet_multiChainRequestHack') {
+      await next();
+      return;
     }
+
+    assert(unwrapped !== undefined, `Invalid params for ${req.method}`);
 
     switch (unwrapped.method) {
       case 'caip_request': {
         assertIsMultiChainRequest(unwrapped.params);
         res.result = await onRequest(origin, unwrapped.params);
-        // eslint-disable-next-line consistent-return
         return;
       }
 
       case 'metamask_handshake': {
         assertIsConnectArguments(unwrapped.params);
         res.result = await onConnect(origin, unwrapped.params);
-        // eslint-disable-next-line consistent-return
         return;
       }
 
-      default:
-        return next();
+      default: {
+        await next();
+      }
     }
   });
 }

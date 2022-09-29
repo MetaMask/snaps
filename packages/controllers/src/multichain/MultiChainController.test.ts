@@ -35,20 +35,19 @@ describe('MultiChainController', () => {
             args[0] === MOCK_SNAP_ID
           ) {
             return { [SnapEndowments.Keyring]: MOCK_KEYRING_PERMISSION } as any;
-          } else if (
+          }
+          const approvalRequest = args[0] as any;
+          if (
             method === 'ApprovalController:addRequest' &&
-            // @ts-expect-error Fix type
-            args[0]?.type === 'multichain_connect'
+            approvalRequest?.type === 'multichain_connect'
           ) {
             return fromEntries(
-              // @ts-expect-error Fix type
-              Object.entries(args[0]?.requestData?.possibleAccounts).map(
-                ([namespace, snapAndAccounts]) => [
-                  namespace,
-                  // @ts-expect-error Fix type
-                  snapAndAccounts[0] ?? null,
-                ],
-              ),
+              Object.entries(
+                approvalRequest?.requestData?.possibleAccounts,
+              ).map(([namespace, snapAndAccounts]) => [
+                namespace,
+                (snapAndAccounts as string[])[0] ?? null,
+              ]),
             ) as any;
           } else if (
             method === 'PermissionController:getPermissions' ||
@@ -102,20 +101,19 @@ describe('MultiChainController', () => {
             args[0] === MOCK_SNAP_ID
           ) {
             return { [SnapEndowments.Keyring]: MOCK_KEYRING_PERMISSION } as any;
-          } else if (
+          }
+          const approvalRequest = args[0] as any;
+          if (
             method === 'ApprovalController:addRequest' &&
-            // @ts-expect-error Fix type
-            args[0]?.type === 'multichain_connect'
+            approvalRequest?.type === 'multichain_connect'
           ) {
             return fromEntries(
-              // @ts-expect-error Fix type
-              Object.entries(args[0]?.requestData?.possibleAccounts).map(
-                ([namespace, snapAndAccounts]) => [
-                  namespace,
-                  // @ts-expect-error Fix type
-                  snapAndAccounts[0] ?? null,
-                ],
-              ),
+              Object.entries(
+                approvalRequest?.requestData?.possibleAccounts,
+              ).map(([namespace, snapAndAccounts]) => [
+                namespace,
+                (snapAndAccounts as string[])[0] ?? null,
+              ]),
             ) as any;
           } else if (
             method === 'PermissionController:getPermissions' ||
@@ -190,8 +188,6 @@ describe('MultiChainController', () => {
             method === 'ApprovalController:addRequest'
           ) {
             return {};
-          } else if (method === 'PermissionController:grantPermissions') {
-            return true;
           }
           return originalCall(method, ...args);
         });
@@ -209,7 +205,7 @@ describe('MultiChainController', () => {
         },
       });
 
-      expect(messengerCallMock).toHaveBeenCalledTimes(6);
+      expect(messengerCallMock).toHaveBeenCalledTimes(5);
 
       snapController.destroy();
       await executionService.terminateAllSnaps();
@@ -240,20 +236,19 @@ describe('MultiChainController', () => {
             args[0] === MOCK_SNAP_ID
           ) {
             return { [SnapEndowments.Keyring]: MOCK_KEYRING_PERMISSION } as any;
-          } else if (
+          }
+          const approvalRequest = args[0] as any;
+          if (
             method === 'ApprovalController:addRequest' &&
-            // @ts-expect-error Fix type
-            args[0]?.type === 'multichain_connect'
+            approvalRequest?.type === 'multichain_connect'
           ) {
             return fromEntries(
-              // @ts-expect-error Fix type
-              Object.entries(args[0]?.requestData?.possibleAccounts).map(
-                ([namespace, snapAndAccounts]) => [
-                  namespace,
-                  // @ts-expect-error Fix type
-                  snapAndAccounts[0] ?? null,
-                ],
-              ),
+              Object.entries(
+                approvalRequest?.requestData?.possibleAccounts,
+              ).map(([namespace, snapAndAccounts]) => [
+                namespace,
+                (snapAndAccounts as string[])[0] ?? null,
+              ]),
             ) as any;
           } else if (
             method === 'PermissionController:getPermissions' ||

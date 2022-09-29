@@ -145,10 +145,10 @@ export const SessionStruct = object({
 export type Session = Infer<typeof SessionStruct>;
 
 /**
- * Asserts that the given value is a valid `Session`.
+ * Asserts that the given value is a valid {@link Session}.
  *
  * @param value - The value to assert.
- * @throws If the value is not a valid `Session`.
+ * @throws If the value is not a valid {@link Session}.
  */
 export function assertIsSession(value: unknown): asserts value is Session {
   assertStruct(value, SessionStruct, 'Invalid session');
