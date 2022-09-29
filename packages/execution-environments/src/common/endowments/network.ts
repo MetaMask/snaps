@@ -439,20 +439,30 @@ const createNetwork = () => {
     await Promise.all(promises);
   };
 
-  // Required by @ssttevee/formdata-ponyfill
+  let _FormData: typeof rootRealmGlobal.FormData;
   /* istanbul ignore next */
-  if (!rootRealmGlobal.Blob) {
-    /* eslint-disable-next-line @typescript-eslint/no-require-imports */
-    rootRealmGlobal.Blob = require('@ssttevee/blob-ponyfill');
+  if (rootRealmGlobal.FormData) {
+    _FormData = rootRealmGlobal.FormData;
+  } else {
+    const originalBlob = rootRealmGlobal.Blob;
+    try {
+      // Required by @ssttevee/formdata-ponyfill
+      if (!rootRealmGlobal.Blob) {
+        /* eslint-disable-next-line @typescript-eslint/no-require-imports */
+        rootRealmGlobal.Blob = require('@ssttevee/blob-ponyfill');
+      }
+
+      /* eslint-disable-next-line @typescript-eslint/no-require-imports */
+      _FormData = require('@ssttevee/formdata-ponyfill');
+    } finally {
+      rootRealmGlobal.Blob = originalBlob;
+    }
   }
 
   return {
     fetch: _fetch,
     WebSocket: _WebSocket,
-    FormData:
-      /* istanbul ignore next */
-      /* eslint-disable-next-line @typescript-eslint/no-require-imports */
-      rootRealmGlobal.FormData ?? require('@ssttevee/formdata-ponyfill'),
+    FormData: _FormData,
     teardownFunction,
   };
 };

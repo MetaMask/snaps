@@ -171,7 +171,7 @@ describe('snaps', () => {
           "id",
         ],
         "sources": [
-          "../../../../../../../../source-map.ts",
+          "../../../../../../../source-map.ts",
         ],
         "sourcesContent": [
           "
