@@ -36,6 +36,7 @@ import {
   IncrementActiveReferences,
   DecrementActiveReferences,
   SnapEndowments,
+  getRunnableSnaps,
 } from '../snaps';
 import { getKeyringCaveatNamespaces } from '../snaps/endowments/keyring';
 import { findMatchingKeyringSnaps } from './matching';
@@ -171,7 +172,7 @@ export class MultiChainController extends BaseController<
     }
 
     const snaps = await this.messagingSystem.call('SnapController:getAll');
-    const filteredSnaps = snaps.filter((snap) => snap.enabled && !snap.blocked);
+    const filteredSnaps = getRunnableSnaps(snaps);
 
     // Get available namespaces supported by currently installed Snaps.
     const availableNamespaces = fromEntries(
@@ -466,18 +467,17 @@ export class MultiChainController extends BaseController<
     >((acc, namespaceId) => {
       const { chains } = requestedNamespaces[namespaceId];
 
-      const result = Object.entries(allAccounts).reduce<
-        { snapId: SnapId; accounts: AccountId[] }[]
-      >((accList, [snapId, accounts]) => {
-        const filteredAccounts = accounts.filter((account) => {
-          const { chainId: parsedChainId } = parseAccountId(account);
-          return chains.some((chainId) => chainId === parsedChainId);
-        });
-        if (filteredAccounts.length > 0) {
-          accList.push({ snapId, accounts: filteredAccounts });
-        }
-        return accList;
-      }, []);
+      const accountInAnyRequestedChain = (account: AccountId) => {
+        const { chainId: parsedChainId } = parseAccountId(account);
+        return chains.some((chainId) => chainId === parsedChainId);
+      };
+
+      const result = Object.entries(allAccounts)
+        .map(([snapId, accounts]) => ({
+          snapId,
+          accounts: accounts.filter(accountInAnyRequestedChain),
+        }))
+        .filter(({ accounts }) => accounts.length > 0);
 
       acc[namespaceId] = result;
 
