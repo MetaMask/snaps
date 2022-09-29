@@ -1,7 +1,7 @@
 /**
  * Flattens an array of arrays of up to 1 level deep into a single array.
  *
- * This is a non-recursively implementation of Array.prototype.flat, which is
+ * This is a non-recursive implementation of `Array.prototype.flat`, which is
  * only available in ES2019 and above.
  *
  * @param array - The array to flatten.
@@ -20,7 +20,7 @@ export const flatten = <Type>(array: (Type | Type[])[]): Type[] => {
  * Maps an array of values using the provided callback, then flattens the result
  * into a single array, up to 1 level deep.
  *
- * This is a non-recursively implementation of Array.prototype.flatMap, which is
+ * This is a non-recursive implementation of `Array.prototype.flatMap`, which is
  * only available in ES2019 and above.
  *
  * @param array - The array to map.
