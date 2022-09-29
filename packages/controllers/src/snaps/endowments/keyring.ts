@@ -1,4 +1,9 @@
-import { isNamespacesObject, SnapCaveatType } from '@metamask/snap-utils';
+import {
+  assert,
+  isNamespacesObject,
+  Namespaces,
+  SnapCaveatType,
+} from '@metamask/snap-utils';
 import {
   Caveat,
   CaveatSpecificationConstraint,
@@ -113,6 +118,35 @@ export function getKeyringCaveatMapper(
       },
     ],
   };
+}
+
+/**
+ * Getter function to get the keyring namespaces from a permission.
+ *
+ * This does basic validation of the caveat, but does not validate the type or
+ * value of the namespaces object itself, as this is handled by the
+ * `PermissionsController` when the permission is requested.
+ *
+ * @param permission - The permission to get the keyring namespaces from.
+ * @returns The keyring namespaces, or `null` if the permission does not have a
+ * keyring caveat.
+ */
+export function getKeyringCaveatNamespaces(
+  permission?: PermissionConstraint,
+): Namespaces | null {
+  if (!permission?.caveats) {
+    return null;
+  }
+
+  assert(permission.caveats.length === 1);
+  assert(permission.caveats[0].type === SnapCaveatType.SnapKeyring);
+
+  const caveat = permission.caveats[0] as Caveat<
+    string,
+    { namespaces: Namespaces }
+  >;
+
+  return caveat.value?.namespaces ?? null;
 }
 
 export const keyringCaveatSpecifications: Record<

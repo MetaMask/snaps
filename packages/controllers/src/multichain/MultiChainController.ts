@@ -23,10 +23,10 @@ import {
   SnapId,
   fromEntries,
   SessionNamespace,
-  Namespace,
   flatten,
   getSnapPermissionName,
   isAccountIdArray,
+  Namespaces,
 } from '@metamask/snap-utils';
 import { hasProperty } from '@metamask/utils';
 import { nanoid } from 'nanoid';
@@ -37,6 +37,7 @@ import {
   DecrementActiveReferences,
   SnapEndowments,
 } from '../snaps';
+import { getKeyringCaveatNamespaces } from '../snaps/endowments/keyring';
 import { findMatchingKeyringSnaps } from './matching';
 
 const controllerName = 'MultiChainController';
@@ -342,15 +343,14 @@ export class MultiChainController extends BaseController<
 
   private async snapToNamespaces(
     snap: TruncatedSnap,
-  ): Promise<Record<NamespaceId, Namespace> | null> {
+  ): Promise<Namespaces | null> {
     const permissions = await this.messagingSystem.call(
       'PermissionController:getPermissions',
       snap.id,
     );
+
     const keyringPermission = permissions?.[SnapEndowments.Keyring];
-    // Null if this snap doesn't expose keyrings
-    // TODO: Verify that this is enough
-    return keyringPermission?.caveats?.[0]?.value?.namespaces ?? null;
+    return getKeyringCaveatNamespaces(keyringPermission);
   }
 
   private async namespacesToAccounts(
