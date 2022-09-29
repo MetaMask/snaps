@@ -145,10 +145,10 @@ export const SessionStruct = object({
 export type Session = Infer<typeof SessionStruct>;
 
 /**
- * Asserts that the given value is a valid `Session`.
+ * Asserts that the given value is a valid {@link Session}.
  *
  * @param value - The value to assert.
- * @throws If the value is not a valid `Session`.
+ * @throws If the value is not a valid {@link Session}.
  */
 export function assertIsSession(value: unknown): asserts value is Session {
   assertStruct(value, SessionStruct, 'Invalid session');
@@ -212,20 +212,20 @@ export function isAccountIdArray(value: unknown): value is AccountId[] {
 }
 
 /**
- * Check if the given value is a connect arguments object.
+ * Check if the given value is a {@link ConnectArguments} object.
  *
  * @param value - The value to check.
- * @returns Whether the value is a valid connect arguments object.
+ * @returns Whether the value is a valid {@link ConnectArguments} object.
  */
 export function isConnectArguments(value: unknown): value is ConnectArguments {
   return is(value, ConnectArgumentsStruct);
 }
 
 /**
- * Assert that the given value is a connect arguments object.
+ * Assert that the given value is a {@link ConnectArguments} object.
  *
  * @param value - The value to check.
- * @throws If the value is not a valid connect arguments object.
+ * @throws If the value is not a valid {@link ConnectArguments} object.
  */
 export function assertIsConnectArguments(
   value: unknown,
@@ -234,10 +234,10 @@ export function assertIsConnectArguments(
 }
 
 /**
- * Check if the given value is a multi chain request object.
+ * Check if the given value is a {@link MultiChainRequest} object.
  *
  * @param value - The value to check.
- * @returns Whether the value is a valid multi chain request object.
+ * @returns Whether the value is a valid {@link MultiChainRequest} object.
  */
 export function isMultiChainRequest(
   value: unknown,
@@ -246,10 +246,10 @@ export function isMultiChainRequest(
 }
 
 /**
- * Assert that the given value is a multi chain request object.
+ * Assert that the given value is a {@link MultiChainRequest} object.
  *
  * @param value - The value to check.
- * @throws If the value is not a valid request arguments object.
+ * @throws If the value is not a valid {@link MultiChainRequest} object.
  */
 export function assertIsMultiChainRequest(
   value: unknown,
@@ -258,17 +258,17 @@ export function assertIsMultiChainRequest(
 }
 
 /**
- * Check if a value is a namespace.
+ * Check if a value is a {@link Namespace}.
  *
  * @param value - The value to validate.
- * @returns True if the value is a valid namespace.
+ * @returns True if the value is a valid {@link Namespace}.
  */
 export function isNamespace(value: unknown): value is Namespace {
   return is(value, NamespaceStruct);
 }
 
 /**
- * Check if a value is an object containing namespaces.
+ * Check if a value is an object containing {@link Namespace}s.
  *
  * @param value - The value to validate.
  * @returns True if the value is a valid object containing namespaces.
