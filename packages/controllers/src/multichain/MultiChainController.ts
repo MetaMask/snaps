@@ -199,21 +199,23 @@ export class MultiChainController extends BaseController<
     const approvedNamespacesAndSnaps = Object.entries(namespaceToSnaps).reduce<
       Record<NamespaceId, SnapId[]>
     >((acc, [namespace, snapIds]) => {
-      // If Snap already is approved for use, solve conflict by using that Snap.
-      const approvedSnap = snapIds.find((snapId) => {
+      const approvedSnaps = snapIds.filter((snapId) => {
         return (
           permissions && hasProperty(permissions, getSnapPermissionName(snapId))
         );
       });
 
-      if (approvedSnap) {
-        acc[namespace] = [approvedSnap];
+      if (approvedSnaps.length > 0) {
+        acc[namespace] = approvedSnaps;
       }
       return acc;
     }, {});
 
+    // If we either don't have a snap to handle a namespace or we have multiple we have conflicts
     const hasConflicts = Object.keys(namespaceToSnaps).some(
-      (namespace) => !hasProperty(approvedNamespacesAndSnaps, namespace),
+      (namespace) =>
+        !hasProperty(approvedNamespacesAndSnaps, namespace) ||
+        approvedNamespacesAndSnaps[namespace]?.length > 1,
     );
 
     // Use already approved snaps if they satisfy the requested namespaces.
@@ -226,6 +228,16 @@ export class MultiChainController extends BaseController<
       origin,
       filteredNamespacesAndSnaps,
       connection.requiredNamespaces,
+    );
+
+    // For now we fail here if no namespaces could be matched to a snap.
+    // We don't fail if at least one namespace is matched to a snap.
+    // TODO: Decide whether this is what we want
+    assert(
+      Object.values(possibleAccounts).some(
+        (possibleAccount) => possibleAccount.length > 0,
+      ),
+      'No installed snaps found for any requested namespace.',
     );
 
     // If currently installed Snaps / configuration doesn't solve request, we

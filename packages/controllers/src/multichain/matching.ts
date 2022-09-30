@@ -47,7 +47,6 @@ function matchNamespace(
   requestedNamespace: ConnectArguments['requiredNamespaces'][NamespaceId],
   potentialMatchNamespace: Namespace,
 ) {
-  // TODO: Determine if those types are actually identical for requested and potential match.
   if (
     !requestedNamespace.chains.every((requestedChain) =>
       potentialMatchNamespace.chains.some(
