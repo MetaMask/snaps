@@ -24,8 +24,9 @@ import {
 
 export {
   AlertFields,
-  ConfirmFields,
+  ConfirmationFields,
   DialogFields,
+  DialogParameters,
   DialogType,
   PromptFields,
 } from './dialog';

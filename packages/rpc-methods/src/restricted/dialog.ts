@@ -4,7 +4,7 @@ import {
   RestrictedMethodOptions,
   ValidPermissionSpecification,
 } from '@metamask/controllers';
-import { assertExhaustive } from '@metamask/snap-utils/src';
+import { assertExhaustive } from '@metamask/snap-utils';
 import { hasProperty, isObject, NonEmptyArray } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
@@ -26,15 +26,15 @@ export type AlertFields = {
    * A description, displayed with the title, no greater than 140 characters
    * long.
    */
-  description: string;
+  description?: string;
 
   /**
    * Free-from text content, no greater than 1800 characters long.
    */
-  textAreaContent: string;
+  textAreaContent?: string;
 };
 
-export type ConfirmFields = {
+export type ConfirmationFields = {
   /**
    * A question describing what the user is confirming, no greater than 40
    * characters long.
@@ -45,12 +45,12 @@ export type ConfirmFields = {
    * A description, displayed with the question, no greater than 140 characters
    * long.
    */
-  description: string;
+  description?: string;
 
   /**
    * Free-from text content, no greater than 1800 characters long.
    */
-  textAreaContent: string;
+  textAreaContent?: string;
 };
 
 export type PromptFields = {
@@ -63,15 +63,15 @@ export type PromptFields = {
    * A description, displayed with the prompt, no greater than 140 characters
    * long.
    */
-  description: string;
+  description?: string;
 };
 
-export type DialogFields = AlertFields | ConfirmFields | PromptFields;
+export type DialogFields = AlertFields | ConfirmationFields | PromptFields;
 
 type ShowAlert = (snapId: string, fields: AlertFields) => Promise<null>;
 type ShowConfirmation = (
   snapId: string,
-  fields: ConfirmFields,
+  fields: ConfirmationFields,
 ) => Promise<boolean>;
 type ShowPrompt = (snapId: string, fields: PromptFields) => Promise<string>;
 
@@ -147,6 +147,26 @@ export const dialogBuilder = Object.freeze({
   },
 } as const);
 
+type AlertParameters = {
+  type: DialogType.alert;
+  fields: AlertFields;
+};
+
+type ConfirmationParameters = {
+  type: DialogType.confirmation;
+  fields: ConfirmationFields;
+};
+
+type PromptParameters = {
+  type: DialogType.prompt;
+  fields: PromptFields;
+};
+
+export type DialogParameters =
+  | AlertParameters
+  | ConfirmationParameters
+  | PromptParameters;
+
 /**
  * Builds the method implementation for `snap_dialog`.
  *
@@ -160,38 +180,41 @@ export const dialogBuilder = Object.freeze({
  * and returns the value the user entered into the prompt's text field.
  * @returns The method implementation which returns `true` if the user approved the confirmation, otherwise `false`.
  */
-function getDialogImplementation({
+export function getDialogImplementation({
   showAlert,
   showConfirmation,
   showPrompt,
 }: DialogMethodHooks) {
-  // This rule is probably triggering due to a bug.
+  // This rule appears to trigger because ESLint does not understand execution
+  // will never reach the "end" of this function.
   // eslint-disable-next-line consistent-return
   return async function dialogImplementation(
-    args: RestrictedMethodOptions<[DialogType, DialogFields]>,
+    args: RestrictedMethodOptions<DialogParameters>,
   ): Promise<boolean | null | string> {
     const {
       params,
       context: { origin },
     } = args;
 
-    const [dialogType, dialogFields] = getValidatedParams(params);
-    switch (dialogType) {
+    const { type, fields } = getValidatedParams(params);
+    switch (type) {
       case DialogType.alert:
-        return showAlert(origin, dialogFields);
+        return showAlert(origin, fields);
 
       case DialogType.confirmation:
-        return showConfirmation(origin, dialogFields);
+        return showConfirmation(origin, fields);
 
       case DialogType.prompt:
-        return showPrompt(origin, dialogFields);
+        return showPrompt(origin, fields);
 
+      /* istanbul ignore next */
       default:
-        assertExhaustive(dialogType);
+        assertExhaustive(type);
     }
   };
 }
 
+// TODO: Use an OpenRPC schema and validator.
 /**
  * Validates the confirm method `params` and returns them cast to the correct
  * type. Throws if validation fails.
@@ -199,23 +222,20 @@ function getDialogImplementation({
  * @param params - The unvalidated params object from the method request.
  * @returns The validated confirm method parameter object.
  */
-function getValidatedParams(
-  params: unknown,
-):
-  | [DialogType.prompt, PromptFields]
-  | [DialogType.alert | DialogType.confirmation, AlertFields | ConfirmFields] {
+function getValidatedParams(params: unknown): DialogParameters {
   if (
-    !Array.isArray(params) ||
-    !hasProperty(DialogType, params[0]) ||
-    !isObject(params[1])
+    !isObject(params) ||
+    !isDialogType(params.type) ||
+    !isObject(params.fields)
   ) {
     throw ethErrors.rpc.invalidParams({
-      message: 'Expected arrays params of the form [DialogType, DialogFields].',
+      message:
+        'Must specify object parameter of the form `{ type: DialogType, fields: DialogFields }`.',
     });
   }
 
-  const dialogType = params[0] as DialogType;
-  const { title, description, textAreaContent } = params[1];
+  const { type: dialogType, fields: dialogFields } = params;
+  const { title, description, textAreaContent } = dialogFields;
 
   if (!title || typeof title !== 'string' || title.length > 40) {
     throw ethErrors.rpc.invalidParams({
@@ -240,7 +260,7 @@ function getValidatedParams(
         message: 'Prompts may not specify a "textAreaContent" field.',
       });
     }
-    return [dialogType, params[1] as PromptFields];
+    return { type: dialogType, fields: dialogFields as PromptFields };
   }
 
   if (
@@ -252,5 +272,19 @@ function getValidatedParams(
         '"textAreaContent" must be a string no more than 1800 characters long if specified.',
     });
   }
-  return [dialogType, params[1] as AlertFields | ConfirmFields];
+
+  return {
+    type: dialogType,
+    fields: dialogFields as AlertFields | ConfirmationFields,
+  };
+}
+
+/**
+ * Type guard for {@link DialogType}.
+ *
+ * @param value - The string to test.
+ * @returns Whether the given string is a valid dialog type.
+ */
+function isDialogType(value: unknown): value is DialogType {
+  return typeof value === 'string' && hasProperty(DialogType, value);
 }
