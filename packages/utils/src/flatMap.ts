@@ -12,7 +12,8 @@ export const flatten = <Type>(array: (Type | Type[])[]): Type[] => {
     if (Array.isArray(cur)) {
       return [...acc, ...cur];
     }
-    return [...acc, cur];
+    acc.push(cur);
+    return acc;
   }, []);
 };
 

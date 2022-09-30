@@ -1,5 +1,9 @@
-import { getRequestNamespace } from '../dist/test-utils';
-import { getChain, getNamespace, getSessionNamespace } from './test-utils';
+import {
+  getChain,
+  getNamespace,
+  getSessionNamespace,
+  getRequestNamespace,
+} from './test-utils';
 import {
   assertIsConnectArguments,
   assertIsMultiChainRequest,

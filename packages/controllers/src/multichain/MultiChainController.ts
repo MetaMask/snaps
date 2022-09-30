@@ -28,6 +28,7 @@ import {
   isAccountIdArray,
   Namespaces,
 } from '@metamask/snap-utils';
+import { SnapKeyring } from '@metamask/snap-types';
 import { hasProperty } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 import {
@@ -378,7 +379,7 @@ export class MultiChainController extends BaseController<
   }: {
     snapId: SnapId;
     origin: string;
-    method: string;
+    method: keyof SnapKeyring;
     args?: unknown;
   }) {
     return this.messagingSystem.call('SnapController:handleRequest', {
