@@ -234,8 +234,10 @@ function getValidatedParams(params: unknown): DialogParameters {
     });
   }
 
-  const { type: dialogType, fields: dialogFields } = params;
-  const { title, description, textAreaContent } = dialogFields;
+  const {
+    type: dialogType,
+    fields: { title, description, textAreaContent },
+  } = params;
 
   if (!title || typeof title !== 'string' || title.length > 40) {
     throw ethErrors.rpc.invalidParams({
@@ -244,14 +246,16 @@ function getValidatedParams(params: unknown): DialogParameters {
     });
   }
 
-  if (
-    description &&
-    (typeof description !== 'string' || description.length > 140)
-  ) {
-    throw ethErrors.rpc.invalidParams({
-      message:
-        '"description" must be a string no more than 140 characters long if specified.',
-    });
+  const validPromptFields: PromptFields = { title };
+
+  if (description) {
+    if (typeof description !== 'string' || description.length > 140) {
+      throw ethErrors.rpc.invalidParams({
+        message:
+          '"description" must be a string no more than 140 characters long if specified.',
+      });
+    }
+    validPromptFields.description = description;
   }
 
   if (dialogType === DialogType.prompt) {
@@ -260,22 +264,24 @@ function getValidatedParams(params: unknown): DialogParameters {
         message: 'Prompts may not specify a "textAreaContent" field.',
       });
     }
-    return { type: dialogType, fields: dialogFields as PromptFields };
+    return { type: dialogType, fields: validPromptFields };
   }
 
-  if (
-    textAreaContent &&
-    (typeof textAreaContent !== 'string' || textAreaContent.length > 1800)
-  ) {
-    throw ethErrors.rpc.invalidParams({
-      message:
-        '"textAreaContent" must be a string no more than 1800 characters long if specified.',
-    });
+  const validFields: AlertFields | ConfirmationFields = validPromptFields;
+
+  if (textAreaContent) {
+    if (typeof textAreaContent !== 'string' || textAreaContent.length > 1800) {
+      throw ethErrors.rpc.invalidParams({
+        message:
+          '"textAreaContent" must be a string no more than 1800 characters long if specified.',
+      });
+    }
+    validFields.textAreaContent = textAreaContent;
   }
 
   return {
     type: dialogType,
-    fields: dialogFields as AlertFields | ConfirmationFields,
+    fields: validFields,
   };
 }
 

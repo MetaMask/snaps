@@ -131,6 +131,28 @@ describe('implementation', () => {
   });
 
   describe('validation', () => {
+    it('ignores unrecognized dialog fields', async () => {
+      const hooks = getMockDialogHooks();
+      const implementation = getDialogImplementation(hooks);
+
+      await implementation({
+        context: { origin: 'foo' },
+        method: 'snap_dialog',
+        params: {
+          type: DialogType.alert,
+          fields: {
+            title: 'Foo',
+            bar: 'baz',
+          } as any,
+        },
+      });
+
+      expect(hooks.showAlert).toHaveBeenCalledTimes(1);
+      expect(hooks.showAlert).toHaveBeenCalledWith('foo', {
+        title: 'Foo',
+      });
+    });
+
     it('rejects invalid parameter object', async () => {
       const hooks = getMockDialogHooks();
       const implementation = getDialogImplementation(hooks);
