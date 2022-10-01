@@ -214,7 +214,9 @@ export function getDialogImplementation({
   };
 }
 
-// TODO: Use an OpenRPC schema and validator.
+// TODO(rekmarks): Use an OpenRPC schema and validator for this.
+// The validation logic is a little bit tortured and we do not reject extraneous
+// properties, even though we should.
 /**
  * Validates the confirm method `params` and returns them cast to the correct
  * type. Throws if validation fails.
