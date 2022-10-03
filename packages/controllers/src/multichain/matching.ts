@@ -1,9 +1,9 @@
-// TODO
-export interface Namespace {
-  chains: { id: string; name: string }[];
-  methods?: string[];
-  events?: string[];
-}
+import {
+  ConnectArguments,
+  NamespaceId,
+  SnapId,
+  Namespace,
+} from '@metamask/snap-utils';
 
 /**
  * Finds a keyring snap for each namespace implements at a minimum the requested functionality.
@@ -13,23 +13,25 @@ export interface Namespace {
  * @returns A mapping between namespaces and snap ids.
  */
 export function findMatchingKeyringSnaps(
-  requestedNamespaces: Record<string, Namespace>,
-  snaps: Record<string, Record<string, Namespace>>,
-) {
+  requestedNamespaces: ConnectArguments['requiredNamespaces'],
+  snaps: Record<SnapId, Record<NamespaceId, Namespace> | null>,
+): Record<NamespaceId, SnapId[]> {
   const snapEntries = Object.entries(snaps);
-  return Object.entries(requestedNamespaces).reduce(
-    (acc, [requestedNamespaceId, currentRequestedNamespace]) => {
-      const matchedSnap = snapEntries.find(([_, namespaces]) => {
-        const potentialMatch = namespaces[requestedNamespaceId];
+  return Object.entries(requestedNamespaces).reduce<
+    Record<NamespaceId, SnapId[]>
+  >((acc, [requestedNamespaceId, currentRequestedNamespace]) => {
+    const matchedSnaps = snapEntries
+      .filter(([, namespaces]) => {
+        const potentialMatch = namespaces?.[requestedNamespaceId];
         return (
-          potentialMatch &&
+          potentialMatch !== undefined &&
           matchNamespace(currentRequestedNamespace, potentialMatch)
         );
-      });
-      return { ...acc, [requestedNamespaceId]: matchedSnap?.[0] ?? null };
-    },
-    {},
-  );
+      })
+      .map(([snapId]) => snapId);
+    acc[requestedNamespaceId] = matchedSnaps;
+    return acc;
+  }, {});
 }
 
 /**
@@ -42,14 +44,13 @@ export function findMatchingKeyringSnaps(
  * @returns True if the potentially matching namespace is a match.
  */
 function matchNamespace(
-  requestedNamespace: Namespace,
+  requestedNamespace: ConnectArguments['requiredNamespaces'][NamespaceId],
   potentialMatchNamespace: Namespace,
 ) {
-  // TODO: Determine if those types are actually identical for requested and potential match.
   if (
     !requestedNamespace.chains.every((requestedChain) =>
       potentialMatchNamespace.chains.some(
-        (potentialMatchChain) => potentialMatchChain.id === requestedChain.id,
+        (potentialMatchChain) => potentialMatchChain.id === requestedChain,
       ),
     )
   ) {
@@ -84,6 +85,6 @@ function matchNamespace(
  * @param array - The other array.
  * @returns True if the first argument is a subset of second argument.
  */
-function isSubset(potentialSubset: string[], array: string[]) {
+function isSubset<T>(potentialSubset: T[], array: T[]) {
   return potentialSubset.every((item) => array.includes(item));
 }

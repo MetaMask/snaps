@@ -2,14 +2,15 @@ module.exports = {
   collectCoverage: true,
   // Ensures that we collect coverage from all source files, not just tested
   // ones.
-  collectCoverageFrom: ['./src/**/*.ts', '!./**/__GENERATED__/**'],
+  collectCoverageFrom: ['./src/**/*.ts'],
+  coveragePathIgnorePatterns: ['./src/index.ts'],
   coverageReporters: ['clover', 'json', 'lcov', 'text', 'json-summary'],
   coverageThreshold: {
     global: {
-      branches: 84.83,
-      functions: 93.23,
-      lines: 87.19,
-      statements: 87.38,
+      branches: 100,
+      functions: 100,
+      lines: 100,
+      statements: 100,
     },
   },
   moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'],
@@ -22,6 +23,9 @@ module.exports = {
   // modules.
   restoreMocks: true,
   testEnvironment: 'jsdom',
+  testEnvironmentOptions: {
+    customExportConditions: ['node', 'node-addons'],
+  },
   testRegex: ['\\.test\\.(ts|js)$'],
   testTimeout: 2500,
 };

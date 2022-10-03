@@ -77,12 +77,11 @@ import {
   TerminateSnapAction,
 } from '../services/ExecutionService';
 import { hasTimedOut, setDiff, withTimeout } from '../utils';
-import { SnapEndowments } from './endowments';
+import { endowmentCaveatMappers, SnapEndowments } from './endowments';
 import { RequestQueue } from './RequestQueue';
 import { fetchNpmSnap } from './utils';
 
 import { Timer } from './Timer';
-import { findMatchingKeyringSnaps, Namespace } from './keyring';
 
 export const controllerName = 'SnapController';
 
@@ -95,6 +94,8 @@ const TRUNCATED_SNAP_PROPERTIES = new Set<TruncatedSnapFields>([
   'id',
   'permissionName',
   'version',
+  'enabled',
+  'blocked',
 ]);
 
 export type PendingRequest = {
@@ -119,9 +120,9 @@ export interface SnapRuntimeData {
   lastRequest: null | number;
 
   /**
-   * The current number of open sessions where this Snap is being used
+   * The current number of active references where this Snap is being used
    */
-  openSessions: number;
+  activeReferences: number;
 
   /**
    * The current pending inbound requests, meaning requests that are processed by snaps.
@@ -268,23 +269,23 @@ export type RemoveSnap = {
 };
 
 export type GetPermittedSnaps = {
-  type: `${typeof controllerName}:getPermittedSnaps`;
+  type: `${typeof controllerName}:getPermitted`;
   handler: SnapController['getPermittedSnaps'];
 };
 
 export type GetAllSnaps = {
-  type: `${typeof controllerName}:getAllSnaps`;
+  type: `${typeof controllerName}:getAll`;
   handler: SnapController['getAllSnaps'];
 };
 
-export type OnSessionOpen = {
-  type: `${typeof controllerName}:onSessionOpen`;
-  handler: SnapController['onSessionOpen'];
+export type IncrementActiveReferences = {
+  type: `${typeof controllerName}:incrementActiveReferences`;
+  handler: SnapController['incrementActiveReferences'];
 };
 
-export type OnSessionClose = {
-  type: `${typeof controllerName}:onSessionClose`;
-  handler: SnapController['onSessionOpen'];
+export type DecrementActiveReferences = {
+  type: `${typeof controllerName}:decrementActiveReferences`;
+  handler: SnapController['decrementActiveReferences'];
 };
 
 export type InstallSnaps = {
@@ -313,8 +314,8 @@ export type SnapControllerActions =
   | InstallSnaps
   | RemoveSnapError
   | GetAllSnaps
-  | OnSessionOpen
-  | OnSessionClose;
+  | IncrementActiveReferences
+  | DecrementActiveReferences;
 
 // Controller Messenger Events
 
@@ -824,7 +825,7 @@ export class SnapController extends BaseController<
     );
 
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:getPermittedSnaps`,
+      `${controllerName}:getPermitted`,
       (...args) => this.getPermittedSnaps(...args),
     );
 
@@ -839,18 +840,18 @@ export class SnapController extends BaseController<
     );
 
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:getAllSnaps`,
+      `${controllerName}:getAll`,
       (...args) => this.getAllSnaps(...args),
     );
 
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:onSessionOpen`,
-      (...args) => this.onSessionOpen(...args),
+      `${controllerName}:incrementActiveReferences`,
+      (...args) => this.incrementActiveReferences(...args),
     );
 
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:onSessionClose`,
-      (...args) => this.onSessionClose(...args),
+      `${controllerName}:decrementActiveReferences`,
+      (...args) => this.decrementActiveReferences(...args),
     );
   }
 
@@ -990,7 +991,7 @@ export class SnapController extends BaseController<
       entries
         .filter(
           ([_snapId, runtime]) =>
-            runtime.openSessions === 0 &&
+            runtime.activeReferences === 0 &&
             runtime.pendingInboundRequests.length === 0 &&
             // lastRequest should always be set here but TypeScript wants this check
             runtime.lastRequest &&
@@ -1416,27 +1417,27 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Handles increasing the openSessions counter on session open.
+   * Handles incrementing the activeReferences counter.
    *
-   * @param snapId - The snap id of the snap the session was opened with.
+   * @param snapId - The snap id of the snap that was referenced.
    */
-  onSessionOpen(snapId: SnapId) {
+  incrementActiveReferences(snapId: SnapId) {
     const runtime = this.getRuntimeOrDefault(snapId);
-    runtime.openSessions += 1;
+    runtime.activeReferences += 1;
   }
 
   /**
-   * Handles decreasing the openSessions counter on session close.
+   * Handles decrement the activeReferences counter.
    *
-   * @param snapId - The snap id of the snap the session was closed with.
+   * @param snapId - The snap id of the snap that was referenced..
    */
-  onSessionClose(snapId: SnapId) {
+  decrementActiveReferences(snapId: SnapId) {
     const runtime = this.getRuntimeOrDefault(snapId);
     assert(
-      runtime.openSessions > 0,
-      new Error(`Session management is in an invalid state.`),
+      runtime.activeReferences > 0,
+      'SnapController reference management is in an invalid state.',
     );
-    runtime.openSessions -= 1;
+    runtime.activeReferences -= 1;
   }
 
   /**
@@ -2098,6 +2099,11 @@ export class SnapController extends BaseController<
       Object.entries(initialPermissions).map(([initialPermission, value]) => {
         if (hasProperty(caveatMappers, initialPermission)) {
           return [initialPermission, caveatMappers[initialPermission](value)];
+        } else if (hasProperty(endowmentCaveatMappers, initialPermission)) {
+          return [
+            initialPermission,
+            endowmentCaveatMappers[initialPermission](value),
+          ];
         }
 
         return [initialPermission, value];
@@ -2384,7 +2390,7 @@ export class SnapController extends BaseController<
         lastRequest: null,
         rpcHandler: null,
         installPromise: null,
-        openSessions: 0,
+        activeReferences: 0,
         pendingInboundRequests: [],
         pendingOutboundRequests: 0,
         interpreter,
@@ -2421,43 +2427,5 @@ export class SnapController extends BaseController<
     const approvedPermissions = setDiff(oldPermissions, unusedPermissions);
 
     return { newPermissions, unusedPermissions, approvedPermissions };
-  }
-
-  public async getKeyringSnaps(requestedNamespaces: Record<string, Namespace>) {
-    const snaps = await this.getPermissionsForAllSnaps();
-    const snapNamespaces = Object.entries(snaps)
-      .filter(([_, permissions]) => hasProperty(permissions, 'snap_keyring'))
-      .reduce<Record<string, Record<string, Namespace>>>(
-        (acc, [id, permissions]) => ({
-          ...acc,
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          [id]: permissions.snap_keyring!.caveats![0].value.namespaces,
-        }),
-        {},
-      );
-    return findMatchingKeyringSnaps(requestedNamespaces, snapNamespaces);
-  }
-
-  private async getPermissionsForAllSnaps(): Promise<
-    Record<SnapId, Awaited<ReturnType<typeof this.getSnapPermissions>>>
-  > {
-    return Object.entries(this.state.snaps)
-      .filter(([_, snap]) => snap.enabled && !snap.blocked)
-      .reduce(
-        async (acc, [id]) => ({
-          ...acc,
-          [id]: await this.getSnapPermissions(id),
-        }),
-        {},
-      );
-  }
-
-  private async getSnapPermissions(snapId: SnapId) {
-    return (
-      (await this.messagingSystem.call(
-        'PermissionController:getPermissions',
-        snapId,
-      )) ?? {}
-    );
   }
 }

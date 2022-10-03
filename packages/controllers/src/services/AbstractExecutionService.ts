@@ -8,7 +8,7 @@ import {
 
 import {
   Duration,
-  isJsonRpcRequest,
+  isJsonRpcNotification,
   isObject,
   JsonRpcNotification,
 } from '@metamask/utils';
@@ -226,7 +226,7 @@ export abstract class AbstractExecutionService<WorkerType>
     const notificationHandler = (
       message: JsonRpcRequest<unknown> | JsonRpcNotification<unknown>,
     ) => {
-      if (isJsonRpcRequest(message)) {
+      if (!isJsonRpcNotification(message)) {
         return;
       }
 

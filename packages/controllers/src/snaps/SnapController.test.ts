@@ -12,7 +12,7 @@ import {
   SnapManifest,
   HandlerType,
   SnapStatus,
-  getSnapPermissionName
+  SnapCaveatType,
 } from '@metamask/snap-utils';
 import { Crypto } from '@peculiar/webcrypto';
 import { EthereumRpcError, ethErrors, serializeError } from 'eth-rpc-errors';
@@ -20,7 +20,6 @@ import fetchMock from 'jest-fetch-mock';
 import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import pump from 'pump';
-import { SnapCaveatType } from '@metamask/rpc-methods';
 import {
   getSnapManifest,
   getSnapObject,
@@ -43,6 +42,8 @@ import {
   getSnapControllerOptions,
   getSnapControllerWithEES,
   getSnapControllerWithEESOptions,
+  MOCK_KEYRING_SNAP,
+  MOCK_NAMESPACES,
 } from '../test-utils';
 import { SnapEndowments } from './endowments';
 import { SNAP_APPROVAL_UPDATE, SnapControllerState } from './SnapController';
@@ -1185,7 +1186,7 @@ describe('SnapController', () => {
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
 
     await options.rootMessenger.call(
-      'SnapController:onSessionOpen',
+      'SnapController:incrementActiveReferences',
       MOCK_SNAP_ID,
     );
 
@@ -1211,7 +1212,7 @@ describe('SnapController', () => {
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
 
     await options.rootMessenger.call(
-      'SnapController:onSessionClose',
+      'SnapController:decrementActiveReferences',
       MOCK_SNAP_ID,
     );
 
@@ -2078,6 +2079,66 @@ describe('SnapController', () => {
       );
     });
 
+    it('maps endowment permission caveats to the proper format', async () => {
+      const { manifest } = MOCK_KEYRING_SNAP;
+
+      const messenger = getSnapControllerMessenger();
+      const snapController = getSnapController(
+        getSnapControllerOptions({ messenger }),
+      );
+
+      const callActionMock = jest.spyOn(messenger, 'call');
+
+      jest
+        .spyOn(snapController as any, '_fetchSnap')
+        .mockImplementationOnce(() => {
+          return getSnapObject({ manifest });
+        });
+
+      await snapController.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: {},
+      });
+
+      const caveat = {
+        type: SnapCaveatType.SnapKeyring,
+        value: { namespaces: MOCK_NAMESPACES },
+      };
+
+      expect(callActionMock).toHaveBeenNthCalledWith(
+        2,
+        'ApprovalController:addRequest',
+        expect.objectContaining({
+          requestData: {
+            metadata: {
+              origin: MOCK_SNAP_ID,
+              dappOrigin: MOCK_ORIGIN,
+              id: expect.any(String),
+            },
+            permissions: {
+              [SnapEndowments.Keyring]: {
+                caveats: [caveat],
+              },
+            },
+            snapId: MOCK_SNAP_ID,
+          },
+        }),
+        true,
+      );
+
+      expect(callActionMock).toHaveBeenNthCalledWith(
+        3,
+        'PermissionController:grantPermissions',
+        {
+          approvedPermissions: {
+            [SnapEndowments.Keyring]: {
+              caveats: [caveat],
+            },
+          },
+          subject: { origin: MOCK_SNAP_ID },
+        },
+      );
+    });
+
     it('maps permission caveats to the proper format when updating snaps', async () => {
       const initialPermissions = {
         snap_getBip32Entropy: [
@@ -2283,12 +2344,7 @@ describe('SnapController', () => {
       );
 
       expect(result).toStrictEqual({
-        [MOCK_SNAP_ID]: {
-          id: MOCK_SNAP_ID,
-          initialPermissions: getSnapManifest().initialPermissions,
-          permissionName: expect.anything(),
-          version: newVersion,
-        },
+        [MOCK_SNAP_ID]: getTruncatedSnap({ version: newVersion }),
       });
     });
 
@@ -3942,7 +3998,7 @@ describe('SnapController', () => {
       });
     });
 
-    describe('SnapController:getPermittedSnaps', () => {
+    describe('SnapController:getPermitted', () => {
       it('calls SnapController.getPermittedSnaps()', async () => {
         const messenger = getSnapControllerMessenger(undefined, false);
         const mockSnap = getMockSnapData({
@@ -3979,16 +4035,11 @@ describe('SnapController', () => {
         );
 
         const result = await messenger.call(
-          'SnapController:getPermittedSnaps',
+          'SnapController:getPermitted',
           mockSnap.origin,
         );
         expect(result).toStrictEqual({
-          [MOCK_SNAP_ID]: {
-            id: MOCK_SNAP_ID,
-            initialPermissions: mockSnap.manifest.initialPermissions,
-            permissionName: `wallet_snap_${MOCK_SNAP_ID}`,
-            version: '1.0.0',
-          },
+          [MOCK_SNAP_ID]: getTruncatedSnap(),
         });
       });
     });
@@ -3997,8 +4048,8 @@ describe('SnapController', () => {
       it('calls SnapController.getAllSnaps()', async () => {
         const messenger = getSnapControllerMessenger(undefined, false);
         const mockSnap = getMockSnapData({
-          id: 'npm:example',
-          origin: 'foo.com',
+          id: MOCK_SNAP_ID,
+          origin: MOCK_ORIGIN,
         });
 
         getSnapController(
@@ -4012,15 +4063,8 @@ describe('SnapController', () => {
           }),
         );
 
-        const result = await messenger.call('SnapController:getAllSnaps');
-        expect(result).toStrictEqual([
-          {
-            id: mockSnap.id,
-            initialPermissions: mockSnap.manifest.initialPermissions,
-            permissionName: getSnapPermissionName(mockSnap.id),
-            version: mockSnap.manifest.version,
-          },
-        ]);
+        const result = await messenger.call('SnapController:getAll');
+        expect(result).toStrictEqual([getTruncatedSnap()]);
       });
     });
 
@@ -4060,87 +4104,6 @@ describe('SnapController', () => {
 
         await messenger.call('SnapController:removeSnapError', 'foo');
         expect(snapController.state.snapErrors.foo).toBeUndefined();
-      });
-    });
-
-    describe('SnapController.getKeyringSnaps', () => {
-      it('finds matching keyring snaps', async () => {
-        const messenger = getSnapControllerMessenger(undefined, false);
-        const mockSnap = getMockSnapData({
-          id: 'npm:example',
-          origin: 'foo.com',
-          enabled: true,
-        });
-
-        const snapController = getSnapController(
-          getSnapControllerOptions({
-            messenger,
-            state: {
-              snaps: {
-                [mockSnap.id]: mockSnap.stateObject,
-              },
-            },
-          }),
-        );
-
-        const requestedNamespaces = {
-          eip155: {
-            methods: [
-              'eth_signTransaction',
-              'eth_accounts',
-              'eth_sign',
-              'personal_sign',
-              'eth_signTypedData',
-            ],
-            events: ['accountsChanged'],
-            chains: [
-              {
-                id: 'eip155:1',
-                name: 'Ethereum (Mainnet)',
-              },
-            ],
-          },
-          bip122: {
-            methods: ['signPBST', 'getExtendedPublicKey'],
-            chains: [
-              {
-                id: 'bip122:000000000019d6689c085ae165831e93',
-                name: 'Bitcoin (Mainnet)',
-              },
-              {
-                id: 'bip122:000000000933ea01ad0ee984209779ba',
-                name: 'Bitcoin (Testnet)',
-              },
-            ],
-          },
-        };
-
-        const caveats = [{ value: { namespaces: requestedNamespaces } }];
-
-        const originalCall = messenger.call.bind(messenger);
-
-        jest.spyOn(messenger, 'call').mockImplementation((method, ...args) => {
-          if (method === 'PermissionController:getPermissions') {
-            return {
-              snap_keyring: {
-                caveats,
-                date: 1661166080905,
-                id: 'VyAsBJiDDKawv_XlNcm13',
-                invoker: 'https://metamask.github.io',
-                parentCapability: 'snap_keyring',
-              },
-            } as any;
-          }
-          return originalCall(method, ...args);
-        });
-
-        const result = await snapController.getKeyringSnaps(
-          requestedNamespaces,
-        );
-        expect(result).toStrictEqual({
-          bip122: 'npm:example',
-          eip155: 'npm:example',
-        });
       });
     });
   });

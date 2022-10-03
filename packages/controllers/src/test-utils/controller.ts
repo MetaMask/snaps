@@ -63,12 +63,12 @@ export const getSnapControllerMessenger = (
       'SnapController:enable',
       'SnapController:disable',
       'SnapController:remove',
-      'SnapController:getAllSnaps',
-      'SnapController:getPermittedSnaps',
+      'SnapController:getAll',
+      'SnapController:getPermitted',
       'SnapController:install',
       'SnapController:removeSnapError',
-      'SnapController:onSessionOpen',
-      'SnapController:onSessionClose',
+      'SnapController:incrementActiveReferences',
+      'SnapController:decrementActiveReferences',
     ],
   });
 
