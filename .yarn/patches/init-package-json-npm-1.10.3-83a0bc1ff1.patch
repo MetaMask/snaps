@@ -1,7 +1,7 @@
-diff --git a/node_modules/init-package-json/default-input.js b/node_modules/init-package-json/default-input.js
-index 7d859a0..9394871 100644
---- a/node_modules/init-package-json/default-input.js
-+++ b/node_modules/init-package-json/default-input.js
+diff --git a/default-input.js b/default-input.js
+index 7d859a0d9b105eafb02c047627da7698412057c0..fcbfa1d31a2e369183a5fbd233d058ea76667970 100644
+--- a/default-input.js
++++ b/default-input.js
 @@ -105,7 +105,7 @@ if (!package.main) {
        else
          f = f[0]
