@@ -335,7 +335,7 @@ describe('MultiChainController', () => {
       await executionService.terminateAllSnaps();
     });
 
-    it('ignores errors throw by snaps getAccounts', async () => {
+    it('ignores errors thrown by snaps getAccounts', async () => {
       // This test works by using different mocks for the messenger than the other tests.
       const {
         multiChainController,
