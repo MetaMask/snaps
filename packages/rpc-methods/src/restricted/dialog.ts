@@ -11,14 +11,14 @@ import { ethErrors } from 'eth-rpc-errors';
 const methodName = 'snap_dialog';
 
 export enum DialogType {
-  alert = 'alert',
-  confirmation = 'confirmation',
-  prompt = 'prompt',
+  Alert = 'Alert',
+  Confirmation = 'Confirmation',
+  Prompt = 'Prompt',
 }
 
 export type AlertFields = {
   /**
-   * The alert title, no greater than 40 characters long.
+   * The dialog title, no greater than 40 characters long.
    */
   title: string;
 
@@ -148,17 +148,17 @@ export const dialogBuilder = Object.freeze({
 } as const);
 
 type AlertParameters = {
-  type: DialogType.alert;
+  type: DialogType.Alert;
   fields: AlertFields;
 };
 
 type ConfirmationParameters = {
-  type: DialogType.confirmation;
+  type: DialogType.Confirmation;
   fields: ConfirmationFields;
 };
 
 type PromptParameters = {
-  type: DialogType.prompt;
+  type: DialogType.Prompt;
   fields: PromptFields;
 };
 
@@ -185,9 +185,6 @@ export function getDialogImplementation({
   showConfirmation,
   showPrompt,
 }: DialogMethodHooks) {
-  // This rule appears to trigger because ESLint does not understand execution
-  // will never reach the "end" of this function.
-  // eslint-disable-next-line consistent-return
   return async function dialogImplementation(
     args: RestrictedMethodOptions<DialogParameters>,
   ): Promise<boolean | null | string> {
@@ -198,18 +195,18 @@ export function getDialogImplementation({
 
     const { type, fields } = getValidatedParams(params);
     switch (type) {
-      case DialogType.alert:
+      case DialogType.Alert:
         return showAlert(origin, fields);
 
-      case DialogType.confirmation:
+      case DialogType.Confirmation:
         return showConfirmation(origin, fields);
 
-      case DialogType.prompt:
+      case DialogType.Prompt:
         return showPrompt(origin, fields);
 
       /* istanbul ignore next */
       default:
-        assertExhaustive(type);
+        return assertExhaustive(type);
     }
   };
 }
@@ -260,7 +257,7 @@ function getValidatedParams(params: unknown): DialogParameters {
     validPromptFields.description = description;
   }
 
-  if (dialogType === DialogType.prompt) {
+  if (dialogType === DialogType.Prompt) {
     if (textAreaContent) {
       throw ethErrors.rpc.invalidParams({
         message: 'Prompts may not specify a "textAreaContent" field.',

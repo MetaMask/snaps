@@ -53,7 +53,7 @@ describe('implementation', () => {
         context: { origin: 'foo' },
         method: 'snap_dialog',
         params: {
-          type: DialogType.alert,
+          type: DialogType.Alert,
           fields: {
             title: 'Foo',
             description: 'Bar',
@@ -82,7 +82,7 @@ describe('implementation', () => {
         context: { origin: 'foo' },
         method: 'snap_dialog',
         params: {
-          type: DialogType.confirmation,
+          type: DialogType.Confirmation,
           fields: {
             title: 'Foo',
             description: 'Bar',
@@ -111,7 +111,7 @@ describe('implementation', () => {
         context: { origin: 'foo' },
         method: 'snap_dialog',
         params: {
-          type: DialogType.prompt,
+          type: DialogType.Prompt,
           fields: {
             title: 'Foo',
             description: 'Bar',
@@ -139,7 +139,7 @@ describe('implementation', () => {
         context: { origin: 'foo' },
         method: 'snap_dialog',
         params: {
-          type: DialogType.alert,
+          type: DialogType.Alert,
           fields: {
             title: 'Foo',
             bar: 'baz',
@@ -171,13 +171,13 @@ describe('implementation', () => {
         { type: false },
         { type: '' },
         { type: 'foo' },
-        { type: DialogType.alert },
-        { type: DialogType.alert, fields: null },
-        { type: DialogType.alert, fields: false },
-        { type: DialogType.alert, fields: '' },
-        { type: DialogType.alert, fields: 'abc' },
-        { type: DialogType.alert, fields: 2 },
-        { type: DialogType.alert, fields: [] },
+        { type: DialogType.Alert },
+        { type: DialogType.Alert, fields: null },
+        { type: DialogType.Alert, fields: false },
+        { type: DialogType.Alert, fields: '' },
+        { type: DialogType.Alert, fields: 'abc' },
+        { type: DialogType.Alert, fields: 2 },
+        { type: DialogType.Alert, fields: [] },
       ]) {
         await expect(
           implementation({
@@ -211,7 +211,7 @@ describe('implementation', () => {
             context: { origin: 'foo' },
             method: 'snap_dialog',
             params: {
-              type: DialogType.alert,
+              type: DialogType.Alert,
               fields: {
                 title: invalidInput,
                 description: 'Bar',
@@ -242,7 +242,7 @@ describe('implementation', () => {
             context: { origin: 'foo' },
             method: 'snap_dialog',
             params: {
-              type: DialogType.alert,
+              type: DialogType.Alert,
               fields: {
                 title: 'Foo',
                 description: invalidInput,
@@ -273,7 +273,7 @@ describe('implementation', () => {
             context: { origin: 'foo' },
             method: 'snap_dialog',
             params: {
-              type: DialogType.alert,
+              type: DialogType.Alert,
               fields: {
                 title: 'Foo',
                 description: 'Bar',
@@ -295,7 +295,7 @@ describe('implementation', () => {
           context: { origin: 'foo' },
           method: 'snap_dialog',
           params: {
-            type: DialogType.prompt,
+            type: DialogType.Prompt,
             fields: {
               title: 'Foo',
               description: 'Bar',
