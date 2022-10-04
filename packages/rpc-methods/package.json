@@ -31,7 +31,8 @@
     "@metamask/snap-utils": "^0.21.0",
     "@metamask/types": "^1.1.0",
     "@metamask/utils": "^3.1.0",
-    "eth-rpc-errors": "^4.0.2"
+    "eth-rpc-errors": "^4.0.2",
+    "superstruct": "^0.16.5"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.0.3",

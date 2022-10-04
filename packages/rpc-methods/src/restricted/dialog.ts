@@ -4,8 +4,24 @@ import {
   RestrictedMethodOptions,
   ValidPermissionSpecification,
 } from '@metamask/controllers';
-import { hasProperty, isObject, NonEmptyArray } from '@metamask/utils';
+import { NonEmptyArray } from '@metamask/utils';
+import { assertExhaustive } from '@metamask/snap-utils';
 import { ethErrors } from 'eth-rpc-errors';
+import {
+  create,
+  enums,
+  Infer,
+  literal,
+  object,
+  omit,
+  optional,
+  size,
+  string,
+  Struct,
+  StructError,
+  type,
+  union,
+} from 'superstruct';
 
 const methodName = 'snap_dialog';
 
@@ -15,55 +31,39 @@ export enum DialogType {
   Prompt = 'Prompt',
 }
 
-export type AlertFields = {
-  /**
-   * The dialog title, no greater than 40 characters long.
-   */
-  title: string;
+const BaseFieldsStruct = object({
+  title: size(string(), 1, 40),
+  description: optional(size(string(), 1, 140)),
+  textAreaContent: optional(size(string(), 1, 1800)),
+});
 
-  /**
-   * A description, displayed with the title, no greater than 140 characters
-   * long.
-   */
-  description?: string;
+const PromptFieldsStruct = omit(BaseFieldsStruct, ['textAreaContent']);
 
-  /**
-   * Free-from text content, no greater than 1800 characters long.
-   */
-  textAreaContent?: string;
-};
+/**
+ * @property title - The alert title, no greater than 40 characters long.
+ * @property description - A description, displayed with the title, no greater
+ * than 140 characters long.
+ * @property textAreaContent - Free-from text content, no greater than 1800
+ * characters long.
+ */
+export type AlertFields = Infer<typeof BaseFieldsStruct>;
 
-export type ConfirmationFields = {
-  /**
-   * A question describing what the user is confirming, no greater than 40
-   * characters long.
-   */
-  title: string;
+/**
+ * @property title - A question describing what the user is confirming, no
+ * greater than 40 characters long.
+ * @property description - A description, displayed with the question, no
+ * greater than 140 characters long.
+ * @property textAreaContent - Free-from text content, no greater than 1800
+ * characters long.
+ */
+export type ConfirmationFields = Infer<typeof BaseFieldsStruct>;
 
-  /**
-   * A description, displayed with the question, no greater than 140 characters
-   * long.
-   */
-  description?: string;
-
-  /**
-   * Free-from text content, no greater than 1800 characters long.
-   */
-  textAreaContent?: string;
-};
-
-export type PromptFields = {
-  /**
-   * The prompt title, no greater than 40 characters long.
-   */
-  title: string;
-
-  /**
-   * A description, displayed with the prompt, no greater than 140 characters
-   * long.
-   */
-  description?: string;
-};
+/**
+ * @property title - The prompt title, no greater than 40 characters long.
+ * @property description - A description, displayed with the prompt, no greater
+ * than 140 characters long.
+ */
+export type PromptFields = Infer<typeof PromptFieldsStruct>;
 
 export type DialogFields = AlertFields | ConfirmationFields | PromptFields;
 
@@ -102,8 +102,10 @@ type DialogSpecification = ValidPermissionSpecification<{
  * - A prompt, for inputting some information.
  *
  * @param options - The specification builder options.
- * @param options.allowedCaveats - The optional allowed caveats for the permission.
- * @param options.methodHooks - The RPC method hooks needed by the method implementation.
+ * @param options.allowedCaveats - The optional allowed caveats for the
+ * permission.
+ * @param options.methodHooks - The RPC method hooks needed by the method
+ * implementation.
  * @returns The specification for the `snap_dialog` permission.
  */
 const specificationBuilder: PermissionSpecificationBuilder<
@@ -130,33 +132,43 @@ export const dialogBuilder = Object.freeze({
   },
 } as const);
 
-type AlertParameters = {
-  type: DialogType.Alert;
-  fields: AlertFields;
-};
+// Note: We use `type` here instead of `object` because `type` does not validate
+// the keys of the object, which is what we want.
+const BaseParamsStruct = type({
+  type: enums([DialogType.Alert, DialogType.Confirmation, DialogType.Prompt]),
+});
 
-type ConfirmationParameters = {
-  type: DialogType.Confirmation;
-  fields: ConfirmationFields;
-};
+const AlertParametersStruct = object({
+  type: literal(DialogType.Alert),
+  fields: BaseFieldsStruct,
+});
 
-type PromptParameters = {
-  type: DialogType.Prompt;
-  fields: PromptFields;
-};
+const ConfirmationParametersStruct = object({
+  type: literal(DialogType.Confirmation),
+  fields: BaseFieldsStruct,
+});
 
-export type DialogParameters =
-  | AlertParameters
-  | ConfirmationParameters
-  | PromptParameters;
+const PromptParametersStruct = object({
+  type: literal(DialogType.Prompt),
+  fields: PromptFieldsStruct,
+});
+
+const DialogParametersStruct = union([
+  AlertParametersStruct,
+  ConfirmationParametersStruct,
+  PromptParametersStruct,
+]);
+
+export type DialogParameters = Infer<typeof DialogParametersStruct>;
 
 /**
  * Builds the method implementation for `snap_dialog`.
  *
  * @param hooks - The RPC method hooks.
- * @param hooks.showDialog - A function that shows the specified dialog in the MetaMask UI
- * and returns the appropriate value for the dialog type.
- * @returns The method implementation which return value depends on the dialog type, valid return types are: string, boolean, null.
+ * @param hooks.showDialog - A function that shows the specified dialog in the
+ * MetaMask UI and returns the appropriate value for the dialog type.
+ * @returns The method implementation which return value depends on the dialog
+ * type, valid return types are: string, boolean, null.
  */
 export function getDialogImplementation({ showDialog }: DialogMethodHooks) {
   return async function dialogImplementation(
@@ -167,90 +179,83 @@ export function getDialogImplementation({ showDialog }: DialogMethodHooks) {
       context: { origin },
     } = args;
 
-    const { type, fields } = getValidatedParams(params);
-    return showDialog(origin, type, fields);
+    const validatedType = getValidatedType(params);
+    switch (validatedType) {
+      case DialogType.Alert: {
+        const { fields } = getValidatedParams(params, AlertParametersStruct);
+        return showDialog(origin, validatedType, fields);
+      }
+
+      case DialogType.Confirmation: {
+        const { fields } = getValidatedParams(
+          params,
+          ConfirmationParametersStruct,
+        );
+        return showDialog(origin, validatedType, fields);
+      }
+
+      case DialogType.Prompt: {
+        const { fields } = getValidatedParams(params, PromptParametersStruct);
+        return showDialog(origin, validatedType, fields);
+      }
+
+      /* istanbul ignore next */
+      default:
+        return assertExhaustive(validatedType);
+    }
   };
 }
 
-// TODO(rekmarks): Use an OpenRPC schema and validator for this.
-// The validation logic is a little bit tortured and we do not reject extraneous
-// properties, even though we should.
+/**
+ * Get the validated type of the dialog parameters. Throws an error if the type
+ * is invalid.
+ *
+ * @param params - The parameters to validate.
+ * @returns The validated type of the dialog parameters.
+ */
+function getValidatedType(params: unknown): DialogType {
+  try {
+    return create(params, BaseParamsStruct).type;
+  } catch (error) {
+    throw ethErrors.rpc.invalidParams({
+      message: `The "type" property must be one of: ${Object.values(
+        DialogType,
+      ).join(', ')}.`,
+    });
+  }
+}
+
 /**
  * Validates the confirm method `params` and returns them cast to the correct
  * type. Throws if validation fails.
  *
  * @param params - The unvalidated params object from the method request.
+ * @param struct - The struct to validate the params against.
  * @returns The validated confirm method parameter object.
  */
-function getValidatedParams(params: unknown): DialogParameters {
-  if (
-    !isObject(params) ||
-    !isDialogType(params.type) ||
-    !isObject(params.fields)
-  ) {
-    throw ethErrors.rpc.invalidParams({
-      message:
-        'Must specify object parameter of the form `{ type: DialogType, fields: DialogFields }`.',
-    });
-  }
+function getValidatedParams(
+  params: unknown,
+  struct: Struct<any>,
+): DialogParameters {
+  try {
+    return create(params, struct);
+  } catch (error) {
+    if (error instanceof StructError) {
+      const { key, type: errorType } = error;
 
-  const {
-    type: dialogType,
-    fields: { title, description, textAreaContent },
-  } = params;
+      if (key === 'textAreaContent' && errorType === 'never') {
+        throw ethErrors.rpc.invalidParams({
+          message:
+            'Invalid params: Prompts may not specify a "textAreaContent" field.',
+        });
+      }
 
-  if (!title || typeof title !== 'string' || title.length > 40) {
-    throw ethErrors.rpc.invalidParams({
-      message:
-        'Must specify a non-empty string "title" less than 40 characters long.',
-    });
-  }
-
-  const validPromptFields: PromptFields = { title };
-
-  if (description) {
-    if (typeof description !== 'string' || description.length > 140) {
       throw ethErrors.rpc.invalidParams({
-        message:
-          '"description" must be a string no more than 140 characters long if specified.',
+        message: `Invalid params: ${error.message}.`,
       });
     }
-    validPromptFields.description = description;
+
+    /* istanbul ignore next */
+    throw ethErrors.rpc.internal();
   }
-
-  if (dialogType === DialogType.Prompt) {
-    if (textAreaContent) {
-      throw ethErrors.rpc.invalidParams({
-        message: 'Prompts may not specify a "textAreaContent" field.',
-      });
-    }
-    return { type: dialogType, fields: validPromptFields };
-  }
-
-  const validFields: AlertFields | ConfirmationFields = validPromptFields;
-
-  if (textAreaContent) {
-    if (typeof textAreaContent !== 'string' || textAreaContent.length > 1800) {
-      throw ethErrors.rpc.invalidParams({
-        message:
-          '"textAreaContent" must be a string no more than 1800 characters long if specified.',
-      });
-    }
-    validFields.textAreaContent = textAreaContent;
-  }
-
-  return {
-    type: dialogType,
-    fields: validFields,
-  };
-}
-
-/**
- * Type guard for {@link DialogType}.
- *
- * @param value - The string to test.
- * @returns Whether the given string is a valid dialog type.
- */
-function isDialogType(value: unknown): value is DialogType {
-  return typeof value === 'string' && hasProperty(DialogType, value);
 }

@@ -120,81 +120,79 @@ describe('implementation', () => {
   });
 
   describe('validation', () => {
-    it('ignores unrecognized dialog fields', async () => {
+    it.each([
+      undefined,
+      null,
+      false,
+      '',
+      'abc',
+      2,
+      [],
+      {},
+      new (class {})(),
+      new Array(41).fill('a').join(''),
+    ])('rejects invalid parameter object', async (value) => {
       const hooks = getMockDialogHooks();
       const implementation = getDialogImplementation(hooks);
 
-      await implementation({
-        context: { origin: 'foo' },
-        method: 'snap_dialog',
-        params: {
-          type: DialogType.Alert,
-          fields: {
-            title: 'Foo',
-            bar: 'baz',
-          } as any,
-        },
-      });
-
-      expect(hooks.showDialog).toHaveBeenCalledTimes(1);
-      expect(hooks.showDialog).toHaveBeenCalledWith('foo', DialogType.Alert, {
-        title: 'Foo',
-      });
+      await expect(
+        implementation({
+          context: { origin: 'foo' },
+          method: 'snap_dialog',
+          params: value as any,
+        }),
+      ).rejects.toThrow(
+        'The "type" property must be one of: Alert, Confirmation, Prompt.',
+      );
     });
 
-    it('rejects invalid parameter object', async () => {
-      const hooks = getMockDialogHooks();
-      const implementation = getDialogImplementation(hooks);
+    it.each([{ type: false }, { type: '' }, { type: 'foo' }])(
+      'rejects invalid types',
+      async (value) => {
+        const hooks = getMockDialogHooks();
+        const implementation = getDialogImplementation(hooks);
 
-      for (const invalidInput of [
-        undefined,
-        null,
-        false,
-        '',
-        'abc',
-        2,
-        [],
-        {},
-        new (class {})(),
-        new Array(41).fill('a').join(''),
-        { type: false },
-        { type: '' },
-        { type: 'foo' },
-        { type: DialogType.Alert },
-        { type: DialogType.Alert, fields: null },
-        { type: DialogType.Alert, fields: false },
-        { type: DialogType.Alert, fields: '' },
-        { type: DialogType.Alert, fields: 'abc' },
-        { type: DialogType.Alert, fields: 2 },
-        { type: DialogType.Alert, fields: [] },
-      ]) {
         await expect(
           implementation({
             context: { origin: 'foo' },
             method: 'snap_dialog',
-            params: invalidInput as any,
+            params: value as any,
           }),
         ).rejects.toThrow(
-          'Must specify object parameter of the form `{ type: DialogType, fields: DialogFields }`.',
+          'The "type" property must be one of: Alert, Confirmation, Prompt.',
         );
-      }
-    });
+      },
+    );
 
-    it('rejects invalid titles', async () => {
+    it.each([
+      { type: DialogType.Alert },
+      { type: DialogType.Alert, fields: null },
+      { type: DialogType.Alert, fields: false },
+      { type: DialogType.Alert, fields: '' },
+      { type: DialogType.Alert, fields: 'abc' },
+      { type: DialogType.Alert, fields: 2 },
+      { type: DialogType.Alert, fields: [] },
+    ])('rejects invalid fields', async (value) => {
       const hooks = getMockDialogHooks();
       const implementation = getDialogImplementation(hooks);
 
-      for (const invalidInput of [
-        undefined,
-        null,
-        false,
-        '',
-        2,
-        [],
-        {},
-        new (class {})(),
-        new Array(41).fill('a').join(''),
-      ]) {
+      await expect(
+        implementation({
+          context: { origin: 'foo' },
+          method: 'snap_dialog',
+          params: value as any,
+        }),
+      ).rejects.toThrow(
+        /Invalid params: At path: .* -- Expected .*, but received: .*\./u,
+      );
+    });
+
+    it.each([undefined, null, false, 2, [], {}, new (class {})()])(
+      'rejects invalid titles',
+      async (value) => {
+        const hooks = getMockDialogHooks();
+        const implementation = getDialogImplementation(hooks);
+
         await expect(
           implementation({
             context: { origin: 'foo' },
@@ -202,30 +200,46 @@ describe('implementation', () => {
             params: {
               type: DialogType.Alert,
               fields: {
-                title: invalidInput,
+                title: value,
                 description: 'Bar',
                 textAreaContent: 'Baz',
               } as any,
             },
           }),
         ).rejects.toThrow(
-          'Must specify a non-empty string "title" less than 40 characters long.',
+          /Invalid params: At path: fields.title -- Expected a string, but received: .*\./u,
         );
-      }
-    });
+      },
+    );
 
-    it('rejects invalid descriptions', async () => {
+    it('rejects titles with invalid length', async () => {
       const hooks = getMockDialogHooks();
       const implementation = getDialogImplementation(hooks);
 
-      for (const invalidInput of [
-        true,
-        2,
-        [],
-        {},
-        new (class {})(),
-        new Array(141).fill('a').join(''),
-      ]) {
+      await expect(
+        implementation({
+          context: { origin: 'foo' },
+          method: 'snap_dialog',
+          params: {
+            type: DialogType.Alert,
+            fields: {
+              title: '',
+              description: 'Bar',
+              textAreaContent: 'Baz',
+            },
+          },
+        }),
+      ).rejects.toThrow(
+        'Invalid params: At path: fields.title -- Expected a string with a length between `1` and `40` but received one with a length of `0`.',
+      );
+    });
+
+    it.each([true, 2, [], {}, new (class {})()])(
+      'rejects invalid descriptions',
+      async (value) => {
+        const hooks = getMockDialogHooks();
+        const implementation = getDialogImplementation(hooks);
+
         await expect(
           implementation({
             context: { origin: 'foo' },
@@ -234,29 +248,45 @@ describe('implementation', () => {
               type: DialogType.Alert,
               fields: {
                 title: 'Foo',
-                description: invalidInput,
+                description: value,
                 textAreaContent: 'Baz',
               } as any,
             },
           }),
         ).rejects.toThrow(
-          '"description" must be a string no more than 140 characters long if specified.',
+          /Invalid params: At path: fields.description -- Expected a string, but received: .*\./u,
         );
-      }
-    });
+      },
+    );
 
-    it('rejects invalid text area contents', async () => {
+    it('rejects too long descriptions', async () => {
       const hooks = getMockDialogHooks();
       const implementation = getDialogImplementation(hooks);
 
-      for (const invalidInput of [
-        true,
-        2,
-        [],
-        {},
-        new (class {})(),
-        new Array(1801).fill('a').join(''),
-      ]) {
+      await expect(
+        implementation({
+          context: { origin: 'foo' },
+          method: 'snap_dialog',
+          params: {
+            type: DialogType.Alert,
+            fields: {
+              title: 'Foo',
+              description: 'a'.repeat(141),
+              textAreaContent: 'Baz',
+            } as any,
+          },
+        }),
+      ).rejects.toThrow(
+        'Invalid params: At path: fields.description -- Expected a string with a length between `1` and `140` but received one with a length of `141`.',
+      );
+    });
+
+    it.each([true, 2, [], {}, new (class {})()])(
+      'rejects invalid text area contents',
+      async (value) => {
+        const hooks = getMockDialogHooks();
+        const implementation = getDialogImplementation(hooks);
+
         await expect(
           implementation({
             context: { origin: 'foo' },
@@ -266,14 +296,36 @@ describe('implementation', () => {
               fields: {
                 title: 'Foo',
                 description: 'Bar',
-                textAreaContent: invalidInput,
+                textAreaContent: value,
               } as any,
             },
           }),
         ).rejects.toThrow(
-          '"textAreaContent" must be a string no more than 1800 characters long if specified.',
+          /Invalid params: At path: fields\.textAreaContent -- Expected a string, but received: .*\./u,
         );
-      }
+      },
+    );
+
+    it('rejects too long text area contents', async () => {
+      const hooks = getMockDialogHooks();
+      const implementation = getDialogImplementation(hooks);
+
+      await expect(
+        implementation({
+          context: { origin: 'foo' },
+          method: 'snap_dialog',
+          params: {
+            type: DialogType.Alert,
+            fields: {
+              title: 'Foo',
+              description: 'Bar',
+              textAreaContent: 'a'.repeat(1801),
+            } as any,
+          },
+        }),
+      ).rejects.toThrow(
+        'Invalid params: At path: fields.textAreaContent -- Expected a string with a length between `1` and `1800` but received one with a length of `1801`.',
+      );
     });
 
     it('rejects textAreaContent field for prompts', async () => {
@@ -292,7 +344,9 @@ describe('implementation', () => {
             } as any,
           },
         }),
-      ).rejects.toThrow('Prompts may not specify a "textAreaContent" field.');
+      ).rejects.toThrow(
+        'Invalid params: Prompts may not specify a "textAreaContent" field.',
+      );
     });
   });
 });
