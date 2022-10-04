@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.22.0]
-### Uncategorized
-- Merge test utils and simplify controller tests ([#782](https://github.com/MetaMask/snaps-skunkworks/pull/782))
+### Changed
+- No changes this release.
 
 ## [0.21.0]
 ### Added

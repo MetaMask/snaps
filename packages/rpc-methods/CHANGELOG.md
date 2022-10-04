@@ -7,12 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.22.0]
-### Uncategorized
+### Added
 - Add `snap_dialog` method ([#799](https://github.com/MetaMask/snaps-skunkworks/pull/799))
-- Bump `@metamask/utils` to `3.1.0` ([#781](https://github.com/MetaMask/snaps-skunkworks/pull/781))
-- Add `MultiChainProvider` and `MultiChainController` ([#700](https://github.com/MetaMask/snaps-skunkworks/pull/700))
-- Add keyring endowment permission ([#777](https://github.com/MetaMask/snaps-skunkworks/pull/777))
-- Bump Jest to the latest version in all packages ([#750](https://github.com/MetaMask/snaps-skunkworks/pull/750))
 
 ## [0.21.0]
 ### Added

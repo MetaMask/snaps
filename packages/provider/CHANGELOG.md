@@ -7,9 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.22.0]
-### Uncategorized
-- Bump `@metamask/utils` to `3.1.0` ([#781](https://github.com/MetaMask/snaps-skunkworks/pull/781))
-- Add `MultiChainProvider` and `MultiChainController` ([#700](https://github.com/MetaMask/snaps-skunkworks/pull/700))
+### Added
+- Initial release ([#700](https://github.com/MetaMask/snaps-skunkworks/pull/700))
 
 [Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.22.0...HEAD
 [0.22.0]: https://github.com/MetaMask/snaps-skunkworks/releases/tag/v0.22.0

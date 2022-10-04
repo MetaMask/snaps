@@ -7,9 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.22.0]
-### Uncategorized
-- Add Snap Keyring support to execution environment ([#728](https://github.com/MetaMask/snaps-skunkworks/pull/728))
-- Bump Jest to the latest version in all packages ([#750](https://github.com/MetaMask/snaps-skunkworks/pull/750))
+### Added
+- Added `SnapKeyring` types ([#728](https://github.com/MetaMask/snaps-skunkworks/pull/728))
 
 ## [0.21.0]
 ### Removed

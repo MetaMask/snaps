@@ -7,14 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.22.0]
-### Uncategorized
-- Bump `@metamask/utils` to `3.1.0` ([#781](https://github.com/MetaMask/snaps-skunkworks/pull/781))
-- Add `MultiChainProvider` and `MultiChainController` ([#700](https://github.com/MetaMask/snaps-skunkworks/pull/700))
-- Add support for keyring session tracking ([#775](https://github.com/MetaMask/snaps-skunkworks/pull/775))
-- Add keyring endowment permission ([#777](https://github.com/MetaMask/snaps-skunkworks/pull/777))
-- Add matching logic for keyring snaps ([#740](https://github.com/MetaMask/snaps-skunkworks/pull/740))
-- Merge test utils and simplify controller tests ([#782](https://github.com/MetaMask/snaps-skunkworks/pull/782))
-- Bump Jest to the latest version in all packages ([#750](https://github.com/MetaMask/snaps-skunkworks/pull/750))
+### Added
+- Add Snap Keyring support ([#700](https://github.com/MetaMask/snaps-skunkworks/pull/700), [#775](https://github.com/MetaMask/snaps-skunkworks/pull/775), [#777](https://github.com/MetaMask/snaps-skunkworks/pull/777), [#740](https://github.com/MetaMask/snaps-skunkworks/pull/740))
+  - Add `endowment:keyring` permission
+  - Add `MultiChainController`
+
+### Changed
+- **BREAKING:** Renamed `SnapController:getSnaps` to `SnapController:getPermittedSnaps` [#775](https://github.com/MetaMask/snaps-skunkworks/pull/775)
 
 ## [0.21.0]
 ### Changed

@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.22.0]
-### Uncategorized
-- Add keyring endowment permission ([#777](https://github.com/MetaMask/snaps-skunkworks/pull/777))
+### Changed
+- No changes this release.
 
 ## [0.21.0]
 ### Added

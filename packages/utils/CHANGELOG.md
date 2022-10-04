@@ -7,13 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.22.0]
-### Uncategorized
-- Bump `@metamask/utils` to `3.1.0` ([#781](https://github.com/MetaMask/snaps-skunkworks/pull/781))
-- Add `MultiChainProvider` and `MultiChainController` ([#700](https://github.com/MetaMask/snaps-skunkworks/pull/700))
-- Add keyring endowment permission ([#777](https://github.com/MetaMask/snaps-skunkworks/pull/777))
-- Add Snap Keyring support to execution environment ([#728](https://github.com/MetaMask/snaps-skunkworks/pull/728))
-- Merge test utils and simplify controller tests ([#782](https://github.com/MetaMask/snaps-skunkworks/pull/782))
-- Bump Jest to the latest version in all packages ([#750](https://github.com/MetaMask/snaps-skunkworks/pull/750))
+### Added
+- Add functionality required for Snap Keyring support ([#700](https://github.com/MetaMask/snaps-skunkworks/pull/700), [#777](https://github.com/MetaMask/snaps-skunkworks/pull/777))
 
 ## [0.21.0]
 ### Changed

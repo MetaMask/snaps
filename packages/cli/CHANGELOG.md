@@ -7,10 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.22.0]
-### Uncategorized
-- Bump `@metamask/utils` to `3.1.0` ([#781](https://github.com/MetaMask/snaps-skunkworks/pull/781))
-- Replace `patch-package` with Yarn 3 patch ([#801](https://github.com/MetaMask/snaps-skunkworks/pull/801))
-- Bump Jest to the latest version in all packages ([#750](https://github.com/MetaMask/snaps-skunkworks/pull/750))
+### Changed
+- No changes this release.
 
 ## [0.21.0]
 ### Changed
