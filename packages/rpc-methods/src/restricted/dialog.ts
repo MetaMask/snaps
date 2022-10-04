@@ -5,7 +5,6 @@ import {
   ValidPermissionSpecification,
 } from '@metamask/controllers';
 import { NonEmptyArray } from '@metamask/utils';
-import { assertExhaustive } from '@metamask/snap-utils';
 import { ethErrors } from 'eth-rpc-errors';
 import {
   create,
@@ -161,6 +160,12 @@ const DialogParametersStruct = union([
 
 export type DialogParameters = Infer<typeof DialogParametersStruct>;
 
+const structs = {
+  [DialogType.Alert]: AlertParametersStruct,
+  [DialogType.Confirmation]: ConfirmationParametersStruct,
+  [DialogType.Prompt]: PromptParametersStruct,
+};
+
 /**
  * Builds the method implementation for `snap_dialog`.
  *
@@ -180,29 +185,9 @@ export function getDialogImplementation({ showDialog }: DialogMethodHooks) {
     } = args;
 
     const validatedType = getValidatedType(params);
-    switch (validatedType) {
-      case DialogType.Alert: {
-        const { fields } = getValidatedParams(params, AlertParametersStruct);
-        return showDialog(origin, validatedType, fields);
-      }
+    const { fields } = getValidatedParams(params, structs[validatedType]);
 
-      case DialogType.Confirmation: {
-        const { fields } = getValidatedParams(
-          params,
-          ConfirmationParametersStruct,
-        );
-        return showDialog(origin, validatedType, fields);
-      }
-
-      case DialogType.Prompt: {
-        const { fields } = getValidatedParams(params, PromptParametersStruct);
-        return showDialog(origin, validatedType, fields);
-      }
-
-      /* istanbul ignore next */
-      default:
-        return assertExhaustive(validatedType);
-    }
+    return showDialog(origin, validatedType, fields);
   };
 }
 
