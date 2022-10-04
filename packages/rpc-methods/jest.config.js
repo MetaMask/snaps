@@ -7,10 +7,10 @@ module.exports = {
   coverageReporters: ['clover', 'json', 'lcov', 'text', 'json-summary'],
   coverageThreshold: {
     global: {
-      branches: 47.61,
+      branches: 46.77,
       functions: 55.84,
-      lines: 43.68,
-      statements: 43.52,
+      lines: 43.08,
+      statements: 42.93,
     },
   },
   moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'],

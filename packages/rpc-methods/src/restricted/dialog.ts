@@ -4,7 +4,6 @@ import {
   RestrictedMethodOptions,
   ValidPermissionSpecification,
 } from '@metamask/controllers';
-import { assertExhaustive } from '@metamask/snap-utils';
 import { hasProperty, isObject, NonEmptyArray } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
@@ -68,33 +67,19 @@ export type PromptFields = {
 
 export type DialogFields = AlertFields | ConfirmationFields | PromptFields;
 
-type ShowAlert = (snapId: string, fields: AlertFields) => Promise<null>;
-type ShowConfirmation = (
+type ShowDialog = (
   snapId: string,
-  fields: ConfirmationFields,
-) => Promise<boolean>;
-type ShowPrompt = (snapId: string, fields: PromptFields) => Promise<string>;
+  type: DialogType,
+  fields: DialogFields,
+) => Promise<null | boolean | string>;
 
 export type DialogMethodHooks = {
   /**
    * @param snapId - The ID of the Snap that created the alert.
-   * @param fields - The alert text fields.
+   * @param type - The dialog type.
+   * @param fields - The dialog fields.
    */
-  showAlert: ShowAlert;
-
-  /**
-   * @param snapId - The ID of the Snap that created the confirmation.
-   * @param fields - The confirmation text fields.
-   * @returns Whether the user accepted or rejected the confirmation.
-   */
-  showConfirmation: ShowConfirmation;
-
-  /**
-   * @param snapId - The ID of the Snap that created the prompt.
-   * @param fields - The prompt text fields.
-   * @returns The value the user entered in the prompt's input text field.
-   */
-  showPrompt: ShowPrompt;
+  showDialog: ShowDialog;
 };
 
 type DialogSpecificationBuilderOptions = {
@@ -141,9 +126,7 @@ export const dialogBuilder = Object.freeze({
   targetKey: methodName,
   specificationBuilder,
   methodHooks: {
-    showAlert: true,
-    showConfirmation: true,
-    showPrompt: true,
+    showDialog: true,
   },
 } as const);
 
@@ -171,20 +154,11 @@ export type DialogParameters =
  * Builds the method implementation for `snap_dialog`.
  *
  * @param hooks - The RPC method hooks.
- * @param hooks.showAlert - A function that shows an alert in the MetaMask UI
- * and returns when the user has closed the alert.
- * @param hooks.showConfirmation - A function that shows a dialog in the
- * MetaMask UI and returns a `boolean` that signals whether the user
- * approved or denied the confirmation.
- * @param hooks.showPrompt - A function that shows a prompt in the MetaMask UI
- * and returns the value the user entered into the prompt's text field.
- * @returns The method implementation which returns `true` if the user approved the confirmation, otherwise `false`.
+ * @param hooks.showDialog - A function that shows the specified dialog in the MetaMask UI
+ * and returns the appropriate value for the dialog type.
+ * @returns The method implementation which return value depends on the dialog type, valid return types are: string, boolean, null.
  */
-export function getDialogImplementation({
-  showAlert,
-  showConfirmation,
-  showPrompt,
-}: DialogMethodHooks) {
+export function getDialogImplementation({ showDialog }: DialogMethodHooks) {
   return async function dialogImplementation(
     args: RestrictedMethodOptions<DialogParameters>,
   ): Promise<boolean | null | string> {
@@ -194,20 +168,7 @@ export function getDialogImplementation({
     } = args;
 
     const { type, fields } = getValidatedParams(params);
-    switch (type) {
-      case DialogType.Alert:
-        return showAlert(origin, fields);
-
-      case DialogType.Confirmation:
-        return showConfirmation(origin, fields);
-
-      case DialogType.Prompt:
-        return showPrompt(origin, fields);
-
-      /* istanbul ignore next */
-      default:
-        return assertExhaustive(type);
-    }
+    return showDialog(origin, type, fields);
   };
 }
 

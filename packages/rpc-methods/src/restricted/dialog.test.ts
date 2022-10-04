@@ -12,9 +12,7 @@ describe('builder', () => {
       targetKey: 'snap_dialog',
       specificationBuilder: expect.any(Function),
       methodHooks: {
-        showAlert: true,
-        showConfirmation: true,
-        showPrompt: true,
+        showDialog: true,
       },
     });
   });
@@ -23,9 +21,7 @@ describe('builder', () => {
     expect(
       dialogBuilder.specificationBuilder({
         methodHooks: {
-          showAlert: jest.fn(),
-          showConfirmation: jest.fn(),
-          showPrompt: jest.fn(),
+          showDialog: jest.fn(),
         },
       }),
     ).toMatchObject({
@@ -40,9 +36,7 @@ describe('builder', () => {
 describe('implementation', () => {
   const getMockDialogHooks = () =>
     ({
-      showAlert: jest.fn().mockResolvedValue(null),
-      showConfirmation: jest.fn(),
-      showPrompt: jest.fn(),
+      showDialog: jest.fn(),
     } as DialogMethodHooks);
 
   describe('alerts', () => {
@@ -62,15 +56,12 @@ describe('implementation', () => {
         },
       });
 
-      expect(hooks.showAlert).toHaveBeenCalledTimes(1);
-      expect(hooks.showAlert).toHaveBeenCalledWith('foo', {
+      expect(hooks.showDialog).toHaveBeenCalledTimes(1);
+      expect(hooks.showDialog).toHaveBeenCalledWith('foo', DialogType.Alert, {
         title: 'Foo',
         description: 'Bar',
         textAreaContent: 'Baz',
       });
-
-      expect(hooks.showConfirmation).not.toHaveBeenCalled();
-      expect(hooks.showPrompt).not.toHaveBeenCalled();
     });
   });
 
@@ -91,15 +82,16 @@ describe('implementation', () => {
         },
       });
 
-      expect(hooks.showConfirmation).toHaveBeenCalledTimes(1);
-      expect(hooks.showConfirmation).toHaveBeenCalledWith('foo', {
-        title: 'Foo',
-        description: 'Bar',
-        textAreaContent: 'Baz',
-      });
-
-      expect(hooks.showAlert).not.toHaveBeenCalled();
-      expect(hooks.showPrompt).not.toHaveBeenCalled();
+      expect(hooks.showDialog).toHaveBeenCalledTimes(1);
+      expect(hooks.showDialog).toHaveBeenCalledWith(
+        'foo',
+        DialogType.Confirmation,
+        {
+          title: 'Foo',
+          description: 'Bar',
+          textAreaContent: 'Baz',
+        },
+      );
     });
   });
 
@@ -119,14 +111,11 @@ describe('implementation', () => {
         },
       });
 
-      expect(hooks.showPrompt).toHaveBeenCalledTimes(1);
-      expect(hooks.showPrompt).toHaveBeenCalledWith('foo', {
+      expect(hooks.showDialog).toHaveBeenCalledTimes(1);
+      expect(hooks.showDialog).toHaveBeenCalledWith('foo', DialogType.Prompt, {
         title: 'Foo',
         description: 'Bar',
       });
-
-      expect(hooks.showAlert).not.toHaveBeenCalled();
-      expect(hooks.showConfirmation).not.toHaveBeenCalled();
     });
   });
 
@@ -147,8 +136,8 @@ describe('implementation', () => {
         },
       });
 
-      expect(hooks.showAlert).toHaveBeenCalledTimes(1);
-      expect(hooks.showAlert).toHaveBeenCalledWith('foo', {
+      expect(hooks.showDialog).toHaveBeenCalledTimes(1);
+      expect(hooks.showDialog).toHaveBeenCalledWith('foo', DialogType.Alert, {
         title: 'Foo',
       });
     });
