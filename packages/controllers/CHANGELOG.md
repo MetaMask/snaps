@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.22.0]
+### Uncategorized
+- Bump `@metamask/utils` to `3.1.0` ([#781](https://github.com/MetaMask/snaps-skunkworks/pull/781))
+- Add `MultiChainProvider` and `MultiChainController` ([#700](https://github.com/MetaMask/snaps-skunkworks/pull/700))
+- Add support for keyring session tracking ([#775](https://github.com/MetaMask/snaps-skunkworks/pull/775))
+- Add keyring endowment permission ([#777](https://github.com/MetaMask/snaps-skunkworks/pull/777))
+- Add matching logic for keyring snaps ([#740](https://github.com/MetaMask/snaps-skunkworks/pull/740))
+- Merge test utils and simplify controller tests ([#782](https://github.com/MetaMask/snaps-skunkworks/pull/782))
+- Bump Jest to the latest version in all packages ([#750](https://github.com/MetaMask/snaps-skunkworks/pull/750))
+
 ## [0.21.0]
 ### Changed
 - **BREAKING:** Add changes to support blocking snaps by shasum ([#767](https://github.com/MetaMask/snaps-skunkworks/pull/767))
@@ -351,7 +361,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.21.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.22.0...HEAD
+[0.22.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.21.0...v0.22.0
 [0.21.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.20.0...v0.21.0
 [0.20.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.19.1...v0.20.0
 [0.19.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.19.0...v0.19.1
