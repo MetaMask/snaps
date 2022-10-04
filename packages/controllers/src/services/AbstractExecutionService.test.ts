@@ -92,7 +92,7 @@ describe('AbstractExecutionService', () => {
     streams.command.emit('data', {
       jsonrpc: '2.0',
       method: 'UnhandledError',
-      params: 2,
+      params: [2],
     });
 
     streams.command.emit('data', {

@@ -30,7 +30,7 @@
     "@metamask/key-tree": "^5.0.2",
     "@metamask/snap-utils": "^0.21.0",
     "@metamask/types": "^1.1.0",
-    "@metamask/utils": "^2.1.0",
+    "@metamask/utils": "^3.1.0",
     "eth-rpc-errors": "^4.0.2"
   },
   "devDependencies": {

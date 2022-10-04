@@ -1,4 +1,4 @@
-import { AssertionError } from '@metamask/snap-utils';
+import { AssertionError } from '@metamask/utils';
 import { createMachine, interpret, StateMachine } from '@xstate/fsm';
 import { InitEvent } from '@xstate/fsm/lib/types';
 import { forceStrict, validateMachine } from './fsm';

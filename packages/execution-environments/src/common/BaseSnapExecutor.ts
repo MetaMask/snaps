@@ -4,9 +4,13 @@ import { Duplex } from 'stream';
 import { MetaMaskInpageProvider } from '@metamask/providers';
 import { SnapProvider, SnapExports } from '@metamask/snap-types';
 import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
-import { isObject, isValidJson, JsonRpcNotification } from '@metamask/utils';
 import {
+  isObject,
+  isValidJson,
+  JsonRpcNotification,
   assert,
+} from '@metamask/utils';
+import {
   HandlerType,
   SNAP_EXPORT_NAMES,
   SnapExportsParameters,
@@ -165,7 +169,7 @@ export class BaseSnapExecutor {
 
   protected notify(
     requestObject: Omit<
-      JsonRpcNotification<Record<string, unknown> | unknown[]>,
+      JsonRpcNotification<Record<string, unknown> | unknown[] | undefined>,
       'jsonrpc'
     >,
   ) {

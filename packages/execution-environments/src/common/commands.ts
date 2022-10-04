@@ -1,5 +1,5 @@
-import { JsonRpcRequest } from '@metamask/utils';
-import { assertExhaustive, HandlerType } from '@metamask/snap-utils';
+import { JsonRpcRequest, assertExhaustive } from '@metamask/utils';
+import { HandlerType } from '@metamask/snap-utils';
 import {
   ExecuteSnap,
   Origin,

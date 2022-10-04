@@ -16,8 +16,6 @@ import {
   ValidPermission,
 } from '@metamask/controllers';
 import {
-  assert,
-  assertExhaustive,
   DEFAULT_ENDOWMENTS,
   DEFAULT_REQUESTED_SNAP_VERSION,
   getSnapPermissionName,
@@ -60,6 +58,8 @@ import {
   isNonEmptyArray,
   Json,
   timeSince,
+  assert,
+  assertExhaustive,
 } from '@metamask/utils';
 import { createMachine, interpret, StateMachine } from '@xstate/fsm';
 import { ethErrors, serializeError } from 'eth-rpc-errors';

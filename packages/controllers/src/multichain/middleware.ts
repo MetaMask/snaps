@@ -3,13 +3,13 @@ import {
   JsonRpcMiddleware,
   JsonRpcRequest,
 } from 'json-rpc-engine';
+import { assert } from '@metamask/utils';
 import {
   assertIsConnectArguments,
   assertIsMultiChainRequest,
   ConnectArguments,
   Session,
   MultiChainRequest,
-  assert,
 } from '@metamask/snap-utils';
 
 /**

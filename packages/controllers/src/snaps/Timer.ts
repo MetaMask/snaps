@@ -1,4 +1,4 @@
-import { assert } from '@metamask/snap-utils';
+import { assert } from '@metamask/utils';
 
 export type TimerStatus = 'stopped' | 'paused' | 'running' | 'finished';
 
