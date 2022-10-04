@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.22.0]
 ### Added
-- Add `snap_dialog` method ([#799](https://github.com/MetaMask/snaps-skunkworks/pull/799))
+- Add `snap_dialog` method and deprecate `snap_confirm` ([#799](https://github.com/MetaMask/snaps-skunkworks/pull/799))
 
 ## [0.21.0]
 ### Added
