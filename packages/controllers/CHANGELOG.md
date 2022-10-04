@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.22.0]
+### Added
+- Add Snap Keyring support ([#700](https://github.com/MetaMask/snaps-skunkworks/pull/700), [#775](https://github.com/MetaMask/snaps-skunkworks/pull/775), [#777](https://github.com/MetaMask/snaps-skunkworks/pull/777), [#740](https://github.com/MetaMask/snaps-skunkworks/pull/740))
+  - Add `endowment:keyring` permission
+  - Add `MultiChainController`
+
+### Changed
+- **BREAKING:** Renamed `SnapController:getSnaps` to `SnapController:getPermittedSnaps` [#775](https://github.com/MetaMask/snaps-skunkworks/pull/775)
+
 ## [0.21.0]
 ### Changed
 - **BREAKING:** Add changes to support blocking snaps by shasum ([#767](https://github.com/MetaMask/snaps-skunkworks/pull/767))
@@ -351,7 +360,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.21.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.22.0...HEAD
+[0.22.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.21.0...v0.22.0
 [0.21.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.20.0...v0.21.0
 [0.20.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.19.1...v0.20.0
 [0.19.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.19.0...v0.19.1
