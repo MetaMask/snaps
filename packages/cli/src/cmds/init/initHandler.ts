@@ -1,7 +1,5 @@
-import { promises as fs, extra as fsExtra } from 'fs';
-import os from 'os';
+import { promises as fs } from 'fs';
 import pathUtils from 'path';
-import { exec } from 'child_process';
 import {
   NpmSnapFileNames,
   SnapManifest,
@@ -10,22 +8,15 @@ import {
   readJsonFile,
   satisfiesVersionRange,
 } from '@metamask/snap-utils';
-import mkdirp from 'mkdirp';
 import { YargsArgs } from '../../types/yargs';
-import { closePrompt, CONFIG_FILE, logError, SnapConfig } from '../../utils';
-import { TemplateType } from '../../builders';
-import template from './init-template.json';
+import { closePrompt } from '../../utils';
 import {
-  asyncPackageInit,
-  buildSnapManifest,
-  isTemplateTypescript,
+  cloneTemplate,
+  createTemporaryDirectory,
   prepareWorkingDirectory,
 } from './initUtils';
 
 const SATISFIED_VERSION = '>=16';
-
-const TEMPLATE_GIT_URL =
-  'https://github.com/MetaMask/template-snap-monorepo.git';
 
 /**
  * Creates a new snap package, based on one of the provided templates. This
@@ -38,6 +29,8 @@ const TEMPLATE_GIT_URL =
  * @throws If initialization of the snap package failed.
  */
 export async function initHandler(argv: YargsArgs) {
+  const { $0: directory } = argv;
+
   const isVersionSupported = satisfiesVersionRange(
     process.version,
     SATISFIED_VERSION,
@@ -49,34 +42,18 @@ export async function initHandler(argv: YargsArgs) {
     );
   }
 
-  await prepareWorkingDirectory();
+  const directoryToUse = directory
+    ? pathUtils.join(process.cwd(), directory)
+    : process.cwd();
 
-  try {
-    // create temporary folder to clone template;
-    const tmpDirPrefix = 'snap-template-tmp';
-    const tmpDir = await fs.mkdtemp(pathUtils.join(os.tmpdir(), tmpDirPrefix));
-    await mkdirp(tmpDir);
+  await prepareWorkingDirectory(directoryToUse);
 
-    exec(
-      `git clone ${TEMPLATE_GIT_URL}`,
-      {
-        cwd: tmpDir,
-      },
-      (err, stdout, stderr) => {
-        if (err) {
-          throw err;
-        }
-        console.log(stdout);
-        console.error(stderr);
-      },
-    );
-  } catch (err) {
-    logError(`Init Error: Failed to create temporary directory.`, err);
-    throw err;
-  }
+  const temporaryDirectory = await createTemporaryDirectory();
+
+  await cloneTemplate(temporaryDirectory);
 
   closePrompt();
-  return { ...argv, ...newArgs };
+  return { ...argv };
 }
 
 /**
