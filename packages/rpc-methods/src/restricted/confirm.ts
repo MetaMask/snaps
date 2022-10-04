@@ -13,20 +13,33 @@ type ConfirmFields = {
   /**
    * A prompt, phrased as a question, no greater than 40 characters long.
    */
-  prompt: string;
+  title: string;
 
   /**
    * A description, displayed with the prompt, no greater than 140 characters
    * long.
    */
-  description: string;
+  description?: string;
 
   /**
    * Free-from text content, no greater than 1800 characters long.
    */
-  textAreaContent: string;
+  textAreaContent?: string;
 };
 
+/**
+ * For backwards compatibility.
+ */
+type LegacyConfirmFields = Omit<ConfirmFields, 'title'> & {
+  /**
+   * A prompt, phrased as a question, no greater than 40 characters long.
+   */
+  prompt: string;
+};
+
+/**
+ * @deprecated Use `snap_dialog` instead.
+ */
 export type ConfirmMethodHooks = {
   /**
    * @param snapId - The ID of the Snap that created the confirmation.
@@ -73,6 +86,9 @@ const specificationBuilder: PermissionSpecificationBuilder<
   };
 };
 
+/**
+ * @deprecated Use `snap_dialog` instead.
+ */
 export const confirmBuilder = Object.freeze({
   targetKey: methodName,
   specificationBuilder,
@@ -90,8 +106,10 @@ export const confirmBuilder = Object.freeze({
  */
 function getConfirmImplementation({ showConfirmation }: ConfirmMethodHooks) {
   return async function confirmImplementation(
-    args: RestrictedMethodOptions<[ConfirmFields]>,
+    args: RestrictedMethodOptions<[LegacyConfirmFields]>,
   ): Promise<boolean> {
+    console.warn('snap_confirm is deprecated. Use snap_dialog instead.');
+
     const {
       params,
       context: { origin },
@@ -115,7 +133,8 @@ function getValidatedParams(params: unknown): ConfirmFields {
     });
   }
 
-  const { prompt, description, textAreaContent } = params[0];
+  const { prompt, ...extraFields } = params[0];
+  const { description, textAreaContent } = extraFields;
 
   if (!prompt || typeof prompt !== 'string' || prompt.length > 40) {
     throw ethErrors.rpc.invalidParams({
@@ -144,5 +163,5 @@ function getValidatedParams(params: unknown): ConfirmFields {
     });
   }
 
-  return params[0] as ConfirmFields;
+  return { title: prompt, ...extraFields };
 }
