@@ -16,6 +16,9 @@
     }
   },
   "main": "dist/index.js",
+  "browser": {
+    "./dist/index": "./dist/index.browser.js"
+  },
   "typesVersions": {
     "*": {
       "*": [
