@@ -5,6 +5,7 @@ module.exports = {
   collectCoverageFrom: ['./src/**/*.ts'],
   coveragePathIgnorePatterns: [
     './src/index.ts',
+    './src/index.browser.ts',
     './src/test-utils',
     './src/json-schemas',
     // Jest currently doesn't collect coverage for child processes.
@@ -17,7 +18,7 @@ module.exports = {
       branches: 86.05,
       functions: 97,
       lines: 96.68,
-      statements: 96.75,
+      statements: 96.76,
     },
   },
   moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'],

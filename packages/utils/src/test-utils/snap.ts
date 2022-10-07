@@ -1,4 +1,5 @@
-import { getSnapSourceShasum, Snap, SnapStatus, TruncatedSnap } from '../snaps';
+import { Snap, SnapStatus, TruncatedSnap } from '../snaps';
+import { getSnapSourceShasum } from '../manifest';
 import { getSnapManifest } from './manifest';
 
 /**

@@ -1,5 +1,6 @@
 import { promises as fs } from 'fs';
 import pathUtils from 'path';
+import { createHash } from 'crypto';
 import { Json } from '@metamask/utils';
 import { validateNpmSnap, validateNpmSnapManifest } from './npm';
 import {
@@ -10,7 +11,7 @@ import {
 } from './types';
 import { SnapManifest } from './json-schemas';
 import { readSnapJsonFile } from './fs';
-import { getSnapSourceShasum, ProgrammaticallyFixableSnapError } from './snaps';
+import { ProgrammaticallyFixableSnapError } from './snaps';
 import { deepClone } from './deep-clone';
 
 const MANIFEST_SORT_ORDER: Record<keyof SnapManifest, number> = {
@@ -22,6 +23,37 @@ const MANIFEST_SORT_ORDER: Record<keyof SnapManifest, number> = {
   initialPermissions: 6,
   manifestVersion: 7,
 };
+
+/**
+ * Calculates the Base64-encoded SHA-256 digest of a Snap source code string.
+ *
+ * @param sourceCode - The UTF-8 string source code of a Snap.
+ * @returns The Base64-encoded SHA-256 digest of the source code.
+ */
+export function getSnapSourceShasum(sourceCode: string): string {
+  return createHash('sha256').update(sourceCode, 'utf8').digest('base64');
+}
+
+/**
+ * Checks whether the `source.shasum` property of a Snap manifest matches the
+ * shasum of a snap source code string.
+ *
+ * @param manifest - The manifest whose shasum to validate.
+ * @param sourceCode - The source code of the snap.
+ * @param errorMessage - The error message to throw if validation fails.
+ */
+export function validateSnapShasum(
+  manifest: SnapManifest,
+  sourceCode: string,
+  errorMessage = 'Invalid Snap manifest: manifest shasum does not match computed shasum.',
+): void {
+  if (manifest.source.shasum !== getSnapSourceShasum(sourceCode)) {
+    throw new ProgrammaticallyFixableSnapError(
+      errorMessage,
+      SnapValidationFailureReason.ShasumMismatch,
+    );
+  }
+}
 
 /**
  * The result from the `checkManifest` function.

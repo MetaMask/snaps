@@ -4,6 +4,7 @@ export * from './deep-clone';
 export * from './default-endowments';
 export * from './flatMap';
 export * from './json-rpc';
+export * from './json-schemas';
 export * from './namespace';
 export * from './notification';
 export * from './object';
