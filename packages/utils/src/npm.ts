@@ -10,8 +10,7 @@ import {
   SnapManifest,
   validateSnapJsonFile,
 } from './json-schemas';
-import { ProgrammaticallyFixableSnapError } from './snaps';
-import { validateSnapShasum } from './manifest';
+import { ProgrammaticallyFixableSnapError, validateSnapShasum } from './snaps';
 
 export const SVG_MAX_BYTE_SIZE = 100_000;
 export const SVG_MAX_BYTE_SIZE_TEXT = `${Math.floor(
