@@ -326,9 +326,16 @@ export class MultiChainController extends BaseController<
     assert(session, `Session for "${origin}" doesn't exist.`);
 
     const { namespace } = parseChainId(data.chainId);
+    const sessionNamespace = session.providedNamespaces[namespace];
     assert(
       session.providedNamespaces[namespace]?.chains.includes(data.chainId),
       `Session for "${origin}" is not connected to "${data.chainId}" chain.`,
+    );
+
+    const { method } = data.request;
+    assert(
+      sessionNamespace?.methods?.includes(method),
+      `Session for "${origin}" does not support ${method}`,
     );
 
     const snapId = session.handlingSnaps[namespace];
