@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.22.1]
+### Changed
+- No changes this release.
+
 ## [0.22.0]
 ### Changed
 - No changes this release.
@@ -59,7 +63,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release ([#410](https://github.com/MetaMask/snaps-skunkworks/pull/410), [#421](https://github.com/MetaMask/snaps-skunkworks/pull/421))
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.22.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.22.1...HEAD
+[0.22.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.22.0...v0.22.1
 [0.22.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.21.0...v0.22.0
 [0.21.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.20.0...v0.21.0
 [0.20.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.19.1...v0.20.0
