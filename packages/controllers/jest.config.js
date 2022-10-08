@@ -18,7 +18,7 @@ module.exports = {
     {
       preset: 'ts-jest',
       testMatch: ['<rootDir>/src/services/iframe/*.test.ts'],
-      testEnvironment: 'jsdom',
+      testEnvironment: '<rootDir>/jest.environment.js',
       testEnvironmentOptions: {
         resources: 'usable',
         runScripts: 'dangerously',
@@ -28,7 +28,7 @@ module.exports = {
     {
       preset: 'ts-jest',
       testPathIgnorePatterns: ['<rootDir>/src/services/iframe/*'],
-      testEnvironment: 'jsdom',
+      testEnvironment: '<rootDir>/jest.environment.js',
       testEnvironmentOptions: {
         customExportConditions: ['node', 'node-addons'],
       },

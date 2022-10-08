@@ -22,7 +22,8 @@ module.exports = {
   // original implementations, between each test. It does not affect mocked
   // modules.
   restoreMocks: true,
-  testEnvironment: 'jsdom',
+  // https://github.com/inrupt/solid-client-authn-js/issues/1676#issuecomment-917030930
+  testEnvironment: '<rootDir>/jest.environment.js',
   testEnvironmentOptions: {
     customExportConditions: ['node', 'node-addons'],
   },

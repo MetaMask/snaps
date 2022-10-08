@@ -1,9 +1,9 @@
 import { SnapProvider } from '@metamask/snap-types';
-import {
-  getSessionNamespace,
-  getRequestNamespace,
-} from '@metamask/snap-utils/test-utils';
 import { NamespaceId, RequestNamespace } from '@metamask/snap-utils';
+import {
+  getRequestNamespace,
+  getSessionNamespace,
+} from '@metamask/snap-utils/test-utils';
 import { MultiChainProvider } from './MultiChainProvider';
 
 Object.assign(globalThis, {

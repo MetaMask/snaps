@@ -1,6 +1,7 @@
-import { createHash } from 'crypto';
-import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import { Json } from '@metamask/utils';
+import { sha256 } from '@noble/hashes/sha256';
+import { base64 } from '@scure/base';
+import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import { SnapManifest } from './json-schemas';
 import { SnapId, SnapIdPrefixes, SnapValidationFailureReason } from './types';
 
@@ -159,7 +160,7 @@ export class ProgrammaticallyFixableSnapError extends Error {
  * @returns The Base64-encoded SHA-256 digest of the source code.
  */
 export function getSnapSourceShasum(sourceCode: string): string {
-  return createHash('sha256').update(sourceCode, 'utf8').digest('base64');
+  return base64.encode(sha256(sourceCode));
 }
 
 export type ValidatedSnapId = `local:${string}` | `npm:${string}`;
