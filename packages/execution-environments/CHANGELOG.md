@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.22.1]
-### Uncategorized
-- Add browser entry point for `snap-utils` ([#820](https://github.com/MetaMask/snaps-skunkworks/pull/820))
+### Changed
+- No changes this release.
 
 ## [0.22.0]
 ### Added
