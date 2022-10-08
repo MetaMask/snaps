@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.22.1]
+### Uncategorized
+- Add browser entry point for `snap-utils` ([#820](https://github.com/MetaMask/snaps-skunkworks/pull/820))
+
 ## [0.22.0]
 ### Added
 - Add Snap Keyring support ([#728](https://github.com/MetaMask/snaps-skunkworks/pull/728), [#700](https://github.com/MetaMask/snaps-skunkworks/pull/700))
@@ -137,7 +141,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Previously, default endowments were specified in the execution environment itself. Now, all endowments must be specified in the `executeSnap` RPC parameters, except for the `wallet` API object.
 - Add endowments to the global `self` in addition to `window` ([#263](https://github.com/MetaMask/snaps-skunkworks/pull/263))
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.22.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.22.1...HEAD
+[0.22.1]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.22.0...v0.22.1
 [0.22.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.21.0...v0.22.0
 [0.21.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.20.0...v0.21.0
 [0.20.0]: https://github.com/MetaMask/snaps-skunkworks/compare/v0.19.1...v0.20.0

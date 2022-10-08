@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snap-utils",
-  "version": "0.22.0",
+  "version": "0.22.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps-skunkworks.git"
@@ -55,7 +55,7 @@
   },
   "dependencies": {
     "@babel/core": "^7.18.6",
-    "@metamask/snap-types": "^0.22.0",
+    "@metamask/snap-types": "^0.22.1",
     "@metamask/utils": "^3.1.0",
     "@noble/hashes": "^1.1.3",
     "@scure/base": "^1.1.1",
