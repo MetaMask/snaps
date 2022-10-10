@@ -4,7 +4,7 @@ import {
   ValidPermissionSpecification,
   PermissionType,
 } from '@metamask/controllers';
-import { isObject, Json, NonEmptyArray } from '@metamask/utils';
+import { isJsonRpcRequest, Json, NonEmptyArray } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 import {
   Snap,
@@ -13,6 +13,7 @@ import {
   HandlerType,
   SnapRpcHookArgs,
 } from '@metamask/snap-utils';
+import { nanoid } from 'nanoid';
 
 const methodPrefix = SNAP_PREFIX;
 const targetKey = `${methodPrefix}*` as const;
@@ -86,7 +87,7 @@ export const invokeSnapBuilder = Object.freeze({
  * @returns The method implementation which returns the result of `handleSnapRpcRequest`.
  * @throws If the params are invalid.
  */
-function getInvokeSnapImplementation({
+export function getInvokeSnapImplementation({
   getSnap,
   handleSnapRpcRequest,
 }: InvokeSnapMethodHooks) {
@@ -94,15 +95,18 @@ function getInvokeSnapImplementation({
     options: RestrictedMethodOptions<[Record<string, Json>]>,
   ): Promise<Json> {
     const { params = [], method, context } = options;
-    const request = params[0];
+    const rawRequest = params[0];
 
-    if (!isObject(request)) {
+    const request = { ...rawRequest, jsonrpc: '2.0', id: nanoid() };
+
+    if (!isJsonRpcRequest(request)) {
       throw ethErrors.rpc.invalidParams({
-        message: 'Must specify snap RPC request object as single parameter.',
+        message:
+          'Must specify a valid JSON-RPC request object as single parameter.',
       });
     }
 
-    const snapId = method.substr(SNAP_PREFIX.length);
+    const snapId = method.slice(SNAP_PREFIX.length);
 
     if (!getSnap(snapId)) {
       throw ethErrors.rpc.invalidRequest({
