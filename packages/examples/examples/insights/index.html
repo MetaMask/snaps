@@ -28,22 +28,28 @@
     <br />
 
     <button class="connect">Connect</button>
-    <button class="sendTransaction">Send ERC-20 Transaction</button>
-    <button class="sendNFTTransaction">Send NFT Transaction</button>
-    <button class="sendUnknownTransaction">Send Unknown Transaction</button>
+    <button class="updateWithdrawalAccount">
+      Send "Update withdrawal account" Transaction
+    </button>
+    <button class="updateMigrateMode">
+      Send "Update migrate mode" Transaction
+    </button>
+    <button class="updateCap">Send "Update cap" Transaction</button>
   </body>
 
   <script>
     const snapId = `local:${window.location.href}`;
 
     const connectButton = document.querySelector('button.connect');
-    const sendButton = document.querySelector('button.sendTransaction');
-    const sendNFTButton = document.querySelector('button.sendNFTTransaction');
-    const sendUnknownButton = document.querySelector(
-      'button.sendUnknownTransaction',
+    const updateWithdrawalAccountButton = document.querySelector(
+      'button.updateWithdrawalAccount',
     );
+    const updateMigrateModeButton = document.querySelector(
+      'button.updateMigrateMode',
+    );
+    const updateCapButton = document.querySelector('button.updateCap');
 
-    const send = (selector) => async () => {
+    const send = (data) => async () => {
       try {
         // Get the user's account from MetaMask.
         const accounts = await ethereum.request({
@@ -59,7 +65,7 @@
               from,
               to: '0x08A8fDBddc160A7d5b957256b903dCAb1aE512C5',
               value: '0x0',
-              data: `0x${selector}00000000000000000000000047170ceae335a9db7e96b72de630389669b334710000000000000000000000000000000000000000000000000000000000000001`,
+              data,
             },
           ],
         });
@@ -70,9 +76,25 @@
     };
 
     connectButton.addEventListener('click', connect);
-    sendButton.addEventListener('click', send('f0f0f0f0'));
-    sendNFTButton.addEventListener('click', send('e1e1e1e1'));
-    sendUnknownButton.addEventListener('click', send('d2d2d2d2'));
+
+    updateWithdrawalAccountButton.addEventListener(
+      'click',
+      send(
+        '0x83ade3dc00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000200000000000000000000000047170ceae335a9db7e96b72de630389669b334710000000000000000000000006b175474e89094c44da98b954eedeac495271d0f',
+      ),
+    );
+    updateMigrateModeButton.addEventListener(
+      'click',
+      send(
+        '0x2e26065e0000000000000000000000000000000000000000000000000000000000000000',
+      ),
+    );
+    updateCapButton.addEventListener(
+      'click',
+      send(
+        '0x85b2c14a00000000000000000000000047170ceae335a9db7e96b72de630389669b334710000000000000000000000000000000000000000000000000de0b6b3a7640000',
+      ),
+    );
 
     // here we get permissions to interact with and install the snap
     async function connect() {

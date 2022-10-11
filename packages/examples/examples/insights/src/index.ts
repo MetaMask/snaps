@@ -10,6 +10,6 @@ import { getInsights } from './insights';
  */
 export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
   return {
-    insights: getInsights(transaction),
+    insights: await getInsights(transaction),
   };
 };
