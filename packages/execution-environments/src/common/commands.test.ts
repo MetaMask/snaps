@@ -74,7 +74,7 @@ describe('getCommandMethodImplementations', () => {
         'endowment1',
         'endowment2',
       ]);
-    }).rejects.toThrow('snapName is not a string');
+    }).rejects.toThrow('Snap name is not a string.');
   });
 
   it('the executeSnap method will throw an Error if the sourceCode is not a string', async () => {
@@ -91,7 +91,7 @@ describe('getCommandMethodImplementations', () => {
         'endowment1',
         'endowment2',
       ]);
-    }).rejects.toThrow('sourceCode is not a string');
+    }).rejects.toThrow('Source code is not a string.');
   });
 
   it('the executeSnap method will throw an Error if it is not passed a proper Endowments object', async () => {
@@ -105,7 +105,7 @@ describe('getCommandMethodImplementations', () => {
     );
     await expect(async () => {
       await methodsObj.executeSnap('foo', 'code', ['endowment1', 2 as any]);
-    }).rejects.toThrow('endowment is not a proper Endowments object');
+    }).rejects.toThrow('Endowments is not an array of strings.');
   });
 
   it('the snapRpc method will invoke the invokeSnapRpc function', async () => {
@@ -152,7 +152,7 @@ describe('getCommandMethodImplementations', () => {
         'bar',
         rpcRequest as any,
       );
-    }).rejects.toThrow('target is not a string');
+    }).rejects.toThrow('Target is not a string.');
   });
 
   it('the snapRpc method will throw an error if the origin is not a string', async () => {
@@ -172,7 +172,7 @@ describe('getCommandMethodImplementations', () => {
         2 as any,
         rpcRequest as any,
       );
-    }).rejects.toThrow('origin is not a string');
+    }).rejects.toThrow('Origin is not a string.');
   });
 
   it('the snapRpc method will throw an error if the request is not a JSON RPC request', async () => {
@@ -192,6 +192,6 @@ describe('getCommandMethodImplementations', () => {
         'bar',
         rpcRequest as any,
       );
-    }).rejects.toThrow('request is not a proper JSON RPC Request');
+    }).rejects.toThrow('Request is not a proper JSON-RPC request.');
   });
 });

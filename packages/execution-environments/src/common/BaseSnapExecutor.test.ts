@@ -1,9 +1,14 @@
 // eslint-disable-next-line import/no-unassigned-import
 import 'ses';
 import { Duplex, DuplexOptions, EventEmitter, Readable } from 'stream';
-import { Json, JsonRpcResponse } from '@metamask/utils';
+import {
+  assertIsJsonRpcSuccess,
+  Json,
+  JsonRpcParams,
+  JsonRpcRequest,
+  JsonRpcResponse,
+} from '@metamask/utils';
 import { HandlerType } from '@metamask/snap-utils';
-import { JsonRpcRequest } from '../__GENERATED__/openrpc';
 import { BaseSnapExecutor } from './BaseSnapExecutor';
 
 const FAKE_ORIGIN = 'origin:foo';
@@ -106,7 +111,7 @@ class TestSnapExecutor extends BaseSnapExecutor {
     });
   }
 
-  public writeCommand(message: JsonRpcRequest): Promise<void> {
+  public writeCommand(message: JsonRpcRequest<JsonRpcParams>): Promise<void> {
     return new Promise((resolve, reject) =>
       this.commandLeft.write(message, (error) => {
         if (error) {
@@ -117,8 +122,8 @@ class TestSnapExecutor extends BaseSnapExecutor {
     );
   }
 
-  public readCommand(): Promise<JsonRpcRequest> {
-    const promise = new Promise<JsonRpcRequest>((resolve) =>
+  public readCommand(): Promise<JsonRpcRequest<JsonRpcParams>> {
+    const promise = new Promise<JsonRpcRequest<JsonRpcParams>>((resolve) =>
       this.commandListeners.push(resolve),
     );
 
@@ -153,10 +158,14 @@ class TestSnapExecutor extends BaseSnapExecutor {
     );
   }
 
-  public readRpc(): Promise<{ name: string; data: JsonRpcRequest }> {
-    const promise = new Promise<{ name: string; data: JsonRpcRequest }>(
-      (resolve) => this.rpcListeners.push(resolve),
-    );
+  public readRpc(): Promise<{
+    name: string;
+    data: JsonRpcRequest<JsonRpcParams>;
+  }> {
+    const promise = new Promise<{
+      name: string;
+      data: JsonRpcRequest<JsonRpcParams>;
+    }>((resolve) => this.rpcListeners.push(resolve));
 
     TestSnapExecutor.flushReads(this.rpcBuffer, this.rpcListeners);
 
@@ -360,8 +369,8 @@ describe('BaseSnapExecutor', () => {
           }),
         );
 
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const handle = getHandleResult!.result;
+        assertIsJsonRpcSuccess(getHandleResult);
+        const handle = getHandleResult.result;
 
         await executor.writeCommand({
           jsonrpc: '2.0',

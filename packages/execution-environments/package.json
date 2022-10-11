@@ -41,7 +41,8 @@
     "eth-rpc-errors": "^4.0.3",
     "pump": "^3.0.0",
     "ses": "^0.15.15",
-    "stream-browserify": "^3.0.0"
+    "stream-browserify": "^3.0.0",
+    "superstruct": "^0.16.5"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.0.3",

@@ -9,6 +9,11 @@ import {
   isValidJson,
   JsonRpcNotification,
   assert,
+  isJsonRpcRequest,
+  JsonRpcId,
+  JsonRpcRequest,
+  JsonRpcParams,
+  Json,
 } from '@metamask/utils';
 import {
   HandlerType,
@@ -16,13 +21,6 @@ import {
   SnapExportsParameters,
 } from '@metamask/snap-utils';
 import EEOpenRPCDocument from '../openrpc.json';
-import {
-  Endowments,
-  JSONRPCID,
-  JsonRpcRequest,
-  Target,
-} from '../__GENERATED__/openrpc';
-import { isJsonRpcRequest } from '../__GENERATED__/openrpc.guard';
 import { createEndowments } from './endowments';
 import {
   getCommandMethodImplementations,
@@ -52,10 +50,10 @@ const fallbackError = {
 export type InvokeSnapArgs = SnapExportsParameters[0];
 
 export type InvokeSnap = (
-  target: Target,
+  target: string,
   handler: HandlerType,
   args: InvokeSnapArgs | undefined,
-) => Promise<unknown>;
+) => Promise<Json>;
 
 export class BaseSnapExecutor {
   private snapData: Map<string, SnapData>;
@@ -118,16 +116,12 @@ export class BaseSnapExecutor {
     });
   }
 
-  private async onCommandRequest(message: JsonRpcRequest) {
+  private async onCommandRequest(message: JsonRpcRequest<JsonRpcParams>) {
     if (!isJsonRpcRequest(message)) {
-      throw new Error('Command stream received a non Json Rpc Request');
+      throw new Error('Command stream received a non-JSON-RPC request.');
     }
+
     const { id, method, params } = message;
-
-    if (id === undefined) {
-      throw new Error('Notifications not supported');
-    }
-
     if (method === 'rpc.discover') {
       this.respond(id, {
         result: EEOpenRPCDocument,
@@ -185,7 +179,7 @@ export class BaseSnapExecutor {
     });
   }
 
-  protected respond(id: JSONRPCID, requestObject: Record<string, unknown>) {
+  protected respond(id: JsonRpcId, requestObject: Record<string, unknown>) {
     if (!isValidJson(requestObject) || !isObject(requestObject)) {
       throw new Error('JSON-RPC responses must be JSON serializable objects.');
     }
@@ -208,7 +202,7 @@ export class BaseSnapExecutor {
   protected async startSnap(
     snapName: string,
     sourceCode: string,
-    _endowments?: Endowments,
+    _endowments?: string[],
   ): Promise<void> {
     console.log(`starting snap '${snapName}' in worker`);
     if (this.snapPromiseErrorHandler) {

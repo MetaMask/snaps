@@ -1,6 +1,6 @@
 // original source sortParamKeys from: https://github.com/etclabscore/sig.tools/blob/master/src/postMessageServer/postMessageServer.ts#L75-L77
 
-import { JSONRPCParams } from '../__GENERATED__/openrpc';
+import { JsonRpcParams } from '@metamask/utils';
 
 /**
  * Deterministically sort JSON-RPC parameter keys. This makes it possible to
@@ -19,7 +19,7 @@ import { JSONRPCParams } from '../__GENERATED__/openrpc';
  */
 export const sortParamKeys = (
   method: { params: { name: string }[] },
-  params?: JSONRPCParams,
+  params?: JsonRpcParams,
 ) => {
   if (!params) {
     return [];

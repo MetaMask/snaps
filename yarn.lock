@@ -2876,6 +2876,7 @@ __metadata:
     rimraf: ^3.0.2
     ses: ^0.15.15
     stream-browserify: ^3.0.0
+    superstruct: ^0.16.5
     ts-auto-guard: ^2.3.0
     ts-jest: ^29.0.0
     ts-loader: ^9.3.1
