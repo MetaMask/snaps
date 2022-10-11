@@ -2145,7 +2145,7 @@ export class SnapController extends BaseController<
           true,
         )) as PermissionsRequest;
 
-      if (isNonEmptyArray(Object.keys(processedPermissions))) {
+      if (isNonEmptyArray(Object.keys(approvedPermissions))) {
         await this.messagingSystem.call(
           'PermissionController:grantPermissions',
           {

@@ -182,12 +182,11 @@ describe('SnapController', () => {
       manifest: getSnapManifest(),
     });
 
-    callActionMock.mockImplementation((method) => {
-      if (
-        method === 'PermissionController:hasPermission' ||
-        method === 'ApprovalController:addRequest'
-      ) {
+    callActionMock.mockImplementation((method, ...args) => {
+      if (method === 'PermissionController:hasPermission') {
         return true;
+      } else if (method === 'ApprovalController:addRequest') {
+        return (args[0] as any).requestData;
       } else if (method === 'PermissionController:getEndowments') {
         return ['fooEndowment'] as any;
       }
@@ -557,6 +556,8 @@ describe('SnapController', () => {
           args[1] === SnapEndowments.LongRunning
         ) {
           return false;
+        } else if (method === 'ApprovalController:addRequest') {
+          return (args[0] as any).requestData;
         }
         return true;
       });
@@ -706,7 +707,7 @@ describe('SnapController', () => {
 
     jest.spyOn(messenger, 'call').mockImplementation((method) => {
       if (method === 'ApprovalController:addRequest') {
-        return false;
+        throw ethErrors.provider.userRejectedRequest();
       }
       return true;
     });
@@ -1677,12 +1678,11 @@ describe('SnapController', () => {
 
       const callActionMock = jest
         .spyOn(messenger, 'call')
-        .mockImplementation((method) => {
-          if (
-            method === 'PermissionController:hasPermission' ||
-            method === 'ApprovalController:addRequest'
-          ) {
+        .mockImplementation((method, ...args) => {
+          if (method === 'PermissionController:hasPermission') {
             return true;
+          } else if (method === 'ApprovalController:addRequest') {
+            return (args[0] as any).requestData;
           } else if (method === 'PermissionController:getPermissions') {
             return {};
           }
@@ -1734,6 +1734,14 @@ describe('SnapController', () => {
         {
           approvedPermissions: getSnapManifest().initialPermissions,
           subject: { origin: MOCK_LOCAL_SNAP_ID },
+          requestData: {
+            metadata: {
+              dappOrigin: MOCK_ORIGIN,
+              id: expect.any(String),
+              origin: MOCK_LOCAL_SNAP_ID,
+            },
+            snapId: MOCK_LOCAL_SNAP_ID,
+          },
         },
       );
 
@@ -1776,12 +1784,11 @@ describe('SnapController', () => {
 
       const callActionMock = jest
         .spyOn(messenger, 'call')
-        .mockImplementation((method) => {
-          if (
-            method === 'PermissionController:hasPermission' ||
-            method === 'ApprovalController:addRequest'
-          ) {
+        .mockImplementation((method, ...args) => {
+          if (method === 'PermissionController:hasPermission') {
             return true;
+          } else if (method === 'ApprovalController:addRequest') {
+            return (args[0] as any).requestData;
           } else if (method === 'PermissionController:getPermissions') {
             return {};
           }
@@ -1843,6 +1850,14 @@ describe('SnapController', () => {
         {
           approvedPermissions: manifest.initialPermissions,
           subject: { origin: MOCK_LOCAL_SNAP_ID },
+          requestData: {
+            metadata: {
+              dappOrigin: MOCK_ORIGIN,
+              id: expect.any(String),
+              origin: MOCK_LOCAL_SNAP_ID,
+            },
+            snapId: MOCK_LOCAL_SNAP_ID,
+          },
         },
       );
 
@@ -1895,6 +1910,14 @@ describe('SnapController', () => {
         {
           approvedPermissions: newManifest.initialPermissions,
           subject: { origin: MOCK_LOCAL_SNAP_ID },
+          requestData: {
+            metadata: {
+              dappOrigin: MOCK_ORIGIN,
+              id: expect.any(String),
+              origin: MOCK_LOCAL_SNAP_ID,
+            },
+            snapId: MOCK_LOCAL_SNAP_ID,
+          },
         },
       );
 
@@ -1931,12 +1954,11 @@ describe('SnapController', () => {
 
       const callActionMock = jest
         .spyOn(messenger, 'call')
-        .mockImplementation((method) => {
-          if (
-            method === 'PermissionController:hasPermission' ||
-            method === 'ApprovalController:addRequest'
-          ) {
+        .mockImplementation((method, ...args) => {
+          if (method === 'PermissionController:hasPermission') {
             return true;
+          } else if (method === 'ApprovalController:addRequest') {
+            return (args[0] as any).requestData;
           } else if (method === 'PermissionController:getPermissions') {
             return {};
           }
@@ -1988,6 +2010,14 @@ describe('SnapController', () => {
         {
           approvedPermissions: manifest.initialPermissions,
           subject: { origin: MOCK_SNAP_ID },
+          requestData: {
+            metadata: {
+              dappOrigin: MOCK_ORIGIN,
+              id: expect.any(String),
+              origin: MOCK_SNAP_ID,
+            },
+            snapId: MOCK_SNAP_ID,
+          },
         },
       );
 
@@ -2075,6 +2105,14 @@ describe('SnapController', () => {
             },
           },
           subject: { origin: MOCK_SNAP_ID },
+          requestData: {
+            metadata: {
+              origin: MOCK_SNAP_ID,
+              dappOrigin: MOCK_ORIGIN,
+              id: expect.any(String),
+            },
+            snapId: MOCK_SNAP_ID,
+          },
         },
       );
     });
@@ -2135,6 +2173,14 @@ describe('SnapController', () => {
             },
           },
           subject: { origin: MOCK_SNAP_ID },
+          requestData: {
+            metadata: {
+              origin: MOCK_SNAP_ID,
+              dappOrigin: MOCK_ORIGIN,
+              id: expect.any(String),
+            },
+            snapId: MOCK_SNAP_ID,
+          },
         },
       );
     });
@@ -2165,12 +2211,11 @@ describe('SnapController', () => {
 
       const callActionMock = jest.spyOn(messenger, 'call');
 
-      callActionMock.mockImplementation((method) => {
-        if (
-          method === 'PermissionController:hasPermission' ||
-          method === 'ApprovalController:addRequest'
-        ) {
+      callActionMock.mockImplementation((method, ...args) => {
+        if (method === 'PermissionController:hasPermission') {
           return true;
+        } else if (method === 'ApprovalController:addRequest') {
+          return (args[0] as any).requestData;
         } else if (method === 'PermissionController:getPermissions') {
           return {};
         }
@@ -2200,6 +2245,27 @@ describe('SnapController', () => {
             },
           },
           subject: { origin: MOCK_SNAP_ID },
+          requestData: {
+            approvedPermissions: {},
+            metadata: {
+              origin: MOCK_SNAP_ID,
+              dappOrigin: MOCK_ORIGIN,
+              id: expect.any(String),
+            },
+            newPermissions: {
+              snap_getBip32Entropy: {
+                caveats: [
+                  {
+                    type: SnapCaveatType.PermittedDerivationPaths,
+                    value: [{ path: ['m', "44'", "60'"], curve: 'secp256k1' }],
+                  },
+                ],
+              },
+            },
+            newVersion: '1.1.0',
+            snapId: MOCK_SNAP_ID,
+            unusedPermissions: {},
+          },
         },
       );
     });
@@ -2260,12 +2326,11 @@ describe('SnapController', () => {
 
       const callActionMock = jest
         .spyOn(messenger, 'call')
-        .mockImplementation((method) => {
-          if (
-            method === 'PermissionController:hasPermission' ||
-            method === 'ApprovalController:addRequest'
-          ) {
+        .mockImplementation((method, ...args) => {
+          if (method === 'PermissionController:hasPermission') {
             return true;
+          } else if (method === 'ApprovalController:addRequest') {
+            return (args[0] as any).requestData;
           } else if (method === 'PermissionController:getPermissions') {
             return {};
           }
@@ -2320,6 +2385,18 @@ describe('SnapController', () => {
         {
           approvedPermissions: getSnapManifest().initialPermissions,
           subject: { origin: MOCK_SNAP_ID },
+          requestData: {
+            metadata: {
+              id: expect.any(String),
+              dappOrigin: MOCK_ORIGIN,
+              origin: MOCK_SNAP_ID,
+            },
+            snapId: MOCK_SNAP_ID,
+            newVersion,
+            newPermissions: getSnapManifest().initialPermissions,
+            approvedPermissions: {},
+            unusedPermissions: {},
+          },
         },
       );
 
@@ -2575,12 +2652,11 @@ describe('SnapController', () => {
           };
         });
 
-      callActionSpy.mockImplementation((method) => {
-        if (
-          method === 'PermissionController:hasPermission' ||
-          method === 'ApprovalController:addRequest'
-        ) {
+      callActionSpy.mockImplementation((method, ...args) => {
+        if (method === 'PermissionController:hasPermission') {
           return true;
+        } else if (method === 'ApprovalController:addRequest') {
+          return (args[0] as any).requestData;
         } else if (method === 'PermissionController:getPermissions') {
           return {};
         }
@@ -2651,6 +2727,18 @@ describe('SnapController', () => {
         {
           approvedPermissions: getSnapManifest().initialPermissions,
           subject: { origin: MOCK_SNAP_ID },
+          requestData: {
+            metadata: {
+              id: expect.any(String),
+              dappOrigin: MOCK_ORIGIN,
+              origin: MOCK_SNAP_ID,
+            },
+            snapId: MOCK_SNAP_ID,
+            newVersion: '1.1.0',
+            newPermissions: getSnapManifest().initialPermissions,
+            approvedPermissions: {},
+            unusedPermissions: {},
+          },
         },
       );
 
@@ -2690,12 +2778,11 @@ describe('SnapController', () => {
         };
       });
 
-      callActionSpy.mockImplementation((method) => {
-        if (
-          method === 'PermissionController:hasPermission' ||
-          method === 'ApprovalController:addRequest'
-        ) {
+      callActionSpy.mockImplementation((method, ...args) => {
+        if (method === 'PermissionController:hasPermission') {
           return true;
+        } else if (method === 'ApprovalController:addRequest') {
+          return (args[0] as any).requestData;
         } else if (method === 'PermissionController:getPermissions') {
           return {};
         }
@@ -2806,6 +2893,8 @@ describe('SnapController', () => {
           return true;
         } else if (method === 'PermissionController:getPermissions') {
           return {};
+        } else if (method === 'ApprovalController:addRequest') {
+          throw ethErrors.provider.userRejectedRequest();
         }
         return false;
       });
@@ -2817,11 +2906,12 @@ describe('SnapController', () => {
         manifest: getSnapManifest(),
       });
 
-      const result = await controller.updateSnap(MOCK_ORIGIN, MOCK_SNAP_ID);
+      await expect(
+        controller.updateSnap(MOCK_ORIGIN, MOCK_SNAP_ID),
+      ).rejects.toThrow('User rejected the request.');
 
       const newSnap = controller.get(MOCK_SNAP_ID);
 
-      expect(result).toBeNull();
       expect(newSnap?.version).toStrictEqual('1.0.0');
       expect(fetchSnapSpy).toHaveBeenCalledTimes(1);
       expect(callActionSpy).toHaveBeenCalledTimes(2);
@@ -2907,12 +2997,11 @@ describe('SnapController', () => {
           };
         });
 
-      callActionSpy.mockImplementation((method) => {
-        if (
-          method === 'PermissionController:hasPermission' ||
-          method === 'ApprovalController:addRequest'
-        ) {
+      callActionSpy.mockImplementation((method, ...args) => {
+        if (method === 'PermissionController:hasPermission') {
           return true;
+        } else if (method === 'ApprovalController:addRequest') {
+          return (args[0] as any).requestData;
         } else if (method === 'PermissionController:getPermissions') {
           return approvedPermissions;
         } else if (
@@ -2977,6 +3066,22 @@ describe('SnapController', () => {
         {
           approvedPermissions: { 'endowment:network-access': {} },
           subject: { origin: MOCK_SNAP_ID },
+          requestData: {
+            metadata: {
+              id: expect.any(String),
+              dappOrigin: MOCK_ORIGIN,
+              origin: MOCK_SNAP_ID,
+            },
+            snapId: MOCK_SNAP_ID,
+            newVersion: '1.1.0',
+            newPermissions: { 'endowment:network-access': {} },
+            approvedPermissions: {
+              snap_confirm: approvedPermissions.snap_confirm,
+            },
+            unusedPermissions: {
+              snap_manageState: approvedPermissions.snap_manageState,
+            },
+          },
         },
       );
 
@@ -3052,16 +3157,12 @@ describe('SnapController', () => {
         });
 
       callActionSpy.mockImplementation((method, request: any) => {
-        if (
-          method === 'PermissionController:hasPermission' ||
-          method === 'ApprovalController:addRequest'
-        ) {
-          if (method === 'ApprovalController:addRequest') {
-            // eslint-disable-next-line jest/no-conditional-expect
-            expect(request.id).toBe(request.requestData.metadata.id);
-          }
-
+        if (method === 'PermissionController:hasPermission') {
           return true;
+        } else if (method === 'ApprovalController:addRequest') {
+          // eslint-disable-next-line jest/no-conditional-expect
+          expect(request.id).toBe(request.requestData.metadata.id);
+          return request.requestData;
         } else if (method === 'PermissionController:getPermissions') {
           return approvedPermissions;
         } else if (
@@ -3073,9 +3174,7 @@ describe('SnapController', () => {
         return undefined;
       });
 
-      console.log(
-        await snapController.installSnaps(MOCK_ORIGIN, { [MOCK_SNAP_ID]: {} }),
-      );
+      await snapController.installSnaps(MOCK_ORIGIN, { [MOCK_SNAP_ID]: {} });
       await snapController.updateSnap(MOCK_ORIGIN, MOCK_SNAP_ID);
     });
   });
