@@ -1658,7 +1658,7 @@ export class SnapController extends BaseController<
     const newVersion = newSnap.manifest.version;
     if (!gtVersion(newVersion, snap.version)) {
       console.warn(
-        `Tried updating snap "${snapId}" within "${newVersionRange}" version range, but newer version "${newVersion}" is already installed`,
+        `Tried updating snap "${snapId}" within "${newVersionRange}" version range, but newer version "${snap.version}" is already installed`,
       );
       return null;
     }
