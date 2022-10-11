@@ -120,7 +120,7 @@ export const getInsights = async (transaction: Record<string, unknown>) => {
     const types = fn.slice(fn.indexOf('(') + 1, fn.indexOf(')')).split(',');
 
     // Decode the data using the ABI utils library.
-    const decoded: any[] = decode(types, add0x(data.slice(8)));
+    const decoded = decode(types, add0x(data.slice(8)));
 
     // Return the function name and decoded arguments.
     return {
