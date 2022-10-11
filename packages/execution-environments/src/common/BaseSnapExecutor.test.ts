@@ -1494,7 +1494,7 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
-  it('throws when trying to send unserializable values', async () => {
+  it('throws when trying to respond with unserializable values', async () => {
     const CODE = `
       module.exports.onRpcRequest = () => BigInt(0);
     `;
