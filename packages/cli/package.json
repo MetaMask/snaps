@@ -4,7 +4,7 @@
   "description": "A CLI for developing MetaMask Snaps.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps-skunkworks.git"
+    "url": "https://github.com/MetaMask/snaps-monorepo.git"
   },
   "license": "ISC",
   "bin": {

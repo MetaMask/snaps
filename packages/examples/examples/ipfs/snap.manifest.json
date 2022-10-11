@@ -4,7 +4,7 @@
   "proposedName": "ipfs-snap",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps-skunkworks.git"
+    "url": "https://github.com/MetaMask/snaps-monorepo.git"
   },
   "source": {
     "shasum": "ZcetnugqubraghMtlmyOiPDlUut7RiwTLmQbUwUypls=",

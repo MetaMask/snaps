@@ -20,8 +20,8 @@ export const DEFAULT_ENDOWMENTS: readonly string[] = Object.freeze([
   'setInterval',
   'clearInterval',
   // Used by fetch, but also as API for some packages that don't do network connections
-  // https://github.com/MetaMask/snaps-skunkworks/issues/662
-  // https://github.com/MetaMask/snaps-skunkworks/discussions/678
+  // https://github.com/MetaMask/snaps-monorepo/issues/662
+  // https://github.com/MetaMask/snaps-monorepo/discussions/678
   'AbortController',
   'AbortSignal',
 ]);

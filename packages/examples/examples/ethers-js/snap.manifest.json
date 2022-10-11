@@ -4,7 +4,7 @@
   "proposedName": "ethers-js-snap",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps-skunkworks.git"
+    "url": "https://github.com/MetaMask/snaps-monorepo.git"
   },
   "source": {
     "shasum": "tZZq/cE7FBqjMguHM+WWaoUFTTqCE2qwV70VeOJSX4g=",

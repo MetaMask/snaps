@@ -12,11 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.22.1]
 ### Fixed
-- The provider now works properly with bundlers ([#820](https://github.com/MetaMask/snaps-skunkworks/pull/820))
+- The provider now works properly with bundlers ([#820](https://github.com/MetaMask/snaps-monorepo/pull/820))
 
 ## [0.22.0]
 ### Added
-- Initial release ([#700](https://github.com/MetaMask/snaps-skunkworks/pull/700))
+- Initial release ([#700](https://github.com/MetaMask/snaps-monorepo/pull/700))
 
 [Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.2...HEAD
 [0.22.2]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.1...v0.22.2

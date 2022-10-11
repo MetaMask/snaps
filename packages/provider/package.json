@@ -3,7 +3,7 @@
   "version": "0.22.2",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps-skunkworks.git"
+    "url": "https://github.com/MetaMask/snaps-monorepo.git"
   },
   "main": "dist/index.js",
   "files": [

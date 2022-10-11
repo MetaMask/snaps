@@ -16,15 +16,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.22.0]
 ### Added
-- Add Snap Keyring support ([#728](https://github.com/MetaMask/snaps-skunkworks/pull/728), [#700](https://github.com/MetaMask/snaps-skunkworks/pull/700))
+- Add Snap Keyring support ([#728](https://github.com/MetaMask/snaps-monorepo/pull/728), [#700](https://github.com/MetaMask/snaps-monorepo/pull/700))
 
 ## [0.21.0]
 ### Removed
-- **BREAKING:** Remove origin parameter from transaction insight payload ([#730](https://github.com/MetaMask/snaps-skunkworks/pull/730))
+- **BREAKING:** Remove origin parameter from transaction insight payload ([#730](https://github.com/MetaMask/snaps-monorepo/pull/730))
 
 ## [0.20.0]
 ### Added
-- **BREAKING:** Add Transaction Insight API ([#642](https://github.com/MetaMask/snaps-skunkworks/pull/642))
+- **BREAKING:** Add Transaction Insight API ([#642](https://github.com/MetaMask/snaps-monorepo/pull/642))
   - Part of this change made changes to the execution environments to support multiple request handlers
   - It also changed the exports of `@metamask/execution-environments`
 
@@ -34,61 +34,61 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.19.0]
 ### Fixed
-- Fixed network teardown so that snaps can't be escape by late returning promises ([#661](https://github.com/MetaMask/snaps-skunkworks/pull/661))
+- Fixed network teardown so that snaps can't be escape by late returning promises ([#661](https://github.com/MetaMask/snaps-monorepo/pull/661))
 
 ## [0.18.1]
 ### Fixed
-- Fix error serialization issues ([#637](https://github.com/MetaMask/snaps-skunkworks/pull/637))
+- Fix error serialization issues ([#637](https://github.com/MetaMask/snaps-monorepo/pull/637))
 
 ## [0.18.0]
 ### Changed
-- Reduce TypeScript compilation target to ES2017 ([#628](https://github.com/MetaMask/snaps-skunkworks/pull/628))
+- Reduce TypeScript compilation target to ES2017 ([#628](https://github.com/MetaMask/snaps-monorepo/pull/628))
 
 ### Fixed
-- Fix `crypto` and `SubtleCrypto` endowments ([#631](https://github.com/MetaMask/snaps-skunkworks/pull/631))
+- Fix `crypto` and `SubtleCrypto` endowments ([#631](https://github.com/MetaMask/snaps-monorepo/pull/631))
 
 ## [0.17.0]
 ### Added
-- Add Node.js `child_process` execution environment ([#523](https://github.com/MetaMask/snaps-skunkworks/pull/523))
-- Add Node.js `worker_threads` execution environment ([#587](https://github.com/MetaMask/snaps-skunkworks/pull/587))
-- Added network endowment teardown ([#514](https://github.com/MetaMask/snaps-skunkworks/pull/514))
+- Add Node.js `child_process` execution environment ([#523](https://github.com/MetaMask/snaps-monorepo/pull/523))
+- Add Node.js `worker_threads` execution environment ([#587](https://github.com/MetaMask/snaps-monorepo/pull/587))
+- Added network endowment teardown ([#514](https://github.com/MetaMask/snaps-monorepo/pull/514))
 
 ### Changed
-- **BREAKING:** Bump minimum Node version to 16 ([#601](https://github.com/MetaMask/snaps-skunkworks/pull/601))
-- Monitor outbound snap requests to pause request timeout ([#593](https://github.com/MetaMask/snaps-skunkworks/pull/593))
+- **BREAKING:** Bump minimum Node version to 16 ([#601](https://github.com/MetaMask/snaps-monorepo/pull/601))
+- Monitor outbound snap requests to pause request timeout ([#593](https://github.com/MetaMask/snaps-monorepo/pull/593))
 
 ### Removed
-- Remove WebWorker implementation ([#591](https://github.com/MetaMask/snaps-skunkworks/pull/591))
+- Remove WebWorker implementation ([#591](https://github.com/MetaMask/snaps-monorepo/pull/591))
 
 ## [0.16.0]
 ### Changed
-- **BREAKING:** Snaps are now required to export `onRpcRequest` to receive RPC requests ([#481](https://github.com/MetaMask/snaps-skunkworks/pull/481), [#533](https://github.com/MetaMask/snaps-skunkworks/pull/533), [#538](https://github.com/MetaMask/snaps-skunkworks/pull/538), [#541](https://github.com/MetaMask/snaps-skunkworks/pull/541))
-- Snaps can no longer run timers outside of pending RPC requests ([#490](https://github.com/MetaMask/snaps-skunkworks/pull/490))
+- **BREAKING:** Snaps are now required to export `onRpcRequest` to receive RPC requests ([#481](https://github.com/MetaMask/snaps-monorepo/pull/481), [#533](https://github.com/MetaMask/snaps-monorepo/pull/533), [#538](https://github.com/MetaMask/snaps-monorepo/pull/538), [#541](https://github.com/MetaMask/snaps-monorepo/pull/541))
+- Snaps can no longer run timers outside of pending RPC requests ([#490](https://github.com/MetaMask/snaps-monorepo/pull/490))
 
 ### Removed
-- **BREAKING:** Remove `wallet.registerRpcMessageHandler` support [#481](https://github.com/MetaMask/snaps-skunkworks/pull/481)
+- **BREAKING:** Remove `wallet.registerRpcMessageHandler` support [#481](https://github.com/MetaMask/snaps-monorepo/pull/481)
 
 ### Fixed
-- Fix issue with iframe error reporting ([#501](https://github.com/MetaMask/snaps-skunkworks/pull/501))
+- Fix issue with iframe error reporting ([#501](https://github.com/MetaMask/snaps-monorepo/pull/501))
 
 ## [0.15.0]
 ### Fixed
-- Added missing properties to `WebAssembly` global ([#459](https://github.com/MetaMask/snaps-skunkworks/pull/459))
-- Fix interval handle leak ([#485](https://github.com/MetaMask/snaps-skunkworks/pull/485))
-- Fix timer handle leak ([#483](https://github.com/MetaMask/snaps-skunkworks/pull/483))
+- Added missing properties to `WebAssembly` global ([#459](https://github.com/MetaMask/snaps-monorepo/pull/459))
+- Fix interval handle leak ([#485](https://github.com/MetaMask/snaps-monorepo/pull/485))
+- Fix timer handle leak ([#483](https://github.com/MetaMask/snaps-monorepo/pull/483))
 
 ## [0.14.0]
 ### Changed
-- **BREAKING:** Increase TypeScript compilation target to ES2020 ([#449](https://github.com/MetaMask/snaps-skunkworks/pull/449))
+- **BREAKING:** Increase TypeScript compilation target to ES2020 ([#449](https://github.com/MetaMask/snaps-monorepo/pull/449))
   - This should not be breaking for consumers on any non-deprecated browser or Node.js version.
 
 ## [0.13.0]
 ### Changed
-- **BREAKING:** Change `execution-environment` build output ([#424](https://github.com/MetaMask/snaps-skunkworks/pull/424))
+- **BREAKING:** Change `execution-environment` build output ([#424](https://github.com/MetaMask/snaps-monorepo/pull/424))
 
 ## [0.12.0]
 ### Added
-- Add support for endowment teardown ([#407](https://github.com/MetaMask/snaps-skunkworks/pull/407))
+- Add support for endowment teardown ([#407](https://github.com/MetaMask/snaps-monorepo/pull/407))
 
 ## [0.11.1]
 ### Changed
@@ -96,31 +96,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.11.0]
 ### Changed
-- Bump `ses` to `0.15.15` ([#396](https://github.com/MetaMask/snaps-skunkworks/pull/396))
-- Upgraded TypeScript version to minimum 4.4 ([#360](https://github.com/MetaMask/snaps-skunkworks/pull/360))
-- Remove cross-fetch ([#349](https://github.com/MetaMask/snaps-skunkworks/pull/349))
+- Bump `ses` to `0.15.15` ([#396](https://github.com/MetaMask/snaps-monorepo/pull/396))
+- Upgraded TypeScript version to minimum 4.4 ([#360](https://github.com/MetaMask/snaps-monorepo/pull/360))
+- Remove cross-fetch ([#349](https://github.com/MetaMask/snaps-monorepo/pull/349))
 
 ## [0.10.7]
 ### Added
-- Add setInterval and clearInterval as default endowments ([#326](https://github.com/MetaMask/snaps-skunkworks/pull/326))
+- Add setInterval and clearInterval as default endowments ([#326](https://github.com/MetaMask/snaps-monorepo/pull/326))
 
 ### Changed
-- **BREAKING:** Bump minimum Node version from 12 to 14 ([#331](https://github.com/MetaMask/snaps-skunkworks/pull/331))
+- **BREAKING:** Bump minimum Node version from 12 to 14 ([#331](https://github.com/MetaMask/snaps-monorepo/pull/331))
 
 ### Fixed
-- Fix missing properties on WebAssembly endowment ([#334](https://github.com/MetaMask/snaps-skunkworks/pull/334))
+- Fix missing properties on WebAssembly endowment ([#334](https://github.com/MetaMask/snaps-monorepo/pull/334))
 
 ## [0.10.6]
 ### Fixed
-- Fix function endowment bindings ([#311](https://github.com/MetaMask/snaps-skunkworks/pull/311))
+- Fix function endowment bindings ([#311](https://github.com/MetaMask/snaps-monorepo/pull/311))
 
 ## [0.10.5]
 ### Fixed
-- Fix missing index.js ([#303](https://github.com/MetaMask/snaps-skunkworks/pull/303))
+- Fix missing index.js ([#303](https://github.com/MetaMask/snaps-monorepo/pull/303))
 
 ## [0.10.4]
 ### Fixed
-- Fix endowed global functions with properties ([#294](https://github.com/MetaMask/snaps-skunkworks/pull/294))
+- Fix endowed global functions with properties ([#294](https://github.com/MetaMask/snaps-monorepo/pull/294))
   - Endowments like `Date` were missing all properties except `name` and `length`, causing e.g. `Date.now` to be `undefined`. This is no longer the case.
 
 ## [0.10.3]
@@ -129,21 +129,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.10.2]
 ### Fixed
-- Remove faulty postinstall script ([#279](https://github.com/MetaMask/snaps-skunkworks/pull/279))
+- Remove faulty postinstall script ([#279](https://github.com/MetaMask/snaps-monorepo/pull/279))
   - The faulty script caused the installation of this package to fail for consumers.
 
 ## [0.10.1]
 ### Fixed
-- Removed deprecated package ([#272](https://github.com/MetaMask/snaps-skunkworks/pull/272))
+- Removed deprecated package ([#272](https://github.com/MetaMask/snaps-monorepo/pull/272))
   - This package now uses the functionally equivalent `@metamask/providers` instead of the deprecated `@metamask/inpage-provider`.
 
 ## [0.10.0]
 ### Changed
-- Initial release, made using components from the deprecated [`@metamask/snap-workers`](https://npmjs.com/package/@metamask/snap-workers) package. ([#231](https://github.com/MetaMask/snaps-skunkworks/pull/231))
+- Initial release, made using components from the deprecated [`@metamask/snap-workers`](https://npmjs.com/package/@metamask/snap-workers) package. ([#231](https://github.com/MetaMask/snaps-monorepo/pull/231))
   - Breaking changes are relative to the old package.
-- **BREAKING:** Endowments must be passed to the execution environment ([#252](https://github.com/MetaMask/snaps-skunkworks/pull/252)), ([#266](https://github.com/MetaMask/snaps-skunkworks/pull/266))
+- **BREAKING:** Endowments must be passed to the execution environment ([#252](https://github.com/MetaMask/snaps-monorepo/pull/252)), ([#266](https://github.com/MetaMask/snaps-monorepo/pull/266))
   - Previously, default endowments were specified in the execution environment itself. Now, all endowments must be specified in the `executeSnap` RPC parameters, except for the `wallet` API object.
-- Add endowments to the global `self` in addition to `window` ([#263](https://github.com/MetaMask/snaps-skunkworks/pull/263))
+- Add endowments to the global `self` in addition to `window` ([#263](https://github.com/MetaMask/snaps-monorepo/pull/263))
 
 [Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.2...HEAD
 [0.22.2]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.1...v0.22.2

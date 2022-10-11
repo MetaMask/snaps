@@ -5,7 +5,7 @@
   "description": "An example Snap that performs IPFS operations.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps-skunkworks.git"
+    "url": "https://github.com/MetaMask/snaps-monorepo.git"
   },
   "license": "ISC",
   "main": "src/index.js",

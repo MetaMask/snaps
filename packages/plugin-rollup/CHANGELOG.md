@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.21.0]
 ### Added
-- Run eval and fix manifest in bundler plugins ([#731](https://github.com/MetaMask/snaps-skunkworks/pull/731))
+- Run eval and fix manifest in bundler plugins ([#731](https://github.com/MetaMask/snaps-monorepo/pull/731))
 
 ## [0.20.0]
 ### Changed
@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.19.1]
 ### Added
-- Generate source maps from modified code ([#615](https://github.com/MetaMask/snaps-skunkworks/pull/615))
+- Generate source maps from modified code ([#615](https://github.com/MetaMask/snaps-monorepo/pull/615))
 
 ## [0.19.0]
 ### Changed
@@ -40,11 +40,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.18.0]
 ### Changed
-- Reduce TypeScript compilation target to ES2017 ([#628](https://github.com/MetaMask/snaps-skunkworks/pull/628))
+- Reduce TypeScript compilation target to ES2017 ([#628](https://github.com/MetaMask/snaps-monorepo/pull/628))
 
 ## [0.17.0]
 ### Changed
-- **BREAKING:** Bump minimum Node version to 16 ([#601](https://github.com/MetaMask/snaps-skunkworks/pull/601))
+- **BREAKING:** Bump minimum Node version to 16 ([#601](https://github.com/MetaMask/snaps-monorepo/pull/601))
 
 ## [0.16.0]
 ### Changed
@@ -56,12 +56,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.14.0]
 ### Fixed
-- Actually publish package contents ([#449](https://github.com/MetaMask/snaps-skunkworks/pull/449))
+- Actually publish package contents ([#449](https://github.com/MetaMask/snaps-monorepo/pull/449))
   - Package contents were omitted from the previous version due to a build failure.
 
 ## [0.13.0]
 ### Added
-- Initial release ([#431](https://github.com/MetaMask/snaps-skunkworks/pull/431))
+- Initial release ([#431](https://github.com/MetaMask/snaps-monorepo/pull/431))
 
 [Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.2...HEAD
 [0.22.2]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.1...v0.22.2

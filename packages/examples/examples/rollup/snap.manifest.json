@@ -4,7 +4,7 @@
   "proposedName": "rollup-snap",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps-skunkworks.git"
+    "url": "https://github.com/MetaMask/snaps-monorepo.git"
   },
   "source": {
     "shasum": "KBCbe8PgRkiublGQuK8NPeUex737E8Px3fSrSdnYuIg=",
