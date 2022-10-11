@@ -1493,4 +1493,46 @@ describe('BaseSnapExecutor', () => {
       error: expect.anything(),
     });
   });
+
+  it('throws when trying to respond with unserializable values', async () => {
+    const CODE = `
+      module.exports.onRpcRequest = () => BigInt(0);
+    `;
+    const executor = new TestSnapExecutor();
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'executeSnap',
+      params: [FAKE_SNAP_NAME, CODE, []],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        FAKE_SNAP_NAME,
+        ON_RPC_REQUEST,
+        FAKE_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 2,
+      error: {
+        code: -32603,
+        data: expect.any(Object),
+        message: 'JSON-RPC responses must be JSON serializable objects.',
+      },
+    });
+  });
 });

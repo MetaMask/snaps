@@ -185,9 +185,13 @@ export class BaseSnapExecutor {
     });
   }
 
-  protected respond(id: JSONRPCID, responseObj: Record<string, unknown>) {
+  protected respond(id: JSONRPCID, requestObject: Record<string, unknown>) {
+    if (!isValidJson(requestObject) || !isObject(requestObject)) {
+      throw new Error('JSON-RPC responses must be JSON serializable objects.');
+    }
+
     this.commandStream.write({
-      ...responseObj,
+      ...requestObject,
       id,
       jsonrpc: '2.0',
     });
