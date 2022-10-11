@@ -90,7 +90,7 @@ Here's an example manifest:
 }
 ```
 
-Refer to [the Snaps publishing specification](https://github.com/MetaMask/specifications/blob/main/snaps/publishing.md) and the [manifest JSON schema](https://github.com/MetaMask/snaps-skunkworks/blob/main/packages/controllers/src/snaps/json-schemas/snap-manifest.schema.json) for details.
+Refer to [the Snaps publishing specification](https://github.com/MetaMask/specifications/blob/main/snaps/publishing.md) and the [manifest JSON schema](https://github.com/MetaMask/snaps-monorepo/blob/main/packages/controllers/src/snaps/json-schemas/snap-manifest.schema.json) for details.
 
 > **ATTN:** If your Snap is not compatible with the publishing specification, your Snap may not work properly or install at all.
 

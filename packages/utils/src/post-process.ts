@@ -318,7 +318,7 @@ export function postProcessBundle(
       // `import()` statements.
       // For reference:
       // - https://github.com/endojs/endo/blob/70cc86eb400655e922413b99c38818d7b2e79da0/packages/ses/error-codes/SES_HTML_COMMENT_REJECTED.md
-      // - https://github.com/MetaMask/snaps-skunkworks/issues/505
+      // - https://github.com/MetaMask/snaps-monorepo/issues/505
       const [replacementQuasis, replacementExpressions] = node.quasis.reduce<
         [TemplateElement[], Expression[]]
       >(
@@ -367,7 +367,7 @@ export function postProcessBundle(
       // `import()` statements.
       // For reference:
       // - https://github.com/endojs/endo/blob/70cc86eb400655e922413b99c38818d7b2e79da0/packages/ses/error-codes/SES_HTML_COMMENT_REJECTED.md
-      // - https://github.com/MetaMask/snaps-skunkworks/issues/505
+      // - https://github.com/MetaMask/snaps-monorepo/issues/505
       const tokens = breakTokens(node.value);
 
       // Only update the node if the string literal was broken up.

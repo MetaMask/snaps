@@ -5,7 +5,7 @@
   "description": "An example Snap that that uses ethers.js.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps-skunkworks.git"
+    "url": "https://github.com/MetaMask/snaps-monorepo.git"
   },
   "license": "ISC",
   "main": "src/index.js",
