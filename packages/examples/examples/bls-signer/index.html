@@ -1,6 +1,6 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-  </head>
+  <head>
     <title>BLS Signature Example</title>
   </head>
 
@@ -13,20 +13,23 @@
         <li>Please note that:</li>
         <ul>
           <li>
-            The <code>snap.manifest.json</code> and <code>package.json</code> must be located in located in the server root directory.
+            The <code>snap.manifest.json</code> and
+            <code>package.json</code> must be located in located in the server
+            root directory.
           </li>
           <li>
-            The Snap bundle must be hosted at the location specified by the <code>location</code> field of <code>snap.manifest.json</code>.
+            The Snap bundle must be hosted at the location specified by the
+            <code>location</code> field of <code>snap.manifest.json</code>.
           </li>
         </ul>
       </ul>
     </details>
-    <br/>
+    <br />
 
     <button class="connect">Connect</button>
     <button class="account">Get Public Key</button>
 
-    <br>
+    <br />
 
     <input class="challenge" placeholder="enter data to sign" />
     <button class="sign">Sign Message</button>
@@ -35,56 +38,63 @@
   <script>
     const snapId = `local:${window.location.href}`;
 
-    const connectButton = document.querySelector('button.connect')
-    const accountButton = document.querySelector('button.account')
-    const signButton = document.querySelector('button.sign')
+    const connectButton = document.querySelector('button.connect');
+    const accountButton = document.querySelector('button.account');
+    const signButton = document.querySelector('button.sign');
 
-    connectButton.addEventListener('click', connect)
-    signButton.addEventListener('click', signMessage)
-    accountButton.addEventListener('click', getAccount)
+    connectButton.addEventListener('click', connect);
+    signButton.addEventListener('click', signMessage);
+    accountButton.addEventListener('click', getAccount);
 
-    async function connect () {
+    async function connect() {
       await ethereum.request({
         method: 'wallet_enable',
-        params: [{
-          wallet_snap: { [snapId]: {} },
-        }]
-      })
+        params: [
+          {
+            wallet_snap: { [snapId]: {} },
+          },
+        ],
+      });
     }
 
-    async function getAccount () {
+    async function getAccount() {
       try {
         const response = await ethereum.request({
           method: 'wallet_invokeSnap',
-          params: [snapId, {
-            method: 'getAccount'
-          }]
-        })
+          params: [
+            snapId,
+            {
+              method: 'getAccount',
+            },
+          ],
+        });
 
-        alert('received back: ' + JSON.stringify(response))
+        alert('received back: ' + JSON.stringify(response));
       } catch (err) {
-        console.error(err)
-        alert('Problem happened: ' + err.message || err)
+        console.error(err);
+        alert('Problem happened: ' + err.message || err);
       }
     }
 
-    async function signMessage () {
+    async function signMessage() {
       try {
-        const data = document.querySelector('.challenge').value
+        const data = document.querySelector('.challenge').value;
         const response = await ethereum.request({
           method: 'wallet_invokeSnap',
-          params: [snapId, {
-            method: 'signMessage',
-            params: [data]
-          }]
-        })
+          params: [
+            snapId,
+            {
+              method: 'signMessage',
+              params: [data],
+            },
+          ],
+        });
 
-        alert('received back: ' + JSON.stringify(response))
+        alert('received back: ' + JSON.stringify(response));
       } catch (err) {
-        console.error(err)
-        alert('Problem happened: ' + err.message || err)
+        console.error(err);
+        alert('Problem happened: ' + err.message || err);
       }
     }
-
   </script>
 </html>

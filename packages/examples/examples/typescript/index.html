@@ -1,8 +1,8 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-  </head>
+  <head>
     <title>Hello, Snaps!</title>
-    <link rel="icon" type="image/svg" href="./images/icon.svg"/>
+    <link rel="icon" type="image/svg" href="./images/icon.svg" />
   </head>
 
   <body>
@@ -14,15 +14,18 @@
         <li>Please note that:</li>
         <ul>
           <li>
-            The <code>snap.manifest.json</code> and <code>package.json</code> must be located in located in the server root directory..
+            The <code>snap.manifest.json</code> and
+            <code>package.json</code> must be located in located in the server
+            root directory..
           </li>
           <li>
-            The Snap bundle must be hosted at the location specified by the <code>location</code> field of <code>snap.manifest.json</code>.
+            The Snap bundle must be hosted at the location specified by the
+            <code>location</code> field of <code>snap.manifest.json</code>.
           </li>
         </ul>
       </ul>
     </details>
-    <br/>
+    <br />
 
     <button class="connect">Connect</button>
     <button class="sendHello">Send Hello</button>
@@ -31,34 +34,39 @@
   <script>
     const snapId = `local:${window.location.href}`;
 
-    const connectButton = document.querySelector('button.connect')
-    const sendButton = document.querySelector('button.sendHello')
+    const connectButton = document.querySelector('button.connect');
+    const sendButton = document.querySelector('button.sendHello');
 
-    connectButton.addEventListener('click', connect)
-    sendButton.addEventListener('click', send)
+    connectButton.addEventListener('click', connect);
+    sendButton.addEventListener('click', send);
 
     // here we get permissions to interact with and install the snap
-    async function connect () {
+    async function connect() {
       await ethereum.request({
         method: 'wallet_enable',
-        params: [{
-          wallet_snap: { [snapId]: {} },
-        }]
-      })
+        params: [
+          {
+            wallet_snap: { [snapId]: {} },
+          },
+        ],
+      });
     }
 
     // here we call the snap's "inApp" or "native" method
-    async function send () {
+    async function send() {
       try {
         await ethereum.request({
           method: 'wallet_invokeSnap',
-          params: [snapId, {
-            method: 'hello'
-          }]
-        })
+          params: [
+            snapId,
+            {
+              method: 'hello',
+            },
+          ],
+        });
       } catch (err) {
-        console.error(err)
-        alert('Problem happened: ' + err.message || err)
+        console.error(err);
+        alert('Problem happened: ' + err.message || err);
       }
     }
   </script>

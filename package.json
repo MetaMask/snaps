@@ -15,7 +15,7 @@
     "publish:all": "./scripts/publish-all.sh",
     "link-packages": "./scripts/link-packages.sh",
     "lint:eslint": "eslint . --cache --ext js,ts",
-    "lint:misc": "prettier '**/*.json' '**/*.md' '!**/CHANGELOG.md' '**/*.yml' --ignore-path .gitignore",
+    "lint:misc": "prettier '**/*.json' '**/*.md' '!**/CHANGELOG.md' '**/*.yml' '**/*.html' --ignore-path .gitignore",
     "lint:changelogs": "yarn workspaces foreach --parallel --verbose run lint:changelog",
     "lint:tsconfig": "node scripts/verify-tsconfig.mjs",
     "lint": "yarn lint:tsconfig && yarn lint:eslint && yarn lint:misc --check",
