@@ -1,4 +1,4 @@
-# snaps-skunkworks
+# snaps-monorepo
 
 Monorepo for experimental snaps dependencies.
 
@@ -40,7 +40,7 @@ Run `yarn test` and `yarn lint` in the project root directory, or in a workspace
 
 ### Publishing
 
-1. Run [Create Release Pull Request workflow](https://github.com/MetaMask/snaps-skunkworks/actions/workflows/create-release-pr.yml)
+1. Run [Create Release Pull Request workflow](https://github.com/MetaMask/snaps-monorepo/actions/workflows/create-release-pr.yml)
 2. Checkout the created branch.
 3. Update CHANGELOG.md in each package, moving changes to their categories and make them more descriptive.
 4. Run `yarn install` in root to update `yarn.lock`.

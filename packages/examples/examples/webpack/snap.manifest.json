@@ -4,7 +4,7 @@
   "proposedName": "webpack-snap",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps-skunkworks.git"
+    "url": "https://github.com/MetaMask/snaps-monorepo.git"
   },
   "source": {
     "shasum": "ZWFcrhWfJfQko9o1PLh+IdOh+GbmDVpA5Ndhq8rhLJM=",

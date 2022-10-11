@@ -4,7 +4,7 @@
   "description": "TypeScript types for developing MetaMask Snaps.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps-skunkworks.git"
+    "url": "https://github.com/MetaMask/snaps-monorepo.git"
   },
   "main": "src/index.d.ts",
   "types": "src/index.d.ts",
