@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.22.2]
-### Uncategorized
-- Fix an issue with installing snaps that request `eth_accounts` ([#839](https://github.com/MetaMask/snaps-monorepo/pull/839))
+### Fixed
+- Fix an issue with installing snaps that request the `eth_accounts` permission ([#839](https://github.com/MetaMask/snaps-monorepo/pull/839))
 
 ## [0.22.1]
 ### Fixed

@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.22.2]
-### Uncategorized
+### Fixed
 - Throw an error when response is unserializable ([#840](https://github.com/MetaMask/snaps-monorepo/pull/840))
 
 ## [0.22.1]
