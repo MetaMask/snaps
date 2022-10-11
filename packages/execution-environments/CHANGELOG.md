@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.22.2]
+### Fixed
+- Throw an error when response is unserializable ([#840](https://github.com/MetaMask/snaps-monorepo/pull/840))
+
 ## [0.22.1]
 ### Changed
 - No changes this release.
@@ -141,7 +145,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Previously, default endowments were specified in the execution environment itself. Now, all endowments must be specified in the `executeSnap` RPC parameters, except for the `wallet` API object.
 - Add endowments to the global `self` in addition to `window` ([#263](https://github.com/MetaMask/snaps-monorepo/pull/263))
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.2...HEAD
+[0.22.2]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.1...v0.22.2
 [0.22.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.0...v0.22.1
 [0.22.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.21.0...v0.22.0
 [0.21.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.20.0...v0.21.0
