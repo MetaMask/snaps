@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello, Snaps!</title>
+    <link rel="icon" type="image/svg" href="./images/icon.svg" />
+  </head>
+
+  <body>
+    <h1>Hello, Snaps!</h1>
+    <details>
+      <summary>Instructions</summary>
+      <ul>
+        <li>First, click "Connect". Then, try out the other buttons!</li>
+        <li>Please note that:</li>
+        <ul>
+          <li>
+            The <code>snap.manifest.json</code> and
+            <code>package.json</code> must be located in the server root
+            directory..
+          </li>
+          <li>
+            The Snap bundle must be hosted at the location specified by the
+            <code>location</code> field of <code>snap.manifest.json</code>.
+          </li>
+        </ul>
+      </ul>
+    </details>
+    <br />
+
+    <button class="connect">Connect</button>
+    <button class="sendTransaction">Send ERC-20 Transaction</button>
+    <button class="sendNFTTransaction">Send NFT Transaction</button>
+    <button class="sendUnknownTransaction">Send Unknown Transaction</button>
+  </body>
+
+  <script>
+    const snapId = `local:${window.location.href}`;
+
+    const connectButton = document.querySelector('button.connect');
+    const sendButton = document.querySelector('button.sendTransaction');
+    const sendNFTButton = document.querySelector('button.sendNFTTransaction');
+    const sendUnknownButton = document.querySelector(
+      'button.sendUnknownTransaction',
+    );
+
+    const send = (selector) => async () => {
+      try {
+        // Get the user's account from MetaMask.
+        const accounts = await ethereum.request({
+          method: 'eth_requestAccounts',
+        });
+        const from = accounts[0];
+
+        // Send a transaction to MetaMask.
+        await ethereum.request({
+          method: 'eth_sendTransaction',
+          params: [
+            {
+              from,
+              to: '0x08A8fDBddc160A7d5b957256b903dCAb1aE512C5',
+              value: '0x0',
+              data: `0x${selector}00000000000000000000000047170ceae335a9db7e96b72de630389669b334710000000000000000000000000000000000000000000000000000000000000001`,
+            },
+          ],
+        });
+      } catch (err) {
+        console.error(err);
+        alert('Problem happened: ' + err.message || err);
+      }
+    };
+
+    connectButton.addEventListener('click', connect);
+    sendButton.addEventListener('click', send('f0f0f0f0'));
+    sendNFTButton.addEventListener('click', send('e1e1e1e1'));
+    sendUnknownButton.addEventListener('click', send('d2d2d2d2'));
+
+    // here we get permissions to interact with and install the snap
+    async function connect() {
+      await ethereum.request({
+        method: 'wallet_enable',
+        params: [
+          {
+            wallet_snap: { [snapId]: {} },
+          },
+        ],
+      });
+    }
+  </script>
+</html>
