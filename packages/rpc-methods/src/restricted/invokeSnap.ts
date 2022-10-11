@@ -97,7 +97,7 @@ export function getInvokeSnapImplementation({
     const { params = [], method, context } = options;
     const rawRequest = params[0];
 
-    const request = { ...rawRequest, jsonrpc: '2.0', id: nanoid() };
+    const request = { jsonrpc: '2.0', id: nanoid(), ...rawRequest };
 
     if (!isJsonRpcRequest(request)) {
       throw ethErrors.rpc.invalidParams({
