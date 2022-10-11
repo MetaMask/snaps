@@ -80,6 +80,8 @@ export const getSnapControllerMessenger = (
         args[1] === SnapEndowments.LongRunning
       ) {
         return false;
+      } else if (method === 'ApprovalController:addRequest') {
+        return (args[0] as any).requestData;
       }
       return true;
     });
