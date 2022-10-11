@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-cli",
-  "version": "0.22.1",
+  "version": "0.22.2",
   "description": "A CLI for developing MetaMask Snaps.",
   "repository": {
     "type": "git",
@@ -46,8 +46,8 @@
     "@babel/plugin-transform-runtime": "^7.16.7",
     "@babel/preset-env": "^7.16.7",
     "@babel/preset-typescript": "^7.16.7",
-    "@metamask/snap-utils": "^0.22.1",
-    "@metamask/snaps-browserify-plugin": "^0.22.1",
+    "@metamask/snap-utils": "^0.22.2",
+    "@metamask/snaps-browserify-plugin": "^0.22.2",
     "@metamask/utils": "^3.1.0",
     "babelify": "^10.0.0",
     "browserify": "^17.0.0",

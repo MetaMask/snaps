@@ -1,6 +1,6 @@
 {
   "name": "@metamask/rpc-methods",
-  "version": "0.22.1",
+  "version": "0.22.2",
   "description": "MetaMask Snap RPC method implementations.",
   "repository": {
     "type": "git",
@@ -28,7 +28,7 @@
   "dependencies": {
     "@metamask/controllers": "^31.0.0",
     "@metamask/key-tree": "^5.0.2",
-    "@metamask/snap-utils": "^0.22.1",
+    "@metamask/snap-utils": "^0.22.2",
     "@metamask/types": "^1.1.0",
     "@metamask/utils": "^3.1.0",
     "eth-rpc-errors": "^4.0.2",
