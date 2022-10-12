@@ -1544,4 +1544,121 @@ describe('BaseSnapExecutor', () => {
       },
     });
   });
+
+  describe('executeSnap', () => {
+    it.each([
+      {
+        snapName: 1,
+        code: 'module.exports.onRpcRequest = () => 1;',
+        endowments: [],
+      },
+      {
+        snapName: FAKE_SNAP_NAME,
+        code: 1,
+        endowments: [],
+      },
+      {
+        snapName: FAKE_SNAP_NAME,
+        code: 'module.exports.onRpcRequest = () => 1;',
+        endowments: ['foo', 1],
+      },
+      [1, 'module.exports.onRpcRequest = () => 1;', []],
+      [FAKE_SNAP_NAME, 1, []],
+      [FAKE_SNAP_NAME, 'module.exports.onRpcRequest = () => 1;', ['foo', 1]],
+    ])(
+      'throws an error if the request arguments are invalid',
+      async (params) => {
+        const executor = new TestSnapExecutor();
+
+        await executor.writeCommand({
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'executeSnap',
+          params,
+        });
+
+        expect(await executor.readCommand()).toStrictEqual({
+          jsonrpc: '2.0',
+          id: 1,
+          error: {
+            code: -32600,
+            data: expect.any(Object),
+            message: expect.any(String),
+            stack: expect.any(String),
+          },
+        });
+      },
+    );
+  });
+
+  describe('snapRpc', () => {
+    it.each([
+      {
+        snapName: 1,
+        method: ON_RPC_REQUEST,
+        origin: FAKE_ORIGIN,
+        request: { jsonrpc: '2.0', method: '', params: [] },
+      },
+      {
+        snapName: FAKE_SNAP_NAME,
+        method: 1,
+        origin: FAKE_ORIGIN,
+        request: { jsonrpc: '2.0', method: '', params: [] },
+      },
+      {
+        snapName: FAKE_SNAP_NAME,
+        method: ON_RPC_REQUEST,
+        origin: 1,
+        request: { jsonrpc: '2.0', method: '', params: [] },
+      },
+      {
+        snapName: FAKE_SNAP_NAME,
+        method: ON_RPC_REQUEST,
+        origin: FAKE_ORIGIN,
+        request: 1,
+      },
+      [
+        1,
+        ON_RPC_REQUEST,
+        FAKE_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+      [
+        FAKE_SNAP_NAME,
+        1,
+        FAKE_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+      [
+        FAKE_SNAP_NAME,
+        ON_RPC_REQUEST,
+        1,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+      [FAKE_SNAP_NAME, ON_RPC_REQUEST, FAKE_ORIGIN, 1],
+    ])(
+      'throws an error if the request arguments are invalid',
+      async (params) => {
+        const executor = new TestSnapExecutor();
+
+        await executor.writeCommand({
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'snapRpc',
+          params,
+        });
+
+        expect(await executor.readCommand()).toStrictEqual({
+          jsonrpc: '2.0',
+          id: 1,
+          error: {
+            code: -32600,
+            data: expect.any(Object),
+            message: expect.any(String),
+            stack: expect.any(String),
+          },
+        });
+      },
+    );
+  });
 });

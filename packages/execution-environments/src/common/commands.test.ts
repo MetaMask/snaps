@@ -60,54 +60,6 @@ describe('getCommandMethodImplementations', () => {
     ).toStrictEqual('OK');
   });
 
-  it('the executeSnap method will throw an Error if the snapName is not a string', async () => {
-    const startSnap = jest.fn();
-    const invokeSnapRpc = jest.fn();
-    const onTerminate = jest.fn();
-    const methodsObj = getCommandMethodImplementations(
-      startSnap,
-      invokeSnapRpc,
-      onTerminate,
-    );
-    await expect(async () => {
-      await methodsObj.executeSnap(1 as any, 'code', [
-        'endowment1',
-        'endowment2',
-      ]);
-    }).rejects.toThrow('Snap name is not a string.');
-  });
-
-  it('the executeSnap method will throw an Error if the sourceCode is not a string', async () => {
-    const startSnap = jest.fn();
-    const invokeSnapRpc = jest.fn();
-    const onTerminate = jest.fn();
-    const methodsObj = getCommandMethodImplementations(
-      startSnap,
-      invokeSnapRpc,
-      onTerminate,
-    );
-    await expect(async () => {
-      await methodsObj.executeSnap('foo', 2 as any, [
-        'endowment1',
-        'endowment2',
-      ]);
-    }).rejects.toThrow('Source code is not a string.');
-  });
-
-  it('the executeSnap method will throw an Error if it is not passed a proper Endowments object', async () => {
-    const startSnap = jest.fn();
-    const invokeSnapRpc = jest.fn();
-    const onTerminate = jest.fn();
-    const methodsObj = getCommandMethodImplementations(
-      startSnap,
-      invokeSnapRpc,
-      onTerminate,
-    );
-    await expect(async () => {
-      await methodsObj.executeSnap('foo', 'code', ['endowment1', 2 as any]);
-    }).rejects.toThrow('Endowments is not an array of strings.');
-  });
-
   it('the snapRpc method will invoke the invokeSnapRpc function', async () => {
     const startSnap = jest.fn();
     const invokeSnapRpc = jest.fn();
@@ -133,65 +85,5 @@ describe('getCommandMethodImplementations', () => {
         request: rpcRequest,
       },
     );
-  });
-
-  it('the snapRpc method will throw an error if the target is not a string', async () => {
-    const startSnap = jest.fn();
-    const invokeSnapRpc = jest.fn();
-    const onTerminate = jest.fn();
-    const methodsObj = getCommandMethodImplementations(
-      startSnap,
-      invokeSnapRpc,
-      onTerminate,
-    );
-    const rpcRequest = { jsonrpc: '2.0', method: 'hello' };
-    await expect(async () => {
-      await methodsObj.snapRpc(
-        2 as any,
-        HandlerType.OnRpcRequest,
-        'bar',
-        rpcRequest as any,
-      );
-    }).rejects.toThrow('Target is not a string.');
-  });
-
-  it('the snapRpc method will throw an error if the origin is not a string', async () => {
-    const startSnap = jest.fn();
-    const invokeSnapRpc = jest.fn();
-    const onTerminate = jest.fn();
-    const methodsObj = getCommandMethodImplementations(
-      startSnap,
-      invokeSnapRpc,
-      onTerminate,
-    );
-    const rpcRequest = { jsonrpc: '2.0', method: 'hello' };
-    await expect(async () => {
-      await methodsObj.snapRpc(
-        'foo',
-        HandlerType.OnRpcRequest,
-        2 as any,
-        rpcRequest as any,
-      );
-    }).rejects.toThrow('Origin is not a string.');
-  });
-
-  it('the snapRpc method will throw an error if the request is not a JSON RPC request', async () => {
-    const startSnap = jest.fn();
-    const invokeSnapRpc = jest.fn();
-    const onTerminate = jest.fn();
-    const methodsObj = getCommandMethodImplementations(
-      startSnap,
-      invokeSnapRpc,
-      onTerminate,
-    );
-    const rpcRequest = { method: 'hello' };
-    await expect(async () => {
-      await methodsObj.snapRpc(
-        'foo',
-        HandlerType.OnRpcRequest,
-        'bar',
-        rpcRequest as any,
-      );
-    }).rejects.toThrow('Request is not a proper JSON-RPC request.');
   });
 });

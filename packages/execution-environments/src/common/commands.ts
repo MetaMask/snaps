@@ -1,15 +1,9 @@
-import {
-  JsonRpcRequest,
-  assertExhaustive,
-  JsonRpcParams,
-  assert,
-} from '@metamask/utils';
+import { assertExhaustive } from '@metamask/utils';
 import { HandlerType } from '@metamask/snap-utils';
 import { InvokeSnap, InvokeSnapArgs } from './BaseSnapExecutor';
 import {
   ExecuteSnap,
-  isEndowmentsArray,
-  isJsonRpcRequestWithoutId,
+  JsonRpcRequestWithoutId,
   Ping,
   SnapRpc,
   Terminate,
@@ -34,7 +28,7 @@ export type CommandMethodsMapping = {
 function getHandlerArguments(
   origin: string,
   handler: HandlerType,
-  request: JsonRpcRequest<JsonRpcParams>,
+  request: JsonRpcRequestWithoutId,
 ): InvokeSnapArgs {
   switch (handler) {
     case HandlerType.OnTransaction: {
@@ -52,16 +46,6 @@ function getHandlerArguments(
     default:
       return assertExhaustive(handler);
   }
-}
-
-/**
- * Typeguard to ensure a handler is part of the HandlerType.
- *
- * @param handler - The handler to pass the request to.
- * @returns A boolean.
- */
-function isHandler(handler: string): handler is HandlerType {
-  return Object.values(HandlerType).includes(handler as HandlerType);
 }
 
 /**
@@ -91,26 +75,11 @@ export function getCommandMethodImplementations(
     },
 
     executeSnap: async (snapName, sourceCode, endowments) => {
-      assert(typeof snapName === 'string', 'Snap name is not a string.');
-      assert(typeof sourceCode === 'string', 'Source code is not a string.');
-      assert(
-        !endowments || isEndowmentsArray(endowments),
-        'Endowments is not an array of strings.',
-      );
-
       await startSnap(snapName as string, sourceCode as string, endowments);
       return 'OK';
     },
 
     snapRpc: async (target, handler, origin, request) => {
-      assert(typeof target === 'string', 'Target is not a string.');
-      assert(typeof origin === 'string', 'Origin is not a string.');
-      assert(
-        isJsonRpcRequestWithoutId(request),
-        'Request is not a proper JSON-RPC request.',
-      );
-      assert(isHandler(handler), 'Incorrect handler type.');
-
       return (
         (await invokeSnap(
           target,

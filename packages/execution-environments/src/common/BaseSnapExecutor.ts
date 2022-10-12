@@ -14,12 +14,14 @@ import {
   JsonRpcRequest,
   JsonRpcParams,
   Json,
+  hasProperty,
 } from '@metamask/utils';
 import {
   HandlerType,
   SNAP_EXPORT_NAMES,
   SnapExportsParameters,
 } from '@metamask/snap-utils';
+import { validate } from 'superstruct';
 import EEOpenRPCDocument from '../openrpc.json';
 import { createEndowments } from './endowments';
 import {
@@ -30,7 +32,13 @@ import { removeEventListener, addEventListener } from './globalEvents';
 import { sortParamKeys } from './sortParams';
 import { constructError, withTeardown } from './utils';
 import { wrapKeyring } from './keyring';
-import { validateExport } from './validation';
+import {
+  ExecuteSnapRequestArgumentsStruct,
+  PingRequestArgumentsStruct,
+  SnapRpcRequestArgumentsStruct,
+  TerminateRequestStruct,
+  validateExport,
+} from './validation';
 
 type EvaluationData = {
   stop: () => void;
@@ -47,13 +55,39 @@ const fallbackError = {
   message: 'Execution Environment Error',
 };
 
-export type InvokeSnapArgs = SnapExportsParameters[0];
+// TODO: `KeyringParameters` expects a `chainId` for certain methods, but we're
+// not providing it in `getHandlerArguments`, resulting in type errors.
+export type InvokeSnapArgs = Omit<SnapExportsParameters[0], 'chainId'>;
 
 export type InvokeSnap = (
   target: string,
   handler: HandlerType,
   args: InvokeSnapArgs | undefined,
 ) => Promise<Json>;
+
+/**
+ * The supported methods in the execution environment. The validator checks the
+ * incoming JSON-RPC request, and the `params` property is used for sorting the
+ * parameters, if they are an object.
+ */
+const EXECUTION_ENVIRONMENT_METHODS = {
+  ping: {
+    validator: PingRequestArgumentsStruct,
+    params: [],
+  },
+  executeSnap: {
+    validator: ExecuteSnapRequestArgumentsStruct,
+    params: ['snapName', 'sourceCode', 'endowments'],
+  },
+  terminate: {
+    validator: TerminateRequestStruct,
+    params: [],
+  },
+  snapRpc: {
+    validator: SnapRpcRequestArgumentsStruct,
+    params: ['target', 'handler', 'origin', 'request'],
+  },
+};
 
 export class BaseSnapExecutor {
   private snapData: Map<string, SnapData>;
@@ -129,11 +163,7 @@ export class BaseSnapExecutor {
       return;
     }
 
-    const methodObject = EEOpenRPCDocument.methods.find(
-      (m) => m.name === method,
-    );
-
-    if (!methodObject || !(this.methods as any)[method]) {
+    if (!hasProperty(EXECUTION_ENVIRONMENT_METHODS, method)) {
       this.respond(id, {
         error: ethErrors.rpc
           .methodNotFound({
@@ -146,8 +176,29 @@ export class BaseSnapExecutor {
       return;
     }
 
+    const methodObject =
+      EXECUTION_ENVIRONMENT_METHODS[
+        method as keyof typeof EXECUTION_ENVIRONMENT_METHODS
+      ];
+
     // support params by-name and by-position
-    const paramsAsArray = sortParamKeys(methodObject, params);
+    const paramsAsArray = sortParamKeys(methodObject.params, params);
+
+    const [error] = validate<any, any>(paramsAsArray, methodObject.validator);
+    if (error) {
+      this.respond(id, {
+        error: ethErrors.rpc
+          .invalidRequest({
+            message: error.message,
+            data: {
+              method,
+              params: paramsAsArray,
+            },
+          })
+          .serialize(),
+      });
+      return;
+    }
 
     try {
       const result = await (this.methods as any)[method](...paramsAsArray);

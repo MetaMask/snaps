@@ -10,13 +10,15 @@ import {
   object,
   omit,
   optional,
+  record,
   string,
+  tuple,
+  union,
   unknown,
 } from 'superstruct';
 import {
   Json,
   JsonRpcIdStruct,
-  JsonRpcRequest,
   JsonRpcRequestStruct,
   JsonRpcSuccess,
   JsonRpcSuccessStruct,
@@ -111,57 +113,46 @@ export function isEndowmentsArray(value: unknown): value is Endowment[] {
 
 const OkStruct = literal('OK');
 
-const PingRequestStruct = assign(
-  JsonRpcRequestStruct,
-  object({
-    method: literal('ping'),
-    params: optional(unknown()),
-  }),
+export const PingRequestArgumentsStruct = optional(
+  union([literal(undefined), array()]),
 );
 
-const TerminateRequestStruct = assign(
-  JsonRpcRequestStruct,
-  object({
-    method: literal('terminate'),
-    params: optional(unknown()),
-  }),
-);
+export const TerminateRequestStruct = union([literal(undefined), array()]);
 
-const ExecuteSnapRequestStruct = assign(
-  JsonRpcRequestStruct,
-  object({
-    method: literal('executeSnap'),
-    params: object({
-      snapName: string(),
-      sourceCode: string(),
-      endowments: optional(array(EndowmentStruct)),
+export const ExecuteSnapRequestArgumentsStruct = tuple([
+  string(),
+  string(),
+  optional(array(EndowmentStruct)),
+]);
+
+export const SnapRpcRequestArgumentsStruct = tuple([
+  string(),
+  enums(Object.values(HandlerType)),
+  string(),
+  assign(
+    JsonRpcRequestWithoutIdStruct,
+    object({
+      params: optional(record(string(), unknown())),
     }),
-  }),
-);
+  ),
+]);
 
-const SnapRpcRequestStruct = assign(
-  JsonRpcRequestStruct,
-  object({
-    method: literal('snapRpc'),
-    params: object({
-      target: string(),
-      handler: enums(Object.values(HandlerType)),
-      origin: string(),
-      request: JsonRpcRequestStruct,
-    }),
-  }),
-);
+export type PingRequestArguments = Infer<typeof PingRequestArgumentsStruct>;
+export type TerminateRequestArguments = Infer<typeof TerminateRequestStruct>;
 
-export type PingRequest = Infer<typeof PingRequestStruct>;
-export type TerminateRequest = Infer<typeof TerminateRequestStruct>;
-export type ExecuteSnapRequest = Infer<typeof ExecuteSnapRequestStruct>;
-export type SnapRpcRequest = Infer<typeof SnapRpcRequestStruct>;
+export type ExecuteSnapRequestArguments = Infer<
+  typeof ExecuteSnapRequestArgumentsStruct
+>;
 
-export type Request =
-  | PingRequest
-  | TerminateRequest
-  | ExecuteSnapRequest
-  | SnapRpcRequest;
+export type SnapRpcRequestArguments = Infer<
+  typeof SnapRpcRequestArgumentsStruct
+>;
+
+export type RequestArguments =
+  | PingRequestArguments
+  | TerminateRequestArguments
+  | ExecuteSnapRequestArguments
+  | SnapRpcRequestArguments;
 
 const OkResponseStruct = assign(
   JsonRpcSuccessStruct,
@@ -177,51 +168,18 @@ export type SnapRpcResponse = Infer<typeof SnapRpcResponse>;
 
 export type Response = OkResponse | SnapRpcResponse;
 
-// UnionToIntersection<A | B> = A & B
-type UnionToIntersection<U> = (
-  U extends unknown ? (arg: U) => 0 : never
-) extends (arg: infer I) => 0
-  ? I
-  : never;
-
-// LastInUnion<A | B> = B
-type LastInUnion<U> = UnionToIntersection<
-  U extends unknown ? (x: U) => 0 : never
-> extends (x: infer L) => 0
-  ? L
-  : never;
-
-// UnionToTuple<A, B> = [A, B]
-type UnionToTuple<T, Last = LastInUnion<T>> = [T] extends [never]
-  ? []
-  : [Last, ...UnionToTuple<Exclude<T, Last>>];
-
-type InterfaceToTuple<
-  T,
-  U = UnionToTuple<keyof T>,
-  V extends any[] = [],
-> = U extends [infer F, ...infer Rest]
-  ? F extends keyof T
-    ? InterfaceToTuple<T, Rest, [T[F], ...V]>
-    : never
-  : V;
-
-type RequestParams<RequestType> = RequestType extends JsonRpcRequest<
-  infer Params
->
-  ? Params extends Record<string, unknown>
-    ? InterfaceToTuple<Params>
-    : Params extends unknown[]
-    ? [...Params]
-    : []
-  : [];
+type RequestParams<Params extends unknown[] | undefined> =
+  Params extends undefined ? [] : Params;
 
 type RequestFunction<
-  RequestType extends Request,
+  Args extends RequestArguments,
   ResponseType extends JsonRpcSuccess<Json>,
-> = (...args: RequestParams<RequestType>) => Promise<ResponseType['result']>;
+> = (...args: RequestParams<Args>) => Promise<ResponseType['result']>;
 
-export type Ping = RequestFunction<PingRequest, OkResponse>;
-export type Terminate = RequestFunction<TerminateRequest, OkResponse>;
-export type ExecuteSnap = RequestFunction<ExecuteSnapRequest, OkResponse>;
-export type SnapRpc = RequestFunction<SnapRpcRequest, SnapRpcResponse>;
+export type Ping = RequestFunction<PingRequestArguments, OkResponse>;
+export type Terminate = RequestFunction<TerminateRequestArguments, OkResponse>;
+export type ExecuteSnap = RequestFunction<
+  ExecuteSnapRequestArguments,
+  OkResponse
+>;
+export type SnapRpc = RequestFunction<SnapRpcRequestArguments, SnapRpcResponse>;
