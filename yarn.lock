@@ -3114,7 +3114,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/snap-types@^0.22.2, @metamask/snap-types@workspace:packages/types":
+"@metamask/snap-types@^0.22.1, @metamask/snap-types@^0.22.2, @metamask/snap-types@workspace:packages/types":
   version: 0.0.0-use.local
   resolution: "@metamask/snap-types@workspace:packages/types"
   dependencies:
@@ -3223,7 +3223,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/snaps-cli@^0.22.2, @metamask/snaps-cli@workspace:packages/cli":
+"@metamask/snaps-cli@^0.22.1, @metamask/snaps-cli@^0.22.2, @metamask/snaps-cli@workspace:packages/cli":
   version: 0.0.0-use.local
   resolution: "@metamask/snaps-cli@workspace:packages/cli"
   dependencies:
