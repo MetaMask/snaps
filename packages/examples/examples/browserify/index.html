@@ -1,8 +1,8 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-  </head>
+  <head>
     <title>Hello, Snaps!</title>
-    <link rel="icon" type="image/svg" href="./images/icon.svg"/>
+    <link rel="icon" type="image/svg" href="./images/icon.svg" />
   </head>
 
   <body>
@@ -14,15 +14,18 @@
         <li>Please note that:</li>
         <ul>
           <li>
-            The <code>snap.manifest.json</code> and <code>package.json</code> must be located in the server root directory.
+            The <code>snap.manifest.json</code> and
+            <code>package.json</code> must be located in the server root
+            directory.
           </li>
           <li>
-            The Snap bundle must be hosted at the location specified by the <code>location</code> field of <code>snap.manifest.json</code>.
+            The Snap bundle must be hosted at the location specified by the
+            <code>location</code> field of <code>snap.manifest.json</code>.
           </li>
         </ul>
       </ul>
     </details>
-    <br/>
+    <br />
 
     <button class="connect">Connect</button>
     <button class="sendInApp">Send in-app notification</button>
@@ -32,36 +35,41 @@
   <script>
     const snapId = `local:${window.location.href}`;
 
-    const connectButton = document.querySelector('button.connect')
-    const sendInAppButton = document.querySelector('button.sendInApp')
-    const sendNativeButton = document.querySelector('button.sendNative')
+    const connectButton = document.querySelector('button.connect');
+    const sendInAppButton = document.querySelector('button.sendInApp');
+    const sendNativeButton = document.querySelector('button.sendNative');
 
-    connectButton.addEventListener('click', connect)
-    sendInAppButton.addEventListener('click', () => send('inApp'))
-    sendNativeButton.addEventListener('click', () => send('native'))
+    connectButton.addEventListener('click', connect);
+    sendInAppButton.addEventListener('click', () => send('inApp'));
+    sendNativeButton.addEventListener('click', () => send('native'));
 
     // here we get permissions to interact with and install the snap
-    async function connect () {
+    async function connect() {
       await ethereum.request({
         method: 'wallet_enable',
-        params: [{
-          wallet_snap: { [snapId]: {} },
-        }]
-      })
+        params: [
+          {
+            wallet_snap: { [snapId]: {} },
+          },
+        ],
+      });
     }
 
     // here we call the snap's "inApp" or "native" method
-    async function send (method) {
+    async function send(method) {
       try {
         await ethereum.request({
           method: 'wallet_invokeSnap',
-          params: [snapId, {
-            method: method
-          }]
-        })
+          params: [
+            snapId,
+            {
+              method: method,
+            },
+          ],
+        });
       } catch (err) {
-        console.error(err)
-        alert('Problem happened: ' + err.message || err)
+        console.error(err);
+        alert('Problem happened: ' + err.message || err);
       }
     }
   </script>

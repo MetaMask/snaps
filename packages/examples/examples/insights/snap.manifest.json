@@ -1,0 +1,24 @@
+{
+  "version": "0.22.1",
+  "description": "An example transaction insights Snap.",
+  "proposedName": "Transaction Insights Example Snap",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps-monorepo.git"
+  },
+  "source": {
+    "shasum": "l3QRoIUw1LSiuN1Y3bl88eqWDj3pc6AL5Wwp/j+ClhA=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "packageName": "transaction-insights-snap",
+        "registry": "https://registry.npmjs.org/"
+      }
+    }
+  },
+  "initialPermissions": {
+    "endowment:transaction-insight": {},
+    "endowment:network-access": {}
+  },
+  "manifestVersion": "0.1"
+}
