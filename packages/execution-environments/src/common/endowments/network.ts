@@ -1,4 +1,4 @@
-import { allFunctions, withTeardown } from '../utils';
+import { allProperties, withTeardown } from '../utils';
 
 type WebSocketCallback = (this: WebSocket, ev: any) => any;
 
@@ -396,19 +396,29 @@ const createNetwork = () => {
       }
 
       return (e) => {
-        const functions = allFunctions(e).map((key) => e[key].bind(this));
-        listener.apply(this, [
-          {
-            ...e,
-            ...functions,
-            target: this,
-            currentTarget: this,
-            srcElement: this,
-            ports: [this],
-            source: null,
-            composedPath: () => [this],
-          },
-        ]);
+        // TODO: Should we migrate this to use a wrapper class?
+        const properties = [...allProperties(e)]
+          .filter(([_, key]) => key !== 'constructor')
+          .reduce<Record<string, any>>((acc, [obj, key]) => {
+            const stringKey = key.toString();
+            const descriptor = Reflect.getOwnPropertyDescriptor(obj, key);
+            if (typeof descriptor?.value === 'function') {
+              acc[stringKey] = e[stringKey].bind(this);
+            } else {
+              acc[stringKey] = e[stringKey];
+            }
+            return acc;
+          }, {});
+        const event = {
+          ...properties,
+          target: this,
+          currentTarget: this,
+          srcElement: this,
+          ports: [this],
+          source: null,
+          composedPath: () => [this],
+        };
+        listener.apply(this, [event]);
       };
     }
 
