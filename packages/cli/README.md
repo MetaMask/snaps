@@ -18,12 +18,12 @@ Install a dev dependency in your snap project or globally using `yarn` or `npm`:
 Usage: mm-snap <command> [options]
 
 Commands:
-  mm-snap build     Build Snap from source                          [aliases: b]
-  mm-snap eval      Attempt to evaluate Snap bundle in SES          [aliases: e]
-  mm-snap init      Initialize Snap package                         [aliases: i]
-  mm-snap manifest  Validate the snap.manifest.json file            [aliases: m]
-  mm-snap serve     Locally serve Snap file(s) for testing          [aliases: s]
-  mm-snap watch     Build Snap on change                            [aliases: w]
+  mm-snap build             Build Snap from source                  [aliases: b]
+  mm-snap eval              Attempt to evaluate Snap bundle in SES  [aliases: e]
+  mm-snap init <directory>  Initialize Snap package                 [aliases: i]
+  mm-snap manifest          Validate the snap.manifest.json file    [aliases: m]
+  mm-snap serve             Locally serve Snap file(s) for testing  [aliases: s]
+  mm-snap watch             Build Snap on change                    [aliases: w]
 
 Options:
       --version           Show version number                          [boolean]

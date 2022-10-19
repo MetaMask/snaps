@@ -1,8 +1,9 @@
-import { promises as fs } from 'fs';
-import { tmpdir } from 'os';
+import { promises as fs, constants, existsSync } from 'fs';
 import { exec, execSync } from 'child_process';
 import pathUtils from 'path';
+import os from 'os';
 import mkdirp from 'mkdirp';
+import rimraf from 'rimraf';
 import { TemplateType } from '../../builders';
 
 /**
@@ -15,7 +16,7 @@ export async function prepareWorkingDirectory(
 ): Promise<void> {
   const isCurrentDirectory = directory === process.cwd();
 
-  if (!isCurrentDirectory && !directoryExists(directory)) {
+  if (!isCurrentDirectory && !existsSync(directory)) {
     try {
       mkdirp(directory);
     } catch (e) {
@@ -31,21 +32,6 @@ export async function prepareWorkingDirectory(
 }
 
 /**
- * Check if the provided directory exists.
- *
- * @param directory - The directory to access.
- * @returns True if the directory exists, false otherwise.
- */
-export async function directoryExists(directory: string) {
-  try {
-    await fs.access(directory);
-    return true;
-  } catch (err) {
-    return false;
-  }
-}
-
-/**
  * Check if template argument is TemplateType.TypeScript.
  *
  * @param templateType - TemplateType value of the template argument passed from CLI.
@@ -56,24 +42,22 @@ export function isTemplateTypescript(templateType: TemplateType): boolean {
 }
 
 /**
- * Creates a temporary directory.
+ * Create a temporary folder in system's temporary directory.
  *
  * @returns The temporary directory path.
  */
 export async function createTemporaryDirectory() {
   try {
-    const tmpDirPrefix = 'snap-template-tmp';
-    const tmpDir = await fs.mkdtemp(pathUtils.join(tmpdir(), tmpDirPrefix));
-    await mkdirp(tmpDir);
-
-    return tmpDir;
-  } catch (e) {
+    return fs.mkdtemp(pathUtils.join(os.tmpdir(), 'snaps-cli-'));
+  } catch (err) {
     throw Error('Failed to create temporary folder');
   }
 }
 
 const TEMPLATE_GIT_URL =
   'https://github.com/MetaMask/template-snap-monorepo.git';
+
+export const TEMPLATE_FOLDER_NAME = 'template';
 
 /**
  * Clones the template in a directory.
@@ -83,7 +67,7 @@ const TEMPLATE_GIT_URL =
 export async function cloneTemplate(directory: string) {
   try {
     exec(
-      `git clone ${TEMPLATE_GIT_URL}`,
+      `git clone --depth=1 ${TEMPLATE_GIT_URL} ${TEMPLATE_FOLDER_NAME}`,
       {
         cwd: directory,
       },
@@ -97,6 +81,20 @@ export async function cloneTemplate(directory: string) {
     );
   } catch (e) {
     throw Error('Failed to clone the template.');
+  }
+}
+
+/**
+ * Check if git is installed.
+ *
+ * @returns True if git is installed otherwise false.
+ */
+export function isGitInstalled() {
+  try {
+    execSync('git --version', { stdio: 'ignore' });
+    return true;
+  } catch (e) {
+    return false;
   }
 }
 

@@ -1,5 +1,6 @@
 import { promises as fs } from 'fs';
 import pathUtils from 'path';
+import { ncp } from 'ncp';
 import {
   NpmSnapFileNames,
   SnapManifest,
@@ -13,7 +14,9 @@ import { closePrompt } from '../../utils';
 import {
   cloneTemplate,
   createTemporaryDirectory,
+  isGitInstalled,
   prepareWorkingDirectory,
+  TEMPLATE_FOLDER_NAME,
 } from './initUtils';
 
 const SATISFIED_VERSION = '>=16';
@@ -29,7 +32,7 @@ const SATISFIED_VERSION = '>=16';
  * @throws If initialization of the snap package failed.
  */
 export async function initHandler(argv: YargsArgs) {
-  const { $0: directory } = argv;
+  const { directory } = argv;
 
   const isVersionSupported = satisfiesVersionRange(
     process.version,
@@ -42,17 +45,35 @@ export async function initHandler(argv: YargsArgs) {
     );
   }
 
+  const gitExists = isGitInstalled();
+
+  if (!gitExists) {
+    console.error(
+      `Init Error: git is not installed. Please intall git to continue.`,
+    );
+  }
+
   const directoryToUse = directory
     ? pathUtils.join(process.cwd(), directory)
     : process.cwd();
 
   await prepareWorkingDirectory(directoryToUse);
 
-  const temporaryDirectory = await createTemporaryDirectory();
+  const tmpDir = await createTemporaryDirectory();
 
-  await cloneTemplate(temporaryDirectory);
-
-  closePrompt();
+  try {
+    await cloneTemplate(tmpDir);
+    ncp(pathUtils.join(tmpDir, TEMPLATE_FOLDER_NAME), directoryToUse, {
+      // @ts-expect-error wrong type
+      filter: (fileName: string) => !fileName.match(/.git/u),
+    });
+  } catch (err) {
+    console.error('Init error: Failed to copy template');
+  } finally {
+    if (tmpDir) {
+      fs.rm(tmpDir, { recursive: true, force: true });
+    }
+  }
   return { ...argv };
 }
 

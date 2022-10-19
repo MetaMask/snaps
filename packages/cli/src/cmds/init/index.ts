@@ -1,12 +1,11 @@
-import yargs, { Arguments } from 'yargs';
+import yargs from 'yargs';
 import builders from '../../builders';
 import { YargsArgs } from '../../types/yargs';
 import { build } from '../build/buildHandler';
 import { initHandler, updateManifestShasum } from './initHandler';
-import { correctDefaultArgs } from './initUtils';
 
 export = {
-  command: ['init', 'i'],
+  command: ['init <directory>', 'i <directory>'],
   desc: 'Initialize Snap package',
   builder: (yarg: yargs.Argv) => {
     yarg
@@ -14,13 +13,7 @@ export = {
       .option('dist', builders.dist)
       .option('port', builders.port)
       .option('outfileName', builders.outfileName)
-      .option('template', builders.template)
-      .middleware(
-        ((yargsArgv: Arguments) => {
-          correctDefaultArgs(yargsArgv);
-        }) as any,
-        true,
-      );
+      .option('template', builders.template);
   },
   handler: (argv: YargsArgs) => init(argv),
 };
