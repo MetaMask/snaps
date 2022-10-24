@@ -13,7 +13,7 @@ jobs:
       statuses: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           # If the base branch has been merged into the release branch, we
           # need to find the earliest common ancestor commit of the base and
