@@ -91,16 +91,15 @@ export class MultiChainProvider extends SafeEventEmitter implements Provider {
         );
 
         this.#isConnected = false;
-        const response = await this.#rpcRequest({
+        const session = await this.#rpcRequest({
           method: 'metamask_handshake',
           params: { requiredNamespaces },
         });
 
-        assertIsSession(response);
+        assertIsSession(session);
 
         this.#isConnected = true;
 
-        const session = response;
         this.emit('session_update', { params: session });
         return session;
       },
