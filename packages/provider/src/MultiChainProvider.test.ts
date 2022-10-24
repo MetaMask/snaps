@@ -160,6 +160,23 @@ describe('MultiChainProvider', () => {
       expect(provider.isConnected).toBe(false);
       expect(listener).not.toHaveBeenCalled();
     });
+
+    it('throws on errors', async () => {
+      const request = ethereum.request as jest.MockedFunction<
+        typeof ethereum.request
+      >;
+
+      request.mockImplementation(async () => {
+        throw new Error('foo');
+      });
+
+      const provider = new MultiChainProvider();
+
+      const { approval } = await provider.connect({ requiredNamespaces: {} });
+      expect(provider.isConnected).toBe(false);
+
+      await expect(approval()).rejects.toThrow('foo');
+    });
   });
 
   describe('request', () => {
@@ -282,6 +299,27 @@ describe('MultiChainProvider', () => {
       const secondId = (request.mock.calls[2][0].params as { id: string }).id;
 
       expect(firstId).not.toBe(secondId);
+    });
+
+    it('throws on errors', async () => {
+      const provider = await getProvider();
+
+      const request = ethereum.request as jest.MockedFunction<
+        typeof ethereum.request
+      >;
+
+      request.mockImplementation(async () => {
+        throw new Error('foo');
+      });
+
+      await expect(
+        provider.request({
+          chainId: 'eip155:1',
+          request: {
+            method: 'eth_accounts',
+          },
+        }),
+      ).rejects.toThrow('foo');
     });
   });
 
