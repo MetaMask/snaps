@@ -66,6 +66,7 @@ jobs:
           node-version: 18.x
       - name: Get Yarn version
         run: echo "YARN_VERSION=$(yarn --version)" >> $GITHUB_OUTPUT
+        shell: bash
         id: yarn-version
       - name: Cache yarn dependencies
         uses: actions/cache@v3
