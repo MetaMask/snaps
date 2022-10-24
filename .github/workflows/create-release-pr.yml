@@ -21,7 +21,7 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           # This is to guarantee that the most recent tag is fetched.
           # This can be configured to a more reasonable value by consumers.
@@ -31,8 +31,8 @@ jobs:
           ref: ${{ github.event.inputs.base-branch }}
       - name: Get Node.js version
         id: nvm
-        run: echo ::set-output name=NODE_VERSION::$(cat .nvmrc)
-      - uses: actions/setup-node@v2
+        run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_OUTPUT
+      - uses: actions/setup-node@v3
         with:
           node-version: ${{ steps.nvm.outputs.NODE_VERSION }}
       - uses: MetaMask/action-create-release-pr@v1
@@ -43,7 +43,7 @@ jobs:
           release-version: ${{ github.event.inputs.release-version }}
           artifacts-path: gh-action__release-authors
       # Upload the release author artifact for use in subsequent workflows
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: release-authors
           path: gh-action__release-authors
