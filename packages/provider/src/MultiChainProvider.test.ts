@@ -33,12 +33,8 @@ async function getProvider(
   >;
 
   request.mockImplementation(async () => ({
-    jsonrpc: '2.0',
-    id: 1,
-    result: {
-      namespaces: {
-        eip155: getSessionNamespace(),
-      },
+    namespaces: {
+      eip155: getSessionNamespace(),
     },
   }));
 
@@ -69,12 +65,8 @@ describe('MultiChainProvider', () => {
       >;
 
       request.mockImplementation(async () => ({
-        jsonrpc: '2.0',
-        id: 1,
-        result: {
-          namespaces: {
-            eip155: getSessionNamespace(),
-          },
+        namespaces: {
+          eip155: getSessionNamespace(),
         },
       }));
 
@@ -93,12 +85,8 @@ describe('MultiChainProvider', () => {
       >;
 
       request.mockImplementation(async () => ({
-        jsonrpc: '2.0',
-        id: 1,
-        result: {
-          namespaces: {
-            eip155: getSessionNamespace(),
-          },
+        namespaces: {
+          eip155: getSessionNamespace(),
         },
       }));
 
@@ -152,12 +140,8 @@ describe('MultiChainProvider', () => {
       >;
 
       request.mockImplementation(async () => ({
-        jsonrpc: '2.0',
-        id: 1,
-        result: {
-          namespaces: {
-            eip155: 'foo',
-          },
+        namespaces: {
+          eip155: 'foo',
         },
       }));
 
@@ -177,26 +161,21 @@ describe('MultiChainProvider', () => {
       expect(listener).not.toHaveBeenCalled();
     });
 
-    it('throws on JSON-RPC error response', async () => {
+    it('throws on errors', async () => {
       const request = ethereum.request as jest.MockedFunction<
         typeof ethereum.request
       >;
 
-      request.mockImplementation(async () => ({
-        jsonrpc: '2.0',
-        id: 1,
-        error: {
-          code: -1,
-          message: 'foo',
-        },
-      }));
+      request.mockImplementation(async () => {
+        throw new Error('foo');
+      });
 
       const provider = new MultiChainProvider();
 
       const { approval } = await provider.connect({ requiredNamespaces: {} });
       expect(provider.isConnected).toBe(false);
 
-      await expect(approval()).rejects.toThrow('JSON-RPC request failed: foo');
+      await expect(approval()).rejects.toThrow('foo');
     });
   });
 
@@ -244,11 +223,7 @@ describe('MultiChainProvider', () => {
         typeof ethereum.request
       >;
 
-      request.mockImplementation(async () => ({
-        jsonrpc: '2.0',
-        id: 1,
-        result: 'foo',
-      }));
+      request.mockImplementation(async () => 'foo');
 
       const result = await provider.request({
         chainId: 'eip155:1',
@@ -326,21 +301,16 @@ describe('MultiChainProvider', () => {
       expect(firstId).not.toBe(secondId);
     });
 
-    it('throws on JSON-RPC errors', async () => {
+    it('throws on errors', async () => {
       const provider = await getProvider();
 
       const request = ethereum.request as jest.MockedFunction<
         typeof ethereum.request
       >;
 
-      request.mockImplementation(async () => ({
-        jsonrpc: '2.0',
-        id: 1,
-        error: {
-          code: -1,
-          message: 'foo',
-        },
-      }));
+      request.mockImplementation(async () => {
+        throw new Error('foo');
+      });
 
       await expect(
         provider.request({
@@ -349,7 +319,7 @@ describe('MultiChainProvider', () => {
             method: 'eth_accounts',
           },
         }),
-      ).rejects.toThrow('JSON-RPC request failed: foo');
+      ).rejects.toThrow('foo');
     });
   });
 

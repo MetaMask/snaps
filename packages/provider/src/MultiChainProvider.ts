@@ -2,7 +2,6 @@ import SafeEventEmitter from '@metamask/safe-event-emitter';
 import { nanoid } from 'nanoid';
 import {
   assertIsConnectArguments,
-  assertIsJsonRpcSuccess,
   assertIsMetaMaskNotification,
   assertIsMultiChainRequest,
   assertIsSession,
@@ -92,17 +91,15 @@ export class MultiChainProvider extends SafeEventEmitter implements Provider {
         );
 
         this.#isConnected = false;
-        const response = await this.#rpcRequest({
+        const session = await this.#rpcRequest({
           method: 'metamask_handshake',
           params: { requiredNamespaces },
         });
 
-        assertIsJsonRpcSuccess(response);
-        assertIsSession(response.result);
+        assertIsSession(session);
 
         this.#isConnected = true;
 
-        const session = response.result;
         this.emit('session_update', { params: session });
         return session;
       },
@@ -129,16 +126,13 @@ export class MultiChainProvider extends SafeEventEmitter implements Provider {
 
     assertIsMultiChainRequest(args);
 
-    const response = await this.#rpcRequest({
+    return this.#rpcRequest({
       method: 'caip_request',
       params: {
         chainId: args.chainId,
         request: { method: args.request.method, params: args.request.params },
       },
     });
-
-    assertIsJsonRpcSuccess(response);
-    return response.result;
   }
 
   /**
