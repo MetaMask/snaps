@@ -1,5 +1,5 @@
 {
-  "version": "0.22.2",
+  "version": "0.22.3",
   "description": "An example Snap built using TypeScript and Rollup",
   "proposedName": "rollup-snap",
   "repository": {

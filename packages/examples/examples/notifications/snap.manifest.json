@@ -1,5 +1,5 @@
 {
-  "version": "0.22.2",
+  "version": "0.22.3",
   "description": "A notification example snap.",
   "proposedName": "Notification Example Snap",
   "repository": {

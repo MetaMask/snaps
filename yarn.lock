@@ -2823,7 +2823,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/execution-environments@^0.22.2, @metamask/execution-environments@workspace:packages/execution-environments":
+"@metamask/execution-environments@^0.22.3, @metamask/execution-environments@workspace:packages/execution-environments":
   version: 0.0.0-use.local
   resolution: "@metamask/execution-environments@workspace:packages/execution-environments"
   dependencies:
@@ -2836,8 +2836,8 @@ __metadata:
     "@metamask/object-multiplex": ^1.2.0
     "@metamask/post-message-stream": ^6.0.0
     "@metamask/providers": ^9.0.0
-    "@metamask/snap-types": ^0.22.2
-    "@metamask/snap-utils": ^0.22.2
+    "@metamask/snap-types": ^0.22.3
+    "@metamask/snap-utils": ^0.22.3
     "@metamask/utils": ^3.1.0
     "@open-rpc/typings": ^1.12.1
     "@types/jest": ^27.5.1
@@ -2905,8 +2905,8 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^9.0.0
     "@metamask/eslint-config-typescript": ^9.0.1
     "@metamask/safe-event-emitter": ^2.0.0
-    "@metamask/snap-types": ^0.22.2
-    "@metamask/snap-utils": ^0.22.2
+    "@metamask/snap-types": ^0.22.3
+    "@metamask/snap-utils": ^0.22.3
     "@metamask/utils": ^3.1.0
     "@types/jest": ^27.5.1
     eslint: ^7.30.0
@@ -2979,7 +2979,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/rollup-plugin-snaps@^0.22.2, @metamask/rollup-plugin-snaps@workspace:packages/plugin-rollup":
+"@metamask/rollup-plugin-snaps@^0.22.3, @metamask/rollup-plugin-snaps@workspace:packages/plugin-rollup":
   version: 0.0.0-use.local
   resolution: "@metamask/rollup-plugin-snaps@workspace:packages/plugin-rollup"
   dependencies:
@@ -2989,7 +2989,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^9.0.0
     "@metamask/eslint-config-nodejs": ^9.0.0
     "@metamask/eslint-config-typescript": ^9.0.1
-    "@metamask/snap-utils": ^0.22.2
+    "@metamask/snap-utils": ^0.22.3
     "@rollup/plugin-virtual": ^2.1.0
     "@types/jest": ^27.5.1
     eslint: ^7.30.0
@@ -3011,7 +3011,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/rpc-methods@^0.22.2, @metamask/rpc-methods@workspace:packages/rpc-methods":
+"@metamask/rpc-methods@^0.22.3, @metamask/rpc-methods@workspace:packages/rpc-methods":
   version: 0.0.0-use.local
   resolution: "@metamask/rpc-methods@workspace:packages/rpc-methods"
   dependencies:
@@ -3023,7 +3023,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^9.0.0
     "@metamask/eslint-config-typescript": ^9.0.1
     "@metamask/key-tree": ^5.0.2
-    "@metamask/snap-utils": ^0.22.2
+    "@metamask/snap-utils": ^0.22.3
     "@metamask/types": ^1.1.0
     "@metamask/utils": ^3.1.0
     "@types/node": ^14.14.25
@@ -3066,12 +3066,12 @@ __metadata:
     "@metamask/eslint-config-jest": ^9.0.0
     "@metamask/eslint-config-nodejs": ^9.0.0
     "@metamask/eslint-config-typescript": ^9.0.1
-    "@metamask/execution-environments": ^0.22.2
+    "@metamask/execution-environments": ^0.22.3
     "@metamask/object-multiplex": ^1.1.0
     "@metamask/post-message-stream": ^6.0.0
-    "@metamask/rpc-methods": ^0.22.2
-    "@metamask/snap-types": ^0.22.2
-    "@metamask/snap-utils": ^0.22.2
+    "@metamask/rpc-methods": ^0.22.3
+    "@metamask/snap-types": ^0.22.3
+    "@metamask/snap-utils": ^0.22.3
     "@metamask/template-snap": ^0.7.0
     "@metamask/utils": ^3.1.0
     "@peculiar/webcrypto": ^1.3.3
@@ -3114,7 +3114,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/snap-types@^0.22.1, @metamask/snap-types@^0.22.2, @metamask/snap-types@workspace:packages/types":
+"@metamask/snap-types@^0.22.3, @metamask/snap-types@workspace:packages/types":
   version: 0.0.0-use.local
   resolution: "@metamask/snap-types@workspace:packages/types"
   dependencies:
@@ -3125,7 +3125,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^9.0.0
     "@metamask/eslint-config-typescript": ^9.0.1
     "@metamask/providers": ^9.0.0
-    "@metamask/snap-utils": ^0.22.2
+    "@metamask/snap-utils": ^0.22.3
     "@metamask/types": ^1.1.0
     eslint: ^7.30.0
     eslint-config-prettier: ^8.3.0
@@ -3143,7 +3143,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/snap-utils@^0.22.2, @metamask/snap-utils@workspace:packages/utils":
+"@metamask/snap-utils@^0.22.3, @metamask/snap-utils@workspace:packages/utils":
   version: 0.0.0-use.local
   resolution: "@metamask/snap-utils@workspace:packages/utils"
   dependencies:
@@ -3156,7 +3156,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^9.0.0
     "@metamask/eslint-config-nodejs": ^9.0.0
     "@metamask/eslint-config-typescript": ^9.0.1
-    "@metamask/snap-types": ^0.22.2
+    "@metamask/snap-types": ^0.22.3
     "@metamask/utils": ^3.1.0
     "@noble/hashes": ^1.1.3
     "@scure/base": ^1.1.1
@@ -3188,7 +3188,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/snaps-browserify-plugin@^0.22.2, @metamask/snaps-browserify-plugin@workspace:packages/plugin-browserify":
+"@metamask/snaps-browserify-plugin@^0.22.3, @metamask/snaps-browserify-plugin@workspace:packages/plugin-browserify":
   version: 0.0.0-use.local
   resolution: "@metamask/snaps-browserify-plugin@workspace:packages/plugin-browserify"
   dependencies:
@@ -3198,7 +3198,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^9.0.0
     "@metamask/eslint-config-nodejs": ^9.0.0
     "@metamask/eslint-config-typescript": ^9.0.1
-    "@metamask/snap-utils": ^0.22.2
+    "@metamask/snap-utils": ^0.22.3
     "@types/browserify": ^12.0.37
     "@types/convert-source-map": ^1.5.2
     "@types/jest": ^27.5.1
@@ -3223,7 +3223,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/snaps-cli@^0.22.1, @metamask/snaps-cli@^0.22.2, @metamask/snaps-cli@workspace:packages/cli":
+"@metamask/snaps-cli@^0.22.3, @metamask/snaps-cli@workspace:packages/cli":
   version: 0.0.0-use.local
   resolution: "@metamask/snaps-cli@workspace:packages/cli"
   dependencies:
@@ -3241,8 +3241,8 @@ __metadata:
     "@metamask/eslint-config-jest": ^9.0.0
     "@metamask/eslint-config-nodejs": ^9.0.0
     "@metamask/eslint-config-typescript": ^9.0.1
-    "@metamask/snap-utils": ^0.22.2
-    "@metamask/snaps-browserify-plugin": ^0.22.2
+    "@metamask/snap-utils": ^0.22.3
+    "@metamask/snaps-browserify-plugin": ^0.22.3
     "@metamask/utils": ^3.1.0
     "@types/browserify": ^12.0.36
     "@types/init-package-json": ^1.10.0
@@ -3290,7 +3290,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/snaps-webpack-plugin@^0.22.2, @metamask/snaps-webpack-plugin@workspace:packages/plugin-webpack":
+"@metamask/snaps-webpack-plugin@^0.22.3, @metamask/snaps-webpack-plugin@workspace:packages/plugin-webpack":
   version: 0.0.0-use.local
   resolution: "@metamask/snaps-webpack-plugin@workspace:packages/plugin-webpack"
   dependencies:
@@ -3300,7 +3300,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^9.0.0
     "@metamask/eslint-config-nodejs": ^9.0.0
     "@metamask/eslint-config-typescript": ^9.0.1
-    "@metamask/snap-utils": ^0.22.2
+    "@metamask/snap-utils": ^0.22.3
     "@types/jest": ^27.5.1
     "@types/webpack-sources": ^3.2.0
     eslint: ^7.30.0
@@ -5793,7 +5793,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^9.0.0
     "@metamask/eslint-config-nodejs": ^9.0.0
     "@metamask/eslint-config-typescript": ^9.0.1
-    "@metamask/snaps-cli": ^0.22.2
+    "@metamask/snaps-cli": ^0.22.3
     eslint: ^7.30.0
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
@@ -6021,9 +6021,9 @@ __metadata:
     "@metamask/eslint-config-jest": ^9.0.0
     "@metamask/eslint-config-nodejs": ^9.0.0
     "@metamask/eslint-config-typescript": ^9.0.1
-    "@metamask/snap-types": ^0.22.2
-    "@metamask/snaps-browserify-plugin": ^0.22.2
-    "@metamask/snaps-cli": ^0.22.2
+    "@metamask/snap-types": ^0.22.3
+    "@metamask/snaps-browserify-plugin": ^0.22.3
+    "@metamask/snaps-cli": ^0.22.3
     "@types/browserify": ^12.0.37
     "@types/gulp": ^4.0.9
     "@types/node": ^17.0.33
@@ -8745,7 +8745,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^9.0.0
     "@metamask/eslint-config-nodejs": ^9.0.0
     "@metamask/eslint-config-typescript": ^9.0.1
-    "@metamask/snaps-cli": ^0.22.2
+    "@metamask/snaps-cli": ^0.22.3
     eslint: ^7.30.0
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
@@ -9005,7 +9005,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^9.0.0
     "@metamask/eslint-config-nodejs": ^9.0.0
     "@metamask/eslint-config-typescript": ^9.0.1
-    "@metamask/snaps-cli": ^0.22.2
+    "@metamask/snaps-cli": ^0.22.3
     "@typescript-eslint/eslint-plugin": ^5.19.0
     "@typescript-eslint/parser": ^5.19.0
     eslint: ^7.30.0
@@ -10570,7 +10570,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^9.0.0
     "@metamask/eslint-config-nodejs": ^9.0.0
     "@metamask/eslint-config-typescript": ^9.0.1
-    "@metamask/snaps-cli": ^0.22.2
+    "@metamask/snaps-cli": ^0.22.3
     eslint: ^7.30.0
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
@@ -13251,7 +13251,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^9.0.0
     "@metamask/eslint-config-nodejs": ^9.0.0
     "@metamask/eslint-config-typescript": ^9.0.1
-    "@metamask/snaps-cli": ^0.22.2
+    "@metamask/snaps-cli": ^0.22.3
     eslint: ^7.30.0
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
@@ -15073,9 +15073,9 @@ __metadata:
     "@metamask/eslint-config-jest": ^9.0.0
     "@metamask/eslint-config-nodejs": ^9.0.0
     "@metamask/eslint-config-typescript": ^9.0.1
-    "@metamask/rollup-plugin-snaps": ^0.22.2
-    "@metamask/snap-types": ^0.22.2
-    "@metamask/snaps-cli": ^0.22.2
+    "@metamask/rollup-plugin-snaps": ^0.22.3
+    "@metamask/snap-types": ^0.22.3
+    "@metamask/snaps-cli": ^0.22.3
     "@rollup/plugin-babel": ^5.3.1
     "@types/node": ^17.0.33
     concurrently: ^7.1.0
@@ -16587,8 +16587,8 @@ __metadata:
     "@metamask/eslint-config-jest": ^9.0.0
     "@metamask/eslint-config-nodejs": ^9.0.0
     "@metamask/eslint-config-typescript": ^9.0.1
-    "@metamask/snap-types": ^0.22.1
-    "@metamask/snaps-cli": ^0.22.1
+    "@metamask/snap-types": ^0.22.3
+    "@metamask/snaps-cli": ^0.22.3
     "@metamask/utils": ^3.2.0
     eslint: ^7.30.0
     eslint-config-prettier: ^8.3.0
@@ -16899,8 +16899,8 @@ __metadata:
     "@metamask/eslint-config-jest": ^9.0.0
     "@metamask/eslint-config-nodejs": ^9.0.0
     "@metamask/eslint-config-typescript": ^9.0.1
-    "@metamask/snap-types": ^0.22.2
-    "@metamask/snaps-cli": ^0.22.2
+    "@metamask/snap-types": ^0.22.3
+    "@metamask/snaps-cli": ^0.22.3
     eslint: ^7.30.0
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
@@ -17434,7 +17434,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^9.0.0
     "@metamask/eslint-config-nodejs": ^9.0.0
     "@metamask/eslint-config-typescript": ^9.0.1
-    "@metamask/snaps-cli": ^0.22.2
+    "@metamask/snaps-cli": ^0.22.3
     assemblyscript: ^0.19.23
     brfs: ^2.0.2
     eslint: ^7.30.0
@@ -17629,9 +17629,9 @@ __metadata:
     "@metamask/eslint-config-jest": ^9.0.0
     "@metamask/eslint-config-nodejs": ^9.0.0
     "@metamask/eslint-config-typescript": ^9.0.1
-    "@metamask/snap-types": ^0.22.2
-    "@metamask/snaps-cli": ^0.22.2
-    "@metamask/snaps-webpack-plugin": ^0.22.2
+    "@metamask/snap-types": ^0.22.3
+    "@metamask/snaps-cli": ^0.22.3
+    "@metamask/snaps-webpack-plugin": ^0.22.3
     "@types/node": ^17.0.33
     babel-loader: ^8.2.5
     concurrently: ^7.1.0
