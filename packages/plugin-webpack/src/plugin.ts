@@ -7,6 +7,7 @@ import {
   PostProcessOptions,
   SourceMap,
 } from '@metamask/snap-utils';
+import { assert } from '@metamask/utils';
 import { Compiler, WebpackError } from 'webpack';
 import { RawSource, SourceMapSource } from 'webpack-sources';
 
@@ -86,9 +87,7 @@ export default class SnapsWebpackPlugin {
         .getAssets()
         .find((asset) => asset.name.endsWith('.js'));
 
-      if (!file) {
-        return;
-      }
+      assert(file);
 
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const outputPath = compilation.outputOptions.path!;
@@ -103,9 +102,10 @@ export default class SnapsWebpackPlugin {
         const { errors, warnings } = await checkManifest(
           pathUtils.dirname(this.options.manifestPath),
           this.options.writeManifest,
-          (
-            await promisify(compiler.outputFileSystem.readFile)(filePath)
-          )?.toString(),
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          (await promisify(compiler.outputFileSystem.readFile)(
+            filePath,
+          ))!.toString(),
         );
 
         if (!this.options.writeManifest && errors.length > 0) {
