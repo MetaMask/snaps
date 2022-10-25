@@ -1,4 +1,9 @@
-import { getSnapSourceShasum, Snap, SnapStatus, TruncatedSnap } from '../snaps';
+import {
+  getSnapSourceShasum,
+  PersistedSnap,
+  SnapStatus,
+  TruncatedSnap,
+} from '../snaps';
 import { getSnapManifest } from './manifest';
 
 /**
@@ -34,7 +39,7 @@ export const getSnapObject = ({
   versionHistory = [
     { origin: MOCK_ORIGIN, version: '1.0.0', date: expect.any(Number) },
   ],
-}: Partial<Snap> = {}): Snap => {
+}: Partial<PersistedSnap> = {}): PersistedSnap => {
   return {
     blocked,
     initialPermissions,

@@ -67,6 +67,9 @@ jest.mock('./utils/npm', () => ({
 
 fetchMock.enableMocks();
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const omitSourceCode = ({ sourceCode, ...rest }: any): any => rest;
+
 describe('SnapController', () => {
   it('creates a snap controller and execution service', async () => {
     const [snapController, service] = getSnapControllerWithEES();
@@ -578,7 +581,7 @@ describe('SnapController', () => {
       new Promise<void>((resolve) => {
         messenger.subscribe('SnapController:snapAdded', (snap) => {
           expect(snap).toStrictEqual(
-            getSnapObject({ status: SnapStatus.Installing }),
+            omitSourceCode(getSnapObject({ status: SnapStatus.Installing })),
           );
           resolve();
         });
@@ -686,8 +689,7 @@ describe('SnapController', () => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const newSnap = controller.get(MOCK_SNAP_ID)!;
 
-    // Notice usage of toBe - we're checking if it's actually the same object, not an equal one
-    expect(newSnap).toBe(snap);
+    expect(newSnap).toStrictEqual(omitSourceCode(snap));
     expect(addSpy).not.toHaveBeenCalled();
     expect(authorizeSpy).not.toHaveBeenCalled();
     expect(messengerCallMock).toHaveBeenCalledTimes(1);
@@ -768,7 +770,7 @@ describe('SnapController', () => {
       new Promise<void>((resolve) => {
         messenger.subscribe('SnapController:snapAdded', (snap) => {
           expect(snap).toStrictEqual(
-            getSnapObject({ status: SnapStatus.Installing }),
+            omitSourceCode(getSnapObject({ status: SnapStatus.Installing })),
           );
           resolve();
         });
@@ -3646,7 +3648,7 @@ describe('SnapController', () => {
         expect(fetchSnapMock).toHaveBeenCalledTimes(1);
         expect(Object.keys(snapController.state.snaps)).toHaveLength(1);
         expect(snapController.state.snaps['npm:fooSnap']).toMatchObject(
-          fooSnapObject,
+          omitSourceCode(fooSnapObject),
         );
       });
     });
@@ -3679,7 +3681,7 @@ describe('SnapController', () => {
         const result = messenger.call('SnapController:get', 'npm:fooSnap');
 
         expect(getSpy).toHaveBeenCalledTimes(1);
-        expect(result).toMatchObject(fooSnapObject);
+        expect(result).toMatchObject(omitSourceCode(fooSnapObject));
       });
     });
 
