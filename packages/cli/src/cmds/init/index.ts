@@ -5,7 +5,7 @@ import { build } from '../build/buildHandler';
 import { initHandler } from './initHandler';
 
 export = {
-  command: ['init [directory]', 'i <directory>'],
+  command: ['init [directory]', 'i [directory]'],
   desc: 'Initialize Snap package',
   builder: (yarg: yargs.Argv) => {
     yarg
