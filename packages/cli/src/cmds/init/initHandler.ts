@@ -1,22 +1,24 @@
 import { promises as fs } from 'fs';
 import pathUtils from 'path';
-import { ncp } from 'ncp';
+import { remove } from 'fs-extra';
 import {
   NpmSnapFileNames,
   SnapManifest,
-  getSnapSourceShasum,
-  getWritableManifest,
   readJsonFile,
   satisfiesVersionRange,
+  NpmSnapPackageJson,
 } from '@metamask/snap-utils';
 import { YargsArgs } from '../../types/yargs';
-import { closePrompt } from '../../utils';
+import { logError } from '../../utils';
 import {
   cloneTemplate,
+  copyTemplate,
   createTemporaryDirectory,
+  gitInit,
   isGitInstalled,
+  isInGitRepository,
   prepareWorkingDirectory,
-  TEMPLATE_FOLDER_NAME,
+  SNAP_LOCATION,
 } from './initUtils';
 
 const SATISFIED_VERSION = '>=16';
@@ -38,17 +40,15 @@ export async function initHandler(argv: YargsArgs) {
     process.version,
     SATISFIED_VERSION,
   );
-
   if (!isVersionSupported) {
-    console.error(
+    logError(
       `Init Error: You are using an outdated version of Node (${process.version}). Please update to Node ${SATISFIED_VERSION}.`,
     );
   }
 
   const gitExists = isGitInstalled();
-
   if (!gitExists) {
-    console.error(
+    logError(
       `Init Error: git is not installed. Please intall git to continue.`,
     );
   }
@@ -57,41 +57,45 @@ export async function initHandler(argv: YargsArgs) {
     ? pathUtils.join(process.cwd(), directory)
     : process.cwd();
 
-  await prepareWorkingDirectory(directoryToUse);
+  console.log(`Preparing ${directoryToUse} ...`);
 
+  await prepareWorkingDirectory(directoryToUse);
   const tmpDir = await createTemporaryDirectory();
 
   try {
+    console.log(`Cloning template...`);
     await cloneTemplate(tmpDir);
-    ncp(pathUtils.join(tmpDir, TEMPLATE_FOLDER_NAME), directoryToUse, {
-      // @ts-expect-error wrong type
-      filter: (fileName: string) => !fileName.match(/.git/u),
-    });
+    await copyTemplate(tmpDir, directoryToUse);
   } catch (err) {
-    console.error('Init error: Failed to copy template');
+    logError('Init Error: Failed to create template, cleaning...');
+    throw err;
   } finally {
     if (tmpDir) {
-      fs.rm(tmpDir, { recursive: true, force: true });
+      await remove(tmpDir);
     }
   }
-  return { ...argv };
-}
 
-/**
- * This updates the Snap shasum value of the manifest after building the Snap
- * during the init command.
- */
-export async function updateManifestShasum() {
-  const manifest = await readJsonFile<SnapManifest>(NpmSnapFileNames.Manifest);
+  if (!isInGitRepository(directoryToUse)) {
+    console.log('Initiating git repository...');
+    gitInit(directoryToUse);
+  }
 
-  const bundleContents = await fs.readFile(
-    manifest.source.location.npm.filePath,
-    'utf8',
+  const snapLocation = pathUtils.join(directoryToUse, SNAP_LOCATION);
+
+  const manifest: SnapManifest = await readJsonFile(
+    pathUtils.join(snapLocation, NpmSnapFileNames.Manifest),
+  );
+  const packageJson: NpmSnapPackageJson = await readJsonFile(
+    pathUtils.join(snapLocation, NpmSnapFileNames.PackageJson),
   );
 
-  manifest.source.shasum = getSnapSourceShasum(bundleContents);
-  await fs.writeFile(
-    NpmSnapFileNames.Manifest,
-    JSON.stringify(getWritableManifest(manifest), null, 2),
-  );
+  const distPath = manifest.source.location.npm.filePath.split('/');
+
+  return {
+    ...argv,
+    dist: distPath[0],
+    outfileName: distPath[1],
+    src: packageJson.main || 'src/index.js',
+    snapLocation,
+  };
 }

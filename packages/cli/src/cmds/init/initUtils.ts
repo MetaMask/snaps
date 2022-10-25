@@ -1,10 +1,10 @@
-import { promises as fs, constants, existsSync } from 'fs';
-import { exec, execSync } from 'child_process';
+import { promises as fs } from 'fs';
+import { execSync } from 'child_process';
 import pathUtils from 'path';
-import os from 'os';
-import mkdirp from 'mkdirp';
-import rimraf from 'rimraf';
+import { tmpdir } from 'os';
+import { mkdirp, copy } from 'fs-extra';
 import { TemplateType } from '../../builders';
+import { logError } from '../../utils';
 
 /**
  * Checks if the destination folder exists and if it's empty. Otherwise create it.
@@ -14,20 +14,25 @@ import { TemplateType } from '../../builders';
 export async function prepareWorkingDirectory(
   directory: string,
 ): Promise<void> {
-  const isCurrentDirectory = directory === process.cwd();
+  try {
+    const isCurrentDirectory = directory === process.cwd();
 
-  if (!isCurrentDirectory && !existsSync(directory)) {
-    try {
-      mkdirp(directory);
-    } catch (e) {
-      throw Error('Failed to create new directory');
+    if (!isCurrentDirectory) {
+      try {
+        await mkdirp(directory);
+      } catch (err) {
+        logError('Init Error: Failed to create new directory', err);
+      }
     }
-  }
 
-  const existingFiles = await fs.readdir(directory);
+    const existingFiles = await fs.readdir(directory);
 
-  if (existingFiles.length > 0) {
-    throw Error('Directory not empty, please provide an empty directory.');
+    if (existingFiles.length > 0) {
+      throw new Error(`Directory not empty: ${directory}`);
+    }
+  } catch (err) {
+    logError('Init Error: Failed to prepare working directory', err);
+    throw err;
   }
 }
 
@@ -48,9 +53,10 @@ export function isTemplateTypescript(templateType: TemplateType): boolean {
  */
 export async function createTemporaryDirectory() {
   try {
-    return fs.mkdtemp(pathUtils.join(os.tmpdir(), 'snaps-cli-'));
+    return fs.mkdtemp(pathUtils.join(tmpdir(), 'snaps-cli-'));
   } catch (err) {
-    throw Error('Failed to create temporary folder');
+    logError('Init Error: Failed to create temporary folder', err);
+    throw err;
   }
 }
 
@@ -66,21 +72,15 @@ export const TEMPLATE_FOLDER_NAME = 'template';
  */
 export async function cloneTemplate(directory: string) {
   try {
-    exec(
+    execSync(
       `git clone --depth=1 ${TEMPLATE_GIT_URL} ${TEMPLATE_FOLDER_NAME}`,
       {
-        cwd: directory,
-      },
-      (err, stdout, stderr) => {
-        if (err) {
-          throw err;
-        }
-        console.log(stdout);
-        console.error(stderr);
+        stdio: [2],
+        cwd: pathUtils.resolve(__dirname, directory),
       },
     );
-  } catch (e) {
-    throw Error('Failed to clone the template.');
+  } catch (err) {
+    logError('Init Error: Failed to clone the template.', err);
   }
 }
 
@@ -99,27 +99,53 @@ export function isGitInstalled() {
 }
 
 /**
+ * Copy the cloned template in the target folder.
+ *
+ * @param source - The directory containing the cloned template.
+ * @param destination - The directory to copy the files into.
+ */
+export async function copyTemplate(source: string, destination: string) {
+  try {
+    await copy(pathUtils.join(source, TEMPLATE_FOLDER_NAME), destination, {
+      filter: (fileName: string) => !fileName.split('/').includes('.git'),
+    });
+  } catch (err) {
+    logError('Init error: Failed to copy template', err);
+  }
+}
+
+/**
  * Check if the actual working dir is a git repository.
  *
+ * @param directory - The directory to check.
  * @returns True if it's a git repository otherwise false.
  */
-export function isInGitRepository() {
+export function isInGitRepository(directory: string) {
   try {
-    execSync('git rev-parse --is-inside-work-tree', { stdio: 'ignore' });
+    execSync('git rev-parse --is-inside-work-tree', {
+      stdio: 'ignore',
+      cwd: pathUtils.resolve(__dirname, directory),
+    });
     return true;
-  } catch (e) {
+  } catch (err) {
     return false;
   }
 }
 
 /**
  * Init a git repository.
+ *
+ * @param directory - The directory to init.
  */
-export function gitInit() {
+export function gitInit(directory: string) {
   try {
-    execSync('git init', { stdio: 'ignore' });
-  } catch (e) {
-    console.warn('Git repo not initialized', e);
-    throw new Error('Failed do init a new repository');
+    execSync('git init', {
+      stdio: 'ignore',
+      cwd: pathUtils.resolve(__dirname, directory),
+    });
+  } catch (err) {
+    logError('Init Error: Failed to init a new git repository', err);
   }
 }
+
+export const SNAP_LOCATION = 'packages/snap/';
