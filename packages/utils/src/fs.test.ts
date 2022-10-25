@@ -13,7 +13,7 @@ import {
 } from './fs';
 import { NpmSnapFileNames } from './types';
 import { DEFAULT_SNAP_BUNDLE, getSnapManifest } from './test-utils';
-import { SnapManifest } from './json-schemas';
+import { SnapManifest } from './manifest';
 
 jest.mock('fs');
 

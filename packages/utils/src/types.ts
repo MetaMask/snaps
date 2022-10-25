@@ -3,7 +3,7 @@ import {
   SnapKeyring as Keyring,
 } from '@metamask/snap-types';
 import { Json } from '@metamask/utils';
-import { NpmSnapPackageJson, SnapManifest } from './json-schemas';
+import { NpmSnapPackageJson, SnapManifest } from './manifest';
 
 /**
  * An object for storing parsed but unvalidated Snap file contents.

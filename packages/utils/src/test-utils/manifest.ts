@@ -1,4 +1,4 @@
-import { NpmSnapPackageJson, SnapManifest } from '../json-schemas';
+import { NpmSnapPackageJson, SnapManifest } from '../manifest';
 import {
   Chain,
   Namespace,
@@ -6,7 +6,6 @@ import {
   SessionNamespace,
 } from '../namespace';
 import { DEFAULT_SNAP_SHASUM } from './snap';
-import { PartialOrNull } from './types';
 
 type GetSnapManifestOptions = Partial<Omit<SnapManifest, 'source'>> & {
   shasum?: string;
@@ -97,19 +96,14 @@ export const getPackageJson = ({
   description = 'The test example snap!',
   main = 'src/index.js',
   repository = getDefaultRepository(),
-}: PartialOrNull<NpmSnapPackageJson> = {}): NpmSnapPackageJson => {
-  return Object.entries({
+}: Partial<NpmSnapPackageJson> = {}): NpmSnapPackageJson => {
+  return {
     name,
     version,
     description,
     main,
     repository,
-  }).reduce((packageJson, [key, value]) => {
-    if (value) {
-      packageJson[key] = value;
-    }
-    return packageJson;
-  }, {} as NpmSnapPackageJson);
+  };
 };
 
 export const getChain = ({

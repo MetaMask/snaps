@@ -2,8 +2,8 @@ import { Json } from '@metamask/utils';
 import { sha256 } from '@noble/hashes/sha256';
 import { base64 } from '@scure/base';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
-import { SnapManifest } from './json-schemas';
 import { SnapId, SnapIdPrefixes, SnapValidationFailureReason } from './types';
+import { SnapManifest } from './manifest';
 
 export const LOCALHOST_HOSTNAMES = new Set(['localhost', '127.0.0.1', '::1']);
 export const SNAP_PREFIX = 'wallet_snap_';

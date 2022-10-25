@@ -5,12 +5,13 @@ import {
   SnapValidationFailureReason,
   UnvalidatedSnapFiles,
 } from './types';
+import { ProgrammaticallyFixableSnapError, validateSnapShasum } from './snaps';
 import {
+  assertIsNpmSnapPackageJson,
+  assertIsSnapManifest,
   NpmSnapPackageJson,
   SnapManifest,
-  validateSnapJsonFile,
-} from './json-schemas';
-import { ProgrammaticallyFixableSnapError, validateSnapShasum } from './snaps';
+} from './manifest';
 
 export const SVG_MAX_BYTE_SIZE = 100_000;
 export const SVG_MAX_BYTE_SIZE_TEXT = `${Math.floor(
@@ -54,13 +55,9 @@ export function validateNpmSnap(
   // Typecast: We are assured that the required files exist if we get here.
   const { manifest, packageJson, sourceCode, svgIcon } = snapFiles as SnapFiles;
   try {
-    validateSnapJsonFile(NpmSnapFileNames.Manifest, manifest);
+    assertIsSnapManifest(manifest);
   } catch (error) {
-    throw new Error(
-      `${errorPrefix ?? ''}"${NpmSnapFileNames.Manifest}" is invalid:\n${
-        error.message
-      }`,
-    );
+    throw new Error(`${errorPrefix ?? ''}${error.message}`);
   }
   const validatedManifest = manifest as SnapManifest;
 
@@ -70,13 +67,9 @@ export function validateNpmSnap(
   }
 
   try {
-    validateSnapJsonFile(NpmSnapFileNames.PackageJson, packageJson);
+    assertIsNpmSnapPackageJson(packageJson);
   } catch (error) {
-    throw new Error(
-      `${errorPrefix ?? ''}"${NpmSnapFileNames.PackageJson}" is invalid:\n${
-        error.message
-      }`,
-    );
+    throw new Error(`${errorPrefix ?? ''}${error.message}`);
   }
   const validatedPackageJson = packageJson as NpmSnapPackageJson;
 
