@@ -1,5 +1,5 @@
 import pathUtils from 'path';
-import { promises as fs } from 'fs';
+import { promisify } from 'util';
 import {
   checkManifest,
   evalBundle,
@@ -103,7 +103,9 @@ export default class SnapsWebpackPlugin {
         const { errors, warnings } = await checkManifest(
           pathUtils.dirname(this.options.manifestPath),
           this.options.writeManifest,
-          await fs.readFile(filePath, 'utf8'),
+          (
+            await promisify(compiler.outputFileSystem.readFile)(filePath)
+          )?.toString(),
         );
 
         if (!this.options.writeManifest && errors.length > 0) {
