@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.22.3]
-### Uncategorized
+### Fixed
 - Fix missing properties on WebSocket MessageEvent ([#845](https://github.com/MetaMask/snaps-monorepo/pull/845))
 
 ## [0.22.2]

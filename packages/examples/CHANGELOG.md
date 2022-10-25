@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.22.3]
-### Uncategorized
+### Added
 - Add transaction insights example snap ([#838](https://github.com/MetaMask/snaps-monorepo/pull/838))
 
 ## [0.22.2]

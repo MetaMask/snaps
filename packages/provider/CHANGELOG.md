@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.22.3]
-### Uncategorized
+### Fixed
 - Stop assuming wrapped responses from MetaMask provider ([#854](https://github.com/MetaMask/snaps-monorepo/pull/854))
 
 ## [0.22.2]
