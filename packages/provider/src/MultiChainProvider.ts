@@ -16,8 +16,6 @@ import { JsonRpcRequest } from '@metamask/utils';
 import type { SnapProvider } from '@metamask/snap-types';
 import { Provider } from './Provider';
 
-export { ChainId, ConnectArguments, RequestArguments, Session };
-
 declare global {
   // Declaration merging doesn't work with types, so we have to use an interface
   // here.
