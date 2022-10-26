@@ -11,9 +11,8 @@ import {
   validateFilePath,
   validateDirPath,
 } from './fs';
-import { NpmSnapFileNames } from './types';
+import { NpmSnapFileNames, SnapManifest } from './types';
 import { DEFAULT_SNAP_BUNDLE, getSnapManifest } from './test-utils';
-import { SnapManifest } from './manifest';
 
 jest.mock('fs');
 

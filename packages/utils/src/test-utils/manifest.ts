@@ -1,4 +1,4 @@
-import { NpmSnapPackageJson, SnapManifest } from '../manifest';
+import { NpmSnapPackageJson, SnapManifest } from '../types';
 import {
   Chain,
   Namespace,

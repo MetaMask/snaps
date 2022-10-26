@@ -2,8 +2,161 @@ import {
   SnapFunctionExports,
   SnapKeyring as Keyring,
 } from '@metamask/snap-types';
-import { Json } from '@metamask/utils';
-import { NpmSnapPackageJson, SnapManifest } from './manifest';
+import { Json, JsonStruct } from '@metamask/utils';
+import {
+  boolean,
+  Infer,
+  is,
+  literal,
+  object,
+  optional,
+  pattern,
+  record,
+  refine,
+  size,
+  string,
+  type,
+  union,
+} from 'superstruct';
+import { valid } from 'semver';
+import { minSize } from './structs';
+import { assertStruct } from './assert';
+
+export enum NpmSnapFileNames {
+  PackageJson = 'package.json',
+  Manifest = 'snap.manifest.json',
+}
+
+/**
+ * A struct for validating a version string.
+ */
+export const VersionStruct = refine(string(), 'Version', (value) => {
+  return valid(value) !== null;
+});
+
+export const NameStruct = size(
+  pattern(
+    string(),
+    /^(?:@[a-z0-9-*~][a-z0-9-*._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/u,
+  ),
+  1,
+  214,
+);
+
+// Note we use `type` instead of `object` here, because the latter does not
+// allow unknown keys.
+export const NpmSnapPackageJsonStruct = type({
+  version: VersionStruct,
+  name: NameStruct,
+  private: optional(boolean()),
+  main: optional(minSize(string(), 1)),
+  publishConfig: optional(
+    type({
+      registry: string(),
+      access: optional(minSize(string(), 1)),
+    }),
+  ),
+  repository: optional(
+    object({
+      type: minSize(string(), 1),
+      url: minSize(string(), 1),
+    }),
+  ),
+});
+
+export type NpmSnapPackageJson = Infer<typeof NpmSnapPackageJsonStruct> &
+  Record<string, any>;
+
+/**
+ * Check if the given value is a valid {@link NpmSnapPackageJson} object.
+ *
+ * @param value - The value to check.
+ * @returns Whether the value is a valid {@link NpmSnapPackageJson} object.
+ */
+export function isNpmSnapPackageJson(
+  value: unknown,
+): value is NpmSnapPackageJson {
+  return is(value, NpmSnapPackageJsonStruct);
+}
+
+/**
+ * Asserts that the given value is a valid {@link NpmSnapPackageJson} object.
+ *
+ * @param value - The value to check.
+ * @throws If the value is not a valid {@link NpmSnapPackageJson} object.
+ */
+export function assertIsNpmSnapPackageJson(
+  value: unknown,
+): asserts value is NpmSnapPackageJson {
+  assertStruct(
+    value,
+    NpmSnapPackageJsonStruct,
+    `"${NpmSnapFileNames.PackageJson}" is invalid`,
+  );
+}
+
+export const SnapManifestStruct = object({
+  version: VersionStruct,
+  description: size(string(), 1, 280),
+  proposedName: NameStruct,
+  repository: optional(
+    object({
+      type: minSize(string(), 1),
+      url: minSize(string(), 1),
+    }),
+  ),
+  source: object({
+    shasum: size(
+      pattern(
+        string(),
+        /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$/u,
+      ),
+      44,
+      44,
+    ),
+    location: object({
+      npm: object({
+        filePath: minSize(string(), 1),
+        iconPath: optional(minSize(string(), 1)),
+        packageName: NameStruct,
+        registry: union([
+          literal('https://registry.npmjs.org'),
+          literal('https://registry.npmjs.org/'),
+        ]),
+      }),
+    }),
+  }),
+  initialPermissions: record(string(), record(string(), JsonStruct)),
+  manifestVersion: literal('0.1'),
+});
+
+export type SnapManifest = Infer<typeof SnapManifestStruct>;
+
+/**
+ * Check if the given value is a valid {@link SnapManifest} object.
+ *
+ * @param value - The value to check.
+ * @returns Whether the value is a valid {@link SnapManifest} object.
+ */
+export function isSnapManifest(value: unknown): value is SnapManifest {
+  return is(value, SnapManifestStruct);
+}
+
+/**
+ * Assert that the given value is a valid {@link SnapManifest} object.
+ *
+ * @param value - The value to check.
+ * @throws If the value is not a valid {@link SnapManifest} object.
+ */
+export function assertIsSnapManifest(
+  value: unknown,
+): asserts value is SnapManifest {
+  assertStruct(
+    value,
+    SnapManifestStruct,
+    `"${NpmSnapFileNames.Manifest}" is invalid`,
+  );
+}
 
 /**
  * An object for storing parsed but unvalidated Snap file contents.
@@ -35,11 +188,6 @@ export enum SnapIdPrefixes {
 }
 
 export type SnapId = string;
-
-export enum NpmSnapFileNames {
-  PackageJson = 'package.json',
-  Manifest = 'snap.manifest.json',
-}
 
 /**
  * Snap validation failure reason codes that are programmatically fixable

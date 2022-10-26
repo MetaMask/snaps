@@ -5,11 +5,11 @@ import {
   fixManifest,
   getSnapSourceCode,
   getWritableManifest,
-  SnapManifest,
 } from './manifest';
 import {
   NpmSnapFileNames,
   SnapFiles,
+  SnapManifest,
   SnapValidationFailureReason,
 } from './types';
 import { readJsonFile } from './fs';
