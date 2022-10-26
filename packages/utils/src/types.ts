@@ -19,7 +19,6 @@ import {
   union,
 } from 'superstruct';
 import { valid as validSemver } from 'semver';
-import { minSize } from './structs';
 import { assertStruct } from './assert';
 
 export enum NpmSnapFileNames {
@@ -48,11 +47,11 @@ export const NameStruct = size(
 export const NpmSnapPackageJsonStruct = type({
   version: VersionStruct,
   name: NameStruct,
-  main: optional(minSize(string(), 1)),
+  main: optional(size(string(), 1, Infinity)),
   repository: optional(
     object({
-      type: minSize(string(), 1),
-      url: minSize(string(), 1),
+      type: size(string(), 1, Infinity),
+      url: size(string(), 1, Infinity),
     }),
   ),
 });
@@ -101,8 +100,8 @@ export const SnapManifestStruct = object({
   ),
   repository: optional(
     object({
-      type: minSize(string(), 1),
-      url: minSize(string(), 1),
+      type: size(string(), 1, Infinity),
+      url: size(string(), 1, Infinity),
     }),
   ),
   source: object({
@@ -116,8 +115,8 @@ export const SnapManifestStruct = object({
     ),
     location: object({
       npm: object({
-        filePath: minSize(string(), 1),
-        iconPath: optional(minSize(string(), 1)),
+        filePath: size(string(), 1, Infinity),
+        iconPath: optional(size(string(), 1, Infinity)),
         packageName: NameStruct,
         registry: union([
           literal('https://registry.npmjs.org'),
