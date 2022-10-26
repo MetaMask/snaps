@@ -5,7 +5,6 @@ import {
 import { Json } from '@metamask/utils';
 import {
   any,
-  boolean,
   Infer,
   is,
   literal,
@@ -19,7 +18,7 @@ import {
   type,
   union,
 } from 'superstruct';
-import { valid } from 'semver';
+import { valid as validSemver } from 'semver';
 import { minSize } from './structs';
 import { assertStruct } from './assert';
 
@@ -32,7 +31,7 @@ export enum NpmSnapFileNames {
  * A struct for validating a version string.
  */
 export const VersionStruct = refine(string(), 'Version', (value) => {
-  return valid(value) !== null;
+  return validSemver(value) !== null;
 });
 
 export const NameStruct = size(
@@ -49,14 +48,7 @@ export const NameStruct = size(
 export const NpmSnapPackageJsonStruct = type({
   version: VersionStruct,
   name: NameStruct,
-  private: optional(boolean()),
   main: optional(minSize(string(), 1)),
-  publishConfig: optional(
-    type({
-      registry: string(),
-      access: optional(minSize(string(), 1)),
-    }),
-  ),
   repository: optional(
     object({
       type: minSize(string(), 1),
