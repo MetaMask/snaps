@@ -3169,11 +3169,10 @@ __metadata:
     "@metamask/snaps-browserify-plugin": ^0.22.3
     "@metamask/utils": ^3.3.0
     "@types/browserify": ^12.0.36
+    "@types/fs-extra": ^9.0.13
     "@types/init-package-json": ^1.10.0
     "@types/is-url": ^1.2.28
     "@types/jest": ^27.5.1
-    "@types/mkdirp": ^1.0.2
-    "@types/ncp": ^2.0.5
     "@types/node": ^14.14.25
     "@types/rimraf": ^3.0.0
     "@types/serve-handler": ^6.1.0
@@ -3192,12 +3191,11 @@ __metadata:
     eslint-plugin-node: ^11.1.0
     eslint-plugin-prettier: ^3.4.0
     execa: ^5.1.1
+    fs-extra: ^10.1.0
     init-package-json: ^1.10.3
     is-url: ^1.2.4
     jest: ^29.0.2
     jest-it-up: ^2.0.0
-    mkdirp: ^1.0.4
-    ncp: ^2.0.0
     prettier: ^2.3.2
     prettier-plugin-packagejson: ^2.2.11
     rimraf: ^3.0.2
@@ -3724,6 +3722,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/fs-extra@npm:^9.0.13":
+  version: 9.0.13
+  resolution: "@types/fs-extra@npm:9.0.13"
+  dependencies:
+    "@types/node": "*"
+  checksum: add79e212acd5ac76b97b9045834e03a7996aef60a814185e0459088fd290519a3c1620865d588fa36c4498bf614210d2a703af5cf80aa1dbc125db78f6edac3
+  languageName: node
+  linkType: hard
+
 "@types/glob-stream@npm:*":
   version: 6.1.1
   resolution: "@types/glob-stream@npm:6.1.1"
@@ -3877,28 +3884,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/mkdirp@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "@types/mkdirp@npm:1.0.2"
-  dependencies:
-    "@types/node": "*"
-  checksum: 72dedfb2d250f0e44ec964ac68ff6a4a03d7d9d6e83ae1d5ba6d212791af69cf051a5fac59846826242d099de56a18c8e0581861792fae8b845b3c9ad67ecdeb
-  languageName: node
-  linkType: hard
-
 "@types/ms@npm:*":
   version: 0.7.31
   resolution: "@types/ms@npm:0.7.31"
   checksum: daadd354aedde024cce6f5aa873fefe7b71b22cd0e28632a69e8b677aeb48ae8caa1c60e5919bb781df040d116b01cb4316335167a3fc0ef6a63fa3614c0f6da
-  languageName: node
-  linkType: hard
-
-"@types/ncp@npm:^2.0.5":
-  version: 2.0.5
-  resolution: "@types/ncp@npm:2.0.5"
-  dependencies:
-    "@types/node": "*"
-  checksum: 43ef789a1f962590d9496df83b70dda79247df12a2785e14b9c9d868c19d4a312c4572735a1d834bdaacb7db62b0e3630a80bbbd4b6a97b4891fe3e2c9603dbf
   languageName: node
   linkType: hard
 
@@ -12695,15 +12684,6 @@ __metadata:
   version: 1.4.0
   resolution: "natural-compare@npm:1.4.0"
   checksum: 23ad088b08f898fc9b53011d7bb78ec48e79de7627e01ab5518e806033861bef68d5b0cd0e2205c2f36690ac9571ff6bcb05eb777ced2eeda8d4ac5b44592c3d
-  languageName: node
-  linkType: hard
-
-"ncp@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "ncp@npm:2.0.0"
-  bin:
-    ncp: ./bin/ncp
-  checksum: ea9b19221da1d1c5529bdb9f8e85c9d191d156bcaae408cce5e415b7fbfd8744c288e792bd7faf1fe3b70fd44c74e22f0d43c39b209bc7ac1fb8016f70793a16
   languageName: node
   linkType: hard
 
