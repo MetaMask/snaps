@@ -3173,7 +3173,6 @@ __metadata:
     "@scure/base": ^1.1.1
     "@types/jest": ^27.5.1
     "@types/semver": ^7.3.10
-    ajv-cli: ^5.0.0
     eslint: ^7.30.0
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
@@ -4829,28 +4828,6 @@ __metadata:
     clean-stack: ^2.0.0
     indent-string: ^4.0.0
   checksum: 1101a33f21baa27a2fa8e04b698271e64616b886795fd43c31068c07533c7b3facfcaf4e9e0cab3624bd88f729a592f1c901a1a229c9e490eafce411a8644b79
-  languageName: node
-  linkType: hard
-
-"ajv-cli@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "ajv-cli@npm:5.0.0"
-  dependencies:
-    ajv: ^8.0.0
-    fast-json-patch: ^2.0.0
-    glob: ^7.1.0
-    js-yaml: ^3.14.0
-    json-schema-migrate: ^2.0.0
-    json5: ^2.1.3
-    minimist: ^1.2.0
-  peerDependencies:
-    ts-node: ">=9.0.0"
-  peerDependenciesMeta:
-    ts-node:
-      optional: true
-  bin:
-    ajv: dist/index.js
-  checksum: e8ba29f618c653abba3a08d8784f8c882b5ac560dab587540af4d53d8230acb93af07c37165a0461294adb4015ba8ceb09916017a66754c782f950f9679ae94a
   languageName: node
   linkType: hard
 
@@ -9268,15 +9245,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-json-patch@npm:^2.0.0":
-  version: 2.2.1
-  resolution: "fast-json-patch@npm:2.2.1"
-  dependencies:
-    fast-deep-equal: ^2.0.1
-  checksum: 955aebb3f873d1fb0452a5d8c34865ce4c3c6cdafeb7d3ad98d43b467de9a5a0d304132f8595fd2b373f8f4d200605947e865286b180f3a55e8377a634893164
-  languageName: node
-  linkType: hard
-
 "fast-json-stable-stringify@npm:2.x, fast-json-stable-stringify@npm:^2.0.0, fast-json-stable-stringify@npm:^2.1.0":
   version: 2.1.0
   resolution: "fast-json-stable-stringify@npm:2.1.0"
@@ -11755,7 +11723,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-yaml@npm:^3.13.1, js-yaml@npm:^3.14.0":
+"js-yaml@npm:^3.13.1":
   version: 3.14.1
   resolution: "js-yaml@npm:3.14.1"
   dependencies:
@@ -11944,15 +11912,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json-schema-migrate@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "json-schema-migrate@npm:2.0.0"
-  dependencies:
-    ajv: ^8.0.0
-  checksum: 21537305f3a5102695cfeeab997d565516297b240ee560bf7fe5c01ea4d56b65e0fbc4e9a4f9a32819e2cb1874daf43b06eb580e623d0aade0cf50d03ae40418
-  languageName: node
-  linkType: hard
-
 "json-schema-traverse@npm:^0.4.1":
   version: 0.4.1
   resolution: "json-schema-traverse@npm:0.4.1"
@@ -12008,7 +11967,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json5@npm:^2.1.2, json5@npm:^2.1.3, json5@npm:^2.2.1":
+"json5@npm:^2.1.2, json5@npm:^2.2.1":
   version: 2.2.1
   resolution: "json5@npm:2.2.1"
   bin:
