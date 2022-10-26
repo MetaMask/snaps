@@ -89,8 +89,8 @@ export default class SnapsWebpackPlugin {
 
       assert(file);
 
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const outputPath = compilation.outputOptions.path!;
+      assert(compilation.outputOptions.path);
+      const outputPath = compilation.outputOptions.path;
 
       const filePath = pathUtils.join(outputPath, file.name);
 
@@ -99,13 +99,14 @@ export default class SnapsWebpackPlugin {
       }
 
       if (this.options.manifestPath) {
+        const content = await promisify(compiler.outputFileSystem.readFile)(
+          filePath,
+        );
+        assert(content);
         const { errors, warnings } = await checkManifest(
           pathUtils.dirname(this.options.manifestPath),
           this.options.writeManifest,
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          (await promisify(compiler.outputFileSystem.readFile)(
-            filePath,
-          ))!.toString(),
+          content.toString(),
         );
 
         if (!this.options.writeManifest && errors.length > 0) {
