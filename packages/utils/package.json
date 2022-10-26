@@ -64,7 +64,6 @@
     "superstruct": "^0.16.5"
   },
   "devDependencies": {
-    "@json-schema-tools/transpiler": "^1.10.2",
     "@lavamoat/allow-scripts": "^2.0.3",
     "@metamask/auto-changelog": "^2.6.0",
     "@metamask/eslint-config": "^9.0.0",
