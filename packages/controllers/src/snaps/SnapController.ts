@@ -35,7 +35,6 @@ import {
   SNAP_PREFIX,
   ValidatedSnapId,
   validateSnapId,
-  validateSnapJsonFile,
   validateSnapShasum,
   TruncatedSnapFields,
   Snap,
@@ -51,6 +50,7 @@ import {
   fromEntries,
   SnapStatus,
   SnapStatusEvents,
+  assertIsSnapManifest,
 } from '@metamask/snap-utils';
 import {
   Duration,
@@ -1904,7 +1904,7 @@ export class SnapController extends BaseController<
       versionRange = DEFAULT_REQUESTED_SNAP_VERSION,
     } = args;
 
-    validateSnapJsonFile(NpmSnapFileNames.Manifest, manifest);
+    assertIsSnapManifest(manifest);
     const { version } = manifest;
 
     if (!satisfiesVersionRange(version, versionRange)) {
@@ -2044,11 +2044,10 @@ export class SnapController extends BaseController<
       );
     }
 
-    const _manifest = await (
+    const manifest = await (
       await this._fetchFunction(manifestUrl.toString(), fetchOptions)
     ).json();
-    validateSnapJsonFile(NpmSnapFileNames.Manifest, _manifest);
-    const manifest = _manifest as SnapManifest;
+    assertIsSnapManifest(manifest);
 
     const {
       source: {

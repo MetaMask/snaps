@@ -5,10 +5,10 @@ import { validateNpmSnap, validateNpmSnapManifest } from './npm';
 import {
   NpmSnapFileNames,
   SnapFiles,
+  SnapManifest,
   SnapValidationFailureReason,
   UnvalidatedSnapFiles,
 } from './types';
-import { SnapManifest } from './json-schemas';
 import { readSnapJsonFile } from './fs';
 import { getSnapSourceShasum, ProgrammaticallyFixableSnapError } from './snaps';
 import { deepClone } from './deep-clone';
@@ -208,7 +208,7 @@ export function fixManifest(
     case SnapValidationFailureReason.RepositoryMismatch:
       manifestCopy.repository = packageJson.repository
         ? deepClone(packageJson.repository)
-        : null;
+        : undefined;
       break;
 
     case SnapValidationFailureReason.ShasumMismatch:

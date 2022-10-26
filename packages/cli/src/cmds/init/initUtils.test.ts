@@ -47,7 +47,8 @@ jest.mock('fs', () => ({
 jest.mock('@metamask/snap-utils', () => ({
   ...jest.requireActual('@metamask/snap-utils'),
   readJsonFile: jest.fn(),
-  validateSnapJsonFile: jest.fn(),
+  assertIsNpmSnapPackageJson: jest.fn(),
+  assertIsSnapManifest: jest.fn(),
 }));
 jest.mock('init-package-json');
 jest.mock('mkdirp');
@@ -75,7 +76,7 @@ describe('initUtils', () => {
         .mockImplementationOnce(async () => '');
 
       const validateSnapJsonFileMock = jest
-        .spyOn(snapUtils, 'validateSnapJsonFile')
+        .spyOn(snapUtils, 'assertIsNpmSnapPackageJson')
         .mockImplementationOnce(() => true);
 
       jest.spyOn(console, 'log').mockImplementation();

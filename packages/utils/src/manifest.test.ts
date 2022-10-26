@@ -9,6 +9,7 @@ import {
 import {
   NpmSnapFileNames,
   SnapFiles,
+  SnapManifest,
   SnapValidationFailureReason,
 } from './types';
 import { readJsonFile } from './fs';
@@ -19,7 +20,6 @@ import {
   getPackageJson,
   getSnapManifest,
 } from './test-utils';
-import { SnapManifest } from './json-schemas';
 import { ProgrammaticallyFixableSnapError } from './snaps';
 import * as npm from './npm';
 
@@ -99,10 +99,10 @@ describe('checkManifest', () => {
   });
 
   it('returns a warning if package.json is missing recommended fields', async () => {
-    await fs.writeFile(
-      PACKAGE_JSON_PATH,
-      JSON.stringify(getPackageJson({ repository: null })),
-    );
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { repository, ...packageJson } = getPackageJson();
+
+    await fs.writeFile(PACKAGE_JSON_PATH, JSON.stringify(packageJson));
 
     const { updated, warnings } = await checkManifest(BASE_PATH);
     expect(updated).toBe(true);
