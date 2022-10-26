@@ -71,7 +71,7 @@ import {
   timeSince,
 } from '@metamask/utils';
 import { createMachine, interpret, StateMachine } from '@xstate/fsm';
-import { ethErrors, serializeError } from 'eth-rpc-errors';
+import { ethErrors } from 'eth-rpc-errors';
 import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
 
@@ -1551,43 +1551,56 @@ export class SnapController extends BaseController<
   ): Promise<InstallSnapsResult> {
     const result: InstallSnapsResult = {};
 
-    await Promise.all(
-      Object.entries(requestedSnaps).map(
-        async ([snapId, { version: rawVersion }]) => {
-          const [error, version] = resolveVersionRange(rawVersion);
-          if (error) {
-            result[snapId] = {
-              error: ethErrors.rpc.invalidParams(
-                `The "version" field must be a valid SemVer version range if specified. Received: "${version}".`,
-              ),
-            };
-            return;
-          }
-          const permissionName = getSnapPermissionName(snapId);
+    const snapIds = Object.keys(requestedSnaps);
 
-          if (
-            this.messagingSystem.call(
-              'PermissionController:hasPermission',
-              origin,
-              permissionName,
-            )
-          ) {
-            // Attempt to install and run the snap, storing any errors that
-            // occur during the process.
-            result[snapId] = {
-              ...(await this.processRequestedSnap(origin, snapId, version)),
-            };
-          } else {
-            // only allow the installation of permitted snaps
-            result[snapId] = {
-              error: ethErrors.provider.unauthorized(
-                `Not authorized to install snap "${snapId}". Request the permission for the snap before attempting to install it.`,
-              ),
-            };
-          }
-        },
-      ),
+    // Existing snaps may need to be updated
+    const pendingUpdates = snapIds.filter((snapId) => this.has(snapId));
+
+    // Non-existing snaps will need to be installed
+    const pendingInstalls = snapIds.filter(
+      (snapId) => !pendingUpdates.includes(snapId),
     );
+
+    try {
+      await Promise.all(
+        Object.entries(requestedSnaps).map(
+          async ([snapId, { version: rawVersion }]) => {
+            const [error, version] = resolveVersionRange(rawVersion);
+            if (error) {
+              throw ethErrors.rpc.invalidParams(
+                `The "version" field must be a valid SemVer version range if specified. Received: "${version}".`,
+              );
+            }
+
+            const permissionName = getSnapPermissionName(snapId);
+
+            if (
+              !this.messagingSystem.call(
+                'PermissionController:hasPermission',
+                origin,
+                permissionName,
+              )
+            ) {
+              throw ethErrors.provider.unauthorized(
+                `Not authorized to install snap "${snapId}". Request the permission for the snap before attempting to install it.`,
+              );
+            }
+
+            result[snapId] = await this.processRequestedSnap(
+              origin,
+              snapId,
+              version,
+            );
+          },
+        ),
+      );
+    } catch (error) {
+      const installed = pendingInstalls.filter((snapId) => this.has(snapId));
+      await this.removeSnaps(installed);
+      // TODO: Handle update roll backs
+
+      throw error;
+    }
     return result;
   }
 
@@ -1605,15 +1618,7 @@ export class SnapController extends BaseController<
     snapId: SnapId,
     versionRange: SemVerRange,
   ): Promise<ProcessSnapResult> {
-    try {
-      validateSnapId(snapId);
-    } catch (error) {
-      return {
-        error: ethErrors.rpc.invalidParams(
-          `"${snapId}" is not a valid snap id.`,
-        ),
-      };
-    }
+    validateSnapId(snapId);
 
     const location = this.#detectSnapLocation(snapId, { versionRange });
 
@@ -1625,31 +1630,22 @@ export class SnapController extends BaseController<
       }
 
       if (this.#featureFlags.dappsCanUpdateSnaps === true) {
-        try {
-          const updateResult = await this.updateSnap(
-            origin,
-            snapId,
-            versionRange,
-            location,
+        const updateResult = await this.updateSnap(
+          origin,
+          snapId,
+          versionRange,
+          location,
+        );
+        if (updateResult === null) {
+          throw ethErrors.rpc.invalidParams(
+            `Snap "${snapId}@${existingSnap.version}" is already installed, couldn't update to a version inside requested "${versionRange}" range.`,
           );
-          if (updateResult === null) {
-            return {
-              error: ethErrors.rpc.invalidParams(
-                `Snap "${snapId}@${existingSnap.version}" is already installed, couldn't update to a version inside requested "${versionRange}" range.`,
-              ),
-            };
-          }
-          return updateResult;
-        } catch (error) {
-          return { error: serializeError(error) };
         }
-      } else {
-        return {
-          error: ethErrors.rpc.invalidParams(
-            `Version mismatch with already installed snap. ${snapId}@${existingSnap.version} doesn't satisfy requested version ${versionRange}`,
-          ),
-        };
+        return updateResult;
       }
+      throw ethErrors.rpc.invalidParams(
+        `Version mismatch with already installed snap. ${snapId}@${existingSnap.version} doesn't satisfy requested version ${versionRange}`,
+      );
     }
 
     // Existing snaps must be stopped before overwriting
@@ -1681,7 +1677,7 @@ export class SnapController extends BaseController<
         await this.removeSnap(snapId);
       }
 
-      return { error: serializeError(error) };
+      throw error;
     }
   }
 

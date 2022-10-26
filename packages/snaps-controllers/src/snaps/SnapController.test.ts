@@ -29,7 +29,7 @@ import {
 } from '@metamask/snaps-utils/test-utils';
 import { AssertionError } from '@metamask/utils';
 import { Crypto } from '@peculiar/webcrypto';
-import { EthereumRpcError, ethErrors, serializeError } from 'eth-rpc-errors';
+import { ethErrors } from 'eth-rpc-errors';
 import fetchMock from 'jest-fetch-mock';
 import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
@@ -622,13 +622,13 @@ describe('SnapController', () => {
   it('throws an error on invalid semver range during installSnaps', async () => {
     const controller = getSnapController();
 
-    const result = await controller.installSnaps(MOCK_ORIGIN, {
-      [MOCK_SNAP_ID]: { version: 'foo' },
-    });
-
-    expect(result).toMatchObject({
-      [MOCK_SNAP_ID]: { error: expect.any(EthereumRpcError) },
-    });
+    await expect(
+      controller.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: { version: 'foo' },
+      }),
+    ).rejects.toThrow(
+      'The "version" field must be a valid SemVer version range if specified. Received: "foo"',
+    );
   });
 
   it('reuses an already installed Snap if it satisfies the requested SemVer range', async () => {
@@ -682,17 +682,12 @@ describe('SnapController', () => {
         return true;
       });
 
-    const result = await controller.installSnaps(MOCK_ORIGIN, {
-      [MOCK_SNAP_ID]: {},
-    });
+    await expect(
+      controller.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: {},
+      }),
+    ).rejects.toThrow('User rejected the request.');
 
-    const { code, message } = serializeError(
-      ethErrors.provider.userRejectedRequest(),
-    );
-
-    expect(result).toStrictEqual({
-      [MOCK_SNAP_ID]: { error: expect.objectContaining({ code, message }) },
-    });
     expect(controller.get(MOCK_SNAP_ID)).toBeUndefined();
   });
 
@@ -737,13 +732,11 @@ describe('SnapController', () => {
 
     const expectedSnapObject = getTruncatedSnap();
 
-    expect(
-      await snapController.installSnaps(MOCK_ORIGIN, {
+    await expect(
+      snapController.installSnaps(MOCK_ORIGIN, {
         [MOCK_SNAP_ID]: {},
       }),
-    ).toStrictEqual({
-      [MOCK_SNAP_ID]: { error: serializeError(new Error('foo')) },
-    });
+    ).rejects.toThrow('foo');
 
     expect(messengerCallMock).toHaveBeenCalledTimes(3);
     expect(messengerCallMock).toHaveBeenNthCalledWith(
@@ -2220,20 +2213,11 @@ describe('SnapController', () => {
       const controller = getSnapController(
         getSnapControllerOptions({ messenger }),
       );
-
-      const result = await controller.installSnaps(MOCK_ORIGIN, {
-        [snapId]: {},
-      });
-
-      expect(result).toStrictEqual({
-        [snapId]: { error: expect.any(EthereumRpcError) },
-      });
-      expect(messenger.call).toHaveBeenCalledTimes(1);
-      expect(messenger.call).toHaveBeenCalledWith(
-        'PermissionController:hasPermission',
-        MOCK_ORIGIN,
-        expect.anything(),
-      );
+      await expect(
+        controller.installSnaps(MOCK_ORIGIN, {
+          [snapId]: {},
+        }),
+      ).rejects.toThrow('Invalid snap id. Unknown prefix. Received: "foo"');
     });
 
     it('updates a snap', async () => {
@@ -2376,9 +2360,14 @@ describe('SnapController', () => {
         }),
       );
 
-      const result = await controller.installSnaps(MOCK_ORIGIN, {
-        [MOCK_SNAP_ID]: { version: newVersionRange },
-      });
+      const manifest = getSnapManifest();
+      await expect(
+        controller.installSnaps(MOCK_ORIGIN, {
+          [MOCK_SNAP_ID]: { version: newVersionRange },
+        }),
+      ).rejects.toThrow(
+        `Snap "${MOCK_SNAP_ID}@${manifest.version}" is already installed, couldn't update to a version inside requested "${newVersionRange}" range.`,
+      );
 
       expect(messenger.call).toHaveBeenCalledTimes(1);
       expect(messenger.call).toHaveBeenCalledWith(
@@ -2391,10 +2380,6 @@ describe('SnapController', () => {
         MOCK_SNAP_ID,
         expect.objectContaining({ versionRange: newVersionRange }),
       );
-
-      expect(result).toStrictEqual({
-        [MOCK_SNAP_ID]: { error: expect.any(EthereumRpcError) },
-      });
     });
 
     it('returns an error when a throw happens inside an update', async () => {
@@ -2417,9 +2402,11 @@ describe('SnapController', () => {
         }),
       );
 
-      const result = await controller.installSnaps(MOCK_ORIGIN, {
-        [MOCK_SNAP_ID]: { version: newVersionRange },
-      });
+      await expect(
+        controller.installSnaps(MOCK_ORIGIN, {
+          [MOCK_SNAP_ID]: { version: newVersionRange },
+        }),
+      ).rejects.toThrow('foo');
 
       expect(messenger.call).toHaveBeenCalledTimes(1);
       expect(messenger.call).toHaveBeenCalledWith(
@@ -2432,10 +2419,6 @@ describe('SnapController', () => {
         MOCK_SNAP_ID,
         expect.objectContaining({ versionRange: newVersionRange }),
       );
-
-      expect(result).toStrictEqual({
-        [MOCK_SNAP_ID]: { error: expect.anything() },
-      });
     });
   });
 
