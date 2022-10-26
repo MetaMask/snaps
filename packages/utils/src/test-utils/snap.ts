@@ -1,4 +1,10 @@
-import { getSnapSourceShasum, Snap, SnapStatus, TruncatedSnap } from '../snaps';
+import {
+  getSnapSourceShasum,
+  PersistedSnap,
+  Snap,
+  SnapStatus,
+  TruncatedSnap,
+} from '../snaps';
 import { getSnapManifest } from './manifest';
 
 /**
@@ -21,7 +27,7 @@ export const MOCK_SNAP_ID = 'npm:@metamask/example-snap';
 export const MOCK_LOCAL_SNAP_ID = 'local:@metamask/example-snap';
 export const MOCK_ORIGIN = 'example.com';
 
-export const getSnapObject = ({
+export const getPersistedSnapObject = ({
   blocked = false,
   enabled = true,
   id = MOCK_SNAP_ID,
@@ -29,6 +35,33 @@ export const getSnapObject = ({
   manifest = getSnapManifest(),
   permissionName = `wallet_snap_${id}`,
   sourceCode = DEFAULT_SNAP_BUNDLE,
+  status = SnapStatus.Stopped,
+  version = getSnapManifest().version,
+  versionHistory = [
+    { origin: MOCK_ORIGIN, version: '1.0.0', date: expect.any(Number) },
+  ],
+}: Partial<PersistedSnap> = {}): PersistedSnap => {
+  return {
+    blocked,
+    initialPermissions,
+    id,
+    permissionName,
+    version,
+    manifest,
+    status,
+    enabled,
+    sourceCode,
+    versionHistory,
+  } as const;
+};
+
+export const getSnapObject = ({
+  blocked = false,
+  enabled = true,
+  id = MOCK_SNAP_ID,
+  initialPermissions = getSnapManifest().initialPermissions,
+  manifest = getSnapManifest(),
+  permissionName = `wallet_snap_${id}`,
   status = SnapStatus.Stopped,
   version = getSnapManifest().version,
   versionHistory = [
@@ -44,7 +77,6 @@ export const getSnapObject = ({
     manifest,
     status,
     enabled,
-    sourceCode,
     versionHistory,
   } as const;
 };
@@ -110,7 +142,7 @@ export const getMockSnapData = ({
     shasum: DEFAULT_SNAP_SHASUM,
     sourceCode,
     manifest,
-    stateObject: getSnapObject({
+    stateObject: getPersistedSnapObject({
       blocked,
       enabled,
       id,

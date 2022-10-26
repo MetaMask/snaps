@@ -51,6 +51,7 @@ import {
   SnapStatus,
   SnapStatusEvents,
   assertIsSnapManifest,
+  PersistedSnap,
 } from '@metamask/snap-utils';
 import {
   Duration,
@@ -113,7 +114,7 @@ export interface SnapRuntimeData {
   /**
    * A promise that resolves when the Snap has finished installing
    */
-  installPromise: null | Promise<Snap>;
+  installPromise: null | Promise<PersistedSnap>;
 
   /**
    * A Unix timestamp for the last time the Snap received an RPC request
@@ -148,6 +149,11 @@ export interface SnapRuntimeData {
    * @see {@link SnapController:constructor}
    */
   interpreter: StateMachine.Service<StatusContext, StatusEvents, StatusStates>;
+
+  /**
+   * The snap source code
+   */
+  sourceCode: null | string;
 }
 
 export type SnapError = {
@@ -186,6 +192,10 @@ export type SnapControllerState = {
   snapErrors: {
     [internalID: string]: SnapError & { internalID: string };
   };
+};
+
+export type PersistedSnapControllerState = SnapControllerState & {
+  snaps: Record<SnapId, PersistedSnap>;
 };
 
 // Controller Messenger Actions
@@ -520,7 +530,7 @@ type SnapControllerArgs = {
   /**
    * Persisted state that will be used for rehydration.
    */
-  state?: SnapControllerState;
+  state?: PersistedSnapControllerState;
 };
 
 type AddSnapArgsBase = {
@@ -629,6 +639,19 @@ export class SnapController extends BaseController<
     fetchFunction = globalThis.fetch.bind(globalThis),
     featureFlags = {},
   }: SnapControllerArgs) {
+    const loadedSourceCode: Record<SnapId, string> = {};
+    const filteredState = {
+      ...state,
+      snaps: Object.values(state?.snaps ?? {}).reduce(
+        (memo: Record<string, Snap>, snap) => {
+          const { sourceCode, ...rest } = snap;
+          loadedSourceCode[snap.id] = sourceCode;
+          memo[snap.id] = rest;
+          return memo;
+        },
+        {},
+      ),
+    };
     super({
       messenger,
       metadata: {
@@ -646,6 +669,7 @@ export class SnapController extends BaseController<
               .map((snap) => {
                 return {
                   ...snap,
+                  sourceCode: this.getRuntimeExpect(snap.id).sourceCode,
                   // At the time state is rehydrated, no snap will be running.
                   status: SnapStatus.Stopped,
                 };
@@ -659,7 +683,7 @@ export class SnapController extends BaseController<
         },
       },
       name,
-      state: { ...defaultState, ...state },
+      state: { ...defaultState, ...filteredState },
     });
 
     this._closeAllConnections = closeAllConnections;
@@ -697,6 +721,10 @@ export class SnapController extends BaseController<
 
     this.initializeStateMachine();
     this.registerMessageHandlers();
+
+    Object.entries(loadedSourceCode).forEach(([id, sourceCode]) =>
+      this.setupRuntime(id, sourceCode),
+    );
   }
 
   /**
@@ -1044,7 +1072,7 @@ export class SnapController extends BaseController<
     snapId: SnapId,
     event: StatusEvents | StatusEvents['type'],
   ) {
-    const { interpreter } = this.getRuntimeOrDefault(snapId);
+    const { interpreter } = this.getRuntimeExpect(snapId);
     interpreter.send(event);
     this.update((state: any) => {
       state.snaps[snapId].status = interpreter.state.value;
@@ -1058,15 +1086,17 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap to start.
    */
   async startSnap(snapId: SnapId): Promise<void> {
-    const snap = this.getExpect(snapId);
+    const runtime = this.getRuntimeExpect(snapId);
 
     if (this.state.snaps[snapId].enabled === false) {
       throw new Error(`Snap "${snapId}" is disabled.`);
     }
 
+    assert(runtime.sourceCode);
+
     await this._startSnap({
       snapId,
-      sourceCode: snap.sourceCode,
+      sourceCode: runtime.sourceCode,
     });
   }
 
@@ -1423,7 +1453,7 @@ export class SnapController extends BaseController<
    * @param snapId - The snap id of the snap that was referenced.
    */
   incrementActiveReferences(snapId: SnapId) {
-    const runtime = this.getRuntimeOrDefault(snapId);
+    const runtime = this.getRuntimeExpect(snapId);
     runtime.activeReferences += 1;
   }
 
@@ -1433,7 +1463,7 @@ export class SnapController extends BaseController<
    * @param snapId - The snap id of the snap that was referenced..
    */
   decrementActiveReferences(snapId: SnapId) {
-    const runtime = this.getRuntimeOrDefault(snapId);
+    const runtime = this.getRuntimeExpect(snapId);
     assert(
       runtime.activeReferences > 0,
       'SnapController reference management is in an invalid state.',
@@ -1750,7 +1780,7 @@ export class SnapController extends BaseController<
    * version.
    * @returns The resulting snap object.
    */
-  async add(args: AddSnapArgs): Promise<Snap> {
+  async add(args: AddSnapArgs): Promise<PersistedSnap> {
     const { id: snapId } = args;
     validateSnapId(snapId);
 
@@ -1763,8 +1793,8 @@ export class SnapController extends BaseController<
     ) {
       throw new Error(`Invalid add snap args for snap "${snapId}".`);
     }
-
-    const runtime = this.getRuntimeOrDefault(snapId);
+    this.setupRuntime(snapId, null);
+    const runtime = this.getRuntimeExpect(snapId);
     if (!runtime.installPromise) {
       console.info(`Adding snap: ${snapId}`);
 
@@ -1894,7 +1924,7 @@ export class SnapController extends BaseController<
    * @param args - The add snap args.
    * @returns The resulting snap object.
    */
-  private _set(args: SetSnapArgs): Snap {
+  private _set(args: SetSnapArgs): PersistedSnap {
     const {
       id: snapId,
       origin,
@@ -1955,7 +1985,6 @@ export class SnapController extends BaseController<
       id: snapId,
       initialPermissions,
       manifest,
-      sourceCode,
       status: this._statusMachine.config.initial as StatusStates['value'],
       version,
       versionHistory,
@@ -1968,8 +1997,11 @@ export class SnapController extends BaseController<
       state.snaps[snapId] = snap;
     });
 
+    const runtime = this.getRuntimeExpect(snapId);
+    runtime.sourceCode = sourceCode;
+
     this.messagingSystem.publish(`SnapController:snapAdded`, snap, svgIcon);
-    return snap;
+    return { ...snap, sourceCode };
   }
 
   /**
@@ -2215,7 +2247,7 @@ export class SnapController extends BaseController<
    * @returns The RPC handler for the given snap.
    */
   private async getRpcRequestHandler(snapId: SnapId): Promise<SnapRpcHook> {
-    const runtime = this.getRuntimeOrDefault(snapId);
+    const runtime = this.getRuntimeExpect(snapId);
     const existingHandler = runtime.rpcHandler;
     if (existingHandler) {
       return existingHandler;
@@ -2369,30 +2401,32 @@ export class SnapController extends BaseController<
     return runtime;
   }
 
-  private getRuntimeOrDefault(snapId: SnapId) {
-    if (!this._snapsRuntimeData.has(snapId)) {
-      const snap = this.get(snapId);
-      const interpreter = interpret(this._statusMachine);
-      interpreter.start({
-        context: { snapId },
-        value:
-          snap?.status ??
-          (this._statusMachine.config.initial as StatusStates['value']),
-      });
-
-      forceStrict(interpreter);
-
-      this._snapsRuntimeData.set(snapId, {
-        lastRequest: null,
-        rpcHandler: null,
-        installPromise: null,
-        activeReferences: 0,
-        pendingInboundRequests: [],
-        pendingOutboundRequests: 0,
-        interpreter,
-      });
+  private setupRuntime(snapId: SnapId, sourceCode: string | null) {
+    if (this._snapsRuntimeData.has(snapId)) {
+      return;
     }
-    return this.getRuntimeExpect(snapId);
+
+    const snap = this.get(snapId);
+    const interpreter = interpret(this._statusMachine);
+    interpreter.start({
+      context: { snapId },
+      value:
+        snap?.status ??
+        (this._statusMachine.config.initial as StatusStates['value']),
+    });
+
+    forceStrict(interpreter);
+
+    this._snapsRuntimeData.set(snapId, {
+      lastRequest: null,
+      rpcHandler: null,
+      installPromise: null,
+      activeReferences: 0,
+      pendingInboundRequests: [],
+      pendingOutboundRequests: 0,
+      interpreter,
+      sourceCode,
+    });
   }
 
   private async calculatePermissionsChange(

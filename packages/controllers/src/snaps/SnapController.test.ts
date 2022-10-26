@@ -22,6 +22,7 @@ import { createEngineStream } from 'json-rpc-middleware-stream';
 import pump from 'pump';
 import {
   getSnapManifest,
+  getPersistedSnapObject,
   getSnapObject,
   MOCK_ORIGIN,
   MOCK_SNAP_ID,
@@ -29,7 +30,6 @@ import {
   getMockSnapData,
   DEFAULT_SNAP_BUNDLE,
   MOCK_LOCAL_SNAP_ID,
-  DEFAULT_SNAP_SHASUM,
 } from '@metamask/snap-utils/test-utils';
 import { NodeThreadExecutionService, setupMultiplex } from '../services';
 import { delay } from '../utils';
@@ -276,7 +276,7 @@ describe('SnapController', () => {
       getSnapControllerOptions({
         state: {
           snaps: {
-            'npm:foo': getSnapObject({
+            'npm:foo': getPersistedSnapObject({
               permissionName: 'fooperm',
               version: '0.0.1',
               sourceCode: DEFAULT_SNAP_BUNDLE,
@@ -666,7 +666,7 @@ describe('SnapController', () => {
       getSnapControllerOptions({ messenger }),
     );
 
-    const snap = await controller.add({
+    await controller.add({
       origin: MOCK_ORIGIN,
       id: MOCK_SNAP_ID,
       manifest: getSnapManifest(),
@@ -686,8 +686,9 @@ describe('SnapController', () => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const newSnap = controller.get(MOCK_SNAP_ID)!;
 
-    // Notice usage of toBe - we're checking if it's actually the same object, not an equal one
-    expect(newSnap).toBe(snap);
+    expect(newSnap).toStrictEqual(
+      getSnapObject({ status: SnapStatus.Installing }),
+    );
     expect(addSpy).not.toHaveBeenCalled();
     expect(authorizeSpy).not.toHaveBeenCalled();
     expect(messengerCallMock).toHaveBeenCalledTimes(1);
@@ -1387,7 +1388,7 @@ describe('SnapController', () => {
     });
 
     it('handlers throw if the request has an invalid "jsonrpc" property', async () => {
-      const fakeSnap = getSnapObject({ status: SnapStatus.Running });
+      const fakeSnap = getPersistedSnapObject({ status: SnapStatus.Running });
       const snapId = fakeSnap.id;
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -1419,7 +1420,7 @@ describe('SnapController', () => {
 
     it('handlers will throw if there are too many pending requests before a snap has started', async () => {
       const messenger = getSnapControllerMessenger();
-      const fakeSnap = getSnapObject({ status: SnapStatus.Stopped });
+      const fakeSnap = getPersistedSnapObject({ status: SnapStatus.Stopped });
       const snapId = fakeSnap.id;
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -1618,7 +1619,7 @@ describe('SnapController', () => {
   describe('installSnaps', () => {
     it('returns existing non-local snaps without reinstalling them', async () => {
       const messenger = getSnapControllerMessenger();
-      const snapObject = getSnapObject();
+      const snapObject = getPersistedSnapObject();
       const truncatedSnap = getTruncatedSnap();
 
       const snapController = getSnapController(
@@ -1658,7 +1659,7 @@ describe('SnapController', () => {
 
     it('reinstalls local snaps even if they are already installed (already stopped)', async () => {
       const messenger = getSnapControllerMessenger();
-      const snapObject = getSnapObject({
+      const snapObject = getPersistedSnapObject({
         id: MOCK_LOCAL_SNAP_ID,
       });
       const truncatedSnap = getTruncatedSnap({
@@ -1968,7 +1969,7 @@ describe('SnapController', () => {
       const fetchSnapMock = jest
         .spyOn(snapController as any, '_fetchSnap')
         .mockImplementationOnce(() => {
-          return getSnapObject({ manifest });
+          return getPersistedSnapObject({ manifest });
         });
 
       const result = await snapController.installSnaps(MOCK_ORIGIN, {
@@ -2057,7 +2058,7 @@ describe('SnapController', () => {
       jest
         .spyOn(snapController as any, '_fetchSnap')
         .mockImplementationOnce(() => {
-          return getSnapObject({ manifest });
+          return getPersistedSnapObject({ manifest });
         });
 
       await snapController.installSnaps(MOCK_ORIGIN, {
@@ -2130,7 +2131,7 @@ describe('SnapController', () => {
       jest
         .spyOn(snapController as any, '_fetchSnap')
         .mockImplementationOnce(() => {
-          return getSnapObject({ manifest });
+          return getPersistedSnapObject({ manifest });
         });
 
       await snapController.installSnaps(MOCK_ORIGIN, {
@@ -2203,7 +2204,7 @@ describe('SnapController', () => {
           messenger,
           state: {
             snaps: {
-              [MOCK_SNAP_ID]: getSnapObject(),
+              [MOCK_SNAP_ID]: getPersistedSnapObject(),
             },
           },
         }),
@@ -2225,7 +2226,7 @@ describe('SnapController', () => {
       jest
         .spyOn(snapController as any, '_fetchSnap')
         .mockImplementationOnce(() => {
-          return getSnapObject({ manifest });
+          return getPersistedSnapObject({ manifest });
         });
 
       await snapController.updateSnap(MOCK_ORIGIN, MOCK_SNAP_ID);
@@ -2536,7 +2537,7 @@ describe('SnapController', () => {
         getSnapControllerOptions({
           state: {
             snaps: {
-              [MOCK_SNAP_ID]: getSnapObject(),
+              [MOCK_SNAP_ID]: getPersistedSnapObject(),
             },
           },
         }),
@@ -2558,7 +2559,7 @@ describe('SnapController', () => {
           checkBlockList: checkBlockListSpy,
           state: {
             snaps: {
-              [MOCK_SNAP_ID]: getSnapObject(),
+              [MOCK_SNAP_ID]: getPersistedSnapObject(),
             },
           },
         }),
@@ -3188,10 +3189,8 @@ describe('SnapController', () => {
         id: MOCK_SNAP_ID,
       });
       expect(result).toStrictEqual(
-        getSnapObject({
-          sourceCode: DEFAULT_SNAP_BUNDLE,
+        getPersistedSnapObject({
           status: SnapStatus.Installing,
-          manifest: getSnapManifest({ shasum: DEFAULT_SNAP_SHASUM }),
         }),
       );
     });
@@ -3211,11 +3210,9 @@ describe('SnapController', () => {
       // Fetch is called 3 times, for fetching the manifest, the sourcecode and icon (icon just has the default response for now)
       expect(fetchMock).toHaveBeenCalledTimes(3);
       expect(result).toStrictEqual(
-        getSnapObject({
+        getPersistedSnapObject({
           id,
-          sourceCode: DEFAULT_SNAP_BUNDLE,
           status: SnapStatus.Installing,
-          manifest: getSnapManifest(),
           permissionName: 'wallet_snap_local:https://localhost:8081',
         }),
       );
@@ -3228,7 +3225,7 @@ describe('SnapController', () => {
         getSnapControllerOptions({
           state: {
             snaps: {
-              [MOCK_SNAP_ID]: { ...getSnapObject(), enabled: false },
+              [MOCK_SNAP_ID]: getPersistedSnapObject({ enabled: false }),
             },
           },
         }),
@@ -3252,11 +3249,10 @@ describe('SnapController', () => {
         getSnapControllerOptions({
           state: {
             snaps: {
-              [MOCK_SNAP_ID]: {
-                ...getSnapObject(),
-                blocked: true,
+              [MOCK_SNAP_ID]: getPersistedSnapObject({
                 enabled: false,
-              },
+                blocked: true,
+              }),
             },
           },
         }),
@@ -3274,7 +3270,7 @@ describe('SnapController', () => {
         getSnapControllerOptions({
           state: {
             snaps: {
-              [MOCK_SNAP_ID]: { ...getSnapObject(), enabled: true },
+              [MOCK_SNAP_ID]: getPersistedSnapObject(),
             },
           },
         }),
@@ -3291,7 +3287,7 @@ describe('SnapController', () => {
         getSnapControllerOptions({
           state: {
             snaps: {
-              [MOCK_SNAP_ID]: { ...getSnapObject(), enabled: true },
+              [MOCK_SNAP_ID]: getPersistedSnapObject(),
             },
           },
         }),
@@ -3617,16 +3613,7 @@ describe('SnapController', () => {
           }),
         );
 
-        const fooSnapObject = {
-          initialPermissions: {},
-          permissionName: 'wallet_snap_npm:fooSnap',
-          version: '1.0.0',
-          sourceCode: DEFAULT_SNAP_BUNDLE,
-          id: 'npm:fooSnap',
-          manifest: getSnapManifest(),
-          enabled: true,
-          status: SnapStatus.Installing,
-        };
+        const fooSnapObject = getPersistedSnapObject();
 
         const addSpy = jest.spyOn(snapController, 'add');
         const fetchSnapMock = jest
@@ -3639,14 +3626,14 @@ describe('SnapController', () => {
 
         await messenger.call('SnapController:add', {
           origin: MOCK_ORIGIN,
-          id: 'npm:fooSnap',
+          id: MOCK_SNAP_ID,
         });
 
         expect(addSpy).toHaveBeenCalledTimes(1);
         expect(fetchSnapMock).toHaveBeenCalledTimes(1);
         expect(Object.keys(snapController.state.snaps)).toHaveLength(1);
-        expect(snapController.state.snaps['npm:fooSnap']).toMatchObject(
-          fooSnapObject,
+        expect(snapController.state.snaps[MOCK_SNAP_ID]).toMatchObject(
+          getSnapObject({ status: SnapStatus.Installing }),
         );
       });
     });
@@ -3654,55 +3641,36 @@ describe('SnapController', () => {
     describe('SnapController:get', () => {
       it('gets a snap', async () => {
         const messenger = getSnapControllerMessenger(undefined, false);
-        const fooSnapObject = getSnapObject({
-          permissionName: 'fooperm',
-          version: '0.0.1',
-          sourceCode: DEFAULT_SNAP_BUNDLE,
-          id: 'npm:fooSnap',
-          manifest: getSnapManifest(),
-          enabled: true,
-          status: SnapStatus.Installing,
-        });
 
         const snapController = getSnapController(
           getSnapControllerOptions({
             messenger,
             state: {
               snaps: {
-                'npm:fooSnap': fooSnapObject,
+                [MOCK_SNAP_ID]: getPersistedSnapObject(),
               },
             },
           }),
         );
 
         const getSpy = jest.spyOn(snapController, 'get');
-        const result = messenger.call('SnapController:get', 'npm:fooSnap');
+        const result = messenger.call('SnapController:get', MOCK_SNAP_ID);
 
         expect(getSpy).toHaveBeenCalledTimes(1);
-        expect(result).toMatchObject(fooSnapObject);
+        expect(result).toMatchObject(getSnapObject());
       });
     });
 
     describe('SnapController:handleRequest', () => {
       it('handles a snap RPC request', async () => {
         const messenger = getSnapControllerMessenger(undefined, false);
-        const fooSnapObject = getSnapObject({
-          initialPermissions: {},
-          permissionName: 'fooperm',
-          version: '0.0.1',
-          sourceCode: DEFAULT_SNAP_BUNDLE,
-          id: 'npm:fooSnap',
-          manifest: getSnapManifest(),
-          enabled: true,
-          status: SnapStatus.Running,
-        });
 
         const snapController = getSnapController(
           getSnapControllerOptions({
             messenger,
             state: {
               snaps: {
-                'npm:fooSnap': fooSnapObject,
+                [MOCK_SNAP_ID]: getPersistedSnapObject(),
               },
             },
           }),
@@ -3714,7 +3682,7 @@ describe('SnapController', () => {
 
         expect(
           await messenger.call('SnapController:handleRequest', {
-            snapId: 'npm:fooSnap',
+            snapId: MOCK_SNAP_ID,
             handler: HandlerType.OnRpcRequest,
             origin: 'foo',
             request: {},
@@ -3726,23 +3694,13 @@ describe('SnapController', () => {
 
     it('handles a transaction insight request', async () => {
       const messenger = getSnapControllerMessenger(undefined, false);
-      const fooSnapObject = getSnapObject({
-        initialPermissions: {},
-        permissionName: 'fooperm',
-        version: '0.0.1',
-        sourceCode: DEFAULT_SNAP_BUNDLE,
-        id: 'npm:fooSnap',
-        manifest: getSnapManifest(),
-        enabled: true,
-        status: SnapStatus.Running,
-      });
 
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
           state: {
             snaps: {
-              'npm:fooSnap': fooSnapObject,
+              [MOCK_SNAP_ID]: getPersistedSnapObject(),
             },
           },
         }),
@@ -3754,7 +3712,7 @@ describe('SnapController', () => {
 
       expect(
         await messenger.call('SnapController:handleRequest', {
-          snapId: 'npm:fooSnap',
+          snapId: MOCK_SNAP_ID,
           handler: HandlerType.OnTransaction,
           origin: 'foo',
           request: {},
@@ -3805,7 +3763,7 @@ describe('SnapController', () => {
           state: {
             snapStates: { [MOCK_SNAP_ID]: 'foo' },
             snaps: {
-              [MOCK_SNAP_ID]: getSnapObject({
+              [MOCK_SNAP_ID]: getPersistedSnapObject({
                 status: SnapStatus.Installing,
               }),
             },
@@ -3832,7 +3790,7 @@ describe('SnapController', () => {
           messenger,
           state: {
             snaps: {
-              'npm:fooSnap': getSnapObject({
+              'npm:fooSnap': getPersistedSnapObject({
                 permissionName: 'fooperm',
                 version: '0.0.1',
                 sourceCode: DEFAULT_SNAP_BUNDLE,
@@ -3863,7 +3821,7 @@ describe('SnapController', () => {
           messenger,
           state: {
             snaps: {
-              'npm:fooSnap': getSnapObject({
+              'npm:fooSnap': getPersistedSnapObject({
                 permissionName: 'fooperm',
                 version: '0.0.1',
                 sourceCode: DEFAULT_SNAP_BUNDLE,
@@ -3904,7 +3862,7 @@ describe('SnapController', () => {
           messenger,
           state: {
             snaps: {
-              'npm:fooSnap': getSnapObject({
+              'npm:fooSnap': getPersistedSnapObject({
                 permissionName: 'fooperm',
                 version: '0.0.1',
                 sourceCode: DEFAULT_SNAP_BUNDLE,
@@ -3913,7 +3871,7 @@ describe('SnapController', () => {
                 enabled: true,
                 status: SnapStatus.Installing,
               }),
-              'npm:fooSnap2': getSnapObject({
+              'npm:fooSnap2': getPersistedSnapObject({
                 permissionName: 'fooperm2',
                 version: '0.0.1',
                 sourceCode: DEFAULT_SNAP_BUNDLE,
@@ -3971,7 +3929,7 @@ describe('SnapController', () => {
           state: {
             snapStates: { [MOCK_SNAP_ID]: 'foo' },
             snaps: {
-              [MOCK_SNAP_ID]: getSnapObject({
+              [MOCK_SNAP_ID]: getPersistedSnapObject({
                 status: SnapStatus.Installing,
               }),
             },
