@@ -1,4 +1,5 @@
 import pathUtils from 'path';
+import { promisify } from 'util';
 import {
   checkManifest,
   evalBundle,
@@ -6,6 +7,7 @@ import {
   PostProcessOptions,
   SourceMap,
 } from '@metamask/snap-utils';
+import { assert } from '@metamask/utils';
 import { Compiler, WebpackError } from 'webpack';
 import { RawSource, SourceMapSource } from 'webpack-sources';
 
@@ -80,43 +82,49 @@ export default class SnapsWebpackPlugin {
       });
     });
 
-    compiler.hooks.assetEmitted.tapPromise(
-      PLUGIN_NAME,
-      async (file, { outputPath, content, compilation }) => {
-        if (!file.endsWith('.js')) {
-          return;
-        }
+    compiler.hooks.afterEmit.tapPromise(PLUGIN_NAME, async (compilation) => {
+      const file = compilation
+        .getAssets()
+        .find((asset) => asset.name.endsWith('.js'));
 
-        const filePath = pathUtils.join(outputPath, file);
+      assert(file);
 
-        if (this.options.eval) {
-          await evalBundle(filePath);
-        }
+      assert(compilation.outputOptions.path);
+      const outputPath = compilation.outputOptions.path;
 
-        if (this.options.manifestPath) {
-          const { errors, warnings } = await checkManifest(
-            pathUtils.dirname(this.options.manifestPath),
-            this.options.writeManifest,
-            content.toString('utf-8'),
+      const filePath = pathUtils.join(outputPath, file.name);
+
+      if (this.options.eval) {
+        await evalBundle(filePath);
+      }
+
+      if (this.options.manifestPath) {
+        const content = await promisify(compiler.outputFileSystem.readFile)(
+          filePath,
+        );
+        assert(content);
+        const { errors, warnings } = await checkManifest(
+          pathUtils.dirname(this.options.manifestPath),
+          this.options.writeManifest,
+          content.toString(),
+        );
+
+        if (!this.options.writeManifest && errors.length > 0) {
+          throw new Error(
+            `Manifest Error: The manifest is invalid.\n${errors.join('\n')}`,
           );
-
-          if (!this.options.writeManifest && errors.length > 0) {
-            throw new Error(
-              `Manifest Error: The manifest is invalid.\n${errors.join('\n')}`,
-            );
-          }
-
-          if (warnings.length > 0) {
-            compilation.warnings.push(
-              new WebpackError(
-                `${PLUGIN_NAME}: Manifest Warning: Validation of snap.manifest.json completed with warnings.\n${warnings.join(
-                  '\n',
-                )}`,
-              ),
-            );
-          }
         }
-      },
-    );
+
+        if (warnings.length > 0) {
+          compilation.warnings.push(
+            new WebpackError(
+              `${PLUGIN_NAME}: Manifest Warning: Validation of snap.manifest.json completed with warnings.\n${warnings.join(
+                '\n',
+              )}`,
+            ),
+          );
+        }
+      }
+    });
   }
 }
