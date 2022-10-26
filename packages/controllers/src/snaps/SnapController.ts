@@ -154,6 +154,11 @@ export interface SnapRuntimeData {
    * The snap source code
    */
   sourceCode: null | string;
+
+  /**
+   * The snap state (encrypted)
+   */
+  state: null | string;
 }
 
 export type SnapError = {
@@ -188,7 +193,8 @@ type StoredSnaps = Record<SnapId, Snap>;
 
 export type SnapControllerState = {
   snaps: StoredSnaps;
-  snapStates: Record<SnapId, string>;
+  // TODO: This type needs to be defined but is always empty in practice..
+  snapStates: Record<string, Json>;
   snapErrors: {
     [internalID: string]: SnapError & { internalID: string };
   };
@@ -642,6 +648,7 @@ export class SnapController extends BaseController<
         },
         {},
       ),
+      snapStates: {},
     };
     super({
       messenger,
@@ -651,7 +658,14 @@ export class SnapController extends BaseController<
           anonymous: false,
         },
         snapStates: {
-          persist: true,
+          persist: () => {
+            return Object.keys(this.state.snaps).reduce<
+              Record<string, string | null>
+            >((acc, cur) => {
+              acc[cur] = this.getRuntimeExpect(cur).state;
+              return acc;
+            }, {});
+          },
           anonymous: false,
         },
         snaps: {
@@ -713,8 +727,11 @@ export class SnapController extends BaseController<
     this.initializeStateMachine();
     this.registerMessageHandlers();
 
-    Object.entries(loadedSourceCode).forEach(([id, sourceCode]) =>
-      this.setupRuntime(id, sourceCode),
+    Object.keys(filteredState.snaps).forEach((id) =>
+      this.setupRuntime(id, {
+        sourceCode: loadedSourceCode[id],
+        state: state?.snapStates?.[id] as string,
+      }),
     );
   }
 
@@ -1257,9 +1274,8 @@ export class SnapController extends BaseController<
    */
   async updateSnapState(snapId: SnapId, newSnapState: Json): Promise<void> {
     const encrypted = await this.encryptSnapState(snapId, newSnapState);
-    this.update((state: any) => {
-      state.snapStates[snapId] = encrypted;
-    });
+    const runtime = this.getRuntimeExpect(snapId);
+    runtime.state = encrypted;
   }
 
   /**
@@ -1269,9 +1285,8 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap whose state should be cleared.
    */
   async clearSnapState(snapId: SnapId): Promise<void> {
-    this.update((state: any) => {
-      delete state.snapStates[snapId];
-    });
+    const runtime = this.getRuntimeExpect(snapId);
+    runtime.state = null;
   }
 
   /**
@@ -1319,7 +1334,7 @@ export class SnapController extends BaseController<
    * @throws If the snap state decryption fails.
    */
   async getSnapState(snapId: SnapId): Promise<Json> {
-    const state = this.state.snapStates[snapId];
+    const { state } = this.getRuntimeExpect(snapId);
     return state ? this.decryptSnapState(snapId, state) : null;
   }
 
@@ -1779,7 +1794,7 @@ export class SnapController extends BaseController<
     ) {
       throw new Error(`Invalid add snap args for snap "${snapId}".`);
     }
-    this.setupRuntime(snapId, null);
+    this.setupRuntime(snapId, { sourceCode: null, state: null });
     const runtime = this.getRuntimeExpect(snapId);
     if (!runtime.installPromise) {
       console.info(`Adding snap: ${snapId}`);
@@ -2387,7 +2402,10 @@ export class SnapController extends BaseController<
     return runtime;
   }
 
-  private setupRuntime(snapId: SnapId, sourceCode: string | null) {
+  private setupRuntime(
+    snapId: SnapId,
+    data: { sourceCode: string | null; state: string | null },
+  ) {
     if (this._snapsRuntimeData.has(snapId)) {
       return;
     }
@@ -2411,7 +2429,7 @@ export class SnapController extends BaseController<
       pendingInboundRequests: [],
       pendingOutboundRequests: 0,
       interpreter,
-      sourceCode,
+      ...data,
     });
   }
 
