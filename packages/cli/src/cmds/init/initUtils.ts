@@ -5,9 +5,10 @@ import {
   NpmSnapFileNames,
   SnapManifest,
   NpmSnapPackageJson,
-  validateSnapJsonFile,
+  assertIsNpmSnapPackageJson,
   readJsonFile,
   deepClone,
+  assertIsSnapManifest,
 } from '@metamask/snap-utils';
 import initPackageJson from 'init-package-json';
 import mkdirp from 'mkdirp';
@@ -48,7 +49,7 @@ export async function asyncPackageInit(
 
     try {
       const packageJson = await readJsonFile(NpmSnapFileNames.PackageJson);
-      validateSnapJsonFile(NpmSnapFileNames.PackageJson, packageJson);
+      assertIsNpmSnapPackageJson(packageJson);
 
       console.log(
         `Init: Successfully parsed '${NpmSnapFileNames.PackageJson}'!`,
@@ -292,7 +293,7 @@ export async function buildSnapManifest(
     };
 
     try {
-      validateSnapJsonFile(NpmSnapFileNames.Manifest, manifest);
+      assertIsSnapManifest(manifest);
     } catch (error) {
       /* istanbul ignore next */
       throw new Error(

@@ -2,8 +2,9 @@ import {
   SnapFunctionExports,
   SnapKeyring as Keyring,
 } from '@metamask/snap-types';
-import { Json, JsonStruct } from '@metamask/utils';
+import { Json } from '@metamask/utils';
 import {
+  any,
   boolean,
   Infer,
   is,
@@ -98,7 +99,14 @@ export function assertIsNpmSnapPackageJson(
 export const SnapManifestStruct = object({
   version: VersionStruct,
   description: size(string(), 1, 280),
-  proposedName: NameStruct,
+  proposedName: size(
+    pattern(
+      string(),
+      /^(?:[A-Za-z0-9-_]+( [A-Za-z0-9-_]+)*)|(?:(?:@[A-Za-z0-9-*~][A-Za-z0-9-*._~]*\/)?[A-Za-z0-9-~][A-Za-z0-9-._~]*)$/u,
+    ),
+    1,
+    214,
+  ),
   repository: optional(
     object({
       type: minSize(string(), 1),
@@ -126,7 +134,7 @@ export const SnapManifestStruct = object({
       }),
     }),
   }),
-  initialPermissions: record(string(), record(string(), JsonStruct)),
+  initialPermissions: record(string(), any()),
   manifestVersion: literal('0.1'),
 });
 
