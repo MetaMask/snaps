@@ -193,8 +193,9 @@ type StoredSnaps = Record<SnapId, Snap>;
 
 export type SnapControllerState = {
   snaps: StoredSnaps;
-  // TODO: This type needs to be defined but is always empty in practice..
-  snapStates: Record<string, Json>;
+  // This type needs to be defined but is always empty in practice..
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  snapStates: {};
   snapErrors: {
     [internalID: string]: SnapError & { internalID: string };
   };
@@ -202,6 +203,7 @@ export type SnapControllerState = {
 
 export type PersistedSnapControllerState = SnapControllerState & {
   snaps: Record<SnapId, PersistedSnap>;
+  snapStates: Record<SnapId, string>;
 };
 
 // Controller Messenger Actions
