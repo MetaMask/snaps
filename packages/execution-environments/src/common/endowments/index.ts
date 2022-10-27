@@ -1,7 +1,6 @@
 import { SnapProvider } from '@metamask/snap-types';
 import { hasProperty } from '@metamask/utils';
 import { rootRealmGlobal } from '../globalObject';
-import buffer from './buffer';
 import interval from './interval';
 import network from './network';
 import timeout from './timeout';
@@ -25,7 +24,7 @@ type EndowmentFactoryResult = {
  * the same factory function, but we only call each factory once for each snap.
  * See {@link createEndowments} for details.
  */
-const endowmentFactories = [buffer, timeout, interval, network, crypto].reduce(
+const endowmentFactories = [timeout, interval, network, crypto].reduce(
   (factories, builder) => {
     builder.names.forEach((name) => {
       factories.set(name, builder.factory);
