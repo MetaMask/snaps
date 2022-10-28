@@ -12,11 +12,9 @@ import {
   assign,
   partial,
   pick,
-  validate,
 } from 'superstruct';
 import { JsonRpcRequestStruct } from '@metamask/utils';
-import { StructError } from 'superstruct/lib/error';
-import { assertStruct } from './assert';
+import { AssertionErrorConstructor, assertStruct } from './assert';
 
 export const CHAIN_ID_REGEX =
   /^(?<namespace>[-a-z0-9]{3,8}):(?<reference>[-a-zA-Z0-9]{1,32})$/u;
@@ -280,17 +278,21 @@ export function isNamespacesObject(value: unknown): value is Namespaces {
 }
 
 /**
- * Check if a value is an object containing {@link Namespaces}s. This behaves
- * the same as {@link isNamespacesObject}, but rather than returning a boolean,
- * it returns a tuple containing an error message if the value is not valid, or
- * the validated value if it is.
+ * Assert that the given value is a {@link Namespaces} object.
  *
- * @param value - The value to validate.
- * @returns A tuple containing an error message if the value is not valid, or
- * the validated value if it is.
+ * @param value - The value to check.
+ * @param ErrorWrapper - The error wrapper to use. Defaults to
+ * {@link AssertionError}.
+ * @throws If the value is not a valid {@link Namespaces} object.
  */
-export function validateNamespacesObject(
+export function assertIsNamespacesObject(
   value: unknown,
-): [StructError, undefined] | [undefined, Namespaces] {
-  return validate(value, NamespacesStruct);
+  ErrorWrapper?: AssertionErrorConstructor,
+): asserts value is Namespaces {
+  assertStruct(
+    value,
+    NamespacesStruct,
+    'Invalid namespaces object',
+    ErrorWrapper,
+  );
 }

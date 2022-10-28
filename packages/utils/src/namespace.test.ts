@@ -1,4 +1,3 @@
-import { StructError } from 'superstruct';
 import {
   getChain,
   getNamespace,
@@ -8,6 +7,7 @@ import {
 import {
   assertIsConnectArguments,
   assertIsMultiChainRequest,
+  assertIsNamespacesObject,
   assertIsSession,
   isAccountId,
   isAccountIdArray,
@@ -19,7 +19,6 @@ import {
   isNamespacesObject,
   parseAccountId,
   parseChainId,
-  validateNamespacesObject,
 } from './namespace';
 
 describe('parseChainId', () => {
@@ -648,14 +647,14 @@ describe('isNamespacesObject', () => {
   });
 });
 
-describe('validateNamespacesObject', () => {
+describe('assertIsNamespacesObject', () => {
   it.each([
     {},
     { eip155: getNamespace() },
     { bip122: getNamespace() },
     { eip155: getNamespace(), bip122: getNamespace() },
-  ])('returns the object for a valid namespaces object', (object) => {
-    expect(validateNamespacesObject(object)).toStrictEqual([undefined, object]);
+  ])('does not throw for a valid namespaces object', (object) => {
+    expect(() => assertIsNamespacesObject(object)).not.toThrow();
   });
 
   it.each([
@@ -678,10 +677,9 @@ describe('validateNamespacesObject', () => {
     { a: getNamespace() },
     { eip155: getNamespace(), a: getNamespace() },
     { foobarbaz: getNamespace() },
-  ])('returns an error for an invalid namespaces object', (object) => {
-    expect(validateNamespacesObject(object)).toStrictEqual([
-      expect.any(StructError),
-      undefined,
-    ]);
+  ])('throws for an invalid namespaces object', (object) => {
+    expect(() => assertIsNamespacesObject(object)).toThrow(
+      'Invalid namespaces object:',
+    );
   });
 });

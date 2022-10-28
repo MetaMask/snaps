@@ -25,4 +25,36 @@ describe('assertStruct', () => {
       'Invalid event: At path: name -- Expected a string, but received: undefined',
     );
   });
+
+  it('throws with a custom error class', () => {
+    class CustomError extends Error {
+      constructor({ message }: { message: string }) {
+        super(message);
+        this.name = 'CustomError';
+      }
+    }
+
+    expect(() =>
+      assertStruct({ data: 'foo' }, EventStruct, 'Invalid event', CustomError),
+    ).toThrow(
+      new CustomError({
+        message:
+          'Invalid event: At path: name -- Expected a string, but received: undefined',
+      }),
+    );
+  });
+
+  it('throws with a custom error function', () => {
+    const CustomError = ({ message }: { message: string }) =>
+      new Error(message);
+
+    expect(() =>
+      assertStruct({ data: 'foo' }, EventStruct, 'Invalid event', CustomError),
+    ).toThrow(
+      CustomError({
+        message:
+          'Invalid event: At path: name -- Expected a string, but received: undefined',
+      }),
+    );
+  });
 });
