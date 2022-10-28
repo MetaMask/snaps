@@ -284,8 +284,9 @@ describe('CronjobController', () => {
       permissionName: '',
       version: '',
     };
-    // eslint-disable-next-line dot-notation
-    await cronjobController['_handleEventSnapInstalled'](snapInfo);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    await cronjobController._handleEventSnapInstalled(snapInfo);
 
     expect(cronjobController.snapIds.size).toBe(2);
 
@@ -320,8 +321,9 @@ describe('CronjobController', () => {
       permissionName: '',
       version: '',
     };
-    // eslint-disable-next-line dot-notation
-    cronjobController['_handleEventSnapRemoved'](snapInfo);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    cronjobController._handleEventSnapRemoved(snapInfo);
 
     expect(cronjobController.snapIds.size).toBe(0);
 
@@ -373,8 +375,9 @@ describe('CronjobController', () => {
       permissionName: '',
       version: '',
     };
-    // eslint-disable-next-line dot-notation
-    await cronjobController['_handleEventSnapUpdated'](snapInfo);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    await cronjobController._handleEventSnapUpdated(snapInfo);
 
     expect(cronjobController.snapIds.size).toBe(1);
 
