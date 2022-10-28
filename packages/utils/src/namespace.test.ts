@@ -7,6 +7,7 @@ import {
 import {
   assertIsConnectArguments,
   assertIsMultiChainRequest,
+  assertIsNamespacesObject,
   assertIsSession,
   isAccountId,
   isAccountIdArray,
@@ -643,5 +644,42 @@ describe('isNamespacesObject', () => {
     { foobarbaz: getNamespace() },
   ])('returns false for an invalid namespaces object', (object) => {
     expect(isNamespacesObject(object)).toBe(false);
+  });
+});
+
+describe('assertIsNamespacesObject', () => {
+  it.each([
+    {},
+    { eip155: getNamespace() },
+    { bip122: getNamespace() },
+    { eip155: getNamespace(), bip122: getNamespace() },
+  ])('does not throw for a valid namespaces object', (object) => {
+    expect(() => assertIsNamespacesObject(object)).not.toThrow();
+  });
+
+  it.each([
+    true,
+    false,
+    null,
+    undefined,
+    1,
+    'foo',
+    { eip155: {} },
+    { eip155: [], bip122: [] },
+    { eip155: true, bip122: true },
+    { eip155: false, bip122: false },
+    { eip155: null, bip122: null },
+    { eip155: undefined, bip122: undefined },
+    { eip155: 1, bip122: 1 },
+    { eip155: 'foo', bip122: 'foo' },
+    { eip155: { methods: [] }, bip122: { methods: [] } },
+    { eip155: { chains: ['foo'] }, bip122: { chains: ['foo'] } },
+    { a: getNamespace() },
+    { eip155: getNamespace(), a: getNamespace() },
+    { foobarbaz: getNamespace() },
+  ])('throws for an invalid namespaces object', (object) => {
+    expect(() => assertIsNamespacesObject(object)).toThrow(
+      'Invalid namespaces object:',
+    );
   });
 });

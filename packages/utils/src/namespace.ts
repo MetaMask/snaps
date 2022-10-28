@@ -14,7 +14,7 @@ import {
   pick,
 } from 'superstruct';
 import { JsonRpcRequestStruct } from '@metamask/utils';
-import { assertStruct } from './assert';
+import { AssertionErrorConstructor, assertStruct } from './assert';
 
 export const CHAIN_ID_REGEX =
   /^(?<namespace>[-a-z0-9]{3,8}):(?<reference>[-a-zA-Z0-9]{1,32})$/u;
@@ -275,4 +275,24 @@ export function isNamespace(value: unknown): value is Namespace {
  */
 export function isNamespacesObject(value: unknown): value is Namespaces {
   return is(value, NamespacesStruct);
+}
+
+/**
+ * Assert that the given value is a {@link Namespaces} object.
+ *
+ * @param value - The value to check.
+ * @param ErrorWrapper - The error wrapper to use. Defaults to
+ * {@link AssertionError}.
+ * @throws If the value is not a valid {@link Namespaces} object.
+ */
+export function assertIsNamespacesObject(
+  value: unknown,
+  ErrorWrapper?: AssertionErrorConstructor,
+): asserts value is Namespaces {
+  assertStruct(
+    value,
+    NamespacesStruct,
+    'Invalid namespaces object',
+    ErrorWrapper,
+  );
 }

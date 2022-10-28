@@ -181,7 +181,9 @@ describe('keyringCaveatSpecifications', () => {
             namespaces: undefined,
           },
         }),
-      ).toThrow('Expected a valid namespaces object.');
+      ).toThrow(
+        'Invalid namespaces object: Expected an object, but received: undefined.',
+      );
     });
   });
 });

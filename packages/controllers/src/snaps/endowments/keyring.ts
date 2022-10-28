@@ -1,5 +1,5 @@
 import {
-  isNamespacesObject,
+  assertIsNamespacesObject,
   Namespaces,
   SnapCaveatType,
 } from '@metamask/snap-utils';
@@ -92,11 +92,7 @@ function validateCaveatNamespace(caveat: Caveat<string, any>): void {
     });
   }
 
-  if (!isNamespacesObject(value.namespaces)) {
-    throw ethErrors.rpc.invalidParams({
-      message: 'Expected a valid namespaces object.',
-    });
-  }
+  assertIsNamespacesObject(value.namespaces, ethErrors.rpc.invalidParams);
 }
 
 /**
