@@ -18,18 +18,6 @@ function isConstructable(
 }
 
 /**
- * Check if a value is not a constructor.
- *
- * @param fn - The value to check.
- * @returns `true` if the value is not a constructor, or `false` otherwise.
- */
-function isNotConstructable(
-  fn: AssertionErrorConstructor,
-): fn is (args: { message: string }) => Error {
-  return !isConstructable(fn);
-}
-
-/**
  * Assert a value against a Superstruct struct.
  *
  * @param value - The value to validate.
@@ -53,16 +41,10 @@ export function assertStruct<T, S>(
       throw new ErrorWrapper({
         message: `${errorPrefix}: ${error.message}.`,
       });
-    }
-
-    if (isNotConstructable(ErrorWrapper)) {
+    } else {
       throw ErrorWrapper({
         message: `${errorPrefix}: ${error.message}.`,
       });
     }
-
-    // This should never happen, but TypeScript doesn't know that.
-    /* istanbul ignore next */
-    throw error;
   }
 }

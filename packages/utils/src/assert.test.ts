@@ -10,11 +10,11 @@ describe('assertStruct', () => {
 
   it('throws meaningful error messages for an invalid value', () => {
     expect(() => assertStruct({ data: 'foo' }, EventStruct)).toThrow(
-      'Assertion failed: At path: name -- Expected a string, but received: undefined',
+      'Assertion failed: At path: name -- Expected a string, but received: undefined.',
     );
 
     expect(() => assertStruct({ name: 1, data: 'foo' }, EventStruct)).toThrow(
-      'Assertion failed: At path: name -- Expected a string, but received: 1',
+      'Assertion failed: At path: name -- Expected a string, but received: 1.',
     );
   });
 
@@ -22,7 +22,7 @@ describe('assertStruct', () => {
     expect(() =>
       assertStruct({ data: 'foo' }, EventStruct, 'Invalid event'),
     ).toThrow(
-      'Invalid event: At path: name -- Expected a string, but received: undefined',
+      'Invalid event: At path: name -- Expected a string, but received: undefined.',
     );
   });
 
@@ -39,7 +39,7 @@ describe('assertStruct', () => {
     ).toThrow(
       new CustomError({
         message:
-          'Invalid event: At path: name -- Expected a string, but received: undefined',
+          'Invalid event: At path: name -- Expected a string, but received: undefined.',
       }),
     );
   });
@@ -53,7 +53,7 @@ describe('assertStruct', () => {
     ).toThrow(
       CustomError({
         message:
-          'Invalid event: At path: name -- Expected a string, but received: undefined',
+          'Invalid event: At path: name -- Expected a string, but received: undefined.',
       }),
     );
   });
