@@ -397,7 +397,7 @@ describe('SnapController', () => {
       }),
     );
 
-    const snap = await snapController.getExpect(MOCK_SNAP_ID);
+    const snap = snapController.getExpect(MOCK_SNAP_ID);
     await snapController.startSnap(snap.id);
 
     await snapController.handleRequest({
