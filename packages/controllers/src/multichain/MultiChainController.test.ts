@@ -8,14 +8,17 @@ import {
   MOCK_ORIGIN,
   MOCK_SNAP_ID,
   getSnapManifest,
+  getPersistedSnapObject,
 } from '@metamask/snap-utils/test-utils';
 import { SnapEndowments } from '../snaps';
 import {
   MOCK_CONNECT_ARGUMENTS,
   getMultiChainControllerWithEES,
-  MOCK_KEYRING_SNAP,
   MOCK_KEYRING_PERMISSION,
   MOCK_EIP155_NAMESPACE_REQUEST,
+  PERSISTED_MOCK_KEYRING_SNAP,
+  getSnapControllerWithEESOptions,
+  getPersistedSnapsState,
 } from '../test-utils';
 
 describe('MultiChainController', () => {
@@ -26,9 +29,15 @@ describe('MultiChainController', () => {
         multiChainControllerMessenger,
         snapController,
         executionService,
-      } = getMultiChainControllerWithEES();
+      } = getMultiChainControllerWithEES({
+        snapControllerOptions: getSnapControllerWithEESOptions({
+          state: {
+            snaps: getPersistedSnapsState(PERSISTED_MOCK_KEYRING_SNAP),
+          },
+        }),
+      });
 
-      const snap = await snapController.add(MOCK_KEYRING_SNAP);
+      const snap = snapController.getExpect(MOCK_SNAP_ID);
       await snapController.startSnap(snap.id);
 
       const originalCall = multiChainControllerMessenger.call.bind(
@@ -92,9 +101,15 @@ describe('MultiChainController', () => {
         multiChainControllerMessenger,
         snapController,
         executionService,
-      } = getMultiChainControllerWithEES();
+      } = getMultiChainControllerWithEES({
+        snapControllerOptions: getSnapControllerWithEESOptions({
+          state: {
+            snaps: getPersistedSnapsState(PERSISTED_MOCK_KEYRING_SNAP),
+          },
+        }),
+      });
 
-      const snap = await snapController.add(MOCK_KEYRING_SNAP);
+      const snap = snapController.getExpect(MOCK_SNAP_ID);
       await snapController.startSnap(snap.id);
 
       const originalCall = multiChainControllerMessenger.call.bind(
@@ -168,9 +183,15 @@ describe('MultiChainController', () => {
         multiChainControllerMessenger,
         snapController,
         executionService,
-      } = getMultiChainControllerWithEES();
+      } = getMultiChainControllerWithEES({
+        snapControllerOptions: getSnapControllerWithEESOptions({
+          state: {
+            snaps: getPersistedSnapsState(PERSISTED_MOCK_KEYRING_SNAP),
+          },
+        }),
+      });
 
-      const snap = await snapController.add(MOCK_KEYRING_SNAP);
+      const snap = snapController.getExpect(MOCK_SNAP_ID);
       await snapController.startSnap(snap.id);
 
       const originalCall = multiChainControllerMessenger.call.bind(
@@ -220,17 +241,8 @@ describe('MultiChainController', () => {
     });
 
     it('prompts in case of multiple previously approved snaps', async () => {
-      const {
-        multiChainController,
-        multiChainControllerMessenger,
-        snapController,
-        executionService,
-      } = getMultiChainControllerWithEES();
-
-      const snap = await snapController.add(MOCK_KEYRING_SNAP);
-      await snapController.startSnap(snap.id);
-
-      const bundle = `
+      const secondSnapId = 'npm:@metamask/example-snap2';
+      const secondSnapSourceCode = `
       class Keyring {
         async getAccounts() {
           return ['eip155:1:bar'];
@@ -238,15 +250,35 @@ describe('MultiChainController', () => {
       }
       module.exports.keyring = new Keyring();`;
 
-      const snap2 = await snapController.add({
-        ...MOCK_KEYRING_SNAP,
-        id: 'npm:@metamask/example-snap2',
-        sourceCode: bundle,
-        manifest: getSnapManifest({
-          shasum: getSnapSourceShasum(bundle),
-          initialPermissions: MOCK_KEYRING_SNAP.manifest.initialPermissions,
+      const {
+        multiChainController,
+        multiChainControllerMessenger,
+        snapController,
+        executionService,
+      } = getMultiChainControllerWithEES({
+        snapControllerOptions: getSnapControllerWithEESOptions({
+          state: {
+            snaps: getPersistedSnapsState(
+              PERSISTED_MOCK_KEYRING_SNAP,
+              getPersistedSnapObject({
+                ...PERSISTED_MOCK_KEYRING_SNAP,
+                id: secondSnapId,
+                sourceCode: secondSnapSourceCode,
+                manifest: getSnapManifest({
+                  shasum: getSnapSourceShasum(secondSnapSourceCode),
+                  initialPermissions:
+                    PERSISTED_MOCK_KEYRING_SNAP.manifest.initialPermissions,
+                }),
+              }),
+            ),
+          },
         }),
       });
+
+      const snap = snapController.getExpect(MOCK_SNAP_ID);
+      await snapController.startSnap(snap.id);
+
+      const snap2 = snapController.getExpect(secondSnapId);
       await snapController.startSnap(snap2.id);
 
       const originalCall = multiChainControllerMessenger.call.bind(
@@ -335,16 +367,9 @@ describe('MultiChainController', () => {
       await executionService.terminateAllSnaps();
     });
 
+    // This test works by using different mocks for the messenger than the other tests.
     it('ignores errors thrown by snaps getAccounts', async () => {
-      // This test works by using different mocks for the messenger than the other tests.
-      const {
-        multiChainController,
-        multiChainControllerMessenger,
-        snapController,
-        executionService,
-      } = getMultiChainControllerWithEES();
-
-      const bundle = `
+      const sourceCode = `
       class Keyring {
         async getAccounts() {
           throw new Error('foo bar');
@@ -352,14 +377,30 @@ describe('MultiChainController', () => {
       }
       module.exports.keyring = new Keyring();`;
 
-      const snap = await snapController.add({
-        ...MOCK_KEYRING_SNAP,
-        sourceCode: bundle,
-        manifest: getSnapManifest({
-          shasum: getSnapSourceShasum(bundle),
-          initialPermissions: MOCK_KEYRING_SNAP.manifest.initialPermissions,
+      const {
+        multiChainController,
+        multiChainControllerMessenger,
+        snapController,
+        executionService,
+      } = getMultiChainControllerWithEES({
+        snapControllerOptions: getSnapControllerWithEESOptions({
+          state: {
+            snaps: getPersistedSnapsState(
+              getPersistedSnapObject({
+                ...PERSISTED_MOCK_KEYRING_SNAP,
+                sourceCode,
+                manifest: getSnapManifest({
+                  shasum: getSnapSourceShasum(sourceCode),
+                  initialPermissions:
+                    PERSISTED_MOCK_KEYRING_SNAP.manifest.initialPermissions,
+                }),
+              }),
+            ),
+          },
         }),
       });
+
+      const snap = snapController.getExpect(MOCK_SNAP_ID);
       await snapController.startSnap(snap.id);
 
       const originalCall = multiChainControllerMessenger.call.bind(
@@ -402,9 +443,15 @@ describe('MultiChainController', () => {
         multiChainControllerMessenger,
         snapController,
         executionService,
-      } = getMultiChainControllerWithEES();
+      } = getMultiChainControllerWithEES({
+        snapControllerOptions: getSnapControllerWithEESOptions({
+          state: {
+            snaps: getPersistedSnapsState(PERSISTED_MOCK_KEYRING_SNAP),
+          },
+        }),
+      });
 
-      const snap = await snapController.add(MOCK_KEYRING_SNAP);
+      const snap = snapController.getExpect(MOCK_SNAP_ID);
       await snapController.startSnap(snap.id);
 
       const originalCall = multiChainControllerMessenger.call.bind(

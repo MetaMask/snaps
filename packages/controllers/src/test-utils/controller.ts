@@ -1,8 +1,10 @@
 import { ControllerMessenger } from '@metamask/controllers';
+import { getPersistedSnapObject } from '@metamask/snap-utils/test-utils';
 import {
   AllowedActions,
   AllowedEvents,
   CheckSnapBlockListArg,
+  PersistedSnapControllerState,
   SnapController,
   SnapControllerActions,
   SnapControllerEvents,
@@ -52,7 +54,6 @@ export const getSnapControllerMessenger = (
       'PermissionController:getPermissions',
       'PermissionController:grantPermissions',
       'PermissionController:revokeAllPermissions',
-      'SnapController:add',
       'SnapController:get',
       'SnapController:handleRequest',
       'SnapController:getSnapState',
@@ -147,6 +148,7 @@ export const getSnapControllerWithEESOptions = (
   const originalCall = snapControllerMessenger.call.bind(
     snapControllerMessenger,
   );
+
   jest
     .spyOn(snapControllerMessenger, 'call')
     .mockImplementation((method, ...args) => {
@@ -159,6 +161,7 @@ export const getSnapControllerWithEESOptions = (
       }
       return originalCall(method, ...args);
     });
+
   return {
     environmentEndowmentPermissions: [],
     closeAllConnections: jest.fn(),
@@ -185,4 +188,16 @@ export const getSnapControllerWithEES = (
     service ?? getNodeEES(getNodeEESMessenger(options.rootMessenger));
   const controller = new SnapController(options);
   return [controller, _service] as const;
+};
+
+export const getPersistedSnapsState = (
+  ...snaps: PersistedSnapControllerState['snaps'][string][]
+): PersistedSnapControllerState['snaps'] => {
+  return (snaps.length > 0 ? snaps : [getPersistedSnapObject()]).reduce(
+    (snapsState, snapObject) => {
+      snapsState[snapObject.id] = snapObject;
+      return snapsState;
+    },
+    {} as PersistedSnapControllerState['snaps'],
+  );
 };
