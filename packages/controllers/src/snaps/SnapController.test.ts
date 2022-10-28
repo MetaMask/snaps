@@ -268,15 +268,15 @@ describe('SnapController', () => {
     const firstSnapController = getSnapController(
       getSnapControllerOptions({
         state: {
-          snaps: {
-            'npm:foo': getPersistedSnapObject({
+          snaps: getPersistedSnapsState(
+            getPersistedSnapObject({
               permissionName: 'fooperm',
               version: '0.0.1',
               sourceCode: DEFAULT_SNAP_BUNDLE,
               id: 'npm:foo',
               status: SnapStatus.Installing,
             }),
-          },
+          ),
         },
       }),
     );
@@ -2116,9 +2116,7 @@ describe('SnapController', () => {
         getSnapControllerOptions({
           messenger,
           state: {
-            snaps: {
-              [MOCK_SNAP_ID]: getPersistedSnapObject(),
-            },
+            snaps: getPersistedSnapsState(),
           },
         }),
       );
@@ -2445,9 +2443,7 @@ describe('SnapController', () => {
       const controller = getSnapController(
         getSnapControllerOptions({
           state: {
-            snaps: {
-              [MOCK_SNAP_ID]: getPersistedSnapObject(),
-            },
+            snaps: getPersistedSnapsState(),
           },
         }),
       );
@@ -2467,9 +2463,7 @@ describe('SnapController', () => {
         getSnapControllerOptions({
           checkBlockList: checkBlockListSpy,
           state: {
-            snaps: {
-              [MOCK_SNAP_ID]: getPersistedSnapObject(),
-            },
+            snaps: getPersistedSnapsState(),
           },
         }),
       );
@@ -3129,9 +3123,9 @@ describe('SnapController', () => {
       const snapController = getSnapController(
         getSnapControllerOptions({
           state: {
-            snaps: {
-              [MOCK_SNAP_ID]: getPersistedSnapObject({ enabled: false }),
-            },
+            snaps: getPersistedSnapsState(
+              getPersistedSnapObject({ enabled: false }),
+            ),
           },
         }),
       );
@@ -3153,12 +3147,9 @@ describe('SnapController', () => {
       const snapController = getSnapController(
         getSnapControllerOptions({
           state: {
-            snaps: {
-              [MOCK_SNAP_ID]: getPersistedSnapObject({
-                enabled: false,
-                blocked: true,
-              }),
-            },
+            snaps: getPersistedSnapsState(
+              getPersistedSnapObject({ enabled: false, blocked: true }),
+            ),
           },
         }),
       );
@@ -3174,9 +3165,7 @@ describe('SnapController', () => {
       const snapController = getSnapController(
         getSnapControllerOptions({
           state: {
-            snaps: {
-              [MOCK_SNAP_ID]: getPersistedSnapObject(),
-            },
+            snaps: getPersistedSnapsState(),
           },
         }),
       );
@@ -3191,9 +3180,7 @@ describe('SnapController', () => {
       const snapController = getSnapController(
         getSnapControllerOptions({
           state: {
-            snaps: {
-              [MOCK_SNAP_ID]: getPersistedSnapObject(),
-            },
+            snaps: getPersistedSnapsState(),
           },
         }),
       );
@@ -3282,10 +3269,10 @@ describe('SnapController', () => {
           messenger,
           checkBlockList: checkBlockListSpy,
           state: {
-            snaps: {
-              [mockSnapA.id]: mockSnapA.stateObject,
-              [mockSnapB.id]: mockSnapB.stateObject,
-            },
+            snaps: getPersistedSnapsState(
+              mockSnapA.stateObject,
+              mockSnapB.stateObject,
+            ),
           },
         }),
       );
@@ -3340,9 +3327,7 @@ describe('SnapController', () => {
         getSnapControllerOptions({
           checkBlockList: checkBlockListSpy,
           state: {
-            snaps: {
-              [mockSnap.id]: mockSnap.stateObject,
-            },
+            snaps: getPersistedSnapsState(mockSnap.stateObject),
           },
         }),
       );
@@ -3384,10 +3369,10 @@ describe('SnapController', () => {
           messenger,
           checkBlockList: checkBlockListSpy,
           state: {
-            snaps: {
-              [mockSnapA.id]: mockSnapA.stateObject,
-              [mockSnapB.id]: mockSnapB.stateObject,
-            },
+            snaps: getPersistedSnapsState(
+              mockSnapA.stateObject,
+              mockSnapB.stateObject,
+            ),
           },
         }),
       );
@@ -3435,9 +3420,7 @@ describe('SnapController', () => {
         getSnapControllerOptions({
           checkBlockList: checkBlockListSpy,
           state: {
-            snaps: {
-              [mockSnap.id]: mockSnap.stateObject,
-            },
+            snaps: getPersistedSnapsState(mockSnap.stateObject),
           },
         }),
       );
@@ -3477,9 +3460,7 @@ describe('SnapController', () => {
         getSnapControllerOptions({
           checkBlockList: checkBlockListSpy,
           state: {
-            snaps: {
-              [mockSnap.id]: mockSnap.stateObject,
-            },
+            snaps: getPersistedSnapsState(mockSnap.stateObject),
           },
         }),
       );
@@ -3517,9 +3498,7 @@ describe('SnapController', () => {
           getSnapControllerOptions({
             messenger,
             state: {
-              snaps: {
-                [MOCK_SNAP_ID]: getPersistedSnapObject(),
-              },
+              snaps: getPersistedSnapsState(),
             },
           }),
         );
@@ -3540,9 +3519,7 @@ describe('SnapController', () => {
           getSnapControllerOptions({
             messenger,
             state: {
-              snaps: {
-                [MOCK_SNAP_ID]: getPersistedSnapObject(),
-              },
+              snaps: getPersistedSnapsState(),
             },
           }),
         );
@@ -3570,9 +3547,7 @@ describe('SnapController', () => {
         getSnapControllerOptions({
           messenger,
           state: {
-            snaps: {
-              [MOCK_SNAP_ID]: getPersistedSnapObject(),
-            },
+            snaps: getPersistedSnapsState(),
           },
         }),
       );
@@ -3633,11 +3608,9 @@ describe('SnapController', () => {
           messenger,
           state: {
             snapStates: { [MOCK_SNAP_ID]: 'foo' },
-            snaps: {
-              [MOCK_SNAP_ID]: getPersistedSnapObject({
-                status: SnapStatus.Installing,
-              }),
-            },
+            snaps: getPersistedSnapsState(
+              getPersistedSnapObject({ status: SnapStatus.Installing }),
+            ),
           },
         }),
       );
@@ -3660,8 +3633,8 @@ describe('SnapController', () => {
         getSnapControllerOptions({
           messenger,
           state: {
-            snaps: {
-              'npm:fooSnap': getPersistedSnapObject({
+            snaps: getPersistedSnapsState(
+              getPersistedSnapObject({
                 permissionName: 'fooperm',
                 version: '0.0.1',
                 sourceCode: DEFAULT_SNAP_BUNDLE,
@@ -3670,7 +3643,7 @@ describe('SnapController', () => {
                 enabled: true,
                 status: SnapStatus.Installing,
               }),
-            },
+            ),
           },
         }),
       );
@@ -3691,8 +3664,8 @@ describe('SnapController', () => {
         getSnapControllerOptions({
           messenger,
           state: {
-            snaps: {
-              'npm:fooSnap': getPersistedSnapObject({
+            snaps: getPersistedSnapsState(
+              getPersistedSnapObject({
                 permissionName: 'fooperm',
                 version: '0.0.1',
                 sourceCode: DEFAULT_SNAP_BUNDLE,
@@ -3701,7 +3674,7 @@ describe('SnapController', () => {
                 enabled: true,
                 status: SnapStatus.Installing,
               }),
-            },
+            ),
           },
         }),
       );
@@ -3732,8 +3705,8 @@ describe('SnapController', () => {
         getSnapControllerOptions({
           messenger,
           state: {
-            snaps: {
-              'npm:fooSnap': getPersistedSnapObject({
+            snaps: getPersistedSnapsState(
+              getPersistedSnapObject({
                 permissionName: 'fooperm',
                 version: '0.0.1',
                 sourceCode: DEFAULT_SNAP_BUNDLE,
@@ -3742,7 +3715,7 @@ describe('SnapController', () => {
                 enabled: true,
                 status: SnapStatus.Installing,
               }),
-              'npm:fooSnap2': getPersistedSnapObject({
+              getPersistedSnapObject({
                 permissionName: 'fooperm2',
                 version: '0.0.1',
                 sourceCode: DEFAULT_SNAP_BUNDLE,
@@ -3751,7 +3724,7 @@ describe('SnapController', () => {
                 enabled: true,
                 status: SnapStatus.Installing,
               }),
-            },
+            ),
           },
         }),
       );
@@ -3799,11 +3772,11 @@ describe('SnapController', () => {
           messenger,
           state: {
             snapStates: { [MOCK_SNAP_ID]: 'foo' },
-            snaps: {
-              [MOCK_SNAP_ID]: getPersistedSnapObject({
+            snaps: getPersistedSnapsState(
+              getPersistedSnapObject({
                 status: SnapStatus.Installing,
               }),
-            },
+            ),
           },
         }),
       );
@@ -3850,14 +3823,12 @@ describe('SnapController', () => {
           getSnapControllerOptions({
             messenger,
             state: {
-              snaps: {
-                [mockSnap.id]: mockSnap.stateObject,
-              },
+              snaps: getPersistedSnapsState(mockSnap.stateObject),
             },
           }),
         );
 
-        await messenger.call('SnapController:enable', mockSnap.id);
+        messenger.call('SnapController:enable', mockSnap.id);
         expect(snapController.state.snaps[mockSnap.id].enabled).toBe(true);
       });
     });
@@ -3875,9 +3846,7 @@ describe('SnapController', () => {
           getSnapControllerOptions({
             messenger,
             state: {
-              snaps: {
-                [mockSnap.id]: mockSnap.stateObject,
-              },
+              snaps: getPersistedSnapsState(mockSnap.stateObject),
             },
           }),
         );
@@ -3900,9 +3869,7 @@ describe('SnapController', () => {
           getSnapControllerOptions({
             messenger,
             state: {
-              snaps: {
-                [mockSnap.id]: mockSnap.stateObject,
-              },
+              snaps: getPersistedSnapsState(mockSnap.stateObject),
             },
           }),
         );
@@ -3955,9 +3922,7 @@ describe('SnapController', () => {
           getSnapControllerOptions({
             messenger,
             state: {
-              snaps: {
-                [mockSnap.id]: mockSnap.stateObject,
-              },
+              snaps: getPersistedSnapsState(mockSnap.stateObject),
             },
           }),
         );
@@ -3984,9 +3949,7 @@ describe('SnapController', () => {
           getSnapControllerOptions({
             messenger,
             state: {
-              snaps: {
-                [mockSnap.id]: mockSnap.stateObject,
-              },
+              snaps: getPersistedSnapsState(mockSnap.stateObject),
             },
           }),
         );
