@@ -12,8 +12,10 @@ import {
   assign,
   partial,
   pick,
+  validate,
 } from 'superstruct';
 import { JsonRpcRequestStruct } from '@metamask/utils';
+import { StructError } from 'superstruct/lib/error';
 import { assertStruct } from './assert';
 
 export const CHAIN_ID_REGEX =
@@ -275,4 +277,20 @@ export function isNamespace(value: unknown): value is Namespace {
  */
 export function isNamespacesObject(value: unknown): value is Namespaces {
   return is(value, NamespacesStruct);
+}
+
+/**
+ * Check if a value is an object containing {@link Namespaces}s. This behaves
+ * the same as {@link isNamespacesObject}, but rather than returning a boolean,
+ * it returns a tuple containing an error message if the value is not valid, or
+ * the validated value if it is.
+ *
+ * @param value - The value to validate.
+ * @returns A tuple containing an error message if the value is not valid, or
+ * the validated value if it is.
+ */
+export function validateNamespacesObject(
+  value: unknown,
+): [StructError, undefined] | [undefined, Namespaces] {
+  return validate(value, NamespacesStruct);
 }
