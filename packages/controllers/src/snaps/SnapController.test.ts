@@ -3081,40 +3081,33 @@ describe('SnapController', () => {
 
   describe('_fetchSnap', () => {
     it('can fetch NPM snaps', async () => {
-      const controller: any = getSnapController();
+      const controller = getSnapController();
 
-      const result = await controller._add({
-        origin: MOCK_ORIGIN,
-        id: MOCK_SNAP_ID,
+      const result = await controller.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: {},
       });
-      expect(result).toStrictEqual(
-        getPersistedSnapObject({
-          status: SnapStatus.Installing,
-        }),
-      );
+      expect(result).toStrictEqual({ [MOCK_SNAP_ID]: getTruncatedSnap() });
     });
 
     it('can fetch local snaps', async () => {
-      const controller: any = getSnapController();
+      const controller = getSnapController();
 
       fetchMock
         .mockResponseOnce(JSON.stringify(getSnapManifest()))
         .mockResponseOnce(DEFAULT_SNAP_BUNDLE);
 
       const id = 'local:https://localhost:8081';
-      const result = await controller._add({
-        origin: MOCK_ORIGIN,
-        id,
+      const result = await controller.installSnaps(MOCK_ORIGIN, {
+        [id]: {},
       });
       // Fetch is called 3 times, for fetching the manifest, the sourcecode and icon (icon just has the default response for now)
       expect(fetchMock).toHaveBeenCalledTimes(3);
-      expect(result).toStrictEqual(
-        getPersistedSnapObject({
+      expect(result).toStrictEqual({
+        [id]: getTruncatedSnap({
           id,
-          status: SnapStatus.Installing,
           permissionName: 'wallet_snap_local:https://localhost:8081',
         }),
-      );
+      });
     });
   });
 
