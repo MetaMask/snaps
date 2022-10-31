@@ -36,7 +36,7 @@ import {
   ExecuteSnapRequestArgumentsStruct,
   PingRequestArgumentsStruct,
   SnapRpcRequestArgumentsStruct,
-  TerminateRequestStruct,
+  TerminateRequestArgumentsStruct,
   validateExport,
 } from './validation';
 
@@ -72,19 +72,19 @@ export type InvokeSnap = (
  */
 const EXECUTION_ENVIRONMENT_METHODS = {
   ping: {
-    validator: PingRequestArgumentsStruct,
+    struct: PingRequestArgumentsStruct,
     params: [],
   },
   executeSnap: {
-    validator: ExecuteSnapRequestArgumentsStruct,
+    struct: ExecuteSnapRequestArgumentsStruct,
     params: ['snapName', 'sourceCode', 'endowments'],
   },
   terminate: {
-    validator: TerminateRequestStruct,
+    struct: TerminateRequestArgumentsStruct,
     params: [],
   },
   snapRpc: {
-    validator: SnapRpcRequestArgumentsStruct,
+    struct: SnapRpcRequestArgumentsStruct,
     params: ['target', 'handler', 'origin', 'request'],
   },
 };
@@ -184,7 +184,7 @@ export class BaseSnapExecutor {
     // support params by-name and by-position
     const paramsAsArray = sortParamKeys(methodObject.params, params);
 
-    const [error] = validate<any, any>(paramsAsArray, methodObject.validator);
+    const [error] = validate<any, any>(paramsAsArray, methodObject.struct);
     if (error) {
       this.respond(id, {
         error: ethErrors.rpc

@@ -106,7 +106,10 @@ export const PingRequestArgumentsStruct = optional(
   union([literal(undefined), array()]),
 );
 
-export const TerminateRequestStruct = union([literal(undefined), array()]);
+export const TerminateRequestArgumentsStruct = union([
+  literal(undefined),
+  array(),
+]);
 
 export const ExecuteSnapRequestArgumentsStruct = tuple([
   string(),
@@ -127,7 +130,9 @@ export const SnapRpcRequestArgumentsStruct = tuple([
 ]);
 
 export type PingRequestArguments = Infer<typeof PingRequestArgumentsStruct>;
-export type TerminateRequestArguments = Infer<typeof TerminateRequestStruct>;
+export type TerminateRequestArguments = Infer<
+  typeof TerminateRequestArgumentsStruct
+>;
 
 export type ExecuteSnapRequestArguments = Infer<
   typeof ExecuteSnapRequestArgumentsStruct
