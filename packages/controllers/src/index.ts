@@ -3,3 +3,4 @@ export * from './services';
 export * from './snaps';
 export * from './utils';
 export * from './multichain';
+export * from './cronjob';
