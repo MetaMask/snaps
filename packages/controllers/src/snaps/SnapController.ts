@@ -193,7 +193,7 @@ type StoredSnaps = Record<SnapId, Snap>;
 
 export type SnapControllerState = {
   snaps: StoredSnaps;
-  // This type needs to be defined but is always empty in practice..
+  // This type needs to be defined but is always empty in practice.
   // eslint-disable-next-line @typescript-eslint/ban-types
   snapStates: {};
   snapErrors: {
@@ -732,7 +732,7 @@ export class SnapController extends BaseController<
     Object.keys(filteredState.snaps).forEach((id) =>
       this.setupRuntime(id, {
         sourceCode: loadedSourceCode[id],
-        state: state?.snapStates?.[id] as string,
+        state: state?.snapStates?.[id] ?? null,
       }),
     );
   }
