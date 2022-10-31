@@ -18,7 +18,9 @@ export type OnTransactionHandler = (args: {
   chainId: string;
 }) => Promise<OnTransactionResponse>;
 
-export type OnCronjobHandler = SnapRpcHandler;
+export type OnCronjobHandler = (args: {
+  request: JsonRpcRequest<unknown[] | { [key: string]: unknown }>;
+}) => Promise<unknown>;
 
 export type SnapProvider = MetaMaskInpageProvider;
 

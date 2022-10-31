@@ -44,9 +44,11 @@ export function getHandlerArguments(
     }
 
     case HandlerType.OnRpcRequest:
-    case HandlerType.OnCronjob:
     case HandlerType.SnapKeyring:
       return { origin, request };
+
+    case HandlerType.OnCronjob:
+      return { request };
 
     default:
       return assertExhaustive(handler);
