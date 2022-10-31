@@ -93,12 +93,12 @@ describe('SnapController', () => {
     await snapController.updateSnapState(snap.id, state);
     const snapState = await snapController.getSnapState(snap.id);
     expect(snapState).toStrictEqual(state);
-    expect(snapController.state.snapStates).toStrictEqual({
-      [MOCK_SNAP_ID]: await passworder.encrypt(
-        `stateEncryption:${MOCK_SNAP_ID}`,
-        state,
-      ),
-    });
+    expect(
+      // @ts-expect-error Accessing private property
+      snapController._snapsRuntimeData.get(MOCK_SNAP_ID).state,
+    ).toStrictEqual(
+      await passworder.encrypt(`stateEncryption:${MOCK_SNAP_ID}`, state),
+    );
     snapController.destroy();
     await service.terminateAllSnaps();
   });
@@ -3569,15 +3569,18 @@ describe('SnapController', () => {
         fizz: 'buzz',
       };
       const encrypted = await passworder.encrypt(
-        'stateEncryption:npm:fooSnap',
+        `stateEncryption:${MOCK_SNAP_ID}`,
         state,
       );
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
           state: {
+            snaps: {
+              [MOCK_SNAP_ID]: getPersistedSnapObject(),
+            },
             snapStates: {
-              'npm:fooSnap': encrypted,
+              [MOCK_SNAP_ID]: encrypted,
             },
           },
         }),
@@ -3586,7 +3589,7 @@ describe('SnapController', () => {
       const getSnapStateSpy = jest.spyOn(snapController, 'getSnapState');
       const result = await messenger.call(
         'SnapController:getSnapState',
-        'npm:fooSnap',
+        MOCK_SNAP_ID,
       );
 
       expect(getSnapStateSpy).toHaveBeenCalledTimes(1);
@@ -3657,17 +3660,7 @@ describe('SnapController', () => {
         getSnapControllerOptions({
           messenger,
           state: {
-            snaps: getPersistedSnapsState(
-              getPersistedSnapObject({
-                permissionName: 'fooperm',
-                version: '0.0.1',
-                sourceCode: DEFAULT_SNAP_BUNDLE,
-                id: 'npm:fooSnap',
-                manifest: getSnapManifest(),
-                enabled: true,
-                status: SnapStatus.Installing,
-              }),
-            ),
+            snaps: getPersistedSnapsState(),
           },
         }),
       );
@@ -3678,17 +3671,17 @@ describe('SnapController', () => {
       };
       await messenger.call(
         'SnapController:updateSnapState',
-        'npm:fooSnap',
+        MOCK_SNAP_ID,
         state,
       );
 
       expect(updateSnapStateSpy).toHaveBeenCalledTimes(1);
-      expect(snapController.state.snapStates).toStrictEqual({
-        'npm:fooSnap': await passworder.encrypt(
-          'stateEncryption:npm:fooSnap',
-          state,
-        ),
-      });
+      expect(
+        // @ts-expect-error Accessing private property
+        snapController._snapsRuntimeData.get(MOCK_SNAP_ID).state,
+      ).toStrictEqual(
+        await passworder.encrypt(`stateEncryption:${MOCK_SNAP_ID}`, state),
+      );
     });
 
     it('has different encryption for the same data stored by two different snaps', async () => {
@@ -3699,23 +3692,9 @@ describe('SnapController', () => {
           messenger,
           state: {
             snaps: getPersistedSnapsState(
+              getPersistedSnapObject(),
               getPersistedSnapObject({
-                permissionName: 'fooperm',
-                version: '0.0.1',
-                sourceCode: DEFAULT_SNAP_BUNDLE,
-                id: 'npm:fooSnap',
-                manifest: getSnapManifest(),
-                enabled: true,
-                status: SnapStatus.Installing,
-              }),
-              getPersistedSnapObject({
-                permissionName: 'fooperm2',
-                version: '0.0.1',
-                sourceCode: DEFAULT_SNAP_BUNDLE,
-                id: 'npm:fooSnap2',
-                manifest: getSnapManifest(),
-                enabled: true,
-                status: SnapStatus.Installing,
+                id: MOCK_LOCAL_SNAP_ID,
               }),
             ),
           },
@@ -3728,31 +3707,37 @@ describe('SnapController', () => {
       };
       await messenger.call(
         'SnapController:updateSnapState',
-        'npm:fooSnap',
+        MOCK_SNAP_ID,
         state,
       );
 
       await messenger.call(
         'SnapController:updateSnapState',
-        'npm:fooSnap2',
+        MOCK_LOCAL_SNAP_ID,
         state,
       );
 
       expect(updateSnapStateSpy).toHaveBeenCalledTimes(2);
-      expect(snapController.state.snapStates).toStrictEqual({
-        'npm:fooSnap': await passworder.encrypt(
-          'stateEncryption:npm:fooSnap',
-          state,
-        ),
-        'npm:fooSnap2': await passworder.encrypt(
-          'stateEncryption:npm:fooSnap2',
-          state,
-        ),
-      });
+      const snapState1 =
+        // @ts-expect-error Accessing private property
+        snapController._snapsRuntimeData.get(MOCK_SNAP_ID).state;
 
-      expect(snapController.state.snapStates['npm:fooSnap']).not.toStrictEqual(
-        snapController.state.snapStates['npm:fooSnap2'],
+      const snapState2 =
+        // @ts-expect-error Accessing private property
+        snapController._snapsRuntimeData.get(MOCK_LOCAL_SNAP_ID).state;
+
+      expect(snapState1).toStrictEqual(
+        await passworder.encrypt(`stateEncryption:${MOCK_SNAP_ID}`, state),
       );
+
+      expect(snapState2).toStrictEqual(
+        await passworder.encrypt(
+          `stateEncryption:${MOCK_LOCAL_SNAP_ID}`,
+          state,
+        ),
+      );
+
+      expect(snapState1).not.toStrictEqual(snapState2);
     });
   });
 
