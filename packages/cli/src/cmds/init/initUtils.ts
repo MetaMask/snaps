@@ -148,4 +148,25 @@ export function gitInit(directory: string) {
   }
 }
 
+/**
+ * Install dependencies in a yarn project.
+ *
+ * @param directory - The directory containing the project.
+ */
+export function yarnInstall(directory: string) {
+  try {
+    execSync('yarn', {
+      stdio: [0, 1, 2],
+      cwd: pathUtils.resolve(__dirname, directory),
+    });
+
+    execSync('yarn install', {
+      stdio: [0, 1, 2],
+      cwd: pathUtils.resolve(__dirname, directory),
+    });
+  } catch (err) {
+    logError('Init Error: Failed to install dependencies', err);
+  }
+}
+
 export const SNAP_LOCATION = 'packages/snap/';

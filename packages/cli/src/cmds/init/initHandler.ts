@@ -1,4 +1,3 @@
-import { promises as fs } from 'fs';
 import pathUtils from 'path';
 import { remove } from 'fs-extra';
 import {
@@ -19,6 +18,7 @@ import {
   isInGitRepository,
   prepareWorkingDirectory,
   SNAP_LOCATION,
+  yarnInstall,
 } from './initUtils';
 
 const SATISFIED_VERSION = '>=16';
@@ -74,6 +74,9 @@ export async function initHandler(argv: YargsArgs) {
       await remove(tmpDir);
     }
   }
+
+  console.log('Installing dependencies...');
+  yarnInstall(directoryToUse);
 
   if (!isInGitRepository(directoryToUse)) {
     console.log('Initiating git repository...');
