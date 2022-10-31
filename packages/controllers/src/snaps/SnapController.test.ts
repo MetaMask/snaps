@@ -3660,17 +3660,7 @@ describe('SnapController', () => {
         getSnapControllerOptions({
           messenger,
           state: {
-            snaps: getPersistedSnapsState(
-              getPersistedSnapObject({
-                permissionName: 'fooperm',
-                version: '0.0.1',
-                sourceCode: DEFAULT_SNAP_BUNDLE,
-                id: 'npm:fooSnap',
-                manifest: getSnapManifest(),
-                enabled: true,
-                status: SnapStatus.Installing,
-              }),
-            ),
+            snaps: getPersistedSnapsState(),
           },
         }),
       );
@@ -3681,16 +3671,16 @@ describe('SnapController', () => {
       };
       await messenger.call(
         'SnapController:updateSnapState',
-        'npm:fooSnap',
+        MOCK_SNAP_ID,
         state,
       );
 
       expect(updateSnapStateSpy).toHaveBeenCalledTimes(1);
       expect(
         // @ts-expect-error Accessing private property
-        snapController._snapsRuntimeData.get('npm:fooSnap').state,
+        snapController._snapsRuntimeData.get(MOCK_SNAP_ID).state,
       ).toStrictEqual(
-        await passworder.encrypt('stateEncryption:npm:fooSnap', state),
+        await passworder.encrypt(`stateEncryption:${MOCK_SNAP_ID}`, state),
       );
     });
 
@@ -3702,23 +3692,9 @@ describe('SnapController', () => {
           messenger,
           state: {
             snaps: getPersistedSnapsState(
+              getPersistedSnapObject(),
               getPersistedSnapObject({
-                permissionName: 'fooperm',
-                version: '0.0.1',
-                sourceCode: DEFAULT_SNAP_BUNDLE,
-                id: 'npm:fooSnap',
-                manifest: getSnapManifest(),
-                enabled: true,
-                status: SnapStatus.Installing,
-              }),
-              getPersistedSnapObject({
-                permissionName: 'fooperm2',
-                version: '0.0.1',
-                sourceCode: DEFAULT_SNAP_BUNDLE,
-                id: 'npm:fooSnap2',
-                manifest: getSnapManifest(),
-                enabled: true,
-                status: SnapStatus.Installing,
+                id: MOCK_LOCAL_SNAP_ID,
               }),
             ),
           },
@@ -3731,31 +3707,34 @@ describe('SnapController', () => {
       };
       await messenger.call(
         'SnapController:updateSnapState',
-        'npm:fooSnap',
+        MOCK_SNAP_ID,
         state,
       );
 
       await messenger.call(
         'SnapController:updateSnapState',
-        'npm:fooSnap2',
+        MOCK_LOCAL_SNAP_ID,
         state,
       );
 
       expect(updateSnapStateSpy).toHaveBeenCalledTimes(2);
       const snapState1 =
         // @ts-expect-error Accessing private property
-        snapController._snapsRuntimeData.get('npm:fooSnap').state;
+        snapController._snapsRuntimeData.get(MOCK_SNAP_ID).state;
 
       const snapState2 =
         // @ts-expect-error Accessing private property
-        snapController._snapsRuntimeData.get('npm:fooSnap2').state;
+        snapController._snapsRuntimeData.get(MOCK_LOCAL_SNAP_ID).state;
 
       expect(snapState1).toStrictEqual(
-        await passworder.encrypt('stateEncryption:npm:fooSnap', state),
+        await passworder.encrypt(`stateEncryption:${MOCK_SNAP_ID}`, state),
       );
 
       expect(snapState2).toStrictEqual(
-        await passworder.encrypt('stateEncryption:npm:fooSnap2', state),
+        await passworder.encrypt(
+          `stateEncryption:${MOCK_LOCAL_SNAP_ID}`,
+          state,
+        ),
       );
 
       expect(snapState1).not.toStrictEqual(snapState2);
