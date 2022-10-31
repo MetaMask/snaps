@@ -3169,7 +3169,6 @@ __metadata:
     "@metamask/snaps-browserify-plugin": ^0.22.3
     "@metamask/utils": ^3.3.0
     "@types/browserify": ^12.0.36
-    "@types/fs-extra": ^9.0.13
     "@types/init-package-json": ^1.10.0
     "@types/is-url": ^1.2.28
     "@types/jest": ^27.5.1
@@ -3191,7 +3190,6 @@ __metadata:
     eslint-plugin-node: ^11.1.0
     eslint-plugin-prettier: ^3.4.0
     execa: ^5.1.1
-    fs-extra: ^10.1.0
     init-package-json: ^1.10.3
     is-url: ^1.2.4
     jest: ^29.0.2
@@ -3719,15 +3717,6 @@ __metadata:
   version: 0.0.29
   resolution: "@types/filewriter@npm:0.0.29"
   checksum: 0c58aa875c2c245be7dbc42b20212f3203e13d11ec013a4a5cd0febf0e8b87214be5882c05ff9d7bdf0398f145a4fdbc24b7e6cf7b094e134a3b4c7a0598502f
-  languageName: node
-  linkType: hard
-
-"@types/fs-extra@npm:^9.0.13":
-  version: 9.0.13
-  resolution: "@types/fs-extra@npm:9.0.13"
-  dependencies:
-    "@types/node": "*"
-  checksum: add79e212acd5ac76b97b9045834e03a7996aef60a814185e0459088fd290519a3c1620865d588fa36c4498bf614210d2a703af5cf80aa1dbc125db78f6edac3
   languageName: node
   linkType: hard
 

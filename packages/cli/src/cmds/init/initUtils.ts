@@ -1,8 +1,6 @@
 import { promises as fs } from 'fs';
 import { execSync } from 'child_process';
 import pathUtils from 'path';
-import { tmpdir } from 'os';
-import { mkdirp, copy } from 'fs-extra';
 import { TemplateType } from '../../builders';
 import { logError } from '../../utils';
 
@@ -19,7 +17,7 @@ export async function prepareWorkingDirectory(
 
     if (!isCurrentDirectory) {
       try {
-        await mkdirp(directory);
+        await fs.mkdir(directory, { recursive: true });
       } catch (err) {
         logError('Init Error: Failed to create new directory', err);
       }
@@ -46,24 +44,8 @@ export function isTemplateTypescript(templateType: TemplateType): boolean {
   return templateType === TemplateType.TypeScript;
 }
 
-/**
- * Create a temporary folder in system's temporary directory.
- *
- * @returns The temporary directory path.
- */
-export async function createTemporaryDirectory() {
-  try {
-    return fs.mkdtemp(pathUtils.join(tmpdir(), 'snaps-cli-'));
-  } catch (err) {
-    logError('Init Error: Failed to create temporary folder', err);
-    throw err;
-  }
-}
-
 const TEMPLATE_GIT_URL =
   'https://github.com/MetaMask/template-snap-monorepo.git';
-
-export const TEMPLATE_FOLDER_NAME = 'template';
 
 /**
  * Clones the template in a directory.
@@ -72,13 +54,9 @@ export const TEMPLATE_FOLDER_NAME = 'template';
  */
 export async function cloneTemplate(directory: string) {
   try {
-    execSync(
-      `git clone --depth=1 ${TEMPLATE_GIT_URL} ${TEMPLATE_FOLDER_NAME}`,
-      {
-        stdio: [2],
-        cwd: pathUtils.resolve(__dirname, directory),
-      },
-    );
+    execSync(`git clone --depth=1 ${TEMPLATE_GIT_URL} ${directory}`, {
+      stdio: [2],
+    });
   } catch (err) {
     logError('Init Error: Failed to clone the template.', err);
   }
@@ -95,22 +73,6 @@ export function isGitInstalled() {
     return true;
   } catch (e) {
     return false;
-  }
-}
-
-/**
- * Copy the cloned template in the target folder.
- *
- * @param source - The directory containing the cloned template.
- * @param destination - The directory to copy the files into.
- */
-export async function copyTemplate(source: string, destination: string) {
-  try {
-    await copy(pathUtils.join(source, TEMPLATE_FOLDER_NAME), destination, {
-      filter: (fileName: string) => !fileName.split('/').includes('.git'),
-    });
-  } catch (err) {
-    logError('Init error: Failed to copy template', err);
   }
 }
 

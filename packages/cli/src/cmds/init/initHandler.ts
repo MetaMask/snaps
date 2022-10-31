@@ -1,5 +1,5 @@
 import pathUtils from 'path';
-import { remove } from 'fs-extra';
+import { promises as fs } from 'fs';
 import {
   NpmSnapFileNames,
   SnapManifest,
@@ -11,8 +11,6 @@ import { YargsArgs } from '../../types/yargs';
 import { logError } from '../../utils';
 import {
   cloneTemplate,
-  copyTemplate,
-  createTemporaryDirectory,
   gitInit,
   isGitInstalled,
   isInGitRepository,
@@ -60,19 +58,22 @@ export async function initHandler(argv: YargsArgs) {
   console.log(`Preparing ${directoryToUse} ...`);
 
   await prepareWorkingDirectory(directoryToUse);
-  const tmpDir = await createTemporaryDirectory();
 
   try {
     console.log(`Cloning template...`);
-    await cloneTemplate(tmpDir);
-    await copyTemplate(tmpDir, directoryToUse);
+    await cloneTemplate(directoryToUse);
+
+    fs.rm(pathUtils.join(directoryToUse, '.git'), {
+      force: true,
+      recursive: true,
+    });
   } catch (err) {
     logError('Init Error: Failed to create template, cleaning...');
+    fs.rm(directoryToUse, {
+      force: true,
+      recursive: true,
+    });
     throw err;
-  } finally {
-    if (tmpDir) {
-      await remove(tmpDir);
-    }
   }
 
   console.log('Installing dependencies...');
