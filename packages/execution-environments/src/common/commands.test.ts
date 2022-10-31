@@ -1,8 +1,35 @@
 import { HandlerType } from '@metamask/snap-utils';
+import { MOCK_ORIGIN } from '@metamask/snap-utils/test-utils';
 import {
   CommandMethodsMapping,
   getCommandMethodImplementations,
+  getHandlerArguments,
 } from './commands';
+
+describe('getHandlerArguments', () => {
+  it('validates the request params for the OnTransaction handler', () => {
+    expect(() =>
+      getHandlerArguments(MOCK_ORIGIN, HandlerType.OnTransaction, {
+        id: 1,
+        jsonrpc: '2.0',
+        method: 'foo',
+        params: {},
+      }),
+    ).toThrow('Invalid request params');
+  });
+
+  it('throws for invalid handler types', () => {
+    expect(() =>
+      // @ts-expect-error Invalid handler type.
+      getHandlerArguments(MOCK_ORIGIN, 'foo', {
+        id: 1,
+        jsonrpc: '2.0',
+        method: 'foo',
+        params: {},
+      }),
+    ).toThrow('Invalid branch reached. Should be detected during compilation.');
+  });
+});
 
 describe('getCommandMethodImplementations', () => {
   it('will return an object with ping, executeSnap, snapRpc and terminate methods', () => {

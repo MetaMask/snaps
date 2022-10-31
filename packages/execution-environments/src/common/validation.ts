@@ -1,4 +1,4 @@
-import { HandlerType } from '@metamask/snap-utils';
+import { assertStruct, ChainIdStruct, HandlerType } from '@metamask/snap-utils';
 import { SnapKeyring } from '@metamask/snap-types';
 import {
   array,
@@ -22,6 +22,7 @@ import {
   JsonRpcRequestStruct,
   JsonRpcSuccess,
   JsonRpcSuccessStruct,
+  JsonStruct,
 } from '@metamask/utils';
 
 const VALIDATION_FUNCTIONS = {
@@ -75,18 +76,6 @@ export const JsonRpcRequestWithoutIdStruct = assign(
 export type JsonRpcRequestWithoutId = Infer<
   typeof JsonRpcRequestWithoutIdStruct
 >;
-
-/**
- * Check if the given value is a JSON-RPC request with an optional ID.
- *
- * @param value - The value to check.
- * @returns Whether the value is a JSON-RPC request with an optional ID.
- */
-export function isJsonRpcRequestWithoutId(
-  value: unknown,
-): value is JsonRpcRequestWithoutId {
-  return is(value, JsonRpcRequestWithoutIdStruct);
-}
 
 export const EndowmentStruct = string();
 export type Endowment = Infer<typeof EndowmentStruct>;
@@ -153,6 +142,34 @@ export type RequestArguments =
   | TerminateRequestArguments
   | ExecuteSnapRequestArguments
   | SnapRpcRequestArguments;
+
+export const OnTransactionRequestArgumentsStruct = object({
+  // TODO: Improve `transaction` type.
+  transaction: record(string(), JsonStruct),
+  chainId: ChainIdStruct,
+});
+
+export type OnTransactionRequestArguments = Infer<
+  typeof OnTransactionRequestArgumentsStruct
+>;
+
+/**
+ * Asserts that the given value is a valid {@link OnTransactionRequestArguments}
+ * object.
+ *
+ * @param value - The value to validate.
+ * @throws If the value is not a valid {@link OnTransactionRequestArguments}
+ * object.
+ */
+export function assertIsOnTransactionRequestArguments(
+  value: unknown,
+): asserts value is OnTransactionRequestArguments {
+  assertStruct(
+    value,
+    OnTransactionRequestArgumentsStruct,
+    'Invalid request params',
+  );
+}
 
 const OkResponseStruct = assign(
   JsonRpcSuccessStruct,

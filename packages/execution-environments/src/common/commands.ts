@@ -2,6 +2,7 @@ import { assertExhaustive } from '@metamask/utils';
 import { HandlerType } from '@metamask/snap-utils';
 import { InvokeSnap, InvokeSnapArgs } from './BaseSnapExecutor';
 import {
+  assertIsOnTransactionRequestArguments,
   ExecuteSnap,
   JsonRpcRequestWithoutId,
   Ping,
@@ -16,7 +17,6 @@ export type CommandMethodsMapping = {
   snapRpc: SnapRpc;
 };
 
-// TODO: Add validation in cases.
 /**
  * Formats the arguments for the given handler.
  *
@@ -25,14 +25,18 @@ export type CommandMethodsMapping = {
  * @param request - The request object.
  * @returns The formatted arguments.
  */
-function getHandlerArguments(
+export function getHandlerArguments(
   origin: string,
   handler: HandlerType,
   request: JsonRpcRequestWithoutId,
 ): InvokeSnapArgs {
+  // `request` is already validated by the time this function is called.
+
   switch (handler) {
     case HandlerType.OnTransaction: {
-      const { transaction, chainId } = request.params as Record<string, any>;
+      assertIsOnTransactionRequestArguments(request.params);
+
+      const { transaction, chainId } = request.params;
       return {
         transaction,
         chainId,
