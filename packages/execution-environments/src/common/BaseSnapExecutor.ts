@@ -9,20 +9,20 @@ import {
   isValidJson,
   JsonRpcNotification,
   assert,
+  isJsonRpcRequest,
+  JsonRpcId,
+  JsonRpcRequest,
+  JsonRpcParams,
+  Json,
+  hasProperty,
 } from '@metamask/utils';
 import {
   HandlerType,
   SNAP_EXPORT_NAMES,
   SnapExportsParameters,
 } from '@metamask/snap-utils';
+import { validate } from 'superstruct';
 import EEOpenRPCDocument from '../openrpc.json';
-import {
-  Endowments,
-  JSONRPCID,
-  JsonRpcRequest,
-  Target,
-} from '../__GENERATED__/openrpc';
-import { isJsonRpcRequest } from '../__GENERATED__/openrpc.guard';
 import { createEndowments } from './endowments';
 import {
   getCommandMethodImplementations,
@@ -32,7 +32,13 @@ import { removeEventListener, addEventListener } from './globalEvents';
 import { sortParamKeys } from './sortParams';
 import { constructError, withTeardown } from './utils';
 import { wrapKeyring } from './keyring';
-import { validateExport } from './validation';
+import {
+  ExecuteSnapRequestArgumentsStruct,
+  PingRequestArgumentsStruct,
+  SnapRpcRequestArgumentsStruct,
+  TerminateRequestArgumentsStruct,
+  validateExport,
+} from './validation';
 
 type EvaluationData = {
   stop: () => void;
@@ -49,13 +55,39 @@ const fallbackError = {
   message: 'Execution Environment Error',
 };
 
-export type InvokeSnapArgs = SnapExportsParameters[0];
+// TODO: `KeyringParameters` expects a `chainId` for certain methods, but we're
+// not providing it in `getHandlerArguments`, resulting in type errors.
+export type InvokeSnapArgs = Omit<SnapExportsParameters[0], 'chainId'>;
 
 export type InvokeSnap = (
-  target: Target,
+  target: string,
   handler: HandlerType,
   args: InvokeSnapArgs | undefined,
-) => Promise<unknown>;
+) => Promise<Json>;
+
+/**
+ * The supported methods in the execution environment. The validator checks the
+ * incoming JSON-RPC request, and the `params` property is used for sorting the
+ * parameters, if they are an object.
+ */
+const EXECUTION_ENVIRONMENT_METHODS = {
+  ping: {
+    struct: PingRequestArgumentsStruct,
+    params: [],
+  },
+  executeSnap: {
+    struct: ExecuteSnapRequestArgumentsStruct,
+    params: ['snapName', 'sourceCode', 'endowments'],
+  },
+  terminate: {
+    struct: TerminateRequestArgumentsStruct,
+    params: [],
+  },
+  snapRpc: {
+    struct: SnapRpcRequestArgumentsStruct,
+    params: ['target', 'handler', 'origin', 'request'],
+  },
+};
 
 export class BaseSnapExecutor {
   private snapData: Map<string, SnapData>;
@@ -118,16 +150,12 @@ export class BaseSnapExecutor {
     });
   }
 
-  private async onCommandRequest(message: JsonRpcRequest) {
+  private async onCommandRequest(message: JsonRpcRequest<JsonRpcParams>) {
     if (!isJsonRpcRequest(message)) {
-      throw new Error('Command stream received a non Json Rpc Request');
+      throw new Error('Command stream received a non-JSON-RPC request.');
     }
+
     const { id, method, params } = message;
-
-    if (id === undefined) {
-      throw new Error('Notifications not supported');
-    }
-
     if (method === 'rpc.discover') {
       this.respond(id, {
         result: EEOpenRPCDocument,
@@ -135,11 +163,7 @@ export class BaseSnapExecutor {
       return;
     }
 
-    const methodObject = EEOpenRPCDocument.methods.find(
-      (m) => m.name === method,
-    );
-
-    if (!methodObject || !(this.methods as any)[method]) {
+    if (!hasProperty(EXECUTION_ENVIRONMENT_METHODS, method)) {
       this.respond(id, {
         error: ethErrors.rpc
           .methodNotFound({
@@ -152,8 +176,29 @@ export class BaseSnapExecutor {
       return;
     }
 
+    const methodObject =
+      EXECUTION_ENVIRONMENT_METHODS[
+        method as keyof typeof EXECUTION_ENVIRONMENT_METHODS
+      ];
+
     // support params by-name and by-position
-    const paramsAsArray = sortParamKeys(methodObject, params);
+    const paramsAsArray = sortParamKeys(methodObject.params, params);
+
+    const [error] = validate<any, any>(paramsAsArray, methodObject.struct);
+    if (error) {
+      this.respond(id, {
+        error: ethErrors.rpc
+          .invalidParams({
+            message: `Invalid parameters for method "${method}": ${error.message}.`,
+            data: {
+              method,
+              params: paramsAsArray,
+            },
+          })
+          .serialize(),
+      });
+      return;
+    }
 
     try {
       const result = await (this.methods as any)[method](...paramsAsArray);
@@ -185,7 +230,7 @@ export class BaseSnapExecutor {
     });
   }
 
-  protected respond(id: JSONRPCID, requestObject: Record<string, unknown>) {
+  protected respond(id: JsonRpcId, requestObject: Record<string, unknown>) {
     if (!isValidJson(requestObject) || !isObject(requestObject)) {
       throw new Error('JSON-RPC responses must be JSON serializable objects.');
     }
@@ -208,7 +253,7 @@ export class BaseSnapExecutor {
   protected async startSnap(
     snapName: string,
     sourceCode: string,
-    _endowments?: Endowments,
+    _endowments?: string[],
   ): Promise<void> {
     console.log(`starting snap '${snapName}' in worker`);
     if (this.snapPromiseErrorHandler) {

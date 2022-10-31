@@ -1,9 +1,14 @@
 // eslint-disable-next-line import/no-unassigned-import
 import 'ses';
 import { Duplex, DuplexOptions, EventEmitter, Readable } from 'stream';
-import { Json, JsonRpcResponse } from '@metamask/utils';
+import {
+  assertIsJsonRpcSuccess,
+  Json,
+  JsonRpcParams,
+  JsonRpcRequest,
+  JsonRpcResponse,
+} from '@metamask/utils';
 import { HandlerType } from '@metamask/snap-utils';
-import { JsonRpcRequest } from '../__GENERATED__/openrpc';
 import { BaseSnapExecutor } from './BaseSnapExecutor';
 
 const FAKE_ORIGIN = 'origin:foo';
@@ -106,7 +111,7 @@ class TestSnapExecutor extends BaseSnapExecutor {
     });
   }
 
-  public writeCommand(message: JsonRpcRequest): Promise<void> {
+  public writeCommand(message: JsonRpcRequest<JsonRpcParams>): Promise<void> {
     return new Promise((resolve, reject) =>
       this.commandLeft.write(message, (error) => {
         if (error) {
@@ -117,8 +122,8 @@ class TestSnapExecutor extends BaseSnapExecutor {
     );
   }
 
-  public readCommand(): Promise<JsonRpcRequest> {
-    const promise = new Promise<JsonRpcRequest>((resolve) =>
+  public readCommand(): Promise<JsonRpcRequest<JsonRpcParams>> {
+    const promise = new Promise<JsonRpcRequest<JsonRpcParams>>((resolve) =>
       this.commandListeners.push(resolve),
     );
 
@@ -153,10 +158,14 @@ class TestSnapExecutor extends BaseSnapExecutor {
     );
   }
 
-  public readRpc(): Promise<{ name: string; data: JsonRpcRequest }> {
-    const promise = new Promise<{ name: string; data: JsonRpcRequest }>(
-      (resolve) => this.rpcListeners.push(resolve),
-    );
+  public readRpc(): Promise<{
+    name: string;
+    data: JsonRpcRequest<JsonRpcParams>;
+  }> {
+    const promise = new Promise<{
+      name: string;
+      data: JsonRpcRequest<JsonRpcParams>;
+    }>((resolve) => this.rpcListeners.push(resolve));
 
     TestSnapExecutor.flushReads(this.rpcBuffer, this.rpcListeners);
 
@@ -360,8 +369,8 @@ describe('BaseSnapExecutor', () => {
           }),
         );
 
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const handle = getHandleResult!.result;
+        assertIsJsonRpcSuccess(getHandleResult);
+        const handle = getHandleResult.result;
 
         await executor.writeCommand({
           jsonrpc: '2.0',
@@ -1533,6 +1542,154 @@ describe('BaseSnapExecutor', () => {
         data: expect.any(Object),
         message: 'JSON-RPC responses must be JSON serializable objects.',
       },
+    });
+  });
+
+  describe('executeSnap', () => {
+    it.each([
+      {
+        snapName: 1,
+        code: 'module.exports.onRpcRequest = () => 1;',
+        endowments: [],
+      },
+      {
+        snapName: FAKE_SNAP_NAME,
+        code: 1,
+        endowments: [],
+      },
+      {
+        snapName: FAKE_SNAP_NAME,
+        code: 'module.exports.onRpcRequest = () => 1;',
+        endowments: ['foo', 1],
+      },
+      [1, 'module.exports.onRpcRequest = () => 1;', []],
+      [FAKE_SNAP_NAME, 1, []],
+      [FAKE_SNAP_NAME, 'module.exports.onRpcRequest = () => 1;', ['foo', 1]],
+    ])(
+      'throws an error if the request arguments are invalid',
+      async (params) => {
+        const executor = new TestSnapExecutor();
+
+        await executor.writeCommand({
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'executeSnap',
+          params,
+        });
+
+        expect(await executor.readCommand()).toStrictEqual({
+          jsonrpc: '2.0',
+          id: 1,
+          error: {
+            code: -32602,
+            data: expect.any(Object),
+            message: expect.any(String),
+            stack: expect.any(String),
+          },
+        });
+      },
+    );
+  });
+
+  describe('snapRpc', () => {
+    it.each([
+      {
+        snapName: 1,
+        method: ON_RPC_REQUEST,
+        origin: FAKE_ORIGIN,
+        request: { jsonrpc: '2.0', method: '', params: [] },
+      },
+      {
+        snapName: FAKE_SNAP_NAME,
+        method: 1,
+        origin: FAKE_ORIGIN,
+        request: { jsonrpc: '2.0', method: '', params: [] },
+      },
+      {
+        snapName: FAKE_SNAP_NAME,
+        method: ON_RPC_REQUEST,
+        origin: 1,
+        request: { jsonrpc: '2.0', method: '', params: [] },
+      },
+      {
+        snapName: FAKE_SNAP_NAME,
+        method: ON_RPC_REQUEST,
+        origin: FAKE_ORIGIN,
+        request: 1,
+      },
+      [
+        1,
+        ON_RPC_REQUEST,
+        FAKE_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+      [
+        FAKE_SNAP_NAME,
+        1,
+        FAKE_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+      [
+        FAKE_SNAP_NAME,
+        ON_RPC_REQUEST,
+        1,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+      [FAKE_SNAP_NAME, ON_RPC_REQUEST, FAKE_ORIGIN, 1],
+    ])(
+      'throws an error if the request arguments are invalid',
+      async (params) => {
+        const executor = new TestSnapExecutor();
+
+        await executor.writeCommand({
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'snapRpc',
+          params,
+        });
+
+        expect(await executor.readCommand()).toStrictEqual({
+          jsonrpc: '2.0',
+          id: 1,
+          error: {
+            code: -32602,
+            data: expect.any(Object),
+            message: expect.any(String),
+            stack: expect.any(String),
+          },
+        });
+      },
+    );
+  });
+
+  describe('onCommandRequest', () => {
+    it('throws a human-readable error if the request arguments are invalid', async () => {
+      const executor = new TestSnapExecutor();
+      const params = {
+        snapName: 1,
+        method: ON_RPC_REQUEST,
+        origin: FAKE_ORIGIN,
+        request: { jsonrpc: '2.0', method: '', params: [] },
+      };
+
+      await executor.writeCommand({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snapRpc',
+        params,
+      });
+
+      expect(await executor.readCommand()).toStrictEqual({
+        jsonrpc: '2.0',
+        id: 1,
+        error: {
+          code: -32602,
+          data: expect.any(Object),
+          message:
+            'Invalid parameters for method "snapRpc": At path: 0 -- Expected a string, but received: 1.',
+          stack: expect.any(String),
+        },
+      });
     });
   });
 });
