@@ -29,16 +29,16 @@ describe('Endowment utils', () => {
     it('handles unattenuated endowments', () => {
       const mockWallet = { foo: Symbol('bar') };
       const { endowments } = createEndowments(mockWallet as any, [
-        'Math',
+        'Uint8Array',
         'Date',
       ]);
 
       expect(endowments).toStrictEqual({
         wallet: mockWallet,
-        Math,
+        Uint8Array,
         Date,
       });
-      expect(endowments.Math).toBe(Math);
+      expect(endowments.Uint8Array).toBe(Uint8Array);
       expect(endowments.Date).toBe(Date);
     });
 
@@ -49,11 +49,9 @@ describe('Endowment utils', () => {
       };
       Object.assign(globalThis, { mockEndowment });
       const { endowments } = createEndowments(mockWallet as any, [
-        'Math',
         'Date',
         'mockEndowment',
       ]);
-      expect(endowments.Math).toBe(Math);
       expect(endowments.Date).toBe(Date);
       expect(endowments.mockEndowment).toBeDefined();
     });
@@ -104,6 +102,7 @@ describe('Endowment utils', () => {
       const { endowments } = createEndowments(mockWallet as any, [
         'Buffer',
         'console',
+        'Uint8Array',
         'Math',
         'setTimeout',
         'clearTimeout',
@@ -114,7 +113,8 @@ describe('Endowment utils', () => {
         wallet: mockWallet,
         Buffer,
         console,
-        Math,
+        Uint8Array,
+        Math: expect.any(Object),
         setTimeout: expect.any(Function),
         clearTimeout: expect.any(Function),
         WebAssembly,
@@ -123,11 +123,12 @@ describe('Endowment utils', () => {
       expect(endowments.wallet).toBe(mockWallet);
       expect(endowments.Buffer).toBe(Buffer);
       expect(endowments.console).toBe(console);
-      expect(endowments.Math).toBe(Math);
+      expect(endowments.Uint8Array).toBe(Uint8Array);
       expect(endowments.WebAssembly).toBe(WebAssembly);
 
       expect(endowments.clearTimeout).not.toBe(clearTimeout);
       expect(endowments.setTimeout).not.toBe(setTimeout);
+      expect(endowments.Math).not.toBe(Math);
     });
 
     it('throws for unknown endowments', () => {
