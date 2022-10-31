@@ -100,7 +100,6 @@ describe('Endowment utils', () => {
     it('handles multiple endowments, factory and non-factory', () => {
       const mockWallet = { foo: Symbol('bar') };
       const { endowments } = createEndowments(mockWallet as any, [
-        'Buffer',
         'console',
         'Uint8Array',
         'Math',
@@ -111,7 +110,6 @@ describe('Endowment utils', () => {
 
       expect(endowments).toMatchObject({
         wallet: mockWallet,
-        Buffer,
         console,
         Uint8Array,
         Math: expect.any(Object),
@@ -121,7 +119,6 @@ describe('Endowment utils', () => {
       });
 
       expect(endowments.wallet).toBe(mockWallet);
-      expect(endowments.Buffer).toBe(Buffer);
       expect(endowments.console).toBe(console);
       expect(endowments.Uint8Array).toBe(Uint8Array);
       expect(endowments.WebAssembly).toBe(WebAssembly);
