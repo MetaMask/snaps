@@ -168,8 +168,8 @@ describe('CronjobController', () => {
     });
 
     // Update state manually for test
-    // eslint-disable-next-line dot-notation
-    cronjobController['update'](() => {
+    // @ts-expect-error Accessing private property
+    cronjobController.update(() => {
       return {
         jobs: {
           [`${MOCK_SNAP_ID}-0`]: { lastRun: 0 },
@@ -253,7 +253,20 @@ describe('CronjobController', () => {
       MOCK_SNAP_ID,
     );
 
-    expect(cronjobController.timers.size).toBe(0);
+    jest.runOnlyPendingTimers();
+
+    expect(callActionMock).not.toHaveBeenCalledWith(
+      'SnapController:handleRequest',
+      {
+        snapId: MOCK_SNAP_ID,
+        origin: '',
+        handler: HandlerType.OnCronjob,
+        request: {
+          method: 'exampleMethodOne',
+          params: ['p1'],
+        },
+      },
+    );
 
     cronjobController.destroy();
   });
@@ -263,7 +276,9 @@ describe('CronjobController', () => {
     const controllerMessenger =
       getRestrictedCronjobControllerMessenger(rootMessenger);
 
-    jest.spyOn(controllerMessenger, 'call').mockImplementation((method) => {
+    const callActionMock = jest.spyOn(controllerMessenger, 'call');
+
+    callActionMock.mockImplementation((method) => {
       if (method === 'SnapController:getAll') {
         return [getTruncatedSnap()];
       } else if (method === 'PermissionController:getPermissions') {
@@ -284,11 +299,24 @@ describe('CronjobController', () => {
       permissionName: '',
       version: '',
     };
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
+    // @ts-expect-error Accessing private property
     await cronjobController._handleEventSnapInstalled(snapInfo);
 
-    expect(cronjobController.snapIds.size).toBe(2);
+    jest.advanceTimersByTime(inMilliseconds(1, Duration.Minute));
+
+    expect(callActionMock).toHaveBeenNthCalledWith(
+      4,
+      'SnapController:handleRequest',
+      {
+        snapId: MOCK_SNAP_ID,
+        origin: '',
+        handler: HandlerType.OnCronjob,
+        request: {
+          method: 'exampleMethodOne',
+          params: ['p1'],
+        },
+      },
+    );
 
     cronjobController.destroy();
   });
@@ -298,7 +326,9 @@ describe('CronjobController', () => {
     const controllerMessenger =
       getRestrictedCronjobControllerMessenger(rootMessenger);
 
-    jest.spyOn(controllerMessenger, 'call').mockImplementation((method) => {
+    const callActionMock = jest.spyOn(controllerMessenger, 'call');
+
+    callActionMock.mockImplementation((method) => {
       if (method === 'SnapController:getAll') {
         return [getTruncatedSnap()];
       } else if (method === 'PermissionController:getPermissions') {
@@ -321,11 +351,24 @@ describe('CronjobController', () => {
       permissionName: '',
       version: '',
     };
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
+
+    // @ts-expect-error Accessing private property
     cronjobController._handleEventSnapRemoved(snapInfo);
 
-    expect(cronjobController.snapIds.size).toBe(0);
+    jest.advanceTimersByTime(inMilliseconds(1, Duration.Minute));
+
+    expect(callActionMock).not.toHaveBeenCalledWith(
+      'SnapController:handleRequest',
+      {
+        snapId: MOCK_SNAP_ID,
+        origin: '',
+        handler: HandlerType.OnCronjob,
+        request: {
+          method: 'exampleMethodOne',
+          params: ['p1'],
+        },
+      },
+    );
 
     cronjobController.destroy();
   });
@@ -347,8 +390,9 @@ describe('CronjobController', () => {
     const controllerMessenger =
       getRestrictedCronjobControllerMessenger(rootMessenger);
 
-    jest
-      .spyOn(controllerMessenger, 'call')
+    const callActionMock = jest.spyOn(controllerMessenger, 'call');
+
+    callActionMock
       .mockResolvedValueOnce([getTruncatedSnap()])
       .mockResolvedValueOnce({
         [SnapEndowments.Cronjob]: MOCK_CRONJOB_PERMISSION,
@@ -363,10 +407,6 @@ describe('CronjobController', () => {
 
     await cronjobController.register(MOCK_SNAP_ID);
 
-    expect(cronjobController.snapIds.size).toBe(2);
-
-    expect(cronjobController.timers.size).toBe(2);
-
     const snapInfo: TruncatedSnap = {
       blocked: false,
       enabled: true,
@@ -375,13 +415,25 @@ describe('CronjobController', () => {
       permissionName: '',
       version: '',
     };
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
+
+    // @ts-expect-error Accessing private property
     await cronjobController._handleEventSnapUpdated(snapInfo);
 
-    expect(cronjobController.snapIds.size).toBe(1);
+    jest.advanceTimersByTime(inMilliseconds(15, Duration.Minute));
 
-    expect(cronjobController.timers.size).toBe(1);
+    expect(callActionMock).toHaveBeenNthCalledWith(
+      5,
+      'SnapController:handleRequest',
+      {
+        snapId: MOCK_SNAP_ID,
+        origin: '',
+        handler: HandlerType.OnCronjob,
+        request: {
+          method: 'exampleMethodOne',
+          params: ['p1'],
+        },
+      },
+    );
 
     cronjobController.destroy();
   });
@@ -413,14 +465,21 @@ describe('CronjobController', () => {
       MOCK_SNAP_ID,
     );
 
-    expect(cronjobController.snapIds.size).toBe(2);
-
-    expect(cronjobController.timers.size).toBe(2);
-
     cronjobController.destroy();
 
-    expect(cronjobController.snapIds.size).toBe(0);
+    jest.advanceTimersByTime(inMilliseconds(1, Duration.Minute));
 
-    expect(cronjobController.timers.size).toBe(0);
+    expect(callActionMock).not.toHaveBeenCalledWith(
+      'SnapController:handleRequest',
+      {
+        snapId: MOCK_SNAP_ID,
+        origin: '',
+        handler: HandlerType.OnCronjob,
+        request: {
+          method: 'exampleMethodOne',
+          params: ['p1'],
+        },
+      },
+    );
   });
 });

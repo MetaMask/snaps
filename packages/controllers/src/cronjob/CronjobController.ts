@@ -136,14 +136,6 @@ export class CronjobController extends BaseController<
     );
   }
 
-  public get timers() {
-    return this.#timers;
-  }
-
-  public get snapIds() {
-    return this.#snapIds;
-  }
-
   /**
    * Retrieve all cronjob specifications for all runnable snaps.
    *
