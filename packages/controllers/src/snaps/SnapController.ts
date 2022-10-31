@@ -201,14 +201,6 @@ export type PersistedSnapControllerState = SnapControllerState & {
 // Controller Messenger Actions
 
 /**
- * Adds the specified Snap to state. Used during installation.
- */
-export type AddSnap = {
-  type: `${typeof controllerName}:add`;
-  handler: SnapController['add'];
-};
-
-/**
  * Gets the specified Snap from state.
  */
 export type GetSnap = {
@@ -310,7 +302,6 @@ export type RemoveSnapError = {
 };
 
 export type SnapControllerActions =
-  | AddSnap
   | ClearSnapState
   | GetSnap
   | GetSnapState
@@ -798,11 +789,6 @@ export class SnapController extends BaseController<
    * actions.
    */
   private registerMessageHandlers(): void {
-    this.messagingSystem.registerActionHandler(
-      `${controllerName}:add`,
-      (...args) => this.add(...args),
-    );
-
     this.messagingSystem.registerActionHandler(
       `${controllerName}:clearSnapState`,
       (...args) => this.clearSnapState(...args),
@@ -1627,7 +1613,7 @@ export class SnapController extends BaseController<
     }
 
     try {
-      const { sourceCode } = await this.add({
+      const { sourceCode } = await this._add({
         origin,
         id: snapId,
         versionRange,
@@ -1780,7 +1766,7 @@ export class SnapController extends BaseController<
    * version.
    * @returns The resulting snap object.
    */
-  async add(args: AddSnapArgs): Promise<PersistedSnap> {
+  private async _add(args: AddSnapArgs): Promise<PersistedSnap> {
     const { id: snapId } = args;
     validateSnapId(snapId);
 

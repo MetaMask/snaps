@@ -3,6 +3,7 @@ import {
   MOCK_ORIGIN,
   MOCK_SNAP_ID,
   getSnapManifest,
+  getPersistedSnapObject,
 } from '@metamask/snap-utils/test-utils';
 import { SnapEndowments } from '..';
 import { MultiChainController } from '../multichain';
@@ -57,11 +58,14 @@ export const getMultiChainController = () => {
   };
 };
 
-export const getMultiChainControllerWithEES = () => {
-  const rootMessenger = getControllerMessenger();
-  const snapControllerOptions = getSnapControllerWithEESOptions({
-    rootMessenger,
-  });
+export const getMultiChainControllerWithEES = (
+  options = {
+    snapControllerOptions: getSnapControllerWithEESOptions(),
+  },
+) => {
+  const { snapControllerOptions } = options;
+  const { rootMessenger } = snapControllerOptions;
+
   const [snapController, executionService] = getSnapControllerWithEES(
     snapControllerOptions,
   );
@@ -154,8 +158,7 @@ class Keyring {
 }
 module.exports.keyring = new Keyring();`;
 
-export const MOCK_KEYRING_SNAP = {
-  origin: MOCK_ORIGIN,
+export const PERSISTED_MOCK_KEYRING_SNAP = getPersistedSnapObject({
   id: MOCK_SNAP_ID,
   sourceCode: MOCK_KEYRING_BUNDLE,
   manifest: getSnapManifest({
@@ -166,7 +169,7 @@ export const MOCK_KEYRING_SNAP = {
       },
     },
   }),
-};
+});
 
 export const MOCK_KEYRING_PERMISSION = {
   caveats: [{ type: 'snapKeyring', value: { namespaces: MOCK_NAMESPACES } }],
