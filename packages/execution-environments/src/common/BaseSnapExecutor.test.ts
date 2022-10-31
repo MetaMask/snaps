@@ -1581,7 +1581,7 @@ describe('BaseSnapExecutor', () => {
           jsonrpc: '2.0',
           id: 1,
           error: {
-            code: -32600,
+            code: -32602,
             data: expect.any(Object),
             message: expect.any(String),
             stack: expect.any(String),
@@ -1652,7 +1652,7 @@ describe('BaseSnapExecutor', () => {
           jsonrpc: '2.0',
           id: 1,
           error: {
-            code: -32600,
+            code: -32602,
             data: expect.any(Object),
             message: expect.any(String),
             stack: expect.any(String),
@@ -1660,5 +1660,36 @@ describe('BaseSnapExecutor', () => {
         });
       },
     );
+  });
+
+  describe('onCommandRequest', () => {
+    it('throws a human-readable error if the request arguments are invalid', async () => {
+      const executor = new TestSnapExecutor();
+      const params = {
+        snapName: 1,
+        method: ON_RPC_REQUEST,
+        origin: FAKE_ORIGIN,
+        request: { jsonrpc: '2.0', method: '', params: [] },
+      };
+
+      await executor.writeCommand({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snapRpc',
+        params,
+      });
+
+      expect(await executor.readCommand()).toStrictEqual({
+        jsonrpc: '2.0',
+        id: 1,
+        error: {
+          code: -32602,
+          data: expect.any(Object),
+          message:
+            'Invalid parameters for method "snapRpc": At path: 0 -- Expected a string, but received: 1.',
+          stack: expect.any(String),
+        },
+      });
+    });
   });
 });

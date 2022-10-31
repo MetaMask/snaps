@@ -188,8 +188,8 @@ export class BaseSnapExecutor {
     if (error) {
       this.respond(id, {
         error: ethErrors.rpc
-          .invalidRequest({
-            message: error.message,
+          .invalidParams({
+            message: `Invalid parameters for method "${method}": ${error.message}.`,
             data: {
               method,
               params: paramsAsArray,
