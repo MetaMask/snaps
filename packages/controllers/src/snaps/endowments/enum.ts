@@ -3,4 +3,5 @@ export enum SnapEndowments {
   LongRunning = 'endowment:long-running',
   TransactionInsight = 'endowment:transaction-insight',
   Keyring = 'endowment:keyring',
+  Cronjob = 'endowment:cronjob',
 }

@@ -1098,6 +1098,44 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
+  it('supports onCronjob export', async () => {
+    const CODE = `
+      module.exports.onCronjob = ({ request }) => request.params[0];
+    `;
+    const executor = new TestSnapExecutor();
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'executeSnap',
+      params: [FAKE_SNAP_NAME, CODE, []],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        FAKE_SNAP_NAME,
+        HandlerType.OnCronjob,
+        FAKE_ORIGIN,
+        { jsonrpc: '2.0', method: 'foo', params: ['bar'] },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: 'bar',
+    });
+  });
+
   it('blocks Snaps from escaping confinement by using unbound this', async () => {
     const PAYLOAD = `
     console.error("Hack the planet");

@@ -208,6 +208,7 @@ export enum HandlerType {
   OnRpcRequest = 'onRpcRequest',
   OnTransaction = 'onTransaction',
   SnapKeyring = 'keyring',
+  OnCronjob = 'onCronjob',
 }
 
 export const SNAP_EXPORT_NAMES = Object.values(HandlerType);

@@ -1,5 +1,10 @@
 import { PermissionConstraint } from '@metamask/controllers';
 import { Json } from '@metamask/utils';
+import {
+  cronjobCaveatSpecifications,
+  cronjobEndowmentBuilder,
+  getCronjobCaveatMapper,
+} from './cronjob';
 import { longRunningEndowmentBuilder } from './long-running';
 import { networkAccessEndowmentBuilder } from './network-access';
 import { transactionInsightEndowmentBuilder } from './transaction-insight';
@@ -15,10 +20,12 @@ export const endowmentPermissionBuilders = {
   [transactionInsightEndowmentBuilder.targetKey]:
     transactionInsightEndowmentBuilder,
   [keyringEndowmentBuilder.targetKey]: keyringEndowmentBuilder,
+  [cronjobEndowmentBuilder.targetKey]: cronjobEndowmentBuilder,
 } as const;
 
 export const endowmentCaveatSpecifications = {
   ...keyringCaveatSpecifications,
+  ...cronjobCaveatSpecifications,
 };
 
 export const endowmentCaveatMappers: Record<
@@ -26,6 +33,7 @@ export const endowmentCaveatMappers: Record<
   (value: Json) => Pick<PermissionConstraint, 'caveats'>
 > = {
   [keyringEndowmentBuilder.targetKey]: getKeyringCaveatMapper,
+  [cronjobEndowmentBuilder.targetKey]: getCronjobCaveatMapper,
 };
 
 export * from './enum';

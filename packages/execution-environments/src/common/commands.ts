@@ -47,6 +47,9 @@ export function getHandlerArguments(
     case HandlerType.SnapKeyring:
       return { origin, request };
 
+    case HandlerType.OnCronjob:
+      return { request };
+
     default:
       return assertExhaustive(handler);
   }
