@@ -12,7 +12,7 @@ jobs:
       IS_RELEASE: ${{ steps.is-release.outputs.IS_RELEASE }}
     runs-on: ubuntu-latest
     steps:
-      - uses: MetaMask/action-is-release@v1.0
+      - uses: MetaMask/action-is-release@v1
         id: is-release
 
   publish-release:
@@ -31,7 +31,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ steps.nvm.outputs.NODE_VERSION }}
-      - uses: MetaMask/action-publish-release@v2.0.0
+      - uses: MetaMask/action-publish-release@v2
         id: publish-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -62,7 +62,7 @@ jobs:
           key: ${{ github.sha }}
       - run: npm config set ignore-scripts true
       - name: Dry Run Publish
-        uses: MetaMask/action-npm-publish@v1.2.0
+        uses: MetaMask/action-npm-publish@v1
 
   npm-publish:
     environment: npm-publish
@@ -81,6 +81,6 @@ jobs:
           key: ${{ github.sha }}
       - run: npm config set ignore-scripts true
       - name: Publish
-        uses: MetaMask/action-npm-publish@v1.2.0
+        uses: MetaMask/action-npm-publish@v1
         with:
           npm-token: ${{ secrets.NPM_TOKEN }}
