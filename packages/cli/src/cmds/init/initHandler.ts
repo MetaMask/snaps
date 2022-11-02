@@ -77,11 +77,11 @@ export async function initHandler(argv: YargsArgs) {
   }
 
   console.log('Installing dependencies...');
-  yarnInstall(directoryToUse);
+  await yarnInstall(directoryToUse);
 
   if (!isInGitRepository(directoryToUse)) {
     console.log('Initiating git repository...');
-    gitInit(directoryToUse);
+    await gitInit(directoryToUse);
   }
 
   const snapLocation = pathUtils.join(directoryToUse, SNAP_LOCATION);

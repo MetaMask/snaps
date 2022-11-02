@@ -1,7 +1,6 @@
 import { promises as fs } from 'fs';
 import { execSync } from 'child_process';
 import pathUtils from 'path';
-import { TemplateType } from '../../builders';
 import { logError } from '../../utils';
 
 /**
@@ -20,6 +19,7 @@ export async function prepareWorkingDirectory(
         await fs.mkdir(directory, { recursive: true });
       } catch (err) {
         logError('Init Error: Failed to create new directory', err);
+        throw err;
       }
     }
 
@@ -34,17 +34,7 @@ export async function prepareWorkingDirectory(
   }
 }
 
-/**
- * Check if template argument is TemplateType.TypeScript.
- *
- * @param templateType - TemplateType value of the template argument passed from CLI.
- * @returns True or false.
- */
-export function isTemplateTypescript(templateType: TemplateType): boolean {
-  return templateType === TemplateType.TypeScript;
-}
-
-const TEMPLATE_GIT_URL =
+export const TEMPLATE_GIT_URL =
   'https://github.com/MetaMask/template-snap-monorepo.git';
 
 /**
@@ -59,6 +49,7 @@ export async function cloneTemplate(directory: string) {
     });
   } catch (err) {
     logError('Init Error: Failed to clone the template.', err);
+    throw err;
   }
 }
 
@@ -99,7 +90,7 @@ export function isInGitRepository(directory: string) {
  *
  * @param directory - The directory to init.
  */
-export function gitInit(directory: string) {
+export async function gitInit(directory: string) {
   try {
     execSync('git init', {
       stdio: 'ignore',
@@ -107,6 +98,7 @@ export function gitInit(directory: string) {
     });
   } catch (err) {
     logError('Init Error: Failed to init a new git repository', err);
+    throw err;
   }
 }
 
@@ -115,7 +107,7 @@ export function gitInit(directory: string) {
  *
  * @param directory - The directory containing the project.
  */
-export function yarnInstall(directory: string) {
+export async function yarnInstall(directory: string) {
   try {
     execSync('yarn', {
       stdio: [0, 1, 2],
@@ -128,6 +120,7 @@ export function yarnInstall(directory: string) {
     });
   } catch (err) {
     logError('Init Error: Failed to install dependencies', err);
+    throw err;
   }
 }
 
