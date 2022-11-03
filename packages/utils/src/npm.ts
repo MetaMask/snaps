@@ -1,15 +1,15 @@
 import deepEqual from 'fast-deep-equal';
+import { ProgrammaticallyFixableSnapError, validateSnapShasum } from './snaps';
 import {
+  assertIsSnapManifest,
+  assertIsSnapPackageJson,
   NpmSnapFileNames,
   SnapFiles,
+  SnapManifest,
+  SnapPackageJson,
   SnapValidationFailureReason,
   UnvalidatedSnapFiles,
-  assertIsNpmSnapPackageJson,
-  assertIsSnapManifest,
-  NpmSnapPackageJson,
-  SnapManifest,
 } from './types';
-import { ProgrammaticallyFixableSnapError, validateSnapShasum } from './snaps';
 
 export const SVG_MAX_BYTE_SIZE = 100_000;
 export const SVG_MAX_BYTE_SIZE_TEXT = `${Math.floor(
@@ -65,11 +65,11 @@ export function validateNpmSnap(
   }
 
   try {
-    assertIsNpmSnapPackageJson(packageJson);
+    assertIsSnapPackageJson(packageJson);
   } catch (error) {
     throw new Error(`${errorPrefix ?? ''}${error.message}`);
   }
-  const validatedPackageJson = packageJson as NpmSnapPackageJson;
+  const validatedPackageJson = packageJson as SnapPackageJson;
 
   validateNpmSnapManifest({
     manifest: validatedManifest,
@@ -110,7 +110,7 @@ export function validateNpmSnapManifest({
   manifest,
   packageJson,
   sourceCode,
-}: SnapFiles): [SnapManifest, string, NpmSnapPackageJson] {
+}: SnapFiles): [SnapManifest, string, SnapPackageJson] {
   const packageJsonName = packageJson.name;
   const packageJsonVersion = packageJson.version;
   const packageJsonRepository = packageJson.repository;

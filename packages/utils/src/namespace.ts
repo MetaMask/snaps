@@ -1,19 +1,19 @@
+import { JsonRpcRequestStruct } from '@metamask/utils';
 import {
   array,
+  assign,
   Infer,
   is,
   object,
+  omit,
   optional,
+  partial,
   pattern,
+  pick,
   record,
   size,
   string,
-  omit,
-  assign,
-  partial,
-  pick,
 } from 'superstruct';
-import { JsonRpcRequestStruct } from '@metamask/utils';
 import { AssertionErrorConstructor, assertStruct } from './assert';
 
 export const CHAIN_ID_REGEX =
@@ -76,7 +76,6 @@ export function parseAccountId(accountId: AccountId): {
  * of 40.
  */
 export const LimitedString = size(string(), 1, 40);
-
 /**
  * A CAIP-2 chain ID, i.e., a human-readable namespace and reference.
  */

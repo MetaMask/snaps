@@ -4,6 +4,8 @@ export * from './deep-clone';
 export * from './default-endowments';
 export * from './flatMap';
 export * from './json-rpc';
+export * from './location';
+export * from './manifest/index.browser';
 export * from './namespace';
 export * from './notification';
 export * from './object';

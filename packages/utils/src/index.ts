@@ -7,6 +7,7 @@ export * from './eval';
 export * from './flatMap';
 export * from './fs';
 export * from './json-rpc';
+export * from './location';
 export * from './manifest';
 export * from './mock';
 export * from './namespace';

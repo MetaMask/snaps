@@ -17,51 +17,49 @@ import {
   ValidPermission,
 } from '@metamask/controllers';
 import {
+  assertIsSnapPackageJson,
+  BlockedSnapInfo,
   DEFAULT_ENDOWMENTS,
   DEFAULT_REQUESTED_SNAP_VERSION,
+  detectSnapLocation,
+  fromEntries,
   getSnapPermissionName,
   getSnapPrefix,
   gtVersion,
+  InstallSnapsResult,
   isValidSnapVersionRange,
-  LOCALHOST_HOSTNAMES,
-  NpmSnapFileNames,
+  PersistedSnap,
+  ProcessSnapResult,
   resolveVersion,
   satisfiesVersionRange,
+  Snap,
   SnapId,
   SnapIdPrefixes,
-  SnapManifest,
+  SnapPackageJson,
+  SnapPermissions,
   SnapRpcHook,
   SnapRpcHookArgs,
+  SnapStatus,
+  SnapStatusEvents,
   SNAP_PREFIX,
-  ValidatedSnapId,
-  validateSnapId,
-  validateSnapShasum,
-  TruncatedSnapFields,
-  Snap,
+  SNAP_PREFIX_REGEX,
   StatusContext,
   StatusEvents,
   StatusStates,
-  BlockedSnapInfo,
   TruncatedSnap,
-  InstallSnapsResult,
-  RequestedSnapPermissions,
-  ProcessSnapResult,
-  SNAP_PREFIX_REGEX,
-  fromEntries,
-  SnapStatus,
-  SnapStatusEvents,
-  assertIsSnapManifest,
-  PersistedSnap,
+  TruncatedSnapFields,
+  ValidatedSnapId,
+  validateSnapId,
+  validateSnapShasum,
 } from '@metamask/snap-utils';
 import {
+  assert,
   Duration,
   hasProperty,
   inMilliseconds,
   isNonEmptyArray,
   Json,
   timeSince,
-  assert,
-  assertExhaustive,
 } from '@metamask/utils';
 import { createMachine, interpret, StateMachine } from '@xstate/fsm';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
@@ -81,7 +79,6 @@ import {
 import { hasTimedOut, setDiff, withTimeout } from '../utils';
 import { endowmentCaveatMappers, SnapEndowments } from './endowments';
 import { RequestQueue } from './RequestQueue';
-import { fetchNpmSnap } from './utils';
 
 import { Timer } from './Timer';
 
@@ -174,7 +171,7 @@ type FetchSnapResult = {
   /**
    * The manifest of the fetched Snap.
    */
-  manifest: SnapManifest;
+  manifest: SnapPackageJson;
 
   /**
    * The source code of the fetched Snap.
@@ -434,14 +431,7 @@ export enum AppKeyType {
 type GetAppKey = (subject: string, appKeyType: AppKeyType) => Promise<string>;
 
 type FeatureFlags = {
-  /**
-   * We still need to implement new UI approval page in metamask-extension before we can allow
-   * DApps to update Snaps. After it's added, this flag can be removed.
-   *
-   * @see {SNAP_APPROVAL_UPDATE}
-   * @see {SnapController.processRequestedSnap}
-   */
-  dappsCanUpdateSnaps?: true;
+  supportsHttpLocation?: boolean;
 };
 
 type SemVerVersion = string;
@@ -543,7 +533,7 @@ type AddSnapArgsBase = {
 type AddSnapArgs =
   | AddSnapArgsBase
   | (AddSnapArgsBase & {
-      manifest: SnapManifest;
+      manifest: SnapPackageJson;
       sourceCode: string;
     });
 
@@ -551,7 +541,7 @@ type AddSnapArgs =
 // validated.
 type SetSnapArgs = Omit<AddSnapArgs, 'id'> & {
   id: ValidatedSnapId;
-  manifest: SnapManifest;
+  manifest: SnapPackageJson;
   sourceCode: string;
   svgIcon?: string;
 };
@@ -636,7 +626,7 @@ export class SnapController extends BaseController<
     maxIdleTime = inMilliseconds(30, Duration.Second),
     maxRequestTime = inMilliseconds(60, Duration.Second),
     fetchFunction = globalThis.fetch.bind(globalThis),
-    featureFlags = {},
+    featureFlags = { supportsHttpLocation: false },
   }: SnapControllerArgs) {
     const loadedSourceCode: Record<SnapId, string> = {};
     const filteredState = {
@@ -907,7 +897,7 @@ export class SnapController extends BaseController<
         (blockListArg, snap) => {
           blockListArg[snap.id] = {
             version: snap.version,
-            shasum: snap.manifest.source.shasum,
+            shasum: snap.manifest.snap.checksum.hash,
           };
           return blockListArg;
         },
@@ -1521,7 +1511,7 @@ export class SnapController extends BaseController<
    */
   async installSnaps(
     origin: string,
-    requestedSnaps: RequestedSnapPermissions,
+    requestedSnaps: Record<string, any>,
   ): Promise<InstallSnapsResult> {
     const result: InstallSnapsResult = {};
 
@@ -1592,35 +1582,32 @@ export class SnapController extends BaseController<
 
     const existingSnap = this.getTruncated(snapId);
     // For devX we always re-install local snaps.
-    if (existingSnap && getSnapPrefix(snapId) !== SnapIdPrefixes.local) {
+    if (
+      existingSnap &&
+      ![SnapIdPrefixes.http, SnapIdPrefixes.https].includes(
+        getSnapPrefix(snapId),
+      )
+    ) {
       if (satisfiesVersionRange(existingSnap.version, versionRange)) {
         return existingSnap;
       }
 
-      if (this._featureFlags.dappsCanUpdateSnaps === true) {
-        try {
-          const updateResult = await this.updateSnap(
-            origin,
-            snapId,
-            versionRange,
-          );
-          if (updateResult === null) {
-            return {
-              error: ethErrors.rpc.invalidParams(
-                `Snap "${snapId}@${existingSnap.version}" is already installed, couldn't update to a version inside requested "${versionRange}" range.`,
-              ),
-            };
-          }
-          return updateResult;
-        } catch (err) {
-          return { error: serializeError(err) };
+      try {
+        const updateResult = await this.updateSnap(
+          origin,
+          snapId,
+          versionRange,
+        );
+        if (updateResult === null) {
+          return {
+            error: ethErrors.rpc.invalidParams(
+              `Snap "${snapId}@${existingSnap.version}" is already installed, couldn't update to a version inside requested "${versionRange}" range.`,
+            ),
+          };
         }
-      } else {
-        return {
-          error: ethErrors.rpc.invalidParams(
-            `Version mismatch with already installed snap. ${snapId}@${existingSnap.version} doesn't satisfy requested version ${versionRange}`,
-          ),
-        };
+        return updateResult;
+      } catch (err) {
+        return { error: serializeError(err) };
       }
     }
 
@@ -1698,11 +1685,11 @@ export class SnapController extends BaseController<
 
     await this._assertIsUnblocked(snapId, {
       version: newVersion,
-      shasum: newSnap.manifest.source.shasum,
+      shasum: newSnap.manifest.snap.checksum.hash,
     });
 
     const processedPermissions = this.processSnapPermissions(
-      newSnap.manifest.initialPermissions,
+      newSnap.manifest.snap.permissions,
     );
 
     const { newPermissions, unusedPermissions, approvedPermissions } =
@@ -1811,7 +1798,7 @@ export class SnapController extends BaseController<
         const fetchedSnap = await this._fetchSnap(snapId, args.versionRange);
         await this._assertIsUnblocked(snapId, {
           version: fetchedSnap.manifest.version,
-          shasum: fetchedSnap.manifest.source.shasum,
+          shasum: fetchedSnap.manifest.snap.checksum.hash,
         });
 
         return this._set({
@@ -1937,7 +1924,7 @@ export class SnapController extends BaseController<
       versionRange = DEFAULT_REQUESTED_SNAP_VERSION,
     } = args;
 
-    assertIsSnapManifest(manifest);
+    assertIsSnapPackageJson(manifest);
     const { version } = manifest;
 
     if (!satisfiesVersionRange(version, versionRange)) {
@@ -1950,7 +1937,7 @@ export class SnapController extends BaseController<
       throw new Error(`Invalid source code for snap "${snapId}".`);
     }
 
-    const initialPermissions = manifest?.initialPermissions;
+    const initialPermissions = manifest?.snap.permissions;
     if (
       !initialPermissions ||
       typeof initialPermissions !== 'object' ||
@@ -2019,98 +2006,27 @@ export class SnapController extends BaseController<
     versionRange: string = DEFAULT_REQUESTED_SNAP_VERSION,
   ): Promise<FetchSnapResult> {
     try {
-      const snapPrefix = getSnapPrefix(snapId);
-      switch (snapPrefix) {
-        case SnapIdPrefixes.local:
-          return this._fetchLocalSnap(snapId.replace(SnapIdPrefixes.local, ''));
-        case SnapIdPrefixes.npm:
-          return this._fetchNpmSnap(
-            snapId.replace(SnapIdPrefixes.npm, ''),
-            versionRange,
-          );
-        /* istanbul ignore next */
-        default:
-          // This whill fail to compile if the above switch is not fully exhaustive
-          return assertExhaustive(snapPrefix);
+      if (
+        !this._featureFlags.supportsHttpLocation &&
+        ['http:', 'https:'].includes(new URL(snapId).protocol)
+      ) {
+        throw new Error(`Disabled snap location protocol`);
       }
+      const location = await detectSnapLocation(snapId, versionRange);
+      const manifest = await location.manifest();
+      assertIsSnapPackageJson(manifest);
+      const sourceCode = await (await location.fetch(manifest.main)).text();
+      validateSnapShasum(manifest, sourceCode);
+      let svgIcon: string | undefined = undefined;
+      if (manifest.snap.icon) {
+        svgIcon = await (await location.fetch(manifest.snap.icon)).text();
+      }
+      return { manifest, sourceCode, svgIcon };
     } catch (error) {
       throw new Error(
         `Failed to fetch Snap "${snapId}": ${(error as Error).message}`,
       );
     }
-  }
-
-  private async _fetchNpmSnap(
-    packageName: string,
-    versionRange: string,
-  ): Promise<FetchSnapResult> {
-    if (!isValidSnapVersionRange(versionRange)) {
-      throw new Error(
-        `Received invalid Snap version range: "${versionRange}".`,
-      );
-    }
-
-    const { manifest, sourceCode, svgIcon } = await fetchNpmSnap(
-      packageName,
-      versionRange,
-      this._npmRegistryUrl,
-      this._fetchFunction,
-    );
-    return { manifest, sourceCode, svgIcon };
-  }
-
-  /**
-   * Fetches the manifest and source code of a local snap.
-   *
-   * @param localhostUrl - The localhost URL to download from.
-   * @returns The validated manifest and the source code.
-   */
-  private async _fetchLocalSnap(
-    localhostUrl: string,
-  ): Promise<FetchSnapResult> {
-    // Local snaps are mostly used for development purposes. Fetches were cached in the browser and were not requested
-    // afterwards which lead to confusing development where old versions of snaps were installed.
-    // Thus we disable caching
-    const fetchOptions: RequestInit = { cache: 'no-cache' };
-    const manifestUrl = new URL(NpmSnapFileNames.Manifest, localhostUrl);
-    if (!LOCALHOST_HOSTNAMES.has(manifestUrl.hostname)) {
-      throw new Error(
-        `Invalid URL: Locally hosted Snaps must be hosted on localhost. Received URL: "${manifestUrl.toString()}"`,
-      );
-    }
-
-    const manifest = await (
-      await this._fetchFunction(manifestUrl.toString(), fetchOptions)
-    ).json();
-    assertIsSnapManifest(manifest);
-
-    const {
-      source: {
-        location: {
-          npm: { filePath, iconPath },
-        },
-      },
-    } = manifest;
-
-    const [sourceCode, svgIcon] = await Promise.all([
-      (
-        await this._fetchFunction(
-          new URL(filePath, localhostUrl).toString(),
-          fetchOptions,
-        )
-      ).text(),
-      iconPath
-        ? (
-            await this._fetchFunction(
-              new URL(iconPath, localhostUrl).toString(),
-              fetchOptions,
-            )
-          ).text()
-        : undefined,
-    ]);
-
-    validateSnapShasum(manifest, sourceCode);
-    return { manifest, sourceCode, svgIcon };
   }
 
   /**
@@ -2126,8 +2042,8 @@ export class SnapController extends BaseController<
    * @private
    */
   private processSnapPermissions(
-    initialPermissions: RequestedSnapPermissions,
-  ): RequestedSnapPermissions {
+    initialPermissions: SnapPermissions,
+  ): Record<string, object> {
     return fromEntries(
       Object.entries(initialPermissions).map(([initialPermission, value]) => {
         if (hasProperty(caveatMappers, initialPermission)) {
@@ -2172,7 +2088,7 @@ export class SnapController extends BaseController<
             requestData: {
               // Mirror previous installation metadata
               metadata: { id, origin: snapId, dappOrigin: origin },
-              permissions: processedPermissions,
+              permissions: processedPermissions as Json,
               snapId,
             },
           },
@@ -2437,9 +2353,9 @@ export class SnapController extends BaseController<
 
   private async calculatePermissionsChange(
     snapId: SnapId,
-    desiredPermissionsSet: RequestedSnapPermissions,
+    desiredPermissionsSet: SnapPermissions,
   ): Promise<{
-    newPermissions: RequestedSnapPermissions;
+    newPermissions: SnapPermissions;
     unusedPermissions: SubjectPermissions<
       ValidPermission<string, Caveat<string, any>>
     >;

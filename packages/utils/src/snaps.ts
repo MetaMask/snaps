@@ -1,15 +1,9 @@
-import { Json } from '@metamask/utils';
 import { sha256 } from '@noble/hashes/sha256';
 import { base64 } from '@scure/base';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
-import {
-  SnapId,
-  SnapIdPrefixes,
-  SnapValidationFailureReason,
-  SnapManifest,
-} from './types';
+import { SnapPackageJson, SnapPermissions } from './index.browser';
+import { SnapId, SnapIdPrefixes } from './types';
 
-export const LOCALHOST_HOSTNAMES = new Set(['localhost', '127.0.0.1', '::1']);
 export const SNAP_PREFIX = 'wallet_snap_';
 
 export const SNAP_PREFIX_REGEX = new RegExp(`^${SNAP_PREFIX}`, 'u');
@@ -25,10 +19,6 @@ export const SNAP_PREFIX_REGEX = new RegExp(`^${SNAP_PREFIX}`, 'u');
 // https://github.com/SchemaStore/schemastore/blob/81a16897c1dabfd98c72242a5fd62eb080ff76d8/src/schemas/json/package.json#L132-L138
 export const PROPOSED_NAME_REGEX =
   /^(?:[A-Za-z0-9-_]+( [A-Za-z0-9-_]+)*)|(?:(?:@[A-Za-z0-9-*~][A-Za-z0-9-*._~]*\/)?[A-Za-z0-9-~][A-Za-z0-9-._~]*)$/u;
-
-export type RequestedSnapPermissions = {
-  [permission: string]: Record<string, Json>;
-};
 
 export type BlockedSnapInfo = { infoUrl?: string; reason?: string };
 
@@ -87,12 +77,12 @@ export type Snap = {
    * The initial permissions of the Snap, which will be requested when it is
    * installed.
    */
-  initialPermissions: RequestedSnapPermissions;
+  initialPermissions: SnapPermissions;
 
   /**
    * The Snap's manifest file.
    */
-  manifest: SnapManifest;
+  manifest: SnapPackageJson;
 
   /**
    * Whether the Snap is blocked.
@@ -147,19 +137,6 @@ export type ProcessSnapResult =
 export type InstallSnapsResult = Record<SnapId, ProcessSnapResult>;
 
 /**
- * An error indicating that a Snap validation failure is programmatically
- * fixable during development.
- */
-export class ProgrammaticallyFixableSnapError extends Error {
-  reason: SnapValidationFailureReason;
-
-  constructor(message: string, reason: SnapValidationFailureReason) {
-    super(message);
-    this.reason = reason;
-  }
-}
-
-/**
  * Calculates the Base64-encoded SHA-256 digest of a Snap source code string.
  *
  * @param sourceCode - The UTF-8 string source code of a Snap.
@@ -180,15 +157,12 @@ export type ValidatedSnapId = `local:${string}` | `npm:${string}`;
  * @param errorMessage - The error message to throw if validation fails.
  */
 export function validateSnapShasum(
-  manifest: SnapManifest,
+  manifest: SnapPackageJson,
   sourceCode: string,
   errorMessage = 'Invalid Snap manifest: manifest shasum does not match computed shasum.',
 ): void {
-  if (manifest.source.shasum !== getSnapSourceShasum(sourceCode)) {
-    throw new ProgrammaticallyFixableSnapError(
-      errorMessage,
-      SnapValidationFailureReason.ShasumMismatch,
-    );
+  if (manifest.snap.checksum.hash !== getSnapSourceShasum(sourceCode)) {
+    throw new Error(errorMessage);
   }
 }
 
@@ -246,6 +220,7 @@ export function validateSnapId(
  * @param chainId - The chainId being tested.
  * @returns `true` if the value is a valid CAIP chain id, and `false` otherwise.
  */
+// TODO(ritave): Use "satisfies chainId is string" in TS4.8
 export function isCaipChainId(chainId: unknown): chainId is string {
   return (
     typeof chainId === 'string' &&

@@ -1,22 +1,18 @@
 import {
+  Caveat,
+  PermissionConstraint,
   PermissionSpecificationBuilder,
   PermissionType,
+  PermissionValidatorConstraint,
+  RestrictedMethodCaveatSpecificationConstraint,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
-  Caveat,
-  PermissionValidatorConstraint,
-  PermissionConstraint,
-  RestrictedMethodCaveatSpecificationConstraint,
 } from '@metamask/controllers';
-import { ethErrors } from 'eth-rpc-errors';
-import {
-  hasProperty,
-  isPlainObject,
-  Json,
-  NonEmptyArray,
-} from '@metamask/utils';
 import { BIP32Node, JsonSLIP10Node, SLIP10Node } from '@metamask/key-tree';
-import { SnapCaveatType } from '@metamask/snap-utils';
+import { Bip32ParametersStruct, SnapCaveatType } from '@metamask/snap-utils';
+import { hasProperty, Json, NonEmptyArray } from '@metamask/utils';
+import { ethErrors } from 'eth-rpc-errors';
+import { validate } from 'superstruct';
 import { isEqual } from '../utils';
 
 const INDEX_REGEX = /^\d+'?$/u;
@@ -66,60 +62,9 @@ type GetBip32EntropyParameters = {
 export function validatePath(
   value: unknown,
 ): asserts value is GetBip32EntropyParameters {
-  if (!isPlainObject(value)) {
-    throw ethErrors.rpc.invalidParams({
-      message: 'Expected a plain object.',
-    });
-  }
-
-  if (
-    !hasProperty(value, 'path') ||
-    !Array.isArray(value.path) ||
-    value.path.length === 0
-  ) {
-    throw ethErrors.rpc.invalidParams({
-      message: `Invalid "path" parameter. The path must be a non-empty BIP-32 derivation path array.`,
-    });
-  }
-
-  if (value.path[0] !== 'm') {
-    throw ethErrors.rpc.invalidParams({
-      message: `Invalid "path" parameter. The path must start with "m".`,
-    });
-  }
-
-  if (
-    value.path
-      .slice(1)
-      .some((v) => typeof v !== 'string' || !INDEX_REGEX.test(v))
-  ) {
-    throw ethErrors.rpc.invalidParams({
-      message: `Invalid "path" parameter. The path must be a valid BIP-32 derivation path array.`,
-    });
-  }
-
-  if (value.path.length < 3) {
-    throw ethErrors.rpc.invalidParams({
-      message: `Invalid "path" parameter. Paths must have a length of at least three.`,
-    });
-  }
-
-  if (
-    !hasProperty(value, 'curve') ||
-    (value.curve !== 'secp256k1' && value.curve !== 'ed25519')
-  ) {
-    throw ethErrors.rpc.invalidParams({
-      message: `Invalid "curve" parameter. The curve must be "secp256k1" or "ed25519".`,
-    });
-  }
-
-  if (
-    value.curve === 'ed25519' &&
-    value.path.slice(1).some((v) => !v.endsWith("'"))
-  ) {
-    throw ethErrors.rpc.invalidParams({
-      message: `Invalid "path" parameter. Ed25519 does not support unhardened paths.`,
-    });
+  const [error] = validate(value, Bip32ParametersStruct);
+  if (error) {
+    throw ethErrors.rpc.invalidParams({ message: error.message });
   }
 }
 

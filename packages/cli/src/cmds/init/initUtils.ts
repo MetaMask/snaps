@@ -1,19 +1,20 @@
-import { existsSync, promises as fs } from 'fs';
-import pathUtils from 'path';
 import {
-  PROPOSED_NAME_REGEX,
-  NpmSnapFileNames,
-  SnapManifest,
-  NpmSnapPackageJson,
-  assertIsNpmSnapPackageJson,
-  readJsonFile,
-  deepClone,
   assertIsSnapManifest,
+  assertIsSnapPackageJson,
+  deepClone,
+  NpmSnapFileNames,
+  PROPOSED_NAME_REGEX,
+  readJsonFile,
+  SnapManifest,
+  SnapPackageJson,
 } from '@metamask/snap-utils';
+import { existsSync, promises as fs } from 'fs';
 import initPackageJson from 'init-package-json';
 import mkdirp from 'mkdirp';
+import pathUtils from 'path';
 import slash from 'slash';
 import { Arguments } from 'yargs';
+import { TemplateType } from '../../builders';
 import { YargsArgs } from '../../types/yargs';
 import {
   CONFIG_FILE,
@@ -22,7 +23,6 @@ import {
   prompt,
   trimPathString,
 } from '../../utils';
-import { TemplateType } from '../../builders';
 
 /**
  * This is a placeholder shasum that will be replaced at the end of the init command.
@@ -41,7 +41,7 @@ const NPM_PUBLIC_REGISTRY_URL = 'https://registry.npmjs.org';
  */
 export async function asyncPackageInit(
   argv: YargsArgs,
-): Promise<Readonly<NpmSnapPackageJson>> {
+): Promise<Readonly<SnapPackageJson>> {
   if (existsSync(NpmSnapFileNames.PackageJson)) {
     console.log(
       `Init: Attempting to use existing '${NpmSnapFileNames.PackageJson}'...`,
@@ -49,12 +49,12 @@ export async function asyncPackageInit(
 
     try {
       const packageJson = await readJsonFile(NpmSnapFileNames.PackageJson);
-      assertIsNpmSnapPackageJson(packageJson);
+      assertIsSnapPackageJson(packageJson);
 
       console.log(
         `Init: Successfully parsed '${NpmSnapFileNames.PackageJson}'!`,
       );
-      return packageJson as NpmSnapPackageJson;
+      return packageJson as SnapPackageJson;
     } catch (error) {
       logError(
         `Init Error: Could not parse '${NpmSnapFileNames.PackageJson}'. Please verify that the file is correctly formatted and try again.`,
@@ -126,7 +126,7 @@ const getDefaultPermissions = () => {
  */
 export async function buildSnapManifest(
   argv: YargsArgs,
-  packageJson: NpmSnapPackageJson,
+  packageJson: SnapPackageJson,
 ): Promise<[SnapManifest, { dist: string; outfileName: string; src: string }]> {
   const { outfileName } = argv;
   let { dist } = argv;
