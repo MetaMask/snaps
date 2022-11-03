@@ -431,6 +431,11 @@ export enum AppKeyType {
 type GetAppKey = (subject: string, appKeyType: AppKeyType) => Promise<string>;
 
 type FeatureFlags = {
+  /**
+   * Whether to allow snaps with 'http:' and 'https:' protocols
+   *
+   * @see {SnapController._fetchSnap}
+   */
   supportsHttpLocation?: boolean;
 };
 
