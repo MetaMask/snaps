@@ -19,6 +19,11 @@ import {
   transactionInsightCaveatSpecifications,
   transactionInsightEndowmentBuilder,
 } from './transaction-insight';
+import {
+  getRpcCaveatMapper,
+  rpcCaveatSpecifications,
+  rpcEndowmentBuilder,
+} from './rpc';
 
 export const endowmentPermissionBuilders = {
   [networkAccessEndowmentBuilder.targetKey]: networkAccessEndowmentBuilder,
@@ -29,12 +34,14 @@ export const endowmentPermissionBuilders = {
   [cronjobEndowmentBuilder.targetKey]: cronjobEndowmentBuilder,
   [ethereumProviderEndowmentBuilder.targetKey]:
     ethereumProviderEndowmentBuilder,
+  [rpcEndowmentBuilder.targetKey]: rpcEndowmentBuilder,
 } as const;
 
 export const endowmentCaveatSpecifications = {
   ...keyringCaveatSpecifications,
   ...cronjobCaveatSpecifications,
   ...transactionInsightCaveatSpecifications,
+  ...rpcCaveatSpecifications,
 };
 
 export const endowmentCaveatMappers: Record<
@@ -45,6 +52,7 @@ export const endowmentCaveatMappers: Record<
   [cronjobEndowmentBuilder.targetKey]: getCronjobCaveatMapper,
   [transactionInsightEndowmentBuilder.targetKey]:
     getTransactionInsightCaveatMapper,
+  [rpcEndowmentBuilder.targetKey]: getRpcCaveatMapper,
 };
 
 export * from './enum';

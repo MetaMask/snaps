@@ -1,4 +1,39 @@
-import { assertIsJsonRpcSuccess } from './json-rpc';
+import { assertIsJsonRpcSuccess, assertIsRpcOrigins } from './json-rpc';
+
+describe('assertIsRpcOrigins', () => {
+  it.each([{ dapps: true }, { snaps: true }, { dapps: true, snaps: true }])(
+    'does not throw for %p',
+    (origins) => {
+      expect(() => assertIsRpcOrigins(origins)).not.toThrow();
+    },
+  );
+
+  it.each([
+    true,
+    false,
+    null,
+    undefined,
+    0,
+    1,
+    '',
+    'foo',
+    [],
+    ['foo'],
+    {},
+    { foo: true },
+    { dapps: false, snaps: false },
+  ])('throws for %p', (origins) => {
+    expect(() => assertIsRpcOrigins(origins)).toThrow(
+      'Invalid JSON-RPC origins:',
+    );
+  });
+
+  it('throws if neither value is true', () => {
+    expect(() => assertIsRpcOrigins({ dapps: false, snaps: false })).toThrow(
+      'Invalid JSON-RPC origins: Must specify at least one JSON-RPC origin.',
+    );
+  });
+});
 
 describe('assertIsJsonRpcSuccess', () => {
   it.each([
