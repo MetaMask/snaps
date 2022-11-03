@@ -1,4 +1,3 @@
-export * from './assert';
 export * from './caveats';
 export * from './deep-clone';
 export * from './default-endowments';

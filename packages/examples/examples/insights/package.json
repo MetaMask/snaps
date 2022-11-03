@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@metamask/abi-utils": "^1.0.0",
-    "@metamask/utils": "^3.2.0"
+    "@metamask/utils": "^3.3.0"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.0.3",

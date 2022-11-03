@@ -2,7 +2,7 @@ import {
   SnapFunctionExports,
   SnapKeyring as Keyring,
 } from '@metamask/snap-types';
-import { Json } from '@metamask/utils';
+import { Json, assertStruct } from '@metamask/utils';
 import {
   any,
   Infer,
@@ -19,7 +19,6 @@ import {
   union,
 } from 'superstruct';
 import { valid as validSemver } from 'semver';
-import { assertStruct } from './assert';
 
 export enum NpmSnapFileNames {
   PackageJson = 'package.json',
