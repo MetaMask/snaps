@@ -36,10 +36,11 @@ export function getHandlerArguments(
     case HandlerType.OnTransaction: {
       assertIsOnTransactionRequestArguments(request.params);
 
-      const { transaction, chainId } = request.params;
+      const { transaction, chainId, transactionOrigin } = request.params;
       return {
         transaction,
         chainId,
+        transactionOrigin,
       };
     }
 

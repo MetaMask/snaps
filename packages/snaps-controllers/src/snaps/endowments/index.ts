@@ -7,7 +7,11 @@ import {
 } from './cronjob';
 import { longRunningEndowmentBuilder } from './long-running';
 import { networkAccessEndowmentBuilder } from './network-access';
-import { transactionInsightEndowmentBuilder } from './transaction-insight';
+import {
+  getTransactionInsightCaveatMapper,
+  transactionInsightCaveatSpecifications,
+  transactionInsightEndowmentBuilder,
+} from './transaction-insight';
 import {
   keyringEndowmentBuilder,
   keyringCaveatSpecifications,
@@ -29,6 +33,7 @@ export const endowmentPermissionBuilders = {
 export const endowmentCaveatSpecifications = {
   ...keyringCaveatSpecifications,
   ...cronjobCaveatSpecifications,
+  ...transactionInsightCaveatSpecifications,
 };
 
 export const endowmentCaveatMappers: Record<
@@ -37,6 +42,8 @@ export const endowmentCaveatMappers: Record<
 > = {
   [keyringEndowmentBuilder.targetKey]: getKeyringCaveatMapper,
   [cronjobEndowmentBuilder.targetKey]: getCronjobCaveatMapper,
+  [transactionInsightEndowmentBuilder.targetKey]:
+    getTransactionInsightCaveatMapper,
 };
 
 export * from './enum';

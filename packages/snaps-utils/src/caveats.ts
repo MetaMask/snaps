@@ -18,4 +18,9 @@ export enum SnapCaveatType {
    * Caveat specifying a snap cronjob.
    */
   SnapCronjob = 'snapCronjob',
+
+  /**
+   * Caveat specifying optional metadata for transaction insight.
+   */
+  SnapTransactionInsight = 'snapTransactionInsight',
 }
