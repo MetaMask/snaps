@@ -1,584 +1,194 @@
 import { promises as fs } from 'fs';
-import {
-  getSnapSourceShasum,
-  NpmSnapFileNames,
-  getWritableManifest,
-} from '@metamask/snap-utils';
-import mkdirp from 'mkdirp';
+import pathUtils from 'path';
 import * as snapUtils from '@metamask/snap-utils';
 import {
   getPackageJson,
   getSnapManifest,
 } from '@metamask/snap-utils/test-utils';
-import * as miscUtils from '../../utils/misc';
-import * as readlineUtils from '../../utils/readline';
-import { TemplateType } from '../../builders';
-import template from './init-template.json';
-import { initHandler, updateManifestShasum } from './initHandler';
+import { initHandler } from './initHandler';
 import * as initUtils from './initUtils';
 
-jest.mock('mkdirp');
 jest.mock('@metamask/snap-utils');
-
-const mkdirpMock = mkdirp as unknown as jest.Mock;
 
 const getMockArgv = () => {
   return {
-    dist: 'dist',
-    outfileName: 'bundle.js',
-    src: 'src/index.js',
-    port: 8081,
+    directory: 'foo',
   } as any;
 };
 
 describe('initialize', () => {
   describe('initHandler', () => {
-    beforeEach(() => {
-      jest
-        .spyOn(initUtils, 'buildSnapManifest')
-        .mockImplementation(async () => [getSnapManifest(), getMockArgv()]);
-      jest.spyOn(initUtils, 'prepareWorkingDirectory').mockImplementation();
-      jest.spyOn(console, 'log').mockImplementation();
-      jest.spyOn(readlineUtils, 'closePrompt').mockImplementation();
-    });
-
     afterEach(() => {
       global.snaps = {};
     });
 
     it('successfully initializes a Snap project', async () => {
-      const fsWriteMock = jest.spyOn(fs, 'writeFile').mockImplementation();
+      const satisfiesVersionRangeMock = jest
+        .spyOn(snapUtils, 'satisfiesVersionRange')
+        .mockImplementation(() => true);
+      const isGitInstalledMock = jest
+        .spyOn(initUtils, 'isGitInstalled')
+        .mockImplementation(() => true);
+      const prepareWorkingDirectoryMock = jest
+        .spyOn(initUtils, 'prepareWorkingDirectory')
+        .mockImplementation();
+      const consoleLogMock = jest.spyOn(console, 'log').mockImplementation();
+      const cloneTemplateMock = jest
+        .spyOn(initUtils, 'cloneTemplate')
+        .mockImplementation();
+      const rmMock = jest.spyOn(fs, 'rm').mockImplementation();
+      const yarnInstallMock = jest
+        .spyOn(initUtils, 'yarnInstall')
+        .mockImplementation();
+      const isInGitRepositoryMock = jest
+        .spyOn(initUtils, 'isInGitRepository')
+        .mockImplementation(() => false);
+
+      const gitInitMock = jest.spyOn(initUtils, 'gitInit').mockImplementation();
+
+      const readJsonFileMock = jest
+        .spyOn(snapUtils, 'readJsonFile')
+        .mockImplementationOnce(async () => getSnapManifest());
 
       jest
-        .spyOn(initUtils, 'asyncPackageInit')
-        .mockImplementation(async () => getPackageJson());
+        .spyOn(snapUtils, 'readJsonFile')
+        .mockImplementationOnce(async () => getPackageJson());
 
-      const closePromptMock = jest
-        .spyOn(readlineUtils, 'closePrompt')
-        .mockImplementation();
-
-      const mockArgv = getMockArgv();
       const expected = {
+        ...getMockArgv(),
         dist: 'dist',
         outfileName: 'bundle.js',
-        port: 8081,
         src: 'src/index.js',
+        snapLocation: pathUtils.join(
+          process.cwd(),
+          `foo/${initUtils.SNAP_LOCATION}`,
+        ),
       };
 
       expect(await initHandler({ ...getMockArgv() })).toStrictEqual({
         ...expected,
       });
-      expect(global.console.log).toHaveBeenCalledTimes(7);
-      expect(fsWriteMock).toHaveBeenCalledTimes(5);
-      expect(fsWriteMock).toHaveBeenNthCalledWith(
-        1,
-        'snap.manifest.json',
-        `${JSON.stringify(getSnapManifest(), null, 2)}\n`,
-      );
 
-      expect(mkdirpMock).toHaveBeenCalledTimes(2);
-      expect(mkdirpMock).toHaveBeenNthCalledWith(1, 'src');
-
-      expect(fsWriteMock).toHaveBeenNthCalledWith(
-        2,
-        mockArgv.src,
-        template.source,
-      );
-
-      expect(fsWriteMock).toHaveBeenNthCalledWith(
-        3,
-        'index.html',
-        template.html.toString().replace(/_PORT_/gu, mockArgv.port.toString()),
-      );
-
-      expect(fsWriteMock).toHaveBeenNthCalledWith(
-        4,
-        miscUtils.CONFIG_FILE,
-        expect.anything(),
-      );
-      expect(closePromptMock).toHaveBeenCalledTimes(1);
+      expect(satisfiesVersionRangeMock).toHaveBeenCalledTimes(1);
+      expect(isGitInstalledMock).toHaveBeenCalledTimes(1);
+      expect(prepareWorkingDirectoryMock).toHaveBeenCalledTimes(1);
+      expect(consoleLogMock).toHaveBeenCalledTimes(4);
+      expect(cloneTemplateMock).toHaveBeenCalledTimes(1);
+      expect(rmMock).toHaveBeenCalledTimes(1);
+      expect(yarnInstallMock).toHaveBeenCalledTimes(1);
+      expect(isInGitRepositoryMock).toHaveBeenCalledTimes(1);
+      expect(gitInitMock).toHaveBeenCalledTimes(1);
+      expect(readJsonFileMock).toHaveBeenCalledTimes(2);
     });
 
-    it('successfully initializes a TypeScript Snap project', async () => {
-      const fsWriteMock = jest.spyOn(fs, 'writeFile').mockImplementation();
-
+    it("doesn't init if it's already in a git repo", async () => {
       jest
-        .spyOn(initUtils, 'asyncPackageInit')
-        .mockImplementation(async () => getPackageJson());
-
-      const closePromptMock = jest
-        .spyOn(readlineUtils, 'closePrompt')
-        .mockImplementation();
-
-      const mockArgv = getMockArgv();
-      // Change mocked argv to enable typescript
-      mockArgv.template = TemplateType.TypeScript;
-      mockArgv.src = 'src/index.ts';
-      const expected = {
-        template: TemplateType.TypeScript,
-        dist: 'dist',
-        outfileName: 'bundle.js',
-        port: 8081,
-        src: 'src/index.ts',
-      };
+        .spyOn(snapUtils, 'satisfiesVersionRange')
+        .mockImplementation(() => true);
+      jest.spyOn(initUtils, 'isGitInstalled').mockImplementation(() => true);
+      jest.spyOn(initUtils, 'prepareWorkingDirectory').mockImplementation();
+      jest.spyOn(initUtils, 'cloneTemplate').mockImplementation();
+      jest.spyOn(fs, 'rm').mockImplementation();
+      jest.spyOn(initUtils, 'yarnInstall').mockImplementation();
       jest
-        .spyOn(initUtils, 'buildSnapManifest')
-        .mockImplementation(async () => [getSnapManifest(), { ...mockArgv }]);
-
-      expect(await initHandler({ ...mockArgv })).toStrictEqual({
-        ...expected,
-      });
-      expect(global.console.log).toHaveBeenCalledTimes(8);
-      expect(fsWriteMock).toHaveBeenCalledTimes(6);
-      expect(fsWriteMock).toHaveBeenNthCalledWith(
-        1,
-        'snap.manifest.json',
-        `${JSON.stringify(getSnapManifest(), null, 2)}\n`,
-      );
-      expect(mkdirpMock).toHaveBeenCalledTimes(2);
-      expect(mkdirpMock).toHaveBeenNthCalledWith(1, 'src');
-      expect(fsWriteMock).toHaveBeenNthCalledWith(
-        2,
-        mockArgv.src,
-        template.typescriptSource,
-      );
-
-      expect(fsWriteMock).toHaveBeenNthCalledWith(
-        3,
-        'index.html',
-        template.typescriptHtml
-          .toString()
-          .replace(/_PORT_/gu, mockArgv.port.toString()),
-      );
-
-      expect(fsWriteMock).toHaveBeenNthCalledWith(
-        4,
-        'tsconfig.json',
-        template.typescriptConfig,
-      );
-
-      expect(fsWriteMock).toHaveBeenNthCalledWith(
-        5,
-        miscUtils.CONFIG_FILE,
-        expect.anything(),
-      );
-
-      expect(fsWriteMock).toHaveBeenNthCalledWith(
-        6,
-        'images/icon.svg',
-        template.icon,
-      );
-
-      expect(closePromptMock).toHaveBeenCalledTimes(1);
-    });
-
-    it('successfully initializes a Snap project (source file in root)', async () => {
-      const fsWriteMock = jest.spyOn(fs, 'writeFile').mockImplementation();
-
-      jest
-        .spyOn(initUtils, 'asyncPackageInit')
-        .mockImplementation(async () => getPackageJson({ main: 'index.js' }));
-
-      const mockArgv = getMockArgv();
-      mockArgv.src = 'index.js';
-
-      jest
-        .spyOn(initUtils, 'buildSnapManifest')
-        .mockImplementation(async () => [getSnapManifest(), { ...mockArgv }]);
-
-      const closePromptMock = jest
-        .spyOn(readlineUtils, 'closePrompt')
-        .mockImplementation();
-
-      const expected = {
-        dist: 'dist',
-        outfileName: 'bundle.js',
-        port: 8081,
-        src: 'index.js',
-      };
-
-      expect(await initHandler({ ...mockArgv })).toStrictEqual({
-        ...expected,
-      });
-      expect(global.console.log).toHaveBeenCalledTimes(7);
-      expect(fsWriteMock).toHaveBeenCalledTimes(5);
-      expect(fsWriteMock).toHaveBeenNthCalledWith(
-        1,
-        'snap.manifest.json',
-        `${JSON.stringify(getSnapManifest(), null, 2)}\n`,
-      );
-
-      expect(mkdirpMock).toHaveBeenCalledTimes(1);
-
-      expect(fsWriteMock).toHaveBeenNthCalledWith(
-        2,
-        mockArgv.src,
-        template.source,
-      );
-
-      expect(fsWriteMock).toHaveBeenNthCalledWith(
-        3,
-        'index.html',
-        template.html.toString().replace(/_PORT_/gu, mockArgv.port.toString()),
-      );
-
-      expect(fsWriteMock).toHaveBeenNthCalledWith(
-        4,
-        miscUtils.CONFIG_FILE,
-        expect.anything(),
-      );
-      expect(closePromptMock).toHaveBeenCalledTimes(1);
-    });
-
-    it('handles manifest write failure', async () => {
-      global.snaps = {
-        verboseErrors: false,
-      };
-
-      const logErrorMock = jest
-        .spyOn(miscUtils, 'logError')
-        .mockImplementation();
-
-      const fsWriteMock = jest
-        .spyOn(fs, 'writeFile')
-        // failed write to snap.manifest.json
-        .mockRejectedValueOnce(new Error('failed to write'));
-
-      jest
-        .spyOn(initUtils, 'asyncPackageInit')
-        .mockImplementation(async () => getPackageJson());
-
-      await expect(initHandler(getMockArgv())).rejects.toThrow(
-        'failed to write',
-      );
-      expect(logErrorMock).toHaveBeenCalledTimes(1);
-      expect(logErrorMock).toHaveBeenNthCalledWith(
-        1,
-        `Init Error: Failed to write 'snap.manifest.json'.`,
-        new Error('failed to write'),
-      );
-
-      expect(fsWriteMock).toHaveBeenCalledTimes(1);
-      expect(fsWriteMock).toHaveBeenNthCalledWith(
-        1,
-        'snap.manifest.json',
-        `${JSON.stringify(getSnapManifest(), null, 2)}\n`,
-      );
-
-      expect(mkdirpMock).not.toHaveBeenCalled();
-    });
-
-    it('handles src directory creation failure', async () => {
-      global.snaps = {
-        verboseErrors: false,
-      };
-
-      const logErrorMock = jest
-        .spyOn(miscUtils, 'logError')
-        .mockImplementation();
-
-      const fsWriteMock = jest.spyOn(fs, 'writeFile').mockImplementation();
-      mkdirpMock.mockRejectedValueOnce(new Error('failed to create directory'));
-
-      jest
-        .spyOn(initUtils, 'asyncPackageInit')
-        .mockImplementation(async () => getPackageJson());
-
-      await expect(initHandler(getMockArgv())).rejects.toThrow(
-        'failed to create directory',
-      );
-
-      expect(logErrorMock).toHaveBeenCalledTimes(1);
-      expect(logErrorMock).toHaveBeenNthCalledWith(
-        1,
-        `Init Error: Failed to write 'src/index.js'.`,
-        new Error('failed to create directory'),
-      );
-
-      expect(fsWriteMock).toHaveBeenCalledTimes(1);
-      expect(fsWriteMock).toHaveBeenNthCalledWith(
-        1,
-        'snap.manifest.json',
-        `${JSON.stringify(getSnapManifest(), null, 2)}\n`,
-      );
-
-      expect(mkdirpMock).toHaveBeenCalledTimes(1);
-      expect(mkdirpMock).toHaveBeenNthCalledWith(1, 'src');
-    });
-
-    it('handles src file write failure', async () => {
-      global.snaps = {
-        verboseErrors: false,
-      };
-
-      const logErrorMock = jest
-        .spyOn(miscUtils, 'logError')
-        .mockImplementation();
-
-      const fsWriteMock = jest
-        .spyOn(fs, 'writeFile')
-        .mockImplementationOnce(async () => undefined)
-        .mockRejectedValueOnce(new Error('failed to write'));
-
-      jest
-        .spyOn(initUtils, 'asyncPackageInit')
-        .mockImplementation(async () => getPackageJson());
-
-      await expect(initHandler(getMockArgv())).rejects.toThrow(
-        'failed to write',
-      );
-      expect(logErrorMock).toHaveBeenCalledTimes(1);
-      expect(logErrorMock).toHaveBeenNthCalledWith(
-        1,
-        `Init Error: Failed to write 'src/index.js'.`,
-        new Error('failed to write'),
-      );
-
-      expect(fsWriteMock).toHaveBeenCalledTimes(2);
-      expect(fsWriteMock).toHaveBeenNthCalledWith(
-        1,
-        'snap.manifest.json',
-        `${JSON.stringify(getSnapManifest(), null, 2)}\n`,
-      );
-
-      expect(fsWriteMock).toHaveBeenNthCalledWith(
-        2,
-        getMockArgv().src,
-        template.source,
-      );
-
-      expect(mkdirpMock).toHaveBeenCalledTimes(1);
-      expect(mkdirpMock).toHaveBeenNthCalledWith(1, 'src');
-    });
-
-    it('handles index.html file write failure', async () => {
-      global.snaps = {
-        verboseErrors: false,
-      };
-
-      const logErrorMock = jest
-        .spyOn(miscUtils, 'logError')
-        .mockImplementation();
-
-      const fsWriteMock = jest
-        .spyOn(fs, 'writeFile')
-        .mockImplementationOnce(async () => undefined)
-        .mockImplementationOnce(async () => undefined)
-        .mockRejectedValueOnce(new Error('failed to write'));
-
-      jest
-        .spyOn(initUtils, 'asyncPackageInit')
-        .mockImplementation(async () => getPackageJson());
-
-      await expect(initHandler(getMockArgv())).rejects.toThrow(
-        'failed to write',
-      );
-
-      const mockArgv = getMockArgv();
-
-      expect(logErrorMock).toHaveBeenCalledTimes(1);
-      expect(logErrorMock).toHaveBeenNthCalledWith(
-        1,
-        `Init Error: Failed to write 'index.html'.`,
-        new Error('failed to write'),
-      );
-
-      expect(fsWriteMock).toHaveBeenCalledTimes(3);
-      expect(fsWriteMock).toHaveBeenNthCalledWith(
-        1,
-        'snap.manifest.json',
-        `${JSON.stringify(getSnapManifest(), null, 2)}\n`,
-      );
-
-      expect(fsWriteMock).toHaveBeenNthCalledWith(
-        2,
-        mockArgv.src,
-        template.source,
-      );
-
-      expect(fsWriteMock).toHaveBeenNthCalledWith(
-        3,
-        'index.html',
-        template.html.toString().replace(/_PORT_/gu, mockArgv.port.toString()),
-      );
-
-      expect(mkdirpMock).toHaveBeenCalledTimes(1);
-      expect(mkdirpMock).toHaveBeenNthCalledWith(1, 'src');
-    });
-
-    it('handles tsconfig file write failure', async () => {
-      global.snaps = {
-        verboseErrors: false,
-      };
-
-      const logErrorMock = jest
-        .spyOn(miscUtils, 'logError')
-        .mockImplementation();
-
-      const fsWriteMock = jest
-        .spyOn(fs, 'writeFile')
-        .mockImplementationOnce(async () => undefined)
-        .mockImplementationOnce(async () => undefined)
-        .mockImplementationOnce(async () => undefined)
-        .mockRejectedValueOnce(new Error('failed to write'));
-
-      jest
-        .spyOn(initUtils, 'asyncPackageInit')
-        .mockImplementation(async () => getPackageJson());
-
-      const mockArgv = getMockArgv();
-      mockArgv.template = TemplateType.TypeScript;
-      await expect(initHandler(mockArgv)).rejects.toThrow('failed to write');
-      expect(logErrorMock).toHaveBeenCalledTimes(1);
-      expect(logErrorMock).toHaveBeenNthCalledWith(
-        1,
-        `Init Error: Failed to write 'tsconfig.json'.`,
-        new Error('failed to write'),
-      );
-      expect(fsWriteMock).toHaveBeenCalledTimes(4);
-
-      expect(fsWriteMock).toHaveBeenNthCalledWith(
-        4,
-        'tsconfig.json',
-        template.typescriptConfig,
-      );
-
-      expect(mkdirpMock).toHaveBeenCalledTimes(1);
-      expect(mkdirpMock).toHaveBeenNthCalledWith(1, 'src');
-    });
-
-    it('handles snap.config.js file write failure', async () => {
-      global.snaps = {
-        verboseErrors: false,
-      };
-
-      const logErrorMock = jest
-        .spyOn(miscUtils, 'logError')
-        .mockImplementation();
-
-      const fsWriteMock = jest
-        .spyOn(fs, 'writeFile')
-        .mockImplementationOnce(async () => undefined)
-        .mockImplementationOnce(async () => undefined)
-        .mockImplementationOnce(async () => undefined)
-        .mockRejectedValueOnce(new Error('failed to write'));
-
-      jest
-        .spyOn(initUtils, 'asyncPackageInit')
-        .mockImplementation(async () => getPackageJson());
-
-      await expect(initHandler(getMockArgv())).rejects.toThrow(
-        'failed to write',
-      );
-
-      const mockArgv = getMockArgv();
-
-      expect(logErrorMock).toHaveBeenCalledTimes(1);
-      expect(logErrorMock).toHaveBeenNthCalledWith(
-        1,
-        `Init Error: Failed to write 'snap.config.js'.`,
-        new Error('failed to write'),
-      );
-
-      expect(fsWriteMock).toHaveBeenCalledTimes(4);
-      expect(fsWriteMock).toHaveBeenNthCalledWith(
-        1,
-        'snap.manifest.json',
-        `${JSON.stringify(getSnapManifest(), null, 2)}\n`,
-      );
-
-      expect(fsWriteMock).toHaveBeenNthCalledWith(
-        2,
-        mockArgv.src,
-        template.source,
-      );
-
-      expect(fsWriteMock).toHaveBeenNthCalledWith(
-        3,
-        'index.html',
-        template.html.toString().replace(/_PORT_/gu, mockArgv.port.toString()),
-      );
-
-      expect(fsWriteMock).toHaveBeenNthCalledWith(
-        4,
-        miscUtils.CONFIG_FILE,
-        expect.anything(),
-      );
-
-      expect(mkdirpMock).toHaveBeenCalledTimes(1);
-      expect(mkdirpMock).toHaveBeenNthCalledWith(1, 'src');
-    });
-
-    it('handles icon file write failure', async () => {
-      global.snaps = {
-        verboseErrors: false,
-      };
-
-      const logErrorMock = jest
-        .spyOn(miscUtils, 'logError')
-        .mockImplementation();
-
-      const fsWriteMock = jest
-        .spyOn(fs, 'writeFile')
-        .mockImplementationOnce(async () => undefined)
-        .mockImplementationOnce(async () => undefined)
-        .mockImplementationOnce(async () => undefined)
-        .mockImplementationOnce(async () => undefined)
-        .mockImplementationOnce(async () => undefined)
-        .mockRejectedValueOnce(new Error('failed to write'));
-
-      jest
-        .spyOn(initUtils, 'asyncPackageInit')
-        .mockImplementation(async () => getPackageJson());
-
-      const mockArgv = getMockArgv();
-      mockArgv.template = TemplateType.TypeScript;
-      await expect(initHandler(mockArgv)).rejects.toThrow('failed to write');
-      expect(logErrorMock).toHaveBeenCalledTimes(1);
-      expect(logErrorMock).toHaveBeenNthCalledWith(
-        1,
-        `Init Error: Failed to write 'images/icon.svg'.`,
-        new Error('failed to write'),
-      );
-      expect(fsWriteMock).toHaveBeenCalledTimes(6);
-
-      expect(fsWriteMock).toHaveBeenNthCalledWith(
-        6,
-        'images/icon.svg',
-        template.icon,
-      );
-    });
-  });
-
-  describe('updateManifestShasum', () => {
-    it('updates the manifest shasum', async () => {
-      const mockBundleContents = 'console.log("Very serious business.");';
-      const expectedShasum = getSnapSourceShasum(mockBundleContents);
-
-      const readJsonFileMock = jest
         .spyOn(snapUtils, 'readJsonFile')
         .mockImplementationOnce(async () => getSnapManifest());
-      const readFileMock = jest
-        .spyOn(fs, 'readFile')
-        .mockImplementationOnce(async () => mockBundleContents);
-      const writeFileMock = jest.spyOn(fs, 'writeFile').mockImplementation();
 
-      await updateManifestShasum();
+      jest
+        .spyOn(snapUtils, 'readJsonFile')
+        .mockImplementationOnce(async () => getPackageJson());
 
-      expect(readJsonFileMock).toHaveBeenCalledTimes(1);
-      expect(readJsonFileMock).toHaveBeenCalledWith(NpmSnapFileNames.Manifest);
+      const isInGitRepositoryMock = jest
+        .spyOn(initUtils, 'isInGitRepository')
+        .mockImplementation(() => true);
 
-      expect(readFileMock).toHaveBeenCalledTimes(1);
-      expect(readFileMock).toHaveBeenCalledWith('dist/bundle.js', 'utf8');
+      const gitInitMock = jest.spyOn(initUtils, 'gitInit');
 
-      expect(writeFileMock).toHaveBeenCalledTimes(1);
-      expect(writeFileMock).toHaveBeenCalledWith(
-        NpmSnapFileNames.Manifest,
-        JSON.stringify(
-          getWritableManifest(getSnapManifest({ shasum: expectedShasum })),
-          null,
-          2,
+      const expected = {
+        ...getMockArgv(),
+        dist: 'dist',
+        outfileName: 'bundle.js',
+        src: 'src/index.js',
+        snapLocation: pathUtils.join(
+          process.cwd(),
+          `foo/${initUtils.SNAP_LOCATION}`,
         ),
+      };
+
+      expect(await initHandler({ ...getMockArgv() })).toStrictEqual({
+        ...expected,
+      });
+
+      expect(isInGitRepositoryMock).toHaveBeenCalledTimes(1);
+      expect(gitInitMock).not.toHaveBeenCalled();
+    });
+
+    it('fails if the node version is not supported', async () => {
+      const satisfiesVersionRangeMock = jest
+        .spyOn(snapUtils, 'satisfiesVersionRange')
+        .mockImplementation(() => false);
+
+      await expect(initHandler({ ...getMockArgv() })).rejects.toThrow(
+        'outdated node version',
+      );
+
+      expect(satisfiesVersionRangeMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('fails if git is not installed', async () => {
+      jest
+        .spyOn(snapUtils, 'satisfiesVersionRange')
+        .mockImplementation(() => true);
+
+      const isGitInstalledMock = jest
+        .spyOn(initUtils, 'isGitInstalled')
+        .mockImplementation(() => false);
+
+      await expect(initHandler({ ...getMockArgv() })).rejects.toThrow(
+        'git is not installed',
+      );
+
+      expect(isGitInstalledMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('fails if it can\t clone template and clean files', async () => {
+      jest
+        .spyOn(snapUtils, 'satisfiesVersionRange')
+        .mockImplementation(() => true);
+
+      jest.spyOn(initUtils, 'isGitInstalled').mockImplementation(() => true);
+
+      jest.spyOn(initUtils, 'prepareWorkingDirectory').mockImplementation();
+      const cloneTemplateMock = jest
+        .spyOn(initUtils, 'cloneTemplate')
+        .mockImplementation(() => {
+          throw new Error('error message');
+        });
+      const rmMock = jest.spyOn(fs, 'rm').mockImplementation();
+
+      await expect(initHandler({ ...getMockArgv() })).rejects.toThrow(
+        'error message',
+      );
+
+      expect(cloneTemplateMock).toHaveBeenCalledTimes(1);
+      expect(rmMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('fails if an error is thrown', async () => {
+      jest
+        .spyOn(snapUtils, 'satisfiesVersionRange')
+        .mockImplementation(() => true);
+
+      jest.spyOn(initUtils, 'isGitInstalled').mockImplementation(() => true);
+
+      jest
+        .spyOn(initUtils, 'prepareWorkingDirectory')
+        .mockImplementation(() => {
+          throw new Error('error message');
+        });
+
+      await expect(initHandler({ ...getMockArgv() })).rejects.toThrow(
+        'error message',
       );
     });
   });

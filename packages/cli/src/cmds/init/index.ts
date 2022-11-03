@@ -8,12 +8,7 @@ export = {
   command: ['init [directory]', 'i [directory]'],
   desc: 'Initialize Snap package',
   builder: (yarg: yargs.Argv) => {
-    yarg
-      .option('src', builders.src)
-      .option('dist', builders.dist)
-      .option('port', builders.port)
-      .option('outfileName', builders.outfileName)
-      .option('template', builders.template);
+    yarg.positional('directory', builders.directory);
   },
   handler: (argv: YargsArgs) => init(argv),
 };

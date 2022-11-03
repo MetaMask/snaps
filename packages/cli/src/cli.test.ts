@@ -136,15 +136,15 @@ describe('cli', () => {
     });
 
     it('handles an error thrown by a locally defined command handler', () => {
-      const mockInitHandler = jest.fn().mockImplementation(() => {
-        throw new Error('init failed');
+      const mockBuildHandler = jest.fn().mockImplementation(() => {
+        throw new Error('build failed');
       });
 
       expect(() =>
-        cli(getMockArgv('init'), [
-          { ...commandMap.init, handler: mockInitHandler },
+        cli(getMockArgv('build'), [
+          { ...commandMap.build, handler: mockBuildHandler },
         ]),
-      ).toThrow('init failed');
+      ).toThrow('build failed');
     });
   });
 });
