@@ -2,10 +2,14 @@ import yargs from 'yargs';
 import { cli } from './cli';
 import commands from './cmds';
 
+// Removes positional arguments from commands. eg. 'init [directory]' -> 'init'
+const sanitizeCommand = (command: string) =>
+  command.replace(/(\[.*?\])/u, '').trim();
+
 const commandMap = (commands as unknown as yargs.CommandModule[]).reduce(
   (map, commandModule) => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    map[commandModule.command![0]] = commandModule;
+    map[sanitizeCommand(commandModule.command![0])] = commandModule;
     return map;
   },
   {} as Record<string, yargs.CommandModule>,
@@ -14,10 +18,6 @@ const commandMap = (commands as unknown as yargs.CommandModule[]).reduce(
 const getMockArgv = (...args: string[]) => {
   return ['/mock/path', '/mock/entry/path', ...args];
 };
-
-// Removes positional arguments from commands. eg. 'init [directory]' -> 'init'
-const sanitizeCommand = (command: string) =>
-  command.replace(/(\[.*?\])/u, '').trim();
 
 // The ".+" is because the CLI name (specified to yargs as "$0") is
 // populated programmatically based on the name of entry point file.
@@ -140,15 +140,15 @@ describe('cli', () => {
     });
 
     it('handles an error thrown by a locally defined command handler', () => {
-      const mockBuildHandler = jest.fn().mockImplementation(() => {
-        throw new Error('build failed');
+      const mockInitHandler = jest.fn().mockImplementation(() => {
+        throw new Error('init failed');
       });
 
       expect(() =>
-        cli(getMockArgv('build'), [
-          { ...commandMap.build, handler: mockBuildHandler },
+        cli(getMockArgv('init'), [
+          { ...commandMap.init, handler: mockInitHandler },
         ]),
-      ).toThrow('build failed');
+      ).toThrow('init failed');
     });
   });
 });

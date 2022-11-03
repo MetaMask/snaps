@@ -5,6 +5,7 @@ import {
   getPackageJson,
   getSnapManifest,
 } from '@metamask/snap-utils/test-utils';
+import { YargsArgs } from '../../types/yargs';
 import { initHandler } from './initHandler';
 import * as initUtils from './initUtils';
 
@@ -22,7 +23,63 @@ describe('initialize', () => {
       global.snaps = {};
     });
 
-    it('successfully initializes a Snap project', async () => {
+    it('successfully initializes a Snap project in the current working directory', async () => {
+      const satisfiesVersionRangeMock = jest
+        .spyOn(snapUtils, 'satisfiesVersionRange')
+        .mockImplementation(() => true);
+      const isGitInstalledMock = jest
+        .spyOn(initUtils, 'isGitInstalled')
+        .mockImplementation(() => true);
+      const prepareWorkingDirectoryMock = jest
+        .spyOn(initUtils, 'prepareWorkingDirectory')
+        .mockImplementation();
+      const consoleLogMock = jest.spyOn(console, 'log').mockImplementation();
+      const cloneTemplateMock = jest
+        .spyOn(initUtils, 'cloneTemplate')
+        .mockImplementation();
+      const rmMock = jest.spyOn(fs, 'rm').mockImplementation();
+      const yarnInstallMock = jest
+        .spyOn(initUtils, 'yarnInstall')
+        .mockImplementation();
+      const isInGitRepositoryMock = jest
+        .spyOn(initUtils, 'isInGitRepository')
+        .mockImplementation(() => false);
+
+      const gitInitMock = jest.spyOn(initUtils, 'gitInit').mockImplementation();
+
+      const readJsonFileMock = jest
+        .spyOn(snapUtils, 'readJsonFile')
+        .mockImplementationOnce(async () => getSnapManifest());
+
+      jest
+        .spyOn(snapUtils, 'readJsonFile')
+        .mockImplementationOnce(async () => getPackageJson());
+
+      const expected = {
+        dist: 'dist',
+        outfileName: 'bundle.js',
+        src: 'src/index.js',
+        snapLocation: pathUtils.join(process.cwd(), initUtils.SNAP_LOCATION),
+      };
+
+      expect(await initHandler({} as YargsArgs)).toStrictEqual({
+        ...expected,
+      });
+
+      expect(satisfiesVersionRangeMock).toHaveBeenCalledTimes(1);
+      expect(isGitInstalledMock).toHaveBeenCalledTimes(1);
+      expect(prepareWorkingDirectoryMock).toHaveBeenCalledTimes(1);
+      expect(prepareWorkingDirectoryMock).toHaveBeenCalledWith(process.cwd());
+      expect(consoleLogMock).toHaveBeenCalledTimes(4);
+      expect(cloneTemplateMock).toHaveBeenCalledTimes(1);
+      expect(rmMock).toHaveBeenCalledTimes(1);
+      expect(yarnInstallMock).toHaveBeenCalledTimes(1);
+      expect(isInGitRepositoryMock).toHaveBeenCalledTimes(1);
+      expect(gitInitMock).toHaveBeenCalledTimes(1);
+      expect(readJsonFileMock).toHaveBeenCalledTimes(2);
+    });
+
+    it('successfully initializes a Snap project in a given directory', async () => {
       const satisfiesVersionRangeMock = jest
         .spyOn(snapUtils, 'satisfiesVersionRange')
         .mockImplementation(() => true);
@@ -72,6 +129,9 @@ describe('initialize', () => {
       expect(satisfiesVersionRangeMock).toHaveBeenCalledTimes(1);
       expect(isGitInstalledMock).toHaveBeenCalledTimes(1);
       expect(prepareWorkingDirectoryMock).toHaveBeenCalledTimes(1);
+      expect(prepareWorkingDirectoryMock).toHaveBeenCalledWith(
+        pathUtils.join(process.cwd(), getMockArgv().directory),
+      );
       expect(consoleLogMock).toHaveBeenCalledTimes(4);
       expect(cloneTemplateMock).toHaveBeenCalledTimes(1);
       expect(rmMock).toHaveBeenCalledTimes(1);
@@ -79,6 +139,48 @@ describe('initialize', () => {
       expect(isInGitRepositoryMock).toHaveBeenCalledTimes(1);
       expect(gitInitMock).toHaveBeenCalledTimes(1);
       expect(readJsonFileMock).toHaveBeenCalledTimes(2);
+    });
+
+    it("defaults to 'src/index.js' if there is no main entry in package.json", async () => {
+      jest
+        .spyOn(snapUtils, 'satisfiesVersionRange')
+        .mockImplementation(() => true);
+
+      jest.spyOn(initUtils, 'isGitInstalled').mockImplementation(() => true);
+
+      jest.spyOn(initUtils, 'prepareWorkingDirectory').mockImplementation();
+      jest.spyOn(console, 'log').mockImplementation();
+      jest.spyOn(initUtils, 'cloneTemplate').mockImplementation();
+      jest.spyOn(fs, 'rm').mockImplementation();
+      jest.spyOn(initUtils, 'yarnInstall').mockImplementation();
+
+      jest
+        .spyOn(initUtils, 'isInGitRepository')
+        .mockImplementation(() => false);
+      jest.spyOn(initUtils, 'gitInit').mockImplementation();
+
+      jest
+        .spyOn(snapUtils, 'readJsonFile')
+        .mockImplementationOnce(async () => getSnapManifest());
+
+      jest
+        .spyOn(snapUtils, 'readJsonFile')
+        .mockImplementationOnce(async () => ({ main: undefined }));
+
+      const expected = {
+        ...getMockArgv(),
+        dist: 'dist',
+        outfileName: 'bundle.js',
+        src: 'src/index.js',
+        snapLocation: pathUtils.join(
+          process.cwd(),
+          `foo/${initUtils.SNAP_LOCATION}`,
+        ),
+      };
+
+      expect(await initHandler({ ...getMockArgv() })).toStrictEqual({
+        ...expected,
+      });
     });
 
     it("doesn't init if it's already in a git repo", async () => {

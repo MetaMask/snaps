@@ -38,6 +38,7 @@ export async function initHandler(argv: YargsArgs) {
     process.version,
     SATISFIED_VERSION,
   );
+
   if (!isVersionSupported) {
     logError(
       `Init Error: You are using an outdated version of Node (${process.version}). Please update to Node ${SATISFIED_VERSION}.`,
