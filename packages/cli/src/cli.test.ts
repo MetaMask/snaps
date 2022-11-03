@@ -15,6 +15,10 @@ const getMockArgv = (...args: string[]) => {
   return ['/mock/path', '/mock/entry/path', ...args];
 };
 
+// Removes positional arguments from commands. eg. 'init [directory]' -> 'init'
+const sanitizeCommand = (command: string) =>
+  command.replace(/(\[.*?\])/u, '').trim();
+
 // The ".+" is because the CLI name (specified to yargs as "$0") is
 // populated programmatically based on the name of entry point file.
 // In Jest, that's sometimes "childProcess.js", sometimes other things.
@@ -75,14 +79,14 @@ describe('cli', () => {
     });
 
     Object.keys(commandMap).forEach((command) => {
-      it(`calls ${command}`, async () => {
+      it(`calls ${sanitizeCommand(command)}`, async () => {
         const mockCommandHandler = jest.fn();
 
         const finished = new Promise<void>((resolve) => {
           mockCommandHandler.mockImplementation(() => resolve() as any);
         });
 
-        cli(getMockArgv(command), [
+        cli(getMockArgv(sanitizeCommand(command)), [
           { ...(commandMap as any)[command], handler: mockCommandHandler },
         ]);
         await finished;
@@ -90,7 +94,7 @@ describe('cli', () => {
         // TODO: Test the complete argv for each command
         expect(mockCommandHandler).toHaveBeenCalledWith(
           expect.objectContaining({
-            _: [command],
+            _: [sanitizeCommand(command)],
             suppressWarnings: false,
             verboseErrors: true,
           }),
