@@ -103,10 +103,5 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
-  },
-  "lavamoat": {
-    "allowScripts": {
-      "babel-to-estree>babel-types>babel-runtime>core-js": false
-    }
   }
 }
