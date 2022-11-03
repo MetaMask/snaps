@@ -13,8 +13,11 @@ import {
   partial,
   pick,
 } from 'superstruct';
-import { JsonRpcRequestStruct } from '@metamask/utils';
-import { AssertionErrorConstructor, assertStruct } from './assert';
+import {
+  JsonRpcRequestStruct,
+  AssertionErrorConstructor,
+  assertStruct,
+} from '@metamask/utils';
 
 export const CHAIN_ID_REGEX =
   /^(?<namespace>[-a-z0-9]{3,8}):(?<reference>[-a-zA-Z0-9]{1,32})$/u;

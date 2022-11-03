@@ -1,4 +1,4 @@
-import { assertStruct, ChainIdStruct, HandlerType } from '@metamask/snap-utils';
+import { ChainIdStruct, HandlerType } from '@metamask/snap-utils';
 import { SnapKeyring } from '@metamask/snap-types';
 import {
   array,
@@ -17,6 +17,7 @@ import {
   unknown,
 } from 'superstruct';
 import {
+  assertStruct,
   Json,
   JsonRpcIdStruct,
   JsonRpcRequestStruct,

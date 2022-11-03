@@ -39,7 +39,7 @@
     "@metamask/rpc-methods": "^0.22.3",
     "@metamask/snap-types": "^0.22.3",
     "@metamask/snap-utils": "^0.22.3",
-    "@metamask/utils": "^3.1.0",
+    "@metamask/utils": "^3.3.0",
     "@xstate/fsm": "^2.0.0",
     "concat-stream": "^2.0.0",
     "cron-parser": "^4.5.0",
