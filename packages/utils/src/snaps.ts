@@ -220,7 +220,7 @@ export function validateSnapId(
  * @param chainId - The chainId being tested.
  * @returns `true` if the value is a valid CAIP chain id, and `false` otherwise.
  */
-// TODO(ritave): Use "satisfies chainId is string" in TS4.8
+// TODO(ritave): Use "satisfies chainId is string" in TS4.9
 export function isCaipChainId(chainId: unknown): chainId is string {
   return (
     typeof chainId === 'string' &&
