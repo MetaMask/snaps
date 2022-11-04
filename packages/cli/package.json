@@ -54,7 +54,7 @@
     "init-package-json": "^1.10.3",
     "is-url": "^1.2.4",
     "mkdirp": "^1.0.4",
-    "serve-handler": "^6.1.1",
+    "serve-handler": "^6.1.5",
     "ses": "^0.15.15",
     "slash": "^3.0.0",
     "superstruct": "^0.16.7",
