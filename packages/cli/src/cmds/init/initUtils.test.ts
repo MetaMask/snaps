@@ -2,7 +2,7 @@ import { promises as fs } from 'fs';
 import childProcess from 'child_process';
 import pathUtils from 'path';
 
-import { BASE_PATH, resetFileSystem } from '../../test-utils';
+import { resetFileSystem } from '../../test-utils';
 import {
   cloneTemplate,
   gitInit,
@@ -36,9 +36,9 @@ describe('initUtils', () => {
     });
 
     it("does not create a directory if it's using the current working directory", async () => {
-      await prepareWorkingDirectory(BASE_PATH);
+      await prepareWorkingDirectory(process.cwd());
 
-      expect(await fs.readdir(BASE_PATH)).toStrictEqual([]);
+      expect(await fs.readdir(process.cwd())).toStrictEqual([]);
     });
 
     it('throws an error if it fails to create a new directory', async () => {
