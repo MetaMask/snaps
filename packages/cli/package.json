@@ -15,7 +15,6 @@
   ],
   "scripts": {
     "shasum": "node ./scripts/computeSnapShasum.js",
-    "build:init-template": "node ./scripts/createInitTemplate.js && yarn prettier --check src/cmds/init/init-template.json",
     "build:tsc": "tsc --project ./tsconfig.local.json",
     "build:chmod": "chmod +x ./dist/main.js",
     "build:readme": "node ./scripts/updateReadme.js",
