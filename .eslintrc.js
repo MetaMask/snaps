@@ -29,10 +29,5 @@ module.exports = {
     },
   ],
 
-  ignorePatterns: [
-    '!.prettierrc.js',
-    '**/!.eslintrc.js',
-    '**/dist*/',
-    '**/*__GENERATED__*',
-  ],
+  ignorePatterns: ['!.prettierrc.js', '**/!.eslintrc.js', '**/dist*/'],
 };
