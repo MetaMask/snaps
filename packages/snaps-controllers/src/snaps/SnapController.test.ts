@@ -1353,7 +1353,7 @@ describe('SnapController', () => {
         },
       });
 
-      expect(spyOnMessengerCall).toHaveBeenCalledTimes(2);
+      expect(spyOnMessengerCall).toHaveBeenCalledTimes(3);
       expect(spyOnMessengerCall).toHaveBeenCalledWith(
         'ExecutionService:handleRpcRequest',
         snapId,

@@ -83,9 +83,13 @@ import {
   SnapErrorJson,
   TerminateAllSnapsAction,
   TerminateSnapAction,
-} from '../services/ExecutionService';
+} from '../services';
 import { hasTimedOut, setDiff, withTimeout } from '../utils';
-import { endowmentCaveatMappers, SnapEndowments } from './endowments';
+import {
+  endowmentCaveatMappers,
+  handlerEndowments,
+  SnapEndowments,
+} from './endowments';
 import { RequestQueue } from './RequestQueue';
 import { Timer } from './Timer';
 import { fetchNpmSnap } from './utils';
@@ -2250,12 +2254,26 @@ export class SnapController extends BaseController<
     handler: handlerType,
     request,
   }: SnapRpcHookArgs & { snapId: SnapId }): Promise<unknown> {
+    const permissionName = handlerEndowments[handlerType];
+    const hasPermission = this.messagingSystem.call(
+      'PermissionController:hasPermission',
+      snapId,
+      permissionName,
+    );
+
+    if (!hasPermission) {
+      throw new Error(
+        `Snap "${snapId}" is not permitted to use "${permissionName}".`,
+      );
+    }
+
     const handler = await this.#getRpcRequestHandler(snapId);
     if (!handler) {
       throw new Error(
         `Snap RPC message handler not found for snap "${snapId}".`,
       );
     }
+
     return handler({ origin, handler: handlerType, request });
   }
 

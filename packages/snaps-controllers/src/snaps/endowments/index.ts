@@ -1,6 +1,6 @@
 import { PermissionConstraint } from '@metamask/permission-controller';
 import { Json } from '@metamask/utils';
-
+import { HandlerType } from '@metamask/snap-utils';
 import {
   cronjobCaveatSpecifications,
   cronjobEndowmentBuilder,
@@ -53,6 +53,13 @@ export const endowmentCaveatMappers: Record<
   [transactionInsightEndowmentBuilder.targetKey]:
     getTransactionInsightCaveatMapper,
   [rpcEndowmentBuilder.targetKey]: getRpcCaveatMapper,
+};
+
+export const handlerEndowments = {
+  [HandlerType.OnRpcRequest]: rpcEndowmentBuilder.targetKey,
+  [HandlerType.SnapKeyring]: keyringEndowmentBuilder.targetKey,
+  [HandlerType.OnTransaction]: transactionInsightEndowmentBuilder.targetKey,
+  [HandlerType.OnCronjob]: cronjobEndowmentBuilder.targetKey,
 };
 
 export * from './enum';
