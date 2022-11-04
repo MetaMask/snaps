@@ -3,6 +3,9 @@ import { execSync } from 'child_process';
 import pathUtils from 'path';
 import { logError } from '../../utils';
 
+export const TEMPLATE_GIT_URL =
+  'https://github.com/MetaMask/template-snap-monorepo.git';
+
 /**
  * Checks if the destination folder exists and if it's empty. Otherwise create it.
  *
@@ -18,7 +21,7 @@ export async function prepareWorkingDirectory(
       try {
         await fs.mkdir(directory, { recursive: true });
       } catch (err) {
-        logError('Init Error: Failed to create new directory', err);
+        logError('Init Error: Failed to create new directory.', err);
         throw err;
       }
     }
@@ -26,16 +29,13 @@ export async function prepareWorkingDirectory(
     const existingFiles = await fs.readdir(directory);
 
     if (existingFiles.length > 0) {
-      throw new Error(`Directory not empty: ${directory}`);
+      throw new Error(`Directory not empty: ${directory}.`);
     }
   } catch (err) {
-    logError('Init Error: Failed to prepare working directory', err);
+    logError('Init Error: Failed to prepare working directory.', err);
     throw err;
   }
 }
-
-export const TEMPLATE_GIT_URL =
-  'https://github.com/MetaMask/template-snap-monorepo.git';
 
 /**
  * Clones the template in a directory.
@@ -114,7 +114,7 @@ export async function yarnInstall(directory: string) {
       cwd: pathUtils.resolve(__dirname, directory),
     });
   } catch (err) {
-    logError('Init Error: Failed to install dependencies', err);
+    logError('Init Error: Failed to install dependencies.', err);
     throw err;
   }
 }

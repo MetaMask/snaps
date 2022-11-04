@@ -43,7 +43,7 @@ export async function initHandler(argv: YargsArgs) {
     logError(
       `Init Error: You are using an outdated version of Node (${process.version}). Please update to Node ${SATISFIED_VERSION}.`,
     );
-    throw new Error('outdated node version');
+    throw new Error('Outdated node version.');
   }
 
   const gitExists = isGitInstalled();
@@ -79,7 +79,7 @@ export async function initHandler(argv: YargsArgs) {
   await yarnInstall(directoryToUse);
 
   if (!isInGitRepository(directoryToUse)) {
-    console.log('Initiating git repository...');
+    console.log('Initializing git repository...');
     await gitInit(directoryToUse);
   }
 
