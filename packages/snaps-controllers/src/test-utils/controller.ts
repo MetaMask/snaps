@@ -13,6 +13,7 @@ import {
   AllowedActions,
   AllowedEvents,
   CheckSnapBlockListArg,
+  handlerEndowments,
   PersistedSnapControllerState,
   SnapController,
   SnapControllerActions,
