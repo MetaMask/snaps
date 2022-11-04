@@ -1,7 +1,8 @@
-import fs, { Dirent } from 'fs';
+import { promises as fs } from 'fs';
 import childProcess from 'child_process';
 import pathUtils from 'path';
 
+import { BASE_PATH, resetFileSystem } from '../../test-utils';
 import {
   cloneTemplate,
   gitInit,
@@ -12,14 +13,7 @@ import {
   TEMPLATE_GIT_URL,
 } from './initUtils';
 
-jest.mock('fs', () => ({
-  ...jest.requireActual('fs'),
-  promises: {
-    ...jest.requireActual('fs').promises,
-    mkdir: jest.fn(),
-    readdir: jest.fn(),
-  },
-}));
+jest.mock('fs');
 
 jest.mock('process', () => ({
   ...jest.requireActual('process'),
@@ -31,85 +25,42 @@ jest.mock('child_process', () => ({
 }));
 
 describe('initUtils', () => {
+  beforeEach(async () => {
+    await resetFileSystem();
+  });
+
   describe('prepareWorkingDirectory', () => {
     it('creates a new directory if needed', async () => {
-      const cwdMock = jest
-        .spyOn(process, 'cwd')
-        .mockImplementation(() => 'bar');
-
-      const mkdirMock = jest.spyOn(fs.promises, 'mkdir');
-
-      const readdirMock = jest
-        .spyOn(fs.promises, 'readdir')
-        .mockImplementation(async () => []);
-
-      await prepareWorkingDirectory('foo');
-
-      expect(cwdMock).toHaveBeenCalledTimes(1);
-      expect(readdirMock).toHaveBeenCalledTimes(1);
-      expect(mkdirMock).toHaveBeenCalledTimes(1);
+      // eslint-disable-next-line jest/no-restricted-matchers
+      await expect(prepareWorkingDirectory('foo')).resolves.toBeUndefined();
     });
 
     it("does not create a directory if it's using the current working directory", async () => {
-      const cwdMock = jest
-        .spyOn(process, 'cwd')
-        .mockImplementation(() => 'bar');
+      await prepareWorkingDirectory(BASE_PATH);
 
-      const mkdirMock = jest.spyOn(fs.promises, 'mkdir');
-
-      const readdirMock = jest
-        .spyOn(fs.promises, 'readdir')
-        .mockImplementation(async () => []);
-
-      await prepareWorkingDirectory('bar');
-
-      expect(cwdMock).toHaveBeenCalledTimes(1);
-      expect(readdirMock).toHaveBeenCalledTimes(1);
-      expect(mkdirMock).not.toHaveBeenCalled();
+      expect(await fs.readdir(BASE_PATH)).toStrictEqual([]);
     });
 
     it('throws an error if it fails to create a new directory', async () => {
-      const cwdMock = jest
-        .spyOn(process, 'cwd')
-        .mockImplementation(() => 'foo');
-
-      const readdirMock = jest
-        .spyOn(fs.promises, 'readdir')
-        .mockImplementation(async () => []);
-
-      const mkdirMock = jest
-        .spyOn(fs.promises, 'mkdir')
-        .mockImplementation(() => {
-          throw new Error('error message');
-        });
+      jest.spyOn(fs, 'mkdir').mockImplementation(() => {
+        throw new Error('error message');
+      });
 
       await expect(prepareWorkingDirectory('bar')).rejects.toThrow(
         'error message',
       );
-
-      expect(cwdMock).toHaveBeenCalledTimes(1);
-      expect(readdirMock).toHaveBeenCalledTimes(0);
-      expect(mkdirMock).toHaveBeenCalledTimes(1);
     });
 
     it('throws if the folder is not empty', async () => {
-      const cwdMock = jest
-        .spyOn(process, 'cwd')
-        .mockImplementation(() => 'bar');
+      const folderPath = 'bar';
+      const filePath = pathUtils.join(folderPath, 'foo.txt');
 
-      const mkdirMock = jest.spyOn(fs.promises, 'mkdir');
-
-      const readdirMock = jest
-        .spyOn(fs.promises, 'readdir')
-        .mockImplementation(async () => ['something'] as unknown as Dirent[]);
+      await fs.mkdir(folderPath);
+      await fs.appendFile(filePath, 'test');
 
       await expect(prepareWorkingDirectory('bar')).rejects.toThrow(
         'Directory not empty: bar',
       );
-
-      expect(cwdMock).toHaveBeenCalledTimes(1);
-      expect(readdirMock).toHaveBeenCalledTimes(1);
-      expect(mkdirMock).not.toHaveBeenCalled();
     });
   });
 

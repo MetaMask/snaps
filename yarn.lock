@@ -3194,6 +3194,7 @@ __metadata:
     is-url: ^1.2.4
     jest: ^29.0.2
     jest-it-up: ^2.0.0
+    memfs: ^3.4.10
     prettier: ^2.3.2
     prettier-plugin-packagejson: ^2.2.11
     rimraf: ^3.0.2
@@ -12284,12 +12285,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"memfs@npm:^3.4.1, memfs@npm:^3.4.7":
-  version: 3.4.7
-  resolution: "memfs@npm:3.4.7"
+"memfs@npm:^3.4.1, memfs@npm:^3.4.10, memfs@npm:^3.4.7":
+  version: 3.4.10
+  resolution: "memfs@npm:3.4.10"
   dependencies:
     fs-monkey: ^1.0.3
-  checksum: fab88266dc576dc4999e38bdf531d703fb798affac2e0dd3fc17470878486844027b2766008ba80c0103b443f52cf9068a5c00f4e1ecf04106f4b29c11855822
+  checksum: bee25e00682a440adedafb81277f1a192c31e27995236d899c5402511648645dec8a0a6c2753c36632d4522bce08ebbaa38dece15753589cbe98223a47aeab4c
   languageName: node
   linkType: hard
 

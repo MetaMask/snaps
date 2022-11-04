@@ -4,6 +4,7 @@ module.exports = {
   // ones.
   collectCoverageFrom: ['./src/**/*.ts'],
   coveragePathIgnorePatterns: [
+    './src/test-utils',
     // These are just type declarations.
     './src/types/*',
     // TODO: Test the eval worker
