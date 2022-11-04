@@ -38,7 +38,7 @@
     "@metamask/utils": "^3.3.0",
     "eth-rpc-errors": "^4.0.3",
     "pump": "^3.0.0",
-    "ses": "^0.15.15",
+    "ses": "^0.17.0",
     "stream-browserify": "^3.0.0",
     "superstruct": "^0.16.7"
   },
