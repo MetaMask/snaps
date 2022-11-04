@@ -4,15 +4,36 @@ import type browserify from 'browserify';
 import { Arguments } from 'yargs';
 import yargsParse from 'yargs-parser';
 import yargs from 'yargs/yargs';
+import { object, optional, func, Infer, is } from 'superstruct';
 import builders from '../builders';
 import { CONFIG_FILE, logError } from './misc';
-import { isSnapConfig } from './snap-config.__GENERATED__';
 
-/** @see {isSnapConfig} ts-auto-guard:type-guard */
-export type SnapConfig = {
-  cliOptions?: Record<string, unknown>;
-  bundlerCustomizer?: (bundler: browserify.BrowserifyObject) => void;
+export type BundleCustomizer = (bundler: browserify.BrowserifyObject) => void;
+
+export const SnapConfigStruct = object({
+  cliOptions: optional(object()),
+  bundlerCustomizer: optional(func()),
+});
+
+export type SnapConfig = Omit<
+  Infer<typeof SnapConfigStruct>,
+  'bundlerCustomizer'
+> & {
+  bundlerCustomizer?: BundleCustomizer;
 };
+
+/**
+ * Check if the given value is a {@link SnapConfig} object. Note that this
+ * function does not check the validity of the `bundleCustomizer` property, as
+ * it is not possible to check the validity of a function in JavaScript.
+ *
+ * @param value - The value to check.
+ * @returns `true` if the value is a valid {@link SnapConfig} object, `false`
+ * otherwise.
+ */
+export function isSnapConfig(value: unknown): value is SnapConfig {
+  return is(value, SnapConfigStruct);
+}
 
 let snapConfigCache: SnapConfig | undefined;
 
