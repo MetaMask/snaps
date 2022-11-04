@@ -39,9 +39,6 @@
       "prettier --write"
     ]
   },
-  "resolutions": {
-    "init-package-json@1.10.3": "patch:init-package-json@npm:1.10.3#.yarn/patches/init-package-json-npm-1.10.3-83a0bc1ff1.patch"
-  },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.0.3",
     "@metamask/auto-changelog": "^2.6.0",
