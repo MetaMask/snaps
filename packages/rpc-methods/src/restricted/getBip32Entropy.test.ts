@@ -1,84 +1,15 @@
 import { SnapCaveatType } from '@metamask/snaps-utils';
+import { EthereumRpcError } from 'eth-rpc-errors';
 import {
   getBip32EntropyBuilder,
   getBip32EntropyCaveatMapper,
   getBip32EntropyCaveatSpecifications,
   getBip32EntropyImplementation,
   validateCaveatPaths,
-  validatePath,
 } from './getBip32Entropy';
 
 const TEST_SECRET_RECOVERY_PHRASE =
   'test test test test test test test test test test test ball';
-
-describe('validatePath', () => {
-  it.each([true, false, null, undefined, 'foo', [], new (class {})()])(
-    'throws if the value is not a plain object',
-    (value) => {
-      expect(() => validatePath(value)).toThrow('Expected a plain object.');
-    },
-  );
-
-  it.each([{}, { path: [] }, { path: 'foo' }])(
-    'throws if the path is invalid or empty',
-    () => {
-      expect(() => validatePath({})).toThrow(
-        'Invalid "path" parameter. The path must be a non-empty BIP-32 derivation path array.',
-      );
-    },
-  );
-
-  it('throws if the path does not start with "m"', () => {
-    expect(() => validatePath({ path: ["44'", "60'"] })).toThrow(
-      'Invalid "path" parameter. The path must start with "m".',
-    );
-  });
-
-  it.each([
-    { path: ['m', 'foo'] },
-    { path: ['m', '0', 'bar'] },
-    { path: ['m', 0] },
-  ])('throws if the path is invalid', (value) => {
-    expect(() => validatePath(value)).toThrow(
-      'Invalid "path" parameter. The path must be a valid BIP-32 derivation path array.',
-    );
-  });
-
-  it.each([{ path: ['m'] }, { path: ['m', "44'"] }])(
-    'throws if the path has a length of less than three',
-    (value) => {
-      expect(() => validatePath(value)).toThrow(
-        'Invalid "path" parameter. Paths must have a length of at least three.',
-      );
-    },
-  );
-
-  it('throws if the curve is invalid', () => {
-    expect(() =>
-      validatePath({ path: ['m', "44'", "60'"], curve: 'foo' }),
-    ).toThrow(
-      'Invalid "curve" parameter. The curve must be "secp256k1" or "ed25519".',
-    );
-  });
-
-  it('throws if the curve is ed25519 and the path has an unhardened index', () => {
-    expect(() =>
-      validatePath({ path: ['m', "44'", "60'", '1'], curve: 'ed25519' }),
-    ).toThrow(
-      'Invalid "path" parameter. Ed25519 does not support unhardened paths.',
-    );
-  });
-
-  it('does not throw if the path is valid', () => {
-    expect(() =>
-      validatePath({ path: ['m', "44'", "60'"], curve: 'secp256k1' }),
-    ).not.toThrow();
-
-    expect(() =>
-      validatePath({ path: ['m', "44'", "60'"], curve: 'ed25519' }),
-    ).not.toThrow();
-  });
-});
 
 describe('validateCaveatPaths', () => {
   it.each([[], null, undefined, 'foo'])(
@@ -89,7 +20,7 @@ describe('validateCaveatPaths', () => {
           type: SnapCaveatType.PermittedDerivationPaths,
           value,
         }),
-      ).toThrow('Expected non-empty array of paths.');
+      ).toThrow(EthereumRpcError);
     },
   );
 
@@ -99,7 +30,7 @@ describe('validateCaveatPaths', () => {
         type: SnapCaveatType.PermittedDerivationPaths,
         value: [{ path: ['foo'], curve: 'secp256k1' }],
       }),
-    ).toThrow('Invalid "path" parameter. The path must start with "m".');
+    ).toThrow('must start with "m"');
   });
 });
 
@@ -244,9 +175,7 @@ describe('getBip32EntropyCaveatSpecifications', () => {
           value: [params],
           // @ts-expect-error Missing other required properties.
         })({ params: { ...params, path: [] } }),
-      ).rejects.toThrow(
-        'Invalid "path" parameter. The path must be a non-empty BIP-32 derivation path array.',
-      );
+      ).rejects.toThrow('must be a non-empty BIP-32 derivation path array');
     });
 
     it('throws if the path is not specified in the caveats', async () => {
@@ -275,7 +204,7 @@ describe('getBip32EntropyCaveatSpecifications', () => {
           type: SnapCaveatType.PermittedDerivationPaths,
           value: [{ path: ['foo'], curve: 'secp256k1' }],
         }),
-      ).toThrow('Invalid "path" parameter. The path must start with "m".');
+      ).toThrow('must start with "m"');
     });
   });
 });

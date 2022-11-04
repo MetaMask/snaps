@@ -1,6 +1,7 @@
 import { assert, assertStruct } from '@metamask/utils';
 import {
   array,
+  boolean,
   enums,
   Infer,
   integer,
@@ -16,6 +17,7 @@ import {
   type,
   union,
 } from 'superstruct';
+import { CronjobSpecificationArrayStruct } from '../cronjob';
 import { NamespacesStruct } from '../namespace';
 import { NameStruct, NpmSnapFileNames, VersionStruct } from '../types';
 
@@ -40,7 +42,7 @@ export type Base64Opts = {
  * Ensure that a provided string-based struct is valid base64.
  *
  * @param struct - The string based struct.
- * @param opts - Optional options to specialize base64 validation. {@see Base64Opts } documentation.
+ * @param opts - Optional options to specialize base64 validation. See {@link Base64Opts} documentation.
  * @returns A superstruct validating base64.
  */
 export const base64 = <T extends string, S>(
@@ -98,14 +100,11 @@ export const Bip32PathStruct = refine(
     return true;
   },
 );
-// Used outside @metamask/snap-utils
-export const Bip32EntropyStruct = refine(
-  object({
-    path: Bip32PathStruct,
-    curve: enums(['ed25519', 'secp256k1']),
-  }),
-  'BIP-32 entropy',
-  (value) => {
+
+const bip32entropy = <T extends { path: string[]; curve: string }, S>(
+  struct: Struct<T, S>,
+) =>
+  refine(struct, 'BIP-32 entropy', (value) => {
     if (
       value.curve === 'ed25519' &&
       value.path.slice(1).some((e) => !e.endsWith("'"))
@@ -114,20 +113,40 @@ export const Bip32EntropyStruct = refine(
     }
 
     return true;
-  },
+  });
+
+// Used outside @metamask/snap-utils
+export const Bip32EntropyStruct = bip32entropy(
+  object({
+    path: Bip32PathStruct,
+    curve: enums(['ed25519', 'secp256k1']),
+  }),
 );
 export type Bip32Entropy = Infer<typeof Bip32EntropyStruct>;
+
+export const Bip32PublicKeyStruct = bip32entropy(
+  object({
+    path: Bip32PathStruct,
+    curve: enums(['ed225519', 'secp256k1']),
+    compressed: optional(boolean()),
+  }),
+);
+export type Bip32PublicKey = Infer<typeof Bip32PublicKeyStruct>;
 
 const PermissionsStruct = type({
   'endowment:long-running': optional(object({})),
   'endowment:network-access': optional(object({})),
   'endowment:transaction-insight': optional(object({})),
+  'endowment:cronjob': optional(
+    object({ jobs: CronjobSpecificationArrayStruct }),
+  ),
   snap_confirm: optional(object({})),
   snap_manageState: optional(object({})),
   snap_notify: optional(object({})),
   snap_getBip32Entropy: optional(array(Bip32EntropyStruct)),
+  snap_getBip32PublicKey: optional(array(Bip32PublicKeyStruct)),
   snap_getBip44Entropy: optional(
-    array(object({ coinType: size(integer(), 0, 2 ** 32) })),
+    array(object({ coinType: size(integer(), 0, 2 ** 32 - 1) })),
   ),
   'endowment:keyring': optional(
     object({

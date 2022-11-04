@@ -1,25 +1,23 @@
 import {
+  Caveat,
+  PermissionConstraint,
   PermissionSpecificationBuilder,
   PermissionType,
+  PermissionValidatorConstraint,
+  RestrictedMethodCaveatSpecificationConstraint,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
-  Caveat,
-  PermissionValidatorConstraint,
-  PermissionConstraint,
-  RestrictedMethodCaveatSpecificationConstraint,
 } from '@metamask/controllers';
-import { ethErrors } from 'eth-rpc-errors';
-import {
-  hasProperty,
-  isPlainObject,
-  Json,
-  NonEmptyArray,
-} from '@metamask/utils';
 import { BIP32Node, JsonSLIP10Node, SLIP10Node } from '@metamask/key-tree';
-import { SnapCaveatType } from '@metamask/snaps-utils';
+import {
+  Bip32Entropy,
+  Bip32EntropyStruct,
+  SnapCaveatType,
+} from '@metamask/snaps-utils';
+import { Json, NonEmptyArray } from '@metamask/utils';
+import { ethErrors } from 'eth-rpc-errors';
+import { array, size, type, validate } from 'superstruct';
 import { isEqual } from '../utils';
-
-const INDEX_REGEX = /^\d+'?$/u;
 
 const targetKey = 'snap_getBip32Entropy';
 
@@ -49,77 +47,19 @@ type GetBip32EntropySpecification = ValidPermissionSpecification<{
   validator: PermissionValidatorConstraint;
 }>;
 
-type GetBip32EntropyParameters = {
-  path: ['m', ...(`${number}` | `${number}'`)[]];
-  curve: 'secp256k1' | 'ed25519';
-};
-
 /**
  * Validate a caveat path object. The object must consist of a `path` array and
- * optionally a `curve` string. Paths must start with `m`, and must contain at
+ * a `curve` string. Paths must start with `m`, and must contain at
  * least two indices. If `ed25519` is used, this checks if all the path indices
  * are hardened.
  *
  * @param value - The value to validate.
  * @throws If the value is invalid.
  */
-export function validatePath(
-  value: unknown,
-): asserts value is GetBip32EntropyParameters {
-  if (!isPlainObject(value)) {
-    throw ethErrors.rpc.invalidParams({
-      message: 'Expected a plain object.',
-    });
-  }
-
-  if (
-    !hasProperty(value, 'path') ||
-    !Array.isArray(value.path) ||
-    value.path.length === 0
-  ) {
-    throw ethErrors.rpc.invalidParams({
-      message: `Invalid "path" parameter. The path must be a non-empty BIP-32 derivation path array.`,
-    });
-  }
-
-  if (value.path[0] !== 'm') {
-    throw ethErrors.rpc.invalidParams({
-      message: `Invalid "path" parameter. The path must start with "m".`,
-    });
-  }
-
-  if (
-    value.path
-      .slice(1)
-      .some((v) => typeof v !== 'string' || !INDEX_REGEX.test(v))
-  ) {
-    throw ethErrors.rpc.invalidParams({
-      message: `Invalid "path" parameter. The path must be a valid BIP-32 derivation path array.`,
-    });
-  }
-
-  if (value.path.length < 3) {
-    throw ethErrors.rpc.invalidParams({
-      message: `Invalid "path" parameter. Paths must have a length of at least three.`,
-    });
-  }
-
-  if (
-    !hasProperty(value, 'curve') ||
-    (value.curve !== 'secp256k1' && value.curve !== 'ed25519')
-  ) {
-    throw ethErrors.rpc.invalidParams({
-      message: `Invalid "curve" parameter. The curve must be "secp256k1" or "ed25519".`,
-    });
-  }
-
-  if (
-    value.curve === 'ed25519' &&
-    value.path.slice(1).some((v) => !v.endsWith("'"))
-  ) {
-    throw ethErrors.rpc.invalidParams({
-      message: `Invalid "path" parameter. Ed25519 does not support unhardened paths.`,
-    });
+function validatePath(value: unknown): asserts value is Bip32Entropy {
+  const [error] = validate(value, Bip32EntropyStruct);
+  if (error) {
+    throw ethErrors.rpc.invalidParams({ message: error.message });
   }
 }
 
@@ -131,17 +71,13 @@ export function validatePath(
  * @throws If the value is invalid.
  */
 export function validateCaveatPaths(caveat: Caveat<string, any>) {
-  if (
-    !hasProperty(caveat, 'value') ||
-    !Array.isArray(caveat.value) ||
-    caveat.value.length === 0
-  ) {
-    throw ethErrors.rpc.invalidParams({
-      message: 'Expected non-empty array of paths.',
-    });
+  const [error] = validate(
+    caveat,
+    type({ value: size(array(Bip32EntropyStruct), 1, Infinity) }),
+  );
+  if (error) {
+    throw ethErrors.rpc.invalidParams({ message: error.message });
   }
-
-  caveat.value.forEach((path) => validatePath(path));
 }
 
 /**
@@ -214,10 +150,7 @@ export const getBip32EntropyCaveatSpecifications: Record<
     type: SnapCaveatType.PermittedDerivationPaths,
     decorator: (
       method,
-      caveat: Caveat<
-        SnapCaveatType.PermittedDerivationPaths,
-        GetBip32EntropyParameters[]
-      >,
+      caveat: Caveat<SnapCaveatType.PermittedDerivationPaths, Bip32Entropy[]>,
     ) => {
       return async (args) => {
         const { params } = args;
@@ -260,7 +193,7 @@ export function getBip32EntropyImplementation({
   getUnlockPromise,
 }: GetBip32EntropyMethodHooks) {
   return async function getBip32Entropy(
-    args: RestrictedMethodOptions<GetBip32EntropyParameters>,
+    args: RestrictedMethodOptions<Bip32Entropy>,
   ): Promise<JsonSLIP10Node> {
     await getUnlockPromise(true);
 

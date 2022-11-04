@@ -1,18 +1,22 @@
 import {
+  Caveat,
   PermissionSpecificationBuilder,
   PermissionType,
-  RestrictedMethodOptions,
-  ValidPermissionSpecification,
-  Caveat,
   PermissionValidatorConstraint,
   RestrictedMethodCaveatSpecificationConstraint,
+  RestrictedMethodOptions,
+  ValidPermissionSpecification,
 } from '@metamask/controllers';
-import { ethErrors } from 'eth-rpc-errors';
-import { NonEmptyArray } from '@metamask/utils';
 import { BIP32Node, SLIP10Node } from '@metamask/key-tree';
-import { SnapCaveatType } from '@metamask/snaps-utils';
+import {
+  Bip32PublicKey,
+  Bip32PublicKeyStruct,
+  SnapCaveatType,
+} from '@metamask/snaps-utils';
+import { NonEmptyArray } from '@metamask/utils';
+import { ethErrors } from 'eth-rpc-errors';
+import { array, size, type, validate } from 'superstruct';
 import { isEqual } from '../utils';
-import { validateCaveatPaths, validatePath } from './getBip32Entropy';
 
 const targetKey = 'snap_getBip32PublicKey';
 
@@ -47,6 +51,39 @@ type GetBip32PublicKeyParameters = {
   curve: 'secp256k1' | 'ed25519';
   compressed?: boolean;
 };
+
+/**
+ * Validate a caveat path object. The object must consist of a `path` array and
+ * a `curve` string. Paths must start with `m`, and must contain at
+ * least two indices. If `ed25519` is used, this checks if all the path indices
+ * are hardened.
+ *
+ * @param value - The value to validate.
+ * @throws If the value is invalid.
+ */
+function validatePath(value: unknown): asserts value is Bip32PublicKey {
+  const [error] = validate(value, Bip32PublicKeyStruct);
+  if (error) {
+    throw ethErrors.rpc.invalidParams({ message: error.message });
+  }
+}
+
+/**
+ * Validate the path values associated with a caveat. This validates that the
+ * value is a non-empty array with valid derivation paths and curves.
+ *
+ * @param caveat - The caveat to validate.
+ * @throws If the value is invalid.
+ */
+export function validateCaveatPaths(caveat: Caveat<string, any>) {
+  const [error] = validate(
+    caveat,
+    type({ value: size(array(Bip32PublicKeyStruct), 1, Infinity) }),
+  );
+  if (error) {
+    throw ethErrors.rpc.invalidParams({ message: error.message });
+  }
+}
 
 /**
  * The specification builder for the `snap_getBip32PublicKey` permission.
