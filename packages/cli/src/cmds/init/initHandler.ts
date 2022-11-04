@@ -1,23 +1,25 @@
-import { promises as fs } from 'fs';
 import pathUtils from 'path';
+import { promises as fs } from 'fs';
 import {
   NpmSnapFileNames,
   SnapManifest,
-  getSnapSourceShasum,
-  getWritableManifest,
   readJsonFile,
+  satisfiesVersionRange,
+  NpmSnapPackageJson,
 } from '@metamask/snap-utils';
-import mkdirp from 'mkdirp';
 import { YargsArgs } from '../../types/yargs';
-import { closePrompt, CONFIG_FILE, logError, SnapConfig } from '../../utils';
-import { TemplateType } from '../../builders';
-import template from './init-template.json';
+import { logError } from '../../utils';
 import {
-  asyncPackageInit,
-  buildSnapManifest,
-  isTemplateTypescript,
+  cloneTemplate,
+  gitInit,
+  isGitInstalled,
+  isInGitRepository,
   prepareWorkingDirectory,
+  SNAP_LOCATION,
+  yarnInstall,
 } from './initUtils';
+
+const SATISFIED_VERSION = '>=16';
 
 /**
  * Creates a new snap package, based on one of the provided templates. This
@@ -30,133 +32,73 @@ import {
  * @throws If initialization of the snap package failed.
  */
 export async function initHandler(argv: YargsArgs) {
-  console.log(`MetaMask Snaps: Initialize\n`);
+  const { directory } = argv;
 
-  const packageJson = await asyncPackageInit(argv);
+  const isVersionSupported = satisfiesVersionRange(
+    process.version,
+    SATISFIED_VERSION,
+  );
 
-  await prepareWorkingDirectory();
-
-  console.log(`\nInit: Building '${NpmSnapFileNames.Manifest}'...\n`);
-
-  const [snapManifest, _newArgs] = await buildSnapManifest(argv, packageJson);
-
-  const newArgs = Object.keys(_newArgs)
-    .sort()
-    .reduce((sorted, key) => {
-      sorted[key] = _newArgs[key as keyof typeof _newArgs];
-      return sorted;
-    }, {} as YargsArgs);
-
-  const isTypeScript = isTemplateTypescript(argv.template as TemplateType);
-  try {
-    await fs.writeFile(
-      NpmSnapFileNames.Manifest,
-      `${JSON.stringify(snapManifest, null, 2)}\n`,
-    );
-  } catch (err) {
+  if (!isVersionSupported) {
     logError(
-      `Init Error: Failed to write '${NpmSnapFileNames.Manifest}'.`,
-      err,
+      `Init Error: You are using an outdated version of Node (${process.version}). Please update to Node ${SATISFIED_VERSION}.`,
     );
-    throw err;
+    throw new Error('Outdated node version.');
   }
 
-  console.log(`\nInit: Created '${NpmSnapFileNames.Manifest}'.`);
-
-  // Write main .js entry file
-  const { src } = newArgs;
-
-  try {
-    if (pathUtils.basename(src) !== src) {
-      await mkdirp(pathUtils.dirname(src));
-    }
-
-    await fs.writeFile(
-      src,
-      isTypeScript ? template.typescriptSource : template.source,
+  const gitExists = isGitInstalled();
+  if (!gitExists) {
+    logError(
+      `Init Error: git is not installed. Please install git to continue.`,
     );
-
-    console.log(`Init: Created '${src}'.`);
-  } catch (err) {
-    logError(`Init Error: Failed to write '${src}'.`, err);
-    throw err;
+    throw new Error('Git is not installed.');
   }
 
-  // Write index.html
+  const directoryToUse = directory
+    ? pathUtils.join(process.cwd(), directory)
+    : process.cwd();
+
+  console.log(`Preparing ${directoryToUse}...`);
+
+  await prepareWorkingDirectory(directoryToUse);
+
   try {
-    await fs.writeFile(
-      'index.html',
-      isTypeScript ? template.typescriptHtml : template.html,
-    );
+    console.log(`Cloning template...`);
+    await cloneTemplate(directoryToUse);
 
-    console.log(`Init: Created 'index.html'.`);
+    fs.rm(pathUtils.join(directoryToUse, '.git'), {
+      force: true,
+      recursive: true,
+    });
   } catch (err) {
-    logError(`Init Error: Failed to write 'index.html'.`, err);
+    logError('Init Error: Failed to create template, cleaning...');
     throw err;
   }
 
-  // Write tsconfig.json
-  if (isTypeScript) {
-    try {
-      await fs.writeFile('tsconfig.json', template.typescriptConfig);
-      console.log(`Init: Created 'tsconfig.json'.`);
-    } catch (err) {
-      logError(`Init Error: Failed to write 'tsconfig.json'.`, err);
-      throw err;
-    }
+  console.log('Installing dependencies...');
+  await yarnInstall(directoryToUse);
+
+  if (!isInGitRepository(directoryToUse)) {
+    console.log('Initializing git repository...');
+    await gitInit(directoryToUse);
   }
 
-  // Write config file
-  try {
-    const defaultConfig: SnapConfig = {
-      cliOptions: newArgs,
-    };
-    const defaultConfigFile = `module.exports = ${JSON.stringify(
-      defaultConfig,
-      null,
-      2,
-    )}
-    `;
-    await fs.writeFile(CONFIG_FILE, defaultConfigFile);
-    console.log(`Init: Wrote '${CONFIG_FILE}' config file`);
-  } catch (err) {
-    logError(`Init Error: Failed to write '${CONFIG_FILE}'.`, err);
-    throw err;
-  }
+  const snapLocation = pathUtils.join(directoryToUse, SNAP_LOCATION);
 
-  // Write icon
-  const iconPath = 'images/icon.svg';
-  try {
-    if (pathUtils.basename(iconPath) !== iconPath) {
-      await mkdirp(pathUtils.dirname(iconPath));
-    }
-    await fs.writeFile(iconPath, template.icon);
-
-    console.log(`Init: Created '${iconPath}'.`);
-  } catch (err) {
-    logError(`Init Error: Failed to write '${iconPath}'.`, err);
-    throw err;
-  }
-
-  closePrompt();
-  return { ...argv, ...newArgs };
-}
-
-/**
- * This updates the Snap shasum value of the manifest after building the Snap
- * during the init command.
- */
-export async function updateManifestShasum() {
-  const manifest = await readJsonFile<SnapManifest>(NpmSnapFileNames.Manifest);
-
-  const bundleContents = await fs.readFile(
-    manifest.source.location.npm.filePath,
-    'utf8',
+  const manifest: SnapManifest = await readJsonFile(
+    pathUtils.join(snapLocation, NpmSnapFileNames.Manifest),
+  );
+  const packageJson: NpmSnapPackageJson = await readJsonFile(
+    pathUtils.join(snapLocation, NpmSnapFileNames.PackageJson),
   );
 
-  manifest.source.shasum = getSnapSourceShasum(bundleContents);
-  await fs.writeFile(
-    NpmSnapFileNames.Manifest,
-    JSON.stringify(getWritableManifest(manifest), null, 2),
-  );
+  const distPath = manifest.source.location.npm.filePath.split('/');
+
+  return {
+    ...argv,
+    dist: distPath[0],
+    outfileName: distPath[1],
+    src: packageJson.main || 'src/index.js',
+    snapLocation,
+  };
 }

@@ -2,10 +2,14 @@ import yargs from 'yargs';
 import { cli } from './cli';
 import commands from './cmds';
 
+// Removes positional arguments from commands. eg. 'init [directory]' -> 'init'
+const sanitizeCommand = (command: string) =>
+  command.replace(/(\[.*?\])/u, '').trim();
+
 const commandMap = (commands as unknown as yargs.CommandModule[]).reduce(
   (map, commandModule) => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    map[commandModule.command![0]] = commandModule;
+    map[sanitizeCommand(commandModule.command![0])] = commandModule;
     return map;
   },
   {} as Record<string, yargs.CommandModule>,
@@ -75,14 +79,14 @@ describe('cli', () => {
     });
 
     Object.keys(commandMap).forEach((command) => {
-      it(`calls ${command}`, async () => {
+      it(`calls ${sanitizeCommand(command)}`, async () => {
         const mockCommandHandler = jest.fn();
 
         const finished = new Promise<void>((resolve) => {
           mockCommandHandler.mockImplementation(() => resolve() as any);
         });
 
-        cli(getMockArgv(command), [
+        cli(getMockArgv(sanitizeCommand(command)), [
           { ...(commandMap as any)[command], handler: mockCommandHandler },
         ]);
         await finished;
@@ -90,7 +94,7 @@ describe('cli', () => {
         // TODO: Test the complete argv for each command
         expect(mockCommandHandler).toHaveBeenCalledWith(
           expect.objectContaining({
-            _: [command],
+            _: [sanitizeCommand(command)],
             suppressWarnings: false,
             verboseErrors: true,
           }),

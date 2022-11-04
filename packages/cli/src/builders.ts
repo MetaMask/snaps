@@ -1,4 +1,4 @@
-import { Options } from 'yargs';
+import { Options, PositionalOptions } from 'yargs';
 
 export type SnapsCliBuilders = {
   readonly bundle: Readonly<Options>;
@@ -17,18 +17,13 @@ export type SnapsCliBuilders = {
   readonly verboseErrors: Readonly<Options>;
   readonly writeManifest: Readonly<Options>;
   readonly serve: Readonly<Options>;
-  readonly template: Readonly<Options>;
+  readonly directory: Readonly<PositionalOptions>;
 };
 
 export enum TranspilationModes {
   localAndDeps = 'localAndDeps',
   localOnly = 'localOnly',
   none = 'none',
-}
-
-export enum TemplateType {
-  TypeScript = 'typescript',
-  JavaScript = 'javascript',
 }
 
 const builders: SnapsCliBuilders = {
@@ -165,13 +160,9 @@ const builders: SnapsCliBuilders = {
     default: true,
   },
 
-  template: {
-    alias: 't',
-    describe: 'Specify which template to use (TypeScript or JavaScript)',
+  directory: {
+    describe: 'the directory to use',
     type: 'string',
-    demandOption: false,
-    default: TemplateType.TypeScript,
-    choices: Object.values(TemplateType),
   },
 };
 

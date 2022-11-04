@@ -1,26 +1,14 @@
-import yargs, { Arguments } from 'yargs';
+import yargs from 'yargs';
 import builders from '../../builders';
 import { YargsArgs } from '../../types/yargs';
 import { build } from '../build/buildHandler';
-import { initHandler, updateManifestShasum } from './initHandler';
-import { correctDefaultArgs } from './initUtils';
+import { initHandler } from './initHandler';
 
 export = {
-  command: ['init', 'i'],
+  command: ['init [directory]', 'i [directory]'],
   desc: 'Initialize Snap package',
   builder: (yarg: yargs.Argv) => {
-    yarg
-      .option('src', builders.src)
-      .option('dist', builders.dist)
-      .option('port', builders.port)
-      .option('outfileName', builders.outfileName)
-      .option('template', builders.template)
-      .middleware(
-        ((yargsArgv: Arguments) => {
-          correctDefaultArgs(yargsArgv);
-        }) as any,
-        true,
-      );
+    yarg.positional('directory', builders.directory);
   },
   handler: (argv: YargsArgs) => init(argv),
 };
@@ -36,13 +24,13 @@ async function init(argv: YargsArgs): Promise<void> {
   console.log();
   const newArgs = await initHandler(argv);
 
+  process.chdir(newArgs.snapLocation);
+
   await build({
     ...newArgs,
     manifest: false,
     eval: true,
   });
-
-  await updateManifestShasum();
 
   console.log('\nSnap project successfully initiated!');
 }

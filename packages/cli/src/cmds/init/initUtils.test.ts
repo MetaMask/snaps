@@ -1,591 +1,211 @@
-import fs from 'fs';
-import { SnapManifest } from '@metamask/snap-utils';
-import * as snapUtils from '@metamask/snap-utils';
-import initPackageJson from 'init-package-json';
-import mkdirp from 'mkdirp';
-import { Arguments } from 'yargs';
+import { promises as fs } from 'fs';
+import childProcess from 'child_process';
+import pathUtils from 'path';
+
+import { resetFileSystem } from '../../test-utils';
 import {
-  getPackageJson,
-  getSnapManifest,
-} from '@metamask/snap-utils/test-utils';
-import { YargsArgs } from '../../types/yargs';
-// We have to import utils separately or else we run into trouble with our mocks
-import * as miscUtils from '../../utils/misc';
-import * as readlineUtils from '../../utils/readline';
-import { TemplateType } from '../../builders';
-import {
-  asyncPackageInit,
-  buildSnapManifest,
-  correctDefaultArgs,
+  cloneTemplate,
+  gitInit,
+  isGitInstalled,
+  isInGitRepository,
   prepareWorkingDirectory,
+  yarnInstall,
+  TEMPLATE_GIT_URL,
 } from './initUtils';
 
-/**
- * A fake Node.js file system error.
- * Basically, {@link Error} but with a `code` property.
- */
-class FakeFsError extends Error {
-  code: string;
+jest.mock('fs');
 
-  constructor(message: string, code: string) {
-    super(message);
-    this.code = code;
-  }
-}
-
-jest.mock('fs', () => ({
-  ...jest.requireActual('fs'),
-  existsSync: jest.fn(),
-  promises: {
-    ...jest.requireActual('fs').promises,
-    mkdir: jest.fn(),
-    readdir: jest.fn(),
-    readFile: jest.fn(),
-  },
+jest.mock('process', () => ({
+  ...jest.requireActual('process'),
+  cwd: jest.fn(),
 }));
 
-jest.mock('@metamask/snap-utils', () => ({
-  ...jest.requireActual('@metamask/snap-utils'),
-  readJsonFile: jest.fn(),
-  assertIsNpmSnapPackageJson: jest.fn(),
-  assertIsSnapManifest: jest.fn(),
+jest.mock('child_process', () => ({
+  execSync: jest.fn(),
 }));
-jest.mock('init-package-json');
-jest.mock('mkdirp');
-
-const mkdirpMock = mkdirp as unknown as jest.Mock;
-const PLACEHOLDER_SHASUM = '2QqUxo5joo4kKKr7yiCjdYsZOZcIFBnIBEdwU9Yx7+M=';
-const getMockedArgv = () => {
-  return {
-    dist: 'dist',
-    outfileName: 'bundle.js',
-    src: 'src/index.js',
-    port: 8081,
-  } as any;
-};
 
 describe('initUtils', () => {
-  describe('asyncPackageInit', () => {
-    it('console logs if successful', async () => {
-      const existsSyncMock = jest
-        .spyOn(fs, 'existsSync')
-        .mockImplementation(() => true);
-
-      const readJsonFileMock = jest
-        .spyOn(snapUtils, 'readJsonFile')
-        .mockImplementationOnce(async () => '');
-
-      const validateSnapJsonFileMock = jest
-        .spyOn(snapUtils, 'assertIsNpmSnapPackageJson')
-        .mockImplementationOnce(() => true);
-
-      jest.spyOn(console, 'log').mockImplementation();
-
-      await asyncPackageInit(getMockedArgv());
-      expect(existsSyncMock).toHaveBeenCalledTimes(1);
-      expect(readJsonFileMock).toHaveBeenCalledTimes(1);
-      expect(validateSnapJsonFileMock).toHaveBeenCalledTimes(1);
-      expect(global.console.log).toHaveBeenCalledTimes(2);
-    });
-
-    it('throws error if unable to parse package.json', async () => {
-      const existsSyncMock = jest
-        .spyOn(fs, 'existsSync')
-        .mockImplementation(() => true);
-      const parseMock = jest
-        .spyOn(snapUtils, 'readJsonFile')
-        .mockImplementation(() => {
-          throw new Error('error message');
-        });
-      jest.spyOn(console, 'log').mockImplementation();
-      const logErrorMock = jest
-        .spyOn(miscUtils, 'logError')
-        .mockImplementation();
-
-      await expect(asyncPackageInit(getMockedArgv())).rejects.toThrow(
-        'error message',
-      );
-      expect(existsSyncMock).toHaveBeenCalled();
-      expect(parseMock).toHaveBeenCalledTimes(1);
-      expect(logErrorMock).toHaveBeenCalledTimes(1);
-      expect(global.console.log).toHaveBeenCalledTimes(1);
-    });
-
-    it('yarn lock logic works throws error if initpackagejson is rejected', async () => {
-      const existsSyncMock = jest
-        .spyOn(fs, 'existsSync')
-        .mockImplementationOnce(() => false)
-        .mockImplementationOnce(() => false);
-      (initPackageJson as unknown as jest.Mock).mockImplementation(
-        (_, __, ___, cb) => cb(new Error('initpackage error'), true),
-      );
-
-      await expect(asyncPackageInit(getMockedArgv())).rejects.toThrow(
-        'initpackage error',
-      );
-      expect(existsSyncMock).toHaveBeenCalledTimes(2);
-    });
-
-    it('yarn lock logic works', async () => {
-      const existsSyncMock = jest
-        .spyOn(fs, 'existsSync')
-        .mockImplementationOnce(() => false)
-        .mockImplementationOnce(() => false);
-      (initPackageJson as unknown as jest.Mock).mockImplementation(
-        (_, __, ___, cb) => cb(false, true),
-      );
-
-      await asyncPackageInit(getMockedArgv());
-      expect(existsSyncMock).toHaveBeenCalledTimes(2);
-    });
-
-    it('logs error when yarn lock is found', async () => {
-      const existsSyncMock = jest
-        .spyOn(fs, 'existsSync')
-        .mockImplementationOnce(() => false)
-        .mockImplementationOnce(() => true);
-      const logErrorMock = jest
-        .spyOn(miscUtils, 'logError')
-        .mockImplementation();
-
-      await expect(asyncPackageInit(getMockedArgv())).rejects.toThrow(
-        'Already existing yarn.lock file found',
-      );
-      expect(existsSyncMock).toHaveBeenCalledTimes(2);
-      expect(logErrorMock).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('buildSnapManifest', () => {
-    const getMockArgv = () => {
-      return {
-        dist: 'dist',
-        outfileName: 'bundle.js',
-      } as any;
-    };
-
-    const NO = 'no';
-    const VALID_PERMISSIONS_INPUT = 'snap_confirm snap_manageState';
-
-    it('applies default manifest values if user inputs "yes"', async () => {
-      const promptMock = jest
-        .spyOn(readlineUtils, 'prompt')
-        .mockImplementation(async () => 'y');
-      jest.spyOn(console, 'log').mockImplementation();
-
-      const manifestAndArgs = await buildSnapManifest(
-        getMockArgv(),
-        getPackageJson(),
-      );
-      expect(manifestAndArgs).not.toBeNull();
-      const [manifest, argv] = manifestAndArgs as [SnapManifest, YargsArgs];
-      expect(manifest).toStrictEqual(
-        getSnapManifest({ shasum: PLACEHOLDER_SHASUM }),
-      );
-
-      expect(argv).toStrictEqual({
-        ...getMockArgv(),
-        src: 'src/index.js',
-      });
-
-      expect(promptMock).toHaveBeenCalledTimes(1);
-
-      expect(mkdirpMock).toHaveBeenCalledTimes(1);
-      expect(mkdirpMock).toHaveBeenCalledWith(getMockArgv().dist);
-
-      expect(global.console.log).toHaveBeenCalledTimes(1);
-    });
-
-    it('handles missing "description" property in package.json', async () => {
-      const promptMock = jest
-        .spyOn(readlineUtils, 'prompt')
-        .mockImplementation(async () => 'y');
-      jest.spyOn(console, 'log').mockImplementation();
-
-      const packageJson = getPackageJson();
-      delete packageJson.description;
-
-      const manifestAndArgs = await buildSnapManifest(
-        getMockArgv(),
-        packageJson,
-      );
-      expect(manifestAndArgs).not.toBeNull();
-      const [manifest, argv] = manifestAndArgs as [SnapManifest, YargsArgs];
-      expect(manifest).toStrictEqual(
-        getSnapManifest({
-          description: 'The @metamask/example-snap Snap.',
-          shasum: PLACEHOLDER_SHASUM,
-        }),
-      );
-
-      expect(argv).toStrictEqual({
-        ...getMockArgv(),
-        src: 'src/index.js',
-      });
-
-      expect(promptMock).toHaveBeenCalledTimes(1);
-
-      expect(mkdirpMock).toHaveBeenCalledTimes(1);
-      expect(mkdirpMock).toHaveBeenCalledWith(getMockArgv().dist);
-
-      expect(global.console.log).toHaveBeenCalledTimes(1);
-    });
-
-    it('handles missing "repository" property in package.json', async () => {
-      jest.spyOn(readlineUtils, 'prompt').mockImplementation(async () => 'y');
-      jest.spyOn(console, 'log').mockImplementation();
-      const packageJson = getPackageJson();
-      delete packageJson.repository;
-
-      const manifestAndArgs = await buildSnapManifest(
-        getMockArgv(),
-        packageJson,
-      );
-      expect(manifestAndArgs).not.toBeNull();
-      const [manifest] = manifestAndArgs as [SnapManifest, YargsArgs];
-      expect(manifest.repository).toBeNull();
-    });
-
-    it('handles missing "main" property in package.json', async () => {
-      jest.spyOn(readlineUtils, 'prompt').mockImplementation(async () => 'y');
-      jest.spyOn(console, 'log').mockImplementation();
-      const packageJson = getPackageJson();
-      delete packageJson.main;
-
-      const manifestAndArgs = await buildSnapManifest(
-        getMockArgv(),
-        packageJson,
-      );
-      expect(manifestAndArgs).not.toBeNull();
-      const [, argv] = manifestAndArgs as [SnapManifest, YargsArgs];
-      expect(argv.src).toBe('src/index.js');
-    });
-
-    it('throws if the "dist" directory cannot be created', async () => {
-      mkdirpMock.mockImplementationOnce(() => {
-        throw new FakeFsError('some file system error', 'ERROR');
-      });
-      const promptMock = jest
-        .spyOn(readlineUtils, 'prompt')
-        .mockImplementation(async () => 'y');
-      jest.spyOn(console, 'log').mockImplementation();
-      const logErrorMock = jest
-        .spyOn(miscUtils, 'logError')
-        .mockImplementation();
-
-      await expect(
-        buildSnapManifest(getMockArgv(), getPackageJson()),
-      ).rejects.toThrow('some file system error');
-      expect(promptMock).toHaveBeenCalledTimes(1);
-      expect(global.console.log).toHaveBeenCalledTimes(1);
-      expect(logErrorMock).toHaveBeenCalledTimes(2);
-    });
-
-    it('handles valid user inputs when not using default values', async () => {
-      const packageJson = getPackageJson();
-      const { dist } = getMockArgv();
-
-      const promptMock = jest
-        .spyOn(readlineUtils, 'prompt')
-        .mockImplementationOnce(async () => NO)
-        .mockImplementationOnce(async () => packageJson.name)
-        .mockImplementationOnce(async () => packageJson.description)
-        .mockImplementationOnce(async () => dist)
-        .mockImplementationOnce(async () => VALID_PERMISSIONS_INPUT);
-
-      expect(
-        await buildSnapManifest(getMockArgv(), getPackageJson()),
-      ).toStrictEqual([
-        getSnapManifest({
-          initialPermissions: {
-            snap_confirm: {},
-            snap_manageState: {},
-          },
-          shasum: PLACEHOLDER_SHASUM,
-        }),
-        { dist, outfileName: 'bundle.js', src: 'src/index.js' },
-      ]);
-      expect(promptMock).toHaveBeenCalledTimes(5);
-      expect(mkdirpMock).toHaveBeenCalledTimes(1);
-    });
-
-    it('handles invalid "proposedName" input', async () => {
-      const packageJson = getPackageJson();
-      const { dist } = getMockArgv();
-
-      const promptMock = jest
-        .spyOn(readlineUtils, 'prompt')
-        .mockImplementationOnce(async () => NO)
-        .mockImplementationOnce(async () => new Array(215).fill('a').join(''))
-        .mockImplementationOnce(async () => packageJson.name)
-        .mockImplementationOnce(async () => packageJson.description)
-        .mockImplementationOnce(async () => dist)
-        .mockImplementationOnce(async () => VALID_PERMISSIONS_INPUT);
-
-      const logErrorMock = jest
-        .spyOn(miscUtils, 'logError')
-        .mockImplementation();
-
-      expect(
-        await buildSnapManifest(getMockArgv(), getPackageJson()),
-      ).toStrictEqual([
-        getSnapManifest({
-          initialPermissions: {
-            snap_confirm: {},
-            snap_manageState: {},
-          },
-          shasum: PLACEHOLDER_SHASUM,
-        }),
-        { dist, outfileName: 'bundle.js', src: 'src/index.js' },
-      ]);
-
-      expect(promptMock).toHaveBeenCalledTimes(6);
-      expect(logErrorMock).toHaveBeenCalledTimes(1);
-      expect(logErrorMock).toHaveBeenCalledWith(
-        expect.stringMatching(
-          /the proposed name must adhere to npm package naming conventions/iu,
-        ),
-      );
-      expect(mkdirpMock).toHaveBeenCalledTimes(1);
-    });
-
-    it('handles invalid "description" input', async () => {
-      const packageJson = getPackageJson();
-      const { dist } = getMockArgv();
-
-      const promptMock = jest
-        .spyOn(readlineUtils, 'prompt')
-        .mockImplementationOnce(async () => NO)
-        .mockImplementationOnce(async () => packageJson.name)
-        .mockImplementationOnce(async () => new Array(281).fill('a').join(''))
-        .mockImplementationOnce(async () => packageJson.description)
-        .mockImplementationOnce(async () => dist)
-        .mockImplementationOnce(async () => VALID_PERMISSIONS_INPUT);
-
-      const logErrorMock = jest
-        .spyOn(miscUtils, 'logError')
-        .mockImplementation();
-
-      expect(
-        await buildSnapManifest(getMockArgv(), getPackageJson()),
-      ).toStrictEqual([
-        getSnapManifest({
-          initialPermissions: {
-            snap_confirm: {},
-            snap_manageState: {},
-          },
-          shasum: PLACEHOLDER_SHASUM,
-        }),
-        { dist, outfileName: 'bundle.js', src: 'src/index.js' },
-      ]);
-
-      expect(promptMock).toHaveBeenCalledTimes(6);
-      expect(logErrorMock).toHaveBeenCalledTimes(1);
-      expect(logErrorMock).toHaveBeenCalledWith(
-        `The description must be a non-empty string less than or equal to 280 characters.`,
-      );
-      expect(mkdirpMock).toHaveBeenCalledTimes(1);
-    });
-
-    it('handles invalid "dist" input', async () => {
-      const packageJson = getPackageJson();
-      const { dist } = getMockArgv();
-
-      const promptMock = jest
-        .spyOn(readlineUtils, 'prompt')
-        .mockImplementationOnce(async () => NO)
-        .mockImplementationOnce(async () => packageJson.name)
-        .mockImplementationOnce(async () => packageJson.description)
-        .mockImplementationOnce(async () => 'invalid/directory')
-        .mockImplementationOnce(async () => dist)
-        .mockImplementationOnce(async () => VALID_PERMISSIONS_INPUT);
-
-      mkdirpMock.mockImplementationOnce(async () => {
-        throw new Error('invalid directory');
-      });
-
-      const logErrorMock = jest
-        .spyOn(miscUtils, 'logError')
-        .mockImplementation();
-
-      expect(
-        await buildSnapManifest(getMockArgv(), getPackageJson()),
-      ).toStrictEqual([
-        getSnapManifest({
-          initialPermissions: {
-            snap_confirm: {},
-            snap_manageState: {},
-          },
-          shasum: PLACEHOLDER_SHASUM,
-        }),
-        { dist, outfileName: 'bundle.js', src: 'src/index.js' },
-      ]);
-
-      expect(promptMock).toHaveBeenCalledTimes(6);
-      expect(logErrorMock).toHaveBeenCalledTimes(1);
-      expect(logErrorMock).toHaveBeenCalledWith(
-        `Unable to create directory 'invalid/directory'. Ensure that the path is valid and try again.`,
-        new Error('invalid directory'),
-      );
-      expect(mkdirpMock).toHaveBeenCalledTimes(2);
-    });
-
-    it('handles "default" initialPermission input', async () => {
-      for (const mockInput of ['', 'snap_confirm']) {
-        const packageJson = getPackageJson();
-        const { dist } = getMockArgv();
-
-        const promptMock = jest
-          .spyOn(readlineUtils, 'prompt')
-          .mockImplementationOnce(async () => NO)
-          .mockImplementationOnce(async () => packageJson.name)
-          .mockImplementationOnce(async () => packageJson.description)
-          .mockImplementationOnce(async () => dist)
-          .mockImplementationOnce(async () => mockInput);
-
-        const logErrorMock = jest
-          .spyOn(miscUtils, 'logError')
-          .mockImplementation();
-
-        expect(
-          await buildSnapManifest(getMockArgv(), getPackageJson()),
-        ).toStrictEqual([
-          getSnapManifest({
-            shasum: PLACEHOLDER_SHASUM,
-          }),
-          { dist, outfileName: 'bundle.js', src: 'src/index.js' },
-        ]);
-
-        expect(promptMock).toHaveBeenCalledTimes(5);
-        expect(logErrorMock).not.toHaveBeenCalled();
-        expect(mkdirpMock).toHaveBeenCalledTimes(1);
-
-        jest.resetAllMocks();
-      }
-    });
-
-    it('handles invalid "initialPermissions" input', async () => {
-      const packageJson = getPackageJson();
-      const { dist } = getMockArgv();
-
-      const promptMock = jest
-        .spyOn(readlineUtils, 'prompt')
-        .mockImplementationOnce(async () => NO)
-        .mockImplementationOnce(async () => packageJson.name)
-        .mockImplementationOnce(async () => packageJson.description)
-        .mockImplementationOnce(async () => dist)
-        .mockImplementationOnce(async () => '@invalid ~permissions')
-        .mockImplementationOnce(async () => VALID_PERMISSIONS_INPUT);
-
-      const logErrorMock = jest
-        .spyOn(miscUtils, 'logError')
-        .mockImplementation();
-
-      expect(
-        await buildSnapManifest(getMockArgv(), getPackageJson()),
-      ).toStrictEqual([
-        getSnapManifest({
-          initialPermissions: {
-            snap_confirm: {},
-            snap_manageState: {},
-          },
-          shasum: PLACEHOLDER_SHASUM,
-        }),
-        { dist, outfileName: 'bundle.js', src: 'src/index.js' },
-      ]);
-
-      expect(promptMock).toHaveBeenCalledTimes(6);
-      expect(logErrorMock).toHaveBeenCalledTimes(1);
-      expect(logErrorMock).toHaveBeenCalledWith(
-        `Invalid permissions '@invalid ~permissions'.\nThe permissions must be specified as a space-separated list of strings with only characters, digits, underscores ('_'), and colons (':').`,
-        new Error('Invalid permission: @invalid'),
-      );
-      expect(mkdirpMock).toHaveBeenCalledTimes(1);
-    });
+  beforeEach(async () => {
+    await resetFileSystem();
   });
 
   describe('prepareWorkingDirectory', () => {
-    it('warns user if files may be overwritten', async () => {
-      const readdirMock = jest
-        .spyOn(fs.promises, 'readdir')
-        .mockImplementation(() => ['src/index.js', 'dist'] as any);
-      const warningMock = jest
-        .spyOn(miscUtils, 'logWarning')
-        .mockImplementation();
-      const promptMock = jest
-        .spyOn(readlineUtils, 'prompt')
-        .mockImplementation(async () => 'n');
-      jest.spyOn(console, 'log').mockImplementation();
+    it('creates a new directory if needed', async () => {
+      // eslint-disable-next-line jest/no-restricted-matchers
+      await expect(prepareWorkingDirectory('foo')).resolves.toBeUndefined();
+    });
 
-      await expect(prepareWorkingDirectory()).rejects.toThrow(
-        'User refused to continue',
+    it("does not create a directory if it's using the current working directory", async () => {
+      await prepareWorkingDirectory(process.cwd());
+
+      expect(await fs.readdir(process.cwd())).toStrictEqual([]);
+    });
+
+    it('throws an error if it fails to create a new directory', async () => {
+      jest.spyOn(fs, 'mkdir').mockImplementation(() => {
+        throw new Error('error message');
+      });
+
+      await expect(prepareWorkingDirectory('bar')).rejects.toThrow(
+        'error message',
       );
-      expect(warningMock).toHaveBeenCalledTimes(1);
-      expect(readdirMock).toHaveBeenCalledTimes(1);
-      expect(promptMock).toHaveBeenCalledTimes(1);
-      expect(global.console.log).toHaveBeenCalledTimes(1);
     });
 
-    it('handles continue correctly', async () => {
-      const readdirMock = jest
-        .spyOn(fs.promises, 'readdir')
-        .mockImplementation(() => ['src/index.js', 'dist'] as any);
-      const warningMock = jest
-        .spyOn(miscUtils, 'logWarning')
-        .mockImplementation();
-      const promptMock = jest
-        .spyOn(readlineUtils, 'prompt')
-        .mockImplementation(async () => 'YES');
-      jest
-        .spyOn(process, 'exit')
-        .mockImplementationOnce(() => undefined as never);
-      jest.spyOn(console, 'log').mockImplementation();
+    it('throws if the folder is not empty', async () => {
+      const folderPath = 'bar';
+      const filePath = pathUtils.join(folderPath, 'foo.txt');
 
-      await prepareWorkingDirectory();
-      expect(warningMock).toHaveBeenCalledTimes(1);
-      expect(readdirMock).toHaveBeenCalledTimes(1);
-      expect(promptMock).toHaveBeenCalledTimes(1);
-    });
+      await fs.mkdir(folderPath);
+      await fs.appendFile(filePath, 'test');
 
-    it('handles a situation where there are no existing files in the directory correctly', async () => {
-      const readdirMock = jest
-        .spyOn(fs.promises, 'readdir')
-        .mockImplementation(() => [] as any);
-      const promptMock = jest.spyOn(readlineUtils, 'prompt');
-      await prepareWorkingDirectory();
-      expect(readdirMock).toHaveBeenCalledTimes(1);
-      expect(promptMock).toHaveBeenCalledTimes(0);
+      await expect(prepareWorkingDirectory('bar')).rejects.toThrow(
+        'Directory not empty: bar',
+      );
     });
   });
 
-  describe('correctDefaultArgs', () => {
-    it('should change default source file from index.js to index.ts when typescript is enabled', () => {
-      const mockArgv = {
-        dist: 'dist',
-        outfileName: 'bundle.js',
-        src: 'src/index.js',
-        port: 8081,
-        template: TemplateType.TypeScript,
-      } as unknown as Arguments;
-      expect(correctDefaultArgs(mockArgv)).toStrictEqual({
-        ...mockArgv,
-        src: 'src/index.ts',
+  describe('cloneTemplate', () => {
+    it('passes if the command is ran successfully', async () => {
+      const execSyncMock = jest
+        .spyOn(childProcess, 'execSync')
+        .mockImplementation(() => Buffer.from([]));
+
+      await cloneTemplate('foo');
+
+      expect(execSyncMock).toHaveBeenCalledTimes(1);
+      expect(execSyncMock).toHaveBeenCalledWith(
+        `git clone --depth=1 ${TEMPLATE_GIT_URL} foo`,
+        {
+          stdio: [2],
+        },
+      );
+    });
+
+    it('throws if the command fails', async () => {
+      const execSyncMock = jest
+        .spyOn(childProcess, 'execSync')
+        .mockImplementation(() => {
+          throw new Error('error message');
+        });
+
+      await expect(cloneTemplate('foo')).rejects.toThrow('error message');
+      expect(execSyncMock).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('isGitInstalled', () => {
+    it('returns true if git is installed', () => {
+      const execSyncMock = jest
+        .spyOn(childProcess, 'execSync')
+        .mockImplementation(() => Buffer.from([]));
+
+      const result = isGitInstalled();
+
+      expect(result).toStrictEqual(true);
+      expect(execSyncMock).toHaveBeenCalledTimes(1);
+      expect(execSyncMock).toHaveBeenCalledWith('git --version', {
+        stdio: 'ignore',
       });
     });
 
-    it('should not change custom source file name when typescript is enabled', () => {
-      const customFileName = 'src/foo.ts';
-      const mockArgv = {
-        dist: 'dist',
-        outfileName: 'bundle.js',
-        src: customFileName,
-        port: 8081,
-        template: TemplateType.TypeScript,
-      } as unknown as Arguments;
-      expect(correctDefaultArgs(mockArgv)).toStrictEqual({
-        ...mockArgv,
-        src: customFileName,
+    it('returns false if git is not installed', () => {
+      const execSyncMock = jest
+        .spyOn(childProcess, 'execSync')
+        .mockImplementation(() => {
+          throw new Error('error message');
+        });
+
+      const result = isGitInstalled();
+
+      expect(result).toStrictEqual(false);
+      expect(execSyncMock).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('isInGitRepository', () => {
+    it('returns true if the directory is a git repository', () => {
+      const execSyncMock = jest
+        .spyOn(childProcess, 'execSync')
+        .mockImplementation(() => Buffer.from([]));
+
+      const result = isInGitRepository('foo');
+
+      expect(result).toStrictEqual(true);
+      expect(execSyncMock).toHaveBeenCalledTimes(1);
+      expect(execSyncMock).toHaveBeenCalledWith(
+        'git rev-parse --is-inside-work-tree',
+        {
+          stdio: 'ignore',
+          cwd: pathUtils.resolve(__dirname, 'foo'),
+        },
+      );
+    });
+
+    it('returns false if the directory is not a git repository', () => {
+      const execSyncMock = jest
+        .spyOn(childProcess, 'execSync')
+        .mockImplementation(() => {
+          throw new Error('error message');
+        });
+
+      const result = isInGitRepository('foo');
+
+      expect(result).toStrictEqual(false);
+      expect(execSyncMock).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('gitInit', () => {
+    it('init a new repository', async () => {
+      const execSyncMock = jest
+        .spyOn(childProcess, 'execSync')
+        .mockImplementation(() => Buffer.from([]));
+
+      await gitInit('foo');
+
+      expect(execSyncMock).toHaveBeenCalledTimes(1);
+      expect(execSyncMock).toHaveBeenCalledWith('git init', {
+        stdio: 'ignore',
+        cwd: pathUtils.resolve(__dirname, 'foo'),
       });
+    });
+
+    it('throws an error if it fails to init a new repository', async () => {
+      const execSyncMock = jest
+        .spyOn(childProcess, 'execSync')
+        .mockImplementation(() => {
+          throw new Error('error message');
+        });
+
+      await expect(gitInit('foo')).rejects.toThrow('error message');
+      expect(execSyncMock).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('yarnInstall', () => {
+    it('run yarn and yarn install commands', async () => {
+      const execSyncMock = jest
+        .spyOn(childProcess, 'execSync')
+        .mockImplementation(() => Buffer.from([]));
+
+      await yarnInstall('foo');
+
+      expect(execSyncMock).toHaveBeenCalledTimes(1);
+      expect(execSyncMock).toHaveBeenCalledWith('yarn install', {
+        stdio: [0, 1, 2],
+        cwd: pathUtils.resolve(__dirname, 'foo'),
+      });
+    });
+
+    it('throws an error if it fails to run a command', async () => {
+      const execSyncMock = jest
+        .spyOn(childProcess, 'execSync')
+        .mockImplementation(() => {
+          throw new Error('error message');
+        });
+
+      await expect(yarnInstall('foo')).rejects.toThrow('error message');
+      expect(execSyncMock).toHaveBeenCalledTimes(1);
     });
   });
 });

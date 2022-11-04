@@ -4,26 +4,27 @@ import initModule from '.';
 
 describe('init module', () => {
   it('console logs if successful', async () => {
-    const mockArgv = { foo: 'bar' };
+    const chdirMock = jest.spyOn(process, 'chdir').mockImplementation(() => {
+      /* noop */
+    });
+    const mockArgv = { directory: 'foo', snapLocation: 'foo' };
     const initHandlerMock = jest
       .spyOn(initHandlerModule, 'initHandler')
       .mockImplementation(() => ({ ...(mockArgv as any) }));
     const buildMock = jest
       .spyOn(buildHandlerModule, 'build')
       .mockImplementation();
-    const updateShasumMock = jest
-      .spyOn(initHandlerModule, 'updateManifestShasum')
-      .mockImplementation(async () => undefined);
     jest.spyOn(console, 'log').mockImplementation();
 
     await initModule.handler({ ...(mockArgv as any) });
     expect(initHandlerMock).toHaveBeenCalledWith(mockArgv);
+    expect(chdirMock).toHaveBeenCalledTimes(1);
     expect(buildMock).toHaveBeenCalledWith({
-      foo: 'bar',
+      directory: 'foo',
+      snapLocation: 'foo',
       manifest: false,
       eval: true,
     });
-    expect(updateShasumMock).toHaveBeenCalledWith();
     expect(global.console.log).toHaveBeenCalledTimes(2);
   });
 });
