@@ -49,16 +49,16 @@ export async function initHandler(argv: YargsArgs) {
   const gitExists = isGitInstalled();
   if (!gitExists) {
     logError(
-      `Init Error: git is not installed. Please intall git to continue.`,
+      `Init Error: git is not installed. Please install git to continue.`,
     );
-    throw new Error('git is not installed');
+    throw new Error('Git is not installed.');
   }
 
   const directoryToUse = directory
     ? pathUtils.join(process.cwd(), directory)
     : process.cwd();
 
-  console.log(`Preparing ${directoryToUse} ...`);
+  console.log(`Preparing ${directoryToUse}...`);
 
   await prepareWorkingDirectory(directoryToUse);
 

@@ -56,7 +56,7 @@ export async function cloneTemplate(directory: string) {
 /**
  * Check if git is installed.
  *
- * @returns True if git is installed otherwise false.
+ * @returns True if git is installed, or false otherwise.
  */
 export function isGitInstalled() {
   try {
@@ -97,7 +97,7 @@ export async function gitInit(directory: string) {
       cwd: pathUtils.resolve(__dirname, directory),
     });
   } catch (err) {
-    logError('Init Error: Failed to init a new git repository', err);
+    logError('Init Error: Failed to init a new git repository.', err);
     throw err;
   }
 }
@@ -109,11 +109,6 @@ export async function gitInit(directory: string) {
  */
 export async function yarnInstall(directory: string) {
   try {
-    execSync('yarn', {
-      stdio: [0, 1, 2],
-      cwd: pathUtils.resolve(__dirname, directory),
-    });
-
     execSync('yarn install', {
       stdio: [0, 1, 2],
       cwd: pathUtils.resolve(__dirname, directory),

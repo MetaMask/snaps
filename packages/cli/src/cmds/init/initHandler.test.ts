@@ -206,7 +206,7 @@ describe('initialize', () => {
         .mockImplementation(() => false);
 
       await expect(initHandler({ ...getMockArgv() })).rejects.toThrow(
-        'git is not installed',
+        'Git is not installed.',
       );
 
       expect(isGitInstalledMock).toHaveBeenCalledTimes(1);

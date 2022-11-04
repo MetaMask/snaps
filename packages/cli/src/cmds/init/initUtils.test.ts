@@ -190,13 +190,8 @@ describe('initUtils', () => {
 
       await yarnInstall('foo');
 
-      expect(execSyncMock).toHaveBeenCalledTimes(2);
-      expect(execSyncMock).toHaveBeenNthCalledWith(1, 'yarn', {
-        stdio: [0, 1, 2],
-        cwd: pathUtils.resolve(__dirname, 'foo'),
-      });
-
-      expect(execSyncMock).toHaveBeenNthCalledWith(2, 'yarn install', {
+      expect(execSyncMock).toHaveBeenCalledTimes(1);
+      expect(execSyncMock).toHaveBeenCalledWith('yarn install', {
         stdio: [0, 1, 2],
         cwd: pathUtils.resolve(__dirname, 'foo'),
       });
