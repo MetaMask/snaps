@@ -6,6 +6,8 @@ import { logError } from '../../utils';
 export const TEMPLATE_GIT_URL =
   'https://github.com/MetaMask/template-snap-monorepo.git';
 
+export const SNAP_LOCATION = 'packages/snap/';
+
 /**
  * Checks if the destination folder exists and if it's empty. Otherwise create it.
  *
@@ -118,5 +120,3 @@ export async function yarnInstall(directory: string) {
     throw err;
   }
 }
-
-export const SNAP_LOCATION = 'packages/snap/';
