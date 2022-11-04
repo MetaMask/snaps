@@ -3198,7 +3198,6 @@ __metadata:
     rimraf: ^3.0.2
     serve-handler: ^6.1.5
     ses: ^0.17.0
-    slash: ^3.0.0
     superstruct: ^0.16.7
     ts-jest: ^29.0.0
     ts-node: ^10.7.0
@@ -12253,7 +12252,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"memfs@npm:^3.4.1, memfs@npm:^3.4.10, memfs@npm:^3.4.7":
+"memfs@npm:^3.4.1, memfs@npm:^3.4.7":
+  version: 3.4.7
+  resolution: "memfs@npm:3.4.7"
+  dependencies:
+    fs-monkey: ^1.0.3
+  checksum: fab88266dc576dc4999e38bdf531d703fb798affac2e0dd3fc17470878486844027b2766008ba80c0103b443f52cf9068a5c00f4e1ecf04106f4b29c11855822
+  languageName: node
+  linkType: hard
+
+"memfs@npm:^3.4.10":
   version: 3.4.10
   resolution: "memfs@npm:3.4.10"
   dependencies:
