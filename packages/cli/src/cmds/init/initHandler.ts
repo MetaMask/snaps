@@ -72,10 +72,6 @@ export async function initHandler(argv: YargsArgs) {
     });
   } catch (err) {
     logError('Init Error: Failed to create template, cleaning...');
-    fs.rm(directoryToUse, {
-      force: true,
-      recursive: true,
-    });
     throw err;
   }
 
