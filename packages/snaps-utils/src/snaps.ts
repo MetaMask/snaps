@@ -2,12 +2,8 @@ import { Json } from '@metamask/utils';
 import { sha256 } from '@noble/hashes/sha256';
 import { base64 } from '@scure/base';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
-import {
-  SnapId,
-  SnapIdPrefixes,
-  SnapValidationFailureReason,
-  SnapManifest,
-} from './types';
+import { SnapManifest, SnapPermissions } from './manifest/validation';
+import { SnapId, SnapIdPrefixes, SnapValidationFailureReason } from './types';
 
 export const LOCALHOST_HOSTNAMES = new Set(['localhost', '127.0.0.1', '::1']);
 export const SNAP_PREFIX = 'wallet_snap_';
@@ -26,6 +22,11 @@ export const SNAP_PREFIX_REGEX = new RegExp(`^${SNAP_PREFIX}`, 'u');
 export const PROPOSED_NAME_REGEX =
   /^(?:[A-Za-z0-9-_]+( [A-Za-z0-9-_]+)*)|(?:(?:@[A-Za-z0-9-*~][A-Za-z0-9-*._~]*\/)?[A-Za-z0-9-~][A-Za-z0-9-._~]*)$/u;
 
+/**
+ * wallet_enable / wallet_installSnaps permission typing.
+ *
+ * @deprecated This type is confusing and not descriptive, people confused it with typing initialPermissions, remove when removing wallet_enable.
+ */
 export type RequestedSnapPermissions = {
   [permission: string]: Record<string, Json>;
 };
@@ -87,7 +88,7 @@ export type Snap = {
    * The initial permissions of the Snap, which will be requested when it is
    * installed.
    */
-  initialPermissions: RequestedSnapPermissions;
+  initialPermissions: SnapPermissions;
 
   /**
    * The Snap's manifest file.

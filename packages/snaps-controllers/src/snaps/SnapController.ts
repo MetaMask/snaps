@@ -8,6 +8,7 @@ import {
   GrantPermissions,
   HasPermission,
   HasPermissions,
+  PermissionConstraint,
   PermissionsRequest,
   RestrictedControllerMessenger,
   RevokeAllPermissions,
@@ -17,54 +18,56 @@ import {
   ValidPermission,
 } from '@metamask/controllers';
 import {
+  assertIsSnapManifest,
+  BlockedSnapInfo,
   DEFAULT_ENDOWMENTS,
   DEFAULT_REQUESTED_SNAP_VERSION,
+  fromEntries,
   getSnapPermissionName,
   getSnapPrefix,
   gtVersion,
+  InstallSnapsResult,
   isValidSnapVersionRange,
   LOCALHOST_HOSTNAMES,
   NpmSnapFileNames,
+  PersistedSnap,
+  ProcessSnapResult,
+  RequestedSnapPermissions,
   resolveVersion,
   satisfiesVersionRange,
+  Snap,
   SnapId,
   SnapIdPrefixes,
   SnapManifest,
+  SnapPermissions,
   SnapRpcHook,
   SnapRpcHookArgs,
+  SnapStatus,
+  SnapStatusEvents,
   SNAP_PREFIX,
-  ValidatedSnapId,
-  validateSnapId,
-  validateSnapShasum,
-  TruncatedSnapFields,
-  Snap,
+  SNAP_PREFIX_REGEX,
   StatusContext,
   StatusEvents,
   StatusStates,
-  BlockedSnapInfo,
   TruncatedSnap,
-  InstallSnapsResult,
-  RequestedSnapPermissions,
-  ProcessSnapResult,
-  SNAP_PREFIX_REGEX,
-  fromEntries,
-  SnapStatus,
-  SnapStatusEvents,
-  assertIsSnapManifest,
-  PersistedSnap,
+  TruncatedSnapFields,
+  ValidatedSnapId,
+  validateSnapId,
+  validateSnapShasum,
 } from '@metamask/snaps-utils';
 import {
+  assert,
+  assertExhaustive,
   Duration,
   hasProperty,
   inMilliseconds,
   isNonEmptyArray,
   Json,
   timeSince,
-  assert,
-  assertExhaustive,
 } from '@metamask/utils';
 import { createMachine, interpret, StateMachine } from '@xstate/fsm';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
+
 import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
 
@@ -2126,8 +2129,11 @@ export class SnapController extends BaseController<
    * @private
    */
   private processSnapPermissions(
-    initialPermissions: RequestedSnapPermissions,
-  ): RequestedSnapPermissions {
+    initialPermissions: SnapPermissions,
+  ): Record<
+    string,
+    Pick<PermissionConstraint, 'caveats'> | Record<string, never>
+  > {
     return fromEntries(
       Object.entries(initialPermissions).map(([initialPermission, value]) => {
         if (hasProperty(caveatMappers, initialPermission)) {
@@ -2139,7 +2145,8 @@ export class SnapController extends BaseController<
           ];
         }
 
-        return [initialPermission, value];
+        assert(Object.keys(value).length === 0);
+        return [initialPermission, {}];
       }),
     );
   }

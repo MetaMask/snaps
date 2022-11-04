@@ -1,18 +1,19 @@
 import { promises as fs } from 'fs';
-import { join } from 'path';
 import * as path from 'path';
+import { join } from 'path';
 import {
-  readSnapJsonFile,
+  getOutfilePath,
   isDirectory,
   isFile,
   readJsonFile,
-  getOutfilePath,
-  validateOutfileName,
-  validateFilePath,
+  readSnapJsonFile,
   validateDirPath,
+  validateFilePath,
+  validateOutfileName,
 } from './fs';
-import { NpmSnapFileNames, SnapManifest } from './types';
+import { SnapManifest } from './manifest/validation';
 import { DEFAULT_SNAP_BUNDLE, getSnapManifest } from './test-utils';
+import { NpmSnapFileNames } from './types';
 
 jest.mock('fs');
 

@@ -1,5 +1,6 @@
 import { promises as filesystem } from 'fs';
 import path from 'path';
+
 import { hasProperty } from '@metamask/utils';
 import { Arguments } from 'yargs';
 
@@ -102,10 +103,17 @@ export function sanitizeInputs(argv: Arguments) {
  * @param msg - The error message.
  * @param err - The original error.
  */
-export function logError(msg: string, err?: Error): void {
-  console.error(msg);
+export function logError(msg: string | null, err?: Error): void {
+  if (msg !== null) {
+    console.error(msg);
+  }
+
   if (err && global.snaps.verboseErrors) {
     console.error(err);
+  }
+
+  if (msg === null && (!err || (err && !global.snaps.verboseErrors))) {
+    console.error('Unknown error.');
   }
 }
 

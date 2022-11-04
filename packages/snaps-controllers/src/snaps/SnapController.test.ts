@@ -1,4 +1,5 @@
 import { Duplex } from 'stream';
+
 import passworder from '@metamask/browser-passworder';
 import {
   Caveat,
@@ -9,30 +10,27 @@ import {
 import {
   DEFAULT_ENDOWMENTS,
   getSnapSourceShasum,
-  SnapManifest,
   HandlerType,
-  SnapStatus,
   SnapCaveatType,
 } from '@metamask/snaps-utils';
+import {
+  DEFAULT_SNAP_BUNDLE,
+  getMockSnapData,
+  getPersistedSnapObject,
+  getSnapManifest,
+  getSnapObject,
+  getTruncatedSnap,
+  MOCK_LOCAL_SNAP_ID,
+  MOCK_ORIGIN,
+  MOCK_SNAP_ID,
+} from '@metamask/snaps-utils/test-utils';
 import { Crypto } from '@peculiar/webcrypto';
 import { EthereumRpcError, ethErrors, serializeError } from 'eth-rpc-errors';
 import fetchMock from 'jest-fetch-mock';
 import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import pump from 'pump';
-import {
-  getSnapManifest,
-  getPersistedSnapObject,
-  getSnapObject,
-  MOCK_ORIGIN,
-  MOCK_SNAP_ID,
-  getTruncatedSnap,
-  getMockSnapData,
-  DEFAULT_SNAP_BUNDLE,
-  MOCK_LOCAL_SNAP_ID,
-} from '@metamask/snaps-utils/test-utils';
 import { NodeThreadExecutionService, setupMultiplex } from '../services';
-import { delay } from '../utils';
 import {
   ExecutionEnvironmentStub,
   getControllerMessenger,
@@ -43,11 +41,12 @@ import {
   getSnapControllerOptions,
   getSnapControllerWithEES,
   getSnapControllerWithEESOptions,
-  PERSISTED_MOCK_KEYRING_SNAP,
   MOCK_NAMESPACES,
+  PERSISTED_MOCK_KEYRING_SNAP,
 } from '../test-utils';
+import { delay } from '../utils';
 import { SnapEndowments } from './endowments';
-import { SNAP_APPROVAL_UPDATE, SnapControllerState } from './SnapController';
+import { SnapControllerState, SNAP_APPROVAL_UPDATE } from './SnapController';
 
 const { subtle } = new Crypto();
 Object.defineProperty(window, 'crypto', {
@@ -1952,7 +1951,7 @@ describe('SnapController', () => {
     it('maps permission caveats to the proper format', async () => {
       const initialPermissions = {
         snap_getBip32Entropy: [
-          { path: ['m', "44'", "60'"], curve: 'secp256k1' },
+          { path: ['m', "44'", "60'"], curve: 'secp256k1' as const },
         ],
       };
 
@@ -2102,7 +2101,7 @@ describe('SnapController', () => {
     it('maps permission caveats to the proper format when updating snaps', async () => {
       const initialPermissions = {
         snap_getBip32Entropy: [
-          { path: ['m', "44'", "60'"], curve: 'secp256k1' },
+          { path: ['m', "44'", "60'"], curve: 'secp256k1' as const },
         ],
       };
 
