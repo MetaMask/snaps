@@ -190,7 +190,7 @@ describe('initialize', () => {
         .mockImplementation(() => false);
 
       await expect(initHandler({ ...getMockArgv() })).rejects.toThrow(
-        'outdated node version',
+        'Outdated node version.',
       );
 
       expect(satisfiesVersionRangeMock).toHaveBeenCalledTimes(1);
