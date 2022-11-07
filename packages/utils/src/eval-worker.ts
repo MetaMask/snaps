@@ -54,7 +54,7 @@ const invalidExports = Object.keys(snapModule.exports).filter(
 );
 
 if (invalidExports.length > 0) {
-  console.warn(`Invalid exports detected:\n${invalidExports.join('\n')}`);
+  console.warn(`Invalid snap exports detected:\n${invalidExports.join('\n')}`);
 }
 
 setTimeout(() => process.exit(0), 1000); // Hack to ensure worker exits
