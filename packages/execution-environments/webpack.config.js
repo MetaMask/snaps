@@ -57,7 +57,19 @@ module.exports = (_, argv) => {
       rules: [
         {
           test: /\.tsx?$/u,
-          use: 'ts-loader',
+          use: [
+            {
+              loader: 'ts-loader',
+              options: {
+                configFile: 'tsconfig.build.json',
+                compilerOptions: {
+                  paths: {
+                    "@metamask/*": ["../*"]
+                  }
+                }
+              }
+            }
+          ],
           exclude: /node_modules/u,
         },
       ],
@@ -104,7 +116,19 @@ module.exports = (_, argv) => {
       rules: [
         {
           test: /\.tsx?$/u,
-          use: 'ts-loader',
+          use: [
+            {
+              loader: 'ts-loader',
+              options: {
+                configFile: 'tsconfig.build.json',
+                compilerOptions: {
+                  paths: {
+                    "@metamask/*": ["../*"]
+                  }
+                }
+              }
+            }
+          ],
           exclude: /node_modules/u,
         },
       ],
@@ -159,7 +183,19 @@ module.exports = (_, argv) => {
       rules: [
         {
           test: /\.tsx?$/u,
-          use: 'ts-loader',
+          use: [
+            {
+              loader: 'ts-loader',
+              options: {
+                configFile: 'tsconfig.build.json',
+                compilerOptions: {
+                  paths: {
+                    "@metamask/*": ["../*"]
+                  }
+                }
+              }
+            }
+          ],
           exclude: /node_modules/u,
         },
       ],
