@@ -10,13 +10,12 @@ import {
   getTruncatedSnap,
 } from '@metamask/snap-utils/test-utils';
 import { Duration, inMilliseconds } from '@metamask/utils';
-import { parseExpression } from 'cron-parser';
 import { SnapEndowments } from '../snaps';
 import {
   getRestrictedCronjobControllerMessenger,
   getRootCronjobControllerMessenger,
 } from '../test-utils';
-import { CronjobController, DAILY_TIMEOUT } from './CronjobController';
+import { CronjobController } from './CronjobController';
 
 const MOCK_CRONJOB_PERMISSION = {
   caveats: [
@@ -78,8 +77,12 @@ const MOCK_CRONJOB_SINGLE_JOB_PERMISSION = {
 };
 
 describe('CronjobController', () => {
-  beforeAll(() => {
-    jest.useFakeTimers();
+  beforeEach(() => {
+    jest.useFakeTimers().setSystemTime(new Date('2022-01-01'));
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
   });
 
   it('registers a cronjob', async () => {
@@ -223,19 +226,7 @@ describe('CronjobController', () => {
   });
 
   it('does not schedule cronjob that is too far in the future', async () => {
-    // Ensure that Cronjob will not yet be scheduled if it reaches DAILY_TIMEOUT
-    // Make expression so the schedule is on some complex date
-    let cronExpression = '59 23 29 2 *'; // At 11:59pm on February 29th
-    // But also ensure that it's not very close so the test doesn't fail
-    const parsed = parseExpression(cronExpression);
-    const next = parsed.next();
-    const now = new Date();
-    const ms = next.getTime() - now.getTime();
-    // So, if the scheduled date is within the range of a daily timeout,
-    // jump over to some other far date by redefining cron expression
-    if (ms < DAILY_TIMEOUT) {
-      cronExpression = '59 23 1 1 *'; // At 11:59pm on January 1st
-    }
+    const cronExpression = '59 23 29 2 *'; // At 11:59pm on February 29th
 
     const MOCK_TOO_FAR_CRONJOB_PERMISSION = deepClone(
       MOCK_CRONJOB_SINGLE_JOB_PERMISSION,

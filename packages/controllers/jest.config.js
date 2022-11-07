@@ -11,7 +11,7 @@ module.exports = {
       branches: 84.8,
       functions: 95.8,
       lines: 94.94,
-      statements: 95.04,
+      statements: 95.05,
     },
   },
   projects: [
@@ -35,6 +35,5 @@ module.exports = {
       testRegex: ['\\.test\\.(ts|js)$'],
     },
   ],
-  silent: true,
   testTimeout: 5000,
 };
