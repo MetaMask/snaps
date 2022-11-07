@@ -35,6 +35,5 @@ module.exports = {
       testRegex: ['\\.test\\.(ts|js)$'],
     },
   ],
-  silent: true,
   testTimeout: 5000,
 };
