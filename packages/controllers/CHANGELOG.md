@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.23.0]
+### Added
+- Add snap cronjobs ([#651](https://github.com/MetaMask/snaps-monorepo/pull/651), [#890](https://github.com/MetaMask/snaps-monorepo/pull/890))
+
+### Changed
+- **BREAKING:** Make `SnapController.add()` private ([#883](https://github.com/MetaMask/snaps-monorepo/pull/883))
+- **BREAKING:** Stop including snap state in SnapController state ([#876](https://github.com/MetaMask/snaps-monorepo/pull/876))
+- **BREAKING:** Stop including source code in SnapController state ([#861](https://github.com/MetaMask/snaps-monorepo/pull/861))
+- Improve keyring endowment error messaging ([#884](https://github.com/MetaMask/snaps-monorepo/pull/884))
+- Replace JSON schema validation with structs ([#862](https://github.com/MetaMask/snaps-monorepo/pull/862))
+
 ## [0.22.3]
 ### Changed
 - No changes this release.
@@ -372,7 +383,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.3...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.23.0...HEAD
+[0.23.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.3...v0.23.0
 [0.22.3]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.2...v0.22.3
 [0.22.2]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.1...v0.22.2
 [0.22.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.0...v0.22.1

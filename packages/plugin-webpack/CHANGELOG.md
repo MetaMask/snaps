@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.23.0]
+### Fixed
+- Fix Webpack plugin issue with existing files ([#858](https://github.com/MetaMask/snaps-monorepo/pull/858))
+
 ## [0.22.3]
 ### Changed
 - No changes this release.
@@ -71,7 +75,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release ([#420](https://github.com/MetaMask/snaps-monorepo/pull/420))
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.3...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.23.0...HEAD
+[0.23.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.3...v0.23.0
 [0.22.3]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.2...v0.22.3
 [0.22.2]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.1...v0.22.2
 [0.22.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.0...v0.22.1

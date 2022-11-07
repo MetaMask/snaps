@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.23.0]
+### Added
+- Add snap cronjobs ([#651](https://github.com/MetaMask/snaps-monorepo/pull/651))
+
+### Changed
+- **BREAKING:** Replace Buffer with Typed Arrays ([#878](https://github.com/MetaMask/snaps-monorepo/pull/878))
+- Improve keyring endowment error messaging ([#884](https://github.com/MetaMask/snaps-monorepo/pull/884))
+- Replace JSON schema validation with structs ([#862](https://github.com/MetaMask/snaps-monorepo/pull/862))
+
+### Removed
+- **BREAKING:** Stop including source code in SnapController state ([#861](https://github.com/MetaMask/snaps-monorepo/pull/861))
+
 ## [0.22.3]
 ### Fixed
 - Make @babel/types a regular dependency ([#852](https://github.com/MetaMask/snaps-monorepo/pull/852))
@@ -81,7 +93,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release ([#410](https://github.com/MetaMask/snaps-monorepo/pull/410), [#421](https://github.com/MetaMask/snaps-monorepo/pull/421))
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.3...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.23.0...HEAD
+[0.23.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.3...v0.23.0
 [0.22.3]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.2...v0.22.3
 [0.22.2]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.1...v0.22.2
 [0.22.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.0...v0.22.1
