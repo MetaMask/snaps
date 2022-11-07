@@ -52,6 +52,7 @@ jobs:
           key: yarn-cache-${{ runner.os }}-${{ needs.prepare.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}
       - run: yarn --immutable
       - run: yarn build
+      - run: yarn workspace @metamask/snap-controllers run test:ci
       - name: Require clean working directory
         shell: bash
         run: |
@@ -113,7 +114,7 @@ jobs:
           path: ${{ needs.prepare.outputs.YARN_CACHE_DIR }}
           key: yarn-cache-${{ runner.os }}-${{ needs.prepare.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}
       - run: yarn --immutable
-      - run: yarn test:ci
+      - run: yarn workspaces foreach --parallel --verbose --exclude @metamask/snap-controllers --exclude root run test:ci
       - name: CodeCov
         uses: codecov/codecov-action@f32b3a3741e1053eb607407145bc9619351dc93b
       - name: Require clean working directory
