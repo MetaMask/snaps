@@ -3,7 +3,7 @@ import 'ses/lockdown';
 
 import { readFileSync } from 'fs';
 import { generateMockEndowments } from './mock';
-import { SNAP_EXPORT_NAMES } from './types';
+import { HandlerType, SNAP_EXPORT_NAMES } from './types';
 
 declare let lockdown: any, Compartment: any;
 
@@ -50,8 +50,7 @@ new Compartment({
 }).evaluate(readFileSync(snapFilePath, 'utf8'));
 
 const invalidExports = Object.keys(snapModule.exports).filter(
-  (snapExport) =>
-    !SNAP_EXPORT_NAMES.some((exportName) => snapExport === exportName),
+  (snapExport) => !SNAP_EXPORT_NAMES.includes(snapExport as HandlerType),
 );
 
 if (invalidExports.length > 0) {
