@@ -18,16 +18,15 @@ import {
 } from './common/snapInstallation';
 
 /**
- * `wallet_installSnaps` installs the requested Snaps, if they are permitted.
+ * `wallet_requestSnaps` installs the requested Snaps and requests permission to use them if necessary.
  */
-export const installSnapsHandler: PermittedHandlerExport<
+export const requestSnapsHandler: PermittedHandlerExport<
   InstallSnapsHooks,
   RequestedPermissions,
   InstallSnapsResult
 > = {
-  // TODO: Rename to wallet_requestSnaps?
-  methodNames: ['wallet_installSnaps'],
-  implementation: installSnapsImplementation,
+  methodNames: ['wallet_requestSnaps'],
+  implementation: requestSnapsImplementation,
   hookNames: {
     installSnaps: true,
     requestPermissions: true,
@@ -35,7 +34,7 @@ export const installSnapsHandler: PermittedHandlerExport<
   },
 };
 
-export type InstallSnapsHooks = {
+export type RequestSnapsHooks = {
   /**
    * Installs the requested snaps if they are permitted.
    */
@@ -88,7 +87,7 @@ function hasPermissions(
 }
 
 /**
- * The `wallet_installSnaps` method implementation.
+ * The `wallet_requestSnaps` method implementation.
  * Tries to install the requested snaps and adds them to the JSON-RPC response.
  *
  * @param req - The JSON-RPC request object.
@@ -104,7 +103,7 @@ function hasPermissions(
  * @returns A promise that resolves once the JSON-RPC response has been modified.
  * @throws If the params are invalid.
  */
-async function installSnapsImplementation(
+async function requestSnapsImplementation(
   req: JsonRpcRequest<RequestedPermissions>,
   res: PendingJsonRpcResponse<InstallSnapsResult>,
   _next: unknown,

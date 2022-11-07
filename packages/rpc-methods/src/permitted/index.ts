@@ -1,15 +1,15 @@
 import { getAppKeyHandler, GetAppKeyHooks } from './getAppKey';
 import { getSnapsHandler, GetSnapsHooks } from './getSnaps';
-import { installSnapsHandler, InstallSnapsHooks } from './installSnaps';
+import { requestSnapsHandler, RequestSnapsHooks } from './requestSnaps';
 import { invokeSnapSugarHandler } from './invokeSnapSugar';
 
 export type PermittedRpcMethodHooks = GetAppKeyHooks &
   GetSnapsHooks &
-  InstallSnapsHooks;
+  RequestSnapsHooks;
 
 export const handlers = [
   getAppKeyHandler,
   getSnapsHandler,
-  installSnapsHandler,
+  requestSnapsHandler,
   invokeSnapSugarHandler,
 ];

@@ -4,12 +4,12 @@ import {
 } from '@metamask/snap-utils/test-utils';
 import { getSnapPermissionName } from '@metamask/snap-utils';
 import { JsonRpcEngine } from 'json-rpc-engine';
-import { installSnapsHandler } from './installSnaps';
+import { requestSnapsHandler } from './requestSnaps';
 
-describe('installSnapsHandler', () => {
+describe('requestSnapsHandler', () => {
   it('has the expected shape', () => {
-    expect(installSnapsHandler).toMatchObject({
-      methodNames: ['wallet_installSnaps'],
+    expect(requestSnapsHandler).toMatchObject({
+      methodNames: ['wallet_requestSnaps'],
       implementation: expect.any(Function),
       hookNames: {
         installSnaps: true,
@@ -29,7 +29,7 @@ describe('implementation', () => {
     } as any);
 
   it('requests permissions if needed', async () => {
-    const { implementation } = installSnapsHandler;
+    const { implementation } = requestSnapsHandler;
 
     const hooks = getMockHooks();
 
@@ -75,7 +75,7 @@ describe('implementation', () => {
   });
 
   it('doesnt request permissions if already present', async () => {
-    const { implementation } = installSnapsHandler;
+    const { implementation } = requestSnapsHandler;
 
     const hooks = getMockHooks();
 
