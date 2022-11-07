@@ -125,6 +125,7 @@ jobs:
           fi
   platform-compatibility-prepare:
     name: Platform Compatibility Prepare
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [macOS-latest, windows-latest]
