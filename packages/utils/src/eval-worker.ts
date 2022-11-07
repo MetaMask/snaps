@@ -3,8 +3,7 @@ import 'ses/lockdown';
 
 import { readFileSync } from 'fs';
 import { generateMockEndowments } from './mock';
-
-const allowedSnapExports = ['onRpcRequest', 'onTransaction'];
+import { SNAP_EXPORT_NAMES } from './types';
 
 declare let lockdown: any, Compartment: any;
 
@@ -52,7 +51,7 @@ new Compartment({
 
 const invalidExports = Object.keys(snapModule.exports).filter(
   (snapExport) =>
-    !allowedSnapExports.some((allowedExport) => snapExport === allowedExport),
+    !SNAP_EXPORT_NAMES.some((exportName) => snapExport === exportName),
 );
 
 if (invalidExports.length) {
