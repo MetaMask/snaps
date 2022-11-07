@@ -54,6 +54,29 @@ const MOCK_CRONJOB_PERMISSION = {
   parentCapability: SnapEndowments.Cronjob,
 };
 
+const MOCK_CRONJOB_SINGLE_JOB_PERMISSION = {
+  caveats: [
+    {
+      type: SnapCaveatType.SnapCronjob,
+      value: {
+        jobs: [
+          {
+            expression: '59 6 * * *',
+            request: {
+              method: 'exampleMethod',
+              params: ['p1'],
+            },
+          },
+        ],
+      },
+    },
+  ],
+  date: 1664187844588,
+  id: 'izn0WGUO8cvq_jqvLQuQP',
+  invoker: MOCK_ORIGIN,
+  parentCapability: SnapEndowments.Cronjob,
+};
+
 describe('CronjobController', () => {
   beforeAll(() => {
     jest.useFakeTimers();
@@ -158,7 +181,9 @@ describe('CronjobController', () => {
         if (method === 'SnapController:getAll') {
           return [getTruncatedSnap()];
         } else if (method === 'PermissionController:getPermissions') {
-          return { [SnapEndowments.Cronjob]: MOCK_CRONJOB_PERMISSION } as any;
+          return {
+            [SnapEndowments.Cronjob]: MOCK_CRONJOB_SINGLE_JOB_PERMISSION,
+          } as any;
         }
         return false;
       });
@@ -181,15 +206,14 @@ describe('CronjobController', () => {
 
     jest.advanceTimersByTime(inMilliseconds(24, Duration.Hour));
 
-    expect(callActionMock).toHaveBeenNthCalledWith(
-      5,
+    expect(callActionMock).toHaveBeenCalledWith(
       'SnapController:handleRequest',
       {
         snapId: MOCK_SNAP_ID,
         origin: '',
         handler: HandlerType.OnCronjob,
         request: {
-          method: 'exampleMethodOne',
+          method: 'exampleMethod',
           params: ['p1'],
         },
       },
@@ -213,13 +237,15 @@ describe('CronjobController', () => {
       cronExpression = '59 23 1 1 *'; // At 11:59pm on January 1st
     }
 
-    const MOCK_TOO_FAR_CRONJOB_PERMISSION = deepClone(MOCK_CRONJOB_PERMISSION);
+    const MOCK_TOO_FAR_CRONJOB_PERMISSION = deepClone(
+      MOCK_CRONJOB_SINGLE_JOB_PERMISSION,
+    );
     MOCK_TOO_FAR_CRONJOB_PERMISSION.caveats[0].value = {
       jobs: [
         {
           expression: cronExpression,
           request: {
-            method: 'exampleMethodOne',
+            method: 'exampleMethod',
             params: ['p1'],
           },
         },
@@ -262,7 +288,7 @@ describe('CronjobController', () => {
         origin: '',
         handler: HandlerType.OnCronjob,
         request: {
-          method: 'exampleMethodOne',
+          method: 'exampleMethod',
           params: ['p1'],
         },
       },
