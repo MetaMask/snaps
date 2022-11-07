@@ -32,7 +32,7 @@
   "dependencies": {
     "@metamask/object-multiplex": "^1.2.0",
     "@metamask/post-message-stream": "^6.0.0",
-    "@metamask/providers": "^9.0.0",
+    "@metamask/providers": "^10.2.0",
     "@metamask/snap-types": "^0.23.0",
     "@metamask/snap-utils": "^0.23.0",
     "@metamask/utils": "^3.3.0",
