@@ -126,21 +126,26 @@ jobs:
   platform-compatibility-build:
     name: Platform Compatibility Build
     runs-on: ${{ matrix.os }}
-    needs:
-      - prepare
     strategy:
       matrix:
         os: [macOS-latest, windows-latest]
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
-      - name: Restore Yarn dependencies
+      - name: Get Yarn cache directory
+        run: echo "YARN_CACHE_DIR=$(yarn config get cacheFolder)" >> "$GITHUB_OUTPUT"
+        id: yarn-cache-dir
+      - name: Get Yarn version
+        run: echo "YARN_VERSION=$(yarn --version)" >> "$GITHUB_OUTPUT"
+        id: yarn-version
+      - name: Cache Yarn dependencies
         uses: actions/cache@v3
         with:
-          path: ${{ needs.prepare.outputs.YARN_CACHE_DIR }}
-          key: yarn-cache-${{ runner.os }}-${{ needs.prepare.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}
+          path: ${{ steps.yarn-cache-dir.outputs.YARN_CACHE_DIR }}
+          key: yarn-cache-${{ runner.os }}-${{ steps.yarn-version.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}
       - run: yarn --immutable
       - name: Build @metamask/snaps-cli and its dependents only
         shell: bash
@@ -161,21 +166,26 @@ jobs:
   platform-compatibility-test:
     name: Platform Compatibility Test
     runs-on: ${{ matrix.os }}
-    needs:
-      - prepare
     strategy:
       matrix:
         os: [macOS-latest, windows-latest]
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
-      - name: Restore Yarn dependencies
+      - name: Get Yarn cache directory
+        run: echo "YARN_CACHE_DIR=$(yarn config get cacheFolder)" >> "$GITHUB_OUTPUT"
+        id: yarn-cache-dir
+      - name: Get Yarn version
+        run: echo "YARN_VERSION=$(yarn --version)" >> "$GITHUB_OUTPUT"
+        id: yarn-version
+      - name: Cache Yarn dependencies
         uses: actions/cache@v3
         with:
-          path: ${{ needs.prepare.outputs.YARN_CACHE_DIR }}
-          key: yarn-cache-${{ runner.os }}-${{ needs.prepare.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}
+          path: ${{ steps.yarn-cache-dir.outputs.YARN_CACHE_DIR }}
+          key: yarn-cache-${{ runner.os }}-${{ steps.yarn-version.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}
       - run: yarn --immutable
       - run: yarn workspace @metamask/snaps-cli run test
   check-workflows:
