@@ -2769,6 +2769,7 @@ __metadata:
     "@types/node": ^17.0.36
     concat: ^1.0.3
     copy-webpack-plugin: ^10.2.4
+    deepmerge: ^4.2.2
     eslint: ^7.30.0
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
@@ -2835,6 +2836,7 @@ __metadata:
     "@metamask/snap-utils": ^0.23.0
     "@metamask/utils": ^3.3.0
     "@types/jest": ^27.5.1
+    deepmerge: ^4.2.2
     eslint: ^7.30.0
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
@@ -2918,6 +2920,7 @@ __metadata:
     "@metamask/snap-utils": ^0.23.0
     "@rollup/plugin-virtual": ^2.1.0
     "@types/jest": ^27.5.1
+    deepmerge: ^4.2.2
     eslint: ^7.30.0
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
@@ -2953,6 +2956,7 @@ __metadata:
     "@metamask/types": ^1.1.0
     "@metamask/utils": ^3.3.0
     "@types/node": ^14.14.25
+    deepmerge: ^4.2.2
     eslint: ^7.30.0
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
@@ -3010,6 +3014,7 @@ __metadata:
     "@xstate/fsm": ^2.0.0
     concat-stream: ^2.0.0
     cron-parser: ^4.5.0
+    deepmerge: ^4.2.2
     eslint: ^7.30.0
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
@@ -3089,6 +3094,7 @@ __metadata:
     "@types/jest": ^27.5.1
     "@types/semver": ^7.3.10
     cron-parser: ^4.5.0
+    deepmerge: ^4.2.2
     eslint: ^7.30.0
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
@@ -3130,6 +3136,7 @@ __metadata:
     browserify: ^17.0.0
     concat-stream: ^2.0.0
     convert-source-map: ^1.8.0
+    deepmerge: ^4.2.2
     eslint: ^7.30.0
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
@@ -3226,6 +3233,7 @@ __metadata:
     "@metamask/utils": ^3.3.0
     "@types/jest": ^27.5.1
     "@types/webpack-sources": ^3.2.0
+    deepmerge: ^4.2.2
     eslint: ^7.30.0
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4

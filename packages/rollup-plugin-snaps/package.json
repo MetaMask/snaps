@@ -40,6 +40,7 @@
     "@metamask/eslint-config-typescript": "^9.0.1",
     "@rollup/plugin-virtual": "^2.1.0",
     "@types/jest": "^27.5.1",
+    "deepmerge": "^4.2.2",
     "eslint": "^7.30.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.23.4",

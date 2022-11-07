@@ -1,11 +1,7 @@
-module.exports = {
-  collectCoverage: true,
-  collectCoverageFrom: [
-    '<rootDir>/**/src/**/*.ts',
-    '!<rootDir>/**/src/**/*.test.ts',
-  ],
-  coverageReporters: ['clover', 'json', 'lcov', 'text', 'json-summary'],
-  coveragePathIgnorePatterns: ['/node_modules/', '/mocks/', '/test/'],
+const deepmerge = require('deepmerge');
+const baseConfig = require('../../jest.config.base');
+
+module.exports = deepmerge(baseConfig, {
   coverageThreshold: {
     global: {
       branches: 84.8,
@@ -15,8 +11,7 @@ module.exports = {
     },
   },
   projects: [
-    {
-      preset: 'ts-jest',
+    deepmerge(baseConfig, {
       testMatch: ['<rootDir>/src/services/iframe/*.test.ts'],
       testEnvironment: '<rootDir>/jest.environment.js',
       testEnvironmentOptions: {
@@ -24,16 +19,15 @@ module.exports = {
         runScripts: 'dangerously',
         customExportConditions: ['node', 'node-addons'],
       },
-    },
-    {
-      preset: 'ts-jest',
+    }),
+    deepmerge(baseConfig, {
       testPathIgnorePatterns: ['<rootDir>/src/services/iframe/*'],
       testEnvironment: '<rootDir>/jest.environment.js',
       testEnvironmentOptions: {
         customExportConditions: ['node', 'node-addons'],
       },
       testRegex: ['\\.test\\.(ts|js)$'],
-    },
+    }),
   ],
   testTimeout: 5000,
-};
+});
