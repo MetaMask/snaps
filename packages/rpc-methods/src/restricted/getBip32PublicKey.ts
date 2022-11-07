@@ -160,7 +160,7 @@ export function getBip32PublicKeyImplementation({
     });
 
     if (params.compressed) {
-      return node.compressedPublicKeyBuffer.toString('hex');
+      return node.compressedPublicKey;
     }
 
     return node.publicKey;

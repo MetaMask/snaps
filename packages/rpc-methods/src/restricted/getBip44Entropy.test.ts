@@ -230,15 +230,15 @@ describe('getBip44EntropyImplementation', () => {
         }),
       ).toMatchInlineSnapshot(`
         {
-          "chainCode": "50ccfa58a885b48b5eed09486b3948e8454f34856fb81da5d7b8519d7997abd1",
+          "chainCode": "0x50ccfa58a885b48b5eed09486b3948e8454f34856fb81da5d7b8519d7997abd1",
           "coin_type": 1,
           "depth": 2,
           "index": 2147483649,
           "masterFingerprint": 1404659567,
           "parentFingerprint": 1829122711,
           "path": "m / bip32:44' / bip32:1'",
-          "privateKey": "c73cedb996e7294f032766853a8b7ba11ab4ce9755fc052f2f7b9000044c99af",
-          "publicKey": "048e129862c1de5ca86468add43b001d32fd34b8113de716ecd63fa355b7f1165f0e76f5dc6095100f9fdaa76ddf28aa3f21406ac5fda7c71ffbedb45634fe2ceb",
+          "privateKey": "0xc73cedb996e7294f032766853a8b7ba11ab4ce9755fc052f2f7b9000044c99af",
+          "publicKey": "0x048e129862c1de5ca86468add43b001d32fd34b8113de716ecd63fa355b7f1165f0e76f5dc6095100f9fdaa76ddf28aa3f21406ac5fda7c71ffbedb45634fe2ceb",
         }
       `);
     });

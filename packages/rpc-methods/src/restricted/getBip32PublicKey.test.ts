@@ -130,7 +130,7 @@ describe('getBip32PublicKeyImplementation', () => {
           },
         }),
       ).toMatchInlineSnapshot(
-        `"04b21938e18aec1e2e7478988ccae5b556597d771c8e46ac2c8ea2a4a1a80619679230a109cd30e8af15856b15799e38991e45e55f406a8a24d5605ba0757da53c"`,
+        `"0x04b21938e18aec1e2e7478988ccae5b556597d771c8e46ac2c8ea2a4a1a80619679230a109cd30e8af15856b15799e38991e45e55f406a8a24d5605ba0757da53c"`,
       );
     });
 
@@ -153,7 +153,7 @@ describe('getBip32PublicKeyImplementation', () => {
           },
         }),
       ).toMatchInlineSnapshot(
-        `"03a797bad3e493c256dc3064a8dd9f214f246e3ef954c767d8c6548040eee645b7"`,
+        `"0x03a797bad3e493c256dc3064a8dd9f214f246e3ef954c767d8c6548040eee645b7"`,
       );
     });
   });
