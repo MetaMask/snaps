@@ -2799,16 +2799,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/key-tree@npm:^5.0.2":
-  version: 5.0.2
-  resolution: "@metamask/key-tree@npm:5.0.2"
+"@metamask/key-tree@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@metamask/key-tree@npm:6.0.0"
   dependencies:
+    "@metamask/utils": ^3.3.0
     "@noble/ed25519": ^1.6.0
     "@noble/hashes": ^1.0.0
     "@noble/secp256k1": ^1.5.5
     "@scure/base": ^1.0.0
     "@scure/bip39": ^1.0.0
-  checksum: 5df428ca2b71674d71ea181bf92142adc0790a9fca41e4c295fe5357abde3f025a883e559e045f0125953850b84d6c66eb97aa5c50cec6dcb41f883f806febf3
+  checksum: 124e1c8195c7a50b8f1fbdc1762c79e024efa3feee921142c64c547963e94ca746f508d41286b57ea0decafa0923ec835c59da3ec4be88b2cb44c4b844a241ac
   languageName: node
   linkType: hard
 
@@ -2947,7 +2948,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^9.0.0
     "@metamask/eslint-config-nodejs": ^9.0.0
     "@metamask/eslint-config-typescript": ^9.0.1
-    "@metamask/key-tree": ^5.0.2
+    "@metamask/key-tree": ^6.0.0
     "@metamask/snap-utils": ^0.22.3
     "@metamask/types": ^1.1.0
     "@metamask/utils": ^3.3.0
