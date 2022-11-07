@@ -48,7 +48,7 @@ describe('implementation', () => {
     await implementation({
       context: { origin: MOCK_ORIGIN },
       method: `wallet_snap_${MOCK_SNAP_ID}`,
-      params: [{ method: 'foo', params: {} }],
+      params: { method: 'foo', params: {} },
     });
 
     expect(hooks.getSnap).toHaveBeenCalledTimes(1);
@@ -73,7 +73,7 @@ describe('implementation', () => {
       implementation({
         context: { origin: MOCK_ORIGIN },
         method: `wallet_snap_${MOCK_SNAP_ID}`,
-        params: [{ method: 'foo', params: {} }],
+        params: { method: 'foo', params: {} },
       }),
     ).rejects.toThrow(
       `The snap "${MOCK_SNAP_ID}" is not installed. This is a bug, please report it.`,
@@ -92,7 +92,7 @@ describe('implementation', () => {
       implementation({
         context: { origin: MOCK_ORIGIN },
         method: `wallet_snap_${MOCK_SNAP_ID}`,
-        params: [{}],
+        params: {},
       }),
     ).rejects.toThrow(
       'Must specify a valid JSON-RPC request object as single parameter.',

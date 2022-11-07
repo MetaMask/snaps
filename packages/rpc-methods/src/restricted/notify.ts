@@ -68,7 +68,7 @@ type Specification = ValidPermissionSpecification<{
  * @param options.methodHooks - The RPC method hooks needed by the method implementation.
  * @returns The specification for the `snap_notify` permission.
  */
-const specificationBuilder: PermissionSpecificationBuilder<
+export const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.RestrictedMethod,
   SpecificationBuilderOptions,
   Specification
@@ -99,12 +99,12 @@ export const notifyBuilder = Object.freeze({
  * @returns The method implementation which returns `null` on success.
  * @throws If the params are invalid.
  */
-function getImplementation({
+export function getImplementation({
   showNativeNotification,
   showInAppNotification,
 }: NotifyMethodHooks) {
   return async function implementation(
-    args: RestrictedMethodOptions<[NotificationArgs]>,
+    args: RestrictedMethodOptions<NotificationArgs>,
   ): Promise<null> {
     const {
       params,
@@ -133,14 +133,14 @@ function getImplementation({
  * @param params - The unvalidated params object from the method request.
  * @returns The validated method parameter object.
  */
-function getValidatedParams(params: unknown): NotificationArgs {
-  if (!Array.isArray(params) || !isObject(params[0])) {
+export function getValidatedParams(params: unknown): NotificationArgs {
+  if (!isObject(params)) {
     throw ethErrors.rpc.invalidParams({
-      message: 'Expected array params with single object.',
+      message: 'Expected params to be a single object.',
     });
   }
 
-  const { type, message } = params[0];
+  const { type, message } = params;
 
   if (
     !type ||
@@ -160,5 +160,5 @@ function getValidatedParams(params: unknown): NotificationArgs {
     });
   }
 
-  return params[0] as NotificationArgs;
+  return params as NotificationArgs;
 }

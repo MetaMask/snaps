@@ -92,12 +92,11 @@ export function getInvokeSnapImplementation({
   handleSnapRpcRequest,
 }: InvokeSnapMethodHooks) {
   return async function invokeSnap(
-    options: RestrictedMethodOptions<[Record<string, Json>]>,
+    options: RestrictedMethodOptions<Record<string, Json>>,
   ): Promise<Json> {
-    const { params = [], method, context } = options;
-    const rawRequest = params[0];
+    const { params = {}, method, context } = options;
 
-    const request = { jsonrpc: '2.0', id: nanoid(), ...rawRequest };
+    const request = { jsonrpc: '2.0', id: nanoid(), ...params };
 
     if (!isJsonRpcRequest(request)) {
       throw ethErrors.rpc.invalidParams({

@@ -8,6 +8,11 @@ import {
 import { isObject } from '@metamask/utils';
 import { SNAP_PREFIX } from '@metamask/snaps-utils';
 
+export type InvokeSnapSugarArgs = {
+  snapId: string;
+  request: JsonRpcRequest<unknown>;
+};
+
 /**
  * `wallet_invokeSnap` attempts to invoke an RPC method of the specified Snap.
  */
@@ -33,25 +38,51 @@ export const invokeSnapSugarHandler: PermittedHandlerExport<
  * @returns Nothing.
  * @throws If the params are invalid.
  */
-function invokeSnapSugar(
+export function invokeSnapSugar(
   req: JsonRpcRequest<unknown>,
   _res: unknown,
   next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
 ): void {
-  if (
-    !Array.isArray(req.params) ||
-    typeof req.params[0] !== 'string' ||
-    !isObject(req.params[1])
-  ) {
-    return end(
-      ethErrors.rpc.invalidParams({
-        message: 'Must specify a string snap ID and a plain request object.',
-      }),
-    );
+  let params: InvokeSnapSugarArgs;
+  try {
+    params = getValidatedParams(req.params);
+  } catch (error) {
+    return end(error);
   }
 
-  req.method = SNAP_PREFIX + req.params[0];
-  req.params = [req.params[1]];
+  req.method = SNAP_PREFIX + params.snapId;
+  req.params = params.request;
   return next();
+}
+
+/**
+ * Validates the wallet_invokeSnap method `params` and returns them cast to the correct
+ * type. Throws if validation fails.
+ *
+ * @param params - The unvalidated params object from the method request.
+ * @returns The validated method parameter object.
+ */
+export function getValidatedParams(params: unknown): InvokeSnapSugarArgs {
+  if (!isObject(params)) {
+    throw ethErrors.rpc.invalidParams({
+      message: 'Expected params to be a single object.',
+    });
+  }
+
+  const { snapId, request } = params;
+
+  if (!snapId || typeof snapId !== 'string' || snapId === '') {
+    throw ethErrors.rpc.invalidParams({
+      message: 'Must specify a valid snap ID.',
+    });
+  }
+
+  if (!isObject(request)) {
+    throw ethErrors.rpc.invalidParams({
+      message: 'Expected request to be a single object.',
+    });
+  }
+
+  return params as InvokeSnapSugarArgs;
 }
