@@ -1,14 +1,14 @@
 {
   "files": [],
   "references": [
-    { "path": "./packages/cli" },
-    { "path": "./packages/controllers" },
     { "path": "./packages/execution-environments" },
-    { "path": "./packages/plugin-browserify" },
-    { "path": "./packages/plugin-rollup" },
-    { "path": "./packages/plugin-webpack" },
-    { "path": "./packages/provider" },
+    { "path": "./packages/multichain-provider" },
+    { "path": "./packages/rollup-plugin-snaps" },
     { "path": "./packages/rpc-methods" },
-    { "path": "./packages/utils" }
+    { "path": "./packages/snap-controllers" },
+    { "path": "./packages/snap-utils" },
+    { "path": "./packages/snaps-browserify-plugin" },
+    { "path": "./packages/snaps-cli" },
+    { "path": "./packages/snaps-webpack-plugin" }
   ]
 }

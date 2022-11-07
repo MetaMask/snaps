@@ -14,5 +14,8 @@
     ]
   },
   "include": ["./src/**/*.ts", "./src/**/*.json"],
-  "references": [{ "path": "../utils" }, { "path": "../plugin-browserify" }]
+  "references": [
+    { "path": "../snap-utils" },
+    { "path": "../snaps-browserify-plugin" }
+  ]
 }

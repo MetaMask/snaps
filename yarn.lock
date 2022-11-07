@@ -2820,9 +2820,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-provider@workspace:packages/provider":
+"@metamask/multichain-provider@workspace:packages/multichain-provider":
   version: 0.0.0-use.local
-  resolution: "@metamask/multichain-provider@workspace:packages/provider"
+  resolution: "@metamask/multichain-provider@workspace:packages/multichain-provider"
   dependencies:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
@@ -2905,9 +2905,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/rollup-plugin-snaps@^0.23.0, @metamask/rollup-plugin-snaps@workspace:packages/plugin-rollup":
+"@metamask/rollup-plugin-snaps@^0.23.0, @metamask/rollup-plugin-snaps@workspace:packages/rollup-plugin-snaps":
   version: 0.0.0-use.local
-  resolution: "@metamask/rollup-plugin-snaps@workspace:packages/plugin-rollup"
+  resolution: "@metamask/rollup-plugin-snaps@workspace:packages/rollup-plugin-snaps"
   dependencies:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
@@ -2980,9 +2980,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snap-controllers@workspace:packages/controllers":
+"@metamask/snap-controllers@workspace:packages/snap-controllers":
   version: 0.0.0-use.local
-  resolution: "@metamask/snap-controllers@workspace:packages/controllers"
+  resolution: "@metamask/snap-controllers@workspace:packages/snap-controllers"
   dependencies:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
@@ -3041,9 +3041,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/snap-types@^0.23.0, @metamask/snap-types@workspace:packages/types":
+"@metamask/snap-types@^0.23.0, @metamask/snap-types@workspace:packages/snap-types":
   version: 0.0.0-use.local
-  resolution: "@metamask/snap-types@workspace:packages/types"
+  resolution: "@metamask/snap-types@workspace:packages/snap-types"
   dependencies:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
@@ -3070,9 +3070,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/snap-utils@^0.23.0, @metamask/snap-utils@workspace:packages/utils":
+"@metamask/snap-utils@^0.23.0, @metamask/snap-utils@workspace:packages/snap-utils":
   version: 0.0.0-use.local
-  resolution: "@metamask/snap-utils@workspace:packages/utils"
+  resolution: "@metamask/snap-utils@workspace:packages/snap-utils"
   dependencies:
     "@babel/core": ^7.18.6
     "@babel/types": ^7.18.7
@@ -3113,9 +3113,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/snaps-browserify-plugin@^0.23.0, @metamask/snaps-browserify-plugin@workspace:packages/plugin-browserify":
+"@metamask/snaps-browserify-plugin@^0.23.0, @metamask/snaps-browserify-plugin@workspace:packages/snaps-browserify-plugin":
   version: 0.0.0-use.local
-  resolution: "@metamask/snaps-browserify-plugin@workspace:packages/plugin-browserify"
+  resolution: "@metamask/snaps-browserify-plugin@workspace:packages/snaps-browserify-plugin"
   dependencies:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
@@ -3148,9 +3148,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/snaps-cli@^0.23.0, @metamask/snaps-cli@workspace:packages/cli":
+"@metamask/snaps-cli@^0.23.0, @metamask/snaps-cli@workspace:packages/snaps-cli":
   version: 0.0.0-use.local
-  resolution: "@metamask/snaps-cli@workspace:packages/cli"
+  resolution: "@metamask/snaps-cli@workspace:packages/snaps-cli"
   dependencies:
     "@babel/core": ^7.16.7
     "@babel/plugin-proposal-class-properties": ^7.16.7
@@ -3211,9 +3211,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/snaps-webpack-plugin@^0.23.0, @metamask/snaps-webpack-plugin@workspace:packages/plugin-webpack":
+"@metamask/snaps-webpack-plugin@^0.23.0, @metamask/snaps-webpack-plugin@workspace:packages/snaps-webpack-plugin":
   version: 0.0.0-use.local
-  resolution: "@metamask/snaps-webpack-plugin@workspace:packages/plugin-webpack"
+  resolution: "@metamask/snaps-webpack-plugin@workspace:packages/snaps-webpack-plugin"
   dependencies:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0

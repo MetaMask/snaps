@@ -10,5 +10,5 @@
     ]
   },
   "include": ["./src"],
-  "references": [{ "path": "../utils" }]
+  "references": [{ "path": "../snap-utils" }]
 }

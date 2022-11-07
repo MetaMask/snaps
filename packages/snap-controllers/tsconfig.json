@@ -9,8 +9,8 @@
   },
   "include": ["./src"],
   "references": [
-    { "path": "../utils" },
     { "path": "../execution-environments" },
-    { "path": "../rpc-methods" }
+    { "path": "../rpc-methods" },
+    { "path": "../snap-utils" }
   ]
 }
