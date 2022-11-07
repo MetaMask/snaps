@@ -21,7 +21,7 @@
     "publish:package": "../../scripts/publish-package.sh"
   },
   "dependencies": {
-    "@metamask/providers": "^9.0.0",
+    "@metamask/providers": "^10.2.0",
     "@metamask/snap-utils": "^0.23.0",
     "@metamask/types": "^1.1.0"
   },

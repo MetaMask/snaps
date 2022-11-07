@@ -2761,7 +2761,7 @@ __metadata:
     "@metamask/eslint-config-typescript": ^9.0.1
     "@metamask/object-multiplex": ^1.2.0
     "@metamask/post-message-stream": ^6.0.0
-    "@metamask/providers": ^9.0.0
+    "@metamask/providers": ^10.2.0
     "@metamask/snap-types": ^0.23.0
     "@metamask/snap-utils": ^0.23.0
     "@metamask/utils": ^3.3.0
@@ -2885,9 +2885,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/providers@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "@metamask/providers@npm:9.0.0"
+"@metamask/providers@npm:^10.2.0":
+  version: 10.2.0
+  resolution: "@metamask/providers@npm:10.2.0"
   dependencies:
     "@metamask/object-multiplex": ^1.1.0
     "@metamask/safe-event-emitter": ^2.0.0
@@ -2898,10 +2898,10 @@ __metadata:
     fast-deep-equal: ^2.0.1
     is-stream: ^2.0.0
     json-rpc-engine: ^6.1.0
-    json-rpc-middleware-stream: ^3.0.0
+    json-rpc-middleware-stream: ^4.2.0
     pump: ^3.0.0
     webextension-polyfill-ts: ^0.25.0
-  checksum: c005742d0757b10bec9da66f077e364794ae306b5371155aa98f29fce2ba534c7d95637359a2caffca7c22abc3270ad69344fe1b6c9065aed50866d795c27336
+  checksum: a20b637281ca1bfdb20fdf2886148fb40ffca4c6aa07194753ea92f5beb4f91961834440173c8ccfc3f1eb172d1dfb441c6825d1332bca5163007fabfaca3bcd
   languageName: node
   linkType: hard
 
@@ -3026,7 +3026,7 @@ __metadata:
     jest-it-up: ^2.0.0
     jsdom: ^19.0.0
     json-rpc-engine: ^6.1.0
-    json-rpc-middleware-stream: ^3.0.0
+    json-rpc-middleware-stream: ^4.2.0
     mkdirp: ^1.0.4
     nanoid: ^3.1.31
     prettier: ^2.3.2
@@ -3051,7 +3051,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^9.0.0
     "@metamask/eslint-config-nodejs": ^9.0.0
     "@metamask/eslint-config-typescript": ^9.0.1
-    "@metamask/providers": ^9.0.0
+    "@metamask/providers": ^10.2.0
     "@metamask/snap-utils": ^0.23.0
     "@metamask/types": ^1.1.0
     eslint: ^7.30.0
@@ -11575,13 +11575,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json-rpc-middleware-stream@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "json-rpc-middleware-stream@npm:3.0.0"
+"json-rpc-middleware-stream@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "json-rpc-middleware-stream@npm:4.2.0"
   dependencies:
     "@metamask/safe-event-emitter": ^2.0.0
     readable-stream: ^2.3.3
-  checksum: 9ff56cd40a6ba0a6f3d0226ea100921635120154c602822f0f4fdfa6bf7c61367d1e8cd055b6e7a7639aa19ed51a9ce7fbf2932a2d348b2404c060f75bc1231f
+  checksum: eccdac47843f2cf6bb0344d2e509791307c2f2e6358ac5b78a7a14c0a079deb0851ed41b68d6126b7ed413a7ff364bb6e98907dcd06f3cf4a032246865e41c59
   languageName: node
   linkType: hard
 
