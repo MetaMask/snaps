@@ -7,14 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.23.0]
-### Uncategorized
-- Upgrade packages to resolve security advisories ([#912](https://github.com/MetaMask/snaps-monorepo/pull/912))
-- Bump @metamask/utils to 3.3.0 ([#906](https://github.com/MetaMask/snaps-monorepo/pull/906))
+### Added
 - Add snap cronjobs ([#651](https://github.com/MetaMask/snaps-monorepo/pull/651))
+
+### Changed
+- **BREAKING:** Replace Buffer with Typed Arrays ([#878](https://github.com/MetaMask/snaps-monorepo/pull/878))
 - Improve keyring endowment error messaging ([#884](https://github.com/MetaMask/snaps-monorepo/pull/884))
-- BREAKING: Replace Buffer with Typed Arrays ([#878](https://github.com/MetaMask/snaps-monorepo/pull/878))
-- Stop including source code in state ([#861](https://github.com/MetaMask/snaps-monorepo/pull/861))
-- Remove JSON schemas in favour of structs ([#862](https://github.com/MetaMask/snaps-monorepo/pull/862))
+- Replace JSON schema validation with structs ([#862](https://github.com/MetaMask/snaps-monorepo/pull/862))
+
+### Removed
+- **BREAKING:** Stop including source code in state ([#861](https://github.com/MetaMask/snaps-monorepo/pull/861))
 
 ## [0.22.3]
 ### Fixed

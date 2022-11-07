@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.23.0]
-### Uncategorized
+### Added
 - Add snap cronjobs ([#651](https://github.com/MetaMask/snaps-monorepo/pull/651))
 
 ## [0.22.3]
