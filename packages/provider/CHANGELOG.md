@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.23.0]
+### Added
+- Export `MultiChainProvider` types ([#857](https://github.com/MetaMask/snaps-monorepo/pull/857))
+
 ## [0.22.3]
 ### Fixed
 - Stop assuming wrapped responses from MetaMask provider ([#854](https://github.com/MetaMask/snaps-monorepo/pull/854))
@@ -22,7 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release ([#700](https://github.com/MetaMask/snaps-monorepo/pull/700))
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.3...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.23.0...HEAD
+[0.23.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.3...v0.23.0
 [0.22.3]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.2...v0.22.3
 [0.22.2]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.1...v0.22.2
 [0.22.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.0...v0.22.1
