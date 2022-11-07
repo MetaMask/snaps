@@ -21,7 +21,7 @@ import {
  * `wallet_requestSnaps` installs the requested Snaps and requests permission to use them if necessary.
  */
 export const requestSnapsHandler: PermittedHandlerExport<
-  InstallSnapsHooks,
+  RequestSnapsHooks,
   RequestedPermissions,
   InstallSnapsResult
 > = {
@@ -108,7 +108,7 @@ async function requestSnapsImplementation(
   res: PendingJsonRpcResponse<InstallSnapsResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { installSnaps, requestPermissions, getPermissions }: InstallSnapsHooks,
+  { installSnaps, requestPermissions, getPermissions }: RequestSnapsHooks,
 ): Promise<void> {
   const requestedSnaps = req.params;
   if (!isObject(requestedSnaps)) {
