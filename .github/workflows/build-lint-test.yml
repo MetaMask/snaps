@@ -170,8 +170,8 @@ jobs:
       - name: Restore Yarn dependencies
         uses: actions/cache@v3
         with:
-          path: ${{ needs.prepare.outputs.YARN_CACHE_DIR }}
-          key: yarn-cache-${{ runner.os }}-${{ needs.prepare.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}
+          path: ${{ needs.platform-compatibility-prepare.outputs.YARN_CACHE_DIR }}
+          key: yarn-cache-${{ runner.os }}-${{ needs.platform-compatibility-prepare.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}
       - run: yarn --immutable
       - name: Build @metamask/snaps-cli and its dependents only
         shell: bash
@@ -206,8 +206,8 @@ jobs:
       - name: Restore Yarn dependencies
         uses: actions/cache@v3
         with:
-          path: ${{ needs.prepare.outputs.YARN_CACHE_DIR }}
-          key: yarn-cache-${{ runner.os }}-${{ needs.prepare.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}
+          path: ${{ needs.platform-compatibility-prepare.outputs.YARN_CACHE_DIR }}
+          key: yarn-cache-${{ runner.os }}-${{ needs.platform-compatibility-prepare.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}
       - run: yarn --immutable
       - run: yarn workspace @metamask/snaps-cli run test
   check-workflows:
