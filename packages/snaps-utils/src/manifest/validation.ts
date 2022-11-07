@@ -143,10 +143,16 @@ const PermissionsStruct = type({
   snap_confirm: optional(object({})),
   snap_manageState: optional(object({})),
   snap_notify: optional(object({})),
-  snap_getBip32Entropy: optional(array(Bip32EntropyStruct)),
-  snap_getBip32PublicKey: optional(array(Bip32PublicKeyStruct)),
+  snap_getBip32Entropy: optional(size(array(Bip32EntropyStruct), 1, Infinity)),
+  snap_getBip32PublicKey: optional(
+    size(array(Bip32PublicKeyStruct), 1, Infinity),
+  ),
   snap_getBip44Entropy: optional(
-    array(object({ coinType: size(integer(), 0, 2 ** 32 - 1) })),
+    size(
+      array(object({ coinType: size(integer(), 0, 2 ** 32 - 1) })),
+      1,
+      Infinity,
+    ),
   ),
   'endowment:keyring': optional(
     object({

@@ -14,9 +14,9 @@ import {
   Bip32EntropyStruct,
   SnapCaveatType,
 } from '@metamask/snaps-utils';
-import { Json, NonEmptyArray } from '@metamask/utils';
+import { Json, NonEmptyArray, assertStruct } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
-import { array, size, type, validate } from 'superstruct';
+import { array, size, type } from 'superstruct';
 import { isEqual } from '../utils';
 
 const targetKey = 'snap_getBip32Entropy';
@@ -57,10 +57,12 @@ type GetBip32EntropySpecification = ValidPermissionSpecification<{
  * @throws If the value is invalid.
  */
 function validatePath(value: unknown): asserts value is Bip32Entropy {
-  const [error] = validate(value, Bip32EntropyStruct);
-  if (error) {
-    throw ethErrors.rpc.invalidParams({ message: error.message });
-  }
+  assertStruct(
+    value,
+    Bip32EntropyStruct,
+    'Invalid BIP-32 entropy path definition',
+    ethErrors.rpc.invalidParams,
+  );
 }
 
 /**
@@ -70,14 +72,15 @@ function validatePath(value: unknown): asserts value is Bip32Entropy {
  * @param caveat - The caveat to validate.
  * @throws If the value is invalid.
  */
-export function validateCaveatPaths(caveat: Caveat<string, any>) {
-  const [error] = validate(
+export function validateCaveatPaths(
+  caveat: Caveat<string, any>,
+): asserts caveat is Caveat<string, Bip32Entropy[]> {
+  assertStruct(
     caveat,
     type({ value: size(array(Bip32EntropyStruct), 1, Infinity) }),
+    'Invalid BIP-32 entropy caveat',
+    ethErrors.rpc.internal,
   );
-  if (error) {
-    throw ethErrors.rpc.invalidParams({ message: error.message });
-  }
 }
 
 /**

@@ -1,5 +1,4 @@
 import { SnapCaveatType } from '@metamask/snaps-utils';
-import { EthereumRpcError } from 'eth-rpc-errors';
 import {
   getBip32EntropyBuilder,
   getBip32EntropyCaveatMapper,
@@ -20,7 +19,9 @@ describe('validateCaveatPaths', () => {
           type: SnapCaveatType.PermittedDerivationPaths,
           value,
         }),
-      ).toThrow(EthereumRpcError);
+      ).toThrow(
+        /^Invalid BIP-32 entropy caveat: At path: value -- Expected an? array/u,
+      ); // Different error messages for different types
     },
   );
 
@@ -30,7 +31,7 @@ describe('validateCaveatPaths', () => {
         type: SnapCaveatType.PermittedDerivationPaths,
         value: [{ path: ['foo'], curve: 'secp256k1' }],
       }),
-    ).toThrow('must start with "m"');
+    ).toThrow('At path: value.0.path -- Path must start with "m".');
   });
 });
 
@@ -175,7 +176,9 @@ describe('getBip32EntropyCaveatSpecifications', () => {
           value: [params],
           // @ts-expect-error Missing other required properties.
         })({ params: { ...params, path: [] } }),
-      ).rejects.toThrow('must be a non-empty BIP-32 derivation path array');
+      ).rejects.toThrow(
+        'At path: path -- Path must be a non-empty BIP-32 derivation path array',
+      );
     });
 
     it('throws if the path is not specified in the caveats', async () => {
@@ -204,7 +207,7 @@ describe('getBip32EntropyCaveatSpecifications', () => {
           type: SnapCaveatType.PermittedDerivationPaths,
           value: [{ path: ['foo'], curve: 'secp256k1' }],
         }),
-      ).toThrow('must start with "m"');
+      ).toThrow('At path: value.0.path -- Path must start with "m".');
     });
   });
 });

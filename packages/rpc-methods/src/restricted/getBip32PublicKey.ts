@@ -13,9 +13,9 @@ import {
   Bip32PublicKeyStruct,
   SnapCaveatType,
 } from '@metamask/snaps-utils';
-import { NonEmptyArray } from '@metamask/utils';
+import { NonEmptyArray, assertStruct } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
-import { array, size, type, validate } from 'superstruct';
+import { array, size, type } from 'superstruct';
 import { isEqual } from '../utils';
 
 const targetKey = 'snap_getBip32PublicKey';
@@ -62,10 +62,12 @@ type GetBip32PublicKeyParameters = {
  * @throws If the value is invalid.
  */
 function validatePath(value: unknown): asserts value is Bip32PublicKey {
-  const [error] = validate(value, Bip32PublicKeyStruct);
-  if (error) {
-    throw ethErrors.rpc.invalidParams({ message: error.message });
-  }
+  assertStruct(
+    value,
+    Bip32PublicKeyStruct,
+    'Invalid BIP-32 public key path definition',
+    ethErrors.rpc.invalidParams,
+  );
 }
 
 /**
@@ -75,14 +77,15 @@ function validatePath(value: unknown): asserts value is Bip32PublicKey {
  * @param caveat - The caveat to validate.
  * @throws If the value is invalid.
  */
-export function validateCaveatPaths(caveat: Caveat<string, any>) {
-  const [error] = validate(
+export function validateCaveatPaths(
+  caveat: Caveat<string, any>,
+): asserts caveat is Caveat<string, Bip32PublicKey[]> {
+  assertStruct(
     caveat,
     type({ value: size(array(Bip32PublicKeyStruct), 1, Infinity) }),
+    'Invalid BIP-32 public key caveat',
+    ethErrors.rpc.internal,
   );
-  if (error) {
-    throw ethErrors.rpc.invalidParams({ message: error.message });
-  }
 }
 
 /**
