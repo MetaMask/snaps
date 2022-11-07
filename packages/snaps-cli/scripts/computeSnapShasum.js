@@ -1,4 +1,5 @@
 const { readFileSync } = require('fs');
+// eslint-disable-next-line import/no-unresolved
 const { getSnapSourceShasum } = require('@metamask/snap-utils');
 const clipboardy = require('clipboardy');
 const yargs = require('yargs');
