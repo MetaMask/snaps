@@ -5,10 +5,10 @@ module.exports = deepmerge(baseConfig, {
   coveragePathIgnorePatterns: ['./src/index.ts'],
   coverageThreshold: {
     global: {
-      branches: 83.88,
-      functions: 92.48,
-      lines: 86.55,
-      statements: 86.72,
+      branches: 89.88,
+      functions: 90.09,
+      lines: 87.81,
+      statements: 87.81,
     },
   },
   testEnvironment: '<rootDir>/jest.environment.js',

@@ -4,14 +4,16 @@ const baseConfig = require('../../jest.config.base');
 module.exports = deepmerge(baseConfig, {
   coverageThreshold: {
     global: {
-      branches: 84.8,
-      functions: 95.8,
-      lines: 94.94,
-      statements: 95.04,
+      branches: 86.31,
+      functions: 87.15,
+      lines: 45.38,
+      statements: 45.38,
     },
   },
   projects: [
-    deepmerge(baseConfig, {
+    {
+      moduleNameMapper: baseConfig.moduleNameMapper,
+      preset: 'ts-jest',
       testMatch: ['<rootDir>/src/services/iframe/*.test.ts'],
       testEnvironment: '<rootDir>/jest.environment.js',
       testEnvironmentOptions: {
@@ -19,15 +21,17 @@ module.exports = deepmerge(baseConfig, {
         runScripts: 'dangerously',
         customExportConditions: ['node', 'node-addons'],
       },
-    }),
-    deepmerge(baseConfig, {
+    },
+    {
+      moduleNameMapper: baseConfig.moduleNameMapper,
+      preset: 'ts-jest',
       testPathIgnorePatterns: ['<rootDir>/src/services/iframe/*'],
       testEnvironment: '<rootDir>/jest.environment.js',
       testEnvironmentOptions: {
         customExportConditions: ['node', 'node-addons'],
       },
       testRegex: ['\\.test\\.(ts|js)$'],
-    }),
+    },
   ],
   testTimeout: 5000,
 });

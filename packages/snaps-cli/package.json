@@ -23,7 +23,7 @@
     "build:clean": "yarn clean && yarn build",
     "build:watch": "tsc-watch --onSuccess 'yarn build:chmod'",
     "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
-    "test": "jest",
+    "test": "jest && yarn posttest",
     "posttest": "jest-it-up",
     "test:watch": "yarn test --watch",
     "test:ci": "yarn test",
