@@ -43,7 +43,7 @@ export function wrapKeyring(
         assert(
           isValidJson(listenerArgs),
           new TypeError(
-            'Keyrings .on listener received non Json serializable value',
+            'Keyrings .on listener received non-JSON-serializable value.',
           ),
         );
         return notify({

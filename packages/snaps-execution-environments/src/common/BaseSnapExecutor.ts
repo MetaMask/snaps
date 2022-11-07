@@ -144,7 +144,7 @@ export class BaseSnapExecutor {
         );
         assert(
           isValidJson(result),
-          new TypeError('Received non JSON serializable value'),
+          new TypeError('Received non JSON serializable value.'),
         );
         return result;
       },
@@ -160,10 +160,7 @@ export class BaseSnapExecutor {
     });
 
     // We're setting it this way to avoid sentData.stack = undefined
-    const sentData: Json = { ...data };
-    if (constructedError?.stack) {
-      sentData.stack = constructedError.stack;
-    }
+    const sentData: Json = { ...data, stack: constructedError?.stack ?? null };
 
     this.notify({
       method: 'UnhandledError',
