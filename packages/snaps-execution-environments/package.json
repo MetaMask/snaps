@@ -35,7 +35,7 @@
     "@metamask/providers": "^10.2.0",
     "@metamask/snaps-types": "^0.23.0",
     "@metamask/snaps-utils": "^0.23.0",
-    "@metamask/utils": "^3.3.0",
+    "@metamask/utils": "^3.3.1",
     "eth-rpc-errors": "^4.0.3",
     "pump": "^3.0.0",
     "ses": "^0.17.0",

@@ -30,7 +30,7 @@
     "@metamask/key-tree": "^6.0.0",
     "@metamask/snaps-utils": "^0.23.0",
     "@metamask/types": "^1.1.0",
-    "@metamask/utils": "^3.3.0",
+    "@metamask/utils": "^3.3.1",
     "eth-rpc-errors": "^4.0.2",
     "nanoid": "^3.1.31",
     "superstruct": "^0.16.7"

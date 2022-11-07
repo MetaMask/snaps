@@ -27,7 +27,8 @@
   "dependencies": {
     "@metamask/safe-event-emitter": "^2.0.0",
     "@metamask/snaps-types": "^0.23.0",
-    "@metamask/utils": "^3.3.0",
+    "@metamask/snaps-utils": "^0.23.0",
+    "@metamask/utils": "^3.3.1",
     "nanoid": "^3.1.31"
   },
   "devDependencies": {

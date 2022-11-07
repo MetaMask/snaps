@@ -1,9 +1,17 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
 /// <reference path="../../../../node_modules/ses/index.d.ts" />
 import { Duplex } from 'stream';
+
 import { MetaMaskInpageProvider } from '@metamask/providers';
 import { SnapProvider, SnapExports } from '@metamask/snaps-types';
-import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
+import {
+  errorCodes,
+  ethErrors,
+  serializeError,
+  errorCodes,
+  ethErrors,
+  serializeError,
+} from 'eth-rpc-errors';
 import {
   isObject,
   isValidJson,
@@ -15,23 +23,30 @@ import {
   JsonRpcParams,
   Json,
   hasProperty,
+  assert,
+  hasProperty,
+  isJsonRpcRequest,
+  isObject,
+  isValidJson,
+  Json,
+  JsonRpcId,
+  JsonRpcNotification,
+  JsonRpcParams,
+  JsonRpcRequest,
 } from '@metamask/utils';
-import {
-  HandlerType,
-  SNAP_EXPORT_NAMES,
-  SnapExportsParameters,
-} from '@metamask/snaps-utils';
+import { HandlerType, SnapExportsParameters } from '@metamask/snaps-utils';
+
 import { validate } from 'superstruct';
 import EEOpenRPCDocument from '../openrpc.json';
-import { createEndowments } from './endowments';
 import {
-  getCommandMethodImplementations,
   CommandMethodsMapping,
+  getCommandMethodImplementations,
 } from './commands';
-import { removeEventListener, addEventListener } from './globalEvents';
+import { createEndowments } from './endowments';
+import { addEventListener, removeEventListener } from './globalEvents';
+import { wrapKeyring } from './keyring';
 import { sortParamKeys } from './sortParams';
 import { constructError, withTeardown } from './utils';
-import { wrapKeyring } from './keyring';
 import {
   ExecuteSnapRequestArgumentsStruct,
   PingRequestArgumentsStruct,
@@ -112,7 +127,7 @@ export class BaseSnapExecutor {
 
     this.methods = getCommandMethodImplementations(
       this.startSnap.bind(this),
-      (target, handlerName, args) => {
+      async (target, handlerName, args) => {
         const data = this.snapData.get(target);
         // We're capturing the handler in case someone modifies the data object before the call
         const handler =
@@ -123,28 +138,39 @@ export class BaseSnapExecutor {
           handler !== undefined,
           `No ${handlerName} handler exported for snap "${target}`,
         );
-        // TODO: fix type
-        return this.executeInSnapContext(target, () => handler(args as any));
+        // TODO: fix handler args type cast
+        const result = await this.executeInSnapContext(target, () =>
+          handler(args as any),
+        );
+        assert(
+          isValidJson(result),
+          new TypeError('Received non JSON serializable value'),
+        );
+        return result;
       },
       this.onTerminate.bind(this),
     );
   }
 
-  private errorHandler(error: unknown, data: Record<string, unknown>) {
+  private errorHandler(error: unknown, data: Record<string, Json>) {
     const constructedError = constructError(error);
     const serializedError = serializeError(constructedError, {
       fallbackError,
       shouldIncludeStack: false,
     });
+
+    // We're setting it this way to avoid sentData.stack = undefined
+    const sentData: Json = { ...data };
+    if (constructedError?.stack) {
+      sentData.stack = constructedError.stack;
+    }
+
     this.notify({
       method: 'UnhandledError',
       params: {
         error: {
           ...serializedError,
-          data: {
-            ...data,
-            stack: constructedError?.stack,
-          },
+          data: sentData,
         },
       },
     });
@@ -214,7 +240,7 @@ export class BaseSnapExecutor {
 
   protected notify(
     requestObject: Omit<
-      JsonRpcNotification<Record<string, unknown> | unknown[] | undefined>,
+      JsonRpcNotification<Record<string, Json> | Json[] | undefined>,
       'jsonrpc'
     >,
   ) {

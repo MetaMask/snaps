@@ -1,4 +1,4 @@
-import { Json, JsonRpcRequestStruct } from '@metamask/utils';
+import { JsonRpcRequestStruct } from '@metamask/utils';
 import { parseExpression } from 'cron-parser';
 import {
   array,
@@ -13,28 +13,11 @@ import {
   pick,
   refine,
   string,
-  Struct,
 } from 'superstruct';
 
-// TODO(ritave): Remove after merging - https://github.com/MetaMask/utils/pull/51
-type TMPJsonRpc = Struct<
-  {
-    id: string | number | null;
-    method: string;
-    jsonrpc: '2.0';
-    params?: Json[] | Record<string, Json> | undefined;
-  },
-  {
-    id: Struct<string | number | null, null>;
-    jsonrpc: Struct<'2.0', '2.0'>;
-    method: Struct<string, null>;
-    params: Struct<Json[] | Record<string, Json> | undefined, null>;
-  }
->;
-
 export const CronjobRpcRequestStruct = assign(
-  partial(pick(JsonRpcRequestStruct as TMPJsonRpc, ['id', 'jsonrpc'])),
-  omit(JsonRpcRequestStruct as TMPJsonRpc, ['id', 'jsonrpc']),
+  partial(pick(JsonRpcRequestStruct, ['id', 'jsonrpc'])),
+  omit(JsonRpcRequestStruct, ['id', 'jsonrpc']),
 );
 export type CronjobRpcRequest = Infer<typeof CronjobRpcRequestStruct>;
 
