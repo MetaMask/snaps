@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.23.0]
+### Uncategorized
+- BREAKING: Bump `@metamask/key-tree` to 6.0.0 ([#918](https://github.com/MetaMask/snaps-monorepo/pull/918))
+- Bump @metamask/utils to 3.3.0 ([#906](https://github.com/MetaMask/snaps-monorepo/pull/906))
+- `@metamask/controllers@32.0.2` ([#868](https://github.com/MetaMask/snaps-monorepo/pull/868))
+
 ## [0.22.3]
 ### Changed
 - No changes this release.
@@ -221,7 +227,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.3...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.23.0...HEAD
+[0.23.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.3...v0.23.0
 [0.22.3]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.2...v0.22.3
 [0.22.2]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.1...v0.22.2
 [0.22.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.0...v0.22.1

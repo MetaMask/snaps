@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.23.0]
+### Uncategorized
+- Upgrade packages to resolve security advisories ([#912](https://github.com/MetaMask/snaps-monorepo/pull/912))
+- Bump @metamask/utils to 3.3.0 ([#906](https://github.com/MetaMask/snaps-monorepo/pull/906))
+- Add snap cronjobs ([#651](https://github.com/MetaMask/snaps-monorepo/pull/651))
+- Improve execution environment type validation ([#844](https://github.com/MetaMask/snaps-monorepo/pull/844))
+- BREAKING: Replace Buffer with Typed Arrays ([#878](https://github.com/MetaMask/snaps-monorepo/pull/878))
+
 ## [0.22.3]
 ### Fixed
 - Fix missing properties on WebSocket MessageEvent ([#845](https://github.com/MetaMask/snaps-monorepo/pull/845))
@@ -149,7 +157,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Previously, default endowments were specified in the execution environment itself. Now, all endowments must be specified in the `executeSnap` RPC parameters, except for the `wallet` API object.
 - Add endowments to the global `self` in addition to `window` ([#263](https://github.com/MetaMask/snaps-monorepo/pull/263))
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.3...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.23.0...HEAD
+[0.23.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.3...v0.23.0
 [0.22.3]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.2...v0.22.3
 [0.22.2]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.1...v0.22.2
 [0.22.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.0...v0.22.1
