@@ -225,8 +225,6 @@ export class CronjobController extends BaseController<
    * @param job - Cronjob specification.
    */
   private executeCronjob(job: Cronjob) {
-    console.log('a');
-
     this.updateJobLastRunState(job.id, Date.now());
     this.#messenger.call('SnapController:handleRequest', {
       snapId: job.snapId,
