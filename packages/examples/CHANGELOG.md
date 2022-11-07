@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.23.0]
-### Uncategorized
-- Bump @metamask/utils to 3.3.0 ([#906](https://github.com/MetaMask/snaps-monorepo/pull/906))
+### Changed
+- No changes this release.
 
 ## [0.22.3]
 ### Added

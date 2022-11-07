@@ -7,10 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.23.0]
-### Uncategorized
-- BREAKING: Bump `@metamask/key-tree` to 6.0.0 ([#918](https://github.com/MetaMask/snaps-monorepo/pull/918))
-- Bump @metamask/utils to 3.3.0 ([#906](https://github.com/MetaMask/snaps-monorepo/pull/906))
-- `@metamask/controllers@32.0.2` ([#868](https://github.com/MetaMask/snaps-monorepo/pull/868))
+### Changed
+- **BREAKING:** Bump `@metamask/key-tree` to 6.0.0 ([#918](https://github.com/MetaMask/snaps-monorepo/pull/918))
+  - All hexadecimal values are now prefixed with `0x`
+  - The package no longer requires the use of `Buffer`, because of that some fields have been renamed.
 
 ## [0.22.3]
 ### Changed

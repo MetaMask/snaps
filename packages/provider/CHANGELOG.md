@@ -7,8 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.23.0]
-### Uncategorized
-- Bump @metamask/utils to 3.3.0 ([#906](https://github.com/MetaMask/snaps-monorepo/pull/906))
+### Added
 - Export `MultiChainProvider` types ([#857](https://github.com/MetaMask/snaps-monorepo/pull/857))
 
 ## [0.22.3]

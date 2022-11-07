@@ -7,17 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.23.0]
-### Uncategorized
-- Upgrade packages to resolve security advisories ([#912](https://github.com/MetaMask/snaps-monorepo/pull/912))
-- Bump @metamask/utils to 3.3.0 ([#906](https://github.com/MetaMask/snaps-monorepo/pull/906))
-- Stop including snap state in controller state ([#876](https://github.com/MetaMask/snaps-monorepo/pull/876))
-- Add missing cronjob exports ([#890](https://github.com/MetaMask/snaps-monorepo/pull/890))
-- Add snap cronjobs ([#651](https://github.com/MetaMask/snaps-monorepo/pull/651))
-- Make `SnapController.add()` private ([#883](https://github.com/MetaMask/snaps-monorepo/pull/883))
+### Added
+- Add snap cronjobs ([#651](https://github.com/MetaMask/snaps-monorepo/pull/651), [#890](https://github.com/MetaMask/snaps-monorepo/pull/890))
+
+### Changed
+- **BREAKING:** Make `SnapController.add()` private ([#883](https://github.com/MetaMask/snaps-monorepo/pull/883))
+- **BREAKING:** Stop including snap state in SnapController state ([#876](https://github.com/MetaMask/snaps-monorepo/pull/876))
+- **BREAKING:** Stop including source code in SnapController state ([#861](https://github.com/MetaMask/snaps-monorepo/pull/861))
 - Improve keyring endowment error messaging ([#884](https://github.com/MetaMask/snaps-monorepo/pull/884))
-- Stop including source code in state ([#861](https://github.com/MetaMask/snaps-monorepo/pull/861))
-- Remove JSON schemas in favour of structs ([#862](https://github.com/MetaMask/snaps-monorepo/pull/862))
-- `@metamask/controllers@32.0.2` ([#868](https://github.com/MetaMask/snaps-monorepo/pull/868))
+- Replace JSON schema validation with structs ([#862](https://github.com/MetaMask/snaps-monorepo/pull/862))
 
 ## [0.22.3]
 ### Changed
