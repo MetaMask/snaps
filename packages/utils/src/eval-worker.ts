@@ -4,6 +4,8 @@ import 'ses/lockdown';
 import { readFileSync } from 'fs';
 import { generateMockEndowments } from './mock';
 
+const allowedSnapExports = ['onRpcRequest', 'onTransaction'];
+
 declare let lockdown: any, Compartment: any;
 
 lockdown({
@@ -48,8 +50,13 @@ new Compartment({
   exports: snapModule.exports,
 }).evaluate(readFileSync(snapFilePath, 'utf8'));
 
-if (!snapModule.exports?.onRpcRequest) {
-  console.warn(`The Snap doesn't have an "onRpcRequest" export defined.`);
+const invalidExports = Object.keys(snapModule.exports).filter(
+  (snapExport) =>
+    !allowedSnapExports.some((allowedExport) => snapExport === allowedExport),
+);
+
+if (invalidExports.length) {
+  console.warn(`Invalid exports detected:\n${invalidExports.join('\n')}`);
 }
 
 setTimeout(() => process.exit(0), 1000); // Hack to ensure worker exits
