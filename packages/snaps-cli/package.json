@@ -15,7 +15,7 @@
   ],
   "scripts": {
     "shasum": "node ./scripts/computeSnapShasum.js",
-    "build:tsc": "tsc --project ./tsconfig.local.json",
+    "build:tsc": "tsc --project ./tsconfig.build.json",
     "build:chmod": "chmod +x ./dist/main.js",
     "build:readme": "node ./scripts/updateReadme.js",
     "build": "yarn build:tsc && yarn build:post-tsc",
@@ -73,6 +73,7 @@
     "@typescript-eslint/eslint-plugin": "^5.19.0",
     "@typescript-eslint/parser": "^5.19.0",
     "clipboardy": "^2.3.0",
+    "deepmerge": "^4.2.2",
     "eslint": "^7.30.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.23.4",

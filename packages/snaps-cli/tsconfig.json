@@ -1,19 +1,9 @@
 {
   "extends": "../../tsconfig.packages.json",
   "compilerOptions": {
-    "inlineSources": true,
-    "lib": ["DOM", "ES2020"],
-    "outDir": "./dist",
-    "resolveJsonModule": true,
-    "rootDir": "./src",
-    "skipLibCheck": false,
-    "typeRoots": [
-      "../../node_modules/@types",
-      "./node_modules/@types",
-      "./src/types"
-    ]
+    "baseUrl": "./"
   },
-  "include": ["./src/**/*.ts", "./src/**/*.json"],
+  "include": ["./src", "./src/**/*.json"],
   "references": [
     { "path": "../snap-utils" },
     { "path": "../snaps-browserify-plugin" }

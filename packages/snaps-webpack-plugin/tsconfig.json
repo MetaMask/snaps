@@ -1,10 +1,12 @@
 {
   "extends": "../../tsconfig.packages.json",
   "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "typeRoots": ["../../node_modules/@types", "./node_modules/@types"]
+    "baseUrl": "./"
   },
   "include": ["./src"],
-  "references": [{ "path": "../snap-utils" }]
+  "references": [
+    {
+      "path": "../snap-utils"
+    }
+  ]
 }

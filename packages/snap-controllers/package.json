@@ -19,7 +19,7 @@
     "test": "yarn test:prepare && jest && yarn posttest",
     "posttest": "jest-it-up",
     "test:ci": "yarn test",
-    "build:tsc": "tsc --project tsconfig.local.json",
+    "build:tsc": "tsc --project tsconfig.build.json",
     "build": "yarn build:tsc",
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf '*.tsbuildinfo' 'dist/*'",

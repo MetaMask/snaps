@@ -1,0 +1,14 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./packages/execution-environments/tsconfig.build.json" },
+    { "path": "./packages/multichain-provider/tsconfig.build.json" },
+    { "path": "./packages/rollup-plugin-snaps/tsconfig.build.json" },
+    { "path": "./packages/rpc-methods/tsconfig.build.json" },
+    { "path": "./packages/snap-controllers/tsconfig.build.json" },
+    { "path": "./packages/snap-utils/tsconfig.build.json" },
+    { "path": "./packages/snaps-browserify-plugin/tsconfig.build.json" },
+    { "path": "./packages/snaps-cli/tsconfig.build.json" },
+    { "path": "./packages/snaps-webpack-plugin/tsconfig.build.json" }
+  ]
+}

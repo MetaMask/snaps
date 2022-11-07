@@ -1,9 +1,7 @@
 {
   "extends": "../../tsconfig.packages.json",
   "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "resolveJsonModule": true,
+    "baseUrl": "./",
     "typeRoots": ["../../node_modules/@types", "./node_modules/@types"]
   },
   "include": ["./src", "./src/openrpc.json"],

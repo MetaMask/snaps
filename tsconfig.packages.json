@@ -1,15 +1,21 @@
 {
   "compilerOptions": {
     "composite": true,
-    "declaration": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
+    "lib": ["DOM"],
     "module": "CommonJS",
     "moduleResolution": "node",
-    "useUnknownInCatchVariables": false,
-    "sourceMap": true,
+    "paths": {
+      "@metamask/*": ["../*/src"]
+    },
+    "resolveJsonModule": true,
     "strict": true,
-    "target": "ES2017"
-  },
-  "exclude": ["**/__snapshots__/**", "**/test/**", "**/*.test.ts"]
+    "target": "ES2017",
+    "useUnknownInCatchVariables": false,
+
+    // TODO: Move this to `tsconfig.build.json`.
+    "declaration": true,
+    "sourceMap": true
+  }
 }

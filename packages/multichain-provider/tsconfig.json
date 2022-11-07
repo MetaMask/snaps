@@ -1,11 +1,7 @@
 {
   "extends": "../../tsconfig.packages.json",
   "compilerOptions": {
-    "allowJs": true,
-    "outDir": "./dist",
-    "resolveJsonModule": true,
-    "rootDir": "./src",
-    "typeRoots": ["../../node_modules/@types", "./node_modules/@types"]
+    "baseUrl": "./"
   },
   "include": ["./src"],
   "references": [{ "path": "../snap-utils" }]
