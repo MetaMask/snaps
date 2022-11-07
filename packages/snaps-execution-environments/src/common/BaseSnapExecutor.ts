@@ -144,7 +144,7 @@ export class BaseSnapExecutor {
         );
         assert(
           isValidJson(result),
-          new TypeError('Received non JSON serializable value.'),
+          new TypeError('Received non-JSON-serializable value.'),
         );
         return result;
       },
