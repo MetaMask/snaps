@@ -54,7 +54,7 @@ const invalidExports = Object.keys(snapModule.exports).filter(
     !SNAP_EXPORT_NAMES.some((exportName) => snapExport === exportName),
 );
 
-if (invalidExports.length) {
+if (invalidExports.length > 0) {
   console.warn(`Invalid exports detected:\n${invalidExports.join('\n')}`);
 }
 
