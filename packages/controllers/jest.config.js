@@ -11,7 +11,7 @@ module.exports = {
       branches: 84.8,
       functions: 95.8,
       lines: 94.94,
-      statements: 95.05,
+      statements: 95.04,
     },
   },
   projects: [
