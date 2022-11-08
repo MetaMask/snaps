@@ -13,7 +13,6 @@
     "resolveJsonModule": true,
     "strict": true,
     "target": "ES2017",
-    "tsBuildInfoFile": ".cache/.tsbuildinfo",
     "useUnknownInCatchVariables": false
   }
 }

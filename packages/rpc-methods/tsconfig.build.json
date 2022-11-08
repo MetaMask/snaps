@@ -3,8 +3,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist",
-    "rootDir": "./src",
-    "tsBuildInfoFile": "../../.cache/rpc-methods.tsbuildinfo"
+    "rootDir": "./src"
   },
   "include": ["./src"],
   "exclude": [
