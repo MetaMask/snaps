@@ -9,7 +9,7 @@ export type SnapRpcHandler = (args: {
 export type OnRpcRequestHandler = SnapRpcHandler;
 
 export type OnTransactionResponse = {
-  insights: { [key: string]: unknown };
+  insights: { [key: string]: unknown } | null;
 };
 
 // TODO: improve type
