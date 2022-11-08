@@ -51,6 +51,14 @@ jobs:
           path: ${{ needs.prepare.outputs.YARN_CACHE_DIR }}
           key: yarn-cache-${{ runner.os }}-${{ needs.prepare.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}
       - run: yarn --immutable
+      - name: Get TypeScript version
+        run: echo "TSC_VERSION=$(yarn tsc --version | cut -d " " -f2)" >> "$GITHUB_OUTPUT"
+        id: tsc-version
+      - name: Cache TypeScript build info
+        uses: actions/cache@v3
+        with:
+          path: .cache
+          key: tsbuildinfo-${{ runner.os }}-${{ matrix.node-version }}-${{ steps.tsc-version.outputs.TSC_VERSION }}
       - run: yarn build
       - run: yarn workspace @metamask/snap-controllers run test:ci
       - name: Require clean working directory

@@ -3,7 +3,8 @@
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "tsBuildInfoFile": "../../.cache/rollup-plugin-snaps.tsbuildinfo"
   },
   "include": ["./src"],
   "exclude": [

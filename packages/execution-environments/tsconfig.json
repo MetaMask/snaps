@@ -2,7 +2,8 @@
   "extends": "../../tsconfig.packages.json",
   "compilerOptions": {
     "baseUrl": "./",
-    "typeRoots": ["../../node_modules/@types", "./node_modules/@types"]
+    "typeRoots": ["../../node_modules/@types", "./node_modules/@types"],
+    "tsBuildInfoFile": "../../.cache/execution-environments.tsbuildinfo"
   },
   "include": ["./src", "./src/openrpc.json"],
   "references": [{ "path": "../snap-utils" }]

@@ -3,7 +3,8 @@
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "tsBuildInfoFile": "../../.cache/multichain-provider.tsbuildinfo"
   },
   "include": ["./src"],
   "exclude": [
