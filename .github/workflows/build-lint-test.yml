@@ -197,7 +197,6 @@ jobs:
             echo "Working tree dirty after building"
             exit 1
           fi
-      - run: yarn workspace @metamask/snaps-cli run test
   platform-compatibility-test:
     name: Platform Compatibility Test
     runs-on: ${{ matrix.os }}
