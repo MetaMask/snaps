@@ -116,7 +116,7 @@ jobs:
       - run: yarn --immutable
       - run: yarn workspaces foreach --parallel --verbose --exclude @metamask/snap-controllers --exclude root run test:ci
       - name: CodeCov
-        uses: codecov/codecov-action@f32b3a3741e1053eb607407145bc9619351dc93b
+        uses: codecov/codecov-action@d9f34f8cd5cb3b3eb79b3e4b5dae3a16df499a70
       - name: Require clean working directory
         shell: bash
         run: |
