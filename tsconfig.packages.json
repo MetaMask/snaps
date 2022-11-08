@@ -13,10 +13,6 @@
     "resolveJsonModule": true,
     "strict": true,
     "target": "ES2017",
-    "useUnknownInCatchVariables": false,
-
-    // TODO: Move this to `tsconfig.build.json`.
-    "declaration": true,
-    "sourceMap": true
+    "useUnknownInCatchVariables": false
   }
 }
