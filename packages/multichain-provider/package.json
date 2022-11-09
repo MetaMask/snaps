@@ -1,13 +1,11 @@
 {
-  "name": "@metamask/rpc-methods",
+  "name": "@metamask/multichain-provider",
   "version": "0.23.0",
-  "description": "MetaMask Snap RPC method implementations.",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps-monorepo.git"
   },
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "files": [
     "dist/"
   ],
@@ -20,20 +18,17 @@
     "lint": "yarn lint:eslint && yarn lint:misc --check",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "yarn auto-changelog validate",
-    "build": "tsc --project tsconfig.build.json",
+    "build:tsc": "tsc --project tsconfig.build.json",
+    "build": "yarn build:tsc",
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
     "publish:package": "../../scripts/publish-package.sh"
   },
   "dependencies": {
-    "@metamask/controllers": "^32.0.2",
-    "@metamask/key-tree": "^6.0.0",
-    "@metamask/snap-utils": "^0.23.0",
-    "@metamask/types": "^1.1.0",
+    "@metamask/safe-event-emitter": "^2.0.0",
+    "@metamask/snap-types": "^0.23.0",
     "@metamask/utils": "^3.3.0",
-    "eth-rpc-errors": "^4.0.2",
-    "nanoid": "^3.1.31",
-    "superstruct": "^0.16.7"
+    "nanoid": "^3.1.31"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.0.3",
@@ -42,7 +37,8 @@
     "@metamask/eslint-config-jest": "^9.0.0",
     "@metamask/eslint-config-nodejs": "^9.0.0",
     "@metamask/eslint-config-typescript": "^9.0.1",
-    "@types/node": "^14.14.25",
+    "@metamask/snap-utils": "^0.23.0",
+    "@types/jest": "^27.5.1",
     "deepmerge": "^4.2.2",
     "eslint": "^7.30.0",
     "eslint-config-prettier": "^8.3.0",
@@ -52,11 +48,12 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.4.0",
     "jest": "^29.0.2",
+    "jest-environment-jsdom": "^29.1.1",
     "jest-it-up": "^2.0.0",
     "prettier": "^2.3.2",
     "prettier-plugin-packagejson": "^2.2.11",
     "rimraf": "^3.0.2",
-    "ts-jest": "^29.0.0",
+    "ts-jest": "^29.0.2",
     "typescript": "^4.4.0"
   },
   "engines": {

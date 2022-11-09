@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.packages.json",
+  "compilerOptions": {
+    "baseUrl": "./"
+  },
+  "include": ["./src", "./src/**/*.json"],
+  "references": [
+    { "path": "../snap-utils" },
+    { "path": "../snaps-browserify-plugin" }
+  ]
+}

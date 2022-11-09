@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfig.packages.build.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist",
+    "rootDir": "./src"
+  },
+  "include": ["./src"],
+  "exclude": [
+    "**/*.test.ts",
+    "./src/**/test-utils",
+    "./src/**/__mocks__",
+    "./src/**/__snapshots__"
+  ],
+  "references": [
+    { "path": "../snap-utils/tsconfig.build.json" },
+    { "path": "../snaps-browserify-plugin/tsconfig.build.json" }
+  ]
+}
