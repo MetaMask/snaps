@@ -1,5 +1,5 @@
 const { babel } = require('@rollup/plugin-babel');
-const snaps = require('@metamask/rollup-plugin-snaps').default;
+const snaps = require('@metamask/snaps-rollup-plugin').default;
 
 /**
  * @type {RollupOptions}

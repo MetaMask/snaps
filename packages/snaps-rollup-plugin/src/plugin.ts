@@ -40,7 +40,7 @@ export default function snaps(options?: Partial<Options>): Plugin {
   };
 
   return {
-    name: '@metamask/rollup-plugin-snaps',
+    name: '@metamask/snaps-rollup-plugin',
 
     renderChunk(code: string): { code: string; map?: SourceMapInput } | null {
       // Rollup internally merges the new source map with the old one, so there
