@@ -1,7 +1,6 @@
 import {
   BaseControllerV2 as BaseController,
   RestrictedControllerMessenger,
-  HasPermission,
   GetPermissions,
 } from '@metamask/controllers';
 import {
@@ -16,15 +15,10 @@ import { Duration, inMilliseconds } from '@metamask/utils';
 import {
   GetAllSnaps,
   getRunnableSnaps,
-  GetSnap,
   HandleSnapRequest,
-  SnapAdded,
-  SnapBlocked,
   SnapEndowments,
   SnapInstalled,
   SnapRemoved,
-  SnapTerminated,
-  SnapUnblocked,
   SnapUpdated,
 } from '..';
 import { getCronjobCaveatJobs } from '../snaps/endowments/cronjob';
@@ -32,19 +26,10 @@ import { Timer } from '../snaps/Timer';
 
 export type CronjobControllerActions =
   | GetAllSnaps
-  | GetSnap
   | HandleSnapRequest
-  | HasPermission
   | GetPermissions;
 
-export type CronjobControllerEvents =
-  | SnapAdded
-  | SnapBlocked
-  | SnapInstalled
-  | SnapRemoved
-  | SnapUnblocked
-  | SnapUpdated
-  | SnapTerminated;
+export type CronjobControllerEvents = SnapInstalled | SnapRemoved | SnapUpdated;
 
 export type CronjobControllerMessenger = RestrictedControllerMessenger<
   'CronjobController',
