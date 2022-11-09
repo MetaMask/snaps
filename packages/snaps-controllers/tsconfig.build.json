@@ -14,13 +14,13 @@
   ],
   "references": [
     {
-      "path": "../snap-utils/tsconfig.build.json"
+      "path": "../snaps-utils/tsconfig.build.json"
     },
     {
       "path": "../rpc-methods/tsconfig.build.json"
     },
     {
-      "path": "../execution-environments/tsconfig.build.json"
+      "path": "../snaps-execution-environments/tsconfig.build.json"
     }
   ]
 }
