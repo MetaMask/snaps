@@ -124,14 +124,12 @@ async function requestSnapsImplementation(
 
   try {
     // We expect the params to be the same as wallet_requestPermissions
-    const requestedPermissions = Object.keys(requestedSnaps).reduce(
-      (acc, key) => {
-        // @ts-expect-error TODO: Type error
-        acc[getSnapPermissionName(key)] = requestedSnaps[key];
-        return acc;
-      },
-      {},
-    );
+    const requestedPermissions = Object.keys(requestedSnaps).reduce<
+      Record<string, Partial<PermissionConstraint>>
+    >((acc, key) => {
+      acc[getSnapPermissionName(key)] = requestedSnaps[key];
+      return acc;
+    }, {});
     const existingPermissions = await getPermissions();
     if (
       !existingPermissions ||
@@ -152,7 +150,7 @@ async function requestSnapsImplementation(
   try {
     res.result = await handleInstallSnaps(requestedSnaps, installSnaps);
   } catch (err) {
-    res.error = err as Error;
+    res.error = err;
   }
   return end();
 }

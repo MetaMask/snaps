@@ -2,8 +2,17 @@ import {
   MOCK_SNAP_ID,
   getTruncatedSnap,
 } from '@metamask/snap-utils/test-utils';
-import { getSnapPermissionName } from '@metamask/snap-utils';
+import {
+  JsonRpcRequest,
+  JsonRpcSuccess,
+  PendingJsonRpcResponse,
+} from '@metamask/types';
+import {
+  getSnapPermissionName,
+  InstallSnapsResult,
+} from '@metamask/snap-utils';
 import { JsonRpcEngine } from 'json-rpc-engine';
+import { RequestedPermissions } from '@metamask/controllers';
 import { requestSnapsHandler } from './requestSnaps';
 
 describe('requestSnapsHandler', () => {
@@ -49,17 +58,23 @@ describe('implementation', () => {
 
     const engine = new JsonRpcEngine();
     engine.push((req, res, next, end) =>
-      implementation(req as any, res as any, next, end, hooks),
+      implementation(
+        req as JsonRpcRequest<RequestedPermissions>,
+        res as PendingJsonRpcResponse<InstallSnapsResult>,
+        next,
+        end,
+        hooks,
+      ),
     );
 
-    const response: any = await engine.handle({
+    const response = (await engine.handle({
       jsonrpc: '2.0',
       id: 1,
       method: 'wallet_installSnaps',
       params: {
         [MOCK_SNAP_ID]: {},
       },
-    });
+    })) as JsonRpcSuccess<InstallSnapsResult>;
 
     expect(hooks.requestPermissions).toHaveBeenCalledWith({
       [getSnapPermissionName(MOCK_SNAP_ID)]: {},
@@ -95,17 +110,23 @@ describe('implementation', () => {
 
     const engine = new JsonRpcEngine();
     engine.push((req, res, next, end) =>
-      implementation(req as any, res as any, next, end, hooks),
+      implementation(
+        req as JsonRpcRequest<RequestedPermissions>,
+        res as PendingJsonRpcResponse<InstallSnapsResult>,
+        next,
+        end,
+        hooks,
+      ),
     );
 
-    const response: any = await engine.handle({
+    const response = (await engine.handle({
       jsonrpc: '2.0',
       id: 1,
       method: 'wallet_installSnaps',
       params: {
         [MOCK_SNAP_ID]: {},
       },
-    });
+    })) as JsonRpcSuccess<InstallSnapsResult>;
 
     expect(hooks.requestPermissions).not.toHaveBeenCalledWith({
       [getSnapPermissionName(MOCK_SNAP_ID)]: {},
