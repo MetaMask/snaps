@@ -459,7 +459,7 @@ describe('BaseSnapExecutor', () => {
 
   it('reports when outbound requests are made', async () => {
     const CODE = `
-      module.exports.onRpcRequest = () => wallet.request({ method: 'eth_blockNumber', params: [] });
+      module.exports.onRpcRequest = () => ethereum.request({ method: 'eth_blockNumber', params: [] });
     `;
     const executor = new TestSnapExecutor();
 
@@ -467,7 +467,7 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 1,
       method: 'executeSnap',
-      params: [FAKE_SNAP_NAME, CODE, []],
+      params: [FAKE_SNAP_NAME, CODE, ['ethereum']],
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -1193,14 +1193,19 @@ describe('BaseSnapExecutor', () => {
     jest.useRealTimers();
     const consoleLogSpy = jest.spyOn(console, 'log');
     const consoleWarnSpy = jest.spyOn(console, 'warn');
-    const TIMER_ENDOWMENTS = ['setTimeout', 'clearTimeout', 'console'];
+    const TIMER_ENDOWMENTS = [
+      'setTimeout',
+      'clearTimeout',
+      'console',
+      'ethereum',
+    ];
     const CODE = `
       let promise;
 
       module.exports.onRpcRequest = async ({request}) => {
         switch (request.method) {
           case 'first':
-            promise = wallet.request({ method: 'eth_blockNumber', params: [] })
+            promise = ethereum.request({ method: 'eth_blockNumber', params: [] })
               .then(() => console.log('Jailbreak'));
             return 'FIRST OK';
           case 'second':
@@ -1320,14 +1325,19 @@ describe('BaseSnapExecutor', () => {
     jest.useRealTimers();
     const consoleLogSpy = jest.spyOn(console, 'log');
     const consoleWarnSpy = jest.spyOn(console, 'warn');
-    const TIMER_ENDOWMENTS = ['setTimeout', 'clearTimeout', 'console'];
+    const TIMER_ENDOWMENTS = [
+      'setTimeout',
+      'clearTimeout',
+      'console',
+      'ethereum',
+    ];
     const CODE = `
       let promise;
 
       module.exports.onRpcRequest = async ({request}) => {
         switch (request.method) {
           case 'first':
-            promise = wallet.request({ method: 'eth_blockNumber', params: [] })
+            promise = ethereum.request({ method: 'eth_blockNumber', params: [] })
               .catch(() => console.log('Jailbreak'));
             return 'FIRST OK';
           case 'second':
@@ -1450,7 +1460,7 @@ describe('BaseSnapExecutor', () => {
     // This will ensure that the reject(reason); is called from inside the proxy method
     // when the original promise throws an error (i.e. RPC request fails).
     const CODE = `
-      module.exports.onRpcRequest = () => wallet.request({ method: 'eth_blockNumber', params: [] });
+      module.exports.onRpcRequest = () => ethereum.request({ method: 'eth_blockNumber', params: [] });
     `;
     const executor = new TestSnapExecutor();
 
@@ -1458,7 +1468,7 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 1,
       method: 'executeSnap',
-      params: [FAKE_SNAP_NAME, CODE, []],
+      params: [FAKE_SNAP_NAME, CODE, ['ethereum']],
     });
 
     expect(await executor.readCommand()).toStrictEqual({
