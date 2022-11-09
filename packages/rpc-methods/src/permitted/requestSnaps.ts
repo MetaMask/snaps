@@ -9,7 +9,7 @@ import {
   PendingJsonRpcResponse,
   JsonRpcEngineEndCallback,
 } from '@metamask/types';
-import { getSnapPermissionName } from '@metamask/snap-utils';
+import { getSnapPermissionName } from '@metamask/snaps-utils';
 import { hasProperty, isObject } from '@metamask/utils';
 import {
   handleInstallSnaps,

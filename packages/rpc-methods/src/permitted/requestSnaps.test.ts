@@ -1,7 +1,7 @@
 import {
   MOCK_SNAP_ID,
   getTruncatedSnap,
-} from '@metamask/snap-utils/test-utils';
+} from '@metamask/snaps-utils/test-utils';
 import {
   JsonRpcRequest,
   JsonRpcSuccess,
@@ -10,7 +10,7 @@ import {
 import {
   getSnapPermissionName,
   InstallSnapsResult,
-} from '@metamask/snap-utils';
+} from '@metamask/snaps-utils';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { RequestedPermissions } from '@metamask/controllers';
 import { requestSnapsHandler } from './requestSnaps';
