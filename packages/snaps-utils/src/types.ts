@@ -1,7 +1,7 @@
 import {
   SnapFunctionExports,
   SnapKeyring as Keyring,
-} from '@metamask/snap-types';
+} from '@metamask/snaps-types';
 import { Json, assertStruct } from '@metamask/utils';
 import {
   any,

@@ -33,7 +33,7 @@
     "@metamask/object-multiplex": "^1.2.0",
     "@metamask/post-message-stream": "^6.0.0",
     "@metamask/providers": "^10.2.0",
-    "@metamask/snap-types": "^0.23.0",
+    "@metamask/snaps-types": "^0.23.0",
     "@metamask/snaps-utils": "^0.23.0",
     "@metamask/utils": "^3.3.0",
     "eth-rpc-errors": "^4.0.3",

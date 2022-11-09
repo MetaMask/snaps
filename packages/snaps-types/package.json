@@ -1,5 +1,5 @@
 {
-  "name": "@metamask/snap-types",
+  "name": "@metamask/snaps-types",
   "version": "0.23.0",
   "description": "TypeScript types for developing MetaMask Snaps.",
   "repository": {

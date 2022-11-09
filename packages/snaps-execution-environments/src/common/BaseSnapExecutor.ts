@@ -2,7 +2,7 @@
 /// <reference path="../../../../node_modules/ses/index.d.ts" />
 import { Duplex } from 'stream';
 import { MetaMaskInpageProvider } from '@metamask/providers';
-import { SnapProvider, SnapExports } from '@metamask/snap-types';
+import { SnapProvider, SnapExports } from '@metamask/snaps-types';
 import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
 import {
   isObject,

@@ -58,7 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **BREAKING:** Simplify manifest format for permission caveats ([#705](https://github.com/MetaMask/snaps-monorepo/pull/705))
 - Reduce TypeScript compilation target for `snap-controllers` ([#708](https://github.com/MetaMask/snaps-monorepo/pull/708))
-- Move all internal types from `@metamask/snap-types` to `@metamask/snaps-utils` ([#695](https://github.com/MetaMask/snaps-monorepo/pull/695))
+- Move all internal types from `@metamask/snaps-types` to `@metamask/snaps-utils` ([#695](https://github.com/MetaMask/snaps-monorepo/pull/695))
 
 ### Removed
 - **BREAKING:** Removed ExternalResourceController ([#701](https://github.com/MetaMask/snaps-monorepo/pull/701))
@@ -107,7 +107,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - **BREAKING:** Snaps are now required to export `onRpcRequest` to receive RPC requests ([#481](https://github.com/MetaMask/snaps-monorepo/pull/481), [#533](https://github.com/MetaMask/snaps-monorepo/pull/533), [#538](https://github.com/MetaMask/snaps-monorepo/pull/538))
-  - The type of the function is available in `@metamask/snap-types` as `OnRpcRequestHandler`.
+  - The type of the function is available in `@metamask/snaps-types` as `OnRpcRequestHandler`.
 - Snaps can no longer run timers outside of pending RPC requests ([#490](https://github.com/MetaMask/snaps-monorepo/pull/490))
 
 ### Fixed

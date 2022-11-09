@@ -27,7 +27,7 @@ import {
   isAccountIdArray,
   Namespaces,
 } from '@metamask/snaps-utils';
-import { SnapKeyring } from '@metamask/snap-types';
+import { SnapKeyring } from '@metamask/snaps-types';
 import { hasProperty, assert } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 import {

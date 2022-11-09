@@ -41,7 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.20.0]
 ### Added
 - **BREAKING:** Add Transaction Insight API ([#642](https://github.com/MetaMask/snaps-monorepo/pull/642))
-- Add internal types from `@metamask/snap-types` ([#695](https://github.com/MetaMask/snaps-monorepo/pull/695))
+- Add internal types from `@metamask/snaps-types` ([#695](https://github.com/MetaMask/snaps-monorepo/pull/695))
 
 ### Changed
 - **BREAKING:** Simplify manifest format for permission caveats ([#705](https://github.com/MetaMask/snaps-monorepo/pull/705))

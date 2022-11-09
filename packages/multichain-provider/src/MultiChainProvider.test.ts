@@ -1,4 +1,4 @@
-import { SnapProvider } from '@metamask/snap-types';
+import { SnapProvider } from '@metamask/snaps-types';
 import { NamespaceId, RequestNamespace } from '@metamask/snaps-utils';
 import {
   getRequestNamespace,

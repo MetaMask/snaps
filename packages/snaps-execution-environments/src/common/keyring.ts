@@ -1,4 +1,4 @@
-import { SnapKeyring } from '@metamask/snap-types';
+import { SnapKeyring } from '@metamask/snaps-types';
 import { JsonRpcNotification, JsonRpcRequest } from '@metamask/utils';
 
 /**

@@ -13,7 +13,7 @@ import {
   Session,
 } from '@metamask/snaps-utils';
 import { JsonRpcRequest } from '@metamask/utils';
-import type { SnapProvider } from '@metamask/snap-types';
+import type { SnapProvider } from '@metamask/snaps-types';
 import { Provider } from './Provider';
 
 declare global {

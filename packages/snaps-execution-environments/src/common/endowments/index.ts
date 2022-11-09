@@ -1,4 +1,4 @@
-import { SnapProvider } from '@metamask/snap-types';
+import { SnapProvider } from '@metamask/snaps-types';
 import { hasProperty } from '@metamask/utils';
 import { rootRealmGlobal } from '../globalObject';
 import interval from './interval';

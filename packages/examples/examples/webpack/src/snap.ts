@@ -1,4 +1,4 @@
-import { OnRpcRequestHandler } from '@metamask/snap-types';
+import { OnRpcRequestHandler } from '@metamask/snaps-types';
 
 /**
  * Handle incoming JSON-RPC requests, sent through `wallet_invokeSnap`.
