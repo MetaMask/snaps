@@ -63,7 +63,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - Remove `ErrorMessageEvent` and `ExecutionServiceMessenger` types ([#486](https://github.com/MetaMask/snaps-monorepo/pull/486))
-  - These types are now available via `@metamask/snap-controllers`
+  - These types are now available via `@metamask/snaps-controllers`
 
 ## [0.16.0]
 ### Added

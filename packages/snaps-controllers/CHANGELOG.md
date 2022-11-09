@@ -348,7 +348,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Readme file ([#71](https://github.com/MetaMask/snaps-monorepo/pull/71))
 
 ### Changed
-- **BREAKING:** Rename package to `@metamask/snap-controllers` ([#73](https://github.com/MetaMask/snaps-monorepo/pull/73))
+- **BREAKING:** Rename package to `@metamask/snaps-controllers` ([#73](https://github.com/MetaMask/snaps-monorepo/pull/73))
 
 ## [0.0.9]
 ### Added

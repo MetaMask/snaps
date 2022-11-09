@@ -1,3 +1,3 @@
-# @metamask/snap-controllers
+# @metamask/snaps-controllers
 
 Controllers for MetaMask Snaps functionality.
