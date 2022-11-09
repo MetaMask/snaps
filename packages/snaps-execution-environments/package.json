@@ -1,5 +1,5 @@
 {
-  "name": "@metamask/execution-environments",
+  "name": "@metamask/snaps-execution-environments",
   "version": "0.23.0",
   "description": "Snap sandbox environments for executing SES javascript",
   "repository": {

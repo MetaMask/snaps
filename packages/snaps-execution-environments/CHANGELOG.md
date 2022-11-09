@@ -38,7 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - **BREAKING:** Add Transaction Insight API ([#642](https://github.com/MetaMask/snaps-monorepo/pull/642))
   - Part of this change made changes to the execution environments to support multiple request handlers
-  - It also changed the exports of `@metamask/execution-environments`
+  - It also changed the exports of `@metamask/snaps-execution-environments`
 
 ## [0.19.1]
 ### Changed

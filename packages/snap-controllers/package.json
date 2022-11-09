@@ -33,12 +33,12 @@
   "dependencies": {
     "@metamask/browser-passworder": "^3.0.0",
     "@metamask/controllers": "^32.0.2",
-    "@metamask/execution-environments": "^0.23.0",
     "@metamask/object-multiplex": "^1.1.0",
     "@metamask/post-message-stream": "^6.0.0",
     "@metamask/rpc-methods": "^0.23.0",
     "@metamask/snap-types": "^0.23.0",
     "@metamask/snap-utils": "^0.23.0",
+    "@metamask/snaps-execution-environments": "^0.23.0",
     "@metamask/utils": "^3.3.0",
     "@xstate/fsm": "^2.0.0",
     "concat-stream": "^2.0.0",
