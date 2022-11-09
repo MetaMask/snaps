@@ -10,7 +10,7 @@ import {
   ConnectArguments,
   Session,
   MultiChainRequest,
-} from '@metamask/snap-utils';
+} from '@metamask/snaps-utils';
 
 /**
  * Creates a middleware that handles requests to the multichain controller.

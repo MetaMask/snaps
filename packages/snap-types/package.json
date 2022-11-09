@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@metamask/providers": "^10.2.0",
-    "@metamask/snap-utils": "^0.23.0",
+    "@metamask/snaps-utils": "^0.23.0",
     "@metamask/types": "^1.1.0"
   },
   "devDependencies": {

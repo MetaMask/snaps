@@ -8,7 +8,7 @@ import {
   JsonRpcRequest,
   JsonRpcResponse,
 } from '@metamask/utils';
-import { HandlerType } from '@metamask/snap-utils';
+import { HandlerType } from '@metamask/snaps-utils';
 import { BaseSnapExecutor } from './BaseSnapExecutor';
 
 const FAKE_ORIGIN = 'origin:foo';

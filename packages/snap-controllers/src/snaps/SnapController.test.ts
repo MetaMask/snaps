@@ -13,7 +13,7 @@ import {
   HandlerType,
   SnapStatus,
   SnapCaveatType,
-} from '@metamask/snap-utils';
+} from '@metamask/snaps-utils';
 import { Crypto } from '@peculiar/webcrypto';
 import { EthereumRpcError, ethErrors, serializeError } from 'eth-rpc-errors';
 import fetchMock from 'jest-fetch-mock';
@@ -30,7 +30,7 @@ import {
   getMockSnapData,
   DEFAULT_SNAP_BUNDLE,
   MOCK_LOCAL_SNAP_ID,
-} from '@metamask/snap-utils/test-utils';
+} from '@metamask/snaps-utils/test-utils';
 import { NodeThreadExecutionService, setupMultiplex } from '../services';
 import { delay } from '../utils';
 import {

@@ -2,7 +2,7 @@ import {
   assertIsNamespacesObject,
   Namespaces,
   SnapCaveatType,
-} from '@metamask/snap-utils';
+} from '@metamask/snaps-utils';
 import {
   Caveat,
   CaveatSpecificationConstraint,

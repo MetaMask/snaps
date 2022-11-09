@@ -52,7 +52,7 @@ import {
   SnapStatusEvents,
   assertIsSnapManifest,
   PersistedSnap,
-} from '@metamask/snap-utils';
+} from '@metamask/snaps-utils';
 import {
   Duration,
   hasProperty,

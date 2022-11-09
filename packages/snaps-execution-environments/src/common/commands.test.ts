@@ -1,5 +1,5 @@
-import { HandlerType } from '@metamask/snap-utils';
-import { MOCK_ORIGIN } from '@metamask/snap-utils/test-utils';
+import { HandlerType } from '@metamask/snaps-utils';
+import { MOCK_ORIGIN } from '@metamask/snaps-utils/test-utils';
 import {
   CommandMethodsMapping,
   getCommandMethodImplementations,

@@ -4,14 +4,14 @@ import { OutputOptions, rollup, RollupOutput } from 'rollup';
 import {
   DEFAULT_SNAP_BUNDLE,
   getSnapManifest,
-} from '@metamask/snap-utils/test-utils';
-import { checkManifest, evalBundle } from '@metamask/snap-utils';
+} from '@metamask/snaps-utils/test-utils';
+import { checkManifest, evalBundle } from '@metamask/snaps-utils';
 import snaps, { Options } from './plugin';
 
 jest.mock('fs');
 
-jest.mock('@metamask/snap-utils', () => ({
-  ...jest.requireActual('@metamask/snap-utils'),
+jest.mock('@metamask/snaps-utils', () => ({
+  ...jest.requireActual('@metamask/snaps-utils'),
   evalBundle: jest.fn(),
   checkManifest: jest.fn(),
 }));

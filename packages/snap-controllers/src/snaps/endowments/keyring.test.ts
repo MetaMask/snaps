@@ -1,6 +1,6 @@
 import { PermissionConstraint, PermissionType } from '@metamask/controllers';
-import { SnapCaveatType } from '@metamask/snap-utils';
-import { getNamespace } from '@metamask/snap-utils/test-utils';
+import { SnapCaveatType } from '@metamask/snaps-utils';
+import { getNamespace } from '@metamask/snaps-utils/test-utils';
 import { SnapEndowments } from './enum';
 import {
   getKeyringCaveatNamespaces,

@@ -1,5 +1,5 @@
 import { Caveat, PermissionType } from '@metamask/controllers';
-import { SnapCaveatType } from '@metamask/snap-utils';
+import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   getCronjobCaveatMapper,
   cronjobEndowmentBuilder,

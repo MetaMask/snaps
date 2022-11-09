@@ -2,7 +2,7 @@ import { ControllerMessenger } from '@metamask/controllers';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import pump from 'pump';
-import { SnapRpcHookArgs } from '@metamask/snap-utils';
+import { SnapRpcHookArgs } from '@metamask/snaps-utils';
 import {
   ExecutionService,
   ExecutionServiceActions,

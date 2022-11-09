@@ -3,13 +3,13 @@ import {
   fromEntries,
   getSnapPermissionName,
   getSnapSourceShasum,
-} from '@metamask/snap-utils';
+} from '@metamask/snaps-utils';
 import {
   MOCK_ORIGIN,
   MOCK_SNAP_ID,
   getSnapManifest,
   getPersistedSnapObject,
-} from '@metamask/snap-utils/test-utils';
+} from '@metamask/snaps-utils/test-utils';
 import { SnapEndowments } from '../snaps';
 import {
   MOCK_CONNECT_ARGUMENTS,

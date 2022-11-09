@@ -10,7 +10,7 @@ import {
   CronjobSpecification,
   flatten,
   parseCronExpression,
-} from '@metamask/snap-utils';
+} from '@metamask/snaps-utils';
 import { Duration, inMilliseconds } from '@metamask/utils';
 import {
   GetAllSnaps,

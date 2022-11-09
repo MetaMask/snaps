@@ -1,5 +1,5 @@
 import path from 'path';
-import * as snapUtils from '@metamask/snap-utils';
+import * as snapUtils from '@metamask/snaps-utils';
 import * as snapEvalModule from '../eval/evalHandler';
 import * as manifestModule from '../manifest/manifestHandler';
 import * as buildBundle from './bundle';
@@ -7,7 +7,7 @@ import buildModule from '.';
 
 const build = buildModule.handler;
 
-jest.mock('@metamask/snap-utils', () => ({
+jest.mock('@metamask/snaps-utils', () => ({
   validateDirPath: jest.fn(),
   validateFilePath: jest.fn(),
   validateOutfileName: jest.fn(),

@@ -7,7 +7,7 @@ import {
   isValidUrl,
   getTargetVersion,
   validateNpmSnap,
-} from '@metamask/snap-utils';
+} from '@metamask/snaps-utils';
 
 import { createTarballExtractionStream, getNodeStream } from './stream';
 

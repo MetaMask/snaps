@@ -1,5 +1,5 @@
 import { ControllerMessenger } from '@metamask/controllers';
-import { getPersistedSnapObject } from '@metamask/snap-utils/test-utils';
+import { getPersistedSnapObject } from '@metamask/snaps-utils/test-utils';
 import {
   AllowedActions,
   AllowedEvents,

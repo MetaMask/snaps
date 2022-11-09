@@ -1,4 +1,4 @@
-import { ChainIdStruct, HandlerType } from '@metamask/snap-utils';
+import { ChainIdStruct, HandlerType } from '@metamask/snaps-utils';
 import { SnapKeyring } from '@metamask/snap-types';
 import {
   array,

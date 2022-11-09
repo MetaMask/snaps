@@ -38,8 +38,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **BREAKING:** Add Transaction Insight API ([#642](https://github.com/MetaMask/snaps-monorepo/pull/642))
 
 ### Removed
-- **BREAKING:** Move all internal types from `@metamask/snap-types` to `@metamask/snap-utils` ([#695](https://github.com/MetaMask/snaps-monorepo/pull/695))
-  - Previously accessible types can now be accessed by importing `@metamask/snap-utils`
+- **BREAKING:** Move all internal types from `@metamask/snap-types` to `@metamask/snaps-utils` ([#695](https://github.com/MetaMask/snaps-monorepo/pull/695))
+  - Previously accessible types can now be accessed by importing `@metamask/snaps-utils`
 
 ## [0.19.1]
 ### Changed

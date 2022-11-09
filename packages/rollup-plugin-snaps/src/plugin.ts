@@ -5,7 +5,7 @@ import {
   evalBundle,
   postProcessBundle,
   PostProcessOptions,
-} from '@metamask/snap-utils';
+} from '@metamask/snaps-utils';
 import { Plugin, SourceMapInput } from 'rollup';
 
 type PluginOptions = {

@@ -7,7 +7,7 @@ import {
   SnapManifest,
   NpmSnapFileNames,
   UnvalidatedSnapFiles,
-} from '@metamask/snap-utils';
+} from '@metamask/snaps-utils';
 
 // The paths of files within npm tarballs appear to always be prefixed with
 // "package/".

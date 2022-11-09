@@ -3,12 +3,12 @@ import {
   HandlerType,
   deepClone,
   TruncatedSnap,
-} from '@metamask/snap-utils';
+} from '@metamask/snaps-utils';
 import {
   MOCK_ORIGIN,
   MOCK_SNAP_ID,
   getTruncatedSnap,
-} from '@metamask/snap-utils/test-utils';
+} from '@metamask/snaps-utils/test-utils';
 import { Duration, inMilliseconds } from '@metamask/utils';
 import { SnapEndowments } from '../snaps';
 import {

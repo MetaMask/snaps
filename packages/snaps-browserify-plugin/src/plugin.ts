@@ -8,7 +8,7 @@ import {
   evalBundle,
   postProcessBundle,
   PostProcessOptions,
-} from '@metamask/snap-utils';
+} from '@metamask/snaps-utils';
 import { fromSource } from 'convert-source-map';
 
 const TEMP_BUNDLE_PATH = pathUtils.join(os.tmpdir(), 'snaps-bundle.js');

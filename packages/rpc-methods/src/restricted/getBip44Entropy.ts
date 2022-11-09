@@ -16,7 +16,7 @@ import {
   Json,
   NonEmptyArray,
 } from '@metamask/utils';
-import { SnapCaveatType } from '@metamask/snap-utils';
+import { SnapCaveatType } from '@metamask/snaps-utils';
 
 const targetKey = 'snap_getBip44Entropy';
 

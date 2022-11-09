@@ -4,7 +4,7 @@ import {
   RequestArguments,
   Session,
   Event,
-} from '@metamask/snap-utils';
+} from '@metamask/snaps-utils';
 
 /* eslint-disable camelcase */
 type ProviderEventMap = {

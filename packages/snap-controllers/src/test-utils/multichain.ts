@@ -1,10 +1,10 @@
-import { getSnapSourceShasum } from '@metamask/snap-utils';
+import { getSnapSourceShasum } from '@metamask/snaps-utils';
 import {
   MOCK_ORIGIN,
   MOCK_SNAP_ID,
   getSnapManifest,
   getPersistedSnapObject,
-} from '@metamask/snap-utils/test-utils';
+} from '@metamask/snaps-utils/test-utils';
 import { SnapEndowments } from '..';
 import { MultiChainController } from '../multichain';
 import {

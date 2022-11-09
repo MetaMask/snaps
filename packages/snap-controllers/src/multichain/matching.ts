@@ -3,7 +3,7 @@ import {
   NamespaceId,
   SnapId,
   Namespace,
-} from '@metamask/snap-utils';
+} from '@metamask/snaps-utils';
 
 /**
  * Finds a keyring snap for each namespace implements at a minimum the requested functionality.

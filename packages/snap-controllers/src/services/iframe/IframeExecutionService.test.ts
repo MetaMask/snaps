@@ -2,7 +2,7 @@ import { ControllerMessenger } from '@metamask/controllers';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import pump from 'pump';
-import { HandlerType } from '@metamask/snap-utils';
+import { HandlerType } from '@metamask/snaps-utils';
 import { ErrorMessageEvent } from '../ExecutionService';
 import { setupMultiplex } from '../AbstractExecutionService';
 import { IframeExecutionService } from './IframeExecutionService';

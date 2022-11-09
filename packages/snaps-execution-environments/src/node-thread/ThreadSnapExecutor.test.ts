@@ -3,7 +3,7 @@ import 'ses';
 import { EventEmitter } from 'stream';
 import { parentPort } from 'worker_threads';
 import { Json, JsonRpcSuccess } from '@metamask/utils';
-import { SNAP_STREAM_NAMES, HandlerType } from '@metamask/snap-utils';
+import { SNAP_STREAM_NAMES, HandlerType } from '@metamask/snaps-utils';
 import { ThreadSnapExecutor } from './ThreadSnapExecutor';
 
 const FAKE_ORIGIN = 'origin:foo';

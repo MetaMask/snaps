@@ -18,7 +18,7 @@ import {
   SnapCaveatType,
   CronjobSpecification,
   isCronjobSpecificationArray,
-} from '@metamask/snap-utils';
+} from '@metamask/snaps-utils';
 import { ethErrors } from 'eth-rpc-errors';
 import { SnapEndowments } from './enum';
 

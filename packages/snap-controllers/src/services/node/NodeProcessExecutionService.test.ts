@@ -1,5 +1,5 @@
 import { ControllerMessenger } from '@metamask/controllers';
-import { HandlerType, SnapId } from '@metamask/snap-utils';
+import { HandlerType, SnapId } from '@metamask/snaps-utils';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import pump from 'pump';

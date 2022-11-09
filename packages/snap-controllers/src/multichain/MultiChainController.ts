@@ -26,7 +26,7 @@ import {
   getSnapPermissionName,
   isAccountIdArray,
   Namespaces,
-} from '@metamask/snap-utils';
+} from '@metamask/snaps-utils';
 import { SnapKeyring } from '@metamask/snap-types';
 import { hasProperty, assert } from '@metamask/utils';
 import { nanoid } from 'nanoid';

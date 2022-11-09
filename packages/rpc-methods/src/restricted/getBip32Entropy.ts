@@ -16,7 +16,7 @@ import {
   NonEmptyArray,
 } from '@metamask/utils';
 import { BIP32Node, JsonSLIP10Node, SLIP10Node } from '@metamask/key-tree';
-import { SnapCaveatType } from '@metamask/snap-utils';
+import { SnapCaveatType } from '@metamask/snaps-utils';
 import { isEqual } from '../utils';
 
 const INDEX_REGEX = /^\d+'?$/u;

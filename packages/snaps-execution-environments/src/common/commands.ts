@@ -1,5 +1,5 @@
 import { assertExhaustive } from '@metamask/utils';
-import { HandlerType } from '@metamask/snap-utils';
+import { HandlerType } from '@metamask/snaps-utils';
 import { InvokeSnap, InvokeSnapArgs } from './BaseSnapExecutor';
 import {
   assertIsOnTransactionRequestArguments,

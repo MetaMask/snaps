@@ -4,7 +4,7 @@ import {
   validateDirPath,
   validateFilePath,
   validateOutfileName,
-} from '@metamask/snap-utils';
+} from '@metamask/snaps-utils';
 import { YargsArgs } from '../../types/yargs';
 import { loadConfig, logError } from '../../utils';
 import { bundle } from '../build/bundle';

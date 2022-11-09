@@ -12,7 +12,7 @@ import {
   SnapId,
   HandlerType,
   SnapRpcHookArgs,
-} from '@metamask/snap-utils';
+} from '@metamask/snaps-utils';
 import { nanoid } from 'nanoid';
 
 const methodPrefix = SNAP_PREFIX;

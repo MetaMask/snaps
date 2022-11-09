@@ -58,7 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **BREAKING:** Simplify manifest format for permission caveats ([#705](https://github.com/MetaMask/snaps-monorepo/pull/705))
 - Reduce TypeScript compilation target for `snap-controllers` ([#708](https://github.com/MetaMask/snaps-monorepo/pull/708))
-- Move all internal types from `@metamask/snap-types` to `@metamask/snap-utils` ([#695](https://github.com/MetaMask/snaps-monorepo/pull/695))
+- Move all internal types from `@metamask/snap-types` to `@metamask/snaps-utils` ([#695](https://github.com/MetaMask/snaps-monorepo/pull/695))
 
 ### Removed
 - **BREAKING:** Removed ExternalResourceController ([#701](https://github.com/MetaMask/snaps-monorepo/pull/701))

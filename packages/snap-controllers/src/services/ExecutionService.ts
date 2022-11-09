@@ -1,5 +1,5 @@
 import { RestrictedControllerMessenger } from '@metamask/controllers';
-import { SnapId, SnapRpcHookArgs } from '@metamask/snap-utils';
+import { SnapId, SnapRpcHookArgs } from '@metamask/snaps-utils';
 
 import { Json } from '@metamask/types';
 

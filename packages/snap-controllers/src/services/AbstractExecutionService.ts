@@ -4,7 +4,7 @@ import {
   SnapRpcHook,
   SnapRpcHookArgs,
   SNAP_STREAM_NAMES,
-} from '@metamask/snap-utils';
+} from '@metamask/snaps-utils';
 
 import {
   Duration,

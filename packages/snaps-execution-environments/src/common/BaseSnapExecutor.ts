@@ -20,7 +20,7 @@ import {
   HandlerType,
   SNAP_EXPORT_NAMES,
   SnapExportsParameters,
-} from '@metamask/snap-utils';
+} from '@metamask/snaps-utils';
 import { validate } from 'superstruct';
 import EEOpenRPCDocument from '../openrpc.json';
 import { createEndowments } from './endowments';

@@ -1,7 +1,7 @@
 import ObjectMultiplex from '@metamask/object-multiplex';
 import pump from 'pump';
 import { ThreadMessageStream } from '@metamask/post-message-stream';
-import { SNAP_STREAM_NAMES } from '@metamask/snap-utils';
+import { SNAP_STREAM_NAMES } from '@metamask/snaps-utils';
 import { BaseSnapExecutor } from '../common/BaseSnapExecutor';
 
 export class ThreadSnapExecutor extends BaseSnapExecutor {

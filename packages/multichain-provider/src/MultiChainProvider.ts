@@ -11,7 +11,7 @@ import {
   RequestArguments,
   RequestNamespace,
   Session,
-} from '@metamask/snap-utils';
+} from '@metamask/snaps-utils';
 import { JsonRpcRequest } from '@metamask/utils';
 import type { SnapProvider } from '@metamask/snap-types';
 import { Provider } from './Provider';
