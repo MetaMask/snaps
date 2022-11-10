@@ -1,5 +1,4 @@
 import SafeEventEmitter from '@metamask/safe-event-emitter';
-import type { SnapProvider } from '@metamask/snap-types';
 import {
   assertIsConnectArguments,
   assertIsMetaMaskNotification,

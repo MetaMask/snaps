@@ -4,14 +4,7 @@ import { Duplex } from 'stream';
 
 import { MetaMaskInpageProvider } from '@metamask/providers';
 import { SnapProvider, SnapExports } from '@metamask/snaps-types';
-import {
-  errorCodes,
-  ethErrors,
-  serializeError,
-  errorCodes,
-  ethErrors,
-  serializeError,
-} from 'eth-rpc-errors';
+import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
 import {
   isObject,
   isValidJson,
@@ -23,18 +16,12 @@ import {
   JsonRpcParams,
   Json,
   hasProperty,
-  assert,
-  hasProperty,
-  isJsonRpcRequest,
-  isObject,
-  isValidJson,
-  Json,
-  JsonRpcId,
-  JsonRpcNotification,
-  JsonRpcParams,
-  JsonRpcRequest,
 } from '@metamask/utils';
-import { HandlerType, SnapExportsParameters } from '@metamask/snaps-utils';
+import {
+  HandlerType,
+  SnapExportsParameters,
+  SNAP_EXPORT_NAMES,
+} from '@metamask/snaps-utils';
 
 import { validate } from 'superstruct';
 import EEOpenRPCDocument from '../openrpc.json';
