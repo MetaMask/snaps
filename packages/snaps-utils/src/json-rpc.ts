@@ -3,9 +3,10 @@ import {
   isJsonRpcSuccess,
   Json,
   JsonRpcSuccess,
+  AssertionErrorConstructor,
+  assertStruct,
 } from '@metamask/utils';
 import { boolean, Infer, object, optional, refine } from 'superstruct';
-import { AssertionErrorConstructor, assertStruct } from './assert';
 
 export const RpcOriginsStruct = refine(
   object({

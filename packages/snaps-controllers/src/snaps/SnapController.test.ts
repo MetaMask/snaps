@@ -1331,15 +1331,7 @@ describe('SnapController', () => {
       });
       const [snapController, service] = getSnapControllerWithEES(options);
 
-      const mockMessageHandler = jest.fn();
-      const spyOnMessengerCall = jest
-        .spyOn(options.messenger, 'call')
-        .mockImplementation((method, ..._args: unknown[]) => {
-          if (method === 'ExecutionService:handleRpcRequest') {
-            return mockMessageHandler as any;
-          }
-          return true;
-        });
+      const spyOnMessengerCall = jest.spyOn(options.messenger, 'call');
 
       await snapController.handleRequest({
         snapId,

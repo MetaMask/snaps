@@ -3,17 +3,23 @@ import {
   ControllerMessenger,
   EventConstraint,
 } from '@metamask/base-controller';
+import { PermissionConstraint } from '@metamask/permission-controller';
+import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   getPersistedSnapObject,
   getTruncatedSnap,
+  MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
+import {
+  SubjectMetadata,
+  SubjectType,
+} from '@metamask/subject-metadata-controller';
 
 import { CronjobControllerActions, CronjobControllerEvents } from '../cronjob';
 import {
   AllowedActions,
   AllowedEvents,
   CheckSnapBlockListArg,
-  handlerEndowments,
   PersistedSnapControllerState,
   SnapController,
   SnapControllerActions,
@@ -68,6 +74,24 @@ export class MockControllerMessenger<
     super.registerActionHandler(actionType, handler);
   }
 }
+
+export const MOCK_SUBJECT_METADATA: SubjectMetadata = {
+  origin: MOCK_SNAP_ID,
+  subjectType: SubjectType.Snap,
+  name: 'foo',
+  extensionId: 'bar',
+  iconUrl: 'baz',
+};
+
+export const MOCK_RPC_ORIGINS_PERMISSION: PermissionConstraint = {
+  caveats: [
+    { type: SnapCaveatType.RpcOrigin, value: { snaps: true, dapps: false } },
+  ],
+  date: 1664187844588,
+  id: 'izn0WGUO8cvq_jqvLQuQP',
+  invoker: MOCK_SNAP_ID,
+  parentCapability: SnapEndowments.Rpc,
+};
 
 export const getControllerMessenger = () => {
   const messenger = new MockControllerMessenger<
@@ -180,6 +204,7 @@ export const getSnapControllerMessenger = (
       'SnapController:removeSnapError',
       'SnapController:incrementActiveReferences',
       'SnapController:decrementActiveReferences',
+      'SubjectMetadataController:getSubjectMetadata',
     ],
   });
 
