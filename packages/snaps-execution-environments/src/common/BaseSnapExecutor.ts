@@ -383,6 +383,7 @@ export class BaseSnapExecutor {
     const request = async (args: RequestArguments) => {
       assert(
         args.method.startsWith('wallet_') || args.method.startsWith('snap_'),
+        'Snap API only allows RPC methods wallet_* and snap_*',
       );
       this.notify({ method: 'OutboundRequest' });
       try {
@@ -405,7 +406,7 @@ export class BaseSnapExecutor {
     const originalRequest = provider.request;
 
     provider.request = async (args) => {
-      assert(!args.method.startsWith('snap_'));
+      assert(!args.method.startsWith('snap_'), 'RPC method not allowed');
       this.notify({ method: 'OutboundRequest' });
       try {
         return await withTeardown(originalRequest(args), this as any);
