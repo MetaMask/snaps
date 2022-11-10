@@ -2,11 +2,11 @@ import EventEmitter from 'events';
 import http from 'http';
 import path from 'path';
 import serveHandler from 'serve-handler';
-import * as snapUtils from '@metamask/snap-utils';
+import * as snapUtils from '@metamask/snaps-utils';
 import * as serveUtils from './serveUtils';
 import serve from '.';
 
-jest.mock('@metamask/snap-utils', () => ({
+jest.mock('@metamask/snaps-utils', () => ({
   validateDirPath: jest.fn(),
   validateFilePath: jest.fn(),
   validateOutfileName: jest.fn(),

@@ -3,7 +3,7 @@ import {
   MOCK_SNAP_ID,
   MOCK_ORIGIN,
   getTruncatedSnap,
-} from '@metamask/snap-utils/test-utils';
+} from '@metamask/snaps-utils/test-utils';
 import { invokeSnapBuilder, getInvokeSnapImplementation } from './invokeSnap';
 
 describe('builder', () => {

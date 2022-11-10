@@ -1,10 +1,10 @@
 import { promises as fs } from 'fs';
 import pathUtils from 'path';
-import * as snapUtils from '@metamask/snap-utils';
+import * as snapUtils from '@metamask/snaps-utils';
 import {
   getPackageJson,
   getSnapManifest,
-} from '@metamask/snap-utils/test-utils';
+} from '@metamask/snaps-utils/test-utils';
 import { YargsArgs } from '../../types/yargs';
 import { resetFileSystem } from '../../test-utils';
 import { initHandler } from './initHandler';
@@ -12,7 +12,7 @@ import * as initUtils from './initUtils';
 
 jest.mock('fs');
 
-jest.mock('@metamask/snap-utils');
+jest.mock('@metamask/snaps-utils');
 
 const getMockArgv = () => {
   return {

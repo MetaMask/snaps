@@ -1,9 +1,9 @@
-import { evalBundle } from '@metamask/snap-utils';
+import { evalBundle } from '@metamask/snaps-utils';
 import { YargsArgs } from '../../types/yargs';
 import { evalHandler } from './evalHandler';
 
-jest.mock('@metamask/snap-utils', () => ({
-  ...jest.requireActual('@metamask/snap-utils'),
+jest.mock('@metamask/snaps-utils', () => ({
+  ...jest.requireActual('@metamask/snaps-utils'),
   evalBundle: jest.fn(),
 }));
 

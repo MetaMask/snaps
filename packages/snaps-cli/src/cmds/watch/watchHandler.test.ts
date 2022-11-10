@@ -2,15 +2,15 @@ import EventEmitter from 'events';
 import path from 'path';
 import http from 'http';
 import chokidar from 'chokidar';
-import * as snapUtils from '@metamask/snap-utils';
+import * as snapUtils from '@metamask/snaps-utils';
 import * as miscUtils from '../../utils/misc';
 import * as build from '../build/bundle';
 import * as evalModule from '../eval/evalHandler';
 import * as manifest from '../manifest/manifestHandler';
 import watch from '.';
 
-jest.mock('@metamask/snap-utils', () => ({
-  ...jest.requireActual('@metamask/snap-utils'),
+jest.mock('@metamask/snaps-utils', () => ({
+  ...jest.requireActual('@metamask/snaps-utils'),
   validateDirPath: jest.fn(),
   validateFilePath: jest.fn(),
   validateOutfileName: jest.fn(),

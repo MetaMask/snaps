@@ -13,7 +13,7 @@
     "./src/**/__snapshots__"
   ],
   "references": [
-    { "path": "../snap-utils/tsconfig.build.json" },
+    { "path": "../snaps-utils/tsconfig.build.json" },
     { "path": "../snaps-browserify-plugin/tsconfig.build.json" }
   ]
 }

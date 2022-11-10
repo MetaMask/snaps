@@ -3,7 +3,7 @@ import {
   validateDirPath,
   validateFilePath,
   validateOutfileName,
-} from '@metamask/snap-utils';
+} from '@metamask/snaps-utils';
 import { YargsArgs } from '../../types/yargs';
 import { loadConfig } from '../../utils';
 import { manifestHandler } from '../manifest/manifestHandler';

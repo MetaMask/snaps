@@ -1,8 +1,8 @@
-import { checkManifest, CheckManifestResult } from '@metamask/snap-utils';
+import { checkManifest, CheckManifestResult } from '@metamask/snaps-utils';
 import { YargsArgs } from '../../types/yargs';
 import { manifestHandler } from './manifestHandler';
 
-jest.mock('@metamask/snap-utils');
+jest.mock('@metamask/snaps-utils');
 
 const getMockArgv = ({ writeManifest = true } = {}) => {
   return { writeManifest } as unknown as YargsArgs;

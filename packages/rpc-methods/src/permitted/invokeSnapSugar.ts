@@ -6,7 +6,7 @@ import {
   JsonRpcEngineEndCallback,
 } from '@metamask/types';
 import { isObject } from '@metamask/utils';
-import { SNAP_PREFIX } from '@metamask/snap-utils';
+import { SNAP_PREFIX } from '@metamask/snaps-utils';
 
 /**
  * `wallet_invokeSnap` attempts to invoke an RPC method of the specified Snap.

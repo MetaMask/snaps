@@ -3,5 +3,5 @@ export {
   PermittedRpcMethodHooks,
 } from './permitted';
 export * from './restricted';
-export { SnapCaveatType } from '@metamask/snap-utils';
+export { SnapCaveatType } from '@metamask/snaps-utils';
 export { selectHooks } from './utils';

@@ -6,7 +6,7 @@ import {
   postProcessBundle,
   PostProcessOptions,
   SourceMap,
-} from '@metamask/snap-utils';
+} from '@metamask/snaps-utils';
 import { assert } from '@metamask/utils';
 import { Compiler, WebpackError } from 'webpack';
 import { RawSource, SourceMapSource } from 'webpack-sources';

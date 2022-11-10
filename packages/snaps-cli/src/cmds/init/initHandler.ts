@@ -6,7 +6,7 @@ import {
   readJsonFile,
   satisfiesVersionRange,
   NpmSnapPackageJson,
-} from '@metamask/snap-utils';
+} from '@metamask/snaps-utils';
 import { YargsArgs } from '../../types/yargs';
 import { logError } from '../../utils';
 import {

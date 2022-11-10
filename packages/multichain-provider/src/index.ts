@@ -5,4 +5,4 @@ export {
   ConnectArguments,
   RequestArguments,
   Session,
-} from '@metamask/snap-utils';
+} from '@metamask/snaps-utils';
