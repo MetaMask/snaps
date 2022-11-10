@@ -1,5 +1,6 @@
-import { join } from 'path';
 import { fork } from 'child_process';
+import { join } from 'path';
+
 import { validateFilePath } from './fs';
 
 const WORKER_PATH = join(__dirname, 'eval-worker.js');

@@ -1,4 +1,6 @@
 import deepEqual from 'fast-deep-equal';
+
+import { ProgrammaticallyFixableSnapError, validateSnapShasum } from './snaps';
 import {
   NpmSnapFileNames,
   SnapFiles,
@@ -9,7 +11,6 @@ import {
   NpmSnapPackageJson,
   SnapManifest,
 } from './types';
-import { ProgrammaticallyFixableSnapError, validateSnapShasum } from './snaps';
 
 export const SVG_MAX_BYTE_SIZE = 100_000;
 export const SVG_MAX_BYTE_SIZE_TEXT = `${Math.floor(

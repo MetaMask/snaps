@@ -1,4 +1,3 @@
-import { Duplex } from 'stream';
 import passworder from '@metamask/browser-passworder';
 import {
   Caveat,
@@ -14,12 +13,6 @@ import {
   SnapStatus,
   SnapCaveatType,
 } from '@metamask/snaps-utils';
-import { Crypto } from '@peculiar/webcrypto';
-import { EthereumRpcError, ethErrors, serializeError } from 'eth-rpc-errors';
-import fetchMock from 'jest-fetch-mock';
-import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
-import { createEngineStream } from 'json-rpc-middleware-stream';
-import pump from 'pump';
 import {
   getSnapManifest,
   getPersistedSnapObject,
@@ -31,8 +24,15 @@ import {
   DEFAULT_SNAP_BUNDLE,
   MOCK_LOCAL_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
+import { Crypto } from '@peculiar/webcrypto';
+import { EthereumRpcError, ethErrors, serializeError } from 'eth-rpc-errors';
+import fetchMock from 'jest-fetch-mock';
+import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
+import { createEngineStream } from 'json-rpc-middleware-stream';
+import pump from 'pump';
+import { Duplex } from 'stream';
+
 import { NodeThreadExecutionService, setupMultiplex } from '../services';
-import { delay } from '../utils';
 import {
   ExecutionEnvironmentStub,
   getControllerMessenger,
@@ -46,6 +46,7 @@ import {
   PERSISTED_MOCK_KEYRING_SNAP,
   MOCK_NAMESPACES,
 } from '../test-utils';
+import { delay } from '../utils';
 import { SnapEndowments } from './endowments';
 import { SNAP_APPROVAL_UPDATE, SnapControllerState } from './SnapController';
 

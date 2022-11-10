@@ -1,5 +1,6 @@
-import browserify, { BrowserifyObject } from 'browserify';
 import plugin, { Options } from '@metamask/snaps-browserify-plugin';
+import browserify, { BrowserifyObject } from 'browserify';
+
 import { TranspilationModes } from '../../builders';
 import { YargsArgs } from '../../types/yargs';
 import { processDependencies, writeBundleFile } from './utils';

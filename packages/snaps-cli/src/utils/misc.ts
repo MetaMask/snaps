@@ -1,6 +1,6 @@
+import { hasProperty } from '@metamask/utils';
 import { promises as filesystem } from 'fs';
 import path from 'path';
-import { hasProperty } from '@metamask/utils';
 import { Arguments } from 'yargs';
 
 export const permRequestKeys = [

@@ -1,10 +1,11 @@
-import path from 'path';
 import { hasProperty } from '@metamask/utils';
 import type browserify from 'browserify';
+import path from 'path';
+import { object, optional, func, Infer, is } from 'superstruct';
 import { Arguments } from 'yargs';
 import yargsParse from 'yargs-parser';
 import yargs from 'yargs/yargs';
-import { object, optional, func, Infer, is } from 'superstruct';
+
 import builders from '../builders';
 import { CONFIG_FILE, logError } from './misc';
 

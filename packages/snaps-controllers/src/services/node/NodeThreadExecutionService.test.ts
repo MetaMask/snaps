@@ -3,8 +3,9 @@ import { HandlerType, SnapId } from '@metamask/snaps-utils';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import pump from 'pump';
-import { ErrorMessageEvent, SnapErrorJson } from '../ExecutionService';
+
 import { setupMultiplex } from '../AbstractExecutionService';
+import { ErrorMessageEvent, SnapErrorJson } from '../ExecutionService';
 import { NodeThreadExecutionService } from './NodeThreadExecutionService';
 
 const ON_RPC_REQUEST = HandlerType.OnRpcRequest;

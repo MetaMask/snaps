@@ -1,12 +1,13 @@
-import { promises as fs } from 'fs';
-import pathUtils from 'path';
 import * as snapUtils from '@metamask/snaps-utils';
 import {
   getPackageJson,
   getSnapManifest,
 } from '@metamask/snaps-utils/test-utils';
-import { YargsArgs } from '../../types/yargs';
+import { promises as fs } from 'fs';
+import pathUtils from 'path';
+
 import { resetFileSystem } from '../../test-utils';
+import { YargsArgs } from '../../types/yargs';
 import { initHandler } from './initHandler';
 import * as initUtils from './initUtils';
 

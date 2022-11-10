@@ -1,18 +1,15 @@
 import { promises as fs } from 'fs';
 import { join } from 'path';
+
+import { readJsonFile } from './fs';
 import {
   checkManifest,
   fixManifest,
   getSnapSourceCode,
   getWritableManifest,
 } from './manifest';
-import {
-  NpmSnapFileNames,
-  SnapFiles,
-  SnapManifest,
-  SnapValidationFailureReason,
-} from './types';
-import { readJsonFile } from './fs';
+import * as npm from './npm';
+import { ProgrammaticallyFixableSnapError } from './snaps';
 import {
   DEFAULT_SNAP_BUNDLE,
   DEFAULT_SNAP_ICON,
@@ -20,8 +17,12 @@ import {
   getPackageJson,
   getSnapManifest,
 } from './test-utils';
-import { ProgrammaticallyFixableSnapError } from './snaps';
-import * as npm from './npm';
+import {
+  NpmSnapFileNames,
+  SnapFiles,
+  SnapManifest,
+  SnapValidationFailureReason,
+} from './types';
 
 jest.mock('fs');
 

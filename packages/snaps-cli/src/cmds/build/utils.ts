@@ -1,7 +1,8 @@
 import { promises as fs } from 'fs';
-import { writeError } from '../../utils/misc';
-import { YargsArgs } from '../../types/yargs';
+
 import { TranspilationModes } from '../../builders';
+import { YargsArgs } from '../../types/yargs';
+import { writeError } from '../../utils/misc';
 
 type WriteBundleFileArgs = {
   bundleError: Error;

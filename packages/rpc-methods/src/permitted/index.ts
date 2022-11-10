@@ -1,7 +1,7 @@
 import { getAppKeyHandler, GetAppKeyHooks } from './getAppKey';
 import { getSnapsHandler, GetSnapsHooks } from './getSnaps';
-import { requestSnapsHandler, RequestSnapsHooks } from './requestSnaps';
 import { invokeSnapSugarHandler } from './invokeSnapSugar';
+import { requestSnapsHandler, RequestSnapsHooks } from './requestSnaps';
 
 export type PermittedRpcMethodHooks = GetAppKeyHooks &
   GetSnapsHooks &

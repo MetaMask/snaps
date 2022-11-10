@@ -1,16 +1,17 @@
 // Allow Jest snapshots because the test outputs are illegible.
 /* eslint-disable jest/no-restricted-matchers */
 
-import { Readable } from 'stream';
-import pathUtils from 'path';
-import os from 'os';
-import browserify, { Options as BrowserifyOptions } from 'browserify';
-import concat from 'concat-stream';
+import { checkManifest, evalBundle } from '@metamask/snaps-utils';
 import {
   DEFAULT_SNAP_BUNDLE,
   getSnapManifest,
 } from '@metamask/snaps-utils/test-utils';
-import { checkManifest, evalBundle } from '@metamask/snaps-utils';
+import browserify, { Options as BrowserifyOptions } from 'browserify';
+import concat from 'concat-stream';
+import os from 'os';
+import pathUtils from 'path';
+import { Readable } from 'stream';
+
 import plugin, { Options, SnapsBrowserifyTransform } from './plugin';
 
 jest.mock('fs');

@@ -4,10 +4,11 @@ import {
   validateFilePath,
   validateOutfileName,
 } from '@metamask/snaps-utils';
+
 import { YargsArgs } from '../../types/yargs';
 import { loadConfig } from '../../utils';
-import { manifestHandler } from '../manifest/manifestHandler';
 import { evalHandler } from '../eval/evalHandler';
+import { manifestHandler } from '../manifest/manifestHandler';
 import { bundle } from './bundle';
 
 /**

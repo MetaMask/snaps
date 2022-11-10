@@ -1,5 +1,10 @@
 import { ControllerMessenger } from '@metamask/controllers';
 import { getPersistedSnapObject } from '@metamask/snaps-utils/test-utils';
+
+import {
+  CronjobControllerActions,
+  CronjobControllerEvents,
+} from '../cronjob/CronjobController';
 import {
   AllowedActions,
   AllowedEvents,
@@ -10,10 +15,6 @@ import {
   SnapControllerEvents,
   SnapEndowments,
 } from '../snaps';
-import {
-  CronjobControllerActions,
-  CronjobControllerEvents,
-} from '../cronjob/CronjobController';
 import { getNodeEES, getNodeEESMessenger } from './execution-environment';
 
 export const getControllerMessenger = () =>

@@ -1,5 +1,3 @@
-import pathUtils from 'path';
-import { promisify } from 'util';
 import {
   checkManifest,
   evalBundle,
@@ -8,6 +6,8 @@ import {
   SourceMap,
 } from '@metamask/snaps-utils';
 import { assert } from '@metamask/utils';
+import pathUtils from 'path';
+import { promisify } from 'util';
 import { Compiler, WebpackError } from 'webpack';
 import { RawSource, SourceMapSource } from 'webpack-sources';
 

@@ -1,4 +1,5 @@
 import yargs from 'yargs';
+
 import { cli } from './cli';
 import commands from './cmds';
 

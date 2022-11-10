@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-unassigned-import
 import 'ses';
-import { Duplex, DuplexOptions, EventEmitter, Readable } from 'stream';
+import { HandlerType } from '@metamask/snaps-utils';
 import {
   assertIsJsonRpcSuccess,
   Json,
@@ -8,7 +8,8 @@ import {
   JsonRpcRequest,
   JsonRpcResponse,
 } from '@metamask/utils';
-import { HandlerType } from '@metamask/snaps-utils';
+import { Duplex, DuplexOptions, EventEmitter, Readable } from 'stream';
+
 import { BaseSnapExecutor } from './BaseSnapExecutor';
 
 const FAKE_ORIGIN = 'origin:foo';

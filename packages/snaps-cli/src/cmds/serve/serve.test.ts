@@ -1,10 +1,11 @@
+import * as snapUtils from '@metamask/snaps-utils';
 import EventEmitter from 'events';
 import http from 'http';
 import path from 'path';
 import serveHandler from 'serve-handler';
-import * as snapUtils from '@metamask/snaps-utils';
-import * as serveUtils from './serveUtils';
+
 import serve from '.';
+import * as serveUtils from './serveUtils';
 
 jest.mock('@metamask/snaps-utils', () => ({
   validateDirPath: jest.fn(),

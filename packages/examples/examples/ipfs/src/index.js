@@ -1,4 +1,5 @@
 const { errors: rpcErrors } = require('eth-json-rpc-errors');
+
 const { IPFS } = require('./ipfs');
 
 const ipfs = new IPFS({

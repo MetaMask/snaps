@@ -1,5 +1,6 @@
-import { Infer, is, literal, object, string, unknown } from 'superstruct';
 import { assertStruct } from '@metamask/utils';
+import { Infer, is, literal, object, string, unknown } from 'superstruct';
+
 import { ChainIdStruct } from './namespace';
 
 export const EventStruct = object({

@@ -1,7 +1,11 @@
+import { Json } from '@metamask/utils';
 import { promises as fs } from 'fs';
 import pathUtils from 'path';
-import { Json } from '@metamask/utils';
+
+import { deepClone } from './deep-clone';
+import { readSnapJsonFile } from './fs';
 import { validateNpmSnap, validateNpmSnapManifest } from './npm';
+import { getSnapSourceShasum, ProgrammaticallyFixableSnapError } from './snaps';
 import {
   NpmSnapFileNames,
   SnapFiles,
@@ -9,9 +13,6 @@ import {
   SnapValidationFailureReason,
   UnvalidatedSnapFiles,
 } from './types';
-import { readSnapJsonFile } from './fs';
-import { getSnapSourceShasum, ProgrammaticallyFixableSnapError } from './snaps';
-import { deepClone } from './deep-clone';
 
 const MANIFEST_SORT_ORDER: Record<keyof SnapManifest, number> = {
   version: 1,

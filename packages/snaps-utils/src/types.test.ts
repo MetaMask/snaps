@@ -1,10 +1,10 @@
+import { getPackageJson, getSnapManifest } from './test-utils';
 import {
   assertIsNpmSnapPackageJson,
   assertIsSnapManifest,
   isNpmSnapPackageJson,
   isSnapManifest,
 } from './types';
-import { getPackageJson, getSnapManifest } from './test-utils';
 
 describe('isNpmSnapPackageJson', () => {
   it('returns true for a valid package.json', () => {

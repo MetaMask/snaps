@@ -1,18 +1,19 @@
 import { PermissionConstraint } from '@metamask/controllers';
 import { Json } from '@metamask/utils';
+
 import {
   cronjobCaveatSpecifications,
   cronjobEndowmentBuilder,
   getCronjobCaveatMapper,
 } from './cronjob';
-import { longRunningEndowmentBuilder } from './long-running';
-import { networkAccessEndowmentBuilder } from './network-access';
-import { transactionInsightEndowmentBuilder } from './transaction-insight';
 import {
   keyringEndowmentBuilder,
   keyringCaveatSpecifications,
   getKeyringCaveatMapper,
 } from './keyring';
+import { longRunningEndowmentBuilder } from './long-running';
+import { networkAccessEndowmentBuilder } from './network-access';
+import { transactionInsightEndowmentBuilder } from './transaction-insight';
 
 export const endowmentPermissionBuilders = {
   [networkAccessEndowmentBuilder.targetKey]: networkAccessEndowmentBuilder,

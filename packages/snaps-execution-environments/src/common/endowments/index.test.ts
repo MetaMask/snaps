@@ -1,4 +1,5 @@
 import fetchMock from 'jest-fetch-mock';
+
 import { createEndowments, isConstructor } from '.';
 
 describe('Endowment utils', () => {

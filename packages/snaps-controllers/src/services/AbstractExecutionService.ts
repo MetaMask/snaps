@@ -1,11 +1,10 @@
-import { Duplex } from 'stream';
 import ObjectMultiplex from '@metamask/object-multiplex';
+import { BasePostMessageStream } from '@metamask/post-message-stream';
 import {
   SnapRpcHook,
   SnapRpcHookArgs,
   SNAP_STREAM_NAMES,
 } from '@metamask/snaps-utils';
-
 import {
   Duration,
   isJsonRpcNotification,
@@ -18,10 +17,11 @@ import {
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from 'json-rpc-engine';
+import { createStreamMiddleware } from 'json-rpc-middleware-stream';
 import { nanoid } from 'nanoid';
 import pump from 'pump';
-import { createStreamMiddleware } from 'json-rpc-middleware-stream';
-import { BasePostMessageStream } from '@metamask/post-message-stream';
+import { Duplex } from 'stream';
+
 import { hasTimedOut, withTimeout } from '../utils';
 import {
   ExecutionService,

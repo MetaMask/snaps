@@ -1,4 +1,5 @@
 import browserify from 'browserify';
+
 import { TranspilationModes } from '../../builders';
 import { bundle } from './bundle';
 import * as bundleUtils from './utils';

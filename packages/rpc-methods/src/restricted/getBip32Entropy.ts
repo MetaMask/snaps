@@ -8,15 +8,16 @@ import {
   PermissionConstraint,
   RestrictedMethodCaveatSpecificationConstraint,
 } from '@metamask/controllers';
-import { ethErrors } from 'eth-rpc-errors';
+import { BIP32Node, JsonSLIP10Node, SLIP10Node } from '@metamask/key-tree';
+import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   hasProperty,
   isPlainObject,
   Json,
   NonEmptyArray,
 } from '@metamask/utils';
-import { BIP32Node, JsonSLIP10Node, SLIP10Node } from '@metamask/key-tree';
-import { SnapCaveatType } from '@metamask/snaps-utils';
+import { ethErrors } from 'eth-rpc-errors';
+
 import { isEqual } from '../utils';
 
 const INDEX_REGEX = /^\d+'?$/u;

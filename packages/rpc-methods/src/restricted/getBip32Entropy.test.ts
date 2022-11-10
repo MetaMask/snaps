@@ -1,4 +1,5 @@
 import { SnapCaveatType } from '@metamask/snaps-utils';
+
 import {
   getBip32EntropyBuilder,
   getBip32EntropyCaveatMapper,

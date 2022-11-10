@@ -1,16 +1,8 @@
 import { PermissionConstraint } from '@metamask/controllers';
 import { Json } from '@metamask/utils';
+
 import { confirmBuilder, ConfirmMethodHooks } from './confirm';
 import { dialogBuilder, DialogMethodHooks } from './dialog';
-import {
-  getBip44EntropyBuilder,
-  getBip44EntropyCaveatMapper,
-  getBip44EntropyCaveatSpecifications,
-  GetBip44EntropyMethodHooks,
-} from './getBip44Entropy';
-import { invokeSnapBuilder, InvokeSnapMethodHooks } from './invokeSnap';
-import { manageStateBuilder, ManageStateMethodHooks } from './manageState';
-import { notifyBuilder, NotifyMethodHooks } from './notify';
 import {
   getBip32EntropyBuilder,
   getBip32EntropyCaveatMapper,
@@ -21,6 +13,15 @@ import {
   getBip32PublicKeyBuilder,
   GetBip32PublicKeyMethodHooks,
 } from './getBip32PublicKey';
+import {
+  getBip44EntropyBuilder,
+  getBip44EntropyCaveatMapper,
+  getBip44EntropyCaveatSpecifications,
+  GetBip44EntropyMethodHooks,
+} from './getBip44Entropy';
+import { invokeSnapBuilder, InvokeSnapMethodHooks } from './invokeSnap';
+import { manageStateBuilder, ManageStateMethodHooks } from './manageState';
+import { notifyBuilder, NotifyMethodHooks } from './notify';
 
 export {
   AlertFields,

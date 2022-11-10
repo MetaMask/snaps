@@ -1,5 +1,6 @@
 import fs from 'fs';
 import pathUtils from 'path';
+
 import {
   booleanStringToBoolean,
   trimPathString,

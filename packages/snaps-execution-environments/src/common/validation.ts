@@ -1,5 +1,14 @@
-import { ChainIdStruct, HandlerType } from '@metamask/snaps-utils';
 import { SnapKeyring } from '@metamask/snaps-types';
+import { ChainIdStruct, HandlerType } from '@metamask/snaps-utils';
+import {
+  assertStruct,
+  Json,
+  JsonRpcIdStruct,
+  JsonRpcRequestStruct,
+  JsonRpcSuccess,
+  JsonRpcSuccessStruct,
+  JsonStruct,
+} from '@metamask/utils';
 import {
   array,
   assign,
@@ -16,15 +25,6 @@ import {
   union,
   unknown,
 } from 'superstruct';
-import {
-  assertStruct,
-  Json,
-  JsonRpcIdStruct,
-  JsonRpcRequestStruct,
-  JsonRpcSuccess,
-  JsonRpcSuccessStruct,
-  JsonStruct,
-} from '@metamask/utils';
 
 const VALIDATION_FUNCTIONS = {
   [HandlerType.OnRpcRequest]: validateFunctionExport,

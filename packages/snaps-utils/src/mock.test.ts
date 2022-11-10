@@ -1,5 +1,6 @@
-import { EventEmitter } from 'stream';
 import crypto from 'crypto';
+import { EventEmitter } from 'stream';
+
 import { generateMockEndowments, isConstructor } from './mock';
 
 describe('generateMockEndowments', () => {

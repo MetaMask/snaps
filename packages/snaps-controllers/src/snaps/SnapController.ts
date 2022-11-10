@@ -16,6 +16,7 @@ import {
   SubjectPermissions,
   ValidPermission,
 } from '@metamask/controllers';
+import { caveatMappers } from '@metamask/rpc-methods';
 import {
   DEFAULT_ENDOWMENTS,
   DEFAULT_REQUESTED_SNAP_VERSION,
@@ -68,7 +69,6 @@ import { ethErrors, serializeError } from 'eth-rpc-errors';
 import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
 
-import { caveatMappers } from '@metamask/rpc-methods';
 import { forceStrict, validateMachine } from '../fsm';
 import {
   ExecuteSnapAction,
@@ -81,9 +81,8 @@ import {
 import { hasTimedOut, setDiff, withTimeout } from '../utils';
 import { endowmentCaveatMappers, SnapEndowments } from './endowments';
 import { RequestQueue } from './RequestQueue';
-import { fetchNpmSnap } from './utils';
-
 import { Timer } from './Timer';
+import { fetchNpmSnap } from './utils';
 
 export const controllerName = 'SnapController';
 

@@ -1,10 +1,11 @@
-import chokidar from 'chokidar';
 import {
   getOutfilePath,
   validateDirPath,
   validateFilePath,
   validateOutfileName,
 } from '@metamask/snaps-utils';
+import chokidar from 'chokidar';
+
 import { YargsArgs } from '../../types/yargs';
 import { loadConfig, logError } from '../../utils';
 import { bundle } from '../build/bundle';

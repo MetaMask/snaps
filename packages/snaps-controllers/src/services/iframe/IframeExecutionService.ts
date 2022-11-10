@@ -2,6 +2,7 @@ import {
   WindowPostMessageStream,
   BasePostMessageStream,
 } from '@metamask/post-message-stream';
+
 import {
   Job,
   AbstractExecutionService,

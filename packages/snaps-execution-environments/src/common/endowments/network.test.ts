@@ -1,5 +1,6 @@
 import fetchMock from 'jest-fetch-mock';
 import { Server as WebSocketServer } from 'mock-socket';
+
 import network from './network';
 
 describe('Network endowments', () => {

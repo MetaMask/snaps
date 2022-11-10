@@ -1,4 +1,5 @@
 import { evalBundle } from '@metamask/snaps-utils';
+
 import { YargsArgs } from '../../types/yargs';
 import { evalHandler } from './evalHandler';
 

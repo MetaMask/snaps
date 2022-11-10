@@ -1,10 +1,10 @@
-import { NpmSnapPackageJson, SnapManifest } from '../types';
 import {
   Chain,
   Namespace,
   RequestNamespace,
   SessionNamespace,
 } from '../namespace';
+import { NpmSnapPackageJson, SnapManifest } from '../types';
 import { DEFAULT_SNAP_SHASUM } from './snap';
 
 type GetSnapManifestOptions = Partial<Omit<SnapManifest, 'source'>> & {

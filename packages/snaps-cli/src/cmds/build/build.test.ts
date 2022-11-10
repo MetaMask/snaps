@@ -1,9 +1,10 @@
-import path from 'path';
 import * as snapUtils from '@metamask/snaps-utils';
+import path from 'path';
+
+import buildModule from '.';
 import * as snapEvalModule from '../eval/evalHandler';
 import * as manifestModule from '../manifest/manifestHandler';
 import * as buildBundle from './bundle';
-import buildModule from '.';
 
 const build = buildModule.handler;
 

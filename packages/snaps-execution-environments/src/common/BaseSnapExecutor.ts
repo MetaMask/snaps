@@ -1,9 +1,12 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
 /// <reference path="../../../../node_modules/ses/index.d.ts" />
-import { Duplex } from 'stream';
 import { MetaMaskInpageProvider } from '@metamask/providers';
 import { SnapProvider, SnapExports } from '@metamask/snaps-types';
-import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
+import {
+  HandlerType,
+  SNAP_EXPORT_NAMES,
+  SnapExportsParameters,
+} from '@metamask/snaps-utils';
 import {
   isObject,
   isValidJson,
@@ -16,22 +19,20 @@ import {
   Json,
   hasProperty,
 } from '@metamask/utils';
-import {
-  HandlerType,
-  SNAP_EXPORT_NAMES,
-  SnapExportsParameters,
-} from '@metamask/snaps-utils';
+import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
+import { Duplex } from 'stream';
 import { validate } from 'superstruct';
+
 import EEOpenRPCDocument from '../openrpc.json';
-import { createEndowments } from './endowments';
 import {
   getCommandMethodImplementations,
   CommandMethodsMapping,
 } from './commands';
+import { createEndowments } from './endowments';
 import { removeEventListener, addEventListener } from './globalEvents';
+import { wrapKeyring } from './keyring';
 import { sortParamKeys } from './sortParams';
 import { constructError, withTeardown } from './utils';
-import { wrapKeyring } from './keyring';
 import {
   ExecuteSnapRequestArgumentsStruct,
   PingRequestArgumentsStruct,

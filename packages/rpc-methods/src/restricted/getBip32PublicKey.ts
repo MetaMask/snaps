@@ -7,10 +7,11 @@ import {
   PermissionValidatorConstraint,
   RestrictedMethodCaveatSpecificationConstraint,
 } from '@metamask/controllers';
-import { ethErrors } from 'eth-rpc-errors';
-import { NonEmptyArray } from '@metamask/utils';
 import { BIP32Node, SLIP10Node } from '@metamask/key-tree';
 import { SnapCaveatType } from '@metamask/snaps-utils';
+import { NonEmptyArray } from '@metamask/utils';
+import { ethErrors } from 'eth-rpc-errors';
+
 import { isEqual } from '../utils';
 import { validateCaveatPaths, validatePath } from './getBip32Entropy';
 

@@ -1,10 +1,4 @@
 import {
-  getChain,
-  getNamespace,
-  getSessionNamespace,
-  getRequestNamespace,
-} from './test-utils';
-import {
   assertIsConnectArguments,
   assertIsMultiChainRequest,
   assertIsNamespacesObject,
@@ -20,6 +14,12 @@ import {
   parseAccountId,
   parseChainId,
 } from './namespace';
+import {
+  getChain,
+  getNamespace,
+  getSessionNamespace,
+  getRequestNamespace,
+} from './test-utils';
 
 describe('parseChainId', () => {
   it('parses valid chain ids', () => {

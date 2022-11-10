@@ -1,11 +1,12 @@
-import { promises as fs } from 'fs';
-import virtual, { RollupVirtualOptions } from '@rollup/plugin-virtual';
-import { OutputOptions, rollup, RollupOutput } from 'rollup';
+import { checkManifest, evalBundle } from '@metamask/snaps-utils';
 import {
   DEFAULT_SNAP_BUNDLE,
   getSnapManifest,
 } from '@metamask/snaps-utils/test-utils';
-import { checkManifest, evalBundle } from '@metamask/snaps-utils';
+import virtual, { RollupVirtualOptions } from '@rollup/plugin-virtual';
+import { promises as fs } from 'fs';
+import { OutputOptions, rollup, RollupOutput } from 'rollup';
+
 import snaps, { Options } from './plugin';
 
 jest.mock('fs');

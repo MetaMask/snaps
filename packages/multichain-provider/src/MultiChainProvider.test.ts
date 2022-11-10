@@ -4,6 +4,7 @@ import {
   getRequestNamespace,
   getSessionNamespace,
 } from '@metamask/snaps-utils/test-utils';
+
 import { MultiChainProvider } from './MultiChainProvider';
 
 Object.assign(globalThis, {

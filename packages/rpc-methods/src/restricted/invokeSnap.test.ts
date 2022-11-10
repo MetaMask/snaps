@@ -4,6 +4,7 @@ import {
   MOCK_ORIGIN,
   getTruncatedSnap,
 } from '@metamask/snaps-utils/test-utils';
+
 import { invokeSnapBuilder, getInvokeSnapImplementation } from './invokeSnap';
 
 describe('builder', () => {

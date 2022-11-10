@@ -1,10 +1,11 @@
 import { ControllerMessenger } from '@metamask/controllers';
+import { HandlerType } from '@metamask/snaps-utils';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import pump from 'pump';
-import { HandlerType } from '@metamask/snaps-utils';
-import { ErrorMessageEvent } from '../ExecutionService';
+
 import { setupMultiplex } from '../AbstractExecutionService';
+import { ErrorMessageEvent } from '../ExecutionService';
 import { IframeExecutionService } from './IframeExecutionService';
 import fixJSDOMPostMessageEventSource from './test/fixJSDOMPostMessageEventSource';
 import {

@@ -1,10 +1,11 @@
 import { SnapProvider } from '@metamask/snaps-types';
 import { hasProperty } from '@metamask/utils';
+
 import { rootRealmGlobal } from '../globalObject';
+import crypto from './crypto';
 import interval from './interval';
 import network from './network';
 import timeout from './timeout';
-import crypto from './crypto';
 
 type EndowmentFactoryResult = {
   /**

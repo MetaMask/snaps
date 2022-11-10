@@ -10,6 +10,7 @@ import {
   getTruncatedSnap,
 } from '@metamask/snaps-utils/test-utils';
 import { Duration, inMilliseconds } from '@metamask/utils';
+
 import { SnapEndowments } from '../snaps';
 import {
   getRestrictedCronjobControllerMessenger,

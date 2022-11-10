@@ -1,4 +1,5 @@
 import { JsonRpcEngine } from 'json-rpc-engine';
+
 import { createMultiChainMiddleware } from './middleware';
 
 describe('createMultiChainMiddleware', () => {

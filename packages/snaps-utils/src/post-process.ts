@@ -1,3 +1,4 @@
+import { transformSync, Node, Visitor, template, PluginObj } from '@babel/core';
 import {
   binaryExpression,
   Expression,
@@ -7,7 +8,6 @@ import {
   templateElement,
   templateLiteral,
 } from '@babel/types';
-import { transformSync, Node, Visitor, template, PluginObj } from '@babel/core';
 
 /**
  * Source map declaration taken from `@babel/core`. Babel doesn't export the

@@ -1,8 +1,9 @@
-import { ChildProcess, fork } from 'child_process';
 import {
   ProcessParentMessageStream,
   BasePostMessageStream,
 } from '@metamask/post-message-stream';
+import { ChildProcess, fork } from 'child_process';
+
 import { AbstractExecutionService, Job } from '..';
 
 export class NodeProcessExecutionService extends AbstractExecutionService<ChildProcess> {

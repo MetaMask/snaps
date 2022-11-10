@@ -1,5 +1,6 @@
-import EventEmitter from 'events';
 import crypto from 'crypto';
+import EventEmitter from 'events';
+
 import { DEFAULT_ENDOWMENTS } from './default-endowments';
 
 const NETWORK_APIS = ['fetch', 'WebSocket'];

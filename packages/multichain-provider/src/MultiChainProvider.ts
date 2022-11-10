@@ -1,5 +1,5 @@
 import SafeEventEmitter from '@metamask/safe-event-emitter';
-import { nanoid } from 'nanoid';
+import type { SnapProvider } from '@metamask/snaps-types';
 import {
   assertIsConnectArguments,
   assertIsMetaMaskNotification,
@@ -13,7 +13,8 @@ import {
   Session,
 } from '@metamask/snaps-utils';
 import { JsonRpcRequest } from '@metamask/utils';
-import type { SnapProvider } from '@metamask/snaps-types';
+import { nanoid } from 'nanoid';
+
 import { Provider } from './Provider';
 
 declare global {

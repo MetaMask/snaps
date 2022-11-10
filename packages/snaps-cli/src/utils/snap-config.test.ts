@@ -1,4 +1,5 @@
 import path from 'path';
+
 import builders from '../builders';
 import * as miscUtils from './misc';
 import { applyConfig, loadConfig, SnapConfig } from './snap-config';

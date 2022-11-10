@@ -1,6 +1,7 @@
 import { PermissionType } from '@metamask/controllers';
-import { transactionInsightEndowmentBuilder } from './transaction-insight';
+
 import { SnapEndowments } from '.';
+import { transactionInsightEndowmentBuilder } from './transaction-insight';
 
 describe('endowment:transaction-insight', () => {
   it('builds the expected permission specification', () => {

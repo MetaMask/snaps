@@ -3,6 +3,24 @@ module.exports = {
 
   extends: ['@metamask/eslint-config'],
 
+  rules: {
+    'import/order': [
+      'error',
+      {
+        'newlines-between': 'always',
+        groups: [
+          ['builtin', 'external'],
+          ['internal', 'parent', 'sibling', 'index'],
+        ],
+        pathGroupsExcludedImportTypes: [],
+        alphabetize: {
+          order: 'asc',
+          caseInsensitive: true,
+        },
+      },
+    ],
+  },
+
   overrides: [
     {
       files: ['**/*.js'],
