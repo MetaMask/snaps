@@ -12,6 +12,8 @@ import {
   getSnapSourceShasum,
   HandlerType,
   SnapCaveatType,
+  SnapManifest,
+  SnapStatus,
 } from '@metamask/snaps-utils';
 import {
   DEFAULT_SNAP_BUNDLE,

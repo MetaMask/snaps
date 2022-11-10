@@ -126,9 +126,15 @@ export class BaseSnapExecutor {
           `No ${handlerName} handler exported for snap "${target}`,
         );
         // TODO: fix handler args type cast
-        const result = await this.executeInSnapContext(target, () =>
+        let result = await this.executeInSnapContext(target, () =>
           handler(args as any),
         );
+
+        // The handler might not return anything, but undefined is not valid JSOn
+        if (result === undefined) {
+          result = null;
+        }
+
         assert(
           isValidJson(result),
           new TypeError('Received non-JSON-serializable value.'),
