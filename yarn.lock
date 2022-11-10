@@ -3098,6 +3098,7 @@ __metadata:
     jest-fetch-mock: ^3.0.3
     jest-it-up: ^2.0.0
     jsdom: ^19.0.0
+    json-rpc-engine: ^6.1.0
     mock-socket: ^9.1.5
     node-polyfill-webpack-plugin: ^1.1.4
     prettier: ^2.3.2

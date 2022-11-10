@@ -9,45 +9,57 @@ import { NodeThreadExecutionService } from './NodeThreadExecutionService';
 
 const ON_RPC_REQUEST = HandlerType.OnRpcRequest;
 
+const MOCK_BLOCK_NUM = '0xa70e75';
+
+function createService() {
+  const controllerMessenger = new ControllerMessenger<
+    never,
+    ErrorMessageEvent
+  >();
+  const messenger = controllerMessenger.getRestricted<
+    'ExecutionService',
+    never,
+    ErrorMessageEvent['type']
+  >({
+    name: 'ExecutionService',
+  });
+  const service = new NodeThreadExecutionService({
+    messenger,
+    setupSnapProvider: (_snapId, rpcStream) => {
+      const mux = setupMultiplex(rpcStream, 'foo');
+      const stream = mux.createStream('metamask-provider');
+      const engine = new JsonRpcEngine();
+      engine.push((req, res, next, end) => {
+        if (req.method === 'metamask_getProviderState') {
+          res.result = {
+            isUnlocked: false,
+            accounts: [],
+            chainId: '0x1',
+            networkVersion: '1',
+          };
+          return end();
+        } else if (req.method === 'eth_blockNumber') {
+          res.result = MOCK_BLOCK_NUM;
+          return end();
+        }
+        return next();
+      });
+      const providerStream = createEngineStream({ engine });
+      pump(stream, providerStream, stream);
+    },
+  });
+  return { service, messenger, controllerMessenger };
+}
+
 describe('NodeThreadExecutionService', () => {
   it('can boot', async () => {
-    const controllerMessenger = new ControllerMessenger<
-      never,
-      ErrorMessageEvent
-    >();
-    const service = new NodeThreadExecutionService({
-      messenger: controllerMessenger.getRestricted<
-        'ExecutionService',
-        never,
-        ErrorMessageEvent['type']
-      >({
-        name: 'ExecutionService',
-      }),
-      setupSnapProvider: () => {
-        // do nothing
-      },
-    });
+    const { service } = createService();
     expect(service).toBeDefined();
     await service.terminateAllSnaps();
   });
 
   it('can create a snap worker and start the snap', async () => {
-    const controllerMessenger = new ControllerMessenger<
-      never,
-      ErrorMessageEvent
-    >();
-    const service = new NodeThreadExecutionService({
-      messenger: controllerMessenger.getRestricted<
-        'ExecutionService',
-        never,
-        ErrorMessageEvent['type']
-      >({
-        name: 'ExecutionService',
-      }),
-      setupSnapProvider: () => {
-        // do nothing
-      },
-    });
+    const { service } = createService();
     const response = await service.executeSnap({
       snapId: 'TestSnap',
       sourceCode: `
@@ -61,22 +73,7 @@ describe('NodeThreadExecutionService', () => {
 
   it('can handle a crashed snap', async () => {
     expect.assertions(1);
-    const controllerMessenger = new ControllerMessenger<
-      never,
-      ErrorMessageEvent
-    >();
-    const service = new NodeThreadExecutionService({
-      messenger: controllerMessenger.getRestricted<
-        'ExecutionService',
-        never,
-        ErrorMessageEvent['type']
-      >({
-        name: 'ExecutionService',
-      }),
-      setupSnapProvider: () => {
-        // do nothing
-      },
-    });
+    const { service } = createService();
     const action = async () => {
       await service.executeSnap({
         snapId: 'TestSnap',
@@ -95,22 +92,7 @@ describe('NodeThreadExecutionService', () => {
 
   it('can handle errors in request handler', async () => {
     expect.assertions(1);
-    const controllerMessenger = new ControllerMessenger<
-      never,
-      ErrorMessageEvent
-    >();
-    const service = new NodeThreadExecutionService({
-      messenger: controllerMessenger.getRestricted<
-        'ExecutionService',
-        never,
-        ErrorMessageEvent['type']
-      >({
-        name: 'ExecutionService',
-      }),
-      setupSnapProvider: () => {
-        // do nothing
-      },
-    });
+    const { service } = createService();
     const snapId = 'TestSnap';
     await service.executeSnap({
       snapId,
@@ -137,22 +119,7 @@ describe('NodeThreadExecutionService', () => {
 
   it('can handle errors out of band', async () => {
     expect.assertions(2);
-    const controllerMessenger = new ControllerMessenger<
-      never,
-      ErrorMessageEvent
-    >();
-    const service = new NodeThreadExecutionService({
-      messenger: controllerMessenger.getRestricted<
-        'ExecutionService',
-        never,
-        ErrorMessageEvent['type']
-      >({
-        name: 'ExecutionService',
-      }),
-      setupSnapProvider: () => {
-        // do nothing
-      },
-    });
+    const { service, controllerMessenger } = createService();
     const snapId = 'TestSnap';
     await service.executeSnap({
       snapId,
@@ -211,46 +178,16 @@ describe('NodeThreadExecutionService', () => {
 
   it('can detect outbound requests', async () => {
     expect.assertions(4);
-    const blockNumber = '0xa70e75';
-    const controllerMessenger = new ControllerMessenger<
-      never,
-      ErrorMessageEvent
-    >();
-    const messenger = controllerMessenger.getRestricted<
-      'ExecutionService',
-      never,
-      ErrorMessageEvent['type']
-    >({
-      name: 'ExecutionService',
-    });
+    const { service, messenger } = createService();
     const publishSpy = jest.spyOn(messenger, 'publish');
-    const service = new NodeThreadExecutionService({
-      messenger,
-      setupSnapProvider: (_snapId, rpcStream) => {
-        const mux = setupMultiplex(rpcStream, 'foo');
-        const stream = mux.createStream('metamask-provider');
-        const engine = new JsonRpcEngine();
-        engine.push((req, res, next, end) => {
-          if (req.method === 'metamask_getProviderState') {
-            res.result = { isUnlocked: false, accounts: [] };
-            return end();
-          } else if (req.method === 'eth_blockNumber') {
-            res.result = blockNumber;
-            return end();
-          }
-          return next();
-        });
-        const providerStream = createEngineStream({ engine });
-        pump(stream, providerStream, stream);
-      },
-    });
+
     const snapId = 'TestSnap';
     const executeResult = await service.executeSnap({
       snapId,
       sourceCode: `
-      module.exports.onRpcRequest = () => wallet.request({ method: 'eth_blockNumber', params: [] });
+      module.exports.onRpcRequest = () => ethereum.request({ method: 'eth_blockNumber', params: [] });
       `,
-      endowments: [],
+      endowments: ['ethereum'],
     });
 
     expect(executeResult).toBe('OK');
@@ -266,7 +203,7 @@ describe('NodeThreadExecutionService', () => {
       },
     });
 
-    expect(result).toBe(blockNumber);
+    expect(result).toBe(MOCK_BLOCK_NUM);
 
     expect(publishSpy).toHaveBeenCalledWith(
       'ExecutionService:outboundRequest',

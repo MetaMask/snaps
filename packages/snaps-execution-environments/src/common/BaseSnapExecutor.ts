@@ -2,6 +2,7 @@
 /// <reference path="../../../../node_modules/ses/index.d.ts" />
 import { Duplex } from 'stream';
 import { StreamProvider } from '@metamask/providers';
+import { createIdRemapMiddleware } from 'json-rpc-engine';
 import { SnapExports, SnapAPI } from '@metamask/snaps-types';
 import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
 import {
@@ -292,6 +293,7 @@ export class BaseSnapExecutor {
 
     const provider = new StreamProvider(this.rpcStream, {
       jsonRpcStreamName: 'metamask-provider',
+      rpcMiddleware: [createIdRemapMiddleware()],
     });
 
     await provider.initialize();

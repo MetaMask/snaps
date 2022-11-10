@@ -1,22 +1,63 @@
 import { ControllerMessenger } from '@metamask/controllers';
 import { HandlerType } from '@metamask/snaps-utils';
+import { JsonRpcEngine } from 'json-rpc-engine';
+import { createEngineStream } from 'json-rpc-middleware-stream';
+import pump from 'pump';
 import {
-  ErrorMessageEvent,
-  ExecutionServiceMessenger,
-} from './ExecutionService';
+  ExecutionServiceArgs,
+  setupMultiplex,
+} from './AbstractExecutionService';
+import { ErrorMessageEvent } from './ExecutionService';
 import { NodeThreadExecutionService } from './node';
 
 class MockExecutionService extends NodeThreadExecutionService {
-  constructor(messenger: ExecutionServiceMessenger) {
+  constructor({ messenger, setupSnapProvider }: ExecutionServiceArgs) {
     super({
       messenger,
-      setupSnapProvider: () => undefined,
+      setupSnapProvider,
     });
   }
 
   getJobs() {
     return this.jobs;
   }
+}
+
+function createService() {
+  const controllerMessenger = new ControllerMessenger<
+    never,
+    ErrorMessageEvent
+  >();
+  const messenger = controllerMessenger.getRestricted<
+    'ExecutionService',
+    never,
+    ErrorMessageEvent['type']
+  >({
+    name: 'ExecutionService',
+  });
+  const service = new MockExecutionService({
+    messenger,
+    setupSnapProvider: (_snapId, rpcStream) => {
+      const mux = setupMultiplex(rpcStream, 'foo');
+      const stream = mux.createStream('metamask-provider');
+      const engine = new JsonRpcEngine();
+      engine.push((req, res, next, end) => {
+        if (req.method === 'metamask_getProviderState') {
+          res.result = {
+            isUnlocked: false,
+            accounts: [],
+            chainId: '0x1',
+            networkVersion: '1',
+          };
+          return end();
+        }
+        return next();
+      });
+      const providerStream = createEngineStream({ engine });
+      pump(stream, providerStream, stream);
+    },
+  });
+  return { service, messenger, controllerMessenger };
 }
 
 describe('AbstractExecutionService', () => {
@@ -27,19 +68,7 @@ describe('AbstractExecutionService', () => {
   it('logs error for unrecognized notifications', async () => {
     const consoleErrorSpy = jest.spyOn(console, 'error');
 
-    const controllerMessenger = new ControllerMessenger<
-      never,
-      ErrorMessageEvent
-    >();
-    const service = new MockExecutionService(
-      controllerMessenger.getRestricted<
-        'ExecutionService',
-        never,
-        ErrorMessageEvent['type']
-      >({
-        name: 'ExecutionService',
-      }),
-    );
+    const { service } = createService();
 
     await service.executeSnap({
       snapId: 'TestSnap',
@@ -66,19 +95,7 @@ describe('AbstractExecutionService', () => {
   it('logs error for malformed UnhandledError notification', async () => {
     const consoleErrorSpy = jest.spyOn(console, 'error');
 
-    const controllerMessenger = new ControllerMessenger<
-      never,
-      ErrorMessageEvent
-    >();
-    const service = new MockExecutionService(
-      controllerMessenger.getRestricted<
-        'ExecutionService',
-        never,
-        ErrorMessageEvent['type']
-      >({
-        name: 'ExecutionService',
-      }),
-    );
+    const { service } = createService();
 
     await service.executeSnap({
       snapId: 'TestSnap',
@@ -112,20 +129,7 @@ describe('AbstractExecutionService', () => {
   });
 
   it('throws an error if RPC request handler is unavailable', async () => {
-    const controllerMessenger = new ControllerMessenger<
-      never,
-      ErrorMessageEvent
-    >();
-    const service = new MockExecutionService(
-      controllerMessenger.getRestricted<
-        'ExecutionService',
-        never,
-        ErrorMessageEvent['type']
-      >({
-        name: 'ExecutionService',
-      }),
-    );
-
+    const { service } = createService();
     const snapId = 'TestSnap';
     await expect(
       service.handleRpcRequest(snapId, {

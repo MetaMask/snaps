@@ -925,7 +925,7 @@ describe('SnapController', () => {
 
   it('does not timeout while waiting for response from MetaMask', async () => {
     const sourceCode = `
-    module.exports.onRpcRequest = () => wallet.request({ method: 'eth_blockNumber', params: [] });
+    module.exports.onRpcRequest = () => ethereum.request({ method: 'eth_blockNumber', params: [] });
     `;
 
     const [snapController, service] = getSnapControllerWithEES(
@@ -958,7 +958,12 @@ describe('SnapController', () => {
         const engine = new JsonRpcEngine();
         const middleware = createAsyncMiddleware(async (req, res, _next) => {
           if (req.method === 'metamask_getProviderState') {
-            res.result = { isUnlocked: false, accounts: [] };
+            res.result = {
+              isUnlocked: false,
+              accounts: [],
+              chainId: '0x1',
+              networkVersion: '1',
+            };
           } else if (req.method === 'eth_blockNumber') {
             await new Promise((resolve) => setTimeout(resolve, 400));
             res.result = blockNumber;
@@ -995,7 +1000,7 @@ describe('SnapController', () => {
 
   it('does not timeout while waiting for response from MetaMask when snap does multiple calls', async () => {
     const sourceCode = `
-    const fetch = async () => parseInt(await wallet.request({ method: 'eth_blockNumber', params: [] }), 16);
+    const fetch = async () => parseInt(await ethereum.request({ method: 'eth_blockNumber', params: [] }), 16);
     module.exports.onRpcRequest = async () => (await fetch()) + (await fetch());
     `;
 
@@ -1027,7 +1032,12 @@ describe('SnapController', () => {
         const engine = new JsonRpcEngine();
         const middleware = createAsyncMiddleware(async (req, res, _next) => {
           if (req.method === 'metamask_getProviderState') {
-            res.result = { isUnlocked: false, accounts: [] };
+            res.result = {
+              isUnlocked: false,
+              accounts: [],
+              chainId: '0x1',
+              networkVersion: '1',
+            };
           } else if (req.method === 'eth_blockNumber') {
             await new Promise((resolve) => setTimeout(resolve, 400));
             res.result = '0xa70e77';
