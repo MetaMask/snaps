@@ -15,6 +15,7 @@ class MockExecutionService extends NodeThreadExecutionService {
   }
 
   getJobs() {
+    // @ts-expect-error Accessing private property
     return this.jobs;
   }
 }
