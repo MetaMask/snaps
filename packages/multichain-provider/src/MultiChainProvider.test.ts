@@ -235,6 +235,47 @@ describe('MultiChainProvider', () => {
       expect(result).toBe('foo');
     });
 
+    it('sends params properly', async () => {
+      const msg = (params?: any) => ({
+        method: 'wallet_multiChainRequestHack',
+        params: {
+          id: expect.any(String),
+          jsonrpc: '2.0',
+          method: 'caip_request',
+          params: {
+            chainId: 'eip155:1',
+            request: {
+              method: 'asd',
+              params,
+            },
+          },
+        },
+      });
+
+      const provider = await getProvider();
+      const request = ethereum.request as jest.MockedFunction<
+        typeof ethereum.request
+      >;
+
+      request.mockImplementation(async () => 'foo');
+
+      await provider.request({
+        chainId: 'eip155:1',
+        request: {
+          method: 'asd',
+        },
+      });
+
+      await provider.request({
+        chainId: 'eip155:1',
+        request: { method: 'asd', params: { prop: 'bar' } },
+      });
+
+      expect(request).toHaveBeenCalledTimes(3);
+      expect(request).toHaveBeenNthCalledWith(2, msg());
+      expect(request).toHaveBeenNthCalledWith(3, msg({ prop: 'bar' }));
+    });
+
     it('generates a random request ID', async () => {
       const provider = await getProvider();
 
