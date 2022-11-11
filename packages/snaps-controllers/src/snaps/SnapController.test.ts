@@ -928,22 +928,40 @@ describe('SnapController', () => {
     module.exports.onRpcRequest = () => ethereum.request({ method: 'eth_blockNumber', params: [] });
     `;
 
-    const [snapController, service] = getSnapControllerWithEES(
-      getSnapControllerWithEESOptions({
-        idleTimeCheckInterval: 30000,
-        maxIdleTime: 160000,
-        state: {
-          snaps: getPersistedSnapsState(
-            getPersistedSnapObject({
-              sourceCode,
-              manifest: getSnapManifest({
-                shasum: getSnapSourceShasum(sourceCode),
-              }),
+    const options = getSnapControllerWithEESOptions({
+      environmentEndowmentPermissions: [SnapEndowments.EIP1193],
+      idleTimeCheckInterval: 30000,
+      maxIdleTime: 160000,
+      state: {
+        snaps: getPersistedSnapsState(
+          getPersistedSnapObject({
+            sourceCode,
+            manifest: getSnapManifest({
+              shasum: getSnapSourceShasum(sourceCode),
             }),
-          ),
-        },
-      }),
-    );
+          }),
+        ),
+      },
+    });
+
+    const { rootMessenger } = options;
+
+    const originalCall = rootMessenger.call.bind(rootMessenger);
+
+    jest.spyOn(rootMessenger, 'call').mockImplementation((method, ...args) => {
+      // Give snap EIP1193 permission
+      if (method === 'PermissionController:hasPermission') {
+        return true;
+      } else if (
+        method === 'PermissionController:getEndowments' &&
+        args[1] === SnapEndowments.EIP1193
+      ) {
+        return ['ethereum'];
+      }
+      return originalCall(method, ...args) as any;
+    });
+
+    const [snapController, service] = getSnapControllerWithEES(options);
 
     const snap = snapController.getExpect(MOCK_SNAP_ID);
 
@@ -1004,22 +1022,40 @@ describe('SnapController', () => {
     module.exports.onRpcRequest = async () => (await fetch()) + (await fetch());
     `;
 
-    const [snapController, service] = getSnapControllerWithEES(
-      getSnapControllerWithEESOptions({
-        idleTimeCheckInterval: 30000,
-        maxIdleTime: 160000,
-        state: {
-          snaps: getPersistedSnapsState(
-            getPersistedSnapObject({
-              sourceCode,
-              manifest: getSnapManifest({
-                shasum: getSnapSourceShasum(sourceCode),
-              }),
+    const options = getSnapControllerWithEESOptions({
+      environmentEndowmentPermissions: [SnapEndowments.EIP1193],
+      idleTimeCheckInterval: 30000,
+      maxIdleTime: 160000,
+      state: {
+        snaps: getPersistedSnapsState(
+          getPersistedSnapObject({
+            sourceCode,
+            manifest: getSnapManifest({
+              shasum: getSnapSourceShasum(sourceCode),
             }),
-          ),
-        },
-      }),
-    );
+          }),
+        ),
+      },
+    });
+
+    const { rootMessenger } = options;
+
+    const originalCall = rootMessenger.call.bind(rootMessenger);
+
+    jest.spyOn(rootMessenger, 'call').mockImplementation((method, ...args) => {
+      // Give snap EIP1193 permission
+      if (method === 'PermissionController:hasPermission') {
+        return true;
+      } else if (
+        method === 'PermissionController:getEndowments' &&
+        args[1] === SnapEndowments.EIP1193
+      ) {
+        return ['ethereum'];
+      }
+      return originalCall(method, ...args) as any;
+    });
+
+    const [snapController, service] = getSnapControllerWithEES(options);
 
     const snap = snapController.getExpect(MOCK_SNAP_ID);
 

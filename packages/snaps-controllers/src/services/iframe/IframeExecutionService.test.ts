@@ -20,7 +20,7 @@ const iframeUrl = new URL(`http://localhost:${serverPort}`);
 
 const MOCK_BLOCK_NUM = '0xa70e75';
 
-function createService() {
+const createService = () => {
   const controllerMessenger = new ControllerMessenger<
     never,
     ErrorMessageEvent
@@ -60,7 +60,7 @@ function createService() {
   });
   const removeListener = fixJSDOMPostMessageEventSource(service);
   return { service, messenger, controllerMessenger, removeListener };
-}
+};
 
 describe('IframeExecutionService', () => {
   // The tests start running before the server is ready if we don't use the done callback.

@@ -11,7 +11,7 @@ const ON_RPC_REQUEST = HandlerType.OnRpcRequest;
 
 const MOCK_BLOCK_NUM = '0xa70e75';
 
-function createService() {
+const createService = () => {
   const controllerMessenger = new ControllerMessenger<
     never,
     ErrorMessageEvent
@@ -49,7 +49,7 @@ function createService() {
     },
   });
   return { service, messenger, controllerMessenger };
-}
+};
 
 describe('NodeProcessExecutionService', () => {
   it('can boot', async () => {

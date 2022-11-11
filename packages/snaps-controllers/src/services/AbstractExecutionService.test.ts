@@ -23,7 +23,7 @@ class MockExecutionService extends NodeThreadExecutionService {
   }
 }
 
-function createService() {
+const createService = () => {
   const controllerMessenger = new ControllerMessenger<
     never,
     ErrorMessageEvent
@@ -58,7 +58,7 @@ function createService() {
     },
   });
   return { service, messenger, controllerMessenger };
-}
+};
 
 describe('AbstractExecutionService', () => {
   afterEach(() => {
