@@ -1,6 +1,8 @@
-import { SnapProvider } from './src';
+import { MetaMaskInpageProvider } from '@metamask/providers';
+import { SnapAPI } from './src';
 
 // Types that should be available globally within a Snap
 declare global {
-  const wallet: SnapProvider;
+  const ethereum: MetaMaskInpageProvider;
+  const snap: SnapAPI;
 }

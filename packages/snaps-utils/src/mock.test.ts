@@ -3,10 +3,15 @@ import crypto from 'crypto';
 import { generateMockEndowments, isConstructor } from './mock';
 
 describe('generateMockEndowments', () => {
-  it('includes mock snap provider', async () => {
+  it('includes mock snap API', async () => {
     const endowments = generateMockEndowments();
-    expect(endowments.wallet).toBeInstanceOf(EventEmitter);
-    expect(await endowments.wallet.request()).toBe(true);
+    expect(await endowments.snap.request()).toBe(true);
+  });
+
+  it('includes mock ethereum provider', async () => {
+    const endowments = generateMockEndowments();
+    expect(endowments.ethereum).toBeInstanceOf(EventEmitter);
+    expect(await endowments.ethereum.request()).toBe(true);
   });
 
   it('returns mock class WebSocket', () => {

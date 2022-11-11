@@ -5,11 +5,7 @@
 
 const ethers = require('ethers');
 
-/*
- * The `wallet` API is a superset of the standard provider,
- * and can be used to initialize an ethers.js provider like this:
- */
-const provider = new ethers.providers.Web3Provider(wallet);
+const provider = new ethers.providers.Web3Provider(ethereum);
 
 /**
  * Handle incoming JSON-RPC requests, sent through `wallet_invokeSnap`.
@@ -22,7 +18,7 @@ const provider = new ethers.providers.Web3Provider(wallet);
  */
 module.exports.onRpcRequest = async ({ request }) => {
   console.log('received request', request);
-  const privKey = await wallet.request({
+  const privKey = await snap.request({
     method: 'snap_getAppKey',
   });
   console.log(`privKey is ${privKey}`);

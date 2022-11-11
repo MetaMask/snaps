@@ -9,7 +9,8 @@ module.exports = {
         browser: true,
       },
       globals: {
-        wallet: true,
+        ethereum: true,
+        snap: true,
       },
       rules: {
         'no-alert': 'off',

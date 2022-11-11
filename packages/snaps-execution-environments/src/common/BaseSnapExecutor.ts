@@ -372,7 +372,7 @@ export class BaseSnapExecutor {
   }
 
   /**
-   * Instantiates a snap provider object (i.e. `globalThis.wallet`).
+   * Instantiates a snap API object (i.e. `globalThis.snap`).
    *
    * @param provider - A StreamProvider connected to MetaMask.
    * @returns The snap provider object.

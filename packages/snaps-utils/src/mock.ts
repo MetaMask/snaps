@@ -6,19 +6,32 @@ const NETWORK_APIS = ['fetch', 'WebSocket'];
 
 export const ALL_APIS: string[] = [...DEFAULT_ENDOWMENTS, ...NETWORK_APIS];
 
-type MockSnapProvider = EventEmitter & {
+type MockSnapProvider = {
+  request: () => Promise<any>;
+};
+
+type MockEthereumProvider = EventEmitter & {
   request: () => Promise<any>;
 };
 
 /**
- * Get a mock snap provider, that always returns `true` for requests.
+ * Get a mock snap API, that always returns `true` for requests.
  *
  * @returns A mocked snap provider.
  */
-function getMockSnapProvider(): MockSnapProvider {
-  const mockProvider = new EventEmitter() as Partial<MockSnapProvider>;
+function getMockSnapAPI(): MockSnapProvider {
+  return { request: async () => true };
+}
+
+/**
+ * Get a mock Ethereum provider, that always returns `true` for requests.
+ *
+ * @returns A mocked ethereum provider.
+ */
+function getMockEthereumProvider(): MockEthereumProvider {
+  const mockProvider = new EventEmitter() as Partial<MockEthereumProvider>;
   mockProvider.request = async () => true;
-  return mockProvider as MockSnapProvider;
+  return mockProvider as MockEthereumProvider;
 }
 
 /**
@@ -104,6 +117,6 @@ const generateMockEndowment = (key: string) => {
 export const generateMockEndowments = () => {
   return ALL_APIS.reduce<Record<string, any>>(
     (acc, cur) => ({ ...acc, [cur]: generateMockEndowment(cur) }),
-    { wallet: getMockSnapProvider() },
+    { snap: getMockSnapAPI(), ethereum: getMockEthereumProvider() },
   );
 };
