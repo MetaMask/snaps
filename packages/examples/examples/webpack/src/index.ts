@@ -21,12 +21,10 @@ sendNativeButton.addEventListener('click', () => send('native'));
  */
 async function connect() {
   await ethereum.request({
-    method: 'wallet_enable',
-    params: [
-      {
-        wallet_snap: { [snapId]: {} },
-      },
-    ],
+    method: 'wallet_requestSnaps',
+    params: {
+      [snapId]: {},
+    },
   });
 }
 
