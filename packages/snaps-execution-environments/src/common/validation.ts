@@ -1,6 +1,15 @@
 import { ChainIdStruct, HandlerType } from '@metamask/snaps-utils';
 import { SnapKeyring } from '@metamask/snaps-types';
 import {
+  assertStruct,
+  Json,
+  JsonRpcIdStruct,
+  JsonRpcRequestStruct,
+  JsonRpcSuccess,
+  JsonRpcSuccessStruct,
+  JsonStruct,
+} from '@metamask/utils';
+import {
   array,
   assign,
   enums,
@@ -14,17 +23,7 @@ import {
   string,
   tuple,
   union,
-  unknown,
 } from 'superstruct';
-import {
-  assertStruct,
-  Json,
-  JsonRpcIdStruct,
-  JsonRpcRequestStruct,
-  JsonRpcSuccess,
-  JsonRpcSuccessStruct,
-  JsonStruct,
-} from '@metamask/utils';
 
 const VALIDATION_FUNCTIONS = {
   [HandlerType.OnRpcRequest]: validateFunctionExport,
@@ -126,7 +125,7 @@ export const SnapRpcRequestArgumentsStruct = tuple([
   assign(
     JsonRpcRequestWithoutIdStruct,
     object({
-      params: optional(record(string(), unknown())),
+      params: optional(record(string(), JsonStruct)),
     }),
   ),
 ]);

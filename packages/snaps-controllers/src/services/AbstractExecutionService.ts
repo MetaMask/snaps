@@ -1,4 +1,5 @@
 import { Duplex } from 'stream';
+
 import ObjectMultiplex from '@metamask/object-multiplex';
 import {
   SnapRpcHook,
@@ -6,10 +7,12 @@ import {
   SNAP_STREAM_NAMES,
 } from '@metamask/snaps-utils';
 
+import { BasePostMessageStream } from '@metamask/post-message-stream';
 import {
   Duration,
   isJsonRpcNotification,
   isObject,
+  Json,
   JsonRpcNotification,
 } from '@metamask/utils';
 import {
@@ -18,10 +21,9 @@ import {
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from 'json-rpc-engine';
+import { createStreamMiddleware } from 'json-rpc-middleware-stream';
 import { nanoid } from 'nanoid';
 import pump from 'pump';
-import { createStreamMiddleware } from 'json-rpc-middleware-stream';
-import { BasePostMessageStream } from '@metamask/post-message-stream';
 import { hasTimedOut, withTimeout } from '../utils';
 import {
   ExecutionService,
@@ -226,7 +228,7 @@ export abstract class AbstractExecutionService<WorkerType>
     const notificationHandler = (
       message:
         | JsonRpcRequest<unknown>
-        | JsonRpcNotification<unknown[] | Record<string, unknown>>,
+        | JsonRpcNotification<Json[] | Record<string, Json>>,
     ) => {
       if (!isJsonRpcNotification(message)) {
         return;

@@ -2,11 +2,11 @@ import fs from 'fs';
 import pathUtils from 'path';
 import {
   booleanStringToBoolean,
-  trimPathString,
   logError,
   logWarning,
   sanitizeInputs,
   setSnapGlobals,
+  trimPathString,
   writeError,
 } from './misc';
 
@@ -178,6 +178,22 @@ describe('misc', () => {
       jest.spyOn(console, 'error').mockImplementation();
       logError('error message');
       expect(global.console.error).toHaveBeenCalledWith('error message');
+    });
+
+    it("doesn't log null", () => {
+      setVerboseErrors(true);
+      jest.spyOn(console, 'error').mockImplementation();
+      logError(null, new Error('verbose'));
+      expect(global.console.error).toHaveBeenCalledWith(new Error('verbose'));
+
+      setVerboseErrors(false);
+      jest.spyOn(console, 'error').mockImplementation();
+      logError(null);
+      expect(global.console.error).toHaveBeenCalledWith('Unknown error.');
+
+      jest.spyOn(console, 'error').mockImplementation();
+      logError(null, new Error('verbose'));
+      expect(global.console.error).toHaveBeenCalledWith('Unknown error.');
     });
   });
 

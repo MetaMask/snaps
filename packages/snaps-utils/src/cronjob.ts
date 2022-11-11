@@ -1,4 +1,5 @@
 import { JsonRpcRequestStruct } from '@metamask/utils';
+import { parseExpression } from 'cron-parser';
 import {
   array,
   assign,
@@ -13,7 +14,6 @@ import {
   refine,
   string,
 } from 'superstruct';
-import { parseExpression } from 'cron-parser';
 
 export const CronjobRpcRequestStruct = assign(
   partial(pick(JsonRpcRequestStruct, ['id', 'jsonrpc'])),

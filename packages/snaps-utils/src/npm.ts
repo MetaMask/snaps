@@ -1,15 +1,12 @@
-import deepEqual from 'fast-deep-equal';
+import { validateNpmSnapManifest } from './manifest/manifest';
+import { assertIsSnapManifest, SnapManifest } from './manifest/validation';
 import {
-  NpmSnapFileNames,
-  SnapFiles,
-  SnapValidationFailureReason,
-  UnvalidatedSnapFiles,
   assertIsNpmSnapPackageJson,
-  assertIsSnapManifest,
+  NpmSnapFileNames,
   NpmSnapPackageJson,
-  SnapManifest,
+  SnapFiles,
+  UnvalidatedSnapFiles,
 } from './types';
-import { ProgrammaticallyFixableSnapError, validateSnapShasum } from './snaps';
 
 export const SVG_MAX_BYTE_SIZE = 100_000;
 export const SVG_MAX_BYTE_SIZE_TEXT = `${Math.floor(
@@ -93,62 +90,4 @@ export function validateNpmSnap(
     sourceCode,
     svgIcon,
   };
-}
-
-/**
- * Validates the fields of an npm Snap manifest that has already passed JSON
- * Schema validation.
- *
- * @param snapFiles - The relevant snap files to validate.
- * @param snapFiles.manifest - The npm Snap manifest to validate.
- * @param snapFiles.packageJson - The npm Snap's `package.json`.
- * @param snapFiles.sourceCode - The Snap's source code.
- * @returns A tuple containing the validated snap manifest, snap source code,
- * and `package.json`.
- */
-export function validateNpmSnapManifest({
-  manifest,
-  packageJson,
-  sourceCode,
-}: SnapFiles): [SnapManifest, string, NpmSnapPackageJson] {
-  const packageJsonName = packageJson.name;
-  const packageJsonVersion = packageJson.version;
-  const packageJsonRepository = packageJson.repository;
-
-  const manifestPackageName = manifest.source.location.npm.packageName;
-  const manifestPackageVersion = manifest.version;
-  const manifestRepository = manifest.repository;
-
-  if (packageJsonName !== manifestPackageName) {
-    throw new ProgrammaticallyFixableSnapError(
-      `"${NpmSnapFileNames.Manifest}" npm package name ("${manifestPackageName}") does not match the "${NpmSnapFileNames.PackageJson}" "name" field ("${packageJsonName}").`,
-      SnapValidationFailureReason.NameMismatch,
-    );
-  }
-
-  if (packageJsonVersion !== manifestPackageVersion) {
-    throw new ProgrammaticallyFixableSnapError(
-      `"${NpmSnapFileNames.Manifest}" npm package version ("${manifestPackageVersion}") does not match the "${NpmSnapFileNames.PackageJson}" "version" field ("${packageJsonVersion}").`,
-      SnapValidationFailureReason.VersionMismatch,
-    );
-  }
-
-  if (
-    // The repository may be `undefined` in package.json but can only be defined
-    // or `null` in the Snap manifest due to TS@<4.4 issues.
-    (packageJsonRepository || manifestRepository) &&
-    !deepEqual(packageJsonRepository, manifestRepository)
-  ) {
-    throw new ProgrammaticallyFixableSnapError(
-      `"${NpmSnapFileNames.Manifest}" "repository" field does not match the "${NpmSnapFileNames.PackageJson}" "repository" field.`,
-      SnapValidationFailureReason.RepositoryMismatch,
-    );
-  }
-
-  validateSnapShasum(
-    manifest,
-    sourceCode,
-    `"${NpmSnapFileNames.Manifest}" "shasum" field does not match computed shasum.`,
-  );
-  return [manifest, sourceCode, packageJson];
 }

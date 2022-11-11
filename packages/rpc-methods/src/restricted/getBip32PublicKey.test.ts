@@ -75,7 +75,7 @@ describe('getBip32PublicKeyCaveatSpecifications', () => {
           // @ts-expect-error Missing other required properties.
         })({ params: { ...params, path: [] } }),
       ).rejects.toThrow(
-        'Invalid "path" parameter. The path must be a non-empty BIP-32 derivation path array.',
+        'Invalid BIP-32 public key path definition: At path: path -- Path must be a non-empty BIP-32 derivation path array.',
       );
     });
 
@@ -105,7 +105,9 @@ describe('getBip32PublicKeyCaveatSpecifications', () => {
           type: SnapCaveatType.PermittedDerivationPaths,
           value: [{ path: ['foo'], curve: 'secp256k1' }],
         }),
-      ).toThrow('Invalid "path" parameter. The path must start with "m".');
+      ).toThrow(
+        'Invalid BIP-32 public key caveat: At path: value.0.path -- Path must start with "m".',
+      );
     });
   });
 });

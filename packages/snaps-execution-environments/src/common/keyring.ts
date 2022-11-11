@@ -1,5 +1,11 @@
 import { SnapKeyring } from '@metamask/snaps-types';
-import { JsonRpcNotification, JsonRpcRequest } from '@metamask/utils';
+import {
+  assert,
+  isValidJson,
+  Json,
+  JsonRpcNotification,
+  JsonRpcRequest,
+} from '@metamask/utils';
 
 /**
  * Wraps a SnapKeyring class, returning a handler that can route requests to the exposed functions by the class.
@@ -11,7 +17,7 @@ import { JsonRpcNotification, JsonRpcRequest } from '@metamask/utils';
 export function wrapKeyring(
   notify: (
     requestObject: Omit<
-      JsonRpcNotification<Record<string, unknown> | unknown[]>,
+      JsonRpcNotification<Record<string, Json> | Json[]>,
       'jsonrpc'
     >,
   ) => void,
@@ -21,29 +27,33 @@ export function wrapKeyring(
     throw new Error('Keyring not exported');
   }
 
-  const keyringHandler = ({
-    request,
-  }: {
-    request: JsonRpcRequest<unknown[]>;
-  }) => {
+  const keyringHandler = ({ request }: { request: JsonRpcRequest<Json[]> }) => {
     const { method, params } = request;
     if (!(method in keyring)) {
       throw new Error(`Keyring does not expose ${method}`);
     }
-    let args = params ?? [];
-    // @ts-expect-error TODO: Figure out how to type this better
-    const func = keyring[method].bind(keyring);
+    let args = (params ?? []) as unknown[];
+    const keyringMethod = keyring[method as keyof SnapKeyring];
+    assert(keyringMethod !== undefined);
+    const func = keyringMethod.bind(keyring);
     // Special case for registering events
     if (method === 'on') {
-      const data = args[0];
-      const listener = (listenerArgs: unknown) =>
-        notify({
+      const data = args[0] as Json;
+      const listener = (...listenerArgs: unknown[]) => {
+        assert(
+          isValidJson(listenerArgs),
+          new TypeError(
+            'Keyrings .on listener received non-JSON-serializable value.',
+          ),
+        );
+        return notify({
           method: 'SnapKeyringEvent',
           params: { data, args: listenerArgs },
         });
+      };
       args = [data, listener];
     }
-    return func(...args);
+    return (func as (..._: unknown[]) => unknown)(...args);
   };
   return keyringHandler;
 }

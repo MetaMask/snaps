@@ -1,17 +1,24 @@
 import { promises as fs } from 'fs';
 import pathUtils from 'path';
+
 import { Json } from '@metamask/utils';
-import { validateNpmSnap, validateNpmSnapManifest } from './npm';
+import deepEqual from 'fast-deep-equal';
+import { deepClone } from '../deep-clone';
+import { readSnapJsonFile } from '../fs';
+import { validateNpmSnap } from '../npm';
+import {
+  getSnapSourceShasum,
+  ProgrammaticallyFixableSnapError,
+  validateSnapShasum,
+} from '../snaps';
 import {
   NpmSnapFileNames,
+  NpmSnapPackageJson,
   SnapFiles,
-  SnapManifest,
   SnapValidationFailureReason,
   UnvalidatedSnapFiles,
-} from './types';
-import { readSnapJsonFile } from './fs';
-import { getSnapSourceShasum, ProgrammaticallyFixableSnapError } from './snaps';
-import { deepClone } from './deep-clone';
+} from '../types';
+import { SnapManifest } from './validation';
 
 const MANIFEST_SORT_ORDER: Record<keyof SnapManifest, number> = {
   version: 1,
@@ -278,4 +285,62 @@ export function getWritableManifest(manifest: SnapManifest): SnapManifest {
       }),
       {} as SnapManifest,
     );
+}
+
+/**
+ * Validates the fields of an npm Snap manifest that has already passed JSON
+ * Schema validation.
+ *
+ * @param snapFiles - The relevant snap files to validate.
+ * @param snapFiles.manifest - The npm Snap manifest to validate.
+ * @param snapFiles.packageJson - The npm Snap's `package.json`.
+ * @param snapFiles.sourceCode - The Snap's source code.
+ * @returns A tuple containing the validated snap manifest, snap source code,
+ * and `package.json`.
+ */
+export function validateNpmSnapManifest({
+  manifest,
+  packageJson,
+  sourceCode,
+}: SnapFiles): [SnapManifest, string, NpmSnapPackageJson] {
+  const packageJsonName = packageJson.name;
+  const packageJsonVersion = packageJson.version;
+  const packageJsonRepository = packageJson.repository;
+
+  const manifestPackageName = manifest.source.location.npm.packageName;
+  const manifestPackageVersion = manifest.version;
+  const manifestRepository = manifest.repository;
+
+  if (packageJsonName !== manifestPackageName) {
+    throw new ProgrammaticallyFixableSnapError(
+      `"${NpmSnapFileNames.Manifest}" npm package name ("${manifestPackageName}") does not match the "${NpmSnapFileNames.PackageJson}" "name" field ("${packageJsonName}").`,
+      SnapValidationFailureReason.NameMismatch,
+    );
+  }
+
+  if (packageJsonVersion !== manifestPackageVersion) {
+    throw new ProgrammaticallyFixableSnapError(
+      `"${NpmSnapFileNames.Manifest}" npm package version ("${manifestPackageVersion}") does not match the "${NpmSnapFileNames.PackageJson}" "version" field ("${packageJsonVersion}").`,
+      SnapValidationFailureReason.VersionMismatch,
+    );
+  }
+
+  if (
+    // The repository may be `undefined` in package.json but can only be defined
+    // or `null` in the Snap manifest due to TS@<4.4 issues.
+    (packageJsonRepository || manifestRepository) &&
+    !deepEqual(packageJsonRepository, manifestRepository)
+  ) {
+    throw new ProgrammaticallyFixableSnapError(
+      `"${NpmSnapFileNames.Manifest}" "repository" field does not match the "${NpmSnapFileNames.PackageJson}" "repository" field.`,
+      SnapValidationFailureReason.RepositoryMismatch,
+    );
+  }
+
+  validateSnapShasum(
+    manifest,
+    sourceCode,
+    `"${NpmSnapFileNames.Manifest}" "shasum" field does not match computed shasum.`,
+  );
+  return [manifest, sourceCode, packageJson];
 }

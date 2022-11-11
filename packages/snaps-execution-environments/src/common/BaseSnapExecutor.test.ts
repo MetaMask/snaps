@@ -996,7 +996,7 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       method: 'SnapKeyringEvent',
       params: {
-        args: 'foo',
+        args: ['foo'],
         data: {
           chainId: 'eip155:1',
           eventName: 'accountsChanged',
@@ -1578,7 +1578,7 @@ describe('BaseSnapExecutor', () => {
       error: {
         code: -32603,
         data: expect.any(Object),
-        message: 'JSON-RPC responses must be JSON serializable objects.',
+        message: 'Received non-JSON-serializable value.',
       },
     });
   });

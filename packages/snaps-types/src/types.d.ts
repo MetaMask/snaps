@@ -48,7 +48,7 @@ export interface SnapKeyring {
       request: RequestArguments;
     },
   ): Promise<Json>;
-  on(data: KeyringEvent, listener: (...args: unknown[]) => void): void;
+  on(data: KeyringEvent, listener: (...args: Json[]) => void): void;
   off(data: KeyringEvent): void;
 
   addAccount?(chainId: ChainId): Promise<AccountId>;

@@ -1,5 +1,4 @@
 import SafeEventEmitter from '@metamask/safe-event-emitter';
-import { nanoid } from 'nanoid';
 import {
   assertIsConnectArguments,
   assertIsMetaMaskNotification,
@@ -12,8 +11,9 @@ import {
   RequestNamespace,
   Session,
 } from '@metamask/snaps-utils';
-import { JsonRpcRequest } from '@metamask/utils';
+import { JsonRpcRequest, Json } from '@metamask/utils';
 import type { SnapProvider } from '@metamask/snaps-types';
+import { nanoid } from 'nanoid';
 import { Provider } from './Provider';
 
 declare global {
@@ -126,11 +126,17 @@ export class MultiChainProvider extends SafeEventEmitter implements Provider {
 
     assertIsMultiChainRequest(args);
 
+    // We're doing it this way to avoid sentRequest.params = undefined.
+    const sentRequest: Json = { method: args.request.method };
+    if (args.request.params !== undefined) {
+      sentRequest.params = args.request.params;
+    }
+
     return this.#rpcRequest({
       method: 'caip_request',
       params: {
         chainId: args.chainId,
-        request: { method: args.request.method, params: args.request.params },
+        request: sentRequest,
       },
     });
   }
@@ -152,7 +158,7 @@ export class MultiChainProvider extends SafeEventEmitter implements Provider {
    */
   async #rpcRequest(
     payload: { method: string } & Partial<
-      JsonRpcRequest<unknown[] | Record<string, unknown>>
+      JsonRpcRequest<Record<string, Json> | Json[] | undefined>
     >,
   ) {
     return await this.#getProvider().request({
