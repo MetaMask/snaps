@@ -28,7 +28,7 @@ function createMath() {
       random: () => {
         // NOTE: This is not intended to be a secure replacement for the weak
         // random number generator used by `Math.random`. It is only intended to
-        // prevent side chain attacks of `Math.random` by replacing it with an
+        // prevent side channel attacks of `Math.random` by replacing it with an
         // alternative implementation that is not vulnerable to the same
         // attacks.
         //
