@@ -70,7 +70,7 @@ describe('implementation', () => {
     const response = (await engine.handle({
       jsonrpc: '2.0',
       id: 1,
-      method: 'wallet_installSnaps',
+      method: 'wallet_requestSnaps',
       params: {
         [MOCK_SNAP_ID]: {},
       },
@@ -122,7 +122,7 @@ describe('implementation', () => {
     const response = (await engine.handle({
       jsonrpc: '2.0',
       id: 1,
-      method: 'wallet_installSnaps',
+      method: 'wallet_requestSnaps',
       params: {
         [MOCK_SNAP_ID]: {},
       },
