@@ -47,9 +47,7 @@ describe('ThreadSnapExecutor', () => {
     // Utility functions
     const emit = (data: Json) => parentEmitter.emit('message', { data });
     const emitChunk = (name: string, data: Json) => emit({ name, data });
-    const waitForOutbound = (
-      request: Partial<JsonRpcRequest<unknown[]>>,
-    ): any =>
+    const waitForOutbound = (request: Partial<JsonRpcRequest<any>>): any =>
       new Promise((resolve) => {
         childEmitter.on('message', ({ data: { name, data } }) => {
           if (

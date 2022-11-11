@@ -13,6 +13,7 @@ import {
 } from '@metamask/snaps-utils';
 import { JsonRpcRequest, Json } from '@metamask/utils';
 import { MetaMaskInpageProvider } from '@metamask/providers';
+import { nanoid } from 'nanoid';
 import { Provider } from './Provider';
 
 declare global {
