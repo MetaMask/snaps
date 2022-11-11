@@ -27,5 +27,13 @@ describe('Math endowment', () => {
       expect(Math.random()).toStrictEqual(expect.any(Number));
       expect(randomSpy).not.toHaveBeenCalled();
     });
+
+    it('returns an number in the range [0, 1)', () => {
+      const { Math } = math.factory();
+      const value = Math.random();
+
+      expect(value).toBeGreaterThanOrEqual(0);
+      expect(value).toBeLessThan(1);
+    });
   });
 });
