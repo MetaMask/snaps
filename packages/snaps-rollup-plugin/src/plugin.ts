@@ -50,6 +50,14 @@ export default function snaps(options?: Partial<Options>): Plugin {
         sourceMap: true,
       });
 
+      if (result.warnings.length > 0) {
+        this.warn(
+          `Bundle Warning: Processing of the Snap bundle completed with warnings.\n${result.warnings.join(
+            '\n',
+          )}`,
+        );
+      }
+
       return { code: result.code, map: result.sourceMap };
     },
 
