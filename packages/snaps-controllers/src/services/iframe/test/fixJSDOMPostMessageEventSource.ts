@@ -4,8 +4,8 @@ import { IframeExecutionService } from '../IframeExecutionService';
 const fixJSDOMPostMessageEventSource = (
   iframeExecutionService: IframeExecutionService,
 ) => {
-  const oldCreateWindow = (iframeExecutionService as any)._createWindow;
-  (iframeExecutionService as any)._createWindow = async (
+  const oldCreateWindow = (iframeExecutionService as any).createWindow;
+  (iframeExecutionService as any).createWindow = async (
     uri: string,
     envId: string,
     timeout: number,

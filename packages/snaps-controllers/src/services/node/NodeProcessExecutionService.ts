@@ -6,7 +6,7 @@ import {
 import { AbstractExecutionService, Job } from '..';
 
 export class NodeProcessExecutionService extends AbstractExecutionService<ChildProcess> {
-  protected async _initEnvStream(): Promise<{
+  protected async initEnvStream(): Promise<{
     worker: ChildProcess;
     stream: BasePostMessageStream;
   }> {
@@ -19,7 +19,7 @@ export class NodeProcessExecutionService extends AbstractExecutionService<ChildP
     return { worker, stream };
   }
 
-  protected _terminate(jobWrapper: Job<ChildProcess>): void {
+  protected terminateJob(jobWrapper: Job<ChildProcess>): void {
     jobWrapper.worker.kill();
   }
 }

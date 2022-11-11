@@ -58,32 +58,34 @@ export type Job<WorkerType> = {
 export abstract class AbstractExecutionService<WorkerType>
   implements ExecutionService
 {
-  protected _snapRpcHooks: Map<string, SnapRpcHook>;
+  #snapRpcHooks: Map<string, SnapRpcHook>;
 
+  // Cannot be hash private yet because of tests.
   protected jobs: Map<string, Job<WorkerType>>;
 
-  protected setupSnapProvider: SetupSnapProvider;
+  // Cannot be hash private yet because of tests.
+  private setupSnapProvider: SetupSnapProvider;
 
-  protected snapToJobMap: Map<string, string>;
+  #snapToJobMap: Map<string, string>;
 
-  protected jobToSnapMap: Map<string, string>;
+  #jobToSnapMap: Map<string, string>;
 
-  protected _messenger: ExecutionServiceMessenger;
+  #messenger: ExecutionServiceMessenger;
 
-  protected _terminationTimeout: number;
+  #terminationTimeout: number;
 
   constructor({
     setupSnapProvider,
     messenger,
     terminationTimeout = Duration.Second,
   }: ExecutionServiceArgs) {
-    this._snapRpcHooks = new Map();
+    this.#snapRpcHooks = new Map();
     this.jobs = new Map();
     this.setupSnapProvider = setupSnapProvider;
-    this.snapToJobMap = new Map();
-    this.jobToSnapMap = new Map();
-    this._messenger = messenger;
-    this._terminationTimeout = terminationTimeout;
+    this.#snapToJobMap = new Map();
+    this.#jobToSnapMap = new Map();
+    this.#messenger = messenger;
+    this.#terminationTimeout = terminationTimeout;
 
     this.registerMessageHandlers();
   }
@@ -93,23 +95,23 @@ export abstract class AbstractExecutionService<WorkerType>
    * actions.
    */
   private registerMessageHandlers(): void {
-    this._messenger.registerActionHandler(
+    this.#messenger.registerActionHandler(
       `${controllerName}:handleRpcRequest`,
       (snapId: string, options: SnapRpcHookArgs) =>
         this.handleRpcRequest(snapId, options),
     );
 
-    this._messenger.registerActionHandler(
+    this.#messenger.registerActionHandler(
       `${controllerName}:executeSnap`,
       (snapData: SnapExecutionData) => this.executeSnap(snapData),
     );
 
-    this._messenger.registerActionHandler(
+    this.#messenger.registerActionHandler(
       `${controllerName}:terminateSnap`,
       (snapId: string) => this.terminateSnap(snapId),
     );
 
-    this._messenger.registerActionHandler(
+    this.#messenger.registerActionHandler(
       `${controllerName}:terminateAllSnaps`,
       () => this.terminateAllSnaps(),
     );
@@ -122,7 +124,7 @@ export abstract class AbstractExecutionService<WorkerType>
    *
    * @param job - The object corresponding to the job to be terminated.
    */
-  protected abstract _terminate(job: Job<WorkerType>): void;
+  protected abstract terminateJob(job: Job<WorkerType>): void;
 
   /**
    * Terminates the job with the specified ID and deletes all its associated
@@ -140,13 +142,13 @@ export abstract class AbstractExecutionService<WorkerType>
 
     // Ping worker and tell it to run teardown, continue with termination if it takes too long
     const result = await withTimeout(
-      this._command(jobId, {
+      this.command(jobId, {
         jsonrpc: '2.0',
         method: 'terminate',
         params: [],
         id: nanoid(),
       }),
-      this._terminationTimeout,
+      this.#terminationTimeout,
     );
 
     if (result === hasTimedOut || result !== 'OK') {
@@ -167,9 +169,9 @@ export abstract class AbstractExecutionService<WorkerType>
       }
     });
 
-    this._terminate(jobWrapper);
+    this.terminateJob(jobWrapper);
 
-    this._removeSnapAndJobMapping(jobId);
+    this.#removeSnapAndJobMapping(jobId);
     this.jobs.delete(jobId);
     console.log(`Job "${jobId}" terminated.`);
   }
@@ -181,9 +183,9 @@ export abstract class AbstractExecutionService<WorkerType>
    *
    * @returns Information regarding the created job.
    */
-  protected async _initJob(): Promise<Job<WorkerType>> {
+  protected async initJob(): Promise<Job<WorkerType>> {
     const jobId = nanoid();
-    const { streams, worker } = await this._initStreams(jobId);
+    const { streams, worker } = await this.initStreams(jobId);
     const rpcEngine = new JsonRpcEngine();
 
     const jsonRpcConnection = createStreamMiddleware();
@@ -211,10 +213,10 @@ export abstract class AbstractExecutionService<WorkerType>
    * @param jobId - The id of the job.
    * @returns The streams to communicate with the worker and the worker itself.
    */
-  protected async _initStreams(
+  protected async initStreams(
     jobId: string,
   ): Promise<{ streams: JobStreams; worker: WorkerType }> {
-    const { worker, stream: envStream } = await this._initEnvStream(jobId);
+    const { worker, stream: envStream } = await this.initEnvStream(jobId);
     // Typecast justification: stream type mismatch
     const mux = setupMultiplex(
       envStream as unknown as Duplex,
@@ -235,14 +237,14 @@ export abstract class AbstractExecutionService<WorkerType>
       }
 
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const snapId = this.jobToSnapMap.get(jobId)!;
+      const snapId = this.#jobToSnapMap.get(jobId)!;
       if (message.method === 'OutboundRequest') {
-        this._messenger.publish('ExecutionService:outboundRequest', snapId);
+        this.#messenger.publish('ExecutionService:outboundRequest', snapId);
       } else if (message.method === 'OutboundResponse') {
-        this._messenger.publish('ExecutionService:outboundResponse', snapId);
+        this.#messenger.publish('ExecutionService:outboundResponse', snapId);
       } else if (message.method === 'UnhandledError') {
         if (isObject(message.params) && message.params.error) {
-          this._messenger.publish(
+          this.#messenger.publish(
             'ExecutionService:unhandledError',
             snapId,
             message.params.error as SnapErrorJson,
@@ -282,7 +284,7 @@ export abstract class AbstractExecutionService<WorkerType>
    *
    * Depending on the execution environment, this may run forever if the Snap fails to start up properly, therefore any call to this function should be wrapped in a timeout.
    */
-  protected abstract _initEnvStream(jobId: string): Promise<{
+  protected abstract initEnvStream(jobId: string): Promise<{
     worker: WorkerType;
     stream: BasePostMessageStream;
   }>;
@@ -295,7 +297,7 @@ export abstract class AbstractExecutionService<WorkerType>
    * @param snapId - The ID of the snap to terminate.
    */
   async terminateSnap(snapId: string) {
-    const jobId = this.snapToJobMap.get(snapId);
+    const jobId = this.#snapToJobMap.get(snapId);
     if (jobId) {
       await this.terminate(jobId);
     }
@@ -305,7 +307,7 @@ export abstract class AbstractExecutionService<WorkerType>
     await Promise.all(
       [...this.jobs.keys()].map((jobId) => this.terminate(jobId)),
     );
-    this._snapRpcHooks.clear();
+    this.#snapRpcHooks.clear();
   }
 
   /**
@@ -315,7 +317,7 @@ export abstract class AbstractExecutionService<WorkerType>
    * @returns The RPC request handler for the snap.
    */
   private async getRpcRequestHandler(snapId: string) {
-    return this._snapRpcHooks.get(snapId);
+    return this.#snapRpcHooks.get(snapId);
   }
 
   /**
@@ -328,15 +330,15 @@ export abstract class AbstractExecutionService<WorkerType>
    * @throws If the execution service returns an error.
    */
   async executeSnap(snapData: SnapExecutionData): Promise<string> {
-    if (this.snapToJobMap.has(snapData.snapId)) {
+    if (this.#snapToJobMap.has(snapData.snapId)) {
       throw new Error(`Snap "${snapData.snapId}" is already being executed.`);
     }
 
-    const job = await this._initJob();
-    this._mapSnapAndJob(snapData.snapId, job.id);
+    const job = await this.initJob();
+    this.#mapSnapAndJob(snapData.snapId, job.id);
 
     // Ping the worker to ensure that it started up
-    await this._command(job.id, {
+    await this.command(job.id, {
       jsonrpc: '2.0',
       method: 'ping',
       id: nanoid(),
@@ -346,17 +348,18 @@ export abstract class AbstractExecutionService<WorkerType>
 
     this.setupSnapProvider(snapData.snapId, rpcStream);
 
-    const result = await this._command(job.id, {
+    const result = await this.command(job.id, {
       jsonrpc: '2.0',
       method: 'executeSnap',
       params: snapData,
       id: nanoid(),
     });
-    this._createSnapHooks(snapData.snapId, job.id);
+    this.#createSnapHooks(snapData.snapId, job.id);
     return result as string;
   }
 
-  protected async _command(
+  // Cannot be hash private yet because of tests.
+  private async command(
     jobId: string,
     message: JsonRpcRequest<unknown>,
   ): Promise<unknown> {
@@ -378,13 +381,13 @@ export abstract class AbstractExecutionService<WorkerType>
     return response.result;
   }
 
-  protected _removeSnapHooks(snapId: string) {
-    this._snapRpcHooks.delete(snapId);
+  #removeSnapHooks(snapId: string) {
+    this.#snapRpcHooks.delete(snapId);
   }
 
-  protected _createSnapHooks(snapId: string, workerId: string) {
+  #createSnapHooks(snapId: string, workerId: string) {
     const rpcHook = async ({ origin, handler, request }: SnapRpcHookArgs) => {
-      return await this._command(workerId, {
+      return await this.command(workerId, {
         id: nanoid(),
         jsonrpc: '2.0',
         method: 'snapRpc',
@@ -397,7 +400,7 @@ export abstract class AbstractExecutionService<WorkerType>
       });
     };
 
-    this._snapRpcHooks.set(snapId, rpcHook);
+    this.#snapRpcHooks.set(snapId, rpcHook);
   }
 
   /**
@@ -406,8 +409,8 @@ export abstract class AbstractExecutionService<WorkerType>
    * @param snapId - A given snap id.
    * @returns The ID of the snap's job.
    */
-  protected _getJobForSnap(snapId: string): string | undefined {
-    return this.snapToJobMap.get(snapId);
+  #getJobForSnap(snapId: string): string | undefined {
+    return this.#snapToJobMap.get(snapId);
   }
 
   /**
@@ -416,24 +419,24 @@ export abstract class AbstractExecutionService<WorkerType>
    * @param jobId - A given job id.
    * @returns The ID of the snap that is running the job.
    */
-  _getSnapForJob(jobId: string): string | undefined {
-    return this.jobToSnapMap.get(jobId);
+  #getSnapForJob(jobId: string): string | undefined {
+    return this.#jobToSnapMap.get(jobId);
   }
 
-  protected _mapSnapAndJob(snapId: string, jobId: string): void {
-    this.snapToJobMap.set(snapId, jobId);
-    this.jobToSnapMap.set(jobId, snapId);
+  #mapSnapAndJob(snapId: string, jobId: string): void {
+    this.#snapToJobMap.set(snapId, jobId);
+    this.#jobToSnapMap.set(jobId, snapId);
   }
 
-  protected _removeSnapAndJobMapping(jobId: string): void {
-    const snapId = this.jobToSnapMap.get(jobId);
+  #removeSnapAndJobMapping(jobId: string): void {
+    const snapId = this.#jobToSnapMap.get(jobId);
     if (!snapId) {
       throw new Error(`job: "${jobId}" has no mapped snap.`);
     }
 
-    this.jobToSnapMap.delete(jobId);
-    this.snapToJobMap.delete(snapId);
-    this._removeSnapHooks(snapId);
+    this.#jobToSnapMap.delete(jobId);
+    this.#snapToJobMap.delete(snapId);
+    this.#removeSnapHooks(snapId);
   }
 
   /**
