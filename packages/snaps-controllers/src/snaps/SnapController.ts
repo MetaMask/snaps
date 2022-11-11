@@ -171,7 +171,7 @@ export type SnapError = {
 };
 
 /**
- * The return type of {@link SnapController._fetchSnap} and its sibling methods.
+ * The return type of {@link SnapController.fetchSnap} and its sibling methods.
  */
 type FetchSnapResult = {
   /**
@@ -611,11 +611,13 @@ export class SnapController extends BaseController<
 
   #maxIdleTime: number;
 
-  #maxRequestTime: number;
+  // This property cannot be hash private yet because of tests.
+  private maxRequestTime: number;
 
   #npmRegistryUrl?: string;
 
-  #snapsRuntimeData: Map<SnapId, SnapRuntimeData>;
+  // This property cannot be hash private yet because of tests.
+  private snapsRuntimeData: Map<SnapId, SnapRuntimeData>;
 
   #getAppKey: GetAppKey;
 
@@ -704,12 +706,12 @@ export class SnapController extends BaseController<
     this.#idleTimeCheckInterval = idleTimeCheckInterval;
     this.#checkSnapBlockList = checkBlockList;
     this.#maxIdleTime = maxIdleTime;
-    this.#maxRequestTime = maxRequestTime;
+    this.maxRequestTime = maxRequestTime;
     this.#npmRegistryUrl = npmRegistryUrl;
     this._onUnhandledSnapError = this._onUnhandledSnapError.bind(this);
     this._onOutboundRequest = this._onOutboundRequest.bind(this);
     this._onOutboundResponse = this._onOutboundResponse.bind(this);
-    this.#snapsRuntimeData = new Map();
+    this.snapsRuntimeData = new Map();
 
     this.#pollForLastRequestStatus();
 
@@ -1019,7 +1021,7 @@ export class SnapController extends BaseController<
   }
 
   async #stopSnapsLastRequestPastMax() {
-    const entries = [...this.#snapsRuntimeData.entries()];
+    const entries = [...this.snapsRuntimeData.entries()];
     return Promise.all(
       entries
         .filter(
@@ -1095,7 +1097,7 @@ export class SnapController extends BaseController<
 
     assert(runtime.sourceCode);
 
-    await this._startSnap({
+    await this.#startSnap({
       snapId,
       sourceCode: runtime.sourceCode,
     });
@@ -1412,7 +1414,7 @@ export class SnapController extends BaseController<
           permissionName,
         );
 
-        this.#snapsRuntimeData.delete(snapId);
+        this.snapsRuntimeData.delete(snapId);
 
         this.update((state: any) => {
           delete state.snaps[snapId];
@@ -1629,9 +1631,9 @@ export class SnapController extends BaseController<
         versionRange,
       });
 
-      await this.#authorize(origin, snapId);
+      await this.authorize(origin, snapId);
 
-      await this._startSnap({
+      await this.#startSnap({
         snapId,
         sourceCode,
       });
@@ -1680,7 +1682,7 @@ export class SnapController extends BaseController<
       );
     }
 
-    const newSnap = await this.#fetchSnap(snapId, newVersionRange);
+    const newSnap = await this.fetchSnap(snapId, newVersionRange);
     const newVersion = newSnap.manifest.version;
     if (!gtVersion(newVersion, snap.version)) {
       console.warn(
@@ -1755,7 +1757,7 @@ export class SnapController extends BaseController<
       });
     }
 
-    await this._startSnap({ snapId, sourceCode: newSnap.sourceCode });
+    await this.#startSnap({ snapId, sourceCode: newSnap.sourceCode });
 
     const truncatedSnap = this.getTruncatedExpect(snapId);
 
@@ -1801,7 +1803,7 @@ export class SnapController extends BaseController<
           return this.#set({ ...args, id: snapId });
         }
 
-        const fetchedSnap = await this.#fetchSnap(snapId, args.versionRange);
+        const fetchedSnap = await this.fetchSnap(snapId, args.versionRange);
         await this.#assertIsUnblocked(snapId, {
           version: fetchedSnap.manifest.version,
           shasum: fetchedSnap.manifest.source.shasum,
@@ -1825,7 +1827,7 @@ export class SnapController extends BaseController<
     }
   }
 
-  private async _startSnap(snapData: { snapId: string; sourceCode: string }) {
+  async #startSnap(snapData: { snapId: string; sourceCode: string }) {
     const { snapId } = snapData;
     if (this.isRunning(snapId)) {
       throw new Error(`Snap "${snapId}" is already started.`);
@@ -1836,7 +1838,7 @@ export class SnapController extends BaseController<
         snapId,
         this.messagingSystem.call('ExecutionService:executeSnap', {
           ...snapData,
-          endowments: await this._getEndowments(snapId),
+          endowments: await this.#getEndowments(snapId),
         }),
       );
       this.#transition(snapId, SnapStatusEvents.Start);
@@ -1858,7 +1860,7 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the snap whose SES endowments to get.
    * @returns An array of the names of the endowments.
    */
-  private async _getEndowments(snapId: string): Promise<string[]> {
+  async #getEndowments(snapId: string): Promise<string[]> {
     let allEndowments: string[] = [];
 
     for (const permissionName of this.#environmentEndowmentPermissions) {
@@ -2003,11 +2005,13 @@ export class SnapController extends BaseController<
   /**
    * Fetches the manifest and source code of a snap.
    *
+   * This function is not hash private yet because of tests.
+   *
    * @param snapId - The id of the Snap.
    * @param versionRange - The SemVer version of the Snap to fetch.
    * @returns A tuple of the Snap manifest object and the Snap source code.
    */
-  async #fetchSnap(
+  async fetchSnap(
     snapId: ValidatedSnapId,
     versionRange: string = DEFAULT_REQUESTED_SNAP_VERSION,
   ): Promise<FetchSnapResult> {
@@ -2143,11 +2147,13 @@ export class SnapController extends BaseController<
    * Initiates a request for the given snap's initial permissions.
    * Must be called in order. See processRequestedSnap.
    *
+   * This function is not hash private yet because of tests.
+   *
    * @param origin - The origin of the install request.
    * @param snapId - The id of the Snap.
    * @returns The snap's approvedPermissions.
    */
-  async #authorize(origin: string, snapId: SnapId): Promise<void> {
+  private async authorize(origin: string, snapId: SnapId): Promise<void> {
     console.info(`Authorizing snap: ${snapId}`);
     const snapsState = this.state.snaps;
     const snap = snapsState[snapId];
@@ -2304,7 +2310,7 @@ export class SnapController extends BaseController<
         });
       }
 
-      const timer = new Timer(this.#maxRequestTime);
+      const timer = new Timer(this.maxRequestTime);
       this.#recordSnapRpcRequestStart(snapId, request.id, timer);
 
       const handleRpcRequestPromise = this.messagingSystem.call(
@@ -2358,7 +2364,7 @@ export class SnapController extends BaseController<
       return promise;
     }
 
-    const result = await withTimeout(promise, timer ?? this.#maxRequestTime);
+    const result = await withTimeout(promise, timer ?? this.maxRequestTime);
     if (result === hasTimedOut) {
       throw new Error('The request timed out.');
     }
@@ -2383,7 +2389,7 @@ export class SnapController extends BaseController<
   }
 
   #getRuntime(snapId: SnapId): SnapRuntimeData | undefined {
-    return this.#snapsRuntimeData.get(snapId);
+    return this.snapsRuntimeData.get(snapId);
   }
 
   #getRuntimeExpect(snapId: SnapId): SnapRuntimeData {
@@ -2399,7 +2405,7 @@ export class SnapController extends BaseController<
     snapId: SnapId,
     data: { sourceCode: string | null; state: string | null },
   ) {
-    if (this.#snapsRuntimeData.has(snapId)) {
+    if (this.snapsRuntimeData.has(snapId)) {
       return;
     }
 
@@ -2414,7 +2420,7 @@ export class SnapController extends BaseController<
 
     forceStrict(interpreter);
 
-    this.#snapsRuntimeData.set(snapId, {
+    this.snapsRuntimeData.set(snapId, {
       lastRequest: null,
       rpcHandler: null,
       installPromise: null,

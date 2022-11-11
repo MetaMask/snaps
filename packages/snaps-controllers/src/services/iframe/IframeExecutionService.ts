@@ -27,15 +27,15 @@ export class IframeExecutionService extends AbstractExecutionService<Window> {
     this.iframeUrl = iframeUrl;
   }
 
-  protected _terminate(jobWrapper: Job<Window>): void {
+  protected terminateJob(jobWrapper: Job<Window>): void {
     document.getElementById(jobWrapper.id)?.remove();
   }
 
-  protected async _initEnvStream(jobId: string): Promise<{
+  protected async initEnvStream(jobId: string): Promise<{
     worker: Window;
     stream: BasePostMessageStream;
   }> {
-    const iframeWindow = await this._createWindow(
+    const iframeWindow = await this.createWindow(
       this.iframeUrl.toString(),
       jobId,
     );
@@ -58,7 +58,7 @@ export class IframeExecutionService extends AbstractExecutionService<Window> {
    * @param jobId - The job id.
    * @returns A promise that resolves to the contentWindow of the iframe.
    */
-  private _createWindow(uri: string, jobId: string): Promise<Window> {
+  private createWindow(uri: string, jobId: string): Promise<Window> {
     return new Promise((resolve, reject) => {
       const iframe = document.createElement('iframe');
       // The order of operations appears to matter for everything except this

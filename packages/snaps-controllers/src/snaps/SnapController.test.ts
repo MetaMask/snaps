@@ -96,7 +96,7 @@ describe('SnapController', () => {
     expect(snapState).toStrictEqual(state);
     expect(
       // @ts-expect-error Accessing private property
-      snapController._snapsRuntimeData.get(MOCK_SNAP_ID).state,
+      snapController.snapsRuntimeData.get(MOCK_SNAP_ID).state,
     ).toStrictEqual(
       await passworder.encrypt(`stateEncryption:${MOCK_SNAP_ID}`, state),
     );
@@ -437,9 +437,9 @@ describe('SnapController', () => {
     const snap = snapController.getExpect(MOCK_SNAP_ID);
     await snapController.startSnap(snap.id);
 
-    (snapController as any)._maxRequestTime = 50;
+    (snapController as any).maxRequestTime = 50;
 
-    (service as any)._command = () =>
+    (service as any).command = () =>
       new Promise((resolve) => {
         setTimeout(resolve, 2000);
       });
@@ -549,7 +549,7 @@ describe('SnapController', () => {
     jest.spyOn(messenger, 'publish');
 
     jest
-      .spyOn(snapController as any, '_fetchSnap')
+      .spyOn(snapController as any, 'fetchSnap')
       .mockImplementationOnce(async () => {
         return {
           manifest: getSnapManifest({
@@ -692,7 +692,7 @@ describe('SnapController', () => {
     });
 
     jest
-      .spyOn(controller as any, '_fetchSnap')
+      .spyOn(controller as any, 'fetchSnap')
       .mockImplementationOnce(async () => {
         return {
           manifest: getSnapManifest(),
@@ -729,7 +729,7 @@ describe('SnapController', () => {
 
     jest.spyOn(messenger, 'publish');
     jest
-      .spyOn(snapController as any, '_fetchSnap')
+      .spyOn(snapController as any, 'fetchSnap')
       .mockImplementationOnce(async () => {
         return {
           manifest: getSnapManifest(),
@@ -902,7 +902,7 @@ describe('SnapController', () => {
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
 
     // We set the maxRequestTime to a low enough value for it to time out
-    (snapController as any)._maxRequestTime = 50;
+    (snapController as any).maxRequestTime = 50;
 
     await expect(
       snapController.handleRequest({
@@ -973,7 +973,7 @@ describe('SnapController', () => {
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
 
     // Max request time should be shorter than eth_blockNumber takes to respond
-    (snapController as any)._maxRequestTime = 300;
+    (snapController as any).maxRequestTime = 300;
 
     expect(
       await snapController.handleRequest({
@@ -1042,7 +1042,7 @@ describe('SnapController', () => {
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
 
     // Max request time should be shorter than eth_blockNumber takes to respond
-    (snapController as any)._maxRequestTime = 300;
+    (snapController as any).maxRequestTime = 300;
 
     expect(
       await snapController.handleRequest({
@@ -1093,7 +1093,7 @@ describe('SnapController', () => {
     expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
 
     // We set the maxRequestTime to a low enough value for it to time out if it werent a long running snap
-    (snapController as any)._maxRequestTime = 50;
+    (snapController as any).maxRequestTime = 50;
 
     const handlerPromise = snapController.handleRequest({
       snapId: snap.id,
@@ -1555,9 +1555,7 @@ describe('SnapController', () => {
           return false;
         });
 
-      const addMock = jest
-        .spyOn(snapController as any, '_add')
-        .mockImplementation();
+      const authorizeSpy = jest.spyOn(snapController as any, 'authorize');
       const result = await snapController.installSnaps(MOCK_ORIGIN, {
         [MOCK_SNAP_ID]: {},
       });
@@ -1568,7 +1566,7 @@ describe('SnapController', () => {
         MOCK_ORIGIN,
         snapObject.permissionName,
       );
-      expect(addMock).not.toHaveBeenCalled();
+      expect(authorizeSpy).not.toHaveBeenCalled();
     });
 
     it('reinstalls local snaps even if they are already installed (already stopped)', async () => {
@@ -1605,7 +1603,7 @@ describe('SnapController', () => {
         });
 
       const fetchSnapMock = jest
-        .spyOn(snapController as any, '_fetchSnap')
+        .spyOn(snapController as any, 'fetchSnap')
         .mockImplementationOnce(() => {
           return {
             ...snapObject,
@@ -1711,7 +1709,7 @@ describe('SnapController', () => {
         });
 
       const fetchSnapMock = jest
-        .spyOn(snapController as any, '_fetchSnap')
+        .spyOn(snapController as any, 'fetchSnap')
         .mockImplementationOnce(() => ({
           manifest,
           sourceCode: DEFAULT_SNAP_BUNDLE,
@@ -1881,7 +1879,7 @@ describe('SnapController', () => {
         });
 
       const fetchSnapMock = jest
-        .spyOn(snapController as any, '_fetchSnap')
+        .spyOn(snapController as any, 'fetchSnap')
         .mockImplementationOnce(() => {
           return getPersistedSnapObject({ manifest });
         });
@@ -1970,7 +1968,7 @@ describe('SnapController', () => {
       const callActionMock = jest.spyOn(messenger, 'call');
 
       jest
-        .spyOn(snapController as any, '_fetchSnap')
+        .spyOn(snapController as any, 'fetchSnap')
         .mockImplementationOnce(() => {
           return getPersistedSnapObject({ manifest });
         });
@@ -2043,7 +2041,7 @@ describe('SnapController', () => {
       const callActionMock = jest.spyOn(messenger, 'call');
 
       jest
-        .spyOn(snapController as any, '_fetchSnap')
+        .spyOn(snapController as any, 'fetchSnap')
         .mockImplementationOnce(() => {
           return getPersistedSnapObject({ manifest });
         });
@@ -2136,7 +2134,7 @@ describe('SnapController', () => {
       });
 
       jest
-        .spyOn(snapController as any, '_fetchSnap')
+        .spyOn(snapController as any, 'fetchSnap')
         .mockImplementationOnce(() => {
           return getPersistedSnapObject({ manifest });
         });
@@ -2224,7 +2222,7 @@ describe('SnapController', () => {
       );
 
       const fetchSnapMock = jest
-        .spyOn(controller as any, '_fetchSnap')
+        .spyOn(controller as any, 'fetchSnap')
         .mockImplementationOnce(async () => ({
           manifest: getSnapManifest(),
           sourceCode: DEFAULT_SNAP_BUNDLE,
@@ -2363,7 +2361,7 @@ describe('SnapController', () => {
         });
 
       const fetchSnapMock = jest
-        .spyOn(controller as any, '_fetchSnap')
+        .spyOn(controller as any, 'fetchSnap')
         .mockImplementationOnce(async () => ({
           manifest: getSnapManifest({ version: newVersion }),
           sourceCode: DEFAULT_SNAP_BUNDLE,
@@ -2410,7 +2408,7 @@ describe('SnapController', () => {
         });
 
       const fetchSnapMock = jest
-        .spyOn(controller as any, '_fetchSnap')
+        .spyOn(controller as any, 'fetchSnap')
         .mockImplementationOnce(async () => {
           throw new Error('foo');
         });
@@ -2468,7 +2466,7 @@ describe('SnapController', () => {
           },
         }),
       );
-      const fetchSnapSpy = jest.spyOn(controller as any, '_fetchSnap');
+      const fetchSnapSpy = jest.spyOn(controller as any, 'fetchSnap');
 
       fetchSnapSpy.mockImplementationOnce(async () => {
         const manifest: SnapManifest = {
@@ -2500,7 +2498,7 @@ describe('SnapController', () => {
           },
         }),
       );
-      const fetchSnapSpy = jest.spyOn(controller as any, '_fetchSnap');
+      const fetchSnapSpy = jest.spyOn(controller as any, 'fetchSnap');
       const onSnapUpdated = jest.fn();
       const onSnapAdded = jest.fn();
 
@@ -2536,7 +2534,7 @@ describe('SnapController', () => {
       const controller = getSnapController(
         getSnapControllerOptions({ messenger }),
       );
-      const fetchSnapSpy = jest.spyOn(controller as any, '_fetchSnap');
+      const fetchSnapSpy = jest.spyOn(controller as any, 'fetchSnap');
       const callActionSpy = jest.spyOn(messenger, 'call');
       const onSnapUpdated = jest.fn();
       const onSnapAdded = jest.fn();
@@ -2674,7 +2672,7 @@ describe('SnapController', () => {
           },
         }),
       );
-      const fetchSnapSpy = jest.spyOn(controller as any, '_fetchSnap');
+      const fetchSnapSpy = jest.spyOn(controller as any, 'fetchSnap');
       const callActionSpy = jest.spyOn(messenger, 'call');
 
       fetchSnapSpy.mockImplementationOnce(async () => {
@@ -2701,7 +2699,6 @@ describe('SnapController', () => {
 
       await controller.startSnap(MOCK_SNAP_ID);
 
-      const startSnapSpy = jest.spyOn(controller as any, '_startSnap');
       const stopSnapSpy = jest.spyOn(controller as any, 'stopSnap');
 
       await controller.updateSnap(MOCK_ORIGIN, MOCK_SNAP_ID);
@@ -2768,8 +2765,6 @@ describe('SnapController', () => {
       );
       expect(isRunning).toStrictEqual(true);
       expect(stopSnapSpy).toHaveBeenCalledTimes(1);
-      expect(startSnapSpy).toHaveBeenCalledTimes(1);
-      expect(stopSnapSpy).toHaveBeenCalledTimes(1);
     });
 
     it('returns null on update request denied', async () => {
@@ -2782,7 +2777,7 @@ describe('SnapController', () => {
           },
         }),
       );
-      const fetchSnapSpy = jest.spyOn(controller as any, '_fetchSnap');
+      const fetchSnapSpy = jest.spyOn(controller as any, 'fetchSnap');
       const callActionSpy = jest.spyOn(messenger, 'call');
 
       fetchSnapSpy.mockImplementationOnce(async () => {
@@ -2876,7 +2871,7 @@ describe('SnapController', () => {
         },
       };
 
-      const fetchSnapSpy = jest.spyOn(controller as any, '_fetchSnap');
+      const fetchSnapSpy = jest.spyOn(controller as any, 'fetchSnap');
       const callActionSpy = jest.spyOn(messenger, 'call');
 
       fetchSnapSpy
@@ -3033,7 +3028,7 @@ describe('SnapController', () => {
         },
       };
 
-      const fetchSnapSpy = jest.spyOn(snapController as any, '_fetchSnap');
+      const fetchSnapSpy = jest.spyOn(snapController as any, 'fetchSnap');
       const callActionSpy = jest.spyOn(messenger, 'call');
 
       fetchSnapSpy
@@ -3080,7 +3075,7 @@ describe('SnapController', () => {
     });
   });
 
-  describe('_fetchSnap', () => {
+  describe('fetchSnap', () => {
     it('can fetch NPM snaps', async () => {
       const controller = getSnapController();
 
@@ -3679,7 +3674,7 @@ describe('SnapController', () => {
       expect(updateSnapStateSpy).toHaveBeenCalledTimes(1);
       expect(
         // @ts-expect-error Accessing private property
-        snapController._snapsRuntimeData.get(MOCK_SNAP_ID).state,
+        snapController.snapsRuntimeData.get(MOCK_SNAP_ID).state,
       ).toStrictEqual(
         await passworder.encrypt(`stateEncryption:${MOCK_SNAP_ID}`, state),
       );
@@ -3721,11 +3716,11 @@ describe('SnapController', () => {
       expect(updateSnapStateSpy).toHaveBeenCalledTimes(2);
       const snapState1 =
         // @ts-expect-error Accessing private property
-        snapController._snapsRuntimeData.get(MOCK_SNAP_ID).state;
+        snapController.snapsRuntimeData.get(MOCK_SNAP_ID).state;
 
       const snapState2 =
         // @ts-expect-error Accessing private property
-        snapController._snapsRuntimeData.get(MOCK_LOCAL_SNAP_ID).state;
+        snapController.snapsRuntimeData.get(MOCK_LOCAL_SNAP_ID).state;
 
       expect(snapState1).toStrictEqual(
         await passworder.encrypt(`stateEncryption:${MOCK_SNAP_ID}`, state),
@@ -3746,7 +3741,7 @@ describe('SnapController', () => {
     it('clears the state of a snap', async () => {
       const messenger = getSnapControllerMessenger(undefined, false);
 
-      const snapController = getSnapController(
+      getSnapController(
         getSnapControllerOptions({
           messenger,
           state: {
@@ -3760,14 +3755,11 @@ describe('SnapController', () => {
         }),
       );
 
-      const clearSnapStateSpy = jest.spyOn(snapController, 'clearSnapState');
       await messenger.call('SnapController:clearSnapState', MOCK_SNAP_ID);
       const clearedState = await messenger.call(
         'SnapController:getSnapState',
         MOCK_SNAP_ID,
       );
-      expect(clearSnapStateSpy).toHaveBeenCalledTimes(1);
-      expect(snapController.state.snapStates).toStrictEqual({});
       expect(clearedState).toBeNull();
     });
   });
