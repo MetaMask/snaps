@@ -8,7 +8,11 @@ import {
   DEFAULT_SNAP_BUNDLE,
   getSnapManifest,
 } from '@metamask/snaps-utils/test-utils';
-import { checkManifest, evalBundle } from '@metamask/snaps-utils';
+import {
+  checkManifest,
+  evalBundle,
+  PostProcessWarning,
+} from '@metamask/snaps-utils';
 import SnapsWebpackPlugin, { Options } from './plugin';
 
 jest.mock('@metamask/snaps-utils', () => ({
@@ -137,6 +141,16 @@ describe('SnapsWebpackPlugin', () => {
     expect(code).toMatchSnapshot();
     expect(code).not.toContain(`// Sets foo to bar`);
     expect(code).not.toContain(`// Returns baz`);
+  });
+
+  it('logs post processing warnings', async () => {
+    const { stats } = await bundle({
+      code: 'console.log(Math.random());',
+    });
+
+    expect(stats.toJson().warnings?.[0].message).toMatch(
+      `SnapsWebpackPlugin: Bundle Warning: Processing of the Snap bundle completed with warnings.\n${PostProcessWarning.UnsafeMathRandom}`,
+    );
   });
 
   it('generates a source map', async () => {

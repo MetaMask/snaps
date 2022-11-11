@@ -47,11 +47,17 @@ export type PostProcessOptions = {
  * @property code - The modified code.
  * @property sourceMap - The source map for the modified code, if the source map
  * option was enabled.
+ * @property warnings - Any warnings that occurred during the post-processing.
  */
 export type PostProcessedBundle = {
   code: string;
   sourceMap?: SourceMap | null;
+  warnings: PostProcessWarning[];
 };
+
+export enum PostProcessWarning {
+  UnsafeMathRandom = '`Math.random` was detected in the bundle. This is not a secure source of randomness.',
+}
 
 // The RegEx below consists of multiple groups joined by a boolean OR.
 // Each part consists of two groups which capture a part of each string
@@ -209,6 +215,8 @@ export function postProcessBundle(
     inputSourceMap,
   }: Partial<PostProcessOptions> = {},
 ): PostProcessedBundle {
+  const warnings = new Set<PostProcessWarning>();
+
   const pre: PluginObj['pre'] = ({ ast }) => {
     ast.comments?.forEach((comment) => {
       // Break up tokens that could be parsed as HTML comment terminators. The
@@ -254,6 +262,17 @@ export function postProcessBundle(
             ARGS: node.arguments,
           }),
         );
+      }
+
+      // Detect the use of `Math.random()` and add a warning.
+      if (
+        node.callee.type === 'MemberExpression' &&
+        node.callee.object.type === 'Identifier' &&
+        node.callee.object.name === 'Math' &&
+        node.callee.property.type === 'Identifier' &&
+        node.callee.property.name === 'random'
+      ) {
+        warnings.add(PostProcessWarning.UnsafeMathRandom);
       }
     },
 
@@ -437,7 +456,11 @@ export function postProcessBundle(
       throw new Error('Bundled code is empty.');
     }
 
-    return { code: file.code, sourceMap: file.map };
+    return {
+      code: file.code,
+      sourceMap: file.map,
+      warnings: Array.from(warnings),
+    };
   } catch (error) {
     throw new Error(`Failed to post process code:\n${error.message}`);
   }
