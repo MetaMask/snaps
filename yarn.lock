@@ -2856,26 +2856,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/providers@npm:^9.0.0":
-  version: 9.1.0
-  resolution: "@metamask/providers@npm:9.1.0"
-  dependencies:
-    "@metamask/object-multiplex": ^1.1.0
-    "@metamask/safe-event-emitter": ^2.0.0
-    "@types/chrome": ^0.0.136
-    detect-browser: ^5.2.0
-    eth-rpc-errors: ^4.0.2
-    extension-port-stream: ^2.0.1
-    fast-deep-equal: ^2.0.1
-    is-stream: ^2.0.0
-    json-rpc-engine: ^6.1.0
-    json-rpc-middleware-stream: ^3.0.0
-    pump: ^3.0.0
-    webextension-polyfill-ts: ^0.25.0
-  checksum: b36fdd3eb6b7dd64eb8017fc32cc485327cd70f8448be1fa87109862db4ffe391a5936e78f1204ef6ff6a381436e185eafa3cfebdb499f0955fc724bde82a881
-  languageName: node
-  linkType: hard
-
 "@metamask/rpc-methods@^0.23.0, @metamask/rpc-methods@workspace:packages/rpc-methods":
   version: 0.0.0-use.local
   resolution: "@metamask/rpc-methods@workspace:packages/rpc-methods"
@@ -2918,38 +2898,6 @@ __metadata:
   version: 2.0.0
   resolution: "@metamask/safe-event-emitter@npm:2.0.0"
   checksum: 8b717ac5d53df0027c05509f03d0534700b5898dd1c3a53fb2dc4c0499ca5971b14aae67f522d09eb9f509e77f50afa95fdb3eda1afbff8b071c18a3d2905e93
-  languageName: node
-  linkType: hard
-
-"@metamask/snap-types@npm:^0.23.0":
-  version: 0.23.0
-  resolution: "@metamask/snap-types@npm:0.23.0"
-  dependencies:
-    "@metamask/providers": ^9.0.0
-    "@metamask/snap-utils": ^0.23.0
-    "@metamask/types": ^1.1.0
-  checksum: c84c3fe1b1a5a29e9297d2fed3efa6adf4f983c3a48f292afc07eb7d66bbed1d10924d5c42d58a3552cc2b7de601b22e207834982a46d535612a2e17d57246b7
-  languageName: node
-  linkType: hard
-
-"@metamask/snap-utils@npm:^0.23.0":
-  version: 0.23.0
-  resolution: "@metamask/snap-utils@npm:0.23.0"
-  dependencies:
-    "@babel/core": ^7.18.6
-    "@babel/types": ^7.18.7
-    "@metamask/snap-types": ^0.23.0
-    "@metamask/utils": ^3.3.0
-    "@noble/hashes": ^1.1.3
-    "@scure/base": ^1.1.1
-    cron-parser: ^4.5.0
-    eth-rpc-errors: ^4.0.3
-    fast-deep-equal: ^3.1.3
-    rfdc: ^1.3.0
-    semver: ^7.3.7
-    ses: ^0.17.0
-    superstruct: ^0.16.7
-  checksum: 8aa8401ff5a57bce1dfed68a1a9f9af71d77cbea83aa08e391a34f2d2b4a52c35150287ad938e2d7c7a125db1b1667d54338496221d5a0e36b7fb9aae1986edb
   languageName: node
   linkType: hard
 
@@ -3176,10 +3124,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^9.0.0
     "@metamask/eslint-config-nodejs": ^9.0.0
     "@metamask/eslint-config-typescript": ^9.0.1
-    "@metamask/safe-event-emitter": ^2.0.0
-    "@metamask/snap-types": ^0.23.0
     "@metamask/snaps-utils": ^0.23.0
-    "@metamask/utils": ^3.3.1
     "@rollup/plugin-virtual": ^2.1.0
     "@types/jest": ^27.5.1
     deepmerge: ^4.2.2
@@ -3193,7 +3138,6 @@ __metadata:
     jest: ^29.0.2
     jest-it-up: ^2.0.0
     memfs: ^3.4.7
-    nanoid: ^3.1.31
     prettier: ^2.3.2
     prettier-plugin-packagejson: ^2.2.11
     rimraf: ^3.0.2
@@ -11638,16 +11582,6 @@ __metadata:
     "@metamask/safe-event-emitter": ^2.0.0
     eth-rpc-errors: ^4.0.2
   checksum: 33b6c9bbd81abf8e323a0281ee05871713203c40d34a4d0bda27706cd0a0935c7b51845238ba89b73027e44ebc8034bbd82db9f962e6c578eb922d9b95acc8bd
-  languageName: node
-  linkType: hard
-
-"json-rpc-middleware-stream@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "json-rpc-middleware-stream@npm:3.0.0"
-  dependencies:
-    "@metamask/safe-event-emitter": ^2.0.0
-    readable-stream: ^2.3.3
-  checksum: 9ff56cd40a6ba0a6f3d0226ea100921635120154c602822f0f4fdfa6bf7c61367d1e8cd055b6e7a7639aa19ed51a9ce7fbf2932a2d348b2404c060f75bc1231f
   languageName: node
   linkType: hard
 
