@@ -61,7 +61,7 @@ export abstract class AbstractExecutionService<WorkerType>
   #snapRpcHooks: Map<string, SnapRpcHook>;
 
   // Cannot be hash private yet because of tests.
-  private jobs: Map<string, Job<WorkerType>>;
+  protected jobs: Map<string, Job<WorkerType>>;
 
   // Cannot be hash private yet because of tests.
   private setupSnapProvider: SetupSnapProvider;
