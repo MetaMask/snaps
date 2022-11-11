@@ -29,11 +29,7 @@
     "publish:package": "../../scripts/publish-package.sh"
   },
   "dependencies": {
-    "@metamask/safe-event-emitter": "^2.0.0",
-    "@metamask/snap-types": "^0.23.0",
-    "@metamask/snaps-utils": "^0.23.0",
-    "@metamask/utils": "^3.3.1",
-    "nanoid": "^3.1.31"
+    "@metamask/snaps-utils": "^0.23.0"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.0.3",

@@ -130,7 +130,7 @@ export class BaseSnapExecutor {
           handler(args as any),
         );
 
-        // The handler might not return anything, but undefined is not valid JSOn
+        // The handler might not return anything, but undefined is not valid JSON.
         if (result === undefined) {
           result = null;
         }
