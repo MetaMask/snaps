@@ -14,10 +14,18 @@ describe('Math endowment', () => {
     expect(Math.abs).toStrictEqual(rootRealmGlobal.Math.abs);
   });
 
-  it('throws when Math.random is called', () => {
-    const { Math } = math.factory();
-    expect(() => Math.random()).toThrow(
-      '`Math.random` is not supported. Use `crypto.getRandomValues` instead.',
-    );
+  describe('random', () => {
+    it('does not return the original Math.random', () => {
+      const { Math } = math.factory();
+      expect(Math.random).not.toStrictEqual(rootRealmGlobal.Math.random);
+    });
+
+    it('returns a random number without calling the original Math.random', () => {
+      const { Math } = math.factory();
+      const randomSpy = jest.spyOn(rootRealmGlobal.Math, 'random');
+
+      expect(Math.random()).toStrictEqual(expect.any(Number));
+      expect(randomSpy).not.toHaveBeenCalled();
+    });
   });
 });
