@@ -44,7 +44,7 @@ const endowmentFactories = [timeout, interval, network, crypto, math].reduce(
  * root realm global will be used.
  *
  * @param snap - The Snap's API object.
- * @param ethereum - The Snap's EIP1193 provider object.
+ * @param ethereum - The Snap's EIP-1193 provider object.
  * @param endowments - The list of endowments to provide to the snap.
  * @returns An object containing the Snap's endowments.
  */
@@ -91,7 +91,7 @@ export function createEndowments(
             ? globalValue.bind(rootRealmGlobal)
             : globalValue;
       } else if (endowmentName === 'ethereum') {
-        // Special case for adding the EIP1193 provider
+        // Special case for adding the EIP-1193 provider.
         allEndowments[endowmentName] = ethereum;
       } else {
         // If we get to this point, we've been passed an endowment that doesn't

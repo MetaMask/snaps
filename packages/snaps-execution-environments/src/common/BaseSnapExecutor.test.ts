@@ -595,7 +595,7 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
-  it('dont allow snap APIs in ethereum provider', async () => {
+  it("doesn't allow snap APIs in the Ethereum provider", async () => {
     const CODE = `
       module.exports.onRpcRequest = () => ethereum.request({ method: 'snap_confirm', params: [] });
     `;
@@ -624,13 +624,12 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
       error: {
-        code: -32603,
-        message: 'RPC method not allowed',
+        code: -32601,
+        message: 'The method does not exist / is not available.',
         data: {
-          originalError: {
-            code: 'ERR_ASSERTION',
-          },
+          method: 'snap_confirm',
         },
+        stack: expect.any(String),
       },
       id: 2,
     });
@@ -666,7 +665,8 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       error: {
         code: -32603,
-        message: 'Snap API only allows RPC methods wallet_* and snap_*',
+        message:
+          'The global Snap API only allows RPC methods starting with `wallet_*` and `snap_*`.',
         data: {
           originalError: {
             code: 'ERR_ASSERTION',

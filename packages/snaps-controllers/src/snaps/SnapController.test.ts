@@ -949,7 +949,7 @@ describe('SnapController', () => {
     const originalCall = rootMessenger.call.bind(rootMessenger);
 
     jest.spyOn(rootMessenger, 'call').mockImplementation((method, ...args) => {
-      // Give snap EIP1193 permission
+      // Give snap EIP-1193 permission
       if (method === 'PermissionController:hasPermission') {
         return true;
       } else if (
@@ -1043,7 +1043,7 @@ describe('SnapController', () => {
     const originalCall = rootMessenger.call.bind(rootMessenger);
 
     jest.spyOn(rootMessenger, 'call').mockImplementation((method, ...args) => {
-      // Give snap EIP1193 permission
+      // Give snap EIP-1193 permission
       if (method === 'PermissionController:hasPermission') {
         return true;
       } else if (
