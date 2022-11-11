@@ -125,6 +125,14 @@ export class SnapsBrowserifyTransform extends Transform {
       inputSourceMap,
     });
 
+    if (result.warnings.length > 0) {
+      console.log(
+        `Bundle Warning: Processing of the Snap bundle completed with warnings.\n${result.warnings.join(
+          '\n',
+        )}`,
+      );
+    }
+
     postBundle(this.#options, result.code)
       .catch((error) => {
         callback(error);

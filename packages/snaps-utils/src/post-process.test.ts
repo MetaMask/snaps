@@ -1,4 +1,4 @@
-import { postProcessBundle } from './post-process';
+import { postProcessBundle, PostProcessWarning } from './post-process';
 
 describe('postProcessBundle', () => {
   it('trims the string', () => {
@@ -58,6 +58,7 @@ describe('postProcessBundle', () => {
       (1, eval)("<!" + "--" + " foo " + "--" + ">");
       (1, foo.eval)("<!" + "--" + " bar " + "--" + ">");",
         "sourceMap": null,
+        "warnings": [],
       }
     `);
   });
@@ -84,6 +85,7 @@ describe('postProcessBundle', () => {
         const bar = 'baz';
       }",
         "sourceMap": null,
+        "warnings": [],
       }
     `);
   });
@@ -112,6 +114,7 @@ describe('postProcessBundle', () => {
         regeneratorRuntime.bar();
       }",
         "sourceMap": null,
+        "warnings": [],
       }
     `);
   });
@@ -124,6 +127,7 @@ describe('postProcessBundle', () => {
 
       var _marked = [a].map(regeneratorRuntime.mark);",
         "sourceMap": null,
+        "warnings": [],
       }
     `);
   });
@@ -138,6 +142,7 @@ describe('postProcessBundle', () => {
       {
         "code": "const foo = 'regeneratorRuntime';",
         "sourceMap": null,
+        "warnings": [],
       }
     `);
   });
@@ -152,6 +157,7 @@ describe('postProcessBundle', () => {
       {
         "code": "const foo = "<!" + "--" + " bar " + "--" + ">";",
         "sourceMap": null,
+        "warnings": [],
       }
     `);
   });
@@ -168,6 +174,7 @@ describe('postProcessBundle', () => {
         "code": "const foo = "foo bar " + "import" + "()" + " baz";
       const bar = "foo bar " + "import" + "(this works too)" + " baz";",
         "sourceMap": null,
+        "warnings": [],
       }
     `);
   });
@@ -182,6 +189,7 @@ describe('postProcessBundle', () => {
       {
         "code": "const foo = \`\${"<!"}\${"--"} bar \${"--"}\${">"} \${"<!" + "--" + " baz " + "--" + ">"} \${qux}\`;",
         "sourceMap": null,
+        "warnings": [],
       }
     `);
   });
@@ -203,6 +211,7 @@ describe('postProcessBundle', () => {
       foo\`
               foo \${"import"}\${"()"} \${"import" + "(bar)"} \${qux}      \`;",
         "sourceMap": null,
+        "warnings": [],
       }
     `);
   });
@@ -217,6 +226,7 @@ describe('postProcessBundle', () => {
       {
         "code": "// < !-- foo -- >",
         "sourceMap": null,
+        "warnings": [],
       }
     `);
   });
@@ -233,6 +243,7 @@ describe('postProcessBundle', () => {
         "code": "// Foo bar import\\() baz
       // Foo bar import\\(baz) qux",
         "sourceMap": null,
+        "warnings": [],
       }
     `);
   });
@@ -247,6 +258,7 @@ describe('postProcessBundle', () => {
       {
         "code": "const foo = '';",
         "sourceMap": null,
+        "warnings": [],
       }
     `);
   });
@@ -265,6 +277,7 @@ describe('postProcessBundle', () => {
       const foo = 'foo';
       const bar = \`bar\${foo}\`;",
         "sourceMap": null,
+        "warnings": [],
       }
     `);
   });
@@ -278,6 +291,7 @@ describe('postProcessBundle', () => {
       {
         "code": "const foo = \`\${"<!"}\${"--"} \\\` \${foo} \\\` \${"--"}\${">"}\`;",
         "sourceMap": null,
+        "warnings": [],
       }
     `);
   });
@@ -320,6 +334,7 @@ describe('postProcessBundle', () => {
         (1, foo.eval)('bar');
       });",
         "sourceMap": null,
+        "warnings": [],
       }
     `);
   });
@@ -362,6 +377,7 @@ describe('postProcessBundle', () => {
           ],
           "version": 3,
         },
+        "warnings": [],
       }
     `);
   });
@@ -380,6 +396,7 @@ describe('postProcessBundle', () => {
         "code": "const foo = 'bar';
       //# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJmb28iXSwic291cmNlcyI6WyJ1bmtub3duIl0sInNvdXJjZXNDb250ZW50IjpbIlxuICAgICAgY29uc3QgZm9vID0gJ2Jhcic7XG4gICAgIl0sIm1hcHBpbmdzIjoiQUFDTSxNQUFNQSxHQUFHLEdBQUcsS0FBWiJ9",
         "sourceMap": null,
+        "warnings": [],
       }
     `);
   });
@@ -432,7 +449,18 @@ describe('postProcessBundle', () => {
           ],
           "version": 3,
         },
+        "warnings": [],
       }
     `);
+  });
+
+  it('returns a warning when using Math.random', () => {
+    const code = `
+      const foo = Math.random();
+    `;
+
+    const { warnings } = postProcessBundle(code);
+    expect(warnings).toHaveLength(1);
+    expect(warnings[0]).toBe(PostProcessWarning.UnsafeMathRandom);
   });
 });

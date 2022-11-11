@@ -67,6 +67,16 @@ export default class SnapsWebpackPlugin {
             inputSourceMap: devtool ? (asset.map() as SourceMap) : undefined,
           });
 
+          if (processed.warnings.length > 0) {
+            compilation.warnings.push(
+              new WebpackError(
+                `${PLUGIN_NAME}: Bundle Warning: Processing of the Snap bundle completed with warnings.\n${processed.warnings.join(
+                  '\n',
+                )}`,
+              ),
+            );
+          }
+
           const replacement = processed.sourceMap
             ? new SourceMapSource(
                 processed.code,

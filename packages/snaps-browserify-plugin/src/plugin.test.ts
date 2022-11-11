@@ -10,7 +10,11 @@ import {
   DEFAULT_SNAP_BUNDLE,
   getSnapManifest,
 } from '@metamask/snaps-utils/test-utils';
-import { checkManifest, evalBundle } from '@metamask/snaps-utils';
+import {
+  checkManifest,
+  evalBundle,
+  PostProcessWarning,
+} from '@metamask/snaps-utils';
 import plugin, { Options, SnapsBrowserifyTransform } from './plugin';
 
 jest.mock('fs');
@@ -127,6 +131,18 @@ describe('plugin', () => {
     });
 
     expect(result).toMatchSnapshot();
+  });
+
+  it('logs post processing warnings', async () => {
+    jest.spyOn(console, 'log').mockImplementation(() => undefined);
+
+    await bundle({
+      code: 'console.log(Math.random());',
+    });
+
+    expect(console.log).toHaveBeenCalledWith(
+      `Bundle Warning: Processing of the Snap bundle completed with warnings.\n${PostProcessWarning.UnsafeMathRandom}`,
+    );
   });
 
   it('generates a source map', async () => {
