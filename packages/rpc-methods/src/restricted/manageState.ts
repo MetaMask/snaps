@@ -60,7 +60,7 @@ type ManageStateSpecification = ValidPermissionSpecification<{
  * @param options.methodHooks - The RPC method hooks needed by the method implementation.
  * @returns The specification for the `snap_manageState` permission.
  */
-const specificationBuilder: PermissionSpecificationBuilder<
+export const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.RestrictedMethod,
   ManageStateSpecificationBuilderOptions,
   ManageStateSpecification
@@ -92,6 +92,11 @@ export enum ManageStateOperation {
   updateState = 'update',
 }
 
+export type ManageStateArgs = {
+  operation: ManageStateOperation;
+  newState?: Record<string, Json>;
+};
+
 export const STORAGE_SIZE_LIMIT = 104857600; // In bytes (100MB)
 
 /**
@@ -104,22 +109,20 @@ export const STORAGE_SIZE_LIMIT = 104857600; // In bytes (100MB)
  * @returns The method implementation which either returns `null` for a successful state update/deletion or returns the decrypted state.
  * @throws If the params are invalid.
  */
-function getManageStateImplementation({
+export function getManageStateImplementation({
   clearSnapState,
   getSnapState,
   updateSnapState,
 }: ManageStateMethodHooks) {
   return async function manageState(
-    options: RestrictedMethodOptions<
-      [ManageStateOperation, Record<string, Json>]
-    >,
+    options: RestrictedMethodOptions<ManageStateArgs>,
   ): Promise<null | Record<string, Json>> {
     const {
-      params = [],
+      params = {},
       method,
       context: { origin },
     } = options;
-    const [operation, newState] = params;
+    const { operation, newState } = getValidatedParams(params, method);
 
     switch (operation) {
       case ManageStateOperation.clearState:
@@ -130,36 +133,7 @@ function getManageStateImplementation({
         return await getSnapState(origin);
 
       case ManageStateOperation.updateState: {
-        if (!isObject(newState)) {
-          throw ethErrors.rpc.invalidParams({
-            message: `Invalid ${method} "updateState" parameter: The new state must be a plain object.`,
-            data: {
-              receivedNewState:
-                typeof newState === 'undefined' ? 'undefined' : newState,
-            },
-          });
-        }
-        const [isValid, plainTextSizeInBytes] =
-          validateJsonAndGetSize(newState);
-        if (!isValid) {
-          throw ethErrors.rpc.invalidParams({
-            message: `Invalid ${method} "updateState" parameter: The new state must be JSON serializable.`,
-            data: {
-              receivedNewState:
-                typeof newState === 'undefined' ? 'undefined' : newState,
-            },
-          });
-        } else if (plainTextSizeInBytes > STORAGE_SIZE_LIMIT) {
-          throw ethErrors.rpc.invalidParams({
-            message: `Invalid ${method} "updateState" parameter: The new state must not exceed ${STORAGE_SIZE_LIMIT} bytes in size.`,
-            data: {
-              receivedNewState:
-                typeof newState === 'undefined' ? 'undefined' : newState,
-            },
-          });
-        }
-
-        await updateSnapState(origin, newState);
+        await updateSnapState(origin, newState as Record<string, Json>);
         return null;
       }
       default:
@@ -168,4 +142,69 @@ function getManageStateImplementation({
         );
     }
   };
+}
+
+/**
+ * Validates the manageState method `params` and returns them cast to the correct
+ * type. Throws if validation fails.
+ *
+ * @param params - The unvalidated params object from the method request.
+ * @param method - RPC method name used for debugging errors.
+ * @param storageSizeLimit - Maximum allowed size (in bytes) of a new state object.
+ * @returns The validated method parameter object.
+ */
+export function getValidatedParams(
+  params: unknown,
+  method: string,
+  storageSizeLimit = STORAGE_SIZE_LIMIT,
+): ManageStateArgs {
+  if (!isObject(params)) {
+    throw ethErrors.rpc.invalidParams({
+      message: 'Expected params to be a single object.',
+    });
+  }
+
+  const { operation, newState } = params;
+
+  if (
+    !operation ||
+    typeof operation !== 'string' ||
+    !(Object.values(ManageStateOperation) as string[]).includes(operation)
+  ) {
+    throw ethErrors.rpc.invalidParams({
+      message: 'Must specify a valid manage state "operation".',
+    });
+  }
+
+  if (operation === ManageStateOperation.updateState) {
+    if (!isObject(newState)) {
+      throw ethErrors.rpc.invalidParams({
+        message: `Invalid ${method} "updateState" parameter: The new state must be a plain object.`,
+        data: {
+          receivedNewState:
+            typeof newState === 'undefined' ? 'undefined' : newState,
+        },
+      });
+    }
+    const [isValid, plainTextSizeInBytes] = validateJsonAndGetSize(newState);
+    if (!isValid) {
+      throw ethErrors.rpc.invalidParams({
+        message: `Invalid ${method} "updateState" parameter: The new state must be JSON serializable.`,
+        data: {
+          receivedNewState:
+            typeof newState === 'undefined' ? 'undefined' : newState,
+        },
+      });
+    } else if (plainTextSizeInBytes > storageSizeLimit) {
+      throw ethErrors.rpc.invalidParams({
+        message: `Invalid ${method} "updateState" parameter: The new state must not exceed ${storageSizeLimit} bytes in size.`,
+        data: {
+          receivedNewState:
+            typeof newState === 'undefined' ? 'undefined' : newState,
+        },
+      });
+    }
+  }
+
+  return params as ManageStateArgs;
 }
