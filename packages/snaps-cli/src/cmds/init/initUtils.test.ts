@@ -47,7 +47,7 @@ describe('initUtils', () => {
       });
 
       await expect(prepareWorkingDirectory('bar')).rejects.toThrow(
-        'error message',
+        'Init Error: Failed to prepare working directory with message: Init Error: Failed to create new directory.',
       );
     });
 
@@ -59,7 +59,7 @@ describe('initUtils', () => {
       await fs.appendFile(filePath, 'test');
 
       await expect(prepareWorkingDirectory('bar')).rejects.toThrow(
-        'Directory not empty: bar',
+        'Init Error: Failed to prepare working directory with message: Directory bar not empty.',
       );
     });
   });
@@ -88,7 +88,9 @@ describe('initUtils', () => {
           throw new Error('error message');
         });
 
-      await expect(cloneTemplate('foo')).rejects.toThrow('error message');
+      await expect(cloneTemplate('foo')).rejects.toThrow(
+        'Init Error: Failed to clone the template.',
+      );
       expect(execSyncMock).toHaveBeenCalledTimes(1);
     });
   });
@@ -177,7 +179,9 @@ describe('initUtils', () => {
           throw new Error('error message');
         });
 
-      await expect(gitInit('foo')).rejects.toThrow('error message');
+      await expect(gitInit('foo')).rejects.toThrow(
+        'Init Error: Failed to init a new git repository.',
+      );
       expect(execSyncMock).toHaveBeenCalledTimes(1);
     });
   });
@@ -204,7 +208,9 @@ describe('initUtils', () => {
           throw new Error('error message');
         });
 
-      await expect(yarnInstall('foo')).rejects.toThrow('error message');
+      await expect(yarnInstall('foo')).rejects.toThrow(
+        'Init Error: Failed to install dependencies.',
+      );
       expect(execSyncMock).toHaveBeenCalledTimes(1);
     });
   });

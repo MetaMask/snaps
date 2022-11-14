@@ -190,7 +190,7 @@ describe('initialize', () => {
         .mockImplementation(() => false);
 
       await expect(initHandler({ ...getMockArgv() })).rejects.toThrow(
-        'Outdated node version.',
+        'Init Error: You are using an outdated version of Node (v16.15.1). Please update to Node >=16.',
       );
 
       expect(satisfiesVersionRangeMock).toHaveBeenCalledTimes(1);
@@ -206,7 +206,7 @@ describe('initialize', () => {
         .mockImplementation(() => false);
 
       await expect(initHandler({ ...getMockArgv() })).rejects.toThrow(
-        'Git is not installed.',
+        'Init Error: git is not installed. Please install git to continue.',
       );
 
       expect(isGitInstalledMock).toHaveBeenCalledTimes(1);
@@ -226,7 +226,7 @@ describe('initialize', () => {
         });
 
       await expect(initHandler({ ...getMockArgv() })).rejects.toThrow(
-        'error message',
+        'Init Error: Failed to create template.',
       );
 
       expect(cloneTemplateMock).toHaveBeenCalledTimes(1);

@@ -68,7 +68,7 @@ export async function initHandler(argv: YargsArgs) {
       recursive: true,
     });
   } catch (err) {
-    throw new Error('Init Error: Failed to create template, cleaning...');
+    throw new Error('Init Error: Failed to create template.');
   }
 
   console.log('Installing dependencies...');
