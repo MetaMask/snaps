@@ -1,6 +1,5 @@
 import { evalBundle } from '@metamask/snaps-utils';
 import { YargsArgs } from '../../types/yargs';
-import { logError } from '../../utils';
 
 /**
  * Runs the snap in a worker, to ensure SES compatibility.
@@ -16,7 +15,6 @@ export async function evalHandler(argv: YargsArgs): Promise<void> {
     await evalBundle(bundlePath as string);
     console.log(`Eval Success: evaluated '${bundlePath}' in SES!`);
   } catch (error) {
-    logError(`Snap evaluation error: ${error.message}`, error);
-    throw error;
+    throw new Error(`Snap evaluation error: ${error.message}`);
   }
 }

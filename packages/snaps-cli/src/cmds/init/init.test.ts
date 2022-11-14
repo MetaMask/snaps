@@ -25,6 +25,6 @@ describe('init module', () => {
       manifest: false,
       eval: true,
     });
-    expect(global.console.log).toHaveBeenCalledTimes(2);
+    expect(global.console.log).toHaveBeenCalledTimes(1);
   });
 });

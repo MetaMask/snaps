@@ -30,7 +30,8 @@ describe('evalHandler', () => {
   it('logs and throws errors', async () => {
     evalBundleMock.mockRejectedValueOnce(new Error('foo'));
 
-    await expect(evalHandler(getMockArgv())).rejects.toThrow('foo');
-    expect(console.error).toHaveBeenCalledWith('Snap evaluation error: foo');
+    await expect(evalHandler(getMockArgv())).rejects.toThrow(
+      'Snap evaluation error: foo',
+    );
   });
 });

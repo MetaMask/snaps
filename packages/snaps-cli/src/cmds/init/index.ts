@@ -21,7 +21,6 @@ export = {
  * @param argv - The Yargs arguments object.
  */
 async function init(argv: YargsArgs): Promise<void> {
-  console.log();
   const newArgs = await initHandler(argv);
 
   process.chdir(newArgs.snapLocation);
