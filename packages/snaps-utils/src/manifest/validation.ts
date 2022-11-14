@@ -20,7 +20,8 @@ import {
 
 import { CronjobSpecificationArrayStruct } from '../cronjob';
 import { NamespacesStruct } from '../namespace';
-import { NameStruct, NpmSnapFileNames, VersionStruct } from '../types';
+import { VersionStruct } from '../versions';
+import { NameStruct, NpmSnapFileNames } from '../types';
 
 // 0xd36e6170 - 0x80000000
 export const SIP_6_MAGIC_VALUE = `1399742832'` as `${number}'`;

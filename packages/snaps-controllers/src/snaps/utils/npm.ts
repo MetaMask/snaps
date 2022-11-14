@@ -4,6 +4,9 @@ import {
   isValidUrl,
   getTargetVersion,
   validateNpmSnap,
+  assertIsSemVerVersion,
+  SemVerRange,
+  SemVerVersion,
 } from '@metamask/snaps-utils';
 import { isObject } from '@metamask/utils';
 import createGunzipStream from 'gunzip-maybe';
@@ -26,7 +29,7 @@ export const DEFAULT_NPM_REGISTRY = 'https://registry.npmjs.org';
  */
 export async function fetchNpmSnap(
   packageName: string,
-  versionRange: string,
+  versionRange: SemVerRange,
   registryUrl = DEFAULT_NPM_REGISTRY,
   fetchFunction = fetch,
 ): Promise<SnapFiles> {
@@ -56,7 +59,7 @@ export async function fetchNpmSnap(
   // object if they exist.
   return validateNpmSnap(
     snapFiles,
-    `npm Snap "${packageName}@${actualVersion}" validation error: `,
+    `npm Snap "${packageName}@${actualVersion}" validation error: ` as `${string}: `,
   );
 }
 
@@ -75,10 +78,10 @@ export async function fetchNpmSnap(
  */
 async function fetchNpmTarball(
   packageName: string,
-  versionRange: string,
+  versionRange: SemVerRange,
   registryUrl = DEFAULT_NPM_REGISTRY,
   fetchFunction = fetch,
-): Promise<[ReadableStream, string]> {
+): Promise<[ReadableStream, SemVerVersion]> {
   const packageMetadata = await (
     await fetchFunction(new URL(packageName, registryUrl).toString())
   ).json();
@@ -89,10 +92,14 @@ async function fetchNpmTarball(
     );
   }
 
-  const targetVersion = getTargetVersion(
-    Object.keys((packageMetadata as any)?.versions ?? {}),
-    versionRange,
+  const versions = Object.keys((packageMetadata as any)?.versions ?? {}).map(
+    (v) => {
+      assertIsSemVerVersion(v);
+      return v;
+    },
   );
+
+  const targetVersion = getTargetVersion(versions, versionRange);
 
   if (targetVersion === null) {
     throw new Error(

@@ -3,32 +3,24 @@ import {
   SnapKeyring as Keyring,
 } from '@metamask/snaps-types';
 import { assertStruct, Json } from '@metamask/utils';
-import { valid as validSemver } from 'semver';
 import {
   Infer,
   is,
   object,
   optional,
   pattern,
-  refine,
   size,
   string,
   type,
 } from 'superstruct';
 
 import { SnapManifest } from './manifest/validation';
+import { VersionStruct } from './versions';
 
 export enum NpmSnapFileNames {
   PackageJson = 'package.json',
   Manifest = 'snap.manifest.json',
 }
-
-/**
- * A struct for validating a version string.
- */
-export const VersionStruct = refine(string(), 'Version', (value) => {
-  return validSemver(value) !== null;
-});
 
 export const NameStruct = size(
   pattern(

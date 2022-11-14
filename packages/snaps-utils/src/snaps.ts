@@ -5,6 +5,7 @@ import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 
 import { SnapManifest, SnapPermissions } from './manifest/validation';
 import { SnapId, SnapIdPrefixes, SnapValidationFailureReason } from './types';
+import { SemVerVersion } from './versions';
 
 export const LOCALHOST_HOSTNAMES = new Set(['localhost', '127.0.0.1', '::1']);
 export const SNAP_PREFIX = 'wallet_snap_';
@@ -119,7 +120,7 @@ export type Snap = {
   /**
    * The version of the Snap.
    */
-  version: string;
+  version: SemVerVersion;
 
   /**
    * The version history of the Snap.
