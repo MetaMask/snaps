@@ -122,11 +122,7 @@ export function getManageStateImplementation({
       method,
       context: { origin },
     } = options;
-    const { operation, newState } = getValidatedParams(
-      params,
-      method,
-      STORAGE_SIZE_LIMIT,
-    );
+    const { operation, newState } = getValidatedParams(params, method);
 
     switch (operation) {
       case ManageStateOperation.clearState:
@@ -160,7 +156,7 @@ export function getManageStateImplementation({
 export function getValidatedParams(
   params: unknown,
   method: string,
-  storageSizeLimit: number,
+  storageSizeLimit = STORAGE_SIZE_LIMIT,
 ): ManageStateArgs {
   if (!isObject(params)) {
     throw ethErrors.rpc.invalidParams({

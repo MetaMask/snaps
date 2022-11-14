@@ -3,7 +3,6 @@ import {
   getValidatedParams,
   ManageStateOperation,
   specificationBuilder,
-  STORAGE_SIZE_LIMIT,
 } from './manageState';
 
 describe('snap_manageState', () => {
@@ -172,18 +171,14 @@ describe('snap_manageState', () => {
 
   describe('getValidatedParams', () => {
     it('throws an error if the params is not an object', () => {
-      expect(() =>
-        getValidatedParams([], 'snap_manageState', STORAGE_SIZE_LIMIT),
-      ).toThrow('Expected params to be a single object.');
+      expect(() => getValidatedParams([], 'snap_manageState')).toThrow(
+        'Expected params to be a single object.',
+      );
     });
 
     it('throws an error if the operation type is missing from params object', () => {
       expect(() =>
-        getValidatedParams(
-          { operation: undefined },
-          'snap_manageState',
-          STORAGE_SIZE_LIMIT,
-        ),
+        getValidatedParams({ operation: undefined }, 'snap_manageState'),
       ).toThrow('Must specify a valid manage state "operation".');
     });
 
@@ -192,18 +187,13 @@ describe('snap_manageState', () => {
         getValidatedParams(
           { operation: 'unspecifiedOperation' },
           'snap_manageState',
-          STORAGE_SIZE_LIMIT,
         ),
       ).toThrow('Must specify a valid manage state "operation".');
     });
 
     it('returns valid parameters for get operation', () => {
       expect(
-        getValidatedParams(
-          { operation: 'get' },
-          'snap_manageState',
-          STORAGE_SIZE_LIMIT,
-        ),
+        getValidatedParams({ operation: 'get' }, 'snap_manageState'),
       ).toStrictEqual({
         operation: 'get',
       });
@@ -211,11 +201,7 @@ describe('snap_manageState', () => {
 
     it('returns valid parameters for clear operation', () => {
       expect(
-        getValidatedParams(
-          { operation: 'clear' },
-          'snap_manageState',
-          STORAGE_SIZE_LIMIT,
-        ),
+        getValidatedParams({ operation: 'clear' }, 'snap_manageState'),
       ).toStrictEqual({
         operation: 'clear',
       });
@@ -229,7 +215,6 @@ describe('snap_manageState', () => {
             newState: { data: 'updated data' },
           },
           'snap_manageState',
-          STORAGE_SIZE_LIMIT,
         ),
       ).toStrictEqual({
         operation: 'update',
@@ -246,7 +231,6 @@ describe('snap_manageState', () => {
         getValidatedParams(
           { operation: 'update', newState: mockInvalidNewStateObject },
           'snap_manageState',
-          STORAGE_SIZE_LIMIT,
         ),
       ).toThrow(
         'Invalid snap_manageState "updateState" parameter: The new state must be a plain object.',
@@ -266,7 +250,6 @@ describe('snap_manageState', () => {
         getValidatedParams(
           { operation: 'update', newState: mockInvalidNewStateObject },
           'snap_manageState',
-          STORAGE_SIZE_LIMIT,
         ),
       ).toThrow(
         'Invalid snap_manageState "updateState" parameter: The new state must be JSON serializable.',
