@@ -1,10 +1,14 @@
+import { assert } from '@metamask/utils';
 import { getSnapPrefix } from './snaps';
 import { SnapIdPrefixes } from './types';
 import {
+  assertIsSemVerRange,
+  assertIsSemVerVersion,
   DEFAULT_REQUESTED_SNAP_VERSION,
   getTargetVersion,
   gtVersion,
   isValidSemVerRange,
+  isValidSemVerVersion,
   resolveVersionRange,
   satisfiesVersionRange,
   SemVerRange,
@@ -13,29 +17,48 @@ import {
 
 function v(value: string[]): SemVerVersion[];
 function v(value: string): SemVerVersion;
+/**
+ * Utility to cast string to version.
+ *
+ * @param value - String to cast.
+ * @returns The same string with different type.
+ */
 function v(value: string | string[]): SemVerVersion | SemVerVersion[] {
   return value as any;
 }
 
+/**
+ * Utility to cast string to range.
+ *
+ * @param value - String to cast.
+ * @returns The same string with different type.
+ */
 function r(value: string): SemVerRange {
   return value as SemVerRange;
 }
 
 describe('resolveVersion', () => {
   it('defaults "latest" to DEFAULT_REQUESTED_SNAP_VERSION', () => {
-    expect(resolveVersionRange('latest')).toBe(DEFAULT_REQUESTED_SNAP_VERSION);
+    expect(resolveVersionRange('latest')[1]).toBe(
+      DEFAULT_REQUESTED_SNAP_VERSION,
+    );
   });
 
   it('defaults an undefined version to DEFAULT_REQUESTED_SNAP_VERSION', () => {
-    expect(resolveVersionRange(undefined)).toBe(DEFAULT_REQUESTED_SNAP_VERSION);
+    expect(resolveVersionRange(undefined)[1]).toBe(
+      DEFAULT_REQUESTED_SNAP_VERSION,
+    );
   });
 
   it('returns the requested version for everything else', () => {
-    expect(resolveVersionRange('1.2.3')).toBe('1.2.3');
+    expect(resolveVersionRange('1.2.3')[1]).toBe('1.2.3');
   });
 
-  it.each([null, 1, {}, Error])('throws on invalid input', (value) => {
-    expect(() => resolveVersionRange(value)).toThrow('asd');
+  it.each([null, 1, {}, Error])('returns error on invalid input', (value) => {
+    const [err, result] = resolveVersionRange(value);
+    assert(err !== undefined);
+    expect(err.message).toMatch('Expected a string, but received: ');
+    expect(result).toBeUndefined();
   });
 });
 
@@ -52,6 +75,48 @@ describe('getSnapPrefix', () => {
     expect(() => getSnapPrefix('foo:fooSnap')).toThrow(
       'Invalid or no prefix found for "foo:fooSnap"',
     );
+  });
+});
+
+describe('assertIsSemVerVersion', () => {
+  it('shows descriptive errors', () => {
+    expect(() => assertIsSemVerVersion('>1.2')).toThrow(
+      'Expected SemVer version, got',
+    );
+  });
+});
+
+describe('assertIsSemVerRange', () => {
+  it('shows descriptive errors', () => {
+    expect(() => assertIsSemVerRange('.')).toThrow(
+      'Expected SemVer range, got',
+    );
+  });
+});
+
+describe('isValidSemVerVersion', () => {
+  it.each([
+    'asd',
+    '()()',
+    '..',
+    '.',
+    '.1',
+    null,
+    undefined,
+    2,
+    true,
+    {},
+    Error,
+  ])('rejects invalid version', (version) => {
+    expect(isValidSemVerVersion(version)).toBe(false);
+  });
+
+  it('supports normal version ranges', () => {
+    expect(isValidSemVerVersion('1.5.0')).toBe(true);
+  });
+
+  it('supports pre-release versions', () => {
+    expect(isValidSemVerVersion('1.0.0-beta.1')).toBe(true);
   });
 });
 
@@ -77,6 +142,13 @@ describe('isValidSemVerRange', () => {
     expect(isValidSemVerRange(true)).toBe(false);
     expect(isValidSemVerRange({})).toBe(false);
   });
+
+  it.each(['asd', '()()(', '..', '.', '1.'])(
+    'rejects invalid ranges',
+    (range) => {
+      expect(isValidSemVerRange(range)).toBe(false);
+    },
+  );
 });
 
 describe('gtVersion', () => {
@@ -128,6 +200,7 @@ describe('getTargetVersion', () => {
     expect(
       getTargetVersion(v(['1.0.0-beta.1', '1.0.0', '1.2.3']), r('^1.0.0')),
     ).toBe('1.2.3');
+
     expect(getTargetVersion(v(['1.0.0-beta.1', '1.0.0']), r('*'))).toBe(
       '1.0.0',
     );

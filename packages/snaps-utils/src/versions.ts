@@ -6,20 +6,24 @@ import {
   valid as validSemVerVersion,
   validRange as validSemVerRange,
 } from 'semver';
-import { is, refine, string, Struct } from 'superstruct';
+import { is, refine, string, Struct, validate } from 'superstruct';
 
 export const DEFAULT_REQUESTED_SNAP_VERSION = '*' as SemVerRange;
 
 /**
  * {@link https://codemix.com/opaque-types-in-javascript/ Opaque} type for SemVer ranges.
- * Castable from string.
+ *
+ * Use {@link assertIsSemVerRange} and {@link isValidSemVerRange} to cast to proper type.
+ * If you know what you're doing and want to side-step type safety, casting from a string works correctly.
  */
 declare type SemVerRange = {
   __TYPE: 'semver_range';
 } & string;
 /**
  * {@link https://codemix.com/opaque-types-in-javascript/ Opaque} type for singular SemVer version.
- * Castable from string.
+ *
+ * Use {@link assertIsSemVerVersion} and {@link isValidSemVerVersion} to cast to proper type.
+ * If you know what you're doing and want to side-step type safety, casting from a string works correctly.
  */
 declare type SemVerVersion = {
   __TYPE: 'semver_version';
@@ -60,10 +64,7 @@ export const VersionRangeStruct = refine<SemVerRange, null>(
 export function isValidSemVerVersion(
   version: unknown,
 ): version is SemVerVersion {
-  return Boolean(
-    typeof version === 'string' &&
-      validSemVerVersion(version, { includePrerelease: true }) !== null,
-  );
+  return is(version, VersionStruct);
 }
 
 /**
@@ -75,7 +76,7 @@ export function isValidSemVerVersion(
 export function isValidSemVerRange(
   versionRange: unknown,
 ): versionRange is SemVerRange {
-  return is(versionRange, VersionStruct);
+  return is(versionRange, VersionRangeStruct);
 }
 
 /**
@@ -167,10 +168,11 @@ export function getTargetVersion(
  * @returns `*` if the version is `undefined` or `latest", otherwise returns
  * the specified version.
  */
-export function resolveVersionRange(version?: Json): SemVerRange {
+export function resolveVersionRange(
+  version?: Json,
+): [undefined, SemVerRange] | [Error, undefined] {
   if (version === undefined || version === 'latest') {
-    return DEFAULT_REQUESTED_SNAP_VERSION;
+    return [undefined, DEFAULT_REQUESTED_SNAP_VERSION];
   }
-  assertIsSemVerRange(version);
-  return version;
+  return validate(version, VersionRangeStruct);
 }

@@ -9,6 +9,7 @@ import {
   DEFAULT_ENDOWMENTS,
   getSnapSourceShasum,
   HandlerType,
+  SemVerVersion,
   SnapCaveatType,
   SnapManifest,
   SnapStatus,
@@ -30,8 +31,7 @@ import fetchMock from 'jest-fetch-mock';
 import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import pump from 'pump';
-import { Duplex } from 'stream';
-
+import { Duplex } from 'stream';;
 import { NodeThreadExecutionService, setupMultiplex } from '../services';
 import {
   ExecutionEnvironmentStub,
@@ -2545,7 +2545,7 @@ describe('SnapController', () => {
       fetchSnapSpy.mockImplementationOnce(async () => {
         const manifest: SnapManifest = {
           ...getSnapManifest(),
-          version: '1.1.0',
+          version: '1.1.0' as SemVerVersion,
         };
 
         return Promise.resolve({
@@ -2580,7 +2580,7 @@ describe('SnapController', () => {
       fetchSnapSpy.mockImplementationOnce(async () => {
         const manifest: SnapManifest = {
           ...getSnapManifest(),
-          version: '0.9.0',
+          version: '0.9.0' as SemVerVersion,
         };
 
         return Promise.resolve({
@@ -2625,7 +2625,7 @@ describe('SnapController', () => {
         .mockImplementationOnce(async () => {
           const manifest: SnapManifest = {
             ...getSnapManifest(),
-            version: '1.1.0',
+            version: '1.1.0' as SemVerVersion,
           };
 
           return Promise.resolve({
@@ -2757,7 +2757,7 @@ describe('SnapController', () => {
       fetchSnapSpy.mockImplementationOnce(async () => {
         const manifest: SnapManifest = {
           ...getSnapManifest(),
-          version: '1.1.0',
+          version: '1.1.0' as SemVerVersion,
         };
 
         return Promise.resolve({
@@ -2864,7 +2864,7 @@ describe('SnapController', () => {
       fetchSnapSpy.mockImplementationOnce(async () => {
         const manifest: SnapManifest = {
           ...getSnapManifest(),
-          version: '1.1.0',
+          version: '1.1.0' as SemVerVersion,
         };
 
         return Promise.resolve({
@@ -3143,7 +3143,13 @@ describe('SnapController', () => {
         });
       /* eslint-enable @typescript-eslint/naming-convention */
 
+<<<<<<< HEAD
       callActionSpy.mockImplementation((method, ...args: unknown[]): any => {
+=======
+      callActionSpy.mockImplementation((method, ...params) => {
+        assert(params.length > 0);
+        const request: any = params[0];
+>>>>>>> c8c60447 (Added opaque types for SemVers)
         if (method === 'PermissionController:hasPermission') {
           return true;
         } else if (method === 'ApprovalController:addRequest') {
@@ -3949,6 +3955,10 @@ describe('SnapController', () => {
           ) {
             return true;
           }
+<<<<<<< HEAD
+=======
+
+>>>>>>> c8c60447 (Added opaque types for SemVers)
           return (originalCall as any)(method, ...args);
         });
 
@@ -3979,6 +3989,10 @@ describe('SnapController', () => {
               },
             };
           }
+<<<<<<< HEAD
+=======
+
+>>>>>>> c8c60447 (Added opaque types for SemVers)
           return (originalCall as any)(method, ...args);
         });
 

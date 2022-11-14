@@ -1,3 +1,4 @@
+import { SemVerVersion } from '../versions';
 import {
   getSnapSourceShasum,
   PersistedSnap,
@@ -27,6 +28,16 @@ export const MOCK_SNAP_ID = 'npm:@metamask/example-snap';
 export const MOCK_LOCAL_SNAP_ID = 'local:@metamask/example-snap';
 export const MOCK_ORIGIN = 'example.com';
 
+type GetPersistedSnapObjectOptions = Partial<Omit<PersistedSnap, 'version'>> & {
+  version?: string | SemVerVersion;
+};
+type GetSnapObjectOptions = Partial<Omit<Snap, 'version'>> & {
+  version?: string | SemVerVersion;
+};
+type GetTruncatedSnapOptions = Partial<Omit<TruncatedSnap, 'version'>> & {
+  version?: string | SemVerVersion;
+};
+
 export const getPersistedSnapObject = ({
   blocked = false,
   enabled = true,
@@ -40,13 +51,13 @@ export const getPersistedSnapObject = ({
   versionHistory = [
     { origin: MOCK_ORIGIN, version: '1.0.0', date: expect.any(Number) },
   ],
-}: Partial<PersistedSnap> = {}): PersistedSnap => {
+}: GetPersistedSnapObjectOptions = {}): PersistedSnap => {
   return {
     blocked,
     initialPermissions,
     id,
     permissionName,
-    version,
+    version: version as SemVerVersion,
     manifest,
     status,
     enabled,
@@ -67,13 +78,13 @@ export const getSnapObject = ({
   versionHistory = [
     { origin: MOCK_ORIGIN, version: '1.0.0', date: expect.any(Number) },
   ],
-}: Partial<Snap> = {}): Snap => {
+}: GetSnapObjectOptions = {}): Snap => {
   return {
     blocked,
     initialPermissions,
     id,
     permissionName,
-    version,
+    version: version as SemVerVersion,
     manifest,
     status,
     enabled,
@@ -88,12 +99,12 @@ export const getTruncatedSnap = ({
   version = getSnapManifest().version,
   enabled = true,
   blocked = false,
-}: Partial<TruncatedSnap> = {}): TruncatedSnap => {
+}: GetTruncatedSnapOptions = {}): TruncatedSnap => {
   return {
     initialPermissions,
     id,
     permissionName,
-    version,
+    version: version as SemVerVersion,
     enabled,
     blocked,
   } as const;
