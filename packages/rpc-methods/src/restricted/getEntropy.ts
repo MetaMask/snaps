@@ -18,7 +18,8 @@ import {
 } from '@metamask/controllers';
 import { keccak_256 as keccak256 } from '@noble/hashes/sha3';
 
-const MAGIC_VALUE = 0xd36e6170;
+// 0xd36e6170 - 0x80000000
+export const SIP_6_MAGIC_VALUE = `1399742832'` as `${number}'`;
 const HARDENED_VALUE = 0x80000000;
 
 const targetKey = 'snap_getEntropy';
@@ -139,7 +140,7 @@ export async function deriveEntropy(
   const { privateKey } = await SLIP10Node.fromDerivationPath({
     derivationPath: [
       `bip39:${mnemonicPhrase}`,
-      `bip32:${MAGIC_VALUE - HARDENED_VALUE}'`,
+      `bip32:${SIP_6_MAGIC_VALUE}`,
       ...computedDerivationPath,
     ],
     curve: 'secp256k1',

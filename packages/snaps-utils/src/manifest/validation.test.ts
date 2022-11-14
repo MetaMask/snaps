@@ -121,6 +121,12 @@ describe('Bip32PathStruct', () => {
       );
     },
   );
+
+  it('throws for forbidden paths', () => {
+    expect(() => assert(['m', "1399742832'", '0'], Bip32PathStruct)).toThrow(
+      'The purpose "1399742832\'" is not allowed for entropy derivation.',
+    );
+  });
 });
 
 describe('Bip32EntropyStruct', () => {
