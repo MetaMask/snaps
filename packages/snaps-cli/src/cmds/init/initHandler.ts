@@ -8,7 +8,6 @@ import {
   NpmSnapPackageJson,
 } from '@metamask/snaps-utils';
 import { YargsArgs } from '../../types/yargs';
-import { logError } from '../../utils';
 import {
   cloneTemplate,
   gitInit,
@@ -40,18 +39,16 @@ export async function initHandler(argv: YargsArgs) {
   );
 
   if (!isVersionSupported) {
-    logError(
+    throw new Error(
       `Init Error: You are using an outdated version of Node (${process.version}). Please update to Node ${SATISFIED_VERSION}.`,
     );
-    throw new Error('Outdated node version.');
   }
 
   const gitExists = isGitInstalled();
   if (!gitExists) {
-    logError(
+    throw new Error(
       `Init Error: git is not installed. Please install git to continue.`,
     );
-    throw new Error('Git is not installed.');
   }
 
   const directoryToUse = directory
@@ -71,8 +68,7 @@ export async function initHandler(argv: YargsArgs) {
       recursive: true,
     });
   } catch (err) {
-    logError('Init Error: Failed to create template, cleaning...');
-    throw err;
+    throw new Error('Init Error: Failed to create template, cleaning...');
   }
 
   console.log('Installing dependencies...');

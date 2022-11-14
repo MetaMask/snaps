@@ -1,7 +1,6 @@
 import { promises as fs } from 'fs';
 import { execSync } from 'child_process';
 import pathUtils from 'path';
-import { logError } from '../../utils';
 
 export const TEMPLATE_GIT_URL =
   'https://github.com/MetaMask/template-snap-monorepo.git';
@@ -23,19 +22,19 @@ export async function prepareWorkingDirectory(
       try {
         await fs.mkdir(directory, { recursive: true });
       } catch (err) {
-        logError('Init Error: Failed to create new directory.', err);
-        throw err;
+        throw new Error('Init Error: Failed to create new directory.');
       }
     }
 
     const existingFiles = await fs.readdir(directory);
 
     if (existingFiles.length > 0) {
-      throw new Error(`Directory not empty: ${directory}.`);
+      throw new Error(`Directory ${directory} not empty.`);
     }
   } catch (err) {
-    logError('Init Error: Failed to prepare working directory.', err);
-    throw err;
+    throw new Error(
+      `Init Error: Failed to prepare working directory with message: ${err.message}`,
+    );
   }
 }
 
@@ -50,8 +49,7 @@ export async function cloneTemplate(directory: string) {
       stdio: [2],
     });
   } catch (err) {
-    logError('Init Error: Failed to clone the template.', err);
-    throw err;
+    throw new Error('Init Error: Failed to clone the template.');
   }
 }
 
@@ -99,8 +97,7 @@ export async function gitInit(directory: string) {
       cwd: pathUtils.resolve(__dirname, directory),
     });
   } catch (err) {
-    logError('Init Error: Failed to init a new git repository.', err);
-    throw err;
+    throw new Error('Init Error: Failed to init a new git repository.');
   }
 }
 
@@ -116,7 +113,6 @@ export async function yarnInstall(directory: string) {
       cwd: pathUtils.resolve(__dirname, directory),
     });
   } catch (err) {
-    logError('Init Error: Failed to install dependencies.', err);
-    throw err;
+    throw new Error('Init Error: Failed to install dependencies.');
   }
 }
