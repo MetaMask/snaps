@@ -13,17 +13,44 @@ export const DEFAULT_REQUESTED_SNAP_VERSION = '*' as SemVerRange;
 /**
  * {@link https://codemix.com/opaque-types-in-javascript/ Opaque} type for SemVer ranges.
  *
- * Use {@link assertIsSemVerRange} and {@link isValidSemVerRange} to cast to proper type.
- * If you know what you're doing and want to side-step type safety, casting from a string works correctly.
+ * @example Use {@link assertIsSemVerRange} and {@link isValidSemVerRange} to cast to proper type.
+ * ```typescript
+ * const unsafeRange: string = dataFromUser();
+ * assertIsSemVerRange(unsafeRange);
+ * unsafeRange
+ * // ^? SemVerRange
+ * ```
+ * @example If you know what you're doing and want to side-step type safety, casting from a string works correctly.
+ * ```typescript
+ * const unsafeRange: string = dataFromUser();
+ * unsafeRange as SemVerRange;
+ * // ^? SemVerRange
+ * ```
+ * @see {@link assertIsSemVerRange}
+ * @see {@link isValidSemVerRange}
  */
 declare type SemVerRange = {
   __TYPE: 'semver_range';
 } & string;
+
 /**
  * {@link https://codemix.com/opaque-types-in-javascript/ Opaque} type for singular SemVer version.
  *
- * Use {@link assertIsSemVerVersion} and {@link isValidSemVerVersion} to cast to proper type.
- * If you know what you're doing and want to side-step type safety, casting from a string works correctly.
+ * @example Use {@link assertIsSemVerVersion} and {@link isValidSemVerVersion} to cast to proper type.
+ * ```typescript
+ * const unsafeVersion: string = dataFromUser();
+ * assertIsSemVerVersion(unsafeRange);
+ * unsafeVersion
+ * // ^? SemVerVersion
+ * ```
+ * @example If you know what you're doing and want to side-step type safety, casting from a string works correctly.
+ * ```typescript
+ * const unsafeVersion: string = dataFromUser();
+ * unsafeRange as SemVerVersion;
+ * // ^? SemVerVersion
+ * ```
+ * @see {@link assertIsSemVerVersion}
+ * @see {@link isValidSemVerVersion}
  */
 declare type SemVerVersion = {
   __TYPE: 'semver_version';
