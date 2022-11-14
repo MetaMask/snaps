@@ -6,8 +6,6 @@ import pump from 'pump';
 import { ErrorMessageEvent, setupMultiplex } from '../services';
 import { MOCK_BLOCK_NUMBER } from './execution-environment';
 
-// type CreateServiceArg<Service> = ConstructorPa
-
 export const createService = <
   Service extends new (...args: any[]) => InstanceType<Service>,
 >(
