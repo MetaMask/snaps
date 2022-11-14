@@ -1,65 +1,19 @@
-import { ControllerMessenger } from '@metamask/controllers';
 import { HandlerType, SnapId } from '@metamask/snaps-utils';
-import { JsonRpcEngine } from 'json-rpc-engine';
-import { createEngineStream } from 'json-rpc-middleware-stream';
-import pump from 'pump';
-import { ErrorMessageEvent, SnapErrorJson } from '../ExecutionService';
-import { setupMultiplex } from '../AbstractExecutionService';
+import { SnapErrorJson } from '../ExecutionService';
+import { createService, MOCK_BLOCK_NUMBER } from '../../test-utils';
 import { NodeProcessExecutionService } from './NodeProcessExecutionService';
 
 const ON_RPC_REQUEST = HandlerType.OnRpcRequest;
 
-const MOCK_BLOCK_NUM = '0xa70e75';
-
-const createService = () => {
-  const controllerMessenger = new ControllerMessenger<
-    never,
-    ErrorMessageEvent
-  >();
-  const messenger = controllerMessenger.getRestricted<
-    'ExecutionService',
-    never,
-    ErrorMessageEvent['type']
-  >({
-    name: 'ExecutionService',
-  });
-  const service = new NodeProcessExecutionService({
-    messenger,
-    setupSnapProvider: (_snapId, rpcStream) => {
-      const mux = setupMultiplex(rpcStream, 'foo');
-      const stream = mux.createStream('metamask-provider');
-      const engine = new JsonRpcEngine();
-      engine.push((req, res, next, end) => {
-        if (req.method === 'metamask_getProviderState') {
-          res.result = {
-            isUnlocked: false,
-            accounts: [],
-            chainId: '0x1',
-            networkVersion: '1',
-          };
-          return end();
-        } else if (req.method === 'eth_blockNumber') {
-          res.result = MOCK_BLOCK_NUM;
-          return end();
-        }
-        return next();
-      });
-      const providerStream = createEngineStream({ engine });
-      pump(stream, providerStream, stream);
-    },
-  });
-  return { service, messenger, controllerMessenger };
-};
-
 describe('NodeProcessExecutionService', () => {
   it('can boot', async () => {
-    const { service } = createService();
+    const { service } = createService(NodeProcessExecutionService);
     expect(service).toBeDefined();
     await service.terminateAllSnaps();
   });
 
   it('can create a snap worker and start the snap', async () => {
-    const { service } = createService();
+    const { service } = createService(NodeProcessExecutionService);
     const response = await service.executeSnap({
       snapId: 'TestSnap',
       sourceCode: `
@@ -73,7 +27,7 @@ describe('NodeProcessExecutionService', () => {
 
   it('can handle a crashed snap', async () => {
     expect.assertions(1);
-    const { service } = createService();
+    const { service } = createService(NodeProcessExecutionService);
     const action = async () => {
       await service.executeSnap({
         snapId: 'TestSnap',
@@ -92,7 +46,7 @@ describe('NodeProcessExecutionService', () => {
 
   it('can handle errors in request handler', async () => {
     expect.assertions(1);
-    const { service } = createService();
+    const { service } = createService(NodeProcessExecutionService);
     const snapId = 'TestSnap';
     await service.executeSnap({
       snapId,
@@ -119,7 +73,9 @@ describe('NodeProcessExecutionService', () => {
 
   it('can handle errors out of band', async () => {
     expect.assertions(2);
-    const { service, controllerMessenger } = createService();
+    const { service, controllerMessenger } = createService(
+      NodeProcessExecutionService,
+    );
     const snapId = 'TestSnap';
     await service.executeSnap({
       snapId,
@@ -178,7 +134,7 @@ describe('NodeProcessExecutionService', () => {
 
   it('can detect outbound requests', async () => {
     expect.assertions(4);
-    const { service, messenger } = createService();
+    const { service, messenger } = createService(NodeProcessExecutionService);
     const publishSpy = jest.spyOn(messenger, 'publish');
     const snapId = 'TestSnap';
     const executeResult = await service.executeSnap({
@@ -202,7 +158,7 @@ describe('NodeProcessExecutionService', () => {
       },
     });
 
-    expect(result).toBe(MOCK_BLOCK_NUM);
+    expect(result).toBe(MOCK_BLOCK_NUMBER);
 
     expect(publishSpy).toHaveBeenCalledWith(
       'ExecutionService:outboundRequest',

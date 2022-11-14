@@ -1,16 +1,11 @@
-import { ControllerMessenger } from '@metamask/controllers';
-import { JsonRpcEngine } from 'json-rpc-engine';
-import { createEngineStream } from 'json-rpc-middleware-stream';
-import pump from 'pump';
 import { HandlerType } from '@metamask/snaps-utils';
-import { ErrorMessageEvent } from '../ExecutionService';
-import { setupMultiplex } from '../AbstractExecutionService';
+import { createService } from '@metamask/snaps-controllers/test-utils';
 import { IframeExecutionService } from './IframeExecutionService';
 import fixJSDOMPostMessageEventSource from './test/fixJSDOMPostMessageEventSource';
 import {
   PORT as serverPort,
-  stop as stopServer,
   start as startServer,
+  stop as stopServer,
 } from './test/server';
 
 // We do not use our default endowments in these tests because JSDOM doesn't
@@ -18,48 +13,13 @@ import {
 
 const iframeUrl = new URL(`http://localhost:${serverPort}`);
 
-const MOCK_BLOCK_NUM = '0xa70e75';
-
-const createService = () => {
-  const controllerMessenger = new ControllerMessenger<
-    never,
-    ErrorMessageEvent
-  >();
-  const messenger = controllerMessenger.getRestricted<
-    'ExecutionService',
-    never,
-    ErrorMessageEvent['type']
-  >({
-    name: 'ExecutionService',
-  });
-  const service = new IframeExecutionService({
-    messenger,
-    setupSnapProvider: (_snapId, rpcStream) => {
-      const mux = setupMultiplex(rpcStream, 'foo');
-      const stream = mux.createStream('metamask-provider');
-      const engine = new JsonRpcEngine();
-      engine.push((req, res, next, end) => {
-        if (req.method === 'metamask_getProviderState') {
-          res.result = {
-            isUnlocked: false,
-            accounts: [],
-            chainId: '0x1',
-            networkVersion: '1',
-          };
-          return end();
-        } else if (req.method === 'eth_blockNumber') {
-          res.result = MOCK_BLOCK_NUM;
-          return end();
-        }
-        return next();
-      });
-      const providerStream = createEngineStream({ engine });
-      pump(stream, providerStream, stream);
-    },
+const createIFrameService = () => {
+  const { service, ...rest } = createService(IframeExecutionService, {
     iframeUrl,
   });
+
   const removeListener = fixJSDOMPostMessageEventSource(service);
-  return { service, messenger, controllerMessenger, removeListener };
+  return { service, removeListener, ...rest };
 };
 
 describe('IframeExecutionService', () => {
@@ -75,14 +35,14 @@ describe('IframeExecutionService', () => {
   });
 
   it('can boot', async () => {
-    const { service, removeListener } = createService();
+    const { service, removeListener } = createIFrameService();
     expect(service).toBeDefined();
     await service.terminateAllSnaps();
     removeListener();
   });
 
   it('can create a snap worker and start the snap', async () => {
-    const { service, removeListener } = createService();
+    const { service, removeListener } = createIFrameService();
     const response = await service.executeSnap({
       snapId: 'TestSnap',
       sourceCode: `
@@ -97,7 +57,7 @@ describe('IframeExecutionService', () => {
 
   it('can handle a crashed snap', async () => {
     expect.assertions(1);
-    const { service, removeListener } = createService();
+    const { service, removeListener } = createIFrameService();
     const action = async () => {
       await service.executeSnap({
         snapId: 'TestSnap',
@@ -118,7 +78,7 @@ describe('IframeExecutionService', () => {
   it('can detect outbound requests', async () => {
     const blockNumber = '0xa70e75';
     expect.assertions(4);
-    const { service, removeListener, messenger } = createService();
+    const { service, removeListener, messenger } = createIFrameService();
     const publishSpy = jest.spyOn(messenger, 'publish');
     const snapId = 'TestSnap';
     const executeResult = await service.executeSnap({
