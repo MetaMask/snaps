@@ -21,6 +21,13 @@ import { CronjobSpecificationArrayStruct } from '../cronjob';
 import { NamespacesStruct } from '../namespace';
 import { NameStruct, NpmSnapFileNames, VersionStruct } from '../types';
 
+// 0xd36e6170 - 0x80000000
+export const SIP_6_MAGIC_VALUE = `1399742832'` as `${number}'`;
+
+// BIP-43 purposes that cannot be used for entropy derivation. These are in the
+// string form, ending with `'`.
+const FORBIDDEN_PURPOSES: string[] = [SIP_6_MAGIC_VALUE];
+
 export type Base64Opts = {
   /**
    * Is the `=` padding at the end required or not.
@@ -97,6 +104,10 @@ export const Bip32PathStruct = refine(
       return 'Path must be a valid BIP-32 derivation path array.';
     }
 
+    if (FORBIDDEN_PURPOSES.includes(path[1])) {
+      return `The purpose "${path[1]}" is not allowed for entropy derivation.`;
+    }
+
     return true;
   },
 );
@@ -122,6 +133,7 @@ export const Bip32EntropyStruct = bip32entropy(
     curve: enums(['ed25519', 'secp256k1']),
   }),
 );
+
 export type Bip32Entropy = Infer<typeof Bip32EntropyStruct>;
 
 export const Bip32PublicKeyStruct = bip32entropy(
@@ -131,6 +143,7 @@ export const Bip32PublicKeyStruct = bip32entropy(
     compressed: optional(boolean()),
   }),
 );
+
 export type Bip32PublicKey = Infer<typeof Bip32PublicKeyStruct>;
 
 const PermissionsStruct = type({
@@ -154,12 +167,14 @@ const PermissionsStruct = type({
       Infinity,
     ),
   ),
+  snap_getEntropy: optional(object({})),
   'endowment:keyring': optional(
     object({
       namespaces: NamespacesStruct,
     }),
   ),
 });
+
 export type SnapPermissions = Infer<typeof PermissionsStruct>;
 
 export const SnapManifestStruct = object({

@@ -1,4 +1,4 @@
-import { SnapCaveatType } from '@metamask/snaps-utils';
+import { SIP_6_MAGIC_VALUE, SnapCaveatType } from '@metamask/snaps-utils';
 import {
   getBip32EntropyBuilder,
   getBip32EntropyCaveatMapper,
@@ -196,6 +196,22 @@ describe('getBip32EntropyCaveatSpecifications', () => {
         'The requested path is not permitted. Allowed paths must be specified in the snap manifest.',
       );
     });
+
+    it('throws if the purpose is not allowed', async () => {
+      const fn = jest.fn().mockImplementation(() => 'foo');
+
+      await expect(
+        getBip32EntropyCaveatSpecifications[
+          SnapCaveatType.PermittedDerivationPaths
+        ].decorator(fn, {
+          type: SnapCaveatType.PermittedDerivationPaths,
+          value: [params],
+          // @ts-expect-error Missing other required properties.
+        })({ params: { ...params, path: ['m', SIP_6_MAGIC_VALUE, "0'"] } }),
+      ).rejects.toThrow(
+        'Invalid BIP-32 entropy path definition: At path: path -- The purpose "1399742832\'" is not allowed for entropy derivation.',
+      );
+    });
   });
 
   describe('validator', () => {
@@ -208,6 +224,19 @@ describe('getBip32EntropyCaveatSpecifications', () => {
           value: [{ path: ['foo'], curve: 'secp256k1' }],
         }),
       ).toThrow('At path: value.0.path -- Path must start with "m".');
+    });
+
+    it('throws if the caveat values contain forbidden paths', () => {
+      expect(() =>
+        getBip32EntropyCaveatSpecifications[
+          SnapCaveatType.PermittedDerivationPaths
+        ].validator?.({
+          type: SnapCaveatType.PermittedDerivationPaths,
+          value: [{ path: ['m', SIP_6_MAGIC_VALUE, "0'"], curve: 'secp256k1' }],
+        }),
+      ).toThrow(
+        'Invalid BIP-32 entropy caveat: At path: value.0.path -- The purpose "1399742832\'" is not allowed for entropy derivation.',
+      );
     });
   });
 });

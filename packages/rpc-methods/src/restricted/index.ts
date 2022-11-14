@@ -21,6 +21,7 @@ import {
   getBip32PublicKeyBuilder,
   GetBip32PublicKeyMethodHooks,
 } from './getBip32PublicKey';
+import { getEntropyBuilder, GetEntropyHooks } from './getEntropy';
 
 export {
   AlertFields,
@@ -38,6 +39,7 @@ export type RestrictedMethodHooks = ConfirmMethodHooks &
   GetBip32EntropyMethodHooks &
   GetBip32PublicKeyMethodHooks &
   GetBip44EntropyMethodHooks &
+  GetEntropyHooks &
   InvokeSnapMethodHooks &
   ManageStateMethodHooks &
   NotifyMethodHooks;
@@ -48,6 +50,7 @@ export const restrictedMethodPermissionBuilders = {
   [getBip32EntropyBuilder.targetKey]: getBip32EntropyBuilder,
   [getBip32PublicKeyBuilder.targetKey]: getBip32PublicKeyBuilder,
   [getBip44EntropyBuilder.targetKey]: getBip44EntropyBuilder,
+  [getEntropyBuilder.targetKey]: getEntropyBuilder,
   [invokeSnapBuilder.targetKey]: invokeSnapBuilder,
   [manageStateBuilder.targetKey]: manageStateBuilder,
   [notifyBuilder.targetKey]: notifyBuilder,
