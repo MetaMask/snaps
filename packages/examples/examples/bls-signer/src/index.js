@@ -27,14 +27,19 @@ module.exports.onRpcRequest = async ({ request }) => {
         'BLS signature request',
         `Do you want to BLS sign ${data} with ${pubKey}?`,
       );
+
       if (!approved) {
         throw rpcErrors.eth.unauthorized();
       }
+
       const PRIVATE_KEY = await wallet.request({
-        method: 'snap_getAppKey',
+        method: 'snap_getEntropy',
+        params: {
+          version: 1,
+        },
       });
-      const signature = await bls.sign(request.params[0], PRIVATE_KEY, DOMAIN);
-      return signature;
+
+      return await bls.sign(request.params[0], PRIVATE_KEY, DOMAIN);
     }
 
     default:
