@@ -185,15 +185,14 @@ describe('initialize', () => {
     });
 
     it('fails if the node version is not supported', async () => {
-      const satisfiesVersionRangeMock = jest
-        .spyOn(snapUtils, 'satisfiesVersionRange')
-        .mockImplementation(() => false);
+      global.process = {
+        ...global.process,
+        version: 'v15.1.1',
+      };
 
       await expect(initHandler({ ...getMockArgv() })).rejects.toThrow(
-        'Init Error: You are using an outdated version of Node (v16.15.1). Please update to Node >=16.',
+        `Init Error: You are using an outdated version of Node (${process.version}). Please update to Node >=16.`,
       );
-
-      expect(satisfiesVersionRangeMock).toHaveBeenCalledTimes(1);
     });
 
     it('fails if git is not installed', async () => {
