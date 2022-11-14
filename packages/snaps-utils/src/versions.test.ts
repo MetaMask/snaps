@@ -15,28 +15,6 @@ import {
   SemVerVersion,
 } from './versions';
 
-function v(value: string[]): SemVerVersion[];
-function v(value: string): SemVerVersion;
-/**
- * Utility to cast string to version.
- *
- * @param value - String to cast.
- * @returns The same string with different type.
- */
-function v(value: string | string[]): SemVerVersion | SemVerVersion[] {
-  return value as any;
-}
-
-/**
- * Utility to cast string to range.
- *
- * @param value - String to cast.
- * @returns The same string with different type.
- */
-function r(value: string): SemVerRange {
-  return value as SemVerRange;
-}
-
 describe('resolveVersion', () => {
   it('defaults "latest" to DEFAULT_REQUESTED_SNAP_VERSION', () => {
     expect(resolveVersionRange('latest')[1]).toBe(
@@ -153,80 +131,167 @@ describe('isValidSemVerRange', () => {
 
 describe('gtVersion', () => {
   it('supports regular versions', () => {
-    expect(gtVersion(v('1.2.3'), v('1.0.0'))).toBe(true);
-    expect(gtVersion(v('2.0.0'), v('1.0.0'))).toBe(true);
-    expect(gtVersion(v('1.0.0'), v('1.2.3'))).toBe(false);
-    expect(gtVersion(v('1.0.0'), v('2.0.0'))).toBe(false);
+    expect(gtVersion('1.2.3' as SemVerVersion, '1.0.0' as SemVerVersion)).toBe(
+      true,
+    );
+
+    expect(gtVersion('2.0.0' as SemVerVersion, '1.0.0' as SemVerVersion)).toBe(
+      true,
+    );
+
+    expect(gtVersion('1.0.0' as SemVerVersion, '1.2.3' as SemVerVersion)).toBe(
+      false,
+    );
+
+    expect(gtVersion('1.0.0' as SemVerVersion, '2.0.0' as SemVerVersion)).toBe(
+      false,
+    );
   });
 
   it('supports pre-release versions', () => {
-    expect(gtVersion(v('1.0.0-beta.2'), v('1.0.0-beta.1'))).toBe(true);
-    expect(gtVersion(v('1.0.0-beta.2'), v('1.2.3'))).toBe(false);
-    expect(gtVersion(v('1.0.0'), v('1.0.0-beta.2'))).toBe(true);
-    expect(gtVersion(v('1.2.3-beta.1'), v('1.0.0'))).toBe(true);
-    expect(gtVersion(v('1.2.3-beta.1'), v('1.2.3-alpha.2'))).toBe(true);
+    expect(
+      gtVersion(
+        '1.0.0-beta.2' as SemVerVersion,
+        '1.0.0-beta.1' as SemVerVersion,
+      ),
+    ).toBe(true);
+
+    expect(
+      gtVersion('1.0.0-beta.2' as SemVerVersion, '1.2.3' as SemVerVersion),
+    ).toBe(false);
+
+    expect(
+      gtVersion('1.0.0' as SemVerVersion, '1.0.0-beta.2' as SemVerVersion),
+    ).toBe(true);
+
+    expect(
+      gtVersion('1.2.3-beta.1' as SemVerVersion, '1.0.0' as SemVerVersion),
+    ).toBe(true);
+
+    expect(
+      gtVersion(
+        '1.2.3-beta.1' as SemVerVersion,
+        '1.2.3-alpha.2' as SemVerVersion,
+      ),
+    ).toBe(true);
   });
 });
 
 describe('getTargetVersion', () => {
   it('supports *', () => {
-    expect(getTargetVersion(v(['1.2.3', '3.0.0']), r('*'))).toBe('3.0.0');
+    expect(
+      getTargetVersion(
+        ['1.2.3', '3.0.0'] as SemVerVersion[],
+        '*' as SemVerRange,
+      ),
+    ).toBe('3.0.0');
   });
 
   it('supports pre-release versions', () => {
-    expect(getTargetVersion(v(['1.0.0-beta.1']), r('*'))).toBe('1.0.0-beta.1');
-    expect(getTargetVersion(v(['1.0.0-beta.1', '1.0.0-beta.2']), r('*'))).toBe(
-      '1.0.0-beta.2',
-    );
+    expect(
+      getTargetVersion(['1.0.0-beta.1'] as SemVerVersion[], '*' as SemVerRange),
+    ).toBe('1.0.0-beta.1');
 
     expect(
-      getTargetVersion(v(['1.0.0-beta.1', '1.0.0-beta.2']), r('^1.0.0-beta.1')),
+      getTargetVersion(
+        ['1.0.0-beta.1', '1.0.0-beta.2'] as SemVerVersion[],
+        '*' as SemVerRange,
+      ),
     ).toBe('1.0.0-beta.2');
 
-    expect(getTargetVersion(v(['1.0.0-alpha.2', '1.0.0-beta.1']), r('*'))).toBe(
-      '1.0.0-beta.1',
-    );
+    expect(
+      getTargetVersion(
+        ['1.0.0-beta.1', '1.0.0-beta.2'] as SemVerVersion[],
+        '^1.0.0-beta.1' as SemVerRange,
+      ),
+    ).toBe('1.0.0-beta.2');
 
-    expect(getTargetVersion(v(['0.9.0', '1.0.0-alpha.0']), r('*'))).toBe(
-      '0.9.0',
-    );
+    expect(
+      getTargetVersion(
+        ['1.0.0-alpha.2', '1.0.0-beta.1'] as SemVerVersion[],
+        '*' as SemVerRange,
+      ),
+    ).toBe('1.0.0-beta.1');
+
+    expect(
+      getTargetVersion(
+        ['0.9.0', '1.0.0-alpha.0'] as SemVerVersion[],
+        '*' as SemVerRange,
+      ),
+    ).toBe('0.9.0');
   });
 
   it("doesn't return pre-release versions by default", () => {
     expect(
-      getTargetVersion(v(['1.0.0-beta.1', '1.0.0', '1.2.3']), r('*')),
+      getTargetVersion(
+        ['1.0.0-beta.1', '1.0.0', '1.2.3'] as SemVerVersion[],
+        '*' as SemVerRange,
+      ),
     ).toBe('1.2.3');
 
     expect(
-      getTargetVersion(v(['1.0.0-beta.1', '1.0.0', '1.2.3']), r('^1.0.0')),
+      getTargetVersion(
+        ['1.0.0-beta.1', '1.0.0', '1.2.3'] as SemVerVersion[],
+        '^1.0.0' as SemVerRange,
+      ),
     ).toBe('1.2.3');
 
-    expect(getTargetVersion(v(['1.0.0-beta.1', '1.0.0']), r('*'))).toBe(
-      '1.0.0',
-    );
+    expect(
+      getTargetVersion(
+        ['1.0.0-beta.1', '1.0.0'] as SemVerVersion[],
+        '*' as SemVerRange,
+      ),
+    ).toBe('1.0.0');
   });
 });
 
 describe('satisfiesVersionRange', () => {
   it('supports *', () => {
-    expect(satisfiesVersionRange(v('3.0.0'), r('*'))).toBe(true);
+    expect(
+      satisfiesVersionRange('3.0.0' as SemVerVersion, '*' as SemVerRange),
+    ).toBe(true);
   });
 
   it('supports exact versions', () => {
-    expect(satisfiesVersionRange(v('1.0.0-beta.1'), r('1.0.0-beta.1'))).toBe(
-      true,
-    );
-    expect(satisfiesVersionRange(v('1.0.0'), r('1.0.0'))).toBe(true);
-    expect(satisfiesVersionRange(v('1.2.3'), r('1.0.0'))).toBe(false);
+    expect(
+      satisfiesVersionRange(
+        '1.0.0-beta.1' as SemVerVersion,
+        '1.0.0-beta.1' as SemVerRange,
+      ),
+    ).toBe(true);
+
+    expect(
+      satisfiesVersionRange('1.0.0' as SemVerVersion, '1.0.0' as SemVerRange),
+    ).toBe(true);
+
+    expect(
+      satisfiesVersionRange('1.2.3' as SemVerVersion, '1.0.0' as SemVerRange),
+    ).toBe(false);
   });
 
   it('supports non-exact version ranges', () => {
-    expect(satisfiesVersionRange(v('1.2.3'), r('^1.0.0'))).toBe(true);
-    expect(satisfiesVersionRange(v('2.0.0'), r('^1.0.0'))).toBe(false);
+    expect(
+      satisfiesVersionRange('1.2.3' as SemVerVersion, '^1.0.0' as SemVerRange),
+    ).toBe(true);
+
+    expect(
+      satisfiesVersionRange('2.0.0' as SemVerVersion, '^1.0.0' as SemVerRange),
+    ).toBe(false);
   });
 
   it('pre-releases can satisfy version range', () => {
-    expect(satisfiesVersionRange(v('1.0.0-beta.1'), r('*'))).toBe(true);
-    expect(satisfiesVersionRange(v('1.0.0-beta.1'), r('^1.0.0'))).toBe(false);
+    expect(
+      satisfiesVersionRange(
+        '1.0.0-beta.1' as SemVerVersion,
+        '*' as SemVerRange,
+      ),
+    ).toBe(true);
+
+    expect(
+      satisfiesVersionRange(
+        '1.0.0-beta.1' as SemVerVersion,
+        '^1.0.0' as SemVerRange,
+      ),
+    ).toBe(false);
   });
 });
