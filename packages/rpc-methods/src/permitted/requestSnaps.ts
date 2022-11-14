@@ -1,7 +1,7 @@
 import {
   PermissionConstraint,
   RequestedPermissions,
-} from '@metamask/controllers';
+} from '@metamask/permission-controller';
 import { getSnapPermissionName } from '@metamask/snaps-utils';
 import {
   PermittedHandlerExport,

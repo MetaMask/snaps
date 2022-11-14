@@ -1,8 +1,8 @@
 import {
   BaseControllerV2 as BaseController,
   RestrictedControllerMessenger,
-  GetPermissions,
-} from '@metamask/controllers';
+} from '@metamask/base-controller';
+import { GetPermissions } from '@metamask/permission-controller';
 import {
   HandlerType,
   SnapId,

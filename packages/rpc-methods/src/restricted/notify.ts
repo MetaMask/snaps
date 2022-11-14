@@ -3,7 +3,7 @@ import {
   PermissionType,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
-} from '@metamask/controllers';
+} from '@metamask/permission-controller';
 import { NonEmptyArray, isObject } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 

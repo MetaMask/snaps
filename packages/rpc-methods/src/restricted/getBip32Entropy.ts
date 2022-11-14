@@ -7,7 +7,7 @@ import {
   RestrictedMethodCaveatSpecificationConstraint,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
-} from '@metamask/controllers';
+} from '@metamask/permission-controller';
 import { BIP32Node, JsonSLIP10Node, SLIP10Node } from '@metamask/key-tree';
 import {
   Bip32Entropy,

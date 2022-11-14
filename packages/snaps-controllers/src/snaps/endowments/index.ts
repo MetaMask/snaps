@@ -1,4 +1,4 @@
-import { PermissionConstraint } from '@metamask/controllers';
+import { PermissionConstraint } from '@metamask/permission-controller';
 import { Json } from '@metamask/utils';
 
 import {

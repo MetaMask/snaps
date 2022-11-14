@@ -1,4 +1,4 @@
-import { RequestedPermissions } from '@metamask/controllers';
+import { RequestedPermissions } from '@metamask/permission-controller';
 import {
   getSnapPermissionName,
   InstallSnapsResult,
@@ -13,7 +13,6 @@ import {
   PendingJsonRpcResponse,
 } from '@metamask/types';
 import { JsonRpcEngine } from 'json-rpc-engine';
-
 import { requestSnapsHandler } from './requestSnaps';
 
 describe('requestSnapsHandler', () => {

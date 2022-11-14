@@ -1,4 +1,4 @@
-import { PermissionConstraint, PermissionType } from '@metamask/controllers';
+import { PermissionConstraint, PermissionType } from '@metamask/permission-controller';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 
 import { SnapEndowments } from '.';

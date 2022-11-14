@@ -1,4 +1,4 @@
-export type { Json } from '@metamask/controllers';
+export type { Json } from '@metamask/utils';
 export * from './services';
 export * from './snaps';
 export * from './utils';

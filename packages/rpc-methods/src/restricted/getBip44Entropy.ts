@@ -7,7 +7,7 @@ import {
   ValidPermissionSpecification,
   PermissionConstraint,
   RestrictedMethodCaveatSpecificationConstraint,
-} from '@metamask/controllers';
+} from '@metamask/permission-controller';
 import { BIP44CoinTypeNode, JsonBIP44CoinTypeNode } from '@metamask/key-tree';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import {

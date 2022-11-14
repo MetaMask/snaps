@@ -31,9 +31,11 @@
     "publish:package": "../../scripts/publish-package.sh"
   },
   "dependencies": {
+    "@metamask/approval-controller": "^1.0.0",
+    "@metamask/base-controller": "^1.0.0",
     "@metamask/browser-passworder": "^4.0.2",
-    "@metamask/controllers": "^32.0.2",
     "@metamask/object-multiplex": "^1.1.0",
+    "@metamask/permission-controller": "^1.0.0",
     "@metamask/post-message-stream": "^6.0.0",
     "@metamask/rpc-methods": "^0.24.1",
     "@metamask/snaps-execution-environments": "^0.24.1",

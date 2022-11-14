@@ -3,7 +3,7 @@ import {
   RestrictedMethodOptions,
   ValidPermissionSpecification,
   PermissionType,
-} from '@metamask/controllers';
+} from '@metamask/permission-controller';
 import {
   Snap,
   SNAP_PREFIX,

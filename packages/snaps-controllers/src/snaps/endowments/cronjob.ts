@@ -6,7 +6,7 @@ import {
   PermissionConstraint,
   Caveat,
   CaveatSpecificationConstraint,
-} from '@metamask/controllers';
+} from '@metamask/permission-controller';
 import {
   SnapCaveatType,
   CronjobSpecification,

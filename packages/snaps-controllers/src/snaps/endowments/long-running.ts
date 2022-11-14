@@ -3,8 +3,7 @@ import {
   PermissionType,
   EndowmentGetterParams,
   ValidPermissionSpecification,
-} from '@metamask/controllers';
-
+} from '@metamask/permission-controller';
 import { SnapEndowments } from './enum';
 
 const permissionName = SnapEndowments.LongRunning;

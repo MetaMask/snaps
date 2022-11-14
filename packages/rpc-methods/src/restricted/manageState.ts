@@ -3,7 +3,7 @@ import {
   PermissionType,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
-} from '@metamask/controllers';
+} from '@metamask/permission-controller';
 import {
   Json,
   NonEmptyArray,

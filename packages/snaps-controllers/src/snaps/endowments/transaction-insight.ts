@@ -7,7 +7,7 @@ import {
   PermissionConstraint,
   CaveatSpecificationConstraint,
   Caveat,
-} from '@metamask/controllers';
+} from '@metamask/permission-controller';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   assert,
