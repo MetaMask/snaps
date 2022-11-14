@@ -1,4 +1,4 @@
-import { SnapCaveatType } from '@metamask/snaps-utils';
+import { SIP_6_MAGIC_VALUE, SnapCaveatType } from '@metamask/snaps-utils';
 import {
   getBip32EntropyBuilder,
   getBip32EntropyCaveatMapper,
@@ -6,7 +6,6 @@ import {
   getBip32EntropyImplementation,
   validateCaveatPaths,
 } from './getBip32Entropy';
-import { SIP_6_MAGIC_VALUE } from './getEntropy';
 
 const TEST_SECRET_RECOVERY_PHRASE =
   'test test test test test test test test test test test ball';

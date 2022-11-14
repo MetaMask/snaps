@@ -5,6 +5,7 @@ import {
   assert,
   assertStruct,
   concatBytes,
+  createDataView,
   Hex,
   NonEmptyArray,
   stringToBytes,
@@ -17,9 +18,8 @@ import {
   ValidPermissionSpecification,
 } from '@metamask/controllers';
 import { keccak_256 as keccak256 } from '@noble/hashes/sha3';
+import { SIP_6_MAGIC_VALUE } from '@metamask/snaps-utils';
 
-// 0xd36e6170 - 0x80000000
-export const SIP_6_MAGIC_VALUE = `1399742832'` as `${number}'`;
 const HARDENED_VALUE = 0x80000000;
 
 const targetKey = 'snap_getEntropy';
@@ -97,7 +97,7 @@ export type GetEntropyHooks = {
  */
 function getDerivationPathArray(hash: Uint8Array): HardenedBIP32Node[] {
   const array: HardenedBIP32Node[] = [];
-  const view = new DataView(hash.buffer, hash.byteOffset, hash.byteLength);
+  const view = createDataView(hash);
 
   for (let index = 0; index < 8; index++) {
     const uint32 = view.getUint32(index * 4);

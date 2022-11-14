@@ -21,12 +21,12 @@ import { CronjobSpecificationArrayStruct } from '../cronjob';
 import { NamespacesStruct } from '../namespace';
 import { NameStruct, NpmSnapFileNames, VersionStruct } from '../types';
 
+// 0xd36e6170 - 0x80000000
+export const SIP_6_MAGIC_VALUE = `1399742832'` as `${number}'`;
+
 // BIP-43 purposes that cannot be used for entropy derivation. These are in the
 // string form, ending with `'`.
-const FORBIDDEN_PURPOSES: string[] = [
-  // SIP-6 magic value.
-  `1399742832'`,
-];
+const FORBIDDEN_PURPOSES: string[] = [SIP_6_MAGIC_VALUE];
 
 export type Base64Opts = {
   /**
