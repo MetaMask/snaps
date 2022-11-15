@@ -6,7 +6,7 @@ const NETWORK_APIS = ['fetch', 'WebSocket'];
 
 export const ALL_APIS: string[] = [...DEFAULT_ENDOWMENTS, ...NETWORK_APIS];
 
-type MockSnapProvider = {
+type MockSnapGlobal = {
   request: () => Promise<any>;
 };
 
@@ -19,7 +19,7 @@ type MockEthereumProvider = EventEmitter & {
  *
  * @returns A mocked snap provider.
  */
-function getMockSnapAPI(): MockSnapProvider {
+function getMockSnapGlobal(): MockSnapGlobal {
   return { request: async () => true };
 }
 
@@ -117,6 +117,6 @@ const generateMockEndowment = (key: string) => {
 export const generateMockEndowments = () => {
   return ALL_APIS.reduce<Record<string, any>>(
     (acc, cur) => ({ ...acc, [cur]: generateMockEndowment(cur) }),
-    { snap: getMockSnapAPI(), ethereum: getMockEthereumProvider() },
+    { snap: getMockSnapGlobal(), ethereum: getMockEthereumProvider() },
   );
 };

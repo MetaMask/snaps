@@ -3,7 +3,7 @@
 import { Duplex } from 'stream';
 import { StreamProvider } from '@metamask/providers';
 import { createIdRemapMiddleware } from 'json-rpc-engine';
-import { SnapExports, SnapAPI } from '@metamask/snaps-types';
+import { SnapExports, SnapsGlobalObject } from '@metamask/snaps-types';
 import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
 import {
   isObject,
@@ -298,7 +298,7 @@ export class BaseSnapExecutor {
 
     await provider.initialize();
 
-    const snap = this.createSnapAPI(provider);
+    const snap = this.createSnapGlobal(provider);
     const ethereum = this.createEIP1193Provider(provider);
     // We specifically use any type because the Snap can modify the object any way they want
     const snapModule: any = { exports: {} };
@@ -377,7 +377,7 @@ export class BaseSnapExecutor {
    * @param provider - A StreamProvider connected to MetaMask.
    * @returns The snap provider object.
    */
-  private createSnapAPI(provider: StreamProvider): SnapAPI {
+  private createSnapGlobal(provider: StreamProvider): SnapsGlobalObject {
     const originalRequest = provider.request;
 
     const request = async (args: RequestArguments) => {
@@ -397,10 +397,10 @@ export class BaseSnapExecutor {
   }
 
   /**
-   * Instantiates an eip1193 provider object (i.e. `globalThis.ethereum`).
+   * Instantiates an EIP-1193 Ethereum provider object (i.e. `globalThis.ethereum`).
    *
    * @param provider - A StreamProvider connected to MetaMask.
-   * @returns The eip1193 provider object.
+   * @returns The EIP-1193 Ethereum provider object.
    */
   private createEIP1193Provider(provider: StreamProvider): StreamProvider {
     const originalRequest = provider.request;

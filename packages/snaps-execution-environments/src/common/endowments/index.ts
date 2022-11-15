@@ -1,4 +1,4 @@
-import { SnapAPI } from '@metamask/snaps-types';
+import { SnapsGlobalObject } from '@metamask/snaps-types';
 import { hasProperty } from '@metamask/utils';
 import { StreamProvider } from '@metamask/providers';
 import { rootRealmGlobal } from '../globalObject';
@@ -49,7 +49,7 @@ const endowmentFactories = [timeout, interval, network, crypto, math].reduce(
  * @returns An object containing the Snap's endowments.
  */
 export function createEndowments(
-  snap: SnapAPI,
+  snap: SnapsGlobalObject,
   ethereum: StreamProvider,
   endowments: string[] = [],
 ): { endowments: Record<string, unknown>; teardown: () => Promise<void> } {

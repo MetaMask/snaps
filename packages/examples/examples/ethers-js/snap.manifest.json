@@ -17,7 +17,7 @@
     }
   },
   "initialPermissions": {
-    "endowment:eip1193": {}
+    "endowment:ethereum-provider": {}
   },
   "manifestVersion": "0.1"
 }

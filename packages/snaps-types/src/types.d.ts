@@ -22,7 +22,7 @@ export type OnCronjobHandler = (args: {
   request: JsonRpcRequest<unknown[] | { [key: string]: unknown }>;
 }) => Promise<unknown>;
 
-export type SnapAPI = { request: StreamProvider['request'] };
+export type SnapsGlobalObject = { request: StreamProvider['request'] };
 
 export type Ethereum = StreamProvider;
 

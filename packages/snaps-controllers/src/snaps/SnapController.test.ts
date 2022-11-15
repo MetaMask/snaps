@@ -929,7 +929,7 @@ describe('SnapController', () => {
     `;
 
     const options = getSnapControllerWithEESOptions({
-      environmentEndowmentPermissions: [SnapEndowments.EIP1193],
+      environmentEndowmentPermissions: [SnapEndowments.EthereumProvider],
       idleTimeCheckInterval: 30000,
       maxIdleTime: 160000,
       state: {
@@ -954,7 +954,7 @@ describe('SnapController', () => {
         return true;
       } else if (
         method === 'PermissionController:getEndowments' &&
-        args[1] === SnapEndowments.EIP1193
+        args[1] === SnapEndowments.EthereumProvider
       ) {
         return ['ethereum'];
       }
@@ -1023,7 +1023,7 @@ describe('SnapController', () => {
     `;
 
     const options = getSnapControllerWithEESOptions({
-      environmentEndowmentPermissions: [SnapEndowments.EIP1193],
+      environmentEndowmentPermissions: [SnapEndowments.EthereumProvider],
       idleTimeCheckInterval: 30000,
       maxIdleTime: 160000,
       state: {
@@ -1048,7 +1048,7 @@ describe('SnapController', () => {
         return true;
       } else if (
         method === 'PermissionController:getEndowments' &&
-        args[1] === SnapEndowments.EIP1193
+        args[1] === SnapEndowments.EthereumProvider
       ) {
         return ['ethereum'];
       }

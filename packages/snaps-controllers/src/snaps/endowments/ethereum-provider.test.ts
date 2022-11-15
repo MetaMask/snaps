@@ -1,13 +1,15 @@
 import { PermissionType } from '@metamask/controllers';
 import { SnapEndowments } from './enum';
-import { eip1193EndowmentBuilder } from './eip1193';
+import { ethereumProviderEndowmentBuilder } from './ethereum-provider';
 
 describe('endowment:eip1193', () => {
   it('builds the expected permission specification', () => {
-    const specification = eip1193EndowmentBuilder.specificationBuilder({});
+    const specification = ethereumProviderEndowmentBuilder.specificationBuilder(
+      {},
+    );
     expect(specification).toStrictEqual({
       permissionType: PermissionType.Endowment,
-      targetKey: SnapEndowments.EIP1193,
+      targetKey: SnapEndowments.EthereumProvider,
       endowmentGetter: expect.any(Function),
       allowedCaveats: null,
     });

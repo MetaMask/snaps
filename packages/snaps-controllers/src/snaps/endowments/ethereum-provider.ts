@@ -6,9 +6,9 @@ import {
 } from '@metamask/controllers';
 import { SnapEndowments } from './enum';
 
-const permissionName = SnapEndowments.EIP1193;
+const permissionName = SnapEndowments.EthereumProvider;
 
-type EIP1193EndowmentSpecification = ValidPermissionSpecification<{
+type EthereumProviderEndowmentSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;
   targetKey: typeof permissionName;
   endowmentGetter: (_options?: any) => ['ethereum'];
@@ -16,9 +16,11 @@ type EIP1193EndowmentSpecification = ValidPermissionSpecification<{
 }>;
 
 /**
- * `endowment:eip1193` returns the name of the ethereum global browser API.
+ * `endowment:ethereum-provider` returns the name of the ethereum global browser API.
  * This is intended to populate the endowments of the
  * SES Compartment in which a Snap executes.
+ *
+ * This populates the global scope with an EIP-1193 provider, which DOES NOT implement all legacy functionality exposed to dapps.
  *
  * @param _builderOptions - Optional specification builder options.
  * @returns The specification for the network endowment.
@@ -26,7 +28,7 @@ type EIP1193EndowmentSpecification = ValidPermissionSpecification<{
 const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.Endowment,
   any,
-  EIP1193EndowmentSpecification
+  EthereumProviderEndowmentSpecification
 > = (_builderOptions?: any) => {
   return {
     permissionType: PermissionType.Endowment,
@@ -38,7 +40,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
   };
 };
 
-export const eip1193EndowmentBuilder = Object.freeze({
+export const ethereumProviderEndowmentBuilder = Object.freeze({
   targetKey: permissionName,
   specificationBuilder,
 } as const);
