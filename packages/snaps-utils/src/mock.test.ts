@@ -5,7 +5,7 @@ import { generateMockEndowments, isConstructor } from './mock';
 describe('generateMockEndowments', () => {
   it('includes mock snap API', async () => {
     const endowments = generateMockEndowments();
-    expect(await endowments.snaps.request()).toBe(true);
+    expect(await endowments.snap.request()).toBe(true);
   });
 
   it('includes mock ethereum provider', async () => {
