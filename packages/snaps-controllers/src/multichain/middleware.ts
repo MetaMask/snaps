@@ -1,16 +1,16 @@
 import {
-  createAsyncMiddleware,
-  JsonRpcMiddleware,
-  JsonRpcRequest,
-} from 'json-rpc-engine';
-import { assert } from '@metamask/utils';
-import {
   assertIsConnectArguments,
   assertIsMultiChainRequest,
   ConnectArguments,
   Session,
   MultiChainRequest,
 } from '@metamask/snaps-utils';
+import { assert } from '@metamask/utils';
+import {
+  createAsyncMiddleware,
+  JsonRpcMiddleware,
+  JsonRpcRequest,
+} from 'json-rpc-engine';
 
 /**
  * Creates a middleware that handles requests to the multichain controller.

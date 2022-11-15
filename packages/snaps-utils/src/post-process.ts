@@ -1,3 +1,4 @@
+import { transformSync, Node, Visitor, template, PluginObj } from '@babel/core';
 import {
   binaryExpression,
   Expression,
@@ -7,7 +8,6 @@ import {
   templateElement,
   templateLiteral,
 } from '@babel/types';
-import { transformSync, Node, Visitor, template, PluginObj } from '@babel/core';
 
 /**
  * Source map declaration taken from `@babel/core`. Babel doesn't export the
@@ -352,13 +352,13 @@ export function postProcessBundle(
           // Only update the node if something changed.
           if (tokens[0].length <= 1) {
             return [
-              [...elements, quasi as TemplateElement],
+              [...elements, quasi],
               [...expressions, node.expressions[index] as Expression],
             ];
           }
 
           return [
-            [...elements, ...(tokens[0] as TemplateElement[])],
+            [...elements, ...tokens[0]],
             [
               ...expressions,
               ...tokens[1],

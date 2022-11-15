@@ -1,12 +1,13 @@
+import { StreamProvider } from '@metamask/providers';
 import { SnapsGlobalObject } from '@metamask/snaps-types';
 import { hasProperty } from '@metamask/utils';
-import { StreamProvider } from '@metamask/providers';
+
 import { rootRealmGlobal } from '../globalObject';
+import crypto from './crypto';
 import interval from './interval';
+import math from './math';
 import network from './network';
 import timeout from './timeout';
-import crypto from './crypto';
-import math from './math';
 
 type EndowmentFactoryResult = {
   /**

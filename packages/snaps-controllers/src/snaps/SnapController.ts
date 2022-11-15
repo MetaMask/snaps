@@ -17,6 +17,7 @@ import {
   SubjectPermissions,
   ValidPermission,
 } from '@metamask/controllers';
+import { caveatMappers } from '@metamask/rpc-methods';
 import {
   assertIsSnapManifest,
   BlockedSnapInfo,
@@ -67,11 +68,9 @@ import {
 } from '@metamask/utils';
 import { createMachine, interpret, StateMachine } from '@xstate/fsm';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
-
 import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
 
-import { caveatMappers } from '@metamask/rpc-methods';
 import { forceStrict, validateMachine } from '../fsm';
 import {
   ExecuteSnapAction,
@@ -84,9 +83,8 @@ import {
 import { hasTimedOut, setDiff, withTimeout } from '../utils';
 import { endowmentCaveatMappers, SnapEndowments } from './endowments';
 import { RequestQueue } from './RequestQueue';
-import { fetchNpmSnap } from './utils';
-
 import { Timer } from './Timer';
+import { fetchNpmSnap } from './utils';
 
 export const controllerName = 'SnapController';
 
@@ -572,7 +570,7 @@ const defaultState: SnapControllerState = {
  * @returns Object with serializable snap properties.
  */
 function truncateSnap(snap: Snap): TruncatedSnap {
-  return Object.keys(snap).reduce((serialized, key) => {
+  return Object.keys(snap).reduce<Partial<TruncatedSnap>>((serialized, key) => {
     if (TRUNCATED_SNAP_PROPERTIES.has(key as any)) {
       serialized[key as keyof TruncatedSnap] = snap[
         key as keyof TruncatedSnap
@@ -580,7 +578,7 @@ function truncateSnap(snap: Snap): TruncatedSnap {
     }
 
     return serialized;
-  }, {} as Partial<TruncatedSnap>) as TruncatedSnap;
+  }, {});
 }
 
 const name = 'SnapController';
@@ -612,12 +610,12 @@ export class SnapController extends BaseController<
   #maxIdleTime: number;
 
   // This property cannot be hash private yet because of tests.
-  private maxRequestTime: number;
+  private readonly maxRequestTime: number;
 
   #npmRegistryUrl?: string;
 
   // This property cannot be hash private yet because of tests.
-  private snapsRuntimeData: Map<SnapId, SnapRuntimeData>;
+  private readonly snapsRuntimeData: Map<SnapId, SnapRuntimeData>;
 
   #getAppKey: GetAppKey;
 
@@ -814,7 +812,7 @@ export class SnapController extends BaseController<
   #registerMessageHandlers(): void {
     this.messagingSystem.registerActionHandler(
       `${controllerName}:clearSnapState`,
-      (...args) => this.clearSnapState(...args),
+      async (...args) => this.clearSnapState(...args),
     );
 
     this.messagingSystem.registerActionHandler(
@@ -824,12 +822,12 @@ export class SnapController extends BaseController<
 
     this.messagingSystem.registerActionHandler(
       `${controllerName}:getSnapState`,
-      (...args) => this.getSnapState(...args),
+      async (...args) => this.getSnapState(...args),
     );
 
     this.messagingSystem.registerActionHandler(
       `${controllerName}:handleRequest`,
-      (...args) => this.handleRequest(...args),
+      async (...args) => this.handleRequest(...args),
     );
 
     this.messagingSystem.registerActionHandler(
@@ -839,12 +837,12 @@ export class SnapController extends BaseController<
 
     this.messagingSystem.registerActionHandler(
       `${controllerName}:updateBlockedSnaps`,
-      () => this.updateBlockedSnaps(),
+      async () => this.updateBlockedSnaps(),
     );
 
     this.messagingSystem.registerActionHandler(
       `${controllerName}:updateSnapState`,
-      (...args) => this.updateSnapState(...args),
+      async (...args) => this.updateSnapState(...args),
     );
 
     this.messagingSystem.registerActionHandler(
@@ -854,27 +852,27 @@ export class SnapController extends BaseController<
 
     this.messagingSystem.registerActionHandler(
       `${controllerName}:disable`,
-      (...args) => this.disableSnap(...args),
+      async (...args) => this.disableSnap(...args),
     );
 
     this.messagingSystem.registerActionHandler(
       `${controllerName}:remove`,
-      (...args) => this.removeSnap(...args),
+      async (...args) => this.removeSnap(...args),
     );
 
     this.messagingSystem.registerActionHandler(
       `${controllerName}:getPermitted`,
-      (...args) => this.getPermittedSnaps(...args),
+      async (...args) => this.getPermittedSnaps(...args),
     );
 
     this.messagingSystem.registerActionHandler(
       `${controllerName}:install`,
-      (...args) => this.installSnaps(...args),
+      async (...args) => this.installSnaps(...args),
     );
 
     this.messagingSystem.registerActionHandler(
       `${controllerName}:removeSnapError`,
-      (...args) => this.removeSnapError(...args),
+      async (...args) => this.removeSnapError(...args),
     );
 
     this.messagingSystem.registerActionHandler(
@@ -921,7 +919,7 @@ export class SnapController extends BaseController<
 
     await Promise.all(
       Object.entries(blockedSnaps).map(
-        ([snapId, { blocked, ...blockData }]) => {
+        async ([snapId, { blocked, ...blockData }]) => {
           if (blocked) {
             return this.#blockSnap(snapId, blockData);
           }
@@ -1033,7 +1031,7 @@ export class SnapController extends BaseController<
             this.#maxIdleTime &&
             timeSince(runtime.lastRequest) > this.#maxIdleTime,
         )
-        .map(([snapId]) => this.stopSnap(snapId, SnapStatusEvents.Stop)),
+        .map(async ([snapId]) => this.stopSnap(snapId, SnapStatusEvents.Stop)),
     );
   }
 
@@ -1127,7 +1125,7 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap to disable.
    * @returns A promise that resolves once the snap has been disabled.
    */
-  disableSnap(snapId: SnapId): Promise<void> {
+  async disableSnap(snapId: SnapId): Promise<void> {
     if (!this.has(snapId)) {
       throw new Error(`Snap "${snapId}" not found.`);
     }
@@ -1490,7 +1488,7 @@ export class SnapController extends BaseController<
         'PermissionController:getPermissions',
         origin,
       )) ?? {},
-    ).reduce((permittedSnaps, perm) => {
+    ).reduce<InstallSnapsResult>((permittedSnaps, perm) => {
       if (perm.parentCapability.startsWith(SNAP_PREFIX)) {
         const snapId = perm.parentCapability.replace(SNAP_PREFIX_REGEX, '');
         const snap = this.get(snapId);
@@ -1501,7 +1499,7 @@ export class SnapController extends BaseController<
         }
       }
       return permittedSnaps;
-    }, {} as InstallSnapsResult);
+    }, {});
   }
 
   /**
@@ -2277,7 +2275,7 @@ export class SnapController extends BaseController<
         );
       }
 
-      if (this.isRunning(snapId) === false) {
+      if (!this.isRunning(snapId)) {
         let localStartPromise = startPromises.get(snapId);
         if (!localStartPromise) {
           localStartPromise = this.startSnap(snapId);

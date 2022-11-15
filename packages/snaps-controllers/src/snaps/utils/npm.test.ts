@@ -1,7 +1,8 @@
-import { readFile } from 'fs/promises';
 import { createReadStream } from 'fs';
-import path from 'path';
+import { readFile } from 'fs/promises';
 import fetchMock from 'jest-fetch-mock';
+import path from 'path';
+
 import { fetchNpmSnap } from './npm';
 
 describe('fetchNpmSnap', () => {

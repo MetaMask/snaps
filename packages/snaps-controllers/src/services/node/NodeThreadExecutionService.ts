@@ -1,8 +1,9 @@
-import { Worker } from 'worker_threads';
 import {
   ThreadParentMessageStream,
   BasePostMessageStream,
 } from '@metamask/post-message-stream';
+import { Worker } from 'worker_threads';
+
 import { AbstractExecutionService, Job } from '..';
 
 export class NodeThreadExecutionService extends AbstractExecutionService<Worker> {

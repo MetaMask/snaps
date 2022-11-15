@@ -1,6 +1,5 @@
 import { RestrictedControllerMessenger } from '@metamask/controllers';
 import { SnapId, SnapRpcHookArgs } from '@metamask/snaps-utils';
-
 import { Json } from '@metamask/types';
 
 type TerminateSnap = (snapId: string) => Promise<void>;

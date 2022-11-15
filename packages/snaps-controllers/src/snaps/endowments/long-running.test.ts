@@ -1,6 +1,7 @@
 import { PermissionType } from '@metamask/controllers';
-import { longRunningEndowmentBuilder } from './long-running';
+
 import { SnapEndowments } from '.';
+import { longRunningEndowmentBuilder } from './long-running';
 
 describe('endowment:long-running', () => {
   it('builds the expected permission specification', () => {

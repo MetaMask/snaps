@@ -1,5 +1,6 @@
 import fs from 'fs';
 import pathUtils from 'path';
+
 import {
   booleanStringToBoolean,
   logError,
@@ -138,16 +139,16 @@ describe('misc', () => {
   describe('setSnapGlobals', () => {
     it('sets global variables correctly', () => {
       setSnapGlobals(exampleArgv);
-      expect(global.snaps.isWatching).toStrictEqual(true);
-      expect(global.snaps.verboseErrors).toStrictEqual(true);
-      expect(global.snaps.suppressWarnings).toStrictEqual(true);
+      expect(global.snaps.isWatching).toBe(true);
+      expect(global.snaps.verboseErrors).toBe(true);
+      expect(global.snaps.suppressWarnings).toBe(true);
     });
 
     it('does not set global variables incorrectly', () => {
       setSnapGlobals(defaultArgv);
-      expect(global.snaps.isWatching).toStrictEqual(false);
-      expect(global.snaps.verboseErrors).toStrictEqual(true);
-      expect(global.snaps.suppressWarnings).toStrictEqual(false);
+      expect(global.snaps.isWatching).toBe(false);
+      expect(global.snaps.verboseErrors).toBe(true);
+      expect(global.snaps.suppressWarnings).toBe(false);
     });
 
     it('does not set global variables if they are not in argv', () => {
@@ -295,13 +296,13 @@ describe('misc', () => {
 
   describe('trimPathString', () => {
     it('trims a given path string', () => {
-      expect(trimPathString('./hello')).toStrictEqual('hello');
-      expect(trimPathString('hello')).toStrictEqual('hello');
-      expect(trimPathString('hello/')).toStrictEqual('hello');
-      expect(trimPathString('')).toStrictEqual('');
-      expect(trimPathString('hello////')).toStrictEqual('hello');
-      expect(trimPathString('../hello')).toStrictEqual('hello');
-      expect(trimPathString('//////hello')).toStrictEqual('hello');
+      expect(trimPathString('./hello')).toBe('hello');
+      expect(trimPathString('hello')).toBe('hello');
+      expect(trimPathString('hello/')).toBe('hello');
+      expect(trimPathString('')).toBe('');
+      expect(trimPathString('hello////')).toBe('hello');
+      expect(trimPathString('../hello')).toBe('hello');
+      expect(trimPathString('//////hello')).toBe('hello');
     });
   });
 });

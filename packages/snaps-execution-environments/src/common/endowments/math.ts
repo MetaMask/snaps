@@ -20,7 +20,7 @@ function createMath() {
     }
 
     return { ...target, [key]: rootRealmGlobal.Math[key] };
-  }, {} as Math);
+  }, {});
 
   return {
     Math: {

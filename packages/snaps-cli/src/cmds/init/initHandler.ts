@@ -1,5 +1,3 @@
-import pathUtils from 'path';
-import { promises as fs } from 'fs';
 import {
   NpmSnapFileNames,
   SnapManifest,
@@ -7,6 +5,9 @@ import {
   satisfiesVersionRange,
   NpmSnapPackageJson,
 } from '@metamask/snaps-utils';
+import { promises as fs } from 'fs';
+import pathUtils from 'path';
+
 import { YargsArgs } from '../../types/yargs';
 import {
   cloneTemplate,

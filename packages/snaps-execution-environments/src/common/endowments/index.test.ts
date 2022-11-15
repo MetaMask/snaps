@@ -1,4 +1,5 @@
 import fetchMock from 'jest-fetch-mock';
+
 import { createEndowments, isConstructor } from '.';
 
 const mockSnapAPI = { foo: Symbol('bar') };
@@ -224,7 +225,7 @@ describe('Endowment utils', () => {
       setTimeout(() => resolve('OK'), 1000);
       jest.runAllTimers();
 
-      expect(await promise).toStrictEqual('OK');
+      expect(await promise).toBe('OK');
       teardown();
       jest.runAllTimers();
     });

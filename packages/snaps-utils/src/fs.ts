@@ -1,6 +1,7 @@
+import { Json } from '@metamask/utils';
 import { promises as fs } from 'fs';
 import pathUtils from 'path';
-import { Json } from '@metamask/utils';
+
 import { NpmSnapFileNames } from './types';
 
 /**

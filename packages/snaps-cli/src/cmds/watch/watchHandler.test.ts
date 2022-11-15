@@ -1,13 +1,14 @@
-import EventEmitter from 'events';
-import path from 'path';
-import http from 'http';
-import chokidar from 'chokidar';
 import * as snapUtils from '@metamask/snaps-utils';
+import chokidar from 'chokidar';
+import EventEmitter from 'events';
+import http from 'http';
+import path from 'path';
+
+import watch from '.';
 import * as miscUtils from '../../utils/misc';
 import * as build from '../build/bundle';
 import * as evalModule from '../eval/evalHandler';
 import * as manifest from '../manifest/manifestHandler';
-import watch from '.';
 
 jest.mock('@metamask/snaps-utils', () => ({
   ...jest.requireActual('@metamask/snaps-utils'),

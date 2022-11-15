@@ -1,6 +1,7 @@
 import { PermissionType } from '@metamask/controllers';
-import { networkAccessEndowmentBuilder } from './network-access';
+
 import { SnapEndowments } from './enum';
+import { networkAccessEndowmentBuilder } from './network-access';
 
 describe('endowment:network-access', () => {
   it('builds the expected permission specification', () => {

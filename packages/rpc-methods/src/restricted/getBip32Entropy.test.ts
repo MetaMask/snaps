@@ -1,4 +1,5 @@
 import { SIP_6_MAGIC_VALUE, SnapCaveatType } from '@metamask/snaps-utils';
+
 import {
   getBip32EntropyBuilder,
   getBip32EntropyCaveatMapper,

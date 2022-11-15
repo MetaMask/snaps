@@ -1,4 +1,5 @@
 import yargs from 'yargs';
+
 import builders from '../../builders';
 import { YargsArgs } from '../../types/yargs';
 import { evalHandler } from './evalHandler';
@@ -9,5 +10,5 @@ export = {
   builder: (yarg: yargs.Argv) => {
     yarg.option('bundle', builders.bundle);
   },
-  handler: (argv: YargsArgs) => evalHandler(argv),
+  handler: async (argv: YargsArgs) => evalHandler(argv),
 };

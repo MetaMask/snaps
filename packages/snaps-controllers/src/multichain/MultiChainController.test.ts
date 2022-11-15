@@ -10,6 +10,7 @@ import {
   getSnapManifest,
   getPersistedSnapObject,
 } from '@metamask/snaps-utils/test-utils';
+
 import { SnapEndowments } from '../snaps';
 import {
   MOCK_CONNECT_ARGUMENTS,
@@ -53,7 +54,7 @@ describe('MultiChainController', () => {
           ) {
             return { [SnapEndowments.Keyring]: MOCK_KEYRING_PERMISSION } as any;
           }
-          const approvalRequest = args[0] as any;
+          const approvalRequest = args[0];
           if (
             method === 'ApprovalController:addRequest' &&
             approvalRequest?.type === 'multichain_connect'
@@ -125,7 +126,7 @@ describe('MultiChainController', () => {
           ) {
             return { [SnapEndowments.Keyring]: MOCK_KEYRING_PERMISSION } as any;
           }
-          const approvalRequest = args[0] as any;
+          const approvalRequest = args[0];
           if (
             method === 'ApprovalController:addRequest' &&
             approvalRequest?.type === 'multichain_connect'
@@ -294,7 +295,7 @@ describe('MultiChainController', () => {
           ) {
             return { [SnapEndowments.Keyring]: MOCK_KEYRING_PERMISSION } as any;
           }
-          const approvalRequest = args[0] as any;
+          const approvalRequest = args[0];
           if (
             method === 'ApprovalController:addRequest' &&
             approvalRequest?.type === 'multichain_connect'
@@ -467,7 +468,7 @@ describe('MultiChainController', () => {
           ) {
             return { [SnapEndowments.Keyring]: MOCK_KEYRING_PERMISSION } as any;
           }
-          const approvalRequest = args[0] as any;
+          const approvalRequest = args[0];
           if (
             method === 'ApprovalController:addRequest' &&
             approvalRequest?.type === 'multichain_connect'

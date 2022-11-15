@@ -195,7 +195,6 @@ export type Mutable<
   TargetKey extends string,
 > = {
   -readonly [Key in keyof Pick<T, TargetKey>]: T[Key];
-} &
-  {
-    [Key in keyof Omit<T, TargetKey>]: T[Key];
-  };
+} & {
+  [Key in keyof Omit<T, TargetKey>]: T[Key];
+};

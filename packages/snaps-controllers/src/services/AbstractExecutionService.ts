@@ -1,13 +1,10 @@
-import { Duplex } from 'stream';
-
 import ObjectMultiplex from '@metamask/object-multiplex';
+import { BasePostMessageStream } from '@metamask/post-message-stream';
 import {
   SnapRpcHook,
   SnapRpcHookArgs,
   SNAP_STREAM_NAMES,
 } from '@metamask/snaps-utils';
-
-import { BasePostMessageStream } from '@metamask/post-message-stream';
 import {
   Duration,
   isJsonRpcNotification,
@@ -24,6 +21,8 @@ import {
 import { createStreamMiddleware } from 'json-rpc-middleware-stream';
 import { nanoid } from 'nanoid';
 import pump from 'pump';
+import { Duplex } from 'stream';
+
 import { hasTimedOut, withTimeout } from '../utils';
 import {
   ExecutionService,
@@ -64,7 +63,7 @@ export abstract class AbstractExecutionService<WorkerType>
   protected jobs: Map<string, Job<WorkerType>>;
 
   // Cannot be hash private yet because of tests.
-  private setupSnapProvider: SetupSnapProvider;
+  private readonly setupSnapProvider: SetupSnapProvider;
 
   #snapToJobMap: Map<string, string>;
 
@@ -97,23 +96,23 @@ export abstract class AbstractExecutionService<WorkerType>
   private registerMessageHandlers(): void {
     this.#messenger.registerActionHandler(
       `${controllerName}:handleRpcRequest`,
-      (snapId: string, options: SnapRpcHookArgs) =>
+      async (snapId: string, options: SnapRpcHookArgs) =>
         this.handleRpcRequest(snapId, options),
     );
 
     this.#messenger.registerActionHandler(
       `${controllerName}:executeSnap`,
-      (snapData: SnapExecutionData) => this.executeSnap(snapData),
+      async (snapData: SnapExecutionData) => this.executeSnap(snapData),
     );
 
     this.#messenger.registerActionHandler(
       `${controllerName}:terminateSnap`,
-      (snapId: string) => this.terminateSnap(snapId),
+      async (snapId: string) => this.terminateSnap(snapId),
     );
 
     this.#messenger.registerActionHandler(
       `${controllerName}:terminateAllSnaps`,
-      () => this.terminateAllSnaps(),
+      async () => this.terminateAllSnaps(),
     );
   }
 
@@ -305,7 +304,7 @@ export abstract class AbstractExecutionService<WorkerType>
 
   async terminateAllSnaps() {
     await Promise.all(
-      [...this.jobs.keys()].map((jobId) => this.terminate(jobId)),
+      [...this.jobs.keys()].map(async (jobId) => this.terminate(jobId)),
     );
     this.#snapRpcHooks.clear();
   }

@@ -8,6 +8,7 @@ import {
   CaveatSpecificationConstraint,
   Caveat,
 } from '@metamask/controllers';
+import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   assert,
   hasProperty,
@@ -16,8 +17,8 @@ import {
   Json,
   NonEmptyArray,
 } from '@metamask/utils';
-import { SnapCaveatType } from '@metamask/snaps-utils';
 import { ethErrors } from 'eth-rpc-errors';
+
 import { SnapEndowments } from './enum';
 
 const permissionName = SnapEndowments.TransactionInsight;

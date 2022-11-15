@@ -1,8 +1,8 @@
+import { Json } from '@metamask/utils';
+import deepEqual from 'fast-deep-equal';
 import { promises as fs } from 'fs';
 import pathUtils from 'path';
 
-import { Json } from '@metamask/utils';
-import deepEqual from 'fast-deep-equal';
 import { deepClone } from '../deep-clone';
 import { readSnapJsonFile } from '../fs';
 import { validateNpmSnap } from '../npm';
@@ -278,12 +278,12 @@ export function getWritableManifest(manifest: SnapManifest): SnapManifest {
 
   return keys
     .sort((a, b) => MANIFEST_SORT_ORDER[a] - MANIFEST_SORT_ORDER[b])
-    .reduce(
+    .reduce<SnapManifest>(
       (result, key) => ({
         ...result,
         [key]: manifest[key],
       }),
-      {} as SnapManifest,
+      {},
     );
 }
 

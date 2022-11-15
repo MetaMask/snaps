@@ -1,5 +1,5 @@
-import { promises as fs } from 'fs';
 import childProcess from 'child_process';
+import { promises as fs } from 'fs';
 import pathUtils from 'path';
 
 import { resetFileSystem } from '../../test-utils';
@@ -103,7 +103,7 @@ describe('initUtils', () => {
 
       const result = isGitInstalled();
 
-      expect(result).toStrictEqual(true);
+      expect(result).toBe(true);
       expect(execSyncMock).toHaveBeenCalledTimes(1);
       expect(execSyncMock).toHaveBeenCalledWith('git --version', {
         stdio: 'ignore',
@@ -119,7 +119,7 @@ describe('initUtils', () => {
 
       const result = isGitInstalled();
 
-      expect(result).toStrictEqual(false);
+      expect(result).toBe(false);
       expect(execSyncMock).toHaveBeenCalledTimes(1);
     });
   });
@@ -132,7 +132,7 @@ describe('initUtils', () => {
 
       const result = isInGitRepository('foo');
 
-      expect(result).toStrictEqual(true);
+      expect(result).toBe(true);
       expect(execSyncMock).toHaveBeenCalledTimes(1);
       expect(execSyncMock).toHaveBeenCalledWith(
         'git rev-parse --is-inside-work-tree',
@@ -152,7 +152,7 @@ describe('initUtils', () => {
 
       const result = isInGitRepository('foo');
 
-      expect(result).toStrictEqual(false);
+      expect(result).toBe(false);
       expect(execSyncMock).toHaveBeenCalledTimes(1);
     });
   });

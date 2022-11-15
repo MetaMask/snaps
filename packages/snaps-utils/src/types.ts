@@ -15,6 +15,7 @@ import {
   string,
   type,
 } from 'superstruct';
+
 import { SnapManifest } from './manifest/validation';
 
 export enum NpmSnapFileNames {

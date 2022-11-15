@@ -1,5 +1,10 @@
 import { ControllerMessenger } from '@metamask/controllers';
 import { getPersistedSnapObject } from '@metamask/snaps-utils/test-utils';
+
+import {
+  CronjobControllerActions,
+  CronjobControllerEvents,
+} from '../cronjob/CronjobController';
 import {
   AllowedActions,
   AllowedEvents,
@@ -10,10 +15,6 @@ import {
   SnapControllerEvents,
   SnapEndowments,
 } from '../snaps';
-import {
-  CronjobControllerActions,
-  CronjobControllerEvents,
-} from '../cronjob/CronjobController';
 import { getNodeEES, getNodeEESMessenger } from './execution-environment';
 
 export const getControllerMessenger = () =>
@@ -86,7 +87,7 @@ export const getSnapControllerMessenger = (
       ) {
         return false;
       } else if (method === 'ApprovalController:addRequest') {
-        return (args[0] as any).requestData;
+        return args[0].requestData;
       }
       return true;
     });
@@ -197,13 +198,12 @@ export const getSnapControllerWithEES = (
 export const getPersistedSnapsState = (
   ...snaps: PersistedSnapControllerState['snaps'][string][]
 ): PersistedSnapControllerState['snaps'] => {
-  return (snaps.length > 0 ? snaps : [getPersistedSnapObject()]).reduce(
-    (snapsState, snapObject) => {
-      snapsState[snapObject.id] = snapObject;
-      return snapsState;
-    },
-    {} as PersistedSnapControllerState['snaps'],
-  );
+  return (snaps.length > 0 ? snaps : [getPersistedSnapObject()]).reduce<
+    PersistedSnapControllerState['snaps']
+  >((snapsState, snapObject) => {
+    snapsState[snapObject.id] = snapObject;
+    return snapsState;
+  }, {});
 };
 
 // Mock controller messenger for Cronjob Controller

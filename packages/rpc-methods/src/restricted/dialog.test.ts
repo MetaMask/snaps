@@ -1,4 +1,5 @@
 import { PermissionType } from '@metamask/controllers';
+
 import {
   dialogBuilder,
   DialogType,

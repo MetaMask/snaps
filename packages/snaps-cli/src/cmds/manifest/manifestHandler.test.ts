@@ -1,4 +1,5 @@
 import { checkManifest, CheckManifestResult } from '@metamask/snaps-utils';
+
 import { YargsArgs } from '../../types/yargs';
 import { manifestHandler } from './manifestHandler';
 

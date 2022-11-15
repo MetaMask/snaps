@@ -14,7 +14,7 @@ describe('Utils', () => {
 
     it('will return an Error object with the message of the original error if it was a string', () => {
       const err = constructError('some reason');
-      expect(err?.message).toStrictEqual('some reason');
+      expect(err?.message).toBe('some reason');
     });
   });
 });
