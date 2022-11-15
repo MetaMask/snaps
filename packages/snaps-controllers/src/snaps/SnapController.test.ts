@@ -1,5 +1,3 @@
-import { Duplex } from 'stream';
-
 import passworder from '@metamask/browser-passworder';
 import {
   Caveat,
@@ -32,6 +30,8 @@ import fetchMock from 'jest-fetch-mock';
 import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import pump from 'pump';
+import { Duplex } from 'stream';
+
 import { NodeThreadExecutionService, setupMultiplex } from '../services';
 import {
   ExecutionEnvironmentStub,
@@ -127,7 +127,7 @@ describe('SnapController', () => {
         id: 1,
       },
     });
-    expect(result).toStrictEqual('test1');
+    expect(result).toBe('test1');
     snapController.destroy();
     await service.terminateAllSnaps();
   });
@@ -162,7 +162,7 @@ describe('SnapController', () => {
         id: 1,
       },
     });
-    expect(result).toStrictEqual('test1');
+    expect(result).toBe('test1');
     snapController.destroy();
   });
 
@@ -186,7 +186,7 @@ describe('SnapController', () => {
       if (method === 'PermissionController:hasPermission') {
         return true;
       } else if (method === 'ApprovalController:addRequest') {
-        return (args[0] as any).requestData;
+        return args[0].requestData;
       } else if (method === 'PermissionController:getEndowments') {
         return ['fooEndowment'] as any;
       }
@@ -295,11 +295,11 @@ describe('SnapController', () => {
       }),
     );
 
-    expect(secondSnapController.isRunning('npm:foo')).toStrictEqual(false);
+    expect(secondSnapController.isRunning('npm:foo')).toBe(false);
     await secondSnapController.startSnap('npm:foo');
 
     expect(secondSnapController.state.snaps['npm:foo']).toBeDefined();
-    expect(secondSnapController.isRunning('npm:foo')).toStrictEqual(true);
+    expect(secondSnapController.isRunning('npm:foo')).toBe(true);
     firstSnapController.destroy();
     secondSnapController.destroy();
   });
@@ -323,7 +323,7 @@ describe('SnapController', () => {
 
     const arrayOfErrors = Object.entries(snapController.state.snapErrors);
 
-    expect(arrayOfErrors.length > 0).toStrictEqual(true);
+    expect(arrayOfErrors.length > 0).toBe(true);
 
     snapController.removeSnapError(arrayOfErrors[0][0]);
 
@@ -415,7 +415,7 @@ describe('SnapController', () => {
 
     await delay(300);
 
-    expect(snapController.isRunning(snap.id)).toStrictEqual(false);
+    expect(snapController.isRunning(snap.id)).toBe(false);
     snapController.destroy();
 
     await service.terminateAllSnaps();
@@ -439,7 +439,7 @@ describe('SnapController', () => {
 
     (snapController as any).maxRequestTime = 50;
 
-    (service as any).command = () =>
+    (service as any).command = async () =>
       new Promise((resolve) => {
         setTimeout(resolve, 2000);
       });
@@ -458,7 +458,7 @@ describe('SnapController', () => {
       }),
     ).rejects.toThrow(/request timed out/u);
 
-    expect(snapController.state.snaps[snap.id].status).toStrictEqual('crashed');
+    expect(snapController.state.snaps[snap.id].status).toBe('crashed');
     snapController.destroy();
 
     await service.terminateAllSnaps();
@@ -478,10 +478,10 @@ describe('SnapController', () => {
     const snap = snapController.getExpect(MOCK_SNAP_ID);
 
     await snapController.startSnap(snap.id);
-    expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
+    expect(snapController.state.snaps[snap.id].status).toBe('running');
 
     await snapController.stopSnap(snap.id);
-    expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
+    expect(snapController.state.snaps[snap.id].status).toBe('stopped');
 
     snapController.destroy();
     await service.terminateAllSnaps();
@@ -501,10 +501,10 @@ describe('SnapController', () => {
     const snap = snapController.getExpect(MOCK_SNAP_ID);
 
     await snapController.startSnap(snap.id);
-    expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
+    expect(snapController.state.snaps[snap.id].status).toBe('running');
 
     await snapController.stopSnap(snap.id);
-    expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
+    expect(snapController.state.snaps[snap.id].status).toBe('stopped');
 
     const results = await snapController.handleRequest({
       snapId: snap.id,
@@ -517,7 +517,7 @@ describe('SnapController', () => {
         id: 1,
       },
     });
-    expect(results).toStrictEqual('test1');
+    expect(results).toBe('test1');
 
     snapController.destroy();
     await service.terminateAllSnaps();
@@ -542,7 +542,7 @@ describe('SnapController', () => {
         ) {
           return false;
         } else if (method === 'ApprovalController:addRequest') {
-          return (args[0] as any).requestData;
+          return args[0].requestData;
         }
         return true;
       });
@@ -814,12 +814,12 @@ describe('SnapController', () => {
     );
 
     await snapController.startSnap(snap.id);
-    expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
+    expect(snapController.state.snaps[snap.id].status).toBe('running');
 
     await snapController.stopSnap(snap.id);
 
     await snapController.disableSnap(snap.id);
-    expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
+    expect(snapController.state.snaps[snap.id].status).toBe('stopped');
 
     await expect(snapController.startSnap(snap.id)).rejects.toThrow(
       `Snap "${MOCK_SNAP_ID}" is disabled.`,
@@ -839,13 +839,13 @@ describe('SnapController', () => {
       }),
     ).rejects.toThrow(`Snap "${MOCK_SNAP_ID}" is disabled.`);
 
-    expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
-    expect(snapController.state.snaps[snap.id].enabled).toStrictEqual(false);
+    expect(snapController.state.snaps[snap.id].status).toBe('stopped');
+    expect(snapController.state.snaps[snap.id].enabled).toBe(false);
 
     snapController.enableSnap(snap.id);
-    expect(snapController.state.snaps[snap.id].enabled).toStrictEqual(true);
+    expect(snapController.state.snaps[snap.id].enabled).toBe(true);
 
-    expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
+    expect(snapController.state.snaps[snap.id].status).toBe('stopped');
 
     const result = await snapController.handleRequest({
       snapId: snap.id,
@@ -859,8 +859,8 @@ describe('SnapController', () => {
       },
     });
 
-    expect(result).toStrictEqual('test1');
-    expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
+    expect(result).toBe('test1');
+    expect(snapController.state.snaps[snap.id].status).toBe('running');
 
     snapController.destroy();
     await service.terminateAllSnaps();
@@ -899,7 +899,7 @@ describe('SnapController', () => {
     const snap = snapController.getExpect(MOCK_SNAP_ID);
 
     await snapController.startSnap(snap.id);
-    expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
+    expect(snapController.state.snaps[snap.id].status).toBe('running');
 
     // We set the maxRequestTime to a low enough value for it to time out
     (snapController as any).maxRequestTime = 50;
@@ -917,7 +917,7 @@ describe('SnapController', () => {
         },
       }),
     ).rejects.toThrow(/request timed out/u);
-    expect(snapController.state.snaps[snap.id].status).toStrictEqual('crashed');
+    expect(snapController.state.snaps[snap.id].status).toBe('crashed');
 
     snapController.destroy();
     await service.terminateAllSnaps();
@@ -958,7 +958,7 @@ describe('SnapController', () => {
       ) {
         return ['ethereum'];
       }
-      return originalCall(method, ...args) as any;
+      return originalCall(method, ...args);
     });
 
     const [snapController, service] = getSnapControllerWithEES(options);
@@ -993,7 +993,7 @@ describe('SnapController', () => {
       });
 
     await snapController.startSnap(snap.id);
-    expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
+    expect(snapController.state.snaps[snap.id].status).toBe('running');
 
     // Max request time should be shorter than eth_blockNumber takes to respond
     (snapController as any).maxRequestTime = 300;
@@ -1052,7 +1052,7 @@ describe('SnapController', () => {
       ) {
         return ['ethereum'];
       }
-      return originalCall(method, ...args) as any;
+      return originalCall(method, ...args);
     });
 
     const [snapController, service] = getSnapControllerWithEES(options);
@@ -1085,7 +1085,7 @@ describe('SnapController', () => {
       });
 
     await snapController.startSnap(snap.id);
-    expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
+    expect(snapController.state.snaps[snap.id].status).toBe('running');
 
     // Max request time should be shorter than eth_blockNumber takes to respond
     (snapController as any).maxRequestTime = 300;
@@ -1136,7 +1136,7 @@ describe('SnapController', () => {
     const snap = snapController.getExpect(MOCK_SNAP_ID);
 
     await snapController.startSnap(snap.id);
-    expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
+    expect(snapController.state.snaps[snap.id].status).toBe('running');
 
     // We set the maxRequestTime to a low enough value for it to time out if it werent a long running snap
     (snapController as any).maxRequestTime = 50;
@@ -1163,7 +1163,7 @@ describe('SnapController', () => {
       // Race the promises to check that handlerPromise does not time out
       await Promise.race([handlerPromise, timeoutPromise]),
     ).toBe(true);
-    expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
+    expect(snapController.state.snaps[snap.id].status).toBe('running');
 
     snapController.destroy();
     await service.terminateAllSnaps();
@@ -1224,7 +1224,7 @@ describe('SnapController', () => {
     const snap = snapController.getExpect(MOCK_SNAP_ID);
 
     await snapController.startSnap(snap.id);
-    expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
+    expect(snapController.state.snaps[snap.id].status).toBe('running');
 
     options.rootMessenger.call(
       'SnapController:incrementActiveReferences',
@@ -1250,7 +1250,7 @@ describe('SnapController', () => {
     });
 
     // Should still be running after idle timeout
-    expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
+    expect(snapController.state.snaps[snap.id].status).toBe('running');
 
     await options.rootMessenger.call(
       'SnapController:decrementActiveReferences',
@@ -1262,7 +1262,7 @@ describe('SnapController', () => {
     });
 
     // Should be terminated by idle timeout now
-    expect(snapController.state.snaps[snap.id].status).toStrictEqual('stopped');
+    expect(snapController.state.snaps[snap.id].status).toBe('stopped');
 
     snapController.destroy();
     await service.terminateAllSnaps();
@@ -1344,7 +1344,7 @@ describe('SnapController', () => {
     const snap = snapController.getExpect(MOCK_SNAP_ID);
 
     await snapController.startSnap(snap.id);
-    expect(snapController.state.snaps[snap.id].status).toStrictEqual('running');
+    expect(snapController.state.snaps[snap.id].status).toBe('running');
 
     await expect(
       snapController.handleRequest({
@@ -1359,7 +1359,7 @@ describe('SnapController', () => {
         },
       }),
     ).rejects.toThrow(/request timed out/u);
-    expect(snapController.state.snaps[snap.id].status).toStrictEqual('crashed');
+    expect(snapController.state.snaps[snap.id].status).toBe('crashed');
 
     await snapController.removeSnap(snap.id);
 
@@ -1641,7 +1641,7 @@ describe('SnapController', () => {
           if (method === 'PermissionController:hasPermission') {
             return true;
           } else if (method === 'ApprovalController:addRequest') {
-            return (args[0] as any).requestData;
+            return args[0].requestData;
           } else if (method === 'PermissionController:getPermissions') {
             return {};
           }
@@ -1747,7 +1747,7 @@ describe('SnapController', () => {
           if (method === 'PermissionController:hasPermission') {
             return true;
           } else if (method === 'ApprovalController:addRequest') {
-            return (args[0] as any).requestData;
+            return args[0].requestData;
           } else if (method === 'PermissionController:getPermissions') {
             return {};
           }
@@ -1769,7 +1769,7 @@ describe('SnapController', () => {
       await snapController.installSnaps(MOCK_ORIGIN, {
         [MOCK_LOCAL_SNAP_ID]: {},
       });
-      expect(snapController.isRunning(MOCK_LOCAL_SNAP_ID)).toStrictEqual(true);
+      expect(snapController.isRunning(MOCK_LOCAL_SNAP_ID)).toBe(true);
 
       const result = await snapController.installSnaps(MOCK_ORIGIN, {
         [MOCK_LOCAL_SNAP_ID]: {},
@@ -1917,7 +1917,7 @@ describe('SnapController', () => {
           if (method === 'PermissionController:hasPermission') {
             return true;
           } else if (method === 'ApprovalController:addRequest') {
-            return (args[0] as any).requestData;
+            return args[0].requestData;
           } else if (method === 'PermissionController:getPermissions') {
             return {};
           }
@@ -2172,7 +2172,7 @@ describe('SnapController', () => {
         if (method === 'PermissionController:hasPermission') {
           return true;
         } else if (method === 'ApprovalController:addRequest') {
-          return (args[0] as any).requestData;
+          return args[0].requestData;
         } else if (method === 'PermissionController:getPermissions') {
           return {};
         }
@@ -2287,7 +2287,7 @@ describe('SnapController', () => {
           if (method === 'PermissionController:hasPermission') {
             return true;
           } else if (method === 'ApprovalController:addRequest') {
-            return (args[0] as any).requestData;
+            return args[0].requestData;
           } else if (method === 'PermissionController:getPermissions') {
             return {};
           }
@@ -2479,7 +2479,7 @@ describe('SnapController', () => {
 
   describe('updateSnap', () => {
     it('throws an error on invalid snap id', async () => {
-      await expect(() =>
+      await expect(async () =>
         getSnapController().updateSnap(MOCK_ORIGIN, 'local:foo'),
       ).rejects.toThrow('Snap "local:foo" not found');
     });
@@ -2605,7 +2605,7 @@ describe('SnapController', () => {
         if (method === 'PermissionController:hasPermission') {
           return true;
         } else if (method === 'ApprovalController:addRequest') {
-          return (args[0] as any).requestData;
+          return args[0].requestData;
         } else if (method === 'PermissionController:getPermissions') {
           return {};
         }
@@ -2625,7 +2625,7 @@ describe('SnapController', () => {
       const newSnap = controller.get(MOCK_SNAP_ID);
 
       expect(result).toStrictEqual(newSnapTruncated);
-      expect(newSnap?.version).toStrictEqual('1.1.0');
+      expect(newSnap?.version).toBe('1.1.0');
       expect(newSnap?.versionHistory).toStrictEqual([
         {
           origin: MOCK_ORIGIN,
@@ -2736,7 +2736,7 @@ describe('SnapController', () => {
         if (method === 'PermissionController:hasPermission') {
           return true;
         } else if (method === 'ApprovalController:addRequest') {
-          return (args[0] as any).requestData;
+          return args[0].requestData;
         } else if (method === 'PermissionController:getPermissions') {
           return {};
         }
@@ -2809,7 +2809,7 @@ describe('SnapController', () => {
         MOCK_SNAP_ID,
         SnapEndowments.LongRunning,
       );
-      expect(isRunning).toStrictEqual(true);
+      expect(isRunning).toBe(true);
       expect(stopSnapSpy).toHaveBeenCalledTimes(1);
     });
 
@@ -2854,7 +2854,7 @@ describe('SnapController', () => {
 
       const newSnap = controller.get(MOCK_SNAP_ID);
 
-      expect(newSnap?.version).toStrictEqual('1.0.0');
+      expect(newSnap?.version).toBe('1.0.0');
       expect(fetchSnapSpy).toHaveBeenCalledTimes(1);
       expect(callActionSpy).toHaveBeenCalledTimes(2);
       expect(callActionSpy).toHaveBeenNthCalledWith(
@@ -2943,7 +2943,7 @@ describe('SnapController', () => {
         if (method === 'PermissionController:hasPermission') {
           return true;
         } else if (method === 'ApprovalController:addRequest') {
-          return (args[0] as any).requestData;
+          return args[0].requestData;
         } else if (method === 'PermissionController:getPermissions') {
           return approvedPermissions;
         } else if (
@@ -3232,7 +3232,7 @@ describe('SnapController', () => {
 
     it('throws an error if the specified snap does not exist', () => {
       const snapController = getSnapController();
-      expect(() => snapController.disableSnap(MOCK_SNAP_ID)).toThrow(
+      expect(async () => snapController.disableSnap(MOCK_SNAP_ID)).toThrow(
         `Snap "${MOCK_SNAP_ID}" not found.`,
       );
     });
@@ -3570,7 +3570,7 @@ describe('SnapController', () => {
             origin: 'foo',
             request: {},
           }),
-        ).toStrictEqual(true);
+        ).toBe(true);
         expect(handleRpcRequestSpy).toHaveBeenCalledTimes(1);
       });
     });
@@ -3598,7 +3598,7 @@ describe('SnapController', () => {
           origin: 'foo',
           request: {},
         }),
-      ).toStrictEqual(true);
+      ).toBe(true);
       expect(handleRpcRequestSpy).toHaveBeenCalledTimes(1);
     });
   });

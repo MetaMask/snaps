@@ -1,4 +1,5 @@
 import yargs from 'yargs';
+
 import builders from '../../builders';
 import { YargsArgs } from '../../types/yargs';
 import { build } from '../build/buildHandler';
@@ -10,7 +11,7 @@ export = {
   builder: (yarg: yargs.Argv) => {
     yarg.positional('directory', builders.directory);
   },
-  handler: (argv: YargsArgs) => init(argv),
+  handler: async (argv: YargsArgs) => init(argv),
 };
 
 /**

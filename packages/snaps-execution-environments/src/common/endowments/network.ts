@@ -52,18 +52,18 @@ class ResponseWrapper implements Response {
     return this.#ogResponse.url;
   }
 
-  text() {
+  async text() {
     return withTeardown<string>(this.#ogResponse.text(), this as any);
   }
 
-  arrayBuffer(): Promise<ArrayBuffer> {
+  async arrayBuffer(): Promise<ArrayBuffer> {
     return withTeardown<ArrayBuffer>(
       this.#ogResponse.arrayBuffer(),
       this as any,
     );
   }
 
-  blob(): Promise<Blob> {
+  async blob(): Promise<Blob> {
     return withTeardown<Blob>(this.#ogResponse.blob(), this as any);
   }
 
@@ -72,11 +72,11 @@ class ResponseWrapper implements Response {
     return new ResponseWrapper(newResponse, this.teardownRef);
   }
 
-  formData(): Promise<FormData> {
+  async formData(): Promise<FormData> {
     return withTeardown<FormData>(this.#ogResponse.formData(), this as any);
   }
 
-  json(): Promise<any> {
+  async json(): Promise<any> {
     return withTeardown(this.#ogResponse.json(), this as any);
   }
 }
@@ -215,7 +215,7 @@ const createNetwork = () => {
     }
 
     set onclose(callback: WebSocketCallback | null) {
-      if (this.#isTornDown !== true) {
+      if (!this.#isTornDown) {
         this.#oncloseOriginal = callback;
         this.#socket.onclose = this.#createWrapped(callback);
       }
@@ -230,12 +230,12 @@ const createNetwork = () => {
       this.#socket.onerror = this.#createWrapped(callback);
     }
 
-    get onmessage(): ((this: WebSocket, ev: MessageEvent<any>) => any) | null {
+    get onmessage(): ((this: WebSocket, ev: MessageEvent) => any) | null {
       return this.#onmessageOriginal;
     }
 
     set onmessage(
-      callback: ((this: WebSocket, ev: MessageEvent<any>) => any) | null,
+      callback: ((this: WebSocket, ev: MessageEvent) => any) | null,
     ) {
       this.#onmessageOriginal = callback;
       this.#socket.onmessage = this.#createWrapped(callback);
@@ -315,7 +315,7 @@ const createNetwork = () => {
     ): void;
 
     addEventListener(type: any, listener: any, options?: any): void {
-      if (this.#isTornDown !== true) {
+      if (!this.#isTornDown) {
         if (this.#events[type] === undefined) {
           this.#events[type] = new Map();
         }
@@ -344,20 +344,20 @@ const createNetwork = () => {
         const wrapped = this.#events[type].get(listener);
         if (wrapped !== undefined) {
           this.#events[type].delete(listener);
-          this.#socket.removeEventListener(type as any, wrapped, options);
+          this.#socket.removeEventListener(type, wrapped, options);
         }
       }
     }
 
     dispatchEvent(event: Event): boolean {
       // Can't call close prematurely before the teardown finishes
-      if (event.type !== 'close' || this.#isTornDown !== true) {
+      if (event.type !== 'close' || !this.#isTornDown) {
         return this.#socket.dispatchEvent(event);
       }
       return false;
     }
 
-    #teardownClose() {
+    async #teardownClose() {
       // We clear all close listeners
       this.#socket.onclose = null;
       for (const wrapped of this.#events.close?.values() ?? []) {

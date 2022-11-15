@@ -1,10 +1,13 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
 /// <reference path="../../../../node_modules/ses/index.d.ts" />
-import { Duplex } from 'stream';
 import { StreamProvider } from '@metamask/providers';
-import { createIdRemapMiddleware } from 'json-rpc-engine';
+import { RequestArguments } from '@metamask/providers/dist/BaseProvider';
 import { SnapExports, SnapsGlobalObject } from '@metamask/snaps-types';
-import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
+import {
+  HandlerType,
+  SnapExportsParameters,
+  SNAP_EXPORT_NAMES,
+} from '@metamask/snaps-utils';
 import {
   isObject,
   isValidJson,
@@ -17,14 +20,11 @@ import {
   Json,
   hasProperty,
 } from '@metamask/utils';
-import {
-  HandlerType,
-  SnapExportsParameters,
-  SNAP_EXPORT_NAMES,
-} from '@metamask/snaps-utils';
-
+import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
+import { createIdRemapMiddleware } from 'json-rpc-engine';
+import { Duplex } from 'stream';
 import { validate } from 'superstruct';
-import { RequestArguments } from '@metamask/providers/dist/BaseProvider';
+
 import EEOpenRPCDocument from '../openrpc.json';
 import {
   CommandMethodsMapping,
@@ -93,13 +93,13 @@ const EXECUTION_ENVIRONMENT_METHODS = {
 };
 
 export class BaseSnapExecutor {
-  private snapData: Map<string, SnapData>;
+  private readonly snapData: Map<string, SnapData>;
 
-  private commandStream: Duplex;
+  private readonly commandStream: Duplex;
 
-  private rpcStream: Duplex;
+  private readonly rpcStream: Duplex;
 
-  private methods: CommandMethodsMapping;
+  private readonly methods: CommandMethodsMapping;
 
   private snapErrorHandler?: (event: ErrorEvent) => void;
 

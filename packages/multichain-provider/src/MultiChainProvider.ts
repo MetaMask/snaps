@@ -1,3 +1,4 @@
+import { MetaMaskInpageProvider } from '@metamask/providers';
 import SafeEventEmitter from '@metamask/safe-event-emitter';
 import {
   assertIsConnectArguments,
@@ -12,8 +13,8 @@ import {
   Session,
 } from '@metamask/snaps-utils';
 import { JsonRpcRequest, Json } from '@metamask/utils';
-import { MetaMaskInpageProvider } from '@metamask/providers';
 import { nanoid } from 'nanoid';
+
 import { Provider } from './Provider';
 
 declare global {

@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-unassigned-import
 import 'ses';
-import { Duplex, DuplexOptions, EventEmitter, Readable } from 'stream';
+import { HandlerType } from '@metamask/snaps-utils';
 import {
   assertIsJsonRpcSuccess,
   Json,
@@ -8,7 +8,8 @@ import {
   JsonRpcRequest,
   JsonRpcResponse,
 } from '@metamask/utils';
-import { HandlerType } from '@metamask/snaps-utils';
+import { Duplex, DuplexOptions, EventEmitter, Readable } from 'stream';
+
 import { BaseSnapExecutor } from './BaseSnapExecutor';
 
 const FAKE_ORIGIN = 'origin:foo';
@@ -73,17 +74,17 @@ class TwoWayPassThrough {
 }
 
 class TestSnapExecutor extends BaseSnapExecutor {
-  private commandLeft: Duplex;
+  private readonly commandLeft: Duplex;
 
-  private rpcLeft: Duplex;
+  private readonly rpcLeft: Duplex;
 
-  private commandBuffer: any[] = [];
+  private readonly commandBuffer: any[] = [];
 
-  private rpcBuffer: any[] = [];
+  private readonly rpcBuffer: any[] = [];
 
-  private commandListeners: ((chunk: any) => void)[] = [];
+  private readonly commandListeners: ((chunk: any) => void)[] = [];
 
-  private rpcListeners: ((chunk: any) => void)[] = [];
+  private readonly rpcListeners: ((chunk: any) => void)[] = [];
 
   constructor() {
     const rpc = new TwoWayPassThrough({
@@ -146,7 +147,9 @@ class TestSnapExecutor extends BaseSnapExecutor {
     jest.advanceTimersByTime(1);
   }
 
-  public writeCommand(message: JsonRpcRequest<JsonRpcParams>): Promise<void> {
+  public async writeCommand(
+    message: JsonRpcRequest<JsonRpcParams>,
+  ): Promise<void> {
     return new Promise((resolve, reject) =>
       this.commandLeft.write(message, (error) => {
         if (error) {
@@ -157,7 +160,7 @@ class TestSnapExecutor extends BaseSnapExecutor {
     );
   }
 
-  public readCommand(): Promise<JsonRpcRequest<JsonRpcParams>> {
+  public async readCommand(): Promise<JsonRpcRequest<JsonRpcParams>> {
     const promise = new Promise<JsonRpcRequest<JsonRpcParams>>((resolve) =>
       this.commandListeners.push(resolve),
     );
@@ -179,7 +182,7 @@ class TestSnapExecutor extends BaseSnapExecutor {
     }
   }
 
-  public writeRpc(message: {
+  public async writeRpc(message: {
     name: string;
     data: JsonRpcResponse<Json>;
   }): Promise<void> {
@@ -193,7 +196,7 @@ class TestSnapExecutor extends BaseSnapExecutor {
     );
   }
 
-  public readRpc(): Promise<{
+  public async readRpc(): Promise<{
     name: string;
     data: JsonRpcRequest<JsonRpcParams>;
   }> {

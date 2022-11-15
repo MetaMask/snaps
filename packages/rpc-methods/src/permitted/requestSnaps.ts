@@ -1,16 +1,17 @@
-import { ethErrors } from 'eth-rpc-errors';
 import {
   PermissionConstraint,
   RequestedPermissions,
 } from '@metamask/controllers';
+import { getSnapPermissionName } from '@metamask/snaps-utils';
 import {
   PermittedHandlerExport,
   JsonRpcRequest,
   PendingJsonRpcResponse,
   JsonRpcEngineEndCallback,
 } from '@metamask/types';
-import { getSnapPermissionName } from '@metamask/snaps-utils';
 import { hasProperty, isObject } from '@metamask/utils';
+import { ethErrors } from 'eth-rpc-errors';
+
 import {
   handleInstallSnaps,
   InstallSnapsHook,

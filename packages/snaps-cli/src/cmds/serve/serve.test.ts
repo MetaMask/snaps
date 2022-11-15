@@ -1,10 +1,11 @@
+import * as snapUtils from '@metamask/snaps-utils';
 import EventEmitter from 'events';
 import http from 'http';
 import path from 'path';
 import serveHandler from 'serve-handler';
-import * as snapUtils from '@metamask/snaps-utils';
-import * as serveUtils from './serveUtils';
+
 import serve from '.';
+import * as serveUtils from './serveUtils';
 
 jest.mock('@metamask/snaps-utils', () => ({
   validateDirPath: jest.fn(),
@@ -71,7 +72,7 @@ describe('serve', () => {
       });
       mockServer.emit('close');
       await finishPromise;
-      expect(process.exitCode).toStrictEqual(1);
+      expect(process.exitCode).toBe(1);
     });
 
     it('server handles "error" event correctly', async () => {
@@ -90,7 +91,7 @@ describe('serve', () => {
       });
       mockServer.emit('error');
       await finishPromise;
-      expect(process.exitCode).toStrictEqual(1);
+      expect(process.exitCode).toBe(1);
     });
 
     it('server handles "request" event correctly', async () => {

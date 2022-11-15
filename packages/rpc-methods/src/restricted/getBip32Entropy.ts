@@ -17,6 +17,7 @@ import {
 import { Json, NonEmptyArray, assertStruct } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 import { array, size, type } from 'superstruct';
+
 import { isEqual } from '../utils';
 
 const targetKey = 'snap_getBip32Entropy';
@@ -202,7 +203,7 @@ export function getBip32EntropyImplementation({
 
     // `args.params` is validated by the decorator, so it's safe to assert here.
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const params = args.params!;
+    const { params } = args;
 
     const node = await SLIP10Node.fromDerivationPath({
       curve: params.curve,

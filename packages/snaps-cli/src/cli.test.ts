@@ -1,4 +1,5 @@
 import yargs from 'yargs';
+
 import { cli } from './cli';
 import commands from './cmds';
 
@@ -6,14 +7,13 @@ import commands from './cmds';
 const sanitizeCommand = (command: string) =>
   command.replace(/(\[.*?\])/u, '').trim();
 
-const commandMap = (commands as unknown as yargs.CommandModule[]).reduce(
-  (map, commandModule) => {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    map[sanitizeCommand(commandModule.command![0])] = commandModule;
-    return map;
-  },
-  {} as Record<string, yargs.CommandModule>,
-);
+const commandMap = (commands as unknown as yargs.CommandModule[]).reduce<
+  Record<string, yargs.CommandModule>
+>((map, commandModule) => {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  map[sanitizeCommand(commandModule.command![0])] = commandModule;
+  return map;
+}, {});
 
 const getMockArgv = (...args: string[]) => {
   return ['/mock/path', '/mock/entry/path', ...args];
@@ -58,7 +58,7 @@ describe('cli', () => {
 
   it('calls "help" command', async () => {
     processExitSpy.mockImplementationOnce((code: number) => {
-      expect(code).toStrictEqual(0);
+      expect(code).toBe(0);
     });
 
     await new Promise<void>((resolve) => {
@@ -119,7 +119,7 @@ describe('cli', () => {
         [{ ...commandMap.serve, handler: mockServeHandler }],
       );
 
-      expect(process.exitCode).toStrictEqual(1);
+      expect(process.exitCode).toBe(1);
       expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
       expect(consoleErrorSpy).toHaveBeenCalledWith('Invalid port: NaN');
       expect(mockServeHandler).not.toHaveBeenCalled();
@@ -133,7 +133,7 @@ describe('cli', () => {
         { ...commandMap.serve, handler: mockServeHandler },
       ]);
 
-      expect(process.exitCode).toStrictEqual(1);
+      expect(process.exitCode).toBe(1);
       expect(consoleErrorSpy).toHaveBeenCalledTimes(2);
       expect(consoleErrorSpy).toHaveBeenNthCalledWith(1, 'Invalid port: NaN');
       expect(mockServeHandler).not.toHaveBeenCalled();

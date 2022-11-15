@@ -1,4 +1,9 @@
 import {
+  JsonRpcRequestStruct,
+  AssertionErrorConstructor,
+  assertStruct,
+} from '@metamask/utils';
+import {
   array,
   Infer,
   is,
@@ -13,11 +18,6 @@ import {
   partial,
   pick,
 } from 'superstruct';
-import {
-  JsonRpcRequestStruct,
-  AssertionErrorConstructor,
-  assertStruct,
-} from '@metamask/utils';
 
 export const CHAIN_ID_REGEX =
   /^(?<namespace>[-a-z0-9]{3,8}):(?<reference>[-a-zA-Z0-9]{1,32})$/u;

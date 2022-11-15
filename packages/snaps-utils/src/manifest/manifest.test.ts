@@ -1,5 +1,6 @@
 import { promises as fs } from 'fs';
 import { join } from 'path';
+
 import { readJsonFile } from '../fs';
 import * as npm from '../npm';
 import { ProgrammaticallyFixableSnapError } from '../snaps';
@@ -275,12 +276,12 @@ describe('getWritableManifest', () => {
     // or higher.
     const manifest = Object.entries(getSnapManifest())
       .reverse()
-      .reduce(
+      .reduce<SnapManifest>(
         (target, [key, value]) => ({
           ...target,
           [key]: value,
         }),
-        {} as SnapManifest,
+        {},
       );
 
     const writableManifest = getWritableManifest(manifest);

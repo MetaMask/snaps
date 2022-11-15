@@ -1,10 +1,11 @@
-import chokidar from 'chokidar';
 import {
   getOutfilePath,
   validateDirPath,
   validateFilePath,
   validateOutfileName,
 } from '@metamask/snaps-utils';
+import chokidar from 'chokidar';
+
 import { YargsArgs } from '../../types/yargs';
 import { loadConfig, logError } from '../../utils';
 import { bundle } from '../build/bundle';
@@ -34,13 +35,14 @@ export async function watch(argv: YargsArgs): Promise<void> {
     serve: shouldServe,
   } = argv;
   if (outfileName) {
-    validateOutfileName(outfileName as string);
+    validateOutfileName(outfileName);
   }
   await validateFilePath(src);
   await validateDirPath(dist, true);
-  const rootDir =
-    src.indexOf('/') === -1 ? '.' : src.substring(0, src.lastIndexOf('/') + 1);
-  const outfilePath = getOutfilePath(dist, outfileName as string);
+  const rootDir = !src.includes('/')
+    ? '.'
+    : src.substring(0, src.lastIndexOf('/') + 1);
+  const outfilePath = getOutfilePath(dist, outfileName);
 
   const buildSnap = async (path?: string, logMessage?: string) => {
     if (logMessage !== undefined) {
@@ -90,8 +92,8 @@ export async function watch(argv: YargsArgs): Promise<void> {
         await serve(argv);
       }
     })
-    .on('add', (path) => buildSnap(path, `File added: ${path}`))
-    .on('change', (path) => buildSnap(path, `File changed: ${path}`))
+    .on('add', async (path) => buildSnap(path, `File added: ${path}`))
+    .on('change', async (path) => buildSnap(path, `File changed: ${path}`))
     .on('unlink', (path) => console.log(`File removed: ${path}`))
     .on('error', (error: Error) => {
       logError(`Watcher error: ${error.message}`, error);

@@ -1,7 +1,8 @@
 import ObjectMultiplex from '@metamask/object-multiplex';
-import pump from 'pump';
 import { ProcessMessageStream } from '@metamask/post-message-stream';
 import { SNAP_STREAM_NAMES } from '@metamask/snaps-utils';
+import pump from 'pump';
+
 import { BaseSnapExecutor } from '../common/BaseSnapExecutor';
 
 export class ChildProcessSnapExecutor extends BaseSnapExecutor {

@@ -12,6 +12,7 @@ import {
   parseCronExpression,
 } from '@metamask/snaps-utils';
 import { Duration, inMilliseconds } from '@metamask/utils';
+
 import {
   GetAllSnaps,
   getRunnableSnaps,
@@ -131,7 +132,7 @@ export class CronjobController extends BaseController<
     const filteredSnaps = getRunnableSnaps(snaps);
 
     const jobs = await Promise.all(
-      filteredSnaps.map((snap) => this.getSnapJobs(snap.id)),
+      filteredSnaps.map(async (snap) => this.getSnapJobs(snap.id)),
     );
     return flatten(jobs).filter((job) => job !== undefined) as Cronjob[];
   }
@@ -278,7 +279,7 @@ export class CronjobController extends BaseController<
       this.schedule(job);
     });
     this.#dailyTimer = new Timer(DAILY_TIMEOUT);
-    this.#dailyTimer.start(() => this.dailyCheckIn());
+    this.#dailyTimer.start(async () => this.dailyCheckIn());
   }
 
   /**

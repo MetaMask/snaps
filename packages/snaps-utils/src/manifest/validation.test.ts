@@ -1,4 +1,5 @@
 import { assert, is, size, string } from 'superstruct';
+
 import { getSnapManifest } from '../test-utils';
 import {
   assertIsSnapManifest,
@@ -31,7 +32,7 @@ describe('base64', () => {
     'validates valid base64',
     (value, opts) => {
       const struct = base64(string(), opts);
-      expect(is(value, struct)).toStrictEqual(true);
+      expect(is(value, struct)).toBe(true);
     },
   );
 
@@ -59,14 +60,14 @@ describe('base64', () => {
     "doesn't validate invalid bas64",
     (value, opts) => {
       const struct = base64(string(), opts);
-      expect(is(value, struct)).toStrictEqual(false);
+      expect(is(value, struct)).toBe(false);
     },
   );
 
   it('respects string() constraints', () => {
     const struct = base64(size(string(), 4, 4));
-    expect(is('abcd', struct)).toStrictEqual(true);
-    expect(is('abcdabcd', struct)).toStrictEqual(false);
+    expect(is('abcd', struct)).toBe(true);
+    expect(is('abcdabcd', struct)).toBe(false);
   });
 });
 
@@ -74,14 +75,14 @@ describe('Bip32PathStruct', () => {
   it.each(['m/0/1/2', "m/0'/1/2", "m/1'/2'/3'/4/5/6", "m/0/1'/2"])(
     'validates correctly',
     (path) => {
-      expect(is(path.split('/'), Bip32PathStruct)).toStrictEqual(true);
+      expect(is(path.split('/'), Bip32PathStruct)).toBe(true);
     },
   );
 
   it('requires an array', () => {
-    expect(is(['m', "0'", '123'], Bip32PathStruct)).toStrictEqual(true);
-    expect(is("m/0'/123", Bip32PathStruct)).toStrictEqual(false);
-    expect(is(42, Bip32PathStruct)).toStrictEqual(false);
+    expect(is(['m', "0'", '123'], Bip32PathStruct)).toBe(true);
+    expect(is("m/0'/123", Bip32PathStruct)).toBe(false);
+    expect(is(42, Bip32PathStruct)).toBe(false);
   });
 
   it('requires an non-empty array', () => {
@@ -136,7 +137,7 @@ describe('Bip32EntropyStruct', () => {
         { path: "m/0'/1'/2'".split('/'), curve: 'ed25519' },
         Bip32EntropyStruct,
       ),
-    ).toStrictEqual(true);
+    ).toBe(true);
   });
 
   it('ed25519 requires hardened paths', () => {
@@ -154,7 +155,7 @@ describe('Bip32EntropyStruct', () => {
         { path: 'm/0/1/2'.split('/'), curve: 'secp256k1' },
         Bip32EntropyStruct,
       ),
-    ).toStrictEqual(true);
+    ).toBe(true);
   });
 
   it.each([1, '', 'asd', {}, null, undefined])(
@@ -162,20 +163,18 @@ describe('Bip32EntropyStruct', () => {
     (curve) => {
       expect(
         is({ path: "m/0'/1'/2'".split('/'), curve }, Bip32EntropyStruct),
-      ).toStrictEqual(false);
+      ).toBe(false);
     },
   );
 
   it.each([42, "m/0'/123/asd".split('/')])('requires valid path', (path) => {
-    expect(is({ path, curve: 'secp256k1' }, Bip32EntropyStruct)).toStrictEqual(
-      false,
-    );
+    expect(is({ path, curve: 'secp256k1' }, Bip32EntropyStruct)).toBe(false);
   });
 
   it.each([undefined, null, {}, { asd: 123 }])(
     'requires valid structure',
     (value) => {
-      expect(is(value, Bip32EntropyStruct)).toStrictEqual(false);
+      expect(is(value, Bip32EntropyStruct)).toBe(false);
     },
   );
 });

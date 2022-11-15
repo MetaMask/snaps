@@ -1,5 +1,6 @@
 import { HandlerType } from '@metamask/snaps-utils';
 import { MOCK_ORIGIN } from '@metamask/snaps-utils/test-utils';
+
 import {
   CommandMethodsMapping,
   getCommandMethodImplementations,
@@ -42,9 +43,9 @@ describe('getCommandMethodImplementations', () => {
       onTerminate,
     );
     ['ping', 'executeSnap', 'snapRpc', 'terminate'].forEach((method) => {
-      expect(
-        typeof methodsObj[method as keyof CommandMethodsMapping],
-      ).toStrictEqual('function');
+      expect(typeof methodsObj[method as keyof CommandMethodsMapping]).toBe(
+        'function',
+      );
     });
     expect(Object.keys(methodsObj)).toHaveLength(4);
   });
@@ -58,7 +59,7 @@ describe('getCommandMethodImplementations', () => {
       invokeSnapRpc,
       onTerminate,
     );
-    expect(await methodsObj.ping()).toStrictEqual('OK');
+    expect(await methodsObj.ping()).toBe('OK');
   });
 
   it("the terminate method will 'OK'", async () => {
@@ -70,7 +71,7 @@ describe('getCommandMethodImplementations', () => {
       invokeSnapRpc,
       onTerminate,
     );
-    expect(await methodsObj.terminate()).toStrictEqual('OK');
+    expect(await methodsObj.terminate()).toBe('OK');
   });
 
   it("the executeSnap method will return 'OK'", async () => {
@@ -84,7 +85,7 @@ describe('getCommandMethodImplementations', () => {
     );
     expect(
       await methodsObj.executeSnap('foo', 'code', ['endowment1', 'endowment2']),
-    ).toStrictEqual('OK');
+    ).toBe('OK');
   });
 
   it('the snapRpc method will invoke the invokeSnapRpc function', async () => {

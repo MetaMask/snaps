@@ -1,6 +1,7 @@
+import { validateDirPath } from '@metamask/snaps-utils';
 import http from 'http';
 import serveHandler from 'serve-handler';
-import { validateDirPath } from '@metamask/snaps-utils';
+
 import { YargsArgs } from '../../types/yargs';
 import { logRequest, logServerError, logServerListening } from './serveUtils';
 

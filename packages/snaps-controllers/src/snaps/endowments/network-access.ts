@@ -4,6 +4,7 @@ import {
   PermissionType,
   ValidPermissionSpecification,
 } from '@metamask/controllers';
+
 import { SnapEndowments } from './enum';
 
 const permissionName = SnapEndowments.NetworkAccess;

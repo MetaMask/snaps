@@ -1,4 +1,5 @@
 import yargs from 'yargs';
+
 import builders from '../../builders';
 import { YargsArgs } from '../../types/yargs';
 import { build } from './buildHandler';
@@ -23,5 +24,5 @@ export = {
       .implies('depsToTranspile', 'transpilationMode')
       .middleware((argv) => processInvalidTranspilation(argv as any));
   },
-  handler: (argv: YargsArgs) => build(argv),
+  handler: async (argv: YargsArgs) => build(argv),
 };

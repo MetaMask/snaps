@@ -4,6 +4,7 @@ import {
   JsonRpcRequest,
 } from '@metamask/types';
 import { ethErrors } from 'eth-rpc-errors';
+
 import { getValidatedParams, invokeSnapSugar } from './invokeSnapSugar';
 
 describe('wallet_invokeSnap', () => {

@@ -1,5 +1,5 @@
-import { promises as fs } from 'fs';
 import { execSync } from 'child_process';
+import { promises as fs } from 'fs';
 import pathUtils from 'path';
 
 export const TEMPLATE_GIT_URL =

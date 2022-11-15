@@ -1,6 +1,3 @@
-import { isObject } from '@metamask/utils';
-import pump from 'pump';
-import createGunzipStream from 'gunzip-maybe';
 import {
   SnapFiles,
   UnvalidatedSnapFiles,
@@ -8,6 +5,9 @@ import {
   getTargetVersion,
   validateNpmSnap,
 } from '@metamask/snaps-utils';
+import { isObject } from '@metamask/utils';
+import createGunzipStream from 'gunzip-maybe';
+import pump from 'pump';
 
 import { createTarballExtractionStream, getNodeStream } from './stream';
 

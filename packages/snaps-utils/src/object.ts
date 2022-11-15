@@ -10,6 +10,6 @@ export const fromEntries = <Key extends string, Value>(
 ): Record<Key, Value> => {
   return entries.reduce<Record<Key, Value>>(
     (acc, [key, value]) => ({ ...acc, [key]: value }),
-    {} as Record<Key, Value>,
+    {},
   );
 };

@@ -1,6 +1,6 @@
+import index from '.';
 import { YargsArgs } from '../../types/yargs';
 import { manifestHandler } from './manifestHandler';
-import index from '.';
 
 jest.mock('./manifestHandler');
 

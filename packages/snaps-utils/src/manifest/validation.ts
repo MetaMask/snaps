@@ -17,6 +17,7 @@ import {
   type,
   union,
 } from 'superstruct';
+
 import { CronjobSpecificationArrayStruct } from '../cronjob';
 import { NamespacesStruct } from '../namespace';
 import { NameStruct, NpmSnapFileNames, VersionStruct } from '../types';

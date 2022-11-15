@@ -1,8 +1,9 @@
 import { ControllerMessenger } from '@metamask/controllers';
+import { SnapRpcHookArgs } from '@metamask/snaps-utils';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import pump from 'pump';
-import { SnapRpcHookArgs } from '@metamask/snaps-utils';
+
 import {
   ExecutionService,
   ExecutionServiceActions,
@@ -66,22 +67,23 @@ export class ExecutionEnvironmentStub implements ExecutionService {
   constructor(messenger: ReturnType<typeof getNodeEESMessenger>) {
     messenger.registerActionHandler(
       `ExecutionService:handleRpcRequest`,
-      (snapId: string, options: SnapRpcHookArgs) =>
+      async (snapId: string, options: SnapRpcHookArgs) =>
         this.handleRpcRequest(snapId, options),
     );
 
     messenger.registerActionHandler(
       'ExecutionService:executeSnap',
-      (snapData: SnapExecutionData) => this.executeSnap(snapData),
+      async (snapData: SnapExecutionData) => this.executeSnap(snapData),
     );
 
     messenger.registerActionHandler(
       'ExecutionService:terminateSnap',
-      (snapId: string) => this.terminateSnap(snapId),
+      async (snapId: string) => this.terminateSnap(snapId),
     );
 
-    messenger.registerActionHandler('ExecutionService:terminateAllSnaps', () =>
-      this.terminateAllSnaps(),
+    messenger.registerActionHandler(
+      'ExecutionService:terminateAllSnaps',
+      async () => this.terminateAllSnaps(),
     );
   }
 
@@ -98,7 +100,7 @@ export class ExecutionEnvironmentStub implements ExecutionService {
   }
 
   async getRpcRequestHandler(_snapId: string) {
-    return ({ request }: SnapRpcHookArgs) => {
+    return async ({ request }: SnapRpcHookArgs) => {
       return new Promise((resolve) => {
         const results = `${request.method}${request.id}`;
         resolve(results);

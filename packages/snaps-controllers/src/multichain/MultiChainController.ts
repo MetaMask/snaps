@@ -7,6 +7,7 @@ import {
   PermissionConstraint,
   RestrictedControllerMessenger,
 } from '@metamask/controllers';
+import { SnapKeyring } from '@metamask/snaps-types';
 import {
   parseAccountId,
   AccountId,
@@ -27,9 +28,9 @@ import {
   isAccountIdArray,
   Namespaces,
 } from '@metamask/snaps-utils';
-import { SnapKeyring } from '@metamask/snaps-types';
 import { hasProperty, assert } from '@metamask/utils';
 import { nanoid } from 'nanoid';
+
 import {
   GetAllSnaps,
   HandleSnapRequest,

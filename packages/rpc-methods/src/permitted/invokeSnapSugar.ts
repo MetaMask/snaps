@@ -1,4 +1,4 @@
-import { ethErrors } from 'eth-rpc-errors';
+import { SNAP_PREFIX } from '@metamask/snaps-utils';
 import {
   PermittedHandlerExport,
   JsonRpcRequest,
@@ -6,7 +6,7 @@ import {
   JsonRpcEngineEndCallback,
 } from '@metamask/types';
 import { isObject } from '@metamask/utils';
-import { SNAP_PREFIX } from '@metamask/snaps-utils';
+import { ethErrors } from 'eth-rpc-errors';
 
 export type InvokeSnapSugarArgs = {
   snapId: string;
