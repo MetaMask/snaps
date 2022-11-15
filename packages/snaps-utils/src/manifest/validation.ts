@@ -149,7 +149,11 @@ export type Bip32PublicKey = Infer<typeof Bip32PublicKeyStruct>;
 const PermissionsStruct = type({
   'endowment:long-running': optional(object({})),
   'endowment:network-access': optional(object({})),
-  'endowment:transaction-insight': optional(object({})),
+  'endowment:transaction-insight': optional(
+    object({
+      allowTransactionOrigin: boolean(),
+    }),
+  ),
   'endowment:cronjob': optional(
     object({ jobs: CronjobSpecificationArrayStruct }),
   ),

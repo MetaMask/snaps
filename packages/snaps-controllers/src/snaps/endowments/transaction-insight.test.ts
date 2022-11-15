@@ -1,5 +1,5 @@
 import { PermissionType } from '@metamask/controllers';
-import { SnapCaveatType } from '@metamask/snap-utils';
+import { SnapCaveatType } from '@metamask/snaps-utils';
 import { transactionInsightEndowmentBuilder } from './transaction-insight';
 import { SnapEndowments } from '.';
 
@@ -10,7 +10,7 @@ describe('endowment:transaction-insight', () => {
     expect(specification).toStrictEqual({
       permissionType: PermissionType.Endowment,
       targetKey: SnapEndowments.TransactionInsight,
-      allowedCaveats: [SnapCaveatType.SnapTransactionInsight],
+      allowedCaveats: [SnapCaveatType.TransactionOrigin],
       endowmentGetter: expect.any(Function),
       validator: expect.any(Function),
     });

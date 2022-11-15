@@ -20,7 +20,7 @@ export enum SnapCaveatType {
   SnapCronjob = 'snapCronjob',
 
   /**
-   * Caveat specifying optional metadata for transaction insight.
+   * Caveat specifying access to the transaction origin, used by `endowment:transaction-insight`.
    */
-  SnapTransactionInsight = 'snapTransactionInsight',
+  TransactionOrigin = 'transactionOrigin',
 }

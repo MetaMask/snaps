@@ -16,7 +16,7 @@ import {
   Json,
   NonEmptyArray,
 } from '@metamask/utils';
-import { SnapCaveatType } from '@metamask/snap-utils';
+import { SnapCaveatType } from '@metamask/snaps-utils';
 import { ethErrors } from 'eth-rpc-errors';
 import { SnapEndowments } from './enum';
 
@@ -45,16 +45,16 @@ const specificationBuilder: PermissionSpecificationBuilder<
   return {
     permissionType: PermissionType.Endowment,
     targetKey: permissionName,
-    allowedCaveats: [SnapCaveatType.SnapTransactionInsight],
+    allowedCaveats: [SnapCaveatType.TransactionOrigin],
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => undefined,
     validator: ({ caveats }) => {
       if (
         caveats !== null &&
         (caveats?.length > 1 ||
-          caveats[0].type !== SnapCaveatType.SnapTransactionInsight)
+          caveats[0].type !== SnapCaveatType.TransactionOrigin)
       ) {
         throw ethErrors.rpc.invalidParams({
-          message: `Expected a single "${SnapCaveatType.SnapTransactionInsight}" caveat.`,
+          message: `Expected a single "${SnapCaveatType.TransactionOrigin}" caveat.`,
         });
       }
     },
@@ -81,15 +81,9 @@ function validateCaveat(caveat: Caveat<string, any>): void {
 
   const { value } = caveat;
 
-  if (!hasProperty(value, 'allowTransactionOrigin')) {
-    throw ethErrors.rpc.invalidParams({
-      message: 'Expected a plain object.',
-    });
-  }
-
   assert(
-    typeof value.allowTransactionOrigin === 'boolean',
-    'Expected allowTransactionOrigin to have type "boolean"',
+    typeof value === 'boolean',
+    'Expected caveat value to have type "boolean"',
   );
 }
 
@@ -104,58 +98,57 @@ function validateCaveat(caveat: Caveat<string, any>): void {
 export function getTransactionInsightCaveatMapper(
   value: Json,
 ): Pick<PermissionConstraint, 'caveats'> {
-  if (!value || (isObject(value) && Object.keys(value).length === 0)) {
+  if (
+    !value ||
+    !isObject(value) ||
+    (isObject(value) && Object.keys(value).length === 0)
+  ) {
     return { caveats: null };
   }
   return {
     caveats: [
       {
-        type: SnapCaveatType.SnapTransactionInsight,
-        value,
+        type: SnapCaveatType.TransactionOrigin,
+        value:
+          hasProperty(value, 'allowTransactionOrigin') &&
+          value.allowTransactionOrigin,
       },
     ],
   };
 }
 
-export type TransactionInsightCaveat = {
-  allowTransactionOrigin?: boolean;
-};
-
 /**
- * Getter function to get the keyring namespaces from a permission.
+ * Getter function to get the transaction origin caveat from a permission.
  *
  * This does basic validation of the caveat, but does not validate the type or
  * value of the namespaces object itself, as this is handled by the
  * `PermissionsController` when the permission is requested.
  *
- * @param permission - The permission to get the keyring namespaces from.
- * @returns The keyring namespaces, or `null` if the permission does not have a
- * keyring caveat.
+ * @param permission - The permission to get the transaction origin caveat from.
+ * @returns The transaction origin, or `null` if the permission does not have a
+ * transaction origin caveat.
  */
-export function getTransactionInsightCaveat(
+export function getTransactionOriginCaveat(
   permission?: PermissionConstraint,
-): TransactionInsightCaveat | null {
+): boolean | null {
   if (!permission?.caveats) {
     return null;
   }
 
   assert(permission.caveats.length === 1);
-  assert(permission.caveats[0].type === SnapCaveatType.SnapTransactionInsight);
+  assert(permission.caveats[0].type === SnapCaveatType.TransactionOrigin);
 
-  const caveat = permission.caveats[0] as Caveat<
-    string,
-    TransactionInsightCaveat
-  >;
+  const caveat = permission.caveats[0] as Caveat<string, boolean>;
 
   return caveat.value ?? null;
 }
 
 export const transactionInsightCaveatSpecifications: Record<
-  SnapCaveatType.SnapTransactionInsight,
+  SnapCaveatType.TransactionOrigin,
   CaveatSpecificationConstraint
 > = {
-  [SnapCaveatType.SnapTransactionInsight]: Object.freeze({
-    type: SnapCaveatType.SnapTransactionInsight,
+  [SnapCaveatType.TransactionOrigin]: Object.freeze({
+    type: SnapCaveatType.TransactionOrigin,
     validator: (caveat: Caveat<string, any>) => validateCaveat(caveat),
   }),
 };
