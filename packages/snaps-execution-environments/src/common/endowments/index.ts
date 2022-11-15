@@ -1,5 +1,6 @@
-import { SnapProvider } from '@metamask/snaps-types';
+import { SnapsGlobalObject } from '@metamask/snaps-types';
 import { hasProperty } from '@metamask/utils';
+import { StreamProvider } from '@metamask/providers';
 import { rootRealmGlobal } from '../globalObject';
 import interval from './interval';
 import network from './network';
@@ -42,12 +43,14 @@ const endowmentFactories = [timeout, interval, network, crypto, math].reduce(
  * such attenuated / modified endowments. Otherwise, the value that's on the
  * root realm global will be used.
  *
- * @param wallet - The Snap's provider object.
+ * @param snaps - The Snaps global API object.
+ * @param ethereum - The Snap's EIP-1193 provider object.
  * @param endowments - The list of endowments to provide to the snap.
  * @returns An object containing the Snap's endowments.
  */
 export function createEndowments(
-  wallet: SnapProvider,
+  snaps: SnapsGlobalObject,
+  ethereum: StreamProvider,
   endowments: string[] = [],
 ): { endowments: Record<string, unknown>; teardown: () => Promise<void> } {
   const attenuatedEndowments: Record<string, unknown> = {};
@@ -87,6 +90,9 @@ export function createEndowments(
           typeof globalValue === 'function' && !isConstructor(globalValue)
             ? globalValue.bind(rootRealmGlobal)
             : globalValue;
+      } else if (endowmentName === 'ethereum') {
+        // Special case for adding the EIP-1193 provider.
+        allEndowments[endowmentName] = ethereum;
       } else {
         // If we get to this point, we've been passed an endowment that doesn't
         // exist in our current environment.
@@ -95,7 +101,7 @@ export function createEndowments(
       return { allEndowments, teardowns };
     },
     {
-      allEndowments: { wallet } as Record<string, unknown>,
+      allEndowments: { snaps } as Record<string, unknown>,
       teardowns: [] as (() => void)[],
     },
   );

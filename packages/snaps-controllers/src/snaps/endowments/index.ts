@@ -13,6 +13,7 @@ import {
   keyringCaveatSpecifications,
   getKeyringCaveatMapper,
 } from './keyring';
+import { ethereumProviderEndowmentBuilder } from './ethereum-provider';
 
 export const endowmentPermissionBuilders = {
   [networkAccessEndowmentBuilder.targetKey]: networkAccessEndowmentBuilder,
@@ -21,6 +22,8 @@ export const endowmentPermissionBuilders = {
     transactionInsightEndowmentBuilder,
   [keyringEndowmentBuilder.targetKey]: keyringEndowmentBuilder,
   [cronjobEndowmentBuilder.targetKey]: cronjobEndowmentBuilder,
+  [ethereumProviderEndowmentBuilder.targetKey]:
+    ethereumProviderEndowmentBuilder,
 } as const;
 
 export const endowmentCaveatSpecifications = {

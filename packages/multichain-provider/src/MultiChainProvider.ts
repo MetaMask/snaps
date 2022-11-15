@@ -12,7 +12,7 @@ import {
   Session,
 } from '@metamask/snaps-utils';
 import { JsonRpcRequest, Json } from '@metamask/utils';
-import type { SnapProvider } from '@metamask/snaps-types';
+import { MetaMaskInpageProvider } from '@metamask/providers';
 import { nanoid } from 'nanoid';
 import { Provider } from './Provider';
 
@@ -21,7 +21,7 @@ declare global {
   // here.
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface Window {
-    ethereum: SnapProvider;
+    ethereum: MetaMaskInpageProvider;
   }
 }
 

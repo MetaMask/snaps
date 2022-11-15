@@ -1,9 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
 /// <reference path="../../../../node_modules/ses/index.d.ts" />
 import { Duplex } from 'stream';
-
-import { MetaMaskInpageProvider } from '@metamask/providers';
-import { SnapProvider, SnapExports } from '@metamask/snaps-types';
+import { StreamProvider } from '@metamask/providers';
+import { createIdRemapMiddleware } from 'json-rpc-engine';
+import { SnapExports, SnapsGlobalObject } from '@metamask/snaps-types';
 import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
 import {
   isObject,
@@ -24,6 +24,7 @@ import {
 } from '@metamask/snaps-utils';
 
 import { validate } from 'superstruct';
+import { RequestArguments } from '@metamask/providers/dist/BaseProvider';
 import EEOpenRPCDocument from '../openrpc.json';
 import {
   CommandMethodsMapping,
@@ -290,13 +291,22 @@ export class BaseSnapExecutor {
       });
     };
 
-    const wallet = this.createSnapProvider();
+    const provider = new StreamProvider(this.rpcStream, {
+      jsonRpcStreamName: 'metamask-provider',
+      rpcMiddleware: [createIdRemapMiddleware()],
+    });
+
+    await provider.initialize();
+
+    const snap = this.createSnapGlobal(provider);
+    const ethereum = this.createEIP1193Provider(provider);
     // We specifically use any type because the Snap can modify the object any way they want
     const snapModule: any = { exports: {} };
 
     try {
       const { endowments, teardown: endowmentTeardown } = createEndowments(
-        wallet,
+        snap,
+        ethereum,
         _endowments,
       );
 
@@ -362,17 +372,48 @@ export class BaseSnapExecutor {
   }
 
   /**
-   * Instantiates a snap provider object (i.e. `globalThis.wallet`).
+   * Instantiates a snap API object (i.e. `globalThis.snap`).
    *
+   * @param provider - A StreamProvider connected to MetaMask.
    * @returns The snap provider object.
    */
-  private createSnapProvider(): SnapProvider {
-    const provider = new MetaMaskInpageProvider(this.rpcStream, {
-      shouldSendMetadata: false,
-    });
+  private createSnapGlobal(provider: StreamProvider): SnapsGlobalObject {
+    const originalRequest = provider.request;
+
+    const request = async (args: RequestArguments) => {
+      assert(
+        args.method.startsWith('wallet_') || args.method.startsWith('snap_'),
+        'The global Snap API only allows RPC methods starting with `wallet_*` and `snap_*`.',
+      );
+      this.notify({ method: 'OutboundRequest' });
+      try {
+        return await withTeardown(originalRequest(args), this as any);
+      } finally {
+        this.notify({ method: 'OutboundResponse' });
+      }
+    };
+
+    return { request };
+  }
+
+  /**
+   * Instantiates an EIP-1193 Ethereum provider object (i.e. `globalThis.ethereum`).
+   *
+   * @param provider - A StreamProvider connected to MetaMask.
+   * @returns The EIP-1193 Ethereum provider object.
+   */
+  private createEIP1193Provider(provider: StreamProvider): StreamProvider {
     const originalRequest = provider.request;
 
     provider.request = async (args) => {
+      assert(
+        !args.method.startsWith('snap_'),
+        ethErrors.rpc.methodNotFound({
+          data: {
+            method: args.method,
+          },
+        }),
+      );
       this.notify({ method: 'OutboundRequest' });
       try {
         return await withTeardown(originalRequest(args), this as any);

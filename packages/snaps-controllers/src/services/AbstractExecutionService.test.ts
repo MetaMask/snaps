@@ -1,16 +1,13 @@
-import { ControllerMessenger } from '@metamask/controllers';
 import { HandlerType } from '@metamask/snaps-utils';
-import {
-  ErrorMessageEvent,
-  ExecutionServiceMessenger,
-} from './ExecutionService';
+import { createService } from '../test-utils';
+import { ExecutionServiceArgs } from './AbstractExecutionService';
 import { NodeThreadExecutionService } from './node';
 
 class MockExecutionService extends NodeThreadExecutionService {
-  constructor(messenger: ExecutionServiceMessenger) {
+  constructor({ messenger, setupSnapProvider }: ExecutionServiceArgs) {
     super({
       messenger,
-      setupSnapProvider: () => undefined,
+      setupSnapProvider,
     });
   }
 
@@ -27,19 +24,7 @@ describe('AbstractExecutionService', () => {
   it('logs error for unrecognized notifications', async () => {
     const consoleErrorSpy = jest.spyOn(console, 'error');
 
-    const controllerMessenger = new ControllerMessenger<
-      never,
-      ErrorMessageEvent
-    >();
-    const service = new MockExecutionService(
-      controllerMessenger.getRestricted<
-        'ExecutionService',
-        never,
-        ErrorMessageEvent['type']
-      >({
-        name: 'ExecutionService',
-      }),
-    );
+    const { service } = createService(MockExecutionService);
 
     await service.executeSnap({
       snapId: 'TestSnap',
@@ -66,19 +51,7 @@ describe('AbstractExecutionService', () => {
   it('logs error for malformed UnhandledError notification', async () => {
     const consoleErrorSpy = jest.spyOn(console, 'error');
 
-    const controllerMessenger = new ControllerMessenger<
-      never,
-      ErrorMessageEvent
-    >();
-    const service = new MockExecutionService(
-      controllerMessenger.getRestricted<
-        'ExecutionService',
-        never,
-        ErrorMessageEvent['type']
-      >({
-        name: 'ExecutionService',
-      }),
-    );
+    const { service } = createService(MockExecutionService);
 
     await service.executeSnap({
       snapId: 'TestSnap',
@@ -112,20 +85,7 @@ describe('AbstractExecutionService', () => {
   });
 
   it('throws an error if RPC request handler is unavailable', async () => {
-    const controllerMessenger = new ControllerMessenger<
-      never,
-      ErrorMessageEvent
-    >();
-    const service = new MockExecutionService(
-      controllerMessenger.getRestricted<
-        'ExecutionService',
-        never,
-        ErrorMessageEvent['type']
-      >({
-        name: 'ExecutionService',
-      }),
-    );
-
+    const { service } = createService(MockExecutionService);
     const snapId = 'TestSnap';
     await expect(
       service.handleRpcRequest(snapId, {

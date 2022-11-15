@@ -1,53 +1,19 @@
-import { ControllerMessenger } from '@metamask/controllers';
 import { HandlerType, SnapId } from '@metamask/snaps-utils';
-import { JsonRpcEngine } from 'json-rpc-engine';
-import { createEngineStream } from 'json-rpc-middleware-stream';
-import pump from 'pump';
-import { ErrorMessageEvent, SnapErrorJson } from '../ExecutionService';
-import { setupMultiplex } from '../AbstractExecutionService';
+import { SnapErrorJson } from '../ExecutionService';
+import { createService, MOCK_BLOCK_NUMBER } from '../../test-utils';
 import { NodeProcessExecutionService } from './NodeProcessExecutionService';
 
 const ON_RPC_REQUEST = HandlerType.OnRpcRequest;
 
 describe('NodeProcessExecutionService', () => {
   it('can boot', async () => {
-    const controllerMessenger = new ControllerMessenger<
-      never,
-      ErrorMessageEvent
-    >();
-    const service = new NodeProcessExecutionService({
-      messenger: controllerMessenger.getRestricted<
-        'ExecutionService',
-        never,
-        ErrorMessageEvent['type']
-      >({
-        name: 'ExecutionService',
-      }),
-      setupSnapProvider: () => {
-        // do nothing
-      },
-    });
+    const { service } = createService(NodeProcessExecutionService);
     expect(service).toBeDefined();
     await service.terminateAllSnaps();
   });
 
   it('can create a snap worker and start the snap', async () => {
-    const controllerMessenger = new ControllerMessenger<
-      never,
-      ErrorMessageEvent
-    >();
-    const service = new NodeProcessExecutionService({
-      messenger: controllerMessenger.getRestricted<
-        'ExecutionService',
-        never,
-        ErrorMessageEvent['type']
-      >({
-        name: 'ExecutionService',
-      }),
-      setupSnapProvider: () => {
-        // do nothing
-      },
-    });
+    const { service } = createService(NodeProcessExecutionService);
     const response = await service.executeSnap({
       snapId: 'TestSnap',
       sourceCode: `
@@ -61,22 +27,7 @@ describe('NodeProcessExecutionService', () => {
 
   it('can handle a crashed snap', async () => {
     expect.assertions(1);
-    const controllerMessenger = new ControllerMessenger<
-      never,
-      ErrorMessageEvent
-    >();
-    const service = new NodeProcessExecutionService({
-      messenger: controllerMessenger.getRestricted<
-        'ExecutionService',
-        never,
-        ErrorMessageEvent['type']
-      >({
-        name: 'ExecutionService',
-      }),
-      setupSnapProvider: () => {
-        // do nothing
-      },
-    });
+    const { service } = createService(NodeProcessExecutionService);
     const action = async () => {
       await service.executeSnap({
         snapId: 'TestSnap',
@@ -95,22 +46,7 @@ describe('NodeProcessExecutionService', () => {
 
   it('can handle errors in request handler', async () => {
     expect.assertions(1);
-    const controllerMessenger = new ControllerMessenger<
-      never,
-      ErrorMessageEvent
-    >();
-    const service = new NodeProcessExecutionService({
-      messenger: controllerMessenger.getRestricted<
-        'ExecutionService',
-        never,
-        ErrorMessageEvent['type']
-      >({
-        name: 'ExecutionService',
-      }),
-      setupSnapProvider: () => {
-        // do nothing
-      },
-    });
+    const { service } = createService(NodeProcessExecutionService);
     const snapId = 'TestSnap';
     await service.executeSnap({
       snapId,
@@ -137,22 +73,9 @@ describe('NodeProcessExecutionService', () => {
 
   it('can handle errors out of band', async () => {
     expect.assertions(2);
-    const controllerMessenger = new ControllerMessenger<
-      never,
-      ErrorMessageEvent
-    >();
-    const service = new NodeProcessExecutionService({
-      messenger: controllerMessenger.getRestricted<
-        'ExecutionService',
-        never,
-        ErrorMessageEvent['type']
-      >({
-        name: 'ExecutionService',
-      }),
-      setupSnapProvider: () => {
-        // do nothing
-      },
-    });
+    const { service, controllerMessenger } = createService(
+      NodeProcessExecutionService,
+    );
     const snapId = 'TestSnap';
     await service.executeSnap({
       snapId,
@@ -211,46 +134,15 @@ describe('NodeProcessExecutionService', () => {
 
   it('can detect outbound requests', async () => {
     expect.assertions(4);
-    const blockNumber = '0xa70e75';
-    const controllerMessenger = new ControllerMessenger<
-      never,
-      ErrorMessageEvent
-    >();
-    const messenger = controllerMessenger.getRestricted<
-      'ExecutionService',
-      never,
-      ErrorMessageEvent['type']
-    >({
-      name: 'ExecutionService',
-    });
+    const { service, messenger } = createService(NodeProcessExecutionService);
     const publishSpy = jest.spyOn(messenger, 'publish');
-    const service = new NodeProcessExecutionService({
-      messenger,
-      setupSnapProvider: (_snapId, rpcStream) => {
-        const mux = setupMultiplex(rpcStream, 'foo');
-        const stream = mux.createStream('metamask-provider');
-        const engine = new JsonRpcEngine();
-        engine.push((req, res, next, end) => {
-          if (req.method === 'metamask_getProviderState') {
-            res.result = { isUnlocked: false, accounts: [] };
-            return end();
-          } else if (req.method === 'eth_blockNumber') {
-            res.result = blockNumber;
-            return end();
-          }
-          return next();
-        });
-        const providerStream = createEngineStream({ engine });
-        pump(stream, providerStream, stream);
-      },
-    });
     const snapId = 'TestSnap';
     const executeResult = await service.executeSnap({
       snapId,
       sourceCode: `
-      module.exports.onRpcRequest = () => wallet.request({ method: 'eth_blockNumber', params: [] });
+      module.exports.onRpcRequest = () => ethereum.request({ method: 'eth_blockNumber', params: [] });
       `,
-      endowments: [],
+      endowments: ['ethereum'],
     });
 
     expect(executeResult).toBe('OK');
@@ -266,7 +158,7 @@ describe('NodeProcessExecutionService', () => {
       },
     });
 
-    expect(result).toBe(blockNumber);
+    expect(result).toBe(MOCK_BLOCK_NUMBER);
 
     expect(publishSpy).toHaveBeenCalledWith(
       'ExecutionService:outboundRequest',

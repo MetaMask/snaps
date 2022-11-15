@@ -1,4 +1,4 @@
-import { SnapProvider } from '@metamask/snaps-types';
+import { MetaMaskInpageProvider } from '@metamask/providers';
 import { NamespaceId, RequestNamespace } from '@metamask/snaps-utils';
 import {
   getRequestNamespace,
@@ -14,7 +14,7 @@ Object.assign(globalThis, {
 });
 
 // Used for mocking the provider's return values.
-declare const ethereum: SnapProvider;
+declare const ethereum: MetaMaskInpageProvider;
 
 /**
  * Get a new `MultiChainProvider` instance, that is connected to the given

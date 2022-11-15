@@ -111,6 +111,41 @@ class TestSnapExecutor extends BaseSnapExecutor {
     });
   }
 
+  // Utility function for executing snaps
+  public async executeSnap(
+    id: number,
+    name: string,
+    code: string,
+    endowments: string[],
+  ) {
+    const providerRequestPromise = this.readRpc();
+    await this.writeCommand({
+      jsonrpc: '2.0',
+      id,
+      method: 'executeSnap',
+      params: [name, code, endowments],
+    });
+
+    // In case we are running fake timers, execute a tiny step that forces setTimeout to execute, is required for stream comms
+    jest.advanceTimersByTime(1);
+    const providerRequest = await providerRequestPromise;
+    await this.writeRpc({
+      name: 'metamask-provider',
+      data: {
+        jsonrpc: '2.0',
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        id: providerRequest.data.id!,
+        result: {
+          isUnlocked: false,
+          accounts: [],
+          chainId: '0x1',
+          networkVersion: '1',
+        },
+      },
+    });
+    jest.advanceTimersByTime(1);
+  }
+
   public writeCommand(message: JsonRpcRequest<JsonRpcParams>): Promise<void> {
     return new Promise((resolve, reject) =>
       this.commandLeft.write(message, (error) => {
@@ -200,12 +235,7 @@ describe('BaseSnapExecutor', () => {
       const executor = new TestSnapExecutor();
       const consoleErrorSpy = jest.spyOn(console, 'error');
 
-      await executor.writeCommand({
-        jsonrpc: '2.0',
-        id: 1,
-        method: 'executeSnap',
-        params: [FAKE_SNAP_NAME, CODE, TIMER_ENDOWMENTS],
-      });
+      await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, TIMER_ENDOWMENTS);
 
       expect(await executor.readCommand()).toStrictEqual({
         jsonrpc: '2.0',
@@ -236,12 +266,7 @@ describe('BaseSnapExecutor', () => {
       const executor = new TestSnapExecutor();
       const consoleErrorSpy = jest.spyOn(console, 'error');
 
-      await executor.writeCommand({
-        jsonrpc: '2.0',
-        id: 1,
-        method: 'executeSnap',
-        params: [FAKE_SNAP_NAME, CODE, TIMER_ENDOWMENTS],
-      });
+      await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, TIMER_ENDOWMENTS);
 
       expect(await executor.readCommand()).toStrictEqual({
         jsonrpc: '2.0',
@@ -308,25 +333,15 @@ describe('BaseSnapExecutor', () => {
         const executor = new TestSnapExecutor();
 
         // Initiate the snaps
-        await executor.writeCommand({
-          jsonrpc: '2.0',
-          id: 1,
-          method: 'executeSnap',
-          params: [SNAP_NAME_1, CODE_1, TIMER_ENDOWMENTS],
-        });
-
-        await executor.writeCommand({
-          jsonrpc: '2.0',
-          id: 2,
-          method: 'executeSnap',
-          params: [SNAP_NAME_2, CODE_2, TIMER_ENDOWMENTS],
-        });
+        await executor.executeSnap(1, SNAP_NAME_1, CODE_1, TIMER_ENDOWMENTS);
 
         expect(await executor.readCommand()).toStrictEqual({
           jsonrpc: '2.0',
           id: 1,
           result: 'OK',
         });
+
+        await executor.executeSnap(2, SNAP_NAME_2, CODE_2, TIMER_ENDOWMENTS);
 
         expect(await executor.readCommand()).toStrictEqual({
           jsonrpc: '2.0',
@@ -407,12 +422,7 @@ describe('BaseSnapExecutor', () => {
     `;
     const executor = new TestSnapExecutor();
 
-    await executor.writeCommand({
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'executeSnap',
-      params: [FAKE_SNAP_NAME, CODE, []],
-    });
+    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, []);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -457,18 +467,13 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
-  it('reports when outbound requests are made', async () => {
+  it('reports when outbound requests are made using ethereum', async () => {
     const CODE = `
-      module.exports.onRpcRequest = () => wallet.request({ method: 'eth_blockNumber', params: [] });
+      module.exports.onRpcRequest = () => ethereum.request({ method: 'eth_blockNumber', params: [] });
     `;
     const executor = new TestSnapExecutor();
 
-    await executor.writeCommand({
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'executeSnap',
-      params: [FAKE_SNAP_NAME, CODE, []],
-    });
+    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, ['ethereum']);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -491,27 +496,6 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
       method: 'OutboundRequest',
-    });
-
-    const providerRequest = await executor.readRpc();
-    expect(providerRequest).toStrictEqual({
-      name: 'metamask-provider',
-      data: {
-        id: expect.any(Number),
-        jsonrpc: '2.0',
-        method: 'metamask_getProviderState',
-        params: undefined,
-      },
-    });
-
-    await executor.writeRpc({
-      name: 'metamask-provider',
-      data: {
-        jsonrpc: '2.0',
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        id: providerRequest.data.id!,
-        result: { isUnlocked: false, accounts: [] },
-      },
     });
 
     const blockNumRequest = await executor.readRpc();
@@ -547,6 +531,152 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
+  it('reports when outbound requests are made using snap API', async () => {
+    const CODE = `
+      module.exports.onRpcRequest = () => snaps.request({ method: 'wallet_getPermissions', params: [] });
+    `;
+    const executor = new TestSnapExecutor();
+
+    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, ['ethereum']);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        FAKE_SNAP_NAME,
+        ON_RPC_REQUEST,
+        FAKE_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      method: 'OutboundRequest',
+    });
+
+    const walletRequest = await executor.readRpc();
+    expect(walletRequest).toStrictEqual({
+      name: 'metamask-provider',
+      data: {
+        id: expect.any(Number),
+        jsonrpc: '2.0',
+        method: 'wallet_getPermissions',
+        params: [],
+      },
+    });
+
+    await executor.writeRpc({
+      name: 'metamask-provider',
+      data: {
+        jsonrpc: '2.0',
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        id: walletRequest.data.id!,
+        result: [],
+      },
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      method: 'OutboundResponse',
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: [],
+    });
+  });
+
+  it("doesn't allow snap APIs in the Ethereum provider", async () => {
+    const CODE = `
+      module.exports.onRpcRequest = () => ethereum.request({ method: 'snap_confirm', params: [] });
+    `;
+    const executor = new TestSnapExecutor();
+
+    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, ['ethereum']);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        FAKE_SNAP_NAME,
+        ON_RPC_REQUEST,
+        FAKE_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      error: {
+        code: -32601,
+        message: 'The method does not exist / is not available.',
+        data: {
+          method: 'snap_confirm',
+        },
+        stack: expect.any(String),
+      },
+      id: 2,
+    });
+  });
+
+  it('only allows certain methods in snap API', async () => {
+    const CODE = `
+      module.exports.onRpcRequest = () => snaps.request({ method: 'eth_blockNumber', params: [] });
+    `;
+    const executor = new TestSnapExecutor();
+
+    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, []);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        FAKE_SNAP_NAME,
+        ON_RPC_REQUEST,
+        FAKE_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      error: {
+        code: -32603,
+        message:
+          'The global Snap API only allows RPC methods starting with `wallet_*` and `snap_*`.',
+        data: {
+          originalError: {
+            code: 'ERR_ASSERTION',
+          },
+        },
+      },
+      id: 2,
+    });
+  });
+
   it('notifies execution service of out of band errors via unhandledrejection', async () => {
     const CODE = `
     module.exports.onRpcRequest = async () => 'foo';
@@ -560,12 +690,7 @@ describe('BaseSnapExecutor', () => {
         emitter.on(type, listener as any),
       );
 
-    await executor.writeCommand({
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'executeSnap',
-      params: [FAKE_SNAP_NAME, CODE, []],
-    });
+    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, []);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -623,12 +748,7 @@ describe('BaseSnapExecutor', () => {
         emitter.on(type, listener as any),
       );
 
-    await executor.writeCommand({
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'executeSnap',
-      params: [FAKE_SNAP_NAME, CODE, []],
-    });
+    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, []);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -686,12 +806,7 @@ describe('BaseSnapExecutor', () => {
         emitter.on(type, listener as any),
       );
 
-    await executor.writeCommand({
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'executeSnap',
-      params: [FAKE_SNAP_NAME, CODE, []],
-    });
+    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, []);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -742,12 +857,7 @@ describe('BaseSnapExecutor', () => {
     `;
     const executor = new TestSnapExecutor();
 
-    await executor.writeCommand({
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'executeSnap',
-      params: [FAKE_SNAP_NAME, CODE, []],
-    });
+    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, []);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -794,12 +904,7 @@ describe('BaseSnapExecutor', () => {
     `;
     const executor = new TestSnapExecutor();
 
-    await executor.writeCommand({
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'executeSnap',
-      params: [FAKE_SNAP_NAME, CODE, []],
-    });
+    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, []);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -875,12 +980,7 @@ describe('BaseSnapExecutor', () => {
     `;
     const executor = new TestSnapExecutor();
 
-    await executor.writeCommand({
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'executeSnap',
-      params: [FAKE_SNAP_NAME, CODE, []],
-    });
+    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, []);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -934,12 +1034,7 @@ describe('BaseSnapExecutor', () => {
     `;
     const executor = new TestSnapExecutor();
 
-    await executor.writeCommand({
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'executeSnap',
-      params: [FAKE_SNAP_NAME, CODE, []],
-    });
+    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, []);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -1023,12 +1118,7 @@ describe('BaseSnapExecutor', () => {
     `;
     const executor = new TestSnapExecutor();
 
-    await executor.writeCommand({
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'executeSnap',
-      params: [FAKE_SNAP_NAME, CODE, []],
-    });
+    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, []);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -1060,12 +1150,7 @@ describe('BaseSnapExecutor', () => {
     `;
     const executor = new TestSnapExecutor();
 
-    await executor.writeCommand({
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'executeSnap',
-      params: [FAKE_SNAP_NAME, CODE, []],
-    });
+    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, []);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -1104,12 +1189,7 @@ describe('BaseSnapExecutor', () => {
     `;
     const executor = new TestSnapExecutor();
 
-    await executor.writeCommand({
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'executeSnap',
-      params: [FAKE_SNAP_NAME, CODE, []],
-    });
+    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, []);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -1151,12 +1231,7 @@ describe('BaseSnapExecutor', () => {
 
     const consoleErrorSpy = jest.spyOn(console, 'error');
 
-    await executor.writeCommand({
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'executeSnap',
-      params: [FAKE_SNAP_NAME, CODE, []],
-    });
+    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, []);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -1193,14 +1268,19 @@ describe('BaseSnapExecutor', () => {
     jest.useRealTimers();
     const consoleLogSpy = jest.spyOn(console, 'log');
     const consoleWarnSpy = jest.spyOn(console, 'warn');
-    const TIMER_ENDOWMENTS = ['setTimeout', 'clearTimeout', 'console'];
+    const TIMER_ENDOWMENTS = [
+      'setTimeout',
+      'clearTimeout',
+      'console',
+      'ethereum',
+    ];
     const CODE = `
       let promise;
 
       module.exports.onRpcRequest = async ({request}) => {
         switch (request.method) {
           case 'first':
-            promise = wallet.request({ method: 'eth_blockNumber', params: [] })
+            promise = ethereum.request({ method: 'eth_blockNumber', params: [] })
               .then(() => console.log('Jailbreak'));
             return 'FIRST OK';
           case 'second':
@@ -1211,13 +1291,7 @@ describe('BaseSnapExecutor', () => {
     `;
     const executor = new TestSnapExecutor();
 
-    // --- Execute Snap
-    await executor.writeCommand({
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'executeSnap',
-      params: [FAKE_SNAP_NAME, CODE, TIMER_ENDOWMENTS],
-    });
+    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, TIMER_ENDOWMENTS);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -1241,27 +1315,6 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
       method: 'OutboundRequest',
-    });
-
-    const providerRequest = await executor.readRpc();
-    expect(providerRequest).toStrictEqual({
-      name: 'metamask-provider',
-      data: {
-        id: expect.any(Number),
-        jsonrpc: '2.0',
-        method: 'metamask_getProviderState',
-        params: undefined,
-      },
-    });
-
-    await executor.writeRpc({
-      name: 'metamask-provider',
-      data: {
-        jsonrpc: '2.0',
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        id: providerRequest.data.id!,
-        result: { isUnlocked: false, accounts: [] },
-      },
     });
 
     const blockNumRequest = await executor.readRpc();
@@ -1320,14 +1373,19 @@ describe('BaseSnapExecutor', () => {
     jest.useRealTimers();
     const consoleLogSpy = jest.spyOn(console, 'log');
     const consoleWarnSpy = jest.spyOn(console, 'warn');
-    const TIMER_ENDOWMENTS = ['setTimeout', 'clearTimeout', 'console'];
+    const TIMER_ENDOWMENTS = [
+      'setTimeout',
+      'clearTimeout',
+      'console',
+      'ethereum',
+    ];
     const CODE = `
       let promise;
 
       module.exports.onRpcRequest = async ({request}) => {
         switch (request.method) {
           case 'first':
-            promise = wallet.request({ method: 'eth_blockNumber', params: [] })
+            promise = ethereum.request({ method: 'eth_blockNumber', params: [] })
               .catch(() => console.log('Jailbreak'));
             return 'FIRST OK';
           case 'second':
@@ -1339,12 +1397,7 @@ describe('BaseSnapExecutor', () => {
     const executor = new TestSnapExecutor();
 
     // --- Execute Snap
-    await executor.writeCommand({
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'executeSnap',
-      params: [FAKE_SNAP_NAME, CODE, TIMER_ENDOWMENTS],
-    });
+    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, TIMER_ENDOWMENTS);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -1368,27 +1421,6 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
       method: 'OutboundRequest',
-    });
-
-    const providerRequest = await executor.readRpc();
-    expect(providerRequest).toStrictEqual({
-      name: 'metamask-provider',
-      data: {
-        id: expect.any(Number),
-        jsonrpc: '2.0',
-        method: 'metamask_getProviderState',
-        params: undefined,
-      },
-    });
-
-    await executor.writeRpc({
-      name: 'metamask-provider',
-      data: {
-        jsonrpc: '2.0',
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        id: providerRequest.data.id!,
-        result: { isUnlocked: false, accounts: [] },
-      },
     });
 
     const blockNumRequest = await executor.readRpc();
@@ -1450,16 +1482,11 @@ describe('BaseSnapExecutor', () => {
     // This will ensure that the reject(reason); is called from inside the proxy method
     // when the original promise throws an error (i.e. RPC request fails).
     const CODE = `
-      module.exports.onRpcRequest = () => wallet.request({ method: 'eth_blockNumber', params: [] });
+      module.exports.onRpcRequest = () => ethereum.request({ method: 'eth_blockNumber', params: [] });
     `;
     const executor = new TestSnapExecutor();
 
-    await executor.writeCommand({
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'executeSnap',
-      params: [FAKE_SNAP_NAME, CODE, []],
-    });
+    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, ['ethereum']);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -1482,27 +1509,6 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
       method: 'OutboundRequest',
-    });
-
-    const providerRequest = await executor.readRpc();
-    expect(providerRequest).toStrictEqual({
-      name: 'metamask-provider',
-      data: {
-        id: expect.any(Number),
-        jsonrpc: '2.0',
-        method: 'metamask_getProviderState',
-        params: undefined,
-      },
-    });
-
-    await executor.writeRpc({
-      name: 'metamask-provider',
-      data: {
-        jsonrpc: '2.0',
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        id: providerRequest.data.id!,
-        result: { isUnlocked: false, accounts: [] },
-      },
     });
 
     const blockNumRequest = await executor.readRpc();
@@ -1547,13 +1553,7 @@ describe('BaseSnapExecutor', () => {
     `;
     const executor = new TestSnapExecutor();
 
-    await executor.writeCommand({
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'executeSnap',
-      params: [FAKE_SNAP_NAME, CODE, []],
-    });
-
+    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, []);
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
       id: 1,

@@ -1,4 +1,4 @@
-import { MetaMaskInpageProvider } from '@metamask/providers';
+import { StreamProvider } from '@metamask/providers';
 import { Json, JsonRpcRequest } from '@metamask/types';
 
 export type SnapRpcHandler = (args: {
@@ -22,7 +22,9 @@ export type OnCronjobHandler = (args: {
   request: JsonRpcRequest<unknown[] | { [key: string]: unknown }>;
 }) => Promise<unknown>;
 
-export type SnapProvider = MetaMaskInpageProvider;
+export type SnapsGlobalObject = { request: StreamProvider['request'] };
+
+export type Ethereum = StreamProvider;
 
 // CAIP2 - https://github.com/ChainAgnostic/CAIPs/blob/master/CAIPs/caip-2.md
 type ChainId = `${string}:${string | number}`;

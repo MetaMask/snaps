@@ -4,4 +4,5 @@ export enum SnapEndowments {
   TransactionInsight = 'endowment:transaction-insight',
   Keyring = 'endowment:keyring',
   Cronjob = 'endowment:cronjob',
+  EthereumProvider = 'endowment:ethereum-provider',
 }
