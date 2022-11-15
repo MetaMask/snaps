@@ -29,7 +29,7 @@ describe('endowment:transaction-insight', () => {
       expect(() =>
         // @ts-expect-error Missing required permission types.
         specification.validator({}),
-      ).not.toThrow('Expected a single "transactionOrigin" caveat.');
+      ).not.toThrow();
     });
 
     it('throws if the caveat is not a single "transactionOrigin"', () => {
