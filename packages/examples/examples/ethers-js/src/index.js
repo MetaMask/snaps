@@ -18,7 +18,7 @@ const provider = new ethers.providers.Web3Provider(ethereum);
  */
 module.exports.onRpcRequest = async ({ request }) => {
   console.log('received request', request);
-  const privKey = await snaps.request({
+  const privKey = await snap.request({
     method: 'snap_getAppKey',
   });
   console.log(`privKey is ${privKey}`);

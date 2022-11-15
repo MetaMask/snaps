@@ -13,7 +13,7 @@
 module.exports.onRpcRequest = async ({ origin, request }) => {
   switch (request.method) {
     case 'inApp':
-      return snaps.request({
+      return snap.request({
         method: 'snap_notify',
         params: [
           {
@@ -23,7 +23,7 @@ module.exports.onRpcRequest = async ({ origin, request }) => {
         ],
       });
     case 'native':
-      return snaps.request({
+      return snap.request({
         method: 'snap_notify',
         params: [
           {
