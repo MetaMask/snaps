@@ -30,7 +30,7 @@ describe('Endowment utils', () => {
         },
         teardown: expect.any(Function),
       });
-      expect(endowments.snaps).toBe(mockSnapAPI);
+      expect(endowments.snap).toBe(mockSnapAPI);
     });
 
     it('handles unattenuated endowments', () => {
@@ -130,7 +130,7 @@ describe('Endowment utils', () => {
         WebAssembly,
       });
 
-      expect(endowments.snaps).toBe(mockSnapAPI);
+      expect(endowments.snap).toBe(mockSnapAPI);
       expect(endowments.console).toBe(console);
       expect(endowments.Uint8Array).toBe(Uint8Array);
       expect(endowments.WebAssembly).toBe(WebAssembly);
