@@ -5,5 +5,5 @@ module.exports = {
     tsconfigRootDir: __dirname,
   },
 
-  ignorePatterns: ['src/openrpc.json', 'webpack.config.js'],
+  ignorePatterns: ['src/openrpc.json', 'webpack.config.js', '__test__'],
 };
