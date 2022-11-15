@@ -3,6 +3,14 @@ module.exports = {
 
   extends: ['@metamask/eslint-config'],
 
+  parserOptions: {
+    tsconfigRootDir: __dirname,
+  },
+
+  env: {
+    'shared-node-browser': true,
+  },
+
   overrides: [
     {
       files: ['**/*.js'],
@@ -13,6 +21,12 @@ module.exports = {
       files: ['**/*.ts'],
       extends: ['@metamask/eslint-config-typescript'],
       rules: {
+        // This rule disallows the `private` modifier on class fields, but we
+        // use it in some places.
+        'no-restricted-syntax': 'off',
+
+        // This rule does not support TypeScript.
+        'no-undef': 'off',
         '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
       },
     },
@@ -25,6 +39,7 @@ module.exports = {
           'error',
           { allow: ['describe', 'expect', 'it'] },
         ],
+        '@typescript-eslint/unbound-method': 'off',
       },
     },
   ],
