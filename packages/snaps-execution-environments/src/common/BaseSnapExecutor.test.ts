@@ -533,7 +533,7 @@ describe('BaseSnapExecutor', () => {
 
   it('reports when outbound requests are made using snap API', async () => {
     const CODE = `
-      module.exports.onRpcRequest = () => snap.request({ method: 'wallet_getPermissions', params: [] });
+      module.exports.onRpcRequest = () => snaps.request({ method: 'wallet_getPermissions', params: [] });
     `;
     const executor = new TestSnapExecutor();
 
@@ -637,7 +637,7 @@ describe('BaseSnapExecutor', () => {
 
   it('only allows certain methods in snap API', async () => {
     const CODE = `
-      module.exports.onRpcRequest = () => snap.request({ method: 'eth_blockNumber', params: [] });
+      module.exports.onRpcRequest = () => snaps.request({ method: 'eth_blockNumber', params: [] });
     `;
     const executor = new TestSnapExecutor();
 

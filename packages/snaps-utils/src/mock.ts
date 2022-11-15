@@ -19,7 +19,7 @@ type MockEthereumProvider = EventEmitter & {
  *
  * @returns A mocked snap provider.
  */
-function getMockSnapGlobal(): MockSnapGlobal {
+function getMockSnapsGlobal(): MockSnapGlobal {
   return { request: async () => true };
 }
 
@@ -117,6 +117,6 @@ const generateMockEndowment = (key: string) => {
 export const generateMockEndowments = () => {
   return ALL_APIS.reduce<Record<string, any>>(
     (acc, cur) => ({ ...acc, [cur]: generateMockEndowment(cur) }),
-    { snap: getMockSnapGlobal(), ethereum: getMockEthereumProvider() },
+    { snaps: getMockSnapsGlobal(), ethereum: getMockEthereumProvider() },
   );
 };

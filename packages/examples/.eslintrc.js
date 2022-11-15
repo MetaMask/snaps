@@ -10,7 +10,7 @@ module.exports = {
       },
       globals: {
         ethereum: true,
-        snap: true,
+        snaps: true,
       },
       rules: {
         'no-alert': 'off',

@@ -43,13 +43,13 @@ const endowmentFactories = [timeout, interval, network, crypto, math].reduce(
  * such attenuated / modified endowments. Otherwise, the value that's on the
  * root realm global will be used.
  *
- * @param snap - The Snap's API object.
+ * @param snaps - The Snaps global API object.
  * @param ethereum - The Snap's EIP-1193 provider object.
  * @param endowments - The list of endowments to provide to the snap.
  * @returns An object containing the Snap's endowments.
  */
 export function createEndowments(
-  snap: SnapsGlobalObject,
+  snaps: SnapsGlobalObject,
   ethereum: StreamProvider,
   endowments: string[] = [],
 ): { endowments: Record<string, unknown>; teardown: () => Promise<void> } {
@@ -101,7 +101,7 @@ export function createEndowments(
       return { allEndowments, teardowns };
     },
     {
-      allEndowments: { snap } as Record<string, unknown>,
+      allEndowments: { snaps } as Record<string, unknown>,
       teardowns: [] as (() => void)[],
     },
   );

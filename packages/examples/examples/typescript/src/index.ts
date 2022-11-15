@@ -15,7 +15,7 @@ import { getMessage } from './message';
 export const onRpcRequest: OnRpcRequestHandler = ({ origin, request }) => {
   switch (request.method) {
     case 'hello':
-      return snap.request({
+      return snaps.request({
         method: 'snap_notify',
         params: [
           {
