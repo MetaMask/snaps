@@ -151,7 +151,7 @@ const PermissionsStruct = type({
   'endowment:network-access': optional(object({})),
   'endowment:transaction-insight': optional(
     object({
-      allowTransactionOrigin: boolean(),
+      allowTransactionOrigin: optional(boolean()),
     }),
   ),
   'endowment:cronjob': optional(
