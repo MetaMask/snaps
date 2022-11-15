@@ -49,8 +49,8 @@ const specificationBuilder: PermissionSpecificationBuilder<
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => undefined,
     validator: ({ caveats }) => {
       if (
-        caveats !== null &&
-        (caveats?.length > 1 ||
+        (caveats !== null && caveats?.length > 1) ||
+        (caveats?.length === 1 &&
           caveats[0].type !== SnapCaveatType.TransactionOrigin)
       ) {
         throw ethErrors.rpc.invalidParams({
@@ -73,7 +73,7 @@ export const transactionInsightEndowmentBuilder = Object.freeze({
  * @throws If the caveat value is invalid.
  */
 function validateCaveat(caveat: Caveat<string, any>): void {
-  if (!hasProperty(caveat, 'value') || !isPlainObject(caveat.value)) {
+  if (!hasProperty(caveat, 'value') || !isPlainObject(caveat)) {
     throw ethErrors.rpc.invalidParams({
       message: 'Expected a plain object.',
     });
