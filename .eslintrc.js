@@ -27,7 +27,17 @@ module.exports = {
 
         // This rule does not support TypeScript.
         'no-undef': 'off',
-        '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
+
+        // Without the `allowAny` option, this rule causes a lot of false
+        // positives.
+        '@typescript-eslint/restrict-template-expressions': [
+          'error',
+          {
+            allowAny: true,
+            allowBoolean: true,
+            allowNumber: true,
+          },
+        ],
       },
     },
 
