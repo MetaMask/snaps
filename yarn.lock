@@ -3281,6 +3281,7 @@ __metadata:
     ses: ^0.17.0
     superstruct: ^0.16.7
     ts-jest: ^29.0.0
+    ts-opaque: ^3.0.1
     typescript: ~4.8.4
   languageName: unknown
   linkType: soft
@@ -16253,6 +16254,13 @@ __metadata:
     ts-node-transpile-only: dist/bin-transpile.js
     ts-script: dist/bin-script-deprecated.js
   checksum: 2a379e43f7478d0b79e1e63af91fe222d83857727957df4bd3bdf3c0a884de5097b12feb9bbf530074526b8874c0338b0e6328cf334f3a5e2c49c71e837273f7
+  languageName: node
+  linkType: hard
+
+"ts-opaque@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "ts-opaque@npm:3.0.1"
+  checksum: 146f71d08d5915ead4551dce310719c53ead762a3ca6219373beacf273c84a7988b7716e5f8b9d0e9013d87ed84bc9f1e794ecdc4ff14083723ceacd9899040c
   languageName: node
   linkType: hard
 
