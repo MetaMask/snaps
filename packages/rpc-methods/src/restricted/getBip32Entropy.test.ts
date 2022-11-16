@@ -165,6 +165,26 @@ describe('getBip32EntropyCaveatSpecifications', () => {
       ).toBe('foo');
     });
 
+    it('ignores unknown fields', async () => {
+      const fn = jest.fn().mockImplementation(() => 'foo');
+
+      expect(
+        await getBip32EntropyCaveatSpecifications[
+          SnapCaveatType.PermittedDerivationPaths
+        ].decorator(fn, {
+          type: SnapCaveatType.PermittedDerivationPaths,
+          value: [params],
+          // @ts-expect-error Missing other required properties.
+        })({
+          params: {
+            path: ['m', "44'", "60'", "0'", '0', '1'],
+            curve: 'secp256k1',
+            compressed: true,
+          },
+        }),
+      ).toBe('foo');
+    });
+
     it('throws if the path is invalid', async () => {
       const fn = jest.fn().mockImplementation(() => 'foo');
 
