@@ -32,7 +32,7 @@ module.exports.onRpcRequest = async ({ request }) => {
         throw rpcErrors.eth.unauthorized();
       }
 
-      const PRIVATE_KEY = await snaps.request({
+      const PRIVATE_KEY = await snap.request({
         method: 'snap_getEntropy',
         params: {
           version: 1,
@@ -53,7 +53,7 @@ module.exports.onRpcRequest = async ({ request }) => {
  * @returns {Promise<Uint8Array>} The BLS12-381 public key.
  */
 async function getPubKey() {
-  const PRIV_KEY = await snaps.request({
+  const PRIV_KEY = await snap.request({
     method: 'snap_getAppKey',
   });
   return bls.getPublicKey(PRIV_KEY);
@@ -70,7 +70,7 @@ async function getPubKey() {
  * and `false` otherwise.
  */
 async function promptUser(header, message) {
-  const response = await snaps.request({
+  const response = await snap.request({
     method: 'snap_confirm',
     params: [{ prompt: header, textAreaContent: message }],
   });

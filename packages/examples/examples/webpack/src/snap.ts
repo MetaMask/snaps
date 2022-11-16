@@ -14,7 +14,7 @@ import { OnRpcRequestHandler } from '@metamask/snaps-types';
 export const onRpcRequest: OnRpcRequestHandler = ({ origin, request }) => {
   switch (request.method) {
     case 'inApp':
-      return snaps.request({
+      return snap.request({
         method: 'snap_notify',
         params: [
           {
@@ -24,7 +24,7 @@ export const onRpcRequest: OnRpcRequestHandler = ({ origin, request }) => {
         ],
       });
     case 'native':
-      return snaps.request({
+      return snap.request({
         method: 'snap_notify',
         params: [
           {
