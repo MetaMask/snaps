@@ -9,13 +9,15 @@ import {
 } from '@metamask/controllers';
 import { BIP32Node, SLIP10Node } from '@metamask/key-tree';
 import {
-  Bip32PublicKey,
-  Bip32PublicKeyStruct,
+  Bip32Entropy,
+  bip32entropy,
+  Bip32PathStruct,
   SnapCaveatType,
+  SnapGetBip32EntropyPermissionsStruct,
 } from '@metamask/snaps-utils';
 import { NonEmptyArray, assertStruct } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
-import { array, size, type } from 'superstruct';
+import { boolean, enums, Infer, object, optional, type } from 'superstruct';
 import { isEqual } from '../utils';
 
 const targetKey = 'snap_getBip32PublicKey';
@@ -52,6 +54,16 @@ type GetBip32PublicKeyParameters = {
   compressed?: boolean;
 };
 
+export const Bip32PublicKeyArgsStruct = bip32entropy(
+  object({
+    path: Bip32PathStruct,
+    curve: enums(['ed225519', 'secp256k1']),
+    compressed: optional(boolean()),
+  }),
+);
+
+export type Bip32PublicKeyArgs = Infer<typeof Bip32PublicKeyArgsStruct>;
+
 /**
  * Validate a caveat path object. The object must consist of a `path` array and
  * a `curve` string. Paths must start with `m`, and must contain at
@@ -61,11 +73,11 @@ type GetBip32PublicKeyParameters = {
  * @param value - The value to validate.
  * @throws If the value is invalid.
  */
-function validatePath(value: unknown): asserts value is Bip32PublicKey {
+function validatePath(value: unknown): asserts value is Bip32PublicKeyArgs {
   assertStruct(
     value,
-    Bip32PublicKeyStruct,
-    'Invalid BIP-32 public key path definition',
+    Bip32PublicKeyArgsStruct,
+    'Invalid BIP-32 public key params',
     ethErrors.rpc.invalidParams,
   );
 }
@@ -79,10 +91,10 @@ function validatePath(value: unknown): asserts value is Bip32PublicKey {
  */
 export function validateCaveatPaths(
   caveat: Caveat<string, any>,
-): asserts caveat is Caveat<string, Bip32PublicKey[]> {
+): asserts caveat is Caveat<string, Bip32Entropy[]> {
   assertStruct(
     caveat,
-    type({ value: size(array(Bip32PublicKeyStruct), 1, Infinity) }),
+    type({ value: SnapGetBip32EntropyPermissionsStruct }),
     'Invalid BIP-32 public key caveat',
     ethErrors.rpc.internal,
   );
