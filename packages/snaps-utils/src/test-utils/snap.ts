@@ -7,6 +7,7 @@ import {
   TruncatedSnap,
 } from '../snaps';
 import { getSnapManifest } from './manifest';
+import { MakeSemVer } from './common';
 
 /**
  * A mock snap source and its shasum.
@@ -28,15 +29,9 @@ export const MOCK_SNAP_ID = 'npm:@metamask/example-snap';
 export const MOCK_LOCAL_SNAP_ID = 'local:@metamask/example-snap';
 export const MOCK_ORIGIN = 'example.com';
 
-type GetPersistedSnapObjectOptions = Partial<Omit<PersistedSnap, 'version'>> & {
-  version?: string | SemVerVersion;
-};
-type GetSnapObjectOptions = Partial<Omit<Snap, 'version'>> & {
-  version?: string | SemVerVersion;
-};
-type GetTruncatedSnapOptions = Partial<Omit<TruncatedSnap, 'version'>> & {
-  version?: string | SemVerVersion;
-};
+type GetPersistedSnapObjectOptions = Partial<MakeSemVer<PersistedSnap>>;
+type GetSnapObjectOptions = Partial<MakeSemVer<Snap>>;
+type GetTruncatedSnapOptions = Partial<MakeSemVer<TruncatedSnap>>;
 
 export const getPersistedSnapObject = ({
   blocked = false,

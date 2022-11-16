@@ -31,7 +31,7 @@ import fetchMock from 'jest-fetch-mock';
 import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import pump from 'pump';
-import { Duplex } from 'stream';;
+import { Duplex } from 'stream';
 import { NodeThreadExecutionService, setupMultiplex } from '../services';
 import {
   ExecutionEnvironmentStub,
@@ -3143,13 +3143,7 @@ describe('SnapController', () => {
         });
       /* eslint-enable @typescript-eslint/naming-convention */
 
-<<<<<<< HEAD
       callActionSpy.mockImplementation((method, ...args: unknown[]): any => {
-=======
-      callActionSpy.mockImplementation((method, ...params) => {
-        assert(params.length > 0);
-        const request: any = params[0];
->>>>>>> c8c60447 (Added opaque types for SemVers)
         if (method === 'PermissionController:hasPermission') {
           return true;
         } else if (method === 'ApprovalController:addRequest') {
@@ -3955,10 +3949,9 @@ describe('SnapController', () => {
           ) {
             return true;
           }
-<<<<<<< HEAD
-=======
-
->>>>>>> c8c60447 (Added opaque types for SemVers)
+          // TypeScript doesn't allow variadic list of arguments into non-variadic functions.
+          // messenger.call is a union of functions that take a constant amount of arguments, and
+          // so, TypeScript errors.
           return (originalCall as any)(method, ...args);
         });
 
@@ -3989,10 +3982,6 @@ describe('SnapController', () => {
               },
             };
           }
-<<<<<<< HEAD
-=======
-
->>>>>>> c8c60447 (Added opaque types for SemVers)
           return (originalCall as any)(method, ...args);
         });
 

@@ -78,6 +78,8 @@ const MOCK_CRONJOB_SINGLE_JOB_PERMISSION = {
   parentCapability: SnapEndowments.Cronjob,
 };
 
+const MOCK_VERSION = '1.0' as SemVerVersion;
+
 describe('CronjobController', () => {
   beforeEach(() => {
     jest.useFakeTimers().setSystemTime(new Date('2022-01-01'));
@@ -316,7 +318,7 @@ describe('CronjobController', () => {
       id: MOCK_SNAP_ID,
       initialPermissions: {},
       permissionName: '',
-      version: '1.0' as SemVerVersion,
+      version: MOCK_VERSION,
     };
     // @ts-expect-error Accessing private property
     cronjobController._handleEventSnapInstalled(snapInfo);
@@ -368,7 +370,7 @@ describe('CronjobController', () => {
       id: MOCK_SNAP_ID,
       initialPermissions: {},
       permissionName: '',
-      version: '1.0' as SemVerVersion,
+      version: MOCK_VERSION,
     };
 
     // @ts-expect-error Accessing private property
@@ -433,7 +435,7 @@ describe('CronjobController', () => {
       id: MOCK_SNAP_ID,
       initialPermissions: {},
       permissionName: '',
-      version: '1.0' as SemVerVersion,
+      version: MOCK_VERSION,
     };
 
     // @ts-expect-error Accessing private property

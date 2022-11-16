@@ -8,11 +8,9 @@ import {
 } from '../namespace';
 import { NpmSnapPackageJson } from '../types';
 import { DEFAULT_SNAP_SHASUM } from './snap';
+import { MakeSemVer } from './common';
 
-type GetSnapManifestOptions = Partial<
-  Omit<SnapManifest, 'source' | 'version'>
-> & {
-  version?: SemVerVersion | string;
+type GetSnapManifestOptions = Partial<MakeSemVer<SnapManifest>> & {
   shasum?: string;
   filePath?: string;
   packageName?: string;
@@ -20,9 +18,7 @@ type GetSnapManifestOptions = Partial<
   iconPath?: string;
 };
 
-type GetPackageJsonOptions = Partial<Omit<NpmSnapPackageJson, 'version'>> & {
-  version?: SemVerVersion | string;
-};
+type GetPackageJsonOptions = Partial<MakeSemVer<NpmSnapPackageJson>>;
 
 /**
  * Get the default package repository, in a format compatible with
