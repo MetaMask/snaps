@@ -128,7 +128,7 @@ export const bip32entropy = <T extends { path: string[]; curve: string }, S>(
 
 // Used outside @metamask/snap-utils
 export const Bip32EntropyStruct = bip32entropy(
-  object({
+  type({
     path: Bip32PathStruct,
     curve: enums(['ed25519', 'secp256k1']),
   }),
