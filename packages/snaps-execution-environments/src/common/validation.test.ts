@@ -41,12 +41,17 @@ describe('isEndowmentsArray', () => {
 
 describe('assertIsOnTransactionRequestArguments', () => {
   it.each([
-    { transaction: {}, chainId: 'eip155:1' },
+    { transaction: {}, chainId: 'eip155:1', transactionOrigin: null },
     {
       transaction: { foo: 'bar' },
       chainId: 'bip122:000000000019d6689c085ae165831e93',
+      transactionOrigin: null,
     },
-    { transaction: { bar: 'baz' }, chainId: 'eip155:2' },
+    {
+      transaction: { bar: 'baz' },
+      chainId: 'eip155:2',
+      transactionOrigin: null,
+    },
   ])('does not throw for a valid transaction params object', (args) => {
     expect(() => assertIsOnTransactionRequestArguments(args)).not.toThrow();
   });

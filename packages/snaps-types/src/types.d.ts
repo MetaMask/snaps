@@ -16,6 +16,7 @@ export type OnTransactionResponse = {
 export type OnTransactionHandler = (args: {
   transaction: { [key: string]: unknown };
   chainId: string;
+  transactionOrigin?: string;
 }) => Promise<OnTransactionResponse>;
 
 export type OnCronjobHandler = (args: {

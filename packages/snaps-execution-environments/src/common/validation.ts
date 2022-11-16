@@ -16,6 +16,7 @@ import {
   Infer,
   is,
   literal,
+  nullable,
   object,
   omit,
   optional,
@@ -153,6 +154,7 @@ export const OnTransactionRequestArgumentsStruct = object({
   // TODO: Improve `transaction` type.
   transaction: record(string(), JsonStruct),
   chainId: ChainIdStruct,
+  transactionOrigin: nullable(string()),
 });
 
 export type OnTransactionRequestArguments = Infer<
