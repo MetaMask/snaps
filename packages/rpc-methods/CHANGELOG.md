@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.24.0]
+### Added
+- Add `snap_getEntropy` JSON-RPC method ([#940](https://github.com/MetaMask/snaps-monorepo/pull/940))
+- Add permission validation to `snap.manifest.json` ([#910](https://github.com/MetaMask/snaps-monorepo/pull/910))
+
+### Changed
+- **BREAKING:** Remove `wallet_enable` and `wallet_installSnaps` in favor of `wallet_requestSnaps` ([#909](https://github.com/MetaMask/snaps-monorepo/pull/909))
+- **BREAKING:** Refactor RPC method params and add tests ([#922](https://github.com/MetaMask/snaps-monorepo/pull/922))
+
+### Removed
+- **BREAKING:** Remove `snap_getAppKey` ([#867](https://github.com/MetaMask/snaps-monorepo/pull/867))
+
 ## [0.23.0]
 ### Changed
 - **BREAKING:** Bump `@metamask/key-tree` to 6.0.0 ([#918](https://github.com/MetaMask/snaps-monorepo/pull/918))
@@ -227,7 +239,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.23.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.24.0...HEAD
+[0.24.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.23.0...v0.24.0
 [0.23.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.3...v0.23.0
 [0.22.3]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.2...v0.22.3
 [0.22.2]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.1...v0.22.2
