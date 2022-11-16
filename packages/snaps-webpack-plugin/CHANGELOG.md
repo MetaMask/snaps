@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.24.0]
 ### Added
-- Add warning when using `Math.random` ([#950](https://github.com/MetaMask/snaps-monorepo/pull/950))
+- Add compile-time warning when using `Math.random` ([#950](https://github.com/MetaMask/snaps-monorepo/pull/950))
 
 ## [0.23.0]
 ### Fixed

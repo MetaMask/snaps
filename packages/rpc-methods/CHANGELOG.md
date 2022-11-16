@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.24.0]
 ### Added
 - Add `snap_getEntropy` JSON-RPC method ([#940](https://github.com/MetaMask/snaps-monorepo/pull/940))
-- Add permission validation to SnapManifest ([#910](https://github.com/MetaMask/snaps-monorepo/pull/910))
+- Add permission validation to `snap.manifest.json` ([#910](https://github.com/MetaMask/snaps-monorepo/pull/910))
 
 ### Changed
 - **BREAKING:** Remove `wallet_enable` and `wallet_installSnaps` in favor of `wallet_requestSnaps` ([#909](https://github.com/MetaMask/snaps-monorepo/pull/909))
