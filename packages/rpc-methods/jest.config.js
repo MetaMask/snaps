@@ -5,10 +5,10 @@ module.exports = deepmerge(baseConfig, {
   coveragePathIgnorePatterns: ['./src/index.ts'],
   coverageThreshold: {
     global: {
-      branches: 88.05,
-      functions: 89.65,
-      lines: 84.11,
-      statements: 84.11,
+      branches: 87.41,
+      functions: 87.27,
+      lines: 83.36,
+      statements: 83.36,
     },
   },
   testTimeout: 2500,

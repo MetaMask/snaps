@@ -1,7 +1,5 @@
-import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   getBip32PublicKeyBuilder,
-  getBip32PublicKeyCaveatSpecifications,
   getBip32PublicKeyImplementation,
 } from './getBip32PublicKey';
 
@@ -41,73 +39,6 @@ describe('specificationBuilder', () => {
           ],
         }),
       ).toThrow('Expected a single "permittedDerivationPaths" caveat.');
-    });
-  });
-});
-
-describe('getBip32PublicKeyCaveatSpecifications', () => {
-  describe('decorator', () => {
-    const params = { path: ['m', "44'", "60'"], curve: 'secp256k1' };
-
-    it('returns the result of the method implementation', async () => {
-      const fn = jest.fn().mockImplementation(() => 'foo');
-
-      expect(
-        await getBip32PublicKeyCaveatSpecifications[
-          SnapCaveatType.PermittedDerivationPaths
-        ].decorator(fn, {
-          type: SnapCaveatType.PermittedDerivationPaths,
-          value: [params],
-          // @ts-expect-error Missing other required properties.
-        })({ params }),
-      ).toBe('foo');
-    });
-
-    it('throws if the path is invalid', async () => {
-      const fn = jest.fn().mockImplementation(() => 'foo');
-
-      await expect(
-        getBip32PublicKeyCaveatSpecifications[
-          SnapCaveatType.PermittedDerivationPaths
-        ].decorator(fn, {
-          type: SnapCaveatType.PermittedDerivationPaths,
-          value: [params],
-          // @ts-expect-error Missing other required properties.
-        })({ params: { ...params, path: [] } }),
-      ).rejects.toThrow(
-        'Invalid BIP-32 public key path definition: At path: path -- Path must be a non-empty BIP-32 derivation path array.',
-      );
-    });
-
-    it('throws if the path is not specified in the caveats', async () => {
-      const fn = jest.fn().mockImplementation(() => 'foo');
-
-      await expect(
-        getBip32PublicKeyCaveatSpecifications[
-          SnapCaveatType.PermittedDerivationPaths
-        ].decorator(fn, {
-          type: SnapCaveatType.PermittedDerivationPaths,
-          value: [params],
-          // @ts-expect-error Missing other required properties.
-        })({ params: { ...params, path: ['m', "44'", "0'"] } }),
-      ).rejects.toThrow(
-        'The requested path is not permitted. Allowed paths must be specified in the snap manifest.',
-      );
-    });
-  });
-
-  describe('validator', () => {
-    it('throws if the caveat values are invalid', () => {
-      expect(() =>
-        getBip32PublicKeyCaveatSpecifications[
-          SnapCaveatType.PermittedDerivationPaths
-        ].validator?.({
-          type: SnapCaveatType.PermittedDerivationPaths,
-          value: [{ path: ['foo'], curve: 'secp256k1' }],
-        }),
-      ).toThrow(
-        'Invalid BIP-32 public key caveat: At path: value.0.path -- Path must start with "m".',
-      );
     });
   });
 });

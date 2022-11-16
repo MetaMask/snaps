@@ -112,7 +112,7 @@ export const Bip32PathStruct = refine(
   },
 );
 
-const bip32entropy = <T extends { path: string[]; curve: string }, S>(
+export const bip32entropy = <T extends { path: string[]; curve: string }, S>(
   struct: Struct<T, S>,
 ) =>
   refine(struct, 'BIP-32 entropy', (value) => {
@@ -128,7 +128,7 @@ const bip32entropy = <T extends { path: string[]; curve: string }, S>(
 
 // Used outside @metamask/snap-utils
 export const Bip32EntropyStruct = bip32entropy(
-  object({
+  type({
     path: Bip32PathStruct,
     curve: enums(['ed25519', 'secp256k1']),
   }),
@@ -136,17 +136,13 @@ export const Bip32EntropyStruct = bip32entropy(
 
 export type Bip32Entropy = Infer<typeof Bip32EntropyStruct>;
 
-export const Bip32PublicKeyStruct = bip32entropy(
-  object({
-    path: Bip32PathStruct,
-    curve: enums(['ed225519', 'secp256k1']),
-    compressed: optional(boolean()),
-  }),
+export const SnapGetBip32EntropyPermissionsStruct = size(
+  array(Bip32EntropyStruct),
+  1,
+  Infinity,
 );
 
-export type Bip32PublicKey = Infer<typeof Bip32PublicKeyStruct>;
-
-const PermissionsStruct = type({
+export const PermissionsStruct = type({
   'endowment:long-running': optional(object({})),
   'endowment:network-access': optional(object({})),
   'endowment:transaction-insight': optional(
@@ -160,10 +156,8 @@ const PermissionsStruct = type({
   snap_confirm: optional(object({})),
   snap_manageState: optional(object({})),
   snap_notify: optional(object({})),
-  snap_getBip32Entropy: optional(size(array(Bip32EntropyStruct), 1, Infinity)),
-  snap_getBip32PublicKey: optional(
-    size(array(Bip32PublicKeyStruct), 1, Infinity),
-  ),
+  snap_getBip32Entropy: optional(SnapGetBip32EntropyPermissionsStruct),
+  snap_getBip32PublicKey: optional(SnapGetBip32EntropyPermissionsStruct),
   snap_getBip44Entropy: optional(
     size(
       array(object({ coinType: size(integer(), 0, 2 ** 32 - 1) })),
