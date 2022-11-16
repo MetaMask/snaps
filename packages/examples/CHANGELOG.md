@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `snap_getEntropy` JSON-RPC method ([#940](https://github.com/MetaMask/snaps-monorepo/pull/940))
 
 ### Changed
-- **BREAKING:** Remove `wallet` global in favor of `snaps` and `ethereum` ([#939](https://github.com/MetaMask/snaps-monorepo/pull/939), [#964](https://github.com/MetaMask/snaps-monorepo/pull/964))
+- **BREAKING:** Remove `wallet` global in favor of `snap` and `ethereum` ([#939](https://github.com/MetaMask/snaps-monorepo/pull/939), [#964](https://github.com/MetaMask/snaps-monorepo/pull/964))
 - Remove `wallet_enable` from examples ([#949](https://github.com/MetaMask/snaps-monorepo/pull/949))
 
 ## [0.23.0]
