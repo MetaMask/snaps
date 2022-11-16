@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.24.0]
+### Uncategorized
+- Remove double logging in CLI ([#958](https://github.com/MetaMask/snaps-monorepo/pull/958))
+- Added Permissions validation to SnapManifest ([#910](https://github.com/MetaMask/snaps-monorepo/pull/910))
+- BREAKING: Rename packages to start with `snaps-` ([#937](https://github.com/MetaMask/snaps-monorepo/pull/937))
+- Speed up CI by running jobs in parallel ([#917](https://github.com/MetaMask/snaps-monorepo/pull/917))
+
 ## [0.23.0]
 ### Changed
 - **BREAKING:** Refactor `mm-snap init` command ([#866](https://github.com/MetaMask/snaps-monorepo/pull/866))
@@ -257,7 +264,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Example snaps ([#72](https://github.com/MetaMask/snaps-monorepo/pull/72))
   - The examples now live in their own package, [`@metamask/snap-examples`](https://npmjs.com/package/@metamask/snap-examples).
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.23.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.24.0...HEAD
+[0.24.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.23.0...v0.24.0
 [0.23.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.3...v0.23.0
 [0.22.3]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.2...v0.22.3
 [0.22.2]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.1...v0.22.2

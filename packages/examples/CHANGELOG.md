@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.24.0]
+### Uncategorized
+- BREAKING: Rename `snaps` global object to `snap` ([#964](https://github.com/MetaMask/snaps-monorepo/pull/964))
+- BREAKING: Remove `wallet` global in favor of `snaps` and `ethereum` ([#939](https://github.com/MetaMask/snaps-monorepo/pull/939))
+- Add `snap_getEntropy` JSON-RPC method ([#940](https://github.com/MetaMask/snaps-monorepo/pull/940))
+- Added Permissions validation to SnapManifest ([#910](https://github.com/MetaMask/snaps-monorepo/pull/910))
+- Remove `wallet_enable` from examples ([#949](https://github.com/MetaMask/snaps-monorepo/pull/949))
+- BREAKING: Rename packages to start with `snaps-` ([#937](https://github.com/MetaMask/snaps-monorepo/pull/937))
+- Speed up CI by running jobs in parallel ([#917](https://github.com/MetaMask/snaps-monorepo/pull/917))
+
 ## [0.23.0]
 ### Changed
 - No changes this release.
@@ -188,7 +198,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - This package was previously a subset of [`snaps-cli`](https://github.com/MetaMask/snaps-cli/tree/main/examples), which has been renamed to [`@metamask/snaps-cli`](https://npmjs.com/package/@metamask/snaps-cli).
   - Some examples have been deleted because they were outdated.
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.23.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.24.0...HEAD
+[0.24.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.23.0...v0.24.0
 [0.23.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.3...v0.23.0
 [0.22.3]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.2...v0.22.3
 [0.22.2]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.1...v0.22.2

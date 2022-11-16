@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.24.0]
+### Uncategorized
+- Show warning when using `Math.random` ([#950](https://github.com/MetaMask/snaps-monorepo/pull/950))
+- BREAKING: Rename packages to start with `snaps-` ([#937](https://github.com/MetaMask/snaps-monorepo/pull/937))
+- Speed up CI by running jobs in parallel ([#917](https://github.com/MetaMask/snaps-monorepo/pull/917))
+
 ## [0.23.0]
 ### Changed
 - No changes this release.
@@ -75,7 +81,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release ([#410](https://github.com/MetaMask/snaps-monorepo/pull/410), [#421](https://github.com/MetaMask/snaps-monorepo/pull/421))
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.23.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.24.0...HEAD
+[0.24.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.23.0...v0.24.0
 [0.23.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.3...v0.23.0
 [0.22.3]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.2...v0.22.3
 [0.22.2]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.1...v0.22.2
