@@ -7,11 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.24.0]
-### Uncategorized
+### Added
+- Add permission validation to SnapManifest ([#910](https://github.com/MetaMask/snaps-monorepo/pull/910))
+
+### Fixed
 - Remove double logging in CLI ([#958](https://github.com/MetaMask/snaps-monorepo/pull/958))
-- Added Permissions validation to SnapManifest ([#910](https://github.com/MetaMask/snaps-monorepo/pull/910))
-- BREAKING: Rename packages to start with `snaps-` ([#937](https://github.com/MetaMask/snaps-monorepo/pull/937))
-- Speed up CI by running jobs in parallel ([#917](https://github.com/MetaMask/snaps-monorepo/pull/917))
 
 ## [0.23.0]
 ### Changed

@@ -7,15 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.24.0]
-### Uncategorized
-- BREAKING: Remove `snap_getAppKey` ([#867](https://github.com/MetaMask/snaps-monorepo/pull/867))
+### Added
 - Add `snap_getEntropy` JSON-RPC method ([#940](https://github.com/MetaMask/snaps-monorepo/pull/940))
-- BREAKING: Refactor RPC method params and add tests ([#922](https://github.com/MetaMask/snaps-monorepo/pull/922))
-- Added Permissions validation to SnapManifest ([#910](https://github.com/MetaMask/snaps-monorepo/pull/910))
-- Remove `wallet_enable` from examples ([#949](https://github.com/MetaMask/snaps-monorepo/pull/949))
-- BREAKING: Rename packages to start with `snaps-` ([#937](https://github.com/MetaMask/snaps-monorepo/pull/937))
-- BREAKING: Remove `wallet_enable` and `wallet_installSnaps` in favor of `wallet_requestSnaps` ([#909](https://github.com/MetaMask/snaps-monorepo/pull/909))
-- Speed up CI by running jobs in parallel ([#917](https://github.com/MetaMask/snaps-monorepo/pull/917))
+- Add permission validation to SnapManifest ([#910](https://github.com/MetaMask/snaps-monorepo/pull/910))
+
+### Changed
+- **BREAKING:** Remove `wallet_enable` and `wallet_installSnaps` in favor of `wallet_requestSnaps` ([#909](https://github.com/MetaMask/snaps-monorepo/pull/909))
+- **BREAKING:** Refactor RPC method params and add tests ([#922](https://github.com/MetaMask/snaps-monorepo/pull/922))
+
+### Removed
+- **BREAKING:** Remove `snap_getAppKey` ([#867](https://github.com/MetaMask/snaps-monorepo/pull/867))
 
 ## [0.23.0]
 ### Changed

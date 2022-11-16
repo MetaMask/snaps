@@ -7,14 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.24.0]
-### Uncategorized
+### Added
 - Add transaction insight caveat for accessing transaction origin ([#902](https://github.com/MetaMask/snaps-monorepo/pull/902))
-- BREAKING: Rename `snaps` global object to `snap` ([#964](https://github.com/MetaMask/snaps-monorepo/pull/964))
-- BREAKING: Remove `wallet` global in favor of `snaps` and `ethereum` ([#939](https://github.com/MetaMask/snaps-monorepo/pull/939))
 - Add `snap_getEntropy` JSON-RPC method ([#940](https://github.com/MetaMask/snaps-monorepo/pull/940))
-- Added Permissions validation to SnapManifest ([#910](https://github.com/MetaMask/snaps-monorepo/pull/910))
-- Show warning when using `Math.random` ([#950](https://github.com/MetaMask/snaps-monorepo/pull/950))
-- BREAKING: Rename packages to start with `snaps-` ([#937](https://github.com/MetaMask/snaps-monorepo/pull/937))
+- Add permission validation to SnapManifest ([#910](https://github.com/MetaMask/snaps-monorepo/pull/910))
+- Add warning when using `Math.random` ([#950](https://github.com/MetaMask/snaps-monorepo/pull/950))
+
+### Changed
+- **BREAKING:** Rename package to start with `snaps-` ([#937](https://github.com/MetaMask/snaps-monorepo/pull/937))
+- **BREAKING:** Remove `wallet` global in favor of `snap` and `ethereum` ([#939](https://github.com/MetaMask/snaps-monorepo/pull/939), [#964](https://github.com/MetaMask/snaps-monorepo/pull/964))
 
 ## [0.23.0]
 ### Added
