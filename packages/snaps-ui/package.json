@@ -23,6 +23,9 @@
     "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
     "publish:package": "../../scripts/publish-package.sh"
   },
+  "dependencies": {
+    "superstruct": "^0.16.7"
+  },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.0.3",
     "@metamask/auto-changelog": "^2.6.0",
