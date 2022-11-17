@@ -39,9 +39,9 @@ export async function watch(argv: YargsArgs): Promise<void> {
   }
   await validateFilePath(src);
   await validateDirPath(dist, true);
-  const rootDir = !src.includes('/')
-    ? '.'
-    : src.substring(0, src.lastIndexOf('/') + 1);
+  const rootDir = src.includes('/')
+    ? src.substring(0, src.lastIndexOf('/') + 1)
+    : '.';
   const outfilePath = getOutfilePath(dist, outfileName);
 
   const buildSnap = async (path?: string, logMessage?: string) => {
@@ -86,14 +86,29 @@ export async function watch(argv: YargsArgs): Promise<void> {
       ],
     })
 
-    .on('ready', async () => {
-      await buildSnap();
-      if (shouldServe) {
-        await serve(argv);
-      }
+    .on('ready', () => {
+      buildSnap()
+        .then(() => {
+          if (shouldServe) {
+            return serve(argv);
+          }
+
+          return undefined;
+        })
+        .catch((error) => {
+          logError('Error during initial build.', error);
+        });
     })
-    .on('add', async (path) => buildSnap(path, `File added: ${path}`))
-    .on('change', async (path) => buildSnap(path, `File changed: ${path}`))
+    .on('add', (path) => {
+      buildSnap(path, `File added: ${path}`).catch((error) => {
+        logError(`Error while processing "${path}".`, error);
+      });
+    })
+    .on('change', (path) => {
+      buildSnap(path, `File changed: ${path}`).catch((error) => {
+        logError(`Error while processing "${path}".`, error);
+      });
+    })
     .on('unlink', (path) => console.log(`File removed: ${path}`))
     .on('error', (error: Error) => {
       logError(`Watcher error: ${error.message}`, error);

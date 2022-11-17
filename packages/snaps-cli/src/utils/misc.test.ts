@@ -24,7 +24,8 @@ describe('misc', () => {
     isWatching: false,
   };
 
-  // this is the yargs object created with cli command: mm-snap init
+  // This is the yargs object created with cli command: `mm-snap init`.
+  /* eslint-disable @typescript-eslint/naming-convention */
   const defaultArgv = {
     _: ['init'],
     verboseErrors: true,
@@ -43,8 +44,8 @@ describe('misc', () => {
     $0: '/usr/local/bin/mm-snap',
   };
 
-  // this is the yargs object created with cli command:
-  //   mm-snap watch -verboseErrors --suppressWarnings
+  // This is the yargs object created with cli command:
+  //   `mm-snap watch -verboseErrors --suppressWarnings`
   const exampleArgv = {
     _: ['watch'],
     verboseErrors: true,
@@ -101,6 +102,7 @@ describe('misc', () => {
     p: 8081,
     $0: '/usr/local/bin/mm-snap',
   };
+  /* eslint-enable @typescript-eslint/naming-convention */
 
   const setVerboseErrors = (bool: boolean) => {
     global.snaps.verboseErrors = bool;
@@ -153,6 +155,8 @@ describe('misc', () => {
 
     it('does not set global variables if they are not in argv', () => {
       global.snaps = { isWatching: false };
+
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       const argv = { _: ['w', 'watch'], $0: '/usr/local/bin/mm-snap' };
       setSnapGlobals(argv);
       expect(global.snaps.verboseErrors).toBeUndefined();

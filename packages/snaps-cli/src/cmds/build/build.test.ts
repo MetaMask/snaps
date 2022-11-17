@@ -44,7 +44,7 @@ describe('build', () => {
         .mockImplementation();
       const bundleMock = jest
         .spyOn(buildBundle, 'bundle')
-        .mockImplementation(async () => true);
+        .mockImplementation(async () => Promise.resolve(true));
       const evalMock = jest
         .spyOn(snapEvalModule, 'evalHandler')
         .mockImplementation();
@@ -87,7 +87,7 @@ describe('build', () => {
         .mockImplementation();
       const bundleMock = jest
         .spyOn(buildBundle, 'bundle')
-        .mockImplementation(async () => true);
+        .mockImplementation(async () => Promise.resolve(true));
       const evalMock = jest
         .spyOn(snapEvalModule, 'evalHandler')
         .mockImplementation();

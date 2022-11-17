@@ -75,9 +75,9 @@ describe('snap-config', () => {
       jest.doMock(
         CONFIG_FILE_LOCATION,
         (): never => {
-          const err: Error & { code?: string } = new Error('foo');
-          err.code = 'MODULE_NOT_FOUND';
-          throw err;
+          const error: Error & { code?: string } = new Error('foo');
+          error.code = 'MODULE_NOT_FOUND';
+          throw error;
         },
         { virtual: true },
       );

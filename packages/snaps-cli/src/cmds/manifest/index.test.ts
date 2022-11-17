@@ -13,8 +13,8 @@ const manifestHandlerMock = manifestHandler as jest.MockedFunction<
 >;
 
 describe('handler', () => {
-  it('calls manifestHandler', () => {
-    index.handler(getMockArgv());
+  it('calls manifestHandler', async () => {
+    await index.handler(getMockArgv());
 
     expect(manifestHandlerMock).toHaveBeenCalled();
   });
@@ -24,6 +24,6 @@ describe('handler', () => {
     jest.spyOn(console, 'error').mockImplementationOnce(() => undefined);
 
     await expect(index.handler(getMockArgv())).rejects.toThrow('foo');
-    await expect(console.error).toHaveBeenCalledTimes(1);
+    expect(console.error).toHaveBeenCalledTimes(1);
   });
 });
