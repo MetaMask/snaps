@@ -6,10 +6,10 @@ module.exports = deepmerge(baseConfig, {
   coveragePathIgnorePatterns: ['./src/types'],
   coverageThreshold: {
     global: {
-      branches: 98.91,
+      branches: 97.89,
       functions: 98.07,
-      lines: 99.86,
-      statements: 99.86,
+      lines: 99.47,
+      statements: 99.47,
     },
   },
   setupFiles: ['./test/setup.js'],

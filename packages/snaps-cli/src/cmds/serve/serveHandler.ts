@@ -38,7 +38,7 @@ export async function serve(argv: YargsArgs): Promise<void> {
           ],
         },
       ],
-    }).catch((error) => {
+    })?.catch((error) => {
       logServerError(error, argv.port);
       res.statusCode = 500;
       res.end();

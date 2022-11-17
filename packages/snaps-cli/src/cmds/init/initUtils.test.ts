@@ -81,14 +81,14 @@ describe('initUtils', () => {
       );
     });
 
-    it('throws if the command fails', async () => {
+    it('throws if the command fails', () => {
       const execSyncMock = jest
         .spyOn(childProcess, 'execSync')
         .mockImplementation(() => {
           throw new Error('error message');
         });
 
-      await expect(cloneTemplate('foo')).rejects.toThrow(
+      expect(() => cloneTemplate('foo')).toThrow(
         'Init Error: Failed to clone the template.',
       );
       expect(execSyncMock).toHaveBeenCalledTimes(1);
