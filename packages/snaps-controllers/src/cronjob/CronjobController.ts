@@ -105,20 +105,22 @@ export class CronjobController extends BaseController<
     this._handleEventSnapUpdated = this._handleEventSnapUpdated.bind(this);
 
     // Subscribe to Snap events
+    /* eslint-disable @typescript-eslint/unbound-method */
     this.messagingSystem.subscribe(
       'SnapController:snapInstalled',
-      this._handleEventSnapInstalled.bind(this),
+      this._handleEventSnapInstalled,
     );
 
     this.messagingSystem.subscribe(
       'SnapController:snapRemoved',
-      this._handleEventSnapRemoved.bind(this),
+      this._handleEventSnapRemoved,
     );
 
     this.messagingSystem.subscribe(
       'SnapController:snapUpdated',
-      this._handleEventSnapUpdated.bind(this),
+      this._handleEventSnapUpdated,
     );
+    /* eslint-enable @typescript-eslint/unbound-method */
 
     this.dailyCheckIn().catch((error) => {
       console.error(error);
@@ -184,6 +186,7 @@ export class CronjobController extends BaseController<
     if (this.#timers.has(job.id)) {
       return;
     }
+
     const parsed = parseCronExpression(job.expression);
     const next = parsed.next();
     const now = new Date();
@@ -300,20 +303,22 @@ export class CronjobController extends BaseController<
   destroy() {
     super.destroy();
 
+    /* eslint-disable @typescript-eslint/unbound-method */
     this.messagingSystem.unsubscribe(
       'SnapController:snapInstalled',
-      this._handleEventSnapInstalled.bind(this),
+      this._handleEventSnapInstalled,
     );
 
     this.messagingSystem.unsubscribe(
       'SnapController:snapRemoved',
-      this._handleEventSnapRemoved.bind(this),
+      this._handleEventSnapRemoved,
     );
 
     this.messagingSystem.unsubscribe(
       'SnapController:snapUpdated',
-      this._handleEventSnapUpdated.bind(this),
+      this._handleEventSnapUpdated,
     );
+    /* eslint-enable @typescript-eslint/unbound-method */
 
     this.#snapIds.forEach((snapId) => {
       this.unregister(snapId);

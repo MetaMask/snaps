@@ -404,20 +404,21 @@ describe('CronjobController', () => {
         },
       ],
     };
+
     const rootMessenger = getRootCronjobControllerMessenger();
     const controllerMessenger =
       getRestrictedCronjobControllerMessenger(rootMessenger);
 
     const callActionMock = jest.spyOn(controllerMessenger, 'call');
 
-    callActionMock
-      .mockResolvedValueOnce([getTruncatedSnap()])
-      .mockResolvedValueOnce({
-        [SnapEndowments.Cronjob]: MOCK_CRONJOB_PERMISSION,
-      })
-      .mockResolvedValueOnce({
-        [SnapEndowments.Cronjob]: MOCK_ANOTHER_CRONJOB_PERMISSION,
-      });
+    callActionMock.mockImplementation((method, ..._params: unknown[]) => {
+      if (method === 'SnapController:getAll') {
+        return [getTruncatedSnap()];
+      } else if (method === 'PermissionController:getPermissions') {
+        return { [SnapEndowments.Cronjob]: MOCK_CRONJOB_PERMISSION } as any;
+      }
+      return false;
+    });
 
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,

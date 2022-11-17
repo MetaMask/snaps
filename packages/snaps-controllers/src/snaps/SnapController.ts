@@ -720,20 +720,22 @@ export class SnapController extends BaseController<
 
     this.#pollForLastRequestStatus();
 
+    /* eslint-disable @typescript-eslint/unbound-method */
     this.messagingSystem.subscribe(
       'ExecutionService:unhandledError',
-      this._onUnhandledSnapError.bind(this),
+      this._onUnhandledSnapError,
     );
 
     this.messagingSystem.subscribe(
       'ExecutionService:outboundRequest',
-      this._onOutboundRequest.bind(this),
+      this._onOutboundRequest,
     );
 
     this.messagingSystem.subscribe(
       'ExecutionService:outboundResponse',
-      this._onOutboundResponse.bind(this),
+      this._onOutboundResponse,
     );
+    /* eslint-enable @typescript-eslint/unbound-method */
 
     this.#initializeStateMachine();
     this.#registerMessageHandlers();
@@ -1047,12 +1049,12 @@ export class SnapController extends BaseController<
   }
 
   _onUnhandledSnapError(snapId: SnapId, error: SnapErrorJson) {
-    this.stopSnap(snapId, SnapStatusEvents.Crash).catch((stopSnapError) => {
-      // TODO: Decide how to handle errors.
-      console.error(stopSnapError);
-    });
-
-    this.addSnapError(error);
+    this.stopSnap(snapId, SnapStatusEvents.Crash)
+      .then(() => this.addSnapError(error))
+      .catch((stopSnapError) => {
+        // TODO: Decide how to handle errors.
+        console.error(stopSnapError);
+      });
   }
 
   _onOutboundRequest(snapId: SnapId) {
@@ -2209,20 +2211,22 @@ export class SnapController extends BaseController<
       clearTimeout(this.#timeoutForLastRequestStatus);
     }
 
+    /* eslint-disable @typescript-eslint/unbound-method */
     this.messagingSystem.unsubscribe(
       'ExecutionService:unhandledError',
-      this._onUnhandledSnapError.bind(this),
+      this._onUnhandledSnapError,
     );
 
     this.messagingSystem.unsubscribe(
       'ExecutionService:outboundRequest',
-      this._onOutboundRequest.bind(this),
+      this._onOutboundRequest,
     );
 
     this.messagingSystem.unsubscribe(
       'ExecutionService:outboundResponse',
-      this._onOutboundResponse.bind(this),
+      this._onOutboundResponse,
     );
+    /* eslint-enable @typescript-eslint/unbound-method */
   }
 
   /**
