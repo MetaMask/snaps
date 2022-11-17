@@ -1,7 +1,8 @@
-import { series, dest } from 'gulp';
 import browserify from 'browserify';
+import { series, dest } from 'gulp';
 import source from 'vinyl-source-stream';
 import watchify from 'watchify';
+
 import babelConfig from './babel.config.json';
 
 const ENTRY_POINT = './src/snap.ts';

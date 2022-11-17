@@ -1,3 +1,4 @@
+import { decode } from '@metamask/abi-utils';
 import {
   add0x,
   bytesToHex,
@@ -5,7 +6,6 @@ import {
   isObject,
   remove0x,
 } from '@metamask/utils';
-import { decode } from '@metamask/abi-utils';
 
 // The API endpoint to get a list of functions by 4 byte signature.
 const API_ENDPOINT =

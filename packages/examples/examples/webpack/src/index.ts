@@ -13,8 +13,8 @@ const sendInAppButton = document.querySelector('button.sendInApp')!;
 const sendNativeButton = document.querySelector('button.sendNative')!;
 
 connectButton.addEventListener('click', connect);
-sendInAppButton.addEventListener('click', () => send('inApp'));
-sendNativeButton.addEventListener('click', () => send('native'));
+sendInAppButton.addEventListener('click', async () => send('inApp'));
+sendNativeButton.addEventListener('click', async () => send('native'));
 
 /**
  * Get permission to interact with and install the snap.
