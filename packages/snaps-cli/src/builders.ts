@@ -21,9 +21,9 @@ export type SnapsCliBuilders = {
 };
 
 export enum TranspilationModes {
-  localAndDeps = 'localAndDeps',
-  localOnly = 'localOnly',
-  none = 'none',
+  LocalAndDeps = 'localAndDeps',
+  LocalOnly = 'localOnly',
+  None = 'none',
 }
 
 const builders: SnapsCliBuilders = {
@@ -70,7 +70,7 @@ const builders: SnapsCliBuilders = {
     coerce: (arg: unknown) => {
       const port = Number.parseInt(String(arg), 10);
       if (Number.isNaN(port)) {
-        throw new Error(`Invalid port: ${arg}`);
+        throw new Error(`Invalid port: ${String(arg)}`);
       }
       return port;
     },
@@ -129,7 +129,7 @@ const builders: SnapsCliBuilders = {
     describe:
       'Whether to use Babel to transpile all source code (including dependencies), local source code only, or nothing.',
     demandOption: false,
-    default: TranspilationModes.localOnly,
+    default: TranspilationModes.LocalOnly,
     choices: Object.values(TranspilationModes),
   },
 

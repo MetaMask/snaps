@@ -20,8 +20,8 @@ export async function serve(argv: YargsArgs): Promise<void> {
 
   console.log(`\nStarting server...`);
 
-  const server = http.createServer(async (req, res) => {
-    await serveHandler(req, res, {
+  const server = http.createServer((req, res) => {
+    serveHandler(req, res, {
       public: rootDir as string,
       headers: [
         {
@@ -38,6 +38,10 @@ export async function serve(argv: YargsArgs): Promise<void> {
           ],
         },
       ],
+    }).catch((error) => {
+      logServerError(error, argv.port);
+      res.statusCode = 500;
+      res.end();
     });
   });
 

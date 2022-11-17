@@ -57,7 +57,7 @@ describe('serve', () => {
 
       jest
         .spyOn(snapUtils, 'validateDirPath')
-        .mockImplementation(async () => true);
+        .mockImplementation(async () => Promise.resolve(true));
     });
 
     it('server handles "close" event correctly', async () => {
@@ -98,11 +98,13 @@ describe('serve', () => {
       let requestCallback: (...args: any[]) => any;
 
       jest.spyOn(serveUtils, 'logServerListening').mockImplementation();
-      jest.spyOn(http, 'createServer').mockImplementationOnce((cb: any) => {
-        requestCallback = cb;
-        mockServer = getMockServer();
-        return mockServer as any;
-      });
+      jest
+        .spyOn(http, 'createServer')
+        .mockImplementationOnce((callback: any) => {
+          requestCallback = callback;
+          mockServer = getMockServer();
+          return mockServer as any;
+        });
 
       jest.spyOn(console, 'log').mockImplementation();
       const logRequestMock = jest

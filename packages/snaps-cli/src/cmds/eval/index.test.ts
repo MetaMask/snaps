@@ -11,8 +11,8 @@ const getMockArgv = ({ bundle = 'dist/snap.js' } = {}) => {
 const evalHandlerMock = evalHandler as jest.MockedFunction<typeof evalHandler>;
 
 describe('handler', () => {
-  it('calls evalHandler', () => {
-    index.handler(getMockArgv());
+  it('calls evalHandler', async () => {
+    await index.handler(getMockArgv());
 
     expect(evalHandlerMock).toHaveBeenCalled();
   });

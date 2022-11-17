@@ -21,7 +21,7 @@ export async function prepareWorkingDirectory(
     if (!isCurrentDirectory) {
       try {
         await fs.mkdir(directory, { recursive: true });
-      } catch (err) {
+      } catch (error) {
         throw new Error('Init Error: Failed to create new directory.');
       }
     }
@@ -31,9 +31,9 @@ export async function prepareWorkingDirectory(
     if (existingFiles.length > 0) {
       throw new Error(`Directory ${directory} not empty.`);
     }
-  } catch (err) {
+  } catch (error) {
     throw new Error(
-      `Init Error: Failed to prepare working directory with message: ${err.message}`,
+      `Init Error: Failed to prepare working directory with message: ${error.message}`,
     );
   }
 }
@@ -43,12 +43,12 @@ export async function prepareWorkingDirectory(
  *
  * @param directory - The directory to clone the template in.
  */
-export async function cloneTemplate(directory: string) {
+export function cloneTemplate(directory: string) {
   try {
     execSync(`git clone --depth=1 ${TEMPLATE_GIT_URL} ${directory}`, {
       stdio: [2],
     });
-  } catch (err) {
+  } catch (error) {
     throw new Error('Init Error: Failed to clone the template.');
   }
 }
@@ -62,7 +62,7 @@ export function isGitInstalled() {
   try {
     execSync('git --version', { stdio: 'ignore' });
     return true;
-  } catch (e) {
+  } catch (error) {
     return false;
   }
 }
@@ -80,7 +80,7 @@ export function isInGitRepository(directory: string) {
       cwd: pathUtils.resolve(__dirname, directory),
     });
     return true;
-  } catch (err) {
+  } catch (error) {
     return false;
   }
 }
@@ -90,13 +90,13 @@ export function isInGitRepository(directory: string) {
  *
  * @param directory - The directory to init.
  */
-export async function gitInit(directory: string) {
+export function gitInit(directory: string) {
   try {
     execSync('git init', {
       stdio: 'ignore',
       cwd: pathUtils.resolve(__dirname, directory),
     });
-  } catch (err) {
+  } catch (error) {
     throw new Error('Init Error: Failed to init a new git repository.');
   }
 }
@@ -106,13 +106,13 @@ export async function gitInit(directory: string) {
  *
  * @param directory - The directory containing the project.
  */
-export async function yarnInstall(directory: string) {
+export function yarnInstall(directory: string) {
   try {
     execSync('yarn install', {
       stdio: [0, 1, 2],
       cwd: pathUtils.resolve(__dirname, directory),
     });
-  } catch (err) {
+  } catch (error) {
     throw new Error('Init Error: Failed to install dependencies.');
   }
 }

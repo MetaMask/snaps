@@ -37,9 +37,9 @@ export async function bundle(
       standalone: '<snap>',
     });
 
-    if (transpilationMode !== TranspilationModes.none) {
+    if (transpilationMode !== TranspilationModes.None) {
       bundler.transform(require('babelify'), {
-        global: transpilationMode === TranspilationModes.localAndDeps,
+        global: transpilationMode === TranspilationModes.LocalAndDeps,
         extensions: ['.js', '.ts'],
         presets: [
           require('@babel/preset-typescript'),

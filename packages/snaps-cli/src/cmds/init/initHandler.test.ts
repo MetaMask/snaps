@@ -48,11 +48,11 @@ describe('initialize', () => {
 
       jest
         .spyOn(snapUtils, 'readJsonFile')
-        .mockImplementationOnce(async () => getSnapManifest());
+        .mockImplementationOnce(async () => Promise.resolve(getSnapManifest()));
 
       jest
         .spyOn(snapUtils, 'readJsonFile')
-        .mockImplementationOnce(async () => getPackageJson());
+        .mockImplementationOnce(async () => Promise.resolve(getPackageJson()));
 
       const expected = {
         dist: 'dist',
@@ -85,11 +85,11 @@ describe('initialize', () => {
 
       jest
         .spyOn(snapUtils, 'readJsonFile')
-        .mockImplementationOnce(async () => getSnapManifest());
+        .mockImplementationOnce(async () => Promise.resolve(getSnapManifest()));
 
       jest
         .spyOn(snapUtils, 'readJsonFile')
-        .mockImplementationOnce(async () => getPackageJson());
+        .mockImplementationOnce(async () => Promise.resolve(getPackageJson()));
 
       const expected = {
         ...getMockArgv(),
@@ -121,11 +121,13 @@ describe('initialize', () => {
       jest.spyOn(initUtils, 'gitInit').mockImplementation();
       jest
         .spyOn(snapUtils, 'readJsonFile')
-        .mockImplementationOnce(async () => getSnapManifest());
+        .mockImplementationOnce(async () => Promise.resolve(getSnapManifest()));
 
       jest
         .spyOn(snapUtils, 'readJsonFile')
-        .mockImplementationOnce(async () => ({ main: undefined }));
+        .mockImplementationOnce(async () =>
+          Promise.resolve({ main: undefined }),
+        );
 
       const expected = {
         ...getMockArgv(),
@@ -154,11 +156,11 @@ describe('initialize', () => {
       jest.spyOn(initUtils, 'yarnInstall').mockImplementation();
       jest
         .spyOn(snapUtils, 'readJsonFile')
-        .mockImplementationOnce(async () => getSnapManifest());
+        .mockImplementationOnce(async () => Promise.resolve(getSnapManifest()));
 
       jest
         .spyOn(snapUtils, 'readJsonFile')
-        .mockImplementationOnce(async () => getPackageJson());
+        .mockImplementationOnce(async () => Promise.resolve(getPackageJson()));
 
       const isInGitRepositoryMock = jest
         .spyOn(initUtils, 'isInGitRepository')

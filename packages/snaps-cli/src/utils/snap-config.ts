@@ -56,12 +56,12 @@ export function loadConfig(cached = true): SnapConfig {
   try {
     // eslint-disable-next-line node/global-require, import/no-dynamic-require, @typescript-eslint/no-require-imports
     config = require(path.resolve(process.cwd(), CONFIG_FILE));
-  } catch (err: any) {
-    if (err.code === 'MODULE_NOT_FOUND') {
+  } catch (error: any) {
+    if (error.code === 'MODULE_NOT_FOUND') {
       snapConfigCache = {};
       return snapConfigCache;
     }
-    logError(`Error during parsing of ${CONFIG_FILE}`, err);
+    logError(`Error during parsing of ${CONFIG_FILE}`, error);
     return process.exit(1);
   }
 
@@ -128,11 +128,11 @@ export function applyConfig(
     return commandOptions.has(key) && !hasProperty(parsedProcessArgv, key);
   };
 
-  const cfg: Record<string, unknown> = snapConfig.cliOptions || {};
-  for (const key of Object.keys(cfg)) {
+  const config: Record<string, unknown> = snapConfig.cliOptions ?? {};
+  for (const key of Object.keys(config)) {
     if (hasProperty(builders, key)) {
       if (shouldSetArg(key)) {
-        yargsArgv[key] = cfg[key];
+        yargsArgv[key] = config[key];
       }
     } else {
       logError(

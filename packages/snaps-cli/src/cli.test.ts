@@ -94,6 +94,7 @@ describe('cli', () => {
         // TODO: Test the complete argv for each command
         expect(mockCommandHandler).toHaveBeenCalledWith(
           expect.objectContaining({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             _: [sanitizeCommand(command)],
             suppressWarnings: false,
             verboseErrors: true,
