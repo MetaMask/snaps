@@ -201,8 +201,8 @@ export function validateSnapShasum(
  * @returns The snap prefix from a snap id, e.g. `npm:`.
  */
 export function getSnapPrefix(snapId: string): SnapIdPrefixes {
-  const prefix = Object.values(SnapIdPrefixes).find((p) =>
-    snapId.startsWith(p),
+  const prefix = Object.values(SnapIdPrefixes).find((possiblePrefix) =>
+    snapId.startsWith(possiblePrefix),
   );
   if (prefix !== undefined) {
     return prefix;
@@ -230,7 +230,7 @@ export function validateSnapId(
   snapId: unknown,
 ): asserts snapId is ValidatedSnapId {
   if (!snapId || typeof snapId !== 'string') {
-    throw new Error(`Invalid snap id. Not a string. Received "${snapId}"`);
+    throw new Error(`Invalid snap id. Not a string.`);
   }
 
   for (const prefix of Object.values(SnapIdPrefixes)) {

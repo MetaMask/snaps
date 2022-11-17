@@ -21,6 +21,7 @@ type MockEthereumProvider = EventEmitter & {
  * @returns A mocked snap provider.
  */
 function getMockSnapGlobal(): MockSnapGlobal {
+  // eslint-disable-next-line @typescript-eslint/require-await
   return { request: async () => true };
 }
 
@@ -31,6 +32,7 @@ function getMockSnapGlobal(): MockSnapGlobal {
  */
 function getMockEthereumProvider(): MockEthereumProvider {
   const mockProvider = new EventEmitter() as Partial<MockEthereumProvider>;
+  // eslint-disable-next-line @typescript-eslint/require-await
   mockProvider.request = async () => true;
   return mockProvider as MockEthereumProvider;
 }
@@ -53,6 +55,7 @@ const mockFunction = () => true;
 class MockClass {}
 
 const handler = {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   construct(Target: any, args: any[]): any {
     return new Proxy(new Target(...args), handler);
   },
