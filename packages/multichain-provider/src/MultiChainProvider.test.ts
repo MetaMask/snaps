@@ -33,11 +33,13 @@ async function getProvider(
     typeof ethereum.request
   >;
 
-  request.mockImplementation(async () => ({
-    namespaces: {
-      eip155: getSessionNamespace(),
-    },
-  }));
+  request.mockImplementation(async () =>
+    Promise.resolve({
+      namespaces: {
+        eip155: getSessionNamespace(),
+      },
+    }),
+  );
 
   const provider = new MultiChainProvider();
 
@@ -65,11 +67,13 @@ describe('MultiChainProvider', () => {
         typeof ethereum.request
       >;
 
-      request.mockImplementation(async () => ({
-        namespaces: {
-          eip155: getSessionNamespace(),
-        },
-      }));
+      request.mockImplementation(async () =>
+        Promise.resolve({
+          namespaces: {
+            eip155: getSessionNamespace(),
+          },
+        }),
+      );
 
       const provider = new MultiChainProvider();
       const { approval } = await provider.connect({ requiredNamespaces: {} });
@@ -85,11 +89,13 @@ describe('MultiChainProvider', () => {
         typeof ethereum.request
       >;
 
-      request.mockImplementation(async () => ({
-        namespaces: {
-          eip155: getSessionNamespace(),
-        },
-      }));
+      request.mockImplementation(async () =>
+        Promise.resolve({
+          namespaces: {
+            eip155: getSessionNamespace(),
+          },
+        }),
+      );
 
       const provider = new MultiChainProvider();
 
@@ -140,11 +146,13 @@ describe('MultiChainProvider', () => {
         typeof ethereum.request
       >;
 
-      request.mockImplementation(async () => ({
-        namespaces: {
-          eip155: 'foo',
-        },
-      }));
+      request.mockImplementation(async () =>
+        Promise.resolve({
+          namespaces: {
+            eip155: 'foo',
+          },
+        }),
+      );
 
       const provider = new MultiChainProvider();
 
@@ -167,9 +175,7 @@ describe('MultiChainProvider', () => {
         typeof ethereum.request
       >;
 
-      request.mockImplementation(async () => {
-        throw new Error('foo');
-      });
+      request.mockImplementation(async () => Promise.reject(new Error('foo')));
 
       const provider = new MultiChainProvider();
 
@@ -224,7 +230,7 @@ describe('MultiChainProvider', () => {
         typeof ethereum.request
       >;
 
-      request.mockImplementation(async () => 'foo');
+      request.mockImplementation(async () => Promise.resolve('foo'));
 
       const result = await provider.request({
         chainId: 'eip155:1',
@@ -237,7 +243,7 @@ describe('MultiChainProvider', () => {
     });
 
     it('sends params properly', async () => {
-      const msg = (params?: any) => ({
+      const message = (params?: any) => ({
         method: 'wallet_multiChainRequestHack',
         params: {
           id: expect.any(String),
@@ -258,7 +264,7 @@ describe('MultiChainProvider', () => {
         typeof ethereum.request
       >;
 
-      request.mockImplementation(async () => 'foo');
+      request.mockImplementation(async () => Promise.resolve('foo'));
 
       await provider.request({
         chainId: 'eip155:1',
@@ -273,8 +279,8 @@ describe('MultiChainProvider', () => {
       });
 
       expect(request).toHaveBeenCalledTimes(3);
-      expect(request).toHaveBeenNthCalledWith(2, msg());
-      expect(request).toHaveBeenNthCalledWith(3, msg({ prop: 'bar' }));
+      expect(request).toHaveBeenNthCalledWith(2, message());
+      expect(request).toHaveBeenNthCalledWith(3, message({ prop: 'bar' }));
     });
 
     it('generates a random request ID', async () => {
@@ -284,11 +290,13 @@ describe('MultiChainProvider', () => {
         typeof ethereum.request
       >;
 
-      request.mockImplementation(async () => ({
-        jsonrpc: '2.0',
-        id: 1,
-        result: 'foo',
-      }));
+      request.mockImplementation(async () =>
+        Promise.resolve({
+          jsonrpc: '2.0',
+          id: 1,
+          result: 'foo',
+        }),
+      );
 
       await provider.request({
         chainId: 'eip155:1',
@@ -350,9 +358,7 @@ describe('MultiChainProvider', () => {
         typeof ethereum.request
       >;
 
-      request.mockImplementation(async () => {
-        throw new Error('foo');
-      });
+      request.mockImplementation(async () => Promise.reject(new Error('foo')));
 
       await expect(
         provider.request({

@@ -68,6 +68,7 @@ export class MultiChainProvider extends SafeEventEmitter implements Provider {
    * @returns An object containing an `approval` function, which can be called
    * to connect to the wallet.
    */
+  // eslint-disable-next-line @typescript-eslint/require-await
   async connect(
     args: ConnectArguments,
   ): Promise<{ approval(): Promise<Session> }> {
