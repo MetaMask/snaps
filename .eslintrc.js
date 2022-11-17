@@ -11,6 +11,17 @@ module.exports = {
     'shared-node-browser': true,
   },
 
+  rules: {
+    // This prevents importing Node.js builtins. We currently use them in
+    // our codebase, so this rule is disabled. This rule should be disabled
+    // in `@metamask/eslint-config-nodejs` in the future.
+    'import/no-nodejs-modules': 'off',
+
+    // This prevents using Node.js and/or browser specific globals. We
+    // currently use both in our codebase, so this rule is disabled.
+    'no-restricted-globals': 'off',
+  },
+
   overrides: [
     {
       files: ['**/*.js'],
@@ -21,10 +32,6 @@ module.exports = {
       files: ['**/*.ts'],
       extends: ['@metamask/eslint-config-typescript'],
       rules: {
-        // This prevents using Node.js and/or browser specific globals. We
-        // currently use both in our codebase, so this rule is disabled.
-        'no-restricted-globals': 'off',
-
         // This rule disallows the `private` modifier on class fields, but we
         // use it in some places.
         'no-restricted-syntax': 'off',
@@ -39,11 +46,6 @@ module.exports = {
             allowNumber: true,
           },
         ],
-
-        // This prevents importing Node.js builtins. We currently use them in
-        // our codebase, so this rule is disabled. This rule should be disabled
-        // in `@metamask/eslint-config-nodejs` in the future.
-        'import/no-nodejs-modules': 'off',
       },
     },
 
