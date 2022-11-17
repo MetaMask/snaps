@@ -11,9 +11,9 @@ export class ThreadSnapExecutor extends BaseSnapExecutor {
 
     const parentStream = new ThreadMessageStream();
     const mux = new ObjectMultiplex();
-    pump(parentStream, mux as any, parentStream, (err) => {
-      if (err) {
-        console.error(`Parent stream failure, closing worker.`, err);
+    pump(parentStream, mux as any, parentStream, (error) => {
+      if (error) {
+        console.error(`Parent stream failure, closing worker.`, error);
       }
       self.close();
     });

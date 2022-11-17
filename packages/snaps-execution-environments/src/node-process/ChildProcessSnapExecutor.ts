@@ -11,9 +11,9 @@ export class ChildProcessSnapExecutor extends BaseSnapExecutor {
 
     const parentStream = new ProcessMessageStream();
     const mux = new ObjectMultiplex();
-    pump(parentStream, mux as any, parentStream, (err) => {
-      if (err) {
-        console.error(`Parent stream failure, closing worker.`, err);
+    pump(parentStream, mux as any, parentStream, (error) => {
+      if (error) {
+        console.error(`Parent stream failure, closing worker.`, error);
       }
       self.close();
     });
