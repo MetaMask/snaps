@@ -2683,25 +2683,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eslint-config-nodejs@npm:^10.0.0":
-  version: 10.0.0
-  resolution: "@metamask/eslint-config-nodejs@npm:10.0.0"
+"@metamask/eslint-config-nodejs@npm:^11.0.0":
+  version: 11.0.0
+  resolution: "@metamask/eslint-config-nodejs@npm:11.0.0"
   peerDependencies:
-    "@metamask/eslint-config": ^10.0.0
-    eslint: ^8.21.0
+    "@metamask/eslint-config": ^11.0.0
+    eslint: ^8.27.0
     eslint-plugin-node: ^11.1.0
-  checksum: eef19eb8ab7949e6e56119a38ba351c25a1002515bc6e47e7b103cc12f73b7af30bc2abde2129eeca573c741986ce352086f79e5385b9b171ce4a7437bc016dd
-  languageName: node
-  linkType: hard
-
-"@metamask/eslint-config-nodejs@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "@metamask/eslint-config-nodejs@npm:9.0.0"
-  peerDependencies:
-    "@metamask/eslint-config": ^9.0.0
-    eslint: ^7.23.0
-    eslint-plugin-node: ^11.1.0
-  checksum: c4e502741f12f252fb01a391b7c733c76b447eadc7d26360b349aa2e768c52d04b30436e92d3db7969540faace68ab4d05f379a0f54d433778bf467f44469ba0
+  checksum: d71be00f71ea36dc7a9e3f9c767492b5fa2f0c61ba8c0976a7394e36874ca583f9472aeb9be1974389999705c57aa44fe92e5a17a692728c0f5252c4fb34f5db
   languageName: node
   linkType: hard
 
@@ -2787,7 +2776,7 @@ __metadata:
     "@metamask/auto-changelog": ^2.6.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^9.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/providers": ^10.2.0
     "@metamask/safe-event-emitter": ^2.0.0
@@ -2876,7 +2865,7 @@ __metadata:
     "@metamask/controllers": ^32.0.2
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^10.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/key-tree": ^6.0.0
     "@metamask/snaps-utils": ^0.24.0
@@ -2923,7 +2912,7 @@ __metadata:
     "@metamask/auto-changelog": ^2.6.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^10.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-utils": ^0.24.0
     "@types/browserify": ^12.0.37
@@ -2969,7 +2958,7 @@ __metadata:
     "@metamask/auto-changelog": ^2.6.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^10.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-browserify-plugin": ^0.24.0
     "@metamask/snaps-utils": ^0.24.0
@@ -3027,7 +3016,7 @@ __metadata:
     "@metamask/controllers": ^32.0.2
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^10.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/object-multiplex": ^1.1.0
     "@metamask/post-message-stream": ^6.0.0
@@ -3089,7 +3078,7 @@ __metadata:
     "@metamask/auto-changelog": ^2.6.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^10.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/object-multiplex": ^1.2.0
     "@metamask/post-message-stream": ^6.0.0
@@ -3143,7 +3132,7 @@ __metadata:
     "@metamask/auto-changelog": ^2.6.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^10.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-utils": ^0.24.0
     "@rollup/plugin-virtual": ^2.1.0
@@ -3178,7 +3167,7 @@ __metadata:
     "@metamask/auto-changelog": ^2.6.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^10.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/providers": ^10.2.0
     "@metamask/snaps-utils": ^0.24.0
@@ -3211,7 +3200,7 @@ __metadata:
     "@metamask/auto-changelog": ^2.6.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^10.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-types": ^0.24.0
     "@metamask/utils": ^3.3.1
@@ -3255,7 +3244,7 @@ __metadata:
     "@metamask/auto-changelog": ^2.6.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^10.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-utils": ^0.24.0
     "@metamask/utils": ^3.3.0
@@ -5557,7 +5546,7 @@ __metadata:
     "@metamask/auto-changelog": ^2.6.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^9.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-cli": ^0.24.0
     "@typescript-eslint/eslint-plugin": ^5.42.1
@@ -5574,7 +5563,7 @@ __metadata:
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.2.11
     rimraf: ^3.0.2
-    typescript: ^4.4.0
+    typescript: ~4.8.4
   languageName: unknown
   linkType: soft
 
@@ -5787,7 +5776,7 @@ __metadata:
     "@babel/preset-typescript": ^7.17.12
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^9.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-browserify-plugin": ^0.24.0
     "@metamask/snaps-cli": ^0.24.0
@@ -5813,7 +5802,7 @@ __metadata:
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.2.11
     ts-node: ^10.7.0
-    typescript: ^4.6.4
+    typescript: ~4.8.4
     vinyl-source-stream: ^2.0.0
     watchify: ^4.0.0
   languageName: unknown
@@ -8492,7 +8481,7 @@ __metadata:
     "@metamask/auto-changelog": ^2.6.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^9.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-cli": ^0.24.0
     "@typescript-eslint/eslint-plugin": ^5.42.1
@@ -8508,7 +8497,7 @@ __metadata:
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.2.11
     rimraf: ^3.0.2
-    typescript: ^4.4.0
+    typescript: ~4.8.4
   languageName: unknown
   linkType: soft
 
@@ -8754,7 +8743,7 @@ __metadata:
     "@metamask/auto-changelog": ^2.6.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^9.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-cli": ^0.24.0
     "@typescript-eslint/eslint-plugin": ^5.42.1
@@ -8769,7 +8758,7 @@ __metadata:
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.2.11
     rimraf: ^3.0.2
-    typescript: ^4.4.0
+    typescript: ~4.8.4
   languageName: unknown
   linkType: soft
 
@@ -10301,7 +10290,7 @@ __metadata:
     "@metamask/auto-changelog": ^2.6.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^9.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-cli": ^0.24.0
     "@typescript-eslint/eslint-plugin": ^5.42.1
@@ -10317,7 +10306,7 @@ __metadata:
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.2.11
     rimraf: ^3.0.2
-    typescript: ^4.4.0
+    typescript: ~4.8.4
     uuid: ^8.3.2
   languageName: unknown
   linkType: soft
@@ -12930,7 +12919,7 @@ __metadata:
     "@metamask/auto-changelog": ^2.6.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^9.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-cli": ^0.24.0
     "@typescript-eslint/eslint-plugin": ^5.42.1
@@ -12945,7 +12934,7 @@ __metadata:
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.2.11
     rimraf: ^3.0.2
-    typescript: ^4.4.0
+    typescript: ~4.8.4
   languageName: unknown
   linkType: soft
 
@@ -14606,7 +14595,7 @@ __metadata:
     "@metamask/auto-changelog": ^2.6.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^9.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-cli": ^0.24.0
     "@metamask/snaps-rollup-plugin": ^0.24.0
@@ -14628,7 +14617,7 @@ __metadata:
     rimraf: ^3.0.2
     rollup: ^2.73.0
     tslib: ^2.4.0
-    typescript: ^4.4.0
+    typescript: ~4.8.4
   languageName: unknown
   linkType: soft
 
@@ -14654,7 +14643,7 @@ __metadata:
     "@metamask/auto-changelog": ^2.6.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^10.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@types/jest": ^27.5.1
     "@types/node": ^14.14.25
@@ -16102,7 +16091,7 @@ __metadata:
     "@metamask/auto-changelog": ^2.6.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^9.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-cli": ^0.24.0
     "@metamask/snaps-types": ^0.24.0
@@ -16119,7 +16108,7 @@ __metadata:
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.2.11
     rimraf: ^3.0.2
-    typescript: ^4.4.0
+    typescript: ~4.8.4
   languageName: unknown
   linkType: soft
 
@@ -16377,7 +16366,7 @@ __metadata:
     "@metamask/auto-changelog": ^2.6.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^9.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-cli": ^0.24.0
     "@metamask/snaps-types": ^0.24.0
@@ -16393,19 +16382,9 @@ __metadata:
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.2.11
     rimraf: ^3.0.2
-    typescript: ^4.4.0
+    typescript: ~4.8.4
   languageName: unknown
   linkType: soft
-
-"typescript@npm:^4.4.0, typescript@npm:^4.6.4":
-  version: 4.9.3
-  resolution: "typescript@npm:4.9.3"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: 17b8f816050b412403e38d48eef0e893deb6be522d6dc7caf105e54a72e34daf6835c447735fd2b28b66784e72bfbf87f627abb4818a8e43d1fa8106396128dc
-  languageName: node
-  linkType: hard
 
 "typescript@npm:~4.8.4":
   version: 4.8.4
@@ -16414,16 +16393,6 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 3e4f061658e0c8f36c820802fa809e0fd812b85687a9a2f5430bc3d0368e37d1c9605c3ce9b39df9a05af2ece67b1d844f9f6ea8ff42819f13bcb80f85629af0
-  languageName: node
-  linkType: hard
-
-"typescript@patch:typescript@^4.4.0#~builtin<compat/typescript>, typescript@patch:typescript@^4.6.4#~builtin<compat/typescript>":
-  version: 4.9.3
-  resolution: "typescript@patch:typescript@npm%3A4.9.3#~builtin<compat/typescript>::version=4.9.3&hash=7ad353"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: ef65c22622d864497d0a0c5db693523329b3284c15fe632e93ad9aa059e8dc38ef3bd767d6f26b1e5ecf9446f49bd0f6c4e5714a2eeaf352805dc002479843d1
   languageName: node
   linkType: hard
 
@@ -16877,7 +16846,7 @@ __metadata:
     "@metamask/auto-changelog": ^2.6.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^9.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-cli": ^0.24.0
     "@typescript-eslint/eslint-plugin": ^5.42.1
@@ -16895,7 +16864,7 @@ __metadata:
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.2.11
     rimraf: ^3.0.2
-    typescript: ^4.4.0
+    typescript: ~4.8.4
   languageName: unknown
   linkType: soft
 
@@ -17074,7 +17043,7 @@ __metadata:
     "@metamask/auto-changelog": ^2.6.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^9.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-cli": ^0.24.0
     "@metamask/snaps-types": ^0.24.0
@@ -17095,7 +17064,7 @@ __metadata:
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.2.11
     rimraf: ^3.0.2
-    typescript: ^4.4.0
+    typescript: ~4.8.4
     webpack: ^5.72.1
     webpack-cli: ^4.9.2
     webpack-merge: ^5.8.0
