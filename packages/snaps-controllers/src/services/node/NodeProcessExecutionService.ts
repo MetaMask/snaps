@@ -16,8 +16,9 @@ export class NodeProcessExecutionService extends AbstractExecutionService<ChildP
         '@metamask/snaps-execution-environments/dist/webpack/node-process/bundle.js',
       ),
     );
+
     const stream = new ProcessParentMessageStream({ process: worker });
-    return { worker, stream };
+    return Promise.resolve({ worker, stream });
   }
 
   protected terminateJob(jobWrapper: Job<ChildProcess>): void {

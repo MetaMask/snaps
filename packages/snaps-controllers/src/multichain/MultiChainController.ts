@@ -172,7 +172,7 @@ export class MultiChainController extends BaseController<
       await this.closeSession(origin);
     }
 
-    const snaps = await this.messagingSystem.call('SnapController:getAll');
+    const snaps = this.messagingSystem.call('SnapController:getAll');
     const filteredSnaps = getRunnableSnaps(snaps);
 
     // Get available namespaces supported by currently installed Snaps.
@@ -191,7 +191,7 @@ export class MultiChainController extends BaseController<
       availableNamespaces,
     );
 
-    const permissions = await this.messagingSystem.call(
+    const permissions = this.messagingSystem.call(
       'PermissionController:getPermissions',
       origin,
     );
@@ -345,7 +345,7 @@ export class MultiChainController extends BaseController<
     const permissionName = getSnapPermissionName(snapId);
 
     // Check if origin has permission to communicate with this Snap.
-    const hasPermission = await this.messagingSystem.call(
+    const hasPermission = this.messagingSystem.call(
       'PermissionController:hasPermission',
       origin,
       permissionName,
@@ -437,10 +437,8 @@ export class MultiChainController extends BaseController<
    * @returns The namespaces, or `null` if the Snap does not have any
    * namespaces.
    */
-  private async snapToNamespaces(
-    snap: TruncatedSnap,
-  ): Promise<Namespaces | null> {
-    const permissions = await this.messagingSystem.call(
+  private snapToNamespaces(snap: TruncatedSnap): Namespaces | null {
+    const permissions = this.messagingSystem.call(
       'PermissionController:getPermissions',
       snap.id,
     );
@@ -553,7 +551,7 @@ export class MultiChainController extends BaseController<
       return acc;
     }, {});
 
-    await this.messagingSystem.call('PermissionController:grantPermissions', {
+    this.messagingSystem.call('PermissionController:grantPermissions', {
       approvedPermissions,
       subject: { origin },
     });

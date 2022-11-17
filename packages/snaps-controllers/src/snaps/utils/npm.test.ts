@@ -22,6 +22,7 @@ describe('fetchNpmSnap', () => {
     fetchMock
       .mockResponseOnce(
         JSON.stringify({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           'dist-tags': {
             latest: templateSnapVersion,
           },
@@ -52,7 +53,7 @@ describe('fetchNpmSnap', () => {
       '@metamask/template-snap',
       templateSnapVersion,
       'https://registry.npmjs.cf',
-      fetchMock,
+      fetchMock as typeof fetch,
     );
 
     expect(fetchMock).toHaveBeenCalledTimes(2);

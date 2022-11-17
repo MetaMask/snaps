@@ -91,15 +91,15 @@ export class ExecutionEnvironmentStub implements ExecutionService {
     snapId: string,
     options: SnapRpcHookArgs,
   ): Promise<unknown> {
-    const handler = await this.getRpcRequestHandler(snapId);
-    return handler(options);
+    const handler = this.getRpcRequestHandler(snapId);
+    return await handler(options);
   }
 
   async terminateAllSnaps() {
     // empty stub
   }
 
-  async getRpcRequestHandler(_snapId: string) {
+  getRpcRequestHandler(_snapId: string) {
     return async ({ request }: SnapRpcHookArgs) => {
       return new Promise((resolve) => {
         const results = `${request.method}${request.id}`;
@@ -109,7 +109,7 @@ export class ExecutionEnvironmentStub implements ExecutionService {
   }
 
   async executeSnap(_snapData: SnapExecutionData) {
-    return 'some-unique-id';
+    return Promise.resolve('some-unique-id');
   }
 
   async terminateSnap(_snapId: string) {

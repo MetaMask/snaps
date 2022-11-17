@@ -163,8 +163,8 @@ export abstract class AbstractExecutionService<WorkerType>
       try {
         !stream.destroyed && stream.destroy();
         stream.removeAllListeners();
-      } catch (err) {
-        console.error('Error while destroying stream', err);
+      } catch (error) {
+        console.error('Error while destroying stream', error);
       }
     });
 
@@ -272,6 +272,7 @@ export abstract class AbstractExecutionService<WorkerType>
       streams: {
         command: commandStream as unknown as Duplex,
         rpc: rpcStream,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         _connection: envStream,
       },
       worker,
@@ -315,7 +316,7 @@ export abstract class AbstractExecutionService<WorkerType>
    * @param snapId - The id of the Snap whose message handler to get.
    * @returns The RPC request handler for the snap.
    */
-  private async getRpcRequestHandler(snapId: string) {
+  private getRpcRequestHandler(snapId: string) {
     return this.#snapRpcHooks.get(snapId);
   }
 
@@ -478,11 +479,11 @@ export function setupMultiplex(
     // Typecast: stream type mismatch
     mux as unknown as Duplex,
     connectionStream,
-    (err) => {
-      if (err) {
+    (error) => {
+      if (error) {
         streamName
-          ? console.error(`"${streamName}" stream failure.`, err)
-          : console.error(err);
+          ? console.error(`"${streamName}" stream failure.`, error)
+          : console.error(error);
       }
     },
   );

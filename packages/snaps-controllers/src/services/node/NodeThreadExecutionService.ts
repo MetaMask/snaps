@@ -2,6 +2,7 @@ import {
   ThreadParentMessageStream,
   BasePostMessageStream,
 } from '@metamask/post-message-stream';
+// eslint-disable-next-line @typescript-eslint/no-shadow
 import { Worker } from 'worker_threads';
 
 import { AbstractExecutionService, Job } from '..';
@@ -17,10 +18,10 @@ export class NodeThreadExecutionService extends AbstractExecutionService<Worker>
       ),
     );
     const stream = new ThreadParentMessageStream({ thread: worker });
-    return { worker, stream };
+    return Promise.resolve({ worker, stream });
   }
 
-  protected terminateJob(jobWrapper: Job<Worker>): void {
-    jobWrapper.worker.terminate();
+  protected async terminateJob(jobWrapper: Job<Worker>): Promise<void> {
+    await jobWrapper.worker.terminate();
   }
 }

@@ -86,14 +86,14 @@ describe('CronjobController', () => {
     jest.useRealTimers();
   });
 
-  it('registers a cronjob', async () => {
+  it('registers a cronjob', () => {
     const rootMessenger = getRootCronjobControllerMessenger();
     const controllerMessenger =
       getRestrictedCronjobControllerMessenger(rootMessenger);
 
     const callActionMock = jest
       .spyOn(controllerMessenger, 'call')
-      .mockImplementation((method) => {
+      .mockImplementation((method, ..._params: unknown[]) => {
         if (method === 'SnapController:getAll') {
           return [getTruncatedSnap()];
         } else if (method === 'PermissionController:getPermissions') {
@@ -106,7 +106,7 @@ describe('CronjobController', () => {
       messenger: controllerMessenger,
     });
 
-    await cronjobController.register(MOCK_SNAP_ID);
+    cronjobController.register(MOCK_SNAP_ID);
 
     expect(callActionMock).toHaveBeenCalledWith(
       'PermissionController:getPermissions',
@@ -132,14 +132,14 @@ describe('CronjobController', () => {
     cronjobController.destroy();
   });
 
-  it('unregisters a cronjob', async () => {
+  it('unregisters a cronjob', () => {
     const rootMessenger = getRootCronjobControllerMessenger();
     const controllerMessenger =
       getRestrictedCronjobControllerMessenger(rootMessenger);
 
     const callActionMock = jest
       .spyOn(controllerMessenger, 'call')
-      .mockImplementation((method) => {
+      .mockImplementation((method, ..._params: unknown[]) => {
         if (method === 'SnapController:getAll') {
           return [getTruncatedSnap()];
         } else if (method === 'PermissionController:getPermissions') {
@@ -152,8 +152,8 @@ describe('CronjobController', () => {
       messenger: controllerMessenger,
     });
 
-    await cronjobController.register(MOCK_SNAP_ID);
-    await cronjobController.unregister(MOCK_SNAP_ID);
+    cronjobController.register(MOCK_SNAP_ID);
+    cronjobController.unregister(MOCK_SNAP_ID);
 
     jest.advanceTimersByTime(inMilliseconds(1, Duration.Minute));
 
@@ -181,7 +181,7 @@ describe('CronjobController', () => {
 
     const callActionMock = jest
       .spyOn(controllerMessenger, 'call')
-      .mockImplementation((method) => {
+      .mockImplementation((method, ..._params: unknown[]) => {
         if (method === 'SnapController:getAll') {
           return [getTruncatedSnap()];
         } else if (method === 'PermissionController:getPermissions') {
@@ -226,7 +226,7 @@ describe('CronjobController', () => {
     cronjobController.destroy();
   });
 
-  it('does not schedule cronjob that is too far in the future', async () => {
+  it('does not schedule cronjob that is too far in the future', () => {
     const cronExpression = '59 23 29 2 *'; // At 11:59pm on February 29th
 
     const MOCK_TOO_FAR_CRONJOB_PERMISSION = deepClone(
@@ -249,7 +249,7 @@ describe('CronjobController', () => {
 
     const callActionMock = jest
       .spyOn(controllerMessenger, 'call')
-      .mockImplementation((method) => {
+      .mockImplementation((method, ..._params: unknown[]) => {
         if (method === 'SnapController:getAll') {
           return [getTruncatedSnap()];
         } else if (method === 'PermissionController:getPermissions') {
@@ -264,7 +264,7 @@ describe('CronjobController', () => {
       messenger: controllerMessenger,
     });
 
-    await cronjobController.register(MOCK_SNAP_ID);
+    cronjobController.register(MOCK_SNAP_ID);
 
     expect(callActionMock).toHaveBeenCalledWith(
       'PermissionController:getPermissions',
@@ -289,14 +289,14 @@ describe('CronjobController', () => {
     cronjobController.destroy();
   });
 
-  it('handles SnapInstalled event', async () => {
+  it('handles SnapInstalled event', () => {
     const rootMessenger = getRootCronjobControllerMessenger();
     const controllerMessenger =
       getRestrictedCronjobControllerMessenger(rootMessenger);
 
     const callActionMock = jest.spyOn(controllerMessenger, 'call');
 
-    callActionMock.mockImplementation((method) => {
+    callActionMock.mockImplementation((method, ..._params: unknown[]) => {
       if (method === 'SnapController:getAll') {
         return [getTruncatedSnap()];
       } else if (method === 'PermissionController:getPermissions') {
@@ -318,7 +318,7 @@ describe('CronjobController', () => {
       version: '',
     };
     // @ts-expect-error Accessing private property
-    await cronjobController._handleEventSnapInstalled(snapInfo);
+    cronjobController._handleEventSnapInstalled(snapInfo);
 
     jest.advanceTimersByTime(inMilliseconds(1, Duration.Minute));
 
@@ -339,14 +339,14 @@ describe('CronjobController', () => {
     cronjobController.destroy();
   });
 
-  it('handles SnapRemoved event', async () => {
+  it('handles SnapRemoved event', () => {
     const rootMessenger = getRootCronjobControllerMessenger();
     const controllerMessenger =
       getRestrictedCronjobControllerMessenger(rootMessenger);
 
     const callActionMock = jest.spyOn(controllerMessenger, 'call');
 
-    callActionMock.mockImplementation((method) => {
+    callActionMock.mockImplementation((method, ..._params: unknown[]) => {
       if (method === 'SnapController:getAll') {
         return [getTruncatedSnap()];
       } else if (method === 'PermissionController:getPermissions') {
@@ -359,7 +359,7 @@ describe('CronjobController', () => {
       messenger: controllerMessenger,
     });
 
-    await cronjobController.register(MOCK_SNAP_ID);
+    cronjobController.register(MOCK_SNAP_ID);
 
     const snapInfo: TruncatedSnap = {
       blocked: false,
@@ -391,7 +391,7 @@ describe('CronjobController', () => {
     cronjobController.destroy();
   });
 
-  it('handles SnapUpdated event', async () => {
+  it('handles SnapUpdated event', () => {
     const MOCK_ANOTHER_CRONJOB_PERMISSION = deepClone(MOCK_CRONJOB_PERMISSION);
     MOCK_ANOTHER_CRONJOB_PERMISSION.caveats[0].value = {
       jobs: [
@@ -423,7 +423,7 @@ describe('CronjobController', () => {
       messenger: controllerMessenger,
     });
 
-    await cronjobController.register(MOCK_SNAP_ID);
+    cronjobController.register(MOCK_SNAP_ID);
 
     const snapInfo: TruncatedSnap = {
       blocked: false,
@@ -435,7 +435,7 @@ describe('CronjobController', () => {
     };
 
     // @ts-expect-error Accessing private property
-    await cronjobController._handleEventSnapUpdated(snapInfo);
+    cronjobController._handleEventSnapUpdated(snapInfo);
 
     jest.advanceTimersByTime(inMilliseconds(15, Duration.Minute));
 
@@ -456,14 +456,14 @@ describe('CronjobController', () => {
     cronjobController.destroy();
   });
 
-  it('removes all jobs and schedules after controller destroy is called', async () => {
+  it('removes all jobs and schedules after controller destroy is called', () => {
     const rootMessenger = getRootCronjobControllerMessenger();
     const controllerMessenger =
       getRestrictedCronjobControllerMessenger(rootMessenger);
 
     const callActionMock = jest
       .spyOn(controllerMessenger, 'call')
-      .mockImplementation((method) => {
+      .mockImplementation((method, ..._params: unknown[]) => {
         if (method === 'SnapController:getAll') {
           return [getTruncatedSnap()];
         } else if (method === 'PermissionController:getPermissions') {
@@ -476,7 +476,7 @@ describe('CronjobController', () => {
       messenger: controllerMessenger,
     });
 
-    await cronjobController.register(MOCK_SNAP_ID);
+    cronjobController.register(MOCK_SNAP_ID);
 
     expect(callActionMock).toHaveBeenCalledWith(
       'PermissionController:getPermissions',
