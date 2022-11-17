@@ -14,7 +14,7 @@ import {
   Bip32EntropyStruct,
   SnapCaveatType,
 } from '@metamask/snaps-utils';
-import { Json, NonEmptyArray, assertStruct } from '@metamask/utils';
+import { Json, NonEmptyArray, assertStruct, assert } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 import { array, size, type } from 'superstruct';
 
@@ -201,9 +201,8 @@ export function getBip32EntropyImplementation({
   ): Promise<JsonSLIP10Node> {
     await getUnlockPromise(true);
 
-    // `args.params` is validated by the decorator, so it's safe to assert here.
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const { params } = args;
+    assert(params);
 
     const node = await SLIP10Node.fromDerivationPath({
       curve: params.curve,

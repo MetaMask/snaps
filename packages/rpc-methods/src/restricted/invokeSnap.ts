@@ -23,7 +23,7 @@ export type InvokeSnapMethodHooks = {
   handleSnapRpcRequest: ({
     snapId,
     origin,
-    handler: handlerType,
+    handler,
     request,
   }: SnapRpcHookArgs & { snapId: SnapId }) => Promise<unknown>;
 };

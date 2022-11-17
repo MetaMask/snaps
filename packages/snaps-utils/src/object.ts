@@ -10,6 +10,7 @@ export const fromEntries = <Key extends string, Value>(
 ): Record<Key, Value> => {
   return entries.reduce<Record<Key, Value>>(
     (acc, [key, value]) => ({ ...acc, [key]: value }),
-    {},
+    // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter
+    {} as Record<Key, Value>,
   );
 };
