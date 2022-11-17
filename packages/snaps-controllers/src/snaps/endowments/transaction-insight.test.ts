@@ -1,12 +1,13 @@
 import { PermissionConstraint, PermissionType } from '@metamask/controllers';
 import { SnapCaveatType } from '@metamask/snaps-utils';
+
+import { SnapEndowments } from '.';
 import {
   getTransactionInsightCaveatMapper,
   getTransactionOriginCaveat,
   transactionInsightCaveatSpecifications,
   transactionInsightEndowmentBuilder,
 } from './transaction-insight';
-import { SnapEndowments } from '.';
 
 describe('endowment:transaction-insight', () => {
   const specification = transactionInsightEndowmentBuilder.specificationBuilder(
@@ -68,7 +69,7 @@ describe('getTransactionOriginCaveat', () => {
       ],
     };
 
-    expect(getTransactionOriginCaveat(permission)).toStrictEqual(true);
+    expect(getTransactionOriginCaveat(permission)).toBe(true);
   });
 
   it('returns null if the input is undefined', () => {

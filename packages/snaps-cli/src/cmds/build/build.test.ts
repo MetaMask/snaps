@@ -1,9 +1,10 @@
-import path from 'path';
 import * as snapUtils from '@metamask/snaps-utils';
+import path from 'path';
+
+import buildModule from '.';
 import * as snapEvalModule from '../eval/evalHandler';
 import * as manifestModule from '../manifest/manifestHandler';
 import * as buildBundle from './bundle';
-import buildModule from '.';
 
 const build = buildModule.handler;
 
@@ -43,7 +44,7 @@ describe('build', () => {
         .mockImplementation();
       const bundleMock = jest
         .spyOn(buildBundle, 'bundle')
-        .mockImplementation(async () => true);
+        .mockImplementation(async () => Promise.resolve(true));
       const evalMock = jest
         .spyOn(snapEvalModule, 'evalHandler')
         .mockImplementation();
@@ -86,7 +87,7 @@ describe('build', () => {
         .mockImplementation();
       const bundleMock = jest
         .spyOn(buildBundle, 'bundle')
-        .mockImplementation(async () => true);
+        .mockImplementation(async () => Promise.resolve(true));
       const evalMock = jest
         .spyOn(snapEvalModule, 'evalHandler')
         .mockImplementation();

@@ -11,10 +11,13 @@ import { OnRpcRequestHandler } from '@metamask/snaps-types';
  * @throws If the request method is not valid for this snap.
  * @throws If the `snap_notify` call failed.
  */
-export const onRpcRequest: OnRpcRequestHandler = ({ origin, request }) => {
+export const onRpcRequest: OnRpcRequestHandler = async ({
+  origin,
+  request,
+}) => {
   switch (request.method) {
     case 'inApp':
-      return snap.request({
+      return await snap.request({
         method: 'snap_notify',
         params: [
           {
@@ -24,7 +27,7 @@ export const onRpcRequest: OnRpcRequestHandler = ({ origin, request }) => {
         ],
       });
     case 'native':
-      return snap.request({
+      return await snap.request({
         method: 'snap_notify',
         params: [
           {

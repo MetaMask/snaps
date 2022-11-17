@@ -1,5 +1,11 @@
-import { ethErrors } from 'eth-rpc-errors';
-import { Infer, literal, object, optional, string } from 'superstruct';
+import {
+  PermissionSpecificationBuilder,
+  PermissionType,
+  RestrictedMethodOptions,
+  ValidPermissionSpecification,
+} from '@metamask/controllers';
+import { HardenedBIP32Node, SLIP10Node } from '@metamask/key-tree';
+import { SIP_6_MAGIC_VALUE } from '@metamask/snaps-utils';
 import {
   add0x,
   assert,
@@ -10,15 +16,9 @@ import {
   NonEmptyArray,
   stringToBytes,
 } from '@metamask/utils';
-import { HardenedBIP32Node, SLIP10Node } from '@metamask/key-tree';
-import {
-  PermissionSpecificationBuilder,
-  PermissionType,
-  RestrictedMethodOptions,
-  ValidPermissionSpecification,
-} from '@metamask/controllers';
 import { keccak_256 as keccak256 } from '@noble/hashes/sha3';
-import { SIP_6_MAGIC_VALUE } from '@metamask/snaps-utils';
+import { ethErrors } from 'eth-rpc-errors';
+import { Infer, literal, object, optional, string } from 'superstruct';
 
 const HARDENED_VALUE = 0x80000000;
 

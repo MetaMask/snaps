@@ -1,5 +1,6 @@
 import fs from 'fs';
 import pathUtils from 'path';
+
 import {
   booleanStringToBoolean,
   logError,
@@ -23,7 +24,8 @@ describe('misc', () => {
     isWatching: false,
   };
 
-  // this is the yargs object created with cli command: mm-snap init
+  // This is the yargs object created with cli command: `mm-snap init`.
+  /* eslint-disable @typescript-eslint/naming-convention */
   const defaultArgv = {
     _: ['init'],
     verboseErrors: true,
@@ -42,8 +44,8 @@ describe('misc', () => {
     $0: '/usr/local/bin/mm-snap',
   };
 
-  // this is the yargs object created with cli command:
-  //   mm-snap watch -verboseErrors --suppressWarnings
+  // This is the yargs object created with cli command:
+  //   `mm-snap watch -verboseErrors --suppressWarnings`
   const exampleArgv = {
     _: ['watch'],
     verboseErrors: true,
@@ -100,6 +102,7 @@ describe('misc', () => {
     p: 8081,
     $0: '/usr/local/bin/mm-snap',
   };
+  /* eslint-enable @typescript-eslint/naming-convention */
 
   const setVerboseErrors = (bool: boolean) => {
     global.snaps.verboseErrors = bool;
@@ -138,20 +141,22 @@ describe('misc', () => {
   describe('setSnapGlobals', () => {
     it('sets global variables correctly', () => {
       setSnapGlobals(exampleArgv);
-      expect(global.snaps.isWatching).toStrictEqual(true);
-      expect(global.snaps.verboseErrors).toStrictEqual(true);
-      expect(global.snaps.suppressWarnings).toStrictEqual(true);
+      expect(global.snaps.isWatching).toBe(true);
+      expect(global.snaps.verboseErrors).toBe(true);
+      expect(global.snaps.suppressWarnings).toBe(true);
     });
 
     it('does not set global variables incorrectly', () => {
       setSnapGlobals(defaultArgv);
-      expect(global.snaps.isWatching).toStrictEqual(false);
-      expect(global.snaps.verboseErrors).toStrictEqual(true);
-      expect(global.snaps.suppressWarnings).toStrictEqual(false);
+      expect(global.snaps.isWatching).toBe(false);
+      expect(global.snaps.verboseErrors).toBe(true);
+      expect(global.snaps.suppressWarnings).toBe(false);
     });
 
     it('does not set global variables if they are not in argv', () => {
       global.snaps = { isWatching: false };
+
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       const argv = { _: ['w', 'watch'], $0: '/usr/local/bin/mm-snap' };
       setSnapGlobals(argv);
       expect(global.snaps.verboseErrors).toBeUndefined();
@@ -295,13 +300,13 @@ describe('misc', () => {
 
   describe('trimPathString', () => {
     it('trims a given path string', () => {
-      expect(trimPathString('./hello')).toStrictEqual('hello');
-      expect(trimPathString('hello')).toStrictEqual('hello');
-      expect(trimPathString('hello/')).toStrictEqual('hello');
-      expect(trimPathString('')).toStrictEqual('');
-      expect(trimPathString('hello////')).toStrictEqual('hello');
-      expect(trimPathString('../hello')).toStrictEqual('hello');
-      expect(trimPathString('//////hello')).toStrictEqual('hello');
+      expect(trimPathString('./hello')).toBe('hello');
+      expect(trimPathString('hello')).toBe('hello');
+      expect(trimPathString('hello/')).toBe('hello');
+      expect(trimPathString('')).toBe('');
+      expect(trimPathString('hello////')).toBe('hello');
+      expect(trimPathString('../hello')).toBe('hello');
+      expect(trimPathString('//////hello')).toBe('hello');
     });
   });
 });

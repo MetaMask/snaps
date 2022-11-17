@@ -1,11 +1,13 @@
 enum GlobalObjectNames {
   // The globalThis entry is incorrectly identified as shadowing the global
   // globalThis.
+  /* eslint-disable @typescript-eslint/naming-convention */
   // eslint-disable-next-line @typescript-eslint/no-shadow
   globalThis = 'globalThis',
   global = 'global',
   self = 'self',
   window = 'window',
+  /* eslint-enavle @typescript-eslint/naming-convention */
 }
 
 let _rootRealmGlobal: typeof globalThis;

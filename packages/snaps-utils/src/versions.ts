@@ -16,7 +16,7 @@ export const DEFAULT_REQUESTED_SNAP_VERSION = '*';
  * @returns `version1 > version2`.
  */
 export function gtVersion(version1: string, version2: string): boolean {
-  return gtSemver(version1, version2, { includePrerelease: true });
+  return gtSemver(version1, version2);
 }
 
 /**

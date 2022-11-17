@@ -1,5 +1,10 @@
 import { ControllerMessenger } from '@metamask/controllers';
 import { getPersistedSnapObject } from '@metamask/snaps-utils/test-utils';
+
+import {
+  CronjobControllerActions,
+  CronjobControllerEvents,
+} from '../cronjob/CronjobController';
 import {
   AllowedActions,
   AllowedEvents,
@@ -10,10 +15,6 @@ import {
   SnapControllerEvents,
   SnapEndowments,
 } from '../snaps';
-import {
-  CronjobControllerActions,
-  CronjobControllerEvents,
-} from '../cronjob/CronjobController';
 import { getNodeEES, getNodeEESMessenger } from './execution-environment';
 
 export const getControllerMessenger = () =>
@@ -28,7 +29,7 @@ export const getSnapControllerMessenger = (
   > = getControllerMessenger(),
   mocked = true,
 ) => {
-  const m = messenger.getRestricted<
+  const snapControllerMessenger = messenger.getRestricted<
     'SnapController',
     SnapControllerActions['type'] | AllowedActions['type'],
     SnapControllerEvents['type'] | AllowedEvents['type']
@@ -78,20 +79,23 @@ export const getSnapControllerMessenger = (
   });
 
   if (mocked) {
-    jest.spyOn(m, 'call').mockImplementation((method, ...args) => {
-      // Return false for long-running by default, and true for everything else.
-      if (
-        method === 'PermissionController:hasPermission' &&
-        args[1] === SnapEndowments.LongRunning
-      ) {
-        return false;
-      } else if (method === 'ApprovalController:addRequest') {
-        return (args[0] as any).requestData;
-      }
-      return true;
-    });
+    jest
+      .spyOn(snapControllerMessenger, 'call')
+      .mockImplementation((method, ...args): any => {
+        // Return false for long-running by default, and true for everything else.
+        if (
+          method === 'PermissionController:hasPermission' &&
+          args[1] === SnapEndowments.LongRunning
+        ) {
+          return false;
+        } else if (method === 'ApprovalController:addRequest') {
+          return (args[0] as { requestData: unknown }).requestData;
+        }
+        return true;
+      });
   }
-  return m;
+
+  return snapControllerMessenger;
 };
 
 export type SnapControllerConstructorParams = ConstructorParameters<
@@ -117,12 +121,14 @@ export const getSnapControllerOptions = (
     featureFlags: { dappsCanUpdateSnaps: true },
     checkBlockList: jest
       .fn()
-      .mockImplementation(async (snaps: CheckSnapBlockListArg) => {
-        return Object.keys(snaps).reduce(
-          (acc, snapId) => ({ ...acc, [snapId]: { blocked: false } }),
-          {},
-        );
-      }),
+      .mockImplementation(async (snaps: CheckSnapBlockListArg) =>
+        Promise.resolve(
+          Object.keys(snaps).reduce(
+            (acc, snapId) => ({ ...acc, [snapId]: { blocked: false } }),
+            {},
+          ),
+        ),
+      ),
     state: undefined,
     ...opts,
   } as SnapControllerConstructorParams;
@@ -163,7 +169,7 @@ export const getSnapControllerWithEESOptions = (
       ) {
         return false;
       }
-      return originalCall(method, ...args);
+      return (originalCall as any)(method, ...args);
     });
 
   return {
@@ -197,13 +203,12 @@ export const getSnapControllerWithEES = (
 export const getPersistedSnapsState = (
   ...snaps: PersistedSnapControllerState['snaps'][string][]
 ): PersistedSnapControllerState['snaps'] => {
-  return (snaps.length > 0 ? snaps : [getPersistedSnapObject()]).reduce(
-    (snapsState, snapObject) => {
-      snapsState[snapObject.id] = snapObject;
-      return snapsState;
-    },
-    {} as PersistedSnapControllerState['snaps'],
-  );
+  return (snaps.length > 0 ? snaps : [getPersistedSnapObject()]).reduce<
+    PersistedSnapControllerState['snaps']
+  >((snapsState, snapObject) => {
+    snapsState[snapObject.id] = snapObject;
+    return snapsState;
+  }, {});
 };
 
 // Mock controller messenger for Cronjob Controller
@@ -219,7 +224,7 @@ export const getRestrictedCronjobControllerMessenger = (
   > = getRootCronjobControllerMessenger(),
   mocked = true,
 ) => {
-  const m = messenger.getRestricted<
+  const cronjobControllerMessenger = messenger.getRestricted<
     'CronjobController',
     CronjobControllerActions['type'] | AllowedActions['type'],
     CronjobControllerEvents['type'] | AllowedEvents['type']
@@ -237,16 +242,19 @@ export const getRestrictedCronjobControllerMessenger = (
   });
 
   if (mocked) {
-    jest.spyOn(m, 'call').mockImplementation((method, ...args) => {
-      // Return false for long-running by default, and true for everything else.
-      if (
-        method === 'PermissionController:hasPermission' &&
-        args[1] === SnapEndowments.LongRunning
-      ) {
-        return false;
-      }
-      return true;
-    });
+    jest
+      .spyOn(cronjobControllerMessenger, 'call')
+      .mockImplementation((method, ...args) => {
+        // Return false for long-running by default, and true for everything else.
+        if (
+          method === 'PermissionController:hasPermission' &&
+          args[1] === SnapEndowments.LongRunning
+        ) {
+          return false;
+        }
+        return true;
+      });
   }
-  return m;
+
+  return cronjobControllerMessenger;
 };

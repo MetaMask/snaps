@@ -1,5 +1,6 @@
-import { HandlerType } from '@metamask/snaps-utils';
 import { createService } from '@metamask/snaps-controllers/test-utils';
+import { HandlerType } from '@metamask/snaps-utils';
+
 import { IframeExecutionService } from './IframeExecutionService';
 import fixJSDOMPostMessageEventSource from './test/fixJSDOMPostMessageEventSource';
 import {
@@ -50,7 +51,7 @@ describe('IframeExecutionService', () => {
       `,
       endowments: ['console'],
     });
-    expect(response).toStrictEqual('OK');
+    expect(response).toBe('OK');
     await service.terminateAllSnaps();
     removeListener();
   });

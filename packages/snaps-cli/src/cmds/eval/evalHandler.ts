@@ -1,4 +1,6 @@
 import { evalBundle } from '@metamask/snaps-utils';
+import { assert } from '@metamask/utils';
+
 import { YargsArgs } from '../../types/yargs';
 
 /**
@@ -11,8 +13,10 @@ import { YargsArgs } from '../../types/yargs';
 export async function evalHandler(argv: YargsArgs): Promise<void> {
   const { bundle: bundlePath } = argv;
 
+  assert(typeof bundlePath === 'string');
+
   try {
-    await evalBundle(bundlePath as string);
+    await evalBundle(bundlePath);
     console.log(`Eval Success: evaluated '${bundlePath}' in SES!`);
   } catch (error) {
     throw new Error(`Snap evaluation error: ${error.message}`);

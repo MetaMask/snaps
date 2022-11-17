@@ -145,7 +145,7 @@ type IsLiteral<T> = T extends string | number | boolean | symbol
  * ```
  * @see [Literal types]{@link https://www.typescriptlang.org/docs/handbook/literal-types.html}
  */
-type _LiteralKeys<T> = NonNullable<
+type LiteralKeys<T> = NonNullable<
   {
     [Key in keyof T]: IsLiteral<Key> extends true ? Key : never;
   }[keyof T]
@@ -161,7 +161,7 @@ type _LiteralKeys<T> = NonNullable<
  * ```
  * @see [Literal types]{@link https://www.typescriptlang.org/docs/handbook/literal-types.html}
  */
-type _NonLiteralKeys<T> = NonNullable<
+type NonLiteralKeys<T> = NonNullable<
   {
     [Key in keyof T]: IsLiteral<Key> extends false ? Key : never;
   }[keyof T]
@@ -181,8 +181,8 @@ type _NonLiteralKeys<T> = NonNullable<
  * ```
  * @see {@link setDiff} for the main use-case
  */
-export type Diff<A, B> = Omit<A, _LiteralKeys<B>> &
-  Partial<Pick<A, Extract<keyof A, _NonLiteralKeys<B>>>>;
+export type Diff<A, B> = Omit<A, LiteralKeys<B>> &
+  Partial<Pick<A, Extract<keyof A, NonLiteralKeys<B>>>>;
 
 /**
  * Makes every specified property of the specified object type mutable.
@@ -195,7 +195,6 @@ export type Mutable<
   TargetKey extends string,
 > = {
   -readonly [Key in keyof Pick<T, TargetKey>]: T[Key];
-} &
-  {
-    [Key in keyof Omit<T, TargetKey>]: T[Key];
-  };
+} & {
+  [Key in keyof Omit<T, TargetKey>]: T[Key];
+};

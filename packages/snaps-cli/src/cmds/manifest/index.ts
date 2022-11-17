@@ -1,4 +1,5 @@
 import yargs from 'yargs';
+
 import builders from '../../builders';
 import { YargsArgs } from '../../types/yargs';
 import { logError } from '../../utils';
@@ -13,9 +14,9 @@ export = {
   handler: async (argv: YargsArgs) => {
     try {
       await manifestHandler(argv);
-    } catch (err) {
-      logError(err.message, err);
-      throw err;
+    } catch (error) {
+      logError(error.message, error);
+      throw error;
     }
   },
 };

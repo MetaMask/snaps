@@ -1,15 +1,15 @@
-import { Transform, TransformCallback } from 'stream';
-import { promises as fs } from 'fs';
-import os from 'os';
-import pathUtils from 'path';
-import { BrowserifyObject } from 'browserify';
 import {
   checkManifest,
   evalBundle,
   postProcessBundle,
   PostProcessOptions,
 } from '@metamask/snaps-utils';
+import { BrowserifyObject } from 'browserify';
 import { fromSource } from 'convert-source-map';
+import { promises as fs } from 'fs';
+import os from 'os';
+import pathUtils from 'path';
+import { Transform, TransformCallback } from 'stream';
 
 const TEMP_BUNDLE_PATH = pathUtils.join(os.tmpdir(), 'snaps-bundle.js');
 
@@ -37,7 +37,7 @@ async function postBundle(options: Partial<Options>, code: string) {
       .catch((error) => {
         throw new Error(`Snap evaluation error: ${error.toString()}`);
       })
-      .finally(() => fs.unlink(TEMP_BUNDLE_PATH));
+      .finally(async () => fs.unlink(TEMP_BUNDLE_PATH));
   }
 
   if (options.manifestPath) {

@@ -1,5 +1,6 @@
-import { join } from 'path';
 import { fork } from 'child_process';
+import { join } from 'path';
+
 import { validateFilePath } from './fs';
 
 const WORKER_PATH = join(__dirname, 'eval-worker.js');
@@ -12,7 +13,7 @@ const WORKER_PATH = join(__dirname, 'eval-worker.js');
  * @throws If the worker failed to run successfully.
  */
 export async function evalBundle(bundlePath: string): Promise<null> {
-  await validateFilePath(bundlePath as string);
+  await validateFilePath(bundlePath);
 
   return new Promise((resolve, reject) => {
     const worker = fork(WORKER_PATH, [bundlePath]);

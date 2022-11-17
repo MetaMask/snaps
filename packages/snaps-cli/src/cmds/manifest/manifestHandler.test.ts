@@ -1,4 +1,5 @@
 import { checkManifest, CheckManifestResult } from '@metamask/snaps-utils';
+
 import { YargsArgs } from '../../types/yargs';
 import { manifestHandler } from './manifestHandler';
 
@@ -16,7 +17,7 @@ describe('manifestHandler', () => {
   it('logs manifest errors if writeManifest is disabled', async () => {
     jest.spyOn(console, 'error').mockImplementation(() => undefined);
     jest.spyOn(process, 'exit').mockImplementation((code) => {
-      throw new Error(`exit ${code}`);
+      throw new Error(`exit ${code ?? '1'}`);
     });
 
     checkManifestMock.mockResolvedValueOnce({

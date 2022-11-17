@@ -21,8 +21,8 @@ export async function start(port = PORT) {
     );
     const publicPath = path.resolve(bundlePath, '../');
 
-    server = http.createServer(async (req, res) => {
-      await serveHandler(req, res, {
+    server = http.createServer((req, res) => {
+      serveHandler(req, res, {
         public: publicPath,
         headers: [
           {
@@ -35,7 +35,7 @@ export async function start(port = PORT) {
             ],
           },
         ],
-      });
+      }).catch(reject);
     });
 
     server.listen({ port }, () => {
@@ -60,9 +60,9 @@ export async function start(port = PORT) {
  */
 export async function stop() {
   await new Promise<void>((resolve, reject) => {
-    server.close((err) => {
-      if (err) {
-        reject(err);
+    server.close((error) => {
+      if (error) {
+        reject(error);
       } else {
         resolve();
       }

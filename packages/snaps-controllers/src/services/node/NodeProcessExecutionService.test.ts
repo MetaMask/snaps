@@ -1,6 +1,7 @@
 import { HandlerType, SnapId } from '@metamask/snaps-utils';
-import { SnapErrorJson } from '../ExecutionService';
+
 import { createService, MOCK_BLOCK_NUMBER } from '../../test-utils';
+import { SnapErrorJson } from '../ExecutionService';
 import { NodeProcessExecutionService } from './NodeProcessExecutionService';
 
 const ON_RPC_REQUEST = HandlerType.OnRpcRequest;
@@ -21,7 +22,7 @@ describe('NodeProcessExecutionService', () => {
       `,
       endowments: ['console'],
     });
-    expect(response).toStrictEqual('OK');
+    expect(response).toBe('OK');
     await service.terminateAllSnaps();
   });
 

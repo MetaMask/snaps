@@ -1,5 +1,7 @@
 module.exports = {
   extends: ['../../.eslintrc.js'],
 
-  ignorePatterns: ['src/json-schemas'],
+  parserOptions: {
+    tsconfigRootDir: __dirname,
+  },
 };

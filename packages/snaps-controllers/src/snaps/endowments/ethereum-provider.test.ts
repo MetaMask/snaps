@@ -1,4 +1,5 @@
 import { PermissionType } from '@metamask/controllers';
+
 import { SnapEndowments } from './enum';
 import { ethereumProviderEndowmentBuilder } from './ethereum-provider';
 

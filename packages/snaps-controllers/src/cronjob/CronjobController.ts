@@ -12,6 +12,7 @@ import {
   parseCronExpression,
 } from '@metamask/snaps-utils';
 import { Duration, inMilliseconds } from '@metamask/utils';
+
 import {
   GetAllSnaps,
   getRunnableSnaps,
@@ -98,13 +99,13 @@ export class CronjobController extends BaseController<
     this.#timers = new Map();
     this.#snapIds = new Map();
     this.#messenger = messenger;
-    this.dailyCheckIn();
 
     this._handleEventSnapInstalled = this._handleEventSnapInstalled.bind(this);
     this._handleEventSnapRemoved = this._handleEventSnapRemoved.bind(this);
     this._handleEventSnapUpdated = this._handleEventSnapUpdated.bind(this);
 
     // Subscribe to Snap events
+    /* eslint-disable @typescript-eslint/unbound-method */
     this.messagingSystem.subscribe(
       'SnapController:snapInstalled',
       this._handleEventSnapInstalled,
@@ -119,6 +120,11 @@ export class CronjobController extends BaseController<
       'SnapController:snapUpdated',
       this._handleEventSnapUpdated,
     );
+    /* eslint-enable @typescript-eslint/unbound-method */
+
+    this.dailyCheckIn().catch((error) => {
+      console.error(error);
+    });
   }
 
   /**
@@ -126,13 +132,11 @@ export class CronjobController extends BaseController<
    *
    * @returns Array of Cronjob specifications.
    */
-  private async getAllJobs(): Promise<Cronjob[]> {
-    const snaps = await this.messagingSystem.call('SnapController:getAll');
+  private getAllJobs(): Cronjob[] {
+    const snaps = this.messagingSystem.call('SnapController:getAll');
     const filteredSnaps = getRunnableSnaps(snaps);
 
-    const jobs = await Promise.all(
-      filteredSnaps.map((snap) => this.getSnapJobs(snap.id)),
-    );
+    const jobs = filteredSnaps.map((snap) => this.getSnapJobs(snap.id));
     return flatten(jobs).filter((job) => job !== undefined) as Cronjob[];
   }
 
@@ -142,8 +146,8 @@ export class CronjobController extends BaseController<
    * @param snapId - ID of a Snap.
    * @returns Array of Cronjob specifications.
    */
-  private async getSnapJobs(snapId: SnapId): Promise<Cronjob[] | undefined> {
-    const permissions = await this.#messenger.call(
+  private getSnapJobs(snapId: SnapId): Cronjob[] | undefined {
+    const permissions = this.#messenger.call(
       'PermissionController:getPermissions',
       snapId,
     );
@@ -162,8 +166,8 @@ export class CronjobController extends BaseController<
    *
    * @param snapId - ID of a snap.
    */
-  async register(snapId: SnapId) {
-    const jobs = await this.getSnapJobs(snapId);
+  register(snapId: SnapId) {
+    const jobs = this.getSnapJobs(snapId);
     jobs?.forEach((job) => this.schedule(job));
   }
 
@@ -182,6 +186,7 @@ export class CronjobController extends BaseController<
     if (this.#timers.has(job.id)) {
       return;
     }
+
     const parsed = parseCronExpression(job.expression);
     const next = parsed.next();
     const now = new Date();
@@ -194,7 +199,11 @@ export class CronjobController extends BaseController<
 
     const timer = new Timer(ms);
     timer.start(() => {
-      this.executeCronjob(job);
+      this.executeCronjob(job).catch((error) => {
+        // TODO: Decide how to handle errors.
+        console.error(error);
+      });
+
       this.#timers.delete(job.id);
       this.schedule(job);
     });
@@ -209,9 +218,9 @@ export class CronjobController extends BaseController<
    *
    * @param job - Cronjob specification.
    */
-  private executeCronjob(job: Cronjob) {
+  private async executeCronjob(job: Cronjob) {
     this.updateJobLastRunState(job.id, Date.now());
-    this.#messenger.call('SnapController:handleRequest', {
+    await this.#messenger.call('SnapController:handleRequest', {
       snapId: job.snapId,
       origin: '',
       handler: HandlerType.OnCronjob,
@@ -261,8 +270,9 @@ export class CronjobController extends BaseController<
    * This is necesary for longer running jobs that execute with more than 24 hours between them.
    */
   async dailyCheckIn() {
-    const jobs = await this.getAllJobs();
-    jobs.forEach((job) => {
+    const jobs = this.getAllJobs();
+
+    for (const job of jobs) {
       const parsed = parseCronExpression(job.expression);
       const lastRun = this.state.jobs[job.id]?.lastRun;
       // If a job was supposed to run while we were shut down but wasn't we run it now
@@ -271,14 +281,20 @@ export class CronjobController extends BaseController<
         parsed.hasPrev() &&
         parsed.prev().getTime() > lastRun
       ) {
-        this.executeCronjob(job);
+        await this.executeCronjob(job);
       }
 
       // Try scheduling, will fail if an existing scheduled job is found
       this.schedule(job);
-    });
+    }
+
     this.#dailyTimer = new Timer(DAILY_TIMEOUT);
-    this.#dailyTimer.start(() => this.dailyCheckIn());
+    this.#dailyTimer.start(() => {
+      this.dailyCheckIn().catch((error) => {
+        // TODO: Decide how to handle errors.
+        console.error(error);
+      });
+    });
   }
 
   /**
@@ -287,6 +303,7 @@ export class CronjobController extends BaseController<
   destroy() {
     super.destroy();
 
+    /* eslint-disable @typescript-eslint/unbound-method */
     this.messagingSystem.unsubscribe(
       'SnapController:snapInstalled',
       this._handleEventSnapInstalled,
@@ -301,6 +318,7 @@ export class CronjobController extends BaseController<
       'SnapController:snapUpdated',
       this._handleEventSnapUpdated,
     );
+    /* eslint-enable @typescript-eslint/unbound-method */
 
     this.#snapIds.forEach((snapId) => {
       this.unregister(snapId);
@@ -312,8 +330,8 @@ export class CronjobController extends BaseController<
    *
    * @param snap - Basic Snap information.
    */
-  private async _handleEventSnapInstalled(snap: TruncatedSnap) {
-    await this.register(snap.id);
+  private _handleEventSnapInstalled(snap: TruncatedSnap) {
+    this.register(snap.id);
   }
 
   /**
@@ -330,8 +348,8 @@ export class CronjobController extends BaseController<
    *
    * @param snap - Basic Snap information.
    */
-  private async _handleEventSnapUpdated(snap: TruncatedSnap) {
+  private _handleEventSnapUpdated(snap: TruncatedSnap) {
     this.unregister(snap.id);
-    await this.register(snap.id);
+    this.register(snap.id);
   }
 }

@@ -1,5 +1,6 @@
 import yargs, { Arguments } from 'yargs';
 import yargsType from 'yargs/yargs';
+
 import builders from './builders';
 import {
   applyConfig,
@@ -63,8 +64,8 @@ export function cli(argv: string[], commands: any): void {
       true,
     )
 
-    .fail((msg: string, err: Error, _yargs) => {
-      logError(msg, err);
+    .fail((message: string, error: Error, _yargs) => {
+      logError(message, error);
       process.exitCode = 1;
     })
 

@@ -1,4 +1,5 @@
 import yargs from 'yargs';
+
 import builders from '../../builders';
 import { YargsArgs } from '../../types/yargs';
 import { serve } from './serveHandler';
@@ -9,5 +10,5 @@ export = {
   builder: (yarg: yargs.Argv) => {
     yarg.option('root', builders.root).option('port', builders.port);
   },
-  handler: (argv: YargsArgs) => serve(argv),
+  handler: async (argv: YargsArgs) => serve(argv),
 };

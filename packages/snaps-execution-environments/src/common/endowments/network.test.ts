@@ -1,5 +1,6 @@
 import fetchMock from 'jest-fetch-mock';
 import { Server as WebSocketServer } from 'mock-socket';
+
 import network from './network';
 
 describe('Network endowments', () => {
@@ -14,7 +15,7 @@ describe('Network endowments', () => {
 
     it('fetches and reads body', async () => {
       const RESULT = 'OK';
-      fetchMock.mockOnce(async () => RESULT);
+      fetchMock.mockOnce(async () => Promise.resolve(RESULT));
       const { fetch } = network.factory();
       const result = await (await fetch('foo.com')).text();
       expect(result).toStrictEqual(RESULT);
@@ -23,9 +24,9 @@ describe('Network endowments', () => {
     it('can use AbortController normally', async () => {
       let resolve: ((result: string) => void) | null = null;
       fetchMock.mockOnce(
-        () =>
-          new Promise((r) => {
-            resolve = r;
+        async () =>
+          new Promise((_resolve) => {
+            resolve = _resolve;
           }),
       );
 
@@ -55,7 +56,9 @@ describe('Network endowments', () => {
 
     it('should not expose then or catch after teardown has been called', async () => {
       let fetchResolve: ((result: string) => void) | null = null;
-      fetchMock.mockOnce(() => new Promise((r) => (fetchResolve = r)));
+      fetchMock.mockOnce(
+        async () => new Promise((resolve) => (fetchResolve = resolve)),
+      );
 
       const { fetch, teardownFunction } = network.factory();
       const ErrorProxy = jest
@@ -70,12 +73,12 @@ describe('Network endowments', () => {
         .catch(() => {
           throw new ErrorProxy('SHOULD_NOT_BE_REACHED');
         })
-        .catch((e) => console.log(e));
+        .catch((error) => console.log(error));
 
       const teardownPromise = teardownFunction();
       (fetchResolve as any)('Resolved');
       await teardownPromise;
-      await new Promise((r) => setTimeout(() => r('Resolved'), 0));
+      await new Promise((resolve) => setTimeout(() => resolve('Resolved'), 0));
 
       expect(ErrorProxy).not.toHaveBeenCalled();
     });
@@ -122,11 +125,11 @@ describe('Network endowments', () => {
       let onErrorResolve: any;
       let onCloseResolve: any;
       const promises = [
-        new Promise((r) => (onConnectionResolve = r)),
-        new Promise((r) => (onMessageResolve = r)),
-        new Promise((r) => (onResponseResolve = r)),
-        new Promise((r) => (onErrorResolve = r)),
-        new Promise((r) => (onCloseResolve = r)),
+        new Promise((resolve) => (onConnectionResolve = resolve)),
+        new Promise((resolve) => (onMessageResolve = resolve)),
+        new Promise((resolve) => (onResponseResolve = resolve)),
+        new Promise((resolve) => (onErrorResolve = resolve)),
+        new Promise((resolve) => (onCloseResolve = resolve)),
       ];
 
       server.on('connection', (response) => {
@@ -142,7 +145,7 @@ describe('Network endowments', () => {
       });
 
       const socket = new _WebSocket(WEBSOCKET_URL, PROTOCOL);
-      const onmessageListener = (event: MessageEvent<any>) => {
+      const onmessageListener = (event: MessageEvent) => {
         onResponseResolve(event.data);
         socket.close();
       };
@@ -155,7 +158,7 @@ describe('Network endowments', () => {
       socket.removeEventListener('close', closeListener);
 
       let closedResolve: any;
-      const closedPromise = new Promise((r) => (closedResolve = r));
+      const closedPromise = new Promise((resolve) => (closedResolve = resolve));
       const oncloseListener = () => closedResolve();
       socket.onclose = oncloseListener;
       expect(socket.onclose).toStrictEqual(oncloseListener);
@@ -174,11 +177,11 @@ describe('Network endowments', () => {
 
       socket.dispatchEvent(new Event('error'));
 
-      expect(socket.binaryType).toStrictEqual('blob');
+      expect(socket.binaryType).toBe('blob');
       socket.binaryType = 'arraybuffer';
-      expect(socket.binaryType).toStrictEqual('arraybuffer');
+      expect(socket.binaryType).toBe('arraybuffer');
       socket.binaryType = 'blob';
-      expect(socket.binaryType).toStrictEqual('blob');
+      expect(socket.binaryType).toBe('blob');
 
       expect(socket.url).toStrictEqual(WEBSOCKET_URL);
       expect(socket.protocol).toStrictEqual(PROTOCOL);
@@ -186,7 +189,7 @@ describe('Network endowments', () => {
       expect(socket.CLOSING).toStrictEqual(WebSocket.CLOSING);
       expect(socket.CONNECTING).toStrictEqual(WebSocket.CONNECTING);
       expect(socket.OPEN).toStrictEqual(WebSocket.OPEN);
-      expect(socket.extensions).toStrictEqual('');
+      expect(socket.extensions).toBe('');
       expect(await Promise.all(promises)).toStrictEqual([
         true,
         MESSAGE_DATA,
@@ -197,7 +200,7 @@ describe('Network endowments', () => {
 
       await closedPromise;
       expect(socket.readyState).toStrictEqual(socket.CLOSED);
-      expect(socket.bufferedAmount).toStrictEqual(0);
+      expect(socket.bufferedAmount).toBe(0);
       expect(closeListener).not.toHaveBeenCalled();
     });
 
@@ -228,7 +231,7 @@ describe('Network endowments', () => {
       const { WebSocket, teardownFunction } = network.factory();
 
       let onClosedResolve: any;
-      const onClosed = new Promise((r) => (onClosedResolve = r));
+      const onClosed = new Promise((resolve) => (onClosedResolve = resolve));
 
       const socket = new WebSocket(WEBSOCKET_URL);
       socket.onopen = async () => {
@@ -245,7 +248,7 @@ describe('Network endowments', () => {
       const { WebSocket } = network.factory();
 
       let onClosedResolve: any;
-      const onClosed = new Promise((r) => (onClosedResolve = r));
+      const onClosed = new Promise((resolve) => (onClosedResolve = resolve));
 
       const socket = new WebSocket(WEBSOCKET_URL);
       socket.onclose = () => {
@@ -340,14 +343,14 @@ describe('Network endowments', () => {
       (socket as any)['#socket'] = null;
 
       let onOpenResolve: any;
-      const onOpen = new Promise((r) => (onOpenResolve = r));
+      const onOpen = new Promise((resolve) => (onOpenResolve = resolve));
       socket.onopen = () => {
         onOpenResolve(true);
       };
 
       await teardownFunction();
 
-      expect(await onOpen).toStrictEqual(true);
+      expect(await onOpen).toBe(true);
       expect(socket.readyState).toStrictEqual(socket.CLOSED);
     });
 
@@ -355,7 +358,7 @@ describe('Network endowments', () => {
       const { WebSocket: _WebSocket } = network.factory();
 
       const socket = new _WebSocket(WEBSOCKET_URL);
-      expect(socket instanceof WebSocket).toStrictEqual(false);
+      expect(socket instanceof WebSocket).toBe(false);
 
       expect(() =>
         Object.getPrototypeOf(_WebSocket).addEventListener.call(
@@ -428,14 +431,14 @@ describe('Network endowments', () => {
 
       const validateThis = function () {
         // @ts-expect-error An outer value of 'this' is shadowed by this container
-        expect(this as any).not.toBeInstanceOf(WebSocket); // eslint-disable-line no-invalid-this
+        expect(this).not.toBeInstanceOf(WebSocket); // eslint-disable-line no-invalid-this
       };
 
       let onCloseEventResolve: any;
       let onCloseResolve: any;
       const allClosed = Promise.all([
-        new Promise((r) => (onCloseEventResolve = r)),
-        new Promise((r) => (onCloseResolve = r)),
+        new Promise((resolve) => (onCloseEventResolve = resolve)),
+        new Promise((resolve) => (onCloseResolve = resolve)),
       ]);
 
       socket.onopen = function () {
@@ -487,11 +490,11 @@ describe('Network endowments', () => {
         });
       });
 
-      const validateEvent = (e: Event) => {
-        expect(e.target).not.toBeInstanceOf(WebSocket);
-        expect(e.currentTarget).not.toBeInstanceOf(WebSocket);
-        expect(e.srcElement).not.toBeInstanceOf(WebSocket);
-        (e.composedPath?.() || []).forEach((path) =>
+      const validateEvent = (event: Event) => {
+        expect(event.target).not.toBeInstanceOf(WebSocket);
+        expect(event.currentTarget).not.toBeInstanceOf(WebSocket);
+        expect(event.srcElement).not.toBeInstanceOf(WebSocket);
+        (event.composedPath?.() || []).forEach((path) =>
           expect(path).not.toBeInstanceOf(WebSocket),
         );
       };
@@ -499,39 +502,39 @@ describe('Network endowments', () => {
       let onCloseEventResolve: any;
       let onCloseResolve: any;
       const allClosed = Promise.all([
-        new Promise((r) => (onCloseEventResolve = r)),
-        new Promise((r) => (onCloseResolve = r)),
+        new Promise((resolve) => (onCloseEventResolve = resolve)),
+        new Promise((resolve) => (onCloseResolve = resolve)),
       ]);
 
       const socket = new _WebSocket(WEBSOCKET_URL);
 
-      socket.onopen = (e) => {
-        validateEvent(e);
+      socket.onopen = (event) => {
+        validateEvent(event);
         socket.send('PING');
       };
 
-      socket.onmessage = (e) => {
-        validateEvent(e);
+      socket.onmessage = (event) => {
+        validateEvent(event);
         socket.dispatchEvent(new Event('error'));
       };
 
-      socket.onerror = (e) => {
-        validateEvent(e);
+      socket.onerror = (event) => {
+        validateEvent(event);
         socket.close();
       };
 
-      socket.onclose = (e) => {
-        validateEvent(e);
+      socket.onclose = (event) => {
+        validateEvent(event);
         onCloseResolve();
       };
-      socket.addEventListener('open', (e) => validateEvent(e));
+      socket.addEventListener('open', (event) => validateEvent(event));
 
-      socket.addEventListener('message', (e) => validateEvent(e));
+      socket.addEventListener('message', (event) => validateEvent(event));
 
-      socket.addEventListener('error', (e) => validateEvent(e));
+      socket.addEventListener('error', (event) => validateEvent(event));
 
-      socket.addEventListener('close', (e) => {
-        validateEvent(e);
+      socket.addEventListener('close', (event) => {
+        validateEvent(event);
         onCloseEventResolve();
       });
 
@@ -550,7 +553,7 @@ describe('Network endowments', () => {
 
     it('should return for each of the Response methods', async () => {
       const RESULT = 'OK';
-      fetchMock.mockOnce(async () => RESULT);
+      fetchMock.mockOnce(async () => Promise.resolve(RESULT));
 
       const { fetch } = network.factory();
       const result = await fetch('foo.com');
@@ -573,7 +576,7 @@ describe('Network endowments', () => {
 
     it('should return when arrayBuffer is called', async () => {
       const RESULT = 'OK';
-      fetchMock.mockOnce(async () => RESULT);
+      fetchMock.mockOnce(async () => Promise.resolve(RESULT));
 
       const { fetch } = network.factory();
       const result = await fetch('foo.com');
@@ -584,7 +587,7 @@ describe('Network endowments', () => {
 
     it('should return when blob is called', async () => {
       const RESULT = 'OK';
-      fetchMock.mockOnce(async () => RESULT);
+      fetchMock.mockOnce(async () => Promise.resolve(RESULT));
 
       const { fetch } = network.factory();
       const result = await fetch('foo.com');
@@ -597,7 +600,7 @@ describe('Network endowments', () => {
 
     it('should clone the body using the wrapper', async () => {
       const RESULT = 'OK';
-      fetchMock.mockOnce(async () => RESULT);
+      fetchMock.mockOnce(async () => Promise.resolve(RESULT));
 
       const { fetch } = network.factory();
       const result = await fetch('foo.com');
@@ -611,7 +614,7 @@ describe('Network endowments', () => {
 
     it('should return when json is called', async () => {
       const RESULT = '{}';
-      fetchMock.mockOnce(async () => RESULT);
+      fetchMock.mockOnce(async () => Promise.resolve(RESULT));
 
       const { fetch } = network.factory();
       const result = await fetch('foo.com');

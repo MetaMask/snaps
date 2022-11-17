@@ -1,4 +1,5 @@
 import { promises as fs } from 'fs';
+
 import { TranspilationModes } from '../../builders';
 import * as miscUtils from '../../utils/misc';
 import {
@@ -135,7 +136,7 @@ describe('utils', () => {
   describe('processDependencies', () => {
     it('will return an empty object if dependencies are not defined', () => {
       const depsToTranspile = undefined;
-      const transpilationMode = TranspilationModes.localAndDeps;
+      const transpilationMode = TranspilationModes.LocalAndDeps;
       const argv: Record<string, any> = { depsToTranspile, transpilationMode };
       const babelifyOptions = processDependencies(argv as any);
       expect(babelifyOptions).toStrictEqual({});
@@ -143,7 +144,7 @@ describe('utils', () => {
 
     it('will return an object with an ignore value if dependencies are specified', () => {
       const depsToTranspile = ['airswap', 'filecoin', 'pify'];
-      const transpilationMode = TranspilationModes.localAndDeps;
+      const transpilationMode = TranspilationModes.LocalAndDeps;
       const argv: Record<string, any> = { depsToTranspile, transpilationMode };
       const babelifyOptions = processDependencies(argv as any);
       expect(babelifyOptions).toStrictEqual({
@@ -155,7 +156,7 @@ describe('utils', () => {
   describe('processInvalidTranspilation', () => {
     it('will throw an error if argv has a depsToTranspile property and a transpilationMode of anything other than localAndDeps', () => {
       const depsToTranspile = ['airswap', 'filecoin', 'pify'];
-      const transpilationMode = TranspilationModes.localOnly;
+      const transpilationMode = TranspilationModes.LocalOnly;
       const argv: Record<string, any> = { depsToTranspile, transpilationMode };
       expect(() => processInvalidTranspilation(argv as any)).toThrow(
         '"depsToTranspile" can only be specified if "transpilationMode" is set to "localAndDeps" .',

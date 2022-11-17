@@ -1,8 +1,9 @@
-import { ChildProcess, fork } from 'child_process';
 import {
   ProcessParentMessageStream,
   BasePostMessageStream,
 } from '@metamask/post-message-stream';
+import { ChildProcess, fork } from 'child_process';
+
 import { AbstractExecutionService, Job } from '..';
 
 export class NodeProcessExecutionService extends AbstractExecutionService<ChildProcess> {
@@ -15,8 +16,9 @@ export class NodeProcessExecutionService extends AbstractExecutionService<ChildP
         '@metamask/snaps-execution-environments/dist/webpack/node-process/bundle.js',
       ),
     );
+
     const stream = new ProcessParentMessageStream({ process: worker });
-    return { worker, stream };
+    return Promise.resolve({ worker, stream });
   }
 
   protected terminateJob(jobWrapper: Job<ChildProcess>): void {

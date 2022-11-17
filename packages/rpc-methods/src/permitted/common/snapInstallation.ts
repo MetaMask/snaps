@@ -1,7 +1,7 @@
-import { ethErrors } from 'eth-rpc-errors';
 import { RequestedPermissions } from '@metamask/controllers';
-import { isObject } from '@metamask/utils';
 import { InstallSnapsResult } from '@metamask/snaps-utils';
+import { isObject } from '@metamask/utils';
+import { ethErrors } from 'eth-rpc-errors';
 
 export { InstallSnapsResult } from '@metamask/snaps-utils';
 

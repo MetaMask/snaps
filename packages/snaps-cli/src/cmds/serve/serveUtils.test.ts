@@ -5,7 +5,7 @@ describe('serve utility functions', () => {
   describe('logServerListening', () => {
     const portInput = 8000;
 
-    it('logs to console', async () => {
+    it('logs to console', () => {
       jest.spyOn(console, 'log').mockImplementation();
       logServerListening(portInput);
       expect(global.console.log).toHaveBeenCalledTimes(1);
@@ -17,7 +17,7 @@ describe('serve utility functions', () => {
       url: 'http://localhost:8000',
     };
 
-    it('logs to console', async () => {
+    it('logs to console', () => {
       jest.spyOn(console, 'log').mockImplementation();
       logRequest(requestInput);
       expect(global.console.log).toHaveBeenCalledTimes(1);
@@ -27,7 +27,7 @@ describe('serve utility functions', () => {
   describe('logServerError', () => {
     const port = 8000;
 
-    it('logs already in use error to console', async () => {
+    it('logs already in use error to console', () => {
       const mockError: Error & { code?: string } = new Error('error message');
       mockError.code = 'EADDRINUSE';
       jest.spyOn(miscUtils, 'logError').mockImplementation();
@@ -35,7 +35,7 @@ describe('serve utility functions', () => {
       expect(miscUtils.logError).toHaveBeenCalledTimes(1);
     });
 
-    it('logs server error to console', async () => {
+    it('logs server error to console', () => {
       const mockBadError: Error & { code?: string } = new Error(
         'error message',
       );

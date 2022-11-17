@@ -1,3 +1,8 @@
+import { RequestedPermissions } from '@metamask/controllers';
+import {
+  getSnapPermissionName,
+  InstallSnapsResult,
+} from '@metamask/snaps-utils';
 import {
   MOCK_SNAP_ID,
   getTruncatedSnap,
@@ -7,12 +12,8 @@ import {
   JsonRpcSuccess,
   PendingJsonRpcResponse,
 } from '@metamask/types';
-import {
-  getSnapPermissionName,
-  InstallSnapsResult,
-} from '@metamask/snaps-utils';
 import { JsonRpcEngine } from 'json-rpc-engine';
-import { RequestedPermissions } from '@metamask/controllers';
+
 import { requestSnapsHandler } from './requestSnaps';
 
 describe('requestSnapsHandler', () => {
@@ -57,15 +58,17 @@ describe('implementation', () => {
     }));
 
     const engine = new JsonRpcEngine();
-    engine.push((req, res, next, end) =>
-      implementation(
+    engine.push((req, res, next, end) => {
+      const result = implementation(
         req as JsonRpcRequest<RequestedPermissions>,
         res as PendingJsonRpcResponse<InstallSnapsResult>,
         next,
         end,
         hooks,
-      ),
-    );
+      );
+
+      result?.catch(end);
+    });
 
     const response = (await engine.handle({
       jsonrpc: '2.0',
@@ -109,15 +112,17 @@ describe('implementation', () => {
     }));
 
     const engine = new JsonRpcEngine();
-    engine.push((req, res, next, end) =>
-      implementation(
+    engine.push((req, res, next, end) => {
+      const result = implementation(
         req as JsonRpcRequest<RequestedPermissions>,
         res as PendingJsonRpcResponse<InstallSnapsResult>,
         next,
         end,
         hooks,
-      ),
-    );
+      );
+
+      result?.catch(end);
+    });
 
     const response = (await engine.handle({
       jsonrpc: '2.0',

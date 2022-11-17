@@ -38,7 +38,7 @@ export const sortParamKeys = (
 
   return Object.entries(params)
     .sort(
-      ([name1, _], [name2, __]) =>
+      ([name1, _1], [name2, _2]) =>
         methodParamsOrder[name1] - methodParamsOrder[name2],
     )
     .map(([_, val]) => val);

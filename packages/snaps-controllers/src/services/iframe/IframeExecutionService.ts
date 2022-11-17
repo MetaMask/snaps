@@ -2,6 +2,7 @@ import {
   WindowPostMessageStream,
   BasePostMessageStream,
 } from '@metamask/post-message-stream';
+
 import {
   Job,
   AbstractExecutionService,
@@ -58,7 +59,7 @@ export class IframeExecutionService extends AbstractExecutionService<Window> {
    * @param jobId - The job id.
    * @returns A promise that resolves to the contentWindow of the iframe.
    */
-  private createWindow(uri: string, jobId: string): Promise<Window> {
+  private async createWindow(uri: string, jobId: string): Promise<Window> {
     return new Promise((resolve, reject) => {
       const iframe = document.createElement('iframe');
       // The order of operations appears to matter for everything except this

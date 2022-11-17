@@ -2,6 +2,7 @@
 import 'ses/lockdown';
 
 import { readFileSync } from 'fs';
+
 import { generateMockEndowments } from './mock';
 import { HandlerType, SNAP_EXPORT_NAMES } from './types';
 

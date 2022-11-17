@@ -1,9 +1,4 @@
 import {
-  assertIsNamespacesObject,
-  Namespaces,
-  SnapCaveatType,
-} from '@metamask/snaps-utils';
-import {
   Caveat,
   CaveatSpecificationConstraint,
   EndowmentGetterParams,
@@ -14,6 +9,11 @@ import {
   ValidPermissionSpecification,
 } from '@metamask/controllers';
 import {
+  assertIsNamespacesObject,
+  Namespaces,
+  SnapCaveatType,
+} from '@metamask/snaps-utils';
+import {
   hasProperty,
   isPlainObject,
   Json,
@@ -21,6 +21,7 @@ import {
   assert,
 } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
+
 import { SnapEndowments } from './enum';
 
 const targetKey = SnapEndowments.Keyring;
