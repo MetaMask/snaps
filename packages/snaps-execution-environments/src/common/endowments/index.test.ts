@@ -221,7 +221,7 @@ describe('Endowment utils', () => {
       jest.runAllTimers();
 
       let resolve: (result: unknown) => void;
-      const promise = new Promise((res) => (resolve = res));
+      const promise = new Promise((_resolve) => (resolve = _resolve));
       setTimeout(() => resolve('OK'), 1000);
       jest.runAllTimers();
 

@@ -74,16 +74,11 @@ export function getCommandMethodImplementations(
   onTerminate: () => void,
 ): CommandMethodsMapping {
   return {
-    ping: async () =>
-      new Promise((resolve) => {
-        resolve('OK');
-      }),
-
-    terminate: async () =>
-      new Promise((resolve) => {
-        onTerminate();
-        resolve('OK');
-      }),
+    ping: async () => Promise.resolve('OK'),
+    terminate: async () => {
+      onTerminate();
+      return Promise.resolve('OK');
+    },
 
     executeSnap: async (snapName, sourceCode, endowments) => {
       await startSnap(snapName, sourceCode, endowments);

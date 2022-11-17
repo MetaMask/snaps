@@ -15,7 +15,7 @@ describe('Network endowments', () => {
 
     it('fetches and reads body', async () => {
       const RESULT = 'OK';
-      fetchMock.mockOnce(async () => new Promise((resolve) => resolve(RESULT)));
+      fetchMock.mockOnce(async () => Promise.resolve(RESULT));
       const { fetch } = network.factory();
       const result = await (await fetch('foo.com')).text();
       expect(result).toStrictEqual(RESULT);
@@ -25,8 +25,8 @@ describe('Network endowments', () => {
       let resolve: ((result: string) => void) | null = null;
       fetchMock.mockOnce(
         async () =>
-          new Promise((res) => {
-            resolve = res;
+          new Promise((_resolve) => {
+            resolve = _resolve;
           }),
       );
 
@@ -57,7 +57,7 @@ describe('Network endowments', () => {
     it('should not expose then or catch after teardown has been called', async () => {
       let fetchResolve: ((result: string) => void) | null = null;
       fetchMock.mockOnce(
-        async () => new Promise((res) => (fetchResolve = res)),
+        async () => new Promise((resolve) => (fetchResolve = resolve)),
       );
 
       const { fetch, teardownFunction } = network.factory();
@@ -78,7 +78,7 @@ describe('Network endowments', () => {
       const teardownPromise = teardownFunction();
       (fetchResolve as any)('Resolved');
       await teardownPromise;
-      await new Promise((res) => setTimeout(() => res('Resolved'), 0));
+      await new Promise((resolve) => setTimeout(() => resolve('Resolved'), 0));
 
       expect(ErrorProxy).not.toHaveBeenCalled();
     });
@@ -125,11 +125,11 @@ describe('Network endowments', () => {
       let onErrorResolve: any;
       let onCloseResolve: any;
       const promises = [
-        new Promise((res) => (onConnectionResolve = res)),
-        new Promise((res) => (onMessageResolve = res)),
-        new Promise((res) => (onResponseResolve = res)),
-        new Promise((res) => (onErrorResolve = res)),
-        new Promise((res) => (onCloseResolve = res)),
+        new Promise((resolve) => (onConnectionResolve = resolve)),
+        new Promise((resolve) => (onMessageResolve = resolve)),
+        new Promise((resolve) => (onResponseResolve = resolve)),
+        new Promise((resolve) => (onErrorResolve = resolve)),
+        new Promise((resolve) => (onCloseResolve = resolve)),
       ];
 
       server.on('connection', (response) => {
@@ -158,7 +158,7 @@ describe('Network endowments', () => {
       socket.removeEventListener('close', closeListener);
 
       let closedResolve: any;
-      const closedPromise = new Promise((res) => (closedResolve = res));
+      const closedPromise = new Promise((resolve) => (closedResolve = resolve));
       const oncloseListener = () => closedResolve();
       socket.onclose = oncloseListener;
       expect(socket.onclose).toStrictEqual(oncloseListener);
@@ -231,7 +231,7 @@ describe('Network endowments', () => {
       const { WebSocket, teardownFunction } = network.factory();
 
       let onClosedResolve: any;
-      const onClosed = new Promise((res) => (onClosedResolve = res));
+      const onClosed = new Promise((resolve) => (onClosedResolve = resolve));
 
       const socket = new WebSocket(WEBSOCKET_URL);
       socket.onopen = async () => {
@@ -248,7 +248,7 @@ describe('Network endowments', () => {
       const { WebSocket } = network.factory();
 
       let onClosedResolve: any;
-      const onClosed = new Promise((res) => (onClosedResolve = res));
+      const onClosed = new Promise((resolve) => (onClosedResolve = resolve));
 
       const socket = new WebSocket(WEBSOCKET_URL);
       socket.onclose = () => {
@@ -343,7 +343,7 @@ describe('Network endowments', () => {
       (socket as any)['#socket'] = null;
 
       let onOpenResolve: any;
-      const onOpen = new Promise((res) => (onOpenResolve = res));
+      const onOpen = new Promise((resolve) => (onOpenResolve = resolve));
       socket.onopen = () => {
         onOpenResolve(true);
       };
@@ -437,8 +437,8 @@ describe('Network endowments', () => {
       let onCloseEventResolve: any;
       let onCloseResolve: any;
       const allClosed = Promise.all([
-        new Promise((res) => (onCloseEventResolve = res)),
-        new Promise((res) => (onCloseResolve = res)),
+        new Promise((resolve) => (onCloseEventResolve = resolve)),
+        new Promise((resolve) => (onCloseResolve = resolve)),
       ]);
 
       socket.onopen = function () {
@@ -502,8 +502,8 @@ describe('Network endowments', () => {
       let onCloseEventResolve: any;
       let onCloseResolve: any;
       const allClosed = Promise.all([
-        new Promise((res) => (onCloseEventResolve = res)),
-        new Promise((res) => (onCloseResolve = res)),
+        new Promise((resolve) => (onCloseEventResolve = resolve)),
+        new Promise((resolve) => (onCloseResolve = resolve)),
       ]);
 
       const socket = new _WebSocket(WEBSOCKET_URL);
@@ -553,7 +553,7 @@ describe('Network endowments', () => {
 
     it('should return for each of the Response methods', async () => {
       const RESULT = 'OK';
-      fetchMock.mockOnce(async () => new Promise((resolve) => resolve(RESULT)));
+      fetchMock.mockOnce(async () => Promise.resolve(RESULT));
 
       const { fetch } = network.factory();
       const result = await fetch('foo.com');
@@ -576,7 +576,7 @@ describe('Network endowments', () => {
 
     it('should return when arrayBuffer is called', async () => {
       const RESULT = 'OK';
-      fetchMock.mockOnce(async () => new Promise((resolve) => resolve(RESULT)));
+      fetchMock.mockOnce(async () => Promise.resolve(RESULT));
 
       const { fetch } = network.factory();
       const result = await fetch('foo.com');
@@ -587,7 +587,7 @@ describe('Network endowments', () => {
 
     it('should return when blob is called', async () => {
       const RESULT = 'OK';
-      fetchMock.mockOnce(async () => new Promise((resolve) => resolve(RESULT)));
+      fetchMock.mockOnce(async () => Promise.resolve(RESULT));
 
       const { fetch } = network.factory();
       const result = await fetch('foo.com');
@@ -600,7 +600,7 @@ describe('Network endowments', () => {
 
     it('should clone the body using the wrapper', async () => {
       const RESULT = 'OK';
-      fetchMock.mockOnce(async () => new Promise((resolve) => resolve(RESULT)));
+      fetchMock.mockOnce(async () => Promise.resolve(RESULT));
 
       const { fetch } = network.factory();
       const result = await fetch('foo.com');
@@ -614,7 +614,7 @@ describe('Network endowments', () => {
 
     it('should return when json is called', async () => {
       const RESULT = '{}';
-      fetchMock.mockOnce(async () => new Promise((resolve) => resolve(RESULT)));
+      fetchMock.mockOnce(async () => Promise.resolve(RESULT));
 
       const { fetch } = network.factory();
       const result = await fetch('foo.com');

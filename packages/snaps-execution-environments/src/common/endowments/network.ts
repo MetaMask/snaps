@@ -259,28 +259,23 @@ const createNetwork = () => {
     }
 
     // The WebSocket interface don't respect the camelCase format
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+    /* eslint-disable @typescript-eslint/naming-convention */
     get CLOSED(): number {
       return this.#socket.CLOSED;
     }
 
-    // The WebSocket interface don't respect the camelCase format
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     get CLOSING(): number {
       return this.#socket.CLOSING;
     }
 
-    // The WebSocket interface don't respect the camelCase format
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     get CONNECTING(): number {
       return this.#socket.CONNECTING;
     }
 
-    // The WebSocket interface don't respect the camelCase format
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     get OPEN(): number {
       return this.#socket.OPEN;
     }
+    /* eslint-enable @typescript-eslint/naming-convention */
 
     get binaryType(): BinaryType {
       return this.#socket.binaryType;
