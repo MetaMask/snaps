@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-unresolved
 const snaps = require('@metamask/snaps-rollup-plugin').default;
 const { babel } = require('@rollup/plugin-babel');
 

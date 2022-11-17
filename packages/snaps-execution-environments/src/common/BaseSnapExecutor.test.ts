@@ -127,8 +127,12 @@ class TestSnapExecutor extends BaseSnapExecutor {
       params: [name, code, endowments],
     });
 
-    // In case we are running fake timers, execute a tiny step that forces setTimeout to execute, is required for stream comms
-    jest.advanceTimersByTime(1);
+    // In case we are running fake timers, execute a tiny step that forces
+    // `setTimeout` to execute, is required for stream communication.
+    if ('clock' in setTimeout) {
+      jest.advanceTimersByTime(1);
+    }
+
     const providerRequest = await providerRequestPromise;
     await this.writeRpc({
       name: 'metamask-provider',
@@ -144,7 +148,10 @@ class TestSnapExecutor extends BaseSnapExecutor {
         },
       },
     });
-    jest.advanceTimersByTime(1);
+
+    if ('clock' in setTimeout) {
+      jest.advanceTimersByTime(1);
+    }
   }
 
   public async writeCommand(
