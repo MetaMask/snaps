@@ -59,7 +59,10 @@ export function createEndowments(
   // TODO: All endowments should be hardened to prevent covert communication
   // channels. Hardening the returned objects breaks tests elsewhere in the
   // monorepo, so further research is needed.
-  const result = endowments.reduce(
+  const result = endowments.reduce<{
+    allEndowments: Record<string, unknown>;
+    teardowns: (() => Promise<void> | void)[];
+  }>(
     ({ allEndowments, teardowns }, endowmentName) => {
       // First, check if the endowment has a factory, and default to that.
       if (endowmentFactories.has(endowmentName)) {
@@ -102,8 +105,8 @@ export function createEndowments(
       return { allEndowments, teardowns };
     },
     {
-      allEndowments: { snap } as Record<string, unknown>,
-      teardowns: [] as (() => void)[],
+      allEndowments: { snap },
+      teardowns: [],
     },
   );
 

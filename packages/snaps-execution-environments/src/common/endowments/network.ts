@@ -7,13 +7,13 @@ type WebSocketCallback = (this: WebSocket, ev: any) => any;
  * That way, a teardown process can stop any processes left.
  */
 class ResponseWrapper implements Response {
-  private readonly teardownRef: { lastTeardown: number };
+  readonly #teardownRef: { lastTeardown: number };
 
   #ogResponse: Response;
 
   constructor(ogResponse: Response, teardownRef: { lastTeardown: number }) {
     this.#ogResponse = ogResponse;
-    this.teardownRef = teardownRef;
+    this.#teardownRef = teardownRef;
   }
 
   get body(): ReadableStream<Uint8Array> | null {
@@ -69,7 +69,7 @@ class ResponseWrapper implements Response {
 
   clone(): Response {
     const newResponse = this.#ogResponse.clone();
-    return new ResponseWrapper(newResponse, this.teardownRef);
+    return new ResponseWrapper(newResponse, this.#teardownRef);
   }
 
   async formData(): Promise<FormData> {
@@ -107,7 +107,7 @@ const createNetwork = () => {
   );
 
   const _fetch: typeof fetch = async (
-    input: RequestInfo,
+    input: RequestInfo | URL,
     init?: RequestInit,
   ): Promise<Response> => {
     const abortController = new AbortController();
@@ -258,6 +258,8 @@ const createNetwork = () => {
       this.#socket.send(data);
     }
 
+    // The WebSocket interface don't respect the camelCase format
+    /* eslint-disable @typescript-eslint/naming-convention */
     get CLOSED(): number {
       return this.#socket.CLOSED;
     }
@@ -273,6 +275,7 @@ const createNetwork = () => {
     get OPEN(): number {
       return this.#socket.OPEN;
     }
+    /* eslint-enable @typescript-eslint/naming-convention */
 
     get binaryType(): BinaryType {
       return this.#socket.binaryType;
@@ -367,7 +370,9 @@ const createNetwork = () => {
 
       // We add our own listener
       let onClosedResolve: any;
-      const onClosed = new Promise<void>((r) => (onClosedResolve = r));
+      const onClosed = new Promise<void>(
+        (resolve) => (onClosedResolve = resolve),
+      );
       this.#socket.onclose = () => {
         onClosedResolve();
       };
@@ -395,21 +400,21 @@ const createNetwork = () => {
         return null;
       }
 
-      return (e) => {
+      return (event) => {
         // TODO: Should we migrate this to use a wrapper class?
-        const properties = [...allProperties(e)]
+        const properties = [...allProperties(event)]
           .filter(([_, key]) => key !== 'constructor')
           .reduce<Record<string, any>>((acc, [obj, key]) => {
             const stringKey = key.toString();
             const descriptor = Reflect.getOwnPropertyDescriptor(obj, key);
             if (typeof descriptor?.value === 'function') {
-              acc[stringKey] = e[stringKey].bind(this);
+              acc[stringKey] = event[stringKey].bind(this);
             } else {
-              acc[stringKey] = e[stringKey];
+              acc[stringKey] = event[stringKey];
             }
             return acc;
           }, {});
-        const event = {
+        const wrappedEvent = {
           ...properties,
           target: this,
           currentTarget: this,
@@ -418,7 +423,7 @@ const createNetwork = () => {
           source: null,
           composedPath: () => [this],
         };
-        listener.apply(this, [event]);
+        listener.apply(this, [wrappedEvent]);
       };
     }
 

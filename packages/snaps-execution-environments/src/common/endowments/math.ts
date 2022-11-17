@@ -20,7 +20,9 @@ function createMath() {
     }
 
     return { ...target, [key]: rootRealmGlobal.Math[key] };
-  }, {});
+    // It seems like there is an issue with the reduce type
+    // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter
+  }, {} as Math);
 
   return {
     Math: {

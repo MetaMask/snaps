@@ -147,7 +147,7 @@ describe('Endowment utils', () => {
       ).toThrow('Unknown endowment: "foo"');
     });
 
-    it('teardown calls all teardown functions', () => {
+    it('teardown calls all teardown functions', async () => {
       const { endowments, teardown } = createEndowments(
         mockSnapAPI as any,
         mockEthereum as any,
@@ -170,7 +170,7 @@ describe('Endowment utils', () => {
         throw new Error('interval was called');
       }, 1000);
 
-      teardown();
+      await teardown();
       jest.runAllTimers();
 
       expect(clearTimeoutSpy).toHaveBeenCalledTimes(1);
@@ -207,26 +207,26 @@ describe('Endowment utils', () => {
 
       timeout();
       interval();
-      teardown();
+      await teardown();
       jest.runAllTimers();
 
       timeout();
       interval();
       timeout();
       interval();
-      teardown();
+      await teardown();
       jest.runAllTimers();
 
-      teardown();
+      await teardown();
       jest.runAllTimers();
 
       let resolve: (result: unknown) => void;
-      const promise = new Promise((r) => (resolve = r));
+      const promise = new Promise((_resolve) => (resolve = _resolve));
       setTimeout(() => resolve('OK'), 1000);
       jest.runAllTimers();
 
       expect(await promise).toBe('OK');
-      teardown();
+      await teardown();
       jest.runAllTimers();
     });
   });

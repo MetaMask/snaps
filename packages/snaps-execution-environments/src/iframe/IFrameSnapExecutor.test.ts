@@ -18,8 +18,8 @@ describe('IFrameSnapExecutor', () => {
     const onSpy = jest
       .spyOn(window, 'addEventListener')
       .mockImplementation((event, listener) =>
-        parentEmitter.on(event, (e) =>
-          (listener as any)({ ...e, source: window }),
+        parentEmitter.on(event, (error) =>
+          (listener as any)({ ...error, source: window }),
         ),
       );
     const sendSpy = jest

@@ -93,30 +93,32 @@ const EXECUTION_ENVIRONMENT_METHODS = {
 };
 
 export class BaseSnapExecutor {
-  private readonly snapData: Map<string, SnapData>;
+  readonly #snapData: Map<string, SnapData>;
 
-  private readonly commandStream: Duplex;
+  readonly #commandStream: Duplex;
 
-  private readonly rpcStream: Duplex;
+  readonly #rpcStream: Duplex;
 
-  private readonly methods: CommandMethodsMapping;
+  readonly #methods: CommandMethodsMapping;
 
-  private snapErrorHandler?: (event: ErrorEvent) => void;
+  #snapErrorHandler?: (event: ErrorEvent) => void;
 
-  private snapPromiseErrorHandler?: (event: PromiseRejectionEvent) => void;
+  #snapPromiseErrorHandler?: (event: PromiseRejectionEvent) => void;
 
-  private lastTeardown = 0;
+  #lastTeardown = 0;
 
   protected constructor(commandStream: Duplex, rpcStream: Duplex) {
-    this.snapData = new Map();
-    this.commandStream = commandStream;
-    this.commandStream.on('data', this.onCommandRequest.bind(this));
-    this.rpcStream = rpcStream;
+    this.#snapData = new Map();
+    this.#commandStream = commandStream;
+    // We can't await in constructor
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    this.#commandStream.on('data', this.#onCommandRequest.bind(this));
+    this.#rpcStream = rpcStream;
 
-    this.methods = getCommandMethodImplementations(
+    this.#methods = getCommandMethodImplementations(
       this.startSnap.bind(this),
       async (target, handlerName, args) => {
-        const data = this.snapData.get(target);
+        const data = this.#snapData.get(target);
         // We're capturing the handler in case someone modifies the data object before the call
         const handler =
           handlerName === HandlerType.SnapKeyring
@@ -127,7 +129,7 @@ export class BaseSnapExecutor {
           `No ${handlerName} handler exported for snap "${target}`,
         );
         // TODO: fix handler args type cast
-        let result = await this.executeInSnapContext(target, () =>
+        let result = await this.#executeInSnapContext(target, () =>
           handler(args as any),
         );
 
@@ -146,7 +148,7 @@ export class BaseSnapExecutor {
     );
   }
 
-  private errorHandler(error: unknown, data: Record<string, Json>) {
+  #errorHandler(error: unknown, data: Record<string, Json>) {
     const constructedError = constructError(error);
     const serializedError = serializeError(constructedError, {
       fallbackError,
@@ -167,7 +169,7 @@ export class BaseSnapExecutor {
     });
   }
 
-  private async onCommandRequest(message: JsonRpcRequest<JsonRpcParams>) {
+  async #onCommandRequest(message: JsonRpcRequest<JsonRpcParams>) {
     if (!isJsonRpcRequest(message)) {
       throw new Error('Command stream received a non-JSON-RPC request.');
     }
@@ -201,12 +203,15 @@ export class BaseSnapExecutor {
     // support params by-name and by-position
     const paramsAsArray = sortParamKeys(methodObject.params, params);
 
-    const [error] = validate<any, any>(paramsAsArray, methodObject.struct);
-    if (error) {
+    const [validationError] = validate<any, any>(
+      paramsAsArray,
+      methodObject.struct,
+    );
+    if (validationError) {
       this.respond(id, {
         error: ethErrors.rpc
           .invalidParams({
-            message: `Invalid parameters for method "${method}": ${error.message}.`,
+            message: `Invalid parameters for method "${method}": ${validationError.message}.`,
             data: {
               method,
               params: paramsAsArray,
@@ -218,11 +223,11 @@ export class BaseSnapExecutor {
     }
 
     try {
-      const result = await (this.methods as any)[method](...paramsAsArray);
+      const result = await (this.#methods as any)[method](...paramsAsArray);
       this.respond(id, { result });
-    } catch (e) {
+    } catch (error) {
       this.respond(id, {
-        error: serializeError(e, {
+        error: serializeError(error, {
           fallbackError,
         }),
       });
@@ -241,7 +246,7 @@ export class BaseSnapExecutor {
       );
     }
 
-    this.commandStream.write({
+    this.#commandStream.write({
       ...requestObject,
       jsonrpc: '2.0',
     });
@@ -252,7 +257,7 @@ export class BaseSnapExecutor {
       throw new Error('JSON-RPC responses must be JSON serializable objects.');
     }
 
-    this.commandStream.write({
+    this.#commandStream.write({
       ...requestObject,
       id,
       jsonrpc: '2.0',
@@ -273,33 +278,33 @@ export class BaseSnapExecutor {
     _endowments?: string[],
   ): Promise<void> {
     console.log(`starting snap '${snapName}' in worker`);
-    if (this.snapPromiseErrorHandler) {
-      removeEventListener('unhandledrejection', this.snapPromiseErrorHandler);
+    if (this.#snapPromiseErrorHandler) {
+      removeEventListener('unhandledrejection', this.#snapPromiseErrorHandler);
     }
 
-    if (this.snapErrorHandler) {
-      removeEventListener('error', this.snapErrorHandler);
+    if (this.#snapErrorHandler) {
+      removeEventListener('error', this.#snapErrorHandler);
     }
 
-    this.snapErrorHandler = (error: ErrorEvent) => {
-      this.errorHandler(error.error, { snapName });
+    this.#snapErrorHandler = (error: ErrorEvent) => {
+      this.#errorHandler(error.error, { snapName });
     };
 
-    this.snapPromiseErrorHandler = (error: PromiseRejectionEvent) => {
-      this.errorHandler(error instanceof Error ? error : error.reason, {
+    this.#snapPromiseErrorHandler = (error: PromiseRejectionEvent) => {
+      this.#errorHandler(error instanceof Error ? error : error.reason, {
         snapName,
       });
     };
 
-    const provider = new StreamProvider(this.rpcStream, {
+    const provider = new StreamProvider(this.#rpcStream, {
       jsonRpcStreamName: 'metamask-provider',
       rpcMiddleware: [createIdRemapMiddleware()],
     });
 
     await provider.initialize();
 
-    const snap = this.createSnapGlobal(provider);
-    const ethereum = this.createEIP1193Provider(provider);
+    const snap = this.#createSnapGlobal(provider);
+    const ethereum = this.#createEIP1193Provider(provider);
     // We specifically use any type because the Snap can modify the object any way they want
     const snapModule: any = { exports: {} };
 
@@ -312,14 +317,14 @@ export class BaseSnapExecutor {
 
       // !!! Ensure that this is the only place the data is being set.
       // Other methods access the object value and mutate its properties.
-      this.snapData.set(snapName, {
+      this.#snapData.set(snapName, {
         idleTeardown: endowmentTeardown,
         runningEvaluations: new Set(),
         exports: {},
       });
 
-      addEventListener('unhandledRejection', this.snapPromiseErrorHandler);
-      addEventListener('error', this.snapErrorHandler);
+      addEventListener('unhandledRejection', this.#snapPromiseErrorHandler);
+      addEventListener('error', this.#snapErrorHandler);
 
       const compartment = new Compartment({
         ...endowments,
@@ -329,14 +334,14 @@ export class BaseSnapExecutor {
         self: { ...endowments },
       });
 
-      await this.executeInSnapContext(snapName, () => {
+      await this.#executeInSnapContext(snapName, () => {
         compartment.evaluate(sourceCode);
-        this.registerSnapExports(snapName, snapModule);
+        this.#registerSnapExports(snapName, snapModule);
       });
-    } catch (err) {
-      this.removeSnap(snapName);
+    } catch (error) {
+      this.#removeSnap(snapName);
       throw new Error(
-        `Error while running snap '${snapName}': ${(err as Error).message}`,
+        `Error while running snap '${snapName}': ${(error as Error).message}`,
       );
     }
   }
@@ -349,14 +354,14 @@ export class BaseSnapExecutor {
     // `stop()` tears down snap endowments.
     // Teardown will also be run for each snap as soon as there are
     // no more running evaluations for that snap.
-    this.snapData.forEach((data) =>
+    this.#snapData.forEach((data) =>
       data.runningEvaluations.forEach((evaluation) => evaluation.stop()),
     );
-    this.snapData.clear();
+    this.#snapData.clear();
   }
 
-  private registerSnapExports(snapName: string, snapModule: any) {
-    const data = this.snapData.get(snapName);
+  #registerSnapExports(snapName: string, snapModule: any) {
+    const data = this.#snapData.get(snapName);
     // Somebody deleted the Snap before we could register
     if (!data) {
       return;
@@ -377,8 +382,9 @@ export class BaseSnapExecutor {
    * @param provider - A StreamProvider connected to MetaMask.
    * @returns The snap provider object.
    */
-  private createSnapGlobal(provider: StreamProvider): SnapsGlobalObject {
-    const originalRequest = provider.request;
+  #createSnapGlobal(provider: StreamProvider): SnapsGlobalObject {
+    const originalRequest = async (args: RequestArguments) =>
+      provider.request(args);
 
     const request = async (args: RequestArguments) => {
       assert(
@@ -402,8 +408,9 @@ export class BaseSnapExecutor {
    * @param provider - A StreamProvider connected to MetaMask.
    * @returns The EIP-1193 Ethereum provider object.
    */
-  private createEIP1193Provider(provider: StreamProvider): StreamProvider {
-    const originalRequest = provider.request;
+  #createEIP1193Provider(provider: StreamProvider): StreamProvider {
+    const originalRequest = async (args: RequestArguments) =>
+      provider.request(args);
 
     provider.request = async (args) => {
       assert(
@@ -430,8 +437,8 @@ export class BaseSnapExecutor {
    *
    * @param snapName - The name of the snap to remove.
    */
-  private removeSnap(snapName: string): void {
-    this.snapData.delete(snapName);
+  #removeSnap(snapName: string): void {
+    this.#snapData.delete(snapName);
   }
 
   /**
@@ -445,11 +452,11 @@ export class BaseSnapExecutor {
    * @returns The executor's return value.
    * @template Result - The return value of the executor.
    */
-  private async executeInSnapContext<Result>(
+  async #executeInSnapContext<Result>(
     snapName: string,
     executor: () => Promise<Result> | Result,
   ): Promise<Result> {
-    const data = this.snapData.get(snapName);
+    const data = this.#snapData.get(snapName);
     if (data === undefined) {
       throw new Error(
         `Tried to execute in context of unknown snap: "${snapName}".`,
@@ -481,7 +488,7 @@ export class BaseSnapExecutor {
       data.runningEvaluations.delete(evaluationData);
 
       if (data.runningEvaluations.size === 0) {
-        this.lastTeardown += 1;
+        this.#lastTeardown += 1;
         await data.idleTeardown();
       }
     }
