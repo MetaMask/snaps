@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.24.1]
-### Uncategorized
+### Fixed
 - Fix `snap_getBip32PublicKey` manifest validation ([#970](https://github.com/MetaMask/snaps-monorepo/pull/970))
 
 ## [0.24.0]
