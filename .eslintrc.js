@@ -20,22 +20,29 @@ module.exports = {
     // This prevents using Node.js and/or browser specific globals. We
     // currently use both in our codebase, so this rule is disabled.
     'no-restricted-globals': 'off',
+
+    // This rule disallows the `private` modifier on class fields, but we
+    // use it in some places. It also disables function expressions, but this
+    // triggers for class methods as well.
+    'no-restricted-syntax': 'off',
   },
 
   overrides: [
     {
       files: ['**/*.js'],
       extends: ['@metamask/eslint-config-nodejs'],
+
+      rules: {
+        // This prevents using Node.js and/or browser specific globals. We
+        // currently use both in our codebase, so this rule is disabled.
+        'no-restricted-globals': 'off',
+      },
     },
 
     {
       files: ['**/*.ts'],
       extends: ['@metamask/eslint-config-typescript'],
       rules: {
-        // This rule disallows the `private` modifier on class fields, but we
-        // use it in some places.
-        'no-restricted-syntax': 'off',
-
         // Without the `allowAny` option, this rule causes a lot of false
         // positives.
         '@typescript-eslint/restrict-template-expressions': [
