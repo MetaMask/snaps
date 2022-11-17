@@ -1,10 +1,11 @@
-import path from 'path';
 import { hasProperty } from '@metamask/utils';
 import type browserify from 'browserify';
+import path from 'path';
+import { object, optional, func, Infer, is } from 'superstruct';
 import { Arguments } from 'yargs';
 import yargsParse from 'yargs-parser';
 import yargs from 'yargs/yargs';
-import { object, optional, func, Infer, is } from 'superstruct';
+
 import builders from '../builders';
 import { CONFIG_FILE, logError } from './misc';
 
@@ -47,7 +48,7 @@ let snapConfigCache: SnapConfig | undefined;
  * @returns The snap config.
  */
 export function loadConfig(cached = true): SnapConfig {
-  if (snapConfigCache !== undefined && cached === true) {
+  if (snapConfigCache !== undefined && cached) {
     return snapConfigCache;
   }
 
@@ -55,12 +56,12 @@ export function loadConfig(cached = true): SnapConfig {
   try {
     // eslint-disable-next-line node/global-require, import/no-dynamic-require, @typescript-eslint/no-require-imports
     config = require(path.resolve(process.cwd(), CONFIG_FILE));
-  } catch (err: any) {
-    if (err.code === 'MODULE_NOT_FOUND') {
+  } catch (error: any) {
+    if (error.code === 'MODULE_NOT_FOUND') {
       snapConfigCache = {};
       return snapConfigCache;
     }
-    logError(`Error during parsing of ${CONFIG_FILE}`, err);
+    logError(`Error during parsing of ${CONFIG_FILE}`, error);
     return process.exit(1);
   }
 
@@ -127,11 +128,11 @@ export function applyConfig(
     return commandOptions.has(key) && !hasProperty(parsedProcessArgv, key);
   };
 
-  const cfg: Record<string, unknown> = snapConfig.cliOptions || {};
-  for (const key of Object.keys(cfg)) {
+  const config: Record<string, unknown> = snapConfig.cliOptions ?? {};
+  for (const key of Object.keys(config)) {
     if (hasProperty(builders, key)) {
       if (shouldSetArg(key)) {
-        yargsArgv[key] = cfg[key];
+        yargsArgv[key] = config[key];
       }
     } else {
       logError(

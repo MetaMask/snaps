@@ -1,7 +1,8 @@
 import { PermissionType } from '@metamask/controllers';
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
-import { deriveEntropy, getEntropyBuilder } from './getEntropy';
+
 import { ENTROPY_VECTORS } from './__fixtures__';
+import { deriveEntropy, getEntropyBuilder } from './getEntropy';
 
 const TEST_SECRET_RECOVERY_PHRASE =
   'test test test test test test test test test test test ball';
@@ -76,7 +77,7 @@ describe('getEntropyImplementation', () => {
       },
     });
 
-    expect(result).toStrictEqual(
+    expect(result).toBe(
       '0x6d8e92de419401c7da3cedd5f60ce5635b26059c2a4a8003877fec83653a4921',
     );
   });

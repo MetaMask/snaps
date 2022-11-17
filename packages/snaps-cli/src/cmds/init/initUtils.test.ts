@@ -1,5 +1,5 @@
-import { promises as fs } from 'fs';
 import childProcess from 'child_process';
+import { promises as fs } from 'fs';
 import pathUtils from 'path';
 
 import { resetFileSystem } from '../../test-utils';
@@ -65,12 +65,12 @@ describe('initUtils', () => {
   });
 
   describe('cloneTemplate', () => {
-    it('passes if the command is ran successfully', async () => {
+    it('passes if the command is ran successfully', () => {
       const execSyncMock = jest
         .spyOn(childProcess, 'execSync')
         .mockImplementation(() => Buffer.from([]));
 
-      await cloneTemplate('foo');
+      cloneTemplate('foo');
 
       expect(execSyncMock).toHaveBeenCalledTimes(1);
       expect(execSyncMock).toHaveBeenCalledWith(
@@ -81,14 +81,14 @@ describe('initUtils', () => {
       );
     });
 
-    it('throws if the command fails', async () => {
+    it('throws if the command fails', () => {
       const execSyncMock = jest
         .spyOn(childProcess, 'execSync')
         .mockImplementation(() => {
           throw new Error('error message');
         });
 
-      await expect(cloneTemplate('foo')).rejects.toThrow(
+      expect(() => cloneTemplate('foo')).toThrow(
         'Init Error: Failed to clone the template.',
       );
       expect(execSyncMock).toHaveBeenCalledTimes(1);
@@ -103,7 +103,7 @@ describe('initUtils', () => {
 
       const result = isGitInstalled();
 
-      expect(result).toStrictEqual(true);
+      expect(result).toBe(true);
       expect(execSyncMock).toHaveBeenCalledTimes(1);
       expect(execSyncMock).toHaveBeenCalledWith('git --version', {
         stdio: 'ignore',
@@ -119,7 +119,7 @@ describe('initUtils', () => {
 
       const result = isGitInstalled();
 
-      expect(result).toStrictEqual(false);
+      expect(result).toBe(false);
       expect(execSyncMock).toHaveBeenCalledTimes(1);
     });
   });
@@ -132,7 +132,7 @@ describe('initUtils', () => {
 
       const result = isInGitRepository('foo');
 
-      expect(result).toStrictEqual(true);
+      expect(result).toBe(true);
       expect(execSyncMock).toHaveBeenCalledTimes(1);
       expect(execSyncMock).toHaveBeenCalledWith(
         'git rev-parse --is-inside-work-tree',
@@ -152,18 +152,18 @@ describe('initUtils', () => {
 
       const result = isInGitRepository('foo');
 
-      expect(result).toStrictEqual(false);
+      expect(result).toBe(false);
       expect(execSyncMock).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('gitInit', () => {
-    it('init a new repository', async () => {
+    it('init a new repository', () => {
       const execSyncMock = jest
         .spyOn(childProcess, 'execSync')
         .mockImplementation(() => Buffer.from([]));
 
-      await gitInit('foo');
+      gitInit('foo');
 
       expect(execSyncMock).toHaveBeenCalledTimes(1);
       expect(execSyncMock).toHaveBeenCalledWith('git init', {
@@ -172,14 +172,14 @@ describe('initUtils', () => {
       });
     });
 
-    it('throws an error if it fails to init a new repository', async () => {
+    it('throws an error if it fails to init a new repository', () => {
       const execSyncMock = jest
         .spyOn(childProcess, 'execSync')
         .mockImplementation(() => {
           throw new Error('error message');
         });
 
-      await expect(gitInit('foo')).rejects.toThrow(
+      expect(() => gitInit('foo')).toThrow(
         'Init Error: Failed to init a new git repository.',
       );
       expect(execSyncMock).toHaveBeenCalledTimes(1);
@@ -187,12 +187,12 @@ describe('initUtils', () => {
   });
 
   describe('yarnInstall', () => {
-    it('run yarn and yarn install commands', async () => {
+    it('run yarn and yarn install commands', () => {
       const execSyncMock = jest
         .spyOn(childProcess, 'execSync')
         .mockImplementation(() => Buffer.from([]));
 
-      await yarnInstall('foo');
+      yarnInstall('foo');
 
       expect(execSyncMock).toHaveBeenCalledTimes(1);
       expect(execSyncMock).toHaveBeenCalledWith('yarn install', {
@@ -201,14 +201,14 @@ describe('initUtils', () => {
       });
     });
 
-    it('throws an error if it fails to run a command', async () => {
+    it('throws an error if it fails to run a command', () => {
       const execSyncMock = jest
         .spyOn(childProcess, 'execSync')
         .mockImplementation(() => {
           throw new Error('error message');
         });
 
-      await expect(yarnInstall('foo')).rejects.toThrow(
+      expect(() => yarnInstall('foo')).toThrow(
         'Init Error: Failed to install dependencies.',
       );
       expect(execSyncMock).toHaveBeenCalledTimes(1);

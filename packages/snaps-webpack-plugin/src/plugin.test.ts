@@ -1,18 +1,19 @@
 // Allow Jest snapshots because the test outputs are illegible.
 /* eslint-disable jest/no-restricted-matchers */
 
-import webpack, { Stats, Configuration } from 'webpack';
-import { createFsFromVolume, IFs, Volume } from 'memfs';
-import { IPromisesAPI } from 'memfs/lib/promises';
-import {
-  DEFAULT_SNAP_BUNDLE,
-  getSnapManifest,
-} from '@metamask/snaps-utils/test-utils';
 import {
   checkManifest,
   evalBundle,
   PostProcessWarning,
 } from '@metamask/snaps-utils';
+import {
+  DEFAULT_SNAP_BUNDLE,
+  getSnapManifest,
+} from '@metamask/snaps-utils/test-utils';
+import { createFsFromVolume, IFs, Volume } from 'memfs';
+import { IPromisesAPI } from 'memfs/lib/promises';
+import webpack, { Stats, Configuration } from 'webpack';
+
 import SnapsWebpackPlugin, { Options } from './plugin';
 
 jest.mock('@metamask/snaps-utils', () => ({

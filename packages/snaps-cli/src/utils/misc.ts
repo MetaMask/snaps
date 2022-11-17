@@ -1,7 +1,6 @@
+import { hasProperty } from '@metamask/utils';
 import { promises as filesystem } from 'fs';
 import path from 'path';
-
-import { hasProperty } from '@metamask/utils';
 import { Arguments } from 'yargs';
 
 export const permRequestKeys = [
@@ -71,7 +70,9 @@ export function booleanStringToBoolean(value: unknown): boolean {
   }
 
   throw new Error(
-    `Expected a boolean or the strings "true" or "false". Received: "${value}"`,
+    `Expected a boolean or the strings "true" or "false". Received: "${String(
+      value,
+    )}"`,
   );
 }
 
@@ -100,19 +101,19 @@ export function sanitizeInputs(argv: Arguments) {
  * Logs an error message to console. Logs original error if it exists and
  * the verboseErrors global is true.
  *
- * @param msg - The error message.
- * @param err - The original error.
+ * @param message - The error message.
+ * @param error - The original error.
  */
-export function logError(msg: string | null, err?: Error): void {
-  if (msg !== null) {
-    console.error(msg);
+export function logError(message: string | null, error?: Error): void {
+  if (message !== null) {
+    console.error(message);
   }
 
-  if (err && global.snaps.verboseErrors) {
-    console.error(err);
+  if (error && global.snaps.verboseErrors) {
+    console.error(error);
   }
 
-  if (msg === null && (!err || (err && !global.snaps.verboseErrors))) {
+  if (message === null && (!error || (error && !global.snaps.verboseErrors))) {
     console.error('Unknown error.');
   }
 }
@@ -120,12 +121,12 @@ export function logError(msg: string | null, err?: Error): void {
 /**
  * Logs a warning message to console.
  *
- * @param msg - The warning message.
+ * @param message - The warning message.
  * @param error - The original error.
  */
-export function logWarning(msg: string, error?: Error): void {
-  if (msg && !global.snaps.suppressWarnings) {
-    console.warn(msg);
+export function logWarning(message: string, error?: Error): void {
+  if (message && !global.snaps.suppressWarnings) {
+    console.warn(message);
     if (error && global.snaps.verboseErrors) {
       console.error(error);
     }
@@ -137,14 +138,14 @@ export function logWarning(msg: string, error?: Error): void {
  * process.
  *
  * @param prefix - The message prefix.
- * @param msg - The error message.
- * @param err - The original error.
+ * @param message - The error message.
+ * @param error - The original error.
  * @param destFilePath - The output file path.
  */
 export async function writeError(
   prefix: string,
-  msg: string,
-  err: Error,
+  message: string,
+  error: Error,
   destFilePath?: string,
 ): Promise<void> {
   let processedPrefix = prefix;
@@ -152,7 +153,7 @@ export async function writeError(
     processedPrefix += ' ';
   }
 
-  logError(processedPrefix + msg, err);
+  logError(processedPrefix + message, error);
   try {
     if (destFilePath) {
       await filesystem.unlink(destFilePath);

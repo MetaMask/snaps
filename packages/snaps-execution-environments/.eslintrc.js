@@ -1,9 +1,9 @@
 module.exports = {
   extends: ['../../.eslintrc.js'],
-  ignorePatterns: [
-    'src/openrpc.json',
-    'src/__GENERATED__/',
-    'webpack.config.js',
-    '__test__/',
-  ],
+
+  parserOptions: {
+    tsconfigRootDir: __dirname,
+  },
+
+  ignorePatterns: ['src/openrpc.json', 'webpack.config.js', '__test__'],
 };

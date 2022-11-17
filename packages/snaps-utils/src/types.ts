@@ -15,6 +15,7 @@ import {
   string,
   type,
 } from 'superstruct';
+
 import { SnapManifest } from './manifest/validation';
 
 export enum NpmSnapFileNames {
@@ -107,10 +108,12 @@ export type SnapFiles = {
 /**
  * The possible prefixes for snap ids.
  */
+/* eslint-disable @typescript-eslint/naming-convention */
 export enum SnapIdPrefixes {
   npm = 'npm:',
   local = 'local:',
 }
+/* eslint-enable @typescript-eslint/naming-convention */
 
 export type SnapId = string;
 
@@ -125,10 +128,12 @@ export enum SnapValidationFailureReason {
   ShasumMismatch = '"shasum" field mismatch',
 }
 
+/* eslint-disable @typescript-eslint/naming-convention */
 export enum SNAP_STREAM_NAMES {
   JSON_RPC = 'jsonRpc',
   COMMAND = 'command',
 }
+/* eslint-enable @typescript-eslint/naming-convention */
 
 export enum HandlerType {
   OnRpcRequest = 'onRpcRequest',

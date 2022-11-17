@@ -1,9 +1,8 @@
 import { validateNpmSnapManifest } from './manifest/manifest';
-import { assertIsSnapManifest, SnapManifest } from './manifest/validation';
+import { assertIsSnapManifest } from './manifest/validation';
 import {
   assertIsNpmSnapPackageJson,
   NpmSnapFileNames,
-  NpmSnapPackageJson,
   SnapFiles,
   UnvalidatedSnapFiles,
 } from './types';
@@ -54,7 +53,7 @@ export function validateNpmSnap(
   } catch (error) {
     throw new Error(`${errorPrefix ?? ''}${error.message}`);
   }
-  const validatedManifest = manifest as SnapManifest;
+  const validatedManifest = manifest;
 
   const { iconPath } = validatedManifest.source.location.npm;
   if (iconPath && !svgIcon) {
@@ -66,7 +65,7 @@ export function validateNpmSnap(
   } catch (error) {
     throw new Error(`${errorPrefix ?? ''}${error.message}`);
   }
-  const validatedPackageJson = packageJson as NpmSnapPackageJson;
+  const validatedPackageJson = packageJson;
 
   validateNpmSnapManifest({
     manifest: validatedManifest,

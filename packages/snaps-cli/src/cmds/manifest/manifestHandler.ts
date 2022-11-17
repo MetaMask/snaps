@@ -1,4 +1,5 @@
 import { checkManifest } from '@metamask/snaps-utils';
+
 import { YargsArgs } from '../../types/yargs';
 
 const ERROR_PREFIX = 'Manifest Error: ';

@@ -4,8 +4,6 @@ import {
   ValidPermissionSpecification,
   PermissionType,
 } from '@metamask/controllers';
-import { isJsonRpcRequest, Json, NonEmptyArray } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
 import {
   Snap,
   SNAP_PREFIX,
@@ -13,6 +11,8 @@ import {
   HandlerType,
   SnapRpcHookArgs,
 } from '@metamask/snaps-utils';
+import { isJsonRpcRequest, Json, NonEmptyArray } from '@metamask/utils';
+import { ethErrors } from 'eth-rpc-errors';
 import { nanoid } from 'nanoid';
 
 const methodPrefix = SNAP_PREFIX;
@@ -23,7 +23,7 @@ export type InvokeSnapMethodHooks = {
   handleSnapRpcRequest: ({
     snapId,
     origin,
-    handler: handlerType,
+    handler,
     request,
   }: SnapRpcHookArgs & { snapId: SnapId }) => Promise<unknown>;
 };

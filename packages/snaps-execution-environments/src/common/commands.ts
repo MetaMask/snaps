@@ -1,5 +1,6 @@
-import { assertExhaustive } from '@metamask/utils';
 import { HandlerType } from '@metamask/snaps-utils';
+import { assertExhaustive } from '@metamask/utils';
+
 import { InvokeSnap, InvokeSnapArgs } from './BaseSnapExecutor';
 import {
   assertIsOnTransactionRequestArguments,
@@ -73,17 +74,14 @@ export function getCommandMethodImplementations(
   onTerminate: () => void,
 ): CommandMethodsMapping {
   return {
-    ping: async () => {
-      return 'OK';
-    },
-
+    ping: async () => Promise.resolve('OK'),
     terminate: async () => {
       onTerminate();
-      return 'OK';
+      return Promise.resolve('OK');
     },
 
     executeSnap: async (snapName, sourceCode, endowments) => {
-      await startSnap(snapName as string, sourceCode as string, endowments);
+      await startSnap(snapName, sourceCode, endowments);
       return 'OK';
     },
 

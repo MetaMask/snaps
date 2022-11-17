@@ -1,8 +1,9 @@
-import { join } from 'path';
-import { promises as fs } from 'fs';
 import childProcess from 'child_process';
-import { DEFAULT_SNAP_BUNDLE } from './test-utils';
+import { promises as fs } from 'fs';
+import { join } from 'path';
+
 import { evalBundle } from './eval';
+import { DEFAULT_SNAP_BUNDLE } from './test-utils';
 
 const WORKER_PATH = join(__dirname, 'eval-worker.ts');
 const TEMPORARY_FOLDER = join(__dirname, '__test__/temporary');

@@ -8,15 +8,15 @@ import {
   PermissionConstraint,
   RestrictedMethodCaveatSpecificationConstraint,
 } from '@metamask/controllers';
-import { ethErrors } from 'eth-rpc-errors';
 import { BIP44CoinTypeNode, JsonBIP44CoinTypeNode } from '@metamask/key-tree';
+import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   hasProperty,
   isPlainObject,
   Json,
   NonEmptyArray,
 } from '@metamask/utils';
-import { SnapCaveatType } from '@metamask/snaps-utils';
+import { ethErrors } from 'eth-rpc-errors';
 
 const targetKey = 'snap_getBip44Entropy';
 

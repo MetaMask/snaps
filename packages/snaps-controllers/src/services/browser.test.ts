@@ -11,7 +11,7 @@ describe('browser entrypoint', () => {
     expect(Object.keys(BrowserExport)).toHaveLength(expectedExports.length);
 
     for (const exportName of expectedExports) {
-      expect(exportName in BrowserExport).toStrictEqual(true);
+      expect(exportName in BrowserExport).toBe(true);
     }
   });
 });

@@ -87,9 +87,9 @@ export const manageStateBuilder = Object.freeze({
 } as const);
 
 export enum ManageStateOperation {
-  clearState = 'clear',
-  getState = 'get',
-  updateState = 'update',
+  ClearState = 'clear',
+  GetState = 'get',
+  UpdateState = 'update',
 }
 
 export type ManageStateArgs = {
@@ -125,20 +125,20 @@ export function getManageStateImplementation({
     const { operation, newState } = getValidatedParams(params, method);
 
     switch (operation) {
-      case ManageStateOperation.clearState:
+      case ManageStateOperation.ClearState:
         await clearSnapState(origin);
         return null;
 
-      case ManageStateOperation.getState:
+      case ManageStateOperation.GetState:
         return await getSnapState(origin);
 
-      case ManageStateOperation.updateState: {
+      case ManageStateOperation.UpdateState: {
         await updateSnapState(origin, newState as Record<string, Json>);
         return null;
       }
       default:
         throw ethErrors.rpc.invalidParams(
-          `Invalid ${method} operation: "${operation}"`,
+          `Invalid ${method} operation: "${operation as string}"`,
         );
     }
   };
@@ -176,7 +176,7 @@ export function getValidatedParams(
     });
   }
 
-  if (operation === ManageStateOperation.updateState) {
+  if (operation === ManageStateOperation.UpdateState) {
     if (!isObject(newState)) {
       throw ethErrors.rpc.invalidParams({
         message: `Invalid ${method} "updateState" parameter: The new state must be a plain object.`,

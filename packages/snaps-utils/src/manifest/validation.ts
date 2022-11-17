@@ -17,6 +17,7 @@ import {
   type,
   union,
 } from 'superstruct';
+
 import { CronjobSpecificationArrayStruct } from '../cronjob';
 import { NamespacesStruct } from '../namespace';
 import { NameStruct, NpmSnapFileNames, VersionStruct } from '../types';
@@ -100,7 +101,7 @@ export const Bip32PathStruct = refine(
       return 'Paths must have a length of at least three.';
     }
 
-    if (path.slice(1).some((e) => !BIP32_INDEX_REGEX.test(e))) {
+    if (path.slice(1).some((part) => !BIP32_INDEX_REGEX.test(part))) {
       return 'Path must be a valid BIP-32 derivation path array.';
     }
 
@@ -118,7 +119,7 @@ export const bip32entropy = <T extends { path: string[]; curve: string }, S>(
   refine(struct, 'BIP-32 entropy', (value) => {
     if (
       value.curve === 'ed25519' &&
-      value.path.slice(1).some((e) => !e.endsWith("'"))
+      value.path.slice(1).some((part) => !part.endsWith("'"))
     ) {
       return 'Ed25519 does not support unhardened paths.';
     }
@@ -142,6 +143,7 @@ export const SnapGetBip32EntropyPermissionsStruct = size(
   Infinity,
 );
 
+/* eslint-disable @typescript-eslint/naming-convention */
 export const PermissionsStruct = type({
   'endowment:long-running': optional(object({})),
   'endowment:network-access': optional(object({})),
@@ -172,6 +174,7 @@ export const PermissionsStruct = type({
     }),
   ),
 });
+/* eslint-enable @typescript-eslint/naming-convention */
 
 export type SnapPermissions = Infer<typeof PermissionsStruct>;
 

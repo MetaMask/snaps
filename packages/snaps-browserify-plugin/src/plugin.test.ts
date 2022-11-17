@@ -1,20 +1,21 @@
 // Allow Jest snapshots because the test outputs are illegible.
 /* eslint-disable jest/no-restricted-matchers */
 
-import { Readable } from 'stream';
-import pathUtils from 'path';
-import os from 'os';
-import browserify, { Options as BrowserifyOptions } from 'browserify';
-import concat from 'concat-stream';
-import {
-  DEFAULT_SNAP_BUNDLE,
-  getSnapManifest,
-} from '@metamask/snaps-utils/test-utils';
 import {
   checkManifest,
   evalBundle,
   PostProcessWarning,
 } from '@metamask/snaps-utils';
+import {
+  DEFAULT_SNAP_BUNDLE,
+  getSnapManifest,
+} from '@metamask/snaps-utils/test-utils';
+import browserify, { Options as BrowserifyOptions } from 'browserify';
+import concat from 'concat-stream';
+import os from 'os';
+import pathUtils from 'path';
+import { Readable } from 'stream';
+
 import plugin, { Options, SnapsBrowserifyTransform } from './plugin';
 
 jest.mock('fs');
@@ -241,10 +242,10 @@ describe('plugin', () => {
       });
       bundler.add(value);
 
-      bundler.bundle((err) => {
+      bundler.bundle((bundleError) => {
         // To test the error, the promise is resolved with the error, rather
         // than rejecting it.
-        resolve(err);
+        resolve(bundleError);
       });
     });
 

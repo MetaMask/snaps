@@ -10,6 +10,7 @@ import {
   getSnapManifest,
   getPersistedSnapObject,
 } from '@metamask/snaps-utils/test-utils';
+
 import { SnapEndowments } from '../snaps';
 import {
   MOCK_CONNECT_ARGUMENTS,
@@ -53,6 +54,8 @@ describe('MultiChainController', () => {
           ) {
             return { [SnapEndowments.Keyring]: MOCK_KEYRING_PERMISSION } as any;
           }
+
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
           const approvalRequest = args[0] as any;
           if (
             method === 'ApprovalController:addRequest' &&
@@ -74,7 +77,7 @@ describe('MultiChainController', () => {
           } else if (method === 'PermissionController:grantPermissions') {
             return true;
           }
-          return originalCall(method, ...args);
+          return (originalCall as any)(method, ...args);
         });
 
       const result = await multiChainController.onConnect(
@@ -125,6 +128,8 @@ describe('MultiChainController', () => {
           ) {
             return { [SnapEndowments.Keyring]: MOCK_KEYRING_PERMISSION } as any;
           }
+
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
           const approvalRequest = args[0] as any;
           if (
             method === 'ApprovalController:addRequest' &&
@@ -146,7 +151,8 @@ describe('MultiChainController', () => {
           } else if (method === 'PermissionController:grantPermissions') {
             return true;
           }
-          return originalCall(method, ...args);
+
+          return (originalCall as any)(method, ...args);
         });
 
       await multiChainController.onConnect(MOCK_ORIGIN, MOCK_CONNECT_ARGUMENTS);
@@ -218,7 +224,7 @@ describe('MultiChainController', () => {
           ) {
             return {};
           }
-          return originalCall(method, ...args);
+          return (originalCall as any)(method, ...args);
         });
 
       const result = await multiChainController.onConnect(
@@ -294,6 +300,8 @@ describe('MultiChainController', () => {
           ) {
             return { [SnapEndowments.Keyring]: MOCK_KEYRING_PERMISSION } as any;
           }
+
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
           const approvalRequest = args[0] as any;
           if (
             method === 'ApprovalController:addRequest' &&
@@ -325,7 +333,8 @@ describe('MultiChainController', () => {
           } else if (method === 'PermissionController:grantPermissions') {
             return true;
           }
-          return originalCall(method, ...args);
+
+          return (originalCall as any)(method, ...args);
         });
 
       const result = await multiChainController.onConnect(
@@ -421,7 +430,8 @@ describe('MultiChainController', () => {
           ) {
             return {};
           }
-          return originalCall(method, ...args);
+
+          return (originalCall as any)(method, ...args);
         });
 
       await expect(
@@ -467,6 +477,8 @@ describe('MultiChainController', () => {
           ) {
             return { [SnapEndowments.Keyring]: MOCK_KEYRING_PERMISSION } as any;
           }
+
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
           const approvalRequest = args[0] as any;
           if (
             method === 'ApprovalController:addRequest' &&
@@ -491,7 +503,9 @@ describe('MultiChainController', () => {
           ) {
             return true;
           }
-          return originalCall(method, ...args);
+
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+          return (originalCall as any)(method, ...args);
         });
 
       await multiChainController.onConnect(MOCK_ORIGIN, MOCK_CONNECT_ARGUMENTS);

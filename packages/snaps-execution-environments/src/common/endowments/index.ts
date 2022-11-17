@@ -1,12 +1,13 @@
+import { StreamProvider } from '@metamask/providers';
 import { SnapsGlobalObject } from '@metamask/snaps-types';
 import { hasProperty } from '@metamask/utils';
-import { StreamProvider } from '@metamask/providers';
+
 import { rootRealmGlobal } from '../globalObject';
+import crypto from './crypto';
 import interval from './interval';
+import math from './math';
 import network from './network';
 import timeout from './timeout';
-import crypto from './crypto';
-import math from './math';
 
 type EndowmentFactoryResult = {
   /**
@@ -58,7 +59,10 @@ export function createEndowments(
   // TODO: All endowments should be hardened to prevent covert communication
   // channels. Hardening the returned objects breaks tests elsewhere in the
   // monorepo, so further research is needed.
-  const result = endowments.reduce(
+  const result = endowments.reduce<{
+    allEndowments: Record<string, unknown>;
+    teardowns: (() => Promise<void> | void)[];
+  }>(
     ({ allEndowments, teardowns }, endowmentName) => {
       // First, check if the endowment has a factory, and default to that.
       if (endowmentFactories.has(endowmentName)) {
@@ -101,8 +105,8 @@ export function createEndowments(
       return { allEndowments, teardowns };
     },
     {
-      allEndowments: { snap } as Record<string, unknown>,
-      teardowns: [] as (() => void)[],
+      allEndowments: { snap },
+      teardowns: [],
     },
   );
 

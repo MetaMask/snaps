@@ -1,6 +1,6 @@
+import initModule from '.';
 import * as buildHandlerModule from '../build/buildHandler';
 import * as initHandlerModule from './initHandler';
-import initModule from '.';
 
 describe('init module', () => {
   it('console logs if successful', async () => {

@@ -8,18 +8,19 @@ import {
   CaveatSpecificationConstraint,
 } from '@metamask/controllers';
 import {
+  SnapCaveatType,
+  CronjobSpecification,
+  isCronjobSpecificationArray,
+} from '@metamask/snaps-utils';
+import {
   assert,
   hasProperty,
   isPlainObject,
   Json,
   NonEmptyArray,
 } from '@metamask/utils';
-import {
-  SnapCaveatType,
-  CronjobSpecification,
-  isCronjobSpecificationArray,
-} from '@metamask/snaps-utils';
 import { ethErrors } from 'eth-rpc-errors';
+
 import { SnapEndowments } from './enum';
 
 const permissionName = SnapEndowments.Cronjob;

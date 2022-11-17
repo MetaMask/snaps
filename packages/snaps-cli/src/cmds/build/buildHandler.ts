@@ -4,10 +4,11 @@ import {
   validateFilePath,
   validateOutfileName,
 } from '@metamask/snaps-utils';
+
 import { YargsArgs } from '../../types/yargs';
 import { loadConfig } from '../../utils';
-import { manifestHandler } from '../manifest/manifestHandler';
 import { evalHandler } from '../eval/evalHandler';
+import { manifestHandler } from '../manifest/manifestHandler';
 import { bundle } from './bundle';
 
 /**
@@ -24,12 +25,12 @@ import { bundle } from './bundle';
 export async function build(argv: YargsArgs): Promise<void> {
   const { src, dist, outfileName } = argv;
   if (outfileName) {
-    validateOutfileName(outfileName as string);
+    validateOutfileName(outfileName);
   }
   await validateFilePath(src);
   await validateDirPath(dist, true);
 
-  const outfilePath = getOutfilePath(dist, outfileName as string);
+  const outfilePath = getOutfilePath(dist, outfileName);
   const result = await bundle(
     src,
     outfilePath,

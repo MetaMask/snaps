@@ -1,8 +1,9 @@
-import { HandlerType, SnapId } from '@metamask/snaps-utils';
 import {
   createService,
   MOCK_BLOCK_NUMBER,
 } from '@metamask/snaps-controllers/test-utils';
+import { HandlerType, SnapId } from '@metamask/snaps-utils';
+
 import { SnapErrorJson } from '../ExecutionService';
 import { NodeThreadExecutionService } from './NodeThreadExecutionService';
 
@@ -24,7 +25,7 @@ describe('NodeThreadExecutionService', () => {
       `,
       endowments: ['console'],
     });
-    expect(response).toStrictEqual('OK');
+    expect(response).toBe('OK');
     await service.terminateAllSnaps();
   });
 

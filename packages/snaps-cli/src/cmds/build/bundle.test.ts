@@ -1,4 +1,5 @@
 import browserify from 'browserify';
+
 import { TranspilationModes } from '../../builders';
 import { bundle } from './bundle';
 import * as bundleUtils from './utils';
@@ -17,7 +18,7 @@ describe('bundle', () => {
       const mockArgv = {
         sourceMaps: true,
         stripComments: true,
-        transpilationMode: TranspilationModes.localOnly,
+        transpilationMode: TranspilationModes.LocalOnly,
       };
 
       const mockTransform = jest.fn();
@@ -26,8 +27,8 @@ describe('bundle', () => {
         () => ({
           transform: mockTransform,
           plugin: mockPlugin,
-          bundle: (cb: () => any) => {
-            cb();
+          bundle: (callback: () => any) => {
+            callback();
           },
         }),
       );
@@ -61,7 +62,7 @@ describe('bundle', () => {
       const mockArgv = {
         sourceMaps: false,
         stripComments: true,
-        transpilationMode: TranspilationModes.localOnly,
+        transpilationMode: TranspilationModes.LocalOnly,
       };
 
       const mockTransform = jest.fn();
@@ -70,8 +71,8 @@ describe('bundle', () => {
         () => ({
           transform: mockTransform,
           plugin: mockPlugin,
-          bundle: (cb: () => any) => {
-            cb();
+          bundle: (callback: () => any) => {
+            callback();
           },
         }),
       );
@@ -103,7 +104,7 @@ describe('bundle', () => {
       const mockArgv = {
         sourceMaps: true,
         stripComments: true,
-        transpilationMode: TranspilationModes.localOnly,
+        transpilationMode: TranspilationModes.LocalOnly,
       };
 
       const mockTransform = jest.fn();
@@ -112,8 +113,8 @@ describe('bundle', () => {
         () => ({
           transform: mockTransform,
           plugin: mockPlugin,
-          bundle: (cb: () => any) => {
-            cb();
+          bundle: (callback: () => any) => {
+            callback();
           },
         }),
       );
@@ -145,7 +146,7 @@ describe('bundle', () => {
       const mockArgv = {
         sourceMaps: true,
         stripComments: true,
-        transpilationMode: TranspilationModes.none,
+        transpilationMode: TranspilationModes.None,
       };
 
       const mockTransform = jest.fn();
@@ -154,8 +155,8 @@ describe('bundle', () => {
         () => ({
           transform: mockTransform,
           plugin: mockPlugin,
-          bundle: (cb: () => any) => {
-            cb();
+          bundle: (callback: () => any) => {
+            callback();
           },
         }),
       );
@@ -183,7 +184,7 @@ describe('bundle', () => {
       const mockArgv = {
         sourceMaps: true,
         stripComments: true,
-        transpilationMode: TranspilationModes.localAndDeps,
+        transpilationMode: TranspilationModes.LocalAndDeps,
       };
 
       const mockTransform = jest.fn();
@@ -192,8 +193,8 @@ describe('bundle', () => {
         () => ({
           transform: mockTransform,
           plugin: mockPlugin,
-          bundle: (cb: () => any) => {
-            cb();
+          bundle: (callback: () => any) => {
+            callback();
           },
         }),
       );

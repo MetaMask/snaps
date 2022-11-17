@@ -1,6 +1,7 @@
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import { join } from 'path';
+
 import {
   getOutfilePath,
   isDirectory,
@@ -177,7 +178,7 @@ describe('getOutfilePath', () => {
     expect(getOutfilePath('src', 'outDir')).toStrictEqual(path4);
     expect(getOutfilePath('src/', './outDir/')).toStrictEqual(path5);
     expect(getOutfilePath('src/', '')).toStrictEqual(path6);
-    expect(getOutfilePath('', '')).toStrictEqual('bundle.js');
+    expect(getOutfilePath('', '')).toBe('bundle.js');
   });
 });
 
@@ -203,8 +204,8 @@ describe('validateOutfileName', () => {
       validateOutfileName('.js');
     }).toThrow('Invalid outfile name: .js');
 
-    expect(validateOutfileName('file.js')).toStrictEqual(true);
-    expect(validateOutfileName('two.file.js')).toStrictEqual(true);
+    expect(validateOutfileName('file.js')).toBe(true);
+    expect(validateOutfileName('two.file.js')).toBe(true);
   });
 });
 
@@ -216,7 +217,7 @@ describe('validateFilePath', () => {
   it('checks whether the given path string resolves to an existing file', async () => {
     // jest.spyOn(snapUtils, 'isFile').mockResolvedValue(true);
     const result = await validateFilePath(MANIFEST_PATH);
-    expect(result).toStrictEqual(true);
+    expect(result).toBe(true);
   });
 
   it('checks whether an invalid path string throws an error', async () => {

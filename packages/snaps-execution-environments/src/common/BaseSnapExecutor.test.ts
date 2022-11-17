@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-unassigned-import
 import 'ses';
-import { Duplex, DuplexOptions, EventEmitter, Readable } from 'stream';
+import { HandlerType } from '@metamask/snaps-utils';
 import {
   assertIsJsonRpcSuccess,
   Json,
@@ -8,7 +8,8 @@ import {
   JsonRpcRequest,
   JsonRpcResponse,
 } from '@metamask/utils';
-import { HandlerType } from '@metamask/snaps-utils';
+import { Duplex, DuplexOptions, EventEmitter, Readable } from 'stream';
+
 import { BaseSnapExecutor } from './BaseSnapExecutor';
 
 const FAKE_ORIGIN = 'origin:foo';
@@ -21,7 +22,7 @@ type TwoWayPassThroughBuffer = {
 };
 
 class TwoWayPassThrough {
-  private static flush(bufferData: TwoWayPassThroughBuffer, stream: Readable) {
+  static #flush(bufferData: TwoWayPassThroughBuffer, stream: Readable) {
     while (bufferData.canPush && bufferData.buffer.length > 0) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const { chunk: data, encoding: enc } = bufferData.buffer.shift()!;
@@ -33,12 +34,12 @@ class TwoWayPassThrough {
 
   readonly right: Duplex;
 
-  private leftToRight: TwoWayPassThroughBuffer = {
+  #leftToRight: TwoWayPassThroughBuffer = {
     buffer: [],
     canPush: false,
   };
 
-  private rightToLeft: TwoWayPassThroughBuffer = {
+  #rightToLeft: TwoWayPassThroughBuffer = {
     buffer: [],
     canPush: false,
   };
@@ -47,43 +48,43 @@ class TwoWayPassThrough {
     this.left = new Duplex({
       ...opts,
       write: (chunk, encoding, callback) => {
-        this.leftToRight.buffer.push({ chunk, encoding });
-        TwoWayPassThrough.flush(this.leftToRight, this.right);
+        this.#leftToRight.buffer.push({ chunk, encoding });
+        TwoWayPassThrough.#flush(this.#leftToRight, this.right);
         return callback();
       },
       read: () => {
-        this.rightToLeft.canPush = true;
-        TwoWayPassThrough.flush(this.rightToLeft, this.left);
+        this.#rightToLeft.canPush = true;
+        TwoWayPassThrough.#flush(this.#rightToLeft, this.left);
       },
     });
 
     this.right = new Duplex({
       ...opts,
       write: (chunk, encoding, callback) => {
-        this.rightToLeft.buffer.push({ chunk, encoding });
-        TwoWayPassThrough.flush(this.rightToLeft, this.left);
+        this.#rightToLeft.buffer.push({ chunk, encoding });
+        TwoWayPassThrough.#flush(this.#rightToLeft, this.left);
         return callback();
       },
       read: () => {
-        this.leftToRight.canPush = true;
-        TwoWayPassThrough.flush(this.leftToRight, this.right);
+        this.#leftToRight.canPush = true;
+        TwoWayPassThrough.#flush(this.#leftToRight, this.right);
       },
     });
   }
 }
 
 class TestSnapExecutor extends BaseSnapExecutor {
-  private commandLeft: Duplex;
+  readonly #commandLeft: Duplex;
 
-  private rpcLeft: Duplex;
+  readonly #rpcLeft: Duplex;
 
-  private commandBuffer: any[] = [];
+  readonly #commandBuffer: any[] = [];
 
-  private rpcBuffer: any[] = [];
+  readonly #rpcBuffer: any[] = [];
 
-  private commandListeners: ((chunk: any) => void)[] = [];
+  readonly #commandListeners: ((chunk: any) => void)[] = [];
 
-  private rpcListeners: ((chunk: any) => void)[] = [];
+  readonly #rpcListeners: ((chunk: any) => void)[] = [];
 
   constructor() {
     const rpc = new TwoWayPassThrough({
@@ -97,17 +98,17 @@ class TestSnapExecutor extends BaseSnapExecutor {
 
     super(command.right, rpc.right);
 
-    this.commandLeft = command.left;
-    this.rpcLeft = rpc.left;
+    this.#commandLeft = command.left;
+    this.#rpcLeft = rpc.left;
 
-    this.commandLeft.on('data', (chunk) => {
-      this.commandBuffer.push(chunk);
-      TestSnapExecutor.flushReads(this.commandBuffer, this.commandListeners);
+    this.#commandLeft.on('data', (chunk) => {
+      this.#commandBuffer.push(chunk);
+      TestSnapExecutor.#flushReads(this.#commandBuffer, this.#commandListeners);
     });
 
-    this.rpcLeft.on('data', (chunk) => {
-      this.rpcBuffer.push(chunk);
-      TestSnapExecutor.flushReads(this.rpcBuffer, this.rpcListeners);
+    this.#rpcLeft.on('data', (chunk) => {
+      this.#rpcBuffer.push(chunk);
+      TestSnapExecutor.#flushReads(this.#rpcBuffer, this.#rpcListeners);
     });
   }
 
@@ -126,8 +127,12 @@ class TestSnapExecutor extends BaseSnapExecutor {
       params: [name, code, endowments],
     });
 
-    // In case we are running fake timers, execute a tiny step that forces setTimeout to execute, is required for stream comms
-    jest.advanceTimersByTime(1);
+    // In case we are running fake timers, execute a tiny step that forces
+    // `setTimeout` to execute, is required for stream communication.
+    if ('clock' in setTimeout) {
+      jest.advanceTimersByTime(1);
+    }
+
     const providerRequest = await providerRequestPromise;
     await this.writeRpc({
       name: 'metamask-provider',
@@ -143,12 +148,17 @@ class TestSnapExecutor extends BaseSnapExecutor {
         },
       },
     });
-    jest.advanceTimersByTime(1);
+
+    if ('clock' in setTimeout) {
+      jest.advanceTimersByTime(1);
+    }
   }
 
-  public writeCommand(message: JsonRpcRequest<JsonRpcParams>): Promise<void> {
+  public async writeCommand(
+    message: JsonRpcRequest<JsonRpcParams>,
+  ): Promise<void> {
     return new Promise((resolve, reject) =>
-      this.commandLeft.write(message, (error) => {
+      this.#commandLeft.write(message, (error) => {
         if (error) {
           return reject(error);
         }
@@ -157,20 +167,17 @@ class TestSnapExecutor extends BaseSnapExecutor {
     );
   }
 
-  public readCommand(): Promise<JsonRpcRequest<JsonRpcParams>> {
+  public async readCommand(): Promise<JsonRpcRequest<JsonRpcParams>> {
     const promise = new Promise<JsonRpcRequest<JsonRpcParams>>((resolve) =>
-      this.commandListeners.push(resolve),
+      this.#commandListeners.push(resolve),
     );
 
-    TestSnapExecutor.flushReads(this.commandBuffer, this.commandListeners);
+    TestSnapExecutor.#flushReads(this.#commandBuffer, this.#commandListeners);
 
     return promise;
   }
 
-  private static flushReads(
-    readBuffer: any[],
-    listeners: ((chunk: any) => void)[],
-  ) {
+  static #flushReads(readBuffer: any[], listeners: ((chunk: any) => void)[]) {
     while (readBuffer.length && listeners.length) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const chunk = readBuffer.shift()!;
@@ -179,12 +186,12 @@ class TestSnapExecutor extends BaseSnapExecutor {
     }
   }
 
-  public writeRpc(message: {
+  public async writeRpc(message: {
     name: string;
     data: JsonRpcResponse<Json>;
   }): Promise<void> {
     return new Promise((resolve, reject) =>
-      this.rpcLeft.write(message, (error) => {
+      this.#rpcLeft.write(message, (error) => {
         if (error) {
           return reject(error);
         }
@@ -193,16 +200,16 @@ class TestSnapExecutor extends BaseSnapExecutor {
     );
   }
 
-  public readRpc(): Promise<{
+  public async readRpc(): Promise<{
     name: string;
     data: JsonRpcRequest<JsonRpcParams>;
   }> {
     const promise = new Promise<{
       name: string;
       data: JsonRpcRequest<JsonRpcParams>;
-    }>((resolve) => this.rpcListeners.push(resolve));
+    }>((resolve) => this.#rpcListeners.push(resolve));
 
-    TestSnapExecutor.flushReads(this.rpcBuffer, this.rpcListeners);
+    TestSnapExecutor.#flushReads(this.#rpcBuffer, this.#rpcListeners);
 
     return promise;
   }

@@ -1,6 +1,6 @@
+const execa = require('execa');
 const { promises: fs } = require('fs');
 const path = require('path');
-const execa = require('execa');
 
 // These magic strings correspond to the README.md file.
 const README_HEADING_1 = '## Usage\n\n```text\n';

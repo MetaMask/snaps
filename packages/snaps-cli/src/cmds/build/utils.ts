@@ -1,7 +1,8 @@
 import { promises as fs } from 'fs';
-import { writeError } from '../../utils/misc';
-import { YargsArgs } from '../../types/yargs';
+
 import { TranspilationModes } from '../../builders';
+import { YargsArgs } from '../../types/yargs';
+import { writeError } from '../../utils/misc';
 
 type WriteBundleFileArgs = {
   bundleError: Error;
@@ -54,7 +55,7 @@ export async function writeBundleFile({
 export function processDependencies(argv: YargsArgs) {
   const { depsToTranspile, transpilationMode } = argv;
   const babelifyOptions: Record<string, any> = {};
-  if (transpilationMode === TranspilationModes.localAndDeps) {
+  if (transpilationMode === TranspilationModes.LocalAndDeps) {
     const regexpStr = getDependencyRegExp(depsToTranspile as string[]);
     if (regexpStr !== null) {
       babelifyOptions.ignore = [regexpStr];
@@ -75,7 +76,7 @@ export function getDependencyRegExp(dependencies: string[]): RegExp | null {
     return regexp;
   }
   const paths: string[] = sanitizeDependencyPaths(dependencies);
-  regexp = `/node_modules/(?!${paths.shift()}`;
+  regexp = `/node_modules/(?!${paths.shift() ?? ''}`;
   paths.forEach((path) => (regexp += `|${path}`));
   regexp += '/)';
   return RegExp(regexp, 'u');
@@ -105,7 +106,7 @@ export function sanitizeDependencyPaths(dependencies: string[]): string[] {
 export function processInvalidTranspilation(argv: YargsArgs) {
   if (
     argv.depsToTranspile &&
-    argv.transpilationMode !== TranspilationModes.localAndDeps
+    argv.transpilationMode !== TranspilationModes.LocalAndDeps
   ) {
     throw new Error(
       '"depsToTranspile" can only be specified if "transpilationMode" is set to "localAndDeps" .',

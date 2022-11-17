@@ -1,8 +1,9 @@
 // eslint-disable-next-line import/no-unassigned-import
 import 'ses';
-import { EventEmitter } from 'stream';
-import { Json, JsonRpcRequest, JsonRpcSuccess } from '@metamask/utils';
 import { SNAP_STREAM_NAMES, HandlerType } from '@metamask/snaps-utils';
+import { Json, JsonRpcRequest, JsonRpcSuccess } from '@metamask/utils';
+import { EventEmitter } from 'stream';
+
 import { ChildProcessSnapExecutor } from './ChildProcessSnapExecutor';
 
 const FAKE_ORIGIN = 'origin:foo';
@@ -48,7 +49,7 @@ describe('ChildProcessSnapExecutor', () => {
           }
         });
       });
-    const waitForResponse = (response: JsonRpcSuccess<string>) =>
+    const waitForResponse = async (response: JsonRpcSuccess<string>) =>
       new Promise((resolve) => {
         childEmitter.on('message', ({ data }) => {
           if (

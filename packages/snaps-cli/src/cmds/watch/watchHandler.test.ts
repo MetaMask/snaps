@@ -1,13 +1,14 @@
-import EventEmitter from 'events';
-import path from 'path';
-import http from 'http';
-import chokidar from 'chokidar';
 import * as snapUtils from '@metamask/snaps-utils';
+import chokidar from 'chokidar';
+import EventEmitter from 'events';
+import http from 'http';
+import path from 'path';
+
+import watch from '.';
 import * as miscUtils from '../../utils/misc';
 import * as build from '../build/bundle';
 import * as evalModule from '../eval/evalHandler';
 import * as manifest from '../manifest/manifestHandler';
-import watch from '.';
 
 jest.mock('@metamask/snaps-utils', () => ({
   ...jest.requireActual('@metamask/snaps-utils'),
@@ -71,10 +72,10 @@ describe('watch', () => {
       jest.spyOn(console, 'log').mockImplementation();
       const validateDirPathMock = jest
         .spyOn(snapUtils, 'validateDirPath')
-        .mockImplementation(async () => true);
+        .mockImplementation(async () => Promise.resolve(true));
       const validateFilePathMock = jest
         .spyOn(snapUtils, 'validateFilePath')
-        .mockImplementation(async () => true);
+        .mockImplementation(async () => Promise.resolve(true));
       const validateOutfileNameMock = jest
         .spyOn(snapUtils, 'validateOutfileName')
         .mockImplementation(() => true);
@@ -96,10 +97,10 @@ describe('watch', () => {
       jest.spyOn(console, 'log').mockImplementation();
       const validateDirPathMock = jest
         .spyOn(snapUtils, 'validateDirPath')
-        .mockImplementation(async () => true);
+        .mockImplementation(async () => Promise.resolve(true));
       const validateFilePathMock = jest
         .spyOn(snapUtils, 'validateFilePath')
-        .mockImplementation(async () => true);
+        .mockImplementation(async () => Promise.resolve(true));
       const validateOutfileNameMock = jest
         .spyOn(snapUtils, 'validateOutfileName')
         .mockImplementation(() => true);
@@ -115,7 +116,7 @@ describe('watch', () => {
       jest.spyOn(console, 'log').mockImplementation();
       jest
         .spyOn(snapUtils, 'validateFilePath')
-        .mockImplementation(async () => true);
+        .mockImplementation(async () => Promise.resolve(true));
       const mockArgs = getMockArgv();
       delete mockArgs.outfileName;
       await watch.handler(mockArgs);
@@ -128,7 +129,7 @@ describe('watch', () => {
       jest.spyOn(console, 'log').mockImplementation();
       jest
         .spyOn(snapUtils, 'validateFilePath')
-        .mockImplementation(async () => true);
+        .mockImplementation(async () => Promise.resolve(true));
       const mockArgs = getMockArgv();
       mockArgs.src = 'index.js';
       await watch.handler(mockArgs);
@@ -144,7 +145,7 @@ describe('watch', () => {
       jest.spyOn(console, 'log').mockImplementation();
       jest
         .spyOn(snapUtils, 'validateFilePath')
-        .mockImplementation(async () => true);
+        .mockImplementation(async () => Promise.resolve(true));
       const bundleMock = jest.spyOn(build, 'bundle').mockImplementation();
 
       const argv = getMockArgv({ serve: true });
@@ -174,7 +175,7 @@ describe('watch', () => {
       const bundleMock = jest.spyOn(build, 'bundle').mockImplementation();
       jest
         .spyOn(snapUtils, 'validateFilePath')
-        .mockImplementation(async () => true);
+        .mockImplementation(async () => Promise.resolve(true));
 
       await watch.handler(getMockArgv());
       const mockPath = path.normalize(`${mockDist}/${mockOutfileName}`);
@@ -200,7 +201,7 @@ describe('watch', () => {
       const bundleMock = jest.spyOn(build, 'bundle').mockImplementation();
       jest
         .spyOn(snapUtils, 'validateFilePath')
-        .mockImplementation(async () => true);
+        .mockImplementation(async () => Promise.resolve(true));
 
       await watch.handler(getMockArgv());
       const mockPath = path.normalize(`${mockDist}/${mockOutfileName}`);
@@ -226,7 +227,7 @@ describe('watch', () => {
       const bundleMock = jest.spyOn(build, 'bundle').mockImplementation();
       jest
         .spyOn(snapUtils, 'validateFilePath')
-        .mockImplementation(async () => true);
+        .mockImplementation(async () => Promise.resolve(true));
 
       await watch.handler(getMockArgv());
       const mockPath = path.normalize(`${mockDist}/${mockOutfileName}`);
@@ -267,7 +268,7 @@ describe('watch', () => {
         }) as any);
       jest
         .spyOn(snapUtils, 'validateFilePath')
-        .mockImplementation(async () => true);
+        .mockImplementation(async () => Promise.resolve(true));
 
       await watch.handler(getMockArgv({ eval: true, manifest: true }));
       const mockPath = path.normalize(`${mockDist}/${mockOutfileName}`);
@@ -303,7 +304,7 @@ describe('watch', () => {
       const bundleMock = jest.spyOn(build, 'bundle').mockImplementation();
       jest
         .spyOn(snapUtils, 'validateFilePath')
-        .mockImplementation(async () => true);
+        .mockImplementation(async () => Promise.resolve(true));
 
       await watch.handler(getMockArgv());
       const finishPromise = new Promise<void>((resolve, _) => {
@@ -328,7 +329,7 @@ describe('watch', () => {
       const bundleMock = jest.spyOn(build, 'bundle').mockImplementation();
       jest
         .spyOn(snapUtils, 'validateFilePath')
-        .mockImplementation(async () => true);
+        .mockImplementation(async () => Promise.resolve(true));
 
       await watch.handler(getMockArgv());
       const finishPromise = new Promise<void>((resolve, _) => {
@@ -354,7 +355,7 @@ describe('watch', () => {
       });
       jest
         .spyOn(snapUtils, 'validateFilePath')
-        .mockImplementation(async () => true);
+        .mockImplementation(async () => Promise.resolve(true));
 
       await watch.handler(getMockArgv());
       const finishPromise = new Promise<void>((resolve, _) => {
@@ -384,7 +385,7 @@ describe('watch', () => {
       });
       jest
         .spyOn(snapUtils, 'validateFilePath')
-        .mockImplementation(async () => true);
+        .mockImplementation(async () => Promise.resolve(true));
       await watch.handler(getMockArgv());
       const finishPromise = new Promise<void>((resolve, _) => {
         watcherEmitter.on('ready', () => {

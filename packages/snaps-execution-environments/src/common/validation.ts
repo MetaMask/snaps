@@ -1,5 +1,5 @@
-import { ChainIdStruct, HandlerType } from '@metamask/snaps-utils';
 import { SnapKeyring } from '@metamask/snaps-types';
+import { ChainIdStruct, HandlerType } from '@metamask/snaps-utils';
 import {
   assertStruct,
   Json,

@@ -68,6 +68,7 @@ module.exports.IPFS = class IPFS {
    * @param {string} ipfsHash - The hash of the file to get.
    * @returns {Promise<string>} The response from IPFS.
    */
+  // eslint-disable-next-line id-denylist
   async cat(ipfsHash) {
     return this.send(`${this.requestBase}/cat?arg=${ipfsHash}`, {
       method: 'POST',

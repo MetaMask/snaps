@@ -11,8 +11,8 @@ const methodName = 'snap_notify';
 
 // Move all the types to a shared place when implementing more notifications
 export enum NotificationType {
-  native = 'native',
-  inApp = 'inApp',
+  Native = 'native',
+  InApp = 'inApp',
 }
 
 export type NotificationArgs = {
@@ -114,9 +114,9 @@ export function getImplementation({
     const validatedParams = getValidatedParams(params);
 
     switch (validatedParams.type) {
-      case NotificationType.native:
+      case NotificationType.Native:
         return await showNativeNotification(origin, validatedParams);
-      case NotificationType.inApp:
+      case NotificationType.InApp:
         return await showInAppNotification(origin, validatedParams);
       default:
         throw ethErrors.rpc.invalidParams({

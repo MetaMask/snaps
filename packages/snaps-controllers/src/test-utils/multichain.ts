@@ -5,6 +5,7 @@ import {
   getSnapManifest,
   getPersistedSnapObject,
 } from '@metamask/snaps-utils/test-utils';
+
 import { SnapEndowments } from '..';
 import { MultiChainController } from '../multichain';
 import {

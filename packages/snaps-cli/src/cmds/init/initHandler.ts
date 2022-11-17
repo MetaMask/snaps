@@ -1,5 +1,3 @@
-import pathUtils from 'path';
-import { promises as fs } from 'fs';
 import {
   NpmSnapFileNames,
   SnapManifest,
@@ -7,6 +5,9 @@ import {
   satisfiesVersionRange,
   NpmSnapPackageJson,
 } from '@metamask/snaps-utils';
+import { promises as fs } from 'fs';
+import pathUtils from 'path';
+
 import { YargsArgs } from '../../types/yargs';
 import {
   cloneTemplate,
@@ -61,22 +62,22 @@ export async function initHandler(argv: YargsArgs) {
 
   try {
     console.log(`Cloning template...`);
-    await cloneTemplate(directoryToUse);
+    cloneTemplate(directoryToUse);
 
-    fs.rm(pathUtils.join(directoryToUse, '.git'), {
+    await fs.rm(pathUtils.join(directoryToUse, '.git'), {
       force: true,
       recursive: true,
     });
-  } catch (err) {
+  } catch (error) {
     throw new Error('Init Error: Failed to create template.');
   }
 
   console.log('Installing dependencies...');
-  await yarnInstall(directoryToUse);
+  yarnInstall(directoryToUse);
 
   if (!isInGitRepository(directoryToUse)) {
     console.log('Initializing git repository...');
-    await gitInit(directoryToUse);
+    gitInit(directoryToUse);
   }
 
   const snapLocation = pathUtils.join(directoryToUse, SNAP_LOCATION);

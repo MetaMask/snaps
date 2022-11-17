@@ -1,10 +1,13 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
 /// <reference path="../../../../node_modules/ses/index.d.ts" />
-import { Duplex } from 'stream';
 import { StreamProvider } from '@metamask/providers';
-import { createIdRemapMiddleware } from 'json-rpc-engine';
+import { RequestArguments } from '@metamask/providers/dist/BaseProvider';
 import { SnapExports, SnapsGlobalObject } from '@metamask/snaps-types';
-import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
+import {
+  HandlerType,
+  SnapExportsParameters,
+  SNAP_EXPORT_NAMES,
+} from '@metamask/snaps-utils';
 import {
   isObject,
   isValidJson,
@@ -17,14 +20,11 @@ import {
   Json,
   hasProperty,
 } from '@metamask/utils';
-import {
-  HandlerType,
-  SnapExportsParameters,
-  SNAP_EXPORT_NAMES,
-} from '@metamask/snaps-utils';
-
+import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
+import { createIdRemapMiddleware } from 'json-rpc-engine';
+import { Duplex } from 'stream';
 import { validate } from 'superstruct';
-import { RequestArguments } from '@metamask/providers/dist/BaseProvider';
+
 import EEOpenRPCDocument from '../openrpc.json';
 import {
   CommandMethodsMapping,
@@ -93,13 +93,13 @@ const EXECUTION_ENVIRONMENT_METHODS = {
 };
 
 export class BaseSnapExecutor {
-  private snapData: Map<string, SnapData>;
+  private readonly snapData: Map<string, SnapData>;
 
-  private commandStream: Duplex;
+  private readonly commandStream: Duplex;
 
-  private rpcStream: Duplex;
+  private readonly rpcStream: Duplex;
 
-  private methods: CommandMethodsMapping;
+  private readonly methods: CommandMethodsMapping;
 
   private snapErrorHandler?: (event: ErrorEvent) => void;
 
@@ -110,7 +110,12 @@ export class BaseSnapExecutor {
   protected constructor(commandStream: Duplex, rpcStream: Duplex) {
     this.snapData = new Map();
     this.commandStream = commandStream;
-    this.commandStream.on('data', this.onCommandRequest.bind(this));
+    this.commandStream.on('data', (data) => {
+      this.onCommandRequest(data).catch((error) => {
+        // TODO: Decide how to handle errors.
+        console.error(error);
+      });
+    });
     this.rpcStream = rpcStream;
 
     this.methods = getCommandMethodImplementations(
@@ -220,9 +225,9 @@ export class BaseSnapExecutor {
     try {
       const result = await (this.methods as any)[method](...paramsAsArray);
       this.respond(id, { result });
-    } catch (e) {
+    } catch (rpcError) {
       this.respond(id, {
-        error: serializeError(e, {
+        error: serializeError(rpcError, {
           fallbackError,
         }),
       });
@@ -333,10 +338,10 @@ export class BaseSnapExecutor {
         compartment.evaluate(sourceCode);
         this.registerSnapExports(snapName, snapModule);
       });
-    } catch (err) {
+    } catch (error) {
       this.removeSnap(snapName);
       throw new Error(
-        `Error while running snap '${snapName}': ${(err as Error).message}`,
+        `Error while running snap '${snapName}': ${(error as Error).message}`,
       );
     }
   }
@@ -378,7 +383,7 @@ export class BaseSnapExecutor {
    * @returns The snap provider object.
    */
   private createSnapGlobal(provider: StreamProvider): SnapsGlobalObject {
-    const originalRequest = provider.request;
+    const originalRequest = provider.request.bind(provider);
 
     const request = async (args: RequestArguments) => {
       assert(
@@ -403,7 +408,7 @@ export class BaseSnapExecutor {
    * @returns The EIP-1193 Ethereum provider object.
    */
   private createEIP1193Provider(provider: StreamProvider): StreamProvider {
-    const originalRequest = provider.request;
+    const originalRequest = provider.request.bind(provider);
 
     provider.request = async (args) => {
       assert(

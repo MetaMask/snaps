@@ -49,7 +49,7 @@ describe('snap_manageState', () => {
       const result = await manageStateImplementation({
         context: { origin: 'snap-origin' },
         method: 'snap_manageState',
-        params: { operation: ManageStateOperation.getState },
+        params: { operation: ManageStateOperation.GetState },
       });
 
       expect(getSnapState).toHaveBeenCalledWith('snap-origin');
@@ -70,7 +70,7 @@ describe('snap_manageState', () => {
       await manageStateImplementation({
         context: { origin: 'snap-origin' },
         method: 'snap_manageState',
-        params: { operation: ManageStateOperation.clearState },
+        params: { operation: ManageStateOperation.ClearState },
       });
 
       expect(clearSnapState).toHaveBeenCalledWith('snap-origin');
@@ -92,7 +92,7 @@ describe('snap_manageState', () => {
         context: { origin: 'snap-origin' },
         method: 'snap_manageState',
         params: {
-          operation: ManageStateOperation.updateState,
+          operation: ManageStateOperation.UpdateState,
           newState,
         },
       });
@@ -119,7 +119,7 @@ describe('snap_manageState', () => {
           context: { origin: 'snap-origin' },
           method: 'snap_manageState',
           params: {
-            operation: ManageStateOperation.updateState,
+            operation: ManageStateOperation.UpdateState,
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-expect-error - invalid type for testing purposes
             newState,
@@ -155,7 +155,7 @@ describe('snap_manageState', () => {
           context: { origin: 'snap-origin' },
           method: 'snap_manageState',
           params: {
-            operation: ManageStateOperation.updateState,
+            operation: ManageStateOperation.UpdateState,
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-expect-error - invalid type for testing purposes
             newState,

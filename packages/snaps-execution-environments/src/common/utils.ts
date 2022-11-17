@@ -70,7 +70,7 @@ export function allFunctions(obj: any): (string | symbol)[] {
  * @param teardownRef.lastTeardown - Number of the last teardown.
  * @returns New proxy promise.
  */
-export function withTeardown<T>(
+export async function withTeardown<T>(
   originalPromise: Promise<T>,
   teardownRef: { lastTeardown: number },
 ): Promise<T> {

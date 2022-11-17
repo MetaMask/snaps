@@ -3,15 +3,16 @@ import {
   ConnectArguments,
   RequestArguments,
   Session,
+  // eslint-disable-next-line @typescript-eslint/no-shadow
   Event,
 } from '@metamask/snaps-utils';
 
-/* eslint-disable camelcase */
+/* eslint-disable @typescript-eslint/naming-convention */
 type ProviderEventMap = {
   session_event: (arg: { params: { event: Event; chainId: ChainId } }) => void;
   session_delete: () => void;
 };
-/* eslint-enable camelcase */
+/* eslint-enable @typescript-eslint/naming-convention */
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface Provider {

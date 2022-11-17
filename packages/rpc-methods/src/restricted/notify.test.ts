@@ -26,13 +26,13 @@ describe('snap_notify', () => {
         },
         method: 'snap_notify',
         params: {
-          type: NotificationType.inApp,
+          type: NotificationType.InApp,
           message: 'Some message',
         },
       });
 
       expect(showInAppNotification).toHaveBeenCalledWith('extension', {
-        type: NotificationType.inApp,
+        type: NotificationType.InApp,
         message: 'Some message',
       });
     });
@@ -52,13 +52,13 @@ describe('snap_notify', () => {
         },
         method: 'snap_notify',
         params: {
-          type: NotificationType.native,
+          type: NotificationType.Native,
           message: 'Some message',
         },
       });
 
       expect(showNativeNotification).toHaveBeenCalledWith('extension', {
-        type: NotificationType.native,
+        type: NotificationType.Native,
         message: 'Some message',
       });
     });

@@ -1,7 +1,8 @@
-import { readFile } from 'fs/promises';
 import { createReadStream } from 'fs';
-import path from 'path';
+import { readFile } from 'fs/promises';
 import fetchMock from 'jest-fetch-mock';
+import path from 'path';
+
 import { fetchNpmSnap } from './npm';
 
 describe('fetchNpmSnap', () => {
@@ -21,6 +22,7 @@ describe('fetchNpmSnap', () => {
     fetchMock
       .mockResponseOnce(
         JSON.stringify({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           'dist-tags': {
             latest: templateSnapVersion,
           },
@@ -51,7 +53,7 @@ describe('fetchNpmSnap', () => {
       '@metamask/template-snap',
       templateSnapVersion,
       'https://registry.npmjs.cf',
-      fetchMock,
+      fetchMock as typeof fetch,
     );
 
     expect(fetchMock).toHaveBeenCalledTimes(2);

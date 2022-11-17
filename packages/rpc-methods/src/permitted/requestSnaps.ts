@@ -1,16 +1,17 @@
-import { ethErrors } from 'eth-rpc-errors';
 import {
   PermissionConstraint,
   RequestedPermissions,
 } from '@metamask/controllers';
+import { getSnapPermissionName } from '@metamask/snaps-utils';
 import {
   PermittedHandlerExport,
   JsonRpcRequest,
   PendingJsonRpcResponse,
   JsonRpcEngineEndCallback,
 } from '@metamask/types';
-import { getSnapPermissionName } from '@metamask/snaps-utils';
 import { hasProperty, isObject } from '@metamask/utils';
+import { ethErrors } from 'eth-rpc-errors';
+
 import {
   handleInstallSnaps,
   InstallSnapsHook,
@@ -139,18 +140,18 @@ async function requestSnapsImplementation(
         requestedPermissions,
       );
 
-      if (!approvedPermissions || !approvedPermissions.length) {
+      if (!approvedPermissions?.length) {
         throw ethErrors.provider.userRejectedRequest({ data: req });
       }
     }
-  } catch (err) {
-    return end(err);
+  } catch (error) {
+    return end(error);
   }
 
   try {
     res.result = await handleInstallSnaps(requestedSnaps, installSnaps);
-  } catch (err) {
-    res.error = err;
+  } catch (error) {
+    res.error = error;
   }
   return end();
 }

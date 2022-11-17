@@ -24,13 +24,13 @@ describe('Timer', () => {
   it('calls the callback', () => {
     const timer = new Timer(1000);
     const callback = jest.fn(() => {
-      expect(timer.status).toStrictEqual('finished');
+      expect(timer.status).toBe('finished');
     });
     timer.start(callback);
     jest.advanceTimersByTime(1000);
 
     expect(callback).toHaveBeenCalled();
-    expect(timer.status).toStrictEqual('finished');
+    expect(timer.status).toBe('finished');
   });
 
   it('can cancel', () => {
@@ -44,21 +44,21 @@ describe('Timer', () => {
 
   it('works with +Infinity', () => {
     const timer = new Timer(Infinity);
-    expect(timer.status).toStrictEqual('stopped');
+    expect(timer.status).toBe('stopped');
 
     const callback = jest.fn();
 
     timer.start(callback);
-    expect(timer.status).toStrictEqual('running');
+    expect(timer.status).toBe('running');
 
     jest.advanceTimersByTime(Number.MAX_SAFE_INTEGER);
-    expect(timer.status).toStrictEqual('running');
+    expect(timer.status).toBe('running');
 
     timer.pause();
-    expect(timer.status).toStrictEqual('paused');
+    expect(timer.status).toBe('paused');
 
     timer.cancel();
-    expect(timer.status).toStrictEqual('finished');
+    expect(timer.status).toBe('finished');
 
     expect(callback).not.toHaveBeenCalled();
   });
@@ -68,15 +68,15 @@ describe('Timer', () => {
     const timer = new Timer(1000);
 
     expect(() => timer.resume()).toThrow(MSG);
-    expect(timer.status).toStrictEqual('stopped');
+    expect(timer.status).toBe('stopped');
 
     timer.start(jest.fn());
     expect(() => timer.resume()).toThrow(MSG);
-    expect(timer.status).toStrictEqual('running');
+    expect(timer.status).toBe('running');
 
     timer.cancel();
     expect(() => timer.resume()).toThrow(MSG);
-    expect(timer.status).toStrictEqual('finished');
+    expect(timer.status).toBe('finished');
   });
 
   it('throws when trying to start when was already started', () => {
@@ -85,15 +85,15 @@ describe('Timer', () => {
     timer.start(jest.fn());
 
     expect(() => timer.start(jest.fn())).toThrow(MSG);
-    expect(timer.status).toStrictEqual('running');
+    expect(timer.status).toBe('running');
 
     timer.pause();
     expect(() => timer.start(jest.fn())).toThrow(MSG);
-    expect(timer.status).toStrictEqual('paused');
+    expect(timer.status).toBe('paused');
 
     timer.cancel();
     expect(() => timer.start(jest.fn())).toThrow(MSG);
-    expect(timer.status).toStrictEqual('finished');
+    expect(timer.status).toBe('finished');
   });
 
   it('throws when trying to pause when not running', () => {
@@ -101,16 +101,16 @@ describe('Timer', () => {
     const timer = new Timer(1000);
 
     expect(() => timer.pause()).toThrow(MSG);
-    expect(timer.status).toStrictEqual('stopped');
+    expect(timer.status).toBe('stopped');
 
     timer.start(jest.fn());
     timer.pause();
     expect(() => timer.pause()).toThrow(MSG);
-    expect(timer.status).toStrictEqual('paused');
+    expect(timer.status).toBe('paused');
 
     timer.cancel();
     expect(() => timer.pause()).toThrow(MSG);
-    expect(timer.status).toStrictEqual('finished');
+    expect(timer.status).toBe('finished');
   });
 
   it('throws when trying to cancel when not running', () => {
@@ -118,32 +118,32 @@ describe('Timer', () => {
     const timer = new Timer(1000);
 
     expect(() => timer.cancel()).toThrow(MSG);
-    expect(timer.status).toStrictEqual('stopped');
+    expect(timer.status).toBe('stopped');
 
     timer.start(jest.fn());
 
     timer.cancel();
     expect(() => timer.cancel()).toThrow(MSG);
-    expect(timer.status).toStrictEqual('finished');
+    expect(timer.status).toBe('finished');
   });
 
   it('reports status', () => {
     const timer = new Timer(1000);
     const callback = jest.fn();
 
-    expect(timer.status).toStrictEqual('stopped');
+    expect(timer.status).toBe('stopped');
 
     timer.start(callback);
-    expect(timer.status).toStrictEqual('running');
+    expect(timer.status).toBe('running');
 
     timer.pause();
-    expect(timer.status).toStrictEqual('paused');
+    expect(timer.status).toBe('paused');
 
     timer.resume();
-    expect(timer.status).toStrictEqual('running');
+    expect(timer.status).toBe('running');
 
     jest.advanceTimersByTime(1000);
-    expect(timer.status).toStrictEqual('finished');
+    expect(timer.status).toBe('finished');
 
     expect(callback).toHaveBeenCalled();
   });

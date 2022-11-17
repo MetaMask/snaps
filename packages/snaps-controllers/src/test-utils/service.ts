@@ -1,14 +1,16 @@
-import { Duplex } from 'stream';
 import { ControllerMessenger } from '@metamask/controllers';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import pump from 'pump';
+import { Duplex } from 'stream';
+
 import { ErrorMessageEvent, setupMultiplex } from '../services';
 import { MOCK_BLOCK_NUMBER } from './execution-environment';
 
 export const createService = <
   Service extends new (...args: any[]) => InstanceType<Service>,
 >(
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   ServiceClass: Service,
   options?: Omit<
     ConstructorParameters<Service>[0],

@@ -1,3 +1,4 @@
+import { decode } from '@metamask/abi-utils';
 import {
   add0x,
   bytesToHex,
@@ -5,13 +6,13 @@ import {
   isObject,
   remove0x,
 } from '@metamask/utils';
-import { decode } from '@metamask/abi-utils';
 
 // The API endpoint to get a list of functions by 4 byte signature.
 const API_ENDPOINT =
   'https://www.4byte.directory/api/v1/signatures/?hex_signature=';
 
-/* eslint-disable camelcase */
+// These fields come from an API.
+/* eslint-disable @typescript-eslint/naming-convention */
 type FourByteSignature = {
   id: number;
   created_at: string;
@@ -19,7 +20,7 @@ type FourByteSignature = {
   hex_signature: string;
   bytes_signature: string;
 };
-/* eslint-enable camelcase */
+/* eslint-enable @typescript-eslint/naming-convention */
 
 /**
  * Gets the function name(s) for the given 4 byte signature.
@@ -35,6 +36,7 @@ export const getFunctionsBySignature = async (
   const response = await fetch(`${API_ENDPOINT}${signature}`, {
     method: 'get',
     headers: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
     },
   });

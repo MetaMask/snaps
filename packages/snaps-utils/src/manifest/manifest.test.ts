@@ -1,5 +1,6 @@
 import { promises as fs } from 'fs';
 import { join } from 'path';
+
 import { readJsonFile } from '../fs';
 import * as npm from '../npm';
 import { ProgrammaticallyFixableSnapError } from '../snaps';
@@ -156,7 +157,7 @@ describe('checkManifest', () => {
 });
 
 describe('fixManifest', () => {
-  it('fixes a name mismatch in the manifest', async () => {
+  it('fixes a name mismatch in the manifest', () => {
     const files: SnapFiles = {
       manifest: getSnapManifest({ packageName: 'foo' }),
       packageJson: getPackageJson({ name: 'bar' }),
@@ -174,7 +175,7 @@ describe('fixManifest', () => {
     expect(manifest).toStrictEqual(getSnapManifest({ packageName: 'bar' }));
   });
 
-  it('fixes a version mismatch in the manifest', async () => {
+  it('fixes a version mismatch in the manifest', () => {
     const files: SnapFiles = {
       manifest: getSnapManifest({ version: '1' }),
       packageJson: getPackageJson({ version: '2' }),
@@ -192,7 +193,7 @@ describe('fixManifest', () => {
     expect(manifest).toStrictEqual(getSnapManifest({ version: '2' }));
   });
 
-  it('fixes a repository mismatch in the manifest', async () => {
+  it('fixes a repository mismatch in the manifest', () => {
     const files: SnapFiles = {
       manifest: getSnapManifest({ repository: { type: 'git', url: 'foo' } }),
       packageJson: getPackageJson({ repository: { type: 'git', url: 'bar' } }),
@@ -212,7 +213,7 @@ describe('fixManifest', () => {
     );
   });
 
-  it('fixes a shasum mismatch in the manifest', async () => {
+  it('fixes a shasum mismatch in the manifest', () => {
     const files: SnapFiles = {
       manifest: getSnapManifest({
         shasum: '29MYwcRiruhy9BEJpN/TBIhxoD3t0P4OdXztV9rW8tc=',
@@ -275,11 +276,12 @@ describe('getWritableManifest', () => {
     // or higher.
     const manifest = Object.entries(getSnapManifest())
       .reverse()
-      .reduce(
+      .reduce<SnapManifest>(
         (target, [key, value]) => ({
           ...target,
           [key]: value,
         }),
+        // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter
         {} as SnapManifest,
       );
 
