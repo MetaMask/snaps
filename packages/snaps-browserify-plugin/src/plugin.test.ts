@@ -242,10 +242,10 @@ describe('plugin', () => {
       });
       bundler.add(value);
 
-      bundler.bundle((err) => {
+      bundler.bundle((bundleError) => {
         // To test the error, the promise is resolved with the error, rather
         // than rejecting it.
-        resolve(err);
+        resolve(bundleError);
       });
     });
 
