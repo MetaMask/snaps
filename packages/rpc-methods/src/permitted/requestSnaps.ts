@@ -140,18 +140,18 @@ async function requestSnapsImplementation(
         requestedPermissions,
       );
 
-      if (!approvedPermissions || !approvedPermissions.length) {
+      if (!approvedPermissions?.length) {
         throw ethErrors.provider.userRejectedRequest({ data: req });
       }
     }
-  } catch (err) {
-    return end(err);
+  } catch (error) {
+    return end(error);
   }
 
   try {
     res.result = await handleInstallSnaps(requestedSnaps, installSnaps);
-  } catch (err) {
-    res.error = err;
+  } catch (error) {
+    res.error = error;
   }
   return end();
 }

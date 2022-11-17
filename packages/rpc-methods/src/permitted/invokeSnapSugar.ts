@@ -51,7 +51,7 @@ export function invokeSnapSugar(
     return end(error);
   }
 
-  req.method = SNAP_PREFIX + params.snapId;
+  req.method = `${SNAP_PREFIX}${params.snapId}`;
   req.params = params.request;
   return next();
 }

@@ -58,15 +58,17 @@ describe('implementation', () => {
     }));
 
     const engine = new JsonRpcEngine();
-    engine.push((req, res, next, end) =>
-      implementation(
+    engine.push((req, res, next, end) => {
+      const result = implementation(
         req as JsonRpcRequest<RequestedPermissions>,
         res as PendingJsonRpcResponse<InstallSnapsResult>,
         next,
         end,
         hooks,
-      ),
-    );
+      );
+
+      result?.catch(end);
+    });
 
     const response = (await engine.handle({
       jsonrpc: '2.0',
@@ -110,15 +112,17 @@ describe('implementation', () => {
     }));
 
     const engine = new JsonRpcEngine();
-    engine.push((req, res, next, end) =>
-      implementation(
+    engine.push((req, res, next, end) => {
+      const result = implementation(
         req as JsonRpcRequest<RequestedPermissions>,
         res as PendingJsonRpcResponse<InstallSnapsResult>,
         next,
         end,
         hooks,
-      ),
-    );
+      );
+
+      result?.catch(end);
+    });
 
     const response = (await engine.handle({
       jsonrpc: '2.0',
