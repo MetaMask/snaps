@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-shadow
 import { transformSync, Node, Visitor, template, PluginObj } from '@babel/core';
 import {
   binaryExpression,
@@ -372,7 +373,9 @@ export function postProcessBundle(
       path.replaceWith(
         templateLiteral(
           replacementQuasis,
-          replacementExpressions.filter((e) => e !== undefined),
+          replacementExpressions.filter(
+            (expression) => expression !== undefined,
+          ),
         ) as Node,
       );
 

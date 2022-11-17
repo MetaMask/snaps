@@ -1,4 +1,4 @@
-import { Json } from '@metamask/utils';
+import { Json, assertExhaustive } from '@metamask/utils';
 import deepEqual from 'fast-deep-equal';
 import { promises as fs } from 'fs';
 import pathUtils from 'path';
@@ -223,12 +223,8 @@ export function fixManifest(
       break;
 
     /* istanbul ignore next */
-    default: {
-      const failureReason: never = error.reason;
-      throw new Error(
-        `Unrecognized validation failure reason: '${failureReason}'`,
-      );
-    }
+    default:
+      assertExhaustive(error.reason);
   }
 
   return manifestCopy;
@@ -283,7 +279,8 @@ export function getWritableManifest(manifest: SnapManifest): SnapManifest {
         ...result,
         [key]: manifest[key],
       }),
-      {},
+      // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter
+      {} as SnapManifest,
     );
 }
 

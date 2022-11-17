@@ -290,6 +290,7 @@ export function isNamespacesObject(value: unknown): value is Namespaces {
  */
 export function assertIsNamespacesObject(
   value: unknown,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   ErrorWrapper?: AssertionErrorConstructor,
 ): asserts value is Namespaces {
   assertStruct(

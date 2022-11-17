@@ -1,9 +1,8 @@
 import { validateNpmSnapManifest } from './manifest/manifest';
-import { assertIsSnapManifest, SnapManifest } from './manifest/validation';
+import { assertIsSnapManifest } from './manifest/validation';
 import {
   assertIsNpmSnapPackageJson,
   NpmSnapFileNames,
-  NpmSnapPackageJson,
   SnapFiles,
   UnvalidatedSnapFiles,
 } from './types';
