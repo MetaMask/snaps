@@ -1,3 +1,4 @@
+import { fromEntries } from '@metamask/snaps-utils';
 import { promises as fs } from 'fs';
 import { join } from 'path';
 
@@ -272,20 +273,9 @@ describe('getSnapSourceCode', () => {
 describe('getWritableManifest', () => {
   it('sorts the manifest keys', () => {
     // This reverses the order of the keys in the manifest.
-    // TODO: Replace `reduce` with `Object.fromEntries` when we support ES2019
-    // or higher.
-    const manifest = Object.entries(getSnapManifest())
-      .reverse()
-      .reduce<SnapManifest>(
-        (target, [key, value]) => ({
-          ...target,
-          [key]: value,
-        }),
-        // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter
-        {} as SnapManifest,
-      );
+    const manifest = fromEntries(Object.entries(getSnapManifest()).reverse());
 
-    const writableManifest = getWritableManifest(manifest);
+    const writableManifest = getWritableManifest(manifest as SnapManifest);
     expect(Object.keys(writableManifest)).toStrictEqual(
       Object.keys(getSnapManifest()),
     );

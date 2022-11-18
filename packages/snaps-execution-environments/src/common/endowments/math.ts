@@ -14,15 +14,13 @@ function createMath() {
     rootRealmGlobal.Math,
   ) as (keyof typeof Math)[];
 
-  const math = keys.reduce<Math>((target, key) => {
+  const math = keys.reduce<Partial<Math>>((target, key) => {
     if (key === 'random') {
       return target;
     }
 
     return { ...target, [key]: rootRealmGlobal.Math[key] };
-    // It seems like there is an issue with the reduce type
-    // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter
-  }, {} as Math);
+  }, {});
 
   return {
     Math: {

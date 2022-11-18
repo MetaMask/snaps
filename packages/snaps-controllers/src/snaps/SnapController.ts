@@ -580,7 +580,6 @@ function truncateSnap(snap: Snap): TruncatedSnap {
       }
 
       return serialized;
-      // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter
     },
     {},
   );

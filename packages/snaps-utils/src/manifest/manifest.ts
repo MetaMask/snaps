@@ -272,16 +272,17 @@ export function getWritableManifest(manifest: SnapManifest): SnapManifest {
     repository ? { ...remaining, repository } : remaining,
   ) as (keyof SnapManifest)[];
 
-  return keys
+  const writableManifest = keys
     .sort((a, b) => MANIFEST_SORT_ORDER[a] - MANIFEST_SORT_ORDER[b])
-    .reduce<SnapManifest>(
+    .reduce<Partial<SnapManifest>>(
       (result, key) => ({
         ...result,
         [key]: manifest[key],
       }),
-      // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter
-      {} as SnapManifest,
+      {},
     );
+
+  return writableManifest as SnapManifest;
 }
 
 /**
