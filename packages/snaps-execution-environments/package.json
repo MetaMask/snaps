@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "test": "jest && yarn posttest",
-    "posttest": "jest-it-up",
+    "posttest": "jest-it-up --margin 0.25",
     "test:ci": "yarn test",
     "test:watch": "jest --watch",
     "lint:eslint": "eslint . --cache --ext js,ts",
