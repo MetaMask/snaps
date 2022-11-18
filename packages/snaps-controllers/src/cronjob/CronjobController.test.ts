@@ -1,15 +1,9 @@
 import {
-  SnapCaveatType,
   HandlerType,
-  deepClone,
-  TruncatedSnap,
   SemVerVersion,
+  TruncatedSnap,
 } from '@metamask/snaps-utils';
-import {
-  MOCK_ORIGIN,
-  MOCK_SNAP_ID,
-  getTruncatedSnap,
-} from '@metamask/snaps-utils/test-utils';
+import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 import { Duration, inMilliseconds } from '@metamask/utils';
 
 import { SnapEndowments } from '../snaps';
@@ -17,66 +11,8 @@ import {
   getRestrictedCronjobControllerMessenger,
   getRootCronjobControllerMessenger,
 } from '../test-utils';
+import { getCronjobPermission } from '../test-utils/cronjob';
 import { CronjobController } from './CronjobController';
-
-const MOCK_CRONJOB_PERMISSION = {
-  caveats: [
-    {
-      type: SnapCaveatType.SnapCronjob,
-      value: {
-        jobs: [
-          {
-            expression: {
-              minute: '*',
-              hour: '*',
-              dayOfMonth: '*',
-              month: '*',
-              dayOfWeek: '*',
-            },
-            request: {
-              method: 'exampleMethodOne',
-              params: ['p1'],
-            },
-          },
-          {
-            expression: '* * * * *',
-            request: {
-              method: 'exampleMethodTwo',
-              params: ['p1'],
-            },
-          },
-        ],
-      },
-    },
-  ],
-  date: 1664187844588,
-  id: 'izn0WGUO8cvq_jqvLQuQP',
-  invoker: MOCK_ORIGIN,
-  parentCapability: SnapEndowments.Cronjob,
-};
-
-const MOCK_CRONJOB_SINGLE_JOB_PERMISSION = {
-  caveats: [
-    {
-      type: SnapCaveatType.SnapCronjob,
-      value: {
-        jobs: [
-          {
-            expression: '59 6 * * *',
-            request: {
-              method: 'exampleMethod',
-              params: ['p1'],
-            },
-          },
-        ],
-      },
-    },
-  ],
-  date: 1664187844588,
-  id: 'izn0WGUO8cvq_jqvLQuQP',
-  invoker: MOCK_ORIGIN,
-  parentCapability: SnapEndowments.Cronjob,
-};
 
 const MOCK_VERSION = '1.0' as SemVerVersion;
 
@@ -94,31 +30,20 @@ describe('CronjobController', () => {
     const controllerMessenger =
       getRestrictedCronjobControllerMessenger(rootMessenger);
 
-    const callActionMock = jest
-      .spyOn(controllerMessenger, 'call')
-      .mockImplementation((method, ..._params: unknown[]) => {
-        if (method === 'SnapController:getAll') {
-          return [getTruncatedSnap()];
-        } else if (method === 'PermissionController:getPermissions') {
-          return { [SnapEndowments.Cronjob]: MOCK_CRONJOB_PERMISSION } as any;
-        }
-        return false;
-      });
-
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,
     });
 
     cronjobController.register(MOCK_SNAP_ID);
 
-    expect(callActionMock).toHaveBeenCalledWith(
+    expect(rootMessenger.call).toHaveBeenCalledWith(
       'PermissionController:getPermissions',
       MOCK_SNAP_ID,
     );
 
     jest.advanceTimersByTime(inMilliseconds(1, Duration.Minute));
 
-    expect(callActionMock).toHaveBeenNthCalledWith(
+    expect(rootMessenger.call).toHaveBeenNthCalledWith(
       4,
       'SnapController:handleRequest',
       {
@@ -140,17 +65,6 @@ describe('CronjobController', () => {
     const controllerMessenger =
       getRestrictedCronjobControllerMessenger(rootMessenger);
 
-    const callActionMock = jest
-      .spyOn(controllerMessenger, 'call')
-      .mockImplementation((method, ..._params: unknown[]) => {
-        if (method === 'SnapController:getAll') {
-          return [getTruncatedSnap()];
-        } else if (method === 'PermissionController:getPermissions') {
-          return { [SnapEndowments.Cronjob]: MOCK_CRONJOB_PERMISSION } as any;
-        }
-        return false;
-      });
-
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,
     });
@@ -160,7 +74,7 @@ describe('CronjobController', () => {
 
     jest.advanceTimersByTime(inMilliseconds(1, Duration.Minute));
 
-    expect(callActionMock).not.toHaveBeenNthCalledWith(
+    expect(rootMessenger.call).not.toHaveBeenNthCalledWith(
       4,
       'SnapController:handleRequest',
       {
@@ -182,18 +96,16 @@ describe('CronjobController', () => {
     const controllerMessenger =
       getRestrictedCronjobControllerMessenger(rootMessenger);
 
-    const callActionMock = jest
-      .spyOn(controllerMessenger, 'call')
-      .mockImplementation((method, ..._params: unknown[]) => {
-        if (method === 'SnapController:getAll') {
-          return [getTruncatedSnap()];
-        } else if (method === 'PermissionController:getPermissions') {
-          return {
-            [SnapEndowments.Cronjob]: MOCK_CRONJOB_SINGLE_JOB_PERMISSION,
-          } as any;
-        }
-        return false;
-      });
+    rootMessenger.unregisterActionHandler(
+      'PermissionController:getPermissions',
+    );
+
+    rootMessenger.registerActionHandler(
+      'PermissionController:getPermissions',
+      () => {
+        return { [SnapEndowments.Cronjob]: getCronjobPermission() };
+      },
+    );
 
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,
@@ -213,7 +125,7 @@ describe('CronjobController', () => {
 
     jest.advanceTimersByTime(inMilliseconds(24, Duration.Hour));
 
-    expect(callActionMock).toHaveBeenCalledWith(
+    expect(rootMessenger.call).toHaveBeenCalledWith(
       'SnapController:handleRequest',
       {
         snapId: MOCK_SNAP_ID,
@@ -230,38 +142,24 @@ describe('CronjobController', () => {
   });
 
   it('does not schedule cronjob that is too far in the future', () => {
-    const cronExpression = '59 23 29 2 *'; // At 11:59pm on February 29th
+    const expression = '59 23 29 2 *'; // At 11:59pm on February 29th
 
-    const MOCK_TOO_FAR_CRONJOB_PERMISSION = deepClone(
-      MOCK_CRONJOB_SINGLE_JOB_PERMISSION,
-    );
-    MOCK_TOO_FAR_CRONJOB_PERMISSION.caveats[0].value = {
-      jobs: [
-        {
-          expression: cronExpression,
-          request: {
-            method: 'exampleMethod',
-            params: ['p1'],
-          },
-        },
-      ],
-    };
     const rootMessenger = getRootCronjobControllerMessenger();
     const controllerMessenger =
       getRestrictedCronjobControllerMessenger(rootMessenger);
 
-    const callActionMock = jest
-      .spyOn(controllerMessenger, 'call')
-      .mockImplementation((method, ..._params: unknown[]) => {
-        if (method === 'SnapController:getAll') {
-          return [getTruncatedSnap()];
-        } else if (method === 'PermissionController:getPermissions') {
-          return {
-            [SnapEndowments.Cronjob]: MOCK_TOO_FAR_CRONJOB_PERMISSION,
-          } as any;
-        }
-        return false;
-      });
+    rootMessenger.unregisterActionHandler(
+      'PermissionController:getPermissions',
+    );
+
+    rootMessenger.registerActionHandler(
+      'PermissionController:getPermissions',
+      () => {
+        return {
+          [SnapEndowments.Cronjob]: getCronjobPermission({ expression }),
+        };
+      },
+    );
 
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,
@@ -269,14 +167,14 @@ describe('CronjobController', () => {
 
     cronjobController.register(MOCK_SNAP_ID);
 
-    expect(callActionMock).toHaveBeenCalledWith(
+    expect(rootMessenger.call).toHaveBeenCalledWith(
       'PermissionController:getPermissions',
       MOCK_SNAP_ID,
     );
 
     jest.runOnlyPendingTimers();
 
-    expect(callActionMock).not.toHaveBeenCalledWith(
+    expect(rootMessenger.call).not.toHaveBeenCalledWith(
       'SnapController:handleRequest',
       {
         snapId: MOCK_SNAP_ID,
@@ -297,17 +195,6 @@ describe('CronjobController', () => {
     const controllerMessenger =
       getRestrictedCronjobControllerMessenger(rootMessenger);
 
-    const callActionMock = jest.spyOn(controllerMessenger, 'call');
-
-    callActionMock.mockImplementation((method, ..._params: unknown[]) => {
-      if (method === 'SnapController:getAll') {
-        return [getTruncatedSnap()];
-      } else if (method === 'PermissionController:getPermissions') {
-        return { [SnapEndowments.Cronjob]: MOCK_CRONJOB_PERMISSION } as any;
-      }
-      return false;
-    });
-
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,
     });
@@ -325,7 +212,7 @@ describe('CronjobController', () => {
 
     jest.advanceTimersByTime(inMilliseconds(1, Duration.Minute));
 
-    expect(callActionMock).toHaveBeenNthCalledWith(
+    expect(rootMessenger.call).toHaveBeenNthCalledWith(
       4,
       'SnapController:handleRequest',
       {
@@ -347,17 +234,6 @@ describe('CronjobController', () => {
     const controllerMessenger =
       getRestrictedCronjobControllerMessenger(rootMessenger);
 
-    const callActionMock = jest.spyOn(controllerMessenger, 'call');
-
-    callActionMock.mockImplementation((method, ..._params: unknown[]) => {
-      if (method === 'SnapController:getAll') {
-        return [getTruncatedSnap()];
-      } else if (method === 'PermissionController:getPermissions') {
-        return { [SnapEndowments.Cronjob]: MOCK_CRONJOB_PERMISSION } as any;
-      }
-      return false;
-    });
-
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,
     });
@@ -378,7 +254,7 @@ describe('CronjobController', () => {
 
     jest.advanceTimersByTime(inMilliseconds(1, Duration.Minute));
 
-    expect(callActionMock).not.toHaveBeenCalledWith(
+    expect(rootMessenger.call).not.toHaveBeenCalledWith(
       'SnapController:handleRequest',
       {
         snapId: MOCK_SNAP_ID,
@@ -395,33 +271,9 @@ describe('CronjobController', () => {
   });
 
   it('handles SnapUpdated event', () => {
-    const MOCK_ANOTHER_CRONJOB_PERMISSION = deepClone(MOCK_CRONJOB_PERMISSION);
-    MOCK_ANOTHER_CRONJOB_PERMISSION.caveats[0].value = {
-      jobs: [
-        {
-          expression: '*/15 * * * *',
-          request: {
-            method: 'exampleMethodOne',
-            params: ['p1'],
-          },
-        },
-      ],
-    };
-
     const rootMessenger = getRootCronjobControllerMessenger();
     const controllerMessenger =
       getRestrictedCronjobControllerMessenger(rootMessenger);
-
-    const callActionMock = jest.spyOn(controllerMessenger, 'call');
-
-    callActionMock.mockImplementation((method, ..._params: unknown[]) => {
-      if (method === 'SnapController:getAll') {
-        return [getTruncatedSnap()];
-      } else if (method === 'PermissionController:getPermissions') {
-        return { [SnapEndowments.Cronjob]: MOCK_CRONJOB_PERMISSION } as any;
-      }
-      return false;
-    });
 
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,
@@ -443,7 +295,7 @@ describe('CronjobController', () => {
 
     jest.advanceTimersByTime(inMilliseconds(15, Duration.Minute));
 
-    expect(callActionMock).toHaveBeenNthCalledWith(
+    expect(rootMessenger.call).toHaveBeenNthCalledWith(
       5,
       'SnapController:handleRequest',
       {
@@ -465,24 +317,13 @@ describe('CronjobController', () => {
     const controllerMessenger =
       getRestrictedCronjobControllerMessenger(rootMessenger);
 
-    const callActionMock = jest
-      .spyOn(controllerMessenger, 'call')
-      .mockImplementation((method, ..._params: unknown[]) => {
-        if (method === 'SnapController:getAll') {
-          return [getTruncatedSnap()];
-        } else if (method === 'PermissionController:getPermissions') {
-          return { [SnapEndowments.Cronjob]: MOCK_CRONJOB_PERMISSION } as any;
-        }
-        return false;
-      });
-
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,
     });
 
     cronjobController.register(MOCK_SNAP_ID);
 
-    expect(callActionMock).toHaveBeenCalledWith(
+    expect(rootMessenger.call).toHaveBeenCalledWith(
       'PermissionController:getPermissions',
       MOCK_SNAP_ID,
     );
@@ -491,7 +332,7 @@ describe('CronjobController', () => {
 
     jest.advanceTimersByTime(inMilliseconds(1, Duration.Minute));
 
-    expect(callActionMock).not.toHaveBeenCalledWith(
+    expect(rootMessenger.call).not.toHaveBeenCalledWith(
       'SnapController:handleRequest',
       {
         snapId: MOCK_SNAP_ID,

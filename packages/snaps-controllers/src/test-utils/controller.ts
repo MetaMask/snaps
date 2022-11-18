@@ -1,5 +1,8 @@
 import { ControllerMessenger } from '@metamask/controllers';
-import { getPersistedSnapObject } from '@metamask/snaps-utils/test-utils';
+import {
+  getPersistedSnapObject,
+  getTruncatedSnap,
+} from '@metamask/snaps-utils/test-utils';
 
 import {
   CronjobControllerActions,
@@ -15,6 +18,7 @@ import {
   SnapControllerEvents,
   SnapEndowments,
 } from '../snaps';
+import { MOCK_CRONJOB_PERMISSION } from './cronjob';
 import { getNodeEES, getNodeEESMessenger } from './execution-environment';
 
 export const getControllerMessenger = () =>
@@ -212,11 +216,16 @@ export const getPersistedSnapsState = (
 };
 
 // Mock controller messenger for Cronjob Controller
-export const getRootCronjobControllerMessenger = () =>
-  new ControllerMessenger<
+export const getRootCronjobControllerMessenger = () => {
+  const messenger = new ControllerMessenger<
     CronjobControllerActions | AllowedActions,
     CronjobControllerEvents | AllowedEvents
   >();
+
+  jest.spyOn(messenger, 'call');
+
+  return messenger;
+};
 
 export const getRestrictedCronjobControllerMessenger = (
   messenger: ReturnType<
@@ -236,24 +245,35 @@ export const getRestrictedCronjobControllerMessenger = (
       'SnapController:snapRemoved',
     ],
     allowedActions: [
+      'PermissionController:hasPermission',
       'PermissionController:getPermissions',
+      'SnapController:getAll',
       'SnapController:handleRequest',
     ],
   });
 
   if (mocked) {
-    jest
-      .spyOn(cronjobControllerMessenger, 'call')
-      .mockImplementation((method, ...args) => {
-        // Return false for long-running by default, and true for everything else.
-        if (
-          method === 'PermissionController:hasPermission' &&
-          args[1] === SnapEndowments.LongRunning
-        ) {
-          return false;
-        }
-        return true;
-      });
+    messenger.registerActionHandler(
+      'PermissionController:hasPermission',
+      (permission) => {
+        return permission !== SnapEndowments.LongRunning;
+      },
+    );
+
+    messenger.registerActionHandler(
+      'PermissionController:getPermissions',
+      () => {
+        return { [SnapEndowments.Cronjob]: MOCK_CRONJOB_PERMISSION };
+      },
+    );
+
+    messenger.registerActionHandler('SnapController:getAll', () => {
+      return [getTruncatedSnap()];
+    });
+
+    messenger.registerActionHandler('SnapController:handleRequest', async () =>
+      Promise.resolve(),
+    );
   }
 
   return cronjobControllerMessenger;
