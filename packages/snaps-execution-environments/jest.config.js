@@ -8,8 +8,8 @@ module.exports = deepmerge(baseConfig, {
     global: {
       branches: 89.78,
       functions: 90.51,
-      lines: 88.47,
-      statements: 88.47,
+      lines: 88.46,
+      statements: 88.46,
     },
   },
   testEnvironment: '<rootDir>/jest.environment.js',
