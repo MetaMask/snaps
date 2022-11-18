@@ -7,7 +7,8 @@ import {
   validRange as validSemVerRange,
 } from 'semver';
 import { is, refine, string, Struct, validate } from 'superstruct';
-import Opaque from 'ts-opaque';
+
+import { Opaque } from './types';
 
 export const DEFAULT_REQUESTED_SNAP_VERSION = '*' as SemVerRange;
 
@@ -31,7 +32,7 @@ export const DEFAULT_REQUESTED_SNAP_VERSION = '*' as SemVerRange;
  * @see {@link isValidSemVerRange}
  */
 export type SemVerRange = Opaque<string, typeof semVerRange>;
-const semVerRange = Symbol('Opaque branding for SemVerRange type');
+declare const semVerRange: unique symbol;
 
 /**
  * {@link https://codemix.com/opaque-types-in-javascript/ Opaque} type for singular SemVer version.
@@ -53,7 +54,7 @@ const semVerRange = Symbol('Opaque branding for SemVerRange type');
  * @see {@link isValidSemVerVersion}
  */
 export type SemVerVersion = Opaque<string, typeof semVerVersion>;
-const semVerVersion = Symbol('Opaque branding for SemVerVersion type');
+declare const semVerVersion: unique symbol;
 
 /**
  * A struct for validating a version string.
