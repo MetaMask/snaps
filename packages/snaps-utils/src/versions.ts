@@ -196,7 +196,7 @@ export function getTargetVersion(
  */
 export function resolveVersionRange(
   version?: Json,
-): [undefined, SemVerRange] | [Error, undefined] {
+): [error: undefined, range: SemVerRange] | [error: Error, range: undefined] {
   if (version === undefined || version === 'latest') {
     return [undefined, DEFAULT_REQUESTED_SNAP_VERSION];
   }
