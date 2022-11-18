@@ -8,10 +8,7 @@ import {
   getTruncatedSnap,
 } from '@metamask/snaps-utils/test-utils';
 
-import {
-  CronjobControllerActions,
-  CronjobControllerEvents,
-} from '../cronjob/CronjobController';
+import { CronjobControllerActions, CronjobControllerEvents } from '../cronjob';
 import {
   AllowedActions,
   AllowedEvents,
@@ -24,6 +21,8 @@ import {
 } from '../snaps';
 import { MOCK_CRONJOB_PERMISSION } from './cronjob';
 import { getNodeEES, getNodeEESMessenger } from './execution-environment';
+
+const asyncNoOp = async () => Promise.resolve();
 
 // These types are extracted from `@metamask/controllers`. Ideally they would
 // be exported from there, but they are not.
@@ -49,10 +48,10 @@ type ExtractActionResponse<Action, T> = Action extends {
  * A controller messenger, that allows overwriting the action handlers, without
  * the need to call `unregisterActionHandler` first.
  */
-class MockControllerMessenger<
-  Actions extends ActionConstraint,
-  Events extends EventConstraint,
-> extends ControllerMessenger<Actions, Events> {
+export class MockControllerMessenger<
+  Action extends ActionConstraint,
+  Event extends EventConstraint,
+> extends ControllerMessenger<Action, Event> {
   /**
    * Registers an action handler for the given action type. If an action handler
    * already exists for the given action type, it will be overwritten.
@@ -60,26 +59,76 @@ class MockControllerMessenger<
    * @param actionType - The action type to register the handler for.
    * @param handler - The action handler to register.
    */
-  registerActionHandler<T extends Actions['type']>(
+  registerActionHandler<T extends Action['type']>(
     actionType: T,
-    handler: ActionHandler<Actions, T>,
+    handler: ActionHandler<Action, T>,
   ) {
     super.unregisterActionHandler(actionType);
     super.registerActionHandler(actionType, handler);
   }
 }
 
-export const getControllerMessenger = () =>
-  new ControllerMessenger<
+export const getControllerMessenger = () => {
+  const messenger = new MockControllerMessenger<
     SnapControllerActions | AllowedActions,
     SnapControllerEvents | AllowedEvents
   >();
+
+  messenger.registerActionHandler(
+    'PermissionController:hasPermission',
+    (permission) => {
+      return permission !== SnapEndowments.LongRunning;
+    },
+  );
+
+  messenger.registerActionHandler(
+    'PermissionController:hasPermissions',
+    (permission) => {
+      return permission !== SnapEndowments.LongRunning;
+    },
+  );
+
+  messenger.registerActionHandler(
+    'ApprovalController:addRequest',
+    async (request) => {
+      return Promise.resolve(request.requestData);
+    },
+  );
+
+  messenger.registerActionHandler(
+    'PermissionController:getEndowments',
+    async () => {
+      return Promise.resolve(['ethereum']);
+    },
+  );
+
+  messenger.registerActionHandler(
+    'PermissionController:grantPermissions',
+    () => ({}),
+  );
+
+  messenger.registerActionHandler(
+    'PermissionController:revokeAllPermissions',
+    () => ({}),
+  );
+
+  messenger.registerActionHandler(
+    'PermissionController:revokePermissionForAllSubjects',
+    () => ({}),
+  );
+
+  messenger.registerActionHandler('ExecutionService:executeSnap', asyncNoOp);
+  messenger.registerActionHandler('ExecutionService:terminateSnap', asyncNoOp);
+
+  jest.spyOn(messenger, 'call');
+
+  return messenger;
+};
 
 export const getSnapControllerMessenger = (
   messenger: ReturnType<
     typeof getControllerMessenger
   > = getControllerMessenger(),
-  mocked = true,
 ) => {
   const snapControllerMessenger = messenger.getRestricted<
     'SnapController',
@@ -111,6 +160,7 @@ export const getSnapControllerMessenger = (
       'PermissionController:getPermissions',
       'PermissionController:grantPermissions',
       'PermissionController:revokeAllPermissions',
+      'PermissionController:revokePermissionForAllSubjects',
       'SnapController:get',
       'SnapController:handleRequest',
       'SnapController:getSnapState',
@@ -130,22 +180,7 @@ export const getSnapControllerMessenger = (
     ],
   });
 
-  if (mocked) {
-    jest
-      .spyOn(snapControllerMessenger, 'call')
-      .mockImplementation((method, ...args): any => {
-        // Return false for long-running by default, and true for everything else.
-        if (
-          method === 'PermissionController:hasPermission' &&
-          args[1] === SnapEndowments.LongRunning
-        ) {
-          return false;
-        } else if (method === 'ApprovalController:addRequest') {
-          return (args[0] as { requestData: unknown }).requestData;
-        }
-        return true;
-      });
-  }
+  jest.spyOn(snapControllerMessenger, 'call');
 
   return snapControllerMessenger;
 };
@@ -199,30 +234,11 @@ export type GetSnapControllerWithEESOptionsParam = Omit<
   'messenger'
 > & { rootMessenger?: ReturnType<typeof getControllerMessenger> };
 
-export const getSnapControllerWithEESOptions = (
-  opts: GetSnapControllerWithEESOptionsParam = {},
-) => {
-  const { rootMessenger = getControllerMessenger() } = opts;
-  const snapControllerMessenger = getSnapControllerMessenger(
-    rootMessenger,
-    false,
-  );
-  const originalCall = snapControllerMessenger.call.bind(
-    snapControllerMessenger,
-  );
-
-  jest
-    .spyOn(snapControllerMessenger, 'call')
-    .mockImplementation((method, ...args) => {
-      // Mock long running permission, call actual implementation for everything else
-      if (
-        method === 'PermissionController:hasPermission' &&
-        args[1] === SnapEndowments.LongRunning
-      ) {
-        return false;
-      }
-      return (originalCall as any)(method, ...args);
-    });
+export const getSnapControllerWithEESOptions = ({
+  rootMessenger = getControllerMessenger(),
+  ...options
+}: GetSnapControllerWithEESOptionsParam = {}) => {
+  const snapControllerMessenger = getSnapControllerMessenger(rootMessenger);
 
   return {
     environmentEndowmentPermissions: [],
@@ -231,8 +247,8 @@ export const getSnapControllerWithEESOptions = (
       .fn()
       .mockImplementation((snapId, appKeyType) => `${appKeyType}:${snapId}`),
     messenger: snapControllerMessenger,
-    ...opts,
     rootMessenger,
+    ...options,
   } as SnapControllerConstructorParams & {
     rootMessenger: ReturnType<typeof getControllerMessenger>;
   };
@@ -248,6 +264,7 @@ export const getSnapControllerWithEES = (
 ) => {
   const _service =
     service ?? getNodeEES(getNodeEESMessenger(options.rootMessenger));
+
   const controller = new SnapController(options);
   return [controller, _service] as const;
 };
@@ -319,9 +336,7 @@ export const getRestrictedCronjobControllerMessenger = (
       return [getTruncatedSnap()];
     });
 
-    messenger.registerActionHandler('SnapController:handleRequest', async () =>
-      Promise.resolve(),
-    );
+    messenger.registerActionHandler('SnapController:handleRequest', asyncNoOp);
   }
 
   return cronjobControllerMessenger;
