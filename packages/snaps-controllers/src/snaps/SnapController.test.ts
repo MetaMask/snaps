@@ -47,6 +47,7 @@ import {
   MOCK_BLOCK_NUMBER,
   MOCK_NAMESPACES,
   PERSISTED_MOCK_KEYRING_SNAP,
+  sleep,
 } from '../test-utils';
 import { delay } from '../utils';
 import { SnapEndowments } from './endowments';
@@ -388,8 +389,8 @@ describe('SnapController', () => {
   it('adds a snap and uses its JSON-RPC API and then get stopped from idling too long', async () => {
     const [snapController, service] = getSnapControllerWithEES(
       getSnapControllerWithEESOptions({
-        idleTimeCheckInterval: 50,
-        maxIdleTime: 100,
+        idleTimeCheckInterval: 10,
+        maxIdleTime: 50,
         state: {
           snaps: getPersistedSnapsState(),
         },
@@ -411,7 +412,7 @@ describe('SnapController', () => {
       },
     });
 
-    await delay(300);
+    await delay(100);
 
     expect(snapController.isRunning(snap.id)).toBe(false);
     snapController.destroy();
@@ -421,17 +422,22 @@ describe('SnapController', () => {
 
   it('terminates a snap even if connection to worker has failed', async () => {
     const rootMessenger = getControllerMessenger();
-    getSnapControllerMessenger(rootMessenger);
-
     const [snapController, service] = getSnapControllerWithEES(
       getSnapControllerWithEESOptions({
         rootMessenger,
-        idleTimeCheckInterval: 50,
-        maxIdleTime: 100,
+        idleTimeCheckInterval: 10,
+        maxIdleTime: 50,
         state: {
           snaps: getPersistedSnapsState(),
         },
       }),
+    );
+
+    rootMessenger.registerActionHandler(
+      'PermissionController:hasPermission',
+      () => {
+        return false;
+      },
     );
 
     const snap = snapController.getExpect(MOCK_SNAP_ID);
@@ -441,10 +447,7 @@ describe('SnapController', () => {
     snapController.maxRequestTime = 50;
 
     // @ts-expect-error `command` is a private property.
-    service.command = async () =>
-      new Promise((resolve) => {
-        setTimeout(resolve, 2000);
-      });
+    service.command = async () => sleep(100);
 
     await expect(
       snapController.handleRequest({
@@ -533,21 +536,6 @@ describe('SnapController', () => {
       }),
     );
 
-    const messengerCallMock = jest
-      .spyOn(messenger, 'call')
-      .mockImplementation((method, ...args) => {
-        if (method === 'PermissionController:getPermissions') {
-          return {};
-        } else if (
-          method === 'PermissionController:hasPermission' &&
-          args[1] === SnapEndowments.LongRunning
-        ) {
-          return false;
-        } else if (method === 'ApprovalController:addRequest') {
-          return (args[0] as { requestData: string }).requestData;
-        }
-        return true;
-      });
     jest.spyOn(messenger, 'publish');
 
     jest
@@ -588,15 +576,15 @@ describe('SnapController', () => {
       [MOCK_SNAP_ID]: expectedSnapObject,
     });
 
-    expect(messengerCallMock).toHaveBeenCalledTimes(5);
-    expect(messengerCallMock).toHaveBeenNthCalledWith(
+    expect(messenger.call).toHaveBeenCalledTimes(5);
+    expect(messenger.call).toHaveBeenNthCalledWith(
       1,
       'PermissionController:hasPermission',
       MOCK_ORIGIN,
       expectedSnapObject.permissionName,
     );
 
-    expect(messengerCallMock).toHaveBeenNthCalledWith(
+    expect(messenger.call).toHaveBeenNthCalledWith(
       2,
       'ApprovalController:addRequest',
       expect.objectContaining({
@@ -613,19 +601,19 @@ describe('SnapController', () => {
       true,
     );
 
-    expect(messengerCallMock).toHaveBeenNthCalledWith(
+    expect(messenger.call).toHaveBeenNthCalledWith(
       3,
       'PermissionController:grantPermissions',
       expect.any(Object),
     );
 
-    expect(messengerCallMock).toHaveBeenNthCalledWith(
+    expect(messenger.call).toHaveBeenNthCalledWith(
       4,
       'ExecutionService:executeSnap',
       expect.any(Object),
     );
 
-    expect(messengerCallMock).toHaveBeenNthCalledWith(
+    expect(messenger.call).toHaveBeenNthCalledWith(
       5,
       'PermissionController:hasPermission',
       MOCK_SNAP_ID,
@@ -871,7 +859,9 @@ describe('SnapController', () => {
   });
 
   it('times out an RPC request that takes too long', async () => {
+    const rootMessenger = getControllerMessenger();
     const options = getSnapControllerWithEESOptions({
+      rootMessenger,
       idleTimeCheckInterval: 30000,
       maxIdleTime: 160000,
       // Note that we are using the default maxRequestTime
@@ -880,33 +870,25 @@ describe('SnapController', () => {
       },
     });
 
-    jest
-      .spyOn(options.messenger, 'call')
-      .mockImplementation((method, ...args) => {
-        // override handler to take too long to return
-        if (method === 'ExecutionService:handleRpcRequest') {
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              resolve(undefined);
-            }, 300);
-          });
-        } else if (
-          method === 'PermissionController:hasPermission' &&
-          args[1] === SnapEndowments.LongRunning
-        ) {
-          return false;
-        }
-        return true;
-      });
     const [snapController, service] = getSnapControllerWithEES(options);
-
     const snap = snapController.getExpect(MOCK_SNAP_ID);
+
+    rootMessenger.registerActionHandler(
+      'ExecutionService:handleRpcRequest',
+      async () => await sleep(100),
+    );
+
+    rootMessenger.registerActionHandler(
+      'PermissionController:hasPermission',
+      () => false,
+    );
 
     await snapController.startSnap(snap.id);
     expect(snapController.state.snaps[snap.id].status).toBe('running');
 
     // We set the maxRequestTime to a low enough value for it to time out
-    (snapController as any).maxRequestTime = 50;
+    // @ts-expect-error - `maxRequestTime` is a private property.
+    snapController.maxRequestTime = 50;
 
     await expect(
       snapController.handleRequest({
@@ -967,7 +949,7 @@ describe('SnapController', () => {
               networkVersion: '1',
             };
           } else if (req.method === 'eth_blockNumber') {
-            await new Promise((resolve) => setTimeout(resolve, 400));
+            await sleep(100);
             res.result = MOCK_BLOCK_NUMBER;
           }
         });
@@ -980,7 +962,8 @@ describe('SnapController', () => {
     expect(snapController.state.snaps[snap.id].status).toBe('running');
 
     // Max request time should be shorter than eth_blockNumber takes to respond
-    (snapController as any).maxRequestTime = 300;
+    // @ts-expect-error - `maxRequestTime` is a private property.
+    snapController.maxRequestTime = 50;
 
     expect(
       await snapController.handleRequest({
@@ -1047,8 +1030,8 @@ describe('SnapController', () => {
               networkVersion: '1',
             };
           } else if (req.method === 'eth_blockNumber') {
-            await new Promise((resolve) => setTimeout(resolve, 400));
-            res.result = '0xa70e77';
+            await sleep(100);
+            res.result = MOCK_BLOCK_NUMBER;
           }
         });
         engine.push(middleware);
@@ -1060,7 +1043,8 @@ describe('SnapController', () => {
     expect(snapController.state.snaps[snap.id].status).toBe('running');
 
     // Max request time should be shorter than eth_blockNumber takes to respond
-    (snapController as any).maxRequestTime = 300;
+    // @ts-expect-error - `maxRequestTime` is a private property.
+    snapController.maxRequestTime = 50;
 
     expect(
       await snapController.handleRequest({
@@ -1074,14 +1058,16 @@ describe('SnapController', () => {
           id: 1,
         },
       }),
-    ).toBe(21896430);
+    ).toBe(21896426);
 
     snapController.destroy();
     await service.terminateAllSnaps();
   });
 
   it('does not time out snaps that are permitted to be long-running', async () => {
+    const rootMessenger = getControllerMessenger();
     const options = getSnapControllerWithEESOptions({
+      rootMessenger,
       idleTimeCheckInterval: 30000,
       maxIdleTime: 160000,
       // Note that we are using the default maxRequestTime
@@ -1090,20 +1076,15 @@ describe('SnapController', () => {
       },
     });
 
-    jest
-      .spyOn(options.messenger, 'call')
-      .mockImplementation((method, ..._args: unknown[]) => {
-        // override handler to take too long to return
-        if (method === 'ExecutionService:handleRpcRequest') {
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              resolve(undefined);
-            }, 300);
-          });
-        }
-        // Return true for everything here, so we signal that we have the long-running permission
-        return true;
-      });
+    rootMessenger.registerActionHandler(
+      'ExecutionService:handleRpcRequest',
+      async () => await sleep(100),
+    );
+
+    rootMessenger.registerActionHandler(
+      'PermissionController:hasPermission',
+      () => true,
+    );
 
     const [snapController, service] = getSnapControllerWithEES(options);
 
@@ -1112,8 +1093,10 @@ describe('SnapController', () => {
     await snapController.startSnap(snap.id);
     expect(snapController.state.snaps[snap.id].status).toBe('running');
 
-    // We set the maxRequestTime to a low enough value for it to time out if it werent a long running snap
-    (snapController as any).maxRequestTime = 50;
+    // We set the maxRequestTime to a low enough value for it to time out if it
+    // weren't a long-running snap.
+    // @ts-expect-error - `maxRequestTime` is a private property.
+    snapController.maxRequestTime = 50;
 
     const handlerPromise = snapController.handleRequest({
       snapId: snap.id,
@@ -1127,16 +1110,12 @@ describe('SnapController', () => {
       },
     });
 
-    const timeoutPromise = new Promise<boolean>((resolve) => {
-      setTimeout(() => {
-        resolve(true);
-      }, 200);
-    });
+    const timeoutPromise = sleep(200);
 
     expect(
       // Race the promises to check that handlerPromise does not time out
       await Promise.race([handlerPromise, timeoutPromise]),
-    ).toBe(true);
+    ).toBe('test1');
     expect(snapController.state.snaps[snap.id].status).toBe('running');
 
     snapController.destroy();
@@ -1144,7 +1123,8 @@ describe('SnapController', () => {
   });
 
   it('times out on stuck starting snap', async () => {
-    const messenger = getSnapControllerMessenger();
+    const rootMessenger = getControllerMessenger();
+    const messenger = getSnapControllerMessenger(rootMessenger);
     const snapController = getSnapController(
       getSnapControllerOptions({
         messenger,
@@ -1157,18 +1137,15 @@ describe('SnapController', () => {
 
     const snap = snapController.getExpect(MOCK_SNAP_ID);
 
-    jest
-      .spyOn(messenger, 'call')
-      .mockImplementation((method, ..._args: unknown[]) => {
-        if (method === 'ExecutionService:executeSnap') {
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              resolve(undefined);
-            }, 300);
-          });
-        }
-        return false;
-      });
+    rootMessenger.registerActionHandler(
+      'ExecutionService:executeSnap',
+      async () => await sleep(100),
+    );
+
+    rootMessenger.registerActionHandler(
+      'PermissionController:hasPermission',
+      () => false,
+    );
 
     await expect(snapController.startSnap(snap.id)).rejects.toThrow(
       /request timed out/u,
@@ -1179,11 +1156,14 @@ describe('SnapController', () => {
 
   it('does not kill snaps with open sessions', async () => {
     const sourceCode = `
-    module.exports.onRpcRequest = () => 'foo bar';
+      module.exports.onRpcRequest = () => 'foo bar';
     `;
+
+    const rootMessenger = getControllerMessenger();
     const options = getSnapControllerWithEESOptions({
-      idleTimeCheckInterval: 100,
-      maxIdleTime: 500,
+      rootMessenger,
+      idleTimeCheckInterval: 10,
+      maxIdleTime: 50,
       state: {
         snaps: getPersistedSnapsState(
           getPersistedSnapObject({
@@ -1199,10 +1179,15 @@ describe('SnapController', () => {
 
     const snap = snapController.getExpect(MOCK_SNAP_ID);
 
+    rootMessenger.registerActionHandler(
+      'PermissionController:hasPermission',
+      () => true,
+    );
+
     await snapController.startSnap(snap.id);
     expect(snapController.state.snaps[snap.id].status).toBe('running');
 
-    options.rootMessenger.call(
+    rootMessenger.call(
       'SnapController:incrementActiveReferences',
       MOCK_SNAP_ID,
     );
@@ -1221,9 +1206,7 @@ describe('SnapController', () => {
       }),
     ).toBe('foo bar');
 
-    await new Promise<void>((resolve) => {
-      setTimeout(() => resolve(), 501);
-    });
+    await sleep(100);
 
     // Should still be running after idle timeout
     expect(snapController.state.snaps[snap.id].status).toBe('running');
@@ -1233,9 +1216,7 @@ describe('SnapController', () => {
       MOCK_SNAP_ID,
     );
 
-    await new Promise<void>((resolve) => {
-      setTimeout(() => resolve(), 101);
-    });
+    await sleep(100);
 
     // Should be terminated by idle timeout now
     expect(snapController.state.snaps[snap.id].status).toBe('stopped');
@@ -1244,22 +1225,9 @@ describe('SnapController', () => {
     await service.terminateAllSnaps();
   });
 
-  it('shouldnt time out a long running snap on start up', async () => {
-    const messenger = getSnapControllerMessenger();
-    jest
-      .spyOn(messenger, 'call')
-      .mockImplementation((method, ..._args: unknown[]) => {
-        // Make snap take 300 ms to execute
-        if (method === 'ExecutionService:executeSnap') {
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              resolve(undefined);
-            }, 300);
-          });
-        }
-        // Return true for everything here, so we signal that we have the long-running permission
-        return true;
-      });
+  it(`shouldn't time out a long running snap on start up`, async () => {
+    const rootMessenger = getControllerMessenger();
+    const messenger = getSnapControllerMessenger(rootMessenger);
     const snapController = getSnapController(
       getSnapControllerOptions({
         messenger,
@@ -1270,15 +1238,20 @@ describe('SnapController', () => {
       }),
     );
 
+    rootMessenger.registerActionHandler(
+      'PermissionController:hasPermission',
+      () => true,
+    );
+
+    rootMessenger.registerActionHandler(
+      'ExecutionService:executeSnap',
+      async () => await sleep(300),
+    );
+
     const snap = snapController.getExpect(MOCK_SNAP_ID);
 
     const startPromise = snapController.startSnap(snap.id);
-
-    const timeoutPromise = new Promise<boolean>((resolve) => {
-      setTimeout(() => {
-        resolve(true);
-      }, 200);
-    });
+    const timeoutPromise = sleep(50).then(() => true);
 
     expect(
       // Race the promises to check that startPromise does not time out
@@ -1294,32 +1267,24 @@ describe('SnapController', () => {
       rootMessenger,
       idleTimeCheckInterval: 30000,
       maxIdleTime: 160000,
-      maxRequestTime: 1000,
+      maxRequestTime: 300,
       state: {
         snaps: getPersistedSnapsState(),
       },
     });
-    jest
-      .spyOn(options.messenger, 'call')
-      .mockImplementation((method, ...args) => {
-        // override handler to take too long to return
-        if (method === 'ExecutionService:handleRpcRequest') {
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              resolve(undefined);
-            }, 30000);
-          });
-        } else if (
-          method === 'PermissionController:hasPermission' &&
-          args[1] === SnapEndowments.LongRunning
-        ) {
-          return false;
-        }
-        return true;
-      });
-    const [snapController, service] = getSnapControllerWithEES(options);
 
+    const [snapController, service] = getSnapControllerWithEES(options);
     const snap = snapController.getExpect(MOCK_SNAP_ID);
+
+    rootMessenger.registerActionHandler(
+      'ExecutionService:handleRpcRequest',
+      async () => await sleep(30000),
+    );
+
+    rootMessenger.registerActionHandler(
+      'PermissionController:hasPermission',
+      () => false,
+    );
 
     await snapController.startSnap(snap.id);
     expect(snapController.state.snaps[snap.id].status).toBe('running');
