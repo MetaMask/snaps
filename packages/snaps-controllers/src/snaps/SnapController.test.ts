@@ -32,6 +32,7 @@ import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import pump from 'pump';
 import { Duplex } from 'stream';
+
 import { NodeThreadExecutionService, setupMultiplex } from '../services';
 import {
   ExecutionEnvironmentStub,

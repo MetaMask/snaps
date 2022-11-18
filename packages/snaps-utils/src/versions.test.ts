@@ -1,4 +1,5 @@
 import { assert } from '@metamask/utils';
+
 import { getSnapPrefix } from './snaps';
 import { SnapIdPrefixes } from './types';
 import {
@@ -33,9 +34,9 @@ describe('resolveVersion', () => {
   });
 
   it.each([null, 1, {}, Error])('returns error on invalid input', (value) => {
-    const [err, result] = resolveVersionRange(value);
-    assert(err !== undefined);
-    expect(err.message).toMatch('Expected a string, but received: ');
+    const [error, result] = resolveVersionRange(value);
+    assert(error !== undefined);
+    expect(error.message).toMatch('Expected a string, but received: ');
     expect(result).toBeUndefined();
   });
 });

@@ -1,4 +1,3 @@
-import { SemVerVersion } from '../versions';
 import { SnapManifest } from '../manifest/validation';
 import {
   Chain,
@@ -7,8 +6,9 @@ import {
   SessionNamespace,
 } from '../namespace';
 import { NpmSnapPackageJson } from '../types';
-import { DEFAULT_SNAP_SHASUM } from './snap';
+import { SemVerVersion } from '../versions';
 import { MakeSemVer } from './common';
+import { DEFAULT_SNAP_SHASUM } from './snap';
 
 type GetSnapManifestOptions = Partial<MakeSemVer<SnapManifest>> & {
   shasum?: string;

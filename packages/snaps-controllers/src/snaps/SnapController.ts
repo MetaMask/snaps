@@ -1536,8 +1536,8 @@ export class SnapController extends BaseController<
     await Promise.all(
       Object.entries(requestedSnaps).map(
         async ([snapId, { version: rawVersion }]) => {
-          const [err, version] = resolveVersionRange(rawVersion);
-          if (err) {
+          const [error, version] = resolveVersionRange(rawVersion);
+          if (error) {
             result[snapId] = {
               error: ethErrors.rpc.invalidParams(
                 `The "version" field must be a valid SemVer version range if specified. Received: "${version}".`,

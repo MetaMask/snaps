@@ -93,9 +93,9 @@ async function fetchNpmTarball(
   }
 
   const versions = Object.keys((packageMetadata as any)?.versions ?? {}).map(
-    (v) => {
-      assertIsSemVerVersion(v);
-      return v;
+    (version) => {
+      assertIsSemVerVersion(version);
+      return version;
     },
   );
 

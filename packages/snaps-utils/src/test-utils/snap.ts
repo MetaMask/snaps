@@ -1,4 +1,3 @@
-import { SemVerVersion } from '../versions';
 import {
   getSnapSourceShasum,
   PersistedSnap,
@@ -6,8 +5,9 @@ import {
   SnapStatus,
   TruncatedSnap,
 } from '../snaps';
-import { getSnapManifest } from './manifest';
+import { SemVerVersion } from '../versions';
 import { MakeSemVer } from './common';
+import { getSnapManifest } from './manifest';
 
 /**
  * A mock snap source and its shasum.
