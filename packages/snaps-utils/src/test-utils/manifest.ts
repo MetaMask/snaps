@@ -6,15 +6,19 @@ import {
   SessionNamespace,
 } from '../namespace';
 import { NpmSnapPackageJson } from '../types';
+import { SemVerVersion } from '../versions';
+import { MakeSemVer } from './common';
 import { DEFAULT_SNAP_SHASUM } from './snap';
 
-type GetSnapManifestOptions = Partial<Omit<SnapManifest, 'source'>> & {
+type GetSnapManifestOptions = Partial<MakeSemVer<SnapManifest>> & {
   shasum?: string;
   filePath?: string;
   packageName?: string;
   registry?: string;
   iconPath?: string;
 };
+
+type GetPackageJsonOptions = Partial<MakeSemVer<NpmSnapPackageJson>>;
 
 /**
  * Get the default package repository, in a format compatible with
@@ -47,7 +51,7 @@ export const getDefaultRepository = () => {
  * @returns The snap manifest.
  */
 export const getSnapManifest = ({
-  version = '1.0.0',
+  version = '1.0.0' as SemVerVersion,
   description = 'The test example snap!',
   proposedName = '@metamask/example-snap',
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -59,7 +63,7 @@ export const getSnapManifest = ({
   iconPath = 'images/icon.svg',
 }: GetSnapManifestOptions = {}): SnapManifest => {
   return {
-    version,
+    version: version as SemVerVersion,
     description,
     proposedName,
     repository,
@@ -94,14 +98,14 @@ export const getSnapManifest = ({
  */
 export const getPackageJson = ({
   name = '@metamask/example-snap',
-  version = '1.0.0',
+  version = '1.0.0' as SemVerVersion,
   description = 'The test example snap!',
   main = 'src/index.js',
   repository = getDefaultRepository(),
-}: Partial<NpmSnapPackageJson> = {}): NpmSnapPackageJson => {
+}: GetPackageJsonOptions = {}): NpmSnapPackageJson => {
   return {
     name,
-    version,
+    version: version as SemVerVersion,
     description,
     main,
     repository,

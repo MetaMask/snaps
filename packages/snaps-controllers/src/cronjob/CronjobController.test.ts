@@ -3,6 +3,7 @@ import {
   HandlerType,
   deepClone,
   TruncatedSnap,
+  SemVerVersion,
 } from '@metamask/snaps-utils';
 import {
   MOCK_ORIGIN,
@@ -76,6 +77,8 @@ const MOCK_CRONJOB_SINGLE_JOB_PERMISSION = {
   invoker: MOCK_ORIGIN,
   parentCapability: SnapEndowments.Cronjob,
 };
+
+const MOCK_VERSION = '1.0' as SemVerVersion;
 
 describe('CronjobController', () => {
   beforeEach(() => {
@@ -315,7 +318,7 @@ describe('CronjobController', () => {
       id: MOCK_SNAP_ID,
       initialPermissions: {},
       permissionName: '',
-      version: '',
+      version: MOCK_VERSION,
     };
     // @ts-expect-error Accessing private property
     cronjobController._handleEventSnapInstalled(snapInfo);
@@ -367,7 +370,7 @@ describe('CronjobController', () => {
       id: MOCK_SNAP_ID,
       initialPermissions: {},
       permissionName: '',
-      version: '',
+      version: MOCK_VERSION,
     };
 
     // @ts-expect-error Accessing private property
@@ -432,7 +435,7 @@ describe('CronjobController', () => {
       id: MOCK_SNAP_ID,
       initialPermissions: {},
       permissionName: '',
-      version: '',
+      version: MOCK_VERSION,
     };
 
     // @ts-expect-error Accessing private property

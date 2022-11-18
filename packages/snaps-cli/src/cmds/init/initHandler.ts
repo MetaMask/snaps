@@ -4,6 +4,8 @@ import {
   readJsonFile,
   satisfiesVersionRange,
   NpmSnapPackageJson,
+  SemVerVersion,
+  SemVerRange,
 } from '@metamask/snaps-utils';
 import { promises as fs } from 'fs';
 import pathUtils from 'path';
@@ -19,7 +21,7 @@ import {
   yarnInstall,
 } from './initUtils';
 
-const SATISFIED_VERSION = '>=16';
+const SATISFIED_VERSION = '>=16' as SemVerRange;
 
 /**
  * Creates a new snap package, based on one of the provided templates. This
@@ -35,7 +37,7 @@ export async function initHandler(argv: YargsArgs) {
   const { directory } = argv;
 
   const isVersionSupported = satisfiesVersionRange(
-    process.version,
+    process.version as SemVerVersion,
     SATISFIED_VERSION,
   );
 

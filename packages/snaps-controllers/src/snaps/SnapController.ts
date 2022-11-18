@@ -28,14 +28,15 @@ import {
   getSnapPrefix,
   gtVersion,
   InstallSnapsResult,
-  isValidSnapVersionRange,
+  isValidSemVerRange,
   LOCALHOST_HOSTNAMES,
   NpmSnapFileNames,
   PersistedSnap,
   ProcessSnapResult,
   RequestedSnapPermissions,
-  resolveVersion,
+  resolveVersionRange,
   satisfiesVersionRange,
+  SemVerRange,
   Snap,
   SnapId,
   SnapIdPrefixes,
@@ -536,7 +537,7 @@ type SnapControllerArgs = {
 type AddSnapArgsBase = {
   id: SnapId;
   origin: string;
-  versionRange?: string;
+  versionRange?: SemVerRange;
 };
 
 // A snap can either be added directly, with manifest and source code, or it
@@ -1535,10 +1536,8 @@ export class SnapController extends BaseController<
     await Promise.all(
       Object.entries(requestedSnaps).map(
         async ([snapId, { version: rawVersion }]) => {
-          const version = resolveVersion(rawVersion);
-          const permissionName = getSnapPermissionName(snapId);
-
-          if (!isValidSnapVersionRange(version)) {
+          const [error, version] = resolveVersionRange(rawVersion);
+          if (error) {
             result[snapId] = {
               error: ethErrors.rpc.invalidParams(
                 `The "version" field must be a valid SemVer version range if specified. Received: "${version}".`,
@@ -1546,6 +1545,7 @@ export class SnapController extends BaseController<
             };
             return;
           }
+          const permissionName = getSnapPermissionName(snapId);
 
           if (
             this.messagingSystem.call(
@@ -1585,7 +1585,7 @@ export class SnapController extends BaseController<
   private async processRequestedSnap(
     origin: string,
     snapId: SnapId,
-    versionRange: string,
+    versionRange: SemVerRange,
   ): Promise<ProcessSnapResult> {
     try {
       validateSnapId(snapId);
@@ -1688,7 +1688,7 @@ export class SnapController extends BaseController<
   ): Promise<TruncatedSnap | null> {
     const snap = this.getExpect(snapId);
 
-    if (!isValidSnapVersionRange(newVersionRange)) {
+    if (!isValidSemVerRange(newVersionRange)) {
       throw new Error(
         `Received invalid snap version range: "${newVersionRange}".`,
       );
@@ -2052,7 +2052,7 @@ export class SnapController extends BaseController<
     packageName: string,
     versionRange: string,
   ): Promise<FetchSnapResult> {
-    if (!isValidSnapVersionRange(versionRange)) {
+    if (!isValidSemVerRange(versionRange)) {
       throw new Error(
         `Received invalid Snap version range: "${versionRange}".`,
       );

@@ -9,6 +9,7 @@ import {
   DEFAULT_ENDOWMENTS,
   getSnapSourceShasum,
   HandlerType,
+  SemVerVersion,
   SnapCaveatType,
   SnapManifest,
   SnapStatus,
@@ -2545,7 +2546,7 @@ describe('SnapController', () => {
       fetchSnapSpy.mockImplementationOnce(async () => {
         const manifest: SnapManifest = {
           ...getSnapManifest(),
-          version: '1.1.0',
+          version: '1.1.0' as SemVerVersion,
         };
 
         return Promise.resolve({
@@ -2580,7 +2581,7 @@ describe('SnapController', () => {
       fetchSnapSpy.mockImplementationOnce(async () => {
         const manifest: SnapManifest = {
           ...getSnapManifest(),
-          version: '0.9.0',
+          version: '0.9.0' as SemVerVersion,
         };
 
         return Promise.resolve({
@@ -2625,7 +2626,7 @@ describe('SnapController', () => {
         .mockImplementationOnce(async () => {
           const manifest: SnapManifest = {
             ...getSnapManifest(),
-            version: '1.1.0',
+            version: '1.1.0' as SemVerVersion,
           };
 
           return Promise.resolve({
@@ -2757,7 +2758,7 @@ describe('SnapController', () => {
       fetchSnapSpy.mockImplementationOnce(async () => {
         const manifest: SnapManifest = {
           ...getSnapManifest(),
-          version: '1.1.0',
+          version: '1.1.0' as SemVerVersion,
         };
 
         return Promise.resolve({
@@ -2864,7 +2865,7 @@ describe('SnapController', () => {
       fetchSnapSpy.mockImplementationOnce(async () => {
         const manifest: SnapManifest = {
           ...getSnapManifest(),
-          version: '1.1.0',
+          version: '1.1.0' as SemVerVersion,
         };
 
         return Promise.resolve({
@@ -3949,6 +3950,9 @@ describe('SnapController', () => {
           ) {
             return true;
           }
+          // TypeScript doesn't allow variadic list of arguments into non-variadic functions.
+          // messenger.call is a union of functions that take a constant amount of arguments, and
+          // so, TypeScript errors.
           return (originalCall as any)(method, ...args);
         });
 
