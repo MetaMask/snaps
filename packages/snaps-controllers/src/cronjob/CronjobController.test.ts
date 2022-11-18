@@ -96,10 +96,6 @@ describe('CronjobController', () => {
     const controllerMessenger =
       getRestrictedCronjobControllerMessenger(rootMessenger);
 
-    rootMessenger.unregisterActionHandler(
-      'PermissionController:getPermissions',
-    );
-
     rootMessenger.registerActionHandler(
       'PermissionController:getPermissions',
       () => {
@@ -147,10 +143,6 @@ describe('CronjobController', () => {
     const rootMessenger = getRootCronjobControllerMessenger();
     const controllerMessenger =
       getRestrictedCronjobControllerMessenger(rootMessenger);
-
-    rootMessenger.unregisterActionHandler(
-      'PermissionController:getPermissions',
-    );
 
     rootMessenger.registerActionHandler(
       'PermissionController:getPermissions',

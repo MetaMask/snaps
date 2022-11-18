@@ -1,4 +1,8 @@
-import { ControllerMessenger } from '@metamask/controllers';
+import {
+  ActionConstraint,
+  ControllerMessenger,
+  EventConstraint,
+} from '@metamask/controllers';
 import {
   getPersistedSnapObject,
   getTruncatedSnap,
@@ -20,6 +24,50 @@ import {
 } from '../snaps';
 import { MOCK_CRONJOB_PERMISSION } from './cronjob';
 import { getNodeEES, getNodeEESMessenger } from './execution-environment';
+
+// These types are extracted from `@metamask/controllers`. Ideally they would
+// be exported from there, but they are not.
+type ActionHandler<Action, ActionType> = (
+  ...args: ExtractActionParameters<Action, ActionType>
+) => ExtractActionResponse<Action, ActionType>;
+
+type ExtractActionParameters<Action, T> = Action extends {
+  type: T;
+  handler: (...args: infer H) => any;
+}
+  ? H
+  : never;
+
+type ExtractActionResponse<Action, T> = Action extends {
+  type: T;
+  handler: (...args: any) => infer H;
+}
+  ? H
+  : never;
+
+/**
+ * A controller messenger, that allows overwriting the action handlers, without
+ * the need to call `unregisterActionHandler` first.
+ */
+class MockControllerMessenger<
+  Actions extends ActionConstraint,
+  Events extends EventConstraint,
+> extends ControllerMessenger<Actions, Events> {
+  /**
+   * Registers an action handler for the given action type. If an action handler
+   * already exists for the given action type, it will be overwritten.
+   *
+   * @param actionType - The action type to register the handler for.
+   * @param handler - The action handler to register.
+   */
+  registerActionHandler<T extends Actions['type']>(
+    actionType: T,
+    handler: ActionHandler<Actions, T>,
+  ) {
+    super.unregisterActionHandler(actionType);
+    super.registerActionHandler(actionType, handler);
+  }
+}
 
 export const getControllerMessenger = () =>
   new ControllerMessenger<
@@ -217,7 +265,7 @@ export const getPersistedSnapsState = (
 
 // Mock controller messenger for Cronjob Controller
 export const getRootCronjobControllerMessenger = () => {
-  const messenger = new ControllerMessenger<
+  const messenger = new MockControllerMessenger<
     CronjobControllerActions | AllowedActions,
     CronjobControllerEvents | AllowedEvents
   >();
