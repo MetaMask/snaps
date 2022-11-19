@@ -9,6 +9,7 @@ import {
 } from '@metamask/snaps-utils/test-utils';
 
 import { CronjobControllerActions, CronjobControllerEvents } from '../cronjob';
+import { NodeThreadExecutionService } from '../services';
 import {
   AllowedActions,
   AllowedEvents,
@@ -20,7 +21,11 @@ import {
   SnapEndowments,
 } from '../snaps';
 import { MOCK_CRONJOB_PERMISSION } from './cronjob';
-import { getNodeEES, getNodeEESMessenger } from './execution-environment';
+import {
+  ExecutionEnvironmentStub,
+  getNodeEES,
+  getNodeEESMessenger,
+} from './execution-environment';
 
 const asyncNoOp = async () => Promise.resolve();
 
@@ -260,7 +265,9 @@ export const getSnapController = (options = getSnapControllerOptions()) => {
 
 export const getSnapControllerWithEES = (
   options = getSnapControllerWithEESOptions(),
-  service?: ReturnType<typeof getNodeEES>,
+  service: ReturnType<typeof getNodeEES> = new ExecutionEnvironmentStub(
+    getNodeEESMessenger(options.rootMessenger),
+  ) as unknown as NodeThreadExecutionService,
 ) => {
   const _service =
     service ?? getNodeEES(getNodeEESMessenger(options.rootMessenger));

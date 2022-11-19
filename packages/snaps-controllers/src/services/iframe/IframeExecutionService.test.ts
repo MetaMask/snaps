@@ -1,18 +1,14 @@
 import { createService } from '@metamask/snaps-controllers/test-utils';
 import { HandlerType } from '@metamask/snaps-utils';
+import { ChildProcess, fork } from 'child_process';
 
 import { IframeExecutionService } from './IframeExecutionService';
 import fixJSDOMPostMessageEventSource from './test/fixJSDOMPostMessageEventSource';
-import {
-  PORT as serverPort,
-  start as startServer,
-  stop as stopServer,
-} from './test/server';
 
 // We do not use our default endowments in these tests because JSDOM doesn't
 // implement all of them.
 
-const iframeUrl = new URL(`http://localhost:${serverPort}`);
+const iframeUrl = new URL(`http://localhost:6364`);
 
 const createIFrameService = () => {
   const { service, ...rest } = createService(IframeExecutionService, {
@@ -24,15 +20,18 @@ const createIFrameService = () => {
 };
 
 describe('IframeExecutionService', () => {
-  // The tests start running before the server is ready if we don't use the done callback.
-  // eslint-disable-next-line jest/no-done-callback
-  beforeAll((done) => {
-    startServer().then(done).catch(done.fail);
+  let process: ChildProcess;
+
+  beforeAll(() => {
+    // Forking the process makes it possible to kill the process later, which is
+    // much faster than gracefully stopping the server.
+    process = fork(require.resolve('./test/server'), [], {
+      stdio: 'inherit',
+    });
   });
 
-  // eslint-disable-next-line jest/no-done-callback
-  afterAll((done) => {
-    stopServer().then(done).catch(done.fail);
+  afterAll(() => {
+    process.kill();
   });
 
   it('can boot', async () => {
