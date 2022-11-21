@@ -1273,7 +1273,12 @@ describe('SnapController', () => {
       },
     });
 
-    const [snapController, service] = getSnapControllerWithEES(options);
+    const [snapController, service] = getSnapControllerWithEES(
+      options,
+      new ExecutionEnvironmentStub(
+        getNodeEESMessenger(options.rootMessenger),
+      ) as unknown as NodeThreadExecutionService,
+    );
     const snap = snapController.getExpect(MOCK_SNAP_ID);
 
     rootMessenger.registerActionHandler(
