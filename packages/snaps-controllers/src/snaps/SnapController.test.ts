@@ -3320,7 +3320,7 @@ describe('SnapController', () => {
     });
 
     it('updating blocked snaps does not throw if a snap is removed while fetching the blocklist', async () => {
-      const consoleErrorSpy = jest.spyOn(console, 'error');
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       const checkBlockListSpy = jest.fn();
 
       const mockSnap = getMockSnapData({
@@ -3360,7 +3360,7 @@ describe('SnapController', () => {
     });
 
     it('logs but does not throw unexpected errors while blocking', async () => {
-      const consoleErrorSpy = jest.spyOn(console, 'error');
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       const checkBlockListSpy = jest.fn();
 
       const mockSnap = getMockSnapData({
