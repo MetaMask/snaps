@@ -1574,11 +1574,6 @@ describe('SnapController', () => {
         }),
       );
 
-      rootMessenger.registerActionHandler(
-        'PermissionController:getPermissions',
-        () => ({}),
-      );
-
       const fetchSnapMock = jest
         .spyOn(snapController as any, 'fetchSnap')
         .mockImplementationOnce(() => {
@@ -1672,11 +1667,6 @@ describe('SnapController', () => {
         getSnapControllerOptions({
           messenger,
         }),
-      );
-
-      rootMessenger.registerActionHandler(
-        'PermissionController:getPermissions',
-        () => ({}),
       );
 
       const fetchSnapMock = jest
@@ -1836,11 +1826,6 @@ describe('SnapController', () => {
       const truncatedSnap = getTruncatedSnap({
         initialPermissions: manifest.initialPermissions,
       });
-
-      rootMessenger.registerActionHandler(
-        'PermissionController:getPermissions',
-        () => ({}),
-      );
 
       const fetchSnapMock = jest
         .spyOn(snapController as any, 'fetchSnap')
@@ -2085,11 +2070,6 @@ describe('SnapController', () => {
         }),
       );
 
-      rootMessenger.registerActionHandler(
-        'PermissionController:getPermissions',
-        () => ({}),
-      );
-
       jest
         .spyOn(snapController as any, 'fetchSnap')
         .mockImplementationOnce(() => {
@@ -2189,11 +2169,6 @@ describe('SnapController', () => {
 
       await controller.installSnaps(MOCK_ORIGIN, { [MOCK_SNAP_ID]: {} });
       await controller.stopSnap(MOCK_SNAP_ID);
-
-      rootMessenger.registerActionHandler(
-        'PermissionController:getPermissions',
-        () => ({}),
-      );
 
       const result = await controller.installSnaps(MOCK_ORIGIN, {
         [MOCK_SNAP_ID]: { version: newVersionRange },

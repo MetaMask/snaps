@@ -117,6 +117,11 @@ export const getControllerMessenger = () => {
     () => ({}),
   );
 
+  messenger.registerActionHandler(
+    'PermissionController:getPermissions',
+    () => ({}),
+  );
+
   messenger.registerActionHandler('ExecutionService:executeSnap', asyncNoOp);
   messenger.registerActionHandler('ExecutionService:terminateSnap', asyncNoOp);
 
