@@ -5,8 +5,8 @@ const baseConfig = require('../../jest.config.base');
 module.exports = deepmerge(baseConfig, {
   coverageThreshold: {
     global: {
-      branches: 88.75,
-      functions: 97.58,
+      branches: 88.84,
+      functions: 96.58,
       lines: 96.74,
       statements: 96.74,
     },

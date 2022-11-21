@@ -1,4 +1,3 @@
-import { PermissionConstraint } from '@metamask/controllers';
 import { getSnapSourceShasum } from '@metamask/snaps-utils';
 import {
   MOCK_ORIGIN,
@@ -7,7 +6,7 @@ import {
   getPersistedSnapObject,
 } from '@metamask/snaps-utils/test-utils';
 
-import { NodeThreadExecutionService, SnapEndowments } from '..';
+import { SnapEndowments } from '..';
 import { MultiChainController } from '../multichain';
 import {
   getControllerMessenger,
@@ -17,7 +16,6 @@ import {
   getSnapControllerWithEES,
   getSnapControllerWithEESOptions,
 } from './controller';
-import { getNodeEES, getNodeEESMessenger } from './execution-environment';
 
 export const getMultiChainControllerMessenger = (
   messenger: ReturnType<
@@ -65,16 +63,12 @@ export const getMultiChainControllerWithEES = (
   options = {
     snapControllerOptions: getSnapControllerWithEESOptions(),
   },
-  service: NodeThreadExecutionService = getNodeEES(
-    getNodeEESMessenger(options.snapControllerOptions.rootMessenger),
-  ),
 ) => {
   const { snapControllerOptions } = options;
   const { rootMessenger } = snapControllerOptions;
 
   const [snapController, executionService] = getSnapControllerWithEES(
     snapControllerOptions,
-    service,
   );
   const multiChainControllerMessenger =
     getMultiChainControllerMessenger(rootMessenger);
@@ -178,7 +172,7 @@ export const PERSISTED_MOCK_KEYRING_SNAP = getPersistedSnapObject({
   }),
 });
 
-export const MOCK_KEYRING_PERMISSION: PermissionConstraint = {
+export const MOCK_KEYRING_PERMISSION = {
   caveats: [{ type: 'snapKeyring', value: { namespaces: MOCK_NAMESPACES } }],
   date: 1664187844588,
   id: 'izn0WGUO8cvq_jqvLQuQP',

@@ -37,7 +37,6 @@ import { NodeThreadExecutionService, setupMultiplex } from '../services';
 import {
   ExecutionEnvironmentStub,
   getControllerMessenger,
-  getNodeEES,
   getNodeEESMessenger,
   getPersistedSnapsState,
   getSnapController,
@@ -423,7 +422,7 @@ describe('SnapController', () => {
 
   it('terminates a snap even if connection to worker has failed', async () => {
     const rootMessenger = getControllerMessenger();
-    const [snapController] = getSnapControllerWithEES(
+    const [snapController, service] = getSnapControllerWithEES(
       getSnapControllerWithEESOptions({
         rootMessenger,
         idleTimeCheckInterval: 10,
@@ -441,16 +440,14 @@ describe('SnapController', () => {
       },
     );
 
-    rootMessenger.registerActionHandler(
-      'ExecutionService:handleRpcRequest',
-      async () => await sleep(100),
-    );
-
     const snap = snapController.getExpect(MOCK_SNAP_ID);
     await snapController.startSnap(snap.id);
 
     // @ts-expect-error `maxRequestTime` is a private property.
     snapController.maxRequestTime = 50;
+
+    // @ts-expect-error `command` is a private property.
+    service.command = async () => sleep(100);
 
     await expect(
       snapController.handleRequest({
@@ -468,6 +465,8 @@ describe('SnapController', () => {
 
     expect(snapController.state.snaps[snap.id].status).toBe('crashed');
     snapController.destroy();
+
+    await service.terminateAllSnaps();
   });
 
   it(`reads a snap's status after adding it`, async () => {
@@ -931,10 +930,7 @@ describe('SnapController', () => {
       },
     });
 
-    const [snapController, service] = getSnapControllerWithEES(
-      options,
-      getNodeEES(getNodeEESMessenger(options.rootMessenger)),
-    );
+    const [snapController, service] = getSnapControllerWithEES(options);
     const snap = snapController.getExpect(MOCK_SNAP_ID);
 
     jest
@@ -1010,10 +1006,7 @@ describe('SnapController', () => {
     });
 
     const { rootMessenger } = options;
-    const [snapController, service] = getSnapControllerWithEES(
-      options,
-      getNodeEES(getNodeEESMessenger(options.rootMessenger)),
-    );
+    const [snapController, service] = getSnapControllerWithEES(options);
     const snap = snapController.getExpect(MOCK_SNAP_ID);
 
     rootMessenger.registerActionHandler(
@@ -1211,9 +1204,9 @@ describe('SnapController', () => {
           id: 1,
         },
       }),
-    ).toBe('test1');
+    ).toBe('foo bar');
 
-    await sleep(50);
+    await sleep(100);
 
     // Should still be running after idle timeout
     expect(snapController.state.snaps[snap.id].status).toBe('running');
@@ -1223,7 +1216,7 @@ describe('SnapController', () => {
       MOCK_SNAP_ID,
     );
 
-    await sleep(50);
+    await sleep(100);
 
     // Should be terminated by idle timeout now
     expect(snapController.state.snaps[snap.id].status).toBe('stopped');
@@ -1274,7 +1267,7 @@ describe('SnapController', () => {
       rootMessenger,
       idleTimeCheckInterval: 30000,
       maxIdleTime: 160000,
-      maxRequestTime: 50,
+      maxRequestTime: 300,
       state: {
         snaps: getPersistedSnapsState(),
       },
@@ -1312,6 +1305,7 @@ describe('SnapController', () => {
     expect(snapController.state.snaps[snap.id].status).toBe('crashed');
 
     await snapController.removeSnap(snap.id);
+
     expect(snapController.state.snaps[snap.id]).toBeUndefined();
 
     snapController.destroy();
