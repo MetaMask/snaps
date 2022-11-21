@@ -1,9 +1,9 @@
-import { fromEntries } from '@metamask/snaps-utils';
 import { promises as fs } from 'fs';
 import { join } from 'path';
 
 import { readJsonFile } from '../fs';
 import * as npm from '../npm';
+import { fromEntries } from '../object';
 import { ProgrammaticallyFixableSnapError } from '../snaps';
 import {
   DEFAULT_SNAP_BUNDLE,

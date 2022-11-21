@@ -2683,36 +2683,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eslint-config-jest@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "@metamask/eslint-config-jest@npm:9.0.0"
-  peerDependencies:
-    "@metamask/eslint-config": ^9.0.0
-    eslint: ^7.23.0
-    eslint-plugin-jest: ^24.1.3
-  checksum: 74ddc7953691cc1e5fe76616fa7e0aaff3c671fae0187851bb90122662cd6a1346ae92ff1f3c28cc1beeeb31a8e86e6ca99062313e7674792a42ab56309efd20
-  languageName: node
-  linkType: hard
-
-"@metamask/eslint-config-nodejs@npm:^11.0.0":
-  version: 11.0.0
-  resolution: "@metamask/eslint-config-nodejs@npm:11.0.0"
+"@metamask/eslint-config-nodejs@npm:^11.0.1":
+  version: 11.0.1
+  resolution: "@metamask/eslint-config-nodejs@npm:11.0.1"
   peerDependencies:
     "@metamask/eslint-config": ^11.0.0
     eslint: ^8.27.0
     eslint-plugin-node: ^11.1.0
-  checksum: d71be00f71ea36dc7a9e3f9c767492b5fa2f0c61ba8c0976a7394e36874ca583f9472aeb9be1974389999705c57aa44fe92e5a17a692728c0f5252c4fb34f5db
-  languageName: node
-  linkType: hard
-
-"@metamask/eslint-config-nodejs@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "@metamask/eslint-config-nodejs@npm:9.0.0"
-  peerDependencies:
-    "@metamask/eslint-config": ^9.0.0
-    eslint: ^7.23.0
-    eslint-plugin-node: ^11.1.0
-  checksum: c4e502741f12f252fb01a391b7c733c76b447eadc7d26360b349aa2e768c52d04b30436e92d3db7969540faace68ab4d05f379a0f54d433778bf467f44469ba0
+  checksum: 97858dc79e3228ba65cedf36455de2b8b3173e1d614522c69df41197d03b327a2543632c131c8bd4b9530fa84ef3e971e01888d6158d451c8eb900e11f138832
   languageName: node
   linkType: hard
 
@@ -2729,19 +2707,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eslint-config-typescript@npm:^9.0.1":
-  version: 9.0.1
-  resolution: "@metamask/eslint-config-typescript@npm:9.0.1"
-  peerDependencies:
-    "@metamask/eslint-config": ^9.0.0
-    "@typescript-eslint/eslint-plugin": ^4.20.0
-    "@typescript-eslint/parser": ^4.20.0
-    eslint: ^7.23.0
-    typescript: ^4.0.7
-  checksum: df6c630e285b1a125caffce1988c23b3ba0f76507c337a849fb30fb5f9b9df4bb563419f9bb2ec7e39072601b7e95a4d5be52ddff1643bde65206f33d73440d3
-  languageName: node
-  linkType: hard
-
 "@metamask/eslint-config@npm:^11.0.0":
   version: 11.0.0
   resolution: "@metamask/eslint-config@npm:11.0.0"
@@ -2753,20 +2718,6 @@ __metadata:
     eslint-plugin-prettier: ^4.2.1
     prettier: ^2.7.1
   checksum: 28fa2f49bc87367d523e80ffab9b3d5989dc01f8a14362f7dfe30642e5ea931ef316b2dd20e740db64f5340d9c5634425089a08003b9de18c8d206ae36454732
-  languageName: node
-  linkType: hard
-
-"@metamask/eslint-config@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "@metamask/eslint-config@npm:9.0.0"
-  peerDependencies:
-    eslint: ^7.23.0
-    eslint-config-prettier: ^8.1.0
-    eslint-plugin-import: ^2.22.1
-    eslint-plugin-jsdoc: ^36.1.0
-    eslint-plugin-prettier: ^3.3.1
-    prettier: ^2.2.1
-  checksum: e44768e5f674e61743f1b147c589932e11f6d717b3f52b4b44ee3ab6b0b1078d379aea93473204c740fdff4b309393fc361c1e63c9cecc59ed5c8ab704eb6d20
   languageName: node
   linkType: hard
 
@@ -2823,10 +2774,10 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
-    "@metamask/eslint-config": ^9.0.0
-    "@metamask/eslint-config-jest": ^9.0.0
-    "@metamask/eslint-config-nodejs": ^9.0.0
-    "@metamask/eslint-config-typescript": ^9.0.1
+    "@metamask/eslint-config": ^11.0.0
+    "@metamask/eslint-config-jest": ^11.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.1
+    "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/providers": ^10.2.0
     "@metamask/safe-event-emitter": ^2.0.0
     "@metamask/snaps-utils": ^0.24.1
@@ -2914,7 +2865,7 @@ __metadata:
     "@metamask/controllers": ^32.0.2
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^11.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/key-tree": ^6.0.0
     "@metamask/snaps-utils": ^0.24.1
@@ -2961,7 +2912,7 @@ __metadata:
     "@metamask/auto-changelog": ^2.6.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^11.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-utils": ^0.24.1
     "@types/browserify": ^12.0.37
@@ -3007,7 +2958,7 @@ __metadata:
     "@metamask/auto-changelog": ^2.6.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^11.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-browserify-plugin": ^0.24.1
     "@metamask/snaps-utils": ^0.24.1
@@ -3065,7 +3016,7 @@ __metadata:
     "@metamask/controllers": ^32.0.2
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^11.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/object-multiplex": ^1.1.0
     "@metamask/post-message-stream": ^6.0.0
@@ -3127,7 +3078,7 @@ __metadata:
     "@metamask/auto-changelog": ^2.6.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^11.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/object-multiplex": ^1.2.0
     "@metamask/post-message-stream": ^6.0.0
@@ -3181,7 +3132,7 @@ __metadata:
     "@metamask/auto-changelog": ^2.6.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^11.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-utils": ^0.24.1
     "@rollup/plugin-virtual": ^2.1.0
@@ -3216,7 +3167,7 @@ __metadata:
     "@metamask/auto-changelog": ^2.6.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^11.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/providers": ^10.2.0
     "@metamask/snaps-utils": ^0.24.1
@@ -3249,7 +3200,7 @@ __metadata:
     "@metamask/auto-changelog": ^2.6.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^11.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-types": ^0.24.1
     "@metamask/utils": ^3.3.1
@@ -3293,7 +3244,7 @@ __metadata:
     "@metamask/auto-changelog": ^2.6.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^11.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-utils": ^0.24.1
     "@metamask/utils": ^3.3.0
@@ -5593,10 +5544,10 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
-    "@metamask/eslint-config": ^9.0.0
-    "@metamask/eslint-config-jest": ^9.0.0
-    "@metamask/eslint-config-nodejs": ^9.0.0
-    "@metamask/eslint-config-typescript": ^9.0.1
+    "@metamask/eslint-config": ^11.0.0
+    "@metamask/eslint-config-jest": ^11.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.1
+    "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-cli": ^0.24.1
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
@@ -5823,10 +5774,10 @@ __metadata:
     "@babel/core": ^7.17.12
     "@babel/preset-env": ^7.17.12
     "@babel/preset-typescript": ^7.17.12
-    "@metamask/eslint-config": ^9.0.0
-    "@metamask/eslint-config-jest": ^9.0.0
-    "@metamask/eslint-config-nodejs": ^9.0.0
-    "@metamask/eslint-config-typescript": ^9.0.1
+    "@metamask/eslint-config": ^11.0.0
+    "@metamask/eslint-config-jest": ^11.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.1
+    "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-browserify-plugin": ^0.24.1
     "@metamask/snaps-cli": ^0.24.1
     "@metamask/snaps-types": ^0.24.1
@@ -8528,10 +8479,10 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
-    "@metamask/eslint-config": ^9.0.0
-    "@metamask/eslint-config-jest": ^9.0.0
-    "@metamask/eslint-config-nodejs": ^9.0.0
-    "@metamask/eslint-config-typescript": ^9.0.1
+    "@metamask/eslint-config": ^11.0.0
+    "@metamask/eslint-config-jest": ^11.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.1
+    "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-cli": ^0.24.1
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
@@ -8790,10 +8741,10 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
-    "@metamask/eslint-config": ^9.0.0
-    "@metamask/eslint-config-jest": ^9.0.0
-    "@metamask/eslint-config-nodejs": ^9.0.0
-    "@metamask/eslint-config-typescript": ^9.0.1
+    "@metamask/eslint-config": ^11.0.0
+    "@metamask/eslint-config-jest": ^11.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.1
+    "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-cli": ^0.24.1
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
@@ -10337,10 +10288,10 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
-    "@metamask/eslint-config": ^9.0.0
-    "@metamask/eslint-config-jest": ^9.0.0
-    "@metamask/eslint-config-nodejs": ^9.0.0
-    "@metamask/eslint-config-typescript": ^9.0.1
+    "@metamask/eslint-config": ^11.0.0
+    "@metamask/eslint-config-jest": ^11.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.1
+    "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-cli": ^0.24.1
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
@@ -12966,10 +12917,10 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
-    "@metamask/eslint-config": ^9.0.0
-    "@metamask/eslint-config-jest": ^9.0.0
-    "@metamask/eslint-config-nodejs": ^9.0.0
-    "@metamask/eslint-config-typescript": ^9.0.1
+    "@metamask/eslint-config": ^11.0.0
+    "@metamask/eslint-config-jest": ^11.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.1
+    "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-cli": ^0.24.1
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
@@ -14642,10 +14593,10 @@ __metadata:
     "@babel/preset-typescript": ^7.17.12
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
-    "@metamask/eslint-config": ^9.0.0
-    "@metamask/eslint-config-jest": ^9.0.0
-    "@metamask/eslint-config-nodejs": ^9.0.0
-    "@metamask/eslint-config-typescript": ^9.0.1
+    "@metamask/eslint-config": ^11.0.0
+    "@metamask/eslint-config-jest": ^11.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.1
+    "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-cli": ^0.24.1
     "@metamask/snaps-rollup-plugin": ^0.24.1
     "@metamask/snaps-types": ^0.24.1
@@ -14692,7 +14643,7 @@ __metadata:
     "@metamask/auto-changelog": ^2.6.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^11.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
     "@types/jest": ^27.5.1
     "@types/node": ^14.14.25
@@ -16138,10 +16089,10 @@ __metadata:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/abi-utils": ^1.0.0
     "@metamask/auto-changelog": ^2.6.0
-    "@metamask/eslint-config": ^9.0.0
-    "@metamask/eslint-config-jest": ^9.0.0
-    "@metamask/eslint-config-nodejs": ^9.0.0
-    "@metamask/eslint-config-typescript": ^9.0.1
+    "@metamask/eslint-config": ^11.0.0
+    "@metamask/eslint-config-jest": ^11.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.1
+    "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-cli": ^0.24.1
     "@metamask/snaps-types": ^0.24.1
     "@metamask/utils": ^3.3.1
@@ -16413,10 +16364,10 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
-    "@metamask/eslint-config": ^9.0.0
-    "@metamask/eslint-config-jest": ^9.0.0
-    "@metamask/eslint-config-nodejs": ^9.0.0
-    "@metamask/eslint-config-typescript": ^9.0.1
+    "@metamask/eslint-config": ^11.0.0
+    "@metamask/eslint-config-jest": ^11.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.1
+    "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-cli": ^0.24.1
     "@metamask/snaps-types": ^0.24.1
     "@typescript-eslint/eslint-plugin": ^5.42.1
@@ -16893,10 +16844,10 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
-    "@metamask/eslint-config": ^9.0.0
-    "@metamask/eslint-config-jest": ^9.0.0
-    "@metamask/eslint-config-nodejs": ^9.0.0
-    "@metamask/eslint-config-typescript": ^9.0.1
+    "@metamask/eslint-config": ^11.0.0
+    "@metamask/eslint-config-jest": ^11.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.1
+    "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-cli": ^0.24.1
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
@@ -17090,10 +17041,10 @@ __metadata:
     "@babel/preset-typescript": ^7.16.7
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
-    "@metamask/eslint-config": ^9.0.0
-    "@metamask/eslint-config-jest": ^9.0.0
-    "@metamask/eslint-config-nodejs": ^9.0.0
-    "@metamask/eslint-config-typescript": ^9.0.1
+    "@metamask/eslint-config": ^11.0.0
+    "@metamask/eslint-config-jest": ^11.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.1
+    "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-cli": ^0.24.1
     "@metamask/snaps-types": ^0.24.1
     "@metamask/snaps-webpack-plugin": ^0.24.1

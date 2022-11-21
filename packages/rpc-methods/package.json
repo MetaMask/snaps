@@ -41,7 +41,7 @@
     "@metamask/auto-changelog": "^2.6.0",
     "@metamask/eslint-config": "^11.0.0",
     "@metamask/eslint-config-jest": "^11.0.0",
-    "@metamask/eslint-config-nodejs": "^11.0.0",
+    "@metamask/eslint-config-nodejs": "^11.0.1",
     "@metamask/eslint-config-typescript": "^11.0.0",
     "@types/node": "^14.14.25",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
