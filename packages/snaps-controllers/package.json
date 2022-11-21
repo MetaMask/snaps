@@ -31,7 +31,7 @@
     "publish:package": "../../scripts/publish-package.sh"
   },
   "dependencies": {
-    "@metamask/browser-passworder": "^3.0.0",
+    "@metamask/browser-passworder": "^4.0.2",
     "@metamask/controllers": "^32.0.2",
     "@metamask/object-multiplex": "^1.1.0",
     "@metamask/post-message-stream": "^6.0.0",
