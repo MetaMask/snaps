@@ -2627,9 +2627,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controllers@npm:^32.0.2":
-  version: 32.0.2
-  resolution: "@metamask/controllers@npm:32.0.2"
+"@metamask/controllers@npm:^33.0.0":
+  version: 33.0.0
+  resolution: "@metamask/controllers@npm:33.0.0"
   dependencies:
     "@ethereumjs/common": ^2.3.1
     "@ethereumjs/tx": ^3.2.1
@@ -2668,7 +2668,7 @@ __metadata:
     uuid: ^8.3.2
     web3: ^0.20.7
     web3-provider-engine: ^16.0.3
-  checksum: 05da9eb32c7c1c28b99157cb99bf3744bb77dbb221e5d2662413b3f1fb839b1981b0fd3f2bf517b79c71803c7a78b6a369132a81ca9e3b4f84b2282139ad3679
+  checksum: c01b4116d1c175bfdc3152efa3f324a73fb8cf19a9df23fb519d32b5be001f9a79cfc512e7677cd733e2c47feb6d13124379c64acdac1ba852fc834dbda67630
   languageName: node
   linkType: hard
 
@@ -2911,7 +2911,7 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
-    "@metamask/controllers": ^32.0.2
+    "@metamask/controllers": ^33.0.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
     "@metamask/eslint-config-nodejs": ^11.0.0
@@ -3062,7 +3062,7 @@ __metadata:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
     "@metamask/browser-passworder": ^3.0.0
-    "@metamask/controllers": ^32.0.2
+    "@metamask/controllers": ^33.0.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
     "@metamask/eslint-config-nodejs": ^11.0.0
