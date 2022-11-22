@@ -1,5 +1,8 @@
 import { AddApprovalRequest } from '@metamask/approval-controller';
-import { BaseControllerV2 as BaseController } from '@metamask/base-controller';
+import {
+  BaseControllerV2 as BaseController,
+  RestrictedControllerMessenger,
+} from '@metamask/base-controller';
 import passworder from '@metamask/browser-passworder';
 import {
   BaseControllerV2 as BaseController,
