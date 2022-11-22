@@ -29,6 +29,18 @@ describe('heading', () => {
     });
   });
 
+  it('creates a heading component using the shorthand form', () => {
+    expect(heading('Hello, world!')).toStrictEqual({
+      type: NodeType.Heading,
+      text: 'Hello, world!',
+    });
+
+    expect(heading('foo bar')).toStrictEqual({
+      type: NodeType.Heading,
+      text: 'foo bar',
+    });
+  });
+
   it('validates the args', () => {
     // @ts-expect-error - Invalid args.
     expect(() => heading({ type: NodeType.Divider })).toThrow(
@@ -61,6 +73,33 @@ describe('panel', () => {
         children: [panel({ children: [heading({ text: 'Hello, world!' })] })],
       }),
     ).toStrictEqual({
+      type: NodeType.Panel,
+      children: [
+        {
+          type: NodeType.Panel,
+          children: [
+            {
+              type: NodeType.Heading,
+              text: 'Hello, world!',
+            },
+          ],
+        },
+      ],
+    });
+  });
+
+  it('creates a panel component using the shorthand form', () => {
+    expect(panel([heading('Hello, world!')])).toStrictEqual({
+      type: NodeType.Panel,
+      children: [
+        {
+          type: NodeType.Heading,
+          text: 'Hello, world!',
+        },
+      ],
+    });
+
+    expect(panel([panel([heading('Hello, world!')])])).toStrictEqual({
       type: NodeType.Panel,
       children: [
         {
@@ -127,6 +166,18 @@ describe('text', () => {
     });
 
     expect(text({ text: 'foo bar' })).toStrictEqual({
+      type: NodeType.Text,
+      text: 'foo bar',
+    });
+  });
+
+  it('creates a text component using the shorthand form', () => {
+    expect(text('Hello, world!')).toStrictEqual({
+      type: NodeType.Text,
+      text: 'Hello, world!',
+    });
+
+    expect(text('foo bar')).toStrictEqual({
       type: NodeType.Text,
       text: 'foo bar',
     });
