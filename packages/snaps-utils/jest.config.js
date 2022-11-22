@@ -14,10 +14,10 @@ module.exports = deepmerge(baseConfig, {
   ],
   coverageThreshold: {
     global: {
-      branches: 94.08,
-      functions: 96.55,
-      lines: 98.64,
-      statements: 98.64,
+      branches: 93.49,
+      functions: 95.45,
+      lines: 98.34,
+      statements: 98.34,
     },
   },
   testTimeout: 2500,
