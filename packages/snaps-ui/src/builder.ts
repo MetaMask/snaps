@@ -1,5 +1,6 @@
-import { Struct } from 'superstruct';
 import { assertStruct } from '@metamask/utils';
+import { Struct } from 'superstruct';
+
 import {
   Component,
   DividerStruct,
