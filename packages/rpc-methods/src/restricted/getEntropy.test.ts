@@ -1,4 +1,4 @@
-import { PermissionType } from '@metamask/controllers';
+import { PermissionType } from '@metamask/permission-controller';
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 
 import { ENTROPY_VECTORS } from './__fixtures__';

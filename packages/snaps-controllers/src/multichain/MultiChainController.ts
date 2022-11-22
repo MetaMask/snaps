@@ -1,11 +1,13 @@
-import { BaseControllerV2 as BaseController } from '@metamask/base-controller';
+import { AddApprovalRequest } from '@metamask/approval-controller';
 import {
-  AddApprovalRequest,
+  BaseControllerV2 as BaseController,
+  RestrictedControllerMessenger,
+} from '@metamask/base-controller';
+import {
   GetPermissions,
   GrantPermissions,
   HasPermission,
   PermissionConstraint,
-  RestrictedControllerMessenger,
 } from '@metamask/permission-controller';
 import { SnapKeyring } from '@metamask/snaps-types';
 import {

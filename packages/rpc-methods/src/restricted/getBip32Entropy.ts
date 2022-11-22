@@ -1,3 +1,4 @@
+import { BIP32Node, JsonSLIP10Node, SLIP10Node } from '@metamask/key-tree';
 import {
   Caveat,
   PermissionConstraint,
@@ -8,7 +9,6 @@ import {
   RestrictedMethodOptions,
   ValidPermissionSpecification,
 } from '@metamask/permission-controller';
-import { BIP32Node, JsonSLIP10Node, SLIP10Node } from '@metamask/key-tree';
 import {
   Bip32Entropy,
   Bip32EntropyStruct,

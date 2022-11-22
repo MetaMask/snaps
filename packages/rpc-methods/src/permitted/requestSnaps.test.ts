@@ -13,6 +13,7 @@ import {
   PendingJsonRpcResponse,
 } from '@metamask/types';
 import { JsonRpcEngine } from 'json-rpc-engine';
+
 import { requestSnapsHandler } from './requestSnaps';
 
 describe('requestSnapsHandler', () => {
