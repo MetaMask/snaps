@@ -2578,12 +2578,12 @@ __metadata:
   linkType: hard
 
 "@metamask/abi-utils@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/abi-utils@npm:1.0.0"
+  version: 1.1.0
+  resolution: "@metamask/abi-utils@npm:1.1.0"
   dependencies:
     "@metamask/utils": ^3.2.0
     superstruct: ^0.16.5
-  checksum: d8f8eab61d56248f6fa4bc9d59e68f505ee089be536c98875a6b152550682d60fae6656e1a479ca20fa4ece1615f5e54403e10b0f2a0b439a249899c880eeabc
+  checksum: 9b199a856b4fc5ee034cc64f776977f2d38eae78c5f08c6a485d2479c9230ec40bd0e3e299e924acdf0dffa6cafe50921e4b43a2319cbc0a25bdc95aed316645
   languageName: node
   linkType: hard
 
