@@ -7,7 +7,19 @@ import { SnapManifest, SnapPermissions } from './manifest/validation';
 import { SnapId, SnapIdPrefixes, SnapValidationFailureReason } from './types';
 import { SemVerVersion } from './versions';
 
+/**
+ * Supported URL protocols for locally hosted snaps.
+ */
+export const LOCALHOST_PROTOCOLS = new Set(['http:', 'https:']);
+
+/**
+ * Supported URL hostnames for locally hosted snaps.
+ */
 export const LOCALHOST_HOSTNAMES = new Set(['localhost', '127.0.0.1', '::1']);
+
+/**
+ * The prefix of the Snap restricted RPC method / permission.
+ */
 export const SNAP_PREFIX = 'wallet_snap_';
 
 export const SNAP_PREFIX_REGEX = new RegExp(`^${SNAP_PREFIX}`, 'u');

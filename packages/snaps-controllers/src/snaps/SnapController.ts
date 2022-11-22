@@ -30,6 +30,7 @@ import {
   InstallSnapsResult,
   isValidSemVerRange,
   LOCALHOST_HOSTNAMES,
+  LOCALHOST_PROTOCOLS,
   NpmSnapFileNames,
   PersistedSnap,
   ProcessSnapResult,
@@ -2069,21 +2070,28 @@ export class SnapController extends BaseController<
   /**
    * Fetches the manifest and source code of a local snap.
    *
-   * @param localhostUrl - The localhost URL to download from.
+   * @param localhostUrlString - The localhost URL to download from.
    * @returns The validated manifest and the source code.
    */
-  async #fetchLocalSnap(localhostUrl: string): Promise<FetchSnapResult> {
+  async #fetchLocalSnap(localhostUrlString: string): Promise<FetchSnapResult> {
+    const localhostUrl = new URL(localhostUrlString);
+    if (
+      !LOCALHOST_PROTOCOLS.has(localhostUrl.protocol) ||
+      !LOCALHOST_HOSTNAMES.has(localhostUrl.hostname)
+    ) {
+      throw new Error(
+        `Invalid URL: Locally hosted snaps must be hosted on localhost via one of the following protocols [ ${Array.from(
+          LOCALHOST_PROTOCOLS,
+        ).join(', ')} ]. Received URL: "${localhostUrl.toString()}"`,
+      );
+    }
+
     // Local snaps are mostly used for development purposes. Fetches were cached in the browser and were not requested
     // afterwards which lead to confusing development where old versions of snaps were installed.
     // Thus we disable caching
     const fetchOptions: RequestInit = { cache: 'no-cache' };
-    const manifestUrl = new URL(NpmSnapFileNames.Manifest, localhostUrl);
-    if (!LOCALHOST_HOSTNAMES.has(manifestUrl.hostname)) {
-      throw new Error(
-        `Invalid URL: Locally hosted Snaps must be hosted on localhost. Received URL: "${manifestUrl.toString()}"`,
-      );
-    }
 
+    const manifestUrl = new URL(NpmSnapFileNames.Manifest, localhostUrl);
     const manifest = await (
       await this.#fetchFunction(manifestUrl.toString(), fetchOptions)
     ).json();

@@ -2282,6 +2282,49 @@ describe('SnapController', () => {
       );
     });
 
+    it.each([
+      'local:foo',
+      'local:foo://localhost:8080',
+      'local:http://foo:8080',
+      'local:https://foo:8080',
+    ])(
+      'returns an error on invalid local snap URL in id',
+      async (invalidLocalId) => {
+        const messenger = getSnapControllerMessenger();
+        const controller = getSnapController(
+          getSnapControllerOptions({ messenger }),
+        );
+
+        const callActionMock = jest
+          .spyOn(messenger, 'call')
+          .mockImplementation((method, ..._args: unknown[]) => {
+            if (method === 'PermissionController:hasPermission') {
+              return true;
+            }
+
+            return false;
+          });
+
+        const result = await controller.installSnaps(MOCK_ORIGIN, {
+          [invalidLocalId]: {},
+        });
+
+        expect(result).toStrictEqual({
+          [invalidLocalId]: {
+            error: expect.objectContaining({
+              message: expect.stringMatching(/^Invalid URL:/iu),
+            }),
+          },
+        });
+        expect(callActionMock).toHaveBeenCalledTimes(1);
+        expect(callActionMock).toHaveBeenCalledWith(
+          'PermissionController:hasPermission',
+          MOCK_ORIGIN,
+          expect.anything(),
+        );
+      },
+    );
+
     it('updates a snap', async () => {
       const newVersion = '1.0.2';
       const newVersionRange = '>=1.0.1';
@@ -2507,11 +2550,19 @@ describe('SnapController', () => {
   });
 
   describe('updateSnap', () => {
-    it('throws an error on invalid snap id', async () => {
-      await expect(async () =>
-        getSnapController().updateSnap(MOCK_ORIGIN, 'local:foo'),
-      ).rejects.toThrow('Snap "local:foo" not found');
-    });
+    it.each([
+      'local:foo',
+      'local:foo://localhost:8080',
+      'local:http://foo:8080',
+      'local:https://foo:8080',
+    ])(
+      'throws an error on invalid local snap URL in id',
+      async (invalidLocalId) => {
+        await expect(async () =>
+          getSnapController().updateSnap(MOCK_ORIGIN, invalidLocalId as any),
+        ).rejects.toThrow(`Snap "${invalidLocalId}" not found`);
+      },
+    );
 
     it('throws an error if the specified SemVer range is invalid', async () => {
       const controller = getSnapController(
