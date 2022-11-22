@@ -2621,9 +2621,9 @@ __metadata:
   linkType: hard
 
 "@metamask/contract-metadata@npm:^1.35.0":
-  version: 1.35.0
-  resolution: "@metamask/contract-metadata@npm:1.35.0"
-  checksum: d2bbb8bff2e2ebd4104512dbf4b2900fffd1f03125673b0d3ac58dac0e3b324402fec7170229dfdb601635d6d7074e0755f139149b3dc8640ee4703c17eb2383
+  version: 1.36.0
+  resolution: "@metamask/contract-metadata@npm:1.36.0"
+  checksum: 6b1bc0927536a7ed235f896dcb0dabbce1f7853eef5e58efdd6cc8294c2ef10dd0c46572d20df9df31563fb466a0a162101169d9e1595dd931c7eabb9fa5a7e9
   languageName: node
   linkType: hard
 
