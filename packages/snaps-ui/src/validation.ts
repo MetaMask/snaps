@@ -1,6 +1,6 @@
+import { assertStruct } from '@metamask/utils';
 import { is } from 'superstruct';
 
-import { assertStruct } from '@metamask/utils';
 import { Component, ComponentStruct } from './nodes';
 
 /**
