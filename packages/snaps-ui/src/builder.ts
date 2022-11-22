@@ -66,7 +66,7 @@ function createBuilder<
   return (...args: [Omit<Node, 'type'>] | NodeArrayType<Node, Keys> | []) => {
     // Node passed as a single object.
     if (args.length === 1 && isPlainObject(args[0])) {
-      const node = { type, ...args[0] };
+      const node = { ...args[0], type };
 
       // The user could be passing invalid values to the builder, so we need to
       // validate them as per the component's struct.

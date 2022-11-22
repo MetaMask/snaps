@@ -36,8 +36,8 @@ describe('copyable', () => {
 
   it('validates the args', () => {
     // @ts-expect-error - Invalid args.
-    expect(() => copyable({ type: NodeType.Divider })).toThrow(
-      'Invalid copyable component: At path: type -- Expected the literal `"copyable"`, but received: "divider".',
+    expect(() => copyable({ text: 'foo', bar: 'baz' })).toThrow(
+      'Invalid copyable component: At path: bar -- Expected a value of type `never`, but received: `"baz"`.',
     );
 
     // @ts-expect-error - Invalid args.
@@ -56,8 +56,8 @@ describe('divider', () => {
 
   it('validates the args', () => {
     // @ts-expect-error - Invalid args.
-    expect(() => divider({ type: NodeType.Heading })).toThrow(
-      'Invalid divider component: At path: type -- Expected the literal `"divider"`, but received: "heading".',
+    expect(() => divider({ bar: 'baz' })).toThrow(
+      'Invalid divider component: At path: bar -- Expected a value of type `never`, but received: `"baz"`.',
     );
   });
 });
@@ -89,8 +89,8 @@ describe('heading', () => {
 
   it('validates the args', () => {
     // @ts-expect-error - Invalid args.
-    expect(() => heading({ type: NodeType.Divider })).toThrow(
-      'Invalid heading component: At path: type -- Expected the literal `"heading"`, but received: "divider".',
+    expect(() => heading({ text: 'foo', bar: 'baz' })).toThrow(
+      'Invalid heading component: At path: bar -- Expected a value of type `never`, but received: `"baz"`.',
     );
 
     // @ts-expect-error - Invalid args.
@@ -163,8 +163,8 @@ describe('panel', () => {
 
   it('validates the args', () => {
     // @ts-expect-error - Invalid args.
-    expect(() => panel({ type: NodeType.Divider })).toThrow(
-      'Invalid panel component: At path: type -- Expected the literal `"panel"`, but received: "divider".',
+    expect(() => panel({ children: [], bar: 'baz' })).toThrow(
+      'Invalid panel component: At path: bar -- Expected a value of type `never`, but received: `"baz"`.',
     );
 
     // @ts-expect-error - Invalid args.
@@ -183,8 +183,8 @@ describe('spacer', () => {
 
   it('validates the args', () => {
     // @ts-expect-error - Invalid args.
-    expect(() => spacer({ type: NodeType.Divider })).toThrow(
-      'Invalid spacer component: At path: type -- Expected the literal `"spacer"`, but received: "divider".',
+    expect(() => spacer({ bar: 'baz' })).toThrow(
+      'Invalid spacer component: At path: bar -- Expected a value of type `never`, but received: `"baz"`.',
     );
   });
 });
@@ -198,8 +198,8 @@ describe('spinner', () => {
 
   it('validates the args', () => {
     // @ts-expect-error - Invalid args.
-    expect(() => spinner({ type: NodeType.Divider })).toThrow(
-      'Invalid spinner component: At path: type -- Expected the literal `"spinner"`, but received: "divider".',
+    expect(() => spinner({ bar: 'baz' })).toThrow(
+      'Invalid spinner component: At path: bar -- Expected a value of type `never`, but received: `"baz"`.',
     );
   });
 });
@@ -231,8 +231,8 @@ describe('text', () => {
 
   it('validates the args', () => {
     // @ts-expect-error - Invalid args.
-    expect(() => text({ type: NodeType.Divider })).toThrow(
-      'Invalid text component: At path: type -- Expected the literal `"text"`, but received: "divider".',
+    expect(() => text({ text: 'foo', bar: 'baz' })).toThrow(
+      'Invalid text component: At path: bar -- Expected a value of type `never`, but received: `"baz"`.',
     );
 
     // @ts-expect-error - Invalid args.
