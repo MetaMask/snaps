@@ -64,6 +64,7 @@ import {
   hasProperty,
   inMilliseconds,
   isNonEmptyArray,
+  isValidJson,
   Json,
   timeSince,
 } from '@metamask/utils';
@@ -1364,7 +1365,10 @@ export class SnapController extends BaseController<
   async #decryptSnapState(snapId: SnapId, encrypted: string): Promise<Json> {
     const appKey = await this.#getEncryptionKey(snapId);
     try {
-      return await passworder.decrypt(appKey, encrypted);
+      const value = await passworder.decrypt(appKey, encrypted);
+
+      assert(isValidJson(value));
+      return value;
     } catch (error) {
       throw new Error(
         'Failed to decrypt snap state, the state must be corrupted.',
