@@ -19,6 +19,7 @@ export type Node = {
 };
 
 export enum NodeType {
+  Copyable = 'copyable',
   Divider = 'divider',
   Heading = 'heading',
   Panel = 'panel',
@@ -26,6 +27,16 @@ export enum NodeType {
   Spinner = 'spinner',
   Text = 'text',
 }
+
+export const CopyableStruct = object({
+  type: literal(NodeType.Copyable),
+  text: string(),
+});
+
+/**
+ * Text that can be copied to the clipboard.
+ */
+export type Copyable = Infer<typeof CopyableStruct>;
 
 export const DividerStruct = object({
   type: literal(NodeType.Divider),
@@ -109,6 +120,7 @@ export const TextStruct = assign(
 export type Text = Infer<typeof TextStruct>;
 
 export const ComponentStruct = union([
+  CopyableStruct,
   DividerStruct,
   HeadingStruct,
   PanelStruct,

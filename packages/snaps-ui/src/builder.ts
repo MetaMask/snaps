@@ -3,6 +3,7 @@ import { Struct } from 'superstruct';
 
 import {
   Component,
+  CopyableStruct,
   DividerStruct,
   HeadingStruct,
   NodeType,
@@ -90,6 +91,18 @@ function createBuilder<
     return node;
   };
 }
+
+/**
+ * Create a {@link Copyable} component.
+ *
+ * @param args - The node arguments. This can either be a string, or an object
+ * with the `text` property.
+ * @param args.text - The text to copy.
+ * @returns A {@link Copyable} component.
+ */
+export const copyable = createBuilder(NodeType.Copyable, CopyableStruct, [
+  'text',
+]);
 
 /**
  * Create a {@link Divider} node.

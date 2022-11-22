@@ -1,5 +1,51 @@
-import { divider, heading, panel, spacer, spinner, text } from './builder';
+import {
+  copyable,
+  divider,
+  heading,
+  panel,
+  spacer,
+  spinner,
+  text,
+} from './builder';
 import { NodeType } from './nodes';
+
+describe('copyable', () => {
+  it('creates a copyable component', () => {
+    expect(copyable({ text: 'Hello, world!' })).toStrictEqual({
+      type: NodeType.Copyable,
+      text: 'Hello, world!',
+    });
+
+    expect(copyable({ text: 'foo bar' })).toStrictEqual({
+      type: NodeType.Copyable,
+      text: 'foo bar',
+    });
+  });
+
+  it('creates a copyable component using the shorthand form', () => {
+    expect(copyable('Hello, world!')).toStrictEqual({
+      type: NodeType.Copyable,
+      text: 'Hello, world!',
+    });
+
+    expect(copyable('foo bar')).toStrictEqual({
+      type: NodeType.Copyable,
+      text: 'foo bar',
+    });
+  });
+
+  it('validates the args', () => {
+    // @ts-expect-error - Invalid args.
+    expect(() => copyable({ type: NodeType.Divider })).toThrow(
+      'Invalid copyable component: At path: type -- Expected the literal `"copyable"`, but received: "divider".',
+    );
+
+    // @ts-expect-error - Invalid args.
+    expect(() => copyable({})).toThrow(
+      'Invalid copyable component: At path: text -- Expected a string, but received: undefined.',
+    );
+  });
+});
 
 describe('divider', () => {
   it('creates a divider component', () => {
