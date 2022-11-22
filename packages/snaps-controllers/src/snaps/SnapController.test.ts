@@ -1,7 +1,7 @@
+import { getPersistentState } from '@metamask/base-controller';
 import { encrypt } from '@metamask/browser-passworder';
 import {
   Caveat,
-  getPersistentState,
   SubjectPermissions,
   ValidPermission,
 } from '@metamask/permission-controller';
