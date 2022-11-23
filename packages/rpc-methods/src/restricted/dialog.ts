@@ -34,9 +34,14 @@ const BaseFieldsStruct = object({
   title: size(string(), 1, 40),
   description: optional(size(string(), 1, 140)),
   textAreaContent: optional(size(string(), 1, 1800)),
+  placeholder: optional(size(string(), 1, 40)),
 });
 
 const PromptFieldsStruct = omit(BaseFieldsStruct, ['textAreaContent']);
+
+const AlertFieldsStruct = omit(BaseFieldsStruct, ['placeholder']);
+
+const ConfirmationFieldsStruct = omit(BaseFieldsStruct, ['placeholder']);
 
 /**
  * @property title - The alert title, no greater than 40 characters long.
@@ -45,7 +50,7 @@ const PromptFieldsStruct = omit(BaseFieldsStruct, ['textAreaContent']);
  * @property textAreaContent - Free-from text content, no greater than 1800
  * characters long.
  */
-export type AlertFields = Infer<typeof BaseFieldsStruct>;
+export type AlertFields = Infer<typeof AlertFieldsStruct>;
 
 /**
  * @property title - A question describing what the user is confirming, no
@@ -55,7 +60,7 @@ export type AlertFields = Infer<typeof BaseFieldsStruct>;
  * @property textAreaContent - Free-from text content, no greater than 1800
  * characters long.
  */
-export type ConfirmationFields = Infer<typeof BaseFieldsStruct>;
+export type ConfirmationFields = Infer<typeof ConfirmationFieldsStruct>;
 
 /**
  * @property title - The prompt title, no greater than 40 characters long.
@@ -139,12 +144,12 @@ const BaseParamsStruct = type({
 
 const AlertParametersStruct = object({
   type: literal(DialogType.Alert),
-  fields: BaseFieldsStruct,
+  fields: AlertFieldsStruct,
 });
 
 const ConfirmationParametersStruct = object({
   type: literal(DialogType.Confirmation),
-  fields: BaseFieldsStruct,
+  fields: ConfirmationFieldsStruct,
 });
 
 const PromptParametersStruct = object({
@@ -232,6 +237,13 @@ function getValidatedParams(
         throw ethErrors.rpc.invalidParams({
           message:
             'Invalid params: Prompts may not specify a "textAreaContent" field.',
+        });
+      }
+
+      if (key === 'placeholder' && errorType === 'never') {
+        throw ethErrors.rpc.invalidParams({
+          message:
+            'Invalid params: Alerts or Confirmations may not specify a "placeholder" field.',
         });
       }
 

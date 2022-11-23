@@ -108,6 +108,7 @@ describe('implementation', () => {
           fields: {
             title: 'Foo',
             description: 'Bar',
+            placeholder: 'Baz',
           },
         },
       });
@@ -116,6 +117,7 @@ describe('implementation', () => {
       expect(hooks.showDialog).toHaveBeenCalledWith('foo', DialogType.Prompt, {
         title: 'Foo',
         description: 'Bar',
+        placeholder: 'Baz',
       });
     });
   });
@@ -307,6 +309,31 @@ describe('implementation', () => {
       },
     );
 
+    it.each([true, 2, [], {}, new (class {})()])(
+      'rejects invalid placeholder contents',
+      async (value) => {
+        const hooks = getMockDialogHooks();
+        const implementation = getDialogImplementation(hooks);
+
+        await expect(
+          implementation({
+            context: { origin: 'foo' },
+            method: 'snap_dialog',
+            params: {
+              type: DialogType.Prompt,
+              fields: {
+                title: 'Foo',
+                description: 'Bar',
+                placeholder: value,
+              } as any,
+            },
+          }),
+        ).rejects.toThrow(
+          /Invalid params: At path: fields\.placeholder -- Expected a string, but received: .*\./u,
+        );
+      },
+    );
+
     it('rejects too long text area contents', async () => {
       const hooks = getMockDialogHooks();
       const implementation = getDialogImplementation(hooks);
@@ -349,5 +376,30 @@ describe('implementation', () => {
         'Invalid params: Prompts may not specify a "textAreaContent" field.',
       );
     });
+
+    it.each([DialogType.Alert, DialogType.Confirmation])(
+      'rejects placehoder field for alerts and confirmations',
+      async (type) => {
+        const hooks = getMockDialogHooks();
+        const implementation = getDialogImplementation(hooks);
+        await expect(
+          implementation({
+            context: { origin: 'foo' },
+            method: 'snap_dialog',
+            params: {
+              type,
+              fields: {
+                title: 'Foo',
+                description: 'Bar',
+                textAreaContent: 'Baz',
+                placeholder: 'Foobar',
+              } as any,
+            },
+          }),
+        ).rejects.toThrow(
+          'Invalid params: Alerts or Confirmations may not specify a "placeholder" field.',
+        );
+      },
+    );
   });
 });
