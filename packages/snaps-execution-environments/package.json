@@ -30,16 +30,6 @@
     "auto-changelog-init": "auto-changelog init",
     "publish:package": "../../scripts/publish-package.sh"
   },
-  "ava": {
-    "concurrency": 5,
-    "extensions": [
-      "ts"
-    ],
-    "require": [
-      "ts-node/register"
-    ],
-    "verbose": true
-  },
   "dependencies": {
     "@metamask/object-multiplex": "^1.2.0",
     "@metamask/post-message-stream": "^6.0.0",

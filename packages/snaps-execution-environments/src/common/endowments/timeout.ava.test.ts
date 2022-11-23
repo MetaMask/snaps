@@ -1,14 +1,12 @@
-// eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
-/// <reference path="../../../../../node_modules/ses/index.d.ts" />
-
-// eslint-disable-next-line @typescript-eslint/no-require-imports,import/no-unassigned-import
-require('ses');
-
-// eslint-disable-next-line
+// eslint-disable-next-line import/no-unassigned-import
+import 'ses';
 import test from 'ava';
 
-// eslint-disable-next-line
 import timeout from './timeout';
+
+test.before(() => {
+  lockdown();
+});
 
 test('has expected properties', (tRef) => {
   tRef.like(timeout, {
