@@ -2179,7 +2179,7 @@ describe('SnapController', () => {
         [MOCK_SNAP_ID]: { version: newVersionRange },
       });
 
-      // expect(messenger.call).toHaveBeenCalledTimes(12);
+      expect(messenger.call).toHaveBeenCalledTimes(12);
       expect(messenger.call).toHaveBeenNthCalledWith(
         7,
         'PermissionController:hasPermission',

@@ -81,12 +81,9 @@ export const getControllerMessenger = () => {
     },
   );
 
-  messenger.registerActionHandler(
-    'PermissionController:hasPermissions',
-    (permission) => {
-      return permission !== SnapEndowments.LongRunning;
-    },
-  );
+  messenger.registerActionHandler('PermissionController:hasPermissions', () => {
+    return true;
+  });
 
   messenger.registerActionHandler(
     'ApprovalController:addRequest',
