@@ -1,10 +1,15 @@
-import { getSnapSourceShasum } from '@metamask/snaps-utils';
+import {
+  PermissionConstraint,
+  SubjectPermissions,
+} from '@metamask/controllers';
+import { fromEntries, getSnapSourceShasum } from '@metamask/snaps-utils';
 import {
   MOCK_ORIGIN,
   MOCK_SNAP_ID,
   getSnapManifest,
   getPersistedSnapObject,
 } from '@metamask/snaps-utils/test-utils';
+import { assert } from '@metamask/utils';
 
 import { SnapEndowments } from '..';
 import { MultiChainController } from '../multichain';
@@ -16,76 +21,6 @@ import {
   getSnapControllerWithEES,
   getSnapControllerWithEESOptions,
 } from './controller';
-
-export const getMultiChainControllerMessenger = (
-  messenger: ReturnType<
-    typeof getControllerMessenger
-  > = getControllerMessenger(),
-) => {
-  return messenger.getRestricted({
-    name: 'MultiChainController',
-    allowedActions: [
-      'PermissionController:getPermissions',
-      'PermissionController:hasPermission',
-      'PermissionController:grantPermissions',
-      'ApprovalController:addRequest',
-      'SnapController:getAll',
-      'SnapController:handleRequest',
-      'SnapController:incrementActiveReferences',
-      'SnapController:decrementActiveReferences',
-    ],
-  });
-};
-
-export const getMultiChainController = () => {
-  const rootMessenger = getControllerMessenger();
-  const snapControllerMessenger = getSnapControllerMessenger(rootMessenger);
-  const snapController = getSnapController(
-    getSnapControllerOptions({ messenger: snapControllerMessenger }),
-  );
-  const multiChainControllerMessenger =
-    getMultiChainControllerMessenger(rootMessenger);
-  const multiChainController = new MultiChainController({
-    messenger: multiChainControllerMessenger,
-    notify: jest.fn(),
-  });
-
-  return {
-    rootMessenger,
-    multiChainControllerMessenger,
-    multiChainController,
-    snapController,
-    snapControllerMessenger,
-  };
-};
-
-export const getMultiChainControllerWithEES = (
-  options = {
-    snapControllerOptions: getSnapControllerWithEESOptions(),
-  },
-) => {
-  const { snapControllerOptions } = options;
-  const { rootMessenger } = snapControllerOptions;
-
-  const [snapController, executionService] = getSnapControllerWithEES(
-    snapControllerOptions,
-  );
-  const multiChainControllerMessenger =
-    getMultiChainControllerMessenger(rootMessenger);
-  const multiChainController = new MultiChainController({
-    messenger: multiChainControllerMessenger,
-    notify: jest.fn(),
-  });
-
-  return {
-    rootMessenger,
-    multiChainControllerMessenger,
-    multiChainController,
-    snapController,
-    snapControllerMessenger: snapControllerOptions.messenger,
-    executionService,
-  };
-};
 
 export const MOCK_EIP155_NAMESPACE = {
   methods: [
@@ -172,10 +107,113 @@ export const PERSISTED_MOCK_KEYRING_SNAP = getPersistedSnapObject({
   }),
 });
 
-export const MOCK_KEYRING_PERMISSION = {
+export const MOCK_KEYRING_PERMISSION: PermissionConstraint = {
   caveats: [{ type: 'snapKeyring', value: { namespaces: MOCK_NAMESPACES } }],
   date: 1664187844588,
   id: 'izn0WGUO8cvq_jqvLQuQP',
   invoker: MOCK_ORIGIN,
   parentCapability: SnapEndowments.Keyring,
+};
+
+export const getMultiChainControllerMessenger = (
+  messenger: ReturnType<
+    typeof getControllerMessenger
+  > = getControllerMessenger(),
+) => {
+  return messenger.getRestricted({
+    name: 'MultiChainController',
+    allowedActions: [
+      'PermissionController:getPermissions',
+      'PermissionController:hasPermission',
+      'PermissionController:grantPermissions',
+      'ApprovalController:addRequest',
+      'SnapController:getAll',
+      'SnapController:handleRequest',
+      'SnapController:incrementActiveReferences',
+      'SnapController:decrementActiveReferences',
+    ],
+  });
+};
+
+export const getMultiChainController = () => {
+  const rootMessenger = getControllerMessenger();
+  const snapControllerMessenger = getSnapControllerMessenger(rootMessenger);
+  const snapController = getSnapController(
+    getSnapControllerOptions({ messenger: snapControllerMessenger }),
+  );
+  const multiChainControllerMessenger =
+    getMultiChainControllerMessenger(rootMessenger);
+  const multiChainController = new MultiChainController({
+    messenger: multiChainControllerMessenger,
+    notify: jest.fn(),
+  });
+
+  return {
+    rootMessenger,
+    multiChainControllerMessenger,
+    multiChainController,
+    snapController,
+    snapControllerMessenger,
+  };
+};
+
+export const getMultiChainControllerWithEES = (
+  options = {
+    snapControllerOptions: getSnapControllerWithEESOptions(),
+  },
+) => {
+  const { snapControllerOptions } = options;
+  const { rootMessenger } = snapControllerOptions;
+
+  rootMessenger.registerActionHandler(
+    'PermissionController:getPermissions',
+    (permissionName): SubjectPermissions<PermissionConstraint> => {
+      if (permissionName === MOCK_SNAP_ID) {
+        return { [SnapEndowments.Keyring]: MOCK_KEYRING_PERMISSION };
+      }
+
+      return {};
+    },
+  );
+
+  rootMessenger.registerActionHandler(
+    'ApprovalController:addRequest',
+    async ({ type, requestData }) => {
+      if (type === 'multichain_connect') {
+        assert(requestData?.possibleAccounts);
+
+        return Promise.resolve(
+          fromEntries(
+            Object.entries(requestData.possibleAccounts).map(
+              ([namespace, snapAndAccounts]) => [
+                namespace,
+                (snapAndAccounts as string[])[0] ?? null,
+              ],
+            ),
+          ),
+        );
+      }
+
+      return Promise.resolve({});
+    },
+  );
+
+  const [snapController, executionService] = getSnapControllerWithEES(
+    snapControllerOptions,
+  );
+  const multiChainControllerMessenger =
+    getMultiChainControllerMessenger(rootMessenger);
+  const multiChainController = new MultiChainController({
+    messenger: multiChainControllerMessenger,
+    notify: jest.fn(),
+  });
+
+  return {
+    rootMessenger,
+    multiChainControllerMessenger,
+    multiChainController,
+    snapController,
+    snapControllerMessenger: snapControllerOptions.messenger,
+    executionService,
+  };
 };
