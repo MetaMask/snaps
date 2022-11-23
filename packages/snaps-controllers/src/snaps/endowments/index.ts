@@ -56,7 +56,7 @@ export const endowmentCaveatMappers: Record<
   [rpcEndowmentBuilder.targetKey]: getRpcCaveatMapper,
 };
 
-export const handlerEndowments = {
+export const handlerEndowments: Record<HandlerType, string> = {
   [HandlerType.OnRpcRequest]: rpcEndowmentBuilder.targetKey,
   [HandlerType.SnapKeyring]: keyringEndowmentBuilder.targetKey,
   [HandlerType.OnTransaction]: transactionInsightEndowmentBuilder.targetKey,

@@ -81,19 +81,12 @@ export const rpcEndowmentBuilder = Object.freeze({
 function validateCaveatOrigins(caveat: Caveat<string, any>) {
   if (!hasProperty(caveat, 'value') || !isPlainObject(caveat.value)) {
     throw ethErrors.rpc.invalidParams({
-      message: 'Expected a plain object.',
+      message: 'Invalid JSON-RPC origins: Expected a plain object.',
     });
   }
 
   const { value } = caveat;
-
-  if (!hasProperty(value, 'origins') || !isPlainObject(value)) {
-    throw ethErrors.rpc.invalidParams({
-      message: 'Expected a plain object.',
-    });
-  }
-
-  assertIsRpcOrigins(value.origins, ethErrors.rpc.invalidParams);
+  assertIsRpcOrigins(value, ethErrors.rpc.invalidParams);
 }
 
 /**
@@ -127,10 +120,7 @@ export function getRpcCaveatMapper(
 export function getRpcCaveatOrigins(
   permission?: PermissionConstraint,
 ): RpcOrigins | null {
-  if (!permission?.caveats) {
-    return null;
-  }
-
+  assert(permission?.caveats);
   assert(permission.caveats.length === 1);
   assert(permission.caveats[0].type === SnapCaveatType.RpcOrigin);
 

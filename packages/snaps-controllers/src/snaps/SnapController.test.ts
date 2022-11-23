@@ -45,12 +45,16 @@ import {
   getSnapControllerWithEES,
   getSnapControllerWithEESOptions,
   MOCK_BLOCK_NUMBER,
+  MOCK_DAPP_SUBJECT_METADATA,
+  MOCK_DAPPS_RPC_ORIGINS_PERMISSION,
   MOCK_NAMESPACES,
+  MOCK_RPC_ORIGINS_PERMISSION,
+  MOCK_SNAP_SUBJECT_METADATA,
   PERSISTED_MOCK_KEYRING_SNAP,
   sleep,
 } from '../test-utils';
 import { delay } from '../utils';
-import { SnapEndowments } from './endowments';
+import { handlerEndowments, SnapEndowments } from './endowments';
 import { SnapControllerState, SNAP_APPROVAL_UPDATE } from './SnapController';
 
 const { subtle } = new Crypto();
@@ -1317,6 +1321,123 @@ describe('SnapController', () => {
 
     snapController.destroy();
     await service.terminateAllSnaps();
+  });
+
+  describe('handleRequest', () => {
+    it.each(Object.keys(handlerEndowments) as HandlerType[])(
+      'throws if the snap does not have permission for the handler',
+      async (handler) => {
+        const rootMessenger = getControllerMessenger();
+        const messenger = getSnapControllerMessenger(rootMessenger);
+        const snapController = getSnapController(
+          getSnapControllerOptions({
+            messenger,
+            state: {
+              snaps: getPersistedSnapsState(),
+            },
+          }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'PermissionController:hasPermission',
+          () => false,
+        );
+
+        const snap = snapController.getExpect(MOCK_SNAP_ID);
+        await expect(
+          snapController.handleRequest({
+            snapId: snap.id,
+            origin: 'foo.com',
+            handler,
+            request: { jsonrpc: '2.0', method: 'test' },
+          }),
+        ).rejects.toThrow(
+          `Snap "${snap.id}" is not permitted to use "${handlerEndowments[handler]}".`,
+        );
+
+        snapController.destroy();
+      },
+    );
+
+    it('throws if the snap does not have permission to handle JSON-RPC requests from dapps', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          // Permission to receive JSON-RPC requests from other Snaps.
+          [SnapEndowments.Rpc]: MOCK_RPC_ORIGINS_PERMISSION,
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SubjectMetadataController:getSubjectMetadata',
+        () => MOCK_DAPP_SUBJECT_METADATA,
+      );
+
+      const snap = snapController.getExpect(MOCK_SNAP_ID);
+      await expect(
+        snapController.handleRequest({
+          snapId: snap.id,
+          origin: MOCK_ORIGIN,
+          handler: HandlerType.OnRpcRequest,
+          request: { jsonrpc: '2.0', method: 'test' },
+        }),
+      ).rejects.toThrow(
+        `Snap "${snap.id}" is not permitted to handle JSON-RPC requests from "${MOCK_ORIGIN}".`,
+      );
+
+      snapController.destroy();
+    });
+
+    it('throws if the snap does not have permission to handle JSON-RPC requests from snaps', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          // Permission to receive JSON-RPC requests from dapps.
+          [SnapEndowments.Rpc]: MOCK_DAPPS_RPC_ORIGINS_PERMISSION,
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SubjectMetadataController:getSubjectMetadata',
+        () => MOCK_SNAP_SUBJECT_METADATA,
+      );
+
+      const snap = snapController.getExpect(MOCK_SNAP_ID);
+      await expect(
+        snapController.handleRequest({
+          snapId: snap.id,
+          origin: MOCK_SNAP_ID,
+          handler: HandlerType.OnRpcRequest,
+          request: { jsonrpc: '2.0', method: 'test' },
+        }),
+      ).rejects.toThrow(
+        `Snap "${snap.id}" is not permitted to handle JSON-RPC requests from "${MOCK_SNAP_ID}".`,
+      );
+
+      snapController.destroy();
+    });
   });
 
   describe('getRpcRequestHandler', () => {
