@@ -21,7 +21,7 @@ describe('isComponent', () => {
   it('returns true for a heading component', () => {
     const heading: Heading = {
       type: NodeType.Heading,
-      text: 'Hello, world!',
+      value: 'Hello, world!',
     };
 
     expect(isComponent(heading)).toBe(true);
@@ -33,7 +33,7 @@ describe('isComponent', () => {
       children: [
         {
           type: NodeType.Heading,
-          text: 'Hello, world!',
+          value: 'Hello, world!',
         },
       ],
     };
@@ -50,7 +50,7 @@ describe('isComponent', () => {
           children: [
             {
               type: NodeType.Heading,
-              text: 'Hello, world!',
+              value: 'Hello, world!',
             },
           ],
         },
@@ -79,7 +79,7 @@ describe('isComponent', () => {
   it('returns true for a text component', () => {
     const text: Text = {
       type: NodeType.Text,
-      text: 'Hello, world!',
+      value: 'Hello, world!',
     };
 
     expect(isComponent(text)).toBe(true);
@@ -116,7 +116,7 @@ describe('assertIsComponent', () => {
   it('does not throw for a heading component', () => {
     const heading: Heading = {
       type: NodeType.Heading,
-      text: 'Hello, world!',
+      value: 'Hello, world!',
     };
 
     expect(() => assertIsComponent(heading)).not.toThrow();
@@ -128,7 +128,7 @@ describe('assertIsComponent', () => {
       children: [
         {
           type: NodeType.Heading,
-          text: 'Hello, world!',
+          value: 'Hello, world!',
         },
       ],
     };
@@ -145,7 +145,7 @@ describe('assertIsComponent', () => {
           children: [
             {
               type: NodeType.Heading,
-              text: 'Hello, world!',
+              value: 'Hello, world!',
             },
           ],
         },
@@ -174,7 +174,7 @@ describe('assertIsComponent', () => {
   it('does not throw for a text component', () => {
     const text: Text = {
       type: NodeType.Text,
-      text: 'Hello, world!',
+      value: 'Hello, world!',
     };
 
     expect(() => assertIsComponent(text)).not.toThrow();

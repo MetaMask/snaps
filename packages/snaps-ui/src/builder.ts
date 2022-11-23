@@ -101,7 +101,7 @@ function createBuilder<
  * @returns A {@link Copyable} component.
  */
 export const copyable = createBuilder(NodeType.Copyable, CopyableStruct, [
-  'text',
+  'value',
 ]);
 
 /**
@@ -128,7 +128,9 @@ export const divider = createBuilder(NodeType.Divider, DividerStruct);
  * const node = heading('Hello, world!');
  * ```
  */
-export const heading = createBuilder(NodeType.Heading, HeadingStruct, ['text']);
+export const heading = createBuilder(NodeType.Heading, HeadingStruct, [
+  'value',
+]);
 
 /**
  * Create a {@link Panel} node.
@@ -190,4 +192,4 @@ export const spinner = createBuilder(NodeType.Spinner, SpinnerStruct);
  * const node = text('Hello, world!');
  * ```
  */
-export const text = createBuilder(NodeType.Text, TextStruct, ['text']);
+export const text = createBuilder(NodeType.Text, TextStruct, ['value']);
