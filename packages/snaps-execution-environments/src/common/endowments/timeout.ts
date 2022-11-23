@@ -1,3 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
+/// <reference path="../../../../../node_modules/ses/index.d.ts" />
+
 /**
  * Creates a pair of `setTimeout` and `clearTimeout` functions attenuated such
  * that:
@@ -43,8 +46,8 @@ const createTimeout = () => {
   };
 
   return {
-    setTimeout: _setTimeout,
-    clearTimeout: _clearTimeout,
+    setTimeout: harden(_setTimeout),
+    clearTimeout: harden(_clearTimeout),
     teardownFunction,
   } as const;
 };
