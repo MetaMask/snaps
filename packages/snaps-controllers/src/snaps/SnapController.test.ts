@@ -1325,13 +1325,7 @@ describe('SnapController', () => {
       const options = getSnapControllerWithEESOptions({
         rootMessenger,
         state: {
-          snaps: {
-            [MOCK_SNAP_ID]: {
-              enabled: true,
-              id: MOCK_SNAP_ID,
-              status: SnapStatus.Running,
-            } as any,
-          },
+          snaps: getPersistedSnapsState(),
         },
       });
       const [snapController, service] = getSnapControllerWithEES(options);
@@ -1355,7 +1349,7 @@ describe('SnapController', () => {
         },
       });
 
-      expect(rootMessenger.call).toHaveBeenCalledTimes(3);
+      expect(rootMessenger.call).toHaveBeenCalledTimes(7);
       expect(rootMessenger.call).toHaveBeenCalledWith(
         'ExecutionService:handleRpcRequest',
         MOCK_SNAP_ID,

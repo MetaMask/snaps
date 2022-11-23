@@ -55,7 +55,7 @@ describe('MultiChainController', () => {
           },
         },
       });
-      expect(rootMessenger.call).toHaveBeenCalledTimes(11);
+      expect(rootMessenger.call).toHaveBeenCalledTimes(12);
 
       snapController.destroy();
       await executionService.terminateAllSnaps();
@@ -99,7 +99,7 @@ describe('MultiChainController', () => {
         MOCK_SNAP_ID,
       );
 
-      expect(rootMessenger.call).toHaveBeenCalledTimes(21);
+      expect(rootMessenger.call).toHaveBeenCalledTimes(23);
 
       snapController.destroy();
       await executionService.terminateAllSnaps();
@@ -153,7 +153,7 @@ describe('MultiChainController', () => {
         },
       });
 
-      expect(rootMessenger.call).toHaveBeenCalledTimes(9);
+      expect(rootMessenger.call).toHaveBeenCalledTimes(10);
 
       snapController.destroy();
       await executionService.terminateAllSnaps();
@@ -255,9 +255,9 @@ describe('MultiChainController', () => {
         },
       });
 
-      expect(rootMessenger.call).toHaveBeenCalledTimes(17);
+      expect(rootMessenger.call).toHaveBeenCalledTimes(19);
       expect(rootMessenger.call).toHaveBeenNthCalledWith(
-        15,
+        17,
         'ApprovalController:addRequest',
         {
           id: expect.any(String),
@@ -326,7 +326,7 @@ describe('MultiChainController', () => {
       ).rejects.toThrow(
         'No installed snaps found for any requested namespace.',
       );
-      expect(rootMessenger.call).toHaveBeenCalledTimes(9);
+      expect(rootMessenger.call).toHaveBeenCalledTimes(10);
 
       snapController.destroy();
       await executionService.terminateAllSnaps();
@@ -359,7 +359,7 @@ describe('MultiChainController', () => {
       });
 
       expect(result).toEqual(['eip155:1:foo']);
-      expect(rootMessenger.call).toHaveBeenCalledTimes(15);
+      expect(rootMessenger.call).toHaveBeenCalledTimes(17);
 
       snapController.destroy();
       await executionService.terminateAllSnaps();
