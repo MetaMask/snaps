@@ -130,6 +130,11 @@ export const getControllerMessenger = () => {
   );
 
   messenger.registerActionHandler(
+    'PermissionController:revokePermissions',
+    () => ({}),
+  );
+
+  messenger.registerActionHandler(
     'PermissionController:revokeAllPermissions',
     () => ({}),
   );
@@ -141,7 +146,14 @@ export const getControllerMessenger = () => {
 
   messenger.registerActionHandler(
     'PermissionController:getPermissions',
-    () => ({}),
+    () => ({
+      [SnapEndowments.Rpc]: MOCK_RPC_ORIGINS_PERMISSION,
+    }),
+  );
+
+  messenger.registerActionHandler(
+    'SubjectMetadataController:getSubjectMetadata',
+    () => MOCK_SUBJECT_METADATA,
   );
 
   messenger.registerActionHandler('ExecutionService:executeSnap', asyncNoOp);
@@ -186,6 +198,7 @@ export const getSnapControllerMessenger = (
       'PermissionController:hasPermissions',
       'PermissionController:getPermissions',
       'PermissionController:grantPermissions',
+      'PermissionController:revokePermissions',
       'PermissionController:revokeAllPermissions',
       'PermissionController:revokePermissionForAllSubjects',
       'SnapController:get',

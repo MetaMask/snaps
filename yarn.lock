@@ -2488,7 +2488,7 @@ __metadata:
   linkType: hard
 
 "@metamask/controller-utils@npm:~1.0.0":
-  version: 0.0.0-use.local
+  version: 1.0.0
   resolution: "@metamask/controller-utils@npm:1.0.0"
   dependencies:
     eth-ens-namehash: ^2.0.8
@@ -2499,7 +2499,7 @@ __metadata:
     isomorphic-fetch: ^3.0.0
   checksum: 76e0629ba97b0b704f2f08e346fc27cf404630a64088504dbbad3d4124afe7a6c9bf3627e999ab9a1f1c183a444978ecc288b6df3ab30b47b5398a1da848ebbf
   languageName: node
-  linkType: soft
+  linkType: hard
 
 "@metamask/eslint-config-jest@npm:^11.0.0":
   version: 11.0.0

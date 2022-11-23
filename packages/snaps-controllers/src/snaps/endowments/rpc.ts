@@ -1,9 +1,4 @@
 import {
-  assertIsRpcOrigins,
-  RpcOrigins,
-  SnapCaveatType,
-} from '@metamask/snap-utils';
-import {
   Caveat,
   CaveatSpecificationConstraint,
   EndowmentGetterParams,
@@ -12,7 +7,12 @@ import {
   PermissionType,
   PermissionValidatorConstraint,
   ValidPermissionSpecification,
-} from '@metamask/controllers';
+} from '@metamask/permission-controller';
+import {
+  assertIsRpcOrigins,
+  RpcOrigins,
+  SnapCaveatType,
+} from '@metamask/snaps-utils';
 import {
   hasProperty,
   isPlainObject,
@@ -21,6 +21,7 @@ import {
   assert,
 } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
+
 import { SnapEndowments } from './enum';
 
 const targetKey = SnapEndowments.Rpc;

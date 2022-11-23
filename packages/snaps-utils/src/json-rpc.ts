@@ -35,6 +35,7 @@ export type RpcOrigins = Infer<typeof RpcOriginsStruct>;
  */
 export function assertIsRpcOrigins(
   value: unknown,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   ErrorWrapper?: AssertionErrorConstructor,
 ): asserts value is RpcOrigins {
   assertStruct(

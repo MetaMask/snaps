@@ -433,8 +433,8 @@ describe('SnapController', () => {
 
     rootMessenger.registerActionHandler(
       'PermissionController:hasPermission',
-      () => {
-        return false;
+      (_origin, permission) => {
+        return permission === SnapEndowments.Rpc;
       },
     );
 
@@ -878,7 +878,9 @@ describe('SnapController', () => {
 
     rootMessenger.registerActionHandler(
       'PermissionController:hasPermission',
-      () => false,
+      (_origin, permission) => {
+        return permission === SnapEndowments.Rpc;
+      },
     );
 
     await snapController.startSnap(snap.id);
@@ -1286,7 +1288,9 @@ describe('SnapController', () => {
 
     rootMessenger.registerActionHandler(
       'PermissionController:hasPermission',
-      () => false,
+      (_origin, permission) => {
+        return permission === SnapEndowments.Rpc;
+      },
     );
 
     await snapController.startSnap(snap.id);
@@ -1317,13 +1321,14 @@ describe('SnapController', () => {
 
   describe('getRpcRequestHandler', () => {
     it('handlers populate the "jsonrpc" property if missing', async () => {
-      const snapId = 'fooSnap';
+      const rootMessenger = getControllerMessenger();
       const options = getSnapControllerWithEESOptions({
+        rootMessenger,
         state: {
           snaps: {
-            [snapId]: {
+            [MOCK_SNAP_ID]: {
               enabled: true,
-              id: snapId,
+              id: MOCK_SNAP_ID,
               status: SnapStatus.Running,
             } as any,
           },
@@ -1331,10 +1336,15 @@ describe('SnapController', () => {
       });
       const [snapController, service] = getSnapControllerWithEES(options);
 
-      const spyOnMessengerCall = jest.spyOn(options.messenger, 'call');
+      rootMessenger.registerActionHandler(
+        'PermissionController:hasPermission',
+        (_origin, permission) => {
+          return permission === SnapEndowments.Rpc;
+        },
+      );
 
       await snapController.handleRequest({
-        snapId,
+        snapId: MOCK_SNAP_ID,
         origin: 'foo.com',
         handler: HandlerType.OnRpcRequest,
         request: {
@@ -1345,10 +1355,10 @@ describe('SnapController', () => {
         },
       });
 
-      expect(spyOnMessengerCall).toHaveBeenCalledTimes(3);
-      expect(spyOnMessengerCall).toHaveBeenCalledWith(
+      expect(rootMessenger.call).toHaveBeenCalledTimes(3);
+      expect(rootMessenger.call).toHaveBeenCalledWith(
         'ExecutionService:handleRpcRequest',
-        snapId,
+        MOCK_SNAP_ID,
         {
           origin: 'foo.com',
           handler: HandlerType.OnRpcRequest,
@@ -1395,7 +1405,8 @@ describe('SnapController', () => {
     });
 
     it('handlers will throw if there are too many pending requests before a snap has started', async () => {
-      const messenger = getSnapControllerMessenger();
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
       const fakeSnap = getPersistedSnapObject({ status: SnapStatus.Stopped });
       const snapId = fakeSnap.id;
       const snapController = getSnapController(
@@ -1414,14 +1425,10 @@ describe('SnapController', () => {
         resolveExecutePromise = res;
       });
 
-      jest
-        .spyOn(messenger, 'call')
-        .mockImplementation((method, ..._args: unknown[]) => {
-          if (method === 'ExecutionService:executeSnap') {
-            return deferredExecutePromise;
-          }
-          return true;
-        });
+      rootMessenger.registerActionHandler(
+        'ExecutionService:executeSnap',
+        async () => deferredExecutePromise,
+      );
 
       // Fill up the request queue
       const finishPromise = Promise.all([
@@ -2065,6 +2072,11 @@ describe('SnapController', () => {
         }),
       );
 
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({}),
+      );
+
       jest
         .spyOn(snapController as any, 'fetchSnap')
         .mockImplementationOnce(() => {
@@ -2145,6 +2157,11 @@ describe('SnapController', () => {
       const messenger = getSnapControllerMessenger(rootMessenger);
       const controller = getSnapController(
         getSnapControllerOptions({ messenger }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({}),
       );
 
       const fetchSnapMock = jest

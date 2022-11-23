@@ -1,6 +1,7 @@
 import { PermissionConstraint } from '@metamask/permission-controller';
+import { HandlerType } from '@metamask/snaps-utils';
 import { Json } from '@metamask/utils';
-import { HandlerType } from '@metamask/snap-utils';
+
 import {
   cronjobCaveatSpecifications,
   cronjobEndowmentBuilder,
@@ -15,15 +16,15 @@ import {
 import { longRunningEndowmentBuilder } from './long-running';
 import { networkAccessEndowmentBuilder } from './network-access';
 import {
-  getTransactionInsightCaveatMapper,
-  transactionInsightCaveatSpecifications,
-  transactionInsightEndowmentBuilder,
-} from './transaction-insight';
-import {
   getRpcCaveatMapper,
   rpcCaveatSpecifications,
   rpcEndowmentBuilder,
 } from './rpc';
+import {
+  getTransactionInsightCaveatMapper,
+  transactionInsightCaveatSpecifications,
+  transactionInsightEndowmentBuilder,
+} from './transaction-insight';
 
 export const endowmentPermissionBuilders = {
   [networkAccessEndowmentBuilder.targetKey]: networkAccessEndowmentBuilder,

@@ -19,6 +19,7 @@ import {
 } from 'superstruct';
 
 import { CronjobSpecificationArrayStruct } from '../cronjob';
+import { RpcOriginsStruct } from '../json-rpc';
 import { NamespacesStruct } from '../namespace';
 import { NameStruct, NpmSnapFileNames } from '../types';
 import { VersionStruct } from '../versions';
@@ -156,6 +157,7 @@ export const PermissionsStruct = type({
   'endowment:cronjob': optional(
     object({ jobs: CronjobSpecificationArrayStruct }),
   ),
+  'endowment:rpc': optional(RpcOriginsStruct),
   snap_confirm: optional(object({})),
   snap_manageState: optional(object({})),
   snap_notify: optional(object({})),
