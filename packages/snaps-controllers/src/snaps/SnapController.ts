@@ -1,4 +1,4 @@
-import passworder from '@metamask/browser-passworder';
+import { encrypt, decrypt } from '@metamask/browser-passworder';
 import {
   AddApprovalRequest,
   BaseControllerV2 as BaseController,
@@ -1359,13 +1359,13 @@ export class SnapController extends BaseController<
 
   async #encryptSnapState(snapId: SnapId, state: Json): Promise<string> {
     const appKey = await this.#getEncryptionKey(snapId);
-    return passworder.encrypt(appKey, state);
+    return encrypt(appKey, state);
   }
 
   async #decryptSnapState(snapId: SnapId, encrypted: string): Promise<Json> {
     const appKey = await this.#getEncryptionKey(snapId);
     try {
-      const value = await passworder.decrypt(appKey, encrypted);
+      const value = await decrypt(appKey, encrypted);
 
       assert(isValidJson(value));
       return value;
