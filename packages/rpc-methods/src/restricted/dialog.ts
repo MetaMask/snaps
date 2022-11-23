@@ -243,7 +243,7 @@ function getValidatedParams(
       if (key === 'placeholder' && errorType === 'never') {
         throw ethErrors.rpc.invalidParams({
           message:
-            'Invalid params: Alerts or Confirmations may not specify a "placeholder" field.',
+            'Invalid params: Alerts or confirmations may not specify a "placeholder" field.',
         });
       }
 

@@ -397,7 +397,7 @@ describe('implementation', () => {
             },
           }),
         ).rejects.toThrow(
-          'Invalid params: Alerts or Confirmations may not specify a "placeholder" field.',
+          'Invalid params: Alerts or confirmations may not specify a "placeholder" field.',
         );
       },
     );
