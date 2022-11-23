@@ -1,7 +1,10 @@
+import { AddApprovalRequest } from '@metamask/approval-controller';
+import {
+  BaseControllerV2 as BaseController,
+  RestrictedControllerMessenger,
+} from '@metamask/base-controller';
 import { encrypt, decrypt } from '@metamask/browser-passworder';
 import {
-  AddApprovalRequest,
-  BaseControllerV2 as BaseController,
   Caveat,
   GetEndowments,
   GetPermissions,
@@ -10,13 +13,12 @@ import {
   HasPermissions,
   PermissionConstraint,
   PermissionsRequest,
-  RestrictedControllerMessenger,
   RevokeAllPermissions,
   RevokePermissionForAllSubjects,
   RevokePermissions,
   SubjectPermissions,
   ValidPermission,
-} from '@metamask/controllers';
+} from '@metamask/permission-controller';
 import { caveatMappers } from '@metamask/rpc-methods';
 import {
   assertIsSnapManifest,

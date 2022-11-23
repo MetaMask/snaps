@@ -7,7 +7,7 @@ import {
   PermissionType,
   PermissionValidatorConstraint,
   ValidPermissionSpecification,
-} from '@metamask/controllers';
+} from '@metamask/permission-controller';
 import {
   assertIsNamespacesObject,
   Namespaces,

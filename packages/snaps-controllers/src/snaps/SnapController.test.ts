@@ -1,10 +1,10 @@
+import { getPersistentState } from '@metamask/base-controller';
 import { encrypt } from '@metamask/browser-passworder';
 import {
   Caveat,
-  getPersistentState,
   SubjectPermissions,
   ValidPermission,
-} from '@metamask/controllers';
+} from '@metamask/permission-controller';
 import {
   DEFAULT_ENDOWMENTS,
   getSnapSourceShasum,

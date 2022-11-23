@@ -1,10 +1,10 @@
+import { HardenedBIP32Node, SLIP10Node } from '@metamask/key-tree';
 import {
   PermissionSpecificationBuilder,
   PermissionType,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
-} from '@metamask/controllers';
-import { HardenedBIP32Node, SLIP10Node } from '@metamask/key-tree';
+} from '@metamask/permission-controller';
 import { SIP_6_MAGIC_VALUE } from '@metamask/snaps-utils';
 import {
   add0x,

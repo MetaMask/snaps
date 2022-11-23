@@ -1,7 +1,7 @@
 import {
   PermissionConstraint,
   SubjectPermissions,
-} from '@metamask/controllers';
+} from '@metamask/permission-controller';
 import { fromEntries, getSnapSourceShasum } from '@metamask/snaps-utils';
 import {
   MOCK_ORIGIN,

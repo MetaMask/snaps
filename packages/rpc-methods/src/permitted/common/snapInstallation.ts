@@ -1,4 +1,4 @@
-import { RequestedPermissions } from '@metamask/controllers';
+import { RequestedPermissions } from '@metamask/permission-controller';
 import { InstallSnapsResult } from '@metamask/snaps-utils';
 import { isObject } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';

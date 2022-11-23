@@ -2,7 +2,7 @@ import {
   ActionConstraint,
   ControllerMessenger,
   EventConstraint,
-} from '@metamask/controllers';
+} from '@metamask/base-controller';
 import {
   getPersistedSnapObject,
   getTruncatedSnap,

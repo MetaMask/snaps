@@ -1,4 +1,4 @@
-import { RequestedPermissions } from '@metamask/controllers';
+import { RequestedPermissions } from '@metamask/permission-controller';
 import {
   getSnapPermissionName,
   InstallSnapsResult,

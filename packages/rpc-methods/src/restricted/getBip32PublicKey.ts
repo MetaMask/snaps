@@ -1,3 +1,4 @@
+import { BIP32Node, SLIP10Node } from '@metamask/key-tree';
 import {
   Caveat,
   PermissionSpecificationBuilder,
@@ -5,8 +6,7 @@ import {
   PermissionValidatorConstraint,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
-} from '@metamask/controllers';
-import { BIP32Node, SLIP10Node } from '@metamask/key-tree';
+} from '@metamask/permission-controller';
 import {
   Bip32Entropy,
   bip32entropy,
