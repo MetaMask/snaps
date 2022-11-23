@@ -3,11 +3,6 @@ import {
   BaseControllerV2 as BaseController,
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
-import passworder from '@metamask/browser-passworder';
-import {
-  BaseControllerV2 as BaseController,
-  RestrictedControllerMessenger,
-} from '@metamask/base-controller';
 import { encrypt, decrypt } from '@metamask/browser-passworder';
 import {
   Caveat,
