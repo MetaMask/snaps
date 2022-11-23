@@ -1,4 +1,3 @@
-import { ControllerMessenger } from '@metamask/controllers';
 import { SnapRpcHookArgs } from '@metamask/snaps-utils';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
@@ -12,11 +11,12 @@ import {
   setupMultiplex,
   SnapExecutionData,
 } from '../services';
+import { MockControllerMessenger } from './controller';
 
 export const MOCK_BLOCK_NUMBER = '0xa70e75';
 
 export const getNodeEESMessenger = (
-  messenger: ControllerMessenger<
+  messenger: MockControllerMessenger<
     ExecutionServiceActions,
     ExecutionServiceEvents
   >,

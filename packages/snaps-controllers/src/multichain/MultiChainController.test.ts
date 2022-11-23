@@ -1,4 +1,5 @@
 /* eslint-disable jest/prefer-strict-equal */
+
 import {
   fromEntries,
   getSnapPermissionName,
@@ -10,6 +11,7 @@ import {
   getSnapManifest,
   getPersistedSnapObject,
 } from '@metamask/snaps-utils/test-utils';
+import { assert } from '@metamask/utils';
 
 import { SnapEndowments } from '../snaps';
 import {
@@ -26,8 +28,8 @@ describe('MultiChainController', () => {
   describe('onConnect', () => {
     it('handles the handshake', async () => {
       const {
+        rootMessenger,
         multiChainController,
-        multiChainControllerMessenger,
         snapController,
         executionService,
       } = getMultiChainControllerWithEES({
@@ -40,45 +42,6 @@ describe('MultiChainController', () => {
 
       const snap = snapController.getExpect(MOCK_SNAP_ID);
       await snapController.startSnap(snap.id);
-
-      const originalCall = multiChainControllerMessenger.call.bind(
-        multiChainControllerMessenger,
-      );
-
-      const messengerCallMock = jest
-        .spyOn(multiChainControllerMessenger, 'call')
-        .mockImplementation((method, ...args) => {
-          if (
-            method === 'PermissionController:getPermissions' &&
-            args[0] === MOCK_SNAP_ID
-          ) {
-            return { [SnapEndowments.Keyring]: MOCK_KEYRING_PERMISSION } as any;
-          }
-
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-          const approvalRequest = args[0] as any;
-          if (
-            method === 'ApprovalController:addRequest' &&
-            approvalRequest?.type === 'multichain_connect'
-          ) {
-            return fromEntries(
-              Object.entries(
-                approvalRequest?.requestData?.possibleAccounts,
-              ).map(([namespace, snapAndAccounts]) => [
-                namespace,
-                (snapAndAccounts as string[])[0] ?? null,
-              ]),
-            ) as any;
-          } else if (
-            method === 'PermissionController:getPermissions' ||
-            method === 'ApprovalController:addRequest'
-          ) {
-            return {};
-          } else if (method === 'PermissionController:grantPermissions') {
-            return true;
-          }
-          return (originalCall as any)(method, ...args);
-        });
 
       const result = await multiChainController.onConnect(
         MOCK_ORIGIN,
@@ -92,7 +55,7 @@ describe('MultiChainController', () => {
           },
         },
       });
-      expect(messengerCallMock).toHaveBeenCalledTimes(7);
+      expect(rootMessenger.call).toHaveBeenCalledTimes(11);
 
       snapController.destroy();
       await executionService.terminateAllSnaps();
@@ -101,7 +64,7 @@ describe('MultiChainController', () => {
     it('closes an existing session', async () => {
       const {
         multiChainController,
-        multiChainControllerMessenger,
+        rootMessenger,
         snapController,
         executionService,
       } = getMultiChainControllerWithEES({
@@ -114,46 +77,6 @@ describe('MultiChainController', () => {
 
       const snap = snapController.getExpect(MOCK_SNAP_ID);
       await snapController.startSnap(snap.id);
-
-      const originalCall = multiChainControllerMessenger.call.bind(
-        multiChainControllerMessenger,
-      );
-
-      const messengerCallMock = jest
-        .spyOn(multiChainControllerMessenger, 'call')
-        .mockImplementation((method, ...args) => {
-          if (
-            method === 'PermissionController:getPermissions' &&
-            args[0] === MOCK_SNAP_ID
-          ) {
-            return { [SnapEndowments.Keyring]: MOCK_KEYRING_PERMISSION } as any;
-          }
-
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-          const approvalRequest = args[0] as any;
-          if (
-            method === 'ApprovalController:addRequest' &&
-            approvalRequest?.type === 'multichain_connect'
-          ) {
-            return fromEntries(
-              Object.entries(
-                approvalRequest?.requestData?.possibleAccounts,
-              ).map(([namespace, snapAndAccounts]) => [
-                namespace,
-                (snapAndAccounts as string[])[0] ?? null,
-              ]),
-            ) as any;
-          } else if (
-            method === 'PermissionController:getPermissions' ||
-            method === 'ApprovalController:addRequest'
-          ) {
-            return {};
-          } else if (method === 'PermissionController:grantPermissions') {
-            return true;
-          }
-
-          return (originalCall as any)(method, ...args);
-        });
 
       await multiChainController.onConnect(MOCK_ORIGIN, MOCK_CONNECT_ARGUMENTS);
 
@@ -171,12 +94,12 @@ describe('MultiChainController', () => {
         },
       });
 
-      expect(messengerCallMock).toHaveBeenCalledWith(
+      expect(rootMessenger.call).toHaveBeenCalledWith(
         'SnapController:decrementActiveReferences',
         MOCK_SNAP_ID,
       );
 
-      expect(messengerCallMock).toHaveBeenCalledTimes(15);
+      expect(rootMessenger.call).toHaveBeenCalledTimes(21);
 
       snapController.destroy();
       await executionService.terminateAllSnaps();
@@ -186,7 +109,7 @@ describe('MultiChainController', () => {
       // This test works by using different mocks for the messenger than the other tests.
       const {
         multiChainController,
-        multiChainControllerMessenger,
+        rootMessenger,
         snapController,
         executionService,
       } = getMultiChainControllerWithEES({
@@ -200,37 +123,27 @@ describe('MultiChainController', () => {
       const snap = snapController.getExpect(MOCK_SNAP_ID);
       await snapController.startSnap(snap.id);
 
-      const originalCall = multiChainControllerMessenger.call.bind(
-        multiChainControllerMessenger,
-      );
-
-      const messengerCallMock = jest
-        .spyOn(multiChainControllerMessenger, 'call')
-        .mockImplementation((method, ...args) => {
-          if (
-            method === 'PermissionController:getPermissions' &&
-            args[0] === MOCK_SNAP_ID
-          ) {
-            return { [SnapEndowments.Keyring]: MOCK_KEYRING_PERMISSION } as any;
-          } else if (
-            method === 'PermissionController:getPermissions' &&
-            args[0] === MOCK_ORIGIN
-          ) {
-            // Return existing connection to the keyring snap
-            return { [getSnapPermissionName(MOCK_SNAP_ID)]: {} } as any;
-          } else if (
-            method === 'PermissionController:getPermissions' ||
-            method === 'ApprovalController:addRequest'
-          ) {
-            return {};
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        // @ts-expect-error - Invalid permission type.
+        (subject) => {
+          if (subject === MOCK_SNAP_ID) {
+            return { [SnapEndowments.Keyring]: MOCK_KEYRING_PERMISSION };
           }
-          return (originalCall as any)(method, ...args);
-        });
+
+          if (subject === MOCK_ORIGIN) {
+            return { [getSnapPermissionName(MOCK_SNAP_ID)]: {} };
+          }
+
+          return {};
+        },
+      );
 
       const result = await multiChainController.onConnect(
         MOCK_ORIGIN,
         MOCK_CONNECT_ARGUMENTS,
       );
+
       expect(result).toEqual({
         namespaces: {
           eip155: {
@@ -240,7 +153,7 @@ describe('MultiChainController', () => {
         },
       });
 
-      expect(messengerCallMock).toHaveBeenCalledTimes(5);
+      expect(rootMessenger.call).toHaveBeenCalledTimes(9);
 
       snapController.destroy();
       await executionService.terminateAllSnaps();
@@ -258,7 +171,7 @@ describe('MultiChainController', () => {
 
       const {
         multiChainController,
-        multiChainControllerMessenger,
+        rootMessenger,
         snapController,
         executionService,
       } = getMultiChainControllerWithEES({
@@ -287,60 +200,52 @@ describe('MultiChainController', () => {
       const snap2 = snapController.getExpect(secondSnapId);
       await snapController.startSnap(snap2.id);
 
-      const originalCall = multiChainControllerMessenger.call.bind(
-        multiChainControllerMessenger,
-      );
-
-      const messengerCallMock = jest
-        .spyOn(multiChainControllerMessenger, 'call')
-        .mockImplementation((method, ...args) => {
-          if (
-            method === 'PermissionController:getPermissions' &&
-            (args[0] === snap.id || args[0] === snap2.id)
-          ) {
-            return { [SnapEndowments.Keyring]: MOCK_KEYRING_PERMISSION } as any;
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        // @ts-expect-error - Invalid permission type.
+        (subject) => {
+          if (subject === snap.id || subject === snap2.id) {
+            return { [SnapEndowments.Keyring]: MOCK_KEYRING_PERMISSION };
           }
 
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-          const approvalRequest = args[0] as any;
-          if (
-            method === 'ApprovalController:addRequest' &&
-            approvalRequest?.type === 'multichain_connect'
-          ) {
-            // Choose second snap
-            return fromEntries(
-              Object.entries(
-                approvalRequest?.requestData?.possibleAccounts,
-              ).map(([namespace, snapAndAccounts]) => [
-                namespace,
-                (snapAndAccounts as string[])[1] ?? null,
-              ]),
-            ) as any;
-          } else if (
-            method === 'PermissionController:getPermissions' &&
-            args[0] === MOCK_ORIGIN
-          ) {
-            // Return existing connection to the keyring snap
+          if (subject === MOCK_ORIGIN) {
             return {
               [getSnapPermissionName(snap.id)]: {},
               [getSnapPermissionName(snap2.id)]: {},
-            } as any;
-          } else if (
-            method === 'PermissionController:getPermissions' ||
-            method === 'ApprovalController:addRequest'
-          ) {
-            return {};
-          } else if (method === 'PermissionController:grantPermissions') {
-            return true;
+            };
           }
 
-          return (originalCall as any)(method, ...args);
-        });
+          return {};
+        },
+      );
+
+      rootMessenger.registerActionHandler(
+        'ApprovalController:addRequest',
+        async ({ type, requestData }) => {
+          if (type === 'multichain_connect') {
+            assert(requestData?.possibleAccounts);
+
+            return Promise.resolve(
+              fromEntries(
+                Object.entries(requestData.possibleAccounts).map(
+                  ([namespace, snapAndAccounts]) => [
+                    namespace,
+                    (snapAndAccounts as string[])[1] ?? null,
+                  ],
+                ),
+              ),
+            );
+          }
+
+          return Promise.resolve({});
+        },
+      );
 
       const result = await multiChainController.onConnect(
         MOCK_ORIGIN,
         MOCK_CONNECT_ARGUMENTS,
       );
+
       expect(result).toEqual({
         namespaces: {
           eip155: {
@@ -350,10 +255,9 @@ describe('MultiChainController', () => {
         },
       });
 
-      expect(messengerCallMock).toHaveBeenCalledTimes(9);
-
-      expect(messengerCallMock).toHaveBeenNthCalledWith(
-        7,
+      expect(rootMessenger.call).toHaveBeenCalledTimes(17);
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        15,
         'ApprovalController:addRequest',
         {
           id: expect.any(String),
@@ -388,7 +292,7 @@ describe('MultiChainController', () => {
 
       const {
         multiChainController,
-        multiChainControllerMessenger,
+        rootMessenger,
         snapController,
         executionService,
       } = getMultiChainControllerWithEES({
@@ -412,34 +316,17 @@ describe('MultiChainController', () => {
       const snap = snapController.getExpect(MOCK_SNAP_ID);
       await snapController.startSnap(snap.id);
 
-      const originalCall = multiChainControllerMessenger.call.bind(
-        multiChainControllerMessenger,
+      rootMessenger.registerActionHandler(
+        'ApprovalController:addRequest',
+        async () => Promise.resolve({}),
       );
-
-      const messengerCallMock = jest
-        .spyOn(multiChainControllerMessenger, 'call')
-        .mockImplementation((method, ...args) => {
-          if (
-            method === 'PermissionController:getPermissions' &&
-            args[0] === MOCK_SNAP_ID
-          ) {
-            return { [SnapEndowments.Keyring]: MOCK_KEYRING_PERMISSION } as any;
-          } else if (
-            method === 'PermissionController:getPermissions' ||
-            method === 'ApprovalController:addRequest'
-          ) {
-            return {};
-          }
-
-          return (originalCall as any)(method, ...args);
-        });
 
       await expect(
         multiChainController.onConnect(MOCK_ORIGIN, MOCK_CONNECT_ARGUMENTS),
       ).rejects.toThrow(
         'No installed snaps found for any requested namespace.',
       );
-      expect(messengerCallMock).toHaveBeenCalledTimes(4);
+      expect(rootMessenger.call).toHaveBeenCalledTimes(9);
 
       snapController.destroy();
       await executionService.terminateAllSnaps();
@@ -450,7 +337,7 @@ describe('MultiChainController', () => {
     it('handles the routing', async () => {
       const {
         multiChainController,
-        multiChainControllerMessenger,
+        rootMessenger,
         snapController,
         executionService,
       } = getMultiChainControllerWithEES({
@@ -464,58 +351,15 @@ describe('MultiChainController', () => {
       const snap = snapController.getExpect(MOCK_SNAP_ID);
       await snapController.startSnap(snap.id);
 
-      const originalCall = multiChainControllerMessenger.call.bind(
-        multiChainControllerMessenger,
-      );
-
-      const messengerCallMock = jest
-        .spyOn(multiChainControllerMessenger, 'call')
-        .mockImplementation((method, ...args) => {
-          if (
-            method === 'PermissionController:getPermissions' &&
-            args[0] === MOCK_SNAP_ID
-          ) {
-            return { [SnapEndowments.Keyring]: MOCK_KEYRING_PERMISSION } as any;
-          }
-
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-          const approvalRequest = args[0] as any;
-          if (
-            method === 'ApprovalController:addRequest' &&
-            approvalRequest?.type === 'multichain_connect'
-          ) {
-            return fromEntries(
-              Object.entries(
-                approvalRequest?.requestData?.possibleAccounts,
-              ).map(([namespace, snapAndAccounts]) => [
-                namespace,
-                (snapAndAccounts as string[])[0] ?? null,
-              ]),
-            ) as any;
-          } else if (
-            method === 'PermissionController:getPermissions' ||
-            method === 'ApprovalController:addRequest'
-          ) {
-            return {};
-          } else if (
-            method === 'PermissionController:grantPermissions' ||
-            method === 'PermissionController:hasPermission'
-          ) {
-            return true;
-          }
-
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-          return (originalCall as any)(method, ...args);
-        });
-
       await multiChainController.onConnect(MOCK_ORIGIN, MOCK_CONNECT_ARGUMENTS);
 
       const result = await multiChainController.onRequest(MOCK_ORIGIN, {
         chainId: 'eip155:1',
         request: { method: 'eth_accounts', params: [] },
       });
+
       expect(result).toEqual(['eip155:1:foo']);
-      expect(messengerCallMock).toHaveBeenCalledTimes(9);
+      expect(rootMessenger.call).toHaveBeenCalledTimes(15);
 
       snapController.destroy();
       await executionService.terminateAllSnaps();

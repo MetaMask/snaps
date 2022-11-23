@@ -23,7 +23,7 @@ describe('AbstractExecutionService', () => {
   });
 
   it('logs error for unrecognized notifications', async () => {
-    const consoleErrorSpy = jest.spyOn(console, 'error');
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
 
     const { service } = createService(MockExecutionService);
 
@@ -50,7 +50,7 @@ describe('AbstractExecutionService', () => {
   });
 
   it('logs error for malformed UnhandledError notification', async () => {
-    const consoleErrorSpy = jest.spyOn(console, 'error');
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
 
     const { service } = createService(MockExecutionService);
 
