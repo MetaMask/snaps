@@ -378,7 +378,7 @@ describe('implementation', () => {
     });
 
     it.each([DialogType.Alert, DialogType.Confirmation])(
-      'rejects placehoder field for alerts and confirmations',
+      'rejects placeholder field for alerts and confirmations',
       async (type) => {
         const hooks = getMockDialogHooks();
         const implementation = getDialogImplementation(hooks);
