@@ -1,4 +1,4 @@
-import passworder from '@metamask/browser-passworder';
+import { encrypt } from '@metamask/browser-passworder';
 import {
   Caveat,
   getPersistentState,
@@ -100,9 +100,7 @@ describe('SnapController', () => {
     expect(
       // @ts-expect-error Accessing private property
       snapController.snapsRuntimeData.get(MOCK_SNAP_ID).state,
-    ).toStrictEqual(
-      await passworder.encrypt(`stateEncryption:${MOCK_SNAP_ID}`, state),
-    );
+    ).toStrictEqual(await encrypt(`stateEncryption:${MOCK_SNAP_ID}`, state));
     snapController.destroy();
     await service.terminateAllSnaps();
   });
@@ -3492,10 +3490,7 @@ describe('SnapController', () => {
       const state = {
         fizz: 'buzz',
       };
-      const encrypted = await passworder.encrypt(
-        `stateEncryption:${MOCK_SNAP_ID}`,
-        state,
-      );
+      const encrypted = await encrypt(`stateEncryption:${MOCK_SNAP_ID}`, state);
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -3603,9 +3598,7 @@ describe('SnapController', () => {
       expect(
         // @ts-expect-error Accessing private property
         snapController.snapsRuntimeData.get(MOCK_SNAP_ID).state,
-      ).toStrictEqual(
-        await passworder.encrypt(`stateEncryption:${MOCK_SNAP_ID}`, state),
-      );
+      ).toStrictEqual(await encrypt(`stateEncryption:${MOCK_SNAP_ID}`, state));
     });
 
     it('has different encryption for the same data stored by two different snaps', async () => {
@@ -3651,14 +3644,11 @@ describe('SnapController', () => {
         snapController.snapsRuntimeData.get(MOCK_LOCAL_SNAP_ID).state;
 
       expect(snapState1).toStrictEqual(
-        await passworder.encrypt(`stateEncryption:${MOCK_SNAP_ID}`, state),
+        await encrypt(`stateEncryption:${MOCK_SNAP_ID}`, state),
       );
 
       expect(snapState2).toStrictEqual(
-        await passworder.encrypt(
-          `stateEncryption:${MOCK_LOCAL_SNAP_ID}`,
-          state,
-        ),
+        await encrypt(`stateEncryption:${MOCK_LOCAL_SNAP_ID}`, state),
       );
 
       expect(snapState1).not.toStrictEqual(snapState2);

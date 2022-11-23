@@ -2613,10 +2613,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/browser-passworder@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/browser-passworder@npm:3.0.0"
-  checksum: 2eccb399341b377b60b544bce758a597c77518983ef13bed50ca795e0053ab883570de884fcba8782a1edc8541b0e03d1124b4097e0bad5d70544e28e320685c
+"@metamask/browser-passworder@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "@metamask/browser-passworder@npm:4.0.2"
+  checksum: 997c330b1c72f7135d0fd2a7f4b0dce37b3c2e6b30e92f048fa8d4f8c949f5b669dcc3064790f41df30ee2e53a9e64a812df72e00527736be704cce2cf4f6e49
   languageName: node
   linkType: hard
 
@@ -3012,7 +3012,7 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^2.6.0
-    "@metamask/browser-passworder": ^3.0.0
+    "@metamask/browser-passworder": ^4.0.2
     "@metamask/controllers": ^32.0.2
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
