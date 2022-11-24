@@ -14,7 +14,7 @@
   "scripts": {
     "test": "jest && yarn posttest",
     "posttest": "jest-it-up --margin 0.25",
-    "test:ava": "ava src/common/endowments/timeout.ava.test.ts",
+    "test:ava": "ava src/common/endowments/timeout.ava.test.ts --pending-deprecation --trace-deprecation",
     "test:ci": "yarn test",
     "test:watch": "jest --watch",
     "lint:eslint": "eslint . --cache --ext js,ts",

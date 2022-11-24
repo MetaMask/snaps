@@ -21,7 +21,7 @@ const createTimeout = () => {
       );
     }
 
-    const handle = Object.freeze({});
+    const handle = harden({});
     const platformHandle = setTimeout(() => {
       registeredHandles.delete(handle);
       handler();

@@ -5,7 +5,7 @@ import test from 'ava';
 import timeout from './timeout';
 
 test.before(() => {
-  lockdown();
+  lockdown({ domainTaming: 'unsafe', errorTaming: 'unsafe' });
 });
 
 test('has expected properties', (tRef) => {
