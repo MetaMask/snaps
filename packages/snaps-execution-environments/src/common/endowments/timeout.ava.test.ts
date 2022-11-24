@@ -60,3 +60,18 @@ test('the attenuated setTimeout should throw if passed a non-function', (tRef) =
     });
   });
 });
+
+test('error should be thrown when trying to modify hardened object', (tRef) => {
+  const { setTimeout: _setTimeout } = timeout.factory();
+
+  tRef.throws(
+    () => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore Ignore because this is supposed to cause an error
+      _setTimeout.whatever = 'something';
+    },
+    {
+      message: `Cannot add property whatever, object is not extensible`,
+    },
+  );
+});
