@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.25.0]
+### Uncategorized
+- Bump @metamask/auto-changelog from 2.6.0 to 3.1.0 ([#1001](https://github.com/MetaMask/snaps-monorepo/pull/1001))
+- Use controllers monorepo packages ([#955](https://github.com/MetaMask/snaps-monorepo/pull/955))
+- Bump @metamask/abi-utils from 1.0.0 to 1.1.0 ([#993](https://github.com/MetaMask/snaps-monorepo/pull/993))
+- Fix ESLint dependencies ([#1000](https://github.com/MetaMask/snaps-monorepo/pull/1000))
+- Bump ESLint configs to latest version ([#963](https://github.com/MetaMask/snaps-monorepo/pull/963))
+
 ## [0.24.1]
 ### Changed
 - No changes this release.
@@ -200,7 +208,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - This package was previously a subset of [`snaps-cli`](https://github.com/MetaMask/snaps-cli/tree/main/examples), which has been renamed to [`@metamask/snaps-cli`](https://npmjs.com/package/@metamask/snaps-cli).
   - Some examples have been deleted because they were outdated.
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.24.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.25.0...HEAD
+[0.25.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.24.1...v0.25.0
 [0.24.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.24.0...v0.24.1
 [0.24.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.23.0...v0.24.0
 [0.23.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.3...v0.23.0
