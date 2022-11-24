@@ -11,38 +11,38 @@ import { NodeType } from './nodes';
 
 describe('copyable', () => {
   it('creates a copyable component', () => {
-    expect(copyable({ text: 'Hello, world!' })).toStrictEqual({
+    expect(copyable({ value: 'Hello, world!' })).toStrictEqual({
       type: NodeType.Copyable,
-      text: 'Hello, world!',
+      value: 'Hello, world!',
     });
 
-    expect(copyable({ text: 'foo bar' })).toStrictEqual({
+    expect(copyable({ value: 'foo bar' })).toStrictEqual({
       type: NodeType.Copyable,
-      text: 'foo bar',
+      value: 'foo bar',
     });
   });
 
   it('creates a copyable component using the shorthand form', () => {
     expect(copyable('Hello, world!')).toStrictEqual({
       type: NodeType.Copyable,
-      text: 'Hello, world!',
+      value: 'Hello, world!',
     });
 
     expect(copyable('foo bar')).toStrictEqual({
       type: NodeType.Copyable,
-      text: 'foo bar',
+      value: 'foo bar',
     });
   });
 
   it('validates the args', () => {
     // @ts-expect-error - Invalid args.
-    expect(() => copyable({ text: 'foo', bar: 'baz' })).toThrow(
+    expect(() => copyable({ value: 'foo', bar: 'baz' })).toThrow(
       'Invalid copyable component: At path: bar -- Expected a value of type `never`, but received: `"baz"`.',
     );
 
     // @ts-expect-error - Invalid args.
     expect(() => copyable({})).toThrow(
-      'Invalid copyable component: At path: text -- Expected a string, but received: undefined.',
+      'Invalid copyable component: At path: value -- Expected a string, but received: undefined.',
     );
   });
 });
@@ -64,38 +64,38 @@ describe('divider', () => {
 
 describe('heading', () => {
   it('creates a heading component', () => {
-    expect(heading({ text: 'Hello, world!' })).toStrictEqual({
+    expect(heading({ value: 'Hello, world!' })).toStrictEqual({
       type: NodeType.Heading,
-      text: 'Hello, world!',
+      value: 'Hello, world!',
     });
 
-    expect(heading({ text: 'foo bar' })).toStrictEqual({
+    expect(heading({ value: 'foo bar' })).toStrictEqual({
       type: NodeType.Heading,
-      text: 'foo bar',
+      value: 'foo bar',
     });
   });
 
   it('creates a heading component using the shorthand form', () => {
     expect(heading('Hello, world!')).toStrictEqual({
       type: NodeType.Heading,
-      text: 'Hello, world!',
+      value: 'Hello, world!',
     });
 
     expect(heading('foo bar')).toStrictEqual({
       type: NodeType.Heading,
-      text: 'foo bar',
+      value: 'foo bar',
     });
   });
 
   it('validates the args', () => {
     // @ts-expect-error - Invalid args.
-    expect(() => heading({ text: 'foo', bar: 'baz' })).toThrow(
+    expect(() => heading({ value: 'foo', bar: 'baz' })).toThrow(
       'Invalid heading component: At path: bar -- Expected a value of type `never`, but received: `"baz"`.',
     );
 
     // @ts-expect-error - Invalid args.
     expect(() => heading({})).toThrow(
-      'Invalid heading component: At path: text -- Expected a string, but received: undefined.',
+      'Invalid heading component: At path: value -- Expected a string, but received: undefined.',
     );
   });
 });
@@ -103,20 +103,20 @@ describe('heading', () => {
 describe('panel', () => {
   it('creates a panel component', () => {
     expect(
-      panel({ children: [heading({ text: 'Hello, world!' })] }),
+      panel({ children: [heading({ value: 'Hello, world!' })] }),
     ).toStrictEqual({
       type: NodeType.Panel,
       children: [
         {
           type: NodeType.Heading,
-          text: 'Hello, world!',
+          value: 'Hello, world!',
         },
       ],
     });
 
     expect(
       panel({
-        children: [panel({ children: [heading({ text: 'Hello, world!' })] })],
+        children: [panel({ children: [heading({ value: 'Hello, world!' })] })],
       }),
     ).toStrictEqual({
       type: NodeType.Panel,
@@ -126,7 +126,7 @@ describe('panel', () => {
           children: [
             {
               type: NodeType.Heading,
-              text: 'Hello, world!',
+              value: 'Hello, world!',
             },
           ],
         },
@@ -140,7 +140,7 @@ describe('panel', () => {
       children: [
         {
           type: NodeType.Heading,
-          text: 'Hello, world!',
+          value: 'Hello, world!',
         },
       ],
     });
@@ -153,7 +153,7 @@ describe('panel', () => {
           children: [
             {
               type: NodeType.Heading,
-              text: 'Hello, world!',
+              value: 'Hello, world!',
             },
           ],
         },
@@ -206,38 +206,38 @@ describe('spinner', () => {
 
 describe('text', () => {
   it('creates a text component', () => {
-    expect(text({ text: 'Hello, world!' })).toStrictEqual({
+    expect(text({ value: 'Hello, world!' })).toStrictEqual({
       type: NodeType.Text,
-      text: 'Hello, world!',
+      value: 'Hello, world!',
     });
 
-    expect(text({ text: 'foo bar' })).toStrictEqual({
+    expect(text({ value: 'foo bar' })).toStrictEqual({
       type: NodeType.Text,
-      text: 'foo bar',
+      value: 'foo bar',
     });
   });
 
   it('creates a text component using the shorthand form', () => {
     expect(text('Hello, world!')).toStrictEqual({
       type: NodeType.Text,
-      text: 'Hello, world!',
+      value: 'Hello, world!',
     });
 
     expect(text('foo bar')).toStrictEqual({
       type: NodeType.Text,
-      text: 'foo bar',
+      value: 'foo bar',
     });
   });
 
   it('validates the args', () => {
     // @ts-expect-error - Invalid args.
-    expect(() => text({ text: 'foo', bar: 'baz' })).toThrow(
+    expect(() => text({ value: 'foo', bar: 'baz' })).toThrow(
       'Invalid text component: At path: bar -- Expected a value of type `never`, but received: `"baz"`.',
     );
 
     // @ts-expect-error - Invalid args.
     expect(() => text({})).toThrow(
-      'Invalid text component: At path: text -- Expected a string, but received: undefined.',
+      'Invalid text component: At path: value -- Expected a string, but received: undefined.',
     );
   });
 });
