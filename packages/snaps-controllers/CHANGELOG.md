@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.25.0]
+### Added
+- **BREAKING:** Add JSON-RPC handler permission ([#905](https://github.com/MetaMask/snaps-monorepo/pull/905))
+  - Snaps are now required to request `endowment:rpc` to receive RPC requests.
+- Add transaction origin caveat export ([#1010](https://github.com/MetaMask/snaps-monorepo/pull/1010))
+
 ## [0.24.1]
 ### Changed
 - No changes this release.
@@ -396,7 +402,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.24.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.25.0...HEAD
+[0.25.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.24.1...v0.25.0
 [0.24.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.24.0...v0.24.1
 [0.24.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.23.0...v0.24.0
 [0.23.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.3...v0.23.0
