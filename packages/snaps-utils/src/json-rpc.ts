@@ -13,7 +13,7 @@ export const RpcOriginsStruct = refine(
     dapps: optional(boolean()),
     snaps: optional(boolean()),
   }),
-  'RPC endpoints',
+  'RPC origins',
   (value) => {
     if (!Object.values(value).some(Boolean)) {
       throw new Error('Must specify at least one JSON-RPC origin');

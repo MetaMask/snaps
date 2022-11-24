@@ -24,7 +24,7 @@ describe('endowment:rpc', () => {
   });
 
   describe('validator', () => {
-    it('throws if the caveat is not a single "transactionOrigin"', () => {
+    it('throws if the caveat is not a single "rpcOrigin"', () => {
       const specification = rpcEndowmentBuilder.specificationBuilder({});
 
       expect(() =>
