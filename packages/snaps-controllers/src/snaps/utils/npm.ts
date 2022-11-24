@@ -124,10 +124,9 @@ async function fetchNpmTarball(
 
   // Perform a raw fetch because we want the Response object itself.
   const tarballResponse = await fetchFunction(newTarballUrl.toString());
-  if (!tarballResponse.ok) {
+  if (!tarballResponse.ok || !tarballResponse.body) {
     throw new Error(`Failed to fetch tarball for package "${packageName}".`);
   }
-  const stream = await tarballResponse.blob().then((blob) => blob.stream());
 
-  return [stream, targetVersion];
+  return [tarballResponse.body, targetVersion];
 }
