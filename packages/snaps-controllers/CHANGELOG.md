@@ -7,17 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.25.0]
-### Uncategorized
+### Added
+- **BREAKING:** Add JSON-RPC handler permission ([#905](https://github.com/MetaMask/snaps-monorepo/pull/905))
+  - Snaps are now required to request `endowment:rpc` to receive RPC requests.
 - Add transaction origin caveat export ([#1010](https://github.com/MetaMask/snaps-monorepo/pull/1010))
-- BREAKING: Add JSON-RPC handler permission ([#905](https://github.com/MetaMask/snaps-monorepo/pull/905))
-- Bump @metamask/auto-changelog from 2.6.0 to 3.1.0 ([#1001](https://github.com/MetaMask/snaps-monorepo/pull/1001))
-- Use controllers monorepo packages ([#955](https://github.com/MetaMask/snaps-monorepo/pull/955))
-- Bump @metamask/browser-passworder from 3.0.0 to 4.0.2 ([#996](https://github.com/MetaMask/snaps-monorepo/pull/996))
-- Simplify controller tests ([#983](https://github.com/MetaMask/snaps-monorepo/pull/983))
-- Fix ESLint dependencies ([#1000](https://github.com/MetaMask/snaps-monorepo/pull/1000))
-- Simplify reduce types in some files ([#986](https://github.com/MetaMask/snaps-monorepo/pull/986))
-- SemVer handling is now through opaque types ([#961](https://github.com/MetaMask/snaps-monorepo/pull/961))
-- Bump ESLint configs to latest version ([#963](https://github.com/MetaMask/snaps-monorepo/pull/963))
 
 ## [0.24.1]
 ### Changed

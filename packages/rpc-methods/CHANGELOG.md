@@ -7,12 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.25.0]
-### Uncategorized
-- Add placeholder parameter for Prompt dialog ([#1007](https://github.com/MetaMask/snaps-monorepo/pull/1007))
-- Bump @metamask/auto-changelog from 2.6.0 to 3.1.0 ([#1001](https://github.com/MetaMask/snaps-monorepo/pull/1001))
-- Use controllers monorepo packages ([#955](https://github.com/MetaMask/snaps-monorepo/pull/955))
-- Fix ESLint dependencies ([#1000](https://github.com/MetaMask/snaps-monorepo/pull/1000))
-- Bump ESLint configs to latest version ([#963](https://github.com/MetaMask/snaps-monorepo/pull/963))
+### Added
+- Add placeholder parameter for prompt dialog ([#1007](https://github.com/MetaMask/snaps-monorepo/pull/1007))
 
 ## [0.24.1]
 ### Fixed
