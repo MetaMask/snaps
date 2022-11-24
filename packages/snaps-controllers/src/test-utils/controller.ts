@@ -3,10 +3,18 @@ import {
   ControllerMessenger,
   EventConstraint,
 } from '@metamask/base-controller';
+import { PermissionConstraint } from '@metamask/permission-controller';
+import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   getPersistedSnapObject,
   getTruncatedSnap,
+  MOCK_ORIGIN,
+  MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
+import {
+  SubjectMetadata,
+  SubjectType,
+} from '@metamask/subject-metadata-controller';
 
 import { CronjobControllerActions, CronjobControllerEvents } from '../cronjob';
 import {
@@ -68,6 +76,42 @@ export class MockControllerMessenger<
   }
 }
 
+export const MOCK_SNAP_SUBJECT_METADATA: SubjectMetadata = {
+  origin: MOCK_SNAP_ID,
+  subjectType: SubjectType.Snap,
+  name: 'foo',
+  extensionId: 'bar',
+  iconUrl: 'baz',
+};
+
+export const MOCK_DAPP_SUBJECT_METADATA: SubjectMetadata = {
+  origin: MOCK_ORIGIN,
+  subjectType: SubjectType.Website,
+  name: 'foo',
+  extensionId: 'bar',
+  iconUrl: 'baz',
+};
+
+export const MOCK_RPC_ORIGINS_PERMISSION: PermissionConstraint = {
+  caveats: [
+    { type: SnapCaveatType.RpcOrigin, value: { snaps: true, dapps: false } },
+  ],
+  date: 1664187844588,
+  id: 'izn0WGUO8cvq_jqvLQuQP',
+  invoker: MOCK_SNAP_ID,
+  parentCapability: SnapEndowments.Rpc,
+};
+
+export const MOCK_DAPPS_RPC_ORIGINS_PERMISSION: PermissionConstraint = {
+  caveats: [
+    { type: SnapCaveatType.RpcOrigin, value: { snaps: false, dapps: true } },
+  ],
+  date: 1664187844588,
+  id: 'izn0WGUO8cvq_jqvLQuQP',
+  invoker: MOCK_SNAP_ID,
+  parentCapability: SnapEndowments.Rpc,
+};
+
 export const getControllerMessenger = () => {
   const messenger = new MockControllerMessenger<
     SnapControllerActions | AllowedActions,
@@ -105,6 +149,11 @@ export const getControllerMessenger = () => {
   );
 
   messenger.registerActionHandler(
+    'PermissionController:revokePermissions',
+    () => ({}),
+  );
+
+  messenger.registerActionHandler(
     'PermissionController:revokeAllPermissions',
     () => ({}),
   );
@@ -116,7 +165,14 @@ export const getControllerMessenger = () => {
 
   messenger.registerActionHandler(
     'PermissionController:getPermissions',
-    () => ({}),
+    () => ({
+      [SnapEndowments.Rpc]: MOCK_RPC_ORIGINS_PERMISSION,
+    }),
+  );
+
+  messenger.registerActionHandler(
+    'SubjectMetadataController:getSubjectMetadata',
+    () => MOCK_SNAP_SUBJECT_METADATA,
   );
 
   messenger.registerActionHandler('ExecutionService:executeSnap', asyncNoOp);
@@ -161,6 +217,7 @@ export const getSnapControllerMessenger = (
       'PermissionController:hasPermissions',
       'PermissionController:getPermissions',
       'PermissionController:grantPermissions',
+      'PermissionController:revokePermissions',
       'PermissionController:revokeAllPermissions',
       'PermissionController:revokePermissionForAllSubjects',
       'SnapController:get',
@@ -179,6 +236,7 @@ export const getSnapControllerMessenger = (
       'SnapController:removeSnapError',
       'SnapController:incrementActiveReferences',
       'SnapController:decrementActiveReferences',
+      'SubjectMetadataController:getSubjectMetadata',
     ],
   });
 

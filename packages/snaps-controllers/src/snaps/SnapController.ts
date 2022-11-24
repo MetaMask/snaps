@@ -60,6 +60,10 @@ import {
   validateSnapShasum,
 } from '@metamask/snaps-utils';
 import {
+  GetSubjectMetadata,
+  SubjectType,
+} from '@metamask/subject-metadata-controller';
+import {
   assert,
   assertExhaustive,
   Duration,
@@ -83,9 +87,14 @@ import {
   SnapErrorJson,
   TerminateAllSnapsAction,
   TerminateSnapAction,
-} from '../services/ExecutionService';
+} from '../services';
 import { hasTimedOut, setDiff, withTimeout } from '../utils';
-import { endowmentCaveatMappers, SnapEndowments } from './endowments';
+import {
+  endowmentCaveatMappers,
+  handlerEndowments,
+  SnapEndowments,
+} from './endowments';
+import { getRpcCaveatOrigins } from './endowments/rpc';
 import { RequestQueue } from './RequestQueue';
 import { Timer } from './Timer';
 import { fetchNpmSnap } from './utils';
@@ -410,6 +419,7 @@ export type SnapControllerEvents =
 export type AllowedActions =
   | GetEndowments
   | GetPermissions
+  | GetSubjectMetadata
   | HasPermission
   | HasPermissions
   | RevokePermissions
@@ -2250,12 +2260,51 @@ export class SnapController extends BaseController<
     handler: handlerType,
     request,
   }: SnapRpcHookArgs & { snapId: SnapId }): Promise<unknown> {
+    const permissionName = handlerEndowments[handlerType];
+    const hasPermission = this.messagingSystem.call(
+      'PermissionController:hasPermission',
+      snapId,
+      permissionName,
+    );
+
+    if (!hasPermission) {
+      throw new Error(
+        `Snap "${snapId}" is not permitted to use "${permissionName}".`,
+      );
+    }
+
+    if (permissionName === SnapEndowments.Rpc) {
+      const subject = this.messagingSystem.call(
+        'SubjectMetadataController:getSubjectMetadata',
+        origin,
+      );
+      const isSnap = subject?.subjectType === SubjectType.Snap;
+
+      const permissions = this.messagingSystem.call(
+        'PermissionController:getPermissions',
+        snapId,
+      );
+
+      const rpcPermission = permissions?.[SnapEndowments.Rpc];
+      assert(rpcPermission);
+
+      const origins = getRpcCaveatOrigins(rpcPermission);
+      assert(origins);
+
+      if ((isSnap && !origins.snaps) || (!isSnap && !origins.dapps)) {
+        throw new Error(
+          `Snap "${snapId}" is not permitted to handle JSON-RPC requests from "${origin}".`,
+        );
+      }
+    }
+
     const handler = await this.#getRpcRequestHandler(snapId);
     if (!handler) {
       throw new Error(
         `Snap RPC message handler not found for snap "${snapId}".`,
       );
     }
+
     return handler({ origin, handler: handlerType, request });
   }
 

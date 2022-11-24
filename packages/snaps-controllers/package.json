@@ -41,6 +41,7 @@
     "@metamask/snaps-execution-environments": "^0.24.1",
     "@metamask/snaps-types": "^0.24.1",
     "@metamask/snaps-utils": "^0.24.1",
+    "@metamask/subject-metadata-controller": "^1.0.0",
     "@metamask/utils": "^3.3.1",
     "@xstate/fsm": "^2.0.0",
     "concat-stream": "^2.0.0",

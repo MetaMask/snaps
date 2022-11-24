@@ -23,4 +23,9 @@ export enum SnapCaveatType {
    * Caveat specifying access to the transaction origin, used by `endowment:transaction-insight`.
    */
   TransactionOrigin = 'transactionOrigin',
+
+  /**
+   * The origins that a Snap can receive JSON-RPC messages from.
+   */
+  RpcOrigin = 'rpcOrigin',
 }

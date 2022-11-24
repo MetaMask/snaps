@@ -1,4 +1,5 @@
 import { PermissionConstraint } from '@metamask/permission-controller';
+import { HandlerType } from '@metamask/snaps-utils';
 import { Json } from '@metamask/utils';
 
 import {
@@ -15,6 +16,11 @@ import {
 import { longRunningEndowmentBuilder } from './long-running';
 import { networkAccessEndowmentBuilder } from './network-access';
 import {
+  getRpcCaveatMapper,
+  rpcCaveatSpecifications,
+  rpcEndowmentBuilder,
+} from './rpc';
+import {
   getTransactionInsightCaveatMapper,
   transactionInsightCaveatSpecifications,
   transactionInsightEndowmentBuilder,
@@ -29,12 +35,14 @@ export const endowmentPermissionBuilders = {
   [cronjobEndowmentBuilder.targetKey]: cronjobEndowmentBuilder,
   [ethereumProviderEndowmentBuilder.targetKey]:
     ethereumProviderEndowmentBuilder,
+  [rpcEndowmentBuilder.targetKey]: rpcEndowmentBuilder,
 } as const;
 
 export const endowmentCaveatSpecifications = {
   ...keyringCaveatSpecifications,
   ...cronjobCaveatSpecifications,
   ...transactionInsightCaveatSpecifications,
+  ...rpcCaveatSpecifications,
 };
 
 export const endowmentCaveatMappers: Record<
@@ -45,6 +53,14 @@ export const endowmentCaveatMappers: Record<
   [cronjobEndowmentBuilder.targetKey]: getCronjobCaveatMapper,
   [transactionInsightEndowmentBuilder.targetKey]:
     getTransactionInsightCaveatMapper,
+  [rpcEndowmentBuilder.targetKey]: getRpcCaveatMapper,
+};
+
+export const handlerEndowments: Record<HandlerType, string> = {
+  [HandlerType.OnRpcRequest]: rpcEndowmentBuilder.targetKey,
+  [HandlerType.SnapKeyring]: keyringEndowmentBuilder.targetKey,
+  [HandlerType.OnTransaction]: transactionInsightEndowmentBuilder.targetKey,
+  [HandlerType.OnCronjob]: cronjobEndowmentBuilder.targetKey,
 };
 
 export * from './enum';
