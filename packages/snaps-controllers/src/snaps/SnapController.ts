@@ -13,6 +13,7 @@ import {
   HasPermissions,
   PermissionConstraint,
   PermissionsRequest,
+  RequestedPermissions,
   RevokeAllPermissions,
   RevokePermissionForAllSubjects,
   RevokePermissions,
@@ -69,10 +70,12 @@ import {
   isValidJson,
   Json,
   timeSince,
+  NonEmptyArray,
 } from '@metamask/utils';
 import { createMachine, interpret, StateMachine } from '@xstate/fsm';
 import { ethErrors } from 'eth-rpc-errors';
 import type { Patch } from 'immer';
+import { enablePatches } from 'immer';
 import { nanoid } from 'nanoid';
 
 import { forceStrict, validateMachine } from '../fsm';
@@ -95,6 +98,7 @@ import { detectSnapLocation, SnapLocation } from './location';
 import { RequestQueue } from './RequestQueue';
 import { Timer } from './Timer';
 
+enablePatches();
 export const controllerName = 'SnapController';
 
 // TODO: Figure out how to name these
@@ -216,6 +220,16 @@ export type SnapControllerState = {
 export type PersistedSnapControllerState = SnapControllerState & {
   snaps: Record<SnapId, PersistedSnap>;
   snapStates: Record<SnapId, string>;
+};
+
+type RollbackSnapshot = {
+  statePatches: Patch[];
+  sourceCode: string | null;
+  permissions: {
+    revoked: unknown;
+    granted: unknown[];
+    requestData: unknown;
+  };
 };
 
 // Controller Messenger Actions
@@ -568,6 +582,7 @@ type SetSnapArgs = Omit<AddSnapArgs, 'id' | 'location'> & {
    */
   // TODO(ritave): Used only for validation in #set, should be moved elsewhere.
   versionRange?: SemVerRange;
+  isUpdate?: boolean;
 };
 
 const defaultState: SnapControllerState = {
@@ -639,6 +654,8 @@ export class SnapController extends BaseController<
   private readonly snapsRuntimeData: Map<SnapId, SnapRuntimeData>;
 
   #getAppKey: GetAppKey;
+
+  private readonly _rollbackSnapshots: Map<SnapId, RollbackSnapshot>;
 
   #timeoutForLastRequestStatus?: number;
 
@@ -733,7 +750,7 @@ export class SnapController extends BaseController<
     this._onOutboundRequest = this._onOutboundRequest.bind(this);
     this._onOutboundResponse = this._onOutboundResponse.bind(this);
     this.snapsRuntimeData = new Map();
-
+    this._rollbackSnapshots = new Map();
     this.#pollForLastRequestStatus();
 
     /* eslint-disable @typescript-eslint/unbound-method */
@@ -1586,6 +1603,17 @@ export class SnapController extends BaseController<
               );
             }
 
+            const isUpdate = pendingUpdates.includes(snapId);
+            if (isUpdate) {
+              let rollbackSnapshot = this.getRollbackSnapshot(snapId);
+              if (rollbackSnapshot === undefined) {
+                const prevSourceCode =
+                  this.#getRuntimeExpect(snapId).sourceCode;
+                rollbackSnapshot = this.createRollbackSnapshot(snapId);
+                rollbackSnapshot.sourceCode = prevSourceCode;
+              }
+            }
+
             result[snapId] = await this.processRequestedSnap(
               origin,
               snapId,
@@ -1771,7 +1799,13 @@ export class SnapController extends BaseController<
       manifest: newSnap.manifest,
       files: newSnap.files,
       versionRange: newVersionRange,
+      isUpdate: true,
     });
+
+    // record revokePermissions to later grant for update rollback
+    // and record approvedNewPermissions to later revoke for update rollback
+    // when rolling back check if the permissions exist as the update might
+    // have errored out before the permissions were assigned
 
     const unusedPermissionsKeys = Object.keys(unusedPermissions);
     if (isNonEmptyArray(unusedPermissionsKeys)) {
@@ -1788,6 +1822,16 @@ export class SnapController extends BaseController<
       });
     }
 
+    const rollbackSnapshot = this.getRollbackSnapshot(
+      snapId,
+    ) as RollbackSnapshot;
+    rollbackSnapshot.permissions.revoked = unusedPermissions;
+    rollbackSnapshot.permissions.granted = Object.keys(approvedNewPermissions);
+    rollbackSnapshot.permissions.requestData = requestData;
+
+    // add a try/catch block here to catch an error if the snap does not start in update situations
+    // we might need to add a flag that delineates between installs/updates calling this methodor ac
+
     const sourceCode = newSnap.files
       .find(
         (file) =>
@@ -1795,10 +1839,8 @@ export class SnapController extends BaseController<
       )
       ?.toString();
     assert(sourceCode !== undefined);
-    await this.#startSnap({
-      snapId,
-      sourceCode,
-    });
+
+    await this.#startSnap({ snapId, sourceCode });
 
     const truncatedSnap = this.getTruncatedExpect(snapId);
     this.messagingSystem.publish(
@@ -1959,6 +2001,7 @@ export class SnapController extends BaseController<
       manifest,
       files,
       versionRange = DEFAULT_REQUESTED_SNAP_VERSION,
+      isUpdate = false,
     } = args;
 
     assertIsSnapManifest(manifest.result);
@@ -2020,9 +2063,18 @@ export class SnapController extends BaseController<
     delete snap.blockInformation;
 
     // store the snap back in state
-    this.update((state: any) => {
+    const [, , inversePatches] = this.update((state: any) => {
       state.snaps[snapId] = snap;
     });
+
+    // checking for isUpdate here as this function is also used in
+    // the install flow, we do not care to create snapsshots for installs
+    if (isUpdate) {
+      const rollbackSnapshot = this.getRollbackSnapshot(
+        snapId,
+      ) as RollbackSnapshot;
+      rollbackSnapshot.statePatches = inversePatches;
+    }
 
     const runtime = this.#getRuntimeExpect(snapId);
     runtime.sourceCode = sourceCode;
@@ -2385,6 +2437,63 @@ export class SnapController extends BaseController<
 
     if (runtime.pendingInboundRequests.length === 0) {
       runtime.lastRequest = Date.now();
+    }
+  }
+
+  private getRollbackSnapshot(snapId: SnapId): RollbackSnapshot | undefined {
+    return this._rollbackSnapshots.get(snapId);
+  }
+
+  private createRollbackSnapshot(snapId: SnapId): RollbackSnapshot {
+    assert(
+      this._rollbackSnapshots.get(snapId) === undefined,
+      new Error(`Snap "${snapId}" rollback snapshot already exists`),
+    );
+
+    this._rollbackSnapshots.set(snapId, {
+      statePatches: [],
+      sourceCode: '',
+      permissions: { revoked: null, granted: null, requestData: null },
+    });
+    return this.getRollbackSnapshot(snapId) as RollbackSnapshot;
+  }
+
+  private async rollbackSnap(snapId: SnapId) {
+    // 1. First check if the rollbackSnapshot exists, if it doesn't throw an error
+    // 2. Then you can begin to pipe in statePatches, sourceCode and permissions into the appropriate functions
+    // 3. Make the appropriate checks to make sure you are
+    const rollbackSnapshot = this.getRollbackSnapshot(snapId);
+    if (!rollbackSnapshot) {
+      throw new Error('A snapshot does not exist for this snap');
+    }
+
+    const { statePatches, sourceCode, permissions } = rollbackSnapshot;
+
+    if (statePatches?.length) {
+      this.applyPatches(rollbackSnapshot.statePatches);
+    }
+
+    if (sourceCode) {
+      const runtime = this.#getRuntimeExpect(snapId);
+      runtime.sourceCode = rollbackSnapshot.sourceCode;
+    }
+
+    if (permissions.revoked && Object.keys(permissions.revoked).length) {
+      this.messagingSystem.call('PermissionController:grantPermissions', {
+        approvedPermissions: rollbackSnapshot.permissions
+          .revoked as RequestedPermissions,
+        subject: { origin: snapId },
+        requestData: rollbackSnapshot.permissions.requestData as Record<
+          string,
+          unknown
+        >,
+      });
+    }
+
+    if (permissions.granted?.length) {
+      this.messagingSystem.call('PermissionController:revokePermissions', {
+        [snapId]: permissions.granted as NonEmptyArray<string>,
+      });
     }
   }
 
