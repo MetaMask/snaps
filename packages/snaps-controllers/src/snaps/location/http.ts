@@ -1,41 +1,69 @@
-import { SnapManifest, assertIsSnapManifest } from '@metamask/snaps-utils';
+import {
+  SnapManifest,
+  assertIsSnapManifest,
+  VFile,
+  deepClone,
+  HttpSnapIdStruct,
+} from '@metamask/snaps-utils';
+import { assert, assertStruct } from '@metamask/utils';
 
-import { assert } from '@metamask/utils';
 import { SnapLocation } from './location';
 
-export class HttpLocation implements SnapLocation {
-  private cache = new Map<string, Blob>();
+export default class HttpLocation implements SnapLocation {
+  // We keep contents separate because then we can use only one Blob in cache,
+  // which we convert to Uint8Array when actually returning the file.
+  //
+  // That avoids deepCloning file contents.
+  // I imagine ArrayBuffers are copy-on-write optimized, meaning
+  // in most often case we'll only have one file contents in common case.
+  private readonly cache: [file: VFile, contents: Blob][] = [];
 
-  private validatedManifest?: SnapManifest;
+  private validatedManifest?: VFile<SnapManifest>;
 
-  private url: URL;
+  private readonly url: URL;
 
   constructor(url: URL) {
+    assertStruct(url.toString(), HttpSnapIdStruct, 'Invalid Snap Id: ');
     this.url = url;
-    assert(url.protocol === 'http:' || url.protocol === 'https:');
   }
 
-  async manifest(): Promise<SnapManifest> {
+  async manifest(): Promise<VFile<SnapManifest>> {
     if (this.validatedManifest) {
-      return this.validatedManifest;
+      return deepClone(this.validatedManifest);
     }
 
-    const manifest = await (await fetch(this.url)).json();
+    const contents = await (await fetch(this.url)).text();
+    const manifest = JSON.parse(contents);
     assertIsSnapManifest(manifest);
-    this.validatedManifest = manifest;
-    return manifest;
+    const vfile = new VFile<SnapManifest>({
+      value: contents,
+      result: manifest,
+      path: './snap.manifest.json',
+      data: { canonicalPath: this.url.toString() },
+    });
+    this.validatedManifest = vfile;
+
+    return this.manifest();
   }
 
-  async fetch(path: string): Promise<Blob> {
-    const canonical = this.toCanonical(path);
-    const cached = this.cache.get(canonical.href);
-    if (cached) {
-      return cached;
+  async fetch(path: string): Promise<VFile> {
+    const cached = this.cache.find(([file]) => file.path === path);
+    if (cached !== undefined) {
+      const [cachedFile, contents] = cached;
+      const value = new Uint8Array(await contents.arrayBuffer());
+      const vfile = deepClone(cachedFile);
+      vfile.value = value;
+      return vfile;
     }
-    const response = await fetch(canonical);
+
+    const canonicalPath = this.toCanonical(path).toString();
+    const response = await fetch(canonicalPath);
+    const vfile = new VFile({ value: '', path, data: { canonicalPath } });
+    // TODO(ritave): When can we assume the file is string vs binary?
     const blob = await response.blob();
-    this.cache.set(canonical.href, blob);
-    return blob;
+    this.cache.push([vfile, blob]);
+
+    return this.fetch(path);
   }
 
   get root(): URL {
@@ -43,6 +71,7 @@ export class HttpLocation implements SnapLocation {
   }
 
   private toCanonical(path: string): URL {
+    assert(!path.startsWith('/'), 'Tried to parse absolute path');
     return new URL(path, this.url);
   }
 }

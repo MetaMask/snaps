@@ -1,15 +1,24 @@
-import { Readable, Writable } from 'stream';
-import { assert, isObject } from '@metamask/utils';
+import {
+  assertIsSemVerVersion,
+  assertIsSnapManifest,
+  deepClone,
+  DEFAULT_REQUESTED_SNAP_VERSION,
+  getTargetVersion,
+  isValidUrl,
+  NpmSnapIdStruct,
+  SemVerRange,
+  SemVerVersion,
+  SnapManifest,
+  VFile,
+} from '@metamask/snaps-utils';
+import { assert, assertStruct, isObject } from '@metamask/utils';
 import concat from 'concat-stream';
 import createGunzipStream from 'gunzip-maybe';
 import pump from 'pump';
 import { ReadableWebToNodeStream } from 'readable-web-to-node-stream';
+import { Readable, Writable } from 'stream';
 import { extract as tarExtract } from 'tar-stream';
-import {
-  getTargetVersion,
-  isValidUrl,
-  SnapManifest,
-} from '@metamask/snaps-utils';
+
 import { SnapLocation } from './location';
 
 const DEFAULT_NPM_REGISTRY = 'https://registry.npmjs.org';
@@ -17,13 +26,19 @@ const DEFAULT_NPM_REGISTRY = 'https://registry.npmjs.org';
 interface NpmMeta {
   registry: URL;
   packageName: string;
-  requestedRange: string;
-  actualVersion: string;
+  requestedRange: SemVerRange;
+  version?: string;
+  fetch: typeof fetch;
 }
-
 export interface NpmOptions {
   /**
+   * @default DEFAULT_REQUESTED_SNAP_VERSION
+   */
+  versionRange?: SemVerRange;
+  /**
    * The function used to fetch data.
+   *
+   * @default globalThis.fetch
    */
   fetch?: typeof fetch;
   /**
@@ -34,113 +49,99 @@ export interface NpmOptions {
   allowCustomRegistries?: boolean;
 }
 
-export class NpmLocation implements SnapLocation {
-  static async create(
-    root: string | URL,
-    versionRange: string,
-    opts: NpmOptions = {
-      fetch,
-      allowCustomRegistries: false,
-    },
-  ): Promise<NpmLocation> {
+export default class NpmLocation implements SnapLocation {
+  private readonly meta: NpmMeta;
+
+  private validatedManifest?: VFile<SnapManifest>;
+
+  private files?: VFile[];
+
+  constructor(url: URL, opts: NpmOptions = {}) {
     const allowCustomRegistries = opts.allowCustomRegistries ?? false;
+    // eslint-disable-next-line @typescript-eslint/no-shadow
+    const fetch = opts.fetch ?? globalThis.fetch;
+    const requestedRange = opts.versionRange ?? DEFAULT_REQUESTED_SNAP_VERSION;
 
-    const base = new URL(root);
-    assert(base.protocol === 'npm:');
+    assertStruct(url.toString(), NpmSnapIdStruct, 'Invalid Snap Id: ');
 
-    let registry;
+    let registry: string | URL;
     if (
-      base.host === '' &&
-      base.port === '' &&
-      base.username === '' &&
-      base.password === ''
+      url.host === '' &&
+      url.port === '' &&
+      url.username === '' &&
+      url.password === ''
     ) {
       registry = new URL(DEFAULT_NPM_REGISTRY);
     } else {
       registry = 'https://';
-      if (base.username) {
-        registry += base.username;
-        if (base.password) {
-          registry += `:${base.password}`;
+      if (url.username) {
+        registry += url.username;
+        if (url.password) {
+          registry += `:${url.password}`;
         }
         registry += '@';
       }
-      registry += base.host;
+      registry += url.host;
       registry = new URL(registry);
       assert(
-        allowCustomRegistries === true,
+        allowCustomRegistries,
         new TypeError(
-          `Custom NPM registries are disabled, tried use "${registry}"`,
+          `Custom NPM registries are disabled, tried to use "${registry.toString()}"`,
         ),
       );
     }
 
     assert(
-      base.pathname !== '' && base.pathname !== '/',
+      registry.pathname === '/' &&
+        registry.search === '' &&
+        registry.hash === '',
+    );
+
+    assert(
+      url.pathname !== '' && url.pathname !== '/',
       new TypeError('The package name in NPM location is empty'),
     );
-    let packageName = base.pathname;
-    if (packageName[0] === '/') {
+    let packageName = url.pathname;
+    if (packageName.startsWith('/')) {
       packageName = packageName.slice(1);
     }
 
-    const [tarballResponse, actualVersion] = await fetchNpmTarball(
-      packageName,
-      versionRange,
+    this.meta = {
+      requestedRange,
       registry,
-      opts.fetch ?? fetch,
-    );
-
-    // TODO(ritave): Lazily extract tar instead of up-front
-    const data = new Map<string, Blob>();
-    await new Promise<void>((resolve, reject) => {
-      pump(
-        getNodeStream(tarballResponse),
-        // The "gz" in "tgz" stands for "gzip". The tarball needs to be decompressed
-        // before we can actually grab any files from it.
-        createGunzipStream(),
-        createTarballStream(data),
-        (error) => {
-          error ? reject(error) : resolve();
-        },
-      );
-    });
-
-    return new NpmLocation(
-      { registry, packageName, requestedRange: versionRange, actualVersion },
-      data,
-    );
+      packageName,
+      fetch,
+    };
   }
 
-  private validatedManifest?: SnapManifest;
-
-  private meta: NpmMeta;
-
-  private data: Map<string, Blob>;
-
-  private constructor(meta: NpmMeta, data: Map<string, Blob>) {
-    this.meta = meta;
-    this.data = data;
-  }
-
-  async manifest(): Promise<SnapManifest> {
+  async manifest(): Promise<VFile<SnapManifest>> {
     if (this.validatedManifest) {
-      return this.validatedManifest;
+      return deepClone(this.validatedManifest);
     }
 
-    const file = JSON.parse(await (await this.fetch('/package.json')).text());
-    this.validatedManifest = file;
-    return file;
+    const vfile = await this.fetch('./snap.manifest.json');
+    const result = JSON.parse(vfile.value.toString());
+    assertIsSnapManifest(result);
+    vfile.result = result;
+    this.validatedManifest = vfile as VFile<SnapManifest>;
+
+    return this.manifest();
   }
 
-  async fetch(path: string): Promise<Blob> {
-    let myPath = path;
-    if (path[0] === '/') {
-      myPath = path.slice(1);
+  // eslint-disable-next-line @typescript-eslint/require-await
+  async fetch(path: string): Promise<VFile> {
+    if (!this.files) {
+      await this.#lazyInit();
+      assert(this.files !== undefined);
     }
-    const contents = this.data.get(myPath);
-    assert(contents !== undefined);
-    return contents;
+    assert(!path.startsWith('/'), 'Tried to fetch absolute path');
+    const relativePath = ensureRelative(path);
+    const vfile = this.files.find((file) => file.path === relativePath);
+    assert(
+      vfile !== undefined,
+      new TypeError(`File "${path}" not found in package`),
+    );
+    return deepClone(vfile);
   }
 
   get packageName(): string {
@@ -148,7 +149,51 @@ export class NpmLocation implements SnapLocation {
   }
 
   get version(): string {
-    return this.meta.actualVersion;
+    assert(
+      this.meta.version !== undefined,
+      'Tried to access version without first fetching NPM package',
+    );
+    return this.meta.version;
+  }
+
+  async #lazyInit() {
+    assert(this.files === undefined);
+    const [tarballResponse, actualVersion] = await fetchNpmTarball(
+      this.meta.packageName,
+      this.meta.requestedRange,
+      this.meta.registry,
+      this.meta.fetch,
+    );
+    this.meta.version = actualVersion;
+
+    let canonicalBase = 'npm://';
+    if (this.meta.registry.username !== '') {
+      canonicalBase += this.meta.registry.username;
+      if (this.meta.registry.password !== '') {
+        canonicalBase += `:${this.meta.registry.password}`;
+      }
+      canonicalBase += '@';
+    }
+    canonicalBase += this.meta.registry.host;
+
+    // TODO(ritave): Lazily extract files instead of up-front extracting all of them
+    //               We would need to replace tar-stream package because it requires immediate consumption of streams.
+    await new Promise<void>((resolve, reject) => {
+      this.files = [];
+      pump(
+        getNodeStream(tarballResponse),
+        // The "gz" in "tgz" stands for "gzip". The tarball needs to be decompressed
+        // before we can actually grab any files from it.
+        createGunzipStream(),
+        createTarballStream(
+          `${canonicalBase}/${this.meta.packageName}/`,
+          this.files,
+        ),
+        (error) => {
+          error ? reject(error) : resolve();
+        },
+      );
+    });
   }
 }
 
@@ -167,10 +212,10 @@ export class NpmLocation implements SnapLocation {
  */
 async function fetchNpmTarball(
   packageName: string,
-  versionRange: string,
+  versionRange: SemVerRange,
   registryUrl: URL | string,
   fetchFunction: typeof fetch,
-): Promise<[ReadableStream, string]> {
+): Promise<[ReadableStream, SemVerVersion]> {
   const packageMetadata = await (
     await fetchFunction(new URL(packageName, registryUrl).toString())
   ).json();
@@ -181,10 +226,14 @@ async function fetchNpmTarball(
     );
   }
 
-  const targetVersion = getTargetVersion(
-    Object.keys((packageMetadata as any)?.versions ?? {}),
-    versionRange,
+  const versions = Object.keys((packageMetadata as any)?.versions ?? {}).map(
+    (version) => {
+      assertIsSemVerVersion(version);
+      return version;
+    },
   );
+
+  const targetVersion = getTargetVersion(versions, versionRange);
 
   if (targetVersion === null) {
     throw new Error(
@@ -244,10 +293,16 @@ function getNodeStream(stream: ReadableStream): Readable {
  * Creates a `tar-stream` that will get the necessary files from an npm Snap
  * package tarball (`.tgz` file).
  *
+ * @param canonicalBase - A base URI as specified in {@link https://github.com/MetaMask/SIPs/blob/main/SIPS/sip-8.md SIP-8}. Starting with 'npm:'. Will be used for canonicalPath vfile argument.
  * @param files - An object to write target file contents to.
  * @returns The {@link Writable} tarball extraction stream.
  */
-function createTarballStream(files: Map<string, Blob>): Writable {
+function createTarballStream(canonicalBase: string, files: VFile[]): Writable {
+  assert(
+    canonicalBase.endsWith('/'),
+    "Base needs to end with '/' for relative paths to be added as children instead of siblings.",
+  );
+  assert(canonicalBase.startsWith('npm:'), 'Protocol mismatch, expected "npm:');
   // `tar-stream` is pretty old-school, so we create it first and then
   // instrument it by adding event listeners.
   const extractStream = tarExtract();
@@ -258,10 +313,17 @@ function createTarballStream(files: Map<string, Blob>): Writable {
     const { name: headerName, type: headerType } = header;
     if (headerType === 'file') {
       // The name is a path if the header type is "file".
-      const filePath = headerName.replace(NPM_TARBALL_PATH_PREFIX, '');
+      const path = headerName.replace(NPM_TARBALL_PATH_PREFIX, './');
       return entryStream.pipe(
         concat((data) => {
-          files.set(filePath, new Blob([data]));
+          const vfile = new VFile({
+            value: data,
+            path,
+            data: {
+              canonicalPath: new URL(path, canonicalBase).toString(),
+            },
+          });
+          files.push(vfile);
           return next();
         }),
       );
@@ -274,4 +336,18 @@ function createTarballStream(files: Map<string, Blob>): Writable {
     return entryStream.resume();
   });
   return extractStream;
+}
+
+/**
+ * Ensures that a relative path starts with `./` prefix.
+ *
+ * @param path - Path to make relative.
+ * @returns The same path, with optional `./` prefix.
+ */
+function ensureRelative(path: string): string {
+  assert(!path.startsWith('/'));
+  if (path.startsWith('./')) {
+    return path;
+  }
+  return `./${path}`;
 }

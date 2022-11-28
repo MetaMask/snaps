@@ -17,3 +17,5 @@ export * from './snaps';
 export * from './types';
 export * from './url';
 export * from './versions';
+export * from './vfile/vfile';
+export * from './vfile/to-vfile';

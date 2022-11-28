@@ -1,37 +1,58 @@
+import { SnapManifest, VFile } from '@metamask/snaps-utils';
 import assert from 'assert';
-import { SnapManifest } from '@metamask/snaps-utils';
-import { HttpLocation } from './http';
-import { LocalLocation } from './local';
-import { NpmLocation } from './npm';
+
+import HttpLocation from './http';
+import LocalLocation from './local';
+import NpmLocation, { NpmOptions } from './npm';
+
+declare module '@metamask/snaps-utils' {
+  interface DataMap {
+    /**
+     * Fully qualified, canonical path for the file in {@link https://github.com/MetaMask/SIPs/blob/main/SIPS/sip-8.md SIP-8 } URI format.
+     */
+    canonicalPath: string;
+  }
+}
 
 export interface SnapLocation {
-  // TODO(ritave): Package.json object
-  manifest(): Promise<SnapManifest>;
-  fetch(path: string): Promise<Blob>;
+  /**
+   * All files are relative to the manifest, except the manifest itself.
+   */
+  manifest(): Promise<VFile<SnapManifest>>;
+  fetch(path: string): Promise<VFile>;
 
   readonly shouldAlwaysReload?: boolean;
 }
 
+export type DetectSnapLocationOptions = NpmOptions & {
+  /**
+   * @default false
+   */
+  allowHttp?: boolean;
+};
+
 /**
- * @param location
- * @param versionRange
- * @param opts
+ * Auto-magically detects which SnapLocation object to create based on the provided {@link location}.
+ *
+ * @param location - A {@link https://github.com/MetaMask/SIPs/blob/main/SIPS/sip-8.md SIP-8} uri.
+ * @param opts - NPM options and feature flags.
+ * @returns SnapLocation based on url.
  */
-export async function detectSnapLocation(
+export function detectSnapLocation(
   location: string | URL,
-  versionRange: string,
-  opts = { allowHttp: false },
-): Promise<SnapLocation> {
+  opts?: DetectSnapLocationOptions,
+): SnapLocation {
+  const allowHttp = opts?.allowHttp ?? false;
   const root = new URL(location);
   switch (root.protocol) {
     case 'npm:':
-      return NpmLocation.create(root, versionRange);
+      return new NpmLocation(root, opts);
     case 'local:':
       return new LocalLocation(root);
     case 'http:':
     case 'https:':
       assert(
-        opts.allowHttp,
+        allowHttp,
         new TypeError('Fetching snaps from external http/https is disabled.'),
       );
       return new HttpLocation(root);

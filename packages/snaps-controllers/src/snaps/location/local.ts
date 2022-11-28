@@ -1,30 +1,32 @@
-import { SnapManifest } from '@metamask/snaps-utils';
-import { assert } from '@metamask/utils';
-import { HttpLocation } from './http';
+import {
+  LocalSnapIdStruct,
+  SnapIdPrefixes,
+  SnapManifest,
+  VFile,
+} from '@metamask/snaps-utils';
+import { assert, assertStruct } from '@metamask/utils';
+
+import HttpLocation from './http';
 import { SnapLocation } from './location';
 
-export const LOCALHOST_HOSTNAMES = new Set(['localhost', '127.0.0.1', '::1']);
-
-export class LocalLocation implements SnapLocation {
-  private http: HttpLocation;
+export default class LocalLocation implements SnapLocation {
+  readonly #http: HttpLocation;
 
   constructor(url: URL) {
-    assert(url.protocol === 'local:');
-    assert(
-      isLocalHost(url),
-      new TypeError('local: protocol, but hostname is not localhost'),
+    assertStruct(url.toString(), LocalSnapIdStruct, 'Invalid Snap Id: ');
+    this.#http = new HttpLocation(
+      new URL(url.toString().slice(SnapIdPrefixes.local.length)),
     );
-    const httpUrl = new URL(url);
-    httpUrl.protocol = 'http:';
-    this.http = new HttpLocation(httpUrl);
   }
 
-  manifest(): Promise<SnapManifest> {
-    return this.http.manifest();
+  async manifest(): Promise<VFile<SnapManifest>> {
+    const vfile = await this.#http.manifest();
+
+    return convertCanonical(vfile);
   }
 
-  fetch(path: string): Promise<Blob> {
-    return this.http.fetch(path);
+  async fetch(path: string): Promise<VFile> {
+    return convertCanonical(await this.#http.fetch(path));
   }
 
   get shouldAlwaysReload() {
@@ -33,11 +35,16 @@ export class LocalLocation implements SnapLocation {
 }
 
 /**
- * Returns whether the `url` param is local or not.
+ * Converts vfiles with canonical `http:` paths into `local:` paths.
  *
- * @param url - Url to check.
- * @returns Whether the param is local.
+ * @param vfile - The {@link VFile} to convert.
+ * @returns The same object with updated `.data.canonicalPath`.
  */
-function isLocalHost(url: URL): boolean {
-  return LOCALHOST_HOSTNAMES.has(url.hostname);
+function convertCanonical<T>(vfile: VFile<T>): VFile<T> {
+  assert(vfile.data.canonicalPath !== undefined);
+  const canonicalPath = new URL(vfile.data.canonicalPath);
+  assert(canonicalPath.protocol === 'http:');
+  canonicalPath.protocol = 'local:';
+  vfile.data.canonicalPath = canonicalPath.toString();
+  return vfile;
 }

@@ -1,16 +1,17 @@
+import { assert } from '@metamask/utils';
 import { createReadStream } from 'fs';
 import { readFile } from 'fs/promises';
 import fetchMock from 'jest-fetch-mock';
 import path from 'path';
 
-import { fetchNpmSnap } from './npm';
+import NpmLocation from './npm';
 
-describe('fetchNpmSnap', () => {
+describe('NpmLocation', () => {
   beforeEach(() => {
     fetchMock.resetMocks();
   });
 
-  it('fetches a package tarball, extracts the necessary files, and validates them', async () => {
+  it('fetches a package tarball, extracts the neecessary files, and validaes them', async () => {
     const { version: templateSnapVersion } = JSON.parse(
       (
         await readFile(require.resolve('@metamask/template-snap/package.json'))
@@ -49,12 +50,23 @@ describe('fetchNpmSnap', () => {
           }) as any,
       );
 
-    const { manifest, sourceCode, svgIcon } = await fetchNpmSnap(
-      '@metamask/template-snap',
-      templateSnapVersion,
-      'https://registry.npmjs.cf',
-      fetchMock as typeof fetch,
+    const location = new NpmLocation(
+      new URL('npm://registry.npmjs.cf/@metamask/template-snap'),
+      {
+        versionRange: templateSnapVersion,
+        fetch: fetchMock as typeof fetch,
+        allowCustomRegistries: true,
+      },
     );
+
+    const manifest = await location.manifest();
+    const sourceCode = (
+      await location.fetch(manifest.result.source.location.npm.filePath)
+    ).value.toString();
+    assert(manifest.result.source.location.npm.iconPath);
+    const svgIcon = (
+      await location.fetch(manifest.result.source.location.npm.iconPath)
+    ).value.toString();
 
     expect(fetchMock).toHaveBeenCalledTimes(2);
     expect(fetchMock).toHaveBeenNthCalledWith(
@@ -63,7 +75,7 @@ describe('fetchNpmSnap', () => {
     );
     expect(fetchMock).toHaveBeenNthCalledWith(2, tarballUrl);
 
-    expect(manifest).toStrictEqual(
+    expect(manifest.result).toStrictEqual(
       JSON.parse(
         (
           await readFile(
@@ -83,6 +95,17 @@ describe('fetchNpmSnap', () => {
 
     expect(svgIcon?.startsWith('<svg') && svgIcon.endsWith('</svg>')).toBe(
       true,
+    );
+  });
+
+  it("can't use custom registries by default", () => {
+    expect(
+      () =>
+        new NpmLocation(
+          new URL('npm://registry.npmjs.cf/@metamask/template-snap'),
+        ),
+    ).toThrow(
+      'Custom NPM registries are disabled, tried to use "https://registry.npmjs.cf/"',
     );
   });
 });

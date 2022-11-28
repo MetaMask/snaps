@@ -26,7 +26,7 @@ export const DEFAULT_SNAP_SHASUM = getSnapSourceShasum(DEFAULT_SNAP_BUNDLE);
 export const DEFAULT_SNAP_ICON = '<svg />';
 
 export const MOCK_SNAP_ID = 'npm:@metamask/example-snap';
-export const MOCK_LOCAL_SNAP_ID = 'local:@metamask/example-snap';
+export const MOCK_LOCAL_SNAP_ID = 'local:http://localhost:8080';
 export const MOCK_ORIGIN = 'example.com';
 
 type GetPersistedSnapObjectOptions = Partial<MakeSemVer<PersistedSnap>>;

@@ -2,12 +2,24 @@ import { Json } from '@metamask/utils';
 import { sha256 } from '@noble/hashes/sha256';
 import { base64 } from '@scure/base';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
+import {
+  define,
+  empty,
+  enums,
+  intersection,
+  literal,
+  refine,
+  size,
+  string,
+  Struct,
+  type,
+  assert as assertSuperstruct,
+} from 'superstruct';
 
 import { SnapManifest, SnapPermissions } from './manifest/validation';
 import { SnapId, SnapIdPrefixes, SnapValidationFailureReason } from './types';
 import { SemVerVersion } from './versions';
 
-export const LOCALHOST_HOSTNAMES = new Set(['localhost', '127.0.0.1', '::1']);
 export const SNAP_PREFIX = 'wallet_snap_';
 
 export const SNAP_PREFIX_REGEX = new RegExp(`^${SNAP_PREFIX}`, 'u');
@@ -194,6 +206,65 @@ export function validateSnapShasum(
     );
   }
 }
+
+export const LOCALHOST_HOSTNAMES = ['localhost', '127.0.0.1', '::1'] as const;
+
+type UriOptions<T extends string> = {
+  protocol?: Struct<T>;
+  hash?: Struct<T>;
+  port?: Struct<T>;
+  hostname?: Struct<T>;
+  pathname?: Struct<T>;
+  search?: Struct<T>;
+};
+export const uri = (opts: UriOptions<any> = {}) =>
+  define<string | URL>('uri', (value) => {
+    try {
+      const url = new URL(value as any);
+
+      const UrlStruct = type(opts);
+      assertSuperstruct(url, UrlStruct);
+      return true;
+    } catch {
+      return `Expected URL, got "${(value as any).toString()}"`;
+    }
+  });
+
+const LocalSnapIdSubUrlStruct = uri({
+  protocol: enums(['http:', 'https:']),
+  hostname: enums(LOCALHOST_HOSTNAMES),
+  hash: empty(string()),
+  search: empty(string()),
+});
+export const LocalSnapIdStruct = refine(string(), 'local Snap Id', (value) => {
+  if (!value.startsWith(SnapIdPrefixes.local)) {
+    return `Expected local Snap Id, got "${value}"`;
+  }
+
+  assertSuperstruct(
+    value.slice(SnapIdPrefixes.local.length),
+    LocalSnapIdSubUrlStruct,
+  );
+  return true;
+});
+export const NpmSnapIdStruct = intersection([
+  string(),
+  uri({
+    protocol: literal(SnapIdPrefixes.npm),
+    pathname: size(string(), 2, Infinity), // potentially starting with / if registry is set.
+    search: empty(string()),
+    hash: empty(string()),
+  }),
+]) as unknown as Struct<string, null>;
+
+export const HttpSnapIdStruct = intersection([
+  string(),
+  uri({
+    protocol: enums(['http:', 'https:']),
+    search: empty(string()),
+    hash: empty(string()),
+  }),
+]) as unknown as Struct<string, null>;
 
 /**
  * Extracts the snap prefix from a snap ID.
