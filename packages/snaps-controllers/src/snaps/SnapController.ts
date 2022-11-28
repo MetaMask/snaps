@@ -178,7 +178,7 @@ export type SnapError = {
 };
 
 /**
- * The return type of {@link SnapController.fetchSnap} and its sibling methods.
+ * The return type of {@link SnapController.#fetchSnap} and its sibling methods.
  */
 type FetchSnapResult = {
   /**
@@ -1716,7 +1716,7 @@ export class SnapController extends BaseController<
         `Received invalid snap version range: "${newVersionRange}".`,
       );
     }
-    const newSnap = await this.fetchSnap(
+    const newSnap = await this.#fetchSnap(
       snapId,
       location ??
         this.#detectSnapLocation(snapId, { versionRange: newVersionRange }),
@@ -1838,7 +1838,7 @@ export class SnapController extends BaseController<
       // If fetching and setting the snap succeeds, this property will be set
       // to null in the authorize() method.
       runtime.installPromise = (async () => {
-        const fetchedSnap = await this.fetchSnap(snapId, location);
+        const fetchedSnap = await this.#fetchSnap(snapId, location);
         await this.#assertIsUnblocked(snapId, {
           version: fetchedSnap.manifest.result.version,
           shasum: fetchedSnap.manifest.result.source.shasum,
@@ -2051,7 +2051,7 @@ export class SnapController extends BaseController<
    * @param location - Source from which snap will be fetched.
    * @returns A tuple of the Snap manifest object and the Snap source code.
    */
-  async fetchSnap(
+  async #fetchSnap(
     snapId: ValidatedSnapId,
     location: SnapLocation,
   ): Promise<FetchSnapResult> {
