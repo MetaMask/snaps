@@ -45,6 +45,7 @@ export const getSnapControllerMessenger = (
       'SnapController:snapUpdated',
       'SnapController:snapRemoved',
       'SnapController:stateChange',
+      'SnapController:snapRolledback',
     ],
     allowedActions: [
       'ApprovalController:addRequest',
