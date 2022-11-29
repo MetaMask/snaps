@@ -1,6 +1,6 @@
-import { resolve } from 'path';
 import SnapsWebpackPlugin from '@metamask/snaps-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import { resolve } from 'path';
 import { Configuration } from 'webpack';
 import { merge } from 'webpack-merge';
 import WebpackBarPlugin from 'webpackbar';

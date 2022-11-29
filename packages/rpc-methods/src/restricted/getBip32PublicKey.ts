@@ -1,18 +1,22 @@
+import { BIP32Node, SLIP10Node } from '@metamask/key-tree';
 import {
+  Caveat,
   PermissionSpecificationBuilder,
   PermissionType,
+  PermissionValidatorConstraint,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
-  Caveat,
-  PermissionValidatorConstraint,
-  RestrictedMethodCaveatSpecificationConstraint,
-} from '@metamask/controllers';
+} from '@metamask/permission-controller';
+import {
+  Bip32Entropy,
+  bip32entropy,
+  Bip32PathStruct,
+  SnapCaveatType,
+  SnapGetBip32EntropyPermissionsStruct,
+} from '@metamask/snaps-utils';
+import { NonEmptyArray, assertStruct } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
-import { NonEmptyArray } from '@metamask/utils';
-import { BIP32Node, SLIP10Node } from '@metamask/key-tree';
-import { SnapCaveatType } from '@metamask/snap-utils';
-import { isEqual } from '../utils';
-import { validateCaveatPaths, validatePath } from './getBip32Entropy';
+import { boolean, enums, object, optional, type } from 'superstruct';
 
 const targetKey = 'snap_getBip32PublicKey';
 
@@ -47,6 +51,32 @@ type GetBip32PublicKeyParameters = {
   curve: 'secp256k1' | 'ed25519';
   compressed?: boolean;
 };
+
+export const Bip32PublicKeyArgsStruct = bip32entropy(
+  object({
+    path: Bip32PathStruct,
+    curve: enums(['ed225519', 'secp256k1']),
+    compressed: optional(boolean()),
+  }),
+);
+
+/**
+ * Validate the path values associated with a caveat. This validates that the
+ * value is a non-empty array with valid derivation paths and curves.
+ *
+ * @param caveat - The caveat to validate.
+ * @throws If the value is invalid.
+ */
+export function validateCaveatPaths(
+  caveat: Caveat<string, any>,
+): asserts caveat is Caveat<string, Bip32Entropy[]> {
+  assertStruct(
+    caveat,
+    type({ value: SnapGetBip32EntropyPermissionsStruct }),
+    'Invalid BIP-32 public key caveat',
+    ethErrors.rpc.internal,
+  );
+}
 
 /**
  * The specification builder for the `snap_getBip32PublicKey` permission.
@@ -89,43 +119,6 @@ export const getBip32PublicKeyBuilder = Object.freeze({
   },
 } as const);
 
-export const getBip32PublicKeyCaveatSpecifications: Record<
-  SnapCaveatType.PermittedDerivationPaths,
-  RestrictedMethodCaveatSpecificationConstraint
-> = {
-  [SnapCaveatType.PermittedDerivationPaths]: Object.freeze({
-    type: SnapCaveatType.PermittedDerivationPaths,
-    decorator: (
-      method,
-      caveat: Caveat<
-        SnapCaveatType.PermittedDerivationPaths,
-        GetBip32PublicKeyParameters[]
-      >,
-    ) => {
-      return async (args) => {
-        const { params } = args;
-        validatePath(params);
-
-        const path = caveat.value.find(
-          (caveatPath) =>
-            isEqual(params.path, caveatPath.path) &&
-            caveatPath.curve === params.curve,
-        );
-
-        if (!path) {
-          throw ethErrors.provider.unauthorized({
-            message:
-              'The requested path is not permitted. Allowed paths must be specified in the snap manifest.',
-          });
-        }
-
-        return await method(args);
-      };
-    },
-    validator: (caveat) => validateCaveatPaths(caveat),
-  }),
-};
-
 /**
  * Builds the method implementation for `snap_getBip32PublicKey`.
  *
@@ -145,9 +138,14 @@ export function getBip32PublicKeyImplementation({
   ): Promise<string> {
     await getUnlockPromise(true);
 
-    // `args.params` is validated by the decorator, so it's safe to assert here.
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const params = args.params!;
+    assertStruct(
+      args.params,
+      Bip32PublicKeyArgsStruct,
+      'Invalid BIP-32 public key params',
+      ethErrors.rpc.invalidParams,
+    );
+
+    const { params } = args;
 
     const node = await SLIP10Node.fromDerivationPath({
       curve: params.curve,

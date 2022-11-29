@@ -1,4 +1,4 @@
-import { InstallSnapsResult } from '@metamask/snap-utils';
+import { InstallSnapsResult } from '@metamask/snaps-utils';
 import {
   PermittedHandlerExport,
   PendingJsonRpcResponse,

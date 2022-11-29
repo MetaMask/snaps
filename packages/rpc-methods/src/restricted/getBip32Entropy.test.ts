@@ -1,84 +1,15 @@
-import { SnapCaveatType } from '@metamask/snap-utils';
+import { SIP_6_MAGIC_VALUE, SnapCaveatType } from '@metamask/snaps-utils';
+
 import {
   getBip32EntropyBuilder,
   getBip32EntropyCaveatMapper,
   getBip32EntropyCaveatSpecifications,
   getBip32EntropyImplementation,
   validateCaveatPaths,
-  validatePath,
 } from './getBip32Entropy';
 
 const TEST_SECRET_RECOVERY_PHRASE =
   'test test test test test test test test test test test ball';
-
-describe('validatePath', () => {
-  it.each([true, false, null, undefined, 'foo', [], new (class {})()])(
-    'throws if the value is not a plain object',
-    (value) => {
-      expect(() => validatePath(value)).toThrow('Expected a plain object.');
-    },
-  );
-
-  it.each([{}, { path: [] }, { path: 'foo' }])(
-    'throws if the path is invalid or empty',
-    () => {
-      expect(() => validatePath({})).toThrow(
-        'Invalid "path" parameter. The path must be a non-empty BIP-32 derivation path array.',
-      );
-    },
-  );
-
-  it('throws if the path does not start with "m"', () => {
-    expect(() => validatePath({ path: ["44'", "60'"] })).toThrow(
-      'Invalid "path" parameter. The path must start with "m".',
-    );
-  });
-
-  it.each([
-    { path: ['m', 'foo'] },
-    { path: ['m', '0', 'bar'] },
-    { path: ['m', 0] },
-  ])('throws if the path is invalid', (value) => {
-    expect(() => validatePath(value)).toThrow(
-      'Invalid "path" parameter. The path must be a valid BIP-32 derivation path array.',
-    );
-  });
-
-  it.each([{ path: ['m'] }, { path: ['m', "44'"] }])(
-    'throws if the path has a length of less than three',
-    (value) => {
-      expect(() => validatePath(value)).toThrow(
-        'Invalid "path" parameter. Paths must have a length of at least three.',
-      );
-    },
-  );
-
-  it('throws if the curve is invalid', () => {
-    expect(() =>
-      validatePath({ path: ['m', "44'", "60'"], curve: 'foo' }),
-    ).toThrow(
-      'Invalid "curve" parameter. The curve must be "secp256k1" or "ed25519".',
-    );
-  });
-
-  it('throws if the curve is ed25519 and the path has an unhardened index', () => {
-    expect(() =>
-      validatePath({ path: ['m', "44'", "60'", '1'], curve: 'ed25519' }),
-    ).toThrow(
-      'Invalid "path" parameter. Ed25519 does not support unhardened paths.',
-    );
-  });
-
-  it('does not throw if the path is valid', () => {
-    expect(() =>
-      validatePath({ path: ['m', "44'", "60'"], curve: 'secp256k1' }),
-    ).not.toThrow();
-
-    expect(() =>
-      validatePath({ path: ['m', "44'", "60'"], curve: 'ed25519' }),
-    ).not.toThrow();
-  });
-});
 
 describe('validateCaveatPaths', () => {
   it.each([[], null, undefined, 'foo'])(
@@ -89,7 +20,9 @@ describe('validateCaveatPaths', () => {
           type: SnapCaveatType.PermittedDerivationPaths,
           value,
         }),
-      ).toThrow('Expected non-empty array of paths.');
+      ).toThrow(
+        /^Invalid BIP-32 entropy caveat: At path: value -- Expected an? array/u,
+      ); // Different error messages for different types
     },
   );
 
@@ -99,7 +32,7 @@ describe('validateCaveatPaths', () => {
         type: SnapCaveatType.PermittedDerivationPaths,
         value: [{ path: ['foo'], curve: 'secp256k1' }],
       }),
-    ).toThrow('Invalid "path" parameter. The path must start with "m".');
+    ).toThrow('At path: value.0.path -- Path must start with "m".');
   });
 });
 
@@ -233,6 +166,26 @@ describe('getBip32EntropyCaveatSpecifications', () => {
       ).toBe('foo');
     });
 
+    it('ignores unknown fields', async () => {
+      const fn = jest.fn().mockImplementation(() => 'foo');
+
+      expect(
+        await getBip32EntropyCaveatSpecifications[
+          SnapCaveatType.PermittedDerivationPaths
+        ].decorator(fn, {
+          type: SnapCaveatType.PermittedDerivationPaths,
+          value: [params],
+          // @ts-expect-error Missing other required properties.
+        })({
+          params: {
+            path: ['m', "44'", "60'", "0'", '0', '1'],
+            curve: 'secp256k1',
+            compressed: true,
+          },
+        }),
+      ).toBe('foo');
+    });
+
     it('throws if the path is invalid', async () => {
       const fn = jest.fn().mockImplementation(() => 'foo');
 
@@ -245,7 +198,7 @@ describe('getBip32EntropyCaveatSpecifications', () => {
           // @ts-expect-error Missing other required properties.
         })({ params: { ...params, path: [] } }),
       ).rejects.toThrow(
-        'Invalid "path" parameter. The path must be a non-empty BIP-32 derivation path array.',
+        'At path: path -- Path must be a non-empty BIP-32 derivation path array',
       );
     });
 
@@ -264,6 +217,22 @@ describe('getBip32EntropyCaveatSpecifications', () => {
         'The requested path is not permitted. Allowed paths must be specified in the snap manifest.',
       );
     });
+
+    it('throws if the purpose is not allowed', async () => {
+      const fn = jest.fn().mockImplementation(() => 'foo');
+
+      await expect(
+        getBip32EntropyCaveatSpecifications[
+          SnapCaveatType.PermittedDerivationPaths
+        ].decorator(fn, {
+          type: SnapCaveatType.PermittedDerivationPaths,
+          value: [params],
+          // @ts-expect-error Missing other required properties.
+        })({ params: { ...params, path: ['m', SIP_6_MAGIC_VALUE, "0'"] } }),
+      ).rejects.toThrow(
+        'Invalid BIP-32 entropy path definition: At path: path -- The purpose "1399742832\'" is not allowed for entropy derivation.',
+      );
+    });
   });
 
   describe('validator', () => {
@@ -275,7 +244,20 @@ describe('getBip32EntropyCaveatSpecifications', () => {
           type: SnapCaveatType.PermittedDerivationPaths,
           value: [{ path: ['foo'], curve: 'secp256k1' }],
         }),
-      ).toThrow('Invalid "path" parameter. The path must start with "m".');
+      ).toThrow('At path: value.0.path -- Path must start with "m".');
+    });
+
+    it('throws if the caveat values contain forbidden paths', () => {
+      expect(() =>
+        getBip32EntropyCaveatSpecifications[
+          SnapCaveatType.PermittedDerivationPaths
+        ].validator?.({
+          type: SnapCaveatType.PermittedDerivationPaths,
+          value: [{ path: ['m', SIP_6_MAGIC_VALUE, "0'"], curve: 'secp256k1' }],
+        }),
+      ).toThrow(
+        'Invalid BIP-32 entropy caveat: At path: value.0.path -- The purpose "1399742832\'" is not allowed for entropy derivation.',
+      );
     });
   });
 });

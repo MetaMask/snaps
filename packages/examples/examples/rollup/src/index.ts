@@ -1,32 +1,32 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-import type { MetaMaskInpageProvider } from '@metamask/providers';
-
-declare global {
-  const ethereum: MetaMaskInpageProvider;
-}
-
 const snapId = `local:${window.location.href}`;
 
 const connectButton = document.querySelector('button.connect')!;
 const sendInAppButton = document.querySelector('button.sendInApp')!;
 const sendNativeButton = document.querySelector('button.sendNative')!;
 
-connectButton.addEventListener('click', connect);
-sendInAppButton.addEventListener('click', () => send('inApp'));
-sendNativeButton.addEventListener('click', () => send('native'));
+connectButton.addEventListener('click', () => {
+  connect().catch(console.error);
+});
+
+sendInAppButton.addEventListener('click', () => {
+  send('inApp').catch(console.error);
+});
+
+sendNativeButton.addEventListener('click', () => {
+  send('native').catch(console.error);
+});
 
 /**
  * Get permission to interact with and install the snap.
  */
 async function connect() {
   await ethereum.request({
-    method: 'wallet_enable',
-    params: [
-      {
-        wallet_snap: { [snapId]: {} },
-      },
-    ],
+    method: 'wallet_requestSnaps',
+    params: {
+      [snapId]: {},
+    },
   });
 }
 
@@ -47,9 +47,11 @@ async function send(method: 'inApp' | 'native') {
         },
       ],
     });
-  } catch (err) {
-    console.error(err);
-    alert(`Problem happened: ${err.message}` || err);
+  } catch (error) {
+    console.error(error);
+
+    // eslint-disable-next-line no-alert
+    alert(`Problem happened: ${error.message}` ?? error);
   }
 }
 

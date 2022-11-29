@@ -1,6 +1,10 @@
 module.exports = {
   extends: ['../../.eslintrc.js'],
 
+  parserOptions: {
+    tsconfigRootDir: __dirname,
+  },
+
   overrides: [
     {
       files: ['examples/**/*.js', 'examples/**/*.ts'],
@@ -9,7 +13,8 @@ module.exports = {
         browser: true,
       },
       globals: {
-        wallet: true,
+        ethereum: true,
+        snap: true,
       },
       rules: {
         'no-alert': 'off',

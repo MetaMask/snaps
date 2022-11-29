@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 const cwd = pathUtils.dirname(fileURLToPath(import.meta.url))
 
 // These are the packages we expect to _not_ be referenced in the root tsconfig.
-const IGNORE_LIST = new Set(['examples', 'types']);
+const IGNORE_LIST = new Set(['examples', 'snaps-types']);
 
 // Get reference paths from root tsconfig.json
 const rootTsconfig = JSON.parse(await fs.readFile('./tsconfig.json', { encoding: 'utf8'}));

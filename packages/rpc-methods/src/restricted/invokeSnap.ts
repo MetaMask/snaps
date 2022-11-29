@@ -3,16 +3,16 @@ import {
   RestrictedMethodOptions,
   ValidPermissionSpecification,
   PermissionType,
-} from '@metamask/controllers';
-import { isJsonRpcRequest, Json, NonEmptyArray } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
+} from '@metamask/permission-controller';
 import {
   Snap,
   SNAP_PREFIX,
   SnapId,
   HandlerType,
   SnapRpcHookArgs,
-} from '@metamask/snap-utils';
+} from '@metamask/snaps-utils';
+import { isJsonRpcRequest, Json, NonEmptyArray } from '@metamask/utils';
+import { ethErrors } from 'eth-rpc-errors';
 import { nanoid } from 'nanoid';
 
 const methodPrefix = SNAP_PREFIX;
@@ -23,7 +23,7 @@ export type InvokeSnapMethodHooks = {
   handleSnapRpcRequest: ({
     snapId,
     origin,
-    handler: handlerType,
+    handler,
     request,
   }: SnapRpcHookArgs & { snapId: SnapId }) => Promise<unknown>;
 };
@@ -92,12 +92,11 @@ export function getInvokeSnapImplementation({
   handleSnapRpcRequest,
 }: InvokeSnapMethodHooks) {
   return async function invokeSnap(
-    options: RestrictedMethodOptions<[Record<string, Json>]>,
+    options: RestrictedMethodOptions<Record<string, Json>>,
   ): Promise<Json> {
-    const { params = [], method, context } = options;
-    const rawRequest = params[0];
+    const { params = {}, method, context } = options;
 
-    const request = { jsonrpc: '2.0', id: nanoid(), ...rawRequest };
+    const request = { jsonrpc: '2.0', id: nanoid(), ...params };
 
     if (!isJsonRpcRequest(request)) {
       throw ethErrors.rpc.invalidParams({

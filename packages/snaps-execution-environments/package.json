@@ -1,0 +1,90 @@
+{
+  "name": "@metamask/snaps-execution-environments",
+  "version": "0.25.0",
+  "description": "Snap sandbox environments for executing SES javascript",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps-monorepo.git"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "test": "jest && yarn posttest",
+    "posttest": "jest-it-up --margin 0.25",
+    "test:ci": "yarn test",
+    "test:watch": "jest --watch",
+    "lint:eslint": "eslint . --cache --ext js,ts",
+    "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path .gitignore",
+    "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
+    "lint:changelog": "yarn auto-changelog validate",
+    "lint": "yarn lint:eslint && yarn lint:misc --check",
+    "clean": "rimraf '*.tsbuildinfo' 'dist/*' 'src/__GENERATED__/' 'coverage/*' '__test__/*'",
+    "build:clean": "yarn clean && yarn build",
+    "build:post-tsc": "webpack --mode production && concat -o ./dist/webpack/node-process/bundle.js ./dist/webpack/node-process/lockdown.umd.min.js ./dist/webpack/node-process/bundle.js && concat -o ./dist/webpack/node-thread/bundle.js ./dist/webpack/node-thread/lockdown.umd.min.js ./dist/webpack/node-thread/bundle.js",
+    "build:tsc": "tsc --project tsconfig.build.json",
+    "build": "yarn build:tsc && yarn build:post-tsc",
+    "auto-changelog-init": "auto-changelog init",
+    "publish:package": "../../scripts/publish-package.sh"
+  },
+  "dependencies": {
+    "@metamask/object-multiplex": "^1.2.0",
+    "@metamask/post-message-stream": "^6.0.0",
+    "@metamask/providers": "^10.2.0",
+    "@metamask/snaps-types": "^0.25.0",
+    "@metamask/snaps-utils": "^0.25.0",
+    "@metamask/utils": "^3.3.1",
+    "eth-rpc-errors": "^4.0.3",
+    "json-rpc-engine": "^6.1.0",
+    "pump": "^3.0.0",
+    "ses": "^0.17.0",
+    "stream-browserify": "^3.0.0",
+    "superstruct": "^0.16.7"
+  },
+  "devDependencies": {
+    "@lavamoat/allow-scripts": "^2.0.3",
+    "@metamask/auto-changelog": "^3.1.0",
+    "@metamask/eslint-config": "^11.0.0",
+    "@metamask/eslint-config-jest": "^11.0.0",
+    "@metamask/eslint-config-nodejs": "^11.0.1",
+    "@metamask/eslint-config-typescript": "^11.0.0",
+    "@types/jest": "^27.5.1",
+    "@types/node": "^17.0.36",
+    "@typescript-eslint/eslint-plugin": "^5.42.1",
+    "@typescript-eslint/parser": "^5.42.1",
+    "concat": "^1.0.3",
+    "copy-webpack-plugin": "^10.2.4",
+    "deepmerge": "^4.2.2",
+    "eslint": "^8.27.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jest": "^27.1.5",
+    "eslint-plugin-jsdoc": "^39.6.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "jest": "^29.0.2",
+    "jest-environment-jsdom": "^29.0.2",
+    "jest-fetch-mock": "^3.0.3",
+    "jest-it-up": "^2.0.0",
+    "jsdom": "^19.0.0",
+    "mock-socket": "^9.1.5",
+    "node-polyfill-webpack-plugin": "^1.1.4",
+    "prettier": "^2.7.1",
+    "prettier-plugin-packagejson": "^2.2.11",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^29.0.0",
+    "ts-loader": "^9.3.1",
+    "typescript": "~4.8.4",
+    "webpack": "^5.68.0",
+    "webpack-cli": "^4.9.2"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

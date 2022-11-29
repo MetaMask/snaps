@@ -1,4 +1,5 @@
-import { OnRpcRequestHandler } from '@metamask/snap-types';
+import { OnRpcRequestHandler } from '@metamask/snaps-types';
+
 import { getMessage } from './message';
 
 /**
@@ -12,10 +13,13 @@ import { getMessage } from './message';
  * @throws If the request method is not valid for this snap.
  * @throws If the `snap_notify` call failed.
  */
-export const onRpcRequest: OnRpcRequestHandler = ({ origin, request }) => {
+export const onRpcRequest: OnRpcRequestHandler = async ({
+  origin,
+  request,
+}) => {
   switch (request.method) {
     case 'hello':
-      return wallet.request({
+      return await snap.request({
         method: 'snap_notify',
         params: [
           {

@@ -1,7 +1,7 @@
 // Due to a bug of how brfs interacts with babel, we need to use require() syntax instead of import pattern
 // https://github.com/browserify/brfs/issues/39
-const fs = require('fs');
 const { ethErrors } = require('eth-rpc-errors');
+const fs = require('fs');
 
 // Ref:
 // - https://developer.mozilla.org/en-US/docs/WebAssembly/Using_the_JavaScript_API

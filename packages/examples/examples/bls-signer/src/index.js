@@ -27,14 +27,19 @@ module.exports.onRpcRequest = async ({ request }) => {
         'BLS signature request',
         `Do you want to BLS sign ${data} with ${pubKey}?`,
       );
+
       if (!approved) {
         throw rpcErrors.eth.unauthorized();
       }
-      const PRIVATE_KEY = await wallet.request({
-        method: 'snap_getAppKey',
+
+      const PRIVATE_KEY = await snap.request({
+        method: 'snap_getEntropy',
+        params: {
+          version: 1,
+        },
       });
-      const signature = await bls.sign(request.params[0], PRIVATE_KEY, DOMAIN);
-      return signature;
+
+      return await bls.sign(request.params[0], PRIVATE_KEY, DOMAIN);
     }
 
     default:
@@ -48,7 +53,7 @@ module.exports.onRpcRequest = async ({ request }) => {
  * @returns {Promise<Uint8Array>} The BLS12-381 public key.
  */
 async function getPubKey() {
-  const PRIV_KEY = await wallet.request({
+  const PRIV_KEY = await snap.request({
     method: 'snap_getAppKey',
   });
   return bls.getPublicKey(PRIV_KEY);
@@ -65,7 +70,7 @@ async function getPubKey() {
  * and `false` otherwise.
  */
 async function promptUser(header, message) {
-  const response = await wallet.request({
+  const response = await snap.request({
     method: 'snap_confirm',
     params: [{ prompt: header, textAreaContent: message }],
   });

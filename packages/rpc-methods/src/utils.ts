@@ -18,11 +18,14 @@ export function selectHooks<
   hookNames?: Record<HookName, boolean>,
 ): Pick<Hooks, HookName> | undefined {
   if (hookNames) {
-    return Object.keys(hookNames).reduce((hookSubset, _hookName) => {
-      const hookName = _hookName as HookName;
-      hookSubset[hookName] = hooks[hookName];
-      return hookSubset;
-    }, {} as Partial<Pick<Hooks, HookName>>) as Pick<Hooks, HookName>;
+    return Object.keys(hookNames).reduce<Partial<Pick<Hooks, HookName>>>(
+      (hookSubset, _hookName) => {
+        const hookName = _hookName as HookName;
+        hookSubset[hookName] = hooks[hookName];
+        return hookSubset;
+      },
+      {},
+    ) as Pick<Hooks, HookName>;
   }
   return undefined;
 }
