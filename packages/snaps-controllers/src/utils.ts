@@ -1,3 +1,5 @@
+import { assert } from '@metamask/utils';
+
 import { Timer } from './snaps/Timer';
 
 /**
@@ -198,3 +200,17 @@ export type Mutable<
 } & {
   [Key in keyof Omit<T, TargetKey>]: T[Key];
 };
+
+/**
+ * Ensures that a relative path starts with `./` prefix.
+ *
+ * @param path - Path to make relative.
+ * @returns The same path, with optional `./` prefix.
+ */
+export function ensureRelative(path: string): string {
+  assert(!path.startsWith('/'));
+  if (path.startsWith('./')) {
+    return path;
+  }
+  return `./${path}`;
+}

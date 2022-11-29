@@ -1,5 +1,5 @@
 import { SnapManifest, VFile } from '@metamask/snaps-utils';
-import assert from 'assert';
+import { assert } from '@metamask/utils';
 
 import HttpLocation from './http';
 import LocalLocation from './local';
@@ -58,7 +58,7 @@ export function detectSnapLocation(
       return new HttpLocation(root);
     default:
       throw new TypeError(
-        `Unrecognized "${root.protocol}" snap location protocol`,
+        `Unrecognized "${root.protocol}" snap location protocol.`,
       );
   }
 }

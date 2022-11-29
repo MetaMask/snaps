@@ -3,7 +3,9 @@
 // TODO(ritave): Move fixing manifest to write messages to vfile similar to unified instead of throwing "ProgrammaticallyFixableErrors".
 //               Better yet, move manifest fixing into eslint fixing altogether
 import { assert, hasProperty } from '@metamask/utils';
-import { instance, integer, is, size, type } from 'superstruct';
+import { Infer, instance, is, union } from 'superstruct';
+
+import { deepClone } from '../deep-clone';
 
 // Using https://github.com/vfile/vfile would be helpful, but they only support ESM.
 // https://github.com/gulpjs/vinyl is also good, but they normalize paths, which we can't do, because
@@ -37,32 +39,31 @@ export type Options<Result = unknown> = {
   data?: Data;
   result?: Result;
 };
-export type TypedArray =
-  | Int8Array
-  | Uint8Array
-  | Uint8ClampedArray
-  | Int16Array
-  | Uint16Array
-  | Int32Array
-  | Uint32Array
-  | Float32Array
-  | Float64Array
-  | BigInt64Array
-  | BigUint64Array;
 
-const TypedArrayStruct = type({
-  buffer: instance(ArrayBuffer),
-  BYTES_PER_ELEMENT: size(integer(), 1, Infinity),
-});
+const TypedArrayStruct = union([
+  instance(Int8Array),
+  instance(Uint8Array),
+  instance(Uint8ClampedArray),
+  instance(Int16Array),
+  instance(Uint16Array),
+  instance(Int32Array),
+  instance(Uint32Array),
+  instance(Float32Array),
+  instance(Float64Array),
+  instance(BigInt64Array),
+  instance(BigUint64Array),
+]);
+
+export type TypedArray = Infer<typeof TypedArrayStruct>;
 
 /**
  * Returns whether the given parameter is one of TypedArray subtypes.
  *
- * @param obj - Object to check.
+ * @param value - Object to check.
  * @returns Whether the parameter is TypeArray subtype.
  */
-export function isTypedArray(obj: unknown): obj is TypedArray {
-  return is(obj, TypedArrayStruct);
+export function isTypedArray(value: unknown): value is TypedArray {
+  return is(value, TypedArrayStruct);
 }
 
 export class VFile<Result = unknown> {
@@ -99,5 +100,19 @@ export class VFile<Result = unknown> {
     }
     const decoder = new TextDecoder(encoding);
     return decoder.decode(this.value);
+  }
+
+  clone() {
+    const vfile = new VFile<Result>();
+    if (typeof this.value === 'string') {
+      vfile.value = this.value;
+    } else {
+      // deep-clone doesn't clone Buffer properly, even if it's a sub-class of Uint8Array
+      vfile.value = this.value.slice(0);
+    }
+    vfile.result = deepClone(this.result);
+    vfile.data = deepClone(this.data);
+    vfile.path = this.path;
+    return vfile;
   }
 }

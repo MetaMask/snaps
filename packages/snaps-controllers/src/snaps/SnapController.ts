@@ -1721,9 +1721,6 @@ export class SnapController extends BaseController<
       location ??
         this.#detectSnapLocation(snapId, { versionRange: newVersionRange }),
     );
-    if (newSnap.manifest.result === undefined) {
-      throw new Error(JSON.stringify(newSnap.manifest));
-    }
     const newVersion = newSnap.manifest.result.version;
     if (!gtVersion(newVersion, snap.version)) {
       console.warn(
@@ -2070,9 +2067,8 @@ export class SnapController extends BaseController<
 
       return { manifest, files, location };
     } catch (error) {
-      throw new Error(
-        `Failed to fetch Snap "${snapId}": ${(error as Error).message}`,
-      );
+      const message = error instanceof Error ? error.message : error.toString();
+      throw new Error(`Failed to fetch Snap "${snapId}": ${message}.`);
     }
   }
 

@@ -1,7 +1,6 @@
 import {
   assertIsSemVerVersion,
   assertIsSnapManifest,
-  deepClone,
   DEFAULT_REQUESTED_SNAP_VERSION,
   getTargetVersion,
   isValidUrl,
@@ -19,6 +18,7 @@ import { ReadableWebToNodeStream } from 'readable-web-to-node-stream';
 import { Readable, Writable } from 'stream';
 import { extract as tarExtract } from 'tar-stream';
 
+import { ensureRelative } from '../../utils';
 import { SnapLocation } from './location';
 
 const DEFAULT_NPM_REGISTRY = 'https://registry.npmjs.org';
@@ -54,12 +54,11 @@ export default class NpmLocation implements SnapLocation {
 
   private validatedManifest?: VFile<SnapManifest>;
 
-  private files?: VFile[];
+  private files?: Map<string, VFile>;
 
   constructor(url: URL, opts: NpmOptions = {}) {
     const allowCustomRegistries = opts.allowCustomRegistries ?? false;
-    // eslint-disable-next-line @typescript-eslint/no-shadow
-    const fetch = opts.fetch ?? globalThis.fetch;
+    const fetchFunction = opts.fetch ?? globalThis.fetch;
     const requestedRange = opts.versionRange ?? DEFAULT_REQUESTED_SNAP_VERSION;
 
     assertStruct(url.toString(), NpmSnapIdStruct, 'Invalid Snap Id: ');
@@ -86,7 +85,7 @@ export default class NpmLocation implements SnapLocation {
       assert(
         allowCustomRegistries,
         new TypeError(
-          `Custom NPM registries are disabled, tried to use "${registry.toString()}"`,
+          `Custom NPM registries are disabled, tried to use "${registry.toString()}".`,
         ),
       );
     }
@@ -99,7 +98,7 @@ export default class NpmLocation implements SnapLocation {
 
     assert(
       url.pathname !== '' && url.pathname !== '/',
-      new TypeError('The package name in NPM location is empty'),
+      new TypeError('The package name in NPM location is empty.'),
     );
     let packageName = url.pathname;
     if (packageName.startsWith('/')) {
@@ -110,17 +109,17 @@ export default class NpmLocation implements SnapLocation {
       requestedRange,
       registry,
       packageName,
-      fetch,
+      fetch: fetchFunction,
     };
   }
 
   async manifest(): Promise<VFile<SnapManifest>> {
     if (this.validatedManifest) {
-      return deepClone(this.validatedManifest);
+      return this.validatedManifest.clone();
     }
 
     const vfile = await this.fetch('./snap.manifest.json');
-    const result = JSON.parse(vfile.value.toString());
+    const result = JSON.parse(vfile.toString());
     assertIsSnapManifest(result);
     vfile.result = result;
     this.validatedManifest = vfile as VFile<SnapManifest>;
@@ -128,20 +127,19 @@ export default class NpmLocation implements SnapLocation {
     return this.manifest();
   }
 
-  // eslint-disable-next-line @typescript-eslint/require-await
   async fetch(path: string): Promise<VFile> {
     if (!this.files) {
       await this.#lazyInit();
       assert(this.files !== undefined);
     }
-    assert(!path.startsWith('/'), 'Tried to fetch absolute path');
+    assert(!path.startsWith('/'), 'Tried to fetch absolute path.');
     const relativePath = ensureRelative(path);
-    const vfile = this.files.find((file) => file.path === relativePath);
+    const vfile = this.files.get(relativePath);
     assert(
       vfile !== undefined,
-      new TypeError(`File "${path}" not found in package`),
+      new TypeError(`File "${path}" not found in package.`),
     );
-    return deepClone(vfile);
+    return vfile.clone();
   }
 
   get packageName(): string {
@@ -151,9 +149,17 @@ export default class NpmLocation implements SnapLocation {
   get version(): string {
     assert(
       this.meta.version !== undefined,
-      'Tried to access version without first fetching NPM package',
+      'Tried to access version without first fetching NPM package.',
     );
     return this.meta.version;
+  }
+
+  get registry(): URL {
+    return this.meta.registry;
+  }
+
+  get versionRange(): SemVerRange {
+    return this.meta.requestedRange;
   }
 
   async #lazyInit() {
@@ -179,7 +185,7 @@ export default class NpmLocation implements SnapLocation {
     // TODO(ritave): Lazily extract files instead of up-front extracting all of them
     //               We would need to replace tar-stream package because it requires immediate consumption of streams.
     await new Promise<void>((resolve, reject) => {
-      this.files = [];
+      this.files = new Map();
       pump(
         getNodeStream(tarballResponse),
         // The "gz" in "tgz" stands for "gzip". The tarball needs to be decompressed
@@ -237,16 +243,16 @@ async function fetchNpmTarball(
 
   if (targetVersion === null) {
     throw new Error(
-      `Failed to find a matching version in npm metadata for package "${packageName}" and requested semver range "${versionRange}"`,
+      `Failed to find a matching version in npm metadata for package "${packageName}" and requested semver range "${versionRange}".`,
     );
   }
 
-  const tarballUrlString = (packageMetadata as any).versions?.[targetVersion]
+  const tarballUrlString = (packageMetadata as any)?.versions?.[targetVersion]
     ?.dist?.tarball;
 
   if (!isValidUrl(tarballUrlString) || !tarballUrlString.endsWith('.tgz')) {
     throw new Error(
-      `Failed to find valid tarball URL in npm metadata for package "${packageName}".`,
+      `Failed to find valid tarball URL in NPM metadata for package "${packageName}".`,
     );
   }
 
@@ -258,12 +264,10 @@ async function fetchNpmTarball(
 
   // Perform a raw fetch because we want the Response object itself.
   const tarballResponse = await fetchFunction(newTarballUrl.toString());
-  if (!tarballResponse.ok) {
+  if (!tarballResponse.ok || !tarballResponse.body) {
     throw new Error(`Failed to fetch tarball for package "${packageName}".`);
   }
-  const stream = await tarballResponse.blob().then((blob) => blob.stream());
-
-  return [stream, targetVersion];
+  return [tarballResponse.body, targetVersion];
 }
 
 /**
@@ -297,12 +301,19 @@ function getNodeStream(stream: ReadableStream): Readable {
  * @param files - An object to write target file contents to.
  * @returns The {@link Writable} tarball extraction stream.
  */
-function createTarballStream(canonicalBase: string, files: VFile[]): Writable {
+function createTarballStream(
+  canonicalBase: string,
+  files: Map<string, VFile>,
+): Writable {
   assert(
     canonicalBase.endsWith('/'),
     "Base needs to end with '/' for relative paths to be added as children instead of siblings.",
   );
-  assert(canonicalBase.startsWith('npm:'), 'Protocol mismatch, expected "npm:');
+
+  assert(
+    canonicalBase.startsWith('npm:'),
+    'Protocol mismatch, expected "npm:".',
+  );
   // `tar-stream` is pretty old-school, so we create it first and then
   // instrument it by adding event listeners.
   const extractStream = tarExtract();
@@ -323,7 +334,11 @@ function createTarballStream(canonicalBase: string, files: VFile[]): Writable {
               canonicalPath: new URL(path, canonicalBase).toString(),
             },
           });
-          files.push(vfile);
+          assert(
+            !files.has(path),
+            'Malformed tarball, multiple files with the same path.',
+          );
+          files.set(path, vfile);
           return next();
         }),
       );
@@ -336,18 +351,4 @@ function createTarballStream(canonicalBase: string, files: VFile[]): Writable {
     return entryStream.resume();
   });
   return extractStream;
-}
-
-/**
- * Ensures that a relative path starts with `./` prefix.
- *
- * @param path - Path to make relative.
- * @returns The same path, with optional `./` prefix.
- */
-function ensureRelative(path: string): string {
-  assert(!path.startsWith('/'));
-  if (path.startsWith('./')) {
-    return path;
-  }
-  return `./${path}`;
 }

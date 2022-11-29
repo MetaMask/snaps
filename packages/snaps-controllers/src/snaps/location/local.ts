@@ -13,9 +13,9 @@ export default class LocalLocation implements SnapLocation {
   readonly #http: HttpLocation;
 
   constructor(url: URL) {
-    assertStruct(url.toString(), LocalSnapIdStruct, 'Invalid Snap Id: ');
+    assertStruct(url.toString(), LocalSnapIdStruct, 'Invalid Snap Id');
     this.#http = new HttpLocation(
-      new URL(url.toString().slice(SnapIdPrefixes.local.length)),
+      new URL(`https://${url.toString().slice(SnapIdPrefixes.local.length)}`),
     );
   }
 

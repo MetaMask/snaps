@@ -3,7 +3,6 @@ import { sha256 } from '@noble/hashes/sha256';
 import { base64 } from '@scure/base';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import {
-  define,
   empty,
   enums,
   intersection,
@@ -14,6 +13,8 @@ import {
   Struct,
   type,
   assert as assertSuperstruct,
+  union,
+  instance,
 } from 'superstruct';
 
 import { SnapManifest, SnapPermissions } from './manifest/validation';
@@ -218,15 +219,15 @@ type UriOptions<T extends string> = {
   search?: Struct<T>;
 };
 export const uri = (opts: UriOptions<any> = {}) =>
-  define<string | URL>('uri', (value) => {
+  refine(union([string(), instance(URL)]), 'uri', (value) => {
     try {
-      const url = new URL(value as any);
+      const url = new URL(value);
 
       const UrlStruct = type(opts);
       assertSuperstruct(url, UrlStruct);
       return true;
     } catch {
-      return `Expected URL, got "${(value as any).toString()}"`;
+      return `Expected URL, got "${value.toString()}".`;
     }
   });
 
@@ -238,11 +239,11 @@ const LocalSnapIdSubUrlStruct = uri({
 });
 export const LocalSnapIdStruct = refine(string(), 'local Snap Id', (value) => {
   if (!value.startsWith(SnapIdPrefixes.local)) {
-    return `Expected local Snap Id, got "${value}"`;
+    return `Expected local Snap ID, got "${value}".`;
   }
 
   assertSuperstruct(
-    value.slice(SnapIdPrefixes.local.length),
+    `https://${value.slice(SnapIdPrefixes.local.length)}`,
     LocalSnapIdSubUrlStruct,
   );
   return true;

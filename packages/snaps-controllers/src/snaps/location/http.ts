@@ -2,11 +2,11 @@ import {
   SnapManifest,
   assertIsSnapManifest,
   VFile,
-  deepClone,
   HttpSnapIdStruct,
 } from '@metamask/snaps-utils';
 import { assert, assertStruct } from '@metamask/utils';
 
+import { ensureRelative } from '../../utils';
 import { SnapLocation } from './location';
 
 export default class HttpLocation implements SnapLocation {
@@ -16,7 +16,7 @@ export default class HttpLocation implements SnapLocation {
   // That avoids deepCloning file contents.
   // I imagine ArrayBuffers are copy-on-write optimized, meaning
   // in most often case we'll only have one file contents in common case.
-  private readonly cache: [file: VFile, contents: Blob][] = [];
+  private readonly cache = new Map<string, { file: VFile; contents: Blob }>();
 
   private validatedManifest?: VFile<SnapManifest>;
 
@@ -29,10 +29,11 @@ export default class HttpLocation implements SnapLocation {
 
   async manifest(): Promise<VFile<SnapManifest>> {
     if (this.validatedManifest) {
-      return deepClone(this.validatedManifest);
+      return this.validatedManifest.clone();
     }
 
-    const contents = await (await fetch(this.url)).text();
+    // jest-fetch-mock doesn't handle new URL(), we need to convert this.url.toString()
+    const contents = await (await fetch(this.url.toString())).text();
     const manifest = JSON.parse(contents);
     assertIsSnapManifest(manifest);
     const vfile = new VFile<SnapManifest>({
@@ -47,23 +48,31 @@ export default class HttpLocation implements SnapLocation {
   }
 
   async fetch(path: string): Promise<VFile> {
-    const cached = this.cache.find(([file]) => file.path === path);
+    const relativePath = ensureRelative(path);
+    const cached = this.cache.get(relativePath);
     if (cached !== undefined) {
-      const [cachedFile, contents] = cached;
+      const { file, contents } = cached;
       const value = new Uint8Array(await contents.arrayBuffer());
-      const vfile = deepClone(cachedFile);
+      const vfile = file.clone();
       vfile.value = value;
       return vfile;
     }
 
-    const canonicalPath = this.toCanonical(path).toString();
+    const canonicalPath = this.toCanonical(relativePath).toString();
     const response = await fetch(canonicalPath);
-    const vfile = new VFile({ value: '', path, data: { canonicalPath } });
-    // TODO(ritave): When can we assume the file is string vs binary?
+    const vfile = new VFile({
+      value: '',
+      path: relativePath,
+      data: { canonicalPath },
+    });
     const blob = await response.blob();
-    this.cache.push([vfile, blob]);
+    assert(
+      !this.cache.has(relativePath),
+      'Corrupted cache, multiple files with same path.',
+    );
+    this.cache.set(relativePath, { file: vfile, contents: blob });
 
-    return this.fetch(path);
+    return this.fetch(relativePath);
   }
 
   get root(): URL {
@@ -71,7 +80,7 @@ export default class HttpLocation implements SnapLocation {
   }
 
   private toCanonical(path: string): URL {
-    assert(!path.startsWith('/'), 'Tried to parse absolute path');
+    assert(!path.startsWith('/'), 'Tried to parse absolute path.');
     return new URL(path, this.url);
   }
 }

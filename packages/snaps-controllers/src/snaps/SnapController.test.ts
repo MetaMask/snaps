@@ -29,7 +29,6 @@ import {
 } from '@metamask/snaps-utils/test-utils';
 import { AssertionError } from '@metamask/utils';
 import { Crypto } from '@peculiar/webcrypto';
-import { assert } from 'console';
 import { EthereumRpcError, ethErrors, serializeError } from 'eth-rpc-errors';
 import fetchMock from 'jest-fetch-mock';
 import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
@@ -1761,15 +1760,13 @@ describe('SnapController', () => {
       });
 
       const location = new LoopbackLocation({ shouldAlwaysReload: true });
-      /* eslint-disable @typescript-eslint/require-await */
       location.manifest
-        .mockImplementationOnce(
-          async () => new VFile({ value: '', result: manifest }),
+        .mockImplementationOnce(async () =>
+          Promise.resolve(new VFile({ value: '', result: manifest })),
         )
-        .mockImplementationOnce(
-          async () => new VFile({ value: '', result: newManifest }),
+        .mockImplementationOnce(async () =>
+          Promise.resolve(new VFile({ value: '', result: newManifest })),
         );
-      /* eslint-enable @typescript-eslint/require-await */
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -2275,7 +2272,6 @@ describe('SnapController', () => {
       const result = await controller.installSnaps(MOCK_ORIGIN, {
         [MOCK_SNAP_ID]: { version: newVersionRange },
       });
-      assert(false, new Error(JSON.stringify(result)));
 
       expect(messenger.call).toHaveBeenCalledTimes(12);
       expect(messenger.call).toHaveBeenNthCalledWith(
@@ -2841,7 +2837,6 @@ describe('SnapController', () => {
 
       const callActionSpy = jest.spyOn(messenger, 'call');
 
-      /* eslint-disable @typescript-eslint/require-await */
       const detect = jest
         .fn()
         .mockImplementationOnce(
@@ -2862,7 +2857,6 @@ describe('SnapController', () => {
               }),
             }),
         );
-      /* eslint-enable @typescript-eslint/require-await */
 
       const controller = getSnapController(
         getSnapControllerOptions({ messenger, detectSnapLocation: detect }),

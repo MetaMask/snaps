@@ -11,7 +11,7 @@ describe('NpmLocation', () => {
     fetchMock.resetMocks();
   });
 
-  it('fetches a package tarball, extracts the neecessary files, and validaes them', async () => {
+  it('fetches a package tarball, extracts the necessary files, and validates them', async () => {
     const { version: templateSnapVersion } = JSON.parse(
       (
         await readFile(require.resolve('@metamask/template-snap/package.json'))
@@ -106,6 +106,26 @@ describe('NpmLocation', () => {
         ),
     ).toThrow(
       'Custom NPM registries are disabled, tried to use "https://registry.npmjs.cf/"',
+    );
+  });
+
+  it.each(['foo:bar@registry.com', 'foo@registry.com'])(
+    'supports registries with usernames and passwords',
+    (host) => {
+      const location = new NpmLocation(new URL(`npm://${host}/snap`), {
+        allowCustomRegistries: true,
+      });
+      expect(location.registry.toString()).toBe(`https://${host}/`);
+    },
+  );
+
+  it('has meta properties', () => {
+    const location = new NpmLocation(new URL('npm:foo'));
+    expect(location.packageName).toBe('foo');
+    expect(location.registry.toString()).toBe('https://registry.npmjs.org/');
+    expect(location.versionRange).toBe('*');
+    expect(() => location.version).toThrow(
+      'Tried to access version without first fetching NPM package.',
     );
   });
 });

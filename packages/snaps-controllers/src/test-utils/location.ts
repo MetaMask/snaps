@@ -71,7 +71,7 @@ export class LoopbackLocation implements SnapLocation {
         files.find(
           (file) => file.path === manifest.result.source.location.npm.filePath,
         ) !== undefined,
-        'Source bundle not found in files',
+        'Source bundle not found in files.',
       );
 
       assert(
@@ -80,7 +80,7 @@ export class LoopbackLocation implements SnapLocation {
             (file) =>
               file.path === manifest.result.source.location.npm.iconPath,
           ) !== undefined,
-        'Icon not found in files',
+        'Icon not found in files.',
       );
     }
 
@@ -88,7 +88,7 @@ export class LoopbackLocation implements SnapLocation {
       !files.find((file) => file.path === MANIFEST_PATH),
       'Manifest in fetch() files',
     );
-    assert(manifest.path === MANIFEST_PATH, 'Manifest has wrong path');
+    assert(manifest.path === MANIFEST_PATH, 'Manifest has wrong path.');
 
     this.#shouldAlwaysReload = shouldAlwaysReload;
     this.#manifest = manifest;
@@ -102,9 +102,9 @@ export class LoopbackLocation implements SnapLocation {
     const file = this.#files.find((candidate) => candidate.path === path);
     assert(
       file !== undefined,
-      `Tried to access file "${path}" not found in loopback location mock. ${this.#files
-        .map((candidate) => candidate.path)
-        .join(' ,')}`,
+      `Tried to access file "${path}" not found in loopback location mock.\nFile list:\n${this.#files
+        .map((candidate) => `\t-> ${candidate.path}`)
+        .join('\n')}`,
     );
     return file;
   });
