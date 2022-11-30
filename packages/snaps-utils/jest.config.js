@@ -6,6 +6,10 @@ module.exports = deepmerge(baseConfig, {
   coveragePathIgnorePatterns: [
     './src/index.ts',
     './src/index.browser.ts',
+    './src/vfile/index.ts',
+    './src/vfile/index.browser.ts',
+    './src/manifest/index.ts',
+    './src/manifest/index.browser.ts',
     './src/test-utils',
     './src/json-schemas',
     // Jest currently doesn't collect coverage for child processes.
@@ -14,10 +18,10 @@ module.exports = deepmerge(baseConfig, {
   ],
   coverageThreshold: {
     global: {
-      branches: 93.49,
-      functions: 95.45,
-      lines: 98.34,
-      statements: 98.34,
+      branches: 94.76,
+      functions: 98.95,
+      lines: 98.74,
+      statements: 98.74,
     },
   },
   testTimeout: 2500,

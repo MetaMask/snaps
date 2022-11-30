@@ -11,14 +11,16 @@ import {
   size,
   string,
   Struct,
-  type,
   assert as assertSuperstruct,
-  union,
-  instance,
 } from 'superstruct';
 
 import { SnapManifest, SnapPermissions } from './manifest/validation';
-import { SnapId, SnapIdPrefixes, SnapValidationFailureReason } from './types';
+import {
+  SnapId,
+  SnapIdPrefixes,
+  SnapValidationFailureReason,
+  uri,
+} from './types';
 import { SemVerVersion } from './versions';
 
 export const SNAP_PREFIX = 'wallet_snap_';
@@ -209,27 +211,6 @@ export function validateSnapShasum(
 }
 
 export const LOCALHOST_HOSTNAMES = ['localhost', '127.0.0.1', '::1'] as const;
-
-type UriOptions<T extends string> = {
-  protocol?: Struct<T>;
-  hash?: Struct<T>;
-  port?: Struct<T>;
-  hostname?: Struct<T>;
-  pathname?: Struct<T>;
-  search?: Struct<T>;
-};
-export const uri = (opts: UriOptions<any> = {}) =>
-  refine(union([string(), instance(URL)]), 'uri', (value) => {
-    try {
-      const url = new URL(value);
-
-      const UrlStruct = type(opts);
-      assertSuperstruct(url, UrlStruct);
-      return true;
-    } catch {
-      return `Expected URL, got "${value.toString()}".`;
-    }
-  });
 
 const LocalSnapIdSubUrlStruct = uri({
   protocol: enums(['http:', 'https:']),

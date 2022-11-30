@@ -10,7 +10,7 @@ import { VFile } from './vfile';
  * @param encoding - Optional encoding to pass down to fs.readFile.
  * @returns Promise returning VFile with loaded file contents.
  */
-export async function readVfile(
+export async function readVFile(
   path: string,
   encoding: BufferEncoding | null = null,
 ) {
@@ -27,7 +27,7 @@ export async function readVfile(
  * @param encoding - Optional encoding to pass down to fs.readFile.
  * @returns VFile with loaded file contents.
  */
-export function readVfileSync(
+export function readVFileSync(
   path: string,
   encoding: BufferEncoding | null = null,
 ) {

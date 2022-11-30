@@ -250,7 +250,10 @@ async function fetchNpmTarball(
   const tarballUrlString = (packageMetadata as any)?.versions?.[targetVersion]
     ?.dist?.tarball;
 
-  if (!isValidUrl(tarballUrlString) || !tarballUrlString.endsWith('.tgz')) {
+  if (
+    !isValidUrl(tarballUrlString) ||
+    !tarballUrlString.toString().endsWith('.tgz')
+  ) {
     throw new Error(
       `Failed to find valid tarball URL in NPM metadata for package "${packageName}".`,
     );
