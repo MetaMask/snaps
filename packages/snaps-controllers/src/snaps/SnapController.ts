@@ -1685,6 +1685,7 @@ export class SnapController extends BaseController<
           snapId,
           versionRange,
         );
+        console.log('update result is:', updateResult);
         if (updateResult === null) {
           throw ethErrors.rpc.invalidParams(
             `Snap "${snapId}@${existingSnap.version}" is already installed, couldn't update to a version inside requested "${versionRange}" range.`,
@@ -1843,7 +1844,7 @@ export class SnapController extends BaseController<
     try {
       await this.#startSnap({ snapId, sourceCode: newSnap.sourceCode });
     } catch {
-      throw new Error('Snap crashed on update.');
+      throw new Error(`Snap ${snapId} crashed with updated source code.`);
     }
 
     const truncatedSnap = this.getTruncatedExpect(snapId);
@@ -2081,12 +2082,12 @@ export class SnapController extends BaseController<
     delete snap.blockInformation;
 
     // store the snap back in state
-    const [, , inversePatches] = this.update((state: any) => {
+    const { inversePatches } = this.update((state: any) => {
       state.snaps[snapId] = snap;
     });
 
     // checking for isUpdate here as this function is also used in
-    // the install flow, we do not care to create snapsshots for installs
+    // the install flow, we do not care to create snapshots for installs
     if (isUpdate) {
       const rollbackSnapshot = this.#getRollbackSnapshot(
         snapId,
