@@ -29,7 +29,7 @@ import {
 } from '@metamask/snaps-utils/test-utils';
 import { AssertionError } from '@metamask/utils';
 import { Crypto } from '@peculiar/webcrypto';
-import { ethErrors } from 'eth-rpc-errors';
+import { EthereumRpcError, ethErrors } from 'eth-rpc-errors';
 import fetchMock from 'jest-fetch-mock';
 import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
@@ -2366,7 +2366,7 @@ describe('SnapController', () => {
           [MOCK_SNAP_ID]: { version: newVersionRange },
         }),
       ).rejects.toThrow(
-        `Snap "${MOCK_SNAP_ID}@${manifest.version}" is already installed, couldn't update to a version inside requested "${newVersionRange}" range.`,
+        `Snap "${MOCK_SNAP_ID}@0.9.0" is already installed, couldn't update to a version inside requested "${newVersionRange}" range.`,
       );
 
       expect(messenger.call).toHaveBeenCalledTimes(1);
@@ -2419,6 +2419,72 @@ describe('SnapController', () => {
         MOCK_SNAP_ID,
         expect.objectContaining({ versionRange: newVersionRange }),
       );
+    });
+
+    it('rollsback any updates & installs made during a failure scenario', async () => {
+      const snapId1 = 'npm:@metamask/example-snap1';
+      const snapId2 = 'npm:@metamask/example-snap2';
+      const snapId3 = 'npm:@metamask/example-snap3';
+      const newVersion = '1.0.1';
+      const messenger = getSnapControllerMessenger();
+      const controller = getSnapController(
+        getSnapControllerOptions({ messenger }),
+      );
+
+      const fetchSnapMock = jest
+        .spyOn(controller as any, 'fetchSnap')
+        .mockImplementationOnce(async () =>
+          Promise.resolve({
+            manifest: getSnapManifest(),
+            sourceCode: DEFAULT_SNAP_BUNDLE,
+          }),
+        )
+        .mockImplementationOnce(async () =>
+          Promise.resolve({
+            manifest: getSnapManifest(),
+            sourceCode: DEFAULT_SNAP_BUNDLE,
+          }),
+        )
+        .mockImplementationOnce(async () =>
+          Promise.resolve({
+            manifest: getSnapManifest(),
+            sourceCode: DEFAULT_SNAP_BUNDLE,
+          }),
+        )
+        .mockImplementationOnce(async () =>
+          Promise.resolve({
+            manifest: getSnapManifest({ version: newVersion }),
+            sourceCode: DEFAULT_SNAP_BUNDLE,
+          }),
+        )
+        .mockImplementationOnce(async () =>
+          Promise.resolve({
+            manifest: getSnapManifest({ version: newVersion }),
+            sourceCode: 'foo',
+          }),
+        );
+
+      await controller.installSnaps(MOCK_ORIGIN, { [snapId1]: {} });
+      await controller.installSnaps(MOCK_ORIGIN, { [snapId2]: {} });
+      await controller.stopSnap(snapId1);
+      await controller.stopSnap(snapId2);
+
+      expect(controller.get(snapId1)).toBeDefined();
+      expect(controller.get(snapId2)).toBeDefined();
+
+      await expect(
+        controller.installSnaps(MOCK_ORIGIN, {
+          [snapId3]: {},
+          [snapId1]: { version: newVersion },
+          [snapId2]: { version: newVersion },
+        }),
+      ).rejects.toThrow(`Snap ${snapId2} crashed with updated source code.`);
+
+      expect(fetchSnapMock).toHaveBeenCalledTimes(5);
+
+      expect(controller.get(snapId3)).toBeUndefined();
+      expect(controller.get(snapId1)?.manifest.version).toBe('1.0.0');
+      expect(controller.get(snapId2)?.manifest.version).toBe('1.0.0');
     });
   });
 
