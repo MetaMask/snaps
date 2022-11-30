@@ -1,4 +1,4 @@
-import { Json } from '@metamask/utils';
+import { assert, Json } from '@metamask/utils';
 import { sha256 } from '@noble/hashes/sha256';
 import { base64 } from '@scure/base';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
@@ -8,11 +8,11 @@ import {
   intersection,
   literal,
   refine,
-  size,
   string,
   Struct,
-  assert as assertSuperstruct,
+  validate,
 } from 'superstruct';
+import validateNPMPackage from 'validate-npm-package-name';
 
 import { SnapManifest, SnapPermissions } from './manifest/validation';
 import {
@@ -210,7 +210,7 @@ export function validateSnapShasum(
   }
 }
 
-export const LOCALHOST_HOSTNAMES = ['localhost', '127.0.0.1', '::1'] as const;
+export const LOCALHOST_HOSTNAMES = ['localhost', '127.0.0.1', '[::1]'] as const;
 
 const LocalSnapIdSubUrlStruct = uri({
   protocol: enums(['http:', 'https:']),
@@ -223,17 +223,30 @@ export const LocalSnapIdStruct = refine(string(), 'local Snap Id', (value) => {
     return `Expected local Snap ID, got "${value}".`;
   }
 
-  assertSuperstruct(
-    `https://${value.slice(SnapIdPrefixes.local.length)}`,
+  const [error] = validate(
+    value.slice(SnapIdPrefixes.local.length),
     LocalSnapIdSubUrlStruct,
   );
-  return true;
+  return error ?? true;
 });
 export const NpmSnapIdStruct = intersection([
   string(),
   uri({
     protocol: literal(SnapIdPrefixes.npm),
-    pathname: size(string(), 2, Infinity), // potentially starting with / if registry is set.
+    pathname: refine(string(), 'package name', function* (value) {
+      const normalized = value.startsWith('/') ? value.slice(1) : value;
+      const { errors, validForNewPackages, warnings } =
+        validateNPMPackage(normalized);
+      if (!validForNewPackages) {
+        if (errors === undefined) {
+          assert(warnings !== undefined);
+          yield* warnings;
+        } else {
+          yield* errors;
+        }
+      }
+      return true;
+    }),
     search: empty(string()),
     hash: empty(string()),
   }),
