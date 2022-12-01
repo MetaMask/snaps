@@ -20,13 +20,13 @@ describe('detectSnapLocation', () => {
   });
 
   it.each([
-    ['npm:', NpmLocation],
-    ['local:', LocalLocation],
-    ['http:', HttpLocation],
-    ['https:', HttpLocation],
-  ])('detects %s protocol', (protocol, classObj) => {
+    ['npm:package', NpmLocation],
+    ['local:http://localhost', LocalLocation],
+    ['https://localhost', HttpLocation],
+    ['http://localhost', HttpLocation],
+  ])('detects %s', (url, classObj) => {
     expect(
-      detectSnapLocation(`${protocol}localhost/foo`, {
+      detectSnapLocation(url, {
         allowHttp: true,
         allowCustomRegistries: true,
       }),
