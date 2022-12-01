@@ -205,6 +205,7 @@ export const getSnapControllerMessenger = (
       'SnapController:snapUpdated',
       'SnapController:snapRemoved',
       'SnapController:stateChange',
+      'SnapController:snapRolledback',
     ],
     allowedActions: [
       'ApprovalController:addRequest',
@@ -301,11 +302,22 @@ export const getSnapControllerWithEESOptions = ({
   const snapControllerMessenger = getSnapControllerMessenger(rootMessenger);
 
   return {
+    featureFlags: { dappsCanUpdateSnaps: true },
     environmentEndowmentPermissions: [],
     closeAllConnections: jest.fn(),
     getAppKey: jest
       .fn()
       .mockImplementation((snapId, appKeyType) => `${appKeyType}:${snapId}`),
+    checkBlockList: jest
+      .fn()
+      .mockImplementation(async (snaps: CheckSnapBlockListArg) =>
+        Promise.resolve(
+          Object.keys(snaps).reduce(
+            (acc, snapId) => ({ ...acc, [snapId]: { blocked: false } }),
+            {},
+          ),
+        ),
+      ),
     messenger: snapControllerMessenger,
     rootMessenger,
     ...options,

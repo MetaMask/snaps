@@ -2459,9 +2459,8 @@ describe('SnapController', () => {
       const snapId2 = 'npm:@metamask/example-snap2';
       const snapId3 = 'npm:@metamask/example-snap3';
       const newVersion = '1.0.1';
-      const messenger = getSnapControllerMessenger();
-      const controller = getSnapController(
-        getSnapControllerOptions({ messenger }),
+      const [controller] = getSnapControllerWithEES(
+        getSnapControllerWithEESOptions(),
       );
 
       const fetchSnapMock = jest
