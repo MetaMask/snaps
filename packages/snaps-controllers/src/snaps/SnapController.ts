@@ -1836,9 +1836,13 @@ export class SnapController extends BaseController<
     const rollbackSnapshot = this.getRollbackSnapshot(
       snapId,
     ) as RollbackSnapshot;
-    rollbackSnapshot.permissions.revoked = unusedPermissions;
-    rollbackSnapshot.permissions.granted = Object.keys(approvedNewPermissions);
-    rollbackSnapshot.permissions.requestData = requestData;
+    if (rollbackSnapshot !== undefined) {
+      rollbackSnapshot.permissions.revoked = unusedPermissions;
+      rollbackSnapshot.permissions.granted = Object.keys(
+        approvedNewPermissions,
+      );
+      rollbackSnapshot.permissions.requestData = requestData;
+    }
 
     // add a try/catch block here to catch an error if the snap does not start in update situations
     // we might need to add a flag that delineates between installs/updates calling this methodor ac
@@ -2088,7 +2092,9 @@ export class SnapController extends BaseController<
       const rollbackSnapshot = this.getRollbackSnapshot(
         snapId,
       ) as RollbackSnapshot;
-      rollbackSnapshot.statePatches = inversePatches;
+      if (rollbackSnapshot !== undefined) {
+        rollbackSnapshot.statePatches = inversePatches;
+      }
     }
 
     const runtime = this.#getRuntimeExpect(snapId);
