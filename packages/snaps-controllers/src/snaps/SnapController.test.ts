@@ -29,7 +29,7 @@ import {
 } from '@metamask/snaps-utils/test-utils';
 import { AssertionError } from '@metamask/utils';
 import { Crypto } from '@peculiar/webcrypto';
-import { EthereumRpcError, ethErrors } from 'eth-rpc-errors';
+import { ethErrors } from 'eth-rpc-errors';
 import fetchMock from 'jest-fetch-mock';
 import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
