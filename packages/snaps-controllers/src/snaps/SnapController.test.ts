@@ -2366,7 +2366,7 @@ describe('SnapController', () => {
           [MOCK_SNAP_ID]: { version: newVersionRange },
         }),
       ).rejects.toThrow(
-        `Snap "${MOCK_SNAP_ID}@0.9.0" is already installed, couldn't update to a version inside requested "${newVersionRange}" range.`,
+        `Snap "${MOCK_SNAP_ID}@1.0.0" is already installed, couldn't update to a version inside requested "${newVersionRange}" range.`,
       );
 
       expect(messenger.call).toHaveBeenCalledTimes(1);
