@@ -77,7 +77,7 @@ import {
   timeSince,
 } from '@metamask/utils';
 import { createMachine, interpret, StateMachine } from '@xstate/fsm';
-import { ethErrors, serializeError } from 'eth-rpc-errors';
+import { ethErrors } from 'eth-rpc-errors';
 import type { Patch } from 'immer';
 import { enablePatches } from 'immer';
 import { nanoid } from 'nanoid';
@@ -1726,7 +1726,7 @@ export class SnapController extends BaseController<
         await this.removeSnap(snapId);
       }
 
-      return { error: serializeError(error) };
+      throw error;
     }
   }
 
