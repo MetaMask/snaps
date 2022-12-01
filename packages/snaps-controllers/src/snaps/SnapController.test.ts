@@ -26,7 +26,7 @@ import {
   MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
 import { Crypto } from '@peculiar/webcrypto';
-import { EthereumRpcError, ethErrors } from 'eth-rpc-errors';
+import { ethErrors } from 'eth-rpc-errors';
 import fetchMock from 'jest-fetch-mock';
 import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
@@ -2242,13 +2242,11 @@ describe('SnapController', () => {
         getSnapControllerOptions({ messenger }),
       );
 
-      const result = await controller.installSnaps(MOCK_ORIGIN, {
-        [snapId]: {},
-      });
-
-      expect(result).toStrictEqual({
-        [snapId]: { error: expect.any(EthereumRpcError) },
-      });
+      await expect(
+        controller.installSnaps(MOCK_ORIGIN, {
+          [snapId]: {},
+        }),
+      ).rejects.toThrow('Invalid snap id. Unknown prefix. Received: "foo"');
       expect(messenger.call).toHaveBeenCalledTimes(1);
       expect(messenger.call).toHaveBeenCalledWith(
         'PermissionController:hasPermission',

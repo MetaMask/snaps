@@ -1662,15 +1662,7 @@ export class SnapController extends BaseController<
     snapId: SnapId,
     versionRange: SemVerRange,
   ): Promise<ProcessSnapResult> {
-    try {
-      validateSnapId(snapId);
-    } catch (error) {
-      return {
-        error: ethErrors.rpc.invalidParams(
-          `"${snapId}" is not a valid snap id.`,
-        ),
-      };
-    }
+    validateSnapId(snapId);
 
     const existingSnap = this.getTruncated(snapId);
     // For devX we always re-install local snaps.
