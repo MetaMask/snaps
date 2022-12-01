@@ -2458,8 +2458,9 @@ describe('SnapController', () => {
       const snapId1 = 'npm:@metamask/example-snap1';
       const snapId2 = 'npm:@metamask/example-snap2';
       const snapId3 = 'npm:@metamask/example-snap3';
+      const oldVersion = '1.0.0';
       const newVersion = '1.0.1';
-      const [controller] = getSnapControllerWithEES(
+      const [controller, service] = getSnapControllerWithEES(
         getSnapControllerWithEESOptions(),
       );
 
@@ -2515,8 +2516,11 @@ describe('SnapController', () => {
       expect(fetchSnapMock).toHaveBeenCalledTimes(5);
 
       expect(controller.get(snapId3)).toBeUndefined();
-      expect(controller.get(snapId1)?.manifest.version).toBe('1.0.0');
-      expect(controller.get(snapId2)?.manifest.version).toBe('1.0.0');
+      expect(controller.get(snapId1)?.manifest.version).toBe(oldVersion);
+      expect(controller.get(snapId2)?.manifest.version).toBe(oldVersion);
+
+      controller.destroy();
+      await service.terminateAllSnaps();
     });
   });
 
