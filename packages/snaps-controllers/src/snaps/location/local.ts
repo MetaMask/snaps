@@ -15,7 +15,7 @@ export default class LocalLocation implements SnapLocation {
   constructor(url: URL) {
     assertStruct(url.toString(), LocalSnapIdStruct, 'Invalid Snap Id');
     this.#http = new HttpLocation(
-      new URL(`https://${url.toString().slice(SnapIdPrefixes.local.length)}`),
+      new URL(url.toString().slice(SnapIdPrefixes.local.length)),
     );
   }
 
@@ -42,9 +42,6 @@ export default class LocalLocation implements SnapLocation {
  */
 function convertCanonical<T>(vfile: VFile<T>): VFile<T> {
   assert(vfile.data.canonicalPath !== undefined);
-  const canonicalPath = new URL(vfile.data.canonicalPath);
-  assert(canonicalPath.protocol === 'http:');
-  canonicalPath.protocol = 'local:';
-  vfile.data.canonicalPath = canonicalPath.toString();
+  vfile.data.canonicalPath = `local:${vfile.data.canonicalPath}`;
   return vfile;
 }

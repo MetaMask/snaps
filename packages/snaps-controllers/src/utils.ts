@@ -209,6 +209,11 @@ export type Mutable<
  */
 export function ensureRelative(path: string): string {
   assert(!path.startsWith('/'));
+  assert(
+    path.search(/:|\/\//u) === -1,
+    `Path "${path}" potentially an URI instead of local relative`,
+  );
+
   if (path.startsWith('./')) {
     return path;
   }

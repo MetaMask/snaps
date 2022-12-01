@@ -128,12 +128,11 @@ export default class NpmLocation implements SnapLocation {
   }
 
   async fetch(path: string): Promise<VFile> {
+    const relativePath = ensureRelative(path);
     if (!this.files) {
       await this.#lazyInit();
       assert(this.files !== undefined);
     }
-    assert(!path.startsWith('/'), 'Tried to fetch absolute path.');
-    const relativePath = ensureRelative(path);
     const vfile = this.files.get(relativePath);
     assert(
       vfile !== undefined,

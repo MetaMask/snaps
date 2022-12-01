@@ -128,4 +128,22 @@ describe('NpmLocation', () => {
       'Tried to access version without first fetching NPM package.',
     );
   });
+
+  // TODO(ritave): Doing this tests requires writing tarball packing utility function
+  //               With the the current changeset going way out of scope, I'm leaving this for future.
+  it.todo('sets canonical path properly');
+  // eslint-disable-next-line jest/no-commented-out-tests
+  /*
+  it.each([
+    ['npm:foo', 'npm://registry.npmjs.org/foo/foo.js'],
+    [
+      'npm:@foo/bar',
+      ['npm://registry.npmjs.org/@foo/bar/foo.js'],
+      [
+        'npm://user:pass@asd.com:8080/@foo/bar',
+        'npm://user:pass@asd.com:8080/@foo/bar/foo.js',
+      ],
+    ],
+  ]);
+  */
 });
