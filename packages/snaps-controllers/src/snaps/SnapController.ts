@@ -1593,7 +1593,7 @@ export class SnapController extends BaseController<
 
             if (error) {
               throw ethErrors.rpc.invalidParams(
-                `The "version" field must be a valid SemVer version range if specified. Received: "${version}".`,
+                `The "version" field must be a valid SemVer version range if specified. Received: "${rawVersion}".`,
               );
             }
 
@@ -1685,7 +1685,6 @@ export class SnapController extends BaseController<
           snapId,
           versionRange,
         );
-        console.log('update result is:', updateResult);
         if (updateResult === null) {
           throw ethErrors.rpc.invalidParams(
             `Snap "${snapId}@${existingSnap.version}" is already installed, couldn't update to a version inside requested "${versionRange}" range.`,
@@ -2554,22 +2553,19 @@ export class SnapController extends BaseController<
     const { statePatches, sourceCode, permissions } = rollbackSnapshot;
 
     if (statePatches?.length) {
-      this.applyPatches(rollbackSnapshot.statePatches);
+      this.applyPatches(statePatches);
     }
 
     if (sourceCode) {
       const runtime = this.#getRuntimeExpect(snapId);
-      runtime.sourceCode = rollbackSnapshot.sourceCode;
+      runtime.sourceCode = sourceCode;
     }
 
     if (permissions.revoked && Object.keys(permissions.revoked).length) {
       this.messagingSystem.call('PermissionController:grantPermissions', {
         approvedPermissions: permissions.revoked as RequestedPermissions,
         subject: { origin: snapId },
-        requestData: rollbackSnapshot.permissions.requestData as Record<
-          string,
-          unknown
-        >,
+        requestData: permissions.requestData as Record<string, unknown>,
       });
     }
 
