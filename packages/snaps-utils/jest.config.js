@@ -6,8 +6,8 @@ module.exports = deepmerge(baseConfig, {
   coveragePathIgnorePatterns: [
     './src/index.ts',
     './src/index.browser.ts',
-    './src/vfile/index.ts',
-    './src/vfile/index.browser.ts',
+    './src/virtual-file/index.ts',
+    './src/virtual-file/index.browser.ts',
     './src/manifest/index.ts',
     './src/manifest/index.browser.ts',
     './src/test-utils',
@@ -18,10 +18,10 @@ module.exports = deepmerge(baseConfig, {
   ],
   coverageThreshold: {
     global: {
-      branches: 94.41,
-      functions: 98.95,
-      lines: 99.01,
-      statements: 99.01,
+      branches: 94.38,
+      functions: 98.93,
+      lines: 98.9,
+      statements: 98.9,
     },
   },
   testTimeout: 2500,
