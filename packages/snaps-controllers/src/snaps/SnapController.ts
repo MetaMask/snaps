@@ -1836,9 +1836,13 @@ export class SnapController extends BaseController<
     const rollbackSnapshot = this.#getRollbackSnapshot(
       snapId,
     ) as RollbackSnapshot;
-    rollbackSnapshot.permissions.revoked = unusedPermissions;
-    rollbackSnapshot.permissions.granted = Object.keys(approvedNewPermissions);
-    rollbackSnapshot.permissions.requestData = requestData;
+    if (rollbackSnapshot !== undefined) {
+      rollbackSnapshot.permissions.revoked = unusedPermissions;
+      rollbackSnapshot.permissions.granted = Object.keys(
+        approvedNewPermissions,
+      );
+      rollbackSnapshot.permissions.requestData = requestData;
+    }
 
     try {
       await this.#startSnap({ snapId, sourceCode: newSnap.sourceCode });
@@ -2091,7 +2095,9 @@ export class SnapController extends BaseController<
       const rollbackSnapshot = this.#getRollbackSnapshot(
         snapId,
       ) as RollbackSnapshot;
-      rollbackSnapshot.statePatches = inversePatches;
+      if (rollbackSnapshot !== undefined) {
+        rollbackSnapshot.statePatches = inversePatches;
+      }
     }
 
     const runtime = this.#getRuntimeExpect(snapId);
