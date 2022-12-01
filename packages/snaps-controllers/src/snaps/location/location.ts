@@ -1,9 +1,9 @@
-import { SnapManifest, VFile } from '@metamask/snaps-utils';
+import { SnapManifest, VirtualFile } from '@metamask/snaps-utils';
 import { assert } from '@metamask/utils';
 
-import HttpLocation from './http';
-import LocalLocation from './local';
-import NpmLocation, { NpmOptions } from './npm';
+import { HttpLocation } from './http';
+import { LocalLocation } from './local';
+import { NpmLocation, NpmOptions } from './npm';
 
 declare module '@metamask/snaps-utils' {
   interface DataMap {
@@ -18,8 +18,8 @@ export interface SnapLocation {
   /**
    * All files are relative to the manifest, except the manifest itself.
    */
-  manifest(): Promise<VFile<SnapManifest>>;
-  fetch(path: string): Promise<VFile>;
+  manifest(): Promise<VirtualFile<SnapManifest>>;
+  fetch(path: string): Promise<VirtualFile>;
 
   readonly shouldAlwaysReload?: boolean;
 }

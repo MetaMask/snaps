@@ -4,7 +4,7 @@ import { readFile } from 'fs/promises';
 import fetchMock from 'jest-fetch-mock';
 import path from 'path';
 
-import NpmLocation from './npm';
+import { NpmLocation } from './npm';
 
 describe('NpmLocation', () => {
   beforeEach(() => {

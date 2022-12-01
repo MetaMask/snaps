@@ -1,7 +1,7 @@
-import HttpLocation from './http';
-import LocalLocation from './local';
+import { HttpLocation } from './http';
+import { LocalLocation } from './local';
 import { detectSnapLocation } from './location';
-import NpmLocation from './npm';
+import { NpmLocation } from './npm';
 
 describe('detectSnapLocation', () => {
   it.each(['http:', 'https:'])(

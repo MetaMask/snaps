@@ -10,4 +10,4 @@ export * from './object';
 export * from './snaps';
 export * from './types';
 export * from './versions';
-export * from './vfile/index.browser';
+export * from './virtual-file/index.browser';

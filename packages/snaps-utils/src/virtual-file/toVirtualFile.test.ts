@@ -1,16 +1,10 @@
 import { vol } from 'memfs';
 
-import {
-  readVFile,
-  readVFileSync,
-  writeVFile,
-  writeVFileSync,
-} from './to-vfile';
-import { VFile } from './vfile';
+import { readVirtualFile, writeVirtualFile } from './toVirtualFile';
+import { VirtualFile } from './VirtualFile';
 
 const CONTENTS_UTF8 = 'foo\nbar';
 
-jest.mock('fs');
 jest.mock('fs/promises');
 
 describe('to-vfile', () => {
@@ -23,26 +17,28 @@ describe('to-vfile', () => {
     /* eslint-enable @typescript-eslint/naming-convention */
   });
 
-  describe.each([readVFile, readVFileSync])('readVFile', (testedFn) => {
+  describe('readVirtualFile', () => {
     it('reads file', async () => {
-      const file = await testedFn('/foo/utf-8.txt');
-      expect(file).toBeInstanceOf(VFile);
+      const file = await readVirtualFile('/foo/utf-8.txt');
+      expect(file).toBeInstanceOf(VirtualFile);
       expect(typeof file.value).not.toBe('string');
       expect(file.toString()).toBe(CONTENTS_UTF8);
     });
 
     it('decodes file', async () => {
-      const file = await testedFn('/foo/utf-8.txt', 'utf8');
-      expect(file).toBeInstanceOf(VFile);
+      const file = await readVirtualFile('/foo/utf-8.txt', 'utf8');
+      expect(file).toBeInstanceOf(VirtualFile);
       expect(typeof file.value).toBe('string');
       expect(file.value).toBe(CONTENTS_UTF8);
     });
   });
 
-  describe.each([writeVFile, writeVFileSync])('writeVFile', (testedFn) => {
+  describe('writeVirtualFile', () => {
     it('writes files', async () => {
       const PATH = '/foo/out.txt';
-      await testedFn(new VFile({ value: CONTENTS_UTF8, path: PATH }));
+      await writeVirtualFile(
+        new VirtualFile({ value: CONTENTS_UTF8, path: PATH }),
+      );
 
       expect(vol.toJSON(PATH)).toStrictEqual(
         // eslint-disable-next-line @typescript-eslint/naming-convention

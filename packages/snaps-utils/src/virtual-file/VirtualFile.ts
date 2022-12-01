@@ -17,7 +17,7 @@ import { deepClone } from '../deep-clone';
  * This type can be augmented to register custom `data` types.
  *
  * @example
- * declare module '@metamask/vfile' {
+ * declare module '@metamask/snaps-utils' {
  *   interface DataMap {
  *     // `file.data.name` is typed as `string`
  *     name: string
@@ -66,7 +66,7 @@ export function isTypedArray(value: unknown): value is TypedArray {
   return is(value, TypedArrayStruct);
 }
 
-export class VFile<Result = unknown> {
+export class VirtualFile<Result = unknown> {
   constructor(value?: Compatible<Result>) {
     let options: Options;
     if (typeof value === 'string' || isTypedArray(value)) {
@@ -103,7 +103,7 @@ export class VFile<Result = unknown> {
   }
 
   clone() {
-    const vfile = new VFile<Result>();
+    const vfile = new VirtualFile<Result>();
     if (typeof this.value === 'string') {
       vfile.value = this.value;
     } else {

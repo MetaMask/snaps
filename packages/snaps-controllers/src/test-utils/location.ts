@@ -1,4 +1,4 @@
-import { VFile, SnapManifest } from '@metamask/snaps-utils';
+import { VirtualFile, SnapManifest } from '@metamask/snaps-utils';
 import {
   DEFAULT_SNAP_BUNDLE,
   DEFAULT_SNAP_ICON,
@@ -13,18 +13,18 @@ type LoopbackOptions = {
   /**
    * @default getSnapManifest()
    */
-  manifest?: SnapManifest | VFile<SnapManifest>;
+  manifest?: SnapManifest | VirtualFile<SnapManifest>;
   /**
    * @default [new VFile({ value: DEFAULT_SNAP_BUNDLE, path: manifest.source.location.npm.filePath }]
    */
-  files?: VFile[];
+  files?: VirtualFile[];
   /**
    * @default false
    */
   shouldAlwaysReload?: boolean;
 };
 
-const isVfile = (obj: unknown): obj is VFile<unknown> => {
+const isVfile = (obj: unknown): obj is VirtualFile<unknown> => {
   return (
     typeof obj === 'object' &&
     obj !== null &&
@@ -33,9 +33,9 @@ const isVfile = (obj: unknown): obj is VFile<unknown> => {
 };
 
 export class LoopbackLocation implements SnapLocation {
-  #manifest: VFile<SnapManifest>;
+  #manifest: VirtualFile<SnapManifest>;
 
-  #files: VFile[];
+  #files: VirtualFile[];
 
   #shouldAlwaysReload: boolean;
 
@@ -43,7 +43,7 @@ export class LoopbackLocation implements SnapLocation {
     const shouldAlwaysReload = opts.shouldAlwaysReload ?? false;
     const manifest = isVfile(opts.manifest)
       ? opts.manifest
-      : new VFile({
+      : new VirtualFile({
           value: '',
           result: opts.manifest ?? getSnapManifest(),
           path: './snap.manifest.json',
@@ -51,7 +51,7 @@ export class LoopbackLocation implements SnapLocation {
     let files;
     if (opts.files === undefined) {
       files = [
-        new VFile({
+        new VirtualFile({
           value: DEFAULT_SNAP_BUNDLE,
           path: manifest.result.source.location.npm.filePath,
         }),
@@ -59,7 +59,7 @@ export class LoopbackLocation implements SnapLocation {
 
       if (manifest.result.source.location.npm.iconPath !== undefined) {
         files.push(
-          new VFile({
+          new VirtualFile({
             value: DEFAULT_SNAP_ICON,
             path: manifest.result.source.location.npm.iconPath,
           }),

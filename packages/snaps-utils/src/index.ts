@@ -16,4 +16,4 @@ export * from './post-process';
 export * from './snaps';
 export * from './types';
 export * from './versions';
-export * from './vfile';
+export * from './virtual-file';

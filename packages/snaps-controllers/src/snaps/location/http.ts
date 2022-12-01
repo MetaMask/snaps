@@ -1,7 +1,7 @@
 import {
   SnapManifest,
   assertIsSnapManifest,
-  VFile,
+  VirtualFile,
   HttpSnapIdStruct,
 } from '@metamask/snaps-utils';
 import { assert, assertStruct } from '@metamask/utils';
@@ -9,34 +9,47 @@ import { assert, assertStruct } from '@metamask/utils';
 import { ensureRelative } from '../../utils';
 import { SnapLocation } from './location';
 
-export default class HttpLocation implements SnapLocation {
+export interface HttpOptions {
+  /**
+   * @default fetch
+   */
+  fetch?: typeof fetch;
+}
+
+export class HttpLocation implements SnapLocation {
   // We keep contents separate because then we can use only one Blob in cache,
   // which we convert to Uint8Array when actually returning the file.
   //
   // That avoids deepCloning file contents.
   // I imagine ArrayBuffers are copy-on-write optimized, meaning
   // in most often case we'll only have one file contents in common case.
-  private readonly cache = new Map<string, { file: VFile; contents: Blob }>();
+  private readonly cache = new Map<
+    string,
+    { file: VirtualFile; contents: Blob }
+  >();
 
-  private validatedManifest?: VFile<SnapManifest>;
+  private validatedManifest?: VirtualFile<SnapManifest>;
 
   private readonly url: URL;
 
-  constructor(url: URL) {
+  private readonly fetchFn: typeof fetch;
+
+  constructor(url: URL, opts: HttpOptions = {}) {
     assertStruct(url.toString(), HttpSnapIdStruct, 'Invalid Snap Id: ');
+    this.fetchFn = opts.fetch ?? globalThis.fetch;
     this.url = url;
   }
 
-  async manifest(): Promise<VFile<SnapManifest>> {
+  async manifest(): Promise<VirtualFile<SnapManifest>> {
     if (this.validatedManifest) {
       return this.validatedManifest.clone();
     }
 
     // jest-fetch-mock doesn't handle new URL(), we need to convert this.url.toString()
-    const contents = await (await fetch(this.url.toString())).text();
+    const contents = await (await this.fetchFn(this.url.toString())).text();
     const manifest = JSON.parse(contents);
     assertIsSnapManifest(manifest);
-    const vfile = new VFile<SnapManifest>({
+    const vfile = new VirtualFile<SnapManifest>({
       value: contents,
       result: manifest,
       path: './snap.manifest.json',
@@ -47,7 +60,7 @@ export default class HttpLocation implements SnapLocation {
     return this.manifest();
   }
 
-  async fetch(path: string): Promise<VFile> {
+  async fetch(path: string): Promise<VirtualFile> {
     const relativePath = ensureRelative(path);
     const cached = this.cache.get(relativePath);
     if (cached !== undefined) {
@@ -59,8 +72,8 @@ export default class HttpLocation implements SnapLocation {
     }
 
     const canonicalPath = this.toCanonical(relativePath).toString();
-    const response = await fetch(canonicalPath);
-    const vfile = new VFile({
+    const response = await this.fetchFn(canonicalPath);
+    const vfile = new VirtualFile({
       value: '',
       path: relativePath,
       data: { canonicalPath },

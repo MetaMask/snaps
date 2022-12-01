@@ -13,7 +13,7 @@ import {
   SemVerVersion,
   SnapCaveatType,
   SnapStatus,
-  VFile,
+  VirtualFile,
 } from '@metamask/snaps-utils';
 import {
   DEFAULT_SNAP_BUNDLE,
@@ -1762,10 +1762,10 @@ describe('SnapController', () => {
       const location = new LoopbackLocation({ shouldAlwaysReload: true });
       location.manifest
         .mockImplementationOnce(async () =>
-          Promise.resolve(new VFile({ value: '', result: manifest })),
+          Promise.resolve(new VirtualFile({ value: '', result: manifest })),
         )
         .mockImplementationOnce(async () =>
-          Promise.resolve(new VFile({ value: '', result: newManifest })),
+          Promise.resolve(new VirtualFile({ value: '', result: newManifest })),
         );
 
       const snapController = getSnapController(
@@ -2075,11 +2075,11 @@ describe('SnapController', () => {
           detectSnapLocation: loopbackDetect({
             manifest,
             files: [
-              new VFile({
+              new VirtualFile({
                 value: keyringSnap.sourceCode,
                 path: manifest.source.location.npm.filePath,
               }),
-              new VFile({
+              new VirtualFile({
                 value: DEFAULT_SNAP_ICON,
                 path: manifest.source.location.npm.iconPath,
               }),

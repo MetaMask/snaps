@@ -8,7 +8,7 @@ import {
   SemVerRange,
   SemVerVersion,
   SnapManifest,
-  VFile,
+  VirtualFile,
 } from '@metamask/snaps-utils';
 import { assert, assertStruct, isObject } from '@metamask/utils';
 import concat from 'concat-stream';
@@ -49,12 +49,12 @@ export interface NpmOptions {
   allowCustomRegistries?: boolean;
 }
 
-export default class NpmLocation implements SnapLocation {
+export class NpmLocation implements SnapLocation {
   private readonly meta: NpmMeta;
 
-  private validatedManifest?: VFile<SnapManifest>;
+  private validatedManifest?: VirtualFile<SnapManifest>;
 
-  private files?: Map<string, VFile>;
+  private files?: Map<string, VirtualFile>;
 
   constructor(url: URL, opts: NpmOptions = {}) {
     const allowCustomRegistries = opts.allowCustomRegistries ?? false;
@@ -113,7 +113,7 @@ export default class NpmLocation implements SnapLocation {
     };
   }
 
-  async manifest(): Promise<VFile<SnapManifest>> {
+  async manifest(): Promise<VirtualFile<SnapManifest>> {
     if (this.validatedManifest) {
       return this.validatedManifest.clone();
     }
@@ -122,12 +122,12 @@ export default class NpmLocation implements SnapLocation {
     const result = JSON.parse(vfile.toString());
     assertIsSnapManifest(result);
     vfile.result = result;
-    this.validatedManifest = vfile as VFile<SnapManifest>;
+    this.validatedManifest = vfile as VirtualFile<SnapManifest>;
 
     return this.manifest();
   }
 
-  async fetch(path: string): Promise<VFile> {
+  async fetch(path: string): Promise<VirtualFile> {
     const relativePath = ensureRelative(path);
     if (!this.files) {
       await this.#lazyInit();
@@ -305,7 +305,7 @@ function getNodeStream(stream: ReadableStream): Readable {
  */
 function createTarballStream(
   canonicalBase: string,
-  files: Map<string, VFile>,
+  files: Map<string, VirtualFile>,
 ): Writable {
   assert(
     canonicalBase.endsWith('/'),
@@ -329,7 +329,7 @@ function createTarballStream(
       const path = headerName.replace(NPM_TARBALL_PATH_PREFIX, './');
       return entryStream.pipe(
         concat((data) => {
-          const vfile = new VFile({
+          const vfile = new VirtualFile({
             value: data,
             path,
             data: {

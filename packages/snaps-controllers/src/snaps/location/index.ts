@@ -1,4 +1,4 @@
 export * from './location';
-export { default as NpmLocation } from './npm';
-export { default as LocalLocation } from './local';
-export { default as HttpLocation } from './http';
+export * from './npm';
+export * from './local';
+export * from './http';

@@ -1,24 +1,24 @@
-import { VFile } from './vfile';
+import { VirtualFile } from './VirtualFile';
 
 const VALUE = 'foo\nbar';
 
 describe('VFile', () => {
   it('stores value string', () => {
-    const file = new VFile({ value: VALUE });
+    const file = new VirtualFile({ value: VALUE });
     expect(file.value).toBe(VALUE);
     expect(file.toString()).toStrictEqual(VALUE);
   });
 
   it('stores value array', () => {
     const array = new TextEncoder().encode(VALUE);
-    const file = new VFile({ value: array });
+    const file = new VirtualFile({ value: array });
     expect(file.value).toStrictEqual(array);
     expect(file.toString()).toStrictEqual(VALUE);
   });
 
   it('cant take options or string', () => {
-    const file1 = new VFile(VALUE);
-    const file2 = new VFile({ value: VALUE });
+    const file1 = new VirtualFile(VALUE);
+    const file2 = new VirtualFile({ value: VALUE });
     expect(file1.value).toStrictEqual(file2.value);
     expect(file1.value).toStrictEqual(VALUE);
   });
@@ -31,7 +31,7 @@ describe('VFile', () => {
         0x00, 0x66, 0x00, 0x6f, 0x00, 0x6f, 0x00, 0x0a, 0x00, 0x62, 0x00, 0x61,
         0x00, 0x72,
       ]);
-      const file = new VFile({ value: array });
+      const file = new VirtualFile({ value: array });
       expect(file.toString('utf-16be')).toStrictEqual(VALUE);
     });
   });
@@ -42,7 +42,7 @@ describe('VFile', () => {
       const result = { foo: 'bar' };
       const data = { bar: 'foo' };
       const path = '/foo/bar';
-      const file = new VFile({ value, result, data, path });
+      const file = new VirtualFile({ value, result, data, path });
       const file2 = file.clone();
       file2.value = 'asd';
       file2.result.foo = 'asd';
@@ -60,7 +60,7 @@ describe('VFile', () => {
 
     it('clones Uint8Array properly', () => {
       const array = new TextEncoder().encode(VALUE);
-      const file1 = new VFile({ value: array });
+      const file1 = new VirtualFile({ value: array });
       const file2 = file1.clone();
 
       array[0] = 42;

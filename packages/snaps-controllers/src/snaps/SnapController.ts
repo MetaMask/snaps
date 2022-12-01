@@ -54,7 +54,7 @@ import {
   ValidatedSnapId,
   validateSnapId,
   validateSnapShasum,
-  VFile,
+  VirtualFile,
 } from '@metamask/snaps-utils';
 import {
   GetSubjectMetadata,
@@ -184,12 +184,12 @@ type FetchSnapResult = {
   /**
    * The manifest of the fetched Snap.
    */
-  manifest: VFile<SnapManifest>;
+  manifest: VirtualFile<SnapManifest>;
 
   /**
    * Auxillary files references in manifest.
    */
-  files: VFile[];
+  files: VirtualFile[];
 
   /**
    * Location that was used to fetch the snap.
@@ -561,8 +561,8 @@ type AddSnapArgs = {
 // validated.
 type SetSnapArgs = Omit<AddSnapArgs, 'id' | 'location'> & {
   id: ValidatedSnapId;
-  manifest: VFile<SnapManifest>;
-  files: VFile[];
+  manifest: VirtualFile<SnapManifest>;
+  files: VirtualFile[];
   /**
    * @default '*'
    */

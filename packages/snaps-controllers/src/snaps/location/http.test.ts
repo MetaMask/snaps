@@ -4,7 +4,7 @@ import {
 } from '@metamask/snaps-utils/test-utils';
 import fetchMock from 'jest-fetch-mock';
 
-import HttpLocation from './http';
+import { HttpLocation } from './http';
 
 fetchMock.enableMocks();
 
