@@ -1,5 +1,6 @@
 import {
   ActionConstraint,
+  ActionHandler,
   ControllerMessenger,
   EventConstraint,
 } from '@metamask/base-controller';
@@ -31,26 +32,6 @@ import { MOCK_CRONJOB_PERMISSION } from './cronjob';
 import { getNodeEES, getNodeEESMessenger } from './execution-environment';
 
 const asyncNoOp = async () => Promise.resolve();
-
-// These types are extracted from `@metamask/controllers`. Ideally they would
-// be exported from there, but they are not.
-type ActionHandler<Action, ActionType> = (
-  ...args: ExtractActionParameters<Action, ActionType>
-) => ExtractActionResponse<Action, ActionType>;
-
-type ExtractActionParameters<Action, T> = Action extends {
-  type: T;
-  handler: (...args: infer H) => any;
-}
-  ? H
-  : never;
-
-type ExtractActionResponse<Action, T> = Action extends {
-  type: T;
-  handler: (...args: any) => infer H;
-}
-  ? H
-  : never;
 
 /**
  * A controller messenger, that allows overwriting the action handlers, without
