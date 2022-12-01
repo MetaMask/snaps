@@ -79,7 +79,6 @@ import {
 import { createMachine, interpret, StateMachine } from '@xstate/fsm';
 import { ethErrors } from 'eth-rpc-errors';
 import type { Patch } from 'immer';
-import { enablePatches } from 'immer';
 import { nanoid } from 'nanoid';
 
 import { forceStrict, validateMachine } from '../fsm';
@@ -102,7 +101,6 @@ import { RequestQueue } from './RequestQueue';
 import { Timer } from './Timer';
 import { fetchNpmSnap } from './utils';
 
-enablePatches();
 export const controllerName = 'SnapController';
 
 // TODO: Figure out how to name these
