@@ -1,15 +1,14 @@
 // TODO(ritave): Move into separate package @metamask/vfile / @metamask/utils + @metamask/to-vfile when passes code review
 // TODO(ritave): Streaming vfile contents similar to vinyl maybe?
-// TODO(ritave): Move fixing manifest to write messages to vfile similar to unified instead of throwing "ProgrammaticallyFixableErrors".
-//               Better yet, move manifest fixing into eslint fixing altogether
-import { assert, hasProperty } from '@metamask/utils';
-import { Infer, instance, is, union } from 'superstruct';
-
-import { deepClone } from '../deep-clone';
-
-// Using https://github.com/vfile/vfile would be helpful, but they only support ESM.
+// TODO(ritave): Move fixing manifest in cli and bundler plugins to write messages to vfile
+//               similar to unified instead of throwing "ProgrammaticallyFixableErrors".
+//
+// Using https://github.com/vfile/vfile would be helpful, but they only support ESM and we need to support CommonJS.
 // https://github.com/gulpjs/vinyl is also good, but they normalize paths, which we can't do, because
 // we're calculating checksums based on original path.
+import { assert, hasProperty } from '@metamask/utils';
+
+import { deepClone } from '../deep-clone';
 
 /**
  * This map registers the type of the `data` key of a `VFile`.
@@ -40,36 +39,10 @@ export type Options<Result = unknown> = {
   result?: Result;
 };
 
-const TypedArrayStruct = union([
-  instance(Int8Array),
-  instance(Uint8Array),
-  instance(Uint8ClampedArray),
-  instance(Int16Array),
-  instance(Uint16Array),
-  instance(Int32Array),
-  instance(Uint32Array),
-  instance(Float32Array),
-  instance(Float64Array),
-  instance(BigInt64Array),
-  instance(BigUint64Array),
-]);
-
-export type TypedArray = Infer<typeof TypedArrayStruct>;
-
-/**
- * Returns whether the given parameter is one of TypedArray subtypes.
- *
- * @param value - Object to check.
- * @returns Whether the parameter is TypeArray subtype.
- */
-export function isTypedArray(value: unknown): value is TypedArray {
-  return is(value, TypedArrayStruct);
-}
-
 export class VirtualFile<Result = unknown> {
   constructor(value?: Compatible<Result>) {
     let options: Options;
-    if (typeof value === 'string' || isTypedArray(value)) {
+    if (typeof value === 'string' || value instanceof Uint8Array) {
       options = { value };
     } else {
       options = value as Options;
