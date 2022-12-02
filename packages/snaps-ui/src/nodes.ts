@@ -59,7 +59,6 @@ export enum NodeType {
   Divider = 'divider',
   Heading = 'heading',
   Panel = 'panel',
-  Spacer = 'spacer',
   Spinner = 'spinner',
   Text = 'text',
 }
@@ -127,18 +126,6 @@ export const PanelStruct: Struct<Panel> = assign(
 // This node references itself indirectly, so it cannot be inferred.
 export type Panel = { type: NodeType.Panel; children: Component[] };
 
-export const SpacerStruct = assign(
-  NodeStruct,
-  object({
-    type: literal(NodeType.Spacer),
-  }),
-);
-
-/**
- * A spacer node, that renders a blank space between other nodes.
- */
-export type Spacer = Infer<typeof SpacerStruct>;
-
 export const SpinnerStruct = assign(
   NodeStruct,
   object({
@@ -174,7 +161,6 @@ export const ComponentStruct = union([
   DividerStruct,
   HeadingStruct,
   PanelStruct,
-  SpacerStruct,
   SpinnerStruct,
   TextStruct,
 ]);

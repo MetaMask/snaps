@@ -1,12 +1,4 @@
-import {
-  Divider,
-  Heading,
-  NodeType,
-  Panel,
-  Spacer,
-  Spinner,
-  Text,
-} from './nodes';
+import { Divider, Heading, NodeType, Panel, Spinner, Text } from './nodes';
 import { assertIsComponent, isComponent } from './validation';
 
 describe('isComponent', () => {
@@ -58,14 +50,6 @@ describe('isComponent', () => {
     };
 
     expect(isComponent(panel)).toBe(true);
-  });
-
-  it('returns true for a spacer component', () => {
-    const spacer: Spacer = {
-      type: NodeType.Spacer,
-    };
-
-    expect(isComponent(spacer)).toBe(true);
   });
 
   it('returns true for a spinner component', () => {
@@ -153,14 +137,6 @@ describe('assertIsComponent', () => {
     };
 
     expect(() => assertIsComponent(panel)).not.toThrow();
-  });
-
-  it('does not throw for a spacer component', () => {
-    const spacer: Spacer = {
-      type: NodeType.Spacer,
-    };
-
-    expect(() => assertIsComponent(spacer)).not.toThrow();
   });
 
   it('does not throw for a spinner component', () => {
