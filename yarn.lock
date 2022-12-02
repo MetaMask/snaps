@@ -2470,17 +2470,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@metamask/base-controller@npm:1.1.0"
-  dependencies:
-    "@metamask/controller-utils": ~1.0.0
-    immer: ^9.0.6
-  checksum: 87f9a78bc2d7111d37fbddbf7ec08d856e18bc64d35a8ac77f9a8c1ed96f8b70c17ebd29931d01a77fe574850fd73467df7826bfbd56ebbd8dac7a4a554207ea
-  languageName: node
-  linkType: hard
-
-"@metamask/base-controller@npm:~1.0.0":
+"@metamask/base-controller@npm:^1.0.0, @metamask/base-controller@npm:~1.0.0":
   version: 1.0.0
   resolution: "@metamask/base-controller@npm:1.0.0"
   dependencies:
@@ -2827,7 +2817,7 @@ __metadata:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/approval-controller": ^1.0.0
     "@metamask/auto-changelog": ^3.1.0
-    "@metamask/base-controller": ^1.1.0
+    "@metamask/base-controller": ^1.0.0
     "@metamask/browser-passworder": ^4.0.2
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
