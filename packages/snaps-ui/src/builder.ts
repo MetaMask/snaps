@@ -8,7 +8,6 @@ import {
   HeadingStruct,
   NodeType,
   PanelStruct,
-  SpacerStruct,
   SpinnerStruct,
   TextStruct,
 } from './nodes';
@@ -156,17 +155,6 @@ export const heading = createBuilder(NodeType.Heading, HeadingStruct, [
  * ```
  */
 export const panel = createBuilder(NodeType.Panel, PanelStruct, ['children']);
-
-/**
- * Create a {@link Spacer} node.
- *
- * @returns The spacer node as object.
- * @example
- * ```typescript
- * const node = spacer();
- * ```
- */
-export const spacer = createBuilder(NodeType.Spacer, SpacerStruct);
 
 /**
  * Create a {@link Spinner} node.

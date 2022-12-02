@@ -1,12 +1,4 @@
-import {
-  copyable,
-  divider,
-  heading,
-  panel,
-  spacer,
-  spinner,
-  text,
-} from './builder';
+import { copyable, divider, heading, panel, spinner, text } from './builder';
 import { NodeType } from './nodes';
 
 describe('copyable', () => {
@@ -170,21 +162,6 @@ describe('panel', () => {
     // @ts-expect-error - Invalid args.
     expect(() => panel({})).toThrow(
       'Invalid panel component: At path: children -- Expected an array value, but received: undefined.',
-    );
-  });
-});
-
-describe('spacer', () => {
-  it('creates a spacer component', () => {
-    expect(spacer()).toStrictEqual({
-      type: NodeType.Spacer,
-    });
-  });
-
-  it('validates the args', () => {
-    // @ts-expect-error - Invalid args.
-    expect(() => spacer({ bar: 'baz' })).toThrow(
-      'Invalid spacer component: At path: bar -- Expected a value of type `never`, but received: `"baz"`.',
     );
   });
 });
