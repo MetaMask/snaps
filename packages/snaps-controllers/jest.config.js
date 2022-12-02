@@ -7,8 +7,8 @@ module.exports = deepmerge(baseConfig, {
     global: {
       branches: 88.74,
       functions: 97.23,
-      lines: 97.1,
-      statements: 97.1,
+      lines: 97.09,
+      statements: 97.09,
     },
   },
   projects: [
