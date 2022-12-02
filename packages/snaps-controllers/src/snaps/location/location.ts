@@ -53,7 +53,7 @@ export function detectSnapLocation(
     case 'https:':
       assert(
         allowHttp,
-        new TypeError('Fetching snaps from external http/https is disabled.'),
+        new TypeError('Fetching snaps through http/https is disabled.'),
       );
       return new HttpLocation(root);
     default:

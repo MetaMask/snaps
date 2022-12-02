@@ -41,7 +41,9 @@ export class LocalLocation implements SnapLocation {
  * @param vfile - The {@link VirtualFile} to convert.
  * @returns The same object with updated `.data.canonicalPath`.
  */
-function convertCanonical<T>(vfile: VirtualFile<T>): VirtualFile<T> {
+function convertCanonical<Result>(
+  vfile: VirtualFile<Result>,
+): VirtualFile<Result> {
   assert(vfile.data.canonicalPath !== undefined);
   vfile.data.canonicalPath = `local:${vfile.data.canonicalPath}`;
   return vfile;

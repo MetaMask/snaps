@@ -6,12 +6,12 @@
 // Using https://github.com/vfile/vfile would be helpful, but they only support ESM and we need to support CommonJS.
 // https://github.com/gulpjs/vinyl is also good, but they normalize paths, which we can't do, because
 // we're calculating checksums based on original path.
-import { assert, hasProperty } from '@metamask/utils';
+import { assert } from '@metamask/utils';
 
 import { deepClone } from '../deep-clone';
 
 /**
- * This map registers the type of the `data` key of a `VFile`.
+ * This map registers the type of the {@link VirtualFile.data} key of a {@link VirtualFile}.
  *
  * This type can be augmented to register custom `data` types.
  *
@@ -41,30 +41,35 @@ export type Options<Result = unknown> = {
 
 export class VirtualFile<Result = unknown> {
   constructor(value?: Compatible<Result>) {
-    let options: Options;
+    let options: Options | undefined;
     if (typeof value === 'string' || value instanceof Uint8Array) {
       options = { value };
     } else {
-      options = value as Options;
+      options = value;
     }
 
-    for (const prop in options) {
-      if (
-        hasProperty(options, prop) &&
-        options[prop as keyof Options] !== undefined
-      ) {
-        this[prop as keyof Options] = options[prop as keyof Options] as any;
-      }
-    }
+    this.value = options?.value ?? '';
+    // This situations happens when there's no .result used,
+    // we expect the file to have default generic in that situation:
+    // VirtualFile<unknown> which will handle undefined properly
+    //
+    // While not 100% type safe, it'll be way less frustrating to work with.
+    // The alternative would be to have VirtualFile.result be Result | undefined
+    // and that would result in needing to branch out and check in all situations.
+    //
+    // In short, optimizing for most common use case.
+    this.result = options?.result ?? (undefined as any);
+    this.data = options?.data ?? {};
+    this.path = options?.path ?? '/';
   }
 
-  value!: Value;
+  value: Value;
 
-  result!: Result;
+  result: Result;
 
-  data: Data = {};
+  data: Data;
 
-  path = '/';
+  path: string;
 
   toString(encoding?: string) {
     if (typeof this.value === 'string') {

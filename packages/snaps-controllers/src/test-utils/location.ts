@@ -15,21 +15,13 @@ type LoopbackOptions = {
    */
   manifest?: SnapManifest | VirtualFile<SnapManifest>;
   /**
-   * @default [new VFile({ value: DEFAULT_SNAP_BUNDLE, path: manifest.source.location.npm.filePath }]
+   * @default [new VirtualFile({ value: DEFAULT_SNAP_BUNDLE, path: manifest.source.location.npm.filePath }]
    */
   files?: VirtualFile[];
   /**
    * @default false
    */
   shouldAlwaysReload?: boolean;
-};
-
-const isVfile = (obj: unknown): obj is VirtualFile<unknown> => {
-  return (
-    typeof obj === 'object' &&
-    obj !== null &&
-    typeof (obj as any).value === 'string'
-  );
 };
 
 export class LoopbackLocation implements SnapLocation {
@@ -41,13 +33,14 @@ export class LoopbackLocation implements SnapLocation {
 
   constructor(opts: LoopbackOptions = {}) {
     const shouldAlwaysReload = opts.shouldAlwaysReload ?? false;
-    const manifest = isVfile(opts.manifest)
-      ? opts.manifest
-      : new VirtualFile({
-          value: '',
-          result: opts.manifest ?? getSnapManifest(),
-          path: './snap.manifest.json',
-        });
+    const manifest =
+      opts.manifest instanceof VirtualFile
+        ? opts.manifest
+        : new VirtualFile({
+            value: '',
+            result: opts.manifest ?? getSnapManifest(),
+            path: './snap.manifest.json',
+          });
     let files;
     if (opts.files === undefined) {
       files = [

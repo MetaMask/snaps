@@ -2,7 +2,7 @@ import { VirtualFile } from './VirtualFile';
 
 const VALUE = 'foo\nbar';
 
-describe('VFile', () => {
+describe('VirtualFile', () => {
   it('stores value string', () => {
     const file = new VirtualFile({ value: VALUE });
     expect(file.value).toBe(VALUE);
