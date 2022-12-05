@@ -2443,16 +2443,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/approval-controller@npm:^1.0.0, @metamask/approval-controller@npm:~1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/approval-controller@npm:1.0.0"
+"@metamask/approval-controller@npm:^1.0.0, @metamask/approval-controller@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@metamask/approval-controller@npm:1.0.1"
   dependencies:
-    "@metamask/base-controller": ~1.0.0
-    "@metamask/controller-utils": ~1.0.0
+    "@metamask/base-controller": ^1.1.1
+    "@metamask/controller-utils": ^1.0.0
     eth-rpc-errors: ^4.0.0
     immer: ^9.0.6
     nanoid: ^3.1.31
-  checksum: cdb179637e200101b6cc64f10cf25d7dba4494e4e982690f10db05a292ef8dcdba1799b1a5d75e4aa378139a62f1dbbd0989701f973cecaa7261b266b9cf1ce5
+  checksum: 83b54946b948b0f97a5453328421666c8852b975bf045f6b23416579f1201feb390dc09941620fa4e480f76cd9a7b4f6e8f2c3e940ddd79f62491a81befe8c7c
   languageName: node
   linkType: hard
 
@@ -2470,23 +2470,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^1.1.0":
+"@metamask/base-controller@npm:^1.1.0, @metamask/base-controller@npm:^1.1.1":
   version: 1.1.1
   resolution: "@metamask/base-controller@npm:1.1.1"
   dependencies:
     "@metamask/controller-utils": ^1.0.0
     immer: ^9.0.6
   checksum: 676408129710a247e95a0705344aef09f2ed55b05ba516fc2788302e1cc2472b5e85f24866e7111ee667bd9e1311eb8f75da8409131ad9dc9901d6e31131db2a
-  languageName: node
-  linkType: hard
-
-"@metamask/base-controller@npm:~1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/base-controller@npm:1.0.0"
-  dependencies:
-    "@metamask/controller-utils": ~1.0.0
-    immer: ^9.0.6
-  checksum: 40affd024add235548c886bd8ad3348682231af8d4a2f7e6fbc5dea5ffa077ed48535f21ac17017c640c50b5d17b5211c30cbb23b7025f360801e72ccbd61a5d
   languageName: node
   linkType: hard
 
@@ -2497,7 +2487,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^1.0.0, @metamask/controller-utils@npm:~1.0.0":
+"@metamask/controller-utils@npm:^1.0.0":
   version: 1.0.0
   resolution: "@metamask/controller-utils@npm:1.0.0"
   dependencies:
@@ -2622,13 +2612,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/permission-controller@npm:^1.0.0, @metamask/permission-controller@npm:~1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/permission-controller@npm:1.0.0"
+"@metamask/permission-controller@npm:^1.0.0, @metamask/permission-controller@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@metamask/permission-controller@npm:1.0.1"
   dependencies:
-    "@metamask/approval-controller": ~1.0.0
-    "@metamask/base-controller": ~1.0.0
-    "@metamask/controller-utils": ~1.0.0
+    "@metamask/approval-controller": ^1.0.1
+    "@metamask/base-controller": ^1.1.1
+    "@metamask/controller-utils": ^1.0.0
     "@metamask/types": ^1.1.0
     "@types/deep-freeze-strict": ^1.1.0
     deep-freeze-strict: ^1.1.1
@@ -2636,7 +2626,7 @@ __metadata:
     immer: ^9.0.6
     json-rpc-engine: ^6.1.0
     nanoid: ^3.1.31
-  checksum: 0e122add27b311adde3be2e61fe02f3a743b6fca2d9590ebb383299b16a36317dab932aeb4d951297c4f6e1ab6b7569622ed1d5392f78f7045bfe20098adaed4
+  checksum: e3af0c64d0adf336b15466ffd153e53659609c1d589e6fe739343fd13050f7a6db2d549eeb161ac4cac82ce466c0e9ba841aa0f347807f959980e95154451c75
   languageName: node
   linkType: hard
 
@@ -3125,14 +3115,14 @@ __metadata:
   linkType: soft
 
 "@metamask/subject-metadata-controller@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/subject-metadata-controller@npm:1.0.0"
+  version: 1.0.1
+  resolution: "@metamask/subject-metadata-controller@npm:1.0.1"
   dependencies:
-    "@metamask/base-controller": ~1.0.0
-    "@metamask/permission-controller": ~1.0.0
+    "@metamask/base-controller": ^1.1.1
+    "@metamask/permission-controller": ^1.0.1
     "@metamask/types": ^1.1.0
     immer: ^9.0.6
-  checksum: 5a9ce9c5a99f4f35ea721b7a3da284e785da4f29f063ef7aa8505e56ba59616377eab7c4628899abc5d5f28a26b642a525728b8775931f705e075929577df593
+  checksum: 8686dd9a7a274bc7fe2315f63687ec91161a7d18da829a2c6a08728c0ab61ceabbeae256e96247a059acc5c74d5dfbe48667893791d9f608e4989d5c4cc62c89
   languageName: node
   linkType: hard
 
