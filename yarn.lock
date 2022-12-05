@@ -2471,12 +2471,12 @@ __metadata:
   linkType: hard
 
 "@metamask/base-controller@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@metamask/base-controller@npm:1.1.0"
+  version: 1.1.1
+  resolution: "@metamask/base-controller@npm:1.1.1"
   dependencies:
-    "@metamask/controller-utils": ~1.0.0
+    "@metamask/controller-utils": ^1.0.0
     immer: ^9.0.6
-  checksum: 87f9a78bc2d7111d37fbddbf7ec08d856e18bc64d35a8ac77f9a8c1ed96f8b70c17ebd29931d01a77fe574850fd73467df7826bfbd56ebbd8dac7a4a554207ea
+  checksum: 676408129710a247e95a0705344aef09f2ed55b05ba516fc2788302e1cc2472b5e85f24866e7111ee667bd9e1311eb8f75da8409131ad9dc9901d6e31131db2a
   languageName: node
   linkType: hard
 
@@ -2497,7 +2497,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:~1.0.0":
+"@metamask/controller-utils@npm:^1.0.0, @metamask/controller-utils@npm:~1.0.0":
   version: 1.0.0
   resolution: "@metamask/controller-utils@npm:1.0.0"
   dependencies:
