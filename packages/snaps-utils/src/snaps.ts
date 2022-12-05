@@ -1,13 +1,28 @@
-import { Json } from '@metamask/utils';
+import { assert, Json } from '@metamask/utils';
 import { sha256 } from '@noble/hashes/sha256';
 import { base64 } from '@scure/base';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
+import {
+  empty,
+  enums,
+  intersection,
+  literal,
+  refine,
+  string,
+  Struct,
+  validate,
+} from 'superstruct';
+import validateNPMPackage from 'validate-npm-package-name';
 
 import { SnapManifest, SnapPermissions } from './manifest/validation';
-import { SnapId, SnapIdPrefixes, SnapValidationFailureReason } from './types';
+import {
+  SnapId,
+  SnapIdPrefixes,
+  SnapValidationFailureReason,
+  uri,
+} from './types';
 import { SemVerVersion } from './versions';
 
-export const LOCALHOST_HOSTNAMES = new Set(['localhost', '127.0.0.1', '::1']);
 export const SNAP_PREFIX = 'wallet_snap_';
 
 export const SNAP_PREFIX_REGEX = new RegExp(`^${SNAP_PREFIX}`, 'u');
@@ -194,6 +209,57 @@ export function validateSnapShasum(
     );
   }
 }
+
+export const LOCALHOST_HOSTNAMES = ['localhost', '127.0.0.1', '[::1]'] as const;
+
+const LocalSnapIdSubUrlStruct = uri({
+  protocol: enums(['http:', 'https:']),
+  hostname: enums(LOCALHOST_HOSTNAMES),
+  hash: empty(string()),
+  search: empty(string()),
+});
+export const LocalSnapIdStruct = refine(string(), 'local Snap Id', (value) => {
+  if (!value.startsWith(SnapIdPrefixes.local)) {
+    return `Expected local Snap ID, got "${value}".`;
+  }
+
+  const [error] = validate(
+    value.slice(SnapIdPrefixes.local.length),
+    LocalSnapIdSubUrlStruct,
+  );
+  return error ?? true;
+});
+export const NpmSnapIdStruct = intersection([
+  string(),
+  uri({
+    protocol: literal(SnapIdPrefixes.npm),
+    pathname: refine(string(), 'package name', function* (value) {
+      const normalized = value.startsWith('/') ? value.slice(1) : value;
+      const { errors, validForNewPackages, warnings } =
+        validateNPMPackage(normalized);
+      if (!validForNewPackages) {
+        if (errors === undefined) {
+          assert(warnings !== undefined);
+          yield* warnings;
+        } else {
+          yield* errors;
+        }
+      }
+      return true;
+    }),
+    search: empty(string()),
+    hash: empty(string()),
+  }),
+]) as unknown as Struct<string, null>;
+
+export const HttpSnapIdStruct = intersection([
+  string(),
+  uri({
+    protocol: enums(['http:', 'https:']),
+    search: empty(string()),
+    hash: empty(string()),
+  }),
+]) as unknown as Struct<string, null>;
 
 /**
  * Extracts the snap prefix from a snap ID.

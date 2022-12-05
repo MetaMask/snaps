@@ -1,4 +1,4 @@
-import { Volume } from 'memfs';
+import { fs } from 'memfs';
 
-// Note: `Volume` implements most of the `fs` API, but not all.
-export = new Volume();
+// Note: 'memfs' implements most of the `fs` API, but not all.
+export = fs;

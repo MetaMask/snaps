@@ -5,13 +5,18 @@ import {
 import { assertStruct, Json } from '@metamask/utils';
 import {
   Infer,
+  instance,
   is,
   object,
   optional,
   pattern,
+  refine,
   size,
   string,
+  Struct,
   type,
+  union,
+  assert as assertSuperstruct,
 } from 'superstruct';
 
 import { SnapManifest } from './manifest/validation';
@@ -163,3 +168,38 @@ export type SnapExportsParameters =
 // while internal symbols do not.
 declare const brand: unique symbol;
 export type Opaque<Base, Brand extends symbol> = Base & { [brand]: Brand };
+
+type UriOptions<T extends string> = {
+  protocol?: Struct<T>;
+  hash?: Struct<T>;
+  port?: Struct<T>;
+  hostname?: Struct<T>;
+  pathname?: Struct<T>;
+  search?: Struct<T>;
+};
+export const uri = (opts: UriOptions<any> = {}) =>
+  refine(union([string(), instance(URL)]), 'uri', (value) => {
+    try {
+      const url = new URL(value);
+
+      const UrlStruct = type(opts);
+      assertSuperstruct(url, UrlStruct);
+      return true;
+    } catch {
+      return `Expected URL, got "${value.toString()}".`;
+    }
+  });
+
+/**
+ * Returns whether a given value is a valid URL.
+ *
+ * @param url - The value to check.
+ * @param opts - Optional constraints for url checking.
+ * @returns Whether `url` is valid URL or not.
+ */
+export function isValidUrl(
+  url: unknown,
+  opts: UriOptions<any> = {},
+): url is string | URL {
+  return is(url, uri(opts));
+}

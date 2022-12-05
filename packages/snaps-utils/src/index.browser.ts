@@ -9,5 +9,5 @@ export * from './notification';
 export * from './object';
 export * from './snaps';
 export * from './types';
-export * from './url';
 export * from './versions';
+export * from './virtual-file/index.browser';
