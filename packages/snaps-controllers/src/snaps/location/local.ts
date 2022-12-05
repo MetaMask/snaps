@@ -14,9 +14,15 @@ export class LocalLocation implements SnapLocation {
 
   constructor(url: URL, opts: HttpOptions = {}) {
     assertStruct(url.toString(), LocalSnapIdStruct, 'Invalid Snap Id');
+    // TODO(ritave): Write deepMerge() which merges fetchOptions.
+    assert(
+      opts.fetchOptions === undefined,
+      'Currently adding fetch options to local: is unsupported.',
+    );
+
     this.#http = new HttpLocation(
       new URL(url.toString().slice(SnapIdPrefixes.local.length)),
-      opts,
+      { ...opts, fetchOptions: { cache: 'no-cache' } },
     );
   }
 

@@ -46,4 +46,37 @@ describe('LocalLocation', () => {
     const file = await new LocalLocation(new URL(base)).fetch('./foo.js');
     expect(file.data.canonicalPath).toBe(canonical);
   });
+
+  it.each([
+    ['local:http://localhost/foo', 'http://localhost/snap.manifest.json'],
+    ['local:https://localhost/foo', 'https://localhost/snap.manifest.json'],
+    ['local:http://localhost/foo/', 'http://localhost/foo/snap.manifest.json'],
+  ])('fetches manifest from proper location', async (base, actuallyFetched) => {
+    fetchMock.mockResponses(JSON.stringify(getSnapManifest()));
+
+    await new LocalLocation(new URL(base)).manifest();
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).toHaveBeenNthCalledWith(
+      1,
+      actuallyFetched,
+      expect.anything(),
+    );
+  });
+
+  it.each(['local:http://localhost', 'local:https://localhost'])(
+    'fetches with caching disabled',
+    async (url) => {
+      fetchMock.mockResponses(DEFAULT_SNAP_BUNDLE);
+
+      await new LocalLocation(new URL(url)).fetch('./foo.js');
+
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+      expect(fetchMock).toHaveBeenNthCalledWith(
+        1,
+        expect.anything(),
+        expect.objectContaining({ cache: 'no-cache' }),
+      );
+    },
+  );
 });

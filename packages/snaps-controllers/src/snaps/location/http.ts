@@ -3,6 +3,7 @@ import {
   assertIsSnapManifest,
   VirtualFile,
   HttpSnapIdStruct,
+  NpmSnapFileNames,
 } from '@metamask/snaps-utils';
 import { assert, assertStruct } from '@metamask/utils';
 
@@ -14,6 +15,7 @@ export interface HttpOptions {
    * @default fetch
    */
   fetch?: typeof fetch;
+  fetchOptions?: RequestInit;
 }
 
 export class HttpLocation implements SnapLocation {
@@ -34,9 +36,12 @@ export class HttpLocation implements SnapLocation {
 
   private readonly fetchFn: typeof fetch;
 
+  private readonly fetchOptions?: RequestInit;
+
   constructor(url: URL, opts: HttpOptions = {}) {
     assertStruct(url.toString(), HttpSnapIdStruct, 'Invalid Snap Id: ');
     this.fetchFn = opts.fetch ?? globalThis.fetch;
+    this.fetchOptions = opts.fetchOptions;
     this.url = url;
   }
 
@@ -45,8 +50,13 @@ export class HttpLocation implements SnapLocation {
       return this.validatedManifest.clone();
     }
 
-    // jest-fetch-mock doesn't handle new URL(), we need to convert this.url.toString()
-    const contents = await (await this.fetchFn(this.url.toString())).text();
+    // jest-fetch-mock doesn't handle new URL(), we need to convert .toString()
+    const contents = await (
+      await this.fetchFn(
+        new URL(NpmSnapFileNames.Manifest, this.url).toString(),
+        this.fetchOptions,
+      )
+    ).text();
     const manifest = JSON.parse(contents);
     assertIsSnapManifest(manifest);
     const vfile = new VirtualFile<SnapManifest>({
@@ -72,7 +82,7 @@ export class HttpLocation implements SnapLocation {
     }
 
     const canonicalPath = this.toCanonical(relativePath).toString();
-    const response = await this.fetchFn(canonicalPath);
+    const response = await this.fetchFn(canonicalPath, this.fetchOptions);
     const vfile = new VirtualFile({
       value: '',
       path: relativePath,

@@ -2067,6 +2067,8 @@ export class SnapController extends BaseController<
 
       return { manifest, files, location };
     } catch (error) {
+      // TODO(ritave): Export `getErrorMessage()` from @metamask/utils and use it here
+      //               https://github.com/MetaMask/utils/blob/62d022ef83c91fa4d150e51913be4441508a0ab1/src/assert.ts
       const message = error instanceof Error ? error.message : error.toString();
       throw new Error(`Failed to fetch Snap "${snapId}": ${message}.`);
     }

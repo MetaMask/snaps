@@ -43,4 +43,17 @@ describe('HttpLocation', () => {
     const file = await new HttpLocation(new URL(base)).fetch('./foo.js');
     expect(file.data.canonicalPath).toBe(canonical);
   });
+
+  it.each([
+    ['http://foo.bar/foo', 'http://foo.bar/snap.manifest.json'],
+    ['https://foo.bar/foo', 'https://foo.bar/snap.manifest.json'],
+    ['http://foo.bar/foo/', 'http://foo.bar/foo/snap.manifest.json'],
+  ])('fetches manifest from proper location', async (base, actuallyFetched) => {
+    fetchMock.mockResponses(JSON.stringify(getSnapManifest()));
+
+    await new HttpLocation(new URL(base)).manifest();
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).toHaveBeenNthCalledWith(1, actuallyFetched, undefined);
+  });
 });
