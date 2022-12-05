@@ -284,8 +284,9 @@ export function postProcessBundle(
       if (
         node.property.type === 'Identifier' &&
         node.property.name === 'eval' &&
-        // If the expression is already wrapped we can ignore it
-        path.parent.type !== 'SequenceExpression'
+        // We only apply this to MemberExpressions that are the callee of CallExpression
+        path.parent.type === 'CallExpression' &&
+        path.parent.callee === node
       ) {
         path.replaceWith(
           objectEvalWrapper({

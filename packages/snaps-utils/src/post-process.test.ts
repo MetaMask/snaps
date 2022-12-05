@@ -63,6 +63,21 @@ describe('postProcessBundle', () => {
     `);
   });
 
+  it('allows eval assignments', () => {
+    const code = `
+      foo.eval = null;
+    `;
+
+    const processedCode = postProcessBundle(code);
+    expect(processedCode).toMatchInlineSnapshot(`
+      {
+        "code": "foo.eval = null;",
+        "sourceMap": null,
+        "warnings": [],
+      }
+    `);
+  });
+
   it('removes the Buffer argument', () => {
     const code = `
       (function (Buffer, foo) {
