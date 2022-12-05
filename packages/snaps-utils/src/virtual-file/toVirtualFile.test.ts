@@ -7,7 +7,7 @@ const CONTENTS_UTF8 = 'foo\nbar';
 
 jest.mock('fs/promises');
 
-describe('to-vfile', () => {
+describe('toVirtualFile', () => {
   beforeEach(() => {
     vol.reset();
     /* eslint-disable @typescript-eslint/naming-convention */
