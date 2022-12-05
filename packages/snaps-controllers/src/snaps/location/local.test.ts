@@ -35,16 +35,40 @@ describe('LocalLocation', () => {
   });
 
   it.each([
-    ['local:http://localhost/foo', 'local:http://localhost/foo.js'],
-    ['local:http://127.0.0.1/foo/', 'local:http://127.0.0.1/foo/foo.js'],
+    [
+      'local:http://localhost/foo',
+      {
+        manifest: 'local:http://localhost/snap.manifest.json',
+        bundle: 'local:http://localhost/foo.js',
+      },
+    ],
+    [
+      'local:http://127.0.0.1/foo/',
+      {
+        manifest: 'local:http://127.0.0.1/foo/snap.manifest.json',
+        bundle: 'local:http://127.0.0.1/foo/foo.js',
+      },
+    ],
     [
       'local:https://user:pass@[::1]:8080/foo/bar',
-      'local:https://user:pass@[::1]:8080/foo/foo.js',
+      {
+        manifest: 'local:https://user:pass@[::1]:8080/foo/snap.manifest.json',
+        bundle: 'local:https://user:pass@[::1]:8080/foo/foo.js',
+      },
     ],
-  ])('sets canonical path properly', async (base, canonical) => {
-    fetchMock.mockResponses(DEFAULT_SNAP_BUNDLE);
-    const file = await new LocalLocation(new URL(base)).fetch('./foo.js');
-    expect(file.data.canonicalPath).toBe(canonical);
+  ])('sets paths properly for %s', async (base, canonical) => {
+    fetchMock.mockResponses(
+      JSON.stringify(getSnapManifest()),
+      DEFAULT_SNAP_BUNDLE,
+    );
+    const location = new LocalLocation(new URL(base));
+    const manifest = await location.manifest();
+    const bundle = await location.fetch('./foo.js');
+
+    expect(manifest.path).toBe('./snap.manifest.json');
+    expect(bundle.path).toBe('./foo.js');
+    expect(manifest.data.canonicalPath).toBe(canonical.manifest);
+    expect(bundle.data.canonicalPath).toBe(canonical.bundle);
   });
 
   it.each([

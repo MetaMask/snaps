@@ -51,19 +51,21 @@ export class HttpLocation implements SnapLocation {
     }
 
     // jest-fetch-mock doesn't handle new URL(), we need to convert .toString()
+    const canonicalPath = new URL(
+      NpmSnapFileNames.Manifest,
+      this.url,
+    ).toString();
+
     const contents = await (
-      await this.fetchFn(
-        new URL(NpmSnapFileNames.Manifest, this.url).toString(),
-        this.fetchOptions,
-      )
+      await this.fetchFn(canonicalPath, this.fetchOptions)
     ).text();
     const manifest = JSON.parse(contents);
     assertIsSnapManifest(manifest);
     const vfile = new VirtualFile<SnapManifest>({
       value: contents,
       result: manifest,
-      path: './snap.manifest.json',
-      data: { canonicalPath: this.url.toString() },
+      path: `./${NpmSnapFileNames.Manifest}`,
+      data: { canonicalPath },
     });
     this.validatedManifest = vfile;
 

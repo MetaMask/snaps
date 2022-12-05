@@ -35,13 +35,34 @@ describe('HttpLocation', () => {
   });
 
   it.each([
-    ['http://foo.bar/foo', 'http://foo.bar/foo.js'],
-    ['http://foo.bar/foo/', 'http://foo.bar/foo/foo.js'],
-  ])('sets canonical path properly', async (base, canonical) => {
-    fetchMock.mockResponses(DEFAULT_SNAP_BUNDLE);
+    [
+      'http://foo.bar/foo',
+      {
+        manifest: 'http://foo.bar/snap.manifest.json',
+        bundle: 'http://foo.bar/foo.js',
+      },
+    ],
+    [
+      'http://foo.bar/foo/',
+      {
+        manifest: 'http://foo.bar/foo/snap.manifest.json',
+        bundle: 'http://foo.bar/foo/foo.js',
+      },
+    ],
+  ])('sets paths properly', async (base, canonical) => {
+    fetchMock.mockResponses(
+      JSON.stringify(getSnapManifest()),
+      DEFAULT_SNAP_BUNDLE,
+    );
 
-    const file = await new HttpLocation(new URL(base)).fetch('./foo.js');
-    expect(file.data.canonicalPath).toBe(canonical);
+    const location = new HttpLocation(new URL(base));
+    const manifest = await location.manifest();
+    const bundle = await location.fetch('./foo.js');
+
+    expect(manifest.path).toBe('./snap.manifest.json');
+    expect(bundle.path).toBe('./foo.js');
+    expect(manifest.data.canonicalPath).toBe(canonical.manifest);
+    expect(bundle.data.canonicalPath).toBe(canonical.bundle);
   });
 
   it.each([
