@@ -72,7 +72,6 @@ import {
   Json,
   NonEmptyArray,
   timeSince,
-  NonEmptyArray,
 } from '@metamask/utils';
 import { createMachine, interpret, StateMachine } from '@xstate/fsm';
 import { ethErrors } from 'eth-rpc-errors';

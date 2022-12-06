@@ -2365,7 +2365,7 @@ describe('SnapController', () => {
           [MOCK_SNAP_ID]: { version: newVersionRange },
         }),
       ).rejects.toThrow(
-        `Snap "${MOCK_SNAP_ID}@1.0.0" is already installed, couldn't update to a version inside requested "${newVersionRange}" range.`,
+        `Snap "${MOCK_SNAP_ID}@1.0.0" is already installed. Couldn't update to a version inside requested "${newVersionRange}" range.`,
       );
 
       expect(messenger.call).toHaveBeenCalledTimes(1);
@@ -2533,7 +2533,7 @@ describe('SnapController', () => {
           [snapId2]: { version: newVersion },
         }),
       ).rejects.toThrow(
-        `Snap "${snapId1}@${oldVersion}" is already installed, couldn't update to a version inside requested "${olderVersion}" range.`,
+        `Snap "${snapId1}@${oldVersion}" is already installed. Couldn't update to a version inside requested "${olderVersion}" range.`,
       );
 
       expect(detect).toHaveBeenCalledTimes(4);
