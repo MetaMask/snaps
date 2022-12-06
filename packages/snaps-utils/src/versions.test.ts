@@ -8,6 +8,7 @@ import {
   DEFAULT_REQUESTED_SNAP_VERSION,
   getTargetVersion,
   gtVersion,
+  gtRange,
   isValidSemVerRange,
   isValidSemVerVersion,
   resolveVersionRange,
@@ -175,6 +176,26 @@ describe('gtVersion', () => {
         '1.2.3-alpha.2' as SemVerVersion,
       ),
     ).toBe(true);
+  });
+});
+
+describe('gtRange', () => {
+  it('supports regular versions', () => {
+    expect(gtRange('1.2.3' as SemVerVersion, '^1.0.0' as SemVerRange)).toBe(
+      false,
+    );
+
+    expect(
+      gtRange('2.0.0' as SemVerVersion, '>1.0.0 <2.0.0' as SemVerRange),
+    ).toBe(true);
+
+    expect(gtRange('1.2.0' as SemVerVersion, '~1.2.0' as SemVerRange)).toBe(
+      false,
+    );
+
+    expect(gtRange('1.5.0' as SemVerVersion, '<1.5.0' as SemVerRange)).toBe(
+      true,
+    );
   });
 });
 

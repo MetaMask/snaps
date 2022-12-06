@@ -1829,9 +1829,7 @@ export class SnapController extends BaseController<
       });
     }
 
-    const rollbackSnapshot = this.#getRollbackSnapshot(
-      snapId,
-    ) as RollbackSnapshot;
+    const rollbackSnapshot = this.#getRollbackSnapshot(snapId);
     if (rollbackSnapshot !== undefined) {
       rollbackSnapshot.permissions.revoked = unusedPermissions;
       rollbackSnapshot.permissions.granted = Object.keys(
