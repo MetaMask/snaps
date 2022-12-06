@@ -1587,53 +1587,52 @@ export class SnapController extends BaseController<
     );
 
     try {
-      await Promise.all(
-        Object.entries(requestedSnaps).map(
-          async ([snapId, { version: rawVersion }]) => {
-            const [error, version] = resolveVersionRange(rawVersion);
-            if (error) {
-              throw ethErrors.rpc.invalidParams(
-                `The "version" field must be a valid SemVer version range if specified. Received: "${rawVersion}".`,
-              );
-            }
+      for (const entry of Object.entries(requestedSnaps)) {
+        const snapId = entry[0];
+        const { version: rawVersion } = entry[1];
 
-            const permissionName = getSnapPermissionName(snapId);
+        const [error, version] = resolveVersionRange(rawVersion);
 
-            if (
-              !this.messagingSystem.call(
-                'PermissionController:hasPermission',
-                origin,
-                permissionName,
-              )
-            ) {
-              throw ethErrors.provider.unauthorized(
-                `Not authorized to install snap "${snapId}". Request the permission for the snap before attempting to install it.`,
-              );
-            }
+        if (error) {
+          throw ethErrors.rpc.invalidParams(
+            `The "version" field must be a valid SemVer version range if specified. Received: "${rawVersion}".`,
+          );
+        }
 
-            const isUpdate = pendingUpdates.includes(snapId);
+        const permissionName = getSnapPermissionName(snapId);
 
-            if (isUpdate && this.#isValidUpdate(snapId, version)) {
-              let rollbackSnapshot = this.#getRollbackSnapshot(snapId);
-              if (rollbackSnapshot === undefined) {
-                const prevSourceCode =
-                  this.#getRuntimeExpect(snapId).sourceCode;
-                rollbackSnapshot = this.#createRollbackSnapshot(snapId);
-                rollbackSnapshot.sourceCode = prevSourceCode;
-                rollbackSnapshot.newVersion = version;
-              } else {
-                console.error('This snap is already being updated.');
-              }
-            }
+        if (
+          !this.messagingSystem.call(
+            'PermissionController:hasPermission',
+            origin,
+            permissionName,
+          )
+        ) {
+          throw ethErrors.provider.unauthorized(
+            `Not authorized to install snap "${snapId}". Request the permission for the snap before attempting to install it.`,
+          );
+        }
 
-            result[snapId] = await this.processRequestedSnap(
-              origin,
-              snapId,
-              version,
-            );
-          },
-        ),
-      );
+        const isUpdate = pendingUpdates.includes(snapId);
+
+        if (isUpdate && this.#isValidUpdate(snapId, version)) {
+          let rollbackSnapshot = this.#getRollbackSnapshot(snapId);
+          if (rollbackSnapshot === undefined) {
+            const prevSourceCode = this.#getRuntimeExpect(snapId).sourceCode;
+            rollbackSnapshot = this.#createRollbackSnapshot(snapId);
+            rollbackSnapshot.sourceCode = prevSourceCode;
+            rollbackSnapshot.newVersion = version;
+          } else {
+            console.error('This snap is already being updated.');
+          }
+        }
+
+        result[snapId] = await this.processRequestedSnap(
+          origin,
+          snapId,
+          version,
+        );
+      }
       snapIds.forEach((snapId) => this.#rollbackSnapshots.delete(snapId));
     } catch (error) {
       const installed = pendingInstalls.filter((snapId) => this.has(snapId));

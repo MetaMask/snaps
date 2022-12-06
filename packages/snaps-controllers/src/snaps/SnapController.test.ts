@@ -2556,12 +2556,12 @@ describe('SnapController', () => {
         `Snap "${snapId1}@${oldVersion}" is already installed, couldn't update to a version inside requested "${olderVersion}" range.`,
       );
 
-      expect(fetchSnapMock).toHaveBeenCalledTimes(5);
+      expect(fetchSnapMock).toHaveBeenCalledTimes(4);
 
       expect(controller.get(snapId3)).toBeUndefined();
       expect(controller.get(snapId1)?.manifest.version).toBe(oldVersion);
       expect(controller.get(snapId2)?.manifest.version).toBe(oldVersion);
-      expect(listener).toHaveBeenCalledTimes(1);
+      expect(listener).toHaveBeenCalledTimes(0);
 
       controller.destroy();
       await service.terminateAllSnaps();
