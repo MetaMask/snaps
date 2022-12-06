@@ -29,6 +29,7 @@ import {
   fromEntries,
   getSnapPermissionName,
   gtVersion,
+  gtRange,
   InstallSnapsResult,
   isValidSemVerRange,
   PersistedSnap,
@@ -660,9 +661,9 @@ export class SnapController extends BaseController<
   // This property cannot be hash private yet because of tests.
   private readonly snapsRuntimeData: Map<SnapId, SnapRuntimeData>;
 
-  #getAppKey: GetAppKey;
+  #rollbackSnapshots: Map<SnapId, RollbackSnapshot>;
 
-  private readonly _rollbackSnapshots: Map<SnapId, RollbackSnapshot>;
+  #getAppKey: GetAppKey;
 
   #timeoutForLastRequestStatus?: number;
 
@@ -756,8 +757,8 @@ export class SnapController extends BaseController<
     this._onUnhandledSnapError = this._onUnhandledSnapError.bind(this);
     this._onOutboundRequest = this._onOutboundRequest.bind(this);
     this._onOutboundResponse = this._onOutboundResponse.bind(this);
+    this.#rollbackSnapshots = new Map();
     this.snapsRuntimeData = new Map();
-    this._rollbackSnapshots = new Map();
     this.#pollForLastRequestStatus();
 
     /* eslint-disable @typescript-eslint/unbound-method */
@@ -1611,12 +1612,13 @@ export class SnapController extends BaseController<
             }
 
             const isUpdate = pendingUpdates.includes(snapId);
-            if (isUpdate) {
-              let rollbackSnapshot = this.getRollbackSnapshot(snapId);
+
+            if (isUpdate && this.#isValidUpdate(snapId, version)) {
+              let rollbackSnapshot = this.#getRollbackSnapshot(snapId);
               if (rollbackSnapshot === undefined) {
                 const prevSourceCode =
                   this.#getRuntimeExpect(snapId).sourceCode;
-                rollbackSnapshot = this.createRollbackSnapshot(snapId);
+                rollbackSnapshot = this.#createRollbackSnapshot(snapId);
                 rollbackSnapshot.sourceCode = prevSourceCode;
                 rollbackSnapshot.newVersion = version;
               } else {
@@ -1632,14 +1634,15 @@ export class SnapController extends BaseController<
           },
         ),
       );
+      snapIds.forEach((snapId) => this.#rollbackSnapshots.delete(snapId));
     } catch (error) {
       const installed = pendingInstalls.filter((snapId) => this.has(snapId));
       await this.removeSnaps(installed);
-      const snapshottedSnaps = [...this._rollbackSnapshots.keys()];
+      const snapshottedSnaps = [...this.#rollbackSnapshots.keys()];
       const snapsToRollback = pendingUpdates.filter((snapId) =>
         snapshottedSnaps.includes(snapId),
       );
-      await this.rollbackSnaps(snapsToRollback);
+      await this.#rollbackSnaps(snapsToRollback);
 
       throw error;
     }
@@ -1715,9 +1718,6 @@ export class SnapController extends BaseController<
       return truncated;
     } catch (error) {
       console.error(`Error when adding snap.`, error);
-      if (this.has(snapId)) {
-        await this.removeSnap(snapId);
-      }
 
       throw error;
     }
@@ -1831,7 +1831,7 @@ export class SnapController extends BaseController<
       });
     }
 
-    const rollbackSnapshot = this.getRollbackSnapshot(
+    const rollbackSnapshot = this.#getRollbackSnapshot(
       snapId,
     ) as RollbackSnapshot;
     if (rollbackSnapshot !== undefined) {
@@ -2087,7 +2087,7 @@ export class SnapController extends BaseController<
     // checking for isUpdate here as this function is also used in
     // the install flow, we do not care to create snapshots for installs
     if (isUpdate) {
-      const rollbackSnapshot = this.getRollbackSnapshot(
+      const rollbackSnapshot = this.#getRollbackSnapshot(
         snapId,
       ) as RollbackSnapshot;
       if (rollbackSnapshot !== undefined) {
@@ -2459,30 +2459,32 @@ export class SnapController extends BaseController<
     }
   }
 
-  private getRollbackSnapshot(snapId: SnapId): RollbackSnapshot | undefined {
-    return this._rollbackSnapshots.get(snapId);
+  #getRollbackSnapshot(snapId: SnapId): RollbackSnapshot | undefined {
+    return this.#rollbackSnapshots.get(snapId);
   }
 
-  private createRollbackSnapshot(snapId: SnapId): RollbackSnapshot {
+  #createRollbackSnapshot(snapId: SnapId): RollbackSnapshot {
     assert(
-      this._rollbackSnapshots.get(snapId) === undefined,
+      this.#rollbackSnapshots.get(snapId) === undefined,
       new Error(`Snap "${snapId}" rollback snapshot already exists.`),
     );
 
-    this._rollbackSnapshots.set(snapId, {
+    this.#rollbackSnapshots.set(snapId, {
       statePatches: [],
       sourceCode: '',
       permissions: { revoked: null, granted: [], requestData: null },
       newVersion: '',
     });
-    return this.getRollbackSnapshot(snapId) as RollbackSnapshot;
+    return this.#getRollbackSnapshot(snapId) as RollbackSnapshot;
   }
 
-  private async rollbackSnap(snapId: SnapId) {
-    const rollbackSnapshot = this.getRollbackSnapshot(snapId);
+  async #rollbackSnap(snapId: SnapId) {
+    const rollbackSnapshot = this.#getRollbackSnapshot(snapId);
     if (!rollbackSnapshot) {
       throw new Error('A snapshot does not exist for this snap.');
     }
+
+    await this.stopSnap(snapId, SnapStatusEvents.Stop);
 
     const { statePatches, sourceCode, permissions } = rollbackSnapshot;
 
@@ -2509,8 +2511,6 @@ export class SnapController extends BaseController<
       });
     }
 
-    await this.stopSnap(snapId, SnapStatusEvents.Stop);
-
     const truncatedSnap = this.getTruncatedExpect(snapId);
 
     this.messagingSystem.publish(
@@ -2518,11 +2518,13 @@ export class SnapController extends BaseController<
       truncatedSnap,
       rollbackSnapshot.newVersion,
     );
+
+    this.#rollbackSnapshots.delete(snapId);
   }
 
-  private async rollbackSnaps(snapIds: SnapId[]) {
+  async #rollbackSnaps(snapIds: SnapId[]) {
     for (const snapId of snapIds) {
-      await this.rollbackSnap(snapId);
+      await this.#rollbackSnap(snapId);
     }
   }
 
@@ -2598,5 +2600,19 @@ export class SnapController extends BaseController<
     const approvedPermissions = setDiff(oldPermissions, unusedPermissions);
 
     return { newPermissions, unusedPermissions, approvedPermissions };
+  }
+
+  #isValidUpdate(snapId: SnapId, newVersionRange: SemVerRange) {
+    const existingSnap = this.getExpect(snapId);
+
+    if (satisfiesVersionRange(existingSnap.version, newVersionRange)) {
+      return false;
+    }
+
+    if (gtRange(existingSnap.version, newVersionRange)) {
+      return false;
+    }
+
+    return true;
   }
 }
