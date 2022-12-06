@@ -12,6 +12,7 @@ import {
   SemVerRange,
   SemVerVersion,
   SnapCaveatType,
+  SnapPermissions,
   SnapStatus,
   VirtualFile,
 } from '@metamask/snaps-utils';
@@ -617,6 +618,37 @@ describe('SnapController', () => {
     );
 
     await eventSubscriptionPromise;
+  });
+
+  it('supports non-snap permissions', async () => {
+    const messenger = getSnapControllerMessenger();
+    const initialPermissions: SnapPermissions = {
+      // @ts-expect-error Current type only expects snap permissions
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      eth_accounts: {
+        requiredMethods: [],
+      },
+    };
+    const snapController = getSnapController(
+      getSnapControllerOptions({
+        messenger,
+        detectSnapLocation: loopbackDetect({
+          manifest: getSnapManifest({
+            initialPermissions,
+          }),
+        }),
+      }),
+    );
+
+    const expectedSnapObject = getTruncatedSnap({ initialPermissions });
+
+    expect(
+      await snapController.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: {},
+      }),
+    ).toStrictEqual({
+      [MOCK_SNAP_ID]: expectedSnapObject,
+    });
   });
 
   it('throws an error on invalid semver range during installSnaps', async () => {
