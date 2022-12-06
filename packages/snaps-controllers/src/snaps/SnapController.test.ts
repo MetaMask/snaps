@@ -10,6 +10,7 @@ import {
   getSnapSourceShasum,
   HandlerType,
   SemVerVersion,
+  SemVerRange,
   SnapCaveatType,
   SnapManifest,
   SnapStatus,
@@ -2452,7 +2453,7 @@ describe('SnapController', () => {
       expect(fetchSnapMock).toHaveBeenCalledWith(MOCK_SNAP_ID, newVersionRange);
     });
 
-    it('rollsback any updates & installs made during a failure scenario', async () => {
+    it('rolls back any updates & installs made during a failure scenario', async () => {
       const snapId1 = 'npm:@metamask/example-snap1';
       const snapId2 = 'npm:@metamask/example-snap2';
       const snapId3 = 'npm:@metamask/example-snap3';
@@ -2520,6 +2521,82 @@ describe('SnapController', () => {
       controller.destroy();
       await service.terminateAllSnaps();
     });
+
+    it('will not create snapshots for already installed snaps that have invalid requested ranges', async () => {
+      const snapId1 = 'npm:@metamask/example-snap1';
+      const snapId2 = 'npm:@metamask/example-snap2';
+      const snapId3 = 'npm:@metamask/example-snap3';
+      const oldVersion = '1.0.0';
+      const newVersion = '1.0.1';
+      const olderVersion = '0.9.0';
+      const options = getSnapControllerWithEESOptions();
+      const { messenger } = options;
+      const [controller, service] = getSnapControllerWithEES(options);
+
+      const listener = jest.fn();
+      messenger.subscribe('SnapController:snapRolledback' as any, listener);
+
+      const fetchSnapMock = jest
+        .spyOn(controller as any, 'fetchSnap')
+        .mockImplementationOnce(async () =>
+          Promise.resolve({
+            manifest: getSnapManifest(),
+            sourceCode: DEFAULT_SNAP_BUNDLE,
+          }),
+        )
+        .mockImplementationOnce(async () =>
+          Promise.resolve({
+            manifest: getSnapManifest(),
+            sourceCode: DEFAULT_SNAP_BUNDLE,
+          }),
+        )
+        .mockImplementationOnce(async () =>
+          Promise.resolve({
+            manifest: getSnapManifest(),
+            sourceCode: DEFAULT_SNAP_BUNDLE,
+          }),
+        )
+        .mockImplementationOnce(async () =>
+          Promise.resolve({
+            manifest: getSnapManifest({ version: olderVersion }),
+            sourceCode: DEFAULT_SNAP_BUNDLE,
+          }),
+        )
+        .mockImplementationOnce(async () =>
+          Promise.resolve({
+            manifest: getSnapManifest({ version: newVersion }),
+            sourceCode: 'foo',
+          }),
+        );
+
+      await controller.installSnaps(MOCK_ORIGIN, { [snapId1]: {} });
+      await controller.installSnaps(MOCK_ORIGIN, { [snapId2]: {} });
+      await controller.stopSnap(snapId1);
+      await controller.stopSnap(snapId2);
+
+      expect(controller.get(snapId1)).toBeDefined();
+      expect(controller.get(snapId2)).toBeDefined();
+
+      await expect(
+        controller.installSnaps(MOCK_ORIGIN, {
+          [snapId3]: {},
+          [snapId1]: { version: olderVersion },
+          [snapId2]: { version: newVersion },
+        }),
+      ).rejects.toThrow(
+        `Snap "${snapId1}@${oldVersion}" is already installed, couldn't update to a version inside requested "${olderVersion}" range.`,
+      );
+
+      expect(fetchSnapMock).toHaveBeenCalledTimes(5);
+
+      expect(controller.get(snapId3)).toBeUndefined();
+      expect(controller.get(snapId1)?.manifest.version).toBe(oldVersion);
+      expect(controller.get(snapId2)?.manifest.version).toBe(oldVersion);
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      controller.destroy();
+      await service.terminateAllSnaps();
+    });
   });
 
   describe('updateSnap', () => {
@@ -2542,9 +2619,9 @@ describe('SnapController', () => {
         controller.updateSnap(
           MOCK_ORIGIN,
           MOCK_SNAP_ID,
-          'this is not a version',
+          'this is not a version' as SemVerRange,
         ),
-      ).rejects.toThrow('Received invalid snap version range');
+      ).rejects.toThrow('Received invalid Snap version range.');
     });
 
     it('throws an error if the new version of the snap is blocked', async () => {
