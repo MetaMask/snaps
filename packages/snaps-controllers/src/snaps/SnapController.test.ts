@@ -619,6 +619,36 @@ describe('SnapController', () => {
     await eventSubscriptionPromise;
   });
 
+  it('supports non-snap permissions', async () => {
+    const messenger = getSnapControllerMessenger();
+    const initialPermissions = {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      eth_accounts: {
+        requiredMethods: [],
+      },
+    } as any;
+    const snapController = getSnapController(
+      getSnapControllerOptions({
+        messenger,
+        detectSnapLocation: loopbackDetect({
+          manifest: getSnapManifest({
+            initialPermissions,
+          }),
+        }),
+      }),
+    );
+
+    const expectedSnapObject = getTruncatedSnap({ initialPermissions });
+
+    expect(
+      await snapController.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: {},
+      }),
+    ).toStrictEqual({
+      [MOCK_SNAP_ID]: expectedSnapObject,
+    });
+  });
+
   it('throws an error on invalid semver range during installSnaps', async () => {
     const controller = getSnapController();
 

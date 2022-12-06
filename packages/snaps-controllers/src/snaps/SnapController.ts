@@ -2088,10 +2088,7 @@ export class SnapController extends BaseController<
    */
   #processSnapPermissions(
     initialPermissions: SnapPermissions,
-  ): Record<
-    string,
-    Pick<PermissionConstraint, 'caveats'> | Record<string, never>
-  > {
+  ): Record<string, Pick<PermissionConstraint, 'caveats'>> {
     return fromEntries(
       Object.entries(initialPermissions).map(([initialPermission, value]) => {
         if (hasProperty(caveatMappers, initialPermission)) {
@@ -2103,8 +2100,11 @@ export class SnapController extends BaseController<
           ];
         }
 
-        assert(Object.keys(value).length === 0);
-        return [initialPermission, {}];
+        // If we have no mapping, this may be a non-snap permission, return as-is
+        return [
+          initialPermission,
+          value as Pick<PermissionConstraint, 'caveats'>,
+        ];
       }),
     );
   }
