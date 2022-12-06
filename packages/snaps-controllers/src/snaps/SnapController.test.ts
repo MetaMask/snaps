@@ -11,7 +11,6 @@ import {
   HandlerType,
   SemVerRange,
   SemVerVersion,
-  SemVerRange,
   SnapCaveatType,
   SnapStatus,
   VirtualFile,
@@ -2361,7 +2360,6 @@ describe('SnapController', () => {
         }),
       );
 
-      const manifest = getSnapManifest();
       await expect(
         controller.installSnaps(MOCK_ORIGIN, {
           [MOCK_SNAP_ID]: { version: newVersionRange },
@@ -2428,42 +2426,42 @@ describe('SnapController', () => {
       const snapId3 = 'npm:@metamask/example-snap3';
       const oldVersion = '1.0.0';
       const newVersion = '1.0.1';
-      const [controller, service] = getSnapControllerWithEES(
-        getSnapControllerWithEESOptions(),
-      );
 
-      const fetchSnapMock = jest
-        .spyOn(controller as any, 'fetchSnap')
-        .mockImplementationOnce(async () =>
-          Promise.resolve({
-            manifest: getSnapManifest(),
-            sourceCode: DEFAULT_SNAP_BUNDLE,
-          }),
+      const manifest = getSnapManifest();
+      const detect = jest
+        .fn()
+        .mockImplementationOnce(() => new LoopbackLocation())
+        .mockImplementationOnce(() => new LoopbackLocation())
+        .mockImplementationOnce(() => new LoopbackLocation())
+        .mockImplementationOnce(
+          () =>
+            new LoopbackLocation({
+              manifest: getSnapManifest({ version: newVersion }),
+            }),
         )
-        .mockImplementationOnce(async () =>
-          Promise.resolve({
-            manifest: getSnapManifest(),
-            sourceCode: DEFAULT_SNAP_BUNDLE,
-          }),
-        )
-        .mockImplementationOnce(async () =>
-          Promise.resolve({
-            manifest: getSnapManifest(),
-            sourceCode: DEFAULT_SNAP_BUNDLE,
-          }),
-        )
-        .mockImplementationOnce(async () =>
-          Promise.resolve({
-            manifest: getSnapManifest({ version: newVersion }),
-            sourceCode: DEFAULT_SNAP_BUNDLE,
-          }),
-        )
-        .mockImplementationOnce(async () =>
-          Promise.resolve({
-            manifest: getSnapManifest({ version: newVersion }),
-            sourceCode: 'foo',
-          }),
+        .mockImplementationOnce(
+          () =>
+            new LoopbackLocation({
+              manifest: getSnapManifest({
+                version: newVersion,
+                shasum: getSnapSourceShasum('foo'),
+              }),
+              files: [
+                new VirtualFile({
+                  value: 'foo',
+                  path: manifest.source.location.npm.filePath,
+                }),
+                new VirtualFile({
+                  value: DEFAULT_SNAP_ICON,
+                  path: manifest.source.location.npm.iconPath,
+                }),
+              ],
+            }),
         );
+
+      const [controller, service] = getSnapControllerWithEES(
+        getSnapControllerWithEESOptions({ detectSnapLocation: detect }),
+      );
 
       await controller.installSnaps(MOCK_ORIGIN, { [snapId1]: {} });
       await controller.installSnaps(MOCK_ORIGIN, { [snapId2]: {} });
@@ -2481,7 +2479,7 @@ describe('SnapController', () => {
         }),
       ).rejects.toThrow(`Snap ${snapId2} crashed with updated source code.`);
 
-      expect(fetchSnapMock).toHaveBeenCalledTimes(5);
+      expect(detect).toHaveBeenCalledTimes(5);
 
       expect(controller.get(snapId3)).toBeUndefined();
       expect(controller.get(snapId1)?.manifest.version).toBe(oldVersion);
@@ -2498,45 +2496,27 @@ describe('SnapController', () => {
       const oldVersion = '1.0.0';
       const newVersion = '1.0.1';
       const olderVersion = '0.9.0';
-      const options = getSnapControllerWithEESOptions();
+
+      const detect = jest
+        .fn()
+        .mockImplementationOnce(() => new LoopbackLocation())
+        .mockImplementationOnce(() => new LoopbackLocation())
+        .mockImplementationOnce(() => new LoopbackLocation())
+        .mockImplementationOnce(
+          () =>
+            new LoopbackLocation({
+              manifest: getSnapManifest({ version: olderVersion }),
+            }),
+        );
+
+      const options = getSnapControllerWithEESOptions({
+        detectSnapLocation: detect,
+      });
       const { messenger } = options;
       const [controller, service] = getSnapControllerWithEES(options);
 
       const listener = jest.fn();
       messenger.subscribe('SnapController:snapRolledback' as any, listener);
-
-      const fetchSnapMock = jest
-        .spyOn(controller as any, 'fetchSnap')
-        .mockImplementationOnce(async () =>
-          Promise.resolve({
-            manifest: getSnapManifest(),
-            sourceCode: DEFAULT_SNAP_BUNDLE,
-          }),
-        )
-        .mockImplementationOnce(async () =>
-          Promise.resolve({
-            manifest: getSnapManifest(),
-            sourceCode: DEFAULT_SNAP_BUNDLE,
-          }),
-        )
-        .mockImplementationOnce(async () =>
-          Promise.resolve({
-            manifest: getSnapManifest(),
-            sourceCode: DEFAULT_SNAP_BUNDLE,
-          }),
-        )
-        .mockImplementationOnce(async () =>
-          Promise.resolve({
-            manifest: getSnapManifest({ version: olderVersion }),
-            sourceCode: DEFAULT_SNAP_BUNDLE,
-          }),
-        )
-        .mockImplementationOnce(async () =>
-          Promise.resolve({
-            manifest: getSnapManifest({ version: newVersion }),
-            sourceCode: 'foo',
-          }),
-        );
 
       await controller.installSnaps(MOCK_ORIGIN, { [snapId1]: {} });
       await controller.installSnaps(MOCK_ORIGIN, { [snapId2]: {} });
@@ -2556,7 +2536,7 @@ describe('SnapController', () => {
         `Snap "${snapId1}@${oldVersion}" is already installed, couldn't update to a version inside requested "${olderVersion}" range.`,
       );
 
-      expect(fetchSnapMock).toHaveBeenCalledTimes(4);
+      expect(detect).toHaveBeenCalledTimes(4);
 
       expect(controller.get(snapId3)).toBeUndefined();
       expect(controller.get(snapId1)?.manifest.version).toBe(oldVersion);
@@ -2590,7 +2570,9 @@ describe('SnapController', () => {
           MOCK_SNAP_ID,
           'this is not a version' as SemVerRange,
         ),
-      ).rejects.toThrow('Received invalid Snap version range.');
+      ).rejects.toThrow(
+        'Received invalid snap version range: "this is not a version"',
+      );
     });
 
     it('throws an error if the new version of the snap is blocked', async () => {
