@@ -306,7 +306,7 @@ export function validateSnapId(
     }
   }
 
-  throw new Error(`Invalid snap id. Unknown prefix. Received: "${snapId}"`);
+  throw new Error(`Invalid snap id. Unknown prefix. Received: "${snapId}".`);
 }
 
 /**

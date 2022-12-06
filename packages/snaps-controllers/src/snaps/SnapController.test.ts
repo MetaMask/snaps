@@ -627,7 +627,7 @@ describe('SnapController', () => {
         [MOCK_SNAP_ID]: { version: 'foo' },
       }),
     ).rejects.toThrow(
-      'The "version" field must be a valid SemVer version range if specified. Received: "foo"',
+      'The "version" field must be a valid SemVer version range if specified. Received: "foo".',
     );
   });
 
@@ -2217,7 +2217,7 @@ describe('SnapController', () => {
         controller.installSnaps(MOCK_ORIGIN, {
           [snapId]: {},
         }),
-      ).rejects.toThrow('Invalid snap id. Unknown prefix. Received: "foo"');
+      ).rejects.toThrow('Invalid snap id. Unknown prefix. Received: "foo".');
     });
 
     it('updates a snap', async () => {
@@ -2420,7 +2420,7 @@ describe('SnapController', () => {
       );
     });
 
-    it('rolls back any updates & installs made during a failure scenario', async () => {
+    it('rolls back any updates and installs made during a failure scenario', async () => {
       const snapId1 = 'npm:@metamask/example-snap1';
       const snapId2 = 'npm:@metamask/example-snap2';
       const snapId3 = 'npm:@metamask/example-snap3';
@@ -2571,7 +2571,7 @@ describe('SnapController', () => {
           'this is not a version' as SemVerRange,
         ),
       ).rejects.toThrow(
-        'Received invalid snap version range: "this is not a version"',
+        'Received invalid snap version range: "this is not a version".',
       );
     });
 

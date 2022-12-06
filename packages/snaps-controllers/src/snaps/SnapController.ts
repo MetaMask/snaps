@@ -1588,10 +1588,9 @@ export class SnapController extends BaseController<
     );
 
     try {
-      for (const entry of Object.entries(requestedSnaps)) {
-        const snapId = entry[0];
-        const { version: rawVersion } = entry[1];
-
+      for (const [snapId, { version: rawVersion }] of Object.entries(
+        requestedSnaps,
+      )) {
         const [error, version] = resolveVersionRange(rawVersion);
 
         if (error) {
@@ -1624,7 +1623,7 @@ export class SnapController extends BaseController<
             rollbackSnapshot.sourceCode = prevSourceCode;
             rollbackSnapshot.newVersion = version;
           } else {
-            console.error('This snap is already being updated.');
+            throw new Error('This snap is already being updated.');
           }
         }
 
@@ -1683,13 +1682,13 @@ export class SnapController extends BaseController<
         );
         if (updateResult === null) {
           throw ethErrors.rpc.invalidParams(
-            `Snap "${snapId}@${existingSnap.version}" is already installed, couldn't update to a version inside requested "${versionRange}" range.`,
+            `Snap "${snapId}@${existingSnap.version}" is already installed. Couldn't update to a version inside requested "${versionRange}" range.`,
           );
         }
         return updateResult;
       }
       throw ethErrors.rpc.invalidParams(
-        `Version mismatch with already installed snap. ${snapId}@${existingSnap.version} doesn't satisfy requested version ${versionRange}`,
+        `Version mismatch with already installed snap. ${snapId}@${existingSnap.version} doesn't satisfy requested version ${versionRange}.`,
       );
     }
 
@@ -1841,9 +1840,6 @@ export class SnapController extends BaseController<
       );
       rollbackSnapshot.permissions.requestData = requestData;
     }
-
-    // add a try/catch block here to catch an error if the snap does not start in update situations
-    // we might need to add a flag that delineates between installs/updates calling this methodor ac
 
     const sourceCode = newSnap.files
       .find(
@@ -2087,9 +2083,7 @@ export class SnapController extends BaseController<
     // checking for isUpdate here as this function is also used in
     // the install flow, we do not care to create snapshots for installs
     if (isUpdate) {
-      const rollbackSnapshot = this.#getRollbackSnapshot(
-        snapId,
-      ) as RollbackSnapshot;
+      const rollbackSnapshot = this.#getRollbackSnapshot(snapId);
       if (rollbackSnapshot !== undefined) {
         rollbackSnapshot.statePatches = inversePatches;
       }
@@ -2459,10 +2453,24 @@ export class SnapController extends BaseController<
     }
   }
 
+  /**
+   * Retrieves the rollback snapshot of a snap.
+   *
+   * @param snapId - The snap id.
+   * @returns A `RollbackSnapshot` or `undefined` if one doesn't exist.
+   */
   #getRollbackSnapshot(snapId: SnapId): RollbackSnapshot | undefined {
     return this.#rollbackSnapshots.get(snapId);
   }
 
+  /**
+   * Creates a `RollbackSnapshot` that is used to help ensure
+   * atomicity in multiple snap updates.
+   *
+   * @param snapId - The snap id.
+   * @throws {@link Error}. If the snap exists before creation or if creation fails.
+   * @returns A `RollbackSnapshot`.
+   */
   #createRollbackSnapshot(snapId: SnapId): RollbackSnapshot {
     assert(
       this.#rollbackSnapshots.get(snapId) === undefined,
@@ -2475,9 +2483,27 @@ export class SnapController extends BaseController<
       permissions: { revoked: null, granted: [], requestData: null },
       newVersion: '',
     });
-    return this.#getRollbackSnapshot(snapId) as RollbackSnapshot;
+
+    const newRollbackSnapshot = this.#rollbackSnapshots.get(snapId);
+
+    assert(
+      newRollbackSnapshot !== undefined,
+      new Error(`Snapshot creation failed for ${snapId}.`),
+    );
+    return newRollbackSnapshot;
   }
 
+  /**
+   * Rolls back a snap to its previous state, permissions
+   * and source code based on the `RollbackSnapshot` that
+   * is captured during the update process. After rolling back,
+   * the function also emits an event indicating that the
+   * snap has been rolled back and it clears the snapshot
+   * for that snap.
+   *
+   * @param snapId - The snap id.
+   * @throws {@link Error}. If a snapshot does not exist.
+   */
   async #rollbackSnap(snapId: SnapId) {
     const rollbackSnapshot = this.#getRollbackSnapshot(snapId);
     if (!rollbackSnapshot) {
@@ -2522,6 +2548,12 @@ export class SnapController extends BaseController<
     this.#rollbackSnapshots.delete(snapId);
   }
 
+  /**
+   * Iterates through an array of snap ids
+   * and calls `rollbackSnap` on them.
+   *
+   * @param snapIds - An array of snap ids.
+   */
   async #rollbackSnaps(snapIds: SnapId[]) {
     for (const snapId of snapIds) {
       await this.#rollbackSnap(snapId);
@@ -2602,7 +2634,22 @@ export class SnapController extends BaseController<
     return { newPermissions, unusedPermissions, approvedPermissions };
   }
 
-  #isValidUpdate(snapId: SnapId, newVersionRange: SemVerRange) {
+  /**
+   * Checks if a snap will pass version validation checks
+   * with the new version range that is requested. The first
+   * check that is done is to check if the existing snap version
+   * falls inside the requested range, if it does we want to return
+   * false because we do not care to create a rollback snapshot in
+   * that scenario. The second check is to ensure that the current
+   * snap version is not greater than all possible versions in
+   * the requested version range, if it is then we also want
+   * to return false in that scenario.
+   *
+   * @param snapId - The snap id.
+   * @param newVersionRange - The new version range being requsted.
+   * @returns `true` if validation checks pass and `false` if they do not.
+   */
+  #isValidUpdate(snapId: SnapId, newVersionRange: SemVerRange): boolean {
     const existingSnap = this.getExpect(snapId);
 
     if (satisfiesVersionRange(existingSnap.version, newVersionRange)) {

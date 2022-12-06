@@ -1,7 +1,7 @@
 import { assertStruct, Json } from '@metamask/utils';
 import {
   gt as gtSemver,
-  gtr,
+  gtr as gtrSemver,
   maxSatisfying as maxSatisfyingSemver,
   satisfies as satisfiesSemver,
   valid as validSemVerVersion,
@@ -150,7 +150,7 @@ export function gtVersion(
  * @returns `version > range`.
  */
 export function gtRange(version: SemVerVersion, range: SemVerRange): boolean {
-  return gtr(version, range);
+  return gtrSemver(version, range);
 }
 
 /**
