@@ -2635,11 +2635,11 @@ export class SnapController extends BaseController<
    * Checks if a snap will pass version validation checks
    * with the new version range that is requested. The first
    * check that is done is to check if the existing snap version
-   * falls inside the requested range, if it does we want to return
+   * falls inside the requested range. If it does, we want to return
    * false because we do not care to create a rollback snapshot in
    * that scenario. The second check is to ensure that the current
    * snap version is not greater than all possible versions in
-   * the requested version range, if it is then we also want
+   * the requested version range. If it is, then we also want
    * to return false in that scenario.
    *
    * @param snapId - The snap id.
