@@ -12,6 +12,7 @@ import {
   SemVerRange,
   SemVerVersion,
   SnapCaveatType,
+  SnapPermissions,
   SnapStatus,
   VirtualFile,
 } from '@metamask/snaps-utils';
@@ -621,12 +622,13 @@ describe('SnapController', () => {
 
   it('supports non-snap permissions', async () => {
     const messenger = getSnapControllerMessenger();
-    const initialPermissions = {
+    const initialPermissions: SnapPermissions = {
+      // @ts-expect-error Current type only expects snap permissions
       // eslint-disable-next-line @typescript-eslint/naming-convention
       eth_accounts: {
         requiredMethods: [],
       },
-    } as any;
+    };
     const snapController = getSnapController(
       getSnapControllerOptions({
         messenger,
