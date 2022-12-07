@@ -29,6 +29,7 @@
     "@metamask/browser-passworder": "^4.0.2",
     "@metamask/key-tree": "^6.0.0",
     "@metamask/permission-controller": "^1.0.1",
+    "@metamask/snaps-ui": "^0.25.0",
     "@metamask/snaps-utils": "^0.26.2",
     "@metamask/types": "^1.1.0",
     "@metamask/utils": "^3.3.1",
@@ -70,5 +71,11 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
+  },
+  "lavamoat": {
+    "allowScripts": {
+      "@metamask/permission-controller>@metamask/controller-utils>ethereumjs-util>ethereum-cryptography>keccak": false,
+      "@metamask/permission-controller>@metamask/controller-utils>ethereumjs-util>ethereum-cryptography>secp256k1": false
+    }
   }
 }

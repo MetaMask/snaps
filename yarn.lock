@@ -2685,6 +2685,7 @@ __metadata:
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/key-tree": ^6.0.0
     "@metamask/permission-controller": ^1.0.1
+    "@metamask/snaps-ui": ^0.25.0
     "@metamask/snaps-utils": ^0.26.2
     "@metamask/types": ^1.1.0
     "@metamask/utils": ^3.3.1
