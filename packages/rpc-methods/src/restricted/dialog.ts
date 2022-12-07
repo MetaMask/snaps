@@ -38,7 +38,7 @@ type ShowDialog = (
   snapId: string,
   type: DialogType,
   ui: Component,
-  placeholder: Placeholder,
+  placeholder?: Placeholder,
 ) => Promise<null | boolean | string>;
 
 export type DialogMethodHooks = {
@@ -124,9 +124,9 @@ const PromptParametersStruct = object({
 });
 
 const DialogParametersStruct = union([
-  PromptParametersStruct,
   AlertParametersStruct,
   ConfirmationParametersStruct,
+  PromptParametersStruct,
 ]);
 
 export type DialogParameters = Infer<typeof DialogParametersStruct>;
@@ -205,13 +205,6 @@ function getValidatedParams(
   } catch (error) {
     if (error instanceof StructError) {
       const { key, type: errorType } = error;
-
-      if (key === 'textAreaContent' && errorType === 'never') {
-        throw ethErrors.rpc.invalidParams({
-          message:
-            'Invalid params: Prompts may not specify a "textAreaContent" field.',
-        });
-      }
 
       if (key === 'placeholder' && errorType === 'never') {
         throw ethErrors.rpc.invalidParams({
