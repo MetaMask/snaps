@@ -1,5 +1,6 @@
 import type { StreamProvider } from '@metamask/providers';
 import { Json, JsonRpcRequest } from '@metamask/utils';
+import { Component } from '@metamask/snaps-ui';
 
 import { AccountId, ChainId, RequestArguments } from './namespace';
 
@@ -34,7 +35,7 @@ export type OnRpcRequestHandler = (args: {
  * If the snap has no insights about the transaction, this should be `null`.
  */
 export type OnTransactionResponse = {
-  insights: { [key: string]: Json } | null;
+  ui: Component;
 };
 
 /**
