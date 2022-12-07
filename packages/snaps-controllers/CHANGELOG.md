@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.26.0]
 ### Changed
 - **BREAKING:** Snap installation refactor ([#1023](https://github.com/MetaMask/snaps-monorepo/pull/1023))
-  - `wallet_requestSnaps` will now throw on error and roll back any changes made during the installation process
+  - `wallet_requestSnaps` will now throw an error and roll back any changes made if installation of any snap fails
 
 ### Fixed
 - Fix an issue processing non-snap permissions ([#1044](https://github.com/MetaMask/snaps-monorepo/pull/1044))
