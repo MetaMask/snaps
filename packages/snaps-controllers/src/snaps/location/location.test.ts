@@ -14,7 +14,9 @@ describe('detectSnapLocation', () => {
   );
 
   it('disallows custom registries by default', () => {
-    expect(() => detectSnapLocation('npm://foo.com/bar')).toThrow(
+    expect(() =>
+      detectSnapLocation('npm://foo.com/bar', { fetch: jest.fn() }),
+    ).toThrow(
       'Custom NPM registries are disabled, tried to use "https://foo.com/".',
     );
   });
@@ -27,6 +29,7 @@ describe('detectSnapLocation', () => {
   ])('detects %s', (url, classObj) => {
     expect(
       detectSnapLocation(url, {
+        fetch: jest.fn(),
         allowHttp: true,
         allowCustomRegistries: true,
       }),

@@ -654,8 +654,6 @@ export class SnapController extends BaseController<
   // This property cannot be hash private yet because of tests.
   private readonly maxRequestTime: number;
 
-  #npmRegistryUrl?: string;
-
   #detectSnapLocation: typeof detectSnapLocation;
 
   // This property cannot be hash private yet because of tests.
@@ -679,7 +677,6 @@ export class SnapController extends BaseController<
     state,
     getAppKey,
     environmentEndowmentPermissions = [],
-    npmRegistryUrl,
     idleTimeCheckInterval = inMilliseconds(5, Duration.Second),
     checkBlockList,
     maxIdleTime = inMilliseconds(30, Duration.Second),
@@ -752,7 +749,6 @@ export class SnapController extends BaseController<
     this.#checkSnapBlockList = checkBlockList;
     this.#maxIdleTime = maxIdleTime;
     this.maxRequestTime = maxRequestTime;
-    this.#npmRegistryUrl = npmRegistryUrl;
     this.#detectSnapLocation = detectSnapLocationFunction;
     this._onUnhandledSnapError = this._onUnhandledSnapError.bind(this);
     this._onOutboundRequest = this._onOutboundRequest.bind(this);
@@ -1663,7 +1659,10 @@ export class SnapController extends BaseController<
   ): Promise<ProcessSnapResult> {
     validateSnapId(snapId);
 
-    const location = this.#detectSnapLocation(snapId, { versionRange });
+    const location = this.#detectSnapLocation(snapId, {
+      versionRange,
+      fetch: this.#fetchFunction,
+    });
 
     const existingSnap = this.getTruncated(snapId);
     // For devX we always re-install local snaps.

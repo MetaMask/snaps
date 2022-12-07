@@ -26,6 +26,12 @@ export interface SnapLocation {
 
 export type DetectSnapLocationOptions = NpmOptions & {
   /**
+   * The function used to fetch data.
+   *
+   * @default globalThis.fetch
+   */
+  fetch?: typeof fetch;
+  /**
    * @default false
    */
   allowHttp?: boolean;
@@ -48,14 +54,14 @@ export function detectSnapLocation(
     case 'npm:':
       return new NpmLocation(root, opts);
     case 'local:':
-      return new LocalLocation(root);
+      return new LocalLocation(root, opts);
     case 'http:':
     case 'https:':
       assert(
         allowHttp,
         new TypeError('Fetching snaps through http/https is disabled.'),
       );
-      return new HttpLocation(root);
+      return new HttpLocation(root, opts);
     default:
       throw new TypeError(
         `Unrecognized "${root.protocol}" snap location protocol.`,
