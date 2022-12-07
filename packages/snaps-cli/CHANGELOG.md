@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.26.0]
-### Changed
-- No changes this release.
+### Fixed
+- Fix post processing issue with `object.eval` ([#1040](https://github.com/MetaMask/snaps-monorepo/pull/1040))
 
 ## [0.25.0]
 ### Changed
