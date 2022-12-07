@@ -1,6 +1,9 @@
 .DS_Store
 node_modules
 coverage
+coverage-ava
+coverage-all
+coverage-merged
 dist
 dist-temp
 temp
