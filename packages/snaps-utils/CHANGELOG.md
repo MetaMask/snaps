@@ -7,9 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.26.0]
-### Uncategorized
-- BREAKING: `SnapController.installSnaps` refactor & rollback functionality added ([#1023](https://github.com/MetaMask/snaps-monorepo/pull/1023))
-- Add virtual files and refactor snap fetching ([#1019](https://github.com/MetaMask/snaps-monorepo/pull/1019))
+### Fixed
 - Fix post processing issue with `object.eval` ([#1040](https://github.com/MetaMask/snaps-monorepo/pull/1040))
 
 ## [0.25.0]

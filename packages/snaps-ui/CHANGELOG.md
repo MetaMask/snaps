@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.26.0]
-### Uncategorized
-- Remove UI spacer ([#1031](https://github.com/MetaMask/snaps-monorepo/pull/1031))
+### Removed
+- **BREAKING:** Remove spacer component ([#1031](https://github.com/MetaMask/snaps-monorepo/pull/1031))
 
 ## [0.25.0]
 ### Added

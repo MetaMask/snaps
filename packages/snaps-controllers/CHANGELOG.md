@@ -8,12 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.26.0]
 ### Uncategorized
-- BREAKING: `SnapController.installSnaps` refactor & rollback functionality added ([#1023](https://github.com/MetaMask/snaps-monorepo/pull/1023))
-- Fix non-snap permission processing ([#1044](https://github.com/MetaMask/snaps-monorepo/pull/1044))
-- Add virtual files and refactor snap fetching ([#1019](https://github.com/MetaMask/snaps-monorepo/pull/1019))
-- Bump controllers packages ([#1039](https://github.com/MetaMask/snaps-monorepo/pull/1039))
-- Fix CI after broken PR merge ([#1027](https://github.com/MetaMask/snaps-monorepo/pull/1027))
-- Remove locally defined ActionHandler type in favor of imported type ([#1025](https://github.com/MetaMask/snaps-monorepo/pull/1025))
+- **BREAKING:** Snap installation refactor ([#1023](https://github.com/MetaMask/snaps-monorepo/pull/1023))
+  - `wallet_requestSnaps` will now throw on error and roll back any changes made during the installation process
+
+### Fixed
+- Fix an issue processing non-snap permissions ([#1044](https://github.com/MetaMask/snaps-monorepo/pull/1044))
 
 ## [0.25.0]
 ### Added
