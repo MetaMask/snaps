@@ -2613,8 +2613,8 @@ __metadata:
   linkType: hard
 
 "@metamask/permission-controller@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "@metamask/permission-controller@npm:1.0.1"
+  version: 1.0.2
+  resolution: "@metamask/permission-controller@npm:1.0.2"
   dependencies:
     "@metamask/approval-controller": ^1.0.1
     "@metamask/base-controller": ^1.1.1
@@ -2626,7 +2626,9 @@ __metadata:
     immer: ^9.0.6
     json-rpc-engine: ^6.1.0
     nanoid: ^3.1.31
-  checksum: e3af0c64d0adf336b15466ffd153e53659609c1d589e6fe739343fd13050f7a6db2d549eeb161ac4cac82ce466c0e9ba841aa0f347807f959980e95154451c75
+  peerDependencies:
+    "@metamask/approval-controller": ^1.0.1
+  checksum: 06c062d232817f6816fb6038b7139f32324ceb3f6c7398effabd5fe6eed8e643b414202e20239302ce01aaa68503a0a49f0692512a433040e89907306260a3db
   languageName: node
   linkType: hard
 
@@ -12757,9 +12759,9 @@ __metadata:
   linkType: hard
 
 "qs@npm:~6.5.2":
-  version: 6.5.2
-  resolution: "qs@npm:6.5.2"
-  checksum: 24af7b9928ba2141233fba2912876ff100403dba1b08b20c3b490da9ea6c636760445ea2211a079e7dfa882a5cf8f738337b3748c8bdd0f93358fa8881d2db8f
+  version: 6.5.3
+  resolution: "qs@npm:6.5.3"
+  checksum: 6f20bf08cabd90c458e50855559539a28d00b2f2e7dddcb66082b16a43188418cb3cb77cbd09268bcef6022935650f0534357b8af9eeb29bf0f27ccb17655692
   languageName: node
   linkType: hard
 
