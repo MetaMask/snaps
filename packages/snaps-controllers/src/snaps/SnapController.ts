@@ -13,6 +13,7 @@ import {
   HasPermissions,
   PermissionConstraint,
   PermissionsRequest,
+  RequestedPermissions,
   RevokeAllPermissions,
   RevokePermissionForAllSubjects,
   RevokePermissions,
@@ -28,6 +29,7 @@ import {
   fromEntries,
   getSnapPermissionName,
   gtVersion,
+  gtRange,
   InstallSnapsResult,
   isValidSemVerRange,
   PersistedSnap,
@@ -68,10 +70,11 @@ import {
   isNonEmptyArray,
   isValidJson,
   Json,
+  NonEmptyArray,
   timeSince,
 } from '@metamask/utils';
 import { createMachine, interpret, StateMachine } from '@xstate/fsm';
-import { ethErrors, serializeError } from 'eth-rpc-errors';
+import { ethErrors } from 'eth-rpc-errors';
 import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
 
@@ -216,6 +219,17 @@ export type SnapControllerState = {
 export type PersistedSnapControllerState = SnapControllerState & {
   snaps: Record<SnapId, PersistedSnap>;
   snapStates: Record<SnapId, string>;
+};
+
+type RollbackSnapshot = {
+  statePatches: Patch[];
+  sourceCode: string | null;
+  permissions: {
+    revoked: unknown;
+    granted: unknown[];
+    requestData: unknown;
+  };
+  newVersion: string;
 };
 
 // Controller Messenger Actions
@@ -396,6 +410,13 @@ export type SnapUpdated = {
 };
 
 /**
+ * Emitted when a snap is rolled back.
+ */
+export type SnapRolledback = {
+  type: `${typeof controllerName}:snapRolledback`;
+  payload: [snap: TruncatedSnap, failedVersion: string];
+};
+/**
  * Emitted when a Snap is terminated. This is different from the snap being
  * stopped as it can also be triggered when a snap fails initialization.
  */
@@ -412,6 +433,7 @@ export type SnapControllerEvents =
   | SnapStateChange
   | SnapUnblocked
   | SnapUpdated
+  | SnapRolledback
   | SnapTerminated;
 
 export type AllowedActions =
@@ -568,6 +590,7 @@ type SetSnapArgs = Omit<AddSnapArgs, 'id' | 'location'> & {
    */
   // TODO(ritave): Used only for validation in #set, should be moved elsewhere.
   versionRange?: SemVerRange;
+  isUpdate?: boolean;
 };
 
 const defaultState: SnapControllerState = {
@@ -637,6 +660,8 @@ export class SnapController extends BaseController<
 
   // This property cannot be hash private yet because of tests.
   private readonly snapsRuntimeData: Map<SnapId, SnapRuntimeData>;
+
+  #rollbackSnapshots: Map<SnapId, RollbackSnapshot>;
 
   #getAppKey: GetAppKey;
 
@@ -732,8 +757,8 @@ export class SnapController extends BaseController<
     this._onUnhandledSnapError = this._onUnhandledSnapError.bind(this);
     this._onOutboundRequest = this._onOutboundRequest.bind(this);
     this._onOutboundResponse = this._onOutboundResponse.bind(this);
+    this.#rollbackSnapshots = new Map();
     this.snapsRuntimeData = new Map();
-
     this.#pollForLastRequestStatus();
 
     /* eslint-disable @typescript-eslint/unbound-method */
@@ -1551,43 +1576,74 @@ export class SnapController extends BaseController<
   ): Promise<InstallSnapsResult> {
     const result: InstallSnapsResult = {};
 
-    await Promise.all(
-      Object.entries(requestedSnaps).map(
-        async ([snapId, { version: rawVersion }]) => {
-          const [error, version] = resolveVersionRange(rawVersion);
-          if (error) {
-            result[snapId] = {
-              error: ethErrors.rpc.invalidParams(
-                `The "version" field must be a valid SemVer version range if specified. Received: "${version}".`,
-              ),
-            };
-            return;
-          }
-          const permissionName = getSnapPermissionName(snapId);
+    const snapIds = Object.keys(requestedSnaps);
 
-          if (
-            this.messagingSystem.call(
-              'PermissionController:hasPermission',
-              origin,
-              permissionName,
-            )
-          ) {
-            // Attempt to install and run the snap, storing any errors that
-            // occur during the process.
-            result[snapId] = {
-              ...(await this.processRequestedSnap(origin, snapId, version)),
-            };
-          } else {
-            // only allow the installation of permitted snaps
-            result[snapId] = {
-              error: ethErrors.provider.unauthorized(
-                `Not authorized to install snap "${snapId}". Request the permission for the snap before attempting to install it.`,
-              ),
-            };
-          }
-        },
-      ),
+    // Existing snaps may need to be updated
+    const pendingUpdates = snapIds.filter((snapId) => this.has(snapId));
+
+    // Non-existing snaps will need to be installed
+    const pendingInstalls = snapIds.filter(
+      (snapId) => !pendingUpdates.includes(snapId),
     );
+
+    try {
+      for (const [snapId, { version: rawVersion }] of Object.entries(
+        requestedSnaps,
+      )) {
+        const [error, version] = resolveVersionRange(rawVersion);
+
+        if (error) {
+          throw ethErrors.rpc.invalidParams(
+            `The "version" field must be a valid SemVer version range if specified. Received: "${rawVersion}".`,
+          );
+        }
+
+        const permissionName = getSnapPermissionName(snapId);
+
+        if (
+          !this.messagingSystem.call(
+            'PermissionController:hasPermission',
+            origin,
+            permissionName,
+          )
+        ) {
+          throw ethErrors.provider.unauthorized(
+            `Not authorized to install snap "${snapId}". Request the permission for the snap before attempting to install it.`,
+          );
+        }
+
+        const isUpdate = pendingUpdates.includes(snapId);
+
+        if (isUpdate && this.#isValidUpdate(snapId, version)) {
+          let rollbackSnapshot = this.#getRollbackSnapshot(snapId);
+          if (rollbackSnapshot === undefined) {
+            const prevSourceCode = this.#getRuntimeExpect(snapId).sourceCode;
+            rollbackSnapshot = this.#createRollbackSnapshot(snapId);
+            rollbackSnapshot.sourceCode = prevSourceCode;
+            rollbackSnapshot.newVersion = version;
+          } else {
+            throw new Error('This snap is already being updated.');
+          }
+        }
+
+        result[snapId] = await this.processRequestedSnap(
+          origin,
+          snapId,
+          version,
+        );
+      }
+      snapIds.forEach((snapId) => this.#rollbackSnapshots.delete(snapId));
+    } catch (error) {
+      const installed = pendingInstalls.filter((snapId) => this.has(snapId));
+      await this.removeSnaps(installed);
+      const snapshottedSnaps = [...this.#rollbackSnapshots.keys()];
+      const snapsToRollback = pendingUpdates.filter((snapId) =>
+        snapshottedSnaps.includes(snapId),
+      );
+      await this.#rollbackSnaps(snapsToRollback);
+
+      throw error;
+    }
     return result;
   }
 
@@ -1605,15 +1661,7 @@ export class SnapController extends BaseController<
     snapId: SnapId,
     versionRange: SemVerRange,
   ): Promise<ProcessSnapResult> {
-    try {
-      validateSnapId(snapId);
-    } catch (error) {
-      return {
-        error: ethErrors.rpc.invalidParams(
-          `"${snapId}" is not a valid snap id.`,
-        ),
-      };
-    }
+    validateSnapId(snapId);
 
     const location = this.#detectSnapLocation(snapId, { versionRange });
 
@@ -1625,31 +1673,22 @@ export class SnapController extends BaseController<
       }
 
       if (this.#featureFlags.dappsCanUpdateSnaps === true) {
-        try {
-          const updateResult = await this.updateSnap(
-            origin,
-            snapId,
-            versionRange,
-            location,
+        const updateResult = await this.updateSnap(
+          origin,
+          snapId,
+          versionRange,
+          location,
+        );
+        if (updateResult === null) {
+          throw ethErrors.rpc.invalidParams(
+            `Snap "${snapId}@${existingSnap.version}" is already installed. Couldn't update to a version inside requested "${versionRange}" range.`,
           );
-          if (updateResult === null) {
-            return {
-              error: ethErrors.rpc.invalidParams(
-                `Snap "${snapId}@${existingSnap.version}" is already installed, couldn't update to a version inside requested "${versionRange}" range.`,
-              ),
-            };
-          }
-          return updateResult;
-        } catch (error) {
-          return { error: serializeError(error) };
         }
-      } else {
-        return {
-          error: ethErrors.rpc.invalidParams(
-            `Version mismatch with already installed snap. ${snapId}@${existingSnap.version} doesn't satisfy requested version ${versionRange}`,
-          ),
-        };
+        return updateResult;
       }
+      throw ethErrors.rpc.invalidParams(
+        `Version mismatch with already installed snap. ${snapId}@${existingSnap.version} doesn't satisfy requested version ${versionRange}.`,
+      );
     }
 
     // Existing snaps must be stopped before overwriting
@@ -1677,11 +1716,8 @@ export class SnapController extends BaseController<
       return truncated;
     } catch (error) {
       console.error(`Error when adding snap.`, error);
-      if (this.has(snapId)) {
-        await this.removeSnap(snapId);
-      }
 
-      return { error: serializeError(error) };
+      throw error;
     }
   }
 
@@ -1775,6 +1811,7 @@ export class SnapController extends BaseController<
       manifest: newSnap.manifest,
       files: newSnap.files,
       versionRange: newVersionRange,
+      isUpdate: true,
     });
 
     const unusedPermissionsKeys = Object.keys(unusedPermissions);
@@ -1792,6 +1829,15 @@ export class SnapController extends BaseController<
       });
     }
 
+    const rollbackSnapshot = this.#getRollbackSnapshot(snapId);
+    if (rollbackSnapshot !== undefined) {
+      rollbackSnapshot.permissions.revoked = unusedPermissions;
+      rollbackSnapshot.permissions.granted = Object.keys(
+        approvedNewPermissions,
+      );
+      rollbackSnapshot.permissions.requestData = requestData;
+    }
+
     const sourceCode = newSnap.files
       .find(
         (file) =>
@@ -1799,10 +1845,12 @@ export class SnapController extends BaseController<
       )
       ?.toString();
     assert(sourceCode !== undefined);
-    await this.#startSnap({
-      snapId,
-      sourceCode,
-    });
+
+    try {
+      await this.#startSnap({ snapId, sourceCode });
+    } catch {
+      throw new Error(`Snap ${snapId} crashed with updated source code.`);
+    }
 
     const truncatedSnap = this.getTruncatedExpect(snapId);
     this.messagingSystem.publish(
@@ -1963,6 +2011,7 @@ export class SnapController extends BaseController<
       manifest,
       files,
       versionRange = DEFAULT_REQUESTED_SNAP_VERSION,
+      isUpdate = false,
     } = args;
 
     assertIsSnapManifest(manifest.result);
@@ -2024,9 +2073,18 @@ export class SnapController extends BaseController<
     delete snap.blockInformation;
 
     // store the snap back in state
-    this.update((state: any) => {
+    const { inversePatches } = this.update((state: any) => {
       state.snaps[snapId] = snap;
     });
+
+    // checking for isUpdate here as this function is also used in
+    // the install flow, we do not care to create snapshots for installs
+    if (isUpdate) {
+      const rollbackSnapshot = this.#getRollbackSnapshot(snapId);
+      if (rollbackSnapshot !== undefined) {
+        rollbackSnapshot.statePatches = inversePatches;
+      }
+    }
 
     const runtime = this.#getRuntimeExpect(snapId);
     runtime.sourceCode = sourceCode;
@@ -2392,6 +2450,113 @@ export class SnapController extends BaseController<
     }
   }
 
+  /**
+   * Retrieves the rollback snapshot of a snap.
+   *
+   * @param snapId - The snap id.
+   * @returns A `RollbackSnapshot` or `undefined` if one doesn't exist.
+   */
+  #getRollbackSnapshot(snapId: SnapId): RollbackSnapshot | undefined {
+    return this.#rollbackSnapshots.get(snapId);
+  }
+
+  /**
+   * Creates a `RollbackSnapshot` that is used to help ensure
+   * atomicity in multiple snap updates.
+   *
+   * @param snapId - The snap id.
+   * @throws {@link Error}. If the snap exists before creation or if creation fails.
+   * @returns A `RollbackSnapshot`.
+   */
+  #createRollbackSnapshot(snapId: SnapId): RollbackSnapshot {
+    assert(
+      this.#rollbackSnapshots.get(snapId) === undefined,
+      new Error(`Snap "${snapId}" rollback snapshot already exists.`),
+    );
+
+    this.#rollbackSnapshots.set(snapId, {
+      statePatches: [],
+      sourceCode: '',
+      permissions: { revoked: null, granted: [], requestData: null },
+      newVersion: '',
+    });
+
+    const newRollbackSnapshot = this.#rollbackSnapshots.get(snapId);
+
+    assert(
+      newRollbackSnapshot !== undefined,
+      new Error(`Snapshot creation failed for ${snapId}.`),
+    );
+    return newRollbackSnapshot;
+  }
+
+  /**
+   * Rolls back a snap to its previous state, permissions
+   * and source code based on the `RollbackSnapshot` that
+   * is captured during the update process. After rolling back,
+   * the function also emits an event indicating that the
+   * snap has been rolled back and it clears the snapshot
+   * for that snap.
+   *
+   * @param snapId - The snap id.
+   * @throws {@link Error}. If a snapshot does not exist.
+   */
+  async #rollbackSnap(snapId: SnapId) {
+    const rollbackSnapshot = this.#getRollbackSnapshot(snapId);
+    if (!rollbackSnapshot) {
+      throw new Error('A snapshot does not exist for this snap.');
+    }
+
+    await this.stopSnap(snapId, SnapStatusEvents.Stop);
+
+    const { statePatches, sourceCode, permissions } = rollbackSnapshot;
+
+    if (statePatches?.length) {
+      this.applyPatches(statePatches);
+    }
+
+    if (sourceCode) {
+      const runtime = this.#getRuntimeExpect(snapId);
+      runtime.sourceCode = sourceCode;
+    }
+
+    if (permissions.revoked && Object.keys(permissions.revoked).length) {
+      this.messagingSystem.call('PermissionController:grantPermissions', {
+        approvedPermissions: permissions.revoked as RequestedPermissions,
+        subject: { origin: snapId },
+        requestData: permissions.requestData as Record<string, unknown>,
+      });
+    }
+
+    if (permissions.granted?.length) {
+      this.messagingSystem.call('PermissionController:revokePermissions', {
+        [snapId]: permissions.granted as NonEmptyArray<string>,
+      });
+    }
+
+    const truncatedSnap = this.getTruncatedExpect(snapId);
+
+    this.messagingSystem.publish(
+      'SnapController:snapRolledback',
+      truncatedSnap,
+      rollbackSnapshot.newVersion,
+    );
+
+    this.#rollbackSnapshots.delete(snapId);
+  }
+
+  /**
+   * Iterates through an array of snap ids
+   * and calls `rollbackSnap` on them.
+   *
+   * @param snapIds - An array of snap ids.
+   */
+  async #rollbackSnaps(snapIds: SnapId[]) {
+    for (const snapId of snapIds) {
+      await this.#rollbackSnap(snapId);
+    }
+  }
+
   #getRuntime(snapId: SnapId): SnapRuntimeData | undefined {
     return this.snapsRuntimeData.get(snapId);
   }
@@ -2464,5 +2629,34 @@ export class SnapController extends BaseController<
     const approvedPermissions = setDiff(oldPermissions, unusedPermissions);
 
     return { newPermissions, unusedPermissions, approvedPermissions };
+  }
+
+  /**
+   * Checks if a snap will pass version validation checks
+   * with the new version range that is requested. The first
+   * check that is done is to check if the existing snap version
+   * falls inside the requested range. If it does, we want to return
+   * false because we do not care to create a rollback snapshot in
+   * that scenario. The second check is to ensure that the current
+   * snap version is not greater than all possible versions in
+   * the requested version range. If it is, then we also want
+   * to return false in that scenario.
+   *
+   * @param snapId - The snap id.
+   * @param newVersionRange - The new version range being requsted.
+   * @returns `true` if validation checks pass and `false` if they do not.
+   */
+  #isValidUpdate(snapId: SnapId, newVersionRange: SemVerRange): boolean {
+    const existingSnap = this.getExpect(snapId);
+
+    if (satisfiesVersionRange(existingSnap.version, newVersionRange)) {
+      return false;
+    }
+
+    if (gtRange(existingSnap.version, newVersionRange)) {
+      return false;
+    }
+
+    return true;
   }
 }

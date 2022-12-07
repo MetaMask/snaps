@@ -1,6 +1,7 @@
 import { assertStruct, Json } from '@metamask/utils';
 import {
   gt as gtSemver,
+  gtr as gtrSemver,
   maxSatisfying as maxSatisfyingSemver,
   satisfies as satisfiesSemver,
   valid as validSemVerVersion,
@@ -139,6 +140,17 @@ export function gtVersion(
   version2: SemVerVersion,
 ): boolean {
   return gtSemver(version1, version2);
+}
+
+/**
+ * Checks whether a SemVer version is greater than all possibilities in a range.
+ *
+ * @param version - A SemvVer version.
+ * @param range - The range to check against.
+ * @returns `version > range`.
+ */
+export function gtRange(version: SemVerVersion, range: SemVerRange): boolean {
+  return gtrSemver(version, range);
 }
 
 /**

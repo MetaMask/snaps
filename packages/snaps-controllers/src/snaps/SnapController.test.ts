@@ -9,8 +9,8 @@ import {
   DEFAULT_ENDOWMENTS,
   getSnapSourceShasum,
   HandlerType,
-  SemVerRange,
   SemVerVersion,
+  SemVerRange,
   SnapCaveatType,
   SnapPermissions,
   SnapStatus,
@@ -30,7 +30,7 @@ import {
 } from '@metamask/snaps-utils/test-utils';
 import { AssertionError } from '@metamask/utils';
 import { Crypto } from '@peculiar/webcrypto';
-import { EthereumRpcError, ethErrors, serializeError } from 'eth-rpc-errors';
+import { ethErrors } from 'eth-rpc-errors';
 import fetchMock from 'jest-fetch-mock';
 import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
@@ -654,13 +654,13 @@ describe('SnapController', () => {
   it('throws an error on invalid semver range during installSnaps', async () => {
     const controller = getSnapController();
 
-    const result = await controller.installSnaps(MOCK_ORIGIN, {
-      [MOCK_SNAP_ID]: { version: 'foo' },
-    });
-
-    expect(result).toMatchObject({
-      [MOCK_SNAP_ID]: { error: expect.any(EthereumRpcError) },
-    });
+    await expect(
+      controller.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: { version: 'foo' },
+      }),
+    ).rejects.toThrow(
+      'The "version" field must be a valid SemVer version range if specified. Received: "foo".',
+    );
   });
 
   it('reuses an already installed Snap if it satisfies the requested SemVer range', async () => {
@@ -714,17 +714,12 @@ describe('SnapController', () => {
         return true;
       });
 
-    const result = await controller.installSnaps(MOCK_ORIGIN, {
-      [MOCK_SNAP_ID]: {},
-    });
+    await expect(
+      controller.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: {},
+      }),
+    ).rejects.toThrow('User rejected the request.');
 
-    const { code, message } = serializeError(
-      ethErrors.provider.userRejectedRequest(),
-    );
-
-    expect(result).toStrictEqual({
-      [MOCK_SNAP_ID]: { error: expect.objectContaining({ code, message }) },
-    });
     expect(controller.get(MOCK_SNAP_ID)).toBeUndefined();
   });
 
@@ -769,13 +764,11 @@ describe('SnapController', () => {
 
     const expectedSnapObject = getTruncatedSnap();
 
-    expect(
-      await snapController.installSnaps(MOCK_ORIGIN, {
+    await expect(
+      snapController.installSnaps(MOCK_ORIGIN, {
         [MOCK_SNAP_ID]: {},
       }),
-    ).toStrictEqual({
-      [MOCK_SNAP_ID]: { error: serializeError(new Error('foo')) },
-    });
+    ).rejects.toThrow('foo');
 
     expect(messengerCallMock).toHaveBeenCalledTimes(3);
     expect(messengerCallMock).toHaveBeenNthCalledWith(
@@ -2252,20 +2245,11 @@ describe('SnapController', () => {
       const controller = getSnapController(
         getSnapControllerOptions({ messenger }),
       );
-
-      const result = await controller.installSnaps(MOCK_ORIGIN, {
-        [snapId]: {},
-      });
-
-      expect(result).toStrictEqual({
-        [snapId]: { error: expect.any(EthereumRpcError) },
-      });
-      expect(messenger.call).toHaveBeenCalledTimes(1);
-      expect(messenger.call).toHaveBeenCalledWith(
-        'PermissionController:hasPermission',
-        MOCK_ORIGIN,
-        expect.anything(),
-      );
+      await expect(
+        controller.installSnaps(MOCK_ORIGIN, {
+          [snapId]: {},
+        }),
+      ).rejects.toThrow('Invalid snap id. Unknown prefix. Received: "foo".');
     });
 
     it('updates a snap', async () => {
@@ -2408,9 +2392,13 @@ describe('SnapController', () => {
         }),
       );
 
-      const result = await controller.installSnaps(MOCK_ORIGIN, {
-        [MOCK_SNAP_ID]: { version: newVersionRange },
-      });
+      await expect(
+        controller.installSnaps(MOCK_ORIGIN, {
+          [MOCK_SNAP_ID]: { version: newVersionRange },
+        }),
+      ).rejects.toThrow(
+        `Snap "${MOCK_SNAP_ID}@1.0.0" is already installed. Couldn't update to a version inside requested "${newVersionRange}" range.`,
+      );
 
       expect(messenger.call).toHaveBeenCalledTimes(1);
       expect(messenger.call).toHaveBeenCalledWith(
@@ -2423,10 +2411,6 @@ describe('SnapController', () => {
         MOCK_SNAP_ID,
         expect.objectContaining({ versionRange: newVersionRange }),
       );
-
-      expect(result).toStrictEqual({
-        [MOCK_SNAP_ID]: { error: expect.any(EthereumRpcError) },
-      });
     });
 
     it('returns an error when a throw happens inside an update', async () => {
@@ -2449,9 +2433,11 @@ describe('SnapController', () => {
         }),
       );
 
-      const result = await controller.installSnaps(MOCK_ORIGIN, {
-        [MOCK_SNAP_ID]: { version: newVersionRange },
-      });
+      await expect(
+        controller.installSnaps(MOCK_ORIGIN, {
+          [MOCK_SNAP_ID]: { version: newVersionRange },
+        }),
+      ).rejects.toThrow('foo');
 
       expect(messenger.call).toHaveBeenCalledTimes(1);
       expect(messenger.call).toHaveBeenCalledWith(
@@ -2464,10 +2450,133 @@ describe('SnapController', () => {
         MOCK_SNAP_ID,
         expect.objectContaining({ versionRange: newVersionRange }),
       );
+    });
 
-      expect(result).toStrictEqual({
-        [MOCK_SNAP_ID]: { error: expect.anything() },
+    it('rolls back any updates and installs made during a failure scenario', async () => {
+      const snapId1 = 'npm:@metamask/example-snap1';
+      const snapId2 = 'npm:@metamask/example-snap2';
+      const snapId3 = 'npm:@metamask/example-snap3';
+      const oldVersion = '1.0.0';
+      const newVersion = '1.0.1';
+
+      const manifest = getSnapManifest();
+      const detect = jest
+        .fn()
+        .mockImplementationOnce(() => new LoopbackLocation())
+        .mockImplementationOnce(() => new LoopbackLocation())
+        .mockImplementationOnce(() => new LoopbackLocation())
+        .mockImplementationOnce(
+          () =>
+            new LoopbackLocation({
+              manifest: getSnapManifest({ version: newVersion }),
+            }),
+        )
+        .mockImplementationOnce(
+          () =>
+            new LoopbackLocation({
+              manifest: getSnapManifest({
+                version: newVersion,
+                shasum: getSnapSourceShasum('foo'),
+              }),
+              files: [
+                new VirtualFile({
+                  value: 'foo',
+                  path: manifest.source.location.npm.filePath,
+                }),
+                new VirtualFile({
+                  value: DEFAULT_SNAP_ICON,
+                  path: manifest.source.location.npm.iconPath,
+                }),
+              ],
+            }),
+        );
+
+      const [controller, service] = getSnapControllerWithEES(
+        getSnapControllerWithEESOptions({ detectSnapLocation: detect }),
+      );
+
+      await controller.installSnaps(MOCK_ORIGIN, { [snapId1]: {} });
+      await controller.installSnaps(MOCK_ORIGIN, { [snapId2]: {} });
+      await controller.stopSnap(snapId1);
+      await controller.stopSnap(snapId2);
+
+      expect(controller.get(snapId1)).toBeDefined();
+      expect(controller.get(snapId2)).toBeDefined();
+
+      await expect(
+        controller.installSnaps(MOCK_ORIGIN, {
+          [snapId3]: {},
+          [snapId1]: { version: newVersion },
+          [snapId2]: { version: newVersion },
+        }),
+      ).rejects.toThrow(`Snap ${snapId2} crashed with updated source code.`);
+
+      expect(detect).toHaveBeenCalledTimes(5);
+
+      expect(controller.get(snapId3)).toBeUndefined();
+      expect(controller.get(snapId1)?.manifest.version).toBe(oldVersion);
+      expect(controller.get(snapId2)?.manifest.version).toBe(oldVersion);
+
+      controller.destroy();
+      await service.terminateAllSnaps();
+    });
+
+    it('will not create snapshots for already installed snaps that have invalid requested ranges', async () => {
+      const snapId1 = 'npm:@metamask/example-snap1';
+      const snapId2 = 'npm:@metamask/example-snap2';
+      const snapId3 = 'npm:@metamask/example-snap3';
+      const oldVersion = '1.0.0';
+      const newVersion = '1.0.1';
+      const olderVersion = '0.9.0';
+
+      const detect = jest
+        .fn()
+        .mockImplementationOnce(() => new LoopbackLocation())
+        .mockImplementationOnce(() => new LoopbackLocation())
+        .mockImplementationOnce(() => new LoopbackLocation())
+        .mockImplementationOnce(
+          () =>
+            new LoopbackLocation({
+              manifest: getSnapManifest({ version: olderVersion }),
+            }),
+        );
+
+      const options = getSnapControllerWithEESOptions({
+        detectSnapLocation: detect,
       });
+      const { messenger } = options;
+      const [controller, service] = getSnapControllerWithEES(options);
+
+      const listener = jest.fn();
+      messenger.subscribe('SnapController:snapRolledback' as any, listener);
+
+      await controller.installSnaps(MOCK_ORIGIN, { [snapId1]: {} });
+      await controller.installSnaps(MOCK_ORIGIN, { [snapId2]: {} });
+      await controller.stopSnap(snapId1);
+      await controller.stopSnap(snapId2);
+
+      expect(controller.get(snapId1)).toBeDefined();
+      expect(controller.get(snapId2)).toBeDefined();
+
+      await expect(
+        controller.installSnaps(MOCK_ORIGIN, {
+          [snapId3]: {},
+          [snapId1]: { version: olderVersion },
+          [snapId2]: { version: newVersion },
+        }),
+      ).rejects.toThrow(
+        `Snap "${snapId1}@${oldVersion}" is already installed. Couldn't update to a version inside requested "${olderVersion}" range.`,
+      );
+
+      expect(detect).toHaveBeenCalledTimes(4);
+
+      expect(controller.get(snapId3)).toBeUndefined();
+      expect(controller.get(snapId1)?.manifest.version).toBe(oldVersion);
+      expect(controller.get(snapId2)?.manifest.version).toBe(oldVersion);
+      expect(listener).toHaveBeenCalledTimes(0);
+
+      controller.destroy();
+      await service.terminateAllSnaps();
     });
   });
 
@@ -2491,9 +2600,11 @@ describe('SnapController', () => {
         controller.updateSnap(
           MOCK_ORIGIN,
           MOCK_SNAP_ID,
-          'this is not a version',
+          'this is not a version' as SemVerRange,
         ),
-      ).rejects.toThrow('Received invalid snap version range');
+      ).rejects.toThrow(
+        'Received invalid snap version range: "this is not a version".',
+      );
     });
 
     it('throws an error if the new version of the snap is blocked', async () => {
