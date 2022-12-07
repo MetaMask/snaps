@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.26.0]
+### Changed
+- **BREAKING:** Snap installation refactor ([#1023](https://github.com/MetaMask/snaps-monorepo/pull/1023))
+  - `wallet_requestSnaps` will now throw an error and roll back any changes made if installation of any snap fails
+
+### Fixed
+- Fix an issue processing non-snap permissions ([#1044](https://github.com/MetaMask/snaps-monorepo/pull/1044))
+
 ## [0.25.0]
 ### Added
 - **BREAKING:** Add JSON-RPC handler permission ([#905](https://github.com/MetaMask/snaps-monorepo/pull/905))
@@ -402,7 +410,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.25.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.26.0...HEAD
+[0.26.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.25.0...v0.26.0
 [0.25.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.24.1...v0.25.0
 [0.24.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.24.0...v0.24.1
 [0.24.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.23.0...v0.24.0

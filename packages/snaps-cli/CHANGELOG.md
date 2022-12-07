@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.26.0]
+### Fixed
+- Fix post processing issue with `object.eval` ([#1040](https://github.com/MetaMask/snaps-monorepo/pull/1040))
+
 ## [0.25.0]
 ### Changed
 - No changes this release.
@@ -272,7 +276,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Example snaps ([#72](https://github.com/MetaMask/snaps-monorepo/pull/72))
   - The examples now live in their own package, [`@metamask/snap-examples`](https://npmjs.com/package/@metamask/snap-examples).
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.25.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.26.0...HEAD
+[0.26.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.25.0...v0.26.0
 [0.25.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.24.1...v0.25.0
 [0.24.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.24.0...v0.24.1
 [0.24.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.23.0...v0.24.0
