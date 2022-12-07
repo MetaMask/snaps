@@ -19,7 +19,7 @@ import { Readable, Writable } from 'stream';
 import { extract as tarExtract } from 'tar-stream';
 
 import { ensureRelative } from '../../utils';
-import { SnapLocation } from './location';
+import { DetectSnapLocationOptions, SnapLocation } from './location';
 
 const DEFAULT_NPM_REGISTRY = 'https://registry.npmjs.org';
 
@@ -36,12 +36,6 @@ export interface NpmOptions {
    */
   versionRange?: SemVerRange;
   /**
-   * The function used to fetch data.
-   *
-   * @default globalThis.fetch
-   */
-  fetch?: typeof fetch;
-  /**
    * Whether to allow custom NPM registries outside of {@link DEFAULT_NPM_REGISTRY}.
    *
    * @default false
@@ -56,9 +50,9 @@ export class NpmLocation implements SnapLocation {
 
   private files?: Map<string, VirtualFile>;
 
-  constructor(url: URL, opts: NpmOptions = {}) {
+  constructor(url: URL, opts: DetectSnapLocationOptions = {}) {
     const allowCustomRegistries = opts.allowCustomRegistries ?? false;
-    const fetchFunction = opts.fetch ?? globalThis.fetch;
+    const fetchFunction = opts.fetch ?? globalThis.fetch.bind(globalThis);
     const requestedRange = opts.versionRange ?? DEFAULT_REQUESTED_SNAP_VERSION;
 
     assertStruct(url.toString(), NpmSnapIdStruct, 'Invalid Snap Id: ');
