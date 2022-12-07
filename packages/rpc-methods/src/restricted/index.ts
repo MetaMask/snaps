@@ -24,13 +24,7 @@ import { invokeSnapBuilder, InvokeSnapMethodHooks } from './invokeSnap';
 import { manageStateBuilder, ManageStateMethodHooks } from './manageState';
 import { notifyBuilder, NotifyMethodHooks } from './notify';
 
-export type {
-  AlertFields,
-  ConfirmationFields,
-  DialogFields,
-  DialogParameters,
-  PromptFields,
-} from './dialog';
+export type { DialogParameters } from './dialog';
 export { DialogType } from './dialog';
 export { ManageStateOperation } from './manageState';
 export type { NotificationArgs } from './notify';
