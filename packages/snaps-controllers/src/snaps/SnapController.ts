@@ -2028,7 +2028,9 @@ export class SnapController extends BaseController<
       )
       ?.toString();
     const svgIcon = files.find(
-      (file) => file.path === manifest.result.source.location.npm.iconPath,
+      (file) =>
+        manifest.result.source.location.npm.iconPath !== undefined &&
+        file.path === manifest.result.source.location.npm.iconPath,
     );
     assert(sourceCode !== undefined);
     if (typeof sourceCode !== 'string' || sourceCode.length === 0) {

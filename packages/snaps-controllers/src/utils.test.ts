@@ -1,6 +1,6 @@
 import { AssertionError } from '@metamask/utils';
 
-import { ensureRelative, setDiff } from './utils';
+import { normalizeRelative, setDiff } from './utils';
 
 describe('setDiff', () => {
   it('does nothing on empty type {}-B', () => {
@@ -32,22 +32,22 @@ describe('setDiff', () => {
   });
 });
 
-describe('ensureRelative', () => {
+describe('normalizeRelative', () => {
   it('throws on absolute paths', () => {
-    expect(() => ensureRelative('/foo/bar.js')).toThrow(AssertionError);
+    expect(() => normalizeRelative('/foo/bar.js')).toThrow(AssertionError);
   });
 
   it('throws on URIs', () => {
-    expect(() => ensureRelative('http://foo.bar')).toThrow(
+    expect(() => normalizeRelative('http://foo.bar')).toThrow(
       'Path "http://foo.bar" potentially an URI instead of local relative',
     );
   });
 
-  it('does nothing on "./" paths', () => {
-    expect(ensureRelative('./foo/bar.js')).toBe('./foo/bar.js');
+  it('removes "./" prefix', () => {
+    expect(normalizeRelative('./foo/bar.js')).toBe('foo/bar.js');
   });
 
-  it('adds "./" if it\'s missing', () => {
-    expect(ensureRelative('foo/bar.js')).toBe('./foo/bar.js');
+  it("does nothing if there's no prefix", () => {
+    expect(normalizeRelative('foo/bar.js')).toBe('foo/bar.js');
   });
 });

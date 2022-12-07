@@ -15,6 +15,8 @@ import {
   SnapPermissions,
   SnapStatus,
   VirtualFile,
+  SnapManifest,
+  NpmSnapFileNames,
 } from '@metamask/snaps-utils';
 import {
   DEFAULT_SNAP_BUNDLE,
@@ -2578,6 +2580,36 @@ describe('SnapController', () => {
       controller.destroy();
       await service.terminateAllSnaps();
     });
+
+    it('handles unnormalized paths correctly', async () => {
+      const manifest = getSnapManifest({
+        filePath: './bundle.js',
+        iconPath: 'icon.svg',
+      });
+      const controller = getSnapController(
+        getSnapControllerOptions({
+          detectSnapLocation: loopbackDetect({
+            manifest: new VirtualFile<SnapManifest>({
+              result: manifest,
+              value: JSON.stringify(manifest),
+              path: NpmSnapFileNames.Manifest,
+            }),
+            files: [
+              new VirtualFile({
+                value: DEFAULT_SNAP_BUNDLE,
+                path: 'bundle.js',
+              }),
+              new VirtualFile({ value: DEFAULT_SNAP_ICON, path: 'icon.svg' }),
+            ],
+          }),
+        }),
+      );
+
+      const result = await controller.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: {},
+      });
+      expect((result[MOCK_SNAP_ID] as any).error).toBeUndefined();
+    });
   });
 
   describe('updateSnap', () => {
@@ -3189,6 +3221,8 @@ describe('SnapController', () => {
       await snapController.installSnaps(MOCK_ORIGIN, { [MOCK_SNAP_ID]: {} });
       await snapController.updateSnap(MOCK_ORIGIN, MOCK_SNAP_ID);
     });
+
+    it.todo('handles unnormalized paths correctly');
   });
 
   describe('enableSnap', () => {

@@ -202,12 +202,12 @@ export type Mutable<
 };
 
 /**
- * Ensures that a relative path starts with `./` prefix.
+ * Normalizes relative paths by optionally removing `./` prefix.
  *
- * @param path - Path to make relative.
- * @returns The same path, with optional `./` prefix.
+ * @param path - Path to make normalize.
+ * @returns The same path, with `./` prefix remove.
  */
-export function ensureRelative(path: string): string {
+export function normalizeRelative(path: string): string {
   assert(!path.startsWith('/'));
   assert(
     path.search(/:|\/\//u) === -1,
@@ -215,7 +215,7 @@ export function ensureRelative(path: string): string {
   );
 
   if (path.startsWith('./')) {
-    return path;
+    return path.slice(2);
   }
-  return `./${path}`;
+  return path;
 }

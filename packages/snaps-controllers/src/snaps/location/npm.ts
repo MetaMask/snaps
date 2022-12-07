@@ -18,7 +18,7 @@ import { ReadableWebToNodeStream } from 'readable-web-to-node-stream';
 import { Readable, Writable } from 'stream';
 import { extract as tarExtract } from 'tar-stream';
 
-import { ensureRelative } from '../../utils';
+import { normalizeRelative } from '../../utils';
 import { DetectSnapLocationOptions, SnapLocation } from './location';
 
 const DEFAULT_NPM_REGISTRY = 'https://registry.npmjs.org';
@@ -122,7 +122,7 @@ export class NpmLocation implements SnapLocation {
   }
 
   async fetch(path: string): Promise<VirtualFile> {
-    const relativePath = ensureRelative(path);
+    const relativePath = normalizeRelative(path);
     if (!this.files) {
       await this.#lazyInit();
       assert(this.files !== undefined);
@@ -320,7 +320,7 @@ function createTarballStream(
     const { name: headerName, type: headerType } = header;
     if (headerType === 'file') {
       // The name is a path if the header type is "file".
-      const path = headerName.replace(NPM_TARBALL_PATH_PREFIX, './');
+      const path = headerName.replace(NPM_TARBALL_PATH_PREFIX, '');
       return entryStream.pipe(
         concat((data) => {
           const vfile = new VirtualFile({

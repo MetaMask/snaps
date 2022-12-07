@@ -1,7 +1,10 @@
+import { NpmSnapFileNames } from '@metamask/snaps-utils';
 import {
   DEFAULT_SNAP_BUNDLE,
+  DEFAULT_SNAP_ICON,
   getSnapManifest,
 } from '@metamask/snaps-utils/test-utils';
+import { assert } from '@metamask/utils';
 import fetchMock from 'jest-fetch-mock';
 
 import { HttpLocation } from './http';
@@ -76,5 +79,34 @@ describe('HttpLocation', () => {
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(fetchMock).toHaveBeenNthCalledWith(1, actuallyFetched, undefined);
+  });
+
+  it('normalizes file paths', async () => {
+    const manifest = getSnapManifest({
+      filePath: './dist/bundle.js',
+      iconPath: './images/icon.svg',
+    });
+
+    fetchMock.mockResponses(
+      JSON.stringify(manifest),
+      DEFAULT_SNAP_BUNDLE,
+      DEFAULT_SNAP_ICON,
+    );
+
+    const location = new HttpLocation(new URL('http://foo.bar'));
+
+    const manifestFile = await location.manifest();
+    const bundleFile = await location.fetch(
+      manifestFile.result.source.location.npm.filePath,
+    );
+    assert(manifestFile.result.source.location.npm.iconPath !== undefined);
+    const iconFile = await location.fetch(
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      manifest.source.location.npm.iconPath!,
+    );
+
+    expect(manifestFile.path).toBe(NpmSnapFileNames.Manifest);
+    expect(bundleFile.path).toBe('dist/bundle.js');
+    expect(iconFile.path).toBe('images/icon.svg');
   });
 });

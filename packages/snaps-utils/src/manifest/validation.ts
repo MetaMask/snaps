@@ -2,6 +2,7 @@ import { assert, assertStruct } from '@metamask/utils';
 import {
   array,
   boolean,
+  coerce,
   enums,
   Infer,
   integer,
@@ -21,6 +22,7 @@ import {
 import { CronjobSpecificationArrayStruct } from '../cronjob';
 import { RpcOriginsStruct } from '../json-rpc';
 import { NamespacesStruct } from '../namespace';
+import { normalizeRelative } from '../path';
 import { NameStruct, NpmSnapFileNames } from '../types';
 import { VersionStruct } from '../versions';
 
@@ -179,6 +181,9 @@ export const PermissionsStruct = type({
 });
 /* eslint-enable @typescript-eslint/naming-convention */
 
+const relativePath = <Type extends string>(struct: Struct<Type>) =>
+  coerce(struct, struct, (value) => normalizeRelative(value));
+
 export type SnapPermissions = Infer<typeof PermissionsStruct>;
 
 export const SnapManifestStruct = object({
@@ -202,8 +207,8 @@ export const SnapManifestStruct = object({
     shasum: size(base64(string(), { paddingRequired: true }), 44, 44),
     location: object({
       npm: object({
-        filePath: size(string(), 1, Infinity),
-        iconPath: optional(size(string(), 1, Infinity)),
+        filePath: relativePath(size(string(), 1, Infinity)),
+        iconPath: optional(relativePath(size(string(), 1, Infinity))),
         packageName: NameStruct,
         registry: union([
           literal('https://registry.npmjs.org'),
