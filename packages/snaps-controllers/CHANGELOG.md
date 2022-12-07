@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.26.0]
+### Uncategorized
+- BREAKING: `SnapController.installSnaps` refactor & rollback functionality added ([#1023](https://github.com/MetaMask/snaps-monorepo/pull/1023))
+- Fix non-snap permission processing ([#1044](https://github.com/MetaMask/snaps-monorepo/pull/1044))
+- Add virtual files and refactor snap fetching ([#1019](https://github.com/MetaMask/snaps-monorepo/pull/1019))
+- Bump controllers packages ([#1039](https://github.com/MetaMask/snaps-monorepo/pull/1039))
+- Fix CI after broken PR merge ([#1027](https://github.com/MetaMask/snaps-monorepo/pull/1027))
+- Remove locally defined ActionHandler type in favor of imported type ([#1025](https://github.com/MetaMask/snaps-monorepo/pull/1025))
+
 ## [0.25.0]
 ### Added
 - **BREAKING:** Add JSON-RPC handler permission ([#905](https://github.com/MetaMask/snaps-monorepo/pull/905))
@@ -402,7 +411,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.25.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.26.0...HEAD
+[0.26.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.25.0...v0.26.0
 [0.25.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.24.1...v0.25.0
 [0.24.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.24.0...v0.24.1
 [0.24.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.23.0...v0.24.0
