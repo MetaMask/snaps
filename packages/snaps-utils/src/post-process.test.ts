@@ -35,7 +35,7 @@ describe('postProcessBundle', () => {
       }),
     ).toStrictEqual(
       expect.objectContaining({
-        code: '/* leave me alone */\npostProcessMe();',
+        code: '/* leave me alone */postProcessMe();',
       }),
     );
   });
@@ -95,7 +95,6 @@ describe('postProcessBundle', () => {
         "code": "(function (foo) {
         const bar = 'baz';
       });
-
       function foo(Buffer) {
         const bar = 'baz';
       }",
@@ -120,11 +119,9 @@ describe('postProcessBundle', () => {
     expect(processedCode).toMatchInlineSnapshot(`
       {
         "code": "var regeneratorRuntime;
-
       function foo() {
         regeneratorRuntime.foo();
       }
-
       function bar() {
         regeneratorRuntime.bar();
       }",
@@ -139,7 +136,6 @@ describe('postProcessBundle', () => {
       .toMatchInlineSnapshot(`
       {
         "code": "var regeneratorRuntime;
-
       var _marked = [a].map(regeneratorRuntime.mark);",
         "sourceMap": null,
         "warnings": [],
@@ -239,7 +235,8 @@ describe('postProcessBundle', () => {
     const processedCode = postProcessBundle(code, { stripComments: false });
     expect(processedCode).toMatchInlineSnapshot(`
       {
-        "code": "// < !-- foo -- >",
+        "code": "
+      // < !-- foo -- >",
         "sourceMap": null,
         "warnings": [],
       }
@@ -255,7 +252,8 @@ describe('postProcessBundle', () => {
     const processedCode = postProcessBundle(code, { stripComments: false });
     expect(processedCode).toMatchInlineSnapshot(`
       {
-        "code": "// Foo bar import\\() baz
+        "code": "
+      // Foo bar import\\() baz
       // Foo bar import\\(baz) qux",
         "sourceMap": null,
         "warnings": [],
@@ -340,7 +338,6 @@ describe('postProcessBundle', () => {
     expect(processedCode).toMatchInlineSnapshot(`
       {
         "code": "var regeneratorRuntime;
-
       (function (foo) {
         const bar = "<!" + "--" + " baz " + "--" + ">" + " " + "import" + "()" + "; " + "import" + "(foo)" + ";";
         const baz = \`\${"<!"}\${"--"} baz \${"--"}\${">"} \${"import" + "()" + ";"} \${"import"}\${"(foo)"};\`;
@@ -377,7 +374,7 @@ describe('postProcessBundle', () => {
         "code": "const foo = 'bar';",
         "sourceMap": {
           "file": undefined,
-          "mappings": "AACM,MAAMA,GAAG,GAAG,KAAZ",
+          "mappings": "AACM,MAAMA,GAAG,GAAG,KAAK",
           "names": [
             "foo",
           ],
@@ -409,7 +406,7 @@ describe('postProcessBundle', () => {
     expect(processedCode).toMatchInlineSnapshot(`
       {
         "code": "const foo = 'bar';
-      //# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJmb28iXSwic291cmNlcyI6WyJ1bmtub3duIl0sInNvdXJjZXNDb250ZW50IjpbIlxuICAgICAgY29uc3QgZm9vID0gJ2Jhcic7XG4gICAgIl0sIm1hcHBpbmdzIjoiQUFDTSxNQUFNQSxHQUFHLEdBQUcsS0FBWiJ9",
+      //# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJmb28iXSwic291cmNlcyI6WyJ1bmtub3duIl0sInNvdXJjZXNDb250ZW50IjpbIlxuICAgICAgY29uc3QgZm9vID0gJ2Jhcic7XG4gICAgIl0sIm1hcHBpbmdzIjoiQUFDTSxNQUFNQSxHQUFHLEdBQUcsS0FBSyJ9",
         "sourceMap": null,
         "warnings": [],
       }
@@ -450,7 +447,7 @@ describe('postProcessBundle', () => {
       exports.foo = 'bar';",
         "sourceMap": {
           "file": undefined,
-          "mappings": ";;;;;AAAaA,OAAG,CAAGC,GAAN,GAAY,MAAZ",
+          "mappings": ";;;;;AAAaA,OAAG,CAAGC,MAAM",
           "names": [
             "exports",
             "foo",

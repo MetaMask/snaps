@@ -114,7 +114,6 @@ describe('snaps', () => {
     const { code } = output[0];
     expect(code).toMatchInlineSnapshot(`
       "// foo bar
-
       /* baz qux */
       const foo = 'bar';
       console.log(foo);
@@ -176,7 +175,7 @@ describe('snaps', () => {
     expect(map).toMatchInlineSnapshot(`
       SourceMap {
         "file": "source-map.js",
-        "mappings": "AACEA,MAAM,CAACC,OAAP,CAAeC,YAAf,GAA8B,CAAC;EAAEC;AAAF,CAAD,KAAiB;EAC7CC,OAAO,CAACC,GAAR,CAAY,eAAZ;EAEA,MAAM;IAAEC,MAAF;IAAUC;EAAV,IAAiBJ,OAAvB;EACA,OAAOG,MAAM,GAAGC,EAAhB;AACD,CALD",
+        "mappings": "AACEA,MAAM,CAACC,OAAO,CAACC,YAAY,GAAG,CAAC;EAAEC;AAAO,CAAE,KAAK;EAC7CC,OAAO,CAACC,GAAG,CAAC,eAAe,CAAC;EAE5B,MAAM;IAAEC,MAAM;IAAEC;EAAI,CAAA,GAAGJ,OAAO;EAC9B,OAAOG,MAAM,GAAGC,EAAE;AACnB,CAAA",
         "names": [
           "module",
           "exports",

@@ -1,0 +1,5 @@
+{
+  "reporter": ["html", "json-summary", "text", "json"],
+  "exclude": ["*.js", "./src/index.ts", "**/*.ava.test.ts"],
+  "report-dir": "./coverage-ava"
+}
