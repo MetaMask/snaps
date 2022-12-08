@@ -1,12 +1,7 @@
 // eslint-disable-next-line import/no-unassigned-import
 import 'ses';
 import { HandlerType } from '@metamask/snaps-utils';
-import {
-  assertIsJsonRpcSuccess,
-  Json,
-  JsonRpcRequest,
-  JsonRpcResponse,
-} from '@metamask/utils';
+import { Json, JsonRpcRequest, JsonRpcResponse } from '@metamask/utils';
 import { Duplex, DuplexOptions, EventEmitter, Readable } from 'stream';
 
 import { BaseSnapExecutor } from './BaseSnapExecutor';
@@ -302,122 +297,6 @@ describe('BaseSnapExecutor', () => {
 
       expect(consoleErrorSpy).not.toHaveBeenCalled();
     });
-
-    it.each(['Timeout', 'Interval'])(
-      "can't clear set%s of other snaps",
-      async (name: string) => {
-        // Since we don't know how the handle looks like we have to actually retrieve it after creating it
-        const CODE_1 = `
-          let handle;
-          exports.onRpcRequest = (({ origin, request }) => {
-            switch (request.method) {
-              case 'set':
-                let resolve;
-                const promise = new Promise((r) => { resolve = r; });
-                handle = set${name}(() => {
-                  clear${name}(handle);
-                  resolve('SNAP 1 OK');
-                }, 1000);
-                return promise;
-              case 'getHandle':
-                return handle;
-            }
-          });
-        `;
-        const CODE_2 = `
-          exports.onRpcRequest = (({ origin, request }) => {
-            const handle = request.params[0];
-            clear${name}(handle);
-            return 'SNAP 2 OK';
-          })
-        `;
-        const SNAP_NAME_1 = `${FAKE_SNAP_NAME}_1`;
-        const SNAP_NAME_2 = `${FAKE_SNAP_NAME}_2`;
-
-        const executor = new TestSnapExecutor();
-
-        // Initiate the snaps
-        await executor.executeSnap(1, SNAP_NAME_1, CODE_1, TIMER_ENDOWMENTS);
-
-        expect(await executor.readCommand()).toStrictEqual({
-          jsonrpc: '2.0',
-          id: 1,
-          result: 'OK',
-        });
-
-        await executor.executeSnap(2, SNAP_NAME_2, CODE_2, TIMER_ENDOWMENTS);
-
-        expect(await executor.readCommand()).toStrictEqual({
-          jsonrpc: '2.0',
-          id: 2,
-          result: 'OK',
-        });
-
-        // The order of below is extremely important!
-
-        await executor.writeCommand({
-          jsonrpc: '2.0',
-          id: 3,
-          method: 'snapRpc',
-          params: [
-            SNAP_NAME_1,
-            ON_RPC_REQUEST,
-            FAKE_ORIGIN,
-            { jsonrpc: '2.0', method: 'set' },
-          ],
-        });
-
-        await executor.writeCommand({
-          jsonrpc: '2.0',
-          id: 4,
-          method: 'snapRpc',
-          params: [
-            SNAP_NAME_1,
-            ON_RPC_REQUEST,
-            FAKE_ORIGIN,
-            { jsonrpc: '2.0', method: 'getHandle' },
-          ],
-        });
-
-        const getHandleResult = await executor.readCommand();
-        expect(getHandleResult).toStrictEqual(
-          expect.objectContaining({
-            jsonrpc: '2.0',
-            id: 4,
-            result: expect.anything(),
-          }),
-        );
-
-        assertIsJsonRpcSuccess(getHandleResult);
-        const handle = getHandleResult.result;
-
-        await executor.writeCommand({
-          jsonrpc: '2.0',
-          id: 5,
-          method: 'snapRpc',
-          params: [
-            SNAP_NAME_2,
-            ON_RPC_REQUEST,
-            FAKE_ORIGIN,
-            { jsonrpc: '2.0', method: '', params: [handle] },
-          ],
-        });
-
-        expect(await executor.readCommand()).toStrictEqual({
-          jsonrpc: '2.0',
-          id: 5,
-          result: 'SNAP 2 OK',
-        });
-
-        jest.advanceTimersByTime(1000);
-
-        expect(await executor.readCommand()).toStrictEqual({
-          jsonrpc: '2.0',
-          id: 3,
-          result: 'SNAP 1 OK',
-        });
-      },
-    );
   });
 
   it('terminates a request when terminate RPC is called', async () => {

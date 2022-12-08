@@ -9,6 +9,7 @@ dist-temp
 temp
 *.log
 *.tgz
+*.ava.test.ts.md
 
 public/
 src/__GENERATED__/
