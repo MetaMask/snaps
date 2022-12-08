@@ -1,5 +1,5 @@
 {
-  "version": "0.26.0",
+  "version": "0.26.1",
   "description": "An example Snap built using TypeScript and Browserify",
   "proposedName": "browserify-snap",
   "repository": {
