@@ -1,5 +1,5 @@
 import { ENTROPY_VECTORS } from './__fixtures__';
-import { deriveEntropy } from './entropy';
+import { deriveEntropy, SIP_6_MAGIC_VALUE } from './entropy';
 
 const TEST_SECRET_RECOVERY_PHRASE =
   'test test test test test test test test test test test ball';
@@ -13,6 +13,7 @@ describe('deriveEntropy', () => {
           input: snapId,
           salt,
           mnemonicPhrase: TEST_SECRET_RECOVERY_PHRASE,
+          magic: SIP_6_MAGIC_VALUE,
         }),
       ).toStrictEqual(entropy);
     },

@@ -4,7 +4,7 @@ import {
   RestrictedMethodOptions,
   ValidPermissionSpecification,
 } from '@metamask/permission-controller';
-import { deriveEntropy } from '@metamask/snaps-utils';
+import { deriveEntropy, SIP_6_MAGIC_VALUE } from '@metamask/snaps-utils';
 import { assertStruct, Hex, NonEmptyArray } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 import { Infer, literal, object, optional, string } from 'superstruct';
@@ -113,6 +113,7 @@ function getEntropyImplementation({
       input: origin,
       salt: params.salt,
       mnemonicPhrase,
+      magic: SIP_6_MAGIC_VALUE,
     });
   };
 }

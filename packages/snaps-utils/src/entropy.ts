@@ -57,9 +57,9 @@ type DeriveEntropyOptions = {
 
   /**
    * A hardened BIP-32 index, which is used to derive the root key from the
-   * mnemonic phrase. If not provided, {@link SIP_6_MAGIC_VALUE} will be used.
+   * mnemonic phrase.
    */
-  magic?: `${number}'`;
+  magic: `${number}'`;
 };
 
 /**
@@ -74,15 +74,14 @@ type DeriveEntropyOptions = {
  * @param options.mnemonicPhrase - The mnemonic phrase to use for entropy
  * derivation.
  * @param options.magic - A hardened BIP-32 index, which is used to derive the
- * root key from the mnemonic phrase. If not provided,
- * {@link SIP_6_MAGIC_VALUE} will be used.
+ * root key from the mnemonic phrase.
  * @returns The derived entropy.
  */
 export async function deriveEntropy({
   input,
   salt = '',
   mnemonicPhrase,
-  magic = SIP_6_MAGIC_VALUE,
+  magic,
 }: DeriveEntropyOptions): Promise<Hex> {
   const inputBytes = stringToBytes(input);
   const saltBytes = stringToBytes(salt);
