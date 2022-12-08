@@ -154,41 +154,6 @@ jobs:
           key: yarn-cache-${{ runner.os }}-${{ steps.yarn-version.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}
       - name: Install Yarn dependencies
         run: yarn --immutable
-  platform-compatibility-build:
-    name: Platform Compatibility Build
-    runs-on: ${{ matrix.os }}
-    needs:
-      - platform-compatibility-prepare
-    strategy:
-      matrix:
-        os: [macOS-latest, windows-latest]
-    steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version-file: '.nvmrc'
-      - name: Restore Yarn dependencies
-        uses: actions/cache@v3
-        with:
-          path: ${{ needs.platform-compatibility-prepare.outputs.YARN_CACHE_DIR }}
-          key: yarn-cache-${{ runner.os }}-${{ needs.platform-compatibility-prepare.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}
-      - run: yarn --immutable
-      - name: Build @metamask/snaps-cli and its dependents only
-        shell: bash
-        run: |
-          yarn workspaces foreach \
-            --recursive \
-            --from @metamask/snaps-cli \
-            --topological-dev \
-            run build
-      - name: Require clean working directory
-        shell: bash
-        run: |
-          if ! git diff --exit-code; then
-            echo "Working tree dirty after building"
-            exit 1
-          fi
   platform-compatibility-test:
     name: Platform Compatibility Test
     runs-on: ${{ matrix.os }}
