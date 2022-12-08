@@ -57,6 +57,7 @@ import {
   validateSnapId,
   validateSnapShasum,
   VirtualFile,
+  deriveEntropy,
 } from '@metamask/snaps-utils';
 import {
   GetSubjectMetadata,
@@ -103,6 +104,9 @@ export const controllerName = 'SnapController';
 // TODO: Figure out how to name these
 export const SNAP_APPROVAL_INSTALL = 'wallet_installSnap';
 export const SNAP_APPROVAL_UPDATE = 'wallet_updateSnap';
+
+// `${bytesToNumber(keccak256('Snaps state encryption').slice(0, 4))}'`
+export const STATE_ENCRYPTION_MAGIC_VALUE = `572232532'` as `${number}'`;
 
 const TRUNCATED_SNAP_PROPERTIES = new Set<TruncatedSnapFields>([
   'initialPermissions',
@@ -462,11 +466,7 @@ type SnapControllerMessenger = RestrictedControllerMessenger<
   AllowedEvents['type']
 >;
 
-export enum AppKeyType {
-  StateEncryption = 'stateEncryption',
-}
-
-type GetAppKey = (subject: string, appKeyType: AppKeyType) => Promise<string>;
+type GetMnemonicPhrase = () => Promise<string>;
 
 type FeatureFlags = {
   /**
@@ -526,9 +526,9 @@ type SnapControllerArgs = {
   featureFlags: FeatureFlags;
 
   /**
-   * A function to get an "app key" for a specific subject.
+   * A function to get the user's mnemonic phrase.
    */
-  getAppKey: GetAppKey;
+  getMnemonicPhrase: GetMnemonicPhrase;
 
   /**
    * How frequently to check whether a snap is idle.
@@ -661,7 +661,7 @@ export class SnapController extends BaseController<
 
   #rollbackSnapshots: Map<SnapId, RollbackSnapshot>;
 
-  #getAppKey: GetAppKey;
+  #getMnemonicPhrase: GetMnemonicPhrase;
 
   #timeoutForLastRequestStatus?: number;
 
@@ -675,7 +675,7 @@ export class SnapController extends BaseController<
     closeAllConnections,
     messenger,
     state,
-    getAppKey,
+    getMnemonicPhrase,
     environmentEndowmentPermissions = [],
     idleTimeCheckInterval = inMilliseconds(5, Duration.Second),
     checkBlockList,
@@ -744,7 +744,7 @@ export class SnapController extends BaseController<
     this.#environmentEndowmentPermissions = environmentEndowmentPermissions;
     this.#featureFlags = featureFlags;
     this.#fetchFunction = fetchFunction;
-    this.#getAppKey = getAppKey;
+    this.#getMnemonicPhrase = getMnemonicPhrase;
     this.#idleTimeCheckInterval = idleTimeCheckInterval;
     this.#checkSnapBlockList = checkBlockList;
     this.#maxIdleTime = maxIdleTime;
@@ -1389,8 +1389,21 @@ export class SnapController extends BaseController<
     return state ? this.#decryptSnapState(snapId, state) : null;
   }
 
+  /**
+   * Get a deterministic encryption key based on the given snap ID.
+   *
+   * @param snapId - The ID of the snap to get the encryption key for.
+   * @returns The encryption key for the given snap ID.
+   */
   async #getEncryptionKey(snapId: SnapId): Promise<string> {
-    return this.#getAppKey(snapId, AppKeyType.StateEncryption);
+    const mnemonicPhrase = await this.#getMnemonicPhrase();
+
+    return deriveEntropy({
+      mnemonicPhrase,
+      input: snapId,
+      salt: 'state encryption',
+      magic: STATE_ENCRYPTION_MAGIC_VALUE,
+    });
   }
 
   async #encryptSnapState(snapId: SnapId, state: Json): Promise<string> {

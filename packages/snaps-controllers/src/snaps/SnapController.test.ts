@@ -17,6 +17,7 @@ import {
   VirtualFile,
   SnapManifest,
   NpmSnapFileNames,
+  deriveEntropy,
 } from '@metamask/snaps-utils';
 import {
   DEFAULT_SNAP_BUNDLE,
@@ -60,10 +61,15 @@ import {
   sleep,
   loopbackDetect,
   LoopbackLocation,
+  TEST_SECRET_RECOVERY_PHRASE,
 } from '../test-utils';
 import { delay } from '../utils';
 import { handlerEndowments, SnapEndowments } from './endowments';
-import { SnapControllerState, SNAP_APPROVAL_UPDATE } from './SnapController';
+import {
+  SnapControllerState,
+  SNAP_APPROVAL_UPDATE,
+  STATE_ENCRYPTION_MAGIC_VALUE,
+} from './SnapController';
 
 const { subtle } = new Crypto();
 Object.defineProperty(window, 'crypto', {
@@ -108,10 +114,18 @@ describe('SnapController', () => {
     await snapController.updateSnapState(snap.id, state);
     const snapState = await snapController.getSnapState(snap.id);
     expect(snapState).toStrictEqual(state);
+
+    const encryptionKey = await deriveEntropy({
+      input: MOCK_SNAP_ID,
+      salt: 'state encryption',
+      mnemonicPhrase: TEST_SECRET_RECOVERY_PHRASE,
+      magic: STATE_ENCRYPTION_MAGIC_VALUE,
+    });
+
     expect(
       // @ts-expect-error Accessing private property
       snapController.snapsRuntimeData.get(MOCK_SNAP_ID).state,
-    ).toStrictEqual(await encrypt(`stateEncryption:${MOCK_SNAP_ID}`, state));
+    ).toStrictEqual(await encrypt(encryptionKey, state));
     snapController.destroy();
     await service.terminateAllSnaps();
   });
@@ -3704,7 +3718,15 @@ describe('SnapController', () => {
       const state = {
         fizz: 'buzz',
       };
-      const encrypted = await encrypt(`stateEncryption:${MOCK_SNAP_ID}`, state);
+
+      const encryptionKey = await deriveEntropy({
+        input: MOCK_SNAP_ID,
+        salt: 'state encryption',
+        mnemonicPhrase: TEST_SECRET_RECOVERY_PHRASE,
+        magic: STATE_ENCRYPTION_MAGIC_VALUE,
+      });
+
+      const encrypted = await encrypt(encryptionKey, state);
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -3808,11 +3830,18 @@ describe('SnapController', () => {
         state,
       );
 
+      const encryptionKey = await deriveEntropy({
+        input: MOCK_SNAP_ID,
+        salt: 'state encryption',
+        mnemonicPhrase: TEST_SECRET_RECOVERY_PHRASE,
+        magic: STATE_ENCRYPTION_MAGIC_VALUE,
+      });
+
       expect(updateSnapStateSpy).toHaveBeenCalledTimes(1);
       expect(
         // @ts-expect-error Accessing private property
         snapController.snapsRuntimeData.get(MOCK_SNAP_ID).state,
-      ).toStrictEqual(await encrypt(`stateEncryption:${MOCK_SNAP_ID}`, state));
+      ).toStrictEqual(await encrypt(encryptionKey, state));
     });
 
     it('has different encryption for the same data stored by two different snaps', async () => {
@@ -3857,14 +3886,22 @@ describe('SnapController', () => {
         // @ts-expect-error Accessing private property
         snapController.snapsRuntimeData.get(MOCK_LOCAL_SNAP_ID).state;
 
-      expect(snapState1).toStrictEqual(
-        await encrypt(`stateEncryption:${MOCK_SNAP_ID}`, state),
-      );
+      const encryptionKey1 = await deriveEntropy({
+        input: MOCK_SNAP_ID,
+        salt: 'state encryption',
+        mnemonicPhrase: TEST_SECRET_RECOVERY_PHRASE,
+        magic: STATE_ENCRYPTION_MAGIC_VALUE,
+      });
 
-      expect(snapState2).toStrictEqual(
-        await encrypt(`stateEncryption:${MOCK_LOCAL_SNAP_ID}`, state),
-      );
+      const encryptionKey2 = await deriveEntropy({
+        input: MOCK_LOCAL_SNAP_ID,
+        salt: 'state encryption',
+        mnemonicPhrase: TEST_SECRET_RECOVERY_PHRASE,
+        magic: STATE_ENCRYPTION_MAGIC_VALUE,
+      });
 
+      expect(snapState1).toStrictEqual(await encrypt(encryptionKey1, state));
+      expect(snapState2).toStrictEqual(await encrypt(encryptionKey2, state));
       expect(snapState1).not.toStrictEqual(snapState2);
     });
   });
