@@ -58,6 +58,7 @@ import {
   validateSnapShasum,
   VirtualFile,
   deriveEntropy,
+  STATE_ENCRYPTION_MAGIC_VALUE,
 } from '@metamask/snaps-utils';
 import {
   GetSubjectMetadata,
@@ -104,9 +105,6 @@ export const controllerName = 'SnapController';
 // TODO: Figure out how to name these
 export const SNAP_APPROVAL_INSTALL = 'wallet_installSnap';
 export const SNAP_APPROVAL_UPDATE = 'wallet_updateSnap';
-
-// `${bytesToNumber(keccak256('Snaps state encryption').slice(0, 4))}'`
-export const STATE_ENCRYPTION_MAGIC_VALUE = `572232532'` as `${number}'`;
 
 const TRUNCATED_SNAP_PROPERTIES = new Set<TruncatedSnapFields>([
   'initialPermissions',

@@ -14,6 +14,13 @@ const HARDENED_VALUE = 0x80000000;
 // 0xd36e6170 - 0x80000000
 export const SIP_6_MAGIC_VALUE = `1399742832'` as `${number}'`;
 
+// `${bytesToNumber(keccak256('Snaps state encryption').slice(0, 4))}'`
+export const STATE_ENCRYPTION_MAGIC_VALUE = `572232532'` as `${number}'`;
+
+export type MagicValue =
+  | typeof SIP_6_MAGIC_VALUE
+  | typeof STATE_ENCRYPTION_MAGIC_VALUE;
+
 /**
  * Get a BIP-32 derivation path array from a hash, which is compatible with
  * `@metamask/key-tree`. The hash is assumed to be 32 bytes long.
@@ -59,7 +66,7 @@ type DeriveEntropyOptions = {
    * A hardened BIP-32 index, which is used to derive the root key from the
    * mnemonic phrase.
    */
-  magic: `${number}'`;
+  magic: MagicValue;
 };
 
 /**
