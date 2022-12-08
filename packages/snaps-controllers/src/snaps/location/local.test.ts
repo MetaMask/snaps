@@ -65,8 +65,8 @@ describe('LocalLocation', () => {
     const manifest = await location.manifest();
     const bundle = await location.fetch('./foo.js');
 
-    expect(manifest.path).toBe('./snap.manifest.json');
-    expect(bundle.path).toBe('./foo.js');
+    expect(manifest.path).toBe('snap.manifest.json');
+    expect(bundle.path).toBe('foo.js');
     expect(manifest.data.canonicalPath).toBe(canonical.manifest);
     expect(bundle.data.canonicalPath).toBe(canonical.bundle);
   });

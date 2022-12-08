@@ -15,6 +15,8 @@ import {
   SnapPermissions,
   SnapStatus,
   VirtualFile,
+  SnapManifest,
+  NpmSnapFileNames,
 } from '@metamask/snaps-utils';
 import {
   DEFAULT_SNAP_BUNDLE,
@@ -2578,6 +2580,36 @@ describe('SnapController', () => {
       controller.destroy();
       await service.terminateAllSnaps();
     });
+
+    it('handles unnormalized paths correctly', async () => {
+      const manifest = getSnapManifest({
+        filePath: './bundle.js',
+        iconPath: 'icon.svg',
+      });
+      const controller = getSnapController(
+        getSnapControllerOptions({
+          detectSnapLocation: loopbackDetect({
+            manifest: new VirtualFile<SnapManifest>({
+              result: manifest,
+              value: JSON.stringify(manifest),
+              path: NpmSnapFileNames.Manifest,
+            }),
+            files: [
+              new VirtualFile({
+                value: DEFAULT_SNAP_BUNDLE,
+                path: 'bundle.js',
+              }),
+              new VirtualFile({ value: DEFAULT_SNAP_ICON, path: 'icon.svg' }),
+            ],
+          }),
+        }),
+      );
+
+      const result = await controller.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: {},
+      });
+      expect((result[MOCK_SNAP_ID] as any).error).toBeUndefined();
+    });
   });
 
   describe('updateSnap', () => {
@@ -3188,6 +3220,30 @@ describe('SnapController', () => {
 
       await snapController.installSnaps(MOCK_ORIGIN, { [MOCK_SNAP_ID]: {} });
       await snapController.updateSnap(MOCK_ORIGIN, MOCK_SNAP_ID);
+    });
+
+    it('handles unnormalized paths correctly', async () => {
+      const messenger = getSnapControllerMessenger();
+      const controller = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+          detectSnapLocation: loopbackDetect({
+            manifest: getSnapManifest({
+              version: '1.2.0' as SemVerVersion,
+              filePath: './dist/bundle.js',
+              iconPath: './images/icon.svg',
+            }),
+          }),
+        }),
+      );
+
+      await controller.updateSnap(MOCK_ORIGIN, MOCK_SNAP_ID);
+
+      const newSnap = controller.get(MOCK_SNAP_ID);
+      expect(newSnap?.version).toBe('1.2.0');
     });
   });
 

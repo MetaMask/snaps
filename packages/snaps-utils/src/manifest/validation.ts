@@ -2,6 +2,8 @@ import { assert, assertStruct } from '@metamask/utils';
 import {
   array,
   boolean,
+  coerce,
+  create,
   enums,
   Infer,
   integer,
@@ -21,6 +23,7 @@ import {
 import { CronjobSpecificationArrayStruct } from '../cronjob';
 import { RpcOriginsStruct } from '../json-rpc';
 import { NamespacesStruct } from '../namespace';
+import { normalizeRelative } from '../path';
 import { NameStruct, NpmSnapFileNames } from '../types';
 import { VersionStruct } from '../versions';
 
@@ -179,6 +182,9 @@ export const PermissionsStruct = type({
 });
 /* eslint-enable @typescript-eslint/naming-convention */
 
+const relativePath = <Type extends string>(struct: Struct<Type>) =>
+  coerce(struct, struct, (value) => normalizeRelative(value));
+
 export type SnapPermissions = Infer<typeof PermissionsStruct>;
 
 export const SnapManifestStruct = object({
@@ -202,8 +208,8 @@ export const SnapManifestStruct = object({
     shasum: size(base64(string(), { paddingRequired: true }), 44, 44),
     location: object({
       npm: object({
-        filePath: size(string(), 1, Infinity),
-        iconPath: optional(size(string(), 1, Infinity)),
+        filePath: relativePath(size(string(), 1, Infinity)),
+        iconPath: optional(relativePath(size(string(), 1, Infinity))),
         packageName: NameStruct,
         registry: union([
           literal('https://registry.npmjs.org'),
@@ -242,4 +248,17 @@ export function assertIsSnapManifest(
     SnapManifestStruct,
     `"${NpmSnapFileNames.Manifest}" is invalid`,
   );
+}
+
+/**
+ * Creates a {@link SnapManifest} object from JSON.
+ *
+ *
+ * @param value - The value to check.
+ * @throws If the value cannot be coerced to a {@link SnapManifest} object.
+ * @returns The created {@link SnapManifest} object.
+ */
+export function createSnapManifest(value: unknown): SnapManifest {
+  // TODO: Add a utility to prefix these errors similar to assertStruct
+  return create(value, SnapManifestStruct);
 }

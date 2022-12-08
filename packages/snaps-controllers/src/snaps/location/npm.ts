@@ -1,6 +1,6 @@
 import {
   assertIsSemVerVersion,
-  assertIsSnapManifest,
+  createSnapManifest,
   DEFAULT_REQUESTED_SNAP_VERSION,
   getTargetVersion,
   isValidUrl,
@@ -9,6 +9,7 @@ import {
   SemVerVersion,
   SnapManifest,
   VirtualFile,
+  normalizeRelative,
 } from '@metamask/snaps-utils';
 import { assert, assertStruct, isObject } from '@metamask/utils';
 import concat from 'concat-stream';
@@ -18,7 +19,6 @@ import { ReadableWebToNodeStream } from 'readable-web-to-node-stream';
 import { Readable, Writable } from 'stream';
 import { extract as tarExtract } from 'tar-stream';
 
-import { ensureRelative } from '../../utils';
 import { DetectSnapLocationOptions, SnapLocation } from './location';
 
 const DEFAULT_NPM_REGISTRY = 'https://registry.npmjs.org';
@@ -112,17 +112,16 @@ export class NpmLocation implements SnapLocation {
       return this.validatedManifest.clone();
     }
 
-    const vfile = await this.fetch('./snap.manifest.json');
+    const vfile = await this.fetch('snap.manifest.json');
     const result = JSON.parse(vfile.toString());
-    assertIsSnapManifest(result);
-    vfile.result = result;
+    vfile.result = createSnapManifest(result);
     this.validatedManifest = vfile as VirtualFile<SnapManifest>;
 
     return this.manifest();
   }
 
   async fetch(path: string): Promise<VirtualFile> {
-    const relativePath = ensureRelative(path);
+    const relativePath = normalizeRelative(path);
     if (!this.files) {
       await this.#lazyInit();
       assert(this.files !== undefined);
@@ -320,7 +319,7 @@ function createTarballStream(
     const { name: headerName, type: headerType } = header;
     if (headerType === 'file') {
       // The name is a path if the header type is "file".
-      const path = headerName.replace(NPM_TARBALL_PATH_PREFIX, './');
+      const path = headerName.replace(NPM_TARBALL_PATH_PREFIX, '');
       return entryStream.pipe(
         concat((data) => {
           const vfile = new VirtualFile({

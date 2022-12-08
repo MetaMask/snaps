@@ -1,4 +1,8 @@
-import { VirtualFile, SnapManifest } from '@metamask/snaps-utils';
+import {
+  VirtualFile,
+  SnapManifest,
+  createSnapManifest,
+} from '@metamask/snaps-utils';
 import {
   DEFAULT_SNAP_BUNDLE,
   DEFAULT_SNAP_ICON,
@@ -7,7 +11,7 @@ import {
 import { assert } from '@metamask/utils';
 import { SnapLocation } from 'src/snaps/location';
 
-const MANIFEST_PATH = './snap.manifest.json';
+const MANIFEST_PATH = 'snap.manifest.json';
 
 type LoopbackOptions = {
   /**
@@ -24,6 +28,12 @@ type LoopbackOptions = {
   shouldAlwaysReload?: boolean;
 };
 
+// Mirror NPM and HTTP implementation
+const coerceManifest = (manifest: VirtualFile<SnapManifest>) => {
+  manifest.result = createSnapManifest(manifest.result);
+  return manifest;
+};
+
 export class LoopbackLocation implements SnapLocation {
   #manifest: VirtualFile<SnapManifest>;
 
@@ -33,14 +43,15 @@ export class LoopbackLocation implements SnapLocation {
 
   constructor(opts: LoopbackOptions = {}) {
     const shouldAlwaysReload = opts.shouldAlwaysReload ?? false;
-    const manifest =
+    const manifest = coerceManifest(
       opts.manifest instanceof VirtualFile
         ? opts.manifest
         : new VirtualFile({
             value: '',
             result: opts.manifest ?? getSnapManifest(),
-            path: './snap.manifest.json',
-          });
+            path: 'snap.manifest.json',
+          }),
+    );
     let files;
     if (opts.files === undefined) {
       files = [

@@ -1,4 +1,4 @@
-import { assert, is, size, string } from 'superstruct';
+import { assert, is, size, string, StructError } from 'superstruct';
 
 import { getSnapManifest } from '../test-utils';
 import {
@@ -7,6 +7,7 @@ import {
   Base64Opts,
   Bip32EntropyStruct,
   Bip32PathStruct,
+  createSnapManifest,
   isSnapManifest,
 } from './validation';
 
@@ -226,5 +227,39 @@ describe('assertIsSnapManifest', () => {
     expect(() => assertIsSnapManifest(value)).toThrow(
       '"snap.manifest.json" is invalid:',
     );
+  });
+});
+
+describe('createSnapManifest', () => {
+  it('does not throw for a valid snap manifest', () => {
+    expect(() => createSnapManifest(getSnapManifest())).not.toThrow();
+  });
+
+  it('coerces source paths', () => {
+    expect(
+      createSnapManifest(
+        getSnapManifest({ filePath: './bundle.js', iconPath: './icon.svg' }),
+      ),
+    ).toStrictEqual(
+      getSnapManifest({ filePath: 'bundle.js', iconPath: 'icon.svg' }),
+    );
+  });
+
+  it.each([
+    true,
+    false,
+    null,
+    undefined,
+    0,
+    1,
+    '',
+    'foo',
+    [],
+    {},
+    { name: 'foo' },
+    { version: '1.0.0' },
+    getSnapManifest({ version: 'foo bar' }),
+  ])('throws for an invalid snap manifest', (value) => {
+    expect(() => createSnapManifest(value)).toThrow(StructError);
   });
 });

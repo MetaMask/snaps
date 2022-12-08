@@ -1,13 +1,13 @@
 import {
   SnapManifest,
-  assertIsSnapManifest,
   VirtualFile,
   HttpSnapIdStruct,
   NpmSnapFileNames,
+  createSnapManifest,
+  normalizeRelative,
 } from '@metamask/snaps-utils';
 import { assert, assertStruct } from '@metamask/utils';
 
-import { ensureRelative } from '../../utils';
 import { SnapLocation } from './location';
 
 export interface HttpOptions {
@@ -60,11 +60,10 @@ export class HttpLocation implements SnapLocation {
       await this.fetchFn(canonicalPath, this.fetchOptions)
     ).text();
     const manifest = JSON.parse(contents);
-    assertIsSnapManifest(manifest);
     const vfile = new VirtualFile<SnapManifest>({
       value: contents,
-      result: manifest,
-      path: `./${NpmSnapFileNames.Manifest}`,
+      result: createSnapManifest(manifest),
+      path: NpmSnapFileNames.Manifest,
       data: { canonicalPath },
     });
     this.validatedManifest = vfile;
@@ -73,7 +72,7 @@ export class HttpLocation implements SnapLocation {
   }
 
   async fetch(path: string): Promise<VirtualFile> {
-    const relativePath = ensureRelative(path);
+    const relativePath = normalizeRelative(path);
     const cached = this.cache.get(relativePath);
     if (cached !== undefined) {
       const { file, contents } = cached;
