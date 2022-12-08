@@ -7,9 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.26.1]
-### Uncategorized
-- Hotfix for SnapLocation paths being wrongly normalized ([#1053](https://github.com/MetaMask/snaps-monorepo/pull/1053))
-- Add AVA test runner integration ([#1022](https://github.com/MetaMask/snaps-monorepo/pull/1022))
+### Fixed
+- Fix some paths being wrongly normalized ([#1053](https://github.com/MetaMask/snaps-monorepo/pull/1053))
 - Fix utils browser export ([#1049](https://github.com/MetaMask/snaps-monorepo/pull/1049))
 
 ## [0.26.0]

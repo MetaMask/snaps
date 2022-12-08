@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.26.1]
-### Uncategorized
-- Hotfix for SnapLocation paths being wrongly normalized ([#1053](https://github.com/MetaMask/snaps-monorepo/pull/1053))
+### Fixed
+- Fix some paths being wrongly normalized ([#1053](https://github.com/MetaMask/snaps-monorepo/pull/1053))
 - Fix some issues with fetching snaps ([#1050](https://github.com/MetaMask/snaps-monorepo/pull/1050))
 
 ## [0.26.0]

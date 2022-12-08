@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.26.1]
-### Uncategorized
-- Add AVA test runner integration ([#1022](https://github.com/MetaMask/snaps-monorepo/pull/1022))
+### Changed
+- No changes this release.
 
 ## [0.26.0]
 ### Changed
