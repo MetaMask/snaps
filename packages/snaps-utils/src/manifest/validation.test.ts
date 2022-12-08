@@ -1,4 +1,4 @@
-import { assert, is, size, string } from 'superstruct';
+import { assert, is, size, string, StructError } from 'superstruct';
 
 import { getSnapManifest } from '../test-utils';
 import {
@@ -260,7 +260,6 @@ describe('createSnapManifest', () => {
     { version: '1.0.0' },
     getSnapManifest({ version: 'foo bar' }),
   ])('throws for an invalid snap manifest', (value) => {
-    // eslint-disable-next-line jest/require-to-throw-message
-    expect(() => createSnapManifest(value)).toThrow();
+    expect(() => createSnapManifest(value)).toThrow(StructError);
   });
 });

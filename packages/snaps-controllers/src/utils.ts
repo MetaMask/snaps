@@ -1,5 +1,3 @@
-import { assert } from '@metamask/utils';
-
 import { Timer } from './snaps/Timer';
 
 /**
@@ -200,22 +198,3 @@ export type Mutable<
 } & {
   [Key in keyof Omit<T, TargetKey>]: T[Key];
 };
-
-/**
- * Normalizes relative paths by optionally removing `./` prefix.
- *
- * @param path - Path to make normalize.
- * @returns The same path, with `./` prefix remove.
- */
-export function normalizeRelative(path: string): string {
-  assert(!path.startsWith('/'));
-  assert(
-    path.search(/:|\/\//u) === -1,
-    `Path "${path}" potentially an URI instead of local relative`,
-  );
-
-  if (path.startsWith('./')) {
-    return path.slice(2);
-  }
-  return path;
-}

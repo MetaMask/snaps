@@ -7,6 +7,7 @@ export * from './manifest/index.browser';
 export * from './namespace';
 export * from './notification';
 export * from './object';
+export * from './path';
 export * from './snaps';
 export * from './types';
 export * from './versions';

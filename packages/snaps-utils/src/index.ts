@@ -12,6 +12,7 @@ export * from './namespace';
 export * from './notification';
 export * from './npm';
 export * from './object';
+export * from './path';
 export * from './post-process';
 export * from './snaps';
 export * from './types';

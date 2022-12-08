@@ -9,6 +9,7 @@ import {
   SemVerVersion,
   SnapManifest,
   VirtualFile,
+  normalizeRelative,
 } from '@metamask/snaps-utils';
 import { assert, assertStruct, isObject } from '@metamask/utils';
 import concat from 'concat-stream';
@@ -18,7 +19,6 @@ import { ReadableWebToNodeStream } from 'readable-web-to-node-stream';
 import { Readable, Writable } from 'stream';
 import { extract as tarExtract } from 'tar-stream';
 
-import { normalizeRelative } from '../../utils';
 import { DetectSnapLocationOptions, SnapLocation } from './location';
 
 const DEFAULT_NPM_REGISTRY = 'https://registry.npmjs.org';

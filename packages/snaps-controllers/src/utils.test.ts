@@ -1,6 +1,4 @@
-import { AssertionError } from '@metamask/utils';
-
-import { normalizeRelative, setDiff } from './utils';
+import { setDiff } from './utils';
 
 describe('setDiff', () => {
   it('does nothing on empty type {}-B', () => {
@@ -29,25 +27,5 @@ describe('setDiff', () => {
   it('works for the same object A-A', () => {
     const object = { a: 'foo', b: 'bar' };
     expect(setDiff(object, object)).toStrictEqual({});
-  });
-});
-
-describe('normalizeRelative', () => {
-  it('throws on absolute paths', () => {
-    expect(() => normalizeRelative('/foo/bar.js')).toThrow(AssertionError);
-  });
-
-  it('throws on URIs', () => {
-    expect(() => normalizeRelative('http://foo.bar')).toThrow(
-      'Path "http://foo.bar" potentially an URI instead of local relative',
-    );
-  });
-
-  it('removes "./" prefix', () => {
-    expect(normalizeRelative('./foo/bar.js')).toBe('foo/bar.js');
-  });
-
-  it("does nothing if there's no prefix", () => {
-    expect(normalizeRelative('foo/bar.js')).toBe('foo/bar.js');
   });
 });

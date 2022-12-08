@@ -4,10 +4,10 @@ import {
   HttpSnapIdStruct,
   NpmSnapFileNames,
   createSnapManifest,
+  normalizeRelative,
 } from '@metamask/snaps-utils';
 import { assert, assertStruct } from '@metamask/utils';
 
-import { normalizeRelative } from '../../utils';
 import { SnapLocation } from './location';
 
 export interface HttpOptions {
