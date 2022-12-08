@@ -3222,7 +3222,29 @@ describe('SnapController', () => {
       await snapController.updateSnap(MOCK_ORIGIN, MOCK_SNAP_ID);
     });
 
-    it.todo('handles unnormalized paths correctly');
+    it('handles unnormalized paths correctly', async () => {
+      const messenger = getSnapControllerMessenger();
+      const controller = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+          detectSnapLocation: loopbackDetect({
+            manifest: getSnapManifest({
+              version: '1.2.0' as SemVerVersion,
+              filePath: './dist/bundle.js',
+              iconPath: './images/icon.svg',
+            }),
+          }),
+        }),
+      );
+
+      await controller.updateSnap(MOCK_ORIGIN, MOCK_SNAP_ID);
+
+      const newSnap = controller.get(MOCK_SNAP_ID);
+      expect(newSnap?.version).toBe('1.2.0');
+    });
   });
 
   describe('enableSnap', () => {
