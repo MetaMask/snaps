@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.26.1]
+### Changed
+- No changes this release.
+
 ## [0.26.0]
 ### Changed
 - No changes this release.
@@ -90,7 +94,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release ([#431](https://github.com/MetaMask/snaps-monorepo/pull/431))
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.26.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.26.1...HEAD
+[0.26.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.26.0...v0.26.1
 [0.26.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.25.0...v0.26.0
 [0.25.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.24.1...v0.25.0
 [0.24.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.24.0...v0.24.1
