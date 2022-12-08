@@ -3,6 +3,7 @@ import {
   array,
   boolean,
   coerce,
+  create,
   enums,
   Infer,
   integer,
@@ -247,4 +248,17 @@ export function assertIsSnapManifest(
     SnapManifestStruct,
     `"${NpmSnapFileNames.Manifest}" is invalid`,
   );
+}
+
+/**
+ * Creates a {@link SnapManifest} object from JSON.
+ *
+ *
+ * @param value - The value to check.
+ * @throws If the value cannot be coerced to a {@link SnapManifest} object.
+ * @returns The created {@link SnapManifest} object.
+ */
+export function createSnapManifest(value: unknown): SnapManifest {
+  // TODO: Add a utility to prefix these errors similar to assertStruct
+  return create(value, SnapManifestStruct);
 }

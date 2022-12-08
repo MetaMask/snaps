@@ -1,9 +1,9 @@
 import {
   SnapManifest,
-  assertIsSnapManifest,
   VirtualFile,
   HttpSnapIdStruct,
   NpmSnapFileNames,
+  createSnapManifest,
 } from '@metamask/snaps-utils';
 import { assert, assertStruct } from '@metamask/utils';
 
@@ -60,11 +60,10 @@ export class HttpLocation implements SnapLocation {
       await this.fetchFn(canonicalPath, this.fetchOptions)
     ).text();
     const manifest = JSON.parse(contents);
-    assertIsSnapManifest(manifest);
     const vfile = new VirtualFile<SnapManifest>({
       value: contents,
-      result: manifest,
-      path: `./${NpmSnapFileNames.Manifest}`,
+      result: createSnapManifest(manifest),
+      path: NpmSnapFileNames.Manifest,
       data: { canonicalPath },
     });
     this.validatedManifest = vfile;

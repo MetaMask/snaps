@@ -1,6 +1,6 @@
 import {
   assertIsSemVerVersion,
-  assertIsSnapManifest,
+  createSnapManifest,
   DEFAULT_REQUESTED_SNAP_VERSION,
   getTargetVersion,
   isValidUrl,
@@ -112,10 +112,9 @@ export class NpmLocation implements SnapLocation {
       return this.validatedManifest.clone();
     }
 
-    const vfile = await this.fetch('./snap.manifest.json');
+    const vfile = await this.fetch('snap.manifest.json');
     const result = JSON.parse(vfile.toString());
-    assertIsSnapManifest(result);
-    vfile.result = result;
+    vfile.result = createSnapManifest(result);
     this.validatedManifest = vfile as VirtualFile<SnapManifest>;
 
     return this.manifest();
