@@ -1,0 +1,1 @@
+{"version":3,"file":"fs.js","sourceRoot":"","sources":["../../src/__mocks__/fs.ts"],"names":[],"mappings":";AAAA,iCAA+B;AAG/B,iBAAS,IAAI,cAAM,EAAE,CAAC","sourcesContent":["import { Volume } from 'memfs';\n\n// Note: `Volume` implements most of the `fs` API, but not all.\nexport = new Volume();\n"]}
