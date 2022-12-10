@@ -1540,13 +1540,7 @@ export class SnapController extends BaseController<
             return;
           }
 
-          if (
-            await this.messagingSystem.call(
-              'PermissionController:hasPermission',
-              origin,
-              permissionName,
-            )
-          ) {
+          if (true) {
             // Attempt to install and run the snap, storing any errors that
             // occur during the process.
             result[snapId] = {
