@@ -18,6 +18,7 @@ import {
   SnapManifest,
   NpmSnapFileNames,
   deriveEntropy,
+  STATE_ENCRYPTION_MAGIC_VALUE,
 } from '@metamask/snaps-utils';
 import {
   DEFAULT_SNAP_BUNDLE,
@@ -65,11 +66,7 @@ import {
 } from '../test-utils';
 import { delay } from '../utils';
 import { handlerEndowments, SnapEndowments } from './endowments';
-import {
-  SnapControllerState,
-  SNAP_APPROVAL_UPDATE,
-  STATE_ENCRYPTION_MAGIC_VALUE,
-} from './SnapController';
+import { SnapControllerState, SNAP_APPROVAL_UPDATE } from './SnapController';
 
 const { subtle } = new Crypto();
 Object.defineProperty(window, 'crypto', {
