@@ -37,7 +37,7 @@ export type Placeholder = Infer<typeof PlaceholderStruct>;
 type ShowDialog = (
   snapId: string,
   type: DialogType,
-  ui: Component,
+  content: Component,
   placeholder?: Placeholder,
 ) => Promise<null | boolean | string>;
 
@@ -45,7 +45,7 @@ export type DialogMethodHooks = {
   /**
    * @param snapId - The ID of the Snap that created the alert.
    * @param type - The dialog type.
-   * @param ui - The dialog custom UI.
+   * @param content - The dialog custom UI.
    * @param placeholder - The placeholder for the Prompt dialog input.
    */
   showDialog: ShowDialog;
@@ -109,17 +109,17 @@ const BaseParamsStruct = type({
 
 const AlertParametersStruct = object({
   type: literal(DialogType.Alert),
-  ui: ComponentStruct,
+  content: ComponentStruct,
 });
 
 const ConfirmationParametersStruct = object({
   type: literal(DialogType.Confirmation),
-  ui: ComponentStruct,
+  content: ComponentStruct,
 });
 
 const PromptParametersStruct = object({
   type: literal(DialogType.Prompt),
-  ui: ComponentStruct,
+  content: ComponentStruct,
   placeholder: PlaceholderStruct,
 });
 
@@ -158,14 +158,14 @@ export function getDialogImplementation({ showDialog }: DialogMethodHooks) {
     const validatedType = getValidatedType(params);
     const validatedParams = getValidatedParams(params, structs[validatedType]);
 
-    const { ui } = validatedParams;
+    const { content } = validatedParams;
 
     const placeholder =
       validatedParams.type === DialogType.Prompt
         ? validatedParams.placeholder
         : undefined;
 
-    return showDialog(origin, validatedType, ui, placeholder);
+    return showDialog(origin, validatedType, content, placeholder);
   };
 }
 

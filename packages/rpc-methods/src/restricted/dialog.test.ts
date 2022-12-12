@@ -50,7 +50,7 @@ describe('implementation', () => {
         method: 'snap_dialog',
         params: {
           type: DialogType.Alert,
-          ui: panel([heading('foo'), text('bar')]),
+          content: panel([heading('foo'), text('bar')]),
         },
       });
 
@@ -73,7 +73,7 @@ describe('implementation', () => {
         method: 'snap_dialog',
         params: {
           type: DialogType.Confirmation,
-          ui: panel([heading('foo'), text('bar')]),
+          content: panel([heading('foo'), text('bar')]),
         },
       });
 
@@ -96,7 +96,7 @@ describe('implementation', () => {
         method: 'snap_dialog',
         params: {
           type: DialogType.Prompt,
-          ui: panel([heading('foo'), text('bar')]),
+          content: panel([heading('foo'), text('bar')]),
           placeholder: 'foobar',
         },
       });
@@ -158,12 +158,12 @@ describe('implementation', () => {
 
     it.each([
       { type: DialogType.Alert },
-      { type: DialogType.Alert, ui: null },
-      { type: DialogType.Alert, ui: false },
-      { type: DialogType.Alert, ui: '' },
-      { type: DialogType.Alert, ui: 'abc' },
-      { type: DialogType.Alert, ui: 2 },
-      { type: DialogType.Alert, ui: [] },
+      { type: DialogType.Alert, content: null },
+      { type: DialogType.Alert, content: false },
+      { type: DialogType.Alert, content: '' },
+      { type: DialogType.Alert, content: 'abc' },
+      { type: DialogType.Alert, content: 2 },
+      { type: DialogType.Alert, content: [] },
     ])('rejects invalid fields', async (value) => {
       const hooks = getMockDialogHooks();
       const implementation = getDialogImplementation(hooks);
@@ -191,7 +191,7 @@ describe('implementation', () => {
             method: 'snap_dialog',
             params: {
               type: DialogType.Prompt,
-              ui: panel([heading('foo'), text('bar')]),
+              content: panel([heading('foo'), text('bar')]),
               placeholder: value,
             },
           }),
@@ -211,7 +211,7 @@ describe('implementation', () => {
           method: 'snap_dialog',
           params: {
             type: DialogType.Prompt,
-            ui: panel([heading('foo'), text('bar')]),
+            content: panel([heading('foo'), text('bar')]),
             placeholder: '',
           },
         }),
@@ -231,7 +231,7 @@ describe('implementation', () => {
             method: 'snap_dialog',
             params: {
               type,
-              ui: panel([heading('foo'), text('bar')]),
+              content: panel([heading('foo'), text('bar')]),
               placeholder: 'foobar',
             },
           }),
