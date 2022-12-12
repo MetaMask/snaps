@@ -3,6 +3,5 @@
   "compilerOptions": {
     "resolveJsonModule": true
   },
-  "files": ["../../../snaps-types/global.d.ts"],
   "include": ["src", "gulpfile.ts", "babel.config.json"]
 }
