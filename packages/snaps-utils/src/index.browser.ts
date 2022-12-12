@@ -2,6 +2,7 @@ export * from './caveats';
 export * from './deep-clone';
 export * from './default-endowments';
 export * from './flatMap';
+export * from './handlers';
 export * from './json-rpc';
 export * from './manifest/index.browser';
 export * from './namespace';

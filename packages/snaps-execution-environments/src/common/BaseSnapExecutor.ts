@@ -2,8 +2,9 @@
 /// <reference path="../../../../node_modules/ses/index.d.ts" />
 import { StreamProvider } from '@metamask/providers';
 import { RequestArguments } from '@metamask/providers/dist/BaseProvider';
-import { SnapExports, SnapsGlobalObject } from '@metamask/snaps-types';
 import {
+  SnapExports,
+  SnapsGlobalObject,
   HandlerType,
   SnapExportsParameters,
   SNAP_EXPORT_NAMES,
