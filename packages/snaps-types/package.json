@@ -9,8 +9,7 @@
   "main": "global.d.ts",
   "types": "dist/index.d.ts",
   "files": [
-    "dist",
-    "global.d.ts"
+    "dist"
   ],
   "scripts": {
     "lint:eslint": "eslint . --cache --ext js,ts",
