@@ -5,6 +5,5 @@
     "declaration": false,
     "typeRoots": ["../../../../node_modules/@types"]
   },
-  "files": ["../../../snaps-types/global.d.ts"],
   "include": ["assembly"]
 }

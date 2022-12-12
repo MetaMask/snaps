@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps-monorepo.git"
   },
   "source": {
-    "shasum": "c8hLUTgqFJnm0GgK1XcEW1RbqBxukctXTYqe2av7khk=",
+    "shasum": "lcCxQquYyEkQGnVdLJZTtXoEGI20tENIG9TRTsLwEmI=",
     "location": {
       "npm": {
         "filePath": "dist/snap.js",
