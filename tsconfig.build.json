@@ -8,6 +8,7 @@
     { "path": "./packages/snaps-controllers/tsconfig.build.json" },
     { "path": "./packages/snaps-execution-environments/tsconfig.build.json" },
     { "path": "./packages/snaps-rollup-plugin/tsconfig.build.json" },
+    { "path": "./packages/snaps-types/tsconfig.build.json" },
     { "path": "./packages/snaps-ui/tsconfig.build.json" },
     { "path": "./packages/snaps-utils/tsconfig.build.json" },
     { "path": "./packages/snaps-webpack-plugin/tsconfig.build.json" }

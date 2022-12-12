@@ -1,4 +1,4 @@
-import { OnTransactionHandler } from '@metamask/snaps-types';
+import { OnTransactionHandler } from '@metamask/snaps-types/src';
 
 import { getInsights } from './insights';
 
