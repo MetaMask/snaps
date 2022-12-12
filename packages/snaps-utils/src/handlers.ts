@@ -34,7 +34,7 @@ export type OnRpcRequestHandler = (args: {
  * If the snap has no insights about the transaction, this should be `null`.
  */
 export type OnTransactionResponse = {
-  insights: { [key: string]: unknown } | null;
+  insights: { [key: string]: Json } | null;
 };
 
 /**
@@ -52,7 +52,7 @@ export type OnTransactionResponse = {
  */
 // TODO: Improve type.
 export type OnTransactionHandler = (args: {
-  transaction: { [key: string]: unknown };
+  transaction: { [key: string]: Json };
   chainId: string;
   transactionOrigin?: string;
 }) => Promise<OnTransactionResponse>;

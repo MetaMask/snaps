@@ -6,17 +6,17 @@ import { StreamProvider } from '@metamask/providers';
 export type Ethereum = StreamProvider;
 
 // Exported again for convenience.
-export type { Json } from '@metamask/utils';
+export type { Json, JsonRpcRequest } from '@metamask/utils';
 export type {
-  RequestArguments,
-  SnapsGlobalObject,
-  OnRpcRequestHandler,
+  AccountId,
+  ChainId,
+  KeyringEvent,
+  KeyringRequest,
   OnCronjobHandler,
+  OnRpcRequestHandler,
   OnTransactionHandler,
   OnTransactionResponse,
+  RequestArguments,
   SnapKeyring,
-  KeyringRequest,
-  KeyringEvent,
-  ChainId,
-  AccountId,
+  SnapsGlobalObject,
 } from '@metamask/snaps-utils';
