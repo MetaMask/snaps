@@ -6,7 +6,7 @@
     "type": "git",
     "url": "https://github.com/MetaMask/snaps-monorepo.git"
   },
-  "main": "global.d.ts",
+  "main": "dist/index.d.ts",
   "types": "dist/index.d.ts",
   "files": [
     "dist"
