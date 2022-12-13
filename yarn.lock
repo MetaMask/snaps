@@ -2840,7 +2840,6 @@ __metadata:
     "@metamask/post-message-stream": ^6.0.0
     "@metamask/rpc-methods": ^0.26.2
     "@metamask/snaps-execution-environments": ^0.26.2
-    "@metamask/snaps-types": ^0.26.2
     "@metamask/snaps-utils": ^0.26.2
     "@metamask/subject-metadata-controller": ^1.0.1
     "@metamask/template-snap": ^0.7.0
@@ -2903,7 +2902,6 @@ __metadata:
     "@metamask/object-multiplex": ^1.2.0
     "@metamask/post-message-stream": ^6.0.0
     "@metamask/providers": ^10.2.0
-    "@metamask/snaps-types": ^0.26.2
     "@metamask/snaps-utils": ^0.26.2
     "@metamask/utils": ^3.3.1
     "@types/jest": ^27.5.1
