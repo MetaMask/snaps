@@ -1,7 +1,3 @@
-import {
-  SnapFunctionExports,
-  SnapKeyring as Keyring,
-} from '@metamask/snaps-types';
 import { assertStruct, Json } from '@metamask/utils';
 import {
   Infer,
@@ -19,7 +15,8 @@ import {
   assert as assertSuperstruct,
 } from 'superstruct';
 
-import { SnapManifest } from './manifest/validation';
+import { SnapFunctionExports, SnapKeyring as Keyring } from './handlers';
+import { SnapManifest } from './manifest';
 import { VersionStruct } from './versions';
 
 export enum NpmSnapFileNames {

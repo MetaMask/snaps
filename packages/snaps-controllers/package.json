@@ -39,7 +39,6 @@
     "@metamask/post-message-stream": "^6.0.0",
     "@metamask/rpc-methods": "^0.26.2",
     "@metamask/snaps-execution-environments": "^0.26.2",
-    "@metamask/snaps-types": "^0.26.2",
     "@metamask/snaps-utils": "^0.26.2",
     "@metamask/subject-metadata-controller": "^1.0.1",
     "@metamask/utils": "^3.3.1",

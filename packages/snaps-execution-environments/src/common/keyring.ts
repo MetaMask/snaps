@@ -1,4 +1,4 @@
-import { SnapKeyring } from '@metamask/snaps-types';
+import { SnapKeyring } from '@metamask/snaps-utils';
 import {
   assert,
   isValidJson,

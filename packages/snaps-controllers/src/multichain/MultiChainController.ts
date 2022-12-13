@@ -9,8 +9,8 @@ import {
   HasPermission,
   PermissionConstraint,
 } from '@metamask/permission-controller';
-import { SnapKeyring } from '@metamask/snaps-types';
 import {
+  SnapKeyring,
   parseAccountId,
   AccountId,
   parseChainId,

@@ -1,5 +1,5 @@
 import { StreamProvider } from '@metamask/providers';
-import { SnapsGlobalObject } from '@metamask/snaps-types';
+import { SnapsGlobalObject } from '@metamask/snaps-utils';
 import { hasProperty } from '@metamask/utils';
 
 import { rootRealmGlobal } from '../globalObject';

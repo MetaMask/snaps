@@ -5,6 +5,7 @@ export * from './default-endowments';
 export * from './eval';
 export * from './flatMap';
 export * from './fs';
+export * from './handlers';
 export * from './json-rpc';
 export * from './manifest';
 export * from './mock';

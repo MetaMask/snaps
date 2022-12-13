@@ -17,7 +17,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
 }) => {
   switch (request.method) {
     case 'inApp':
-      return snap.request({
+      return await snap.request({
         method: 'snap_notify',
         params: [
           {
@@ -27,7 +27,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
         ],
       });
     case 'native':
-      return snap.request({
+      return await snap.request({
         method: 'snap_notify',
         params: [
           {
