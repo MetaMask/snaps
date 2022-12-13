@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.26.2]
-### Uncategorized
-- Fix usage of wrong `ethereum` object for `ethereum` endowment ([#1064](https://github.com/MetaMask/snaps-monorepo/pull/1064))
+### Fixed
+- Fix usage of wrong `ethereum` global for `ethereum` endowment ([#1064](https://github.com/MetaMask/snaps-monorepo/pull/1064))
 
 ## [0.26.1]
 ### Changed
