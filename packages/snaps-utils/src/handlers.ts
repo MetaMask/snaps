@@ -1,6 +1,6 @@
 import type { StreamProvider } from '@metamask/providers';
-import { Json, JsonRpcRequest } from '@metamask/utils';
 import { Component } from '@metamask/snaps-ui';
+import { Json, JsonRpcRequest } from '@metamask/utils';
 
 import { AccountId, ChainId, RequestArguments } from './namespace';
 
