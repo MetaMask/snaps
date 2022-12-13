@@ -1,7 +1,7 @@
 export * from './caveats';
 export * from './deep-clone';
 export * from './default-endowments';
-export * from './flatMap';
+export * from './collections';
 export * from './json-rpc';
 export * from './manifest/index.browser';
 export * from './namespace';
@@ -12,3 +12,4 @@ export * from './snaps';
 export * from './types';
 export * from './versions';
 export * from './virtual-file/index.browser';
+export * from './checksum';
