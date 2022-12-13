@@ -84,6 +84,9 @@ export function createEndowments(
         }
 
         allEndowments[endowmentName] = attenuatedEndowments[endowmentName];
+      } else if (endowmentName === 'ethereum') {
+        // Special case for adding the EIP-1193 provider.
+        allEndowments[endowmentName] = ethereum;
       } else if (endowmentName in rootRealmGlobal) {
         // If the endowment doesn't have a factory, just use whatever is on the
         // global object.
@@ -94,9 +97,6 @@ export function createEndowments(
           typeof globalValue === 'function' && !isConstructor(globalValue)
             ? globalValue.bind(rootRealmGlobal)
             : globalValue;
-      } else if (endowmentName === 'ethereum') {
-        // Special case for adding the EIP-1193 provider.
-        allEndowments[endowmentName] = ethereum;
       } else {
         // If we get to this point, we've been passed an endowment that doesn't
         // exist in our current environment.

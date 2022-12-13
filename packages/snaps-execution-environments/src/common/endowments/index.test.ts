@@ -64,6 +64,16 @@ describe('Endowment utils', () => {
       expect(endowments.mockEndowment).toBeDefined();
     });
 
+    it('handles special case for ethereum endowment', () => {
+      Object.assign(globalThis, { ethereum: {} });
+      const { endowments } = createEndowments(
+        mockSnapAPI as any,
+        mockEthereum as any,
+        ['ethereum'],
+      );
+      expect(endowments.ethereum).toBe(mockEthereum);
+    });
+
     it('handles factory endowments', () => {
       const { endowments } = createEndowments(
         mockSnapAPI as any,
