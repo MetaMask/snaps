@@ -1,5 +1,6 @@
 export * from './caveats';
 export * from './cronjob';
+export * from './checksum';
 export * from './deep-clone';
 export * from './default-endowments';
 export * from './entropy';
