@@ -31,9 +31,6 @@ import {
 import { MOCK_CRONJOB_PERMISSION } from './cronjob';
 import { getNodeEES, getNodeEESMessenger } from './execution-environment';
 
-export const TEST_SECRET_RECOVERY_PHRASE =
-  'test test test test test test test test test test test ball';
-
 const asyncNoOp = async () => Promise.resolve();
 
 /**
@@ -246,9 +243,6 @@ export const getSnapControllerOptions = (
   const options = {
     environmentEndowmentPermissions: [],
     closeAllConnections: jest.fn(),
-    getMnemonicPhrase: jest
-      .fn()
-      .mockImplementation(() => TEST_SECRET_RECOVERY_PHRASE),
     messenger: getSnapControllerMessenger(),
     featureFlags: { dappsCanUpdateSnaps: true },
     checkBlockList: jest
@@ -289,9 +283,6 @@ export const getSnapControllerWithEESOptions = ({
     featureFlags: { dappsCanUpdateSnaps: true },
     environmentEndowmentPermissions: [],
     closeAllConnections: jest.fn(),
-    getMnemonicPhrase: jest
-      .fn()
-      .mockImplementation(() => TEST_SECRET_RECOVERY_PHRASE),
     checkBlockList: jest
       .fn()
       .mockImplementation(async (snaps: CheckSnapBlockListArg) =>
