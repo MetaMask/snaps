@@ -460,8 +460,6 @@ type SnapControllerMessenger = RestrictedControllerMessenger<
   AllowedEvents['type']
 >;
 
-type GetMnemonicPhrase = () => Promise<string>;
-
 type FeatureFlags = {
   /**
    * We still need to implement new UI approval page in metamask-extension before we can allow
@@ -518,11 +516,6 @@ type SnapControllerArgs = {
    * See {@link FeatureFlags}.
    */
   featureFlags: FeatureFlags;
-
-  /**
-   * A function to get the user's mnemonic phrase.
-   */
-  getMnemonicPhrase: GetMnemonicPhrase;
 
   /**
    * How frequently to check whether a snap is idle.
