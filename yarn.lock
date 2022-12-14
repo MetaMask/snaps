@@ -15614,6 +15614,7 @@ __metadata:
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-cli": ^0.26.2
     "@metamask/snaps-types": ^0.26.2
+    "@metamask/snaps-ui": ^0.26.2
     "@metamask/utils": ^3.3.1
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
