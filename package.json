@@ -39,6 +39,9 @@
       "prettier --write"
     ]
   },
+  "dependencies": {
+    "@metamask/snaps-ui": "workspace:^"
+  },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.0.3",
     "@metamask/auto-changelog": "^3.1.0",

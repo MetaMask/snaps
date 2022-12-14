@@ -71,11 +71,5 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
-  },
-  "lavamoat": {
-    "allowScripts": {
-      "@metamask/permission-controller>@metamask/controller-utils>ethereumjs-util>ethereum-cryptography>keccak": false,
-      "@metamask/permission-controller>@metamask/controller-utils>ethereumjs-util>ethereum-cryptography>secp256k1": false
-    }
   }
 }
