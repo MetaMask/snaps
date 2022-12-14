@@ -7,9 +7,9 @@ module.exports = deepmerge(baseConfig, {
   coverageThreshold: {
     global: {
       branches: 98.09,
-      functions: 94.73,
-      lines: 98.51,
-      statements: 98.52,
+      functions: 94.66,
+      lines: 98.49,
+      statements: 98.5,
     },
   },
   setupFiles: ['./test/setup.js'],
