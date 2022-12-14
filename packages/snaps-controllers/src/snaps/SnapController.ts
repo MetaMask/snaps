@@ -3,7 +3,6 @@ import {
   BaseControllerV2 as BaseController,
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
-import { encrypt, decrypt } from '@metamask/browser-passworder';
 import {
   Caveat,
   GetEndowments,
@@ -68,7 +67,6 @@ import {
   hasProperty,
   inMilliseconds,
   isNonEmptyArray,
-  isValidJson,
   Json,
   NonEmptyArray,
   timeSince,
@@ -462,12 +460,6 @@ type SnapControllerMessenger = RestrictedControllerMessenger<
   AllowedEvents['type']
 >;
 
-export enum AppKeyType {
-  StateEncryption = 'stateEncryption',
-}
-
-type GetAppKey = (subject: string, appKeyType: AppKeyType) => Promise<string>;
-
 type FeatureFlags = {
   /**
    * We still need to implement new UI approval page in metamask-extension before we can allow
@@ -524,11 +516,6 @@ type SnapControllerArgs = {
    * See {@link FeatureFlags}.
    */
   featureFlags: FeatureFlags;
-
-  /**
-   * A function to get an "app key" for a specific subject.
-   */
-  getAppKey: GetAppKey;
 
   /**
    * How frequently to check whether a snap is idle.
@@ -661,8 +648,6 @@ export class SnapController extends BaseController<
 
   #rollbackSnapshots: Map<SnapId, RollbackSnapshot>;
 
-  #getAppKey: GetAppKey;
-
   #timeoutForLastRequestStatus?: number;
 
   #statusMachine!: StateMachine.Machine<
@@ -675,7 +660,6 @@ export class SnapController extends BaseController<
     closeAllConnections,
     messenger,
     state,
-    getAppKey,
     environmentEndowmentPermissions = [],
     idleTimeCheckInterval = inMilliseconds(5, Duration.Second),
     checkBlockList,
@@ -744,7 +728,6 @@ export class SnapController extends BaseController<
     this.#environmentEndowmentPermissions = environmentEndowmentPermissions;
     this.#featureFlags = featureFlags;
     this.#fetchFunction = fetchFunction;
-    this.#getAppKey = getAppKey;
     this.#idleTimeCheckInterval = idleTimeCheckInterval;
     this.#checkSnapBlockList = checkBlockList;
     this.#maxIdleTime = maxIdleTime;
@@ -1324,10 +1307,9 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap whose state should be updated.
    * @param newSnapState - The new state of the snap.
    */
-  async updateSnapState(snapId: SnapId, newSnapState: Json): Promise<void> {
-    const encrypted = await this.#encryptSnapState(snapId, newSnapState);
+  async updateSnapState(snapId: SnapId, newSnapState: string): Promise<void> {
     const runtime = this.#getRuntimeExpect(snapId);
-    runtime.state = encrypted;
+    runtime.state = newSnapState;
   }
 
   /**
@@ -1386,30 +1368,7 @@ export class SnapController extends BaseController<
    */
   async getSnapState(snapId: SnapId): Promise<Json> {
     const { state } = this.#getRuntimeExpect(snapId);
-    return state ? this.#decryptSnapState(snapId, state) : null;
-  }
-
-  async #getEncryptionKey(snapId: SnapId): Promise<string> {
-    return this.#getAppKey(snapId, AppKeyType.StateEncryption);
-  }
-
-  async #encryptSnapState(snapId: SnapId, state: Json): Promise<string> {
-    const appKey = await this.#getEncryptionKey(snapId);
-    return encrypt(appKey, state);
-  }
-
-  async #decryptSnapState(snapId: SnapId, encrypted: string): Promise<Json> {
-    const appKey = await this.#getEncryptionKey(snapId);
-    try {
-      const value = await decrypt(appKey, encrypted);
-
-      assert(isValidJson(value));
-      return value;
-    } catch (error) {
-      throw new Error(
-        'Failed to decrypt snap state, the state must be corrupted.',
-      );
-    }
+    return state ?? null;
   }
 
   /**

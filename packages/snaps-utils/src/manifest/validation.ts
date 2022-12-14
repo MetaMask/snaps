@@ -21,18 +21,19 @@ import {
 } from 'superstruct';
 
 import { CronjobSpecificationArrayStruct } from '../cronjob';
+import { SIP_6_MAGIC_VALUE, STATE_ENCRYPTION_MAGIC_VALUE } from '../entropy';
 import { RpcOriginsStruct } from '../json-rpc';
 import { NamespacesStruct } from '../namespace';
 import { normalizeRelative } from '../path';
 import { NameStruct, NpmSnapFileNames } from '../types';
 import { VersionStruct } from '../versions';
 
-// 0xd36e6170 - 0x80000000
-export const SIP_6_MAGIC_VALUE = `1399742832'` as `${number}'`;
-
 // BIP-43 purposes that cannot be used for entropy derivation. These are in the
 // string form, ending with `'`.
-const FORBIDDEN_PURPOSES: string[] = [SIP_6_MAGIC_VALUE];
+const FORBIDDEN_PURPOSES: string[] = [
+  SIP_6_MAGIC_VALUE,
+  STATE_ENCRYPTION_MAGIC_VALUE,
+];
 
 export type Base64Opts = {
   /**

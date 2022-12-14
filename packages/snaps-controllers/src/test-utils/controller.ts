@@ -243,9 +243,6 @@ export const getSnapControllerOptions = (
   const options = {
     environmentEndowmentPermissions: [],
     closeAllConnections: jest.fn(),
-    getAppKey: jest
-      .fn()
-      .mockImplementation((snapId, appKeyType) => `${appKeyType}:${snapId}`),
     messenger: getSnapControllerMessenger(),
     featureFlags: { dappsCanUpdateSnaps: true },
     checkBlockList: jest
@@ -286,9 +283,6 @@ export const getSnapControllerWithEESOptions = ({
     featureFlags: { dappsCanUpdateSnaps: true },
     environmentEndowmentPermissions: [],
     closeAllConnections: jest.fn(),
-    getAppKey: jest
-      .fn()
-      .mockImplementation((snapId, appKeyType) => `${appKeyType}:${snapId}`),
     checkBlockList: jest
       .fn()
       .mockImplementation(async (snaps: CheckSnapBlockListArg) =>

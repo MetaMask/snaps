@@ -1,5 +1,8 @@
 import { SemVerVersion } from '../versions';
 
+export const TEST_SECRET_RECOVERY_PHRASE =
+  'test test test test test test test test test test test ball';
+
 /**
  * Tens/hundreds legacy tests use creation utils.
  *

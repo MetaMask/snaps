@@ -4,5 +4,6 @@
  * only be used in tests, and should not be used in production code.
  */
 
+export * from './common';
 export * from './manifest';
 export * from './snap';

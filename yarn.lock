@@ -2678,6 +2678,7 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^3.1.0
+    "@metamask/browser-passworder": ^4.0.2
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
     "@metamask/eslint-config-nodejs": ^11.0.1
@@ -2830,7 +2831,6 @@ __metadata:
     "@metamask/approval-controller": ^1.0.1
     "@metamask/auto-changelog": ^3.1.0
     "@metamask/base-controller": ^1.1.1
-    "@metamask/browser-passworder": ^4.0.2
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
     "@metamask/eslint-config-nodejs": ^11.0.1

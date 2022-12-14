@@ -1,8 +1,7 @@
 import { PermissionType } from '@metamask/permission-controller';
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 
-import { ENTROPY_VECTORS } from './__fixtures__';
-import { deriveEntropy, getEntropyBuilder } from './getEntropy';
+import { getEntropyBuilder } from './getEntropy';
 
 const TEST_SECRET_RECOVERY_PHRASE =
   'test test test test test test test test test test test ball';
@@ -34,19 +33,6 @@ describe('getEntropyBuilder', () => {
       methodImplementation: expect.any(Function),
     });
   });
-});
-
-describe('deriveEntropy', () => {
-  it.each(ENTROPY_VECTORS)(
-    'derives entropy from the given parameters',
-    async () => {
-      const { snapId, salt, entropy } = ENTROPY_VECTORS[0];
-
-      expect(
-        await deriveEntropy(snapId, TEST_SECRET_RECOVERY_PHRASE, salt ?? ''),
-      ).toStrictEqual(entropy);
-    },
-  );
 });
 
 describe('getEntropyImplementation', () => {

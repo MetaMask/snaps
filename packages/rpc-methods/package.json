@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "test": "jest && yarn posttest",
-    "posttest": "jest-it-up",
+    "posttest": "jest-it-up --margin 0.25",
     "test:ci": "yarn test",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
@@ -26,6 +26,7 @@
     "publish:package": "../../scripts/publish-package.sh"
   },
   "dependencies": {
+    "@metamask/browser-passworder": "^4.0.2",
     "@metamask/key-tree": "^6.0.0",
     "@metamask/permission-controller": "^1.0.1",
     "@metamask/snaps-utils": "^0.26.2",

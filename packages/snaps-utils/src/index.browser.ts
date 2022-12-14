@@ -1,6 +1,7 @@
 export * from './caveats';
 export * from './deep-clone';
 export * from './default-endowments';
+export * from './entropy';
 export * from './flatMap';
 export * from './handlers';
 export * from './json-rpc';
