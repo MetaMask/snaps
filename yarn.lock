@@ -3014,7 +3014,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/snaps-ui@^0.26.2, @metamask/snaps-ui@workspace:^, @metamask/snaps-ui@workspace:packages/snaps-ui":
+"@metamask/snaps-ui@^0.26.2, @metamask/snaps-ui@workspace:packages/snaps-ui":
   version: 0.0.0-use.local
   resolution: "@metamask/snaps-ui@workspace:packages/snaps-ui"
   dependencies:
@@ -14144,7 +14144,6 @@ __metadata:
     "@metamask/eslint-config-jest": ^11.0.0
     "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
-    "@metamask/snaps-ui": "workspace:^"
     "@types/jest": ^27.5.1
     "@types/node": ^14.14.25
     "@typescript-eslint/eslint-plugin": ^5.42.1
