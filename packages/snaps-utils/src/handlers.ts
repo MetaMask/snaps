@@ -35,7 +35,7 @@ export type OnRpcRequestHandler = (args: {
  * If the snap has no insights about the transaction, this should be `null`.
  */
 export type OnTransactionResponse = {
-  ui: Component;
+  content: Component;
 };
 
 /**
