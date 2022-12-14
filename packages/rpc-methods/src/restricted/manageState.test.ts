@@ -1,5 +1,4 @@
 import { encrypt } from '@metamask/browser-passworder';
-import { STATE_ENCRYPTION_MAGIC_VALUE } from '@metamask/snaps-utils';
 import {
   MOCK_LOCAL_SNAP_ID,
   MOCK_SNAP_ID,
@@ -7,13 +6,11 @@ import {
 } from '@metamask/snaps-utils/test-utils';
 import { ethErrors } from 'eth-rpc-errors';
 
-import { deriveEntropy } from '../utils';
 import {
   getManageStateImplementation,
   getValidatedParams,
   ManageStateOperation,
   specificationBuilder,
-  STATE_ENCRYPTION_SALT,
 } from './manageState';
 
 Object.defineProperty(global, 'crypto', {
@@ -25,6 +22,14 @@ Object.defineProperty(global, 'crypto', {
     getRandomValues: (input: Uint8Array) => input.fill(0),
   },
 });
+
+// Encryption key for `MOCK_SNAP_ID`.
+const ENCRYPTION_KEY =
+  '0xd2f0a8e994b871ba4451ac383bf323cdaad8d554736355f2223e155692fbc446';
+
+// Encryption key for `MOCK_LOCAL_SNAP_ID`.
+const OTHER_ENCRYPTION_KEY =
+  '0x7cd340349a41e0f7af62a9d97c76e96b12485e0206791d6b5638dd59736af8f5';
 
 describe('snap_manageState', () => {
   const MOCK_SMALLER_STORAGE_SIZE_LIMIT = 10; // In bytes
@@ -55,20 +60,13 @@ describe('snap_manageState', () => {
 
   describe('getManageStateImplementation', () => {
     it('gets snap state', async () => {
-      const encryptionKey = await deriveEntropy({
-        input: MOCK_SNAP_ID,
-        salt: STATE_ENCRYPTION_SALT,
-        mnemonicPhrase: TEST_SECRET_RECOVERY_PHRASE,
-        magic: STATE_ENCRYPTION_MAGIC_VALUE,
-      });
-
       const mockSnapState = {
         some: {
           data: 'for a snap state',
         },
       };
 
-      const mockEncryptedState = encrypt(encryptionKey, mockSnapState);
+      const mockEncryptedState = encrypt(ENCRYPTION_KEY, mockSnapState);
 
       const clearSnapState = jest.fn().mockResolvedValueOnce(true);
       const getSnapState = jest.fn().mockResolvedValueOnce(mockEncryptedState);
@@ -115,20 +113,13 @@ describe('snap_manageState', () => {
     });
 
     it('updates snap state', async () => {
-      const encryptionKey = await deriveEntropy({
-        input: MOCK_SNAP_ID,
-        salt: STATE_ENCRYPTION_SALT,
-        mnemonicPhrase: TEST_SECRET_RECOVERY_PHRASE,
-        magic: STATE_ENCRYPTION_MAGIC_VALUE,
-      });
-
       const mockSnapState = {
         some: {
           data: 'for a snap state',
         },
       };
 
-      const mockEncryptedState = await encrypt(encryptionKey, mockSnapState);
+      const mockEncryptedState = await encrypt(ENCRYPTION_KEY, mockSnapState);
 
       const clearSnapState = jest.fn().mockResolvedValueOnce(true);
       const getSnapState = jest.fn().mockResolvedValueOnce(true);
@@ -158,20 +149,17 @@ describe('snap_manageState', () => {
     });
 
     it('uses different encryption for different snap IDs', async () => {
-      const encryptionKey = await deriveEntropy({
-        input: MOCK_SNAP_ID,
-        salt: STATE_ENCRYPTION_SALT,
-        mnemonicPhrase: TEST_SECRET_RECOVERY_PHRASE,
-        magic: STATE_ENCRYPTION_MAGIC_VALUE,
-      });
-
       const mockSnapState = {
         some: {
           data: 'for a snap state',
         },
       };
 
-      const mockEncryptedState = await encrypt(encryptionKey, mockSnapState);
+      const mockEncryptedState = await encrypt(ENCRYPTION_KEY, mockSnapState);
+      const mockOtherEncryptedState = await encrypt(
+        OTHER_ENCRYPTION_KEY,
+        mockSnapState,
+      );
 
       const clearSnapState = jest.fn().mockResolvedValueOnce(true);
       const getSnapState = jest.fn().mockResolvedValueOnce(true);
@@ -210,10 +198,10 @@ describe('snap_manageState', () => {
         mockEncryptedState,
       );
 
-      expect(updateSnapState).not.toHaveBeenNthCalledWith(
+      expect(updateSnapState).toHaveBeenNthCalledWith(
         2,
         MOCK_LOCAL_SNAP_ID,
-        mockEncryptedState,
+        mockOtherEncryptedState,
       );
     });
 
