@@ -194,7 +194,6 @@ jobs:
       - build
       - lint
       - test
-      - platform-compatibility-build
       - platform-compatibility-test
       - check-workflows
     outputs:
