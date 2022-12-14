@@ -1,8 +1,5 @@
 import { encrypt } from '@metamask/browser-passworder';
-import {
-  deriveEntropy,
-  STATE_ENCRYPTION_MAGIC_VALUE,
-} from '@metamask/snaps-utils';
+import { STATE_ENCRYPTION_MAGIC_VALUE } from '@metamask/snaps-utils';
 import {
   MOCK_LOCAL_SNAP_ID,
   MOCK_SNAP_ID,
@@ -10,6 +7,7 @@ import {
 } from '@metamask/snaps-utils/test-utils';
 import { ethErrors } from 'eth-rpc-errors';
 
+import { deriveEntropy } from '../utils';
 import {
   getManageStateImplementation,
   getValidatedParams,

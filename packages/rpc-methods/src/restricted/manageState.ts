@@ -5,10 +5,7 @@ import {
   RestrictedMethodOptions,
   ValidPermissionSpecification,
 } from '@metamask/permission-controller';
-import {
-  deriveEntropy,
-  STATE_ENCRYPTION_MAGIC_VALUE,
-} from '@metamask/snaps-utils';
+import { STATE_ENCRYPTION_MAGIC_VALUE } from '@metamask/snaps-utils';
 import {
   Json,
   NonEmptyArray,
@@ -18,6 +15,8 @@ import {
   isValidJson,
 } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
+
+import { deriveEntropy } from '../utils';
 
 // The salt used for SIP-6-based entropy derivation.
 export const STATE_ENCRYPTION_SALT = 'snap_manageState encryption';
