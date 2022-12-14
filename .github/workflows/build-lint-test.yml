@@ -53,6 +53,8 @@ jobs:
       - run: yarn --immutable
       - run: yarn build
       - run: yarn workspace @metamask/snaps-controllers run test:ci
+      - name: CodeCov
+        uses: codecov/codecov-action@d9f34f8cd5cb3b3eb79b3e4b5dae3a16df499a70
       - name: Require clean working directory
         shell: bash
         run: |
