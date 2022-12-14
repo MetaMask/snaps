@@ -1,5 +1,4 @@
 import { getPersistentState } from '@metamask/base-controller';
-import { encrypt } from '@metamask/browser-passworder';
 import {
   Caveat,
   SubjectPermissions,
@@ -17,8 +16,6 @@ import {
   VirtualFile,
   SnapManifest,
   NpmSnapFileNames,
-  deriveEntropy,
-  STATE_ENCRYPTION_MAGIC_VALUE,
 } from '@metamask/snaps-utils';
 import {
   DEFAULT_SNAP_BUNDLE,
@@ -62,7 +59,6 @@ import {
   sleep,
   loopbackDetect,
   LoopbackLocation,
-  TEST_SECRET_RECOVERY_PHRASE,
 } from '../test-utils';
 import { delay } from '../utils';
 import { handlerEndowments, SnapEndowments } from './endowments';
@@ -105,24 +101,17 @@ describe('SnapController', () => {
     );
 
     const snap = snapController.getExpect(MOCK_SNAP_ID);
-    const state = { hello: 'world' };
+    const state = 'foo';
 
     await snapController.startSnap(snap.id);
     await snapController.updateSnapState(snap.id, state);
     const snapState = await snapController.getSnapState(snap.id);
     expect(snapState).toStrictEqual(state);
 
-    const encryptionKey = await deriveEntropy({
-      input: MOCK_SNAP_ID,
-      salt: 'state encryption',
-      mnemonicPhrase: TEST_SECRET_RECOVERY_PHRASE,
-      magic: STATE_ENCRYPTION_MAGIC_VALUE,
-    });
-
     expect(
       // @ts-expect-error Accessing private property
       snapController.snapsRuntimeData.get(MOCK_SNAP_ID).state,
-    ).toStrictEqual(await encrypt(encryptionKey, state));
+    ).toStrictEqual(state);
     snapController.destroy();
     await service.terminateAllSnaps();
   });
@@ -3712,18 +3701,8 @@ describe('SnapController', () => {
     it(`gets the snap's state`, async () => {
       const messenger = getSnapControllerMessenger();
 
-      const state = {
-        fizz: 'buzz',
-      };
+      const state = 'foo';
 
-      const encryptionKey = await deriveEntropy({
-        input: MOCK_SNAP_ID,
-        salt: 'state encryption',
-        mnemonicPhrase: TEST_SECRET_RECOVERY_PHRASE,
-        magic: STATE_ENCRYPTION_MAGIC_VALUE,
-      });
-
-      const encrypted = await encrypt(encryptionKey, state);
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -3732,7 +3711,7 @@ describe('SnapController', () => {
               [MOCK_SNAP_ID]: getPersistedSnapObject(),
             },
             snapStates: {
-              [MOCK_SNAP_ID]: encrypted,
+              [MOCK_SNAP_ID]: state,
             },
           },
         }),
@@ -3746,30 +3725,6 @@ describe('SnapController', () => {
 
       expect(getSnapStateSpy).toHaveBeenCalledTimes(1);
       expect(result).toStrictEqual(state);
-    });
-
-    it('throws custom error message in case decryption fails', async () => {
-      const messenger = getSnapControllerMessenger();
-
-      const snapController = getSnapController(
-        getSnapControllerOptions({
-          messenger,
-          state: {
-            snapStates: { [MOCK_SNAP_ID]: 'foo' },
-            snaps: getPersistedSnapsState(
-              getPersistedSnapObject({ status: SnapStatus.Installing }),
-            ),
-          },
-        }),
-      );
-
-      const getSnapStateSpy = jest.spyOn(snapController, 'getSnapState');
-      await expect(
-        messenger.call('SnapController:getSnapState', MOCK_SNAP_ID),
-      ).rejects.toThrow(
-        'Failed to decrypt snap state, the state must be corrupted.',
-      );
-      expect(getSnapStateSpy).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -3818,88 +3773,18 @@ describe('SnapController', () => {
       );
 
       const updateSnapStateSpy = jest.spyOn(snapController, 'updateSnapState');
-      const state = {
-        bar: 'baz',
-      };
+      const state = 'bar';
       await messenger.call(
         'SnapController:updateSnapState',
         MOCK_SNAP_ID,
         state,
       );
-
-      const encryptionKey = await deriveEntropy({
-        input: MOCK_SNAP_ID,
-        salt: 'state encryption',
-        mnemonicPhrase: TEST_SECRET_RECOVERY_PHRASE,
-        magic: STATE_ENCRYPTION_MAGIC_VALUE,
-      });
 
       expect(updateSnapStateSpy).toHaveBeenCalledTimes(1);
       expect(
         // @ts-expect-error Accessing private property
         snapController.snapsRuntimeData.get(MOCK_SNAP_ID).state,
-      ).toStrictEqual(await encrypt(encryptionKey, state));
-    });
-
-    it('has different encryption for the same data stored by two different snaps', async () => {
-      const messenger = getSnapControllerMessenger();
-
-      const snapController = getSnapController(
-        getSnapControllerOptions({
-          messenger,
-          state: {
-            snaps: getPersistedSnapsState(
-              getPersistedSnapObject(),
-              getPersistedSnapObject({
-                id: MOCK_LOCAL_SNAP_ID,
-              }),
-            ),
-          },
-        }),
-      );
-
-      const updateSnapStateSpy = jest.spyOn(snapController, 'updateSnapState');
-      const state = {
-        bar: 'baz',
-      };
-      await messenger.call(
-        'SnapController:updateSnapState',
-        MOCK_SNAP_ID,
-        state,
-      );
-
-      await messenger.call(
-        'SnapController:updateSnapState',
-        MOCK_LOCAL_SNAP_ID,
-        state,
-      );
-
-      expect(updateSnapStateSpy).toHaveBeenCalledTimes(2);
-      const snapState1 =
-        // @ts-expect-error Accessing private property
-        snapController.snapsRuntimeData.get(MOCK_SNAP_ID).state;
-
-      const snapState2 =
-        // @ts-expect-error Accessing private property
-        snapController.snapsRuntimeData.get(MOCK_LOCAL_SNAP_ID).state;
-
-      const encryptionKey1 = await deriveEntropy({
-        input: MOCK_SNAP_ID,
-        salt: 'state encryption',
-        mnemonicPhrase: TEST_SECRET_RECOVERY_PHRASE,
-        magic: STATE_ENCRYPTION_MAGIC_VALUE,
-      });
-
-      const encryptionKey2 = await deriveEntropy({
-        input: MOCK_LOCAL_SNAP_ID,
-        salt: 'state encryption',
-        mnemonicPhrase: TEST_SECRET_RECOVERY_PHRASE,
-        magic: STATE_ENCRYPTION_MAGIC_VALUE,
-      });
-
-      expect(snapState1).toStrictEqual(await encrypt(encryptionKey1, state));
-      expect(snapState2).toStrictEqual(await encrypt(encryptionKey2, state));
-      expect(snapState1).not.toStrictEqual(snapState2);
+      ).toStrictEqual(state);
     });
   });
 

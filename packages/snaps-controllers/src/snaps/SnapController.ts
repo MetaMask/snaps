@@ -3,7 +3,6 @@ import {
   BaseControllerV2 as BaseController,
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
-import { encrypt, decrypt } from '@metamask/browser-passworder';
 import {
   Caveat,
   GetEndowments,
@@ -57,8 +56,6 @@ import {
   validateSnapId,
   validateSnapShasum,
   VirtualFile,
-  deriveEntropy,
-  STATE_ENCRYPTION_MAGIC_VALUE,
 } from '@metamask/snaps-utils';
 import {
   GetSubjectMetadata,
@@ -70,7 +67,6 @@ import {
   hasProperty,
   inMilliseconds,
   isNonEmptyArray,
-  isValidJson,
   Json,
   NonEmptyArray,
   timeSince,
@@ -659,8 +655,6 @@ export class SnapController extends BaseController<
 
   #rollbackSnapshots: Map<SnapId, RollbackSnapshot>;
 
-  #getMnemonicPhrase: GetMnemonicPhrase;
-
   #timeoutForLastRequestStatus?: number;
 
   #statusMachine!: StateMachine.Machine<
@@ -673,7 +667,6 @@ export class SnapController extends BaseController<
     closeAllConnections,
     messenger,
     state,
-    getMnemonicPhrase,
     environmentEndowmentPermissions = [],
     idleTimeCheckInterval = inMilliseconds(5, Duration.Second),
     checkBlockList,
@@ -742,7 +735,6 @@ export class SnapController extends BaseController<
     this.#environmentEndowmentPermissions = environmentEndowmentPermissions;
     this.#featureFlags = featureFlags;
     this.#fetchFunction = fetchFunction;
-    this.#getMnemonicPhrase = getMnemonicPhrase;
     this.#idleTimeCheckInterval = idleTimeCheckInterval;
     this.#checkSnapBlockList = checkBlockList;
     this.#maxIdleTime = maxIdleTime;
@@ -1322,10 +1314,9 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap whose state should be updated.
    * @param newSnapState - The new state of the snap.
    */
-  async updateSnapState(snapId: SnapId, newSnapState: Json): Promise<void> {
-    const encrypted = await this.#encryptSnapState(snapId, newSnapState);
+  async updateSnapState(snapId: SnapId, newSnapState: string): Promise<void> {
     const runtime = this.#getRuntimeExpect(snapId);
-    runtime.state = encrypted;
+    runtime.state = newSnapState;
   }
 
   /**
@@ -1384,43 +1375,7 @@ export class SnapController extends BaseController<
    */
   async getSnapState(snapId: SnapId): Promise<Json> {
     const { state } = this.#getRuntimeExpect(snapId);
-    return state ? this.#decryptSnapState(snapId, state) : null;
-  }
-
-  /**
-   * Get a deterministic encryption key based on the given snap ID.
-   *
-   * @param snapId - The ID of the snap to get the encryption key for.
-   * @returns The encryption key for the given snap ID.
-   */
-  async #getEncryptionKey(snapId: SnapId): Promise<string> {
-    const mnemonicPhrase = await this.#getMnemonicPhrase();
-
-    return deriveEntropy({
-      mnemonicPhrase,
-      input: snapId,
-      salt: 'state encryption',
-      magic: STATE_ENCRYPTION_MAGIC_VALUE,
-    });
-  }
-
-  async #encryptSnapState(snapId: SnapId, state: Json): Promise<string> {
-    const appKey = await this.#getEncryptionKey(snapId);
-    return encrypt(appKey, state);
-  }
-
-  async #decryptSnapState(snapId: SnapId, encrypted: string): Promise<Json> {
-    const appKey = await this.#getEncryptionKey(snapId);
-    try {
-      const value = await decrypt(appKey, encrypted);
-
-      assert(isValidJson(value));
-      return value;
-    } catch (error) {
-      throw new Error(
-        'Failed to decrypt snap state, the state must be corrupted.',
-      );
-    }
+    return state ?? null;
   }
 
   /**

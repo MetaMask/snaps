@@ -33,7 +33,6 @@
   "dependencies": {
     "@metamask/approval-controller": "^1.0.1",
     "@metamask/base-controller": "^1.1.1",
-    "@metamask/browser-passworder": "^4.0.2",
     "@metamask/object-multiplex": "^1.1.0",
     "@metamask/permission-controller": "^1.0.1",
     "@metamask/post-message-stream": "^6.0.0",
