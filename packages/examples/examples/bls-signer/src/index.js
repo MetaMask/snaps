@@ -63,19 +63,19 @@ async function getPubKey() {
 /**
  * Displays a prompt to the user in the MetaMask UI.
  *
- * @param {string} headerContent - A prompt, phrased as a question, no greater than 40
+ * @param {string} title - A prompt, phrased as a question, no greater than 40
  * characters long.
  * @param {string} [message] - Free-from text content, no greater than 1800
  * characters long.
  * @returns {Promise<boolean>} `true` if the user accepted the confirmation,
  * and `false` otherwise.
  */
-async function promptUser(headerContent, message) {
+async function promptUser(title, message) {
   const response = await snap.request({
     method: 'snap_dialog',
     params: {
       type: 'Confirmation',
-      content: panel([header(headerContent), copyable(message)]),
+      content: panel([header(title), copyable(message)]),
     },
   });
   return response;
