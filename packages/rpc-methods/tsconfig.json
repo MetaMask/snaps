@@ -4,5 +4,5 @@
     "baseUrl": "./"
   },
   "include": ["./src"],
-  "references": [{ "path": "../snaps-utils" }]
+  "references": [{ "path": "../snaps-utils" }, { "path": "../snaps-ui" }]
 }

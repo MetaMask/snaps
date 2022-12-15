@@ -2685,6 +2685,7 @@ __metadata:
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/key-tree": ^6.0.0
     "@metamask/permission-controller": ^1.0.1
+    "@metamask/snaps-ui": ^0.26.2
     "@metamask/snaps-utils": ^0.26.2
     "@metamask/types": ^1.1.0
     "@metamask/utils": ^3.3.1
@@ -5348,6 +5349,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-cli": ^0.26.2
+    "@metamask/snaps-ui": ^0.26.2
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
     eslint: ^8.27.0

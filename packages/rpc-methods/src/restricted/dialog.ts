@@ -4,6 +4,7 @@ import {
   RestrictedMethodOptions,
   ValidPermissionSpecification,
 } from '@metamask/permission-controller';
+import { Component, ComponentStruct } from '@metamask/snaps-ui';
 import { NonEmptyArray } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 import {
@@ -12,7 +13,6 @@ import {
   Infer,
   literal,
   object,
-  omit,
   optional,
   size,
   string,
@@ -30,58 +30,23 @@ export enum DialogType {
   Prompt = 'Prompt',
 }
 
-const BaseFieldsStruct = object({
-  title: size(string(), 1, 40),
-  description: optional(size(string(), 1, 140)),
-  textAreaContent: optional(size(string(), 1, 1800)),
-  placeholder: optional(size(string(), 1, 40)),
-});
+const PlaceholderStruct = optional(size(string(), 1, 40));
 
-const PromptFieldsStruct = omit(BaseFieldsStruct, ['textAreaContent']);
-
-const AlertFieldsStruct = omit(BaseFieldsStruct, ['placeholder']);
-
-const ConfirmationFieldsStruct = omit(BaseFieldsStruct, ['placeholder']);
-
-/**
- * @property title - The alert title, no greater than 40 characters long.
- * @property description - A description, displayed with the title, no greater
- * than 140 characters long.
- * @property textAreaContent - Free-from text content, no greater than 1800
- * characters long.
- */
-export type AlertFields = Infer<typeof AlertFieldsStruct>;
-
-/**
- * @property title - A question describing what the user is confirming, no
- * greater than 40 characters long.
- * @property description - A description, displayed with the question, no
- * greater than 140 characters long.
- * @property textAreaContent - Free-from text content, no greater than 1800
- * characters long.
- */
-export type ConfirmationFields = Infer<typeof ConfirmationFieldsStruct>;
-
-/**
- * @property title - The prompt title, no greater than 40 characters long.
- * @property description - A description, displayed with the prompt, no greater
- * than 140 characters long.
- */
-export type PromptFields = Infer<typeof PromptFieldsStruct>;
-
-export type DialogFields = AlertFields | ConfirmationFields | PromptFields;
+export type Placeholder = Infer<typeof PlaceholderStruct>;
 
 type ShowDialog = (
   snapId: string,
   type: DialogType,
-  fields: DialogFields,
+  content: Component,
+  placeholder?: Placeholder,
 ) => Promise<null | boolean | string>;
 
 export type DialogMethodHooks = {
   /**
    * @param snapId - The ID of the Snap that created the alert.
    * @param type - The dialog type.
-   * @param fields - The dialog fields.
+   * @param content - The dialog custom UI.
+   * @param placeholder - The placeholder for the Prompt dialog input.
    */
   showDialog: ShowDialog;
 };
@@ -144,17 +109,18 @@ const BaseParamsStruct = type({
 
 const AlertParametersStruct = object({
   type: literal(DialogType.Alert),
-  fields: AlertFieldsStruct,
+  content: ComponentStruct,
 });
 
 const ConfirmationParametersStruct = object({
   type: literal(DialogType.Confirmation),
-  fields: ConfirmationFieldsStruct,
+  content: ComponentStruct,
 });
 
 const PromptParametersStruct = object({
   type: literal(DialogType.Prompt),
-  fields: PromptFieldsStruct,
+  content: ComponentStruct,
+  placeholder: PlaceholderStruct,
 });
 
 const DialogParametersStruct = union([
@@ -190,9 +156,16 @@ export function getDialogImplementation({ showDialog }: DialogMethodHooks) {
     } = args;
 
     const validatedType = getValidatedType(params);
-    const { fields } = getValidatedParams(params, structs[validatedType]);
+    const validatedParams = getValidatedParams(params, structs[validatedType]);
 
-    return showDialog(origin, validatedType, fields);
+    const { content } = validatedParams;
+
+    const placeholder =
+      validatedParams.type === DialogType.Prompt
+        ? validatedParams.placeholder
+        : undefined;
+
+    return showDialog(origin, validatedType, content, placeholder);
   };
 }
 
@@ -232,13 +205,6 @@ function getValidatedParams(
   } catch (error) {
     if (error instanceof StructError) {
       const { key, type: errorType } = error;
-
-      if (key === 'textAreaContent' && errorType === 'never') {
-        throw ethErrors.rpc.invalidParams({
-          message:
-            'Invalid params: Prompts may not specify a "textAreaContent" field.',
-        });
-      }
 
       if (key === 'placeholder' && errorType === 'never') {
         throw ethErrors.rpc.invalidParams({
