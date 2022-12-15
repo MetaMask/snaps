@@ -9,11 +9,20 @@ import { ethErrors } from 'eth-rpc-errors';
 
 const methodName = 'snap_notify';
 
-// Move all the types to a shared place when implementing more notifications
-export enum NotificationType {
-  Native = 'native',
-  InApp = 'inApp',
-}
+// TODO: Move all the types to a shared place when implementing more
+// notifications.
+// Note: We can't use an enum here, because strings are not assignable to
+// their enum values. For example:
+// ```typescript
+// enum Foo {
+//   Bar = 'bar',
+// }
+//
+// // Error: Type '"bar"' is not assignable to type 'Foo'.
+// const foo: Foo = 'bar';
+// ```
+const NotificationTypeArray = ['inApp', 'native'] as const;
+export type NotificationType = typeof NotificationTypeArray[number];
 
 export type NotificationArgs = {
   /**
@@ -114,9 +123,9 @@ export function getImplementation({
     const validatedParams = getValidatedParams(params);
 
     switch (validatedParams.type) {
-      case NotificationType.Native:
+      case 'native':
         return await showNativeNotification(origin, validatedParams);
-      case NotificationType.InApp:
+      case 'inApp':
         return await showInAppNotification(origin, validatedParams);
       default:
         throw ethErrors.rpc.invalidParams({
@@ -145,7 +154,7 @@ export function getValidatedParams(params: unknown): NotificationArgs {
   if (
     !type ||
     typeof type !== 'string' ||
-    !(Object.values(NotificationType) as string[]).includes(type)
+    !NotificationTypeArray.includes(type as NotificationType)
   ) {
     throw ethErrors.rpc.invalidParams({
       message: 'Must specify a valid notification "type".',
