@@ -2,9 +2,9 @@
 /// <reference path="../../../../node_modules/ses/index.d.ts" />
 import { StreamProvider } from '@metamask/providers';
 import { RequestArguments } from '@metamask/providers/dist/BaseProvider';
+import { RequestFunction, SnapsGlobalObject } from '@metamask/rpc-methods';
 import {
   SnapExports,
-  SnapsGlobalObject,
   HandlerType,
   SnapExportsParameters,
   SNAP_EXPORT_NAMES,
@@ -393,7 +393,7 @@ export class BaseSnapExecutor {
       }
     };
 
-    return { request };
+    return { request: request as RequestFunction };
   }
 
   /**

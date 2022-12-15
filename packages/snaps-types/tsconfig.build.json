@@ -9,6 +9,9 @@
   "include": ["./src"],
   "references": [
     {
+      "path": "../rpc-methods/tsconfig.build.json"
+    },
+    {
       "path": "../snaps-utils/tsconfig.build.json"
     }
   ]
