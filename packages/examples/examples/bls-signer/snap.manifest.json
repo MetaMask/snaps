@@ -17,7 +17,7 @@
     }
   },
   "initialPermissions": {
-    "snap_confirm": {}
+    "snap_dialog": {}
   },
   "manifestVersion": "0.1"
 }
