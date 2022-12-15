@@ -21,12 +21,10 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
     case 'hello':
       return await snap.request({
         method: 'snap_notify',
-        params: [
-          {
-            type: 'inapp',
-            message: getMessage(origin),
-          },
-        ],
+        params: {
+          type: 'inapp',
+          message: getMessage(origin),
+        },
       });
     default:
       throw new Error('Method not found.');
