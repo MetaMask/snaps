@@ -90,6 +90,7 @@ module.exports = (_, argv) => {
     mode: argv.mode,
     entry: {
       iframe: './src/iframe/index.ts',
+      offscreen: './src/offscreen/index.ts',
     },
     output: {
       filename: '[name]/bundle.js',
