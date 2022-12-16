@@ -90,6 +90,29 @@ describe('snap_manageState', () => {
       expect(result).toStrictEqual(mockSnapState);
     });
 
+    it('supports empty state', async () => {
+      const clearSnapState = jest.fn().mockResolvedValueOnce(true);
+      const getSnapState = jest.fn().mockResolvedValueOnce(null);
+      const updateSnapState = jest.fn().mockResolvedValueOnce(true);
+
+      const manageStateImplementation = getManageStateImplementation({
+        clearSnapState,
+        getSnapState,
+        updateSnapState,
+        getMnemonic: jest.fn().mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE),
+        getUnlockPromise: jest.fn(),
+      });
+
+      const result = await manageStateImplementation({
+        context: { origin: MOCK_SNAP_ID },
+        method: 'snap_manageState',
+        params: { operation: ManageStateOperation.GetState },
+      });
+
+      expect(getSnapState).toHaveBeenCalledWith(MOCK_SNAP_ID);
+      expect(result).toBeNull();
+    });
+
     it('clears snap state', async () => {
       const clearSnapState = jest.fn().mockResolvedValueOnce(true);
       const getSnapState = jest.fn().mockResolvedValueOnce(true);

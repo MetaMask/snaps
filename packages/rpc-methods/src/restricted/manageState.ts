@@ -245,6 +245,9 @@ export function getManageStateImplementation({
 
       case ManageStateOperation.GetState: {
         const state = await getSnapState(origin);
+        if (state === null) {
+          return state;
+        }
         return await decryptState({
           state,
           mnemonicPhrase,
