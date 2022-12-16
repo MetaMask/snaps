@@ -2512,13 +2512,13 @@ __metadata:
   linkType: hard
 
 "@metamask/eslint-config-jest@npm:^11.0.0":
-  version: 11.0.0
-  resolution: "@metamask/eslint-config-jest@npm:11.0.0"
+  version: 11.1.0
+  resolution: "@metamask/eslint-config-jest@npm:11.1.0"
   peerDependencies:
     "@metamask/eslint-config": ^11.0.0
     eslint: ^8.27.0
     eslint-plugin-jest: ^27.1.5
-  checksum: 844a3fabb0a758c842fd8567ed6ebee41e43692d9f1f17de516cfafef33df1f549f9f2eb28d5b0eeb8a7c277cde310a2f31adadf80abb2802d87daa46412c046
+  checksum: a649cf317327532d0d18795ac3bc74766e649e821ca3130dac288b16d5243ae72b5bda4eb85c678f1b4f9c073904ac6162b740c237b67921e64ce4f40c6ceb77
   languageName: node
   linkType: hard
 
