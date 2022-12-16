@@ -7,11 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.27.0]
-### Uncategorized
-- BREAKING: Use SIP-6 algorithm for state encryption ([#1055](https://github.com/MetaMask/snaps-monorepo/pull/1055))
-- BREAKING: Use custom UI in transaction insights ([#1047](https://github.com/MetaMask/snaps-monorepo/pull/1047))
-- Prefer Babel for Jest coverage ([#1066](https://github.com/MetaMask/snaps-monorepo/pull/1066))
-- BREAKING: Move all internal types from `snaps-types` to `snaps-utils` ([#1060](https://github.com/MetaMask/snaps-monorepo/pull/1060))
+### Changed
+- **BREAKING:** Use SIP-6 algorithm for state encryption ([#1055](https://github.com/MetaMask/snaps-monorepo/pull/1055))
+- **BREAKING:** Use custom UI in transaction insights ([#1047](https://github.com/MetaMask/snaps-monorepo/pull/1047))
+- **BREAKING:** Move all internal types from `snaps-types` to `snaps-utils` ([#1060](https://github.com/MetaMask/snaps-monorepo/pull/1060))
 
 ## [0.26.2]
 ### Changed
