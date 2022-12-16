@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.27.1]
-### Uncategorized
+### Fixed
 - Fix `snap_manageState` with empty state ([#1083](https://github.com/MetaMask/snaps-monorepo/pull/1083))
 - Fix `snap_manageState` method hooks ([#1080](https://github.com/MetaMask/snaps-monorepo/pull/1080))
 
