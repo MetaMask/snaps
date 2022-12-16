@@ -593,7 +593,7 @@ describe('SnapController', () => {
             dappOrigin: MOCK_ORIGIN,
             id: expect.any(String),
           },
-          permissions: getSnapManifest().initialPermissions,
+          permissions: getSnapManifest().permissions,
           snapId: MOCK_SNAP_ID,
         },
       }),
@@ -636,7 +636,7 @@ describe('SnapController', () => {
         messenger,
         detectSnapLocation: loopbackDetect({
           manifest: getSnapManifest({
-            initialPermissions,
+            permissions: initialPermissions,
           }),
         }),
       }),
@@ -935,7 +935,7 @@ describe('SnapController', () => {
           getPersistedSnapObject({
             sourceCode,
             manifest: getSnapManifest({
-              shasum: getSnapSourceShasum(sourceCode),
+              checksum: getSnapSourceShasum(sourceCode),
             }),
           }),
         ),
@@ -1010,7 +1010,7 @@ describe('SnapController', () => {
           getPersistedSnapObject({
             sourceCode,
             manifest: getSnapManifest({
-              shasum: getSnapSourceShasum(sourceCode),
+              checksum: getSnapSourceShasum(sourceCode),
             }),
           }),
         ),
@@ -1181,7 +1181,7 @@ describe('SnapController', () => {
           getPersistedSnapObject({
             sourceCode,
             manifest: getSnapManifest({
-              shasum: getSnapSourceShasum(sourceCode),
+              checksum: getSnapSourceShasum(sourceCode),
             }),
           }),
         ),
@@ -1731,7 +1731,7 @@ describe('SnapController', () => {
               dappOrigin: MOCK_ORIGIN,
               id: expect.any(String),
             },
-            permissions: getSnapManifest().initialPermissions,
+            permissions: getSnapManifest().permissions,
             snapId: MOCK_LOCAL_SNAP_ID,
           },
         }),
@@ -1742,7 +1742,7 @@ describe('SnapController', () => {
         3,
         'PermissionController:grantPermissions',
         {
-          approvedPermissions: getSnapManifest().initialPermissions,
+          approvedPermissions: getSnapManifest().permissions,
           subject: { origin: MOCK_LOCAL_SNAP_ID },
           requestData: {
             metadata: {
@@ -1834,7 +1834,7 @@ describe('SnapController', () => {
               dappOrigin: MOCK_ORIGIN,
               id: expect.any(String),
             },
-            permissions: manifest.initialPermissions,
+            permissions: manifest.permissions,
             snapId: MOCK_LOCAL_SNAP_ID,
           },
         }),
@@ -1845,7 +1845,7 @@ describe('SnapController', () => {
         3,
         'PermissionController:grantPermissions',
         {
-          approvedPermissions: manifest.initialPermissions,
+          approvedPermissions: manifest.permissions,
           subject: { origin: MOCK_LOCAL_SNAP_ID },
           requestData: {
             metadata: {
@@ -1894,7 +1894,7 @@ describe('SnapController', () => {
               dappOrigin: MOCK_ORIGIN,
               id: expect.any(String),
             },
-            permissions: newManifest.initialPermissions,
+            permissions: newManifest.permissions,
             snapId: MOCK_LOCAL_SNAP_ID,
           },
         }),
@@ -1905,7 +1905,7 @@ describe('SnapController', () => {
         9,
         'PermissionController:grantPermissions',
         {
-          approvedPermissions: newManifest.initialPermissions,
+          approvedPermissions: newManifest.permissions,
           subject: { origin: MOCK_LOCAL_SNAP_ID },
           requestData: {
             metadata: {
@@ -1945,7 +1945,7 @@ describe('SnapController', () => {
       );
 
       const truncatedSnap = getTruncatedSnap({
-        initialPermissions: manifest.initialPermissions,
+        initialPermissions: manifest.permissions,
       });
 
       const result = await snapController.installSnaps(MOCK_ORIGIN, {
@@ -1973,7 +1973,7 @@ describe('SnapController', () => {
               dappOrigin: MOCK_ORIGIN,
               id: expect.any(String),
             },
-            permissions: manifest.initialPermissions,
+            permissions: manifest.permissions,
             snapId: MOCK_SNAP_ID,
           },
         }),
@@ -1984,7 +1984,7 @@ describe('SnapController', () => {
         3,
         'PermissionController:grantPermissions',
         {
-          approvedPermissions: manifest.initialPermissions,
+          approvedPermissions: manifest.permissions,
           subject: { origin: MOCK_SNAP_ID },
           requestData: {
             metadata: {
@@ -2318,10 +2318,10 @@ describe('SnapController', () => {
               dappOrigin: MOCK_ORIGIN,
               origin: MOCK_SNAP_ID,
             },
-            permissions: getSnapManifest().initialPermissions,
+            permissions: getSnapManifest().permissions,
             snapId: MOCK_SNAP_ID,
             newVersion,
-            newPermissions: getSnapManifest().initialPermissions,
+            newPermissions: getSnapManifest().permissions,
             approvedPermissions: {},
             unusedPermissions: {},
           },
@@ -2333,7 +2333,7 @@ describe('SnapController', () => {
         10,
         'PermissionController:grantPermissions',
         {
-          approvedPermissions: getSnapManifest().initialPermissions,
+          approvedPermissions: getSnapManifest().permissions,
           subject: { origin: MOCK_SNAP_ID },
           requestData: {
             metadata: {
@@ -2343,7 +2343,7 @@ describe('SnapController', () => {
             },
             snapId: MOCK_SNAP_ID,
             newVersion,
-            newPermissions: getSnapManifest().initialPermissions,
+            newPermissions: getSnapManifest().permissions,
             approvedPermissions: {},
             unusedPermissions: {},
           },
@@ -2478,7 +2478,7 @@ describe('SnapController', () => {
             new LoopbackLocation({
               manifest: getSnapManifest({
                 version: newVersion,
-                shasum: getSnapSourceShasum('foo'),
+                checksum: getSnapSourceShasum('foo'),
               }),
               files: [
                 new VirtualFile({
@@ -2583,7 +2583,7 @@ describe('SnapController', () => {
 
     it('handles unnormalized paths correctly', async () => {
       const manifest = getSnapManifest({
-        filePath: './bundle.js',
+        source: './bundle.js',
         iconPath: 'icon.svg',
       });
       const controller = getSnapController(
@@ -2772,10 +2772,10 @@ describe('SnapController', () => {
               dappOrigin: MOCK_ORIGIN,
               origin: MOCK_SNAP_ID,
             },
-            permissions: getSnapManifest().initialPermissions,
+            permissions: getSnapManifest().permissions,
             snapId: MOCK_SNAP_ID,
             newVersion: '1.1.0',
-            newPermissions: getSnapManifest().initialPermissions,
+            newPermissions: getSnapManifest().permissions,
             approvedPermissions: {},
             unusedPermissions: {},
           },
@@ -2787,7 +2787,7 @@ describe('SnapController', () => {
         9,
         'PermissionController:grantPermissions',
         {
-          approvedPermissions: getSnapManifest().initialPermissions,
+          approvedPermissions: getSnapManifest().permissions,
           subject: { origin: MOCK_SNAP_ID },
           requestData: {
             metadata: {
@@ -2797,7 +2797,7 @@ describe('SnapController', () => {
             },
             snapId: MOCK_SNAP_ID,
             newVersion: '1.1.0',
-            newPermissions: getSnapManifest().initialPermissions,
+            newPermissions: getSnapManifest().permissions,
             approvedPermissions: {},
             unusedPermissions: {},
           },
@@ -2890,10 +2890,10 @@ describe('SnapController', () => {
               dappOrigin: MOCK_ORIGIN,
               origin: MOCK_SNAP_ID,
             },
-            permissions: getSnapManifest().initialPermissions,
+            permissions: getSnapManifest().permissions,
             snapId: MOCK_SNAP_ID,
             newVersion: '1.1.0',
-            newPermissions: getSnapManifest().initialPermissions,
+            newPermissions: getSnapManifest().permissions,
             approvedPermissions: {},
             unusedPermissions: {},
           },
@@ -2970,10 +2970,10 @@ describe('SnapController', () => {
               dappOrigin: MOCK_ORIGIN,
               origin: MOCK_SNAP_ID,
             },
-            permissions: getSnapManifest().initialPermissions,
+            permissions: getSnapManifest().permissions,
             snapId: MOCK_SNAP_ID,
             newVersion: '1.1.0',
-            newPermissions: getSnapManifest().initialPermissions,
+            newPermissions: getSnapManifest().permissions,
             approvedPermissions: {},
             unusedPermissions: {},
           },
@@ -3017,7 +3017,7 @@ describe('SnapController', () => {
         .mockImplementationOnce(
           () =>
             new LoopbackLocation({
-              manifest: getSnapManifest({ initialPermissions }),
+              manifest: getSnapManifest({ permissions: initialPermissions }),
             }),
         )
         .mockImplementationOnce(
@@ -3025,7 +3025,7 @@ describe('SnapController', () => {
             new LoopbackLocation({
               manifest: getSnapManifest({
                 version: '1.1.0' as SemVerRange,
-                initialPermissions: {
+                permissions: {
                   snap_confirm: {},
                   'endowment:network-access': {},
                 },
@@ -3173,7 +3173,7 @@ describe('SnapController', () => {
         .mockImplementationOnce(
           () =>
             new LoopbackLocation({
-              manifest: getSnapManifest({ initialPermissions }),
+              manifest: getSnapManifest({ permissions: initialPermissions }),
             }),
         )
         .mockImplementationOnce(
@@ -3181,7 +3181,7 @@ describe('SnapController', () => {
             new LoopbackLocation({
               manifest: getSnapManifest({
                 version: '1.1.0' as SemVerRange,
-                initialPermissions: {
+                permissions: {
                   snap_confirm: {},
                   'endowment:network-access': {},
                 },
@@ -3233,7 +3233,7 @@ describe('SnapController', () => {
           detectSnapLocation: loopbackDetect({
             manifest: getSnapManifest({
               version: '1.2.0' as SemVerVersion,
-              filePath: './dist/bundle.js',
+              source: './dist/bundle.js',
               iconPath: './images/icon.svg',
             }),
           }),

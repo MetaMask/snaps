@@ -83,7 +83,7 @@ describe('HttpLocation', () => {
 
   it('normalizes file paths', async () => {
     const manifest = getSnapManifest({
-      filePath: './dist/bundle.js',
+      source: './dist/bundle.js',
       iconPath: './images/icon.svg',
     });
 

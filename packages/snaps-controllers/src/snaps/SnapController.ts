@@ -55,7 +55,7 @@ import {
   TruncatedSnapFields,
   ValidatedSnapId,
   validateSnapId,
-  validateSnapShasum,
+  validateSnapChecksum,
   VirtualFile,
 } from '@metamask/snaps-utils';
 import {
@@ -1770,7 +1770,7 @@ export class SnapController extends BaseController<
     });
 
     const processedPermissions = this.#processSnapPermissions(
-      newSnap.manifest.result.initialPermissions,
+      newSnap.manifest.result.permissions,
     );
 
     const { newPermissions, unusedPermissions, approvedPermissions } =
@@ -2064,7 +2064,7 @@ export class SnapController extends BaseController<
       permissionName: getSnapPermissionName(snapId),
 
       id: snapId,
-      initialPermissions: manifest.result.initialPermissions,
+      initialPermissions: manifest.result.permissions,
       manifest: manifest.result,
       status: this.#statusMachine.config.initial as StatusStates['value'],
       version,
@@ -2116,7 +2116,7 @@ export class SnapController extends BaseController<
       const sourceCode = await location.fetch(
         manifest.result.source.location.npm.filePath,
       );
-      validateSnapShasum(manifest.result, sourceCode.toString());
+      validateSnapChecksum(manifest.result, sourceCode.toString());
       const { iconPath } = manifest.result.source.location.npm;
 
       const files = [sourceCode];

@@ -82,27 +82,6 @@ export function assertIsNpmSnapPackageJson(
 }
 
 /**
- * An object for storing parsed but unvalidated Snap file contents.
- */
-export type UnvalidatedSnapFiles = {
-  manifest?: Json;
-  packageJson?: Json;
-  sourceCode?: string;
-  svgIcon?: string;
-};
-
-/**
- * An object for storing the contents of Snap files that have passed JSON
- * Schema validation, or are non-empty if they are strings.
- */
-export type SnapFiles = {
-  manifest: SnapManifest;
-  packageJson: NpmSnapPackageJson;
-  sourceCode: string;
-  svgIcon?: string;
-};
-
-/**
  * The possible prefixes for snap ids.
  */
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -122,7 +101,7 @@ export enum SnapValidationFailureReason {
   NameMismatch = '"name" field mismatch',
   VersionMismatch = '"version" field mismatch',
   RepositoryMismatch = '"repository" field mismatch',
-  ShasumMismatch = '"shasum" field mismatch',
+  ChecksumMismatch = '"shasum" field mismatch',
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */

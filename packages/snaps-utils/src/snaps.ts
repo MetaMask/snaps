@@ -1,5 +1,4 @@
 import { assert, Json } from '@metamask/utils';
-import { sha256 } from '@noble/hashes/sha256';
 import { base64 } from '@scure/base';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import {
@@ -14,14 +13,14 @@ import {
 } from 'superstruct';
 import validateNPMPackage from 'validate-npm-package-name';
 
-import { SnapManifest, SnapPermissions } from './manifest/validation';
+import { checksumFiles, SemVerVersion, VirtualFile } from './index.browser';
+import { SnapManifest } from './manifest/validation';
 import {
   SnapId,
   SnapIdPrefixes,
   SnapValidationFailureReason,
   uri,
 } from './types';
-import { SemVerVersion } from './versions';
 
 export const SNAP_PREFIX = 'wallet_snap_';
 
@@ -75,7 +74,7 @@ export type Status = StatusStates['value'];
 
 export type VersionHistory = {
   origin: string;
-  version: string;
+  version: SemVerVersion;
   // Unix timestamp
   date: number;
 };
@@ -100,12 +99,6 @@ export type Snap = {
    * The ID of the Snap.
    */
   id: SnapId;
-
-  /**
-   * The initial permissions of the Snap, which will be requested when it is
-   * installed.
-   */
-  initialPermissions: SnapPermissions;
 
   /**
    * The Snap's manifest file.
@@ -133,11 +126,6 @@ export type Snap = {
   status: Status;
 
   /**
-   * The version of the Snap.
-   */
-  version: SemVerVersion;
-
-  /**
    * The version history of the Snap.
    * Can be used to derive when the Snap was installed, when it was updated to a certain version and who requested the change.
    */
@@ -146,9 +134,8 @@ export type Snap = {
 
 export type TruncatedSnapFields =
   | 'id'
-  | 'initialPermissions'
   | 'permissionName'
-  | 'version'
+  | 'manifest'
   | 'enabled'
   | 'blocked';
 
@@ -178,34 +165,33 @@ export class ProgrammaticallyFixableSnapError extends Error {
 }
 
 /**
- * Calculates the Base64-encoded SHA-256 digest of a Snap source code string.
+ * Calculates the Base64-encoded checksum of all files included in the Snap Manifest.
  *
- * @param sourceCode - The UTF-8 string source code of a Snap.
- * @returns The Base64-encoded SHA-256 digest of the source code.
+ * @param files - A list of unique files in the manifest along with their relative paths.
+ * @returns The Base64-encoded checksum.
  */
-export function getSnapSourceShasum(sourceCode: string): string {
-  return base64.encode(sha256(sourceCode));
+export function getSnapChecksum(files: VirtualFile[]): string {
+  return base64.encode(checksumFiles(files));
 }
 
 export type ValidatedSnapId = `local:${string}` | `npm:${string}`;
 
 /**
- * Checks whether the `source.shasum` property of a Snap manifest matches the
- * shasum of a snap source code string.
+ * Checks whether the checksum in the manifest matches the calculated checksum over all the files.
  *
  * @param manifest - The manifest whose shasum to validate.
- * @param sourceCode - The source code of the snap.
+ * @param files - The files loaded from manifest.
  * @param errorMessage - The error message to throw if validation fails.
  */
-export function validateSnapShasum(
+export function validateSnapChecksum(
   manifest: SnapManifest,
-  sourceCode: string,
-  errorMessage = 'Invalid Snap manifest: manifest shasum does not match computed shasum.',
+  files: VirtualFile[],
+  errorMessage = 'Invalid Snap manifest: manifest checksum does not match computed shasum.',
 ): void {
-  if (manifest.source.shasum !== getSnapSourceShasum(sourceCode)) {
+  if (manifest.checksum !== getSnapChecksum(files)) {
     throw new ProgrammaticallyFixableSnapError(
       errorMessage,
-      SnapValidationFailureReason.ShasumMismatch,
+      SnapValidationFailureReason.ChecksumMismatch,
     );
   }
 }

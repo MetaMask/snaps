@@ -1,13 +1,18 @@
 import {
-  getSnapSourceShasum,
+  getSnapChecksum,
   PersistedSnap,
   Snap,
   SnapStatus,
   TruncatedSnap,
 } from '../snaps';
 import { SemVerVersion } from '../versions';
+import { VirtualFile } from '../virtual-file/VirtualFile';
 import { MakeSemVer } from './common';
-import { getSnapManifest } from './manifest';
+import {
+  DEFAULT_ICON_PATH,
+  DEFAULT_SOURCE_PATH,
+  getSnapManifest,
+} from './manifest';
 
 /**
  * A mock snap source and its shasum.
@@ -21,9 +26,12 @@ export const DEFAULT_SNAP_BUNDLE = `
   };
 `;
 
-export const DEFAULT_SNAP_SHASUM = getSnapSourceShasum(DEFAULT_SNAP_BUNDLE);
-
 export const DEFAULT_SNAP_ICON = '<svg />';
+
+export const DEFAULT_SNAP_CHECKSUM = getSnapChecksum([
+  new VirtualFile({ value: DEFAULT_SNAP_BUNDLE, path: DEFAULT_SOURCE_PATH }),
+  new VirtualFile({ value: DEFAULT_SNAP_ICON, path: DEFAULT_ICON_PATH }),
+]);
 
 export const MOCK_SNAP_ID = 'npm:@metamask/example-snap';
 export const MOCK_LOCAL_SNAP_ID = 'local:http://localhost:8080';
@@ -37,7 +45,6 @@ export const getPersistedSnapObject = ({
   blocked = false,
   enabled = true,
   id = MOCK_SNAP_ID,
-  initialPermissions = getSnapManifest().initialPermissions,
   manifest = getSnapManifest(),
   permissionName = `wallet_snap_${id}`,
   sourceCode = DEFAULT_SNAP_BUNDLE,
@@ -49,7 +56,6 @@ export const getPersistedSnapObject = ({
 }: GetPersistedSnapObjectOptions = {}): PersistedSnap => {
   return {
     blocked,
-    initialPermissions,
     id,
     permissionName,
     version: version as SemVerVersion,
@@ -65,7 +71,6 @@ export const getSnapObject = ({
   blocked = false,
   enabled = true,
   id = MOCK_SNAP_ID,
-  initialPermissions = getSnapManifest().initialPermissions,
   manifest = getSnapManifest(),
   permissionName = `wallet_snap_${id}`,
   status = SnapStatus.Stopped,
@@ -76,7 +81,6 @@ export const getSnapObject = ({
 }: GetSnapObjectOptions = {}): Snap => {
   return {
     blocked,
-    initialPermissions,
     id,
     permissionName,
     version: version as SemVerVersion,
@@ -88,18 +92,18 @@ export const getSnapObject = ({
 };
 
 export const getTruncatedSnap = ({
-  initialPermissions = getSnapManifest().initialPermissions,
   id = MOCK_SNAP_ID,
   permissionName = `wallet_snap_${id}`,
+  manifest = getSnapManifest(),
   version = getSnapManifest().version,
   enabled = true,
   blocked = false,
 }: GetTruncatedSnapOptions = {}): TruncatedSnap => {
   return {
-    initialPermissions,
     id,
     permissionName,
     version: version as SemVerVersion,
+    manifest,
     enabled,
     blocked,
   } as const;
@@ -145,7 +149,7 @@ export const getMockSnapData = ({
     id,
     origin,
     packageName,
-    shasum: DEFAULT_SNAP_SHASUM,
+    shasum: DEFAULT_SNAP_CHECKSUM,
     sourceCode,
     manifest,
     stateObject: getPersistedSnapObject({

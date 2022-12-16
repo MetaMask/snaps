@@ -8,15 +8,9 @@ import {
 import { NpmSnapPackageJson } from '../types';
 import { SemVerVersion } from '../versions';
 import { MakeSemVer } from './common';
-import { DEFAULT_SNAP_SHASUM } from './snap';
+import { DEFAULT_SNAP_CHECKSUM } from './snap';
 
-type GetSnapManifestOptions = Partial<MakeSemVer<SnapManifest>> & {
-  shasum?: string;
-  filePath?: string;
-  packageName?: string;
-  registry?: string;
-  iconPath?: string;
-};
+type GetSnapManifestOptions = Partial<MakeSemVer<SnapManifest>>;
 
 type GetPackageJsonOptions = Partial<MakeSemVer<NpmSnapPackageJson>>;
 
@@ -33,6 +27,9 @@ export const getDefaultRepository = () => {
   };
 };
 
+export const DEFAULT_SOURCE_PATH = 'dist/bundle.js';
+export const DEFAULT_ICON_PATH = 'images/icon.svg';
+
 /**
  * Get a mock snap manifest, based on the provided options. This is useful for
  * quickly generating a manifest file, while being able to override any of the
@@ -41,45 +38,32 @@ export const getDefaultRepository = () => {
  * @param manifest - The optional manifest overrides.
  * @param manifest.version - The version of the snap.
  * @param manifest.description - The description of the snap.
- * @param manifest.proposedName - The proposed name of the snap.
- * @param manifest.initialPermissions - The initial permissions of the snap.
- * @param manifest.shasum - The shasum of the snap.
- * @param manifest.filePath - The path to the snap.
- * @param manifest.packageName - The name of the snap.
- * @param manifest.repository - The repository of the snap.
- * @param manifest.iconPath - The path to the icon of the snap.
+ * @param manifest.name - The proposed name of the snap.
+ * @param manifest.permissions - The initial permissions of the snap.
+ * @param manifest.checksum - The shasum of the snap.
+ * @param manifest.source - The path to the snap.
+ * @param manifest.icon - The path to the icon of the snap.
  * @returns The snap manifest.
  */
 export const getSnapManifest = ({
   version = '1.0.0' as SemVerVersion,
   description = 'The test example snap!',
-  proposedName = '@metamask/example-snap',
+  name = '@metamask/example-snap',
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  initialPermissions = { snap_confirm: {} },
-  shasum = DEFAULT_SNAP_SHASUM,
-  filePath = 'dist/bundle.js',
-  packageName = '@metamask/example-snap',
-  repository = getDefaultRepository(),
-  iconPath = 'images/icon.svg',
+  permissions = { snap_confirm: {} },
+  checksum = DEFAULT_SNAP_CHECKSUM,
+  source = DEFAULT_SOURCE_PATH,
+  icon = DEFAULT_ICON_PATH,
 }: GetSnapManifestOptions = {}): SnapManifest => {
   return {
     version: version as SemVerVersion,
     description,
-    proposedName,
-    repository,
-    source: {
-      shasum,
-      location: {
-        npm: {
-          filePath,
-          packageName,
-          registry: 'https://registry.npmjs.org',
-          iconPath,
-        } as const,
-      },
-    },
-    initialPermissions,
-    manifestVersion: '0.1' as const,
+    name,
+    source,
+    icon,
+    checksum,
+    permissions,
+    manifestVersion: 2 as const,
   };
 };
 

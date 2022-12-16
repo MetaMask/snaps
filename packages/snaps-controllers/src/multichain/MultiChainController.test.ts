@@ -184,9 +184,8 @@ describe('MultiChainController', () => {
                 id: secondSnapId,
                 sourceCode: secondSnapSourceCode,
                 manifest: getSnapManifest({
-                  shasum: getSnapSourceShasum(secondSnapSourceCode),
-                  initialPermissions:
-                    PERSISTED_MOCK_KEYRING_SNAP.manifest.initialPermissions,
+                  checksum: getSnapSourceShasum(secondSnapSourceCode),
+                  permissions: PERSISTED_MOCK_KEYRING_SNAP.manifest.permissions,
                 }),
               }),
             ),
@@ -303,9 +302,8 @@ describe('MultiChainController', () => {
                 ...PERSISTED_MOCK_KEYRING_SNAP,
                 sourceCode,
                 manifest: getSnapManifest({
-                  shasum: getSnapSourceShasum(sourceCode),
-                  initialPermissions:
-                    PERSISTED_MOCK_KEYRING_SNAP.manifest.initialPermissions,
+                  checksum: getSnapSourceShasum(sourceCode),
+                  permissions: PERSISTED_MOCK_KEYRING_SNAP.manifest.permissions,
                 }),
               }),
             ),

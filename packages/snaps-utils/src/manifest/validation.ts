@@ -17,14 +17,13 @@ import {
   string,
   Struct,
   type,
-  union,
 } from 'superstruct';
 
 import { CronjobSpecificationArrayStruct } from '../cronjob';
 import { RpcOriginsStruct } from '../json-rpc';
 import { NamespacesStruct } from '../namespace';
 import { normalizeRelative } from '../path';
-import { NameStruct, NpmSnapFileNames } from '../types';
+import { NpmSnapFileNames } from '../types';
 import { VersionStruct } from '../versions';
 
 // 0xd36e6170 - 0x80000000
@@ -188,9 +187,7 @@ const relativePath = <Type extends string>(struct: Struct<Type>) =>
 export type SnapPermissions = Infer<typeof PermissionsStruct>;
 
 export const SnapManifestStruct = object({
-  version: VersionStruct,
-  description: size(string(), 1, 280),
-  proposedName: size(
+  name: size(
     pattern(
       string(),
       /^(?:[A-Za-z0-9-_]+( [A-Za-z0-9-_]+)*)|(?:(?:@[A-Za-z0-9-*~][A-Za-z0-9-*._~]*\/)?[A-Za-z0-9-~][A-Za-z0-9-._~]*)$/u,
@@ -198,28 +195,13 @@ export const SnapManifestStruct = object({
     1,
     214,
   ),
-  repository: optional(
-    object({
-      type: size(string(), 1, Infinity),
-      url: size(string(), 1, Infinity),
-    }),
-  ),
-  source: object({
-    shasum: size(base64(string(), { paddingRequired: true }), 44, 44),
-    location: object({
-      npm: object({
-        filePath: relativePath(size(string(), 1, Infinity)),
-        iconPath: optional(relativePath(size(string(), 1, Infinity))),
-        packageName: NameStruct,
-        registry: union([
-          literal('https://registry.npmjs.org'),
-          literal('https://registry.npmjs.org/'),
-        ]),
-      }),
-    }),
-  }),
-  initialPermissions: PermissionsStruct,
-  manifestVersion: literal('0.1'),
+  description: size(string(), 1, 280),
+  checksum: size(base64(string(), { paddingRequired: true }), 44, 44),
+  source: relativePath(size(string(), 1, Infinity)),
+  icon: optional(relativePath(size(string(), 1, Infinity))),
+  permissions: PermissionsStruct,
+  version: VersionStruct,
+  manifestVersion: literal(2),
 });
 
 export type SnapManifest = Infer<typeof SnapManifestStruct>;

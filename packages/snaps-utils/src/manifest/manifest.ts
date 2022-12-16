@@ -2,55 +2,67 @@ import { Json, assertExhaustive } from '@metamask/utils';
 import deepEqual from 'fast-deep-equal';
 import { promises as fs } from 'fs';
 import pathUtils from 'path';
+import { validate } from 'superstruct';
 
 import { deepClone } from '../deep-clone';
-import { readSnapJsonFile } from '../fs';
+import { readJsonFile, readSnapJsonFile } from '../fs';
 import { validateNpmSnap } from '../npm';
 import {
-  getSnapSourceShasum,
   ProgrammaticallyFixableSnapError,
-  validateSnapShasum,
+  validateSnapChecksum,
 } from '../snaps';
 import {
   NpmSnapFileNames,
   NpmSnapPackageJson,
-  SnapFiles,
   SnapValidationFailureReason,
-  UnvalidatedSnapFiles,
 } from '../types';
-import { SnapManifest } from './validation';
+import { readVirtualFile } from '../virtual-file/toVirtualFile';
+import { VirtualFile } from '../virtual-file/VirtualFile';
+import { SnapManifest, SnapManifestStruct } from './validation';
 
 const MANIFEST_SORT_ORDER: Record<keyof SnapManifest, number> = {
-  version: 1,
+  name: 1,
   description: 2,
-  proposedName: 3,
-  repository: 4,
-  source: 5,
-  initialPermissions: 6,
-  manifestVersion: 7,
+  version: 3,
+  source: 4,
+  icon: 5,
+  permissions: 6,
+  checksum: 7,
+  manifestVersion: 8,
 };
 
-/**
- * The result from the `checkManifest` function.
- *
- * @property manifest - The fixed manifest object.
- * @property updated - Whether the manifest was updated.
- * @property warnings - An array of warnings that were encountered during
- * processing of the manifest files. These warnings are not logged to the
- * console automatically, so depending on the environment the function is called
- * in, a different method for logging can be used.
- * @property errors - An array of errors that were encountered during
- * processing of the manifest files. These errors are not logged to the
- * console automatically, so depending on the environment the function is called
- * in, a different method for logging can be used.
- */
-export type CheckManifestResult = {
-  manifest: SnapManifest;
-  updated?: boolean;
-  warnings: string[];
-  errors: string[];
+export type VirtualFileMessage = {
+  reason: string;
+  severity: 'fatal' | 'warning' | 'info';
 };
 
+declare module '@metamask/snaps-utils' {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+  interface VirtualFileDataMap {
+    /**
+     * Whether the manifest was stored on disk.
+     */
+    stored: boolean;
+    /**
+     * Whether the manifest was updated in any way.
+     */
+    updated: boolean;
+    /**
+     * These message are not logged to the console automatically,
+     * so depending on the environment the function is called in,
+     * a different method for logging can be used.
+     */
+    messages: VirtualFileMessage[];
+  }
+}
+
+export type CheckManifestOptions = {
+  writeManifest?: boolean;
+  overrides?: VirtualFile[];
+};
+
+// require-param/check-param-names are buggy when we're destructuring the argument
+/* eslint-disable jsdoc/require-param, jsdoc/check-param-names */
 /**
  * Validates a snap.manifest.json file. Attempts to fix the manifest and write
  * the fixed version to disk if `writeManifest` is true. Throws if validation
@@ -58,42 +70,72 @@ export type CheckManifestResult = {
  *
  * @param basePath - The path to the folder with the manifest files.
  * @param writeManifest - Whether to write the fixed manifest to disk.
- * @param sourceCode - The source code of the Snap.
+ * @param overrides - The files to load from memory rather than from disk based on the manifest path.
  * @returns Whether the manifest was updated, and an array of warnings that
  * were encountered during processing of the manifest files.
  */
 export async function checkManifest(
   basePath: string,
-  writeManifest = true,
-  sourceCode?: string,
-): Promise<CheckManifestResult> {
-  const warnings: string[] = [];
-  const errors: string[] = [];
+  { writeManifest = true, overrides = [] }: CheckManifestOptions = {},
+): Promise<VirtualFile<SnapManifest | undefined>> {
+  const loadPath = async (
+    relativePath: string,
+    encoding: BufferEncoding | undefined = 'utf8',
+  ) => {
+    const override = overrides.find((file) => file.path === relativePath);
+    if (override !== undefined) {
+      return override;
+    }
+    return await readVirtualFile(
+      pathUtils.join(basePath, relativePath),
+      encoding,
+    );
+  };
 
   let updated = false;
 
-  const unvalidatedManifest = await readSnapJsonFile(
-    basePath,
-    NpmSnapFileNames.Manifest,
+  const manifestPath = pathUtils.join(basePath, NpmSnapFileNames.Manifest);
+  // TODO(ritave): Consider making readJsonFile return messages as well instead of throwing.
+  let manifestFile: VirtualFile<Json>;
+  try {
+    manifestFile = await readJsonFile(manifestPath);
+  } catch (error) {
+    if (error instanceof Error) {
+      return new VirtualFile({
+        value: '',
+        path: manifestPath,
+        data: {
+          messages: [
+            {
+              severity: 'fatal',
+              reason: error.message,
+            },
+          ],
+        },
+      });
+    }
+    throw error;
+  }
+
+  const [error, manifest] = validate(manifestFile.result, SnapManifestStruct, {
+    coerce: true,
+  });
+
+  const packageFile = await readJsonFile(
+    pathUtils.join(basePath, NpmSnapFileNames.PackageJson),
   );
 
-  const iconPath =
-    unvalidatedManifest && typeof unvalidatedManifest === 'object'
-      ? /* istanbul ignore next */
-        (unvalidatedManifest as Partial<SnapManifest>).source?.location?.npm
-          ?.iconPath
-      : /* istanbul ignore next */
-        undefined;
+  const iconPath = (manifestFile.result as Partial<SnapManifest>)?.icon;
+  const iconFile =
+    iconPath === undefined // we're avoiding scenario where iconPath === ""
+      ? undefined
+      : await readVirtualFile(pathUtils.join(basePath, iconPath), 'utf-8');
 
-  const snapFiles: UnvalidatedSnapFiles = {
-    manifest: unvalidatedManifest,
-    packageJson: await readSnapJsonFile(basePath, NpmSnapFileNames.PackageJson),
-    sourceCode:
-      sourceCode ?? (await getSnapSourceCode(basePath, unvalidatedManifest)),
-    svgIcon:
-      iconPath &&
-      (await fs.readFile(pathUtils.join(basePath, iconPath), 'utf8')),
-  };
+  const sourcePath = (manifestFile.result as Partial<SnapManifest>)?.source;
+  const sourceFile =
+    sourcePath === undefined
+      ? undefined
+      : await readVirtualFile(pathUtils.join(basePath, sourcePath), 'utf-8');
 
   let manifest: SnapManifest | undefined;
   try {
@@ -186,6 +228,7 @@ export async function checkManifest(
 
   return { manifest: validatedManifest, updated, warnings, errors };
 }
+/* eslint-enable jsdoc/require-param, jsdoc/check-param-names */
 
 /**
  * Given the relevant Snap files (manifest, `package.json`, and bundle) and a
@@ -218,7 +261,7 @@ export function fixManifest(
         : undefined;
       break;
 
-    case SnapValidationFailureReason.ShasumMismatch:
+    case SnapValidationFailureReason.ChecksumMismatch:
       manifestCopy.source.shasum = getSnapSourceShasum(sourceCode);
       break;
 
@@ -228,34 +271,6 @@ export function fixManifest(
   }
 
   return manifestCopy;
-}
-
-/**
- * Given an unvalidated Snap manifest, attempts to extract the location of the
- * bundle source file location and read the file.
- *
- * @param basePath - The path to the folder with the manifest files.
- * @param manifest - The unvalidated Snap manifest file contents.
- * @returns The contents of the bundle file, if any.
- */
-export async function getSnapSourceCode(
-  basePath: string,
-  manifest: Json,
-): Promise<string | undefined> {
-  if (manifest && typeof manifest === 'object' && !Array.isArray(manifest)) {
-    const sourceFilePath = (manifest as Partial<SnapManifest>).source?.location
-      ?.npm?.filePath;
-
-    try {
-      return sourceFilePath
-        ? await fs.readFile(pathUtils.join(basePath, sourceFilePath), 'utf8')
-        : undefined;
-    } catch (error) {
-      throw new Error(`Failed to read Snap bundle file: ${error.message}`);
-    }
-  }
-
-  return undefined;
 }
 
 /**
@@ -282,7 +297,7 @@ export function getWritableManifest(manifest: SnapManifest): SnapManifest {
       {},
     );
 
-  return writableManifest as SnapManifest;
+  return writableManifest;
 }
 
 /**
@@ -335,7 +350,7 @@ export function validateNpmSnapManifest({
     );
   }
 
-  validateSnapShasum(
+  validateSnapChecksum(
     manifest,
     sourceCode,
     `"${NpmSnapFileNames.Manifest}" "shasum" field does not match computed shasum.`,

@@ -55,7 +55,7 @@ export function validateNpmSnap(
   }
   const validatedManifest = manifest;
 
-  const { iconPath } = validatedManifest.source.location.npm;
+  const iconPath = validatedManifest.icon;
   if (iconPath && !svgIcon) {
     throw new Error(`Missing file "${iconPath}".`);
   }

@@ -98,8 +98,8 @@ export const PERSISTED_MOCK_KEYRING_SNAP = getPersistedSnapObject({
   id: MOCK_SNAP_ID,
   sourceCode: MOCK_KEYRING_BUNDLE,
   manifest: getSnapManifest({
-    shasum: getSnapSourceShasum(MOCK_KEYRING_BUNDLE),
-    initialPermissions: {
+    checksum: getSnapSourceShasum(MOCK_KEYRING_BUNDLE),
+    permissions: {
       [SnapEndowments.Keyring]: {
         namespaces: MOCK_NAMESPACES,
       },

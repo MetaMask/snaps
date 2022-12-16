@@ -8,7 +8,7 @@ import { ProgrammaticallyFixableSnapError } from '../snaps';
 import {
   DEFAULT_SNAP_BUNDLE,
   DEFAULT_SNAP_ICON,
-  DEFAULT_SNAP_SHASUM,
+  DEFAULT_SNAP_CHECKSUM,
   getPackageJson,
   getSnapManifest,
 } from '../test-utils';
@@ -65,7 +65,7 @@ describe('checkManifest', () => {
       MANIFEST_PATH,
       JSON.stringify(
         getSnapManifest({
-          shasum: '29MYwcRiruhy9BEJpN/TBIhxoD3t0P4OdXztV9rW8tc=',
+          checksum: '29MYwcRiruhy9BEJpN/TBIhxoD3t0P4OdXztV9rW8tc=',
         }),
       ),
     );
@@ -76,7 +76,7 @@ describe('checkManifest', () => {
     expect(warnings).toHaveLength(0);
 
     const { source } = await readJsonFile<SnapManifest>(MANIFEST_PATH);
-    expect(source.shasum).toBe(DEFAULT_SNAP_SHASUM);
+    expect(source.shasum).toBe(DEFAULT_SNAP_CHECKSUM);
   });
 
   it('fixes multiple problems in the manifest', async () => {
@@ -85,7 +85,7 @@ describe('checkManifest', () => {
       JSON.stringify(
         getSnapManifest({
           version: '0.0.1',
-          shasum: '29MYwcRiruhy9BEJpN/TBIhxoD3t0P4OdXztV9rW8tc=',
+          checksum: '29MYwcRiruhy9BEJpN/TBIhxoD3t0P4OdXztV9rW8tc=',
         }),
       ),
     );
@@ -96,7 +96,7 @@ describe('checkManifest', () => {
     expect(warnings).toHaveLength(0);
 
     const { source, version } = await readJsonFile<SnapManifest>(MANIFEST_PATH);
-    expect(source.shasum).toBe(DEFAULT_SNAP_SHASUM);
+    expect(source.shasum).toBe(DEFAULT_SNAP_CHECKSUM);
     expect(version).toBe('1.0.0');
   });
 
@@ -118,7 +118,7 @@ describe('checkManifest', () => {
       JSON.stringify(
         getSnapManifest({
           version: '0.0.1',
-          shasum: '29MYwcRiruhy9BEJpN/TBIhxoD3t0P4OdXztV9rW8tc=',
+          checksum: '29MYwcRiruhy9BEJpN/TBIhxoD3t0P4OdXztV9rW8tc=',
         }),
       ),
     );
@@ -217,7 +217,7 @@ describe('fixManifest', () => {
   it('fixes a shasum mismatch in the manifest', () => {
     const files: SnapFiles = {
       manifest: getSnapManifest({
-        shasum: '29MYwcRiruhy9BEJpN/TBIhxoD3t0P4OdXztV9rW8tc=',
+        checksum: '29MYwcRiruhy9BEJpN/TBIhxoD3t0P4OdXztV9rW8tc=',
       }),
       packageJson: getPackageJson(),
       sourceCode: DEFAULT_SNAP_BUNDLE,
@@ -227,7 +227,7 @@ describe('fixManifest', () => {
       files,
       new ProgrammaticallyFixableSnapError(
         'foo',
-        SnapValidationFailureReason.ShasumMismatch,
+        SnapValidationFailureReason.ChecksumMismatch,
       ),
     );
 

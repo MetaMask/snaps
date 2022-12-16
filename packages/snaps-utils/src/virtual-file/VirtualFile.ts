@@ -24,14 +24,14 @@ import { deepClone } from '../deep-clone';
  * }
  */
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions, @typescript-eslint/no-empty-interface
-export interface DataMap {}
+export interface VirtualFileDataMap {}
 
 export type Value = string | Uint8Array;
 export type Compatible<Result = unknown> =
   | string
   | Uint8Array
   | Options<Result>;
-export type Data = Record<string, unknown> & Partial<DataMap>;
+export type Data = Record<string, unknown> & Partial<VirtualFileDataMap>;
 export type Options<Result = unknown> = {
   value: Value;
   path?: string;
