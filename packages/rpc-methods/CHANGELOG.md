@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.27.0]
+### Changed
+- **BREAKING:** Use custom UI in `snap_dialog` ([#1051](https://github.com/MetaMask/snaps-monorepo/pull/1051))
+- **BREAKING:** Use SIP-6 algorithm for state encryption ([#1055](https://github.com/MetaMask/snaps-monorepo/pull/1055))
+  - This breaks all existing snaps that use `snap_manageState`
+
 ## [0.26.2]
 ### Changed
 - No changes this release.
@@ -259,7 +265,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.26.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.0...HEAD
+[0.27.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.26.2...v0.27.0
 [0.26.2]: https://github.com/MetaMask/snaps-monorepo/compare/v0.26.1...v0.26.2
 [0.26.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.26.0...v0.26.1
 [0.26.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.25.0...v0.26.0
