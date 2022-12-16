@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.27.0]
 ### Changed
 - **BREAKING:** Use SIP-6 algorithm for state encryption ([#1055](https://github.com/MetaMask/snaps-monorepo/pull/1055))
+  - This breaks all existing snaps that use `snap_manageState`
 - **BREAKING:** Use custom UI in transaction insights ([#1047](https://github.com/MetaMask/snaps-monorepo/pull/1047))
 - **BREAKING:** Move all internal types from `snaps-types` to `snaps-utils` ([#1060](https://github.com/MetaMask/snaps-monorepo/pull/1060))
 
