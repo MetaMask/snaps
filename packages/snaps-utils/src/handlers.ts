@@ -10,6 +10,11 @@ import { AccountId, ChainId, RequestArguments } from './namespace';
 export type SnapsGlobalObject = { request: StreamProvider['request'] };
 
 /**
+ * The global `ethereum` object. This is injected into the global scope of a snap if the snap has the appropriate endowment.
+ */
+export type EthereumGlobalObject = { request: StreamProvider['request'] };
+
+/**
  * The `onRpcRequest` handler. This is called whenever a JSON-RPC request is
  * made to the snap.
  *

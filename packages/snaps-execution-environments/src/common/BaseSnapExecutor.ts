@@ -8,6 +8,7 @@ import {
   HandlerType,
   SnapExportsParameters,
   SNAP_EXPORT_NAMES,
+  EthereumGlobalObject,
 } from '@metamask/snaps-utils';
 import {
   isObject,
@@ -408,10 +409,12 @@ export class BaseSnapExecutor {
    * @param provider - A StreamProvider connected to MetaMask.
    * @returns The EIP-1193 Ethereum provider object.
    */
-  private createEIP1193Provider(provider: StreamProvider): StreamProvider {
+  private createEIP1193Provider(
+    provider: StreamProvider,
+  ): EthereumGlobalObject {
     const originalRequest = provider.request.bind(provider);
 
-    provider.request = async (args) => {
+    const request = async (args: RequestArguments) => {
       assert(
         !args.method.startsWith('snap_'),
         ethErrors.rpc.methodNotFound({
@@ -428,7 +431,7 @@ export class BaseSnapExecutor {
       }
     };
 
-    return provider;
+    return { request };
   }
 
   /**

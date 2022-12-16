@@ -1,5 +1,4 @@
-import { StreamProvider } from '@metamask/providers';
-import { SnapsGlobalObject } from '@metamask/snaps-utils';
+import { EthereumGlobalObject, SnapsGlobalObject } from '@metamask/snaps-utils';
 import { hasProperty } from '@metamask/utils';
 
 import { rootRealmGlobal } from '../globalObject';
@@ -51,7 +50,7 @@ const endowmentFactories = [timeout, interval, network, crypto, math].reduce(
  */
 export function createEndowments(
   snap: SnapsGlobalObject,
-  ethereum: StreamProvider,
+  ethereum: EthereumGlobalObject,
   endowments: string[] = [],
 ): { endowments: Record<string, unknown>; teardown: () => Promise<void> } {
   const attenuatedEndowments: Record<string, unknown> = {};
