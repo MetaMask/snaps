@@ -2523,13 +2523,13 @@ __metadata:
   linkType: hard
 
 "@metamask/eslint-config-nodejs@npm:^11.0.1":
-  version: 11.0.1
-  resolution: "@metamask/eslint-config-nodejs@npm:11.0.1"
+  version: 11.1.0
+  resolution: "@metamask/eslint-config-nodejs@npm:11.1.0"
   peerDependencies:
     "@metamask/eslint-config": ^11.0.0
     eslint: ^8.27.0
     eslint-plugin-node: ^11.1.0
-  checksum: 97858dc79e3228ba65cedf36455de2b8b3173e1d614522c69df41197d03b327a2543632c131c8bd4b9530fa84ef3e971e01888d6158d451c8eb900e11f138832
+  checksum: f672fc4a3269c55ec6189caf4fe1a4d94f375ebd4c72d479530bc561d6afc642999b055ff795398f6ad77e9e7f217baa44499699f3301e149ace316dc3cba861
   languageName: node
   linkType: hard
 
