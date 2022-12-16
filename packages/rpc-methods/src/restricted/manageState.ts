@@ -98,6 +98,8 @@ export const manageStateBuilder = Object.freeze({
   targetKey: methodName,
   specificationBuilder,
   methodHooks: {
+    getMnemonic: true,
+    getUnlockPromise: true,
     clearSnapState: true,
     getSnapState: true,
     updateSnapState: true,
