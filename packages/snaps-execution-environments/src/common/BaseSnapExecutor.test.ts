@@ -642,6 +642,43 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
+  it("doesn't allow direct access to ethereum internals", async () => {
+    const CODE = `
+      module.exports.onRpcRequest = () => ethereum._rpcEngine.handle({ method: 'snap_confirm', params: [] });
+    `;
+    const executor = new TestSnapExecutor();
+
+    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, ['ethereum']);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        FAKE_SNAP_NAME,
+        ON_RPC_REQUEST,
+        FAKE_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      error: {
+        code: -32603,
+        message: "Cannot read properties of undefined (reading 'handle')",
+        data: expect.any(Object),
+      },
+      id: 2,
+    });
+  });
+
   it('only allows certain methods in snap API', async () => {
     const CODE = `
       module.exports.onRpcRequest = () => snap.request({ method: 'eth_blockNumber', params: [] });
