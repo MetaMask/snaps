@@ -642,6 +642,74 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
+  it('allows direct access to ethereum public properties', async () => {
+    const CODE = `
+      module.exports.onRpcRequest = () => {
+        const listener = () => undefined;
+        ethereum.on('accountsChanged', listener);
+        ethereum.removeListener('accountsChanged', listener);
+        return ethereum.request({ method: 'eth_blockNumber', params: [] }) };
+    `;
+    const executor = new TestSnapExecutor();
+
+    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, ['ethereum']);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        FAKE_SNAP_NAME,
+        ON_RPC_REQUEST,
+        FAKE_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      method: 'OutboundRequest',
+    });
+
+    const blockNumRequest = await executor.readRpc();
+    expect(blockNumRequest).toStrictEqual({
+      name: 'metamask-provider',
+      data: {
+        id: expect.any(Number),
+        jsonrpc: '2.0',
+        method: 'eth_blockNumber',
+        params: [],
+      },
+    });
+
+    await executor.writeRpc({
+      name: 'metamask-provider',
+      data: {
+        jsonrpc: '2.0',
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        id: blockNumRequest.data.id!,
+        result: '0xa70e77',
+      },
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      method: 'OutboundResponse',
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: '0xa70e77',
+    });
+  });
+
   it("doesn't allow direct access to ethereum internals", async () => {
     const CODE = `
       module.exports.onRpcRequest = () => ethereum._rpcEngine.handle({ method: 'snap_confirm', params: [] });
