@@ -411,7 +411,7 @@ export class BaseSnapExecutor {
   private createEIP1193Provider(provider: StreamProvider): StreamProvider {
     const originalRequest = provider.request.bind(provider);
 
-    provider.request = async (args) => {
+    const request = async (args: RequestArguments) => {
       assert(
         !args.method.startsWith('snap_'),
         ethErrors.rpc.methodNotFound({
@@ -428,7 +428,20 @@ export class BaseSnapExecutor {
       }
     };
 
-    return provider;
+    // To harden and limit access to internals, we use a proxy.
+    const proxy = new Proxy(provider, {
+      get(target, prop: keyof StreamProvider) {
+        if (prop === 'request') {
+          return request;
+        } else if (['on', 'removeListener'].includes(prop)) {
+          return target[prop];
+        }
+
+        return undefined;
+      },
+    });
+
+    return proxy;
   }
 
   /**
