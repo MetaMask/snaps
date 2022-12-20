@@ -4,10 +4,6 @@ import {
 } from '@metamask/post-message-stream';
 import { JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
 
-// TODO: This should be configurable somehow.
-const IFRAME_URL =
-  'https://metamask.github.io/iframe-execution-environment/0.11.1/';
-
 type ExecutorJob = {
   id: string;
   window: Window;
@@ -32,15 +28,20 @@ export class OffscreenSnapExecutor {
    * @param data - The message data.
    * @param data.data - The JSON-RPC request.
    * @param data.jobId - The job ID.
+   * @param data.frameUrl - The URL to load in the iframe.
    */
-  #onData(data: { data: JsonRpcRequest<JsonRpcParams>; jobId: string }) {
-    const { jobId, data: request } = data;
+  #onData(data: {
+    data: JsonRpcRequest<JsonRpcParams>;
+    jobId: string;
+    frameUrl: string;
+  }) {
+    const { jobId, frameUrl, data: request } = data;
 
     if (!this.#jobs[jobId]) {
       // This ensures that a job is initialized before it is used. To avoid
       // code duplication, we call the `#onData` method again, which will
       // run the rest of the logic after initialization.
-      this.#initializeJob(jobId)
+      this.#initializeJob(jobId, frameUrl)
         .then(() => {
           this.#onData(data);
         })
@@ -51,6 +52,8 @@ export class OffscreenSnapExecutor {
       return;
     }
 
+    // This is a method specific to the `OffscreenSnapExecutor`, as the service
+    // itself does not have access to the iframes directly.
     if (request.method === 'terminateJob') {
       this.#terminateJob(jobId);
       return;
@@ -63,9 +66,10 @@ export class OffscreenSnapExecutor {
    * Create a new iframe and set up a stream to communicate with it.
    *
    * @param jobId - The job ID.
+   * @param frameUrl - The URL to load in the iframe.
    */
-  async #initializeJob(jobId: string): Promise<ExecutorJob> {
-    const window = await this.#createWindow(IFRAME_URL, jobId);
+  async #initializeJob(jobId: string, frameUrl: string): Promise<ExecutorJob> {
+    const window = await this.#createWindow(frameUrl, jobId);
     const jobStream = new WindowPostMessageStream({
       name: 'parent',
       target: 'child',

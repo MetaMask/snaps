@@ -10,10 +10,13 @@ import { OffscreenPostMessageStream } from './OffscreenPostMessageStream';
 
 type OffscreenExecutionEnvironmentServiceArgs = {
   documentUrl: URL;
+  frameUrl: URL;
 } & ExecutionServiceArgs;
 
 export class OffscreenExecutionService extends AbstractExecutionService<string> {
   public readonly documentUrl: URL;
+
+  public readonly frameUrl: URL;
 
   readonly #runtimeStream: BrowserRuntimePostMessageStream;
 
@@ -24,6 +27,8 @@ export class OffscreenExecutionService extends AbstractExecutionService<string> 
    * @param args.documentUrl - The URL of the offscreen document to use as the
    * execution environment. This must be a URL relative to the location where
    * this is called. This cannot be a public (http(s)) URL.
+   * @param args.frameUrl - The URL of the iframe to load inside the offscreen
+   * document.
    * @param args.messenger - The messenger to use for communication with the
    * `SnapController`.
    * @param args.setupSnapProvider - The function to use to set up the snap
@@ -31,6 +36,7 @@ export class OffscreenExecutionService extends AbstractExecutionService<string> 
    */
   constructor({
     documentUrl,
+    frameUrl,
     messenger,
     setupSnapProvider,
   }: OffscreenExecutionEnvironmentServiceArgs) {
@@ -40,6 +46,7 @@ export class OffscreenExecutionService extends AbstractExecutionService<string> 
     });
 
     this.documentUrl = documentUrl;
+    this.frameUrl = frameUrl;
     this.#runtimeStream = new BrowserRuntimePostMessageStream({
       name: 'parent',
       target: 'child',
@@ -76,6 +83,7 @@ export class OffscreenExecutionService extends AbstractExecutionService<string> 
 
     const stream = new OffscreenPostMessageStream({
       stream: this.#runtimeStream,
+      frameUrl: this.frameUrl.toString(),
       jobId,
     });
 

@@ -4,6 +4,7 @@ import { JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
 export type OffscreenDuplexStreamArgs = {
   stream: BasePostMessageStream;
   jobId: string;
+  frameUrl: string;
 };
 
 export type OffscreenDuplexStreamMessage = {
@@ -20,18 +21,23 @@ export class OffscreenPostMessageStream extends BasePostMessageStream {
 
   readonly #jobId: string;
 
+  readonly #frameUrl: string;
+
   /**
    * Initializes a new `OffscreenDuplexStream` instance.
    *
    * @param args - The constructor arguments.
    * @param args.stream - The underlying stream to use for communication.
    * @param args.jobId - The ID of the job this stream is associated with.
+   * @param args.frameUrl - The URL of the frame to load inside the offscreen
+   * document.
    */
-  constructor({ stream, jobId }: OffscreenDuplexStreamArgs) {
+  constructor({ stream, jobId, frameUrl }: OffscreenDuplexStreamArgs) {
     super();
 
     this.#stream = stream;
     this.#jobId = jobId;
+    this.#frameUrl = frameUrl;
 
     this.#stream.on('data', this.#onData.bind(this));
   }
@@ -59,6 +65,10 @@ export class OffscreenPostMessageStream extends BasePostMessageStream {
   _postMessage(data: OffscreenDuplexStreamMessage) {
     this.#stream.write({
       jobId: this.#jobId,
+      // TODO: Rather than injecting the frame URL here, we should come up with
+      // a better way to do this. The frame URL is needed to avoid hard coding
+      // it in the offscreen execution environment.
+      frameUrl: this.#frameUrl,
       data,
     });
   }
