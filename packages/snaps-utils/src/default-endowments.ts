@@ -7,7 +7,6 @@ export const DEFAULT_ENDOWMENTS: readonly string[] = Object.freeze([
   'BigInt',
   'console',
   'crypto',
-  'Date',
   'Math',
   'setTimeout',
   'clearTimeout',
