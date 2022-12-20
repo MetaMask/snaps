@@ -1,4 +1,5 @@
 import { BrowserRuntimePostMessageStream } from '@metamask/post-message-stream';
+import { nanoid } from 'nanoid';
 
 import {
   AbstractExecutionService,
@@ -45,8 +46,22 @@ export class OffscreenExecutionService extends AbstractExecutionService<string> 
     });
   }
 
-  protected async terminateJob(_job: Job<string>): Promise<void> {
-    // TODO.
+  /**
+   * Send a termination command to the offscreen document.
+   *
+   * @param job - The job to terminate.
+   */
+  protected async terminateJob(job: Job<string>) {
+    // The `AbstractExecutionService` will have already closed the job stream,
+    // so we write to the runtime stream directly.
+    this.#runtimeStream.write({
+      jobId: job.id,
+      data: {
+        jsonrpc: '2.0',
+        method: 'terminateJob',
+        id: nanoid(),
+      },
+    });
   }
 
   /**

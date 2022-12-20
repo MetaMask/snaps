@@ -51,9 +51,7 @@ export class OffscreenSnapExecutor {
       return;
     }
 
-    // TODO: Verify that this is correct.
-    if (request.method === 'terminate') {
-      this.#jobs[jobId].stream.write(request);
+    if (request.method === 'terminateJob') {
       this.#terminateJob(jobId);
       return;
     }
@@ -93,8 +91,11 @@ export class OffscreenSnapExecutor {
   #terminateJob(jobId: string) {
     assert(this.#jobs[jobId], `Job "${jobId}" not found.`);
 
+    const iframe = document.getElementById(jobId);
+    assert(iframe?.parentNode, `Iframe with ID "${jobId}" not found.`);
+
+    iframe.parentNode.removeChild(iframe);
     this.#jobs[jobId].stream.destroy();
-    this.#jobs[jobId].window.close();
     delete this.#jobs[jobId];
   }
 
