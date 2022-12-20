@@ -40,6 +40,7 @@ export class IframeExecutionService extends AbstractExecutionService<Window> {
       this.iframeUrl.toString(),
       jobId,
     );
+
     const stream = new WindowPostMessageStream({
       name: 'parent',
       target: 'child',

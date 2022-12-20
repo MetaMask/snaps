@@ -18,6 +18,8 @@ declare namespace chrome.offscreen {
     url: string;
   };
 
+  export function hasDocument(): Promise<boolean>;
+
   export function createDocument(
     parameters: CreateParameters,
     callback?: () => void,

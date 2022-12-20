@@ -116,6 +116,21 @@ module.exports = (_, argv) => {
             to: path.resolve(ENVIRONMENTS, 'iframe/index.html'),
             toType: 'file',
           },
+          {
+            // For use in <script> tag along with the offscreen bundle. Copied to ensure same version as bundled
+            from: path.resolve(
+              `${path.dirname(require.resolve('ses/package.json'))}`,
+              'dist',
+              'lockdown.umd.min.js',
+            ),
+            to: path.resolve(ENVIRONMENTS, 'offscreen/lockdown.umd.min.js'),
+            toType: 'file',
+          },
+          {
+            from: path.resolve('src', 'offscreen', 'index.html'),
+            to: path.resolve(ENVIRONMENTS, 'offscreen/index.html'),
+            toType: 'file',
+          },
         ],
       }),
     ],

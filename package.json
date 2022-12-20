@@ -39,9 +39,6 @@
       "prettier --write"
     ]
   },
-  "resolutions": {
-    "@metamask/post-message-stream": "portal:/Users/morten/Development/MetaMask/post-message-stream"
-  },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.0.3",
     "@metamask/auto-changelog": "^3.1.0",
