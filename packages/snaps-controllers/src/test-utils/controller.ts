@@ -21,7 +21,6 @@ import { CronjobControllerActions, CronjobControllerEvents } from '../cronjob';
 import {
   AllowedActions,
   AllowedEvents,
-  CheckSnapBlockListArg,
   PersistedSnapControllerState,
   SnapController,
   SnapControllerActions,
@@ -30,6 +29,7 @@ import {
 } from '../snaps';
 import { MOCK_CRONJOB_PERMISSION } from './cronjob';
 import { getNodeEES, getNodeEESMessenger } from './execution-environment';
+import { MockSnapRegistry } from './registry';
 
 const asyncNoOp = async () => Promise.resolve();
 
@@ -240,21 +240,13 @@ export type PartialSnapControllerConstructorParams = Partial<
 export const getSnapControllerOptions = (
   opts?: PartialSnapControllerConstructorParams,
 ) => {
+  const registry = new MockSnapRegistry();
   const options = {
     environmentEndowmentPermissions: [],
     closeAllConnections: jest.fn(),
     messenger: getSnapControllerMessenger(),
     featureFlags: { dappsCanUpdateSnaps: true },
-    checkBlockList: jest
-      .fn()
-      .mockImplementation(async (snaps: CheckSnapBlockListArg) =>
-        Promise.resolve(
-          Object.keys(snaps).reduce(
-            (acc, snapId) => ({ ...acc, [snapId]: { blocked: false } }),
-            {},
-          ),
-        ),
-      ),
+    registry,
     state: undefined,
     ...opts,
   } as SnapControllerConstructorParams;
@@ -279,20 +271,13 @@ export const getSnapControllerWithEESOptions = ({
 }: GetSnapControllerWithEESOptionsParam = {}) => {
   const snapControllerMessenger = getSnapControllerMessenger(rootMessenger);
 
+  const registry = new MockSnapRegistry();
+
   return {
     featureFlags: { dappsCanUpdateSnaps: true },
     environmentEndowmentPermissions: [],
     closeAllConnections: jest.fn(),
-    checkBlockList: jest
-      .fn()
-      .mockImplementation(async (snaps: CheckSnapBlockListArg) =>
-        Promise.resolve(
-          Object.keys(snaps).reduce(
-            (acc, snapId) => ({ ...acc, [snapId]: { blocked: false } }),
-            {},
-          ),
-        ),
-      ),
+    registry,
     messenger: snapControllerMessenger,
     rootMessenger,
     ...options,

@@ -93,6 +93,13 @@ import {
 } from './endowments';
 import { getRpcCaveatOrigins } from './endowments/rpc';
 import { detectSnapLocation, SnapLocation } from './location';
+import {
+  SnapRegistry,
+  JsonSnapRegistry,
+  SnapRegistryInfo,
+  SnapRegistryRequest,
+  SnapRegistryStatus,
+} from './registry';
 import { RequestQueue } from './RequestQueue';
 import { Timer } from './Timer';
 
@@ -469,28 +476,8 @@ type FeatureFlags = {
    * @see {SnapController.processRequestedSnap}
    */
   dappsCanUpdateSnaps?: true;
+  requireAllowlist?: true;
 };
-
-type SemVerVersion = string;
-type SnapInfo = { version: SemVerVersion; shasum: string };
-export type CheckSnapBlockListArg = Record<SnapId, SnapInfo>;
-
-export type CheckSnapBlockListResult = Record<
-  SnapId,
-  | {
-      blocked: true;
-      reason?: string;
-      infoUrl?: string;
-    }
-  | { blocked: false }
->;
-
-/**
- * Checks whether a version of a snap is blocked.
- */
-export type CheckSnapBlockList = (
-  snapsToCheck: CheckSnapBlockListArg,
-) => Promise<CheckSnapBlockListResult>;
 
 type SnapControllerArgs = {
   /**
@@ -523,9 +510,9 @@ type SnapControllerArgs = {
   idleTimeCheckInterval?: number;
 
   /**
-   * A function that checks whether the specified snap and version is blocked.
+   * TODO
    */
-  checkBlockList: CheckSnapBlockList;
+  registry: SnapRegistry;
 
   /**
    * The maximum amount of time that a snap may be idle.
@@ -634,7 +621,7 @@ export class SnapController extends BaseController<
 
   #idleTimeCheckInterval: number;
 
-  #checkSnapBlockList: CheckSnapBlockList;
+  #registry: SnapRegistry;
 
   #maxIdleTime: number;
 
@@ -662,7 +649,7 @@ export class SnapController extends BaseController<
     state,
     environmentEndowmentPermissions = [],
     idleTimeCheckInterval = inMilliseconds(5, Duration.Second),
-    checkBlockList,
+    registry = new JsonSnapRegistry(),
     maxIdleTime = inMilliseconds(30, Duration.Second),
     maxRequestTime = inMilliseconds(60, Duration.Second),
     fetchFunction = globalThis.fetch.bind(globalThis),
@@ -729,7 +716,7 @@ export class SnapController extends BaseController<
     this.#featureFlags = featureFlags;
     this.#fetchFunction = fetchFunction;
     this.#idleTimeCheckInterval = idleTimeCheckInterval;
-    this.#checkSnapBlockList = checkBlockList;
+    this.#registry = registry;
     this.#maxIdleTime = maxIdleTime;
     this.maxRequestTime = maxRequestTime;
     this.#detectSnapLocation = detectSnapLocationFunction;
@@ -937,8 +924,8 @@ export class SnapController extends BaseController<
    * for more information.
    */
   async updateBlockedSnaps(): Promise<void> {
-    const blockedSnaps = await this.#checkSnapBlockList(
-      Object.values(this.state.snaps).reduce<CheckSnapBlockListArg>(
+    const blockedSnaps = await this.#registry.get(
+      Object.values(this.state.snaps).reduce<SnapRegistryRequest>(
         (blockListArg, snap) => {
           blockListArg[snap.id] = {
             version: snap.version,
@@ -952,8 +939,9 @@ export class SnapController extends BaseController<
 
     await Promise.all(
       Object.entries(blockedSnaps).map(
-        async ([snapId, { blocked, ...blockData }]) => {
-          if (blocked) {
+        async ([snapId, { status, ...blockData }]) => {
+          if (status === SnapRegistryStatus.Blocked) {
+            // TODO: Figure out shape of block data
             return this.#blockSnap(snapId, blockData);
           }
 
@@ -1019,34 +1007,24 @@ export class SnapController extends BaseController<
     this.messagingSystem.publish(`${controllerName}:snapUnblocked`, snapId);
   }
 
-  /**
-   * Checks the block list to determine whether a version of a snap is blocked.
-   *
-   * @param snapId - The snap id to check.
-   * @param snapInfo - Snap information containing version and shasum.
-   * @returns Whether the version of the snap is blocked or not.
-   */
-  async isBlocked(
+  async #assertIsInstallAllowed(
     snapId: ValidatedSnapId,
-    snapInfo: SnapInfo,
-  ): Promise<boolean> {
-    const result = await this.#checkSnapBlockList({
+    snapInfo: SnapRegistryInfo,
+  ) {
+    const results = await this.#registry.get({
       [snapId]: snapInfo,
     });
-    return result[snapId].blocked;
-  }
-
-  /**
-   * Asserts that a version of a snap is not blocked. Succeeds automatically
-   * if {@link SnapController._checkSnapBlockList} is undefined.
-   *
-   * @param snapId - The id of the snap to check.
-   * @param snapInfo - Snap information containing version and shasum.
-   */
-  async #assertIsUnblocked(snapId: ValidatedSnapId, snapInfo: SnapInfo) {
-    if (await this.isBlocked(snapId, snapInfo)) {
+    const result = results[snapId];
+    if (result.status === SnapRegistryStatus.Blocked) {
       throw new Error(
         `Cannot install version "${snapInfo.version}" of snap "${snapId}": the version is blocked.`,
+      );
+    } else if (
+      this.#featureFlags.requireAllowlist &&
+      result.status !== SnapRegistryStatus.Verified
+    ) {
+      throw new Error(
+        `Cannot install version "${snapInfo.version}" of snap "${snapId}": the snap is not allowlisted.`,
       );
     }
   }
@@ -1723,7 +1701,7 @@ export class SnapController extends BaseController<
       return null;
     }
 
-    await this.#assertIsUnblocked(snapId, {
+    await this.#assertIsInstallAllowed(snapId, {
       version: newVersion,
       shasum: newSnap.manifest.result.source.shasum,
     });
@@ -1842,7 +1820,7 @@ export class SnapController extends BaseController<
       // to null in the authorize() method.
       runtime.installPromise = (async () => {
         const fetchedSnap = await this.#fetchSnap(snapId, location);
-        await this.#assertIsUnblocked(snapId, {
+        await this.#assertIsInstallAllowed(snapId, {
           version: fetchedSnap.manifest.result.version,
           shasum: fetchedSnap.manifest.result.source.shasum,
         });

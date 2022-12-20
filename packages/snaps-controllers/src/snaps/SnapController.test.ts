@@ -57,9 +57,11 @@ import {
   sleep,
   loopbackDetect,
   LoopbackLocation,
+  MockSnapRegistry,
 } from '../test-utils';
 import { delay } from '../utils';
 import { handlerEndowments, SnapEndowments } from './endowments';
+import { SnapRegistryStatus } from './registry';
 import { SnapControllerState, SNAP_APPROVAL_UPDATE } from './SnapController';
 
 const { subtle } = new Crypto();
@@ -2638,10 +2640,10 @@ describe('SnapController', () => {
     });
 
     it('throws an error if the new version of the snap is blocked', async () => {
-      const checkBlockListSpy = jest.fn();
+      const registry = new MockSnapRegistry();
       const controller = getSnapController(
         getSnapControllerOptions({
-          checkBlockList: checkBlockListSpy,
+          registry,
           state: {
             snaps: getPersistedSnapsState(),
           },
@@ -2651,8 +2653,8 @@ describe('SnapController', () => {
         }),
       );
 
-      checkBlockListSpy.mockResolvedValueOnce({
-        [MOCK_SNAP_ID]: { blocked: true },
+      registry.get.mockResolvedValueOnce({
+        [MOCK_SNAP_ID]: { status: SnapRegistryStatus.Blocked },
       });
 
       await expect(
@@ -3330,56 +3332,12 @@ describe('SnapController', () => {
     });
   });
 
-  describe('isBlocked', () => {
-    it('returns whether a version of a snap is blocked', async () => {
-      const checkBlockListSpy = jest.fn();
-      const snapId = 'npm:example';
-      const version = '1.0.0';
-      const shasum = 'source-shasum';
-
-      const snapController = getSnapController(
-        getSnapControllerOptions({
-          checkBlockList: checkBlockListSpy,
-        }),
-      );
-
-      checkBlockListSpy.mockResolvedValueOnce({
-        [snapId]: { blocked: false },
-      });
-
-      expect(
-        await snapController.isBlocked(snapId, {
-          version,
-          shasum,
-        }),
-      ).toBe(false);
-
-      checkBlockListSpy.mockResolvedValueOnce({
-        [snapId]: { blocked: true },
-      });
-
-      expect(
-        await snapController.isBlocked(snapId, {
-          version,
-          shasum,
-        }),
-      ).toBe(true);
-
-      expect(checkBlockListSpy).toHaveBeenCalledWith({
-        [snapId]: {
-          version,
-          shasum,
-        },
-      });
-    });
-  });
-
   describe('updateBlockedSnaps', () => {
     it('blocks snaps as expected', async () => {
       const messenger = getSnapControllerMessenger();
       const publishMock = jest.spyOn(messenger, 'publish');
 
-      const checkBlockListSpy = jest.fn();
+      const registry = new MockSnapRegistry();
 
       const mockSnapA = getMockSnapData({
         id: 'npm:exampleA',
@@ -3394,7 +3352,7 @@ describe('SnapController', () => {
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
-          checkBlockList: checkBlockListSpy,
+          registry,
           state: {
             snaps: getPersistedSnapsState(
               mockSnapA.stateObject,
@@ -3407,13 +3365,13 @@ describe('SnapController', () => {
       const reason = 'foo';
       const infoUrl = 'foobar.com';
       // Block snap A, ignore B.
-      checkBlockListSpy.mockResolvedValueOnce({
-        [mockSnapA.id]: { blocked: true, reason, infoUrl },
+      registry.get.mockResolvedValueOnce({
+        [mockSnapA.id]: { status: SnapRegistryStatus.Blocked, reason, infoUrl },
       });
       await snapController.updateBlockedSnaps();
 
       // Ensure that CheckSnapBlockListArg is correct
-      expect(checkBlockListSpy).toHaveBeenCalledWith({
+      expect(registry.get).toHaveBeenCalledWith({
         [mockSnapA.id]: {
           version: mockSnapA.manifest.version,
           shasum: mockSnapA.manifest.source.shasum,
@@ -3443,7 +3401,7 @@ describe('SnapController', () => {
     });
 
     it('stops running snaps when they are blocked', async () => {
-      const checkBlockListSpy = jest.fn();
+      const registry = new MockSnapRegistry();
 
       const mockSnap = getMockSnapData({
         id: 'npm:example',
@@ -3452,7 +3410,7 @@ describe('SnapController', () => {
 
       const snapController = getSnapController(
         getSnapControllerOptions({
-          checkBlockList: checkBlockListSpy,
+          registry,
           state: {
             snaps: getPersistedSnapsState(mockSnap.stateObject),
           },
@@ -3462,8 +3420,8 @@ describe('SnapController', () => {
       await snapController.startSnap(mockSnap.id);
 
       // Block the snap
-      checkBlockListSpy.mockResolvedValueOnce({
-        [mockSnap.id]: { blocked: true },
+      registry.get.mockResolvedValueOnce({
+        [mockSnap.id]: { status: SnapRegistryStatus.Blocked },
       });
       await snapController.updateBlockedSnaps();
 
@@ -3477,7 +3435,7 @@ describe('SnapController', () => {
       const messenger = getSnapControllerMessenger();
       const publishMock = jest.spyOn(messenger, 'publish');
 
-      const checkBlockListSpy = jest.fn();
+      const registry = new MockSnapRegistry();
 
       const mockSnapA = getMockSnapData({
         id: 'npm:exampleA',
@@ -3494,7 +3452,7 @@ describe('SnapController', () => {
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
-          checkBlockList: checkBlockListSpy,
+          registry,
           state: {
             snaps: getPersistedSnapsState(
               mockSnapA.stateObject,
@@ -3514,9 +3472,9 @@ describe('SnapController', () => {
 
       // Indicate that both snaps A and B are unblocked, and update blocked
       // states.
-      checkBlockListSpy.mockResolvedValueOnce({
-        [mockSnapA.id]: { blocked: false },
-        [mockSnapB.id]: { blocked: false },
+      registry.get.mockResolvedValueOnce({
+        [mockSnapA.id]: { status: SnapRegistryStatus.Unverified },
+        [mockSnapB.id]: { status: SnapRegistryStatus.Unverified },
       });
       await snapController.updateBlockedSnaps();
 
@@ -3536,7 +3494,7 @@ describe('SnapController', () => {
 
     it('updating blocked snaps does not throw if a snap is removed while fetching the blocklist', async () => {
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-      const checkBlockListSpy = jest.fn();
+      const registry = new MockSnapRegistry();
 
       const mockSnap = getMockSnapData({
         id: 'npm:example',
@@ -3545,7 +3503,7 @@ describe('SnapController', () => {
 
       const snapController = getSnapController(
         getSnapControllerOptions({
-          checkBlockList: checkBlockListSpy,
+          registry,
           state: {
             snaps: getPersistedSnapsState(mockSnap.stateObject),
           },
@@ -3554,7 +3512,7 @@ describe('SnapController', () => {
 
       // Block the snap
       let resolveBlockListPromise: any;
-      checkBlockListSpy.mockReturnValueOnce(
+      registry.get.mockReturnValueOnce(
         new Promise<unknown>((resolve) => (resolveBlockListPromise = resolve)),
       );
 
@@ -3565,7 +3523,7 @@ describe('SnapController', () => {
 
       // Resolve the blocklist and wait for the call to complete
       resolveBlockListPromise({
-        [mockSnap.id]: { blocked: true },
+        [mockSnap.id]: { status: SnapRegistryStatus.Blocked },
       });
       await updateBlockList;
 
@@ -3576,7 +3534,7 @@ describe('SnapController', () => {
 
     it('logs but does not throw unexpected errors while blocking', async () => {
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-      const checkBlockListSpy = jest.fn();
+      const registry = new MockSnapRegistry();
 
       const mockSnap = getMockSnapData({
         id: 'npm:example',
@@ -3585,7 +3543,7 @@ describe('SnapController', () => {
 
       const snapController = getSnapController(
         getSnapControllerOptions({
-          checkBlockList: checkBlockListSpy,
+          registry,
           state: {
             snaps: getPersistedSnapsState(mockSnap.stateObject),
           },
@@ -3599,8 +3557,8 @@ describe('SnapController', () => {
       });
 
       // Block the snap
-      checkBlockListSpy.mockResolvedValueOnce({
-        [mockSnap.id]: { blocked: true },
+      registry.get.mockResolvedValueOnce({
+        [mockSnap.id]: { status: SnapRegistryStatus.Blocked },
       });
       await snapController.updateBlockedSnaps();
 
