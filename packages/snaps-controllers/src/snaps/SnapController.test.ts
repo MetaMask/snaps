@@ -14,6 +14,7 @@ import {
   VirtualFile,
   SnapManifest,
   NpmSnapFileNames,
+  DEFAULT_REQUESTED_SNAP_VERSION,
 } from '@metamask/snaps-utils';
 import {
   DEFAULT_SNAP_BUNDLE,
@@ -662,6 +663,23 @@ describe('SnapController', () => {
       }),
     ).rejects.toThrow(
       'The "version" field must be a valid SemVer version range if specified. Received: "foo".',
+    );
+  });
+
+  it('throws an error if snap is not on allowlist and allowlisting is required', async () => {
+    const controller = getSnapController(
+      getSnapControllerOptions({
+        featureFlags: { requireAllowlist: true },
+        detectSnapLocation: loopbackDetect(),
+      }),
+    );
+
+    await expect(
+      controller.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: { version: DEFAULT_REQUESTED_SNAP_VERSION },
+      }),
+    ).rejects.toThrow(
+      'Cannot install version "1.0.0" of snap "npm:@metamask/example-snap": the snap is not allowlisted.',
     );
   });
 
