@@ -1,7 +1,13 @@
-import { SemVerVersion, SnapId } from '@metamask/snaps-utils';
+import {
+  satisfiesVersionRange,
+  SemVerRange,
+  SemVerVersion,
+  SnapId,
+} from '@metamask/snaps-utils';
 
 import {
   SnapRegistry,
+  SnapRegistryBlockReason,
   SnapRegistryInfo,
   SnapRegistryRequest,
   SnapRegistryResult,
@@ -13,17 +19,23 @@ const SNAP_REGISTRY_URL = 'foo.json';
 
 const SNAP_NOT_FOUND = { status: SnapRegistryStatus.Unverified };
 
-export type JsonSnapRegistryEntry = {
+export type JsonSnapRegistryVerifiedEntry = {
   id: SnapId;
   versions: Record<SemVerVersion, JsonSnapRegistryVersion>;
 };
 
 export type JsonSnapRegistryVersion = {
   checksum: string;
-  status: SnapRegistryStatus;
 };
 
-export type JsonSnapRegistryDatabase = Record<SnapId, JsonSnapRegistryEntry>;
+export type JsonSnapRegistryBlockedEntry = {
+  reason?: SnapRegistryBlockReason;
+} & ({ id: SnapId; versionRange: SemVerRange } | { shasum: string });
+
+export type JsonSnapRegistryDatabase = {
+  verifiedSnaps: Record<SnapId, JsonSnapRegistryVerifiedEntry>;
+  blockedSnaps: JsonSnapRegistryBlockedEntry[];
+};
 
 export class JsonSnapRegistry implements SnapRegistry {
   #db: JsonSnapRegistryDatabase | null = null;
@@ -47,8 +59,27 @@ export class JsonSnapRegistry implements SnapRegistry {
 
   async #getSingle(snapId: SnapId, snapInfo: SnapRegistryInfo) {
     const db = await this.#getDatabase();
-    const result = db?.[snapId];
-    const version = result?.versions?.[snapInfo.version];
+
+    const blockedEntry = db?.blockedSnaps?.find((blocked) => {
+      if ('id' in blocked) {
+        return (
+          blocked.id === snapId &&
+          satisfiesVersionRange(snapInfo.version, blocked.versionRange)
+        );
+      }
+
+      return blocked.shasum === snapInfo.shasum;
+    });
+
+    if (blockedEntry) {
+      return {
+        status: SnapRegistryStatus.Blocked,
+        reason: blockedEntry.reason,
+      };
+    }
+
+    const verified = db?.verifiedSnaps?.[snapId];
+    const version = verified?.versions?.[snapInfo.version];
     if (!version) {
       return SNAP_NOT_FOUND;
     } else if (version.checksum !== snapInfo.shasum) {
@@ -56,7 +87,7 @@ export class JsonSnapRegistry implements SnapRegistry {
       return SNAP_NOT_FOUND;
     }
 
-    return { status: version.status };
+    return { status: SnapRegistryStatus.Verified };
   }
 
   public async get(

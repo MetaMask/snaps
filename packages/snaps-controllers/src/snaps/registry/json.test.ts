@@ -9,16 +9,29 @@ import { JsonSnapRegistry } from './json';
 import { SnapRegistryStatus } from './registry';
 
 const MOCK_DATABASE = {
-  [MOCK_SNAP_ID]: {
-    id: MOCK_SNAP_ID,
-    versions: {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      '1.0.0': {
-        checksum: DEFAULT_SNAP_SHASUM,
-        status: SnapRegistryStatus.Verified,
+  verifiedSnaps: {
+    [MOCK_SNAP_ID]: {
+      id: MOCK_SNAP_ID,
+      versions: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        '1.0.0': {
+          checksum: DEFAULT_SNAP_SHASUM,
+          status: SnapRegistryStatus.Verified,
+        },
       },
     },
   },
+  blockedSnaps: [
+    {
+      shasum: 'foo',
+      reason: { explanation: 'malicious' },
+    },
+    {
+      id: 'npm:@consensys/starknet-snap',
+      versionRange: '<0.1.11',
+      reason: { explanation: 'vuln' },
+    },
+  ],
 };
 
 describe('JsonSnapRegistry', () => {
@@ -81,13 +94,51 @@ describe('JsonSnapRegistry', () => {
     const result = await registry.get({
       [MOCK_SNAP_ID]: {
         version: '1.0.0' as SemVerVersion,
-        shasum: 'foo',
+        shasum: 'bar',
       },
     });
 
     expect(result).toStrictEqual({
       [MOCK_SNAP_ID]: {
         status: SnapRegistryStatus.Unverified,
+      },
+    });
+  });
+
+  it('returns blocked if snap shasum is on blocklist', async () => {
+    fetchMock.mockResponse(JSON.stringify(MOCK_DATABASE));
+    const registry = new JsonSnapRegistry();
+    const result = await registry.get({
+      [MOCK_SNAP_ID]: {
+        version: '1.0.0' as SemVerVersion,
+        shasum: 'foo',
+      },
+    });
+
+    expect(result).toStrictEqual({
+      [MOCK_SNAP_ID]: {
+        status: SnapRegistryStatus.Blocked,
+        reason: { explanation: 'malicious' },
+      },
+    });
+  });
+
+  it('returns blocked if snap version range is on blocklist', async () => {
+    fetchMock.mockResponse(JSON.stringify(MOCK_DATABASE));
+    const registry = new JsonSnapRegistry();
+    const result = await registry.get({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      'npm:@consensys/starknet-snap': {
+        version: '0.1.10' as SemVerVersion,
+        shasum: DEFAULT_SNAP_SHASUM,
+      },
+    });
+
+    expect(result).toStrictEqual({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      'npm:@consensys/starknet-snap': {
+        status: SnapRegistryStatus.Blocked,
+        reason: { explanation: 'vuln' },
       },
     });
   });

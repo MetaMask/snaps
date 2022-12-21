@@ -10,8 +10,14 @@ export enum SnapRegistryStatus {
   Verified,
 }
 
+export type SnapRegistryBlockReason = {
+  explanation?: string;
+  url?: string;
+};
+
 export type SnapRegistryResult = {
   status: SnapRegistryStatus;
+  reason?: SnapRegistryBlockReason;
 };
 
 export interface SnapRegistry {
