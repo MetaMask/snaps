@@ -927,7 +927,7 @@ export class SnapController extends BaseController<
         (blockListArg, snap) => {
           blockListArg[snap.id] = {
             version: snap.version,
-            shasum: snap.manifest.source.shasum,
+            checksum: snap.manifest.source.shasum,
           };
           return blockListArg;
         },
@@ -1698,7 +1698,7 @@ export class SnapController extends BaseController<
 
     await this.#assertIsInstallAllowed(snapId, {
       version: newVersion,
-      shasum: newSnap.manifest.result.source.shasum,
+      checksum: newSnap.manifest.result.source.shasum,
     });
 
     const processedPermissions = this.#processSnapPermissions(
@@ -1817,7 +1817,7 @@ export class SnapController extends BaseController<
         const fetchedSnap = await this.#fetchSnap(snapId, location);
         await this.#assertIsInstallAllowed(snapId, {
           version: fetchedSnap.manifest.result.version,
-          shasum: fetchedSnap.manifest.result.source.shasum,
+          checksum: fetchedSnap.manifest.result.source.shasum,
         });
 
         return this.#set({

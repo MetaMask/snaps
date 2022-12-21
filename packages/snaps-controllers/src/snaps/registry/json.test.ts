@@ -1,33 +1,36 @@
-import { SemVerVersion, SnapRegistryStatus } from '@metamask/snaps-utils';
+import {
+  SemVerRange,
+  SemVerVersion,
+  SnapRegistryStatus,
+} from '@metamask/snaps-utils';
 import {
   DEFAULT_SNAP_SHASUM,
   MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
 import fetchMock from 'jest-fetch-mock';
 
-import { JsonSnapRegistry } from './json';
+import { JsonSnapRegistry, JsonSnapRegistryDatabase } from './json';
 
-const MOCK_DATABASE = {
+const MOCK_DATABASE: JsonSnapRegistryDatabase = {
   verifiedSnaps: {
     [MOCK_SNAP_ID]: {
       id: MOCK_SNAP_ID,
       versions: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        '1.0.0': {
+        ['1.0.0' as SemVerVersion]: {
           checksum: DEFAULT_SNAP_SHASUM,
-          status: SnapRegistryStatus.Verified,
         },
       },
     },
   },
   blockedSnaps: [
     {
-      shasum: 'foo',
+      checksum: 'foo',
       reason: { explanation: 'malicious' },
     },
     {
       id: 'npm:@consensys/starknet-snap',
-      versionRange: '<0.1.11',
+      versionRange: '<0.1.11' as SemVerRange,
       reason: { explanation: 'vuln' },
     },
   ],
@@ -41,7 +44,7 @@ describe('JsonSnapRegistry', () => {
     const result = await registry.get({
       [MOCK_SNAP_ID]: {
         version: '1.0.0' as SemVerVersion,
-        shasum: DEFAULT_SNAP_SHASUM,
+        checksum: DEFAULT_SNAP_SHASUM,
       },
     });
 
@@ -59,7 +62,7 @@ describe('JsonSnapRegistry', () => {
     const result = await registry.get({
       [MOCK_SNAP_ID]: {
         version: '1.0.0' as SemVerVersion,
-        shasum: DEFAULT_SNAP_SHASUM,
+        checksum: DEFAULT_SNAP_SHASUM,
       },
     });
 
@@ -76,7 +79,7 @@ describe('JsonSnapRegistry', () => {
     const result = await registry.get({
       [MOCK_SNAP_ID]: {
         version: '1.0.1' as SemVerVersion,
-        shasum: DEFAULT_SNAP_SHASUM,
+        checksum: DEFAULT_SNAP_SHASUM,
       },
     });
 
@@ -93,7 +96,7 @@ describe('JsonSnapRegistry', () => {
     const result = await registry.get({
       [MOCK_SNAP_ID]: {
         version: '1.0.0' as SemVerVersion,
-        shasum: 'bar',
+        checksum: 'bar',
       },
     });
 
@@ -104,13 +107,13 @@ describe('JsonSnapRegistry', () => {
     });
   });
 
-  it('returns blocked if snap shasum is on blocklist', async () => {
+  it('returns blocked if snap checksum is on blocklist', async () => {
     fetchMock.mockResponse(JSON.stringify(MOCK_DATABASE));
     const registry = new JsonSnapRegistry();
     const result = await registry.get({
       [MOCK_SNAP_ID]: {
         version: '1.0.0' as SemVerVersion,
-        shasum: 'foo',
+        checksum: 'foo',
       },
     });
 
@@ -129,7 +132,7 @@ describe('JsonSnapRegistry', () => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       'npm:@consensys/starknet-snap': {
         version: '0.1.10' as SemVerVersion,
-        shasum: DEFAULT_SNAP_SHASUM,
+        checksum: DEFAULT_SNAP_SHASUM,
       },
     });
 

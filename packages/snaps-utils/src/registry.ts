@@ -1,7 +1,7 @@
 import { SnapId } from './types';
 import { SemVerVersion } from './versions';
 
-export type SnapRegistryInfo = { version: SemVerVersion; shasum: string };
+export type SnapRegistryInfo = { version: SemVerVersion; checksum: string };
 export type SnapRegistryRequest = Record<SnapId, SnapRegistryInfo>;
 
 // TODO: Decide on names for these

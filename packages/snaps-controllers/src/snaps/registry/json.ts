@@ -14,8 +14,6 @@ import {
 // TODO
 const SNAP_REGISTRY_URL = 'foo.json';
 
-const SNAP_NOT_FOUND = { status: SnapRegistryStatus.Unverified };
-
 export type JsonSnapRegistryVerifiedEntry = {
   id: SnapId;
   versions: Record<SemVerVersion, JsonSnapRegistryVersion>;
@@ -27,7 +25,7 @@ export type JsonSnapRegistryVersion = {
 
 export type JsonSnapRegistryBlockedEntry = {
   reason?: SnapRegistryBlockReason;
-} & ({ id: SnapId; versionRange: SemVerRange } | { shasum: string });
+} & ({ id: SnapId; versionRange: SemVerRange } | { checksum: string });
 
 export type JsonSnapRegistryDatabase = {
   verifiedSnaps: Record<SnapId, JsonSnapRegistryVerifiedEntry>;
@@ -65,7 +63,7 @@ export class JsonSnapRegistry implements SnapRegistry {
         );
       }
 
-      return blocked.shasum === snapInfo.shasum;
+      return blocked.checksum === snapInfo.checksum;
     });
 
     if (blockedEntry) {
@@ -77,14 +75,10 @@ export class JsonSnapRegistry implements SnapRegistry {
 
     const verified = db?.verifiedSnaps?.[snapId];
     const version = verified?.versions?.[snapInfo.version];
-    if (!version) {
-      return SNAP_NOT_FOUND;
-    } else if (version.checksum !== snapInfo.shasum) {
-      // TODO: Decide what this should return
-      return SNAP_NOT_FOUND;
+    if (version && version.checksum === snapInfo.checksum) {
+      return { status: SnapRegistryStatus.Verified };
     }
-
-    return { status: SnapRegistryStatus.Verified };
+    return { status: SnapRegistryStatus.Unverified };
   }
 
   public async get(

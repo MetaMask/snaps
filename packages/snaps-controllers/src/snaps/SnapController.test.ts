@@ -3395,11 +3395,11 @@ describe('SnapController', () => {
       expect(registry.get).toHaveBeenCalledWith({
         [mockSnapA.id]: {
           version: mockSnapA.manifest.version,
-          shasum: mockSnapA.manifest.source.shasum,
+          checksum: mockSnapA.manifest.source.shasum,
         },
         [mockSnapB.id]: {
           version: mockSnapB.manifest.version,
-          shasum: mockSnapB.manifest.source.shasum,
+          checksum: mockSnapB.manifest.source.shasum,
         },
       });
 
