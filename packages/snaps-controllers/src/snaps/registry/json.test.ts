@@ -1,4 +1,4 @@
-import { SemVerVersion } from '@metamask/snaps-utils';
+import { SemVerVersion, SnapRegistryStatus } from '@metamask/snaps-utils';
 import {
   DEFAULT_SNAP_SHASUM,
   MOCK_SNAP_ID,
@@ -6,7 +6,6 @@ import {
 import fetchMock from 'jest-fetch-mock';
 
 import { JsonSnapRegistry } from './json';
-import { SnapRegistryStatus } from './registry';
 
 const MOCK_DATABASE = {
   verifiedSnaps: {

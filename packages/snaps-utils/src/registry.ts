@@ -1,4 +1,5 @@
-import { SemVerVersion, SnapId } from '@metamask/snaps-utils';
+import { SnapId } from './types';
+import { SemVerVersion } from './versions';
 
 export type SnapRegistryInfo = { version: SemVerVersion; shasum: string };
 export type SnapRegistryRequest = Record<SnapId, SnapRegistryInfo>;
@@ -20,6 +21,7 @@ export type SnapRegistryResult = {
   reason?: SnapRegistryBlockReason;
 };
 
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface SnapRegistry {
   get(snaps: SnapRegistryRequest): Promise<Record<SnapId, SnapRegistryResult>>;
 }

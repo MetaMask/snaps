@@ -3,16 +3,13 @@ import {
   SemVerRange,
   SemVerVersion,
   SnapId,
-} from '@metamask/snaps-utils';
-
-import {
   SnapRegistry,
   SnapRegistryBlockReason,
   SnapRegistryInfo,
   SnapRegistryRequest,
   SnapRegistryResult,
   SnapRegistryStatus,
-} from './registry';
+} from '@metamask/snaps-utils';
 
 // TODO
 const SNAP_REGISTRY_URL = 'foo.json';

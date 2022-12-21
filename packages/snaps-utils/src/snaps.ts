@@ -15,6 +15,7 @@ import {
 import validateNPMPackage from 'validate-npm-package-name';
 
 import { SnapManifest, SnapPermissions } from './manifest/validation';
+import { SnapRegistryBlockReason } from './registry';
 import {
   SnapId,
   SnapIdPrefixes,
@@ -46,8 +47,6 @@ export const PROPOSED_NAME_REGEX =
 export type RequestedSnapPermissions = {
   [permission: string]: Record<string, Json>;
 };
-
-export type BlockedSnapInfo = { infoUrl?: string; reason?: string };
 
 export enum SnapStatus {
   Installing = 'installing',
@@ -119,7 +118,7 @@ export type Snap = {
   /**
    * Information detailing why the snap is blocked.
    */
-  blockInformation?: BlockedSnapInfo;
+  blockInformation?: SnapRegistryBlockReason;
 
   /**
    * The name of the permission used to invoke the Snap.

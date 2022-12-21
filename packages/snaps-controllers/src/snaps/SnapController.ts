@@ -22,7 +22,6 @@ import {
 import { caveatMappers } from '@metamask/rpc-methods';
 import {
   assertIsSnapManifest,
-  BlockedSnapInfo,
   DEFAULT_ENDOWMENTS,
   DEFAULT_REQUESTED_SNAP_VERSION,
   fromEntries,
@@ -51,6 +50,11 @@ import {
   validateSnapId,
   validateSnapShasum,
   VirtualFile,
+  SnapRegistry,
+  SnapRegistryInfo,
+  SnapRegistryRequest,
+  SnapRegistryStatus,
+  SnapRegistryBlockReason,
 } from '@metamask/snaps-utils';
 import {
   GetSubjectMetadata,
@@ -93,13 +97,7 @@ import {
 } from './endowments';
 import { getRpcCaveatOrigins } from './endowments/rpc';
 import { detectSnapLocation, SnapLocation } from './location';
-import {
-  SnapRegistry,
-  JsonSnapRegistry,
-  SnapRegistryInfo,
-  SnapRegistryRequest,
-  SnapRegistryStatus,
-} from './registry';
+import { JsonSnapRegistry } from './registry';
 import { RequestQueue } from './RequestQueue';
 import { Timer } from './Timer';
 
@@ -378,7 +376,7 @@ export type SnapAdded = {
  */
 export type SnapBlocked = {
   type: `${typeof controllerName}:snapBlocked`;
-  payload: [snapId: string, blockedSnapInfo: BlockedSnapInfo];
+  payload: [snapId: string, blockedSnapInfo?: SnapRegistryBlockReason];
 };
 
 /**
@@ -938,16 +936,13 @@ export class SnapController extends BaseController<
     );
 
     await Promise.all(
-      Object.entries(blockedSnaps).map(
-        async ([snapId, { status, ...blockData }]) => {
-          if (status === SnapRegistryStatus.Blocked) {
-            // TODO: Figure out shape of block data
-            return this.#blockSnap(snapId, blockData);
-          }
+      Object.entries(blockedSnaps).map(async ([snapId, { status, reason }]) => {
+        if (status === SnapRegistryStatus.Blocked) {
+          return this.#blockSnap(snapId, reason);
+        }
 
-          return this.#unblockSnap(snapId);
-        },
-      ),
+        return this.#unblockSnap(snapId);
+      }),
     );
   }
 
@@ -960,7 +955,7 @@ export class SnapController extends BaseController<
    */
   async #blockSnap(
     snapId: SnapId,
-    blockedSnapInfo: BlockedSnapInfo,
+    blockedSnapInfo?: SnapRegistryBlockReason,
   ): Promise<void> {
     if (!this.has(snapId)) {
       return;
