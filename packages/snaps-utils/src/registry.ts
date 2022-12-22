@@ -22,10 +22,7 @@ export enum SnapRegistryStatus {
   Verified,
 }
 
-export type SnapRegistryBlockReason = {
-  explanation?: string;
-  url?: string;
-};
+export type SnapRegistryBlockReason = Infer<typeof BlockReasonStruct>;
 
 export type SnapRegistryResult = {
   status: SnapRegistryStatus;
