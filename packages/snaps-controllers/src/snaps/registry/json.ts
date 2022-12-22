@@ -11,8 +11,9 @@ import {
   SnapRegistryStatus,
 } from '@metamask/snaps-utils';
 
-// TODO
-const SNAP_REGISTRY_URL = 'foo.json';
+// TODO: Replace with a Codefi URL
+const SNAP_REGISTRY_URL =
+  'https://cdn.jsdelivr.net/gh/MetaMask/snaps-registry@main/src/registry.json';
 
 export type JsonSnapRegistryVerifiedEntry = {
   id: SnapId;
@@ -37,16 +38,16 @@ export class JsonSnapRegistry implements SnapRegistry {
 
   #fetchFn: typeof fetch;
 
-  constructor(fetchFn?: typeof fetch) {
-    this.#fetchFn = fetchFn ?? globalThis.fetch.bind(globalThis);
+  constructor(fetchFn: typeof fetch = globalThis.fetch.bind(globalThis)) {
+    this.#fetchFn = fetchFn;
   }
 
   async #getDatabase(): Promise<JsonSnapRegistryDatabase> {
     if (this.#db === null) {
+      // TODO: Decide if we should persist this between sessions
       // TODO: Decide what happens if this fails
-      this.#db = await this.#fetchFn(SNAP_REGISTRY_URL).then(async (result) =>
-        result.json(),
-      );
+      const response = await this.#fetchFn(SNAP_REGISTRY_URL);
+      this.#db = await response.json();
     }
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return this.#db!;
@@ -55,7 +56,7 @@ export class JsonSnapRegistry implements SnapRegistry {
   async #getSingle(snapId: SnapId, snapInfo: SnapRegistryInfo) {
     const db = await this.#getDatabase();
 
-    const blockedEntry = db?.blockedSnaps?.find((blocked) => {
+    const blockedEntry = db.blockedSnaps.find((blocked) => {
       if ('id' in blocked) {
         return (
           blocked.id === snapId &&
@@ -73,7 +74,7 @@ export class JsonSnapRegistry implements SnapRegistry {
       };
     }
 
-    const verified = db?.verifiedSnaps?.[snapId];
+    const verified = db.verifiedSnaps[snapId];
     const version = verified?.versions?.[snapInfo.version];
     if (version && version.checksum === snapInfo.checksum) {
       return { status: SnapRegistryStatus.Verified };

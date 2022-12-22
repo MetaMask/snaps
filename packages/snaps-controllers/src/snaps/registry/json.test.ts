@@ -57,7 +57,9 @@ describe('JsonSnapRegistry', () => {
 
   it('returns unverified for non existing snaps', async () => {
     // Empty database
-    fetchMock.mockResponse(JSON.stringify({}));
+    fetchMock.mockResponse(
+      JSON.stringify({ verifiedSnaps: {}, blockedSnaps: [] }),
+    );
     const registry = new JsonSnapRegistry();
     const result = await registry.get({
       [MOCK_SNAP_ID]: {
