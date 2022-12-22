@@ -132,6 +132,12 @@ const relativePath = <Type extends string>(struct: Struct<Type>) =>
 
 export type SnapPermissions = Infer<typeof PermissionsStruct>;
 
+export const ChecksumStruct = size(
+  base64(string(), { paddingRequired: true }),
+  44,
+  44,
+);
+
 export const SnapManifestStruct = object({
   version: VersionStruct,
   description: size(string(), 1, 280),

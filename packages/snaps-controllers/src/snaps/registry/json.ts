@@ -1,10 +1,8 @@
 import {
   satisfiesVersionRange,
-  SemVerRange,
-  SemVerVersion,
   SnapId,
   SnapRegistry,
-  SnapRegistryBlockReason,
+  JsonSnapRegistryDatabase,
   SnapRegistryInfo,
   SnapRegistryRequest,
   SnapRegistryResult,
@@ -14,24 +12,6 @@ import {
 // TODO: Replace with a Codefi URL
 const SNAP_REGISTRY_URL =
   'https://cdn.jsdelivr.net/gh/MetaMask/snaps-registry@main/src/registry.json';
-
-export type JsonSnapRegistryVerifiedEntry = {
-  id: SnapId;
-  versions: Record<SemVerVersion, JsonSnapRegistryVersion>;
-};
-
-export type JsonSnapRegistryVersion = {
-  checksum: string;
-};
-
-export type JsonSnapRegistryBlockedEntry = {
-  reason?: SnapRegistryBlockReason;
-} & ({ id: SnapId; versionRange: SemVerRange } | { checksum: string });
-
-export type JsonSnapRegistryDatabase = {
-  verifiedSnaps: Record<SnapId, JsonSnapRegistryVerifiedEntry>;
-  blockedSnaps: JsonSnapRegistryBlockedEntry[];
-};
 
 export class JsonSnapRegistry implements SnapRegistry {
   #db: JsonSnapRegistryDatabase | null = null;
@@ -49,8 +29,7 @@ export class JsonSnapRegistry implements SnapRegistry {
       const response = await this.#fetchFn(SNAP_REGISTRY_URL);
       this.#db = await response.json();
     }
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.#db!;
+    return this.#db as JsonSnapRegistryDatabase;
   }
 
   async #getSingle(snapId: SnapId, snapInfo: SnapRegistryInfo) {
