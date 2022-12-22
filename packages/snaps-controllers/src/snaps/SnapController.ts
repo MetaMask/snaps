@@ -647,7 +647,7 @@ export class SnapController extends BaseController<
     state,
     environmentEndowmentPermissions = [],
     idleTimeCheckInterval = inMilliseconds(5, Duration.Second),
-    registry = new JsonSnapRegistry(),
+    registry = new JsonSnapRegistry({}),
     maxIdleTime = inMilliseconds(30, Duration.Second),
     maxRequestTime = inMilliseconds(60, Duration.Second),
     fetchFunction = globalThis.fetch.bind(globalThis),

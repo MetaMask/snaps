@@ -13,29 +13,47 @@ import {
 const SNAP_REGISTRY_URL =
   'https://cdn.jsdelivr.net/gh/MetaMask/snaps-registry@main/src/registry.json';
 
+export type JsonSnapRegistryArgs = {
+  fetchFn?: typeof fetch;
+  failOnUnavailableRegistry?: boolean;
+};
+
 export class JsonSnapRegistry implements SnapRegistry {
   #db: JsonSnapRegistryDatabase | null = null;
 
   #fetchFn: typeof fetch;
 
-  constructor(fetchFn: typeof fetch = globalThis.fetch.bind(globalThis)) {
+  #failOnUnavailableRegistry: boolean;
+
+  constructor({
+    fetchFn = globalThis.fetch.bind(globalThis),
+    failOnUnavailableRegistry = true,
+  }: JsonSnapRegistryArgs) {
     this.#fetchFn = fetchFn;
+    this.#failOnUnavailableRegistry = failOnUnavailableRegistry;
   }
 
-  async #getDatabase(): Promise<JsonSnapRegistryDatabase> {
+  async #getDatabase(): Promise<JsonSnapRegistryDatabase | null> {
     if (this.#db === null) {
       // TODO: Decide if we should persist this between sessions
-      // TODO: Decide what happens if this fails
-      const response = await this.#fetchFn(SNAP_REGISTRY_URL);
-      this.#db = await response.json();
+      try {
+        const response = await this.#fetchFn(SNAP_REGISTRY_URL);
+        this.#db = await response.json();
+      } catch {
+        // Ignore
+      }
     }
-    return this.#db as JsonSnapRegistryDatabase;
+    return this.#db;
   }
 
   async #getSingle(snapId: SnapId, snapInfo: SnapRegistryInfo) {
     const db = await this.#getDatabase();
 
-    const blockedEntry = db.blockedSnaps.find((blocked) => {
+    if (this.#failOnUnavailableRegistry && db === null) {
+      throw new Error('Snap Registry is unavailable, installation blocked.');
+    }
+
+    const blockedEntry = db?.blockedSnaps.find((blocked) => {
       if ('id' in blocked) {
         return (
           blocked.id === snapId &&
@@ -53,7 +71,7 @@ export class JsonSnapRegistry implements SnapRegistry {
       };
     }
 
-    const verified = db.verifiedSnaps[snapId];
+    const verified = db?.verifiedSnaps[snapId];
     const version = verified?.versions?.[snapInfo.version];
     if (version && version.checksum === snapInfo.checksum) {
       return { status: SnapRegistryStatus.Verified };
