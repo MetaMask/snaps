@@ -17,7 +17,7 @@ const createTimeout = () => {
         `The timeout handler must be a function. Received: ${typeof handler}`,
       );
     }
-
+    harden(handler);
     const handle = Object.freeze({});
     const platformHandle = setTimeout(() => {
       registeredHandles.delete(handle);
@@ -25,7 +25,7 @@ const createTimeout = () => {
     }, timeout);
 
     registeredHandles.set(handle, platformHandle);
-    return handle;
+    return harden(handle);
   };
 
   const _clearTimeout = (handle: unknown): void => {
@@ -43,8 +43,8 @@ const createTimeout = () => {
   };
 
   return {
-    setTimeout: _setTimeout,
-    clearTimeout: _clearTimeout,
+    setTimeout: harden(_setTimeout),
+    clearTimeout: harden(_clearTimeout),
     teardownFunction,
   } as const;
 };
