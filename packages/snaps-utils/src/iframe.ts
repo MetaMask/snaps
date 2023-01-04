@@ -11,7 +11,7 @@ export async function createWindow(
   uri: string,
   jobId: string,
 ): Promise<Window> {
-  return new Promise((resolve, reject) => {
+  return await new Promise((resolve, reject) => {
     const iframe = document.createElement('iframe');
     // The order of operations appears to matter for everything except this
     // attribute. We may as well set it here.
