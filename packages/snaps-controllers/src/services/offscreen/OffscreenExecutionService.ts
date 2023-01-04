@@ -82,7 +82,8 @@ export class OffscreenExecutionService extends AbstractExecutionService<string> 
     await this.createDocument();
 
     const stream = new OffscreenPostMessageStream({
-      stream: this.#runtimeStream,
+      name: 'parent',
+      target: 'child',
       frameUrl: this.frameUrl.toString(),
       jobId,
     });

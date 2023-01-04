@@ -1,13 +1,14 @@
-import { BasePostMessageStream } from '@metamask/post-message-stream';
+import { BrowserRuntimePostMessageStream } from '@metamask/post-message-stream';
 import { JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
 
-export type OffscreenDuplexStreamArgs = {
-  stream: BasePostMessageStream;
+export type OffscreenPostMessageStreamArgs = {
+  name: string;
+  target: string;
   jobId: string;
   frameUrl: string;
 };
 
-export type OffscreenDuplexStreamMessage = {
+export type OffscreenPostMessage = {
   jobId: string;
   data: JsonRpcRequest<JsonRpcParams>;
 };
@@ -16,9 +17,7 @@ export type OffscreenDuplexStreamMessage = {
  * A post message stream that wraps messages in a job ID, before sending them
  * over the underlying stream.
  */
-export class OffscreenPostMessageStream extends BasePostMessageStream {
-  readonly #stream: BasePostMessageStream;
-
+export class OffscreenPostMessageStream extends BrowserRuntimePostMessageStream {
   readonly #jobId: string;
 
   readonly #frameUrl: string;
@@ -27,19 +26,22 @@ export class OffscreenPostMessageStream extends BasePostMessageStream {
    * Initializes a new `OffscreenDuplexStream` instance.
    *
    * @param args - The constructor arguments.
-   * @param args.stream - The underlying stream to use for communication.
+   * @param args.name - The name of the stream.
+   * @param args.target - The name of the target stream.
    * @param args.jobId - The ID of the job this stream is associated with.
    * @param args.frameUrl - The URL of the frame to load inside the offscreen
    * document.
    */
-  constructor({ stream, jobId, frameUrl }: OffscreenDuplexStreamArgs) {
-    super();
+  constructor({
+    name,
+    target,
+    jobId,
+    frameUrl,
+  }: OffscreenPostMessageStreamArgs) {
+    super({ name, target });
 
-    this.#stream = stream;
     this.#jobId = jobId;
     this.#frameUrl = frameUrl;
-
-    this.#stream.on('data', this.#onData.bind(this));
   }
 
   /**
@@ -48,12 +50,12 @@ export class OffscreenPostMessageStream extends BasePostMessageStream {
    *
    * @param data - The data to handle.
    */
-  #onData(data: OffscreenDuplexStreamMessage) {
+  protected _onData(data: OffscreenPostMessage) {
     if (data.jobId !== this.#jobId) {
       return;
     }
 
-    this.push(data.data);
+    super._onData(data.data);
   }
 
   /**
@@ -62,8 +64,8 @@ export class OffscreenPostMessageStream extends BasePostMessageStream {
    *
    * @param data - The data to write.
    */
-  _postMessage(data: OffscreenDuplexStreamMessage) {
-    this.#stream.write({
+  protected _postMessage(data: OffscreenPostMessage) {
+    super._postMessage({
       jobId: this.#jobId,
       // TODO: Rather than injecting the frame URL here, we should come up with
       // a better way to do this. The frame URL is needed to avoid hard coding
