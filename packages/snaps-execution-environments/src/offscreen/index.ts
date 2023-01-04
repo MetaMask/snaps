@@ -13,5 +13,4 @@ const parentStream = new BrowserRuntimePostMessageStream({
   target: 'parent',
 });
 
-// eslint-disable-next-line no-new
-new OffscreenSnapExecutor(parentStream);
+OffscreenSnapExecutor.initialize(parentStream);

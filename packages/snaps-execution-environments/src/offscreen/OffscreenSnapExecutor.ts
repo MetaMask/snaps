@@ -16,6 +16,17 @@ export class OffscreenSnapExecutor {
 
   readonly #jobs: Record<string, ExecutorJob> = {};
 
+  /**
+   * Initialize the executor with the given stream. This is a wrapper around the
+   * constructor.
+   *
+   * @param stream - The stream to use for communication.
+   * @returns The initialized executor.
+   */
+  static initialize(stream: BasePostMessageStream) {
+    return new OffscreenSnapExecutor(stream);
+  }
+
   constructor(stream: BasePostMessageStream) {
     this.#stream = stream;
     this.#stream.on('data', this.#onData.bind(this));
