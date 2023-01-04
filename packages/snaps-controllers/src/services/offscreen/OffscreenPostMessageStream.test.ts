@@ -24,8 +24,10 @@ const MOCK_FRAME_URL = 'frame-url';
 describe('OffScreenPostMessageStream', () => {
   it('wraps messages with an iframe url and job id', async () => {
     const write = jest.fn();
+
+    const mockStream = new MockPostMessageStream(write);
     const stream = new OffscreenPostMessageStream({
-      stream: new MockPostMessageStream(write),
+      stream: mockStream,
       jobId: MOCK_JOB_ID,
       frameUrl: MOCK_FRAME_URL,
     });
@@ -39,6 +41,7 @@ describe('OffScreenPostMessageStream', () => {
       data: message,
     });
 
+    mockStream.destroy();
     stream.destroy();
   });
 
@@ -73,5 +76,8 @@ describe('OffScreenPostMessageStream', () => {
     expect(onData).toHaveBeenCalledTimes(1);
     expect(onData).toHaveBeenCalledWith({ foo: 'bar' });
     expect(onData).not.toHaveBeenCalledWith({ bar: 'baz' });
+
+    mockStream.destroy();
+    stream.destroy();
   });
 });
