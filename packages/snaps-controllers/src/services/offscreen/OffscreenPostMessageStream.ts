@@ -23,7 +23,7 @@ export class OffscreenPostMessageStream extends BrowserRuntimePostMessageStream 
   readonly #frameUrl: string;
 
   /**
-   * Initializes a new `OffscreenDuplexStream` instance.
+   * Initializes a new `OffscreenPostMessageStream` instance.
    *
    * @param args - The constructor arguments.
    * @param args.name - The name of the stream.
