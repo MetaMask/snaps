@@ -4,6 +4,7 @@ export * from './default-endowments';
 export * from './entropy';
 export * from './flatMap';
 export * from './handlers';
+export * from './iframe';
 export * from './json-rpc';
 export * from './manifest/index.browser';
 export * from './namespace';
