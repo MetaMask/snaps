@@ -1,9 +1,8 @@
-import { BrowserRuntimePostMessageStream } from '@metamask/post-message-stream';
+import { BasePostMessageStream } from '@metamask/post-message-stream';
 import { JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
 
 export type OffscreenPostMessageStreamArgs = {
-  name: string;
-  target: string;
+  stream: BasePostMessageStream;
   jobId: string;
   frameUrl: string;
 };
@@ -17,7 +16,9 @@ export type OffscreenPostMessage = {
  * A post message stream that wraps messages in a job ID, before sending them
  * over the underlying stream.
  */
-export class OffscreenPostMessageStream extends BrowserRuntimePostMessageStream {
+export class OffscreenPostMessageStream extends BasePostMessageStream {
+  readonly #stream: BasePostMessageStream;
+
   readonly #jobId: string;
 
   readonly #frameUrl: string;
@@ -26,22 +27,19 @@ export class OffscreenPostMessageStream extends BrowserRuntimePostMessageStream 
    * Initializes a new `OffscreenPostMessageStream` instance.
    *
    * @param args - The constructor arguments.
-   * @param args.name - The name of the stream.
-   * @param args.target - The name of the target stream.
+   * @param args.stream - The underlying stream to use for communication.
    * @param args.jobId - The ID of the job this stream is associated with.
    * @param args.frameUrl - The URL of the frame to load inside the offscreen
    * document.
    */
-  constructor({
-    name,
-    target,
-    jobId,
-    frameUrl,
-  }: OffscreenPostMessageStreamArgs) {
-    super({ name, target });
+  constructor({ stream, jobId, frameUrl }: OffscreenPostMessageStreamArgs) {
+    super();
 
+    this.#stream = stream;
     this.#jobId = jobId;
     this.#frameUrl = frameUrl;
+
+    this.#stream.on('data', this.#onData.bind(this));
   }
 
   /**
@@ -50,12 +48,12 @@ export class OffscreenPostMessageStream extends BrowserRuntimePostMessageStream 
    *
    * @param data - The data to handle.
    */
-  protected _onData(data: OffscreenPostMessage) {
+  #onData(data: OffscreenPostMessage) {
     if (data.jobId !== this.#jobId) {
       return;
     }
 
-    super._onData(data.data);
+    this.push(data.data);
   }
 
   /**
@@ -64,8 +62,8 @@ export class OffscreenPostMessageStream extends BrowserRuntimePostMessageStream 
    *
    * @param data - The data to write.
    */
-  protected _postMessage(data: OffscreenPostMessage) {
-    super._postMessage({
+  _postMessage(data: OffscreenPostMessage) {
+    this.#stream.write({
       jobId: this.#jobId,
       // TODO: Rather than injecting the frame URL here, we should come up with
       // a better way to do this. The frame URL is needed to avoid hard coding
