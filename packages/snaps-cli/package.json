@@ -51,7 +51,7 @@
     "chokidar": "^3.5.2",
     "is-url": "^1.2.4",
     "serve-handler": "^6.1.5",
-    "ses": "^0.17.0",
+    "ses": "^0.18.1",
     "superstruct": "^0.16.7",
     "yargs": "^16.2.0",
     "yargs-parser": "^20.2.2"
