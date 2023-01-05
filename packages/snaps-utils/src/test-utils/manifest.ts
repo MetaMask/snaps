@@ -1,3 +1,5 @@
+import { SemVerVersion } from '@metamask/utils';
+
 import { SnapManifest } from '../manifest/validation';
 import {
   Chain,
@@ -6,7 +8,6 @@ import {
   SessionNamespace,
 } from '../namespace';
 import { NpmSnapPackageJson } from '../types';
-import { SemVerVersion } from '../versions';
 import { MakeSemVer } from './common';
 import { DEFAULT_SNAP_SHASUM } from './snap';
 

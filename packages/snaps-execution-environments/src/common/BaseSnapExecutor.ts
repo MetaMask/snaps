@@ -17,7 +17,6 @@ import {
   isJsonRpcRequest,
   JsonRpcId,
   JsonRpcRequest,
-  JsonRpcParams,
   Json,
   hasProperty,
 } from '@metamask/utils';
@@ -173,7 +172,7 @@ export class BaseSnapExecutor {
     });
   }
 
-  private async onCommandRequest(message: JsonRpcRequest<JsonRpcParams>) {
+  private async onCommandRequest(message: JsonRpcRequest) {
     if (!isJsonRpcRequest(message)) {
       throw new Error('Command stream received a non-JSON-RPC request.');
     }
@@ -235,12 +234,7 @@ export class BaseSnapExecutor {
     }
   }
 
-  protected notify(
-    requestObject: Omit<
-      JsonRpcNotification<Record<string, Json> | Json[] | undefined>,
-      'jsonrpc'
-    >,
-  ) {
+  protected notify(requestObject: Omit<JsonRpcNotification, 'jsonrpc'>) {
     if (!isValidJson(requestObject) || !isObject(requestObject)) {
       throw new Error(
         'JSON-RPC notifications must be JSON serializable objects',

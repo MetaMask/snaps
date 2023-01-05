@@ -3,6 +3,7 @@ import {
   getPackageJson,
   getSnapManifest,
 } from '@metamask/snaps-utils/test-utils';
+import * as utils from '@metamask/utils';
 import { promises as fs } from 'fs';
 import pathUtils from 'path';
 
@@ -13,6 +14,7 @@ import * as initUtils from './initUtils';
 
 jest.mock('fs');
 
+jest.mock('@metamask/utils');
 jest.mock('@metamask/snaps-utils');
 
 const getMockArgv = () => {
@@ -32,9 +34,7 @@ describe('initialize', () => {
     });
 
     it('successfully initializes a Snap project in the current working directory', async () => {
-      jest
-        .spyOn(snapUtils, 'satisfiesVersionRange')
-        .mockImplementation(() => true);
+      jest.spyOn(utils, 'satisfiesVersionRange').mockImplementation(() => true);
 
       jest.spyOn(initUtils, 'isGitInstalled').mockImplementation(() => true);
       jest.spyOn(initUtils, 'cloneTemplate').mockImplementation();
@@ -67,9 +67,7 @@ describe('initialize', () => {
     });
 
     it('successfully initializes a Snap project in a given directory', async () => {
-      jest
-        .spyOn(snapUtils, 'satisfiesVersionRange')
-        .mockImplementation(() => true);
+      jest.spyOn(utils, 'satisfiesVersionRange').mockImplementation(() => true);
 
       jest.spyOn(initUtils, 'isGitInstalled').mockImplementation(() => true);
 
@@ -108,9 +106,7 @@ describe('initialize', () => {
     });
 
     it("defaults to 'src/index.js' if there is no main entry in package.json", async () => {
-      jest
-        .spyOn(snapUtils, 'satisfiesVersionRange')
-        .mockImplementation(() => true);
+      jest.spyOn(utils, 'satisfiesVersionRange').mockImplementation(() => true);
       jest.spyOn(initUtils, 'isGitInstalled').mockImplementation(() => true);
 
       jest.spyOn(initUtils, 'cloneTemplate').mockImplementation();
@@ -146,9 +142,7 @@ describe('initialize', () => {
     });
 
     it("doesn't init if it's already in a git repo", async () => {
-      jest
-        .spyOn(snapUtils, 'satisfiesVersionRange')
-        .mockImplementation(() => true);
+      jest.spyOn(utils, 'satisfiesVersionRange').mockImplementation(() => true);
       jest.spyOn(initUtils, 'isGitInstalled').mockImplementation(() => true);
 
       jest.spyOn(initUtils, 'cloneTemplate').mockImplementation();
@@ -199,9 +193,7 @@ describe('initialize', () => {
     });
 
     it('fails if git is not installed', async () => {
-      jest
-        .spyOn(snapUtils, 'satisfiesVersionRange')
-        .mockImplementation(() => true);
+      jest.spyOn(utils, 'satisfiesVersionRange').mockImplementation(() => true);
 
       const isGitInstalledMock = jest
         .spyOn(initUtils, 'isGitInstalled')
@@ -215,9 +207,7 @@ describe('initialize', () => {
     });
 
     it('fails if it can\t clone template and clean files', async () => {
-      jest
-        .spyOn(snapUtils, 'satisfiesVersionRange')
-        .mockImplementation(() => true);
+      jest.spyOn(utils, 'satisfiesVersionRange').mockImplementation(() => true);
 
       jest.spyOn(initUtils, 'isGitInstalled').mockImplementation(() => true);
 
@@ -235,9 +225,7 @@ describe('initialize', () => {
     });
 
     it('fails if an error is thrown', async () => {
-      jest
-        .spyOn(snapUtils, 'satisfiesVersionRange')
-        .mockImplementation(() => true);
+      jest.spyOn(utils, 'satisfiesVersionRange').mockImplementation(() => true);
 
       jest.spyOn(initUtils, 'isGitInstalled').mockImplementation(() => true);
 

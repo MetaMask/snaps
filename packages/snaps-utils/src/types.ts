@@ -1,4 +1,4 @@
-import { assertStruct, Json } from '@metamask/utils';
+import { assertStruct, Json, VersionStruct } from '@metamask/utils';
 import {
   Infer,
   instance,
@@ -17,7 +17,6 @@ import {
 
 import { SnapFunctionExports, SnapKeyring as Keyring } from './handlers';
 import { SnapManifest } from './manifest';
-import { VersionStruct } from './versions';
 
 export enum NpmSnapFileNames {
   PackageJson = 'package.json',
@@ -160,11 +159,6 @@ type KeyringParameters = KeyringParameter<Keyring[keyof Keyring]>;
 export type SnapExportsParameters =
   | ObjectParameters<SnapFunctionExports>
   | KeyringParameters;
-
-// We use a symbol property name instead of { _type: Brand }, because that would show up in IDE suggestions,
-// while internal symbols do not.
-declare const brand: unique symbol;
-export type Opaque<Base, Brand extends symbol> = Base & { [brand]: Brand };
 
 type UriOptions<T extends string> = {
   protocol?: Struct<T>;

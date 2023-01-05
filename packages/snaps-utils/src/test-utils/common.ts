@@ -1,4 +1,4 @@
-import { SemVerVersion } from '../versions';
+import { SemVerVersion } from '@metamask/utils';
 
 export const TEST_SECRET_RECOVERY_PHRASE =
   'test test test test test test test test test test test ball';

@@ -4,7 +4,6 @@ import { HandlerType } from '@metamask/snaps-utils';
 import {
   assertIsJsonRpcSuccess,
   Json,
-  JsonRpcParams,
   JsonRpcRequest,
   JsonRpcResponse,
 } from '@metamask/utils';
@@ -154,9 +153,7 @@ class TestSnapExecutor extends BaseSnapExecutor {
     }
   }
 
-  public async writeCommand(
-    message: JsonRpcRequest<JsonRpcParams>,
-  ): Promise<void> {
+  public async writeCommand(message: JsonRpcRequest): Promise<void> {
     return new Promise((resolve, reject) =>
       this.#commandLeft.write(message, (error) => {
         if (error) {
@@ -167,8 +164,8 @@ class TestSnapExecutor extends BaseSnapExecutor {
     );
   }
 
-  public async readCommand(): Promise<JsonRpcRequest<JsonRpcParams>> {
-    const promise = new Promise<JsonRpcRequest<JsonRpcParams>>((resolve) =>
+  public async readCommand(): Promise<JsonRpcRequest> {
+    const promise = new Promise<JsonRpcRequest>((resolve) =>
       this.#commandListeners.push(resolve),
     );
 
@@ -202,11 +199,11 @@ class TestSnapExecutor extends BaseSnapExecutor {
 
   public async readRpc(): Promise<{
     name: string;
-    data: JsonRpcRequest<JsonRpcParams>;
+    data: JsonRpcRequest;
   }> {
     const promise = new Promise<{
       name: string;
-      data: JsonRpcRequest<JsonRpcParams>;
+      data: JsonRpcRequest;
     }>((resolve) => this.#rpcListeners.push(resolve));
 
     TestSnapExecutor.#flushReads(this.#rpcBuffer, this.#rpcListeners);

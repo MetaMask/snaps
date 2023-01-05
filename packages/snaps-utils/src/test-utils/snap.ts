@@ -1,3 +1,5 @@
+import { SemVerVersion } from '@metamask/utils';
+
 import {
   getSnapSourceShasum,
   PersistedSnap,
@@ -5,7 +7,6 @@ import {
   SnapStatus,
   TruncatedSnap,
 } from '../snaps';
-import { SemVerVersion } from '../versions';
 import { MakeSemVer } from './common';
 import { getSnapManifest } from './manifest';
 
