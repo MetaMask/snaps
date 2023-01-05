@@ -4,7 +4,7 @@ import { OffscreenPostMessageStream } from '@metamask/snaps-controllers';
 import { sleep } from '../../test-utils';
 
 class MockPostMessageStream extends BasePostMessageStream {
-  #write: (...args: unknown[]) => unknown;
+  readonly #write: (...args: unknown[]) => unknown;
 
   constructor(write: () => void) {
     super();
