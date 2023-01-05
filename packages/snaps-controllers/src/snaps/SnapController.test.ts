@@ -8,8 +8,6 @@ import {
   DEFAULT_ENDOWMENTS,
   getSnapSourceShasum,
   HandlerType,
-  SemVerVersion,
-  SemVerRange,
   SnapCaveatType,
   SnapPermissions,
   SnapStatus,
@@ -29,7 +27,7 @@ import {
   MOCK_ORIGIN,
   MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
-import { AssertionError } from '@metamask/utils';
+import { AssertionError, SemVerVersion, SemVerRange } from '@metamask/utils';
 import { Crypto } from '@peculiar/webcrypto';
 import { ethErrors } from 'eth-rpc-errors';
 import fetchMock from 'jest-fetch-mock';
