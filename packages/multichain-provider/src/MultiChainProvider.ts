@@ -158,11 +158,7 @@ export class MultiChainProvider extends SafeEventEmitter implements Provider {
    * @param payload - The JSON-RPC request to send.
    * @returns The JSON-RPC response.
    */
-  async #rpcRequest(
-    payload: { method: string } & Partial<
-      JsonRpcRequest<Record<string, Json> | Json[] | undefined>
-    >,
-  ) {
+  async #rpcRequest(payload: { method: string } & Partial<JsonRpcRequest>) {
     return await this.#getProvider().request({
       method: 'wallet_multiChainRequestHack',
       params: {
