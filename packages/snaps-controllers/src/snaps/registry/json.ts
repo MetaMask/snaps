@@ -1,13 +1,14 @@
+import { SnapRegistryDatabase } from '@metamask/snaps-registry';
+import { SnapId } from '@metamask/snaps-utils';
+import { satisfiesVersionRange } from '@metamask/utils';
+
 import {
-  satisfiesVersionRange,
-  SnapId,
   SnapRegistry,
-  JsonSnapRegistryDatabase,
   SnapRegistryInfo,
   SnapRegistryRequest,
   SnapRegistryResult,
   SnapRegistryStatus,
-} from '@metamask/snaps-utils';
+} from './registry';
 
 // TODO: Replace with a Codefi URL
 const SNAP_REGISTRY_URL =
@@ -19,7 +20,7 @@ export type JsonSnapRegistryArgs = {
 };
 
 export class JsonSnapRegistry implements SnapRegistry {
-  #db: JsonSnapRegistryDatabase | null = null;
+  #db: SnapRegistryDatabase | null = null;
 
   #fetchFn: typeof fetch;
 
@@ -33,7 +34,7 @@ export class JsonSnapRegistry implements SnapRegistry {
     this.#failOnUnavailableRegistry = failOnUnavailableRegistry;
   }
 
-  async #getDatabase(): Promise<JsonSnapRegistryDatabase | null> {
+  async #getDatabase(): Promise<SnapRegistryDatabase | null> {
     if (this.#db === null) {
       // TODO: Decide if we should persist this between sessions
       try {

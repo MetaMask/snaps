@@ -14,4 +14,3 @@ export * from './snaps';
 export * from './types';
 export * from './versions';
 export * from './virtual-file/index.browser';
-export * from './registry';
