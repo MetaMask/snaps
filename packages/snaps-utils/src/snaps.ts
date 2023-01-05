@@ -1,3 +1,4 @@
+import { BlockReason } from '@metamask/snaps-registry';
 import { assert, Json, SemVerVersion } from '@metamask/utils';
 import { sha256 } from '@noble/hashes/sha256';
 import { base64 } from '@scure/base';
@@ -15,7 +16,6 @@ import {
 import validateNPMPackage from 'validate-npm-package-name';
 
 import { SnapManifest, SnapPermissions } from './manifest/validation';
-import { SnapRegistryBlockReason } from './registry';
 import {
   SnapId,
   SnapIdPrefixes,
@@ -118,7 +118,7 @@ export type Snap = {
   /**
    * Information detailing why the snap is blocked.
    */
-  blockInformation?: SnapRegistryBlockReason;
+  blockInformation?: BlockReason;
 
   /**
    * The name of the permission used to invoke the Snap.
