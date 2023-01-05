@@ -1,4 +1,4 @@
-import { assertStruct, Json } from '@metamask/utils';
+import { assertStruct, Json, VersionStruct } from '@metamask/utils';
 import {
   Infer,
   instance,
@@ -17,7 +17,6 @@ import {
 
 import { SnapFunctionExports, SnapKeyring as Keyring } from './handlers';
 import { SnapManifest } from './manifest';
-import { VersionStruct } from './versions';
 
 export enum NpmSnapFileNames {
   PackageJson = 'package.json',

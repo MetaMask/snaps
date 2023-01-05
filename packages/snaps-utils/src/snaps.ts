@@ -1,4 +1,4 @@
-import { assert, Json } from '@metamask/utils';
+import { assert, Json, SemVerVersion } from '@metamask/utils';
 import { sha256 } from '@noble/hashes/sha256';
 import { base64 } from '@scure/base';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
@@ -21,7 +21,6 @@ import {
   SnapValidationFailureReason,
   uri,
 } from './types';
-import { SemVerVersion } from './versions';
 
 export const SNAP_PREFIX = 'wallet_snap_';
 

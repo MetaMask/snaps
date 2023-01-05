@@ -2,11 +2,13 @@ import {
   NpmSnapFileNames,
   SnapManifest,
   readJsonFile,
-  satisfiesVersionRange,
   NpmSnapPackageJson,
-  SemVerVersion,
-  SemVerRange,
 } from '@metamask/snaps-utils';
+import {
+  satisfiesVersionRange,
+  SemVerRange,
+  SemVerVersion,
+} from '@metamask/utils';
 import { promises as fs } from 'fs';
 import pathUtils from 'path';
 

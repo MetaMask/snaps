@@ -1,17 +1,21 @@
 import {
-  assertIsSemVerVersion,
   createSnapManifest,
   DEFAULT_REQUESTED_SNAP_VERSION,
   getTargetVersion,
   isValidUrl,
   NpmSnapIdStruct,
-  SemVerRange,
-  SemVerVersion,
   SnapManifest,
   VirtualFile,
   normalizeRelative,
 } from '@metamask/snaps-utils';
-import { assert, assertStruct, isObject } from '@metamask/utils';
+import {
+  assert,
+  assertIsSemVerVersion,
+  assertStruct,
+  isObject,
+  SemVerRange,
+  SemVerVersion,
+} from '@metamask/utils';
 import concat from 'concat-stream';
 import createGunzipStream from 'gunzip-maybe';
 import pump from 'pump';
