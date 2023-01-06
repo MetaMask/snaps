@@ -146,6 +146,7 @@ module.exports = (_, argv) => {
 
   const unsafeConfig = {
     ...extraOptions,
+    name: 'iframe-test',
     mode: argv.mode,
     entry: {
       'iframe-test': './src/iframe-test/index.ts',
