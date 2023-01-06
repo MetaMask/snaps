@@ -1,5 +1,5 @@
 import { BasePostMessageStream } from '@metamask/post-message-stream';
-import { JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
+import { JsonRpcRequest } from '@metamask/utils';
 
 export type OffscreenPostMessageStreamArgs = {
   stream: BasePostMessageStream;
@@ -9,7 +9,7 @@ export type OffscreenPostMessageStreamArgs = {
 
 export type OffscreenPostMessage = {
   jobId: string;
-  data: JsonRpcRequest<JsonRpcParams>;
+  data: JsonRpcRequest;
 };
 
 /**

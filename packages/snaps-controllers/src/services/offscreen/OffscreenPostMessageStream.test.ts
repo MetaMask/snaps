@@ -31,7 +31,7 @@ describe('OffScreenPostMessageStream', () => {
   });
 
   it('handles incoming messages with the right job id', async () => {
-    const mockStream = new MockPostMessageStream(jest.fn());
+    const mockStream = new MockPostMessageStream();
     const stream = new OffscreenPostMessageStream({
       stream: mockStream,
       jobId: MOCK_JOB_ID,

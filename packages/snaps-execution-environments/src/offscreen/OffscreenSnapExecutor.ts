@@ -3,7 +3,7 @@ import {
   WindowPostMessageStream,
 } from '@metamask/post-message-stream';
 import { createWindow } from '@metamask/snaps-utils';
-import { JsonRpcParams, JsonRpcRequest, assert } from '@metamask/utils';
+import { JsonRpcRequest, assert } from '@metamask/utils';
 
 type ExecutorJob = {
   id: string;
@@ -42,11 +42,7 @@ export class OffscreenSnapExecutor {
    * @param data.jobId - The job ID.
    * @param data.frameUrl - The URL to load in the iframe.
    */
-  #onData(data: {
-    data: JsonRpcRequest<JsonRpcParams>;
-    jobId: string;
-    frameUrl: string;
-  }) {
+  #onData(data: { data: JsonRpcRequest; jobId: string; frameUrl: string }) {
     const { jobId, frameUrl, data: request } = data;
 
     if (!this.jobs[jobId]) {

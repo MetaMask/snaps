@@ -9,7 +9,6 @@ import {
   isJsonRpcRequest,
   isPlainObject,
   Json,
-  JsonRpcParams,
   JsonRpcRequest,
 } from '@metamask/utils';
 
@@ -29,7 +28,7 @@ const FRAME_URL = new URL('https://bar');
  */
 function getResponse(
   message: Record<string, unknown>,
-  request: JsonRpcRequest<JsonRpcParams>,
+  request: JsonRpcRequest,
   response: Json,
 ) {
   return {
