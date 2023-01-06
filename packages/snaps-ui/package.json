@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "@metamask/utils": "^3.4.0",
-    "superstruct": "^0.16.7"
+    "superstruct": "^1.0.3"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.0.3",

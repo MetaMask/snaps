@@ -42,7 +42,7 @@
     "pump": "^3.0.0",
     "ses": "^0.18.1",
     "stream-browserify": "^3.0.0",
-    "superstruct": "^0.16.7"
+    "superstruct": "^1.0.3"
   },
   "devDependencies": {
     "@ava/typescript": "^3.0.1",

@@ -2709,7 +2709,7 @@ __metadata:
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.2.11
     rimraf: ^3.0.2
-    superstruct: ^0.16.7
+    superstruct: ^1.0.3
     ts-jest: ^29.0.0
     typescript: ~4.8.4
   languageName: unknown
@@ -2812,7 +2812,7 @@ __metadata:
     rimraf: ^3.0.2
     serve-handler: ^6.1.5
     ses: ^0.18.1
-    superstruct: ^0.16.7
+    superstruct: ^1.0.3
     ts-jest: ^29.0.0
     ts-node: ^10.7.0
     tsc-watch: ^4.5.0
@@ -2841,6 +2841,7 @@ __metadata:
     "@metamask/post-message-stream": ^6.0.0
     "@metamask/rpc-methods": ^0.27.1
     "@metamask/snaps-execution-environments": ^0.27.1
+    "@metamask/snaps-registry": ^1.0.0
     "@metamask/snaps-utils": ^0.27.1
     "@metamask/subject-metadata-controller": ^1.0.1
     "@metamask/template-snap": ^0.7.0
@@ -2939,7 +2940,7 @@ __metadata:
     ses: ^0.18.1
     shx: ^0.3.4
     stream-browserify: ^3.0.0
-    superstruct: ^0.16.7
+    superstruct: ^1.0.3
     ts-jest: ^29.0.0
     ts-loader: ^9.3.1
     typescript: ~4.8.4
@@ -2947,6 +2948,16 @@ __metadata:
     webpack-cli: ^4.9.2
   languageName: unknown
   linkType: soft
+
+"@metamask/snaps-registry@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/snaps-registry@npm:1.0.0"
+  dependencies:
+    "@metamask/utils": ^3.4.0
+    superstruct: ^1.0.3
+  checksum: 6a127d4d2db30e6f3966f4f82f3810a22a79db62c84b5db2b95d189dd36fe59aa5de59f01203095c9f7f07a44c1bf049c0fc046931269327d0693d1274f8f154
+  languageName: node
+  linkType: hard
 
 "@metamask/snaps-rollup-plugin@^0.27.1, @metamask/snaps-rollup-plugin@workspace:packages/snaps-rollup-plugin":
   version: 0.0.0-use.local
@@ -3042,7 +3053,7 @@ __metadata:
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.2.11
     rimraf: ^3.0.2
-    superstruct: ^0.16.7
+    superstruct: ^1.0.3
     ts-jest: ^29.0.0
     typescript: ~4.8.4
   languageName: unknown
@@ -3061,6 +3072,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/providers": ^10.2.1
+    "@metamask/snaps-registry": ^1.0.0
     "@metamask/snaps-ui": ^0.27.1
     "@metamask/utils": ^3.4.0
     "@noble/hashes": ^1.1.3
@@ -3090,7 +3102,7 @@ __metadata:
     rimraf: ^3.0.2
     semver: ^7.3.7
     ses: ^0.18.1
-    superstruct: ^0.16.7
+    superstruct: ^1.0.3
     ts-jest: ^29.0.0
     typescript: ~4.8.4
     validate-npm-package-name: ^5.0.0
@@ -15229,6 +15241,13 @@ __metadata:
   version: 0.16.7
   resolution: "superstruct@npm:0.16.7"
   checksum: c8c855ff6945da8a41048c6d236de7b1af5d4d9c31742b3ee54d65647c31597488620281f65e095d5efc9e2fbdaad529b8c8f2506c12569d428467c835a21477
+  languageName: node
+  linkType: hard
+
+"superstruct@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "superstruct@npm:1.0.3"
+  checksum: 761790bb111e6e21ddd608299c252f3be35df543263a7ebbc004e840d01fcf8046794c274bcb351bdf3eae4600f79d317d085cdbb19ca05803a4361840cc9bb1
   languageName: node
   linkType: hard
 
