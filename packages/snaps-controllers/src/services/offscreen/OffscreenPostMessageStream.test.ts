@@ -1,22 +1,7 @@
-import { BasePostMessageStream } from '@metamask/post-message-stream';
 import { OffscreenPostMessageStream } from '@metamask/snaps-controllers';
+import { MockPostMessageStream } from '@metamask/snaps-utils/test-utils';
 
 import { sleep } from '../../test-utils';
-
-class MockPostMessageStream extends BasePostMessageStream {
-  readonly #write: (...args: unknown[]) => unknown;
-
-  constructor(write: () => void) {
-    super();
-
-    this.#write = write;
-  }
-
-  protected _postMessage(data: unknown): void {
-    this.#write(data);
-    this.emit('data', data);
-  }
-}
 
 const MOCK_JOB_ID = 'job-id';
 const MOCK_FRAME_URL = 'frame-url';

@@ -3,7 +3,7 @@ import {
   WindowPostMessageStream,
 } from '@metamask/post-message-stream';
 import { createWindow } from '@metamask/snaps-utils';
-import { JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
+import { JsonRpcParams, JsonRpcRequest, assert } from '@metamask/utils';
 
 type ExecutorJob = {
   id: string;
@@ -14,7 +14,7 @@ type ExecutorJob = {
 export class OffscreenSnapExecutor {
   readonly #stream: BasePostMessageStream;
 
-  readonly #jobs: Record<string, ExecutorJob> = {};
+  readonly jobs: Record<string, ExecutorJob> = {};
 
   /**
    * Initialize the executor with the given stream. This is a wrapper around the
@@ -49,7 +49,7 @@ export class OffscreenSnapExecutor {
   }) {
     const { jobId, frameUrl, data: request } = data;
 
-    if (!this.#jobs[jobId]) {
+    if (!this.jobs[jobId]) {
       // This ensures that a job is initialized before it is used. To avoid
       // code duplication, we call the `#onData` method again, which will
       // run the rest of the logic after initialization.
@@ -71,7 +71,7 @@ export class OffscreenSnapExecutor {
       return;
     }
 
-    this.#jobs[jobId].stream.write(request);
+    this.jobs[jobId].stream.write(request);
   }
 
   /**
@@ -94,8 +94,8 @@ export class OffscreenSnapExecutor {
       this.#stream.write({ data, jobId });
     });
 
-    this.#jobs[jobId] = { id: jobId, window, stream: jobStream };
-    return this.#jobs[jobId];
+    this.jobs[jobId] = { id: jobId, window, stream: jobStream };
+    return this.jobs[jobId];
   }
 
   /**
@@ -105,13 +105,13 @@ export class OffscreenSnapExecutor {
    * @param jobId - The job ID.
    */
   #terminateJob(jobId: string) {
-    assert(this.#jobs[jobId], `Job "${jobId}" not found.`);
+    assert(this.jobs[jobId], `Job "${jobId}" not found.`);
 
     const iframe = document.getElementById(jobId);
     assert(iframe?.parentNode, `Iframe with ID "${jobId}" not found.`);
 
     iframe.parentNode.removeChild(iframe);
-    this.#jobs[jobId].stream.destroy();
-    delete this.#jobs[jobId];
+    this.jobs[jobId].stream.destroy();
+    delete this.jobs[jobId];
   }
 }

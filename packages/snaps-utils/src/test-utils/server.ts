@@ -2,16 +2,14 @@ import http from 'http';
 import path from 'path';
 import serveHandler from 'serve-handler';
 
-export const PORT = 6364;
-
-let server: http.Server;
 /**
  * Starts a local server that serves the iframe execution environment.
  *
  * @param port - The port to start the server on.
+ * @returns The server instance.
  */
-export async function start(port = PORT) {
-  return new Promise<void>((resolve, reject) => {
+export async function startServer(port: number) {
+  return new Promise<http.Server>((resolve, reject) => {
     if (!Number.isSafeInteger(port) || port < 0) {
       reject(new Error(`Invalid port: "${port}"`));
     }
@@ -21,7 +19,7 @@ export async function start(port = PORT) {
     );
     const publicPath = path.resolve(bundlePath, '../');
 
-    server = http.createServer((req, res) => {
+    const server = http.createServer((req, res) => {
       serveHandler(req, res, {
         public: publicPath,
         headers: [
@@ -40,7 +38,7 @@ export async function start(port = PORT) {
 
     server.listen({ port }, () => {
       console.log(`Server listening on: http://localhost:${port}`);
-      resolve();
+      resolve(server);
     });
 
     server.on('error', (error) => {
@@ -57,8 +55,10 @@ export async function start(port = PORT) {
 
 /**
  * Stops the local server.
+ *
+ * @param server - The server to stop.
  */
-export async function stop() {
+export async function stopServer(server: http.Server) {
   await new Promise<void>((resolve, reject) => {
     server.close((error) => {
       if (error) {
