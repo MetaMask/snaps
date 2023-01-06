@@ -113,7 +113,7 @@ jobs:
           path: ${{ needs.prepare.outputs.YARN_CACHE_DIR }}
           key: yarn-cache-${{ runner.os }}-${{ needs.prepare.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}
       - run: yarn --immutable
-      - run: yarn workspaces foreach --parallel --verbose --exclude root run test:ci
+      - run: yarn test:ci
       - name: CodeCov
         uses: codecov/codecov-action@d9f34f8cd5cb3b3eb79b3e4b5dae3a16df499a70
       - name: Require clean working directory
