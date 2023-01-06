@@ -1,6 +1,7 @@
 const path = require('path');
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 const DIST = path.resolve(__dirname, 'dist');
 const ENVIRONMENTS = path.resolve(DIST, 'webpack');
@@ -186,14 +187,9 @@ module.exports = (_, argv) => {
           test: /\.tsx?$/u,
           use: [
             {
-              loader: 'ts-loader',
+              loader: 'babel-loader',
               options: {
-                configFile: 'tsconfig.build.json',
-                compilerOptions: {
-                  paths: {
-                    "@metamask/*": ["../*"]
-                  }
-                }
+                presets: ['@babel/preset-typescript'],
               }
             }
           ],
@@ -203,6 +199,9 @@ module.exports = (_, argv) => {
     },
     resolve: {
       extensions: ['.tsx', '.ts', '.js'],
+      plugins: [new TsconfigPathsPlugin({
+        configFile: 'tsconfig.build.json',
+      })],
       alias: {
         // Without this alias webpack tried to require ../../node_modules/stream/ which doesn't have Duplex, breaking the bundle
         stream: 'stream-browserify',
