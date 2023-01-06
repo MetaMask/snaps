@@ -6,17 +6,21 @@ import serveHandler from 'serve-handler';
  * Starts a local server that serves the iframe execution environment.
  *
  * @param port - The port to start the server on.
+ * @param bundlePath - The path to the bundle to serve. Defaults to the iframe
+ * test bundle.
  * @returns The server instance.
  */
-export async function startServer(port: number) {
+export async function startServer(
+  port: number,
+  bundlePath: string = require.resolve(
+    '@metamask/snaps-execution-environments/__test__/iframe-test/bundle.js',
+  ),
+) {
   return new Promise<http.Server>((resolve, reject) => {
     if (!Number.isSafeInteger(port) || port < 0) {
       reject(new Error(`Invalid port: "${port}"`));
     }
 
-    const bundlePath = require.resolve(
-      '@metamask/snaps-execution-environments/__test__/iframe-test/bundle.js',
-    );
     const publicPath = path.resolve(bundlePath, '../');
 
     const server = http.createServer((req, res) => {
