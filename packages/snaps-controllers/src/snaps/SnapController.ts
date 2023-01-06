@@ -510,7 +510,7 @@ type SnapControllerArgs = {
   idleTimeCheckInterval?: number;
 
   /**
-   * TODO
+   * A registry implementation used for checking for verified and blocked snaps.
    */
   registry: SnapRegistry;
 
