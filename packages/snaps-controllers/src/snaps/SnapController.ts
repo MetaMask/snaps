@@ -20,6 +20,7 @@ import {
   ValidPermission,
 } from '@metamask/permission-controller';
 import { caveatMappers } from '@metamask/rpc-methods';
+import { BlockReason } from '@metamask/snaps-registry';
 import {
   assertIsSnapManifest,
   DEFAULT_ENDOWMENTS,
@@ -50,11 +51,6 @@ import {
   validateSnapId,
   validateSnapShasum,
   VirtualFile,
-  SnapRegistry,
-  SnapRegistryInfo,
-  SnapRegistryRequest,
-  SnapRegistryStatus,
-  SnapRegistryBlockReason,
 } from '@metamask/snaps-utils';
 import {
   GetSubjectMetadata,
@@ -97,7 +93,13 @@ import {
 } from './endowments';
 import { getRpcCaveatOrigins } from './endowments/rpc';
 import { detectSnapLocation, SnapLocation } from './location';
-import { JsonSnapRegistry } from './registry';
+import {
+  JsonSnapRegistry,
+  SnapRegistry,
+  SnapRegistryInfo,
+  SnapRegistryRequest,
+  SnapRegistryStatus,
+} from './registry';
 import { RequestQueue } from './RequestQueue';
 import { Timer } from './Timer';
 
@@ -376,7 +378,7 @@ export type SnapAdded = {
  */
 export type SnapBlocked = {
   type: `${typeof controllerName}:snapBlocked`;
-  payload: [snapId: string, blockedSnapInfo?: SnapRegistryBlockReason];
+  payload: [snapId: string, blockedSnapInfo?: BlockReason];
 };
 
 /**
@@ -955,7 +957,7 @@ export class SnapController extends BaseController<
    */
   async #blockSnap(
     snapId: SnapId,
-    blockedSnapInfo?: SnapRegistryBlockReason,
+    blockedSnapInfo?: BlockReason,
   ): Promise<void> {
     if (!this.has(snapId)) {
       return;
