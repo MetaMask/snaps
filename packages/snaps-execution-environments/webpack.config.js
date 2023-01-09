@@ -2,20 +2,10 @@ const path = require('path');
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
-const { readFileSync } = require('fs');
-const { BannerPlugin } = require('webpack');
 
 const DIST = path.resolve(__dirname, 'dist');
 const ENVIRONMENTS = path.resolve(DIST, 'webpack');
 const UNSAFE_ENVIRONMENTS = path.resolve(__dirname, '__test__');
-
-const LOCKDOWN_PATH = path.resolve(
-  `${path.dirname(require.resolve('ses/package.json'))}`,
-  'dist',
-  'lockdown.umd.min.js',
-);
-
-const LOCKDOWN_FILE = readFileSync(LOCKDOWN_PATH, 'utf8');
 
 module.exports = (_, argv) => {
   const isProd = argv.mode === 'production';
@@ -68,10 +58,27 @@ module.exports = (_, argv) => {
       path: ENVIRONMENTS,
     },
     plugins: [
-      // Prepend the SES lockdown bundle to the bundles.
-      new BannerPlugin({
-        banner: LOCKDOWN_FILE,
-        raw: true,
+      new CopyPlugin({
+        patterns: [
+          {
+            from: path.resolve(
+              `${path.dirname(require.resolve('ses/package.json'))}`,
+              'dist',
+              'lockdown.umd.min.js',
+            ),
+            to: path.resolve(ENVIRONMENTS, 'node-process/lockdown.umd.min.js'),
+            toType: 'file',
+          },
+          {
+            from: path.resolve(
+              `${path.dirname(require.resolve('ses/package.json'))}`,
+              'dist',
+              'lockdown.umd.min.js',
+            ),
+            to: path.resolve(ENVIRONMENTS, 'node-thread/lockdown.umd.min.js'),
+            toType: 'file',
+          },
+        ],
       }),
     ],
     module,
