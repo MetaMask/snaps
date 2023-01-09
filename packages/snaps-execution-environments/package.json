@@ -25,9 +25,11 @@
     "lint": "yarn lint:eslint && yarn lint:misc --check",
     "clean": "rimraf '*.tsbuildinfo' 'dist/*' 'src/__GENERATED__/' 'coverage/*' '__test__/*'",
     "build:clean": "yarn clean && yarn build",
-    "build:post-tsc": "webpack --mode production && concat -o ./dist/webpack/node-process/bundle.js ./dist/webpack/node-process/lockdown.umd.min.js ./dist/webpack/node-process/bundle.js && concat -o ./dist/webpack/node-thread/bundle.js ./dist/webpack/node-thread/lockdown.umd.min.js ./dist/webpack/node-thread/bundle.js",
+    "build:post-tsc": "webpack --mode production && yarn build:concat",
     "build:tsc": "tsc --project tsconfig.build.json",
     "build": "yarn build:tsc && yarn build:post-tsc",
+    "build:test": "yarn webpack --mode none --config-name iframe-test --config-name node && yarn build:concat",
+    "build:concat": "concat -o ./dist/webpack/node-process/bundle.js ./dist/webpack/node-process/lockdown.umd.min.js ./dist/webpack/node-process/bundle.js && concat -o ./dist/webpack/node-thread/bundle.js ./dist/webpack/node-thread/lockdown.umd.min.js ./dist/webpack/node-thread/bundle.js",
     "auto-changelog-init": "auto-changelog init",
     "publish:package": "../../scripts/publish-package.sh"
   },
@@ -46,6 +48,8 @@
   },
   "devDependencies": {
     "@ava/typescript": "^3.0.1",
+    "@babel/core": "^7.20.12",
+    "@babel/preset-typescript": "^7.18.6",
     "@lavamoat/allow-scripts": "^2.0.3",
     "@metamask/auto-changelog": "^3.1.0",
     "@metamask/eslint-config": "^11.0.0",
@@ -57,6 +61,7 @@
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
     "ava": "^5.1.0",
+    "babel-loader": "^9.1.2",
     "c8": "^7.12.0",
     "concat": "^1.0.3",
     "copy-webpack-plugin": "^10.2.4",
@@ -82,7 +87,7 @@
     "rimraf": "^3.0.2",
     "shx": "^0.3.4",
     "ts-jest": "^29.0.0",
-    "ts-loader": "^9.3.1",
+    "tsconfig-paths-webpack-plugin": "^4.0.0",
     "typescript": "~4.8.4",
     "webpack": "^5.68.0",
     "webpack-cli": "^4.9.2"
