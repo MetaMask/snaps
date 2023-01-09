@@ -25,7 +25,7 @@
     "lint": "yarn lint:eslint && yarn lint:misc --check",
     "clean": "rimraf '*.tsbuildinfo' 'dist/*' 'src/__GENERATED__/' 'coverage/*' '__test__/*'",
     "build:clean": "yarn clean && yarn build",
-    "build:post-tsc": "webpack --mode production && concat -o ./dist/webpack/node-process/bundle.js ./dist/webpack/node-process/lockdown.umd.min.js ./dist/webpack/node-process/bundle.js && concat -o ./dist/webpack/node-thread/bundle.js ./dist/webpack/node-thread/lockdown.umd.min.js ./dist/webpack/node-thread/bundle.js",
+    "build:post-tsc": "webpack --mode production",
     "build:tsc": "tsc --project tsconfig.build.json",
     "build": "yarn build:tsc && yarn build:post-tsc",
     "build:test": "yarn webpack --mode none --config-name iframe-test --config-name node",
