@@ -2443,13 +2443,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/abi-utils@npm:^1.0.0":
-  version: 1.1.0
-  resolution: "@metamask/abi-utils@npm:1.1.0"
+"@metamask/abi-utils@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "@metamask/abi-utils@npm:1.1.1"
   dependencies:
-    "@metamask/utils": ^3.2.0
-    superstruct: ^0.16.5
-  checksum: 9b199a856b4fc5ee034cc64f776977f2d38eae78c5f08c6a485d2479c9230ec40bd0e3e299e924acdf0dffa6cafe50921e4b43a2319cbc0a25bdc95aed316645
+    "@metamask/utils": ^3.4.1
+    superstruct: ^1.0.3
+  checksum: 475e6ef5f91daaeed86d757f092623dfb31f492969115a2886e499f7ac91f8cccb33abda3368112f4e4c1de3b124dd8a0f48990293ca25ac1de3978796bd622d
   languageName: node
   linkType: hard
 
@@ -2587,7 +2587,7 @@ __metadata:
     "@metamask/providers": ^10.2.0
     "@metamask/safe-event-emitter": ^2.0.0
     "@metamask/snaps-utils": ^0.27.1
-    "@metamask/utils": ^3.4.0
+    "@metamask/utils": ^3.4.1
     "@types/jest": ^27.5.1
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
@@ -2688,7 +2688,7 @@ __metadata:
     "@metamask/snaps-ui": ^0.27.1
     "@metamask/snaps-utils": ^0.27.1
     "@metamask/types": ^1.1.0
-    "@metamask/utils": ^3.4.0
+    "@metamask/utils": ^3.4.1
     "@noble/hashes": ^1.1.3
     "@types/node": ^14.14.25
     "@typescript-eslint/eslint-plugin": ^5.42.1
@@ -2780,7 +2780,7 @@ __metadata:
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-browserify-plugin": ^0.27.1
     "@metamask/snaps-utils": ^0.27.1
-    "@metamask/utils": ^3.4.0
+    "@metamask/utils": ^3.4.1
     "@types/browserify": ^12.0.36
     "@types/is-url": ^1.2.28
     "@types/jest": ^27.5.1
@@ -2845,7 +2845,7 @@ __metadata:
     "@metamask/snaps-utils": ^0.27.1
     "@metamask/subject-metadata-controller": ^1.0.1
     "@metamask/template-snap": ^0.7.0
-    "@metamask/utils": ^3.4.0
+    "@metamask/utils": ^3.4.1
     "@peculiar/webcrypto": ^1.3.3
     "@types/concat-stream": ^2.0.0
     "@types/gunzip-maybe": ^1.4.0
@@ -2905,7 +2905,7 @@ __metadata:
     "@metamask/post-message-stream": ^6.0.0
     "@metamask/providers": ^10.2.0
     "@metamask/snaps-utils": ^0.27.1
-    "@metamask/utils": ^3.4.0
+    "@metamask/utils": ^3.4.1
     "@types/jest": ^27.5.1
     "@types/node": ^17.0.36
     "@typescript-eslint/eslint-plugin": ^5.42.1
@@ -3006,7 +3006,7 @@ __metadata:
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/providers": ^10.2.0
     "@metamask/snaps-utils": ^0.27.1
-    "@metamask/utils": ^3.4.0
+    "@metamask/utils": ^3.4.1
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
     eslint: ^8.27.0
@@ -3035,7 +3035,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^11.0.0
     "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
-    "@metamask/utils": ^3.4.0
+    "@metamask/utils": ^3.4.1
     "@types/jest": ^27.5.1
     "@types/semver": ^7.3.10
     "@typescript-eslint/eslint-plugin": ^5.42.1
@@ -3074,7 +3074,7 @@ __metadata:
     "@metamask/providers": ^10.2.1
     "@metamask/snaps-registry": ^1.0.0
     "@metamask/snaps-ui": ^0.27.1
-    "@metamask/utils": ^3.4.0
+    "@metamask/utils": ^3.4.1
     "@noble/hashes": ^1.1.3
     "@scure/base": ^1.1.1
     "@types/jest": ^27.5.1
@@ -3181,15 +3181,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^3.2.0, @metamask/utils@npm:^3.3.0, @metamask/utils@npm:^3.4.0":
-  version: 3.4.0
-  resolution: "@metamask/utils@npm:3.4.0"
+"@metamask/utils@npm:^3.3.0, @metamask/utils@npm:^3.4.0, @metamask/utils@npm:^3.4.1":
+  version: 3.4.1
+  resolution: "@metamask/utils@npm:3.4.1"
   dependencies:
     "@types/debug": ^4.1.7
     debug: ^4.3.4
     semver: ^7.3.8
-    superstruct: ^0.16.7
-  checksum: 7d2b2e5e666587a429b274c1a00a9b89787bf0b590fc594d6a3d2900f0d73bf514191e6a371fa8bfa497ccded8abab0e1fa80606efa3849067aa9ba29891e034
+    superstruct: ^1.0.3
+  checksum: 0799cefc17effecba4b4cd34879113f9f826a7aff4d21bfdcca64ef31c117be3e6a30cdd49c0b91289f22efbf7e56901322f4ce1b4d638dd2fc3bc3e81e3c87d
   languageName: node
   linkType: hard
 
@@ -15237,13 +15237,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"superstruct@npm:^0.16.5, superstruct@npm:^0.16.7":
-  version: 0.16.7
-  resolution: "superstruct@npm:0.16.7"
-  checksum: c8c855ff6945da8a41048c6d236de7b1af5d4d9c31742b3ee54d65647c31597488620281f65e095d5efc9e2fbdaad529b8c8f2506c12569d428467c835a21477
-  languageName: node
-  linkType: hard
-
 "superstruct@npm:^1.0.3":
   version: 1.0.3
   resolution: "superstruct@npm:1.0.3"
@@ -15628,7 +15621,7 @@ __metadata:
   resolution: "transaction-insights-snap@workspace:packages/examples/examples/insights"
   dependencies:
     "@lavamoat/allow-scripts": ^2.0.3
-    "@metamask/abi-utils": ^1.0.0
+    "@metamask/abi-utils": ^1.1.1
     "@metamask/auto-changelog": ^3.1.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
@@ -15637,7 +15630,7 @@ __metadata:
     "@metamask/snaps-cli": ^0.27.1
     "@metamask/snaps-types": ^0.27.1
     "@metamask/snaps-ui": ^0.27.1
-    "@metamask/utils": ^3.4.0
+    "@metamask/utils": ^3.4.1
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
     eslint: ^8.27.0

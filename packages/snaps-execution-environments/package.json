@@ -36,7 +36,7 @@
     "@metamask/post-message-stream": "^6.0.0",
     "@metamask/providers": "^10.2.0",
     "@metamask/snaps-utils": "^0.27.1",
-    "@metamask/utils": "^3.4.0",
+    "@metamask/utils": "^3.4.1",
     "eth-rpc-errors": "^4.0.3",
     "json-rpc-engine": "^6.1.0",
     "pump": "^3.0.0",

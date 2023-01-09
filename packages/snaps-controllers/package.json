@@ -41,7 +41,7 @@
     "@metamask/snaps-registry": "^1.0.0",
     "@metamask/snaps-utils": "^0.27.1",
     "@metamask/subject-metadata-controller": "^1.0.1",
-    "@metamask/utils": "^3.4.0",
+    "@metamask/utils": "^3.4.1",
     "@xstate/fsm": "^2.0.0",
     "concat-stream": "^2.0.0",
     "cron-parser": "^4.5.0",

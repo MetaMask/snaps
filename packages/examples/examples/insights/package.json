@@ -26,9 +26,9 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write"
   },
   "dependencies": {
-    "@metamask/abi-utils": "^1.0.0",
+    "@metamask/abi-utils": "^1.1.1",
     "@metamask/snaps-ui": "^0.27.1",
-    "@metamask/utils": "^3.4.0"
+    "@metamask/utils": "^3.4.1"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.0.3",
