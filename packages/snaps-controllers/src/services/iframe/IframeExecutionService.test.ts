@@ -52,6 +52,8 @@ describe('IframeExecutionService', () => {
 
   // eslint-disable-next-line jest/no-done-callback, consistent-return
   afterAll((done) => {
+    // `server` is undefined if the server failed to start. This is unlikely to
+    // happen, but we check it anyway to keep TypeScript happy.
     if (!server) {
       return done();
     }

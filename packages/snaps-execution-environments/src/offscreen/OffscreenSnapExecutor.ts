@@ -11,6 +11,20 @@ type ExecutorJob = {
   stream: WindowPostMessageStream;
 };
 
+/**
+ * A snap executor using the Offscreen Documents API.
+ *
+ * This is not a traditional snap executor, as it does not execute snaps itself.
+ * Instead, it creates an iframe window for each snap execution, and sends the
+ * snap execution request to the iframe window. The iframe window is responsible
+ * for executing the snap.
+ *
+ * Extensions can only have a single offscreen document, so this executor is
+ * persisted between snap executions. The offscreen snap executor essentially
+ * acts as a proxy between the extension and the iframe execution environment.
+ *
+ * @see https://developer.chrome.com/docs/extensions/reference/offscreen/
+ */
 export class OffscreenSnapExecutor {
   readonly #stream: BasePostMessageStream;
 
@@ -104,7 +118,7 @@ export class OffscreenSnapExecutor {
     assert(this.jobs[jobId], `Job "${jobId}" not found.`);
 
     const iframe = document.getElementById(jobId);
-    assert(iframe?.parentNode, `Iframe with ID "${jobId}" not found.`);
+    assert(iframe, `Iframe with ID "${jobId}" not found.`);
 
     iframe.remove();
     this.jobs[jobId].stream.destroy();
