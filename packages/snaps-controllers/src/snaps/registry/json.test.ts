@@ -7,7 +7,7 @@ import { SemVerRange, SemVerVersion } from '@metamask/utils';
 import fetchMock from 'jest-fetch-mock';
 
 import { JsonSnapsRegistry } from './json';
-import { SnapRegistryStatus } from './registry';
+import { SnapsRegistryStatus } from './registry';
 
 const MOCK_DATABASE: SnapsRegistryDatabase = {
   verifiedSnaps: {
@@ -38,7 +38,7 @@ describe('JsonSnapsRegistry', () => {
   fetchMock.enableMocks();
   it('can get entries from the registry', async () => {
     fetchMock.mockResponse(JSON.stringify(MOCK_DATABASE));
-    const registry = new JsonSnapsRegistry({});
+    const registry = new JsonSnapsRegistry();
     const result = await registry.get({
       [MOCK_SNAP_ID]: {
         version: '1.0.0' as SemVerVersion,
@@ -48,7 +48,7 @@ describe('JsonSnapsRegistry', () => {
 
     expect(result).toStrictEqual({
       [MOCK_SNAP_ID]: {
-        status: SnapRegistryStatus.Verified,
+        status: SnapsRegistryStatus.Verified,
       },
     });
   });
@@ -58,7 +58,7 @@ describe('JsonSnapsRegistry', () => {
     fetchMock.mockResponse(
       JSON.stringify({ verifiedSnaps: {}, blockedSnaps: [] }),
     );
-    const registry = new JsonSnapsRegistry({});
+    const registry = new JsonSnapsRegistry();
     const result = await registry.get({
       [MOCK_SNAP_ID]: {
         version: '1.0.0' as SemVerVersion,
@@ -68,14 +68,14 @@ describe('JsonSnapsRegistry', () => {
 
     expect(result).toStrictEqual({
       [MOCK_SNAP_ID]: {
-        status: SnapRegistryStatus.Unverified,
+        status: SnapsRegistryStatus.Unverified,
       },
     });
   });
 
   it('returns unverified for non existing versions', async () => {
     fetchMock.mockResponse(JSON.stringify(MOCK_DATABASE));
-    const registry = new JsonSnapsRegistry({});
+    const registry = new JsonSnapsRegistry();
     const result = await registry.get({
       [MOCK_SNAP_ID]: {
         version: '1.0.1' as SemVerVersion,
@@ -85,14 +85,14 @@ describe('JsonSnapsRegistry', () => {
 
     expect(result).toStrictEqual({
       [MOCK_SNAP_ID]: {
-        status: SnapRegistryStatus.Unverified,
+        status: SnapsRegistryStatus.Unverified,
       },
     });
   });
 
   it('returns unverified if existing snap doesnt match checksum', async () => {
     fetchMock.mockResponse(JSON.stringify(MOCK_DATABASE));
-    const registry = new JsonSnapsRegistry({});
+    const registry = new JsonSnapsRegistry();
     const result = await registry.get({
       [MOCK_SNAP_ID]: {
         version: '1.0.0' as SemVerVersion,
@@ -102,14 +102,14 @@ describe('JsonSnapsRegistry', () => {
 
     expect(result).toStrictEqual({
       [MOCK_SNAP_ID]: {
-        status: SnapRegistryStatus.Unverified,
+        status: SnapsRegistryStatus.Unverified,
       },
     });
   });
 
   it('returns blocked if snap checksum is on blocklist', async () => {
     fetchMock.mockResponse(JSON.stringify(MOCK_DATABASE));
-    const registry = new JsonSnapsRegistry({});
+    const registry = new JsonSnapsRegistry();
     const result = await registry.get({
       [MOCK_SNAP_ID]: {
         version: '1.0.0' as SemVerVersion,
@@ -119,7 +119,7 @@ describe('JsonSnapsRegistry', () => {
 
     expect(result).toStrictEqual({
       [MOCK_SNAP_ID]: {
-        status: SnapRegistryStatus.Blocked,
+        status: SnapsRegistryStatus.Blocked,
         reason: { explanation: 'malicious' },
       },
     });
@@ -127,7 +127,7 @@ describe('JsonSnapsRegistry', () => {
 
   it('returns blocked if snap version range is on blocklist', async () => {
     fetchMock.mockResponse(JSON.stringify(MOCK_DATABASE));
-    const registry = new JsonSnapsRegistry({});
+    const registry = new JsonSnapsRegistry();
     const result = await registry.get({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       'npm:@consensys/starknet-snap': {
@@ -139,7 +139,7 @@ describe('JsonSnapsRegistry', () => {
     expect(result).toStrictEqual({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       'npm:@consensys/starknet-snap': {
-        status: SnapRegistryStatus.Blocked,
+        status: SnapsRegistryStatus.Blocked,
         reason: { explanation: 'vuln' },
       },
     });
@@ -159,14 +159,14 @@ describe('JsonSnapsRegistry', () => {
 
     expect(result).toStrictEqual({
       [MOCK_SNAP_ID]: {
-        status: SnapRegistryStatus.Unverified,
+        status: SnapsRegistryStatus.Unverified,
       },
     });
   });
 
   it('throws for unavailable database by default', async () => {
     fetchMock.mockResponse('', { status: 404 });
-    const registry = new JsonSnapsRegistry({});
+    const registry = new JsonSnapsRegistry();
 
     await expect(
       registry.get({

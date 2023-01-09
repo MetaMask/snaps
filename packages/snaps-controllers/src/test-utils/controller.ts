@@ -29,7 +29,7 @@ import {
 } from '../snaps';
 import { MOCK_CRONJOB_PERMISSION } from './cronjob';
 import { getNodeEES, getNodeEESMessenger } from './execution-environment';
-import { MockSnapRegistry } from './registry';
+import { MockSnapsRegistry } from './registry';
 
 const asyncNoOp = async () => Promise.resolve();
 
@@ -240,7 +240,7 @@ export type PartialSnapControllerConstructorParams = Partial<
 export const getSnapControllerOptions = (
   opts?: PartialSnapControllerConstructorParams,
 ) => {
-  const registry = new MockSnapRegistry();
+  const registry = new MockSnapsRegistry();
   const options = {
     environmentEndowmentPermissions: [],
     closeAllConnections: jest.fn(),
@@ -271,7 +271,7 @@ export const getSnapControllerWithEESOptions = ({
 }: GetSnapControllerWithEESOptionsParam = {}) => {
   const snapControllerMessenger = getSnapControllerMessenger(rootMessenger);
 
-  const registry = new MockSnapRegistry();
+  const registry = new MockSnapsRegistry();
 
   return {
     featureFlags: { dappsCanUpdateSnaps: true },

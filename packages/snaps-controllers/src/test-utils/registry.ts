@@ -1,12 +1,12 @@
-import { SnapRegistry, SnapRegistryStatus } from '../snaps';
+import { SnapsRegistry, SnapsRegistryStatus } from '../snaps';
 
-export class MockSnapRegistry implements SnapRegistry {
+export class MockSnapsRegistry implements SnapsRegistry {
   get = jest.fn().mockImplementation(async (snaps) => {
     return Promise.resolve(
       Object.keys(snaps).reduce(
         (acc, snapId) => ({
           ...acc,
-          [snapId]: { status: SnapRegistryStatus.Unverified },
+          [snapId]: { status: SnapsRegistryStatus.Unverified },
         }),
         {},
       ),

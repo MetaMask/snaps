@@ -2,21 +2,23 @@ import { BlockReason } from '@metamask/snaps-registry';
 import { SnapId } from '@metamask/snaps-utils';
 import { SemVerVersion } from '@metamask/utils';
 
-export type SnapRegistryInfo = { version: SemVerVersion; checksum: string };
-export type SnapRegistryRequest = Record<SnapId, SnapRegistryInfo>;
+export type SnapsRegistryInfo = { version: SemVerVersion; checksum: string };
+export type SnapsRegistryRequest = Record<SnapId, SnapsRegistryInfo>;
 
 // TODO: Decide on names for these
-export enum SnapRegistryStatus {
+export enum SnapsRegistryStatus {
   Unverified,
   Blocked,
   Verified,
 }
 
-export type SnapRegistryResult = {
-  status: SnapRegistryStatus;
+export type SnapsRegistryResult = {
+  status: SnapsRegistryStatus;
   reason?: BlockReason;
 };
 
-export type SnapRegistry = {
-  get(snaps: SnapRegistryRequest): Promise<Record<SnapId, SnapRegistryResult>>;
+export type SnapsRegistry = {
+  get(
+    snaps: SnapsRegistryRequest,
+  ): Promise<Record<SnapId, SnapsRegistryResult>>;
 };

@@ -95,10 +95,10 @@ import { getRpcCaveatOrigins } from './endowments/rpc';
 import { detectSnapLocation, SnapLocation } from './location';
 import {
   JsonSnapsRegistry,
-  SnapRegistry,
-  SnapRegistryInfo,
-  SnapRegistryRequest,
-  SnapRegistryStatus,
+  SnapsRegistry,
+  SnapsRegistryInfo,
+  SnapsRegistryRequest,
+  SnapsRegistryStatus,
 } from './registry';
 import { RequestQueue } from './RequestQueue';
 import { Timer } from './Timer';
@@ -512,7 +512,7 @@ type SnapControllerArgs = {
   /**
    * A registry implementation used for checking for verified and blocked snaps.
    */
-  registry: SnapRegistry;
+  registry: SnapsRegistry;
 
   /**
    * The maximum amount of time that a snap may be idle.
@@ -621,7 +621,7 @@ export class SnapController extends BaseController<
 
   #idleTimeCheckInterval: number;
 
-  #registry: SnapRegistry;
+  #registry: SnapsRegistry;
 
   #maxIdleTime: number;
 
@@ -649,7 +649,7 @@ export class SnapController extends BaseController<
     state,
     environmentEndowmentPermissions = [],
     idleTimeCheckInterval = inMilliseconds(5, Duration.Second),
-    registry = new JsonSnapsRegistry({}),
+    registry = new JsonSnapsRegistry(),
     maxIdleTime = inMilliseconds(30, Duration.Second),
     maxRequestTime = inMilliseconds(60, Duration.Second),
     fetchFunction = globalThis.fetch.bind(globalThis),
@@ -925,7 +925,7 @@ export class SnapController extends BaseController<
    */
   async updateBlockedSnaps(): Promise<void> {
     const blockedSnaps = await this.#registry.get(
-      Object.values(this.state.snaps).reduce<SnapRegistryRequest>(
+      Object.values(this.state.snaps).reduce<SnapsRegistryRequest>(
         (blockListArg, snap) => {
           blockListArg[snap.id] = {
             version: snap.version,
@@ -939,7 +939,7 @@ export class SnapController extends BaseController<
 
     await Promise.all(
       Object.entries(blockedSnaps).map(async ([snapId, { status, reason }]) => {
-        if (status === SnapRegistryStatus.Blocked) {
+        if (status === SnapsRegistryStatus.Blocked) {
           return this.#blockSnap(snapId, reason);
         }
 
@@ -1006,13 +1006,13 @@ export class SnapController extends BaseController<
 
   async #assertIsInstallAllowed(
     snapId: ValidatedSnapId,
-    snapInfo: SnapRegistryInfo,
+    snapInfo: SnapsRegistryInfo,
   ) {
     const results = await this.#registry.get({
       [snapId]: snapInfo,
     });
     const result = results[snapId];
-    if (result.status === SnapRegistryStatus.Blocked) {
+    if (result.status === SnapsRegistryStatus.Blocked) {
       throw new Error(
         `Cannot install version "${
           snapInfo.version
@@ -1022,7 +1022,7 @@ export class SnapController extends BaseController<
       );
     } else if (
       this.#featureFlags.requireAllowlist &&
-      result.status !== SnapRegistryStatus.Verified
+      result.status !== SnapsRegistryStatus.Verified
     ) {
       throw new Error(
         `Cannot install version "${snapInfo.version}" of snap "${snapId}": The snap is not on the allow list.`,

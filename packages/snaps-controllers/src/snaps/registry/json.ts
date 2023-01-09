@@ -3,11 +3,11 @@ import { SnapId } from '@metamask/snaps-utils';
 import { satisfiesVersionRange } from '@metamask/utils';
 
 import {
-  SnapRegistry,
-  SnapRegistryInfo,
-  SnapRegistryRequest,
-  SnapRegistryResult,
-  SnapRegistryStatus,
+  SnapsRegistry,
+  SnapsRegistryInfo,
+  SnapsRegistryRequest,
+  SnapsRegistryResult,
+  SnapsRegistryStatus,
 } from './registry';
 
 // TODO: Replace with a Codefi URL
@@ -20,7 +20,7 @@ export type JsonSnapsRegistryArgs = {
   failOnUnavailableRegistry?: boolean;
 };
 
-export class JsonSnapsRegistry implements SnapRegistry {
+export class JsonSnapsRegistry implements SnapsRegistry {
   #url: string;
 
   #database: SnapsRegistryDatabase | null = null;
@@ -33,7 +33,7 @@ export class JsonSnapsRegistry implements SnapRegistry {
     url = SNAP_REGISTRY_URL,
     fetchFunction = globalThis.fetch.bind(globalThis),
     failOnUnavailableRegistry = true,
-  }: JsonSnapsRegistryArgs) {
+  }: JsonSnapsRegistryArgs = {}) {
     this.#url = url;
     this.#fetchFunction = fetchFunction;
     this.#failOnUnavailableRegistry = failOnUnavailableRegistry;
@@ -59,7 +59,7 @@ export class JsonSnapsRegistry implements SnapRegistry {
     return this.#database;
   }
 
-  async #getSingle(snapId: SnapId, snapInfo: SnapRegistryInfo) {
+  async #getSingle(snapId: SnapId, snapInfo: SnapsRegistryInfo) {
     const database = await this.#getDatabase();
 
     const blockedEntry = database?.blockedSnaps.find((blocked) => {
@@ -75,7 +75,7 @@ export class JsonSnapsRegistry implements SnapRegistry {
 
     if (blockedEntry) {
       return {
-        status: SnapRegistryStatus.Blocked,
+        status: SnapsRegistryStatus.Blocked,
         reason: blockedEntry.reason,
       };
     }
@@ -83,16 +83,16 @@ export class JsonSnapsRegistry implements SnapRegistry {
     const verified = database?.verifiedSnaps[snapId];
     const version = verified?.versions?.[snapInfo.version];
     if (version && version.checksum === snapInfo.checksum) {
-      return { status: SnapRegistryStatus.Verified };
+      return { status: SnapsRegistryStatus.Verified };
     }
-    return { status: SnapRegistryStatus.Unverified };
+    return { status: SnapsRegistryStatus.Unverified };
   }
 
   public async get(
-    snaps: SnapRegistryRequest,
-  ): Promise<Record<SnapId, SnapRegistryResult>> {
+    snaps: SnapsRegistryRequest,
+  ): Promise<Record<SnapId, SnapsRegistryResult>> {
     return Object.entries(snaps).reduce<
-      Promise<Record<SnapId, SnapRegistryResult>>
+      Promise<Record<SnapId, SnapsRegistryResult>>
     >(async (previousPromise, [snapId, snapInfo]) => {
       const result = await this.#getSingle(snapId, snapInfo);
       const acc = await previousPromise;
