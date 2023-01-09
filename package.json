@@ -26,7 +26,7 @@
     "build:post-tsc": "yarn workspaces foreach --parallel --topological --verbose run build:post-tsc",
     "clean": "yarn workspaces foreach --parallel --verbose run clean",
     "test": "yarn workspaces foreach --parallel --verbose run test",
-    "test:ci": "node scripts/build-iframe.js && yarn workspaces foreach --parallel --verbose run test:ci"
+    "test:ci": "yarn workspace @metamask/snaps-execution-environments run build:test && yarn workspaces foreach --parallel --verbose run test:ci"
   },
   "simple-git-hooks": {
     "pre-commit": "yarn lint-staged && yarn dedupe --check"
