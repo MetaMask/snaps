@@ -4,3 +4,4 @@ export * from './multichain';
 export * from './service';
 export * from './sleep';
 export * from './location';
+export * from './registry';

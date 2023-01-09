@@ -24,8 +24,8 @@
     "publish:package": "../../scripts/publish-package.sh"
   },
   "dependencies": {
-    "@metamask/utils": "^3.4.0",
-    "superstruct": "^0.16.7"
+    "@metamask/utils": "^3.4.1",
+    "superstruct": "^1.0.3"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.0.3",

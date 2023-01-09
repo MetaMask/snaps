@@ -38,13 +38,13 @@
     "@metamask/post-message-stream": "^6.0.0",
     "@metamask/providers": "^10.2.0",
     "@metamask/snaps-utils": "^0.27.1",
-    "@metamask/utils": "^3.4.0",
+    "@metamask/utils": "^3.4.1",
     "eth-rpc-errors": "^4.0.3",
     "json-rpc-engine": "^6.1.0",
     "pump": "^3.0.0",
     "ses": "^0.18.1",
     "stream-browserify": "^3.0.0",
-    "superstruct": "^0.16.7"
+    "superstruct": "^1.0.3"
   },
   "devDependencies": {
     "@ava/typescript": "^3.0.1",

@@ -1,3 +1,4 @@
+import { BlockReason } from '@metamask/snaps-registry';
 import { assert, Json, SemVerVersion } from '@metamask/utils';
 import { sha256 } from '@noble/hashes/sha256';
 import { base64 } from '@scure/base';
@@ -46,8 +47,6 @@ export const PROPOSED_NAME_REGEX =
 export type RequestedSnapPermissions = {
   [permission: string]: Record<string, Json>;
 };
-
-export type BlockedSnapInfo = { infoUrl?: string; reason?: string };
 
 export enum SnapStatus {
   Installing = 'installing',
@@ -119,7 +118,7 @@ export type Snap = {
   /**
    * Information detailing why the snap is blocked.
    */
-  blockInformation?: BlockedSnapInfo;
+  blockInformation?: BlockReason;
 
   /**
    * The name of the permission used to invoke the Snap.
