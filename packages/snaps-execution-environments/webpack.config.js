@@ -66,16 +66,7 @@ module.exports = (_, argv) => {
               'dist',
               'lockdown.umd.min.js',
             ),
-            to: path.resolve(ENVIRONMENTS, 'node-process/lockdown.umd.min.js'),
-            toType: 'file',
-          },
-          {
-            from: path.resolve(
-              `${path.dirname(require.resolve('ses/package.json'))}`,
-              'dist',
-              'lockdown.umd.min.js',
-            ),
-            to: path.resolve(ENVIRONMENTS, 'node-thread/lockdown.umd.min.js'),
+            to: path.resolve(ENVIRONMENTS, 'lockdown.umd.min.js'),
             toType: 'file',
           },
         ],
