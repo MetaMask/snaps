@@ -106,7 +106,7 @@ export class OffscreenSnapExecutor {
     const iframe = document.getElementById(jobId);
     assert(iframe?.parentNode, `Iframe with ID "${jobId}" not found.`);
 
-    iframe.parentNode.removeChild(iframe);
+    iframe.remove();
     this.jobs[jobId].stream.destroy();
     delete this.jobs[jobId];
   }

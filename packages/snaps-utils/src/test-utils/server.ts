@@ -73,3 +73,70 @@ export async function stopServer(server: http.Server) {
     });
   });
 }
+
+/**
+ * Fix for JSDOM not adding an origin or source to post message events. This
+ * function is intended to be used as a mock for the `createWindow` function in
+ * `@metamask/snaps-utils`.
+ *
+ * @param uri - The iframe URI.
+ * @param jobId - The job id.
+ * @returns A promise that resolves to the contentWindow of the iframe.
+ * @example
+ * ```typescript
+ * jest.mock('@metamask/snaps-utils', () => {
+ *   const actual = jest.requireActual('@metamask/snaps-utils');
+ *   return {
+ *     ...actual,
+ *     createWindow: (...args: Parameters<typeof fixCreateWindow>) =>
+ *       fixCreateWindow(...args),
+ *   };
+ * });
+ * ```
+ */
+export async function fixCreateWindow(uri: string, jobId: string) {
+  const window = await jest
+    .requireActual('@metamask/snaps-utils')
+    .createWindow(uri, jobId);
+
+  const scriptElement = window.document.createElement('script');
+
+  if (!scriptElement) {
+    return window;
+  }
+
+  // Fix the inside window.
+  scriptElement.textContent = `
+    window.addEventListener('message', (postMessageEvent) => {
+      if (postMessageEvent.source === null && !postMessageEvent.origin) {
+        let source;
+        let postMessageEventOrigin;
+        if (postMessageEvent.data.target === 'child') {
+          source = window.parent;
+          postMessageEventOrigin = '*';
+        } else if (postMessageEvent.data.target === 'parent') {
+          source = window;
+          postMessageEventOrigin = window.location.origin;
+        }
+        if (postMessageEvent.data.target) {
+          postMessageEvent.stopImmediatePropagation();
+          const args = Object.assign({
+            ...postMessageEvent,
+            data: postMessageEvent.data,
+            source,
+            origin: postMessageEventOrigin,
+          });
+          const postMessageEventWithOrigin = new MessageEvent(
+            'message',
+            args,
+          );
+          window.dispatchEvent(postMessageEventWithOrigin);
+        }
+      }
+    });
+  `;
+
+  window.document.body.appendChild(scriptElement);
+
+  return window;
+}

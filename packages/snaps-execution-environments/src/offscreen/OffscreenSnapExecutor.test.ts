@@ -1,4 +1,5 @@
 import {
+  fixCreateWindow,
   MockPostMessageStream,
   startServer,
   stopServer,
@@ -18,48 +19,8 @@ jest.mock('@metamask/snaps-utils', () => {
   const actual = jest.requireActual('@metamask/snaps-utils');
   return {
     ...actual,
-    createWindow: async (uri: string, jobId: string) => {
-      const result = await actual.createWindow(uri, jobId);
-      const scriptElement = result.document.createElement('script');
-
-      if (!scriptElement) {
-        return result;
-      }
-
-      // Fix the inside window.
-      scriptElement.textContent = `
-        window.addEventListener('message', (postMessageEvent) => {
-          if (postMessageEvent.source === null && !postMessageEvent.origin) {
-            let source;
-            let postMessageEventOrigin;
-            if (postMessageEvent.data.target === 'child') {
-              source = window.parent;
-              postMessageEventOrigin = '*';
-            } else if (postMessageEvent.data.target === 'parent') {
-              source = window;
-              postMessageEventOrigin = window.location.origin;
-            }
-            if (postMessageEvent.data.target) {
-              postMessageEvent.stopImmediatePropagation();
-              const args = Object.assign({
-                ...postMessageEvent,
-                data: postMessageEvent.data,
-                source,
-                origin: postMessageEventOrigin,
-              });
-              const postMessageEventWithOrigin = new MessageEvent(
-                'message',
-                args,
-              );
-              window.dispatchEvent(postMessageEventWithOrigin);
-            }
-          }
-        });
-      `;
-      result.document.body.appendChild(scriptElement);
-
-      return result;
-    },
+    createWindow: (...args: Parameters<typeof fixCreateWindow>) =>
+      fixCreateWindow(...args),
   };
 });
 
