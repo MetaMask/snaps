@@ -5,6 +5,8 @@ describe('browser entrypoint', () => {
     'AbstractExecutionService',
     'setupMultiplex',
     'IframeExecutionService',
+    'OffscreenExecutionService',
+    'OffscreenPostMessageStream',
   ];
 
   it('entrypoint has expected exports', () => {

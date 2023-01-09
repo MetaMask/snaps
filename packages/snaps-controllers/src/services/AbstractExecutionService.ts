@@ -151,7 +151,7 @@ export abstract class AbstractExecutionService<WorkerType>
     );
 
     if (result === hasTimedOut || result !== 'OK') {
-      // We tried to shutdown gracefully but failed. This probably means the Snap is in infite loop and
+      // We tried to shutdown gracefully but failed. This probably means the Snap is in infinite loop and
       // hogging down the whole JS process.
       // TODO(ritave): It might be doing weird things such as posting a lot of setTimeouts. Add a test to ensure that this behaviour
       //               doesn't leak into other workers. Especially important in IframeExecutionEnvironment since they all share the same
@@ -264,6 +264,7 @@ export abstract class AbstractExecutionService<WorkerType>
         );
       }
     };
+
     commandStream.on('data', notificationHandler);
     const rpcStream = mux.createStream(SNAP_STREAM_NAMES.JSON_RPC);
 

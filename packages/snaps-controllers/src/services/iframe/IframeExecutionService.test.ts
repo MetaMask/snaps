@@ -1,18 +1,21 @@
 import { createService } from '@metamask/snaps-controllers/test-utils';
 import { HandlerType } from '@metamask/snaps-utils';
+import {
+  fixCreateWindow,
+  startServer,
+  stopServer,
+} from '@metamask/snaps-utils/test-utils';
+import http from 'http';
 
 import { IframeExecutionService } from './IframeExecutionService';
 import fixJSDOMPostMessageEventSource from './test/fixJSDOMPostMessageEventSource';
-import {
-  PORT as serverPort,
-  start as startServer,
-  stop as stopServer,
-} from './test/server';
+
+const SERVER_PORT = 6364;
 
 // We do not use our default endowments in these tests because JSDOM doesn't
 // implement all of them.
 
-const iframeUrl = new URL(`http://localhost:${serverPort}`);
+const iframeUrl = new URL(`http://localhost:${SERVER_PORT}`);
 
 const createIFrameService = () => {
   const { service, ...rest } = createService(IframeExecutionService, {
@@ -23,16 +26,39 @@ const createIFrameService = () => {
   return { service, removeListener, ...rest };
 };
 
+jest.mock('@metamask/snaps-utils', () => {
+  const actual = jest.requireActual('@metamask/snaps-utils');
+  return {
+    ...actual,
+    createWindow: (...args: Parameters<typeof fixCreateWindow>) =>
+      fixCreateWindow(...args),
+  };
+});
+
 describe('IframeExecutionService', () => {
-  // The tests start running before the server is ready if we don't use the done callback.
+  let server: http.Server | undefined;
+
+  // The tests start running before the server is ready if we don't use the done
+  // callback.
   // eslint-disable-next-line jest/no-done-callback
   beforeAll((done) => {
-    startServer().then(done).catch(done.fail);
+    startServer(SERVER_PORT)
+      .then((newServer) => {
+        server = newServer;
+        done();
+      })
+      .catch(done.fail);
   });
 
-  // eslint-disable-next-line jest/no-done-callback
+  // eslint-disable-next-line jest/no-done-callback, consistent-return
   afterAll((done) => {
-    stopServer().then(done).catch(done.fail);
+    // `server` is undefined if the server failed to start. This is unlikely to
+    // happen, but we check it anyway to keep TypeScript happy.
+    if (!server) {
+      return done();
+    }
+
+    stopServer(server).then(done).catch(done.fail);
   });
 
   it('can boot', async () => {

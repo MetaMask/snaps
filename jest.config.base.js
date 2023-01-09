@@ -26,6 +26,7 @@ module.exports = {
     './src/**/*.ts',
     '!./src/**/*.test.ts',
     '!./src/test-utils/**/*.ts',
+    '!./src/**/*.d.ts',
   ],
 
   // The directory where Jest should output its coverage files
@@ -168,9 +169,7 @@ module.exports = {
   // ],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
-  // testPathIgnorePatterns: [
-  //   "/node_modules/"
-  // ],
+  testPathIgnorePatterns: ['.ava.test.ts'],
 
   // The regexp pattern or array of patterns that Jest uses to detect test files
   // testRegex: [],
