@@ -18,8 +18,35 @@ module.exports = (_, argv) => {
     };
   }
 
+  const module = {
+    rules: [
+      {
+        test: /\.tsx?$/u,
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/preset-typescript'],
+            },
+          },
+        ],
+        exclude: /node_modules/u,
+      },
+    ],
+  };
+
+  const resolve = {
+    extensions: ['.tsx', '.ts', '.js'],
+    plugins: [
+      new TsconfigPathsPlugin({
+        configFile: 'tsconfig.build.json',
+      }),
+    ],
+  };
+
   const nodeConfig = {
     ...extraOptions,
+    name: 'node',
     mode: argv.mode,
     target: 'node',
     entry: {
@@ -54,30 +81,8 @@ module.exports = (_, argv) => {
         ],
       }),
     ],
-    module: {
-      rules: [
-        {
-          test: /\.tsx?$/u,
-          use: [
-            {
-              loader: 'ts-loader',
-              options: {
-                configFile: 'tsconfig.build.json',
-                compilerOptions: {
-                  paths: {
-                    "@metamask/*": ["../*"]
-                  }
-                }
-              }
-            }
-          ],
-          exclude: /node_modules/u,
-        },
-      ],
-    },
-    resolve: {
-      extensions: ['.tsx', '.ts', '.js'],
-    },
+    module,
+    resolve,
   };
 
   const browserConfig = {
@@ -113,34 +118,14 @@ module.exports = (_, argv) => {
         ],
       }),
     ],
-    module: {
-      rules: [
-        {
-          test: /\.tsx?$/u,
-          use: [
-            {
-              loader: 'ts-loader',
-              options: {
-                configFile: 'tsconfig.build.json',
-                compilerOptions: {
-                  paths: {
-                    "@metamask/*": ["../*"]
-                  }
-                }
-              }
-            }
-          ],
-          exclude: /node_modules/u,
-        },
-      ],
-    },
+    module,
     resolve: {
-      extensions: ['.tsx', '.ts', '.js'],
+      ...resolve,
       alias: {
         // Without this alias webpack tried to require ../../node_modules/stream/ which doesn't have Duplex, breaking the bundle
         stream: 'stream-browserify',
         child_process: false,
-        fs: false
+        fs: false,
       },
     },
   };
@@ -181,32 +166,14 @@ module.exports = (_, argv) => {
         ],
       }),
     ],
-    module: {
-      rules: [
-        {
-          test: /\.tsx?$/u,
-          use: [
-            {
-              loader: 'babel-loader',
-              options: {
-                presets: ['@babel/preset-typescript'],
-              }
-            }
-          ],
-          exclude: /node_modules/u,
-        },
-      ],
-    },
+    module,
     resolve: {
-      extensions: ['.tsx', '.ts', '.js'],
-      plugins: [new TsconfigPathsPlugin({
-        configFile: 'tsconfig.build.json',
-      })],
+      ...resolve,
       alias: {
         // Without this alias webpack tried to require ../../node_modules/stream/ which doesn't have Duplex, breaking the bundle
         stream: 'stream-browserify',
         child_process: false,
-        fs: false
+        fs: false,
       },
     },
   };
