@@ -3180,19 +3180,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^3.0.1":
-  version: 3.4.0
-  resolution: "@metamask/utils@npm:3.4.0"
-  dependencies:
-    "@types/debug": ^4.1.7
-    debug: ^4.3.4
-    semver: ^7.3.8
-    superstruct: ^1.0.3
-  checksum: 7d2b2e5e666587a429b274c1a00a9b89787bf0b590fc594d6a3d2900f0d73bf514191e6a371fa8bfa497ccded8abab0e1fa80606efa3849067aa9ba29891e034
-  languageName: node
-  linkType: hard
-
-"@metamask/utils@npm:^3.3.0, @metamask/utils@npm:^3.4.0, @metamask/utils@npm:^3.4.1":
+"@metamask/utils@npm:^3.0.1, @metamask/utils@npm:^3.3.0, @metamask/utils@npm:^3.4.0, @metamask/utils@npm:^3.4.1":
   version: 3.4.1
   resolution: "@metamask/utils@npm:3.4.1"
   dependencies:
