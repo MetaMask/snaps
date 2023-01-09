@@ -1,18 +1,15 @@
-import {
-  SemVerRange,
-  SemVerVersion,
-  SnapRegistryStatus,
-  JsonSnapRegistryDatabase,
-} from '@metamask/snaps-utils';
+import { SnapsRegistryDatabase } from '@metamask/snaps-registry';
 import {
   DEFAULT_SNAP_SHASUM,
   MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
+import { SemVerRange, SemVerVersion } from '@metamask/utils';
 import fetchMock from 'jest-fetch-mock';
 
 import { JsonSnapRegistry } from './json';
+import { SnapRegistryStatus } from './registry';
 
-const MOCK_DATABASE: JsonSnapRegistryDatabase = {
+const MOCK_DATABASE: SnapsRegistryDatabase = {
   verifiedSnaps: {
     [MOCK_SNAP_ID]: {
       id: MOCK_SNAP_ID,
@@ -149,7 +146,7 @@ describe('JsonSnapRegistry', () => {
   });
 
   it('returns unverified for unavailable database if failOnUnavailableRegistry is set to false', async () => {
-    fetchMock.mockReject();
+    fetchMock.mockResponse('', { status: 404 });
     const registry = new JsonSnapRegistry({ failOnUnavailableRegistry: false });
     const result = await registry.get({
       [MOCK_SNAP_ID]: {
@@ -166,7 +163,7 @@ describe('JsonSnapRegistry', () => {
   });
 
   it('throws for unavailable database by default', async () => {
-    fetchMock.mockReject();
+    fetchMock.mockResponse('', { status: 404 });
     const registry = new JsonSnapRegistry({});
 
     await expect(

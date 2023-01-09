@@ -1,4 +1,4 @@
-import { SnapRegistry, SnapRegistryStatus } from '@metamask/snaps-utils';
+import { SnapRegistry, SnapRegistryStatus } from '../snaps';
 
 export class MockSnapRegistry implements SnapRegistry {
   get = jest.fn().mockImplementation(async (snaps) => {

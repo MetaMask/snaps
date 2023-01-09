@@ -39,6 +39,9 @@ export class JsonSnapRegistry implements SnapRegistry {
       // TODO: Decide if we should persist this between sessions
       try {
         const response = await this.#fetchFn(SNAP_REGISTRY_URL);
+        if (!response.ok) {
+          throw new Error('Failed to fetch Snaps Registry');
+        }
         this.#db = await response.json();
       } catch {
         // Ignore

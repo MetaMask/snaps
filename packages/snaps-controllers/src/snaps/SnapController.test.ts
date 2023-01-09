@@ -15,7 +15,6 @@ import {
   SnapManifest,
   NpmSnapFileNames,
   DEFAULT_REQUESTED_SNAP_VERSION,
-  SnapRegistryStatus,
 } from '@metamask/snaps-utils';
 import {
   DEFAULT_SNAP_BUNDLE,
@@ -63,6 +62,7 @@ import {
 } from '../test-utils';
 import { delay } from '../utils';
 import { handlerEndowments, SnapEndowments } from './endowments';
+import { SnapRegistryStatus } from './registry';
 import { SnapControllerState, SNAP_APPROVAL_UPDATE } from './SnapController';
 
 const { subtle } = new Crypto();
