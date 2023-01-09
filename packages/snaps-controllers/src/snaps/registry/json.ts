@@ -14,50 +14,55 @@ import {
 const SNAP_REGISTRY_URL =
   'https://cdn.jsdelivr.net/gh/MetaMask/snaps-registry@main/src/registry.json';
 
-export type JsonSnapRegistryArgs = {
-  fetchFn?: typeof fetch;
+export type JsonSnapsRegistryArgs = {
+  fetchFunction?: typeof fetch;
+  url?: string;
   failOnUnavailableRegistry?: boolean;
 };
 
-export class JsonSnapRegistry implements SnapRegistry {
-  #db: SnapsRegistryDatabase | null = null;
+export class JsonSnapsRegistry implements SnapRegistry {
+  #url: string;
 
-  #fetchFn: typeof fetch;
+  #database: SnapsRegistryDatabase | null = null;
+
+  #fetchFunction: typeof fetch;
 
   #failOnUnavailableRegistry: boolean;
 
   constructor({
-    fetchFn = globalThis.fetch.bind(globalThis),
+    url = SNAP_REGISTRY_URL,
+    fetchFunction = globalThis.fetch.bind(globalThis),
     failOnUnavailableRegistry = true,
-  }: JsonSnapRegistryArgs) {
-    this.#fetchFn = fetchFn;
+  }: JsonSnapsRegistryArgs) {
+    this.#url = url;
+    this.#fetchFunction = fetchFunction;
     this.#failOnUnavailableRegistry = failOnUnavailableRegistry;
   }
 
   async #getDatabase(): Promise<SnapsRegistryDatabase | null> {
-    if (this.#db === null) {
+    if (this.#database === null) {
       // TODO: Decide if we should persist this between sessions
       try {
-        const response = await this.#fetchFn(SNAP_REGISTRY_URL);
+        const response = await this.#fetchFunction(this.#url);
         if (!response.ok) {
-          throw new Error('Failed to fetch Snaps Registry');
+          throw new Error('Failed to fetch Snaps registry.');
         }
-        this.#db = await response.json();
+        this.#database = await response.json();
       } catch {
         // Ignore
       }
     }
-    return this.#db;
+    // If the database is still null and we require it, throw.
+    if (this.#failOnUnavailableRegistry && this.#database === null) {
+      throw new Error('Snaps registry is unavailable, installation blocked.');
+    }
+    return this.#database;
   }
 
   async #getSingle(snapId: SnapId, snapInfo: SnapRegistryInfo) {
-    const db = await this.#getDatabase();
+    const database = await this.#getDatabase();
 
-    if (this.#failOnUnavailableRegistry && db === null) {
-      throw new Error('Snap Registry is unavailable, installation blocked.');
-    }
-
-    const blockedEntry = db?.blockedSnaps.find((blocked) => {
+    const blockedEntry = database?.blockedSnaps.find((blocked) => {
       if ('id' in blocked) {
         return (
           blocked.id === snapId &&
@@ -75,7 +80,7 @@ export class JsonSnapRegistry implements SnapRegistry {
       };
     }
 
-    const verified = db?.verifiedSnaps[snapId];
+    const verified = database?.verifiedSnaps[snapId];
     const version = verified?.versions?.[snapInfo.version];
     if (version && version.checksum === snapInfo.checksum) {
       return { status: SnapRegistryStatus.Verified };

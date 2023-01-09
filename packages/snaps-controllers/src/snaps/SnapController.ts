@@ -94,7 +94,7 @@ import {
 import { getRpcCaveatOrigins } from './endowments/rpc';
 import { detectSnapLocation, SnapLocation } from './location';
 import {
-  JsonSnapRegistry,
+  JsonSnapsRegistry,
   SnapRegistry,
   SnapRegistryInfo,
   SnapRegistryRequest,
@@ -649,7 +649,7 @@ export class SnapController extends BaseController<
     state,
     environmentEndowmentPermissions = [],
     idleTimeCheckInterval = inMilliseconds(5, Duration.Second),
-    registry = new JsonSnapRegistry({}),
+    registry = new JsonSnapsRegistry({}),
     maxIdleTime = inMilliseconds(30, Duration.Second),
     maxRequestTime = inMilliseconds(60, Duration.Second),
     fetchFunction = globalThis.fetch.bind(globalThis),
@@ -1014,14 +1014,18 @@ export class SnapController extends BaseController<
     const result = results[snapId];
     if (result.status === SnapRegistryStatus.Blocked) {
       throw new Error(
-        `Cannot install version "${snapInfo.version}" of snap "${snapId}": the version is blocked.`,
+        `Cannot install version "${
+          snapInfo.version
+        }" of snap "${snapId}": The version is blocked. ${
+          result.reason?.explanation ?? ''
+        }`,
       );
     } else if (
       this.#featureFlags.requireAllowlist &&
       result.status !== SnapRegistryStatus.Verified
     ) {
       throw new Error(
-        `Cannot install version "${snapInfo.version}" of snap "${snapId}": the snap is not allowlisted.`,
+        `Cannot install version "${snapInfo.version}" of snap "${snapId}": The snap is not on the allow list.`,
       );
     }
   }

@@ -17,7 +17,6 @@ export type SnapRegistryResult = {
   reason?: BlockReason;
 };
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export interface SnapRegistry {
+export type SnapRegistry = {
   get(snaps: SnapRegistryRequest): Promise<Record<SnapId, SnapRegistryResult>>;
-}
+};
