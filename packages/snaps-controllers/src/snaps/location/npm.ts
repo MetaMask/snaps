@@ -186,7 +186,8 @@ export class NpmLocation implements SnapLocation {
         getNodeStream(tarballResponse),
         // The "gz" in "tgz" stands for "gzip". The tarball needs to be decompressed
         // before we can actually grab any files from it.
-        createGunzipStream(),
+        // To prevent recursion-based zip bombs, we set a maximum recursion depth of 3.
+        createGunzipStream(3),
         createTarballStream(
           `${canonicalBase}/${this.meta.packageName}/`,
           this.files,
@@ -292,6 +293,9 @@ function getNodeStream(stream: ReadableStream): Readable {
   return new ReadableWebToNodeStream(stream);
 }
 
+// Safety limit for tarballs, 250 MB in bytes
+const TARBALL_SIZE_SAFETY_LIMIT = 262144000;
+
 /**
  * Creates a `tar-stream` that will get the necessary files from an npm Snap
  * package tarball (`.tgz` file).
@@ -317,6 +321,8 @@ function createTarballStream(
   // instrument it by adding event listeners.
   const extractStream = tarExtract();
 
+  let totalSize = 0;
+
   // "entry" is fired for every discreet entity in the tarball. This includes
   // files and folders.
   extractStream.on('entry', (header, entryStream, next) => {
@@ -326,6 +332,12 @@ function createTarballStream(
       const path = headerName.replace(NPM_TARBALL_PATH_PREFIX, '');
       return entryStream.pipe(
         concat((data) => {
+          totalSize += data.byteLength;
+          // To prevent zip bombs, we set a safety limit for the total size of tarballs.
+          assert(
+            totalSize < TARBALL_SIZE_SAFETY_LIMIT,
+            `Snap tarball exceeds limit of ${TARBALL_SIZE_SAFETY_LIMIT} bytes.`,
+          );
           const vfile = new VirtualFile({
             value: data,
             path,
@@ -333,6 +345,7 @@ function createTarballStream(
               canonicalPath: new URL(path, canonicalBase).toString(),
             },
           });
+          // We disallow files having identical paths as it may confuse our checksum calculations.
           assert(
             !files.has(path),
             'Malformed tarball, multiple files with the same path.',
