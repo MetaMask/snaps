@@ -2839,6 +2839,50 @@ describe('SnapController', () => {
       expect(onSnapAdded).toHaveBeenCalledTimes(1);
     });
 
+    it('can update crashed snap', async () => {
+      const messenger = getSnapControllerMessenger();
+      const controller = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(
+              getPersistedSnapObject({ status: SnapStatus.Crashed }),
+            ),
+          },
+          detectSnapLocation: jest.fn().mockImplementation(
+            () =>
+              new LoopbackLocation({
+                manifest: getSnapManifest({
+                  version: '1.1.0' as SemVerVersion,
+                }),
+              }),
+          ),
+        }),
+      );
+
+      const result = await controller.updateSnap(MOCK_ORIGIN, MOCK_SNAP_ID);
+
+      const newSnapTruncated = controller.getTruncated(MOCK_SNAP_ID);
+
+      const newSnap = controller.get(MOCK_SNAP_ID);
+
+      expect(result).toStrictEqual(newSnapTruncated);
+      expect(newSnap?.version).toBe('1.1.0');
+      expect(newSnap?.versionHistory).toStrictEqual([
+        {
+          origin: MOCK_ORIGIN,
+          version: '1.0.0',
+          date: expect.any(Number),
+        },
+        {
+          origin: MOCK_ORIGIN,
+          version: '1.1.0',
+          date: expect.any(Number),
+        },
+      ]);
+      expect(newSnap?.status).toBe(SnapStatus.Running);
+    });
+
     it('stops and restarts a running snap during an update', async () => {
       const messenger = getSnapControllerMessenger();
       const controller = getSnapController(

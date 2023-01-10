@@ -813,6 +813,7 @@ export class SnapController extends BaseController<
               target: SnapStatus.Running,
               cond: disableGuard,
             },
+            [SnapStatusEvents.Update]: SnapStatus.Updating,
           },
         },
       },
