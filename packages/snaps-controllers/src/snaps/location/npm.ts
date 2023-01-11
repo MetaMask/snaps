@@ -332,26 +332,30 @@ function createTarballStream(
       const path = headerName.replace(NPM_TARBALL_PATH_PREFIX, '');
       return entryStream.pipe(
         concat((data) => {
-          totalSize += data.byteLength;
-          // To prevent zip bombs, we set a safety limit for the total size of tarballs.
-          assert(
-            totalSize < TARBALL_SIZE_SAFETY_LIMIT,
-            `Snap tarball exceeds limit of ${TARBALL_SIZE_SAFETY_LIMIT} bytes.`,
-          );
-          const vfile = new VirtualFile({
-            value: data,
-            path,
-            data: {
-              canonicalPath: new URL(path, canonicalBase).toString(),
-            },
-          });
-          // We disallow files having identical paths as it may confuse our checksum calculations.
-          assert(
-            !files.has(path),
-            'Malformed tarball, multiple files with the same path.',
-          );
-          files.set(path, vfile);
-          return next();
+          try {
+            totalSize += data.byteLength;
+            // To prevent zip bombs, we set a safety limit for the total size of tarballs.
+            assert(
+              totalSize < TARBALL_SIZE_SAFETY_LIMIT,
+              `Snap tarball exceeds limit of ${TARBALL_SIZE_SAFETY_LIMIT} bytes.`,
+            );
+            const vfile = new VirtualFile({
+              value: data,
+              path,
+              data: {
+                canonicalPath: new URL(path, canonicalBase).toString(),
+              },
+            });
+            // We disallow files having identical paths as it may confuse our checksum calculations.
+            assert(
+              !files.has(path),
+              'Malformed tarball, multiple files with the same path.',
+            );
+            files.set(path, vfile);
+            return next();
+          } catch (error) {
+            return extractStream.destroy(error);
+          }
         }),
       );
     }
