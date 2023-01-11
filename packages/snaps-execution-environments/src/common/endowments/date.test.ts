@@ -26,6 +26,9 @@ describe('Date endowment', () => {
 
   describe('constructor', () => {
     it('does not return the original constructor', () => {
+      jest
+        .spyOn(rootRealmGlobal.crypto, 'getRandomValues')
+        .mockImplementation(() => new Uint32Array([42]));
       const { Date } = date.factory();
       const actual = new rootRealmGlobal.Date();
       const newDate = new Date();
@@ -40,6 +43,9 @@ describe('Date endowment', () => {
 
   describe('now', () => {
     it('does not return the original Date.now', () => {
+      jest
+        .spyOn(rootRealmGlobal.crypto, 'getRandomValues')
+        .mockImplementation(() => new Uint32Array([42]));
       const { Date } = date.factory();
       expect(Date.now).not.toStrictEqual(rootRealmGlobal.Date.now);
       expect(Date.now()).not.toBe(rootRealmGlobal.Date.now());
