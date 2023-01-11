@@ -186,8 +186,8 @@ export class NpmLocation implements SnapLocation {
         getNodeStream(tarballResponse),
         // The "gz" in "tgz" stands for "gzip". The tarball needs to be decompressed
         // before we can actually grab any files from it.
-        // To prevent recursion-based zip bombs, we set a maximum recursion depth of 3.
-        createGunzipStream(3),
+        // To prevent recursion-based zip bombs, we set a maximum recursion depth of 1.
+        createGunzipStream(1),
         createTarballStream(
           `${canonicalBase}/${this.meta.packageName}/`,
           this.files,
