@@ -20,9 +20,9 @@ function createDate() {
     const noise =
       rootRealmGlobal.crypto.getRandomValues(new Uint32Array(1))[0] %
       MAXIMUM_NOISE;
-    const newRounded = Math.round(actual + noise);
-    if (newRounded > currentTime) {
-      currentTime = newRounded;
+    const newTime = actual + noise;
+    if (newTime > currentTime) {
+      currentTime = newTime;
     }
     return currentTime;
   };

@@ -17,9 +17,11 @@ describe('Date endowment', () => {
     });
   });
 
-  it('returns Date from rootRealmGlobal', () => {
+  it('has same properties as rootRealmGlobal.Date', () => {
     const { Date } = date.factory();
-    expect(Date.UTC).toStrictEqual(rootRealmGlobal.Date.UTC);
+    expect(Object.getOwnPropertyNames(Date)).toStrictEqual(
+      Object.getOwnPropertyNames(rootRealmGlobal.Date),
+    );
   });
 
   describe('constructor', () => {
@@ -29,12 +31,18 @@ describe('Date endowment', () => {
       const newDate = new Date();
       expect(newDate.getTime()).not.toBe(actual.getTime());
     });
+
+    it('new constructor still supports arguments', () => {
+      const { Date } = date.factory();
+      expect(new Date(0).getTime()).toBe(0);
+    });
   });
 
   describe('now', () => {
     it('does not return the original Date.now', () => {
       const { Date } = date.factory();
       expect(Date.now).not.toStrictEqual(rootRealmGlobal.Date.now);
+      expect(Date.now()).not.toBe(rootRealmGlobal.Date.now());
     });
   });
 });
