@@ -2946,7 +2946,6 @@ __metadata:
     jsdom: ^19.0.0
     json-rpc-engine: ^6.1.0
     mkdirp: ^1.0.4
-    mock-socket: ^9.1.5
     node-polyfill-webpack-plugin: ^1.1.4
     nyc: ^15.1.0
     prettier: ^2.7.1
@@ -12033,13 +12032,6 @@ __metadata:
   bin:
     mkdirp: bin/cmd.js
   checksum: a96865108c6c3b1b8e1d5e9f11843de1e077e57737602de1b82030815f311be11f96f09cce59bd5b903d0b29834733e5313f9301e3ed6d6f6fba2eae0df4298f
-  languageName: node
-  linkType: hard
-
-"mock-socket@npm:^9.1.5":
-  version: 9.1.5
-  resolution: "mock-socket@npm:9.1.5"
-  checksum: a01586bc2850eb5809eda6de0c7ab19255c1e0eb217a805f86ba662bb4aab00b919032d67e7c826c6c12bcfb2fbe19cecbacf0ab6184936487edc4ba37d3ba53
   languageName: node
   linkType: hard
 

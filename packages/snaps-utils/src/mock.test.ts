@@ -15,12 +15,6 @@ describe('generateMockEndowments', () => {
     expect(await endowments.ethereum.request()).toBe(true);
   });
 
-  it('returns mock class WebSocket', () => {
-    const endowments = generateMockEndowments();
-    const ws = new endowments.WebSocket();
-    expect(ws.send()).toBe(true);
-  });
-
   it('returns some endowments unmocked', () => {
     const endowments = generateMockEndowments();
     expect(endowments.Math).toBe(Math);

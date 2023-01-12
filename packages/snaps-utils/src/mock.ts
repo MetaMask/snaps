@@ -3,7 +3,7 @@ import EventEmitter from 'events';
 
 import { DEFAULT_ENDOWMENTS } from './default-endowments';
 
-const NETWORK_APIS = ['fetch', 'WebSocket'];
+const NETWORK_APIS = ['fetch'];
 
 export const ALL_APIS: string[] = [...DEFAULT_ENDOWMENTS, ...NETWORK_APIS];
 
@@ -78,7 +78,6 @@ const generateMockClass = (value: any) => {
 // Things not currently auto-mocked because of NodeJS, by adding them here we
 // have types for them and can use that to generate mocks if needed.
 const mockWindow: Record<string, unknown> = {
-  WebSocket: MockClass,
   crypto,
   SubtleCrypto: MockClass,
 };
