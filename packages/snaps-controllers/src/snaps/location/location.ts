@@ -35,6 +35,10 @@ export type DetectSnapLocationOptions = NpmOptions & {
    * @default false
    */
   allowHttp?: boolean;
+  /**
+   * @default false
+   */
+  allowLocal?: boolean;
 };
 
 /**
@@ -49,11 +53,13 @@ export function detectSnapLocation(
   opts?: DetectSnapLocationOptions,
 ): SnapLocation {
   const allowHttp = opts?.allowHttp ?? false;
+  const allowLocal = opts?.allowLocal ?? false;
   const root = new URL(location);
   switch (root.protocol) {
     case 'npm:':
       return new NpmLocation(root, opts);
     case 'local:':
+      assert(allowLocal, new TypeError('Fetching local snaps is disabled.'));
       return new LocalLocation(root, opts);
     case 'http:':
     case 'https:':

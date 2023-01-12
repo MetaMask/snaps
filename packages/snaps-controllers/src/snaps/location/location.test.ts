@@ -21,6 +21,12 @@ describe('detectSnapLocation', () => {
     );
   });
 
+  it('disallows local snaps by default', () => {
+    expect(() =>
+      detectSnapLocation('local:http://localhost', { fetch: jest.fn() }),
+    ).toThrow('Fetching local snaps is disabled.');
+  });
+
   it.each([
     ['npm:package', NpmLocation],
     ['local:http://localhost', LocalLocation],
@@ -31,6 +37,7 @@ describe('detectSnapLocation', () => {
       detectSnapLocation(url, {
         fetch: jest.fn(),
         allowHttp: true,
+        allowLocal: true,
         allowCustomRegistries: true,
       }),
     ).toBeInstanceOf(classObj);

@@ -477,6 +477,7 @@ type FeatureFlags = {
    */
   dappsCanUpdateSnaps?: true;
   requireAllowlist?: true;
+  allowLocalSnaps?: true;
 };
 
 type SnapControllerArgs = {
@@ -1601,6 +1602,7 @@ export class SnapController extends BaseController<
     const location = this.#detectSnapLocation(snapId, {
       versionRange,
       fetch: this.#fetchFunction,
+      allowLocal: this.#featureFlags.allowLocalSnaps,
     });
 
     const existingSnap = this.getTruncated(snapId);
