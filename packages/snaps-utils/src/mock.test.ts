@@ -9,6 +9,12 @@ describe('generateMockEndowments', () => {
     expect(await endowments.snap.request()).toBe(true);
   });
 
+  it('includes mocked classes', async () => {
+    const endowments = generateMockEndowments();
+    const subtle = new endowments.SubtleCrypto();
+    expect(subtle.encrypt()).toBe(true);
+  });
+
   it('includes mock ethereum provider', async () => {
     const endowments = generateMockEndowments();
     expect(endowments.ethereum).toBeInstanceOf(EventEmitter);
