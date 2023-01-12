@@ -1,7 +1,5 @@
 import { rootRealmGlobal } from '../globalObject';
 
-const MAXIMUM_NOISE = 5;
-
 /**
  * Creates a {@link Date} constructor, with most of the same properties as the global object.
  * The Date.now() function has added noise as to limit its precision and prevent potential timing attacks.
@@ -17,10 +15,7 @@ function createDate() {
   let currentTime = 0;
   const now = () => {
     const actual = rootRealmGlobal.Date.now();
-    const noise =
-      rootRealmGlobal.crypto.getRandomValues(new Uint32Array(1))[0] %
-      MAXIMUM_NOISE;
-    const newTime = actual + noise;
+    const newTime = Math.round(actual + Math.random());
     if (newTime > currentTime) {
       currentTime = newTime;
     }
