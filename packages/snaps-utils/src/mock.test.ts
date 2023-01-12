@@ -9,16 +9,16 @@ describe('generateMockEndowments', () => {
     expect(await endowments.snap.request()).toBe(true);
   });
 
+  it('includes mocked classes', async () => {
+    const endowments = generateMockEndowments();
+    const subtle = new endowments.SubtleCrypto();
+    expect(subtle.encrypt()).toBe(true);
+  });
+
   it('includes mock ethereum provider', async () => {
     const endowments = generateMockEndowments();
     expect(endowments.ethereum).toBeInstanceOf(EventEmitter);
     expect(await endowments.ethereum.request()).toBe(true);
-  });
-
-  it('returns mock class WebSocket', () => {
-    const endowments = generateMockEndowments();
-    const ws = new endowments.WebSocket();
-    expect(ws.send()).toBe(true);
   });
 
   it('returns some endowments unmocked', () => {

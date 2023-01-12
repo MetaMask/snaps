@@ -79,7 +79,6 @@
     "jest-it-up": "^2.0.0",
     "jsdom": "^19.0.0",
     "mkdirp": "^1.0.4",
-    "mock-socket": "^9.1.5",
     "node-polyfill-webpack-plugin": "^1.1.4",
     "nyc": "^15.1.0",
     "prettier": "^2.7.1",

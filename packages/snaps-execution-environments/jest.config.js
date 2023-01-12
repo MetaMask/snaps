@@ -6,10 +6,10 @@ module.exports = deepmerge(baseConfig, {
   coveragePathIgnorePatterns: ['./src/index.ts', '.ava.test.ts'],
   coverageThreshold: {
     global: {
-      branches: 82.02,
-      functions: 91.6,
-      lines: 90.4,
-      statements: 90.47,
+      branches: 82.03,
+      functions: 89.71,
+      lines: 90.12,
+      statements: 90.21,
     },
   },
   projects: [
