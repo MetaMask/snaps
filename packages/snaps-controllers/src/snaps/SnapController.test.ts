@@ -2060,27 +2060,33 @@ describe('SnapController', () => {
     it('displays a warning if endowment:long-runnig is used', async () => {
       const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
 
-      const initialPermissions = {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        'endowment:long-running': {},
-      };
-
-      const manifest = {
-        ...getSnapManifest(),
-        initialPermissions,
-      };
-
-      const messenger = getSnapControllerMessenger();
-      const controller = getSnapController(
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
-          detectSnapLocation: loopbackDetect({ manifest }),
+          maxRequestTime: 50,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
         }),
       );
 
-      await controller.installSnaps(MOCK_ORIGIN, {
-        [MOCK_SNAP_ID]: {},
-      });
+      rootMessenger.registerActionHandler(
+        'PermissionController:hasPermission',
+        () => true,
+      );
+
+      rootMessenger.registerActionHandler(
+        'ExecutionService:executeSnap',
+        async () => await sleep(300),
+      );
+
+      const snap = snapController.getExpect(MOCK_SNAP_ID);
+
+      await snapController.startSnap(snap.id);
+
+      snapController.destroy();
 
       expect(consoleWarnSpy).toHaveBeenCalledWith(
         'endowment:long-running will soon be deprecated. For more informations please see https://github.com/MetaMask/snaps-monorepo/issues/945.',

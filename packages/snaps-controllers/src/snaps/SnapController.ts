@@ -2134,12 +2134,6 @@ export class SnapController extends BaseController<
       const processedPermissions =
         this.#processSnapPermissions(initialPermissions);
 
-      if (hasProperty(processedPermissions, SnapEndowments.LongRunning)) {
-        console.warn(
-          `${SnapEndowments.LongRunning} will soon be deprecated. For more informations please see https://github.com/MetaMask/snaps-monorepo/issues/945.`,
-        );
-      }
-
       const excludedPermissionErrors = Object.keys(processedPermissions).reduce<
         string[]
       >((errors, permission) => {
@@ -2394,6 +2388,9 @@ export class SnapController extends BaseController<
 
     // Long running snaps have timeouts disabled
     if (isLongRunning) {
+      console.warn(
+        `${SnapEndowments.LongRunning} will soon be deprecated. For more informations please see https://github.com/MetaMask/snaps-monorepo/issues/945.`,
+      );
       return promise;
     }
 
