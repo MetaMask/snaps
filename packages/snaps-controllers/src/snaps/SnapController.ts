@@ -1616,8 +1616,8 @@ export class SnapController extends BaseController<
         const updateResult = await this.updateSnap(
           origin,
           snapId,
-          versionRange,
           location,
+          versionRange,
         );
         if (updateResult === null) {
           throw ethErrors.rpc.invalidParams(
@@ -1675,15 +1675,15 @@ export class SnapController extends BaseController<
    *
    * @param origin - The origin requesting the snap update.
    * @param snapId - The id of the Snap to be updated.
-   * @param newVersionRange - A semver version range in which the maximum version will be chosen.
    * @param location - Optional location that was already used during installation flow.
+   * @param newVersionRange - A semver version range in which the maximum version will be chosen.
    * @returns The snap metadata if updated, `null` otherwise.
    */
   async updateSnap(
     origin: string,
     snapId: ValidatedSnapId,
+    location: SnapLocation,
     newVersionRange: string = DEFAULT_REQUESTED_SNAP_VERSION,
-    location?: SnapLocation,
   ): Promise<TruncatedSnap | null> {
     const snap = this.getExpect(snapId);
 
@@ -1692,11 +1692,7 @@ export class SnapController extends BaseController<
         `Received invalid snap version range: "${newVersionRange}".`,
       );
     }
-    const newSnap = await this.#fetchSnap(
-      snapId,
-      location ??
-        this.#detectSnapLocation(snapId, { versionRange: newVersionRange }),
-    );
+    const newSnap = await this.#fetchSnap(snapId, location);
     const newVersion = newSnap.manifest.result.version;
     if (!gtVersion(newVersion, snap.version)) {
       console.warn(
