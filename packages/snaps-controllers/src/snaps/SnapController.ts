@@ -478,7 +478,6 @@ type FeatureFlags = {
   dappsCanUpdateSnaps?: true;
   requireAllowlist?: true;
   allowLocalSnaps?: true;
-  allowLongRunning?: true;
 };
 
 type SnapControllerArgs = {
