@@ -118,6 +118,9 @@ const TRUNCATED_SNAP_PROPERTIES = new Set<TruncatedSnapFields>([
   'blocked',
 ]);
 
+// @TODO: Is this the right place to define this ?
+export const ExcludedSnapPermissions = new Set(['endowment:long-running']);
+
 export type PendingRequest = {
   requestId: unknown;
   timer: Timer;
@@ -478,6 +481,7 @@ type FeatureFlags = {
   dappsCanUpdateSnaps?: true;
   requireAllowlist?: true;
   allowLocalSnaps?: true;
+  allowLongRunning?: true;
 };
 
 type SnapControllerArgs = {
@@ -2124,6 +2128,22 @@ export class SnapController extends BaseController<
     try {
       const processedPermissions =
         this.#processSnapPermissions(initialPermissions);
+
+      const excludedPermissions = Object.keys(processedPermissions).reduce<
+        string[]
+      >((excludedList, permission) => {
+        if (ExcludedSnapPermissions.has(permission)) {
+          return [...excludedList, permission];
+        }
+
+        return excludedList;
+      }, []);
+
+      assert(
+        excludedPermissions.length === 0,
+        `Permission not allowed:\n${excludedPermissions.join('\n')}`,
+      );
+
       const id = nanoid();
       const { permissions: approvedPermissions, ...requestData } =
         (await this.messagingSystem.call(
