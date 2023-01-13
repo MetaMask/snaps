@@ -118,9 +118,6 @@ const TRUNCATED_SNAP_PROPERTIES = new Set<TruncatedSnapFields>([
   'blocked',
 ]);
 
-// @TODO: Is this the right place to define this ?
-export const ExcludedSnapPermissions = new Set(['endowment:long-running']);
-
 export type PendingRequest = {
   requestId: unknown;
   timer: Timer;
@@ -498,6 +495,11 @@ type SnapControllerArgs = {
   environmentEndowmentPermissions: string[];
 
   /**
+   * Excluded permissions with its associated error message used to forbid certain permssions.
+   */
+  excludedPermissions: Record<string, string>;
+
+  /**
    * The function that will be used by the controller fo make network requests.
    * Should be compatible with {@link fetch}.
    */
@@ -620,6 +622,8 @@ export class SnapController extends BaseController<
 
   #environmentEndowmentPermissions: string[];
 
+  #excludedPermissions: Record<string, string>;
+
   #featureFlags: FeatureFlags;
 
   #fetchFunction: typeof fetch;
@@ -653,6 +657,7 @@ export class SnapController extends BaseController<
     messenger,
     state,
     environmentEndowmentPermissions = [],
+    excludedPermissions = {},
     idleTimeCheckInterval = inMilliseconds(5, Duration.Second),
     registry = new JsonSnapsRegistry(),
     maxIdleTime = inMilliseconds(30, Duration.Second),
@@ -718,6 +723,7 @@ export class SnapController extends BaseController<
 
     this.#closeAllConnections = closeAllConnections;
     this.#environmentEndowmentPermissions = environmentEndowmentPermissions;
+    this.#excludedPermissions = excludedPermissions;
     this.#featureFlags = featureFlags;
     this.#fetchFunction = fetchFunction;
     this.#idleTimeCheckInterval = idleTimeCheckInterval;
@@ -2129,19 +2135,19 @@ export class SnapController extends BaseController<
       const processedPermissions =
         this.#processSnapPermissions(initialPermissions);
 
-      const excludedPermissions = Object.keys(processedPermissions).reduce<
+      const excludedPermissionErrors = Object.keys(processedPermissions).reduce<
         string[]
-      >((excludedList, permission) => {
-        if (ExcludedSnapPermissions.has(permission)) {
-          return [...excludedList, permission];
+      >((errors, permission) => {
+        if (Object.keys(this.#excludedPermissions).includes(permission)) {
+          return [...errors, this.#excludedPermissions[permission]];
         }
 
-        return excludedList;
+        return errors;
       }, []);
 
       assert(
-        excludedPermissions.length === 0,
-        `Permission not allowed:\n${excludedPermissions.join('\n')}`,
+        excludedPermissionErrors.length === 0,
+        `Permission not allowed:\n${excludedPermissionErrors.join('\n')}`,
       );
 
       const id = nanoid();

@@ -2045,6 +2045,8 @@ describe('SnapController', () => {
         getSnapControllerOptions({
           messenger,
           detectSnapLocation: loopbackDetect({ manifest }),
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          excludedPermissions: { 'endowment:long-running': 'foobar' },
         }),
       );
 
@@ -2052,7 +2054,7 @@ describe('SnapController', () => {
         controller.installSnaps(MOCK_ORIGIN, {
           [MOCK_SNAP_ID]: {},
         }),
-      ).rejects.toThrow('Permission not allowed:\nendowment:long-running');
+      ).rejects.toThrow('Permission not allowed:\nfoobar');
     });
 
     it('maps permission caveats to the proper format', async () => {
