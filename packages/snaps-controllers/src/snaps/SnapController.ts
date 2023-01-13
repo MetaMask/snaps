@@ -2137,8 +2137,8 @@ export class SnapController extends BaseController<
       const excludedPermissionErrors = Object.keys(processedPermissions).reduce<
         string[]
       >((errors, permission) => {
-        if (Object.keys(this.#excludedPermissions).includes(permission)) {
-          return [...errors, this.#excludedPermissions[permission]];
+        if (hasProperty(this.#excludedPermissions, permission)) {
+          errors.push(this.#excludedPermissions[permission]);
         }
 
         return errors;
@@ -2146,7 +2146,9 @@ export class SnapController extends BaseController<
 
       assert(
         excludedPermissionErrors.length === 0,
-        `Permission not allowed:\n${excludedPermissionErrors.join('\n')}`,
+        `One or more permissions are not allowed:\n${excludedPermissionErrors.join(
+          '\n',
+        )}`,
       );
 
       const id = nanoid();
