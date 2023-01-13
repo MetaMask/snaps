@@ -2057,7 +2057,7 @@ describe('SnapController', () => {
       ).rejects.toThrow('One or more permissions are not allowed:\nfoobar');
     });
 
-    it('displays a warning if endowment:long-runnig is used', async () => {
+    it('displays a warning if endowment:long-running is used', async () => {
       const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
 
       const rootMessenger = getControllerMessenger();
@@ -2089,7 +2089,7 @@ describe('SnapController', () => {
       snapController.destroy();
 
       expect(consoleWarnSpy).toHaveBeenCalledWith(
-        'endowment:long-running will soon be deprecated. For more informations please see https://github.com/MetaMask/snaps-monorepo/issues/945.',
+        'endowment:long-running will soon be deprecated. For more information please see https://github.com/MetaMask/snaps-monorepo/issues/945.',
       );
     });
 
