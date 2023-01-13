@@ -2388,6 +2388,9 @@ export class SnapController extends BaseController<
 
     // Long running snaps have timeouts disabled
     if (isLongRunning) {
+      console.warn(
+        `${SnapEndowments.LongRunning} will soon be deprecated. For more information please see https://github.com/MetaMask/snaps-monorepo/issues/945.`,
+      );
       return promise;
     }
 

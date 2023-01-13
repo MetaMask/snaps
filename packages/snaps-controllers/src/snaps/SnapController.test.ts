@@ -2057,6 +2057,42 @@ describe('SnapController', () => {
       ).rejects.toThrow('One or more permissions are not allowed:\nfoobar');
     });
 
+    it('displays a warning if endowment:long-running is used', async () => {
+      const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          maxRequestTime: 50,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:hasPermission',
+        () => true,
+      );
+
+      rootMessenger.registerActionHandler(
+        'ExecutionService:executeSnap',
+        async () => await sleep(300),
+      );
+
+      const snap = snapController.getExpect(MOCK_SNAP_ID);
+
+      await snapController.startSnap(snap.id);
+
+      snapController.destroy();
+
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        'endowment:long-running will soon be deprecated. For more information please see https://github.com/MetaMask/snaps-monorepo/issues/945.',
+      );
+    });
+
     it('maps permission caveats to the proper format', async () => {
       const initialPermissions = {
         // eslint-disable-next-line @typescript-eslint/naming-convention
