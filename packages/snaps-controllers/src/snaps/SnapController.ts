@@ -494,6 +494,11 @@ type SnapControllerArgs = {
   environmentEndowmentPermissions: string[];
 
   /**
+   * Excluded permissions with its associated error message used to forbid certain permssions.
+   */
+  excludedPermissions: Record<string, string>;
+
+  /**
    * The function that will be used by the controller fo make network requests.
    * Should be compatible with {@link fetch}.
    */
@@ -616,6 +621,8 @@ export class SnapController extends BaseController<
 
   #environmentEndowmentPermissions: string[];
 
+  #excludedPermissions: Record<string, string>;
+
   #featureFlags: FeatureFlags;
 
   #fetchFunction: typeof fetch;
@@ -649,6 +656,7 @@ export class SnapController extends BaseController<
     messenger,
     state,
     environmentEndowmentPermissions = [],
+    excludedPermissions = {},
     idleTimeCheckInterval = inMilliseconds(5, Duration.Second),
     registry = new JsonSnapsRegistry(),
     maxIdleTime = inMilliseconds(30, Duration.Second),
@@ -714,6 +722,7 @@ export class SnapController extends BaseController<
 
     this.#closeAllConnections = closeAllConnections;
     this.#environmentEndowmentPermissions = environmentEndowmentPermissions;
+    this.#excludedPermissions = excludedPermissions;
     this.#featureFlags = featureFlags;
     this.#fetchFunction = fetchFunction;
     this.#idleTimeCheckInterval = idleTimeCheckInterval;
@@ -2124,6 +2133,24 @@ export class SnapController extends BaseController<
     try {
       const processedPermissions =
         this.#processSnapPermissions(initialPermissions);
+
+      const excludedPermissionErrors = Object.keys(processedPermissions).reduce<
+        string[]
+      >((errors, permission) => {
+        if (hasProperty(this.#excludedPermissions, permission)) {
+          errors.push(this.#excludedPermissions[permission]);
+        }
+
+        return errors;
+      }, []);
+
+      assert(
+        excludedPermissionErrors.length === 0,
+        `One or more permissions are not allowed:\n${excludedPermissionErrors.join(
+          '\n',
+        )}`,
+      );
+
       const id = nanoid();
       const { permissions: approvedPermissions, ...requestData } =
         (await this.messagingSystem.call(

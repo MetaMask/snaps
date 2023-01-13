@@ -2029,6 +2029,34 @@ describe('SnapController', () => {
       );
     });
 
+    it('throws an error if a forbidden permission is requested', async () => {
+      const initialPermissions = {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        'endowment:long-running': {},
+      };
+
+      const manifest = {
+        ...getSnapManifest(),
+        initialPermissions,
+      };
+
+      const messenger = getSnapControllerMessenger();
+      const controller = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          detectSnapLocation: loopbackDetect({ manifest }),
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          excludedPermissions: { 'endowment:long-running': 'foobar' },
+        }),
+      );
+
+      await expect(
+        controller.installSnaps(MOCK_ORIGIN, {
+          [MOCK_SNAP_ID]: {},
+        }),
+      ).rejects.toThrow('One or more permissions are not allowed:\nfoobar');
+    });
+
     it('maps permission caveats to the proper format', async () => {
       const initialPermissions = {
         // eslint-disable-next-line @typescript-eslint/naming-convention
