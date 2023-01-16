@@ -7,9 +7,10 @@ import {
   RequestNamespace,
   SessionNamespace,
 } from '../namespace';
-import { NpmSnapPackageJson } from '../types';
+import { getSnapChecksum } from '../snaps';
+import { NpmSnapPackageJson, SnapFiles } from '../types';
+import { VirtualFile } from '../virtual-file';
 import { MakeSemVer } from './common';
-import { DEFAULT_SNAP_SHASUM } from './snap';
 
 type GetSnapManifestOptions = Partial<MakeSemVer<SnapManifest>> & {
   shasum?: string;
@@ -24,6 +25,13 @@ type GetPackageJsonOptions = Partial<MakeSemVer<NpmSnapPackageJson>>;
 export const DEFAULT_SOURCE_PATH = 'dist/bundle.js';
 export const DEFAULT_ICON_PATH = 'images/icon.svg';
 export const DEFAULT_MANIFEST_PATH = 'snap.manifest.json';
+export const DEFAULT_PACKAGE_JSON_PATH = 'package.json';
+
+export const MOCK_SNAP_NAME = '@metamask/example-snap';
+export const MOCK_SNAP_DESCRIPTION = 'The test example snap!';
+export const MOCK_SNAP_VERSION = '1.0.0' as SemVerVersion;
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export const MOCK_INITIAL_PERMISSIONS = { snap_confirm: {} };
 
 /**
  * Get the default package repository, in a format compatible with
@@ -37,6 +45,57 @@ export const getDefaultRepository = () => {
     url: 'https://github.com/MetaMask/example-snap.git',
   };
 };
+
+/**
+ * A mock snap source and its shasum.
+ */
+export const DEFAULT_SNAP_BUNDLE = `
+  module.exports.onRpcRequest = ({ request }) => {
+    console.log("Hello, world!");
+
+    const { method, id } = request;
+    return method + id;
+  };
+`;
+
+export const DEFAULT_SNAP_ICON = '<svg />';
+
+// Defined separately to prevent circular dependencies, should match getSnapManifest()
+const SHASUM_MANIFEST = {
+  version: MOCK_SNAP_VERSION,
+  description: MOCK_SNAP_DESCRIPTION,
+  proposedName: MOCK_SNAP_NAME,
+  repository: getDefaultRepository(),
+  source: {
+    shasum: '',
+    location: {
+      npm: {
+        filePath: DEFAULT_SOURCE_PATH,
+        packageName: MOCK_SNAP_NAME,
+        registry: 'https://registry.npmjs.org',
+        iconPath: DEFAULT_ICON_PATH,
+      } as const,
+    },
+  },
+  initialPermissions: MOCK_INITIAL_PERMISSIONS,
+  manifestVersion: '0.1' as const,
+};
+
+export const DEFAULT_SNAP_SHASUM = getSnapChecksum({
+  sourceCode: new VirtualFile({
+    value: DEFAULT_SNAP_BUNDLE,
+    path: DEFAULT_SOURCE_PATH,
+  }),
+  svgIcon: new VirtualFile({
+    value: DEFAULT_SNAP_ICON,
+    path: DEFAULT_ICON_PATH,
+  }),
+  manifest: new VirtualFile({
+    value: JSON.stringify(SHASUM_MANIFEST),
+    result: SHASUM_MANIFEST,
+    path: DEFAULT_MANIFEST_PATH,
+  }),
+});
 
 /**
  * Get a mock snap manifest, based on the provided options. This is useful for
@@ -56,14 +115,13 @@ export const getDefaultRepository = () => {
  * @returns The snap manifest.
  */
 export const getSnapManifest = ({
-  version = '1.0.0' as SemVerVersion,
-  description = 'The test example snap!',
-  proposedName = '@metamask/example-snap',
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  initialPermissions = { snap_confirm: {} },
+  version = MOCK_SNAP_VERSION,
+  description = MOCK_SNAP_DESCRIPTION,
+  proposedName = MOCK_SNAP_NAME,
+  initialPermissions = MOCK_INITIAL_PERMISSIONS,
   shasum = DEFAULT_SNAP_SHASUM,
   filePath = DEFAULT_SOURCE_PATH,
-  packageName = '@metamask/example-snap',
+  packageName = MOCK_SNAP_NAME,
   repository = getDefaultRepository(),
   iconPath = DEFAULT_ICON_PATH,
 }: GetSnapManifestOptions = {}): SnapManifest => {
@@ -114,6 +172,41 @@ export const getPackageJson = ({
     description,
     main,
     repository,
+  };
+};
+
+export const getSnapFiles = ({
+  manifest = SHASUM_MANIFEST,
+  packageJson = getPackageJson(),
+  sourceCode = DEFAULT_SNAP_BUNDLE,
+  svgIcon = DEFAULT_SNAP_ICON,
+}: {
+  manifest?: SnapManifest;
+  sourceCode?: string;
+  packageJson?: NpmSnapPackageJson;
+  svgIcon?: string;
+}): SnapFiles => {
+  return {
+    manifest: new VirtualFile({
+      value: JSON.stringify(manifest),
+      result: manifest,
+      path: DEFAULT_MANIFEST_PATH,
+    }),
+    packageJson: new VirtualFile({
+      value: JSON.stringify(packageJson),
+      result: packageJson,
+      path: DEFAULT_PACKAGE_JSON_PATH,
+    }),
+    sourceCode: new VirtualFile({
+      value: sourceCode,
+      path: DEFAULT_SOURCE_PATH,
+    }),
+    svgIcon: svgIcon
+      ? new VirtualFile({
+          value: svgIcon,
+          path: DEFAULT_ICON_PATH,
+        })
+      : undefined,
   };
 };
 

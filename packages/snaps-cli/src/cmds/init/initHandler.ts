@@ -86,12 +86,14 @@ export async function initHandler(argv: YargsArgs) {
 
   const snapLocation = pathUtils.join(directoryToUse, SNAP_LOCATION);
 
-  const manifest: SnapManifest = await readJsonFile(
-    pathUtils.join(snapLocation, NpmSnapFileNames.Manifest),
-  );
-  const packageJson: NpmSnapPackageJson = await readJsonFile(
-    pathUtils.join(snapLocation, NpmSnapFileNames.PackageJson),
-  );
+  const manifest = (
+    await readJsonFile(pathUtils.join(snapLocation, NpmSnapFileNames.Manifest))
+  ).result as SnapManifest;
+  const packageJson = (
+    await readJsonFile(
+      pathUtils.join(snapLocation, NpmSnapFileNames.PackageJson),
+    )
+  ).result as NpmSnapPackageJson;
 
   const distPath = manifest.source.location.npm.filePath.split('/');
 

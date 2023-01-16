@@ -95,14 +95,20 @@ describe('readJsonFile', () => {
   });
 
   it('reads and parses a json file', async () => {
-    expect(await readJsonFile<SnapManifest>(MANIFEST_PATH)).toStrictEqual(
-      getSnapManifest(),
-    );
+    const file = await readJsonFile<SnapManifest>(MANIFEST_PATH);
+    expect(file.path).toBe(MANIFEST_PATH);
+    expect(file.result).toStrictEqual(getSnapManifest());
   });
 
   it('throws if the file name does not end with .json', async () => {
     await expect(readJsonFile('foo')).rejects.toThrow(
       'The specified file must be a ".json" file.',
+    );
+  });
+
+  it('throws if the file doesnt exist', async () => {
+    await expect(readJsonFile('foo.json')).rejects.toThrow(
+      "Could not find 'foo.json'. Please ensure that the file exists.",
     );
   });
 

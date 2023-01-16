@@ -6,7 +6,7 @@ import {
 } from '@metamask/permission-controller';
 import {
   DEFAULT_ENDOWMENTS,
-  getSnapSourceShasum,
+  getSnapChecksum,
   HandlerType,
   SnapCaveatType,
   SnapPermissions,
@@ -21,6 +21,7 @@ import {
   DEFAULT_SNAP_ICON,
   getMockSnapData,
   getPersistedSnapObject,
+  getSnapFiles,
   getSnapManifest,
   getSnapObject,
   getTruncatedSnap,
@@ -953,7 +954,7 @@ describe('SnapController', () => {
           getPersistedSnapObject({
             sourceCode,
             manifest: getSnapManifest({
-              shasum: getSnapSourceShasum(sourceCode),
+              shasum: getSnapChecksum(getSnapFiles({ sourceCode })),
             }),
           }),
         ),
@@ -1028,7 +1029,7 @@ describe('SnapController', () => {
           getPersistedSnapObject({
             sourceCode,
             manifest: getSnapManifest({
-              shasum: getSnapSourceShasum(sourceCode),
+              shasum: getSnapChecksum(getSnapFiles({ sourceCode })),
             }),
           }),
         ),
@@ -1199,7 +1200,7 @@ describe('SnapController', () => {
           getPersistedSnapObject({
             sourceCode,
             manifest: getSnapManifest({
-              shasum: getSnapSourceShasum(sourceCode),
+              shasum: getSnapChecksum(getSnapFiles({ sourceCode })),
             }),
           }),
         ),
@@ -2566,7 +2567,7 @@ describe('SnapController', () => {
             new LoopbackLocation({
               manifest: getSnapManifest({
                 version: newVersion,
-                shasum: getSnapSourceShasum('foo'),
+                shasum: getSnapChecksum(getSnapFiles({ sourceCode: 'foo' })),
               }),
               files: [
                 new VirtualFile({

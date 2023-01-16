@@ -242,7 +242,7 @@ export async function getSnapSourceCode(
   basePath: string,
   manifest: Json,
   sourceCode?: string,
-): Promise<VirtualFile<string> | undefined> {
+): Promise<VirtualFile | undefined> {
   if (manifest && typeof manifest === 'object' && !Array.isArray(manifest)) {
     const sourceFilePath = (manifest as Partial<SnapManifest>).source?.location
       ?.npm?.filePath;
@@ -255,7 +255,6 @@ export async function getSnapSourceCode(
       return new VirtualFile({
         path: pathUtils.join(basePath, sourceFilePath),
         value: sourceCode,
-        result: sourceCode,
       });
     }
 
@@ -264,8 +263,7 @@ export async function getSnapSourceCode(
         pathUtils.join(basePath, sourceFilePath),
         'utf8',
       );
-      virtualFile.result = virtualFile.value;
-      return virtualFile as VirtualFile<string>;
+      return virtualFile;
     } catch (error) {
       throw new Error(`Failed to read Snap bundle file: ${error.message}`);
     }
@@ -284,7 +282,7 @@ export async function getSnapSourceCode(
 export async function getSnapIcon(
   basePath: string,
   manifest: Json,
-): Promise<VirtualFile<string> | undefined> {
+): Promise<VirtualFile | undefined> {
   if (manifest && typeof manifest === 'object' && !Array.isArray(manifest)) {
     const iconPath = (manifest as Partial<SnapManifest>).source?.location?.npm
       ?.iconPath;
@@ -298,8 +296,7 @@ export async function getSnapIcon(
         pathUtils.join(basePath, iconPath),
         'utf8',
       );
-      virtualFile.result = virtualFile.value;
-      return virtualFile as VirtualFile<string>;
+      return virtualFile;
     } catch (error) {
       throw new Error(`Failed to read Snap icon file: ${error.message}`);
     }

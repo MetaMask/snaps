@@ -84,8 +84,8 @@ export function assertIsNpmSnapPackageJson(
 export type UnvalidatedSnapFiles = {
   manifest?: VirtualFile<Json>;
   packageJson?: VirtualFile<Json>;
-  sourceCode?: VirtualFile<string>;
-  svgIcon?: VirtualFile<string>;
+  sourceCode?: VirtualFile;
+  svgIcon?: VirtualFile;
 };
 
 /**
@@ -95,8 +95,8 @@ export type UnvalidatedSnapFiles = {
 export type SnapFiles = {
   manifest: VirtualFile<SnapManifest>;
   packageJson: VirtualFile<NpmSnapPackageJson>;
-  sourceCode: VirtualFile<string>;
-  svgIcon?: VirtualFile<string>;
+  sourceCode: VirtualFile;
+  svgIcon?: VirtualFile;
 };
 
 /**
