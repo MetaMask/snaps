@@ -17,6 +17,7 @@ import {
 
 import { SnapFunctionExports, SnapKeyring as Keyring } from './handlers';
 import { SnapManifest } from './manifest';
+import { VirtualFile } from './virtual-file';
 
 export enum NpmSnapFileNames {
   PackageJson = 'package.json',
@@ -81,10 +82,10 @@ export function assertIsNpmSnapPackageJson(
  * An object for storing parsed but unvalidated Snap file contents.
  */
 export type UnvalidatedSnapFiles = {
-  manifest?: Json;
-  packageJson?: Json;
-  sourceCode?: string;
-  svgIcon?: string;
+  manifest?: VirtualFile<Json>;
+  packageJson?: VirtualFile<Json>;
+  sourceCode?: VirtualFile<string>;
+  svgIcon?: VirtualFile<string>;
 };
 
 /**
@@ -92,10 +93,10 @@ export type UnvalidatedSnapFiles = {
  * Schema validation, or are non-empty if they are strings.
  */
 export type SnapFiles = {
-  manifest: SnapManifest;
-  packageJson: NpmSnapPackageJson;
-  sourceCode: string;
-  svgIcon?: string;
+  manifest: VirtualFile<SnapManifest>;
+  packageJson: VirtualFile<NpmSnapPackageJson>;
+  sourceCode: VirtualFile<string>;
+  svgIcon?: VirtualFile<string>;
 };
 
 /**

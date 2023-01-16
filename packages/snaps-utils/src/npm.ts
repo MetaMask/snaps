@@ -74,7 +74,7 @@ export function validateNpmSnap(
   });
 
   if (svgIcon) {
-    if (Buffer.byteLength(svgIcon, 'utf8') > SVG_MAX_BYTE_SIZE) {
+    if (Buffer.byteLength(svgIcon.result, 'utf8') > SVG_MAX_BYTE_SIZE) {
       throw new Error(
         `${
           errorPrefix ?? ''

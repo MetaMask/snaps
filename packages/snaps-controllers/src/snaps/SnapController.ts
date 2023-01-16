@@ -2062,13 +2062,15 @@ export class SnapController extends BaseController<
       const sourceCode = await location.fetch(
         manifest.result.source.location.npm.filePath,
       );
-      validateSnapShasum(manifest.result, sourceCode.toString());
       const { iconPath } = manifest.result.source.location.npm;
+      const svgIcon = iconPath ? await location.fetch(iconPath) : undefined;
 
       const files = [sourceCode];
-      if (iconPath) {
-        files.push(await location.fetch(iconPath));
+      if (svgIcon) {
+        files.push(svgIcon);
       }
+
+      validateSnapShasum({ manifest, sourceCode, svgIcon });
 
       return { manifest, files, location };
     } catch (error) {

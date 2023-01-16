@@ -21,6 +21,10 @@ type GetSnapManifestOptions = Partial<MakeSemVer<SnapManifest>> & {
 
 type GetPackageJsonOptions = Partial<MakeSemVer<NpmSnapPackageJson>>;
 
+export const DEFAULT_SOURCE_PATH = 'dist/bundle.js';
+export const DEFAULT_ICON_PATH = 'images/icon.svg';
+export const DEFAULT_MANIFEST_PATH = 'snap.manifest.json';
+
 /**
  * Get the default package repository, in a format compatible with
  * `package.json`.
@@ -58,10 +62,10 @@ export const getSnapManifest = ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   initialPermissions = { snap_confirm: {} },
   shasum = DEFAULT_SNAP_SHASUM,
-  filePath = 'dist/bundle.js',
+  filePath = DEFAULT_SOURCE_PATH,
   packageName = '@metamask/example-snap',
   repository = getDefaultRepository(),
-  iconPath = 'images/icon.svg',
+  iconPath = DEFAULT_ICON_PATH,
 }: GetSnapManifestOptions = {}): SnapManifest => {
   return {
     version: version as SemVerVersion,
