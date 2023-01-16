@@ -76,14 +76,6 @@ export async function checkManifest(
   const manifestFile = await readJsonFile(manifestPath);
   const unvalidatedManifest = manifestFile.result;
 
-  const iconPath =
-    unvalidatedManifest && typeof unvalidatedManifest === 'object'
-      ? /* istanbul ignore next */
-        (unvalidatedManifest as Partial<SnapManifest>).source?.location?.npm
-          ?.iconPath
-      : /* istanbul ignore next */
-        undefined;
-
   const packageFile = await readJsonFile(
     pathUtils.join(basePath, NpmSnapFileNames.PackageJson),
   );
@@ -91,11 +83,12 @@ export async function checkManifest(
   const snapFiles: UnvalidatedSnapFiles = {
     manifest: manifestFile,
     packageJson: packageFile,
-    sourceCode:
-      sourceCode ?? (await getSnapSourceCode(basePath, unvalidatedManifest)),
-    svgIcon: iconPath
-      ? await readVirtualFile(pathUtils.join(basePath, iconPath), 'utf8')
-      : undefined,
+    sourceCode: await getSnapSourceCode(
+      basePath,
+      unvalidatedManifest,
+      sourceCode,
+    ),
+    svgIcon: await getSnapIcon(basePath, unvalidatedManifest),
   };
 
   let manifest: VirtualFile<SnapManifest> | undefined;
@@ -242,20 +235,31 @@ export function fixManifest(
  *
  * @param basePath - The path to the folder with the manifest files.
  * @param manifest - The unvalidated Snap manifest file contents.
+ * @param sourceCode - Override source code for plugins.
  * @returns The contents of the bundle file, if any.
  */
 export async function getSnapSourceCode(
   basePath: string,
   manifest: Json,
+  sourceCode?: string,
 ): Promise<VirtualFile<string> | undefined> {
   if (manifest && typeof manifest === 'object' && !Array.isArray(manifest)) {
     const sourceFilePath = (manifest as Partial<SnapManifest>).source?.location
       ?.npm?.filePath;
 
+    if (!sourceFilePath) {
+      return undefined;
+    }
+
+    if (sourceCode) {
+      return new VirtualFile({
+        path: pathUtils.join(basePath, sourceFilePath),
+        value: sourceCode,
+        result: sourceCode,
+      });
+    }
+
     try {
-      if (!sourceFilePath) {
-        return undefined;
-      }
       const virtualFile = await readVirtualFile(
         pathUtils.join(basePath, sourceFilePath),
         'utf8',
@@ -266,7 +270,40 @@ export async function getSnapSourceCode(
       throw new Error(`Failed to read Snap bundle file: ${error.message}`);
     }
   }
+  return undefined;
+}
 
+/**
+ * Given an unvalidated Snap manifest, attempts to extract the location of the
+ * icon and read the file.
+ *
+ * @param basePath - The path to the folder with the manifest files.
+ * @param manifest - The unvalidated Snap manifest file contents.
+ * @returns The contents of the icon, if any.
+ */
+export async function getSnapIcon(
+  basePath: string,
+  manifest: Json,
+): Promise<VirtualFile<string> | undefined> {
+  if (manifest && typeof manifest === 'object' && !Array.isArray(manifest)) {
+    const iconPath = (manifest as Partial<SnapManifest>).source?.location?.npm
+      ?.iconPath;
+
+    if (!iconPath) {
+      return undefined;
+    }
+
+    try {
+      const virtualFile = await readVirtualFile(
+        pathUtils.join(basePath, iconPath),
+        'utf8',
+      );
+      virtualFile.result = virtualFile.value;
+      return virtualFile as VirtualFile<string>;
+    } catch (error) {
+      throw new Error(`Failed to read Snap icon file: ${error.message}`);
+    }
+  }
   return undefined;
 }
 
