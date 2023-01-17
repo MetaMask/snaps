@@ -168,6 +168,7 @@ describe('fixManifest', () => {
       manifest: getSnapManifest({ packageName: 'foo' }),
       packageJson: getPackageJson({ name: 'bar' }),
       sourceCode: DEFAULT_SNAP_BUNDLE,
+      updateChecksum: false,
     });
 
     const manifest = fixManifest(
@@ -188,6 +189,7 @@ describe('fixManifest', () => {
       manifest: getSnapManifest({ version: '1' }),
       packageJson: getPackageJson({ version: '2' }),
       sourceCode: DEFAULT_SNAP_BUNDLE,
+      updateChecksum: false,
     });
 
     const manifest = fixManifest(
@@ -206,6 +208,7 @@ describe('fixManifest', () => {
       manifest: getSnapManifest({ repository: { type: 'git', url: 'foo' } }),
       packageJson: getPackageJson({ repository: { type: 'git', url: 'bar' } }),
       sourceCode: DEFAULT_SNAP_BUNDLE,
+      updateChecksum: false,
     });
 
     const manifest = fixManifest(
@@ -229,6 +232,7 @@ describe('fixManifest', () => {
       packageJson: getPackageJson(),
       sourceCode: DEFAULT_SNAP_BUNDLE,
       svgIcon: DEFAULT_SNAP_ICON,
+      updateChecksum: false,
     });
 
     const manifest = fixManifest(

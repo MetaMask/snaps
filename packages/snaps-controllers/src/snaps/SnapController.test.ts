@@ -12,8 +12,6 @@ import {
   SnapPermissions,
   SnapStatus,
   VirtualFile,
-  SnapManifest,
-  NpmSnapFileNames,
   DEFAULT_REQUESTED_SNAP_VERSION,
 } from '@metamask/snaps-utils';
 import {
@@ -633,13 +631,18 @@ describe('SnapController', () => {
         requiredMethods: [],
       },
     };
+
+    const { manifest } = getSnapFiles({
+      manifest: getSnapManifest({
+        initialPermissions,
+      }),
+    });
+
     const snapController = getSnapController(
       getSnapControllerOptions({
         messenger,
         detectSnapLocation: loopbackDetect({
-          manifest: getSnapManifest({
-            initialPermissions,
-          }),
+          manifest: manifest.result,
         }),
       }),
     );
@@ -1798,8 +1801,12 @@ describe('SnapController', () => {
       const version = '0.0.1';
       const newVersion = '0.0.2';
 
-      const manifest = getSnapManifest({ version });
-      const newManifest = getSnapManifest({ version: newVersion });
+      const { manifest } = getSnapFiles({
+        manifest: getSnapManifest({ version }),
+      });
+      const { manifest: newManifest } = getSnapFiles({
+        manifest: getSnapManifest({ version: newVersion }),
+      });
       const truncatedSnap = getTruncatedSnap({
         version: newVersion,
         id: MOCK_LOCAL_SNAP_ID,
@@ -1807,12 +1814,8 @@ describe('SnapController', () => {
 
       const location = new LoopbackLocation({ shouldAlwaysReload: true });
       location.manifest
-        .mockImplementationOnce(async () =>
-          Promise.resolve(new VirtualFile({ value: '', result: manifest })),
-        )
-        .mockImplementationOnce(async () =>
-          Promise.resolve(new VirtualFile({ value: '', result: newManifest })),
-        );
+        .mockImplementationOnce(async () => Promise.resolve(manifest))
+        .mockImplementationOnce(async () => Promise.resolve(newManifest));
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -1853,7 +1856,7 @@ describe('SnapController', () => {
               dappOrigin: MOCK_ORIGIN,
               id: expect.any(String),
             },
-            permissions: manifest.initialPermissions,
+            permissions: manifest.result.initialPermissions,
             snapId: MOCK_LOCAL_SNAP_ID,
           },
         }),
@@ -1864,7 +1867,7 @@ describe('SnapController', () => {
         3,
         'PermissionController:grantPermissions',
         {
-          approvedPermissions: manifest.initialPermissions,
+          approvedPermissions: manifest.result.initialPermissions,
           subject: { origin: MOCK_LOCAL_SNAP_ID },
           requestData: {
             metadata: {
@@ -1913,7 +1916,7 @@ describe('SnapController', () => {
               dappOrigin: MOCK_ORIGIN,
               id: expect.any(String),
             },
-            permissions: newManifest.initialPermissions,
+            permissions: newManifest.result.initialPermissions,
             snapId: MOCK_LOCAL_SNAP_ID,
           },
         }),
@@ -1924,7 +1927,7 @@ describe('SnapController', () => {
         9,
         'PermissionController:grantPermissions',
         {
-          approvedPermissions: newManifest.initialPermissions,
+          approvedPermissions: newManifest.result.initialPermissions,
           subject: { origin: MOCK_LOCAL_SNAP_ID },
           requestData: {
             metadata: {
@@ -2036,16 +2039,19 @@ describe('SnapController', () => {
         'endowment:long-running': {},
       };
 
-      const manifest = {
-        ...getSnapManifest(),
-        initialPermissions,
-      };
+      const { manifest } = getSnapFiles({
+        manifest: getSnapManifest({
+          initialPermissions,
+        }),
+      });
 
       const messenger = getSnapControllerMessenger();
       const controller = getSnapController(
         getSnapControllerOptions({
           messenger,
-          detectSnapLocation: loopbackDetect({ manifest }),
+          detectSnapLocation: loopbackDetect({
+            manifest: manifest.result,
+          }),
           // eslint-disable-next-line @typescript-eslint/naming-convention
           excludedPermissions: { 'endowment:long-running': 'foobar' },
         }),
@@ -2102,16 +2108,19 @@ describe('SnapController', () => {
         ],
       };
 
-      const manifest = {
-        ...getSnapManifest(),
-        initialPermissions,
-      };
+      const { manifest } = getSnapFiles({
+        manifest: getSnapManifest({
+          initialPermissions,
+        }),
+      });
 
       const messenger = getSnapControllerMessenger();
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
-          detectSnapLocation: loopbackDetect({ manifest }),
+          detectSnapLocation: loopbackDetect({
+            manifest: manifest.result,
+          }),
         }),
       );
 
@@ -2257,13 +2266,16 @@ describe('SnapController', () => {
           { path: ['m', "44'", "60'"], curve: 'secp256k1' as const },
         ],
       };
+      const { manifest } = getSnapFiles({
+        manifest: getSnapManifest({
+          version: '1.1.0' as SemVerVersion,
+          initialPermissions,
+        }),
+      });
 
-      const manifest = {
-        ...getSnapManifest({ version: '1.1.0' }),
-        initialPermissions,
-      };
-
-      const detectSnapLocation = loopbackDetect({ manifest });
+      const detectSnapLocation = loopbackDetect({
+        manifest: manifest.result,
+      });
 
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
@@ -2349,6 +2361,13 @@ describe('SnapController', () => {
 
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
+
+      const { manifest } = getSnapFiles({
+        manifest: getSnapManifest({
+          version: newVersion,
+        }),
+      });
+
       const detectLocationMock = jest
         .fn()
         .mockImplementationOnce(
@@ -2357,7 +2376,7 @@ describe('SnapController', () => {
         .mockImplementationOnce(
           () =>
             new LoopbackLocation({
-              manifest: getSnapManifest({ version: newVersion }),
+              manifest: manifest.result,
             }),
         );
 
@@ -2469,8 +2488,13 @@ describe('SnapController', () => {
       const newVersion = '0.9.0';
       const newVersionRange = '^0.9.0';
 
+      const { manifest } = getSnapFiles({
+        manifest: getSnapManifest({
+          version: newVersion,
+        }),
+      });
       const detect = loopbackDetect({
-        manifest: getSnapManifest({ version: newVersion }),
+        manifest: manifest.result,
       });
       const messenger = getSnapControllerMessenger();
       const controller = getSnapController(
@@ -2559,16 +2583,22 @@ describe('SnapController', () => {
         .mockImplementationOnce(
           () =>
             new LoopbackLocation({
-              manifest: getSnapManifest({ version: newVersion }),
+              manifest: getSnapFiles({
+                manifest: getSnapManifest({
+                  version: newVersion,
+                }),
+              }).manifest.result,
             }),
         )
         .mockImplementationOnce(
           () =>
             new LoopbackLocation({
-              manifest: getSnapManifest({
-                version: newVersion,
-                shasum: getSnapChecksum(getSnapFiles({ sourceCode: 'foo' })),
-              }),
+              manifest: getSnapFiles({
+                manifest: getSnapManifest({
+                  version: newVersion,
+                }),
+                sourceCode: 'foo',
+              }).manifest.result,
               files: [
                 new VirtualFile({
                   value: 'foo',
@@ -2620,6 +2650,11 @@ describe('SnapController', () => {
       const newVersion = '1.0.1';
       const olderVersion = '0.9.0';
 
+      const { manifest } = getSnapFiles({
+        manifest: getSnapManifest({
+          version: olderVersion,
+        }),
+      });
       const detect = jest
         .fn()
         .mockImplementationOnce(() => new LoopbackLocation())
@@ -2628,7 +2663,7 @@ describe('SnapController', () => {
         .mockImplementationOnce(
           () =>
             new LoopbackLocation({
-              manifest: getSnapManifest({ version: olderVersion }),
+              manifest: manifest.result,
             }),
         );
 
@@ -2671,25 +2706,25 @@ describe('SnapController', () => {
     });
 
     it('handles unnormalized paths correctly', async () => {
-      const manifest = getSnapManifest({
-        filePath: './bundle.js',
-        iconPath: 'icon.svg',
+      const { manifest, sourceCode, svgIcon } = getSnapFiles({
+        manifest: getSnapManifest({
+          filePath: './bundle.js',
+          iconPath: 'icon.svg',
+        }),
+        sourceCode: new VirtualFile({
+          value: DEFAULT_SNAP_BUNDLE,
+          path: 'bundle.js',
+        }),
+        svgIcon: new VirtualFile({
+          value: DEFAULT_SNAP_ICON,
+          path: 'icon.svg',
+        }),
       });
       const controller = getSnapController(
         getSnapControllerOptions({
           detectSnapLocation: loopbackDetect({
-            manifest: new VirtualFile<SnapManifest>({
-              result: manifest,
-              value: JSON.stringify(manifest),
-              path: NpmSnapFileNames.Manifest,
-            }),
-            files: [
-              new VirtualFile({
-                value: DEFAULT_SNAP_BUNDLE,
-                path: 'bundle.js',
-              }),
-              new VirtualFile({ value: DEFAULT_SNAP_ICON, path: 'icon.svg' }),
-            ],
+            manifest,
+            files: [sourceCode, svgIcon as VirtualFile],
           }),
         }),
       );
@@ -2736,8 +2771,13 @@ describe('SnapController', () => {
     });
 
     it('throws an error if the new version of the snap is blocked', async () => {
+      const { manifest } = getSnapFiles({
+        manifest: getSnapManifest({
+          version: '1.1.0' as SemVerVersion,
+        }),
+      });
       const detectSnapLocation = loopbackDetect({
-        manifest: getSnapManifest({ version: '1.1.0' as SemVerVersion }),
+        manifest: manifest.result,
       });
       const registry = new MockSnapsRegistry();
       const controller = getSnapController(
@@ -2760,8 +2800,13 @@ describe('SnapController', () => {
     });
 
     it('does not update on older snap version downloaded', async () => {
+      const { manifest } = getSnapFiles({
+        manifest: getSnapManifest({
+          version: '0.9.0' as SemVerVersion,
+        }),
+      });
       const detectSnapLocation = loopbackDetect({
-        manifest: getSnapManifest({ version: '0.9.0' as SemVerVersion }),
+        manifest: manifest.result,
       });
       const messenger = getSnapControllerMessenger();
       const controller = getSnapController(
@@ -2796,15 +2841,18 @@ describe('SnapController', () => {
     });
 
     it('updates a snap', async () => {
+      const { manifest } = getSnapFiles({
+        manifest: getSnapManifest({
+          version: '1.1.0' as SemVerVersion,
+        }),
+      });
       const detectSnapLocation = jest
         .fn()
         .mockImplementationOnce(() => new LoopbackLocation())
         .mockImplementationOnce(
           () =>
             new LoopbackLocation({
-              manifest: getSnapManifest({
-                version: '1.1.0' as SemVerVersion,
-              }),
+              manifest: manifest.result,
             }),
         );
       const messenger = getSnapControllerMessenger();
@@ -2929,12 +2977,15 @@ describe('SnapController', () => {
     });
 
     it('can update crashed snap', async () => {
+      const { manifest } = getSnapFiles({
+        manifest: getSnapManifest({
+          version: '1.1.0' as SemVerVersion,
+        }),
+      });
       const detectSnapLocation = jest.fn().mockImplementation(
         () =>
           new LoopbackLocation({
-            manifest: getSnapManifest({
-              version: '1.1.0' as SemVerVersion,
-            }),
+            manifest: manifest.result,
           }),
       );
       const messenger = getSnapControllerMessenger();
@@ -2978,8 +3029,13 @@ describe('SnapController', () => {
     });
 
     it('stops and restarts a running snap during an update', async () => {
+      const { manifest } = getSnapFiles({
+        manifest: getSnapManifest({
+          version: '1.1.0' as SemVerVersion,
+        }),
+      });
       const detectSnapLocation = loopbackDetect({
-        manifest: getSnapManifest({ version: '1.1.0' as SemVerVersion }),
+        manifest: manifest.result,
       });
       const messenger = getSnapControllerMessenger();
       const controller = getSnapController(
@@ -3079,8 +3135,13 @@ describe('SnapController', () => {
     });
 
     it('returns null on update request denied', async () => {
+      const { manifest } = getSnapFiles({
+        manifest: getSnapManifest({
+          version: '1.1.0' as SemVerVersion,
+        }),
+      });
       const detectSnapLocation = loopbackDetect({
-        manifest: getSnapManifest({ version: '1.1.0' as SemVerVersion }),
+        manifest: manifest.result,
       });
       const messenger = getSnapControllerMessenger();
       const controller = getSnapController(
@@ -3172,6 +3233,22 @@ describe('SnapController', () => {
         },
       };
 
+      const { manifest } = getSnapFiles({
+        manifest: getSnapManifest({
+          initialPermissions,
+        }),
+      });
+
+      const { manifest: manifest2 } = getSnapFiles({
+        manifest: getSnapManifest({
+          version: '1.1.0' as SemVerRange,
+          initialPermissions: {
+            snap_confirm: {},
+            'endowment:network-access': {},
+          },
+        }),
+      });
+
       const callActionSpy = jest.spyOn(messenger, 'call');
 
       const detect = jest
@@ -3179,19 +3256,13 @@ describe('SnapController', () => {
         .mockImplementationOnce(
           () =>
             new LoopbackLocation({
-              manifest: getSnapManifest({ initialPermissions }),
+              manifest: manifest.result,
             }),
         )
         .mockImplementationOnce(
           () =>
             new LoopbackLocation({
-              manifest: getSnapManifest({
-                version: '1.1.0' as SemVerRange,
-                initialPermissions: {
-                  snap_confirm: {},
-                  'endowment:network-access': {},
-                },
-              }),
+              manifest: manifest2.result,
             }),
         );
 
@@ -3335,19 +3406,23 @@ describe('SnapController', () => {
         .mockImplementationOnce(
           () =>
             new LoopbackLocation({
-              manifest: getSnapManifest({ initialPermissions }),
+              manifest: getSnapFiles({
+                manifest: getSnapManifest({ initialPermissions }),
+              }).manifest.result,
             }),
         )
         .mockImplementationOnce(
           () =>
             new LoopbackLocation({
-              manifest: getSnapManifest({
-                version: '1.1.0' as SemVerRange,
-                initialPermissions: {
-                  snap_confirm: {},
-                  'endowment:network-access': {},
-                },
-              }),
+              manifest: getSnapFiles({
+                manifest: getSnapManifest({
+                  version: '1.1.0' as SemVerRange,
+                  initialPermissions: {
+                    snap_confirm: {},
+                    'endowment:network-access': {},
+                  },
+                }),
+              }).manifest.result,
             }),
         );
       const callActionSpy = jest.spyOn(messenger, 'call');
@@ -3385,12 +3460,15 @@ describe('SnapController', () => {
     });
 
     it('handles unnormalized paths correctly', async () => {
-      const detectSnapLocation = loopbackDetect({
+      const { manifest } = getSnapFiles({
         manifest: getSnapManifest({
           version: '1.2.0' as SemVerVersion,
           filePath: './dist/bundle.js',
           iconPath: './images/icon.svg',
         }),
+      });
+      const detectSnapLocation = loopbackDetect({
+        manifest: manifest.result,
       });
       const messenger = getSnapControllerMessenger();
       const controller = getSnapController(

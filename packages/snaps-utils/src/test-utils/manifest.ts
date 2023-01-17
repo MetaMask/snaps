@@ -180,34 +180,50 @@ export const getSnapFiles = ({
   packageJson = getPackageJson(),
   sourceCode = DEFAULT_SNAP_BUNDLE,
   svgIcon = DEFAULT_SNAP_ICON,
+  updateChecksum = true,
 }: {
-  manifest?: SnapManifest;
-  sourceCode?: string;
+  manifest?: SnapManifest | VirtualFile<SnapManifest>;
+  sourceCode?: string | VirtualFile;
   packageJson?: NpmSnapPackageJson;
-  svgIcon?: string;
+  svgIcon?: string | VirtualFile;
+  updateChecksum?: boolean;
 }): SnapFiles => {
-  return {
-    manifest: new VirtualFile({
-      value: JSON.stringify(manifest),
-      result: manifest,
-      path: DEFAULT_MANIFEST_PATH,
-    }),
+  const files = {
+    manifest:
+      manifest instanceof VirtualFile
+        ? manifest
+        : new VirtualFile({
+            value: JSON.stringify(manifest),
+            result: manifest,
+            path: DEFAULT_MANIFEST_PATH,
+          }),
     packageJson: new VirtualFile({
       value: JSON.stringify(packageJson),
       result: packageJson,
       path: DEFAULT_PACKAGE_JSON_PATH,
     }),
-    sourceCode: new VirtualFile({
-      value: sourceCode,
-      path: DEFAULT_SOURCE_PATH,
-    }),
+    sourceCode:
+      sourceCode instanceof VirtualFile
+        ? sourceCode
+        : new VirtualFile({
+            value: sourceCode,
+            path: DEFAULT_SOURCE_PATH,
+          }),
+    // eslint-disable-next-line no-nested-ternary
     svgIcon: svgIcon
-      ? new VirtualFile({
-          value: svgIcon,
-          path: DEFAULT_ICON_PATH,
-        })
+      ? svgIcon instanceof VirtualFile
+        ? svgIcon
+        : new VirtualFile({
+            value: svgIcon,
+            path: DEFAULT_ICON_PATH,
+          })
       : undefined,
   };
+  if (updateChecksum) {
+    files.manifest.result.source.shasum = getSnapChecksum(files);
+    files.manifest.value = JSON.stringify(files.manifest.result);
+  }
+  return files;
 };
 
 export const getChain = ({
