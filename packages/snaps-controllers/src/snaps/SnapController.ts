@@ -28,6 +28,7 @@ import {
   fromEntries,
   getSnapPermissionName,
   InstallSnapsResult,
+  normalizeRelative,
   PersistedSnap,
   ProcessSnapResult,
   RequestedSnapPermissions,
@@ -1786,7 +1787,10 @@ export class SnapController extends BaseController<
     const sourceCode = newSnap.files
       .find(
         (file) =>
-          file.path === newSnap.manifest.result.source.location.npm.filePath,
+          file.path ===
+          normalizeRelative(
+            newSnap.manifest.result.source.location.npm.filePath,
+          ),
       )
       ?.toString();
     assert(sourceCode !== undefined);
@@ -1970,13 +1974,16 @@ export class SnapController extends BaseController<
 
     const sourceCode = files
       .find(
-        (file) => file.path === manifest.result.source.location.npm.filePath,
+        (file) =>
+          file.path ===
+          normalizeRelative(manifest.result.source.location.npm.filePath),
       )
       ?.toString();
     const svgIcon = files.find(
       (file) =>
         manifest.result.source.location.npm.iconPath !== undefined &&
-        file.path === manifest.result.source.location.npm.iconPath,
+        file.path ===
+          normalizeRelative(manifest.result.source.location.npm.iconPath),
     );
     assert(sourceCode !== undefined);
     if (typeof sourceCode !== 'string' || sourceCode.length === 0) {
