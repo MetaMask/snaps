@@ -28,4 +28,9 @@ export enum SnapCaveatType {
    * The origins that a Snap can receive JSON-RPC messages from.
    */
   RpcOrigin = 'rpcOrigin',
+
+  /**
+   * Caveat specifying a specific snap to be installed
+   */
+  SnapIds = 'snapIds',
 }

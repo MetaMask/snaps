@@ -3,20 +3,27 @@ import {
   RestrictedMethodOptions,
   ValidPermissionSpecification,
   PermissionType,
+  RestrictedMethodCaveatSpecificationConstraint,
+  Caveat,
 } from '@metamask/permission-controller';
 import {
   Snap,
-  SNAP_PREFIX,
   SnapId,
   HandlerType,
   SnapRpcHookArgs,
+  SnapCaveatType,
 } from '@metamask/snaps-utils';
-import { isJsonRpcRequest, Json, NonEmptyArray } from '@metamask/utils';
+import {
+  isJsonRpcRequest,
+  Json,
+  NonEmptyArray,
+  hasProperty,
+  isObject,
+} from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 import { nanoid } from 'nanoid';
 
-const methodPrefix = SNAP_PREFIX;
-const targetKey = `${methodPrefix}*` as const;
+const targetKey = 'wallet_snap';
 
 export type InvokeSnapMethodHooks = {
   getSnap: (snapId: SnapId) => Snap | undefined;
@@ -40,6 +47,29 @@ type InvokeSnapSpecification = ValidPermissionSpecification<{
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
 }>;
 
+type InvokeSnapParams = {
+  snapId: string;
+  request: Record<string, unknown>;
+};
+
+/**
+ * Validates that the caveat value exists and is a non-empty object.
+ *
+ * @param caveat - The caveat to validate.
+ * @throws If the caveat is invalid.
+ */
+export function validateCaveat(caveat: Caveat<string, any>) {
+  if (
+    !hasProperty(caveat, 'value') ||
+    !isObject(caveat.value) ||
+    Object.keys(caveat.value).length === 0
+  ) {
+    throw ethErrors.rpc.invalidParams({
+      message: 'Expected non-empty array of coin types.',
+    });
+  }
+}
+
 /**
  * The specification builder for the `wallet_snap_*` permission.
  *
@@ -49,7 +79,6 @@ type InvokeSnapSpecification = ValidPermissionSpecification<{
  * and install it if it's not avaialble yet.
  *
  * @param options - The specification builder options.
- * @param options.allowedCaveats - The optional allowed caveats for the permission.
  * @param options.methodHooks - The RPC method hooks needed by the method implementation.
  * @returns The specification for the `wallet_snap_*` permission.
  */
@@ -57,14 +86,11 @@ const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.RestrictedMethod,
   InvokeSnapSpecificationBuilderOptions,
   InvokeSnapSpecification
-> = ({
-  allowedCaveats = null,
-  methodHooks,
-}: InvokeSnapSpecificationBuilderOptions) => {
+> = ({ methodHooks }: InvokeSnapSpecificationBuilderOptions) => {
   return {
     permissionType: PermissionType.RestrictedMethod,
     targetKey,
-    allowedCaveats,
+    allowedCaveats: [SnapCaveatType.SnapIds],
     methodImplementation: getInvokeSnapImplementation(methodHooks),
   };
 };
@@ -77,6 +103,16 @@ export const invokeSnapBuilder = Object.freeze({
     handleSnapRpcRequest: true,
   },
 } as const);
+
+export const getInvokeSnapCaveatSpecifications: Record<
+  SnapCaveatType.SnapIds,
+  Omit<RestrictedMethodCaveatSpecificationConstraint, 'decorator'>
+> = {
+  [SnapCaveatType.SnapIds]: Object.freeze({
+    type: SnapCaveatType.SnapIds,
+    validator: (caveat) => validateCaveat(caveat),
+  }),
+};
 
 /**
  * Builds the method implementation for `wallet_snap_*`.
@@ -94,18 +130,22 @@ export function getInvokeSnapImplementation({
   return async function invokeSnap(
     options: RestrictedMethodOptions<Record<string, Json>>,
   ): Promise<Json> {
-    const { params = {}, method, context } = options;
+    const { params = {}, context } = options;
 
-    const request = { jsonrpc: '2.0', id: nanoid(), ...params };
+    const { snapId, request } = params as InvokeSnapParams;
 
-    if (!isJsonRpcRequest(request)) {
+    const rpcRequest = {
+      jsonrpc: '2.0',
+      id: nanoid(),
+      ...request,
+    };
+
+    if (!isJsonRpcRequest(rpcRequest)) {
       throw ethErrors.rpc.invalidParams({
         message:
           'Must specify a valid JSON-RPC request object as single parameter.',
       });
     }
-
-    const snapId = method.slice(SNAP_PREFIX.length);
 
     if (!getSnap(snapId)) {
       throw ethErrors.rpc.invalidRequest({
@@ -118,7 +158,7 @@ export function getInvokeSnapImplementation({
     return (await handleSnapRpcRequest({
       snapId,
       origin,
-      request,
+      request: rpcRequest,
       handler: HandlerType.OnRpcRequest,
     })) as Json;
   };

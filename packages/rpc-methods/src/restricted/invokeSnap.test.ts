@@ -1,4 +1,5 @@
 import { PermissionType } from '@metamask/permission-controller';
+import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   MOCK_SNAP_ID,
   MOCK_ORIGIN,
@@ -10,7 +11,7 @@ import { invokeSnapBuilder, getInvokeSnapImplementation } from './invokeSnap';
 describe('builder', () => {
   it('has the expected shape', () => {
     expect(invokeSnapBuilder).toMatchObject({
-      targetKey: 'wallet_snap_*',
+      targetKey: 'wallet_snap',
       specificationBuilder: expect.any(Function),
       methodHooks: {
         getSnap: true,
@@ -29,8 +30,8 @@ describe('builder', () => {
       }),
     ).toMatchObject({
       permissionType: PermissionType.RestrictedMethod,
-      targetKey: 'wallet_snap_*',
-      allowedCaveats: null,
+      targetKey: 'wallet_snap',
+      allowedCaveats: [SnapCaveatType.SnapIds],
       methodImplementation: expect.any(Function),
     });
   });
@@ -48,8 +49,11 @@ describe('implementation', () => {
     const implementation = getInvokeSnapImplementation(hooks);
     await implementation({
       context: { origin: MOCK_ORIGIN },
-      method: `wallet_snap_${MOCK_SNAP_ID}`,
-      params: { method: 'foo', params: {} },
+      method: 'wallet_snap',
+      params: {
+        snapId: MOCK_SNAP_ID,
+        request: { method: 'hello', params: {} },
+      },
     });
 
     expect(hooks.getSnap).toHaveBeenCalledTimes(1);
@@ -60,7 +64,7 @@ describe('implementation', () => {
       request: {
         jsonrpc: '2.0',
         id: expect.any(String),
-        method: 'foo',
+        method: 'hello',
         params: {},
       },
       snapId: MOCK_SNAP_ID,
@@ -73,8 +77,11 @@ describe('implementation', () => {
     await expect(
       implementation({
         context: { origin: MOCK_ORIGIN },
-        method: `wallet_snap_${MOCK_SNAP_ID}`,
-        params: { method: 'foo', params: {} },
+        method: 'wallet_snap',
+        params: {
+          snapId: MOCK_SNAP_ID,
+          request: { method: 'hello', params: {} },
+        },
       }),
     ).rejects.toThrow(
       `The snap "${MOCK_SNAP_ID}" is not installed. This is a bug, please report it.`,
@@ -92,7 +99,7 @@ describe('implementation', () => {
     await expect(
       implementation({
         context: { origin: MOCK_ORIGIN },
-        method: `wallet_snap_${MOCK_SNAP_ID}`,
+        method: 'wallet_snap',
         params: {},
       }),
     ).rejects.toThrow(

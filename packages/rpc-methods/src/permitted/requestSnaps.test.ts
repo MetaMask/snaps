@@ -1,8 +1,5 @@
 import { RequestedPermissions } from '@metamask/permission-controller';
-import {
-  getSnapPermissionName,
-  InstallSnapsResult,
-} from '@metamask/snaps-utils';
+import { InstallSnapsResult, SnapCaveatType } from '@metamask/snaps-utils';
 import {
   MOCK_SNAP_ID,
   getTruncatedSnap,
@@ -15,6 +12,8 @@ import {
 import { JsonRpcEngine } from 'json-rpc-engine';
 
 import { requestSnapsHandler } from './requestSnaps';
+
+const permissionName = 'wallet_snap';
 
 describe('requestSnapsHandler', () => {
   it('has the expected shape', () => {
@@ -45,11 +44,13 @@ describe('implementation', () => {
 
     hooks.requestPermissions.mockImplementation(() => [
       {
-        caveats: null,
+        caveats: [
+          { type: SnapCaveatType.SnapIds, value: { [MOCK_SNAP_ID]: {} } },
+        ],
         date: 1661166080905,
         id: 'VyAsBJiDDKawv_XlNcm13',
         invoker: 'https://metamask.github.io',
-        parentCapability: getSnapPermissionName(MOCK_SNAP_ID),
+        parentCapability: permissionName,
       },
     ]);
 
@@ -80,7 +81,11 @@ describe('implementation', () => {
     })) as JsonRpcSuccess<InstallSnapsResult>;
 
     expect(hooks.requestPermissions).toHaveBeenCalledWith({
-      [getSnapPermissionName(MOCK_SNAP_ID)]: {},
+      [permissionName]: {
+        caveats: [
+          { type: SnapCaveatType.SnapIds, value: { [MOCK_SNAP_ID]: {} } },
+        ],
+      },
     });
 
     expect(hooks.installSnaps).toHaveBeenCalledWith({
@@ -98,12 +103,14 @@ describe('implementation', () => {
     const hooks = getMockHooks();
 
     hooks.getPermissions.mockImplementation(() => ({
-      [getSnapPermissionName(MOCK_SNAP_ID)]: {
-        caveats: null,
+      [permissionName]: {
+        caveats: [
+          { type: SnapCaveatType.SnapIds, value: { [MOCK_SNAP_ID]: {} } },
+        ],
         date: 1661166080905,
         id: 'VyAsBJiDDKawv_XlNcm13',
         invoker: 'https://metamask.github.io',
-        parentCapability: getSnapPermissionName(MOCK_SNAP_ID),
+        parentCapability: permissionName,
       },
     }));
 
@@ -134,7 +141,11 @@ describe('implementation', () => {
     })) as JsonRpcSuccess<InstallSnapsResult>;
 
     expect(hooks.requestPermissions).not.toHaveBeenCalledWith({
-      [getSnapPermissionName(MOCK_SNAP_ID)]: {},
+      [permissionName]: {
+        caveats: [
+          { type: SnapCaveatType.SnapIds, value: { [MOCK_SNAP_ID]: {} } },
+        ],
+      },
     });
 
     expect(hooks.installSnaps).toHaveBeenCalledWith({

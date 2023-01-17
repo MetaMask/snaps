@@ -2,7 +2,7 @@ import {
   PermissionConstraint,
   RequestedPermissions,
 } from '@metamask/permission-controller';
-import { getSnapPermissionName } from '@metamask/snaps-utils';
+import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   PermittedHandlerExport,
   JsonRpcRequest,
@@ -61,30 +61,27 @@ export type RequestSnapsHooks = {
 };
 
 /**
- * Checks whether existing permissions satisfy the requested permissions
- *
- * Note: Currently, we don't compare caveats, if any caveats are requested, we always return false.
+ * Checks whether an origin has existing `wallet_snap` permission and
+ * whether or not it has the requested snapIds.
  *
  * @param existingPermissions - The existing permissions for the origin.
- * @param requestedPermissions - The requested permissions for the origin.
- * @returns True if the existing permissions satisfy the requested permissions, otherwise false.
+ * @param requestedSnaps - The requested snaps.
+ * @returns True if the existing permissions satisfy the requested snaps, otherwise false.
  */
-function hasPermissions(
+function hasSnaps(
   existingPermissions: Record<string, PermissionConstraint>,
-  requestedPermissions: RequestedPermissions,
+  requestedSnaps: RequestedPermissions,
 ): boolean {
-  return Object.entries(requestedPermissions).every(
-    ([target, requestedPermission]) => {
-      if (
-        requestedPermission?.caveats &&
-        requestedPermission.caveats.length > 0
-      ) {
-        return false;
-      }
-
-      return hasProperty(existingPermissions, target);
-    },
+  const snapIdCaveat = existingPermissions.wallet_snap?.caveats?.find(
+    (caveat) => caveat.type === SnapCaveatType.SnapIds,
   );
+  const permittedSnaps = snapIdCaveat?.value;
+  if (isObject(permittedSnaps)) {
+    return Object.keys(requestedSnaps).every((requestedSnap) =>
+      hasProperty(permittedSnaps, requestedSnap),
+    );
+  }
+  return false;
 }
 
 /**
@@ -124,17 +121,17 @@ async function requestSnapsImplementation(
   // TODO: Should this be part of the install flow?
 
   try {
-    // We expect the params to be the same as wallet_requestPermissions
-    const requestedPermissions = Object.keys(requestedSnaps).reduce<
-      Record<string, Partial<PermissionConstraint>>
-    >((acc, key) => {
-      acc[getSnapPermissionName(key)] = requestedSnaps[key];
-      return acc;
-    }, {});
+    const permissionKey = 'wallet_snap';
+    const requestedPermissions = {
+      [permissionKey]: {
+        caveats: [{ type: 'snapIds', value: requestedSnaps }],
+      },
+    } as RequestedPermissions;
     const existingPermissions = await getPermissions();
+
     if (
       !existingPermissions ||
-      !hasPermissions(existingPermissions, requestedPermissions)
+      !hasSnaps(existingPermissions, requestedSnaps)
     ) {
       const approvedPermissions = await requestPermissions(
         requestedPermissions,
