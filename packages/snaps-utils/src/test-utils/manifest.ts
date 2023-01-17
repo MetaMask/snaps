@@ -187,7 +187,7 @@ export const getSnapFiles = ({
   packageJson?: NpmSnapPackageJson;
   svgIcon?: string | VirtualFile;
   updateChecksum?: boolean;
-}): SnapFiles => {
+} = {}): SnapFiles => {
   const files = {
     manifest:
       manifest instanceof VirtualFile

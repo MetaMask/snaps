@@ -1,8 +1,5 @@
 import * as snapUtils from '@metamask/snaps-utils';
-import {
-  getPackageJson,
-  getSnapManifest,
-} from '@metamask/snaps-utils/test-utils';
+import { getSnapFiles } from '@metamask/snaps-utils/test-utils';
 import * as utils from '@metamask/utils';
 import { promises as fs } from 'fs';
 import pathUtils from 'path';
@@ -46,13 +43,15 @@ describe('initialize', () => {
         .mockImplementation(() => false);
       jest.spyOn(initUtils, 'gitInit').mockImplementation();
 
-      jest
-        .spyOn(snapUtils, 'readJsonFile')
-        .mockImplementationOnce(async () => Promise.resolve(getSnapManifest()));
+      const { manifest, packageJson } = getSnapFiles();
 
       jest
         .spyOn(snapUtils, 'readJsonFile')
-        .mockImplementationOnce(async () => Promise.resolve(getPackageJson()));
+        .mockImplementationOnce(async () => Promise.resolve(manifest));
+
+      jest
+        .spyOn(snapUtils, 'readJsonFile')
+        .mockImplementationOnce(async () => Promise.resolve(packageJson));
 
       const expected = {
         dist: 'dist',
@@ -81,13 +80,15 @@ describe('initialize', () => {
 
       jest.spyOn(initUtils, 'gitInit').mockImplementation();
 
-      jest
-        .spyOn(snapUtils, 'readJsonFile')
-        .mockImplementationOnce(async () => Promise.resolve(getSnapManifest()));
+      const { manifest, packageJson } = getSnapFiles();
 
       jest
         .spyOn(snapUtils, 'readJsonFile')
-        .mockImplementationOnce(async () => Promise.resolve(getPackageJson()));
+        .mockImplementationOnce(async () => Promise.resolve(manifest));
+
+      jest
+        .spyOn(snapUtils, 'readJsonFile')
+        .mockImplementationOnce(async () => Promise.resolve(packageJson));
 
       const expected = {
         ...getMockArgv(),
@@ -115,15 +116,18 @@ describe('initialize', () => {
         .spyOn(initUtils, 'isInGitRepository')
         .mockImplementation(() => false);
       jest.spyOn(initUtils, 'gitInit').mockImplementation();
-      jest
-        .spyOn(snapUtils, 'readJsonFile')
-        .mockImplementationOnce(async () => Promise.resolve(getSnapManifest()));
+
+      const { manifest, packageJson } = getSnapFiles({
+        packageJson: { main: undefined } as any,
+      });
 
       jest
         .spyOn(snapUtils, 'readJsonFile')
-        .mockImplementationOnce(async () =>
-          Promise.resolve({ main: undefined }),
-        );
+        .mockImplementationOnce(async () => Promise.resolve(manifest));
+
+      jest
+        .spyOn(snapUtils, 'readJsonFile')
+        .mockImplementationOnce(async () => Promise.resolve(packageJson));
 
       const expected = {
         ...getMockArgv(),
@@ -148,13 +152,16 @@ describe('initialize', () => {
       jest.spyOn(initUtils, 'cloneTemplate').mockImplementation();
       jest.spyOn(fs, 'rm').mockImplementation();
       jest.spyOn(initUtils, 'yarnInstall').mockImplementation();
-      jest
-        .spyOn(snapUtils, 'readJsonFile')
-        .mockImplementationOnce(async () => Promise.resolve(getSnapManifest()));
+
+      const { manifest, packageJson } = getSnapFiles();
 
       jest
         .spyOn(snapUtils, 'readJsonFile')
-        .mockImplementationOnce(async () => Promise.resolve(getPackageJson()));
+        .mockImplementationOnce(async () => Promise.resolve(manifest));
+
+      jest
+        .spyOn(snapUtils, 'readJsonFile')
+        .mockImplementationOnce(async () => Promise.resolve(packageJson));
 
       const isInGitRepositoryMock = jest
         .spyOn(initUtils, 'isInGitRepository')
