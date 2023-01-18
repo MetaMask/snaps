@@ -8,8 +8,8 @@ module.exports = deepmerge(baseConfig, {
     global: {
       branches: 98.09,
       functions: 94.66,
-      lines: 98.49,
-      statements: 98.5,
+      lines: 98.5,
+      statements: 98.51,
     },
   },
   setupFiles: ['./test/setup.js'],

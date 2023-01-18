@@ -1,8 +1,8 @@
 import {
   NpmSnapFileNames,
-  SnapManifest,
   readJsonFile,
   NpmSnapPackageJson,
+  createSnapManifest,
 } from '@metamask/snaps-utils';
 import {
   satisfiesVersionRange,
@@ -88,14 +88,17 @@ export async function initHandler(argv: YargsArgs) {
 
   const manifest = (
     await readJsonFile(pathUtils.join(snapLocation, NpmSnapFileNames.Manifest))
-  ).result as SnapManifest;
+  ).result;
+
+  const validatedManifest = createSnapManifest(manifest);
+
   const packageJson = (
     await readJsonFile(
       pathUtils.join(snapLocation, NpmSnapFileNames.PackageJson),
     )
   ).result as NpmSnapPackageJson;
 
-  const distPath = manifest.source.location.npm.filePath.split('/');
+  const distPath = validatedManifest.source.location.npm.filePath.split('/');
 
   return {
     ...argv,

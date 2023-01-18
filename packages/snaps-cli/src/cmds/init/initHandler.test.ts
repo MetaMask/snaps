@@ -11,8 +11,14 @@ import * as initUtils from './initUtils';
 
 jest.mock('fs');
 
-jest.mock('@metamask/utils');
-jest.mock('@metamask/snaps-utils');
+jest.mock('@metamask/utils', () => ({
+  ...jest.requireActual('@metamask/utils'),
+  satisfiesVersionRange: jest.fn(),
+}));
+jest.mock('@metamask/snaps-utils', () => ({
+  ...jest.requireActual('@metamask/snaps-utils'),
+  readJsonFile: jest.fn(),
+}));
 
 const getMockArgv = () => {
   return {
