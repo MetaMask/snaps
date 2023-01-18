@@ -1,4 +1,4 @@
-import { Json, assertExhaustive } from '@metamask/utils';
+import { Json, assertExhaustive, assert } from '@metamask/utils';
 import deepEqual from 'fast-deep-equal';
 import { promises as fs } from 'fs';
 import pathUtils from 'path';
@@ -145,9 +145,11 @@ export async function checkManifest(
     }
   }
 
-  // TypeScript doesn't see that the 'manifest' variable must be of type
-  // SnapManifest at this point, so we cast it.
-  const validatedManifest = manifest?.result as SnapManifest;
+  // TypeScript assumes ´manifest´ can still be undefined, that is not the case.
+  // But we assert to keep TypeScript happy.
+  assert(manifest);
+
+  const validatedManifest = manifest.result;
 
   // Check presence of recommended keys
   const recommendedFields = ['repository'] as const;

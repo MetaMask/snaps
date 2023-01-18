@@ -2,7 +2,7 @@ import { BlockReason } from '@metamask/snaps-registry';
 import { assert, Json, SemVerVersion } from '@metamask/utils';
 import { base64 } from '@scure/base';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
-import stringify from 'fast-json-stable-stringify';
+import stableStringify from 'fast-json-stable-stringify';
 import {
   empty,
   enums,
@@ -187,11 +187,11 @@ export class ProgrammaticallyFixableSnapError extends Error {
 function getChecksummableManifest(
   manifest: VirtualFile<SnapManifest>,
 ): VirtualFile {
-  const manifestCopy = manifest.clone() as any;
+  const manifestCopy = manifest.clone() as VirtualFile<any>;
   delete manifestCopy.result.source.shasum;
 
   // Use fast-json-stable-stringify for determinism
-  manifestCopy.value = stringify(manifestCopy.result);
+  manifestCopy.value = stableStringify(manifestCopy.result);
   return manifestCopy;
 }
 

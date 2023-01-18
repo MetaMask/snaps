@@ -1972,19 +1972,19 @@ export class SnapController extends BaseController<
       );
     }
 
-    const sourceCode = files
-      .find(
-        (file) =>
-          file.path ===
-          normalizeRelative(manifest.result.source.location.npm.filePath),
-      )
-      ?.toString();
-    const svgIcon = files.find(
-      (file) =>
-        manifest.result.source.location.npm.iconPath !== undefined &&
-        file.path ===
-          normalizeRelative(manifest.result.source.location.npm.iconPath),
+    const normalizedSourcePath = normalizeRelative(
+      manifest.result.source.location.npm.filePath,
     );
+
+    const { iconPath } = manifest.result.source.location.npm;
+    const normalizedIconPath = iconPath && normalizeRelative(iconPath);
+
+    const sourceCode = files
+      .find((file) => file.path === normalizedSourcePath)
+      ?.toString();
+    const svgIcon = normalizedIconPath
+      ? files.find((file) => file.path === normalizedIconPath)
+      : undefined;
     assert(sourceCode !== undefined);
     if (typeof sourceCode !== 'string' || sourceCode.length === 0) {
       throw new Error(`Invalid source code for snap "${snapId}".`);
