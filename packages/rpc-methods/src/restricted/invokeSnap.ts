@@ -65,7 +65,7 @@ export function validateCaveat(caveat: Caveat<string, any>) {
     Object.keys(caveat.value).length === 0
   ) {
     throw ethErrors.rpc.invalidParams({
-      message: 'Expected non-empty array of coin types.',
+      message: 'Expected non-empty object of snap ids.',
     });
   }
 }
