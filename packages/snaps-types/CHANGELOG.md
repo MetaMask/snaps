@@ -7,9 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.28.0]
-### Uncategorized
-- BREAKING: Add support for snap registries ([#1090](https://github.com/MetaMask/snaps-monorepo/pull/1090))
-- Use `@metamask/utils@3.4.0` ([#1102](https://github.com/MetaMask/snaps-monorepo/pull/1102))
+### Changed
+- No changes this release.
 
 ## [0.27.1]
 ### Changed

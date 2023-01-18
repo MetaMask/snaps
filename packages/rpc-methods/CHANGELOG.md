@@ -7,11 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.28.0]
-### Uncategorized
-- BREAKING: Bump `key-tree` to 6.2.0 and use `Uint8Array` for secret recovery phrases ([#1137](https://github.com/MetaMask/snaps-monorepo/pull/1137))
-- bump @metamask/key-tree version ([#1114](https://github.com/MetaMask/snaps-monorepo/pull/1114))
-- BREAKING: Add support for snap registries ([#1090](https://github.com/MetaMask/snaps-monorepo/pull/1090))
-- Use `@metamask/utils@3.4.0` ([#1102](https://github.com/MetaMask/snaps-monorepo/pull/1102))
+### Changed
+- **BREAKING:** Bump `key-tree` to `6.2.0` and use `Uint8Array` for secret recovery phrases ([#1137](https://github.com/MetaMask/snaps-monorepo/pull/1137))
 
 ## [0.27.1]
 ### Fixed
