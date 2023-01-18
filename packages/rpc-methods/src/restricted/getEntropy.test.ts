@@ -1,10 +1,10 @@
 import { PermissionType } from '@metamask/permission-controller';
-import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
+import {
+  MOCK_SNAP_ID,
+  TEST_SECRET_RECOVERY_PHRASE_BYTES,
+} from '@metamask/snaps-utils/test-utils';
 
 import { getEntropyBuilder } from './getEntropy';
-
-const TEST_SECRET_RECOVERY_PHRASE =
-  'test test test test test test test test test test test ball';
 
 describe('getEntropyBuilder', () => {
   it('has the expected shape', () => {
@@ -39,7 +39,7 @@ describe('getEntropyImplementation', () => {
   it('returns the expected result', async () => {
     const getMnemonic = jest
       .fn()
-      .mockImplementation(() => TEST_SECRET_RECOVERY_PHRASE);
+      .mockImplementation(() => TEST_SECRET_RECOVERY_PHRASE_BYTES);
 
     const getUnlockPromise = jest.fn();
 
