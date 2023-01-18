@@ -1,12 +1,18 @@
-import { PermissionType } from '@metamask/permission-controller';
+import { PermissionType, Caveat } from '@metamask/permission-controller';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   MOCK_SNAP_ID,
   MOCK_ORIGIN,
   getTruncatedSnap,
 } from '@metamask/snaps-utils/test-utils';
+import { Json } from '@metamask/utils';
 
-import { invokeSnapBuilder, getInvokeSnapImplementation } from './invokeSnap';
+import {
+  invokeSnapBuilder,
+  getInvokeSnapImplementation,
+  validateCaveat,
+  getInvokeSnapCaveatSpecifications,
+} from './invokeSnap';
 
 const restrictedMethod = 'wallet_snap';
 
@@ -35,6 +41,46 @@ describe('builder', () => {
       targetKey: restrictedMethod,
       allowedCaveats: [SnapCaveatType.SnapIds],
       methodImplementation: expect.any(Function),
+    });
+  });
+});
+
+describe('validateCaveats', () => {
+  it('validates that a caveat has a non-empty object as a caveat value', () => {
+    const caveat = {
+      type: SnapCaveatType.SnapIds,
+      value: { [MOCK_SNAP_ID]: {} },
+    };
+    const missingValueCaveat = {
+      type: SnapCaveatType.SnapIds,
+    };
+    const emptyValueCaveat = {
+      type: SnapCaveatType.SnapIds,
+      value: {},
+    };
+    expect(() => validateCaveat(caveat)).not.toThrow();
+    expect(() =>
+      validateCaveat(missingValueCaveat as Caveat<string, Json>),
+    ).toThrow(
+      'Expected caveat to have a value property of a non-empty object of snap ids.',
+    );
+    expect(() => validateCaveat(emptyValueCaveat)).toThrow(
+      'Expected caveat to have a value property of a non-empty object of snap ids.',
+    );
+  });
+});
+
+describe('getInvokeSnapCaveatSpecifications', () => {
+  describe('validator', () => {
+    it('throws for an invalid caveat object', () => {
+      expect(() => {
+        getInvokeSnapCaveatSpecifications[SnapCaveatType.SnapIds].validator?.({
+          type: SnapCaveatType.SnapIds,
+          value: {},
+        });
+      }).toThrow(
+        'Expected caveat to have a value property of a non-empty object of snap ids.',
+      );
     });
   });
 });

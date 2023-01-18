@@ -65,7 +65,8 @@ export function validateCaveat(caveat: Caveat<string, any>) {
     Object.keys(caveat.value).length === 0
   ) {
     throw ethErrors.rpc.invalidParams({
-      message: 'Expected non-empty object of snap ids.',
+      message:
+        'Expected caveat to have a value property of a non-empty object of snap ids.',
     });
   }
 }

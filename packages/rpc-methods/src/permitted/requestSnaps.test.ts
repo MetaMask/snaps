@@ -1,4 +1,7 @@
-import { RequestedPermissions } from '@metamask/permission-controller';
+import {
+  RequestedPermissions,
+  PermissionConstraint,
+} from '@metamask/permission-controller';
 import { InstallSnapsResult, SnapCaveatType } from '@metamask/snaps-utils';
 import {
   MOCK_SNAP_ID,
@@ -11,7 +14,7 @@ import {
 } from '@metamask/types';
 import { JsonRpcEngine } from 'json-rpc-engine';
 
-import { requestSnapsHandler } from './requestSnaps';
+import { requestSnapsHandler, hasSnaps } from './requestSnaps';
 
 const permissionName = 'wallet_snap';
 
@@ -26,6 +29,58 @@ describe('requestSnapsHandler', () => {
         getPermissions: true,
       },
     });
+  });
+});
+
+describe('hasSnaps', () => {
+  it('returns true if an origin has the requested snaps in its permissions', () => {
+    const existingPermission = {
+      [permissionName]: {
+        caveats: [
+          { type: SnapCaveatType.SnapIds, value: { [MOCK_SNAP_ID]: {} } },
+        ],
+        date: 1661166080905,
+        id: 'VyAsBJiDDKawv_XlNcm13',
+        invoker: 'https://metamask.github.io',
+        parentCapability: permissionName,
+      },
+    } as Record<string, PermissionConstraint>;
+
+    const requestedSnaps = { [MOCK_SNAP_ID]: {} };
+
+    expect(hasSnaps(existingPermission, requestedSnaps)).toBe(true);
+  });
+
+  it('returns false if an origin does not have the requested snaps in its permissions', () => {
+    const existingPermission = {
+      [permissionName]: {
+        caveats: [{ type: SnapCaveatType.SnapIds, value: { baz: {} } }],
+        date: 1661166080905,
+        id: 'VyAsBJiDDKawv_XlNcm13',
+        invoker: 'https://metamask.github.io',
+        parentCapability: permissionName,
+      },
+    } as Record<string, PermissionConstraint>;
+
+    const requestedSnaps = { [MOCK_SNAP_ID]: {} };
+
+    expect(hasSnaps(existingPermission, requestedSnaps)).toBe(false);
+  });
+
+  it('returns false if an origin does not have the "wallet_snap" permission', () => {
+    const existingPermission = {
+      foo: {
+        caveats: [{ type: SnapCaveatType.SnapIds, value: { baz: {} } }],
+        date: 1661166080905,
+        id: 'VyAsBJiDDKawv_XlNcm13',
+        invoker: 'https://metamask.github.io',
+        parentCapability: permissionName,
+      },
+    } as Record<string, PermissionConstraint>;
+
+    const requestedSnaps = { [MOCK_SNAP_ID]: {} };
+
+    expect(hasSnaps(existingPermission, requestedSnaps)).toBe(false);
   });
 });
 

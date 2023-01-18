@@ -68,7 +68,7 @@ export type RequestSnapsHooks = {
  * @param requestedSnaps - The requested snaps.
  * @returns True if the existing permissions satisfy the requested snaps, otherwise false.
  */
-function hasSnaps(
+export function hasSnaps(
   existingPermissions: Record<string, PermissionConstraint>,
   requestedSnaps: RequestedPermissions,
 ): boolean {
