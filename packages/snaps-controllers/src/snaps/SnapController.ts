@@ -1784,14 +1784,12 @@ export class SnapController extends BaseController<
       rollbackSnapshot.permissions.requestData = requestData;
     }
 
+    const normalizedSourcePath = normalizeRelative(
+      newSnap.manifest.result.source.location.npm.filePath,
+    );
+
     const sourceCode = newSnap.files
-      .find(
-        (file) =>
-          file.path ===
-          normalizeRelative(
-            newSnap.manifest.result.source.location.npm.filePath,
-          ),
-      )
+      .find((file) => file.path === normalizedSourcePath)
       ?.toString();
     assert(sourceCode !== undefined);
 

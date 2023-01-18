@@ -1,4 +1,4 @@
-import { assert } from '@metamask/utils';
+import { assert, concatBytes } from '@metamask/utils';
 import { sha256 } from '@noble/hashes/sha256';
 
 import { VirtualFile } from './virtual-file/VirtualFile';
@@ -30,8 +30,8 @@ export function checksum(
  */
 export function checksumFiles(files: VirtualFile[]) {
   return checksum(
-    concat(
-      ...[...files]
+    concatBytes(
+      [...files]
         // eslint-disable-next-line consistent-return, array-callback-return
         .sort((a, b) => {
           if (a.path < b.path) {
@@ -44,23 +44,4 @@ export function checksumFiles(files: VirtualFile[]) {
         .map((file) => checksum(file)),
     ),
   );
-}
-
-/**
- * Same as {@link Array.concat}, it takes a list of arrays and joins them into one.
- *
- * @param chunks - The arrays to concatenate.
- * @returns An array of all the chunks concatenated in order.
- */
-function concat(...chunks: Uint8Array[]): Uint8Array {
-  const totalLength = chunks.reduce((acc, chunk) => acc + chunk.length, 0);
-  const result = new Uint8Array(totalLength);
-
-  let currentLength = 0;
-  for (const chunk of chunks) {
-    result.set(chunk, currentLength);
-    currentLength += chunk.length;
-  }
-  assert(currentLength === totalLength);
-  return result;
 }
