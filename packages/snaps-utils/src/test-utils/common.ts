@@ -1,12 +1,12 @@
 // TODO: Import from root.
-import { hexToBytes, SemVerVersion } from '@metamask/utils';
+import { mnemonicPhraseToBytes } from '@metamask/key-tree/dist/utils';
+import { SemVerVersion } from '@metamask/utils';
 
 export const TEST_SECRET_RECOVERY_PHRASE =
   'test test test test test test test test test test test ball';
 
-// `mnemonicPhraseToBytes(TEST_SECRET_RECOVERY_PHRASE)`.
-export const TEST_SECRET_RECOVERY_PHRASE_BYTES = hexToBytes(
-  '0xfc06fc06fc06fc06fc06fc06fc06fc06fc06fc06fc068f00',
+export const TEST_SECRET_RECOVERY_PHRASE_BYTES = mnemonicPhraseToBytes(
+  TEST_SECRET_RECOVERY_PHRASE,
 );
 
 /**
