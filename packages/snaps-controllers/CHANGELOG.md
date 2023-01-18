@@ -13,13 +13,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - **BREAKING:** Add support for snap registries ([#1090](https://github.com/MetaMask/snaps-monorepo/pull/1090))
+  - This removes the `checkBlockList` constructor argument in favor of `registry`
+  - A registry implementation can be passed here, defaulting to a hosted JSON file
+  - Requiring a snap to be on the allowlist can be toggled with the feature flag `requireAllowlist`
 - **BREAKING:** Disallow local snaps by default ([#1123](https://github.com/MetaMask/snaps-monorepo/pull/1123))
+  - They can be re-enabled by using the feature flag `allowLocalSnaps`
 - Allow updating crashed snaps ([#1113](https://github.com/MetaMask/snaps-monorepo/pull/1113))
 - Add safety measures for malicious tarballs  ([#1116](https://github.com/MetaMask/snaps-monorepo/pull/1116))
 - Make `installSnaps` throw on excluded permissions ([#1125](https://github.com/MetaMask/snaps-monorepo/pull/1125))
 
 ### Removed
-- **BREAKING:** Remove `WebSocket` ([#1122](https://github.com/MetaMask/snaps-monorepo/pull/1122))
+- **BREAKING:** Remove `WebSocket` endowment ([#1122](https://github.com/MetaMask/snaps-monorepo/pull/1122))
 
 ## [0.27.1]
 ### Changed

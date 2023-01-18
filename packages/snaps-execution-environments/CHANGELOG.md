@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add proxy for `ethereum` global ([#1087](https://github.com/MetaMask/snaps-monorepo/pull/1087))
 
 ### Removed
-- **BREAKING:** Remove `WebSocket` ([#1122](https://github.com/MetaMask/snaps-monorepo/pull/1122))
+- **BREAKING:** Remove `WebSocket` endowment ([#1122](https://github.com/MetaMask/snaps-monorepo/pull/1122))
 
 ## [0.27.1]
 ### Changed
