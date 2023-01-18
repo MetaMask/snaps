@@ -24,7 +24,7 @@ export type GetBip44EntropyMethodHooks = {
   /**
    * @returns The mnemonic of the user's primary keyring.
    */
-  getMnemonic: () => Promise<string>;
+  getMnemonic: () => Promise<Uint8Array>;
 
   /**
    * Waits for the extension to be unlocked.
@@ -223,7 +223,7 @@ export function getBip44EntropyImplementation({
     const params = args.params!;
 
     const node = await BIP44CoinTypeNode.fromDerivationPath([
-      `bip39:${await getMnemonic()}`,
+      await getMnemonic(),
       `bip32:44'`,
       `bip32:${params.coinType}'`,
     ]);

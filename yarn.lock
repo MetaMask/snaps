@@ -2563,9 +2563,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/key-tree@npm:^6.1.0":
-  version: 6.1.0
-  resolution: "@metamask/key-tree@npm:6.1.0"
+"@metamask/key-tree@npm:^6.2.0":
+  version: 6.2.0
+  resolution: "@metamask/key-tree@npm:6.2.0"
   dependencies:
     "@metamask/scure-bip39": ^2.1.0
     "@metamask/utils": ^3.3.0
@@ -2573,7 +2573,7 @@ __metadata:
     "@noble/hashes": ^1.0.0
     "@noble/secp256k1": ^1.5.5
     "@scure/base": ^1.0.0
-  checksum: 552fb8e59c4972521154ec45c0dc43e561c2cf248e8e4e730fd0a70c3890c69f0e89509387ba3ec64def973a53ad6af1c40b50f950aa1f22674d22d4a79cbf88
+  checksum: d1f6839ac63c7bee2ece7fcd39c29b7e3f054568d93c07469b7cb28b9dfc3dd1d5c3fbec07702b2029310d96356a7dbbb55bafc66c6fc817b2235a8e0994ec38
   languageName: node
   linkType: hard
 
@@ -2686,7 +2686,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^11.0.0
     "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
-    "@metamask/key-tree": ^6.1.0
+    "@metamask/key-tree": ^6.2.0
     "@metamask/permission-controller": ^1.0.1
     "@metamask/snaps-ui": ^0.27.1
     "@metamask/snaps-utils": ^0.27.1
@@ -3086,6 +3086,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^11.0.0
     "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
+    "@metamask/key-tree": ^6.2.0
     "@metamask/post-message-stream": ^6.1.0
     "@metamask/providers": ^10.2.1
     "@metamask/snaps-registry": ^1.0.0

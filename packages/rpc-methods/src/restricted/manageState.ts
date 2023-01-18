@@ -27,7 +27,7 @@ export type ManageStateMethodHooks = {
   /**
    * @returns The mnemonic of the user's primary keyring.
    */
-  getMnemonic: () => Promise<string>;
+  getMnemonic: () => Promise<Uint8Array>;
 
   /**
    * Waits for the extension to be unlocked.
@@ -121,7 +121,7 @@ export const STORAGE_SIZE_LIMIT = 104857600; // In bytes (100MB)
 
 type GetEncryptionKeyArgs = {
   snapId: string;
-  mnemonicPhrase: string;
+  mnemonicPhrase: Uint8Array;
 };
 
 /**

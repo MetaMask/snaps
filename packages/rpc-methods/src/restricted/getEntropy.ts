@@ -67,7 +67,7 @@ export type GetEntropyHooks = {
   /**
    * @returns The mnemonic of the user's primary keyring.
    */
-  getMnemonic: () => Promise<string>;
+  getMnemonic: () => Promise<Uint8Array>;
 
   /**
    * Waits for the extension to be unlocked.

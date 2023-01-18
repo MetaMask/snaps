@@ -1,10 +1,9 @@
+import { TEST_SECRET_RECOVERY_PHRASE_BYTES } from '@metamask/snaps-utils/test-utils';
+
 import {
   getBip32PublicKeyBuilder,
   getBip32PublicKeyImplementation,
 } from './getBip32PublicKey';
-
-const TEST_SECRET_RECOVERY_PHRASE =
-  'test test test test test test test test test test test ball';
 
 describe('specificationBuilder', () => {
   const methodHooks = {
@@ -49,7 +48,7 @@ describe('getBip32PublicKeyImplementation', () => {
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
       const getMnemonic = jest
         .fn()
-        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE);
+        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
 
       expect(
         await getBip32PublicKeyImplementation({
@@ -71,7 +70,7 @@ describe('getBip32PublicKeyImplementation', () => {
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
       const getMnemonic = jest
         .fn()
-        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE);
+        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
 
       expect(
         await getBip32PublicKeyImplementation({

@@ -26,7 +26,7 @@ export type GetBip32EntropyMethodHooks = {
   /**
    * @returns The mnemonic of the user's primary keyring.
    */
-  getMnemonic: () => Promise<string>;
+  getMnemonic: () => Promise<Uint8Array>;
 
   /**
    * Waits for the extension to be unlocked.
@@ -207,7 +207,7 @@ export function getBip32EntropyImplementation({
     const node = await SLIP10Node.fromDerivationPath({
       curve: params.curve,
       derivationPath: [
-        `bip39:${await getMnemonic()}`,
+        await getMnemonic(),
         ...params.path
           .slice(1)
           .map<BIP32Node>((index) => `bip32:${index}` as BIP32Node),
