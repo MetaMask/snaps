@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.28.0]
+### Uncategorized
+- Add `endowment:long-running` deprecation warning ([#1126](https://github.com/MetaMask/snaps-monorepo/pull/1126))
+- Make `authorize()` throw on excluded permissions ([#1125](https://github.com/MetaMask/snaps-monorepo/pull/1125))
+- Require `location` for `SnapController.updateSnap` ([#1124](https://github.com/MetaMask/snaps-monorepo/pull/1124))
+- BREAKING: Disallow local snaps by default ([#1123](https://github.com/MetaMask/snaps-monorepo/pull/1123))
+- BREAKING: Remove `WebSocket` ([#1122](https://github.com/MetaMask/snaps-monorepo/pull/1122))
+- Add safety measures for malicious tarballs  ([#1116](https://github.com/MetaMask/snaps-monorepo/pull/1116))
+- Allow updating crashed snaps ([#1113](https://github.com/MetaMask/snaps-monorepo/pull/1113))
+- Add experimental offscreen execution environment ([#1082](https://github.com/MetaMask/snaps-monorepo/pull/1082))
+- BREAKING: Add support for snap registries ([#1090](https://github.com/MetaMask/snaps-monorepo/pull/1090))
+- Use `@metamask/utils@3.4.0` ([#1102](https://github.com/MetaMask/snaps-monorepo/pull/1102))
+
 ## [0.27.1]
 ### Changed
 - No changes this release.
@@ -428,7 +441,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.28.0...HEAD
+[0.28.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.1...v0.28.0
 [0.27.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.0...v0.27.1
 [0.27.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.26.2...v0.27.0
 [0.26.2]: https://github.com/MetaMask/snaps-monorepo/compare/v0.26.1...v0.26.2

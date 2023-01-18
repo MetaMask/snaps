@@ -1,6 +1,6 @@
 {
   "name": "@metamask/multichain-provider",
-  "version": "0.27.1",
+  "version": "0.28.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps-monorepo.git"
@@ -27,7 +27,7 @@
   "dependencies": {
     "@metamask/providers": "^10.2.0",
     "@metamask/safe-event-emitter": "^2.0.0",
-    "@metamask/snaps-utils": "^0.27.1",
+    "@metamask/snaps-utils": "^0.28.0",
     "@metamask/utils": "^3.4.1",
     "nanoid": "^3.1.31"
   },
@@ -38,7 +38,7 @@
     "@metamask/eslint-config-jest": "^11.0.0",
     "@metamask/eslint-config-nodejs": "^11.0.1",
     "@metamask/eslint-config-typescript": "^11.0.0",
-    "@metamask/snaps-utils": "^0.27.1",
+    "@metamask/snaps-utils": "^0.28.0",
     "@types/jest": "^27.5.1",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",

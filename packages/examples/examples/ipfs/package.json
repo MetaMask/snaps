@@ -1,6 +1,6 @@
 {
   "name": "ipfs-snap",
-  "version": "0.27.1",
+  "version": "0.28.0",
   "private": true,
   "description": "An example Snap that performs IPFS operations.",
   "repository": {
@@ -28,7 +28,7 @@
     "@metamask/eslint-config-jest": "^11.0.0",
     "@metamask/eslint-config-nodejs": "^11.0.1",
     "@metamask/eslint-config-typescript": "^11.0.0",
-    "@metamask/snaps-cli": "^0.27.1",
+    "@metamask/snaps-cli": "^0.28.0",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
     "eslint": "^8.27.0",

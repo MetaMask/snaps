@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.28.0]
+### Uncategorized
+- BREAKING: Bump `key-tree` to 6.2.0 and use `Uint8Array` for secret recovery phrases ([#1137](https://github.com/MetaMask/snaps-monorepo/pull/1137))
+- bump @metamask/key-tree version ([#1114](https://github.com/MetaMask/snaps-monorepo/pull/1114))
+- BREAKING: Add support for snap registries ([#1090](https://github.com/MetaMask/snaps-monorepo/pull/1090))
+- Use `@metamask/utils@3.4.0` ([#1102](https://github.com/MetaMask/snaps-monorepo/pull/1102))
+
 ## [0.27.1]
 ### Fixed
 - Fix `snap_manageState` with empty state ([#1083](https://github.com/MetaMask/snaps-monorepo/pull/1083))
@@ -270,7 +277,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.28.0...HEAD
+[0.28.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.1...v0.28.0
 [0.27.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.0...v0.27.1
 [0.27.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.26.2...v0.27.0
 [0.26.2]: https://github.com/MetaMask/snaps-monorepo/compare/v0.26.1...v0.26.2

@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-browserify-plugin",
-  "version": "0.27.1",
+  "version": "0.28.0",
   "keywords": [
     "browserify-plugin"
   ],
@@ -28,7 +28,7 @@
     "publish:package": "../../scripts/publish-package.sh"
   },
   "dependencies": {
-    "@metamask/snaps-utils": "^0.27.1",
+    "@metamask/snaps-utils": "^0.28.0",
     "convert-source-map": "^1.8.0"
   },
   "devDependencies": {
