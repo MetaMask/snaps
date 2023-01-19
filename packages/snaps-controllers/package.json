@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-controllers",
-  "version": "0.27.1",
+  "version": "0.28.0",
   "description": "Controllers for MetaMask Snaps.",
   "repository": {
     "type": "git",
@@ -36,10 +36,10 @@
     "@metamask/object-multiplex": "^1.1.0",
     "@metamask/permission-controller": "^1.0.1",
     "@metamask/post-message-stream": "^6.1.0",
-    "@metamask/rpc-methods": "^0.27.1",
-    "@metamask/snaps-execution-environments": "^0.27.1",
+    "@metamask/rpc-methods": "^0.28.0",
+    "@metamask/snaps-execution-environments": "^0.28.0",
     "@metamask/snaps-registry": "^1.0.0",
-    "@metamask/snaps-utils": "^0.27.1",
+    "@metamask/snaps-utils": "^0.28.0",
     "@metamask/subject-metadata-controller": "^1.0.1",
     "@metamask/utils": "^3.4.1",
     "@xstate/fsm": "^2.0.0",

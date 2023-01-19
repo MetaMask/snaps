@@ -1,6 +1,6 @@
 {
   "name": "rollup-snap",
-  "version": "0.27.1",
+  "version": "0.28.0",
   "private": true,
   "description": "An example Snap built using TypeScript and Rollup",
   "repository": {
@@ -27,9 +27,9 @@
     "@metamask/eslint-config-jest": "^11.0.0",
     "@metamask/eslint-config-nodejs": "^11.0.1",
     "@metamask/eslint-config-typescript": "^11.0.0",
-    "@metamask/snaps-cli": "^0.27.1",
-    "@metamask/snaps-rollup-plugin": "^0.27.1",
-    "@metamask/snaps-types": "^0.27.1",
+    "@metamask/snaps-cli": "^0.28.0",
+    "@metamask/snaps-rollup-plugin": "^0.28.0",
+    "@metamask/snaps-types": "^0.28.0",
     "@rollup/plugin-babel": "^5.3.1",
     "@types/node": "^17.0.33",
     "@typescript-eslint/eslint-plugin": "^5.42.1",

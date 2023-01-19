@@ -1,7 +1,13 @@
+// TODO: Import from root.
+import { mnemonicPhraseToBytes } from '@metamask/key-tree/dist/utils';
 import { SemVerVersion } from '@metamask/utils';
 
 export const TEST_SECRET_RECOVERY_PHRASE =
   'test test test test test test test test test test test ball';
+
+export const TEST_SECRET_RECOVERY_PHRASE_BYTES = mnemonicPhraseToBytes(
+  TEST_SECRET_RECOVERY_PHRASE,
+);
 
 /**
  * Tens/hundreds legacy tests use creation utils.

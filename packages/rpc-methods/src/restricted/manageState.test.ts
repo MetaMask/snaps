@@ -2,7 +2,7 @@ import { encrypt } from '@metamask/browser-passworder';
 import {
   MOCK_LOCAL_SNAP_ID,
   MOCK_SNAP_ID,
-  TEST_SECRET_RECOVERY_PHRASE,
+  TEST_SECRET_RECOVERY_PHRASE_BYTES,
 } from '@metamask/snaps-utils/test-utils';
 import { ethErrors } from 'eth-rpc-errors';
 
@@ -76,7 +76,9 @@ describe('snap_manageState', () => {
         clearSnapState,
         getSnapState,
         updateSnapState,
-        getMnemonic: jest.fn().mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE),
+        getMnemonic: jest
+          .fn()
+          .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES),
         getUnlockPromise: jest.fn(),
       });
 
@@ -99,7 +101,9 @@ describe('snap_manageState', () => {
         clearSnapState,
         getSnapState,
         updateSnapState,
-        getMnemonic: jest.fn().mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE),
+        getMnemonic: jest
+          .fn()
+          .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES),
         getUnlockPromise: jest.fn(),
       });
 
@@ -122,7 +126,9 @@ describe('snap_manageState', () => {
         clearSnapState,
         getSnapState,
         updateSnapState,
-        getMnemonic: jest.fn().mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE),
+        getMnemonic: jest
+          .fn()
+          .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES),
         getUnlockPromise: jest.fn(),
       });
 
@@ -152,7 +158,9 @@ describe('snap_manageState', () => {
         clearSnapState,
         getSnapState,
         updateSnapState,
-        getMnemonic: jest.fn().mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE),
+        getMnemonic: jest
+          .fn()
+          .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES),
         getUnlockPromise: jest.fn(),
       });
 
@@ -192,7 +200,9 @@ describe('snap_manageState', () => {
         clearSnapState,
         getSnapState,
         updateSnapState,
-        getMnemonic: jest.fn().mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE),
+        getMnemonic: jest
+          .fn()
+          .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES),
         getUnlockPromise: jest.fn(),
       });
 
@@ -237,7 +247,9 @@ describe('snap_manageState', () => {
         clearSnapState,
         getSnapState,
         updateSnapState,
-        getMnemonic: jest.fn().mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE),
+        getMnemonic: jest
+          .fn()
+          .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES),
         getUnlockPromise: jest.fn(),
       });
 
@@ -263,7 +275,9 @@ describe('snap_manageState', () => {
         clearSnapState,
         getSnapState,
         updateSnapState,
-        getMnemonic: jest.fn().mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE),
+        getMnemonic: jest
+          .fn()
+          .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES),
         getUnlockPromise: jest.fn(),
       });
 
@@ -298,7 +312,9 @@ describe('snap_manageState', () => {
         clearSnapState,
         getSnapState,
         updateSnapState,
-        getMnemonic: jest.fn().mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE),
+        getMnemonic: jest
+          .fn()
+          .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES),
         getUnlockPromise: jest.fn(),
       });
 

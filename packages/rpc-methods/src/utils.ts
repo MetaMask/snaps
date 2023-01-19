@@ -96,7 +96,7 @@ type DeriveEntropyOptions = {
   /**
    * The mnemonic phrase to use for entropy derivation.
    */
-  mnemonicPhrase: string;
+  mnemonicPhrase: Uint8Array;
 
   /**
    * A hardened BIP-32 index, which is used to derive the root key from the
@@ -136,7 +136,7 @@ export async function deriveEntropy({
   // Derive the private key using BIP-32.
   const { privateKey } = await SLIP10Node.fromDerivationPath({
     derivationPath: [
-      `bip39:${mnemonicPhrase}`,
+      mnemonicPhrase,
       `bip32:${magic}`,
       ...computedDerivationPath,
     ],

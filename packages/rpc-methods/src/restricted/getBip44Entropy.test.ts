@@ -1,4 +1,5 @@
 import { SnapCaveatType } from '@metamask/snaps-utils';
+import { TEST_SECRET_RECOVERY_PHRASE_BYTES } from '@metamask/snaps-utils/test-utils';
 
 import {
   getBip44EntropyBuilder,
@@ -8,9 +9,6 @@ import {
   validateCaveat,
   validateParams,
 } from './getBip44Entropy';
-
-const TEST_SECRET_RECOVERY_PHRASE =
-  'test test test test test test test test test test test ball';
 
 describe('validateParams', () => {
   it.each([true, false, null, undefined, 'foo', [], new (class {})()])(
@@ -222,7 +220,7 @@ describe('getBip44EntropyImplementation', () => {
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
       const getMnemonic = jest
         .fn()
-        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE);
+        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
 
       expect(
         // @ts-expect-error Missing other required properties.

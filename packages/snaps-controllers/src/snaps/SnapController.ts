@@ -494,6 +494,11 @@ type SnapControllerArgs = {
   environmentEndowmentPermissions: string[];
 
   /**
+   * Excluded permissions with its associated error message used to forbid certain permssions.
+   */
+  excludedPermissions: Record<string, string>;
+
+  /**
    * The function that will be used by the controller fo make network requests.
    * Should be compatible with {@link fetch}.
    */
@@ -616,6 +621,8 @@ export class SnapController extends BaseController<
 
   #environmentEndowmentPermissions: string[];
 
+  #excludedPermissions: Record<string, string>;
+
   #featureFlags: FeatureFlags;
 
   #fetchFunction: typeof fetch;
@@ -649,6 +656,7 @@ export class SnapController extends BaseController<
     messenger,
     state,
     environmentEndowmentPermissions = [],
+    excludedPermissions = {},
     idleTimeCheckInterval = inMilliseconds(5, Duration.Second),
     registry = new JsonSnapsRegistry(),
     maxIdleTime = inMilliseconds(30, Duration.Second),
@@ -714,6 +722,7 @@ export class SnapController extends BaseController<
 
     this.#closeAllConnections = closeAllConnections;
     this.#environmentEndowmentPermissions = environmentEndowmentPermissions;
+    this.#excludedPermissions = excludedPermissions;
     this.#featureFlags = featureFlags;
     this.#fetchFunction = fetchFunction;
     this.#idleTimeCheckInterval = idleTimeCheckInterval;
@@ -1616,8 +1625,8 @@ export class SnapController extends BaseController<
         const updateResult = await this.updateSnap(
           origin,
           snapId,
-          versionRange,
           location,
+          versionRange,
         );
         if (updateResult === null) {
           throw ethErrors.rpc.invalidParams(
@@ -1675,15 +1684,15 @@ export class SnapController extends BaseController<
    *
    * @param origin - The origin requesting the snap update.
    * @param snapId - The id of the Snap to be updated.
-   * @param newVersionRange - A semver version range in which the maximum version will be chosen.
    * @param location - Optional location that was already used during installation flow.
+   * @param newVersionRange - A semver version range in which the maximum version will be chosen.
    * @returns The snap metadata if updated, `null` otherwise.
    */
   async updateSnap(
     origin: string,
     snapId: ValidatedSnapId,
+    location: SnapLocation,
     newVersionRange: string = DEFAULT_REQUESTED_SNAP_VERSION,
-    location?: SnapLocation,
   ): Promise<TruncatedSnap | null> {
     const snap = this.getExpect(snapId);
 
@@ -1692,11 +1701,7 @@ export class SnapController extends BaseController<
         `Received invalid snap version range: "${newVersionRange}".`,
       );
     }
-    const newSnap = await this.#fetchSnap(
-      snapId,
-      location ??
-        this.#detectSnapLocation(snapId, { versionRange: newVersionRange }),
-    );
+    const newSnap = await this.#fetchSnap(snapId, location);
     const newVersion = newSnap.manifest.result.version;
     if (!gtVersion(newVersion, snap.version)) {
       console.warn(
@@ -2128,6 +2133,24 @@ export class SnapController extends BaseController<
     try {
       const processedPermissions =
         this.#processSnapPermissions(initialPermissions);
+
+      const excludedPermissionErrors = Object.keys(processedPermissions).reduce<
+        string[]
+      >((errors, permission) => {
+        if (hasProperty(this.#excludedPermissions, permission)) {
+          errors.push(this.#excludedPermissions[permission]);
+        }
+
+        return errors;
+      }, []);
+
+      assert(
+        excludedPermissionErrors.length === 0,
+        `One or more permissions are not allowed:\n${excludedPermissionErrors.join(
+          '\n',
+        )}`,
+      );
+
       const id = nanoid();
       const { permissions: approvedPermissions, ...requestData } =
         (await this.messagingSystem.call(
@@ -2365,6 +2388,9 @@ export class SnapController extends BaseController<
 
     // Long running snaps have timeouts disabled
     if (isLongRunning) {
+      console.warn(
+        `${SnapEndowments.LongRunning} will soon be deprecated. For more information please see https://github.com/MetaMask/snaps-monorepo/issues/945.`,
+      );
       return promise;
     }
 
