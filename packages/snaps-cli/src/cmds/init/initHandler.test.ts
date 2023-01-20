@@ -124,7 +124,7 @@ describe('initialize', () => {
       jest.spyOn(initUtils, 'gitInit').mockImplementation();
 
       const { manifest, packageJson } = getSnapFiles({
-        packageJson: getPackageJson({ main: undefined }),
+        packageJson: { ...getPackageJson(), main: undefined },
       });
 
       jest
