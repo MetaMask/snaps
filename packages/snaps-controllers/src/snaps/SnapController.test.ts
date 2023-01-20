@@ -579,9 +579,8 @@ describe('SnapController', () => {
     expect(messenger.call).toHaveBeenCalledTimes(5);
     expect(messenger.call).toHaveBeenNthCalledWith(
       1,
-      'PermissionController:hasPermission',
+      'PermissionController:getPermissions',
       MOCK_ORIGIN,
-      expectedSnapObject.permissionName,
     );
 
     expect(messenger.call).toHaveBeenNthCalledWith(
