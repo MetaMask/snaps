@@ -227,7 +227,7 @@ export function fixManifest(
   }
 
   clonedFile.result = manifestCopy;
-  // TODO: Do we need to update clonedFile.value?
+  clonedFile.value = JSON.stringify(manifestCopy);
   return clonedFile;
 }
 
