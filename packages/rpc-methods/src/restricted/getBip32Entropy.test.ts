@@ -1,5 +1,5 @@
 import { SIP_6_MAGIC_VALUE, SnapCaveatType } from '@metamask/snaps-utils';
-import { TEST_SECRET_RECOVERY_PHRASE } from '@metamask/snaps-utils/test-utils';
+import { TEST_SECRET_RECOVERY_PHRASE_BYTES } from '@metamask/snaps-utils/test-utils';
 
 import {
   getBip32EntropyBuilder,
@@ -266,7 +266,7 @@ describe('getBip32EntropyImplementation', () => {
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
       const getMnemonic = jest
         .fn()
-        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE);
+        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
 
       expect(
         // @ts-expect-error Missing other required properties.
@@ -291,7 +291,7 @@ describe('getBip32EntropyImplementation', () => {
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
       const getMnemonic = jest
         .fn()
-        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE);
+        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
 
       expect(
         // @ts-expect-error Missing other required properties.

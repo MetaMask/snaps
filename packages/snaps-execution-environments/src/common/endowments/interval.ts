@@ -1,3 +1,5 @@
+const MINIMUM_INTERVAL = 10;
+
 /**
  * Creates a pair of `setInterval` and `clearInterval` functions attenuated such
  * that:
@@ -18,7 +20,10 @@ const createInterval = () => {
       );
     }
     const handle = Object.freeze({});
-    const platformHandle = setInterval(handler, timeout);
+    const platformHandle = setInterval(
+      handler,
+      Math.max(MINIMUM_INTERVAL, timeout ?? 0),
+    );
     registeredHandles.set(handle, platformHandle);
     return handle;
   };

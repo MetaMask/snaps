@@ -1,3 +1,5 @@
+const MINIMUM_TIMEOUT = 10;
+
 /**
  * Creates a pair of `setTimeout` and `clearTimeout` functions attenuated such
  * that:
@@ -22,7 +24,7 @@ const createTimeout = () => {
     const platformHandle = setTimeout(() => {
       registeredHandles.delete(handle);
       handler();
-    }, timeout);
+    }, Math.max(MINIMUM_TIMEOUT, timeout ?? 0));
 
     registeredHandles.set(handle, platformHandle);
     return handle;

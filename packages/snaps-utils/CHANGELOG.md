@@ -6,6 +6,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.28.0]
+### Added
+- **BREAKING:** Add support for snap registries ([#1090](https://github.com/MetaMask/snaps-monorepo/pull/1090))
+  - This removes the `checkBlockList` constructor argument in favor of `registry`
+  - A registry implementation can be passed here, defaulting to a hosted JSON file
+  - Requiring a snap to be on the allowlist can be toggled with the feature flag `requireAllowlist`
+- Add experimental offscreen execution environment ([#1082](https://github.com/MetaMask/snaps-monorepo/pull/1082))
+
+### Changed
+- **BREAKING:** Bump `key-tree` to 6.2.0 and use `Uint8Array` for secret recovery phrases ([#1137](https://github.com/MetaMask/snaps-monorepo/pull/1137))
+
+### Removed
+- **BREAKING:** Remove `WebSocket` endowment ([#1122](https://github.com/MetaMask/snaps-monorepo/pull/1122))
+
+### Fixed
+- Fix missing cronjob export ([#1134](https://github.com/MetaMask/snaps-monorepo/pull/1134))
+
 ## [0.27.1]
 ### Changed
 - No changes this release.
@@ -137,7 +154,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release ([#410](https://github.com/MetaMask/snaps-monorepo/pull/410), [#421](https://github.com/MetaMask/snaps-monorepo/pull/421))
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.28.0...HEAD
+[0.28.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.1...v0.28.0
 [0.27.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.0...v0.27.1
 [0.27.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.26.2...v0.27.0
 [0.26.2]: https://github.com/MetaMask/snaps-monorepo/compare/v0.26.1...v0.26.2

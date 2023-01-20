@@ -4,6 +4,7 @@ import { hasProperty } from '@metamask/utils';
 
 import { rootRealmGlobal } from '../globalObject';
 import crypto from './crypto';
+import date from './date';
 import interval from './interval';
 import math from './math';
 import network from './network';
@@ -27,15 +28,19 @@ type EndowmentFactoryResult = {
  * the same factory function, but we only call each factory once for each snap.
  * See {@link createEndowments} for details.
  */
-const endowmentFactories = [timeout, interval, network, crypto, math].reduce(
-  (factories, builder) => {
-    builder.names.forEach((name) => {
-      factories.set(name, builder.factory);
-    });
-    return factories;
-  },
-  new Map<string, () => EndowmentFactoryResult>(),
-);
+const endowmentFactories = [
+  timeout,
+  interval,
+  network,
+  crypto,
+  math,
+  date,
+].reduce((factories, builder) => {
+  builder.names.forEach((name) => {
+    factories.set(name, builder.factory);
+  });
+  return factories;
+}, new Map<string, () => EndowmentFactoryResult>());
 
 /**
  * Gets the endowments for a particular Snap. Some endowments, like `setTimeout`

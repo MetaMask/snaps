@@ -1,5 +1,5 @@
 {
-  "version": "0.27.1",
+  "version": "0.28.0",
   "description": "An example transaction insights Snap.",
   "proposedName": "Transaction Insights Example Snap",
   "repository": {
