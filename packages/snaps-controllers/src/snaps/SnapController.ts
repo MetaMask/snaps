@@ -1791,7 +1791,11 @@ export class SnapController extends BaseController<
     const sourceCode = newSnap.files
       .find((file) => file.path === normalizedSourcePath)
       ?.toString();
-    assert(sourceCode !== undefined);
+
+    assert(
+      typeof sourceCode === 'string' && sourceCode.length > 0,
+      `Invalid source code for snap "${snapId}".`,
+    );
 
     try {
       await this.#startSnap({ snapId, sourceCode });
@@ -1980,13 +1984,15 @@ export class SnapController extends BaseController<
     const sourceCode = files
       .find((file) => file.path === normalizedSourcePath)
       ?.toString();
+
     const svgIcon = normalizedIconPath
       ? files.find((file) => file.path === normalizedIconPath)
       : undefined;
-    assert(sourceCode !== undefined);
-    if (typeof sourceCode !== 'string' || sourceCode.length === 0) {
-      throw new Error(`Invalid source code for snap "${snapId}".`);
-    }
+
+    assert(
+      typeof sourceCode === 'string' && sourceCode.length > 0,
+      `Invalid source code for snap "${snapId}".`,
+    );
 
     const snapsState = this.state.snaps;
 
