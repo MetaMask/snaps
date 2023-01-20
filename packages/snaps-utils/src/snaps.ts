@@ -190,7 +190,8 @@ function getChecksummableManifest(
   const manifestCopy = manifest.clone() as VirtualFile<any>;
   delete manifestCopy.result.source.shasum;
 
-  // Use fast-json-stable-stringify for determinism
+  // We use fast-json-stable-stringify to deterministically serialize the JSON
+  // This is required before checksumming so we get reproducible checksums across platforms etc
   manifestCopy.value = stableStringify(manifestCopy.result);
   return manifestCopy;
 }

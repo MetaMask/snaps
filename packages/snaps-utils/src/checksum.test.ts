@@ -7,14 +7,11 @@ const EMPTY_SHA256 = '47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=';
 
 describe('checksum', () => {
   const FOO_BAR_STR = 'foo bar';
-  let FOO_BAR_UINT8: Uint8Array;
+  const FOO_BAR_UINT8 = new Uint8Array([
+    0x66, 0x6f, 0x6f, 0x20, 0x62, 0x61, 0x72,
+  ]);
   // echo -n 'foo bar' | shasum -a 256 | cut -d ' ' -f 1| xxd -r -p | base64
   const FOO_BAR_SHA256 = '+8Gp+Fjqnhd5FpZL2Iw9N7kaHoRBJ2XimVB3fyZcS3U=';
-
-  beforeEach(() => {
-    // "foo bar" in ascii
-    FOO_BAR_UINT8 = new Uint8Array([0x66, 0x6f, 0x6f, 0x20, 0x62, 0x61, 0x72]);
-  });
 
   it('takes string', () => {
     expect(base64.encode(checksum(FOO_BAR_STR))).toBe(FOO_BAR_SHA256);

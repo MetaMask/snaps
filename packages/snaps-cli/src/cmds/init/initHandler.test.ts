@@ -1,5 +1,5 @@
 import * as snapUtils from '@metamask/snaps-utils';
-import { getSnapFiles } from '@metamask/snaps-utils/test-utils';
+import { getPackageJson, getSnapFiles } from '@metamask/snaps-utils/test-utils';
 import * as utils from '@metamask/utils';
 import { promises as fs } from 'fs';
 import pathUtils from 'path';
@@ -124,7 +124,7 @@ describe('initialize', () => {
       jest.spyOn(initUtils, 'gitInit').mockImplementation();
 
       const { manifest, packageJson } = getSnapFiles({
-        packageJson: { main: undefined } as any,
+        packageJson: getPackageJson({ main: undefined }),
       });
 
       jest

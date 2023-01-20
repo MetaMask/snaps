@@ -4,15 +4,13 @@ import { sha256 } from '@noble/hashes/sha256';
 import { VirtualFile } from './virtual-file/VirtualFile';
 
 /**
- * Calculates checksum for a single buffer.
+ * Calculates checksum for a single byte array.
  *
- * @param buffer - The buffer to calculate the checksum over.
+ * @param bytes - The byte array to calculate the checksum for.
  * @returns A single sha-256 checksum.
  */
-export function checksum(
-  buffer: VirtualFile | Uint8Array | string,
-): Uint8Array {
-  const value = buffer instanceof VirtualFile ? buffer.value : buffer;
+export function checksum(bytes: VirtualFile | Uint8Array | string): Uint8Array {
+  const value = bytes instanceof VirtualFile ? bytes.value : bytes;
   return sha256(value);
 }
 

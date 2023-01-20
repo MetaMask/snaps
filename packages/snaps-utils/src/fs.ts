@@ -2,8 +2,7 @@ import { Json } from '@metamask/utils';
 import { promises as fs } from 'fs';
 import pathUtils from 'path';
 
-import { VirtualFile } from './index.browser';
-import { readVirtualFile } from './virtual-file';
+import { readVirtualFile, VirtualFile } from './virtual-file';
 
 /**
  * Checks whether the given path string resolves to an existing directory, and
