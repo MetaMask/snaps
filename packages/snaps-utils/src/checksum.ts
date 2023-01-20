@@ -30,14 +30,15 @@ export function checksumFiles(files: VirtualFile[]) {
   return checksum(
     concatBytes(
       [...files]
-        // eslint-disable-next-line consistent-return, array-callback-return
         .sort((a, b) => {
+          assert(
+            a.path !== b.path,
+            'Tried to sort files with non-unique paths.',
+          );
           if (a.path < b.path) {
             return -1;
-          } else if (a.path > b.path) {
-            return 1;
           }
-          assert(false, 'Tried to sort files with non-unique paths.');
+          return 1;
         })
         .map((file) => checksum(file)),
     ),
