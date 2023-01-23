@@ -1,8 +1,4 @@
-import {
-  PermissionType,
-  Caveat,
-  OriginString,
-} from '@metamask/permission-controller';
+import { Caveat, OriginString } from '@metamask/permission-controller';
 import { SnapCaveatType, SnapId } from '@metamask/snaps-utils';
 import {
   MOCK_SNAP_ID,
@@ -30,20 +26,36 @@ describe('builder', () => {
       },
     });
   });
+});
 
-  it('builder outputs expected specification', () => {
-    expect(
-      invokeSnapBuilder.specificationBuilder({
-        methodHooks: {
-          getSnap: jest.fn(),
-          handleSnapRpcRequest: jest.fn(),
-        },
-      }),
-    ).toMatchObject({
-      permissionType: PermissionType.RestrictedMethod,
-      targetKey: restrictedMethod,
-      allowedCaveats: [SnapCaveatType.SnapIds],
-      methodImplementation: expect.any(Function),
+describe('specificationBuilder', () => {
+  const specification = invokeSnapBuilder.specificationBuilder({
+    methodHooks: {
+      getSnap: jest.fn(),
+      handleSnapRpcRequest: jest.fn(),
+    },
+  });
+  describe('validator', () => {
+    it('throws if the caveat is not a single "snapIds"', () => {
+      expect(() =>
+        // @ts-expect-error Missing required permission types.
+        specification.validator({}),
+      ).toThrow('Expected a single "snapIds" caveat.');
+
+      expect(() =>
+        // @ts-expect-error Missing required permission types.
+        specification.validator({ caveats: [{ type: 'foo', value: 'bar' }] }),
+      ).toThrow('Expected a single "snapIds" caveat.');
+
+      expect(() =>
+        // @ts-expect-error Missing required permission types.
+        specification.validator({
+          caveats: [
+            { type: SnapCaveatType.SnapIds, value: { [MOCK_SNAP_ID]: {} } },
+            { type: SnapCaveatType.SnapIds, value: { [MOCK_SNAP_ID]: {} } },
+          ],
+        }),
+      ).toThrow('Expected a single "snapIds" caveat.');
     });
   });
 });

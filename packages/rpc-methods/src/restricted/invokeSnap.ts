@@ -6,6 +6,7 @@ import {
   RestrictedMethodCaveatSpecificationConstraint,
   Caveat,
   RestrictedMethodParameters,
+  PermissionValidatorConstraint,
 } from '@metamask/permission-controller';
 import {
   Snap,
@@ -47,6 +48,7 @@ type InvokeSnapSpecification = ValidPermissionSpecification<{
   targetKey: typeof targetKey;
   methodImplementation: ReturnType<typeof getInvokeSnapImplementation>;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
+  validator: PermissionValidatorConstraint;
 }>;
 
 type InvokeSnapParams = {
@@ -95,6 +97,13 @@ const specificationBuilder: PermissionSpecificationBuilder<
     targetKey,
     allowedCaveats: [SnapCaveatType.SnapIds],
     methodImplementation: getInvokeSnapImplementation(methodHooks),
+    validator: ({ caveats }) => {
+      if (caveats?.length !== 1 || caveats[0].type !== SnapCaveatType.SnapIds) {
+        throw ethErrors.rpc.invalidParams({
+          message: `Expected a single "${SnapCaveatType.SnapIds}" caveat.`,
+        });
+      }
+    },
   };
 };
 

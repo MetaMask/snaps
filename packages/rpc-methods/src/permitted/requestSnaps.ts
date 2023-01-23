@@ -63,7 +63,7 @@ export type RequestSnapsHooks = {
 
 /**
  * Checks whether an origin has existing `wallet_snap` permission and
- * whether or not it has the requested snapIds.
+ * whether or not it has the requested snapIds caveat.
  *
  * @param existingPermissions - The existing permissions for the origin.
  * @param requestedSnaps - The requested snaps.
