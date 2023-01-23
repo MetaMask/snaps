@@ -5,6 +5,7 @@ import {
   PermissionType,
   RestrictedMethodCaveatSpecificationConstraint,
   Caveat,
+  RestrictedMethodParameters,
 } from '@metamask/permission-controller';
 import {
   Snap,
@@ -12,6 +13,7 @@ import {
   HandlerType,
   SnapRpcHookArgs,
   SnapCaveatType,
+  validateSnapId,
 } from '@metamask/snaps-utils';
 import {
   isJsonRpcRequest,
@@ -23,7 +25,7 @@ import {
 import { ethErrors } from 'eth-rpc-errors';
 import { nanoid } from 'nanoid';
 
-const targetKey = 'wallet_snap';
+export const targetKey = 'wallet_snap';
 
 export type InvokeSnapMethodHooks = {
   getSnap: (snapId: SnapId) => Snap | undefined;
@@ -59,15 +61,15 @@ type InvokeSnapParams = {
  * @throws If the caveat is invalid.
  */
 export function validateCaveat(caveat: Caveat<string, any>) {
-  if (
-    !hasProperty(caveat, 'value') ||
-    !isObject(caveat.value) ||
-    Object.keys(caveat.value).length === 0
-  ) {
+  if (!isObject(caveat.value) || Object.keys(caveat.value).length === 0) {
     throw ethErrors.rpc.invalidParams({
       message:
         'Expected caveat to have a value property of a non-empty object of snap ids.',
     });
+  }
+  const snapIds = Object.keys(caveat.value);
+  for (const snapId of snapIds) {
+    validateSnapId(snapId);
   }
 }
 
@@ -105,13 +107,29 @@ export const invokeSnapBuilder = Object.freeze({
   },
 } as const);
 
-export const getInvokeSnapCaveatSpecifications: Record<
+export const InvokeSnapCaveatSpecifications: Record<
   SnapCaveatType.SnapIds,
-  Omit<RestrictedMethodCaveatSpecificationConstraint, 'decorator'>
+  RestrictedMethodCaveatSpecificationConstraint
 > = {
   [SnapCaveatType.SnapIds]: Object.freeze({
     type: SnapCaveatType.SnapIds,
     validator: (caveat) => validateCaveat(caveat),
+    decorator: (method, caveat) => {
+      return async (args) => {
+        const {
+          params,
+          context: { origin },
+        }: RestrictedMethodOptions<RestrictedMethodParameters> = args;
+        const snapIds = caveat.value;
+        const { snapId } = params as InvokeSnapParams;
+        if (!hasProperty(snapIds, snapId)) {
+          throw new Error(
+            `${origin} does not have permission to invoke ${snapId} snap.`,
+          );
+        }
+        return await method(args);
+      };
+    },
   }),
 };
 

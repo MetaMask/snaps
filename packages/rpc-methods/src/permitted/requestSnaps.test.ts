@@ -14,9 +14,8 @@ import {
 } from '@metamask/types';
 import { JsonRpcEngine } from 'json-rpc-engine';
 
+import { targetKey as permissionName } from '../restricted/invokeSnap';
 import { requestSnapsHandler, hasSnaps } from './requestSnaps';
-
-const permissionName = 'wallet_snap';
 
 describe('requestSnapsHandler', () => {
   it('has the expected shape', () => {

@@ -1,5 +1,9 @@
-import { PermissionType, Caveat } from '@metamask/permission-controller';
-import { SnapCaveatType } from '@metamask/snaps-utils';
+import {
+  PermissionType,
+  Caveat,
+  OriginString,
+} from '@metamask/permission-controller';
+import { SnapCaveatType, SnapId } from '@metamask/snaps-utils';
 import {
   MOCK_SNAP_ID,
   MOCK_ORIGIN,
@@ -11,10 +15,9 @@ import {
   invokeSnapBuilder,
   getInvokeSnapImplementation,
   validateCaveat,
-  getInvokeSnapCaveatSpecifications,
+  InvokeSnapCaveatSpecifications,
+  targetKey as restrictedMethod,
 } from './invokeSnap';
-
-const restrictedMethod = 'wallet_snap';
 
 describe('builder', () => {
   it('has the expected shape', () => {
@@ -70,16 +73,47 @@ describe('validateCaveats', () => {
   });
 });
 
-describe('getInvokeSnapCaveatSpecifications', () => {
+describe('InvokeSnapCaveatSpecifications', () => {
   describe('validator', () => {
     it('throws for an invalid caveat object', () => {
       expect(() => {
-        getInvokeSnapCaveatSpecifications[SnapCaveatType.SnapIds].validator?.({
+        InvokeSnapCaveatSpecifications[SnapCaveatType.SnapIds].validator?.({
           type: SnapCaveatType.SnapIds,
           value: {},
         });
       }).toThrow(
         'Expected caveat to have a value property of a non-empty object of snap ids.',
+      );
+    });
+  });
+
+  describe('decorator', () => {
+    const params: { snapId: SnapId } = { snapId: MOCK_SNAP_ID };
+    const context: { origin: OriginString } = { origin: MOCK_ORIGIN };
+    it('returns the result of the method implementation', async () => {
+      const caveat = {
+        type: SnapCaveatType.SnapIds,
+        value: { [MOCK_SNAP_ID]: {} },
+      };
+      const method = jest.fn().mockImplementation(() => 'foo');
+      expect(
+        await InvokeSnapCaveatSpecifications[SnapCaveatType.SnapIds].decorator(
+          method,
+          caveat,
+        )({ method: 'hello', params, context }),
+      ).toBe('foo');
+    });
+
+    it('throws if the origin trying to invoke the snap does not have its permission', async () => {
+      const method = jest.fn().mockImplementation(() => 'foo');
+      const caveat = { type: SnapCaveatType.SnapIds, value: { foo: {} } };
+      await expect(
+        InvokeSnapCaveatSpecifications[SnapCaveatType.SnapIds].decorator(
+          method,
+          caveat,
+        )({ method: 'hello', params, context }),
+      ).rejects.toThrow(
+        `${MOCK_ORIGIN} does not have permission to invoke ${MOCK_SNAP_ID} snap.`,
       );
     });
   });

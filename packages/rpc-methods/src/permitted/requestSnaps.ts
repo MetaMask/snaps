@@ -12,6 +12,7 @@ import {
 import { hasProperty, isObject } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
+import { targetKey as permissionKey } from '../restricted/invokeSnap';
 import {
   handleInstallSnaps,
   InstallSnapsHook,
@@ -121,10 +122,9 @@ async function requestSnapsImplementation(
   // TODO: Should this be part of the install flow?
 
   try {
-    const permissionKey = 'wallet_snap';
     const requestedPermissions = {
       [permissionKey]: {
-        caveats: [{ type: 'snapIds', value: requestedSnaps }],
+        caveats: [{ type: SnapCaveatType.SnapIds, value: requestedSnaps }],
       },
     } as RequestedPermissions;
     const existingPermissions = await getPermissions();

@@ -21,7 +21,7 @@ import {
 } from './getBip44Entropy';
 import { getEntropyBuilder, GetEntropyHooks } from './getEntropy';
 import {
-  getInvokeSnapCaveatSpecifications,
+  InvokeSnapCaveatSpecifications,
   invokeSnapBuilder,
   InvokeSnapMethodHooks,
 } from './invokeSnap';
@@ -59,7 +59,7 @@ export const restrictedMethodPermissionBuilders = {
 export const caveatSpecifications = {
   ...getBip32EntropyCaveatSpecifications,
   ...getBip44EntropyCaveatSpecifications,
-  ...getInvokeSnapCaveatSpecifications,
+  ...InvokeSnapCaveatSpecifications,
 } as const;
 
 export const caveatMappers: Record<
