@@ -46,7 +46,7 @@ type InvokeSnapSpecification = ValidPermissionSpecification<{
  * `wallet_snap_*` attempts to invoke an RPC method of the specified Snap.
  *
  * Requesting its corresponding permission will attempt to connect to the Snap,
- * and install it if it's not avaialble yet.
+ * and install it if it's not available yet.
  *
  * @param options - The specification builder options.
  * @param options.allowedCaveats - The optional allowed caveats for the permission.
