@@ -2,6 +2,7 @@ import {
   VirtualFile,
   SnapManifest,
   createSnapManifest,
+  normalizeRelative,
 } from '@metamask/snaps-utils';
 import {
   DEFAULT_SNAP_BUNDLE,
@@ -57,7 +58,7 @@ export class LoopbackLocation implements SnapLocation {
       files = [
         new VirtualFile({
           value: DEFAULT_SNAP_BUNDLE,
-          path: manifest.result.source.location.npm.filePath,
+          path: normalizeRelative(manifest.result.source.location.npm.filePath),
         }),
       ];
 
@@ -65,7 +66,9 @@ export class LoopbackLocation implements SnapLocation {
         files.push(
           new VirtualFile({
             value: DEFAULT_SNAP_ICON,
-            path: manifest.result.source.location.npm.iconPath,
+            path: normalizeRelative(
+              manifest.result.source.location.npm.iconPath,
+            ),
           }),
         );
       }
@@ -73,7 +76,9 @@ export class LoopbackLocation implements SnapLocation {
       files = opts.files;
       assert(
         files.find(
-          (file) => file.path === manifest.result.source.location.npm.filePath,
+          (file) =>
+            file.path ===
+            normalizeRelative(manifest.result.source.location.npm.filePath),
         ) !== undefined,
         'Source bundle not found in files.',
       );
@@ -82,7 +87,10 @@ export class LoopbackLocation implements SnapLocation {
         manifest.result.source.location.npm.iconPath === undefined ||
           files.find(
             (file) =>
-              file.path === manifest.result.source.location.npm.iconPath,
+              file.path ===
+              normalizeRelative(
+                manifest.result.source.location.npm.iconPath as string,
+              ),
           ) !== undefined,
         'Icon not found in files.',
       );
@@ -103,7 +111,10 @@ export class LoopbackLocation implements SnapLocation {
   manifest = jest.fn(async () => this.#manifest);
 
   fetch = jest.fn(async (path: string) => {
-    const file = this.#files.find((candidate) => candidate.path === path);
+    const relativePath = normalizeRelative(path);
+    const file = this.#files.find(
+      (candidate) => candidate.path === relativePath,
+    );
     assert(
       file !== undefined,
       `Tried to access file "${path}" not found in loopback location mock.\nFile list:\n${this.#files

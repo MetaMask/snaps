@@ -49,19 +49,19 @@ export function validateNpmSnap(
   // Typecast: We are assured that the required files exist if we get here.
   const { manifest, packageJson, sourceCode, svgIcon } = snapFiles as SnapFiles;
   try {
-    assertIsSnapManifest(manifest);
+    assertIsSnapManifest(manifest.result);
   } catch (error) {
     throw new Error(`${errorPrefix ?? ''}${error.message}`);
   }
   const validatedManifest = manifest;
 
-  const { iconPath } = validatedManifest.source.location.npm;
+  const { iconPath } = validatedManifest.result.source.location.npm;
   if (iconPath && !svgIcon) {
     throw new Error(`Missing file "${iconPath}".`);
   }
 
   try {
-    assertIsNpmSnapPackageJson(packageJson);
+    assertIsNpmSnapPackageJson(packageJson.result);
   } catch (error) {
     throw new Error(`${errorPrefix ?? ''}${error.message}`);
   }
@@ -71,10 +71,11 @@ export function validateNpmSnap(
     manifest: validatedManifest,
     packageJson: validatedPackageJson,
     sourceCode,
+    svgIcon,
   });
 
   if (svgIcon) {
-    if (Buffer.byteLength(svgIcon, 'utf8') > SVG_MAX_BYTE_SIZE) {
+    if (Buffer.byteLength(svgIcon.value, 'utf8') > SVG_MAX_BYTE_SIZE) {
       throw new Error(
         `${
           errorPrefix ?? ''

@@ -28,6 +28,7 @@ import {
   fromEntries,
   getSnapPermissionName,
   InstallSnapsResult,
+  normalizeRelative,
   PersistedSnap,
   ProcessSnapResult,
   RequestedSnapPermissions,
@@ -1783,13 +1784,18 @@ export class SnapController extends BaseController<
       rollbackSnapshot.permissions.requestData = requestData;
     }
 
+    const normalizedSourcePath = normalizeRelative(
+      newSnap.manifest.result.source.location.npm.filePath,
+    );
+
     const sourceCode = newSnap.files
-      .find(
-        (file) =>
-          file.path === newSnap.manifest.result.source.location.npm.filePath,
-      )
+      .find((file) => file.path === normalizedSourcePath)
       ?.toString();
-    assert(sourceCode !== undefined);
+
+    assert(
+      typeof sourceCode === 'string' && sourceCode.length > 0,
+      `Invalid source code for snap "${snapId}".`,
+    );
 
     try {
       await this.#startSnap({ snapId, sourceCode });
@@ -1968,20 +1974,25 @@ export class SnapController extends BaseController<
       );
     }
 
-    const sourceCode = files
-      .find(
-        (file) => file.path === manifest.result.source.location.npm.filePath,
-      )
-      ?.toString();
-    const svgIcon = files.find(
-      (file) =>
-        manifest.result.source.location.npm.iconPath !== undefined &&
-        file.path === manifest.result.source.location.npm.iconPath,
+    const normalizedSourcePath = normalizeRelative(
+      manifest.result.source.location.npm.filePath,
     );
-    assert(sourceCode !== undefined);
-    if (typeof sourceCode !== 'string' || sourceCode.length === 0) {
-      throw new Error(`Invalid source code for snap "${snapId}".`);
-    }
+
+    const { iconPath } = manifest.result.source.location.npm;
+    const normalizedIconPath = iconPath && normalizeRelative(iconPath);
+
+    const sourceCode = files
+      .find((file) => file.path === normalizedSourcePath)
+      ?.toString();
+
+    const svgIcon = normalizedIconPath
+      ? files.find((file) => file.path === normalizedIconPath)
+      : undefined;
+
+    assert(
+      typeof sourceCode === 'string' && sourceCode.length > 0,
+      `Invalid source code for snap "${snapId}".`,
+    );
 
     const snapsState = this.state.snaps;
 
@@ -2062,13 +2073,15 @@ export class SnapController extends BaseController<
       const sourceCode = await location.fetch(
         manifest.result.source.location.npm.filePath,
       );
-      validateSnapShasum(manifest.result, sourceCode.toString());
       const { iconPath } = manifest.result.source.location.npm;
+      const svgIcon = iconPath ? await location.fetch(iconPath) : undefined;
 
       const files = [sourceCode];
-      if (iconPath) {
-        files.push(await location.fetch(iconPath));
+      if (svgIcon) {
+        files.push(svgIcon);
       }
+
+      validateSnapShasum({ manifest, sourceCode, svgIcon });
 
       return { manifest, files, location };
     } catch (error) {

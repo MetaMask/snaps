@@ -2,7 +2,7 @@ import { Json } from '@metamask/utils';
 import { promises as fs } from 'fs';
 import pathUtils from 'path';
 
-import { NpmSnapFileNames } from './types';
+import { readVirtualFile, VirtualFile } from './virtual-file';
 
 /**
  * Checks whether the given path string resolves to an existing directory, and
@@ -54,41 +54,27 @@ export async function isFile(pathString: string): Promise<boolean> {
  * @param pathString - The path to the JSON file.
  * @returns The parsed contents of the JSON file.
  */
-export async function readJsonFile<Type = Json>(
+export async function readJsonFile<Type extends Json = Json>(
   pathString: string,
-): Promise<Type> {
+): Promise<VirtualFile<Type>> {
   if (!pathString.endsWith('.json')) {
     throw new Error('The specified file must be a ".json" file.');
   }
 
-  return JSON.parse(await fs.readFile(pathString, 'utf8'));
-}
-
-/**
- * Utility function for reading `package.json` or the Snap manifest file.
- * These are assumed to be in the current working directory.
- *
- * @param pathString - The base path of the file to read.
- * @param snapJsonFileName - The name of the file to read.
- * @returns The parsed JSON file.
- */
-export async function readSnapJsonFile(
-  pathString: string,
-  snapJsonFileName: NpmSnapFileNames,
-): Promise<Json> {
-  const path = pathUtils.join(pathString, snapJsonFileName);
-
+  let file;
   try {
-    return await readJsonFile(path);
+    file = await readVirtualFile(pathString, 'utf8');
   } catch (error) {
     if (error.code === 'ENOENT') {
       throw new Error(
-        `Could not find '${path}'. Please ensure that the file exists.`,
+        `Could not find '${pathString}'. Please ensure that the file exists.`,
       );
     }
 
     throw error;
   }
+  file.result = JSON.parse(file.toString());
+  return file as VirtualFile<Type>;
 }
 
 /**

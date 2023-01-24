@@ -2,7 +2,6 @@ import { assertStruct, ChecksumStruct, VersionStruct } from '@metamask/utils';
 import {
   array,
   boolean,
-  coerce,
   create,
   enums,
   Infer,
@@ -24,7 +23,6 @@ import { CronjobSpecificationArrayStruct } from '../cronjob';
 import { SIP_6_MAGIC_VALUE, STATE_ENCRYPTION_MAGIC_VALUE } from '../entropy';
 import { RpcOriginsStruct } from '../json-rpc';
 import { NamespacesStruct } from '../namespace';
-import { normalizeRelative } from '../path';
 import { NameStruct, NpmSnapFileNames } from '../types';
 
 // BIP-43 purposes that cannot be used for entropy derivation. These are in the
@@ -127,9 +125,6 @@ export const PermissionsStruct = type({
 });
 /* eslint-enable @typescript-eslint/naming-convention */
 
-const relativePath = <Type extends string>(struct: Struct<Type>) =>
-  coerce(struct, struct, (value) => normalizeRelative(value));
-
 export type SnapPermissions = Infer<typeof PermissionsStruct>;
 
 export const SnapManifestStruct = object({
@@ -153,8 +148,8 @@ export const SnapManifestStruct = object({
     shasum: ChecksumStruct,
     location: object({
       npm: object({
-        filePath: relativePath(size(string(), 1, Infinity)),
-        iconPath: optional(relativePath(size(string(), 1, Infinity))),
+        filePath: size(string(), 1, Infinity),
+        iconPath: optional(size(string(), 1, Infinity)),
         packageName: NameStruct,
         registry: union([
           literal('https://registry.npmjs.org'),

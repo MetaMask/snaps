@@ -1,4 +1,4 @@
-import fsPromises from 'fs/promises';
+import { promises as fsPromises } from 'fs';
 
 import { VirtualFile } from './VirtualFile';
 

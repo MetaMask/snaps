@@ -2,12 +2,13 @@ import {
   PermissionConstraint,
   SubjectPermissions,
 } from '@metamask/permission-controller';
-import { fromEntries, getSnapSourceShasum } from '@metamask/snaps-utils';
+import { fromEntries, getSnapChecksum } from '@metamask/snaps-utils';
 import {
   MOCK_ORIGIN,
   MOCK_SNAP_ID,
   getSnapManifest,
   getPersistedSnapObject,
+  getSnapFiles,
 } from '@metamask/snaps-utils/test-utils';
 import { assert } from '@metamask/utils';
 
@@ -94,16 +95,23 @@ class Keyring {
 }
 module.exports.keyring = new Keyring();`;
 
+const KEYRING_PERMISSIONS = {
+  [SnapEndowments.Keyring]: {
+    namespaces: MOCK_NAMESPACES,
+  },
+};
+
 export const PERSISTED_MOCK_KEYRING_SNAP = getPersistedSnapObject({
   id: MOCK_SNAP_ID,
   sourceCode: MOCK_KEYRING_BUNDLE,
   manifest: getSnapManifest({
-    shasum: getSnapSourceShasum(MOCK_KEYRING_BUNDLE),
-    initialPermissions: {
-      [SnapEndowments.Keyring]: {
-        namespaces: MOCK_NAMESPACES,
-      },
-    },
+    shasum: getSnapChecksum(
+      getSnapFiles({
+        sourceCode: MOCK_KEYRING_BUNDLE,
+        manifest: getSnapManifest({ initialPermissions: KEYRING_PERMISSIONS }),
+      }),
+    ),
+    initialPermissions: KEYRING_PERMISSIONS,
   }),
 });
 

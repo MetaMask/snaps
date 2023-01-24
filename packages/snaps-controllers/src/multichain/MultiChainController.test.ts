@@ -3,13 +3,14 @@
 import {
   fromEntries,
   getSnapPermissionName,
-  getSnapSourceShasum,
+  getSnapChecksum,
 } from '@metamask/snaps-utils';
 import {
   MOCK_ORIGIN,
   MOCK_SNAP_ID,
   getSnapManifest,
   getPersistedSnapObject,
+  getSnapFiles,
 } from '@metamask/snaps-utils/test-utils';
 import { assert } from '@metamask/utils';
 
@@ -184,7 +185,9 @@ describe('MultiChainController', () => {
                 id: secondSnapId,
                 sourceCode: secondSnapSourceCode,
                 manifest: getSnapManifest({
-                  shasum: getSnapSourceShasum(secondSnapSourceCode),
+                  shasum: getSnapChecksum(
+                    getSnapFiles({ sourceCode: secondSnapSourceCode }),
+                  ),
                   initialPermissions:
                     PERSISTED_MOCK_KEYRING_SNAP.manifest.initialPermissions,
                 }),
@@ -303,7 +306,7 @@ describe('MultiChainController', () => {
                 ...PERSISTED_MOCK_KEYRING_SNAP,
                 sourceCode,
                 manifest: getSnapManifest({
-                  shasum: getSnapSourceShasum(sourceCode),
+                  shasum: getSnapChecksum(getSnapFiles({ sourceCode })),
                   initialPermissions:
                     PERSISTED_MOCK_KEYRING_SNAP.manifest.initialPermissions,
                 }),
