@@ -1,4 +1,8 @@
-import { Caveat, OriginString } from '@metamask/permission-controller';
+import {
+  Caveat,
+  OriginString,
+  PermissionType,
+} from '@metamask/permission-controller';
 import { SnapCaveatType, SnapId } from '@metamask/snaps-utils';
 import {
   MOCK_SNAP_ID,
@@ -24,6 +28,22 @@ describe('builder', () => {
         getSnap: true,
         handleSnapRpcRequest: true,
       },
+    });
+  });
+
+  it('builder outputs expected specification', () => {
+    expect(
+      invokeSnapBuilder.specificationBuilder({
+        methodHooks: {
+          getSnap: jest.fn(),
+          handleSnapRpcRequest: jest.fn(),
+        },
+      }),
+    ).toMatchObject({
+      permissionType: PermissionType.RestrictedMethod,
+      targetKey: restrictedMethod,
+      allowedCaveats: [SnapCaveatType.SnapIds],
+      methodImplementation: expect.any(Function),
     });
   });
 });
