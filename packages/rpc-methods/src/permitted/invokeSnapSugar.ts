@@ -1,4 +1,3 @@
-import { SNAP_PREFIX } from '@metamask/snaps-utils';
 import {
   PermittedHandlerExport,
   JsonRpcRequest,
@@ -51,8 +50,8 @@ export function invokeSnapSugar(
     return end(error);
   }
 
-  req.method = `${SNAP_PREFIX}${params.snapId}`;
-  req.params = params.request;
+  req.method = 'wallet_snap';
+  req.params = params;
   return next();
 }
 
