@@ -23,10 +23,6 @@ import {
   uri,
 } from './types';
 
-export const SNAP_PREFIX = 'wallet_snap_';
-
-export const SNAP_PREFIX_REGEX = new RegExp(`^${SNAP_PREFIX}`, 'u');
-
 // This RegEx matches valid npm package names (with some exceptions) and space-
 // separated alphanumerical words, optionally with dashes and underscores.
 // The RegEx consists of two parts. The first part matches space-separated
@@ -121,11 +117,6 @@ export type Snap = {
   blockInformation?: BlockReason;
 
   /**
-   * The name of the permission used to invoke the Snap.
-   */
-  permissionName: string;
-
-  /**
    * The current status of the Snap, e.g. whether it's running or stopped.
    */
   status: Status;
@@ -145,7 +136,6 @@ export type Snap = {
 export type TruncatedSnapFields =
   | 'id'
   | 'initialPermissions'
-  | 'permissionName'
   | 'version'
   | 'enabled'
   | 'blocked';
@@ -273,16 +263,6 @@ export function getSnapPrefix(snapId: string): SnapIdPrefixes {
     return prefix;
   }
   throw new Error(`Invalid or no prefix found for "${snapId}"`);
-}
-
-/**
- * Computes the permission name of a snap from its snap ID.
- *
- * @param snapId - The snap ID.
- * @returns The permission name corresponding to the given snap ID.
- */
-export function getSnapPermissionName(snapId: string): string {
-  return SNAP_PREFIX + snapId;
 }
 
 /**

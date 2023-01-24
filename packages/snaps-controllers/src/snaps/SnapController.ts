@@ -110,7 +110,6 @@ export const SNAP_APPROVAL_UPDATE = 'wallet_updateSnap';
 const TRUNCATED_SNAP_PROPERTIES = new Set<TruncatedSnapFields>([
   'initialPermissions',
   'id',
-  'permissionName',
   'version',
   'enabled',
   'blocked',

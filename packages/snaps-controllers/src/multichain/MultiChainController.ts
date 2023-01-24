@@ -4,6 +4,7 @@ import {
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
 import {
+  Caveat,
   GetPermissions,
   GrantPermissions,
   HasPermission,
@@ -30,7 +31,7 @@ import {
   isAccountIdArray,
   Namespaces,
 } from '@metamask/snaps-utils';
-import { hasProperty, assert } from '@metamask/utils';
+import { hasProperty, assert, Json } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 
 import {
@@ -193,20 +194,13 @@ export class MultiChainController extends BaseController<
       availableNamespaces,
     );
 
-    const permissions = this.messagingSystem.call(
-      'PermissionController:getPermissions',
-      origin,
-    );
+    const originHasSnap = this.#hasSnap(origin);
 
     // Find namespaces that can be satisfied with existing approved Snaps.
     const approvedNamespacesAndSnaps = Object.entries(namespaceToSnaps).reduce<
       Record<NamespaceId, SnapId[]>
     >((acc, [namespace, snapIds]) => {
-      const approvedSnaps = snapIds.filter((snapId) => {
-        return (
-          permissions && hasProperty(permissions, getSnapPermissionName(snapId))
-        );
-      });
+      const approvedSnaps = snapIds.filter(originHasSnap);
 
       if (approvedSnaps.length > 0) {
         acc[namespace] = approvedSnaps;
@@ -344,20 +338,11 @@ export class MultiChainController extends BaseController<
     const snapId = session.handlingSnaps[namespace];
     assert(snapId !== undefined);
 
-    const permissionName = getSnapPermissionName(snapId);
-
-    // Check if origin has permission to communicate with this Snap.
-    const hasPermission = this.messagingSystem.call(
-      'PermissionController:hasPermission',
-      origin,
-      permissionName,
-    );
-
     // TODO: Get permission for origin connecting to snap, or get user approval.
     // In the future this is where we should prompt for this permission.
     // In this iteration, we will grant this permission in `onConnect`.
     assert(
-      hasPermission,
+      this.#hasSnap(origin)(snapId),
       `${origin} does not have permission to communicate with ${snapId}.`,
     );
 
@@ -559,5 +544,29 @@ export class MultiChainController extends BaseController<
     });
 
     return resolvedAccounts;
+  }
+
+  /**
+   * Utility function to check if an origin has permission (and caveat) for a particular snap.
+   *
+   * @param origin - The origin in question.
+   * @returns A closure based on origin that is used to check if the origin has permission to communicate with a snap.
+   */
+  #hasSnap(origin: string) {
+    const permissions = this.messagingSystem.call(
+      'PermissionController:getPermissions',
+      origin,
+    );
+    return (snapId: SnapId) => {
+      return Boolean(
+        (
+          (
+            (permissions?.wallet_snap?.caveats?.find(
+              (caveat) => caveat.type === 'snapIds',
+            ) ?? {}) as Caveat<string, Json>
+          ).value as Record<string, unknown>
+        )?.[snapId],
+      );
+    };
   }
 }
