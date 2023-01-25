@@ -129,6 +129,8 @@ export const divider = createBuilder(NodeType.Divider, DividerStruct);
  */
 export const heading = createBuilder(NodeType.Heading, HeadingStruct, [
   'value',
+  'variant',
+  'fontWeight',
 ]);
 
 /**
@@ -154,7 +156,11 @@ export const heading = createBuilder(NodeType.Heading, HeadingStruct, [
  * ]);
  * ```
  */
-export const panel = createBuilder(NodeType.Panel, PanelStruct, ['children']);
+export const panel = createBuilder(NodeType.Panel, PanelStruct, [
+  'children',
+  'flexDirection',
+  'justifyContent',
+]);
 
 /**
  * Create a {@link Spinner} node.
@@ -180,4 +186,7 @@ export const spinner = createBuilder(NodeType.Spinner, SpinnerStruct);
  * const node = text('Hello, world!');
  * ```
  */
-export const text = createBuilder(NodeType.Text, TextStruct, ['value']);
+export const text = createBuilder(NodeType.Text, TextStruct, [
+  'value',
+  'color',
+]);
