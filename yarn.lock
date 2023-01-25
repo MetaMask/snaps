@@ -2484,12 +2484,12 @@ __metadata:
   linkType: hard
 
 "@metamask/base-controller@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "@metamask/base-controller@npm:1.1.1"
+  version: 1.1.2
+  resolution: "@metamask/base-controller@npm:1.1.2"
   dependencies:
-    "@metamask/controller-utils": ^1.0.0
+    "@metamask/controller-utils": ^2.0.0
     immer: ^9.0.6
-  checksum: 676408129710a247e95a0705344aef09f2ed55b05ba516fc2788302e1cc2472b5e85f24866e7111ee667bd9e1311eb8f75da8409131ad9dc9901d6e31131db2a
+  checksum: 54a114615924a755fe1a1e2d0b9fd7b9f982dee813a9908889e133aec8190f7d52a7903f830d66b020b487c1c4047b1a379ac07e9c80fec67688763bd8a713dd
   languageName: node
   linkType: hard
 
@@ -2511,6 +2511,20 @@ __metadata:
     fast-deep-equal: ^3.1.3
     isomorphic-fetch: ^3.0.0
   checksum: 76e0629ba97b0b704f2f08e346fc27cf404630a64088504dbbad3d4124afe7a6c9bf3627e999ab9a1f1c183a444978ecc288b6df3ab30b47b5398a1da848ebbf
+  languageName: node
+  linkType: hard
+
+"@metamask/controller-utils@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/controller-utils@npm:2.0.0"
+  dependencies:
+    eth-ens-namehash: ^2.0.8
+    eth-rpc-errors: ^4.0.0
+    ethereumjs-util: ^7.0.10
+    ethjs-unit: ^0.1.6
+    fast-deep-equal: ^3.1.3
+    isomorphic-fetch: ^3.0.0
+  checksum: 7e77aad25057b63a62a05058685fc07f78693d737892fc617a23ae06512715ed74a536174396e04cc276999e44c7ca67bd8a0026e5b820455dbf6eb5d0c7c173
   languageName: node
   linkType: hard
 
