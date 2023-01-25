@@ -2456,20 +2456,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/approval-controller@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "@metamask/approval-controller@npm:1.0.1"
-  dependencies:
-    "@metamask/base-controller": ^1.1.1
-    "@metamask/controller-utils": ^1.0.0
-    eth-rpc-errors: ^4.0.0
-    immer: ^9.0.6
-    nanoid: ^3.1.31
-  checksum: 83b54946b948b0f97a5453328421666c8852b975bf045f6b23416579f1201feb390dc09941620fa4e480f76cd9a7b4f6e8f2c3e940ddd79f62491a81befe8c7c
-  languageName: node
-  linkType: hard
-
-"@metamask/approval-controller@npm:^1.1.0":
+"@metamask/approval-controller@npm:^1.0.1, @metamask/approval-controller@npm:^1.1.0":
   version: 1.1.0
   resolution: "@metamask/approval-controller@npm:1.1.0"
   dependencies:
