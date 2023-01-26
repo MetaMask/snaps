@@ -9,7 +9,7 @@ import timeout from './timeout';
 
 export type EndowmentFactory = {
   names: readonly string[];
-  factory: () => unknown;
+  factory: () => { [key: string]: unknown };
 };
 
 export type CommonEndowmentSpecification = {

@@ -30,7 +30,7 @@ const registeredEndowments = buildCommonEndowments();
  */
 const endowmentFactories = registeredEndowments.reduce((factories, builder) => {
   builder.names.forEach((name) => {
-    factories.set(name, builder.factory as () => EndowmentFactoryResult);
+    factories.set(name, builder.factory);
   });
   return factories;
 }, new Map<string, () => EndowmentFactoryResult>());
