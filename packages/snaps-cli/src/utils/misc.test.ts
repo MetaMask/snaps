@@ -10,11 +10,7 @@ import {
   writeError,
 } from './misc';
 
-jest.mock('fs', () => ({
-  promises: {
-    unlink: jest.fn(),
-  },
-}));
+jest.mock('fs');
 
 describe('misc', () => {
   global.snaps = {
