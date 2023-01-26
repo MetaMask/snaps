@@ -1,3 +1,4 @@
+import { logError as logErrorUtil } from '@metamask/snaps-utils';
 import { hasProperty } from '@metamask/utils';
 import { promises as filesystem } from 'fs';
 import path from 'path';
@@ -106,30 +107,15 @@ export function sanitizeInputs(argv: Arguments) {
  */
 export function logError(message: string | null, error?: Error): void {
   if (message !== null) {
-    console.error(message);
+    logErrorUtil(message);
   }
 
   if (error && global.snaps.verboseErrors) {
-    console.error(error);
+    logErrorUtil(error);
   }
 
   if (message === null && (!error || (error && !global.snaps.verboseErrors))) {
-    console.error('Unknown error.');
-  }
-}
-
-/**
- * Logs a warning message to console.
- *
- * @param message - The warning message.
- * @param error - The original error.
- */
-export function logWarning(message: string, error?: Error): void {
-  if (message && !global.snaps.suppressWarnings) {
-    console.warn(message);
-    if (error && global.snaps.verboseErrors) {
-      console.error(error);
-    }
+    logErrorUtil('Unknown error.');
   }
 }
 

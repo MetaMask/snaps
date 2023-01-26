@@ -10,6 +10,7 @@ export * from './fs';
 export * from './handlers';
 export * from './iframe';
 export * from './json-rpc';
+export * from './logging';
 export * from './manifest';
 export * from './mock';
 export * from './namespace';

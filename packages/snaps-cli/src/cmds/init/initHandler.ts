@@ -3,6 +3,7 @@ import {
   readJsonFile,
   NpmSnapPackageJson,
   createSnapManifest,
+  logInfo,
 } from '@metamask/snaps-utils';
 import {
   satisfiesVersionRange,
@@ -60,12 +61,12 @@ export async function initHandler(argv: YargsArgs) {
     ? pathUtils.join(process.cwd(), directory)
     : process.cwd();
 
-  console.log(`Preparing ${directoryToUse}...`);
+  logInfo(`Preparing ${directoryToUse}...`);
 
   await prepareWorkingDirectory(directoryToUse);
 
   try {
-    console.log(`Cloning template...`);
+    logInfo(`Cloning template...`);
     cloneTemplate(directoryToUse);
 
     await fs.rm(pathUtils.join(directoryToUse, '.git'), {
@@ -76,11 +77,11 @@ export async function initHandler(argv: YargsArgs) {
     throw new Error('Init Error: Failed to create template.');
   }
 
-  console.log('Installing dependencies...');
+  logInfo('Installing dependencies...');
   yarnInstall(directoryToUse);
 
   if (!isInGitRepository(directoryToUse)) {
-    console.log('Initializing git repository...');
+    logInfo('Initializing git repository...');
     gitInit(directoryToUse);
   }
 

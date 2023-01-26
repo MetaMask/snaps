@@ -4,7 +4,6 @@ import pathUtils from 'path';
 import {
   booleanStringToBoolean,
   logError,
-  logWarning,
   sanitizeInputs,
   setSnapGlobals,
   trimPathString,
@@ -108,10 +107,6 @@ describe('misc', () => {
     global.snaps.verboseErrors = bool;
   };
 
-  const setSuppressWarnings = (bool: boolean) => {
-    global.snaps.suppressWarnings = bool;
-  };
-
   const setIsWatching = (bool: boolean) => {
     global.snaps.isWatching = bool;
   };
@@ -199,62 +194,6 @@ describe('misc', () => {
       jest.spyOn(console, 'error').mockImplementation();
       logError(null, new Error('verbose'));
       expect(global.console.error).toHaveBeenCalledWith('Unknown error.');
-    });
-  });
-
-  describe('logWarning', () => {
-    it('logs a warning and error message to console', () => {
-      setSuppressWarnings(false);
-      setVerboseErrors(true);
-
-      jest.spyOn(console, 'warn').mockImplementation();
-      jest.spyOn(console, 'error').mockImplementation();
-
-      logWarning('custom warning message', new Error('verbose'));
-      expect(global.console.warn).toHaveBeenCalledWith(
-        'custom warning message',
-      );
-      expect(global.console.error).toHaveBeenCalledWith(new Error('verbose'));
-    });
-
-    it('if verbose errors is set to false, just logs a warning message to console', () => {
-      setSuppressWarnings(false);
-      setVerboseErrors(false);
-
-      jest.spyOn(console, 'warn').mockImplementation();
-      jest.spyOn(console, 'error').mockImplementation();
-
-      logWarning('custom warning message', new Error('verbose'));
-      expect(global.console.warn).toHaveBeenCalledWith(
-        'custom warning message',
-      );
-      expect(global.console.error).not.toHaveBeenCalled();
-    });
-
-    it('given no error, just logs a warning message to console', () => {
-      setSuppressWarnings(false);
-      setVerboseErrors(false);
-
-      jest.spyOn(console, 'warn').mockImplementation();
-      jest.spyOn(console, 'error').mockImplementation();
-
-      logWarning('custom warning message');
-      expect(global.console.warn).toHaveBeenCalledWith(
-        'custom warning message',
-      );
-      expect(global.console.error).not.toHaveBeenCalled();
-    });
-
-    it('logs no message to console', () => {
-      setSuppressWarnings(true);
-      setVerboseErrors(true);
-
-      jest.spyOn(console, 'warn').mockImplementation();
-      jest.spyOn(console, 'error').mockImplementation();
-
-      logWarning('custom warning message', new Error('verbose'));
-      expect(global.console.warn).not.toHaveBeenCalled();
-      expect(global.console.error).not.toHaveBeenCalled();
     });
   });
 

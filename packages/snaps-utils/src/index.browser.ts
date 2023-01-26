@@ -8,6 +8,7 @@ export * from './flatMap';
 export * from './handlers';
 export * from './iframe';
 export * from './json-rpc';
+export * from './logging';
 export * from './manifest/index.browser';
 export * from './namespace';
 export * from './notification';

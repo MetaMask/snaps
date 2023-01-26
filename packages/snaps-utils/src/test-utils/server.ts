@@ -2,6 +2,8 @@ import http from 'http';
 import path from 'path';
 import serveHandler from 'serve-handler';
 
+import { logError } from '../logging';
+
 /**
  * Starts a local server that serves the iframe execution environment.
  *
@@ -41,17 +43,18 @@ export async function startServer(
     });
 
     server.listen({ port }, () => {
+      // eslint-disable-next-line no-console
       console.log(`Server listening on: http://localhost:${port}`);
       resolve(server);
     });
 
     server.on('error', (error) => {
-      console.error('Server error', error);
+      logError('Server error', error);
       reject(error);
     });
 
     server.on('close', () => {
-      console.log('Server closed');
+      logError('Server closed');
       reject(new Error('Server closed'));
     });
   });

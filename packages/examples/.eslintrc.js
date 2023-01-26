@@ -5,6 +5,10 @@ module.exports = {
     tsconfigRootDir: __dirname,
   },
 
+  rules: {
+    'no-console': 'off',
+  },
+
   overrides: [
     {
       files: ['examples/**/*.js', 'examples/**/*.ts'],

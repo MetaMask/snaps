@@ -1,8 +1,9 @@
+import { logInfo } from '@metamask/snaps-utils';
 import { promises as fs } from 'fs';
 
 import { TranspilationModes } from '../../builders';
 import { YargsArgs } from '../../types/yargs';
-import { writeError } from '../../utils/misc';
+import { writeError } from '../../utils';
 
 type WriteBundleFileArgs = {
   bundleError: Error;
@@ -39,7 +40,7 @@ export async function writeBundleFile({
 
   try {
     await fs.writeFile(dest, bundleBuffer?.toString());
-    console.log(`Build success: '${src}' bundled as '${dest}'!`);
+    logInfo(`Build success: '${src}' bundled as '${dest}'!`);
     resolve(true);
   } catch (error) {
     await writeError('Write error:', error.message, error, dest);

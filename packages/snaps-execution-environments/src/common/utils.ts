@@ -1,3 +1,5 @@
+import { log } from '../logging';
+
 /**
  * Takes an error that was thrown, determines if it is
  * an error object. If it is then it will return that. Otherwise,
@@ -39,7 +41,7 @@ export async function withTeardown<T>(
         if (teardownRef.lastTeardown === myTeardown) {
           resolve(value);
         } else {
-          console.warn(
+          log(
             'Late promise received after Snap finished execution. Promise will be dropped.',
           );
         }
@@ -48,7 +50,7 @@ export async function withTeardown<T>(
         if (teardownRef.lastTeardown === myTeardown) {
           reject(reason);
         } else {
-          console.warn(
+          log(
             'Late promise received after Snap finished execution. Promise will be dropped.',
           );
         }

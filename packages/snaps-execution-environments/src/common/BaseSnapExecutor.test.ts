@@ -4,6 +4,7 @@ import { HandlerType } from '@metamask/snaps-utils';
 import { Json, JsonRpcRequest, JsonRpcResponse } from '@metamask/utils';
 import { Duplex, DuplexOptions, EventEmitter, Readable } from 'stream';
 
+import * as logging from '../logging';
 import { BaseSnapExecutor } from './BaseSnapExecutor';
 
 const FAKE_ORIGIN = 'origin:foo';
@@ -1259,7 +1260,7 @@ describe('BaseSnapExecutor', () => {
   it('does not return control to a snap after idle teardown', async () => {
     jest.useRealTimers();
     const consoleLogSpy = jest.spyOn(console, 'log');
-    const consoleWarnSpy = jest.spyOn(console, 'warn');
+    const logSpy = jest.spyOn(logging, 'log');
     const TIMER_ENDOWMENTS = [
       'setTimeout',
       'clearTimeout',
@@ -1356,7 +1357,7 @@ describe('BaseSnapExecutor', () => {
     });
 
     expect(consoleLogSpy).not.toHaveBeenCalledWith('Jailbreak');
-    expect(consoleWarnSpy).toHaveBeenCalledWith(
+    expect(logSpy).toHaveBeenCalledWith(
       'Late promise received after Snap finished execution. Promise will be dropped.',
     );
   });
@@ -1364,7 +1365,7 @@ describe('BaseSnapExecutor', () => {
   it('does not return control to a snap after idle teardown when request fails', async () => {
     jest.useRealTimers();
     const consoleLogSpy = jest.spyOn(console, 'log');
-    const consoleWarnSpy = jest.spyOn(console, 'warn');
+    const logSpy = jest.spyOn(logging, 'log');
     const TIMER_ENDOWMENTS = [
       'setTimeout',
       'clearTimeout',
@@ -1465,7 +1466,7 @@ describe('BaseSnapExecutor', () => {
     });
 
     expect(consoleLogSpy).not.toHaveBeenCalledWith('Jailbreak');
-    expect(consoleWarnSpy).toHaveBeenCalledWith(
+    expect(logSpy).toHaveBeenCalledWith(
       'Late promise received after Snap finished execution. Promise will be dropped.',
     );
   });

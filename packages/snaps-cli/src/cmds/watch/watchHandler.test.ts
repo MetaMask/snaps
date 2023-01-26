@@ -1,11 +1,11 @@
 import * as snapUtils from '@metamask/snaps-utils';
+import { logError, logInfo } from '@metamask/snaps-utils';
 import chokidar from 'chokidar';
 import EventEmitter from 'events';
 import http from 'http';
 import path from 'path';
 
 import watch from '.';
-import * as miscUtils from '../../utils/misc';
 import * as build from '../build/bundle';
 import * as evalModule from '../eval/evalHandler';
 import * as manifest from '../manifest/manifestHandler';
@@ -18,6 +18,8 @@ jest.mock('@metamask/snaps-utils', () => ({
   getOutfilePath: () => path.normalize('dist/bundle.js'),
   isFile: () => true,
   isDirectory: () => true,
+  logInfo: jest.fn(),
+  logError: jest.fn(),
 }));
 
 type MockWatcher = {
@@ -120,7 +122,7 @@ describe('watch', () => {
       const mockArgs = getMockArgv();
       delete mockArgs.outfileName;
       await watch.handler(mockArgs);
-      expect(global.console.log).toHaveBeenCalledTimes(1);
+      expect(logInfo).toHaveBeenCalledTimes(1);
     });
 
     it('successfully handles when only a filename is provided for src', async () => {
@@ -133,7 +135,7 @@ describe('watch', () => {
       const mockArgs = getMockArgv();
       mockArgs.src = 'index.js';
       await watch.handler(mockArgs);
-      expect(global.console.log).toHaveBeenCalledTimes(1);
+      expect(logInfo).toHaveBeenCalledTimes(1);
     });
 
     it('successfully serves a snap when the serve flag is provided', async () => {
@@ -167,7 +169,7 @@ describe('watch', () => {
       await readyPromise;
       // Wait for other promises to resolve
       await new Promise(process.nextTick);
-      expect(global.console.log).toHaveBeenCalledWith(`\nStarting server...`);
+      expect(logInfo).toHaveBeenCalledWith(`\nStarting server...`);
     });
 
     it('handles "changed" event correctly', async () => {
@@ -193,7 +195,7 @@ describe('watch', () => {
       watcherEmitter.emit('change');
 
       await finishPromise;
-      expect(global.console.log).toHaveBeenCalledTimes(2);
+      expect(logInfo).toHaveBeenCalledTimes(2);
     });
 
     it('handles "ready" event correctly', async () => {
@@ -219,7 +221,7 @@ describe('watch', () => {
       watcherEmitter.emit('ready');
 
       await finishPromise;
-      expect(global.console.log).toHaveBeenCalledTimes(1);
+      expect(logInfo).toHaveBeenCalledTimes(1);
     });
 
     it('handles "add" event correctly', async () => {
@@ -245,7 +247,7 @@ describe('watch', () => {
       watcherEmitter.emit('add');
 
       await finishPromise;
-      expect(global.console.log).toHaveBeenCalledTimes(2);
+      expect(logInfo).toHaveBeenCalledTimes(2);
     });
 
     it('calls the manifest handler if commanded', async () => {
@@ -296,7 +298,7 @@ describe('watch', () => {
           }),
         ),
       );
-      expect(global.console.log).toHaveBeenCalledTimes(2);
+      expect(logInfo).toHaveBeenCalledTimes(2);
     });
 
     it('handles "unlink" event correctly', async () => {
@@ -316,16 +318,13 @@ describe('watch', () => {
       watcherEmitter.emit('unlink');
 
       await finishPromise;
-      expect(global.console.log).toHaveBeenCalledTimes(2);
+      expect(logInfo).toHaveBeenCalledTimes(2);
     });
 
     it('handles "error" event correctly', async () => {
       const mockError = new Error('error message');
       mockError.message = 'this is a message';
       jest.spyOn(console, 'log').mockImplementation();
-      const logErrorMock = jest
-        .spyOn(miscUtils, 'logError')
-        .mockImplementation();
       const bundleMock = jest.spyOn(build, 'bundle').mockImplementation();
       jest
         .spyOn(snapUtils, 'validateFilePath')
@@ -335,21 +334,18 @@ describe('watch', () => {
       const finishPromise = new Promise<void>((resolve, _) => {
         watcherEmitter.on('error', () => {
           expect(bundleMock).not.toHaveBeenCalled();
-          expect(logErrorMock).toHaveBeenCalled();
+          expect(logError).toHaveBeenCalled();
           resolve();
         });
       });
       watcherEmitter.emit('error', mockError);
 
       await finishPromise;
-      expect(global.console.log).toHaveBeenCalledTimes(1);
+      expect(logInfo).toHaveBeenCalledTimes(1);
     });
 
     it('handles errors thrown during rebuilding', async () => {
       jest.spyOn(console, 'log').mockImplementation();
-      const logErrorMock = jest
-        .spyOn(miscUtils, 'logError')
-        .mockImplementation();
       const bundleMock = jest.spyOn(build, 'bundle').mockImplementation(() => {
         throw new Error('build failure');
       });
@@ -361,8 +357,8 @@ describe('watch', () => {
       const finishPromise = new Promise<void>((resolve, _) => {
         watcherEmitter.on('add', () => {
           expect(bundleMock).toHaveBeenCalledTimes(1);
-          expect(logErrorMock).toHaveBeenCalledTimes(1);
-          expect(logErrorMock).toHaveBeenCalledWith(
+          expect(logError).toHaveBeenCalledTimes(1);
+          expect(logError).toHaveBeenCalledWith(
             'Error while processing "foo/bar.js".',
             expect.objectContaining({ message: 'build failure' }),
           );
@@ -372,14 +368,11 @@ describe('watch', () => {
       watcherEmitter.emit('add', 'foo/bar.js');
 
       await finishPromise;
-      expect(global.console.log).toHaveBeenCalledTimes(2);
+      expect(logInfo).toHaveBeenCalledTimes(2);
     });
 
     it('logs the proper message for errors during initial build', async () => {
       jest.spyOn(console, 'log').mockImplementation();
-      const logErrorMock = jest
-        .spyOn(miscUtils, 'logError')
-        .mockImplementation();
       const bundleMock = jest.spyOn(build, 'bundle').mockImplementation(() => {
         throw new Error('build failure');
       });
@@ -390,8 +383,8 @@ describe('watch', () => {
       const finishPromise = new Promise<void>((resolve, _) => {
         watcherEmitter.on('ready', () => {
           expect(bundleMock).toHaveBeenCalledTimes(1);
-          expect(logErrorMock).toHaveBeenCalledTimes(1);
-          expect(logErrorMock).toHaveBeenCalledWith(
+          expect(logError).toHaveBeenCalledTimes(1);
+          expect(logError).toHaveBeenCalledWith(
             'Error during initial build.',
             expect.objectContaining({ message: 'build failure' }),
           );
@@ -400,7 +393,7 @@ describe('watch', () => {
       });
       watcherEmitter.emit('ready');
       await finishPromise;
-      expect(global.console.log).toHaveBeenCalledTimes(1);
+      expect(logInfo).toHaveBeenCalledTimes(1);
     });
   });
 });

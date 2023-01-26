@@ -4,6 +4,7 @@ import {
   RestrictedMethodOptions,
   ValidPermissionSpecification,
 } from '@metamask/permission-controller';
+import { logWarning } from '@metamask/snaps-utils';
 import { isObject, NonEmptyArray } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
@@ -108,7 +109,7 @@ function getConfirmImplementation({ showConfirmation }: ConfirmMethodHooks) {
   return async function confirmImplementation(
     args: RestrictedMethodOptions<[LegacyConfirmFields]>,
   ): Promise<boolean> {
-    console.warn('snap_confirm is deprecated. Use snap_dialog instead.');
+    logWarning('snap_confirm is deprecated. Use snap_dialog instead.');
 
     const {
       params,

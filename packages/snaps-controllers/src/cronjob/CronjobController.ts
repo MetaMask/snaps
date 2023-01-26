@@ -10,6 +10,7 @@ import {
   CronjobSpecification,
   flatten,
   parseCronExpression,
+  logError,
 } from '@metamask/snaps-utils';
 import { Duration, inMilliseconds } from '@metamask/utils';
 
@@ -123,7 +124,7 @@ export class CronjobController extends BaseController<
     /* eslint-enable @typescript-eslint/unbound-method */
 
     this.dailyCheckIn().catch((error) => {
-      console.error(error);
+      logError(error);
     });
   }
 
@@ -201,7 +202,7 @@ export class CronjobController extends BaseController<
     timer.start(() => {
       this.executeCronjob(job).catch((error) => {
         // TODO: Decide how to handle errors.
-        console.error(error);
+        logError(error);
       });
 
       this.#timers.delete(job.id);
@@ -292,7 +293,7 @@ export class CronjobController extends BaseController<
     this.#dailyTimer.start(() => {
       this.dailyCheckIn().catch((error) => {
         // TODO: Decide how to handle errors.
-        console.error(error);
+        logError(error);
       });
     });
   }

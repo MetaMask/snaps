@@ -4,6 +4,7 @@ import {
   SnapRpcHook,
   SnapRpcHookArgs,
   SNAP_STREAM_NAMES,
+  logError,
 } from '@metamask/snaps-utils';
 import {
   Duration,
@@ -23,6 +24,7 @@ import { nanoid } from 'nanoid';
 import pump from 'pump';
 import { Duplex } from 'stream';
 
+import { log } from '../logging';
 import { hasTimedOut, withTimeout } from '../utils';
 import {
   ExecutionService,
@@ -156,7 +158,7 @@ export abstract class AbstractExecutionService<WorkerType>
       // TODO(ritave): It might be doing weird things such as posting a lot of setTimeouts. Add a test to ensure that this behaviour
       //               doesn't leak into other workers. Especially important in IframeExecutionEnvironment since they all share the same
       //               JS process.
-      console.error(`Job "${jobId}" failed to terminate gracefully.`, result);
+      logError(`Job "${jobId}" failed to terminate gracefully.`, result);
     }
 
     Object.values(jobWrapper.streams).forEach((stream) => {
@@ -164,7 +166,7 @@ export abstract class AbstractExecutionService<WorkerType>
         !stream.destroyed && stream.destroy();
         stream.removeAllListeners();
       } catch (error) {
-        console.error('Error while destroying stream', error);
+        logError('Error while destroying stream', error);
       }
     });
 
@@ -172,7 +174,7 @@ export abstract class AbstractExecutionService<WorkerType>
 
     this.#removeSnapAndJobMapping(jobId);
     this.jobs.delete(jobId);
-    console.log(`Job "${jobId}" terminated.`);
+    log(`Job "${jobId}" terminated.`);
   }
 
   /**
@@ -250,14 +252,14 @@ export abstract class AbstractExecutionService<WorkerType>
           );
           commandStream.removeListener('data', notificationHandler);
         } else {
-          console.error(
+          logError(
             new Error(
               `Received malformed "${message.method}" command stream notification.`,
             ),
           );
         }
       } else {
-        console.error(
+        logError(
           new Error(
             `Received unexpected command stream notification "${message.method}".`,
           ),
@@ -373,7 +375,7 @@ export abstract class AbstractExecutionService<WorkerType>
       throw new Error(`Job with id "${jobId}" not found.`);
     }
 
-    console.log('Parent: Sending Command', message);
+    log('Parent: Sending Command', message);
     const response: PendingJsonRpcResponse<unknown> =
       await job.rpcEngine.handle(message);
     if (response.error) {
@@ -483,8 +485,8 @@ export function setupMultiplex(
     (error) => {
       if (error) {
         streamName
-          ? console.error(`"${streamName}" stream failure.`, error)
-          : console.error(error);
+          ? logError(`"${streamName}" stream failure.`, error)
+          : logError(error);
       }
     },
   );

@@ -1,3 +1,4 @@
+import { logInfo } from '@metamask/snaps-utils';
 import yargs from 'yargs';
 
 import builders from '../../builders';
@@ -32,5 +33,5 @@ async function init(argv: YargsArgs): Promise<void> {
     eval: true,
   });
 
-  console.log('\nSnap project successfully initiated!');
+  logInfo('\nSnap project successfully initiated!');
 }

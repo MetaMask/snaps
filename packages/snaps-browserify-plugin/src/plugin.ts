@@ -1,6 +1,7 @@
 import {
   checkManifest,
   evalBundle,
+  logWarning,
   postProcessBundle,
   PostProcessOptions,
 } from '@metamask/snaps-utils';
@@ -54,13 +55,11 @@ async function postBundle(options: Partial<Options>, code: string) {
     }
 
     if (warnings.length > 0) {
-      console.log(
+      logWarning(
         'Manifest Warning: Validation of snap.manifest.json completed with warnings.',
       );
 
-      warnings.forEach((warning) =>
-        console.log(`Manifest Warning: ${warning}`),
-      );
+      warnings.forEach((warning) => logWarning(`Manifest Warning: ${warning}`));
     }
   }
 }
@@ -126,7 +125,7 @@ export class SnapsBrowserifyTransform extends Transform {
     });
 
     if (result.warnings.length > 0) {
-      console.log(
+      logWarning(
         `Bundle Warning: Processing of the Snap bundle completed with warnings.\n${result.warnings.join(
           '\n',
         )}`,
