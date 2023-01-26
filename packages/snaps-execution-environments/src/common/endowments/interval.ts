@@ -19,7 +19,8 @@ const createInterval = () => {
         `The interval handler must be a function. Received: ${typeof handler}`,
       );
     }
-    const handle = Object.freeze({});
+    harden(handler);
+    const handle = Object.freeze(Object.create(null));
     const platformHandle = setInterval(
       handler,
       Math.max(MINIMUM_INTERVAL, timeout ?? 0),
@@ -29,6 +30,7 @@ const createInterval = () => {
   };
 
   const _clearInterval = (handle: unknown): void => {
+    harden(handle);
     const platformHandle = registeredHandles.get(handle);
     if (platformHandle !== undefined) {
       clearInterval(platformHandle as any);
@@ -43,8 +45,8 @@ const createInterval = () => {
   };
 
   return {
-    setInterval: _setInterval,
-    clearInterval: _clearInterval,
+    setInterval: harden(_setInterval),
+    clearInterval: harden(_clearInterval),
     teardownFunction,
   } as const;
 };
