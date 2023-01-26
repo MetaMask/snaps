@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-unassigned-import
 import 'ses';
 // @ts-expect-error Walker has no types yet.
-import Walker from '@lavamoat/walker';
+import LavaTube from '@lavamoat/lavatube';
 import test from 'ava';
 // FinalizationRegistry will fix type errors in tests related to network endowment.
 // eslint-disable-next-line import/no-extraneous-dependencies, @typescript-eslint/no-unused-vars
@@ -26,7 +26,7 @@ lockdown({
 
 /**
  * Object walker test utility function.
- * This function will instantiate and configure @lavamoat/walker for testing
+ * This function will instantiate and configure @lavamoat/lavatube for testing
  * endowment specific use case. It will also adapt its result to a boolean value.
  *
  * @param subject - Subject to be tested.
@@ -35,7 +35,7 @@ lockdown({
  */
 function walkAndSearch(subject: unknown, target: unknown) {
   let result = false;
-  const walker = new Walker(
+  const walker = new LavaTube(
     (value: unknown) => {
       result = target === value;
       return result;
