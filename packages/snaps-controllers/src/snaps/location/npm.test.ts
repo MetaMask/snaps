@@ -41,6 +41,8 @@ describe('NpmLocation', () => {
         (_req) =>
           Promise.resolve({
             ok: true,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            headers: new Headers({ 'content-length': '5477' }),
             body: createReadStream(
               path.resolve(
                 __dirname,
