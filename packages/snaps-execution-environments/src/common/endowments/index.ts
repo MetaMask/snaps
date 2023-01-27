@@ -3,12 +3,7 @@ import { SnapsGlobalObject } from '@metamask/snaps-utils';
 import { hasProperty } from '@metamask/utils';
 
 import { rootRealmGlobal } from '../globalObject';
-import crypto from './crypto';
-import date from './date';
-import interval from './interval';
-import math from './math';
-import network from './network';
-import timeout from './timeout';
+import buildCommonEndowments from './commonEndowmentFactory';
 
 type EndowmentFactoryResult = {
   /**
@@ -24,18 +19,16 @@ type EndowmentFactoryResult = {
 };
 
 /**
+ * Retrieve consolidated endowment factories for common endowments.
+ */
+const registeredEndowments = buildCommonEndowments();
+
+/**
  * A map of endowment names to their factory functions. Some endowments share
  * the same factory function, but we only call each factory once for each snap.
  * See {@link createEndowments} for details.
  */
-const endowmentFactories = [
-  timeout,
-  interval,
-  network,
-  crypto,
-  math,
-  date,
-].reduce((factories, builder) => {
+const endowmentFactories = registeredEndowments.reduce((factories, builder) => {
   builder.names.forEach((name) => {
     factories.set(name, builder.factory);
   });
