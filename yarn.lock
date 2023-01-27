@@ -2446,6 +2446,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@lavamoat/lavatube@npm:^0.0.1":
+  version: 0.0.1
+  resolution: "@lavamoat/lavatube@npm:0.0.1"
+  checksum: 91b73a9053f16e3d8e630df4f3e60cbdea4fea0abb820e5124e92e4b867f934d0e55f1c1430272a8100ed4d547494bb818baee86216bdf430104184ad5ce735c
+  languageName: node
+  linkType: hard
+
 "@metamask/abi-utils@npm:^1.1.1":
   version: 1.1.1
   resolution: "@metamask/abi-utils@npm:1.1.1"
@@ -2497,20 +2504,6 @@ __metadata:
   version: 4.0.2
   resolution: "@metamask/browser-passworder@npm:4.0.2"
   checksum: 997c330b1c72f7135d0fd2a7f4b0dce37b3c2e6b30e92f048fa8d4f8c949f5b669dcc3064790f41df30ee2e53a9e64a812df72e00527736be704cce2cf4f6e49
-  languageName: node
-  linkType: hard
-
-"@metamask/controller-utils@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/controller-utils@npm:1.0.0"
-  dependencies:
-    eth-ens-namehash: ^2.0.8
-    eth-rpc-errors: ^4.0.0
-    ethereumjs-util: ^7.0.10
-    ethjs-unit: ^0.1.6
-    fast-deep-equal: ^3.1.3
-    isomorphic-fetch: ^3.0.0
-  checksum: 76e0629ba97b0b704f2f08e346fc27cf404630a64088504dbbad3d4124afe7a6c9bf3627e999ab9a1f1c183a444978ecc288b6df3ab30b47b5398a1da848ebbf
   languageName: node
   linkType: hard
 
@@ -2639,26 +2632,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/permission-controller@npm:^1.0.1":
-  version: 1.0.2
-  resolution: "@metamask/permission-controller@npm:1.0.2"
-  dependencies:
-    "@metamask/approval-controller": ^1.0.1
-    "@metamask/base-controller": ^1.1.1
-    "@metamask/controller-utils": ^1.0.0
-    "@metamask/types": ^1.1.0
-    "@types/deep-freeze-strict": ^1.1.0
-    deep-freeze-strict: ^1.1.1
-    eth-rpc-errors: ^4.0.0
-    immer: ^9.0.6
-    json-rpc-engine: ^6.1.0
-    nanoid: ^3.1.31
-  peerDependencies:
-    "@metamask/approval-controller": ^1.0.1
-  checksum: 06c062d232817f6816fb6038b7139f32324ceb3f6c7398effabd5fe6eed8e643b414202e20239302ce01aaa68503a0a49f0692512a433040e89907306260a3db
-  languageName: node
-  linkType: hard
-
 "@metamask/permission-controller@npm:^2.0.0":
   version: 2.0.0
   resolution: "@metamask/permission-controller@npm:2.0.0"
@@ -2721,7 +2694,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/key-tree": ^6.2.1
-    "@metamask/permission-controller": ^1.0.1
+    "@metamask/permission-controller": ^2.0.0
     "@metamask/snaps-ui": ^0.28.0
     "@metamask/snaps-utils": ^0.28.0
     "@metamask/types": ^1.1.0
@@ -2883,7 +2856,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/object-multiplex": ^1.1.0
-    "@metamask/permission-controller": ^1.0.1
+    "@metamask/permission-controller": ^2.0.0
     "@metamask/post-message-stream": ^6.1.0
     "@metamask/rpc-methods": ^0.28.0
     "@metamask/snaps-execution-environments": ^0.28.0
@@ -2944,6 +2917,7 @@ __metadata:
     "@babel/core": ^7.20.12
     "@babel/preset-typescript": ^7.18.6
     "@lavamoat/allow-scripts": ^2.0.3
+    "@lavamoat/lavatube": ^0.0.1
     "@metamask/auto-changelog": ^3.1.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
@@ -2975,7 +2949,6 @@ __metadata:
     jest: ^29.0.2
     jest-environment-jsdom: ^29.0.2
     jest-fetch-mock: ^3.0.3
-    jest-it-up: ^2.0.0
     jsdom: ^19.0.0
     json-rpc-engine: ^6.1.0
     mkdirp: ^1.0.4

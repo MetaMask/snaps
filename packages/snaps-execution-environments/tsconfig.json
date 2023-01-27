@@ -2,7 +2,8 @@
   "extends": "../../tsconfig.packages.json",
   "compilerOptions": {
     "baseUrl": "./",
-    "typeRoots": ["../../node_modules/@types", "./node_modules/@types"]
+    "typeRoots": ["../../node_modules/@types", "./node_modules/@types"],
+    "lib": ["es2015.proxy"]
   },
   "include": ["./src", "./src/openrpc.json"],
   "references": [{ "path": "../snaps-utils" }]

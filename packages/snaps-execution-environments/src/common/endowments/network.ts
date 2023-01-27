@@ -172,7 +172,7 @@ const createNetwork = () => {
         () => openConnections.delete(openBodyConnection),
       );
     }
-    return res;
+    return harden(res);
   };
 
   const teardownFunction = async () => {
@@ -184,7 +184,7 @@ const createNetwork = () => {
   };
 
   return {
-    fetch: _fetch,
+    fetch: harden(_fetch),
     teardownFunction,
   };
 };

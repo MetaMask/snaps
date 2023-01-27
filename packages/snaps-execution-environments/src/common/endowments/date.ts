@@ -38,7 +38,7 @@ function createDate() {
     });
   });
 
-  return { Date: NewDate };
+  return { Date: harden(NewDate) };
 }
 
 const endowmentModule = {
