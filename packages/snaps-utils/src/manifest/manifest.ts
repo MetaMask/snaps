@@ -171,10 +171,18 @@ export async function checkManifest(
 
   if (writeManifest) {
     try {
-      await fs.writeFile(
-        pathUtils.join(basePath, NpmSnapFileNames.Manifest),
-        `${JSON.stringify(getWritableManifest(validatedManifest), null, 2)}\n`,
-      );
+      const newManifest = `${JSON.stringify(
+        getWritableManifest(validatedManifest),
+        null,
+        2,
+      )}\n`;
+
+      if (updated || newManifest !== manifestFile.value) {
+        await fs.writeFile(
+          pathUtils.join(basePath, NpmSnapFileNames.Manifest),
+          newManifest,
+        );
+      }
     } catch (error) {
       // Note: This error isn't pushed to the errors array, because it's not an
       // error in the manifest itself.
