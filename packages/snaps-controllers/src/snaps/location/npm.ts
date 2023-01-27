@@ -270,11 +270,12 @@ async function fetchNpmTarball(
   if (!tarballResponse.ok || !tarballResponse.body) {
     throw new Error(`Failed to fetch tarball for package "${packageName}".`);
   }
+  // We assume that NPM is a good actor and provides us with a valid `content-length` header.
   const tarballSizeString = tarballResponse.headers.get('content-length');
   assert(tarballSizeString, 'Snap tarball has invalid content-length');
   const tarballSize = parseInt(tarballSizeString, 10);
   assert(
-    tarballSize <= TARBALL_SIZE_SAFETY_LIMIT / 2,
+    tarballSize <= TARBALL_SIZE_SAFETY_LIMIT,
     'Snap tarball exceeds size limit',
   );
   return [tarballResponse.body, targetVersion];
