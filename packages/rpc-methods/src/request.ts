@@ -119,6 +119,10 @@ export type MethodRequestArguments<
     : never;
 };
 
+export type MethodReturnType<
+  MethodName extends keyof MethodFunction | GenericMethodFunction,
+> = ReturnType<MethodFunctionFallback<MethodName>>;
+
 /**
  * A function that takes a JSON-RPC request and returns a JSON-RPC response.
  *
@@ -129,7 +133,7 @@ export type RequestFunction = <
   MethodName extends keyof MethodFunction | GenericMethodFunction,
 >(
   args: MethodRequestArguments<MethodName>,
-) => ReturnType<MethodFunctionFallback<MethodName>>;
+) => MethodReturnType<MethodName>;
 
 /**
  * The global `snap` object. This is injected into the global scope of a snap.

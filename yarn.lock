@@ -2712,6 +2712,7 @@ __metadata:
     eslint-plugin-node: ^11.1.0
     eslint-plugin-prettier: ^4.2.1
     eth-rpc-errors: ^4.0.2
+    expect-type: ^0.15.0
     jest: ^29.0.2
     jest-it-up: ^2.0.0
     json-rpc-engine: ^6.1.0
@@ -8248,6 +8249,13 @@ __metadata:
   dependencies:
     homedir-polyfill: ^1.0.1
   checksum: 2efe6ed407d229981b1b6ceb552438fbc9e5c7d6a6751ad6ced3e0aa5cf12f0b299da695e90d6c2ac79191b5c53c613e508f7149e4573abfbb540698ddb7301a
+  languageName: node
+  linkType: hard
+
+"expect-type@npm:^0.15.0":
+  version: 0.15.0
+  resolution: "expect-type@npm:0.15.0"
+  checksum: f5d3733bb593d9f7cf302b393e34b19389fb7022d72963815e9a847a9517b65201faef733dd9006bed9e200486d77204fd958c8d29ef58b466bed2da076fc0ba
   languageName: node
   linkType: hard
 
