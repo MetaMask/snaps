@@ -1,8 +1,11 @@
-// This script is a custom replacement for jest-it-up
+/* eslint-disable no-console */
+
+// This script is a custom replacement for jest-it-up.
 // Since two test runners are used in the snaps-execution-environments package,
 // it is required that coverage process runs independently based on the results
 // from both test runners.
 // This script will update changes to coverage thresholds when they're improved.
+
 'use strict';
 
 const fs = require('fs');
