@@ -4,6 +4,7 @@ import {
   RestrictedMethodOptions,
 } from '@metamask/permission-controller';
 import { PermittedHandlerExport } from '@metamask/types';
+import { JsonRpcParams } from '@metamask/utils';
 
 import { methodHandlers } from './permitted';
 import { restrictedMethodPermissionBuilders } from './restricted';
@@ -87,6 +88,19 @@ type RestrictedMethodFunction = {
  * A type containing all supported JSON-RPC methods.
  */
 type MethodFunction = RestrictedMethodFunction & PermittedMethodFunction;
+type GenericMethodFunction = `wallet_${string}`;
+
+/**
+ * Get a typed function if the method is defined in {@link MethodFunction}, or
+ * a generic function if the method name extends {@link GenericMethodFunction}.
+ * Otherwise, this returns `never`.
+ */
+type MethodFunctionFallback<MethodName> =
+  MethodName extends keyof MethodFunction
+    ? MethodFunction[MethodName]
+    : MethodName extends GenericMethodFunction
+    ? (args: { method: MethodName; params?: JsonRpcParams }) => Promise<unknown>
+    : never;
 
 /**
  * The request arguments for a JSON-RPC method.
@@ -94,9 +108,11 @@ type MethodFunction = RestrictedMethodFunction & PermittedMethodFunction;
  * @template MethodName - The name of the method. In most cases this is inferred
  * from the args.
  */
-export type MethodRequestArguments<MethodName extends keyof MethodFunction> = {
+export type MethodRequestArguments<
+  MethodName extends keyof MethodFunction | GenericMethodFunction,
+> = {
   method: MethodName;
-  params?: Parameters<MethodFunction[MethodName]>[0] extends {
+  params?: Parameters<MethodFunctionFallback<MethodName>>[0] extends {
     params?: infer Params;
   }
     ? Params
@@ -109,9 +125,11 @@ export type MethodRequestArguments<MethodName extends keyof MethodFunction> = {
  * @template MethodName - The name of the method. In most cases this is inferred
  * from the args.
  */
-export type RequestFunction = <MethodName extends keyof MethodFunction>(
+export type RequestFunction = <
+  MethodName extends keyof MethodFunction | GenericMethodFunction,
+>(
   args: MethodRequestArguments<MethodName>,
-) => ReturnType<MethodFunction[MethodName]>;
+) => ReturnType<MethodFunctionFallback<MethodName>>;
 
 /**
  * The global `snap` object. This is injected into the global scope of a snap.
