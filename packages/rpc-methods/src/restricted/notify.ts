@@ -7,28 +7,21 @@ import {
 import { NonEmptyArray, isObject } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
+import { EnumToUnion } from '../utils';
+
 const methodName = 'snap_notify';
 
 // TODO: Move all the types to a shared place when implementing more
-// notifications.
-// Note: We can't use an enum here, because strings are not assignable to
-// their enum values. For example:
-// ```typescript
-// enum Foo {
-//   Bar = 'bar',
-// }
-//
-// // Error: Type '"bar"' is not assignable to type 'Foo'.
-// const foo: Foo = 'bar';
-// ```
-const NotificationTypeArray = ['inApp', 'native'] as const;
-export type NotificationType = typeof NotificationTypeArray[number];
+export enum NotificationType {
+  InApp = 'inApp',
+  Native = 'native',
+}
 
 export type NotificationArgs = {
   /**
    * Enum type to determine notification type.
    */
-  type: NotificationType;
+  type: EnumToUnion<NotificationType>;
 
   /**
    * A message to show on the notification.
@@ -123,9 +116,9 @@ export function getImplementation({
     const validatedParams = getValidatedParams(params);
 
     switch (validatedParams.type) {
-      case 'native':
+      case NotificationType.Native:
         return await showNativeNotification(origin, validatedParams);
-      case 'inApp':
+      case NotificationType.InApp:
         return await showInAppNotification(origin, validatedParams);
       default:
         throw ethErrors.rpc.invalidParams({
@@ -154,7 +147,7 @@ export function getValidatedParams(params: unknown): NotificationArgs {
   if (
     !type ||
     typeof type !== 'string' ||
-    !NotificationTypeArray.includes(type as NotificationType)
+    !Object.values(NotificationType).includes(type as NotificationType)
   ) {
     throw ethErrors.rpc.invalidParams({
       message: 'Must specify a valid notification "type".',

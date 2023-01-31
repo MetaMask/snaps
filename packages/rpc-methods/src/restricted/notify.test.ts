@@ -1,8 +1,12 @@
-import { getImplementation, getValidatedParams } from './notify';
+import {
+  getImplementation,
+  getValidatedParams,
+  NotificationType,
+} from './notify';
 
 describe('snap_notify', () => {
   const validParams = {
-    type: 'inApp',
+    type: NotificationType.InApp,
     message: 'Some message',
   };
 
@@ -22,13 +26,13 @@ describe('snap_notify', () => {
         },
         method: 'snap_notify',
         params: {
-          type: 'inApp',
+          type: NotificationType.InApp,
           message: 'Some message',
         },
       });
 
       expect(showInAppNotification).toHaveBeenCalledWith('extension', {
-        type: 'inApp',
+        type: NotificationType.InApp,
         message: 'Some message',
       });
     });
@@ -48,13 +52,13 @@ describe('snap_notify', () => {
         },
         method: 'snap_notify',
         params: {
-          type: 'native',
+          type: NotificationType.Native,
           message: 'Some message',
         },
       });
 
       expect(showNativeNotification).toHaveBeenCalledWith('extension', {
-        type: 'native',
+        type: NotificationType.Native,
         message: 'Some message',
       });
     });
@@ -75,8 +79,7 @@ describe('snap_notify', () => {
           },
           method: 'snap_notify',
           params: {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error - invalid type for testing purposes
+            // @ts-expect-error - Invalid type for testing purposes.
             type: 'invalid-type',
             message: 'Some message',
           },
@@ -99,13 +102,17 @@ describe('snap_notify', () => {
     });
 
     it('throws an error if the message is empty', () => {
-      expect(() => getValidatedParams({ type: 'inApp', message: '' })).toThrow(
+      expect(() =>
+        getValidatedParams({ type: NotificationType.InApp, message: '' }),
+      ).toThrow(
         'Must specify a non-empty string "message" less than 50 characters long.',
       );
     });
 
     it('throws an error if the message is not a string', () => {
-      expect(() => getValidatedParams({ type: 'inApp', message: 123 })).toThrow(
+      expect(() =>
+        getValidatedParams({ type: NotificationType.InApp, message: 123 }),
+      ).toThrow(
         'Must specify a non-empty string "message" less than 50 characters long.',
       );
     });
@@ -113,7 +120,7 @@ describe('snap_notify', () => {
     it('throws an error if the message is larger than 50 characters', () => {
       expect(() =>
         getValidatedParams({
-          type: 'inApp',
+          type: NotificationType.InApp,
           message:
             'test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg',
         }),
