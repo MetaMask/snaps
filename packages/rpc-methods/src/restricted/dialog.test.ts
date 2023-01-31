@@ -155,7 +155,7 @@ describe('implementation', () => {
           params: value as any,
         }),
       ).rejects.toThrow(
-        'The "type" property must be one of: Alert, Confirmation, Prompt.',
+        'The "type" property must be one of: alert, confirmation, prompt.',
       );
     });
 
@@ -172,7 +172,7 @@ describe('implementation', () => {
             params: value as any,
           }),
         ).rejects.toThrow(
-          'The "type" property must be one of: Alert, Confirmation, Prompt.',
+          'The "type" property must be one of: alert, confirmation, prompt.',
         );
       },
     );
