@@ -9,6 +9,7 @@ import {
   stringToBytes,
 } from '@metamask/utils';
 import { keccak_256 as keccak256 } from '@noble/hashes/sha3';
+import { literal, Struct } from 'superstruct';
 
 const HARDENED_VALUE = 0x80000000;
 
@@ -150,8 +151,8 @@ export async function deriveEntropy({
 }
 
 /**
- * Get the enum values as union type. This allows using both the enum values
- * and the enum itself as values.
+ * Get the enum values as union type. This allows using both the enum string
+ * values and the enum itself as values.
  *
  * Note: This only works for string enums.
  *
@@ -170,3 +171,16 @@ export async function deriveEntropy({
  * ```
  */
 export type EnumToUnion<Type extends string> = `${Type}`;
+
+/**
+ * Superstruct struct for validating an enum value. This allows using both the
+ * enum string values and the enum itself as values.
+ *
+ * @param constant - The enum to validate against.
+ * @returns The superstruct struct.
+ */
+export function enumValue<T extends string>(
+  constant: T,
+): Struct<EnumToUnion<T>, EnumToUnion<T>> {
+  return literal(constant as EnumToUnion<T>);
+}

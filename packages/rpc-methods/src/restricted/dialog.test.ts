@@ -41,6 +41,27 @@ describe('implementation', () => {
       showDialog: jest.fn(),
     } as DialogMethodHooks);
 
+  it('accepts string dialog types', async () => {
+    const hooks = getMockDialogHooks();
+    const implementation = getDialogImplementation(hooks);
+    await implementation({
+      context: { origin: 'foo' },
+      method: 'snap_dialog',
+      params: {
+        type: 'alert',
+        content: panel([heading('foo'), text('bar')]),
+      },
+    });
+
+    expect(hooks.showDialog).toHaveBeenCalledTimes(1);
+    expect(hooks.showDialog).toHaveBeenCalledWith(
+      'foo',
+      DialogType.Alert,
+      panel([heading('foo'), text('bar')]),
+      undefined,
+    );
+  });
+
   describe('alerts', () => {
     it('handles alerts', async () => {
       const hooks = getMockDialogHooks();

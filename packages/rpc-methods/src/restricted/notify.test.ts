@@ -63,6 +63,32 @@ describe('snap_notify', () => {
       });
     });
 
+    it('accepts string notification types', async () => {
+      const showNativeNotification = jest.fn().mockResolvedValueOnce(true);
+      const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
+
+      const notificationImplementation = getImplementation({
+        showNativeNotification,
+        showInAppNotification,
+      });
+
+      await notificationImplementation({
+        context: {
+          origin: 'extension',
+        },
+        method: 'snap_notify',
+        params: {
+          type: 'native',
+          message: 'Some message',
+        },
+      });
+
+      expect(showNativeNotification).toHaveBeenCalledWith('extension', {
+        type: NotificationType.Native,
+        message: 'Some message',
+      });
+    });
+
     it('throws an error if the notification type is invalid', async () => {
       const showNativeNotification = jest.fn().mockResolvedValueOnce(true);
       const showInAppNotification = jest.fn().mockResolvedValueOnce(true);

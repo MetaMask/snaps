@@ -11,7 +11,6 @@ import {
   create,
   enums,
   Infer,
-  literal,
   object,
   optional,
   size,
@@ -22,12 +21,14 @@ import {
   union,
 } from 'superstruct';
 
+import { EnumToUnion, enumValue } from '../utils';
+
 const methodName = 'snap_dialog';
 
 export enum DialogType {
-  Alert = 'Alert',
-  Confirmation = 'Confirmation',
-  Prompt = 'Prompt',
+  Alert = 'alert',
+  Confirmation = 'confirmation',
+  Prompt = 'prompt',
 }
 
 const PlaceholderStruct = optional(size(string(), 1, 40));
@@ -36,7 +37,7 @@ export type Placeholder = Infer<typeof PlaceholderStruct>;
 
 type ShowDialog = (
   snapId: string,
-  type: DialogType,
+  type: EnumToUnion<DialogType>,
   content: Component,
   placeholder?: Placeholder,
 ) => Promise<null | boolean | string>;
@@ -108,17 +109,17 @@ const BaseParamsStruct = type({
 });
 
 const AlertParametersStruct = object({
-  type: literal(DialogType.Alert),
+  type: enumValue(DialogType.Alert),
   content: ComponentStruct,
 });
 
 const ConfirmationParametersStruct = object({
-  type: literal(DialogType.Confirmation),
+  type: enumValue(DialogType.Confirmation),
   content: ComponentStruct,
 });
 
 const PromptParametersStruct = object({
-  type: literal(DialogType.Prompt),
+  type: enumValue(DialogType.Prompt),
   content: ComponentStruct,
   placeholder: PlaceholderStruct,
 });
