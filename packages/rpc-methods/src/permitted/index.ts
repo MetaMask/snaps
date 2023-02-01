@@ -4,8 +4,12 @@ import { requestSnapsHandler, RequestSnapsHooks } from './requestSnaps';
 
 export type PermittedRpcMethodHooks = GetSnapsHooks & RequestSnapsHooks;
 
-export const handlers = [
-  getSnapsHandler,
-  requestSnapsHandler,
-  invokeSnapSugarHandler,
-];
+/* eslint-disable @typescript-eslint/naming-convention */
+export const methodHandlers = {
+  wallet_getSnaps: getSnapsHandler,
+  wallet_requestSnaps: requestSnapsHandler,
+  wallet_invokeSnap: invokeSnapSugarHandler,
+};
+/* eslint-enable @typescript-eslint/naming-convention */
+
+export const handlers = Object.values(methodHandlers);

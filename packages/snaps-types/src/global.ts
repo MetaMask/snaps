@@ -1,5 +1,5 @@
 import { MetaMaskInpageProvider } from '@metamask/providers';
-import { SnapsGlobalObject } from '@metamask/snaps-utils';
+import type { SnapsGlobalObject } from '@metamask/rpc-methods';
 
 // Types that should be available globally within a snap.
 declare global {
