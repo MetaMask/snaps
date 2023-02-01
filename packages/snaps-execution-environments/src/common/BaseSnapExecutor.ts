@@ -332,7 +332,7 @@ export class BaseSnapExecutor {
       // but we add them for compatibility sake with external libraries.
       //
       // We can't do that in the injected globals object above
-      // because SES creates it's own globalThis
+      // because SES creates its own globalThis
       compartment.globalThis.self = compartment.globalThis;
       compartment.globalThis.global = compartment.globalThis;
       compartment.globalThis.window = compartment.globalThis;
