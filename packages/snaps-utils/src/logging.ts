@@ -27,6 +27,10 @@ export function logInfo(message: string, ...optionalParams: unknown[]): void {
  * production builds, so they should be used sparingly, and not contain any
  * sensitive information.
  *
+ * These logs should always be visible, without requiring the user to enable
+ * verbose logging (like setting a `DEBUG` environment variable), as they are
+ * important for debugging snaps.
+ *
  * This function makes it easy to swap out the logging implementation in all
  * files at once.
  *
@@ -43,6 +47,10 @@ export function logError(error: unknown, ...optionalParams: unknown[]): void {
  * the implementation may change in the future. These logs will be included in
  * production builds, so they should be used sparingly, and not contain any
  * sensitive information.
+ *
+ * These logs should always be visible, without requiring the user to enable
+ * verbose logging (like setting a `DEBUG` environment variable), as they are
+ * important for debugging snaps.
  *
  * This function makes it easy to swap out the logging implementation in all
  * files at once.
