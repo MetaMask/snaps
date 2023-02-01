@@ -101,6 +101,7 @@ import {
   JsonSnapsRegistry,
   SnapsRegistry,
   SnapsRegistryInfo,
+  SnapsRegistryMetadata,
   SnapsRegistryRequest,
   SnapsRegistryStatus,
 } from './registry';
@@ -344,6 +345,11 @@ export type RemoveSnapError = {
   handler: SnapController['removeSnapError'];
 };
 
+export type GetRegistryMetadata = {
+  type: `${typeof controllerName}:getRegistryMetadata`;
+  handler: SnapController['getRegistryMetadata'];
+};
+
 export type SnapControllerActions =
   | ClearSnapState
   | GetSnap
@@ -360,7 +366,8 @@ export type SnapControllerActions =
   | RemoveSnapError
   | GetAllSnaps
   | IncrementActiveReferences
-  | DecrementActiveReferences;
+  | DecrementActiveReferences
+  | GetRegistryMetadata;
 
 // Controller Messenger Events
 
@@ -919,6 +926,11 @@ export class SnapController extends BaseController<
     this.messagingSystem.registerActionHandler(
       `${controllerName}:decrementActiveReferences`,
       (...args) => this.decrementActiveReferences(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:getRegistryMetadata`,
+      async (...args) => this.getRegistryMetadata(...args),
     );
   }
 
@@ -1814,6 +1826,19 @@ export class SnapController extends BaseController<
     );
 
     return truncatedSnap;
+  }
+
+  /**
+   * Get metadata for the given snap ID.
+   *
+   * @param snapId - The ID of the snap to get metadata for.
+   * @returns The metadata for the given snap ID, or `null` if the snap is not
+   * verified.
+   */
+  async getRegistryMetadata(
+    snapId: SnapId,
+  ): Promise<SnapsRegistryMetadata | null> {
+    return await this.#registry.getMetadata(snapId);
   }
 
   /**

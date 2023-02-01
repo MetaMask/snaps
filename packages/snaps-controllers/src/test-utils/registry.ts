@@ -12,4 +12,6 @@ export class MockSnapsRegistry implements SnapsRegistry {
       ),
     );
   });
+
+  getMetadata = jest.fn().mockResolvedValue(null);
 }

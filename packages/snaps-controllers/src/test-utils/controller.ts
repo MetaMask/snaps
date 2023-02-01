@@ -218,6 +218,7 @@ export const getSnapControllerMessenger = (
       'SnapController:removeSnapError',
       'SnapController:incrementActiveReferences',
       'SnapController:decrementActiveReferences',
+      'SnapController:getRegistryMetadata',
       'SubjectMetadataController:getSubjectMetadata',
     ],
   });

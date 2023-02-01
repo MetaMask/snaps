@@ -3822,6 +3822,38 @@ describe('SnapController', () => {
     });
   });
 
+  describe('getRegistryMetadata', () => {
+    it('returns the metadata for a verified snap', async () => {
+      const registry = new MockSnapsRegistry();
+      registry.getMetadata.mockReturnValue({
+        name: 'Mock Snap',
+      });
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          registry,
+        }),
+      );
+
+      expect(
+        await snapController.getRegistryMetadata(MOCK_SNAP_ID),
+      ).toStrictEqual({
+        name: 'Mock Snap',
+      });
+    });
+
+    it('returns null for a non-verified snap', async () => {
+      const registry = new MockSnapsRegistry();
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          registry,
+        }),
+      );
+
+      expect(await snapController.getRegistryMetadata(MOCK_SNAP_ID)).toBeNull();
+    });
+  });
+
   describe('SnapController actions', () => {
     describe('SnapController:get', () => {
       it('gets a snap', () => {
@@ -4204,6 +4236,33 @@ describe('SnapController', () => {
 
         messenger.call('SnapController:removeSnapError', 'foo');
         expect(snapController.state.snapErrors.foo).toBeUndefined();
+      });
+    });
+
+    describe('SnapController:getRegistryMetadata', () => {
+      it('calls SnapController.getRegistryMetadata()', async () => {
+        const messenger = getSnapControllerMessenger();
+        const registry = new MockSnapsRegistry();
+
+        registry.getMetadata.mockReturnValue({
+          name: 'Mock Snap',
+        });
+
+        getSnapController(
+          getSnapControllerOptions({
+            messenger,
+            registry,
+          }),
+        );
+
+        expect(
+          await messenger.call(
+            'SnapController:getRegistryMetadata',
+            MOCK_SNAP_ID,
+          ),
+        ).toStrictEqual({
+          name: 'Mock Snap',
+        });
       });
     });
   });

@@ -13,6 +13,9 @@ const MOCK_DATABASE: SnapsRegistryDatabase = {
   verifiedSnaps: {
     [MOCK_SNAP_ID]: {
       id: MOCK_SNAP_ID,
+      metadata: {
+        name: 'Mock Snap',
+      },
       versions: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         ['1.0.0' as SemVerVersion]: {
@@ -36,6 +39,7 @@ const MOCK_DATABASE: SnapsRegistryDatabase = {
 
 describe('JsonSnapsRegistry', () => {
   fetchMock.enableMocks();
+
   it('can get entries from the registry', async () => {
     fetchMock.mockResponse(JSON.stringify(MOCK_DATABASE));
     const registry = new JsonSnapsRegistry();
@@ -176,5 +180,27 @@ describe('JsonSnapsRegistry', () => {
         },
       }),
     ).rejects.toThrow('Snaps registry is unavailable, installation blocked.');
+  });
+
+  describe('getMetadata', () => {
+    it('returns the metadata for a verified snap', async () => {
+      fetchMock.mockResponse(JSON.stringify(MOCK_DATABASE));
+
+      const registry = new JsonSnapsRegistry();
+      const result = await registry.getMetadata(MOCK_SNAP_ID);
+
+      expect(result).toStrictEqual({
+        name: 'Mock Snap',
+      });
+    });
+
+    it('returns null for a non-verified snap', async () => {
+      fetchMock.mockResponse(JSON.stringify(MOCK_DATABASE));
+
+      const registry = new JsonSnapsRegistry();
+      const result = await registry.getMetadata('foo');
+
+      expect(result).toBeNull();
+    });
   });
 });

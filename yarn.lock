@@ -2973,15 +2973,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/snaps-registry@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/snaps-registry@npm:1.0.0"
+"@metamask/snaps-registry@portal:/Users/morten/Development/MetaMask/snaps-registry::locator=root%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@metamask/snaps-registry@portal:/Users/morten/Development/MetaMask/snaps-registry::locator=root%40workspace%3A."
   dependencies:
     "@metamask/utils": ^3.4.0
     superstruct: ^1.0.3
-  checksum: 6a127d4d2db30e6f3966f4f82f3810a22a79db62c84b5db2b95d189dd36fe59aa5de59f01203095c9f7f07a44c1bf049c0fc046931269327d0693d1274f8f154
   languageName: node
-  linkType: hard
+  linkType: soft
 
 "@metamask/snaps-rollup-plugin@^0.28.0, @metamask/snaps-rollup-plugin@workspace:packages/snaps-rollup-plugin":
   version: 0.0.0-use.local
