@@ -4,6 +4,7 @@
 import {
   checkManifest,
   evalBundle,
+  logWarning,
   PostProcessWarning,
 } from '@metamask/snaps-utils';
 import {
@@ -24,6 +25,7 @@ jest.mock('@metamask/snaps-utils', () => ({
   ...jest.requireActual('@metamask/snaps-utils'),
   evalBundle: jest.fn(),
   checkManifest: jest.fn(),
+  logWarning: jest.fn(),
 }));
 
 /**
@@ -135,13 +137,11 @@ describe('plugin', () => {
   });
 
   it('logs post processing warnings', async () => {
-    jest.spyOn(console, 'log').mockImplementation(() => undefined);
-
     await bundle({
       code: 'console.log(Math.random());',
     });
 
-    expect(console.log).toHaveBeenCalledWith(
+    expect(logWarning).toHaveBeenCalledWith(
       `Bundle Warning: Processing of the Snap bundle completed with warnings.\n${PostProcessWarning.UnsafeMathRandom}`,
     );
   });
@@ -210,8 +210,6 @@ describe('plugin', () => {
   });
 
   it('logs manifest warnings', async () => {
-    jest.spyOn(console, 'log').mockImplementation(() => undefined);
-
     const mock = checkManifest as jest.MockedFunction<typeof checkManifest>;
     mock.mockResolvedValue({
       manifest: getSnapManifest(),
@@ -223,9 +221,9 @@ describe('plugin', () => {
       options: { eval: false, manifestPath: 'foo' },
     });
 
-    expect(console.log).toHaveBeenCalledTimes(3);
-    expect(console.log).toHaveBeenCalledWith('Manifest Warning: foo');
-    expect(console.log).toHaveBeenCalledWith('Manifest Warning: bar');
+    expect(logWarning).toHaveBeenCalledTimes(3);
+    expect(logWarning).toHaveBeenCalledWith('Manifest Warning: foo');
+    expect(logWarning).toHaveBeenCalledWith('Manifest Warning: bar');
   });
 
   it('forwards errors', async () => {
