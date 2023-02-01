@@ -39,9 +39,6 @@
       "prettier --write"
     ]
   },
-  "resolutions": {
-    "@metamask/snaps-registry": "portal:/Users/morten/Development/MetaMask/snaps-registry"
-  },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.0.3",
     "@metamask/auto-changelog": "^3.1.0",

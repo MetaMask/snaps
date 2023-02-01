@@ -2861,7 +2861,7 @@ __metadata:
     "@metamask/post-message-stream": ^6.1.0
     "@metamask/rpc-methods": ^0.28.0
     "@metamask/snaps-execution-environments": ^0.28.0
-    "@metamask/snaps-registry": ^1.0.0
+    "@metamask/snaps-registry": ^1.1.0
     "@metamask/snaps-utils": ^0.28.0
     "@metamask/subject-metadata-controller": ^1.0.1
     "@metamask/template-snap": ^0.7.0
@@ -2973,14 +2973,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/snaps-registry@portal:/Users/morten/Development/MetaMask/snaps-registry::locator=root%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "@metamask/snaps-registry@portal:/Users/morten/Development/MetaMask/snaps-registry::locator=root%40workspace%3A."
+"@metamask/snaps-registry@npm:^1.0.0, @metamask/snaps-registry@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@metamask/snaps-registry@npm:1.1.0"
   dependencies:
     "@metamask/utils": ^3.4.0
     superstruct: ^1.0.3
+  checksum: a67a9e7a30a2f7bc55d130b278573aa2bf043ab5c5935704ab8166898dadf37557284412f9b653f9ed52059a557a51b8472aabbe6887a06922d5526ead12199b
   languageName: node
-  linkType: soft
+  linkType: hard
 
 "@metamask/snaps-rollup-plugin@^0.28.0, @metamask/snaps-rollup-plugin@workspace:packages/snaps-rollup-plugin":
   version: 0.0.0-use.local
