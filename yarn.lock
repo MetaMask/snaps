@@ -2861,7 +2861,7 @@ __metadata:
     "@metamask/post-message-stream": ^6.1.0
     "@metamask/rpc-methods": ^0.28.0
     "@metamask/snaps-execution-environments": ^0.28.0
-    "@metamask/snaps-registry": ^1.0.0
+    "@metamask/snaps-registry": ^1.1.0
     "@metamask/snaps-utils": ^0.28.0
     "@metamask/subject-metadata-controller": ^1.0.1
     "@metamask/template-snap": ^0.7.0
@@ -2973,13 +2973,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/snaps-registry@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/snaps-registry@npm:1.0.0"
+"@metamask/snaps-registry@npm:^1.0.0, @metamask/snaps-registry@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@metamask/snaps-registry@npm:1.1.0"
   dependencies:
     "@metamask/utils": ^3.4.0
     superstruct: ^1.0.3
-  checksum: 6a127d4d2db30e6f3966f4f82f3810a22a79db62c84b5db2b95d189dd36fe59aa5de59f01203095c9f7f07a44c1bf049c0fc046931269327d0693d1274f8f154
+  checksum: a67a9e7a30a2f7bc55d130b278573aa2bf043ab5c5935704ab8166898dadf37557284412f9b653f9ed52059a557a51b8472aabbe6887a06922d5526ead12199b
   languageName: node
   linkType: hard
 
