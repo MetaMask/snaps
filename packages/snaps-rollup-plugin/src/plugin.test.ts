@@ -8,6 +8,7 @@ import {
   getSnapManifest,
 } from '@metamask/snaps-utils/test-utils';
 import virtual, { RollupVirtualOptions } from '@rollup/plugin-virtual';
+import assert from 'assert';
 import { promises as fs } from 'fs';
 import { OutputOptions, rollup, RollupOutput } from 'rollup';
 
@@ -172,8 +173,12 @@ describe('snaps', () => {
     });
 
     const { map } = output[0];
-    expect(map).toMatchInlineSnapshot(`
-      SourceMap {
+    assert(map);
+
+    const { sources, ...partialMap } = map;
+
+    expect(partialMap).toMatchInlineSnapshot(`
+      {
         "file": "source-map.js",
         "mappings": "AACEA,MAAM,CAACC,OAAO,CAACC,YAAY,GAAG,CAAC;EAAEC;AAAO,CAAE,KAAK;EAC7CC,OAAO,CAACC,GAAG,CAAC,eAAe,CAAC;EAE5B,MAAM;IAAEC,MAAM;IAAEC;EAAI,CAAA,GAAGJ,OAAO;EAC9B,OAAOG,MAAM,GAAGC,EAAE;AACnB,CAAA",
         "names": [
@@ -185,9 +190,6 @@ describe('snaps', () => {
           "log",
           "method",
           "id",
-        ],
-        "sources": [
-          "../../../../../../../source-map.ts",
         ],
         "sourcesContent": [
           "
