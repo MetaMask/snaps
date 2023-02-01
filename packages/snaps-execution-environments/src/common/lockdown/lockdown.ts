@@ -1,6 +1,8 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
 /// <reference path="../../../../../node_modules/ses/index.d.ts" />
 
+import { logError } from '@metamask/snaps-utils';
+
 /**
  * Execute SES lockdown in the current context, i.e., the current iframe.
  *
@@ -17,7 +19,7 @@ export function executeLockdown() {
     });
   } catch (error) {
     // If the `lockdown` call throws an exception, it should not be able to continue
-    console.error('Lockdown failed:', error);
+    logError('Lockdown failed:', error);
     throw error;
   }
 }

@@ -1,5 +1,7 @@
 import {
   getOutfilePath,
+  logError,
+  logInfo,
   validateDirPath,
   validateFilePath,
   validateOutfileName,
@@ -7,7 +9,7 @@ import {
 import chokidar from 'chokidar';
 
 import { YargsArgs } from '../../types/yargs';
-import { loadConfig, logError } from '../../utils';
+import { loadConfig } from '../../utils';
 import { bundle } from '../build/bundle';
 import { evalHandler } from '../eval/evalHandler';
 import { manifestHandler } from '../manifest/manifestHandler';
@@ -46,7 +48,7 @@ export async function watch(argv: YargsArgs): Promise<void> {
 
   const buildSnap = async (path?: string, logMessage?: string) => {
     if (logMessage !== undefined) {
-      console.log(logMessage);
+      logInfo(logMessage);
     }
 
     try {
@@ -109,12 +111,12 @@ export async function watch(argv: YargsArgs): Promise<void> {
         logError(`Error while processing "${path}".`, error);
       });
     })
-    .on('unlink', (path) => console.log(`File removed: ${path}`))
+    .on('unlink', (path) => logInfo(`File removed: ${path}`))
     .on('error', (error: Error) => {
       logError(`Watcher error: ${error.message}`, error);
     })
 
     .add(rootDir);
 
-  console.log(`Watching '${rootDir}' for changes...`);
+  logInfo(`Watching '${rootDir}' for changes...`);
 }

@@ -1,6 +1,8 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
 /// <reference path="../../../../../node_modules/ses/index.d.ts" />
 
+import { logError } from '@metamask/snaps-utils';
+
 /**
  * The SES `lockdown` function only hardens the properties enumerated by the
  * universalPropertyNames constant specified in 'ses/src/whitelist'. This
@@ -72,7 +74,7 @@ export function executeLockdownMore() {
       }
     });
   } catch (error) {
-    console.error('Protecting intrinsics failed:', error);
+    logError('Protecting intrinsics failed:', error);
     throw error;
   }
 }

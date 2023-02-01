@@ -29,6 +29,7 @@ import {
   getSnapPermissionName,
   isAccountIdArray,
   Namespaces,
+  logError,
 } from '@metamask/snaps-utils';
 import { hasProperty, assert } from '@metamask/utils';
 import { nanoid } from 'nanoid';
@@ -426,7 +427,7 @@ export class MultiChainController extends BaseController<
       }
     } catch (error) {
       // Ignore errors for now
-      console.error(error);
+      logError(error);
     }
 
     return null;

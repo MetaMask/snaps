@@ -1,4 +1,4 @@
-import { validateDirPath } from '@metamask/snaps-utils';
+import { logInfo, validateDirPath } from '@metamask/snaps-utils';
 import http from 'http';
 import serveHandler from 'serve-handler';
 
@@ -18,7 +18,7 @@ export async function serve(argv: YargsArgs): Promise<void> {
 
   await validateDirPath(rootDir as string, true);
 
-  console.log(`\nStarting server...`);
+  logInfo(`\nStarting server...`);
 
   const server = http.createServer((req, res) => {
     serveHandler(req, res, {
@@ -55,7 +55,7 @@ export async function serve(argv: YargsArgs): Promise<void> {
   });
 
   server.on('close', () => {
-    console.log('Server closed');
+    logInfo('Server closed');
     process.exitCode = 1;
   });
 }

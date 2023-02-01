@@ -17,6 +17,11 @@ module.exports = {
     // in `@metamask/eslint-config-nodejs` in the future.
     'import/no-nodejs-modules': 'off',
 
+    // This prevents using the `console.log` and similar functions. All logging
+    // should be done through the module logger, or `logError` function in
+    // `@metamask/snaps-utils`.
+    'no-console': 'error',
+
     // This prevents using Node.js and/or browser specific globals. We
     // currently use both in our codebase, so this rule is disabled.
     'no-restricted-globals': 'off',
@@ -70,6 +75,7 @@ module.exports = {
           { allow: ['describe', 'expect', 'it'] },
         ],
         '@typescript-eslint/unbound-method': 'off',
+        'no-console': 'off',
       },
     },
   ],

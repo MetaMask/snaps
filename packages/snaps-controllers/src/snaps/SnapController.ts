@@ -52,6 +52,8 @@ import {
   validateSnapId,
   validateSnapShasum,
   VirtualFile,
+  logError,
+  logWarning,
 } from '@metamask/snaps-utils';
 import {
   GetSubjectMetadata,
@@ -78,6 +80,7 @@ import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
 
 import { forceStrict, validateMachine } from '../fsm';
+import { log } from '../logging';
 import {
   ExecuteSnapAction,
   ExecutionServiceEvents,
@@ -923,7 +926,7 @@ export class SnapController extends BaseController<
     this.#timeoutForLastRequestStatus = setTimeout(() => {
       this.#stopSnapsLastRequestPastMax().catch((error) => {
         // TODO: Decide how to handle errors.
-        console.error(error);
+        logError(error);
       });
 
       this.#pollForLastRequestStatus();
@@ -983,7 +986,7 @@ export class SnapController extends BaseController<
 
       await this.disableSnap(snapId);
     } catch (error) {
-      console.error(
+      logError(
         `Encountered error when stopping blocked snap "${snapId}".`,
         error,
       );
@@ -1064,7 +1067,7 @@ export class SnapController extends BaseController<
       .then(() => this.addSnapError(error))
       .catch((stopSnapError) => {
         // TODO: Decide how to handle errors.
-        console.error(stopSnapError);
+        logError(stopSnapError);
       });
   }
 
@@ -1665,7 +1668,7 @@ export class SnapController extends BaseController<
       this.messagingSystem.publish(`SnapController:snapInstalled`, truncated);
       return truncated;
     } catch (error) {
-      console.error(`Error when adding snap.`, error);
+      logError(`Error when adding snap.`, error);
 
       throw error;
     }
@@ -1705,7 +1708,7 @@ export class SnapController extends BaseController<
     const newSnap = await this.#fetchSnap(snapId, location);
     const newVersion = newSnap.manifest.result.version;
     if (!gtVersion(newVersion, snap.version)) {
-      console.warn(
+      logWarning(
         `Tried updating snap "${snapId}" within "${newVersionRange}" version range, but newer version "${snap.version}" is already installed`,
       );
       return null;
@@ -1829,7 +1832,7 @@ export class SnapController extends BaseController<
     this.#setupRuntime(snapId, { sourceCode: null, state: null });
     const runtime = this.#getRuntimeExpect(snapId);
     if (!runtime.installPromise) {
-      console.info(`Adding snap: ${snapId}`);
+      log(`Adding snap: ${snapId}`);
 
       // If fetching and setting the snap succeeds, this property will be set
       // to null in the authorize() method.
@@ -1933,7 +1936,7 @@ export class SnapController extends BaseController<
       // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       DEFAULT_ENDOWMENTS.length + allEndowments.length
     ) {
-      console.error(
+      logError(
         'Duplicate endowments found. Default endowments should not be requested.',
         allEndowments,
       );
@@ -2138,7 +2141,7 @@ export class SnapController extends BaseController<
    * @returns The snap's approvedPermissions.
    */
   private async authorize(origin: string, snapId: SnapId): Promise<void> {
-    console.info(`Authorizing snap: ${snapId}`);
+    log(`Authorizing snap: ${snapId}`);
     const snapsState = this.state.snaps;
     const snap = snapsState[snapId];
     const { initialPermissions } = snap;
@@ -2401,7 +2404,7 @@ export class SnapController extends BaseController<
 
     // Long running snaps have timeouts disabled
     if (isLongRunning) {
-      console.warn(
+      logWarning(
         `${SnapEndowments.LongRunning} will soon be deprecated. For more information please see https://github.com/MetaMask/snaps-monorepo/issues/945.`,
       );
       return promise;

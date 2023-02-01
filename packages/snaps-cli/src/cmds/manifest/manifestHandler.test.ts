@@ -1,4 +1,9 @@
-import { checkManifest, CheckManifestResult } from '@metamask/snaps-utils';
+import {
+  checkManifest,
+  CheckManifestResult,
+  logError,
+  logWarning,
+} from '@metamask/snaps-utils';
 
 import { YargsArgs } from '../../types/yargs';
 import { manifestHandler } from './manifestHandler';
@@ -15,7 +20,6 @@ const checkManifestMock = checkManifest as jest.MockedFunction<
 
 describe('manifestHandler', () => {
   it('logs manifest errors if writeManifest is disabled', async () => {
-    jest.spyOn(console, 'error').mockImplementation(() => undefined);
     jest.spyOn(process, 'exit').mockImplementation((code) => {
       throw new Error(`exit ${code ?? '1'}`);
     });
@@ -29,9 +33,9 @@ describe('manifestHandler', () => {
       manifestHandler(getMockArgv({ writeManifest: false })),
     ).rejects.toThrow('exit 1');
 
-    expect(console.error).toHaveBeenCalledTimes(3);
-    expect(console.error).toHaveBeenCalledWith('Manifest Error: foo');
-    expect(console.error).toHaveBeenCalledWith('Manifest Error: bar');
+    expect(logError).toHaveBeenCalledTimes(3);
+    expect(logError).toHaveBeenCalledWith('Manifest Error: foo');
+    expect(logError).toHaveBeenCalledWith('Manifest Error: bar');
   });
 
   it('logs manifest warnings', async () => {
@@ -43,15 +47,13 @@ describe('manifestHandler', () => {
 
     await manifestHandler(getMockArgv());
 
-    expect(console.log).toHaveBeenCalledTimes(3);
-    expect(console.log).toHaveBeenCalledWith('Manifest Warning: foo');
-    expect(console.log).toHaveBeenCalledWith('Manifest Warning: bar');
+    expect(logWarning).toHaveBeenCalledTimes(3);
+    expect(logWarning).toHaveBeenCalledWith('Manifest Warning: foo');
+    expect(logWarning).toHaveBeenCalledWith('Manifest Warning: bar');
   });
 
   it('suppresses manifest warnings', async () => {
     global.snaps.suppressWarnings = true;
-
-    jest.spyOn(console, 'log').mockImplementation(() => undefined);
 
     checkManifestMock.mockResolvedValueOnce({
       errors: [],
@@ -60,7 +62,7 @@ describe('manifestHandler', () => {
 
     await manifestHandler(getMockArgv({ writeManifest: false }));
 
-    expect(console.log).toHaveBeenCalledTimes(1);
+    expect(logWarning).toHaveBeenCalledTimes(1);
   });
 
   it('forwards manifest errors', async () => {

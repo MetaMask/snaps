@@ -8,6 +8,7 @@ import {
   HandlerType,
   SnapExportsParameters,
   SNAP_EXPORT_NAMES,
+  logError,
 } from '@metamask/snaps-utils';
 import {
   isObject,
@@ -25,6 +26,7 @@ import { createIdRemapMiddleware } from 'json-rpc-engine';
 import { Duplex } from 'stream';
 import { validate } from 'superstruct';
 
+import { log } from '../logging';
 import EEOpenRPCDocument from '../openrpc.json';
 import {
   CommandMethodsMapping,
@@ -113,7 +115,7 @@ export class BaseSnapExecutor {
     this.commandStream.on('data', (data) => {
       this.onCommandRequest(data).catch((error) => {
         // TODO: Decide how to handle errors.
-        console.error(error);
+        logError(error);
       });
     });
     this.rpcStream = rpcStream;
@@ -272,7 +274,7 @@ export class BaseSnapExecutor {
     sourceCode: string,
     _endowments?: string[],
   ): Promise<void> {
-    console.log(`starting snap '${snapName}' in worker`);
+    log(`Starting snap '${snapName}' in worker.`);
     if (this.snapPromiseErrorHandler) {
       removeEventListener('unhandledrejection', this.snapPromiseErrorHandler);
     }
