@@ -522,6 +522,11 @@ describe('BaseSnapExecutor', () => {
   it('allows direct access to ethereum public properties', async () => {
     const CODE = `
       module.exports.onRpcRequest = () => {
+        'request' in ethereum;
+        'on' in ethereum;
+        'removeListener' in ethereum;
+        'whatever' in ethereum;
+
         const listener = () => undefined;
         ethereum.on('accountsChanged', listener);
         ethereum.removeListener('accountsChanged', listener);

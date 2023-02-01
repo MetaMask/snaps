@@ -425,19 +425,34 @@ export class BaseSnapExecutor {
     };
 
     // To harden and limit access to internals, we use a proxy.
-    const proxy = new Proxy(provider, {
-      get(target, prop: keyof StreamProvider) {
-        if (prop === 'request') {
-          return request;
-        } else if (['on', 'removeListener'].includes(prop)) {
-          return target[prop];
-        }
+    // Proxy target is intentionally set to be an empty object, to ensure
+    // that access to the prototype chain is not possible.
+    const proxy = new Proxy(
+      {},
+      {
+        has(_target: object, prop: string | symbol) {
+          if (prop === 'request') {
+            return true;
+          } else if (['on', 'removeListener'].includes(prop as string)) {
+            return true;
+          }
 
-        return undefined;
+          return false;
+        },
+        get(_target, prop: keyof StreamProvider) {
+          if (prop === 'request') {
+            return request;
+          } else if (['on', 'removeListener'].includes(prop)) {
+            return provider[prop];
+          }
+
+          return undefined;
+        },
       },
-    });
+    );
 
-    return proxy;
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    return <StreamProvider>proxy;
   }
 
   /**
