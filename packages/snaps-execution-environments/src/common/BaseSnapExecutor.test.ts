@@ -1054,7 +1054,7 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
-  it('throws if snap doesnt export keyring', async () => {
+  it("throws if snap doesn't export keyring", async () => {
     const CODE = `
     `;
     const executor = new TestSnapExecutor();
@@ -1489,6 +1489,43 @@ describe('BaseSnapExecutor', () => {
         data: expect.any(Object),
         message: 'Received non-JSON-serializable value.',
       },
+    });
+  });
+
+  it('contains the self-referential global scopes', async () => {
+    const CODE = `
+      module.exports.onRpcRequest = () => globalThis !== undefined &&
+        globalThis.self === self &&
+        globalThis === self.self &&
+        globalThis === window &&
+        globalThis === global &&
+        globalThis === global.global;
+    `;
+    const executor = new TestSnapExecutor();
+
+    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, []);
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        FAKE_SNAP_NAME,
+        ON_RPC_REQUEST,
+        FAKE_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 2,
+      result: true,
     });
   });
 
