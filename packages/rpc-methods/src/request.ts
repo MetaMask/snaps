@@ -66,7 +66,7 @@ type RestrictedMethod<Builder extends { targetKey: string }> =
     : never;
 
 /**
- * A type containing all permitted JSON-RPC methods.
+ * A type containing all permitted JSON-RPC methods as functions.
  */
 type PermittedMethodFunction = {
   [MethodName in keyof typeof methodHandlers]: PermittedMethod<
@@ -76,7 +76,7 @@ type PermittedMethodFunction = {
 };
 
 /**
- * A type containing all restricted JSON-RPC methods.
+ * A type containing all restricted JSON-RPC methods as functions.
  */
 type RestrictedMethodFunction = {
   [Builder in keyof typeof restrictedMethodPermissionBuilders]: RestrictedMethod<
@@ -85,31 +85,37 @@ type RestrictedMethodFunction = {
 };
 
 /**
- * A type containing all supported JSON-RPC methods.
+ * A type containing all supported JSON-RPC methods as functions.
  */
 type MethodFunction = RestrictedMethodFunction & PermittedMethodFunction;
-type GenericMethodFunction = `wallet_${string}`;
+
+/**
+ * Fallback method name. `wallet_*` is supported by Snaps, but these functions
+ * are not implemented in `@metamask/rpc-methods`, so we don't have a type for
+ * them.
+ */
+type WalletMethodName = `wallet_${string}`;
 
 /**
  * Get a typed function if the method is defined in {@link MethodFunction}, or
- * a generic function if the method name extends {@link GenericMethodFunction}.
+ * a generic function if the method name extends {@link WalletMethodName}.
  * Otherwise, this returns `never`.
  */
 type MethodFunctionFallback<MethodName> =
   MethodName extends keyof MethodFunction
     ? MethodFunction[MethodName]
-    : MethodName extends GenericMethodFunction
+    : MethodName extends WalletMethodName
     ? (args: { method: MethodName; params?: JsonRpcParams }) => Promise<unknown>
     : never;
 
 /**
- * The request arguments for a JSON-RPC method.
+ * Get the JSON-RPC object from a method name.
  *
  * @template MethodName - The name of the method. In most cases this is inferred
  * from the args.
  */
-export type MethodRequestArguments<
-  MethodName extends keyof MethodFunction | GenericMethodFunction,
+export type ObjectFromMethodName<
+  MethodName extends keyof MethodFunction | WalletMethodName,
 > = {
   method: MethodName;
   params?: Parameters<MethodFunctionFallback<MethodName>>[0] extends {
@@ -120,7 +126,7 @@ export type MethodRequestArguments<
 };
 
 export type MethodReturnType<
-  MethodName extends keyof MethodFunction | GenericMethodFunction,
+  MethodName extends keyof MethodFunction | WalletMethodName,
 > = ReturnType<MethodFunctionFallback<MethodName>>;
 
 /**
@@ -130,9 +136,9 @@ export type MethodReturnType<
  * from the args.
  */
 export type RequestFunction = <
-  MethodName extends keyof MethodFunction | GenericMethodFunction,
+  MethodName extends keyof MethodFunction | WalletMethodName,
 >(
-  args: MethodRequestArguments<MethodName>,
+  args: ObjectFromMethodName<MethodName>,
 ) => MethodReturnType<MethodName>;
 
 /**

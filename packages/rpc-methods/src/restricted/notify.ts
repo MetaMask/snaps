@@ -12,6 +12,7 @@ import { EnumToUnion } from '../utils';
 const methodName = 'snap_notify';
 
 // TODO: Move all the types to a shared place when implementing more
+//  notifications.
 export enum NotificationType {
   InApp = 'inApp',
   Native = 'native',
