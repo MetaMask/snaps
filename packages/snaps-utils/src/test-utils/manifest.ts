@@ -55,8 +55,12 @@ export const getSnapManifest = ({
   version = '1.0.0' as SemVerVersion,
   description = 'The test example snap!',
   proposedName = '@metamask/example-snap',
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  initialPermissions = { snap_confirm: {} },
+  initialPermissions = {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    snap_confirm: {},
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    'endowment:rpc': { snaps: true, dapps: false },
+  },
   shasum = DEFAULT_SNAP_SHASUM,
   filePath = 'dist/bundle.js',
   packageName = '@metamask/example-snap',

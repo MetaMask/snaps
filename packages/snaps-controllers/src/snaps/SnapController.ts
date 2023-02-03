@@ -19,20 +19,24 @@ import {
   RevokePermissions,
   SubjectPermissions,
   ValidPermission,
+  UpdateCaveat,
 } from '@metamask/permission-controller';
 import { caveatMappers } from '@metamask/rpc-methods';
+import { targetKey as permissionKey } from '@metamask/rpc-methods/src/restricted/invokeSnap';
 import { BlockReason } from '@metamask/snaps-registry';
 import {
   assertIsSnapManifest,
   DEFAULT_ENDOWMENTS,
   DEFAULT_REQUESTED_SNAP_VERSION,
   fromEntries,
+  hasSnap,
   InstallSnapsResult,
   PersistedSnap,
   ProcessSnapResult,
   RequestedSnapPermissions,
   resolveVersionRange,
   Snap,
+  SnapCaveatType,
   SnapId,
   SnapManifest,
   SnapPermissions,
@@ -453,7 +457,8 @@ export type AllowedActions =
   | HandleRpcRequestAction
   | ExecuteSnapAction
   | TerminateAllSnapsAction
-  | TerminateSnapAction;
+  | TerminateSnapAction
+  | UpdateCaveat;
 
 export type AllowedEvents = ExecutionServiceEvents;
 
@@ -1436,51 +1441,28 @@ export class SnapController extends BaseController<
       const subjectPermissions = this.messagingSystem.call(
         'PermissionController:getPermissions',
         subject,
-      );
+      ) as SubjectPermissions<PermissionConstraint>;
       const snapIdsCaveat = (subjectPermissions?.wallet_snap?.caveats?.find(
-        (caveat) => caveat.type === 'snapIds',
+        (caveat) => caveat.type === SnapCaveatType.SnapIds,
       ) ?? {}) as Caveat<string, Json>;
 
-      const hasSnap = Boolean(
+      const caveatHasSnap = Boolean(
         (snapIdsCaveat.value as Record<string, unknown>)?.[snapId],
       );
-      if (hasSnap) {
+      if (caveatHasSnap) {
         const newCaveatValue = {
           ...(snapIdsCaveat.value as Record<string, unknown>),
         };
         delete newCaveatValue[snapId];
-        // this.messagingSystem.call(
-        //   'PermissionController:updateCaveat',
-        //   subject,
-        //   'wallet_snap',
-        //   'snapIds',
-        //   newCaveatValue,
-        // );
+        this.messagingSystem.call(
+          'PermissionController:updateCaveat',
+          subject,
+          permissionKey,
+          SnapCaveatType.SnapIds,
+          newCaveatValue,
+        );
       }
     }
-  }
-
-  /**
-   * Utility function to check if an origin has permission (and caveat) for a particular snap.
-   *
-   * @param origin - The origin in question.
-   * @param snapId - The id of the snap.
-   * @returns A boolean based on if an origin has the specified snap.
-   */
-  #hasSnap(origin: string, snapId: SnapId) {
-    const permissions = this.messagingSystem.call(
-      'PermissionController:getPermissions',
-      origin,
-    );
-    return Boolean(
-      (
-        (
-          (permissions?.wallet_snap?.caveats?.find(
-            (caveat) => caveat.type === 'snapIds',
-          ) ?? {}) as Caveat<string, Json>
-        ).value as Record<string, unknown>
-      )?.[snapId],
-    );
   }
 
   /**
@@ -1546,7 +1528,7 @@ export class SnapController extends BaseController<
       ) ?? {};
     const snaps =
       permissions.wallet_snap?.caveats?.find(
-        (caveat) => caveat.type === 'snapIds',
+        (caveat) => caveat.type === SnapCaveatType.SnapIds,
       )?.value ?? {};
     return Object.keys(snaps).reduce<InstallSnapsResult>(
       (permittedSnaps, snapId) => {
@@ -1600,7 +1582,12 @@ export class SnapController extends BaseController<
           );
         }
 
-        if (!this.#hasSnap(origin, snapId)) {
+        const permissions = this.messagingSystem.call(
+          'PermissionController:getPermissions',
+          origin,
+        ) as SubjectPermissions<PermissionConstraint>;
+
+        if (!hasSnap(permissions, snapId)) {
           throw ethErrors.provider.unauthorized(
             `Not authorized to install snap "${snapId}". Request the permission for the snap before attempting to install it.`,
           );

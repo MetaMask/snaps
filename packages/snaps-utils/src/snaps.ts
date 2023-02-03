@@ -1,3 +1,8 @@
+import {
+  Caveat,
+  SubjectPermissions,
+  PermissionConstraint,
+} from '@metamask/permission-controller';
 import { BlockReason } from '@metamask/snaps-registry';
 import { assert, Json, SemVerVersion } from '@metamask/utils';
 import { sha256 } from '@noble/hashes/sha256';
@@ -15,6 +20,7 @@ import {
 } from 'superstruct';
 import validateNPMPackage from 'validate-npm-package-name';
 
+import { SnapCaveatType } from './caveats';
 import { SnapManifest, SnapPermissions } from './manifest/validation';
 import {
   SnapId,
@@ -299,5 +305,27 @@ export function isCaipChainId(chainId: unknown): chainId is string {
     /^(?<namespace>[-a-z0-9]{3,8}):(?<reference>[-a-zA-Z0-9]{1,32})$/u.test(
       chainId,
     )
+  );
+}
+
+/**
+ * Utility function to check if an origin has permission (and caveat) for a particular snap.
+ *
+ * @param permissions - An origin's permissions object.
+ * @param snapId - The id of the snap.
+ * @returns A boolean based on if an origin has the specified snap.
+ */
+export function hasSnap(
+  permissions: SubjectPermissions<PermissionConstraint>,
+  snapId: SnapId,
+) {
+  return Boolean(
+    (
+      (
+        (permissions?.wallet_snap?.caveats?.find(
+          (caveat) => caveat.type === SnapCaveatType.SnapIds,
+        ) ?? {}) as Caveat<string, Json>
+      ).value as Record<string, unknown>
+    )?.[snapId],
   );
 }

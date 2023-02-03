@@ -1,6 +1,11 @@
+import {
+  SubjectPermissions,
+  PermissionConstraint,
+} from '@metamask/permission-controller';
 import { is } from 'superstruct';
 
 import {
+  hasSnap,
   HttpSnapIdStruct,
   isCaipChainId,
   LocalSnapIdStruct,
@@ -190,5 +195,58 @@ describe('HttpSnapIdStruct', () => {
     'http://github.com/snap?foo=true#bar',
   ])('invalidates an improper http ID (#%#)', (value) => {
     expect(is(value, HttpSnapIdStruct)).toBe(false);
+  });
+});
+
+describe('hasSnap', () => {
+  it("will check an origin's permissions object to see if it has permission to interact with a specific snap", () => {
+    const permissionKey = 'wallet_snap';
+    const validPermissions = {
+      [permissionKey]: {
+        date: 1,
+        id: '1',
+        invoker: 'example.com',
+        parentCapability: 'wallet_snap',
+        caveats: [
+          {
+            type: 'snapIds',
+            value: {
+              foo: {},
+            },
+          },
+        ],
+      },
+    } as SubjectPermissions<PermissionConstraint>;
+
+    const invalidPermissions1 = {
+      [permissionKey]: {
+        date: 1,
+        id: '1',
+        invoker: 'example.com',
+        parentCapability: 'wallet_snap',
+        caveats: [
+          {
+            type: 'snapIds',
+            value: {
+              bar: {},
+            },
+          },
+        ],
+      },
+    } as SubjectPermissions<PermissionConstraint>;
+
+    const invalidPermissions2 = {
+      foo: {
+        date: 1,
+        id: '1',
+        invoker: 'example.com',
+        parentCapability: 'foo',
+        caveats: null,
+      },
+    } as SubjectPermissions<PermissionConstraint>;
+
+    expect(hasSnap(validPermissions, 'foo')).toBe(true);
+    expect(hasSnap(invalidPermissions1, 'foo')).toBe(false);
+    expect(hasSnap(invalidPermissions2, 'foo')).toBe(false);
   });
 });

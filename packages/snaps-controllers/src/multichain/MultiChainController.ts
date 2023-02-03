@@ -4,12 +4,13 @@ import {
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
 import {
-  Caveat,
   GetPermissions,
   GrantPermissions,
   HasPermission,
   PermissionConstraint,
+  SubjectPermissions,
 } from '@metamask/permission-controller';
+import { targetKey as permissionKey } from '@metamask/rpc-methods/src/restricted/invokeSnap';
 import {
   SnapKeyring,
   parseAccountId,
@@ -17,6 +18,7 @@ import {
   parseChainId,
   ChainId,
   ConnectArguments,
+  hasSnap,
   HandlerType,
   NamespaceId,
   RequestArguments,
@@ -27,11 +29,10 @@ import {
   fromEntries,
   SessionNamespace,
   flatten,
-  getSnapPermissionName,
   isAccountIdArray,
   Namespaces,
 } from '@metamask/snaps-utils';
-import { hasProperty, assert, Json } from '@metamask/utils';
+import { hasProperty, assert } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 
 import {
@@ -194,13 +195,18 @@ export class MultiChainController extends BaseController<
       availableNamespaces,
     );
 
-    const originHasSnap = this.#hasSnap(origin);
+    const permissions = this.messagingSystem.call(
+      'PermissionController:getPermissions',
+      origin,
+    ) as SubjectPermissions<PermissionConstraint>;
 
     // Find namespaces that can be satisfied with existing approved Snaps.
     const approvedNamespacesAndSnaps = Object.entries(namespaceToSnaps).reduce<
       Record<NamespaceId, SnapId[]>
     >((acc, [namespace, snapIds]) => {
-      const approvedSnaps = snapIds.filter(originHasSnap);
+      const approvedSnaps = snapIds.filter((snapId) =>
+        hasSnap(permissions, snapId),
+      );
 
       if (approvedSnaps.length > 0) {
         acc[namespace] = approvedSnaps;
@@ -341,8 +347,13 @@ export class MultiChainController extends BaseController<
     // TODO: Get permission for origin connecting to snap, or get user approval.
     // In the future this is where we should prompt for this permission.
     // In this iteration, we will grant this permission in `onConnect`.
+    const permissions = this.messagingSystem.call(
+      'PermissionController:getPermissions',
+      origin,
+    ) as SubjectPermissions<PermissionConstraint>;
+
     assert(
-      this.#hasSnap(origin)(snapId),
+      hasSnap(permissions, snapId),
       `${origin} does not have permission to communicate with ${snapId}.`,
     );
 
@@ -529,14 +540,18 @@ export class MultiChainController extends BaseController<
     // Instead we should give origin only a read-only access to list of accounts
     // without allowing provider.request() talking to a snap before additional
     // user approval. The additional approval would be requested in `onRequest`.
+
     const approvedPermissions = Object.values(resolvedAccounts).reduce<
-      Record<string, Partial<PermissionConstraint>>
-    >((acc, cur) => {
-      if (cur !== null) {
-        acc[getSnapPermissionName(cur.snapId)] = {};
-      }
-      return acc;
-    }, {});
+      Record<string, Record<string, Partial<PermissionConstraint>>>
+    >(
+      (acc, curr) => {
+        if (curr !== null) {
+          acc[permissionKey][curr.snapId] = {};
+        }
+        return acc;
+      },
+      { [permissionKey]: {} },
+    );
 
     this.messagingSystem.call('PermissionController:grantPermissions', {
       approvedPermissions,
@@ -544,29 +559,5 @@ export class MultiChainController extends BaseController<
     });
 
     return resolvedAccounts;
-  }
-
-  /**
-   * Utility function to check if an origin has permission (and caveat) for a particular snap.
-   *
-   * @param origin - The origin in question.
-   * @returns A closure based on origin that is used to check if the origin has permission to communicate with a snap.
-   */
-  #hasSnap(origin: string) {
-    const permissions = this.messagingSystem.call(
-      'PermissionController:getPermissions',
-      origin,
-    );
-    return (snapId: SnapId) => {
-      return Boolean(
-        (
-          (
-            (permissions?.wallet_snap?.caveats?.find(
-              (caveat) => caveat.type === 'snapIds',
-            ) ?? {}) as Caveat<string, Json>
-          ).value as Record<string, unknown>
-        )?.[snapId],
-      );
-    };
   }
 }

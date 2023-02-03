@@ -4,11 +4,18 @@ import {
   ControllerMessenger,
   EventConstraint,
 } from '@metamask/base-controller';
-import { PermissionConstraint } from '@metamask/permission-controller';
+import {
+  PermissionConstraint,
+  SubjectPermissions,
+  ValidPermission,
+  Caveat,
+} from '@metamask/permission-controller';
+import { targetKey as walletSnapPermissionKey } from '@metamask/rpc-methods/src/restricted/invokeSnap';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   getPersistedSnapObject,
   getTruncatedSnap,
+  MOCK_LOCAL_SNAP_ID,
   MOCK_ORIGIN,
   MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
@@ -16,6 +23,7 @@ import {
   SubjectMetadata,
   SubjectType,
 } from '@metamask/subject-metadata-controller';
+import { Json } from '@metamask/utils';
 
 import { CronjobControllerActions, CronjobControllerEvents } from '../cronjob';
 import {
@@ -57,6 +65,8 @@ export class MockControllerMessenger<
   }
 }
 
+export const snapConfirmPermissionKey = 'snap_confirm';
+
 export const MOCK_SNAP_SUBJECT_METADATA: SubjectMetadata = {
   origin: MOCK_SNAP_ID,
   subjectType: SubjectType.Snap,
@@ -91,6 +101,43 @@ export const MOCK_DAPPS_RPC_ORIGINS_PERMISSION: PermissionConstraint = {
   id: 'izn0WGUO8cvq_jqvLQuQP',
   invoker: MOCK_SNAP_ID,
   parentCapability: SnapEndowments.Rpc,
+};
+
+export const MOCK_SNAP_CONFIRM_PERMISSION: PermissionConstraint = {
+  caveats: null,
+  date: 1664187844588,
+  id: 'izn0WGUO8cvq_jqvLQuQP',
+  invoker: MOCK_SNAP_ID,
+  parentCapability: snapConfirmPermissionKey,
+};
+
+export const MOCK_WALLET_SNAP_PERMISSION: PermissionConstraint = {
+  caveats: [
+    {
+      type: SnapCaveatType.SnapIds,
+      value: {
+        [MOCK_SNAP_ID]: {},
+        [MOCK_LOCAL_SNAP_ID]: {},
+        foo: {},
+        [`${MOCK_SNAP_ID}1`]: {},
+        [`${MOCK_SNAP_ID}2`]: {},
+        [`${MOCK_SNAP_ID}3`]: {},
+      },
+    },
+  ],
+  date: 1664187844588,
+  id: 'izn0WGUO8cvq_jqvLQuQP',
+  invoker: MOCK_ORIGIN,
+  parentCapability: walletSnapPermissionKey,
+};
+
+export const MOCK_ORIGIN_PERMISSIONS: Record<string, PermissionConstraint> = {
+  [walletSnapPermissionKey]: MOCK_WALLET_SNAP_PERMISSION,
+};
+
+export const MOCK_SNAP_PERMISSIONS: Record<string, PermissionConstraint> = {
+  [SnapEndowments.Rpc]: MOCK_RPC_ORIGINS_PERMISSION,
+  [snapConfirmPermissionKey]: MOCK_SNAP_CONFIRM_PERMISSION,
 };
 
 export const getControllerMessenger = () => {
@@ -146,9 +193,26 @@ export const getControllerMessenger = () => {
 
   messenger.registerActionHandler(
     'PermissionController:getPermissions',
-    () => ({
-      [SnapEndowments.Rpc]: MOCK_RPC_ORIGINS_PERMISSION,
-    }),
+    (
+      origin,
+    ): SubjectPermissions<
+      ValidPermission<string, Caveat<string, Json> | Caveat<string, any>>
+    > => {
+      if (origin === MOCK_SNAP_ID) {
+        return MOCK_SNAP_PERMISSIONS;
+      }
+      return MOCK_ORIGIN_PERMISSIONS;
+    },
+  );
+
+  messenger.registerActionHandler(
+    'PermissionController:getSubjectNames',
+    () => [MOCK_ORIGIN],
+  );
+
+  messenger.registerActionHandler(
+    'PermissionController:updateCaveat',
+    () => undefined,
   );
 
   messenger.registerActionHandler(
@@ -202,6 +266,8 @@ export const getSnapControllerMessenger = (
       'PermissionController:revokePermissions',
       'PermissionController:revokeAllPermissions',
       'PermissionController:revokePermissionForAllSubjects',
+      'PermissionController:updateCaveat',
+      'PermissionController:getSubjectNames',
       'SnapController:get',
       'SnapController:handleRequest',
       'SnapController:getSnapState',
