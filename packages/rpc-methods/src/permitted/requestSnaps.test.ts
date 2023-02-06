@@ -14,7 +14,7 @@ import {
 } from '@metamask/types';
 import { JsonRpcEngine } from 'json-rpc-engine';
 
-import { targetKey as permissionName } from '../restricted/invokeSnap';
+import { WALLET_SNAP_PERMISSION_KEY } from '../restricted/invokeSnap';
 import { requestSnapsHandler, hasSnaps } from './requestSnaps';
 
 describe('requestSnapsHandler', () => {
@@ -34,14 +34,14 @@ describe('requestSnapsHandler', () => {
 describe('hasSnaps', () => {
   it('returns true if an origin has the requested snaps in its permissions', () => {
     const existingPermission = {
-      [permissionName]: {
+      [WALLET_SNAP_PERMISSION_KEY]: {
         caveats: [
           { type: SnapCaveatType.SnapIds, value: { [MOCK_SNAP_ID]: {} } },
         ],
         date: 1661166080905,
         id: 'VyAsBJiDDKawv_XlNcm13',
         invoker: 'https://metamask.github.io',
-        parentCapability: permissionName,
+        parentCapability: WALLET_SNAP_PERMISSION_KEY,
       },
     } as Record<string, PermissionConstraint>;
 
@@ -52,12 +52,12 @@ describe('hasSnaps', () => {
 
   it('returns false if an origin does not have the requested snaps in its permissions', () => {
     const existingPermission = {
-      [permissionName]: {
+      [WALLET_SNAP_PERMISSION_KEY]: {
         caveats: [{ type: SnapCaveatType.SnapIds, value: { baz: {} } }],
         date: 1661166080905,
         id: 'VyAsBJiDDKawv_XlNcm13',
         invoker: 'https://metamask.github.io',
-        parentCapability: permissionName,
+        parentCapability: WALLET_SNAP_PERMISSION_KEY,
       },
     } as Record<string, PermissionConstraint>;
 
@@ -73,7 +73,7 @@ describe('hasSnaps', () => {
         date: 1661166080905,
         id: 'VyAsBJiDDKawv_XlNcm13',
         invoker: 'https://metamask.github.io',
-        parentCapability: permissionName,
+        parentCapability: WALLET_SNAP_PERMISSION_KEY,
       },
     } as Record<string, PermissionConstraint>;
 
@@ -104,7 +104,7 @@ describe('implementation', () => {
         date: 1661166080905,
         id: 'VyAsBJiDDKawv_XlNcm13',
         invoker: 'https://metamask.github.io',
-        parentCapability: permissionName,
+        parentCapability: WALLET_SNAP_PERMISSION_KEY,
       },
     ]);
 
@@ -135,7 +135,7 @@ describe('implementation', () => {
     })) as JsonRpcSuccess<InstallSnapsResult>;
 
     expect(hooks.requestPermissions).toHaveBeenCalledWith({
-      [permissionName]: {
+      [WALLET_SNAP_PERMISSION_KEY]: {
         caveats: [
           { type: SnapCaveatType.SnapIds, value: { [MOCK_SNAP_ID]: {} } },
         ],
@@ -157,14 +157,14 @@ describe('implementation', () => {
     const hooks = getMockHooks();
 
     hooks.getPermissions.mockImplementation(() => ({
-      [permissionName]: {
+      [WALLET_SNAP_PERMISSION_KEY]: {
         caveats: [
           { type: SnapCaveatType.SnapIds, value: { [MOCK_SNAP_ID]: {} } },
         ],
         date: 1661166080905,
         id: 'VyAsBJiDDKawv_XlNcm13',
         invoker: 'https://metamask.github.io',
-        parentCapability: permissionName,
+        parentCapability: WALLET_SNAP_PERMISSION_KEY,
       },
     }));
 
@@ -195,7 +195,7 @@ describe('implementation', () => {
     })) as JsonRpcSuccess<InstallSnapsResult>;
 
     expect(hooks.requestPermissions).not.toHaveBeenCalledWith({
-      [permissionName]: {
+      [WALLET_SNAP_PERMISSION_KEY]: {
         caveats: [
           { type: SnapCaveatType.SnapIds, value: { [MOCK_SNAP_ID]: {} } },
         ],

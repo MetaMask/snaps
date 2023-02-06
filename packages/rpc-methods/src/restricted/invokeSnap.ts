@@ -26,7 +26,7 @@ import {
 import { ethErrors } from 'eth-rpc-errors';
 import { nanoid } from 'nanoid';
 
-export const targetKey = 'wallet_snap';
+export const WALLET_SNAP_PERMISSION_KEY = 'wallet_snap';
 
 export type InvokeSnapMethodHooks = {
   getSnap: (snapId: SnapId) => Snap | undefined;
@@ -45,7 +45,7 @@ type InvokeSnapSpecificationBuilderOptions = {
 
 type InvokeSnapSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.RestrictedMethod;
-  targetKey: typeof targetKey;
+  targetKey: typeof WALLET_SNAP_PERMISSION_KEY;
   methodImplementation: ReturnType<typeof getInvokeSnapImplementation>;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
   validator: PermissionValidatorConstraint;
@@ -94,7 +94,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
 > = ({ methodHooks }: InvokeSnapSpecificationBuilderOptions) => {
   return {
     permissionType: PermissionType.RestrictedMethod,
-    targetKey,
+    targetKey: WALLET_SNAP_PERMISSION_KEY,
     allowedCaveats: [SnapCaveatType.SnapIds],
     methodImplementation: getInvokeSnapImplementation(methodHooks),
     validator: ({ caveats }) => {
@@ -108,7 +108,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
 };
 
 export const invokeSnapBuilder = Object.freeze({
-  targetKey,
+  targetKey: WALLET_SNAP_PERMISSION_KEY,
   specificationBuilder,
   methodHooks: {
     getSnap: true,

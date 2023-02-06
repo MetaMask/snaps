@@ -315,7 +315,7 @@ export function isCaipChainId(chainId: unknown): chainId is string {
  * @param snapId - The id of the snap.
  * @returns A boolean based on if an origin has the specified snap.
  */
-export function hasSnap(
+export function isSnapPermitted(
   permissions: SubjectPermissions<PermissionConstraint>,
   snapId: SnapId,
 ) {

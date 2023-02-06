@@ -10,7 +10,7 @@ import {
   ValidPermission,
   Caveat,
 } from '@metamask/permission-controller';
-import { targetKey as walletSnapPermissionKey } from '@metamask/rpc-methods/src/restricted/invokeSnap';
+import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   getPersistedSnapObject,
@@ -128,11 +128,11 @@ export const MOCK_WALLET_SNAP_PERMISSION: PermissionConstraint = {
   date: 1664187844588,
   id: 'izn0WGUO8cvq_jqvLQuQP',
   invoker: MOCK_ORIGIN,
-  parentCapability: walletSnapPermissionKey,
+  parentCapability: WALLET_SNAP_PERMISSION_KEY,
 };
 
 export const MOCK_ORIGIN_PERMISSIONS: Record<string, PermissionConstraint> = {
-  [walletSnapPermissionKey]: MOCK_WALLET_SNAP_PERMISSION,
+  [WALLET_SNAP_PERMISSION_KEY]: MOCK_WALLET_SNAP_PERMISSION,
 };
 
 export const MOCK_SNAP_PERMISSIONS: Record<string, PermissionConstraint> = {

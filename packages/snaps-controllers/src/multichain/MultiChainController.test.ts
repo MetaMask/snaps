@@ -1,6 +1,6 @@
 /* eslint-disable jest/prefer-strict-equal */
 
-import { targetKey as permissionKey } from '@metamask/rpc-methods/src/restricted/invokeSnap';
+import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
 import { fromEntries, getSnapSourceShasum } from '@metamask/snaps-utils';
 import {
   MOCK_ORIGIN,
@@ -129,7 +129,7 @@ describe('MultiChainController', () => {
           }
 
           if (subject === MOCK_ORIGIN) {
-            return { [permissionKey]: { [MOCK_SNAP_ID]: {} } };
+            return { [WALLET_SNAP_PERMISSION_KEY]: { [MOCK_SNAP_ID]: {} } };
           }
 
           return {};
@@ -207,7 +207,7 @@ describe('MultiChainController', () => {
 
           if (subject === MOCK_ORIGIN) {
             return {
-              [permissionKey]: {
+              [WALLET_SNAP_PERMISSION_KEY]: {
                 [snap.id]: {},
                 [snap2.id]: {},
               },

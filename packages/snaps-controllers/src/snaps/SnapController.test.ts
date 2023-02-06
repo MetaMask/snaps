@@ -4,7 +4,7 @@ import {
   SubjectPermissions,
   ValidPermission,
 } from '@metamask/permission-controller';
-import { targetKey as walletSnapPermissionKey } from '@metamask/rpc-methods/src/restricted/invokeSnap';
+import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
 import {
   DEFAULT_ENDOWMENTS,
   getSnapSourceShasum,
@@ -731,7 +731,7 @@ describe('SnapController', () => {
     );
 
     const permission = {
-      [walletSnapPermissionKey]: MOCK_WALLET_SNAP_PERMISSION,
+      [WALLET_SNAP_PERMISSION_KEY]: MOCK_WALLET_SNAP_PERMISSION,
     };
 
     jest

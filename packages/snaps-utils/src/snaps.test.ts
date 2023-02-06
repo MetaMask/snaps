@@ -5,7 +5,7 @@ import {
 import { is } from 'superstruct';
 
 import {
-  hasSnap,
+  isSnapPermitted,
   HttpSnapIdStruct,
   isCaipChainId,
   LocalSnapIdStruct,
@@ -198,10 +198,10 @@ describe('HttpSnapIdStruct', () => {
   });
 });
 
-describe('hasSnap', () => {
+describe('isSnapPermitted', () => {
   it("will check an origin's permissions object to see if it has permission to interact with a specific snap", () => {
     const permissionKey = 'wallet_snap';
-    const validPermissions = {
+    const validPermissions: SubjectPermissions<PermissionConstraint> = {
       [permissionKey]: {
         date: 1,
         id: '1',
@@ -216,9 +216,9 @@ describe('hasSnap', () => {
           },
         ],
       },
-    } as SubjectPermissions<PermissionConstraint>;
+    };
 
-    const invalidPermissions1 = {
+    const invalidPermissions1: SubjectPermissions<PermissionConstraint> = {
       [permissionKey]: {
         date: 1,
         id: '1',
@@ -233,9 +233,9 @@ describe('hasSnap', () => {
           },
         ],
       },
-    } as SubjectPermissions<PermissionConstraint>;
+    };
 
-    const invalidPermissions2 = {
+    const invalidPermissions2: SubjectPermissions<PermissionConstraint> = {
       foo: {
         date: 1,
         id: '1',
@@ -243,10 +243,10 @@ describe('hasSnap', () => {
         parentCapability: 'foo',
         caveats: null,
       },
-    } as SubjectPermissions<PermissionConstraint>;
+    };
 
-    expect(hasSnap(validPermissions, 'foo')).toBe(true);
-    expect(hasSnap(invalidPermissions1, 'foo')).toBe(false);
-    expect(hasSnap(invalidPermissions2, 'foo')).toBe(false);
+    expect(isSnapPermitted(validPermissions, 'foo')).toBe(true);
+    expect(isSnapPermitted(invalidPermissions1, 'foo')).toBe(false);
+    expect(isSnapPermitted(invalidPermissions2, 'foo')).toBe(false);
   });
 });

@@ -16,13 +16,13 @@ import {
   getInvokeSnapImplementation,
   validateCaveat,
   InvokeSnapCaveatSpecifications,
-  targetKey as restrictedMethod,
+  WALLET_SNAP_PERMISSION_KEY,
 } from './invokeSnap';
 
 describe('builder', () => {
   it('has the expected shape', () => {
     expect(invokeSnapBuilder).toMatchObject({
-      targetKey: restrictedMethod,
+      targetKey: WALLET_SNAP_PERMISSION_KEY,
       specificationBuilder: expect.any(Function),
       methodHooks: {
         getSnap: true,
@@ -41,7 +41,7 @@ describe('builder', () => {
       }),
     ).toMatchObject({
       permissionType: PermissionType.RestrictedMethod,
-      targetKey: restrictedMethod,
+      targetKey: WALLET_SNAP_PERMISSION_KEY,
       allowedCaveats: [SnapCaveatType.SnapIds],
       methodImplementation: expect.any(Function),
     });
@@ -163,7 +163,7 @@ describe('implementation', () => {
     const implementation = getInvokeSnapImplementation(hooks);
     await implementation({
       context: { origin: MOCK_ORIGIN },
-      method: restrictedMethod,
+      method: WALLET_SNAP_PERMISSION_KEY,
       params: {
         snapId: MOCK_SNAP_ID,
         request: { method: 'hello', params: {} },
@@ -191,7 +191,7 @@ describe('implementation', () => {
     await expect(
       implementation({
         context: { origin: MOCK_ORIGIN },
-        method: restrictedMethod,
+        method: WALLET_SNAP_PERMISSION_KEY,
         params: {
           snapId: MOCK_SNAP_ID,
           request: { method: 'hello', params: {} },
@@ -213,7 +213,7 @@ describe('implementation', () => {
     await expect(
       implementation({
         context: { origin: MOCK_ORIGIN },
-        method: restrictedMethod,
+        method: WALLET_SNAP_PERMISSION_KEY,
         params: {},
       }),
     ).rejects.toThrow(

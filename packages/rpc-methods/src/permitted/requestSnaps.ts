@@ -12,7 +12,7 @@ import {
 import { hasProperty, isObject } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
-import { targetKey as permissionKey } from '../restricted/invokeSnap';
+import { WALLET_SNAP_PERMISSION_KEY } from '../restricted/invokeSnap';
 import {
   handleInstallSnaps,
   InstallSnapsHook,
@@ -123,7 +123,7 @@ async function requestSnapsImplementation(
 
   try {
     const requestedPermissions = {
-      [permissionKey]: {
+      [WALLET_SNAP_PERMISSION_KEY]: {
         caveats: [{ type: SnapCaveatType.SnapIds, value: requestedSnaps }],
       },
     } as RequestedPermissions;

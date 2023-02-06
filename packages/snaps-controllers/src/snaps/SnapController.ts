@@ -21,15 +21,17 @@ import {
   ValidPermission,
   UpdateCaveat,
 } from '@metamask/permission-controller';
-import { caveatMappers } from '@metamask/rpc-methods';
-import { targetKey as permissionKey } from '@metamask/rpc-methods/src/restricted/invokeSnap';
+import {
+  caveatMappers,
+  WALLET_SNAP_PERMISSION_KEY,
+} from '@metamask/rpc-methods';
 import { BlockReason } from '@metamask/snaps-registry';
 import {
   assertIsSnapManifest,
   DEFAULT_ENDOWMENTS,
   DEFAULT_REQUESTED_SNAP_VERSION,
   fromEntries,
-  hasSnap,
+  isSnapPermitted,
   InstallSnapsResult,
   PersistedSnap,
   ProcessSnapResult,
@@ -1457,7 +1459,7 @@ export class SnapController extends BaseController<
         this.messagingSystem.call(
           'PermissionController:updateCaveat',
           subject,
-          permissionKey,
+          WALLET_SNAP_PERMISSION_KEY,
           SnapCaveatType.SnapIds,
           newCaveatValue,
         );
@@ -1587,7 +1589,7 @@ export class SnapController extends BaseController<
           origin,
         ) as SubjectPermissions<PermissionConstraint>;
 
-        if (!hasSnap(permissions, snapId)) {
+        if (!isSnapPermitted(permissions, snapId)) {
           throw ethErrors.provider.unauthorized(
             `Not authorized to install snap "${snapId}". Request the permission for the snap before attempting to install it.`,
           );

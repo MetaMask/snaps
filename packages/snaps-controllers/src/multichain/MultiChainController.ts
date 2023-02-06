@@ -10,7 +10,7 @@ import {
   PermissionConstraint,
   SubjectPermissions,
 } from '@metamask/permission-controller';
-import { targetKey as permissionKey } from '@metamask/rpc-methods/src/restricted/invokeSnap';
+import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
 import {
   SnapKeyring,
   parseAccountId,
@@ -18,7 +18,7 @@ import {
   parseChainId,
   ChainId,
   ConnectArguments,
-  hasSnap,
+  isSnapPermitted,
   HandlerType,
   NamespaceId,
   RequestArguments,
@@ -200,12 +200,17 @@ export class MultiChainController extends BaseController<
       origin,
     ) as SubjectPermissions<PermissionConstraint>;
 
+    assert(
+      permissions !== undefined,
+      `${origin} does not have any permissions.`,
+    );
+
     // Find namespaces that can be satisfied with existing approved Snaps.
     const approvedNamespacesAndSnaps = Object.entries(namespaceToSnaps).reduce<
       Record<NamespaceId, SnapId[]>
     >((acc, [namespace, snapIds]) => {
       const approvedSnaps = snapIds.filter((snapId) =>
-        hasSnap(permissions, snapId),
+        isSnapPermitted(permissions, snapId),
       );
 
       if (approvedSnaps.length > 0) {
@@ -350,10 +355,15 @@ export class MultiChainController extends BaseController<
     const permissions = this.messagingSystem.call(
       'PermissionController:getPermissions',
       origin,
-    ) as SubjectPermissions<PermissionConstraint>;
+    );
 
     assert(
-      hasSnap(permissions, snapId),
+      permissions !== undefined,
+      `${origin} does not have any permissions.`,
+    );
+
+    assert(
+      isSnapPermitted(permissions, snapId),
       `${origin} does not have permission to communicate with ${snapId}.`,
     );
 
@@ -546,11 +556,11 @@ export class MultiChainController extends BaseController<
     >(
       (acc, curr) => {
         if (curr !== null) {
-          acc[permissionKey][curr.snapId] = {};
+          acc[WALLET_SNAP_PERMISSION_KEY][curr.snapId] = {};
         }
         return acc;
       },
-      { [permissionKey]: {} },
+      { [WALLET_SNAP_PERMISSION_KEY]: {} },
     );
 
     this.messagingSystem.call('PermissionController:grantPermissions', {
