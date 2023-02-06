@@ -2,7 +2,7 @@
 /// <reference path="../../../../node_modules/ses/index.d.ts" />
 import { StreamProvider } from '@metamask/providers';
 import { RequestArguments } from '@metamask/providers/dist/BaseProvider';
-import { RequestFunction, SnapsGlobalObject } from '@metamask/rpc-methods';
+import { SnapsGlobalObject } from '@metamask/rpc-methods';
 import {
   SnapExports,
   HandlerType,
@@ -395,7 +395,35 @@ export class BaseSnapExecutor {
       }
     };
 
-    return { request: request as RequestFunction };
+    // To harden and limit access to internals, we use a proxy.
+    // Proxy target is intentionally set to be an empty object, to ensure
+    // that access to the prototype chain is not possible.
+    const proxy = new Proxy(
+      {},
+      {
+        has(_target: object, prop: string | symbol) {
+          if (prop === 'request') {
+            return true;
+          } else if (['on', 'removeListener'].includes(prop as string)) {
+            return true;
+          }
+
+          return false;
+        },
+        get(_target, prop: keyof StreamProvider) {
+          if (prop === 'request') {
+            return request;
+          } else if (['on', 'removeListener'].includes(prop)) {
+            return provider[prop];
+          }
+
+          return undefined;
+        },
+      },
+    );
+
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    return <SnapsGlobalObject>proxy;
   }
 
   /**
