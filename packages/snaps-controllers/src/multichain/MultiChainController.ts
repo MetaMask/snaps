@@ -8,7 +8,6 @@ import {
   GrantPermissions,
   HasPermission,
   PermissionConstraint,
-  SubjectPermissions,
 } from '@metamask/permission-controller';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
 import {
@@ -199,7 +198,7 @@ export class MultiChainController extends BaseController<
     const permissions = this.messagingSystem.call(
       'PermissionController:getPermissions',
       origin,
-    ) as SubjectPermissions<PermissionConstraint>;
+    );
 
     assert(
       permissions !== undefined,
