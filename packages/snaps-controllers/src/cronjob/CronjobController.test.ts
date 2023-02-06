@@ -192,7 +192,6 @@ describe('CronjobController', () => {
       enabled: true,
       id: MOCK_SNAP_ID,
       initialPermissions: {},
-      permissionName: '',
       version: MOCK_VERSION,
     };
     // @ts-expect-error Accessing private property
@@ -233,7 +232,6 @@ describe('CronjobController', () => {
       enabled: true,
       id: MOCK_SNAP_ID,
       initialPermissions: {},
-      permissionName: '',
       version: MOCK_VERSION,
     };
 
@@ -274,7 +272,6 @@ describe('CronjobController', () => {
       enabled: true,
       id: MOCK_SNAP_ID,
       initialPermissions: {},
-      permissionName: '',
       version: MOCK_VERSION,
     };
 

@@ -52,6 +52,7 @@
   "dependencies": {
     "@babel/core": "^7.18.6",
     "@babel/types": "^7.18.7",
+    "@metamask/permission-controller": "^2.0.0",
     "@metamask/providers": "^10.2.1",
     "@metamask/snaps-registry": "^1.0.0",
     "@metamask/snaps-ui": "^0.27.1",
@@ -104,5 +105,11 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
+  },
+  "lavamoat": {
+    "allowScripts": {
+      "@metamask/permission-controller>@metamask/controller-utils>ethereumjs-util>ethereum-cryptography>keccak": false,
+      "@metamask/permission-controller>@metamask/controller-utils>ethereumjs-util>ethereum-cryptography>secp256k1": false
+    }
   }
 }

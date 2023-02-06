@@ -7,6 +7,7 @@ import {
   Caveat,
   GetEndowments,
   GetPermissions,
+  GetSubjects,
   GrantPermissions,
   HasPermission,
   HasPermissions,
@@ -18,21 +19,26 @@ import {
   RevokePermissions,
   SubjectPermissions,
   ValidPermission,
+  UpdateCaveat,
 } from '@metamask/permission-controller';
-import { caveatMappers } from '@metamask/rpc-methods';
+import {
+  caveatMappers,
+  WALLET_SNAP_PERMISSION_KEY,
+} from '@metamask/rpc-methods';
 import { BlockReason } from '@metamask/snaps-registry';
 import {
   assertIsSnapManifest,
   DEFAULT_ENDOWMENTS,
   DEFAULT_REQUESTED_SNAP_VERSION,
   fromEntries,
-  getSnapPermissionName,
+  isSnapPermitted,
   InstallSnapsResult,
   PersistedSnap,
   ProcessSnapResult,
   RequestedSnapPermissions,
   resolveVersionRange,
   Snap,
+  SnapCaveatType,
   SnapId,
   SnapManifest,
   SnapPermissions,
@@ -40,8 +46,6 @@ import {
   SnapRpcHookArgs,
   SnapStatus,
   SnapStatusEvents,
-  SNAP_PREFIX,
-  SNAP_PREFIX_REGEX,
   StatusContext,
   StatusEvents,
   StatusStates,
@@ -112,7 +116,6 @@ export const SNAP_APPROVAL_UPDATE = 'wallet_updateSnap';
 const TRUNCATED_SNAP_PROPERTIES = new Set<TruncatedSnapFields>([
   'initialPermissions',
   'id',
-  'permissionName',
   'version',
   'enabled',
   'blocked',
@@ -444,6 +447,7 @@ export type SnapControllerEvents =
 export type AllowedActions =
   | GetEndowments
   | GetPermissions
+  | GetSubjects
   | GetSubjectMetadata
   | HasPermission
   | HasPermissions
@@ -455,7 +459,8 @@ export type AllowedActions =
   | HandleRpcRequestAction
   | ExecuteSnapAction
   | TerminateAllSnapsAction
-  | TerminateSnapAction;
+  | TerminateSnapAction
+  | UpdateCaveat;
 
 export type AllowedEvents = ExecutionServiceEvents;
 
@@ -1411,12 +1416,7 @@ export class SnapController extends BaseController<
         await this.disableSnap(snapId);
         this.revokeAllSnapPermissions(snapId);
 
-        const permissionName = getSnapPermissionName(snapId);
-        // Revoke all subjects access to the snap
-        this.messagingSystem.call(
-          'PermissionController:revokePermissionForAllSubjects',
-          permissionName,
-        );
+        this.#removeSnapFromSubjects(snapId);
 
         this.snapsRuntimeData.delete(snapId);
 
@@ -1428,6 +1428,43 @@ export class SnapController extends BaseController<
         this.messagingSystem.publish(`SnapController:snapRemoved`, truncated);
       }),
     );
+  }
+
+  /**
+   * Removes a snap's permission (caveat) from all subjects.
+   *
+   * @param snapId - The id of the Snap.
+   */
+  #removeSnapFromSubjects(snapId: SnapId) {
+    const subjects = this.messagingSystem.call(
+      'PermissionController:getSubjectNames',
+    );
+    for (const subject of subjects) {
+      const subjectPermissions = this.messagingSystem.call(
+        'PermissionController:getPermissions',
+        subject,
+      ) as SubjectPermissions<PermissionConstraint>;
+      const snapIdsCaveat = (subjectPermissions?.wallet_snap?.caveats?.find(
+        (caveat) => caveat.type === SnapCaveatType.SnapIds,
+      ) ?? {}) as Caveat<string, Json>;
+
+      const caveatHasSnap = Boolean(
+        (snapIdsCaveat.value as Record<string, unknown>)?.[snapId],
+      );
+      if (caveatHasSnap) {
+        const newCaveatValue = {
+          ...(snapIdsCaveat.value as Record<string, unknown>),
+        };
+        delete newCaveatValue[snapId];
+        this.messagingSystem.call(
+          'PermissionController:updateCaveat',
+          subject,
+          WALLET_SNAP_PERMISSION_KEY,
+          SnapCaveatType.SnapIds,
+          newCaveatValue,
+        );
+      }
+    }
   }
 
   /**
@@ -1486,23 +1523,27 @@ export class SnapController extends BaseController<
    * @returns The serialized permitted snaps for the origin.
    */
   getPermittedSnaps(origin: string): InstallSnapsResult {
-    return Object.values(
+    const permissions =
       this.messagingSystem.call(
         'PermissionController:getPermissions',
         origin,
-      ) ?? {},
-    ).reduce<InstallSnapsResult>((permittedSnaps, perm) => {
-      if (perm.parentCapability.startsWith(SNAP_PREFIX)) {
-        const snapId = perm.parentCapability.replace(SNAP_PREFIX_REGEX, '');
+      ) ?? {};
+    const snaps =
+      permissions.wallet_snap?.caveats?.find(
+        (caveat) => caveat.type === SnapCaveatType.SnapIds,
+      )?.value ?? {};
+    return Object.keys(snaps).reduce<InstallSnapsResult>(
+      (permittedSnaps, snapId) => {
         const snap = this.get(snapId);
         const truncatedSnap = this.getTruncated(snapId);
 
         if (truncatedSnap && snap?.status !== SnapStatus.Installing) {
           permittedSnaps[snapId] = truncatedSnap;
         }
-      }
-      return permittedSnaps;
-    }, {});
+        return permittedSnaps;
+      },
+      {},
+    );
   }
 
   /**
@@ -1543,15 +1584,12 @@ export class SnapController extends BaseController<
           );
         }
 
-        const permissionName = getSnapPermissionName(snapId);
+        const permissions = this.messagingSystem.call(
+          'PermissionController:getPermissions',
+          origin,
+        ) as SubjectPermissions<PermissionConstraint>;
 
-        if (
-          !this.messagingSystem.call(
-            'PermissionController:hasPermission',
-            origin,
-            permissionName,
-          )
-        ) {
+        if (!isSnapPermitted(permissions, snapId)) {
           throw ethErrors.provider.unauthorized(
             `Not authorized to install snap "${snapId}". Request the permission for the snap before attempting to install it.`,
           );
@@ -2005,9 +2043,6 @@ export class SnapController extends BaseController<
       // previous state.
       blocked: false,
       enabled: true,
-
-      // So we can easily correlate the snap with its permission
-      permissionName: getSnapPermissionName(snapId),
 
       id: snapId,
       initialPermissions: manifest.result.initialPermissions,
