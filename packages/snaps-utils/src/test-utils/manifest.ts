@@ -60,7 +60,7 @@ export const getSnapManifest = ({
     snap_confirm: {},
     'endowment:rpc': { snaps: true, dapps: false },
   },
-  /* eslint-disable @typescript-eslint/naming-convention */
+  /* eslint-enable @typescript-eslint/naming-convention */
   shasum = DEFAULT_SNAP_SHASUM,
   filePath = 'dist/bundle.js',
   packageName = '@metamask/example-snap',
