@@ -1,5 +1,5 @@
 import { SIP_6_MAGIC_VALUE, SnapCaveatType } from '@metamask/snaps-utils';
-import { TEST_SECRET_RECOVERY_PHRASE } from '@metamask/snaps-utils/test-utils';
+import { TEST_SECRET_RECOVERY_PHRASE_BYTES } from '@metamask/snaps-utils/test-utils';
 
 import {
   getBip32EntropyBuilder,
@@ -266,7 +266,7 @@ describe('getBip32EntropyImplementation', () => {
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
       const getMnemonic = jest
         .fn()
-        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE);
+        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
 
       expect(
         // @ts-expect-error Missing other required properties.
@@ -291,7 +291,7 @@ describe('getBip32EntropyImplementation', () => {
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
       const getMnemonic = jest
         .fn()
-        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE);
+        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
 
       expect(
         // @ts-expect-error Missing other required properties.
@@ -311,6 +311,34 @@ describe('getBip32EntropyImplementation', () => {
           "parentFingerprint": 942995271,
           "privateKey": "0x4adb19cafa5fdf467215fa30b56a50facac2dee40a7015063c6a7a0f1f4e2576",
           "publicKey": "0x04b21938e18aec1e2e7478988ccae5b556597d771c8e46ac2c8ea2a4a1a80619679230a109cd30e8af15856b15799e38991e45e55f406a8a24d5605ba0757da53c",
+        }
+      `);
+    });
+
+    it('derives a path using ed25519', async () => {
+      const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
+      const getMnemonic = jest
+        .fn()
+        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
+
+      expect(
+        // @ts-expect-error Missing other required properties.
+        await getBip32EntropyImplementation({ getUnlockPromise, getMnemonic })({
+          params: {
+            path: ['m', "44'", "60'", "0'", "0'", "1'"],
+            curve: 'ed25519',
+          },
+        }),
+      ).toMatchInlineSnapshot(`
+        {
+          "chainCode": "0xc258fb2565397094f6fbc5b21b5a51a2dd573748ba752b192babadcd21426015",
+          "curve": "ed25519",
+          "depth": 5,
+          "index": 2147483649,
+          "masterFingerprint": 650419359,
+          "parentFingerprint": 497597606,
+          "privateKey": "0x4ef4bf3da2c6a47495d24303b7c463dca03fe164ca1550f2d60aa68e5134d6c1",
+          "publicKey": "0x009e76714baba27091db7a5abee8e1cd8416a5d78580e8dde15d68fb78ed930097",
         }
       `);
     });

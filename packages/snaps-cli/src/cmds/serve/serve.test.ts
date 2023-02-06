@@ -1,4 +1,5 @@
 import * as snapUtils from '@metamask/snaps-utils';
+import { logInfo } from '@metamask/snaps-utils';
 import EventEmitter from 'events';
 import http from 'http';
 import path from 'path';
@@ -12,6 +13,8 @@ jest.mock('@metamask/snaps-utils', () => ({
   validateFilePath: jest.fn(),
   validateOutfileName: jest.fn(),
   getOutfilePath: () => path.normalize('dist/bundle.js'),
+  logInfo: jest.fn(),
+  logError: jest.fn(),
 }));
 
 /**
@@ -61,12 +64,10 @@ describe('serve', () => {
     });
 
     it('server handles "close" event correctly', async () => {
-      jest.spyOn(console, 'log').mockImplementation();
-
       await serve.handler(getMockArgv());
       const finishPromise = new Promise<void>((resolve, _) => {
         mockServer.on('close', () => {
-          expect(global.console.log).toHaveBeenCalledTimes(2);
+          expect(logInfo).toHaveBeenCalledTimes(2);
           resolve();
         });
       });
@@ -84,7 +85,7 @@ describe('serve', () => {
       await serve.handler(getMockArgv());
       const finishPromise = new Promise<void>((resolve, _) => {
         mockServer.on('error', () => {
-          expect(global.console.log).toHaveBeenCalledTimes(1);
+          expect(logInfo).toHaveBeenCalledTimes(1);
           expect(logServerErrorMock).toHaveBeenCalled();
           resolve();
         });
@@ -106,7 +107,6 @@ describe('serve', () => {
           return mockServer as any;
         });
 
-      jest.spyOn(console, 'log').mockImplementation();
       const logRequestMock = jest
         .spyOn(serveUtils, 'logRequest')
         .mockImplementation();
@@ -114,7 +114,7 @@ describe('serve', () => {
       await serve.handler(getMockArgv());
       const finishPromise = new Promise<void>((resolve, _) => {
         mockServer.on('request', (...args) => {
-          expect(global.console.log).toHaveBeenCalledTimes(1);
+          expect(logInfo).toHaveBeenCalledTimes(1);
           expect(logRequestMock).toHaveBeenCalled();
           requestCallback(...args);
           resolve();

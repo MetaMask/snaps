@@ -81,7 +81,7 @@ export function validateCaveat(caveat: Caveat<string, any>) {
  * `wallet_snap_*` attempts to invoke an RPC method of the specified Snap.
  *
  * Requesting its corresponding permission will attempt to connect to the Snap,
- * and install it if it's not avaialble yet.
+ * and install it if it's not available yet.
  *
  * @param options - The specification builder options.
  * @param options.methodHooks - The RPC method hooks needed by the method implementation.

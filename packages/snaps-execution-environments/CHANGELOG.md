@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.28.0]
+### Added
+- Add experimental offscreen execution environment ([#1082](https://github.com/MetaMask/snaps-monorepo/pull/1082))
+
+### Changed
+- Add proxy for `ethereum` global ([#1087](https://github.com/MetaMask/snaps-monorepo/pull/1087))
+
+### Removed
+- **BREAKING:** Remove `WebSocket` endowment ([#1122](https://github.com/MetaMask/snaps-monorepo/pull/1122))
+
 ## [0.27.1]
 ### Changed
 - No changes this release.
@@ -195,7 +205,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Previously, default endowments were specified in the execution environment itself. Now, all endowments must be specified in the `executeSnap` RPC parameters, except for the `wallet` API object.
 - Add endowments to the global `self` in addition to `window` ([#263](https://github.com/MetaMask/snaps-monorepo/pull/263))
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.28.0...HEAD
+[0.28.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.1...v0.28.0
 [0.27.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.0...v0.27.1
 [0.27.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.26.2...v0.27.0
 [0.26.2]: https://github.com/MetaMask/snaps-monorepo/compare/v0.26.1...v0.26.2

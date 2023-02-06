@@ -5,7 +5,7 @@ import { VirtualFile } from './VirtualFile';
 
 const CONTENTS_UTF8 = 'foo\nbar';
 
-jest.mock('fs/promises');
+jest.mock('fs');
 
 describe('toVirtualFile', () => {
   beforeEach(() => {

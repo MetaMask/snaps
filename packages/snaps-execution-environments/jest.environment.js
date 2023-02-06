@@ -13,6 +13,7 @@ module.exports = class CustomTestEnvironment extends TestEnvironment {
       this.global.TextDecoder = TextDecoder;
       this.global.ArrayBuffer = ArrayBuffer;
       this.global.Uint8Array = Uint8Array;
+      this.global.harden = (param) => param;
     }
   }
 };

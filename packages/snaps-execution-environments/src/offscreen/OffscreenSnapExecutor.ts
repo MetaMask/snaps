@@ -2,7 +2,7 @@ import {
   BasePostMessageStream,
   WindowPostMessageStream,
 } from '@metamask/post-message-stream';
-import { createWindow } from '@metamask/snaps-utils';
+import { createWindow, logError } from '@metamask/snaps-utils';
 import { JsonRpcRequest, assert } from '@metamask/utils';
 
 type ExecutorJob = {
@@ -68,7 +68,7 @@ export class OffscreenSnapExecutor {
           this.#onData(data);
         })
         .catch((error) => {
-          console.error('[Worker] Error initializing job:', error);
+          logError('[Worker] Error initializing job:', error);
         });
 
       return;

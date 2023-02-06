@@ -31,9 +31,8 @@ import { notifyBuilder, NotifyMethodHooks } from './notify';
 export type { DialogParameters } from './dialog';
 export { DialogType } from './dialog';
 export { ManageStateOperation } from './manageState';
-export type { NotificationArgs } from './notify';
-export { NotificationType } from './notify';
 export { WALLET_SNAP_PERMISSION_KEY } from './invokeSnap';
+export type { NotificationArgs, NotificationType } from './notify';
 
 export type RestrictedMethodHooks = ConfirmMethodHooks &
   DialogMethodHooks &

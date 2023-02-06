@@ -5,9 +5,9 @@ import {
 } from '@metamask/permission-controller';
 import { BlockReason } from '@metamask/snaps-registry';
 import { assert, Json, SemVerVersion } from '@metamask/utils';
-import { sha256 } from '@noble/hashes/sha256';
 import { base64 } from '@scure/base';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
+import stableStringify from 'fast-json-stable-stringify';
 import {
   empty,
   enums,
@@ -21,13 +21,16 @@ import {
 import validateNPMPackage from 'validate-npm-package-name';
 
 import { SnapCaveatType } from './caveats';
+import { checksumFiles } from './checksum';
 import { SnapManifest, SnapPermissions } from './manifest/validation';
 import {
+  SnapFiles,
   SnapId,
   SnapIdPrefixes,
   SnapValidationFailureReason,
   uri,
 } from './types';
+import { VirtualFile } from './virtual-file';
 
 // This RegEx matches valid npm package names (with some exceptions) and space-
 // separated alphanumerical words, optionally with dashes and underscores.
@@ -172,31 +175,53 @@ export class ProgrammaticallyFixableSnapError extends Error {
 }
 
 /**
- * Calculates the Base64-encoded SHA-256 digest of a Snap source code string.
+ * Gets a checksummable manifest by removing the shasum property and reserializing the JSON using a deterministic algorithm.
  *
- * @param sourceCode - The UTF-8 string source code of a Snap.
+ * @param manifest - The manifest itself.
+ * @returns A virtual file containing the checksummable manifest.
+ */
+function getChecksummableManifest(
+  manifest: VirtualFile<SnapManifest>,
+): VirtualFile {
+  const manifestCopy = manifest.clone() as VirtualFile<any>;
+  delete manifestCopy.result.source.shasum;
+
+  // We use fast-json-stable-stringify to deterministically serialize the JSON
+  // This is required before checksumming so we get reproducible checksums across platforms etc
+  manifestCopy.value = stableStringify(manifestCopy.result);
+  return manifestCopy;
+}
+
+/**
+ * Calculates the Base64-encoded SHA-256 digest of all required Snap files.
+ *
+ * @param files - All required Snap files to be included in the checksum.
  * @returns The Base64-encoded SHA-256 digest of the source code.
  */
-export function getSnapSourceShasum(sourceCode: string): string {
-  return base64.encode(sha256(sourceCode));
+export function getSnapChecksum(
+  files: Pick<SnapFiles, 'manifest' | 'sourceCode' | 'svgIcon'>,
+): string {
+  const { manifest, sourceCode, svgIcon } = files;
+  const all = [getChecksummableManifest(manifest), sourceCode, svgIcon].filter(
+    (file) => file !== undefined,
+  );
+  return base64.encode(checksumFiles(all as VirtualFile[]));
 }
 
 export type ValidatedSnapId = `local:${string}` | `npm:${string}`;
 
 /**
  * Checks whether the `source.shasum` property of a Snap manifest matches the
- * shasum of a snap source code string.
+ * shasum of the snap.
  *
- * @param manifest - The manifest whose shasum to validate.
- * @param sourceCode - The source code of the snap.
+ * @param files - All required Snap files to be included in the checksum.
  * @param errorMessage - The error message to throw if validation fails.
  */
 export function validateSnapShasum(
-  manifest: SnapManifest,
-  sourceCode: string,
+  files: Pick<SnapFiles, 'manifest' | 'sourceCode' | 'svgIcon'>,
   errorMessage = 'Invalid Snap manifest: manifest shasum does not match computed shasum.',
 ): void {
-  if (manifest.source.shasum !== getSnapSourceShasum(sourceCode)) {
+  if (files.manifest.result.source.shasum !== getSnapChecksum(files)) {
     throw new ProgrammaticallyFixableSnapError(
       errorMessage,
       SnapValidationFailureReason.ShasumMismatch,

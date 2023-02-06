@@ -7,7 +7,6 @@ import {
   isDirectory,
   isFile,
   readJsonFile,
-  readSnapJsonFile,
   validateDirPath,
   validateFilePath,
   validateOutfileName,
@@ -96,14 +95,20 @@ describe('readJsonFile', () => {
   });
 
   it('reads and parses a json file', async () => {
-    expect(await readJsonFile<SnapManifest>(MANIFEST_PATH)).toStrictEqual(
-      getSnapManifest(),
-    );
+    const file = await readJsonFile<SnapManifest>(MANIFEST_PATH);
+    expect(file.path).toBe(MANIFEST_PATH);
+    expect(file.result).toStrictEqual(getSnapManifest());
   });
 
   it('throws if the file name does not end with .json', async () => {
     await expect(readJsonFile('foo')).rejects.toThrow(
       'The specified file must be a ".json" file.',
+    );
+  });
+
+  it('throws if the file doesnt exist', async () => {
+    await expect(readJsonFile('foo.json')).rejects.toThrow(
+      "Could not find 'foo.json'. Please ensure that the file exists.",
     );
   });
 
@@ -113,53 +118,6 @@ describe('readJsonFile', () => {
     });
 
     await expect(readJsonFile(MANIFEST_PATH)).rejects.toThrow('foo');
-  });
-});
-
-describe('readSnapJsonFile', () => {
-  beforeEach(async () => {
-    await resetFileSystem();
-  });
-
-  it('returns the contents of the file', async () => {
-    const json = {
-      foo: 'bar',
-    };
-
-    await fs.writeFile(
-      join(BASE_PATH, NpmSnapFileNames.Manifest),
-      JSON.stringify(json),
-    );
-
-    expect(
-      await readSnapJsonFile(BASE_PATH, NpmSnapFileNames.Manifest),
-    ).toStrictEqual(json);
-  });
-
-  it('throws an error if the file does not exist', async () => {
-    await fs.unlink(MANIFEST_PATH);
-
-    await expect(
-      readSnapJsonFile(BASE_PATH, NpmSnapFileNames.Manifest),
-    ).rejects.toThrow(
-      "Could not find '/snap/snap.manifest.json'. Please ensure that the file exists.",
-    );
-
-    await expect(
-      readSnapJsonFile(BASE_PATH, NpmSnapFileNames.PackageJson),
-    ).rejects.toThrow(
-      "Could not find '/snap/package.json'. Please ensure that the file exists.",
-    );
-  });
-
-  it('forwards fs errors', async () => {
-    jest.spyOn(fs, 'readFile').mockImplementation(() => {
-      throw new Error('foo');
-    });
-
-    await expect(
-      readSnapJsonFile(BASE_PATH, NpmSnapFileNames.Manifest),
-    ).rejects.toThrow('foo');
   });
 });
 

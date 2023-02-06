@@ -1,30 +1,12 @@
 import { SemVerVersion } from '@metamask/utils';
 
-import {
-  getSnapSourceShasum,
-  PersistedSnap,
-  Snap,
-  SnapStatus,
-  TruncatedSnap,
-} from '../snaps';
+import { PersistedSnap, Snap, SnapStatus, TruncatedSnap } from '../snaps';
 import { MakeSemVer } from './common';
-import { getSnapManifest } from './manifest';
-
-/**
- * A mock snap source and its shasum.
- */
-export const DEFAULT_SNAP_BUNDLE = `
-  module.exports.onRpcRequest = ({ request }) => {
-    console.log("Hello, world!");
-
-    const { method, id } = request;
-    return method + id;
-  };
-`;
-
-export const DEFAULT_SNAP_SHASUM = getSnapSourceShasum(DEFAULT_SNAP_BUNDLE);
-
-export const DEFAULT_SNAP_ICON = '<svg />';
+import {
+  DEFAULT_SNAP_BUNDLE,
+  DEFAULT_SNAP_SHASUM,
+  getSnapManifest,
+} from './manifest';
 
 export const MOCK_SNAP_ID = 'npm:@metamask/example-snap';
 export const MOCK_LOCAL_SNAP_ID = 'local:http://localhost:8080';

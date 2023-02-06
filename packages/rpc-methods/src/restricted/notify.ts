@@ -7,19 +7,22 @@ import {
 import { NonEmptyArray, isObject } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
+import { EnumToUnion } from '../utils';
+
 const methodName = 'snap_notify';
 
-// Move all the types to a shared place when implementing more notifications
+// TODO: Move all the types to a shared place when implementing more
+//  notifications.
 export enum NotificationType {
-  Native = 'native',
   InApp = 'inApp',
+  Native = 'native',
 }
 
 export type NotificationArgs = {
   /**
    * Enum type to determine notification type.
    */
-  type: NotificationType;
+  type: EnumToUnion<NotificationType>;
 
   /**
    * A message to show on the notification.
@@ -145,7 +148,7 @@ export function getValidatedParams(params: unknown): NotificationArgs {
   if (
     !type ||
     typeof type !== 'string' ||
-    !(Object.values(NotificationType) as string[]).includes(type)
+    !Object.values(NotificationType).includes(type as NotificationType)
   ) {
     throw ethErrors.rpc.invalidParams({
       message: 'Must specify a valid notification "type".',

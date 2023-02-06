@@ -33,6 +33,7 @@ import {
   fromEntries,
   isSnapPermitted,
   InstallSnapsResult,
+  normalizeRelative,
   PersistedSnap,
   ProcessSnapResult,
   RequestedSnapPermissions,
@@ -55,6 +56,8 @@ import {
   validateSnapId,
   validateSnapShasum,
   VirtualFile,
+  logError,
+  logWarning,
 } from '@metamask/snaps-utils';
 import {
   GetSubjectMetadata,
@@ -81,6 +84,7 @@ import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
 
 import { forceStrict, validateMachine } from '../fsm';
+import { log } from '../logging';
 import {
   ExecuteSnapAction,
   ExecutionServiceEvents,
@@ -101,6 +105,7 @@ import {
   JsonSnapsRegistry,
   SnapsRegistry,
   SnapsRegistryInfo,
+  SnapsRegistryMetadata,
   SnapsRegistryRequest,
   SnapsRegistryStatus,
 } from './registry';
@@ -343,6 +348,11 @@ export type RemoveSnapError = {
   handler: SnapController['removeSnapError'];
 };
 
+export type GetRegistryMetadata = {
+  type: `${typeof controllerName}:getRegistryMetadata`;
+  handler: SnapController['getRegistryMetadata'];
+};
+
 export type SnapControllerActions =
   | ClearSnapState
   | GetSnap
@@ -359,7 +369,8 @@ export type SnapControllerActions =
   | RemoveSnapError
   | GetAllSnaps
   | IncrementActiveReferences
-  | DecrementActiveReferences;
+  | DecrementActiveReferences
+  | GetRegistryMetadata;
 
 // Controller Messenger Events
 
@@ -921,13 +932,18 @@ export class SnapController extends BaseController<
       `${controllerName}:decrementActiveReferences`,
       (...args) => this.decrementActiveReferences(...args),
     );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:getRegistryMetadata`,
+      async (...args) => this.getRegistryMetadata(...args),
+    );
   }
 
   #pollForLastRequestStatus() {
     this.#timeoutForLastRequestStatus = setTimeout(() => {
       this.#stopSnapsLastRequestPastMax().catch((error) => {
         // TODO: Decide how to handle errors.
-        console.error(error);
+        logError(error);
       });
 
       this.#pollForLastRequestStatus();
@@ -987,7 +1003,7 @@ export class SnapController extends BaseController<
 
       await this.disableSnap(snapId);
     } catch (error) {
-      console.error(
+      logError(
         `Encountered error when stopping blocked snap "${snapId}".`,
         error,
       );
@@ -1068,7 +1084,7 @@ export class SnapController extends BaseController<
       .then(() => this.addSnapError(error))
       .catch((stopSnapError) => {
         // TODO: Decide how to handle errors.
-        console.error(stopSnapError);
+        logError(stopSnapError);
       });
   }
 
@@ -1702,7 +1718,7 @@ export class SnapController extends BaseController<
       this.messagingSystem.publish(`SnapController:snapInstalled`, truncated);
       return truncated;
     } catch (error) {
-      console.error(`Error when adding snap.`, error);
+      logError(`Error when adding snap.`, error);
 
       throw error;
     }
@@ -1742,7 +1758,7 @@ export class SnapController extends BaseController<
     const newSnap = await this.#fetchSnap(snapId, location);
     const newVersion = newSnap.manifest.result.version;
     if (!gtVersion(newVersion, snap.version)) {
-      console.warn(
+      logWarning(
         `Tried updating snap "${snapId}" within "${newVersionRange}" version range, but newer version "${snap.version}" is already installed`,
       );
       return null;
@@ -1821,13 +1837,18 @@ export class SnapController extends BaseController<
       rollbackSnapshot.permissions.requestData = requestData;
     }
 
+    const normalizedSourcePath = normalizeRelative(
+      newSnap.manifest.result.source.location.npm.filePath,
+    );
+
     const sourceCode = newSnap.files
-      .find(
-        (file) =>
-          file.path === newSnap.manifest.result.source.location.npm.filePath,
-      )
+      .find((file) => file.path === normalizedSourcePath)
       ?.toString();
-    assert(sourceCode !== undefined);
+
+    assert(
+      typeof sourceCode === 'string' && sourceCode.length > 0,
+      `Invalid source code for snap "${snapId}".`,
+    );
 
     try {
       await this.#startSnap({ snapId, sourceCode });
@@ -1846,6 +1867,19 @@ export class SnapController extends BaseController<
   }
 
   /**
+   * Get metadata for the given snap ID.
+   *
+   * @param snapId - The ID of the snap to get metadata for.
+   * @returns The metadata for the given snap ID, or `null` if the snap is not
+   * verified.
+   */
+  async getRegistryMetadata(
+    snapId: SnapId,
+  ): Promise<SnapsRegistryMetadata | null> {
+    return await this.#registry.getMetadata(snapId);
+  }
+
+  /**
    * Returns a promise representing the complete installation of the requested snap.
    * If the snap is already being installed, the previously pending promise will be returned.
    *
@@ -1861,7 +1895,7 @@ export class SnapController extends BaseController<
     this.#setupRuntime(snapId, { sourceCode: null, state: null });
     const runtime = this.#getRuntimeExpect(snapId);
     if (!runtime.installPromise) {
-      console.info(`Adding snap: ${snapId}`);
+      log(`Adding snap: ${snapId}`);
 
       // If fetching and setting the snap succeeds, this property will be set
       // to null in the authorize() method.
@@ -1965,7 +1999,7 @@ export class SnapController extends BaseController<
       // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       DEFAULT_ENDOWMENTS.length + allEndowments.length
     ) {
-      console.error(
+      logError(
         'Duplicate endowments found. Default endowments should not be requested.',
         allEndowments,
       );
@@ -2006,20 +2040,25 @@ export class SnapController extends BaseController<
       );
     }
 
-    const sourceCode = files
-      .find(
-        (file) => file.path === manifest.result.source.location.npm.filePath,
-      )
-      ?.toString();
-    const svgIcon = files.find(
-      (file) =>
-        manifest.result.source.location.npm.iconPath !== undefined &&
-        file.path === manifest.result.source.location.npm.iconPath,
+    const normalizedSourcePath = normalizeRelative(
+      manifest.result.source.location.npm.filePath,
     );
-    assert(sourceCode !== undefined);
-    if (typeof sourceCode !== 'string' || sourceCode.length === 0) {
-      throw new Error(`Invalid source code for snap "${snapId}".`);
-    }
+
+    const { iconPath } = manifest.result.source.location.npm;
+    const normalizedIconPath = iconPath && normalizeRelative(iconPath);
+
+    const sourceCode = files
+      .find((file) => file.path === normalizedSourcePath)
+      ?.toString();
+
+    const svgIcon = normalizedIconPath
+      ? files.find((file) => file.path === normalizedIconPath)
+      : undefined;
+
+    assert(
+      typeof sourceCode === 'string' && sourceCode.length > 0,
+      `Invalid source code for snap "${snapId}".`,
+    );
 
     const snapsState = this.state.snaps;
 
@@ -2097,13 +2136,15 @@ export class SnapController extends BaseController<
       const sourceCode = await location.fetch(
         manifest.result.source.location.npm.filePath,
       );
-      validateSnapShasum(manifest.result, sourceCode.toString());
       const { iconPath } = manifest.result.source.location.npm;
+      const svgIcon = iconPath ? await location.fetch(iconPath) : undefined;
 
       const files = [sourceCode];
-      if (iconPath) {
-        files.push(await location.fetch(iconPath));
+      if (svgIcon) {
+        files.push(svgIcon);
       }
+
+      validateSnapShasum({ manifest, sourceCode, svgIcon });
 
       return { manifest, files, location };
     } catch (error) {
@@ -2160,7 +2201,7 @@ export class SnapController extends BaseController<
    * @returns The snap's approvedPermissions.
    */
   private async authorize(origin: string, snapId: SnapId): Promise<void> {
-    console.info(`Authorizing snap: ${snapId}`);
+    log(`Authorizing snap: ${snapId}`);
     const snapsState = this.state.snaps;
     const snap = snapsState[snapId];
     const { initialPermissions } = snap;
@@ -2423,7 +2464,7 @@ export class SnapController extends BaseController<
 
     // Long running snaps have timeouts disabled
     if (isLongRunning) {
-      console.warn(
+      logWarning(
         `${SnapEndowments.LongRunning} will soon be deprecated. For more information please see https://github.com/MetaMask/snaps-monorepo/issues/945.`,
       );
       return promise;

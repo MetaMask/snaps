@@ -1,9 +1,10 @@
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
-import { SNAP_STREAM_NAMES } from '@metamask/snaps-utils';
+import { logError, SNAP_STREAM_NAMES } from '@metamask/snaps-utils';
 import pump from 'pump';
 
 import { BaseSnapExecutor } from '../common/BaseSnapExecutor';
+import { log } from '../logging';
 
 export class IFrameSnapExecutor extends BaseSnapExecutor {
   /**
@@ -14,7 +15,7 @@ export class IFrameSnapExecutor extends BaseSnapExecutor {
    * message streams.
    */
   static initialize() {
-    console.log('Worker: Connecting to parent.');
+    log('Worker: Connecting to parent.');
 
     const parentStream = new WindowPostMessageStream({
       name: 'child',
@@ -26,7 +27,7 @@ export class IFrameSnapExecutor extends BaseSnapExecutor {
     const mux = new ObjectMultiplex();
     pump(parentStream, mux, parentStream, (error) => {
       if (error) {
-        console.error(`Parent stream failure, closing worker.`, error);
+        logError(`Parent stream failure, closing worker.`, error);
       }
       self.close();
     });

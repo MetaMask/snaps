@@ -7,6 +7,8 @@ export type Ethereum = StreamProvider;
 
 // Exported again for convenience.
 export type { Json, JsonRpcRequest } from '@metamask/utils';
+export { DialogType, NotificationType } from '@metamask/rpc-methods';
+export type { SnapsGlobalObject } from '@metamask/rpc-methods';
 export type {
   AccountId,
   ChainId,
@@ -18,5 +20,4 @@ export type {
   OnTransactionResponse,
   RequestArguments,
   SnapKeyring,
-  SnapsGlobalObject,
 } from '@metamask/snaps-utils';

@@ -1,23 +1,23 @@
-import { Json, assertExhaustive } from '@metamask/utils';
+import { Json, assertExhaustive, assert, isPlainObject } from '@metamask/utils';
 import deepEqual from 'fast-deep-equal';
 import { promises as fs } from 'fs';
 import pathUtils from 'path';
 
 import { deepClone } from '../deep-clone';
-import { readSnapJsonFile } from '../fs';
+import { readJsonFile } from '../fs';
 import { validateNpmSnap } from '../npm';
 import {
-  getSnapSourceShasum,
+  getSnapChecksum,
   ProgrammaticallyFixableSnapError,
   validateSnapShasum,
 } from '../snaps';
 import {
   NpmSnapFileNames,
-  NpmSnapPackageJson,
   SnapFiles,
   SnapValidationFailureReason,
   UnvalidatedSnapFiles,
 } from '../types';
+import { readVirtualFile, VirtualFile } from '../virtual-file';
 import { SnapManifest } from './validation';
 
 const MANIFEST_SORT_ORDER: Record<keyof SnapManifest, number> = {
@@ -72,30 +72,26 @@ export async function checkManifest(
 
   let updated = false;
 
-  const unvalidatedManifest = await readSnapJsonFile(
-    basePath,
-    NpmSnapFileNames.Manifest,
+  const manifestPath = pathUtils.join(basePath, NpmSnapFileNames.Manifest);
+  const manifestFile = await readJsonFile(manifestPath);
+  const unvalidatedManifest = manifestFile.result;
+
+  const packageFile = await readJsonFile(
+    pathUtils.join(basePath, NpmSnapFileNames.PackageJson),
   );
 
-  const iconPath =
-    unvalidatedManifest && typeof unvalidatedManifest === 'object'
-      ? /* istanbul ignore next */
-        (unvalidatedManifest as Partial<SnapManifest>).source?.location?.npm
-          ?.iconPath
-      : /* istanbul ignore next */
-        undefined;
-
   const snapFiles: UnvalidatedSnapFiles = {
-    manifest: unvalidatedManifest,
-    packageJson: await readSnapJsonFile(basePath, NpmSnapFileNames.PackageJson),
-    sourceCode:
-      sourceCode ?? (await getSnapSourceCode(basePath, unvalidatedManifest)),
-    svgIcon:
-      iconPath &&
-      (await fs.readFile(pathUtils.join(basePath, iconPath), 'utf8')),
+    manifest: manifestFile,
+    packageJson: packageFile,
+    sourceCode: await getSnapSourceCode(
+      basePath,
+      unvalidatedManifest,
+      sourceCode,
+    ),
+    svgIcon: await getSnapIcon(basePath, unvalidatedManifest),
   };
 
-  let manifest: SnapManifest | undefined;
+  let manifest: VirtualFile<SnapManifest> | undefined;
   try {
     ({ manifest } = validateNpmSnap(snapFiles));
   } catch (error) {
@@ -149,9 +145,11 @@ export async function checkManifest(
     }
   }
 
-  // TypeScript doesn't see that the 'manifest' variable must be of type
-  // SnapManifest at this point, so we cast it.
-  const validatedManifest = manifest as SnapManifest;
+  // TypeScript assumes `manifest` can still be undefined, that is not the case.
+  // But we assert to keep TypeScript happy.
+  assert(manifest);
+
+  const validatedManifest = manifest.result;
 
   // Check presence of recommended keys
   const recommendedFields = ['repository'] as const;
@@ -173,10 +171,18 @@ export async function checkManifest(
 
   if (writeManifest) {
     try {
-      await fs.writeFile(
-        pathUtils.join(basePath, NpmSnapFileNames.Manifest),
-        `${JSON.stringify(getWritableManifest(validatedManifest), null, 2)}\n`,
-      );
+      const newManifest = `${JSON.stringify(
+        getWritableManifest(validatedManifest),
+        null,
+        2,
+      )}\n`;
+
+      if (updated || newManifest !== manifestFile.value) {
+        await fs.writeFile(
+          pathUtils.join(basePath, NpmSnapFileNames.Manifest),
+          newManifest,
+        );
+      }
     } catch (error) {
       // Note: This error isn't pushed to the errors array, because it's not an
       // error in the manifest itself.
@@ -199,27 +205,28 @@ export async function checkManifest(
 export function fixManifest(
   snapFiles: SnapFiles,
   error: ProgrammaticallyFixableSnapError,
-): SnapManifest {
-  const { manifest, packageJson, sourceCode } = snapFiles;
-  const manifestCopy = deepClone(manifest);
+): VirtualFile<SnapManifest> {
+  const { manifest, packageJson } = snapFiles;
+  const clonedFile = manifest.clone();
+  const manifestCopy = clonedFile.result;
 
   switch (error.reason) {
     case SnapValidationFailureReason.NameMismatch:
-      manifestCopy.source.location.npm.packageName = packageJson.name;
+      manifestCopy.source.location.npm.packageName = packageJson.result.name;
       break;
 
     case SnapValidationFailureReason.VersionMismatch:
-      manifestCopy.version = packageJson.version;
+      manifestCopy.version = packageJson.result.version;
       break;
 
     case SnapValidationFailureReason.RepositoryMismatch:
-      manifestCopy.repository = packageJson.repository
-        ? deepClone(packageJson.repository)
+      manifestCopy.repository = packageJson.result.repository
+        ? deepClone(packageJson.result.repository)
         : undefined;
       break;
 
     case SnapValidationFailureReason.ShasumMismatch:
-      manifestCopy.source.shasum = getSnapSourceShasum(sourceCode);
+      manifestCopy.source.shasum = getSnapChecksum(snapFiles);
       break;
 
     /* istanbul ignore next */
@@ -227,7 +234,9 @@ export function fixManifest(
       assertExhaustive(error.reason);
   }
 
-  return manifestCopy;
+  clonedFile.result = manifestCopy;
+  clonedFile.value = JSON.stringify(manifestCopy);
+  return clonedFile;
 }
 
 /**
@@ -236,26 +245,75 @@ export function fixManifest(
  *
  * @param basePath - The path to the folder with the manifest files.
  * @param manifest - The unvalidated Snap manifest file contents.
+ * @param sourceCode - Override source code for plugins.
  * @returns The contents of the bundle file, if any.
  */
 export async function getSnapSourceCode(
   basePath: string,
   manifest: Json,
-): Promise<string | undefined> {
-  if (manifest && typeof manifest === 'object' && !Array.isArray(manifest)) {
-    const sourceFilePath = (manifest as Partial<SnapManifest>).source?.location
-      ?.npm?.filePath;
-
-    try {
-      return sourceFilePath
-        ? await fs.readFile(pathUtils.join(basePath, sourceFilePath), 'utf8')
-        : undefined;
-    } catch (error) {
-      throw new Error(`Failed to read Snap bundle file: ${error.message}`);
-    }
+  sourceCode?: string,
+): Promise<VirtualFile | undefined> {
+  if (!isPlainObject(manifest)) {
+    return undefined;
   }
 
-  return undefined;
+  const sourceFilePath = (manifest as Partial<SnapManifest>).source?.location
+    ?.npm?.filePath;
+
+  if (!sourceFilePath) {
+    return undefined;
+  }
+
+  if (sourceCode) {
+    return new VirtualFile({
+      path: pathUtils.join(basePath, sourceFilePath),
+      value: sourceCode,
+    });
+  }
+
+  try {
+    const virtualFile = await readVirtualFile(
+      pathUtils.join(basePath, sourceFilePath),
+      'utf8',
+    );
+    return virtualFile;
+  } catch (error) {
+    throw new Error(`Failed to read Snap bundle file: ${error.message}`);
+  }
+}
+
+/**
+ * Given an unvalidated Snap manifest, attempts to extract the location of the
+ * icon and read the file.
+ *
+ * @param basePath - The path to the folder with the manifest files.
+ * @param manifest - The unvalidated Snap manifest file contents.
+ * @returns The contents of the icon, if any.
+ */
+export async function getSnapIcon(
+  basePath: string,
+  manifest: Json,
+): Promise<VirtualFile | undefined> {
+  if (!isPlainObject(manifest)) {
+    return undefined;
+  }
+
+  const iconPath = (manifest as Partial<SnapManifest>).source?.location?.npm
+    ?.iconPath;
+
+  if (!iconPath) {
+    return undefined;
+  }
+
+  try {
+    const virtualFile = await readVirtualFile(
+      pathUtils.join(basePath, iconPath),
+      'utf8',
+    );
+    return virtualFile;
+  } catch (error) {
+    throw new Error(`Failed to read Snap icon file: ${error.message}`);
+  }
 }
 
 /**
@@ -293,21 +351,21 @@ export function getWritableManifest(manifest: SnapManifest): SnapManifest {
  * @param snapFiles.manifest - The npm Snap manifest to validate.
  * @param snapFiles.packageJson - The npm Snap's `package.json`.
  * @param snapFiles.sourceCode - The Snap's source code.
- * @returns A tuple containing the validated snap manifest, snap source code,
- * and `package.json`.
+ * @param snapFiles.svgIcon - The Snap's optional icon.
  */
 export function validateNpmSnapManifest({
   manifest,
   packageJson,
   sourceCode,
-}: SnapFiles): [SnapManifest, string, NpmSnapPackageJson] {
-  const packageJsonName = packageJson.name;
-  const packageJsonVersion = packageJson.version;
-  const packageJsonRepository = packageJson.repository;
+  svgIcon,
+}: SnapFiles) {
+  const packageJsonName = packageJson.result.name;
+  const packageJsonVersion = packageJson.result.version;
+  const packageJsonRepository = packageJson.result.repository;
 
-  const manifestPackageName = manifest.source.location.npm.packageName;
-  const manifestPackageVersion = manifest.version;
-  const manifestRepository = manifest.repository;
+  const manifestPackageName = manifest.result.source.location.npm.packageName;
+  const manifestPackageVersion = manifest.result.version;
+  const manifestRepository = manifest.result.repository;
 
   if (packageJsonName !== manifestPackageName) {
     throw new ProgrammaticallyFixableSnapError(
@@ -336,9 +394,7 @@ export function validateNpmSnapManifest({
   }
 
   validateSnapShasum(
-    manifest,
-    sourceCode,
+    { manifest, sourceCode, svgIcon },
     `"${NpmSnapFileNames.Manifest}" "shasum" field does not match computed shasum.`,
   );
-  return [manifest, sourceCode, packageJson];
 }

@@ -5,6 +5,7 @@ import { satisfiesVersionRange } from '@metamask/utils';
 import {
   SnapsRegistry,
   SnapsRegistryInfo,
+  SnapsRegistryMetadata,
   SnapsRegistryRequest,
   SnapsRegistryResult,
   SnapsRegistryStatus,
@@ -99,5 +100,19 @@ export class JsonSnapsRegistry implements SnapsRegistry {
       acc[snapId] = result;
       return acc;
     }, Promise.resolve({}));
+  }
+
+  /**
+   * Get metadata for the given snap ID.
+   *
+   * @param snapId - The ID of the snap to get metadata for.
+   * @returns The metadata for the given snap ID, or `null` if the snap is not
+   * verified.
+   */
+  public async getMetadata(
+    snapId: SnapId,
+  ): Promise<SnapsRegistryMetadata | null> {
+    const database = await this.#getDatabase();
+    return database?.verifiedSnaps[snapId]?.metadata ?? null;
   }
 }

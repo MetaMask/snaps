@@ -22,7 +22,7 @@ function createMath() {
     return { ...target, [key]: rootRealmGlobal.Math[key] };
   }, {});
 
-  return {
+  return harden({
     Math: {
       ...math,
       random: () => {
@@ -45,7 +45,7 @@ function createMath() {
         return crypto.getRandomValues(new Uint32Array(1))[0] / 2 ** 32;
       },
     },
-  };
+  });
 }
 
 const endowmentModule = {

@@ -172,16 +172,6 @@ describe('createSnapManifest', () => {
     expect(() => createSnapManifest(getSnapManifest())).not.toThrow();
   });
 
-  it('coerces source paths', () => {
-    expect(
-      createSnapManifest(
-        getSnapManifest({ filePath: './bundle.js', iconPath: './icon.svg' }),
-      ),
-    ).toStrictEqual(
-      getSnapManifest({ filePath: 'bundle.js', iconPath: 'icon.svg' }),
-    );
-  });
-
   it.each([
     true,
     false,

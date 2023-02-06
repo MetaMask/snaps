@@ -1,4 +1,4 @@
-import { checkManifest } from '@metamask/snaps-utils';
+import { checkManifest, logError, logWarning } from '@metamask/snaps-utils';
 
 import { YargsArgs } from '../../types/yargs';
 
@@ -20,14 +20,14 @@ export async function manifestHandler({ writeManifest }: YargsArgs) {
     );
 
     if (!writeManifest && errors.length > 0) {
-      console.error(`${ERROR_PREFIX}The manifest is invalid.`);
+      logError(`${ERROR_PREFIX}The manifest is invalid.`);
       errors.forEach(logManifestError);
 
       process.exit(1);
     }
 
     if (warnings.length > 0) {
-      console.log(
+      logWarning(
         'Manifest Warning: Validation of snap.manifest.json completed with warnings.',
       );
       warnings.forEach(logManifestWarning);
@@ -44,7 +44,7 @@ export async function manifestHandler({ writeManifest }: YargsArgs) {
  */
 function logManifestWarning(message: string) {
   if (!global.snaps.suppressWarnings) {
-    console.log(`Manifest Warning: ${message}`);
+    logWarning(`Manifest Warning: ${message}`);
   }
 }
 
@@ -54,5 +54,5 @@ function logManifestWarning(message: string) {
  * @param message - The message to log.
  */
 function logManifestError(message: string) {
-  console.error(`${ERROR_PREFIX}${message}`);
+  logError(`${ERROR_PREFIX}${message}`);
 }

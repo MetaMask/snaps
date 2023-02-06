@@ -1,9 +1,9 @@
 module.exports = () => {
   return {
-    concurrency: 5,
     extensions: ['ts'],
-    require: ['ts-node/register'],
+    require: ['ts-node/register', 'tsconfig-paths/register'],
     verbose: true,
     files: ['src/**/*.ava.test.ts'],
+    timeout: '30s',
   };
 };

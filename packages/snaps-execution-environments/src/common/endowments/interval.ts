@@ -1,3 +1,5 @@
+const MINIMUM_INTERVAL = 10;
+
 /**
  * Creates a pair of `setInterval` and `clearInterval` functions attenuated such
  * that:
@@ -17,13 +19,18 @@ const createInterval = () => {
         `The interval handler must be a function. Received: ${typeof handler}`,
       );
     }
-    const handle = Object.freeze({});
-    const platformHandle = setInterval(handler, timeout);
+    harden(handler);
+    const handle = Object.freeze(Object.create(null));
+    const platformHandle = setInterval(
+      handler,
+      Math.max(MINIMUM_INTERVAL, timeout ?? 0),
+    );
     registeredHandles.set(handle, platformHandle);
     return handle;
   };
 
   const _clearInterval = (handle: unknown): void => {
+    harden(handle);
     const platformHandle = registeredHandles.get(handle);
     if (platformHandle !== undefined) {
       clearInterval(platformHandle as any);
@@ -38,8 +45,8 @@ const createInterval = () => {
   };
 
   return {
-    setInterval: _setInterval,
-    clearInterval: _clearInterval,
+    setInterval: harden(_setInterval),
+    clearInterval: harden(_clearInterval),
     teardownFunction,
   } as const;
 };

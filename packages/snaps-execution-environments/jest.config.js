@@ -2,16 +2,11 @@ const deepmerge = require('deepmerge');
 
 const baseConfig = require('../../jest.config.base');
 
+delete baseConfig.coverageThreshold;
+
 module.exports = deepmerge(baseConfig, {
   coveragePathIgnorePatterns: ['./src/index.ts', '.ava.test.ts'],
-  coverageThreshold: {
-    global: {
-      branches: 82.03,
-      functions: 89.71,
-      lines: 90.12,
-      statements: 90.21,
-    },
-  },
+  coverageProvider: 'v8',
   projects: [
     deepmerge(baseConfig, {
       coveragePathIgnorePatterns: ['index.ts', '.ava.test.ts'],

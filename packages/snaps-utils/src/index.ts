@@ -1,5 +1,6 @@
 export * from './caveats';
 export * from './cronjob';
+export * from './checksum';
 export * from './deep-clone';
 export * from './default-endowments';
 export * from './entropy';
@@ -9,6 +10,7 @@ export * from './fs';
 export * from './handlers';
 export * from './iframe';
 export * from './json-rpc';
+export * from './logging';
 export * from './manifest';
 export * from './mock';
 export * from './namespace';

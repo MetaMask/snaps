@@ -1,3 +1,5 @@
+const MINIMUM_TIMEOUT = 10;
+
 /**
  * Creates a pair of `setTimeout` and `clearTimeout` functions attenuated such
  * that:
@@ -17,12 +19,12 @@ const createTimeout = () => {
         `The timeout handler must be a function. Received: ${typeof handler}`,
       );
     }
-
-    const handle = Object.freeze({});
+    harden(handler);
+    const handle = Object.freeze(Object.create(null));
     const platformHandle = setTimeout(() => {
       registeredHandles.delete(handle);
       handler();
-    }, timeout);
+    }, Math.max(MINIMUM_TIMEOUT, timeout ?? 0));
 
     registeredHandles.set(handle, platformHandle);
     return handle;
@@ -43,8 +45,8 @@ const createTimeout = () => {
   };
 
   return {
-    setTimeout: _setTimeout,
-    clearTimeout: _clearTimeout,
+    setTimeout: harden(_setTimeout),
+    clearTimeout: harden(_clearTimeout),
     teardownFunction,
   } as const;
 };
