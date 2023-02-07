@@ -88,7 +88,7 @@ export function hasRequestedSnaps(
 }
 
 /**
- * Constructs a valid permission request based on existing permissions
+ * Constructs a valid permission request with merged caveats based on existing permissions
  * and the requested snaps.
  *
  * @param existingPermissions - The existing permissions for the origin.
@@ -168,6 +168,10 @@ async function requestSnapsImplementation(
   // TODO: Should this be part of the install flow?
 
   try {
+    if (!Object.keys(requestedSnaps).length) {
+      throw new Error('Request must have at least one requested snap.');
+    }
+
     const requestedPermissions = {
       [WALLET_SNAP_PERMISSION_KEY]: {
         caveats: [{ type: SnapCaveatType.SnapIds, value: requestedSnaps }],
