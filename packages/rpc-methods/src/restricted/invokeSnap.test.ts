@@ -97,10 +97,10 @@ describe('validateCaveats', () => {
     expect(() =>
       validateCaveat(missingValueCaveat as Caveat<string, Json>),
     ).toThrow(
-      'Expected caveat to have a value property of a non-empty object of snap ids.',
+      'Expected caveat to have a value property of a non-empty object of snap IDs.',
     );
     expect(() => validateCaveat(emptyValueCaveat)).toThrow(
-      'Expected caveat to have a value property of a non-empty object of snap ids.',
+      'Expected caveat to have a value property of a non-empty object of snap IDs.',
     );
   });
 });
@@ -114,7 +114,7 @@ describe('InvokeSnapCaveatSpecifications', () => {
           value: {},
         });
       }).toThrow(
-        'Expected caveat to have a value property of a non-empty object of snap ids.',
+        'Expected caveat to have a value property of a non-empty object of snap IDs.',
       );
     });
   });

@@ -1,6 +1,7 @@
 import {
   PermissionConstraint,
   RequestedPermissions,
+  Caveat,
 } from '@metamask/permission-controller';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
@@ -9,7 +10,7 @@ import {
   PendingJsonRpcResponse,
   JsonRpcEngineEndCallback,
 } from '@metamask/types';
-import { hasProperty, isObject } from '@metamask/utils';
+import { hasProperty, isObject, Json } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
 import { WALLET_SNAP_PERMISSION_KEY } from '../restricted/invokeSnap';
@@ -69,13 +70,14 @@ export type RequestSnapsHooks = {
  * @param requestedSnaps - The requested snaps.
  * @returns True if the existing permissions satisfy the requested snaps, otherwise false.
  */
-export function hasSnaps(
+export function hasRequestedSnaps(
   existingPermissions: Record<string, PermissionConstraint>,
-  requestedSnaps: RequestedPermissions,
+  requestedSnaps: Record<string, unknown>,
 ): boolean {
   const snapIdCaveat = existingPermissions.wallet_snap?.caveats?.find(
-    (caveat) => caveat.type === SnapCaveatType.SnapIds,
+    (caveat: Caveat<string, Json>) => caveat.type === SnapCaveatType.SnapIds,
   );
+
   const permittedSnaps = snapIdCaveat?.value;
   if (isObject(permittedSnaps)) {
     return Object.keys(requestedSnaps).every((requestedSnap) =>
@@ -83,6 +85,50 @@ export function hasSnaps(
     );
   }
   return false;
+}
+
+/**
+ * Constructs a valid permission request based on existing permissions
+ * and the requested snaps.
+ *
+ * @param existingPermissions - The existing permissions for the origin.
+ * @param requestedPermissions - The permission request passed into `requestPermissions`.
+ * @returns `requestedPermissions`.
+ */
+export function getSnapPermissionsRequest(
+  existingPermissions: Record<string, PermissionConstraint>,
+  requestedPermissions: Record<string, any>,
+): RequestedPermissions {
+  if (!existingPermissions.wallet_snap) {
+    return requestedPermissions as RequestedPermissions;
+  }
+
+  const snapIdCaveat = existingPermissions.wallet_snap.caveats?.find(
+    (caveat: Caveat<string, Json>) => caveat.type === SnapCaveatType.SnapIds,
+  );
+
+  const permittedSnaps = snapIdCaveat?.value ?? {};
+  const snapIdSet = new Set(Object.keys(permittedSnaps));
+
+  const requestedSnaps =
+    requestedPermissions[WALLET_SNAP_PERMISSION_KEY].caveats[0].value ?? {};
+
+  for (const requestedSnap of Object.keys(requestedSnaps)) {
+    snapIdSet.add(requestedSnap);
+  }
+
+  const mergedCaveatValue = [...snapIdSet].reduce<Record<string, unknown>>(
+    (request, snapId) => {
+      request[snapId] = {};
+      return request;
+    },
+    {},
+  );
+
+  requestedPermissions[WALLET_SNAP_PERMISSION_KEY].caveats[0].value =
+    mergedCaveatValue;
+
+  return requestedPermissions;
 }
 
 /**
@@ -129,17 +175,24 @@ async function requestSnapsImplementation(
     } as RequestedPermissions;
     const existingPermissions = await getPermissions();
 
-    if (
-      !existingPermissions ||
-      !hasSnaps(existingPermissions, requestedSnaps)
-    ) {
-      const approvedPermissions = await requestPermissions(
+    let approvedPermissions = [];
+
+    if (!existingPermissions) {
+      approvedPermissions = await requestPermissions(requestedPermissions);
+    } else if (!hasRequestedSnaps(existingPermissions, requestedSnaps)) {
+      const mergedPermissionsRequest = getSnapPermissionsRequest(
+        existingPermissions,
         requestedPermissions,
       );
+      approvedPermissions = await requestPermissions(mergedPermissionsRequest);
+    }
 
-      if (!approvedPermissions?.length) {
-        throw ethErrors.provider.userRejectedRequest({ data: req });
-      }
+    if (
+      (!existingPermissions ||
+        !hasRequestedSnaps(existingPermissions, requestedSnaps)) &&
+      !approvedPermissions?.length
+    ) {
+      throw ethErrors.provider.userRejectedRequest({ data: req });
     }
   } catch (error) {
     return end(error);

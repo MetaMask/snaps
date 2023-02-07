@@ -5,6 +5,7 @@ import {
 import { InstallSnapsResult, SnapCaveatType } from '@metamask/snaps-utils';
 import {
   MOCK_SNAP_ID,
+  MOCK_ORIGIN,
   getTruncatedSnap,
 } from '@metamask/snaps-utils/test-utils';
 import {
@@ -15,7 +16,11 @@ import {
 import { JsonRpcEngine } from 'json-rpc-engine';
 
 import { WALLET_SNAP_PERMISSION_KEY } from '../restricted/invokeSnap';
-import { requestSnapsHandler, hasSnaps } from './requestSnaps';
+import {
+  requestSnapsHandler,
+  hasRequestedSnaps,
+  getSnapPermissionsRequest,
+} from './requestSnaps';
 
 describe('requestSnapsHandler', () => {
   it('has the expected shape', () => {
@@ -31,7 +36,7 @@ describe('requestSnapsHandler', () => {
   });
 });
 
-describe('hasSnaps', () => {
+describe('hasRequestedSnaps', () => {
   it('returns true if an origin has the requested snaps in its permissions', () => {
     const existingPermission = {
       [WALLET_SNAP_PERMISSION_KEY]: {
@@ -47,7 +52,7 @@ describe('hasSnaps', () => {
 
     const requestedSnaps = { [MOCK_SNAP_ID]: {} };
 
-    expect(hasSnaps(existingPermission, requestedSnaps)).toBe(true);
+    expect(hasRequestedSnaps(existingPermission, requestedSnaps)).toBe(true);
   });
 
   it('returns false if an origin does not have the requested snaps in its permissions', () => {
@@ -63,7 +68,7 @@ describe('hasSnaps', () => {
 
     const requestedSnaps = { [MOCK_SNAP_ID]: {} };
 
-    expect(hasSnaps(existingPermission, requestedSnaps)).toBe(false);
+    expect(hasRequestedSnaps(existingPermission, requestedSnaps)).toBe(false);
   });
 
   it('returns false if an origin does not have the "wallet_snap" permission', () => {
@@ -79,7 +84,57 @@ describe('hasSnaps', () => {
 
     const requestedSnaps = { [MOCK_SNAP_ID]: {} };
 
-    expect(hasSnaps(existingPermission, requestedSnaps)).toBe(false);
+    expect(hasRequestedSnaps(existingPermission, requestedSnaps)).toBe(false);
+  });
+});
+
+describe('getSnapPermissionsRequest', () => {
+  it('will construct a permission request preserving current snap permissions', () => {
+    const requestedPermissions: RequestedPermissions = {
+      [WALLET_SNAP_PERMISSION_KEY]: {
+        caveats: [
+          {
+            type: SnapCaveatType.SnapIds,
+            value: {
+              [`${MOCK_SNAP_ID}1`]: {},
+            },
+          },
+        ],
+      },
+    };
+
+    const existingPermissions: Record<string, PermissionConstraint> = {
+      [WALLET_SNAP_PERMISSION_KEY]: {
+        id: '1',
+        date: 1,
+        caveats: [
+          {
+            type: SnapCaveatType.SnapIds,
+            value: {
+              [MOCK_SNAP_ID]: {},
+            },
+          },
+        ],
+        parentCapability: WALLET_SNAP_PERMISSION_KEY,
+        invoker: MOCK_ORIGIN,
+      },
+    };
+
+    expect(
+      getSnapPermissionsRequest(existingPermissions, requestedPermissions),
+    ).toStrictEqual({
+      [WALLET_SNAP_PERMISSION_KEY]: {
+        caveats: [
+          {
+            type: SnapCaveatType.SnapIds,
+            value: {
+              [MOCK_SNAP_ID]: {},
+              [`${MOCK_SNAP_ID}1`]: {},
+            },
+          },
+        ],
+      },
+    });
   });
 });
 

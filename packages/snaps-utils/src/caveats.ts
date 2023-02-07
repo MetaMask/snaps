@@ -30,7 +30,7 @@ export enum SnapCaveatType {
   RpcOrigin = 'rpcOrigin',
 
   /**
-   * Caveat specifying a specific snap to be installed
+   * Caveat specifying the snap IDs that can be interacted with.
    */
   SnapIds = 'snapIds',
 }
