@@ -136,6 +136,35 @@ describe('getSnapPermissionsRequest', () => {
       },
     });
   });
+
+  it('will return the original requested permissions if the origin has no "wallet_snap" permission', () => {
+    const requestedPermissions: RequestedPermissions = {
+      [WALLET_SNAP_PERMISSION_KEY]: {
+        caveats: [
+          {
+            type: SnapCaveatType.SnapIds,
+            value: {
+              [`${MOCK_SNAP_ID}1`]: {},
+            },
+          },
+        ],
+      },
+    };
+
+    const existingPermissions: Record<string, PermissionConstraint> = {
+      foo: {
+        id: '1',
+        date: 1,
+        caveats: null,
+        parentCapability: 'foo',
+        invoker: MOCK_ORIGIN,
+      },
+    };
+
+    expect(
+      getSnapPermissionsRequest(existingPermissions, requestedPermissions),
+    ).toStrictEqual(requestedPermissions);
+  });
 });
 
 describe('implementation', () => {
