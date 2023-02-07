@@ -9,7 +9,9 @@ import FinalizationRegistry from 'globals';
 
 import {
   endowmentHardeningTestFunction,
+  getMockedStreamProvider,
   TestSnapExecutor,
+  walkAndSearch,
 } from './test-utils/testUtils';
 
 // Note: harden is only defined after calling lockdown
@@ -22,6 +24,7 @@ lockdown({
 const FAKE_ORIGIN = 'origin:foo';
 const FAKE_SNAP_NAME = 'local:foo';
 const ON_RPC_REQUEST = HandlerType.OnRpcRequest;
+const globalThis = global;
 
 // This test will also make visible potential errors caused by hardening
 // in the execution environments, since Jest does not work as expected with SES.
@@ -166,4 +169,18 @@ testSubjects.forEach((endowment) => {
 
     expect.true(hardeningTestErrors.length > 0);
   });
+});
+
+// This test will ensure that the custom endowment does not leak reference to
+// global this by using object walker to walk object properties and search for it.
+// Because of the same architectural design of a snap and ethereum endowments,
+// it is enough to test one of them (both are StreamProviders going through proxy).
+test('custom endowment does not leak globalThis', async (expect) => {
+  // Because of encapsulation of the endowment implemented in BaseSnapExecutor,
+  // mocked version is used and will reflect the same use case that is suitable
+  // for security auditing of this type.
+  const provider = getMockedStreamProvider();
+  const searchResult = walkAndSearch(provider, globalThis);
+
+  expect.is(searchResult, false);
 });

@@ -1,13 +1,14 @@
 // eslint-disable-next-line import/no-unassigned-import
 import 'ses';
-// @ts-expect-error Walker has no types yet.
-import LavaTube from '@lavamoat/lavatube';
 import test from 'ava';
 // FinalizationRegistry will fix type errors in tests related to network endowment.
 // eslint-disable-next-line import/no-extraneous-dependencies, @typescript-eslint/no-unused-vars
 import FinalizationRegistry from 'globals';
 
-import { endowmentHardeningTestFunction } from '../test-utils/testUtils';
+import {
+  endowmentHardeningTestFunction,
+  walkAndSearch,
+} from '../test-utils/testUtils';
 import buildCommonEndowments from './commonEndowmentFactory';
 import Crypto from './crypto';
 import date from './date';
@@ -24,28 +25,6 @@ lockdown({
   errorTaming: 'unsafe',
   stackFiltering: 'verbose',
 });
-
-/**
- * Object walker test utility function.
- * This function will instantiate and configure @lavamoat/lavatube for testing
- * endowment specific use case. It will also adapt its result to a boolean value.
- *
- * @param subject - Subject to be tested.
- * @param target - Target object.
- * @returns True if target object is found, false otherwise.
- */
-function walkAndSearch(subject: unknown, target: unknown) {
-  let result = false;
-  const walker = new LavaTube(
-    (value: unknown) => {
-      result = target === value;
-      return result;
-    },
-    { maxRecursionLimit: 100, onShouldIgnoreError: () => true },
-  );
-  walker.walk(subject);
-  return result;
-}
 
 // Retrieve registered endowments
 const registeredEndowments = buildCommonEndowments();
