@@ -95,6 +95,7 @@ export const SnapGetBip32EntropyPermissionsStruct = size(
 export const PermissionsStruct = type({
   'endowment:long-running': optional(object({})),
   'endowment:network-access': optional(object({})),
+  'endowment:webassembly': optional(object({})),
   'endowment:transaction-insight': optional(
     object({
       allowTransactionOrigin: optional(boolean()),
