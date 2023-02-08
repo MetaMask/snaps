@@ -4,7 +4,7 @@ import { HandlerType } from '@metamask/snaps-utils';
 import { EventEmitter } from 'stream';
 
 import * as logging from '../logging';
-import { TestSnapExecutor } from './test-utils/testUtils';
+import { TestSnapExecutor } from './test-utils/executor';
 
 const FAKE_ORIGIN = 'origin:foo';
 const FAKE_SNAP_NAME = 'local:foo';

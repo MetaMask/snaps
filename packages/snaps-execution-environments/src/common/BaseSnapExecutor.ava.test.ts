@@ -8,11 +8,11 @@ import test from 'ava';
 import FinalizationRegistry from 'globals';
 
 import {
-  testEndowmentHardening,
   getMockedStreamProvider,
-  TestSnapExecutor,
+  testEndowmentHardening,
   walkAndSearch,
-} from './test-utils/testUtils';
+} from './test-utils/endowments';
+import { TestSnapExecutor } from './test-utils/executor';
 
 // Note: harden is only defined after calling lockdown
 lockdown({

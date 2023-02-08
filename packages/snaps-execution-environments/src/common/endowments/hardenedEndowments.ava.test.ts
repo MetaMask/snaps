@@ -5,7 +5,10 @@ import test from 'ava';
 // eslint-disable-next-line import/no-extraneous-dependencies, @typescript-eslint/no-unused-vars
 import FinalizationRegistry from 'globals';
 
-import { testEndowmentHardening, walkAndSearch } from '../test-utils/testUtils';
+import {
+  testEndowmentHardening,
+  walkAndSearch,
+} from '../test-utils/endowments';
 import buildCommonEndowments from './commonEndowmentFactory';
 import Crypto from './crypto';
 import date from './date';
