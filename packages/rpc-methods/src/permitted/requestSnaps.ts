@@ -74,7 +74,9 @@ export function hasRequestedSnaps(
   existingPermissions: Record<string, PermissionConstraint>,
   requestedSnaps: Record<string, unknown>,
 ): boolean {
-  const snapIdCaveat = existingPermissions.wallet_snap?.caveats?.find(
+  const snapIdCaveat = existingPermissions[
+    WALLET_SNAP_PERMISSION_KEY
+  ]?.caveats?.find(
     (caveat: Caveat<string, Json>) => caveat.type === SnapCaveatType.SnapIds,
   );
 
@@ -99,11 +101,13 @@ export function getSnapPermissionsRequest(
   existingPermissions: Record<string, PermissionConstraint>,
   requestedPermissions: Record<string, any>,
 ): RequestedPermissions {
-  if (!existingPermissions.wallet_snap) {
+  if (!existingPermissions[WALLET_SNAP_PERMISSION_KEY]) {
     return requestedPermissions as RequestedPermissions;
   }
 
-  const snapIdCaveat = existingPermissions.wallet_snap.caveats?.find(
+  const snapIdCaveat = existingPermissions[
+    WALLET_SNAP_PERMISSION_KEY
+  ].caveats?.find(
     (caveat: Caveat<string, Json>) => caveat.type === SnapCaveatType.SnapIds,
   );
 
