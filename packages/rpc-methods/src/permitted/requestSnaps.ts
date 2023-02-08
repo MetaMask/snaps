@@ -102,7 +102,7 @@ export function getSnapPermissionsRequest(
   requestedPermissions: Record<string, any>,
 ): RequestedPermissions {
   if (!existingPermissions[WALLET_SNAP_PERMISSION_KEY]) {
-    return requestedPermissions as RequestedPermissions;
+    return requestedPermissions;
   }
 
   const snapIdCaveat = existingPermissions[
