@@ -5,10 +5,7 @@ import test from 'ava';
 // eslint-disable-next-line import/no-extraneous-dependencies, @typescript-eslint/no-unused-vars
 import FinalizationRegistry from 'globals';
 
-import {
-  endowmentHardeningTestFunction,
-  walkAndSearch,
-} from '../test-utils/testUtils';
+import { testEndowmentHardening, walkAndSearch } from '../test-utils/testUtils';
 import buildCommonEndowments from './commonEndowmentFactory';
 import Crypto from './crypto';
 import date from './date';
@@ -186,7 +183,7 @@ const testSubjects = {
 Object.entries(testSubjects).forEach(([name, { endowments, factory }]) => {
   test(`hardening protects ${name}`, (expect) => {
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    const source = `;(${endowmentHardeningTestFunction})(${name},${factory})`;
+    const source = `;(${testEndowmentHardening})(${name},${factory})`;
     // @ts-expect-error Indexing error is expected (endowment structure should be enough).
     const subject = endowments[name];
     const c1 = new Compartment(endowments, {}, {});

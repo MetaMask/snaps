@@ -230,7 +230,7 @@ export type HardenedEndowmentInstance = {
  * @param factory - Factory that creates an instance using constructor function.
  * @returns Array of error messages.
  */
-export function endowmentHardeningTestFunction(
+export function testEndowmentHardening(
   subject: HardenedEndowmentSubject,
   factory: () => HardenedEndowmentInstance,
 ): unknown[] {

@@ -36,7 +36,7 @@ import { createEndowments } from './endowments';
 import { addEventListener, removeEventListener } from './globalEvents';
 import { wrapKeyring } from './keyring';
 import { sortParamKeys } from './sortParams';
-import { constructError, withTeardown } from './utils';
+import { constructError, proxyStreamProvider, withTeardown } from './utils';
 import {
   ExecuteSnapRequestArgumentsStruct,
   PingRequestArgumentsStruct,
@@ -395,35 +395,7 @@ export class BaseSnapExecutor {
       }
     };
 
-    // To harden and limit access to internals, we use a proxy.
-    // Proxy target is intentionally set to be an empty object, to ensure
-    // that access to the prototype chain is not possible.
-    const proxy = new Proxy(
-      {},
-      {
-        has(_target: object, prop: string | symbol) {
-          if (prop === 'request') {
-            return true;
-          } else if (['on', 'removeListener'].includes(prop as string)) {
-            return true;
-          }
-
-          return false;
-        },
-        get(_target, prop: keyof StreamProvider) {
-          if (prop === 'request') {
-            return request;
-          } else if (['on', 'removeListener'].includes(prop)) {
-            return provider[prop];
-          }
-
-          return undefined;
-        },
-      },
-    );
-
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    return <SnapsGlobalObject>proxy;
+    return proxyStreamProvider(provider, request) as SnapsGlobalObject;
   }
 
   /**
@@ -452,35 +424,7 @@ export class BaseSnapExecutor {
       }
     };
 
-    // To harden and limit access to internals, we use a proxy.
-    // Proxy target is intentionally set to be an empty object, to ensure
-    // that access to the prototype chain is not possible.
-    const proxy = new Proxy(
-      {},
-      {
-        has(_target: object, prop: string | symbol) {
-          if (prop === 'request') {
-            return true;
-          } else if (['on', 'removeListener'].includes(prop as string)) {
-            return true;
-          }
-
-          return false;
-        },
-        get(_target, prop: keyof StreamProvider) {
-          if (prop === 'request') {
-            return request;
-          } else if (['on', 'removeListener'].includes(prop)) {
-            return provider[prop];
-          }
-
-          return undefined;
-        },
-      },
-    );
-
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    return <StreamProvider>proxy;
+    return proxyStreamProvider(provider, request);
   }
 
   /**

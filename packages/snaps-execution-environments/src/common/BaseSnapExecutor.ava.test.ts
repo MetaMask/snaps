@@ -8,7 +8,7 @@ import test from 'ava';
 import FinalizationRegistry from 'globals';
 
 import {
-  endowmentHardeningTestFunction,
+  testEndowmentHardening,
   getMockedStreamProvider,
   TestSnapExecutor,
   walkAndSearch,
@@ -114,7 +114,7 @@ testSubjects.forEach((endowment) => {
         let errors = [];
 
         try {
-          errors = (${endowmentHardeningTestFunction})(${endowment}, () => ${endowment});
+          errors = (${testEndowmentHardening})(${endowment}, () => ${endowment});
         } catch (error) {
           return error.message;
         }
