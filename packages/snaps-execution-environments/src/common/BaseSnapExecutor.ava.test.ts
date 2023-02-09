@@ -9,10 +9,10 @@ import FinalizationRegistry from 'globals';
 
 import {
   getMockedStreamProvider,
-  testEndowmentHardening,
   walkAndSearch,
 } from './test-utils/endowments';
 import { TestSnapExecutor } from './test-utils/executor';
+import { testEndowmentHardening } from './test-utils/hardening';
 
 // Note: harden is only defined after calling lockdown
 lockdown({

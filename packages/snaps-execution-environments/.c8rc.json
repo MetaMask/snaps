@@ -4,8 +4,9 @@
     "*.js",
     "**/index.ts",
     "**/*.ava.test.ts",
-    "**/executor.ts",
-    "**/endowments.ts"
+    "**/test-utils/executor.ts",
+    "**/test-utils/endowments.ts",
+    "**/test-utils/hardening.ts"
   ],
   "report-dir": "./coverage-ava"
 }

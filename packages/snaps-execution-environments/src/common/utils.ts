@@ -61,7 +61,8 @@ export async function withTeardown<T>(
 }
 
 /**
- * Creates and returns specific type of Proxy used for limiting StreamProvider.
+ * Returns a Proxy that narrows down (attenuates) the fields available on
+ * the StreamProvider and replaces the request implementation.
  *
  * @param provider - Instance of a StreamProvider to be limited.
  * @param request - Custom attenuated request object.
