@@ -120,7 +120,32 @@ testSubjects.forEach((endowment) => {
         }
 
         try {
-          if (ethereum.__flag) {
+          if (${endowment}.__flag) {
+            result = 'ENDOWMENT_NOT_SECURED';
+          }
+        } catch (error) {
+          return error.message;
+        }
+
+        try {
+          if (${endowment}.__proto__ && ${endowment}.__proto__.__flag) {
+            result = 'ENDOWMENT_NOT_SECURED';
+          }
+        } catch (error) {
+          return error.message;
+        }
+
+        try {
+          if (${endowment}.prototype && ${endowment}.prototype.__flag) {
+            result = 'ENDOWMENT_NOT_SECURED';
+          }
+        } catch (error) {
+          return error.message;
+        }
+
+        try {
+          const objectProto = Object.getPrototypeOf(${endowment});
+          if (objectProto.__flag) {
             result = 'ENDOWMENT_NOT_SECURED';
           }
         } catch (error) {
