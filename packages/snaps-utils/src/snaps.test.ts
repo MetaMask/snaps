@@ -14,7 +14,7 @@ import {
   validateSnapId,
   verifyRequestedSnapPermissions,
 } from './snaps';
-import { SnapIdPrefixes, uri } from './types';
+import { SnapIdPrefixes, uri, WALLET_SNAP_PERMISSION_KEY } from './types';
 
 describe('validateSnapId', () => {
   it.each([undefined, {}, null, true, 2])(
@@ -202,9 +202,8 @@ describe('HttpSnapIdStruct', () => {
 
 describe('isSnapPermitted', () => {
   it("will check an origin's permissions object to see if it has permission to interact with a specific snap", () => {
-    const permissionKey = 'wallet_snap';
     const validPermissions: SubjectPermissions<PermissionConstraint> = {
-      [permissionKey]: {
+      [WALLET_SNAP_PERMISSION_KEY]: {
         date: 1,
         id: '1',
         invoker: 'example.com',
@@ -221,7 +220,7 @@ describe('isSnapPermitted', () => {
     };
 
     const invalidPermissions1: SubjectPermissions<PermissionConstraint> = {
-      [permissionKey]: {
+      [WALLET_SNAP_PERMISSION_KEY]: {
         date: 1,
         id: '1',
         invoker: 'example.com',
@@ -253,23 +252,19 @@ describe('isSnapPermitted', () => {
   });
 
   describe('verifyRequestedSnapPermissions', () => {
-    const WALLET_SNAP_PERMISSION_KEY = 'wallet_snap';
-
     it.each([
       { request: null, error: 'Requested permissions must be an object.' },
       {
         request: { foo: {} },
-        error: 'wallet_snap is missing from the requested permissions.',
+        error: `${WALLET_SNAP_PERMISSION_KEY} is missing from the requested permissions.`,
       },
       {
         request: { [WALLET_SNAP_PERMISSION_KEY]: { caveats: null } },
-        error:
-          'wallet_snap must have a caveat property with a single-item array value.',
+        error: `${WALLET_SNAP_PERMISSION_KEY} must have a caveat property with a single-item array value.`,
       },
       {
         request: { [WALLET_SNAP_PERMISSION_KEY]: { caveats: [{}, {}] } },
-        error:
-          'wallet_snap must have a caveat property with a single-item array value.',
+        error: `${WALLET_SNAP_PERMISSION_KEY} must have a caveat property with a single-item array value.`,
       },
       {
         request: { [WALLET_SNAP_PERMISSION_KEY]: { caveats: [{ foo: {} }] } },

@@ -198,7 +198,7 @@ export function isValidUrl(
 }
 
 // redefining here to avoid circular dependency
-const WALLET_SNAP_PERMISSION_KEY = 'wallet_snap';
+export const WALLET_SNAP_PERMISSION_KEY = 'wallet_snap';
 
 export type SnapsPermissionRequest = {
   [WALLET_SNAP_PERMISSION_KEY]: {
