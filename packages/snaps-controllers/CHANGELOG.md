@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.29.0]
+### Uncategorized
+- [BREAKING] Update monorepo to caveats ([#1182](https://github.com/MetaMask/snaps-monorepo/pull/1182))
+- Add method to get metadata from the Snaps registry ([#1173](https://github.com/MetaMask/snaps-monorepo/pull/1173))
+- Standardise logging across all packages ([#1164](https://github.com/MetaMask/snaps-monorepo/pull/1164))
+- Establish pre-fetch NPM tarball size limit ([#1169](https://github.com/MetaMask/snaps-monorepo/pull/1169))
+- Bump @metamask/permission-controller from 1.0.2 to 2.0.0 ([#1156](https://github.com/MetaMask/snaps-monorepo/pull/1156))
+- BREAKING: Change checksum calculation ([#1128](https://github.com/MetaMask/snaps-monorepo/pull/1128))
+
 ## [0.28.0]
 ### Added
 - Add `endowment:long-running` deprecation warning ([#1126](https://github.com/MetaMask/snaps-monorepo/pull/1126))
@@ -447,7 +456,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.28.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.29.0...HEAD
+[0.29.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.28.0...v0.29.0
 [0.28.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.1...v0.28.0
 [0.27.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.0...v0.27.1
 [0.27.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.26.2...v0.27.0

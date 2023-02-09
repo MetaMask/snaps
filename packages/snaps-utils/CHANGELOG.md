@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.29.0]
+### Uncategorized
+- [BREAKING] Update monorepo to caveats ([#1182](https://github.com/MetaMask/snaps-monorepo/pull/1182))
+- Standardise logging across all packages ([#1164](https://github.com/MetaMask/snaps-monorepo/pull/1164))
+- BREAKING: Improve request function types ([#1014](https://github.com/MetaMask/snaps-monorepo/pull/1014))
+- Skip writing manifest if identical ([#1171](https://github.com/MetaMask/snaps-monorepo/pull/1171))
+- Harden endowments ([#1058](https://github.com/MetaMask/snaps-monorepo/pull/1058))
+- BREAKING: Change checksum calculation ([#1128](https://github.com/MetaMask/snaps-monorepo/pull/1128))
+- Bump `@metamask/key-tree` to 6.2.1 ([#1142](https://github.com/MetaMask/snaps-monorepo/pull/1142))
+
 ## [0.28.0]
 ### Added
 - **BREAKING:** Add support for snap registries ([#1090](https://github.com/MetaMask/snaps-monorepo/pull/1090))
@@ -154,7 +164,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release ([#410](https://github.com/MetaMask/snaps-monorepo/pull/410), [#421](https://github.com/MetaMask/snaps-monorepo/pull/421))
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.28.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.29.0...HEAD
+[0.29.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.28.0...v0.29.0
 [0.28.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.1...v0.28.0
 [0.27.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.0...v0.27.1
 [0.27.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.26.2...v0.27.0

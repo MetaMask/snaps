@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.29.0]
+### Uncategorized
+- [BREAKING] Update monorepo to caveats ([#1182](https://github.com/MetaMask/snaps-monorepo/pull/1182))
+- Standardise logging across all packages ([#1164](https://github.com/MetaMask/snaps-monorepo/pull/1164))
+- BREAKING: Improve request function types ([#1014](https://github.com/MetaMask/snaps-monorepo/pull/1014))
+- Bump @metamask/permission-controller from 1.0.2 to 2.0.0 ([#1156](https://github.com/MetaMask/snaps-monorepo/pull/1156))
+- Bump `@metamask/key-tree` to 6.2.1 ([#1142](https://github.com/MetaMask/snaps-monorepo/pull/1142))
+- Fix typo in documentation ([#1140](https://github.com/MetaMask/snaps-monorepo/pull/1140))
+
 ## [0.28.0]
 ### Changed
 - **BREAKING:** Bump `key-tree` to `6.2.0` and use `Uint8Array` for secret recovery phrases ([#1137](https://github.com/MetaMask/snaps-monorepo/pull/1137))
@@ -274,7 +283,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.28.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.29.0...HEAD
+[0.29.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.28.0...v0.29.0
 [0.28.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.1...v0.28.0
 [0.27.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.0...v0.27.1
 [0.27.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.26.2...v0.27.0
