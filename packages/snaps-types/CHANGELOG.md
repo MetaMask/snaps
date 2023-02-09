@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.29.0]
 ### Added
-- **BREAKING:** New types re-exported from `rpc-methods` ([#1014](https://github.com/MetaMask/snaps-monorepo/pull/1014))
+- **BREAKING:** Improve request function types ([#1014](https://github.com/MetaMask/snaps-monorepo/pull/1014))
+  - New types re-exported from `rpc-methods`: `DialogType`, `NotificationType` and `SnapsGlobalObject`
 
 ## [0.28.0]
 ### Changed

@@ -8,10 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.29.0]
 ### Changed
-- Standardise logging across all packages ([#1164](https://github.com/MetaMask/snaps-monorepo/pull/1164))
-
-### Fixed
-- Improve Rollup test stability ([#1175](https://github.com/MetaMask/snaps-monorepo/pull/1175))
+- No changes this release.
 
 ## [0.28.0]
 ### Changed
