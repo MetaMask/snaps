@@ -209,3 +209,13 @@ test('custom endowment does not leak globalThis', async (expect) => {
 
   expect.is(searchResult, false);
 });
+
+test('custom endowment does not leak real prototype of the provider', async (expect) => {
+  // Because of encapsulation of the endowment implemented in BaseSnapExecutor,
+  // mocked version is used and will reflect the same use case that is suitable
+  // for security auditing of this type.
+  const provider = getMockedStreamProvider();
+  const objectProto = Object.getPrototypeOf(provider);
+
+  expect.deepEqual(objectProto, {});
+});
