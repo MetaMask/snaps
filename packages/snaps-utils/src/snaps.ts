@@ -1,5 +1,10 @@
+import {
+  Caveat,
+  SubjectPermissions,
+  PermissionConstraint,
+} from '@metamask/permission-controller';
 import { BlockReason } from '@metamask/snaps-registry';
-import { assert, Json, SemVerVersion } from '@metamask/utils';
+import { assert, Json, SemVerVersion, isObject } from '@metamask/utils';
 import { base64 } from '@scure/base';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import stableStringify from 'fast-json-stable-stringify';
@@ -15,20 +20,18 @@ import {
 } from 'superstruct';
 import validateNPMPackage from 'validate-npm-package-name';
 
+import { SnapCaveatType } from './caveats';
 import { checksumFiles } from './checksum';
 import { SnapManifest, SnapPermissions } from './manifest/validation';
 import {
   SnapFiles,
   SnapId,
   SnapIdPrefixes,
+  SnapsPermissionRequest,
   SnapValidationFailureReason,
   uri,
 } from './types';
 import { VirtualFile } from './virtual-file';
-
-export const SNAP_PREFIX = 'wallet_snap_';
-
-export const SNAP_PREFIX_REGEX = new RegExp(`^${SNAP_PREFIX}`, 'u');
 
 // This RegEx matches valid npm package names (with some exceptions) and space-
 // separated alphanumerical words, optionally with dashes and underscores.
@@ -124,11 +127,6 @@ export type Snap = {
   blockInformation?: BlockReason;
 
   /**
-   * The name of the permission used to invoke the Snap.
-   */
-  permissionName: string;
-
-  /**
    * The current status of the Snap, e.g. whether it's running or stopped.
    */
   status: Status;
@@ -148,7 +146,6 @@ export type Snap = {
 export type TruncatedSnapFields =
   | 'id'
   | 'initialPermissions'
-  | 'permissionName'
   | 'version'
   | 'enabled'
   | 'blocked';
@@ -301,16 +298,6 @@ export function getSnapPrefix(snapId: string): SnapIdPrefixes {
 }
 
 /**
- * Computes the permission name of a snap from its snap ID.
- *
- * @param snapId - The snap ID.
- * @returns The permission name corresponding to the given snap ID.
- */
-export function getSnapPermissionName(snapId: string): string {
-  return SNAP_PREFIX + snapId;
-}
-
-/**
  * Asserts the provided object is a snapId with a supported prefix.
  *
  * @param snapId - The object to validate.
@@ -344,5 +331,66 @@ export function isCaipChainId(chainId: unknown): chainId is string {
     /^(?<namespace>[-a-z0-9]{3,8}):(?<reference>[-a-zA-Z0-9]{1,32})$/u.test(
       chainId,
     )
+  );
+}
+
+/**
+ * Utility function to check if an origin has permission (and caveat) for a particular snap.
+ *
+ * @param permissions - An origin's permissions object.
+ * @param snapId - The id of the snap.
+ * @returns A boolean based on if an origin has the specified snap.
+ */
+export function isSnapPermitted(
+  permissions: SubjectPermissions<PermissionConstraint>,
+  snapId: SnapId,
+) {
+  return Boolean(
+    (
+      (
+        (permissions?.wallet_snap?.caveats?.find(
+          (caveat) => caveat.type === SnapCaveatType.SnapIds,
+        ) ?? {}) as Caveat<string, Json>
+      ).value as Record<string, unknown>
+    )?.[snapId],
+  );
+}
+
+/**
+ * Checks whether the passed in requestedPermissions is a valid
+ * permission request for a `wallet_snap` permission.
+ *
+ * @param requestedPermissions - The requested permissions.
+ * @throws If the criteria is not met.
+ */
+export function verifyRequestedSnapPermissions(
+  requestedPermissions: unknown,
+): asserts requestedPermissions is SnapsPermissionRequest {
+  assert(
+    isObject(requestedPermissions),
+    'Requested permissions must be an object.',
+  );
+
+  const { wallet_snap: walletSnapPermission } = requestedPermissions;
+
+  assert(
+    isObject(walletSnapPermission),
+    'wallet_snap is missing from the requested permissions.',
+  );
+
+  const { caveats } = walletSnapPermission;
+
+  assert(
+    Array.isArray(caveats) && caveats.length === 1,
+    'wallet_snap must have a caveat property with a single-item array value.',
+  );
+
+  const [caveat] = caveats;
+
+  assert(
+    isObject(caveat) &&
+      caveat.type === SnapCaveatType.SnapIds &&
+      isObject(caveat.value),
+    `The requested permissions do not have a valid ${SnapCaveatType.SnapIds} caveat.`,
   );
 }

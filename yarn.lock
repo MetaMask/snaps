@@ -2463,7 +2463,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/approval-controller@npm:^1.0.1, @metamask/approval-controller@npm:^1.1.0":
+"@metamask/approval-controller@npm:^1.1.0":
   version: 1.1.0
   resolution: "@metamask/approval-controller@npm:1.1.0"
   dependencies:
@@ -2490,7 +2490,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^1.1.1, @metamask/base-controller@npm:^1.1.2":
+"@metamask/base-controller@npm:^1.1.2":
   version: 1.1.2
   resolution: "@metamask/base-controller@npm:1.1.2"
   dependencies:
@@ -2849,9 +2849,9 @@ __metadata:
   resolution: "@metamask/snaps-controllers@workspace:packages/snaps-controllers"
   dependencies:
     "@lavamoat/allow-scripts": ^2.0.3
-    "@metamask/approval-controller": ^1.0.1
+    "@metamask/approval-controller": ^1.1.0
     "@metamask/auto-changelog": ^3.1.0
-    "@metamask/base-controller": ^1.1.1
+    "@metamask/base-controller": ^1.1.2
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
     "@metamask/eslint-config-nodejs": ^11.0.1
@@ -3097,6 +3097,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/key-tree": ^6.2.1
+    "@metamask/permission-controller": ^2.0.0
     "@metamask/post-message-stream": ^6.1.0
     "@metamask/providers": ^10.2.1
     "@metamask/snaps-registry": ^1.0.0

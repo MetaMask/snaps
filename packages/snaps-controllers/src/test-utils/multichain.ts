@@ -21,6 +21,7 @@ import {
   getSnapControllerOptions,
   getSnapControllerWithEES,
   getSnapControllerWithEESOptions,
+  MOCK_ORIGIN_PERMISSIONS,
 } from './controller';
 
 export const MOCK_EIP155_NAMESPACE = {
@@ -180,7 +181,7 @@ export const getMultiChainControllerWithEES = (
         return { [SnapEndowments.Keyring]: MOCK_KEYRING_PERMISSION };
       }
 
-      return {};
+      return MOCK_ORIGIN_PERMISSIONS;
     },
   );
 

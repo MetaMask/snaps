@@ -20,13 +20,18 @@ import {
   GetBip44EntropyMethodHooks,
 } from './getBip44Entropy';
 import { getEntropyBuilder, GetEntropyHooks } from './getEntropy';
-import { invokeSnapBuilder, InvokeSnapMethodHooks } from './invokeSnap';
+import {
+  InvokeSnapCaveatSpecifications,
+  invokeSnapBuilder,
+  InvokeSnapMethodHooks,
+} from './invokeSnap';
 import { manageStateBuilder, ManageStateMethodHooks } from './manageState';
 import { notifyBuilder, NotifyMethodHooks } from './notify';
 
 export type { DialogParameters } from './dialog';
 export { DialogType } from './dialog';
 export { ManageStateOperation } from './manageState';
+export { WALLET_SNAP_PERMISSION_KEY } from './invokeSnap';
 export type { NotificationArgs, NotificationType } from './notify';
 
 export type RestrictedMethodHooks = ConfirmMethodHooks &
@@ -54,6 +59,7 @@ export const restrictedMethodPermissionBuilders = {
 export const caveatSpecifications = {
   ...getBip32EntropyCaveatSpecifications,
   ...getBip44EntropyCaveatSpecifications,
+  ...InvokeSnapCaveatSpecifications,
 } as const;
 
 export const caveatMappers: Record<

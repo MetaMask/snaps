@@ -30,8 +30,12 @@ export const DEFAULT_PACKAGE_JSON_PATH = 'package.json';
 export const MOCK_SNAP_NAME = '@metamask/example-snap';
 export const MOCK_SNAP_DESCRIPTION = 'The test example snap!';
 export const MOCK_SNAP_VERSION = '1.0.0' as SemVerVersion;
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const MOCK_INITIAL_PERMISSIONS = { snap_confirm: {} };
+/* eslint-disable @typescript-eslint/naming-convention */
+export const MOCK_INITIAL_PERMISSIONS = {
+  snap_confirm: {},
+  'endowment:rpc': { snaps: true, dapps: false },
+};
+/* eslint-enable @typescript-eslint/naming-convention */
 
 /**
  * Get the default package repository, in a format compatible with
