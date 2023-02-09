@@ -15,6 +15,7 @@ import {
   assert as assertSuperstruct,
 } from 'superstruct';
 
+import { SnapCaveatType } from './caveats';
 import { SnapFunctionExports, SnapKeyring as Keyring } from './handlers';
 import { SnapManifest } from './manifest';
 import { VirtualFile } from './virtual-file';
@@ -195,3 +196,17 @@ export function isValidUrl(
 ): url is string | URL {
   return is(url, uri(opts));
 }
+
+// redefining here to avoid circular dependency
+const WALLET_SNAP_PERMISSION_KEY = 'wallet_snap';
+
+export type SnapsPermissionRequest = {
+  [WALLET_SNAP_PERMISSION_KEY]: {
+    caveats: [
+      {
+        type: SnapCaveatType.SnapIds;
+        value: Record<string, Json>;
+      },
+    ];
+  };
+};

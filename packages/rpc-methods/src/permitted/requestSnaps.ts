@@ -3,7 +3,11 @@ import {
   RequestedPermissions,
   Caveat,
 } from '@metamask/permission-controller';
-import { SnapCaveatType } from '@metamask/snaps-utils';
+import {
+  SnapCaveatType,
+  SnapsPermissionRequest,
+  verifyRequestedSnapPermissions,
+} from '@metamask/snaps-utils';
 import {
   PermittedHandlerExport,
   JsonRpcRequest,
@@ -99,8 +103,10 @@ export function hasRequestedSnaps(
  */
 export function getSnapPermissionsRequest(
   existingPermissions: Record<string, PermissionConstraint>,
-  requestedPermissions: Record<string, any>,
-): RequestedPermissions {
+  requestedPermissions: unknown,
+): SnapsPermissionRequest {
+  verifyRequestedSnapPermissions(requestedPermissions);
+
   if (!existingPermissions[WALLET_SNAP_PERMISSION_KEY]) {
     return requestedPermissions;
   }
@@ -115,13 +121,13 @@ export function getSnapPermissionsRequest(
   const snapIdSet = new Set(Object.keys(permittedSnaps));
 
   const requestedSnaps =
-    requestedPermissions[WALLET_SNAP_PERMISSION_KEY].caveats[0].value ?? {};
+    requestedPermissions[WALLET_SNAP_PERMISSION_KEY].caveats[0].value;
 
   for (const requestedSnap of Object.keys(requestedSnaps)) {
     snapIdSet.add(requestedSnap);
   }
 
-  const mergedCaveatValue = [...snapIdSet].reduce<Record<string, unknown>>(
+  const mergedCaveatValue = [...snapIdSet].reduce<Record<string, Json>>(
     (request, snapId) => {
       request[snapId] = {};
       return request;

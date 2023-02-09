@@ -4,6 +4,7 @@ import {
 } from '@metamask/permission-controller';
 import { is } from 'superstruct';
 
+import { SnapCaveatType } from './caveats';
 import {
   isSnapPermitted,
   HttpSnapIdStruct,
@@ -11,6 +12,7 @@ import {
   LocalSnapIdStruct,
   NpmSnapIdStruct,
   validateSnapId,
+  verifyRequestedSnapPermissions,
 } from './snaps';
 import { SnapIdPrefixes, uri } from './types';
 
@@ -248,5 +250,43 @@ describe('isSnapPermitted', () => {
     expect(isSnapPermitted(validPermissions, 'foo')).toBe(true);
     expect(isSnapPermitted(invalidPermissions1, 'foo')).toBe(false);
     expect(isSnapPermitted(invalidPermissions2, 'foo')).toBe(false);
+  });
+
+  describe('verifyRequestedSnapPermissions', () => {
+    const WALLET_SNAP_PERMISSION_KEY = 'wallet_snap';
+
+    it.each([
+      { request: null, error: 'Requested permissions must be an object.' },
+      {
+        request: { foo: {} },
+        error: 'wallet_snap is missing from the requested permissions.',
+      },
+      {
+        request: { [WALLET_SNAP_PERMISSION_KEY]: { caveats: null } },
+        error:
+          'wallet_snap must have a caveat property with a single-item array value.',
+      },
+      {
+        request: { [WALLET_SNAP_PERMISSION_KEY]: { caveats: [{}, {}] } },
+        error:
+          'wallet_snap must have a caveat property with a single-item array value.',
+      },
+      {
+        request: { [WALLET_SNAP_PERMISSION_KEY]: { caveats: [{ foo: {} }] } },
+        error: `The requested permissions do not have a valid ${SnapCaveatType.SnapIds} caveat.`,
+      },
+      {
+        request: {
+          [WALLET_SNAP_PERMISSION_KEY]: {
+            caveats: [{ type: SnapCaveatType.SnapIds, foo: {} }],
+          },
+        },
+        error: `The requested permissions do not have a valid ${SnapCaveatType.SnapIds} caveat.`,
+      },
+    ])('will throw in failure scenarios', (test) => {
+      expect(() => verifyRequestedSnapPermissions(test.request)).toThrow(
+        test.error,
+      );
+    });
   });
 });

@@ -4,7 +4,7 @@ import {
   PermissionConstraint,
 } from '@metamask/permission-controller';
 import { BlockReason } from '@metamask/snaps-registry';
-import { assert, Json, SemVerVersion } from '@metamask/utils';
+import { assert, Json, SemVerVersion, isObject } from '@metamask/utils';
 import { base64 } from '@scure/base';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import stableStringify from 'fast-json-stable-stringify';
@@ -27,6 +27,7 @@ import {
   SnapFiles,
   SnapId,
   SnapIdPrefixes,
+  SnapsPermissionRequest,
   SnapValidationFailureReason,
   uri,
 } from './types';
@@ -352,5 +353,44 @@ export function isSnapPermitted(
         ) ?? {}) as Caveat<string, Json>
       ).value as Record<string, unknown>
     )?.[snapId],
+  );
+}
+
+/**
+ * Checks whether the passed in requestedPermissions is a valid
+ * permission request for a `wallet_snap` permission.
+ *
+ * @param requestedPermissions - The requested permissions.
+ * @throws If the criteria is not met.
+ */
+export function verifyRequestedSnapPermissions(
+  requestedPermissions: unknown,
+): asserts requestedPermissions is SnapsPermissionRequest {
+  assert(
+    isObject(requestedPermissions),
+    'Requested permissions must be an object.',
+  );
+
+  const { wallet_snap: walletSnapPermission } = requestedPermissions;
+
+  assert(
+    isObject(walletSnapPermission),
+    'wallet_snap is missing from the requested permissions.',
+  );
+
+  const { caveats } = walletSnapPermission;
+
+  assert(
+    Array.isArray(caveats) && caveats.length === 1,
+    'wallet_snap must have a caveat property with a single-item array value.',
+  );
+
+  const [caveat] = caveats;
+
+  assert(
+    isObject(caveat) &&
+      caveat.type === SnapCaveatType.SnapIds &&
+      isObject(caveat.value),
+    `The requested permissions do not have a valid ${SnapCaveatType.SnapIds} caveat.`,
   );
 }
