@@ -7,12 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.29.0]
-### Uncategorized
-- [BREAKING] Update monorepo to caveats ([#1182](https://github.com/MetaMask/snaps-monorepo/pull/1182))
+### Changed
+- **BREAKING:** `wallet_snap_*` rpc method was deprecated in favor of `wallet_snap` and new caveat type, `snapIds`, was added ([#1182](https://github.com/MetaMask/snaps-monorepo/pull/1182))
 - Standardise logging across all packages ([#1164](https://github.com/MetaMask/snaps-monorepo/pull/1164))
-- BREAKING: Improve request function types ([#1014](https://github.com/MetaMask/snaps-monorepo/pull/1014))
 - Bump @metamask/permission-controller from 1.0.2 to 2.0.0 ([#1156](https://github.com/MetaMask/snaps-monorepo/pull/1156))
 - Bump `@metamask/key-tree` to 6.2.1 ([#1142](https://github.com/MetaMask/snaps-monorepo/pull/1142))
+
+### Added
+- **BREAKING:** `snap.request` is now strongly typed in line with the rpc methods in this package ([#1014](https://github.com/MetaMask/snaps-monorepo/pull/1014))
+
+### Fixed
 - Fix typo in documentation ([#1140](https://github.com/MetaMask/snaps-monorepo/pull/1140))
 
 ## [0.28.0]

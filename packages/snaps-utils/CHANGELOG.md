@@ -7,13 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.29.0]
-### Uncategorized
-- [BREAKING] Update monorepo to caveats ([#1182](https://github.com/MetaMask/snaps-monorepo/pull/1182))
+### Added
+- **BREAKING:** Added new types in relation to caveat work ([#1182](https://github.com/MetaMask/snaps-monorepo/pull/1182))
+
+### Removed
+- **BREAKING:** Removed `SnapsGlobalObject` type ([#1014](https://github.com/MetaMask/snaps-monorepo/pull/1014))
+
+### Changed
+- **BREAKING:** Change checksum calculation ([#1128](https://github.com/MetaMask/snaps-monorepo/pull/1128))
 - Standardise logging across all packages ([#1164](https://github.com/MetaMask/snaps-monorepo/pull/1164))
-- BREAKING: Improve request function types ([#1014](https://github.com/MetaMask/snaps-monorepo/pull/1014))
 - Skip writing manifest if identical ([#1171](https://github.com/MetaMask/snaps-monorepo/pull/1171))
-- Harden endowments ([#1058](https://github.com/MetaMask/snaps-monorepo/pull/1058))
-- BREAKING: Change checksum calculation ([#1128](https://github.com/MetaMask/snaps-monorepo/pull/1128))
+- Harden endowments -- updated eslint rule ([#1058](https://github.com/MetaMask/snaps-monorepo/pull/1058))
 - Bump `@metamask/key-tree` to 6.2.1 ([#1142](https://github.com/MetaMask/snaps-monorepo/pull/1142))
 
 ## [0.28.0]

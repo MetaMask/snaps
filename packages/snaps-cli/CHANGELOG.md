@@ -7,9 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.29.0]
-### Uncategorized
+### Changed
+- **BREAKING:** Change checksum calculation ([#1128](https://github.com/MetaMask/snaps-monorepo/pull/1128))
 - Standardise logging across all packages ([#1164](https://github.com/MetaMask/snaps-monorepo/pull/1164))
-- BREAKING: Change checksum calculation ([#1128](https://github.com/MetaMask/snaps-monorepo/pull/1128))
 - Update the `mm-snap init` examples ([#1139](https://github.com/MetaMask/snaps-monorepo/pull/1139))
 
 ## [0.28.0]
