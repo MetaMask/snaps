@@ -7,13 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.29.0]
-### Changed
-- Standardise logging across all packages ([#1164](https://github.com/MetaMask/snaps-monorepo/pull/1164))
-
 ### Added
 - **BREAKING:** Improve request function types ([#1014](https://github.com/MetaMask/snaps-monorepo/pull/1014))
 - Harden endowments ([#1058](https://github.com/MetaMask/snaps-monorepo/pull/1058))
 - Constrain `Date` and timeouts ([#1118](https://github.com/MetaMask/snaps-monorepo/pull/1118))
+
+### Changed
+- Standardise logging across all packages ([#1164](https://github.com/MetaMask/snaps-monorepo/pull/1164))
 
 ## [0.28.0]
 ### Added
