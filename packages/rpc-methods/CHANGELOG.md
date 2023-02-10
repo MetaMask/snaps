@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.29.0]
 ### Added
 - **BREAKING:** Improve request function types ([#1014](https://github.com/MetaMask/snaps-monorepo/pull/1014))
-  - `snap.request` is now strongly typed in line with the rpc methods in this package
+  - `snap.request` is now strongly typed in line with the JSON-RPC methods in this package
 
 ### Changed
 - **BREAKING:** Replace `wallet_snap_*` permission with `wallet_snap` ([#1182](https://github.com/MetaMask/snaps-monorepo/pull/1182))

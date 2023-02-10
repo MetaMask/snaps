@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - **BREAKING:** Improve request function types ([#1014](https://github.com/MetaMask/snaps-monorepo/pull/1014))
-  - `snap.request` is now strongly typed in line with the rpc methods in this package
+  - `snap.request` is now strongly typed in line with the JSON-RPC methods in the `rpc-methods` package
 
 ## [0.28.0]
 ### Added

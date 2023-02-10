@@ -8,9 +8,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.29.0]
 ### Changed
-- **BREAKING:** Change checksum calculation ([#1128](https://github.com/MetaMask/snaps-monorepo/pull/1128))
-  - The calculation for checksum now includes snap source code, manifest and its icon
-  - Implementation was refactored to use virtual files
 - Skip writing manifest if identical ([#1171](https://github.com/MetaMask/snaps-monorepo/pull/1171))
   - This fixes a bug on Windows where the CLI could get stuck in a loop
 
