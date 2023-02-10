@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.29.0]
+### Added
+- Add method to get metadata from the Snaps registry ([#1173](https://github.com/MetaMask/snaps-monorepo/pull/1173))
+- Set pre-fetch NPM tarball size limit ([#1169](https://github.com/MetaMask/snaps-monorepo/pull/1169))
+  - NPM packages now have a size limit of 250 MB
+
+### Changed
+- **BREAKING:** Updated controllers to accomodate new `wallet_snap` permission ([#1182](https://github.com/MetaMask/snaps-monorepo/pull/1182))
+- **BREAKING:** Change checksum calculation ([#1128](https://github.com/MetaMask/snaps-monorepo/pull/1128))
+  - The checksum has changed for all snaps, and needs to be updated
+
 ## [0.28.0]
 ### Added
 - Add `endowment:long-running` deprecation warning ([#1126](https://github.com/MetaMask/snaps-monorepo/pull/1126))
@@ -447,7 +458,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.28.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.29.0...HEAD
+[0.29.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.28.0...v0.29.0
 [0.28.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.1...v0.28.0
 [0.27.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.0...v0.27.1
 [0.27.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.26.2...v0.27.0

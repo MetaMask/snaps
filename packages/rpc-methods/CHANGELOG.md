@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.29.0]
+### Added
+- **BREAKING:** Improve request function types ([#1014](https://github.com/MetaMask/snaps-monorepo/pull/1014))
+  - `snap.request` is now strongly typed in line with the JSON-RPC methods in this package
+
+### Changed
+- **BREAKING:** Replace `wallet_snap_*` permission with `wallet_snap` ([#1182](https://github.com/MetaMask/snaps-monorepo/pull/1182))
+  - The new permission uses a caveat-based implementation to specify the snaps that are allowed to be interacted with
+
 ## [0.28.0]
 ### Changed
 - **BREAKING:** Bump `key-tree` to `6.2.0` and use `Uint8Array` for secret recovery phrases ([#1137](https://github.com/MetaMask/snaps-monorepo/pull/1137))
@@ -274,7 +283,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.28.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.29.0...HEAD
+[0.29.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.28.0...v0.29.0
 [0.28.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.1...v0.28.0
 [0.27.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.0...v0.27.1
 [0.27.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.26.2...v0.27.0

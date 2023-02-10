@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.29.0]
+### Added
+- **BREAKING:** Improve request function types ([#1014](https://github.com/MetaMask/snaps-monorepo/pull/1014))
+  - New types re-exported from `rpc-methods`: `DialogType`, `NotificationType` and `SnapsGlobalObject`
+  - `snap.request` is now strongly typed
+
 ## [0.28.0]
 ### Changed
 - No changes this release.
@@ -239,7 +245,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.28.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.29.0...HEAD
+[0.29.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.28.0...v0.29.0
 [0.28.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.1...v0.28.0
 [0.27.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.0...v0.27.1
 [0.27.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.26.2...v0.27.0

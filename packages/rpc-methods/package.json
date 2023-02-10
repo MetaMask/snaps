@@ -1,6 +1,6 @@
 {
   "name": "@metamask/rpc-methods",
-  "version": "0.28.0",
+  "version": "0.29.0",
   "description": "MetaMask Snap RPC method implementations.",
   "repository": {
     "type": "git",
@@ -29,8 +29,8 @@
     "@metamask/browser-passworder": "^4.0.2",
     "@metamask/key-tree": "^6.2.1",
     "@metamask/permission-controller": "^2.0.0",
-    "@metamask/snaps-ui": "^0.28.0",
-    "@metamask/snaps-utils": "^0.28.0",
+    "@metamask/snaps-ui": "^0.29.0",
+    "@metamask/snaps-utils": "^0.29.0",
     "@metamask/types": "^1.1.0",
     "@metamask/utils": "^3.4.1",
     "@noble/hashes": "^1.1.3",

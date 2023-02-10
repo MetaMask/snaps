@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.29.0]
+### Added
+- Harden endowments ([#1058](https://github.com/MetaMask/snaps-monorepo/pull/1058))
+- Constrain `Date` and timeouts ([#1118](https://github.com/MetaMask/snaps-monorepo/pull/1118))
+
+### Changed
+- **BREAKING:** Improve request function types ([#1014](https://github.com/MetaMask/snaps-monorepo/pull/1014))
+  - `snap.request` is now strongly typed in line with the JSON-RPC methods in the `rpc-methods` package
+
 ## [0.28.0]
 ### Added
 - Add experimental offscreen execution environment ([#1082](https://github.com/MetaMask/snaps-monorepo/pull/1082))
@@ -205,7 +214,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Previously, default endowments were specified in the execution environment itself. Now, all endowments must be specified in the `executeSnap` RPC parameters, except for the `wallet` API object.
 - Add endowments to the global `self` in addition to `window` ([#263](https://github.com/MetaMask/snaps-monorepo/pull/263))
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.28.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.29.0...HEAD
+[0.29.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.28.0...v0.29.0
 [0.28.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.1...v0.28.0
 [0.27.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.0...v0.27.1
 [0.27.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.26.2...v0.27.0
