@@ -392,9 +392,7 @@ describe('BaseSnapExecutor', () => {
   it('allows direct access to snap public properties', async () => {
     const CODE = `
       module.exports.onRpcRequest = () => {
-        const listener = () => undefined;
-        snap.on('accountsChanged', listener);
-        snap.removeListener('accountsChanged', listener);
+        snap.request;
         return snap.request({ method: 'wallet_getSnaps', params: [] }) };
     `;
     const executor = new TestSnapExecutor();

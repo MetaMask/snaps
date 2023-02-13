@@ -50,6 +50,7 @@ test('ensure that a snap and ethereum endowments have expected methods', async (
               on: 'on' in snap,
               removeListener: 'removeListener' in snap,
               rpcEngine: '_rpcEngine' in snap,
+              requestType: typeof snap.request,
             }
           }
         } catch (error) {
@@ -94,9 +95,10 @@ test('ensure that a snap and ethereum endowments have expected methods', async (
         },
         snap: {
           request: true,
-          on: true,
-          removeListener: true,
+          on: false,
+          removeListener: false,
           rpcEngine: false,
+          requestType: 'function',
         },
       },
     },

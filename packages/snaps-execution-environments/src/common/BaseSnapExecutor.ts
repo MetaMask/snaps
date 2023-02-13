@@ -395,7 +395,23 @@ export class BaseSnapExecutor {
       }
     };
 
-    return proxyStreamProvider(provider, request) as SnapsGlobalObject;
+    // Proxy target is intentionally set to be an empty object, to ensure
+    // that access to the prototype chain is not possible.
+    return new Proxy(
+      {},
+      {
+        has(_target: object, prop: string | symbol) {
+          return typeof prop === 'string' && ['request'].includes(prop);
+        },
+        get(_target, prop: keyof StreamProvider) {
+          if (prop === 'request') {
+            return request;
+          }
+
+          return undefined;
+        },
+      },
+    ) as SnapsGlobalObject;
   }
 
   /**

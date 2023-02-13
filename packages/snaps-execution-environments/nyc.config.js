@@ -3,8 +3,8 @@
  */
 module.exports = {
   'check-coverage': true,
-  branches: 89.09,
-  lines: 90.42,
-  functions: 94.44,
-  statements: 90.42,
+  branches: 89.28,
+  lines: 90.5,
+  functions: 94.56,
+  statements: 90.5,
 };
