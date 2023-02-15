@@ -10,7 +10,7 @@ import { SnapEndowments } from './enum';
 const permissionName = SnapEndowments.WebHID;
 
 type WebHIDEndowmentSpecification = ValidPermissionSpecification<{
-  permissionType: PermissionType.WebHID;
+  permissionType: PermissionType.Endowment;
   targetKey: typeof permissionName;
   endowmentGetter: (_options?: any) => ['navigator'];
   allowedCaveats: null;
