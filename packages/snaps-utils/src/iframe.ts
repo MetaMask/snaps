@@ -17,6 +17,12 @@ export async function createWindow(
     // attribute. We may as well set it here.
     iframe.setAttribute('id', jobId);
 
+    // For the sandbox property to have any effect it needs to be set before the iframe is appended.
+    // We apply this property as a principle of least authority (POLA)
+    // measure.
+    // Ref: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#attr-sandbox
+    iframe.setAttribute('sandbox', 'allow-scripts');
+
     // In the past, we've had problems that appear to be symptomatic of the
     // iframe firing the `load` event before its scripts are actually loaded,
     // which has prevented snaps from executing properly. Therefore, we set
@@ -44,18 +50,5 @@ export async function createWindow(
         );
       }
     });
-
-    // We need to set the sandbox attribute after appending the iframe to the
-    // DOM, otherwise errors in the iframe will not be propagated via `error`
-    // and `unhandledrejection` events, and we cannot catch and handle them.
-    // We wish we knew why this was the case.
-    //
-    // We set this property after adding the `load` listener because it
-    // appears to work dependably. ¯\_(ツ)_/¯
-    //
-    // We apply this property as a principle of least authority (POLA)
-    // measure.
-    // Ref: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#attr-sandbox
-    iframe.setAttribute('sandbox', 'allow-scripts');
   });
 }
