@@ -36,6 +36,10 @@ export async function createWindow(
     // MDN article for `load` event: https://developer.mozilla.org/en-US/docs/Web/API/Window/load_event
     // Re: `load` firing twice: https://stackoverflow.com/questions/10781880/dynamically-created-iframe-triggers-onload-event-twice/15880489#15880489
     iframe.setAttribute('src', uri);
+
+    // Enable WebHID to be executed in the iframe.
+    iframe.setAttribute('allow', 'hid');
+
     document.body.appendChild(iframe);
 
     iframe.addEventListener('load', () => {
