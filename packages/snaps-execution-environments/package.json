@@ -29,7 +29,7 @@
     "build:tsc": "tsc --project tsconfig.build.json",
     "build": "yarn build:tsc && yarn build:post-tsc",
     "build:test": "yarn webpack --mode none --config-name iframe-test --config-name node && yarn build:concat",
-    "build:concat": "concat -o ./dist/webpack/node-process/bundle.js ./dist/webpack/node-process/lockdown.umd.min.js ./dist/webpack/node-process/bundle.js && concat -o ./dist/webpack/node-thread/bundle.js ./dist/webpack/node-thread/lockdown.umd.min.js ./dist/webpack/node-thread/bundle.js",
+    "build:concat": "concat -o ./dist/webpack/iframe/bundle.js ./dist/webpack/iframe/lockdown.umd.min.js ./dist/webpack/iframe/bundle.js && concat -o ./dist/webpack/node-process/bundle.js ./dist/webpack/node-process/lockdown.umd.min.js ./dist/webpack/node-process/bundle.js && concat -o ./dist/webpack/node-thread/bundle.js ./dist/webpack/node-thread/lockdown.umd.min.js ./dist/webpack/node-thread/bundle.js",
     "auto-changelog-init": "auto-changelog init",
     "publish:package": "../../scripts/publish-package.sh"
   },
