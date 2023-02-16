@@ -1473,7 +1473,7 @@ export class SnapController extends BaseController<
           ...(snapIdsCaveat.value as Record<string, unknown>),
         };
         delete newCaveatValue[snapId];
-        if (Object.keys(newCaveatValue).length > 1) {
+        if (Object.keys(newCaveatValue).length > 0) {
           this.messagingSystem.call(
             'PermissionController:updateCaveat',
             subject,
