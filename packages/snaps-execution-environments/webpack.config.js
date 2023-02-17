@@ -87,7 +87,7 @@ module.exports = (_, argv) => {
   const nodeProcessConfig = merge(nodeConfig, {
     name: 'node-process',
     entry: {
-      'node-process': './src/node-process/index.ts',
+      bundle: './src/node-process/index.ts',
     },
     output: {
       path: path.resolve(ENVIRONMENTS, 'node-process'),
@@ -100,7 +100,7 @@ module.exports = (_, argv) => {
   const nodeThreadConfig = merge(nodeConfig, {
     name: 'node-thread',
     entry: {
-      'node-thread': './src/node-thread/index.ts',
+      bundle: './src/node-thread/index.ts',
     },
     output: {
       path: path.resolve(ENVIRONMENTS, 'node-thread'),
@@ -117,7 +117,7 @@ module.exports = (_, argv) => {
    */
   const browserConfig = merge(baseConfig, {
     entry: {
-      ses: path.join(
+      lockdown: path.join(
         path.dirname(require.resolve('ses/package.json')),
         'dist',
         'lockdown.umd.min.js',
@@ -152,7 +152,7 @@ module.exports = (_, argv) => {
    */
   const iframeConfig = merge(browserConfig, {
     entry: {
-      iframe: './src/iframe/index.ts',
+      bundle: './src/iframe/index.ts',
     },
     output: {
       path: path.resolve(ENVIRONMENTS, 'iframe'),
@@ -164,7 +164,7 @@ module.exports = (_, argv) => {
    */
   const offscreenConfig = merge(browserConfig, {
     entry: {
-      offscreen: './src/offscreen/index.ts',
+      bundle: './src/offscreen/index.ts',
     },
     output: {
       path: path.resolve(ENVIRONMENTS, 'offscreen'),
@@ -179,7 +179,7 @@ module.exports = (_, argv) => {
   const unsafeConfig = merge(browserConfig, {
     name: 'iframe-test',
     entry: {
-      'iframe-test': './src/iframe-test/index.ts',
+      bundle: './src/iframe-test/index.ts',
     },
     output: {
       path: path.resolve(UNSAFE_ENVIRONMENTS, 'iframe-test'),
