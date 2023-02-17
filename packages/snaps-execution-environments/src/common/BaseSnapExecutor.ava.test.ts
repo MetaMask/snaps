@@ -177,6 +177,15 @@ testSubjects.forEach((endowment) => {
     // It is expected for the errors to exist, because trying to change
     // hardened objects should result with an error
     expect.true(hardeningTestErrors.length > 0);
+    expect.true(
+      Boolean(
+        hardeningTestErrors.find(
+          (errorMessage: string) =>
+            errorMessage ===
+            'Cannot define property __flag, object is not extensible',
+        ),
+      ),
+    );
   });
 });
 
