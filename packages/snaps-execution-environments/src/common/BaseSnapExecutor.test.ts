@@ -544,7 +544,7 @@ describe('BaseSnapExecutor', () => {
 
   it('only allows certain methods in ethereum API', async () => {
     const CODE = `
-      module.exports.onRpcRequest = () => ethereum.request({ method: 'snap_blockNumber', params: [] });
+      module.exports.onRpcRequest = () => ethereum.request({ method: 'snap_dialog', params: [] });
     `;
     const executor = new TestSnapExecutor();
 
@@ -574,7 +574,7 @@ describe('BaseSnapExecutor', () => {
         code: -32601,
         message: 'The method does not exist / is not available.',
         data: {
-          method: 'snap_blockNumber',
+          method: 'snap_dialog',
         },
         stack: expect.anything(),
       },

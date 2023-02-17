@@ -52,10 +52,6 @@ export function createEndowments(
   ethereum: StreamProvider,
   endowments: string[] = [],
 ): { endowments: Record<string, unknown>; teardown: () => Promise<void> } {
-  // Harden custom endowments
-  harden(snap);
-  harden(ethereum);
-
   const attenuatedEndowments: Record<string, unknown> = {};
 
   // TODO: All endowments should be hardened to prevent covert communication

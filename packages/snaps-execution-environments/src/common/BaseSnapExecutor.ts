@@ -397,7 +397,7 @@ export class BaseSnapExecutor {
 
     // Proxy target is intentionally set to be an empty object, to ensure
     // that access to the prototype chain is not possible.
-    return new Proxy(
+    const snapGlobalProxy = new Proxy(
       {},
       {
         has(_target: object, prop: string | symbol) {
@@ -412,6 +412,8 @@ export class BaseSnapExecutor {
         },
       },
     ) as SnapsGlobalObject;
+
+    return harden(snapGlobalProxy);
   }
 
   /**
@@ -440,7 +442,9 @@ export class BaseSnapExecutor {
       }
     };
 
-    return proxyStreamProvider(provider, request);
+    const streamProviderProxy = proxyStreamProvider(provider, request);
+
+    return harden(streamProviderProxy);
   }
 
   /**
