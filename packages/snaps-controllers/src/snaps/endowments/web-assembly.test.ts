@@ -3,7 +3,7 @@ import { PermissionType } from '@metamask/permission-controller';
 import { SnapEndowments } from './enum';
 import { webAssemblyEndowmentBuilder } from './web-assembly';
 
-describe('endowment:endowment:webassembly', () => {
+describe('endowment:webassembly', () => {
   it('builds the expected permission specification', () => {
     const specification = webAssemblyEndowmentBuilder.specificationBuilder({});
     expect(specification).toStrictEqual({
