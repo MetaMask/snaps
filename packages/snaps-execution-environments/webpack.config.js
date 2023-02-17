@@ -28,7 +28,7 @@ module.exports = (_, argv) => {
    */
   const baseConfig = {
     ...extraOptions,
-    mode: argv.mode,
+    mode: 'none',
     output: {
       filename: '[name].js',
     },
@@ -111,6 +111,9 @@ module.exports = (_, argv) => {
    * Base browser configuration, which should be used by all browser
    * environments. It makes sure that the SES lockdown bundle is included in the
    * output bundle.
+   *
+   * The SES bundle is inlined due to a bug in Chromium and/or SES, which causes
+   * unhandled promise rejections to not be caught.
    */
   const browserConfig = merge(baseConfig, {
     entry: {
@@ -170,26 +173,16 @@ module.exports = (_, argv) => {
 
   /**
    * Configuration for the `unsafe` environment. This is used for testing. It's
-   * essentially the same as the `iframe` environment, but does not include the
-   * SES lockdown bundle.
+   * essentially the same as the `iframe` environment, but does not do a full
+   * lockdown.
    */
-  const unsafeConfig = merge(baseConfig, {
+  const unsafeConfig = merge(browserConfig, {
     name: 'iframe-test',
     entry: {
       'iframe-test': './src/iframe-test/index.ts',
     },
     output: {
       path: path.resolve(UNSAFE_ENVIRONMENTS, 'iframe-test'),
-    },
-    plugins: [new NodePolyfillPlugin()],
-    resolve: {
-      alias: {
-        // Without this alias webpack tried to require `../../node_modules/stream/`
-        // which doesn't have `Duplex`, breaking the bundle.
-        stream: 'stream-browserify',
-        child_process: false,
-        fs: false,
-      },
     },
   });
 
