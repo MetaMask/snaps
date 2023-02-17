@@ -117,35 +117,15 @@ testSubjects.forEach((endowment) => {
 
         try {
           errors = (${testEndowmentHardening})(${endowment}, () => ${endowment});
-        } catch (error) {
-          return error.message;
-        }
-
-        try {
           if (${endowment}.__flag) {
             result = 'ENDOWMENT_NOT_SECURED';
           }
-        } catch (error) {
-          return error.message;
-        }
-
-        try {
           if (${endowment}.__proto__ && ${endowment}.__proto__.__flag) {
             result = 'ENDOWMENT_NOT_SECURED';
           }
-        } catch (error) {
-          return error.message;
-        }
-
-        try {
           if (${endowment}.prototype && ${endowment}.prototype.__flag) {
             result = 'ENDOWMENT_NOT_SECURED';
           }
-        } catch (error) {
-          return error.message;
-        }
-
-        try {
           const objectProto = Object.getPrototypeOf(${endowment});
           if (objectProto.__flag) {
             result = 'ENDOWMENT_NOT_SECURED';
@@ -194,6 +174,8 @@ testSubjects.forEach((endowment) => {
       },
     });
 
+    // It is expected for the errors to exist, because trying to change
+    // hardened objects should result with an error
     expect.true(hardeningTestErrors.length > 0);
   });
 });
