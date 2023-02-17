@@ -2,6 +2,10 @@ const path = require('path');
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlInlineScriptPlugin = require('html-inline-script-webpack-plugin');
+const { merge } = require('webpack-merge');
+const WebpackBarPlugin = require('webpackbar');
 
 const DIST = path.resolve(__dirname, 'dist');
 const ENVIRONMENTS = path.resolve(DIST, 'webpack');
@@ -18,183 +22,182 @@ module.exports = (_, argv) => {
     };
   }
 
-  const module = {
-    rules: [
-      {
-        test: /\.tsx?$/u,
-        use: [
-          {
-            loader: 'babel-loader',
-            options: {
-              presets: ['@babel/preset-typescript'],
+  /**
+   * Base configuration, which should be used by all environments. It sets up
+   * TypeScript, and some common plugins.
+   */
+  const baseConfig = {
+    ...extraOptions,
+    mode: argv.mode,
+    output: {
+      filename: '[name].js',
+    },
+    module: {
+      rules: [
+        {
+          test: /\.tsx?$/u,
+          use: [
+            {
+              loader: 'babel-loader',
+              options: {
+                presets: ['@babel/preset-typescript'],
+              },
             },
+          ],
+          exclude: /node_modules/u,
+        },
+      ],
+    },
+    resolve: {
+      extensions: ['.tsx', '.ts', '.js'],
+      plugins: [
+        new TsconfigPathsPlugin({
+          configFile: 'tsconfig.build.json',
+        }),
+      ],
+    },
+    plugins: [new WebpackBarPlugin()],
+  };
+
+  /**
+   * Node configuration, which should be used by all node environments. It makes
+   * sure that the SES lockdown bundle is copied into the output directory, and
+   * sets the target to `node`.
+   */
+  const nodeConfig = merge(baseConfig, {
+    target: 'node',
+    plugins: [
+      new CopyPlugin({
+        patterns: [
+          {
+            from: path.resolve(
+              `${path.dirname(require.resolve('ses/package.json'))}`,
+              'dist',
+              'lockdown.umd.min.js',
+            ),
           },
         ],
-        exclude: /node_modules/u,
-      },
-    ],
-  };
-
-  const resolve = {
-    extensions: ['.tsx', '.ts', '.js'],
-    plugins: [
-      new TsconfigPathsPlugin({
-        configFile: 'tsconfig.build.json',
       }),
     ],
-  };
+  });
 
-  const nodeConfig = {
-    ...extraOptions,
-    name: 'node',
-    mode: argv.mode,
-    target: 'node',
+  /**
+   * Configuration for the `node-process` environment.
+   */
+  const nodeProcessConfig = merge(nodeConfig, {
+    name: 'node-process',
     entry: {
       'node-process': './src/node-process/index.ts',
+    },
+    output: {
+      path: path.resolve(ENVIRONMENTS, 'node-process'),
+    },
+  });
+
+  /**
+   * Configuration for the `node-thread` environment.
+   */
+  const nodeThreadConfig = merge(nodeConfig, {
+    name: 'node-thread',
+    entry: {
       'node-thread': './src/node-thread/index.ts',
     },
     output: {
-      filename: '[name]/bundle.js',
-      path: ENVIRONMENTS,
+      path: path.resolve(ENVIRONMENTS, 'node-thread'),
     },
-    plugins: [
-      new CopyPlugin({
-        patterns: [
-          {
-            from: path.resolve(
-              `${path.dirname(require.resolve('ses/package.json'))}`,
-              'dist',
-              'lockdown.umd.min.js',
-            ),
-            to: path.resolve(ENVIRONMENTS, 'node-process/lockdown.umd.min.js'),
-            toType: 'file',
-          },
-          {
-            from: path.resolve(
-              `${path.dirname(require.resolve('ses/package.json'))}`,
-              'dist',
-              'lockdown.umd.min.js',
-            ),
-            to: path.resolve(ENVIRONMENTS, 'node-thread/lockdown.umd.min.js'),
-            toType: 'file',
-          },
-        ],
-      }),
-    ],
-    module,
-    resolve,
-  };
+  });
 
-  const browserConfig = {
-    ...extraOptions,
-    mode: argv.mode,
+  /**
+   * Base browser configuration, which should be used by all browser
+   * environments. It makes sure that the SES lockdown bundle is included in the
+   * output bundle.
+   */
+  const browserConfig = merge(baseConfig, {
     entry: {
-      iframe: './src/iframe/index.ts',
-      offscreen: './src/offscreen/index.ts',
+      ses: path.join(
+        path.dirname(require.resolve('ses/package.json')),
+        'dist',
+        'lockdown.umd.min.js',
+      ),
     },
     output: {
-      filename: '[name]/bundle.js',
-      path: ENVIRONMENTS,
+      filename: '[name].js',
     },
     plugins: [
       new NodePolyfillPlugin(),
-      new CopyPlugin({
-        patterns: [
-          // TODO: Merge this with above if possible
-          {
-            // For use in <script> tag along with the iframe bundle. Copied to
-            // ensure same version as bundled.
-            from: path.resolve(
-              `${path.dirname(require.resolve('ses/package.json'))}`,
-              'dist',
-              'lockdown.umd.min.js',
-            ),
-            to: path.resolve(ENVIRONMENTS, 'iframe/lockdown.umd.min.js'),
-            toType: 'file',
-          },
-          {
-            // For use in <script> tag along with the iframe bundle. Copied to
-            // ensure same version as bundled.
-            from: path.resolve(
-              `${path.dirname(require.resolve('ses/package.json'))}`,
-              'dist',
-              'lockdown.umd.min.js',
-            ),
-            to: path.resolve(ENVIRONMENTS, 'offscreen/lockdown.umd.min.js'),
-            toType: 'file',
-          },
-          {
-            from: path.resolve('src', 'iframe', 'index.html'),
-            to: path.resolve(ENVIRONMENTS, 'iframe/index.html'),
-            toType: 'file',
-          },
-          {
-            from: path.resolve('src', 'offscreen', 'index.html'),
-            to: path.resolve(ENVIRONMENTS, 'offscreen/index.html'),
-            toType: 'file',
-          },
-        ],
+      new HtmlWebpackPlugin({
+        title: 'MetaMask Snaps Execution Environment',
+        scriptLoading: 'blocking',
+      }),
+      new HtmlInlineScriptPlugin({
+        scriptMatchPattern: [/ses\.js$/u],
       }),
     ],
-    module,
     resolve: {
-      ...resolve,
       alias: {
-        // Without this alias webpack tried to require ../../node_modules/stream/ which doesn't have Duplex, breaking the bundle
+        // Without this alias webpack tried to require `../../node_modules/stream/`
+        // which doesn't have `Duplex`, breaking the bundle.
         stream: 'stream-browserify',
         child_process: false,
         fs: false,
       },
     },
-  };
+  });
 
-  const unsafeConfig = {
-    ...extraOptions,
+  /**
+   * Configuration for the `iframe` environment.
+   */
+  const iframeConfig = merge(browserConfig, {
+    entry: {
+      iframe: './src/iframe/index.ts',
+    },
+    output: {
+      path: path.resolve(ENVIRONMENTS, 'iframe'),
+    },
+  });
+
+  /**
+   * Configuration for the `offscreen` environment.
+   */
+  const offscreenConfig = merge(browserConfig, {
+    entry: {
+      offscreen: './src/offscreen/index.ts',
+    },
+    output: {
+      path: path.resolve(ENVIRONMENTS, 'offscreen'),
+    },
+  });
+
+  /**
+   * Configuration for the `unsafe` environment. This is used for testing. It's
+   * essentially the same as the `iframe` environment, but does not include the
+   * SES lockdown bundle.
+   */
+  const unsafeConfig = merge(baseConfig, {
     name: 'iframe-test',
-    mode: argv.mode,
     entry: {
       'iframe-test': './src/iframe-test/index.ts',
     },
     output: {
-      filename: '[name]/bundle.js',
-      path: UNSAFE_ENVIRONMENTS,
+      path: path.resolve(UNSAFE_ENVIRONMENTS, 'iframe-test'),
     },
-    plugins: [
-      new NodePolyfillPlugin(),
-      new CopyPlugin({
-        patterns: [
-          {
-            // For use in <script> tag along with the iframe bundle. Copied to ensure same version as bundled
-            from: path.resolve(
-              `${path.dirname(require.resolve('ses/package.json'))}`,
-              'dist',
-              'lockdown.umd.min.js',
-            ),
-            to: path.resolve(
-              UNSAFE_ENVIRONMENTS,
-              'iframe-test/lockdown.umd.min.js',
-            ),
-            toType: 'file',
-          },
-          {
-            from: path.resolve('src', 'iframe', 'index.html'),
-            to: path.resolve(UNSAFE_ENVIRONMENTS, 'iframe-test/index.html'),
-            toType: 'file',
-          },
-        ],
-      }),
-    ],
-    module,
+    plugins: [new NodePolyfillPlugin()],
     resolve: {
-      ...resolve,
       alias: {
-        // Without this alias webpack tried to require ../../node_modules/stream/ which doesn't have Duplex, breaking the bundle
+        // Without this alias webpack tried to require `../../node_modules/stream/`
+        // which doesn't have `Duplex`, breaking the bundle.
         stream: 'stream-browserify',
         child_process: false,
         fs: false,
       },
     },
-  };
+  });
 
-  return [browserConfig, nodeConfig, unsafeConfig];
+  return [
+    nodeProcessConfig,
+    nodeThreadConfig,
+    iframeConfig,
+    offscreenConfig,
+    unsafeConfig,
+  ];
 };
