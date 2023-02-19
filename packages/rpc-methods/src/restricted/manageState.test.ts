@@ -259,8 +259,8 @@ describe('snap_manageState', () => {
         getUnlockPromise: jest.fn(),
       });
 
-      expect(
-        await manageStateImplementation({
+      expect(async () =>
+        manageStateImplementation({
           context: { origin: MOCK_SNAP_ID },
           method: 'snap_manageState',
           params: {
