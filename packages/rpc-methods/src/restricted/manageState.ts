@@ -16,7 +16,7 @@ import {
 } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
-import { deriveEntropy } from '../utils';
+import { deriveEntropy, EnumToUnion } from '../utils';
 
 // The salt used for SIP-6-based entropy derivation.
 export const STATE_ENCRYPTION_SALT = 'snap_manageState encryption';
@@ -113,7 +113,7 @@ export enum ManageStateOperation {
 }
 
 export type ManageStateArgs = {
-  operation: ManageStateOperation;
+  operation: EnumToUnion<ManageStateOperation>;
   newState?: Record<string, Json>;
 };
 
