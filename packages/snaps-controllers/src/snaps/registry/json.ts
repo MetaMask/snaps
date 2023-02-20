@@ -32,7 +32,7 @@ export class JsonSnapsRegistry implements SnapsRegistry {
 
   constructor({
     url = SNAP_REGISTRY_URL,
-    fetchFunction = globalThis.fetch.bind(globalThis),
+    fetchFunction = globalThis.fetch?.bind(globalThis),
     failOnUnavailableRegistry = true,
   }: JsonSnapsRegistryArgs = {}) {
     this.#url = url;

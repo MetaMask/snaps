@@ -677,7 +677,7 @@ export class SnapController extends BaseController<
     registry = new JsonSnapsRegistry(),
     maxIdleTime = inMilliseconds(30, Duration.Second),
     maxRequestTime = inMilliseconds(60, Duration.Second),
-    fetchFunction = globalThis.fetch.bind(globalThis),
+    fetchFunction = globalThis.fetch?.bind(globalThis),
     featureFlags = {},
     detectSnapLocation: detectSnapLocationFunction = detectSnapLocation,
   }: SnapControllerArgs) {

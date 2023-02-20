@@ -40,7 +40,7 @@ export class HttpLocation implements SnapLocation {
 
   constructor(url: URL, opts: HttpOptions = {}) {
     assertStruct(url.toString(), HttpSnapIdStruct, 'Invalid Snap Id: ');
-    this.fetchFn = opts.fetch ?? globalThis.fetch.bind(globalThis);
+    this.fetchFn = opts.fetch ?? globalThis.fetch?.bind(globalThis);
     this.fetchOptions = opts.fetchOptions;
     this.url = url;
   }

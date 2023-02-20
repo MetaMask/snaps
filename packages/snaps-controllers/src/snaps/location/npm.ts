@@ -56,7 +56,7 @@ export class NpmLocation implements SnapLocation {
 
   constructor(url: URL, opts: DetectSnapLocationOptions = {}) {
     const allowCustomRegistries = opts.allowCustomRegistries ?? false;
-    const fetchFunction = opts.fetch ?? globalThis.fetch.bind(globalThis);
+    const fetchFunction = opts.fetch ?? globalThis.fetch?.bind(globalThis);
     const requestedRange = opts.versionRange ?? DEFAULT_REQUESTED_SNAP_VERSION;
 
     assertStruct(url.toString(), NpmSnapIdStruct, 'Invalid Snap Id: ');
