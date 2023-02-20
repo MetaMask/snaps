@@ -1473,13 +1473,19 @@ export class SnapController extends BaseController<
           ...(snapIdsCaveat.value as Record<string, unknown>),
         };
         delete newCaveatValue[snapId];
-        this.messagingSystem.call(
-          'PermissionController:updateCaveat',
-          subject,
-          WALLET_SNAP_PERMISSION_KEY,
-          SnapCaveatType.SnapIds,
-          newCaveatValue,
-        );
+        if (Object.keys(newCaveatValue).length > 0) {
+          this.messagingSystem.call(
+            'PermissionController:updateCaveat',
+            subject,
+            WALLET_SNAP_PERMISSION_KEY,
+            SnapCaveatType.SnapIds,
+            newCaveatValue,
+          );
+        } else {
+          this.messagingSystem.call('PermissionController:revokePermissions', {
+            [subject]: [WALLET_SNAP_PERMISSION_KEY],
+          });
+        }
       }
     }
   }

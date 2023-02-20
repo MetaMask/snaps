@@ -315,6 +315,7 @@ export const getSnapControllerOptions = (
     featureFlags: { dappsCanUpdateSnaps: true },
     registry,
     state: undefined,
+    fetchFunction: jest.fn(),
     ...opts,
   } as SnapControllerConstructorParams;
 
@@ -347,6 +348,7 @@ export const getSnapControllerWithEESOptions = ({
     registry,
     messenger: snapControllerMessenger,
     rootMessenger,
+    fetchFunction: jest.fn(),
     ...options,
   } as SnapControllerConstructorParams & {
     rootMessenger: ReturnType<typeof getControllerMessenger>;
