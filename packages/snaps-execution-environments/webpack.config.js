@@ -133,7 +133,7 @@ module.exports = (_, argv) => {
         scriptLoading: 'blocking',
       }),
       new HtmlInlineScriptPlugin({
-        scriptMatchPattern: [/ses\.js$/u],
+        scriptMatchPattern: [/lockdown\.js$/u],
       }),
     ],
     resolve: {
