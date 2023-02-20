@@ -40,7 +40,7 @@
     "@metamask/snaps-execution-environments": "^0.29.0",
     "@metamask/snaps-registry": "^1.1.0",
     "@metamask/snaps-utils": "^0.29.0",
-    "@metamask/subject-metadata-controller": "^1.0.1",
+    "@metamask/subject-metadata-controller": "^2.0.0",
     "@metamask/utils": "^3.4.1",
     "@xstate/fsm": "^2.0.0",
     "concat-stream": "^2.0.0",
