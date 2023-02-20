@@ -34,7 +34,7 @@
     "@metamask/approval-controller": "^1.1.0",
     "@metamask/base-controller": "^2.0.0",
     "@metamask/object-multiplex": "^1.1.0",
-    "@metamask/permission-controller": "^2.0.0",
+    "@metamask/permission-controller": "^3.0.0",
     "@metamask/post-message-stream": "^6.1.0",
     "@metamask/rpc-methods": "^0.29.0",
     "@metamask/snaps-execution-environments": "^0.29.0",

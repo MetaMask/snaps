@@ -2476,6 +2476,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/approval-controller@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/approval-controller@npm:2.0.0"
+  dependencies:
+    "@metamask/base-controller": ^2.0.0
+    "@metamask/controller-utils": ^3.0.0
+    eth-rpc-errors: ^4.0.0
+    immer: ^9.0.6
+    nanoid: ^3.1.31
+  checksum: 1db5f9c21b04fa4688c17cdfb7da0a14b3fee084fbd8c0cfdcc41572e54140ce093c24b811b85e8ee9d3ccd8987db04d9150d7c6d5ab21daf72b4364a05f3428
+  languageName: node
+  linkType: hard
+
 "@metamask/auto-changelog@npm:^3.1.0":
   version: 3.1.0
   resolution: "@metamask/auto-changelog@npm:3.1.0"
@@ -2675,6 +2688,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/permission-controller@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@metamask/permission-controller@npm:3.0.0"
+  dependencies:
+    "@metamask/approval-controller": ^2.0.0
+    "@metamask/base-controller": ^2.0.0
+    "@metamask/controller-utils": ^3.0.0
+    "@metamask/types": ^1.1.0
+    "@types/deep-freeze-strict": ^1.1.0
+    deep-freeze-strict: ^1.1.1
+    eth-rpc-errors: ^4.0.0
+    immer: ^9.0.6
+    json-rpc-engine: ^6.1.0
+    nanoid: ^3.1.31
+  peerDependencies:
+    "@metamask/approval-controller": ^2.0.0
+  checksum: 67e104d21b3f0258863ecaabd11cb587f10dbcc91ff9b081d8b9569d163d6d54dd5b8fb267d5416ab8e41c8c48b5103e92e013fd1916d492b72706cda2474962
+  languageName: node
+  linkType: hard
+
 "@metamask/post-message-stream@npm:^6.1.0":
   version: 6.1.0
   resolution: "@metamask/post-message-stream@npm:6.1.0"
@@ -2717,7 +2750,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/key-tree": ^6.2.1
-    "@metamask/permission-controller": ^2.0.0
+    "@metamask/permission-controller": ^3.0.0
     "@metamask/snaps-ui": ^0.29.0
     "@metamask/snaps-utils": ^0.29.0
     "@metamask/types": ^1.1.0
@@ -2880,7 +2913,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/object-multiplex": ^1.1.0
-    "@metamask/permission-controller": ^2.0.0
+    "@metamask/permission-controller": ^3.0.0
     "@metamask/post-message-stream": ^6.1.0
     "@metamask/rpc-methods": ^0.29.0
     "@metamask/snaps-execution-environments": ^0.29.0
@@ -3120,7 +3153,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/key-tree": ^6.2.1
-    "@metamask/permission-controller": ^2.0.0
+    "@metamask/permission-controller": ^3.0.0
     "@metamask/post-message-stream": ^6.1.0
     "@metamask/providers": ^10.2.1
     "@metamask/snaps-registry": ^1.0.0
