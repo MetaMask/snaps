@@ -384,7 +384,8 @@ export class BaseSnapExecutor {
 
     const request = async (args: RequestArguments) => {
       assert(
-        args.method.startsWith('wallet_') || args.method.startsWith('snap_'),
+        String.prototype.startsWith.call(args.method, 'wallet_') ||
+          String.prototype.startsWith.call(args.method, 'snap_'),
         'The global Snap API only allows RPC methods starting with `wallet_*` and `snap_*`.',
       );
       this.notify({ method: 'OutboundRequest' });
@@ -427,7 +428,7 @@ export class BaseSnapExecutor {
 
     const request = async (args: RequestArguments) => {
       assert(
-        !args.method.startsWith('snap_'),
+        !String.prototype.startsWith.call(args.method, 'snap_'),
         ethErrors.rpc.methodNotFound({
           data: {
             method: args.method,

@@ -52,7 +52,7 @@ export function getMockedStreamProvider() {
 
   const request = async (args: RequestArguments) => {
     assert(
-      !args.method.startsWith('snap_'),
+      !String.prototype.startsWith.call(args.method, 'snap_'),
       ethErrors.rpc.methodNotFound({
         data: {
           method: args.method,
