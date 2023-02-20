@@ -25,6 +25,7 @@ import {
   transactionInsightCaveatSpecifications,
   transactionInsightEndowmentBuilder,
 } from './transaction-insight';
+import { webAssemblyEndowmentBuilder } from './web-assembly';
 
 export const endowmentPermissionBuilders = {
   [networkAccessEndowmentBuilder.targetKey]: networkAccessEndowmentBuilder,
@@ -36,6 +37,7 @@ export const endowmentPermissionBuilders = {
   [ethereumProviderEndowmentBuilder.targetKey]:
     ethereumProviderEndowmentBuilder,
   [rpcEndowmentBuilder.targetKey]: rpcEndowmentBuilder,
+  [webAssemblyEndowmentBuilder.targetKey]: webAssemblyEndowmentBuilder,
 } as const;
 
 export const endowmentCaveatSpecifications = {

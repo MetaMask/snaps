@@ -6,4 +6,5 @@ export enum SnapEndowments {
   Cronjob = 'endowment:cronjob',
   EthereumProvider = 'endowment:ethereum-provider',
   Rpc = 'endowment:rpc',
+  WebAssemblyAccess = 'endowment:webassembly',
 }
