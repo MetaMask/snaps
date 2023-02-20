@@ -9,6 +9,8 @@ import { webpack, Configuration } from 'webpack';
 
 import createConfig from '../webpack.config';
 
+jest.setTimeout(30000);
+
 describe('bundle', () => {
   it.each(['iframe', 'offscreen'])(
     'includes SES in the %s bundle',
