@@ -238,6 +238,39 @@ describe('snap_manageState', () => {
       );
     });
 
+    it('accepts a string as operation', async () => {
+      const mockSnapState = {
+        some: {
+          data: 'for a snap state',
+        },
+      };
+
+      const clearSnapState = jest.fn().mockResolvedValueOnce(true);
+      const getSnapState = jest.fn().mockResolvedValueOnce(true);
+      const updateSnapState = jest.fn().mockResolvedValueOnce(true);
+
+      const manageStateImplementation = getManageStateImplementation({
+        clearSnapState,
+        getSnapState,
+        updateSnapState,
+        getMnemonic: jest
+          .fn()
+          .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES),
+        getUnlockPromise: jest.fn(),
+      });
+
+      expect(async () =>
+        manageStateImplementation({
+          context: { origin: MOCK_SNAP_ID },
+          method: 'snap_manageState',
+          params: {
+            operation: 'update',
+            newState: mockSnapState,
+          },
+        }),
+      ).not.toThrow();
+    });
+
     it('throws an error if the state is corrupt', async () => {
       const clearSnapState = jest.fn().mockResolvedValueOnce(true);
       const getSnapState = jest.fn().mockResolvedValueOnce('foo');
