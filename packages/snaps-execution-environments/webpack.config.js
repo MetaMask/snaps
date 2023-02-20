@@ -151,6 +151,7 @@ module.exports = (_, argv) => {
    * Configuration for the `iframe` environment.
    */
   const iframeConfig = merge(browserConfig, {
+    name: 'iframe',
     entry: {
       bundle: './src/iframe/index.ts',
     },
@@ -163,6 +164,7 @@ module.exports = (_, argv) => {
    * Configuration for the `offscreen` environment.
    */
   const offscreenConfig = merge(browserConfig, {
+    name: 'offscreen',
     entry: {
       bundle: './src/offscreen/index.ts',
     },

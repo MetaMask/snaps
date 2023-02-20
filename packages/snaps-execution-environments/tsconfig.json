@@ -3,9 +3,10 @@
   "compilerOptions": {
     "baseUrl": "./",
     "typeRoots": ["../../node_modules/@types", "./node_modules/@types"],
-    "lib": ["es2015.proxy"]
+    "lib": ["es2015.proxy"],
+    "allowJs": true
   },
-  "include": ["./src", "./src/openrpc.json"],
+  "include": ["./src", "./src/openrpc.json", "webpack.config.js"],
   "references": [
     {
       "path": "../rpc-methods"

@@ -11,7 +11,8 @@
     "**/*.test.ts",
     "./src/**/test-utils",
     "./src/**/__mocks__",
-    "./src/**/__snapshots__"
+    "./src/**/__snapshots__",
+    "webpack.config.js"
   ],
   "references": [
     {

@@ -2955,6 +2955,7 @@ __metadata:
     jest-fetch-mock: ^3.0.3
     jsdom: ^19.0.0
     json-rpc-engine: ^6.1.0
+    memfs: ^3.4.13
     mkdirp: ^1.0.4
     node-polyfill-webpack-plugin: ^1.1.4
     nyc: ^15.1.0
@@ -11733,12 +11734,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"memfs@npm:^3.4.1, memfs@npm:^3.4.10, memfs@npm:^3.4.12, memfs@npm:^3.4.7":
-  version: 3.4.12
-  resolution: "memfs@npm:3.4.12"
+"memfs@npm:^3.4.1, memfs@npm:^3.4.10, memfs@npm:^3.4.12, memfs@npm:^3.4.13, memfs@npm:^3.4.7":
+  version: 3.4.13
+  resolution: "memfs@npm:3.4.13"
   dependencies:
     fs-monkey: ^1.0.3
-  checksum: dab8dec1ae0b2a92e4d563ac86846047cd7aeb17cde4ad51da85cff6e580c32d12b886354527788e36eb75f733dd8edbaf174476b7cea73fed9c5a0e45a6b428
+  checksum: 3f9717d6f060919d53f211acb6096a0ea2f566a8cbcc4ef7e1f2561e31e33dc456053fdf951c90a49c8ec55402de7f01b006b81683ab7bd4bdbbd8c9b9cdae5f
   languageName: node
   linkType: hard
 
