@@ -120,7 +120,7 @@ module.exports = (_, argv) => {
       lockdown: path.join(
         path.dirname(require.resolve('ses/package.json')),
         'dist',
-        'lockdown.umd.min.js',
+        'lockdown.umd.js',
       ),
     },
     output: {

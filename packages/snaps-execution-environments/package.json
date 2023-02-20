@@ -25,7 +25,7 @@
     "lint": "yarn lint:eslint && yarn lint:misc --check",
     "clean": "rimraf '*.tsbuildinfo' 'dist/*' 'src/__GENERATED__/' 'coverage/*' '__test__/*'",
     "build:clean": "yarn clean && yarn build",
-    "build:post-tsc": "webpack --mode production && yarn build:concat",
+    "build:post-tsc": "webpack --mode none && yarn build:concat",
     "build:tsc": "tsc --project tsconfig.build.json",
     "build": "yarn build:tsc && yarn build:post-tsc",
     "build:test": "yarn webpack --mode none --config-name iframe-test --config-name node-process --config-name node-thread && yarn build:concat",
