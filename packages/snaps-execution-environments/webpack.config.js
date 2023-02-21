@@ -12,13 +12,19 @@ const ENVIRONMENTS = path.resolve(DIST, 'webpack');
 const UNSAFE_ENVIRONMENTS = path.resolve(__dirname, '__test__');
 
 module.exports = (_, argv) => {
-  const isProd = argv.mode === 'production';
-
   let extraOptions = {};
 
-  if (isProd === false) {
-    extraOptions = {
-      devtool: 'inline-source-map',
+  if (argv.mode !== 'production') {
+    extraOptions.devtool = 'inline-source-map';
+  }
+
+  if (process.env.NODE_ENV === 'test') {
+    extraOptions.resolve = {
+      plugins: [
+        new TsconfigPathsPlugin({
+          configFile: 'tsconfig.build.json',
+        }),
+      ],
     };
   }
 
@@ -26,8 +32,7 @@ module.exports = (_, argv) => {
    * Base configuration, which should be used by all environments. It sets up
    * TypeScript, and some common plugins.
    */
-  const baseConfig = {
-    ...extraOptions,
+  const baseConfig = merge(extraOptions, {
     mode: 'none',
     output: {
       filename: '[name].js',
@@ -50,14 +55,9 @@ module.exports = (_, argv) => {
     },
     resolve: {
       extensions: ['.tsx', '.ts', '.js'],
-      plugins: [
-        new TsconfigPathsPlugin({
-          configFile: 'tsconfig.build.json',
-        }),
-      ],
     },
     plugins: [new WebpackBarPlugin()],
-  };
+  });
 
   /**
    * Node configuration, which should be used by all node environments. It makes
