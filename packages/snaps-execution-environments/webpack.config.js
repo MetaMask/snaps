@@ -109,21 +109,14 @@ module.exports = () => {
   });
 
   /**
-   * Base browser configuration, which should be used by all browser
-   * environments. It makes sure that the SES lockdown bundle is included in the
-   * output bundle.
+   * Base browser configuration, without the SES lockdown bundle. This is used
+   * by the `iframe` environment, which needs to include the SES lockdown bundle
+   * in a specific order.
    *
-   * The SES bundle is inlined due to a bug in Chromium and/or SES, which causes
-   * unhandled promise rejections to not be caught.
+   * Other environments should use {@link browserLockdownConfig} instead, which
+   * extends this configuration.
    */
   const browserConfig = merge(baseConfig, {
-    entry: {
-      lockdown: path.join(
-        path.dirname(require.resolve('ses/package.json')),
-        'dist',
-        'lockdown.umd.js',
-      ),
-    },
     output: {
       filename: '[name].js',
     },
@@ -170,7 +163,7 @@ module.exports = () => {
       // `NODE_ENV` to `production`.
       nodeEnv: 'production',
 
-      minimize: true,
+      minimize: false,
       minimizer: [
         new TerserPlugin({
           // This makes sure we don't minify the SES lockdown bundle.
@@ -181,11 +174,35 @@ module.exports = () => {
   });
 
   /**
+   * Base browser configuration, which should be used by all browser
+   * environments. It makes sure that the SES lockdown bundle is included in the
+   * output bundle.
+   *
+   * The SES bundle is inlined due to a bug in Chromium and/or SES, which causes
+   * unhandled promise rejections to not be caught.
+   */
+  const browserLockdownConfig = merge(browserConfig, {
+    entry: {
+      lockdown: path.join(
+        path.dirname(require.resolve('ses/package.json')),
+        'dist',
+        'lockdown.umd.js',
+      ),
+    },
+  });
+
+  /**
    * Configuration for the `iframe` environment.
    */
   const iframeConfig = merge(browserConfig, {
     name: 'iframe',
     entry: {
+      snow: './src/iframe/snow.ts',
+      lockdown: path.join(
+        path.dirname(require.resolve('ses/package.json')),
+        'dist',
+        'lockdown.umd.js',
+      ),
       bundle: './src/iframe/index.ts',
     },
     output: {
@@ -196,7 +213,7 @@ module.exports = () => {
   /**
    * Configuration for the `offscreen` environment.
    */
-  const offscreenConfig = merge(browserConfig, {
+  const offscreenConfig = merge(browserLockdownConfig, {
     name: 'offscreen',
     entry: {
       bundle: './src/offscreen/index.ts',
@@ -209,9 +226,9 @@ module.exports = () => {
   /**
    * Configuration for the `unsafe` environment. This is used for testing. It's
    * essentially the same as the `iframe` environment, but does not do a full
-   * lockdown.
+   * lockdown. It also does not include the Snow bundle.
    */
-  const unsafeConfig = merge(browserConfig, {
+  const unsafeConfig = merge(browserLockdownConfig, {
     name: 'iframe-test',
     entry: {
       bundle: './src/iframe-test/index.ts',

@@ -2453,6 +2453,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@lavamoat/snow@npm:^1.4.1":
+  version: 1.4.1
+  resolution: "@lavamoat/snow@npm:1.4.1"
+  dependencies:
+    is-cross-origin: ^1.0.1
+  checksum: d4dcd9907bb4caa7ac7fc130dbe7eff0295a992769136895c222b8e823edb0de44aa822e467670515ef70e85b9e5edb93c4ca9ffc05735ed18528304e478754a
+  languageName: node
+  linkType: hard
+
 "@metamask/abi-utils@npm:^1.1.1":
   version: 1.1.1
   resolution: "@metamask/abi-utils@npm:1.1.1"
@@ -2918,6 +2927,7 @@ __metadata:
     "@babel/preset-typescript": ^7.18.6
     "@lavamoat/allow-scripts": ^2.0.3
     "@lavamoat/lavatube": ^0.0.1
+    "@lavamoat/snow": ^1.4.1
     "@metamask/auto-changelog": ^3.1.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
@@ -9865,6 +9875,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"is-cross-origin@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "is-cross-origin@npm:1.0.1"
+  dependencies:
+    is-window: ^1.0.2
+  checksum: 396efb188e986ed640b48e5ac19b3edb09ad9a95426b6e1cec18c087d97834e22baf2d1fa354eb87da4816dfa517ccd35d6788bb82ea37eba2e686b1b96ebf8f
+  languageName: node
+  linkType: hard
+
 "is-data-descriptor@npm:^0.1.4":
   version: 0.1.4
   resolution: "is-data-descriptor@npm:0.1.4"
@@ -10245,6 +10264,13 @@ __metadata:
   dependencies:
     call-bind: ^1.0.2
   checksum: 95bd9a57cdcb58c63b1c401c60a474b0f45b94719c30f548c891860f051bc2231575c290a6b420c6bc6e7ed99459d424c652bd5bf9a1d5259505dc35b4bf83de
+  languageName: node
+  linkType: hard
+
+"is-window@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "is-window@npm:1.0.2"
+  checksum: aeaacd2ca816d38d4e2fba4670158fba2190061f28a61c5d84df7c479abf8897b8cb634d22cb76cdf7805035e95bebd430faaab6231ac2ebc814eae02d2c8fd4
   languageName: node
   linkType: hard
 
