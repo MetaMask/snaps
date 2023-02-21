@@ -1,5 +1,5 @@
 {
-  "version": "0.29.0",
+  "version": "0.30.0",
   "description": "An example Snap that that uses ethers.js.",
   "proposedName": "ethers-js-snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps-monorepo.git"
   },
   "source": {
-    "shasum": "DdGSwnLxN3C1uIOf19UoeDYNCrzi0VSbEVoZB2zwmZU=",
+    "shasum": "DGlzeJ+RezU8vghcCs5e80Jq6EB7PoVSYyHObQ/+jog=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
