@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.30.0]
+### Uncategorized
+- Add WebAssembly permission ([#1185](https://github.com/MetaMask/snaps-monorepo/pull/1185))
+- Fix remove snaps from subjects & update core packages ([#1194](https://github.com/MetaMask/snaps-monorepo/pull/1194))
+- Bump @metamask/base-controller from 1.1.2 to 2.0.0 ([#1210](https://github.com/MetaMask/snaps-monorepo/pull/1210))
+
 ## [0.29.0]
 ### Added
 - Add method to get metadata from the Snaps registry ([#1173](https://github.com/MetaMask/snaps-monorepo/pull/1173))
@@ -458,7 +464,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.29.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.30.0...HEAD
+[0.30.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.29.0...v0.30.0
 [0.29.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.28.0...v0.29.0
 [0.28.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.1...v0.28.0
 [0.27.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.0...v0.27.1
