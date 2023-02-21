@@ -12,12 +12,8 @@ const DIST = path.resolve(__dirname, 'dist');
 const ENVIRONMENTS = path.resolve(DIST, 'webpack');
 const UNSAFE_ENVIRONMENTS = path.resolve(__dirname, '__test__');
 
-module.exports = (_, argv) => {
+module.exports = () => {
   let extraOptions = {};
-
-  if (argv.mode !== 'production') {
-    extraOptions.devtool = 'inline-source-map';
-  }
 
   if (process.env.NODE_ENV === 'test') {
     extraOptions.resolve = {

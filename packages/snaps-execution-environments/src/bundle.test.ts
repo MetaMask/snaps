@@ -18,9 +18,7 @@ describe('bundle', () => {
       expect.assertions(3);
 
       const fileSystem = createFsFromVolume(new Volume());
-      const configArray = createConfig(undefined, {
-        mode: 'production',
-      }) as Configuration[];
+      const configArray = createConfig() as Configuration[];
 
       const config = configArray.find(({ name }) => name === bundleName);
       assert(config);
