@@ -24,7 +24,7 @@
     "publish:package": "../../scripts/publish-package.sh"
   },
   "dependencies": {
-    "@metamask/utils": "^3.4.1",
+    "@metamask/utils": "^4.0.0",
     "superstruct": "^1.0.3"
   },
   "devDependencies": {

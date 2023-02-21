@@ -27,7 +27,7 @@
     "@metamask/providers": "^10.2.0",
     "@metamask/rpc-methods": "^0.29.0",
     "@metamask/snaps-utils": "^0.29.0",
-    "@metamask/utils": "^3.4.1"
+    "@metamask/utils": "^4.0.0"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.0.3",
