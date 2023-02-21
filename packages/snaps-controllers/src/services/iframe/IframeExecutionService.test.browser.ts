@@ -167,4 +167,58 @@ describe('IframeExecutionService', () => {
       'Failed to access document of the snap iframe: SecurityError',
     );
   });
+
+  it('confirms that events are secured', async () => {
+    // Check if the security critical properties of the Event object
+    // are unavailable. This will confirm that executeLockdownEvents works
+    // inside snaps-execution-environments
+    const { service } = createService(IframeExecutionService, {
+      iframeUrl: new URL(IFRAME_URL),
+    });
+
+    await service.executeSnap({
+      snapId: MOCK_SNAP_ID,
+      sourceCode: `
+        module.exports.onRpcRequest = async ({ request }) => {
+            let result;
+            const promise = new Promise((resolve) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', 'https://metamask.io/');
+                xhr.send();
+                xhr.onreadystatechange = (ev) => {
+                  result = ev;
+                  resolve();
+                };
+            });
+            await promise;
+
+            return {
+              targetIsUndefined: result.target === undefined,
+              currentTargetIsUndefined: result.target === undefined,
+              srcElementIsUndefined: result.target === undefined,
+              composedPathIsUndefined: result.target === undefined
+            };
+        };
+      `,
+      endowments: ['console', 'XMLHttpRequest'],
+    });
+
+    const result = await service.handleRpcRequest(MOCK_SNAP_ID, {
+      origin: 'foo',
+      handler: HandlerType.OnRpcRequest,
+      request: {
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'foobar',
+        params: [],
+      },
+    });
+
+    expect(result).toStrictEqual({
+      targetIsUndefined: true,
+      currentTargetIsUndefined: true,
+      srcElementIsUndefined: true,
+      composedPathIsUndefined: true,
+    });
+  });
 });
