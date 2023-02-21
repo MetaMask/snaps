@@ -9,7 +9,11 @@ module.exports = deepmerge(baseConfig, {
   coverageProvider: 'v8',
   projects: [
     deepmerge(baseConfig, {
-      coveragePathIgnorePatterns: ['index.ts', '.ava.test.ts'],
+      coveragePathIgnorePatterns: [
+        'index.ts',
+        '.ava.test.ts',
+        '<rootDir>/src/common/test-utils',
+      ],
       testMatch: ['<rootDir>/src/offscreen/*.test.ts'],
       testEnvironment: '<rootDir>/jest.environment.js',
 
@@ -21,7 +25,11 @@ module.exports = deepmerge(baseConfig, {
       },
     }),
     deepmerge(baseConfig, {
-      coveragePathIgnorePatterns: ['index.ts', '.ava.test.ts'],
+      coveragePathIgnorePatterns: [
+        'index.ts',
+        '.ava.test.ts',
+        '<rootDir>/src/common/test-utils',
+      ],
       testPathIgnorePatterns: ['<rootDir>/src/offscreen/*'],
       testEnvironment: '<rootDir>/jest.environment.js',
       testEnvironmentOptions: {

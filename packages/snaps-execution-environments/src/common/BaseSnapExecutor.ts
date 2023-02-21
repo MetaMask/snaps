@@ -2,7 +2,7 @@
 /// <reference path="../../../../node_modules/ses/index.d.ts" />
 import { StreamProvider } from '@metamask/providers';
 import { RequestArguments } from '@metamask/providers/dist/BaseProvider';
-import { RequestFunction, SnapsGlobalObject } from '@metamask/rpc-methods';
+import { SnapsGlobalObject } from '@metamask/rpc-methods';
 import {
   SnapExports,
   HandlerType,
@@ -36,7 +36,7 @@ import { createEndowments } from './endowments';
 import { addEventListener, removeEventListener } from './globalEvents';
 import { wrapKeyring } from './keyring';
 import { sortParamKeys } from './sortParams';
-import { constructError, withTeardown } from './utils';
+import { constructError, proxyStreamProvider, withTeardown } from './utils';
 import {
   ExecuteSnapRequestArgumentsStruct,
   PingRequestArgumentsStruct,
@@ -384,7 +384,8 @@ export class BaseSnapExecutor {
 
     const request = async (args: RequestArguments) => {
       assert(
-        args.method.startsWith('wallet_') || args.method.startsWith('snap_'),
+        String.prototype.startsWith.call(args.method, 'wallet_') ||
+          String.prototype.startsWith.call(args.method, 'snap_'),
         'The global Snap API only allows RPC methods starting with `wallet_*` and `snap_*`.',
       );
       this.notify({ method: 'OutboundRequest' });
@@ -395,7 +396,25 @@ export class BaseSnapExecutor {
       }
     };
 
-    return { request: request as RequestFunction };
+    // Proxy target is intentionally set to be an empty object, to ensure
+    // that access to the prototype chain is not possible.
+    const snapGlobalProxy = new Proxy(
+      {},
+      {
+        has(_target: object, prop: string | symbol) {
+          return typeof prop === 'string' && ['request'].includes(prop);
+        },
+        get(_target, prop: keyof StreamProvider) {
+          if (prop === 'request') {
+            return request;
+          }
+
+          return undefined;
+        },
+      },
+    ) as SnapsGlobalObject;
+
+    return harden(snapGlobalProxy);
   }
 
   /**
@@ -409,7 +428,7 @@ export class BaseSnapExecutor {
 
     const request = async (args: RequestArguments) => {
       assert(
-        !args.method.startsWith('snap_'),
+        !String.prototype.startsWith.call(args.method, 'snap_'),
         ethErrors.rpc.methodNotFound({
           data: {
             method: args.method,
@@ -424,20 +443,9 @@ export class BaseSnapExecutor {
       }
     };
 
-    // To harden and limit access to internals, we use a proxy.
-    const proxy = new Proxy(provider, {
-      get(target, prop: keyof StreamProvider) {
-        if (prop === 'request') {
-          return request;
-        } else if (['on', 'removeListener'].includes(prop)) {
-          return target[prop];
-        }
+    const streamProviderProxy = proxyStreamProvider(provider, request);
 
-        return undefined;
-      },
-    });
-
-    return proxy;
+    return harden(streamProviderProxy);
   }
 
   /**

@@ -4,7 +4,7 @@ A CLI for developing MetaMask Snaps.
 
 ## Installation
 
-Use Node.js `12.11.0` or later.
+Use Node.js `16.0.0` or later.
 We recommend [nvm](https://github.com/nvm-sh/nvm) for managing Node.js versions.
 
 Install a dev dependency in your snap project or globally using `yarn` or `npm`:
@@ -110,7 +110,7 @@ snap-project/
 ```
 
 Source files other than `index.js` are located through its imports.
-The defaults can be overwritten using the `snap.config.json` [config file](#configuration-file).
+The defaults can be overwritten using the `snap.config.js` [config file](#configuration-file).
 
 ### Configuration File
 
