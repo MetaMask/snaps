@@ -7,10 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.30.0]
-### Uncategorized
-- Fix remove snaps from subjects & update core packages ([#1194](https://github.com/MetaMask/snaps-monorepo/pull/1194))
+### Changed
 - Accept string operation for `snap_manageState` ([#1208](https://github.com/MetaMask/snaps-monorepo/pull/1208))
-- BREAKING: Remove deprecated `snap_confirm` ([#809](https://github.com/MetaMask/snaps-monorepo/pull/809))
+  - `snap_manageState` now accepts both enum and string types for its operations
+
+### Removed
+- **BREAKING:** Remove deprecated `snap_confirm` ([#809](https://github.com/MetaMask/snaps-monorepo/pull/809))
 
 ## [0.29.0]
 ### Added

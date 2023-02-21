@@ -7,10 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.30.0]
-### Uncategorized
-- Properly sandbox iframe and inline SES in execution bundles ([#1193](https://github.com/MetaMask/snaps-monorepo/pull/1193))
-- Add WebAssembly permission ([#1185](https://github.com/MetaMask/snaps-monorepo/pull/1185))
-- Fix remove snaps from subjects & update core packages ([#1194](https://github.com/MetaMask/snaps-monorepo/pull/1194))
+### Changed
+- No changes this release.
 
 ## [0.29.0]
 ### Changed
