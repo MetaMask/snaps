@@ -18,6 +18,10 @@ module.exports = () => {
   if (process.env.NODE_ENV === 'test') {
     extraOptions.resolve = {
       plugins: [
+        // To make it possible to build without requiring all other packages to
+        // be built first, we use the paths specified in `tsconfig.build.json`
+        // to use the TypeScript source files directly, rather than the
+        // transpiled JavaScript files.
         new TsconfigPathsPlugin({
           configFile: 'tsconfig.build.json',
         }),
@@ -125,6 +129,8 @@ module.exports = () => {
     },
     plugins: [
       new ProvidePlugin({
+        // These Node.js modules are used in the bundle, so we need to polyfill
+        // them.
         process: 'process/browser',
         Buffer: ['buffer', 'Buffer'],
       }),
@@ -145,8 +151,12 @@ module.exports = () => {
         fs: false,
       },
       fallback: {
+        // `path` and `crypto` are referenced in the bundles, but not used, so
+        // we set it to `false` to prevent webpack from trying to bundle them.
         path: false,
         crypto: false,
+
+        // `buffer` used by streams, so we have to add a polyfill.
         buffer: require.resolve('buffer/'),
       },
     },
@@ -211,6 +221,9 @@ module.exports = () => {
     },
     resolve: {
       fallback: {
+        // For the test build we use `TsconfigPathsPlugin`, which has the
+        // downside that it does not support the browser exports. We need to
+        // add a polyfill for `path` to make it work.
         path: 'path-browserify',
       },
     },
