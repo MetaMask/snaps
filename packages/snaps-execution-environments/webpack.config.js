@@ -6,6 +6,7 @@ const HtmlInlineScriptPlugin = require('html-inline-script-webpack-plugin');
 const { merge } = require('webpack-merge');
 const WebpackBarPlugin = require('webpackbar');
 const TerserPlugin = require('terser-webpack-plugin');
+const { ProvidePlugin } = require('webpack');
 
 const DIST = path.resolve(__dirname, 'dist');
 const ENVIRONMENTS = path.resolve(DIST, 'webpack');
@@ -127,6 +128,10 @@ module.exports = (_, argv) => {
       filename: '[name].js',
     },
     plugins: [
+      new ProvidePlugin({
+        process: 'process/browser',
+        Buffer: ['buffer', 'Buffer'],
+      }),
       new HtmlWebpackPlugin({
         title: 'MetaMask Snaps Execution Environment',
         scriptLoading: 'blocking',
@@ -146,6 +151,7 @@ module.exports = (_, argv) => {
       fallback: {
         path: false,
         crypto: false,
+        buffer: require.resolve('buffer/'),
       },
     },
     optimization: {
@@ -206,6 +212,11 @@ module.exports = (_, argv) => {
     },
     output: {
       path: path.resolve(UNSAFE_ENVIRONMENTS, 'iframe-test'),
+    },
+    resolve: {
+      fallback: {
+        path: 'path-browserify',
+      },
     },
   });
 
