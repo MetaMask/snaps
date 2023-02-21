@@ -19,7 +19,6 @@
     }
   },
   "main": "dist/index.js",
-  "module": "dist/index.browser.js",
   "browser": {
     "./dist/index.js": "./dist/index.browser.js"
   },
