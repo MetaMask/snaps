@@ -6,6 +6,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlInlineScriptPlugin = require('html-inline-script-webpack-plugin');
 const { merge } = require('webpack-merge');
 const WebpackBarPlugin = require('webpackbar');
+const TerserPlugin = require('terser-webpack-plugin');
 
 const DIST = path.resolve(__dirname, 'dist');
 const ENVIRONMENTS = path.resolve(DIST, 'webpack');
@@ -127,7 +128,6 @@ module.exports = (_, argv) => {
       filename: '[name].js',
     },
     plugins: [
-      new NodePolyfillPlugin(),
       new HtmlWebpackPlugin({
         title: 'MetaMask Snaps Execution Environment',
         scriptLoading: 'blocking',
@@ -144,6 +144,28 @@ module.exports = (_, argv) => {
         child_process: false,
         fs: false,
       },
+      fallback: {
+        path: false,
+        crypto: false,
+      },
+    },
+    optimization: {
+      // This makes the output deterministic, which is important for the
+      // snapshot tests.
+      chunkIds: 'deterministic',
+      moduleIds: 'deterministic',
+
+      // Since we're setting `mode` to `none`, we need to explicitly set
+      // `NODE_ENV` to `production`.
+      nodeEnv: 'production',
+
+      minimize: true,
+      minimizer: [
+        new TerserPlugin({
+          // This makes sure we don't minify the SES lockdown bundle.
+          exclude: /lockdown\.js$/u,
+        }),
+      ],
     },
   });
 
