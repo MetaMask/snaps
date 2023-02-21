@@ -6,6 +6,7 @@ import network from './network';
 import textDecoder from './textDecoder';
 import textEncoder from './textEncoder';
 import timeout from './timeout';
+import webhid from './webhid';
 
 export type EndowmentFactory = {
   names: readonly string[];
@@ -58,6 +59,7 @@ const buildCommonEndowments = (): EndowmentFactory[] => {
     textDecoder,
     textEncoder,
     date,
+    webhid,
   ];
 
   commonEndowments.forEach((endowmentSpecification) => {
