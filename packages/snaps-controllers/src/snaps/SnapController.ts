@@ -1601,16 +1601,16 @@ export class SnapController extends BaseController<
           );
         }
 
-        const permissions = this.messagingSystem.call(
-          'PermissionController:getPermissions',
-          origin,
-        ) as SubjectPermissions<PermissionConstraint>;
+        // const permissions = this.messagingSystem.call(
+        //   'PermissionController:getPermissions',
+        //   origin,
+        // ) as SubjectPermissions<PermissionConstraint>;
 
-        if (!isSnapPermitted(permissions, snapId)) {
-          throw ethErrors.provider.unauthorized(
-            `Not authorized to install snap "${snapId}". Request the permission for the snap before attempting to install it.`,
-          );
-        }
+        // if (!isSnapPermitted(permissions, snapId)) {
+        //   throw ethErrors.provider.unauthorized(
+        //     `Not authorized to install snap "${snapId}". Request the permission for the snap before attempting to install it.`,
+        //   );
+        // }
 
         const isUpdate = pendingUpdates.includes(snapId);
 
