@@ -68,10 +68,8 @@ export default function snaps(options?: Partial<Options>): Plugin {
         return;
       }
 
-      const sourceCode = await fs.readFile(output.file, 'utf8');
-
       if (defaultOptions.eval) {
-        await evalBundle(sourceCode).catch((error) => {
+        await evalBundle(output.file).catch((error) => {
           this.error(error);
         });
       }
@@ -80,7 +78,7 @@ export default function snaps(options?: Partial<Options>): Plugin {
         const { errors, warnings } = await checkManifest(
           pathUtils.dirname(defaultOptions.manifestPath),
           defaultOptions.writeManifest,
-          sourceCode
+          await fs.readFile(output.file, 'utf8'),
         );
 
         if (!defaultOptions.writeManifest && errors.length > 0) {

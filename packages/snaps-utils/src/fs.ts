@@ -1,5 +1,6 @@
 import { Json } from '@metamask/utils';
 import { promises as fs } from 'fs';
+import os from 'os';
 import pathUtils from 'path';
 
 import { readVirtualFile, VirtualFile } from './virtual-file';
@@ -145,3 +146,18 @@ export async function validateDirPath(
   }
   return true;
 }
+
+export const useTemporaryFile = async (
+  fileName: string,
+  fileContents: string,
+  fn: (path: string) => Promise<unknown>,
+): Promise<void> => {
+  const filePath = pathUtils.join(os.tmpdir(), fileName);
+  await fs.mkdir(pathUtils.dirname(filePath), { recursive: true });
+  await fs.writeFile(filePath, fileContents);
+  try {
+    await fn(filePath);
+  } finally {
+    await fs.unlink(filePath);
+  }
+};

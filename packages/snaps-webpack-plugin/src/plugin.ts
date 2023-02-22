@@ -4,6 +4,7 @@ import {
   postProcessBundle,
   PostProcessOptions,
   SourceMap,
+  useTemporaryFile,
 } from '@metamask/snaps-utils';
 import { assert } from '@metamask/utils';
 import pathUtils from 'path';
@@ -114,7 +115,9 @@ export default class SnapsWebpackPlugin {
       const bundleContent = bundleFile.toString();
 
       if (this.options.eval) {
-        await evalBundle(bundleContent);
+        await useTemporaryFile('snaps-bundle.js', bundleContent, (path) =>
+          evalBundle(path),
+        );
       }
 
       if (this.options.manifestPath) {

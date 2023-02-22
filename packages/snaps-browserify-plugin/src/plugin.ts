@@ -4,11 +4,10 @@ import {
   logWarning,
   postProcessBundle,
   PostProcessOptions,
+  useTemporaryFile,
 } from '@metamask/snaps-utils';
 import { BrowserifyObject } from 'browserify';
 import { fromSource } from 'convert-source-map';
-import { promises as fs } from 'fs';
-import os from 'os';
 import pathUtils from 'path';
 import { Transform, TransformCallback } from 'stream';
 
@@ -29,10 +28,7 @@ export type Options = PluginOptions &
  */
 async function postBundle(options: Partial<Options>, code: string) {
   if (options.eval) {
-    await evalBundle(code)
-      .catch((error) => {
-        throw new Error(`Snap evaluation error: ${error.toString()}`);
-      })
+    await useTemporaryFile('snaps-bundle.js', code, (path) => evalBundle(path));
   }
 
   if (options.manifestPath) {
