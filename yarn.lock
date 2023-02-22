@@ -2905,6 +2905,7 @@ __metadata:
     "@types/concat-stream": ^2.0.0
     "@types/gunzip-maybe": ^1.4.0
     "@types/jest": ^27.5.1
+    "@types/mocha": 10.0.1
     "@types/pump": ^1.1.1
     "@types/readable-stream": ^2.3.9
     "@types/tar-stream": ^2.2.2
@@ -3847,10 +3848,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/mocha@npm:^10.0.0":
+"@types/mocha@npm:10.0.1, @types/mocha@npm:^10.0.0":
   version: 10.0.1
   resolution: "@types/mocha@npm:10.0.1"
   checksum: 224ea9fce7b1734ccdb9aa99a622d902a538ce1847bca7fd22c5fb38adcf3ed536f50f48f587085db988a4bb3c2eb68f4b98e1cd6a38bc5547bd3bbbedc54495
+  languageName: node
+  linkType: hard
+
+"@types/mocha@patch:@types/mocha@npm:10.0.1#.yarn/patches/@types-mocha-npm-10.0.1-7c94e9e170.patch::locator=root%40workspace%3A.":
+  version: 10.0.1
+  resolution: "@types/mocha@patch:@types/mocha@npm%3A10.0.1#.yarn/patches/@types-mocha-npm-10.0.1-7c94e9e170.patch::version=10.0.1&hash=9a8b8d&locator=root%40workspace%3A."
+  checksum: 9df2881ac5a753984c9baf732ebb099808fe6bd048b8bb1ffe5bd5f9c63a2587bea5de36f91e86383c0ef0ce422dc37a69f0ad40c71fad97ca8af961ffb80761
   languageName: node
   linkType: hard
 
