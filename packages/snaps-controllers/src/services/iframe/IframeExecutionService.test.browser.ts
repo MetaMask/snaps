@@ -5,6 +5,7 @@ import {
   MOCK_ORIGIN,
   MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
+import { assert } from '@metamask/utils';
 
 import { IframeExecutionService } from './IframeExecutionService';
 
@@ -33,5 +34,22 @@ describe('IframeExecutionService', () => {
     expect(result).toBe('foo1');
 
     await service.terminateAllSnaps();
+  });
+
+  it('properly sandboxes the iframe', async () => {
+    const { service } = createService(IframeExecutionService, {
+      iframeUrl: new URL('http://localhost:4567'),
+    });
+
+    await service.executeSnap({
+      snapId: MOCK_SNAP_ID,
+      sourceCode: DEFAULT_SNAP_BUNDLE,
+      endowments: ['console'],
+    });
+
+    const iframe = document.querySelector('iframe');
+    assert(iframe);
+
+    expect(iframe.contentDocument).toBeNull();
   });
 });
