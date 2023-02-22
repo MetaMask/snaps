@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.30.0]
+### Added
+- Harden custom endowments ([#1172](https://github.com/MetaMask/snaps-monorepo/pull/1172))
+- Properly secure `snap` and `ethereum` request functions ([#1214](https://github.com/MetaMask/snaps-monorepo/pull/1214))
+
 ### Changed
 - Properly sandbox iframe and inline SES in execution bundles ([#1193](https://github.com/MetaMask/snaps-monorepo/pull/1193))
   - SES is now inlined in `index.html`
