@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add WebAssembly permission ([#1185](https://github.com/MetaMask/snaps-monorepo/pull/1185))
 
 ### Fixed
-- Fix remove snaps from subjects & update core packages ([#1194](https://github.com/MetaMask/snaps-monorepo/pull/1194))
+- Fix an issue with removing snaps ([#1194](https://github.com/MetaMask/snaps-monorepo/pull/1194))
   - Previously, the `SnapController` was not requesting revocation of the `wallet_snap` permission from the `PermissionController` if an origin no longer had any permitted snaps, logic has been updated to account for this
 
 ## [0.29.0]

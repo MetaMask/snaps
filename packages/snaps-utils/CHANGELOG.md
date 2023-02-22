@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.30.0]
 ### Changed
-- No changes this release.
+- Properly sandbox iframe and inline SES in execution bundles ([#1193](https://github.com/MetaMask/snaps-monorepo/pull/1193))
 
 ## [0.29.0]
 ### Changed
