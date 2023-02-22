@@ -10,7 +10,9 @@
     "**/*.test.ts",
     "./src/**/test-utils",
     "./src/**/__mocks__",
-    "./src/**/__snapshots__"
+    "./src/**/__snapshots__",
+    "wdio.config.ts",
+    "webpack.config.ts"
   ],
   "references": [
     {
