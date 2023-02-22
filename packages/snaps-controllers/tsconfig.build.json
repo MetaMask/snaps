@@ -8,9 +8,11 @@
   "include": ["./src"],
   "exclude": [
     "**/*.test.ts",
+    "**/*.test.browser.ts",
     "./src/**/test-utils",
     "./src/**/__mocks__",
-    "./src/**/__snapshots__"
+    "./src/**/__snapshots__",
+    "wdio.config.ts"
   ],
   "references": [
     {
