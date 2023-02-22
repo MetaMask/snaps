@@ -70,6 +70,7 @@
     "@types/concat-stream": "^2.0.0",
     "@types/gunzip-maybe": "^1.4.0",
     "@types/jest": "^27.5.1",
+    "@types/mocha": "^10.0.1",
     "@types/pump": "^1.1.1",
     "@types/readable-stream": "^2.3.9",
     "@types/tar-stream": "^2.2.2",
