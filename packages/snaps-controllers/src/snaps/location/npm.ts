@@ -222,9 +222,13 @@ async function fetchNpmTarball(
   registryUrl: URL | string,
   fetchFunction: typeof fetch,
 ): Promise<[ReadableStream, SemVerVersion]> {
-  const packageMetadata = await (
-    await fetchFunction(new URL(packageName, registryUrl).toString())
-  ).json();
+  const packageResponse = await fetchFunction(
+    new URL(packageName, registryUrl).toString(),
+  );
+  if (!packageResponse.ok) {
+    throw new Error('Failed to fetch NPM registry entry');
+  }
+  const packageMetadata = await packageResponse.json();
 
   if (!isObject(packageMetadata)) {
     throw new Error(
