@@ -226,7 +226,7 @@ async function fetchNpmTarball(
     new URL(packageName, registryUrl).toString(),
   );
   if (!packageResponse.ok) {
-    throw new Error('Failed to fetch NPM registry entry');
+    throw new Error(`Failed to fetch NPM registry entry. Status code: ${packageResponse.status}.`);
   }
   const packageMetadata = await packageResponse.json();
 
