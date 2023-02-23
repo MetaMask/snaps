@@ -9,10 +9,12 @@ import { assert } from '@metamask/utils';
 
 import { IframeExecutionService } from './IframeExecutionService';
 
+const IFRAME_URL = 'http://localhost:4567';
+
 describe('IframeExecutionService', () => {
   it('executes a snap', async () => {
     const { service } = createService(IframeExecutionService, {
-      iframeUrl: new URL('http://localhost:4567'),
+      iframeUrl: new URL(IFRAME_URL),
     });
 
     await service.executeSnap({
@@ -38,7 +40,7 @@ describe('IframeExecutionService', () => {
 
   it('properly sandboxes the iframe', async () => {
     const { service } = createService(IframeExecutionService, {
-      iframeUrl: new URL('http://localhost:4567'),
+      iframeUrl: new URL(IFRAME_URL),
     });
 
     await service.executeSnap({
@@ -59,11 +61,11 @@ describe('IframeExecutionService', () => {
     // Creates an iframe attempts to access the iframe created by the execution
     // service. This should fail due to the sandboxing.
     const testFrame = document.createElement('iframe');
-    testFrame.src = 'http://localhost:4567/test/sandbox';
+    testFrame.src = `${IFRAME_URL}/test/sandbox`;
     document.body.appendChild(testFrame);
 
     expect(await message).toBe(
-      'SecurityError: Blocked a frame with origin "http://localhost:4567" from accessing a cross-origin frame.',
+      `SecurityError: Blocked a frame with origin "${IFRAME_URL}" from accessing a cross-origin frame.`,
     );
   });
 });
