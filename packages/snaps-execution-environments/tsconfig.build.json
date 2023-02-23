@@ -12,7 +12,8 @@
     "./src/**/test-utils",
     "./src/**/__mocks__",
     "./src/**/__snapshots__",
-    "webpack.config.js"
+    "webpack.config.js",
+    "wdio.config.ts"
   ],
   "references": [
     {
