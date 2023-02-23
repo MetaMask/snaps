@@ -12,7 +12,7 @@
     "dist/"
   ],
   "scripts": {
-    "test": "yarn test:ava && jest && yarn merge:coverage && yarn posttest",
+    "test": "yarn test:ava && jest && yarn merge:coverage && yarn posttest && yarn test:browser",
     "posttest": "node update-coverage-thresholds.js",
     "test:browser": "wdio run wdio.config.ts",
     "test:ava": "c8 ava",
