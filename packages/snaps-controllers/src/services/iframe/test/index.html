@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+<head>
+  <title>Sandbox test</title>
+</head>
+<body>
+<!--
+This file is used to test the sandboxing of the iframe. It is used by the
+`IframeExecutionService.test.browser.ts` test.
+-->
+<script>
+  try {
+    top[0].document;
+    window.parent.postMessage('unsafe', '*');
+  } catch (e) {
+    window.parent.postMessage(e.toString(), '*');
+  }
+</script>
+</body>
+</html>

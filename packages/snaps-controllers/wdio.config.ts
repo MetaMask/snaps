@@ -52,12 +52,19 @@ export const config: Options.Testrunner = {
       {
         port: 4567,
         folders: [
+          // The iframe execution service bundle.
           {
             mount: '/',
             path: resolve(
               __dirname,
               '../snaps-execution-environments/__test__/iframe-test',
             ),
+          },
+
+          // A test page used for testing the sandboxing.
+          {
+            mount: '/test/sandbox',
+            path: resolve(__dirname, './src/services/iframe/test'),
           },
         ],
       },

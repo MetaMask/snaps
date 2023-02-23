@@ -50,9 +50,22 @@ describe('IframeExecutionService', () => {
     const iframe = document.querySelector('iframe');
     assert(iframe);
 
-    expect(iframe.contentDocument).toBeNull();
-    expect(() => iframe.contentWindow?.document).toThrow(
-      /Blocked a frame with origin ".+" from accessing a cross-origin frame./u,
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    const message = new Promise((resolve) => {
+      window.addEventListener('message', (event) => {
+        resolve(event.data);
+      });
+    });
+
+    // Creates an iframe attempts to access the iframe created by the execution
+    // service. This should fail due to the sandboxing.
+    const testFrame = document.createElement('iframe');
+    testFrame.src = 'http://localhost:4567/test/sandbox';
+    document.body.appendChild(testFrame);
+
+    expect(await message).toBe(
+      'SecurityError: Blocked a frame with origin "http://localhost:4567" from accessing a cross-origin frame.',
     );
   });
 });
