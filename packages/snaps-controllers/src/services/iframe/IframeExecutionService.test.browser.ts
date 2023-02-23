@@ -51,5 +51,8 @@ describe('IframeExecutionService', () => {
     assert(iframe);
 
     expect(iframe.contentDocument).toBeNull();
+    expect(() => iframe.contentWindow?.document).toThrow(
+      /Blocked a frame with origin ".+" from accessing a cross-origin frame./u,
+    );
   });
 });
