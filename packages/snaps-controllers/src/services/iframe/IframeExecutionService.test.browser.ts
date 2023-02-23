@@ -50,8 +50,6 @@ describe('IframeExecutionService', () => {
     const iframe = document.querySelector('iframe');
     assert(iframe);
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
     const message = new Promise((resolve) => {
       window.addEventListener('message', (event) => {
         resolve(event.data);
