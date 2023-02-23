@@ -32,6 +32,19 @@ describe('HttpLocation', () => {
     expect(bundle.toString()).toStrictEqual(DEFAULT_SNAP_BUNDLE);
   });
 
+  it('throws if fetch fails', async () => {
+    const base = 'http://foo.bar';
+
+    fetchMock.mockResponse(async () => ({ status: 404, body: 'Not found' }));
+    const location = new HttpLocation(new URL(base));
+    await expect(location.manifest()).rejects.toThrow(
+      'Failed to fetch "http://foo.bar/snap.manifest.json". Status code: 404.',
+    );
+    await expect(location.fetch('foo.js')).rejects.toThrow(
+      'Failed to fetch "http://foo.bar/foo.js". Status code: 404.',
+    );
+  });
+
   it('returns proper root', () => {
     const base = 'http://foo.bar/foo/';
     expect(new HttpLocation(new URL(base)).root.toString()).toStrictEqual(base);

@@ -56,9 +56,13 @@ export class HttpLocation implements SnapLocation {
       this.url,
     ).toString();
 
-    const contents = await (
-      await this.fetchFn(canonicalPath, this.fetchOptions)
-    ).text();
+    const response = await this.fetchFn(canonicalPath, this.fetchOptions);
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch "${canonicalPath}". Status code: ${response.status}.`,
+      );
+    }
+    const contents = await response.text();
     const manifest = JSON.parse(contents);
     const vfile = new VirtualFile<SnapManifest>({
       value: contents,
@@ -84,6 +88,11 @@ export class HttpLocation implements SnapLocation {
 
     const canonicalPath = this.toCanonical(relativePath).toString();
     const response = await this.fetchFn(canonicalPath, this.fetchOptions);
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch "${canonicalPath}". Status code: ${response.status}.`,
+      );
+    }
     const vfile = new VirtualFile({
       value: '',
       path: relativePath,
