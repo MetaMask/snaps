@@ -10,8 +10,11 @@
     -->
     <script>
       try {
+        // We try to access the snap iframe document. If this works, it means
+        // that the iframe is not sandboxed. Otherwise it will throw an error.
         top[0].document;
-        window.parent.postMessage('unsafe', '*');
+
+        window.parent.postMessage('Same origin frames access worked which might suggest sandboxing failed.', '*');
       } catch (e) {
         window.parent.postMessage(e.toString(), '*');
       }
