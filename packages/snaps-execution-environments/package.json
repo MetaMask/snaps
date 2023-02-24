@@ -12,7 +12,7 @@
     "dist/"
   ],
   "scripts": {
-    "test": "jest && yarn posttest && yarn test:browser",
+    "test": "jest && yarn posttest",
     "posttest": "jest-it-up --margin 0.25",
     "test:browser": "wdio run wdio.config.ts",
     "test:ci": "yarn test",
