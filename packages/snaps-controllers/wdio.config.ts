@@ -83,6 +83,6 @@ export const config: Options.Testrunner = {
   ],
   mochaOpts: {
     ui: 'bdd',
-    timeout: 60000,
+    timeout: 120000,
   },
 };

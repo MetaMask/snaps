@@ -3,7 +3,7 @@ import { MockPostMessageStream } from '@metamask/snaps-utils/test-utils';
 import { OffscreenSnapExecutor } from './OffscreenSnapExecutor';
 
 const MOCK_JOB_ID = 'job-id';
-const IFRAME_URL = `http://localhost:4567`;
+const IFRAME_URL = `http://localhost:4568`;
 
 /**
  * Write a message to the stream, wrapped with the job ID and frame URL.

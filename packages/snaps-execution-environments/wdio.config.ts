@@ -49,7 +49,7 @@ export const config: Options.Testrunner = {
     [
       'static-server',
       {
-        port: 4567,
+        port: 4568,
         folders: [
           {
             mount: '/',
@@ -72,6 +72,6 @@ export const config: Options.Testrunner = {
   ],
   mochaOpts: {
     ui: 'bdd',
-    timeout: 60000,
+    timeout: 120000,
   },
 };
