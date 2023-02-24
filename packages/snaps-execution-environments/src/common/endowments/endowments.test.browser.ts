@@ -15,11 +15,23 @@ import timeout from './timeout';
 // @ts-expect-error - `globalThis.process` is not optional.
 delete globalThis.process;
 
+const originalAtob = globalThis.atob.bind(globalThis);
+const originalBtoa = globalThis.btoa.bind(globalThis);
+const originalConsole = globalThis.console;
+
 lockdown({
-  domainTaming: 'unsafe',
+  consoleTaming: 'unsafe',
   errorTaming: 'unsafe',
-  stackFiltering: 'verbose',
+  mathTaming: 'unsafe',
+  dateTaming: 'unsafe',
+  overrideTaming: 'severe',
 });
+
+// This is a hack to make `atob,` `btoa`, and `console` hardening work. This
+// needs to be investigated further.
+globalThis.atob = harden(originalAtob);
+globalThis.btoa = harden(originalBtoa);
+globalThis.console = harden(originalConsole);
 
 describe('endowments', () => {
   describe('hardening', () => {
