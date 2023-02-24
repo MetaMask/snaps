@@ -626,6 +626,8 @@ describe('SnapController', () => {
     );
 
     await eventSubscriptionPromise;
+
+    snapController.destroy();
   });
 
   it('supports non-snap permissions', async () => {
@@ -662,6 +664,8 @@ describe('SnapController', () => {
     ).toStrictEqual({
       [MOCK_SNAP_ID]: expectedSnapObject,
     });
+
+    snapController.destroy();
   });
 
   it('throws an error on invalid semver range during installSnaps', async () => {
@@ -674,6 +678,8 @@ describe('SnapController', () => {
     ).rejects.toThrow(
       'The "version" field must be a valid SemVer version range if specified. Received: "foo".',
     );
+
+    controller.destroy();
   });
 
   it('throws an error if snap is not on allowlist and allowlisting is required', async () => {
@@ -691,6 +697,8 @@ describe('SnapController', () => {
     ).rejects.toThrow(
       'Cannot install version "1.0.0" of snap "npm:@metamask/example-snap": The snap is not on the allow list.',
     );
+
+    controller.destroy();
   });
 
   it('reuses an already installed Snap if it satisfies the requested SemVer range', async () => {
@@ -721,6 +729,8 @@ describe('SnapController', () => {
       'PermissionController:getPermissions',
       MOCK_ORIGIN,
     );
+
+    controller.destroy();
   });
 
   it('fails to install snap if user rejects installation', async () => {
@@ -754,6 +764,8 @@ describe('SnapController', () => {
     ).rejects.toThrow('User rejected the request.');
 
     expect(controller.get(MOCK_SNAP_ID)).toBeUndefined();
+
+    controller.destroy();
   });
 
   it('removes a snap that errors during installation after being added', async () => {
@@ -804,6 +816,8 @@ describe('SnapController', () => {
     );
 
     await eventSubscriptionPromise;
+
+    snapController.destroy();
   });
 
   it('adds a snap, disable/enables it, and still gets a response from an RPC method', async () => {
@@ -1516,7 +1530,9 @@ describe('SnapController', () => {
           },
         },
       );
+
       await service.terminateAllSnaps();
+      snapController.destroy();
     });
 
     it('handlers throw if the request has an invalid "jsonrpc" property', async () => {
@@ -1548,6 +1564,8 @@ describe('SnapController', () => {
           data: 'kaplar',
         }),
       );
+
+      snapController.destroy();
     });
 
     it('handlers will throw if there are too many pending requests before a snap has started', async () => {
@@ -1667,6 +1685,8 @@ describe('SnapController', () => {
       // Resolve the promise that the pending requests are waiting for and wait for them to finish
       resolveExecutePromise();
       await finishPromise;
+
+      snapController.destroy();
     });
   });
 
@@ -1698,6 +1718,8 @@ describe('SnapController', () => {
         MOCK_ORIGIN,
       );
       expect(authorizeSpy).not.toHaveBeenCalled();
+
+      snapController.destroy();
     });
 
     it('reinstalls local snaps even if they are already installed (already stopped)', async () => {
@@ -1801,6 +1823,8 @@ describe('SnapController', () => {
       expect(location.manifest).toHaveBeenCalledTimes(1);
 
       expect(stopSnapSpy).not.toHaveBeenCalled();
+
+      snapController.destroy();
     });
 
     it('reinstalls local snaps even if they are already installed (running)', async () => {
@@ -1968,6 +1992,8 @@ describe('SnapController', () => {
         SnapEndowments.LongRunning,
       );
       expect(stopSnapSpy).toHaveBeenCalledTimes(1);
+
+      snapController.destroy();
     });
 
     it('authorizes permissions needed for snaps', async () => {
@@ -2054,6 +2080,8 @@ describe('SnapController', () => {
         MOCK_SNAP_ID,
         SnapEndowments.LongRunning,
       );
+
+      snapController.destroy();
     });
 
     it('throws an error if a forbidden permission is requested', async () => {
@@ -2085,6 +2113,8 @@ describe('SnapController', () => {
           [MOCK_SNAP_ID]: {},
         }),
       ).rejects.toThrow('One or more permissions are not allowed:\nfoobar');
+
+      controller.destroy();
     });
 
     it('displays a warning if endowment:long-running is used', async () => {
@@ -2204,6 +2234,8 @@ describe('SnapController', () => {
           },
         },
       );
+
+      snapController.destroy();
     });
 
     it('maps endowment permission caveats to the proper format', async () => {
@@ -2280,6 +2312,8 @@ describe('SnapController', () => {
           },
         },
       );
+
+      snapController.destroy();
     });
 
     it('maps permission caveats to the proper format when updating snaps', async () => {
@@ -2363,6 +2397,8 @@ describe('SnapController', () => {
           },
         },
       );
+
+      snapController.destroy();
     });
 
     it('returns an error on invalid snap id', async () => {
@@ -2376,6 +2412,8 @@ describe('SnapController', () => {
           [snapId]: {},
         }),
       ).rejects.toThrow('Invalid snap id. Unknown prefix. Received: "foo".');
+
+      controller.destroy();
     });
 
     it('returns an error if an origin does not have the permission to install a snap', async () => {
@@ -2388,6 +2426,8 @@ describe('SnapController', () => {
       ).rejects.toThrow(
         `Not authorized to install snap "bar". Request the permission for the snap before attempting to install it.`,
       );
+
+      controller.destroy();
     });
 
     it('updates a snap', async () => {
@@ -2494,6 +2534,8 @@ describe('SnapController', () => {
           version: newVersion,
         }),
       });
+
+      controller.destroy();
     });
 
     it("returns an error when didn't update", async () => {
@@ -2538,6 +2580,8 @@ describe('SnapController', () => {
         MOCK_SNAP_ID,
         expect.objectContaining({ versionRange: newVersionRange }),
       );
+
+      controller.destroy();
     });
 
     it('returns an error when a throw happens inside an update', async () => {
@@ -2576,6 +2620,8 @@ describe('SnapController', () => {
         MOCK_SNAP_ID,
         expect.objectContaining({ versionRange: newVersionRange }),
       );
+
+      controller.destroy();
     });
 
     it('rolls back any updates and installs made during a failure scenario', async () => {
@@ -2744,19 +2790,21 @@ describe('SnapController', () => {
         [MOCK_SNAP_ID]: {},
       });
       expect((result[MOCK_SNAP_ID] as any).error).toBeUndefined();
+
+      controller.destroy();
     });
   });
 
   describe('updateSnap', () => {
     it('throws an error on invalid snap id', async () => {
       const detectSnapLocation = loopbackDetect();
+      const controller = getSnapController();
+
       await expect(async () =>
-        getSnapController().updateSnap(
-          MOCK_ORIGIN,
-          'local:foo',
-          detectSnapLocation(),
-        ),
+        controller.updateSnap(MOCK_ORIGIN, 'local:foo', detectSnapLocation()),
       ).rejects.toThrow('Snap "local:foo" not found');
+
+      controller.destroy();
     });
 
     it('throws an error if the specified SemVer range is invalid', async () => {
@@ -2779,6 +2827,8 @@ describe('SnapController', () => {
       ).rejects.toThrow(
         'Received invalid snap version range: "this is not a version".',
       );
+
+      controller.destroy();
     });
 
     it('throws an error if the new version of the snap is blocked', async () => {
@@ -2808,6 +2858,8 @@ describe('SnapController', () => {
       await expect(
         controller.updateSnap(MOCK_ORIGIN, MOCK_SNAP_ID, detectSnapLocation()),
       ).rejects.toThrow('Cannot install version "1.1.0" of snap');
+
+      controller.destroy();
     });
 
     it('does not update on older snap version downloaded', async () => {
@@ -2849,6 +2901,8 @@ describe('SnapController', () => {
       expect(newSnap?.version).toStrictEqual(snap.version);
       expect(onSnapUpdated).not.toHaveBeenCalled();
       expect(onSnapAdded).not.toHaveBeenCalled();
+
+      controller.destroy();
     });
 
     it('updates a snap', async () => {
@@ -2953,6 +3007,8 @@ describe('SnapController', () => {
 
       expect(onSnapUpdated).toHaveBeenCalledTimes(1);
       expect(onSnapAdded).toHaveBeenCalledTimes(1);
+
+      controller.destroy();
     });
 
     it('can update crashed snap', async () => {
@@ -3005,6 +3061,8 @@ describe('SnapController', () => {
         },
       ]);
       expect(newSnap?.status).toBe(SnapStatus.Running);
+
+      controller.destroy();
     });
 
     it('stops and restarts a running snap during an update', async () => {
@@ -3099,6 +3157,8 @@ describe('SnapController', () => {
       );
       expect(isRunning).toBe(true);
       expect(stopSnapSpy).toHaveBeenCalledTimes(1);
+
+      controller.destroy();
     });
 
     it('returns null on update request denied', async () => {
@@ -3178,6 +3238,8 @@ describe('SnapController', () => {
         },
         true,
       );
+
+      controller.destroy();
     });
 
     it('requests approval for new and already approved permissions and revoke unused permissions', async () => {
@@ -3348,6 +3410,8 @@ describe('SnapController', () => {
         MOCK_SNAP_ID,
         SnapEndowments.LongRunning,
       );
+
+      controller.destroy();
     });
 
     it('assigns the same id to the approval request and the request metadata', async () => {
@@ -3438,6 +3502,8 @@ describe('SnapController', () => {
 
       await snapController.installSnaps(MOCK_ORIGIN, { [MOCK_SNAP_ID]: {} });
       await snapController.updateSnap(MOCK_ORIGIN, MOCK_SNAP_ID, detect());
+
+      snapController.destroy();
     });
 
     it('handles unnormalized paths correctly', async () => {
@@ -3470,6 +3536,8 @@ describe('SnapController', () => {
 
       const newSnap = controller.get(MOCK_SNAP_ID);
       expect(newSnap?.version).toBe('1.2.0');
+
+      controller.destroy();
     });
   });
 
@@ -3518,6 +3586,8 @@ describe('SnapController', () => {
           [MOCK_ORIGIN]: [WALLET_SNAP_PERMISSION_KEY],
         },
       );
+
+      snapController.destroy();
     });
 
     it('will update the "wallet_snap" permission from a subject that has one or more permitted snaps', async () => {
@@ -3569,6 +3639,8 @@ describe('SnapController', () => {
         SnapCaveatType.SnapIds,
         { [`${MOCK_SNAP_ID}2`]: {} },
       );
+
+      snapController.destroy();
     });
   });
 
@@ -3588,6 +3660,8 @@ describe('SnapController', () => {
 
       snapController.enableSnap(MOCK_SNAP_ID);
       expect(snapController.get(MOCK_SNAP_ID)?.enabled).toBe(true);
+
+      snapController.destroy();
     });
 
     it('throws an error if the specified snap does not exist', () => {
@@ -3595,6 +3669,8 @@ describe('SnapController', () => {
       expect(() => snapController.enableSnap(MOCK_SNAP_ID)).toThrow(
         `Snap "${MOCK_SNAP_ID}" not found.`,
       );
+
+      snapController.destroy();
     });
 
     it('throws an error if the specified snap is blocked', () => {
@@ -3611,6 +3687,8 @@ describe('SnapController', () => {
       expect(() => snapController.enableSnap(MOCK_SNAP_ID)).toThrow(
         `Snap "${MOCK_SNAP_ID}" is blocked and cannot be enabled.`,
       );
+
+      snapController.destroy();
     });
   });
 
@@ -3628,6 +3706,8 @@ describe('SnapController', () => {
 
       await snapController.disableSnap(MOCK_SNAP_ID);
       expect(snapController.get(MOCK_SNAP_ID)?.enabled).toBe(false);
+
+      snapController.destroy();
     });
 
     it('stops a running snap when disabling it', async () => {
@@ -3647,6 +3727,8 @@ describe('SnapController', () => {
       await snapController.disableSnap(MOCK_SNAP_ID);
       expect(snapController.get(MOCK_SNAP_ID)?.enabled).toBe(false);
       expect(snapController.isRunning(MOCK_SNAP_ID)).toBe(false);
+
+      snapController.destroy();
     });
 
     it('throws an error if the specified snap does not exist', async () => {
@@ -3654,6 +3736,8 @@ describe('SnapController', () => {
       await expect(snapController.disableSnap(MOCK_SNAP_ID)).rejects.toThrow(
         `Snap "${MOCK_SNAP_ID}" not found.`,
       );
+
+      snapController.destroy();
     });
   });
 
@@ -3726,6 +3810,8 @@ describe('SnapController', () => {
           explanation,
         },
       );
+
+      snapController.destroy();
     });
 
     it('stops running snaps when they are blocked', async () => {
@@ -3757,6 +3843,8 @@ describe('SnapController', () => {
       expect(snapController.get(mockSnap.id)?.blocked).toBe(true);
       expect(snapController.get(mockSnap.id)?.enabled).toBe(false);
       expect(snapController.isRunning(mockSnap.id)).toBe(false);
+
+      snapController.destroy();
     });
 
     it('unblocks snaps as expected', async () => {
@@ -3818,6 +3906,8 @@ describe('SnapController', () => {
         'SnapController:snapUnblocked',
         mockSnapA.id,
       );
+
+      snapController.destroy();
     });
 
     it('updating blocked snaps does not throw if a snap is removed while fetching the blocklist', async () => {
@@ -3858,6 +3948,8 @@ describe('SnapController', () => {
       // The snap was removed, no errors were thrown
       expect(snapController.has(mockSnap.id)).toBe(false);
       expect(consoleErrorSpy).not.toHaveBeenCalled();
+
+      snapController.destroy();
     });
 
     it('logs but does not throw unexpected errors while blocking', async () => {
@@ -3899,6 +3991,8 @@ describe('SnapController', () => {
         `Encountered error when stopping blocked snap "${mockSnap.id}".`,
         new Error('foo'),
       );
+
+      snapController.destroy();
     });
   });
 
@@ -3920,6 +4014,8 @@ describe('SnapController', () => {
       ).toStrictEqual({
         name: 'Mock Snap',
       });
+
+      snapController.destroy();
     });
 
     it('returns null for a non-verified snap', async () => {
@@ -3931,6 +4027,8 @@ describe('SnapController', () => {
       );
 
       expect(await snapController.getRegistryMetadata(MOCK_SNAP_ID)).toBeNull();
+
+      snapController.destroy();
     });
   });
 
@@ -3953,6 +4051,8 @@ describe('SnapController', () => {
 
         expect(getSpy).toHaveBeenCalledTimes(1);
         expect(result).toMatchObject(getSnapObject());
+
+        snapController.destroy();
       });
     });
 
@@ -3982,6 +4082,8 @@ describe('SnapController', () => {
           }),
         ).toBe(true);
         expect(handleRpcRequestSpy).toHaveBeenCalledTimes(1);
+
+        snapController.destroy();
       });
     });
 
@@ -4010,6 +4112,8 @@ describe('SnapController', () => {
         }),
       ).toBe(true);
       expect(handleRpcRequestSpy).toHaveBeenCalledTimes(1);
+
+      snapController.destroy();
     });
   });
 
@@ -4041,6 +4145,8 @@ describe('SnapController', () => {
 
       expect(getSnapStateSpy).toHaveBeenCalledTimes(1);
       expect(result).toStrictEqual(state);
+
+      snapController.destroy();
     });
   });
 
@@ -4071,6 +4177,8 @@ describe('SnapController', () => {
 
       expect(hasSpy).toHaveBeenCalledTimes(1);
       expect(result).toBe(true);
+
+      snapController.destroy();
     });
   });
 
@@ -4100,6 +4208,8 @@ describe('SnapController', () => {
         // @ts-expect-error Accessing private property
         snapController.snapsRuntimeData.get(MOCK_SNAP_ID).state,
       ).toStrictEqual(state);
+
+      snapController.destroy();
     });
   });
 
@@ -4107,7 +4217,7 @@ describe('SnapController', () => {
     it('clears the state of a snap', async () => {
       const messenger = getSnapControllerMessenger();
 
-      getSnapController(
+      const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
           state: {
@@ -4127,6 +4237,8 @@ describe('SnapController', () => {
         MOCK_SNAP_ID,
       );
       expect(clearedState).toBeNull();
+
+      snapController.destroy();
     });
   });
 
@@ -4145,6 +4257,8 @@ describe('SnapController', () => {
 
       await messenger.call('SnapController:updateBlockedSnaps');
       expect(updateBlockedSnapsSpy).toHaveBeenCalledTimes(1);
+
+      snapController.destroy();
     });
 
     describe('SnapController:enable', () => {
@@ -4167,6 +4281,8 @@ describe('SnapController', () => {
 
         messenger.call('SnapController:enable', mockSnap.id);
         expect(snapController.state.snaps[mockSnap.id].enabled).toBe(true);
+
+        snapController.destroy();
       });
     });
 
@@ -4190,6 +4306,8 @@ describe('SnapController', () => {
 
         await messenger.call('SnapController:disable', mockSnap.id);
         expect(snapController.state.snaps[mockSnap.id].enabled).toBe(false);
+
+        snapController.destroy();
       });
     });
 
@@ -4213,6 +4331,8 @@ describe('SnapController', () => {
 
         await messenger.call('SnapController:remove', mockSnap.id);
         expect(snapController.state.snaps[mockSnap.id]).toBeUndefined();
+
+        snapController.destroy();
       });
     });
 
@@ -4225,7 +4345,7 @@ describe('SnapController', () => {
           origin: MOCK_ORIGIN,
         });
 
-        getSnapController(
+        const snapController = getSnapController(
           getSnapControllerOptions({
             messenger,
             state: {
@@ -4241,6 +4361,8 @@ describe('SnapController', () => {
         expect(result).toStrictEqual({
           [MOCK_SNAP_ID]: getTruncatedSnap(),
         });
+
+        snapController.destroy();
       });
     });
 
@@ -4252,7 +4374,7 @@ describe('SnapController', () => {
           origin: MOCK_ORIGIN,
         });
 
-        getSnapController(
+        const snapController = getSnapController(
           getSnapControllerOptions({
             messenger,
             state: {
@@ -4263,6 +4385,8 @@ describe('SnapController', () => {
 
         const result = messenger.call('SnapController:getAll');
         expect(result).toStrictEqual([getTruncatedSnap()]);
+
+        snapController.destroy();
       });
     });
 
@@ -4283,6 +4407,8 @@ describe('SnapController', () => {
         await messenger.call('SnapController:install', 'foo', snaps);
         expect(installSnapsSpy).toHaveBeenCalledTimes(1);
         expect(installSnapsSpy).toHaveBeenCalledWith('foo', snaps);
+
+        snapController.destroy();
       });
     });
 
@@ -4302,6 +4428,8 @@ describe('SnapController', () => {
 
         messenger.call('SnapController:removeSnapError', 'foo');
         expect(snapController.state.snapErrors.foo).toBeUndefined();
+
+        snapController.destroy();
       });
     });
 
@@ -4314,7 +4442,7 @@ describe('SnapController', () => {
           name: 'Mock Snap',
         });
 
-        getSnapController(
+        const snapController = getSnapController(
           getSnapControllerOptions({
             messenger,
             registry,
@@ -4329,6 +4457,8 @@ describe('SnapController', () => {
         ).toStrictEqual({
           name: 'Mock Snap',
         });
+
+        snapController.destroy();
       });
     });
   });
