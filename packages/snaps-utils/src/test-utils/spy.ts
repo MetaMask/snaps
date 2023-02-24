@@ -18,12 +18,14 @@ export const spy = <Target extends object, Args, Result>(
   target: Target,
   method: keyof Target,
 ) => {
-  const original = target[method];
+  const unboundOriginal = target[method];
 
   assert(
-    typeof original === 'function',
+    typeof unboundOriginal === 'function',
     `Cannot spy on non-function: ${method.toString()}.`,
   );
+
+  const original = unboundOriginal.bind(target);
 
   const spyFunction: SpyFunction<Args, Result> = (...args: Args[]): Result => {
     const result = original(...args);
