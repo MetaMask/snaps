@@ -17,21 +17,17 @@ delete globalThis.process;
 
 const originalAtob = globalThis.atob.bind(globalThis);
 const originalBtoa = globalThis.btoa.bind(globalThis);
-const originalConsole = globalThis.console;
 
 lockdown({
-  consoleTaming: 'unsafe',
+  domainTaming: 'unsafe',
   errorTaming: 'unsafe',
-  mathTaming: 'unsafe',
-  dateTaming: 'unsafe',
-  overrideTaming: 'severe',
+  stackFiltering: 'verbose',
 });
 
-// This is a hack to make `atob,` `btoa`, and `console` hardening work. This
-// needs to be investigated further.
+// This is a hack to make `atob`, and `btoa` hardening work. This needs to be
+// investigated further.
 globalThis.atob = harden(originalAtob);
 globalThis.btoa = harden(originalBtoa);
-globalThis.console = harden(originalConsole);
 
 describe('endowments', () => {
   describe('hardening', () => {
