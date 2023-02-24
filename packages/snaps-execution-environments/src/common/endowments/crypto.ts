@@ -8,8 +8,8 @@ const createCrypto = () => {
     typeof rootRealmGlobal.SubtleCrypto === 'function'
   ) {
     return {
-      crypto: rootRealmGlobal.crypto,
-      SubtleCrypto: rootRealmGlobal.SubtleCrypto,
+      crypto: harden(rootRealmGlobal.crypto),
+      SubtleCrypto: harden(rootRealmGlobal.SubtleCrypto),
     };
   }
   // For now, we expose the experimental webcrypto API for Node.js execution environments

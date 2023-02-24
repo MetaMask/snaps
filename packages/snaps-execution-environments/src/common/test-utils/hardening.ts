@@ -4,6 +4,7 @@ export type HardenedEndowmentSubject = {
   __flag: unknown;
   prototype: { __flag: unknown };
 };
+
 export type HardenedEndowmentInstance = {
   __flag: unknown;
   __proto__: { __flag: unknown };

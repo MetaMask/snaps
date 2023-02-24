@@ -99,6 +99,10 @@ export class TestSnapExecutor extends BaseSnapExecutor {
     });
   }
 
+  get commandBuffer() {
+    return this.#commandBuffer;
+  }
+
   // Utility function for executing snaps
   public async executeSnap(
     id: number,

@@ -2,39 +2,22 @@ const deepmerge = require('deepmerge');
 
 const baseConfig = require('../../jest.config.base');
 
-delete baseConfig.coverageThreshold;
-
 module.exports = deepmerge(baseConfig, {
-  coveragePathIgnorePatterns: ['./src/index.ts', '.ava.test.ts'],
-  coverageProvider: 'v8',
-  projects: [
-    deepmerge(baseConfig, {
-      coveragePathIgnorePatterns: [
-        'index.ts',
-        '.ava.test.ts',
-        '<rootDir>/src/common/test-utils',
-      ],
-      testMatch: ['<rootDir>/src/offscreen/*.test.ts'],
-      testEnvironment: '<rootDir>/jest.environment.js',
+  coveragePathIgnorePatterns: ['./src/index.ts'],
+  coverageThreshold: {
+    global: {
+      branches: 57.06,
+      functions: 57.41,
+      lines: 57.7,
+      statements: 57.86,
+    },
+  },
+  testTimeout: 10000,
+  testEnvironment: '<rootDir>/jest.environment.js',
+  testEnvironmentOptions: {
+    customExportConditions: ['node', 'node-addons'],
+  },
 
-      // These options are required to run iframes in JSDOM.
-      testEnvironmentOptions: {
-        resources: 'usable',
-        runScripts: 'dangerously',
-        customExportConditions: ['node', 'node-addons'],
-      },
-    }),
-    deepmerge(baseConfig, {
-      coveragePathIgnorePatterns: [
-        'index.ts',
-        '.ava.test.ts',
-        '<rootDir>/src/common/test-utils',
-      ],
-      testPathIgnorePatterns: ['<rootDir>/src/offscreen/*'],
-      testEnvironment: '<rootDir>/jest.environment.js',
-      testEnvironmentOptions: {
-        customExportConditions: ['node', 'node-addons'],
-      },
-    }),
-  ],
+  // This is required for `jest-fetch-mock` to work.
+  resetMocks: false,
 });

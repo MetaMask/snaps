@@ -17,7 +17,6 @@ export const config: Options.Testrunner = {
               NodeModulesPolyfillPlugin(),
               NodeGlobalsPolyfillPlugin({
                 buffer: true,
-                process: true,
               }),
             ],
           },
@@ -34,10 +33,10 @@ export const config: Options.Testrunner = {
 
   specs: ['./src/**/*.test.browser.ts'],
 
-  maxInstances: 10,
+  maxInstances: 1,
   capabilities: [
     {
-      maxInstances: 5,
+      maxInstances: 1,
       browserName: 'chrome',
       acceptInsecureCerts: true,
     },
@@ -50,21 +49,11 @@ export const config: Options.Testrunner = {
     [
       'static-server',
       {
-        port: 4567,
+        port: 4568,
         folders: [
-          // The iframe execution service bundle.
           {
             mount: '/',
-            path: resolve(
-              __dirname,
-              '../snaps-execution-environments/__test__/iframe-test',
-            ),
-          },
-
-          // A test page used for testing the sandboxing.
-          {
-            mount: '/test/sandbox',
-            path: resolve(__dirname, './src/services/iframe/test'),
+            path: resolve(__dirname, './__test__/iframe-test'),
           },
         ],
       },

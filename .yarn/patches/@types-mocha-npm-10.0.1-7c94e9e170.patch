@@ -1,14 +1,5 @@
 diff --git a/index.d.ts b/index.d.ts
 index 8e5122397bd0b9418decc4db6c508e6a018abd33..702191271bebb2c8505c123420d2b704f5351425 100755
---- a/index.d.ts
-+++ b/index.d.ts
-@@ -2611,7 +2611,7 @@ declare function run(): void;
-  *
-  * @see https://mochajs.org/api/global.html#before
-  */
--declare var before: Mocha.HookFunction;
-+// declare var before: Mocha.HookFunction;
-
  /**
   * Execute before running tests.
 @@ -2620,7 +2620,7 @@ declare var before: Mocha.HookFunction;

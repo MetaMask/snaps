@@ -1,43 +1,52 @@
-// eslint-disable-next-line import/no-unassigned-import
-import 'ses';
+/* eslint-disable @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-shadow, import/no-unassigned-import */
+
 import { HandlerType } from '@metamask/snaps-utils';
-import { EventEmitter } from 'stream';
+import {
+  MOCK_ORIGIN,
+  MOCK_SNAP_ID,
+  spy,
+} from '@metamask/snaps-utils/test-utils';
+import { browser } from '@wdio/globals';
 
-import * as logging from '../logging';
+import {
+  getMockedStreamProvider,
+  walkAndSearch,
+} from './test-utils/endowments';
 import { TestSnapExecutor } from './test-utils/executor';
+import { testEndowmentHardening } from './test-utils/hardening';
 
-const FAKE_ORIGIN = 'origin:foo';
-const FAKE_SNAP_NAME = 'local:foo';
-const ON_RPC_REQUEST = HandlerType.OnRpcRequest;
+import 'ses';
+
+const sleep = async (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
 
 describe('BaseSnapExecutor', () => {
+  before(() => {
+    // @ts-expect-error - `globalThis.process` is not optional.
+    delete globalThis.process;
+
+    globalThis.harden = (value) => value;
+  });
+
+  const TIMER_ENDOWMENTS = [
+    'setTimeout',
+    'clearTimeout',
+    'setInterval',
+    'clearInterval',
+    'console',
+  ];
+
   describe('timers', () => {
-    const TIMER_ENDOWMENTS = [
-      'setTimeout',
-      'clearTimeout',
-      'setInterval',
-      'clearInterval',
-      'console',
-    ];
-
-    beforeAll(() => {
-      jest.useFakeTimers();
-    });
-
-    afterAll(() => {
-      jest.useRealTimers();
-    });
-
     it("doesn't leak execution outside of expected timeshare during initial eval", async () => {
       const CODE = `
-        setTimeout(() => console.error('setTimeout executed'), 250);
-        setInterval(() => console.error('setInterval executed'), 250);
+        setTimeout(() => { throw new Error('setTimeout executed'); }, 10);
+        setInterval(() => { throw new Error('setInterval executed'); }, 10);
       `;
 
       const executor = new TestSnapExecutor();
-      const consoleErrorSpy = jest.spyOn(console, 'error');
+      await executor.executeSnap(1, MOCK_SNAP_ID, CODE, TIMER_ENDOWMENTS);
 
-      await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, TIMER_ENDOWMENTS);
+      await sleep(20);
 
       expect(await executor.readCommand()).toStrictEqual({
         jsonrpc: '2.0',
@@ -45,30 +54,28 @@ describe('BaseSnapExecutor', () => {
         result: 'OK',
       });
 
-      jest.advanceTimersByTime(250);
-
-      expect(consoleErrorSpy).not.toHaveBeenCalled();
+      // If this is empty, it means that the errors aren't being thrown.
+      expect(executor.commandBuffer).toHaveLength(0);
     });
 
     it("doesn't leak execution outside of expected timeshare during RPC calls", async () => {
-      // The 250 timeout should run and return a value, but all later timeouts should fail to execute
+      // The 25 timeout should run and return a value, but all later timeouts
+      // should fail to execute.
       const CODE = `
         exports.onRpcRequest = (() => {
           let resolve;
           const promise = new Promise((r) => { resolve = r; });
 
-          setTimeout(() => resolve('SNAP OK'), 250);
-          setTimeout(() => console.error('setTimeout executed'), 500);
-          setInterval(() => console.error('setInterval executed'), 500);
+          setTimeout(() => resolve('SNAP OK'), 25);
+          setTimeout(() => { throw new Error('setTimeout executed'); }, 50);
+          setInterval(() => { throw new Error('setInterval executed'); }, 50);
 
           return promise;
         });
       `;
 
       const executor = new TestSnapExecutor();
-      const consoleErrorSpy = jest.spyOn(console, 'error');
-
-      await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, TIMER_ENDOWMENTS);
+      await executor.executeSnap(1, MOCK_SNAP_ID, CODE, TIMER_ENDOWMENTS);
 
       expect(await executor.readCommand()).toStrictEqual({
         jsonrpc: '2.0',
@@ -81,14 +88,12 @@ describe('BaseSnapExecutor', () => {
         id: 2,
         method: 'snapRpc',
         params: [
-          FAKE_SNAP_NAME,
-          ON_RPC_REQUEST,
-          FAKE_ORIGIN,
+          MOCK_SNAP_ID,
+          HandlerType.OnRpcRequest,
+          MOCK_ORIGIN,
           { jsonrpc: '2.0', method: '' },
         ],
       });
-
-      jest.advanceTimersByTime(250);
 
       expect(await executor.readCommand()).toStrictEqual({
         jsonrpc: '2.0',
@@ -96,9 +101,10 @@ describe('BaseSnapExecutor', () => {
         result: 'SNAP OK',
       });
 
-      jest.advanceTimersByTime(250);
+      await sleep(100);
 
-      expect(consoleErrorSpy).not.toHaveBeenCalled();
+      // If this is empty, it means that the errors aren't being thrown.
+      expect(executor.commandBuffer).toHaveLength(0);
     });
   });
 
@@ -106,9 +112,9 @@ describe('BaseSnapExecutor', () => {
     const CODE = `
       exports.onRpcRequest = (() => new Promise(() => ({})));
     `;
-    const executor = new TestSnapExecutor();
 
-    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, []);
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -121,9 +127,9 @@ describe('BaseSnapExecutor', () => {
       id: 2,
       method: 'snapRpc',
       params: [
-        FAKE_SNAP_NAME,
-        ON_RPC_REQUEST,
-        FAKE_ORIGIN,
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
         { jsonrpc: '2.0', method: '', params: [] },
       ],
     });
@@ -145,7 +151,7 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       error: {
         code: -32603,
-        message: `The snap "${FAKE_SNAP_NAME}" has been terminated during execution.`,
+        message: `The snap "${MOCK_SNAP_ID}" has been terminated during execution.`,
         stack: expect.anything(),
       },
       id: 2,
@@ -157,9 +163,9 @@ describe('BaseSnapExecutor', () => {
     const CODE = `
       module.exports.onRpcRequest = () => ethereum.request({ method: 'eth_blockNumber', params: [] });
     `;
-    const executor = new TestSnapExecutor();
 
-    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, ['ethereum']);
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, ['ethereum']);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -172,9 +178,9 @@ describe('BaseSnapExecutor', () => {
       id: 2,
       method: 'snapRpc',
       params: [
-        FAKE_SNAP_NAME,
-        ON_RPC_REQUEST,
-        FAKE_ORIGIN,
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
         { jsonrpc: '2.0', method: '', params: [] },
       ],
     });
@@ -221,9 +227,9 @@ describe('BaseSnapExecutor', () => {
     const CODE = `
       module.exports.onRpcRequest = () => snap.request({ method: 'wallet_getPermissions', params: [] });
     `;
-    const executor = new TestSnapExecutor();
 
-    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, ['ethereum']);
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, ['ethereum']);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -236,9 +242,9 @@ describe('BaseSnapExecutor', () => {
       id: 2,
       method: 'snapRpc',
       params: [
-        FAKE_SNAP_NAME,
-        ON_RPC_REQUEST,
-        FAKE_ORIGIN,
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
         { jsonrpc: '2.0', method: '', params: [] },
       ],
     });
@@ -285,9 +291,9 @@ describe('BaseSnapExecutor', () => {
     const CODE = `
       module.exports.onRpcRequest = () => ethereum.request({ method: 'snap_confirm', params: [] });
     `;
-    const executor = new TestSnapExecutor();
 
-    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, ['ethereum']);
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, ['ethereum']);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -300,9 +306,9 @@ describe('BaseSnapExecutor', () => {
       id: 2,
       method: 'snapRpc',
       params: [
-        FAKE_SNAP_NAME,
-        ON_RPC_REQUEST,
-        FAKE_ORIGIN,
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
         { jsonrpc: '2.0', method: '', params: [] },
       ],
     });
@@ -327,11 +333,12 @@ describe('BaseSnapExecutor', () => {
         const listener = () => undefined;
         ethereum.on('accountsChanged', listener);
         ethereum.removeListener('accountsChanged', listener);
-        return ethereum.request({ method: 'eth_blockNumber', params: [] }) };
+        return ethereum.request({ method: 'eth_blockNumber', params: [] });
+      };
     `;
-    const executor = new TestSnapExecutor();
 
-    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, ['ethereum']);
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, ['ethereum']);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -344,9 +351,9 @@ describe('BaseSnapExecutor', () => {
       id: 2,
       method: 'snapRpc',
       params: [
-        FAKE_SNAP_NAME,
-        ON_RPC_REQUEST,
-        FAKE_ORIGIN,
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
         { jsonrpc: '2.0', method: '', params: [] },
       ],
     });
@@ -395,9 +402,9 @@ describe('BaseSnapExecutor', () => {
         snap.request;
         return snap.request({ method: 'wallet_getSnaps', params: [] }) };
     `;
-    const executor = new TestSnapExecutor();
 
-    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, ['ethereum']);
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, ['ethereum']);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -410,9 +417,9 @@ describe('BaseSnapExecutor', () => {
       id: 2,
       method: 'snapRpc',
       params: [
-        FAKE_SNAP_NAME,
-        ON_RPC_REQUEST,
-        FAKE_ORIGIN,
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
         { jsonrpc: '2.0', method: '', params: [] },
       ],
     });
@@ -465,11 +472,12 @@ describe('BaseSnapExecutor', () => {
 
   it("doesn't allow direct access to ethereum internals", async () => {
     const CODE = `
-      module.exports.onRpcRequest = () => ethereum._rpcEngine.handle({ method: 'snap_confirm', params: [] });
+      module.exports.onRpcRequest = () =>
+        ethereum._rpcEngine.handle({ method: 'snap_confirm', params: [] });
     `;
-    const executor = new TestSnapExecutor();
 
-    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, ['ethereum']);
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, ['ethereum']);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -482,9 +490,9 @@ describe('BaseSnapExecutor', () => {
       id: 2,
       method: 'snapRpc',
       params: [
-        FAKE_SNAP_NAME,
-        ON_RPC_REQUEST,
-        FAKE_ORIGIN,
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
         { jsonrpc: '2.0', method: '', params: [] },
       ],
     });
@@ -506,7 +514,7 @@ describe('BaseSnapExecutor', () => {
     `;
     const executor = new TestSnapExecutor();
 
-    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, []);
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -519,9 +527,9 @@ describe('BaseSnapExecutor', () => {
       id: 2,
       method: 'snapRpc',
       params: [
-        FAKE_SNAP_NAME,
-        ON_RPC_REQUEST,
-        FAKE_ORIGIN,
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
         { jsonrpc: '2.0', method: '', params: [] },
       ],
     });
@@ -548,7 +556,7 @@ describe('BaseSnapExecutor', () => {
     `;
     const executor = new TestSnapExecutor();
 
-    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, ['ethereum']);
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, ['ethereum']);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -561,9 +569,9 @@ describe('BaseSnapExecutor', () => {
       id: 2,
       method: 'snapRpc',
       params: [
-        FAKE_SNAP_NAME,
-        ON_RPC_REQUEST,
-        FAKE_ORIGIN,
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
         { jsonrpc: '2.0', method: '', params: [] },
       ],
     });
@@ -584,18 +592,11 @@ describe('BaseSnapExecutor', () => {
 
   it('notifies execution service of out of band errors via unhandledrejection', async () => {
     const CODE = `
-    module.exports.onRpcRequest = async () => 'foo';
+      module.exports.onRpcRequest = async () => 'foo';
     `;
+
     const executor = new TestSnapExecutor();
-    const emitter = new EventEmitter();
-
-    jest
-      .spyOn(window, 'addEventListener')
-      .mockImplementation((type, listener) =>
-        emitter.on(type, listener as any),
-      );
-
-    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, []);
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -608,9 +609,9 @@ describe('BaseSnapExecutor', () => {
       id: 2,
       method: 'snapRpc',
       params: [
-        FAKE_SNAP_NAME,
-        ON_RPC_REQUEST,
-        FAKE_ORIGIN,
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
         { jsonrpc: '2.0', method: '', params: [] },
       ],
     });
@@ -621,8 +622,11 @@ describe('BaseSnapExecutor', () => {
       result: 'foo',
     });
 
-    const testError = new Error('test error');
-    emitter.emit('unhandledrejection', { reason: testError });
+    // The executor listens for unhandledrejection events on the `window`
+    // object, so we dispatch one here.
+    const promise = browser.executeAsync(() => {
+      throw new Error('Execute async error.');
+    });
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -631,29 +635,26 @@ describe('BaseSnapExecutor', () => {
         error: {
           code: -32603,
           data: {
-            stack: testError.stack,
-            snapName: 'local:foo',
+            stack: expect.any(String),
+            snapName: MOCK_SNAP_ID,
           },
-          message: testError.message,
+          message: expect.stringContaining('Execute async error.'),
         },
       },
     });
+
+    await expect(promise).rejects.toThrow('Execute async error.');
   });
 
-  it('notifies execution service of out of band errors via unhandledrejection when event is error', async () => {
+  it('notifies execution service of out of band errors via error event', async () => {
+    // TODO: Verify that this test is actually testing what it says it is.
+
     const CODE = `
-    module.exports.onRpcRequest = async () => 'foo';
+      module.exports.onRpcRequest = async () => 'foo';
     `;
+
     const executor = new TestSnapExecutor();
-    const emitter = new EventEmitter();
-
-    jest
-      .spyOn(window, 'addEventListener')
-      .mockImplementation((type, listener) =>
-        emitter.on(type, listener as any),
-      );
-
-    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, []);
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -666,9 +667,9 @@ describe('BaseSnapExecutor', () => {
       id: 2,
       method: 'snapRpc',
       params: [
-        FAKE_SNAP_NAME,
-        ON_RPC_REQUEST,
-        FAKE_ORIGIN,
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
         { jsonrpc: '2.0', method: '', params: [] },
       ],
     });
@@ -679,8 +680,11 @@ describe('BaseSnapExecutor', () => {
       result: 'foo',
     });
 
-    const testError = new Error('test error');
-    emitter.emit('unhandledrejection', testError);
+    // The executor listens for error events on the `window` object, so we
+    // dispatch one here.
+    const promise = browser.execute(() => {
+      throw new Error('Execute error.');
+    });
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -689,80 +693,25 @@ describe('BaseSnapExecutor', () => {
         error: {
           code: -32603,
           data: {
-            stack: testError.stack,
-            snapName: 'local:foo',
+            stack: expect.any(String),
+            snapName: MOCK_SNAP_ID,
           },
-          message: testError.message,
+          message: expect.stringContaining('Execute error.'),
         },
       },
     });
-  });
 
-  it('notifies execution service of out of band errors via error', async () => {
-    const CODE = `
-    module.exports.onRpcRequest = async () => 'foo';
-    `;
-    const executor = new TestSnapExecutor();
-    const emitter = new EventEmitter();
-
-    jest
-      .spyOn(window, 'addEventListener')
-      .mockImplementation((type, listener) =>
-        emitter.on(type, listener as any),
-      );
-
-    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, []);
-
-    expect(await executor.readCommand()).toStrictEqual({
-      jsonrpc: '2.0',
-      id: 1,
-      result: 'OK',
-    });
-
-    await executor.writeCommand({
-      jsonrpc: '2.0',
-      id: 2,
-      method: 'snapRpc',
-      params: [
-        FAKE_SNAP_NAME,
-        ON_RPC_REQUEST,
-        FAKE_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
-    });
-
-    expect(await executor.readCommand()).toStrictEqual({
-      id: 2,
-      jsonrpc: '2.0',
-      result: 'foo',
-    });
-
-    const testError = new Error('test error');
-    emitter.emit('error', { error: testError });
-
-    expect(await executor.readCommand()).toStrictEqual({
-      jsonrpc: '2.0',
-      method: 'UnhandledError',
-      params: {
-        error: {
-          code: -32603,
-          data: {
-            stack: testError.stack,
-            snapName: 'local:foo',
-          },
-          message: testError.message,
-        },
-      },
-    });
+    await expect(promise).rejects.toThrow('Execute error.');
   });
 
   it('supports onTransaction export', async () => {
     const CODE = `
-      module.exports.onTransaction = ({ transaction, chainId, transactionOrigin }) => ({ transaction, chainId, transactionOrigin });
+      module.exports.onTransaction = ({ transaction, chainId, transactionOrigin }) =>
+        ({ transaction, chainId, transactionOrigin });
     `;
-    const executor = new TestSnapExecutor();
 
-    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, []);
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -770,8 +719,8 @@ describe('BaseSnapExecutor', () => {
       result: 'OK',
     });
 
-    // TODO: Updating the value to be closer to the value we expect from the extension.
-    // We also have to decide on the shape of that object.
+    // TODO: Update the value to be closer to the value we expect from the
+    //  extension. We also have to decide on the shape of that object.
     const transaction = { maxFeePerGas: '0x' };
 
     const params = {
@@ -785,9 +734,9 @@ describe('BaseSnapExecutor', () => {
       id: 2,
       method: 'snapRpc',
       params: [
-        FAKE_SNAP_NAME,
+        MOCK_SNAP_ID,
         HandlerType.OnTransaction,
-        FAKE_ORIGIN,
+        MOCK_ORIGIN,
         { jsonrpc: '2.0', method: 'foo', params },
       ],
     });
@@ -811,9 +760,9 @@ describe('BaseSnapExecutor', () => {
       }
       module.exports.keyring = new Keyring();
     `;
-    const executor = new TestSnapExecutor();
 
-    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, []);
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -826,7 +775,7 @@ describe('BaseSnapExecutor', () => {
       params: [
         {
           chainId: 'eip155:1',
-          origin: FAKE_ORIGIN,
+          origin: MOCK_ORIGIN,
           request: {
             method: 'eth_signTransaction',
             params: { foo: 'bar' },
@@ -840,9 +789,9 @@ describe('BaseSnapExecutor', () => {
       id: 2,
       method: 'snapRpc',
       params: [
-        FAKE_SNAP_NAME,
+        MOCK_SNAP_ID,
         HandlerType.SnapKeyring,
-        FAKE_ORIGIN,
+        MOCK_ORIGIN,
         { jsonrpc: '2.0', ...keyringRequest },
       ],
     });
@@ -858,9 +807,9 @@ describe('BaseSnapExecutor', () => {
       id: 3,
       method: 'snapRpc',
       params: [
-        FAKE_SNAP_NAME,
+        MOCK_SNAP_ID,
         HandlerType.SnapKeyring,
-        FAKE_ORIGIN,
+        MOCK_ORIGIN,
         { jsonrpc: '2.0', method: 'foo' },
       ],
     });
@@ -887,9 +836,9 @@ describe('BaseSnapExecutor', () => {
       }
       module.exports.keyring = new Keyring();
     `;
-    const executor = new TestSnapExecutor();
 
-    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, []);
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -907,9 +856,9 @@ describe('BaseSnapExecutor', () => {
       id: 2,
       method: 'snapRpc',
       params: [
-        FAKE_SNAP_NAME,
+        MOCK_SNAP_ID,
         HandlerType.SnapKeyring,
-        FAKE_ORIGIN,
+        MOCK_ORIGIN,
         { jsonrpc: '2.0', ...keyringRequest },
       ],
     });
@@ -941,9 +890,9 @@ describe('BaseSnapExecutor', () => {
       }
       module.exports.keyring = new Keyring();
     `;
-    const executor = new TestSnapExecutor();
 
-    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, []);
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -956,7 +905,7 @@ describe('BaseSnapExecutor', () => {
       params: [
         {
           chainId: 'eip155:1',
-          origin: FAKE_ORIGIN,
+          origin: MOCK_ORIGIN,
           eventName: 'accountsChanged',
         },
       ],
@@ -967,9 +916,9 @@ describe('BaseSnapExecutor', () => {
       id: 2,
       method: 'snapRpc',
       params: [
-        FAKE_SNAP_NAME,
+        MOCK_SNAP_ID,
         HandlerType.SnapKeyring,
-        FAKE_ORIGIN,
+        MOCK_ORIGIN,
         { jsonrpc: '2.0', ...keyringRequest },
       ],
     });
@@ -985,9 +934,9 @@ describe('BaseSnapExecutor', () => {
       id: 3,
       method: 'snapRpc',
       params: [
-        FAKE_SNAP_NAME,
+        MOCK_SNAP_ID,
         HandlerType.SnapKeyring,
-        FAKE_ORIGIN,
+        MOCK_ORIGIN,
         {
           jsonrpc: '2.0',
           method: 'importAccount',
@@ -1004,7 +953,7 @@ describe('BaseSnapExecutor', () => {
         data: {
           chainId: 'eip155:1',
           eventName: 'accountsChanged',
-          origin: FAKE_ORIGIN,
+          origin: MOCK_ORIGIN,
         },
       },
     });
@@ -1025,9 +974,9 @@ describe('BaseSnapExecutor', () => {
       }
       module.exports.keyring = new Keyring();
     `;
-    const executor = new TestSnapExecutor();
 
-    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, []);
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -1040,9 +989,9 @@ describe('BaseSnapExecutor', () => {
       id: 2,
       method: 'snapRpc',
       params: [
-        FAKE_SNAP_NAME,
+        MOCK_SNAP_ID,
         HandlerType.SnapKeyring,
-        FAKE_ORIGIN,
+        MOCK_ORIGIN,
         { jsonrpc: '2.0', method: 'getAccounts' },
       ],
     });
@@ -1055,11 +1004,10 @@ describe('BaseSnapExecutor', () => {
   });
 
   it("throws if snap doesn't export keyring", async () => {
-    const CODE = `
-    `;
-    const executor = new TestSnapExecutor();
+    const CODE = ``;
 
-    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, []);
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -1072,9 +1020,9 @@ describe('BaseSnapExecutor', () => {
       id: 2,
       method: 'snapRpc',
       params: [
-        FAKE_SNAP_NAME,
+        MOCK_SNAP_ID,
         HandlerType.SnapKeyring,
-        FAKE_ORIGIN,
+        MOCK_ORIGIN,
         { jsonrpc: '2.0', method: 'foo' },
       ],
     });
@@ -1096,9 +1044,9 @@ describe('BaseSnapExecutor', () => {
     const CODE = `
       module.exports.onCronjob = ({ request }) => request.params[0];
     `;
-    const executor = new TestSnapExecutor();
 
-    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, []);
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -1111,9 +1059,9 @@ describe('BaseSnapExecutor', () => {
       id: 2,
       method: 'snapRpc',
       params: [
-        FAKE_SNAP_NAME,
+        MOCK_SNAP_ID,
         HandlerType.OnCronjob,
-        FAKE_ORIGIN,
+        MOCK_ORIGIN,
         { jsonrpc: '2.0', method: 'foo', params: ['bar'] },
       ],
     });
@@ -1125,22 +1073,22 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
-  it('blocks Snaps from escaping confinement by using unbound this', async () => {
+  it('blocks snaps from escaping confinement by using unbound this', async () => {
+    const consoleSpy = spy(console, 'log');
+
     const PAYLOAD = `
-    console.error("Hack the planet");
+      console.log('Payload executed.');
     `;
+
     const CODE = `
       exports.onRpcRequest = async function() {
         await this.startSnap("payload", \`${PAYLOAD}\`, ['console'])
-        return 'PAYLOAD SENT';
+        return 'Payload has been sent.';
       }
     `;
 
     const executor = new TestSnapExecutor();
-
-    const consoleErrorSpy = jest.spyOn(console, 'error');
-
-    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, []);
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -1153,9 +1101,9 @@ describe('BaseSnapExecutor', () => {
       id: 2,
       method: 'snapRpc',
       params: [
-        FAKE_SNAP_NAME,
-        ON_RPC_REQUEST,
-        FAKE_ORIGIN,
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
         { jsonrpc: '2.0', method: '', params: [] },
       ],
     });
@@ -1170,19 +1118,18 @@ describe('BaseSnapExecutor', () => {
       },
     });
 
-    expect(consoleErrorSpy).not.toHaveBeenCalled();
+    expect(executor.commandBuffer).toHaveLength(0);
+    expect(consoleSpy.calls).not.toContainEqual({
+      args: ['Payload executed.'],
+      result: undefined,
+    });
+
+    consoleSpy.reset();
   });
 
   it('does not return control to a snap after idle teardown', async () => {
-    jest.useRealTimers();
-    const consoleLogSpy = jest.spyOn(console, 'log');
-    const logSpy = jest.spyOn(logging, 'log');
-    const TIMER_ENDOWMENTS = [
-      'setTimeout',
-      'clearTimeout',
-      'console',
-      'ethereum',
-    ];
+    const consoleSpy = spy(console, 'log');
+
     const CODE = `
       let promise;
 
@@ -1190,17 +1137,20 @@ describe('BaseSnapExecutor', () => {
         switch (request.method) {
           case 'first':
             promise = ethereum.request({ method: 'eth_blockNumber', params: [] })
-              .then(() => console.log('Jailbreak'));
-            return 'FIRST OK';
+              .then(() => console.log('Jailbreak.'));
+            return 'First call is ok.';
           case 'second':
-            const timeout = new Promise((r) => setTimeout(() => r('TIMEOUT_RESOLVED_FROM_SECOND_CALL'), 1000));
-            return Promise.race([timeout, promise.then(() => 'SECOND OK')]);
+            const timeout = new Promise((r) => setTimeout(() => r('Timeout resolved for second call.'), 1000));
+            return Promise.race([timeout, promise.then(() => 'Second call is ok.')]);
         }
       }
     `;
-    const executor = new TestSnapExecutor();
 
-    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, TIMER_ENDOWMENTS);
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, [
+      ...TIMER_ENDOWMENTS,
+      'ethereum',
+    ]);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -1208,15 +1158,14 @@ describe('BaseSnapExecutor', () => {
       result: 'OK',
     });
 
-    // --- Call Snap RPC
     await executor.writeCommand({
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
       params: [
-        FAKE_SNAP_NAME,
-        ON_RPC_REQUEST,
-        FAKE_ORIGIN,
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
         { jsonrpc: '2.0', method: 'first', params: [] },
       ],
     });
@@ -1240,18 +1189,17 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       id: 2,
       jsonrpc: '2.0',
-      result: 'FIRST OK',
+      result: 'First call is ok.',
     });
 
-    // --- Call Snap RPC for the second time
     await executor.writeCommand({
       jsonrpc: '2.0',
       id: 3,
       method: 'snapRpc',
       params: [
-        FAKE_SNAP_NAME,
-        ON_RPC_REQUEST,
-        FAKE_ORIGIN,
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
         { jsonrpc: '2.0', method: 'second', params: [] },
       ],
     });
@@ -1269,25 +1217,21 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       id: 3,
       jsonrpc: '2.0',
-      result: 'TIMEOUT_RESOLVED_FROM_SECOND_CALL',
+      result: 'Timeout resolved for second call.',
     });
 
-    expect(consoleLogSpy).not.toHaveBeenCalledWith('Jailbreak');
-    expect(logSpy).toHaveBeenCalledWith(
-      'Late promise received after Snap finished execution. Promise will be dropped.',
-    );
+    expect(executor.commandBuffer).toHaveLength(0);
+    expect(consoleSpy.calls).not.toContainEqual({
+      args: ['Jailbreak.'],
+      result: undefined,
+    });
+
+    consoleSpy.reset();
   });
 
   it('does not return control to a snap after idle teardown when request fails', async () => {
-    jest.useRealTimers();
-    const consoleLogSpy = jest.spyOn(console, 'log');
-    const logSpy = jest.spyOn(logging, 'log');
-    const TIMER_ENDOWMENTS = [
-      'setTimeout',
-      'clearTimeout',
-      'console',
-      'ethereum',
-    ];
+    const consoleSpy = spy(console, 'log');
+
     const CODE = `
       let promise;
 
@@ -1295,18 +1239,20 @@ describe('BaseSnapExecutor', () => {
         switch (request.method) {
           case 'first':
             promise = ethereum.request({ method: 'eth_blockNumber', params: [] })
-              .catch(() => console.log('Jailbreak'));
-            return 'FIRST OK';
+              .catch(() => console.log('Jailbreak.'));
+            return 'First call is ok.';
           case 'second':
-            const timeout = new Promise((r) => setTimeout(() => r('TIMEOUT_RESOLVED_FROM_SECOND_CALL'), 1000));
-            return Promise.race([timeout, promise.then(() => 'SECOND OK')]);
+            const timeout = new Promise((r) => setTimeout(() => r('Timeout resolved for second call.'), 1000));
+            return Promise.race([timeout, promise.then(() => 'Second call is ok.')]);
         }
       }
     `;
-    const executor = new TestSnapExecutor();
 
-    // --- Execute Snap
-    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, TIMER_ENDOWMENTS);
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, [
+      ...TIMER_ENDOWMENTS,
+      'ethereum',
+    ]);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -1314,15 +1260,14 @@ describe('BaseSnapExecutor', () => {
       result: 'OK',
     });
 
-    // --- Call Snap RPC
     await executor.writeCommand({
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
       params: [
-        FAKE_SNAP_NAME,
-        ON_RPC_REQUEST,
-        FAKE_ORIGIN,
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
         { jsonrpc: '2.0', method: 'first', params: [] },
       ],
     });
@@ -1346,18 +1291,17 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       id: 2,
       jsonrpc: '2.0',
-      result: 'FIRST OK',
+      result: 'First call is ok.',
     });
 
-    // --- Call Snap RPC for the second time
     await executor.writeCommand({
       jsonrpc: '2.0',
       id: 3,
       method: 'snapRpc',
       params: [
-        FAKE_SNAP_NAME,
-        ON_RPC_REQUEST,
-        FAKE_ORIGIN,
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
         { jsonrpc: '2.0', method: 'second', params: [] },
       ],
     });
@@ -1378,24 +1322,24 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       id: 3,
       jsonrpc: '2.0',
-      result: 'TIMEOUT_RESOLVED_FROM_SECOND_CALL',
+      result: 'Timeout resolved for second call.',
     });
 
-    expect(consoleLogSpy).not.toHaveBeenCalledWith('Jailbreak');
-    expect(logSpy).toHaveBeenCalledWith(
-      'Late promise received after Snap finished execution. Promise will be dropped.',
-    );
+    expect(executor.commandBuffer).toHaveLength(0);
+    expect(consoleSpy.calls).toHaveLength(0);
   });
 
   it('should handle promise rejection that is passed through the proxy', async () => {
-    // This will ensure that the reject(reason); is called from inside the proxy method
-    // when the original promise throws an error (i.e. RPC request fails).
+    // This will ensure that the reject(reason); is called from inside the proxy
+    // method when the original promise throws an error (i.e., JSON-RPC request
+    // fails).
     const CODE = `
-      module.exports.onRpcRequest = () => ethereum.request({ method: 'eth_blockNumber', params: [] });
+      module.exports.onRpcRequest = () =>
+        ethereum.request({ method: 'eth_blockNumber', params: [] });
     `;
-    const executor = new TestSnapExecutor();
 
-    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, ['ethereum']);
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, ['ethereum']);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -1408,9 +1352,9 @@ describe('BaseSnapExecutor', () => {
       id: 2,
       method: 'snapRpc',
       params: [
-        FAKE_SNAP_NAME,
-        ON_RPC_REQUEST,
-        FAKE_ORIGIN,
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
         { jsonrpc: '2.0', method: '', params: [] },
       ],
     });
@@ -1460,9 +1404,10 @@ describe('BaseSnapExecutor', () => {
     const CODE = `
       module.exports.onRpcRequest = () => BigInt(0);
     `;
-    const executor = new TestSnapExecutor();
 
-    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, []);
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
       id: 1,
@@ -1474,9 +1419,9 @@ describe('BaseSnapExecutor', () => {
       id: 2,
       method: 'snapRpc',
       params: [
-        FAKE_SNAP_NAME,
-        ON_RPC_REQUEST,
-        FAKE_ORIGIN,
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
         { jsonrpc: '2.0', method: '', params: [] },
       ],
     });
@@ -1501,9 +1446,10 @@ describe('BaseSnapExecutor', () => {
         globalThis === global &&
         globalThis === global.global;
     `;
-    const executor = new TestSnapExecutor();
 
-    await executor.executeSnap(1, FAKE_SNAP_NAME, CODE, []);
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
       id: 1,
@@ -1515,9 +1461,9 @@ describe('BaseSnapExecutor', () => {
       id: 2,
       method: 'snapRpc',
       params: [
-        FAKE_SNAP_NAME,
-        ON_RPC_REQUEST,
-        FAKE_ORIGIN,
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
         { jsonrpc: '2.0', method: '', params: [] },
       ],
     });
@@ -1529,151 +1475,185 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
-  describe('executeSnap', () => {
-    it.each([
-      {
-        snapName: 1,
-        code: 'module.exports.onRpcRequest = () => 1;',
-        endowments: [],
-      },
-      {
-        snapName: FAKE_SNAP_NAME,
-        code: 1,
-        endowments: [],
-      },
-      {
-        snapName: FAKE_SNAP_NAME,
-        code: 'module.exports.onRpcRequest = () => 1;',
-        endowments: ['foo', 1],
-      },
-      [1, 'module.exports.onRpcRequest = () => 1;', []],
-      [FAKE_SNAP_NAME, 1, []],
-      [FAKE_SNAP_NAME, 'module.exports.onRpcRequest = () => 1;', ['foo', 1]],
-    ])(
-      'throws an error if the request arguments are invalid',
-      async (params) => {
-        const executor = new TestSnapExecutor();
+  describe('hardening', () => {
+    before(() => {
+      // @ts-expect-error - `globalThis.harden` is not optional.
+      delete globalThis.harden;
 
-        await executor.writeCommand({
-          jsonrpc: '2.0',
-          id: 1,
-          method: 'executeSnap',
-          params,
-        });
-
-        expect(await executor.readCommand()).toStrictEqual({
-          jsonrpc: '2.0',
-          id: 1,
-          error: {
-            code: -32602,
-            data: expect.any(Object),
-            message: expect.any(String),
-            stack: expect.any(String),
-          },
-        });
-      },
-    );
-  });
-
-  describe('snapRpc', () => {
-    it.each([
-      {
-        snapName: 1,
-        method: ON_RPC_REQUEST,
-        origin: FAKE_ORIGIN,
-        request: { jsonrpc: '2.0', method: '', params: [] },
-      },
-      {
-        snapName: FAKE_SNAP_NAME,
-        method: 1,
-        origin: FAKE_ORIGIN,
-        request: { jsonrpc: '2.0', method: '', params: [] },
-      },
-      {
-        snapName: FAKE_SNAP_NAME,
-        method: ON_RPC_REQUEST,
-        origin: 1,
-        request: { jsonrpc: '2.0', method: '', params: [] },
-      },
-      {
-        snapName: FAKE_SNAP_NAME,
-        method: ON_RPC_REQUEST,
-        origin: FAKE_ORIGIN,
-        request: 1,
-      },
-      [
-        1,
-        ON_RPC_REQUEST,
-        FAKE_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
-      [
-        FAKE_SNAP_NAME,
-        1,
-        FAKE_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
-      [
-        FAKE_SNAP_NAME,
-        ON_RPC_REQUEST,
-        1,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
-      [FAKE_SNAP_NAME, ON_RPC_REQUEST, FAKE_ORIGIN, 1],
-    ])(
-      'throws an error if the request arguments are invalid',
-      async (params) => {
-        const executor = new TestSnapExecutor();
-
-        await executor.writeCommand({
-          jsonrpc: '2.0',
-          id: 1,
-          method: 'snapRpc',
-          params,
-        });
-
-        expect(await executor.readCommand()).toStrictEqual({
-          jsonrpc: '2.0',
-          id: 1,
-          error: {
-            code: -32602,
-            data: expect.any(Object),
-            message: expect.any(String),
-            stack: expect.any(String),
-          },
-        });
-      },
-    );
-  });
-
-  describe('onCommandRequest', () => {
-    it('throws a human-readable error if the request arguments are invalid', async () => {
-      const executor = new TestSnapExecutor();
-      const params = {
-        snapName: 1,
-        method: ON_RPC_REQUEST,
-        origin: FAKE_ORIGIN,
-        request: { jsonrpc: '2.0', method: '', params: [] },
-      };
-
-      await executor.writeCommand({
-        jsonrpc: '2.0',
-        id: 1,
-        method: 'snapRpc',
-        params,
+      lockdown({
+        domainTaming: 'unsafe',
+        errorTaming: 'unsafe',
+        stackFiltering: 'verbose',
       });
+    });
+
+    it('hardens the snap and ethereum endowments', async () => {
+      const CODE = `
+      module.exports.onRpcRequest = () => {
+        let result = {
+          hasMethods: {},
+          errors: [],
+        };
+
+        try {
+          result.hasMethods = {
+            ethereum: {
+              request: 'request' in ethereum,
+              on: 'on' in ethereum,
+              removeListener: 'removeListener' in ethereum,
+              rpcEngine: '_rpcEngine' in ethereum,
+            },
+            snap: {
+              request: 'request' in snap,
+              on: 'on' in snap,
+              removeListener: 'removeListener' in snap,
+              rpcEngine: '_rpcEngine' in snap,
+              requestType: typeof snap.request,
+            }
+          }
+        } catch (error) {
+          result.errors.push(error.message);
+        }
+
+        return result;
+      }
+    `;
+
+      const executor = new TestSnapExecutor();
+      await executor.executeSnap(1, MOCK_SNAP_ID, CODE, ['ethereum']);
 
       expect(await executor.readCommand()).toStrictEqual({
         jsonrpc: '2.0',
         id: 1,
-        error: {
-          code: -32602,
-          data: expect.any(Object),
-          message:
-            'Invalid parameters for method "snapRpc": At path: 0 -- Expected a string, but received: 1.',
-          stack: expect.any(String),
+        result: 'OK',
+      });
+
+      await executor.writeCommand({
+        jsonrpc: '2.0',
+        id: 2,
+        method: 'snapRpc',
+        params: [
+          MOCK_SNAP_ID,
+          HandlerType.OnRpcRequest,
+          MOCK_ORIGIN,
+          { jsonrpc: '2.0', method: '', params: [] },
+        ],
+      });
+
+      expect(await executor.readCommand()).toStrictEqual({
+        jsonrpc: '2.0',
+        id: 2,
+        result: {
+          errors: [],
+          hasMethods: {
+            ethereum: {
+              request: true,
+              on: true,
+              removeListener: true,
+              rpcEngine: false,
+            },
+            snap: {
+              request: true,
+              on: false,
+              removeListener: false,
+              rpcEngine: false,
+              requestType: 'function',
+            },
+          },
         },
       });
+    });
+
+    ['ethereum', 'snap'].forEach((endowment) => {
+      it(`properly hardens ${endowment}`, async () => {
+        const CODE = `
+        module.exports.onRpcRequest = () => {
+          let result = 'ENDOWMENT_SECURED';
+          let errors = [];
+
+          try {
+            errors = (${testEndowmentHardening})(${endowment}, () => ${endowment});
+            if (${endowment}.__flag) {
+              result = 'ENDOWMENT_NOT_SECURED';
+            }
+            if (${endowment}.__proto__ && ${endowment}.__proto__.__flag) {
+              result = 'ENDOWMENT_NOT_SECURED';
+            }
+            if (${endowment}.prototype && ${endowment}.prototype.__flag) {
+              result = 'ENDOWMENT_NOT_SECURED';
+            }
+            const objectProto = Object.getPrototypeOf(${endowment});
+            if (objectProto.__flag) {
+              result = 'ENDOWMENT_NOT_SECURED';
+            }
+          } catch (error) {
+            return error.message;
+          }
+
+          return {
+            result: result,
+            errors: errors,
+          };
+        };
+      `;
+
+        const executor = new TestSnapExecutor();
+        await executor.executeSnap(1, MOCK_SNAP_ID, CODE, ['ethereum']);
+
+        expect(await executor.readCommand()).toStrictEqual({
+          jsonrpc: '2.0',
+          id: 1,
+          result: 'OK',
+        });
+
+        await executor.writeCommand({
+          jsonrpc: '2.0',
+          id: 2,
+          method: 'snapRpc',
+          params: [
+            MOCK_SNAP_ID,
+            HandlerType.OnRpcRequest,
+            MOCK_ORIGIN,
+            { jsonrpc: '2.0', method: '', params: [] },
+          ],
+        });
+
+        expect(await executor.readCommand()).toStrictEqual({
+          jsonrpc: '2.0',
+          id: 2,
+          result: {
+            result: 'ENDOWMENT_SECURED',
+            errors: [
+              'Cannot define property __flag, object is not extensible',
+              'Cannot define property __flag, object is not extensible',
+              "Cannot set properties of undefined (setting '__flag')",
+              "Cannot set properties of undefined (setting '__flag')",
+              "Cannot set properties of undefined (setting '__flag')",
+            ],
+          },
+        });
+      });
+    });
+
+    // This test will ensure that the custom endowment does not leak reference to
+    // `globalThis` by using object walker to walk object properties and search
+    // for it. Because of the same architectural design of a snap and ethereum
+    // endowments, it is enough to test one of them (both are StreamProviders
+    // going through proxy).
+    it('does not leak `globalThis` in custom endowments', async () => {
+      // Because of encapsulation of the endowment implemented in
+      // `BaseSnapExecutor`, mocked version is used and will reflect the same use
+      // case that is suitable for security auditing of this type.
+      const provider = getMockedStreamProvider();
+      expect(walkAndSearch(provider, globalThis)).toBe(false);
+    });
+
+    it('does not leak real prototype in custom endowments', async () => {
+      // Because of encapsulation of the endowment implemented in
+      // `BaseSnapExecutor`, mocked version is used and will reflect the same use
+      // case that is suitable for security auditing of this type.
+      const provider = getMockedStreamProvider();
+      expect(Object.getPrototypeOf(provider)).toStrictEqual({});
     });
   });
 });

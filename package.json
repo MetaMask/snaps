@@ -26,6 +26,7 @@
     "build:post-tsc": "yarn workspaces foreach --parallel --topological --verbose run build:post-tsc",
     "clean": "yarn workspaces foreach --parallel --verbose run clean",
     "test": "yarn workspaces foreach --parallel --verbose run test",
+    "test:browser": "yarn workspaces foreach --verbose run test:browser",
     "test:ci": "yarn workspace @metamask/snaps-execution-environments run build:test && yarn workspaces foreach --parallel --verbose run test:ci"
   },
   "simple-git-hooks": {
@@ -40,7 +41,8 @@
     ]
   },
   "resolutions": {
-    "@types/mocha@^10.0.1": "patch:@types/mocha@npm:10.0.1#.yarn/patches/@types-mocha-npm-10.0.1-7c94e9e170.patch"
+    "@types/mocha@^10.0.1": "patch:@types/mocha@npm:10.0.1#.yarn/patches/@types-mocha-npm-10.0.1-7c94e9e170.patch",
+    "jest-fetch-mock@^3.0.3": "patch:jest-fetch-mock@npm:3.0.3#.yarn/patches/jest-fetch-mock-npm-3.0.3-ac072ca8af.patch"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.0.3",

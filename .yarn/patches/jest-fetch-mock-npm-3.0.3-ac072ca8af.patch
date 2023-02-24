@@ -1,0 +1,14 @@
+diff --git a/src/index.js b/src/index.js
+index 42015c1815447aab80df4524d1af91ac33e5751d..003aa9a2f0ce3ac4a65053b0b29ca0fe9b5c7ff3 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -82,7 +82,8 @@ const isFn = unknown => typeof unknown === 'function'
+ const isMocking = jest.fn(staticMatches(true))
+ 
+ const abortError = () =>
+-  new DOMException('The operation was aborted. ', 'AbortError')
++  // `DOMException` is not available in Node.js.
++  new Error('The operation was aborted. ')
+ 
+ const abort = () => {
+   throw abortError()
