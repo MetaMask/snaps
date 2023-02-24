@@ -17,4 +17,7 @@ module.exports = deepmerge(baseConfig, {
   testEnvironmentOptions: {
     customExportConditions: ['node', 'node-addons'],
   },
+
+  // This is required for `jest-fetch-mock` to work.
+  resetMocks: false,
 });

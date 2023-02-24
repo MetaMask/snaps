@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import fetchMock from 'jest-fetch-mock';
 
 import network from './network';

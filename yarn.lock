@@ -12359,13 +12359,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-fetch-mock@npm:^3.0.3":
+"jest-fetch-mock@npm:3.0.3":
   version: 3.0.3
   resolution: "jest-fetch-mock@npm:3.0.3"
   dependencies:
     cross-fetch: ^3.0.4
     promise-polyfill: ^8.1.3
   checksum: fb052f7e0ef1c8192a9c15efdd1b18d281ab68fc6b1648b30bff8880fe24418bdf12190ea79b1996932dc15417c3c01f5b2d77ef7104a7e7943e7cbe8d61071d
+  languageName: node
+  linkType: hard
+
+"jest-fetch-mock@patch:jest-fetch-mock@npm:3.0.3#.yarn/patches/jest-fetch-mock-npm-3.0.3-ac072ca8af.patch::locator=root%40workspace%3A.":
+  version: 3.0.3
+  resolution: "jest-fetch-mock@patch:jest-fetch-mock@npm%3A3.0.3#.yarn/patches/jest-fetch-mock-npm-3.0.3-ac072ca8af.patch::version=3.0.3&hash=b5d7a5&locator=root%40workspace%3A."
+  dependencies:
+    cross-fetch: ^3.0.4
+    promise-polyfill: ^8.1.3
+  checksum: f346d693b446bb9d3d85be88e83a50268051e3e3f1bce75e26e58142b8dd5336983f678573761b45419e68834e40ee54d525718beb122ddff62655ca3b6653eb
   languageName: node
   linkType: hard
 

@@ -29,7 +29,6 @@ import {
   MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
 import { AssertionError, SemVerVersion, SemVerRange } from '@metamask/utils';
-import { Crypto } from '@peculiar/webcrypto';
 import { ethErrors } from 'eth-rpc-errors';
 import fetchMock from 'jest-fetch-mock';
 import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
@@ -68,11 +67,10 @@ import { handlerEndowments, SnapEndowments } from './endowments';
 import { SnapsRegistryStatus } from './registry';
 import { SnapControllerState, SNAP_APPROVAL_UPDATE } from './SnapController';
 
-const { subtle } = new Crypto();
-Object.defineProperty(window, 'crypto', {
+Object.defineProperty(globalThis, 'crypto', {
   value: {
-    ...window.crypto,
-    subtle,
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+    ...require('node:crypto').webcrypto,
     getRandomValues: jest.fn().mockReturnValue(new Uint32Array(32)),
   },
 });
