@@ -273,6 +273,8 @@ describe('SnapController', () => {
       MOCK_SNAP_ID,
       SnapEndowments.LongRunning,
     );
+
+    snapController.destroy();
   });
 
   it('can rehydrate state', async () => {
@@ -917,7 +919,7 @@ describe('SnapController', () => {
       },
     });
 
-    const [snapController, service] = getSnapControllerWithEES(options);
+    const snapController = getSnapController(options);
     const snap = snapController.getExpect(MOCK_SNAP_ID);
 
     rootMessenger.registerActionHandler(
@@ -955,7 +957,6 @@ describe('SnapController', () => {
     expect(snapController.state.snaps[snap.id].status).toBe('crashed');
 
     snapController.destroy();
-    await service.terminateAllSnaps();
   });
 
   it('does not timeout while waiting for response from MetaMask', async () => {
