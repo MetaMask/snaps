@@ -33,10 +33,10 @@ export const config: Options.Testrunner = {
 
   specs: ['./src/**/*.test.browser.ts'],
 
-  maxInstances: 10,
+  maxInstances: 1,
   capabilities: [
     {
-      maxInstances: 5,
+      maxInstances: 1,
       browserName: 'chrome',
       acceptInsecureCerts: true,
     },
