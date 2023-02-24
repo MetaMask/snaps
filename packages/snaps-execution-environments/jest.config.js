@@ -12,32 +12,11 @@ module.exports = deepmerge(baseConfig, {
       statements: 89.71,
     },
   },
-  projects: [
-    deepmerge(baseConfig, {
-      coveragePathIgnorePatterns: [
-        'index.ts',
-        '<rootDir>/src/common/test-utils',
-      ],
-      testMatch: ['<rootDir>/src/offscreen/*.test.ts'],
-      testEnvironment: '<rootDir>/jest.environment.js',
-
-      // These options are required to run iframes in JSDOM.
-      testEnvironmentOptions: {
-        resources: 'usable',
-        runScripts: 'dangerously',
-        customExportConditions: ['node', 'node-addons'],
-      },
-    }),
-    deepmerge(baseConfig, {
-      coveragePathIgnorePatterns: [
-        'index.ts',
-        '<rootDir>/src/common/test-utils',
-      ],
-      testPathIgnorePatterns: ['<rootDir>/src/offscreen/*'],
-      testEnvironment: '<rootDir>/jest.environment.js',
-      testEnvironmentOptions: {
-        customExportConditions: ['node', 'node-addons'],
-      },
-    }),
-  ],
+  testTimeout: 10000,
+  testEnvironment: '<rootDir>/jest.environment.js',
+  testEnvironmentOptions: {
+    resources: 'usable',
+    runScripts: 'dangerously',
+    customExportConditions: ['node', 'node-addons'],
+  },
 });

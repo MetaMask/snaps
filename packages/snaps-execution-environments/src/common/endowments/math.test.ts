@@ -1,6 +1,9 @@
 import { rootRealmGlobal } from '../globalObject';
 import math from './math';
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+globalThis.crypto = require('node:crypto').webcrypto;
+
 describe('Math endowment', () => {
   it('has expected properties', () => {
     expect(math).toMatchObject({
