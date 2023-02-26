@@ -9,7 +9,7 @@
       `IframeExecutionService.test.browser.ts` test.
     -->
     <script>
-      (function() {
+      (function () {
         try {
           const snap = top.querySelector('iframe[data-testid="snaps-iframe"]');
           if (!snap) {
@@ -26,7 +26,10 @@
             '*',
           );
         } catch (e) {
-          window.parent.postMessage(`Failed to access "top[0].document": ${e.toString()}`, '*');
+          window.parent.postMessage(
+            `Failed to access document of the snap iframe: ${e.toString()}`,
+            '*',
+          );
         }
       })();
     </script>
