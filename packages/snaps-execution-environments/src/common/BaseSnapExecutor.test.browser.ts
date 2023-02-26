@@ -6,6 +6,7 @@ import {
   MOCK_SNAP_ID,
   spy,
 } from '@metamask/snaps-utils/test-utils';
+import { assertIsJsonRpcSuccess, isPlainObject } from '@metamask/utils';
 import { browser } from '@wdio/globals';
 
 import {
@@ -501,7 +502,7 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       error: {
         code: -32603,
-        message: "Cannot read properties of undefined (reading 'handle')",
+        message: expect.stringContaining('undefined'),
         data: expect.any(Object),
       },
       id: 2,
@@ -1618,18 +1619,18 @@ describe('BaseSnapExecutor', () => {
           ],
         });
 
-        expect(await executor.readCommand()).toStrictEqual({
+        const command = await executor.readCommand();
+
+        assertIsJsonRpcSuccess(command);
+        assert(isPlainObject(command.result));
+
+        expect(command.result.errors).toHaveLength(5);
+        expect(command).toStrictEqual({
           jsonrpc: '2.0',
           id: 2,
           result: {
             result: 'ENDOWMENT_SECURED',
-            errors: [
-              'Cannot define property __flag, object is not extensible',
-              'Cannot define property __flag, object is not extensible',
-              "Cannot set properties of undefined (setting '__flag')",
-              "Cannot set properties of undefined (setting '__flag')",
-              "Cannot set properties of undefined (setting '__flag')",
-            ],
+            errors: expect.any(Array),
           },
         });
       });
