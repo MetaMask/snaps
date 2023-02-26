@@ -163,8 +163,8 @@ describe('IframeExecutionService', () => {
     testFrame.src = `${IFRAME_URL}/test/sandbox`;
     document.body.appendChild(testFrame);
 
-    expect(await message).toBe(
-      `SecurityError: Blocked a frame with origin "${IFRAME_URL}" from accessing a cross-origin frame.`,
+    expect(await message).toContain(
+      'Failed to access "top[0].document": SecurityError',
     );
   });
 });

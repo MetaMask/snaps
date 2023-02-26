@@ -41,7 +41,6 @@ export const config: Options.Testrunner = {
     {
       maxInstances: MAX_WORKERS,
       browserName: 'chrome',
-      acceptInsecureCerts: true,
     },
     {
       maxInstances: MAX_WORKERS,

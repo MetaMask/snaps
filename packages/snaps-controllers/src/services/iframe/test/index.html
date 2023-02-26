@@ -19,7 +19,7 @@
           '*',
         );
       } catch (e) {
-        window.parent.postMessage(e.toString(), '*');
+        window.parent.postMessage(`Failed to access "top[0].document": ${e.toString()}`, '*');
       }
     </script>
   </body>

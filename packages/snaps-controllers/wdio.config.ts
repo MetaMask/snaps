@@ -4,6 +4,9 @@ import type { Options } from '@wdio/types';
 import { resolve } from 'path';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
+const IS_CI = Boolean(process.env.CI);
+const MAX_WORKERS = IS_CI ? 1 : 5;
+
 export const config: Options.Testrunner = {
   runner: [
     'browser',
@@ -34,19 +37,23 @@ export const config: Options.Testrunner = {
 
   specs: ['./src/**/*.test.browser.ts'],
 
-  maxInstances: 10,
+  maxInstances: MAX_WORKERS,
   capabilities: [
     {
-      maxInstances: 5,
+      maxInstances: MAX_WORKERS,
       browserName: 'chrome',
-      acceptInsecureCerts: true,
+    },
+    {
+      maxInstances: MAX_WORKERS,
+      browserName: 'firefox',
     },
   ],
 
-  logLevel: 'silent',
+  logLevel: 'error',
 
   services: [
     'chromedriver',
+    'geckodriver',
     [
       'static-server',
       {

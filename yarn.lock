@@ -3102,6 +3102,7 @@ __metadata:
     vite: ^4.1.4
     vite-tsconfig-paths: ^4.0.5
     wdio-chromedriver-service: ^8.1.1
+    wdio-geckodriver-service: ^4.1.0
     webdriverio: ^8.3.10
   languageName: unknown
   linkType: soft
