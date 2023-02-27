@@ -4,12 +4,12 @@ import ObjectMultiplex from '@metamask/object-multiplex';
 import { StreamProvider } from '@metamask/providers';
 import { RequestArguments } from '@metamask/providers/dist/BaseProvider';
 import { SNAP_STREAM_NAMES } from '@metamask/snaps-utils';
-import { SILENT_LOGGER } from '@metamask/snaps-utils/test-utils';
 import { assert } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 import { createIdRemapMiddleware } from 'json-rpc-engine';
 
 import { proxyStreamProvider, withTeardown } from '../utils';
+import { SILENT_LOGGER } from './logger';
 
 /**
  * Object walker test utility function.

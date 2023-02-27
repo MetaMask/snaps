@@ -10,7 +10,6 @@ import {
   SNAP_EXPORT_NAMES,
   logError,
 } from '@metamask/snaps-utils';
-import { SILENT_LOGGER } from '@metamask/snaps-utils/test-utils';
 import {
   isObject,
   isValidJson,
@@ -37,6 +36,7 @@ import { createEndowments } from './endowments';
 import { addEventListener, removeEventListener } from './globalEvents';
 import { wrapKeyring } from './keyring';
 import { sortParamKeys } from './sortParams';
+import { SILENT_LOGGER } from './test-utils/logger';
 import { constructError, proxyStreamProvider, withTeardown } from './utils';
 import {
   ExecuteSnapRequestArgumentsStruct,
