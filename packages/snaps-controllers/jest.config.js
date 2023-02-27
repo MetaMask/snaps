@@ -2,15 +2,11 @@ const deepmerge = require('deepmerge');
 
 const baseConfig = require('../../jest.config.base');
 
+delete baseConfig.coverageThreshold;
+
 module.exports = deepmerge(baseConfig, {
-  coverageThreshold: {
-    global: {
-      branches: 88.94,
-      functions: 94.67,
-      lines: 96.26,
-      statements: 96.18,
-    },
-  },
+  coverageDirectory: './coverage/jest',
+  coverageProvider: 'v8',
   testTimeout: 5000,
 
   // This is required for `jest-fetch-mock` to work.

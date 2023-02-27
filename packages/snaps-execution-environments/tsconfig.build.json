@@ -14,7 +14,8 @@
     "./src/**/__mocks__",
     "./src/**/__snapshots__",
     "webpack.config.js",
-    "wdio.config.ts"
+    "wdio.config.ts",
+    "scripts"
   ],
   "references": [
     {

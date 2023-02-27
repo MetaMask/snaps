@@ -12,7 +12,8 @@
     "./src/**/test-utils",
     "./src/**/__mocks__",
     "./src/**/__snapshots__",
-    "wdio.config.ts"
+    "wdio.config.ts",
+    "scripts"
   ],
   "references": [
     {

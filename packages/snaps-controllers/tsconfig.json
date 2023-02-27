@@ -3,7 +3,7 @@
   "compilerOptions": {
     "baseUrl": "./"
   },
-  "include": ["./src", "wdio.config.ts"],
+  "include": ["./src", "wdio.config.ts", "scripts"],
   "references": [
     { "path": "../snaps-execution-environments" },
     { "path": "../rpc-methods" },

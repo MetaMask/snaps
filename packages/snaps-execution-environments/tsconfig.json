@@ -10,7 +10,8 @@
     "./src",
     "./src/openrpc.json",
     "webpack.config.js",
-    "wdio.config.ts"
+    "wdio.config.ts",
+    "scripts"
   ],
   "references": [
     {
