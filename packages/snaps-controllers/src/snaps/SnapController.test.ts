@@ -2815,7 +2815,7 @@ describe('SnapController', () => {
       const controller = getSnapController();
 
       await expect(async () =>
-        getSnapController().updateSnap(
+        controller.updateSnap(
           MOCK_ORIGIN,
           MOCK_LOCAL_SNAP_ID,
           detectSnapLocation(),
