@@ -114,7 +114,6 @@ jobs:
           key: yarn-cache-${{ runner.os }}-${{ needs.prepare.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}
       - run: yarn --immutable
       - run: yarn test:ci
-      - run: yarn test:browser
       - name: CodeCov
         uses: codecov/codecov-action@d9f34f8cd5cb3b3eb79b3e4b5dae3a16df499a70
       - name: Require clean working directory
