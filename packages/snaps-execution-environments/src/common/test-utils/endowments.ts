@@ -4,6 +4,7 @@ import ObjectMultiplex from '@metamask/object-multiplex';
 import { StreamProvider } from '@metamask/providers';
 import { RequestArguments } from '@metamask/providers/dist/BaseProvider';
 import { SNAP_STREAM_NAMES } from '@metamask/snaps-utils';
+import { SILENT_LOGGER } from '@metamask/snaps-utils/test-utils';
 import { assert } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 import { createIdRemapMiddleware } from 'json-rpc-engine';
@@ -46,6 +47,7 @@ export function getMockedStreamProvider() {
   const provider = new StreamProvider(rpcStream, {
     jsonRpcStreamName: 'metamask-provider',
     rpcMiddleware: [createIdRemapMiddleware()],
+    logger: SILENT_LOGGER,
   });
 
   const originalRequest = provider.request.bind(provider);

@@ -64,7 +64,7 @@ export const config: Options.Testrunner = {
             mount: '/',
             path: resolve(
               __dirname,
-              '../snaps-execution-environments/__test__/iframe-test',
+              '../snaps-execution-environments/dist/webpack/iframe',
             ),
           },
 

@@ -60,7 +60,7 @@ export const config: Options.Testrunner = {
         folders: [
           {
             mount: '/',
-            path: resolve(__dirname, './__test__/iframe-test'),
+            path: resolve(__dirname, './dist/webpack/iframe'),
           },
         ],
       },

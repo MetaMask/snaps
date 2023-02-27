@@ -10,6 +10,7 @@ import {
   SNAP_EXPORT_NAMES,
   logError,
 } from '@metamask/snaps-utils';
+import { SILENT_LOGGER } from '@metamask/snaps-utils/test-utils';
 import {
   isObject,
   isValidJson,
@@ -296,6 +297,7 @@ export class BaseSnapExecutor {
     const provider = new StreamProvider(this.rpcStream, {
       jsonRpcStreamName: 'metamask-provider',
       rpcMiddleware: [createIdRemapMiddleware()],
+      logger: process.env.NODE_ENV === 'test' ? SILENT_LOGGER : undefined,
     });
 
     await provider.initialize();

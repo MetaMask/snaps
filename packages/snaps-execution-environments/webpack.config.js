@@ -10,7 +10,6 @@ const { ProvidePlugin } = require('webpack');
 
 const DIST = path.resolve(__dirname, 'dist');
 const ENVIRONMENTS = path.resolve(DIST, 'webpack');
-const UNSAFE_ENVIRONMENTS = path.resolve(__dirname, '__test__');
 
 module.exports = () => {
   let extraOptions = {};
@@ -206,34 +205,5 @@ module.exports = () => {
     },
   });
 
-  /**
-   * Configuration for the `unsafe` environment. This is used for testing. It's
-   * essentially the same as the `iframe` environment, but does not do a full
-   * lockdown.
-   */
-  const unsafeConfig = merge(browserConfig, {
-    name: 'iframe-test',
-    entry: {
-      bundle: './src/iframe-test/index.ts',
-    },
-    output: {
-      path: path.resolve(UNSAFE_ENVIRONMENTS, 'iframe-test'),
-    },
-    resolve: {
-      fallback: {
-        // For the test build we use `TsconfigPathsPlugin`, which has the
-        // downside that it does not support the browser exports. We need to
-        // add a polyfill for `path` to make it work.
-        path: 'path-browserify',
-      },
-    },
-  });
-
-  return [
-    nodeProcessConfig,
-    nodeThreadConfig,
-    iframeConfig,
-    offscreenConfig,
-    unsafeConfig,
-  ];
+  return [nodeProcessConfig, nodeThreadConfig, iframeConfig, offscreenConfig];
 };
