@@ -3090,12 +3090,14 @@ __metadata:
     json-rpc-middleware-stream: ^4.2.0
     mkdirp: ^1.0.4
     nanoid: ^3.1.31
+    nyc: ^15.1.0
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.2.11
     pump: ^3.0.0
     readable-web-to-node-stream: ^3.0.2
     rimraf: ^3.0.2
     serve-handler: ^6.1.5
+    shx: ^0.3.4
     tar-stream: ^2.2.0
     ts-jest: ^29.0.0
     ts-node: ^10.9.1
