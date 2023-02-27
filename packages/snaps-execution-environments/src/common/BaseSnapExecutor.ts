@@ -36,7 +36,6 @@ import { createEndowments } from './endowments';
 import { addEventListener, removeEventListener } from './globalEvents';
 import { wrapKeyring } from './keyring';
 import { sortParamKeys } from './sortParams';
-import { SILENT_LOGGER } from './test-utils/logger';
 import { constructError, proxyStreamProvider, withTeardown } from './utils';
 import {
   ExecuteSnapRequestArgumentsStruct,
@@ -297,7 +296,6 @@ export class BaseSnapExecutor {
     const provider = new StreamProvider(this.rpcStream, {
       jsonRpcStreamName: 'metamask-provider',
       rpcMiddleware: [createIdRemapMiddleware()],
-      logger: process.env.NODE_ENV === 'test' ? SILENT_LOGGER : undefined,
     });
 
     await provider.initialize();
