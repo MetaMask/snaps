@@ -253,7 +253,7 @@ export const LocalSnapIdStruct = refine(
   'local Snap Id',
   (value) => {
     if (!value.startsWith(SnapIdPrefixes.local)) {
-      return `Expected local Snap ID, got "${value}".`;
+      return `Expected local snap ID, got "${value}".`;
     }
 
     const [error] = validate(

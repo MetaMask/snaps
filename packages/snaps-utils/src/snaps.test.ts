@@ -20,12 +20,17 @@ describe('assertIsValidSnapId', () => {
   it.each([undefined, {}, null, true, 2])(
     'throws for non-strings (#%#)',
     (value) => {
-      expect(() => assertIsValidSnapId(value)).toThrow('Invalid snap ID:');
+      expect(() => assertIsValidSnapId(value)).toThrow(
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+        `Invalid snap ID: Expected the value to satisfy a union of \`intersection | string\`, but received: ${value}`,
+      );
     },
   );
 
   it('throws for invalid snap id', () => {
-    expect(() => assertIsValidSnapId('foo:bar')).toThrow('Invalid snap ID:');
+    expect(() => assertIsValidSnapId('foo:bar')).toThrow(
+      `Invalid snap ID: Expected the value to satisfy a union of \`intersection | string\`, but received: "foo:bar"`,
+    );
   });
 
   it('supports valid NPM IDs', () => {
@@ -40,25 +45,25 @@ describe('assertIsValidSnapId', () => {
     ).not.toThrow();
   });
 
-  it('disallows whitespace', () => {
-    expect(() => assertIsValidSnapId(' local:http://localhost:8000')).toThrow(
-      'Invalid snap ID:',
-    );
-    expect(() => assertIsValidSnapId('local:http://localhost:8000 ')).toThrow(
-      'Invalid snap ID:',
-    );
-    expect(() => assertIsValidSnapId('local:http://localhost:8000\n')).toThrow(
-      'Invalid snap ID:',
-    );
-    expect(() => assertIsValidSnapId('local:http://localhost:8000\r')).toThrow(
-      'Invalid snap ID:',
+  it.each([
+    ' local:http://localhost:8000',
+    'local:http://localhost:8000 ',
+    'local:http://localhost:8000\n',
+    'local:http://localhost:8000\r',
+  ])('disallows whitespace #%#', (value) => {
+    expect(() => assertIsValidSnapId(value)).toThrow(
+      /Invalid snap ID: Expected the value to satisfy a union of `intersection | string`, but received: .\+/u,
     );
   });
 
-  it('disallows non-ASCII symbols', () => {
-    expect(() => assertIsValidSnapId('local:😎')).toThrow('Invalid snap ID:');
-    expect(() => assertIsValidSnapId('local:␡')).toThrow('Invalid snap ID:');
-  });
+  it.each(['local:😎', 'local:␡'])(
+    'disallows non-ASCII symbols #%#',
+    (value) => {
+      expect(() => assertIsValidSnapId(value)).toThrow(
+        `Invalid snap ID: Expected the value to satisfy a union of \`intersection | string\`, but received: "${value}"`,
+      );
+    },
+  );
 });
 
 describe('isCaipChainId', () => {
