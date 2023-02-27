@@ -1626,6 +1626,9 @@ describe('BaseSnapExecutor', () => {
 
   describe('hardening', () => {
     before(() => {
+      // We define a global `harden` function for the tests, but the `lockdown`
+      // function will fail if such function is already defined. We therefore
+      // delete it here.
       // @ts-expect-error - `globalThis.harden` is not optional.
       delete globalThis.harden;
 
