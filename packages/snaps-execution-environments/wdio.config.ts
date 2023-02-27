@@ -25,6 +25,11 @@ export const config: Options.Testrunner = {
           },
         },
       },
+
+      coverage: {
+        enabled: true,
+        exclude: ['**/*.test.browser.ts', '**/test-utils/**'],
+      },
     },
   ],
 
