@@ -150,10 +150,11 @@ module.exports = () => {
         fs: false,
       },
       fallback: {
-        // `path` and `crypto` are referenced in the bundles, but not used, so
+        // These packages are referenced in the bundles, but not used, so
         // we set it to `false` to prevent webpack from trying to bundle them.
         path: false,
         crypto: false,
+        module: false,
 
         // `buffer` used by streams, so we have to add a polyfill.
         buffer: require.resolve('buffer/'),
