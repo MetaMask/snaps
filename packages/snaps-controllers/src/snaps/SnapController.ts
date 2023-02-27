@@ -578,7 +578,6 @@ type AddSnapArgs = {
 // When we set a snap, we need all required properties to be present and
 // validated.
 type SetSnapArgs = Omit<AddSnapArgs, 'location'> & {
-  id: ValidatedSnapId;
   manifest: VirtualFile<SnapManifest>;
   files: VirtualFile[];
   /**
