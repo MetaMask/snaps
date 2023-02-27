@@ -85,6 +85,7 @@ export const config: Options.Testrunner = {
       {
         addConsoleLogs: true,
         showPreface: false,
+        realtimeReporting: true,
       },
     ],
   ],
