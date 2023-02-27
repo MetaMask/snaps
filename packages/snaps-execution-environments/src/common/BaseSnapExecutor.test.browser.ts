@@ -648,11 +648,11 @@ describe('BaseSnapExecutor', () => {
   });
 
   it('notifies execution service of out of band errors via error event', async () => {
-    // TODO: Verify that this test is actually testing what it says it is.
-
     const CODE = `
       module.exports.onRpcRequest = async () => 'foo';
     `;
+
+    const addEventListenerSpy = spy(globalThis, 'addEventListener');
 
     const executor = new TestSnapExecutor();
     await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
@@ -683,9 +683,11 @@ describe('BaseSnapExecutor', () => {
 
     // The executor listens for error events on the `window` object, so we
     // dispatch one here.
-    const promise = browser.execute(() => {
-      throw new Error('Execute error.');
-    });
+    assert(addEventListenerSpy.calls[1].args[0] === 'error');
+    const listener = addEventListenerSpy.calls[1].args[1] as EventListener;
+
+    const error = new Error('Test error.');
+    listener(new ErrorEvent('error', { error }));
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
@@ -694,15 +696,15 @@ describe('BaseSnapExecutor', () => {
         error: {
           code: -32603,
           data: {
-            stack: expect.any(String),
+            stack: error.stack,
             snapName: MOCK_SNAP_ID,
           },
-          message: expect.stringContaining('Execute error.'),
+          message: error.message,
         },
       },
     });
 
-    await expect(promise).rejects.toThrow('Execute error.');
+    addEventListenerSpy.reset();
   });
 
   it('supports onTransaction export', async () => {
