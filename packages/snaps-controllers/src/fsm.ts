@@ -1,4 +1,3 @@
-import { flatMap } from '@metamask/snaps-utils';
 import { assert } from '@metamask/utils';
 import {
   EventObject,
@@ -36,13 +35,15 @@ export function validateMachine<
   };
   const allActions = new Set<string>();
   const addActions = (actions: any) =>
-    flatMap(toArray(actions), (action) => {
-      if (typeof action === 'string') {
-        return [action];
-      }
-      assert(typeof action === 'function');
-      return [];
-    }).forEach(allActions.add.bind(allActions));
+    toArray(actions)
+      .flatMap((action) => {
+        if (typeof action === 'string') {
+          return [action];
+        }
+        assert(typeof action === 'function');
+        return [];
+      })
+      .forEach(allActions.add.bind(allActions));
 
   for (const state of Object.values<typeof typed.config.states[string]>(
     typed.config.states,

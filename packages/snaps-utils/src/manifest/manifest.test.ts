@@ -3,7 +3,6 @@ import { join } from 'path';
 
 import { readJsonFile } from '../fs';
 import * as npm from '../npm';
-import { fromEntries } from '../object';
 import { ProgrammaticallyFixableSnapError } from '../snaps';
 import {
   DEFAULT_SNAP_BUNDLE,
@@ -323,7 +322,9 @@ describe('getSnapIcon', () => {
 describe('getWritableManifest', () => {
   it('sorts the manifest keys', () => {
     // This reverses the order of the keys in the manifest.
-    const manifest = fromEntries(Object.entries(getSnapManifest()).reverse());
+    const manifest = Object.fromEntries(
+      Object.entries(getSnapManifest()).reverse(),
+    );
 
     const writableManifest = getWritableManifest(manifest as SnapManifest);
     expect(Object.keys(writableManifest)).toStrictEqual(
