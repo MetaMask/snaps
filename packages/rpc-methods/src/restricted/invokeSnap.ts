@@ -14,7 +14,7 @@ import {
   HandlerType,
   SnapRpcHookArgs,
   SnapCaveatType,
-  validateSnapId,
+  assertIsValidSnapId,
 } from '@metamask/snaps-utils';
 import {
   isJsonRpcRequest,
@@ -71,7 +71,7 @@ export function validateCaveat(caveat: Caveat<string, any>) {
   }
   const snapIds = Object.keys(caveat.value);
   for (const snapId of snapIds) {
-    validateSnapId(snapId);
+    assertIsValidSnapId(snapId);
   }
 }
 

@@ -19,9 +19,9 @@ const coveragePathIgnorePatterns = [
 module.exports = deepmerge(baseConfig, {
   coverageThreshold: {
     global: {
-      branches: 91.43,
+      branches: 91.41,
       functions: 100,
-      lines: 98.93,
+      lines: 98.94,
       statements: 98.97,
     },
   },

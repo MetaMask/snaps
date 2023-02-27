@@ -4,7 +4,14 @@ import {
   PermissionConstraint,
 } from '@metamask/permission-controller';
 import { BlockReason } from '@metamask/snaps-registry';
-import { assert, Json, SemVerVersion, isObject } from '@metamask/utils';
+import {
+  assert,
+  Json,
+  SemVerVersion,
+  isObject,
+  Opaque,
+  assertStruct,
+} from '@metamask/utils';
 import { base64 } from '@scure/base';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import stableStringify from 'fast-json-stable-stringify';
@@ -13,9 +20,11 @@ import {
   enums,
   intersection,
   literal,
+  pattern,
   refine,
   string,
   Struct,
+  union,
   validate,
 } from 'superstruct';
 import validateNPMPackage from 'validate-npm-package-name';
@@ -209,8 +218,6 @@ export function getSnapChecksum(
   return base64.encode(checksumFiles(all as VirtualFile[]));
 }
 
-export type ValidatedSnapId = `local:${string}` | `npm:${string}`;
-
 /**
  * Checks whether the `source.shasum` property of a Snap manifest matches the
  * shasum of the snap.
@@ -232,25 +239,32 @@ export function validateSnapShasum(
 
 export const LOCALHOST_HOSTNAMES = ['localhost', '127.0.0.1', '[::1]'] as const;
 
+// Require snap ids to only consist of printable ASCII characters
+export const BaseSnapIdStruct = pattern(string(), /^[\x21-\x7E]*$/u);
+
 const LocalSnapIdSubUrlStruct = uri({
   protocol: enums(['http:', 'https:']),
   hostname: enums(LOCALHOST_HOSTNAMES),
   hash: empty(string()),
   search: empty(string()),
 });
-export const LocalSnapIdStruct = refine(string(), 'local Snap Id', (value) => {
-  if (!value.startsWith(SnapIdPrefixes.local)) {
-    return `Expected local Snap ID, got "${value}".`;
-  }
+export const LocalSnapIdStruct = refine(
+  BaseSnapIdStruct,
+  'local Snap Id',
+  (value) => {
+    if (!value.startsWith(SnapIdPrefixes.local)) {
+      return `Expected local snap ID, got "${value}".`;
+    }
 
-  const [error] = validate(
-    value.slice(SnapIdPrefixes.local.length),
-    LocalSnapIdSubUrlStruct,
-  );
-  return error ?? true;
-});
+    const [error] = validate(
+      value.slice(SnapIdPrefixes.local.length),
+      LocalSnapIdSubUrlStruct,
+    );
+    return error ?? true;
+  },
+);
 export const NpmSnapIdStruct = intersection([
-  string(),
+  BaseSnapIdStruct,
   uri({
     protocol: literal(SnapIdPrefixes.npm),
     pathname: refine(string(), 'package name', function* (value) {
@@ -273,13 +287,18 @@ export const NpmSnapIdStruct = intersection([
 ]) as unknown as Struct<string, null>;
 
 export const HttpSnapIdStruct = intersection([
-  string(),
+  BaseSnapIdStruct,
   uri({
     protocol: enums(['http:', 'https:']),
     search: empty(string()),
     hash: empty(string()),
   }),
 ]) as unknown as Struct<string, null>;
+
+export const SnapIdStruct = union([NpmSnapIdStruct, LocalSnapIdStruct]);
+
+export type ValidatedSnapId = Opaque<string, typeof snapIdSymbol>;
+declare const snapIdSymbol: unique symbol;
 
 /**
  * Extracts the snap prefix from a snap ID.
@@ -298,25 +317,15 @@ export function getSnapPrefix(snapId: string): SnapIdPrefixes {
 }
 
 /**
- * Asserts the provided object is a snapId with a supported prefix.
+ * Assert that the given value is a valid snap ID.
  *
- * @param snapId - The object to validate.
- * @throws {@link Error}. If the validation fails.
+ * @param value - The value to check.
+ * @throws If the value is not a valid snap ID.
  */
-export function validateSnapId(
-  snapId: unknown,
-): asserts snapId is ValidatedSnapId {
-  if (!snapId || typeof snapId !== 'string') {
-    throw new Error(`Invalid snap id. Not a string.`);
-  }
-
-  for (const prefix of Object.values(SnapIdPrefixes)) {
-    if (snapId.startsWith(prefix) && snapId.replace(prefix, '').length > 0) {
-      return;
-    }
-  }
-
-  throw new Error(`Invalid snap id. Unknown prefix. Received: "${snapId}".`);
+export function assertIsValidSnapId(
+  value: unknown,
+): asserts value is ValidatedSnapId {
+  assertStruct(value, SnapIdStruct, 'Invalid snap ID');
 }
 
 /**
