@@ -22,14 +22,14 @@ describe('assertIsValidSnapId', () => {
     (value) => {
       expect(() => assertIsValidSnapId(value)).toThrow(
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-        `Invalid snap ID: Expected the value to satisfy a union of \`intersection | string\`, but received: ${value}`,
+        `Invalid snap ID: Expected the value to satisfy a union of \`intersection | string\`, but received: ${value}.`,
       );
     },
   );
 
   it('throws for invalid snap id', () => {
     expect(() => assertIsValidSnapId('foo:bar')).toThrow(
-      `Invalid snap ID: Expected the value to satisfy a union of \`intersection | string\`, but received: "foo:bar"`,
+      `Invalid snap ID: Expected the value to satisfy a union of \`intersection | string\`, but received: "foo:bar".`,
     );
   });
 
@@ -52,7 +52,7 @@ describe('assertIsValidSnapId', () => {
     'local:http://localhost:8000\r',
   ])('disallows whitespace #%#', (value) => {
     expect(() => assertIsValidSnapId(value)).toThrow(
-      /Invalid snap ID: Expected the value to satisfy a union of `intersection | string`, but received: .\+/u,
+      /Invalid snap ID: Expected the value to satisfy a union of `intersection \| string`, but received: .+\./u,
     );
   });
 
@@ -60,7 +60,7 @@ describe('assertIsValidSnapId', () => {
     'disallows non-ASCII symbols #%#',
     (value) => {
       expect(() => assertIsValidSnapId(value)).toThrow(
-        `Invalid snap ID: Expected the value to satisfy a union of \`intersection | string\`, but received: "${value}"`,
+        `Invalid snap ID: Expected the value to satisfy a union of \`intersection | string\`, but received: "${value}".`,
       );
     },
   );
