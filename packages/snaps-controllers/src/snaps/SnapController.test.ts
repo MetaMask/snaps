@@ -2377,7 +2377,7 @@ describe('SnapController', () => {
         controller.installSnaps(MOCK_ORIGIN, {
           [snapId]: {},
         }),
-      ).rejects.toThrow('Invalid snap id. Unknown prefix. Received: "foo".');
+      ).rejects.toThrow('Invalid snap ID:');
     });
 
     it('returns an error if an origin does not have the permission to install a snap', async () => {
@@ -2385,10 +2385,11 @@ describe('SnapController', () => {
 
       await expect(
         controller.installSnaps(MOCK_ORIGIN, {
-          bar: {},
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          'npm:bar': {},
         }),
       ).rejects.toThrow(
-        `Not authorized to install snap "bar". Request the permission for the snap before attempting to install it.`,
+        `Not authorized to install snap "npm:bar". Request the permission for the snap before attempting to install it.`,
       );
     });
 
@@ -2750,15 +2751,15 @@ describe('SnapController', () => {
   });
 
   describe('updateSnap', () => {
-    it('throws an error on invalid snap id', async () => {
+    it('throws an error for non installed snap', async () => {
       const detectSnapLocation = loopbackDetect();
       await expect(async () =>
         getSnapController().updateSnap(
           MOCK_ORIGIN,
-          'local:foo',
+          MOCK_LOCAL_SNAP_ID,
           detectSnapLocation(),
         ),
-      ).rejects.toThrow('Snap "local:foo" not found');
+      ).rejects.toThrow(`Snap "${MOCK_LOCAL_SNAP_ID}" not found`);
     });
 
     it('throws an error if the specified SemVer range is invalid', async () => {

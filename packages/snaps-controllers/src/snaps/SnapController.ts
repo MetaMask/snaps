@@ -53,7 +53,7 @@ import {
   TruncatedSnap,
   TruncatedSnapFields,
   ValidatedSnapId,
-  validateSnapId,
+  assertIsValidSnapId,
   validateSnapShasum,
   VirtualFile,
   logError,
@@ -570,14 +570,14 @@ type SnapControllerArgs = {
   detectSnapLocation?: typeof detectSnapLocation;
 };
 type AddSnapArgs = {
-  id: SnapId;
+  id: ValidatedSnapId;
   origin: string;
   location: SnapLocation;
 };
 
 // When we set a snap, we need all required properties to be present and
 // validated.
-type SetSnapArgs = Omit<AddSnapArgs, 'id' | 'location'> & {
+type SetSnapArgs = Omit<AddSnapArgs, 'location'> & {
   id: ValidatedSnapId;
   manifest: VirtualFile<SnapManifest>;
   files: VirtualFile[];
@@ -1599,6 +1599,8 @@ export class SnapController extends BaseController<
       for (const [snapId, { version: rawVersion }] of Object.entries(
         requestedSnaps,
       )) {
+        assertIsValidSnapId(snapId);
+
         const [error, version] = resolveVersionRange(rawVersion);
 
         if (error) {
@@ -1664,11 +1666,9 @@ export class SnapController extends BaseController<
    */
   private async processRequestedSnap(
     origin: string,
-    snapId: SnapId,
+    snapId: ValidatedSnapId,
     versionRange: SemVerRange,
   ): Promise<ProcessSnapResult> {
-    validateSnapId(snapId);
-
     const location = this.#detectSnapLocation(snapId, {
       versionRange,
       fetch: this.#fetchFunction,
@@ -1897,7 +1897,6 @@ export class SnapController extends BaseController<
    */
   async #add(args: AddSnapArgs): Promise<PersistedSnap> {
     const { id: snapId, location } = args;
-    validateSnapId(snapId);
 
     this.#setupRuntime(snapId, { sourceCode: null, state: null });
     const runtime = this.#getRuntimeExpect(snapId);
