@@ -9,7 +9,6 @@ import { base64 } from '@scure/base';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import stableStringify from 'fast-json-stable-stringify';
 import {
-  coerce,
   create,
   empty,
   enums,
@@ -232,23 +231,10 @@ export function validateSnapShasum(
   }
 }
 
-/**
- * Sanitizes a potential snap id string.
- *
- * @param snapId - A potential snap id.
- * @returns A sanitized potential snap id.
- */
-function sanitizeSnapId(snapId: string) {
-  return snapId.replace(/\s/gu, '');
-}
-
 export const LOCALHOST_HOSTNAMES = ['localhost', '127.0.0.1', '[::1]'] as const;
 
-const ASCIIString = pattern(string(), /^[\x21-\x7E]*$/u);
-
-export const BaseSnapIdStruct = coerce(ASCIIString, string(), (value) =>
-  sanitizeSnapId(value),
-);
+// Require snap ids to only consist of printable ASCII characters
+export const BaseSnapIdStruct = pattern(string(), /^[\x21-\x7E]*$/u);
 
 const LocalSnapIdSubUrlStruct = uri({
   protocol: enums(['http:', 'https:']),

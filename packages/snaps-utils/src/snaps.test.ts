@@ -40,9 +40,18 @@ describe('createSnapId', () => {
     );
   });
 
-  it('strips whitespace', () => {
-    expect(createSnapId(' local:http://localhost:8000 ')).toBe(
-      'local:http://localhost:8000',
+  it('disallows whitespace', () => {
+    expect(() => createSnapId(' local:http://localhost:8000')).toThrow(
+      'Invalid snap ID.',
+    );
+    expect(() => createSnapId('local:http://localhost:8000 ')).toThrow(
+      'Invalid snap ID.',
+    );
+    expect(() => createSnapId('local:http://localhost:8000\n')).toThrow(
+      'Invalid snap ID.',
+    );
+    expect(() => createSnapId('local:http://localhost:8000\r')).toThrow(
+      'Invalid snap ID.',
     );
   });
 
