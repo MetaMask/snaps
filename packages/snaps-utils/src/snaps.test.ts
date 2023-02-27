@@ -11,53 +11,53 @@ import {
   isCaipChainId,
   LocalSnapIdStruct,
   NpmSnapIdStruct,
-  createSnapId,
+  assertIsValidSnapId,
   verifyRequestedSnapPermissions,
 } from './snaps';
 import { uri, WALLET_SNAP_PERMISSION_KEY } from './types';
 
-describe('createSnapId', () => {
+describe('assertIsValidSnapId', () => {
   it.each([undefined, {}, null, true, 2])(
     'throws for non-strings (#%#)',
     (value) => {
-      expect(() => createSnapId(value)).toThrow('Invalid snap ID.');
+      expect(() => assertIsValidSnapId(value)).toThrow('Invalid snap ID:');
     },
   );
 
   it('throws for invalid snap id', () => {
-    expect(() => createSnapId('foo:bar')).toThrow('Invalid snap ID.');
+    expect(() => assertIsValidSnapId('foo:bar')).toThrow('Invalid snap ID:');
   });
 
   it('supports valid NPM IDs', () => {
-    expect(createSnapId('npm:@metamask/test-snap-bip44')).toBe(
-      'npm:@metamask/test-snap-bip44',
-    );
+    expect(() =>
+      assertIsValidSnapId('npm:@metamask/test-snap-bip44'),
+    ).not.toThrow();
   });
 
   it('supports valid local IDs', () => {
-    expect(createSnapId('local:http://localhost:8000')).toBe(
-      'local:http://localhost:8000',
-    );
+    expect(() =>
+      assertIsValidSnapId('local:http://localhost:8000'),
+    ).not.toThrow();
   });
 
   it('disallows whitespace', () => {
-    expect(() => createSnapId(' local:http://localhost:8000')).toThrow(
-      'Invalid snap ID.',
+    expect(() => assertIsValidSnapId(' local:http://localhost:8000')).toThrow(
+      'Invalid snap ID:',
     );
-    expect(() => createSnapId('local:http://localhost:8000 ')).toThrow(
-      'Invalid snap ID.',
+    expect(() => assertIsValidSnapId('local:http://localhost:8000 ')).toThrow(
+      'Invalid snap ID:',
     );
-    expect(() => createSnapId('local:http://localhost:8000\n')).toThrow(
-      'Invalid snap ID.',
+    expect(() => assertIsValidSnapId('local:http://localhost:8000\n')).toThrow(
+      'Invalid snap ID:',
     );
-    expect(() => createSnapId('local:http://localhost:8000\r')).toThrow(
-      'Invalid snap ID.',
+    expect(() => assertIsValidSnapId('local:http://localhost:8000\r')).toThrow(
+      'Invalid snap ID:',
     );
   });
 
   it('disallows non-ASCII symbols', () => {
-    expect(() => createSnapId('local:😎')).toThrow('Invalid snap ID.');
-    expect(() => createSnapId('local:␡')).toThrow('Invalid snap ID.');
+    expect(() => assertIsValidSnapId('local:😎')).toThrow('Invalid snap ID:');
+    expect(() => assertIsValidSnapId('local:␡')).toThrow('Invalid snap ID:');
   });
 });
 

@@ -4,12 +4,18 @@ import {
   PermissionConstraint,
 } from '@metamask/permission-controller';
 import { BlockReason } from '@metamask/snaps-registry';
-import { assert, Json, SemVerVersion, isObject, Opaque } from '@metamask/utils';
+import {
+  assert,
+  Json,
+  SemVerVersion,
+  isObject,
+  Opaque,
+  assertStruct,
+} from '@metamask/utils';
 import { base64 } from '@scure/base';
 import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import stableStringify from 'fast-json-stable-stringify';
 import {
-  create,
   empty,
   enums,
   intersection,
@@ -309,19 +315,17 @@ export function getSnapPrefix(snapId: string): SnapIdPrefixes {
   }
   throw new Error(`Invalid or no prefix found for "${snapId}"`);
 }
+
 /**
- * Validates and coerces an input to be a valid Snap ID.
+ * Assert that the given value is a valid snap ID.
  *
- * @param snapId - The snap ID.
- * @returns The potentially coerced snap ID.
- * @throws If the snap ID is invalid and cannot be coerced to valid
+ * @param value - The value to check.
+ * @throws If the value is not a valid snap ID.
  */
-export function createSnapId(snapId: unknown): ValidatedSnapId {
-  try {
-    return create(snapId, SnapIdStruct) as ValidatedSnapId;
-  } catch (error) {
-    throw new Error(`Invalid snap ID. Validation error: ${error.message}`);
-  }
+export function assertIsValidSnapId(
+  value: unknown,
+): asserts value is ValidatedSnapId {
+  assertStruct(value, SnapIdStruct, 'Invalid snap ID');
 }
 
 /**
