@@ -327,9 +327,15 @@ export class BaseSnapExecutor {
         ...endowments,
         module: snapModule,
         exports: snapModule.exports,
-        window: { ...endowments },
-        self: { ...endowments },
       });
+      // All of those are JavaScript runtime specific and self referential,
+      // but we add them for compatibility sake with external libraries.
+      //
+      // We can't do that in the injected globals object above
+      // because SES creates its own globalThis
+      compartment.globalThis.self = compartment.globalThis;
+      compartment.globalThis.global = compartment.globalThis;
+      compartment.globalThis.window = compartment.globalThis;
 
       await this.executeInSnapContext(snapName, () => {
         compartment.evaluate(sourceCode);
