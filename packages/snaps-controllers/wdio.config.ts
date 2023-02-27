@@ -30,7 +30,7 @@ export const config: Options.Testrunner = {
       coverage: {
         enabled: true,
         exclude: ['**/*.test.browser.ts', '**/test-utils/**'],
-        reporter: 'json',
+        reporter: ['html', 'json-summary', 'text', 'json'],
         reportsDirectory: './coverage/wdio',
       },
     },
