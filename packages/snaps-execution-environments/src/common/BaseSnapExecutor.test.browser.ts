@@ -1476,6 +1476,152 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
+  describe('executeSnap', () => {
+    [
+      {
+        snapName: 1,
+        code: 'module.exports.onRpcRequest = () => 1;',
+        endowments: [],
+      },
+      {
+        snapName: MOCK_SNAP_ID,
+        code: 1,
+        endowments: [],
+      },
+      {
+        snapName: MOCK_SNAP_ID,
+        code: 'module.exports.onRpcRequest = () => 1;',
+        endowments: ['foo', 1],
+      },
+      [1, 'module.exports.onRpcRequest = () => 1;', []],
+      [MOCK_SNAP_ID, 1, []],
+      [MOCK_SNAP_ID, 'module.exports.onRpcRequest = () => 1;', ['foo', 1]],
+    ].forEach((params) => {
+      it('throws an error if the request arguments are invalid', async () => {
+        const executor = new TestSnapExecutor();
+
+        await executor.writeCommand({
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'executeSnap',
+          params,
+        });
+
+        expect(await executor.readCommand()).toStrictEqual({
+          jsonrpc: '2.0',
+          id: 1,
+          error: {
+            code: -32602,
+            data: expect.any(Object),
+            message: expect.any(String),
+            stack: expect.any(String),
+          },
+        });
+      });
+    });
+  });
+
+  describe('snapRpc', () => {
+    [
+      {
+        snapName: 1,
+        method: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: '', params: [] },
+      },
+      {
+        snapName: MOCK_SNAP_ID,
+        method: 1,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: '', params: [] },
+      },
+      {
+        snapName: MOCK_SNAP_ID,
+        method: HandlerType.OnRpcRequest,
+        origin: 1,
+        request: { jsonrpc: '2.0', method: '', params: [] },
+      },
+      {
+        snapName: MOCK_SNAP_ID,
+        method: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: 1,
+      },
+      [
+        1,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+      [
+        MOCK_SNAP_ID,
+        1,
+        MOCK_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+      [
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        1,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+      [MOCK_SNAP_ID, HandlerType.OnRpcRequest, MOCK_ORIGIN, 1],
+    ].forEach((params) => {
+      it('throws an error if the request arguments are invalid', async () => {
+        const executor = new TestSnapExecutor();
+
+        await executor.writeCommand({
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'snapRpc',
+          params,
+        });
+
+        expect(await executor.readCommand()).toStrictEqual({
+          jsonrpc: '2.0',
+          id: 1,
+          error: {
+            code: -32602,
+            data: expect.any(Object),
+            message: expect.any(String),
+            stack: expect.any(String),
+          },
+        });
+      });
+    });
+  });
+
+  describe('onCommandRequest', () => {
+    it('throws a human-readable error if the request arguments are invalid', async () => {
+      const executor = new TestSnapExecutor();
+      const params = {
+        snapName: 1,
+        method: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: '', params: [] },
+      };
+
+      await executor.writeCommand({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snapRpc',
+        params,
+      });
+
+      expect(await executor.readCommand()).toStrictEqual({
+        jsonrpc: '2.0',
+        id: 1,
+        error: {
+          code: -32602,
+          data: expect.any(Object),
+          message:
+            'Invalid parameters for method "snapRpc": At path: 0 -- Expected a string, but received: 1.',
+          stack: expect.any(String),
+        },
+      });
+    });
+  });
+
   describe('hardening', () => {
     before(() => {
       // @ts-expect-error - `globalThis.harden` is not optional.
