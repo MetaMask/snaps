@@ -6,7 +6,6 @@ delete baseConfig.coverageThreshold;
 
 module.exports = deepmerge(baseConfig, {
   coverageDirectory: './coverage/jest',
-  coverageProvider: 'v8',
   testTimeout: 5000,
 
   // This is required for `jest-fetch-mock` to work.

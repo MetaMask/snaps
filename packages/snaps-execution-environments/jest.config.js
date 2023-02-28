@@ -7,7 +7,6 @@ delete baseConfig.coverageThreshold;
 module.exports = deepmerge(baseConfig, {
   coveragePathIgnorePatterns: ['./src/index.ts', './src/common/test-utils'],
   coverageDirectory: './coverage/jest',
-  coverageProvider: 'v8',
   testTimeout: 10000,
   testEnvironment: '<rootDir>/jest.environment.js',
   testEnvironmentOptions: {
