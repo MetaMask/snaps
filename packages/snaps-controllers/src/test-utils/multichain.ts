@@ -2,7 +2,7 @@ import {
   PermissionConstraint,
   SubjectPermissions,
 } from '@metamask/permission-controller';
-import { fromEntries, getSnapChecksum } from '@metamask/snaps-utils';
+import { getSnapChecksum } from '@metamask/snaps-utils';
 import {
   MOCK_ORIGIN,
   MOCK_SNAP_ID,
@@ -192,7 +192,7 @@ export const getMultiChainControllerWithEES = (
         assert(requestData?.possibleAccounts);
 
         return Promise.resolve(
-          fromEntries(
+          Object.fromEntries(
             Object.entries(requestData.possibleAccounts).map(
               ([namespace, snapAndAccounts]) => [
                 namespace,
