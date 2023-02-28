@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "test": "shx rm -rf coverage && jest && yarn test:browser && yarn posttest",
-    "posttest": "yarn merge-coverage && yarn update-coverage",
+    "posttest": "yarn merge-coverage && yarn update-coverage && yarn clean-coverage",
     "test:browser": "wdio run wdio.config.ts",
     "test:ci": "yarn test",
     "test:watch": "jest --watch",
