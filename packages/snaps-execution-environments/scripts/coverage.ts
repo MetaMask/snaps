@@ -61,7 +61,10 @@ async function main() {
 
   // Write coverage percentages to disk.
   console.log('Writing new coverage percentages to disk.');
-  await fs.writeFile(COVERAGE_FILE, JSON.stringify(percentages, null, 2));
+  await fs.writeFile(
+    COVERAGE_FILE,
+    `${JSON.stringify(percentages, null, 2)}\n`,
+  );
 }
 
 main().catch((error) => {
