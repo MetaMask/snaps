@@ -9,6 +9,7 @@ const COVERAGE_SUMMARY = resolve(
   __dirname,
   '..',
   'coverage',
+  'report',
   'coverage-summary.json',
 );
 
