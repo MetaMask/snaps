@@ -30,7 +30,6 @@ import {
   assertIsSnapManifest,
   DEFAULT_ENDOWMENTS,
   DEFAULT_REQUESTED_SNAP_VERSION,
-  fromEntries,
   isSnapPermitted,
   InstallSnapsResult,
   normalizeRelative,
@@ -2175,7 +2174,7 @@ export class SnapController extends BaseController<
   #processSnapPermissions(
     initialPermissions: SnapPermissions,
   ): Record<string, Pick<PermissionConstraint, 'caveats'>> {
-    return fromEntries(
+    return Object.fromEntries(
       Object.entries(initialPermissions).map(([initialPermission, value]) => {
         if (hasProperty(caveatMappers, initialPermission)) {
           return [initialPermission, caveatMappers[initialPermission](value)];

@@ -8,7 +8,6 @@ import {
   SnapId,
   TruncatedSnap,
   CronjobSpecification,
-  flatten,
   parseCronExpression,
   logError,
 } from '@metamask/snaps-utils';
@@ -138,7 +137,8 @@ export class CronjobController extends BaseController<
     const filteredSnaps = getRunnableSnaps(snaps);
 
     const jobs = filteredSnaps.map((snap) => this.getSnapJobs(snap.id));
-    return flatten(jobs).filter((job) => job !== undefined) as Cronjob[];
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+    return jobs.flat().filter((job) => job !== undefined) as Cronjob[];
   }
 
   /**
