@@ -12,7 +12,7 @@
     "dist/"
   ],
   "scripts": {
-    "test": "jest && yarn test:browser && yarn posttest",
+    "test": "shx rm -rf coverage && jest && yarn test:browser && yarn posttest",
     "posttest": "yarn merge-coverage && yarn update-coverage",
     "test:browser": "wdio run wdio.config.ts",
     "test:ci": "yarn test",
@@ -31,7 +31,7 @@
     "build:concat": "concat -o ./dist/webpack/node-process/bundle.js ./dist/webpack/node-process/lockdown.umd.min.js ./dist/webpack/node-process/bundle.js && concat -o ./dist/webpack/node-thread/bundle.js ./dist/webpack/node-thread/lockdown.umd.min.js ./dist/webpack/node-thread/bundle.js",
     "auto-changelog-init": "auto-changelog init",
     "publish:package": "../../scripts/publish-package.sh",
-    "merge-coverage": "shx mkdir -p coverage/all && shx cp coverage/jest/coverage-final.json coverage/all/coverage-final-jest.json && shx cp coverage/wdio/coverage-final.json coverage/all/coverage-final-wdio.json && nyc merge coverage/all coverage/all/coverage-final.json && nyc report -t coverage/all --report-dir coverage --reporter=text --reporter=html --reporter=json-summary",
+    "merge-coverage": "shx mkdir -p coverage/all && shx cp coverage/jest/coverage-final.json coverage/all/coverage-final-jest.json && shx cp coverage/wdio/coverage-final.json coverage/all/coverage-final-wdio.json && nyc merge coverage/all coverage/all/coverage-final.json && nyc report -t coverage/all --report-dir coverage --reporter=text --reporter=html --reporter=json --reporter=json-summary",
     "update-coverage": "ts-node scripts/coverage.ts"
   },
   "dependencies": {
