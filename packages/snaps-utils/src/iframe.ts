@@ -16,6 +16,7 @@ export async function createWindow(
     // The order of operations appears to matter for everything except this
     // attribute. We may as well set it here.
     iframe.setAttribute('id', jobId);
+    iframe.setAttribute('data-testid', 'snaps-iframe');
 
     // For the sandbox property to have any effect it needs to be set before the iframe is appended.
     // We apply this property as a principle of least authority (POLA)

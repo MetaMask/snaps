@@ -3,6 +3,10 @@ import fetchMock from 'jest-fetch-mock';
 import network from './network';
 
 describe('Network endowments', () => {
+  beforeAll(() => {
+    globalThis.harden = (value) => value;
+  });
+
   describe('fetch', () => {
     beforeEach(() => {
       fetchMock.enableMocks();

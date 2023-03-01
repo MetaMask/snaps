@@ -447,17 +447,17 @@ describe('postProcessBundle', () => {
       exports.foo = 'bar';",
         "sourceMap": {
           "file": undefined,
-          "mappings": ";;;;;AAAaA,OAAG,CAAGC,MAAM",
+          "mappings": ";;;;;AAAaA,OAAG,CAAGC,GAAA,GAAM",
           "names": [
             "exports",
             "foo",
           ],
-          "sourceRoot": "",
+          "sourceRoot": undefined,
           "sources": [
             "../src/foo.ts",
           ],
           "sourcesContent": [
-            null,
+            undefined,
           ],
           "version": 3,
         },

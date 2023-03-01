@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sandbox test</title>
+  </head>
+  <body>
+    <!--
+      This file is used to test the sandboxing of the iframe. It is used by the
+      `IframeExecutionService.test.browser.ts` test.
+    -->
+    <script>
+      (function () {
+        try {
+          const snap = top.querySelector('iframe[data-testid="snaps-iframe"]');
+          if (!snap) {
+            window.parent.postMessage('Failed to find snap iframe.', '*');
+            return;
+          }
+
+          // We try to access the snap iframe document. If this works, it means
+          // that the iframe is not sandboxed. Otherwise it will throw an error.
+          snap.document;
+
+          window.parent.postMessage(
+            'Same origin frames access worked which might suggest sandboxing failed.',
+            '*',
+          );
+        } catch (e) {
+          window.parent.postMessage(
+            `Failed to access document of the snap iframe: ${e.toString()}`,
+            '*',
+          );
+        }
+      })();
+    </script>
+  </body>
+</html>

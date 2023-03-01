@@ -25,6 +25,7 @@ module.exports = {
   collectCoverageFrom: [
     './src/**/*.ts',
     '!./src/**/*.test.ts',
+    '!./src/**/*.test.browser.ts',
     '!./src/test-utils/**/*.ts',
     '!./src/**/*.d.ts',
   ],
