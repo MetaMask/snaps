@@ -4193,7 +4193,7 @@ __metadata:
 
 "@types/mocha@patch:@types/mocha@npm:10.0.1#.yarn/patches/@types-mocha-npm-10.0.1-7c94e9e170.patch::locator=root%40workspace%3A.":
   version: 10.0.1
-  resolution: "@types/mocha@patch:@types/mocha@npm%3A10.0.1#.yarn/patches/@types-mocha-npm-10.0.1-7c94e9e170.patch::version=10.0.1&hash=f2ed1c&locator=root%40workspace%3A."
+  resolution: "@types/mocha@patch:@types/mocha@npm%3A10.0.1#.yarn/patches/@types-mocha-npm-10.0.1-7c94e9e170.patch::version=10.0.1&hash=05ce47&locator=root%40workspace%3A."
   checksum: 4a6debf1a05bdfba01bf5f3f0a3714bc09a70767344789e5bc477fe7e26c6296be062456dab838559f136d6d3fac94a26b98100f9cac610cc26c067f7aa1e631
   languageName: node
   linkType: hard
