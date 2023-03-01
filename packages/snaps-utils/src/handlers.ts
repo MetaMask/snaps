@@ -21,15 +21,12 @@ export type OnRpcRequestHandler = (args: {
 /**
  * The response from a snap's `onTransaction` handler.
  *
- * @property insights - The insights object. This is a key-value map of the
- * insights that the snap has about the transaction. The keys are the insight
- * names, and the values are the insight values. The insight values must be
- * JSON-serializable.
+ * @property content - A custom UI component, that will be shown in MetaMask. Can be created using `@metamask/snaps-ui`.
  *
  * If the snap has no insights about the transaction, this should be `null`.
  */
 export type OnTransactionResponse = {
-  content: Component;
+  content: Component | null;
 };
 
 /**
