@@ -2035,6 +2035,8 @@ describe('SnapController', () => {
       ).rejects.toThrow('User rejected the request.');
 
       expect(snapController.state.snaps[MOCK_LOCAL_SNAP_ID]).toBeUndefined();
+
+      snapController.destroy();
     });
 
     it('does not maintain existing permissions when re-installing local snap', async () => {
@@ -2070,6 +2072,8 @@ describe('SnapController', () => {
         'PermissionController:revokeAllPermissions',
         MOCK_LOCAL_SNAP_ID,
       );
+
+      snapController.destroy();
     });
 
     it('authorizes permissions needed for snaps', async () => {
