@@ -12,7 +12,6 @@ const MINIMUM_TIMEOUT = 10;
  */
 const createTimeout = () => {
   const registeredHandles = new Map<unknown, unknown>();
-
   const _setTimeout = (handler: TimerHandler, timeout?: number): unknown => {
     if (typeof handler !== 'function') {
       throw new Error(

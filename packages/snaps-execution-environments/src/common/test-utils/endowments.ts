@@ -9,6 +9,7 @@ import { ethErrors } from 'eth-rpc-errors';
 import { createIdRemapMiddleware } from 'json-rpc-engine';
 
 import { proxyStreamProvider, withTeardown } from '../utils';
+import { SILENT_LOGGER } from './logger';
 
 /**
  * Object walker test utility function.
@@ -46,6 +47,7 @@ export function getMockedStreamProvider() {
   const provider = new StreamProvider(rpcStream, {
     jsonRpcStreamName: 'metamask-provider',
     rpcMiddleware: [createIdRemapMiddleware()],
+    logger: SILENT_LOGGER,
   });
 
   const originalRequest = provider.request.bind(provider);

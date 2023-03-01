@@ -1,0 +1,151 @@
+`@types/mocha` and `@types/jest` both declare global `describe`, `it` and some other functions, which causes a conflict
+in TypeScript. This patch removes the global declarations from `@types/mocha`, which are not needed in most cases. They
+can still be imported from `mocha` if needed.
+
+diff --git a/index.d.ts b/index.d.ts
+index 8e5122397bd0b9418decc4db6c508e6a018abd33..702191271bebb2c8505c123420d2b704f5351425 100755
+ /**
+  * Execute before running tests.
+@@ -2620,7 +2620,7 @@ declare var before: Mocha.HookFunction;
+  *
+  * @see https://mochajs.org/api/global.html#before
+  */
+-declare var suiteSetup: Mocha.HookFunction;
++// declare var suiteSetup: Mocha.HookFunction;
+
+ /**
+  * Execute after running tests.
+@@ -2629,7 +2629,7 @@ declare var suiteSetup: Mocha.HookFunction;
+  *
+  * @see https://mochajs.org/api/global.html#after
+  */
+-declare var after: Mocha.HookFunction;
++// declare var after: Mocha.HookFunction;
+
+ /**
+  * Execute after running tests.
+@@ -2638,7 +2638,7 @@ declare var after: Mocha.HookFunction;
+  *
+  * @see https://mochajs.org/api/global.html#after
+  */
+-declare var suiteTeardown: Mocha.HookFunction;
++// declare var suiteTeardown: Mocha.HookFunction;
+
+ /**
+  * Execute before each test case.
+@@ -2647,7 +2647,7 @@ declare var suiteTeardown: Mocha.HookFunction;
+  *
+  * @see https://mochajs.org/api/global.html#beforeEach
+  */
+-declare var beforeEach: Mocha.HookFunction;
++// declare var beforeEach: Mocha.HookFunction;
+
+ /**
+  * Execute before each test case.
+@@ -2656,7 +2656,7 @@ declare var beforeEach: Mocha.HookFunction;
+  *
+  * @see https://mochajs.org/api/global.html#beforeEach
+  */
+-declare var setup: Mocha.HookFunction;
++// declare var setup: Mocha.HookFunction;
+
+ /**
+  * Execute after each test case.
+@@ -2665,7 +2665,7 @@ declare var setup: Mocha.HookFunction;
+  *
+  * @see https://mochajs.org/api/global.html#afterEach
+  */
+-declare var afterEach: Mocha.HookFunction;
++// declare var afterEach: Mocha.HookFunction;
+
+ /**
+  * Execute after each test case.
+@@ -2674,77 +2674,77 @@ declare var afterEach: Mocha.HookFunction;
+  *
+  * @see https://mochajs.org/api/global.html#afterEach
+  */
+-declare var teardown: Mocha.HookFunction;
++// declare var teardown: Mocha.HookFunction;
+
+ /**
+  * Describe a "suite" containing nested suites and tests.
+  *
+  * - _Only available when invoked via the mocha CLI._
+  */
+-declare var describe: Mocha.SuiteFunction;
++// declare var describe: Mocha.SuiteFunction;
+
+ /**
+  * Describe a "suite" containing nested suites and tests.
+  *
+  * - _Only available when invoked via the mocha CLI._
+  */
+-declare var context: Mocha.SuiteFunction;
++// declare var context: Mocha.SuiteFunction;
+
+ /**
+  * Describe a "suite" containing nested suites and tests.
+  *
+  * - _Only available when invoked via the mocha CLI._
+  */
+-declare var suite: Mocha.SuiteFunction;
++// declare var suite: Mocha.SuiteFunction;
+
+ /**
+  * Pending suite.
+  *
+  * - _Only available when invoked via the mocha CLI._
+  */
+-declare var xdescribe: Mocha.PendingSuiteFunction;
++// declare var xdescribe: Mocha.PendingSuiteFunction;
+
+ /**
+  * Pending suite.
+  *
+  * - _Only available when invoked via the mocha CLI._
+  */
+-declare var xcontext: Mocha.PendingSuiteFunction;
++// declare var xcontext: Mocha.PendingSuiteFunction;
+
+ /**
+  * Describes a test case.
+  *
+  * - _Only available when invoked via the mocha CLI._
+  */
+-declare var it: Mocha.TestFunction;
++// declare var it: Mocha.TestFunction;
+
+ /**
+  * Describes a test case.
+  *
+  * - _Only available when invoked via the mocha CLI._
+  */
+-declare var specify: Mocha.TestFunction;
++// declare var specify: Mocha.TestFunction;
+
+ /**
+  * Describes a test case.
+  *
+  * - _Only available when invoked via the mocha CLI._
+  */
+-declare var test: Mocha.TestFunction;
++// declare var test: Mocha.TestFunction;
+
+ /**
+  * Describes a pending test case.
+  *
+  * - _Only available when invoked via the mocha CLI._
+  */
+-declare var xit: Mocha.PendingTestFunction;
++// declare var xit: Mocha.PendingTestFunction;
+
+ /**
+  * Describes a pending test case.
+  *
+  * - _Only available when invoked via the mocha CLI._
+  */
+-declare var xspecify: Mocha.PendingTestFunction;
++// declare var xspecify: Mocha.PendingTestFunction;
+
+ // #endregion Test interface augmentations
+

@@ -60,6 +60,7 @@ describe('ThreadSnapExecutor', () => {
           }
         });
       });
+
     const waitForResponse = async (response: JsonRpcSuccess<string>) =>
       new Promise((resolve) => {
         childEmitter.on('message', ({ data }) => {

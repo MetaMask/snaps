@@ -9,10 +9,13 @@
   "include": ["./src", "./src/openrpc.json"],
   "exclude": [
     "**/*.test.ts",
+    "**/*.test.browser.ts",
     "./src/**/test-utils",
     "./src/**/__mocks__",
     "./src/**/__snapshots__",
-    "webpack.config.js"
+    "webpack.config.js",
+    "wdio.config.ts",
+    "scripts"
   ],
   "references": [
     {

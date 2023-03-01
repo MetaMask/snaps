@@ -1,14 +1,11 @@
 // eslint-disable-next-line import/no-unassigned-import
 import 'ses';
-import { SNAP_STREAM_NAMES, HandlerType } from '@metamask/snaps-utils';
+import { HandlerType, SNAP_STREAM_NAMES } from '@metamask/snaps-utils';
+import { MOCK_ORIGIN, MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 import { Json, JsonRpcRequest, JsonRpcSuccess } from '@metamask/utils';
 import { EventEmitter } from 'stream';
 
 import { ChildProcessSnapExecutor } from './ChildProcessSnapExecutor';
-
-const FAKE_ORIGIN = 'origin:foo';
-const FAKE_SNAP_NAME = 'local:foo';
-const ON_RPC_REQUEST = HandlerType.OnRpcRequest;
 
 describe('ChildProcessSnapExecutor', () => {
   it('receives and processes commands', async () => {
@@ -29,10 +26,10 @@ describe('ChildProcessSnapExecutor', () => {
     expect(onSpy).toHaveBeenCalled();
 
     const CODE = `
-        exports.onRpcRequest = (() => {
-          return 'foobar';
-        });
-      `;
+      exports.onRpcRequest = (() => {
+        return 'foobar';
+      });
+    `;
 
     // Utility functions
     const emit = (data: Json) => parentEmitter.emit('message', { data });
@@ -49,6 +46,7 @@ describe('ChildProcessSnapExecutor', () => {
           }
         });
       });
+
     const waitForResponse = async (response: JsonRpcSuccess<string>) =>
       new Promise((resolve) => {
         childEmitter.on('message', ({ data }) => {
@@ -71,7 +69,7 @@ describe('ChildProcessSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 1,
       method: 'executeSnap',
-      params: [FAKE_SNAP_NAME, CODE, []],
+      params: [MOCK_SNAP_ID, CODE, []],
     });
 
     const providerRequest = await waitForOutbound({
@@ -102,9 +100,9 @@ describe('ChildProcessSnapExecutor', () => {
       id: 2,
       method: 'snapRpc',
       params: [
-        FAKE_SNAP_NAME,
-        ON_RPC_REQUEST,
-        FAKE_ORIGIN,
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
         { jsonrpc: '2.0', method: '' },
       ],
     });
