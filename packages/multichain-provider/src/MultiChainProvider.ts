@@ -18,12 +18,10 @@ import { nanoid } from 'nanoid';
 import { Provider } from './Provider';
 
 declare global {
-  // Declaration merging doesn't work with types, so we have to use an interface
-  // here.
-  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-  interface Window {
-    ethereum: MetaMaskInpageProvider;
-  }
+  // `var` is required here to properly declare the global variable on the
+  // `globalThis` object. `const` and `let` will not work.
+  // eslint-disable-next-line no-var
+  var ethereum: MetaMaskInpageProvider;
 }
 
 export class MultiChainProvider extends SafeEventEmitter implements Provider {
@@ -149,7 +147,7 @@ export class MultiChainProvider extends SafeEventEmitter implements Provider {
    * @returns The injected provider.
    */
   #getProvider() {
-    return window.ethereum;
+    return globalThis.ethereum;
   }
 
   /**

@@ -13,5 +13,4 @@ module.exports = deepmerge(baseConfig, {
     },
   },
   setupFiles: ['./test/setup.js'],
-  testTimeout: 2500,
 });

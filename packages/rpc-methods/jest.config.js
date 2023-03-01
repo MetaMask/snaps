@@ -16,5 +16,4 @@ module.exports = deepmerge(baseConfig, {
       statements: 94.4,
     },
   },
-  testTimeout: 2500,
 });

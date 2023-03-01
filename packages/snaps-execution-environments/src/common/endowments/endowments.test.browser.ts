@@ -5,7 +5,7 @@ import 'ses';
 import { walkAndSearch } from '../test-utils/endowments';
 import { testEndowmentHardening } from '../test-utils/hardening';
 import buildCommonEndowments from './commonEndowmentFactory';
-import Crypto from './crypto';
+import CryptoEndowment from './crypto';
 import date from './date';
 import interval from './interval';
 import math from './math';
@@ -36,7 +36,8 @@ describe('endowments', () => {
 
     // Specially attenuated endowments or endowments that require
     // to be imported in a different way
-    const { SubtleCrypto, crypto } = Crypto.factory();
+    const { SubtleCrypto: SubtleCryptoEndowment, crypto } =
+      CryptoEndowment.factory();
     const {
       setTimeout: setTimeoutAttenuated,
       clearTimeout: clearTimeoutAttenuated,
@@ -56,7 +57,7 @@ describe('endowments', () => {
         factory: () => BigInt(3),
       },
       SubtleCrypto: {
-        endowments: { SubtleCrypto },
+        endowments: { SubtleCrypto: SubtleCryptoEndowment },
         factory: () => undefined,
       },
       TextDecoder: {
