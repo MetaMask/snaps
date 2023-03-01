@@ -1767,7 +1767,7 @@ describe('SnapController', () => {
 
       expect(result).toStrictEqual({ [MOCK_LOCAL_SNAP_ID]: truncatedSnap });
 
-      expect(messenger.call).toHaveBeenCalledTimes(5);
+      expect(messenger.call).toHaveBeenCalledTimes(7);
       expect(messenger.call).toHaveBeenNthCalledWith(
         1,
         'PermissionController:getPermissions',
@@ -1775,7 +1775,7 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        2,
+        4,
         'ApprovalController:addRequest',
         expect.objectContaining({
           requestData: {
@@ -1792,7 +1792,7 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        3,
+        5,
         'PermissionController:grantPermissions',
         {
           approvedPermissions: permissions,
@@ -1809,13 +1809,13 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        4,
+        6,
         'ExecutionService:executeSnap',
         expect.objectContaining({}),
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        5,
+        7,
         'PermissionController:hasPermission',
         MOCK_LOCAL_SNAP_ID,
         SnapEndowments.LongRunning,
@@ -1880,7 +1880,7 @@ describe('SnapController', () => {
         [MOCK_LOCAL_SNAP_ID]: truncatedSnap,
       });
 
-      expect(messenger.call).toHaveBeenCalledTimes(11);
+      expect(messenger.call).toHaveBeenCalledTimes(13);
       expect(messenger.call).toHaveBeenNthCalledWith(
         1,
         'PermissionController:getPermissions',
@@ -1947,7 +1947,7 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        8,
+        10,
         'ApprovalController:addRequest',
         expect.objectContaining({
           requestData: {
@@ -1964,7 +1964,7 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        9,
+        11,
         'PermissionController:grantPermissions',
         {
           approvedPermissions: permissions,
@@ -1981,18 +1981,97 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        10,
+        12,
         'ExecutionService:executeSnap',
         expect.objectContaining({ snapId: MOCK_LOCAL_SNAP_ID }),
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        11,
+        13,
         'PermissionController:hasPermission',
         MOCK_LOCAL_SNAP_ID,
         SnapEndowments.LongRunning,
       );
       expect(stopSnapSpy).toHaveBeenCalledTimes(1);
+
+      snapController.destroy();
+    });
+
+    it('does not get stuck when re-installing a local snap that fails to install', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapObject = getPersistedSnapObject({
+        id: MOCK_LOCAL_SNAP_ID,
+      });
+
+      const location = new LoopbackLocation({
+        manifest: snapObject.manifest,
+        shouldAlwaysReload: true,
+      });
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: {
+              [MOCK_LOCAL_SNAP_ID]: snapObject,
+            },
+          },
+          detectSnapLocation: loopbackDetect(location),
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'ApprovalController:addRequest',
+        () => {
+          throw ethErrors.provider.userRejectedRequest();
+        },
+      );
+
+      await expect(
+        snapController.installSnaps(MOCK_ORIGIN, {
+          [MOCK_LOCAL_SNAP_ID]: {},
+        }),
+      ).rejects.toThrow('User rejected the request.');
+
+      expect(snapController.state.snaps[MOCK_LOCAL_SNAP_ID]).toBeUndefined();
+
+      snapController.destroy();
+    });
+
+    it('does not maintain existing permissions when re-installing local snap', async () => {
+      const messenger = getSnapControllerMessenger();
+      const snapObject = getPersistedSnapObject({
+        id: MOCK_LOCAL_SNAP_ID,
+      });
+
+      const location = new LoopbackLocation({
+        manifest: snapObject.manifest,
+        shouldAlwaysReload: true,
+      });
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: {
+              [MOCK_LOCAL_SNAP_ID]: snapObject,
+            },
+          },
+          detectSnapLocation: loopbackDetect(location),
+        }),
+      );
+
+      await snapController.installSnaps(MOCK_ORIGIN, {
+        [MOCK_LOCAL_SNAP_ID]: {},
+      });
+
+      expect(snapController.state.snaps[MOCK_LOCAL_SNAP_ID]).toBeDefined();
+
+      expect(messenger.call).toHaveBeenCalledWith(
+        'PermissionController:revokeAllPermissions',
+        MOCK_LOCAL_SNAP_ID,
+      );
 
       snapController.destroy();
     });

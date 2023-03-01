@@ -1585,13 +1585,8 @@ export class SnapController extends BaseController<
 
     const snapIds = Object.keys(requestedSnaps);
 
-    // Existing snaps may need to be updated
-    const pendingUpdates = snapIds.filter((snapId) => this.has(snapId));
-
-    // Non-existing snaps will need to be installed
-    const pendingInstalls = snapIds.filter(
-      (snapId) => !pendingUpdates.includes(snapId),
-    );
+    const pendingUpdates = [];
+    const pendingInstalls = [];
 
     try {
       for (const [snapId, { version: rawVersion }] of Object.entries(
@@ -1618,9 +1613,18 @@ export class SnapController extends BaseController<
           );
         }
 
-        const isUpdate = pendingUpdates.includes(snapId);
+        const location = this.#detectSnapLocation(snapId, {
+          versionRange: version,
+          fetch: this.#fetchFunction,
+          allowLocal: this.#featureFlags.allowLocalSnaps,
+        });
+
+        // Existing snaps may need to be updated, unless they should be re-installed (e.g. local snaps)
+        // Everything else is treated as an install
+        const isUpdate = this.has(snapId) && !location.shouldAlwaysReload;
 
         if (isUpdate && this.#isValidUpdate(snapId, version)) {
+          pendingUpdates.push(snapId);
           let rollbackSnapshot = this.#getRollbackSnapshot(snapId);
           if (rollbackSnapshot === undefined) {
             const prevSourceCode = this.#getRuntimeExpect(snapId).sourceCode;
@@ -1630,11 +1634,14 @@ export class SnapController extends BaseController<
           } else {
             throw new Error('This snap is already being updated.');
           }
+        } else if (!isUpdate) {
+          pendingInstalls.push(snapId);
         }
 
         result[snapId] = await this.processRequestedSnap(
           origin,
           snapId,
+          location,
           version,
         );
       }
@@ -1659,20 +1666,16 @@ export class SnapController extends BaseController<
    *
    * @param origin - The origin requesting the snap.
    * @param snapId - The id of the snap.
+   * @param location - The location implementation of the snap.
    * @param versionRange - The semver range of the snap to install.
    * @returns The resulting snap object, or an error if something went wrong.
    */
   private async processRequestedSnap(
     origin: string,
     snapId: ValidatedSnapId,
+    location: SnapLocation,
     versionRange: SemVerRange,
   ): Promise<ProcessSnapResult> {
-    const location = this.#detectSnapLocation(snapId, {
-      versionRange,
-      fetch: this.#fetchFunction,
-      allowLocal: this.#featureFlags.allowLocalSnaps,
-    });
-
     const existingSnap = this.getTruncated(snapId);
     // For devX we always re-install local snaps.
     if (existingSnap && !location.shouldAlwaysReload) {
@@ -1702,6 +1705,11 @@ export class SnapController extends BaseController<
     // Existing snaps must be stopped before overwriting
     if (existingSnap && this.isRunning(snapId)) {
       await this.stopSnap(snapId, SnapStatusEvents.Stop);
+    }
+
+    // Existing snaps that should be re-installed should not maintain their existing permissions
+    if (existingSnap && location.shouldAlwaysReload) {
+      this.revokeAllSnapPermissions(snapId);
     }
 
     try {
@@ -1743,7 +1751,7 @@ export class SnapController extends BaseController<
    *
    * @param origin - The origin requesting the snap update.
    * @param snapId - The id of the Snap to be updated.
-   * @param location - Optional location that was already used during installation flow.
+   * @param location - The location implementation of the snap.
    * @param newVersionRange - A semver version range in which the maximum version will be chosen.
    * @returns The snap metadata if updated, `null` otherwise.
    */
