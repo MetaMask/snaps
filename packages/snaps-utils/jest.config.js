@@ -2,7 +2,10 @@ const deepmerge = require('deepmerge');
 
 const baseConfig = require('../../jest.config.base');
 
+delete baseConfig.coverageThreshold;
+
 module.exports = deepmerge(baseConfig, {
+  coverageDirectory: './coverage/jest',
   coveragePathIgnorePatterns: [
     './src/index.ts',
     './src/index.browser.ts',
@@ -16,12 +19,4 @@ module.exports = deepmerge(baseConfig, {
     // https://github.com/facebook/jest/issues/5274
     './src/eval-worker.ts',
   ],
-  coverageThreshold: {
-    global: {
-      branches: 92.89,
-      functions: 100,
-      lines: 98.93,
-      statements: 98.94,
-    },
-  },
 });
