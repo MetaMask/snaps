@@ -5,6 +5,7 @@ import {
   MOCK_ORIGIN,
   MOCK_SNAP_ID,
   spy,
+  sleep,
 } from '@metamask/snaps-utils/test-utils';
 import { assertIsJsonRpcSuccess, isPlainObject } from '@metamask/utils';
 
@@ -16,9 +17,6 @@ import { TestSnapExecutor } from './test-utils/executor';
 import { testEndowmentHardening } from './test-utils/hardening';
 
 import 'ses';
-
-const sleep = async (ms: number) =>
-  new Promise((resolve) => setTimeout(resolve, ms));
 
 describe('BaseSnapExecutor', () => {
   before(() => {

@@ -1,6 +1,5 @@
-import { MockPostMessageStream } from '@metamask/snaps-utils/test-utils';
+import { MockPostMessageStream, sleep } from '@metamask/snaps-utils/test-utils';
 
-import { sleep } from '../../test-utils';
 import { OffscreenPostMessageStream } from './OffscreenPostMessageStream';
 
 const MOCK_JOB_ID = 'job-id';
