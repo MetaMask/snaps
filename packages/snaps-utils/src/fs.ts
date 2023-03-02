@@ -147,17 +147,27 @@ export async function validateDirPath(
   return true;
 }
 
-export const useTemporaryFile = async (
+/**
+ * Creates a temporary file with a given name and content, writes it to disk and calls the provided function.
+ * This function handles deletion of the temporary file after usage.
+ *
+ * @param fileName - The name of the temporary file.
+ * @param fileContents - The content of the temporary file.
+ * @param fn - The callback function to call when the temporary file has been created.
+ */
+export async function useTemporaryFile(
   fileName: string,
   fileContents: string,
   fn: (path: string) => Promise<unknown>,
-): Promise<void> => {
+): Promise<void> {
   const filePath = pathUtils.join(os.tmpdir(), fileName);
   await fs.mkdir(pathUtils.dirname(filePath), { recursive: true });
   await fs.writeFile(filePath, fileContents);
   try {
     await fn(filePath);
   } finally {
-    await fs.unlink(filePath);
+    if (await isFile(filePath)) {
+      await fs.unlink(filePath);
+    }
   }
-};
+}
