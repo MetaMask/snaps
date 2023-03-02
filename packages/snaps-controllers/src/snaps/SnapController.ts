@@ -1,4 +1,7 @@
-import { AddApprovalRequest } from '@metamask/approval-controller';
+import {
+  AddApprovalRequest,
+  UpdateRequestState,
+} from '@metamask/approval-controller';
 import {
   BaseControllerV2 as BaseController,
   RestrictedControllerMessenger,
@@ -244,6 +247,11 @@ type RollbackSnapshot = {
   newVersion: string;
 };
 
+type PendingApproval = {
+  id: string;
+  promise: Promise<unknown>;
+};
+
 // Controller Messenger Actions
 
 /**
@@ -466,6 +474,7 @@ export type AllowedActions =
   | RevokePermissionForAllSubjects
   | GrantPermissions
   | AddApprovalRequest
+  | UpdateRequestState
   | HandleRpcRequestAction
   | ExecuteSnapAction
   | TerminateAllSnapsAction
@@ -1660,6 +1669,41 @@ export class SnapController extends BaseController<
     return result;
   }
 
+  #createApproval({
+    origin,
+    snapId,
+    type,
+  }: {
+    origin: string;
+    snapId: ValidatedSnapId;
+    type: string;
+  }): PendingApproval {
+    const id = nanoid();
+    const promise = this.messagingSystem.call(
+      'ApprovalController:addRequest',
+      {
+        origin,
+        id,
+        type,
+        requestData: {
+          // Mirror previous installation metadata
+          metadata: { id, origin: snapId, dappOrigin: origin },
+          snapId,
+        },
+      },
+      true,
+    );
+
+    return { id, promise };
+  }
+
+  #updateApproval(id: string, requestState: Record<string, Json>) {
+    this.messagingSystem.call('ApprovalController:updateRequestState', {
+      id,
+      requestState,
+    });
+  }
+
   /**
    * Adds, authorizes, and runs the given snap with a snap provider.
    * Results from this method should be efficiently serializable.
@@ -1702,6 +1746,12 @@ export class SnapController extends BaseController<
       );
     }
 
+    const pendingApproval = this.#createApproval({
+      origin,
+      snapId,
+      type: SNAP_APPROVAL_INSTALL,
+    });
+
     // Existing snaps must be stopped before overwriting
     if (existingSnap && this.isRunning(snapId)) {
       await this.stopSnap(snapId, SnapStatusEvents.Stop);
@@ -1719,7 +1769,7 @@ export class SnapController extends BaseController<
         location,
       });
 
-      await this.authorize(origin, snapId);
+      await this.authorize(snapId, pendingApproval);
 
       await this.#startSnap({
         snapId,
@@ -1768,6 +1818,13 @@ export class SnapController extends BaseController<
         `Received invalid snap version range: "${newVersionRange}".`,
       );
     }
+
+    const pendingApproval = this.#createApproval({
+      origin,
+      snapId,
+      type: SNAP_APPROVAL_UPDATE,
+    });
+
     const newSnap = await this.#fetchSnap(snapId, location);
     const newVersion = newSnap.manifest.result.version;
     if (!gtVersion(newVersion, snap.version)) {
@@ -1786,30 +1843,21 @@ export class SnapController extends BaseController<
       newSnap.manifest.result.initialPermissions,
     );
 
+    this.#validateSnapPermissions(processedPermissions);
+
     const { newPermissions, unusedPermissions, approvedPermissions } =
       this.#calculatePermissionsChange(snapId, processedPermissions);
 
-    const id = nanoid();
+    this.#updateApproval(pendingApproval.id, {
+      permissions: newPermissions,
+      newVersion: newSnap.manifest.result.version,
+      newPermissions,
+      approvedPermissions,
+      unusedPermissions,
+    });
+
     const { permissions: approvedNewPermissions, ...requestData } =
-      (await this.messagingSystem.call(
-        'ApprovalController:addRequest',
-        {
-          origin,
-          id,
-          type: SNAP_APPROVAL_UPDATE,
-          requestData: {
-            // First two keys mirror installation params
-            metadata: { id, origin: snapId, dappOrigin: origin },
-            permissions: newPermissions,
-            snapId,
-            newVersion: newSnap.manifest.result.version,
-            newPermissions,
-            approvedPermissions,
-            unusedPermissions,
-          },
-        },
-        true,
-      )) as PermissionsRequest;
+      (await pendingApproval.promise) as PermissionsRequest;
 
     if (this.isRunning(snapId)) {
       await this.stopSnap(snapId, SnapStatusEvents.Stop);
@@ -2202,17 +2250,41 @@ export class SnapController extends BaseController<
     );
   }
 
+  #validateSnapPermissions(
+    processedPermissions: Record<string, Pick<PermissionConstraint, 'caveats'>>,
+  ) {
+    const excludedPermissionErrors = Object.keys(processedPermissions).reduce<
+      string[]
+    >((errors, permission) => {
+      if (hasProperty(this.#excludedPermissions, permission)) {
+        errors.push(this.#excludedPermissions[permission]);
+      }
+
+      return errors;
+    }, []);
+
+    assert(
+      excludedPermissionErrors.length === 0,
+      `One or more permissions are not allowed:\n${excludedPermissionErrors.join(
+        '\n',
+      )}`,
+    );
+  }
+
   /**
    * Initiates a request for the given snap's initial permissions.
    * Must be called in order. See processRequestedSnap.
    *
    * This function is not hash private yet because of tests.
    *
-   * @param origin - The origin of the install request.
    * @param snapId - The id of the Snap.
+   * @param pendingApproval - Pending approval for installation of the snap.
    * @returns The snap's approvedPermissions.
    */
-  private async authorize(origin: string, snapId: SnapId): Promise<void> {
+  private async authorize(
+    snapId: SnapId,
+    pendingApproval: PendingApproval,
+  ): Promise<void> {
     log(`Authorizing snap: ${snapId}`);
     const snapsState = this.state.snaps;
     const snap = snapsState[snapId];
@@ -2222,40 +2294,14 @@ export class SnapController extends BaseController<
       const processedPermissions =
         this.#processSnapPermissions(initialPermissions);
 
-      const excludedPermissionErrors = Object.keys(processedPermissions).reduce<
-        string[]
-      >((errors, permission) => {
-        if (hasProperty(this.#excludedPermissions, permission)) {
-          errors.push(this.#excludedPermissions[permission]);
-        }
+      this.#validateSnapPermissions(processedPermissions);
 
-        return errors;
-      }, []);
+      this.#updateApproval(pendingApproval.id, {
+        permissions: processedPermissions,
+      });
 
-      assert(
-        excludedPermissionErrors.length === 0,
-        `One or more permissions are not allowed:\n${excludedPermissionErrors.join(
-          '\n',
-        )}`,
-      );
-
-      const id = nanoid();
       const { permissions: approvedPermissions, ...requestData } =
-        (await this.messagingSystem.call(
-          'ApprovalController:addRequest',
-          {
-            origin,
-            id,
-            type: SNAP_APPROVAL_INSTALL,
-            requestData: {
-              // Mirror previous installation metadata
-              metadata: { id, origin: snapId, dappOrigin: origin },
-              permissions: processedPermissions,
-              snapId,
-            },
-          },
-          true,
-        )) as PermissionsRequest;
+        (await pendingApproval.promise) as PermissionsRequest;
 
       if (isNonEmptyArray(Object.keys(approvedPermissions))) {
         this.messagingSystem.call('PermissionController:grantPermissions', {
