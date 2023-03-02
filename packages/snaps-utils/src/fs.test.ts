@@ -209,15 +209,16 @@ describe('validateDirPath', () => {
 
 describe('useTemporaryFile', () => {
   it('creates a temporary file with the proper name and content', async () => {
+    expect.assertions(2);
     await useTemporaryFile('foo', 'bar', async (filePath) => {
       expect(filePath).toContain('foo');
       const content = await fs.readFile(filePath, { encoding: 'utf-8' });
       expect(content.toString()).toBe('bar');
     });
-    expect.assertions(2);
   });
 
   it('always deletes the temporary file after usage', async () => {
+    expect.assertions(4);
     let filePath: string;
 
     await useTemporaryFile('foo', 'bar', async (fp) => {
@@ -229,6 +230,7 @@ describe('useTemporaryFile', () => {
 
     await expect(
       useTemporaryFile('foo', 'bar', async (fp) => {
+        expect(fp).toBeDefined();
         filePath = fp;
         throw new Error('baz');
       }),
@@ -236,7 +238,5 @@ describe('useTemporaryFile', () => {
 
     // @ts-expect-error Usage before defined
     expect(await isFile(filePath)).toBe(false);
-
-    expect.assertions(3);
   });
 });
