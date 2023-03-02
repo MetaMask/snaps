@@ -20,9 +20,9 @@ jobs:
         shell: bash
 
   lint-build-test:
-    name: Lint, build, and test
+    name: Build, lint, and test
     needs: check-workflows
-    uses: ./.github/workflows/lint-build-test.yml
+    uses: ./.github/workflows/build-lint-test.yml
 
   is-release:
     # Release merge commits come from `github-actions`.
