@@ -228,7 +228,7 @@ describe('plugin', () => {
 
   it('forwards errors', async () => {
     const mock = evalBundle as jest.MockedFunction<typeof evalBundle>;
-    mock.mockRejectedValue('foo');
+    mock.mockRejectedValue(new Error('foo'));
 
     const value = toStream(DEFAULT_SNAP_BUNDLE);
 
@@ -247,6 +247,6 @@ describe('plugin', () => {
       });
     });
 
-    expect(error.message).toBe('Snap evaluation error: foo');
+    expect(error.message).toBe('foo');
   });
 });
