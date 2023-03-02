@@ -65,7 +65,7 @@ jobs:
     steps:
       - name: Check that all jobs have passed
         run: |
-          passed="${{ needs.all-jobs-completed.outputs.passed }}"
+          passed="${{ needs.all-jobs-complete.outputs.passed }}"
           if [[ $passed != "true" ]]; then
             exit 1
           fi
