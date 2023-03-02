@@ -7,6 +7,7 @@ import {
   isDirectory,
   isFile,
   readJsonFile,
+  useTemporaryFile,
   validateDirPath,
   validateFilePath,
   validateOutfileName,
@@ -173,13 +174,11 @@ describe('validateFilePath', () => {
   });
 
   it('checks whether the given path string resolves to an existing file', async () => {
-    // jest.spyOn(snapUtils, 'isFile').mockResolvedValue(true);
     const result = await validateFilePath(MANIFEST_PATH);
     expect(result).toBe(true);
   });
 
   it('checks whether an invalid path string throws an error', async () => {
-    // jest.spyOn(snapUtils, 'isFile').mockResolvedValue(false);
     await expect(validateFilePath('/foo/bar.js')).rejects.toThrow(
       "Invalid params: '/foo/bar.js' is not a file or does not exist.",
     );
@@ -205,5 +204,39 @@ describe('validateDirPath', () => {
     ).rejects.toThrow(
       "Invalid params: '/snap/bar' is not a directory or could not be created.",
     );
+  });
+});
+
+describe('useTemporaryFile', () => {
+  it('creates a temporary file with the proper name and content', async () => {
+    expect.assertions(2);
+    await useTemporaryFile('foo', 'bar', async (filePath) => {
+      expect(filePath).toContain('foo');
+      const content = await fs.readFile(filePath, { encoding: 'utf-8' });
+      expect(content.toString()).toBe('bar');
+    });
+  });
+
+  it('always deletes the temporary file after usage', async () => {
+    expect.assertions(4);
+    let filePath: string;
+
+    await useTemporaryFile('foo', 'bar', async (fp) => {
+      filePath = fp;
+    });
+
+    // @ts-expect-error Usage before defined
+    expect(await isFile(filePath)).toBe(false);
+
+    await expect(
+      useTemporaryFile('foo', 'bar', async (fp) => {
+        expect(fp).toBeDefined();
+        filePath = fp;
+        throw new Error('baz');
+      }),
+    ).rejects.toThrow('baz');
+
+    // @ts-expect-error Usage before defined
+    expect(await isFile(filePath)).toBe(false);
   });
 });

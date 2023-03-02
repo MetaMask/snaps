@@ -177,7 +177,7 @@ describe('SnapsWebpackPlugin', () => {
     });
 
     expect(mock).toHaveBeenCalledTimes(1);
-    expect(mock).toHaveBeenCalledWith('/lib/foo.js');
+    expect(mock).toHaveBeenCalledWith('/tmp/snaps-bundle.js');
   });
 
   it('checks the manifest if configured', async () => {

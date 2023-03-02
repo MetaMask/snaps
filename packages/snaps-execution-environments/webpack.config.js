@@ -155,6 +155,7 @@ module.exports = () => {
         path: false,
         crypto: false,
         module: false,
+        os: false,
 
         // `buffer` used by streams, so we have to add a polyfill.
         buffer: require.resolve('buffer/'),
