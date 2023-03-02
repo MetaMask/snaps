@@ -88,7 +88,8 @@
       "$root$": false,
       "chromedriver": true,
       "jest>jest-cli>jest-config>ts-node>@swc/core": false,
-      "geckodriver": true
+      "geckodriver": true,
+      "ts-node>@swc/core": false
     }
   },
   "packageManager": "yarn@3.4.1"
