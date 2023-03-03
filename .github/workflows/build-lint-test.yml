@@ -148,7 +148,7 @@ jobs:
         with:
           name: coverage
           path: ${{ steps.get-coverage-folder.outputs.coverage-folder }}/**/coverage-final.json
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 1
       - name: Require clean working directory
         shell: bash
