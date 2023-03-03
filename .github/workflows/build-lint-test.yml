@@ -137,12 +137,17 @@ jobs:
           key: test-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
       - run: yarn --immutable --immutable-cache
       - run: yarn workspace ${{ matrix.package-name }} run test:ci
+      - name: Get coverage folder
+        id: get-coverage-folder
+        run: |
+          echo "coverage-folder=$(yarn workspaces list --json | grep ${{ matrix.package-name }} | jq -r '.location')/coverage" >> "$GITHUB_OUTPUT"
+        shell: bash
       - name: Upload coverage artifact
         if: ${{ matrix.node-version == '16.x' }}
         uses: actions/upload-artifact@v3
         with:
           name: coverage
-          path: packages/${{ matrix.package-name }}/coverage/**/coverage-final.json
+          path: ${{ steps.get-coverage-folder.outputs.coverage-folder }}/**/coverage-final.json
           if-no-files-found: error
           retention-days: 1
       - name: Require clean working directory
