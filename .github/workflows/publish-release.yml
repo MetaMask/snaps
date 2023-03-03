@@ -1,26 +1,16 @@
 name: Publish Release
 
 on:
-  push:
-    branches: [main]
+  workflow_call:
+    secrets:
+      NPM_TOKEN:
+        required: true
 
 jobs:
-  is-release:
-    # release merge commits come from github-actions
-    if: startsWith(github.event.commits[0].author.name, 'github-actions')
-    outputs:
-      IS_RELEASE: ${{ steps.is-release.outputs.IS_RELEASE }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: MetaMask/action-is-release@v1
-        id: is-release
-
   publish-release:
     permissions:
       contents: write
-    if: needs.is-release.outputs.IS_RELEASE == 'true'
     runs-on: ubuntu-latest
-    needs: is-release
     steps:
       - uses: actions/checkout@v3
         with:

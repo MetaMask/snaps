@@ -1,5 +1,4 @@
 {
-  "files": [],
   "references": [
     { "path": "./packages/multichain-provider" },
     { "path": "./packages/rpc-methods" },
@@ -12,5 +11,11 @@
     { "path": "./packages/snaps-ui" },
     { "path": "./packages/snaps-utils" },
     { "path": "./packages/snaps-webpack-plugin" }
-  ]
+  ],
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "noEmit": true
+  },
+  "files": [],
+  "include": ["scripts"]
 }

@@ -30,6 +30,8 @@
     "build:test": "cross-env NODE_ENV=test webpack --mode none && yarn build:concat",
     "build:concat": "concat -o ./dist/webpack/node-process/bundle.js ./dist/webpack/node-process/lockdown.umd.min.js ./dist/webpack/node-process/bundle.js && concat -o ./dist/webpack/node-thread/bundle.js ./dist/webpack/node-thread/lockdown.umd.min.js ./dist/webpack/node-thread/bundle.js",
     "auto-changelog-init": "auto-changelog init",
+    "prepare-manifest:preview": "../../scripts/prepare-preview-manifest.sh",
+    "publish:preview": "yarn npm publish --tag preview",
     "publish:package": "../../scripts/publish-package.sh"
   },
   "dependencies": {
