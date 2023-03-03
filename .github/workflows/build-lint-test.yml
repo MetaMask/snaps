@@ -170,10 +170,8 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: coverage
-      - name: Display structure of downloaded files
-        run: ls -R
-  #      - name: Upload coverage results
-  #        uses: codecov/codecov-action@d9f34f8cd5cb3b3eb79b3e4b5dae3a16df499a70
+      - name: Upload coverage results
+        uses: codecov/codecov-action@d9f34f8cd5cb3b3eb79b3e4b5dae3a16df499a70
 
   platform-compatibility-test:
     name: Test platform compatibility
