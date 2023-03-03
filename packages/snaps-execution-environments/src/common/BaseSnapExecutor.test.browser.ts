@@ -657,12 +657,14 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
       error: {
-        code: -32601,
-        message: 'The method does not exist / is not available.',
+        code: -32603,
+        message:
+          'The global Snap API only allows RPC methods starting with `wallet_*` and `snap_*`.',
         data: {
-          method: 'eth_requestAccounts',
+          originalError: {
+            code: 'ERR_ASSERTION',
+          },
         },
-        stack: expect.any(String),
       },
       id: 2,
     });
