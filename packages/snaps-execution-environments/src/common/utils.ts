@@ -1,4 +1,7 @@
 import { StreamProvider } from '@metamask/providers';
+import { RequestArguments } from '@metamask/providers/dist/BaseProvider';
+import { assert } from '@metamask/utils';
+import { ethErrors } from 'eth-rpc-errors';
 
 import { log } from '../logging';
 
@@ -96,4 +99,57 @@ export function proxyStreamProvider(
   );
 
   return proxy as StreamProvider;
+}
+
+// We're blocking these two RPC methods for v1, will revisit later.
+const BLOCKED_RPC_METHODS = Object.freeze([
+  'eth_requestAccounts',
+  'wallet_requestSnaps',
+]);
+
+/**
+ * Asserts the validity of request arguments for a snap outbound request using the `snap.request` API.
+ *
+ * @param args - The arguments to validate.
+ */
+export function assertSnapOutboundRequest(args: RequestArguments) {
+  // Disallow any non `wallet_` or `snap_` methods for seperation of concerns
+  assert(
+    String.prototype.startsWith.call(args.method, 'wallet_') ||
+      String.prototype.startsWith.call(args.method, 'snap_'),
+    'The global Snap API only allows RPC methods starting with `wallet_*` and `snap_*`.',
+  );
+  assert(
+    !BLOCKED_RPC_METHODS.includes(args.method),
+    ethErrors.rpc.methodNotFound({
+      data: {
+        method: args.method,
+      },
+    }),
+  );
+}
+
+/**
+ * Asserts the validity of request arguments for an ethereum outbound request using the `ethereum.request` API.
+ *
+ * @param args - The arguments to validate.
+ */
+export function assertEthereumOutboundRequest(args: RequestArguments) {
+  // Disallow snaps methods for seperation of concerns
+  assert(
+    !String.prototype.startsWith.call(args.method, 'snap_'),
+    ethErrors.rpc.methodNotFound({
+      data: {
+        method: args.method,
+      },
+    }),
+  );
+  assert(
+    !BLOCKED_RPC_METHODS.includes(args.method),
+    ethErrors.rpc.methodNotFound({
+      data: {
+        method: args.method,
+      },
+    }),
+  );
 }

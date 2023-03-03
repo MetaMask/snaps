@@ -325,6 +325,86 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
+  it("doesn't allow eth_requestAccounts in the Ethereum provider", async () => {
+    const CODE = `
+      module.exports.onRpcRequest = () => ethereum.request({ method: 'eth_requestAccounts', params: [] });
+    `;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, ['ethereum']);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      error: {
+        code: -32601,
+        message: 'The method does not exist / is not available.',
+        data: {
+          method: 'eth_requestAccounts',
+        },
+        stack: expect.any(String),
+      },
+      id: 2,
+    });
+  });
+
+  it("doesn't allow wallet_requestSnaps in the Ethereum provider", async () => {
+    const CODE = `
+      module.exports.onRpcRequest = () => ethereum.request({ method: 'wallet_requestSnaps', params: [] });
+    `;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, ['ethereum']);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      error: {
+        code: -32601,
+        message: 'The method does not exist / is not available.',
+        data: {
+          method: 'wallet_requestSnaps',
+        },
+        stack: expect.any(String),
+      },
+      id: 2,
+    });
+  });
+
   it('allows direct access to ethereum public properties', async () => {
     const CODE = `
       module.exports.onRpcRequest = () => {
@@ -543,6 +623,86 @@ describe('BaseSnapExecutor', () => {
             code: 'ERR_ASSERTION',
           },
         },
+      },
+      id: 2,
+    });
+  });
+
+  it("doesn't allow eth_requestAccounts in the snap.request", async () => {
+    const CODE = `
+      module.exports.onRpcRequest = () => snap.request({ method: 'eth_requestAccounts', params: [] });
+    `;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      error: {
+        code: -32601,
+        message: 'The method does not exist / is not available.',
+        data: {
+          method: 'eth_requestAccounts',
+        },
+        stack: expect.any(String),
+      },
+      id: 2,
+    });
+  });
+
+  it("doesn't allow wallet_requestSnaps in the snap.request", async () => {
+    const CODE = `
+      module.exports.onRpcRequest = () => snap.request({ method: 'wallet_requestSnaps', params: [] });
+    `;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      error: {
+        code: -32601,
+        message: 'The method does not exist / is not available.',
+        data: {
+          method: 'wallet_requestSnaps',
+        },
+        stack: expect.any(String),
       },
       id: 2,
     });
