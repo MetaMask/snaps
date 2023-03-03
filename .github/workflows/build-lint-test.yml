@@ -26,7 +26,9 @@ jobs:
         with:
           path: |
             packages/snaps-execution-environments/dist/webpack
-          key: test-build-${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('yarn.lock') }}-${{ hashFiles('packages/snaps-execution-environments/**/*.[tj]sx?') }}
+          key: test-build-${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('yarn.lock') }}-${{ hashFiles('packages/snaps-execution-environments/**/*.[tj]s') }}
+          restore-keys: |
+            test-build
       - name: Prepare test build
         if: steps.cache-test-build.outputs.cache-hit != 'true'
         run: yarn test:prepare
@@ -129,7 +131,7 @@ jobs:
         with:
           path: |
             packages/snaps-execution-environments/dist/webpack
-          key: test-build-${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('yarn.lock') }}
+          key: test-build
       - run: yarn --immutable --immutable-cache
       - run: yarn workspace ${{ matrix.package-name }} run test:ci
       - name: Upload coverage results
