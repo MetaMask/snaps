@@ -166,12 +166,15 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     steps:
+      - uses: actions/checkout@v3
       - name: Download coverage artifact
         uses: actions/download-artifact@v3
         with:
           name: coverage
       - name: Upload coverage results
         uses: codecov/codecov-action@d9f34f8cd5cb3b3eb79b3e4b5dae3a16df499a70
+        with:
+          files: packages/**/coverage-final.json
 
   platform-compatibility-test:
     name: Test platform compatibility
