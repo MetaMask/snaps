@@ -10,8 +10,8 @@ jobs:
     outputs:
       child-workspace-package-names: ${{ steps.workspace-package-names.outputs.child-workspace-package-names }}
     strategy:
+      fail-fast: false
       matrix:
-        fail-fast: false
         node-version: [16.x, 18.x]
     steps:
       - uses: actions/checkout@v3
@@ -151,8 +151,8 @@ jobs:
     name: Test platform compatibility
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        fail-fast: false
         os: [macOS-latest, windows-latest]
     steps:
       - uses: actions/checkout@v3
