@@ -26,7 +26,7 @@ jobs:
         with:
           path: |
             packages/snaps-execution-environments/dist/webpack
-          key: test-build-${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('yarn.lock') }}
+          key: test-build-${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('yarn.lock') }}-${{ hashFiles('packages/snaps-execution-environments/**/*.[tj]sx?') }}
       - name: Prepare test build
         if: steps.cache-test-build.outputs.cache-hit != 'true'
         run: yarn test:prepare
