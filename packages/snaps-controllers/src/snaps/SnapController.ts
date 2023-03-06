@@ -31,6 +31,7 @@ import {
   DEFAULT_ENDOWMENTS,
   DEFAULT_REQUESTED_SNAP_VERSION,
   isSnapPermitted,
+  fromEntries,
   InstallSnapsResult,
   normalizeRelative,
   PersistedSnap,
@@ -1676,6 +1677,28 @@ export class SnapController extends BaseController<
     location: SnapLocation,
     versionRange: SemVerRange,
   ): Promise<ProcessSnapResult> {
+    const confirmationId = nanoid();
+
+    const confirmation = this.messagingSystem.call(
+      'ApprovalController:addRequest',
+      {
+        origin,
+        id: confirmationId,
+        type: SNAP_APPROVAL_INSTALL,
+        requestData: {
+          // Mirror previous installation metadata
+          metadata: { id: confirmationId, origin: snapId, dappOrigin: origin },
+          snapId,
+        },
+        requestState: {
+          loading: true,
+          error: false,
+          Permissions: null,
+        },
+      },
+      true,
+    );
+
     const existingSnap = this.getTruncated(snapId);
     // For devX we always re-install local snaps.
     if (existingSnap && !location.shouldAlwaysReload) {
@@ -1719,8 +1742,7 @@ export class SnapController extends BaseController<
         location,
       });
 
-      await this.authorize(origin, snapId);
-
+      await this.authorize(snapId, confirmation, confirmationId);
       await this.#startSnap({
         snapId,
         sourceCode,
@@ -2210,9 +2232,15 @@ export class SnapController extends BaseController<
    *
    * @param origin - The origin of the install request.
    * @param snapId - The id of the Snap.
+   * @param permissionRequest
+   * @param confirmationId
    * @returns The snap's approvedPermissions.
    */
-  private async authorize(origin: string, snapId: SnapId): Promise<void> {
+  private async authorize(
+    snapId: SnapId,
+    permissionRequest: any,
+    confirmationId: string,
+  ): Promise<void> {
     log(`Authorizing snap: ${snapId}`);
     const snapsState = this.state.snaps;
     const snap = snapsState[snapId];
@@ -2239,23 +2267,18 @@ export class SnapController extends BaseController<
         )}`,
       );
 
-      const id = nanoid();
+      // @ts-expect-error Not updated
+      await this.messagingSystem.call('ApprovalController:updateRequestState', {
+        id: confirmationId,
+        requestState: {
+          loading: false,
+          error: false,
+          permissions: processedPermissions,
+        },
+      });
+
       const { permissions: approvedPermissions, ...requestData } =
-        (await this.messagingSystem.call(
-          'ApprovalController:addRequest',
-          {
-            origin,
-            id,
-            type: SNAP_APPROVAL_INSTALL,
-            requestData: {
-              // Mirror previous installation metadata
-              metadata: { id, origin: snapId, dappOrigin: origin },
-              permissions: processedPermissions,
-              snapId,
-            },
-          },
-          true,
-        )) as PermissionsRequest;
+        await permissionRequest;
 
       if (isNonEmptyArray(Object.keys(approvedPermissions))) {
         this.messagingSystem.call('PermissionController:grantPermissions', {
