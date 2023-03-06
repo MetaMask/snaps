@@ -33,8 +33,6 @@ import {
   assertIsSnapManifest,
   DEFAULT_ENDOWMENTS,
   DEFAULT_REQUESTED_SNAP_VERSION,
-  isSnapPermitted,
-  fromEntries,
   InstallSnapsResult,
   normalizeRelative,
   PersistedSnap,
