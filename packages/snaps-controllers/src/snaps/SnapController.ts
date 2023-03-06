@@ -1610,7 +1610,15 @@ export class SnapController extends BaseController<
           );
         }
 
-        const isUpdate = pendingUpdates.includes(snapId);
+        const location = this.#detectSnapLocation(snapId, {
+          versionRange: version,
+          fetch: this.#fetchFunction,
+          allowLocal: this.#featureFlags.allowLocalSnaps,
+        });
+
+        // Existing snaps may need to be updated, unless they should be re-installed (e.g. local snaps)
+        // Everything else is treated as an install
+        const isUpdate = this.has(snapId) && !location.shouldAlwaysReload;
 
         if (isUpdate && this.#isValidUpdate(snapId, version)) {
           pendingUpdates.push(snapId);
