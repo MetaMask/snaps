@@ -119,6 +119,12 @@ export const controllerName = 'SnapController';
 // TODO: Figure out how to name these
 export const SNAP_APPROVAL_INSTALL = 'wallet_installSnap';
 export const SNAP_APPROVAL_UPDATE = 'wallet_updateSnap';
+export const SNAP_APPROVAL_RESULT = 'wallet_installSnapResult';
+
+export enum SnapInstallError {
+  FetchFailed = 'fetchFailed',
+  StartFailed = 'startFailed',
+}
 
 const TRUNCATED_SNAP_PROPERTIES = new Set<TruncatedSnapFields>([
   'initialPermissions',
@@ -1685,12 +1691,6 @@ export class SnapController extends BaseController<
     location: SnapLocation,
     versionRange: SemVerRange,
   ): Promise<ProcessSnapResult> {
-    const pendingApproval = this.#createApproval({
-      origin,
-      snapId,
-      type: SNAP_APPROVAL_INSTALL,
-    });
-
     const existingSnap = this.getTruncated(snapId);
     // For devX we always re-install local snaps.
     if (existingSnap && !location.shouldAlwaysReload) {
@@ -1717,6 +1717,12 @@ export class SnapController extends BaseController<
       );
     }
 
+    const permissionsApproval = this.#createApproval({
+      origin,
+      snapId,
+      type: SNAP_APPROVAL_INSTALL,
+    });
+
     // Existing snaps must be stopped before overwriting
     if (existingSnap && this.isRunning(snapId)) {
       await this.stopSnap(snapId, SnapStatusEvents.Stop);
@@ -1728,25 +1734,57 @@ export class SnapController extends BaseController<
     }
 
     try {
-      const { sourceCode } = await this.#add({
+      try {
+        await this.#add({
+          origin,
+          id: snapId,
+          location,
+        });
+      } catch (error) {
+        this.#updateApproval(permissionsApproval.id, {
+          loading: false,
+          error: SnapInstallError.FetchFailed,
+        });
+
+        throw error;
+      }
+
+      await this.authorize(snapId, permissionsApproval);
+
+      const resultApproval = this.#createApproval({
         origin,
-        id: snapId,
-        location,
+        snapId,
+        type: SNAP_APPROVAL_RESULT,
       });
 
-      await this.authorize(snapId, pendingApproval);
-      await this.#startSnap({
-        snapId,
-        sourceCode,
-      });
+      try {
+        const { sourceCode } = this.#getRuntimeExpect(snapId);
+        if (sourceCode) {
+          await this.#startSnap({
+            snapId,
+            sourceCode,
+          });
+        } else {
+          throw Error('no source code found');
+        }
+      } catch (error) {
+        this.#updateApproval(resultApproval.id, {
+          loading: false,
+          error: SnapInstallError.StartFailed,
+        });
+
+        throw error;
+      }
 
       const truncated = this.getTruncatedExpect(snapId);
 
       this.messagingSystem.publish(`SnapController:snapInstalled`, truncated);
+
+      this.#updateApproval(resultApproval.id, { loading: false });
+
       return truncated;
     } catch (error) {
       logError(`Error when adding snap.`, error);
-
       throw error;
     }
   }
@@ -1774,8 +1812,7 @@ export class SnapController extends BaseController<
         },
         requestState: {
           loading: true,
-          error: false,
-          permissions: null,
+          error: null,
         },
       },
       true,
