@@ -59,6 +59,7 @@ import {
   VirtualFile,
   logError,
   logWarning,
+  isSnapPermitted,
 } from '@metamask/snaps-utils';
 import {
   GetSubjectMetadata,
@@ -1607,6 +1608,17 @@ export class SnapController extends BaseController<
         if (error) {
           throw ethErrors.rpc.invalidParams(
             `The "version" field must be a valid SemVer version range if specified. Received: "${rawVersion}".`,
+          );
+        }
+
+        const permissions = this.messagingSystem.call(
+          'PermissionController:getPermissions',
+          origin,
+        ) as SubjectPermissions<PermissionConstraint>;
+
+        if (!isSnapPermitted(permissions, snapId)) {
+          throw ethErrors.provider.unauthorized(
+            `Not authorized to install snap "${snapId}". Request the permission for the snap before attempting to install it.`,
           );
         }
 
