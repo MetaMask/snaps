@@ -1853,6 +1853,7 @@ export class SnapController extends BaseController<
     newVersionRange: string = DEFAULT_REQUESTED_SNAP_VERSION,
   ): Promise<TruncatedSnap | null> {
     const snap = this.getExpect(snapId);
+    let newSnap;
 
     if (!isValidSemVerRange(newVersionRange)) {
       throw new Error(
@@ -1860,13 +1861,21 @@ export class SnapController extends BaseController<
       );
     }
 
-    const pendingApproval = this.#createApproval({
+    const permissionsApproval = this.#createApproval({
       origin,
       snapId,
       type: SNAP_APPROVAL_UPDATE,
     });
 
-    const newSnap = await this.#fetchSnap(snapId, location);
+    try {
+      newSnap = await this.#fetchSnap(snapId, location);
+    } catch (error) {
+      this.#updateApproval(permissionsApproval.id, {
+        loading: false,
+        error: SnapInstallError.FetchFailed,
+      });
+      throw error;
+    }
     const newVersion = newSnap.manifest.result.version;
     if (!gtVersion(newVersion, snap.version)) {
       logWarning(
@@ -1889,7 +1898,7 @@ export class SnapController extends BaseController<
     const { newPermissions, unusedPermissions, approvedPermissions } =
       this.#calculatePermissionsChange(snapId, processedPermissions);
 
-    this.#updateApproval(pendingApproval.id, {
+    this.#updateApproval(permissionsApproval.id, {
       permissions: newPermissions,
       newVersion: newSnap.manifest.result.version,
       newPermissions,
@@ -1900,7 +1909,13 @@ export class SnapController extends BaseController<
     });
 
     const { permissions: approvedNewPermissions, ...requestData } =
-      (await pendingApproval.promise) as PermissionsRequest;
+      (await permissionsApproval.promise) as PermissionsRequest;
+
+    const resultApproval = this.#createApproval({
+      origin,
+      snapId,
+      type: SNAP_APPROVAL_RESULT,
+    });
 
     if (this.isRunning(snapId)) {
       await this.stopSnap(snapId, SnapStatusEvents.Stop);
@@ -1957,6 +1972,10 @@ export class SnapController extends BaseController<
     try {
       await this.#startSnap({ snapId, sourceCode });
     } catch {
+      this.#updateApproval(resultApproval.id, {
+        loading: false,
+        error: SnapInstallError.StartFailed,
+      });
       throw new Error(`Snap ${snapId} crashed with updated source code.`);
     }
 
@@ -1966,6 +1985,8 @@ export class SnapController extends BaseController<
       truncatedSnap,
       snap.version,
     );
+
+    this.#updateApproval(resultApproval.id, { loading: false });
 
     return truncatedSnap;
   }
