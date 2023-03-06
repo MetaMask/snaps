@@ -104,10 +104,6 @@ const specificationBuilder: PermissionSpecificationBuilder<
         });
       }
     },
-    sideEffect: {
-      onPermitted: permittedHandler,
-      onFailure: async () => Promise.resolve(),
-    },
   };
 };
 
@@ -194,20 +190,4 @@ export function getInvokeSnapImplementation({
       handler: HandlerType.OnRpcRequest,
     })) as Json;
   };
-}
-
-/**
- * This is a test.
- *
- * @param options0 - Test.
- * @param options0.requestData - Test.
- * @param options0.callAction - Test.
- */
-async function permittedHandler({ requestData, callAction }: any) {
-  console.log(requestData);
-  await callAction(
-    'SnapController:install',
-    requestData.metadata.origin,
-    requestData.permissions[WALLET_SNAP_PERMISSION_KEY].caveats[0].value,
-  );
 }
