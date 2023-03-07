@@ -3331,6 +3331,7 @@ __metadata:
     webpack-cli: ^4.9.2
     webpack-merge: ^5.8.0
     webpackbar: ^5.0.2
+    yargs: ^17.7.1
   languageName: unknown
   linkType: soft
 
@@ -19675,7 +19676,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yargs@npm:^17.0.1, yargs@npm:^17.3.1, yargs@npm:^17.5.1":
+"yargs@npm:^17.0.1, yargs@npm:^17.3.1, yargs@npm:^17.5.1, yargs@npm:^17.7.1":
   version: 17.7.1
   resolution: "yargs@npm:17.7.1"
   dependencies:
