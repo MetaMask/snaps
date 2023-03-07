@@ -2730,7 +2730,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/aa@npm:^3.0.0, @lavamoat/aa@npm:^3.1.0":
+"@lavamoat/aa@npm:3.1.2":
   version: 3.1.2
   resolution: "@lavamoat/aa@npm:3.1.2"
   dependencies:
@@ -2738,6 +2738,17 @@ __metadata:
   bin:
     lavamoat-ls: src/cli.js
   checksum: e580278f2119e26b968105b1ba61d9285537b2577b2f2a256c12d4e623bc544eb7664989855b90e7b2aee6ed23222179423a0c9009f67995ded85678e132332f
+  languageName: node
+  linkType: hard
+
+"@lavamoat/aa@patch:@lavamoat/aa@npm%3A3.1.2#./.yarn/patches/@lavamoat-aa-npm-3.1.2-5a47e9a622.patch::locator=root%40workspace%3A.":
+  version: 3.1.2
+  resolution: "@lavamoat/aa@patch:@lavamoat/aa@npm%3A3.1.2#./.yarn/patches/@lavamoat-aa-npm-3.1.2-5a47e9a622.patch::version=3.1.2&hash=fe1f45&locator=root%40workspace%3A."
+  dependencies:
+    resolve: ^1.20.0
+  bin:
+    lavamoat-ls: src/cli.js
+  checksum: 32ebf8c1a95ac77f97a5c1c683c3ca5f2450c9ab53f8ed8961b962af43a643a08fe189125d097728a88e39246e867934c97a4e2bc615c4bea9239c600beaead5
   languageName: node
   linkType: hard
 
@@ -3282,6 +3293,7 @@ __metadata:
     "@wdio/spec-reporter": ^8.3.0
     "@wdio/static-server-service": ^8.3.0
     babel-loader: ^9.1.2
+    babel-plugin-tsconfig-paths: 1.0.3-rc.6
     babelify: ^10.0.0
     browserify: ^17.0.0
     buffer: ^6.0.3
@@ -6159,6 +6171,28 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.0.0-0
   checksum: ab0355efbad17d29492503230387679dfb780b63b25408990d2e4cf421012dae61d6199ddc309f4d2409ce4e9d3002d187702700dd8f4f8770ebbba651ed066c
+  languageName: node
+  linkType: hard
+
+"babel-plugin-tsconfig-paths@npm:1.0.3-rc.6":
+  version: 1.0.3-rc.6
+  resolution: "babel-plugin-tsconfig-paths@npm:1.0.3-rc.6"
+  dependencies:
+    json5: ^2.2.0
+  peerDependencies:
+    "@babel/core": ^7.9.0
+  checksum: b6c364b6a0b3e595a752cd9b67c9663ecdbc5f350b8dc6ddb1182d7d5c6d8dc6a01f3bc9e073501e659a79a8cd29606a342b16385de8c58d18869561891dd778
+  languageName: node
+  linkType: hard
+
+"babel-plugin-tsconfig-paths@patch:babel-plugin-tsconfig-paths@npm%3A1.0.3-rc.6#./.yarn/patches/babel-plugin-tsconfig-paths-npm-1.0.3-rc.6-918b52a0d2.patch::locator=root%40workspace%3A.":
+  version: 1.0.3-rc.6
+  resolution: "babel-plugin-tsconfig-paths@patch:babel-plugin-tsconfig-paths@npm%3A1.0.3-rc.6#./.yarn/patches/babel-plugin-tsconfig-paths-npm-1.0.3-rc.6-918b52a0d2.patch::version=1.0.3-rc.6&hash=e6b51e&locator=root%40workspace%3A."
+  dependencies:
+    json5: ^2.2.0
+  peerDependencies:
+    "@babel/core": ^7.9.0
+  checksum: ff1b7b71ef86d868522560690782704c553c09141ffc73013ef26faa7ddfb83b6902a9cbb0a1f8e90e48b5b9e9ff3682f454bd4e676389ada99796fc9845a776
   languageName: node
   linkType: hard
 
@@ -13118,7 +13152,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json5@npm:^2.1.2, json5@npm:^2.2.1, json5@npm:^2.2.2":
+"json5@npm:^2.1.2, json5@npm:^2.2.0, json5@npm:^2.2.1, json5@npm:^2.2.2":
   version: 2.2.3
   resolution: "json5@npm:2.2.3"
   bin:

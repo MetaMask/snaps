@@ -43,6 +43,7 @@ async function main() {
 
   await Promise.all(
     Object.entries(ENTRY_POINTS).map(async ([key, config]) => {
+      console.log('Bundling', key);
       const { html, entryPoint } = config;
       const bundler = browserify(entryPoint, {
         extensions: ['.ts'],
@@ -62,9 +63,30 @@ async function main() {
             },
           ],
         ],
+        plugins: [
+          [
+            require('babel-plugin-tsconfig-paths'),
+            {
+              relative: true,
+              extensions: ['.js', '.ts'],
+              tsconfig: 'tsconfig.build.json',
+            },
+          ],
+        ],
       });
 
-      bundler.plugin(LavaMoatBrowserify, { writeAutoPolicy });
+      bundler.plugin(LavaMoatBrowserify, {
+        writeAutoPolicy,
+        policy: path.resolve(
+          __dirname,
+          `../lavamoat/browserify/${key}/policy.json`,
+        ),
+        policyName: key,
+        policyOverride: path.resolve(
+          __dirname,
+          `../lavamoat/browserify/policy-override.json`,
+        ),
+      });
 
       const buffer = await new Promise((resolve, reject) => {
         bundler.bundle((error, bundle) => {
@@ -96,6 +118,7 @@ async function main() {
         await fs.writeFile(bundlePath, buffer as Uint8Array);
       }
 
+      console.log('Finished', key);
       return buffer;
     }),
   );

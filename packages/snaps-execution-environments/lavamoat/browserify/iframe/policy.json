@@ -114,6 +114,19 @@
         "crypto": true
       }
     },
+    "@metamask/snaps-utils": {
+      "packages": {
+        "@metamask/rpc-methods>@noble/hashes": true,
+        "@metamask/snaps-utils>@scure/base": true,
+        "@metamask/snaps-utils>cron-parser": true,
+        "@metamask/snaps-utils>rfdc": true,
+        "@metamask/snaps-utils>validate-npm-package-name": true,
+        "@metamask/utils": true,
+        "superstruct": true,
+        "ts-jest>fast-json-stable-stringify": true,
+        "ts-jest>semver": true
+      }
+    },
     "@metamask/snaps-utils>@scure/base": {
       "globals": {
         "TextDecoder": true,
@@ -541,145 +554,6 @@
     "eth-rpc-errors": {
       "packages": {
         "eth-rpc-errors>fast-safe-stringify": true
-      }
-    },
-    "external:../snaps-utils/dist/checksum.js": {
-      "packages": {
-        "@metamask/rpc-methods>@noble/hashes": true,
-        "@metamask/utils": true,
-        "external:../snaps-utils/dist/virtual-file/VirtualFile.js": true
-      }
-    },
-    "external:../snaps-utils/dist/cronjob.js": {
-      "packages": {
-        "@metamask/snaps-utils>cron-parser": true,
-        "@metamask/utils": true,
-        "superstruct": true
-      }
-    },
-    "external:../snaps-utils/dist/deep-clone.js": {
-      "packages": {
-        "@metamask/snaps-utils>rfdc": true
-      }
-    },
-    "external:../snaps-utils/dist/iframe.js": {
-      "globals": {
-        "document.body.appendChild": true,
-        "document.createElement": true
-      }
-    },
-    "external:../snaps-utils/dist/index.browser.js": {
-      "packages": {
-        "external:../snaps-utils/dist/caveats.js": true,
-        "external:../snaps-utils/dist/checksum.js": true,
-        "external:../snaps-utils/dist/cronjob.js": true,
-        "external:../snaps-utils/dist/deep-clone.js": true,
-        "external:../snaps-utils/dist/default-endowments.js": true,
-        "external:../snaps-utils/dist/entropy.js": true,
-        "external:../snaps-utils/dist/handlers.js": true,
-        "external:../snaps-utils/dist/iframe.js": true,
-        "external:../snaps-utils/dist/json-rpc.js": true,
-        "external:../snaps-utils/dist/logging.js": true,
-        "external:../snaps-utils/dist/manifest/index.browser.js": true,
-        "external:../snaps-utils/dist/namespace.js": true,
-        "external:../snaps-utils/dist/notification.js": true,
-        "external:../snaps-utils/dist/path.js": true,
-        "external:../snaps-utils/dist/snaps.js": true,
-        "external:../snaps-utils/dist/types.js": true,
-        "external:../snaps-utils/dist/versions.js": true,
-        "external:../snaps-utils/dist/virtual-file/index.browser.js": true
-      }
-    },
-    "external:../snaps-utils/dist/json-rpc.js": {
-      "packages": {
-        "@metamask/utils": true,
-        "superstruct": true
-      }
-    },
-    "external:../snaps-utils/dist/logging.js": {
-      "globals": {
-        "console.error": true,
-        "console.log": true,
-        "console.warn": true
-      },
-      "packages": {
-        "@metamask/utils": true
-      }
-    },
-    "external:../snaps-utils/dist/manifest/index.browser.js": {
-      "packages": {
-        "external:../snaps-utils/dist/manifest/validation.js": true
-      }
-    },
-    "external:../snaps-utils/dist/manifest/validation.js": {
-      "packages": {
-        "@metamask/utils": true,
-        "external:../snaps-utils/dist/cronjob.js": true,
-        "external:../snaps-utils/dist/entropy.js": true,
-        "external:../snaps-utils/dist/json-rpc.js": true,
-        "external:../snaps-utils/dist/namespace.js": true,
-        "external:../snaps-utils/dist/types.js": true,
-        "superstruct": true
-      }
-    },
-    "external:../snaps-utils/dist/namespace.js": {
-      "packages": {
-        "@metamask/utils": true,
-        "superstruct": true
-      }
-    },
-    "external:../snaps-utils/dist/notification.js": {
-      "packages": {
-        "@metamask/utils": true,
-        "external:../snaps-utils/dist/namespace.js": true,
-        "superstruct": true
-      }
-    },
-    "external:../snaps-utils/dist/path.js": {
-      "packages": {
-        "@metamask/utils": true
-      }
-    },
-    "external:../snaps-utils/dist/snaps.js": {
-      "packages": {
-        "@metamask/snaps-utils>@scure/base": true,
-        "@metamask/snaps-utils>validate-npm-package-name": true,
-        "@metamask/utils": true,
-        "external:../snaps-utils/dist/caveats.js": true,
-        "external:../snaps-utils/dist/checksum.js": true,
-        "external:../snaps-utils/dist/types.js": true,
-        "superstruct": true,
-        "ts-jest>fast-json-stable-stringify": true
-      }
-    },
-    "external:../snaps-utils/dist/types.js": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@metamask/utils": true,
-        "superstruct": true
-      }
-    },
-    "external:../snaps-utils/dist/versions.js": {
-      "packages": {
-        "@metamask/utils": true,
-        "superstruct": true,
-        "ts-jest>semver": true
-      }
-    },
-    "external:../snaps-utils/dist/virtual-file/VirtualFile.js": {
-      "globals": {
-        "TextDecoder": true
-      },
-      "packages": {
-        "@metamask/utils": true,
-        "external:../snaps-utils/dist/deep-clone.js": true
-      }
-    },
-    "external:../snaps-utils/dist/virtual-file/index.browser.js": {
-      "packages": {
-        "external:../snaps-utils/dist/virtual-file/VirtualFile.js": true
       }
     },
     "json-rpc-engine": {
