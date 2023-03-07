@@ -1778,9 +1778,9 @@ export class SnapController extends BaseController<
 
       const truncated = this.getTruncatedExpect(snapId);
 
-      this.messagingSystem.publish(`SnapController:snapInstalled`, truncated);
-
       this.#updateApproval(resultApproval.id, { loading: false });
+
+      this.messagingSystem.publish(`SnapController:snapInstalled`, truncated);
 
       return truncated;
     } catch (error) {
@@ -1905,7 +1905,6 @@ export class SnapController extends BaseController<
       approvedPermissions,
       unusedPermissions,
       loading: false,
-      error: false,
     });
 
     const { permissions: approvedNewPermissions, ...requestData } =
@@ -2362,7 +2361,6 @@ export class SnapController extends BaseController<
 
       this.#updateApproval(pendingApproval.id, {
         loading: false,
-        error: false,
         permissions: processedPermissions,
       });
 

@@ -65,6 +65,34 @@ export class MockControllerMessenger<
   }
 }
 
+export class MockApprovalController {
+  #approval: any;
+
+  async addRequest(request: any) {
+    const promise = new Promise((resolve) => {
+      this.#approval = {
+        resolve,
+        request,
+      };
+    });
+
+    return promise;
+  }
+
+  async updateRequestState({ requestState }: any) {
+    if (requestState.loading === false && !requestState.error) {
+      this.#approval.resolve({
+        permissions: requestState.permissions,
+        ...this.#approval.request.requestData,
+      });
+    } else {
+      this.#approval.resolve();
+    }
+  }
+}
+
+export const approvalControllerMock = new MockApprovalController();
+
 export const snapConfirmPermissionKey = 'snap_confirm';
 
 export const MOCK_SNAP_SUBJECT_METADATA: SubjectMetadata = {
@@ -159,9 +187,12 @@ export const getControllerMessenger = () => {
 
   messenger.registerActionHandler(
     'ApprovalController:addRequest',
-    async (request) => {
-      return Promise.resolve(request.requestData);
-    },
+    approvalControllerMock.addRequest.bind(approvalControllerMock),
+  );
+
+  messenger.registerActionHandler(
+    'ApprovalController:updateRequestState',
+    approvalControllerMock.updateRequestState.bind(approvalControllerMock),
   );
 
   messenger.registerActionHandler(
@@ -254,6 +285,7 @@ export const getSnapControllerMessenger = (
     ],
     allowedActions: [
       'ApprovalController:addRequest',
+      'ApprovalController:updateRequestState',
       'ExecutionService:executeSnap',
       'ExecutionService:terminateAllSnaps',
       'ExecutionService:terminateSnap',
