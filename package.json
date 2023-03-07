@@ -44,7 +44,10 @@
     ]
   },
   "resolutions": {
+    "@lavamoat/aa@^3.0.0": "patch:@lavamoat/aa@npm%3A3.1.2#./.yarn/patches/@lavamoat-aa-npm-3.1.2-5a47e9a622.patch",
+    "@lavamoat/aa@^3.1.0": "patch:@lavamoat/aa@npm%3A3.1.2#./.yarn/patches/@lavamoat-aa-npm-3.1.2-5a47e9a622.patch",
     "@types/mocha@^10.0.1": "patch:@types/mocha@npm:10.0.1#.yarn/patches/@types-mocha-npm-10.0.1-7c94e9e170.patch",
+    "babel-plugin-tsconfig-paths@1.0.3-rc.6": "patch:babel-plugin-tsconfig-paths@npm%3A1.0.3-rc.6#./.yarn/patches/babel-plugin-tsconfig-paths-npm-1.0.3-rc.6-918b52a0d2.patch",
     "jest-fetch-mock@^3.0.3": "patch:jest-fetch-mock@npm:3.0.3#.yarn/patches/jest-fetch-mock-npm-3.0.3-ac072ca8af.patch",
     "luxon@^3.2.1": "patch:luxon@npm%3A3.3.0#./.yarn/patches/luxon-npm-3.3.0-bdbae9bfd5.patch"
   },
