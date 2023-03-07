@@ -1,10 +1,9 @@
 import { BrowserRuntimePostMessageStream } from '@metamask/post-message-stream';
 
-import { executeLockdown } from '../common/lockdown/lockdown';
 import { executeLockdownMore } from '../common/lockdown/lockdown-more';
 import { OffscreenSnapExecutor } from './OffscreenSnapExecutor';
 
-executeLockdown();
+// Lockdown is already applied in LavaMoat
 executeLockdownMore();
 
 // The stream from the offscreen document to the execution service.
