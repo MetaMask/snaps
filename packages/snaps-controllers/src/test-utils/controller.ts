@@ -1,3 +1,4 @@
+import { ApprovalRequest } from '@metamask/approval-controller';
 import {
   ActionConstraint,
   ActionHandler,
@@ -66,9 +67,12 @@ export class MockControllerMessenger<
 }
 
 export class MockApprovalController {
-  #approval: any;
+  #approval?: {
+    request: Partial<ApprovalRequest<Record<string, Json>>>;
+    resolve: (value?: unknown) => void;
+  };
 
-  async addRequest(request: any) {
+  async addRequest(request: { requestData?: Record<string, Json> }) {
     const promise = new Promise((resolve) => {
       this.#approval = {
         resolve,
@@ -79,14 +83,16 @@ export class MockApprovalController {
     return promise;
   }
 
-  async updateRequestState({ requestState }: any) {
-    if (requestState.loading === false && !requestState.error) {
-      this.#approval.resolve({
-        permissions: requestState.permissions,
-        ...this.#approval.request.requestData,
-      });
-    } else {
-      this.#approval.resolve();
+  updateRequestState({ requestState }: { requestState: Record<string, Json> }) {
+    if (this.#approval) {
+      if (requestState.loading === false && !requestState.error) {
+        this.#approval.resolve({
+          permissions: requestState.permissions,
+          ...this.#approval.request.requestData,
+        });
+      } else {
+        this.#approval.resolve();
+      }
     }
   }
 }
