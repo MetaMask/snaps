@@ -13318,7 +13318,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-browserify@npm:^16.0.0":
+"lavamoat-browserify@npm:16.0.0":
   version: 16.0.0
   resolution: "lavamoat-browserify@npm:16.0.0"
   dependencies:
@@ -13336,6 +13336,27 @@ __metadata:
     source-map: ^0.7.3
     through2: ^3.0.0
   checksum: 73f902f2c928028c97f5955ed6866e83497b3dd04bc6c777a845a40d5d17ffb57a8e43ba97741bd7b278f4f5b14ebe14ef7a8f030af4f48af60d62833627ce7b
+  languageName: node
+  linkType: hard
+
+"lavamoat-browserify@patch:lavamoat-browserify@npm%3A16.0.0#./.yarn/patches/lavamoat-browserify-npm-16.0.0-fc7e6c6e0b.patch::locator=root%40workspace%3A.":
+  version: 16.0.0
+  resolution: "lavamoat-browserify@patch:lavamoat-browserify@npm%3A16.0.0#./.yarn/patches/lavamoat-browserify-npm-16.0.0-fc7e6c6e0b.patch::version=16.0.0&hash=51b630&locator=root%40workspace%3A."
+  dependencies:
+    "@babel/code-frame": ^7.16.7
+    "@lavamoat/aa": ^3.1.0
+    "@lavamoat/lavapack": ^3.2.1
+    browser-resolve: ^2.0.0
+    concat-stream: ^2.0.0
+    convert-source-map: ^1.8.0
+    duplexify: ^4.1.1
+    json-stable-stringify: ^1.0.1
+    lavamoat-core: ^12.3.0
+    pify: ^4.0.1
+    readable-stream: ^3.6.0
+    source-map: ^0.7.3
+    through2: ^3.0.0
+  checksum: 1ac04fe52b03e1e65161ee87e57ae9b77329e26b0e5e9423379b120c9063f84c3f70ef5daeb1d5757b561b3d0c72710b2bac781c306eb8742b31ee30e3d74276
   languageName: node
   linkType: hard
 
