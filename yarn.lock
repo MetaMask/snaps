@@ -2783,7 +2783,7 @@ __metadata:
 
 "@lavamoat/lavapack@patch:@lavamoat/lavapack@npm%3A3.3.0#./.yarn/patches/@lavamoat-lavapack-npm-3.3.0-5a61b5374d.patch::locator=root%40workspace%3A.":
   version: 3.3.0
-  resolution: "@lavamoat/lavapack@patch:@lavamoat/lavapack@npm%3A3.3.0#./.yarn/patches/@lavamoat-lavapack-npm-3.3.0-5a61b5374d.patch::version=3.3.0&hash=87cf2f&locator=root%40workspace%3A."
+  resolution: "@lavamoat/lavapack@patch:@lavamoat/lavapack@npm%3A3.3.0#./.yarn/patches/@lavamoat-lavapack-npm-3.3.0-5a61b5374d.patch::version=3.3.0&hash=328ab3&locator=root%40workspace%3A."
   dependencies:
     JSONStream: ^1.3.5
     combine-source-map: ^0.8.0
@@ -2793,7 +2793,7 @@ __metadata:
     readable-stream: ^3.6.0
     through2: ^4.0.2
     umd: ^3.0.3
-  checksum: 8e0fb4588725b6ffa1081bfc6d5b13754d4445f36d87cb790424045d60b413f8ba5f9dd06513c51a3506ba6e345828dac6db766769fafb2c013b5e03db550687
+  checksum: 55041be4df915082094b2097cde8f5f1056dd5d9396322d41e71f56433cd6099341599c958abc591e6e277d8705a91cc70237c56e14b0ddc5e7af95ca547bd26
   languageName: node
   linkType: hard
 

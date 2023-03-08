@@ -10,10 +10,22 @@ import path from 'path';
 import yargs from 'yargs';
 
 const ENTRY_POINTS = {
-  iframe: { entryPoint: './src/iframe/index.ts', html: true },
-  offscreen: { entryPoint: './src/offscreen/index.ts', html: true },
-  'node-thread': { entryPoint: './src/node-thread/index.ts', html: false },
-  'node-process': { entryPoint: './src/node-process/index.ts', html: false },
+  iframe: { entryPoint: './src/iframe/index.ts', html: true, node: false },
+  offscreen: {
+    entryPoint: './src/offscreen/index.ts',
+    html: true,
+    node: false,
+  },
+  'node-thread': {
+    entryPoint: './src/node-thread/index.ts',
+    html: false,
+    node: true,
+  },
+  'node-process': {
+    entryPoint: './src/node-process/index.ts',
+    html: false,
+    node: true,
+  },
 };
 const OUTPUT_PATH = './dist/browserify';
 const OUTPUT_HTML = 'index.html';
@@ -44,11 +56,31 @@ async function main() {
   await Promise.all(
     Object.entries(ENTRY_POINTS).map(async ([key, config]) => {
       console.log('Bundling', key);
-      const { html, entryPoint } = config;
+      const { html, entryPoint, node } = config;
+      const insertGlobalVars = node
+        ? { process: undefined, ...LavaMoatBrowserify.args.insertGlobalVars }
+        : LavaMoatBrowserify.args.insertGlobalVars;
       const bundler = browserify(entryPoint, {
-        extensions: ['.ts'],
         ...LavaMoatBrowserify.args,
+        insertGlobalVars,
+        extensions: ['.ts'],
+        node,
       });
+
+      if (node) {
+        bundler.external([
+          'worker_threads',
+          'buffer',
+          'stream',
+          'tty',
+          'crypto',
+          'util',
+          'events',
+          'os',
+          'timers',
+          'fs',
+        ]);
+      }
 
       bundler.transform(require('babelify'), {
         extensions: ['.js', '.ts'],
