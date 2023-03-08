@@ -2765,7 +2765,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/lavapack@npm:3.3.0":
+"@lavamoat/lavapack@npm:^3.3.0":
   version: 3.3.0
   resolution: "@lavamoat/lavapack@npm:3.3.0"
   dependencies:
@@ -2778,22 +2778,6 @@ __metadata:
     through2: ^4.0.2
     umd: ^3.0.3
   checksum: 77f6588d38d53f0feba1856de409829969dc3592b9b4d1e722fd395a1eabae6a8983648e2929ef9243fd6ead6919683cb87e65433325601bafabcf8b46dc83be
-  languageName: node
-  linkType: hard
-
-"@lavamoat/lavapack@patch:@lavamoat/lavapack@npm%3A3.3.0#./.yarn/patches/@lavamoat-lavapack-npm-3.3.0-5a61b5374d.patch::locator=root%40workspace%3A.":
-  version: 3.3.0
-  resolution: "@lavamoat/lavapack@patch:@lavamoat/lavapack@npm%3A3.3.0#./.yarn/patches/@lavamoat-lavapack-npm-3.3.0-5a61b5374d.patch::version=3.3.0&hash=2534d4&locator=root%40workspace%3A."
-  dependencies:
-    JSONStream: ^1.3.5
-    combine-source-map: ^0.8.0
-    convert-source-map: ^1.7.0
-    json-stable-stringify: ^1.0.1
-    lavamoat-core: ^12.4.0
-    readable-stream: ^3.6.0
-    through2: ^4.0.2
-    umd: ^3.0.3
-  checksum: d5da15b91d8973822382a4e2668caff09534ca517182d8b36232bc81aea59ee9a146a1d16b98118d7ac3785db6d6cadb44f0fca485da7ca32cc6254b1e5e9112
   languageName: node
   linkType: hard
 
@@ -3334,7 +3318,7 @@ __metadata:
     jest: ^29.0.2
     jest-fetch-mock: ^3.0.3
     json-rpc-engine: ^6.1.0
-    lavamoat-browserify: ^16.0.0
+    lavamoat-browserify: ^15.5.0
     memfs: ^3.4.13
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.2.11
@@ -13318,49 +13302,49 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-browserify@npm:16.0.0":
-  version: 16.0.0
-  resolution: "lavamoat-browserify@npm:16.0.0"
+"lavamoat-browserify@npm:15.5.0":
+  version: 15.5.0
+  resolution: "lavamoat-browserify@npm:15.5.0"
   dependencies:
     "@babel/code-frame": ^7.16.7
     "@lavamoat/aa": ^3.1.0
-    "@lavamoat/lavapack": ^3.2.1
+    "@lavamoat/lavapack": ^3.3.0
     browser-resolve: ^2.0.0
     concat-stream: ^2.0.0
     convert-source-map: ^1.8.0
     duplexify: ^4.1.1
     json-stable-stringify: ^1.0.1
-    lavamoat-core: ^12.3.0
+    lavamoat-core: ^12.4.0
     pify: ^4.0.1
     readable-stream: ^3.6.0
     source-map: ^0.7.3
     through2: ^3.0.0
-  checksum: 73f902f2c928028c97f5955ed6866e83497b3dd04bc6c777a845a40d5d17ffb57a8e43ba97741bd7b278f4f5b14ebe14ef7a8f030af4f48af60d62833627ce7b
+  checksum: b9d4ccbe6dd09aa63145f89f99f0b3ac269930a5e419cc836659f8c6a7e26b78d2dd3722e44055e6436d2334b044c348895f512d134ee8b5dc4ee87adc890b6f
   languageName: node
   linkType: hard
 
-"lavamoat-browserify@patch:lavamoat-browserify@npm%3A16.0.0#./.yarn/patches/lavamoat-browserify-npm-16.0.0-fc7e6c6e0b.patch::locator=root%40workspace%3A.":
-  version: 16.0.0
-  resolution: "lavamoat-browserify@patch:lavamoat-browserify@npm%3A16.0.0#./.yarn/patches/lavamoat-browserify-npm-16.0.0-fc7e6c6e0b.patch::version=16.0.0&hash=51b630&locator=root%40workspace%3A."
+"lavamoat-browserify@patch:lavamoat-browserify@npm%3A15.5.0#./.yarn/patches/lavamoat-browserify-npm-15.5.0-ce0bbe5e4c.patch::locator=root%40workspace%3A.":
+  version: 15.5.0
+  resolution: "lavamoat-browserify@patch:lavamoat-browserify@npm%3A15.5.0#./.yarn/patches/lavamoat-browserify-npm-15.5.0-ce0bbe5e4c.patch::version=15.5.0&hash=51b630&locator=root%40workspace%3A."
   dependencies:
     "@babel/code-frame": ^7.16.7
     "@lavamoat/aa": ^3.1.0
-    "@lavamoat/lavapack": ^3.2.1
+    "@lavamoat/lavapack": ^3.3.0
     browser-resolve: ^2.0.0
     concat-stream: ^2.0.0
     convert-source-map: ^1.8.0
     duplexify: ^4.1.1
     json-stable-stringify: ^1.0.1
-    lavamoat-core: ^12.3.0
+    lavamoat-core: ^12.4.0
     pify: ^4.0.1
     readable-stream: ^3.6.0
     source-map: ^0.7.3
     through2: ^3.0.0
-  checksum: 1ac04fe52b03e1e65161ee87e57ae9b77329e26b0e5e9423379b120c9063f84c3f70ef5daeb1d5757b561b3d0c72710b2bac781c306eb8742b31ee30e3d74276
+  checksum: 28b90b0d6e7623ac6cd98a04b190325b43c32493de7b39243e80f4f4437d6702c291b410d2cbbb7ca02fd54ef57fe0feeb871aacc203c30114277521c8c8b158
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^12.3.0, lavamoat-core@npm:^12.4.0":
+"lavamoat-core@npm:^12.4.0":
   version: 12.4.0
   resolution: "lavamoat-core@npm:12.4.0"
   dependencies:
