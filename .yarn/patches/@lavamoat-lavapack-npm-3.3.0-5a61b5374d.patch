@@ -1,5 +1,5 @@
 diff --git a/src/runtime.js b/src/runtime.js
-index 97c9ddb9b76a2fe31cf9b202cb491f15232232ff..fe1cc43b933c77afdfd50e427a1989d5ed040005 100644
+index 97c9ddb9b76a2fe31cf9b202cb491f15232232ff..6c707994ae892d4f273c225df7f3d419d7d93dd4 100644
 --- a/src/runtime.js
 +++ b/src/runtime.js
 @@ -10831,6 +10831,10 @@ function makeGetEndowmentsForConfig ({ createFunctionWrapper }) {
@@ -28,9 +28,30 @@ index 97c9ddb9b76a2fe31cf9b202cb491f15232232ff..fe1cc43b933c77afdfd50e427a1989d5
          const descriptors = Object.getOwnPropertyDescriptors(source)
          Object.values(descriptors).forEach(desc => {
            if ('get' in desc) {
+-            Reflect.apply(desc.get, globalRef, [])
 +            try {
-             Reflect.apply(desc.get, globalRef, [])
++              Reflect.apply(desc.get, globalRef, [])
 +            }catch{}
            }
          })
        })
+@@ -11556,6 +11558,19 @@ module.exports = {
+ 
+ 
+   function loadModuleData (moduleId) {
++    const resolve = require('resolve');
++    if (resolve.isCore(moduleId)) {
++      return {
++        type: 'builtin',
++        file: moduleId,
++        package: moduleId,
++        id: moduleId,
++        // Using unprotected require
++        moduleInitializer: (_, module) => {
++          module.exports = require(moduleId);
++        },
++      }
++    }
+     if (!moduleRegistry.has(moduleId)) {
+       throw new Error(`no module registered for "${moduleId}" (${typeof moduleId})`)
+     }

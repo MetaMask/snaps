@@ -50,6 +50,7 @@
     "@types/mocha@^10.0.1": "patch:@types/mocha@npm:10.0.1#.yarn/patches/@types-mocha-npm-10.0.1-7c94e9e170.patch",
     "babel-plugin-tsconfig-paths@1.0.3-rc.6": "patch:babel-plugin-tsconfig-paths@npm%3A1.0.3-rc.6#./.yarn/patches/babel-plugin-tsconfig-paths-npm-1.0.3-rc.6-918b52a0d2.patch",
     "jest-fetch-mock@^3.0.3": "patch:jest-fetch-mock@npm:3.0.3#.yarn/patches/jest-fetch-mock-npm-3.0.3-ac072ca8af.patch",
+    "lavamoat-browserify@^16.0.0": "patch:lavamoat-browserify@npm%3A16.0.0#./.yarn/patches/lavamoat-browserify-npm-16.0.0-fc7e6c6e0b.patch",
     "luxon@^3.2.1": "patch:luxon@npm%3A3.3.0#./.yarn/patches/luxon-npm-3.3.0-bdbae9bfd5.patch"
   },
   "devDependencies": {
