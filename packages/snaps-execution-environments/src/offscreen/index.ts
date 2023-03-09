@@ -1,11 +1,9 @@
 import { BrowserRuntimePostMessageStream } from '@metamask/post-message-stream';
 
 import { executeLockdown } from '../common/lockdown/lockdown';
-import { executeLockdownEvents } from '../common/lockdown/lockdown-events';
 import { executeLockdownMore } from '../common/lockdown/lockdown-more';
 import { OffscreenSnapExecutor } from './OffscreenSnapExecutor';
 
-executeLockdownEvents();
 executeLockdown();
 executeLockdownMore();
 
