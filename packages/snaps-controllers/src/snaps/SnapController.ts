@@ -1734,20 +1734,11 @@ export class SnapController extends BaseController<
     }
 
     try {
-      try {
-        await this.#add({
-          origin,
-          id: snapId,
-          location,
-        });
-      } catch (error) {
-        this.#updateApproval(permissionsApproval.id, {
-          loading: false,
-          error: SnapInstallError.FetchFailed,
-        });
-
-        throw error;
-      }
+      const { sourceCode } = await this.#add({
+        origin,
+        id: snapId,
+        location,
+      });
 
       await this.authorize(snapId, permissionsApproval);
 
@@ -1757,24 +1748,10 @@ export class SnapController extends BaseController<
         type: SNAP_APPROVAL_RESULT,
       });
 
-      try {
-        const { sourceCode } = this.#getRuntimeExpect(snapId);
-        if (sourceCode) {
-          await this.#startSnap({
-            snapId,
-            sourceCode,
-          });
-        } else {
-          throw Error('no source code found');
-        }
-      } catch (error) {
-        this.#updateApproval(resultApproval.id, {
-          loading: false,
-          error: SnapInstallError.StartFailed,
-        });
-
-        throw error;
-      }
+      await this.#startSnap({
+        snapId,
+        sourceCode,
+      });
 
       const truncated = this.getTruncatedExpect(snapId);
 
@@ -1812,7 +1789,6 @@ export class SnapController extends BaseController<
         },
         requestState: {
           loading: true,
-          error: null,
         },
       },
       true,
@@ -1853,7 +1829,6 @@ export class SnapController extends BaseController<
     newVersionRange: string = DEFAULT_REQUESTED_SNAP_VERSION,
   ): Promise<TruncatedSnap | null> {
     const snap = this.getExpect(snapId);
-    let newSnap;
 
     if (!isValidSemVerRange(newVersionRange)) {
       throw new Error(
@@ -1867,15 +1842,8 @@ export class SnapController extends BaseController<
       type: SNAP_APPROVAL_UPDATE,
     });
 
-    try {
-      newSnap = await this.#fetchSnap(snapId, location);
-    } catch (error) {
-      this.#updateApproval(permissionsApproval.id, {
-        loading: false,
-        error: SnapInstallError.FetchFailed,
-      });
-      throw error;
-    }
+    const newSnap = await this.#fetchSnap(snapId, location);
+
     const newVersion = newSnap.manifest.result.version;
     if (!gtVersion(newVersion, snap.version)) {
       logWarning(
@@ -1973,7 +1941,7 @@ export class SnapController extends BaseController<
     } catch {
       this.#updateApproval(resultApproval.id, {
         loading: false,
-        error: SnapInstallError.StartFailed,
+        error: `Snap ${snapId} crashed with updated source code.`,
       });
       throw new Error(`Snap ${snapId} crashed with updated source code.`);
     }
