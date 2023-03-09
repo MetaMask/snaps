@@ -121,11 +121,6 @@ export const SNAP_APPROVAL_INSTALL = 'wallet_installSnap';
 export const SNAP_APPROVAL_UPDATE = 'wallet_updateSnap';
 export const SNAP_APPROVAL_RESULT = 'wallet_installSnapResult';
 
-export enum SnapInstallError {
-  FetchFailed = 'fetchFailed',
-  StartFailed = 'startFailed',
-}
-
 const TRUNCATED_SNAP_PROPERTIES = new Set<TruncatedSnapFields>([
   'initialPermissions',
   'id',
