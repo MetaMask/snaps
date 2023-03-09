@@ -15,6 +15,7 @@ import pathUtils from 'path';
 
 import { YargsArgs } from '../../types/yargs';
 import {
+  buildSnap,
   cloneTemplate,
   gitInit,
   isGitInstalled,
@@ -86,6 +87,9 @@ export async function initHandler(argv: YargsArgs) {
   }
 
   const snapLocation = pathUtils.join(directoryToUse, SNAP_LOCATION);
+
+  logInfo('Running initial build...');
+  buildSnap(snapLocation);
 
   const manifest = (
     await readJsonFile(pathUtils.join(snapLocation, NpmSnapFileNames.Manifest))
