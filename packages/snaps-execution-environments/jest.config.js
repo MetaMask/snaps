@@ -8,6 +8,9 @@ module.exports = deepmerge(baseConfig, {
   coveragePathIgnorePatterns: [
     './src/index.ts',
     './src/iframe/index.ts',
+    './src/node-process/index.ts',
+    './src/node-thread/index.ts',
+    './src/offscreen/index.ts',
     './src/common/test-utils',
   ],
   coverageDirectory: './coverage/jest',
