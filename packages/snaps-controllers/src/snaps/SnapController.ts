@@ -1702,18 +1702,7 @@ export class SnapController extends BaseController<
       }
 
       if (this.#featureFlags.dappsCanUpdateSnaps === true) {
-        const updateResult = await this.updateSnap(
-          origin,
-          snapId,
-          location,
-          versionRange,
-        );
-        if (updateResult === null) {
-          throw ethErrors.rpc.invalidParams(
-            `Snap "${snapId}@${existingSnap.version}" is already installed. Couldn't update to a version inside requested "${versionRange}" range.`,
-          );
-        }
-        return updateResult;
+        return await this.updateSnap(origin, snapId, location, versionRange);
       }
       throw ethErrors.rpc.invalidParams(
         `Version mismatch with already installed snap. ${snapId}@${existingSnap.version} doesn't satisfy requested version ${versionRange}.`,
@@ -1767,6 +1756,7 @@ export class SnapController extends BaseController<
       logError(`Error when adding snap.`, error);
 
       this.#updateApproval(pendingApproval.id, {
+        loading: false,
         error: error instanceof Error ? error.message : error.toString(),
       });
 
@@ -1806,10 +1796,14 @@ export class SnapController extends BaseController<
   }
 
   #updateApproval(id: string, requestState: Record<string, Json>) {
-    this.messagingSystem.call('ApprovalController:updateRequestState', {
-      id,
-      requestState,
-    });
+    try {
+      this.messagingSystem.call('ApprovalController:updateRequestState', {
+        id,
+        requestState,
+      });
+    } catch {
+      // Do nothing
+    }
   }
 
   /**
@@ -1835,7 +1829,7 @@ export class SnapController extends BaseController<
     snapId: ValidatedSnapId,
     location: SnapLocation,
     newVersionRange: string = DEFAULT_REQUESTED_SNAP_VERSION,
-  ): Promise<TruncatedSnap | null> {
+  ): Promise<TruncatedSnap> {
     let pendingApproval: PendingApproval;
 
     pendingApproval = this.#createApproval({
@@ -1857,10 +1851,9 @@ export class SnapController extends BaseController<
 
       const newVersion = newSnap.manifest.result.version;
       if (!gtVersion(newVersion, snap.version)) {
-        logWarning(
-          `Tried updating snap "${snapId}" within "${newVersionRange}" version range, but newer version "${snap.version}" is already installed`,
+        throw ethErrors.rpc.invalidParams(
+          `Snap "${snapId}@${snap.version}" is already installed. Couldn't update to a version inside requested "${newVersionRange}" range.`,
         );
-        return null;
       }
 
       await this.#assertIsInstallAllowed(snapId, {
@@ -1964,6 +1957,8 @@ export class SnapController extends BaseController<
 
       return truncatedSnap;
     } catch (error) {
+      logError(`Error when updating snap,`, error);
+
       this.#updateApproval(pendingApproval.id, {
         loading: false,
         error: error instanceof Error ? error.message : error.toString(),

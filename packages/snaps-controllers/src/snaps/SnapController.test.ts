@@ -860,11 +860,23 @@ describe('SnapController', () => {
       }),
     ).rejects.toThrow('foo');
 
-    expect(messengerCallMock).toHaveBeenCalledTimes(7);
+    expect(messengerCallMock).toHaveBeenCalledTimes(8);
     expect(messengerCallMock).toHaveBeenNthCalledWith(
       1,
       'PermissionController:getPermissions',
       MOCK_ORIGIN,
+    );
+
+    expect(messengerCallMock).toHaveBeenNthCalledWith(
+      3,
+      'ApprovalController:updateRequestState',
+      expect.objectContaining({
+        id: expect.any(String),
+        requestState: {
+          loading: false,
+          error: 'foo',
+        },
+      }),
     );
 
     await eventSubscriptionPromise;
@@ -2947,18 +2959,29 @@ describe('SnapController', () => {
         }),
       );
 
+      const errorMessage = `Snap "${MOCK_SNAP_ID}@1.0.0" is already installed. Couldn't update to a version inside requested "${newVersionRange}" range.`;
+
       await expect(
         controller.installSnaps(MOCK_ORIGIN, {
           [MOCK_SNAP_ID]: { version: newVersionRange },
         }),
-      ).rejects.toThrow(
-        `Snap "${MOCK_SNAP_ID}@1.0.0" is already installed. Couldn't update to a version inside requested "${newVersionRange}" range.`,
-      );
+      ).rejects.toThrow(errorMessage);
 
-      expect(messenger.call).toHaveBeenCalledTimes(2);
+      expect(messenger.call).toHaveBeenCalledTimes(3);
       expect(messenger.call).toHaveBeenCalledWith(
         'PermissionController:getPermissions',
         MOCK_ORIGIN,
+      );
+
+      expect(messenger.call).toHaveBeenCalledWith(
+        'ApprovalController:updateRequestState',
+        expect.objectContaining({
+          id: expect.any(String),
+          requestState: {
+            loading: false,
+            error: errorMessage,
+          },
+        }),
       );
       expect(detect).toHaveBeenCalledTimes(1);
       expect(detect).toHaveBeenCalledWith(
@@ -3278,15 +3301,20 @@ describe('SnapController', () => {
       messenger.subscribe('SnapController:snapUpdated', onSnapUpdated);
       messenger.subscribe('SnapController:snapAdded', onSnapAdded);
 
-      const result = await controller.updateSnap(
-        MOCK_ORIGIN,
-        MOCK_SNAP_ID,
-        detectSnapLocation(),
-      );
-
       const newSnap = controller.get(MOCK_SNAP_ID);
 
-      expect(result).toBeNull();
+      await expect(
+        async () =>
+          await controller.updateSnap(
+            MOCK_ORIGIN,
+            MOCK_SNAP_ID,
+            detectSnapLocation(),
+          ),
+      ).rejects.toThrow(
+        ethErrors.rpc.invalidParams(
+          `Snap "${MOCK_SNAP_ID}@${snap.version}" is already installed. Couldn't update to a version inside requested "*" range.`,
+        ),
+      );
       expect(newSnap?.version).toStrictEqual(snap.version);
       expect(onSnapUpdated).not.toHaveBeenCalled();
       expect(onSnapAdded).not.toHaveBeenCalled();
@@ -3641,7 +3669,7 @@ describe('SnapController', () => {
       controller.destroy();
     });
 
-    it('returns null on update request denied', async () => {
+    it('throws on update request denied', async () => {
       const { manifest } = getSnapFiles({
         manifest: getSnapManifest({
           version: '1.1.0' as SemVerVersion,
@@ -3670,21 +3698,19 @@ describe('SnapController', () => {
         },
       };
 
-      let rejectPromise: (reason: any) => void | undefined;
-
-      callActionSpy.mockImplementation((method, ..._args: unknown[]) => {
+      callActionSpy.mockImplementation((method, ...args) => {
         if (method === 'PermissionController:hasPermission') {
           return true;
         } else if (method === 'PermissionController:getPermissions') {
           return {};
         } else if (method === 'ApprovalController:addRequest') {
-          const approvalPromise = new Promise((_resolve, reject) => {
-            rejectPromise = reject;
-          });
-
-          return approvalPromise;
+          return approvalControllerMock.addRequest.bind(approvalControllerMock)(
+            args[0],
+          );
         } else if (method === 'ApprovalController:updateRequestState') {
-          rejectPromise(ethErrors.provider.userRejectedRequest());
+          approvalControllerMock.updateRequestStateAndReject.bind(
+            approvalControllerMock,
+          )(args[0]);
         }
         return false;
       });
@@ -3696,7 +3722,7 @@ describe('SnapController', () => {
       const newSnap = controller.get(MOCK_SNAP_ID);
 
       expect(newSnap?.version).toBe('1.0.0');
-      expect(callActionSpy).toHaveBeenCalledTimes(3);
+      expect(callActionSpy).toHaveBeenCalledTimes(4);
 
       expect(callActionSpy).toHaveBeenNthCalledWith(
         1,
@@ -3818,7 +3844,7 @@ describe('SnapController', () => {
             args[0],
           );
         } else if (method === 'ApprovalController:updateRequestState') {
-          return approvalControllerMock.updateRequestState.bind(
+          return approvalControllerMock.updateRequestStateAndApprove.bind(
             approvalControllerMock,
           )(args[0]);
         } else if (method === 'PermissionController:getPermissions') {
@@ -3870,7 +3896,7 @@ describe('SnapController', () => {
         MOCK_SNAP_ID,
       );
 
-      expect(callActionSpy).toHaveBeenCalledWith(
+      expect(callActionSpy).toHaveBeenNthCalledWith(
         12,
         'ApprovalController:updateRequestState',
         expect.objectContaining({
@@ -3948,6 +3974,17 @@ describe('SnapController', () => {
         SnapEndowments.LongRunning,
       );
 
+      expect(callActionSpy).toHaveBeenNthCalledWith(
+        18,
+        'ApprovalController:updateRequestState',
+        expect.objectContaining({
+          id: expect.any(String),
+          requestState: {
+            loading: false,
+          },
+        }),
+      );
+
       controller.destroy();
     });
 
@@ -4014,7 +4051,7 @@ describe('SnapController', () => {
         }),
       );
 
-      callActionSpy.mockImplementation((method, ...args: unknown[]): any => {
+      callActionSpy.mockImplementation((method, ...args): any => {
         if (method === 'PermissionController:hasPermission') {
           return true;
         } else if (method === 'ApprovalController:addRequest') {
@@ -4022,7 +4059,13 @@ describe('SnapController', () => {
 
           // eslint-disable-next-line jest/no-conditional-expect
           expect(request.id).toBe(request.requestData.metadata.id);
-          return { ...request.requestData, permissions: approvedPermissions };
+          return approvalControllerMock.addRequest.bind(approvalControllerMock)(
+            args[0],
+          );
+        } else if (method === 'ApprovalController:updateRequestState') {
+          approvalControllerMock.updateRequestStateAndApprove.bind(
+            approvalControllerMock,
+          )(args[0]);
         } else if (method === 'PermissionController:getPermissions') {
           if (args[0] === MOCK_ORIGIN) {
             return MOCK_ORIGIN_PERMISSIONS;

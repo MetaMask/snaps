@@ -25,6 +25,7 @@ import {
   SubjectType,
 } from '@metamask/subject-metadata-controller';
 import { Json } from '@metamask/utils';
+import { ethErrors } from 'eth-rpc-errors';
 
 import { CronjobControllerActions, CronjobControllerEvents } from '../cronjob';
 import {
@@ -69,13 +70,16 @@ export class MockControllerMessenger<
 export class MockApprovalController {
   #approval?: {
     request: Partial<ApprovalRequest<Record<string, Json>>>;
-    resolve: (value?: unknown) => void;
+    promise: {
+      resolve: (value?: unknown) => void;
+      reject: (value?: unknown) => void;
+    };
   };
 
   async addRequest(request: { requestData?: Record<string, Json> }) {
-    const promise = new Promise((resolve) => {
+    const promise = new Promise((resolve, reject) => {
       this.#approval = {
-        resolve,
+        promise: { resolve, reject },
         request,
       };
     });
@@ -83,15 +87,29 @@ export class MockApprovalController {
     return promise;
   }
 
-  updateRequestState({ requestState }: { requestState: Record<string, Json> }) {
+  updateRequestStateAndApprove({
+    requestState,
+  }: {
+    requestState: Record<string, Json>;
+  }) {
     if (this.#approval) {
       if (requestState.loading === false && !requestState.error) {
-        this.#approval.resolve({
+        this.#approval.promise.resolve({
           permissions: requestState.permissions,
           ...this.#approval.request.requestData,
         });
-      } else {
-        this.#approval.resolve();
+      }
+    }
+  }
+
+  updateRequestStateAndReject({
+    requestState,
+  }: {
+    requestState: Record<string, Json>;
+  }) {
+    if (this.#approval) {
+      if (requestState.loading === false && !requestState.error) {
+        this.#approval.promise.reject(ethErrors.provider.userRejectedRequest());
       }
     }
   }
@@ -198,7 +216,9 @@ export const getControllerMessenger = () => {
 
   messenger.registerActionHandler(
     'ApprovalController:updateRequestState',
-    approvalControllerMock.updateRequestState.bind(approvalControllerMock),
+    approvalControllerMock.updateRequestStateAndApprove.bind(
+      approvalControllerMock,
+    ),
   );
 
   messenger.registerActionHandler(
