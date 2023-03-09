@@ -1688,8 +1688,6 @@ export class SnapController extends BaseController<
   ): Promise<ProcessSnapResult> {
     const existingSnap = this.getTruncated(snapId);
 
-    let pendingApproval: PendingApproval;
-
     // For devX we always re-install local snaps.
     if (existingSnap && !location.shouldAlwaysReload) {
       if (satisfiesVersionRange(existingSnap.version, versionRange)) {
@@ -1704,7 +1702,7 @@ export class SnapController extends BaseController<
       );
     }
 
-    pendingApproval = this.#createApproval({
+    let pendingApproval = this.#createApproval({
       origin,
       snapId,
       type: SNAP_APPROVAL_INSTALL,
@@ -1825,9 +1823,7 @@ export class SnapController extends BaseController<
     location: SnapLocation,
     newVersionRange: string = DEFAULT_REQUESTED_SNAP_VERSION,
   ): Promise<TruncatedSnap> {
-    let pendingApproval: PendingApproval;
-
-    pendingApproval = this.#createApproval({
+    let pendingApproval = this.#createApproval({
       origin,
       snapId,
       type: SNAP_APPROVAL_UPDATE,
