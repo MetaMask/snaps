@@ -73,7 +73,7 @@
     "@wdio/spec-reporter": "^8.3.0",
     "@wdio/static-server-service": "^8.3.0",
     "babel-loader": "^9.1.2",
-    "babel-plugin-tsconfig-paths": "1.0.3-rc.6",
+    "babel-plugin-tsconfig-paths-module-resolver": "^1.0.4",
     "babelify": "^10.0.0",
     "browserify": "^17.0.0",
     "buffer": "^6.0.3",

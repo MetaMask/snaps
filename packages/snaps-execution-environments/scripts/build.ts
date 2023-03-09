@@ -2,12 +2,15 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable @typescript-eslint/no-require-imports */
+import { createResolvePath } from 'babel-plugin-tsconfig-paths-module-resolver';
 import browserify from 'browserify';
 import { promises as fs } from 'fs';
 // @ts-expect-error No types for now
 import LavaMoatBrowserify from 'lavamoat-browserify';
 import path from 'path';
 import yargs from 'yargs';
+
+const defaultResolvePath = createResolvePath();
 
 const ENTRY_POINTS = {
   iframe: { entryPoint: './src/iframe/index.ts', html: true, node: false },
@@ -97,11 +100,28 @@ async function main() {
         ],
         plugins: [
           [
-            require('babel-plugin-tsconfig-paths'),
+            require('babel-plugin-tsconfig-paths-module-resolver'),
             {
-              relative: true,
-              extensions: ['.js', '.ts'],
-              tsconfig: 'tsconfig.build.json',
+              resolvePath: (
+                sourceFile: string,
+                currentFile: string,
+                opts: any,
+              ) => {
+                const result = defaultResolvePath(
+                  sourceFile,
+                  currentFile,
+                  opts,
+                );
+                // Force resolve `@metamask/snaps-utils` to browser bundle regardless of environment to reduce bundle size
+                // Use default resolver for everything else
+                if (
+                  sourceFile === '@metamask/snaps-utils' &&
+                  result.includes('../snaps-utils/src')
+                ) {
+                  return `${result}/index.browser`;
+                }
+                return result;
+              },
             },
           ],
         ],
