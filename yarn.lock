@@ -2730,7 +2730,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/aa@npm:3.1.2":
+"@lavamoat/aa@npm:^3.0.0, @lavamoat/aa@npm:^3.1.0":
   version: 3.1.2
   resolution: "@lavamoat/aa@npm:3.1.2"
   dependencies:
@@ -2738,17 +2738,6 @@ __metadata:
   bin:
     lavamoat-ls: src/cli.js
   checksum: e580278f2119e26b968105b1ba61d9285537b2577b2f2a256c12d4e623bc544eb7664989855b90e7b2aee6ed23222179423a0c9009f67995ded85678e132332f
-  languageName: node
-  linkType: hard
-
-"@lavamoat/aa@patch:@lavamoat/aa@npm%3A3.1.2#./.yarn/patches/@lavamoat-aa-npm-3.1.2-5a47e9a622.patch::locator=root%40workspace%3A.":
-  version: 3.1.2
-  resolution: "@lavamoat/aa@patch:@lavamoat/aa@npm%3A3.1.2#./.yarn/patches/@lavamoat-aa-npm-3.1.2-5a47e9a622.patch::version=3.1.2&hash=fe1f45&locator=root%40workspace%3A."
-  dependencies:
-    resolve: ^1.20.0
-  bin:
-    lavamoat-ls: src/cli.js
-  checksum: 32ebf8c1a95ac77f97a5c1c683c3ca5f2450c9ab53f8ed8961b962af43a643a08fe189125d097728a88e39246e867934c97a4e2bc615c4bea9239c600beaead5
   languageName: node
   linkType: hard
 

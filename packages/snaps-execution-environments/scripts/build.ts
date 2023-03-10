@@ -103,19 +103,23 @@ async function main() {
             require('babel-plugin-tsconfig-paths-module-resolver'),
             {
               resolvePath: (
-                sourceFile: string,
+                sourcePath: string,
                 currentFile: string,
                 opts: any,
               ) => {
                 const result = defaultResolvePath(
-                  sourceFile,
+                  sourcePath,
                   currentFile,
                   opts,
                 );
+                // Result is null for modules found in node_modules
+                if (!result) {
+                  return null;
+                }
                 // Force resolve `@metamask/snaps-utils` to browser bundle regardless of environment to reduce bundle size
                 // Use default resolver for everything else
                 if (
-                  sourceFile === '@metamask/snaps-utils' &&
+                  sourcePath === '@metamask/snaps-utils' &&
                   result.includes('../snaps-utils/src')
                 ) {
                   return `${result}/index.browser`;
