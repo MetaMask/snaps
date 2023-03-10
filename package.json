@@ -44,8 +44,6 @@
     ]
   },
   "resolutions": {
-    "@lavamoat/aa@^3.0.0": "patch:@lavamoat/aa@npm%3A3.1.2#./.yarn/patches/@lavamoat-aa-npm-3.1.2-5a47e9a622.patch",
-    "@lavamoat/aa@^3.1.0": "patch:@lavamoat/aa@npm%3A3.1.2#./.yarn/patches/@lavamoat-aa-npm-3.1.2-5a47e9a622.patch",
     "@lavamoat/lavapack@^3.3.0": "patch:@lavamoat/lavapack@npm%3A3.3.0#./.yarn/patches/@lavamoat-lavapack-npm-3.3.0-5a61b5374d.patch",
     "@types/mocha@^10.0.1": "patch:@types/mocha@npm:10.0.1#.yarn/patches/@types-mocha-npm-10.0.1-7c94e9e170.patch",
     "jest-fetch-mock@^3.0.3": "patch:jest-fetch-mock@npm:3.0.3#.yarn/patches/jest-fetch-mock-npm-3.0.3-ac072ca8af.patch",
