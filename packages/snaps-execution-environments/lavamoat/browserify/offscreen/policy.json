@@ -2,6 +2,7 @@
   "resources": {
     "@metamask/post-message-stream": {
       "globals": {
+        "MessageEvent.prototype": true,
         "WorkerGlobalScope": true,
         "addEventListener": true,
         "browser": true,
@@ -12,8 +13,20 @@
         "removeEventListener": true
       },
       "packages": {
-        "@metamask/post-message-stream>readable-stream": true,
-        "@metamask/utils": true
+        "@metamask/post-message-stream>@metamask/utils": true,
+        "@metamask/post-message-stream>readable-stream": true
+      }
+    },
+    "@metamask/post-message-stream>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "browserify>buffer": true,
+        "eslint>debug": true,
+        "superstruct": true,
+        "ts-jest>semver": true
       }
     },
     "@metamask/post-message-stream>readable-stream": {
