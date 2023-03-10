@@ -15,6 +15,7 @@
         "worker_threads.parentPort": true
       },
       "globals": {
+        "MessageEvent.prototype": true,
         "WorkerGlobalScope": true,
         "addEventListener": true,
         "browser": true,
@@ -28,9 +29,24 @@
         "removeEventListener": true
       },
       "packages": {
+        "@metamask/post-message-stream>@metamask/utils": true,
         "@metamask/post-message-stream>readable-stream": true,
-        "@metamask/utils": true,
         "worker_threads": true
+      }
+    },
+    "@metamask/post-message-stream>@metamask/utils": {
+      "builtin": {
+        "buffer.Buffer": true
+      },
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "buffer": true,
+        "eslint>debug": true,
+        "superstruct": true,
+        "ts-jest>semver": true
       }
     },
     "@metamask/post-message-stream>readable-stream": {
