@@ -8,7 +8,7 @@ import {
   MOCK_ORIGIN,
   getTruncatedSnap,
 } from '@metamask/snaps-utils/test-utils';
-import {
+import type {
   JsonRpcRequest,
   JsonRpcSuccess,
   PendingJsonRpcResponse,
