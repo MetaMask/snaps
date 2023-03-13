@@ -1,4 +1,4 @@
-import type {
+import {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
   JsonRpcRequest,

@@ -8,7 +8,7 @@ import {
   SnapsPermissionRequest,
   verifyRequestedSnapPermissions,
 } from '@metamask/snaps-utils';
-import type {
+import {
   PermittedHandlerExport,
   JsonRpcRequest,
   PendingJsonRpcResponse,
