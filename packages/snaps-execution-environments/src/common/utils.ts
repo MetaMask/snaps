@@ -113,7 +113,7 @@ const BLOCKED_RPC_METHODS = Object.freeze([
  * @param args - The arguments to validate.
  */
 export function assertSnapOutboundRequest(args: RequestArguments) {
-  // Disallow any non `wallet_` or `snap_` methods for seperation of concerns
+  // Disallow any non `wallet_` or `snap_` methods for separation of concerns.
   assert(
     String.prototype.startsWith.call(args.method, 'wallet_') ||
       String.prototype.startsWith.call(args.method, 'snap_'),
