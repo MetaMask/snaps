@@ -2417,7 +2417,7 @@ export class SnapController extends BaseController<
 
       let _request = request;
       if (!hasProperty(request, 'jsonrpc')) {
-        _request = { ...request, jsonrpc: '2.0' };
+        _request = { ...(request as Record<string, unknown>), jsonrpc: '2.0' };
       } else if (request.jsonrpc !== '2.0') {
         throw ethErrors.rpc.invalidRequest({
           message: 'Invalid "jsonrpc" property. Must be "2.0" if provided.',

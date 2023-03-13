@@ -112,7 +112,7 @@ export function getTransactionInsightCaveatMapper(
         type: SnapCaveatType.TransactionOrigin,
         value:
           hasProperty(value, 'allowTransactionOrigin') &&
-          value.allowTransactionOrigin,
+          (value.allowTransactionOrigin as boolean),
       },
     ],
   };
