@@ -79,6 +79,9 @@ jobs:
           cache: yarn
       - run: yarn --immutable --immutable-cache
       - run: yarn lint
+        env:
+          DEBUG: '*,-eslintrc:cascading-config-array-factory'
+          TIMING: 1
       - name: Require clean working directory
         shell: bash
         run: |
