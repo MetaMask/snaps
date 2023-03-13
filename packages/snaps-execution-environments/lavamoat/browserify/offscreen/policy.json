@@ -35,13 +35,13 @@
         "@metamask/post-message-stream>readable-stream>safe-buffer": true,
         "@metamask/post-message-stream>readable-stream>string_decoder": true,
         "browserify>browser-resolve": true,
+        "browserify>events": true,
         "browserify>inherits": true,
         "browserify>readable-stream>core-util-is": true,
         "browserify>readable-stream>isarray": true,
         "browserify>readable-stream>util-deprecate": true,
         "browserify>timers-browserify": true,
-        "process": true,
-        "webpack>events": true
+        "process": true
       }
     },
     "@metamask/post-message-stream>readable-stream>process-nextick-args": {
@@ -117,6 +117,11 @@
       "packages": {
         "buffer>base64-js": true,
         "buffer>ieee754": true
+      }
+    },
+    "browserify>events": {
+      "globals": {
+        "console": true
       }
     },
     "browserify>readable-stream>core-util-is": {
@@ -295,11 +300,6 @@
     "ts-jest>semver>lru-cache": {
       "packages": {
         "ts-jest>semver>lru-cache>yallist": true
-      }
-    },
-    "webpack>events": {
-      "globals": {
-        "console": true
       }
     }
   }

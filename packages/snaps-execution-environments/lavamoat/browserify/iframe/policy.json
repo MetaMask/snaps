@@ -45,13 +45,13 @@
         "@metamask/post-message-stream>readable-stream>safe-buffer": true,
         "@metamask/post-message-stream>readable-stream>string_decoder": true,
         "browserify>browser-resolve": true,
+        "browserify>events": true,
         "browserify>inherits": true,
         "browserify>readable-stream>core-util-is": true,
         "browserify>readable-stream>isarray": true,
         "browserify>readable-stream>util-deprecate": true,
         "browserify>timers-browserify": true,
-        "process": true,
-        "webpack>events": true
+        "process": true
       }
     },
     "@metamask/post-message-stream>readable-stream>process-nextick-args": {
@@ -273,11 +273,11 @@
       "packages": {
         "browserify>browser-resolve": true,
         "browserify>buffer": true,
+        "browserify>events": true,
         "browserify>inherits": true,
         "browserify>readable-stream>util-deprecate": true,
         "browserify>string_decoder": true,
-        "process": true,
-        "webpack>events": true
+        "process": true
       }
     },
     "browserify>crypto-browserify>create-ecdh": {
@@ -404,11 +404,11 @@
       "packages": {
         "browserify>browser-resolve": true,
         "browserify>buffer": true,
+        "browserify>events": true,
         "browserify>inherits": true,
         "browserify>readable-stream>util-deprecate": true,
         "browserify>string_decoder": true,
-        "process": true,
-        "webpack>events": true
+        "process": true
       }
     },
     "browserify>crypto-browserify>pbkdf2>sha.js": {
@@ -480,9 +480,15 @@
         "process": true
       }
     },
+    "browserify>events": {
+      "globals": {
+        "console": true
+      }
+    },
     "browserify>readable-stream": {
       "packages": {
         "browserify>browser-resolve": true,
+        "browserify>events": true,
         "browserify>inherits": true,
         "browserify>readable-stream>core-util-is": true,
         "browserify>readable-stream>isarray": true,
@@ -491,8 +497,7 @@
         "browserify>readable-stream>string_decoder": true,
         "browserify>readable-stream>util-deprecate": true,
         "browserify>timers-browserify": true,
-        "process": true,
-        "webpack>events": true
+        "process": true
       }
     },
     "browserify>readable-stream>core-util-is": {
@@ -689,7 +694,7 @@
         "setTimeout": true
       },
       "packages": {
-        "webpack>events": true
+        "browserify>events": true
       }
     },
     "process": {
@@ -719,20 +724,20 @@
     },
     "stream-browserify": {
       "packages": {
+        "browserify>events": true,
         "browserify>inherits": true,
-        "stream-browserify>readable-stream": true,
-        "webpack>events": true
+        "stream-browserify>readable-stream": true
       }
     },
     "stream-browserify>readable-stream": {
       "packages": {
         "browserify>browser-resolve": true,
         "browserify>buffer": true,
+        "browserify>events": true,
         "browserify>inherits": true,
         "browserify>readable-stream>util-deprecate": true,
         "browserify>string_decoder": true,
-        "process": true,
-        "webpack>events": true
+        "process": true
       }
     },
     "ts-jest>semver": {
@@ -747,11 +752,6 @@
     "ts-jest>semver>lru-cache": {
       "packages": {
         "ts-jest>semver>lru-cache>yallist": true
-      }
-    },
-    "webpack>events": {
-      "globals": {
-        "console": true
       }
     }
   }
