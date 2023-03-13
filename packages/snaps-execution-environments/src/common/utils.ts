@@ -127,6 +127,7 @@ export function assertSnapOutboundRequest(args: RequestArguments) {
       },
     }),
   );
+  assertStruct(args, JsonStruct, 'Provided value is not JSON-RPC compatible');
 }
 
 /**
