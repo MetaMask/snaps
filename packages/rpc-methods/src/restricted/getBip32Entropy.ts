@@ -215,11 +215,9 @@ export function getBip32EntropyImplementation({
       curve: params.curve,
       derivationPath: [
         await getMnemonic(),
-        ...params.path
-          .slice(1)
-          .map<BIP32Node | SLIP10PathNode>(
-            (index) => `${prefix}:${index}` as BIP32Node | SLIP10PathNode,
-          ),
+        ...(params.path.slice(1).map((index) => `${prefix}:${index}`) as
+          | BIP32Node[]
+          | SLIP10PathNode[]),
       ],
     });
 
