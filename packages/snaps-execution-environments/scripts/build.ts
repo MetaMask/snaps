@@ -131,6 +131,10 @@ async function main() {
         ],
       });
 
+      // Tree shaking
+      bundler.transform('@browserify/uglifyify', { global: true });
+      bundler.plugin('common-shakeify', { ecmaVersion: 2020 });
+
       bundler.plugin(LavaMoatBrowserify, {
         writeAutoPolicy,
         policy: path.resolve(
