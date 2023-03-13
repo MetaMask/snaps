@@ -58,7 +58,7 @@ describe('assertSnapOutboundRequest', () => {
   it('throws for invalid JSON values', () => {
     expect(() =>
       assertSnapOutboundRequest({
-        method: 'eth_blockNumber',
+        method: 'snap_notify',
         params: [undefined],
       }),
     ).toThrow(
@@ -97,8 +97,8 @@ describe('assertEthereumOutboundRequest', () => {
 
   it('throws for invalid JSON values', () => {
     expect(() =>
-      assertSnapOutboundRequest({
-        method: 'snap_notify',
+      assertEthereumOutboundRequest({
+        method: 'eth_blockNumber',
         params: [undefined],
       }),
     ).toThrow(
