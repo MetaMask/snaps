@@ -1,4 +1,9 @@
-import { BIP32Node, JsonSLIP10Node, SLIP10Node } from '@metamask/key-tree';
+import {
+  BIP32Node,
+  JsonSLIP10Node,
+  SLIP10Node,
+  SLIP10PathNode,
+} from '@metamask/key-tree';
 import {
   Caveat,
   PermissionConstraint,
@@ -204,13 +209,15 @@ export function getBip32EntropyImplementation({
     const { params } = args;
     assert(params);
 
+    const prefix = params.curve === 'ed25519' ? 'slip10' : 'bip32';
+
     const node = await SLIP10Node.fromDerivationPath({
       curve: params.curve,
       derivationPath: [
         await getMnemonic(),
-        ...params.path
-          .slice(1)
-          .map<BIP32Node>((index) => `bip32:${index}` as BIP32Node),
+        ...(params.path.slice(1).map((index) => `${prefix}:${index}`) as
+          | BIP32Node[]
+          | SLIP10PathNode[]),
       ],
     });
 
