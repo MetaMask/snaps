@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.31.0]
+### Uncategorized
+- Bump `@metamask/utils` to `5.0.0` and handle breaking changes ([#1276](https://github.com/MetaMask/snaps-monorepo/pull/1276))
+- Update workflows to match `MetaMask/core` repository ([#1254](https://github.com/MetaMask/snaps-monorepo/pull/1254))
+- Disallow requesting dynamic RPC methods ([#1256](https://github.com/MetaMask/snaps-monorepo/pull/1256))
+- Improvements to Webpack plugin ([#1225](https://github.com/MetaMask/snaps-monorepo/pull/1225))
+- Remove JSDOM from all packages ([#1241](https://github.com/MetaMask/snaps-monorepo/pull/1241))
+- Implement tests using `webdriverio` ([#1231](https://github.com/MetaMask/snaps-monorepo/pull/1231))
+- Target `ES2020` ([#1247](https://github.com/MetaMask/snaps-monorepo/pull/1247))
+- Snaps globalThis now has proper self-referential properties ([#1174](https://github.com/MetaMask/snaps-monorepo/pull/1174))
+
 ## [0.30.0]
 ### Changed
 - Harden custom endowments ([#1172](https://github.com/MetaMask/snaps-monorepo/pull/1172))
@@ -221,7 +232,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Previously, default endowments were specified in the execution environment itself. Now, all endowments must be specified in the `executeSnap` RPC parameters, except for the `wallet` API object.
 - Add endowments to the global `self` in addition to `window` ([#263](https://github.com/MetaMask/snaps-monorepo/pull/263))
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.30.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.31.0...HEAD
+[0.31.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.30.0...v0.31.0
 [0.30.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.29.0...v0.30.0
 [0.29.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.28.0...v0.29.0
 [0.28.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.1...v0.28.0

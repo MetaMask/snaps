@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.31.0]
+### Uncategorized
+- Bump `@metamask/utils` to `5.0.0` and handle breaking changes ([#1276](https://github.com/MetaMask/snaps-monorepo/pull/1276))
+- Bump `key-tree` to `7.0.0` ([#1275](https://github.com/MetaMask/snaps-monorepo/pull/1275))
+- Update workflows to match `MetaMask/core` repository ([#1254](https://github.com/MetaMask/snaps-monorepo/pull/1254))
+- Improvements to Webpack plugin ([#1225](https://github.com/MetaMask/snaps-monorepo/pull/1225))
+- Remove JSDOM from all packages ([#1241](https://github.com/MetaMask/snaps-monorepo/pull/1241))
+- Implement tests using `webdriverio` ([#1231](https://github.com/MetaMask/snaps-monorepo/pull/1231))
+- Fix transaction insights docs ([#1252](https://github.com/MetaMask/snaps-monorepo/pull/1252))
+- Target `ES2020` ([#1247](https://github.com/MetaMask/snaps-monorepo/pull/1247))
+- Improve validation and sanitizing of snap IDs ([#1237](https://github.com/MetaMask/snaps-monorepo/pull/1237))
+
 ## [0.30.0]
 ### Changed
 - Properly sandbox iframe and inline SES in execution bundles ([#1193](https://github.com/MetaMask/snaps-monorepo/pull/1193))
@@ -166,7 +178,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release ([#410](https://github.com/MetaMask/snaps-monorepo/pull/410), [#421](https://github.com/MetaMask/snaps-monorepo/pull/421))
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.30.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.31.0...HEAD
+[0.31.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.30.0...v0.31.0
 [0.30.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.29.0...v0.30.0
 [0.29.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.28.0...v0.29.0
 [0.28.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.1...v0.28.0

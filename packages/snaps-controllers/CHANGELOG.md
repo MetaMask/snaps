@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.31.0]
+### Uncategorized
+- BREAKING: Combine snap installation popups ([#1261](https://github.com/MetaMask/snaps-monorepo/pull/1261))
+- Bump `@metamask/utils` to `5.0.0` and handle breaking changes ([#1276](https://github.com/MetaMask/snaps-monorepo/pull/1276))
+- Update workflows to match `MetaMask/core` repository ([#1254](https://github.com/MetaMask/snaps-monorepo/pull/1254))
+- Remove JSDOM from all packages ([#1241](https://github.com/MetaMask/snaps-monorepo/pull/1241))
+- Fix two install bugs with local snaps ([#1248](https://github.com/MetaMask/snaps-monorepo/pull/1248))
+- Implement tests using `webdriverio` ([#1231](https://github.com/MetaMask/snaps-monorepo/pull/1231))
+- Target `ES2020` ([#1247](https://github.com/MetaMask/snaps-monorepo/pull/1247))
+- Improve validation and sanitizing of snap IDs ([#1237](https://github.com/MetaMask/snaps-monorepo/pull/1237))
+- Throw errors on failed `fetch` ([#1227](https://github.com/MetaMask/snaps-monorepo/pull/1227))
+
 ## [0.30.0]
 ### Added
 - Add WebAssembly permission ([#1185](https://github.com/MetaMask/snaps-monorepo/pull/1185))
@@ -466,7 +478,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.30.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.31.0...HEAD
+[0.31.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.30.0...v0.31.0
 [0.30.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.29.0...v0.30.0
 [0.29.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.28.0...v0.29.0
 [0.28.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.1...v0.28.0
