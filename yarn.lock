@@ -3131,6 +3131,7 @@ __metadata:
     "@metamask/utils": ^3.4.1
     "@types/jest": ^27.5.1
     "@types/node": ^17.0.36
+    "@types/w3c-web-hid": ^1.0.3
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
     "@wdio/browser-runner": ^8.3.10
@@ -4413,6 +4414,13 @@ __metadata:
     "@types/expect": ^1.20.4
     "@types/node": "*"
   checksum: 5012fb61e3a29e7deaac7e66b6d8cb73d87d15965c8a38cb69277c2beb851a9a8ec09d4a1b07a3151e143afc2e3a102ca368b9a0e08f2f29de9183c97f9c7d85
+  languageName: node
+  linkType: hard
+
+"@types/w3c-web-hid@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "@types/w3c-web-hid@npm:1.0.3"
+  checksum: 90ee1eeb2acf5d5ddf0b7acefd4f8aaa7d0175d991c3606a9ad62bdfa7a8de93665f5f6218dc4ecb34ea1d2f3e357813b315f46c1ea6b8aa1693e217e436c9b2
   languageName: node
   linkType: hard
 
