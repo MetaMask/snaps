@@ -25,6 +25,7 @@ import {
   transactionInsightCaveatSpecifications,
   transactionInsightEndowmentBuilder,
 } from './transaction-insight';
+import { webAssemblyEndowmentBuilder } from './web-assembly';
 import { webhidEndowmentBuilder } from './webhid';
 
 export const endowmentPermissionBuilders = {
@@ -37,6 +38,7 @@ export const endowmentPermissionBuilders = {
   [ethereumProviderEndowmentBuilder.targetKey]:
     ethereumProviderEndowmentBuilder,
   [rpcEndowmentBuilder.targetKey]: rpcEndowmentBuilder,
+  [webAssemblyEndowmentBuilder.targetKey]: webAssemblyEndowmentBuilder,
   [webhidEndowmentBuilder.targetKey]: webhidEndowmentBuilder,
 } as const;
 
