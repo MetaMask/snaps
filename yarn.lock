@@ -2937,7 +2937,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/post-message-stream@npm:^6.1.0":
+"@metamask/post-message-stream@npm:^6.1.1":
   version: 6.1.1
   resolution: "@metamask/post-message-stream@npm:6.1.1"
   dependencies:
@@ -3145,7 +3145,7 @@ __metadata:
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/object-multiplex": ^1.1.0
     "@metamask/permission-controller": ^3.0.0
-    "@metamask/post-message-stream": ^6.1.0
+    "@metamask/post-message-stream": ^6.1.1
     "@metamask/rpc-methods": ^0.31.0
     "@metamask/snaps-execution-environments": ^0.31.0
     "@metamask/snaps-registry": ^1.1.1
@@ -3228,7 +3228,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/object-multiplex": ^1.2.0
-    "@metamask/post-message-stream": ^6.1.0
+    "@metamask/post-message-stream": ^6.1.1
     "@metamask/providers": ^10.2.0
     "@metamask/rpc-methods": ^0.31.0
     "@metamask/snaps-utils": ^0.31.0
@@ -3420,7 +3420,7 @@ __metadata:
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/key-tree": ^7.0.0
     "@metamask/permission-controller": ^3.0.0
-    "@metamask/post-message-stream": ^6.1.0
+    "@metamask/post-message-stream": ^6.1.1
     "@metamask/providers": ^10.2.1
     "@metamask/snaps-registry": ^1.1.1
     "@metamask/snaps-ui": ^0.31.0
