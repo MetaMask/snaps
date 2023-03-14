@@ -9,10 +9,9 @@ import { rootRealmGlobal } from '../globalObject';
 function createHID() {
   return {
     navigator: {
-      // ts-ignore hid is a read only method thats available on the browser.
       // https://developer.mozilla.org/en-US/docs/Web/API/Navigator/hid
       // https://wicg.github.io/webhid/#dom-navigator-hid
-      hid: rootRealmGlobal.navigator.hid,
+      hid: rootRealmGlobal.navigator?.hid,
     },
   };
 }

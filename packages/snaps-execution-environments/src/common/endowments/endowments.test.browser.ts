@@ -253,6 +253,7 @@ describe('endowments', () => {
           factory: expect.any(Function),
           names: ['Date'],
         },
+        { factory: expect.any(Function), names: ['navigator'] },
         {
           factory: expect.any(Function),
           names: ['AbortController'],
