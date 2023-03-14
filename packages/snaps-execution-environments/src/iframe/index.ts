@@ -3,8 +3,8 @@ import { executeLockdownEvents } from '../common/lockdown/lockdown-events';
 import { executeLockdownMore } from '../common/lockdown/lockdown-more';
 import { IFrameSnapExecutor } from './IFrameSnapExecutor';
 
-executeLockdownEvents();
 executeLockdown();
 executeLockdownMore();
+executeLockdownEvents();
 
 IFrameSnapExecutor.initialize();
