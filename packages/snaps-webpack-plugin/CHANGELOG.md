@@ -7,12 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.31.0]
-### Uncategorized
-- Bump `@metamask/utils` to `5.0.0` and handle breaking changes ([#1276](https://github.com/MetaMask/snaps-monorepo/pull/1276))
-- Update workflows to match `MetaMask/core` repository ([#1254](https://github.com/MetaMask/snaps-monorepo/pull/1254))
-- Improvements to Webpack plugin ([#1225](https://github.com/MetaMask/snaps-monorepo/pull/1225))
-- Remove JSDOM from all packages ([#1241](https://github.com/MetaMask/snaps-monorepo/pull/1241))
-- Implement tests using `webdriverio` ([#1231](https://github.com/MetaMask/snaps-monorepo/pull/1231))
+### Changed
+- **BREAKING:** Target `ES2020` ([#1247](https://github.com/MetaMask/snaps-monorepo/pull/1247))
+
+### Fixed
+- Fix a few smaller issues when using the Webpack plugin with in-memory files ([#1225](https://github.com/MetaMask/snaps-monorepo/pull/1225))
 
 ## [0.30.0]
 ### Changed

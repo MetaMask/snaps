@@ -7,9 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.31.0]
-### Uncategorized
-- Bump `@metamask/utils` to `5.0.0` and handle breaking changes ([#1276](https://github.com/MetaMask/snaps-monorepo/pull/1276))
-- Update workflows to match `MetaMask/core` repository ([#1254](https://github.com/MetaMask/snaps-monorepo/pull/1254))
+### Changed
+- **BREAKING:** Target `ES2020` ([#1247](https://github.com/MetaMask/snaps-monorepo/pull/1247))
 
 ## [0.30.0]
 ### Changed

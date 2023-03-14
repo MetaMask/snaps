@@ -7,9 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.31.0]
-### Uncategorized
-- Update workflows to match `MetaMask/core` repository ([#1254](https://github.com/MetaMask/snaps-monorepo/pull/1254))
-- Remove JSDOM from all packages ([#1241](https://github.com/MetaMask/snaps-monorepo/pull/1241))
+### Changed
+- **BREAKING:** Target `ES2020` ([#1247](https://github.com/MetaMask/snaps-monorepo/pull/1247))
 
 ## [0.30.0]
 ### Changed

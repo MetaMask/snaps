@@ -7,10 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.31.0]
-### Uncategorized
-- Bump `@metamask/utils` to `5.0.0` and handle breaking changes ([#1276](https://github.com/MetaMask/snaps-monorepo/pull/1276))
-- Implement tests using `webdriverio` ([#1231](https://github.com/MetaMask/snaps-monorepo/pull/1231))
-- Target `ES2020` ([#1247](https://github.com/MetaMask/snaps-monorepo/pull/1247))
+### Changed
+- **BREAKING:** Target `ES2020` ([#1247](https://github.com/MetaMask/snaps-monorepo/pull/1247))
 
 ## [0.30.0]
 ### Changed

@@ -7,16 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.31.0]
-### Uncategorized
-- BREAKING: Combine snap installation popups ([#1261](https://github.com/MetaMask/snaps-monorepo/pull/1261))
-- Bump `@metamask/utils` to `5.0.0` and handle breaking changes ([#1276](https://github.com/MetaMask/snaps-monorepo/pull/1276))
-- Update workflows to match `MetaMask/core` repository ([#1254](https://github.com/MetaMask/snaps-monorepo/pull/1254))
-- Remove JSDOM from all packages ([#1241](https://github.com/MetaMask/snaps-monorepo/pull/1241))
-- Fix two install bugs with local snaps ([#1248](https://github.com/MetaMask/snaps-monorepo/pull/1248))
-- Implement tests using `webdriverio` ([#1231](https://github.com/MetaMask/snaps-monorepo/pull/1231))
-- Target `ES2020` ([#1247](https://github.com/MetaMask/snaps-monorepo/pull/1247))
-- Improve validation and sanitizing of snap IDs ([#1237](https://github.com/MetaMask/snaps-monorepo/pull/1237))
+### Changed
+- **BREAKING:** Target `ES2020` ([#1247](https://github.com/MetaMask/snaps-monorepo/pull/1247))
+- **BREAKING:** Combine snap installation popups ([#1261](https://github.com/MetaMask/snaps-monorepo/pull/1261))
 - Throw errors on failed `fetch` ([#1227](https://github.com/MetaMask/snaps-monorepo/pull/1227))
+- Improve validation and sanitizing of snap IDs ([#1237](https://github.com/MetaMask/snaps-monorepo/pull/1237))
+
+### Fixed
+- Fix smaller installation issues affecting local snaps ([#1248](https://github.com/MetaMask/snaps-monorepo/pull/1248))
 
 ## [0.30.0]
 ### Added
