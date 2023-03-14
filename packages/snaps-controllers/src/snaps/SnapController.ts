@@ -1,4 +1,7 @@
-import { AddApprovalRequest } from '@metamask/approval-controller';
+import {
+  AddApprovalRequest,
+  UpdateRequestState,
+} from '@metamask/approval-controller';
 import {
   BaseControllerV2 as BaseController,
   RestrictedControllerMessenger,
@@ -30,7 +33,6 @@ import {
   assertIsSnapManifest,
   DEFAULT_ENDOWMENTS,
   DEFAULT_REQUESTED_SNAP_VERSION,
-  isSnapPermitted,
   InstallSnapsResult,
   normalizeRelative,
   PersistedSnap,
@@ -57,6 +59,7 @@ import {
   VirtualFile,
   logError,
   logWarning,
+  isSnapPermitted,
 } from '@metamask/snaps-utils';
 import {
   GetSubjectMetadata,
@@ -116,6 +119,7 @@ export const controllerName = 'SnapController';
 // TODO: Figure out how to name these
 export const SNAP_APPROVAL_INSTALL = 'wallet_installSnap';
 export const SNAP_APPROVAL_UPDATE = 'wallet_updateSnap';
+export const SNAP_APPROVAL_RESULT = 'wallet_installSnapResult';
 
 const TRUNCATED_SNAP_PROPERTIES = new Set<TruncatedSnapFields>([
   'initialPermissions',
@@ -242,6 +246,11 @@ type RollbackSnapshot = {
     requestData: unknown;
   };
   newVersion: string;
+};
+
+type PendingApproval = {
+  id: string;
+  promise: Promise<unknown>;
 };
 
 // Controller Messenger Actions
@@ -470,7 +479,8 @@ export type AllowedActions =
   | ExecuteSnapAction
   | TerminateAllSnapsAction
   | TerminateSnapAction
-  | UpdateCaveat;
+  | UpdateCaveat
+  | UpdateRequestState;
 
 export type AllowedEvents = ExecutionServiceEvents;
 
@@ -1677,6 +1687,7 @@ export class SnapController extends BaseController<
     versionRange: SemVerRange,
   ): Promise<ProcessSnapResult> {
     const existingSnap = this.getTruncated(snapId);
+
     // For devX we always re-install local snaps.
     if (existingSnap && !location.shouldAlwaysReload) {
       if (satisfiesVersionRange(existingSnap.version, versionRange)) {
@@ -1684,23 +1695,18 @@ export class SnapController extends BaseController<
       }
 
       if (this.#featureFlags.dappsCanUpdateSnaps === true) {
-        const updateResult = await this.updateSnap(
-          origin,
-          snapId,
-          location,
-          versionRange,
-        );
-        if (updateResult === null) {
-          throw ethErrors.rpc.invalidParams(
-            `Snap "${snapId}@${existingSnap.version}" is already installed. Couldn't update to a version inside requested "${versionRange}" range.`,
-          );
-        }
-        return updateResult;
+        return await this.updateSnap(origin, snapId, location, versionRange);
       }
       throw ethErrors.rpc.invalidParams(
         `Version mismatch with already installed snap. ${snapId}@${existingSnap.version} doesn't satisfy requested version ${versionRange}.`,
       );
     }
+
+    let pendingApproval = this.#createApproval({
+      origin,
+      snapId,
+      type: SNAP_APPROVAL_INSTALL,
+    });
 
     // Existing snaps must be stopped before overwriting
     if (existingSnap && this.isRunning(snapId)) {
@@ -1719,7 +1725,13 @@ export class SnapController extends BaseController<
         location,
       });
 
-      await this.authorize(origin, snapId);
+      await this.authorize(snapId, pendingApproval);
+
+      pendingApproval = this.#createApproval({
+        origin,
+        snapId,
+        type: SNAP_APPROVAL_RESULT,
+      });
 
       await this.#startSnap({
         snapId,
@@ -1728,12 +1740,62 @@ export class SnapController extends BaseController<
 
       const truncated = this.getTruncatedExpect(snapId);
 
+      this.#updateApproval(pendingApproval.id, { loading: false });
+
       this.messagingSystem.publish(`SnapController:snapInstalled`, truncated);
+
       return truncated;
     } catch (error) {
       logError(`Error when adding snap.`, error);
 
+      this.#updateApproval(pendingApproval.id, {
+        loading: false,
+        error: error instanceof Error ? error.message : error.toString(),
+      });
+
       throw error;
+    }
+  }
+
+  #createApproval({
+    origin,
+    snapId,
+    type,
+  }: {
+    origin: string;
+    snapId: ValidatedSnapId;
+    type: string;
+  }): PendingApproval {
+    const id = nanoid();
+    const promise = this.messagingSystem.call(
+      'ApprovalController:addRequest',
+      {
+        origin,
+        id,
+        type,
+        requestData: {
+          // Mirror previous installation metadata
+          metadata: { id, origin: snapId, dappOrigin: origin },
+          snapId,
+        },
+        requestState: {
+          loading: true,
+        },
+      },
+      true,
+    );
+
+    return { id, promise };
+  }
+
+  #updateApproval(id: string, requestState: Record<string, Json>) {
+    try {
+      this.messagingSystem.call('ApprovalController:updateRequestState', {
+        id,
+        requestState,
+      });
+    } catch {
+      // Do nothing
     }
   }
 
@@ -1760,123 +1822,140 @@ export class SnapController extends BaseController<
     snapId: ValidatedSnapId,
     location: SnapLocation,
     newVersionRange: string = DEFAULT_REQUESTED_SNAP_VERSION,
-  ): Promise<TruncatedSnap | null> {
-    const snap = this.getExpect(snapId);
-
+  ): Promise<TruncatedSnap> {
     if (!isValidSemVerRange(newVersionRange)) {
       throw new Error(
         `Received invalid snap version range: "${newVersionRange}".`,
       );
     }
-    const newSnap = await this.#fetchSnap(snapId, location);
-    const newVersion = newSnap.manifest.result.version;
-    if (!gtVersion(newVersion, snap.version)) {
-      logWarning(
-        `Tried updating snap "${snapId}" within "${newVersionRange}" version range, but newer version "${snap.version}" is already installed`,
-      );
-      return null;
-    }
 
-    await this.#assertIsInstallAllowed(snapId, {
-      version: newVersion,
-      checksum: newSnap.manifest.result.source.shasum,
-    });
-
-    const processedPermissions = this.#processSnapPermissions(
-      newSnap.manifest.result.initialPermissions,
-    );
-
-    const { newPermissions, unusedPermissions, approvedPermissions } =
-      this.#calculatePermissionsChange(snapId, processedPermissions);
-
-    const id = nanoid();
-    const { permissions: approvedNewPermissions, ...requestData } =
-      (await this.messagingSystem.call(
-        'ApprovalController:addRequest',
-        {
-          origin,
-          id,
-          type: SNAP_APPROVAL_UPDATE,
-          requestData: {
-            // First two keys mirror installation params
-            metadata: { id, origin: snapId, dappOrigin: origin },
-            permissions: newPermissions,
-            snapId,
-            newVersion: newSnap.manifest.result.version,
-            newPermissions,
-            approvedPermissions,
-            unusedPermissions,
-          },
-        },
-        true,
-      )) as PermissionsRequest;
-
-    if (this.isRunning(snapId)) {
-      await this.stopSnap(snapId, SnapStatusEvents.Stop);
-    }
-
-    this.#transition(snapId, SnapStatusEvents.Update);
-
-    this.#set({
+    let pendingApproval = this.#createApproval({
       origin,
-      id: snapId,
-      manifest: newSnap.manifest,
-      files: newSnap.files,
-      versionRange: newVersionRange,
-      isUpdate: true,
+      snapId,
+      type: SNAP_APPROVAL_UPDATE,
     });
-
-    const unusedPermissionsKeys = Object.keys(unusedPermissions);
-    if (isNonEmptyArray(unusedPermissionsKeys)) {
-      this.messagingSystem.call('PermissionController:revokePermissions', {
-        [snapId]: unusedPermissionsKeys,
-      });
-    }
-
-    if (isNonEmptyArray(Object.keys(approvedNewPermissions))) {
-      this.messagingSystem.call('PermissionController:grantPermissions', {
-        approvedPermissions: approvedNewPermissions,
-        subject: { origin: snapId },
-        requestData,
-      });
-    }
-
-    const rollbackSnapshot = this.#getRollbackSnapshot(snapId);
-    if (rollbackSnapshot !== undefined) {
-      rollbackSnapshot.permissions.revoked = unusedPermissions;
-      rollbackSnapshot.permissions.granted = Object.keys(
-        approvedNewPermissions,
-      );
-      rollbackSnapshot.permissions.requestData = requestData;
-    }
-
-    const normalizedSourcePath = normalizeRelative(
-      newSnap.manifest.result.source.location.npm.filePath,
-    );
-
-    const sourceCode = newSnap.files
-      .find((file) => file.path === normalizedSourcePath)
-      ?.toString();
-
-    assert(
-      typeof sourceCode === 'string' && sourceCode.length > 0,
-      `Invalid source code for snap "${snapId}".`,
-    );
 
     try {
-      await this.#startSnap({ snapId, sourceCode });
-    } catch {
-      throw new Error(`Snap ${snapId} crashed with updated source code.`);
+      const snap = this.getExpect(snapId);
+
+      const newSnap = await this.#fetchSnap(snapId, location);
+
+      const newVersion = newSnap.manifest.result.version;
+      if (!gtVersion(newVersion, snap.version)) {
+        throw ethErrors.rpc.invalidParams(
+          `Snap "${snapId}@${snap.version}" is already installed. Couldn't update to a version inside requested "${newVersionRange}" range.`,
+        );
+      }
+
+      await this.#assertIsInstallAllowed(snapId, {
+        version: newVersion,
+        checksum: newSnap.manifest.result.source.shasum,
+      });
+
+      const processedPermissions = this.#processSnapPermissions(
+        newSnap.manifest.result.initialPermissions,
+      );
+
+      this.#validateSnapPermissions(processedPermissions);
+
+      const { newPermissions, unusedPermissions, approvedPermissions } =
+        this.#calculatePermissionsChange(snapId, processedPermissions);
+
+      this.#updateApproval(pendingApproval.id, {
+        permissions: newPermissions,
+        newVersion: newSnap.manifest.result.version,
+        newPermissions,
+        approvedPermissions,
+        unusedPermissions,
+        loading: false,
+      });
+
+      const { permissions: approvedNewPermissions, ...requestData } =
+        (await pendingApproval.promise) as PermissionsRequest;
+
+      pendingApproval = this.#createApproval({
+        origin,
+        snapId,
+        type: SNAP_APPROVAL_RESULT,
+      });
+
+      if (this.isRunning(snapId)) {
+        await this.stopSnap(snapId, SnapStatusEvents.Stop);
+      }
+
+      this.#transition(snapId, SnapStatusEvents.Update);
+
+      this.#set({
+        origin,
+        id: snapId,
+        manifest: newSnap.manifest,
+        files: newSnap.files,
+        versionRange: newVersionRange,
+        isUpdate: true,
+      });
+
+      const unusedPermissionsKeys = Object.keys(unusedPermissions);
+      if (isNonEmptyArray(unusedPermissionsKeys)) {
+        this.messagingSystem.call('PermissionController:revokePermissions', {
+          [snapId]: unusedPermissionsKeys,
+        });
+      }
+
+      if (isNonEmptyArray(Object.keys(approvedNewPermissions))) {
+        this.messagingSystem.call('PermissionController:grantPermissions', {
+          approvedPermissions: approvedNewPermissions,
+          subject: { origin: snapId },
+          requestData,
+        });
+      }
+
+      const rollbackSnapshot = this.#getRollbackSnapshot(snapId);
+      if (rollbackSnapshot !== undefined) {
+        rollbackSnapshot.permissions.revoked = unusedPermissions;
+        rollbackSnapshot.permissions.granted = Object.keys(
+          approvedNewPermissions,
+        );
+        rollbackSnapshot.permissions.requestData = requestData;
+      }
+
+      const normalizedSourcePath = normalizeRelative(
+        newSnap.manifest.result.source.location.npm.filePath,
+      );
+
+      const sourceCode = newSnap.files
+        .find((file) => file.path === normalizedSourcePath)
+        ?.toString();
+
+      assert(
+        typeof sourceCode === 'string' && sourceCode.length > 0,
+        `Invalid source code for snap "${snapId}".`,
+      );
+
+      try {
+        await this.#startSnap({ snapId, sourceCode });
+      } catch {
+        throw new Error(`Snap ${snapId} crashed with updated source code.`);
+      }
+
+      const truncatedSnap = this.getTruncatedExpect(snapId);
+      this.messagingSystem.publish(
+        'SnapController:snapUpdated',
+        truncatedSnap,
+        snap.version,
+      );
+
+      this.#updateApproval(pendingApproval.id, { loading: false });
+
+      return truncatedSnap;
+    } catch (error) {
+      logError(`Error when updating snap,`, error);
+
+      this.#updateApproval(pendingApproval.id, {
+        loading: false,
+        error: error instanceof Error ? error.message : error.toString(),
+      });
+      throw error;
     }
-
-    const truncatedSnap = this.getTruncatedExpect(snapId);
-    this.messagingSystem.publish(
-      'SnapController:snapUpdated',
-      truncatedSnap,
-      snap.version,
-    );
-
-    return truncatedSnap;
   }
 
   /**
@@ -2202,17 +2281,41 @@ export class SnapController extends BaseController<
     );
   }
 
+  #validateSnapPermissions(
+    processedPermissions: Record<string, Pick<PermissionConstraint, 'caveats'>>,
+  ) {
+    const excludedPermissionErrors = Object.keys(processedPermissions).reduce<
+      string[]
+    >((errors, permission) => {
+      if (hasProperty(this.#excludedPermissions, permission)) {
+        errors.push(this.#excludedPermissions[permission]);
+      }
+
+      return errors;
+    }, []);
+
+    assert(
+      excludedPermissionErrors.length === 0,
+      `One or more permissions are not allowed:\n${excludedPermissionErrors.join(
+        '\n',
+      )}`,
+    );
+  }
+
   /**
    * Initiates a request for the given snap's initial permissions.
    * Must be called in order. See processRequestedSnap.
    *
    * This function is not hash private yet because of tests.
    *
-   * @param origin - The origin of the install request.
    * @param snapId - The id of the Snap.
+   * @param pendingApproval - Pending approval to update.
    * @returns The snap's approvedPermissions.
    */
-  private async authorize(origin: string, snapId: SnapId): Promise<void> {
+  private async authorize(
+    snapId: SnapId,
+    pendingApproval: PendingApproval,
+  ): Promise<void> {
     log(`Authorizing snap: ${snapId}`);
     const snapsState = this.state.snaps;
     const snap = snapsState[snapId];
@@ -2222,40 +2325,15 @@ export class SnapController extends BaseController<
       const processedPermissions =
         this.#processSnapPermissions(initialPermissions);
 
-      const excludedPermissionErrors = Object.keys(processedPermissions).reduce<
-        string[]
-      >((errors, permission) => {
-        if (hasProperty(this.#excludedPermissions, permission)) {
-          errors.push(this.#excludedPermissions[permission]);
-        }
+      this.#validateSnapPermissions(processedPermissions);
 
-        return errors;
-      }, []);
+      this.#updateApproval(pendingApproval.id, {
+        loading: false,
+        permissions: processedPermissions,
+      });
 
-      assert(
-        excludedPermissionErrors.length === 0,
-        `One or more permissions are not allowed:\n${excludedPermissionErrors.join(
-          '\n',
-        )}`,
-      );
-
-      const id = nanoid();
       const { permissions: approvedPermissions, ...requestData } =
-        (await this.messagingSystem.call(
-          'ApprovalController:addRequest',
-          {
-            origin,
-            id,
-            type: SNAP_APPROVAL_INSTALL,
-            requestData: {
-              // Mirror previous installation metadata
-              metadata: { id, origin: snapId, dappOrigin: origin },
-              permissions: processedPermissions,
-              snapId,
-            },
-          },
-          true,
-        )) as PermissionsRequest;
+        (await pendingApproval.promise) as PermissionsRequest;
 
       if (isNonEmptyArray(Object.keys(approvedPermissions))) {
         this.messagingSystem.call('PermissionController:grantPermissions', {
