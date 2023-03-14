@@ -2796,7 +2796,7 @@ __metadata:
 
 "@lavamoat/lavapack@patch:@lavamoat/lavapack@npm%3A3.3.0#./.yarn/patches/@lavamoat-lavapack-npm-3.3.0-5a61b5374d.patch::locator=root%40workspace%3A.":
   version: 3.3.0
-  resolution: "@lavamoat/lavapack@patch:@lavamoat/lavapack@npm%3A3.3.0#./.yarn/patches/@lavamoat-lavapack-npm-3.3.0-5a61b5374d.patch::version=3.3.0&hash=2534d4&locator=root%40workspace%3A."
+  resolution: "@lavamoat/lavapack@patch:@lavamoat/lavapack@npm%3A3.3.0#./.yarn/patches/@lavamoat-lavapack-npm-3.3.0-5a61b5374d.patch::version=3.3.0&hash=96b346&locator=root%40workspace%3A."
   dependencies:
     JSONStream: ^1.3.5
     combine-source-map: ^0.8.0
@@ -2806,7 +2806,7 @@ __metadata:
     readable-stream: ^3.6.0
     through2: ^4.0.2
     umd: ^3.0.3
-  checksum: d5da15b91d8973822382a4e2668caff09534ca517182d8b36232bc81aea59ee9a146a1d16b98118d7ac3785db6d6cadb44f0fca485da7ca32cc6254b1e5e9112
+  checksum: 1371cfcbec8358f897580b115770860677cf1e84ed72965b78f3343202a05188fd88c8030cd0b99d58102862cbcdd077b286a86a87d5fd77750c94c236359bc9
   languageName: node
   linkType: hard
 
@@ -13341,7 +13341,7 @@ __metadata:
 
 "lavamoat-browserify@patch:lavamoat-browserify@npm%3A15.5.0#./.yarn/patches/lavamoat-browserify-npm-15.5.0-ce0bbe5e4c.patch::locator=root%40workspace%3A.":
   version: 15.5.0
-  resolution: "lavamoat-browserify@patch:lavamoat-browserify@npm%3A15.5.0#./.yarn/patches/lavamoat-browserify-npm-15.5.0-ce0bbe5e4c.patch::version=15.5.0&hash=51b630&locator=root%40workspace%3A."
+  resolution: "lavamoat-browserify@patch:lavamoat-browserify@npm%3A15.5.0#./.yarn/patches/lavamoat-browserify-npm-15.5.0-ce0bbe5e4c.patch::version=15.5.0&hash=38f425&locator=root%40workspace%3A."
   dependencies:
     "@babel/code-frame": ^7.16.7
     "@lavamoat/aa": ^3.1.0
@@ -13356,7 +13356,7 @@ __metadata:
     readable-stream: ^3.6.0
     source-map: ^0.7.3
     through2: ^3.0.0
-  checksum: 28b90b0d6e7623ac6cd98a04b190325b43c32493de7b39243e80f4f4437d6702c291b410d2cbbb7ca02fd54ef57fe0feeb871aacc203c30114277521c8c8b158
+  checksum: c0f6a20f9ce2055f59be9864e6949f50a708005d84d4a33e8763cc60c893cc87d3a364bf37b4ba1f2d55aa05235ae88a2fe1618eb21f69c0fe43615edbfbc1cd
   languageName: node
   linkType: hard
 

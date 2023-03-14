@@ -1,12 +1,12 @@
 diff --git a/src/index.js b/src/index.js
-index 6943a606618d0841ad68eb0927f33b1267ab6ff2..f12aec0376e779415036c2b7c22e3932502b6817 100644
+index 6943a606618d0841ad68eb0927f33b1267ab6ff2..b05229e20469c331508c64cdc8599a44acadbde6 100644
 --- a/src/index.js
 +++ b/src/index.js
 @@ -8,6 +8,7 @@ const createLavaPack = require('@lavamoat/lavapack')
  const { createSesWorkaroundsTransform } = require('./sesTransforms')
  const { loadCanonicalNameMap } = require('@lavamoat/aa')
  const browserResolve = require('browser-resolve')
-+const resolve = require('resolve');
++const { isBuiltin } = require('node:module')
  
  
  // these are the reccomended arguments for lavaMoat to work well with browserify
@@ -15,7 +15,7 @@ index 6943a606618d0841ad68eb0927f33b1267ab6ff2..f12aec0376e779415036c2b7c22e3932
          policyOverride,
          // no builtins in the browser (yet!)
 -        isBuiltin: () => false,
-+        isBuiltin: (name) => browserify._options.node && resolve.isCore(name),
++        isBuiltin: (name) => browserify._options.node && isBuiltin(name),
          // should prepare debug info
          includeDebugInfo: configuration.writeAutoPolicyDebug,
          // write policy files to disk
