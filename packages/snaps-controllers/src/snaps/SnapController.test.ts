@@ -801,9 +801,14 @@ describe('SnapController', () => {
     jest
       .spyOn(messenger, 'call')
       .mockImplementationOnce(() => permission)
-      .mockImplementationOnce(() => {
-        throw ethErrors.provider.userRejectedRequest();
-      })
+      .mockImplementationOnce(async (_method, ...args) =>
+        approvalControllerMock.addRequest.bind(approvalControllerMock)(args[0]),
+      )
+      .mockImplementationOnce((_method, ...args) =>
+        approvalControllerMock.updateRequestStateAndReject.bind(
+          approvalControllerMock,
+        )(args[0]),
+      )
       .mockImplementationOnce(() => true)
       .mockImplementationOnce(() => false)
       .mockImplementationOnce(() => [MOCK_ORIGIN])
@@ -814,6 +819,39 @@ describe('SnapController', () => {
         [MOCK_SNAP_ID]: {},
       }),
     ).rejects.toThrow('User rejected the request.');
+
+    expect(messenger.call).toHaveBeenNthCalledWith(
+      2,
+      'ApprovalController:addRequest',
+      expect.objectContaining({
+        id: expect.any(String),
+        type: SNAP_APPROVAL_INSTALL,
+        requestData: {
+          metadata: {
+            origin: MOCK_SNAP_ID,
+            dappOrigin: MOCK_ORIGIN,
+            id: expect.any(String),
+          },
+          snapId: MOCK_SNAP_ID,
+        },
+        requestState: {
+          loading: true,
+        },
+      }),
+      true,
+    );
+
+    expect(messenger.call).toHaveBeenNthCalledWith(
+      4,
+      'ApprovalController:updateRequestState',
+      expect.objectContaining({
+        id: expect.any(String),
+        requestState: {
+          loading: false,
+          error: ethErrors.provider.userRejectedRequest().message,
+        },
+      }),
+    );
 
     expect(controller.get(MOCK_SNAP_ID)).toBeUndefined();
 
@@ -2225,9 +2263,14 @@ describe('SnapController', () => {
 
       rootMessenger.registerActionHandler(
         'ApprovalController:addRequest',
-        () => {
-          throw ethErrors.provider.userRejectedRequest();
-        },
+        approvalControllerMock.addRequest.bind(approvalControllerMock),
+      );
+
+      rootMessenger.registerActionHandler(
+        'ApprovalController:updateRequestState',
+        approvalControllerMock.updateRequestStateAndReject.bind(
+          approvalControllerMock,
+        ),
       );
 
       await expect(
@@ -2235,6 +2278,35 @@ describe('SnapController', () => {
           [MOCK_LOCAL_SNAP_ID]: {},
         }),
       ).rejects.toThrow('User rejected the request.');
+
+      expect(messenger.call).toHaveBeenNthCalledWith(
+        2,
+        'ApprovalController:addRequest',
+        expect.objectContaining({
+          type: SNAP_APPROVAL_INSTALL,
+          requestData: {
+            metadata: {
+              origin: MOCK_LOCAL_SNAP_ID,
+              dappOrigin: MOCK_ORIGIN,
+              id: expect.any(String),
+            },
+            snapId: MOCK_LOCAL_SNAP_ID,
+          },
+        }),
+        true,
+      );
+
+      expect(messenger.call).toHaveBeenNthCalledWith(
+        6,
+        'ApprovalController:updateRequestState',
+        expect.objectContaining({
+          id: expect.any(String),
+          requestState: {
+            loading: false,
+            error: ethErrors.provider.userRejectedRequest().message,
+          },
+        }),
+      );
 
       expect(snapController.state.snaps[MOCK_LOCAL_SNAP_ID]).toBeUndefined();
 

@@ -1823,6 +1823,12 @@ export class SnapController extends BaseController<
     location: SnapLocation,
     newVersionRange: string = DEFAULT_REQUESTED_SNAP_VERSION,
   ): Promise<TruncatedSnap> {
+    if (!isValidSemVerRange(newVersionRange)) {
+      throw new Error(
+        `Received invalid snap version range: "${newVersionRange}".`,
+      );
+    }
+
     let pendingApproval = this.#createApproval({
       origin,
       snapId,
@@ -1831,12 +1837,6 @@ export class SnapController extends BaseController<
 
     try {
       const snap = this.getExpect(snapId);
-
-      if (!isValidSemVerRange(newVersionRange)) {
-        throw new Error(
-          `Received invalid snap version range: "${newVersionRange}".`,
-        );
-      }
 
       const newSnap = await this.#fetchSnap(snapId, location);
 
