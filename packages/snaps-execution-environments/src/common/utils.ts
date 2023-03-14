@@ -1,6 +1,6 @@
 import { StreamProvider } from '@metamask/providers';
 import { RequestArguments } from '@metamask/providers/dist/BaseProvider';
-import { assert } from '@metamask/utils';
+import { assert, assertStruct, JsonStruct } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
 import { log } from '../logging';
@@ -113,7 +113,7 @@ const BLOCKED_RPC_METHODS = Object.freeze([
  * @param args - The arguments to validate.
  */
 export function assertSnapOutboundRequest(args: RequestArguments) {
-  // Disallow any non `wallet_` or `snap_` methods for seperation of concerns
+  // Disallow any non `wallet_` or `snap_` methods for separation of concerns.
   assert(
     String.prototype.startsWith.call(args.method, 'wallet_') ||
       String.prototype.startsWith.call(args.method, 'snap_'),
@@ -127,6 +127,7 @@ export function assertSnapOutboundRequest(args: RequestArguments) {
       },
     }),
   );
+  assertStruct(args, JsonStruct, 'Provided value is not JSON-RPC compatible');
 }
 
 /**
@@ -135,7 +136,7 @@ export function assertSnapOutboundRequest(args: RequestArguments) {
  * @param args - The arguments to validate.
  */
 export function assertEthereumOutboundRequest(args: RequestArguments) {
-  // Disallow snaps methods for seperation of concerns
+  // Disallow snaps methods for separation of concerns.
   assert(
     !String.prototype.startsWith.call(args.method, 'snap_'),
     ethErrors.rpc.methodNotFound({
@@ -152,4 +153,5 @@ export function assertEthereumOutboundRequest(args: RequestArguments) {
       },
     }),
   );
+  assertStruct(args, JsonStruct, 'Provided value is not JSON-RPC compatible');
 }
