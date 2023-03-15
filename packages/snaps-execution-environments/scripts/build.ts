@@ -146,6 +146,9 @@ async function main() {
           __dirname,
           `../lavamoat/browserify/policy-override.json`,
         ),
+        // Only enable for browser builds for now due to incompatiblities
+        scuttleGlobalThis: !node,
+        scuttleGlobalThisExceptions: ['postMessage'],
       });
 
       const buffer = await new Promise((resolve, reject) => {
