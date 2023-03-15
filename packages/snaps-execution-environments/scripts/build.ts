@@ -137,6 +137,8 @@ async function main() {
 
       bundler.plugin(LavaMoatBrowserify, {
         writeAutoPolicy,
+        scuttleGlobalThis: true,
+        scuttleGlobalThisExceptions: ['postMessage'],
         policy: path.resolve(
           __dirname,
           `../lavamoat/browserify/${key}/policy.json`,
