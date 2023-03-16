@@ -1,0 +1,26 @@
+{
+  "version": "0.31.0",
+  "description": "A snap using its own entropy for deriving child keys",
+  "proposedName": "signer-core",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps-monorepo.git"
+  },
+  "source": {
+    "shasum": "1vH5LeEgk6xe5JQ6sv5BIH5nVDAD5/YuGSpFtOfVGa4=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "packageName": "signer-core",
+        "registry": "https://registry.npmjs.org"
+      }
+    }
+  },
+  "initialPermissions": {
+    "snap_getEntropy": {},
+    "endowment:rpc": {
+      "snaps": true
+    }
+  },
+  "manifestVersion": "0.1"
+}

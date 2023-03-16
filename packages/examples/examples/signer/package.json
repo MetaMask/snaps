@@ -1,0 +1,11 @@
+{
+  "name": "signer",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "yarn workspaces foreach --parallel --verbose run build",
+    "start": "yarn workspaces foreach --parallel --verbose --interlaced run start"
+  },
+  "packageManager": "yarn@3.4.1"
+}
