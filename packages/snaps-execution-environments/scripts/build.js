@@ -1,5 +1,7 @@
-/* eslint-disable no-console */
-const { createResolvePath } = require('babel-plugin-tsconfig-paths-module-resolver');
+/* eslint-disable no-console, node/global-require, node/no-process-exit */
+const {
+  createResolvePath,
+} = require('babel-plugin-tsconfig-paths-module-resolver');
 const browserify = require('browserify');
 const { promises: fs } = require('fs');
 const LavaMoatBrowserify = require('lavamoat-browserify');
@@ -41,14 +43,13 @@ async function main() {
     '$0 [options]',
     'Build snaps execution environments',
     (yargsInstance) =>
-      yargsInstance
-        .option('writeAutoPolicy', {
-          alias: ['p'],
-          default: false,
-          demandOption: false,
-          description: 'Whether to regenerate the LavaMoat policy or not',
-          type: 'boolean',
-        })
+      yargsInstance.option('writeAutoPolicy', {
+        alias: ['p'],
+        default: false,
+        demandOption: false,
+        description: 'Whether to regenerate the LavaMoat policy or not',
+        type: 'boolean',
+      }),
   );
 
   await Promise.all(
@@ -97,11 +98,7 @@ async function main() {
           [
             require('babel-plugin-tsconfig-paths-module-resolver'),
             {
-              resolvePath: (
-                sourcePath,
-                currentFile,
-                opts,
-              ) => {
+              resolvePath: (sourcePath, currentFile, opts) => {
                 const result = defaultResolvePath(
                   sourcePath,
                   currentFile,

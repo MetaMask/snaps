@@ -3323,6 +3323,7 @@ __metadata:
     "@esbuild-plugins/node-globals-polyfill": ^0.2.3
     "@esbuild-plugins/node-modules-polyfill": ^0.2.2
     "@lavamoat/allow-scripts": ^2.0.3
+    "@lavamoat/lavapack": ^3.3.0
     "@lavamoat/lavatube": ^0.0.1
     "@metamask/auto-changelog": ^3.1.0
     "@metamask/eslint-config": ^11.0.0
