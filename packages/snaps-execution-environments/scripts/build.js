@@ -1,14 +1,10 @@
 /* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/naming-convention */
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable @typescript-eslint/no-require-imports */
-import { createResolvePath } from 'babel-plugin-tsconfig-paths-module-resolver';
-import browserify from 'browserify';
-import { promises as fs } from 'fs';
-// @ts-expect-error No types for now
-import LavaMoatBrowserify from 'lavamoat-browserify';
-import path from 'path';
-import yargs from 'yargs';
+const { createResolvePath } = require('babel-plugin-tsconfig-paths-module-resolver');
+const browserify = require('browserify');
+const { promises: fs } = require('fs');
+const LavaMoatBrowserify = require('lavamoat-browserify');
+const path = require('path');
+const yargs = require('yargs');
 
 const defaultResolvePath = createResolvePath();
 
@@ -53,7 +49,6 @@ async function main() {
           description: 'Whether to regenerate the LavaMoat policy or not',
           type: 'boolean',
         })
-        .strict(),
   );
 
   await Promise.all(
@@ -103,9 +98,9 @@ async function main() {
             require('babel-plugin-tsconfig-paths-module-resolver'),
             {
               resolvePath: (
-                sourcePath: string,
-                currentFile: string,
-                opts: any,
+                sourcePath,
+                currentFile,
+                opts,
               ) => {
                 const result = defaultResolvePath(
                   sourcePath,
@@ -132,8 +127,8 @@ async function main() {
       });
 
       // Tree shaking
-      bundler.transform('@browserify/uglifyify', { global: true });
-      bundler.plugin('common-shakeify', { ecmaVersion: 2020 });
+      bundler.transform(require('@browserify/uglifyify'), { global: true });
+      bundler.plugin(require('common-shakeify'), { ecmaVersion: 2020 });
 
       bundler.plugin(LavaMoatBrowserify, {
         writeAutoPolicy,
@@ -162,7 +157,7 @@ async function main() {
 
       const bundlePath = path.join(OUTPUT_PATH, key, OUTPUT_BUNDLE);
       await fs.mkdir(path.dirname(bundlePath), { recursive: true });
-      await fs.writeFile(bundlePath, buffer as Uint8Array);
+      await fs.writeFile(bundlePath, buffer);
 
       if (html) {
         const lavaMoatRuntimeBuffer = await fs.readFile(

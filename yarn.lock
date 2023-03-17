@@ -15,7 +15,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.12.13, @babel/code-frame@npm:^7.16.7, @babel/code-frame@npm:^7.18.6":
+"@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.10.4, @babel/code-frame@npm:^7.12.13, @babel/code-frame@npm:^7.16.7, @babel/code-frame@npm:^7.18.6":
   version: 7.18.6
   resolution: "@babel/code-frame@npm:7.18.6"
   dependencies:
@@ -330,7 +330,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/highlight@npm:^7.18.6":
+"@babel/highlight@npm:^7.10.4, @babel/highlight@npm:^7.18.6":
   version: 7.18.6
   resolution: "@babel/highlight@npm:7.18.6"
   dependencies:
@@ -3344,6 +3344,7 @@ __metadata:
     jest: ^29.0.2
     jest-fetch-mock: ^3.0.3
     json-rpc-engine: ^6.1.0
+    lavamoat: ^6.4.0
     lavamoat-browserify: ^15.5.0
     memfs: ^3.4.13
     prettier: ^2.7.1
@@ -11395,7 +11396,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"htmlescape@npm:^1.1.0":
+"htmlescape@npm:^1.1.0, htmlescape@npm:^1.1.1":
   version: 1.1.1
   resolution: "htmlescape@npm:1.1.1"
   checksum: c59a915ae6ae076b5720243c8c594fd8c76e927d511ed5f205e4d586f47d521478d7148dc7fbe3d4a0cfc30abcc2dd215b30255903c09ed04eb38bca44367c5d
@@ -13360,7 +13361,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^12.4.0":
+"lavamoat-core@npm:^12.3.0, lavamoat-core@npm:^12.4.0":
   version: 12.4.0
   resolution: "lavamoat-core@npm:12.4.0"
   dependencies:
@@ -13379,6 +13380,29 @@ __metadata:
     "@babel/parser": ^7.10.1
     "@babel/traverse": ^7.10.1
   checksum: 97d70ff75f6f3fac8cfbcec8077f42a17601fa39cc2a0392cd5c4c6b0c05697a446bba4502c00426ad890144be34b4973b4c3148a625cceb894740f2547609d6
+  languageName: node
+  linkType: hard
+
+"lavamoat@npm:^6.4.0":
+  version: 6.4.0
+  resolution: "lavamoat@npm:6.4.0"
+  dependencies:
+    "@babel/code-frame": ^7.10.4
+    "@babel/highlight": ^7.10.4
+    "@lavamoat/aa": ^3.1.0
+    bindings: ^1.5.0
+    htmlescape: ^1.1.1
+    json-stable-stringify: ^1.0.1
+    lavamoat-core: ^12.3.0
+    lavamoat-tofu: ^6.0.2
+    node-gyp-build: ^4.2.3
+    object.fromentries: ^2.0.2
+    resolve: ^1.17.0
+    yargs: ^16.0.0
+  bin:
+    lavamoat: src/cli.js
+    lavamoat-run-command: src/run-command.js
+  checksum: 5a058b0b62fa4d6baa477775dc03433c0064e7ab0f14f4a540aa033154c3484cd9b59ec66e2968e387087c24531b09cbd6a70a3a11f4b52e3b4519cd3672c54c
   languageName: node
   linkType: hard
 
@@ -14631,6 +14655,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"node-gyp-build@npm:^4.2.3":
+  version: 4.6.0
+  resolution: "node-gyp-build@npm:4.6.0"
+  bin:
+    node-gyp-build: bin.js
+    node-gyp-build-optional: optional.js
+    node-gyp-build-test: build-test.js
+  checksum: 25d78c5ef1f8c24291f4a370c47ba52fcea14f39272041a90a7894cd50d766f7c8cb8fb06c0f42bf6f69b204b49d9be3c8fc344aac09714d5bdb95965499eb15
+  languageName: node
+  linkType: hard
+
 "node-gyp@npm:^7.1.0":
   version: 7.1.2
   resolution: "node-gyp@npm:7.1.2"
@@ -14940,6 +14975,17 @@ __metadata:
     for-own: ^1.0.0
     isobject: ^3.0.0
   checksum: 25468e06132af866bffedf9889b8180a31b9915776dbb660106866c5dd70cd0c0ad54f17e34de8ab99e6f548d579678de2e558390f56bd4ee61899fa6057f946
+  languageName: node
+  linkType: hard
+
+"object.fromentries@npm:^2.0.2":
+  version: 2.0.6
+  resolution: "object.fromentries@npm:2.0.6"
+  dependencies:
+    call-bind: ^1.0.2
+    define-properties: ^1.1.4
+    es-abstract: ^1.20.4
+  checksum: 453c6d694180c0c30df451b60eaf27a5b9bca3fb43c37908fd2b78af895803dc631242bcf05582173afa40d8d0e9c96e16e8874b39471aa53f3ac1f98a085d85
   languageName: node
   linkType: hard
 
@@ -19818,7 +19864,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yargs@npm:16.2.0, yargs@npm:^16.2.0":
+"yargs@npm:16.2.0, yargs@npm:^16.0.0, yargs@npm:^16.2.0":
   version: 16.2.0
   resolution: "yargs@npm:16.2.0"
   dependencies:
