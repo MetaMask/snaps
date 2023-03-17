@@ -1,5 +1,6 @@
 {
   "name": "signer",
+  "private": true,
   "workspaces": [
     "packages/*"
   ],

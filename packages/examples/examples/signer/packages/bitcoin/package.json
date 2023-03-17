@@ -1,6 +1,7 @@
 {
   "name": "signer-bitcoin",
   "version": "0.31.0",
+  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps-monorepo.git"
