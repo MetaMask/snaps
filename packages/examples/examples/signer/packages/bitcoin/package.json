@@ -1,5 +1,5 @@
 {
-  "name": "signer-ethereum",
+  "name": "signer-bitcoin",
   "version": "0.31.0",
   "repository": {
     "type": "git",
@@ -10,10 +10,10 @@
     "start": "mm-snap serve"
   },
   "dependencies": {
-    "@ethereumjs/tx": "^3.5.2",
     "@metamask/key-tree": "^7.0.0",
     "@metamask/snaps-types": "^0.31.0",
     "@metamask/utils": "^5.0.0",
+    "@noble/secp256k1": "^1.7.1",
     "buffer": "^6.0.3"
   },
   "devDependencies": {
