@@ -146,9 +146,8 @@ async function main() {
           __dirname,
           `../lavamoat/browserify/policy-override.json`,
         ),
-        // Only enable for browser builds for now due to incompatiblities
-        scuttleGlobalThis: !node,
-        scuttleGlobalThisExceptions: ['postMessage'],
+        // Prelude is included in Node, in the browser it is inlined.
+        includePrelude: node,
       });
 
       const buffer = await new Promise((resolve, reject) => {
@@ -161,24 +160,37 @@ async function main() {
         });
       });
 
+      const bundlePath = path.join(OUTPUT_PATH, key, OUTPUT_BUNDLE);
+      await fs.mkdir(path.dirname(bundlePath), { recursive: true });
+      await fs.writeFile(bundlePath, buffer as Uint8Array);
+
       if (html) {
+        const lavaMoatRuntimeBuffer = await fs.readFile(
+          require.resolve('@lavamoat/lavapack/src/runtime.js'),
+        );
+        const lavaMoatRuntime = lavaMoatRuntimeBuffer.toString().replace(
+          '__lavamoatSecurityOptions__',
+          JSON.stringify({
+            // Only enable for browser builds for now due to incompatiblities
+            scuttleGlobalThis: true,
+            scuttleGlobalThisExceptions: ['postMessage'],
+          }),
+        );
+
         const htmlFile = `
       <!DOCTYPE html>
       <html>
         <head>
           <meta charset="utf-8" />
           <title>MetaMask Snaps Iframe Execution Environment</title>
-          <script>${(buffer as Uint8Array).toString()}</script>
+          <script>${lavaMoatRuntime}</script>
+          <script src="bundle.js"></script>
         </head>
       </html>`;
 
         const htmlPath = path.join(OUTPUT_PATH, key, OUTPUT_HTML);
         await fs.mkdir(path.dirname(htmlPath), { recursive: true });
         await fs.writeFile(htmlPath, htmlFile);
-      } else {
-        const bundlePath = path.join(OUTPUT_PATH, key, OUTPUT_BUNDLE);
-        await fs.mkdir(path.dirname(bundlePath), { recursive: true });
-        await fs.writeFile(bundlePath, buffer as Uint8Array);
       }
 
       console.log('Finished', key);
