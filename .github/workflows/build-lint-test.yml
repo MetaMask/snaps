@@ -79,6 +79,8 @@ jobs:
           cache: yarn
       - run: yarn --immutable --immutable-cache
       - run: yarn lint
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
       - name: Require clean working directory
         shell: bash
         run: |

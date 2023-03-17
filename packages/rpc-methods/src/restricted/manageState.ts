@@ -10,7 +10,7 @@ import {
   Json,
   NonEmptyArray,
   isObject,
-  validateJsonAndGetSize,
+  getJsonSize,
   assert,
   isValidJson,
 } from '@metamask/utils';
@@ -318,8 +318,12 @@ export function getValidatedParams(
         },
       });
     }
-    const [isValid, plainTextSizeInBytes] = validateJsonAndGetSize(newState);
-    if (!isValid) {
+
+    let size;
+    try {
+      // `getJsonSize` will throw if the state is not JSON serializable.
+      size = getJsonSize(newState);
+    } catch {
       throw ethErrors.rpc.invalidParams({
         message: `Invalid ${method} "updateState" parameter: The new state must be JSON serializable.`,
         data: {
@@ -327,7 +331,9 @@ export function getValidatedParams(
             typeof newState === 'undefined' ? 'undefined' : newState,
         },
       });
-    } else if (plainTextSizeInBytes > storageSizeLimit) {
+    }
+
+    if (size > storageSizeLimit) {
       throw ethErrors.rpc.invalidParams({
         message: `Invalid ${method} "updateState" parameter: The new state must not exceed ${storageSizeLimit} bytes in size.`,
         data: {

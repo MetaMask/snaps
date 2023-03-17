@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.31.0]
+### Changed
+- **BREAKING:** Target `ES2020` ([#1247](https://github.com/MetaMask/snaps-monorepo/pull/1247))
+- Improve validation and sanitizing of snap IDs ([#1237](https://github.com/MetaMask/snaps-monorepo/pull/1237))
+
 ## [0.30.0]
 ### Changed
 - Accept string operation for `snap_manageState` ([#1208](https://github.com/MetaMask/snaps-monorepo/pull/1208))
@@ -291,7 +296,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.30.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.31.0...HEAD
+[0.31.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.30.0...v0.31.0
 [0.30.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.29.0...v0.30.0
 [0.29.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.28.0...v0.29.0
 [0.28.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.1...v0.28.0

@@ -100,6 +100,8 @@ const EXECUTION_ENVIRONMENT_METHODS = {
   },
 };
 
+type Methods = typeof EXECUTION_ENVIRONMENT_METHODS;
+
 export class BaseSnapExecutor {
   private readonly snapData: Map<string, SnapData>;
 
@@ -206,10 +208,7 @@ export class BaseSnapExecutor {
       return;
     }
 
-    const methodObject =
-      EXECUTION_ENVIRONMENT_METHODS[
-        method as keyof typeof EXECUTION_ENVIRONMENT_METHODS
-      ];
+    const methodObject = EXECUTION_ENVIRONMENT_METHODS[method as keyof Methods];
 
     // support params by-name and by-position
     const paramsAsArray = sortParamKeys(methodObject.params, params);
