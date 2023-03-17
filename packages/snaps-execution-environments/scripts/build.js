@@ -127,6 +127,9 @@ async function main() {
       bundler.transform(require('@browserify/uglifyify'), { global: true });
       bundler.plugin(require('common-shakeify'), { ecmaVersion: 2020 });
 
+      // Add LavaMoat to wrap bundles in LavaPack
+      // For Node.js builds, this also includes a prelude that contains SES and the LavaMoat runtime
+      // For browser builds, the prelude is skipped and inlined in a script tag before the main bundle instead
       bundler.plugin(LavaMoatBrowserify, {
         writeAutoPolicy,
         policy: path.resolve(
@@ -165,7 +168,7 @@ async function main() {
           JSON.stringify({
             // Only enable for browser builds for now due to incompatiblities
             scuttleGlobalThis: true,
-            scuttleGlobalThisExceptions: ['postMessage'],
+            scuttleGlobalThisExceptions: ['postMessage', 'removeEventListener'],
           }),
         );
 
