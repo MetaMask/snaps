@@ -1,6 +1,6 @@
 import initModule from '.';
-import * as buildHandlerModule from '../build/buildHandler';
 import * as initHandlerModule from './initHandler';
+import * as initUtils from './initUtils';
 
 describe('init module', () => {
   it('console logs if successful', async () => {
@@ -11,20 +11,13 @@ describe('init module', () => {
     const initHandlerMock = jest
       .spyOn(initHandlerModule, 'initHandler')
       .mockImplementation(() => ({ ...(mockArgv as any) }));
-    const buildMock = jest
-      .spyOn(buildHandlerModule, 'build')
-      .mockImplementation();
+    const buildMock = jest.spyOn(initUtils, 'buildSnap').mockImplementation();
     jest.spyOn(console, 'log').mockImplementation();
 
     await initModule.handler({ ...(mockArgv as any) });
     expect(initHandlerMock).toHaveBeenCalledWith(mockArgv);
     expect(chdirMock).toHaveBeenCalledTimes(1);
-    expect(buildMock).toHaveBeenCalledWith({
-      directory: 'foo',
-      snapLocation: 'foo',
-      manifest: false,
-      eval: true,
-    });
+    expect(buildMock).toHaveBeenCalledWith('foo');
     expect(global.console.log).toHaveBeenCalledTimes(1);
   });
 });
