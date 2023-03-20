@@ -15,7 +15,7 @@
     "publish:all": "./scripts/publish-all.sh",
     "link-packages": "./scripts/link-packages.sh",
     "lint:eslint": "eslint . --cache --ext js,ts",
-    "lint:misc": "prettier '**/*.json' '**/*.md' '!**/CHANGELOG.md' '**/*.yml' '**/*.html' --ignore-path .gitignore",
+    "lint:misc": "prettier '**/*.json' '**/*.md' '!**/CHANGELOG.md' '**/*.yml' '**/*.html'",
     "lint:changelogs": "yarn workspaces foreach --parallel --verbose run lint:changelog",
     "lint:tsconfig": "node scripts/verify-tsconfig.mjs",
     "lint": "yarn lint:tsconfig && yarn lint:eslint && yarn lint:misc --check",
@@ -44,8 +44,12 @@
     ]
   },
   "resolutions": {
+    "@babel/core": "patch:@babel/core@npm%3A7.21.0#./.yarn/patches/@babel-core-npm-7.21.0-fb3817b0e5.patch",
+    "@lavamoat/lavapack@^3.3.0": "patch:@lavamoat/lavapack@npm%3A3.3.0#./.yarn/patches/@lavamoat-lavapack-npm-3.3.0-5a61b5374d.patch",
     "@types/mocha@^10.0.1": "patch:@types/mocha@npm:10.0.1#.yarn/patches/@types-mocha-npm-10.0.1-7c94e9e170.patch",
-    "jest-fetch-mock@^3.0.3": "patch:jest-fetch-mock@npm:3.0.3#.yarn/patches/jest-fetch-mock-npm-3.0.3-ac072ca8af.patch"
+    "jest-fetch-mock@^3.0.3": "patch:jest-fetch-mock@npm:3.0.3#.yarn/patches/jest-fetch-mock-npm-3.0.3-ac072ca8af.patch",
+    "lavamoat-browserify@^15.5.0": "patch:lavamoat-browserify@npm%3A15.5.0#./.yarn/patches/lavamoat-browserify-npm-15.5.0-ce0bbe5e4c.patch",
+    "luxon@^3.2.1": "patch:luxon@npm%3A3.3.0#./.yarn/patches/luxon-npm-3.3.0-bdbae9bfd5.patch"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.0.3",
