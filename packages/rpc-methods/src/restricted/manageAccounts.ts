@@ -1,14 +1,19 @@
 import {
   Caveat,
-  PermissionSpecificationBuilder,
   PermissionType,
+  // PermissionConstraint,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
-  RestrictedMethodCaveatSpecificationConstraint,
   PermissionValidatorConstraint,
+  PermissionSpecificationBuilder,
+  RestrictedMethodCaveatSpecificationConstraint,
 } from '@metamask/permission-controller';
 // import { SnapCaveatType, isChainId } from '@metamask/snaps-utils';
-import { SnapCaveatType, isCaipAccount } from '@metamask/snaps-utils';
+import {
+  SnapCaveatType,
+  isCaipAccount,
+  isChainId,
+} from '@metamask/snaps-utils';
 import { Json, NonEmptyArray, assertStruct } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 import { type } from 'superstruct';
@@ -17,7 +22,7 @@ export const MANAGE_ACCOUNT_PERMISSION_KEY = 'snap_manageAccounts';
 
 export type ManageAccountParams = {
   action: ManageAccountsOperation;
-  caip10Account?: string;
+  accountId?: string;
   accountType?: AccountType;
 };
 
@@ -36,7 +41,7 @@ export enum ManageAccountsOperation {
 type ManageAccountCaveat = {
   // To Do: Use isChainId from '@metamask/snaps-utils' to validate CAIP-2 standard in network caveat
   chainId: `${string}:${string}`;
-  // To Do: Define validation for accountType. At the moment is it only AccountType.EOA but we need a more generic validator
+  // To Do: Define validation for accountType. At the moment it is only AccountType.EOA but we need a more generic validator
   accountType: AccountType.EOA;
 };
 
@@ -65,11 +70,11 @@ export type ManageAccountsMethodHooks = {
    */
   getSnapKeyring: () => Promise<{
     listAccounts(origin: string): Promise<string[]>;
-    createAccount(origin: string, caip10Account: string): Promise<boolean>;
-    readAccount(origin: string, caip10Account: string): Promise<Json>;
-    updateAccount(origin: string, caip10Account: string, methodArgs?: any): any;
-    removeAccount(origin: string, caip10Account: string): Promise<boolean>;
-    deleteAccount(caip10Account: string): any;
+    createAccount(origin: string, accountId: string): Promise<boolean>;
+    readAccount(origin: string, accountId: string): Promise<Json>;
+    updateAccount(origin: string, accountId: string, methodArgs?: any): any;
+    removeAccount(origin: string, accountId: string): Promise<boolean>;
+    deleteAccount(accountId: string): any;
     deleteAccountByOrigin(origin: string): any;
   }>;
 
@@ -81,6 +86,26 @@ export type ManageAccountsMethodHooks = {
    */
   saveSnapKeyring: (removedAddress?: string) => Promise<void>;
 };
+
+/**
+ * Validate chainId property of manageAccounts caveat according to CAIP-2.
+ *
+ * @param chainId - Caveat property Chain ID.
+ * @returns Boolean indicating if the value is CAIP-2.
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const validateChainId = (chainId: `${string}:${string}`): boolean =>
+  isChainId(chainId);
+
+/**
+ * Validate chainId property of manageAccounts caveat according to CAIP-2.
+ *
+ * @param accountType - Caveat property Account Type.
+ * @returns Boolean indicating if value is EOA.
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const validateAccountType = (accountType: AccountType): boolean =>
+  accountType === AccountType.EOA;
 
 export const validateCaveatManageAccounts = (
   caveat: Caveat<string, any>,
@@ -118,7 +143,7 @@ export function manageAccountsImplementation({
       params,
     } = options;
 
-    if (!params || !params.action) {
+    if (!params?.action || !params?.accountId) {
       throw ethErrors.rpc.invalidParams('Invalid ManageAccount Arguments');
     }
 
@@ -127,61 +152,54 @@ export function manageAccountsImplementation({
     if (params.action === ManageAccountsOperation.ListAccounts) {
       const accounts = await keyring.listAccounts(origin);
       return accounts;
-    } else {
-      // validate CAIP-10
-      if (!params.caip10Account || !isCaipAccount(params.caip10Account)) {
-        throw ethErrors.rpc.invalidParams(
-          `Invalid ManageAccount Arguments: Invalid CAIP10 Account ${params?.caip10Account}`,
-        );
+    }
+    // validate CAIP-10
+    if (!isCaipAccount(params.accountId)) {
+      throw ethErrors.rpc.invalidParams(
+        `Invalid ManageAccount Arguments: Invalid CAIP10 Account ${params?.accountId}`,
+      );
+    }
+    switch (params.action) {
+      case ManageAccountsOperation.CreateAccount: {
+        if (params.accountType !== AccountType.EOA) {
+          throw ethErrors.rpc.invalidParams(
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            `Invalid ManageAccount Arguments: Account Type ${params.accountType} is not supported`,
+          );
+        }
+        const created = await keyring.createAccount(origin, params.accountId);
+        if (created) {
+          await saveSnapKeyring();
+        }
+        return created;
+      }
+      case ManageAccountsOperation.ReadAccount:
+        return keyring.readAccount(origin, params.accountId);
+      case ManageAccountsOperation.UpdateAccount: {
+        const updated = keyring.updateAccount(origin, params.accountId);
+        if (updated) {
+          await saveSnapKeyring();
+        }
+        return updated;
       }
 
-      // Throw if network is not ethereum
-      if (params.caip10Account.split(':')[0] !== 'eip155') {
-        throw ethErrors.rpc.invalidParams(
-          `Invalid ManageAccount Arguments: Only ethereum EOA are supported.`,
-        );
+      case ManageAccountsOperation.RemoveAccount: {
+        // NOTE: we don't call removeAccount() on the keyringController
+        // NOTE: as it prunes empty keyrings and we don't want that behavior
+        const address = await keyring.removeAccount(origin, params.accountId);
+        if (address) {
+          // @montelaidev - This is returning a boolean. Is the idea for removeAccount to return an address?
+          // Probably is better to throw an error if it fails
+          await saveSnapKeyring('address');
+        }
+        return address !== null;
       }
 
-      switch (params.action) {
-        case ManageAccountsOperation.CreateAccount: {
-          if (params.accountType !== AccountType.EOA) {
-            throw ethErrors.rpc.invalidParams(
-              `Invalid ManageAccount Arguments: Account Type ${params.accountType} is not supported`,
-            );
-          }
-          const created = await keyring.createAccount(
-            origin,
-            params.caip10Account,
-          );
-          if (created) {
-            await saveSnapKeyring();
-          }
-          return created;
-        }
-        case ManageAccountsOperation.ReadAccount:
-          return await keyring.readAccount(origin, params.caip10Account);
-        case ManageAccountsOperation.UpdateAccount: {
-          const updated = keyring.updateAccount(origin, params.caip10Account);
-          if (updated) {
-            await saveSnapKeyring();
-          }
-          return updated;
-        }
-
-        case ManageAccountsOperation.RemoveAccount: {
-          // NOTE: we don't call removeAccount() on the keyringController
-          // NOTE: as it prunes empty keyrings and we don't want that behavior
-          const removed = await keyring.removeAccount(
-            origin,
-            params.caip10Account,
-          );
-          if (removed) {
-            await saveSnapKeyring(params.caip10Account);
-          }
-          return removed;
-        }
-        default:
-          throw new Error('invalid snap_manageAccounts action');
+      default: {
+        throw ethErrors.rpc.invalidRequest(
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          `Invalid ManageAccount Request: The request ${params.action} is not supported`,
+        );
       }
     }
   };
