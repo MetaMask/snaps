@@ -28,7 +28,9 @@ export enum ManageAccountsOperation {
 }
 
 type ManageAccountCaveat = {
+  // To Do: Use isChainId from '@metamask/snaps-utils' to validate CAIP-2 standard in network caveat
   chainId: `${string}:${string}`;
+  // To Do: Define validation for accountType. At the moment is it only AccountType.EOA but we need a more generic validator
   accountType: AccountType.EOA;
 };
 
