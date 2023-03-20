@@ -1,5 +1,7 @@
 import { PermissionType } from '@metamask/permission-controller';
+
 import {
+  AccountType,
   MANAGE_ACCOUNT_PERMISSION_KEY,
   manageAccountsBuilder,
   manageAccountsCaveatSpecification,
@@ -9,6 +11,7 @@ import {
   manageAccountsImplementation,
   ManageAccountsOperation,
 } from './manageAccounts';
+
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 
@@ -24,7 +27,9 @@ class SnapKeyringMock {
 
   createAccount = async (_origin: string, _address: string) => true;
 
-  readAccount = async () => undefined;
+  readAccount = async () => {
+    return {};
+  };
 
   updateAccount = async () => undefined;
 
@@ -105,13 +110,224 @@ describe('manageAccountsImplementation', () => {
     expect(accountList).toStrictEqual([mockCAIP10Account]);
   });
 
-  it('should create an account', async () => {});
+  it('should create an account', async () => {
+    const mockKeyring = new SnapKeyringMock();
+    const getSnapKeyring = jest.fn().mockResolvedValue(mockKeyring);
+    const saveSnapKeyring = jest.fn().mockResolvedValue(undefined);
 
-  it('should fail to create an account if the address is not CAIP10', async () => {});
+    const createAccountSpy = jest
+      .spyOn(mockKeyring, 'createAccount')
+      .mockResolvedValue(true);
 
-  it('should read an account', async () => {});
+    const manageAccounts = manageAccountsImplementation({
+      getSnapKeyring,
+      saveSnapKeyring,
+    });
 
-  it('should remove account', async () => {});
+    const createAccountSuccessResponse = await manageAccounts({
+      method: 'snap_manageAccounts',
+      context: {
+        origin: mockSnapId, // snap id origin
+      },
+      params: {
+        action: ManageAccountsOperation.CreateAccount,
+        accountType: AccountType.EOA,
+        caip10Account: mockCAIP10Account,
+      },
+    });
 
-  it("should not remove account that isn't in the keyring", async () => {});
+    expect(createAccountSpy).toHaveBeenCalledTimes(1);
+    expect(createAccountSpy).toHaveBeenCalledWith(
+      mockSnapId,
+      mockCAIP10Account,
+    );
+    expect(createAccountSuccessResponse).toBe(true);
+    createAccountSpy.mockClear();
+  });
+
+  it('should throw if CAIP10 accounts is not correct', async () => {
+    const mockKeyring = new SnapKeyringMock();
+    const mockBadCAIP10Account = 'bad account';
+    const getSnapKeyring = jest.fn().mockResolvedValue(mockKeyring);
+    const saveSnapKeyring = jest.fn().mockResolvedValue(undefined);
+
+    const createAccountSpy = jest.spyOn(mockKeyring, 'createAccount');
+
+    const manageAccounts = manageAccountsImplementation({
+      getSnapKeyring,
+      saveSnapKeyring,
+    });
+
+    expect(
+      manageAccounts({
+        method: 'snap_manageAccounts',
+        context: {
+          origin: mockSnapId,
+        },
+        params: {
+          action: ManageAccountsOperation.CreateAccount,
+          accountType: AccountType.EOA,
+          caip10Account: mockBadCAIP10Account,
+        },
+      }),
+    ).rejects.toThrow('Invalid CAIP10 Account bad account');
+    expect(createAccountSpy).toHaveBeenCalledTimes(0);
+  });
+
+  it('should throw error if caip10 network is not ethereum', async () => {
+    const mockKeyring = new SnapKeyringMock();
+    const mockInvalidNetowrkCAIP10Account =
+      'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6';
+    const getSnapKeyring = jest.fn().mockResolvedValue(mockKeyring);
+    const saveSnapKeyring = jest.fn().mockResolvedValue(undefined);
+
+    const createAccountSpy = jest
+      .spyOn(mockKeyring, 'createAccount')
+      .mockResolvedValue(true);
+
+    const manageAccounts = manageAccountsImplementation({
+      getSnapKeyring,
+      saveSnapKeyring,
+    });
+    expect(
+      manageAccounts({
+        method: 'snap_manageAccounts',
+        context: {
+          origin: mockSnapId,
+        },
+        params: {
+          action: ManageAccountsOperation.CreateAccount,
+          accountType: AccountType.EOA,
+          caip10Account: mockInvalidNetowrkCAIP10Account,
+        },
+      }),
+    ).rejects.toThrow(
+      `Invalid ManageAccount Arguments: Only ethereum EOA are supported.`,
+    );
+    expect(createAccountSpy).toHaveBeenCalledTimes(0);
+  });
+
+  it('should read an account', async () => {
+    const mockKeyring = new SnapKeyringMock();
+    const getSnapKeyring = jest.fn().mockResolvedValue(mockKeyring);
+    const saveSnapKeyring = jest.fn().mockResolvedValue(undefined);
+
+    const readAccountSpy = jest
+      .spyOn(mockKeyring, 'readAccount')
+      .mockResolvedValue({
+        caip20Account: mockCAIP10Account,
+        data: 'mockdata',
+      });
+
+    const manageAccounts = manageAccountsImplementation({
+      getSnapKeyring,
+      saveSnapKeyring,
+    });
+
+    const account = await manageAccounts({
+      method: 'snap_manageAccounts',
+      context: {
+        origin: mockSnapId,
+      },
+      params: {
+        action: ManageAccountsOperation.ReadAccount,
+        caip10Account: mockCAIP10Account,
+      },
+    });
+
+    expect(readAccountSpy).toBeCalledTimes(1);
+    expect(readAccountSpy).toBeCalledWith(mockSnapId, mockCAIP10Account);
+    expect(account).toStrictEqual({
+      caip20Account: mockCAIP10Account,
+      data: 'mockdata',
+    });
+  });
+
+  it('should remove account', async () => {
+    const mockKeyring = new SnapKeyringMock();
+    const getSnapKeyring = jest.fn().mockResolvedValue(mockKeyring);
+    const saveSnapKeyring = jest.fn().mockResolvedValue(undefined);
+
+    const removeAccountSpy = jest
+      .spyOn(mockKeyring, 'removeAccount')
+      .mockResolvedValue(true);
+
+    const manageAccounts = manageAccountsImplementation({
+      getSnapKeyring,
+      saveSnapKeyring,
+    });
+
+    const account = await manageAccounts({
+      method: 'snap_manageAccounts',
+      context: {
+        origin: mockSnapId,
+      },
+      params: {
+        action: ManageAccountsOperation.RemoveAccount,
+        caip10Account: mockCAIP10Account,
+      },
+    });
+
+    expect(removeAccountSpy).toBeCalledTimes(1);
+    expect(removeAccountSpy).toBeCalledWith(mockSnapId, mockCAIP10Account);
+    expect(account).toBe(true);
+  });
+
+  it("should not remove account that isn't in the keyring", async () => {
+    const mockUnknownCAIP10Account = 'eip155:1:0xunkonwn';
+    const mockKeyring = new SnapKeyringMock();
+    const getSnapKeyring = jest.fn().mockResolvedValue(mockKeyring);
+    const saveSnapKeyring = jest.fn().mockResolvedValue(undefined);
+
+    const removeAccountSpy = jest
+      .spyOn(mockKeyring, 'removeAccount')
+      .mockResolvedValue(false);
+
+    const manageAccounts = manageAccountsImplementation({
+      getSnapKeyring,
+      saveSnapKeyring,
+    });
+
+    const account = await manageAccounts({
+      method: 'snap_manageAccounts',
+      context: {
+        origin: mockSnapId,
+      },
+      params: {
+        action: ManageAccountsOperation.RemoveAccount,
+        caip10Account: mockUnknownCAIP10Account,
+      },
+    });
+
+    expect(removeAccountSpy).toBeCalledTimes(1);
+    expect(removeAccountSpy).toBeCalledWith(
+      mockSnapId,
+      mockUnknownCAIP10Account,
+    );
+    expect(account).toBe(false);
+  });
+
+  it('should throw if when it is an invalid action', async () => {
+    const mockKeyring = new SnapKeyringMock();
+    const getSnapKeyring = jest.fn().mockResolvedValue(mockKeyring);
+    const saveSnapKeyring = jest.fn().mockResolvedValue(undefined);
+
+    const manageAccounts = manageAccountsImplementation({
+      getSnapKeyring,
+      saveSnapKeyring,
+    });
+
+    expect(
+      manageAccounts({
+        method: 'snap_manageAccounts',
+        context: {
+          origin: mockSnapId,
+        },
+        params: {
+          action: 'unknown action' as ManageAccountsOperation,
+          caip10Account: mockCAIP10Account,
+        },
+      }),
+    ).rejects.toThrow('invalid snap_manageAccounts action');
+  });
 });

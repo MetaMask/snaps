@@ -21,7 +21,7 @@ export type ManageAccountParams = {
   accountType?: AccountType;
 };
 
-enum AccountType {
+export enum AccountType {
   EOA = 'externally-owned-account',
 }
 
@@ -66,9 +66,9 @@ export type ManageAccountsMethodHooks = {
   getSnapKeyring: () => Promise<{
     listAccounts(origin: string): Promise<string[]>;
     createAccount(origin: string, caip10Account: string): Promise<boolean>;
-    readAccount(origin: string, caip10Account: string): any;
+    readAccount(origin: string, caip10Account: string): Promise<Json>;
     updateAccount(origin: string, caip10Account: string, methodArgs?: any): any;
-    removeAccount(origin: string, caip10Account: string): any;
+    removeAccount(origin: string, caip10Account: string): Promise<boolean>;
     deleteAccount(caip10Account: string): any;
     deleteAccountByOrigin(origin: string): any;
   }>;
@@ -127,50 +127,62 @@ export function manageAccountsImplementation({
     if (params.action === ManageAccountsOperation.ListAccounts) {
       const accounts = await keyring.listAccounts(origin);
       return accounts;
-    }
-    // validate CAIP-10
-    if (!params.caip10Account || !isCaipAccount(params.caip10Account)) {
-      throw ethErrors.rpc.invalidParams(
-        `Invalid ManageAccount Arguments: Invalid CAIP10 Account ${params?.caip10Account}`,
-      );
-    }
-    switch (params.action) {
-      case ManageAccountsOperation.CreateAccount: {
-        if (params.accountType !== AccountType.EOA) {
-          throw ethErrors.rpc.invalidParams(
-            `Invalid ManageAccount Arguments: Account Type ${params.accountType} is not supported`,
-          );
-        }
-        const created = await keyring.createAccount(
-          origin,
-          params.caip10Account,
+    } else {
+      // validate CAIP-10
+      if (!params.caip10Account || !isCaipAccount(params.caip10Account)) {
+        throw ethErrors.rpc.invalidParams(
+          `Invalid ManageAccount Arguments: Invalid CAIP10 Account ${params?.caip10Account}`,
         );
-        if (created) {
-          await saveSnapKeyring();
-        }
-        return created;
-      }
-      case ManageAccountsOperation.ReadAccount:
-        return keyring.readAccount(origin, params.caip10Account);
-      case ManageAccountsOperation.UpdateAccount: {
-        const updated = keyring.updateAccount(origin, params.caip10Account);
-        if (updated) {
-          await saveSnapKeyring();
-        }
-        return updated;
       }
 
-      case ManageAccountsOperation.RemoveAccount: {
-        // NOTE: we don't call removeAccount() on the keyringController
-        // NOTE: as it prunes empty keyrings and we don't want that behavior
-        const address = keyring.removeAccount(origin, params.caip10Account);
-        if (address) {
-          await saveSnapKeyring(address);
-        }
-        return address !== null;
+      // Throw if network is not ethereum
+      if (params.caip10Account.split(':')[0] !== 'eip155') {
+        throw ethErrors.rpc.invalidParams(
+          `Invalid ManageAccount Arguments: Only ethereum EOA are supported.`,
+        );
       }
-      default:
-        throw new Error('invalid snap_manageAccounts action');
+
+      switch (params.action) {
+        case ManageAccountsOperation.CreateAccount: {
+          if (params.accountType !== AccountType.EOA) {
+            throw ethErrors.rpc.invalidParams(
+              `Invalid ManageAccount Arguments: Account Type ${params.accountType} is not supported`,
+            );
+          }
+          const created = await keyring.createAccount(
+            origin,
+            params.caip10Account,
+          );
+          if (created) {
+            await saveSnapKeyring();
+          }
+          return created;
+        }
+        case ManageAccountsOperation.ReadAccount:
+          return await keyring.readAccount(origin, params.caip10Account);
+        case ManageAccountsOperation.UpdateAccount: {
+          const updated = keyring.updateAccount(origin, params.caip10Account);
+          if (updated) {
+            await saveSnapKeyring();
+          }
+          return updated;
+        }
+
+        case ManageAccountsOperation.RemoveAccount: {
+          // NOTE: we don't call removeAccount() on the keyringController
+          // NOTE: as it prunes empty keyrings and we don't want that behavior
+          const removed = await keyring.removeAccount(
+            origin,
+            params.caip10Account,
+          );
+          if (removed) {
+            await saveSnapKeyring(params.caip10Account);
+          }
+          return removed;
+        }
+        default:
+          throw new Error('invalid snap_manageAccounts action');
+      }
     }
   };
 }
