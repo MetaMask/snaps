@@ -9,6 +9,9 @@ import {
   hexToBytes,
   isPlainObject,
 } from '@metamask/utils';
+import { Mutex } from 'async-mutex';
+
+const mutex = new Mutex();
 
 /**
  * Get a root BIP-32 node based on the snap's entropy.
@@ -16,35 +19,37 @@ import {
  * @returns The root BIP-32 node as {@link SLIP10Node}.
  */
 async function getEntropy(): Promise<SLIP10Node> {
-  const state = await snap.request({
-    method: 'snap_manageState',
-    params: {
-      operation: 'get',
-    },
-  });
+  return await mutex.runExclusive(async () => {
+    const state = await snap.request({
+      method: 'snap_manageState',
+      params: {
+        operation: 'get',
+      },
+    });
 
-  // If we have entropy in state, use it to derive the root BIP-32 node.
-  if (state?.entropy) {
-    assertIsHexString(state.entropy);
+    // If we have entropy in state, use it to derive the root BIP-32 node.
+    if (state?.entropy) {
+      assertIsHexString(state.entropy);
+
+      // Derive the root BIP-32 node from the entropy.
+      return await createBip39KeyFromSeed(hexToBytes(state.entropy), secp256k1);
+    }
+
+    // Otherwise, generate some entropy and store it in state.
+    const entropy = crypto.getRandomValues(new Uint8Array(32));
+    await snap.request({
+      method: 'snap_manageState',
+      params: {
+        operation: 'update',
+        newState: {
+          entropy: bytesToHex(entropy),
+        },
+      },
+    });
 
     // Derive the root BIP-32 node from the entropy.
-    return await createBip39KeyFromSeed(hexToBytes(state.entropy), secp256k1);
-  }
-
-  // Otherwise, generate some entropy and store it in state.
-  const entropy = crypto.getRandomValues(new Uint8Array(32));
-  await snap.request({
-    method: 'snap_manageState',
-    params: {
-      operation: 'update',
-      newState: {
-        entropy: bytesToHex(entropy),
-      },
-    },
+    return await createBip39KeyFromSeed(entropy, secp256k1);
   });
-
-  // Derive the root BIP-32 node from the entropy.
-  return await createBip39KeyFromSeed(entropy, secp256k1);
 }
 
 /**
