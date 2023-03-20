@@ -3,6 +3,8 @@ import { createBip39KeyFromSeed } from '@metamask/key-tree/dist/derivers/bip39';
 import { OnRpcRequestHandler } from '@metamask/snaps-types';
 import {
   assert,
+  assertIsHexString,
+  bytesToHex,
   hasProperty,
   hexToBytes,
   isPlainObject,
@@ -14,17 +16,32 @@ import {
  * @returns The root BIP-32 node as {@link SLIP10Node}.
  */
 async function getEntropy(): Promise<SLIP10Node> {
-  // Request the snap's entropy. This is unique to the snap, and is guaranteed
-  // to be the same for every request.
-  const entropy = await snap
-    .request({
-      method: 'snap_getEntropy',
-      params: {
-        version: 1,
-        salt: 'Signing Entropy',
+  const state = await snap.request({
+    method: 'snap_manageState',
+    params: {
+      operation: 'get',
+    },
+  });
+
+  // If we have entropy in state, use it to derive the root BIP-32 node.
+  if (state?.entropy) {
+    assertIsHexString(state.entropy);
+
+    // Derive the root BIP-32 node from the entropy.
+    return await createBip39KeyFromSeed(hexToBytes(state.entropy), secp256k1);
+  }
+
+  // Otherwise, generate some entropy and store it in state.
+  const entropy = crypto.getRandomValues(new Uint8Array(32));
+  await snap.request({
+    method: 'snap_manageState',
+    params: {
+      operation: 'update',
+      newState: {
+        entropy: bytesToHex(entropy),
       },
-    })
-    .then(hexToBytes);
+    },
+  });
 
   // Derive the root BIP-32 node from the entropy.
   return await createBip39KeyFromSeed(entropy, secp256k1);
