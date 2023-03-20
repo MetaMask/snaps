@@ -8,12 +8,18 @@ import {
   PermissionValidatorConstraint,
 } from '@metamask/permission-controller';
 // import { SnapCaveatType, isChainId } from '@metamask/snaps-utils';
-import { SnapCaveatType } from '@metamask/snaps-utils';
+import { SnapCaveatType, isCaipAccount } from '@metamask/snaps-utils';
 import { Json, NonEmptyArray, assertStruct } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 import { type } from 'superstruct';
 
-const targetKey = 'snap_manageAccounts';
+export const MANAGE_ACCOUNT_PERMISSION_KEY = 'snap_manageAccounts';
+
+export type ManageAccountParams = {
+  action: ManageAccountsOperation;
+  caip10Account?: string;
+  accountType?: AccountType;
+};
 
 enum AccountType {
   EOA = 'externally-owned-account',
@@ -58,19 +64,13 @@ export type ManageAccountsMethodHooks = {
    * Gets the snap keyring implementation.
    */
   getSnapKeyring: () => Promise<{
-    listAccounts(origin: string): string[];
-    createAccount(
-      origin: string,
-      publicKeyBuffer: Buffer,
-      methodArgs?: any,
-    ): any;
-    readAccount(origin: string, publicKeyBuffer: Buffer): any;
-    updateAccount(
-      origin: string,
-      publicKeyBuffer: Buffer,
-      methodArgs?: any,
-    ): any;
-    removeAccount(origin: string, publicKeyBuffer: Buffer): any;
+    listAccounts(origin: string): Promise<string[]>;
+    createAccount(origin: string, caip10Account: string): Promise<boolean>;
+    readAccount(origin: string, caip10Account: string): any;
+    updateAccount(origin: string, caip10Account: string, methodArgs?: any): any;
+    removeAccount(origin: string, caip10Account: string): any;
+    deleteAccount(caip10Account: string): any;
+    deleteAccountByOrigin(origin: string): any;
   }>;
 
   /**
@@ -99,7 +99,7 @@ type ManageAccountsSpecificationBuilderOptions = {
 
 type ManageAccountsSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.RestrictedMethod;
-  targetKey: typeof targetKey;
+  targetKey: typeof MANAGE_ACCOUNT_PERMISSION_KEY;
   methodImplementation: ReturnType<typeof manageAccountsImplementation>;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
   validator: PermissionValidatorConstraint;
@@ -111,40 +111,39 @@ export function manageAccountsImplementation({
   saveSnapKeyring,
 }: ManageAccountsMethodHooks) {
   return async function manageAccounts(
-    options: RestrictedMethodOptions<
-      [ManageAccountsOperation, Record<string, Json>]
-    >,
+    options: RestrictedMethodOptions<ManageAccountParams>,
   ): Promise<string[] | Json | boolean> {
     const {
       context: { origin },
-      params = [],
+      params,
     } = options;
-    const [methodAction, methodArgs] = params;
 
-    // Create and update args is a two-value tuple whereas
-    // read and delete just expect a single parameter
-    const publicKeyBuffer = Buffer.from(
-      Array.isArray(methodArgs) ? methodArgs[0] : methodArgs,
-      'hex',
-    );
-
-    // Expecting a SEC-1 encoded compressed point or a uncompressed point
-    if (publicKeyBuffer.length !== 33 && publicKeyBuffer.length !== 64) {
-      throw new Error(
-        'Public key must be a SEC-1 compressed point or an uncompressed point (33 or 64 bytes)',
-      );
+    if (!params || !params.action) {
+      throw ethErrors.rpc.invalidParams('Invalid ManageAccount Arguments');
     }
 
     const keyring = await getSnapKeyring();
 
-    switch (methodAction) {
-      case ManageAccountsOperation.ListAccounts:
-        return keyring.listAccounts(origin);
+    if (params.action === ManageAccountsOperation.ListAccounts) {
+      const accounts = await keyring.listAccounts(origin);
+      return accounts;
+    }
+    // validate CAIP-10
+    if (!params.caip10Account || !isCaipAccount(params.caip10Account)) {
+      throw ethErrors.rpc.invalidParams(
+        `Invalid ManageAccount Arguments: Invalid CAIP10 Account ${params?.caip10Account}`,
+      );
+    }
+    switch (params.action) {
       case ManageAccountsOperation.CreateAccount: {
-        const created = keyring.createAccount(
+        if (params.accountType !== AccountType.EOA) {
+          throw ethErrors.rpc.invalidParams(
+            `Invalid ManageAccount Arguments: Account Type ${params.accountType} is not supported`,
+          );
+        }
+        const created = await keyring.createAccount(
           origin,
-          publicKeyBuffer,
-          methodArgs ? methodArgs[1] : null,
+          params.caip10Account,
         );
         if (created) {
           await saveSnapKeyring();
@@ -152,13 +151,9 @@ export function manageAccountsImplementation({
         return created;
       }
       case ManageAccountsOperation.ReadAccount:
-        return keyring.readAccount(origin, publicKeyBuffer);
+        return keyring.readAccount(origin, params.caip10Account);
       case ManageAccountsOperation.UpdateAccount: {
-        const updated = keyring.updateAccount(
-          origin,
-          publicKeyBuffer,
-          methodArgs ? methodArgs[1] : null,
-        );
+        const updated = keyring.updateAccount(origin, params.caip10Account);
         if (updated) {
           await saveSnapKeyring();
         }
@@ -168,7 +163,7 @@ export function manageAccountsImplementation({
       case ManageAccountsOperation.RemoveAccount: {
         // NOTE: we don't call removeAccount() on the keyringController
         // NOTE: as it prunes empty keyrings and we don't want that behavior
-        const address = keyring.removeAccount(origin, publicKeyBuffer);
+        const address = keyring.removeAccount(origin, params.caip10Account);
         if (address) {
           await saveSnapKeyring(address);
         }
@@ -186,11 +181,11 @@ const specificationBuilder: PermissionSpecificationBuilder<
   ManageAccountsSpecification
 > = ({ methodHooks }: ManageAccountsSpecificationBuilderOptions) => {
   return {
-    targetKey,
     permissionType: PermissionType.RestrictedMethod,
+    targetKey: MANAGE_ACCOUNT_PERMISSION_KEY,
     allowedCaveats: [SnapCaveatType.ManageAccounts],
     methodImplementation: manageAccountsImplementation(methodHooks),
-    validator: ({ caveats }: { caveats: [Caveat<string, any>] }): void => {
+    validator: ({ caveats }): void => {
       if (
         caveats?.length !== 1 ||
         caveats[0].type !== SnapCaveatType.ManageAccounts
@@ -233,7 +228,7 @@ export const manageAccountsCaveatSpecification: Record<
 };
 
 export const manageAccountsBuilder = Object.freeze({
-  targetKey,
+  targetKey: MANAGE_ACCOUNT_PERMISSION_KEY,
   specificationBuilder,
   methodHooks: {
     getSnapKeyring: true,

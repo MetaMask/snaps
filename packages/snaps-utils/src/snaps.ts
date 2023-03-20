@@ -343,6 +343,15 @@ export function isCaipChainId(chainId: unknown): chainId is string {
   );
 }
 
+export function isCaipAccount(caip10Account: string): caip10Account is string {
+  return (
+    typeof caip10Account === 'string' &&
+    /^(?<namespace>[-a-z0-9]{3,8}):(?<reference>[-a-zA-Z0-9]{1,32}):(?<address>[-.%a-zA-Z0-9]{1,128})$/u.test(
+      caip10Account,
+    )
+  );
+}
+
 /**
  * Utility function to check if an origin has permission (and caveat) for a particular snap.
  *
