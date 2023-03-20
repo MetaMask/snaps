@@ -160,10 +160,11 @@ async function main() {
       await fs.writeFile(bundlePath, buffer);
 
       if (html) {
-        const lavaMoatRuntimeBuffer = await fs.readFile(
+        const lavaMoatRuntimeString = await fs.readFile(
           require.resolve('@lavamoat/lavapack/src/runtime.js'),
+          'utf-8',
         );
-        const lavaMoatRuntime = lavaMoatRuntimeBuffer.toString().replace(
+        const lavaMoatRuntime = lavaMoatRuntimeString.replace(
           '__lavamoatSecurityOptions__',
           JSON.stringify({
             // Only enable for browser builds for now due to incompatiblities
