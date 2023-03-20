@@ -4,39 +4,72 @@ import {
   PermissionType,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
+  RestrictedMethodCaveatSpecificationConstraint,
+  PermissionValidatorConstraint,
 } from '@metamask/permission-controller';
+// import { SnapCaveatType, isChainId } from '@metamask/snaps-utils';
 import { SnapCaveatType } from '@metamask/snaps-utils';
-import { Json, NonEmptyArray } from '@metamask/utils';
-import type { Keyring } from '@metamask/utils';
+import { Json, NonEmptyArray, assertStruct } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
+import { type } from 'superstruct';
 
-const methodName = 'snap_manageAccounts';
+const targetKey = 'snap_manageAccounts';
 
-export enum AccountType {
+enum AccountType {
   EOA = 'externally-owned-account',
 }
+
+export enum ManageAccountsOperation {
+  ListAccounts = 'list',
+  CreateAccount = 'create',
+  ReadAccount = 'read',
+  UpdateAccount = 'update',
+  RemoveAccount = 'remove',
+}
+
+type ManageAccountCaveat = {
+  chainId: `${string}:${string}`;
+  accountType: AccountType.EOA;
+};
+
+/**
+ * Map a raw value from the `initialPermissions` to a caveat specification.
+ * Note that this function does not do any validation, that's handled by the
+ * PermissionsController when the permission is requested.
+ *
+ * @param value - The raw value from the `initialPermissions`.
+ * @returns The caveat specification.
+ */
+// export const manageAccountsCaveatMapper = (
+//   value: Json,
+// ): Pick<PermissionConstraint, 'caveats'> => {
+//   return {
+//     caveats: {
+//       type: SnapCaveatType.ManageAccounts,
+//       value,
+//     },
+//   };
+// };
 
 export type ManageAccountsMethodHooks = {
   /**
    * Gets the snap keyring implementation.
    */
-  getSnapKeyring: () => Promise<
-    Keyring<any> & {
-      listAccounts(origin: string): any;
-      createAccount(
-        origin: string,
-        publicKeyBuffer: Buffer,
-        methodArgs?: any,
-      ): any;
-      readAccount(origin: string, publicKeyBuffer: Buffer): any;
-      updateAccount(
-        origin: string,
-        publicKeyBuffer: Buffer,
-        methodArgs?: any,
-      ): any;
-      removeAccount(origin: string, publicKeyBuffer: Buffer): any;
-    }
-  >;
+  getSnapKeyring: () => Promise<{
+    listAccounts(origin: string): string[];
+    createAccount(
+      origin: string,
+      publicKeyBuffer: Buffer,
+      methodArgs?: any,
+    ): any;
+    readAccount(origin: string, publicKeyBuffer: Buffer): any;
+    updateAccount(
+      origin: string,
+      publicKeyBuffer: Buffer,
+      methodArgs?: any,
+    ): any;
+    removeAccount(origin: string, publicKeyBuffer: Buffer): any;
+  }>;
 
   /**
    * Saves the snap keyring, should be called after mutable operations.
@@ -47,36 +80,39 @@ export type ManageAccountsMethodHooks = {
   saveSnapKeyring: (removedAddress?: string) => Promise<void>;
 };
 
+export const validateCaveatManageAccounts = (
+  caveat: Caveat<string, any>,
+): asserts caveat is Caveat<string, ManageAccountCaveat> => {
+  assertStruct(
+    caveat,
+    type({}),
+    'Invalid ManageAccount caveat',
+    ethErrors.rpc.internal,
+  );
+};
+
 type ManageAccountsSpecificationBuilderOptions = {
-  allowedCaveats?: Readonly<NonEmptyArray<string>> | null;
   methodHooks: ManageAccountsMethodHooks;
 };
 
 type ManageAccountsSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.RestrictedMethod;
-  targetKey: typeof methodName;
-  methodImplementation: ReturnType<typeof getManageAccountsImplementation>;
+  targetKey: typeof targetKey;
+  methodImplementation: ReturnType<typeof manageAccountsImplementation>;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
+  validator: PermissionValidatorConstraint;
 }>;
 
-export enum ManageAccountsOperation {
-  ListAccounts = 'list',
-  CreateAccount = 'create',
-  ReadAccount = 'read',
-  UpdateAccount = 'update',
-  RemoveAccount = 'remove',
-}
-
-const getManageAccountsImplementation = ({
+// eslint-disable-next-line jsdoc/require-jsdoc
+export function manageAccountsImplementation({
   getSnapKeyring,
   saveSnapKeyring,
-}: ManageAccountsMethodHooks) => {
+}: ManageAccountsMethodHooks) {
   return async function manageAccounts(
     options: RestrictedMethodOptions<
       [ManageAccountsOperation, Record<string, Json>]
     >,
   ): Promise<string[] | Json | boolean> {
-    // FIXME[muji]: `origin` should be a stable identifier not snapId
     const {
       context: { origin },
       params = [],
@@ -93,7 +129,7 @@ const getManageAccountsImplementation = ({
     // Expecting a SEC-1 encoded compressed point or a uncompressed point
     if (publicKeyBuffer.length !== 33 && publicKeyBuffer.length !== 64) {
       throw new Error(
-        'public key must be a SEC-1 compressed point or an uncompressed point (33 or 64 bytes)',
+        'Public key must be a SEC-1 compressed point or an uncompressed point (33 or 64 bytes)',
       );
     }
 
@@ -140,40 +176,62 @@ const getManageAccountsImplementation = ({
         throw new Error('invalid snap_manageAccounts action');
     }
   };
-};
+}
 
 const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.RestrictedMethod,
   ManageAccountsSpecificationBuilderOptions,
   ManageAccountsSpecification
-> = ({
-  allowedCaveats = null,
-  methodHooks,
-}: ManageAccountsSpecificationBuilderOptions) => {
+> = ({ methodHooks }: ManageAccountsSpecificationBuilderOptions) => {
   return {
+    targetKey,
     permissionType: PermissionType.RestrictedMethod,
-    targetKey: methodName,
-    allowedCaveats,
-    methodImplementation: getManageAccountsImplementation(methodHooks),
-    validator: ({ caveats }: { caveats: Caveat<string, any>[] }) => {
+    allowedCaveats: [SnapCaveatType.ManageAccounts],
+    methodImplementation: manageAccountsImplementation(methodHooks),
+    validator: ({ caveats }: { caveats: [Caveat<string, any>] }): void => {
       if (
         caveats?.length !== 1 ||
-        caveats[0].type !== SnapCaveatType.AccountType
+        caveats[0].type !== SnapCaveatType.ManageAccounts
       ) {
         throw ethErrors.rpc.invalidParams({
-          message: `Expected a single "${SnapCaveatType.AccountType}" caveat.`,
-        });
-      } else if (caveats[0].value !== AccountType.EOA) {
-        throw ethErrors.provider.unauthorized({
-          message: `The requested account of type ${caveats[0].value} is not permitted`,
+          message: `Expected a single "${SnapCaveatType.ManageAccounts}" caveat.`,
         });
       }
     },
   };
 };
 
+export const manageAccountsCaveatSpecification: Record<
+  SnapCaveatType.ManageAccounts,
+  RestrictedMethodCaveatSpecificationConstraint
+> = {
+  [SnapCaveatType.ManageAccounts]: Object.freeze({
+    type: SnapCaveatType.ManageAccounts,
+    decorator: (
+      method,
+      caveat: Caveat<SnapCaveatType.ManageAccounts, ManageAccountCaveat>,
+    ) => {
+      return async (args) => {
+        // eslint-disable-next-line no-console
+        console.log({ caveat, args, method });
+        throw new Error(
+          'Mock error on manageAccountsCaveatSpecification decorator',
+        );
+        return await method(args);
+      };
+    },
+    validator: (caveat) => {
+      // eslint-disable-next-line no-console
+      console.log('Execute validator for caveat', caveat);
+      throw new Error(
+        'Mock error on manageAccountsCaveatSpecification validator',
+      );
+    },
+  }),
+};
+
 export const manageAccountsBuilder = Object.freeze({
-  targetKey: methodName,
+  targetKey,
   specificationBuilder,
   methodHooks: {
     getSnapKeyring: true,

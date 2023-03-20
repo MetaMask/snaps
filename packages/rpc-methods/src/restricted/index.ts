@@ -24,6 +24,11 @@ import {
   invokeSnapBuilder,
   InvokeSnapMethodHooks,
 } from './invokeSnap';
+import {
+  manageAccountsCaveatSpecification,
+  // manageAccountsCaveatMapper,
+  // manageAccountsBuilder,
+} from './manageAccounts';
 import { manageStateBuilder, ManageStateMethodHooks } from './manageState';
 import { notifyBuilder, NotifyMethodHooks } from './notify';
 
@@ -57,6 +62,7 @@ export const caveatSpecifications = {
   ...getBip32EntropyCaveatSpecifications,
   ...getBip44EntropyCaveatSpecifications,
   ...InvokeSnapCaveatSpecifications,
+  ...manageAccountsCaveatSpecification,
 } as const;
 
 export const caveatMappers: Record<
@@ -66,4 +72,5 @@ export const caveatMappers: Record<
   [getBip32EntropyBuilder.targetKey]: getBip32EntropyCaveatMapper,
   [getBip32PublicKeyBuilder.targetKey]: getBip32EntropyCaveatMapper,
   [getBip44EntropyBuilder.targetKey]: getBip44EntropyCaveatMapper,
+  // [manageAccountsBuilder.targetKey]: manageAccountsCaveatMapper,
 };

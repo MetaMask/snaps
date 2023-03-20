@@ -37,5 +37,5 @@ export enum SnapCaveatType {
   /**
    * Caveat specifying the type of account to be used.
    */
-  AccountType = 'accountType',
+  ManageAccounts = 'manageAccounts',
 }
