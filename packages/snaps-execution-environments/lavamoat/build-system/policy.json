@@ -951,34 +951,10 @@
       },
       "packages": {
         "@babel/core>convert-source-map": true,
-        "@browserify/uglifyify>through2": true,
+        "@lavamoat/lavapack>through2": true,
         "browserify>xtend": true,
         "eslint>minimatch": true,
         "vite>terser": true
-      }
-    },
-    "@browserify/uglifyify>through2": {
-      "packages": {
-        "@browserify/uglifyify>through2>readable-stream": true
-      }
-    },
-    "@browserify/uglifyify>through2>readable-stream": {
-      "builtin": {
-        "buffer.Buffer": true,
-        "events.EventEmitter": true,
-        "stream": true,
-        "util": true
-      },
-      "globals": {
-        "process.env.READABLE_STREAM": true,
-        "process.nextTick": true,
-        "process.stderr": true,
-        "process.stdout": true
-      },
-      "packages": {
-        "browserify>inherits": true,
-        "browserify>readable-stream>util-deprecate": true,
-        "browserify>string_decoder": true
       }
     },
     "@lavamoat/lavapack": {
@@ -1060,7 +1036,26 @@
     },
     "@lavamoat/lavapack>through2": {
       "packages": {
-        "@lavamoat/lavapack>readable-stream": true
+        "@lavamoat/lavapack>through2>readable-stream": true
+      }
+    },
+    "@lavamoat/lavapack>through2>readable-stream": {
+      "builtin": {
+        "buffer.Buffer": true,
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.env.READABLE_STREAM": true,
+        "process.nextTick": true,
+        "process.stderr": true,
+        "process.stdout": true
+      },
+      "packages": {
+        "browserify>inherits": true,
+        "browserify>readable-stream>util-deprecate": true,
+        "browserify>string_decoder": true
       }
     },
     "@wdio/cli>inquirer>through": {
@@ -1293,13 +1288,25 @@
         "@lavamoat/lavapack>umd": true,
         "browserify>JSONStream": true,
         "browserify>browser-pack>safe-buffer": true,
-        "browserify>defined": true,
-        "browserify>through2": true
+        "browserify>browser-pack>through2": true,
+        "browserify>defined": true
       }
     },
     "browserify>browser-pack>safe-buffer": {
       "builtin": {
         "buffer": true
+      }
+    },
+    "browserify>browser-pack>through2": {
+      "builtin": {
+        "util.inherits": true
+      },
+      "globals": {
+        "process.nextTick": true
+      },
+      "packages": {
+        "browserify>readable-stream": true,
+        "browserify>xtend": true
       }
     },
     "browserify>browser-resolve": {
@@ -1343,8 +1350,20 @@
     },
     "browserify>deps-sort": {
       "packages": {
-        "browserify>shasum-object": true,
-        "browserify>through2": true
+        "browserify>deps-sort>through2": true,
+        "browserify>shasum-object": true
+      }
+    },
+    "browserify>deps-sort>through2": {
+      "builtin": {
+        "util.inherits": true
+      },
+      "globals": {
+        "process.nextTick": true
+      },
+      "packages": {
+        "browserify>readable-stream": true,
+        "browserify>xtend": true
       }
     },
     "browserify>duplexer2": {
@@ -1439,9 +1458,21 @@
       "packages": {
         "@lavamoat/lavapack>combine-source-map": true,
         "browserify>glob>path-is-absolute": true,
+        "browserify>insert-module-globals>through2": true,
         "browserify>insert-module-globals>undeclared-identifiers": true,
         "browserify>syntax-error>acorn-node": true,
-        "browserify>through2": true,
+        "browserify>xtend": true
+      }
+    },
+    "browserify>insert-module-globals>through2": {
+      "builtin": {
+        "util.inherits": true
+      },
+      "globals": {
+        "process.nextTick": true
+      },
+      "packages": {
+        "browserify>readable-stream": true,
         "browserify>xtend": true
       }
     },
@@ -1500,9 +1531,9 @@
         "browserify>module-deps>concat-stream": true,
         "browserify>module-deps>detective": true,
         "browserify>module-deps>stream-combiner2": true,
+        "browserify>module-deps>through2": true,
         "browserify>parents": true,
         "browserify>readable-stream": true,
-        "browserify>through2": true,
         "browserify>xtend": true,
         "vite>resolve": true
       }
@@ -1529,6 +1560,18 @@
       "packages": {
         "browserify>duplexer2": true,
         "browserify>readable-stream": true
+      }
+    },
+    "browserify>module-deps>through2": {
+      "builtin": {
+        "util.inherits": true
+      },
+      "globals": {
+        "process.nextTick": true
+      },
+      "packages": {
+        "browserify>readable-stream": true,
+        "browserify>xtend": true
       }
     },
     "browserify>parents": {
@@ -1662,8 +1705,8 @@
       },
       "packages": {
         "@babel/core>convert-source-map": true,
-        "browserify>through2": true,
         "common-shakeify>@goto-bus-stop/common-shake": true,
+        "common-shakeify>through2": true,
         "common-shakeify>transform-ast": true,
         "common-shakeify>wrap-comment": true
       }
@@ -1761,6 +1804,18 @@
         "common-shakeify>@goto-bus-stop/common-shake>escope>es6-map>es5-ext": true,
         "common-shakeify>@goto-bus-stop/common-shake>escope>es6-map>es6-iterator": true,
         "common-shakeify>@goto-bus-stop/common-shake>escope>es6-map>es6-symbol": true
+      }
+    },
+    "common-shakeify>through2": {
+      "builtin": {
+        "util.inherits": true
+      },
+      "globals": {
+        "process.nextTick": true
+      },
+      "packages": {
+        "browserify>readable-stream": true,
+        "browserify>xtend": true
       }
     },
     "common-shakeify>transform-ast": {

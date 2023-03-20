@@ -1645,6 +1645,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ethereumjs/common@npm:^2.6.4":
+  version: 2.6.5
+  resolution: "@ethereumjs/common@npm:2.6.5"
+  dependencies:
+    crc-32: ^1.2.0
+    ethereumjs-util: ^7.1.5
+  checksum: 0143386f267ef01b7a8bb1847596f964ad58643c084e5fd8e3a0271a7bf8428605dbf38cbb92c84f6622080ad095abeb765f178c02d86ec52abf9e8a4c0e4ecf
+  languageName: node
+  linkType: hard
+
 "@ethereumjs/common@npm:^3.1.1":
   version: 3.1.1
   resolution: "@ethereumjs/common@npm:3.1.1"
@@ -1661,6 +1671,16 @@ __metadata:
   bin:
     rlp: bin/rlp
   checksum: 30db19c78faa2b6ff27275ab767646929207bb207f903f09eb3e4c273ce2738b45f3c82169ddacd67468b4f063d8d96035f2bf36f02b6b7e4d928eefe2e3ecbc
+  languageName: node
+  linkType: hard
+
+"@ethereumjs/tx@npm:^3.5.2":
+  version: 3.5.2
+  resolution: "@ethereumjs/tx@npm:3.5.2"
+  dependencies:
+    "@ethereumjs/common": ^2.6.4
+    ethereumjs-util: ^7.1.5
+  checksum: a34a7228a623b40300484d15875b9f31f0a612cfeab64a845f6866cf0bfe439519e9455ac6396149f29bc527cf0ee277ace082ae013a1075dcbf7193220a0146
   languageName: node
   linkType: hard
 
@@ -3166,7 +3186,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/snaps-cli@^0.31.0, @metamask/snaps-cli@workspace:packages/snaps-cli":
+"@metamask/snaps-cli@^0.31.0, @metamask/snaps-cli@workspace:^, @metamask/snaps-cli@workspace:packages/snaps-cli":
   version: 0.0.0-use.local
   resolution: "@metamask/snaps-cli@workspace:packages/snaps-cli"
   dependencies:
@@ -3697,7 +3717,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/secp256k1@npm:1.7.1, @noble/secp256k1@npm:^1.5.5, @noble/secp256k1@npm:~1.7.0":
+"@noble/secp256k1@npm:1.7.1, @noble/secp256k1@npm:^1.5.5, @noble/secp256k1@npm:^1.7.1, @noble/secp256k1@npm:~1.7.0":
   version: 1.7.1
   resolution: "@noble/secp256k1@npm:1.7.1"
   checksum: d2301f1f7690368d8409a3152450458f27e54df47e3f917292de3de82c298770890c2de7c967d237eff9c95b70af485389a9695f73eb05a43e2bd562d18b18cb
@@ -6016,6 +6036,15 @@ __metadata:
   version: 2.0.1
   resolution: "async-exit-hook@npm:2.0.1"
   checksum: b72cbdd19ea90fa33a3a57b0dbff83e4bf2f4e4acd70b2b3847a588f9f16a45d38590ee13f285375dd919c224f60fa58dc3d315a87678d3aa24ff686d1c0200a
+  languageName: node
+  linkType: hard
+
+"async-mutex@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "async-mutex@npm:0.4.0"
+  dependencies:
+    tslib: ^2.4.0
+  checksum: 813a71728b35a4fbfd64dba719f04726d9133c67b577fcd951b7028c4a675a13ee34e69beb82d621f87bf81f5d4f135c4c44be0448550c7db728547244ef71fc
   languageName: node
   linkType: hard
 
@@ -9701,7 +9730,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethereumjs-util@npm:^7.0.10":
+"ethereumjs-util@npm:^7.0.10, ethereumjs-util@npm:^7.1.5":
   version: 7.1.5
   resolution: "ethereumjs-util@npm:7.1.5"
   dependencies:
@@ -17248,6 +17277,52 @@ __metadata:
   checksum: a2f098f247adc367dffc27845853e9959b9e88b01cb301658cfe4194352d8d2bb32e18467c786a7fe15f1d44b233ea35633d076d5e737870b7139949d1ab6318
   languageName: node
   linkType: hard
+
+"signer-bitcoin@workspace:packages/examples/examples/signer/packages/bitcoin":
+  version: 0.0.0-use.local
+  resolution: "signer-bitcoin@workspace:packages/examples/examples/signer/packages/bitcoin"
+  dependencies:
+    "@metamask/key-tree": ^7.0.0
+    "@metamask/snaps-cli": ^0.31.0
+    "@metamask/snaps-types": ^0.31.0
+    "@metamask/utils": ^5.0.0
+    "@noble/secp256k1": ^1.7.1
+    buffer: ^6.0.3
+    through2: ^4.0.2
+  languageName: unknown
+  linkType: soft
+
+"signer-core@workspace:packages/examples/examples/signer/packages/core":
+  version: 0.0.0-use.local
+  resolution: "signer-core@workspace:packages/examples/examples/signer/packages/core"
+  dependencies:
+    "@metamask/key-tree": ^7.0.0
+    "@metamask/snaps-cli": "workspace:^"
+    "@metamask/snaps-types": ^0.31.0
+    "@metamask/utils": ^5.0.0
+    async-mutex: ^0.4.0
+  languageName: unknown
+  linkType: soft
+
+"signer-ethereum@workspace:packages/examples/examples/signer/packages/ethereum":
+  version: 0.0.0-use.local
+  resolution: "signer-ethereum@workspace:packages/examples/examples/signer/packages/ethereum"
+  dependencies:
+    "@ethereumjs/tx": ^3.5.2
+    "@metamask/key-tree": ^7.0.0
+    "@metamask/snaps-cli": ^0.31.0
+    "@metamask/snaps-types": ^0.31.0
+    "@metamask/utils": ^5.0.0
+    buffer: ^6.0.3
+    through2: ^4.0.2
+  languageName: unknown
+  linkType: soft
+
+"signer@workspace:packages/examples/examples/signer":
+  version: 0.0.0-use.local
+  resolution: "signer@workspace:packages/examples/examples/signer"
+  languageName: unknown
+  linkType: soft
 
 "simple-concat@npm:^1.0.0":
   version: 1.0.1
