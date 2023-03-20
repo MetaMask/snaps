@@ -1740,7 +1740,10 @@ export class SnapController extends BaseController<
 
       const truncated = this.getTruncatedExpect(snapId);
 
-      this.#updateApproval(pendingApproval.id, { loading: false });
+      this.#updateApproval(pendingApproval.id, {
+        loading: false,
+        type: SNAP_APPROVAL_INSTALL,
+      });
 
       this.messagingSystem.publish(`SnapController:snapInstalled`, truncated);
 
@@ -1750,6 +1753,7 @@ export class SnapController extends BaseController<
 
       this.#updateApproval(pendingApproval.id, {
         loading: false,
+        type: SNAP_APPROVAL_INSTALL,
         error: error instanceof Error ? error.message : error.toString(),
       });
 
@@ -1944,7 +1948,10 @@ export class SnapController extends BaseController<
         snap.version,
       );
 
-      this.#updateApproval(pendingApproval.id, { loading: false });
+      this.#updateApproval(pendingApproval.id, {
+        loading: false,
+        type: SNAP_APPROVAL_UPDATE,
+      });
 
       return truncatedSnap;
     } catch (error) {
@@ -1953,6 +1960,7 @@ export class SnapController extends BaseController<
       this.#updateApproval(pendingApproval.id, {
         loading: false,
         error: error instanceof Error ? error.message : error.toString(),
+        type: SNAP_APPROVAL_UPDATE,
       });
       throw error;
     }

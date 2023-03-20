@@ -673,6 +673,7 @@ describe('SnapController', () => {
         id: expect.any(String),
         requestState: {
           loading: false,
+          type: SNAP_APPROVAL_INSTALL,
         },
       },
     );
@@ -849,6 +850,7 @@ describe('SnapController', () => {
         requestState: {
           loading: false,
           error: ethErrors.provider.userRejectedRequest().message,
+          type: SNAP_APPROVAL_INSTALL,
         },
       }),
     );
@@ -913,6 +915,7 @@ describe('SnapController', () => {
         requestState: {
           loading: false,
           error: 'foo',
+          type: SNAP_APPROVAL_INSTALL,
         },
       }),
     );
@@ -1963,6 +1966,7 @@ describe('SnapController', () => {
           id: expect.any(String),
           requestState: {
             loading: false,
+            type: SNAP_APPROVAL_INSTALL,
           },
         }),
       );
@@ -2123,6 +2127,7 @@ describe('SnapController', () => {
           id: expect.any(String),
           requestState: {
             loading: false,
+            type: SNAP_APPROVAL_INSTALL,
           },
         }),
       );
@@ -2229,6 +2234,7 @@ describe('SnapController', () => {
           id: expect.any(String),
           requestState: {
             loading: false,
+            type: SNAP_APPROVAL_INSTALL,
           },
         }),
       );
@@ -2304,6 +2310,7 @@ describe('SnapController', () => {
           requestState: {
             loading: false,
             error: ethErrors.provider.userRejectedRequest().message,
+            type: SNAP_APPROVAL_INSTALL,
           },
         }),
       );
@@ -2475,6 +2482,7 @@ describe('SnapController', () => {
           id: expect.any(String),
           requestState: {
             loading: false,
+            type: SNAP_APPROVAL_INSTALL,
           },
         }),
       );
@@ -2987,6 +2995,7 @@ describe('SnapController', () => {
           id: expect.any(String),
           requestState: {
             loading: false,
+            type: SNAP_APPROVAL_UPDATE,
           },
         }),
       );
@@ -3052,6 +3061,7 @@ describe('SnapController', () => {
           requestState: {
             loading: false,
             error: errorMessage,
+            type: SNAP_APPROVAL_UPDATE,
           },
         }),
       );
@@ -3535,7 +3545,7 @@ describe('SnapController', () => {
         'ApprovalController:updateRequestState',
         expect.objectContaining({
           id: expect.any(String),
-          requestState: { loading: false },
+          requestState: { loading: false, type: SNAP_APPROVAL_UPDATE },
         }),
       );
 
@@ -3732,6 +3742,7 @@ describe('SnapController', () => {
           id: expect.any(String),
           requestState: {
             loading: false,
+            type: SNAP_APPROVAL_UPDATE,
           },
         }),
       );
@@ -4053,6 +4064,7 @@ describe('SnapController', () => {
           id: expect.any(String),
           requestState: {
             loading: false,
+            type: SNAP_APPROVAL_UPDATE,
           },
         }),
       );
