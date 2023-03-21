@@ -157,7 +157,7 @@ export function manageAccountsImplementation({
       params,
     } = options;
 
-    if (!params || !params.action) {
+    if (!params?.action) {
       throw ethErrors.rpc.invalidParams('Invalid ManageAccount Arguments');
     }
 
@@ -166,66 +166,66 @@ export function manageAccountsImplementation({
     if (params.action === ManageAccountsOperation.ListAccounts) {
       const accounts = await keyring.listAccounts(origin);
       return accounts;
-    } else {
-      if (!params.accountId) {
-        throw ethErrors.rpc.invalidParams(
-          'Invalid ManageAccount Arguments: Missing accountId',
-        );
-      }
-      // validate CAIP-10
-      if (!isCaipAccount(params.accountId)) {
-        throw ethErrors.rpc.invalidParams(
-          `Invalid ManageAccount Arguments: Invalid CAIP10 Account ${params.accountId}`,
-        );
-      }
-      switch (params.action) {
-        case ManageAccountsOperation.CreateAccount: {
-          if (!params.accountType || !validateAccountType(params.accountType)) {
-            throw ethErrors.rpc.invalidParams(
-              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-              `Invalid ManageAccount Arguments: Account Type ${params.accountType} is not supported`,
-            );
-          }
-          const created = await keyring.createAccount(origin, params.accountId);
-          if (created) {
-            await saveSnapKeyring();
-          }
-          return created;
-        }
-        case ManageAccountsOperation.ReadAccount:
-          return keyring.readAccount(origin, params.accountId);
-        case ManageAccountsOperation.UpdateAccount: {
-          const updatedAccount = keyring.updateAccount(
-            origin,
-            params.accountId,
-          );
-          if (updatedAccount) {
-            await saveSnapKeyring();
-          }
-          return updatedAccount;
-        }
+    }
 
-        case ManageAccountsOperation.RemoveAccount: {
-          // NOTE: we don't call removeAccount() on the keyringController
-          // NOTE: as it prunes empty keyrings and we don't want that behavior
-          const knownAddress = await keyring.removeAccount(
-            origin,
-            params.accountId,
-          );
-          if (!knownAddress)
-            throw ethErrors.rpc.invalidParams(
-              `Invalid ManageAccount Request: Unknown account ${params.accountId}`,
-            );
-          await saveSnapKeyring('address');
-          return knownAddress;
-        }
+    if (!params.accountId) {
+      throw ethErrors.rpc.invalidParams(
+        'Invalid ManageAccount Arguments: Missing accountId',
+      );
+    }
 
-        default: {
-          throw ethErrors.rpc.invalidRequest(
+    // validate CAIP-10
+    if (!isCaipAccount(params.accountId)) {
+      throw ethErrors.rpc.invalidParams(
+        `Invalid ManageAccount Arguments: Invalid CAIP10 Account ${params.accountId}`,
+      );
+    }
+
+    switch (params.action) {
+      case ManageAccountsOperation.CreateAccount: {
+        if (!params.accountType || !validateAccountType(params.accountType)) {
+          throw ethErrors.rpc.invalidParams(
             // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-            `Invalid ManageAccount Request: The request ${params.action} is not supported`,
+            `Invalid ManageAccount Arguments: Account Type ${params.accountType} is not supported`,
           );
         }
+        const created = await keyring.createAccount(origin, params.accountId);
+        if (created) {
+          await saveSnapKeyring();
+        }
+        return created;
+      }
+      case ManageAccountsOperation.ReadAccount:
+        return keyring.readAccount(origin, params.accountId);
+      case ManageAccountsOperation.UpdateAccount: {
+        const updatedAccount = keyring.updateAccount(origin, params.accountId);
+        if (updatedAccount) {
+          await saveSnapKeyring();
+        }
+        return updatedAccount;
+      }
+
+      case ManageAccountsOperation.RemoveAccount: {
+        // NOTE: we don't call removeAccount() on the keyringController
+        // NOTE: as it prunes empty keyrings and we don't want that behavior
+        const knownAddress = await keyring.removeAccount(
+          origin,
+          params.accountId,
+        );
+        if (!knownAddress) {
+          throw ethErrors.rpc.invalidParams(
+            `Invalid ManageAccount Request: Unknown account ${params.accountId}`,
+          );
+        }
+        await saveSnapKeyring('address');
+        return knownAddress;
+      }
+
+      default: {
+        throw ethErrors.rpc.invalidRequest(
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          `Invalid ManageAccount Request: The request ${params.action} is not supported`,
+        );
       }
     }
   };

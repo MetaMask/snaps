@@ -6,9 +6,7 @@ import {
   AccountType,
   MANAGE_ACCOUNT_PERMISSION_KEY,
   manageAccountsBuilder,
-  // manageAccountsCaveatSpecification,
   validateCaveatManageAccounts,
-  // specificationBuilder,
   manageAccountsCaveatMapper,
   manageAccountsImplementation,
   ManageAccountsOperation,
@@ -256,8 +254,8 @@ describe('manageAccountsImplementation', () => {
       },
     });
 
-    expect(listAccoutnSpy).toBeCalledTimes(1);
-    expect(listAccoutnSpy).toBeCalledWith(mockSnapId);
+    expect(listAccoutnSpy).toHaveBeenCalledTimes(1);
+    expect(listAccoutnSpy).toHaveBeenCalledWith(mockSnapId);
     expect(accountList).toStrictEqual([mockCAIP10Account]);
   });
 
@@ -383,8 +381,8 @@ describe('manageAccountsImplementation', () => {
       },
     });
 
-    expect(readAccountSpy).toBeCalledTimes(1);
-    expect(readAccountSpy).toBeCalledWith(mockSnapId, mockCAIP10Account);
+    expect(readAccountSpy).toHaveBeenCalledTimes(1);
+    expect(readAccountSpy).toHaveBeenCalledWith(mockSnapId, mockCAIP10Account);
     expect(account).toStrictEqual({
       caip20Account: mockCAIP10Account,
       data: 'mockdata',
@@ -419,8 +417,11 @@ describe('manageAccountsImplementation', () => {
       },
     });
 
-    expect(updateAccountSpy).toBeCalledTimes(1);
-    expect(updateAccountSpy).toBeCalledWith(mockSnapId, mockCAIP10Account);
+    expect(updateAccountSpy).toHaveBeenCalledTimes(1);
+    expect(updateAccountSpy).toHaveBeenCalledWith(
+      mockSnapId,
+      mockCAIP10Account,
+    );
     expect(account).toStrictEqual({
       account: mockCAIP10Account,
       data: 'mockdata',
@@ -452,8 +453,11 @@ describe('manageAccountsImplementation', () => {
       },
     });
 
-    expect(removeAccountSpy).toBeCalledTimes(1);
-    expect(removeAccountSpy).toBeCalledWith(mockSnapId, mockCAIP10Account);
+    expect(removeAccountSpy).toHaveBeenCalledTimes(1);
+    expect(removeAccountSpy).toHaveBeenCalledWith(
+      mockSnapId,
+      mockCAIP10Account,
+    );
     expect(account).toBe(true);
   });
 
