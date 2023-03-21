@@ -7,6 +7,7 @@ import {
   PermissionValidatorConstraint,
   PermissionSpecificationBuilder,
   RestrictedMethodCaveatSpecificationConstraint,
+  RestrictedMethodParameters,
 } from '@metamask/permission-controller';
 // import { SnapCaveatType, isChainId } from '@metamask/snaps-utils';
 import {
@@ -66,6 +67,16 @@ export const manageAccountsCaveatMapper = (
   };
 };
 
+export enum ValidManageAccountMethods {
+  ListAccounts = 'listAccounts',
+  CreateAccount = 'createAccount',
+  ReadAccount = 'readAccount',
+  UpdateAccount = 'updateAccount',
+  RemoveAccount = 'remove',
+  DeleteAccount = 'deleteAccount',
+  DeleteAccountByOrigin = 'deleteAccountByOrigin',
+}
+
 export type ManageAccountsMethodHooks = {
   /**
    * Gets the snap keyring implementation.
@@ -109,14 +120,24 @@ const validateAccountType = (accountType: AccountType): boolean =>
 
 export const validateCaveatManageAccounts = (caveat: Caveat<string, any>) => {
   const caveatStruct = superstruct.object({
-    chainId: superstruct.string(),
-    accountType: superstruct.string(),
+    chainId: superstruct.refine(
+      superstruct.string(),
+      'caip2ChainId',
+      isChainId,
+    ),
+    accountType: superstruct.refine(
+      superstruct.string(),
+      'accountType',
+      (accountType) => {
+        return Object.values(AccountType).includes(accountType as AccountType);
+      },
+    ),
   });
 
   superstruct.assert(
     caveat.value,
     caveatStruct,
-    'Expect object containing chainId and accountType.',
+    'Expect object containing CAIP-2 chainId and accountType.',
   );
 };
 
@@ -145,7 +166,7 @@ export function manageAccountsImplementation({
       params,
     } = options;
 
-    if (!params?.action || !params?.accountId) {
+    if (!params?.action) {
       throw ethErrors.rpc.invalidParams('Invalid ManageAccount Arguments');
     }
 
@@ -154,54 +175,66 @@ export function manageAccountsImplementation({
     if (params.action === ManageAccountsOperation.ListAccounts) {
       const accounts = await keyring.listAccounts(origin);
       return accounts;
-    }
-    // validate CAIP-10
-    if (!isCaipAccount(params.accountId)) {
-      throw ethErrors.rpc.invalidParams(
-        `Invalid ManageAccount Arguments: Invalid CAIP10 Account ${params?.accountId}`,
-      );
-    }
-    switch (params.action) {
-      case ManageAccountsOperation.CreateAccount: {
-        if (!params.accountType || !validateAccountType(params.accountType)) {
-          throw ethErrors.rpc.invalidParams(
+    } else {
+      if (!params?.accountId) {
+        throw ethErrors.rpc.invalidParams(
+          'Invalid ManageAccount Arguments: Missing accountId',
+        );
+      }
+      // validate CAIP-10
+      if (!isCaipAccount(params.accountId)) {
+        throw ethErrors.rpc.invalidParams(
+          `Invalid ManageAccount Arguments: Invalid CAIP10 Account ${params?.accountId}`,
+        );
+      }
+      switch (params.action) {
+        case ManageAccountsOperation.CreateAccount: {
+          if (!params.accountType || !validateAccountType(params.accountType)) {
+            throw ethErrors.rpc.invalidParams(
+              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+              `Invalid ManageAccount Arguments: Account Type ${params.accountType} is not supported`,
+            );
+          }
+          const created = await keyring.createAccount(origin, params.accountId);
+          if (created) {
+            await saveSnapKeyring();
+          }
+          return created;
+        }
+        case ManageAccountsOperation.ReadAccount:
+          return keyring.readAccount(origin, params.accountId);
+        case ManageAccountsOperation.UpdateAccount: {
+          const updatedAccount = keyring.updateAccount(
+            origin,
+            params.accountId,
+          );
+          if (updatedAccount) {
+            await saveSnapKeyring();
+          }
+          return updatedAccount;
+        }
+
+        case ManageAccountsOperation.RemoveAccount: {
+          // NOTE: we don't call removeAccount() on the keyringController
+          // NOTE: as it prunes empty keyrings and we don't want that behavior
+          const knownAddress = await keyring.removeAccount(
+            origin,
+            params.accountId,
+          );
+          if (!knownAddress)
+            throw ethErrors.rpc.invalidParams(
+              `Invalid ManageAccount Request: Unknown account ${params.accountId}`,
+            );
+          await saveSnapKeyring('address');
+          return knownAddress;
+        }
+
+        default: {
+          throw ethErrors.rpc.invalidRequest(
             // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-            `Invalid ManageAccount Arguments: Account Type ${params.accountType} is not supported`,
+            `Invalid ManageAccount Request: The request ${params.action} is not supported`,
           );
         }
-        const created = await keyring.createAccount(origin, params.accountId);
-        if (created) {
-          await saveSnapKeyring();
-        }
-        return created;
-      }
-      case ManageAccountsOperation.ReadAccount:
-        return keyring.readAccount(origin, params.accountId);
-      case ManageAccountsOperation.UpdateAccount: {
-        const updated = keyring.updateAccount(origin, params.accountId);
-        if (updated) {
-          await saveSnapKeyring();
-        }
-        return updated;
-      }
-
-      case ManageAccountsOperation.RemoveAccount: {
-        // NOTE: we don't call removeAccount() on the keyringController
-        // NOTE: as it prunes empty keyrings and we don't want that behavior
-        const address = await keyring.removeAccount(origin, params.accountId);
-        if (address) {
-          // @montelaidev - This is returning a boolean. Is the idea for removeAccount to return an address?
-          // Probably is better to throw an error if it fails
-          await saveSnapKeyring('address');
-        }
-        return address !== null;
-      }
-
-      default: {
-        throw ethErrors.rpc.invalidRequest(
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          `Invalid ManageAccount Request: The request ${params.action} is not supported`,
-        );
       }
     }
   };
@@ -238,14 +271,22 @@ export const manageAccountsCaveatSpecification: Record<
     type: SnapCaveatType.ManageAccounts,
     decorator: (
       method,
+      // @tslint:disable-next-line
       caveat: Caveat<SnapCaveatType.ManageAccounts, ManageAccountCaveat>,
     ) => {
       return async (args) => {
-        // eslint-disable-next-line no-console
-        console.log({ caveat, args, method });
-        throw new Error(
-          'Mock error on manageAccountsCaveatSpecification decorator',
-        );
+        const {
+          method: keyringMethod,
+        }: RestrictedMethodOptions<RestrictedMethodParameters> = args;
+        if (
+          !Object.values(ValidManageAccountMethods).includes(
+            keyringMethod as ValidManageAccountMethods,
+          )
+        ) {
+          throw ethErrors.rpc.invalidRequest(
+            `Invalid Keyring Method ${keyringMethod}`,
+          );
+        }
         return await method(args);
       };
     },

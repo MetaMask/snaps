@@ -1,6 +1,6 @@
-import { PermissionType } from '@metamask/permission-controller';
+import { PermissionType, OriginString } from '@metamask/permission-controller';
 import { SnapCaveatType } from '@metamask/snaps-utils';
-import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
+import { MOCK_SNAP_ID, MOCK_ORIGIN } from '@metamask/snaps-utils/test-utils';
 
 import {
   AccountType,
@@ -12,6 +12,7 @@ import {
   manageAccountsCaveatMapper,
   manageAccountsImplementation,
   ManageAccountsOperation,
+  manageAccountsCaveatSpecification,
 } from './manageAccounts';
 
 // To Do:
@@ -30,7 +31,9 @@ class SnapKeyringMock {
     return {};
   };
 
-  updateAccount = async () => undefined;
+  updateAccount = async () => {
+    return {};
+  };
 
   removeAccount = async (): Promise<boolean> => true;
 }
@@ -44,7 +47,7 @@ describe('validateCaveatManageAccounts', () => {
           type: SnapCaveatType.ManageAccounts,
           value,
         }),
-      ).toThrow('Expect object containing chainId and accountType.'); // Different error messages for different types
+      ).toThrow('Expect object containing CAIP-2 chainId and accountType.'); // Different error messages for different types
     },
   );
 
@@ -53,8 +56,8 @@ describe('validateCaveatManageAccounts', () => {
       validateCaveatManageAccounts({
         type: SnapCaveatType.ManageAccounts,
         value: {
-          chainId: 'chain-id',
-          accountType: 'account-type',
+          chainId: 'eip155:1',
+          accountType: AccountType.EOA,
         },
       }),
     ).not.toThrow();
@@ -171,6 +174,75 @@ describe('manageAccountsImplementation', () => {
     jest.clearAllMocks();
   });
 
+  it('should throw params are not set', async () => {
+    const mockKeyring = new SnapKeyringMock();
+    const getSnapKeyring = jest.fn().mockResolvedValue(mockKeyring);
+    const saveSnapKeyring = jest.fn().mockResolvedValue(undefined);
+
+    const manageAccounts = manageAccountsImplementation({
+      getSnapKeyring,
+      saveSnapKeyring,
+    });
+
+    await expect(
+      manageAccounts({
+        method: 'snap_manageAccounts',
+        context: {
+          origin: mockSnapId,
+        },
+        // @ts-expect-error Missing other required permission types.
+        params: {},
+      }),
+    ).rejects.toThrow('Invalid ManageAccount Arguments');
+  });
+
+  it('should throw params accountId is not set', async () => {
+    const mockKeyring = new SnapKeyringMock();
+    const getSnapKeyring = jest.fn().mockResolvedValue(mockKeyring);
+    const saveSnapKeyring = jest.fn().mockResolvedValue(undefined);
+
+    const manageAccounts = manageAccountsImplementation({
+      getSnapKeyring,
+      saveSnapKeyring,
+    });
+
+    await expect(
+      manageAccounts({
+        method: 'snap_manageAccounts',
+        context: {
+          origin: mockSnapId,
+        },
+        // @ts-expect-error Missing other required permission types.
+        params: {},
+      }),
+    ).rejects.toThrow('Invalid ManageAccount Arguments');
+
+    await expect(
+      manageAccounts({
+        method: 'snap_manageAccounts',
+        context: {
+          origin: mockSnapId,
+        },
+        params: {
+          // @ts-expect-error Missing other required permission types.
+          action: undefined,
+        },
+      }),
+    ).rejects.toThrow('Invalid ManageAccount Arguments');
+
+    await expect(
+      manageAccounts({
+        method: 'snap_manageAccounts',
+        context: {
+          origin: mockSnapId,
+        },
+        params: {
+          action: ManageAccountsOperation.CreateAccount,
+        },
+      }),
+    ).rejects.toThrow('Invalid ManageAccount Arguments: Missing accountId');
+  });
+
   it('should list accounts', async () => {
     // TODO: Change to use actual snapKeyring and mock the methods
     const mockKeyring = new SnapKeyringMock();
@@ -266,23 +338,19 @@ describe('manageAccountsImplementation', () => {
     expect(createAccountSpy).toHaveBeenCalledTimes(0);
   });
 
-  it('should throw error if caip10 network is not ethereum', async () => {
+  it('should throw if account type is not correct', async () => {
     const mockKeyring = new SnapKeyringMock();
-    const mockInvalidNetowrkCAIP10Account =
-      'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6';
     const getSnapKeyring = jest.fn().mockResolvedValue(mockKeyring);
     const saveSnapKeyring = jest.fn().mockResolvedValue(undefined);
 
-    const createAccountSpy = jest
-      .spyOn(mockKeyring, 'createAccount')
-      .mockResolvedValue(true);
+    const createAccountSpy = jest.spyOn(mockKeyring, 'createAccount');
 
     const manageAccounts = manageAccountsImplementation({
       getSnapKeyring,
       saveSnapKeyring,
     });
 
-    expect(
+    await expect(
       manageAccounts({
         method: 'snap_manageAccounts',
         context: {
@@ -290,14 +358,13 @@ describe('manageAccountsImplementation', () => {
         },
         params: {
           action: ManageAccountsOperation.CreateAccount,
-          accountType: AccountType.EOA,
-          accountId: mockInvalidNetowrkCAIP10Account,
+          accountType: 'bad account type' as AccountType,
+          accountId: mockCAIP10Account,
         },
       }),
     ).rejects.toThrow(
-      `Invalid ManageAccount Arguments: Only ethereum EOA are supported.`,
+      'Invalid ManageAccount Arguments: Account Type bad account type is not supported',
     );
-
     expect(createAccountSpy).toHaveBeenCalledTimes(0);
   });
 
@@ -337,6 +404,42 @@ describe('manageAccountsImplementation', () => {
     });
   });
 
+  it('should update account', async () => {
+    const mockKeyring = new SnapKeyringMock();
+    const getSnapKeyring = jest.fn().mockResolvedValue(mockKeyring);
+    const saveSnapKeyring = jest.fn().mockResolvedValue(undefined);
+
+    const updateAccountSpy = jest
+      .spyOn(mockKeyring, 'updateAccount')
+      .mockResolvedValue({
+        account: mockCAIP10Account,
+        data: 'mockdata',
+      });
+
+    const manageAccounts = manageAccountsImplementation({
+      getSnapKeyring,
+      saveSnapKeyring,
+    });
+
+    const account = await manageAccounts({
+      method: 'snap_manageAccounts',
+      context: {
+        origin: mockSnapId,
+      },
+      params: {
+        action: ManageAccountsOperation.UpdateAccount,
+        accountId: mockCAIP10Account,
+      },
+    });
+
+    expect(updateAccountSpy).toBeCalledTimes(1);
+    expect(updateAccountSpy).toBeCalledWith(mockSnapId, mockCAIP10Account);
+    expect(account).toStrictEqual({
+      account: mockCAIP10Account,
+      data: 'mockdata',
+    });
+  });
+
   it('should remove account', async () => {
     const mockKeyring = new SnapKeyringMock();
     const getSnapKeyring = jest.fn().mockResolvedValue(mockKeyring);
@@ -367,39 +470,34 @@ describe('manageAccountsImplementation', () => {
     expect(account).toBe(true);
   });
 
-  // it("should not remove account that isn't in the keyring", async () => {
-  //   const mockUnknownCAIP10Account = 'eip155:1:0xunknown';
-  //   const mockKeyring = new SnapKeyringMock();
-  //   const getSnapKeyring = jest.fn().mockResolvedValue(mockKeyring);
-  //   const saveSnapKeyring = jest.fn().mockResolvedValue(undefined);
+  it("should not remove account that isn't in the keyring", async () => {
+    const mockUnknownCAIP10Account = 'eip155:1:0xunknown';
+    const mockKeyring = new SnapKeyringMock();
+    const getSnapKeyring = jest.fn().mockResolvedValue(mockKeyring);
+    const saveSnapKeyring = jest.fn().mockResolvedValue(undefined);
 
-  //   const removeAccountSpy = jest
-  //     .spyOn(mockKeyring, 'removeAccount')
-  //     .mockImplementation(false);
+    jest.spyOn(mockKeyring, 'removeAccount').mockResolvedValue(false);
 
-  //   const manageAccounts = manageAccountsImplementation({
-  //     getSnapKeyring,
-  //     saveSnapKeyring,
-  //   });
+    const manageAccounts = manageAccountsImplementation({
+      getSnapKeyring,
+      saveSnapKeyring,
+    });
 
-  //   const account = await manageAccounts({
-  //     method: 'snap_manageAccounts',
-  //     context: {
-  //       origin: mockSnapId,
-  //     },
-  //     params: {
-  //       action: ManageAccountsOperation.RemoveAccount,
-  //       accountId: mockUnknownCAIP10Account,
-  //     },
-  //   });
-
-  //   expect(removeAccountSpy).toBeCalledTimes(1);
-  //   expect(removeAccountSpy).toBeCalledWith(
-  //     mockSnapId,
-  //     mockUnknownCAIP10Account,
-  //   );
-  //   expect(account).toBe(false);
-  // });
+    await expect(
+      manageAccounts({
+        method: 'snap_manageAccounts',
+        context: {
+          origin: mockSnapId,
+        },
+        params: {
+          action: ManageAccountsOperation.RemoveAccount,
+          accountId: mockUnknownCAIP10Account,
+        },
+      }),
+    ).rejects.toThrow(
+      `Invalid ManageAccount Request: Unknown account ${mockUnknownCAIP10Account}`,
+    );
+  });
 
   it('should throw if when it is an invalid action', async () => {
     const mockKeyring = new SnapKeyringMock();
@@ -425,5 +523,101 @@ describe('manageAccountsImplementation', () => {
     ).rejects.toThrow(
       'Invalid ManageAccount Request: The request unknown action is not supported',
     );
+  });
+});
+
+describe('manageAccountsCaveatSpecification', () => {
+  describe('validator', () => {
+    it('throws for an invalid caveat object', () => {
+      expect(() => {
+        manageAccountsCaveatSpecification[
+          SnapCaveatType.ManageAccounts
+        ].validator?.({
+          type: SnapCaveatType.ManageAccounts,
+          value: {},
+        });
+      }).toThrow('Expect object containing CAIP-2 chainId and accountType.');
+    });
+
+    it('validates the chainId and account type', () => {
+      expect(() => {
+        manageAccountsCaveatSpecification[
+          SnapCaveatType.ManageAccounts
+        ].validator?.({
+          type: SnapCaveatType.ManageAccounts,
+          value: {
+            chainId: 'eip155:1',
+            accountType: AccountType.EOA,
+          },
+        });
+      }).not.toThrow();
+    });
+
+    it("fails if the chainId doesn't use CAIP2", () => {
+      expect(() => {
+        manageAccountsCaveatSpecification[
+          SnapCaveatType.ManageAccounts
+        ].validator?.({
+          type: SnapCaveatType.ManageAccounts,
+          value: {
+            chainId: 'fake chain id',
+            accountType: AccountType.EOA,
+          },
+        });
+      }).toThrow('Expect object containing CAIP-2 chainId and accountType.');
+    });
+
+    it('fails if account type is not EOA', () => {
+      expect(() => {
+        manageAccountsCaveatSpecification[
+          SnapCaveatType.ManageAccounts
+        ].validator?.({
+          type: SnapCaveatType.ManageAccounts,
+          value: {
+            chainId: 'eip155:1',
+            accountType: 'unknown type',
+          },
+        });
+      }).toThrow('Expect object containing CAIP-2 chainId and accountType.');
+    });
+  });
+
+  describe('decorator', () => {
+    const params = {};
+    const context: { origin: OriginString } = { origin: MOCK_ORIGIN };
+    it('returns the result of the method implementation', async () => {
+      const caveat = {
+        type: SnapCaveatType.ManageAccounts,
+        value: {
+          chainId: 'eip155:1',
+          accountType: AccountType.EOA,
+        },
+      };
+      const method = jest.fn().mockImplementation(() => 'foo');
+      expect(
+        await manageAccountsCaveatSpecification[
+          SnapCaveatType.ManageAccounts
+        ].decorator(
+          method,
+          caveat,
+        )({ method: 'listAccounts', params, context }),
+      ).toBe('foo');
+    });
+
+    it('throws if the keyring method is incorrect', async () => {
+      const method = jest.fn().mockImplementation(() => 'foo');
+      const caveat = {
+        type: SnapCaveatType.ManageAccounts,
+        value: { foo: {} },
+      };
+      await expect(
+        manageAccountsCaveatSpecification[
+          SnapCaveatType.ManageAccounts
+        ].decorator(
+          method,
+          caveat,
+        )({ method: 'signCoolTx', params, context }),
+      ).rejects.toThrow(`Invalid Keyring Method signCoolTx`);
+    });
   });
 });
