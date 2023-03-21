@@ -2,9 +2,10 @@ import {
   BaseControllerV2 as BaseController,
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
-import { SnapsRegistryDatabase } from '@metamask/snaps-registry';
+import { SnapsRegistryDatabase, verify } from '@metamask/snaps-registry';
 import { SnapId } from '@metamask/snaps-utils';
 import {
+  assert,
   Duration,
   inMilliseconds,
   satisfiesVersionRange,
@@ -20,14 +21,26 @@ import {
 } from './registry';
 
 // TODO: Replace with a Codefi URL
-const SNAP_REGISTRY_URL =
-  'https://cdn.jsdelivr.net/gh/MetaMask/snaps-registry@main/src/registry.json';
+export const SNAP_REGISTRY_URL =
+  'https://cdn.jsdelivr.net/gh/MetaMask/snaps-registry@gh-pages/latest/registry.json';
+
+export const SNAP_REGISTRY_SIGNATURE_URL =
+  'https://cdn.jsdelivr.net/gh/MetaMask/snaps-registry@gh-pages/latest/signature.json';
+
+// TODO: Set public key.
+const SNAP_REGISTRY_PUBLIC_KEY =
+  '0x034ca27b046507d1a9997bddc991b56d96b93d4adac3a96dfe01ce450bfb661455';
+
+type JsonSnapsRegistryUrl = {
+  registry: string;
+  signature: string;
+};
 
 export type JsonSnapsRegistryArgs = {
   messenger: SnapsRegistryMessenger;
   state?: SnapsRegistryState;
   fetchFunction?: typeof fetch;
-  url?: string;
+  url?: JsonSnapsRegistryUrl;
   recentFetchThreshold?: number;
   refetchOnAllowlistMiss?: boolean;
   failOnUnavailableRegistry?: boolean;
@@ -72,7 +85,7 @@ export class JsonSnapsRegistry extends BaseController<
   SnapsRegistryState,
   SnapsRegistryMessenger
 > {
-  #url: string;
+  #url: JsonSnapsRegistryUrl;
 
   #fetchFunction: typeof fetch;
 
@@ -85,7 +98,10 @@ export class JsonSnapsRegistry extends BaseController<
   constructor({
     messenger,
     state,
-    url = SNAP_REGISTRY_URL,
+    url = {
+      registry: SNAP_REGISTRY_URL,
+      signature: SNAP_REGISTRY_SIGNATURE_URL,
+    },
     fetchFunction = globalThis.fetch.bind(globalThis),
     recentFetchThreshold = inMilliseconds(5, Duration.Minute),
     failOnUnavailableRegistry = true,
@@ -127,21 +143,22 @@ export class JsonSnapsRegistry extends BaseController<
   }
 
   async #updateDatabase() {
-    // No-op if we recently fetched the registry
+    // No-op if we recently fetched the registry.
     if (this.#wasRecentlyFetched()) {
       return;
     }
+
     try {
-      const response = await this.#fetchFunction(this.#url);
-      if (!response.ok) {
-        throw new Error('Failed to fetch Snaps registry.');
-      }
-      const db = await response.json();
+      const database = await this.#safeFetch(this.#url.registry);
+      const signature = await this.#safeFetch(this.#url.signature);
+
+      await this.#verifySignature(database, signature);
+
       this.update((state) => {
-        state.database = db;
+        state.database = JSON.parse(database);
         state.lastUpdated = Date.now();
       });
-    } catch {
+    } catch (error) {
       // Ignore
     }
   }
@@ -150,6 +167,7 @@ export class JsonSnapsRegistry extends BaseController<
     if (this.state.database === null) {
       await this.#updateDatabase();
     }
+
     // If the database is still null and we require it, throw.
     if (this.#failOnUnavailableRegistry && this.state.database === null) {
       throw new Error('Snaps registry is unavailable, installation blocked.');
@@ -218,5 +236,42 @@ export class JsonSnapsRegistry extends BaseController<
   async #getMetadata(snapId: SnapId): Promise<SnapsRegistryMetadata | null> {
     const database = await this.#getDatabase();
     return database?.verifiedSnaps[snapId]?.metadata ?? null;
+  }
+
+  /**
+   * Verify the signature of the registry.
+   *
+   * @param database - The registry database.
+   * @param signature - The signature of the registry.
+   * @throws If the signature is invalid.
+   * @private
+   */
+  async #verifySignature(database: string, signature: string) {
+    console.log(JSON.parse(signature));
+
+    const valid = verify({
+      registry: database,
+      signature: JSON.parse(signature),
+      publicKey: SNAP_REGISTRY_PUBLIC_KEY,
+    });
+
+    assert(valid, 'Invalid registry signature.');
+  }
+
+  /**
+   * Fetch the given URL, throwing if the response is not OK.
+   *
+   * @param url - The URL to fetch.
+   * @returns The response body.
+   * @private
+   */
+  async #safeFetch(url: string) {
+    return await this.#fetchFunction(url).then(async (response) => {
+      if (!response.ok) {
+        throw new Error(`Failed to fetch ${url}.`);
+      }
+
+      return await response.text();
+    });
   }
 }

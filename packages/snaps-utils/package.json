@@ -57,7 +57,7 @@
     "@babel/types": "^7.18.7",
     "@metamask/permission-controller": "^3.0.0",
     "@metamask/providers": "^10.2.1",
-    "@metamask/snaps-registry": "^1.1.1",
+    "@metamask/snaps-registry": "^1.2.0",
     "@metamask/snaps-ui": "^0.31.0",
     "@metamask/utils": "^5.0.0",
     "@noble/hashes": "^1.1.3",

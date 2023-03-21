@@ -4,6 +4,7 @@ import {
   MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
 import { SemVerRange, SemVerVersion } from '@metamask/utils';
+import * as secp256k1 from '@noble/secp256k1';
 import fetchMock from 'jest-fetch-mock';
 
 import { getRestrictedSnapsRegistryControllerMessenger } from '../../test-utils';
@@ -43,11 +44,22 @@ const MOCK_DATABASE: SnapsRegistryDatabase = {
   ],
 };
 
+const MOCK_SIGNATURE =
+  '0x3045022100cc049732d4cc8b888162b8b998c9beefcc1de8c4489594c7c504d4aa031223af02206835834ba2b7bec45b2a9e1e72312d69445d6a0f5590a2408bb13931a14f6c8a';
+const MOCK_SIGNATURE_FILE = {
+  signature: MOCK_SIGNATURE,
+  curve: 'secp256k1',
+  format: 'DER',
+};
+
 describe('JsonSnapsRegistry', () => {
   fetchMock.enableMocks();
 
   it('can get entries from the registry', async () => {
-    fetchMock.mockResponse(JSON.stringify(MOCK_DATABASE));
+    fetchMock
+      .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
+      .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
+
     const { messenger } = getRegistry();
     const result = await messenger.call('SnapsRegistry:get', {
       [MOCK_SNAP_ID]: {
@@ -65,9 +77,12 @@ describe('JsonSnapsRegistry', () => {
 
   it('returns unverified for non existing snaps', async () => {
     // Empty database
-    fetchMock.mockResponse(
-      JSON.stringify({ verifiedSnaps: {}, blockedSnaps: [] }),
-    );
+    fetchMock
+      .mockResponseOnce(JSON.stringify({ verifiedSnaps: {}, blockedSnaps: [] }))
+      .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
+
+    jest.spyOn(secp256k1, 'verify').mockReturnValue(true);
+
     const { messenger } = getRegistry();
     const result = await messenger.call('SnapsRegistry:get', {
       [MOCK_SNAP_ID]: {
@@ -84,9 +99,11 @@ describe('JsonSnapsRegistry', () => {
   });
 
   it('returns unverified for non existing versions', async () => {
-    fetchMock.mockResponse(JSON.stringify(MOCK_DATABASE));
-    const { messenger } = getRegistry();
+    fetchMock
+      .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
+      .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
 
+    const { messenger } = getRegistry();
     const result = await messenger.call('SnapsRegistry:get', {
       [MOCK_SNAP_ID]: {
         version: '1.0.1' as SemVerVersion,
@@ -102,9 +119,11 @@ describe('JsonSnapsRegistry', () => {
   });
 
   it('returns unverified if existing snap doesnt match checksum', async () => {
-    fetchMock.mockResponse(JSON.stringify(MOCK_DATABASE));
-    const { messenger } = getRegistry();
+    fetchMock
+      .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
+      .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
 
+    const { messenger } = getRegistry();
     const result = await messenger.call('SnapsRegistry:get', {
       [MOCK_SNAP_ID]: {
         version: '1.0.0' as SemVerVersion,
@@ -120,9 +139,11 @@ describe('JsonSnapsRegistry', () => {
   });
 
   it('returns blocked if snap checksum is on blocklist', async () => {
-    fetchMock.mockResponse(JSON.stringify(MOCK_DATABASE));
-    const { messenger } = getRegistry();
+    fetchMock
+      .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
+      .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
 
+    const { messenger } = getRegistry();
     const result = await messenger.call('SnapsRegistry:get', {
       [MOCK_SNAP_ID]: {
         version: '1.0.0' as SemVerVersion,
@@ -139,9 +160,11 @@ describe('JsonSnapsRegistry', () => {
   });
 
   it('returns blocked if snap version range is on blocklist', async () => {
-    fetchMock.mockResponse(JSON.stringify(MOCK_DATABASE));
-    const { messenger } = getRegistry();
+    fetchMock
+      .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
+      .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
 
+    const { messenger } = getRegistry();
     const result = await messenger.call('SnapsRegistry:get', {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       'npm:@consensys/starknet-snap': {
@@ -160,7 +183,10 @@ describe('JsonSnapsRegistry', () => {
   });
 
   it('refetches the database on allowlist miss if configured', async () => {
-    fetchMock.mockResponse(JSON.stringify(MOCK_DATABASE));
+    fetchMock
+      .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
+      .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
+
     const { messenger } = getRegistry({
       refetchOnAllowlistMiss: true,
       state: {
@@ -184,9 +210,11 @@ describe('JsonSnapsRegistry', () => {
 
   it('returns unverified for unavailable database if failOnUnavailableRegistry is set to false', async () => {
     fetchMock.mockResponse('', { status: 404 });
+
     const { messenger } = getRegistry({
       failOnUnavailableRegistry: false,
     });
+
     const result = await messenger.call('SnapsRegistry:get', {
       [MOCK_SNAP_ID]: {
         version: '1.0.0' as SemVerVersion,
@@ -215,9 +243,30 @@ describe('JsonSnapsRegistry', () => {
     ).rejects.toThrow('Snaps registry is unavailable, installation blocked.');
   });
 
+  it('throws for unavailable signature', async () => {
+    fetchMock
+      .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
+      .mockResponseOnce('', {
+        status: 404,
+      });
+
+    const { messenger } = getRegistry();
+
+    await expect(
+      messenger.call('SnapsRegistry:get', {
+        [MOCK_SNAP_ID]: {
+          version: '1.0.0' as SemVerVersion,
+          checksum: DEFAULT_SNAP_SHASUM,
+        },
+      }),
+    ).rejects.toThrow('Snaps registry is unavailable, installation blocked.');
+  });
+
   describe('getMetadata', () => {
     it('returns the metadata for a verified snap', async () => {
-      fetchMock.mockResponse(JSON.stringify(MOCK_DATABASE));
+      fetchMock
+        .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
+        .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
 
       const { messenger } = getRegistry();
       const result = await messenger.call(
@@ -231,7 +280,9 @@ describe('JsonSnapsRegistry', () => {
     });
 
     it('returns null for a non-verified snap', async () => {
-      fetchMock.mockResponse(JSON.stringify(MOCK_DATABASE));
+      fetchMock
+        .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
+        .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
 
       const { messenger } = getRegistry();
       const result = await messenger.call('SnapsRegistry:getMetadata', 'foo');
