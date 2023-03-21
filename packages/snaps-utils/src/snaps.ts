@@ -343,6 +343,12 @@ export function isCaipChainId(chainId: unknown): chainId is string {
   );
 }
 
+/**
+ * Typeguard to ensure an account follows the CAIP-10 standard.
+ *
+ * @param caip10Account - The account being tested.
+ * @returns `true` if the value is a valid CAIP-10 account, and `false` otherwise.
+ */
 export function isCaipAccount(caip10Account: string): caip10Account is string {
   return (
     typeof caip10Account === 'string' &&
