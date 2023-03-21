@@ -1,7 +1,7 @@
 import {
   Caveat,
   PermissionType,
-  // PermissionConstraint,
+  PermissionConstraint,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
   PermissionValidatorConstraint,
@@ -14,9 +14,9 @@ import {
   isCaipAccount,
   isChainId,
 } from '@metamask/snaps-utils';
-import { Json, NonEmptyArray, assertStruct } from '@metamask/utils';
+import { Json, NonEmptyArray } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
-import { type } from 'superstruct';
+import * as superstruct from 'superstruct';
 
 export const MANAGE_ACCOUNT_PERMISSION_KEY = 'snap_manageAccounts';
 
@@ -53,16 +53,18 @@ type ManageAccountCaveat = {
  * @param value - The raw value from the `initialPermissions`.
  * @returns The caveat specification.
  */
-// export const manageAccountsCaveatMapper = (
-//   value: Json,
-// ): Pick<PermissionConstraint, 'caveats'> => {
-//   return {
-//     caveats: {
-//       type: SnapCaveatType.ManageAccounts,
-//       value,
-//     },
-//   };
-// };
+export const manageAccountsCaveatMapper = (
+  value: Json,
+): Pick<PermissionConstraint, 'caveats'> => {
+  return {
+    caveats: [
+      {
+        type: SnapCaveatType.ManageAccounts,
+        value,
+      },
+    ],
+  };
+};
 
 export type ManageAccountsMethodHooks = {
   /**
@@ -94,8 +96,7 @@ export type ManageAccountsMethodHooks = {
  * @returns Boolean indicating if the value is CAIP-2.
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const validateChainId = (chainId: `${string}:${string}`): boolean =>
-  isChainId(chainId);
+const validateChainId = (chainId: string): boolean => isChainId(chainId);
 
 /**
  * Validate chainId property of manageAccounts caveat according to CAIP-2.
@@ -103,18 +104,19 @@ const validateChainId = (chainId: `${string}:${string}`): boolean =>
  * @param accountType - Caveat property Account Type.
  * @returns Boolean indicating if value is EOA.
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const validateAccountType = (accountType: AccountType): boolean =>
   accountType === AccountType.EOA;
 
-export const validateCaveatManageAccounts = (
-  caveat: Caveat<string, any>,
-): asserts caveat is Caveat<string, ManageAccountCaveat> => {
-  assertStruct(
-    caveat,
-    type({}),
-    'Invalid ManageAccount caveat',
-    ethErrors.rpc.internal,
+export const validateCaveatManageAccounts = (caveat: Caveat<string, any>) => {
+  const caveatStruct = superstruct.object({
+    chainId: superstruct.string(),
+    accountType: superstruct.string(),
+  });
+
+  superstruct.assert(
+    caveat.value,
+    caveatStruct,
+    'Expect object containing chainId and accountType.',
   );
 };
 
@@ -161,7 +163,7 @@ export function manageAccountsImplementation({
     }
     switch (params.action) {
       case ManageAccountsOperation.CreateAccount: {
-        if (params.accountType !== AccountType.EOA) {
+        if (!params.accountType || !validateAccountType(params.accountType)) {
           throw ethErrors.rpc.invalidParams(
             // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
             `Invalid ManageAccount Arguments: Account Type ${params.accountType} is not supported`,
@@ -247,13 +249,7 @@ export const manageAccountsCaveatSpecification: Record<
         return await method(args);
       };
     },
-    validator: (caveat) => {
-      // eslint-disable-next-line no-console
-      console.log('Execute validator for caveat', caveat);
-      throw new Error(
-        'Mock error on manageAccountsCaveatSpecification validator',
-      );
-    },
+    validator: (caveat) => validateCaveatManageAccounts(caveat),
   }),
 };
 

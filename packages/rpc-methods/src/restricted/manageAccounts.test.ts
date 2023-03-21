@@ -7,9 +7,9 @@ import {
   MANAGE_ACCOUNT_PERMISSION_KEY,
   manageAccountsBuilder,
   // manageAccountsCaveatSpecification,
-  // validateCaveatManageAccounts,
+  validateCaveatManageAccounts,
   // specificationBuilder,
-  // manageAccountsCaveatMapper,
+  manageAccountsCaveatMapper,
   manageAccountsImplementation,
   ManageAccountsOperation,
 } from './manageAccounts';
@@ -35,7 +35,31 @@ class SnapKeyringMock {
   removeAccount = async (): Promise<boolean> => true;
 }
 
-// describe('validateCaveatManageAccounts', () => {});
+describe('validateCaveatManageAccounts', () => {
+  it.each([[], null, undefined, 'foo', {}])(
+    'throws if the value is not an object containing accountType and chainId',
+    (value) => {
+      expect(() =>
+        validateCaveatManageAccounts({
+          type: SnapCaveatType.ManageAccounts,
+          value,
+        }),
+      ).toThrow('Expect object containing chainId and accountType.'); // Different error messages for different types
+    },
+  );
+
+  it('should not throw if caveat struct is correct', () => {
+    expect(() =>
+      validateCaveatManageAccounts({
+        type: SnapCaveatType.ManageAccounts,
+        value: {
+          chainId: 'chain-id',
+          accountType: 'account-type',
+        },
+      }),
+    ).not.toThrow();
+  });
+});
 
 describe('specificationBuilder', () => {
   const methodHooks = {
@@ -60,6 +84,16 @@ describe('specificationBuilder', () => {
           caveats: [{ type: 'foo', value: 'bar' }],
         }),
       ).toThrow('Expected a single "manageAccounts" caveat.');
+
+      expect(() =>
+        // @ts-expect-error Missing other required permission types.
+        specification.validator({
+          caveats: [
+            { type: 'manageAccounts', value: [] },
+            { type: 'manageAccounts', value: [] },
+          ],
+        }),
+      ).toThrow('Expected a single "manageAccounts" caveat.');
     });
 
     it('should not throw and error if have the caveat has the correct form values for "manageAccounts"', () => {
@@ -78,7 +112,26 @@ describe('specificationBuilder', () => {
   });
 });
 
-// describe('manageAccountsCaveatMapper', () => {});
+describe('manageAccountsCaveatMapper', () => {
+  it('returns a caveat value for an object containing chainId and accountType', () => {
+    expect(
+      manageAccountsCaveatMapper({
+        chainId: 'eip155:1',
+        accountType: 'externally-owned-account',
+      }),
+    ).toStrictEqual({
+      caveats: [
+        {
+          type: SnapCaveatType.ManageAccounts,
+          value: {
+            chainId: 'eip155:1',
+            accountType: 'externally-owned-account',
+          },
+        },
+      ],
+    });
+  });
+});
 
 describe('builder', () => {
   it('has the expected shape', () => {
