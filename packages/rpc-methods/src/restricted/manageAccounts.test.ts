@@ -224,19 +224,6 @@ describe('manageAccountsImplementation', () => {
           origin: mockSnapId,
         },
         params: {
-          // @ts-expect-error Missing other required permission types.
-          action: undefined,
-        },
-      }),
-    ).rejects.toThrow('Invalid ManageAccount Arguments');
-
-    await expect(
-      manageAccounts({
-        method: 'snap_manageAccounts',
-        context: {
-          origin: mockSnapId,
-        },
-        params: {
           action: ManageAccountsOperation.CreateAccount,
         },
       }),

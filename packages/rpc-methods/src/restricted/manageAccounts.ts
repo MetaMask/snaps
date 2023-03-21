@@ -103,15 +103,6 @@ export type ManageAccountsMethodHooks = {
 /**
  * Validate chainId property of manageAccounts caveat according to CAIP-2.
  *
- * @param chainId - Caveat property Chain ID.
- * @returns Boolean indicating if the value is CAIP-2.
- */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const validateChainId = (chainId: string): boolean => isChainId(chainId);
-
-/**
- * Validate chainId property of manageAccounts caveat according to CAIP-2.
- *
  * @param accountType - Caveat property Account Type.
  * @returns Boolean indicating if value is EOA.
  */
@@ -166,7 +157,7 @@ export function manageAccountsImplementation({
       params,
     } = options;
 
-    if (!params?.action) {
+    if (!params || !params.action) {
       throw ethErrors.rpc.invalidParams('Invalid ManageAccount Arguments');
     }
 
@@ -176,7 +167,7 @@ export function manageAccountsImplementation({
       const accounts = await keyring.listAccounts(origin);
       return accounts;
     } else {
-      if (!params?.accountId) {
+      if (!params.accountId) {
         throw ethErrors.rpc.invalidParams(
           'Invalid ManageAccount Arguments: Missing accountId',
         );
@@ -184,7 +175,7 @@ export function manageAccountsImplementation({
       // validate CAIP-10
       if (!isCaipAccount(params.accountId)) {
         throw ethErrors.rpc.invalidParams(
-          `Invalid ManageAccount Arguments: Invalid CAIP10 Account ${params?.accountId}`,
+          `Invalid ManageAccount Arguments: Invalid CAIP10 Account ${params.accountId}`,
         );
       }
       switch (params.action) {
@@ -271,7 +262,7 @@ export const manageAccountsCaveatSpecification: Record<
     type: SnapCaveatType.ManageAccounts,
     decorator: (
       method,
-      // @tslint:disable-next-line
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       caveat: Caveat<SnapCaveatType.ManageAccounts, ManageAccountCaveat>,
     ) => {
       return async (args) => {
