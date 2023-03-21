@@ -7,6 +7,7 @@ import { SnapId } from '@metamask/snaps-utils';
 import {
   assert,
   Duration,
+  Hex,
   inMilliseconds,
   satisfiesVersionRange,
 } from '@metamask/utils';
@@ -21,15 +22,11 @@ import {
 } from './registry';
 
 // TODO: Replace with a Codefi URL
-export const SNAP_REGISTRY_URL =
+const SNAP_REGISTRY_URL =
   'https://cdn.jsdelivr.net/gh/MetaMask/snaps-registry@gh-pages/latest/registry.json';
 
-export const SNAP_REGISTRY_SIGNATURE_URL =
+const SNAP_REGISTRY_SIGNATURE_URL =
   'https://cdn.jsdelivr.net/gh/MetaMask/snaps-registry@gh-pages/latest/signature.json';
-
-// TODO: Set public key.
-const SNAP_REGISTRY_PUBLIC_KEY =
-  '0x034ca27b046507d1a9997bddc991b56d96b93d4adac3a96dfe01ce450bfb661455';
 
 type JsonSnapsRegistryUrl = {
   registry: string;
@@ -44,6 +41,7 @@ export type JsonSnapsRegistryArgs = {
   recentFetchThreshold?: number;
   refetchOnAllowlistMiss?: boolean;
   failOnUnavailableRegistry?: boolean;
+  publicKey?: Hex;
 };
 
 export type GetResult = {
@@ -87,6 +85,10 @@ export class JsonSnapsRegistry extends BaseController<
 > {
   #url: JsonSnapsRegistryUrl;
 
+  #publicKey?: Hex;
+
+  #database: SnapsRegistryDatabase | null = null;
+
   #fetchFunction: typeof fetch;
 
   #recentFetchThreshold: number;
@@ -102,6 +104,7 @@ export class JsonSnapsRegistry extends BaseController<
       registry: SNAP_REGISTRY_URL,
       signature: SNAP_REGISTRY_SIGNATURE_URL,
     },
+    publicKey,
     fetchFunction = globalThis.fetch.bind(globalThis),
     recentFetchThreshold = inMilliseconds(5, Duration.Minute),
     failOnUnavailableRegistry = true,
@@ -120,6 +123,7 @@ export class JsonSnapsRegistry extends BaseController<
       },
     });
     this.#url = url;
+    this.#publicKey = publicKey;
     this.#fetchFunction = fetchFunction;
     this.#recentFetchThreshold = recentFetchThreshold;
     this.#refetchOnAllowlistMiss = refetchOnAllowlistMiss;
@@ -152,7 +156,9 @@ export class JsonSnapsRegistry extends BaseController<
       const database = await this.#safeFetch(this.#url.registry);
       const signature = await this.#safeFetch(this.#url.signature);
 
-      await this.#verifySignature(database, signature);
+      if (this.#publicKey) {
+        await this.#verifySignature(database, signature);
+      }
 
       this.update((state) => {
         state.database = JSON.parse(database);
@@ -247,12 +253,12 @@ export class JsonSnapsRegistry extends BaseController<
    * @private
    */
   async #verifySignature(database: string, signature: string) {
-    console.log(JSON.parse(signature));
+    assert(this.#publicKey, 'No public key provided.');
 
     const valid = verify({
       registry: database,
       signature: JSON.parse(signature),
-      publicKey: SNAP_REGISTRY_PUBLIC_KEY,
+      publicKey: this.#publicKey,
     });
 
     assert(valid, 'Invalid registry signature.');

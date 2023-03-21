@@ -4,16 +4,25 @@ import {
   MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
 import { SemVerRange, SemVerVersion } from '@metamask/utils';
-import * as secp256k1 from '@noble/secp256k1';
 import fetchMock from 'jest-fetch-mock';
 
 import { getRestrictedSnapsRegistryControllerMessenger } from '../../test-utils';
 import { JsonSnapsRegistry, JsonSnapsRegistryArgs } from './json';
 import { SnapsRegistryStatus } from './registry';
 
+const MOCK_PUBLIC_KEY =
+  '0x034ca27b046507d1a9997bddc991b56d96b93d4adac3a96dfe01ce450bfb661455';
+
 const getRegistry = (args?: Partial<JsonSnapsRegistryArgs>) => {
   const messenger = getRestrictedSnapsRegistryControllerMessenger();
-  return { registry: new JsonSnapsRegistry({ messenger, ...args }), messenger };
+  return {
+    registry: new JsonSnapsRegistry({
+      messenger,
+      publicKey: MOCK_PUBLIC_KEY,
+      ...args,
+    }),
+    messenger,
+  };
 };
 
 const MOCK_DATABASE: SnapsRegistryDatabase = {
@@ -55,6 +64,10 @@ const MOCK_SIGNATURE_FILE = {
 describe('JsonSnapsRegistry', () => {
   fetchMock.enableMocks();
 
+  afterEach(() => {
+    fetchMock.resetMocks();
+  });
+
   it('can get entries from the registry', async () => {
     fetchMock
       .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
@@ -80,8 +93,6 @@ describe('JsonSnapsRegistry', () => {
     fetchMock
       .mockResponseOnce(JSON.stringify({ verifiedSnaps: {}, blockedSnaps: [] }))
       .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
-
-    jest.spyOn(secp256k1, 'verify').mockReturnValue(true);
 
     const { messenger } = getRegistry();
     const result = await messenger.call('SnapsRegistry:get', {
@@ -229,8 +240,30 @@ describe('JsonSnapsRegistry', () => {
     });
   });
 
+  it('does not verify the signature if no public key is provided', async () => {
+    fetchMock.mockResponse(JSON.stringify(MOCK_DATABASE));
+
+    const { messenger } = getRegistry({
+      publicKey: undefined,
+    });
+
+    const result = await messenger.call('SnapsRegistry:get', {
+      [MOCK_SNAP_ID]: {
+        version: '1.0.0' as SemVerVersion,
+        checksum: DEFAULT_SNAP_SHASUM,
+      },
+    });
+
+    expect(result).toStrictEqual({
+      [MOCK_SNAP_ID]: {
+        status: SnapsRegistryStatus.Verified,
+      },
+    });
+  });
+
   it('throws for unavailable database by default', async () => {
     fetchMock.mockResponse('', { status: 404 });
+
     const { messenger } = getRegistry();
 
     await expect(
