@@ -45,7 +45,7 @@ describe('validateCaveatManageAccounts', () => {
           type: SnapCaveatType.ManageAccounts,
           value,
         }),
-      ).toThrow('Expect object containing CAIP-2 chainId and accountType.'); // Different error messages for different types
+      ).toThrow('Expect object containing CAIP-2 chainId and accountType.');
     },
   );
 
@@ -276,7 +276,7 @@ describe('manageAccountsImplementation', () => {
     const createAccountSuccessResponse = await manageAccounts({
       method: 'snap_manageAccounts',
       context: {
-        origin: mockSnapId, // snap id origin
+        origin: mockSnapId,
       },
       params: {
         action: ManageAccountsOperation.CreateAccount,
