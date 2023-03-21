@@ -4,6 +4,9 @@ const originalAddEventListener = globalThis.addEventListener;
 const originalRemoveEventListener = globalThis.removeEventListener;
 const originalProcess = globalThis.process;
 
+globalThis.addEventListener = () => undefined;
+globalThis.removeEventListener = () => undefined;
+
 describe('addEventListener', () => {
   afterEach(() => {
     Object.assign(globalThis, {

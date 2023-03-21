@@ -1,3 +1,4 @@
+import { ApprovalRequest } from '@metamask/approval-controller';
 import {
   ActionConstraint,
   ActionHandler,
@@ -24,6 +25,7 @@ import {
   SubjectType,
 } from '@metamask/subject-metadata-controller';
 import { Json } from '@metamask/utils';
+import { ethErrors } from 'eth-rpc-errors';
 
 import { CronjobControllerActions, CronjobControllerEvents } from '../cronjob';
 import {
@@ -64,6 +66,56 @@ export class MockControllerMessenger<
     super.registerActionHandler(actionType, handler);
   }
 }
+
+export class MockApprovalController {
+  #approval?: {
+    request: Partial<ApprovalRequest<Record<string, Json>>>;
+    promise: {
+      resolve: (value?: unknown) => void;
+      reject: (value?: unknown) => void;
+    };
+  };
+
+  async addRequest(request: { requestData?: Record<string, Json> }) {
+    const promise = new Promise((resolve, reject) => {
+      this.#approval = {
+        promise: { resolve, reject },
+        request,
+      };
+    });
+
+    return promise;
+  }
+
+  updateRequestStateAndApprove({
+    requestState,
+  }: {
+    requestState: Record<string, Json>;
+  }) {
+    if (this.#approval) {
+      if (requestState.loading === false && !requestState.error) {
+        this.#approval.promise.resolve({
+          permissions: requestState.permissions,
+          ...this.#approval.request.requestData,
+        });
+      }
+    }
+  }
+
+  updateRequestStateAndReject({
+    requestState,
+  }: {
+    requestState: Record<string, Json>;
+  }) {
+    if (this.#approval) {
+      if (requestState.loading === false && !requestState.error) {
+        this.#approval.promise.reject(ethErrors.provider.userRejectedRequest());
+      }
+    }
+  }
+}
+
+export const approvalControllerMock = new MockApprovalController();
 
 export const snapConfirmPermissionKey = 'snap_confirm';
 
@@ -159,9 +211,14 @@ export const getControllerMessenger = () => {
 
   messenger.registerActionHandler(
     'ApprovalController:addRequest',
-    async (request) => {
-      return Promise.resolve(request.requestData);
-    },
+    approvalControllerMock.addRequest.bind(approvalControllerMock),
+  );
+
+  messenger.registerActionHandler(
+    'ApprovalController:updateRequestState',
+    approvalControllerMock.updateRequestStateAndApprove.bind(
+      approvalControllerMock,
+    ),
   );
 
   messenger.registerActionHandler(
@@ -254,6 +311,7 @@ export const getSnapControllerMessenger = (
     ],
     allowedActions: [
       'ApprovalController:addRequest',
+      'ApprovalController:updateRequestState',
       'ExecutionService:executeSnap',
       'ExecutionService:terminateAllSnaps',
       'ExecutionService:terminateSnap',

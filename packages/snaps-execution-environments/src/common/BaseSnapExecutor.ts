@@ -36,7 +36,13 @@ import { createEndowments } from './endowments';
 import { addEventListener, removeEventListener } from './globalEvents';
 import { wrapKeyring } from './keyring';
 import { sortParamKeys } from './sortParams';
-import { constructError, proxyStreamProvider, withTeardown } from './utils';
+import {
+  assertEthereumOutboundRequest,
+  assertSnapOutboundRequest,
+  constructError,
+  proxyStreamProvider,
+  withTeardown,
+} from './utils';
 import {
   ExecuteSnapRequestArgumentsStruct,
   PingRequestArgumentsStruct,
@@ -93,6 +99,8 @@ const EXECUTION_ENVIRONMENT_METHODS = {
     params: ['target', 'handler', 'origin', 'request'],
   },
 };
+
+type Methods = typeof EXECUTION_ENVIRONMENT_METHODS;
 
 export class BaseSnapExecutor {
   private readonly snapData: Map<string, SnapData>;
@@ -200,10 +208,7 @@ export class BaseSnapExecutor {
       return;
     }
 
-    const methodObject =
-      EXECUTION_ENVIRONMENT_METHODS[
-        method as keyof typeof EXECUTION_ENVIRONMENT_METHODS
-      ];
+    const methodObject = EXECUTION_ENVIRONMENT_METHODS[method as keyof Methods];
 
     // support params by-name and by-position
     const paramsAsArray = sortParamKeys(methodObject.params, params);
@@ -389,11 +394,7 @@ export class BaseSnapExecutor {
     const originalRequest = provider.request.bind(provider);
 
     const request = async (args: RequestArguments) => {
-      assert(
-        String.prototype.startsWith.call(args.method, 'wallet_') ||
-          String.prototype.startsWith.call(args.method, 'snap_'),
-        'The global Snap API only allows RPC methods starting with `wallet_*` and `snap_*`.',
-      );
+      assertSnapOutboundRequest(args);
       this.notify({ method: 'OutboundRequest' });
       try {
         return await withTeardown(originalRequest(args), this as any);
@@ -433,14 +434,7 @@ export class BaseSnapExecutor {
     const originalRequest = provider.request.bind(provider);
 
     const request = async (args: RequestArguments) => {
-      assert(
-        !String.prototype.startsWith.call(args.method, 'snap_'),
-        ethErrors.rpc.methodNotFound({
-          data: {
-            method: args.method,
-          },
-        }),
-      );
+      assertEthereumOutboundRequest(args);
       this.notify({ method: 'OutboundRequest' });
       try {
         return await withTeardown(originalRequest(args), this as any);

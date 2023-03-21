@@ -25,9 +25,7 @@ import {
   Session,
   TruncatedSnap,
   SnapId,
-  fromEntries,
   SessionNamespace,
-  flatten,
   isAccountIdArray,
   Namespaces,
   logError,
@@ -180,7 +178,7 @@ export class MultiChainController extends BaseController<
     const filteredSnaps = getRunnableSnaps(snaps);
 
     // Get available namespaces supported by currently installed Snaps.
-    const availableNamespaces = fromEntries(
+    const availableNamespaces = Object.fromEntries(
       await Promise.all(
         filteredSnaps.map(async (snap) => [
           snap.id,
@@ -252,7 +250,7 @@ export class MultiChainController extends BaseController<
     // need to show a prompt. This is handled by `resolveConflicts`.
     const resolvedAccounts = hasConflicts
       ? await this.resolveConflicts(origin, possibleAccounts)
-      : fromEntries(
+      : Object.fromEntries(
           Object.entries(possibleAccounts).map(
             ([namespace, snapAndAccounts]) => [
               namespace,
@@ -474,7 +472,7 @@ export class MultiChainController extends BaseController<
     requestedNamespaces: Record<NamespaceId, RequestNamespace>,
   ): Promise<Record<NamespaceId, { snapId: SnapId; accounts: AccountId[] }[]>> {
     const dedupedSnaps = [
-      ...new Set(flatten(Object.values(namespacesAndSnaps))),
+      ...new Set(Object.values(namespacesAndSnaps).flat()),
     ] as SnapId[];
 
     const allAccounts = await dedupedSnaps.reduce<

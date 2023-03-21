@@ -6,6 +6,7 @@
 
 export * from './common';
 export * from './manifest';
-export * from './server';
+export * from './sleep';
 export * from './snap';
+export * from './spy';
 export * from './stream';

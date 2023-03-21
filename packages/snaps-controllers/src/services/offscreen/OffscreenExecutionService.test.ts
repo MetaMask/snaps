@@ -1,4 +1,3 @@
-import { OffscreenExecutionService } from '@metamask/snaps-controllers';
 import { createService } from '@metamask/snaps-controllers/test-utils';
 import {
   DEFAULT_SNAP_BUNDLE,
@@ -13,6 +12,7 @@ import {
 } from '@metamask/utils';
 
 import { getMockedFunction } from '../../test-utils/mock';
+import { OffscreenExecutionService } from './OffscreenExecutionService';
 
 const DOCUMENT_URL = new URL('https://foo');
 const FRAME_URL = new URL('https://bar');

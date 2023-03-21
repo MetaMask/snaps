@@ -1,0 +1,62 @@
+name: Publish a preview build
+
+on:
+  issue_comment:
+    types: created
+
+jobs:
+  is-fork-pull-request:
+    name: Determine whether this issue comment was on a pull request from a fork
+    if: ${{ github.event.issue.pull_request && startsWith(github.event.comment.body, '@metamaskbot publish-preview') }}
+    runs-on: ubuntu-latest
+    outputs:
+      IS_FORK: ${{ steps.is-fork.outputs.IS_FORK }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Determine whether this PR is from a fork
+        id: is-fork
+        run: echo "IS_FORK=$(gh pr view --json isCrossRepository --jq '.isCrossRepository' "${PR_NUMBER}" )" >> "$GITHUB_OUTPUT"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+
+  publish-preview:
+    name: Publish build preview
+    needs: is-fork-pull-request
+    permissions:
+      pull-requests: write
+    # This ensures we don't publish on forks. We can't trust forks with this token.
+    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Checkout pull request
+        run: gh pr checkout "${PR_NUMBER}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@MetaMask'
+      - run: yarn --immutable
+      - name: Get commit SHA
+        id: commit-sha
+        run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+      - run: yarn prepare-preview-builds ${{ steps.commit-sha.outputs.COMMIT_SHA }}
+      - run: yarn build
+      - name: Publish preview build
+        run: yarn publish-previews
+        env:
+          YARN_NPM_AUTH_TOKEN: ${{ secrets.PUBLISH_PREVIEW_NPM_TOKEN }}
+      - name: Generate preview build message
+        run: yarn ts-node scripts/generate-preview-build-message.ts
+      - name: Post build preview in comment
+        run: gh pr comment "${PR_NUMBER}" --body-file preview-build-message.txt
+        env:
+          COMMIT_SHA: ${{ steps.commit-sha.outputs.COMMIT_SHA }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}

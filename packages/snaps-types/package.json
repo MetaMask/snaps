@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-types",
-  "version": "0.30.0",
+  "version": "0.31.0",
   "description": "TypeScript types for developing MetaMask Snaps.",
   "repository": {
     "type": "git",
@@ -12,6 +12,8 @@
     "dist"
   ],
   "scripts": {
+    "test": "echo \"N/A\" && exit 0",
+    "test:ci": "yarn test",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
@@ -21,13 +23,15 @@
     "build": "yarn build:tsc",
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
+    "prepare-manifest:preview": "../../scripts/prepare-preview-manifest.sh",
+    "publish:preview": "yarn npm publish --tag preview",
     "publish:package": "../../scripts/publish-package.sh"
   },
   "dependencies": {
     "@metamask/providers": "^10.2.0",
-    "@metamask/rpc-methods": "^0.30.0",
-    "@metamask/snaps-utils": "^0.30.0",
-    "@metamask/utils": "^3.4.1"
+    "@metamask/rpc-methods": "^0.31.0",
+    "@metamask/snaps-utils": "^0.31.0",
+    "@metamask/utils": "^5.0.0"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.0.3",

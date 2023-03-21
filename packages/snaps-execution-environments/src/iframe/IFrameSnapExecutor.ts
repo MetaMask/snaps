@@ -1,5 +1,8 @@
 import ObjectMultiplex from '@metamask/object-multiplex';
-import { WindowPostMessageStream } from '@metamask/post-message-stream';
+import {
+  BasePostMessageStream,
+  WindowPostMessageStream,
+} from '@metamask/post-message-stream';
 import { logError, SNAP_STREAM_NAMES } from '@metamask/snaps-utils';
 import pump from 'pump';
 
@@ -11,21 +14,22 @@ export class IFrameSnapExecutor extends BaseSnapExecutor {
    * Initialize the IFrameSnapExecutor. This creates a post message stream from
    * and to the parent window, for two-way communication with the iframe.
    *
+   * @param stream - The stream to use for communication.
    * @returns An instance of `IFrameSnapExecutor`, with the initialized post
    * message streams.
    */
-  static initialize() {
-    log('Worker: Connecting to parent.');
-
-    const parentStream = new WindowPostMessageStream({
+  static initialize(
+    stream: BasePostMessageStream = new WindowPostMessageStream({
       name: 'child',
       target: 'parent',
       targetWindow: self.parent,
       targetOrigin: '*',
-    });
+    }),
+  ) {
+    log('Worker: Connecting to parent.');
 
     const mux = new ObjectMultiplex();
-    pump(parentStream, mux, parentStream, (error) => {
+    pump(stream, mux, stream, (error) => {
       if (error) {
         logError(`Parent stream failure, closing worker.`, error);
       }

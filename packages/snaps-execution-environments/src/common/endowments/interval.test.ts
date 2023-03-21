@@ -1,6 +1,8 @@
 import interval from './interval';
 
 describe('Interval endowments', () => {
+  jest.useFakeTimers();
+
   it('has expected properties', () => {
     expect(interval).toMatchObject({
       names: ['setInterval', 'clearInterval'],
@@ -19,37 +21,43 @@ describe('Interval endowments', () => {
     const { setInterval: _setInterval, clearInterval: _clearInterval } =
       interval.factory();
 
-    expect(
-      await new Promise((resolve, reject) => {
-        const handle = _setInterval(reject, 100);
-        _clearInterval(handle);
-        _setInterval(resolve, 200);
-      }),
-    ).toBeUndefined();
-  }, 300);
+    const promise = new Promise((resolve, reject) => {
+      const handle = _setInterval(reject, 100);
+      _clearInterval(handle);
+      _setInterval(resolve, 200);
+    });
+
+    jest.advanceTimersByTime(300);
+
+    expect(await promise).toBeUndefined();
+  });
 
   it('teardownFunction should clear intervals', async () => {
     const { setInterval: _setInterval, teardownFunction } = interval.factory();
 
-    expect(
-      await new Promise((resolve, reject) => {
-        _setInterval(reject, 100);
-        teardownFunction();
-        setInterval(resolve, 200);
-      }),
-    ).toBeUndefined();
-  }, 300);
+    const promise = new Promise((resolve, reject) => {
+      _setInterval(reject, 100);
+      teardownFunction();
+      setInterval(resolve, 200);
+    });
+
+    jest.advanceTimersByTime(300);
+
+    expect(await promise).toBeUndefined();
+  });
 
   it('should not be able to clear an interval created with the global setInterval', async () => {
     const { clearInterval: _clearInterval } = interval.factory();
 
-    expect(
-      await new Promise((resolve) => {
-        const handle = setInterval(resolve, 100);
-        _clearInterval(handle as any);
-      }),
-    ).toBeUndefined();
-  }, 200);
+    const promise = new Promise((resolve) => {
+      const handle = setInterval(resolve, 100);
+      _clearInterval(handle as any);
+    });
+
+    jest.advanceTimersByTime(200);
+
+    expect(await promise).toBeUndefined();
+  });
 
   it('the attenuated setInterval should throw if passed a non-function', () => {
     const { setInterval: _setInterval } = interval.factory();

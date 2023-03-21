@@ -37,6 +37,10 @@ module.exports = {
       files: ['**/*.js'],
       extends: ['@metamask/eslint-config-nodejs'],
 
+      parserOptions: {
+        ecmaVersion: 2020,
+      },
+
       rules: {
         // This prevents using Node.js and/or browser specific globals. We
         // currently use both in our codebase, so this rule is disabled.

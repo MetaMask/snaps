@@ -3,8 +3,6 @@ import { join } from 'path';
 
 import { validateFilePath } from './fs';
 
-const WORKER_PATH = join(__dirname, 'eval-worker.js');
-
 /**
  * Spawn a new process to run the provided bundle in.
  *
@@ -16,7 +14,7 @@ export async function evalBundle(bundlePath: string): Promise<null> {
   await validateFilePath(bundlePath);
 
   return new Promise((resolve, reject) => {
-    const worker = fork(WORKER_PATH, [bundlePath]);
+    const worker = fork(join(__dirname, 'eval-worker.js'), [bundlePath]);
 
     worker.on('exit', (exitCode: number) => {
       if (exitCode === 0) {

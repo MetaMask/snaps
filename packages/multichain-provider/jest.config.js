@@ -12,9 +12,4 @@ module.exports = deepmerge(baseConfig, {
       statements: 100,
     },
   },
-  testEnvironment: '<rootDir>/jest.environment.js',
-  testEnvironmentOptions: {
-    customExportConditions: ['node', 'node-addons'],
-  },
-  testTimeout: 2500,
 });

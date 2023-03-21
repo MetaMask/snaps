@@ -12,6 +12,8 @@ import {
 } from '@metamask/snaps-utils/test-utils';
 import { createFsFromVolume, IFs, Volume } from 'memfs';
 import { IPromisesAPI } from 'memfs/lib/promises';
+import * as os from 'os';
+import * as pathUtils from 'path';
 import webpack, { Stats, Configuration } from 'webpack';
 
 import SnapsWebpackPlugin, { Options } from './plugin';
@@ -177,7 +179,9 @@ describe('SnapsWebpackPlugin', () => {
     });
 
     expect(mock).toHaveBeenCalledTimes(1);
-    expect(mock).toHaveBeenCalledWith('/lib/foo.js');
+    expect(mock).toHaveBeenCalledWith(
+      pathUtils.resolve(os.tmpdir(), 'snaps-bundle.js'),
+    );
   });
 
   it('checks the manifest if configured', async () => {

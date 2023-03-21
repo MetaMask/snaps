@@ -16,23 +16,23 @@ describe('Crypto endowment', () => {
   });
 
   it('returns crypto from rootRealmGlobal', () => {
-    Object.defineProperty(window, 'crypto', {
+    Object.defineProperty(globalThis, 'crypto', {
       value: {},
       writable: true,
     });
 
-    Object.defineProperty(window, 'SubtleCrypto', {
+    Object.defineProperty(globalThis, 'SubtleCrypto', {
       value: () => undefined,
       writable: true,
     });
 
     expect(crypto.factory()).toStrictEqual({
-      crypto: window.crypto,
-      SubtleCrypto: window.SubtleCrypto,
+      crypto: globalThis.crypto,
+      SubtleCrypto: globalThis.SubtleCrypto,
     });
 
-    Object.assign(window, {
-      ...window,
+    Object.assign(globalThis, {
+      ...globalThis,
       crypto: undefined,
       SubtleCrypto: undefined,
     });

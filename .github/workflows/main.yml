@@ -1,0 +1,71 @@
+name: Main
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check-workflows:
+    name: Check workflows
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Download actionlint
+        id: download-actionlint
+        run: bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/7fdc9630cc360ea1a469eed64ac6d78caeda1234/scripts/download-actionlint.bash) 1.6.22
+        shell: bash
+      - name: Check workflow files
+        run: ${{ steps.download-actionlint.outputs.executable }} -color
+        shell: bash
+
+  lint-build-test:
+    name: Build, lint, and test
+    needs: check-workflows
+    uses: ./.github/workflows/build-lint-test.yml
+
+  is-release:
+    name: Determine whether this is a release merge commit
+    needs: lint-build-test
+    # Release merge commits come from `github-actions`.
+    if: startsWith(github.event.commits[0].author.name, 'github-actions')
+    outputs:
+      IS_RELEASE: ${{ steps.is-release.outputs.IS_RELEASE }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: MetaMask/action-is-release@v1
+        id: is-release
+
+  publish-release:
+    name: Publish release
+    needs: is-release
+    if: needs.is-release.outputs.IS_RELEASE == 'true'
+    permissions:
+      contents: write
+    uses: ./.github/workflows/publish-release.yml
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  all-jobs-complete:
+    name: All jobs complete
+    runs-on: ubuntu-latest
+    needs: lint-build-test
+    outputs:
+      passed: ${{ steps.set-output.outputs.passed }}
+    steps:
+      - name: Set passed output
+        id: set-output
+        run: echo "passed=true" >> "$GITHUB_OUTPUT"
+
+  all-jobs-pass:
+    name: All jobs pass
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    needs: all-jobs-complete
+    steps:
+      - name: Check that all jobs have passed
+        run: |
+          passed="${{ needs.all-jobs-complete.outputs.passed }}"
+          if [[ $passed != "true" ]]; then
+            exit 1
+          fi

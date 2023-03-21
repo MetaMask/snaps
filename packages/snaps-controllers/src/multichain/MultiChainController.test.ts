@@ -1,7 +1,7 @@
 /* eslint-disable jest/prefer-strict-equal */
 
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
-import { fromEntries, getSnapChecksum } from '@metamask/snaps-utils';
+import { getSnapChecksum } from '@metamask/snaps-utils';
 import {
   MOCK_ORIGIN,
   MOCK_SNAP_ID,
@@ -228,7 +228,7 @@ describe('MultiChainController', () => {
             assert(requestData?.possibleAccounts);
 
             return Promise.resolve(
-              fromEntries(
+              Object.fromEntries(
                 Object.entries(requestData.possibleAccounts).map(
                   ([namespace, snapAndAccounts]) => [
                     namespace,

@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-ui",
-  "version": "0.30.0",
+  "version": "0.31.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps-monorepo.git"
@@ -21,10 +21,12 @@
     "build": "tsc --project tsconfig.build.json",
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
+    "prepare-manifest:preview": "../../scripts/prepare-preview-manifest.sh",
+    "publish:preview": "yarn npm publish --tag preview",
     "publish:package": "../../scripts/publish-package.sh"
   },
   "dependencies": {
-    "@metamask/utils": "^3.4.1",
+    "@metamask/utils": "^5.0.0",
     "superstruct": "^1.0.3"
   },
   "devDependencies": {
