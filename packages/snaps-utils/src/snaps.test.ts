@@ -9,6 +9,7 @@ import {
   isSnapPermitted,
   HttpSnapIdStruct,
   isCaipChainId,
+  isCaipAccount,
   LocalSnapIdStruct,
   NpmSnapIdStruct,
   assertIsValidSnapId,
@@ -81,6 +82,24 @@ describe('isCaipChainId', () => {
     'cosmos:cosmoshub-2',
   ])('returns true for valid IDs (#%#)', (value) => {
     expect(isCaipChainId(value)).toBe(true);
+  });
+});
+
+describe('isCaipAccount', () => {
+  it.each([undefined, {}, null, true, 2])(
+    'returns false for non-strings (#%#)',
+    (value) => {
+      expect(isCaipAccount(value)).toBe(false);
+    },
+  );
+
+  it.each([
+    'eip155:1:0xab16a96D359eC26a11e2C2b3d8f8B8942d5Bfcdb',
+    'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
+    'cosmos:cosmoshub-3:cosmos1t2uflqwqe0fsj0shcfkrvpukewcw40yjj6hdc0',
+    'hedera:mainnet:0.0.1234567890-zbhlt',
+  ])('returns true for valid IDs (#%#)', (value) => {
+    expect(isCaipAccount(value)).toBe(true);
   });
 });
 

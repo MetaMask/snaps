@@ -349,7 +349,7 @@ export function isCaipChainId(chainId: unknown): chainId is string {
  * @param caip10Account - The account being tested.
  * @returns `true` if the value is a valid CAIP-10 account, and `false` otherwise.
  */
-export function isCaipAccount(caip10Account: string): caip10Account is string {
+export function isCaipAccount(caip10Account: unknown): caip10Account is string {
   return (
     typeof caip10Account === 'string' &&
     /^(?<namespace>[-a-z0-9]{3,8}):(?<reference>[-a-zA-Z0-9]{1,32}):(?<address>[-.%a-zA-Z0-9]{1,128})$/u.test(
