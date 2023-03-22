@@ -2300,7 +2300,7 @@ export class SnapController extends BaseController<
       permissionKeys.some((key) => handlerPermissions.includes(key)),
       `A snap must request at least one of the following permissions: ${handlerPermissions.join(
         ', ',
-      )} `,
+      )}.`,
     );
 
     const excludedPermissionErrors = permissionKeys.reduce<string[]>(
