@@ -18,6 +18,8 @@ import { NonEmptyArray, assertStruct } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 import { boolean, enums, object, optional, type } from 'superstruct';
 
+import { MethodHooksObject } from '../utils';
+
 const targetKey = 'snap_getBip32PublicKey';
 
 export type GetBip32PublicKeyMethodHooks = {
@@ -110,13 +112,15 @@ const specificationBuilder: PermissionSpecificationBuilder<
   };
 };
 
+const methodHooks: MethodHooksObject<GetBip32PublicKeyMethodHooks> = {
+  getMnemonic: true,
+  getUnlockPromise: true,
+};
+
 export const getBip32PublicKeyBuilder = Object.freeze({
   targetKey,
   specificationBuilder,
-  methodHooks: {
-    getMnemonic: true,
-    getUnlockPromise: true,
-  },
+  methodHooks,
 } as const);
 
 /**
