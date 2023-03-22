@@ -105,6 +105,8 @@ export const PermissionsStruct = type({
     object({ jobs: CronjobSpecificationArrayStruct }),
   ),
   'endowment:rpc': optional(RpcOriginsStruct),
+  snap_dialog: optional(object({})),
+  // TODO: Remove
   snap_confirm: optional(object({})),
   snap_manageState: optional(object({})),
   snap_notify: optional(object({})),
