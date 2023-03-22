@@ -3252,6 +3252,7 @@ __metadata:
     browserify: ^17.0.0
     chokidar: ^3.5.2
     clet: ^1.0.1
+    cross-fetch: ^3.1.5
     deepmerge: ^4.2.2
     eslint: ^8.27.0
     eslint-config-prettier: ^8.5.0
@@ -8199,7 +8200,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-fetch@npm:3.1.5, cross-fetch@npm:^3.0.4":
+"cross-fetch@npm:3.1.5, cross-fetch@npm:^3.0.4, cross-fetch@npm:^3.1.5":
   version: 3.1.5
   resolution: "cross-fetch@npm:3.1.5"
   dependencies:
