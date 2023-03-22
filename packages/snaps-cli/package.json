@@ -74,6 +74,8 @@
     "@types/yargs": "^15.0.12",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
+    "babel-jest": "^29.5.0",
+    "clet": "^1.0.1",
     "deepmerge": "^4.2.2",
     "eslint": "^8.27.0",
     "eslint-config-prettier": "^8.5.0",

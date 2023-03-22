@@ -1,0 +1,12 @@
+diff --git a/lib/validator.js b/lib/validator.js
+index 94c8f4f5c9657d88aa3097426b197193502972cc..ef56780ab973b9421e2f0b6d742e7e5b0979d79c 100644
+--- a/lib/validator.js
++++ b/lib/validator.js
+@@ -21,7 +21,6 @@ export function expect(fn) {
+ }
+ 
+ const extractPathRegex = /\s+at.*[(\s](.*):\d+:\d+\)?/;
+-const __filename = filename(import.meta);
+ 
+ function mergeError(buildError, runError) {
+   buildError.message = runError.message;
