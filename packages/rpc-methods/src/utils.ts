@@ -14,6 +14,15 @@ import { literal, Struct } from 'superstruct';
 const HARDENED_VALUE = 0x80000000;
 
 /**
+ * Maps an interface with method hooks to an object, using the keys of the
+ * interface, and `true` as value. This ensures that the `methodHooks` object
+ * has the same values as the interface.
+ */
+export type MethodHooksObject<HooksType extends Record<string, unknown>> = {
+  [Key in keyof HooksType]: true;
+};
+
+/**
  * Returns the subset of the specified `hooks` that are included in the
  * `hookNames` object. This is a Principle of Least Authority (POLA) measure
  * to ensure that each RPC method implementation only has access to the

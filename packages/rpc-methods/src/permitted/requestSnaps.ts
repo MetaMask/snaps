@@ -18,11 +18,18 @@ import { hasProperty, isObject, Json } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
 import { WALLET_SNAP_PERMISSION_KEY } from '../restricted/invokeSnap';
+import { MethodHooksObject } from '../utils';
 import {
   handleInstallSnaps,
   InstallSnapsHook,
   InstallSnapsResult,
 } from './common/snapInstallation';
+
+const hookNames: MethodHooksObject<RequestSnapsHooks> = {
+  installSnaps: true,
+  requestPermissions: true,
+  getPermissions: true,
+};
 
 /**
  * `wallet_requestSnaps` installs the requested Snaps and requests permission to use them if necessary.
@@ -34,11 +41,7 @@ export const requestSnapsHandler: PermittedHandlerExport<
 > = {
   methodNames: ['wallet_requestSnaps'],
   implementation: requestSnapsImplementation,
-  hookNames: {
-    installSnaps: true,
-    requestPermissions: true,
-    getPermissions: true,
-  },
+  hookNames,
 };
 
 export type RequestSnapsHooks = {
