@@ -7588,7 +7588,7 @@ __metadata:
 
 "clet@patch:clet@npm%3A1.0.1#./.yarn/patches/clet-npm-1.0.1-8523231bdc.patch::locator=root%40workspace%3A.":
   version: 1.0.1
-  resolution: "clet@patch:clet@npm%3A1.0.1#./.yarn/patches/clet-npm-1.0.1-8523231bdc.patch::version=1.0.1&hash=3eea2e&locator=root%40workspace%3A."
+  resolution: "clet@patch:clet@npm%3A1.0.1#./.yarn/patches/clet-npm-1.0.1-8523231bdc.patch::version=1.0.1&hash=36f435&locator=root%40workspace%3A."
   dependencies:
     dirname-filename-esm: ^1.1.1
     dot-prop: ^7.2.0
@@ -7599,7 +7599,7 @@ __metadata:
     strip-final-newline: ^3.0.0
     throwback: ^4.1.0
     trash: ^8.1.0
-  checksum: eea36cc7f2db80e67b5820b276ba9c223b07df4afb4c48bf14f121d8dd8251a31418ae70ebb5f792bc420ef853b0a68216a3a32043a9e4a579fd2bfa1eab7274
+  checksum: 622901aa005f88f191cbd5534f31c889c7abd6f46f2df60d11c6ce077a1e4e3af441b8f59cef40b5b1de40b24ec485bbc5699de6a449f2e227465d6223819e2d
   languageName: node
   linkType: hard
 

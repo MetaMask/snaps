@@ -1,5 +1,4 @@
 import { run } from '@metamask/snaps-cli/test-utils';
-import { WaitType } from 'clet';
 import fetch from 'cross-fetch';
 
 describe('mm-snap serve', () => {
@@ -21,13 +20,8 @@ describe('mm-snap serve', () => {
         command,
         options: [`--port ${port}`],
       })
-        .wait('stdout' as WaitType, 'Starting server...')
-        .wait(
-          'stdout' as WaitType,
-          `Server listening on: http://localhost:${port}`,
-        )
-        // The types are inaccurate: `tap` supports `async` functions.
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        .wait('stdout', 'Starting server...')
+        .wait('stdout', `Server listening on: http://localhost:${port}`)
         .tap(async () => {
           const response = await fetch(`http://localhost:${port}`);
           expect(response.ok).toBe(true);
