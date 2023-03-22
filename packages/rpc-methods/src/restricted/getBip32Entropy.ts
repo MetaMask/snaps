@@ -5,25 +5,17 @@ import {
   SLIP10PathNode,
 } from '@metamask/key-tree';
 import {
-  Caveat,
-  PermissionConstraint,
   PermissionSpecificationBuilder,
   PermissionType,
   PermissionValidatorConstraint,
-  RestrictedMethodCaveatSpecificationConstraint,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
 } from '@metamask/permission-controller';
-import {
-  Bip32Entropy,
-  Bip32EntropyStruct,
-  SnapCaveatType,
-} from '@metamask/snaps-utils';
-import { Json, NonEmptyArray, assertStruct, assert } from '@metamask/utils';
+import { Bip32Entropy, SnapCaveatType } from '@metamask/snaps-utils';
+import { NonEmptyArray, assert } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
-import { array, size, type } from 'superstruct';
 
-import { isEqual, MethodHooksObject } from '../utils';
+import { MethodHooksObject } from '../utils';
 
 const targetKey = 'snap_getBip32Entropy';
 
@@ -52,42 +44,6 @@ type GetBip32EntropySpecification = ValidPermissionSpecification<{
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
   validator: PermissionValidatorConstraint;
 }>;
-
-/**
- * Validate a caveat path object. The object must consist of a `path` array and
- * a `curve` string. Paths must start with `m`, and must contain at
- * least two indices. If `ed25519` is used, this checks if all the path indices
- * are hardened.
- *
- * @param value - The value to validate.
- * @throws If the value is invalid.
- */
-function validatePath(value: unknown): asserts value is Bip32Entropy {
-  assertStruct(
-    value,
-    Bip32EntropyStruct,
-    'Invalid BIP-32 entropy path definition',
-    ethErrors.rpc.invalidParams,
-  );
-}
-
-/**
- * Validate the path values associated with a caveat. This validates that the
- * value is a non-empty array with valid derivation paths and curves.
- *
- * @param caveat - The caveat to validate.
- * @throws If the value is invalid.
- */
-export function validateCaveatPaths(
-  caveat: Caveat<string, any>,
-): asserts caveat is Caveat<string, Bip32Entropy[]> {
-  assertStruct(
-    caveat,
-    type({ value: size(array(Bip32EntropyStruct), 1, Infinity) }),
-    'Invalid BIP-32 entropy caveat',
-    ethErrors.rpc.internal,
-  );
-}
 
 /**
  * The specification builder for the `snap_getBip32Entropy` permission.
@@ -131,63 +87,6 @@ export const getBip32EntropyBuilder = Object.freeze({
   specificationBuilder,
   methodHooks,
 } as const);
-
-/**
- * Map a raw value from the `initialPermissions` to a caveat specification.
- * Note that this function does not do any validation, that's handled by the
- * PermissionsController when the permission is requested.
- *
- * @param value - The raw value from the `initialPermissions`.
- * @returns The caveat specification.
- */
-export function getBip32EntropyCaveatMapper(
-  value: Json,
-): Pick<PermissionConstraint, 'caveats'> {
-  return {
-    caveats: [
-      {
-        type: SnapCaveatType.PermittedDerivationPaths,
-        value,
-      },
-    ],
-  };
-}
-
-export const getBip32EntropyCaveatSpecifications: Record<
-  SnapCaveatType.PermittedDerivationPaths,
-  RestrictedMethodCaveatSpecificationConstraint
-> = {
-  [SnapCaveatType.PermittedDerivationPaths]: Object.freeze({
-    type: SnapCaveatType.PermittedDerivationPaths,
-    decorator: (
-      method,
-      caveat: Caveat<SnapCaveatType.PermittedDerivationPaths, Bip32Entropy[]>,
-    ) => {
-      return async (args) => {
-        const { params } = args;
-        validatePath(params);
-
-        const path = caveat.value.find(
-          (caveatPath) =>
-            isEqual(
-              params.path.slice(0, caveatPath.path.length),
-              caveatPath.path,
-            ) && caveatPath.curve === params.curve,
-        );
-
-        if (!path) {
-          throw ethErrors.provider.unauthorized({
-            message:
-              'The requested path is not permitted. Allowed paths must be specified in the snap manifest.',
-          });
-        }
-
-        return await method(args);
-      };
-    },
-    validator: (caveat) => validateCaveatPaths(caveat),
-  }),
-};
 
 /**
  * Builds the method implementation for `snap_getBip32Entropy`.

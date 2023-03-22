@@ -1,11 +1,16 @@
 import { PermissionConstraint } from '@metamask/permission-controller';
 import { Json } from '@metamask/utils';
+import {
+  getBip32EntropyCaveatMapper,
+  getBip44EntropyCaveatMapper,
+  PermittedDerivationPathCaveatSpecification,
+  PermittedCoinTypesCaveatSpecification,
+  SnapIdsCaveatSpecification,
+} from 'src/caveats';
 
 import { dialogBuilder, DialogMethodHooks } from './dialog';
 import {
   getBip32EntropyBuilder,
-  getBip32EntropyCaveatMapper,
-  getBip32EntropyCaveatSpecifications,
   GetBip32EntropyMethodHooks,
 } from './getBip32Entropy';
 import {
@@ -14,16 +19,10 @@ import {
 } from './getBip32PublicKey';
 import {
   getBip44EntropyBuilder,
-  getBip44EntropyCaveatMapper,
-  getBip44EntropyCaveatSpecifications,
   GetBip44EntropyMethodHooks,
 } from './getBip44Entropy';
 import { getEntropyBuilder, GetEntropyHooks } from './getEntropy';
-import {
-  InvokeSnapCaveatSpecifications,
-  invokeSnapBuilder,
-  InvokeSnapMethodHooks,
-} from './invokeSnap';
+import { invokeSnapBuilder, InvokeSnapMethodHooks } from './invokeSnap';
 import { manageStateBuilder, ManageStateMethodHooks } from './manageState';
 import { notifyBuilder, NotifyMethodHooks } from './notify';
 
@@ -54,9 +53,9 @@ export const restrictedMethodPermissionBuilders = {
 } as const;
 
 export const caveatSpecifications = {
-  ...getBip32EntropyCaveatSpecifications,
-  ...getBip44EntropyCaveatSpecifications,
-  ...InvokeSnapCaveatSpecifications,
+  ...PermittedDerivationPathCaveatSpecification,
+  ...PermittedCoinTypesCaveatSpecification,
+  ...SnapIdsCaveatSpecification,
 } as const;
 
 export const caveatMappers: Record<
