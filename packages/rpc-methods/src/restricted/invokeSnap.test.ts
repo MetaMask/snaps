@@ -198,7 +198,7 @@ describe('implementation', () => {
         },
       }),
     ).rejects.toThrow(
-      `The snap "${MOCK_SNAP_ID}" is not installed. This is a bug, please report it.`,
+      `The snap "${MOCK_SNAP_ID}" is not installed. Please install it first, before invoking the snap.`,
     );
     expect(hooks.getSnap).toHaveBeenCalledTimes(1);
     expect(hooks.getSnap).toHaveBeenCalledWith(MOCK_SNAP_ID);
