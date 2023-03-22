@@ -28,6 +28,7 @@ import {
   manageAccountsCaveatSpecification,
   manageAccountsCaveatMapper,
   manageAccountsBuilder,
+  ManageAccountsMethodHooks,
 } from './manageAccounts';
 import { manageStateBuilder, ManageStateMethodHooks } from './manageState';
 import { notifyBuilder, NotifyMethodHooks } from './notify';
@@ -45,7 +46,8 @@ export type RestrictedMethodHooks = DialogMethodHooks &
   GetEntropyHooks &
   InvokeSnapMethodHooks &
   ManageStateMethodHooks &
-  NotifyMethodHooks;
+  NotifyMethodHooks &
+  ManageAccountsMethodHooks;
 
 export const restrictedMethodPermissionBuilders = {
   [dialogBuilder.targetKey]: dialogBuilder,
@@ -56,6 +58,7 @@ export const restrictedMethodPermissionBuilders = {
   [invokeSnapBuilder.targetKey]: invokeSnapBuilder,
   [manageStateBuilder.targetKey]: manageStateBuilder,
   [notifyBuilder.targetKey]: notifyBuilder,
+  [manageAccountsBuilder.targetKey]: manageAccountsBuilder,
 } as const;
 
 export const caveatSpecifications = {
