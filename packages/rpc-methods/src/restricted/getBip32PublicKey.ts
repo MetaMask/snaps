@@ -1,6 +1,5 @@
 import { BIP32Node, SLIP10Node } from '@metamask/key-tree';
 import {
-  Caveat,
   PermissionSpecificationBuilder,
   PermissionType,
   PermissionValidatorConstraint,
@@ -8,15 +7,13 @@ import {
   ValidPermissionSpecification,
 } from '@metamask/permission-controller';
 import {
-  Bip32Entropy,
   bip32entropy,
   Bip32PathStruct,
   SnapCaveatType,
-  SnapGetBip32EntropyPermissionsStruct,
 } from '@metamask/snaps-utils';
 import { NonEmptyArray, assertStruct } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
-import { boolean, enums, object, optional, type } from 'superstruct';
+import { boolean, enums, object, optional } from 'superstruct';
 
 import { MethodHooksObject } from '../utils';
 
@@ -61,24 +58,6 @@ export const Bip32PublicKeyArgsStruct = bip32entropy(
     compressed: optional(boolean()),
   }),
 );
-
-/**
- * Validate the path values associated with a caveat. This validates that the
- * value is a non-empty array with valid derivation paths and curves.
- *
- * @param caveat - The caveat to validate.
- * @throws If the value is invalid.
- */
-export function validateCaveatPaths(
-  caveat: Caveat<string, any>,
-): asserts caveat is Caveat<string, Bip32Entropy[]> {
-  assertStruct(
-    caveat,
-    type({ value: SnapGetBip32EntropyPermissionsStruct }),
-    'Invalid BIP-32 public key caveat',
-    ethErrors.rpc.internal,
-  );
-}
 
 /**
  * The specification builder for the `snap_getBip32PublicKey` permission.
