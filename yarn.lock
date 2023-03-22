@@ -3100,8 +3100,8 @@ __metadata:
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/key-tree": ^7.0.0
     "@metamask/permission-controller": ^3.0.0
-    "@metamask/snaps-ui": ^0.31.0
-    "@metamask/snaps-utils": ^0.31.0
+    "@metamask/snaps-ui": 0.31.0-preview.27a8785
+    "@metamask/snaps-utils": 0.31.0-preview.27a8785
     "@metamask/types": ^1.1.0
     "@metamask/utils": ^5.0.0
     "@noble/hashes": ^1.1.3
@@ -3523,6 +3523,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@metamask/snaps-ui@npm:0.31.0-preview.27a8785":
+  version: 0.31.0-preview.27a8785
+  resolution: "@metamask/snaps-ui@npm:0.31.0-preview.27a8785::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40metamask%2Fsnaps-ui%2F0.31.0-preview.27a8785%2Fb7b0d8206e86cea471732456372f10651f77fec1"
+  dependencies:
+    "@metamask/utils": ^5.0.0
+    superstruct: ^1.0.3
+  checksum: d6e9325ae9ae3e93c90633c7b946e24dc883bacba351bdd776bd1ad38b0fdbf0d254b1333397e36349708e3b7580cf13b02fb73cde5b426e34ecb7afe8374804
+  languageName: node
+  linkType: hard
+
 "@metamask/snaps-utils@^0.31.0, @metamask/snaps-utils@workspace:packages/snaps-utils":
   version: 0.0.0-use.local
   resolution: "@metamask/snaps-utils@workspace:packages/snaps-utils"
@@ -3595,6 +3605,32 @@ __metadata:
     webdriverio: ^8.5.1
   languageName: unknown
   linkType: soft
+
+"@metamask/snaps-utils@npm:0.31.0-preview.27a8785":
+  version: 0.31.0-preview.27a8785
+  resolution: "@metamask/snaps-utils@npm:0.31.0-preview.27a8785::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40metamask%2Fsnaps-utils%2F0.31.0-preview.27a8785%2F375c58121b617074f01b1cc2e4dd1a1eadf6da16"
+  dependencies:
+    "@babel/core": ^7.18.6
+    "@babel/types": ^7.18.7
+    "@metamask/permission-controller": ^3.0.0
+    "@metamask/providers": ^10.2.1
+    "@metamask/snaps-registry": ^1.1.1
+    "@metamask/snaps-ui": ^0.31.0
+    "@metamask/utils": ^5.0.0
+    "@noble/hashes": ^1.1.3
+    "@scure/base": ^1.1.1
+    cron-parser: ^4.5.0
+    eth-rpc-errors: ^4.0.3
+    fast-deep-equal: ^3.1.3
+    fast-json-stable-stringify: ^2.1.0
+    rfdc: ^1.3.0
+    semver: ^7.3.7
+    ses: ^0.18.1
+    superstruct: ^1.0.3
+    validate-npm-package-name: ^5.0.0
+  checksum: ea88b667c6ab99ee7daba810230bc84b8d0efdd87b7066ee730b9876d2af2d852342dac06dbc7d866782d982260a9b883b0c43d0a936aef224c8754841b077e5
+  languageName: node
+  linkType: hard
 
 "@metamask/snaps-webpack-plugin@^0.31.0, @metamask/snaps-webpack-plugin@workspace:packages/snaps-webpack-plugin":
   version: 0.0.0-use.local
