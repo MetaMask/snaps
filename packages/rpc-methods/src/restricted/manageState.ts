@@ -16,7 +16,7 @@ import {
 } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
-import { deriveEntropy, EnumToUnion } from '../utils';
+import { deriveEntropy, EnumToUnion, MethodHooksObject } from '../utils';
 
 // The salt used for SIP-6-based entropy derivation.
 export const STATE_ENCRYPTION_SALT = 'snap_manageState encryption';
@@ -94,16 +94,18 @@ export const specificationBuilder: PermissionSpecificationBuilder<
   };
 };
 
+const methodHooks: MethodHooksObject<ManageStateMethodHooks> = {
+  getMnemonic: true,
+  getUnlockPromise: true,
+  clearSnapState: true,
+  getSnapState: true,
+  updateSnapState: true,
+};
+
 export const manageStateBuilder = Object.freeze({
   targetKey: methodName,
   specificationBuilder,
-  methodHooks: {
-    getMnemonic: true,
-    getUnlockPromise: true,
-    clearSnapState: true,
-    getSnapState: true,
-    updateSnapState: true,
-  },
+  methodHooks,
 } as const);
 
 export enum ManageStateOperation {

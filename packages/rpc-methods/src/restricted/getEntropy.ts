@@ -9,7 +9,7 @@ import { assertStruct, Hex, NonEmptyArray } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 import { Infer, literal, object, optional, string } from 'superstruct';
 
-import { deriveEntropy } from '../utils';
+import { deriveEntropy, MethodHooksObject } from '../utils';
 
 const targetKey = 'snap_getEntropy';
 
@@ -54,13 +54,15 @@ const specificationBuilder: PermissionSpecificationBuilder<
   };
 };
 
+const methodHooks: MethodHooksObject<GetEntropyHooks> = {
+  getMnemonic: true,
+  getUnlockPromise: true,
+};
+
 export const getEntropyBuilder = Object.freeze({
   targetKey,
   specificationBuilder,
-  methodHooks: {
-    getMnemonic: true,
-    getUnlockPromise: true,
-  },
+  methodHooks,
 } as const);
 
 export type GetEntropyHooks = {
