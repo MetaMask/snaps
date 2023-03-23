@@ -38,4 +38,5 @@ module.exports = deepmerge(baseConfig, {
   transform: {
     '^.+\\.jsx?$': 'babel-jest',
   },
+  testTimeout: 10000,
 });

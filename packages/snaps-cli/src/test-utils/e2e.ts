@@ -23,8 +23,21 @@ export function run({
   options = [],
   workingDirectory = SNAP_DIR,
 }: RunOptions) {
-  return runner()
-    .debug(LogLevel.ERROR)
-    .cwd(workingDirectory)
-    .spawn('yarn', ['mm-snap', command, ...options], {});
+  return (
+    runner()
+      .debug(LogLevel.ERROR)
+      .cwd(workingDirectory)
+      // `yarn ts-node --files src/main.ts [command] [options]`
+      .spawn(
+        'yarn',
+        [
+          'ts-node',
+          '--files',
+          join(__dirname, '../main.ts'),
+          command,
+          ...options,
+        ],
+        {},
+      )
+  );
 }
