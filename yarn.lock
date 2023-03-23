@@ -3087,7 +3087,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/rpc-methods@^0.31.0, @metamask/rpc-methods@workspace:packages/rpc-methods":
+"@metamask/rpc-methods@^0.31.0, @metamask/rpc-methods@workspace:^, @metamask/rpc-methods@workspace:packages/rpc-methods":
   version: 0.0.0-use.local
   resolution: "@metamask/rpc-methods@workspace:packages/rpc-methods"
   dependencies:
@@ -3266,10 +3266,10 @@ __metadata:
     "@metamask/object-multiplex": ^1.1.0
     "@metamask/permission-controller": ^3.0.0
     "@metamask/post-message-stream": ^6.1.1
-    "@metamask/rpc-methods": ^0.31.0
+    "@metamask/rpc-methods": "workspace:^"
     "@metamask/snaps-execution-environments": ^0.31.0
     "@metamask/snaps-registry": ^1.1.1
-    "@metamask/snaps-utils": ^0.31.0
+    "@metamask/snaps-utils": "workspace:^"
     "@metamask/subject-metadata-controller": ^2.0.0
     "@metamask/template-snap": ^0.7.0
     "@metamask/utils": ^5.0.0
