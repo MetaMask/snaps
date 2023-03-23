@@ -23,6 +23,6 @@ We recommend creating your snap using this tool.
 
 ## How to start developing with MetaMask Snaps?
 
-* Use the [MetaMask Snaps documentation](https://docs.metamask.io/guide/snaps.html)
-* Use the [Getting started guide](https://tinyurl.com/mm-denver)
-* Follow the [MetaMask Snaps step-by-step workshop](https://github.com/ziad-saab/ethdenver-2023-metamask-snaps-workshop)
+- Use the [MetaMask Snaps documentation](https://docs.metamask.io/guide/snaps.html)
+- Use the [Getting started guide](https://tinyurl.com/mm-denver)
+- Follow the [MetaMask Snaps step-by-step workshop](https://github.com/ziad-saab/ethdenver-2023-metamask-snaps-workshop)
