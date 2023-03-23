@@ -15,9 +15,15 @@ describe('mm-snap watch', () => {
         .wait('stdout', "Watching 'src/' for changes...")
         .wait(
           'stdout',
-          "Build success: 'src/index.ts' bundled as 'dist/bundle.js'!",
+          `Build success: '${join('src', 'index.ts')}' bundled as '${join(
+            'dist',
+            'bundle.js',
+          )}'!`,
         )
-        .wait('stdout', "Eval Success: evaluated 'dist/bundle.js' in SES!")
+        .wait(
+          'stdout',
+          `Eval Success: evaluated '${join('dist', 'bundle.js')}' in SES!`,
+        )
         .kill()
         .end();
     },
@@ -37,9 +43,15 @@ describe('mm-snap watch', () => {
       .wait('stdout', "Watching 'src/' for changes...")
       .wait(
         'stdout',
-        "Build success: 'src/index.ts' bundled as 'dist/bundle.js'!",
+        `Build success: '${join('src', 'index.ts')}' bundled as '${join(
+          'dist',
+          'bundle.js',
+        )}'!`,
       )
-      .wait('stdout', "Eval Success: evaluated 'dist/bundle.js' in SES!")
+      .wait(
+        'stdout',
+        `Eval Success: evaluated '${join('dist', 'bundle.js')}' in SES!`,
+      )
       .tap(async () => {
         await fs.writeFile(
           filePath,
@@ -49,10 +61,16 @@ describe('mm-snap watch', () => {
       })
       .wait(
         'stdout',
-        "Build success: 'src/index.ts' bundled as 'dist/bundle.js'!",
+        `Build success: '${join('src', 'index.ts')}' bundled as '${join(
+          'dist',
+          'bundle.js',
+        )}'!`,
       )
       .wait('stdout', 'This should show up during eval.')
-      .wait('stdout', "Eval Success: evaluated 'dist/bundle.js' in SES!")
+      .wait(
+        'stdout',
+        `Eval Success: evaluated '${join('dist', 'bundle.js')}' in SES!`,
+      )
       .kill()
       .end();
 
@@ -67,9 +85,15 @@ describe('mm-snap watch', () => {
       .wait('stdout', "Watching 'src/' for changes...")
       .wait(
         'stdout',
-        "Build success: 'src/index.ts' bundled as 'dist/bundle.js'!",
+        `Build success: '${join('src', 'index.ts')}' bundled as '${join(
+          'dist',
+          'bundle.js',
+        )}'!`,
       )
-      .wait('stdout', "Eval Success: evaluated 'dist/bundle.js' in SES!")
+      .wait(
+        'stdout',
+        `Eval Success: evaluated '${join('dist', 'bundle.js')}' in SES!`,
+      )
       .wait('stdout', 'Starting server...')
       .wait('stdout', `Server listening on: http://localhost:8088`)
       .tap(async () => {

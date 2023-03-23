@@ -1,6 +1,6 @@
 import { promises as fs } from 'fs';
 import { tmpdir } from 'os';
-import { resolve } from 'path';
+import { join, resolve } from 'path';
 
 import { run } from '../../test-utils';
 
@@ -29,7 +29,10 @@ describe('mm-snap init', () => {
           'stdout',
           "Build success: 'src/index.ts' bundled as 'dist/bundle.js'!",
         )
-        .wait('stdout', "Eval Success: evaluated 'dist/bundle.js' in SES!")
+        .wait(
+          'stdout',
+          `Eval Success: evaluated '${join('dist', 'bundle.js')}' in SES!`,
+        )
         .wait('stdout', 'Snap project successfully initiated!')
         .kill()
         .end();
