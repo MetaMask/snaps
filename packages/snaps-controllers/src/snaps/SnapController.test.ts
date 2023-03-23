@@ -673,6 +673,7 @@ describe('SnapController', () => {
         id: expect.any(String),
         requestState: {
           loading: false,
+          type: SNAP_APPROVAL_INSTALL,
         },
       },
     );
@@ -685,6 +686,7 @@ describe('SnapController', () => {
   it('supports non-snap permissions', async () => {
     const messenger = getSnapControllerMessenger();
     const initialPermissions: SnapPermissions = {
+      [handlerEndowments.onRpcRequest]: { snaps: false, dapps: true },
       // @ts-expect-error Current type only expects snap permissions
       // eslint-disable-next-line @typescript-eslint/naming-convention
       eth_accounts: {
@@ -849,6 +851,7 @@ describe('SnapController', () => {
         requestState: {
           loading: false,
           error: ethErrors.provider.userRejectedRequest().message,
+          type: SNAP_APPROVAL_INSTALL,
         },
       }),
     );
@@ -913,6 +916,7 @@ describe('SnapController', () => {
         requestState: {
           loading: false,
           error: 'foo',
+          type: SNAP_APPROVAL_INSTALL,
         },
       }),
     );
@@ -1963,6 +1967,7 @@ describe('SnapController', () => {
           id: expect.any(String),
           requestState: {
             loading: false,
+            type: SNAP_APPROVAL_INSTALL,
           },
         }),
       );
@@ -2123,6 +2128,7 @@ describe('SnapController', () => {
           id: expect.any(String),
           requestState: {
             loading: false,
+            type: SNAP_APPROVAL_INSTALL,
           },
         }),
       );
@@ -2229,6 +2235,7 @@ describe('SnapController', () => {
           id: expect.any(String),
           requestState: {
             loading: false,
+            type: SNAP_APPROVAL_INSTALL,
           },
         }),
       );
@@ -2304,6 +2311,7 @@ describe('SnapController', () => {
           requestState: {
             loading: false,
             error: ethErrors.provider.userRejectedRequest().message,
+            type: SNAP_APPROVAL_INSTALL,
           },
         }),
       );
@@ -2475,6 +2483,7 @@ describe('SnapController', () => {
           id: expect.any(String),
           requestState: {
             loading: false,
+            type: SNAP_APPROVAL_INSTALL,
           },
         }),
       );
@@ -2484,6 +2493,7 @@ describe('SnapController', () => {
 
     it('throws an error if a forbidden permission is requested', async () => {
       const initialPermissions = {
+        [handlerEndowments.onRpcRequest]: { snaps: false, dapps: true },
         // eslint-disable-next-line @typescript-eslint/naming-convention
         'endowment:long-running': {},
       };
@@ -2511,6 +2521,39 @@ describe('SnapController', () => {
           [MOCK_SNAP_ID]: {},
         }),
       ).rejects.toThrow('One or more permissions are not allowed:\nfoobar');
+
+      controller.destroy();
+    });
+
+    it('throws an error if no handler permissions are requested', async () => {
+      const initialPermissions = {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        snap_dialog: {},
+      };
+
+      const { manifest } = getSnapFiles({
+        manifest: getSnapManifest({
+          initialPermissions,
+        }),
+      });
+
+      const messenger = getSnapControllerMessenger();
+      const controller = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          detectSnapLocation: loopbackDetect({
+            manifest: manifest.result,
+          }),
+        }),
+      );
+
+      await expect(
+        controller.installSnaps(MOCK_ORIGIN, {
+          [MOCK_SNAP_ID]: {},
+        }),
+      ).rejects.toThrow(
+        'A snap must request at least one of the following permissions: endowment:rpc, endowment:keyring, endowment:transaction-insight, endowment:cronjob.',
+      );
 
       controller.destroy();
     });
@@ -2553,6 +2596,8 @@ describe('SnapController', () => {
 
     it('maps permission caveats to the proper format', async () => {
       const initialPermissions = {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        'endowment:rpc': { snaps: false, dapps: true },
         // eslint-disable-next-line @typescript-eslint/naming-convention
         snap_getBip32Entropy: [
           { path: ['m', "44'", "60'"], curve: 'secp256k1' as const },
@@ -2604,6 +2649,17 @@ describe('SnapController', () => {
           requestState: {
             loading: false,
             permissions: {
+              [handlerEndowments.onRpcRequest]: {
+                caveats: [
+                  {
+                    type: SnapCaveatType.RpcOrigin,
+                    value: {
+                      dapps: true,
+                      snaps: false,
+                    },
+                  },
+                ],
+              },
               // eslint-disable-next-line @typescript-eslint/naming-convention
               snap_getBip32Entropy: {
                 caveats: [
@@ -2623,6 +2679,17 @@ describe('SnapController', () => {
         'PermissionController:grantPermissions',
         {
           approvedPermissions: {
+            [handlerEndowments.onRpcRequest]: {
+              caveats: [
+                {
+                  type: SnapCaveatType.RpcOrigin,
+                  value: {
+                    dapps: true,
+                    snaps: false,
+                  },
+                },
+              ],
+            },
             // eslint-disable-next-line @typescript-eslint/naming-convention
             snap_getBip32Entropy: {
               caveats: [
@@ -2740,6 +2807,7 @@ describe('SnapController', () => {
 
     it('maps permission caveats to the proper format when updating snaps', async () => {
       const initialPermissions = {
+        [handlerEndowments.onRpcRequest]: { snaps: false, dapps: true },
         // eslint-disable-next-line @typescript-eslint/naming-convention
         snap_getBip32Entropy: [
           { path: ['m', "44'", "60'"], curve: 'secp256k1' as const },
@@ -2784,6 +2852,17 @@ describe('SnapController', () => {
         'PermissionController:grantPermissions',
         {
           approvedPermissions: {
+            [handlerEndowments.onRpcRequest]: {
+              caveats: [
+                {
+                  type: SnapCaveatType.RpcOrigin,
+                  value: {
+                    dapps: true,
+                    snaps: false,
+                  },
+                },
+              ],
+            },
             // eslint-disable-next-line @typescript-eslint/naming-convention
             snap_getBip32Entropy: {
               caveats: [
@@ -2987,6 +3066,7 @@ describe('SnapController', () => {
           id: expect.any(String),
           requestState: {
             loading: false,
+            type: SNAP_APPROVAL_UPDATE,
           },
         }),
       );
@@ -3052,6 +3132,7 @@ describe('SnapController', () => {
           requestState: {
             loading: false,
             error: errorMessage,
+            type: SNAP_APPROVAL_UPDATE,
           },
         }),
       );
@@ -3535,7 +3616,7 @@ describe('SnapController', () => {
         'ApprovalController:updateRequestState',
         expect.objectContaining({
           id: expect.any(String),
-          requestState: { loading: false },
+          requestState: { loading: false, type: SNAP_APPROVAL_UPDATE },
         }),
       );
 
@@ -3732,6 +3813,7 @@ describe('SnapController', () => {
           id: expect.any(String),
           requestState: {
             loading: false,
+            type: SNAP_APPROVAL_UPDATE,
           },
         }),
       );
@@ -3848,6 +3930,7 @@ describe('SnapController', () => {
 
       /* eslint-disable @typescript-eslint/naming-convention */
       const initialPermissions = {
+        [handlerEndowments.onRpcRequest]: { snaps: false, dapps: true },
         snap_confirm: {},
         snap_manageState: {},
       };
@@ -3869,6 +3952,21 @@ describe('SnapController', () => {
           date: 1,
           invoker: MOCK_SNAP_ID,
         },
+        [handlerEndowments.onRpcRequest]: {
+          caveats: [
+            {
+              type: SnapCaveatType.RpcOrigin,
+              value: {
+                dapps: true,
+                snaps: false,
+              },
+            },
+          ],
+          parentCapability: handlerEndowments.onRpcRequest,
+          id: '3',
+          date: 1,
+          invoker: MOCK_SNAP_ID,
+        },
       };
 
       const { manifest } = getSnapFiles({
@@ -3881,6 +3979,7 @@ describe('SnapController', () => {
         manifest: getSnapManifest({
           version: '1.1.0' as SemVerRange,
           initialPermissions: {
+            [handlerEndowments.onRpcRequest]: { snaps: false, dapps: true },
             snap_confirm: {},
             'endowment:network-access': {},
           },
@@ -3979,6 +4078,8 @@ describe('SnapController', () => {
             newVersion: '1.1.0',
             newPermissions: { 'endowment:network-access': {} },
             approvedPermissions: {
+              [handlerEndowments.onRpcRequest]:
+                approvedPermissions[handlerEndowments.onRpcRequest],
               snap_confirm: approvedPermissions.snap_confirm,
             },
             unusedPermissions: {
@@ -4053,6 +4154,7 @@ describe('SnapController', () => {
           id: expect.any(String),
           requestState: {
             loading: false,
+            type: SNAP_APPROVAL_UPDATE,
           },
         }),
       );
@@ -4067,6 +4169,7 @@ describe('SnapController', () => {
 
       /* eslint-disable @typescript-eslint/naming-convention */
       const initialPermissions = {
+        [handlerEndowments.onRpcRequest]: { snaps: false, dapps: true },
         snap_confirm: {},
         snap_manageState: {},
       };
@@ -4084,6 +4187,21 @@ describe('SnapController', () => {
           caveats: null,
           parentCapability: 'snap_manageState',
           id: '2',
+          date: 1,
+          invoker: MOCK_SNAP_ID,
+        },
+        [handlerEndowments.onRpcRequest]: {
+          caveats: [
+            {
+              type: SnapCaveatType.RpcOrigin,
+              value: {
+                dapps: true,
+                snaps: false,
+              },
+            },
+          ],
+          parentCapability: handlerEndowments.onRpcRequest,
+          id: '3',
           date: 1,
           invoker: MOCK_SNAP_ID,
         },
@@ -4106,6 +4224,10 @@ describe('SnapController', () => {
                 manifest: getSnapManifest({
                   version: '1.1.0' as SemVerRange,
                   initialPermissions: {
+                    [handlerEndowments.onRpcRequest]: {
+                      snaps: false,
+                      dapps: true,
+                    },
                     snap_confirm: {},
                     'endowment:network-access': {},
                   },

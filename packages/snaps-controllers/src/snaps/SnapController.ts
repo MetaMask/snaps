@@ -1740,7 +1740,10 @@ export class SnapController extends BaseController<
 
       const truncated = this.getTruncatedExpect(snapId);
 
-      this.#updateApproval(pendingApproval.id, { loading: false });
+      this.#updateApproval(pendingApproval.id, {
+        loading: false,
+        type: SNAP_APPROVAL_INSTALL,
+      });
 
       this.messagingSystem.publish(`SnapController:snapInstalled`, truncated);
 
@@ -1750,6 +1753,7 @@ export class SnapController extends BaseController<
 
       this.#updateApproval(pendingApproval.id, {
         loading: false,
+        type: SNAP_APPROVAL_INSTALL,
         error: error instanceof Error ? error.message : error.toString(),
       });
 
@@ -1944,7 +1948,10 @@ export class SnapController extends BaseController<
         snap.version,
       );
 
-      this.#updateApproval(pendingApproval.id, { loading: false });
+      this.#updateApproval(pendingApproval.id, {
+        loading: false,
+        type: SNAP_APPROVAL_UPDATE,
+      });
 
       return truncatedSnap;
     } catch (error) {
@@ -1953,6 +1960,7 @@ export class SnapController extends BaseController<
       this.#updateApproval(pendingApproval.id, {
         loading: false,
         error: error instanceof Error ? error.message : error.toString(),
+        type: SNAP_APPROVAL_UPDATE,
       });
       throw error;
     }
@@ -2284,15 +2292,27 @@ export class SnapController extends BaseController<
   #validateSnapPermissions(
     processedPermissions: Record<string, Pick<PermissionConstraint, 'caveats'>>,
   ) {
-    const excludedPermissionErrors = Object.keys(processedPermissions).reduce<
-      string[]
-    >((errors, permission) => {
-      if (hasProperty(this.#excludedPermissions, permission)) {
-        errors.push(this.#excludedPermissions[permission]);
-      }
+    const permissionKeys = Object.keys(processedPermissions);
 
-      return errors;
-    }, []);
+    const handlerPermissions = Object.values(handlerEndowments);
+
+    assert(
+      permissionKeys.some((key) => handlerPermissions.includes(key)),
+      `A snap must request at least one of the following permissions: ${handlerPermissions.join(
+        ', ',
+      )}.`,
+    );
+
+    const excludedPermissionErrors = permissionKeys.reduce<string[]>(
+      (errors, permission) => {
+        if (hasProperty(this.#excludedPermissions, permission)) {
+          errors.push(this.#excludedPermissions[permission]);
+        }
+
+        return errors;
+      },
+      [],
+    );
 
     assert(
       excludedPermissionErrors.length === 0,

@@ -1,0 +1,25 @@
+{
+  "name": "signer-ethereum",
+  "version": "0.31.0",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps-monorepo.git"
+  },
+  "scripts": {
+    "build": "mm-snap build",
+    "start": "mm-snap serve"
+  },
+  "dependencies": {
+    "@ethereumjs/tx": "^3.5.2",
+    "@metamask/key-tree": "^7.0.0",
+    "@metamask/snaps-types": "^0.31.0",
+    "@metamask/utils": "^5.0.0",
+    "buffer": "^6.0.3"
+  },
+  "devDependencies": {
+    "@metamask/snaps-cli": "^0.31.0",
+    "through2": "^4.0.2"
+  },
+  "packageManager": "yarn@3.4.1"
+}

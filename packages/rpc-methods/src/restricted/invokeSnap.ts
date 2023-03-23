@@ -26,6 +26,8 @@ import {
 import { ethErrors } from 'eth-rpc-errors';
 import { nanoid } from 'nanoid';
 
+import { MethodHooksObject } from '../utils';
+
 export const WALLET_SNAP_PERMISSION_KEY = 'wallet_snap';
 
 export type InvokeSnapMethodHooks = {
@@ -107,13 +109,15 @@ const specificationBuilder: PermissionSpecificationBuilder<
   };
 };
 
+const methodHooks: MethodHooksObject<InvokeSnapMethodHooks> = {
+  getSnap: true,
+  handleSnapRpcRequest: true,
+};
+
 export const invokeSnapBuilder = Object.freeze({
   targetKey: WALLET_SNAP_PERMISSION_KEY,
   specificationBuilder,
-  methodHooks: {
-    getSnap: true,
-    handleSnapRpcRequest: true,
-  },
+  methodHooks,
 } as const);
 
 export const InvokeSnapCaveatSpecifications: Record<
@@ -177,7 +181,7 @@ export function getInvokeSnapImplementation({
 
     if (!getSnap(snapId)) {
       throw ethErrors.rpc.invalidRequest({
-        message: `The snap "${snapId}" is not installed. This is a bug, please report it.`,
+        message: `The snap "${snapId}" is not installed. Please install it first, before invoking the snap.`,
       });
     }
 

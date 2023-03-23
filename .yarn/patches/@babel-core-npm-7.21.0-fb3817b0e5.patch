@@ -1,0 +1,12 @@
+diff --git a/lib/index.js b/lib/index.js
+index 8b6dc73d1a71fb868cdd70c2ea98e543510ce80f..d32206166a2a9e33c20f1440876fe2dac2ad936a 100644
+--- a/lib/index.js
++++ b/lib/index.js
+@@ -231,7 +231,6 @@ function _module() {
+   };
+   return data;
+ }
+-var thisFile = require("./index");
+ const version = "7.21.0";
+ exports.version = version;
+ const DEFAULT_EXTENSIONS = Object.freeze([".js", ".jsx", ".es6", ".es", ".mjs", ".cjs"]);

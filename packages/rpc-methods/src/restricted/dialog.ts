@@ -21,7 +21,7 @@ import {
   union,
 } from 'superstruct';
 
-import { EnumToUnion, enumValue } from '../utils';
+import { EnumToUnion, enumValue, MethodHooksObject } from '../utils';
 
 const methodName = 'snap_dialog';
 
@@ -94,12 +94,14 @@ const specificationBuilder: PermissionSpecificationBuilder<
   };
 };
 
+const methodHooks: MethodHooksObject<DialogMethodHooks> = {
+  showDialog: true,
+};
+
 export const dialogBuilder = Object.freeze({
   targetKey: methodName,
   specificationBuilder,
-  methodHooks: {
-    showDialog: true,
-  },
+  methodHooks,
 } as const);
 
 // Note: We use `type` here instead of `object` because `type` does not validate

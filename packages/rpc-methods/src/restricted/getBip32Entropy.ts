@@ -23,7 +23,7 @@ import { Json, NonEmptyArray, assertStruct, assert } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 import { array, size, type } from 'superstruct';
 
-import { isEqual } from '../utils';
+import { isEqual, MethodHooksObject } from '../utils';
 
 const targetKey = 'snap_getBip32Entropy';
 
@@ -121,13 +121,15 @@ const specificationBuilder: PermissionSpecificationBuilder<
   };
 };
 
+const methodHooks: MethodHooksObject<GetBip32EntropyMethodHooks> = {
+  getMnemonic: true,
+  getUnlockPromise: true,
+};
+
 export const getBip32EntropyBuilder = Object.freeze({
   targetKey,
   specificationBuilder,
-  methodHooks: {
-    getMnemonic: true,
-    getUnlockPromise: true,
-  },
+  methodHooks,
 } as const);
 
 /**

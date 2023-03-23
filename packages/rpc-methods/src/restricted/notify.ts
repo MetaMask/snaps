@@ -7,7 +7,7 @@ import {
 import { NonEmptyArray, isObject } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
-import { EnumToUnion } from '../utils';
+import { EnumToUnion, MethodHooksObject } from '../utils';
 
 const methodName = 'snap_notify';
 
@@ -84,13 +84,15 @@ export const specificationBuilder: PermissionSpecificationBuilder<
   };
 };
 
+const methodHooks: MethodHooksObject<NotifyMethodHooks> = {
+  showNativeNotification: true,
+  showInAppNotification: true,
+};
+
 export const notifyBuilder = Object.freeze({
   targetKey: methodName,
   specificationBuilder,
-  methodHooks: {
-    showNativeNotification: true,
-    showInAppNotification: true,
-  },
+  methodHooks,
 } as const);
 
 /**
