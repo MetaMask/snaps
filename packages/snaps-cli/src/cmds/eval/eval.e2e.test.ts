@@ -11,6 +11,7 @@ describe('mm-snap eval', () => {
         workingDirectory: __dirname,
       })
         .stdout("Eval Success: evaluated '__test__/eval.js' in SES!")
+        .kill()
         .end();
     },
   );
@@ -23,6 +24,7 @@ describe('mm-snap eval', () => {
     })
       .stderr('Eval failed.')
       .code(1)
+      .kill()
       .end();
   });
 });

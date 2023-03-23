@@ -9,6 +9,7 @@ describe('mm-snap build', () => {
       await run({ command })
         .stdout("Build success: 'src/index.ts' bundled as 'dist/bundle.js'!")
         .stdout("Eval Success: evaluated 'dist/bundle.js' in SES!")
+        .kill()
         .end();
     },
   );
@@ -30,6 +31,7 @@ describe('mm-snap build', () => {
       .stdout(
         "Eval Success: evaluated '../examples/examples/typescript/dist/bundle.js' in SES!",
       )
+      .kill()
       .end();
   });
 
@@ -37,6 +39,7 @@ describe('mm-snap build', () => {
     await run({ command: 'build', options: ['--eval false'] })
       .stdout("Build success: 'src/index.ts' bundled as 'dist/bundle.js'!")
       .notStdout("Eval Success: evaluated 'dist/bundle.js' in SES!")
+      .kill()
       .end();
   });
 
@@ -46,6 +49,7 @@ describe('mm-snap build', () => {
         "Error: Invalid params: 'foo.js' is not a file or does not exist.",
       )
       .code(1)
+      .kill()
       .end();
   });
 });

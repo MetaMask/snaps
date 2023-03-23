@@ -66,6 +66,7 @@ describe('mm-snap manifest', () => {
         'Manifest Error: "snap.manifest.json" "repository" field does not match the "package.json" "repository" field.',
       )
       .code(1)
+      .kill()
       .end();
 
     await run({
@@ -73,6 +74,7 @@ describe('mm-snap manifest', () => {
       options: ['--fix true'],
     })
       .code(0)
+      .kill()
       .end();
 
     const manifest = await fs.readFile(MANIFEST_PATH, 'utf-8').then(JSON.parse);
