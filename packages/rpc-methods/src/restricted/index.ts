@@ -3,7 +3,7 @@ import { Json } from '@metamask/utils';
 import {
   getBip32EntropyCaveatMapper,
   getBip44EntropyCaveatMapper,
-  PermittedDerivationPathCaveatSpecification,
+  PermittedDerivationPathsCaveatSpecification,
   PermittedCoinTypesCaveatSpecification,
   SnapIdsCaveatSpecification,
 } from 'src/caveats';
@@ -53,7 +53,7 @@ export const restrictedMethodPermissionBuilders = {
 } as const;
 
 export const caveatSpecifications = {
-  ...PermittedDerivationPathCaveatSpecification,
+  ...PermittedDerivationPathsCaveatSpecification,
   ...PermittedCoinTypesCaveatSpecification,
   ...SnapIdsCaveatSpecification,
 } as const;

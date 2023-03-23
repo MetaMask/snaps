@@ -25,7 +25,10 @@ import { GetBip44EntropyParams } from './restricted/getBip44Entropy';
 import { InvokeSnapParams } from './restricted/invokeSnap';
 import { isEqual } from './utils';
 
-// CAVEAT MAPPERS - Used to map params to caveats internally
+/**
+ * CAVEAT MAPPERS - Used to map params from RPC method calls to caveats
+ * internally so that RPC requests are less verbose for the end user.
+ */
 
 /**
  * Map a raw value from the `initialPermissions` to a caveat specification.
@@ -69,7 +72,10 @@ export function getBip44EntropyCaveatMapper(
   };
 }
 
-// VALIDATION FUNCTIONS - Validation functions for the various caveat types
+/**
+ * CAVEAT VALIDATION FUNCTIONS - Validation functions for the various caveat types.
+ * These functions are called when a permission is granted in the PermissionController.
+ */
 
 /**
  * Validate a caveat path object. The object must consist of a `path` array and
@@ -164,7 +170,7 @@ export function validateBIP44Caveat(caveat: Caveat<string, any>) {
  * @param caveat - The caveat to validate.
  * @throws If the caveat is invalid.
  */
-export function validateSnapIdCaveat(caveat: Caveat<string, any>) {
+export function validateSnapIdsCaveat(caveat: Caveat<string, any>) {
   if (!isObject(caveat.value) || Object.keys(caveat.value).length === 0) {
     throw ethErrors.rpc.invalidParams({
       message:
@@ -177,10 +183,14 @@ export function validateSnapIdCaveat(caveat: Caveat<string, any>) {
   }
 }
 
-// CAVEAT SPECIFICATIONS - Specifications outlined for each SnapCaveatType
+/**
+ * CAVEAT SPECIFICATIONS - Specifications outlined for each SnapCaveatType.
+ * The getBip32Entropy and getBip32PublicKey permissions/methods use the PermittedDerivationPaths caveat.
+ * The getBip44Entropy permission/method uses the PermittedCoinTypes caveat.
+ * The wallet_snap permission and wallet_invokeSnap method use the SnapIds caveat.
+ */
 
-// Caveat specification used for getBip32Entropy and getBip32PublicKey permissions/methods
-export const PermittedDerivationPathCaveatSpecification: Record<
+export const PermittedDerivationPathsCaveatSpecification: Record<
   SnapCaveatType.PermittedDerivationPaths,
   RestrictedMethodCaveatSpecificationConstraint
 > = {
@@ -216,7 +226,6 @@ export const PermittedDerivationPathCaveatSpecification: Record<
   }),
 };
 
-// Caveat specification used for the getBip44Entropy permission/method
 export const PermittedCoinTypesCaveatSpecification: Record<
   SnapCaveatType.PermittedCoinTypes,
   RestrictedMethodCaveatSpecificationConstraint
@@ -252,14 +261,13 @@ export const PermittedCoinTypesCaveatSpecification: Record<
   }),
 };
 
-// Caveat specification used for the wallet_invokeSnap RPC method
 export const SnapIdsCaveatSpecification: Record<
   SnapCaveatType.SnapIds,
   RestrictedMethodCaveatSpecificationConstraint
 > = {
   [SnapCaveatType.SnapIds]: Object.freeze({
     type: SnapCaveatType.SnapIds,
-    validator: (caveat) => validateSnapIdCaveat(caveat),
+    validator: (caveat) => validateSnapIdsCaveat(caveat),
     decorator: (method, caveat) => {
       return async (args) => {
         const {
