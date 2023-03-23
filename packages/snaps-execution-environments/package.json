@@ -42,6 +42,7 @@
     "@metamask/rpc-methods": "^0.31.0",
     "@metamask/snaps-utils": "^0.31.0",
     "@metamask/utils": "^5.0.0",
+    "@scure/base": "^1.1.1",
     "eth-rpc-errors": "^4.0.3",
     "json-rpc-engine": "^6.1.0",
     "pump": "^3.0.0",

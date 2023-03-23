@@ -4,6 +4,7 @@ import 'ses';
 
 import { walkAndSearch } from '../test-utils/endowments';
 import { testEndowmentHardening } from '../test-utils/hardening';
+import base64 from './base64';
 import buildCommonEndowments from './commonEndowmentFactory';
 import CryptoEndowment from './crypto';
 import date from './date';
@@ -15,19 +16,11 @@ import timeout from './timeout';
 // @ts-expect-error - `globalThis.process` is not optional.
 delete globalThis.process;
 
-const originalAtob = globalThis.atob.bind(globalThis);
-const originalBtoa = globalThis.btoa.bind(globalThis);
-
 lockdown({
   domainTaming: 'unsafe',
   errorTaming: 'unsafe',
   stackFiltering: 'verbose',
 });
-
-// This is a hack to make `atob`, and `btoa` hardening work. This needs to be
-// investigated further.
-globalThis.atob = harden(originalAtob);
-globalThis.btoa = harden(originalBtoa);
 
 describe('endowments', () => {
   describe('hardening', () => {
@@ -49,6 +42,7 @@ describe('endowments', () => {
     const { Math: mathAttenuated } = math.factory();
     const { fetch: fetchAttenuated } = network.factory();
     const { Date: DateAttenuated } = date.factory();
+    const { atob: atobAttenuated, btoa: btoaAttenuated } = base64.factory();
 
     const TEST_ENDOWMENTS = {
       // Constructor functions.
@@ -158,13 +152,13 @@ describe('endowments', () => {
       },
 
       // Functions.
-      atob: {
-        endowments: { atob },
-        factory: () => atob('U25hcHM='),
+      atobAttenuated: {
+        endowments: { atobAttenuated },
+        factory: () => atobAttenuated('U25hcHM='),
       },
-      btoa: {
-        endowments: { btoa },
-        factory: () => btoa('Snaps'),
+      btoaAttenuated: {
+        endowments: { btoaAttenuated },
+        factory: () => btoaAttenuated('Snaps'),
       },
       setTimeoutAttenuated: {
         endowments: { setTimeoutAttenuated },
@@ -223,6 +217,10 @@ describe('endowments', () => {
       expect(endowments).toStrictEqual([
         {
           factory: expect.any(Function),
+          names: ['atob', 'btoa'],
+        },
+        {
+          factory: expect.any(Function),
           names: ['crypto', 'SubtleCrypto'],
         },
         {
@@ -267,10 +265,6 @@ describe('endowments', () => {
         },
         {
           factory: expect.any(Function),
-          names: ['atob'],
-        },
-        {
-          factory: expect.any(Function),
           names: ['BigInt'],
         },
         {
@@ -280,10 +274,6 @@ describe('endowments', () => {
         {
           factory: expect.any(Function),
           names: ['BigUint64Array'],
-        },
-        {
-          factory: expect.any(Function),
-          names: ['btoa'],
         },
         {
           factory: expect.any(Function),

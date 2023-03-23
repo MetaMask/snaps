@@ -1,3 +1,4 @@
+import base64 from './base64';
 import crypto from './crypto';
 import date from './date';
 import interval from './interval';
@@ -22,11 +23,9 @@ const commonEndowments: CommonEndowmentSpecification[] = [
   { endowment: AbortController, name: 'AbortController' },
   { endowment: AbortSignal, name: 'AbortSignal' },
   { endowment: ArrayBuffer, name: 'ArrayBuffer' },
-  { endowment: atob, name: 'atob' },
   { endowment: BigInt, name: 'BigInt' },
   { endowment: BigInt64Array, name: 'BigInt64Array' },
   { endowment: BigUint64Array, name: 'BigUint64Array' },
-  { endowment: btoa, name: 'btoa' },
   { endowment: DataView, name: 'DataView' },
   { endowment: Float32Array, name: 'Float32Array' },
   { endowment: Float64Array, name: 'Float64Array' },
@@ -50,6 +49,7 @@ const commonEndowments: CommonEndowmentSpecification[] = [
  */
 const buildCommonEndowments = (): EndowmentFactory[] => {
   const endowmentFactories: EndowmentFactory[] = [
+    base64,
     crypto,
     interval,
     math,
