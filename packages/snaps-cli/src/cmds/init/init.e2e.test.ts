@@ -5,7 +5,6 @@ import { join, resolve } from 'path';
 import { run } from '../../test-utils';
 
 jest.unmock('fs');
-jest.setTimeout(60000);
 
 const TMP_DIR = resolve(tmpdir(), 'metamask-snaps-test');
 
