@@ -3249,6 +3249,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@metamask/snaps-browserify-plugin@npm:^0.30.0":
+  version: 0.30.0
+  resolution: "@metamask/snaps-browserify-plugin@npm:0.30.0"
+  dependencies:
+    "@metamask/snaps-utils": ^0.30.0
+    convert-source-map: ^1.8.0
+  checksum: 277a68d829c41e5e11ba19555aed0849003257db020dfae563c0ef1feac25a1424458c072ac58537b720bff4776513c647473f02e6d7c300a492d88283d69d8b
+  languageName: node
+  linkType: hard
+
 "@metamask/snaps-cli@^0.31.0, @metamask/snaps-cli@workspace:^, @metamask/snaps-cli@workspace:packages/snaps-cli":
   version: 0.0.0-use.local
   resolution: "@metamask/snaps-cli@workspace:packages/snaps-cli"
@@ -3475,7 +3485,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/snaps-registry@npm:^1.1.1":
+"@metamask/snaps-registry@npm:^1.0.0, @metamask/snaps-registry@npm:^1.1.1":
   version: 1.1.1
   resolution: "@metamask/snaps-registry@npm:1.1.1"
   dependencies:
@@ -3586,6 +3596,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@metamask/snaps-ui@npm:^0.30.0":
+  version: 0.30.0
+  resolution: "@metamask/snaps-ui@npm:0.30.0"
+  dependencies:
+    "@metamask/utils": ^3.4.1
+    superstruct: ^1.0.3
+  checksum: a4612e08e830542b094bf995023221a24dfa45861d3ca919c1c11ae1bd3d6933789d40c667780145bcd3ff3053d0593e654ae1812ea9f3c7cc973d500cfb0a96
+  languageName: node
+  linkType: hard
+
 "@metamask/snaps-utils@^0.31.0, @metamask/snaps-utils@workspace:packages/snaps-utils":
   version: 0.0.0-use.local
   resolution: "@metamask/snaps-utils@workspace:packages/snaps-utils"
@@ -3658,6 +3678,32 @@ __metadata:
     webdriverio: ^8.5.1
   languageName: unknown
   linkType: soft
+
+"@metamask/snaps-utils@npm:^0.30.0":
+  version: 0.30.0
+  resolution: "@metamask/snaps-utils@npm:0.30.0"
+  dependencies:
+    "@babel/core": ^7.18.6
+    "@babel/types": ^7.18.7
+    "@metamask/permission-controller": ^3.0.0
+    "@metamask/providers": ^10.2.1
+    "@metamask/snaps-registry": ^1.0.0
+    "@metamask/snaps-ui": ^0.30.0
+    "@metamask/utils": ^3.4.1
+    "@noble/hashes": ^1.1.3
+    "@scure/base": ^1.1.1
+    cron-parser: ^4.5.0
+    eth-rpc-errors: ^4.0.3
+    fast-deep-equal: ^3.1.3
+    fast-json-stable-stringify: ^2.1.0
+    rfdc: ^1.3.0
+    semver: ^7.3.7
+    ses: ^0.18.1
+    superstruct: ^1.0.3
+    validate-npm-package-name: ^5.0.0
+  checksum: 56334795dee7deeddd63badd35870ebb51ba5336071146bd6f48a9f7c1d703515241ac9371d7a4e054d77d7c6d06f34530e7b9439074339a46fea89920d32bce
+  languageName: node
+  linkType: hard
 
 "@metamask/snaps-webpack-plugin@^0.31.0, @metamask/snaps-webpack-plugin@workspace:packages/snaps-webpack-plugin":
   version: 0.0.0-use.local
