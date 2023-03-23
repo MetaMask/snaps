@@ -6,6 +6,7 @@ import network from './network';
 import textDecoder from './textDecoder';
 import textEncoder from './textEncoder';
 import timeout from './timeout';
+import { bindEndowment } from './utils';
 
 export type EndowmentFactory = {
   names: readonly string[];
@@ -64,10 +65,9 @@ const buildCommonEndowments = (): EndowmentFactory[] => {
     const endowment = {
       names: [endowmentSpecification.name] as const,
       factory: () => {
+        const boundEndowment = bindEndowment(endowmentSpecification.endowment);
         return {
-          [endowmentSpecification.name]: harden(
-            endowmentSpecification.endowment,
-          ),
+          [endowmentSpecification.name]: harden(boundEndowment),
         } as const;
       },
     };

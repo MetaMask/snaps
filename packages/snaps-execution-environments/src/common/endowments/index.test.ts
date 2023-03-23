@@ -1,6 +1,6 @@
 import fetchMock from 'jest-fetch-mock';
 
-import { createEndowments, isConstructor } from '.';
+import { createEndowments } from '.';
 
 const mockSnapAPI = { foo: Symbol('bar') };
 const mockEthereum = { foo: Symbol('bar') };
@@ -221,14 +221,6 @@ describe('Endowment utils', () => {
       expect(await promise).toBe('OK');
       await teardown();
       jest.runAllTimers();
-    });
-  });
-
-  describe('isConstructor', () => {
-    it("will return false if passed in a function who's prototype doesn't have a constructor", () => {
-      const mockFn = jest.fn();
-      mockFn.prototype = null;
-      expect(isConstructor(mockFn)).toBe(false);
     });
   });
 });
