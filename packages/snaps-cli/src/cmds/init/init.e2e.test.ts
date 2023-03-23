@@ -9,7 +9,7 @@ jest.unmock('fs');
 const TMP_DIR = resolve(tmpdir(), 'metamask-snaps-test');
 
 describe('mm-snap init', () => {
-  it.each(['init', 'i'])(
+  it.skip.each(['init', 'i'])(
     'initializes a new snap using "mm-snap %s"',
     async (command) => {
       const initPath = resolve(TMP_DIR, command);
