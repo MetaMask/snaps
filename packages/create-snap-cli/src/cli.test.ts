@@ -1,19 +1,5 @@
-import yargs from 'yargs';
-
 import { cli } from './cli';
-import commands from './cmds';
-
-// Removes positional arguments from commands. eg. 'init [directory]' -> 'init'
-const sanitizeCommand = (command: string) =>
-  command.replace(/(\[.*?\])/u, '').trim();
-
-const commandMap = (commands as unknown as yargs.CommandModule[]).reduce<
-  Record<string, yargs.CommandModule>
->((map, commandModule) => {
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  map[sanitizeCommand(commandModule.command![0])] = commandModule;
-  return map;
-}, {});
+import * as initHandlerModule from './cmds/init/initHandler';
 
 const getMockArgv = (...args: string[]) => {
   return ['/mock/path', '/mock/entry/path', ...args];
@@ -51,9 +37,7 @@ describe('cli', () => {
       throw new Error('process exited');
     });
 
-    expect(() => cli(getMockArgv('--help'), commands)).toThrow(
-      'process exited',
-    );
+    expect(() => cli(getMockArgv('--help'))).toThrow('process exited');
   });
 
   it('calls "help" command', async () => {
@@ -67,89 +51,16 @@ describe('cli', () => {
         resolve();
       });
 
-      cli(getMockArgv('--help'), commands);
-    });
-  });
-
-  // Commands are fully tested in their respective unit tests.
-  // This is just to ensure full coverage of cli.ts.
-  describe('locally defined commands', () => {
-    beforeEach(() => {
-      processExitSpy.mockImplementation();
-    });
-
-    Object.keys(commandMap).forEach((command) => {
-      it(`calls ${sanitizeCommand(command)}`, async () => {
-        const mockCommandHandler = jest.fn();
-
-        const finished = new Promise<void>((resolve) => {
-          mockCommandHandler.mockImplementation(() => resolve() as any);
-        });
-
-        cli(getMockArgv(sanitizeCommand(command)), [
-          { ...(commandMap as any)[command], handler: mockCommandHandler },
-        ]);
-        await finished;
-        expect(mockCommandHandler).toHaveBeenCalledTimes(1);
-        // TODO: Test the complete argv for each command
-        expect(mockCommandHandler).toHaveBeenCalledWith(
-          expect.objectContaining({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            _: [sanitizeCommand(command)],
-            suppressWarnings: false,
-            verboseErrors: true,
-          }),
-        );
-      });
+      cli(getMockArgv('--help'));
     });
   });
 
   describe('command failures', () => {
-    it('handles an argument validation failure for a locally defined command', () => {
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-      const mockServeHandler = jest.fn();
-
-      cli(
-        getMockArgv(
-          'serve',
-          '--port',
-          'not-a-number',
-          '--verboseErrors',
-          'false',
-        ),
-        [{ ...commandMap.serve, handler: mockServeHandler }],
-      );
-
-      expect(process.exitCode).toBe(1);
-      expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
-      expect(consoleErrorSpy).toHaveBeenCalledWith('Invalid port: NaN');
-      expect(mockServeHandler).not.toHaveBeenCalled();
-    });
-
-    it('handles an argument validation failure for a locally defined command, with verbose errors', () => {
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-      const mockServeHandler = jest.fn();
-
-      cli(getMockArgv('serve', '--port', 'not-a-number', `--verboseErrors`), [
-        { ...commandMap.serve, handler: mockServeHandler },
-      ]);
-
-      expect(process.exitCode).toBe(1);
-      expect(consoleErrorSpy).toHaveBeenCalledTimes(2);
-      expect(consoleErrorSpy).toHaveBeenNthCalledWith(1, 'Invalid port: NaN');
-      expect(mockServeHandler).not.toHaveBeenCalled();
-    });
-
     it('handles an error thrown by a locally defined command handler', () => {
-      const mockInitHandler = jest.fn().mockImplementation(() => {
+      jest.spyOn(initHandlerModule, 'initHandler').mockImplementation(() => {
         throw new Error('init failed');
       });
-
-      expect(() =>
-        cli(getMockArgv('init'), [
-          { ...commandMap.init, handler: mockInitHandler },
-        ]),
-      ).toThrow('init failed');
+      expect(() => cli(getMockArgv('init'))).toThrow('init failed');
     });
   });
 });
