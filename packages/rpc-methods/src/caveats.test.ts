@@ -137,7 +137,7 @@ describe('Caveat validation functions', () => {
       { type: SnapCaveatType.PermittedCoinTypes, value: [] },
     ])('throws if the caveat is invalid', (caveat) => {
       // @ts-expect-error Invalid caveat type.
-      expect(() => validateCaveat(caveat)).toThrow(
+      expect(() => validateBIP44Caveat(caveat)).toThrow(
         'Expected non-empty array of coin types.',
       );
     });
