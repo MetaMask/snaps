@@ -7,6 +7,7 @@ import {
   Caveat,
   RestrictedMethodParameters,
   PermissionValidatorConstraint,
+  PermissionSideEffect,
 } from '@metamask/permission-controller';
 import {
   Snap,
@@ -78,6 +79,28 @@ export function validateCaveat(caveat: Caveat<string, any>) {
 }
 
 /**
+ * The side-effect method to handle the snap install.
+ *
+ * @param params - The side-effect params.
+ * @param params.requestData - The request data associated to the requested permission.
+ * @param params.messagingSystem - The messenger to call an action.
+ */
+export const handleSnapInstall: PermissionSideEffect<
+  any,
+  any
+>['onPermitted'] = async ({ requestData, messagingSystem }) => {
+  const snaps =
+    // @ts-expect-error: Will see later
+    requestData.permissions[WALLET_SNAP_PERMISSION_KEY].caveats[0].value;
+
+  return messagingSystem.call(
+    `SnapController:install`,
+    // @ts-expect-error: Will see later
+    requestData.metadata.origin,
+    snaps,
+  );
+};
+/**
  * The specification builder for the `wallet_snap_*` permission.
  *
  * `wallet_snap_*` attempts to invoke an RPC method of the specified Snap.
@@ -105,6 +128,9 @@ const specificationBuilder: PermissionSpecificationBuilder<
           message: `Expected a single "${SnapCaveatType.SnapIds}" caveat.`,
         });
       }
+    },
+    sideEffect: {
+      onPermitted: handleSnapInstall,
     },
   };
 };
