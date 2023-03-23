@@ -110,7 +110,7 @@ export function yarnInstall(directory: string) {
   try {
     execSync('yarn install', {
       stdio: [0, 1, 2],
-      cwd: pathUtils.resolve(__dirname, directory),
+      cwd: directory,
     });
   } catch (error) {
     throw new Error('Init Error: Failed to install dependencies.');
