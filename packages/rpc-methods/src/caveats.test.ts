@@ -8,8 +8,8 @@ import { MOCK_SNAP_ID, MOCK_ORIGIN } from '@metamask/snaps-utils/test-utils';
 import { Json } from '@metamask/utils';
 
 import {
-  getBip32EntropyCaveatMapper,
-  getBip44EntropyCaveatMapper,
+  permittedDerivationPathsCaveatMapper,
+  permittedCoinTypesCaveatMapper,
   validateBIP32CaveatPaths,
   validateBIP44Params,
   validateBIP44Caveat,
@@ -20,10 +20,10 @@ import {
 } from './caveats';
 
 describe('Caveat mappers', () => {
-  describe('getBip32EntropyCaveatMapper', () => {
+  describe('permittedDerivationPathsCaveatMapper', () => {
     it('returns a caveat value for an array of paths', () => {
       expect(
-        getBip32EntropyCaveatMapper([
+        permittedDerivationPathsCaveatMapper([
           { path: ['m', "44'", "60'"], curve: 'secp256k1' },
           { path: ['m', "0'", "0'"], curve: 'ed25519' },
         ]),
@@ -41,10 +41,10 @@ describe('Caveat mappers', () => {
     });
   });
 
-  describe('getBip44EntropyCaveatMapper', () => {
+  describe('permittedCoinTypesCaveatMapper', () => {
     it('returns a caveat value for an array of coin types', () => {
       expect(
-        getBip44EntropyCaveatMapper([
+        permittedCoinTypesCaveatMapper([
           {
             coinType: 1,
           },

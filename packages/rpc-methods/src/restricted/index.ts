@@ -2,8 +2,8 @@ import { PermissionConstraint } from '@metamask/permission-controller';
 import { Json } from '@metamask/utils';
 
 import {
-  getBip32EntropyCaveatMapper,
-  getBip44EntropyCaveatMapper,
+  permittedDerivationPathsCaveatMapper,
+  permittedCoinTypesCaveatMapper,
   PermittedDerivationPathsCaveatSpecification,
   PermittedCoinTypesCaveatSpecification,
   SnapIdsCaveatSpecification,
@@ -62,7 +62,7 @@ export const caveatMappers: Record<
   string,
   (value: Json) => Pick<PermissionConstraint, 'caveats'>
 > = {
-  [getBip32EntropyBuilder.targetKey]: getBip32EntropyCaveatMapper,
-  [getBip32PublicKeyBuilder.targetKey]: getBip32EntropyCaveatMapper,
-  [getBip44EntropyBuilder.targetKey]: getBip44EntropyCaveatMapper,
+  [getBip32EntropyBuilder.targetKey]: permittedDerivationPathsCaveatMapper,
+  [getBip32PublicKeyBuilder.targetKey]: permittedDerivationPathsCaveatMapper,
+  [getBip44EntropyBuilder.targetKey]: permittedCoinTypesCaveatMapper,
 };

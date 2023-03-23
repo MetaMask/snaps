@@ -38,7 +38,7 @@ import { isEqual } from './utils';
  * @param value - The raw value from the `initialPermissions`.
  * @returns The caveat specification.
  */
-export function getBip32EntropyCaveatMapper(
+export function permittedDerivationPathsCaveatMapper(
   value: Json,
 ): Pick<PermissionConstraint, 'caveats'> {
   return {
@@ -59,7 +59,7 @@ export function getBip32EntropyCaveatMapper(
  * @param value - The raw value from the `initialPermissions`.
  * @returns The caveat specification.
  */
-export function getBip44EntropyCaveatMapper(
+export function permittedCoinTypesCaveatMapper(
   value: Json,
 ): Pick<PermissionConstraint, 'caveats'> {
   return {
