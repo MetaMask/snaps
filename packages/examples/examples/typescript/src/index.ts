@@ -30,3 +30,5 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
       throw new Error('Method not found.');
   }
 };
+
+console.log('This should show up during eval.');

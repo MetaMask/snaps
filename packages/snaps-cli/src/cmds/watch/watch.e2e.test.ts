@@ -10,6 +10,7 @@ describe('mm-snap watch', () => {
     async (command) => {
       await run({
         command,
+        options: ['--serve false'],
       })
         .wait('stdout', "Watching 'src/' for changes...")
         .wait(
@@ -31,6 +32,7 @@ describe('mm-snap watch', () => {
 
     await run({
       command: 'watch',
+      options: ['--serve false'],
     })
       .wait('stdout', "Watching 'src/' for changes...")
       .wait(
@@ -60,6 +62,7 @@ describe('mm-snap watch', () => {
   it('serves the snap by default', async () => {
     await run({
       command: 'watch',
+      options: ['--port 8088'],
     })
       .wait('stdout', "Watching 'src/' for changes...")
       .wait(
@@ -68,9 +71,9 @@ describe('mm-snap watch', () => {
       )
       .wait('stdout', "Eval Success: evaluated 'dist/bundle.js' in SES!")
       .wait('stdout', 'Starting server...')
-      .wait('stdout', `Server listening on: http://localhost:8086`)
+      .wait('stdout', `Server listening on: http://localhost:8088`)
       .tap(async () => {
-        const response = await fetch(`http://localhost:8086`);
+        const response = await fetch(`http://localhost:8088`);
         expect(response.ok).toBe(true);
       })
       .kill()
