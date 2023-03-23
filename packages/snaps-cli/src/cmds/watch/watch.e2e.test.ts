@@ -1,4 +1,3 @@
-import { LogLevel } from 'clet';
 import fetch from 'cross-fetch';
 import { promises as fs } from 'fs';
 import { join } from 'path';
@@ -11,7 +10,6 @@ describe('mm-snap watch', () => {
     async (command) => {
       await run({
         command,
-        options: ['--serve false'],
       })
         .wait('stdout', "Watching 'src/' for changes...")
         .wait(
@@ -33,7 +31,6 @@ describe('mm-snap watch', () => {
 
     await run({
       command: 'watch',
-      options: ['--serve false'],
     })
       .wait('stdout', "Watching 'src/' for changes...")
       .wait(
@@ -54,7 +51,6 @@ describe('mm-snap watch', () => {
       )
       .wait('stdout', 'This should show up during eval.')
       .wait('stdout', "Eval Success: evaluated 'dist/bundle.js' in SES!")
-      .debug(LogLevel.INFO)
       .kill()
       .end();
 

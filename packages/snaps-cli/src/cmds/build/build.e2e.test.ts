@@ -1,6 +1,6 @@
 import { join } from 'path';
 
-import { SNAP_DIR, run } from '../../test-utils';
+import { run, SNAP_DIR } from '../../test-utils';
 
 describe('mm-snap build', () => {
   it.each(['build', 'b'])(

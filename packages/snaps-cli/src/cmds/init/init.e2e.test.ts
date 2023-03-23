@@ -1,4 +1,3 @@
-import { LogLevel } from 'clet';
 import { promises as fs } from 'fs';
 import { tmpdir } from 'os';
 import { resolve } from 'path';
@@ -24,7 +23,6 @@ describe('mm-snap init', () => {
         command,
         options: [initPath],
       })
-        .debug(LogLevel.INFO)
         .wait('stdout', `Preparing ${initPath}...`)
         .wait('stdout', 'Cloning template...')
         .wait('stdout', 'Installing dependencies...')
