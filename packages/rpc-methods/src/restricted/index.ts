@@ -1,13 +1,13 @@
 import { PermissionConstraint } from '@metamask/permission-controller';
 import { Json } from '@metamask/utils';
+
 import {
   getBip32EntropyCaveatMapper,
   getBip44EntropyCaveatMapper,
   PermittedDerivationPathsCaveatSpecification,
   PermittedCoinTypesCaveatSpecification,
   SnapIdsCaveatSpecification,
-} from 'src/caveats';
-
+} from '../caveats';
 import { dialogBuilder, DialogMethodHooks } from './dialog';
 import {
   getBip32EntropyBuilder,
