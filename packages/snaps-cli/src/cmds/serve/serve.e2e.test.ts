@@ -1,4 +1,4 @@
-import { run } from '@metamask/snaps-cli/test-utils';
+import { kill, run } from '@metamask/snaps-cli/test-utils';
 import fetch from 'cross-fetch';
 
 describe('mm-snap serve', () => {
@@ -16,7 +16,7 @@ describe('mm-snap serve', () => {
     async ({ command, port }) => {
       expect.assertions(1);
 
-      await run({
+      const runner = run({
         command,
         options: [`--port ${port}`],
       })
@@ -26,8 +26,10 @@ describe('mm-snap serve', () => {
           const response = await fetch(`http://localhost:${port}`);
           expect(response.ok).toBe(true);
         })
-        .kill()
-        .end();
+        .kill();
+
+      await runner.end();
+      kill(runner);
     },
   );
 });
