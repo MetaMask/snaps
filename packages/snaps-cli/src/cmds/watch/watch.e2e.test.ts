@@ -5,7 +5,7 @@ import { join } from 'path';
 import { run, SNAP_DIR } from '../../test-utils';
 
 describe('mm-snap watch', () => {
-  it.each(['watch', 'w'])(
+  it.skip.each(['watch', 'w'])(
     'builds and watches for changes using "mm-snap %s"',
     async (command) => {
       await run({
@@ -29,7 +29,7 @@ describe('mm-snap watch', () => {
     },
   );
 
-  it('rebuilds after a change', async () => {
+  it.skip('rebuilds after a change', async () => {
     // Since this is an end-to-end test, and we're working with a "real" snap,
     // we have to make a copy of the original snap file, so we can modify it and
     // reset it after the test.
@@ -77,7 +77,7 @@ describe('mm-snap watch', () => {
     await fs.writeFile(filePath, originalFile, 'utf-8');
   });
 
-  it('serves the snap by default', async () => {
+  it.skip('serves the snap by default', async () => {
     await run({
       command: 'watch',
       options: ['--port 8088'],

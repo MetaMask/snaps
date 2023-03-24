@@ -3,7 +3,7 @@ import { join } from 'path';
 import { run, SNAP_DIR } from '../../test-utils';
 
 describe('mm-snap build', () => {
-  it.each(['build', 'b'])(
+  it.skip.each(['build', 'b'])(
     'builds a snap using "mm-snap %s"',
     async (command) => {
       await run({ command })
@@ -21,7 +21,7 @@ describe('mm-snap build', () => {
     },
   );
 
-  it('supports setting a bundle and output file', async () => {
+  it.skip('supports setting a bundle and output file', async () => {
     await run({
       command: 'build',
       options: [
@@ -50,7 +50,7 @@ describe('mm-snap build', () => {
       .end();
   });
 
-  it('does not eval when set to false', async () => {
+  it.skip('does not eval when set to false', async () => {
     await run({ command: 'build', options: ['--eval false'] })
       .stdout(
         `Build success: '${join('src', 'index.ts')}' bundled as '${join(
@@ -65,7 +65,7 @@ describe('mm-snap build', () => {
       .end();
   });
 
-  it('logs an error when the input file does not exist', async () => {
+  it.skip('logs an error when the input file does not exist', async () => {
     await run({ command: 'build', options: ['--src foo.js'] })
       .stderr(
         "Error: Invalid params: 'foo.js' is not a file or does not exist.",

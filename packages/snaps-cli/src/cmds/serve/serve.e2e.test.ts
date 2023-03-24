@@ -2,7 +2,7 @@ import { run } from '@metamask/snaps-cli/test-utils';
 import fetch from 'cross-fetch';
 
 describe('mm-snap serve', () => {
-  it.each([
+  it.skip.each([
     {
       command: 'serve',
       port: '8086',

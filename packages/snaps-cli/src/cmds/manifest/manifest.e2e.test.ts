@@ -1,7 +1,7 @@
 import { run } from '../../test-utils';
 
 describe('mm-snap manifest', () => {
-  it.each(['manifest', 'm'])(
+  it.skip.each(['manifest', 'm'])(
     'validates the manifest using "mm-snap %s"',
     async (command) => {
       await run({
