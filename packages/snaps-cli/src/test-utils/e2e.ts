@@ -24,7 +24,7 @@ export function run({
   workingDirectory = SNAP_DIR,
 }: RunOptions) {
   const testRunner = runner()
-    .debug(LogLevel.Verbose)
+    .debug(LogLevel.ERROR)
     .cwd(workingDirectory)
     .fork(
       require.resolve('ts-node/dist/bin.js'),
