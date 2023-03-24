@@ -1,5 +1,6 @@
 import { StreamProvider } from '@metamask/providers';
 import { SnapsGlobalObject } from '@metamask/rpc-methods';
+import { logWarning } from '@metamask/snaps-utils';
 import { hasProperty } from '@metamask/utils';
 
 import { rootRealmGlobal } from '../globalObject';
@@ -86,8 +87,7 @@ export function createEndowments(
         // Special case for adding the EIP-1193 provider.
         allEndowments[endowmentName] = ethereum;
       } else if (endowmentName in rootRealmGlobal) {
-        // eslint-disable-next-line no-console
-        console.warn(`Access to unhardened global ${endowmentName}`);
+        logWarning(`Access to unhardened global ${endowmentName}`);
         // If the endowment doesn't have a factory, just use whatever is on the
         // global object.
         const globalValue = (rootRealmGlobal as Record<string, unknown>)[
