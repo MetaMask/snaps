@@ -1,4 +1,4 @@
-import { LogLevel, runner, TestRunner } from 'clet';
+import { LogLevel, runner } from 'clet';
 import { join } from 'path';
 
 export const SNAP_DIR = join('..', 'examples/examples/typescript');
@@ -24,13 +24,13 @@ export function run({
   workingDirectory = SNAP_DIR,
 }: RunOptions) {
   const testRunner = runner()
-    .debug(LogLevel.ERROR)
+    .debug(LogLevel.Verbose)
     .cwd(workingDirectory)
-    .spawn(
-      'yarn',
+    .fork(
+      require.resolve('ts-node/dist/bin.js'),
       [
-        'ts-node',
-        '--require tsconfig-paths/register',
+        '--require',
+        'tsconfig-paths/register',
         '--files',
         '--swc',
         join(__dirname, '../main.ts'),
@@ -56,14 +56,4 @@ export function run({
   };
 
   return testRunner;
-}
-
-/**
- * Kill the test runner. This is useful for testing long-running commands.
- *
- * @param testRunner - The test runner.
- */
-export function kill(testRunner: TestRunner) {
-  testRunner.proc.kill();
-  testRunner.proc.unref();
 }

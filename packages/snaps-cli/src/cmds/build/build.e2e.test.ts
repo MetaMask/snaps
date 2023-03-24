@@ -24,10 +24,14 @@ describe('mm-snap build', () => {
     await run({
       command: 'build',
       options: [
-        `--src ${join(SNAP_DIR, 'src/index.ts')}`,
-        `--dist ${join(SNAP_DIR, 'dist')}`,
-        `--manifest false`,
-        `--writeManifest false`,
+        '--src',
+        join(SNAP_DIR, 'src/index.ts'),
+        '--dist',
+        join(SNAP_DIR, 'dist'),
+        '--manifest',
+        'false',
+        '--writeManifest',
+        'false',
       ],
       workingDirectory: '.',
     })
@@ -49,7 +53,7 @@ describe('mm-snap build', () => {
   });
 
   it('does not eval when set to false', async () => {
-    await run({ command: 'build', options: ['--eval false'] })
+    await run({ command: 'build', options: ['--eval', 'false'] })
       .stdout(
         `Build success: '${join('src', 'index.ts')}' bundled as '${join(
           'dist',
@@ -63,7 +67,7 @@ describe('mm-snap build', () => {
   });
 
   it('logs an error when the input file does not exist', async () => {
-    await run({ command: 'build', options: ['--src foo.js'] })
+    await run({ command: 'build', options: ['--src', 'foo.js'] })
       .stderr(
         "Error: Invalid params: 'foo.js' is not a file or does not exist.",
       )

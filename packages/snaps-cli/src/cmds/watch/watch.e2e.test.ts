@@ -2,15 +2,15 @@ import fetch from 'cross-fetch';
 import { promises as fs } from 'fs';
 import { join } from 'path';
 
-import { kill, run, SNAP_DIR } from '../../test-utils';
+import { run, SNAP_DIR } from '../../test-utils';
 
 describe('mm-snap watch', () => {
   it.each(['watch', 'w'])(
     'builds and watches for changes using "mm-snap %s"',
     async (command) => {
-      const runner = run({
+      await run({
         command,
-        options: ['--serve false'],
+        options: ['--serve', 'false'],
       })
         .stdout("Watching 'src/' for changes...")
         .stdout(
@@ -22,10 +22,8 @@ describe('mm-snap watch', () => {
         .stdout(
           `Eval Success: evaluated '${join('dist', 'bundle.js')}' in SES!`,
         )
-        .kill();
-
-      await runner.end();
-      kill(runner);
+        .kill()
+        .end();
     },
   );
 
@@ -36,9 +34,9 @@ describe('mm-snap watch', () => {
     const filePath = join(SNAP_DIR, 'src/index.ts');
     const originalFile = await fs.readFile(filePath, 'utf-8');
 
-    const runner = run({
+    await run({
       command: 'watch',
-      options: ['--serve false'],
+      options: ['--serve', 'false'],
     })
       .stdout("Watching 'src/' for changes...")
       .stdout(
@@ -63,18 +61,16 @@ describe('mm-snap watch', () => {
       )
       .stdout('This should show up during eval.')
       .stdout(`Eval Success: evaluated '${join('dist', 'bundle.js')}' in SES!`)
-      .kill();
-
-    await runner.end();
-    kill(runner);
+      .kill()
+      .end();
 
     await fs.writeFile(filePath, originalFile, 'utf-8');
   });
 
   it('serves the snap by default', async () => {
-    const runner = run({
+    await run({
       command: 'watch',
-      options: ['--port 8088'],
+      options: ['--port', '8088'],
     })
       .stdout("Watching 'src/' for changes...")
       .stdout(
@@ -90,9 +86,8 @@ describe('mm-snap watch', () => {
         const response = await fetch(`http://localhost:8088`);
         expect(response.ok).toBe(true);
       })
-      .kill();
-
-    await runner.end();
-    kill(runner);
+      .stdout('Handling incoming request for: /')
+      .kill()
+      .end();
   });
 });

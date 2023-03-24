@@ -7,7 +7,7 @@ describe('mm-snap eval', () => {
     async (command) => {
       await run({
         command,
-        options: [`--bundle ${join('__test__', 'eval.js')}`],
+        options: ['--bundle', join('__test__', 'eval.js')],
         workingDirectory: __dirname,
       })
         .stdout(
@@ -20,7 +20,7 @@ describe('mm-snap eval', () => {
   it('shows a message if the evaluation failed', async () => {
     await run({
       command: 'eval',
-      options: [`--bundle ${join('__test__', 'eval-2.js')}`],
+      options: ['--bundle', join('__test__', 'eval-2.js')],
       workingDirectory: __dirname,
     })
       .stderr('Eval failed.')
