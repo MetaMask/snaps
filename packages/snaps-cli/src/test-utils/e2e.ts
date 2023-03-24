@@ -24,7 +24,7 @@ export function run({
   workingDirectory = SNAP_DIR,
 }: RunOptions) {
   return runner()
-    .debug(LogLevel.Verbose)
+    .debug(LogLevel.ERROR)
     .cwd(workingDirectory)
     .spawn(
       'yarn',
