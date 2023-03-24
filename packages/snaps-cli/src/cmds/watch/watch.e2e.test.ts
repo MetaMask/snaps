@@ -2,13 +2,13 @@ import fetch from 'cross-fetch';
 import { promises as fs } from 'fs';
 import { join } from 'path';
 
-import { run, SNAP_DIR } from '../../test-utils';
+import { kill, run, SNAP_DIR } from '../../test-utils';
 
 describe('mm-snap watch', () => {
   it.each(['watch', 'w'])(
     'builds and watches for changes using "mm-snap %s"',
     async (command) => {
-      await run({
+      const runner = run({
         command,
         options: ['--serve false'],
       })
@@ -22,8 +22,10 @@ describe('mm-snap watch', () => {
         .stdout(
           `Eval Success: evaluated '${join('dist', 'bundle.js')}' in SES!`,
         )
-        .kill()
-        .end();
+        .kill();
+
+      await runner.end();
+      kill(runner);
     },
   );
 
@@ -34,7 +36,7 @@ describe('mm-snap watch', () => {
     const filePath = join(SNAP_DIR, 'src/index.ts');
     const originalFile = await fs.readFile(filePath, 'utf-8');
 
-    await run({
+    const runner = run({
       command: 'watch',
       options: ['--serve false'],
     })
@@ -61,14 +63,16 @@ describe('mm-snap watch', () => {
       )
       .stdout('This should show up during eval.')
       .stdout(`Eval Success: evaluated '${join('dist', 'bundle.js')}' in SES!`)
-      .kill()
-      .end();
+      .kill();
+
+    await runner.end();
+    kill(runner);
 
     await fs.writeFile(filePath, originalFile, 'utf-8');
   });
 
   it('serves the snap by default', async () => {
-    await run({
+    const runner = run({
       command: 'watch',
       options: ['--port 8088'],
     })
@@ -86,7 +90,9 @@ describe('mm-snap watch', () => {
         const response = await fetch(`http://localhost:8088`);
         expect(response.ok).toBe(true);
       })
-      .kill()
-      .end();
+      .kill();
+
+    await runner.end();
+    kill(runner);
   });
 });
