@@ -23,7 +23,7 @@ export function run({
   options = [],
   workingDirectory = SNAP_DIR,
 }: RunOptions) {
-  return runner()
+  const testRunner = runner()
     .debug(LogLevel.ERROR)
     .cwd(workingDirectory)
     .spawn(
@@ -39,4 +39,21 @@ export function run({
       ],
       {},
     );
+
+  const originalStdout = testRunner.stdout.bind(testRunner);
+  const originalStderr = testRunner.stderr.bind(testRunner);
+
+  testRunner.stdout = (...args: Parameters<typeof originalStdout>) => {
+    testRunner.wait('stdout', ...args);
+    originalStdout(...args);
+    return testRunner;
+  };
+
+  testRunner.stderr = (...args: Parameters<typeof originalStderr>) => {
+    testRunner.wait('stderr', ...args);
+    originalStderr(...args);
+    return testRunner;
+  };
+
+  return testRunner;
 }

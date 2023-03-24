@@ -3,7 +3,7 @@ import { join } from 'path';
 import { run, SNAP_DIR } from '../../test-utils';
 
 describe('mm-snap build', () => {
-  it.skip.each(['build', 'b'])(
+  it.each(['build', 'b'])(
     'builds a snap using "mm-snap %s"',
     async (command) => {
       await run({ command })
@@ -16,12 +16,11 @@ describe('mm-snap build', () => {
         .stdout(
           `Eval Success: evaluated '${join('dist', 'bundle.js')}' in SES!`,
         )
-        .kill()
         .end();
     },
   );
 
-  it.skip('supports setting a bundle and output file', async () => {
+  it('supports setting a bundle and output file', async () => {
     await run({
       command: 'build',
       options: [
@@ -46,11 +45,10 @@ describe('mm-snap build', () => {
           'bundle.js',
         )}' in SES!`,
       )
-      .kill()
       .end();
   });
 
-  it.skip('does not eval when set to false', async () => {
+  it('does not eval when set to false', async () => {
     await run({ command: 'build', options: ['--eval false'] })
       .stdout(
         `Build success: '${join('src', 'index.ts')}' bundled as '${join(
@@ -61,17 +59,15 @@ describe('mm-snap build', () => {
       .notStdout(
         `Eval Success: evaluated '${join('dist', 'bundle.js')}' in SES!`,
       )
-      .kill()
       .end();
   });
 
-  it.skip('logs an error when the input file does not exist', async () => {
+  it('logs an error when the input file does not exist', async () => {
     await run({ command: 'build', options: ['--src foo.js'] })
       .stderr(
         "Error: Invalid params: 'foo.js' is not a file or does not exist.",
       )
       .code(1)
-      .kill()
       .end();
   });
 });

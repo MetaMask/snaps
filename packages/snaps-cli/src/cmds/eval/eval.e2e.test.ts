@@ -10,10 +10,6 @@ describe('mm-snap eval', () => {
         options: [`--bundle ${join('__test__', 'eval.js')}`],
         workingDirectory: __dirname,
       })
-        .wait(
-          'stdout',
-          `Eval Success: evaluated '${join('__test__', 'eval.js')}' in SES!`,
-        )
         .stdout(
           `Eval Success: evaluated '${join('__test__', 'eval.js')}' in SES!`,
         )
@@ -27,7 +23,6 @@ describe('mm-snap eval', () => {
       options: [`--bundle ${join('__test__', 'eval-2.js')}`],
       workingDirectory: __dirname,
     })
-      .wait('stderr', 'Eval failed.')
       .stderr('Eval failed.')
       .code(1)
       .end();
