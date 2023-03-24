@@ -87,7 +87,7 @@ export function createEndowments(
         // Special case for adding the EIP-1193 provider.
         allEndowments[endowmentName] = ethereum;
       } else if (endowmentName in rootRealmGlobal) {
-        logWarning(`Access to unhardened global ${endowmentName}`);
+        logWarning(`Access to unhardened global ${endowmentName}.`);
         // If the endowment doesn't have a factory, just use whatever is on the
         // global object.
         const globalValue = (rootRealmGlobal as Record<string, unknown>)[
