@@ -1,6 +1,6 @@
 import fetchMock from 'jest-fetch-mock';
 
-import { createEndowments, isConstructor } from '.';
+import { createEndowments } from '.';
 
 const mockSnapAPI = { foo: Symbol('bar') };
 const mockEthereum = { foo: Symbol('bar') };
@@ -34,10 +34,8 @@ describe('Endowment utils', () => {
       expect(endowments.snap).toBe(mockSnapAPI);
     });
 
-    it('handles special cases where endowment is a function but not a constructor', () => {
-      const mockEndowment = () => {
-        return {};
-      };
+    it('handles special cases where endowment is not available as part of a factory', () => {
+      const mockEndowment = {};
       Object.assign(globalThis, { mockEndowment });
       const { endowments } = createEndowments(
         mockSnapAPI as any,
@@ -221,14 +219,6 @@ describe('Endowment utils', () => {
       expect(await promise).toBe('OK');
       await teardown();
       jest.runAllTimers();
-    });
-  });
-
-  describe('isConstructor', () => {
-    it("will return false if passed in a function who's prototype doesn't have a constructor", () => {
-      const mockFn = jest.fn();
-      mockFn.prototype = null;
-      expect(isConstructor(mockFn)).toBe(false);
     });
   });
 });
