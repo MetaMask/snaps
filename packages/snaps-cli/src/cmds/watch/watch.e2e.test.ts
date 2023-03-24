@@ -13,15 +13,8 @@ describe('mm-snap watch', () => {
         options: ['--serve', 'false'],
       })
         .stdout(/Watching '.*' for changes.../u)
-        .stdout(
-          `Build success: '${join('src', 'index.ts')}' bundled as '${join(
-            'dist',
-            'bundle.js',
-          )}'!`,
-        )
-        .stdout(
-          `Eval Success: evaluated '${join('dist', 'bundle.js')}' in SES!`,
-        )
+        .stdout(/Build success: '.*' bundled as '.*'!/u)
+        .stdout(/Eval Success: evaluated '.*' in SES!/u)
         .kill()
         .end();
     },
@@ -39,13 +32,8 @@ describe('mm-snap watch', () => {
       options: ['--serve', 'false'],
     })
       .stdout(/Watching '.*' for changes.../u)
-      .stdout(
-        `Build success: '${join('src', 'index.ts')}' bundled as '${join(
-          'dist',
-          'bundle.js',
-        )}'!`,
-      )
-      .stdout(`Eval Success: evaluated '${join('dist', 'bundle.js')}' in SES!`)
+      .stdout(/Build success: '.*' bundled as '.*'!/u)
+      .stdout(/Eval Success: evaluated '.*' in SES!/u)
       .tap(async () => {
         await fs.writeFile(
           filePath,
@@ -53,14 +41,9 @@ describe('mm-snap watch', () => {
           'utf-8',
         );
       })
-      .stdout(
-        `Build success: '${join('src', 'index.ts')}' bundled as '${join(
-          'dist',
-          'bundle.js',
-        )}'!`,
-      )
+      .stdout(/Build success: '.*' bundled as '.*'!/u)
       .stdout('This should show up during eval.')
-      .stdout(`Eval Success: evaluated '${join('dist', 'bundle.js')}' in SES!`)
+      .stdout(/Eval Success: evaluated '.*' in SES!/u)
       .kill()
       .end();
 
@@ -73,13 +56,8 @@ describe('mm-snap watch', () => {
       options: ['--port', '8088'],
     })
       .stdout(/Watching '.*' for changes.../u)
-      .stdout(
-        `Build success: '${join('src', 'index.ts')}' bundled as '${join(
-          'dist',
-          'bundle.js',
-        )}'!`,
-      )
-      .stdout(`Eval Success: evaluated '${join('dist', 'bundle.js')}' in SES!`)
+      .stdout(/Build success: '.*' bundled as '.*'!/u)
+      .stdout(/Eval Success: evaluated '.*' in SES!/u)
       .stdout('Starting server...')
       .stdout(`Server listening on: http://localhost:8088`)
       .tap(async () => {

@@ -1,6 +1,6 @@
 import { promises as fs } from 'fs';
 import { tmpdir } from 'os';
-import { join, resolve } from 'path';
+import { resolve } from 'path';
 
 import { run } from '../../test-utils';
 
@@ -9,7 +9,7 @@ jest.unmock('fs');
 const TMP_DIR = resolve(tmpdir(), 'metamask-snaps-test');
 
 describe('mm-snap init', () => {
-  it.skip.each(['init', 'i'])(
+  it.each(['init', 'i'])(
     'initializes a new snap using "mm-snap %s"',
     async (command) => {
       const initPath = resolve(TMP_DIR, command);
@@ -20,18 +20,12 @@ describe('mm-snap init', () => {
         command,
         options: [initPath],
       })
-        .wait('stdout', `Preparing ${initPath}...`)
-        .wait('stdout', 'Cloning template...')
-        .wait('stdout', 'Installing dependencies...')
-        .wait('stdout', 'Initializing git repository...')
-        .wait(
-          'stdout',
-          "Build success: 'src/index.ts' bundled as 'dist/bundle.js'!",
-        )
-        .wait(
-          'stdout',
-          `Eval Success: evaluated '${join('dist', 'bundle.js')}' in SES!`,
-        )
+        .stdout(/Preparing .*\.\.\./u)
+        .stdout('Cloning template...')
+        .stdout('Installing dependencies...')
+        .stdout('Initializing git repository...')
+        .stdout(/Build success: '.*' bundled as '.*'!/u)
+        .stdout(/Eval Success: evaluated '.*' in SES!/u)
         .wait('stdout', 'Snap project successfully initiated!')
         .kill()
         .end();

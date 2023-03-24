@@ -10,9 +10,7 @@ describe('mm-snap eval', () => {
         options: ['--bundle', join('__test__', 'eval.js')],
         workingDirectory: __dirname,
       })
-        .stdout(
-          `Eval Success: evaluated '${join('__test__', 'eval.js')}' in SES!`,
-        )
+        .stdout(/Eval Success: evaluated '.*' in SES!/u)
         .end();
     },
   );

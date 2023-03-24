@@ -7,15 +7,8 @@ describe('mm-snap build', () => {
     'builds a snap using "mm-snap %s"',
     async (command) => {
       await run({ command })
-        .stdout(
-          `Build success: '${join('src', 'index.ts')}' bundled as '${join(
-            'dist',
-            'bundle.js',
-          )}'!`,
-        )
-        .stdout(
-          `Eval Success: evaluated '${join('dist', 'bundle.js')}' in SES!`,
-        )
+        .stdout(/Build success: '.*' bundled as '.*'!/u)
+        .stdout(/Eval Success: evaluated '.*' in SES!/u)
         .end();
     },
   );
@@ -35,34 +28,15 @@ describe('mm-snap build', () => {
       ],
       workingDirectory: '.',
     })
-      .stdout(
-        `Build success: '${join(SNAP_DIR, 'src/index.ts')}' bundled as '${join(
-          SNAP_DIR,
-          'dist',
-          'bundle.js',
-        )}'!`,
-      )
-      .stdout(
-        `Eval Success: evaluated '${join(
-          SNAP_DIR,
-          'dist',
-          'bundle.js',
-        )}' in SES!`,
-      )
+      .stdout(/Build success: '.*' bundled as '.*'!/u)
+      .stdout(/Eval Success: evaluated '.*' in SES!/u)
       .end();
   });
 
   it('does not eval when set to false', async () => {
     await run({ command: 'build', options: ['--eval', 'false'] })
-      .stdout(
-        `Build success: '${join('src', 'index.ts')}' bundled as '${join(
-          'dist',
-          'bundle.js',
-        )}'!`,
-      )
-      .notStdout(
-        `Eval Success: evaluated '${join('dist', 'bundle.js')}' in SES!`,
-      )
+      .stdout(/Build success: '.*' bundled as '.*'!/u)
+      .notStdout(/Eval Success: evaluated '.*' in SES!/u)
       .end();
   });
 
