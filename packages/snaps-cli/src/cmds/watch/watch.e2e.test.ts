@@ -12,7 +12,7 @@ describe('mm-snap watch', () => {
         command,
         options: ['--serve', 'false'],
       })
-        .stdout("Watching 'src/' for changes...")
+        .stdout(/Watching '.*' for changes.../u)
         .stdout(
           `Build success: '${join('src', 'index.ts')}' bundled as '${join(
             'dist',
@@ -38,7 +38,7 @@ describe('mm-snap watch', () => {
       command: 'watch',
       options: ['--serve', 'false'],
     })
-      .stdout("Watching 'src/' for changes...")
+      .stdout(/Watching '.*' for changes.../u)
       .stdout(
         `Build success: '${join('src', 'index.ts')}' bundled as '${join(
           'dist',
@@ -72,7 +72,7 @@ describe('mm-snap watch', () => {
       command: 'watch',
       options: ['--port', '8088'],
     })
-      .stdout("Watching 'src/' for changes...")
+      .stdout(/Watching '.*' for changes.../u)
       .stdout(
         `Build success: '${join('src', 'index.ts')}' bundled as '${join(
           'dist',
