@@ -2,7 +2,7 @@ import { run } from '@metamask/snaps-cli/test-utils';
 import fetch from 'cross-fetch';
 
 describe('mm-snap serve', () => {
-  it.skip.each([
+  it.each([
     {
       command: 'serve',
       port: '8086',
@@ -20,8 +20,8 @@ describe('mm-snap serve', () => {
         command,
         options: [`--port ${port}`],
       })
-        .wait('stdout', 'Starting server...')
-        .wait('stdout', `Server listening on: http://localhost:${port}`)
+        .stdout('Starting server...')
+        .stdout(`Server listening on: http://localhost:${port}`)
         .tap(async () => {
           const response = await fetch(`http://localhost:${port}`);
           expect(response.ok).toBe(true);

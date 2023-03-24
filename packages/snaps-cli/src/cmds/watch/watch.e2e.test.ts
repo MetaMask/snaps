@@ -5,23 +5,21 @@ import { join } from 'path';
 import { run, SNAP_DIR } from '../../test-utils';
 
 describe('mm-snap watch', () => {
-  it.skip.each(['watch', 'w'])(
+  it.each(['watch', 'w'])(
     'builds and watches for changes using "mm-snap %s"',
     async (command) => {
       await run({
         command,
         options: ['--serve false'],
       })
-        .wait('stdout', "Watching 'src/' for changes...")
-        .wait(
-          'stdout',
+        .stdout("Watching 'src/' for changes...")
+        .stdout(
           `Build success: '${join('src', 'index.ts')}' bundled as '${join(
             'dist',
             'bundle.js',
           )}'!`,
         )
-        .wait(
-          'stdout',
+        .stdout(
           `Eval Success: evaluated '${join('dist', 'bundle.js')}' in SES!`,
         )
         .kill()
@@ -29,7 +27,7 @@ describe('mm-snap watch', () => {
     },
   );
 
-  it.skip('rebuilds after a change', async () => {
+  it('rebuilds after a change', async () => {
     // Since this is an end-to-end test, and we're working with a "real" snap,
     // we have to make a copy of the original snap file, so we can modify it and
     // reset it after the test.
@@ -40,18 +38,14 @@ describe('mm-snap watch', () => {
       command: 'watch',
       options: ['--serve false'],
     })
-      .wait('stdout', "Watching 'src/' for changes...")
-      .wait(
-        'stdout',
+      .stdout("Watching 'src/' for changes...")
+      .stdout(
         `Build success: '${join('src', 'index.ts')}' bundled as '${join(
           'dist',
           'bundle.js',
         )}'!`,
       )
-      .wait(
-        'stdout',
-        `Eval Success: evaluated '${join('dist', 'bundle.js')}' in SES!`,
-      )
+      .stdout(`Eval Success: evaluated '${join('dist', 'bundle.js')}' in SES!`)
       .tap(async () => {
         await fs.writeFile(
           filePath,
@@ -59,43 +53,35 @@ describe('mm-snap watch', () => {
           'utf-8',
         );
       })
-      .wait(
-        'stdout',
+      .stdout(
         `Build success: '${join('src', 'index.ts')}' bundled as '${join(
           'dist',
           'bundle.js',
         )}'!`,
       )
-      .wait('stdout', 'This should show up during eval.')
-      .wait(
-        'stdout',
-        `Eval Success: evaluated '${join('dist', 'bundle.js')}' in SES!`,
-      )
+      .stdout('This should show up during eval.')
+      .stdout(`Eval Success: evaluated '${join('dist', 'bundle.js')}' in SES!`)
       .kill()
       .end();
 
     await fs.writeFile(filePath, originalFile, 'utf-8');
   });
 
-  it.skip('serves the snap by default', async () => {
+  it('serves the snap by default', async () => {
     await run({
       command: 'watch',
       options: ['--port 8088'],
     })
-      .wait('stdout', "Watching 'src/' for changes...")
-      .wait(
-        'stdout',
+      .stdout("Watching 'src/' for changes...")
+      .stdout(
         `Build success: '${join('src', 'index.ts')}' bundled as '${join(
           'dist',
           'bundle.js',
         )}'!`,
       )
-      .wait(
-        'stdout',
-        `Eval Success: evaluated '${join('dist', 'bundle.js')}' in SES!`,
-      )
-      .wait('stdout', 'Starting server...')
-      .wait('stdout', `Server listening on: http://localhost:8088`)
+      .stdout(`Eval Success: evaluated '${join('dist', 'bundle.js')}' in SES!`)
+      .stdout('Starting server...')
+      .stdout(`Server listening on: http://localhost:8088`)
       .tap(async () => {
         const response = await fetch(`http://localhost:8088`);
         expect(response.ok).toBe(true);
