@@ -12,8 +12,6 @@ describe('main', () => {
     expect(global.snaps).toStrictEqual({
       // see test/setup.js
       verboseErrors: false,
-      suppressWarnings: false,
-      isWatching: false,
     });
   });
 });

@@ -12,7 +12,7 @@ const initCommand = {
     yarg.positional('directory', builders.directory);
     return yarg;
   },
-  handler: async (argv: YargsArgs) => init(argv),
+  handler: init,
 };
 
 export default initCommand;

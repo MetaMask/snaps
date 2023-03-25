@@ -4,6 +4,7 @@ import pathUtils from 'path';
 
 import { resetFileSystem } from '../../test-utils';
 import {
+  buildSnap,
   cloneTemplate,
   gitInit,
   isGitInstalled,
@@ -61,6 +62,18 @@ describe('initUtils', () => {
       await expect(prepareWorkingDirectory('bar')).rejects.toThrow(
         'Init Error: Failed to prepare working directory with message: Directory bar not empty.',
       );
+    });
+  });
+
+  describe('buildSnap', () => {
+    it('calls execSync', () => {
+      const mockExecSync = jest
+        .spyOn(childProcess, 'execSync')
+        .mockImplementation();
+
+      buildSnap('foo');
+
+      expect(mockExecSync).toHaveBeenCalled();
     });
   });
 

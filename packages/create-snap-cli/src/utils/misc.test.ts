@@ -1,13 +1,11 @@
 import fs from 'fs';
-import pathUtils from 'path';
 
 import {
   booleanStringToBoolean,
   logError,
-  sanitizeInputs,
-  setSnapGlobals,
   trimPathString,
   writeError,
+  setSnapGlobals,
 } from './misc';
 
 jest.mock('fs');
@@ -15,96 +13,29 @@ jest.mock('fs');
 describe('misc', () => {
   global.snaps = {
     verboseErrors: false,
-    suppressWarnings: false,
-    isWatching: false,
   };
 
-  // This is the yargs object created with cli command: `mm-snap init`.
+  // This is the yargs object created with cli command: `yarn create-snap init`.
   /* eslint-disable @typescript-eslint/naming-convention */
   const defaultArgv = {
     _: ['init'],
     verboseErrors: true,
     'verbose-errors': false,
-    suppressWarnings: false,
-    'suppress-warnings': false,
-    src: 'src/index.js',
-    s: 'src/index.js',
-    dist: 'dist',
-    d: 'dist',
-    outfileName: 'bundle.js',
-    n: 'bundle.js',
-    'outfile-name': 'bundle.js',
-    port: 8081,
-    p: 8081,
-    $0: '/usr/local/bin/mm-snap',
+    $0: '/usr/local/bin/create-snap',
   };
 
   // This is the yargs object created with cli command:
-  //   `mm-snap watch -verboseErrors --suppressWarnings`
+  //   `mm-snap init -verboseErrors
   const exampleArgv = {
-    _: ['watch'],
+    _: ['init'],
     verboseErrors: true,
     'verbose-errors': true,
-    suppressWarnings: true,
-    'suppress-warnings': true,
-    src: 'src/index.js',
-    s: 'src/index.js',
-    dist: 'dist',
-    d: 'dist',
-    outfileName: 'bundle.js',
-    n: 'bundle.js',
-    'outfile-name': 'bundle.js',
-    sourceMaps: false,
-    'source-maps': false,
-    stripComments: false,
-    strip: false,
-    'strip-comments': false,
-    $0: '/usr/local/bin/mm-snap',
-  };
-
-  const unsanitizedArgv = {
-    _: ['init'],
-    verboseErrors: true,
-    'verbose-errors': false,
-    suppressWarnings: false,
-    'suppress-warnings': false,
-    src: './',
-    s: './src/index.js',
-    dist: 'dist',
-    d: 'dist',
-    outfileName: 'bundle.js',
-    n: 'bundle.js',
-    'outfile-name': 'bundle.js',
-    port: 8081,
-    p: 8081,
-    $0: '/usr/local/bin/mm-snap',
-  };
-
-  const sanitizedArgv = {
-    _: ['init'],
-    verboseErrors: true,
-    'verbose-errors': false,
-    suppressWarnings: false,
-    'suppress-warnings': false,
-    src: '.',
-    s: pathUtils.normalize('src/index.js'),
-    dist: 'dist',
-    d: 'dist',
-    outfileName: 'bundle.js',
-    n: 'bundle.js',
-    'outfile-name': 'bundle.js',
-    port: 8081,
-    p: 8081,
-    $0: '/usr/local/bin/mm-snap',
+    $0: '/usr/local/bin/create-snap',
   };
   /* eslint-enable @typescript-eslint/naming-convention */
 
   const setVerboseErrors = (bool: boolean) => {
     global.snaps.verboseErrors = bool;
-  };
-
-  const setIsWatching = (bool: boolean) => {
-    global.snaps.isWatching = bool;
   };
 
   afterAll(() => {
@@ -132,33 +63,21 @@ describe('misc', () => {
   describe('setSnapGlobals', () => {
     it('sets global variables correctly', () => {
       setSnapGlobals(exampleArgv);
-      expect(global.snaps.isWatching).toBe(true);
       expect(global.snaps.verboseErrors).toBe(true);
-      expect(global.snaps.suppressWarnings).toBe(true);
     });
 
     it('does not set global variables incorrectly', () => {
       setSnapGlobals(defaultArgv);
-      expect(global.snaps.isWatching).toBe(false);
       expect(global.snaps.verboseErrors).toBe(true);
-      expect(global.snaps.suppressWarnings).toBe(false);
     });
 
     it('does not set global variables if they are not in argv', () => {
-      global.snaps = { isWatching: false };
+      global.snaps = {};
 
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      const argv = { _: ['w', 'watch'], $0: '/usr/local/bin/mm-snap' };
+      const argv = { _: ['init'], $0: '/usr/local/bin/create-snap' };
       setSnapGlobals(argv);
       expect(global.snaps.verboseErrors).toBeUndefined();
-      expect(global.snaps.suppressWarnings).toBeUndefined();
-    });
-  });
-
-  describe('sanitizeInputs', () => {
-    it('correctly normalizes paths', () => {
-      sanitizeInputs(unsanitizedArgv);
-      expect(unsanitizedArgv).toStrictEqual(sanitizedArgv);
     });
   });
 
@@ -196,7 +115,6 @@ describe('misc', () => {
   describe('writeError', () => {
     it('calls console error once if filesystem unlink is successful', async () => {
       setVerboseErrors(false);
-      setIsWatching(false);
       jest.spyOn(process, 'exit').mockImplementation(() => {
         throw new Error('process exited');
       });
@@ -211,7 +129,6 @@ describe('misc', () => {
 
     it('calls console error twice if filesystem unlink fails', async () => {
       setVerboseErrors(false);
-      setIsWatching(false);
       jest.spyOn(process, 'exit').mockImplementation(() => {
         throw new Error('process exited');
       });
@@ -222,14 +139,6 @@ describe('misc', () => {
       ).rejects.toThrow('process exited');
       expect(errorMock).toHaveBeenNthCalledWith(1, 'foo bar');
       expect(errorMock).toHaveBeenCalledTimes(2);
-    });
-
-    it('will not process an already processed prefix', async () => {
-      setIsWatching(true);
-      const prefix = 'Custom Error ';
-      const errorMock = jest.spyOn(console, 'error').mockImplementation();
-      await writeError(prefix, 'bar', new Error('error message'));
-      expect(errorMock).toHaveBeenCalledWith(`${prefix}bar`);
     });
   });
 

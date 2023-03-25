@@ -1,5 +1,5 @@
 import { cli } from './cli';
-import * as initHandlerModule from './cmds/init/initHandler';
+import { init } from './cmds';
 
 const getMockArgv = (...args: string[]) => {
   return ['/mock/path', '/mock/entry/path', ...args];
@@ -9,7 +9,7 @@ const getMockArgv = (...args: string[]) => {
 // populated programmatically based on the name of entry point file.
 // In Jest, that's sometimes "childProcess.js", sometimes other things.
 // In practice, it should always be "mm-snap".
-const HELP_TEXT_REGEX = /^\s*Usage: .+ <command> \[options\]/u;
+const HELP_TEXT_REGEX = /^\s*create-metamask-snap \[directory\]/u;
 
 describe('cli', () => {
   let consoleLogSpy: jest.SpyInstance;
@@ -56,11 +56,27 @@ describe('cli', () => {
   });
 
   describe('command failures', () => {
-    it('handles an error thrown by a locally defined command handler', () => {
-      jest.spyOn(initHandlerModule, 'initHandler').mockImplementation(() => {
-        throw new Error('init failed');
+    it('handles an argument validation failure', () => {
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+      const mockInitHandler = jest.fn();
+
+      cli(getMockArgv('--non-existent-option'), {
+        ...init,
+        handler: mockInitHandler,
       });
-      expect(() => cli(getMockArgv('init'))).toThrow('init failed');
+
+      expect(process.exitCode).toBe(1);
+      expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
+    });
+    it('handles an error thrown by a locally defined command handler', () => {
+      expect(() =>
+        cli(getMockArgv('foo'), {
+          ...init,
+          handler: () => {
+            throw new Error('init failed');
+          },
+        }),
+      ).toThrow('init failed');
     });
   });
 });
