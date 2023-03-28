@@ -104,8 +104,8 @@ import {
 import { getRpcCaveatOrigins } from './endowments/rpc';
 import { detectSnapLocation, SnapLocation } from './location';
 import {
-  JsonSnapsRegistry,
-  SnapsRegistry,
+  GetMetadata,
+  GetResult,
   SnapsRegistryInfo,
   SnapsRegistryMetadata,
   SnapsRegistryRequest,
@@ -480,7 +480,9 @@ export type AllowedActions =
   | TerminateAllSnapsAction
   | TerminateSnapAction
   | UpdateCaveat
-  | UpdateRequestState;
+  | UpdateRequestState
+  | GetResult
+  | GetMetadata;
 
 export type AllowedEvents = ExecutionServiceEvents;
 
@@ -539,11 +541,6 @@ type SnapControllerArgs = {
    * How frequently to check whether a snap is idle.
    */
   idleTimeCheckInterval?: number;
-
-  /**
-   * A registry implementation used for checking for verified and blocked snaps.
-   */
-  registry: SnapsRegistry;
 
   /**
    * The maximum amount of time that a snap may be idle.
@@ -653,8 +650,6 @@ export class SnapController extends BaseController<
 
   #idleTimeCheckInterval: number;
 
-  #registry: SnapsRegistry;
-
   #maxIdleTime: number;
 
   // This property cannot be hash private yet because of tests.
@@ -682,7 +677,6 @@ export class SnapController extends BaseController<
     environmentEndowmentPermissions = [],
     excludedPermissions = {},
     idleTimeCheckInterval = inMilliseconds(5, Duration.Second),
-    registry = new JsonSnapsRegistry(),
     maxIdleTime = inMilliseconds(30, Duration.Second),
     maxRequestTime = inMilliseconds(60, Duration.Second),
     fetchFunction = globalThis.fetch.bind(globalThis),
@@ -750,7 +744,6 @@ export class SnapController extends BaseController<
     this.#featureFlags = featureFlags;
     this.#fetchFunction = fetchFunction;
     this.#idleTimeCheckInterval = idleTimeCheckInterval;
-    this.#registry = registry;
     this.#maxIdleTime = maxIdleTime;
     this.maxRequestTime = maxRequestTime;
     this.#detectSnapLocation = detectSnapLocationFunction;
@@ -964,7 +957,8 @@ export class SnapController extends BaseController<
    * for more information.
    */
   async updateBlockedSnaps(): Promise<void> {
-    const blockedSnaps = await this.#registry.get(
+    const blockedSnaps = await this.messagingSystem.call(
+      'SnapsRegistry:get',
       Object.values(this.state.snaps).reduce<SnapsRegistryRequest>(
         (blockListArg, snap) => {
           blockListArg[snap.id] = {
@@ -1048,7 +1042,7 @@ export class SnapController extends BaseController<
     snapId: ValidatedSnapId,
     snapInfo: SnapsRegistryInfo,
   ) {
-    const results = await this.#registry.get({
+    const results = await this.messagingSystem.call('SnapsRegistry:get', {
       [snapId]: snapInfo,
     });
     const result = results[snapId];
@@ -1976,7 +1970,7 @@ export class SnapController extends BaseController<
   async getRegistryMetadata(
     snapId: SnapId,
   ): Promise<SnapsRegistryMetadata | null> {
-    return await this.#registry.getMetadata(snapId);
+    return await this.messagingSystem.call('SnapsRegistry:getMetadata', snapId);
   }
 
   /**
