@@ -159,6 +159,29 @@ describe('JsonSnapsRegistry', () => {
     });
   });
 
+  it('refetches the database on allowlist miss if configured', async () => {
+    fetchMock.mockResponse(JSON.stringify(MOCK_DATABASE));
+    const { messenger } = getRegistry({
+      refetchOnAllowlistMiss: true,
+      state: {
+        lastUpdated: 0,
+        database: { verifiedSnaps: {}, blockedSnaps: [] },
+      },
+    });
+    const result = await messenger.call('SnapsRegistry:get', {
+      [MOCK_SNAP_ID]: {
+        version: '1.0.0' as SemVerVersion,
+        checksum: DEFAULT_SNAP_SHASUM,
+      },
+    });
+
+    expect(result).toStrictEqual({
+      [MOCK_SNAP_ID]: {
+        status: SnapsRegistryStatus.Verified,
+      },
+    });
+  });
+
   it('returns unverified for unavailable database if failOnUnavailableRegistry is set to false', async () => {
     fetchMock.mockResponse('', { status: 404 });
     const { messenger } = getRegistry({
