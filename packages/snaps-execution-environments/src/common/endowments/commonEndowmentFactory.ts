@@ -1,3 +1,4 @@
+import { rootRealmGlobal } from '../globalObject';
 import crypto from './crypto';
 import date from './date';
 import interval from './interval';
@@ -15,6 +16,7 @@ export type EndowmentFactory = {
 export type CommonEndowmentSpecification = {
   endowment: unknown;
   name: string;
+  bind?: boolean;
 };
 
 // Array of common endowments
@@ -22,11 +24,12 @@ const commonEndowments: CommonEndowmentSpecification[] = [
   { endowment: AbortController, name: 'AbortController' },
   { endowment: AbortSignal, name: 'AbortSignal' },
   { endowment: ArrayBuffer, name: 'ArrayBuffer' },
-  { endowment: atob, name: 'atob' },
+  { endowment: atob, name: 'atob', bind: true },
   { endowment: BigInt, name: 'BigInt' },
   { endowment: BigInt64Array, name: 'BigInt64Array' },
   { endowment: BigUint64Array, name: 'BigUint64Array' },
-  { endowment: btoa, name: 'btoa' },
+  { endowment: btoa, name: 'btoa', bind: true },
+  { endowment: console, name: 'console' },
   { endowment: DataView, name: 'DataView' },
   { endowment: Float32Array, name: 'Float32Array' },
   { endowment: Float64Array, name: 'Float64Array' },
@@ -64,10 +67,13 @@ const buildCommonEndowments = (): EndowmentFactory[] => {
     const endowment = {
       names: [endowmentSpecification.name] as const,
       factory: () => {
+        const boundEndowment =
+          typeof endowmentSpecification.endowment === 'function' &&
+          endowmentSpecification.bind
+            ? endowmentSpecification.endowment.bind(rootRealmGlobal)
+            : endowmentSpecification.endowment;
         return {
-          [endowmentSpecification.name]: harden(
-            endowmentSpecification.endowment,
-          ),
+          [endowmentSpecification.name]: harden(boundEndowment),
         } as const;
       },
     };

@@ -287,6 +287,10 @@ describe('endowments', () => {
         },
         {
           factory: expect.any(Function),
+          names: ['console'],
+        },
+        {
+          factory: expect.any(Function),
           names: ['DataView'],
         },
         {
