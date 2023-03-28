@@ -2,12 +2,14 @@ import { PermissionConstraint } from '@metamask/permission-controller';
 import { Json } from '@metamask/utils';
 
 import {
-  permittedDerivationPathsCaveatMapper,
   permittedCoinTypesCaveatMapper,
-  PermittedDerivationPathsCaveatSpecification,
   PermittedCoinTypesCaveatSpecification,
-  SnapIdsCaveatSpecification,
-} from '../caveats';
+} from '../caveats/permittedCoinTypes';
+import {
+  permittedDerivationPathsCaveatMapper,
+  PermittedDerivationPathsCaveatSpecification,
+} from '../caveats/permittedDerivationPaths';
+import { SnapIdsCaveatSpecification } from '../caveats/snapIds';
 import { dialogBuilder, DialogMethodHooks } from './dialog';
 import {
   getBip32EntropyBuilder,
