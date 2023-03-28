@@ -34,7 +34,7 @@ import { MethodHooksObject } from '../utils';
 export const WALLET_SNAP_PERMISSION_KEY = 'wallet_snap';
 
 // Redeclare installSnaps action type to avoid circular dependencies
-type InstallSnaps = {
+export type InstallSnaps = {
   type: `SnapController:install`;
   handler: (
     origin: string,

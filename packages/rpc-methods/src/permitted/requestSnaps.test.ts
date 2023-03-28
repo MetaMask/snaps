@@ -190,11 +190,12 @@ describe('implementation', () => {
         invoker: 'https://metamask.github.io',
         parentCapability: WALLET_SNAP_PERMISSION_KEY,
       },
+      {
+        data: {
+          [WALLET_SNAP_PERMISSION_KEY]: { [MOCK_SNAP_ID]: getTruncatedSnap() },
+        },
+      },
     ]);
-
-    hooks.installSnaps.mockImplementation(() => ({
-      [MOCK_SNAP_ID]: getTruncatedSnap(),
-    }));
 
     const engine = new JsonRpcEngine();
     engine.push((req, res, next, end) => {
@@ -224,10 +225,6 @@ describe('implementation', () => {
           { type: SnapCaveatType.SnapIds, value: { [MOCK_SNAP_ID]: {} } },
         ],
       },
-    });
-
-    expect(hooks.installSnaps).toHaveBeenCalledWith({
-      [MOCK_SNAP_ID]: {},
     });
 
     expect(response.result).toStrictEqual({

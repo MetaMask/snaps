@@ -1,11 +1,5 @@
 import { ApprovalRequest } from '@metamask/approval-controller';
 import {
-  ActionConstraint,
-  ActionHandler,
-  ControllerMessenger,
-  EventConstraint,
-} from '@metamask/base-controller';
-import {
   PermissionConstraint,
   SubjectPermissions,
   ValidPermission,
@@ -14,6 +8,7 @@ import {
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
+  MockControllerMessenger,
   getPersistedSnapObject,
   getTruncatedSnap,
   MOCK_LOCAL_SNAP_ID,
@@ -49,25 +44,6 @@ const asyncNoOp = async () => Promise.resolve();
  * A controller messenger, that allows overwriting the action handlers, without
  * the need to call `unregisterActionHandler` first.
  */
-export class MockControllerMessenger<
-  Action extends ActionConstraint,
-  Event extends EventConstraint,
-> extends ControllerMessenger<Action, Event> {
-  /**
-   * Registers an action handler for the given action type. If an action handler
-   * already exists for the given action type, it will be overwritten.
-   *
-   * @param actionType - The action type to register the handler for.
-   * @param handler - The action handler to register.
-   */
-  registerActionHandler<T extends Action['type']>(
-    actionType: T,
-    handler: ActionHandler<Action, T>,
-  ) {
-    super.unregisterActionHandler(actionType);
-    super.registerActionHandler(actionType, handler);
-  }
-}
 
 export class MockApprovalController {
   #approval?: {
