@@ -16,6 +16,8 @@ import {
   SnapRpcHookArgs,
   SnapCaveatType,
   assertIsValidSnapId,
+  RequestedSnapPermissions,
+  InstallSnapsResult,
 } from '@metamask/snaps-utils';
 import {
   isJsonRpcRequest,
@@ -30,6 +32,17 @@ import { nanoid } from 'nanoid';
 import { MethodHooksObject } from '../utils';
 
 export const WALLET_SNAP_PERMISSION_KEY = 'wallet_snap';
+
+// Redeclare installSnaps action type to avoid circular dependencies
+type InstallSnaps = {
+  type: `SnapController:install`;
+  handler: (
+    origin: string,
+    requestedSnaps: RequestedSnapPermissions,
+  ) => Promise<InstallSnapsResult>;
+};
+
+type AllowedActions = InstallSnaps;
 
 export type InvokeSnapMethodHooks = {
   getSnap: (snapId: SnapId) => Snap | undefined;
@@ -52,6 +65,9 @@ type InvokeSnapSpecification = ValidPermissionSpecification<{
   methodImplementation: ReturnType<typeof getInvokeSnapImplementation>;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
   validator: PermissionValidatorConstraint;
+  sideEffect: {
+    onPermitted: PermissionSideEffect<AllowedActions, never>['onPermitted'];
+  };
 }>;
 
 type InvokeSnapParams = {
@@ -86,16 +102,14 @@ export function validateCaveat(caveat: Caveat<string, any>) {
  * @param params.messagingSystem - The messenger to call an action.
  */
 export const handleSnapInstall: PermissionSideEffect<
-  any,
-  any
+  AllowedActions,
+  never
 >['onPermitted'] = async ({ requestData, messagingSystem }) => {
-  const snaps =
-    // @ts-expect-error: Will see later
-    requestData.permissions[WALLET_SNAP_PERMISSION_KEY].caveats[0].value;
+  const snaps = requestData.permissions[WALLET_SNAP_PERMISSION_KEY].caveats?.[0]
+    .value as RequestedSnapPermissions;
 
   return messagingSystem.call(
     `SnapController:install`,
-    // @ts-expect-error: Will see later
     requestData.metadata.origin,
     snaps,
   );

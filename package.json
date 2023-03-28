@@ -46,7 +46,6 @@
   "resolutions": {
     "@babel/core": "patch:@babel/core@npm%3A7.21.0#./.yarn/patches/@babel-core-npm-7.21.0-fb3817b0e5.patch",
     "@lavamoat/lavapack@^3.3.0": "patch:@lavamoat/lavapack@npm%3A3.3.0#./.yarn/patches/@lavamoat-lavapack-npm-3.3.0-5a61b5374d.patch",
-    "@metamask/approval-controller": "2.0.0-preview.9e5d040",
     "@types/mocha@^10.0.1": "patch:@types/mocha@npm:10.0.1#.yarn/patches/@types-mocha-npm-10.0.1-7c94e9e170.patch",
     "jest-fetch-mock@^3.0.3": "patch:jest-fetch-mock@npm:3.0.3#.yarn/patches/jest-fetch-mock-npm-3.0.3-ac072ca8af.patch",
     "lavamoat-browserify@^15.5.0": "patch:lavamoat-browserify@npm%3A15.5.0#./.yarn/patches/lavamoat-browserify-npm-15.5.0-ce0bbe5e4c.patch",
