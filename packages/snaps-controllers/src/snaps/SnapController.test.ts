@@ -741,6 +741,22 @@ describe('SnapController', () => {
     controller.destroy();
   });
 
+  it('throws an error if semver version range doesnt match downloaded version', async () => {
+    const controller = getSnapController(
+      getSnapControllerOptions({ detectSnapLocation: loopbackDetect() }),
+    );
+
+    await expect(
+      controller.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: { version: '1.2.0' },
+      }),
+    ).rejects.toThrow(
+      `Version mismatch. Manifest for "npm:@metamask/example-snap" specifies version "1.0.0" which doesn't satisfy requested version range "1.2.0"`,
+    );
+
+    controller.destroy();
+  });
+
   it('throws an error if snap is not on allowlist and allowlisting is required', async () => {
     const controller = getSnapController(
       getSnapControllerOptions({
@@ -3250,6 +3266,8 @@ describe('SnapController', () => {
       expect(controller.get(snapId3)).toBeUndefined();
       expect(controller.get(snapId1)?.manifest.version).toBe(oldVersion);
       expect(controller.get(snapId2)?.manifest.version).toBe(oldVersion);
+      expect(controller.get(snapId1)?.status).toBe('stopped');
+      expect(controller.get(snapId2)?.status).toBe('stopped');
 
       controller.destroy();
       await service.terminateAllSnaps();

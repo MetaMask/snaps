@@ -579,18 +579,14 @@ type AddSnapArgs = {
   id: ValidatedSnapId;
   origin: string;
   location: SnapLocation;
+  versionRange: SemVerRange;
 };
 
 // When we set a snap, we need all required properties to be present and
 // validated.
-type SetSnapArgs = Omit<AddSnapArgs, 'location'> & {
+type SetSnapArgs = Omit<AddSnapArgs, 'location' | 'versionRange'> & {
   manifest: VirtualFile<SnapManifest>;
   files: VirtualFile[];
-  /**
-   * @default '*'
-   */
-  // TODO(ritave): Used only for validation in #set, should be moved elsewhere.
-  versionRange?: SemVerRange;
   isUpdate?: boolean;
 };
 
@@ -817,6 +813,7 @@ export class SnapController extends BaseController<
               target: SnapStatus.Running,
               cond: disableGuard,
             },
+            [SnapStatusEvents.Stop]: SnapStatus.Stopped,
           },
         },
         [SnapStatus.Running]: {
@@ -1717,6 +1714,7 @@ export class SnapController extends BaseController<
         origin,
         id: snapId,
         location,
+        versionRange,
       });
 
       await this.authorize(snapId, pendingApproval);
@@ -1845,6 +1843,12 @@ export class SnapController extends BaseController<
         );
       }
 
+      if (!satisfiesVersionRange(newVersion, newVersionRange)) {
+        throw new Error(
+          `Version mismatch. Manifest for "${snapId}" specifies version "${newVersion}" which doesn't satisfy requested version range "${newVersionRange}"`,
+        );
+      }
+
       await this.#assertIsInstallAllowed(snapId, {
         version: newVersion,
         checksum: newSnap.manifest.result.source.shasum,
@@ -1888,7 +1892,6 @@ export class SnapController extends BaseController<
         id: snapId,
         manifest: newSnap.manifest,
         files: newSnap.files,
-        versionRange: newVersionRange,
         isUpdate: true,
       });
 
@@ -1983,7 +1986,7 @@ export class SnapController extends BaseController<
    * @returns The resulting snap object.
    */
   async #add(args: AddSnapArgs): Promise<PersistedSnap> {
-    const { id: snapId, location } = args;
+    const { id: snapId, location, versionRange } = args;
 
     this.#setupRuntime(snapId, { sourceCode: null, state: null });
     const runtime = this.#getRuntimeExpect(snapId);
@@ -1994,9 +1997,16 @@ export class SnapController extends BaseController<
       // to null in the authorize() method.
       runtime.installPromise = (async () => {
         const fetchedSnap = await this.#fetchSnap(snapId, location);
+        const manifest = fetchedSnap.manifest.result;
+        assertIsSnapManifest(manifest);
+        if (!satisfiesVersionRange(manifest.version, versionRange)) {
+          throw new Error(
+            `Version mismatch. Manifest for "${snapId}" specifies version "${manifest.version}" which doesn't satisfy requested version range "${versionRange}"`,
+          );
+        }
         await this.#assertIsInstallAllowed(snapId, {
-          version: fetchedSnap.manifest.result.version,
-          checksum: fetchedSnap.manifest.result.source.shasum,
+          version: manifest.version,
+          checksum: manifest.source.shasum,
         });
 
         return this.#set({
@@ -2115,23 +2125,10 @@ export class SnapController extends BaseController<
    * @returns The resulting snap object.
    */
   #set(args: SetSnapArgs): PersistedSnap {
-    const {
-      id: snapId,
-      origin,
-      manifest,
-      files,
-      versionRange = DEFAULT_REQUESTED_SNAP_VERSION,
-      isUpdate = false,
-    } = args;
+    const { id: snapId, origin, manifest, files, isUpdate = false } = args;
 
     assertIsSnapManifest(manifest.result);
     const { version } = manifest.result;
-
-    if (!satisfiesVersionRange(version, versionRange)) {
-      throw new Error(
-        `Version mismatch. Manifest for "${snapId}" specifies version "${version}" which doesn't satisfy requested version range "${versionRange}"`,
-      );
-    }
 
     const normalizedSourcePath = normalizeRelative(
       manifest.result.source.location.npm.filePath,
@@ -2656,11 +2653,23 @@ export class SnapController extends BaseController<
     }
 
     await this.stopSnap(snapId, SnapStatusEvents.Stop);
+    // Always set to stopped even if it wasn't running initially
+    if (this.get(snapId)?.status !== SnapStatus.Stopped) {
+      this.#transition(snapId, SnapStatusEvents.Stop);
+    }
 
     const { statePatches, sourceCode, permissions } = rollbackSnapshot;
 
     if (statePatches?.length) {
       this.applyPatches(statePatches);
+    }
+
+    // Reset snap status, as we may have been in another state when we stored state patches
+    // But now we are 100% in a stopped state
+    if (this.get(snapId)?.status !== SnapStatus.Stopped) {
+      this.update((state) => {
+        state.snaps[snapId].status = SnapStatus.Stopped;
+      });
     }
 
     if (sourceCode) {
