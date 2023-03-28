@@ -4,7 +4,11 @@ import {
 } from '@metamask/base-controller';
 import { SnapsRegistryDatabase } from '@metamask/snaps-registry';
 import { SnapId } from '@metamask/snaps-utils';
-import { satisfiesVersionRange } from '@metamask/utils';
+import {
+  Duration,
+  inMilliseconds,
+  satisfiesVersionRange,
+} from '@metamask/utils';
 
 import {
   SnapsRegistry,
@@ -24,6 +28,8 @@ export type JsonSnapsRegistryArgs = {
   state?: SnapsRegistryState;
   fetchFunction?: typeof fetch;
   url?: string;
+  recentFetchThreshold?: number;
+  refetchOnAllowlistMiss?: boolean;
   failOnUnavailableRegistry?: boolean;
 };
 
@@ -70,6 +76,10 @@ export class JsonSnapsRegistry extends BaseController<
 
   #fetchFunction: typeof fetch;
 
+  #recentFetchThreshold: number;
+
+  #refetchOnAllowlistMiss: boolean;
+
   #failOnUnavailableRegistry: boolean;
 
   constructor({
@@ -77,7 +87,9 @@ export class JsonSnapsRegistry extends BaseController<
     state,
     url = SNAP_REGISTRY_URL,
     fetchFunction = globalThis.fetch.bind(globalThis),
+    recentFetchThreshold = inMilliseconds(5, Duration.Minute),
     failOnUnavailableRegistry = true,
+    refetchOnAllowlistMiss = true,
   }: JsonSnapsRegistryArgs) {
     super({
       messenger,
@@ -93,19 +105,32 @@ export class JsonSnapsRegistry extends BaseController<
     });
     this.#url = url;
     this.#fetchFunction = fetchFunction;
+    this.#recentFetchThreshold = recentFetchThreshold;
+    this.#refetchOnAllowlistMiss = refetchOnAllowlistMiss;
     this.#failOnUnavailableRegistry = failOnUnavailableRegistry;
 
     this.messagingSystem.registerActionHandler(
       'SnapsRegistry:get',
-      async (...args) => this.get(...args),
+      async (...args) => this.#get(...args),
     );
     this.messagingSystem.registerActionHandler(
       'SnapsRegistry:getMetadata',
-      async (...args) => this.getMetadata(...args),
+      async (...args) => this.#getMetadata(...args),
+    );
+  }
+
+  #wasRecentlyFetched() {
+    return (
+      this.state.lastUpdated &&
+      Date.now() - this.state.lastUpdated < this.#recentFetchThreshold
     );
   }
 
   async #updateDatabase() {
+    // No-op if we recently fetched the registry
+    if (this.#wasRecentlyFetched()) {
+      return;
+    }
     try {
       const response = await this.#fetchFunction(this.#url);
       if (!response.ok) {
@@ -132,7 +157,11 @@ export class JsonSnapsRegistry extends BaseController<
     return this.state.database;
   }
 
-  async #getSingle(snapId: SnapId, snapInfo: SnapsRegistryInfo) {
+  async #getSingle(
+    snapId: SnapId,
+    snapInfo: SnapsRegistryInfo,
+    refetch = false,
+  ): Promise<SnapsRegistryResult> {
     const database = await this.#getDatabase();
 
     const blockedEntry = database?.blockedSnaps.find((blocked) => {
@@ -158,10 +187,15 @@ export class JsonSnapsRegistry extends BaseController<
     if (version && version.checksum === snapInfo.checksum) {
       return { status: SnapsRegistryStatus.Verified };
     }
+    // For now, if we have an allowlist miss, we can refetch once and try again.
+    if (this.#refetchOnAllowlistMiss && !refetch) {
+      await this.#updateDatabase();
+      return this.#getSingle(snapId, snapInfo, true);
+    }
     return { status: SnapsRegistryStatus.Unverified };
   }
 
-  public async get(
+  async #get(
     snaps: SnapsRegistryRequest,
   ): Promise<Record<SnapId, SnapsRegistryResult>> {
     return Object.entries(snaps).reduce<
@@ -181,9 +215,7 @@ export class JsonSnapsRegistry extends BaseController<
    * @returns The metadata for the given snap ID, or `null` if the snap is not
    * verified.
    */
-  public async getMetadata(
-    snapId: SnapId,
-  ): Promise<SnapsRegistryMetadata | null> {
+  async #getMetadata(snapId: SnapId): Promise<SnapsRegistryMetadata | null> {
     const database = await this.#getDatabase();
     return database?.verifiedSnaps[snapId]?.metadata ?? null;
   }
