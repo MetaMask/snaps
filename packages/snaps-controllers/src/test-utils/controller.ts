@@ -344,6 +344,8 @@ export const getSnapControllerMessenger = (
       'SnapController:decrementActiveReferences',
       'SnapController:getRegistryMetadata',
       'SubjectMetadataController:getSubjectMetadata',
+      'SnapsRegistry:get',
+      'SnapsRegistry:getMetadata',
     ],
   });
 

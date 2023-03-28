@@ -1,3 +1,7 @@
+import {
+  BaseControllerV2 as BaseController,
+  RestrictedControllerMessenger,
+} from '@metamask/base-controller';
 import { SnapsRegistryDatabase } from '@metamask/snaps-registry';
 import { SnapId } from '@metamask/snaps-utils';
 import { satisfiesVersionRange } from '@metamask/utils';
@@ -16,48 +20,116 @@ const SNAP_REGISTRY_URL =
   'https://cdn.jsdelivr.net/gh/MetaMask/snaps-registry@main/src/registry.json';
 
 export type JsonSnapsRegistryArgs = {
+  messenger: SnapsRegistryMessenger;
+  state?: SnapsRegistryState;
   fetchFunction?: typeof fetch;
   url?: string;
   failOnUnavailableRegistry?: boolean;
 };
 
-export class JsonSnapsRegistry implements SnapsRegistry {
-  #url: string;
+export type GetResult = {
+  type: `${typeof controllerName}:get`;
+  handler: SnapsRegistry['get'];
+};
 
-  #database: SnapsRegistryDatabase | null = null;
+export type GetMetadata = {
+  type: `${typeof controllerName}:getMetadata`;
+  handler: SnapsRegistry['getMetadata'];
+};
+
+export type SnapsRegistryActions = GetResult | GetMetadata;
+
+export type SnapsRegistryEvents = never;
+
+export type SnapsRegistryMessenger = RestrictedControllerMessenger<
+  'SnapsRegistry',
+  SnapsRegistryActions,
+  SnapsRegistryEvents,
+  SnapsRegistryActions['type'],
+  SnapsRegistryEvents['type']
+>;
+
+export type SnapsRegistryState = {
+  database: SnapsRegistryDatabase | null;
+  lastUpdated: number | null;
+};
+
+const controllerName = 'SnapsRegistry';
+
+const defaultState = {
+  database: null,
+  lastUpdated: null,
+};
+
+export class JsonSnapsRegistry extends BaseController<
+  typeof controllerName,
+  SnapsRegistryState,
+  SnapsRegistryMessenger
+> {
+  #url: string;
 
   #fetchFunction: typeof fetch;
 
   #failOnUnavailableRegistry: boolean;
 
   constructor({
+    messenger,
+    state,
     url = SNAP_REGISTRY_URL,
     fetchFunction = globalThis.fetch.bind(globalThis),
     failOnUnavailableRegistry = true,
-  }: JsonSnapsRegistryArgs = {}) {
+  }: JsonSnapsRegistryArgs) {
+    super({
+      messenger,
+      metadata: {
+        database: { persist: true, anonymous: false },
+        lastUpdated: { persist: true, anonymous: false },
+      },
+      name: controllerName,
+      state: {
+        ...defaultState,
+        ...state,
+      },
+    });
     this.#url = url;
     this.#fetchFunction = fetchFunction;
     this.#failOnUnavailableRegistry = failOnUnavailableRegistry;
+
+    this.messagingSystem.registerActionHandler(
+      'SnapsRegistry:get',
+      async (...args) => this.get(...args),
+    );
+    this.messagingSystem.registerActionHandler(
+      'SnapsRegistry:getMetadata',
+      async (...args) => this.getMetadata(...args),
+    );
+  }
+
+  async #updateDatabase() {
+    try {
+      const response = await this.#fetchFunction(this.#url);
+      if (!response.ok) {
+        throw new Error('Failed to fetch Snaps registry.');
+      }
+      const db = await response.json();
+      this.update((state) => {
+        state.database = db;
+        state.lastUpdated = Date.now();
+      });
+    } catch {
+      // Ignore
+    }
   }
 
   async #getDatabase(): Promise<SnapsRegistryDatabase | null> {
-    if (this.#database === null) {
-      // TODO: Decide if we should persist this between sessions
-      try {
-        const response = await this.#fetchFunction(this.#url);
-        if (!response.ok) {
-          throw new Error('Failed to fetch Snaps registry.');
-        }
-        this.#database = await response.json();
-      } catch {
-        // Ignore
-      }
+    if (this.state.database === null) {
+      await this.#updateDatabase();
     }
     // If the database is still null and we require it, throw.
-    if (this.#failOnUnavailableRegistry && this.#database === null) {
+    if (this.#failOnUnavailableRegistry && this.state.database === null) {
       throw new Error('Snaps registry is unavailable, installation blocked.');
     }
-    return this.#database;
+    return this.state.database;
   }
 
   async #getSingle(snapId: SnapId, snapInfo: SnapsRegistryInfo) {
