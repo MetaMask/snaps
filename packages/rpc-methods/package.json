@@ -30,7 +30,7 @@
   "dependencies": {
     "@metamask/browser-passworder": "^4.0.2",
     "@metamask/key-tree": "^7.0.0",
-    "@metamask/permission-controller": "3.0.0-preview.df812ce",
+    "@metamask/permission-controller": "^3.0.0",
     "@metamask/snaps-ui": "^0.31.0",
     "@metamask/snaps-utils": "^0.31.0",
     "@metamask/types": "^1.1.0",
