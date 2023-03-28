@@ -36,6 +36,8 @@ import {
   SnapControllerActions,
   SnapControllerEvents,
   SnapEndowments,
+  SnapsRegistryActions,
+  SnapsRegistryEvents,
 } from '../snaps';
 import { MOCK_CRONJOB_PERMISSION } from './cronjob';
 import { getNodeEES, getNodeEESMessenger } from './execution-environment';
@@ -192,7 +194,7 @@ export const MOCK_SNAP_PERMISSIONS: Record<string, PermissionConstraint> = {
   [snapConfirmPermissionKey]: MOCK_SNAP_CONFIRM_PERMISSION,
 };
 
-export const getControllerMessenger = () => {
+export const getControllerMessenger = (registry = new MockSnapsRegistry()) => {
   const messenger = new MockControllerMessenger<
     SnapControllerActions | AllowedActions,
     SnapControllerEvents | AllowedEvents
@@ -279,6 +281,15 @@ export const getControllerMessenger = () => {
 
   messenger.registerActionHandler('ExecutionService:executeSnap', asyncNoOp);
   messenger.registerActionHandler('ExecutionService:terminateSnap', asyncNoOp);
+
+  messenger.registerActionHandler(
+    'SnapsRegistry:get',
+    registry.get.bind(registry),
+  );
+  messenger.registerActionHandler(
+    'SnapsRegistry:getMetadata',
+    registry.getMetadata.bind(registry),
+  );
 
   jest.spyOn(messenger, 'call');
 
@@ -367,13 +378,11 @@ export type PartialSnapControllerConstructorParams = Partial<
 export const getSnapControllerOptions = (
   opts?: PartialSnapControllerConstructorParams,
 ) => {
-  const registry = new MockSnapsRegistry();
   const options = {
     environmentEndowmentPermissions: [],
     closeAllConnections: jest.fn(),
     messenger: getSnapControllerMessenger(),
     featureFlags: { dappsCanUpdateSnaps: true },
-    registry,
     state: undefined,
     fetchFunction: jest.fn(),
     ...opts,
@@ -399,13 +408,10 @@ export const getSnapControllerWithEESOptions = ({
 }: GetSnapControllerWithEESOptionsParam = {}) => {
   const snapControllerMessenger = getSnapControllerMessenger(rootMessenger);
 
-  const registry = new MockSnapsRegistry();
-
   return {
     featureFlags: { dappsCanUpdateSnaps: true },
     environmentEndowmentPermissions: [],
     closeAllConnections: jest.fn(),
-    registry,
     messenger: snapControllerMessenger,
     rootMessenger,
     fetchFunction: jest.fn(),
@@ -501,4 +507,34 @@ export const getRestrictedCronjobControllerMessenger = (
   }
 
   return cronjobControllerMessenger;
+};
+
+// Mock controller messenger for registry
+export const getRootSnapsRegistryControllerMessenger = () => {
+  const messenger = new MockControllerMessenger<
+    SnapsRegistryActions,
+    SnapsRegistryEvents
+  >();
+
+  jest.spyOn(messenger, 'call');
+
+  return messenger;
+};
+
+export const getRestrictedSnapsRegistryControllerMessenger = (
+  messenger: ReturnType<
+    typeof getRootSnapsRegistryControllerMessenger
+  > = getRootSnapsRegistryControllerMessenger(),
+) => {
+  const controllerMessenger = messenger.getRestricted<
+    'SnapsRegistry',
+    SnapsRegistryActions['type'],
+    SnapsRegistryEvents['type']
+  >({
+    name: 'SnapsRegistry',
+    allowedEvents: [],
+    allowedActions: ['SnapsRegistry:get', 'SnapsRegistry:getMetadata'],
+  });
+
+  return controllerMessenger;
 };

@@ -106,7 +106,6 @@ import { detectSnapLocation, SnapLocation } from './location';
 import {
   GetMetadata,
   GetResult,
-  SnapsRegistry,
   SnapsRegistryInfo,
   SnapsRegistryMetadata,
   SnapsRegistryRequest,
@@ -542,11 +541,6 @@ type SnapControllerArgs = {
    * How frequently to check whether a snap is idle.
    */
   idleTimeCheckInterval?: number;
-
-  /**
-   * A registry implementation used for checking for verified and blocked snaps.
-   */
-  registry: SnapsRegistry;
 
   /**
    * The maximum amount of time that a snap may be idle.

@@ -6,8 +6,14 @@ import {
 import { SemVerRange, SemVerVersion } from '@metamask/utils';
 import fetchMock from 'jest-fetch-mock';
 
-import { JsonSnapsRegistry } from './json';
+import { getRestrictedSnapsRegistryControllerMessenger } from '../../test-utils';
+import { JsonSnapsRegistry, JsonSnapsRegistryArgs } from './json';
 import { SnapsRegistryStatus } from './registry';
+
+const getRegistry = (args?: Partial<JsonSnapsRegistryArgs>) => {
+  const messenger = getRestrictedSnapsRegistryControllerMessenger();
+  return { registry: new JsonSnapsRegistry({ messenger, ...args }), messenger };
+};
 
 const MOCK_DATABASE: SnapsRegistryDatabase = {
   verifiedSnaps: {
@@ -42,8 +48,8 @@ describe('JsonSnapsRegistry', () => {
 
   it('can get entries from the registry', async () => {
     fetchMock.mockResponse(JSON.stringify(MOCK_DATABASE));
-    const registry = new JsonSnapsRegistry();
-    const result = await registry.get({
+    const { messenger } = getRegistry();
+    const result = await messenger.call('SnapsRegistry:get', {
       [MOCK_SNAP_ID]: {
         version: '1.0.0' as SemVerVersion,
         checksum: DEFAULT_SNAP_SHASUM,
@@ -62,8 +68,8 @@ describe('JsonSnapsRegistry', () => {
     fetchMock.mockResponse(
       JSON.stringify({ verifiedSnaps: {}, blockedSnaps: [] }),
     );
-    const registry = new JsonSnapsRegistry();
-    const result = await registry.get({
+    const { messenger } = getRegistry();
+    const result = await messenger.call('SnapsRegistry:get', {
       [MOCK_SNAP_ID]: {
         version: '1.0.0' as SemVerVersion,
         checksum: DEFAULT_SNAP_SHASUM,
@@ -79,8 +85,9 @@ describe('JsonSnapsRegistry', () => {
 
   it('returns unverified for non existing versions', async () => {
     fetchMock.mockResponse(JSON.stringify(MOCK_DATABASE));
-    const registry = new JsonSnapsRegistry();
-    const result = await registry.get({
+    const { messenger } = getRegistry();
+
+    const result = await messenger.call('SnapsRegistry:get', {
       [MOCK_SNAP_ID]: {
         version: '1.0.1' as SemVerVersion,
         checksum: DEFAULT_SNAP_SHASUM,
@@ -96,8 +103,9 @@ describe('JsonSnapsRegistry', () => {
 
   it('returns unverified if existing snap doesnt match checksum', async () => {
     fetchMock.mockResponse(JSON.stringify(MOCK_DATABASE));
-    const registry = new JsonSnapsRegistry();
-    const result = await registry.get({
+    const { messenger } = getRegistry();
+
+    const result = await messenger.call('SnapsRegistry:get', {
       [MOCK_SNAP_ID]: {
         version: '1.0.0' as SemVerVersion,
         checksum: 'bar',
@@ -113,8 +121,9 @@ describe('JsonSnapsRegistry', () => {
 
   it('returns blocked if snap checksum is on blocklist', async () => {
     fetchMock.mockResponse(JSON.stringify(MOCK_DATABASE));
-    const registry = new JsonSnapsRegistry();
-    const result = await registry.get({
+    const { messenger } = getRegistry();
+
+    const result = await messenger.call('SnapsRegistry:get', {
       [MOCK_SNAP_ID]: {
         version: '1.0.0' as SemVerVersion,
         checksum: 'foo',
@@ -131,8 +140,9 @@ describe('JsonSnapsRegistry', () => {
 
   it('returns blocked if snap version range is on blocklist', async () => {
     fetchMock.mockResponse(JSON.stringify(MOCK_DATABASE));
-    const registry = new JsonSnapsRegistry();
-    const result = await registry.get({
+    const { messenger } = getRegistry();
+
+    const result = await messenger.call('SnapsRegistry:get', {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       'npm:@consensys/starknet-snap': {
         version: '0.1.10' as SemVerVersion,
@@ -151,10 +161,10 @@ describe('JsonSnapsRegistry', () => {
 
   it('returns unverified for unavailable database if failOnUnavailableRegistry is set to false', async () => {
     fetchMock.mockResponse('', { status: 404 });
-    const registry = new JsonSnapsRegistry({
+    const { messenger } = getRegistry({
       failOnUnavailableRegistry: false,
     });
-    const result = await registry.get({
+    const result = await messenger.call('SnapsRegistry:get', {
       [MOCK_SNAP_ID]: {
         version: '1.0.0' as SemVerVersion,
         checksum: DEFAULT_SNAP_SHASUM,
@@ -170,10 +180,10 @@ describe('JsonSnapsRegistry', () => {
 
   it('throws for unavailable database by default', async () => {
     fetchMock.mockResponse('', { status: 404 });
-    const registry = new JsonSnapsRegistry();
+    const { messenger } = getRegistry();
 
     await expect(
-      registry.get({
+      messenger.call('SnapsRegistry:get', {
         [MOCK_SNAP_ID]: {
           version: '1.0.0' as SemVerVersion,
           checksum: DEFAULT_SNAP_SHASUM,
@@ -186,8 +196,11 @@ describe('JsonSnapsRegistry', () => {
     it('returns the metadata for a verified snap', async () => {
       fetchMock.mockResponse(JSON.stringify(MOCK_DATABASE));
 
-      const registry = new JsonSnapsRegistry();
-      const result = await registry.getMetadata(MOCK_SNAP_ID);
+      const { messenger } = getRegistry();
+      const result = await messenger.call(
+        'SnapsRegistry:getMetadata',
+        MOCK_SNAP_ID,
+      );
 
       expect(result).toStrictEqual({
         name: 'Mock Snap',
@@ -197,8 +210,8 @@ describe('JsonSnapsRegistry', () => {
     it('returns null for a non-verified snap', async () => {
       fetchMock.mockResponse(JSON.stringify(MOCK_DATABASE));
 
-      const registry = new JsonSnapsRegistry();
-      const result = await registry.getMetadata('foo');
+      const { messenger } = getRegistry();
+      const result = await messenger.call('SnapsRegistry:getMetadata', 'foo');
 
       expect(result).toBeNull();
     });
