@@ -7,11 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.32.0]
-### Uncategorized
-- Fix unbound endowments ([#1299](https://github.com/MetaMask/snaps-monorepo/pull/1299))
-- Add example signer snaps ([#1284](https://github.com/MetaMask/snaps-monorepo/pull/1284))
+### Changed
 - Build execution environments with Browserify and LavaMoat ([#1262](https://github.com/MetaMask/snaps-monorepo/pull/1262))
-- Add harden events utilities ([#1221](https://github.com/MetaMask/snaps-monorepo/pull/1221))
+- Harden events ([#1221](https://github.com/MetaMask/snaps-monorepo/pull/1221))
+
+### Fixed
+- Fix unbound endowments ([#1299](https://github.com/MetaMask/snaps-monorepo/pull/1299))
 
 ## [0.31.0]
 ### Changed

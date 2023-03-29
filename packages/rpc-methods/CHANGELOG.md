@@ -7,8 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.32.0]
-### Uncategorized
-- Use side effects for `wallet_snap` permission ([#1301](https://github.com/MetaMask/snaps-monorepo/pull/1301))
+### Changed
+- Use side effects to install snaps via `wallet_snap` permission ([#1301](https://github.com/MetaMask/snaps-monorepo/pull/1301))
+
+### Fixed
 - Fix invoke snap error message ([#1293](https://github.com/MetaMask/snaps-monorepo/pull/1293))
 - Ensure that same method hooks are used in type and builder ([#1292](https://github.com/MetaMask/snaps-monorepo/pull/1292))
 

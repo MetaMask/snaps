@@ -7,12 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.32.0]
-### Uncategorized
-- Use side effects for `wallet_snap` permission ([#1301](https://github.com/MetaMask/snaps-monorepo/pull/1301))
-- Verify registry signature ([#1291](https://github.com/MetaMask/snaps-monorepo/pull/1291))
-- BREAKING: Require snaps to request at least one handler permission ([#1294](https://github.com/MetaMask/snaps-monorepo/pull/1294))
-- Build execution environments with Browserify and LavaMoat ([#1262](https://github.com/MetaMask/snaps-monorepo/pull/1262))
-- Add harden events utilities ([#1221](https://github.com/MetaMask/snaps-monorepo/pull/1221))
+### Changed
+- Use side effects to install snaps via `wallet_snap` permission ([#1301](https://github.com/MetaMask/snaps-monorepo/pull/1301))
 
 ## [0.31.0]
 ### Changed

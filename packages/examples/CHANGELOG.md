@@ -7,9 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.32.0]
-### Uncategorized
-- Add version to signer example ([#1310](https://github.com/MetaMask/snaps-monorepo/pull/1310))
-- Use side effects for `wallet_snap` permission ([#1301](https://github.com/MetaMask/snaps-monorepo/pull/1301))
+### Added
 - Add example signer snaps ([#1284](https://github.com/MetaMask/snaps-monorepo/pull/1284))
 
 ## [0.31.0]
