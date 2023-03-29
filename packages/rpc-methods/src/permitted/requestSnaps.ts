@@ -182,9 +182,6 @@ async function requestSnapsImplementation(
     );
   }
 
-  // Request the permission for the installing DApp to talk to the snap, if needed
-  // TODO: Should this be part of the install flow?
-
   try {
     if (!Object.keys(requestedSnaps).length) {
       throw new Error('Request must have at least one requested snap.');
