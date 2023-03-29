@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.32.0]
+### Changed
+- Build execution environments with Browserify and LavaMoat ([#1262](https://github.com/MetaMask/snaps-monorepo/pull/1262))
+- Harden events ([#1221](https://github.com/MetaMask/snaps-monorepo/pull/1221))
+
+### Fixed
+- Fix unbound endowments ([#1299](https://github.com/MetaMask/snaps-monorepo/pull/1299))
+
 ## [0.31.0]
 ### Changed
 - **BREAKING:** Target `ES2020` ([#1247](https://github.com/MetaMask/snaps-monorepo/pull/1247))
@@ -227,7 +235,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Previously, default endowments were specified in the execution environment itself. Now, all endowments must be specified in the `executeSnap` RPC parameters, except for the `wallet` API object.
 - Add endowments to the global `self` in addition to `window` ([#263](https://github.com/MetaMask/snaps-monorepo/pull/263))
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.31.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.32.0...HEAD
+[0.32.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.31.0...v0.32.0
 [0.31.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.30.0...v0.31.0
 [0.30.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.29.0...v0.30.0
 [0.29.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.28.0...v0.29.0
