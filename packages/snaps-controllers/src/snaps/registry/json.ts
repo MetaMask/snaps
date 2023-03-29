@@ -270,12 +270,11 @@ export class JsonSnapsRegistry extends BaseController<
    * @private
    */
   async #safeFetch(url: string) {
-    return await this.#fetchFunction(url).then(async (response) => {
-      if (!response.ok) {
-        throw new Error(`Failed to fetch ${url}.`);
-      }
+    const response = await this.#fetchFunction(url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch ${url}.`);
+    }
 
-      return await response.text();
-    });
+    return await response.text();
   }
 }
