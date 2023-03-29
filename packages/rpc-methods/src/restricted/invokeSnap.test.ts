@@ -269,7 +269,6 @@ describe('handleSnapInstall', () => {
 
     const result = await handleSnapInstall({
       requestData,
-      // @ts-expect-error controller messenger type mismatch
       messagingSystem: sideEffectMessenger,
     });
 
