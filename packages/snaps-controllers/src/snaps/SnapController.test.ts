@@ -741,6 +741,22 @@ describe('SnapController', () => {
     controller.destroy();
   });
 
+  it("throws an error if semver version range doesn't match downloaded version", async () => {
+    const controller = getSnapController(
+      getSnapControllerOptions({ detectSnapLocation: loopbackDetect() }),
+    );
+
+    await expect(
+      controller.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: { version: '1.2.0' },
+      }),
+    ).rejects.toThrow(
+      `Version mismatch. Manifest for "npm:@metamask/example-snap" specifies version "1.0.0" which doesn't satisfy requested version range "1.2.0".`,
+    );
+
+    controller.destroy();
+  });
+
   it('throws an error if snap is not on allowlist and allowlisting is required', async () => {
     const controller = getSnapController(
       getSnapControllerOptions({
@@ -3250,6 +3266,8 @@ describe('SnapController', () => {
       expect(controller.get(snapId3)).toBeUndefined();
       expect(controller.get(snapId1)?.manifest.version).toBe(oldVersion);
       expect(controller.get(snapId2)?.manifest.version).toBe(oldVersion);
+      expect(controller.get(snapId1)?.status).toBe('stopped');
+      expect(controller.get(snapId2)?.status).toBe('stopped');
 
       controller.destroy();
       await service.terminateAllSnaps();
@@ -3387,6 +3405,53 @@ describe('SnapController', () => {
       ).rejects.toThrow(
         'Received invalid snap version range: "this is not a version".',
       );
+
+      controller.destroy();
+    });
+
+    it("throws an error if new version doesn't match version range", async () => {
+      const { manifest } = getSnapFiles({
+        manifest: getSnapManifest({
+          version: '1.1.0' as SemVerVersion,
+        }),
+      });
+      const detectSnapLocation = loopbackDetect({
+        manifest: manifest.result,
+      });
+      const messenger = getSnapControllerMessenger();
+      const controller = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+          detectSnapLocation,
+        }),
+      );
+      const onSnapUpdated = jest.fn();
+      const onSnapAdded = jest.fn();
+
+      const snap = controller.getExpect(MOCK_SNAP_ID);
+
+      messenger.subscribe('SnapController:snapUpdated', onSnapUpdated);
+      messenger.subscribe('SnapController:snapAdded', onSnapAdded);
+
+      const newSnap = controller.get(MOCK_SNAP_ID);
+
+      await expect(
+        async () =>
+          await controller.updateSnap(
+            MOCK_ORIGIN,
+            MOCK_SNAP_ID,
+            detectSnapLocation(),
+            '1.2.0',
+          ),
+      ).rejects.toThrow(
+        `Version mismatch. Manifest for "npm:@metamask/example-snap" specifies version "1.1.0" which doesn't satisfy requested version range "1.2.0".`,
+      );
+      expect(newSnap?.version).toStrictEqual(snap.version);
+      expect(onSnapUpdated).not.toHaveBeenCalled();
+      expect(onSnapAdded).not.toHaveBeenCalled();
 
       controller.destroy();
     });
