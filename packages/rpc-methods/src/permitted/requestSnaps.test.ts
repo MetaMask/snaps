@@ -291,4 +291,50 @@ describe('implementation', () => {
       [MOCK_SNAP_ID]: getTruncatedSnap(),
     });
   });
+
+  it('throws with the appropriate error if the side-effect fails', async () => {
+    const { implementation } = requestSnapsHandler;
+
+    const hooks = getMockHooks();
+
+    hooks.requestPermissions.mockImplementation(async () => {
+      throw new Error('error');
+    });
+
+    const engine = new JsonRpcEngine();
+    engine.push((req, res, next, end) => {
+      const result = implementation(
+        req as JsonRpcRequest<RequestedPermissions>,
+        res as PendingJsonRpcResponse<InstallSnapsResult>,
+        next,
+        end,
+        hooks,
+      );
+
+      result?.catch(end);
+    });
+
+    const response = (await engine.handle({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'wallet_requestSnaps',
+      params: {
+        [MOCK_SNAP_ID]: {},
+      },
+    })) as JsonRpcSuccess<InstallSnapsResult>;
+
+    expect(hooks.requestPermissions).toHaveBeenCalledWith({
+      [WALLET_SNAP_PERMISSION_KEY]: {
+        caveats: [
+          { type: SnapCaveatType.SnapIds, value: { [MOCK_SNAP_ID]: {} } },
+        ],
+      },
+    });
+
+    expect(response).toStrictEqual({
+      error: { code: -32603, data: { originalError: {} }, message: 'error' },
+      id: 1,
+      jsonrpc: '2.0',
+    });
+  });
 });

@@ -230,7 +230,7 @@ describe('implementation', () => {
 });
 
 describe('handleSnapInstall', () => {
-  it("calls 'SnapController:install with the right parameters", async () => {
+  it('calls SnapController:install with the right parameters', async () => {
     const messenger = new MockControllerMessenger<InstallSnaps, never>();
 
     const sideEffectMessenger = messenger.getRestricted({
@@ -269,7 +269,7 @@ describe('handleSnapInstall', () => {
 
     const result = await handleSnapInstall({
       requestData,
-      // @ts-expect-error controller messenger type missmatch
+      // @ts-expect-error controller messenger type mismatch
       messagingSystem: sideEffectMessenger,
     });
 
