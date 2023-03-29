@@ -741,7 +741,7 @@ describe('SnapController', () => {
     controller.destroy();
   });
 
-  it('throws an error if semver version range doesnt match downloaded version', async () => {
+  it("throws an error if semver version range doesn't match downloaded version", async () => {
     const controller = getSnapController(
       getSnapControllerOptions({ detectSnapLocation: loopbackDetect() }),
     );
@@ -751,7 +751,7 @@ describe('SnapController', () => {
         [MOCK_SNAP_ID]: { version: '1.2.0' },
       }),
     ).rejects.toThrow(
-      `Version mismatch. Manifest for "npm:@metamask/example-snap" specifies version "1.0.0" which doesn't satisfy requested version range "1.2.0"`,
+      `Version mismatch. Manifest for "npm:@metamask/example-snap" specifies version "1.0.0" which doesn't satisfy requested version range "1.2.0".`,
     );
 
     controller.destroy();

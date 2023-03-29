@@ -1845,7 +1845,7 @@ export class SnapController extends BaseController<
 
       if (!satisfiesVersionRange(newVersion, newVersionRange)) {
         throw new Error(
-          `Version mismatch. Manifest for "${snapId}" specifies version "${newVersion}" which doesn't satisfy requested version range "${newVersionRange}"`,
+          `Version mismatch. Manifest for "${snapId}" specifies version "${newVersion}" which doesn't satisfy requested version range "${newVersionRange}".`,
         );
       }
 
@@ -2001,7 +2001,7 @@ export class SnapController extends BaseController<
         assertIsSnapManifest(manifest);
         if (!satisfiesVersionRange(manifest.version, versionRange)) {
           throw new Error(
-            `Version mismatch. Manifest for "${snapId}" specifies version "${manifest.version}" which doesn't satisfy requested version range "${versionRange}"`,
+            `Version mismatch. Manifest for "${snapId}" specifies version "${manifest.version}" which doesn't satisfy requested version range "${versionRange}".`,
           );
         }
         await this.#assertIsInstallAllowed(snapId, {
