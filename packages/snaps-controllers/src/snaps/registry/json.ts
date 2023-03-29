@@ -87,8 +87,6 @@ export class JsonSnapsRegistry extends BaseController<
 
   #publicKey?: Hex;
 
-  #database: SnapsRegistryDatabase | null = null;
-
   #fetchFunction: typeof fetch;
 
   #recentFetchThreshold: number;
@@ -154,9 +152,9 @@ export class JsonSnapsRegistry extends BaseController<
 
     try {
       const database = await this.#safeFetch(this.#url.registry);
-      const signature = await this.#safeFetch(this.#url.signature);
 
       if (this.#publicKey) {
+        const signature = await this.#safeFetch(this.#url.signature);
         await this.#verifySignature(database, signature);
       }
 
@@ -164,7 +162,7 @@ export class JsonSnapsRegistry extends BaseController<
         state.database = JSON.parse(database);
         state.lastUpdated = Date.now();
       });
-    } catch (error) {
+    } catch {
       // Ignore
     }
   }
