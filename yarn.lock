@@ -2914,16 +2914,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/controller-utils@npm:3.0.0"
+"@metamask/controller-utils@npm:^3.0.0, @metamask/controller-utils@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "@metamask/controller-utils@npm:3.1.0"
   dependencies:
+    "@metamask/utils": ^3.3.1
+    "@spruceid/siwe-parser": 1.1.3
     eth-ens-namehash: ^2.0.8
     eth-rpc-errors: ^4.0.0
     ethereumjs-util: ^7.0.10
     ethjs-unit: ^0.1.6
     fast-deep-equal: ^3.1.3
-  checksum: 44227aa9f716f86373a1a4fb86b7ae1c51199dd819f30a3a310a9f87838b7e11c1a3bb024572253bd3cb0258281596cfab8fbf317c3fe90962fa6cf426aa6858
+  checksum: 811fc4b9da98ca406a0e002c87933687e745d20f802305bb2af0affcdad454189c705caae9389444da1f5f88f2d10269b3ae8354aa1f600a11ddb9315cfa5718
   languageName: node
   linkType: hard
 
@@ -3037,13 +3039,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/permission-controller@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/permission-controller@npm:3.0.0"
+"@metamask/permission-controller@npm:^3.0.0, @metamask/permission-controller@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "@metamask/permission-controller@npm:3.1.0"
   dependencies:
     "@metamask/approval-controller": ^2.0.0
     "@metamask/base-controller": ^2.0.0
-    "@metamask/controller-utils": ^3.0.0
+    "@metamask/controller-utils": ^3.1.0
     "@metamask/types": ^1.1.0
     "@types/deep-freeze-strict": ^1.1.0
     deep-freeze-strict: ^1.1.1
@@ -3053,7 +3055,7 @@ __metadata:
     nanoid: ^3.1.31
   peerDependencies:
     "@metamask/approval-controller": ^2.0.0
-  checksum: 67e104d21b3f0258863ecaabd11cb587f10dbcc91ff9b081d8b9569d163d6d54dd5b8fb267d5416ab8e41c8c48b5103e92e013fd1916d492b72706cda2474962
+  checksum: 91c615e2faf9c1ce16371602e99354178d79a0af0697f1c3c81c860c2e9972f23e8189290cd41423c3df3048906bbf55c01fef8326677f2ea5cbcfdfb6a58db6
   languageName: node
   linkType: hard
 
@@ -3099,7 +3101,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/key-tree": ^7.0.0
-    "@metamask/permission-controller": ^3.0.0
+    "@metamask/permission-controller": ^3.1.0
     "@metamask/snaps-ui": ^0.31.0
     "@metamask/snaps-utils": ^0.31.0
     "@metamask/types": ^1.1.0
@@ -3264,7 +3266,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/object-multiplex": ^1.1.0
-    "@metamask/permission-controller": ^3.0.0
+    "@metamask/permission-controller": ^3.1.0
     "@metamask/post-message-stream": ^6.1.1
     "@metamask/rpc-methods": ^0.31.0
     "@metamask/snaps-execution-environments": ^0.31.0
@@ -3534,12 +3536,13 @@ __metadata:
     "@esbuild-plugins/node-modules-polyfill": ^0.2.2
     "@lavamoat/allow-scripts": ^2.0.3
     "@metamask/auto-changelog": ^3.1.0
+    "@metamask/base-controller": ^2.0.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
     "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/key-tree": ^7.0.0
-    "@metamask/permission-controller": ^3.0.0
+    "@metamask/permission-controller": ^3.1.0
     "@metamask/post-message-stream": ^6.1.1
     "@metamask/providers": ^10.2.1
     "@metamask/snaps-registry": ^1.2.0
@@ -3660,15 +3663,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^3.3.0, @metamask/utils@npm:^3.4.1":
-  version: 3.4.1
-  resolution: "@metamask/utils@npm:3.4.1"
+"@metamask/utils@npm:^3.3.0, @metamask/utils@npm:^3.3.1, @metamask/utils@npm:^3.4.1":
+  version: 3.6.0
+  resolution: "@metamask/utils@npm:3.6.0"
   dependencies:
     "@types/debug": ^4.1.7
     debug: ^4.3.4
     semver: ^7.3.8
     superstruct: ^1.0.3
-  checksum: 0799cefc17effecba4b4cd34879113f9f826a7aff4d21bfdcca64ef31c117be3e6a30cdd49c0b91289f22efbf7e56901322f4ce1b4d638dd2fc3bc3e81e3c87d
+  checksum: 1ebc6677bb017e4d09d4af143621fe27194d8ed815234cfd76469c3c734dc1db2ea7b577c01a2096c21c04d8c9c4d721d3035b5353fe2ded3b4737f326755e43
   languageName: node
   linkType: hard
 
@@ -3971,6 +3974,15 @@ __metadata:
   dependencies:
     "@sinonjs/commons": ^1.7.0
   checksum: 7d3aef54e17c1073101cb64d953157c19d62a40e261a30923fa1ee337b049c5f29cc47b1f0c477880f42b5659848ba9ab897607ac8ea4acd5c30ddcfac57fca6
+  languageName: node
+  linkType: hard
+
+"@spruceid/siwe-parser@npm:1.1.3":
+  version: 1.1.3
+  resolution: "@spruceid/siwe-parser@npm:1.1.3"
+  dependencies:
+    apg-js: ^4.1.1
+  checksum: 708786ba2f10987c45c1fd8a6243ba6572ee7f320531616d71ff66044828bc24af66f5537ce09c9272bdae93fcc35b566a7804fe7997284f2ee5445a36e6add2
   languageName: node
   linkType: hard
 
@@ -5653,6 +5665,13 @@ __metadata:
     normalize-path: ^3.0.0
     picomatch: ^2.0.4
   checksum: 985163db2292fac9e5a1e072bf99f1b5baccf196e4de25a0b0b81865ebddeb3b3eb4480734ef0a2ac8c002845396b91aa89121f5b84f93981a4658164a9ec6e9
+  languageName: node
+  linkType: hard
+
+"apg-js@npm:^4.1.1":
+  version: 4.1.3
+  resolution: "apg-js@npm:4.1.3"
+  checksum: fa815838fc3c4b2fa5801419d050c5cf0ac8b5dbbc7476a9c9b8e1ae5fc78feccf01ff3ff52ef1e80c72f8b7bf39f589f1b8aaad5f5aeba399523a9ba18da127
   languageName: node
   linkType: hard
 
