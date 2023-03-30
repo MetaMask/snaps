@@ -8,6 +8,7 @@ import {
   MOCK_ORIGIN,
   getTruncatedSnap,
   MockControllerMessenger,
+  MOCK_LOCAL_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
 
 import {
@@ -16,6 +17,7 @@ import {
   WALLET_SNAP_PERMISSION_KEY,
   handleSnapInstall,
   InstallSnaps,
+  GetPermittedSnaps,
 } from './invokeSnap';
 
 describe('builder', () => {
@@ -155,11 +157,14 @@ describe('implementation', () => {
 
 describe('handleSnapInstall', () => {
   it('calls SnapController:install with the right parameters', async () => {
-    const messenger = new MockControllerMessenger<InstallSnaps, never>();
+    const messenger = new MockControllerMessenger<
+      InstallSnaps | GetPermittedSnaps,
+      never
+    >();
 
     const sideEffectMessenger = messenger.getRestricted({
       name: 'PermissionController',
-      allowedActions: ['SnapController:install'],
+      allowedActions: ['SnapController:install', 'SnapController:getPermitted'],
     });
 
     const expectedResult = {
@@ -170,6 +175,8 @@ describe('handleSnapInstall', () => {
       'SnapController:install',
       async () => expectedResult,
     );
+
+    messenger.registerActionHandler('SnapController:getPermitted', () => ({}));
 
     jest.spyOn(sideEffectMessenger, 'call');
 
@@ -200,6 +207,65 @@ describe('handleSnapInstall', () => {
       'SnapController:install',
       MOCK_ORIGIN,
       requestedSnaps,
+    );
+
+    expect(result).toBe(expectedResult);
+  });
+
+  it('dedupes snaps before calling installSnaps', async () => {
+    const messenger = new MockControllerMessenger<
+      InstallSnaps | GetPermittedSnaps,
+      never
+    >();
+
+    const sideEffectMessenger = messenger.getRestricted({
+      name: 'PermissionController',
+      allowedActions: ['SnapController:install', 'SnapController:getPermitted'],
+    });
+
+    const expectedResult = {
+      [MOCK_LOCAL_SNAP_ID]: getTruncatedSnap({ id: MOCK_LOCAL_SNAP_ID }),
+    };
+
+    messenger.registerActionHandler(
+      'SnapController:install',
+      async () => expectedResult,
+    );
+
+    messenger.registerActionHandler('SnapController:getPermitted', () => ({
+      [MOCK_SNAP_ID]: getTruncatedSnap(),
+    }));
+
+    jest.spyOn(sideEffectMessenger, 'call');
+
+    const requestedSnaps = {
+      [MOCK_SNAP_ID]: {},
+      [MOCK_LOCAL_SNAP_ID]: {},
+    };
+
+    const requestData = {
+      permissions: {
+        [WALLET_SNAP_PERMISSION_KEY]: {
+          caveats: [
+            {
+              type: SnapCaveatType.SnapIds,
+              value: requestedSnaps,
+            },
+          ],
+        },
+      },
+      metadata: { origin: MOCK_ORIGIN, id: 'foo' },
+    } as PermissionsRequest;
+
+    const result = await handleSnapInstall({
+      requestData,
+      messagingSystem: sideEffectMessenger,
+    });
+
+    expect(sideEffectMessenger.call).toHaveBeenCalledWith(
+      'SnapController:install',
+      MOCK_ORIGIN,
+      { [MOCK_LOCAL_SNAP_ID]: {} },
     );
 
     expect(result).toBe(expectedResult);

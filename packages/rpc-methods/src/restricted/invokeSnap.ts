@@ -32,7 +32,12 @@ export type InstallSnaps = {
   ) => Promise<InstallSnapsResult>;
 };
 
-type AllowedActions = InstallSnaps;
+export type GetPermittedSnaps = {
+  type: `SnapController:getPermitted`;
+  handler: (origin: string) => InstallSnapsResult;
+};
+
+type AllowedActions = InstallSnaps | GetPermittedSnaps;
 
 export type InvokeSnapMethodHooks = {
   getSnap: (snapId: SnapId) => Snap | undefined;
@@ -79,10 +84,25 @@ export const handleSnapInstall: PermissionSideEffect<
   const snaps = requestData.permissions[WALLET_SNAP_PERMISSION_KEY].caveats?.[0]
     .value as RequestedSnapPermissions;
 
+  const permittedSnaps = messagingSystem.call(
+    `SnapController:getPermitted`,
+    requestData.metadata.origin,
+  );
+
+  const dedupedSnaps = Object.keys(snaps).reduce<RequestedSnapPermissions>(
+    (filteredSnaps, snap) => {
+      if (!permittedSnaps[snap]) {
+        filteredSnaps[snap] = snaps[snap];
+      }
+      return filteredSnaps;
+    },
+    {},
+  );
+
   return messagingSystem.call(
     `SnapController:install`,
     requestData.metadata.origin,
-    snaps,
+    dedupedSnaps,
   );
 };
 /**
