@@ -14,7 +14,7 @@ const builders: SnapsCliBuilders = {
   },
 
   directory: {
-    describe: 'the directory to use',
+    describe: 'The directory to use',
     type: 'string',
   },
 };
