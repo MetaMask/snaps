@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.32.1]
-### Uncategorized
-- Fix `handleSnapInstall` side-effect ([#1314](https://github.com/MetaMask/snaps-monorepo/pull/1314))
+### Fixed
+- Fix `handleSnapInstall` side-effect re-installing all local snaps ([#1314](https://github.com/MetaMask/snaps-monorepo/pull/1314))
 
 ## [0.32.0]
 ### Changed
