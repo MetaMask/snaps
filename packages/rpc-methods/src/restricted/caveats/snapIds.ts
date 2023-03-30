@@ -8,7 +8,7 @@ import { assertIsValidSnapId, SnapCaveatType } from '@metamask/snaps-utils';
 import { isObject, hasProperty } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
-import { InvokeSnapParams } from '../restricted/invokeSnap';
+import { InvokeSnapParams } from '../invokeSnap';
 
 /**
  * Validates that the caveat value exists and is a non-empty object.

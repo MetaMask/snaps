@@ -12,7 +12,7 @@ import { Json, assertStruct } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 import { array, size, type } from 'superstruct';
 
-import { isEqual } from '../utils';
+import { isEqual } from '../../utils';
 
 /**
  * Map a raw value from the `initialPermissions` to a caveat specification.

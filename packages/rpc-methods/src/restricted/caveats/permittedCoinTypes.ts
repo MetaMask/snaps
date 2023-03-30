@@ -7,7 +7,7 @@ import { SnapCaveatType } from '@metamask/snaps-utils';
 import { Json, hasProperty, isPlainObject } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
-import { GetBip44EntropyParams } from '../restricted/getBip44Entropy';
+import { GetBip44EntropyParams } from '../getBip44Entropy';
 
 /**
  * Map a raw value from the `initialPermissions` to a caveat specification.
