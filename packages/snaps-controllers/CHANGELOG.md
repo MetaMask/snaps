@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.32.2]
-### Uncategorized
+### Fixed
 - Properly handle Promise in `JsonSnapsRegistry` signature verification ([#1317](https://github.com/MetaMask/snaps-monorepo/pull/1317))
 
 ## [0.32.1]

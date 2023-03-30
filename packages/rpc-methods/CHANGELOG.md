@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.32.2]
-### Uncategorized
-- Decouple caveats from RPC methods ([#1300](https://github.com/MetaMask/snaps-monorepo/pull/1300))
+### Changed
+- No changes this release.
 
 ## [0.32.1]
 ### Fixed
