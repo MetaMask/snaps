@@ -1,4 +1,4 @@
-import initModule from '.';
+import { initCommand } from '.';
 import * as initHandlerModule from './initHandler';
 
 describe('init module', () => {
@@ -9,7 +9,7 @@ describe('init module', () => {
       .mockImplementation(() => ({ ...(mockArgv as any) }));
     jest.spyOn(console, 'log').mockImplementation();
 
-    await initModule.handler({ ...(mockArgv as any) });
+    await initCommand.handler({ ...(mockArgv as any) });
     expect(initHandlerMock).toHaveBeenCalledWith(mockArgv);
     expect(global.console.log).toHaveBeenCalledTimes(1);
   });

@@ -1,1 +1,1 @@
-export { default as init } from './init';
+export { initCommand as init } from './init';

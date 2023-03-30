@@ -5,7 +5,7 @@ import builders from '../../builders';
 import { YargsArgs } from '../../types/yargs';
 import { initHandler } from './initHandler';
 
-const initCommand = {
+export const initCommand = {
   command: ['$0 [directory]'],
   desc: 'Initialize MetaMask Snaps project',
   builder: (yarg: yargs.Argv) => {
@@ -14,8 +14,6 @@ const initCommand = {
   },
   handler: init,
 };
-
-export default initCommand;
 
 /**
  * The main entrypoint for the init command. This calls the init handler to
