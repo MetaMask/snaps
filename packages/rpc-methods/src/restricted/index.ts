@@ -4,12 +4,10 @@ import { Json } from '@metamask/utils';
 import {
   permittedCoinTypesCaveatMapper,
   PermittedCoinTypesCaveatSpecification,
-} from '../caveats/permittedCoinTypes';
-import {
   permittedDerivationPathsCaveatMapper,
   PermittedDerivationPathsCaveatSpecification,
-} from '../caveats/permittedDerivationPaths';
-import { SnapIdsCaveatSpecification } from '../caveats/snapIds';
+  SnapIdsCaveatSpecification,
+} from '../caveats';
 import { dialogBuilder, DialogMethodHooks } from './dialog';
 import {
   getBip32EntropyBuilder,
