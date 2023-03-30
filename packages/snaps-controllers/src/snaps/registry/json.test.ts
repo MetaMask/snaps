@@ -11,7 +11,7 @@ import { JsonSnapsRegistry, JsonSnapsRegistryArgs } from './json';
 import { SnapsRegistryStatus } from './registry';
 
 const MOCK_PUBLIC_KEY =
-  '0x034ca27b046507d1a9997bddc991b56d96b93d4adac3a96dfe01ce450bfb661455';
+  '0x0351e33621fd89183c3db90db7db2a518a91ad0534d1345d031625d33e581e495a';
 
 const getRegistry = (args?: Partial<JsonSnapsRegistryArgs>) => {
   const messenger = getRestrictedSnapsRegistryControllerMessenger();
@@ -54,9 +54,17 @@ const MOCK_DATABASE: SnapsRegistryDatabase = {
 };
 
 const MOCK_SIGNATURE =
-  '0x3045022100cc049732d4cc8b888162b8b998c9beefcc1de8c4489594c7c504d4aa031223af02206835834ba2b7bec45b2a9e1e72312d69445d6a0f5590a2408bb13931a14f6c8a';
+  '0x3044022067256cfed70fe93696246f58aa7ff252eba82fd3a6741d2551a58dcda017111402201cc11efbf5bc5f381b4bae4b83d84565ba478ad33308d72c23b47e8dda5b9983';
 const MOCK_SIGNATURE_FILE = {
   signature: MOCK_SIGNATURE,
+  curve: 'secp256k1',
+  format: 'DER',
+};
+
+const MOCK_EMPTY_SIGNATURE =
+  '0x304402202de0931fff0173f5c0e701cc8228f2b732da5fa719199b487d7c05e7a47b954702202ff96a4a4748af9cc3a9b6eb7065235f84a2680add6e3aee3ee761eb3084a8e1';
+const MOCK_EMPTY_SIGNATURE_FILE = {
+  signature: MOCK_EMPTY_SIGNATURE,
   curve: 'secp256k1',
   format: 'DER',
 };
@@ -92,7 +100,7 @@ describe('JsonSnapsRegistry', () => {
     // Empty database
     fetchMock
       .mockResponseOnce(JSON.stringify({ verifiedSnaps: {}, blockedSnaps: [] }))
-      .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
+      .mockResponseOnce(JSON.stringify(MOCK_EMPTY_SIGNATURE_FILE));
 
     const { messenger } = getRegistry();
     const result = await messenger.call('SnapsRegistry:get', {
@@ -284,6 +292,26 @@ describe('JsonSnapsRegistry', () => {
       });
 
     const { messenger } = getRegistry();
+
+    await expect(
+      messenger.call('SnapsRegistry:get', {
+        [MOCK_SNAP_ID]: {
+          version: '1.0.0' as SemVerVersion,
+          checksum: DEFAULT_SNAP_SHASUM,
+        },
+      }),
+    ).rejects.toThrow('Snaps registry is unavailable, installation blocked.');
+  });
+
+  it('throws for invalid signature', async () => {
+    fetchMock
+      .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
+      .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
+
+    const { messenger } = getRegistry({
+      publicKey:
+        '0x034ca27b046507d1a9997bddc991b56d96b93d4adac3a96dfe01ce450bfb661455',
+    });
 
     await expect(
       messenger.call('SnapsRegistry:get', {

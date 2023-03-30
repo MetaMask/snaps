@@ -253,7 +253,7 @@ export class JsonSnapsRegistry extends BaseController<
   async #verifySignature(database: string, signature: string) {
     assert(this.#publicKey, 'No public key provided.');
 
-    const valid = verify({
+    const valid = await verify({
       registry: database,
       signature: JSON.parse(signature),
       publicKey: this.#publicKey,
