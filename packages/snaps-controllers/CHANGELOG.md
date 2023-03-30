@@ -6,6 +6,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.32.1]
+### Changed
+- No changes this release.
+
+## [0.32.0]
+### Added
+- Add verification of registry signature ([#1291](https://github.com/MetaMask/snaps-monorepo/pull/1291))
+- Add types to result approvals ([#1288](https://github.com/MetaMask/snaps-monorepo/pull/1288))
+
+### Changed
+- **BREAKING:** Convert registry to a caching controller ([#1305](https://github.com/MetaMask/snaps-monorepo/pull/1305))
+- **BREAKING:** Require snaps to request at least one handler permission ([#1294](https://github.com/MetaMask/snaps-monorepo/pull/1294))
+- Use side effects to install snaps via `wallet_snap` permission ([#1301](https://github.com/MetaMask/snaps-monorepo/pull/1301))
+
+### Fixed
+- Fix a few issues with installation and updating ([#1308](https://github.com/MetaMask/snaps-monorepo/pull/1308))
+
 ## [0.31.0]
 ### Changed
 - **BREAKING:** Target `ES2020` ([#1247](https://github.com/MetaMask/snaps-monorepo/pull/1247))
@@ -476,7 +493,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.31.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.32.1...HEAD
+[0.32.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.32.0...v0.32.1
+[0.32.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.31.0...v0.32.0
 [0.31.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.30.0...v0.31.0
 [0.30.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.29.0...v0.30.0
 [0.29.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.28.0...v0.29.0
