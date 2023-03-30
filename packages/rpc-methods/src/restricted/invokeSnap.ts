@@ -4,6 +4,7 @@ import {
   ValidPermissionSpecification,
   PermissionType,
   PermissionValidatorConstraint,
+  PermissionSideEffect,
 } from '@metamask/permission-controller';
 import {
   Snap,
@@ -11,6 +12,8 @@ import {
   HandlerType,
   SnapRpcHookArgs,
   SnapCaveatType,
+  RequestedSnapPermissions,
+  InstallSnapsResult,
 } from '@metamask/snaps-utils';
 import { isJsonRpcRequest, Json, NonEmptyArray } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
@@ -19,6 +22,17 @@ import { nanoid } from 'nanoid';
 import { MethodHooksObject } from '../utils';
 
 export const WALLET_SNAP_PERMISSION_KEY = 'wallet_snap';
+
+// Redeclare installSnaps action type to avoid circular dependencies
+export type InstallSnaps = {
+  type: `SnapController:install`;
+  handler: (
+    origin: string,
+    requestedSnaps: RequestedSnapPermissions,
+  ) => Promise<InstallSnapsResult>;
+};
+
+type AllowedActions = InstallSnaps;
 
 export type InvokeSnapMethodHooks = {
   getSnap: (snapId: SnapId) => Snap | undefined;
@@ -41,6 +55,9 @@ type InvokeSnapSpecification = ValidPermissionSpecification<{
   methodImplementation: ReturnType<typeof getInvokeSnapImplementation>;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
   validator: PermissionValidatorConstraint;
+  sideEffect: {
+    onPermitted: PermissionSideEffect<AllowedActions, never>['onPermitted'];
+  };
 }>;
 
 export type InvokeSnapParams = {
@@ -48,6 +65,26 @@ export type InvokeSnapParams = {
   request: Record<string, unknown>;
 };
 
+/**
+ * The side-effect method to handle the snap install.
+ *
+ * @param params - The side-effect params.
+ * @param params.requestData - The request data associated to the requested permission.
+ * @param params.messagingSystem - The messenger to call an action.
+ */
+export const handleSnapInstall: PermissionSideEffect<
+  AllowedActions,
+  never
+>['onPermitted'] = async ({ requestData, messagingSystem }) => {
+  const snaps = requestData.permissions[WALLET_SNAP_PERMISSION_KEY].caveats?.[0]
+    .value as RequestedSnapPermissions;
+
+  return messagingSystem.call(
+    `SnapController:install`,
+    requestData.metadata.origin,
+    snaps,
+  );
+};
 /**
  * The specification builder for the `wallet_snap_*` permission.
  *
@@ -76,6 +113,9 @@ const specificationBuilder: PermissionSpecificationBuilder<
           message: `Expected a single "${SnapCaveatType.SnapIds}" caveat.`,
         });
       }
+    },
+    sideEffect: {
+      onPermitted: handleSnapInstall,
     },
   };
 };

@@ -1,4 +1,5 @@
 import { SnapRpcHookArgs } from '@metamask/snaps-utils';
+import { MockControllerMessenger } from '@metamask/snaps-utils/test-utils';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import pump from 'pump';
@@ -11,7 +12,6 @@ import {
   setupMultiplex,
   SnapExecutionData,
 } from '../services';
-import { MockControllerMessenger } from './controller';
 
 export const MOCK_BLOCK_NUMBER = '0xa70e75';
 

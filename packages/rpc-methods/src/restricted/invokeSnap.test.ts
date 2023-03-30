@@ -1,15 +1,21 @@
-import { PermissionType } from '@metamask/permission-controller';
+import {
+  PermissionsRequest,
+  PermissionType,
+} from '@metamask/permission-controller';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   MOCK_SNAP_ID,
   MOCK_ORIGIN,
   getTruncatedSnap,
+  MockControllerMessenger,
 } from '@metamask/snaps-utils/test-utils';
 
 import {
   invokeSnapBuilder,
   getInvokeSnapImplementation,
   WALLET_SNAP_PERMISSION_KEY,
+  handleSnapInstall,
+  InstallSnaps,
 } from './invokeSnap';
 
 describe('builder', () => {
@@ -144,5 +150,58 @@ describe('implementation', () => {
 
     expect(hooks.getSnap).toHaveBeenCalledTimes(0);
     expect(hooks.handleSnapRpcRequest).not.toHaveBeenCalled();
+  });
+});
+
+describe('handleSnapInstall', () => {
+  it('calls SnapController:install with the right parameters', async () => {
+    const messenger = new MockControllerMessenger<InstallSnaps, never>();
+
+    const sideEffectMessenger = messenger.getRestricted({
+      name: 'PermissionController',
+      allowedActions: ['SnapController:install'],
+    });
+
+    const expectedResult = {
+      [MOCK_SNAP_ID]: getTruncatedSnap(),
+    };
+
+    messenger.registerActionHandler(
+      'SnapController:install',
+      async () => expectedResult,
+    );
+
+    jest.spyOn(sideEffectMessenger, 'call');
+
+    const requestedSnaps = {
+      [MOCK_SNAP_ID]: {},
+    };
+
+    const requestData = {
+      permissions: {
+        [WALLET_SNAP_PERMISSION_KEY]: {
+          caveats: [
+            {
+              type: SnapCaveatType.SnapIds,
+              value: requestedSnaps,
+            },
+          ],
+        },
+      },
+      metadata: { origin: MOCK_ORIGIN, id: 'foo' },
+    } as PermissionsRequest;
+
+    const result = await handleSnapInstall({
+      requestData,
+      messagingSystem: sideEffectMessenger,
+    });
+
+    expect(sideEffectMessenger.call).toHaveBeenCalledWith(
+      'SnapController:install',
+      MOCK_ORIGIN,
+      requestedSnaps,
+    );
+
+    expect(result).toBe(expectedResult);
   });
 });

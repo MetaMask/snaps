@@ -10,3 +10,4 @@ export * from './sleep';
 export * from './snap';
 export * from './spy';
 export * from './stream';
+export * from './controller';

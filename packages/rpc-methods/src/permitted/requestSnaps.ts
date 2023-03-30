@@ -57,7 +57,12 @@ export type RequestSnapsHooks = {
    */
   requestPermissions: (
     permissions: RequestedPermissions,
-  ) => Promise<PermissionConstraint[]>;
+  ) => Promise<
+    [
+      Record<string, PermissionConstraint>,
+      { data: Record<string, unknown>; id: string; origin: string },
+    ]
+  >;
 
   /**
    * Gets the current permissions for the requesting origin.
@@ -177,9 +182,6 @@ async function requestSnapsImplementation(
     );
   }
 
-  // Request the permission for the installing DApp to talk to the snap, if needed
-  // TODO: Should this be part of the install flow?
-
   try {
     if (!Object.keys(requestedSnaps).length) {
       throw new Error('Request must have at least one requested snap.');
@@ -192,33 +194,27 @@ async function requestSnapsImplementation(
     } as RequestedPermissions;
     const existingPermissions = await getPermissions();
 
-    let approvedPermissions = [];
-
     if (!existingPermissions) {
-      approvedPermissions = await requestPermissions(requestedPermissions);
-    } else if (!hasRequestedSnaps(existingPermissions, requestedSnaps)) {
+      const [, metadata] = await requestPermissions(requestedPermissions);
+      res.result = metadata.data[
+        WALLET_SNAP_PERMISSION_KEY
+      ] as InstallSnapsResult;
+    } else if (hasRequestedSnaps(existingPermissions, requestedSnaps)) {
+      res.result = await handleInstallSnaps(requestedSnaps, installSnaps);
+    } else {
       const mergedPermissionsRequest = getSnapPermissionsRequest(
         existingPermissions,
         requestedPermissions,
       );
-      approvedPermissions = await requestPermissions(mergedPermissionsRequest);
-    }
 
-    if (
-      (!existingPermissions ||
-        !hasRequestedSnaps(existingPermissions, requestedSnaps)) &&
-      !approvedPermissions?.length
-    ) {
-      throw ethErrors.provider.userRejectedRequest({ data: req });
+      const [, metadata] = await requestPermissions(mergedPermissionsRequest);
+      res.result = metadata.data[
+        WALLET_SNAP_PERMISSION_KEY
+      ] as InstallSnapsResult;
     }
-  } catch (error) {
-    return end(error);
-  }
-
-  try {
-    res.result = await handleInstallSnaps(requestedSnaps, installSnaps);
   } catch (error) {
     res.error = error;
   }
+
   return end();
 }
