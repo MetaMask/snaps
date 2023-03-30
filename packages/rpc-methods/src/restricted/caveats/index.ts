@@ -1,9 +1,9 @@
 import { PermissionConstraint } from '@metamask/permission-controller';
 import { Json } from '@metamask/utils';
 
-import { getBip32EntropyBuilder } from '../restricted/getBip32Entropy';
-import { getBip32PublicKeyBuilder } from '../restricted/getBip32PublicKey';
-import { getBip44EntropyBuilder } from '../restricted/getBip44Entropy';
+import { getBip32EntropyBuilder } from '../getBip32Entropy';
+import { getBip32PublicKeyBuilder } from '../getBip32PublicKey';
+import { getBip44EntropyBuilder } from '../getBip44Entropy';
 import {
   permittedCoinTypesCaveatMapper,
   PermittedCoinTypesCaveatSpecification,

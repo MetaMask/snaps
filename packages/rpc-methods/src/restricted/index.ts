@@ -42,4 +42,4 @@ export const restrictedMethodPermissionBuilders = {
   [notifyBuilder.targetKey]: notifyBuilder,
 } as const;
 
-export * from '../caveats';
+export * from './caveats';
