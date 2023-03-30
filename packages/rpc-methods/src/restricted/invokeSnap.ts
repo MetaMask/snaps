@@ -42,7 +42,14 @@ export type InstallSnaps = {
   ) => Promise<InstallSnapsResult>;
 };
 
-type AllowedActions = InstallSnaps;
+export type GetPermittedSnaps = {
+  type: `SnapController:getPermitted`;
+  handler: (origin: string) => InstallSnapsResult;
+};
+
+// add a get snaps type here and then union it below with InstallSnaps
+
+type AllowedActions = InstallSnaps | GetPermittedSnaps;
 
 export type InvokeSnapMethodHooks = {
   getSnap: (snapId: SnapId) => Snap | undefined;
@@ -108,10 +115,30 @@ export const handleSnapInstall: PermissionSideEffect<
   const snaps = requestData.permissions[WALLET_SNAP_PERMISSION_KEY].caveats?.[0]
     .value as RequestedSnapPermissions;
 
+  // get installed snaps
+  // dedupe against this snaps variable
+  // will need to check if this messaging system will be able to call
+  // getInstalledSnaps...we might need to open a quick PR into core to add the allowedAction
+
+  const permittedSnaps = messagingSystem.call(
+    `SnapController:getPermitted`,
+    requestData.metadata.origin,
+  );
+
+  const dedupedSnaps = Object.keys(snaps).reduce<RequestedSnapPermissions>(
+    (filteredSnaps, snap) => {
+      if (!permittedSnaps[snap]) {
+        filteredSnaps[snap] = snaps[snap];
+      }
+      return filteredSnaps;
+    },
+    {},
+  );
+
   return messagingSystem.call(
     `SnapController:install`,
     requestData.metadata.origin,
-    snaps,
+    dedupedSnaps,
   );
 };
 /**
