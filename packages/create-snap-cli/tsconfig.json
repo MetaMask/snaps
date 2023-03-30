@@ -4,8 +4,5 @@
     "baseUrl": "./"
   },
   "include": ["./src", "./src/**/*.json"],
-  "references": [
-    { "path": "../snaps-utils" },
-    { "path": "../snaps-browserify-plugin" }
-  ]
+  "references": [{ "path": "../snaps-utils" }]
 }

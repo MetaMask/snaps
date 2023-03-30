@@ -12,8 +12,5 @@
     "./src/**/__mocks__",
     "./src/**/__snapshots__"
   ],
-  "references": [
-    { "path": "../snaps-utils/tsconfig.build.json" },
-    { "path": "../snaps-browserify-plugin/tsconfig.build.json" }
-  ]
+  "references": [{ "path": "../snaps-utils/tsconfig.build.json" }]
 }
