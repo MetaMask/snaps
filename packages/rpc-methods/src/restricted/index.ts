@@ -1,13 +1,3 @@
-import { PermissionConstraint } from '@metamask/permission-controller';
-import { Json } from '@metamask/utils';
-
-import {
-  permittedCoinTypesCaveatMapper,
-  PermittedCoinTypesCaveatSpecification,
-  permittedDerivationPathsCaveatMapper,
-  PermittedDerivationPathsCaveatSpecification,
-  SnapIdsCaveatSpecification,
-} from '../caveats';
 import { dialogBuilder, DialogMethodHooks } from './dialog';
 import {
   getBip32EntropyBuilder,
@@ -52,17 +42,4 @@ export const restrictedMethodPermissionBuilders = {
   [notifyBuilder.targetKey]: notifyBuilder,
 } as const;
 
-export const caveatSpecifications = {
-  ...PermittedDerivationPathsCaveatSpecification,
-  ...PermittedCoinTypesCaveatSpecification,
-  ...SnapIdsCaveatSpecification,
-} as const;
-
-export const caveatMappers: Record<
-  string,
-  (value: Json) => Pick<PermissionConstraint, 'caveats'>
-> = {
-  [getBip32EntropyBuilder.targetKey]: permittedDerivationPathsCaveatMapper,
-  [getBip32PublicKeyBuilder.targetKey]: permittedDerivationPathsCaveatMapper,
-  [getBip44EntropyBuilder.targetKey]: permittedCoinTypesCaveatMapper,
-};
+export * from '../caveats';
