@@ -67,13 +67,27 @@ describe('initUtils', () => {
 
   describe('buildSnap', () => {
     it('calls execSync', () => {
-      const mockExecSync = jest
+      const execSyncMock = jest
         .spyOn(childProcess, 'execSync')
         .mockImplementation();
 
       buildSnap('foo');
 
-      expect(mockExecSync).toHaveBeenCalled();
+      expect(execSyncMock).toHaveBeenCalledTimes(1);
+      expect(execSyncMock).toHaveBeenCalledWith('yarn build', {
+        stdio: [0, 1, 2],
+        cwd: pathUtils.resolve(__dirname, 'foo'),
+      });
+    });
+
+    it('throws an error when execution fails', () => {
+      jest.spyOn(childProcess, 'execSync').mockImplementation(() => {
+        throw new Error('failed');
+      });
+
+      expect(() => buildSnap('foo')).toThrow(
+        'Init Error: Failed to build snap.',
+      );
     });
   });
 
