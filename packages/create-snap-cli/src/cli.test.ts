@@ -5,10 +5,6 @@ const getMockArgv = (...args: string[]) => {
   return ['/mock/path', '/mock/entry/path', ...args];
 };
 
-// The ".+" is because the CLI name (specified to yargs as "$0") is
-// populated programmatically based on the name of entry point file.
-// In Jest, that's sometimes "childProcess.js", sometimes other things.
-// In practice, it should always be "mm-snap".
 const HELP_TEXT_REGEX = /^\s*create-metamask-snap \[directory\]/u;
 
 describe('cli', () => {
