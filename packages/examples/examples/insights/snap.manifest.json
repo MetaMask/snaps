@@ -1,5 +1,5 @@
 {
-  "version": "0.32.0",
+  "version": "0.32.1",
   "description": "An example transaction insights Snap.",
   "proposedName": "Transaction Insights Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps-monorepo.git"
   },
   "source": {
-    "shasum": "kSH9Dn16eFHmKE+julW44O/er1gkPnYoxOhZKPDV9e4=",
+    "shasum": "wt3yT/ZMuH4FVO9vuof2qXODCBX8jrIyO0kQRH6wR4I=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.32.1]
+### Changed
+- No changes this release.
+
 ## [0.32.0]
 ### Changed
 - No changes this release.
@@ -313,7 +317,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Example snaps ([#72](https://github.com/MetaMask/snaps-monorepo/pull/72))
   - The examples now live in their own package, [`@metamask/snap-examples`](https://npmjs.com/package/@metamask/snap-examples).
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.32.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.32.1...HEAD
+[0.32.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.32.0...v0.32.1
 [0.32.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.31.0...v0.32.0
 [0.31.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.30.0...v0.31.0
 [0.30.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.29.0...v0.30.0

@@ -1,6 +1,6 @@
 {
   "name": "transaction-insights-snap",
-  "version": "0.32.0",
+  "version": "0.32.1",
   "private": true,
   "description": "An example transaction insights Snap.",
   "repository": {
@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@metamask/abi-utils": "^1.1.1",
-    "@metamask/snaps-ui": "^0.32.0",
+    "@metamask/snaps-ui": "^0.32.1",
     "@metamask/utils": "^5.0.0"
   },
   "devDependencies": {
@@ -37,8 +37,8 @@
     "@metamask/eslint-config-jest": "^11.0.0",
     "@metamask/eslint-config-nodejs": "^11.0.1",
     "@metamask/eslint-config-typescript": "^11.0.0",
-    "@metamask/snaps-cli": "^0.32.0",
-    "@metamask/snaps-types": "^0.32.0",
+    "@metamask/snaps-cli": "^0.32.1",
+    "@metamask/snaps-types": "^0.32.1",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
     "eslint": "^8.27.0",

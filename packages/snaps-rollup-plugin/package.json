@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-rollup-plugin",
-  "version": "0.32.0",
+  "version": "0.32.1",
   "keywords": [
     "rollup",
     "rollup-plugin"
@@ -31,7 +31,7 @@
     "publish:package": "../../scripts/publish-package.sh"
   },
   "dependencies": {
-    "@metamask/snaps-utils": "^0.32.0"
+    "@metamask/snaps-utils": "^0.32.1"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.0.3",
