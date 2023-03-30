@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.32.1]
+
 ## [0.32.0]
 ### Added
 - Add example signer snaps ([#1284](https://github.com/MetaMask/snaps-monorepo/pull/1284))
@@ -248,7 +250,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - This package was previously a subset of [`snaps-cli`](https://github.com/MetaMask/snaps-cli/tree/main/examples), which has been renamed to [`@metamask/snaps-cli`](https://npmjs.com/package/@metamask/snaps-cli).
   - Some examples have been deleted because they were outdated.
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.32.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.32.1...HEAD
+[0.32.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.32.0...v0.32.1
 [0.32.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.31.0...v0.32.0
 [0.31.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.30.0...v0.31.0
 [0.30.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.29.0...v0.30.0
