@@ -21,6 +21,7 @@ import {
   WALLET_SNAP_PERMISSION_KEY,
   handleSnapInstall,
   InstallSnaps,
+  GetPermittedSnaps,
 } from './invokeSnap';
 
 describe('builder', () => {
@@ -231,11 +232,14 @@ describe('implementation', () => {
 
 describe('handleSnapInstall', () => {
   it('calls SnapController:install with the right parameters', async () => {
-    const messenger = new MockControllerMessenger<InstallSnaps, never>();
+    const messenger = new MockControllerMessenger<
+      InstallSnaps | GetPermittedSnaps,
+      never
+    >();
 
     const sideEffectMessenger = messenger.getRestricted({
       name: 'PermissionController',
-      allowedActions: ['SnapController:install'],
+      allowedActions: ['SnapController:install', 'SnapController:getPermitted'],
     });
 
     const expectedResult = {
@@ -246,6 +250,8 @@ describe('handleSnapInstall', () => {
       'SnapController:install',
       async () => expectedResult,
     );
+
+    messenger.registerActionHandler('SnapController:getPermitted', () => ({}));
 
     jest.spyOn(sideEffectMessenger, 'call');
 
