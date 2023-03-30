@@ -1,7 +1,7 @@
 {
   "files": [],
   "references": [
-    { "path": "./packages/create-snap-cli/tsconfig.build.json" },
+    { "path": "./packages/create-snap/tsconfig.build.json" },
     { "path": "./packages/multichain-provider/tsconfig.build.json" },
     { "path": "./packages/rpc-methods/tsconfig.build.json" },
     { "path": "./packages/snaps-browserify-plugin/tsconfig.build.json" },

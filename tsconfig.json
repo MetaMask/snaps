@@ -1,6 +1,6 @@
 {
   "references": [
-    { "path": "./packages/create-snap-cli" },
+    { "path": "./packages/create-snap" },
     { "path": "./packages/multichain-provider" },
     { "path": "./packages/rpc-methods" },
     { "path": "./packages/snaps-browserify-plugin" },
