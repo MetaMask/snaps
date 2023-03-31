@@ -1,6 +1,6 @@
 {
   "name": "signer-ethereum",
-  "version": "0.31.0",
+  "version": "0.32.2",
   "private": true,
   "repository": {
     "type": "git",
