@@ -3,6 +3,7 @@ import {
   WindowPostMessageStream,
 } from '@metamask/post-message-stream';
 import { createWindow } from '@metamask/snaps-utils';
+import { assert } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 
 import {
@@ -10,7 +11,7 @@ import {
   ExecutionServiceArgs,
   Job,
 } from '../AbstractExecutionService';
-import { WebWorkerPostMessageStream } from './WebWorkerPostMessageStream';
+import { WebWorkerProxyPostMessageStream } from './WebWorkerProxyPostMessageStream';
 
 type WebWorkerExecutionEnvironmentServiceArgs = {
   documentUrl: URL;
@@ -19,7 +20,7 @@ type WebWorkerExecutionEnvironmentServiceArgs = {
 export class WebWorkerExecutionService extends AbstractExecutionService<string> {
   public readonly documentUrl: URL;
 
-  readonly #runtimeStream: BasePostMessageStream;
+  #runtimeStream?: BasePostMessageStream;
 
   /**
    * Create a new webworker execution service.
@@ -43,10 +44,6 @@ export class WebWorkerExecutionService extends AbstractExecutionService<string> 
     });
 
     this.documentUrl = documentUrl;
-    this.#runtimeStream = new WindowPostMessageStream({
-      name: 'parent',
-      target: 'child',
-    });
   }
 
   /**
@@ -57,6 +54,7 @@ export class WebWorkerExecutionService extends AbstractExecutionService<string> 
   protected async terminateJob(job: Job<string>) {
     // The `AbstractExecutionService` will have already closed the job stream,
     // so we write to the runtime stream directly.
+    assert(this.#runtimeStream, 'Runtime stream not initialized.');
     this.#runtimeStream.write({
       jobId: job.id,
       data: {
@@ -77,7 +75,10 @@ export class WebWorkerExecutionService extends AbstractExecutionService<string> 
     // Lazily create the worker pool document.
     await this.createDocument();
 
-    const stream = new WebWorkerPostMessageStream({
+    // `createDocument` should have initialized the runtime stream.
+    assert(this.#runtimeStream, 'Runtime stream not initialized.');
+
+    const stream = new WebWorkerProxyPostMessageStream({
       stream: this.#runtimeStream,
       jobId,
     });
@@ -96,6 +97,12 @@ export class WebWorkerExecutionService extends AbstractExecutionService<string> 
       return;
     }
 
-    await createWindow(this.documentUrl.href, 'pool');
+    const window = await createWindow(this.documentUrl.href, 'pool', false);
+    this.#runtimeStream = new WindowPostMessageStream({
+      name: 'parent',
+      target: 'child',
+      targetWindow: window,
+      targetOrigin: '*',
+    });
   }
 }

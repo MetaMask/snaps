@@ -1,2 +1,2 @@
 export * from './WebWorkerExecutionService';
-export * from './WebWorkerPostMessageStream';
+export * from './WebWorkerProxyPostMessageStream';

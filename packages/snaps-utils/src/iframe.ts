@@ -5,11 +5,13 @@
  *
  * @param uri - The iframe URI.
  * @param jobId - The job id.
+ * @param sandbox - Whether to enable the sandbox attribute.
  * @returns A promise that resolves to the contentWindow of the iframe.
  */
 export async function createWindow(
   uri: string,
   jobId: string,
+  sandbox = true,
 ): Promise<Window> {
   return await new Promise((resolve, reject) => {
     const iframe = document.createElement('iframe');
@@ -18,11 +20,13 @@ export async function createWindow(
     iframe.setAttribute('id', jobId);
     iframe.setAttribute('data-testid', 'snaps-iframe');
 
-    // For the sandbox property to have any effect it needs to be set before the iframe is appended.
-    // We apply this property as a principle of least authority (POLA)
-    // measure.
-    // Ref: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#attr-sandbox
-    iframe.setAttribute('sandbox', 'allow-scripts');
+    if (sandbox) {
+      // For the sandbox property to have any effect it needs to be set before the iframe is appended.
+      // We apply this property as a principle of least authority (POLA)
+      // measure.
+      // Ref: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#attr-sandbox
+      iframe.setAttribute('sandbox', 'allow-scripts');
+    }
 
     // In the past, we've had problems that appear to be symptomatic of the
     // iframe firing the `load` event before its scripts are actually loaded,

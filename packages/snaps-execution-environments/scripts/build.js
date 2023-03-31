@@ -165,21 +165,18 @@ async function main() {
       await fs.mkdir(path.dirname(bundlePath), { recursive: true });
       await fs.writeFile(bundlePath, buffer);
 
+      const lavaMoatRuntimeString = await fs.readFile(
+        require.resolve('@lavamoat/lavapack/src/runtime.js'),
+        'utf-8',
+      );
+
       if (html) {
-        const lavaMoatRuntimeString = await fs.readFile(
-          require.resolve('@lavamoat/lavapack/src/runtime.js'),
-          'utf-8',
-        );
         const lavaMoatRuntime = lavaMoatRuntimeString.replace(
           '__lavamoatSecurityOptions__',
           JSON.stringify({
             // Only enable for browser builds for now due to incompatiblities
             scuttleGlobalThis: true,
-            scuttleGlobalThisExceptions: [
-              'postMessage',
-              'removeEventListener',
-              'origin',
-            ],
+            scuttleGlobalThisExceptions: ['postMessage', 'removeEventListener'],
           }),
         );
 

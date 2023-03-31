@@ -15,7 +15,7 @@ export type WebWorkerPostMessage = {
  * A post message stream that wraps messages in a job ID, before sending them
  * over the underlying stream.
  */
-export class WebWorkerPostMessageStream extends BasePostMessageStream {
+export class WebWorkerProxyPostMessageStream extends BasePostMessageStream {
   readonly #stream: BasePostMessageStream;
 
   readonly #jobId: string;

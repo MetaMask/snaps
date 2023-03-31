@@ -11,7 +11,7 @@ export const config: Options.Testrunner = {
   runner: [
     'browser',
     {
-      headless: false,
+      headless: true,
       viteConfig: {
         plugins: [tsconfigPaths()],
         optimizeDeps: {
