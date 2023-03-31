@@ -58,7 +58,7 @@ export async function initHandler(argv: YargsArgs) {
   }
 
   const directoryToUse = directory
-    ? pathUtils.join(process.cwd(), directory)
+    ? pathUtils.resolve(process.cwd(), directory)
     : process.cwd();
 
   logInfo(`Preparing ${directoryToUse}...`);
