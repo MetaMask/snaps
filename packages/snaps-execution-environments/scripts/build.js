@@ -27,14 +27,14 @@ const ENTRY_POINTS = {
     html: false,
     node: true,
   },
-  'worker-pool': {
-    entryPoint: './src/webworker/WebWorkerPool.ts',
-    html: true,
+  'worker-executor': {
+    entryPoint: './src/webworker/executor/index.ts',
+    html: false,
     node: false,
   },
-  worker: {
-    entryPoint: './src/webworker/index.ts',
-    html: false,
+  'worker-pool': {
+    entryPoint: './src/webworker/pool/index.ts',
+    html: true,
     node: false,
   },
 };

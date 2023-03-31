@@ -1,7 +1,7 @@
 import {
   BasePostMessageStream,
   WebWorkerParentPostMessageStream,
-  WebWorkerPostMessageStream,
+  WindowPostMessageStream,
 } from '@metamask/post-message-stream';
 import { logError } from '@metamask/snaps-utils';
 import { JsonRpcRequest, assert } from '@metamask/utils';
@@ -31,9 +31,14 @@ export class WebWorkerPool {
   readonly #jobs: Map<string, ExecutorJob> = new Map();
 
   static initialize(
-    stream: BasePostMessageStream = new WebWorkerPostMessageStream(),
+    stream: BasePostMessageStream = new WindowPostMessageStream({
+      name: 'child',
+      target: 'parent',
+      targetWindow: self.parent,
+      targetOrigin: '*',
+    }),
   ) {
-    return new WebWorkerPool(stream, 'worker.js');
+    return new WebWorkerPool(stream, '/worker/bundle.js');
   }
 
   constructor(stream: BasePostMessageStream, url: string) {

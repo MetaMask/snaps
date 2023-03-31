@@ -6,8 +6,8 @@ import {
 import { logError, SNAP_STREAM_NAMES } from '@metamask/snaps-utils';
 import pump from 'pump';
 
-import { BaseSnapExecutor } from '../common/BaseSnapExecutor';
-import { log } from '../logging';
+import { BaseSnapExecutor } from '../../common/BaseSnapExecutor';
+import { log } from '../../logging';
 
 export class WebWorkerSnapExecutor extends BaseSnapExecutor {
   /**

@@ -11,7 +11,7 @@ export const config: Options.Testrunner = {
   runner: [
     'browser',
     {
-      headless: true,
+      headless: false,
       viteConfig: {
         plugins: [tsconfigPaths()],
         optimizeDeps: {
@@ -77,10 +77,10 @@ export const config: Options.Testrunner = {
 
           // The web worker execution service bundle.
           {
-            mount: '/worker',
+            mount: '/worker/executor',
             path: resolve(
               __dirname,
-              '../snaps-execution-environments/dist/browserify/worker',
+              '../snaps-execution-environments/dist/browserify/worker-executor',
             ),
           },
 
