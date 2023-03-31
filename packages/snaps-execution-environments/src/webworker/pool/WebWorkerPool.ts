@@ -38,7 +38,7 @@ export class WebWorkerPool {
       targetOrigin: '*',
     }),
   ) {
-    return new WebWorkerPool(stream, '/worker/bundle.js');
+    return new WebWorkerPool(stream, '../executor/bundle.js');
   }
 
   constructor(stream: BasePostMessageStream, url: string) {
@@ -59,6 +59,8 @@ export class WebWorkerPool {
    * @param data.frameUrl - The URL to load in the iframe.
    */
   #onData(data: { data: JsonRpcRequest; jobId: string; frameUrl: string }) {
+    console.log('WebWorkerPool#onData', data);
+
     const { jobId, data: request } = data;
 
     const job = this.#jobs.get(jobId);
@@ -126,7 +128,7 @@ export class WebWorkerPool {
   }
 
   #createWorker(jobId: string) {
-    return new Worker(new URL(this.#url), {
+    return new Worker(this.#url, {
       name: `worker-${jobId}`,
     });
   }

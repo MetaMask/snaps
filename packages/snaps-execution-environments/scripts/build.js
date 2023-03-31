@@ -15,27 +15,22 @@ const ENTRY_POINTS = {
   offscreen: {
     entryPoint: './src/offscreen/index.ts',
     html: true,
-    node: false,
   },
   'node-thread': {
     entryPoint: './src/node-thread/index.ts',
-    html: false,
     node: true,
   },
   'node-process': {
     entryPoint: './src/node-process/index.ts',
-    html: false,
     node: true,
   },
   'worker-executor': {
     entryPoint: './src/webworker/executor/index.ts',
-    html: false,
-    node: false,
+    worker: true,
   },
   'worker-pool': {
     entryPoint: './src/webworker/pool/index.ts',
     html: true,
-    node: false,
   },
 };
 
@@ -66,7 +61,7 @@ async function main() {
   await Promise.all(
     Object.entries(ENTRY_POINTS).map(async ([key, config]) => {
       console.log('Bundling', key);
-      const { html, entryPoint, node } = config;
+      const { html, node, worker, entryPoint } = config;
       const insertGlobalVars = node
         ? { process: undefined, ...LavaMoatBrowserify.args.insertGlobalVars }
         : LavaMoatBrowserify.args.insertGlobalVars;
@@ -153,7 +148,7 @@ async function main() {
           `../lavamoat/browserify/policy-override.json`,
         ),
         // Prelude is included in Node, in the browser it is inlined.
-        includePrelude: node,
+        includePrelude: node || worker,
       });
 
       const buffer = await new Promise((resolve, reject) => {
@@ -180,7 +175,11 @@ async function main() {
           JSON.stringify({
             // Only enable for browser builds for now due to incompatiblities
             scuttleGlobalThis: true,
-            scuttleGlobalThisExceptions: ['postMessage', 'removeEventListener'],
+            scuttleGlobalThisExceptions: [
+              'postMessage',
+              'removeEventListener',
+              'origin',
+            ],
           }),
         );
 
