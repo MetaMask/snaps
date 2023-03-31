@@ -27,7 +27,18 @@ const ENTRY_POINTS = {
     html: false,
     node: true,
   },
+  'worker-pool': {
+    entryPoint: './src/webworker/WebWorkerPool.ts',
+    html: true,
+    node: false,
+  },
+  worker: {
+    entryPoint: './src/webworker/index.ts',
+    html: false,
+    node: false,
+  },
 };
+
 const OUTPUT_PATH = './dist/browserify';
 const OUTPUT_HTML = 'index.html';
 const OUTPUT_BUNDLE = 'bundle.js';
