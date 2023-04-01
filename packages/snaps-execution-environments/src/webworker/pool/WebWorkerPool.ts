@@ -27,9 +27,9 @@ export class WebWorkerPool {
 
   readonly #url: string;
 
-  readonly #pool: Worker[] = [];
+  readonly pool: Worker[] = [];
 
-  readonly #jobs: Map<string, ExecutorJob> = new Map();
+  readonly jobs: Map<string, ExecutorJob> = new Map();
 
   #workerSourceURL?: string;
 
@@ -65,7 +65,7 @@ export class WebWorkerPool {
   #onData(data: { data: JsonRpcRequest; jobId: string; frameUrl: string }) {
     const { jobId, data: request } = data;
 
-    const job = this.#jobs.get(jobId);
+    const job = this.jobs.get(jobId);
     if (!job) {
       // This ensures that a job is initialized before it is used. To avoid
       // code duplication, we call the `#onData` method again, which will
@@ -81,8 +81,8 @@ export class WebWorkerPool {
       return;
     }
 
-    // This is a method specific to the `OffscreenSnapExecutor`, as the service
-    // itself does not have access to the iframes directly.
+    // This is a method specific to the `WebWorkerPool`, as the service itself
+    // does not have access to the iframes directly.
     if (request.method === 'terminateJob') {
       this.#terminateJob(jobId);
       return;
@@ -109,7 +109,7 @@ export class WebWorkerPool {
     });
 
     const job = { id: jobId, worker, stream: jobStream };
-    this.#jobs.set(jobId, job);
+    this.jobs.set(jobId, job);
     return job;
   }
 
@@ -120,13 +120,13 @@ export class WebWorkerPool {
    * @param jobId - The job ID.
    */
   #terminateJob(jobId: string) {
-    const job = this.#jobs.get(jobId);
+    const job = this.jobs.get(jobId);
     assert(job, `Job "${jobId}" not found.`);
 
     job.stream.destroy();
     job.worker.terminate();
 
-    this.#jobs.delete(jobId);
+    this.jobs.delete(jobId);
   }
 
   /**
@@ -136,11 +136,11 @@ export class WebWorkerPool {
    */
   async #getWorker() {
     // Lazily create the pool of workers.
-    if (this.#pool.length === 0) {
+    if (this.pool.length === 0) {
       await this.#updatePool();
     }
 
-    const worker = this.#pool.pop();
+    const worker = this.pool.shift();
     assert(worker, 'Worker not found.');
 
     await this.#updatePool();
@@ -153,9 +153,9 @@ export class WebWorkerPool {
    * below the minimum size.
    */
   async #updatePool() {
-    while (this.#pool.length < this.#poolSize) {
+    while (this.pool.length < this.#poolSize) {
       const worker = await this.#createWorker();
-      this.#pool.push(worker);
+      this.pool.push(worker);
     }
   }
 
@@ -167,7 +167,7 @@ export class WebWorkerPool {
    */
   async #createWorker() {
     return new Worker(await this.#getWorkerURL(), {
-      name: `worker-${this.#pool.length}`,
+      name: `worker-${this.pool.length}`,
     });
   }
 

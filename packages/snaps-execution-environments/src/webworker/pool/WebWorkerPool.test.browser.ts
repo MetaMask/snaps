@@ -1,4 +1,5 @@
-import { MockPostMessageStream } from '@metamask/snaps-utils/test-utils';
+import { MockPostMessageStream, spy } from '@metamask/snaps-utils/test-utils';
+import { assert } from '@metamask/utils';
 
 import { WebWorkerPool } from './WebWorkerPool';
 
@@ -10,13 +11,15 @@ const WORKER_URL = 'http://localhost:4568/worker/executor/';
  *
  * @param stream - The stream to write to.
  * @param message - The message to write.
+ * @param jobId - The job ID.
  */
 function writeMessage(
   stream: MockPostMessageStream,
   message: Record<string, unknown>,
+  jobId = MOCK_JOB_ID,
 ) {
   stream.write({
-    jobId: MOCK_JOB_ID,
+    jobId,
     data: message,
   });
 }
@@ -78,5 +81,76 @@ describe('WebWorkerPool', () => {
     expect(document.getElementById(MOCK_JOB_ID)).toBeDefined();
 
     await terminateJob(mockStream);
+  });
+
+  it('terminates the worker', async () => {
+    const mockStream = new MockPostMessageStream();
+
+    const executor = WebWorkerPool.initialize(mockStream, WORKER_URL);
+
+    // Send ping to ensure that the worker is created.
+    writeMessage(mockStream, {
+      name: 'command',
+      data: {
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'ping',
+      },
+    });
+
+    // Wait for the response, so that we know the worker is created.
+    await getResponse(mockStream);
+
+    const worker = executor.jobs.get(MOCK_JOB_ID);
+
+    assert(worker);
+    const terminateSpy = spy(worker.worker, 'terminate');
+
+    await terminateJob(mockStream);
+
+    expect(executor.jobs.get(MOCK_JOB_ID)).toBeUndefined();
+    expect(terminateSpy.calls.length).toBe(1);
+  });
+
+  it('creates a worker pool', async () => {
+    const mockStream = new MockPostMessageStream();
+
+    const executor = WebWorkerPool.initialize(mockStream, WORKER_URL);
+    expect(executor.pool.length).toBe(0);
+
+    // Send ping to ensure that the worker is created.
+    writeMessage(mockStream, {
+      name: 'command',
+      data: {
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'ping',
+      },
+    });
+
+    // Wait for the response, so that we know the worker is created.
+    await getResponse(mockStream);
+
+    expect(executor.pool.length).toBe(3);
+    const nextWorker = executor.pool[0];
+
+    writeMessage(
+      mockStream,
+      {
+        name: 'command',
+        data: {
+          jsonrpc: '2.0',
+          id: 2,
+          method: 'ping',
+        },
+      },
+      'job-id-2',
+    );
+
+    // Wait for the response, so that we know the worker is created.
+    await getResponse(mockStream);
+
+    expect(executor.pool.length).toBe(3);
+    expect(executor.pool[0]).not.toBe(nextWorker);
   });
 });
