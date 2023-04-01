@@ -31,6 +31,8 @@ export class WebWorkerPool {
 
   readonly #jobs: Map<string, ExecutorJob> = new Map();
 
+  #workerSourceURL?: string;
+
   static initialize(
     stream: BasePostMessageStream = new WindowPostMessageStream({
       name: 'child',
@@ -38,8 +40,9 @@ export class WebWorkerPool {
       targetWindow: self.parent,
       targetOrigin: '*',
     }),
+    url = '../executor/bundle.js',
   ) {
-    return new WebWorkerPool(stream, '../executor/bundle.js');
+    return new WebWorkerPool(stream, url);
   }
 
   constructor(stream: BasePostMessageStream, url: string) {
@@ -47,7 +50,6 @@ export class WebWorkerPool {
     this.#url = url;
 
     this.#stream.on('data', this.#onData.bind(this));
-    this.#updatePool();
   }
 
   /**
@@ -73,7 +75,7 @@ export class WebWorkerPool {
           this.#onData(data);
         })
         .catch((error) => {
-          logError('[Worker] Error initializing job:', error);
+          logError('[Worker] Error initializing job:', error.toString());
         });
 
       return;
@@ -96,7 +98,7 @@ export class WebWorkerPool {
    * @returns The job.
    */
   async #initializeJob(jobId: string): Promise<ExecutorJob> {
-    const worker = this.#getWorker();
+    const worker = await this.#getWorker();
     const jobStream = new WebWorkerParentPostMessageStream({
       worker,
     });
@@ -132,13 +134,16 @@ export class WebWorkerPool {
    *
    * @returns The worker.
    */
-  #getWorker() {
-    assert(this.#pool.length > 0, 'No workers available.');
+  async #getWorker() {
+    // Lazily create the pool of workers.
+    if (this.#pool.length === 0) {
+      await this.#updatePool();
+    }
 
     const worker = this.#pool.pop();
     assert(worker, 'Worker not found.');
 
-    this.#updatePool();
+    await this.#updatePool();
 
     return worker;
   }
@@ -147,21 +152,41 @@ export class WebWorkerPool {
    * Update the pool of workers. This will create new workers if the pool is
    * below the minimum size.
    */
-  #updatePool() {
+  async #updatePool() {
     while (this.#pool.length < this.#poolSize) {
-      const worker = this.#createWorker();
+      const worker = await this.#createWorker();
       this.#pool.push(worker);
     }
   }
 
   /**
-   * Create a new worker.
+   * Create a new worker. This will fetch the worker source if it has not
+   * already been fetched.
    *
    * @returns The worker.
    */
-  #createWorker() {
-    return new Worker(this.#url, {
+  async #createWorker() {
+    return new Worker(await this.#getWorkerURL(), {
       name: `worker-${this.#pool.length}`,
     });
+  }
+
+  /**
+   * Get the URL of the worker source. This will fetch the worker source if it
+   * has not already been fetched.
+   *
+   * @returns The worker source URL, as a `blob:` URL.
+   */
+  async #getWorkerURL() {
+    if (this.#workerSourceURL) {
+      return this.#workerSourceURL;
+    }
+
+    const blob = await fetch(this.#url)
+      .then(async (response) => response.blob())
+      .then(URL.createObjectURL.bind(URL));
+
+    this.#workerSourceURL = blob;
+    return blob;
   }
 }
