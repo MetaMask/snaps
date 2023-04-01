@@ -11,7 +11,7 @@ import {
   ExecutionServiceArgs,
   Job,
 } from '../AbstractExecutionService';
-import { WebWorkerProxyPostMessageStream } from './WebWorkerProxyPostMessageStream';
+import { ProxyPostMessageStream } from '../ProxyPostMessageStream';
 
 type WebWorkerExecutionEnvironmentServiceArgs = {
   documentUrl: URL;
@@ -78,7 +78,7 @@ export class WebWorkerExecutionService extends AbstractExecutionService<string> 
     // `createDocument` should have initialized the runtime stream.
     assert(this.#runtimeStream, 'Runtime stream not initialized.');
 
-    const stream = new WebWorkerProxyPostMessageStream({
+    const stream = new ProxyPostMessageStream({
       stream: this.#runtimeStream,
       jobId,
     });

@@ -1,19 +1,21 @@
 import { MockPostMessageStream, sleep } from '@metamask/snaps-utils/test-utils';
 
-import { OffscreenPostMessageStream } from './OffscreenPostMessageStream';
+import { ProxyPostMessageStream } from './ProxyPostMessageStream';
 
 const MOCK_JOB_ID = 'job-id';
 const MOCK_FRAME_URL = 'frame-url';
 
-describe('OffScreenPostMessageStream', () => {
+describe('ProxyPostMessageStream', () => {
   it('wraps messages with an iframe url and job id', async () => {
     const write = jest.fn();
 
     const mockStream = new MockPostMessageStream(write);
-    const stream = new OffscreenPostMessageStream({
+    const stream = new ProxyPostMessageStream({
       stream: mockStream,
       jobId: MOCK_JOB_ID,
-      frameUrl: MOCK_FRAME_URL,
+      extra: {
+        frameUrl: MOCK_FRAME_URL,
+      },
     });
 
     const message = { foo: 'bar' };
@@ -21,8 +23,10 @@ describe('OffScreenPostMessageStream', () => {
 
     expect(write).toHaveBeenCalledWith({
       jobId: MOCK_JOB_ID,
-      frameUrl: MOCK_FRAME_URL,
       data: message,
+      extra: {
+        frameUrl: MOCK_FRAME_URL,
+      },
     });
 
     mockStream.destroy();
@@ -31,10 +35,9 @@ describe('OffScreenPostMessageStream', () => {
 
   it('handles incoming messages with the right job id', async () => {
     const mockStream = new MockPostMessageStream();
-    const stream = new OffscreenPostMessageStream({
+    const stream = new ProxyPostMessageStream({
       stream: mockStream,
       jobId: MOCK_JOB_ID,
-      frameUrl: MOCK_FRAME_URL,
     });
 
     const onData = jest.fn();
@@ -42,14 +45,12 @@ describe('OffScreenPostMessageStream', () => {
 
     mockStream.write({
       jobId: MOCK_JOB_ID,
-      frameUrl: MOCK_FRAME_URL,
       data: { foo: 'bar' },
     });
 
     // Write a different message with the wrong job ID.
     mockStream.write({
       jobId: 'foo',
-      frameUrl: MOCK_FRAME_URL,
       data: {
         bar: 'baz',
       },

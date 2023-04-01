@@ -6,7 +6,7 @@ import {
   ExecutionServiceArgs,
   Job,
 } from '../AbstractExecutionService';
-import { OffscreenPostMessageStream } from './OffscreenPostMessageStream';
+import { ProxyPostMessageStream } from '../ProxyPostMessageStream';
 
 type OffscreenExecutionEnvironmentServiceArgs = {
   documentUrl: URL;
@@ -81,9 +81,11 @@ export class OffscreenExecutionService extends AbstractExecutionService<string> 
     // Lazily create the offscreen document.
     await this.createDocument();
 
-    const stream = new OffscreenPostMessageStream({
+    const stream = new ProxyPostMessageStream({
       stream: this.#runtimeStream,
-      frameUrl: this.frameUrl.toString(),
+      extra: {
+        frameUrl: this.frameUrl.toString(),
+      },
       jobId,
     });
 
