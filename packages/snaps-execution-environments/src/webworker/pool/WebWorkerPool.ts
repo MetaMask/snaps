@@ -21,12 +21,13 @@ type ExecutorJob = {
  * executing the snap.
  */
 export class WebWorkerPool {
-  // TODO: Actually implement a pool.
   readonly #poolSize = 3;
 
   readonly #stream: BasePostMessageStream;
 
   readonly #url: string;
+
+  readonly #pool: Worker[] = [];
 
   readonly #jobs: Map<string, ExecutorJob> = new Map();
 
@@ -46,6 +47,7 @@ export class WebWorkerPool {
     this.#url = url;
 
     this.#stream.on('data', this.#onData.bind(this));
+    this.#updatePool();
   }
 
   /**
@@ -59,8 +61,6 @@ export class WebWorkerPool {
    * @param data.frameUrl - The URL to load in the iframe.
    */
   #onData(data: { data: JsonRpcRequest; jobId: string; frameUrl: string }) {
-    console.log('WebWorkerPool#onData', data);
-
     const { jobId, data: request } = data;
 
     const job = this.#jobs.get(jobId);
@@ -96,7 +96,7 @@ export class WebWorkerPool {
    * @returns The job.
    */
   async #initializeJob(jobId: string): Promise<ExecutorJob> {
-    const worker = this.#createWorker(jobId);
+    const worker = this.#getWorker();
     const jobStream = new WebWorkerParentPostMessageStream({
       worker,
     });
@@ -127,9 +127,41 @@ export class WebWorkerPool {
     this.#jobs.delete(jobId);
   }
 
-  #createWorker(jobId: string) {
+  /**
+   * Get a worker from the pool. A new worker will be created automatically.
+   *
+   * @returns The worker.
+   */
+  #getWorker() {
+    assert(this.#pool.length > 0, 'No workers available.');
+
+    const worker = this.#pool.pop();
+    assert(worker, 'Worker not found.');
+
+    this.#updatePool();
+
+    return worker;
+  }
+
+  /**
+   * Update the pool of workers. This will create new workers if the pool is
+   * below the minimum size.
+   */
+  #updatePool() {
+    while (this.#pool.length < this.#poolSize) {
+      const worker = this.#createWorker();
+      this.#pool.push(worker);
+    }
+  }
+
+  /**
+   * Create a new worker.
+   *
+   * @returns The worker.
+   */
+  #createWorker() {
     return new Worker(this.#url, {
-      name: `worker-${jobId}`,
+      name: `worker-${this.#pool.length}`,
     });
   }
 }
