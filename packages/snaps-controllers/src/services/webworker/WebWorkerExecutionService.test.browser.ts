@@ -1,6 +1,7 @@
 import { HandlerType } from '@metamask/snaps-utils';
 import {
   DEFAULT_SNAP_BUNDLE,
+  MOCK_LOCAL_SNAP_ID,
   MOCK_ORIGIN,
   MOCK_SNAP_ID,
   spy,
@@ -22,6 +23,33 @@ describe('WebWorkerExecutionService', () => {
     });
 
     expect(service).toBeDefined();
+    await service.terminateAllSnaps();
+  });
+
+  it('only creates a single iframe', async () => {
+    const { service } = createService(WebWorkerExecutionService, {
+      documentUrl: new URL(WORKER_POOL_URL),
+    });
+
+    await service.executeSnap({
+      snapId: MOCK_SNAP_ID,
+      sourceCode: `
+        console.log('foo');
+      `,
+      endowments: ['console'],
+    });
+
+    await service.executeSnap({
+      snapId: MOCK_LOCAL_SNAP_ID,
+      sourceCode: `
+        console.log('foo');
+      `,
+      endowments: ['console'],
+    });
+
+    expect(document.getElementById('pool')).toBeDefined();
+    expect(document.getElementsByTagName('iframe')).toHaveLength(1);
+
     await service.terminateAllSnaps();
   });
 
