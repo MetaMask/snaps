@@ -5,6 +5,8 @@ import {
   MOCK_ORIGIN,
   MOCK_SNAP_ID,
   MockWindowPostMessageStream,
+  spy,
+  SpyFunction,
 } from '@metamask/snaps-utils/test-utils';
 import { JsonRpcRequest } from '@metamask/utils';
 
@@ -56,15 +58,25 @@ async function getOutboundRequest(
 }
 
 describe('WebWorkerSnapExecutor', () => {
+  let consoleSpy: SpyFunction<unknown, unknown>;
+
   before(() => {
     // @ts-expect-error - `globalThis.process` is not optional.
     delete globalThis.process;
+
+    // SES makes the `console.error` property non-writable, so we have to
+    // create the spy before lockdown.
+    consoleSpy = spy(console, 'error');
 
     lockdown({
       domainTaming: 'unsafe',
       errorTaming: 'unsafe',
       stackFiltering: 'verbose',
     });
+  });
+
+  beforeEach(() => {
+    consoleSpy.clear();
   });
 
   it('receives and processes commands', async () => {
@@ -150,5 +162,41 @@ describe('WebWorkerSnapExecutor', () => {
       id: 3,
       jsonrpc: '2.0',
     });
+  });
+
+  it('handles closing the stream', async () => {
+    const mockStream = new MockWindowPostMessageStream();
+
+    // We have to mock close, because otherwise WebDriverIO will break.
+    const closeSpy = spy(globalThis, 'close').mockImplementation(() => {
+      // Do nothing
+    });
+
+    WebWorkerSnapExecutor.initialize(mockStream);
+    mockStream.destroy();
+
+    expect(closeSpy.calls.length).toBe(1);
+
+    closeSpy.reset();
+  });
+
+  it('handles stream errors', async () => {
+    const mockStream = new MockWindowPostMessageStream();
+
+    // We have to mock close, because otherwise WebDriverIO will break.
+    const closeSpy = spy(globalThis, 'close').mockImplementation(() => {
+      // Do nothing
+    });
+
+    WebWorkerSnapExecutor.initialize(mockStream);
+    mockStream.emit('error', new Error('test error'));
+
+    expect(closeSpy.calls.length).toBe(1);
+    expect(consoleSpy.calls.length).toBe(3);
+    expect(consoleSpy.calls[0].args[0]).toBe(
+      'Parent stream failure, closing worker.',
+    );
+
+    closeSpy.reset();
   });
 });

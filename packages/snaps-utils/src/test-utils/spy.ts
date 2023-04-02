@@ -1,8 +1,12 @@
 import { assert } from '@metamask/utils';
 
-type SpyFunction<Args, Result> = {
+export type SpyFunction<Args, Result> = {
   (...args: Args[]): Result;
+  mockImplementation: (
+    newImplementation: (...args: Args[]) => Result,
+  ) => SpyFunction<Args, Result>;
   calls: { args: Args[]; result: Result }[];
+  clear(): void;
   reset(): void;
 };
 
@@ -26,15 +30,26 @@ export const spy = <Target extends object, Args, Result>(
   );
 
   const original = unboundOriginal.bind(target);
+  let implementation = original;
 
   const spyFunction: SpyFunction<Args, Result> = (...args: Args[]): Result => {
-    const result = original(...args);
+    const result = implementation(...args);
     spyFunction.calls.push({ args, result });
 
     return result;
   };
 
   spyFunction.calls = [];
+
+  spyFunction.mockImplementation = (newImplementation) => {
+    implementation = newImplementation;
+    return spyFunction;
+  };
+
+  spyFunction.clear = () => {
+    spyFunction.calls = [];
+  };
+
   spyFunction.reset = () => {
     spyFunction.calls = [];
     target[method] = original;
