@@ -1,5 +1,8 @@
 import ObjectMultiplex from '@metamask/object-multiplex';
-import { BasePostMessageStream } from '@metamask/post-message-stream';
+import {
+  BasePostMessageStream,
+  WebWorkerPostMessageStream,
+} from '@metamask/post-message-stream';
 import { logError, SNAP_STREAM_NAMES } from '@metamask/snaps-utils';
 import pump from 'pump';
 
@@ -15,7 +18,9 @@ export class WebWorkerSnapExecutor extends BaseSnapExecutor {
    * @returns An instance of `WebWorkerSnapExecutor`, with the initialized post
    * message streams.
    */
-  static initialize(stream: BasePostMessageStream) {
+  static initialize(
+    stream: BasePostMessageStream = new WebWorkerPostMessageStream(),
+  ) {
     log('Worker: Connecting to parent.');
 
     const mux = new ObjectMultiplex();

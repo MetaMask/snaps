@@ -33,10 +33,16 @@ export const spy = <Target extends object, Args, Result>(
   let implementation = original;
 
   const spyFunction: SpyFunction<Args, Result> = (...args: Args[]): Result => {
-    const result = implementation(...args);
-    spyFunction.calls.push({ args, result });
+    try {
+      const result = implementation(...args);
+      spyFunction.calls.push({ args, result });
 
-    return result;
+      return result;
+    } catch (error) {
+      spyFunction.calls.push({ args, result: error });
+
+      throw error;
+    }
   };
 
   spyFunction.calls = [];

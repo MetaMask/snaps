@@ -153,4 +153,36 @@ describe('WebWorkerPool', () => {
     expect(executor.pool.length).toBe(3);
     expect(executor.pool[0]).not.toBe(nextWorker);
   });
+
+  it('handles errors', async () => {
+    const mockStream = new MockPostMessageStream();
+
+    const fetchSpy = spy(globalThis, 'fetch').mockImplementation(() => {
+      throw new Error('Failed to fetch.');
+    });
+
+    WebWorkerPool.initialize(mockStream, WORKER_URL);
+
+    writeMessage(mockStream, {
+      name: 'command',
+      data: {
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'ping',
+      },
+    });
+
+    // Wait for the response, so that we know the worker is created.
+    const response = await getResponse(mockStream);
+    expect(response).toStrictEqual({
+      jsonrpc: '2.0',
+      id: null,
+      error: {
+        code: -32000,
+        message: 'Internal error',
+      },
+    });
+
+    expect(fetchSpy.calls.length).toBe(1);
+  });
 });

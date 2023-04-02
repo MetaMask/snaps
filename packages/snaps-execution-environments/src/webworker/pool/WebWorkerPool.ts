@@ -33,6 +33,7 @@ export class WebWorkerPool {
 
   #workerSourceURL?: string;
 
+  /* istanbul ignore next - Constructor arguments. */
   static initialize(
     stream: BasePostMessageStream = new WindowPostMessageStream({
       name: 'child',
@@ -60,9 +61,8 @@ export class WebWorkerPool {
    * @param data - The message data.
    * @param data.data - The JSON-RPC request.
    * @param data.jobId - The job ID.
-   * @param data.frameUrl - The URL to load in the iframe.
    */
-  #onData(data: { data: JsonRpcRequest; jobId: string; frameUrl: string }) {
+  #onData(data: { data: JsonRpcRequest; jobId: string }) {
     const { jobId, data: request } = data;
 
     const job = this.jobs.get(jobId);
@@ -76,6 +76,21 @@ export class WebWorkerPool {
         })
         .catch((error) => {
           logError('[Worker] Error initializing job:', error.toString());
+
+          this.#stream.write({
+            jobId,
+            data: {
+              name: 'command',
+              data: {
+                jsonrpc: '2.0',
+                id: request.id ?? null,
+                error: {
+                  code: -32000,
+                  message: 'Internal error',
+                },
+              },
+            },
+          });
         });
 
       return;
