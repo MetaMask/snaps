@@ -17,10 +17,10 @@ import {
  * @param argv - The raw command line arguments, i.e., `process.argv`.
  * @param commands - The list of commands to use.
  */
-export function cli(argv: string[], commands: any): void {
+export async function cli(argv: string[], commands: any): Promise<void> {
   const rawArgv = argv.slice(2);
   // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-  yargs(rawArgv)
+  await yargs(rawArgv)
     .scriptName('mm-snap')
     .usage('Usage: $0 <command> [options]')
 

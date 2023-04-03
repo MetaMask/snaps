@@ -1,5 +1,4 @@
 import { logError, logInfo } from '@metamask/snaps-utils';
-import { IncomingMessage } from 'http';
 
 /**
  * Log a message with the URL and port of the server.
@@ -16,7 +15,7 @@ export function logServerListening(port: number) {
  * @param request - The request object.
  * @param request.url - The URL of the request.
  */
-export function logRequest(request: IncomingMessage) {
+export function logRequest(request: { url?: string }) {
   logInfo(`Handling incoming request for: ${request.url ?? 'unknown'}`);
 }
 
