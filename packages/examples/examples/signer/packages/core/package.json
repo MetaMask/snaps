@@ -16,8 +16,8 @@
   },
   "devDependencies": {
     "@metamask/key-tree": "^7.0.0",
-    "@metamask/snaps-cli": "workspace:^",
-    "@metamask/snaps-types": "^0.31.0"
+    "@metamask/snaps-cli": "^0.32.2",
+    "@metamask/snaps-types": "^0.32.2"
   },
   "packageManager": "yarn@3.4.1"
 }

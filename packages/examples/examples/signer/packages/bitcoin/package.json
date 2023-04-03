@@ -12,13 +12,13 @@
   },
   "dependencies": {
     "@metamask/key-tree": "^7.0.0",
-    "@metamask/snaps-types": "^0.31.0",
+    "@metamask/snaps-types": "^0.32.2",
     "@metamask/utils": "^5.0.0",
     "@noble/secp256k1": "^1.7.1",
     "buffer": "^6.0.3"
   },
   "devDependencies": {
-    "@metamask/snaps-cli": "^0.31.0",
+    "@metamask/snaps-cli": "^0.32.2",
     "through2": "^4.0.2"
   },
   "packageManager": "yarn@3.4.1"
