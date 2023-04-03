@@ -32,8 +32,7 @@
     "build:lavamoat:policy": "yarn build:lavamoat --writeAutoPolicy && node scripts/build.js --writeAutoPolicy",
     "auto-changelog-init": "auto-changelog init",
     "prepare-manifest:preview": "../../scripts/prepare-preview-manifest.sh",
-    "publish:preview": "yarn npm publish --tag preview",
-    "publish:package": "../../scripts/publish-package.sh"
+    "publish:preview": "yarn npm publish --tag preview"
   },
   "dependencies": {
     "@metamask/object-multiplex": "^1.2.0",

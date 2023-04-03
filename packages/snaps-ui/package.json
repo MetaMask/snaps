@@ -22,8 +22,7 @@
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
     "prepare-manifest:preview": "../../scripts/prepare-preview-manifest.sh",
-    "publish:preview": "yarn npm publish --tag preview",
-    "publish:package": "../../scripts/publish-package.sh"
+    "publish:preview": "yarn npm publish --tag preview"
   },
   "dependencies": {
     "@metamask/utils": "^5.0.0",

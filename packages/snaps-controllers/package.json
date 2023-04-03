@@ -30,8 +30,7 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "yarn auto-changelog validate",
     "prepare-manifest:preview": "../../scripts/prepare-preview-manifest.sh",
-    "publish:preview": "yarn npm publish --tag preview",
-    "publish:package": "../../scripts/publish-package.sh"
+    "publish:preview": "yarn npm publish --tag preview"
   },
   "dependencies": {
     "@metamask/approval-controller": "^2.0.0",
