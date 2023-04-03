@@ -5,7 +5,7 @@ import {
 } from '@metamask/post-message-stream';
 import { logError } from '@metamask/snaps-utils';
 import { JsonRpcRequest, assert } from '@metamask/utils';
-import { nanoid } from 'nanoid';
+import { nanoid } from 'nanoid/non-secure';
 
 type ExecutorJob = {
   id: string;
