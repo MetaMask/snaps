@@ -89,6 +89,15 @@ async function main() {
   bundler.transform(require('@browserify/uglifyify'), { global: true });
   bundler.plugin(require('common-shakeify'), { ecmaVersion: 2020 });
 
+  let extraOptions = {};
+
+  if (worker) {
+    extraOptions = {
+      scuttleGlobalThis: true,
+      scuttleGlobalThisExceptions: ['postMessage', 'removeEventListener'],
+    };
+  }
+
   // Add LavaMoat to wrap bundles in LavaPack
   // For Node.js builds, this also includes a prelude that contains SES and the LavaMoat runtime
   // For browser builds, the prelude is skipped and inlined in a script tag before the main bundle instead
@@ -105,6 +114,7 @@ async function main() {
     ),
     // Prelude is included in Node, in the browser it is inlined.
     includePrelude: node || worker,
+    ...extraOptions,
   });
 
   const buffer = await new Promise((resolve, reject) => {
@@ -130,7 +140,7 @@ async function main() {
     const lavaMoatRuntime = lavaMoatRuntimeString.replace(
       '__lavamoatSecurityOptions__',
       JSON.stringify({
-        // Only enable for browser builds for now due to incompatiblities
+        // Only enable for browser builds for now due to incompatibilities
         scuttleGlobalThis: true,
         scuttleGlobalThisExceptions: ['postMessage', 'removeEventListener'],
       }),
