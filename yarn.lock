@@ -3060,12 +3060,12 @@ __metadata:
   linkType: hard
 
 "@metamask/post-message-stream@npm:^6.1.1":
-  version: 6.1.1
-  resolution: "@metamask/post-message-stream@npm:6.1.1"
+  version: 6.1.2
+  resolution: "@metamask/post-message-stream@npm:6.1.2"
   dependencies:
-    "@metamask/utils": ^4.0.0
+    "@metamask/utils": ^5.0.0
     readable-stream: 2.3.3
-  checksum: 588988d555ff20e0d60ed2de71e804d96963a9d4c07716901d5ae13100eb0f97c49eb6b2dbd93ac408098067c0e12cbfca90fed345fecdb69c92e852ab28c0b4
+  checksum: 3591ec9b7fd602806b07cbc0fed5075fb7a347c279c43ef1f25fbdd8634dfcad9ce192ae59457fb76554ef0bc15cbf25cfaa5875aee2d72668a273b7a6852c32
   languageName: node
   linkType: hard
 
@@ -3782,18 +3782,6 @@ __metadata:
     semver: ^7.3.8
     superstruct: ^1.0.3
   checksum: 1ebc6677bb017e4d09d4af143621fe27194d8ed815234cfd76469c3c734dc1db2ea7b577c01a2096c21c04d8c9c4d721d3035b5353fe2ded3b4737f326755e43
-  languageName: node
-  linkType: hard
-
-"@metamask/utils@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "@metamask/utils@npm:4.0.0"
-  dependencies:
-    "@types/debug": ^4.1.7
-    debug: ^4.3.4
-    semver: ^7.3.8
-    superstruct: ^1.0.3
-  checksum: 6d4edca78fe1f66504ed5e5ca021a67f4b4e0893e86484c746b87039c2161c39d3b8bd8e4b9235ddfd023b2d76dd54210af94ec5550e27bc4ad9c0d7d5f3f231
   languageName: node
   linkType: hard
 
