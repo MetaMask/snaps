@@ -30,7 +30,7 @@
     "publish:preview": "yarn npm publish --tag preview"
   },
   "dependencies": {
-    "@metamask/snaps-utils": "^0.32.2"
+    "@metamask/snaps-utils": "workspace:^"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.0.3",

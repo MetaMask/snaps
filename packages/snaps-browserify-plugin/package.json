@@ -29,7 +29,7 @@
     "publish:preview": "yarn npm publish --tag preview"
   },
   "dependencies": {
-    "@metamask/snaps-utils": "^0.32.2",
+    "@metamask/snaps-utils": "workspace:^",
     "convert-source-map": "^1.8.0"
   },
   "devDependencies": {
