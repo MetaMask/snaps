@@ -12,8 +12,6 @@
   "scripts": {
     "setup": "yarn install",
     "postinstall": "simple-git-hooks",
-    "publish:all": "./scripts/publish-all.sh",
-    "link-packages": "./scripts/link-packages.sh",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!**/CHANGELOG.md' '**/*.yml' '**/*.html'",
     "lint:changelogs": "yarn workspaces foreach --parallel --verbose run lint:changelog",
