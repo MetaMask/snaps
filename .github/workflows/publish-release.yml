@@ -52,7 +52,7 @@ jobs:
           key: ${{ github.sha }}
       - run: npm config set ignore-scripts true
       - name: Dry Run Publish
-        uses: MetaMask/action-npm-publish@v1
+        uses: MetaMask/action-npm-publish@v3
 
   npm-publish:
     environment: npm-publish
@@ -71,6 +71,6 @@ jobs:
           key: ${{ github.sha }}
       - run: npm config set ignore-scripts true
       - name: Publish
-        uses: MetaMask/action-npm-publish@v1
+        uses: MetaMask/action-npm-publish@v3
         with:
           npm-token: ${{ secrets.NPM_TOKEN }}
