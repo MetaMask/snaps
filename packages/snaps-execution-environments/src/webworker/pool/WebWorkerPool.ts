@@ -5,6 +5,7 @@ import {
 } from '@metamask/post-message-stream';
 import { logError } from '@metamask/snaps-utils';
 import { JsonRpcRequest, assert } from '@metamask/utils';
+import { nanoid } from 'nanoid';
 
 type ExecutorJob = {
   id: string;
@@ -182,7 +183,7 @@ export class WebWorkerPool {
    */
   async #createWorker() {
     return new Worker(await this.#getWorkerURL(), {
-      name: `worker-${this.pool.length}`,
+      name: `worker-${nanoid()}`,
     });
   }
 

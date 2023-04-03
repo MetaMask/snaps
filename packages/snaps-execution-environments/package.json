@@ -43,6 +43,7 @@
     "@metamask/utils": "^5.0.0",
     "eth-rpc-errors": "^4.0.3",
     "json-rpc-engine": "^6.1.0",
+    "nanoid": "^3.1.31",
     "pump": "^3.0.0",
     "ses": "^0.18.1",
     "stream-browserify": "^3.0.0",
