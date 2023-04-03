@@ -73,7 +73,7 @@
     "@types/jest": "^27.5.1",
     "@types/mocha": "^10.0.1",
     "@types/pump": "^1.1.1",
-    "@types/readable-stream": "^2.3.9",
+    "@types/readable-stream": "^2.3.15",
     "@types/tar-stream": "^2.2.2",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",

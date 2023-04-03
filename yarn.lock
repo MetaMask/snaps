@@ -3287,7 +3287,7 @@ __metadata:
     "@types/jest": ^27.5.1
     "@types/mocha": ^10.0.1
     "@types/pump": ^1.1.1
-    "@types/readable-stream": ^2.3.9
+    "@types/readable-stream": ^2.3.15
     "@types/tar-stream": ^2.2.2
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
@@ -4587,13 +4587,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/readable-stream@npm:^2.3.9":
-  version: 2.3.9
-  resolution: "@types/readable-stream@npm:2.3.9"
+"@types/readable-stream@npm:^2.3.15":
+  version: 2.3.15
+  resolution: "@types/readable-stream@npm:2.3.15"
   dependencies:
     "@types/node": "*"
-    safe-buffer: "*"
-  checksum: 62ad1c7cda8b5519de0d6bcd10858a36be149a15adec66cad1d5d7fb28cfdeb2d0c3cb6727ea0d4c0b2aba040dc068283082164bc33fb72651194aa2a1b2dc86
+    safe-buffer: ~5.1.1
+  checksum: ec36f525cad09b6c65a1dafcb5ad99b9e2ed824ec49b7aa23180ac427e5d35b8a0706193ecd79ab4253a283ad485ba03d5917a98daaaa144f0ea34f4823e9d82
   languageName: node
   linkType: hard
 
@@ -17383,17 +17383,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"safe-buffer@npm:*, safe-buffer@npm:5.2.1, safe-buffer@npm:^5.0.1, safe-buffer@npm:^5.1.0, safe-buffer@npm:^5.1.1, safe-buffer@npm:^5.1.2, safe-buffer@npm:^5.2.0, safe-buffer@npm:~5.2.0":
-  version: 5.2.1
-  resolution: "safe-buffer@npm:5.2.1"
-  checksum: b99c4b41fdd67a6aaf280fcd05e9ffb0813654894223afb78a31f14a19ad220bba8aba1cb14eddce1fcfb037155fe6de4e861784eb434f7d11ed58d1e70dd491
-  languageName: node
-  linkType: hard
-
 "safe-buffer@npm:5.1.2, safe-buffer@npm:~5.1.0, safe-buffer@npm:~5.1.1":
   version: 5.1.2
   resolution: "safe-buffer@npm:5.1.2"
   checksum: f2f1f7943ca44a594893a852894055cf619c1fbcb611237fc39e461ae751187e7baf4dc391a72125e0ac4fb2d8c5c0b3c71529622e6a58f46b960211e704903c
+  languageName: node
+  linkType: hard
+
+"safe-buffer@npm:5.2.1, safe-buffer@npm:^5.0.1, safe-buffer@npm:^5.1.0, safe-buffer@npm:^5.1.1, safe-buffer@npm:^5.1.2, safe-buffer@npm:^5.2.0, safe-buffer@npm:~5.2.0":
+  version: 5.2.1
+  resolution: "safe-buffer@npm:5.2.1"
+  checksum: b99c4b41fdd67a6aaf280fcd05e9ffb0813654894223afb78a31f14a19ad220bba8aba1cb14eddce1fcfb037155fe6de4e861784eb434f7d11ed58d1e70dd491
   languageName: node
   linkType: hard
 
