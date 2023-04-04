@@ -360,6 +360,11 @@ export type GetRegistryMetadata = {
   handler: SnapController['getRegistryMetadata'];
 };
 
+export type DisconnectOrigin = {
+  type: `${typeof controllerName}:disconnectOrigin`;
+  handler: SnapController['removeSnapFromSubject'];
+};
+
 export type SnapControllerActions =
   | ClearSnapState
   | GetSnap
@@ -377,7 +382,8 @@ export type SnapControllerActions =
   | GetAllSnaps
   | IncrementActiveReferences
   | DecrementActiveReferences
-  | GetRegistryMetadata;
+  | GetRegistryMetadata
+  | DisconnectOrigin;
 
 // Controller Messenger Events
 
@@ -1445,6 +1451,46 @@ export class SnapController extends BaseController<
   }
 
   /**
+   * Removes a snap's permission (caveat) from the specified subject.
+   *
+   * @param origin - The origin from which to remove the snap.
+   * @param snapId - The id of the snap to remove.
+   */
+  removeSnapFromSubject(origin: string, snapId: SnapId) {
+    const subjectPermissions = this.messagingSystem.call(
+      'PermissionController:getPermissions',
+      origin,
+    ) as SubjectPermissions<PermissionConstraint>;
+    const snapIdsCaveat = (subjectPermissions?.[
+      WALLET_SNAP_PERMISSION_KEY
+    ]?.caveats?.find((caveat) => caveat.type === SnapCaveatType.SnapIds) ??
+      {}) as Caveat<string, Json>;
+
+    const caveatHasSnap = Boolean(
+      (snapIdsCaveat.value as Record<string, unknown>)?.[snapId],
+    );
+    if (caveatHasSnap) {
+      const newCaveatValue = {
+        ...(snapIdsCaveat.value as Record<string, unknown>),
+      };
+      delete newCaveatValue[snapId];
+      if (Object.keys(newCaveatValue).length > 0) {
+        this.messagingSystem.call(
+          'PermissionController:updateCaveat',
+          origin,
+          WALLET_SNAP_PERMISSION_KEY,
+          SnapCaveatType.SnapIds,
+          newCaveatValue,
+        );
+      } else {
+        this.messagingSystem.call('PermissionController:revokePermissions', {
+          [origin]: [WALLET_SNAP_PERMISSION_KEY],
+        });
+      }
+    }
+  }
+
+  /**
    * Removes a snap's permission (caveat) from all subjects.
    *
    * @param snapId - The id of the Snap.
@@ -1454,37 +1500,7 @@ export class SnapController extends BaseController<
       'PermissionController:getSubjectNames',
     );
     for (const subject of subjects) {
-      const subjectPermissions = this.messagingSystem.call(
-        'PermissionController:getPermissions',
-        subject,
-      ) as SubjectPermissions<PermissionConstraint>;
-      const snapIdsCaveat = (subjectPermissions?.[
-        WALLET_SNAP_PERMISSION_KEY
-      ]?.caveats?.find((caveat) => caveat.type === SnapCaveatType.SnapIds) ??
-        {}) as Caveat<string, Json>;
-
-      const caveatHasSnap = Boolean(
-        (snapIdsCaveat.value as Record<string, unknown>)?.[snapId],
-      );
-      if (caveatHasSnap) {
-        const newCaveatValue = {
-          ...(snapIdsCaveat.value as Record<string, unknown>),
-        };
-        delete newCaveatValue[snapId];
-        if (Object.keys(newCaveatValue).length > 0) {
-          this.messagingSystem.call(
-            'PermissionController:updateCaveat',
-            subject,
-            WALLET_SNAP_PERMISSION_KEY,
-            SnapCaveatType.SnapIds,
-            newCaveatValue,
-          );
-        } else {
-          this.messagingSystem.call('PermissionController:revokePermissions', {
-            [subject]: [WALLET_SNAP_PERMISSION_KEY],
-          });
-        }
-      }
+      this.removeSnapFromSubject(subject, snapId);
     }
   }
 
