@@ -2,7 +2,6 @@
 
 import { cli } from './cli';
 import commands from './cmds';
-import { logError } from './utils';
 
 global.snaps = {
   verboseErrors: false,
@@ -10,7 +9,4 @@ global.snaps = {
   isWatching: false,
 };
 
-cli(process.argv, commands).catch((error) => {
-  logError(error);
-  process.exit(1);
-});
+cli(process.argv, commands);

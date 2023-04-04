@@ -1,12 +1,13 @@
 import * as cliModule from './cli';
 import commands from './cmds';
 
+jest.mock('./cli', () => ({
+  cli: jest.fn(),
+}));
+
 describe('main', () => {
   it('executes the CLI application', async () => {
-    jest.spyOn(cliModule, 'cli').mockResolvedValue(undefined);
-
     await import('./main');
-
     expect(cliModule.cli).toHaveBeenCalledTimes(1);
     expect(cliModule.cli).toHaveBeenCalledWith(process.argv, commands);
     expect(global.snaps).toStrictEqual({
