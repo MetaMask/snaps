@@ -79,6 +79,7 @@
     "buffer": "^6.0.3",
     "common-shakeify": "^1.1.2",
     "deepmerge": "^4.2.2",
+    "esbuild": "^0.17.15",
     "eslint": "^8.27.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
