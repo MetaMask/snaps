@@ -27,6 +27,7 @@
     "test:browser": "yarn workspaces foreach --verbose run test:browser",
     "test:prepare": "yarn workspace @metamask/snaps-execution-environments run build:test",
     "child-workspace-package-names-as-json": "ts-node scripts/child-workspace-package-names-as-json.ts",
+    "prepare-flask-builds": "yarn workspaces foreach --parallel run prepare-manifest:flask",
     "prepare-preview-builds": "yarn workspaces foreach --parallel run prepare-manifest:preview",
     "publish-previews": "yarn workspaces foreach --parallel run publish:preview"
   },
