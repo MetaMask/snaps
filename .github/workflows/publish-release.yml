@@ -72,12 +72,14 @@ jobs:
       - name: Get release tag
         id: get-release-tag
         run: |
-          if [ "$GITHUB_HEAD_REF" = "main" ]
+          branch=${GITHUB_REF#refs/heads/}
+          if [ "$branch" = "main" ]
           then
             echo "tag=flask" >> "$GITHUB_OUTPUT"
           else
             echo "tag=latest" >> "$GITHUB_OUTPUT"
           fi
+        shell: bash
       - run: npm config set ignore-scripts true
       - name: Publish ${{ steps.get-release-tag.outputs.tag }}
         uses: MetaMask/action-npm-publish@v3
