@@ -27,6 +27,7 @@
     "publish:preview": "yarn npm publish --tag preview"
   },
   "dependencies": {
+    "@metamask/providers": "^10.2.1",
     "@metamask/rpc-methods": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
     "@metamask/utils": "^5.0.0"
