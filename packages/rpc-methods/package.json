@@ -23,7 +23,6 @@
     "build": "tsc --project tsconfig.build.json",
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
-    "prepare-manifest:flask": "../../scripts/prepare-flask-manifest.sh",
     "prepare-manifest:preview": "../../scripts/prepare-preview-manifest.sh",
     "publish:preview": "yarn npm publish --tag preview"
   },

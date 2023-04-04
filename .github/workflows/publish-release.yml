@@ -50,12 +50,6 @@ jobs:
             ./packages/**/dist
             ./node_modules
           key: ${{ github.sha }}
-      - run: |
-          # Check if the branch name is `main`
-          if [ GITHUB_REF_NAME = 'main' ]
-            yarn prepare-flask-builds
-          fi
-        shell: bash
       - run: npm config set ignore-scripts true
       - name: Dry Run Publish
         uses: MetaMask/action-npm-publish@v3
@@ -75,12 +69,6 @@ jobs:
             ./packages/**/dist
             ./node_modules
           key: ${{ github.sha }}
-      - run: |
-          # Check if the branch name is `main`
-          if [ GITHUB_REF_NAME = 'main' ]
-            yarn prepare-flask-builds
-          fi
-        shell: bash
       - run: npm config set ignore-scripts true
       - name: Publish
         uses: MetaMask/action-npm-publish@v3

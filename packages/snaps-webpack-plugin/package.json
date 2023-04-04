@@ -27,7 +27,6 @@
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
     "prepare-manifest:preview": "../../scripts/prepare-preview-manifest.sh",
-    "prepare-manifest:flask": "../../scripts/prepare-flask-manifest.sh",
     "publish:preview": "yarn npm publish --tag preview"
   },
   "dependencies": {
