@@ -2,7 +2,9 @@ name: Main
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - release/1.0.0
   pull_request:
 
 jobs:
