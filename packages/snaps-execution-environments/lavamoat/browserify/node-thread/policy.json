@@ -217,21 +217,6 @@
         "ts-jest>semver": true
       }
     },
-    "@wdio/mocha-framework>mocha>supports-color": {
-      "builtin": {
-        "os.release": true,
-        "tty.isatty": true
-      },
-      "globals": {
-        "process.env": true,
-        "process.platform": true
-      },
-      "packages": {
-        "istanbul-lib-report>supports-color>has-flag": true,
-        "os": true,
-        "tty": true
-      }
-    },
     "browserify>inherits": {
       "builtin": {
         "util.inherits": true
@@ -299,6 +284,26 @@
         "util": true
       }
     },
+    "concurrently>supports-color": {
+      "builtin": {
+        "os.release": true,
+        "tty.isatty": true
+      },
+      "globals": {
+        "process.env": true,
+        "process.platform": true
+      },
+      "packages": {
+        "concurrently>supports-color>has-flag": true,
+        "os": true,
+        "tty": true
+      }
+    },
+    "concurrently>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
+      }
+    },
     "eslint>debug": {
       "builtin": {
         "tty.isatty": true,
@@ -314,7 +319,7 @@
         "process": true
       },
       "packages": {
-        "@wdio/mocha-framework>mocha>supports-color": true,
+        "concurrently>supports-color": true,
         "eslint>debug>ms": true,
         "tty": true,
         "util": true
@@ -448,11 +453,6 @@
     "external:../snaps-utils/src/virtual-file/index.browser.ts": {
       "packages": {
         "external:../snaps-utils/src/virtual-file/VirtualFile.ts": true
-      }
-    },
-    "istanbul-lib-report>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
       }
     },
     "json-rpc-engine": {

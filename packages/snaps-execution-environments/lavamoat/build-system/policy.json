@@ -1074,19 +1074,6 @@
         "process.nextTick": true
       }
     },
-    "@wdio/mocha-framework>mocha>supports-color": {
-      "builtin": {
-        "os.release": true,
-        "tty.isatty": true
-      },
-      "globals": {
-        "process.env": true,
-        "process.platform": true
-      },
-      "packages": {
-        "istanbul-lib-report>supports-color>has-flag": true
-      }
-    },
     "babel-plugin-tsconfig-paths-module-resolver": {
       "builtin": {
         "path": true
@@ -1748,7 +1735,7 @@
       },
       "packages": {
         "@wdio/mocha-framework>mocha>ms": true,
-        "@wdio/mocha-framework>mocha>supports-color": true
+        "concurrently>supports-color": true
       }
     },
     "common-shakeify>@goto-bus-stop/common-shake>escope": {
@@ -1854,22 +1841,30 @@
         "common-shakeify>transform-ast>merge-source-map>source-map": true
       }
     },
+    "concurrently>supports-color": {
+      "builtin": {
+        "os.release": true,
+        "tty.isatty": true
+      },
+      "globals": {
+        "process.env": true,
+        "process.platform": true
+      },
+      "packages": {
+        "concurrently>supports-color>has-flag": true
+      }
+    },
+    "concurrently>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
+      }
+    },
     "eslint-plugin-import>is-core-module": {
       "globals": {
         "process.versions": true
       },
       "packages": {
         "browserify>has": true
-      }
-    },
-    "eslint>chalk>ansi-styles": {
-      "packages": {
-        "eslint>chalk>ansi-styles>color-convert": true
-      }
-    },
-    "eslint>chalk>ansi-styles>color-convert": {
-      "packages": {
-        "eslint>chalk>ansi-styles>color-convert>color-name": true
       }
     },
     "eslint>debug": {
@@ -1887,7 +1882,7 @@
         "process": true
       },
       "packages": {
-        "@wdio/mocha-framework>mocha>supports-color": true,
+        "concurrently>supports-color": true,
         "eslint>debug>ms": true
       }
     },
@@ -1911,16 +1906,6 @@
       "packages": {
         "eslint>minimatch>brace-expansion>balanced-match": true,
         "eslint>minimatch>brace-expansion>concat-map": true
-      }
-    },
-    "eslint>strip-ansi": {
-      "packages": {
-        "eslint>strip-ansi>ansi-regex": true
-      }
-    },
-    "istanbul-lib-report>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
       }
     },
     "lavamoat-browserify": {
@@ -2303,53 +2288,6 @@
         "Error": true,
         "console": true,
         "process": true
-      },
-      "packages": {
-        "yargs>cliui": true,
-        "yargs>escalade": true,
-        "yargs>get-caller-file": true,
-        "yargs>require-directory": true,
-        "yargs>string-width": true,
-        "yargs>y18n": true,
-        "yargs>yargs-parser": true
-      }
-    },
-    "yargs>cliui": {
-      "packages": {
-        "eslint>strip-ansi": true,
-        "yargs>cliui>wrap-ansi": true,
-        "yargs>string-width": true
-      }
-    },
-    "yargs>cliui>wrap-ansi": {
-      "packages": {
-        "eslint>chalk>ansi-styles": true,
-        "eslint>strip-ansi": true,
-        "yargs>string-width": true
-      }
-    },
-    "yargs>escalade": {
-      "builtin": {
-        "fs.readdirSync": true,
-        "fs.statSync": true,
-        "path.dirname": true,
-        "path.resolve": true
-      }
-    },
-    "yargs>require-directory": {
-      "builtin": {
-        "fs.readdirSync": true,
-        "fs.statSync": true,
-        "path.dirname": true,
-        "path.join": true,
-        "path.resolve": true
-      }
-    },
-    "yargs>string-width": {
-      "packages": {
-        "eslint>strip-ansi": true,
-        "yargs>string-width>emoji-regex": true,
-        "yargs>string-width>is-fullwidth-code-point": true
       }
     },
     "yargs>y18n": {
