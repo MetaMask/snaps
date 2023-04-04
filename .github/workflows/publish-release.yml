@@ -53,6 +53,7 @@ jobs:
       - run: |
           # Check if the branch name is `main`
           if [ GITHUB_REF_NAME = 'main' ]
+          then
             yarn prepare-flask-builds
           fi
         shell: bash
@@ -78,6 +79,7 @@ jobs:
       - run: |
           # Check if the branch name is `main`
           if [ GITHUB_REF_NAME = 'main' ]
+          then
             yarn prepare-flask-builds
           fi
         shell: bash
