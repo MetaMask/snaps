@@ -50,7 +50,7 @@ describe('WebWorkerExecutionService', () => {
       endowments: ['console'],
     });
 
-    expect(document.getElementById('pool')).toBeDefined();
+    expect(document.getElementById(WORKER_POOL_ID)).not.toBeNull();
     expect(document.getElementsByTagName('iframe')).toHaveLength(1);
 
     await service.terminateAllSnaps();
