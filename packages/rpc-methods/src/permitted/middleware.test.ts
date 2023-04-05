@@ -4,11 +4,11 @@ import {
 } from '@metamask/snaps-utils/test-utils';
 import { JsonRpcEngine } from 'json-rpc-engine';
 
-import { createSnapMethodMiddleware } from './middleware';
+import { createSnapsMethodMiddleware } from './middleware';
 
-describe('createSnapMethodMiddleware', () => {
+describe('createSnapsMethodMiddleware', () => {
   it('supports wallet_getSnaps', async () => {
-    const middleware = createSnapMethodMiddleware(true, {
+    const middleware = createSnapsMethodMiddleware(true, {
       getSnaps: () => ({ [MOCK_SNAP_ID]: getTruncatedSnap() }),
     });
 
@@ -31,7 +31,7 @@ describe('createSnapMethodMiddleware', () => {
   });
 
   it('handles errors', async () => {
-    const middleware = createSnapMethodMiddleware(true, {
+    const middleware = createSnapsMethodMiddleware(true, {
       getSnaps: () => {
         throw new Error('foo');
       },
@@ -62,7 +62,7 @@ describe('createSnapMethodMiddleware', () => {
   });
 
   it('ignores unknown methods', async () => {
-    const middleware = createSnapMethodMiddleware(true, {});
+    const middleware = createSnapsMethodMiddleware(true, {});
 
     const engine = new JsonRpcEngine();
 

@@ -1,16 +1,9 @@
 import { logError } from '@metamask/snaps-utils';
 import { ethErrors } from 'eth-rpc-errors';
-import { JsonRpcMiddleware, JsonRpcRequest } from 'json-rpc-engine';
+import { JsonRpcMiddleware } from 'json-rpc-engine';
 
-import { handlers } from '.';
 import { selectHooks } from '../utils';
-
-const snapHandlerMap = handlers.reduce((map, handler) => {
-  for (const methodName of handler.methodNames) {
-    map.set(methodName, handler);
-  }
-  return map;
-}, new Map());
+import { methodHandlers } from './handlers';
 
 /**
  * Creates a middleware that handles permitted snap RPC methods.
@@ -19,25 +12,27 @@ const snapHandlerMap = handlers.reduce((map, handler) => {
  * @param hooks - An object containing the hooks made available to the permitted RPC methods.
  * @returns The middleware.
  */
-export function createSnapMethodMiddleware(
+export function createSnapsMethodMiddleware(
   isSnap: boolean,
   hooks: Record<string, unknown>,
-): JsonRpcMiddleware<JsonRpcRequest<unknown>, any> {
+): JsonRpcMiddleware<unknown, unknown> {
   // This is not actually a misused promise, the type is just wrong
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async function methodMiddleware(req, res, next, end) {
-    const handler = snapHandlerMap.get(req.method);
+  return async function methodMiddleware(request, response, next, end) {
+    const handler =
+      methodHandlers[request.method as keyof typeof methodHandlers];
     if (handler) {
-      if (/^snap_/iu.test(req.method) && !isSnap) {
+      if (request.method.startsWith('snap_') && !isSnap) {
         return end(ethErrors.rpc.methodNotFound());
       }
 
-      const { implementation, hookNames } = handler;
+      // TODO: Once json-rpc-engine types are up to date, we should type this correctly
+      const { implementation, hookNames } = handler as any;
       try {
         // Implementations may or may not be async, so we must await them.
         return await implementation(
-          req,
-          res,
+          request,
+          response,
           next,
           end,
           selectHooks(hooks, hookNames),
