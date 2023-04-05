@@ -13,3 +13,5 @@ export const methodHandlers = {
 /* eslint-enable @typescript-eslint/naming-convention */
 
 export const handlers = Object.values(methodHandlers);
+
+export * from './middleware';
