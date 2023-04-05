@@ -4,20 +4,20 @@
  * an initialization timeout in the SnapController.
  *
  * @param uri - The iframe URI.
- * @param jobId - The job id.
+ * @param id - The ID to assign to the iframe.
  * @param sandbox - Whether to enable the sandbox attribute.
  * @returns A promise that resolves to the contentWindow of the iframe.
  */
 export async function createWindow(
   uri: string,
-  jobId: string,
+  id: string,
   sandbox = true,
 ): Promise<Window> {
   return await new Promise((resolve, reject) => {
     const iframe = document.createElement('iframe');
     // The order of operations appears to matter for everything except this
     // attribute. We may as well set it here.
-    iframe.setAttribute('id', jobId);
+    iframe.setAttribute('id', id);
     iframe.setAttribute('data-testid', 'snaps-iframe');
 
     if (sandbox) {
@@ -50,7 +50,7 @@ export async function createWindow(
         // fast if it does.
         reject(
           new Error(
-            `iframe.contentWindow not present on load for job "${jobId}".`,
+            `iframe.contentWindow not present on load for job "${id}".`,
           ),
         );
       }
