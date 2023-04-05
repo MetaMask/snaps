@@ -13,7 +13,7 @@ import { JsonRpcRequest } from '@metamask/utils';
 import { WebWorkerSnapExecutor } from './WebWorkerSnapExecutor';
 
 /**
- * Write a message to the stream, wrapped with the job ID and frame URL.
+ * Write a message to the stream, wrapped with the job ID.
  *
  * @param stream - The stream to write to.
  * @param message - The message to write.
