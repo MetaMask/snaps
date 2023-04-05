@@ -1729,7 +1729,7 @@ export class SnapController extends BaseController<
 
       return truncated;
     } catch (error) {
-      logError(`Error when adding snap.`, error);
+      logError(`Error when adding ${snapId}.`, error);
 
       this.#updateApproval(pendingApproval.id, {
         loading: false,
@@ -1940,7 +1940,7 @@ export class SnapController extends BaseController<
 
       return truncatedSnap;
     } catch (error) {
-      logError(`Error when updating snap,`, error);
+      logError(`Error when updating ${snapId},`, error);
 
       this.#updateApproval(pendingApproval.id, {
         loading: false,
@@ -2091,7 +2091,7 @@ export class SnapController extends BaseController<
       DEFAULT_ENDOWMENTS.length + allEndowments.length
     ) {
       logError(
-        'Duplicate endowments found. Default endowments should not be requested.',
+        `Duplicate endowments found for ${snapId}. Default endowments should not be requested.`,
         allEndowments,
       );
     }
