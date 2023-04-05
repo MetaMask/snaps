@@ -22,7 +22,7 @@ const snapHandlerMap = handlers.reduce((map, handler) => {
 export function createSnapMethodMiddleware(
   isSnap: boolean,
   hooks: Record<string, unknown>,
-): JsonRpcMiddleware<Omit<JsonRpcRequest<unknown>, 'id' | 'jsonrpc'>, any> {
+): JsonRpcMiddleware<JsonRpcRequest<unknown>, any> {
   // This is not actually a misused promise, the type is just wrong
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async function methodMiddleware(req, res, next, end) {
