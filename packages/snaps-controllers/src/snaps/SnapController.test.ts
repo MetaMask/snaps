@@ -5260,28 +5260,26 @@ describe('SnapController', () => {
   describe('SnapController:disconnectOrigin', () => {
     it('calls SnapController.removeSnapFromSubject()', () => {
       const messenger = getSnapControllerMessenger();
+      const permittedSnaps = [
+        MOCK_SNAP_ID,
+        MOCK_LOCAL_SNAP_ID,
+        'foo',
+        `${MOCK_SNAP_ID}1`,
+        `${MOCK_SNAP_ID}2`,
+        `${MOCK_SNAP_ID}3`,
+      ];
+      const snapObjects = permittedSnaps.map((snapId) =>
+        getPersistedSnapObject({ id: snapId }),
+      );
+      const snaps = getPersistedSnapsState(...snapObjects);
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
           state: {
-            snaps: getPersistedSnapsState(),
+            snaps,
           },
         }),
       );
-
-      const permissions = {
-        [WALLET_SNAP_PERMISSION_KEY]: {
-          ...MOCK_WALLET_SNAP_PERMISSION,
-          caveats: [
-            {
-              type: SnapCaveatType.SnapIds,
-              value: {
-                [MOCK_SNAP_ID]: {},
-              },
-            },
-          ],
-        },
-      };
 
       const removeSnapFromSubjectSpy = jest.spyOn(
         snapController,
@@ -5289,12 +5287,6 @@ describe('SnapController', () => {
       );
 
       const callActionSpy = jest.spyOn(messenger, 'call');
-      callActionSpy.mockImplementation((method, ..._args): any => {
-        if (method === 'PermissionController:getPermissions') {
-          return permissions;
-        }
-        return undefined;
-      });
 
       messenger.call(
         'SnapController:disconnectOrigin',
@@ -5304,9 +5296,16 @@ describe('SnapController', () => {
       expect(callActionSpy).toHaveBeenCalledTimes(3);
       expect(callActionSpy).toHaveBeenNthCalledWith(
         3,
-        'PermissionController:revokePermissions',
+        'PermissionController:updateCaveat',
+        MOCK_ORIGIN,
+        WALLET_SNAP_PERMISSION_KEY,
+        SnapCaveatType.SnapIds,
         {
-          [MOCK_ORIGIN]: [WALLET_SNAP_PERMISSION_KEY],
+          [MOCK_LOCAL_SNAP_ID]: {},
+          foo: {},
+          [`${MOCK_SNAP_ID}1`]: {},
+          [`${MOCK_SNAP_ID}2`]: {},
+          [`${MOCK_SNAP_ID}3`]: {},
         },
       );
       expect(removeSnapFromSubjectSpy).toHaveBeenCalledWith(
