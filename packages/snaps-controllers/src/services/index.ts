@@ -4,4 +4,4 @@ export * from './ProxyPostMessageStream';
 export * from './iframe';
 export * from './node';
 export * from './offscreen';
-export * from './webworker';
+export { WebWorkerExecutionService } from './webworker';

@@ -8,13 +8,16 @@ import {
 } from '@metamask/snaps-utils/test-utils';
 
 import { createService, MOCK_BLOCK_NUMBER } from '../../test-utils';
-import { WebWorkerExecutionService } from './WebWorkerExecutionService';
+import {
+  WebWorkerExecutionService,
+  WORKER_POOL_ID,
+} from './WebWorkerExecutionService';
 
 const WORKER_POOL_URL = 'http://localhost:4567/worker/pool';
 
 describe('WebWorkerExecutionService', () => {
   afterEach(() => {
-    document.getElementById('pool')?.remove();
+    document.getElementById(WORKER_POOL_ID)?.remove();
   });
 
   it('can boot', async () => {

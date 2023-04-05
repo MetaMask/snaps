@@ -17,7 +17,7 @@ type WebWorkerExecutionEnvironmentServiceArgs = {
   documentUrl: URL;
 } & ExecutionServiceArgs;
 
-const WORKER_POOL_ID = 'snaps-worker-pool';
+export const WORKER_POOL_ID = 'snaps-worker-pool';
 
 export class WebWorkerExecutionService extends AbstractExecutionService<string> {
   public readonly documentUrl: URL;
