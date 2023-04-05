@@ -29,7 +29,7 @@ When developing changes to packages within this repository that a different proj
 >
 > There is a known problem with the preview build workflow. It relies upon you having a local cache of any non-preview `@metamask/`-scoped packages.
 >
-> If you encounter problems installing non-preview `@metamask/`-scoped packages when using this workflow, you can workaround the problem by temporarily removing the `.npmrc` / `.yarnrc.yml` changes to install the missing packages. Once they are installed, restore the preview build credentials to use preview builds. The non-preview `@metamask/`-scoped packages should then be found in your local cache.
+> If you encounter problems installing non-preview `@metamask/`-scoped packages when using this workflow, you can work around the problem by temporarily removing the `.npmrc` / `.yarnrc.yml` changes to install the missing packages. Once they are installed, restore the preview build credentials to use preview builds. The non-preview `@metamask/`-scoped packages should then be found in your local cache.
 >
 > See [issue #1075](https://github.com/MetaMask/core/issues/1075) for more details.
 
