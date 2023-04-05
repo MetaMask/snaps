@@ -165,7 +165,11 @@ async function build() {
   if (worker) {
     extraOptions = {
       scuttleGlobalThis: true,
-      scuttleGlobalThisExceptions: ['postMessage', 'removeEventListener'],
+      scuttleGlobalThisExceptions: [
+        'postMessage',
+        'removeEventListener',
+        'isSecureContext',
+      ],
     };
   }
 
@@ -213,7 +217,11 @@ async function build() {
       JSON.stringify({
         // Only enable for browser builds for now due to incompatibilities
         scuttleGlobalThis: true,
-        scuttleGlobalThisExceptions: ['postMessage', 'removeEventListener'],
+        scuttleGlobalThisExceptions: [
+          'postMessage',
+          'removeEventListener',
+          'isSecureContext',
+        ],
       }),
     );
 
