@@ -5255,5 +5255,66 @@ describe('SnapController', () => {
         snapController.destroy();
       });
     });
+
+    describe('SnapController:disconnectOrigin', () => {
+      it('calls SnapController.removeSnapFromSubject()', async () => {
+        const messenger = getSnapControllerMessenger();
+        const snapController = getSnapController(
+          getSnapControllerOptions({
+            messenger,
+            state: {
+              snaps: getPersistedSnapsState(),
+            },
+          }),
+        );
+
+        const permissions = {
+          [WALLET_SNAP_PERMISSION_KEY]: {
+            ...MOCK_WALLET_SNAP_PERMISSION,
+            caveats: [
+              {
+                type: SnapCaveatType.SnapIds,
+                value: {
+                  [MOCK_SNAP_ID]: {},
+                },
+              },
+            ],
+          },
+        };
+
+        const removeSnapFromSubjectSpy = jest.spyOn(
+          snapController,
+          'removeSnapFromSubject',
+        );
+
+        const callActionSpy = jest.spyOn(messenger, 'call');
+        callActionSpy.mockImplementation((method, ..._args): any => {
+          if (method === 'PermissionController:getPermissions') {
+            return permissions;
+          }
+          return undefined;
+        });
+
+        messenger.call(
+          'SnapController:disconnectOrigin',
+          MOCK_ORIGIN,
+          MOCK_SNAP_ID,
+        );
+        expect(callActionSpy).toHaveBeenCalledTimes(3);
+        expect(callActionSpy).toHaveBeenNthCalledWith(
+          3,
+          'PermissionController:revokePermissions',
+          {
+            [MOCK_ORIGIN]: [WALLET_SNAP_PERMISSION_KEY],
+          },
+        );
+        expect(removeSnapFromSubjectSpy).toHaveBeenCalledWith(
+          MOCK_ORIGIN,
+          MOCK_SNAP_ID,
+        );
+
+        snapController.destroy();
+      });
+    });
   });
 });

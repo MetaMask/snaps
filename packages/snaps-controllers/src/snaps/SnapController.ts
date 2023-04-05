@@ -940,6 +940,11 @@ export class SnapController extends BaseController<
       `${controllerName}:getRegistryMetadata`,
       async (...args) => this.getRegistryMetadata(...args),
     );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:disconnectOrigin`,
+      (...args) => this.removeSnapFromSubject(...args),
+    );
   }
 
   #pollForLastRequestStatus() {

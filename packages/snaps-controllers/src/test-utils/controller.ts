@@ -333,6 +333,7 @@ export const getSnapControllerMessenger = (
       'SubjectMetadataController:getSubjectMetadata',
       'SnapsRegistry:get',
       'SnapsRegistry:getMetadata',
+      'SnapController:disconnectOrigin',
     ],
   });
 
