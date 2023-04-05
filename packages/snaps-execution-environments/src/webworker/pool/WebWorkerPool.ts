@@ -57,7 +57,7 @@ export class WebWorkerPool {
   }
 
   /**
-   * Handle an incoming message from the `OffscreenExecutionService`. This
+   * Handle an incoming message from the `WebWorkerExecutionService`. This
    * assumes that the message contains a `jobId` property, and a JSON-RPC
    * request in the `data` property.
    *
@@ -100,7 +100,7 @@ export class WebWorkerPool {
     }
 
     // This is a method specific to the `WebWorkerPool`, as the service itself
-    // does not have access to the iframes directly.
+    // does not have access to the workers directly.
     if (request.method === 'terminateJob') {
       this.#terminateJob(jobId);
       return;
@@ -110,7 +110,7 @@ export class WebWorkerPool {
   }
 
   /**
-   * Create a new iframe and set up a stream to communicate with it.
+   * Create a new worker and set up a stream to communicate with it.
    *
    * @param jobId - The job ID.
    * @returns The job.
@@ -132,7 +132,7 @@ export class WebWorkerPool {
   }
 
   /**
-   * Terminate the job with the given ID. This will close the iframe and delete
+   * Terminate the job with the given ID. This will close the worker and delete
    * the job from the internal job map.
    *
    * @param jobId - The job ID.
