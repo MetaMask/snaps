@@ -84,6 +84,9 @@ export class OffscreenExecutionService extends AbstractExecutionService<string> 
     const stream = new ProxyPostMessageStream({
       stream: this.#runtimeStream,
       extra: {
+        // TODO: Rather than injecting the frame URL here, we should come up
+        // with a better way to do this. The frame URL is needed to avoid hard
+        // coding it in the offscreen execution environment.
         frameUrl: this.frameUrl.toString(),
       },
       jobId,
