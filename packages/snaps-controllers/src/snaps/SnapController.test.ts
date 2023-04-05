@@ -5257,7 +5257,7 @@ describe('SnapController', () => {
     });
 
     describe('SnapController:disconnectOrigin', () => {
-      it('calls SnapController.removeSnapFromSubject()', async () => {
+      it('calls SnapController.removeSnapFromSubject()', () => {
         const messenger = getSnapControllerMessenger();
         const snapController = getSnapController(
           getSnapControllerOptions({
