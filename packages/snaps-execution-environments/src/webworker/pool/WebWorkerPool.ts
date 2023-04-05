@@ -22,7 +22,7 @@ type ExecutorJob = {
  * executing the snap.
  */
 export class WebWorkerPool {
-  readonly #poolSize = 3;
+  readonly #poolSize;
 
   readonly #stream: BasePostMessageStream;
 
@@ -43,13 +43,15 @@ export class WebWorkerPool {
       targetOrigin: '*',
     }),
     url = '../executor/bundle.js',
+    poolSize?: number,
   ) {
-    return new WebWorkerPool(stream, url);
+    return new WebWorkerPool(stream, url, poolSize);
   }
 
-  constructor(stream: BasePostMessageStream, url: string) {
+  constructor(stream: BasePostMessageStream, url: string, poolSize = 3) {
     this.#stream = stream;
     this.#url = url;
+    this.#poolSize = poolSize;
 
     this.#stream.on('data', this.#onData.bind(this));
   }
