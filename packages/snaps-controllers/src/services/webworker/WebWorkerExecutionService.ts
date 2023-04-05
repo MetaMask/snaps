@@ -20,7 +20,7 @@ type WebWorkerExecutionEnvironmentServiceArgs = {
 export const WORKER_POOL_ID = 'snaps-worker-pool';
 
 export class WebWorkerExecutionService extends AbstractExecutionService<string> {
-  public readonly documentUrl: URL;
+  #documentUrl: URL;
 
   #runtimeStream?: BasePostMessageStream;
 
@@ -45,7 +45,7 @@ export class WebWorkerExecutionService extends AbstractExecutionService<string> 
       setupSnapProvider,
     });
 
-    this.documentUrl = documentUrl;
+    this.#documentUrl = documentUrl;
   }
 
   /**
@@ -100,7 +100,7 @@ export class WebWorkerExecutionService extends AbstractExecutionService<string> 
     }
 
     const window = await createWindow(
-      this.documentUrl.href,
+      this.#documentUrl.href,
       WORKER_POOL_ID,
       false,
     );
