@@ -1,4 +1,4 @@
-import { encrypt } from '@metamask/browser-passworder';
+import { decrypt, encrypt } from '@metamask/browser-passworder';
 import {
   MOCK_LOCAL_SNAP_ID,
   MOCK_SNAP_ID,
@@ -42,6 +42,8 @@ describe('snap_manageState', () => {
         updateSnapState: jest.fn(),
         getMnemonic: jest.fn(),
         getUnlockPromise: jest.fn(),
+        encrypt,
+        decrypt,
       };
 
       expect(
@@ -80,6 +82,8 @@ describe('snap_manageState', () => {
           .fn()
           .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES),
         getUnlockPromise: jest.fn(),
+        encrypt,
+        decrypt,
       });
 
       const result = await manageStateImplementation({
@@ -105,6 +109,8 @@ describe('snap_manageState', () => {
           .fn()
           .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES),
         getUnlockPromise: jest.fn(),
+        encrypt,
+        decrypt,
       });
 
       const result = await manageStateImplementation({
@@ -130,6 +136,8 @@ describe('snap_manageState', () => {
           .fn()
           .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES),
         getUnlockPromise: jest.fn(),
+        encrypt,
+        decrypt,
       });
 
       await manageStateImplementation({
@@ -162,6 +170,8 @@ describe('snap_manageState', () => {
           .fn()
           .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES),
         getUnlockPromise: jest.fn(),
+        encrypt,
+        decrypt,
       });
 
       await manageStateImplementation({
@@ -204,6 +214,8 @@ describe('snap_manageState', () => {
           .fn()
           .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES),
         getUnlockPromise: jest.fn(),
+        encrypt,
+        decrypt,
       });
 
       await manageStateImplementation({
@@ -257,6 +269,8 @@ describe('snap_manageState', () => {
           .fn()
           .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES),
         getUnlockPromise: jest.fn(),
+        encrypt,
+        decrypt,
       });
 
       expect(async () =>
@@ -284,6 +298,8 @@ describe('snap_manageState', () => {
           .fn()
           .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES),
         getUnlockPromise: jest.fn(),
+        encrypt,
+        decrypt,
       });
 
       await expect(
@@ -312,6 +328,8 @@ describe('snap_manageState', () => {
           .fn()
           .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES),
         getUnlockPromise: jest.fn(),
+        encrypt,
+        decrypt,
       });
 
       const newState = (a: unknown) => {
@@ -349,6 +367,8 @@ describe('snap_manageState', () => {
           .fn()
           .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES),
         getUnlockPromise: jest.fn(),
+        encrypt,
+        decrypt,
       });
 
       const newState = {
