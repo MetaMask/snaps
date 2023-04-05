@@ -7,7 +7,7 @@ const MOCK_JOB_ID = 'job-id';
 const WORKER_URL = 'http://localhost:4568/worker/executor/';
 
 /**
- * Write a message to the stream, wrapped with the job ID and frame URL.
+ * Write a message to the stream, wrapped with the job ID.
  *
  * @param stream - The stream to write to.
  * @param message - The message to write.
