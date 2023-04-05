@@ -133,10 +133,11 @@ async function main() {
       bundler.transform(require('@browserify/uglifyify'), { global: true });
       bundler.plugin(require('common-shakeify'), { ecmaVersion: 2020 });
 
-      let extraOptions = {};
+      let lavamoatSecurityOptions = {};
 
-      if (worker) {
-        extraOptions = {
+      if (worker || html) {
+        lavamoatSecurityOptions = {
+          // Only enable for browser builds for now due to incompatibilities.
           scuttleGlobalThis: true,
           scuttleGlobalThisExceptions: [
             'postMessage',
@@ -162,7 +163,7 @@ async function main() {
         ),
         // Prelude is included in Node, in the browser it is inlined.
         includePrelude: node || worker,
-        ...extraOptions,
+        ...lavamoatSecurityOptions,
       });
 
       const buffer = await new Promise((resolve, reject) => {
@@ -179,23 +180,15 @@ async function main() {
       await fs.mkdir(path.dirname(bundlePath), { recursive: true });
       await fs.writeFile(bundlePath, buffer);
 
-      const lavaMoatRuntimeString = await fs.readFile(
-        require.resolve('@lavamoat/lavapack/src/runtime.js'),
-        'utf-8',
-      );
-
       if (html) {
+        const lavaMoatRuntimeString = await fs.readFile(
+          require.resolve('@lavamoat/lavapack/src/runtime.js'),
+          'utf-8',
+        );
+
         const lavaMoatRuntime = lavaMoatRuntimeString.replace(
           '__lavamoatSecurityOptions__',
-          JSON.stringify({
-            // Only enable for browser builds for now due to incompatiblities
-            scuttleGlobalThis: true,
-            scuttleGlobalThisExceptions: [
-              'postMessage',
-              'removeEventListener',
-              'isSecureContext',
-            ],
-          }),
+          JSON.stringify(lavamoatSecurityOptions),
         );
 
         const htmlFile = `
