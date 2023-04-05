@@ -9,6 +9,8 @@ module.exports = deepmerge(baseConfig, {
     './src/index.ts',
     './src/iframe/index.ts',
     './src/offscreen/index.ts',
+    './src/webworker/executor/index.ts',
+    './src/webworker/pool/index.ts',
     './src/common/test-utils',
   ],
   coverageDirectory: './coverage/jest',

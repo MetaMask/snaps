@@ -82,7 +82,7 @@
     "@metamask/eslint-config-nodejs": "^11.0.1",
     "@metamask/eslint-config-typescript": "^11.0.0",
     "@metamask/key-tree": "^7.0.0",
-    "@metamask/post-message-stream": "^6.1.1",
+    "@metamask/post-message-stream": "^6.1.2",
     "@types/jest": "^27.5.1",
     "@types/mocha": "^10.0.1",
     "@types/node": "^17.0.36",

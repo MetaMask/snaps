@@ -2996,7 +2996,7 @@ __metadata:
 
 "@lavamoat/lavapack@patch:@lavamoat/lavapack@npm%3A3.3.0#./.yarn/patches/@lavamoat-lavapack-npm-3.3.0-5a61b5374d.patch::locator=root%40workspace%3A.":
   version: 3.3.0
-  resolution: "@lavamoat/lavapack@patch:@lavamoat/lavapack@npm%3A3.3.0#./.yarn/patches/@lavamoat-lavapack-npm-3.3.0-5a61b5374d.patch::version=3.3.0&hash=96b346&locator=root%40workspace%3A."
+  resolution: "@lavamoat/lavapack@patch:@lavamoat/lavapack@npm%3A3.3.0#./.yarn/patches/@lavamoat-lavapack-npm-3.3.0-5a61b5374d.patch::version=3.3.0&hash=413755&locator=root%40workspace%3A."
   dependencies:
     JSONStream: ^1.3.5
     combine-source-map: ^0.8.0
@@ -3006,7 +3006,7 @@ __metadata:
     readable-stream: ^3.6.0
     through2: ^4.0.2
     umd: ^3.0.3
-  checksum: 1371cfcbec8358f897580b115770860677cf1e84ed72965b78f3343202a05188fd88c8030cd0b99d58102862cbcdd077b286a86a87d5fd77750c94c236359bc9
+  checksum: 95af0d750a497af6d3eb4698f6276a79654c6e0add92fd899b0224ca8cc684da98aa4920ba796b606075c5803ccf8ed4a72c6cb45c2d32831fdbc23384035f52
   languageName: node
   linkType: hard
 
@@ -3216,13 +3216,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/post-message-stream@npm:^6.1.1":
-  version: 6.1.1
-  resolution: "@metamask/post-message-stream@npm:6.1.1"
+"@metamask/post-message-stream@npm:^6.1.2":
+  version: 6.1.2
+  resolution: "@metamask/post-message-stream@npm:6.1.2"
   dependencies:
-    "@metamask/utils": ^4.0.0
+    "@metamask/utils": ^5.0.0
     readable-stream: 2.3.3
-  checksum: 588988d555ff20e0d60ed2de71e804d96963a9d4c07716901d5ae13100eb0f97c49eb6b2dbd93ac408098067c0e12cbfca90fed345fecdb69c92e852ab28c0b4
+  checksum: 3591ec9b7fd602806b07cbc0fed5075fb7a347c279c43ef1f25fbdd8634dfcad9ce192ae59457fb76554ef0bc15cbf25cfaa5875aee2d72668a273b7a6852c32
   languageName: node
   linkType: hard
 
@@ -3427,7 +3427,7 @@ __metadata:
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/object-multiplex": ^1.2.0
     "@metamask/permission-controller": ^3.1.0
-    "@metamask/post-message-stream": ^6.1.1
+    "@metamask/post-message-stream": ^6.1.2
     "@metamask/rpc-methods": "workspace:^"
     "@metamask/snaps-execution-environments": "workspace:^"
     "@metamask/snaps-registry": ^1.2.0
@@ -3515,11 +3515,12 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/object-multiplex": ^1.2.0
-    "@metamask/post-message-stream": ^6.1.1
+    "@metamask/post-message-stream": ^6.1.2
     "@metamask/providers": ^10.2.1
     "@metamask/rpc-methods": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
     "@metamask/utils": ^5.0.0
+    "@types/express": ^4.17.17
     "@types/jest": ^27.5.1
     "@types/node": ^17.0.36
     "@typescript-eslint/eslint-plugin": ^5.42.1
@@ -3555,6 +3556,7 @@ __metadata:
     lavamoat: ^6.4.0
     lavamoat-browserify: ^15.5.0
     memfs: ^3.4.13
+    nanoid: ^3.1.31
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.2.11
     process: ^0.11.10
@@ -3705,7 +3707,7 @@ __metadata:
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/key-tree": ^7.0.0
     "@metamask/permission-controller": ^3.1.0
-    "@metamask/post-message-stream": ^6.1.1
+    "@metamask/post-message-stream": ^6.1.2
     "@metamask/providers": ^10.2.1
     "@metamask/snaps-registry": ^1.2.0
     "@metamask/snaps-ui": "workspace:^"
@@ -3836,18 +3838,6 @@ __metadata:
     semver: ^7.3.8
     superstruct: ^1.0.3
   checksum: 1ebc6677bb017e4d09d4af143621fe27194d8ed815234cfd76469c3c734dc1db2ea7b577c01a2096c21c04d8c9c4d721d3035b5353fe2ded3b4737f326755e43
-  languageName: node
-  linkType: hard
-
-"@metamask/utils@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "@metamask/utils@npm:4.0.0"
-  dependencies:
-    "@types/debug": ^4.1.7
-    debug: ^4.3.4
-    semver: ^7.3.8
-    superstruct: ^1.0.3
-  checksum: 6d4edca78fe1f66504ed5e5ca021a67f4b4e0893e86484c746b87039c2161c39d3b8bd8e4b9235ddfd023b2d76dd54210af94ec5550e27bc4ad9c0d7d5f3f231
   languageName: node
   linkType: hard
 
@@ -4399,6 +4389,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/body-parser@npm:*":
+  version: 1.19.2
+  resolution: "@types/body-parser@npm:1.19.2"
+  dependencies:
+    "@types/connect": "*"
+    "@types/node": "*"
+  checksum: e17840c7d747a549f00aebe72c89313d09fbc4b632b949b2470c5cb3b1cb73863901ae84d9335b567a79ec5efcfb8a28ff8e3f36bc8748a9686756b6d5681f40
+  languageName: node
+  linkType: hard
+
 "@types/browserify@npm:*, @types/browserify@npm:^12.0.37":
   version: 12.0.37
   resolution: "@types/browserify@npm:12.0.37"
@@ -4437,6 +4437,15 @@ __metadata:
   dependencies:
     "@types/node": "*"
   checksum: d82ace5cb92f9fc91660ae1a101fa0a6b6159da59b0351c28627b24c317670267bc527f24ef4fa2c08d00404b49882ca66bf5c75d47d2b5f48d2fd85f9c2ea4d
+  languageName: node
+  linkType: hard
+
+"@types/connect@npm:*":
+  version: 3.4.35
+  resolution: "@types/connect@npm:3.4.35"
+  dependencies:
+    "@types/node": "*"
+  checksum: fe81351470f2d3165e8b12ce33542eef89ea893e36dd62e8f7d72566dfb7e448376ae962f9f3ea888547ce8b55a40020ca0e01d637fab5d99567673084542641
   languageName: node
   linkType: hard
 
@@ -4501,6 +4510,29 @@ __metadata:
   version: 1.20.4
   resolution: "@types/expect@npm:1.20.4"
   checksum: c09a9abec2c1776dd8948920dc3bad87b1206c843509d3d3002040983b1769b2e3914202a6c20b72e5c3fb5738a1ab87cb7be9d3fe9efabf2a324173b222a224
+  languageName: node
+  linkType: hard
+
+"@types/express-serve-static-core@npm:^4.17.33":
+  version: 4.17.33
+  resolution: "@types/express-serve-static-core@npm:4.17.33"
+  dependencies:
+    "@types/node": "*"
+    "@types/qs": "*"
+    "@types/range-parser": "*"
+  checksum: dce580d16b85f207445af9d4053d66942b27d0c72e86153089fa00feee3e96ae336b7bedb31ed4eea9e553c99d6dd356ed6e0928f135375d9f862a1a8015adf2
+  languageName: node
+  linkType: hard
+
+"@types/express@npm:^4.17.17":
+  version: 4.17.17
+  resolution: "@types/express@npm:4.17.17"
+  dependencies:
+    "@types/body-parser": "*"
+    "@types/express-serve-static-core": ^4.17.33
+    "@types/qs": "*"
+    "@types/serve-static": "*"
+  checksum: 0196dacc275ac3ce89d7364885cb08e7fb61f53ca101f65886dbf1daf9b7eb05c0943e2e4bbd01b0cc5e50f37e0eea7e4cbe97d0304094411ac73e1b7998f4da
   languageName: node
   linkType: hard
 
@@ -4674,6 +4706,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/mime@npm:*":
+  version: 3.0.1
+  resolution: "@types/mime@npm:3.0.1"
+  checksum: 4040fac73fd0cea2460e29b348c1a6173da747f3a87da0dbce80dd7a9355a3d0e51d6d9a401654f3e5550620e3718b5a899b2ec1debf18424e298a2c605346e7
+  languageName: node
+  linkType: hard
+
 "@types/minimatch@npm:*":
   version: 3.0.5
   resolution: "@types/minimatch@npm:3.0.5"
@@ -4748,6 +4787,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/qs@npm:*":
+  version: 6.9.7
+  resolution: "@types/qs@npm:6.9.7"
+  checksum: 7fd6f9c25053e9b5bb6bc9f9f76c1d89e6c04f7707a7ba0e44cc01f17ef5284adb82f230f542c2d5557d69407c9a40f0f3515e8319afd14e1e16b5543ac6cdba
+  languageName: node
+  linkType: hard
+
+"@types/range-parser@npm:*":
+  version: 1.2.4
+  resolution: "@types/range-parser@npm:1.2.4"
+  checksum: b7c0dfd5080a989d6c8bb0b6750fc0933d9acabeb476da6fe71d8bdf1ab65e37c136169d84148034802f48378ab94e3c37bb4ef7656b2bec2cb9c0f8d4146a95
+  languageName: node
+  linkType: hard
+
 "@types/readable-stream@npm:^2.3.15":
   version: 2.3.15
   resolution: "@types/readable-stream@npm:2.3.15"
@@ -4799,6 +4852,16 @@ __metadata:
   dependencies:
     "@types/node": "*"
   checksum: f519f83b18d7dea80f188f387a56dfe30fe944196849c470902fabf9db344c083c470f67e3362ad3f2294512950bc55924282c5c7a911ec8d507c37c6861d8ce
+  languageName: node
+  linkType: hard
+
+"@types/serve-static@npm:*":
+  version: 1.15.1
+  resolution: "@types/serve-static@npm:1.15.1"
+  dependencies:
+    "@types/mime": "*"
+    "@types/node": "*"
+  checksum: 2e078bdc1e458c7dfe69e9faa83cc69194b8896cce57cb745016580543c7ab5af07fdaa8ac1765eb79524208c81017546f66056f44d1204f812d72810613de36
   languageName: node
   linkType: hard
 

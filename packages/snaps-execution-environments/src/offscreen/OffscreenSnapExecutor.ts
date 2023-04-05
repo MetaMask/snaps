@@ -54,10 +54,19 @@ export class OffscreenSnapExecutor {
    * @param data - The message data.
    * @param data.data - The JSON-RPC request.
    * @param data.jobId - The job ID.
-   * @param data.frameUrl - The URL to load in the iframe.
+   * @param data.extra - Extra data.
+   * @param data.extra.frameUrl - The URL to load in the iframe.
    */
-  #onData(data: { data: JsonRpcRequest; jobId: string; frameUrl: string }) {
-    const { jobId, frameUrl, data: request } = data;
+  #onData(data: {
+    data: JsonRpcRequest;
+    jobId: string;
+    extra: { frameUrl: string };
+  }) {
+    const {
+      jobId,
+      extra: { frameUrl },
+      data: request,
+    } = data;
 
     if (!this.jobs[jobId]) {
       // This ensures that a job is initialized before it is used. To avoid

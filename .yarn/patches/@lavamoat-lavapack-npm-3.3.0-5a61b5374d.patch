@@ -23,7 +23,7 @@ index 97c9ddb9b76a2fe31cf9b202cb491f15232232ff..f7f66db9e16d58e2f50bae9491eae88b
 -    }
    }
  }
- 
+
 @@ -11384,7 +11384,9 @@ module.exports = {
          const descriptors = Object.getOwnPropertyDescriptors(source)
          Object.values(descriptors).forEach(desc => {
@@ -36,10 +36,10 @@ index 97c9ddb9b76a2fe31cf9b202cb491f15232232ff..f7f66db9e16d58e2f50bae9491eae88b
          })
        })
 @@ -11556,6 +11558,17 @@ module.exports = {
- 
- 
+
+
    function loadModuleData (moduleId) {
-+    if (typeof window === 'undefined' && require('node:module').isBuiltin(moduleId)) {
++    if (typeof window === 'undefined' && typeof require === 'function' && require('node:module').isBuiltin(moduleId)) {
 +      return {
 +        type: 'builtin',
 +        package: moduleId,
