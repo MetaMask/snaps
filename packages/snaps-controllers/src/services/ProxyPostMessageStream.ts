@@ -1,43 +1,43 @@
 import { BasePostMessageStream } from '@metamask/post-message-stream';
 import { JsonRpcRequest } from '@metamask/utils';
 
-export type OffscreenPostMessageStreamArgs = {
+export type ProxyPostMessageStreamArgs = {
   stream: BasePostMessageStream;
   jobId: string;
-  frameUrl: string;
+  extra?: Record<string, unknown>;
 };
 
-export type OffscreenPostMessage = {
+export type ProxyPostMessage = {
   jobId: string;
   data: JsonRpcRequest;
+  extra?: Record<string, unknown>;
 };
 
 /**
  * A post message stream that wraps messages in a job ID, before sending them
  * over the underlying stream.
  */
-export class OffscreenPostMessageStream extends BasePostMessageStream {
+export class ProxyPostMessageStream extends BasePostMessageStream {
   readonly #stream: BasePostMessageStream;
 
   readonly #jobId: string;
 
-  readonly #frameUrl: string;
+  readonly #extra?: Record<string, unknown>;
 
   /**
-   * Initializes a new `OffscreenPostMessageStream` instance.
+   * Initializes a new `ProxyPostMessageStream` instance.
    *
    * @param args - The constructor arguments.
    * @param args.stream - The underlying stream to use for communication.
    * @param args.jobId - The ID of the job this stream is associated with.
-   * @param args.frameUrl - The URL of the frame to load inside the offscreen
-   * document.
+   * @param args.extra - Extra data to include in the post message.
    */
-  constructor({ stream, jobId, frameUrl }: OffscreenPostMessageStreamArgs) {
+  constructor({ stream, jobId, extra }: ProxyPostMessageStreamArgs) {
     super();
 
     this.#stream = stream;
     this.#jobId = jobId;
-    this.#frameUrl = frameUrl;
+    this.#extra = extra;
 
     this.#stream.on('data', this.#onData.bind(this));
   }
@@ -48,7 +48,7 @@ export class OffscreenPostMessageStream extends BasePostMessageStream {
    *
    * @param data - The data to handle.
    */
-  #onData(data: OffscreenPostMessage) {
+  #onData(data: ProxyPostMessage) {
     if (data.jobId !== this.#jobId) {
       return;
     }
@@ -62,14 +62,11 @@ export class OffscreenPostMessageStream extends BasePostMessageStream {
    *
    * @param data - The data to write.
    */
-  _postMessage(data: OffscreenPostMessage) {
+  _postMessage(data: ProxyPostMessage) {
     this.#stream.write({
       jobId: this.#jobId,
-      // TODO: Rather than injecting the frame URL here, we should come up with
-      // a better way to do this. The frame URL is needed to avoid hard coding
-      // it in the offscreen execution environment.
-      frameUrl: this.#frameUrl,
       data,
+      extra: this.#extra,
     });
   }
 }

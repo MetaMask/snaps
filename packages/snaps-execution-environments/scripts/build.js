@@ -15,26 +15,31 @@ const ENTRY_POINTS = {
   offscreen: {
     entryPoint: './src/offscreen/index.ts',
     html: true,
-    node: false,
   },
   'node-thread': {
     entryPoint: './src/node-thread/index.ts',
-    html: false,
     node: true,
   },
   'node-process': {
     entryPoint: './src/node-process/index.ts',
-    html: false,
     node: true,
   },
+  'worker-executor': {
+    entryPoint: './src/webworker/executor/index.ts',
+    worker: true,
+  },
+  'worker-pool': {
+    entryPoint: './src/webworker/pool/index.ts',
+    html: true,
+  },
 };
+
 const OUTPUT_PATH = './dist/browserify';
 const OUTPUT_HTML = 'index.html';
 const OUTPUT_BUNDLE = 'bundle.js';
 
 /**
- * Builds snaps execution environments using Browserify and LavaMoat.
- *
+ * Create a worker for each entry point and wait for them to finish.
  */
 async function main() {
   const {
@@ -55,10 +60,11 @@ async function main() {
   await Promise.all(
     Object.entries(ENTRY_POINTS).map(async ([key, config]) => {
       console.log('Bundling', key);
-      const { html, entryPoint, node } = config;
+      const { html, node, worker, entryPoint } = config;
       const insertGlobalVars = node
         ? { process: undefined, ...LavaMoatBrowserify.args.insertGlobalVars }
         : LavaMoatBrowserify.args.insertGlobalVars;
+
       const bundler = browserify(entryPoint, {
         ...LavaMoatBrowserify.args,
         insertGlobalVars,
@@ -127,6 +133,20 @@ async function main() {
       bundler.transform(require('@browserify/uglifyify'), { global: true });
       bundler.plugin(require('common-shakeify'), { ecmaVersion: 2020 });
 
+      let lavamoatSecurityOptions = {};
+
+      if (worker || html) {
+        lavamoatSecurityOptions = {
+          // Only enable for browser builds for now due to incompatibilities.
+          scuttleGlobalThis: true,
+          scuttleGlobalThisExceptions: [
+            'postMessage',
+            'removeEventListener',
+            'isSecureContext',
+          ],
+        };
+      }
+
       // Add LavaMoat to wrap bundles in LavaPack
       // For Node.js builds, this also includes a prelude that contains SES and the LavaMoat runtime
       // For browser builds, the prelude is skipped and inlined in a script tag before the main bundle instead
@@ -142,7 +162,8 @@ async function main() {
           `../lavamoat/browserify/policy-override.json`,
         ),
         // Prelude is included in Node, in the browser it is inlined.
-        includePrelude: node,
+        includePrelude: node || worker,
+        ...lavamoatSecurityOptions,
       });
 
       const buffer = await new Promise((resolve, reject) => {
@@ -164,13 +185,10 @@ async function main() {
           require.resolve('@lavamoat/lavapack/src/runtime.js'),
           'utf-8',
         );
+
         const lavaMoatRuntime = lavaMoatRuntimeString.replace(
           '__lavamoatSecurityOptions__',
-          JSON.stringify({
-            // Only enable for browser builds for now due to incompatiblities
-            scuttleGlobalThis: true,
-            scuttleGlobalThisExceptions: ['postMessage', 'removeEventListener'],
-          }),
+          JSON.stringify(lavamoatSecurityOptions),
         );
 
         const htmlFile = `
