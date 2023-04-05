@@ -27,7 +27,6 @@
     "publish:preview": "yarn npm publish --tag preview"
   },
   "dependencies": {
-    "@metamask/browser-passworder": "^4.0.2",
     "@metamask/key-tree": "^7.0.0",
     "@metamask/permission-controller": "^3.1.0",
     "@metamask/snaps-ui": "workspace:^",
@@ -42,6 +41,7 @@
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.0.3",
     "@metamask/auto-changelog": "^3.1.0",
+    "@metamask/browser-passworder": "^4.0.2",
     "@metamask/eslint-config": "^11.0.0",
     "@metamask/eslint-config-jest": "^11.0.0",
     "@metamask/eslint-config-nodejs": "^11.0.1",
