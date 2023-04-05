@@ -17,6 +17,8 @@ type WebWorkerExecutionEnvironmentServiceArgs = {
   documentUrl: URL;
 } & ExecutionServiceArgs;
 
+const WORKER_POOL_ID = 'snaps-worker-pool';
+
 export class WebWorkerExecutionService extends AbstractExecutionService<string> {
   public readonly documentUrl: URL;
 
@@ -93,11 +95,16 @@ export class WebWorkerExecutionService extends AbstractExecutionService<string> 
    */
   private async createDocument() {
     // We only want to create a single pool.
-    if (document.getElementById('pool')) {
+    if (document.getElementById(WORKER_POOL_ID)) {
       return;
     }
 
-    const window = await createWindow(this.documentUrl.href, 'pool', false);
+    const window = await createWindow(
+      this.documentUrl.href,
+      WORKER_POOL_ID,
+      false,
+    );
+
     this.#runtimeStream = new WindowPostMessageStream({
       name: 'parent',
       target: 'child',
