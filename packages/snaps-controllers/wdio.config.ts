@@ -75,6 +75,24 @@ export const config: Options.Testrunner = {
             ),
           },
 
+          // The web worker execution service bundle.
+          {
+            mount: '/worker/executor',
+            path: resolve(
+              __dirname,
+              '../snaps-execution-environments/dist/browserify/worker-executor',
+            ),
+          },
+
+          // The web worker pool.
+          {
+            mount: '/worker/pool',
+            path: resolve(
+              __dirname,
+              '../snaps-execution-environments/dist/browserify/worker-pool',
+            ),
+          },
+
           // A test page used for testing the sandboxing.
           {
             mount: '/test/sandbox',

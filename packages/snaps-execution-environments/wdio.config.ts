@@ -1,6 +1,8 @@
 import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
 import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill';
 import type { Options } from '@wdio/types';
+// eslint-disable-next-line @typescript-eslint/no-shadow
+import type { Request, Response } from 'express';
 import { resolve } from 'path';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
@@ -64,10 +66,37 @@ export const config: Options.Testrunner = {
       'static-server',
       {
         port: 4568,
+        middleware: [
+          {
+            mount: '/worker/executor/',
+
+            // This is a workaround to add the `Access-Control-Allow-Origin`
+            // header to the worker bundle, which is required because it is
+            // loaded from a different origin than the test page.
+            middleware: (_: Request, response: Response) => {
+              response.setHeader('Access-Control-Allow-Origin', '*');
+
+              response.type('application/javascript');
+              response.sendFile(
+                resolve(
+                  __dirname,
+                  './dist/browserify/worker-executor/bundle.js',
+                ),
+              );
+            },
+          },
+        ],
         folders: [
+          // The iframe execution service bundle.
           {
             mount: '/',
             path: resolve(__dirname, './dist/browserify/iframe'),
+          },
+
+          // The web worker execution service bundle.
+          {
+            mount: '/worker/executor',
+            path: resolve(__dirname, './dist/browserify/worker-executor'),
           },
         ],
       },
