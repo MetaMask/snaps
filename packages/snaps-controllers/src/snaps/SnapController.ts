@@ -1,6 +1,7 @@
 import {
   AddApprovalRequest,
   UpdateRequestState,
+  SetFlowLoadingText,
 } from '@metamask/approval-controller';
 import {
   BaseControllerV2 as BaseController,
@@ -481,7 +482,8 @@ export type AllowedActions =
   | UpdateCaveat
   | UpdateRequestState
   | GetResult
-  | GetMetadata;
+  | GetMetadata
+  | SetFlowLoadingText;
 
 export type AllowedEvents = ExecutionServiceEvents;
 
@@ -1681,12 +1683,6 @@ export class SnapController extends BaseController<
       );
     }
 
-    let pendingApproval = this.#createApproval({
-      origin,
-      snapId,
-      type: SNAP_APPROVAL_INSTALL,
-    });
-
     // Existing snaps must be stopped before overwriting
     if (existingSnap && this.isRunning(snapId)) {
       await this.stopSnap(snapId, SnapStatusEvents.Stop);
@@ -1705,13 +1701,7 @@ export class SnapController extends BaseController<
         versionRange,
       });
 
-      await this.authorize(snapId, pendingApproval);
-
-      pendingApproval = this.#createApproval({
-        origin,
-        snapId,
-        type: SNAP_APPROVAL_RESULT,
-      });
+      await this.authorize(snapId);
 
       await this.#startSnap({
         snapId,
@@ -1720,9 +1710,13 @@ export class SnapController extends BaseController<
 
       const truncated = this.getTruncatedExpect(snapId);
 
-      this.#updateApproval(pendingApproval.id, {
-        loading: false,
-        type: SNAP_APPROVAL_INSTALL,
+      // Simulate delay to show loading page
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+
+      this.#createApproval({
+        origin,
+        snapId,
+        type: SNAP_APPROVAL_RESULT,
       });
 
       this.messagingSystem.publish(`SnapController:snapInstalled`, truncated);
@@ -1731,10 +1725,14 @@ export class SnapController extends BaseController<
     } catch (error) {
       logError(`Error when adding snap.`, error);
 
-      this.#updateApproval(pendingApproval.id, {
-        loading: false,
-        type: SNAP_APPROVAL_INSTALL,
-        error: error instanceof Error ? error.message : error.toString(),
+      this.#createApproval({
+        origin,
+        snapId,
+        type: SNAP_APPROVAL_RESULT,
+        requestState: {
+          loading: false,
+          error: error instanceof Error ? error.message : error.toString(),
+        },
       });
 
       throw error;
@@ -1745,10 +1743,12 @@ export class SnapController extends BaseController<
     origin,
     snapId,
     type,
+    requestState = { loading: false },
   }: {
     origin: string;
     snapId: ValidatedSnapId;
     type: string;
+    requestState?: Record<string, Json>;
   }): PendingApproval {
     const id = nanoid();
     const promise = this.messagingSystem.call(
@@ -1762,9 +1762,7 @@ export class SnapController extends BaseController<
           metadata: { id, origin: snapId, dappOrigin: origin },
           snapId,
         },
-        requestState: {
-          loading: true,
-        },
+        requestState,
       },
       true,
     );
@@ -1780,6 +1778,17 @@ export class SnapController extends BaseController<
       });
     } catch {
       // Do nothing
+    }
+  }
+
+  #setApprovalFlowLoadingText(loadingText: string | null) {
+    try {
+      this.messagingSystem.call(
+        'ApprovalController:setFlowLoadingText',
+        loadingText,
+      );
+    } catch (error) {
+      logError('Failed to set loading text', error);
     }
   }
 
@@ -2311,10 +2320,7 @@ export class SnapController extends BaseController<
    * @param pendingApproval - Pending approval to update.
    * @returns The snap's approvedPermissions.
    */
-  private async authorize(
-    snapId: SnapId,
-    pendingApproval: PendingApproval,
-  ): Promise<void> {
+  private async authorize(snapId: ValidatedSnapId): Promise<void> {
     log(`Authorizing snap: ${snapId}`);
     const snapsState = this.state.snaps;
     const snap = snapsState[snapId];
@@ -2326,10 +2332,20 @@ export class SnapController extends BaseController<
 
       this.#validateSnapPermissions(processedPermissions);
 
-      this.#updateApproval(pendingApproval.id, {
-        loading: false,
-        permissions: processedPermissions,
+      // Simulate delay to show loading page
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+
+      const pendingApproval = this.#createApproval({
+        origin,
+        snapId,
+        type: SNAP_APPROVAL_INSTALL,
+        requestState: {
+          loading: false,
+          permissions: processedPermissions,
+        },
       });
+
+      this.#setApprovalFlowLoadingText('Installing Snap');
 
       const { permissions: approvedPermissions, ...requestData } =
         (await pendingApproval.promise) as PermissionsRequest;
