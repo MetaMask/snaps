@@ -1701,7 +1701,7 @@ export class SnapController extends BaseController<
         versionRange,
       });
 
-      await this.authorize(snapId);
+      await this.authorize(snapId, origin);
 
       await this.#startSnap({
         snapId,
@@ -2317,10 +2317,13 @@ export class SnapController extends BaseController<
    * This function is not hash private yet because of tests.
    *
    * @param snapId - The id of the Snap.
-   * @param pendingApproval - Pending approval to update.
+   * @param origin
    * @returns The snap's approvedPermissions.
    */
-  private async authorize(snapId: ValidatedSnapId): Promise<void> {
+  private async authorize(
+    snapId: ValidatedSnapId,
+    origin: string,
+  ): Promise<void> {
     log(`Authorizing snap: ${snapId}`);
     const snapsState = this.state.snaps;
     const snap = snapsState[snapId];
