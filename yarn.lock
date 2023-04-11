@@ -3018,12 +3018,12 @@ __metadata:
   linkType: hard
 
 "@metamask/abi-utils@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "@metamask/abi-utils@npm:1.1.1"
+  version: 1.2.0
+  resolution: "@metamask/abi-utils@npm:1.2.0"
   dependencies:
     "@metamask/utils": ^3.4.1
     superstruct: ^1.0.3
-  checksum: 475e6ef5f91daaeed86d757f092623dfb31f492969115a2886e499f7ac91f8cccb33abda3368112f4e4c1de3b124dd8a0f48990293ca25ac1de3978796bd622d
+  checksum: 55fde5bcbc7b2b72fb469867e3f2c41fddb1b2e992c6ea846de5701ad8fa5fcc66701facf1df793f8f58b8befcaa3c21a5e5519e839cc6fd5a3932806db7a5d5
   languageName: node
   linkType: hard
 
