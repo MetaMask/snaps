@@ -3018,12 +3018,12 @@ __metadata:
   linkType: hard
 
 "@metamask/abi-utils@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "@metamask/abi-utils@npm:1.1.1"
+  version: 1.2.0
+  resolution: "@metamask/abi-utils@npm:1.2.0"
   dependencies:
     "@metamask/utils": ^3.4.1
     superstruct: ^1.0.3
-  checksum: 475e6ef5f91daaeed86d757f092623dfb31f492969115a2886e499f7ac91f8cccb33abda3368112f4e4c1de3b124dd8a0f48990293ca25ac1de3978796bd622d
+  checksum: 55fde5bcbc7b2b72fb469867e3f2c41fddb1b2e992c6ea846de5701ad8fa5fcc66701facf1df793f8f58b8befcaa3c21a5e5519e839cc6fd5a3932806db7a5d5
   languageName: node
   linkType: hard
 
@@ -3842,15 +3842,15 @@ __metadata:
   linkType: hard
 
 "@metamask/utils@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "@metamask/utils@npm:5.0.0"
+  version: 5.0.1
+  resolution: "@metamask/utils@npm:5.0.1"
   dependencies:
     "@ethereumjs/tx": ^4.1.1
     "@types/debug": ^4.1.7
     debug: ^4.3.4
     semver: ^7.3.8
     superstruct: ^1.0.3
-  checksum: 34e39fc0bf28db5fe92676753de3291b05a517f8c81dbe332a4b6002739a58450a89fb2bddd85922a4f420affb1674604e6ad4627cdf052459e5371361ef7dd2
+  checksum: 29745bd3d2db06bf66263bdec04e93a8f417c46c69d8054149c0046ed54b5f13d26d94a998fff1a31b5a8e7a2200935bfc8392a5fa3c4261e3cecd3ccdd9ddc0
   languageName: node
   linkType: hard
 
