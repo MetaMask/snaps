@@ -866,7 +866,7 @@
         "@babel/core>@babel/helper-compilation-targets": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
         "@babel/preset-env>babel-plugin-polyfill-corejs2>@babel/helper-define-polyfill-provider>lodash.debounce": true,
-        "vite>resolve": true
+        "lavamoat>resolve": true
       }
     },
     "@babel/preset-env>babel-plugin-polyfill-corejs2>@babel/helper-define-polyfill-provider>lodash.debounce": {
@@ -1053,7 +1053,7 @@
         "babel-plugin-tsconfig-paths-module-resolver>babel-plugin-module-resolver>pkg-up": true,
         "babel-plugin-tsconfig-paths-module-resolver>babel-plugin-module-resolver>reselect": true,
         "browserify>glob": true,
-        "vite>resolve": true
+        "lavamoat>resolve": true
       }
     },
     "babel-plugin-tsconfig-paths-module-resolver>babel-plugin-module-resolver>find-babel-config": {
@@ -1068,14 +1068,8 @@
         "process.cwd": true
       },
       "packages": {
-        "babel-plugin-tsconfig-paths-module-resolver>babel-plugin-module-resolver>find-babel-config>json5": true,
-        "babel-plugin-tsconfig-paths-module-resolver>babel-plugin-module-resolver>find-babel-config>path-exists": true
-      }
-    },
-    "babel-plugin-tsconfig-paths-module-resolver>babel-plugin-module-resolver>find-babel-config>path-exists": {
-      "builtin": {
-        "fs.access": true,
-        "fs.accessSync": true
+        "@babel/core>json5": true,
+        "eslint>find-up>path-exists": true
       }
     },
     "babel-plugin-tsconfig-paths-module-resolver>babel-plugin-module-resolver>pkg-up": {
@@ -1203,7 +1197,7 @@
         "browserify>through2": true,
         "browserify>xtend": true,
         "lavamoat>htmlescape": true,
-        "vite>resolve": true
+        "lavamoat>resolve": true
       }
     },
     "browserify>JSONStream": {
@@ -1306,7 +1300,7 @@
         "process.platform": true
       },
       "packages": {
-        "vite>resolve": true
+        "lavamoat>resolve": true
       }
     },
     "browserify>cached-path-relative": {
@@ -1674,7 +1668,7 @@
         "browserify>module-deps>through2": true,
         "browserify>parents": true,
         "browserify>xtend": true,
-        "vite>resolve": true
+        "lavamoat>resolve": true
       }
     },
     "browserify>module-deps>concat-stream": {
@@ -1977,6 +1971,13 @@
         "eslint>debug>ms": true
       }
     },
+    "eslint>find-up>path-exists": {
+      "builtin": {
+        "fs.access": true,
+        "fs.accessSync": true,
+        "util.promisify": true
+      }
+    },
     "eslint>strip-ansi": {
       "packages": {
         "eslint>strip-ansi>ansi-regex": true
@@ -2118,7 +2119,7 @@
         "performantResolve": true
       },
       "packages": {
-        "vite>resolve": true
+        "lavamoat>resolve": true
       }
     },
     "lavamoat>json-stable-stringify": {
@@ -2220,6 +2221,45 @@
         "@babel/core>@babel/traverse": true
       }
     },
+    "lavamoat>resolve": {
+      "builtin": {
+        "fs.readFile": true,
+        "fs.readFileSync": true,
+        "fs.realpath": true,
+        "fs.realpathSync": true,
+        "fs.stat": true,
+        "fs.statSync": true,
+        "os.homedir": true,
+        "path.dirname": true,
+        "path.join": true,
+        "path.parse": true,
+        "path.relative": true,
+        "path.resolve": true
+      },
+      "globals": {
+        "process.env.HOME": true,
+        "process.env.HOMEDRIVE": true,
+        "process.env.HOMEPATH": true,
+        "process.env.LNAME": true,
+        "process.env.LOGNAME": true,
+        "process.env.USER": true,
+        "process.env.USERNAME": true,
+        "process.env.USERPROFILE": true,
+        "process.getuid": true,
+        "process.nextTick": true,
+        "process.platform": true,
+        "process.versions.pnp": true
+      },
+      "packages": {
+        "eslint-plugin-import>is-core-module": true,
+        "lavamoat>resolve>path-parse": true
+      }
+    },
+    "lavamoat>resolve>path-parse": {
+      "globals": {
+        "process.platform": true
+      }
+    },
     "pump>end-of-stream": {
       "globals": {
         "process.nextTick": true
@@ -2319,45 +2359,6 @@
     "terser>source-map-support>buffer-from": {
       "globals": {
         "Buffer": true
-      }
-    },
-    "vite>resolve": {
-      "builtin": {
-        "fs.readFile": true,
-        "fs.readFileSync": true,
-        "fs.realpath": true,
-        "fs.realpathSync": true,
-        "fs.stat": true,
-        "fs.statSync": true,
-        "os.homedir": true,
-        "path.dirname": true,
-        "path.join": true,
-        "path.parse": true,
-        "path.relative": true,
-        "path.resolve": true
-      },
-      "globals": {
-        "process.env.HOME": true,
-        "process.env.HOMEDRIVE": true,
-        "process.env.HOMEPATH": true,
-        "process.env.LNAME": true,
-        "process.env.LOGNAME": true,
-        "process.env.USER": true,
-        "process.env.USERNAME": true,
-        "process.env.USERPROFILE": true,
-        "process.getuid": true,
-        "process.nextTick": true,
-        "process.platform": true,
-        "process.versions.pnp": true
-      },
-      "packages": {
-        "eslint-plugin-import>is-core-module": true,
-        "vite>resolve>path-parse": true
-      }
-    },
-    "vite>resolve>path-parse": {
-      "globals": {
-        "process.platform": true
       }
     },
     "yargs": {
