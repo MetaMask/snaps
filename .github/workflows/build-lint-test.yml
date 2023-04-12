@@ -126,6 +126,8 @@ jobs:
         package-name: ${{ fromJson(needs.prepare.outputs.child-workspace-package-names) }}
     steps:
       - uses: actions/checkout@v3
+      - name: Install Google Chrome
+        run: yarn install-chrome
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:

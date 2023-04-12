@@ -28,7 +28,8 @@
     "test:prepare": "yarn workspace @metamask/snaps-execution-environments run build:test",
     "child-workspace-package-names-as-json": "ts-node scripts/child-workspace-package-names-as-json.ts",
     "prepare-preview-builds": "yarn workspaces foreach --parallel run prepare-manifest:preview",
-    "publish-previews": "yarn workspaces foreach --parallel run publish:preview"
+    "publish-previews": "yarn workspaces foreach --parallel run publish:preview",
+    "install-chrome": "./scripts/install-chrome.sh"
   },
   "simple-git-hooks": {
     "pre-commit": "yarn lint-staged && yarn dedupe --check"
