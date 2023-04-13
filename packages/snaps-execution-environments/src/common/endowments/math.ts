@@ -23,7 +23,7 @@ function createMath() {
     return { ...target, [key]: rootRealmGlobal.Math[key] };
   }, {});
 
-  // Since the math endowment requires crypto, we can leverage the crypto endowment factory to get a hardened (and potentially) polyfilled instance of webcrypto
+  // Since the math endowment requires crypto, we can leverage the crypto endowment factory to get a hardened and platform agnostic instance of webcrypto
   const { crypto: hardenedCrypto } = createCrypto();
 
   return harden({
