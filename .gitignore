@@ -75,3 +75,6 @@ typings/
 
 # Webpack generated files
 packages/examples/examples/webpack/index.html
+
+# Ubuntu package files
+.deb
