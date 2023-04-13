@@ -1,11 +1,13 @@
 {
   "name": "cronjob-snap",
   "version": "0.32.2",
+  "private": true,
   "description": "MetaMask Cronjob Test Snap",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/test-snaps.git"
+    "url": "https://github.com/MetaMask/snaps-monorepo.git"
   },
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
