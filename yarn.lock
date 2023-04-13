@@ -8360,6 +8360,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "cronjob-snap@workspace:packages/examples/examples/cronjob"
   dependencies:
+    "@metamask/auto-changelog": ^3.1.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
     "@metamask/eslint-config-nodejs": ^11.0.1
