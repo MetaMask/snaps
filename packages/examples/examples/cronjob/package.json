@@ -1,6 +1,6 @@
 {
   "name": "cronjob-snap",
-  "version": "1.0.0",
+  "version": "0.32.2",
   "description": "MetaMask Cronjob Test Snap",
   "repository": {
     "type": "git",
