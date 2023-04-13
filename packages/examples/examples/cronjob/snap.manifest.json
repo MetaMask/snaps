@@ -4,10 +4,10 @@
   "proposedName": "MetaMask Cronjob Snap Example",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/test-snaps.git"
+    "url": "https://github.com/MetaMask/snaps-monorepo.git"
   },
   "source": {
-    "shasum": "hI1IYONPHYC32ls8uRtmuddal2HQYOIJXy3GAvfD5pk=",
+    "shasum": "jazhnrSl1gpeawXBIdz2I2/lc+kmKc3tVsFUpypAhAE=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
