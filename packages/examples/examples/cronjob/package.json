@@ -1,0 +1,65 @@
+{
+  "name": "cronjob-snap",
+  "version": "1.0.0",
+  "description": "MetaMask Cronjob Test Snap",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/test-snaps.git"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/",
+    "snap.manifest.json",
+    "images/icon.svg"
+  ],
+  "scripts": {
+    "build": "mm-snap build --eval false",
+    "build:dev": "yarn build",
+    "build:clean": "yarn clean && yarn build",
+    "clean": "rimraf 'dist/*'",
+    "start": "mm-snap watch",
+    "serve": "mm-snap serve",
+    "test": "jest --passWithNoTests",
+    "test:watch": "jest --watch",
+    "lint:eslint": "eslint . --cache --ext js,ts",
+    "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' '**/*.yml' --single-quote --ignore-path ../../.prettierignore --no-error-on-unmatched-pattern",
+    "lint": "yarn lint:eslint && yarn lint:misc --check",
+    "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
+    "lint:changelog": "yarn auto-changelog validate"
+  },
+  "dependencies": {
+    "@metamask/snaps-types": "^0.30.0",
+    "@metamask/snaps-ui": "^0.30.0"
+  },
+  "devDependencies": {
+    "@metamask/auto-changelog": "^2.5.0",
+    "@metamask/eslint-config": "^6.0.0",
+    "@metamask/eslint-config-jest": "^6.0.0",
+    "@metamask/eslint-config-nodejs": "^6.0.0",
+    "@metamask/eslint-config-typescript": "^6.0.0",
+    "@metamask/snaps-cli": "^0.30.0",
+    "@types/jest": "^26.0.13",
+    "@typescript-eslint/eslint-plugin": "^5.19.0",
+    "@typescript-eslint/parser": "^5.19.0",
+    "eslint": "^7.30.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-jest": "^24.4.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "jest": "^26.4.2",
+    "prettier": "^2.2.1",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^26.3.0",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.4.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

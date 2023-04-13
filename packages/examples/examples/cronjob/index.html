@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Cronjob Snap Example</title>
+  <link rel="icon" type="image/svg" href="./images/icon.svg" />
+  <style>
+    body {
+      background-color: #121212;
+      color: #fff;
+      font-size: 1rem;
+      font-family: Tahoma, Verdana, Segoe, sans-serif;
+    }
+    h1 { color: #6F4CFF; }
+    button {
+      font-size: 1.4rem;
+      border-radius: 8px;
+      background-color: #FFFFFF;
+      color: #24272A;
+      border: 1px solid #FFFFFF;
+      font-weight: bold;
+      padding: 1rem;
+      min-height: 3rem;
+      cursor: pointer;
+      -webkit-transition: all .2s ease-in-out;
+      transition: all .2s ease-in-out;
+    }
+    button:hover {
+      background-color: transparent;
+      border: 1px solid #FFFFFF;
+      color: #FFFFFF;
+    }
+    code { background: #2c2c2c; padding: 2px; border-radius: 5px; }
+    .button-content { display: flex; justify-content: center; align-items: center; }
+    .main-content { padding: 48px; max-width: 820px; }
+    .connect-button-wrapper { display: flex; justify-content: center; }
+  </style>
+</head>
+
+<body>
+<div class='main-content'>
+  <h1>&#9201; Cronjob Snap Example</h1>
+  <details open>
+    <summary>Instructions</summary>
+    <ul>
+      <li>First, click "Connect" and install the snap!</li>
+      <li>Wait around minute for the cronjob to be triggered, and you'll see a message popup!</li>
+      <li>Please note that:</li>
+      <ul>
+        <li>
+          The <code>snap.manifest.json</code> and
+          <code>package.json</code> must be located in the server root
+          directory..
+        </li>
+        <li>
+          The Snap bundle must be hosted at the location specified by the
+          <code>location</code> field of <code>snap.manifest.json</code>.
+        </li>
+        <li>
+          Cronjob is configured within <code>initialPermissions: { endowment:cronjob: {...} }</code>
+          field of <code>snap.manifest.json</code>.
+        </li>
+      </ul>
+    </ul>
+  </details>
+  <br />
+  <div class='connect-button-wrapper'>
+    <button class="connect">
+      <span class="button-content">
+        <img alt="snap-icon" src='images/icon.svg'>&nbsp;
+        Connect and Install
+      </span>
+    </button>
+  </div>
+</div>
+</body>
+
+<script>
+  const snapId = `local:${window.location.href}`;
+  const connectButton = document.querySelector('button.connect');
+  connectButton.addEventListener('click', connect);
+
+  // Request permissions and install the snap
+  async function connect() {
+    await ethereum.request({
+      method: 'wallet_requestSnaps',
+      params: {
+        [snapId]: {},
+      },
+    });
+  }
+</script>
+</html>
