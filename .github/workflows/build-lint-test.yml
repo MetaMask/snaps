@@ -138,6 +138,8 @@ jobs:
             packages/snaps-execution-environments/dist/browserify
           key: test-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
       - run: yarn --immutable --immutable-cache
+      - name: Install Google Chrome
+        run: yarn install-chrome
       - run: yarn workspace ${{ matrix.package-name }} run test:ci
       - name: Get coverage folder
         id: get-coverage-folder
