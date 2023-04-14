@@ -13,7 +13,6 @@ import {
   assertStruct,
 } from '@metamask/utils';
 import { base64 } from '@scure/base';
-import { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import stableStringify from 'fast-json-stable-stringify';
 import {
   empty,
@@ -165,9 +164,7 @@ export type TruncatedSnapFields =
  */
 export type TruncatedSnap = Pick<Snap, TruncatedSnapFields>;
 
-export type ProcessSnapResult =
-  | TruncatedSnap
-  | { error: SerializedEthereumRpcError };
+export type ProcessSnapResult = TruncatedSnap;
 
 export type InstallSnapsResult = Record<SnapId, ProcessSnapResult>;
 

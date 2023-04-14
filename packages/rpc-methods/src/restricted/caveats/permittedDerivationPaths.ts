@@ -3,13 +3,13 @@ import {
   PermissionConstraint,
   RestrictedMethodCaveatSpecificationConstraint,
 } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import {
   SnapCaveatType,
   Bip32Entropy,
   Bip32EntropyStruct,
 } from '@metamask/snaps-utils';
 import { Json, assertStruct } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
 import { array, size, type } from 'superstruct';
 
 import { isEqual } from '../../utils';
@@ -51,7 +51,7 @@ export function validateBIP32Path(
     value,
     Bip32EntropyStruct,
     'Invalid BIP-32 entropy path definition',
-    ethErrors.rpc.invalidParams,
+    rpcErrors.invalidParams,
   );
 }
 
@@ -69,7 +69,7 @@ export function validateBIP32CaveatPaths(
     caveat,
     type({ value: size(array(Bip32EntropyStruct), 1, Infinity) }),
     'Invalid BIP-32 entropy caveat',
-    ethErrors.rpc.internal,
+    rpcErrors.internal,
   );
 }
 

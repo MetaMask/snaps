@@ -1,9 +1,9 @@
+import { rpcErrors } from '@metamask/rpc-errors';
 import {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
   JsonRpcRequest,
 } from '@metamask/types';
-import { ethErrors } from 'eth-rpc-errors';
 
 import { getValidatedParams, invokeSnapSugar } from './invokeSnapSugar';
 
@@ -49,7 +49,7 @@ describe('wallet_invokeSnap', () => {
       invokeSnapSugar(req, _res, next, end);
 
       expect(end).toHaveBeenCalledWith(
-        ethErrors.rpc.invalidParams({
+        rpcErrors.invalidParams({
           message: 'Must specify a valid snap ID.',
         }),
       );

@@ -1,6 +1,6 @@
+import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { SnapRpcHookArgs } from '@metamask/snaps-utils';
 import { MockControllerMessenger } from '@metamask/snaps-utils/test-utils';
-import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import pump from 'pump';
 

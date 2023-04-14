@@ -1,6 +1,6 @@
+import { JsonRpcMiddleware } from '@metamask/json-rpc-engine';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { logError } from '@metamask/snaps-utils';
-import { ethErrors } from 'eth-rpc-errors';
-import { JsonRpcMiddleware } from 'json-rpc-engine';
 
 import { selectHooks } from '../utils';
 import { methodHandlers } from './handlers';
@@ -23,7 +23,7 @@ export function createSnapsMethodMiddleware(
       methodHandlers[request.method as keyof typeof methodHandlers];
     if (handler) {
       if (request.method.startsWith('snap_') && !isSnap) {
-        return end(ethErrors.rpc.methodNotFound());
+        return end(rpcErrors.methodNotFound());
       }
 
       // TODO: Once json-rpc-engine types are up to date, we should type this correctly

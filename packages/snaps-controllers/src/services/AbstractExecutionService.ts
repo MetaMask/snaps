@@ -1,3 +1,4 @@
+import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { BasePostMessageStream } from '@metamask/post-message-stream';
 import {
@@ -12,13 +13,9 @@ import {
   isObject,
   Json,
   JsonRpcNotification,
-} from '@metamask/utils';
-import {
-  JsonRpcEngine,
-  // TODO: Replace with @metamask/utils version after bumping json-rpc-engine
   JsonRpcRequest,
   PendingJsonRpcResponse,
-} from 'json-rpc-engine';
+} from '@metamask/utils';
 import { createStreamMiddleware } from 'json-rpc-middleware-stream';
 import { nanoid } from 'nanoid';
 import pump from 'pump';
@@ -230,7 +227,7 @@ export abstract class AbstractExecutionService<WorkerType>
     // Also keep track of outbound request/responses
     const notificationHandler = (
       message:
-        | JsonRpcRequest<unknown>
+        | JsonRpcRequest
         | JsonRpcNotification<Json[] | Record<string, Json>>,
     ) => {
       if (!isJsonRpcNotification(message)) {
@@ -364,7 +361,7 @@ export abstract class AbstractExecutionService<WorkerType>
   // Cannot be hash private yet because of tests.
   private async command(
     jobId: string,
-    message: JsonRpcRequest<unknown>,
+    message: JsonRpcRequest,
   ): Promise<unknown> {
     if (typeof message !== 'object') {
       throw new Error('Must send object.');
@@ -376,8 +373,9 @@ export abstract class AbstractExecutionService<WorkerType>
     }
 
     log('Parent: Sending Command', message);
-    const response: PendingJsonRpcResponse<unknown> =
-      await job.rpcEngine.handle(message);
+    const response: PendingJsonRpcResponse<Json> = await job.rpcEngine.handle(
+      message,
+    );
     if (response.error) {
       throw new Error(response.error.message);
     }

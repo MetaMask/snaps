@@ -4,6 +4,7 @@ import {
   RestrictedMethodOptions,
   ValidPermissionSpecification,
 } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { STATE_ENCRYPTION_MAGIC_VALUE } from '@metamask/snaps-utils';
 import {
   Json,
@@ -14,7 +15,6 @@ import {
   isValidJson,
   Hex,
 } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
 
 import { deriveEntropy, EnumToUnion, MethodHooksObject } from '../utils';
 
@@ -229,7 +229,7 @@ async function decryptState({
 
     return decryptedState as Record<string, Json>;
   } catch {
-    throw ethErrors.rpc.internal({
+    throw rpcErrors.internal({
       message: 'Failed to decrypt snap state, the state must be corrupted.',
     });
   }
@@ -311,7 +311,7 @@ export function getManageStateImplementation({
       }
 
       default:
-        throw ethErrors.rpc.invalidParams(
+        throw rpcErrors.invalidParams(
           `Invalid ${method} operation: "${operation as string}"`,
         );
     }
@@ -333,7 +333,7 @@ export function getValidatedParams(
   storageSizeLimit = STORAGE_SIZE_LIMIT,
 ): ManageStateArgs {
   if (!isObject(params)) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: 'Expected params to be a single object.',
     });
   }
@@ -345,14 +345,14 @@ export function getValidatedParams(
     typeof operation !== 'string' ||
     !(Object.values(ManageStateOperation) as string[]).includes(operation)
   ) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: 'Must specify a valid manage state "operation".',
     });
   }
 
   if (operation === ManageStateOperation.UpdateState) {
     if (!isObject(newState)) {
-      throw ethErrors.rpc.invalidParams({
+      throw rpcErrors.invalidParams({
         message: `Invalid ${method} "updateState" parameter: The new state must be a plain object.`,
         data: {
           receivedNewState:
@@ -366,7 +366,7 @@ export function getValidatedParams(
       // `getJsonSize` will throw if the state is not JSON serializable.
       size = getJsonSize(newState);
     } catch {
-      throw ethErrors.rpc.invalidParams({
+      throw rpcErrors.invalidParams({
         message: `Invalid ${method} "updateState" parameter: The new state must be JSON serializable.`,
         data: {
           receivedNewState:
@@ -376,7 +376,7 @@ export function getValidatedParams(
     }
 
     if (size > storageSizeLimit) {
-      throw ethErrors.rpc.invalidParams({
+      throw rpcErrors.invalidParams({
         message: `Invalid ${method} "updateState" parameter: The new state must not exceed ${storageSizeLimit} bytes in size.`,
         data: {
           receivedNewState:

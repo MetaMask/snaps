@@ -4,8 +4,8 @@ import {
   RestrictedMethodOptions,
   ValidPermissionSpecification,
 } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { NonEmptyArray, isObject } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
 
 import { EnumToUnion, MethodHooksObject } from '../utils';
 
@@ -124,7 +124,7 @@ export function getImplementation({
       case NotificationType.InApp:
         return await showInAppNotification(origin, validatedParams);
       default:
-        throw ethErrors.rpc.invalidParams({
+        throw rpcErrors.invalidParams({
           message: 'Must specify a valid notification "type".',
         });
     }
@@ -140,7 +140,7 @@ export function getImplementation({
  */
 export function getValidatedParams(params: unknown): NotificationArgs {
   if (!isObject(params)) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: 'Expected params to be a single object.',
     });
   }
@@ -152,14 +152,14 @@ export function getValidatedParams(params: unknown): NotificationArgs {
     typeof type !== 'string' ||
     !Object.values(NotificationType).includes(type as NotificationType)
   ) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: 'Must specify a valid notification "type".',
     });
   }
 
   // Set to the max message length on a Mac notification for now.
   if (!message || typeof message !== 'string' || message.length >= 50) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message:
         'Must specify a non-empty string "message" less than 50 characters long.',
     });

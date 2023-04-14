@@ -3,6 +3,7 @@ import {
   RequestedPermissions,
   Caveat,
 } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import {
   SnapCaveatType,
   SnapsPermissionRequest,
@@ -15,7 +16,6 @@ import {
   JsonRpcEngineEndCallback,
 } from '@metamask/types';
 import { hasProperty, isObject, Json } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
 
 import { WALLET_SNAP_PERMISSION_KEY } from '../restricted/invokeSnap';
 import { MethodHooksObject } from '../utils';
@@ -176,7 +176,7 @@ async function requestSnapsImplementation(
   const requestedSnaps = req.params;
   if (!isObject(requestedSnaps)) {
     return end(
-      ethErrors.rpc.invalidParams({
+      rpcErrors.invalidParams({
         message: '"params" must be an object.',
       }),
     );

@@ -1,10 +1,10 @@
 // @ts-expect-error Walker has no types yet.
 import LavaTube from '@lavamoat/lavatube';
+import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { StreamProvider } from '@metamask/providers';
 import { RequestArguments } from '@metamask/providers/dist/BaseProvider';
 import { SNAP_STREAM_NAMES } from '@metamask/snaps-utils';
-import { createIdRemapMiddleware } from 'json-rpc-engine';
 
 import {
   assertEthereumOutboundRequest,

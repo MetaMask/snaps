@@ -6,13 +6,13 @@ import {
   RestrictedMethodOptions,
   ValidPermissionSpecification,
 } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import {
   bip32entropy,
   Bip32PathStruct,
   SnapCaveatType,
 } from '@metamask/snaps-utils';
 import { NonEmptyArray, assertStruct } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
 import { boolean, enums, object, optional } from 'superstruct';
 
 import { MethodHooksObject } from '../utils';
@@ -83,7 +83,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
         caveats?.length !== 1 ||
         caveats[0].type !== SnapCaveatType.PermittedDerivationPaths
       ) {
-        throw ethErrors.rpc.invalidParams({
+        throw rpcErrors.invalidParams({
           message: `Expected a single "${SnapCaveatType.PermittedDerivationPaths}" caveat.`,
         });
       }
@@ -125,7 +125,7 @@ export function getBip32PublicKeyImplementation({
       args.params,
       Bip32PublicKeyArgsStruct,
       'Invalid BIP-32 public key params',
-      ethErrors.rpc.invalidParams,
+      rpcErrors.invalidParams,
     );
 
     const { params } = args;

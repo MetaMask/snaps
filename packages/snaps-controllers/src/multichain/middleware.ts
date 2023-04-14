@@ -1,16 +1,15 @@
 import {
+  createAsyncMiddleware,
+  JsonRpcMiddleware,
+} from '@metamask/json-rpc-engine';
+import {
   assertIsConnectArguments,
   assertIsMultiChainRequest,
   ConnectArguments,
   Session,
   MultiChainRequest,
 } from '@metamask/snaps-utils';
-import { assert } from '@metamask/utils';
-import {
-  createAsyncMiddleware,
-  JsonRpcMiddleware,
-  JsonRpcRequest,
-} from 'json-rpc-engine';
+import { JsonRpcRequest, assert } from '@metamask/utils';
 
 /**
  * Creates a middleware that handles requests to the multichain controller.
@@ -29,12 +28,11 @@ export function createMultiChainMiddleware({
     requestedNamespaces: ConnectArguments,
   ) => Promise<Session>;
   onRequest: (origin: string, data: MultiChainRequest) => Promise<unknown>;
-}): JsonRpcMiddleware<Omit<JsonRpcRequest<unknown>, 'id' | 'jsonrpc'>, any> {
+}): JsonRpcMiddleware<Omit<JsonRpcRequest, 'id' | 'jsonrpc'>, any> {
   return createAsyncMiddleware(async function middleware(req, res, next) {
     // This is added by other middleware
-    const { origin, params: unwrapped } = req as JsonRpcRequest<
-      JsonRpcRequest<unknown>
-    > & { origin: string };
+    const { origin, params: unwrapped } =
+      req as JsonRpcRequest<JsonRpcRequest> & { origin: string };
     if (req.method !== 'wallet_multiChainRequestHack') {
       await next();
       return;

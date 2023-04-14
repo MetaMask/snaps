@@ -11,9 +11,9 @@ import {
   RestrictedMethodOptions,
   ValidPermissionSpecification,
 } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { Bip32Entropy, SnapCaveatType } from '@metamask/snaps-utils';
 import { NonEmptyArray, assert } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
 
 import { MethodHooksObject } from '../utils';
 
@@ -69,7 +69,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
         caveats?.length !== 1 ||
         caveats[0].type !== SnapCaveatType.PermittedDerivationPaths
       ) {
-        throw ethErrors.rpc.invalidParams({
+        throw rpcErrors.invalidParams({
           message: `Expected a single "${SnapCaveatType.PermittedDerivationPaths}" caveat.`,
         });
       }

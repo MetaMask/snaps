@@ -21,7 +21,7 @@
     "serve": "mm-snap serve"
   },
   "dependencies": {
-    "eth-rpc-errors": "^4.0.3"
+    "@metamask/rpc-errors": "^5.0.0"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.0.3",

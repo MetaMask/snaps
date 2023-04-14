@@ -8,6 +8,7 @@ import {
   PermissionValidatorConstraint,
   ValidPermissionSpecification,
 } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import {
   assertIsRpcOrigins,
   RpcOrigins,
@@ -20,7 +21,6 @@ import {
   NonEmptyArray,
   assert,
 } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
 
 import { SnapEndowments } from './enum';
 
@@ -58,7 +58,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
         caveats?.length !== 1 ||
         caveats[0].type !== SnapCaveatType.RpcOrigin
       ) {
-        throw ethErrors.rpc.invalidParams({
+        throw rpcErrors.invalidParams({
           message: `Expected a single "${SnapCaveatType.RpcOrigin}" caveat.`,
         });
       }
@@ -80,13 +80,13 @@ export const rpcEndowmentBuilder = Object.freeze({
  */
 function validateCaveatOrigins(caveat: Caveat<string, any>) {
   if (!hasProperty(caveat, 'value') || !isPlainObject(caveat.value)) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: 'Invalid JSON-RPC origins: Expected a plain object.',
     });
   }
 
   const { value } = caveat;
-  assertIsRpcOrigins(value, ethErrors.rpc.invalidParams);
+  assertIsRpcOrigins(value, rpcErrors.invalidParams);
 }
 
 /**

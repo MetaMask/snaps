@@ -6,6 +6,7 @@ import {
   PermissionValidatorConstraint,
   PermissionSideEffect,
 } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import {
   Snap,
   SnapId,
@@ -16,7 +17,6 @@ import {
   InstallSnapsResult,
 } from '@metamask/snaps-utils';
 import { isJsonRpcRequest, Json, NonEmptyArray } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
 import { nanoid } from 'nanoid';
 
 import { MethodHooksObject } from '../utils';
@@ -129,7 +129,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
     methodImplementation: getInvokeSnapImplementation(methodHooks),
     validator: ({ caveats }) => {
       if (caveats?.length !== 1 || caveats[0].type !== SnapCaveatType.SnapIds) {
-        throw ethErrors.rpc.invalidParams({
+        throw rpcErrors.invalidParams({
           message: `Expected a single "${SnapCaveatType.SnapIds}" caveat.`,
         });
       }
@@ -178,14 +178,14 @@ export function getInvokeSnapImplementation({
     };
 
     if (!isJsonRpcRequest(rpcRequest)) {
-      throw ethErrors.rpc.invalidParams({
+      throw rpcErrors.invalidParams({
         message:
           'Must specify a valid JSON-RPC request object as single parameter.',
       });
     }
 
     if (!getSnap(snapId)) {
-      throw ethErrors.rpc.invalidRequest({
+      throw rpcErrors.invalidRequest({
         message: `The snap "${snapId}" is not installed. Please install it first, before invoking the snap.`,
       });
     }

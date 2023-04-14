@@ -8,6 +8,7 @@ import {
   PermissionValidatorConstraint,
   ValidPermissionSpecification,
 } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import {
   assertIsNamespacesObject,
   Namespaces,
@@ -20,7 +21,6 @@ import {
   NonEmptyArray,
   assert,
 } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
 
 import { SnapEndowments } from './enum';
 
@@ -58,7 +58,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
         caveats?.length !== 1 ||
         caveats[0].type !== SnapCaveatType.SnapKeyring
       ) {
-        throw ethErrors.rpc.invalidParams({
+        throw rpcErrors.invalidParams({
           message: `Expected a single "${SnapCaveatType.SnapKeyring}" caveat.`,
         });
       }
@@ -80,7 +80,7 @@ export const keyringEndowmentBuilder = Object.freeze({
  */
 function validateCaveatNamespace(caveat: Caveat<string, any>): void {
   if (!hasProperty(caveat, 'value') || !isPlainObject(caveat.value)) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: 'Expected a plain object.',
     });
   }
@@ -88,12 +88,12 @@ function validateCaveatNamespace(caveat: Caveat<string, any>): void {
   const { value } = caveat;
 
   if (!hasProperty(value, 'namespaces') || !isPlainObject(value)) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: 'Expected a plain object.',
     });
   }
 
-  assertIsNamespacesObject(value.namespaces, ethErrors.rpc.invalidParams);
+  assertIsNamespacesObject(value.namespaces, rpcErrors.invalidParams);
 }
 
 /**

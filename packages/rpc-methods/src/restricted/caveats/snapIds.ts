@@ -4,9 +4,9 @@ import {
   RestrictedMethodParameters,
   RestrictedMethodCaveatSpecificationConstraint,
 } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { assertIsValidSnapId, SnapCaveatType } from '@metamask/snaps-utils';
 import { isObject, hasProperty } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
 
 import { InvokeSnapParams } from '../invokeSnap';
 
@@ -18,7 +18,7 @@ import { InvokeSnapParams } from '../invokeSnap';
  */
 export function validateSnapIdsCaveat(caveat: Caveat<string, any>) {
   if (!isObject(caveat.value) || Object.keys(caveat.value).length === 0) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message:
         'Expected caveat to have a value property of a non-empty object of snap IDs.',
     });

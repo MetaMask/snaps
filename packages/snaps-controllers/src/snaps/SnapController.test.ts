@@ -1,9 +1,14 @@
 import { getPersistentState } from '@metamask/base-controller';
 import {
+  createAsyncMiddleware,
+  JsonRpcEngine,
+} from '@metamask/json-rpc-engine';
+import {
   Caveat,
   SubjectPermissions,
   ValidPermission,
 } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
 import {
   DEFAULT_ENDOWMENTS,
@@ -30,9 +35,7 @@ import {
   MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
 import { AssertionError, SemVerVersion, SemVerRange } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
 import fetchMock from 'jest-fetch-mock';
-import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import pump from 'pump';
 import { Duplex } from 'stream';
@@ -1658,7 +1661,7 @@ describe('SnapController', () => {
           },
         }),
       ).rejects.toThrow(
-        ethErrors.rpc.invalidRequest({
+        rpcErrors.invalidRequest({
           message: 'Invalid "jsonrpc" property. Must be "2.0" if provided.',
           data: 'kaplar',
         }),
@@ -3445,7 +3448,7 @@ describe('SnapController', () => {
             detectSnapLocation(),
           ),
       ).rejects.toThrow(
-        ethErrors.rpc.invalidParams(
+        rpcErrors.invalidParams(
           `Snap "${MOCK_SNAP_ID}@${snap.version}" is already installed. Couldn't update to a version inside requested "*" range.`,
         ),
       );

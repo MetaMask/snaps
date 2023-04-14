@@ -1,3 +1,4 @@
+import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import {
   RequestedPermissions,
   PermissionConstraint,
@@ -13,7 +14,6 @@ import {
   JsonRpcSuccess,
   PendingJsonRpcResponse,
 } from '@metamask/types';
-import { JsonRpcEngine } from 'json-rpc-engine';
 
 import { WALLET_SNAP_PERMISSION_KEY } from '../restricted/invokeSnap';
 import {

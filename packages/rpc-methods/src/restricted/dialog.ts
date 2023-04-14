@@ -4,9 +4,9 @@ import {
   RestrictedMethodOptions,
   ValidPermissionSpecification,
 } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { Component, ComponentStruct } from '@metamask/snaps-ui';
 import { NonEmptyArray } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
 import {
   create,
   enums,
@@ -183,7 +183,7 @@ function getValidatedType(params: unknown): DialogType {
   try {
     return create(params, BaseParamsStruct).type;
   } catch (error) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `The "type" property must be one of: ${Object.values(
         DialogType,
       ).join(', ')}.`,
@@ -210,18 +210,18 @@ function getValidatedParams(
       const { key, type: errorType } = error;
 
       if (key === 'placeholder' && errorType === 'never') {
-        throw ethErrors.rpc.invalidParams({
+        throw rpcErrors.invalidParams({
           message:
             'Invalid params: Alerts or confirmations may not specify a "placeholder" field.',
         });
       }
 
-      throw ethErrors.rpc.invalidParams({
+      throw rpcErrors.invalidParams({
         message: `Invalid params: ${error.message}.`,
       });
     }
 
     /* istanbul ignore next */
-    throw ethErrors.rpc.internal();
+    throw rpcErrors.internal();
   }
 }

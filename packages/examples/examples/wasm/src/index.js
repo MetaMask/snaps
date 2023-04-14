@@ -1,6 +1,6 @@
 // Due to a bug of how brfs interacts with babel, we need to use require() syntax instead of import pattern
 // https://github.com/browserify/brfs/issues/39
-const { ethErrors } = require('eth-rpc-errors');
+const { rpcErrors } = require('@metamask/rpc-errors');
 const fs = require('fs');
 
 // Ref:
@@ -46,5 +46,5 @@ module.exports.onRpcRequest = async ({ request }) => {
   if (wasm.instance.exports[request.method]) {
     return wasm.instance.exports[request.method](...request.params);
   }
-  throw ethErrors.rpc.methodNotFound({ data: { request } });
+  throw rpcErrors.methodNotFound({ data: { request } });
 };

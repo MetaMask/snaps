@@ -1,7 +1,7 @@
 import { RequestedPermissions } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { InstallSnapsResult } from '@metamask/snaps-utils';
 import { isObject } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
 
 export type { InstallSnapsResult } from '@metamask/snaps-utils';
 
@@ -25,12 +25,12 @@ export async function handleInstallSnaps(
   installSnaps: InstallSnapsHook,
 ): Promise<InstallSnapsResult> {
   if (!isObject(requestedSnaps)) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Invalid snap installation params.`,
       data: { requestedSnaps },
     });
   } else if (Object.keys(requestedSnaps).length === 0) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Must specify at least one snap to install.`,
       data: { requestedSnaps },
     });

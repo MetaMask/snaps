@@ -1,8 +1,8 @@
+import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import {
   MOCK_SNAP_ID,
   getTruncatedSnap,
 } from '@metamask/snaps-utils/test-utils';
-import { JsonRpcEngine } from 'json-rpc-engine';
 
 import { createSnapsMethodMiddleware } from './middleware';
 

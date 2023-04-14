@@ -8,6 +8,7 @@ import {
   CaveatSpecificationConstraint,
   Caveat,
 } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   assert,
@@ -17,7 +18,6 @@ import {
   Json,
   NonEmptyArray,
 } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
 
 import { SnapEndowments } from './enum';
 
@@ -54,7 +54,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
         (caveats?.length === 1 &&
           caveats[0].type !== SnapCaveatType.TransactionOrigin)
       ) {
-        throw ethErrors.rpc.invalidParams({
+        throw rpcErrors.invalidParams({
           message: `Expected a single "${SnapCaveatType.TransactionOrigin}" caveat.`,
         });
       }
@@ -75,7 +75,7 @@ export const transactionInsightEndowmentBuilder = Object.freeze({
  */
 function validateCaveat(caveat: Caveat<string, any>): void {
   if (!hasProperty(caveat, 'value') || !isPlainObject(caveat)) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: 'Expected a plain object.',
     });
   }
