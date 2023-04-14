@@ -1,4 +1,5 @@
 import { rootRealmGlobal } from '../globalObject';
+import { createCrypto } from './crypto';
 
 /**
  * Create a {@link Math} object, with the same properties as the global
@@ -22,6 +23,9 @@ function createMath() {
     return { ...target, [key]: rootRealmGlobal.Math[key] };
   }, {});
 
+  // Since the math endowment requires crypto, we can leverage the crypto endowment factory to get a hardened and platform agnostic instance of webcrypto
+  const { crypto: hardenedCrypto } = createCrypto();
+
   return harden({
     Math: {
       ...math,
@@ -42,7 +46,7 @@ function createMath() {
         //
         // - https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/generateKey
         // - https://developer.mozilla.org/en-US/docs/Web/API/Crypto/getRandomValues
-        return crypto.getRandomValues(new Uint32Array(1))[0] / 2 ** 32;
+        return hardenedCrypto.getRandomValues(new Uint32Array(1))[0] / 2 ** 32;
       },
     },
   });

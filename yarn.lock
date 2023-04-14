@@ -3842,15 +3842,15 @@ __metadata:
   linkType: hard
 
 "@metamask/utils@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "@metamask/utils@npm:5.0.0"
+  version: 5.0.1
+  resolution: "@metamask/utils@npm:5.0.1"
   dependencies:
     "@ethereumjs/tx": ^4.1.1
     "@types/debug": ^4.1.7
     debug: ^4.3.4
     semver: ^7.3.8
     superstruct: ^1.0.3
-  checksum: 34e39fc0bf28db5fe92676753de3291b05a517f8c81dbe332a4b6002739a58450a89fb2bddd85922a4f420affb1674604e6ad4627cdf052459e5371361ef7dd2
+  checksum: 29745bd3d2db06bf66263bdec04e93a8f417c46c69d8054149c0046ed54b5f13d26d94a998fff1a31b5a8e7a2200935bfc8392a5fa3c4261e3cecd3ccdd9ddc0
   languageName: node
   linkType: hard
 
@@ -7625,9 +7625,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chromedriver@npm:^110.0.0":
-  version: 110.0.0
-  resolution: "chromedriver@npm:110.0.0"
+"chromedriver@npm:^112.0.0":
+  version: 112.0.0
+  resolution: "chromedriver@npm:112.0.0"
   dependencies:
     "@testim/chrome-version": ^1.1.3
     axios: ^1.2.1
@@ -7638,7 +7638,7 @@ __metadata:
     tcp-port-used: ^1.0.1
   bin:
     chromedriver: bin/chromedriver
-  checksum: 52c51f21ef523865af6496736e92689bf8a16d477653cb096ff22ad3bbf16495935b6f42f860a3cdea3123e2d8a4084688acc07a06da4924b7c0e2d2bc646ae4
+  checksum: 6cd254c50326ca1775adac54cac1dc1b96a32fd9af1dfb7c44e812c619286ec96c727f74adbbece50a1f3efd463b895f05aadbce95cec9e23525b8bdf379de7f
   languageName: node
   linkType: hard
 
@@ -17630,7 +17630,7 @@ __metadata:
     "@types/node": ^17.0.36
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
-    chromedriver: ^110.0.0
+    chromedriver: ^112.0.0
     eslint: ^8.27.0
     eslint-config-prettier: ^8.5.0
     eslint-plugin-import: ^2.26.0
