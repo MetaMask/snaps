@@ -1,6 +1,7 @@
 import { JsonRpcMiddleware } from '@metamask/json-rpc-engine';
 import { rpcErrors } from '@metamask/rpc-errors';
 import { logError } from '@metamask/snaps-utils';
+import { JsonRpcParams, Json } from '@metamask/utils';
 
 import { selectHooks } from '../utils';
 import { methodHandlers } from './handlers';
@@ -15,7 +16,7 @@ import { methodHandlers } from './handlers';
 export function createSnapsMethodMiddleware(
   isSnap: boolean,
   hooks: Record<string, unknown>,
-): JsonRpcMiddleware<unknown, unknown> {
+): JsonRpcMiddleware<JsonRpcParams, Json> {
   // This is not actually a misused promise, the type is just wrong
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async function methodMiddleware(request, response, next, end) {

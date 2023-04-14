@@ -142,7 +142,7 @@ export const SNAP_EXPORT_NAMES = Object.values(HandlerType);
 export type SnapRpcHookArgs = {
   origin: string;
   handler: HandlerType;
-  request: Record<string, unknown>;
+  request: Record<string, Json>;
 };
 
 // The snap is the callee

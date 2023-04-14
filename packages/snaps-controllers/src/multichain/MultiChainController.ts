@@ -30,7 +30,7 @@ import {
   Namespaces,
   logError,
 } from '@metamask/snaps-utils';
-import { hasProperty, assert } from '@metamask/utils';
+import { hasProperty, assert, Json } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 
 import {
@@ -393,7 +393,7 @@ export class MultiChainController extends BaseController<
     snapId: SnapId;
     origin: string;
     method: keyof SnapKeyring;
-    args?: unknown;
+    args?: Json;
   }) {
     return this.messagingSystem.call('SnapController:handleRequest', {
       snapId,

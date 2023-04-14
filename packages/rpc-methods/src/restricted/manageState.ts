@@ -356,7 +356,7 @@ export function getValidatedParams(
         message: `Invalid ${method} "updateState" parameter: The new state must be a plain object.`,
         data: {
           receivedNewState:
-            typeof newState === 'undefined' ? 'undefined' : newState,
+            typeof newState === 'undefined' ? 'undefined' : (newState as Json),
         },
       });
     }
@@ -368,10 +368,6 @@ export function getValidatedParams(
     } catch {
       throw rpcErrors.invalidParams({
         message: `Invalid ${method} "updateState" parameter: The new state must be JSON serializable.`,
-        data: {
-          receivedNewState:
-            typeof newState === 'undefined' ? 'undefined' : newState,
-        },
       });
     }
 
@@ -379,8 +375,7 @@ export function getValidatedParams(
       throw rpcErrors.invalidParams({
         message: `Invalid ${method} "updateState" parameter: The new state must not exceed ${storageSizeLimit} bytes in size.`,
         data: {
-          receivedNewState:
-            typeof newState === 'undefined' ? 'undefined' : newState,
+          receivedNewState: newState as Json,
         },
       });
     }

@@ -3,7 +3,7 @@ import {
   RestrictedMethodCaveatSpecificationConstraint,
   Caveat,
 } from '@metamask/permission-controller';
-import { rpcErrors } from '@metamask/rpc-errors';
+import { rpcErrors, providerErrors } from '@metamask/rpc-errors';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import { Json, hasProperty, isPlainObject } from '@metamask/utils';
 
@@ -101,7 +101,7 @@ export const PermittedCoinTypesCaveatSpecification: Record<
         );
 
         if (!coinType) {
-          throw ethErrors.provider.unauthorized({
+          throw providerErrors.unauthorized({
             message:
               'The requested coin type is not permitted. Allowed coin types must be specified in the snap manifest.',
           });

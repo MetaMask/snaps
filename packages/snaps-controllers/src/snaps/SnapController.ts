@@ -2522,7 +2522,7 @@ export class SnapController extends BaseController<
       } else if (request.jsonrpc !== '2.0') {
         throw rpcErrors.invalidRequest({
           message: 'Invalid "jsonrpc" property. Must be "2.0" if provided.',
-          data: request.jsonrpc,
+          data: request.jsonrpc as Json,
         });
       }
 
