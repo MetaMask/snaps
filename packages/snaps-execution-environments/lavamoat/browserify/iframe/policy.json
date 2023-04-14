@@ -1,5 +1,12 @@
 {
   "resources": {
+    "@metamask/json-rpc-engine": {
+      "packages": {
+        "@metamask/providers>@metamask/safe-event-emitter": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/object-multiplex": {
       "globals": {
         "console.warn": true
@@ -72,15 +79,23 @@
       },
       "packages": {
         "@metamask/object-multiplex": true,
+        "@metamask/providers>@metamask/safe-event-emitter": true,
         "@metamask/providers>detect-browser": true,
+        "@metamask/providers>eth-rpc-errors": true,
         "@metamask/providers>extension-port-stream": true,
         "@metamask/providers>fast-deep-equal": true,
         "@metamask/providers>is-stream": true,
+        "@metamask/providers>json-rpc-engine": true,
         "@metamask/providers>json-rpc-middleware-stream": true,
-        "eth-rpc-errors": true,
-        "json-rpc-engine": true,
-        "json-rpc-engine>@metamask/safe-event-emitter": true,
         "pump": true
+      }
+    },
+    "@metamask/providers>@metamask/safe-event-emitter": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "browserify>events": true
       }
     },
     "@metamask/providers>detect-browser": {
@@ -92,10 +107,21 @@
         "process": true
       }
     },
+    "@metamask/providers>eth-rpc-errors": {
+      "packages": {
+        "@metamask/rpc-errors>fast-safe-stringify": true
+      }
+    },
     "@metamask/providers>extension-port-stream": {
       "packages": {
         "browserify>buffer": true,
         "stream-browserify": true
+      }
+    },
+    "@metamask/providers>json-rpc-engine": {
+      "packages": {
+        "@metamask/providers>@metamask/safe-event-emitter": true,
+        "@metamask/providers>eth-rpc-errors": true
       }
     },
     "@metamask/providers>json-rpc-middleware-stream": {
@@ -104,8 +130,14 @@
         "setTimeout": true
       },
       "packages": {
-        "browserify>readable-stream": true,
-        "json-rpc-engine>@metamask/safe-event-emitter": true
+        "@metamask/providers>@metamask/safe-event-emitter": true,
+        "browserify>readable-stream": true
+      }
+    },
+    "@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/rpc-errors>fast-safe-stringify": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/rpc-methods>@noble/hashes": {
@@ -543,11 +575,6 @@
         "process": true
       }
     },
-    "eth-rpc-errors": {
-      "packages": {
-        "eth-rpc-errors>fast-safe-stringify": true
-      }
-    },
     "external:../snaps-utils/src/checksum.ts": {
       "packages": {
         "@metamask/rpc-methods>@noble/hashes": true,
@@ -671,20 +698,6 @@
     "external:../snaps-utils/src/virtual-file/index.browser.ts": {
       "packages": {
         "external:../snaps-utils/src/virtual-file/VirtualFile.ts": true
-      }
-    },
-    "json-rpc-engine": {
-      "packages": {
-        "eth-rpc-errors": true,
-        "json-rpc-engine>@metamask/safe-event-emitter": true
-      }
-    },
-    "json-rpc-engine>@metamask/safe-event-emitter": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "browserify>events": true
       }
     },
     "process": {
