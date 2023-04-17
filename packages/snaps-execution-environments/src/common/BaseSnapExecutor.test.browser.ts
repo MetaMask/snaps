@@ -805,7 +805,7 @@ describe('BaseSnapExecutor', () => {
           code: -32603,
           data: {
             stack: error.stack,
-            snapName: MOCK_SNAP_ID,
+            snapId: MOCK_SNAP_ID,
           },
           message: error.message,
         },
@@ -865,7 +865,7 @@ describe('BaseSnapExecutor', () => {
           code: -32603,
           data: {
             stack: error.stack,
-            snapName: MOCK_SNAP_ID,
+            snapId: MOCK_SNAP_ID,
           },
           message: error.message,
         },
@@ -1649,17 +1649,17 @@ describe('BaseSnapExecutor', () => {
   describe('executeSnap', () => {
     [
       {
-        snapName: 1,
+        snapId: 1,
         code: 'module.exports.onRpcRequest = () => 1;',
         endowments: [],
       },
       {
-        snapName: MOCK_SNAP_ID,
+        snapId: MOCK_SNAP_ID,
         code: 1,
         endowments: [],
       },
       {
-        snapName: MOCK_SNAP_ID,
+        snapId: MOCK_SNAP_ID,
         code: 'module.exports.onRpcRequest = () => 1;',
         endowments: ['foo', 1],
       },
@@ -1694,25 +1694,25 @@ describe('BaseSnapExecutor', () => {
   describe('snapRpc', () => {
     [
       {
-        snapName: 1,
+        snapId: 1,
         method: HandlerType.OnRpcRequest,
         origin: MOCK_ORIGIN,
         request: { jsonrpc: '2.0', method: '', params: [] },
       },
       {
-        snapName: MOCK_SNAP_ID,
+        snapId: MOCK_SNAP_ID,
         method: 1,
         origin: MOCK_ORIGIN,
         request: { jsonrpc: '2.0', method: '', params: [] },
       },
       {
-        snapName: MOCK_SNAP_ID,
+        snapId: MOCK_SNAP_ID,
         method: HandlerType.OnRpcRequest,
         origin: 1,
         request: { jsonrpc: '2.0', method: '', params: [] },
       },
       {
-        snapName: MOCK_SNAP_ID,
+        snapId: MOCK_SNAP_ID,
         method: HandlerType.OnRpcRequest,
         origin: MOCK_ORIGIN,
         request: 1,
@@ -1765,7 +1765,7 @@ describe('BaseSnapExecutor', () => {
     it('throws a human-readable error if the request arguments are invalid', async () => {
       const executor = new TestSnapExecutor();
       const params = {
-        snapName: 1,
+        snapId: 1,
         method: HandlerType.OnRpcRequest,
         origin: MOCK_ORIGIN,
         request: { jsonrpc: '2.0', method: '', params: [] },
