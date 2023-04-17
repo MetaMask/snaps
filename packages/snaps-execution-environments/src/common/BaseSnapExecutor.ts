@@ -314,6 +314,7 @@ export class BaseSnapExecutor {
       const { endowments, teardown: endowmentTeardown } = createEndowments(
         snap,
         ethereum,
+        snapName,
         _endowments,
       );
 

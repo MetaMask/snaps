@@ -255,6 +255,10 @@ describe('endowments', () => {
         },
         {
           factory: expect.any(Function),
+          names: ['console'],
+        },
+        {
+          factory: expect.any(Function),
           names: ['AbortController'],
         },
         {
@@ -284,10 +288,6 @@ describe('endowments', () => {
         {
           factory: expect.any(Function),
           names: ['btoa'],
-        },
-        {
-          factory: expect.any(Function),
-          names: ['console'],
         },
         {
           factory: expect.any(Function),

@@ -1,10 +1,13 @@
 import { StreamProvider } from '@metamask/providers';
 import { SnapsGlobalObject } from '@metamask/rpc-methods';
-import { logWarning } from '@metamask/snaps-utils';
+import { SnapId, logWarning } from '@metamask/snaps-utils';
 import { hasProperty } from '@metamask/utils';
 
 import { rootRealmGlobal } from '../globalObject';
-import buildCommonEndowments from './commonEndowmentFactory';
+import buildCommonEndowments, {
+  EndowmentFactoryOptions,
+  EndowmentsWithFactoryOptions,
+} from './commonEndowmentFactory';
 
 type EndowmentFactoryResult = {
   /**
@@ -34,7 +37,7 @@ const endowmentFactories = registeredEndowments.reduce((factories, builder) => {
     factories.set(name, builder.factory);
   });
   return factories;
-}, new Map<string, () => EndowmentFactoryResult>());
+}, new Map<string, (options?: EndowmentFactoryOptions) => EndowmentFactoryResult>());
 
 /**
  * Gets the endowments for a particular Snap. Some endowments, like `setTimeout`
@@ -45,12 +48,14 @@ const endowmentFactories = registeredEndowments.reduce((factories, builder) => {
  *
  * @param snap - The Snaps global API object.
  * @param ethereum - The Snap's EIP-1193 provider object.
+ * @param snapId - The id of the snap that will use the created endowments.
  * @param endowments - The list of endowments to provide to the snap.
  * @returns An object containing the Snap's endowments.
  */
 export function createEndowments(
   snap: SnapsGlobalObject,
   ethereum: StreamProvider,
+  snapId: SnapId,
   endowments: string[] = [],
 ): { endowments: Record<string, unknown>; teardown: () => Promise<void> } {
   const attenuatedEndowments: Record<string, unknown> = {};
@@ -73,9 +78,15 @@ export function createEndowments(
           // This may not have an actual use case, but, safety first.
 
           // We just confirmed that endowmentFactories has the specified key.
-          const { teardownFunction, ...endowment } =
+          let factoryResult;
+          if (EndowmentsWithFactoryOptions.has(endowmentName)) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            endowmentFactories.get(endowmentName)!();
+            factoryResult = endowmentFactories.get(endowmentName)!({ snapId });
+          } else {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            factoryResult = endowmentFactories.get(endowmentName)!();
+          }
+          const { teardownFunction, ...endowment } = factoryResult;
           Object.assign(attenuatedEndowments, endowment);
           if (teardownFunction) {
             teardowns.push(teardownFunction);
