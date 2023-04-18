@@ -2,9 +2,14 @@
 
 import 'ses';
 
+import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
+
 import { walkAndSearch } from '../test-utils/endowments';
 import { testEndowmentHardening } from '../test-utils/hardening';
-import buildCommonEndowments from './commonEndowmentFactory';
+import buildCommonEndowments, {
+  EndowmentsWithFactoryOptions,
+} from './commonEndowmentFactory';
+import consoleEndowment from './console';
 import CryptoEndowment from './crypto';
 import date from './date';
 import interval from './interval';
@@ -32,7 +37,13 @@ globalThis.btoa = harden(originalBtoa);
 describe('endowments', () => {
   describe('hardening', () => {
     const modules = buildCommonEndowments();
-    modules.forEach((endowment) => endowment.factory());
+    modules
+      .filter((module) => {
+        return module.names.every((name) => {
+          return !EndowmentsWithFactoryOptions.has(name);
+        });
+      })
+      .forEach((endowment) => endowment.factory());
 
     // Specially attenuated endowments or endowments that require
     // to be imported in a different way
@@ -49,6 +60,9 @@ describe('endowments', () => {
     const { Math: mathAttenuated } = math.factory();
     const { fetch: fetchAttenuated } = network.factory();
     const { Date: DateAttenuated } = date.factory();
+    const { console: consoleAttenuated } = consoleEndowment.factory({
+      snapId: MOCK_SNAP_ID,
+    });
 
     const TEST_ENDOWMENTS = {
       // Constructor functions.
@@ -140,9 +154,9 @@ describe('endowments', () => {
       },
 
       // Objects.
-      console: {
-        endowments: { console },
-        factory: () => console,
+      consoleAttenuated: {
+        endowments: { consoleAttenuated },
+        factory: () => consoleAttenuated,
       },
       crypto: {
         endowments: { crypto },

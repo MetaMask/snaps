@@ -37,11 +37,10 @@ describe('Console endowment', () => {
       const { console } = consoleEndowment.factory({ snapId: MOCK_SNAP_ID });
       const logSpy = jest.spyOn(rootRealmGlobal.console, 'log');
       console.log('This is a log message.');
-      expect(logSpy).toHaveBeenNthCalledWith(
-        1,
-        `[SNAP LOG | snapId: ${MOCK_SNAP_ID}]`,
+      expect(logSpy).toHaveBeenCalledTimes(1);
+      expect(logSpy).toHaveBeenCalledWith(
+        `[Snap: ${MOCK_SNAP_ID}] This is a log message.`,
       );
-      expect(logSpy).toHaveBeenNthCalledWith(2, 'This is a log message.');
     });
   });
 
@@ -53,13 +52,12 @@ describe('Console endowment', () => {
 
     it('will log a message identifying the source of the call (snap id)', () => {
       const { console } = consoleEndowment.factory({ snapId: MOCK_SNAP_ID });
-      const logSpy = jest.spyOn(rootRealmGlobal.console, 'log');
       const errorSpy = jest.spyOn(rootRealmGlobal.console, 'error');
       console.error('This is an error message.');
-      expect(logSpy).toHaveBeenCalledWith(
-        `[SNAP ERROR | snapId: ${MOCK_SNAP_ID}]`,
+      expect(errorSpy).toHaveBeenCalledTimes(1);
+      expect(errorSpy).toHaveBeenCalledWith(
+        `[Snap: ${MOCK_SNAP_ID}] This is an error message.`,
       );
-      expect(errorSpy).toHaveBeenCalledWith('This is an error message.');
     });
   });
 
@@ -71,15 +69,12 @@ describe('Console endowment', () => {
 
     it('will log a message identifying the source of the call (snap id)', () => {
       const { console } = consoleEndowment.factory({ snapId: MOCK_SNAP_ID });
-      const logSpy = jest.spyOn(rootRealmGlobal.console, 'log');
       const assertSpy = jest.spyOn(rootRealmGlobal.console, 'assert');
       console.assert(1 > 2, 'This is an assert message.');
-      expect(logSpy).toHaveBeenCalledWith(
-        `[SNAP ASSERT | snapId: ${MOCK_SNAP_ID}]`,
-      );
+      expect(assertSpy).toHaveBeenCalledTimes(1);
       expect(assertSpy).toHaveBeenCalledWith(
-        1 > 2,
-        'This is an assert message.',
+        false,
+        `[Snap: ${MOCK_SNAP_ID}] This is an assert message.`,
       );
     });
   });
@@ -92,13 +87,12 @@ describe('Console endowment', () => {
 
     it('will log a message identifying the source of the call (snap id)', () => {
       const { console } = consoleEndowment.factory({ snapId: MOCK_SNAP_ID });
-      const logSpy = jest.spyOn(rootRealmGlobal.console, 'log');
       const debugSpy = jest.spyOn(rootRealmGlobal.console, 'debug');
       console.debug('This is a debug message.');
-      expect(logSpy).toHaveBeenCalledWith(
-        `[SNAP DEBUG | snapId: ${MOCK_SNAP_ID}]`,
+      expect(debugSpy).toHaveBeenCalledTimes(1);
+      expect(debugSpy).toHaveBeenCalledWith(
+        `[Snap: ${MOCK_SNAP_ID}] This is a debug message.`,
       );
-      expect(debugSpy).toHaveBeenCalledWith('This is a debug message.');
     });
   });
 
@@ -111,12 +105,11 @@ describe('Console endowment', () => {
     it('will log a message identifying the source of the call (snap id)', () => {
       const { console } = consoleEndowment.factory({ snapId: MOCK_SNAP_ID });
       const infoSpy = jest.spyOn(rootRealmGlobal.console, 'info');
-      const logSpy = jest.spyOn(rootRealmGlobal.console, 'log');
       console.info('This is an info message.');
-      expect(logSpy).toHaveBeenCalledWith(
-        `[SNAP INFO | snapId: ${MOCK_SNAP_ID}]`,
+      expect(infoSpy).toHaveBeenCalledTimes(1);
+      expect(infoSpy).toHaveBeenCalledWith(
+        `[Snap: ${MOCK_SNAP_ID}] This is an info message.`,
       );
-      expect(infoSpy).toHaveBeenCalledWith('This is an info message.');
     });
   });
 
@@ -128,13 +121,12 @@ describe('Console endowment', () => {
 
     it('will log a message identifying the source of the call (snap id)', () => {
       const { console } = consoleEndowment.factory({ snapId: MOCK_SNAP_ID });
-      const logSpy = jest.spyOn(rootRealmGlobal.console, 'log');
       const warnSpy = jest.spyOn(rootRealmGlobal.console, 'warn');
       console.warn('This is a warn message.');
-      expect(logSpy).toHaveBeenCalledWith(
-        `[SNAP WARN | snapId: ${MOCK_SNAP_ID}]`,
+      expect(warnSpy).toHaveBeenCalledTimes(1);
+      expect(warnSpy).toHaveBeenCalledWith(
+        `[Snap: ${MOCK_SNAP_ID}] This is a warn message.`,
       );
-      expect(warnSpy).toHaveBeenCalledWith('This is a warn message.');
     });
   });
 });
