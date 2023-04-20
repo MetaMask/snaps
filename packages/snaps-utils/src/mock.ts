@@ -5,7 +5,11 @@ import { DEFAULT_ENDOWMENTS } from './default-endowments';
 
 const NETWORK_APIS = ['fetch'];
 
-export const ALL_APIS: string[] = [...DEFAULT_ENDOWMENTS, ...NETWORK_APIS];
+export const ALL_APIS: string[] = [
+  ...DEFAULT_ENDOWMENTS,
+  ...NETWORK_APIS,
+  'WebAssembly',
+];
 
 type MockSnapGlobal = {
   request: () => Promise<any>;
