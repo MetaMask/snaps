@@ -118,5 +118,7 @@ export async function watch(argv: YargsArgs): Promise<void> {
       logError(`Watcher error: ${error.message}`, error);
     });
 
-  logInfo(`Watching '${watchDirs.join(', ')}' for changes...`);
+  logInfo(
+    `Watching ${watchDirs.map((dir) => `'${dir}'`).join(', ')} for changes...`,
+  );
 }
