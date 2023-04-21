@@ -14,6 +14,37 @@ export const consoleAttenuatedMethods = new Set([
 ]);
 
 /**
+ * A set of all the `console` values that will be passed to the snap. This has
+ * all the values that are available in both the browser and Node.js.
+ */
+const consoleMethods = new Set([
+  'debug',
+  'error',
+  'info',
+  'log',
+  'warn',
+  'dir',
+  'dirxml',
+  'table',
+  'trace',
+  'group',
+  'groupCollapsed',
+  'groupEnd',
+  'clear',
+  'count',
+  'countReset',
+  'assert',
+  'profile',
+  'profileEnd',
+  'time',
+  'timeLog',
+  'timeEnd',
+  'timeStamp',
+  'context',
+  'createTask',
+]);
+
+/**
  * Gets the appropriate (prepended) message to pass to one of the attenuated
  * method calls.
  *
@@ -51,11 +82,11 @@ function createConsole({ snapId }: EndowmentFactoryOptions = {}) {
   ) as (keyof typeof console)[];
 
   const attenuatedConsole = keys.reduce((target, key) => {
-    if (consoleAttenuatedMethods.has(key)) {
-      return target;
+    if (consoleMethods.has(key) && !consoleAttenuatedMethods.has(key)) {
+      return { ...target, [key]: rootRealmGlobal.console[key] };
     }
 
-    return { ...target, [key]: rootRealmGlobal.console[key] };
+    return target;
   }, {});
 
   return harden({
