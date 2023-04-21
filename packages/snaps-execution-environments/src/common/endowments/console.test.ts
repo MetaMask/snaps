@@ -46,6 +46,22 @@ describe('Console endowment', () => {
         `[Snap: ${MOCK_SNAP_ID}] This is a log message.`,
       );
     });
+
+    it('can handle non-string message types', () => {
+      const { console } = consoleEndowment.factory({ snapId: MOCK_SNAP_ID });
+      const logSpy = jest.spyOn(rootRealmGlobal.console, 'log');
+      console.log(12345);
+      console.log({ foo: 'bar' });
+      expect(logSpy).toHaveBeenCalledTimes(2);
+      expect(logSpy).toHaveBeenNthCalledWith(
+        1,
+        `[Snap: ${MOCK_SNAP_ID}]`,
+        12345,
+      );
+      expect(logSpy).toHaveBeenNthCalledWith(2, `[Snap: ${MOCK_SNAP_ID}]`, {
+        foo: 'bar',
+      });
+    });
   });
 
   describe('error', () => {
