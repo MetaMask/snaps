@@ -12324,12 +12324,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"inline-source-map@npm:~0.6.0":
+"inline-source-map@npm:0.6.2":
   version: 0.6.2
   resolution: "inline-source-map@npm:0.6.2"
   dependencies:
     source-map: ~0.5.3
   checksum: 1f7fa2ad1764d03a0a525d5c47993f9e3d0445f29c2e2413d2878deecb6ecb1e6f9137a6207e3db8dc129565bde15de88c1ba2665407e753e7f3ec768ca29262
+  languageName: node
+  linkType: hard
+
+"inline-source-map@patch:inline-source-map@npm%3A0.6.2#./.yarn/patches/inline-source-map-npm-0.6.2-96902459a0.patch::locator=root%40workspace%3A.":
+  version: 0.6.2
+  resolution: "inline-source-map@patch:inline-source-map@npm%3A0.6.2#./.yarn/patches/inline-source-map-npm-0.6.2-96902459a0.patch::version=0.6.2&hash=7b9dc6&locator=root%40workspace%3A."
+  dependencies:
+    source-map: ~0.5.3
+  checksum: b25c0c215ba3b88e6a18c0bf3625ba5b306a5438235f21ad3357e6e0f5b3a09af8afcf9daf3f0a394f836c6ed695b34debc4802323a2604b5fa1798265350df0
   languageName: node
   linkType: hard
 
