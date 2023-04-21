@@ -88,7 +88,7 @@ describe('watch', () => {
       expect(validateFilePathMock).toHaveBeenCalledWith(mockSrc);
       expect(validateOutfileNameMock).toHaveBeenCalledWith(mockOutfileName);
       expect(chokidarMock.mock.calls[0][0]).toStrictEqual([
-        'src/',
+        'src',
         NpmSnapFileNames.Manifest,
         CONFIG_FILE,
       ]);
@@ -117,7 +117,7 @@ describe('watch', () => {
       expect(validateFilePathMock).toHaveBeenCalledWith('foo/index.js');
       expect(validateOutfileNameMock).toHaveBeenCalledWith(mockOutfileName);
       expect(chokidarMock.mock.calls[0][0]).toStrictEqual([
-        'foo/',
+        'foo',
         NpmSnapFileNames.Manifest,
         CONFIG_FILE,
       ]);
