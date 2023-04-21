@@ -376,6 +376,7 @@
         "external:../snaps-utils/src/entropy.ts": true,
         "external:../snaps-utils/src/json-rpc.ts": true,
         "external:../snaps-utils/src/namespace.ts": true,
+        "external:../snaps-utils/src/snaps.ts": true,
         "external:../snaps-utils/src/types.ts": true,
         "superstruct": true
       }
