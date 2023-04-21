@@ -41,7 +41,6 @@ const consoleMethods = new Set([
   'timeEnd',
   'timeStamp',
   'context',
-  'createTask',
 ]);
 
 /**
