@@ -43,6 +43,12 @@ export const consoleMethods = new Set([
   'context',
 ]);
 
+const consoleFunctions = ['log', 'error', 'debug', 'info', 'warn'] as const;
+
+type ConsoleFunctions = {
+  [Key in typeof consoleFunctions[number]]?: typeof rootRealmGlobal.console[Key];
+};
+
 /**
  * Gets the appropriate (prepended) message to pass to one of the attenuated
  * method calls.
@@ -91,11 +97,6 @@ function createConsole({ snapId }: EndowmentFactoryOptions = {}) {
   return harden({
     console: {
       ...attenuatedConsole,
-      log: (message?: any, ...optionalParams: any[]) => {
-        rootRealmGlobal.console.log(
-          ...getMessage(snapId, message, ...optionalParams),
-        );
-      },
       assert: (
         value: any,
         message?: string | undefined,
@@ -106,26 +107,16 @@ function createConsole({ snapId }: EndowmentFactoryOptions = {}) {
           ...getMessage(snapId, message, ...optionalParams),
         );
       },
-      error: (message?: any, ...optionalParams: any[]) => {
-        rootRealmGlobal.console.error(
-          ...getMessage(snapId, message, ...optionalParams),
-        );
-      },
-      debug: (message?: any, ...optionalParams: any[]) => {
-        rootRealmGlobal.console.debug(
-          ...getMessage(snapId, message, ...optionalParams),
-        );
-      },
-      info: (message?: any, ...optionalParams: any[]) => {
-        rootRealmGlobal.console.info(
-          ...getMessage(snapId, message, ...optionalParams),
-        );
-      },
-      warn: (message?: any, ...optionalParams: any[]) => {
-        rootRealmGlobal.console.warn(
-          ...getMessage(snapId, message, ...optionalParams),
-        );
-      },
+      ...consoleFunctions.reduce<ConsoleFunctions>((target, key) => {
+        return {
+          ...target,
+          [key]: (message?: unknown, ...optionalParams: any[]) => {
+            rootRealmGlobal.console[key](
+              ...getMessage(snapId, message, ...optionalParams),
+            );
+          },
+        };
+      }, {}),
     },
   });
 }

@@ -26,8 +26,6 @@ export type CommonEndowmentSpecification = {
   bind?: boolean;
 };
 
-export const EndowmentsWithFactoryOptions = new Set(['console']);
-
 // Array of common endowments
 const commonEndowments: CommonEndowmentSpecification[] = [
   { endowment: AbortController, name: 'AbortController' },

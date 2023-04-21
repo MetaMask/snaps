@@ -6,7 +6,6 @@ import { hasProperty } from '@metamask/utils';
 import { rootRealmGlobal } from '../globalObject';
 import buildCommonEndowments, {
   EndowmentFactoryOptions,
-  EndowmentsWithFactoryOptions,
 } from './commonEndowmentFactory';
 
 type EndowmentFactoryResult = {
@@ -78,21 +77,15 @@ export function createEndowments(
           // This may not have an actual use case, but, safety first.
 
           // We just confirmed that endowmentFactories has the specified key.
-          let factoryResult;
-          if (EndowmentsWithFactoryOptions.has(endowmentName)) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            factoryResult = endowmentFactories.get(endowmentName)!({ snapId });
-          } else {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            factoryResult = endowmentFactories.get(endowmentName)!();
-          }
-          const { teardownFunction, ...endowment } = factoryResult;
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const { teardownFunction, ...endowment } = endowmentFactories.get(
+            endowmentName,
+          )!({ snapId });
           Object.assign(attenuatedEndowments, endowment);
           if (teardownFunction) {
             teardowns.push(teardownFunction);
           }
         }
-
         allEndowments[endowmentName] = attenuatedEndowments[endowmentName];
       } else if (endowmentName === 'ethereum') {
         // Special case for adding the EIP-1193 provider.
