@@ -1017,7 +1017,7 @@
     },
     "@lavamoat/lavapack>combine-source-map>inline-source-map": {
       "globals": {
-        "Buffer": true
+        "Buffer.from": true
       },
       "packages": {
         "@lavamoat/lavapack>combine-source-map>inline-source-map>source-map": true
