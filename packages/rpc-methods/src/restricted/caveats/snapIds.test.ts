@@ -3,13 +3,40 @@ import { SnapCaveatType, SnapId } from '@metamask/snaps-utils';
 import { MOCK_SNAP_ID, MOCK_ORIGIN } from '@metamask/snaps-utils/test-utils';
 import { Json } from '@metamask/utils';
 
-import { validateSnapIdsCaveat, SnapIdsCaveatSpecification } from './snapIds';
+import {
+  validateSnapIdsCaveat,
+  SnapIdsCaveatSpecification,
+  snapIdsCaveatMapper,
+} from './snapIds';
+
+describe('snapIdsCaveatMapper', () => {
+  it('returns a caveat value for an array of paths', () => {
+    expect(
+      snapIdsCaveatMapper({
+        MOCK_SNAP_ID: { version: '2.1.0' },
+      }),
+    ).toStrictEqual({
+      caveats: [
+        {
+          type: SnapCaveatType.SnapIds,
+          value: {
+            MOCK_SNAP_ID: { version: '2.1.0' },
+          },
+        },
+      ],
+    });
+  });
+});
 
 describe('validateSnapIdsCaveats', () => {
-  it('validates that a caveat has a non-empty object as a caveat value', () => {
-    const caveat = {
+  it('validates that a caveat has a non-empty snap IDs object as a caveat value', () => {
+    const validCaveat1 = {
       type: SnapCaveatType.SnapIds,
       value: { [MOCK_SNAP_ID]: {} },
+    };
+    const validCaveat2 = {
+      type: SnapCaveatType.SnapIds,
+      value: { [MOCK_SNAP_ID]: { version: '1.0.0' } },
     };
     const missingValueCaveat = {
       type: SnapCaveatType.SnapIds,
@@ -18,7 +45,16 @@ describe('validateSnapIdsCaveats', () => {
       type: SnapCaveatType.SnapIds,
       value: {},
     };
-    expect(() => validateSnapIdsCaveat(caveat)).not.toThrow();
+    const invalidSnapValueCaveat = {
+      type: SnapCaveatType.SnapIds,
+      value: { [MOCK_SNAP_ID]: 'foobar' },
+    };
+    const invalidVersionCaveat = {
+      type: SnapCaveatType.SnapIds,
+      value: { [MOCK_SNAP_ID]: { version: '2.0.0.0' } },
+    };
+    expect(() => validateSnapIdsCaveat(validCaveat1)).not.toThrow();
+    expect(() => validateSnapIdsCaveat(validCaveat2)).not.toThrow();
     expect(() =>
       validateSnapIdsCaveat(missingValueCaveat as Caveat<string, Json>),
     ).toThrow(
@@ -26,6 +62,12 @@ describe('validateSnapIdsCaveats', () => {
     );
     expect(() => validateSnapIdsCaveat(emptyValueCaveat)).toThrow(
       'Expected caveat to have a value property of a non-empty object of snap IDs.',
+    );
+    expect(() => validateSnapIdsCaveat(invalidSnapValueCaveat)).toThrow(
+      'Expected caveat to have a value property of a non-empty object of snap IDs.: At path: value.npm:@metamask/example-snap -- Expected the value to satisfy a union of `object | object`, but received: "foobar".',
+    );
+    expect(() => validateSnapIdsCaveat(invalidVersionCaveat)).toThrow(
+      'Expected caveat to have a value property of a non-empty object of snap IDs.: At path: value.npm:@metamask/example-snap -- Expected the value to satisfy a union of `object | object`, but received: [object Object].',
     );
   });
 });

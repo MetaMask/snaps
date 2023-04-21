@@ -4,6 +4,7 @@ import { Json } from '@metamask/utils';
 import { getBip32EntropyBuilder } from '../getBip32Entropy';
 import { getBip32PublicKeyBuilder } from '../getBip32PublicKey';
 import { getBip44EntropyBuilder } from '../getBip44Entropy';
+import { invokeSnapBuilder } from '../invokeSnap';
 import {
   permittedCoinTypesCaveatMapper,
   PermittedCoinTypesCaveatSpecification,
@@ -12,7 +13,7 @@ import {
   permittedDerivationPathsCaveatMapper,
   PermittedDerivationPathsCaveatSpecification,
 } from './permittedDerivationPaths';
-import { SnapIdsCaveatSpecification } from './snapIds';
+import { snapIdsCaveatMapper, SnapIdsCaveatSpecification } from './snapIds';
 
 export const caveatSpecifications = {
   ...PermittedDerivationPathsCaveatSpecification,
@@ -27,4 +28,5 @@ export const caveatMappers: Record<
   [getBip32EntropyBuilder.targetKey]: permittedDerivationPathsCaveatMapper,
   [getBip32PublicKeyBuilder.targetKey]: permittedDerivationPathsCaveatMapper,
   [getBip44EntropyBuilder.targetKey]: permittedCoinTypesCaveatMapper,
+  [invokeSnapBuilder.targetKey]: snapIdsCaveatMapper,
 };

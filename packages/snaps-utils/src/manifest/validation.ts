@@ -1,4 +1,9 @@
-import { assertStruct, ChecksumStruct, VersionStruct } from '@metamask/utils';
+import {
+  assertStruct,
+  ChecksumStruct,
+  VersionRangeStruct,
+  VersionStruct,
+} from '@metamask/utils';
 import {
   array,
   boolean,
@@ -12,6 +17,7 @@ import {
   optional,
   pattern,
   refine,
+  record,
   size,
   string,
   Struct,
@@ -23,6 +29,7 @@ import { CronjobSpecificationArrayStruct } from '../cronjob';
 import { SIP_6_MAGIC_VALUE, STATE_ENCRYPTION_MAGIC_VALUE } from '../entropy';
 import { RpcOriginsStruct } from '../json-rpc';
 import { NamespacesStruct } from '../namespace';
+import { SnapIdStruct } from '../snaps';
 import { NameStruct, NpmSnapFileNames } from '../types';
 
 // BIP-43 purposes that cannot be used for entropy derivation. These are in the
@@ -91,6 +98,30 @@ export const SnapGetBip32EntropyPermissionsStruct = size(
   Infinity,
 );
 
+export const SnapIdsStruct = record(
+  refine(string(), 'SnapId', (value) => {
+    if (!is(value, SnapIdStruct)) {
+      return 'Invalid snap ID';
+    }
+    return true;
+  }),
+  refine(
+    union([object({}), object({ version: VersionRangeStruct })]),
+    'SnapIdObject',
+    (value) => {
+      if (is(value, object({}))) {
+        return true;
+      }
+      if (is(value, object({ version: VersionRangeStruct }))) {
+        return true;
+      }
+      return 'Snap ID object is invalid, must be empty or have a version key with a valid SemVer range.';
+    },
+  ),
+);
+
+export type SnapIds = Infer<typeof SnapIdsStruct>;
+
 /* eslint-disable @typescript-eslint/naming-convention */
 export const PermissionsStruct = type({
   'endowment:long-running': optional(object({})),
@@ -125,6 +156,7 @@ export const PermissionsStruct = type({
       namespaces: NamespacesStruct,
     }),
   ),
+  wallet_snap: optional(SnapIdsStruct),
 });
 /* eslint-enable @typescript-eslint/naming-convention */
 
