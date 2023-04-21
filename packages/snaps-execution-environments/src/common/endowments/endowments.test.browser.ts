@@ -6,9 +6,7 @@ import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 
 import { walkAndSearch } from '../test-utils/endowments';
 import { testEndowmentHardening } from '../test-utils/hardening';
-import buildCommonEndowments, {
-  EndowmentsWithFactoryOptions,
-} from './commonEndowmentFactory';
+import buildCommonEndowments from './commonEndowmentFactory';
 import consoleEndowment from './console';
 import CryptoEndowment from './crypto';
 import date from './date';
@@ -37,13 +35,7 @@ globalThis.btoa = harden(originalBtoa);
 describe('endowments', () => {
   describe('hardening', () => {
     const modules = buildCommonEndowments();
-    modules
-      .filter((module) => {
-        return module.names.every((name) => {
-          return !EndowmentsWithFactoryOptions.has(name);
-        });
-      })
-      .forEach((endowment) => endowment.factory());
+    modules.forEach((endowment) => endowment.factory());
 
     // Specially attenuated endowments or endowments that require
     // to be imported in a different way
