@@ -32,6 +32,10 @@ const ENTRY_POINTS = {
     entryPoint: './src/webworker/pool/index.ts',
     html: true,
   },
+  console: {
+    entryPoint: './src/console.ts',
+    node: true,
+  },
 };
 
 const OUTPUT_PATH = './dist/browserify';
