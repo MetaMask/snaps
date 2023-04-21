@@ -1,7 +1,10 @@
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 
 import { rootRealmGlobal } from '../globalObject';
-import consoleEndowment, { consoleAttenuatedMethods } from './console';
+import consoleEndowment, {
+  consoleAttenuatedMethods,
+  consoleMethods,
+} from './console';
 
 describe('Console endowment', () => {
   it('has expected properties', () => {
@@ -18,7 +21,8 @@ describe('Console endowment', () => {
       rootRealmGlobal.console,
     );
     const unchangedProperties = consoleProperties.filter(
-      (property) => !consoleAttenuatedMethods.has(property),
+      (property) =>
+        consoleMethods.has(property) && !consoleAttenuatedMethods.has(property),
     ) as (keyof typeof rootRealmGlobal.console)[];
     unchangedProperties.forEach((unchangedProperty) => {
       expect(console[unchangedProperty]).toStrictEqual(
