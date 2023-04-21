@@ -35,7 +35,7 @@ globalThis.btoa = harden(originalBtoa);
 describe('endowments', () => {
   describe('hardening', () => {
     const modules = buildCommonEndowments();
-    modules.forEach((endowment) => endowment.factory());
+    modules.forEach((endowment) => endowment.factory({ snapId: MOCK_SNAP_ID }));
 
     // Specially attenuated endowments or endowments that require
     // to be imported in a different way
