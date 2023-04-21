@@ -46,7 +46,7 @@ export const consoleMethods = new Set([
 const consoleFunctions = ['log', 'error', 'debug', 'info', 'warn'] as const;
 
 type ConsoleFunctions = {
-  [Key in typeof consoleFunctions[number]]?: typeof rootRealmGlobal.console[Key];
+  [Key in typeof consoleFunctions[number]]: typeof rootRealmGlobal.console[Key];
 };
 
 /**
@@ -116,7 +116,7 @@ function createConsole({ snapId }: EndowmentFactoryOptions = {}) {
             );
           },
         };
-      }, {}),
+      }, {} as ConsoleFunctions),
     },
   });
 }
