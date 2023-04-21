@@ -1,11 +1,12 @@
 import * as snapUtils from '@metamask/snaps-utils';
-import { logError, logInfo } from '@metamask/snaps-utils';
+import { logError, logInfo, NpmSnapFileNames } from '@metamask/snaps-utils';
 import chokidar from 'chokidar';
 import EventEmitter from 'events';
 import http from 'http';
 import path from 'path';
 
 import watch from '.';
+import { CONFIG_FILE } from '../../utils';
 import * as build from '../build/bundle';
 import * as evalModule from '../eval/evalHandler';
 import * as manifest from '../manifest/manifestHandler';
@@ -86,7 +87,11 @@ describe('watch', () => {
       expect(validateDirPathMock).toHaveBeenCalledWith(mockDist, true);
       expect(validateFilePathMock).toHaveBeenCalledWith(mockSrc);
       expect(validateOutfileNameMock).toHaveBeenCalledWith(mockOutfileName);
-      expect(chokidarMock.mock.calls[0][0]).toBe('src/');
+      expect(chokidarMock.mock.calls[0][0]).toStrictEqual([
+        'src',
+        NpmSnapFileNames.Manifest,
+        CONFIG_FILE,
+      ]);
     });
 
     it('successfully processes arguments from yargs: nested src path', async () => {
@@ -111,7 +116,11 @@ describe('watch', () => {
       expect(validateDirPathMock).toHaveBeenCalledWith(mockDist, true);
       expect(validateFilePathMock).toHaveBeenCalledWith('foo/index.js');
       expect(validateOutfileNameMock).toHaveBeenCalledWith(mockOutfileName);
-      expect(chokidarMock.mock.calls[0][0]).toBe('foo/');
+      expect(chokidarMock.mock.calls[0][0]).toStrictEqual([
+        'foo',
+        NpmSnapFileNames.Manifest,
+        CONFIG_FILE,
+      ]);
     });
 
     it('successfully handles when an outfileName is not provided', async () => {
