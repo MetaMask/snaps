@@ -1,12 +1,13 @@
 import { assert, is, StructError } from 'superstruct';
 
-import { getSnapManifest } from '../test-utils';
+import { getSnapManifest, MOCK_SNAP_ID } from '../test-utils';
 import {
   assertIsSnapManifest,
   Bip32EntropyStruct,
   Bip32PathStruct,
   createSnapManifest,
   isSnapManifest,
+  SnapIdsStruct,
 } from './validation';
 
 describe('Bip32PathStruct', () => {
@@ -115,6 +116,24 @@ describe('Bip32EntropyStruct', () => {
       expect(is(value, Bip32EntropyStruct)).toBe(false);
     },
   );
+});
+
+describe('SnapIdsStruct', () => {
+  it('requires valid snap IDs', () => {
+    expect(is({ [MOCK_SNAP_ID]: {} }, SnapIdsStruct)).toBe(true);
+    expect(is({ fooBar: {} }, SnapIdsStruct)).toBe(false);
+  });
+
+  it('requires a valid snap ID object', () => {
+    expect(is({ [MOCK_SNAP_ID]: {} }, SnapIdsStruct)).toBe(true);
+    expect(is({ [MOCK_SNAP_ID]: { version: '2.0.0' } }, SnapIdsStruct)).toBe(
+      true,
+    );
+    expect(is({ [MOCK_SNAP_ID]: { version: '!34' } }, SnapIdsStruct)).toBe(
+      false,
+    );
+    expect(is({ fooBar: {} }, SnapIdsStruct)).toBe(false);
+  });
 });
 
 describe('isSnapManifest', () => {
