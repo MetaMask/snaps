@@ -18,14 +18,7 @@
   },
   "initialPermissions": {
     "wallet_snap": {
-      "caveats": [
-        {
-          "type": "snapIds",
-          "value": {
-            "local:http://localhost:8100": {}
-          }
-        }
-      ]
+      "local:http://localhost:8100": {}
     },
     "endowment:rpc": {
       "dapps": true
