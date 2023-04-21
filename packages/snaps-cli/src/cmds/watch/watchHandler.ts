@@ -8,6 +8,7 @@ import {
   NpmSnapFileNames,
 } from '@metamask/snaps-utils';
 import chokidar from 'chokidar';
+import pathUtils from 'path';
 
 import { YargsArgs } from '../../types/yargs';
 import { CONFIG_FILE, loadConfig } from '../../utils';
@@ -42,9 +43,7 @@ export async function watch(argv: YargsArgs): Promise<void> {
   }
   await validateFilePath(src);
   await validateDirPath(dist, true);
-  const srcDir = src.includes('/')
-    ? src.substring(0, src.lastIndexOf('/') + 1)
-    : '.';
+  const srcDir = pathUtils.dirname(src);
   const watchDirs = [srcDir, NpmSnapFileNames.Manifest, CONFIG_FILE];
   const outfilePath = getOutfilePath(dist, outfileName);
 
