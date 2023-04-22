@@ -129,7 +129,7 @@ describe('SnapIdsStruct', () => {
     expect(is({ [MOCK_SNAP_ID]: { version: '2.0.0' } }, SnapIdsStruct)).toBe(
       true,
     );
-    expect(is({ [MOCK_SNAP_ID]: { version: '!34' } }, SnapIdsStruct)).toBe(
+    expect(is({ [MOCK_SNAP_ID]: { version: '3.0.0.0' } }, SnapIdsStruct)).toBe(
       false,
     );
     expect(is({ fooBar: {} }, SnapIdsStruct)).toBe(false);
