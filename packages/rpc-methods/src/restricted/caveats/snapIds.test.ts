@@ -67,7 +67,7 @@ describe('validateSnapIdsCaveats', () => {
       'Expected caveat to have a value property of a non-empty object of snap IDs.: At path: value.npm:@metamask/example-snap -- Expected the value to satisfy a union of `object | object`, but received: "foobar".',
     );
     expect(() => validateSnapIdsCaveat(invalidVersionCaveat)).toThrow(
-      'Expected caveat to have a value property of a non-empty object of snap IDs.: At path: value.npm:@metamask/example-snap -- Expected the value to satisfy a union of `object | object`, but received: [object Object].',
+      'Expected caveat to have a value property of a non-empty object of snap IDs.: At path: value.npm:@metamask/example-snap -- Snap ID object is invalid, must be empty or have a version key with a valid SemVer range.',
     );
   });
 });
