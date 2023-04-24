@@ -8,7 +8,7 @@ import {
 import { SnapIds, SnapCaveatType, SnapIdsStruct } from '@metamask/snaps-utils';
 import { hasProperty, Json, assertStruct } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
-import { refine, type } from 'superstruct';
+import { type } from 'superstruct';
 
 import { InvokeSnapParams } from '../invokeSnap';
 
@@ -45,12 +45,7 @@ export function validateSnapIdsCaveat(
   assertStruct(
     caveat,
     type({
-      value: refine(SnapIdsStruct, 'SnapIdsCaveat', (value) => {
-        if (Object.keys(value).length === 0) {
-          return false;
-        }
-        return true;
-      }),
+      value: SnapIdsStruct,
     }),
     'Expected caveat to have a value property of a non-empty object of snap IDs.',
     ethErrors.rpc.invalidParams,

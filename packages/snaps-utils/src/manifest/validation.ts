@@ -1,8 +1,9 @@
 import {
   assertStruct,
   ChecksumStruct,
-  VersionRangeStruct,
   VersionStruct,
+  isValidSemVerRange,
+  isObject,
 } from '@metamask/utils';
 import {
   array,
@@ -98,26 +99,35 @@ export const SnapGetBip32EntropyPermissionsStruct = size(
   Infinity,
 );
 
-export const SnapIdsStruct = record(
-  refine(string(), 'SnapId', (value) => {
-    if (!is(value, SnapIdStruct)) {
-      return 'Invalid snap ID';
+export const SnapIdsStruct = refine(
+  record(
+    refine(string(), 'SnapId', (value) => {
+      if (!is(value, SnapIdStruct)) {
+        return 'Invalid snap ID';
+      }
+      return true;
+    }),
+    refine(
+      union([object({}), object({ version: string() })]),
+      'SnapIdObject',
+      (value: unknown) => {
+        if (is(value, object({}))) {
+          return true;
+        }
+        if (isObject(value) && isValidSemVerRange(value.version)) {
+          return true;
+        }
+        return 'Snap ID object is invalid, must be empty or have a version key with a valid SemVer range.';
+      },
+    ),
+  ),
+  'SnapIds',
+  (value) => {
+    if (Object.keys(value).length === 0) {
+      return false;
     }
     return true;
-  }),
-  refine(
-    union([object({}), object({ version: VersionRangeStruct })]),
-    'SnapIdObject',
-    (value) => {
-      if (is(value, object({}))) {
-        return true;
-      }
-      if (is(value, object({ version: VersionRangeStruct }))) {
-        return true;
-      }
-      return 'Snap ID object is invalid, must be empty or have a version key with a valid SemVer range.';
-    },
-  ),
+  },
 );
 
 export type SnapIds = Infer<typeof SnapIdsStruct>;

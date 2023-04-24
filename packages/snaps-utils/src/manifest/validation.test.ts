@@ -119,6 +119,10 @@ describe('Bip32EntropyStruct', () => {
 });
 
 describe('SnapIdsStruct', () => {
+  it('requires at least one snap ID', () => {
+    expect(is({}, SnapIdsStruct)).toBe(false);
+  });
+
   it('requires valid snap IDs', () => {
     expect(is({ [MOCK_SNAP_ID]: {} }, SnapIdsStruct)).toBe(true);
     expect(is({ fooBar: {} }, SnapIdsStruct)).toBe(false);
