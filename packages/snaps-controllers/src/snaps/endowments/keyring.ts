@@ -7,6 +7,7 @@ import {
   PermissionType,
   PermissionValidatorConstraint,
   ValidPermissionSpecification,
+  SubjectType,
 } from '@metamask/permission-controller';
 import {
   assertIsNamespacesObject,
@@ -63,6 +64,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
         });
       }
     },
+    subjectTypes: [SubjectType.Snap],
   };
 };
 

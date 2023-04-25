@@ -3,6 +3,7 @@ import {
   PermissionType,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
+  SubjectType,
 } from '@metamask/permission-controller';
 import { SIP_6_MAGIC_VALUE } from '@metamask/snaps-utils';
 import { assertStruct, Hex, NonEmptyArray } from '@metamask/utils';
@@ -51,6 +52,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
     targetKey,
     allowedCaveats,
     methodImplementation: getEntropyImplementation(methodHooks),
+    subjectTypes: [SubjectType.Snap],
   };
 };
 

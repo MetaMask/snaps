@@ -3,6 +3,7 @@ import {
   PermissionType,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
+  SubjectType,
 } from '@metamask/permission-controller';
 import { STATE_ENCRYPTION_MAGIC_VALUE } from '@metamask/snaps-utils';
 import {
@@ -111,6 +112,7 @@ export const specificationBuilder: PermissionSpecificationBuilder<
     targetKey: methodName,
     allowedCaveats,
     methodImplementation: getManageStateImplementation(methodHooks),
+    subjectTypes: [SubjectType.Snap],
   };
 };
 

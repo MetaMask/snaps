@@ -23,6 +23,8 @@ import {
   SubjectPermissions,
   ValidPermission,
   UpdateCaveat,
+  GetSubjectMetadata,
+  SubjectType,
 } from '@metamask/permission-controller';
 import {
   caveatMappers,
@@ -60,10 +62,6 @@ import {
   logError,
   logWarning,
 } from '@metamask/snaps-utils';
-import {
-  GetSubjectMetadata,
-  SubjectType,
-} from '@metamask/subject-metadata-controller';
 import {
   assert,
   Duration,
