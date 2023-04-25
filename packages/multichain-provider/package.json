@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@metamask/providers": "^10.2.1",
-    "@metamask/safe-event-emitter": "^2.0.0",
+    "@metamask/safe-event-emitter": "^3.0.0",
     "@metamask/snaps-utils": "workspace:^",
     "@metamask/utils": "^5.0.0",
     "nanoid": "^3.1.31"
