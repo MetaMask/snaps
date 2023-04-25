@@ -3,7 +3,6 @@ import {
   ChecksumStruct,
   VersionStruct,
   isValidSemVerRange,
-  isObject,
 } from '@metamask/utils';
 import {
   array,
@@ -99,33 +98,21 @@ export const SnapGetBip32EntropyPermissionsStruct = size(
   Infinity,
 );
 
+export const SemVerRangeStruct = refine(string(), 'SemVer range', (value) => {
+  if (isValidSemVerRange(value)) {
+    return true;
+  }
+  return 'Expected a valid SemVer range.';
+});
+
 export const SnapIdsStruct = refine(
-  record(
-    refine(string(), 'SnapId', (value) => {
-      if (!is(value, SnapIdStruct)) {
-        return 'Invalid snap ID';
-      }
-      return true;
-    }),
-    refine(
-      union([object({}), object({ version: string() })]),
-      'SnapIdObject',
-      (value: unknown) => {
-        if (is(value, object({}))) {
-          return true;
-        }
-        if (isObject(value) && isValidSemVerRange(value.version)) {
-          return true;
-        }
-        return 'Snap ID object is invalid, must be empty or have a version key with a valid SemVer range.';
-      },
-    ),
-  ),
+  record(SnapIdStruct, object({ version: optional(SemVerRangeStruct) })),
   'SnapIds',
   (value) => {
     if (Object.keys(value).length === 0) {
       return false;
     }
+
     return true;
   },
 );
