@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.packages.json",
+  "compilerOptions": {
+    "baseUrl": "./"
+  },
+  "include": ["./src", "webpack.config.ts"],
+  "references": [
+    {
+      "path": "../snaps-utils"
+    },
+    {
+      "path": "../snaps-controllers"
+    }
+  ]
+}

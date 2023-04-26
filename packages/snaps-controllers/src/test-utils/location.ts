@@ -10,7 +10,8 @@ import {
   getSnapManifest,
 } from '@metamask/snaps-utils/test-utils';
 import { assert } from '@metamask/utils';
-import { SnapLocation } from 'src/snaps/location';
+
+import { SnapLocation } from '../snaps/location';
 
 const MANIFEST_PATH = 'snap.manifest.json';
 

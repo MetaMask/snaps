@@ -1,0 +1,88 @@
+{
+  "name": "@metamask/snaps-benchmarks",
+  "version": "0.32.2",
+  "description": "A list of benchmarks for MetaMask Snaps, and a tool to generate them.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps-monorepo.git"
+  },
+  "license": "ISC",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "test": "jest && yarn posttest",
+    "posttest": "jest-it-up",
+    "test:ci": "yarn test",
+    "lint:eslint": "eslint . --cache --ext js,ts",
+    "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
+    "lint": "yarn lint:eslint && yarn lint:misc --check",
+    "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
+    "lint:changelog": "yarn auto-changelog validate",
+    "build:tsc": "tsc --project tsconfig.build.json",
+    "build": "yarn build:tsc",
+    "build:clean": "yarn clean && yarn build",
+    "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
+    "prepare-manifest:preview": "../../scripts/prepare-preview-manifest.sh",
+    "publish:preview": "yarn npm publish --tag preview"
+  },
+  "dependencies": {
+    "@babel/preset-typescript": "^7.21.4",
+    "@metamask/snaps-controllers": "workspace:^",
+    "@metamask/snaps-utils": "workspace:^",
+    "@metamask/utils": "^5.0.0",
+    "babel-loader": "^9.1.2",
+    "extract-zip": "^2.0.1",
+    "html-webpack-plugin": "^5.5.1",
+    "node-polyfill-webpack-plugin": "^2.0.1",
+    "serve-handler": "^6.1.5",
+    "ts-loader": "^9.4.2",
+    "tsconfig-paths-webpack-plugin": "^4.0.1",
+    "webdriverio": "^8.8.6",
+    "webpack": "^5.81.0",
+    "webpack-cli": "^5.0.2",
+    "yargs": "^17.7.1"
+  },
+  "devDependencies": {
+    "@lavamoat/allow-scripts": "^2.0.3",
+    "@metamask/auto-changelog": "^3.1.0",
+    "@metamask/eslint-config": "^11.0.0",
+    "@metamask/eslint-config-jest": "^11.0.0",
+    "@metamask/eslint-config-nodejs": "^11.0.1",
+    "@metamask/eslint-config-typescript": "^11.0.0",
+    "@types/jest": "^27.5.1",
+    "@types/node": "^17.0.36",
+    "@types/rimraf": "^3.0.0",
+    "@types/serve-handler": "^6.1.0",
+    "@types/yargs": "^17.0.24",
+    "@typescript-eslint/eslint-plugin": "^5.42.1",
+    "@typescript-eslint/parser": "^5.42.1",
+    "babel-jest": "^29.5.0",
+    "eslint": "^8.27.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jest": "^27.1.5",
+    "eslint-plugin-jsdoc": "^39.6.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "execa": "^5.1.1",
+    "jest": "^29.0.2",
+    "jest-it-up": "^2.0.0",
+    "prettier": "^2.7.1",
+    "prettier-plugin-packagejson": "^2.2.11",
+    "rimraf": "^4.1.2",
+    "ts-jest": "^29.0.2",
+    "ts-node": "^10.9.1",
+    "tsc-watch": "^4.5.0",
+    "typescript": "^5.0.4"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "lavamoat": {
+    "allowScripts": {
+      "@lavamoat/preinstall-always-fail": false
+    }
+  },
+  "private": true
+}
