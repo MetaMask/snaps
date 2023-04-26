@@ -96,6 +96,7 @@
       },
       "packages": {
         "@metamask/object-multiplex": true,
+        "@metamask/providers>@metamask/safe-event-emitter": true,
         "@metamask/providers>detect-browser": true,
         "@metamask/providers>extension-port-stream": true,
         "@metamask/providers>fast-deep-equal": true,
@@ -103,8 +104,18 @@
         "@metamask/providers>json-rpc-middleware-stream": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
-        "json-rpc-engine>@metamask/safe-event-emitter": true,
         "pump": true
+      }
+    },
+    "@metamask/providers>@metamask/safe-event-emitter": {
+      "builtin": {
+        "events.EventEmitter": true
+      },
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "events": true
       }
     },
     "@metamask/providers>detect-browser": {
@@ -130,8 +141,19 @@
         "setTimeout": true
       },
       "packages": {
-        "browserify>readable-stream": true,
-        "json-rpc-engine>@metamask/safe-event-emitter": true
+        "@metamask/providers>json-rpc-middleware-stream>@metamask/safe-event-emitter": true,
+        "browserify>readable-stream": true
+      }
+    },
+    "@metamask/providers>json-rpc-middleware-stream>@metamask/safe-event-emitter": {
+      "builtin": {
+        "events.EventEmitter": true
+      },
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "events": true
       }
     },
     "@metamask/rpc-methods>@noble/hashes": {
