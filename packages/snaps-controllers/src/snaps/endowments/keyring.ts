@@ -7,6 +7,7 @@ import {
   PermissionType,
   PermissionValidatorConstraint,
   ValidPermissionSpecification,
+  SubjectType,
 } from '@metamask/permission-controller';
 import {
   assertIsNamespacesObject,
@@ -32,6 +33,7 @@ type KeyringSpecification = ValidPermissionSpecification<{
   endowmentGetter: (_options?: any) => undefined;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
   validator: PermissionValidatorConstraint;
+  subjectTypes: readonly SubjectType[];
 }>;
 
 type KeyringSpecificationBuilderOptions = {
@@ -63,6 +65,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
         });
       }
     },
+    subjectTypes: [SubjectType.Snap],
   };
 };
 

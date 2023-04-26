@@ -10,6 +10,7 @@ import {
   PermissionValidatorConstraint,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
+  SubjectType,
 } from '@metamask/permission-controller';
 import { Bip32Entropy, SnapCaveatType } from '@metamask/snaps-utils';
 import { NonEmptyArray, assert } from '@metamask/utils';
@@ -74,6 +75,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
         });
       }
     },
+    subjectTypes: [SubjectType.Snap],
   };
 };
 

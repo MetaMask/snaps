@@ -1,6 +1,7 @@
 import {
   PermissionConstraint,
   PermissionType,
+  SubjectType,
 } from '@metamask/permission-controller';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import { getNamespace } from '@metamask/snaps-utils/test-utils';
@@ -22,6 +23,7 @@ describe('specificationBuilder', () => {
       allowedCaveats: [SnapCaveatType.SnapKeyring],
       endowmentGetter: expect.any(Function),
       validator: expect.any(Function),
+      subjectTypes: [SubjectType.Snap],
     });
 
     expect(specification.endowmentGetter()).toBeUndefined();
