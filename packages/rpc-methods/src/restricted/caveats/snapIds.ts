@@ -3,12 +3,35 @@ import {
   RestrictedMethodOptions,
   RestrictedMethodParameters,
   RestrictedMethodCaveatSpecificationConstraint,
+  PermissionConstraint,
 } from '@metamask/permission-controller';
-import { assertIsValidSnapId, SnapCaveatType } from '@metamask/snaps-utils';
-import { isObject, hasProperty } from '@metamask/utils';
+import { SnapIds, SnapCaveatType, SnapIdsStruct } from '@metamask/snaps-utils';
+import { hasProperty, Json, assertStruct } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
+import { type } from 'superstruct';
 
 import { InvokeSnapParams } from '../invokeSnap';
+
+/**
+ * Map a raw value from the `initialPermissions` to a caveat specification.
+ * Note that this function does not do any validation, that's handled by the
+ * PermissionsController when the permission is requested.
+ *
+ * @param value - The raw value from the `initialPermissions`.
+ * @returns The caveat specification.
+ */
+export function snapIdsCaveatMapper(
+  value: Json,
+): Pick<PermissionConstraint, 'caveats'> {
+  return {
+    caveats: [
+      {
+        type: SnapCaveatType.SnapIds,
+        value,
+      },
+    ],
+  };
+}
 
 /**
  * Validates that the caveat value exists and is a non-empty object.
@@ -16,17 +39,17 @@ import { InvokeSnapParams } from '../invokeSnap';
  * @param caveat - The caveat to validate.
  * @throws If the caveat is invalid.
  */
-export function validateSnapIdsCaveat(caveat: Caveat<string, any>) {
-  if (!isObject(caveat.value) || Object.keys(caveat.value).length === 0) {
-    throw ethErrors.rpc.invalidParams({
-      message:
-        'Expected caveat to have a value property of a non-empty object of snap IDs.',
-    });
-  }
-  const snapIds = Object.keys(caveat.value);
-  for (const snapId of snapIds) {
-    assertIsValidSnapId(snapId);
-  }
+export function validateSnapIdsCaveat(
+  caveat: Caveat<string, any>,
+): asserts caveat is Caveat<string, SnapIds> {
+  assertStruct(
+    caveat,
+    type({
+      value: SnapIdsStruct,
+    }),
+    'Expected caveat to have a value property of a non-empty object of snap IDs.',
+    ethErrors.rpc.invalidParams,
+  );
 }
 
 export const SnapIdsCaveatSpecification: Record<

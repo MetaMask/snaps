@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps-monorepo.git"
   },
   "source": {
-    "shasum": "ypHQ9cYOQTfuT3AG2P1AOQatfq9LZhRiVUmBVuWzxx8=",
+    "shasum": "wWNruPmUhyQxst7Rw5+o4DWM2N93FjJbw9Sh+BLHPr8=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
@@ -18,14 +18,7 @@
   },
   "initialPermissions": {
     "wallet_snap": {
-      "caveats": [
-        {
-          "type": "snapIds",
-          "value": {
-            "local:http://localhost:8100": {}
-          }
-        }
-      ]
+      "local:http://localhost:8100": {}
     },
     "endowment:rpc": {
       "dapps": true
