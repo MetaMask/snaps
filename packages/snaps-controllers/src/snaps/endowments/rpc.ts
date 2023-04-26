@@ -7,6 +7,7 @@ import {
   PermissionType,
   PermissionValidatorConstraint,
   ValidPermissionSpecification,
+  SubjectType,
 } from '@metamask/permission-controller';
 import {
   assertIsRpcOrigins,
@@ -32,6 +33,7 @@ type RpcSpecification = ValidPermissionSpecification<{
   endowmentGetter: (_options?: any) => undefined;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
   validator: PermissionValidatorConstraint;
+  subjectTypes: readonly SubjectType[];
 }>;
 
 type RpcSpecificationBuilderOptions = {
@@ -63,6 +65,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
         });
       }
     },
+    subjectTypes: [SubjectType.Snap],
   };
 };
 

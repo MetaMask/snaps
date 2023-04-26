@@ -1,4 +1,4 @@
-import { PermissionType } from '@metamask/permission-controller';
+import { PermissionType, SubjectType } from '@metamask/permission-controller';
 
 import { SnapEndowments } from '.';
 import { longRunningEndowmentBuilder } from './long-running';
@@ -11,6 +11,7 @@ describe('endowment:long-running', () => {
       targetKey: SnapEndowments.LongRunning,
       endowmentGetter: expect.any(Function),
       allowedCaveats: null,
+      subjectTypes: [SubjectType.Snap],
     });
 
     expect(specification.endowmentGetter()).toBeUndefined();

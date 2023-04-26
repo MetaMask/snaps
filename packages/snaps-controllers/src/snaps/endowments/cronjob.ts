@@ -6,6 +6,7 @@ import {
   PermissionConstraint,
   Caveat,
   CaveatSpecificationConstraint,
+  SubjectType,
 } from '@metamask/permission-controller';
 import {
   SnapCaveatType,
@@ -48,6 +49,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
     targetKey: permissionName,
     allowedCaveats: [SnapCaveatType.SnapCronjob],
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => undefined,
+    subjectTypes: [SubjectType.Snap],
   };
 };
 

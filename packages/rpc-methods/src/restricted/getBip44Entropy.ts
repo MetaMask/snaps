@@ -5,6 +5,7 @@ import {
   PermissionValidatorConstraint,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
+  SubjectType,
 } from '@metamask/permission-controller';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import { NonEmptyArray } from '@metamask/utils';
@@ -74,6 +75,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
         });
       }
     },
+    subjectTypes: [SubjectType.Snap],
   };
 };
 
