@@ -3,6 +3,7 @@ import {
   PermissionType,
   EndowmentGetterParams,
   ValidPermissionSpecification,
+  SubjectType,
 } from '@metamask/permission-controller';
 
 import { SnapEndowments } from './enum';
@@ -35,6 +36,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
     targetKey: permissionName,
     allowedCaveats: null,
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => undefined,
+    subjectTypes: [SubjectType.Snap],
   };
 };
 

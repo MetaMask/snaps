@@ -1,4 +1,4 @@
-import { PermissionType } from '@metamask/permission-controller';
+import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { heading, panel, text } from '@metamask/snaps-ui';
 
 import {
@@ -26,11 +26,12 @@ describe('builder', () => {
           showDialog: jest.fn(),
         },
       }),
-    ).toMatchObject({
+    ).toStrictEqual({
       permissionType: PermissionType.RestrictedMethod,
       targetKey: 'snap_dialog',
       allowedCaveats: null,
       methodImplementation: expect.any(Function),
+      subjectTypes: [SubjectType.Snap],
     });
   });
 });

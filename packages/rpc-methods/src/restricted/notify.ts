@@ -3,6 +3,7 @@ import {
   PermissionType,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
+  SubjectType,
 } from '@metamask/permission-controller';
 import { NonEmptyArray, isObject } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
@@ -81,6 +82,7 @@ export const specificationBuilder: PermissionSpecificationBuilder<
     targetKey: methodName,
     allowedCaveats,
     methodImplementation: getImplementation(methodHooks),
+    subjectTypes: [SubjectType.Snap],
   };
 };
 

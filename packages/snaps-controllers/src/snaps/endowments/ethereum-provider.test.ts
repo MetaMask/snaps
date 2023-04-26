@@ -1,4 +1,4 @@
-import { PermissionType } from '@metamask/permission-controller';
+import { PermissionType, SubjectType } from '@metamask/permission-controller';
 
 import { SnapEndowments } from './enum';
 import { ethereumProviderEndowmentBuilder } from './ethereum-provider';
@@ -13,6 +13,7 @@ describe('endowment:eip1193', () => {
       targetKey: SnapEndowments.EthereumProvider,
       endowmentGetter: expect.any(Function),
       allowedCaveats: null,
+      subjectTypes: [SubjectType.Snap],
     });
 
     expect(specification.endowmentGetter()).toStrictEqual(['ethereum']);

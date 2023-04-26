@@ -30,9 +30,9 @@
   "dependencies": {
     "@metamask/browser-passworder": "^4.0.2",
     "@metamask/key-tree": "^7.0.0",
-    "@metamask/permission-controller": "^3.1.0",
-    "@metamask/snaps-ui": "^0.32.2",
-    "@metamask/snaps-utils": "^0.32.2",
+    "@metamask/permission-controller": "^3.2.0",
+    "@metamask/snaps-ui": "workspace:^",
+    "@metamask/snaps-utils": "workspace:^",
     "@metamask/types": "^1.1.0",
     "@metamask/utils": "^5.0.0",
     "@noble/hashes": "^1.1.3",

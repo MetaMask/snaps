@@ -7,6 +7,7 @@ import {
   PermissionConstraint,
   CaveatSpecificationConstraint,
   Caveat,
+  SubjectType,
 } from '@metamask/permission-controller';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
@@ -59,6 +60,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
         });
       }
     },
+    subjectTypes: [SubjectType.Snap],
   };
 };
 
