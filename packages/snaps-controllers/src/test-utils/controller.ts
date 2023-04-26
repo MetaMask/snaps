@@ -4,6 +4,8 @@ import {
   SubjectPermissions,
   ValidPermission,
   Caveat,
+  SubjectMetadata,
+  SubjectType,
 } from '@metamask/permission-controller';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
 import { SnapCaveatType } from '@metamask/snaps-utils';
@@ -15,10 +17,6 @@ import {
   MOCK_ORIGIN,
   MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
-import {
-  SubjectMetadata,
-  SubjectType,
-} from '@metamask/subject-metadata-controller';
 import { Json } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 

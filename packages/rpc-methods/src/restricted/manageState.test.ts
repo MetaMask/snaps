@@ -1,4 +1,5 @@
 import { encrypt } from '@metamask/browser-passworder';
+import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import {
   MOCK_LOCAL_SNAP_ID,
   MOCK_SNAP_ID,
@@ -52,8 +53,9 @@ describe('snap_manageState', () => {
       ).toStrictEqual({
         allowedCaveats: null,
         methodImplementation: expect.anything(),
-        permissionType: 'RestrictedMethod',
+        permissionType: PermissionType.RestrictedMethod,
         targetKey: 'snap_manageState',
+        subjectTypes: [SubjectType.Snap],
       });
     });
   });

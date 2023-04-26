@@ -40,11 +40,15 @@ describe('builder', () => {
           handleSnapRpcRequest: jest.fn(),
         },
       }),
-    ).toMatchObject({
+    ).toStrictEqual({
       permissionType: PermissionType.RestrictedMethod,
       targetKey: WALLET_SNAP_PERMISSION_KEY,
       allowedCaveats: [SnapCaveatType.SnapIds],
       methodImplementation: expect.any(Function),
+      sideEffect: {
+        onPermitted: expect.any(Function),
+      },
+      validator: expect.any(Function),
     });
   });
 });

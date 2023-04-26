@@ -5,6 +5,7 @@ import {
   PermissionValidatorConstraint,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
+  SubjectType,
 } from '@metamask/permission-controller';
 import {
   bip32entropy,
@@ -88,6 +89,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
         });
       }
     },
+    subjectTypes: [SubjectType.Snap],
   };
 };
 
