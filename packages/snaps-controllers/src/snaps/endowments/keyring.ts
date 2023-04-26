@@ -33,6 +33,7 @@ type KeyringSpecification = ValidPermissionSpecification<{
   endowmentGetter: (_options?: any) => undefined;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
   validator: PermissionValidatorConstraint;
+  subjectTypes: readonly SubjectType[];
 }>;
 
 type KeyringSpecificationBuilderOptions = {
