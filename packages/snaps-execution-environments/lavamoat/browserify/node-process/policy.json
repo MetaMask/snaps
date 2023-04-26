@@ -157,13 +157,8 @@
       }
     },
     "@metamask/rpc-methods>@noble/hashes": {
-      "builtin": {
-        "crypto": true
-      },
       "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
+        "TextEncoder": true,
         "crypto": true
       }
     },
