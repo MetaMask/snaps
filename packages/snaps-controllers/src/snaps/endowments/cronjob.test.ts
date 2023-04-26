@@ -1,4 +1,8 @@
-import { Caveat, PermissionType } from '@metamask/permission-controller';
+import {
+  Caveat,
+  PermissionType,
+  SubjectType,
+} from '@metamask/permission-controller';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 
 import { SnapEndowments } from '.';
@@ -18,6 +22,7 @@ describe('endowment:cronjob', () => {
         targetKey: SnapEndowments.Cronjob,
         endowmentGetter: expect.any(Function),
         allowedCaveats: [SnapCaveatType.SnapCronjob],
+        subjectTypes: [SubjectType.Snap],
       });
 
       expect(specification.endowmentGetter()).toBeUndefined();
