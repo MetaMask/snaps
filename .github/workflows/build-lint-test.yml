@@ -54,6 +54,8 @@ jobs:
           cache: yarn
       - run: yarn --immutable --immutable-cache
       - run: yarn build
+      - name: Generate LavaMoat policy
+        run: yarn workspace @metamask/snaps-execution-environments build:lavamoat:policy
       - name: Require clean working directory
         shell: bash
         run: |
