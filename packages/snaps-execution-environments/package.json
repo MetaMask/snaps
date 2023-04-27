@@ -56,7 +56,7 @@
     "@browserify/uglifyify": "^6.0.0",
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
     "@esbuild-plugins/node-modules-polyfill": "^0.2.2",
-    "@lavamoat/allow-scripts": "^2.0.3",
+    "@lavamoat/allow-scripts": "^2.3.1",
     "@lavamoat/lavapack": "^3.3.0",
     "@lavamoat/lavatube": "^0.0.1",
     "@metamask/auto-changelog": "^3.1.0",

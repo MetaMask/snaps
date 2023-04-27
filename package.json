@@ -53,7 +53,7 @@
     "luxon@^3.2.1": "patch:luxon@npm%3A3.3.0#./.yarn/patches/luxon-npm-3.3.0-bdbae9bfd5.patch"
   },
   "devDependencies": {
-    "@lavamoat/allow-scripts": "^2.0.3",
+    "@lavamoat/allow-scripts": "^2.3.1",
     "@metamask/auto-changelog": "^3.1.0",
     "@metamask/eslint-config": "^11.0.0",
     "@metamask/eslint-config-jest": "^11.0.0",

@@ -39,7 +39,7 @@
     "superstruct": "^1.0.3"
   },
   "devDependencies": {
-    "@lavamoat/allow-scripts": "^2.0.3",
+    "@lavamoat/allow-scripts": "^2.3.1",
     "@metamask/auto-changelog": "^3.1.0",
     "@metamask/browser-passworder": "^4.0.2",
     "@metamask/eslint-config": "^11.0.0",
