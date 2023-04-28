@@ -8,8 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.33.0-flask.1]
 ### Changed
-- Updated Ethers.js example ([#1373](https://github.com/MetaMask/snaps-monorepo/pull/1373))
-- Updated signer examples ([#1360](https://github.com/MetaMask/snaps-monorepo/pull/1360))
+- Update Ethers.js example ([#1373](https://github.com/MetaMask/snaps-monorepo/pull/1373))
+- Update signer examples ([#1360](https://github.com/MetaMask/snaps-monorepo/pull/1360))
 
 ## [0.32.2]
 ### Changed

@@ -8,10 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.33.0-flask.1]
 ### Changed
-- Add subjectType restrictions to snap-specific permissions ([#1366](https://github.com/MetaMask/snaps-monorepo/pull/1366))
-- Add console endowment that prepends snap ids to log output ([#1355](https://github.com/MetaMask/snaps-monorepo/pull/1355))
+- Add subject type restrictions to snap-specific permissions ([#1366](https://github.com/MetaMask/snaps-monorepo/pull/1366))
+- Add console endowment that prepends snap IDs to log output ([#1355](https://github.com/MetaMask/snaps-monorepo/pull/1355))
 - Add `DisconnectOrigin` action ([#1329](https://github.com/MetaMask/snaps-monorepo/pull/1329))
-- Improved logging ([#1333](https://github.com/MetaMask/snaps-monorepo/pull/1333))
 - Add Web Worker support for snap execution ([#1320](https://github.com/MetaMask/snaps-monorepo/pull/1320))
 
 ## [0.32.2]

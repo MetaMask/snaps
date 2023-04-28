@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.33.0-flask.1]
 ### Changed
-- Updated CLI Babel config to support ES2022 modules ([#1373](https://github.com/MetaMask/snaps-monorepo/pull/1373))
+- Support ES2022 features ([#1373](https://github.com/MetaMask/snaps-monorepo/pull/1373))
 - Automatically watch `snap.config.js` and `snap.manifest.json` files ([#1358](https://github.com/MetaMask/snaps-monorepo/pull/1358))
 
 ## [0.32.2]

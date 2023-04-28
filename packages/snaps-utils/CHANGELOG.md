@@ -9,8 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.33.0-flask.1]
 ### Changed
 - **BREAKING:** Added `snapIds` caveat mapper ([#1360](https://github.com/MetaMask/snaps-monorepo/pull/1360))
-  - Snap dependencies should be specified in a simplified manner, see the PR for an example.
-- Add subjectType restrictions to snap-specific permissions ([#1366](https://github.com/MetaMask/snaps-monorepo/pull/1366))
+  - Snap dependencies must be specified in a simplified manner. See the PR for an example.
+- Add subject type restrictions to snap-specific permissions ([#1366](https://github.com/MetaMask/snaps-monorepo/pull/1366))
 - Add Web Worker support for snap execution ([#1320](https://github.com/MetaMask/snaps-monorepo/pull/1320))
 
 ### Fixed

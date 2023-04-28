@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.33.0-flask.1]
 ### Changed
 - **BREAKING:** Block `wallet_requestPermissions` ([#1371](https://github.com/MetaMask/snaps-monorepo/pull/1371))
-- Add console endowment that prepends snap ids to log output ([#1355](https://github.com/MetaMask/snaps-monorepo/pull/1355))
+- Add console endowment that prepends snap IDs to log output ([#1355](https://github.com/MetaMask/snaps-monorepo/pull/1355))
 - Add Web Worker support for snap execution ([#1320](https://github.com/MetaMask/snaps-monorepo/pull/1320))
 
 ### Fixed
