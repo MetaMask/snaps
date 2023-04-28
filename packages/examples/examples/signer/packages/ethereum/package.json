@@ -13,12 +13,12 @@
   "dependencies": {
     "@ethereumjs/tx": "^3.5.2",
     "@metamask/key-tree": "^7.0.0",
-    "@metamask/snaps-types": "^0.33.0-flask.1",
+    "@metamask/snaps-types": "workspace:^",
     "@metamask/utils": "^5.0.0",
     "buffer": "^6.0.3"
   },
   "devDependencies": {
-    "@metamask/snaps-cli": "^0.33.0-flask.1",
+    "@metamask/snaps-cli": "workspace:^",
     "through2": "^4.0.2"
   },
   "packageManager": "yarn@3.4.1"
