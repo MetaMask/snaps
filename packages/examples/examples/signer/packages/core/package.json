@@ -1,6 +1,6 @@
 {
   "name": "signer-core",
-  "version": "0.32.2",
+  "version": "0.33.0-flask.1",
   "private": true,
   "repository": {
     "type": "git",
@@ -16,8 +16,8 @@
   },
   "devDependencies": {
     "@metamask/key-tree": "^7.0.0",
-    "@metamask/snaps-cli": "^0.32.2",
-    "@metamask/snaps-types": "^0.32.2"
+    "@metamask/snaps-cli": "^0.33.0-flask.1",
+    "@metamask/snaps-types": "^0.33.0-flask.1"
   },
   "packageManager": "yarn@3.4.1"
 }
