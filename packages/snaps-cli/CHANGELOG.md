@@ -7,13 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.33.0-flask.1]
-### Uncategorized
-- Update CLI Babel config ([#1373](https://github.com/MetaMask/snaps-monorepo/pull/1373))
-- devDeps: @lavamoat/allow-scripts@2.0.3->2.3.1 ([#1372](https://github.com/MetaMask/snaps-monorepo/pull/1372))
-- Watch manifest and config files ([#1358](https://github.com/MetaMask/snaps-monorepo/pull/1358))
-- Synchronize package versions across the workspace ([#1326](https://github.com/MetaMask/snaps-monorepo/pull/1326))
-- Bump `MetaMask/action-npm-publish` to `v3` and update dependencies to use `workspace:^` ([#1325](https://github.com/MetaMask/snaps-monorepo/pull/1325))
-- Add E2E tests for Snaps CLI ([#1295](https://github.com/MetaMask/snaps-monorepo/pull/1295))
+### Changed
+- Updated CLI Babel config to support ES2022 modules ([#1373](https://github.com/MetaMask/snaps-monorepo/pull/1373))
+- Automatically watch `snap.config.js` and `snap.manifest.json` files ([#1358](https://github.com/MetaMask/snaps-monorepo/pull/1358))
 
 ## [0.32.2]
 ### Changed

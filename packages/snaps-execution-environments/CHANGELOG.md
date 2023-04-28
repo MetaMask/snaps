@@ -7,17 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.33.0-flask.1]
-### Uncategorized
-- devDeps: @lavamoat/allow-scripts@2.0.3->2.3.1 ([#1372](https://github.com/MetaMask/snaps-monorepo/pull/1372))
-- Added `snapIds` caveat mapper ([#1360](https://github.com/MetaMask/snaps-monorepo/pull/1360))
-- Block `wallet_requestPermissions` ([#1371](https://github.com/MetaMask/snaps-monorepo/pull/1371))
-- Bump @metamask/safe-event-emitter from 2.0.0 to 3.0.0 ([#1365](https://github.com/MetaMask/snaps-monorepo/pull/1365))
-- Add LavaMoat policy generation and update Buffer global in inline-source-map ([#1369](https://github.com/MetaMask/snaps-monorepo/pull/1369))
-- Add console endowment ([#1355](https://github.com/MetaMask/snaps-monorepo/pull/1355))
-- Fix Math endowment in Node.js ([#1347](https://github.com/MetaMask/snaps-monorepo/pull/1347))
+### Changed
+- **BREAKING:** Block `wallet_requestPermissions` ([#1371](https://github.com/MetaMask/snaps-monorepo/pull/1371))
+- Add console endowment that prepends snap ids to log output ([#1355](https://github.com/MetaMask/snaps-monorepo/pull/1355))
 - Add Web Worker support for snap execution ([#1320](https://github.com/MetaMask/snaps-monorepo/pull/1320))
-- Synchronize package versions across the workspace ([#1326](https://github.com/MetaMask/snaps-monorepo/pull/1326))
-- Bump `MetaMask/action-npm-publish` to `v3` and update dependencies to use `workspace:^` ([#1325](https://github.com/MetaMask/snaps-monorepo/pull/1325))
+
+### Fixed
+- Fix Math endowment in Node.js ([#1347](https://github.com/MetaMask/snaps-monorepo/pull/1347))
 
 ## [0.32.2]
 ### Changed

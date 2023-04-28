@@ -7,14 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.33.0-flask.1]
-### Uncategorized
-- devDeps: @lavamoat/allow-scripts@2.0.3->2.3.1 ([#1372](https://github.com/MetaMask/snaps-monorepo/pull/1372))
-- Added `snapIds` caveat mapper ([#1360](https://github.com/MetaMask/snaps-monorepo/pull/1360))
+### Added
 - Add subjectType restrictions to snap-specific permissions ([#1366](https://github.com/MetaMask/snaps-monorepo/pull/1366))
-- Add encrypt and decrypt hook to let implementations use their own functions ([#1331](https://github.com/MetaMask/snaps-monorepo/pull/1331))
 - Add `createSnapsMethodMiddleware` from extension ([#1330](https://github.com/MetaMask/snaps-monorepo/pull/1330))
-- Synchronize package versions across the workspace ([#1326](https://github.com/MetaMask/snaps-monorepo/pull/1326))
-- Bump `MetaMask/action-npm-publish` to `v3` and update dependencies to use `workspace:^` ([#1325](https://github.com/MetaMask/snaps-monorepo/pull/1325))
+
+### Changed
+- **BREAKING:** Add encrypt and decrypt hook to let implementations use their own functions ([#1331](https://github.com/MetaMask/snaps-monorepo/pull/1331))
+- **BREAKING:** Added `snapIds` caveat mapper ([#1360](https://github.com/MetaMask/snaps-monorepo/pull/1360))
+  - Snap dependencies should be specified in a simplified manner, see the PR for an example.
 
 ## [0.32.2]
 ### Changed

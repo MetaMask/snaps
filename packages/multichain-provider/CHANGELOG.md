@@ -7,11 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.33.0-flask.1]
-### Uncategorized
-- devDeps: @lavamoat/allow-scripts@2.0.3->2.3.1 ([#1372](https://github.com/MetaMask/snaps-monorepo/pull/1372))
-- Bump @metamask/safe-event-emitter from 2.0.0 to 3.0.0 ([#1365](https://github.com/MetaMask/snaps-monorepo/pull/1365))
-- Synchronize package versions across the workspace ([#1326](https://github.com/MetaMask/snaps-monorepo/pull/1326))
-- Bump `MetaMask/action-npm-publish` to `v3` and update dependencies to use `workspace:^` ([#1325](https://github.com/MetaMask/snaps-monorepo/pull/1325))
+### Changed
+- No changes this release.
+
 
 ## [0.32.2]
 ### Changed
