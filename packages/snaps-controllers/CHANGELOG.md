@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.33.0-flask.1]
+### Uncategorized
+- devDeps: @lavamoat/allow-scripts@2.0.3->2.3.1 ([#1372](https://github.com/MetaMask/snaps-monorepo/pull/1372))
+- Add subjectType restrictions to snap-specific permissions ([#1366](https://github.com/MetaMask/snaps-monorepo/pull/1366))
+- Add console endowment ([#1355](https://github.com/MetaMask/snaps-monorepo/pull/1355))
+- Added `DisconnectOrigin` action and refactored `removeSnapsFromSubjects` ([#1329](https://github.com/MetaMask/snaps-monorepo/pull/1329))
+- add snapId to select logs ([#1333](https://github.com/MetaMask/snaps-monorepo/pull/1333))
+- Add Web Worker support for snap execution ([#1320](https://github.com/MetaMask/snaps-monorepo/pull/1320))
+- Synchronize package versions across the workspace ([#1326](https://github.com/MetaMask/snaps-monorepo/pull/1326))
+- Bump `MetaMask/action-npm-publish` to `v3` and update dependencies to use `workspace:^` ([#1325](https://github.com/MetaMask/snaps-monorepo/pull/1325))
+
 ## [0.32.2]
 ### Fixed
 - Properly handle Promise in `JsonSnapsRegistry` signature verification ([#1317](https://github.com/MetaMask/snaps-monorepo/pull/1317))
@@ -497,7 +508,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.32.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.33.0-flask.1...HEAD
+[0.33.0-flask.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.32.2...v0.33.0-flask.1
 [0.32.2]: https://github.com/MetaMask/snaps-monorepo/compare/v0.32.1...v0.32.2
 [0.32.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.32.0...v0.32.1
 [0.32.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.31.0...v0.32.0

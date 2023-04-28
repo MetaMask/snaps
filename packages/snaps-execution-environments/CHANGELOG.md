@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.33.0-flask.1]
+### Uncategorized
+- devDeps: @lavamoat/allow-scripts@2.0.3->2.3.1 ([#1372](https://github.com/MetaMask/snaps-monorepo/pull/1372))
+- Added `snapIds` caveat mapper ([#1360](https://github.com/MetaMask/snaps-monorepo/pull/1360))
+- Block `wallet_requestPermissions` ([#1371](https://github.com/MetaMask/snaps-monorepo/pull/1371))
+- Bump @metamask/safe-event-emitter from 2.0.0 to 3.0.0 ([#1365](https://github.com/MetaMask/snaps-monorepo/pull/1365))
+- Add LavaMoat policy generation and update Buffer global in inline-source-map ([#1369](https://github.com/MetaMask/snaps-monorepo/pull/1369))
+- Add console endowment ([#1355](https://github.com/MetaMask/snaps-monorepo/pull/1355))
+- Fix Math endowment in Node.js ([#1347](https://github.com/MetaMask/snaps-monorepo/pull/1347))
+- Add Web Worker support for snap execution ([#1320](https://github.com/MetaMask/snaps-monorepo/pull/1320))
+- Synchronize package versions across the workspace ([#1326](https://github.com/MetaMask/snaps-monorepo/pull/1326))
+- Bump `MetaMask/action-npm-publish` to `v3` and update dependencies to use `workspace:^` ([#1325](https://github.com/MetaMask/snaps-monorepo/pull/1325))
+
 ## [0.32.2]
 ### Changed
 - No changes this release.
@@ -243,7 +256,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Previously, default endowments were specified in the execution environment itself. Now, all endowments must be specified in the `executeSnap` RPC parameters, except for the `wallet` API object.
 - Add endowments to the global `self` in addition to `window` ([#263](https://github.com/MetaMask/snaps-monorepo/pull/263))
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.32.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.33.0-flask.1...HEAD
+[0.33.0-flask.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.32.2...v0.33.0-flask.1
 [0.32.2]: https://github.com/MetaMask/snaps-monorepo/compare/v0.32.1...v0.32.2
 [0.32.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.32.0...v0.32.1
 [0.32.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.31.0...v0.32.0
