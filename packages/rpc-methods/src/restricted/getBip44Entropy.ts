@@ -1,21 +1,14 @@
 import { BIP44CoinTypeNode, JsonBIP44CoinTypeNode } from '@metamask/key-tree';
 import {
-  Caveat,
   PermissionSpecificationBuilder,
   PermissionType,
   PermissionValidatorConstraint,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
-  PermissionConstraint,
-  RestrictedMethodCaveatSpecificationConstraint,
+  SubjectType,
 } from '@metamask/permission-controller';
 import { SnapCaveatType } from '@metamask/snaps-utils';
-import {
-  hasProperty,
-  isPlainObject,
-  Json,
-  NonEmptyArray,
-} from '@metamask/utils';
+import { NonEmptyArray } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
 import { MethodHooksObject } from '../utils';
@@ -48,58 +41,9 @@ type GetBip44EntropySpecification = ValidPermissionSpecification<{
   validator: PermissionValidatorConstraint;
 }>;
 
-type GetBip44EntropyParams = {
+export type GetBip44EntropyParams = {
   coinType: number;
 };
-
-/**
- * Validate the params for `snap_getBip44Entropy`.
- *
- * @param value - The params to validate.
- * @throws If the params are invalid.
- */
-export function validateParams(
-  value: unknown,
-): asserts value is GetBip44EntropyParams {
-  if (!isPlainObject(value) || !hasProperty(value, 'coinType')) {
-    throw ethErrors.rpc.invalidParams({
-      message: 'Expected a plain object containing a coin type.',
-    });
-  }
-
-  if (
-    typeof value.coinType !== 'number' ||
-    !Number.isInteger(value.coinType) ||
-    value.coinType < 0 ||
-    value.coinType > 0x7fffffff
-  ) {
-    throw ethErrors.rpc.invalidParams({
-      message:
-        'Invalid "coinType" parameter. Coin type must be a non-negative integer.',
-    });
-  }
-}
-
-/**
- * Validate the coin types values associated with a caveat. This checks if the
- * values are non-negative integers (>= 0).
- *
- * @param caveat - The caveat to validate.
- * @throws If the caveat is invalid.
- */
-export function validateCaveat(caveat: Caveat<string, any>) {
-  if (
-    !hasProperty(caveat, 'value') ||
-    !Array.isArray(caveat.value) ||
-    caveat.value.length === 0
-  ) {
-    throw ethErrors.rpc.invalidParams({
-      message: 'Expected non-empty array of coin types.',
-    });
-  }
-
-  caveat.value.forEach(validateParams);
-}
 
 /**
  * The specification builder for the `snap_getBip44Entropy` permission.
@@ -131,6 +75,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
         });
       }
     },
+    subjectTypes: [SubjectType.Snap],
   };
 };
 
@@ -144,62 +89,6 @@ export const getBip44EntropyBuilder = Object.freeze({
   specificationBuilder,
   methodHooks,
 } as const);
-
-/**
- * Map a raw value from the `initialPermissions` to a caveat specification.
- * Note that this function does not do any validation, that's handled by the
- * PermissionsController when the permission is requested.
- *
- * @param value - The raw value from the `initialPermissions`.
- * @returns The caveat specification.
- */
-export function getBip44EntropyCaveatMapper(
-  value: Json,
-): Pick<PermissionConstraint, 'caveats'> {
-  return {
-    caveats: [
-      {
-        type: SnapCaveatType.PermittedCoinTypes,
-        value,
-      },
-    ],
-  };
-}
-
-export const getBip44EntropyCaveatSpecifications: Record<
-  SnapCaveatType.PermittedCoinTypes,
-  RestrictedMethodCaveatSpecificationConstraint
-> = {
-  [SnapCaveatType.PermittedCoinTypes]: Object.freeze({
-    type: SnapCaveatType.PermittedCoinTypes,
-    decorator: (
-      method,
-      caveat: Caveat<
-        SnapCaveatType.PermittedCoinTypes,
-        GetBip44EntropyParams[]
-      >,
-    ) => {
-      return async (args) => {
-        const { params } = args;
-        validateParams(params);
-
-        const coinType = caveat.value.find(
-          (caveatValue) => caveatValue.coinType === params.coinType,
-        );
-
-        if (!coinType) {
-          throw ethErrors.provider.unauthorized({
-            message:
-              'The requested coin type is not permitted. Allowed coin types must be specified in the snap manifest.',
-          });
-        }
-
-        return await method(args);
-      };
-    },
-    validator: (caveat) => validateCaveat(caveat),
-  }),
-};
 
 /**
  * Builds the method implementation for `snap_getBip44Entropy`.

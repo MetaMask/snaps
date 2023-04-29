@@ -1,3 +1,5 @@
+import { PermissionType, SubjectType } from '@metamask/permission-controller';
+import { SnapCaveatType } from '@metamask/snaps-utils';
 import { TEST_SECRET_RECOVERY_PHRASE_BYTES } from '@metamask/snaps-utils/test-utils';
 
 import {
@@ -13,6 +15,17 @@ describe('specificationBuilder', () => {
 
   const specification = getBip32PublicKeyBuilder.specificationBuilder({
     methodHooks,
+  });
+
+  it('outputs expected specification', () => {
+    expect(specification).toStrictEqual({
+      permissionType: PermissionType.RestrictedMethod,
+      targetKey: 'snap_getBip32PublicKey',
+      allowedCaveats: [SnapCaveatType.PermittedDerivationPaths],
+      methodImplementation: expect.any(Function),
+      subjectTypes: [SubjectType.Snap],
+      validator: expect.any(Function),
+    });
   });
 
   describe('validator', () => {

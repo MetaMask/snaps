@@ -17,8 +17,10 @@ function writeMessage(
 ) {
   stream.write({
     jobId: MOCK_JOB_ID,
-    frameUrl: IFRAME_URL,
     data: message,
+    extra: {
+      frameUrl: IFRAME_URL,
+    },
   });
 }
 

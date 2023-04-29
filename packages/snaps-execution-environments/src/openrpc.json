@@ -32,7 +32,7 @@
       "description": "executes a snap in the environment. The snap can then be interacted with via `snapRpc`",
       "params": [
         {
-          "name": "snapName",
+          "name": "snapId",
           "required": true,
           "description": "the name of the snap",
           "schema": {
@@ -75,7 +75,7 @@
           "name": "BasicTestSnapExecuteExample",
           "params": [
             {
-              "name": "snapName",
+              "name": "snapId",
               "value": "TestSnap"
             },
             {

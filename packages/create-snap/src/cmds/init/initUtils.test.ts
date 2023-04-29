@@ -224,7 +224,7 @@ describe('initUtils', () => {
       expect(execSyncMock).toHaveBeenCalledTimes(1);
       expect(execSyncMock).toHaveBeenCalledWith('yarn install', {
         stdio: [0, 1, 2],
-        cwd: pathUtils.resolve(__dirname, 'foo'),
+        cwd: 'foo',
       });
     });
 

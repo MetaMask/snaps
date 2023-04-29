@@ -21,7 +21,6 @@
         "browser": true,
         "chrome": true,
         "location.origin": true,
-        "onmessage": "write",
         "postMessage": true,
         "process.on": true,
         "process.removeListener": true,
@@ -29,24 +28,9 @@
         "removeEventListener": true
       },
       "packages": {
-        "@metamask/post-message-stream>@metamask/utils": true,
         "@metamask/post-message-stream>readable-stream": true,
+        "@metamask/utils": true,
         "worker_threads": true
-      }
-    },
-    "@metamask/post-message-stream>@metamask/utils": {
-      "builtin": {
-        "buffer.Buffer": true
-      },
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "buffer": true,
-        "eslint>debug": true,
-        "superstruct": true,
-        "ts-jest>semver": true
       }
     },
     "@metamask/post-message-stream>readable-stream": {
@@ -112,6 +96,7 @@
       },
       "packages": {
         "@metamask/object-multiplex": true,
+        "@metamask/providers>@metamask/safe-event-emitter": true,
         "@metamask/providers>detect-browser": true,
         "@metamask/providers>extension-port-stream": true,
         "@metamask/providers>fast-deep-equal": true,
@@ -119,8 +104,18 @@
         "@metamask/providers>json-rpc-middleware-stream": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
-        "json-rpc-engine>@metamask/safe-event-emitter": true,
         "pump": true
+      }
+    },
+    "@metamask/providers>@metamask/safe-event-emitter": {
+      "builtin": {
+        "events.EventEmitter": true
+      },
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "events": true
       }
     },
     "@metamask/providers>detect-browser": {
@@ -146,18 +141,24 @@
         "setTimeout": true
       },
       "packages": {
-        "browserify>readable-stream": true,
-        "json-rpc-engine>@metamask/safe-event-emitter": true
+        "@metamask/providers>json-rpc-middleware-stream>@metamask/safe-event-emitter": true,
+        "browserify>readable-stream": true
+      }
+    },
+    "@metamask/providers>json-rpc-middleware-stream>@metamask/safe-event-emitter": {
+      "builtin": {
+        "events.EventEmitter": true
+      },
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "events": true
       }
     },
     "@metamask/rpc-methods>@noble/hashes": {
-      "builtin": {
-        "crypto": true
-      },
       "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
+        "TextEncoder": true,
         "crypto": true
       }
     },
@@ -392,6 +393,7 @@
         "external:../snaps-utils/src/entropy.ts": true,
         "external:../snaps-utils/src/json-rpc.ts": true,
         "external:../snaps-utils/src/namespace.ts": true,
+        "external:../snaps-utils/src/snaps.ts": true,
         "external:../snaps-utils/src/types.ts": true,
         "superstruct": true
       }

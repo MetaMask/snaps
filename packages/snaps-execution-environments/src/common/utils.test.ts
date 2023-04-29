@@ -55,6 +55,12 @@ describe('assertSnapOutboundRequest', () => {
     ).toThrow('The method does not exist / is not available.');
   });
 
+  it('disallows wallet_requestPermissions', () => {
+    expect(() =>
+      assertSnapOutboundRequest({ method: 'wallet_requestPermissions' }),
+    ).toThrow('The method does not exist / is not available.');
+  });
+
   it('throws for invalid JSON values', () => {
     expect(() =>
       assertSnapOutboundRequest({
@@ -80,6 +86,12 @@ describe('assertEthereumOutboundRequest', () => {
   it('disallows snaps_ prefixed methods', () => {
     expect(() =>
       assertEthereumOutboundRequest({ method: 'snap_notify' }),
+    ).toThrow('The method does not exist / is not available.');
+  });
+
+  it('disallows wallet_requestPermissions', () => {
+    expect(() =>
+      assertEthereumOutboundRequest({ method: 'wallet_requestPermissions' }),
     ).toThrow('The method does not exist / is not available.');
   });
 

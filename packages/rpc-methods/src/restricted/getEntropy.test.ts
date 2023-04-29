@@ -1,4 +1,4 @@
-import { PermissionType } from '@metamask/permission-controller';
+import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import {
   MOCK_SNAP_ID,
   TEST_SECRET_RECOVERY_PHRASE_BYTES,
@@ -31,6 +31,7 @@ describe('getEntropyBuilder', () => {
       targetKey: 'snap_getEntropy',
       allowedCaveats: null,
       methodImplementation: expect.any(Function),
+      subjectTypes: [SubjectType.Snap],
     });
   });
 });

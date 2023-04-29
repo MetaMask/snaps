@@ -3,6 +3,7 @@ import {
   PermissionType,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
+  SubjectType,
 } from '@metamask/permission-controller';
 import { Component, ComponentStruct } from '@metamask/snaps-ui';
 import { NonEmptyArray } from '@metamask/utils';
@@ -91,6 +92,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
     targetKey: methodName,
     allowedCaveats,
     methodImplementation: getDialogImplementation(methodHooks),
+    subjectTypes: [SubjectType.Snap],
   };
 };
 

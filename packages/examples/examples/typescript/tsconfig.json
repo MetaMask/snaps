@@ -1,7 +1,11 @@
 {
   "extends": "../../../../tsconfig.packages.json",
   "compilerOptions": {
-    "typeRoots": ["../../../../node_modules/@types"]
+    "baseUrl": "./",
+    "typeRoots": ["../../../../node_modules/@types"],
+    "paths": {
+      "@metamask/*": ["../../../*/src"]
+    }
   },
   "include": ["src"]
 }

@@ -45,5 +45,12 @@ module.exports = {
         'node/no-callback-literal': 'off',
       },
     },
+
+    {
+      files: ['**/*.e2e.test.ts'],
+      rules: {
+        'jest/expect-expect': 'off',
+      },
+    },
   ],
 };

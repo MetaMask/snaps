@@ -4,17 +4,12 @@
 export {};
 
 type SnapsCliGlobals = {
-  snaps: {
-    verboseErrors?: boolean;
-    suppressWarnings?: boolean;
-    isWatching?: boolean;
-  };
+  verboseErrors?: boolean;
+  suppressWarnings?: boolean;
+  isWatching?: boolean;
 };
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace NodeJS {
-    // eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/consistent-type-definitions
-    interface Global extends SnapsCliGlobals {}
-  }
+  // eslint-disable-next-line no-var
+  var snaps: SnapsCliGlobals;
 }

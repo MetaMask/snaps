@@ -1,5 +1,5 @@
 {
-  "version": "0.31.0",
+  "version": "0.32.2",
   "description": "An Bitcoin transaction signer, which uses a snap for deriving private keys",
   "proposedName": "signer-bitcoin",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps-monorepo.git"
   },
   "source": {
-    "shasum": "B69Mq57XQZme1VRdVfb7H2YxC5Gyiw4mpy9/6ZbytA8=",
+    "shasum": "wWNruPmUhyQxst7Rw5+o4DWM2N93FjJbw9Sh+BLHPr8=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
@@ -18,14 +18,7 @@
   },
   "initialPermissions": {
     "wallet_snap": {
-      "caveats": [
-        {
-          "type": "snapIds",
-          "value": {
-            "local:http://localhost:8100": {}
-          }
-        }
-      ]
+      "local:http://localhost:8100": {}
     },
     "endowment:rpc": {
       "dapps": true

@@ -19,7 +19,7 @@ import {
  */
 export function cli(argv: string[], commands: any): void {
   const rawArgv = argv.slice(2);
-  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+  // eslint-disable-next-line @typescript-eslint/no-unused-expressions, @typescript-eslint/no-floating-promises
   yargs(rawArgv)
     .scriptName('mm-snap')
     .usage('Usage: $0 <command> [options]')

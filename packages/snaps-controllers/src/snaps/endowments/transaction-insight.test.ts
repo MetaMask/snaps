@@ -1,6 +1,7 @@
 import {
   PermissionConstraint,
   PermissionType,
+  SubjectType,
 } from '@metamask/permission-controller';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 
@@ -23,6 +24,7 @@ describe('endowment:transaction-insight', () => {
       allowedCaveats: [SnapCaveatType.TransactionOrigin],
       endowmentGetter: expect.any(Function),
       validator: expect.any(Function),
+      subjectTypes: [SubjectType.Snap],
     });
 
     expect(specification.endowmentGetter()).toBeUndefined();
