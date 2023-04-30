@@ -5,7 +5,7 @@ const getMockArgv = (...args: string[]) => {
   return ['/mock/path', '/mock/entry/path', ...args];
 };
 
-const HELP_TEXT_REGEX = /^\s*create-snap \[directory\]/u;
+const HELP_TEXT_REGEX = /^\s*Usage: .+ \[directory-name\]/u;
 
 describe('cli', () => {
   let consoleLogSpy: jest.SpyInstance;
