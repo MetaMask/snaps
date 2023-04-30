@@ -13,7 +13,7 @@ import { init } from './cmds';
  */
 export function cli(argv: string[], initCommand: typeof init = init): void {
   const rawArgv = argv.slice(2);
-  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+  // eslint-disable-next-line @typescript-eslint/no-unused-expressions, @typescript-eslint/no-floating-promises
   yargs(rawArgv)
     .scriptName('create-snap')
     .usage('Usage: $0 [directory-name]')
