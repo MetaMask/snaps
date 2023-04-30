@@ -7,9 +7,7 @@
     "url": "https://github.com/MetaMask/snaps-monorepo.git"
   },
   "license": "ISC",
-  "bin": {
-    "create-metamask-snap": "./dist/main.js"
-  },
+  "bin": "./dist/main.js",
   "files": [
     "dist/"
   ],
@@ -41,6 +39,7 @@
     "@babel/plugin-transform-runtime": "^7.16.7",
     "@babel/preset-env": "^7.16.7",
     "@babel/preset-typescript": "^7.16.7",
+    "@metamask/snaps-cli": "^0.32.1",
     "@metamask/snaps-utils": "^0.32.1",
     "@metamask/utils": "^3.4.1",
     "yargs": "^16.2.0"

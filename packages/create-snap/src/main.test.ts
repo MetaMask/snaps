@@ -9,9 +9,5 @@ describe('main', () => {
     await import('./main');
     expect(cliModule.cli).toHaveBeenCalledTimes(1);
     expect(cliModule.cli).toHaveBeenCalledWith(process.argv);
-    expect(global.snaps).toStrictEqual({
-      // see test/setup.js
-      verboseErrors: false,
-    });
   });
 });

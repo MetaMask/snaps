@@ -12,5 +12,8 @@ describe('init module', () => {
     await initCommand.handler({ ...(mockArgv as any) });
     expect(initHandlerMock).toHaveBeenCalledWith(mockArgv);
     expect(global.console.log).toHaveBeenCalledTimes(1);
+    expect(global.console.log).toHaveBeenCalledWith(
+      '\nSnap project successfully initiated!',
+    );
   });
 });
