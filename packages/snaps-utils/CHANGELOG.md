@@ -7,17 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.33.0-flask.1]
-### Uncategorized
-- Revert "0.33.0-flask.1 (#1376)" ([#1376](https://github.com/MetaMask/snaps-monorepo/pull/1376))
-- 0.33.0-flask.1 ([#1376](https://github.com/MetaMask/snaps-monorepo/pull/1376))
-- devDeps: @lavamoat/allow-scripts@2.0.3->2.3.1 ([#1372](https://github.com/MetaMask/snaps-monorepo/pull/1372))
-- Added `snapIds` caveat mapper ([#1360](https://github.com/MetaMask/snaps-monorepo/pull/1360))
-- Add subjectType restrictions to snap-specific permissions ([#1366](https://github.com/MetaMask/snaps-monorepo/pull/1366))
-- Add `WebAssembly` to eval mock ([#1359](https://github.com/MetaMask/snaps-monorepo/pull/1359))
+### Changed
+- **BREAKING:** Added `snapIds` caveat mapper ([#1360](https://github.com/MetaMask/snaps-monorepo/pull/1360))
+  - Snap dependencies must be specified in a simplified manner. See the PR for an example.
+- Add subject type restrictions to snap-specific permissions ([#1366](https://github.com/MetaMask/snaps-monorepo/pull/1366))
 - Add Web Worker support for snap execution ([#1320](https://github.com/MetaMask/snaps-monorepo/pull/1320))
-- Synchronize package versions across the workspace ([#1326](https://github.com/MetaMask/snaps-monorepo/pull/1326))
-- Bump `MetaMask/action-npm-publish` to `v3` and update dependencies to use `workspace:^` ([#1325](https://github.com/MetaMask/snaps-monorepo/pull/1325))
-- Add E2E tests for Snaps CLI ([#1295](https://github.com/MetaMask/snaps-monorepo/pull/1295))
+
+### Fixed
+- Add `WebAssembly` to eval mock ([#1359](https://github.com/MetaMask/snaps-monorepo/pull/1359))
 
 ## [0.32.2]
 ### Changed
