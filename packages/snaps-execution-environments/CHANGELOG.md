@@ -6,15 +6,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.33.0-flask.1]
-### Changed
-- **BREAKING:** Block `wallet_requestPermissions` ([#1371](https://github.com/MetaMask/snaps-monorepo/pull/1371))
-- Add console endowment that prepends snap IDs to log output ([#1355](https://github.com/MetaMask/snaps-monorepo/pull/1355))
-- Add Web Worker support for snap execution ([#1320](https://github.com/MetaMask/snaps-monorepo/pull/1320))
-
-### Fixed
-- Fix Math endowment in Node.js ([#1347](https://github.com/MetaMask/snaps-monorepo/pull/1347))
-
 ## [0.32.2]
 ### Changed
 - No changes this release.
@@ -252,8 +243,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Previously, default endowments were specified in the execution environment itself. Now, all endowments must be specified in the `executeSnap` RPC parameters, except for the `wallet` API object.
 - Add endowments to the global `self` in addition to `window` ([#263](https://github.com/MetaMask/snaps-monorepo/pull/263))
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.33.0-flask.1...HEAD
-[0.33.0-flask.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.32.2...v0.33.0-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.32.2...HEAD
 [0.32.2]: https://github.com/MetaMask/snaps-monorepo/compare/v0.32.1...v0.32.2
 [0.32.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.32.0...v0.32.1
 [0.32.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.31.0...v0.32.0

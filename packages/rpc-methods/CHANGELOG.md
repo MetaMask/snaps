@@ -6,16 +6,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.33.0-flask.1]
-### Added
-- Add subject type restrictions to snap-specific permissions ([#1366](https://github.com/MetaMask/snaps-monorepo/pull/1366))
-- Add `createSnapsMethodMiddleware` from extension ([#1330](https://github.com/MetaMask/snaps-monorepo/pull/1330))
-
-### Changed
-- **BREAKING:** Add encrypt and decrypt hook to let implementations use their own functions ([#1331](https://github.com/MetaMask/snaps-monorepo/pull/1331))
-- **BREAKING:** Add `snapIds` caveat mapper ([#1360](https://github.com/MetaMask/snaps-monorepo/pull/1360))
-  - Snap dependencies must be specified in a simplified manner. See the PR for an example.
-
 ## [0.32.2]
 ### Changed
 - No changes this release.
@@ -322,8 +312,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.33.0-flask.1...HEAD
-[0.33.0-flask.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.32.2...v0.33.0-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.32.2...HEAD
 [0.32.2]: https://github.com/MetaMask/snaps-monorepo/compare/v0.32.1...v0.32.2
 [0.32.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.32.0...v0.32.1
 [0.32.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.31.0...v0.32.0
