@@ -6,16 +6,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.33.0-flask.1]
-### Changed
-- **BREAKING:** Added `snapIds` caveat mapper ([#1360](https://github.com/MetaMask/snaps-monorepo/pull/1360))
-  - Snap dependencies must be specified in a simplified manner. See the PR for an example.
-- Add subject type restrictions to snap-specific permissions ([#1366](https://github.com/MetaMask/snaps-monorepo/pull/1366))
-- Add Web Worker support for snap execution ([#1320](https://github.com/MetaMask/snaps-monorepo/pull/1320))
-
-### Fixed
-- Add `WebAssembly` to eval mock ([#1359](https://github.com/MetaMask/snaps-monorepo/pull/1359))
-
 ## [0.32.2]
 ### Changed
 - No changes this release.
@@ -193,8 +183,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release ([#410](https://github.com/MetaMask/snaps-monorepo/pull/410), [#421](https://github.com/MetaMask/snaps-monorepo/pull/421))
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.33.0-flask.1...HEAD
-[0.33.0-flask.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.32.2...v0.33.0-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.32.2...HEAD
 [0.32.2]: https://github.com/MetaMask/snaps-monorepo/compare/v0.32.1...v0.32.2
 [0.32.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.32.0...v0.32.1
 [0.32.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.31.0...v0.32.0
