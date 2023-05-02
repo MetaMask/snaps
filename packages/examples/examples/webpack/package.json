@@ -1,6 +1,6 @@
 {
   "name": "webpack-snap",
-  "version": "0.32.2",
+  "version": "0.33.0-flask.1",
   "private": true,
   "description": "An example Snap built using TypeScript and Webpack",
   "repository": {
