@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-execution-environments",
-  "version": "0.32.2",
+  "version": "0.33.0-flask.1",
   "description": "Snap sandbox environments for executing SES javascript",
   "repository": {
     "type": "git",
