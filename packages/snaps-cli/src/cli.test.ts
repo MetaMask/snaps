@@ -57,6 +57,7 @@ describe('cli', () => {
   });
 
   it('calls "help" command', async () => {
+    expect.assertions(2);
     processExitSpy.mockImplementationOnce((code: number) => {
       expect(code).toBe(0);
     });

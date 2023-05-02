@@ -37,6 +37,7 @@ describe('cli', () => {
   });
 
   it('calls "help" command', async () => {
+    expect.assertions(2);
     processExitSpy.mockImplementationOnce((code: number) => {
       expect(code).toBe(0);
     });
@@ -64,6 +65,7 @@ describe('cli', () => {
       expect(process.exitCode).toBe(1);
       expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
     });
+
     it('handles an error thrown by a locally defined command handler', () => {
       expect(() =>
         cli(getMockArgv('foo'), {
