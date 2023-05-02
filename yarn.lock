@@ -2689,7 +2689,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/snaps-cli@^0.32.2, @metamask/snaps-cli@workspace:^, @metamask/snaps-cli@workspace:packages/snaps-cli":
+"@metamask/snaps-cli@workspace:^, @metamask/snaps-cli@workspace:packages/snaps-cli":
   version: 0.0.0-use.local
   resolution: "@metamask/snaps-cli@workspace:packages/snaps-cli"
   dependencies:
@@ -2967,7 +2967,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/snaps-types@^0.32.2, @metamask/snaps-types@workspace:^, @metamask/snaps-types@workspace:packages/snaps-types":
+"@metamask/snaps-types@workspace:^, @metamask/snaps-types@workspace:packages/snaps-types":
   version: 0.0.0-use.local
   resolution: "@metamask/snaps-types@workspace:packages/snaps-types"
   dependencies:
@@ -17111,8 +17111,8 @@ __metadata:
   resolution: "signer-bitcoin@workspace:packages/examples/examples/signer/packages/bitcoin"
   dependencies:
     "@metamask/key-tree": ^7.0.0
-    "@metamask/snaps-cli": ^0.32.2
-    "@metamask/snaps-types": ^0.32.2
+    "@metamask/snaps-cli": "workspace:^"
+    "@metamask/snaps-types": "workspace:^"
     "@metamask/utils": ^5.0.0
     "@noble/secp256k1": ^1.7.1
     buffer: ^6.0.3
@@ -17125,8 +17125,8 @@ __metadata:
   resolution: "signer-core@workspace:packages/examples/examples/signer/packages/core"
   dependencies:
     "@metamask/key-tree": ^7.0.0
-    "@metamask/snaps-cli": ^0.32.2
-    "@metamask/snaps-types": ^0.32.2
+    "@metamask/snaps-cli": "workspace:^"
+    "@metamask/snaps-types": "workspace:^"
     "@metamask/utils": ^5.0.0
     async-mutex: ^0.4.0
   languageName: unknown
@@ -17138,8 +17138,8 @@ __metadata:
   dependencies:
     "@ethereumjs/tx": ^3.5.2
     "@metamask/key-tree": ^7.0.0
-    "@metamask/snaps-cli": ^0.32.2
-    "@metamask/snaps-types": ^0.32.2
+    "@metamask/snaps-cli": "workspace:^"
+    "@metamask/snaps-types": "workspace:^"
     "@metamask/utils": ^5.0.0
     buffer: ^6.0.3
     through2: ^4.0.2
