@@ -78,7 +78,7 @@ export enum SnapStatusEvents {
   Update = 'UPDATE',
 }
 
-export type StatusContext = { snapId: string };
+export type StatusContext = { snapId: ValidatedSnapId };
 export type StatusEvents = { type: SnapStatusEvents };
 export type StatusStates = {
   value: SnapStatus;
@@ -112,7 +112,7 @@ export type Snap = {
   /**
    * The ID of the Snap.
    */
-  id: SnapId;
+  id: ValidatedSnapId;
 
   /**
    * The initial permissions of the Snap, which will be requested when it is
