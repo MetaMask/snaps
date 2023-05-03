@@ -6,14 +6,14 @@ The columns are organized so that everything inside of the iframe is to the righ
 sequenceDiagram
   participant d as dApp
   participant mm as MetaMask bg
-  participant sc as SnapsController
+  participant sc as SnapController
   participant ex as ExecutionService
   participant i as Iframe
   participant exe as Execution Environment
   participant ses as SES Compartment
   participant s as A-Snap
 
-  Note over d,mm: invoke A-Snapp with RPC request
+  Note over d,mm: invoke A-Snap with RPC request
   Note over d,mm: permission for the dApp to invoke
   d->>mm: invokeSnap(snapId, request)
   Note over mm: provider engine:<br>permission to call handler check<br>call matching handler
@@ -33,7 +33,7 @@ sequenceDiagram
   Note over ex,exe: postMessage is set up<br>⚠️ e.source===_targetWindow
   Note over ex, exe: can use command(method, RPC) now
   ex->>exe: await command("ping", …)
-  exe-->>ex: _
+  exe-->>ex: OK
   ex->>mm: setupSnapProvider(snapId, stream)
   Note over mm,ex: communication is set up on the stream, <br>⚠️ checked for subjectType and snapId as origin
   mm-->>ex: _
@@ -66,14 +66,21 @@ sequenceDiagram
   Note over exe: asserts defensively, doesn't use<br>method.startsWith
   exe->>mm: RPC request
   Note over mm: provider engine:<br>permission to call handler check<br>call matching handler
-  Note over mm: …<br>STUFF HAPPENS<br>…
   mm-->>exe: RPC response
   exe-->>s: RPC response
 
   s->>s: do stuff
+  
+  s-->>exe: Snap response
+  exe->>exe: assert returned value is valid JSON
+  
+  exe-->>ex: Snap response
+  ex->>ex: Throw if response is an error
+  
+  ex-->>sc: Snap response
+  sc->>sc: Cancel timer
 
-  Note over d,s: TODO: DOCUMENT RETURNING THE RESULT
-
+  sc-->>d: Snap response
 
 ```
 
