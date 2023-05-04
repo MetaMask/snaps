@@ -184,7 +184,10 @@ describe('implementation', () => {
     hooks.requestPermissions.mockImplementation(() => [
       {
         caveats: [
-          { type: SnapCaveatType.SnapIds, value: { [MOCK_SNAP_ID]: {} } },
+          {
+            type: SnapCaveatType.SnapIds,
+            value: { [MOCK_SNAP_ID]: { version: '^1.0.0' } },
+          },
         ],
         date: 1661166080905,
         id: 'VyAsBJiDDKawv_XlNcm13',
@@ -244,7 +247,10 @@ describe('implementation', () => {
     hooks.getPermissions.mockImplementation(() => ({
       [WALLET_SNAP_PERMISSION_KEY]: {
         caveats: [
-          { type: SnapCaveatType.SnapIds, value: { [MOCK_SNAP_ID]: {} } },
+          {
+            type: SnapCaveatType.SnapIds,
+            value: { [MOCK_SNAP_ID]: { version: '^1.0.0' } },
+          },
         ],
         date: 1661166080905,
         id: 'VyAsBJiDDKawv_XlNcm13',
@@ -304,7 +310,10 @@ describe('implementation', () => {
     hooks.getPermissions.mockImplementation(() => ({
       [WALLET_SNAP_PERMISSION_KEY]: {
         caveats: [
-          { type: SnapCaveatType.SnapIds, value: { [MOCK_SNAP_ID]: {} } },
+          {
+            type: SnapCaveatType.SnapIds,
+            value: { [MOCK_SNAP_ID]: { version: '^1.0.0' } },
+          },
         ],
         date: 1661166080905,
         id: 'VyAsBJiDDKawv_XlNcm13',
