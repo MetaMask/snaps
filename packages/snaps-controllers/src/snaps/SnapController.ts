@@ -1464,13 +1464,16 @@ export class SnapController extends BaseController<
       'PermissionController:getPermissions',
       origin,
     ) as SubjectPermissions<PermissionConstraint>;
+
     const snapIdsCaveat = subjectPermissions?.[
       WALLET_SNAP_PERMISSION_KEY
     ]?.caveats?.find((caveat) => caveat.type === SnapCaveatType.SnapIds) as
       | Caveat<string, Json>
       | undefined;
 
-    assert(snapIdsCaveat !== undefined);
+    if (!snapIdsCaveat) {
+      return;
+    }
 
     const caveatHasSnap = Boolean(
       (snapIdsCaveat.value as Record<string, Json>)?.[snapId],
