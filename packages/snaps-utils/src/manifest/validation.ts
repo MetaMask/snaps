@@ -216,7 +216,7 @@ export function assertIsSnapManifest(
   value: unknown,
 ): asserts value is SnapManifest {
   assertStruct(
-    value,
+    createSnapManifest(value),
     SnapManifestStruct,
     `"${NpmSnapFileNames.Manifest}" is invalid`,
   );
