@@ -21,3 +21,4 @@ export * from './snaps';
 export * from './types';
 export * from './versions';
 export * from './virtual-file';
+export * from './name-lookup';

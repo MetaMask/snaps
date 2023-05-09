@@ -33,4 +33,9 @@ export enum SnapCaveatType {
    * Caveat specifying the snap IDs that can be interacted with.
    */
   SnapIds = 'snapIds',
+
+  /**
+   * Caveat specifying the lookup protocols that a snap supports.
+   */
+  LookupProtocols = 'lookupProtocols',
 }

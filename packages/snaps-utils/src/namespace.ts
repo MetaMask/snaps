@@ -87,14 +87,14 @@ export const LimitedString = size(string(), 1, 40);
  */
 export const ChainIdStruct = pattern(string(), CHAIN_ID_REGEX);
 export type ChainId = `${string}:${string}`;
-export type Caip2ChainId = typeof ChainIdStruct;
+export type Caip2ChainId = Infer<typeof ChainIdStruct>;
 
 export const AccountIdStruct = pattern(string(), ACCOUNT_ID_REGEX);
 export type AccountId = `${ChainId}:${string}`;
 
 export const AccountIdArrayStruct = array(AccountIdStruct);
 export const AccountAddressStruct = pattern(string(), ACCOUNT_ADDRESS_REGEX);
-export type AccountAddress = typeof AccountAddressStruct;
+export type AccountAddress = Infer<typeof AccountAddressStruct>;
 
 /**
  * A chain descriptor.
