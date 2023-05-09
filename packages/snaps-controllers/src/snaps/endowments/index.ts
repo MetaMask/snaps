@@ -14,6 +14,7 @@ import {
   getKeyringCaveatMapper,
 } from './keyring';
 import { longRunningEndowmentBuilder } from './long-running';
+import { nameLookupEndowmentBuilder } from './name-lookup';
 import { networkAccessEndowmentBuilder } from './network-access';
 import {
   getRpcCaveatMapper,
@@ -38,6 +39,7 @@ export const endowmentPermissionBuilders = {
     ethereumProviderEndowmentBuilder,
   [rpcEndowmentBuilder.targetKey]: rpcEndowmentBuilder,
   [webAssemblyEndowmentBuilder.targetKey]: webAssemblyEndowmentBuilder,
+  [nameLookupEndowmentBuilder.targetKey]: nameLookupEndowmentBuilder,
 } as const;
 
 export const endowmentCaveatSpecifications = {
@@ -63,6 +65,7 @@ export const handlerEndowments: Record<HandlerType, string> = {
   [HandlerType.SnapKeyring]: keyringEndowmentBuilder.targetKey,
   [HandlerType.OnTransaction]: transactionInsightEndowmentBuilder.targetKey,
   [HandlerType.OnCronjob]: cronjobEndowmentBuilder.targetKey,
+  [HandlerType.OnNameLookup]: nameLookupEndowmentBuilder.targetKey,
 };
 
 export * from './enum';

@@ -2521,7 +2521,7 @@ describe('SnapController', () => {
           [MOCK_SNAP_ID]: {},
         }),
       ).rejects.toThrow(
-        'A snap must request at least one of the following permissions: endowment:rpc, endowment:keyring, endowment:transaction-insight, endowment:cronjob.',
+        'A snap must request at least one of the following permissions: endowment:rpc, endowment:keyring, endowment:transaction-insight, endowment:cronjob, endowment:name-lookup.',
       );
 
       controller.destroy();
