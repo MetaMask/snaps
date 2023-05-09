@@ -154,6 +154,7 @@ export const PermissionsStruct = type({
     }),
   ),
   wallet_snap: optional(SnapIdsStruct),
+  'endowment:name-lookup': optional(object({})),
 });
 /* eslint-enable @typescript-eslint/naming-convention */
 
