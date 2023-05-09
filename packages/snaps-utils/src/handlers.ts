@@ -1,7 +1,13 @@
 import { Component } from '@metamask/snaps-ui';
 import { Json, JsonRpcRequest } from '@metamask/utils';
 
-import { AccountId, ChainId, RequestArguments } from './namespace';
+import {
+  AccountId,
+  AccountAddress,
+  ChainId,
+  Caip2ChainId,
+  RequestArguments,
+} from './namespace';
 
 /**
  * The `onRpcRequest` handler. This is called whenever a JSON-RPC request is
@@ -61,6 +67,32 @@ export type OnCronjobHandler = (args: {
 }) => Promise<unknown>;
 
 /**
+ * The response from a snap's `onNameLookup` handler.
+ *
+ * @property protocolName - This refers to the protocol that was used for the address lookup.
+ *
+ * If the snap has no resolved addresses from its lookup, this should be `null`.
+ */
+export type OnNameLookupResponse = {
+  [protocolName: string]: AccountAddress;
+} | null;
+
+/**
+ * The `onNameLookup` handler. This is called whenever content is entered
+ * into the send to field for sending assets to an EOA address.
+ *
+ * @param args - The request arguments.
+ * @param args.content - The human-readable address that is to be resolved.
+ * @param args.id - The CAIP-2 chain ID of the network the transaction is
+ * being submitted to.
+ * @returns Resolved address(es) from the content lookup. See {@link OnNameLookupResponse}.
+ */
+export type OnNameLookupHandler = (args: {
+  id: Caip2ChainId;
+  content: string;
+}) => Promise<OnNameLookupResponse>;
+
+/**
  * A request sent to the `handleRequest` handler of a snap keyring.
  *
  * @property chainId - The CAIP-2 chain ID of the network the request is being
@@ -107,6 +139,7 @@ export type SnapFunctionExports = {
   onRpcRequest?: OnRpcRequestHandler;
   onTransaction?: OnTransactionHandler;
   onCronjob?: OnCronjobHandler;
+  onNameLookup?: OnNameLookupHandler;
 };
 
 /**

@@ -135,6 +135,7 @@ export enum HandlerType {
   OnTransaction = 'onTransaction',
   SnapKeyring = 'keyring',
   OnCronjob = 'onCronjob',
+  OnNameLookup = 'onNameLookup',
 }
 
 export const SNAP_EXPORT_NAMES = Object.values(HandlerType);

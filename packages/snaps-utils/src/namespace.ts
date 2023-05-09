@@ -25,6 +25,8 @@ export const CHAIN_ID_REGEX =
 export const ACCOUNT_ID_REGEX =
   /^(?<chainId>(?<namespace>[-a-z0-9]{3,8}):(?<reference>[-a-zA-Z0-9]{1,32})):(?<accountAddress>[a-zA-Z0-9]{1,64})$/u;
 
+export const ACCOUNT_ADDRESS_REGEX = /^(?<accountAddress>[a-zA-Z0-9]{1,64})$/u;
+
 /**
  * Parse a chain ID string to an object containing the namespace and reference.
  * This validates the chain ID before parsing it.
@@ -85,11 +87,14 @@ export const LimitedString = size(string(), 1, 40);
  */
 export const ChainIdStruct = pattern(string(), CHAIN_ID_REGEX);
 export type ChainId = `${string}:${string}`;
+export type Caip2ChainId = typeof ChainIdStruct;
 
 export const AccountIdStruct = pattern(string(), ACCOUNT_ID_REGEX);
 export type AccountId = `${ChainId}:${string}`;
 
 export const AccountIdArrayStruct = array(AccountIdStruct);
+export const AccountAddressStruct = pattern(string(), ACCOUNT_ADDRESS_REGEX);
+export type AccountAddress = typeof AccountAddressStruct;
 
 /**
  * A chain descriptor.
