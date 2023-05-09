@@ -1,4 +1,5 @@
 import { SemVerVersion } from '@metamask/utils';
+import { CronExpression } from 'src/cronjob';
 
 import { SnapManifest } from '../manifest/validation';
 import {
@@ -34,6 +35,22 @@ export const MOCK_SNAP_VERSION = '1.0.0' as SemVerVersion;
 export const MOCK_INITIAL_PERMISSIONS = {
   snap_confirm: {},
   'endowment:rpc': { snaps: true, dapps: false },
+  'endowment:cronjob': {
+    jobs: [
+      {
+        expression: {
+          minute: '*',
+          hour: '*',
+          dayOfMonth: '*',
+          month: '*',
+          dayOfWeek: '*',
+        } as unknown as CronExpression,
+        request: {
+          method: 'fireCronjob',
+        },
+      },
+    ],
+  },
 };
 /* eslint-enable @typescript-eslint/naming-convention */
 

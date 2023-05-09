@@ -203,7 +203,12 @@ export type SnapManifest = Infer<typeof SnapManifestStruct>;
  * @returns Whether the value is a valid {@link SnapManifest} object.
  */
 export function isSnapManifest(value: unknown): value is SnapManifest {
-  return is(value, SnapManifestStruct);
+  try {
+    const snapManifest = createSnapManifest(value);
+    return is(snapManifest, SnapManifestStruct);
+  } catch (error) {
+    return false;
+  }
 }
 
 /**

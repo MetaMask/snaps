@@ -185,7 +185,7 @@ describe('assertIsSnapManifest', () => {
     getSnapManifest({ version: 'foo bar' }),
   ])('throws for an invalid snap manifest', (value) => {
     expect(() => assertIsSnapManifest(value)).toThrow(
-      '"snap.manifest.json" is invalid:',
+      /At path: .+|Expected .+/u,
     );
   });
 });
