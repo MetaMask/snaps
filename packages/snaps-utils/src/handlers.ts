@@ -74,7 +74,7 @@ export type OnCronjobHandler = (args: {
  * If the snap has no resolved addresses from its lookup, this should be `null`.
  */
 export type OnNameLookupResponse = {
-  [protocolName: string]: AccountAddress;
+  resolvedAccount: AccountAddress;
 } | null;
 
 /**
