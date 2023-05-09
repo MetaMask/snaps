@@ -1244,6 +1244,41 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
+  it('supports onNameLookup export', async () => {
+    const CODE = `module.exports.onNameLookup = ({ id, content }) => content`;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        MOCK_SNAP_ID,
+        HandlerType.OnNameLookup,
+        MOCK_ORIGIN,
+        {
+          jsonrpc: '2.0',
+          method: 'foo',
+          params: { id: 'eip155:1', content: 'foo.lens' },
+        },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: 'foo.lens',
+    });
+  });
+
   it('blocks snaps from escaping confinement by using unbound this', async () => {
     const consoleSpy = spy(console, 'log');
 

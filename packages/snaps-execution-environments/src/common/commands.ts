@@ -4,6 +4,7 @@ import { assertExhaustive } from '@metamask/utils';
 import { InvokeSnap, InvokeSnapArgs } from './BaseSnapExecutor';
 import {
   assertIsOnTransactionRequestArguments,
+  assertIsOnNameLookupRequestArguments,
   ExecuteSnap,
   JsonRpcRequestWithoutId,
   Ping,
@@ -44,7 +45,14 @@ export function getHandlerArguments(
         transactionOrigin,
       };
     }
-
+    case HandlerType.OnNameLookup: {
+      assertIsOnNameLookupRequestArguments(request.params);
+      const { id, content } = request.params;
+      return {
+        id,
+        content,
+      };
+    }
     case HandlerType.OnRpcRequest:
     case HandlerType.SnapKeyring:
       return { origin, request };

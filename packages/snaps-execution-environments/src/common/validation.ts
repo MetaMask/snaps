@@ -30,6 +30,7 @@ const VALIDATION_FUNCTIONS = {
   [HandlerType.OnTransaction]: validateFunctionExport,
   [HandlerType.SnapKeyring]: validateKeyringExport,
   [HandlerType.OnCronjob]: validateFunctionExport,
+  [HandlerType.OnNameLookup]: validateFunctionExport,
 };
 
 /**
@@ -174,6 +175,33 @@ export function assertIsOnTransactionRequestArguments(
   assertStruct(
     value,
     OnTransactionRequestArgumentsStruct,
+    'Invalid request params',
+  );
+}
+
+export const OnNameLookupRequestArgumentsStruct = object({
+  id: ChainIdStruct,
+  content: string(),
+});
+
+export type OnNameLookupRequestArguments = Infer<
+  typeof OnNameLookupRequestArgumentsStruct
+>;
+
+/**
+ * Asserts that the given value is a valid {@link OnTransactionRequestArguments}
+ * object.
+ *
+ * @param value - The value to validate.
+ * @throws If the value is not a valid {@link OnTransactionRequestArguments}
+ * object.
+ */
+export function assertIsOnNameLookupRequestArguments(
+  value: unknown,
+): asserts value is OnNameLookupRequestArguments {
+  assertStruct(
+    value,
+    OnNameLookupRequestArgumentsStruct,
     'Invalid request params',
   );
 }
