@@ -1,6 +1,6 @@
 import { SemVerVersion } from '@metamask/utils';
-import { CronExpression } from 'src/cronjob';
 
+import { type CronExpression } from '../cronjob';
 import { SnapManifest } from '../manifest/validation';
 import {
   Chain,
