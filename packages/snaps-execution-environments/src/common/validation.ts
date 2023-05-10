@@ -189,7 +189,7 @@ export type OnNameLookupRequestArguments = Infer<
 >;
 
 /**
- * Asserts that the given value is a valid {@link OnTransactionRequestArguments}
+ * Asserts that the given value is a valid {@link OnNameLookupRequestArguments}
  * object.
  *
  * @param value - The value to validate.
