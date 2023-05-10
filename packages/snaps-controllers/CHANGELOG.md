@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.33.1-flask.1]
-### Uncategorized
+### Fixed
 - Skip subjects without the `wallet_snap` permission in `removeSnapFromSubject` ([#1388](https://github.com/MetaMask/snaps-monorepo/pull/1388))
 
 ## [0.33.0-flask.1]

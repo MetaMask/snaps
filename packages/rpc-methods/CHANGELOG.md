@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.33.1-flask.1]
-### Uncategorized
-- Fix snap install versioning ([#1387](https://github.com/MetaMask/snaps-monorepo/pull/1387))
+### Fixed
+- Fix versions being passed incorrectly during snap install ([#1387](https://github.com/MetaMask/snaps-monorepo/pull/1387))
 
 ## [0.33.0-flask.1]
 ### Added
