@@ -193,7 +193,7 @@ export type OnNameLookupRequestArguments = Infer<
  * object.
  *
  * @param value - The value to validate.
- * @throws If the value is not a valid {@link OnTransactionRequestArguments}
+ * @throws If the value is not a valid {@link OnNameLookupRequestArguments}
  * object.
  */
 export function assertIsOnNameLookupRequestArguments(
