@@ -1,6 +1,6 @@
 {
   "name": "bls-signer",
-  "version": "0.33.0-flask.1",
+  "version": "0.33.1-flask.1",
   "private": true,
   "description": "An example Snap that signs messages using BLS.",
   "repository": {
