@@ -1,5 +1,5 @@
 {
-  "version": "0.33.0-flask.1",
+  "version": "0.33.1-flask.1",
   "description": "An example Snap built using TypeScript and Webpack",
   "proposedName": "webpack-snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps-monorepo.git"
   },
   "source": {
-    "shasum": "GbE9ohJqRX5JfEfrKqD1GNcKmYry7WKK/ohHv32GaCc=",
+    "shasum": "cU7b9AW7vafEpZC3I5gz/OBNZ2lc1d2vQNKq9axdLmE=",
     "location": {
       "npm": {
         "filePath": "dist/snap.js",
