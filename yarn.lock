@@ -4698,6 +4698,7 @@ __metadata:
     expect-webdriverio: ^4.1.2
     fast-deep-equal: ^3.1.3
     fast-json-stable-stringify: ^2.1.0
+    is-svg: ^4.4.0
     istanbul-lib-coverage: ^3.2.0
     istanbul-lib-report: ^3.0.0
     istanbul-reports: ^3.1.5
@@ -12682,6 +12683,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fast-xml-parser@npm:^4.1.3":
+  version: 4.2.2
+  resolution: "fast-xml-parser@npm:4.2.2"
+  dependencies:
+    strnum: ^1.0.5
+  bin:
+    fxparser: src/cli/cli.js
+  checksum: f0e687927ddc11b2ba9e434d8bf77ef759b6692639dd2dd731e2f30201319e7c70dec08a103dd67a1af7a27f176246502d9d0f5325b5b5b99ab49665fa876857
+  languageName: node
+  linkType: hard
+
 "fastest-levenshtein@npm:^1.0.12":
   version: 1.0.12
   resolution: "fastest-levenshtein@npm:1.0.12"
@@ -15077,6 +15089,15 @@ __metadata:
   dependencies:
     has-tostringtag: ^1.0.0
   checksum: 323b3d04622f78d45077cf89aab783b2f49d24dc641aa89b5ad1a72114cfeff2585efc8c12ef42466dff32bde93d839ad321b26884cf75e5a7892a938b089989
+  languageName: node
+  linkType: hard
+
+"is-svg@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "is-svg@npm:4.4.0"
+  dependencies:
+    fast-xml-parser: ^4.1.3
+  checksum: cd5a0ba1af653e4897721913b0b80de968fa5b19eb1a592412f4672d3a1203935d183c2a9dbf61d68023739ee43d3761ea795ae1a9f618c6098a9e89eacdd256
   languageName: node
   linkType: hard
 
@@ -21878,6 +21899,13 @@ __metadata:
   version: 2.0.1
   resolution: "strip-json-comments@npm:2.0.1"
   checksum: 1074ccb63270d32ca28edfb0a281c96b94dc679077828135141f27d52a5a398ef5e78bcf22809d23cadc2b81dfbe345eb5fd8699b385c8b1128907dec4a7d1e1
+  languageName: node
+  linkType: hard
+
+"strnum@npm:^1.0.5":
+  version: 1.0.5
+  resolution: "strnum@npm:1.0.5"
+  checksum: 651b2031db5da1bf4a77fdd2f116a8ac8055157c5420f5569f64879133825915ad461513e7202a16d7fec63c54fd822410d0962f8ca12385c4334891b9ae6dd2
   languageName: node
   linkType: hard
 
