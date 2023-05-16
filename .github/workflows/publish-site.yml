@@ -1,0 +1,37 @@
+name: Publish site
+
+on:
+  workflow_call:
+    inputs:
+      destination_dir:
+        required: true
+        type: string
+
+jobs:
+  publish-site:
+    name: Publish site
+    runs-on: ubuntu-latest
+    environment: deploy-prod
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Ensure `destination_dir` is not empty
+        if: ${{ inputs.destination_dir == '' }}
+        run: exit 1
+      - uses: actions/cache@v3
+        id: restore-build
+        with:
+          path: |
+            ./packages/**/dist
+            ./node_modules
+          key: ${{ github.sha }}
+      - name: configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@e1e17a757e536f70e52b5a12b2e8d1d1c60e04ef
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          role-session-name: ghactionssession
+          aws-region: ${{ vars.AWS_REGION }}
+      - name: Deploy to `${{ inputs.destination_dir }}` directory of remote storage
+        run: |
+          aws s3 cp ./packages/snaps-execution-environments/dist/browserify/iframe s3://${{ vars.AWS_BUCKET_NAME }}/${{ inputs.destination_dir }} --recursive --acl private
