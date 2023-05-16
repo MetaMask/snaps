@@ -720,12 +720,11 @@ export class SnapController extends BaseController<
         ...{
           ...state,
           snaps: Object.values(state?.snaps ?? {}).reduce(
-            (
-              memo: Record<ValidatedSnapId, Snap>,
-              snap: Snap & { sourceCode: string },
-            ) => {
+            (memo: Record<ValidatedSnapId, Snap>, snap: PersistedSnap) => {
               // eslint-disable-next-line @typescript-eslint/no-unused-vars
-              // this is to catch any old state that may still have sourceCode in the snap state
+              // sourceCode is stripped out to prevent piping to MetaMask UI,
+              // it is stored in the runtime while we're running a snap and then
+              // persisted to state when needed.
               const { sourceCode, ...rest } = snap;
               memo[snap.id] = rest;
               return memo;
