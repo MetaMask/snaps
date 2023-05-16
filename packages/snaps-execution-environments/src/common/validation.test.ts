@@ -2,6 +2,7 @@ import {
   assertIsOnTransactionRequestArguments,
   isEndowment,
   isEndowmentsArray,
+  sanitizeJsonStructure,
 } from './validation';
 
 describe('isEndowment', () => {
@@ -77,4 +78,90 @@ describe('assertIsOnTransactionRequestArguments', () => {
       );
     },
   );
+});
+
+describe('sanitizeJsonStructure', () => {
+  it('should return sanitized JSON', () => {
+    // Make sure that getters cannot have side effect
+    const testSubject = { a: {}, b: {} };
+    let counter = 0;
+    Object.defineProperty(testSubject, 'jailbreak', {
+      enumerable: true,
+      get() {
+        counter += 1;
+        return counter;
+      },
+      set(value) {
+        return (counter = value);
+      },
+    });
+    const result = sanitizeJsonStructure(testSubject) as { jailbreak: number };
+
+    // Remember the counter
+    const finalCount = result.jailbreak;
+    expect(typeof result.jailbreak).not.toBe('function');
+    // Make sure that counter value is not increased
+    expect(result.jailbreak).toBe(finalCount);
+  });
+
+  it('should throw an error if circular reference is detected', () => {
+    const DIRECT_CIRCULAR_REFERENCE_ARRAY: unknown[] = [];
+    DIRECT_CIRCULAR_REFERENCE_ARRAY.push(DIRECT_CIRCULAR_REFERENCE_ARRAY);
+
+    const INDIRECT_CIRCULAR_REFERENCE_ARRAY: unknown[] = [];
+    INDIRECT_CIRCULAR_REFERENCE_ARRAY.push([
+      [INDIRECT_CIRCULAR_REFERENCE_ARRAY],
+    ]);
+
+    const DIRECT_CIRCULAR_REFERENCE_OBJECT: Record<string, unknown> = {};
+    DIRECT_CIRCULAR_REFERENCE_OBJECT.prop = DIRECT_CIRCULAR_REFERENCE_OBJECT;
+
+    const INDIRECT_CIRCULAR_REFERENCE_OBJECT: Record<string, unknown> = {
+      p1: {
+        p2: {
+          get p3() {
+            return INDIRECT_CIRCULAR_REFERENCE_OBJECT;
+          },
+        },
+      },
+    };
+
+    const TO_JSON_CIRCULAR_REFERENCE = {
+      toJSON() {
+        return {};
+      },
+    };
+
+    const CIRCULAR_REFERENCE = { prop: TO_JSON_CIRCULAR_REFERENCE };
+    TO_JSON_CIRCULAR_REFERENCE.toJSON = function () {
+      return CIRCULAR_REFERENCE;
+    };
+
+    expect(() =>
+      sanitizeJsonStructure(DIRECT_CIRCULAR_REFERENCE_ARRAY),
+    ).toThrow(
+      'Received non-JSON-serializable value. Error might be caused by presence of a circular reference within the structure.',
+    );
+    expect(() =>
+      sanitizeJsonStructure(INDIRECT_CIRCULAR_REFERENCE_ARRAY),
+    ).toThrow(
+      'Received non-JSON-serializable value. Error might be caused by presence of a circular reference within the structure.',
+    );
+    expect(() =>
+      sanitizeJsonStructure(DIRECT_CIRCULAR_REFERENCE_OBJECT),
+    ).toThrow(
+      'Received non-JSON-serializable value. Error might be caused by presence of a circular reference within the structure.',
+    );
+    expect(() =>
+      sanitizeJsonStructure(INDIRECT_CIRCULAR_REFERENCE_OBJECT),
+    ).toThrow(
+      'Received non-JSON-serializable value. Error might be caused by presence of a circular reference within the structure.',
+    );
+    expect(() => sanitizeJsonStructure(TO_JSON_CIRCULAR_REFERENCE)).toThrow(
+      'Received non-JSON-serializable value. Error might be caused by presence of a circular reference within the structure.',
+    );
+    expect(() => sanitizeJsonStructure(CIRCULAR_REFERENCE)).toThrow(
+      'Received non-JSON-serializable value. Error might be caused by presence of a circular reference within the structure.',
+    );
+  });
 });

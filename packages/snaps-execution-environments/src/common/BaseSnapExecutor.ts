@@ -46,6 +46,7 @@ import {
 import {
   ExecuteSnapRequestArgumentsStruct,
   PingRequestArgumentsStruct,
+  sanitizeJsonStructure,
   SnapRpcRequestArgumentsStruct,
   TerminateRequestArgumentsStruct,
   validateExport,
@@ -155,7 +156,8 @@ export class BaseSnapExecutor {
           isValidJson(result),
           new TypeError('Received non-JSON-serializable value.'),
         );
-        return result;
+        // /!\ Always return only sanitized JSON to prevent security flaws. /!\
+        return sanitizeJsonStructure(result);
       },
       this.onTerminate.bind(this),
     );
@@ -258,9 +260,12 @@ export class BaseSnapExecutor {
     if (!isValidJson(requestObject) || !isObject(requestObject)) {
       throw new Error('JSON-RPC responses must be JSON serializable objects.');
     }
+    const sanitizedRequestObject = sanitizeJsonStructure(
+      requestObject,
+    ) as Record<string, unknown>;
 
     this.commandStream.write({
-      ...requestObject,
+      ...sanitizedRequestObject,
       id,
       jsonrpc: '2.0',
     });
