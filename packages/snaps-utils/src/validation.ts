@@ -1,5 +1,5 @@
 import { assertIsSnapIcon } from './icon';
-import { assertIsSnapManifest } from './manifest';
+import { assertIsSnapManifest } from './manifest/validation';
 import { validateSnapShasum } from './snaps';
 import { SnapFiles } from './types';
 
