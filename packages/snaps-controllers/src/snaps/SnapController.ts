@@ -26,10 +26,7 @@ import {
   GetSubjectMetadata,
   SubjectType,
 } from '@metamask/permission-controller';
-import {
-  caveatMappers,
-  WALLET_SNAP_PERMISSION_KEY,
-} from '@metamask/rpc-methods';
+import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
 import { BlockReason } from '@metamask/snaps-registry';
 import {
   assertIsSnapManifest,
@@ -45,7 +42,6 @@ import {
   SnapCaveatType,
   SnapId,
   SnapManifest,
-  SnapPermissions,
   SnapRpcHook,
   SnapRpcHookArgs,
   SnapStatus,
@@ -93,13 +89,10 @@ import {
   TerminateSnapAction,
 } from '../services';
 import { hasTimedOut, setDiff, withTimeout } from '../utils';
-import {
-  endowmentCaveatMappers,
-  handlerEndowments,
-  SnapEndowments,
-} from './endowments';
+import { handlerEndowments, SnapEndowments } from './endowments';
 import { getRpcCaveatOrigins } from './endowments/rpc';
 import { detectSnapLocation, SnapLocation } from './location';
+import { processSnapPermissions } from './permissions';
 import {
   GetMetadata,
   GetResult,
@@ -1476,13 +1469,16 @@ export class SnapController extends BaseController<
       'PermissionController:getPermissions',
       origin,
     ) as SubjectPermissions<PermissionConstraint>;
+
     const snapIdsCaveat = subjectPermissions?.[
       WALLET_SNAP_PERMISSION_KEY
     ]?.caveats?.find((caveat) => caveat.type === SnapCaveatType.SnapIds) as
       | Caveat<string, Json>
       | undefined;
 
-    assert(snapIdsCaveat !== undefined);
+    if (!snapIdsCaveat) {
+      return;
+    }
 
     const caveatHasSnap = Boolean(
       (snapIdsCaveat.value as Record<string, Json>)?.[snapId],
@@ -1876,7 +1872,7 @@ export class SnapController extends BaseController<
         checksum: newSnap.manifest.result.source.shasum,
       });
 
-      const processedPermissions = this.#processSnapPermissions(
+      const processedPermissions = processSnapPermissions(
         newSnap.manifest.result.initialPermissions,
       );
 
@@ -2267,41 +2263,6 @@ export class SnapController extends BaseController<
     }
   }
 
-  /**
-   * Map initial permissions as defined in a Snap manifest to something that can
-   * be processed by the PermissionsController. Each caveat mapping function
-   * should return a valid permission caveat value.
-   *
-   * This function does not validate the caveat values, since that is done by
-   * the PermissionsController itself, upon requesting the permissions.
-   *
-   * @param initialPermissions - The initial permissions to process.
-   * @returns The processed permissions.
-   * @private
-   */
-  #processSnapPermissions(
-    initialPermissions: SnapPermissions,
-  ): Record<string, Pick<PermissionConstraint, 'caveats'>> {
-    return Object.fromEntries(
-      Object.entries(initialPermissions).map(([initialPermission, value]) => {
-        if (hasProperty(caveatMappers, initialPermission)) {
-          return [initialPermission, caveatMappers[initialPermission](value)];
-        } else if (hasProperty(endowmentCaveatMappers, initialPermission)) {
-          return [
-            initialPermission,
-            endowmentCaveatMappers[initialPermission](value),
-          ];
-        }
-
-        // If we have no mapping, this may be a non-snap permission, return as-is
-        return [
-          initialPermission,
-          value as Pick<PermissionConstraint, 'caveats'>,
-        ];
-      }),
-    );
-  }
-
   #validateSnapPermissions(
     processedPermissions: Record<string, Pick<PermissionConstraint, 'caveats'>>,
   ) {
@@ -2355,8 +2316,7 @@ export class SnapController extends BaseController<
     const { initialPermissions } = snap;
 
     try {
-      const processedPermissions =
-        this.#processSnapPermissions(initialPermissions);
+      const processedPermissions = processSnapPermissions(initialPermissions);
 
       this.#validateSnapPermissions(processedPermissions);
 

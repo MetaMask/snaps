@@ -192,6 +192,7 @@ export const SnapManifestStruct = object({
   }),
   initialPermissions: PermissionsStruct,
   manifestVersion: literal('0.1'),
+  $schema: optional(string()), // enables JSON-Schema linting in VSC and other IDEs
 });
 
 export type SnapManifest = Infer<typeof SnapManifestStruct>;

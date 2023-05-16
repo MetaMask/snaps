@@ -145,6 +145,15 @@ describe('isSnapManifest', () => {
     expect(isSnapManifest(getSnapManifest())).toBe(true);
   });
 
+  it('accepts $schema property', () => {
+    const manifest = {
+      ...getSnapManifest(),
+      $schema:
+        'https://raw.githubusercontent.com/MetaMask/SIPs/main/assets/sip-9/snap.manifest.schema.json',
+    };
+    expect(isSnapManifest(manifest)).toBe(true);
+  });
+
   it.each([
     true,
     false,

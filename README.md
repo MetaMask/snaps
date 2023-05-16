@@ -132,6 +132,8 @@ If a package is neither referenced nor ignored, linting will fail.
 
 Run `yarn test` and `yarn lint` in the project root directory, or in a workspace.
 
+You need to have both Chrome and Firefox installed globally on your computer to run browser tests.
+
 ### Publishing
 
 1. Run [Create Release Pull Request workflow](https://github.com/MetaMask/snaps-monorepo/actions/workflows/create-release-pr.yml)
