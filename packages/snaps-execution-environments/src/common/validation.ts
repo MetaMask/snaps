@@ -221,8 +221,9 @@ export type SnapRpc = RequestFunction<SnapRpcRequestArguments, SnapRpcResponse>;
  * @param value - JSON structure to be processed.
  * @returns Sanitized JSON structure.
  */
-export function sanitizeJsonStructure(value: unknown): Json {
+export function sanitizeJsonStructure(value: unknown): unknown {
   try {
+    assertStruct(value, JsonStruct);
     return JSON.parse(JSON.stringify(value));
   } catch (error) {
     throw new TypeError(

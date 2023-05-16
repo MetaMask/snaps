@@ -157,7 +157,7 @@ export class BaseSnapExecutor {
           new TypeError('Received non-JSON-serializable value.'),
         );
         // /!\ Always return only sanitized JSON to prevent security flaws. /!\
-        return sanitizeJsonStructure(result);
+        return sanitizeJsonStructure(result) as Json;
       },
       this.onTerminate.bind(this),
     );
@@ -401,9 +401,10 @@ export class BaseSnapExecutor {
 
     const request = async (args: RequestArguments) => {
       assertSnapOutboundRequest(args);
+      const sanitizedArgs = sanitizeJsonStructure(args) as RequestArguments;
       this.notify({ method: 'OutboundRequest' });
       try {
-        return await withTeardown(originalRequest(args), this as any);
+        return await withTeardown(originalRequest(sanitizedArgs), this as any);
       } finally {
         this.notify({ method: 'OutboundResponse' });
       }
@@ -441,9 +442,10 @@ export class BaseSnapExecutor {
 
     const request = async (args: RequestArguments) => {
       assertEthereumOutboundRequest(args);
+      const sanitizedArgs = sanitizeJsonStructure(args) as RequestArguments;
       this.notify({ method: 'OutboundRequest' });
       try {
-        return await withTeardown(originalRequest(args), this as any);
+        return await withTeardown(originalRequest(sanitizedArgs), this as any);
       } finally {
         this.notify({ method: 'OutboundResponse' });
       }
