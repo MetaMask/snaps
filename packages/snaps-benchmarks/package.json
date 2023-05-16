@@ -1,6 +1,7 @@
 {
   "name": "@metamask/snaps-benchmarks",
   "version": "0.32.2",
+  "private": true,
   "description": "A list of benchmarks for MetaMask Snaps, and a tool to generate them.",
   "repository": {
     "type": "git",
@@ -24,23 +25,31 @@
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
     "prepare-manifest:preview": "../../scripts/prepare-preview-manifest.sh",
-    "publish:preview": "yarn npm publish --tag preview"
+    "publish:preview": "yarn npm publish --tag preview",
+    "benchmark": "yarn ts-node --files src --environment",
+    "benchmark:all": "yarn benchmark all",
+    "benchmark:iframe": "yarn benchmark iframe",
+    "benchmark:worker": "yarn benchmark worker"
   },
   "dependencies": {
-    "@babel/preset-typescript": "^7.21.4",
+    "@babel/preset-typescript": "^7.20.12",
     "@metamask/snaps-controllers": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
     "@metamask/utils": "^5.0.0",
-    "babel-loader": "^9.1.2",
+    "babel-loader": "^8.2.5",
+    "chalk": "^4.1.2",
+    "express": "^4.18.2",
     "extract-zip": "^2.0.1",
-    "html-webpack-plugin": "^5.5.1",
+    "html-webpack-plugin": "^5.5.0",
     "node-polyfill-webpack-plugin": "^2.0.1",
+    "ora": "^5.4.1",
     "serve-handler": "^6.1.5",
     "ts-loader": "^9.4.2",
     "tsconfig-paths-webpack-plugin": "^4.0.1",
-    "webdriverio": "^8.8.6",
-    "webpack": "^5.81.0",
-    "webpack-cli": "^5.0.2",
+    "webdriverio": "^8.5.2",
+    "webpack": "^5.72.1",
+    "webpack-cli": "^4.9.2",
+    "webpack-merge": "^5.8.0",
     "yargs": "^17.7.1"
   },
   "devDependencies": {
@@ -83,6 +92,5 @@
     "allowScripts": {
       "@lavamoat/preinstall-always-fail": false
     }
-  },
-  "private": true
+  }
 }

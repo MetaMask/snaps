@@ -32,9 +32,7 @@ export const getPersistedSnapObject = ({
   sourceCode = DEFAULT_SNAP_BUNDLE,
   status = SnapStatus.Stopped,
   version = getSnapManifest().version,
-  versionHistory = [
-    { origin: MOCK_ORIGIN, version: '1.0.0', date: expect.any(Number) },
-  ],
+  versionHistory = [{ origin: MOCK_ORIGIN, version: '1.0.0', date: 1 }],
 }: GetPersistedSnapObjectOptions = {}): PersistedSnap => {
   return {
     blocked,

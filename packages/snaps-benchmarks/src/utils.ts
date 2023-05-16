@@ -1,17 +1,14 @@
+import { logInfo } from '@metamask/snaps-utils';
+import { Ora } from 'ora';
+
 /**
- * Find the first element in an array that matches a condition.
+ * Log a message to the console.
  *
- * @param array - The array to search.
- * @param callback - The callback to call for each element.
- * @returns The first element that matches the condition, or undefined if none
- * match.
+ * @param spinner - The spinner to use for logging.
+ * @param message - The message to log.
  */
-export async function findAsync<Type>(
-  array: Type[],
-  callback: (element: Type) => Promise<boolean>,
-): Promise<Type | undefined> {
-  const promises = array.map(callback);
-  const results = await Promise.all(promises);
-  const index = results.findIndex((result) => result);
-  return array[index];
+export function log(spinner: Ora, message: string) {
+  spinner.clear();
+  spinner.frame();
+  logInfo(message);
 }

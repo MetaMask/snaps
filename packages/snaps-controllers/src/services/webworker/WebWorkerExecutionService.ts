@@ -4,6 +4,7 @@ import {
 } from '@metamask/post-message-stream';
 import { createWindow } from '@metamask/snaps-utils';
 import { assert } from '@metamask/utils';
+import { Mutex } from 'async-mutex';
 import { nanoid } from 'nanoid';
 
 import {
@@ -20,6 +21,8 @@ type WebWorkerExecutionEnvironmentServiceArgs = {
 export const WORKER_POOL_ID = 'snaps-worker-pool';
 
 export class WebWorkerExecutionService extends AbstractExecutionService<string> {
+  #mutex: Mutex = new Mutex();
+
   #documentUrl: URL;
 
   #runtimeStream?: BasePostMessageStream;
@@ -94,22 +97,26 @@ export class WebWorkerExecutionService extends AbstractExecutionService<string> 
    * If the document already exists, this does nothing.
    */
   private async createDocument() {
-    // We only want to create a single pool.
-    if (document.getElementById(WORKER_POOL_ID)) {
-      return;
-    }
+    // To prevent a race condition, we use a mutex to ensure that only one
+    // instance of this function can run at a time.
+    await this.#mutex.runExclusive(async () => {
+      // We only want to create a single pool.
+      if (document.getElementById(WORKER_POOL_ID)) {
+        return;
+      }
 
-    const window = await createWindow(
-      this.#documentUrl.href,
-      WORKER_POOL_ID,
-      false,
-    );
+      const window = await createWindow(
+        this.#documentUrl.href,
+        WORKER_POOL_ID,
+        false,
+      );
 
-    this.#runtimeStream = new WindowPostMessageStream({
-      name: 'parent',
-      target: 'child',
-      targetWindow: window,
-      targetOrigin: '*',
+      this.#runtimeStream = new WindowPostMessageStream({
+        name: 'parent',
+        target: 'child',
+        targetWindow: window,
+        targetOrigin: '*',
+      });
     });
   }
 }

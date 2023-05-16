@@ -1,6 +1,6 @@
 import {
   AbstractExecutionService,
-  IframeExecutionService,
+  WebWorkerExecutionService,
 } from '@metamask/snaps-controllers';
 import { createService } from '@metamask/snaps-controllers/test-utils';
 
@@ -19,6 +19,6 @@ if (!process.env.BENCHMARK_URL) {
 
 // In order to access the service from within the browser, we need to attach it
 // to the window object.
-window.service = createService(IframeExecutionService, {
-  iframeUrl: new URL(`${process.env.BENCHMARK_URL}/environment`),
+window.service = createService(WebWorkerExecutionService, {
+  documentUrl: new URL(`${process.env.BENCHMARK_URL}/environment`),
 });

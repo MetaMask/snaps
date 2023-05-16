@@ -1,44 +1,16 @@
-import { assert } from '@metamask/utils';
-import { Browser, remote } from 'webdriverio';
-
-import { BenchmarkRunner } from './environment';
+import { BrowserRunner, BrowserRunnerOptions } from './browser';
 
 const DEFAULT_URL = 'https://execution.metamask.io/0.15.1/index.html';
 
-export type IframeRunnerOptions = {
+export type IframeRunnerOptions = Omit<BrowserRunnerOptions, 'bundleName'> & {
   url?: string;
 };
 
-export class IframeRunner extends BenchmarkRunner {
+export class IframeRunner extends BrowserRunner {
   #url: string;
 
-  #browser?: Browser;
-
-  constructor({ url = DEFAULT_URL }: IframeRunnerOptions) {
-    super();
+  constructor({ url = DEFAULT_URL, ...options }: IframeRunnerOptions) {
+    super({ bundleName: 'iframe', ...options });
     this.#url = url;
-  }
-
-  async initialize() {
-    this.#browser = await remote({
-      automationProtocol: 'devtools',
-      capabilities: {
-        browserName: 'chrome',
-        /* eslint-disable @typescript-eslint/naming-convention */
-        'goog:chromeOptions': {
-          args: [],
-        },
-        'wdio:devtoolsOptions': {
-          headless: false,
-        },
-        /* eslint-enable @typescript-eslint/naming-convention */
-      },
-    });
-  }
-
-  async run() {
-    assert(this.#browser, 'Browser not initialized.');
-
-    console.log('Running in iframe');
   }
 }

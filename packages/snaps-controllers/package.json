@@ -45,6 +45,7 @@
     "@metamask/subject-metadata-controller": "^2.0.0",
     "@metamask/utils": "^5.0.0",
     "@xstate/fsm": "^2.0.0",
+    "async-mutex": "^0.4.0",
     "concat-stream": "^2.0.0",
     "cron-parser": "^4.5.0",
     "eth-rpc-errors": "^4.0.3",
