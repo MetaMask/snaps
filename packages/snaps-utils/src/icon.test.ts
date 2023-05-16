@@ -5,6 +5,7 @@ import {
   SVG_MAX_BYTE_SIZE_TEXT,
   assertIsSnapIcon,
 } from './icon';
+import { ALTERNATIVE_SNAP_ICON } from './test-utils';
 import { VirtualFile } from './virtual-file';
 
 describe('assertIsSnapIcon', () => {
@@ -36,5 +37,13 @@ describe('assertIsSnapIcon', () => {
     expect(() => assertIsSnapIcon(icon)).toThrow(
       'Snap icon must be a valid SVG',
     );
+  });
+
+  it('doesnt throw for a valid SVG', () => {
+    const icon = new VirtualFile({
+      value: stringToBytes(ALTERNATIVE_SNAP_ICON),
+      path: 'foo.svg',
+    });
+    expect(() => assertIsSnapIcon(icon)).not.toThrow();
   });
 });
