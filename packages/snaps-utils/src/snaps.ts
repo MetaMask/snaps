@@ -31,12 +31,7 @@ import validateNPMPackage from 'validate-npm-package-name';
 
 import { SnapCaveatType } from './caveats';
 import { checksumFiles } from './checksum';
-import { assertIsSnapIcon } from './icon';
-import {
-  SnapManifest,
-  SnapPermissions,
-  assertIsSnapManifest,
-} from './manifest/validation';
+import { SnapManifest, SnapPermissions } from './manifest/validation';
 import {
   SnapFiles,
   SnapId,
@@ -221,23 +216,6 @@ export function getSnapChecksum(
     (file) => file !== undefined,
   );
   return base64.encode(checksumFiles(all as VirtualFile[]));
-}
-
-/**
- * Validates the files contained in a fetched snap.
- *
- * @param files - All potentially included files in a fetched snap.
- * @throws If any of the files are considered invalid.
- */
-export function validateFetchedSnap(
-  files: Pick<SnapFiles, 'manifest' | 'sourceCode' | 'svgIcon'>,
-): void {
-  assertIsSnapManifest(files.manifest.result);
-  validateSnapShasum(files);
-
-  if (files.svgIcon) {
-    assertIsSnapIcon(files.svgIcon);
-  }
 }
 
 /**
