@@ -82,15 +82,8 @@
         "define": true
       },
       "packages": {
-        "@babel/core>@babel/generator>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
-        "ts-node>@cspotcode/source-map-support>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true
-      }
-    },
-    "@babel/core>@babel/generator>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": {
-      "globals": {
-        "Buffer": true,
-        "TextDecoder": true,
-        "define": true
+        "ts-node>@cspotcode/source-map-support>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
+        "ts-node>@cspotcode/source-map-support>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
       }
     },
     "@babel/core>@babel/generator>jsesc": {

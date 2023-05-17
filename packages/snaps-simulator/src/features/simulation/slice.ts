@@ -46,6 +46,7 @@ export const INITIAL_STATE: SimulationState = {
   status: SnapStatus.Loading,
   executionService: null,
   permissionController: null,
+  subjectMetadataController: null,
   manifest: null,
   sourceCode: null,
   snapState: null,
