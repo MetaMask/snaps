@@ -4539,7 +4539,6 @@ __metadata:
     redux-saga: ^1.2.3
     redux-saga-test-plan: ^4.0.6
     rimraf: ^4.1.2
-    simple-git-hooks: ^2.7.0
     stream-browserify: ^3.0.0
     style-loader: ^3.3.2
     swc-loader: ^0.2.3

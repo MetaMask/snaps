@@ -16,7 +16,6 @@
   "scripts": {
     "build": "webpack --mode production",
     "build:clean": "rimraf dist && yarn build",
-    "postinstall": "simple-git-hooks",
     "lint": "yarn lint:eslint && yarn lint:constraints && yarn lint:misc --check && yarn lint:changelog",
     "lint:changelog": "auto-changelog validate",
     "lint:constraints": "yarn constraints",
@@ -114,7 +113,6 @@
     "readable-stream": "^4.4.0",
     "redux-saga-test-plan": "^4.0.6",
     "rimraf": "^4.1.2",
-    "simple-git-hooks": "^2.7.0",
     "stream-browserify": "^3.0.0",
     "style-loader": "^3.3.2",
     "swc-loader": "^0.2.3",
