@@ -1,22 +1,7 @@
 import { Component } from '@metamask/snaps-ui';
-import { Json } from '@metamask/utils';
+import { Json, JsonRpcRequest } from '@metamask/utils';
 
 import { AccountId, ChainId, RequestArguments } from './namespace';
-
-/**
- * The request coming to a snap's `onRpcRequest` handler.
- *
- * @property id - The ID of the request.
- * @property method - The requested method.
- * @property jsonrpc - The fixed string "2.0".
- * @property params - The parameters of the request.
- */
-export type SnapsJsonRpcRequest<Params> = {
-  id: string | number | null;
-  method: string;
-  jsonrpc: '2.0';
-  params: Params;
-};
 
 /**
  * The `onRpcRequest` handler. This is called whenever a JSON-RPC request is
@@ -29,10 +14,13 @@ export type SnapsJsonRpcRequest<Params> = {
  * @returns The JSON-RPC response. This must be a JSON-serializable value.
  */
 export type OnRpcRequestHandler<
-  Params = Json[] | Record<string, Json> | undefined,
+  Params extends Json[] | Record<string, Json> | undefined =
+    | Json[]
+    | Record<string, Json>
+    | undefined,
 > = (args: {
   origin: string;
-  request: SnapsJsonRpcRequest<Params>;
+  request: JsonRpcRequest<Params>;
 }) => Promise<unknown>;
 
 /**
@@ -74,8 +62,11 @@ export type OnTransactionHandler = (args: {
  * @param args.request - The JSON-RPC request sent to the snap.
  */
 export type OnCronjobHandler<
-  Params = Json[] | Record<string, Json> | undefined,
-> = (args: { request: SnapsJsonRpcRequest<Params> }) => Promise<unknown>;
+  Params extends Json[] | Record<string, Json> | undefined =
+    | Json[]
+    | Record<string, Json>
+    | undefined,
+> = (args: { request: JsonRpcRequest<Params> }) => Promise<unknown>;
 
 /**
  * A request sent to the `handleRequest` handler of a snap keyring.
