@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.packages.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "jsx": "react-jsx"
+  },
+  "include": ["./src", "webpack.config.ts"],
+  "references": [
+    { "path": "../rpc-methods/tsconfig.build.json" },
+    { "path": "../snaps-controllers/tsconfig.build.json" },
+    { "path": "../snaps-utils/tsconfig.build.json" },
+    { "path": "../snaps-ui/tsconfig.build.json" }
+  ]
+}
