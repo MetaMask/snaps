@@ -82,8 +82,15 @@
         "define": true
       },
       "packages": {
-        "ts-node>@cspotcode/source-map-support>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
-        "ts-node>@cspotcode/source-map-support>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
+        "@babel/core>@babel/generator>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
+        "ts-node>@cspotcode/source-map-support>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true
+      }
+    },
+    "@babel/core>@babel/generator>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "define": true
       }
     },
     "@babel/core>@babel/generator>jsesc": {
@@ -584,11 +591,11 @@
         "@babel/core>@babel/traverse>@babel/helper-environment-visitor": true,
         "@babel/core>@babel/traverse>@babel/helper-function-name": true,
         "@babel/core>@babel/traverse>@babel/helper-split-export-declaration": true,
-        "@babel/core>@babel/traverse>globals": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-optimise-call-expression": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers": true
+        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers": true,
+        "@babel/preset-env>@babel/plugin-transform-classes>globals": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": {
@@ -2574,7 +2581,7 @@
         "process.getuid": true,
         "process.nextTick": true,
         "process.platform": true,
-        "process.versions": true
+        "process.versions.pnp": true
       },
       "packages": {
         "eslint-plugin-import>is-core-module": true,

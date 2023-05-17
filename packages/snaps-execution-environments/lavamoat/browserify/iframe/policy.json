@@ -341,6 +341,9 @@
       }
     },
     "browserify>crypto-browserify>create-ecdh>bn.js": {
+      "globals": {
+        "Buffer": true
+      },
       "packages": {
         "browserify>browser-resolve": true
       }
