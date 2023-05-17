@@ -1,0 +1,28 @@
+{
+  "version": "0.1.0",
+  "description": "A snap with a companion Dapp that uses SIWE to retrieve an API key",
+  "proposedName": "SIWE Snap Example",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ziad-saab/siwe-metamask-snap.git"
+  },
+  "source": {
+    "shasum": "JckepxXPG30I3T9f23KApmeie1MSCkPGZ28w4C8r8+8=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "iconPath": "images/icon.svg",
+        "packageName": "siwe-metamask-snap",
+        "registry": "https://registry.npmjs.org/"
+      }
+    }
+  },
+  "initialPermissions": {
+    "snap_manageState": {},
+    "endowment:rpc": {
+      "dapps": true,
+      "snaps": false
+    }
+  },
+  "manifestVersion": "0.1"
+}

@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "useUnknownInCatchVariables": false,
+    "sourceMap": true,
+    "strict": true,
+    "target": "ES2017"
+  },
+  "exclude": ["**/__snapshots__/**", "**/test/**", "**/*.test.ts"]
+}
