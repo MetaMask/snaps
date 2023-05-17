@@ -15,7 +15,7 @@ const getApiKey = async () => {
   return null;
 };
 
-const setApiKey = (apiKey: string | null) => {
+const setApiKey = async (apiKey: string | null) => {
   return snap.request({
     method: 'snap_manageState',
     params: {
@@ -30,7 +30,7 @@ const setApiKey = (apiKey: string | null) => {
 const makeRequestWithApiKey = async (apiKey: string) => {
   console.log('Making authenticated API call from snap...', apiKey);
   // simulate API call with latency
-  await new Promise((r) => setTimeout(r, Math.random() * 1000));
+  await new Promise((res) => setTimeout(res, Math.random() * 1000));
   return {
     secretResult: Math.random(),
   };
@@ -40,8 +40,6 @@ const makeRequestWithApiKey = async (apiKey: string) => {
  * Handle incoming JSON-RPC requests, sent through `wallet_invokeSnap`.
  *
  * @param args - The request handler args as object.
- * @param args.origin - The origin of the request, e.g., the website that
- * invoked the snap.
  * @param args.request - A validated JSON-RPC request object.
  * @returns The result of `snap_dialog`.
  * @throws If the request method is not valid for this snap.
@@ -50,9 +48,10 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   switch (request.method) {
     case 'remove_api_key':
       await setApiKey(null);
-      break;
+      return true;
     case 'set_api_key':
       if (
+        request.params &&
         'apiKey' in request.params &&
         typeof request.params.apiKey === 'string'
       ) {
