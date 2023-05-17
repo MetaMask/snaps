@@ -82,7 +82,7 @@ jobs:
 
   get-release-version:
     runs-on: ubuntu-latest
-    needs: npm-publish
+    needs: publish-release
     outputs:
       RELEASE_VERSION: ${{ steps.get-release-version.outputs.RELEASE_VERSION }}
     steps:
@@ -99,6 +99,6 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    uses: ./.github/workflows/publish-site.yml
+    uses: ./.github/workflows/publish-environment.yml
     with:
       destination_dir: ${{ needs.get-release-version.outputs.RELEASE_VERSION }}

@@ -1,4 +1,4 @@
-name: Publish site
+name: Publish execution environment
 
 on:
   workflow_call:
@@ -9,7 +9,7 @@ on:
 
 jobs:
   publish-site:
-    name: Publish site
+    name: Publish execution environment
     runs-on: ubuntu-latest
     environment: deploy-prod
     permissions:
