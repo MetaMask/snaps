@@ -1,11 +1,19 @@
 {
-  "extends": "../../tsconfig.packages.json",
+  "extends": "../../tsconfig.packages.build.json",
   "compilerOptions": {
-    "baseUrl": "./",
     "jsx": "react-jsx",
-    "module": "commonjs"
+    "baseUrl": "./",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "module": "esnext"
   },
-  "include": ["./src", "webpack.config.ts"],
+  "include": ["./src"],
+  "exclude": [
+    "**/*.test.ts",
+    "./src/**/test-utils",
+    "./src/**/__mocks__",
+    "./src/**/__snapshots__"
+  ],
   "references": [
     { "path": "../rpc-methods/tsconfig.build.esm.json" },
     { "path": "../snaps-controllers/tsconfig.build.esm.json" },

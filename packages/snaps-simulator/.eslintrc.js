@@ -11,6 +11,12 @@ module.exports = {
     'import/extensions': ['.ts', '.tsx'],
   },
 
+  rules: {
+    // TODO: Investigate why this is needed.
+    'node/no-unpublished-import': 'off',
+    'node/no-unpublished-require': 'off',
+  },
+
   overrides: [
     {
       files: ['*.ts', '*.tsx'],

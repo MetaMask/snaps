@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.build.json",
+  "compilerOptions": {
+    "module": "esnext"
+  },
+  "references": [
+    { "path": "../snaps-utils/tsconfig.build.esm.json" },
+    { "path": "../snaps-browserify-plugin/tsconfig.build.esm.json" }
+  ]
+}

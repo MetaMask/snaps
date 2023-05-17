@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.build.json",
+  "compilerOptions": {
+    "module": "esnext"
+  },
+  "references": [
+    {
+      "path": "../snaps-utils/tsconfig.build.esm.json"
+    }
+  ]
+}

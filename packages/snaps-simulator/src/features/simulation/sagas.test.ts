@@ -1,4 +1,5 @@
 import { GenericPermissionController } from '@metamask/permission-controller';
+import { processSnapPermissions } from '@metamask/snaps-controllers';
 import { DEFAULT_ENDOWMENTS, HandlerType } from '@metamask/snaps-utils';
 import { expectSaga } from 'redux-saga-test-plan';
 
@@ -16,7 +17,6 @@ import {
   setManifest,
   setSourceCode,
 } from './slice';
-import { processSnapPermissions } from './snap-permissions';
 import { MockExecutionService } from './test/mockExecutionService';
 import { MOCK_MANIFEST, MOCK_MANIFEST_FILE } from './test/mockManifest';
 import { MOCK_SNAP_SOURCE, MOCK_SNAP_SOURCE_FILE } from './test/mockSnap';
@@ -90,12 +90,18 @@ describe('permissionsSaga', () => {
     const permissionController = {
       grantPermissions,
     } as unknown as GenericPermissionController;
+
+    const subjectMetadataController = {
+      addSubjectMetadata: jest.fn(),
+    };
+
     const approvedPermissions = processSnapPermissions(
       MOCK_MANIFEST.initialPermissions,
     );
+
     await expectSaga(permissionsSaga, setManifest(MOCK_MANIFEST_FILE))
       .withState({
-        simulation: { permissionController },
+        simulation: { subjectMetadataController, permissionController },
       })
       .call([permissionController, 'grantPermissions'], {
         approvedPermissions,

@@ -16,7 +16,14 @@ const config: Configuration & Record<'devServer', DevServerConfiguration> = {
     rules: [
       {
         test: /\.tsx?$/u,
-        use: 'swc-loader',
+        use: {
+          loader: 'ts-loader',
+          options: {
+            transpileOnly: true,
+            configFile: resolve(__dirname, 'tsconfig.build.json'),
+            projectReferences: true,
+          },
+        },
       },
       {
         test: /\.m?js$/u,
@@ -90,12 +97,12 @@ const config: Configuration & Record<'devServer', DevServerConfiguration> = {
     }),
     new FaviconsWebpackPlugin('./src/assets/favicon.svg'),
   ],
-  cache: {
-    type: 'filesystem',
-    buildDependencies: {
-      config: [__filename],
-    },
-  },
+  // cache: {
+  //   type: 'filesystem',
+  //   buildDependencies: {
+  //     config: [__filename],
+  //   },
+  // },
   devServer: {
     port: 8000,
     historyApiFallback: true,
