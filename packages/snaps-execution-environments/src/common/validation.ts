@@ -209,26 +209,24 @@ export type ExecuteSnap = RequestFunction<
 export type SnapRpc = RequestFunction<SnapRpcRequestArguments, SnapRpcResponse>;
 
 /**
- * Sanitize JSON structure.
+ * Validate and sanitize JSON structure.
  *
  * Note:
  * This function will stringify and then parse the object provided
  * to ensure that there are no getters which can have side effects
  * that can cause security issues.
- * For complete safety, this function should always be used with isValidJson
- * (after or before) which is using Superstruct validation.
  *
  * @param value - JSON structure to be processed.
  * @returns Sanitized JSON structure.
  */
-export function sanitizeJsonStructure(value: unknown): unknown {
+export function sanitizeJsonStructure(value: unknown): Json {
   try {
     assertStruct(value, JsonStruct);
-    return JSON.parse(JSON.stringify(value));
+    const sanitizedJsonStruct = JSON.parse(JSON.stringify(value));
+    assertStruct(sanitizedJsonStruct, JsonStruct);
+
+    return sanitizedJsonStruct;
   } catch (error) {
-    throw new TypeError(
-      'Received non-JSON-serializable value. ' +
-        'Error might be caused by presence of a circular reference within the structure.',
-    );
+    throw new TypeError('Received non-JSON-serializable value.');
   }
 }

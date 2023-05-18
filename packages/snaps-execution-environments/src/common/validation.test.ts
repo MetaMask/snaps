@@ -97,11 +97,13 @@ describe('sanitizeJsonStructure', () => {
     });
     const result = sanitizeJsonStructure(testSubject) as { jailbreak: number };
 
-    // Remember the counter
-    const finalCount = result.jailbreak;
-    expect(typeof result.jailbreak).not.toBe('function');
-    // Make sure that counter value is not increased
-    expect(result.jailbreak).toBe(finalCount);
+    // Check that the counter is not increasing
+    expect(result.jailbreak).toStrictEqual(result.jailbreak);
+    // Check that it's a value, not a getter explicitly
+    const descriptor = Object.getOwnPropertyDescriptor(result, 'jailbreak');
+    expect(descriptor?.value).toBe(result.jailbreak);
+    expect(descriptor?.get).toBeUndefined();
+    expect(descriptor?.set).toBeUndefined();
   });
 
   it('should throw an error if circular reference is detected', () => {
@@ -139,29 +141,21 @@ describe('sanitizeJsonStructure', () => {
 
     expect(() =>
       sanitizeJsonStructure(DIRECT_CIRCULAR_REFERENCE_ARRAY),
-    ).toThrow(
-      'Received non-JSON-serializable value. Error might be caused by presence of a circular reference within the structure.',
-    );
+    ).toThrow('Received non-JSON-serializable value.');
     expect(() =>
       sanitizeJsonStructure(INDIRECT_CIRCULAR_REFERENCE_ARRAY),
-    ).toThrow(
-      'Received non-JSON-serializable value. Error might be caused by presence of a circular reference within the structure.',
-    );
+    ).toThrow('Received non-JSON-serializable value.');
     expect(() =>
       sanitizeJsonStructure(DIRECT_CIRCULAR_REFERENCE_OBJECT),
-    ).toThrow(
-      'Received non-JSON-serializable value. Error might be caused by presence of a circular reference within the structure.',
-    );
+    ).toThrow('Received non-JSON-serializable value.');
     expect(() =>
       sanitizeJsonStructure(INDIRECT_CIRCULAR_REFERENCE_OBJECT),
-    ).toThrow(
-      'Received non-JSON-serializable value. Error might be caused by presence of a circular reference within the structure.',
-    );
+    ).toThrow('Received non-JSON-serializable value.');
     expect(() => sanitizeJsonStructure(TO_JSON_CIRCULAR_REFERENCE)).toThrow(
-      'Received non-JSON-serializable value. Error might be caused by presence of a circular reference within the structure.',
+      'Received non-JSON-serializable value.',
     );
     expect(() => sanitizeJsonStructure(CIRCULAR_REFERENCE)).toThrow(
-      'Received non-JSON-serializable value. Error might be caused by presence of a circular reference within the structure.',
+      'Received non-JSON-serializable value.',
     );
   });
 });

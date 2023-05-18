@@ -152,12 +152,8 @@ export class BaseSnapExecutor {
           result = null;
         }
 
-        assert(
-          isValidJson(result),
-          new TypeError('Received non-JSON-serializable value.'),
-        );
         // /!\ Always return only sanitized JSON to prevent security flaws. /!\
-        return sanitizeJsonStructure(result) as Json;
+        return sanitizeJsonStructure(result);
       },
       this.onTerminate.bind(this),
     );
@@ -260,12 +256,9 @@ export class BaseSnapExecutor {
     if (!isValidJson(requestObject) || !isObject(requestObject)) {
       throw new Error('JSON-RPC responses must be JSON serializable objects.');
     }
-    const sanitizedRequestObject = sanitizeJsonStructure(
-      requestObject,
-    ) as Record<string, unknown>;
 
     this.commandStream.write({
-      ...sanitizedRequestObject,
+      ...requestObject,
       id,
       jsonrpc: '2.0',
     });
@@ -401,7 +394,9 @@ export class BaseSnapExecutor {
 
     const request = async (args: RequestArguments) => {
       assertSnapOutboundRequest(args);
-      const sanitizedArgs = sanitizeJsonStructure(args) as RequestArguments;
+      const sanitizedArgs = sanitizeJsonStructure(
+        args,
+      ) as unknown as RequestArguments;
       this.notify({ method: 'OutboundRequest' });
       try {
         return await withTeardown(originalRequest(sanitizedArgs), this as any);
@@ -442,7 +437,9 @@ export class BaseSnapExecutor {
 
     const request = async (args: RequestArguments) => {
       assertEthereumOutboundRequest(args);
-      const sanitizedArgs = sanitizeJsonStructure(args) as RequestArguments;
+      const sanitizedArgs = sanitizeJsonStructure(
+        args,
+      ) as unknown as RequestArguments;
       this.notify({ method: 'OutboundRequest' });
       try {
         return await withTeardown(originalRequest(sanitizedArgs), this as any);
