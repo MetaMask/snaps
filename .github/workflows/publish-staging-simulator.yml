@@ -1,0 +1,16 @@
+name: Publish staging `@metamask/snaps-simulator` to GitHub Pages
+
+on:
+  push:
+    branches: main
+
+jobs:
+  publish-to-gh-pages:
+    name: Publish site to `snaps-simulator/staging` directory of `gh-pages` branch
+    permissions:
+      contents: write
+    uses: ./.github/workflows/publish-site.yml
+    with:
+      build_script: yarn workspace @metamask/snaps-simulator build
+      publish_dir: ./packages/snaps-simulator/dist
+      destination_dir: snaps-simulator/staging

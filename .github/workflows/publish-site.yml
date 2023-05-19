@@ -1,0 +1,46 @@
+name: Publish site to GitHub Pages
+
+on:
+  workflow_call:
+    inputs:
+      build_script:
+        required: true
+        type: string
+      publish_dir:
+        required: true
+        type: string
+      destination_dir:
+        required: true
+        type: string
+
+jobs:
+  publish-site-to-gh-pages:
+    name: Publish site to GitHub Pages
+    runs-on: ubuntu-latest
+    environment: github-pages
+    permissions:
+      contents: write
+    steps:
+      - name: Ensure `publish_dir` is not empty
+        if: ${{ inputs.publish_dir == '' }}
+        run: exit 1
+      - name: Ensure `destination_dir` is not empty
+        if: ${{ inputs.destination_dir == '' }}
+        run: exit 1
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+      - name: Install npm dependencies
+        run: yarn --immutable
+      - name: Run build script
+        run: ${{ inputs.build_script }}
+      - name: Deploy to `${{ inputs.destination_dir }}` directory of `gh-pages` branch
+        uses: peaceiris/actions-gh-pages@de7ea6f8efb354206b205ef54722213d99067935
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ${{ inputs.publish_dir }}
+          destination_dir: ${{ inputs.destination_dir }}
