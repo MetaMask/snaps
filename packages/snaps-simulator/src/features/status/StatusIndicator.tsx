@@ -3,26 +3,37 @@ import { useEffect, useState } from 'react';
 
 import { Icon } from '../../components';
 import { useDispatch, useSelector } from '../../hooks';
-import { getSnapUrl, openConfigurationModal } from '../configuration';
+import { getSnapId, openConfigurationModal } from '../configuration';
 import { SnapStatus, getStatus } from '../simulation';
+import {
+  SnapIdPrefixes,
+  getSnapPrefix,
+  stripSnapPrefix,
+} from '@metamask/snaps-utils';
 
 export const StatusIndicator = () => {
-  const snapUrl = useSelector(getSnapUrl);
+  const snapId = useSelector(getSnapId);
   const status = useSelector(getStatus);
   const dispatch = useDispatch();
 
-  const [prettyUrl, setPrettyUrl] = useState(snapUrl);
+  const [prettyUrl, setPrettyUrl] = useState(snapId);
 
   useEffect(() => {
-    if (snapUrl) {
-      try {
-        const url = new URL(snapUrl);
-        setPrettyUrl(url.host);
-      } catch {
-        // Ignore.
-      }
+    if (!snapId) {
+      return;
     }
-  }, [snapUrl]);
+    try {
+      const stripped = stripSnapPrefix(snapId);
+      if (getSnapPrefix(snapId) === SnapIdPrefixes.npm) {
+        setPrettyUrl(stripped);
+        return;
+      }
+      const url = new URL(stripped);
+      setPrettyUrl(url.host);
+    } catch {
+      // Ignore.
+    }
+  }, [snapId]);
 
   const color =
     // eslint-disable-next-line no-nested-ternary

@@ -21,15 +21,15 @@ import { useDispatch, useSelector } from '../../hooks';
 import {
   getOpen,
   getSesEnabled,
-  getSnapUrl,
+  getSnapId,
   getSrp,
   setOpen,
-  setSnapUrl,
+  setSnapId,
 } from './slice';
 
 export const Configuration = () => {
   const dispatch = useDispatch();
-  const snapUrl = useSelector(getSnapUrl);
+  const snapUrl = useSelector(getSnapId);
   const srp = useSelector(getSrp);
   const sesEnabled = useSelector(getSesEnabled);
   const isOpen = useSelector(getOpen);
@@ -39,7 +39,7 @@ export const Configuration = () => {
   };
 
   const handleSnapUrlChange = (event: FormEvent<HTMLInputElement>) => {
-    dispatch(setSnapUrl(event.currentTarget.value));
+    dispatch(setSnapId(event.currentTarget.value));
   };
 
   // const handleSrpChange = (event: FormEvent<HTMLTextAreaElement>) => {
