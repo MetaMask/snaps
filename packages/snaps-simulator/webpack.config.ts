@@ -96,12 +96,12 @@ const config: Configuration & Record<'devServer', DevServerConfiguration> = {
     }),
     new FaviconsWebpackPlugin('./src/assets/favicon.svg'),
   ],
-  // cache: {
-  //   type: 'filesystem',
-  //   buildDependencies: {
-  //     config: [__filename],
-  //   },
-  // },
+  cache: {
+    type: 'filesystem',
+    buildDependencies: {
+      config: [__filename],
+    },
+  },
   devServer: {
     port: 8000,
     historyApiFallback: true,
