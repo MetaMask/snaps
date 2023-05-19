@@ -116,7 +116,6 @@
     "rimraf": "^4.1.2",
     "stream-browserify": "^3.0.0",
     "style-loader": "^3.3.2",
-    "swc-loader": "^0.2.3",
     "ts-loader": "^9.4.2",
     "ts-node": "^10.9.1",
     "tsconfig-paths-webpack-plugin": "^4.0.1",

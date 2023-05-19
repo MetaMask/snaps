@@ -4435,7 +4435,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@metamask/snaps-simulator@workspace:packages/snaps-simulator"
   dependencies:
-    "@babel/core": ^7.21.8
+    "@babel/core": ^7.20.12
     "@chakra-ui/anatomy": ^2.1.1
     "@chakra-ui/react": ^2.6.1
     "@emotion/react": ^11.10.8
@@ -4476,7 +4476,7 @@ __metadata:
     constants-browserify: ^1.0.0
     css-loader: ^6.7.3
     date-fns: ^2.30.0
-    deepmerge: ^4.3.1
+    deepmerge: ^4.2.2
     eslint: ^8.27.0
     eslint-config-prettier: ^8.5.0
     eslint-plugin-import: ^2.26.0
@@ -4520,7 +4520,6 @@ __metadata:
     rimraf: ^4.1.2
     stream-browserify: ^3.0.0
     style-loader: ^3.3.2
-    swc-loader: ^0.2.3
     ts-loader: ^9.4.2
     ts-node: ^10.9.1
     tsconfig-paths-webpack-plugin: ^4.0.1
@@ -10324,7 +10323,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"deepmerge@npm:^4.2.2, deepmerge@npm:^4.3.1":
+"deepmerge@npm:^4.2.2":
   version: 4.3.1
   resolution: "deepmerge@npm:4.3.1"
   checksum: 2024c6a980a1b7128084170c4cf56b0fd58a63f2da1660dcfe977415f27b17dbe5888668b59d0b063753f3220719d5e400b7f113609489c90160bb9a5518d052
@@ -21960,16 +21959,6 @@ __metadata:
     es6-iterator: ^2.0.1
     es6-symbol: ^3.1.1
   checksum: d6cddb86bd921d105f33b60faa85ebe6cee128e468f983a1f3da00d486f35c0ca4226d14edac5f3f0ffcac0f5ca6afd4e55e4eb1c7db4e81135d2a7d662f9365
-  languageName: node
-  linkType: hard
-
-"swc-loader@npm:^0.2.3":
-  version: 0.2.3
-  resolution: "swc-loader@npm:0.2.3"
-  peerDependencies:
-    "@swc/core": ^1.2.147
-    webpack: ">=2"
-  checksum: 010d84d399525c0185d36d62c86c55ae017e7a90046bc8a39be4b7e07526924037868049f6037bc966da98151cb2600934b96a66279b742d3c413a718b427251
   languageName: node
   linkType: hard
 
