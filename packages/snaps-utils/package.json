@@ -5,7 +5,6 @@
     "type": "git",
     "url": "https://github.com/MetaMask/snaps-monorepo.git"
   },
-  "sideEffects": false,
   "exports": {
     ".": {
       "browser": {

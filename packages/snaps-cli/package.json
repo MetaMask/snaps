@@ -7,7 +7,6 @@
     "url": "https://github.com/MetaMask/snaps-monorepo.git"
   },
   "license": "ISC",
-  "sideEffects": false,
   "bin": {
     "mm-snap": "./dist/main.js"
   },

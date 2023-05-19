@@ -65,7 +65,7 @@
     "redux-saga": "^1.2.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.21.8",
+    "@babel/core": "^7.20.12",
     "@metamask/auto-changelog": "^3.1.0",
     "@metamask/eslint-config": "^11.0.0",
     "@metamask/eslint-config-browser": "^11.1.0",
@@ -88,7 +88,7 @@
     "babel-jest": "^29.5.0",
     "constants-browserify": "^1.0.0",
     "css-loader": "^6.7.3",
-    "deepmerge": "^4.3.1",
+    "deepmerge": "^4.2.2",
     "eslint": "^8.27.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
