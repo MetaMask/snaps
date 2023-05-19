@@ -108,7 +108,7 @@ But then event.source is compared with this.\_targetWindow, which should do the 
 
 `subjectType` is being checked before a middleware gets to handle an RPC request. The snap is going through the same permission mechanism in the provider as a dapp would.
 
-PermissionsController is fed the snapId as origin, but the snapId is coming from
+PermissionsController is fed the snapId as origin, but the snapId is coming from the reference passed in at the time of the communication channel being set up and before the snap ran. It's not reachable by the snap and could only ever be changed by a sloppy merge of content from the RPC request onto the object with the id. (which is not the case now)
 
 TODO: add an e2e test checking if enforcing methods not allowed for a snap works.
 
