@@ -16,6 +16,7 @@
   "scripts": {
     "build": "webpack --mode production",
     "build:clean": "rimraf dist && yarn build",
+    "build:post-tsc": "yarn build",
     "lint": "yarn lint:eslint && yarn lint:constraints && yarn lint:misc --check && yarn lint:changelog",
     "lint:changelog": "auto-changelog validate",
     "lint:constraints": "yarn constraints",

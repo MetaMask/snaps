@@ -19,7 +19,6 @@ const config: Configuration & Record<'devServer', DevServerConfiguration> = {
         use: {
           loader: 'ts-loader',
           options: {
-            transpileOnly: true,
             configFile: resolve(__dirname, 'tsconfig.build.json'),
             projectReferences: true,
           },

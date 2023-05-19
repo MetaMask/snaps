@@ -4,8 +4,7 @@
     "jsx": "react-jsx",
     "baseUrl": "./",
     "outDir": "./dist",
-    "rootDir": "./src",
-    "module": "esnext"
+    "rootDir": "./src"
   },
   "include": ["./src"],
   "exclude": [
@@ -15,9 +14,9 @@
     "./src/**/__snapshots__"
   ],
   "references": [
-    { "path": "../rpc-methods/tsconfig.build.esm.json" },
-    { "path": "../snaps-controllers/tsconfig.build.esm.json" },
-    { "path": "../snaps-utils/tsconfig.build.esm.json" },
-    { "path": "../snaps-ui/tsconfig.build.esm.json" }
+    { "path": "../rpc-methods/tsconfig.build.json" },
+    { "path": "../snaps-controllers/tsconfig.build.json" },
+    { "path": "../snaps-utils/tsconfig.build.json" },
+    { "path": "../snaps-ui/tsconfig.build.json" }
   ]
 }
