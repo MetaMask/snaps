@@ -20,6 +20,7 @@ import {
   JsonRpcRequest,
   Json,
   hasProperty,
+  getValidatedAndSanitizedJson,
 } from '@metamask/utils';
 import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
 import { createIdRemapMiddleware } from 'json-rpc-engine';
@@ -46,7 +47,6 @@ import {
 import {
   ExecuteSnapRequestArgumentsStruct,
   PingRequestArgumentsStruct,
-  sanitizeJsonStructure,
   SnapRpcRequestArgumentsStruct,
   TerminateRequestArgumentsStruct,
   validateExport,
@@ -153,7 +153,11 @@ export class BaseSnapExecutor {
         }
 
         // /!\ Always return only sanitized JSON to prevent security flaws. /!\
-        return sanitizeJsonStructure(result);
+        try {
+          return getValidatedAndSanitizedJson<Promise<Json>>(result);
+        } catch {
+          throw new TypeError('Received non-JSON-serializable value.');
+        }
       },
       this.onTerminate.bind(this),
     );
@@ -394,9 +398,8 @@ export class BaseSnapExecutor {
 
     const request = async (args: RequestArguments) => {
       assertSnapOutboundRequest(args);
-      const sanitizedArgs = sanitizeJsonStructure(
-        args,
-      ) as unknown as RequestArguments;
+      const sanitizedArgs =
+        getValidatedAndSanitizedJson<RequestArguments>(args);
       this.notify({ method: 'OutboundRequest' });
       try {
         return await withTeardown(originalRequest(sanitizedArgs), this as any);
@@ -437,9 +440,8 @@ export class BaseSnapExecutor {
 
     const request = async (args: RequestArguments) => {
       assertEthereumOutboundRequest(args);
-      const sanitizedArgs = sanitizeJsonStructure(
-        args,
-      ) as unknown as RequestArguments;
+      const sanitizedArgs =
+        getValidatedAndSanitizedJson<RequestArguments>(args);
       this.notify({ method: 'OutboundRequest' });
       try {
         return await withTeardown(originalRequest(sanitizedArgs), this as any);
