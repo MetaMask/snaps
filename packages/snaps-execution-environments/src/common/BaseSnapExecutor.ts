@@ -20,7 +20,7 @@ import {
   JsonRpcRequest,
   Json,
   hasProperty,
-  getValidatedAndSanitizedJson,
+  getSafeJson,
 } from '@metamask/utils';
 import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
 import { createIdRemapMiddleware } from 'json-rpc-engine';
@@ -154,7 +154,7 @@ export class BaseSnapExecutor {
 
         // /!\ Always return only sanitized JSON to prevent security flaws. /!\
         try {
-          return getValidatedAndSanitizedJson<Promise<Json>>(result);
+          return getSafeJson(result);
         } catch {
           throw new TypeError('Received non-JSON-serializable value.');
         }
@@ -398,8 +398,7 @@ export class BaseSnapExecutor {
 
     const request = async (args: RequestArguments) => {
       assertSnapOutboundRequest(args);
-      const sanitizedArgs =
-        getValidatedAndSanitizedJson<RequestArguments>(args);
+      const sanitizedArgs = getSafeJson<RequestArguments>(args);
       this.notify({ method: 'OutboundRequest' });
       try {
         return await withTeardown(originalRequest(sanitizedArgs), this as any);
@@ -440,8 +439,7 @@ export class BaseSnapExecutor {
 
     const request = async (args: RequestArguments) => {
       assertEthereumOutboundRequest(args);
-      const sanitizedArgs =
-        getValidatedAndSanitizedJson<RequestArguments>(args);
+      const sanitizedArgs = getSafeJson<RequestArguments>(args);
       this.notify({ method: 'OutboundRequest' });
       try {
         return await withTeardown(originalRequest(sanitizedArgs), this as any);
