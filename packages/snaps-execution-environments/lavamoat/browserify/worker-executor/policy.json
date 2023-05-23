@@ -5,9 +5,34 @@
         "console.warn": true
       },
       "packages": {
-        "browserify>readable-stream": true,
+        "@metamask/object-multiplex>readable-stream": true,
         "pump>end-of-stream": true,
         "pump>once": true
+      }
+    },
+    "@metamask/object-multiplex>readable-stream": {
+      "packages": {
+        "@metamask/object-multiplex>readable-stream>safe-buffer": true,
+        "@metamask/object-multiplex>readable-stream>string_decoder": true,
+        "browserify>browser-resolve": true,
+        "browserify>events": true,
+        "browserify>inherits": true,
+        "browserify>readable-stream>core-util-is": true,
+        "browserify>readable-stream>isarray": true,
+        "browserify>readable-stream>process-nextick-args": true,
+        "browserify>readable-stream>util-deprecate": true,
+        "browserify>timers-browserify": true,
+        "process": true
+      }
+    },
+    "@metamask/object-multiplex>readable-stream>safe-buffer": {
+      "packages": {
+        "browserify>buffer": true
+      }
+    },
+    "@metamask/object-multiplex>readable-stream>string_decoder": {
+      "packages": {
+        "@metamask/object-multiplex>readable-stream>safe-buffer": true
       }
     },
     "@metamask/post-message-stream": {
@@ -113,7 +138,7 @@
       },
       "packages": {
         "@metamask/providers>json-rpc-middleware-stream>@metamask/safe-event-emitter": true,
-        "browserify>readable-stream": true
+        "@metamask/providers>json-rpc-middleware-stream>readable-stream": true
       }
     },
     "@metamask/providers>json-rpc-middleware-stream>@metamask/safe-event-emitter": {
@@ -122,6 +147,31 @@
       },
       "packages": {
         "browserify>events": true
+      }
+    },
+    "@metamask/providers>json-rpc-middleware-stream>readable-stream": {
+      "packages": {
+        "@metamask/providers>json-rpc-middleware-stream>readable-stream>safe-buffer": true,
+        "@metamask/providers>json-rpc-middleware-stream>readable-stream>string_decoder": true,
+        "browserify>browser-resolve": true,
+        "browserify>events": true,
+        "browserify>inherits": true,
+        "browserify>readable-stream>core-util-is": true,
+        "browserify>readable-stream>isarray": true,
+        "browserify>readable-stream>process-nextick-args": true,
+        "browserify>readable-stream>util-deprecate": true,
+        "browserify>timers-browserify": true,
+        "process": true
+      }
+    },
+    "@metamask/providers>json-rpc-middleware-stream>readable-stream>safe-buffer": {
+      "packages": {
+        "browserify>buffer": true
+      }
+    },
+    "@metamask/providers>json-rpc-middleware-stream>readable-stream>string_decoder": {
+      "packages": {
+        "@metamask/providers>json-rpc-middleware-stream>readable-stream>safe-buffer": true
       }
     },
     "@metamask/rpc-methods>@noble/hashes": {
@@ -255,13 +305,13 @@
       "packages": {
         "browserify>browser-pack>safe-buffer": true,
         "browserify>crypto-browserify>browserify-sign>bn.js": true,
-        "browserify>crypto-browserify>browserify-sign>readable-stream": true,
         "browserify>crypto-browserify>create-ecdh>elliptic": true,
         "browserify>crypto-browserify>create-hash": true,
         "browserify>crypto-browserify>create-hmac": true,
         "browserify>crypto-browserify>public-encrypt>browserify-rsa": true,
         "browserify>crypto-browserify>public-encrypt>parse-asn1": true,
-        "browserify>inherits": true
+        "browserify>inherits": true,
+        "stream-browserify>readable-stream": true
       }
     },
     "browserify>crypto-browserify>browserify-sign>bn.js": {
@@ -272,17 +322,6 @@
         "browserify>browser-resolve": true
       }
     },
-    "browserify>crypto-browserify>browserify-sign>readable-stream": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>buffer": true,
-        "browserify>events": true,
-        "browserify>inherits": true,
-        "browserify>readable-stream>util-deprecate": true,
-        "browserify>string_decoder": true,
-        "process": true
-      }
-    },
     "browserify>crypto-browserify>create-ecdh": {
       "packages": {
         "browserify>buffer": true,
@@ -291,6 +330,9 @@
       }
     },
     "browserify>crypto-browserify>create-ecdh>bn.js": {
+      "globals": {
+        "Buffer": true
+      },
       "packages": {
         "browserify>browser-resolve": true
       }
@@ -399,19 +441,8 @@
     "browserify>crypto-browserify>pbkdf2>ripemd160>hash-base": {
       "packages": {
         "browserify>browser-pack>safe-buffer": true,
-        "browserify>crypto-browserify>pbkdf2>ripemd160>hash-base>readable-stream": true,
-        "browserify>inherits": true
-      }
-    },
-    "browserify>crypto-browserify>pbkdf2>ripemd160>hash-base>readable-stream": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>buffer": true,
-        "browserify>events": true,
         "browserify>inherits": true,
-        "browserify>readable-stream>util-deprecate": true,
-        "browserify>string_decoder": true,
-        "process": true
+        "stream-browserify>readable-stream": true
       }
     },
     "browserify>crypto-browserify>pbkdf2>sha.js": {
@@ -488,21 +519,6 @@
         "console": true
       }
     },
-    "browserify>readable-stream": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>events": true,
-        "browserify>inherits": true,
-        "browserify>readable-stream>core-util-is": true,
-        "browserify>readable-stream>isarray": true,
-        "browserify>readable-stream>process-nextick-args": true,
-        "browserify>readable-stream>safe-buffer": true,
-        "browserify>readable-stream>string_decoder": true,
-        "browserify>readable-stream>util-deprecate": true,
-        "browserify>timers-browserify": true,
-        "process": true
-      }
-    },
     "browserify>readable-stream>core-util-is": {
       "packages": {
         "browserify>insert-module-globals>is-buffer": true
@@ -511,16 +527,6 @@
     "browserify>readable-stream>process-nextick-args": {
       "packages": {
         "process": true
-      }
-    },
-    "browserify>readable-stream>safe-buffer": {
-      "packages": {
-        "browserify>buffer": true
-      }
-    },
-    "browserify>readable-stream>string_decoder": {
-      "packages": {
-        "browserify>readable-stream>safe-buffer": true
       }
     },
     "browserify>readable-stream>util-deprecate": {

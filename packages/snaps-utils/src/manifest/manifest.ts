@@ -21,13 +21,14 @@ import { readVirtualFile, VirtualFile } from '../virtual-file';
 import { SnapManifest } from './validation';
 
 const MANIFEST_SORT_ORDER: Record<keyof SnapManifest, number> = {
-  version: 1,
-  description: 2,
-  proposedName: 3,
-  repository: 4,
-  source: 5,
-  initialPermissions: 6,
-  manifestVersion: 7,
+  $schema: 1,
+  version: 2,
+  description: 3,
+  proposedName: 4,
+  repository: 5,
+  source: 6,
+  initialPermissions: 7,
+  manifestVersion: 8,
 };
 
 /**
