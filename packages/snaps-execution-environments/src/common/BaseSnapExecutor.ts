@@ -398,10 +398,13 @@ export class BaseSnapExecutor {
 
     const request = async (args: RequestArguments) => {
       assertSnapOutboundRequest(args);
-      const sanitizedArgs = getSafeJson<RequestArguments>(args);
+      const sanitizedArgs = getSafeJson(args);
       this.notify({ method: 'OutboundRequest' });
       try {
-        return await withTeardown(originalRequest(sanitizedArgs), this as any);
+        return await withTeardown(
+          originalRequest(sanitizedArgs as unknown as RequestArguments),
+          this as any,
+        );
       } finally {
         this.notify({ method: 'OutboundResponse' });
       }
@@ -439,10 +442,13 @@ export class BaseSnapExecutor {
 
     const request = async (args: RequestArguments) => {
       assertEthereumOutboundRequest(args);
-      const sanitizedArgs = getSafeJson<RequestArguments>(args);
+      const sanitizedArgs = getSafeJson(args);
       this.notify({ method: 'OutboundRequest' });
       try {
-        return await withTeardown(originalRequest(sanitizedArgs), this as any);
+        return await withTeardown(
+          originalRequest(sanitizedArgs as unknown as RequestArguments),
+          this as any,
+        );
       } finally {
         this.notify({ method: 'OutboundResponse' });
       }
