@@ -356,6 +356,11 @@ export type DisconnectOrigin = {
   handler: SnapController['removeSnapFromSubject'];
 };
 
+export type RevokeDynamicPermissions = {
+  type: `${typeof controllerName}:revokeDynamicPermissions`;
+  handler: SnapController['revokeDynamicSnapPermissions'];
+};
+
 export type SnapControllerActions =
   | ClearSnapState
   | GetSnap
@@ -374,7 +379,8 @@ export type SnapControllerActions =
   | IncrementActiveReferences
   | DecrementActiveReferences
   | GetRegistryMetadata
-  | DisconnectOrigin;
+  | DisconnectOrigin
+  | RevokeDynamicPermissions;
 
 // Controller Messenger Events
 
@@ -511,6 +517,11 @@ type SnapControllerArgs = {
   closeAllConnections: CloseAllConnectionsFunction;
 
   /**
+   * A list of permissions that are allowed to be dynamic, meaning they can be revoked from the snap whenever.
+   */
+  dynamicPermissions: string[];
+
+  /**
    * The names of endowment permissions whose values are the names of JavaScript
    * APIs that will be added to the snap execution environment at runtime.
    */
@@ -632,6 +643,8 @@ export class SnapController extends BaseController<
 > {
   #closeAllConnections: CloseAllConnectionsFunction;
 
+  #dynamicPermissions: string[];
+
   #environmentEndowmentPermissions: string[];
 
   #excludedPermissions: Record<string, string>;
@@ -666,6 +679,7 @@ export class SnapController extends BaseController<
     closeAllConnections,
     messenger,
     state,
+    dynamicPermissions = ['eth_accounts'],
     environmentEndowmentPermissions = [],
     excludedPermissions = {},
     idleTimeCheckInterval = inMilliseconds(5, Duration.Second),
@@ -736,6 +750,7 @@ export class SnapController extends BaseController<
     });
 
     this.#closeAllConnections = closeAllConnections;
+    this.#dynamicPermissions = dynamicPermissions;
     this.#environmentEndowmentPermissions = environmentEndowmentPermissions;
     this.#excludedPermissions = excludedPermissions;
     this.#featureFlags = featureFlags;
@@ -940,6 +955,11 @@ export class SnapController extends BaseController<
     this.messagingSystem.registerActionHandler(
       `${controllerName}:disconnectOrigin`,
       (...args) => this.removeSnapFromSubject(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:revokeDynamicPermissions`,
+      (...args) => this.revokeDynamicSnapPermissions(...args),
     );
   }
 
@@ -1404,7 +1424,7 @@ export class SnapController extends BaseController<
     });
 
     await this.messagingSystem.call('ExecutionService:terminateAllSnaps');
-    snapIds.forEach((snapId) => this.revokeAllSnapPermissions(snapId));
+    snapIds.forEach((snapId) => this.#revokeAllSnapPermissions(snapId));
 
     this.update((state: any) => {
       state.snaps = {};
@@ -1441,7 +1461,7 @@ export class SnapController extends BaseController<
         // it. This ensures that the snap will not be restarted or otherwise
         // affect the host environment while we are deleting it.
         await this.disableSnap(snapId);
-        this.revokeAllSnapPermissions(snapId);
+        this.#revokeAllSnapPermissions(snapId);
 
         this.#removeSnapFromSubjects(snapId);
 
@@ -1504,6 +1524,28 @@ export class SnapController extends BaseController<
   }
 
   /**
+   * Checks if a list of permissions are dynamic and allowed to be revoked, if they are they will all be revoked.
+   *
+   * @param snapId - The snap ID.
+   * @param permissionNames - The names of the permissions.
+   * @throws If non-dynamic permissions are passed.
+   */
+  revokeDynamicSnapPermissions(
+    snapId: string,
+    permissionNames: NonEmptyArray<string>,
+  ) {
+    assert(
+      !permissionNames.every((permissionName) =>
+        this.#dynamicPermissions.includes(permissionName),
+      ),
+      'Non-dynamic permissions cannot be revoked',
+    );
+    this.messagingSystem.call('PermissionController:revokePermissions', {
+      [snapId]: permissionNames,
+    });
+  }
+
+  /**
    * Removes a snap's permission (caveat) from all subjects.
    *
    * @param snapId - The id of the Snap.
@@ -1522,7 +1564,7 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The snap ID.
    */
-  private revokeAllSnapPermissions(snapId: string) {
+  #revokeAllSnapPermissions(snapId: string) {
     if (
       this.messagingSystem.call('PermissionController:hasPermissions', snapId)
     ) {
@@ -1723,7 +1765,7 @@ export class SnapController extends BaseController<
 
     // Existing snaps that should be re-installed should not maintain their existing permissions
     if (existingSnap && location.shouldAlwaysReload) {
-      this.revokeAllSnapPermissions(snapId);
+      this.#revokeAllSnapPermissions(snapId);
     }
 
     try {
