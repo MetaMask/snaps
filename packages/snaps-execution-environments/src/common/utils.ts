@@ -103,7 +103,6 @@ export function proxyStreamProvider(
 
 // We're blocking these RPC methods for v1, will revisit later.
 const BLOCKED_RPC_METHODS = Object.freeze([
-  'eth_requestAccounts',
   'wallet_requestSnaps',
   'wallet_requestPermissions',
 ]);
