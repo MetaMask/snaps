@@ -14,8 +14,11 @@ import {
   Textarea,
   Text,
   Divider,
+  InputLeftAddon,
+  InputGroup,
+  Select,
 } from '@chakra-ui/react';
-import { FormEvent } from 'react';
+import { FormEvent, useState } from 'react';
 
 import { useDispatch, useSelector } from '../../hooks';
 import {
@@ -26,6 +29,11 @@ import {
   setOpen,
   setSnapId,
 } from './slice';
+import {
+  SnapIdPrefixes,
+  getSnapPrefix,
+  stripSnapPrefix,
+} from '@metamask/snaps-utils';
 
 export const Configuration = () => {
   const dispatch = useDispatch();
@@ -34,12 +42,20 @@ export const Configuration = () => {
   const sesEnabled = useSelector(getSesEnabled);
   const isOpen = useSelector(getOpen);
 
+  const [snapIdInput, setSnapIdInput] = useState(stripSnapPrefix(snapUrl));
+  const [snapIdPrefix, setSnapIdPrefix] = useState(getSnapPrefix(snapUrl));
+
   const handleClose = () => {
+    dispatch(setSnapId(`${snapIdPrefix}:${snapIdInput}`));
     dispatch(setOpen(false));
   };
 
+  const handleSnapPrefixChange = (event: FormEvent<HTMLSelectElement>) => {
+    setSnapIdPrefix(event.currentTarget.value as SnapIdPrefixes);
+  };
+
   const handleSnapUrlChange = (event: FormEvent<HTMLInputElement>) => {
-    dispatch(setSnapId(event.currentTarget.value));
+    setSnapIdInput(event.currentTarget.value);
   };
 
   // const handleSrpChange = (event: FormEvent<HTMLTextAreaElement>) => {
@@ -63,10 +79,26 @@ export const Configuration = () => {
         <Divider my="4" />
         <ModalBody pt="0">
           <FormControl>
-            <FormLabel>Local server location</FormLabel>
-            <Input type="text" value={snapUrl} onChange={handleSnapUrlChange} />
+            <FormLabel>Snap location</FormLabel>
+            <InputGroup>
+              <InputLeftAddon px="0" bg="white" borderColor="border.default">
+                <Select
+                  border="none"
+                  onChange={handleSnapPrefixChange}
+                  value={snapIdPrefix}
+                >
+                  <option value="local">local</option>
+                  <option value="npm">npm</option>
+                </Select>
+              </InputLeftAddon>
+              <Input
+                type="text"
+                value={snapIdInput}
+                onChange={handleSnapUrlChange}
+              />
+            </InputGroup>
 
-            <FormLabel mt="4">Environment SRP</FormLabel>
+            <FormLabel>Environment SRP</FormLabel>
             <Textarea
               value={srp}
               readOnly={true}
@@ -75,7 +107,7 @@ export const Configuration = () => {
               // onChange={handleSrpChange}
             />
 
-            <HStack mt="6" alignItems="center" justifyContent="space-between">
+            <HStack alignItems="center" justifyContent="space-between">
               <FormLabel mb="0" htmlFor="ses-switch">
                 Secure EcmaScript (SES)
               </FormLabel>
