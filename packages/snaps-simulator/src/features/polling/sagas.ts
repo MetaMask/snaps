@@ -6,10 +6,11 @@ import {
   SnapManifest,
   VirtualFile,
 } from '@metamask/snaps-utils';
+import { SemVerRange } from '@metamask/utils';
 import equal from 'fast-deep-equal/es6';
 import { all, call, delay, put, select, takeLatest } from 'redux-saga/effects';
 
-import { getSnapId, setSnapId } from '../configuration';
+import { getSnapId, getSnapVersion, setSnapId } from '../configuration';
 import { addDefault, addError } from '../console';
 import { ManifestStatus, setValid, validateManifest } from '../manifest';
 import {
@@ -29,8 +30,12 @@ import {
  */
 export function* fetchingSaga() {
   const snapId: string = yield select(getSnapId);
+  const snapVersion: string = yield select(getSnapVersion);
 
-  const location = detectSnapLocation(snapId, { allowLocal: true });
+  const location = detectSnapLocation(snapId, {
+    allowLocal: true,
+    versionRange: snapVersion as SemVerRange,
+  });
   const manifestFile: VirtualFile<SnapManifest> = yield call(
     [location, 'fetch'],
     'snap.manifest.json',

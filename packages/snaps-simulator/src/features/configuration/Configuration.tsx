@@ -15,37 +15,52 @@ import {
   Text,
   Divider,
   InputLeftAddon,
+  InputRightAddon,
   InputGroup,
   Select,
 } from '@chakra-ui/react';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 
 import { useDispatch, useSelector } from '../../hooks';
 import {
   getOpen,
   getSesEnabled,
   getSnapId,
+  getSnapVersion,
   getSrp,
   setOpen,
   setSnapId,
+  setSnapVersion,
 } from './slice';
 import {
   SnapIdPrefixes,
   getSnapPrefix,
   stripSnapPrefix,
 } from '@metamask/snaps-utils';
+import {
+  fetchNpmMetadata,
+  DEFAULT_NPM_REGISTRY,
+} from '@metamask/snaps-controllers/dist/snaps/location';
 
 export const Configuration = () => {
   const dispatch = useDispatch();
   const snapUrl = useSelector(getSnapId);
+  const snapVersion = useSelector(getSnapVersion);
   const srp = useSelector(getSrp);
   const sesEnabled = useSelector(getSesEnabled);
   const isOpen = useSelector(getOpen);
 
   const [snapIdInput, setSnapIdInput] = useState(stripSnapPrefix(snapUrl));
   const [snapIdPrefix, setSnapIdPrefix] = useState(getSnapPrefix(snapUrl));
+  const [npmVersions, setNpmVersions] = useState<string[]>([]);
+  const [selectedNpmVersion, setSelectedNpmVersion] = useState<
+    string | undefined
+  >(snapVersion);
+
+  const isNPM = snapIdPrefix === SnapIdPrefixes.npm.slice(0, -1);
 
   const handleClose = () => {
+    dispatch(setSnapVersion(selectedNpmVersion));
     dispatch(setSnapId(`${snapIdPrefix}:${snapIdInput}`));
     dispatch(setOpen(false));
   };
@@ -57,6 +72,38 @@ export const Configuration = () => {
   const handleSnapUrlChange = (event: FormEvent<HTMLInputElement>) => {
     setSnapIdInput(event.currentTarget.value);
   };
+
+  const handleNpmVersionChange = (event: FormEvent<HTMLSelectElement>) => {
+    setSelectedNpmVersion(event.currentTarget.value);
+  };
+
+  useEffect(() => {
+    let cancelled = false;
+    async function fetchNpmVersions() {
+      const metadata = await fetchNpmMetadata(
+        snapIdInput,
+        new URL(DEFAULT_NPM_REGISTRY),
+        fetch.bind(globalThis),
+      );
+      const versions = Object.keys(metadata.versions).reverse();
+      if (!cancelled) {
+        setNpmVersions(versions);
+      }
+    }
+
+    // Reset version state if the inputs are changed
+    setSelectedNpmVersion(undefined);
+    setNpmVersions([]);
+
+    // If input is an NPM snap, try to repopulate the version state
+    if (isNPM) {
+      fetchNpmVersions();
+    }
+
+    return () => {
+      cancelled = true;
+    };
+  }, [snapIdInput, snapIdPrefix, isNPM]);
 
   // const handleSrpChange = (event: FormEvent<HTMLTextAreaElement>) => {
   //   dispatch(setSrp(event.currentTarget.value));
@@ -96,6 +143,19 @@ export const Configuration = () => {
                 value={snapIdInput}
                 onChange={handleSnapUrlChange}
               />
+              {isNPM && npmVersions.length > 0 && (
+                <InputRightAddon px="0" bg="white" borderColor="border.default">
+                  <Select
+                    border="none"
+                    onChange={handleNpmVersionChange}
+                    value={selectedNpmVersion}
+                  >
+                    {npmVersions.map((version) => (
+                      <option value={version}>{version}</option>
+                    ))}
+                  </Select>
+                </InputRightAddon>
+              )}
             </InputGroup>
 
             <FormLabel>Environment SRP</FormLabel>
