@@ -323,7 +323,7 @@ export function getSnapPrefix(snapId: string): SnapIdPrefixes {
  * @returns The stripped snap ID.
  */
 export function stripSnapPrefix(snapId: string): string {
-  return snapId?.replace(getSnapPrefix(snapId), '');
+  return snapId.replace(getSnapPrefix(snapId), '');
 }
 
 /**
