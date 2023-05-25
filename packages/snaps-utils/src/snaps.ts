@@ -317,6 +317,16 @@ export function getSnapPrefix(snapId: string): SnapIdPrefixes {
 }
 
 /**
+ * Strips snap prefix from a full snap ID.
+ *
+ * @param snapId - The snap ID to strip.
+ * @returns The stripped snap ID.
+ */
+export function stripSnapPrefix(snapId: string): string {
+  return snapId.replace(getSnapPrefix(snapId), '');
+}
+
+/**
  * Assert that the given value is a valid snap ID.
  *
  * @param value - The value to check.

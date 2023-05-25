@@ -28,7 +28,7 @@ import pump from 'pump';
 import { all, call, put, select, takeLatest } from 'redux-saga/effects';
 
 import { runSaga } from '../../store/middleware';
-import { getSrp } from '../configuration';
+import { getSnapId, getSrp, setSnapId } from '../configuration';
 import { addError } from '../console';
 import { ManifestStatus, setValid } from '../manifest';
 import {
@@ -59,16 +59,15 @@ import {
   unrestrictedMethods,
 } from './snap-permissions';
 
-// TODO: Use actual snap ID
-export const DEFAULT_SNAP_ID = 'simulated-snap';
-
 /**
- * The initialization saga is run on page load and initializes the snaps execution environment.
+ * The initialization saga is run on when the snap ID is changed and initializes the snaps execution environment.
  * This saga also creates the JSON-RPC engine and middlewares used to process RPC requests from the executing snap.
  *
+ * @param action - The action itself.
+ * @param action.payload - The payload of the action, in this case the snap ID.
  * @yields Puts the execution environment after creation.
  */
-export function* initSaga() {
+export function* initSaga({ payload }: PayloadAction<string>) {
   const controllerMessenger = new ControllerMessenger();
 
   const srp: string = yield select(getSrp);
@@ -131,7 +130,7 @@ export function* initSaga() {
 
   engine.push(
     permissionController.createPermissionMiddleware({
-      origin: DEFAULT_SNAP_ID,
+      origin: payload,
     }),
   );
 
@@ -173,10 +172,10 @@ export function* initSaga() {
  * @yields Select for selecting the execution service and call to call the execution service.
  */
 export function* rebootSaga({ payload }: PayloadAction<VirtualFile<string>>) {
+  const snapId: string = yield select(getSnapId);
   const executionService: IframeExecutionService = yield select(
     getExecutionService,
   );
-
   const permissionController: GenericPermissionController = yield select(
     getPermissionController,
   );
@@ -184,13 +183,13 @@ export function* rebootSaga({ payload }: PayloadAction<VirtualFile<string>>) {
   const endowments: string[] = yield call(
     getEndowments,
     permissionController,
-    DEFAULT_SNAP_ID,
+    snapId,
   );
 
   try {
     yield call([executionService, 'terminateAllSnaps']);
     yield call([executionService, 'executeSnap'], {
-      snapId: DEFAULT_SNAP_ID,
+      snapId,
       sourceCode: payload.toString('utf8'),
       endowments,
     });
@@ -212,6 +211,7 @@ export function* rebootSaga({ payload }: PayloadAction<VirtualFile<string>>) {
  */
 export function* requestSaga({ payload }: PayloadAction<SnapRpcHookArgs>) {
   yield put({ type: `${payload.handler}/setRequest`, payload });
+  const snapId: string = yield select(getSnapId);
   const executionService: IframeExecutionService = yield select(
     getExecutionService,
   );
@@ -219,7 +219,7 @@ export function* requestSaga({ payload }: PayloadAction<SnapRpcHookArgs>) {
   try {
     const result: unknown = yield call(
       [executionService, 'handleRpcRequest'],
-      DEFAULT_SNAP_ID,
+      snapId,
       payload,
     );
 
@@ -249,12 +249,13 @@ export function* permissionsSaga({
   payload,
 }: PayloadAction<VirtualFile<SnapManifest>>) {
   try {
+    const snapId: string = yield select(getSnapId);
     const subjectMetadataController: SubjectMetadataController = yield select(
       getSubjectMetadataController,
     );
 
     yield call([subjectMetadataController, 'addSubjectMetadata'], {
-      origin: DEFAULT_SNAP_ID,
+      origin: snapId,
       subjectType: SubjectType.Snap,
     });
 
@@ -272,7 +273,7 @@ export function* permissionsSaga({
     // Grant all permissions
     yield call([permissionController, 'grantPermissions'], {
       approvedPermissions,
-      subject: { origin: DEFAULT_SNAP_ID },
+      subject: { origin: snapId },
       preserveExistingPermissions: false,
     });
   } catch (error: any) {
@@ -290,7 +291,7 @@ export function* permissionsSaga({
  */
 export function* simulationSaga() {
   yield all([
-    initSaga(),
+    takeLatest(setSnapId.type, initSaga),
     takeLatest(setSourceCode.type, rebootSaga),
     takeLatest(sendRequest.type, requestSaga),
     takeLatest(setManifest, permissionsSaga),

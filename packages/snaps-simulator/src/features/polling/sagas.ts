@@ -1,9 +1,16 @@
-import { LocalLocation } from '@metamask/snaps-controllers/dist/snaps/location';
-import { logError, SnapManifest, VirtualFile } from '@metamask/snaps-utils';
+import { detectSnapLocation } from '@metamask/snaps-controllers/dist/snaps/location';
+import {
+  getSnapPrefix,
+  logError,
+  SnapIdPrefixes,
+  SnapManifest,
+  VirtualFile,
+} from '@metamask/snaps-utils';
+import { SemVerRange } from '@metamask/utils';
 import equal from 'fast-deep-equal/es6';
 import { all, call, delay, put, select, takeLatest } from 'redux-saga/effects';
 
-import { getSnapUrl, setSnapUrl } from '../configuration';
+import { getSnapId, getSnapVersion, setSnapId } from '../configuration';
 import { addDefault, addError } from '../console';
 import { ManifestStatus, setValid, validateManifest } from '../manifest';
 import {
@@ -22,9 +29,13 @@ import {
  * @yields Selects the snap URL and checksum, calls fetch to fetch the manifest, puts updates to the manifest and source code.
  */
 export function* fetchingSaga() {
-  const url: string = yield select(getSnapUrl);
+  const snapId: string = yield select(getSnapId);
+  const snapVersion: string = yield select(getSnapVersion);
 
-  const location = new LocalLocation(new URL(`local:${url}`));
+  const location = detectSnapLocation(snapId, {
+    allowLocal: true,
+    versionRange: snapVersion as SemVerRange,
+  });
   const manifestFile: VirtualFile<SnapManifest> = yield call(
     [location, 'fetch'],
     'snap.manifest.json',
@@ -74,7 +85,11 @@ export function* fetchingSaga() {
 export function* pollingSaga() {
   while (true) {
     try {
+      const snapId: string = yield select(getSnapId);
       yield call(fetchingSaga);
+      if (getSnapPrefix(snapId) !== SnapIdPrefixes.local) {
+        break;
+      }
       yield delay(500);
     } catch (error: any) {
       logError(error);
@@ -92,5 +107,5 @@ export function* pollingSaga() {
  * @yields All sagas for the polling feature.
  */
 export function* rootPollingSaga() {
-  yield all([takeLatest(setSnapUrl.type, pollingSaga)]);
+  yield all([takeLatest(setSnapId.type, pollingSaga)]);
 }

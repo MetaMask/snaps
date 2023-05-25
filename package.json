@@ -35,7 +35,7 @@
     "pre-commit": "yarn lint-staged && yarn dedupe --check"
   },
   "lint-staged": {
-    "*.{js,ts}": [
+    "*.{js,ts,tsx,jsx}": [
       "eslint --fix"
     ],
     "!(CHANGELOG).{json,yml,md}": [

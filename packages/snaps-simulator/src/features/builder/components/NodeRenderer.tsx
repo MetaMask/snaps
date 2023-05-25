@@ -6,8 +6,9 @@ import { useSelector } from 'react-redux';
 
 import { Delineator, Window } from '../../../components';
 import { Renderer } from '../../renderer';
-import { DEFAULT_SNAP_ID, getSnapName } from '../../simulation';
+import { getSnapName } from '../../simulation';
 import { nodeModelsToComponent } from '../utils';
+import { getSnapId } from '../../configuration';
 
 export type NodeRendererProps = {
   items: NodeModel<Component>[];
@@ -24,11 +25,12 @@ export type NodeRendererProps = {
 export const NodeRenderer: FunctionComponent<NodeRendererProps> = ({
   items,
 }) => {
+  const snapId = useSelector(getSnapId);
   const snapName = useSelector(getSnapName) ?? 'Unknown';
   const node = useMemo(() => nodeModelsToComponent(items), [items]);
 
   return (
-    <Window snapName={snapName} snapId={DEFAULT_SNAP_ID}>
+    <Window snapName={snapName} snapId={snapId}>
       <Box margin="4" marginTop="0" flex="1">
         <Delineator snapName={snapName}>
           <Renderer node={node} />
