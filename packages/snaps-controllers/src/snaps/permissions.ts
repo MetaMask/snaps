@@ -1,9 +1,19 @@
-import { PermissionConstraint } from '@metamask/permission-controller';
-import { caveatMappers } from '@metamask/rpc-methods';
+import {
+  PermissionConstraint,
+  PermissionSpecificationConstraint,
+} from '@metamask/permission-controller';
+import {
+  caveatMappers,
+  restrictedMethodPermissionBuilders,
+  selectHooks,
+} from '@metamask/rpc-methods';
 import { SnapPermissions } from '@metamask/snaps-utils';
 import { hasProperty } from '@metamask/utils';
 
-import { endowmentCaveatMappers } from './endowments';
+import {
+  endowmentCaveatMappers,
+  endowmentPermissionBuilders,
+} from './endowments';
 
 /**
  * Map initial permissions as defined in a Snap manifest to something that can
@@ -38,3 +48,34 @@ export function processSnapPermissions(
     }),
   );
 }
+
+export const buildSnapEndowmentSpecifications = (
+  excludedEndowments: string[],
+) =>
+  Object.values(endowmentPermissionBuilders).reduce<
+    Record<string, PermissionSpecificationConstraint>
+  >((allSpecifications, { targetKey, specificationBuilder }) => {
+    if (!excludedEndowments.includes(targetKey)) {
+      allSpecifications[targetKey] = specificationBuilder({});
+    }
+    return allSpecifications;
+  }, {});
+
+export const buildSnapRestrictedMethodSpecifications = (
+  excludedPermissions: string[],
+  hooks: Record<string, unknown>,
+) =>
+  Object.values(restrictedMethodPermissionBuilders).reduce<
+    Record<string, PermissionSpecificationConstraint>
+  >((specifications, { targetKey, specificationBuilder, methodHooks }) => {
+    if (!excludedPermissions.includes(targetKey)) {
+      specifications[targetKey] = specificationBuilder({
+        // @ts-expect-error The selectHooks type is wonky
+        methodHooks: selectHooks<typeof hooks, keyof typeof methodHooks>(
+          hooks,
+          methodHooks,
+        ) as Pick<typeof hooks, keyof typeof methodHooks>,
+      });
+    }
+    return specifications;
+  }, {});
