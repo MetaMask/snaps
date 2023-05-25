@@ -3,16 +3,16 @@ import yargs from 'yargs';
 
 import builders from '../../builders';
 import { YargsArgs } from '../../types/yargs';
-import { build } from '../build/buildHandler';
 import { initHandler } from './initHandler';
 
-export = {
-  command: ['init [directory]', 'i [directory]'],
-  desc: 'Initialize Snap package',
+export const initCommand = {
+  command: ['$0 [directory]'],
+  desc: 'Initialize MetaMask Snaps project',
   builder: (yarg: yargs.Argv) => {
     yarg.positional('directory', builders.directory);
+    return yarg;
   },
-  handler: async (argv: YargsArgs) => init(argv),
+  handler: init,
 };
 
 /**
@@ -23,15 +23,6 @@ export = {
  * @param argv - The Yargs arguments object.
  */
 async function init(argv: YargsArgs): Promise<void> {
-  const newArgs = await initHandler(argv);
-
-  process.chdir(newArgs.snapLocation);
-
-  await build({
-    ...newArgs,
-    manifest: false,
-    eval: true,
-  });
-
+  await initHandler(argv);
   logInfo('\nSnap project successfully initiated!');
 }

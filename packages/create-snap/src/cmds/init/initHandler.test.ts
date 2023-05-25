@@ -33,6 +33,7 @@ describe('initialize', () => {
   describe('initHandler', () => {
     beforeEach(async () => {
       await resetFileSystem();
+      jest.spyOn(initUtils, 'buildSnap').mockImplementation();
     });
 
     afterEach(() => {

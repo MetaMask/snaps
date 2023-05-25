@@ -116,3 +116,19 @@ export function yarnInstall(directory: string) {
     throw new Error('Init Error: Failed to install dependencies.');
   }
 }
+
+/**
+ * Build the snap project.
+ *
+ * @param snapDirectory - The directory containing the snap.
+ */
+export function buildSnap(snapDirectory: string) {
+  try {
+    execSync('yarn build', {
+      stdio: [0, 1, 2],
+      cwd: pathUtils.resolve(__dirname, snapDirectory),
+    });
+  } catch (error) {
+    throw new Error('Init Error: Failed to build snap.');
+  }
+}
