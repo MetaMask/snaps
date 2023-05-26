@@ -115,13 +115,14 @@ jobs:
       - run: yarn --immutable --immutable-cache
       - name: Generate LavaMoat policy
         run: yarn workspace @metamask/snaps-execution-environments build:lavamoat:policy
-      - name: Cache simulator build
+      - name: Cache e2e build
         id: cache-simulator-build
         uses: actions/cache@v3
         with:
           path: |
             packages/snaps-simulator/dist
-          key: simulator-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
+            packages/snaps-cli/dist
+          key: e2e-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
       - name: Require clean working directory
         shell: bash
         run: |
@@ -246,7 +247,8 @@ jobs:
         with:
           path: |
             packages/snaps-simulator/dist
-          key: simulator-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
+            packages/snaps-cli/dist
+          key: e2e-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
       - run: yarn --immutable --immutable-cache
       - name: Install Google Chrome
         run: yarn install-chrome
