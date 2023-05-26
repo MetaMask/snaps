@@ -604,6 +604,9 @@
       }
     },
     "external:../snaps-utils/src/icon.ts": {
+      "builtin": {
+        "buffer": true
+      },
       "packages": {
         "@metamask/snaps-utils>is-svg": true,
         "@metamask/utils": true,
